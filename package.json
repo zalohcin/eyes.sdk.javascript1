@@ -1,0 +1,46 @@
+{
+    "name": "eyes.leanft",
+    "version": "0.0.1",
+    "description": "Applitools Eyes SDK For LeanFT JavaScript WebBrowser",
+    "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
+    "keywords": [
+        "eyes.leanft",
+        "Test Automation",
+        "Visual Regression",
+        "tests",
+        "SDK",
+        "Applitools",
+        "Eyes",
+        "automation",
+        "leanft",
+        "testing"
+    ],
+    "homepage": "http://www.applitools.com/",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/applitools/eyes.javascript.leanft.git"
+    },
+    "license": "Apache-2.0",
+    "main": "index",
+    "dependencies": {
+        "eyes.utils": "0.0.25",
+        "eyes.sdk": "0.0.61",
+        "q": "^1.4.1"
+    },
+    "devDependencies": {
+        "ava": "^0.18.0"
+    },
+    "optionalDependencies": {
+        "leanft": "*",
+        "leanft.sdk.web": "*"
+    },
+    "scripts": {
+        "test": "ava"
+    },
+    "ava": {
+        "concurrency": 1
+    },
+    "engines": {
+        "node": ">=6.9.0"
+    }
+}
