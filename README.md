@@ -2,7 +2,7 @@ eyes.leanft
 =============
 
 Applitools Eyes SDK For LeanFT
-[![Build Status](https://travis-ci.org/applitools/Eyes.Selenium.JavaScript.svg?branch=master)](https://travis-ci.org/applitools/Eyes.Selenium.JavaScript)
+[![Build Status](https://travis-ci.org/applitools/eyes.leanft.javascript.svg?branch=master)](https://travis-ci.org/applitools/eyes.leanft.javascript)
 
 
 Getting Started
