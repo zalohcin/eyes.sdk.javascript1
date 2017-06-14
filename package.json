@@ -24,7 +24,7 @@
     "main": "index",
     "dependencies": {
         "eyes.utils": "0.0.25",
-        "eyes.sdk": "0.0.61",
+        "eyes.sdk": "0.0.62",
         "q": "^1.4.1"
     },
     "devDependencies": {
