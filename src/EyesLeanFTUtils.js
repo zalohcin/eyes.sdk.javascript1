@@ -259,9 +259,9 @@
             return EyesLeanFTUtils.promiseArrayToArray(results, 2, promiseFactory);
         }).then(function (results) {
             // If we can't find the current scroll position, we use 0 as default.
-            var x = parseInt(results[0], 10) || 0;
-            var y = parseInt(results[1], 10) || 0;
-            return {x: x, y: y};
+            var x = parseInt(results[1], 10) || 0;
+            var y = parseInt(results[0], 10) || 0;
+            return { x: x, y: y };
         });
     };
 
@@ -281,9 +281,9 @@
         return EyesLeanFTUtils.executeScript(browser, JS_GET_CONTENT_ENTIRE_SIZE, promiseFactory).then(function (results) {
             return EyesLeanFTUtils.promiseArrayToArray(results, 2, promiseFactory);
         }).then(function (results) {
-            var totalWidth = results[0] || 0;
-            var totalHeight = results[1] || 0;
-            return {width: totalWidth, height: totalHeight};
+            var totalWidth = results[1] || 0;
+            var totalHeight = results[0] || 0;
+            return { width: totalWidth, height: totalHeight };
         });
     };
 
@@ -339,8 +339,8 @@
                     reject("Can't parse values.");
                 } else {
                     var returnV = {
-                        width: results[0] || 0,
-                        height: results[1] || 0
+                        width: results[1] || 0,
+                        height: results[0] || 0
                     }
                     resolve(returnV);
                 }
