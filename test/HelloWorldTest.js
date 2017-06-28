@@ -14,6 +14,7 @@ test.cb.before(t => {
     eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
     eyes.setForceFullPageScreenshot(true);
     eyes.setLogHandler(new ConsoleLogHandler(true));
+    //eyes.setSaveDebugScreenshots(true, "c:/temp");
     //eyes.setServerUrl("https://localhost.applitools.com"); // TODO - add missing function "setServerUrl"
 
     LFT.whenDone(t.end);
