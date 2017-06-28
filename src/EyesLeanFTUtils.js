@@ -692,6 +692,28 @@
         });
     };
 
+    function formatDate(date) {
+        if (date === null || date === undefined) {
+            date = new Date();
+        }
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+
+        if (day < 10) day = '0' + day;
+        if (month < 10) month = '0' + month;
+        if (year < 10) year = '0' + year;
+        if (hour < 10) hour = '0' + hour;
+        if (minute < 10) minute = '0' + minute;
+        if (second < 10) second = '0' + second;
+
+        return '' + year + '_' + month + '_' + day + '-' + hour + '_' + minute + '_' + second;
+    }
+
     /**
      * @private
      * @param {Web.Browser} browser
@@ -735,7 +757,7 @@
             }).then(function (image) {
                 mutableImage = image;
                 if (saveDebugScreenshots) {
-                    var filename = "screenshot " + (new Date()).getTime()+ " original.png";
+                    var filename = "screenshot " + formatDate() + " original.png";
                     return mutableImage.saveImage(debugScreenshotsPath + filename.replace(/ /g, '_'));
                 }
             }).then(function () {
@@ -762,7 +784,7 @@
                 }
             }).then(function () {
                 if (saveDebugScreenshots) {
-                    var filename = "screenshot " +  (new Date()).getTime() + " cropped.png";
+                    var filename = "screenshot " + formatDate() + " cropped.png";
                     return mutableImage.saveImage(debugScreenshotsPath + filename.replace(/ /g, '_'));
                 }
             }).then(function () {
@@ -771,7 +793,7 @@
                 }
             }).then(function () {
                 if (saveDebugScreenshots) {
-                    var filename = "screenshot " + (new Date()).getTime() + " scaled.png";
+                    var filename = "screenshot " + formatDate() + " scaled.png";
                     return mutableImage.saveImage(debugScreenshotsPath + filename.replace(/ /g, '_'));
                 }
             }).then(function () {
