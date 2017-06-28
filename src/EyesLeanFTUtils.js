@@ -464,7 +464,7 @@
 
                     // We move the window to (0,0) to have the best chance to be able to
                     // set the viewport size as requested.
-                    EyesLeanFTUtils.scrollTo(browser, {x: 0, y: 0}, promiseFactory).catch(function () {
+                    EyesLeanFTUtils.scrollTo(browser, { x: 0, y: 0 }, promiseFactory).catch(function () {
                         logger.verbose("Warning: Failed to move the browser window to (0,0)");
                     }).then(function () {
                         return EyesLeanFTUtils.setBrowserSizeByViewportSize(logger, browser, actualViewportSize, requiredSize, promiseFactory);
@@ -507,10 +507,10 @@
                                     return _setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
                                         widthDiff, widthStep, heightDiff, heightStep, currWidthChange, currHeightChange,
                                         retriesLeft, lastRequiredBrowserSize, promiseFactory).then(function () {
-                                        resolve();
-                                    }, function () {
-                                        reject("Failed to set viewport size: zoom workaround failed.");
-                                    });
+                                            resolve();
+                                        }, function () {
+                                            reject("Failed to set viewport size: zoom workaround failed.");
+                                        });
                                 }
 
                                 reject("Failed to set viewport size!");
@@ -599,10 +599,10 @@
                     return _setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
                         widthDiff, widthStep, heightDiff, heightStep, currWidthChange, currHeightChange,
                         retriesLeft, lastRequiredBrowserSize, promiseFactory).then(function () {
-                        resolve();
-                    }, function (err) {
-                        reject(err);
-                    });
+                            resolve();
+                        }, function (err) {
+                            reject(err);
+                        });
                 }
 
                 reject("Failed to set window size!");
@@ -662,31 +662,31 @@
                 if (part.left === 0 && part.top === 0) {
                     parts.push({
                         image: imageObj.imageBuffer,
-                        size: {width: imageObj.width, height: imageObj.height},
-                        position: {x: 0, y: 0}
+                        size: { width: imageObj.width, height: imageObj.height },
+                        position: { x: 0, y: 0 }
                     });
 
                     resolve();
                     return;
                 }
 
-                var partPosition = {x: part.left, y: part.top};
+                var partPosition = { x: part.left, y: part.top };
                 return positionProvider.setPosition(partPosition).then(function () {
                     return positionProvider.getCurrentPosition();
                 }).then(function (currentPosition) {
                     return _captureViewport(browser, promiseFactory, viewportSize, scaleProviderFactory, cutProvider, entirePageSize,
                         pixelRatio, rotationDegrees, automaticRotation, automaticRotationDegrees, isLandscape,
                         waitBeforeScreenshots, regionInScreenshot, saveDebugScreenshots, debugScreenshotsPath).then(function (partImage) {
-                        return partImage.asObject();
-                    }).then(function (partObj) {
-                        parts.push({
-                            image: partObj.imageBuffer,
-                            size: {width: partObj.width, height: partObj.height},
-                            position: {x: currentPosition.x, y: currentPosition.y}
-                        });
+                            return partImage.asObject();
+                        }).then(function (partObj) {
+                            parts.push({
+                                image: partObj.imageBuffer,
+                                size: { width: partObj.width, height: partObj.height },
+                                position: { x: currentPosition.x, y: currentPosition.y }
+                            });
 
-                        resolve();
-                    });
+                            resolve();
+                        });
                 });
             });
         });
@@ -809,7 +809,7 @@
                         return mutableImage.setCoordinates(scrollPosition);
                     }, function () {
                         // Failed to get Scroll position, setting coordinates to default.
-                        return mutableImage.setCoordinates({x: 0, y: 0});
+                        return mutableImage.setCoordinates({ x: 0, y: 0 });
                     });
                 }
             }).then(function () {
@@ -899,7 +899,7 @@
             if (fullPage) {
                 return positionProvider.getState().then(function (state) {
                     originalPosition = state;
-                    return positionProvider.setPosition({x: 0, y: 0});
+                    return positionProvider.setPosition({ x: 0, y: 0 });
                 }).then(function () {
                     return positionProvider.getCurrentPosition();
                 }).then(function (location) {
