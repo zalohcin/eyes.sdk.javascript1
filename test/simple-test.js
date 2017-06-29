@@ -9,7 +9,7 @@ let browser = null, eyes = null;
 test.cb.before(t => {
     LFT.init();
 
-    eyes = new Eyes();
+    eyes = new Eyes("https://localhost.applitools.com");
     eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
     eyes.setForceFullPageScreenshot(true);
     eyes.setLogHandler(new ConsoleLogHandler(true));
