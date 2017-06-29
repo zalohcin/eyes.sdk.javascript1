@@ -259,9 +259,9 @@
             return EyesLeanFTUtils.promiseArrayToArray(results, 2, promiseFactory);
         }).then(function (results) {
             // If we can't find the current scroll position, we use 0 as default.
-            var x = parseInt(results[0], 10) || 0;
-            var y = parseInt(results[1], 10) || 0;
-            return {x: x, y: y};
+            var x = parseInt(results[1], 10) || 0;
+            var y = parseInt(results[0], 10) || 0;
+            return { x: x, y: y };
         });
     };
 
@@ -281,9 +281,9 @@
         return EyesLeanFTUtils.executeScript(browser, JS_GET_CONTENT_ENTIRE_SIZE, promiseFactory).then(function (results) {
             return EyesLeanFTUtils.promiseArrayToArray(results, 2, promiseFactory);
         }).then(function (results) {
-            var totalWidth = results[0] || 0;
-            var totalHeight = results[1] || 0;
-            return {width: totalWidth, height: totalHeight};
+            var totalWidth = results[1] || 0;
+            var totalHeight = results[0] || 0;
+            return { width: totalWidth, height: totalHeight };
         });
     };
 
@@ -339,8 +339,8 @@
                     reject("Can't parse values.");
                 } else {
                     var returnV = {
-                        width: results[0] || 0,
-                        height: results[1] || 0
+                        width: results[1] || 0,
+                        height: results[0] || 0
                     }
                     resolve(returnV);
                 }
@@ -464,7 +464,7 @@
 
                     // We move the window to (0,0) to have the best chance to be able to
                     // set the viewport size as requested.
-                    EyesLeanFTUtils.scrollTo(browser, {x: 0, y: 0}, promiseFactory).catch(function () {
+                    EyesLeanFTUtils.scrollTo(browser, { x: 0, y: 0 }, promiseFactory).catch(function () {
                         logger.verbose("Warning: Failed to move the browser window to (0,0)");
                     }).then(function () {
                         return EyesLeanFTUtils.setBrowserSizeByViewportSize(logger, browser, actualViewportSize, requiredSize, promiseFactory);
@@ -507,10 +507,10 @@
                                     return _setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
                                         widthDiff, widthStep, heightDiff, heightStep, currWidthChange, currHeightChange,
                                         retriesLeft, lastRequiredBrowserSize, promiseFactory).then(function () {
-                                        resolve();
-                                    }, function () {
-                                        reject("Failed to set viewport size: zoom workaround failed.");
-                                    });
+                                            resolve();
+                                        }, function () {
+                                            reject("Failed to set viewport size: zoom workaround failed.");
+                                        });
                                 }
 
                                 reject("Failed to set viewport size!");
@@ -599,10 +599,10 @@
                     return _setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
                         widthDiff, widthStep, heightDiff, heightStep, currWidthChange, currHeightChange,
                         retriesLeft, lastRequiredBrowserSize, promiseFactory).then(function () {
-                        resolve();
-                    }, function (err) {
-                        reject(err);
-                    });
+                            resolve();
+                        }, function (err) {
+                            reject(err);
+                        });
                 }
 
                 reject("Failed to set window size!");
@@ -662,35 +662,57 @@
                 if (part.left === 0 && part.top === 0) {
                     parts.push({
                         image: imageObj.imageBuffer,
-                        size: {width: imageObj.width, height: imageObj.height},
-                        position: {x: 0, y: 0}
+                        size: { width: imageObj.width, height: imageObj.height },
+                        position: { x: 0, y: 0 }
                     });
 
                     resolve();
                     return;
                 }
 
-                var partPosition = {x: part.left, y: part.top};
+                var partPosition = { x: part.left, y: part.top };
                 return positionProvider.setPosition(partPosition).then(function () {
                     return positionProvider.getCurrentPosition();
                 }).then(function (currentPosition) {
                     return _captureViewport(browser, promiseFactory, viewportSize, scaleProviderFactory, cutProvider, entirePageSize,
                         pixelRatio, rotationDegrees, automaticRotation, automaticRotationDegrees, isLandscape,
                         waitBeforeScreenshots, regionInScreenshot, saveDebugScreenshots, debugScreenshotsPath).then(function (partImage) {
-                        return partImage.asObject();
-                    }).then(function (partObj) {
-                        parts.push({
-                            image: partObj.imageBuffer,
-                            size: {width: partObj.width, height: partObj.height},
-                            position: {x: currentPosition.x, y: currentPosition.y}
-                        });
+                            return partImage.asObject();
+                        }).then(function (partObj) {
+                            parts.push({
+                                image: partObj.imageBuffer,
+                                size: { width: partObj.width, height: partObj.height },
+                                position: { x: currentPosition.x, y: currentPosition.y }
+                            });
 
-                        resolve();
-                    });
+                            resolve();
+                        });
                 });
             });
         });
     };
+
+    function formatDate(date) {
+        if (date === null || date === undefined) {
+            date = new Date();
+        }
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+
+        if (day < 10) day = '0' + day;
+        if (month < 10) month = '0' + month;
+        if (year < 10) year = '0' + year;
+        if (hour < 10) hour = '0' + hour;
+        if (minute < 10) minute = '0' + minute;
+        if (second < 10) second = '0' + second;
+
+        return '' + year + '_' + month + '_' + day + '-' + hour + '_' + minute + '_' + second;
+    }
 
     /**
      * @private
@@ -735,7 +757,7 @@
             }).then(function (image) {
                 mutableImage = image;
                 if (saveDebugScreenshots) {
-                    var filename = "screenshot " + (new Date()).getTime()+ " original.png";
+                    var filename = "screenshot " + formatDate() + " original.png";
                     return mutableImage.saveImage(debugScreenshotsPath + filename.replace(/ /g, '_'));
                 }
             }).then(function () {
@@ -762,7 +784,7 @@
                 }
             }).then(function () {
                 if (saveDebugScreenshots) {
-                    var filename = "screenshot " +  (new Date()).getTime() + " cropped.png";
+                    var filename = "screenshot " + formatDate() + " cropped.png";
                     return mutableImage.saveImage(debugScreenshotsPath + filename.replace(/ /g, '_'));
                 }
             }).then(function () {
@@ -771,7 +793,7 @@
                 }
             }).then(function () {
                 if (saveDebugScreenshots) {
-                    var filename = "screenshot " + (new Date()).getTime() + " scaled.png";
+                    var filename = "screenshot " + formatDate() + " scaled.png";
                     return mutableImage.saveImage(debugScreenshotsPath + filename.replace(/ /g, '_'));
                 }
             }).then(function () {
@@ -787,7 +809,7 @@
                         return mutableImage.setCoordinates(scrollPosition);
                     }, function () {
                         // Failed to get Scroll position, setting coordinates to default.
-                        return mutableImage.setCoordinates({x: 0, y: 0});
+                        return mutableImage.setCoordinates({ x: 0, y: 0 });
                     });
                 }
             }).then(function () {
@@ -877,7 +899,7 @@
             if (fullPage) {
                 return positionProvider.getState().then(function (state) {
                     originalPosition = state;
-                    return positionProvider.setPosition({x: 0, y: 0});
+                    return positionProvider.setPosition({ x: 0, y: 0 });
                 }).then(function () {
                     return positionProvider.getCurrentPosition();
                 }).then(function (location) {

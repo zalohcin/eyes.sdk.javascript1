@@ -295,7 +295,7 @@
                     that._devicePixelRatio = DEFAULT_DEVICE_PIXEL_RATIO;
                 }).then(function () {
                     that._logger.verbose("Device pixel ratio: " + that._devicePixelRatio);
-                    that._logger.verbose("Setting scale provider..");
+                    that._logger.verbose("Setting scale provider...");
                     return that._positionProvider.getEntireSize();
                 }).then(function (entireSize) {
                     enSize = entireSize;
