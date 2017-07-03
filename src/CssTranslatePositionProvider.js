@@ -10,7 +10,7 @@
     /**
      * @constructor
      * @param {Logger} logger A Logger instance.
-     * @param {EyesWebDriver} executor
+     * @param {EyesWebBrowser} executor
      * @param {PromiseFactory} promiseFactory
      * @augments PositionProvider
      */

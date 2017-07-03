@@ -2,7 +2,8 @@
     "use strict";
 
     var EyesUtils = require('eyes.utils'),
-        EyesSDK = require('eyes.sdk');
+        EyesSDK = require('eyes.sdk'),
+        EyesLeanFTScreenshot = require('./EyesLeanFTScreenshot');
     var RegionProvider = EyesSDK.RegionProvider,
         GeometryUtils = EyesUtils.GeometryUtils;
 
@@ -39,13 +40,17 @@
      */
     EyesRegionProvider.prototype.getRegionInLocation = function (image, toCoordinatesType, promiseFactory) {
         var that = this;
-        return promiseFactory.makePromise(function (resolve, reject) {
+        return promiseFactory.makePromise(function (resolve) {
             if (that._coordinatesType === toCoordinatesType) {
                 resolve(that._region);
                 return;
             }
 
-            reject("Unsupported action.");
+            var screenshot = new EyesLeanFTScreenshot(that._logger, that._driver, image, promiseFactory);
+            return screenshot.buildScreenshot().then(function () {
+                var newRegion = screenshot.convertRegionLocation(that._region, that._coordinatesType, toCoordinatesType);
+                resolve(newRegion);
+            });
         });
     };
 

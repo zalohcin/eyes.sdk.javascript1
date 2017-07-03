@@ -5,6 +5,9 @@ logs
 # JetBrains
 .idea
 
+# VS Code
+.vscode
+
 # Runtime data
 pids
 *.pid

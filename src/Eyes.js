@@ -1,28 +1,21 @@
-/*
- ---
-
- name: Eyes
-
- description: The main type - to be used by the users of the library to access all functionality.
-
- provides: [Eyes]
- requires: [eyes.sdk, EyesWebDriver, ViewportSize, selenium-webdriver]
-
- ---
- */
-
 (function () {
     'use strict';
 
     var promise = require('q'),
+        LeanftSdkWeb = require("leanft.sdk.web"),
         EyesSDK = require('eyes.sdk'),
         EyesUtils = require('eyes.utils'),
+        EyesWebBrowser = require('./EyesWebBrowser'),
+        EyesLeanFTUtils = require('./EyesLeanFTUtils'),
+        EyesWebTestObject = require('./EyesWebTestObject'),
         ScrollPositionProvider = require('./ScrollPositionProvider'),
         CssTranslatePositionProvider = require('./CssTranslatePositionProvider'),
-        EyesLeanFTUtils = require('./EyesLeanFTUtils'),
+        ElementPositionProvider = require('./ElementPositionProvider'),
         EyesRegionProvider = require('./EyesRegionProvider'),
         Target = require('./Target');
-    var EyesBase = EyesSDK.EyesBase,
+    var WebBaseDescription = LeanftSdkWeb.Behaviors.WebBaseDescription,
+        WebBaseTestObject = LeanftSdkWeb.Behaviors.WebBaseTestObject,
+        EyesBase = EyesSDK.EyesBase,
         FixedScaleProvider = EyesSDK.FixedScaleProvider,
         ContextBasedScaleProviderFactory = EyesSDK.ContextBasedScaleProviderFactory,
         FixedScaleProviderFactory = EyesSDK.FixedScaleProviderFactory,
@@ -77,7 +70,7 @@
 
     //noinspection JSUnusedGlobalSymbols
     Eyes.prototype._getBaseAgentId = function () {
-        return 'selenium-js/0.0.67';
+        return 'leanft-js/0.0.1';
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -88,12 +81,11 @@
      * @param {string} testName - The test name.
      * @param {{width: number, height: number}} viewportSize - The required browser's
      * viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
-     * @return {Promise<Web.Browser>} A wrapped WebDriver which enables Eyes trigger recording and
-     * frame handling.
+     * @return {Promise<Web.Browser>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
      */
     Eyes.prototype.open = function (browser, appName, testName, viewportSize) {
         var that = this;
-        that._driver = browser;
+        that._driver = new EyesWebBrowser(browser, that, that._logger, that._promiseFactory);
 
         that._promiseFactory.setFactoryMethods(function (asyncAction) {
             return browser._session._promiseManager.syncedBranchThen(function () {
@@ -149,7 +141,7 @@
     /**
      * Preform visual validation
      * @param {string} name - A name to be associated with the match
-     * @param {Target} target - Target instance which describes whether we want a window/region/frame
+     * @param {Target} target - Target instance which describes whether we want a window/region
      * @return {Promise} A promise which is resolved when the validation is finished.
      */
     Eyes.prototype.check = function (name, target) {
@@ -167,22 +159,85 @@
             return promise;
         }
 
+        if (target.getIgnoreObjects().length) {
+            target.getIgnoreObjects().forEach(function (obj) {
+                promise = promise.then(function() {
+                    return findElementByLocator(that, obj.element);
+                }).then(function (element) {
+                    if (!isElementObject(element)) {
+                        throw new Error("Unsupported ignore region type: " + typeof element);
+                    }
+
+                    return getRegionFromWebElement(element);
+                }).then(function (region) {
+                    target.ignore(region);
+                });
+            });
+        }
+
+        if (target.getFloatingObjects().length) {
+            target.getFloatingObjects().forEach(function (obj) {
+                promise = promise.then(function() {
+                    return findElementByLocator(that, obj.element);
+                }).then(function (element) {
+                    if (!isElementObject(element)) {
+                        throw new Error("Unsupported floating region type: " + typeof element);
+                    }
+
+                    return getRegionFromWebElement(element);
+                }).then(function (region) {
+                    region.maxLeftOffset = obj.maxLeftOffset;
+                    region.maxRightOffset = obj.maxRightOffset;
+                    region.maxUpOffset = obj.maxUpOffset;
+                    region.maxDownOffset = obj.maxDownOffset;
+                    target.floating(region);
+                });
+            });
+        }
+
         that._logger.verbose("match starting with params", name, target.getStitchContent(), target.getTimeout());
         var regionObject,
             regionProvider,
-            isFrameSwitched = false, // if we will switch frame then we need to restore parent
             originalOverflow, originalPositionProvider, originalHideScrollBars;
 
         // if region specified
         if (target.isUsingRegion()) {
-            regionObject = target.getRegion();
+            promise = promise.then(function () {
+                return findElementByLocator(that, target.getRegion());
+            }).then(function (region) {
+                regionObject = region;
 
-            if (GeometryUtils.isRegion(regionObject)) {
-                // if regionObject is simple region
-                regionProvider = new EyesRegionProvider(that._logger, that._driver, regionObject, CoordinatesType.CONTEXT_AS_IS);
-            } else {
-                throw new Error("Unsupported region type: " + typeof regionObject);
-            }
+                if (isElementObject(regionObject)) {
+                    var regionPromise;
+                    if (target.getStitchContent()) {
+                        that._checkFrameOrElement = true;
+
+                        originalPositionProvider = that.getPositionProvider();
+                        that.setPositionProvider(new ElementPositionProvider(that._logger, that._driver, regionObject, that._promiseFactory));
+
+                        // Set overflow to "hidden".
+                        regionPromise = regionObject.getOverflow().then(function (value) {
+                            originalOverflow = value;
+                            return regionObject.setOverflow("hidden");
+                        }).then(function () {
+                            return getRegionProviderForElement(that, regionObject);
+                        }).then(function (regionProvider) {
+                            that._regionToCheck = regionProvider;
+                        });
+                    } else {
+                        regionPromise = getRegionFromWebElement(regionObject);
+                    }
+
+                    return regionPromise.then(function (region) {
+                        regionProvider = new EyesRegionProvider(that._logger, that._driver, region, CoordinatesType.CONTEXT_RELATIVE);
+                    });
+                } else if (GeometryUtils.isRegion(regionObject)) {
+                    // if regionObject is simple region
+                    regionProvider = new EyesRegionProvider(that._logger, that._driver, regionObject, CoordinatesType.CONTEXT_AS_IS);
+                } else {
+                    throw new Error("Unsupported region type: " + typeof regionObject);
+                }
+            });
         }
 
         return promise.then(function () {
@@ -228,14 +283,80 @@
             }
         }).then(function () {
             that._logger.verbose("Done!");
+        });
+    };
 
-            // restore parent frame, if another frame was selected
-            if (isFrameSwitched) {
-                that._logger.verbose("Switching back to parent frame...");
-                return that._driver.switchTo().parentFrame().then(function () {
-                    that._logger.verbose("Done!");
-                });
+    var findElementByLocator = function (that, elementObject) {
+        return that._promiseFactory.makePromise(function (resolve) {
+            if (isLocatorObject(elementObject)) {
+                that._logger.verbose("Trying to find element...", elementObject);
+                resolve(that._driver.$(elementObject));
+                return;
             }
+
+            resolve(elementObject);
+        });
+    };
+
+    var isElementObject = function (o) {
+        return o instanceof EyesWebTestObject || o instanceof WebBaseTestObject;
+    };
+
+    var isLocatorObject = function (o) {
+        return o instanceof WebBaseDescription;
+    };
+
+    /**
+     * Get the region provider for a certain element.
+     * @param {Eyes} eyes - The eyes instance.
+     * @param {EyesWebTestObject} element - The element to get a region for.
+     * @return {Promise<EyesRegionProvider>} The region for a certain element.
+     */
+    var getRegionProviderForElement = function (eyes, element) {
+        var elementLocation, elementSize,
+            borderLeftWidth, borderRightWidth, borderTopWidth;
+
+        eyes._logger.verbose("getRegionProviderForElement");
+        return element.getLocation().then(function (value) {
+            elementLocation = value;
+            return element.getSize();
+        }).then(function (value) {
+            elementSize = value;
+            return element.getBorderLeftWidth();
+        }).then(function (value) {
+            borderLeftWidth = value;
+            return element.getBorderRightWidth();
+        }).then(function (value) {
+            borderRightWidth = value;
+            return element.getBorderTopWidth();
+        }).then(function (value) {
+            borderTopWidth = value;
+            return element.getBorderBottomWidth();
+        }).then(function (value) { // borderBottomWidth
+            var elementRegion = GeometryUtils.createRegion(
+                elementLocation.x + borderLeftWidth,
+                elementLocation.y + borderTopWidth,
+                elementSize.width - borderLeftWidth - borderRightWidth,
+                elementSize.height - borderTopWidth - value
+            );
+
+            eyes._logger.verbose("Done! Element region", elementRegion);
+            return new EyesRegionProvider(eyes._logger, eyes._driver, elementRegion, CoordinatesType.CONTEXT_RELATIVE);
+        });
+    };
+
+    /**
+     * Get the region for a certain web element.
+     * @param {EyesWebTestObject} element - The web element to get the region from.
+     * @return {Promise<{left: number, top: number, width: number, height: number}>} The region.
+     */
+    var getRegionFromWebElement = function (element) {
+        var elementSize;
+        return element.getSize().then(function (size) {
+            elementSize = size;
+            return element.getLocation();
+        }).then(function (point) {
+            return GeometryUtils.createRegionFromLocationAndSize(point, elementSize);
         });
     };
 
@@ -255,13 +376,26 @@
     /**
      * Takes a snapshot of the application under test and matches a specific
      * element with the expected region output.
-     * @param {webdriver.WebElement|EyesRemoteWebElement} element - The element to check.
+     * @param {EyesWebTestObject} element - The element to check.
      * @param {int|null} matchTimeout - The amount of time to retry matching (milliseconds).
      * @param {string} tag - An optional tag to be associated with the match.
      * @return {Promise} A promise which is resolved when the validation is finished.
      */
     Eyes.prototype.checkElement = function (element, matchTimeout, tag) {
         return this.check(tag, Target.region(element).timeout(matchTimeout).fully());
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Takes a snapshot of the application under test and matches a specific
+     * element with the expected region output.
+     * @param {WebBaseDescription} locator - The element to check.
+     * @param {int|null} matchTimeout - The amount of time to retry matching (milliseconds).
+     * @param {string} tag - An optional tag to be associated with the match.
+     * @return {ManagedPromise} A promise which is resolved when the validation is finished.
+     */
+    Eyes.prototype.checkElementBy = function (locator, matchTimeout, tag) {
+        return this.check(tag, Target.region(locator).timeout(matchTimeout).fully());
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -275,6 +409,30 @@
      */
     Eyes.prototype.checkRegion = function (region, tag, matchTimeout) {
         return this.check(tag, Target.region(region).timeout(matchTimeout));
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Visually validates a region in the screenshot.
+     * @param {EyesWebTestObject} element - The element defining the region to validate.
+     * @param {string} tag - An optional tag to be associated with the screenshot.
+     * @param {int} matchTimeout - The amount of time to retry matching.
+     * @return {ManagedPromise} A promise which is resolved when the validation is finished.
+     */
+    Eyes.prototype.checkRegionByElement = function (element, tag, matchTimeout) {
+        return this.check(tag, Target.region(element).timeout(matchTimeout));
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Visually validates a region in the screenshot.
+     * @param {WebBaseDescription} by - The WebDriver selector used for finding the region to validate.
+     * @param {string} tag - An optional tag to be associated with the screenshot.
+     * @param {int} matchTimeout - The amount of time to retry matching.
+     * @return {ManagedPromise} A promise which is resolved when the validation is finished.
+     */
+    Eyes.prototype.checkRegionBy = function (by, tag, matchTimeout) {
+        return this.check(tag, Target.region(by).timeout(matchTimeout));
     };
 
     /**
@@ -538,7 +696,7 @@
     //noinspection JSUnusedGlobalSymbols
     /**
      * Get the session id.
-     * @returns {Promise} A promise which resolves to the webdriver's session ID.
+     * @returns {Promise} A promise which resolves to the browser's session ID.
      */
     Eyes.prototype.getAUTSessionId = function () {
         return this._promiseFactory.makePromise(function (resolve) {
@@ -547,7 +705,7 @@
                 return;
             }
 
-            resolve(this._driver._session._communication._sessionID);
+            resolve(this._driver.getSessionId());
         }.bind(this));
     };
 

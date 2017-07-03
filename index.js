@@ -1,7 +1,11 @@
 exports.CssTranslatePositionProvider = require('./src/CssTranslatePositionProvider');
+exports.ElementPositionProvider = require('./src/ElementPositionProvider');
 exports.Eyes = require('./src/Eyes');
 exports.StitchMode = exports.Eyes.StitchMode;
 exports.EyesRegionProvider = require('./src/EyesRegionProvider');
+exports.EyesWebTestObject = require('./src/EyesWebTestObject');
+exports.EyesWebBrowser = require('./src/EyesWebBrowser');
+exports.EyesLeanFTScreenshot = require('./src/EyesLeanFTScreenshot');
 exports.ScrollPositionProvider = require('./src/ScrollPositionProvider');
 exports.Target = require('./src/Target');
 var EyesSDK = require('eyes.sdk');

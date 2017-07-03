@@ -8,7 +8,7 @@
      * @typedef {{left: number, top: number, width: number, height: number}} Region
      * @typedef {{left: number, top: number, width: number, height: number,
      *            maxLeftOffset: number, maxRightOffset: number, maxUpOffset: number, maxDownOffset: number}} FloatingRegion
-     * @typedef {{element: webdriver.WebElement|EyesRemoteWebElement|webdriver.By,
+     * @typedef {{element: WebBaseDescription|WebBaseTestObject,
      *            maxLeftOffset: number, maxRightOffset: number, maxUpOffset: number, maxDownOffset: number}} FloatingElement
      */
 
@@ -25,6 +25,9 @@
         this._ignoreCaret = null;
         this._ignoreRegions = [];
         this._floatingRegions = [];
+
+        this._ignoreObjects = [];
+        this._floatingObjects = [];
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -91,8 +94,8 @@
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * @param {...(Region|webdriver.WebElement|EyesRemoteWebElement|webdriver.By|
-     *          {element: (webdriver.WebElement|EyesRemoteWebElement|webdriver.By)})} ignoreRegion
+     * @param {...(Region|WebBaseDescription|WebBaseTestObject|
+     *          {element: (WebBaseDescription|WebBaseTestObject)})} ignoreRegion
      * @return {Target}
      */
     Target.prototype.ignore = function (ignoreRegion) {
@@ -103,8 +106,10 @@
 
             if (GeometryUtils.isRegion(arguments[i])) {
                 this._ignoreRegions.push(arguments[i]);
+            } else if (arguments[i].constructor.name === "Object" && "element" in arguments[i]) {
+                this._ignoreObjects.push(arguments[i]);
             } else {
-                throw new Error("Unsupported type.");
+                this._ignoreObjects.push({element: arguments[i]});
             }
         }
         return this;
@@ -125,14 +130,14 @@
                 "maxLeftOffset" in arguments[i] && "maxRightOffset" in arguments[i] && "maxUpOffset" in arguments[i] && "maxDownOffset" in arguments[i]) {
                 this._floatingRegions.push(arguments[i]);
             } else {
-                throw new Error("Unsupported type.");
+                this._floatingObjects.push(arguments[i]);
             }
         }
         return this;
     };
 
     /**
-     * @returns {Region|webdriver.WebElement|EyesRemoteWebElement|webdriver.By|null}
+     * @returns {Region|WebBaseDescription|WebBaseTestObject|null}
      */
     Target.prototype.getRegion = function () {
         return this._region;
@@ -188,10 +193,24 @@
     };
 
     /**
+     * @returns {{element: (WebBaseDescription|WebBaseTestObject)}[]}
+     */
+    Target.prototype.getIgnoreObjects = function () {
+        return this._ignoreObjects;
+    };
+
+    /**
      * @returns {FloatingRegion[]}
      */
     Target.prototype.getFloatingRegions = function () {
         return this._floatingRegions;
+    };
+
+    /**
+     * @returns {FloatingElement[]}
+     */
+    Target.prototype.getFloatingObjects = function () {
+        return this._floatingObjects;
     };
 
     /**
@@ -205,9 +224,9 @@
     };
 
     /**
-     * Validate region (in current window or frame) using region's rect, element or element's locator
+     * Validate region using region's rect, element or element's locator
      *
-     * @param {Region} region The region to validate.
+     * @param {Region|WebBaseDescription|WebBaseTestObject} region The region to validate.
      * @return {Target}
      * @constructor
      */
