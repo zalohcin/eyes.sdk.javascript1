@@ -80,14 +80,19 @@
      * @return {Promise<void>} A promise which resolves to the result of the script's execution on the tab.
      */
     EyesLeanFTUtils.executeScript = function executeScript(browser, script, promiseFactory, stabilizationTimeMs) {
-        return browser.executeScript(script).then(function (result) {
-            if (stabilizationTimeMs) {
-                return GeneralUtils.sleep(stabilizationTimeMs, promiseFactory).then(function () {
-                    return result;
+        return promiseFactory.makePromise(function (resolve, reject) {
+            try {
+                browser.executeScript(script).then(function (result) {
+                    if (stabilizationTimeMs) {
+                        return GeneralUtils.sleep(stabilizationTimeMs, promiseFactory).then(function () {
+                            resolve(result);
+                        });
+                    }
+                    resolve(result);
                 });
+            } catch (e) {
+                reject(e);
             }
-
-            return result;
         });
     };
 
@@ -711,7 +716,7 @@
 
     /**
      * @private
-     * @param {Web.Browser} browser
+     * @param {EyesWebBrowser|EyesStdWinWindow} browser
      * @param {PromiseFactory} promiseFactory
      * @param {{width: number, height: number}} viewportSize
      * @param {ScaleProviderFactory} scaleProviderFactory
@@ -745,7 +750,7 @@
                                      debugScreenshotsPath) {
         var mutableImage, scaleRatio = 1;
         return GeneralUtils.sleep(waitBeforeScreenshots, promiseFactory).then(function () {
-            return browser.page.snapshot().then(function (screenshot64) {
+            return browser.takeScreenshot().then(function (screenshot64) {
                 return new MutableImage(new Buffer(screenshot64, 'base64'), promiseFactory);
             }).then(function (image) {
                 mutableImage = image;

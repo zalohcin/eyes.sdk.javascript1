@@ -1,21 +1,18 @@
 import test from 'ava';
-var LFT = require("leanft");
-var Web = LFT.Web;
+import LFT from 'leanft';
+import {Web} from 'leanft';
 import {Eyes, ConsoleLogHandler} from '../index';
 
-const testName = "Eyes.LeanFT.JavaScript - Hello World";
+const appName = "Eyes.LeanFT.JavaScrip - hello world";
 let browser = null, eyes = null;
-
 
 test.cb.before(t => {
     LFT.init();
 
-    eyes = new Eyes("https://localhost.applitools.com");
+    eyes = new Eyes();
     eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
-    eyes.setForceFullPageScreenshot(true);
     eyes.setLogHandler(new ConsoleLogHandler(true));
-    //eyes.setSaveDebugScreenshots(true, "c:/temp");
-    //eyes.setServerUrl("https://localhost.applitools.com"); // TODO - add missing function "setServerUrl"
+    eyes.setForceFullPageScreenshot(true);
 
     LFT.whenDone(t.end);
 });
@@ -23,7 +20,10 @@ test.cb.before(t => {
 test.cb.beforeEach(t => {
     LFT.beforeTest();
 
+    const testName = t.title.replace("beforeEach for ", "");
     Web.Browser.launch(Web.BrowserType.Chrome).then(function(launched_browser){
+        return eyes.open(launched_browser, appName, testName);
+    }).then(function (launched_browser) {
         browser = launched_browser;
     });
 
@@ -31,19 +31,17 @@ test.cb.beforeEach(t => {
 });
 
 test.cb('LeanFT Hello World', t => {
-    eyes.open(browser, testName, t.title).then(function () {
-        browser.navigate("https://www.applitools.com/helloworld");
-        browser.sync();
+    browser.navigate("https://www.applitools.com/helloworld");
+    browser.sync();
 
-        eyes.checkWindow("Hello!");
+    eyes.checkWindow("Hello!");
 
-        let button = browser.$(Web.Element({tagName: "button"}));
-        button.click();
+    let button = browser.$(Web.Element({tagName: "button"}));
+    button.click();
 
-        eyes.checkWindow("Click!");
+    eyes.checkWindow("Click!");
 
-        return eyes.close();
-    });
+    eyes.close();
 
     LFT.whenDone(t.end);
 });
@@ -58,5 +56,6 @@ test.cb.afterEach.always(t => {
 
 test.cb.after.always(t => {
     LFT.cleanup();
+    eyes.abortIfNotClosed();
     LFT.whenDone(t.end);
 });

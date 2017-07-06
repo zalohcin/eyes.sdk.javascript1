@@ -5,6 +5,7 @@ exports.StitchMode = exports.Eyes.StitchMode;
 exports.EyesRegionProvider = require('./src/EyesRegionProvider');
 exports.EyesWebTestObject = require('./src/EyesWebTestObject');
 exports.EyesWebBrowser = require('./src/EyesWebBrowser');
+exports.EyesStdWinWindow = require('./src/EyesStdWinWindow');
 exports.EyesLeanFTScreenshot = require('./src/EyesLeanFTScreenshot');
 exports.ScrollPositionProvider = require('./src/ScrollPositionProvider');
 exports.Target = require('./src/Target');

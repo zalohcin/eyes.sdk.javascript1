@@ -3,7 +3,7 @@ import LFT from 'leanft';
 import {Web} from 'leanft';
 import {Eyes, ConsoleLogHandler, Target, MatchLevel, StitchMode} from '../index';
 
-const appName = "Eyes.Selenium.JavaScript - check-interface";
+const appName = "Eyes.LeanFT.JavaScript - check-interface";
 let browser = null, eyes = null;
 
 test.cb.before(t => {
@@ -31,7 +31,7 @@ test.cb.beforeEach(t => {
     LFT.whenDone(t.end);
 });
 
-test.cb("Different check methods on TestHtmlPages", t => {
+test.cb("LeanFT check-interface test on Web", t => {
     browser.navigate("https://astappev.github.io/test-html-pages/");
     browser.sync();
 

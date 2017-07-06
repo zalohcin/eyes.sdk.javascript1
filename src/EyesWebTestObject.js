@@ -96,9 +96,9 @@
         };
     }
 
-    function _getBounds (element) {
-        return element.getLocation().then(function (location) {
-            return element.getSize().then(function (size) {
+    function _getBounds(element) {
+        return element.location().then(function (location) {
+            return element.size().then(function (size) {
                 return _getRectangle(location, size);
             }, function () {
                 return _getRectangle(location);

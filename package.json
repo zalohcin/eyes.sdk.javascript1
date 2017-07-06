@@ -32,7 +32,8 @@
     },
     "optionalDependencies": {
         "leanft": "*",
-        "leanft.sdk.web": "*"
+        "leanft.sdk.web": "*",
+        "leanft.sdk.stdwin": "*"
     },
     "scripts": {
         "test": "ava"

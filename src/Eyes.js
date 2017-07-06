@@ -6,6 +6,7 @@
         EyesSDK = require('eyes.sdk'),
         EyesUtils = require('eyes.utils'),
         EyesWebBrowser = require('./EyesWebBrowser'),
+        EyesStdWinWindow = require('./EyesStdWinWindow'),
         EyesLeanFTUtils = require('./EyesLeanFTUtils'),
         EyesWebTestObject = require('./EyesWebTestObject'),
         ScrollPositionProvider = require('./ScrollPositionProvider'),
@@ -21,6 +22,7 @@
         FixedScaleProviderFactory = EyesSDK.FixedScaleProviderFactory,
         NullScaleProvider = EyesSDK.NullScaleProvider,
         Logger = EyesSDK.Logger,
+        MutableImage = EyesSDK.MutableImage,
         CoordinatesType = EyesSDK.CoordinatesType,
         ScaleProviderIdentityFactory = EyesSDK.ScaleProviderIdentityFactory,
         PromiseFactory = EyesUtils.PromiseFactory,
@@ -76,16 +78,24 @@
     //noinspection JSUnusedGlobalSymbols
     /**
      * Starts a test.
-     * @param {Web.Browser} browser - The web driver that controls the browser hosting the application under test.
+     * @param {Web.Browser|StdWin.Window} browser - The web driver that controls the browser hosting the application under test.
      * @param {string} appName - The name of the application under test.
      * @param {string} testName - The test name.
      * @param {{width: number, height: number}} viewportSize - The required browser's
      * viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
-     * @return {Promise<Web.Browser>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
+     * @return {Promise<EyesWebBrowser|EyesStdWinWindow>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
      */
     Eyes.prototype.open = function (browser, appName, testName, viewportSize) {
         var that = this;
-        that._driver = new EyesWebBrowser(browser, that, that._logger, that._promiseFactory);
+
+        var browserClassName = browser.constructor.name;
+        if (browserClassName === 'Browser') {
+            that._driver = new EyesWebBrowser(browser, that, that._logger, that._promiseFactory);
+        } else if (browserClassName === 'UiObjectBaseTO') {
+            that._driver = new EyesStdWinWindow(browser, that, that._logger, that._promiseFactory);
+        } else {
+            that._driver = browser;
+        }
 
         that._promiseFactory.setFactoryMethods(function (asyncAction) {
             return browser._session._promiseManager.syncedBranchThen(function () {
@@ -484,33 +494,45 @@
      */
     Eyes.prototype.getScreenShot = function () {
         var that = this;
-        return that.updateScalingParams().then(function (scaleProviderFactory) {
-            return EyesLeanFTUtils.getScreenshot(
-                that._driver,
-                that._promiseFactory,
-                that._viewportSize,
-                that._positionProvider,
-                scaleProviderFactory,
-                that._cutProviderHandler.get(),
-                that._forceFullPage,
-                that._hideScrollbars,
-                that._stitchMode === StitchMode.CSS,
-                that._imageRotationDegrees,
-                that._automaticRotation,
-                that._os === 'Android' ? 90 : 270,
-                that._isLandscape,
-                that._waitBeforeScreenshots,
-                that._checkFrameOrElement,
-                that._regionToCheck,
-                that._saveDebugScreenshots,
-                that._debugScreenshotsPath
-            );
-        });
+        if (that._driver instanceof EyesWebBrowser) {
+            return that.updateScalingParams().then(function (scaleProviderFactory) {
+                return EyesLeanFTUtils.getScreenshot(
+                    that._driver,
+                    that._promiseFactory,
+                    that._viewportSize,
+                    that._positionProvider,
+                    scaleProviderFactory,
+                    that._cutProviderHandler.get(),
+                    that._forceFullPage,
+                    that._hideScrollbars,
+                    that._stitchMode === StitchMode.CSS,
+                    that._imageRotationDegrees,
+                    that._automaticRotation,
+                    that._os === 'Android' ? 90 : 270,
+                    that._isLandscape,
+                    that._waitBeforeScreenshots,
+                    that._checkFrameOrElement,
+                    that._regionToCheck,
+                    that._saveDebugScreenshots,
+                    that._debugScreenshotsPath
+                );
+            });
+        } else if (that._driver instanceof EyesStdWinWindow) {
+            if (that._forceFullPage) {
+                throw new Error("Full page screenshot is supported only for browser test object");
+            }
+
+            return this._driver.takeScreenshot().then(function (results) {
+                return MutableImage.fromBase64(results, that._promiseFactory);
+            });
+        } else {
+            throw new Error("Top level object is of unsupported type");
+        }
     };
 
     //noinspection JSUnusedGlobalSymbols
     Eyes.prototype.getTitle = function () {
-        return this._driver.page.title();
+        return this._driver.getTitle();
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -527,11 +549,8 @@
 
     //noinspection JSUnusedGlobalSymbols
     Eyes.prototype.getInferredEnvironment = function () {
-        var res = 'useragent:';
-        return EyesLeanFTUtils.executeScript(this._driver, 'return navigator.userAgent;', this._promiseFactory).then(function (userAgent) {
-            return res + userAgent;
-        }, function () {
-            return res;
+        return this._driver.getUserAgent().then(function (userAgent) {
+            return 'useragent:' + userAgent;
         });
     };
 
@@ -555,12 +574,25 @@
      * @returns {*} The viewport size.
      */
     Eyes.prototype.getViewportSize = function () {
-        return EyesLeanFTUtils.getViewportSizeOrDisplaySize(this._logger, this._driver, this._promiseFactory);
+        var that = this;
+        if (this._driver instanceof EyesWebBrowser) {
+            return EyesLeanFTUtils.getViewportSizeOrDisplaySize(this._logger, this._driver, this._promiseFactory);
+        } else if (this._driver instanceof EyesStdWinWindow) {
+            return that._driver.size();
+        } else {
+            throw new Error("Top level object is of unsupported type");
+        }
     };
 
     //noinspection JSUnusedGlobalSymbols
     Eyes.prototype.setViewportSize = function (size) {
-        return EyesLeanFTUtils.setViewportSize(this._logger, this._driver, size, this._promiseFactory);
+        if (this._driver instanceof EyesWebBrowser) {
+            return EyesLeanFTUtils.setViewportSize(this._logger, this._driver, size, this._promiseFactory);
+        } else if (this._driver instanceof EyesStdWinWindow) {
+            throw this._driver.resize(size.width, size.height);
+        } else {
+            throw new Error("Top level object is of unsupported type");
+        }
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -699,14 +731,14 @@
      * @returns {Promise} A promise which resolves to the browser's session ID.
      */
     Eyes.prototype.getAUTSessionId = function () {
+        var that = this;
         return this._promiseFactory.makePromise(function (resolve) {
-            if (!this._driver) {
+            if (that._driver instanceof EyesWebBrowser) {
+                resolve(that._driver.getSessionId());
+            } else {
                 resolve(undefined);
-                return;
             }
-
-            resolve(this._driver.getSessionId());
-        }.bind(this));
+        });
     };
 
     /**

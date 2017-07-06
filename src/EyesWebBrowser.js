@@ -65,7 +65,7 @@
 
     //noinspection JSUnusedGlobalSymbols
     EyesWebBrowser.prototype.getUserAgent = function () {
-        return this.executeScript("return navigator.userAgent");
+        return this.executeScript("return navigator.userAgent;");
     };
 
     /**
@@ -106,6 +106,21 @@
      */
     EyesWebBrowser.prototype.getSessionId = function () {
         return this._browser._session._communication._sessionID;
+    };
+
+    /**
+     *
+     * @return {Promise.<String>}
+     */
+    EyesWebBrowser.prototype.getTitle = function () {
+        return this._browser.page.title();
+    };
+
+    /**
+     * @return {String} Base64 representation of this test object.
+     */
+    EyesWebBrowser.prototype.takeScreenshot = function () {
+        return this._browser.page.snapshot();
     };
 
     module.exports = EyesWebBrowser;
