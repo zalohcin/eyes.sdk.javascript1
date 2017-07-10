@@ -55,7 +55,7 @@
 
     //noinspection JSUnusedGlobalSymbols
     EyesStdWinWindow.prototype.getUserAgent = function () {
-        this._promiseFactory.makePromise(function (resolve) {
+        return this._promiseFactory.makePromise(function (resolve) {
             resolve("");
         })
     };
