@@ -72,7 +72,7 @@
 
     //noinspection JSUnusedGlobalSymbols
     Eyes.prototype._getBaseAgentId = function () {
-        return 'leanft-js/0.0.1';
+        return 'leanft-js/1.0.1';
     };
 
     //noinspection JSUnusedGlobalSymbols
