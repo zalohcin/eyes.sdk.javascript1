@@ -38,3 +38,5 @@ yarn.lock
 
 # LOCAL tests folder
 tests
+
+dist/eyes-browser.js
