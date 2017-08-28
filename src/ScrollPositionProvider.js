@@ -3,7 +3,7 @@
 
     var EyesUtils = require('eyes.utils');
     var EyesSDK = require('eyes.sdk');
-    var EyesLeanFTUtils = require('./EyesLeanFTUtils');
+    var EyesLeanFTUtils = require('./EyesLeanFTUtils').EyesLeanFTUtils;
     var PositionProvider = EyesSDK.PositionProvider,
         ArgumentGuard = EyesUtils.ArgumentGuard;
 
@@ -80,5 +80,7 @@
         });
     };
 
-    module.exports = ScrollPositionProvider;
+    module.exports = {
+        ScrollPositionProvider: ScrollPositionProvider
+    };
 }());

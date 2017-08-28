@@ -306,5 +306,7 @@
         return this._element;
     };
 
-    module.exports = EyesWebTestObject;
+    module.exports = {
+        EyesWebTestObject: EyesWebTestObject
+    };
 }());

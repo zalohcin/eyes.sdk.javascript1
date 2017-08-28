@@ -19,7 +19,7 @@
         GeometryUtils = EyesUtils.GeometryUtils,
         ImageUtils = EyesUtils.ImageUtils;
 
-    var EyesLeanFTUtils = {};
+    function EyesLeanFTUtils () {}
 
     /**
      * @private
@@ -983,5 +983,7 @@
         });
     };
 
-    module.exports = EyesLeanFTUtils;
+    module.exports = {
+        EyesLeanFTUtils: EyesLeanFTUtils
+    };
 }());

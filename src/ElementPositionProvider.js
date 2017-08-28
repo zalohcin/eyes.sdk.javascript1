@@ -97,5 +97,7 @@
         });
     };
 
-    module.exports = ElementPositionProvider;
+    module.exports = {
+        ElementPositionProvider: ElementPositionProvider
+    };
 }());

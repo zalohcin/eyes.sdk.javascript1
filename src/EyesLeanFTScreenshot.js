@@ -3,7 +3,7 @@
 
     var EyesSDK = require('eyes.sdk'),
         EyesUtils = require('eyes.utils'),
-        ScrollPositionProvider = require('./ScrollPositionProvider');
+        ScrollPositionProvider = require('./ScrollPositionProvider').ScrollPositionProvider;
     var EyesScreenshot = EyesSDK.EyesScreenshot,
         CoordinatesType = EyesSDK.CoordinatesType,
         ArgumentGuard = EyesUtils.ArgumentGuard,
@@ -350,5 +350,7 @@
         });
     };
 
-    module.exports = EyesLeanFTScreenshot;
+    module.exports = {
+        EyesLeanFTScreenshot: EyesLeanFTScreenshot
+    };
 }());

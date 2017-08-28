@@ -31,5 +31,7 @@ build/Release
 node_modules
 tests
 
+bundle.js
+
 yarn.lock
 RunResults/

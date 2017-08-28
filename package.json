@@ -1,47 +1,53 @@
 {
-    "name": "eyes.leanft",
-    "version": "1.0.1",
-    "description": "Applitools Eyes SDK For LeanFT JavaScript WebBrowser",
-    "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
-    "keywords": [
-        "eyes.leanft",
-        "Test Automation",
-        "Visual Regression",
-        "tests",
-        "SDK",
-        "Applitools",
-        "Eyes",
-        "automation",
-        "leanft",
-        "testing"
-    ],
-    "homepage": "http://www.applitools.com/",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/applitools/eyes.leanft.javascript.git"
-    },
-    "license": "Apache-2.0",
-    "main": "index",
-    "dependencies": {
-        "eyes.utils": "0.0.25",
-        "eyes.sdk": "0.0.62",
-        "q": "^1.4.1"
-    },
-    "devDependencies": {
-        "ava": "^0.18.0"
-    },
-    "optionalDependencies": {
-        "leanft": "*",
-        "leanft.sdk.web": "*",
-        "leanft.sdk.stdwin": "*"
-    },
-    "scripts": {
-        "test": "ava"
-    },
-    "ava": {
-        "concurrency": 1
-    },
-    "engines": {
-        "node": ">=6.9.0"
-    }
+  "name": "eyes.leanft",
+  "version": "1.0.1",
+  "description": "Applitools Eyes SDK For LeanFT JavaScript WebBrowser",
+  "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
+  "keywords": [
+    "eyes.leanft",
+    "Test Automation",
+    "Visual Regression",
+    "tests",
+    "SDK",
+    "Applitools",
+    "Eyes",
+    "automation",
+    "leanft",
+    "testing"
+  ],
+  "homepage": "http://www.applitools.com/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/applitools/eyes.leanft.javascript.git"
+  },
+  "license": "Apache-2.0",
+  "main": "bundle",
+  "dependencies": {
+    "eyes.utils": "0.0.25",
+    "eyes.sdk": "0.0.62",
+    "q": "^1.4.1"
+  },
+  "devDependencies": {
+    "ava": "^0.18.0",
+    "uglify-js": "^3.0.28",
+    "webpack": "^3.5.5",
+    "webpack-node-externals": "^1.6.0"
+  },
+  "optionalDependencies": {
+    "leanft": "*",
+    "leanft.sdk.web": "*",
+    "leanft.sdk.stdwin": "*"
+  },
+  "scripts": {
+    "test": "ava",
+    "build": "webpack",
+    "minify": "uglifyjs -c -m reserved=[module.exports] --warn bundle.js -o bundle.js",
+    "prepublish": "webpack && uglifyjs -c -m reserved=[module.exports] --warn bundle.js -o bundle.js"
+  },
+  "ava": {
+    "concurrency": 1
+  },
+  "engines": {
+    "node": ">=6.9.0"
+  }
 }

@@ -1,9 +1,9 @@
 (function () {
     "use strict";
     var EyesUtils = require('eyes.utils'),
-        EyesLeanFTUtils = require('./EyesLeanFTUtils'),
-        EyesWebTestObject = require('./EyesWebTestObject'),
-        ScrollPositionProvider = require('./ScrollPositionProvider');
+        EyesLeanFTUtils = require('./EyesLeanFTUtils').EyesLeanFTUtils,
+        EyesWebTestObject = require('./EyesWebTestObject').EyesWebTestObject,
+        ScrollPositionProvider = require('./ScrollPositionProvider').ScrollPositionProvider;
     var GeneralUtils = EyesUtils.GeneralUtils;
 
     /**
@@ -123,5 +123,7 @@
         return this._browser.page.snapshot();
     };
 
-    module.exports = EyesWebBrowser;
+    module.exports = {
+        EyesWebBrowser: EyesWebBrowser
+    };
 }());

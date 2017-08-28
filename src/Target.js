@@ -234,5 +234,7 @@
         return new Target(region);
     };
 
-    module.exports = Target;
+    module.exports = {
+        Target: Target
+    };
 }());

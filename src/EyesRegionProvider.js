@@ -3,7 +3,7 @@
 
     var EyesUtils = require('eyes.utils'),
         EyesSDK = require('eyes.sdk'),
-        EyesLeanFTScreenshot = require('./EyesLeanFTScreenshot');
+        EyesLeanFTScreenshot = require('./EyesLeanFTScreenshot').EyesLeanFTScreenshot;
     var RegionProvider = EyesSDK.RegionProvider,
         GeometryUtils = EyesUtils.GeometryUtils;
 
@@ -61,6 +61,8 @@
         return this._coordinatesType;
     };
 
-    module.exports = EyesRegionProvider;
+    module.exports = {
+        EyesRegionProvider: EyesRegionProvider
+    };
 
 }());

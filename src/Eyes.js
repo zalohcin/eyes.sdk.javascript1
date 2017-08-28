@@ -5,15 +5,15 @@
         LeanftSdkWeb = require("leanft.sdk.web"),
         EyesSDK = require('eyes.sdk'),
         EyesUtils = require('eyes.utils'),
-        EyesWebBrowser = require('./EyesWebBrowser'),
-        EyesStdWinWindow = require('./EyesStdWinWindow'),
-        EyesLeanFTUtils = require('./EyesLeanFTUtils'),
-        EyesWebTestObject = require('./EyesWebTestObject'),
-        ScrollPositionProvider = require('./ScrollPositionProvider'),
-        CssTranslatePositionProvider = require('./CssTranslatePositionProvider'),
-        ElementPositionProvider = require('./ElementPositionProvider'),
-        EyesRegionProvider = require('./EyesRegionProvider'),
-        Target = require('./Target');
+        EyesWebBrowser = require('./EyesWebBrowser').EyesWebBrowser,
+        EyesStdWinWindow = require('./EyesStdWinWindow').EyesStdWinWindow,
+        EyesLeanFTUtils = require('./EyesLeanFTUtils').EyesLeanFTUtils,
+        EyesWebTestObject = require('./EyesWebTestObject').EyesWebTestObject,
+        ScrollPositionProvider = require('./ScrollPositionProvider').ScrollPositionProvider,
+        CssTranslatePositionProvider = require('./CssTranslatePositionProvider').CssTranslatePositionProvider,
+        ElementPositionProvider = require('./ElementPositionProvider').ElementPositionProvider,
+        EyesRegionProvider = require('./EyesRegionProvider').EyesRegionProvider,
+        Target = require('./Target').Target;
     var WebBaseDescription = LeanftSdkWeb.Behaviors.WebBaseDescription,
         WebBaseTestObject = LeanftSdkWeb.Behaviors.WebBaseTestObject,
         EyesBase = EyesSDK.EyesBase,
@@ -746,5 +746,7 @@
      * @enum {string}
      */
     Eyes.StitchMode = Object.freeze(StitchMode);
-    module.exports = Eyes;
+    module.exports = {
+        Eyes: Eyes
+    };
 }());

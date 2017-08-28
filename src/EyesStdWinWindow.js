@@ -99,5 +99,7 @@
         return this._browser.snapshot();
     };
 
-    module.exports = EyesStdWinWindow;
+    module.exports = {
+        EyesStdWinWindow: EyesStdWinWindow
+    };
 }());
