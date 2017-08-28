@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var VERSION = require('./../package.json').version;
+
     var promise = require('q'),
         LeanftSdkWeb = require("leanft.sdk.web"),
         EyesSDK = require('eyes.sdk'),
@@ -72,7 +74,7 @@
 
     //noinspection JSUnusedGlobalSymbols
     Eyes.prototype._getBaseAgentId = function () {
-        return 'leanft-js/1.0.1';
+        return 'leanft-js/' + VERSION;
     };
 
     //noinspection JSUnusedGlobalSymbols
