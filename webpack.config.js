@@ -5,6 +5,7 @@ module.exports = {
     externals: [nodeExternals()], // in order to ignore all modules in node_modules folder
     entry: "./index.js",
     output: {
+        libraryTarget: "umd",
         filename: "bundle.js"
     },
 };
