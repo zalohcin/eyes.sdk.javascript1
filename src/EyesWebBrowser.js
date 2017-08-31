@@ -2,8 +2,7 @@
     "use strict";
     var EyesUtils = require('eyes.utils'),
         EyesLeanFTUtils = require('./EyesLeanFTUtils').EyesLeanFTUtils,
-        EyesWebTestObject = require('./EyesWebTestObject').EyesWebTestObject,
-        ScrollPositionProvider = require('./ScrollPositionProvider').ScrollPositionProvider;
+        EyesWebTestObject = require('./EyesWebTestObject').EyesWebTestObject;
     var GeneralUtils = EyesUtils.GeneralUtils;
 
     /**

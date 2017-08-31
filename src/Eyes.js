@@ -19,7 +19,6 @@
     var WebBaseDescription = LeanftSdkWeb.Behaviors.WebBaseDescription,
         WebBaseTestObject = LeanftSdkWeb.Behaviors.WebBaseTestObject,
         EyesBase = EyesSDK.EyesBase,
-        FixedScaleProvider = EyesSDK.FixedScaleProvider,
         ContextBasedScaleProviderFactory = EyesSDK.ContextBasedScaleProviderFactory,
         FixedScaleProviderFactory = EyesSDK.FixedScaleProviderFactory,
         NullScaleProvider = EyesSDK.NullScaleProvider,
@@ -210,7 +209,7 @@
         that._logger.verbose("match starting with params", name, target.getStitchContent(), target.getTimeout());
         var regionObject,
             regionProvider,
-            originalOverflow, originalPositionProvider, originalHideScrollBars;
+            originalOverflow, originalPositionProvider;
 
         // if region specified
         if (target.isUsingRegion()) {
@@ -282,10 +281,6 @@
             }
 
             // restore initial values
-            if (originalHideScrollBars !== undefined) {
-                that._hideScrollbars = originalHideScrollBars;
-            }
-
             if (originalPositionProvider !== undefined) {
                 that.setPositionProvider(originalPositionProvider);
             }
