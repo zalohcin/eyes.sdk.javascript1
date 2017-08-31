@@ -1,7 +1,7 @@
 {
   "name": "eyes.leanft",
   "version": "1.0.1",
-  "description": "Applitools Eyes SDK For LeanFT JavaScript WebBrowser",
+  "description": "Applitools Eyes SDK For LeanFT JavaScript",
   "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
   "keywords": [
     "eyes.leanft",
