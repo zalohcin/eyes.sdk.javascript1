@@ -31,29 +31,29 @@ class UnscaledFixedCutProvider extends CutProvider {
         let promise = promiseFactory.resolve();
 
         if (this._header > 0) {
-            promise = promise.then(() => image.getSize()).then(imageSize => {
-                const region = new Region(0, that._header, imageSize.getWidth(), imageSize.getHeight() - that._header);
+            promise = promise.then(() => {
+                const region = new Region(0, that._header, image.getWidth(), image.getHeight() - that._header);
                 return image.cropImage(region);
             });
         }
 
         if (this._footer > 0) {
-            promise = promise.then(() => image.getSize()).then(imageSize => {
-                const region = new Region(0, 0, imageSize.getWidth(), imageSize.getHeight() - that._footer);
+            promise = promise.then(() => {
+                const region = new Region(0, 0, image.getWidth(), image.getHeight() - that._footer);
                 return image.cropImage(region);
             });
         }
 
         if (this._left > 0) {
-            promise = promise.then(() => image.getSize()).then(imageSize => {
-                const region = new Region(that._left, 0, imageSize.getWidth() - that._left, imageSize.getHeight());
+            promise = promise.then(() => {
+                const region = new Region(that._left, 0, image.getWidth() - that._left, image.getHeight());
                 return image.cropImage(region);
             });
         }
 
         if (this._right > 0) {
-            promise = promise.then(() => image.getSize()).then(imageSize => {
-                const region = new Region(0, 0, imageSize.getWidth() - that._right, imageSize.getHeight());
+            promise = promise.then(() => {
+                const region = new Region(0, 0, image.getWidth() - that._right, image.getHeight());
                 return image.cropImage(region);
             });
         }

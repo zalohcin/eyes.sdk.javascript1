@@ -20,7 +20,7 @@ class DebugScreenshotsProvider {
     }
 
     setPrefix(value) {
-        this._prefix = value ? value : this.DEFAULT_PREFIX;
+        this._prefix = value || this.DEFAULT_PREFIX;
     }
 
     getPath() {

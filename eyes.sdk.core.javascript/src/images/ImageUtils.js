@@ -285,7 +285,7 @@ class ImageUtils {
      * Crops a parsed image - the image is changed
      *
      * @param {Image} image
-     * @param {{left: number, top: number, width: number, height: number}} region Region to crop
+     * @param {Region} region Region to crop
      * @param {PromiseFactory} promiseFactory
      * @return {Promise.<Image>}
      **/
@@ -295,14 +295,16 @@ class ImageUtils {
                 return resolve(image);
             }
 
-            if (region.top < 0 || region.top >= image.height || region.left < 0 || region.left >= image.width) {
+            if (region.getTop() < 0 || region.getTop() >= image.height || region.getLeft() < 0 || region.getLeft() >= image.width) {
                 return reject(new Error('region is outside the image bounds!'));
             }
 
             // process the pixels - crop
             const croppedArray = [];
-            const yStart = region.top, yEnd = Math.min(region.top + region.height, image.height), xStart = region.left,
-                xEnd = Math.min(region.left + region.width, image.width);
+            const yStart = region.getTop();
+            const yEnd = Math.min(region.getTop() + region.getHeight(), image.height);
+            const xStart = region.getLeft();
+            const xEnd = Math.min(region.getLeft() + region.getWidth(), image.width);
 
             let y, x, idx, i;
             for (y = yStart; y < yEnd; y++) {
@@ -462,22 +464,18 @@ class ImageUtils {
      * Get png size from image buffer. Don't require parsing the image
      *
      * @param {Buffer} imageBuffer
-     * @param {PromiseFactory} promiseFactory
      * @return {{width: number, height: number}}
      */
-    static getImageSizeFromBuffer(imageBuffer, promiseFactory) {
-        return promiseFactory.makePromise((resolve, reject) => {
+    static getImageSizeFromBuffer(imageBuffer) {
+        if (imageBuffer[12] === 0x49 && imageBuffer[13] === 0x48 && imageBuffer[14] === 0x44 && imageBuffer[15] === 0x52) {
             // noinspection MagicNumberJS
-            if (imageBuffer[12] === 0x49 && imageBuffer[13] === 0x48 && imageBuffer[14] === 0x44 && imageBuffer[15] === 0x52) {
-                // noinspection MagicNumberJS
-                const width = (imageBuffer[16] * 256 * 256 * 256) + (imageBuffer[17] * 256 * 256) + (imageBuffer[18] * 256) + imageBuffer[19];
-                // noinspection MagicNumberJS
-                const height = (imageBuffer[20] * 256 * 256 * 256) + (imageBuffer[21] * 256 * 256) + (imageBuffer[22] * 256) + imageBuffer[23];
-                return resolve({width, height});
-            }
+            const width = (imageBuffer[16] * 256 * 256 * 256) + (imageBuffer[17] * 256 * 256) + (imageBuffer[18] * 256) + imageBuffer[19];
+            // noinspection MagicNumberJS
+            const height = (imageBuffer[20] * 256 * 256 * 256) + (imageBuffer[21] * 256 * 256) + (imageBuffer[22] * 256) + imageBuffer[23];
+            return {width, height};
+        }
 
-            reject("Buffer contains unsupported image type.");
-        });
+        throw new TypeError("Buffer contains unsupported image type.");
     }
 
     //noinspection JSUnusedGlobalSymbols

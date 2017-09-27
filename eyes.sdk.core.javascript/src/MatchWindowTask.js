@@ -97,9 +97,8 @@ class MatchWindowTask {
             }
 
             that._updateLastScreenshot(screenshot);
-            return that._updateBounds(region).then(() => {
-                return that._matchResult;
-            });
+            that._updateBounds(region);
+            return that._matchResult;
         });
     }
 
@@ -220,7 +219,6 @@ class MatchWindowTask {
     /**
      * @private
      * @param {Region} region
-     * @return {Promise<void>}
      */
     _updateBounds(region) {
         if (region.isEmpty()) {
@@ -228,9 +226,7 @@ class MatchWindowTask {
                 // We set an "infinite" image size since we don't know what the screenshot size is...
                 this._lastScreenshotBounds = new Region(0, 0, Number.MAX_VALUE, Number.MAX_VALUE);
             } else {
-                return this._lastScreenshot.getImage().getSize().then(imageSize => {
-                    this._lastScreenshotBounds = new Region(0, 0, imageSize.getWidth(), imageSize.getHeight());
-                });
+                this._lastScreenshotBounds = new Region(0, 0, this._lastScreenshot.getImage().getWidth(), this._lastScreenshot.getImage().getHeight());
             }
         } else {
             this._lastScreenshotBounds = region;

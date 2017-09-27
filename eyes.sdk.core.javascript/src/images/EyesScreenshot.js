@@ -102,9 +102,9 @@ class EyesScreenshot {
         ArgumentGuard.notNull(from, "from");
         ArgumentGuard.notNull(to, "to");
 
-        const updatedLocation = this.convertLocation(region.location, from, to);
+        const updatedLocation = this.convertLocation(region.getLocation(), from, to);
 
-        return Region.fromLocationAndSize(updatedLocation, region.size);
+        return Region.fromLocationAndSize(updatedLocation, region.getSize());
     }
 }
 

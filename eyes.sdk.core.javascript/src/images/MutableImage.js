@@ -56,17 +56,13 @@ function _packImage(that) {
  * @param {MutableImage} that The context of the current instance of MutableImage
  */
 function _retrieveImageSize(that) {
-    return that._promiseFactory.makePromise(resolve => {
-        if (that._isParsed || that._width && that._height) {
-            return resolve();
-        }
+    if (that._isParsed || that._width && that._height) {
+        return;
+    }
 
-        return ImageUtils.getImageSizeFromBuffer(that._imageBuffer, that._promiseFactory).then(imageSize => {
-            that._width = imageSize.width;
-            that._height = imageSize.height;
-            resolve();
-        });
-    });
+    const imageSize = ImageUtils.getImageSizeFromBuffer(that._imageBuffer);
+    that._width = imageSize.width;
+    that._height = imageSize.height;
 }
 
 /**
@@ -118,11 +114,29 @@ class MutableImage {
     /**
      * Size of the image. Parses the image if necessary
      *
-     * @return {Promise.<RectangleSize>}
+     * @return {RectangleSize}
      */
     getSize() {
-        const that = this;
-        return _retrieveImageSize(that).then(() => new RectangleSize(that._width, that._height));
+        _retrieveImageSize(this);
+        return new RectangleSize(this._width, this._height);
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {Number}
+     */
+    getWidth() {
+        _retrieveImageSize(this);
+        return this._width;
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {Number}
+     */
+    getHeight() {
+        _retrieveImageSize(this);
+        return this._height;
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -170,7 +184,7 @@ class MutableImage {
     /**
      * Crops the image according to the given region.
      *
-     * @param {{left: number, top: number, width: number, height: number, relative: boolean=}} region
+     * @param {Region} region
      * @return {Promise.<MutableImage>}
      */
     cropImage(region) {
@@ -185,6 +199,21 @@ class MutableImage {
                 });
             }
             return that;
+        });
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Crops the image according to the given region and return new image, do not override existing
+     *
+     * @param {Region} region
+     * @return {Promise.<MutableImage>}
+     */
+    getImagePart(region) {
+        const that = this;
+        return _packImage(that).then(() => {
+            const newImage = new MutableImage(Buffer.from(that._imageBuffer), that._promiseFactory);
+            return newImage.cropImage(region);
         });
     }
 

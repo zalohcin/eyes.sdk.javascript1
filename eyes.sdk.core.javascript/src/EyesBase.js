@@ -59,6 +59,7 @@ const TestResults = require('./server/TestResults');
  */
 class EyesBase {
 
+    static DEFAULT_EYES_SERVER = "https://eyesapi.applitools.com";
     static DEFAULT_MATCH_TIMEOUT = 2000;
     static USE_DEFAULT_TIMEOUT = -1;
 
@@ -275,7 +276,7 @@ class EyesBase {
      * @return {String} The name of the application under test.
      */
     getAppName() {
-        return this._currentAppName ? this._currentAppName : this._appName;
+        return this._currentAppName || this._appName;
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -504,10 +505,10 @@ class EyesBase {
     _getFullAgentId() {
         const agentId = this.getAgentId();
         if (!agentId) {
-            return this._getBaseAgentId();
+            return this.getBaseAgentId();
         }
         //noinspection JSUnresolvedFunction
-        return `${agentId} [${this._getBaseAgentId()}]`;
+        return `${agentId} [${this.getBaseAgentId()}]`;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -686,7 +687,7 @@ class EyesBase {
      */
     getIgnoreCaret() {
         const ignoreCaret = this._defaultMatchSettings.getIgnoreCaret();
-        return ignoreCaret ? ignoreCaret : true;
+        return ignoreCaret || true;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -1034,7 +1035,7 @@ class EyesBase {
      * @param {Boolean} ignoreMismatch Whether to ignore this check if a mismatch is found.
      * @param {CheckSettings} [checkSettings]  The settings to use.
      * @return {Promise<MatchResult>} The result of matching the output with the expected output.
-     * @throws TestFailedException Thrown if a mismatch is detected and immediate failure reports are enabled.
+     * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
      */
     checkWindowBase(regionProvider, tag = "", ignoreMismatch, checkSettings = new CheckSettings(EyesBase.USE_DEFAULT_TIMEOUT)) {
         if (this._isDisabled) {
@@ -1094,7 +1095,7 @@ class EyesBase {
      * @param {string} [tag] The updated tag for the step.
      * @param {string} [title] The updated title for the step.
      * @param {Array} [userInputs] The updated userInputs for the step.
-     * @return {Promise} A promise which resolves when replacing is done, or rejects on error.
+     * @return {Promise<MatchResult>} A promise which resolves when replacing is done, or rejects on error.
      */
     replaceWindow(stepIndex, screenshot, tag = "", title = "", userInputs = []) {
         this._logger.verbose('EyesBase.replaceWindow - running');
@@ -1261,10 +1262,10 @@ class EyesBase {
             return this._validateSessionOpen().then(() => {
                 that._isViewportSizeSet = false;
 
-                that._currentAppName = appName ? appName : that._appName;
+                that._currentAppName = appName || that._appName;
                 that._testName = testName;
                 that._viewportSizeHandler.set(viewportSize);
-                that._sessionType = sessionType ? sessionType : SessionType.SEQUENTIAL;
+                that._sessionType = sessionType || SessionType.SEQUENTIAL;
                 that._scaleProviderHandler.set(new NullScaleProvider());
                 that._validationId = -1;
 
@@ -1547,7 +1548,7 @@ class EyesBase {
             that._logger.verbose(`Application environment is ${appEnvironment}`);
             return that._notifyEvent('initEnded', that._autSessionId);
         }).then(() => {
-            that._sessionStartInfo = new SessionStartInfo(that._getBaseAgentId(), that._sessionType,
+            that._sessionStartInfo = new SessionStartInfo(that.getBaseAgentId(), that._sessionType,
                 that.getAppName(), null, that._testName, testBatch, that._baselineEnvName, that._environmentName, appEnvironment,
                 that._defaultMatchSettings, that._branchName, that._parentBranchName, that._properties);
 
@@ -1720,8 +1721,7 @@ class EyesBase {
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     *
-     * @return {Object} An object containing data about the currently running session.
+     * @return {RunningSession} An object containing data about the currently running session.
      */
     getRunningSession() {
         return this._runningSession;
@@ -1733,8 +1733,8 @@ class EyesBase {
      * @abstract
      * @return {String} The base agent id of the SDK.
      */
-    _getBaseAgentId() {
-        throw new TypeError('_getBaseAgentId method is not implemented!');
+    getBaseAgentId() {
+        throw new TypeError('getBaseAgentId method is not implemented!');
     }
 
     // noinspection JSMethodCanBeStatic
@@ -1742,7 +1742,7 @@ class EyesBase {
      * @protected
      * @abstract
      * Get the session id.
-     * @return {Promise} A promise which resolves to the webdriver's session ID.
+     * @return {Promise<String>} A promise which resolves to the webdriver's session ID.
      */
     getAUTSessionId() {
         throw new TypeError('getAUTSessionId method is not implemented!');
@@ -1803,7 +1803,7 @@ class EyesBase {
      *
      * @protected
      * @abstract
-     * @return {Promise.<string>}
+     * @return {Promise.<String>}
      */
     getTitle() {
         throw new TypeError('getTitle method is not implemented!');
