@@ -11,7 +11,7 @@
 (function () {
     "use strict";
 
-    var ArgumentGuard = require('./ArgumentGuard');
+    var ArgumentGuard = require('../ArgumentGuard');
 
     var GeometryUtils = {};
 

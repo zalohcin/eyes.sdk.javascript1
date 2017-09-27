@@ -16,7 +16,7 @@
 
     var fs = require('fs'),
         png = require('png-async'),
-        StreamUtils = require('./StreamUtils');
+        StreamUtils = require('../StreamUtils');
 
     var ReadableBufferStream = StreamUtils.ReadableBufferStream,
         WritableBufferStream = StreamUtils.WritableBufferStream;

@@ -12,17 +12,17 @@
     "use strict";
 
     var EyesUtils = require('eyes.utils'),
-        MatchSettings = require('./MatchSettings'),
+        MatchSettings = require('./match/MatchSettings'),
         ServerConnector = require('./ServerConnector'),
         MatchWindowTask = require('./MatchWindowTask'),
         SessionEventHandler = require('./SessionEventHandler'),
         RemoteSessionEventHandler = require('./RemoteSessionEventHandler'),
-        FixedScaleProvider = require('./FixedScaleProvider'),
-        FixedCutProvider = require('./FixedCutProvider'),
-        NullScaleProvider = require('./NullScaleProvider'),
-        NullCutProvider = require('./NullCutProvider'),
-        Triggers = require('./Triggers'),
-        Logger = require('./Logger');
+        FixedScaleProvider = require('./scaling/FixedScaleProvider'),
+        FixedCutProvider = require('./cutting/FixedCutProvider'),
+        NullScaleProvider = require('./scaling/NullScaleProvider'),
+        NullCutProvider = require('./cutting/NullCutProvider'),
+        Triggers = require('./triggers/Triggers'),
+        Logger = require('./logging/Logger');
 
     var ImageUtils = EyesUtils.ImageUtils,
         GeneralUtils = EyesUtils.GeneralUtils,

@@ -12,7 +12,7 @@
     "use strict";
 
     var zlib = require('zlib'),
-        WritableBufferStream = require('./StreamUtils').WritableBufferStream;
+        WritableBufferStream = require('../StreamUtils').WritableBufferStream;
 
     var PREAMBLE = new Buffer("applitools", "utf8");
     var COMPRESS_BY_RAW_BLOCKS_FORMAT = 3;

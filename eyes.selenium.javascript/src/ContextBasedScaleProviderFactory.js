@@ -1,8 +1,9 @@
 (function() {
     'use strict';
 
-    var ContextBasedScaleProvider = require('./ContextBasedScaleProvider'),
-        ScaleProviderFactory = require('./ScaleProviderFactory');
+    var EyesSDK = require('eyes.sdk'),
+        ContextBasedScaleProvider = require('./ContextBasedScaleProvider');
+    var ScaleProviderFactory = EyesSDK.ScaleProviderFactory;
 
     /**
      * Factory implementation for creating {@link ContextBasedScaleProvider} instances.

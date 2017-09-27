@@ -1,5 +1,5 @@
 import test from 'ava';
-import {GeneralUtils} from '../index';
+import {GeneralUtils} from '../../eyes.utils.javascript/index';
 
 test('GeneralUtils #urlConcat()', t => {
     const leftWithoutSlash = "http://www.applitools.com", rightWithSlash = "/subdomain/index.html",

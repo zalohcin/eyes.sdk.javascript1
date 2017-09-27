@@ -1,3 +1,5 @@
+exports.ContextBasedScaleProvider = require('./src/ContextBasedScaleProvider');
+exports.ContextBasedScaleProviderFactory = require('./src/ContextBasedScaleProviderFactory');
 exports.CssTranslatePositionProvider = require('./src/CssTranslatePositionProvider');
 exports.ElementPositionProvider = require('./src/ElementPositionProvider');
 exports.Eyes = require('./src/Eyes');
@@ -13,8 +15,6 @@ exports.ScrollPositionProvider = require('./src/ScrollPositionProvider');
 exports.Target = require('./src/Target');
 var EyesSDK = require('eyes.sdk');
 exports.ConsoleLogHandler = EyesSDK.ConsoleLogHandler;
-exports.ContextBasedScaleProvider = EyesSDK.ContextBasedScaleProvider;
-exports.ContextBasedScaleProviderFactory = EyesSDK.ContextBasedScaleProviderFactory;
 exports.CoordinatesType = EyesSDK.CoordinatesType;
 exports.CutProvider = EyesSDK.CutProvider;
 exports.EyesScreenshot = EyesSDK.EyesScreenshot;
