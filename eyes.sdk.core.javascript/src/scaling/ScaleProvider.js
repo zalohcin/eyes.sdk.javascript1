@@ -1,16 +1,25 @@
-(function () {
-    "use strict";
+'use strict';
 
-    /**
-     * @constructor
-     **/
-    function ScaleProvider() {}
+/**
+ * Encapsulates scaling logic.
+ *
+ * @interface
+ */
+class ScaleProvider {
 
+    constructor() {
+        if (new.target === ScaleProvider) {
+            throw new TypeError("Can not construct `ScaleProvider` instance directly, should be used implementation!");
+        }
+    }
+
+    // noinspection JSMethodCanBeStatic
     /**
-     * @return {number} The ratio by which an image will be scaled.
+     * @return {Number} The ratio by which an image will be scaled.
      */
-    ScaleProvider.prototype.getScaleRatio = function () {};
+    getScaleRatio() {
+        throw new TypeError('The method `getScaleRatio` from `ScaleProvider` should be implemented!');
+    }
+}
 
-    module.exports = ScaleProvider;
-
-}());
+module.exports = ScaleProvider;

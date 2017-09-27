@@ -1,37 +1,35 @@
-(function () {
-    "use strict";
+'use strict';
 
-    var PropertyHandler = require('./PropertyHandler');
+const PropertyHandler = require('./PropertyHandler');
+
+/**
+ * A simple implementation of {@link PropertyHandler}. Allows get/set.
+ */
+class SimplePropertyHandler extends PropertyHandler {
 
     /**
-     * A simple implementation of {@link PropertyHandler}. Allows get/set.
-     *
-     * @constructor
      * @param {Object} [obj] The object to set.
      **/
-    function SimplePropertyHandler(obj) {
+    constructor(obj) {
+        super();
         this._obj = obj || null;
     }
-
-    SimplePropertyHandler.prototype = new PropertyHandler();
-    SimplePropertyHandler.prototype.constructor = SimplePropertyHandler;
 
     /**
      * @param {Object} obj The object to set.
      * @return {boolean|void} {@code true} if the object was set, {@code false} otherwise.
      */
-    SimplePropertyHandler.prototype.set = function (obj) {
+    set(obj) {
         this._obj = obj;
         return true;
-    };
+    }
 
     /**
      * @return {Object} The object that was set. (Note that object might also be set in the constructor of an implementation class).
      */
-    SimplePropertyHandler.prototype.get = function () {
+    get() {
         return this._obj;
-    };
+    }
+}
 
-    module.exports = SimplePropertyHandler;
-
-}());
+module.exports = SimplePropertyHandler;

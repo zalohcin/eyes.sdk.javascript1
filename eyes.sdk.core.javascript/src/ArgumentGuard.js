@@ -1,125 +1,167 @@
-/*
- ---
+'use strict';
 
- name: ArgumentGuard
-
- description: Argument validation utilities.
-
- ---
+/**
+ * Argument validation utilities.
  */
+class ArgumentGuard {
 
-(function () {
-    "use strict";
-
-    var ArgumentGuard = {};
-
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Fails if the input parameter equals the input value.
      *
      * @param {Object} param The input parameter.
      * @param {Object} value The input value.
-     * @param {string} paramName The input parameter name.
+     * @param {String} paramName The input parameter name.
      */
-    ArgumentGuard.notEqual = function (param, value, paramName) {
+    static notEqual(param, value, paramName) {
         if (param === value) {
-            throw new Error("IllegalArgument: " + paramName + " == " + value);
+            throw new Error(`IllegalArgument: ${paramName} === ${value}`);
         }
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Fails if the input parameter is null.
      *
      * @param {Object} param The input parameter.
-     * @param {string} paramName The input parameter name.
+     * @param {String} paramName The input parameter name.
      */
-    ArgumentGuard.notNull = function (param, paramName) {
-        if (null === param || undefined === param) {
-            throw new Error("IllegalArgument: " + paramName + " is null");
+    static notNull(param, paramName) {
+        if (param === null || param === undefined) {
+            throw new Error(`IllegalArgument: ${paramName} is null or undefined`);
         }
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Fails if the input parameter is not null.
      *
      * @param {Object} param The input parameter.
-     * @param {string} paramName The input parameter name.
+     * @param {String} paramName The input parameter name.
      */
-    ArgumentGuard.isNull = function (param, paramName) {
-        if (null !== param && undefined !== param) {
-            throw new Error("IllegalArgument: " + paramName + " is not null");
+    static isNull(param, paramName) {
+        if (param !== null && param !== undefined) {
+            throw new Error(`IllegalArgument: ${paramName} is not null or undefined`);
         }
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Fails if the input parameter string is null or empty.
      *
      * @param {Object} param The input parameter.
-     * @param {string} paramName The input parameter name.
+     * @param {String} paramName The input parameter name.
      */
-    ArgumentGuard.notNullOrEmpty = function (param, paramName) {
+    static notNullOrEmpty(param, paramName) {
         if (!param) {
-            throw new Error("IllegalArgument: " + paramName + " is empty");
+            throw new Error(`IllegalArgument: ${paramName} is null or empty`);
         }
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Fails if the input integer parameter is negative.
      *
-     * @param {number} param The input parameter.
-     * @param {string} paramName The input parameter name.
+     * @param {Number} param The input parameter.
+     * @param {String} paramName The input parameter name.
+     * @param {Boolean} isInteger Whether or not, the number should be en integer
      */
-    ArgumentGuard.greaterThanOrEqualToZero = function (param, paramName) {
-        if (0 > param) {
-            throw new Error("IllegalArgument: " + paramName + " < 0");
+    static greaterThanOrEqualToZero(param, paramName, isInteger = false) {
+        if (isInteger) {
+            ArgumentGuard.isInteger(param, paramName);
+        }
+
+        if (param < 0) {
+            throw new Error(`IllegalArgument: ${paramName} < 0`);
         }
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Fails if the input integer parameter is smaller than 1.
      *
-     * @param {number} param The input parameter.
-     * @param {string} paramName The input parameter name.
+     * @param {Number} param The input parameter.
+     * @param {String} paramName The input parameter name.
+     * @param {Boolean} isInteger Whether or not, the number should be en integer
      */
-    ArgumentGuard.greaterThanZero = function (param, paramName) {
-        if (0 >= param) {
-            throw new Error("IllegalArgument: " + paramName + " < 1");
+    static greaterThanZero(param, paramName, isInteger = false) {
+        if (isInteger) {
+            ArgumentGuard.isInteger(param, paramName);
+        }
+
+        if (param <= 0) {
+            throw new Error(`IllegalArgument: ${paramName} < 1`);
         }
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Fails if the input integer parameter is equal to 0.
      * @param param The input parameter.
      * @param paramName The input parameter name.
+     * @param {Boolean} isInteger Whether or not, the number should be en integer
      */
-    ArgumentGuard.notZero = function (param, paramName) {
-        if (0 === param) {
-            throw new Error("IllegalArgument: " + paramName + " == 0");
+    static notZero(param, paramName, isInteger = false) {
+        if (isInteger) {
+            ArgumentGuard.isInteger(param, paramName);
+        }
+
+        if (param === 0) {
+            throw new Error(`IllegalArgument: ${paramName} === 0`);
         }
     };
 
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Fails if the input number is not integer
+     *
+     * @param {Number} param The input parameter.
+     * @param {String} paramName The input parameter name.
+     */
+    static isInteger(param, paramName) {
+        if (!Number.isInteger(param)) {
+            throw new Error(`IllegalArgument: ${paramName} is not integer`);
+        }
+    };
+
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Fails if isValid is false.
      *
-     * @param {boolean} isValid Whether the current state is valid.
-     * @param {string} errMsg A description of the error.
+     * @param {Boolean} isValid Whether the current state is valid.
+     * @param {String} errMsg A description of the error.
      */
-    ArgumentGuard.isValidState = function (isValid, errMsg) {
+    static isValidState(isValid, errMsg) {
         if (!isValid) {
-            throw new Error("IllegalState: " + errMsg);
+            throw new Error(`IllegalState: ${errMsg}`);
         }
     };
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Fails if isValid is false.
      *
      * @param {Object} param The input parameter.
      * @param {Object} type The expected param type
      */
-    ArgumentGuard.isValidType = function (param, type) {
+    static isValidType(param, type) {
         if (!(param instanceof type)) {
-            throw new Error("IllegalType: " + param + " is not instance of " + type);
+            throw new Error(`IllegalType: ${param} is not instance of ${type}`);
         }
     };
 
-    module.exports = ArgumentGuard;
-}());
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Fails if isValid is false.
+     *
+     * @param {*} value The input value.
+     * @param {Object} enumObject The required enum object
+     */
+    static isValidEnumValue(value, enumObject) {
+        if (!(enumObject.hasOwnProperty(value))) {
+            throw new Error(`IllegalType: ${value} is not member of ${enumObject}`);
+        }
+    };
+}
+
+module.exports = ArgumentGuard;

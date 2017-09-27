@@ -1,25 +1,30 @@
-(function () {
-    "use strict";
+'use strict';
+
+/**
+ * Encapsulates getter/setter behavior. (e.g., set only once etc.).
+ *
+ * @interface
+ **/
+class PropertyHandler {
+
+    constructor() {
+        if (new.target === PropertyHandler) {
+            throw new TypeError("Cannot construct Abstract instances directly");
+        }
+    }
 
     /**
-     * Encapsulates getter/setter behavior. (e.g., set only once etc.).
-     *
-     * @constructor
-     **/
-    function PropertyHandler() { }
-
-    /**
-     * @param {Object} obj The object to set.
+     * @abstract
+     * @param {*} obj The object to set.
      * @return {boolean|void} {@code true} if the object was set, {@code false} otherwise.
      */
-    PropertyHandler.prototype.set = function (obj) {};
+    set(obj) {}
 
     /**
-     *
-     * @return {Object} The object that was set. (Note that object might also be set in the constructor of an implementation class).
+     * @abstract
+     * @return {*} The object that was set. (Note that object might also be set in the constructor of an implementation class).
      */
-    PropertyHandler.prototype.get = function () {};
+    get() {}
+}
 
-    module.exports = PropertyHandler;
-
-}());
+module.exports = PropertyHandler;

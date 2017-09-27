@@ -1,29 +1,25 @@
-(function() {
-    'use strict';
+'use strict';
 
-    var ScaleProvider = require('./ScaleProvider'),
-        ArgumentGuard = require('eyes.utils').ArgumentGuard;
+const ArgumentGuard = require('../ArgumentGuard');
+const ScaleProvider = require('./ScaleProvider');
 
+class FixedScaleProvider extends ScaleProvider {
     /**
-     * @constructor
-     * @param {number} scaleRatio The scale ratio to use.
-     * @augments ScaleProvider
+     * @param {Number} scaleRatio The scale ratio to use.
      */
-    function FixedScaleProvider(scaleRatio) {
-        ArgumentGuard.greaterThanZero(scaleRatio, "scaleRatio");
+    constructor(scaleRatio) {
+        super();
 
+        ArgumentGuard.greaterThanZero(scaleRatio, "scaleRatio");
         this._scaleRatio = scaleRatio;
     }
 
-    FixedScaleProvider.prototype = new ScaleProvider();
-    FixedScaleProvider.prototype.constructor = FixedScaleProvider;
-
     /**
-     * @return {number} The ratio by which an image will be scaled.
+     * @return {Number} The ratio by which an image will be scaled.
      */
-    FixedScaleProvider.prototype.getScaleRatio = function () {
+    getScaleRatio() {
         return this._scaleRatio;
-    };
+    }
+}
 
-    module.exports = FixedScaleProvider;
-}());
+module.exports = FixedScaleProvider;

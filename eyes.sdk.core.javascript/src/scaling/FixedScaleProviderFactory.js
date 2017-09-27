@@ -1,23 +1,19 @@
-(function() {
-    'use strict';
+'use strict';
 
-    var FixedScaleProvider = require('./FixedScaleProvider'),
-        ScaleProviderFactory = require('./ScaleProviderFactory');
+const FixedScaleProvider = require('./FixedScaleProvider');
+const ScaleProviderFactory = require('./ScaleProviderFactory');
+
+class FixedScaleProviderFactory extends ScaleProviderFactory {
 
     /**
-     * @constructor
-     * @param {number} scaleRatio The scale ratio to use.
+     * @param {Number} scaleRatio The scale ratio to use.
      * @param {PropertyHandler} scaleProviderHandler
-     * @augments ScaleProviderFactory
      */
-    function FixedScaleProviderFactory(scaleRatio, scaleProviderHandler) {
-        this._scaleRatio = scaleRatio;
+    constructor(scaleRatio, scaleProviderHandler) {
+        super(scaleProviderHandler);
 
-        ScaleProviderFactory.call(this, scaleProviderHandler);
+        this._fixedScaleProvider = new FixedScaleProvider(scaleRatio);
     }
-
-    FixedScaleProviderFactory.prototype = Object.create(ScaleProviderFactory.prototype);
-    FixedScaleProviderFactory.prototype.constructor = FixedScaleProviderFactory;
 
     /**
      * The implementation of getting/creating the scale provider, should be implemented by child classes.
@@ -25,9 +21,9 @@
      * @param {int} imageToScaleWidth The width of the image to scale. This parameter CAN be by class implementing the factory, but this is not mandatory.
      * @return {ScaleProvider} The scale provider to be used.
      */
-    FixedScaleProviderFactory.prototype.getScaleProviderImpl = function (imageToScaleWidth) {
-        return new FixedScaleProvider(this._scaleRatio);
-    };
+    getScaleProviderImpl(imageToScaleWidth) {
+        return this._fixedScaleProvider;
+    }
+}
 
-    module.exports = FixedScaleProviderFactory;
-}());
+module.exports = FixedScaleProviderFactory;

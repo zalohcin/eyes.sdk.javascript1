@@ -1,23 +1,15 @@
-/*
- ---
+'use strict';
 
- name: ImageDeltaCompressor
+const zlib = require('zlib');
+const WritableBufferStream = require('../StreamUtils').WritableBufferStream;
 
- description: Provides image compression based on delta between consecutive images
+const PREAMBLE = new Buffer("applitools", "utf8");
+const COMPRESS_BY_RAW_BLOCKS_FORMAT = 3;
 
- ---
+/**
+ * Provides image compression based on delta between consecutive images
  */
-
-(function () {
-    "use strict";
-
-    var zlib = require('zlib'),
-        WritableBufferStream = require('../StreamUtils').WritableBufferStream;
-
-    var PREAMBLE = new Buffer("applitools", "utf8");
-    var COMPRESS_BY_RAW_BLOCKS_FORMAT = 3;
-
-    var ImageDeltaCompressor = {};
+class ImageDeltaCompressor {
 
     /**
      * Computes the width and height of the image data contained in the block at the input column and row.
@@ -29,9 +21,9 @@
      * @param {int} blockRow The block row index
      * @return {{width: number, height: number}} The width and height of the image data contained in the block.
      */
-    function _getActualBlockSize(imageSize, blockSize, blockColumn, blockRow) {
-        var actualWidth = Math.min(imageSize.width - (blockColumn * blockSize), blockSize);
-        var actualHeight = Math.min(imageSize.height - (blockRow * blockSize), blockSize);
+    static _getActualBlockSize(imageSize, blockSize, blockColumn, blockRow) {
+        const actualWidth = Math.min(imageSize.width - (blockColumn * blockSize), blockSize);
+        const actualHeight = Math.min(imageSize.height - (blockRow * blockSize), blockSize);
 
         return {
             width: actualWidth,
@@ -40,7 +32,7 @@
     }
 
     /**
-     *
+     * @private
      * @param {Buffer} sourcePixels
      * @param {Buffer} targetPixels
      * @param {{width: number, height: number}} imageSize
@@ -50,61 +42,59 @@
      * @param {int} blockRow
      * @param {int} channel
      * @return {{isIdentical: boolean, buffer: Buffer}}
-     * @private
      */
-    function _compareAndCopyBlocks(sourcePixels, targetPixels, imageSize, pixelLength, blockSize, blockColumn, blockRow, channel) {
-        var isIdentical = true; // initial default
+    static _compareAndCopyBlocks(sourcePixels, targetPixels, imageSize, pixelLength, blockSize, blockColumn, blockRow, channel) {
+        let isIdentical = true; // initial default
 
         // Getting the actual amount of data in the block we wish to copy
-        var actualBlockSize = _getActualBlockSize(imageSize, blockSize, blockColumn, blockRow);
+        const actualBlockSize = ImageDeltaCompressor._getActualBlockSize(imageSize, blockSize, blockColumn, blockRow);
 
-        var actualBlockHeight = actualBlockSize.height;
-        var actualBlockWidth = actualBlockSize.width;
+        const actualBlockHeight = actualBlockSize.height;
+        const actualBlockWidth = actualBlockSize.width;
 
-        var stride = imageSize.width * pixelLength;
+        const stride = imageSize.width * pixelLength;
 
         // The number of bytes actually contained in the block for the
         // current channel (might be less than blockSize*blockSize)
-        var channelBytes = new Buffer(actualBlockHeight * actualBlockWidth);
-        var channelBytesOffset = 0;
+        const channelBytes = new Buffer(actualBlockHeight * actualBlockWidth);
+        let channelBytesOffset = 0;
 
         // Actually comparing and copying the pixels
-        var sourceByte, targetByte;
-        for (var h = 0; h < actualBlockHeight; ++h) {
-            var offset = (((blockSize * blockRow) + h) * stride) + (blockSize * blockColumn * pixelLength) + channel;
-            for (var w = 0; w < actualBlockWidth; ++w) {
+        let sourceByte, targetByte;
+        for (let h = 0; h < actualBlockHeight; ++h) {
+            let offset = (((blockSize * blockRow) + h) * stride) + (blockSize * blockColumn * pixelLength) + channel;
+            for (let w = 0; w < actualBlockWidth; ++w) {
                 sourceByte = sourcePixels[offset];
                 targetByte = targetPixels[offset];
-                if (sourceByte != targetByte) {
+                if (sourceByte !== targetByte) {
                     isIdentical = false;
                 }
 
-                channelBytes.writeUInt8(targetByte, channelBytesOffset++);
+                channelBytes.writeUInt8(targetByte, channelBytesOffset);
+                channelBytesOffset++;
                 offset += pixelLength;
             }
         }
 
         return {
-            isIdentical: isIdentical,
+            isIdentical,
             buffer: channelBytes
         };
     }
 
+    //noinspection JSUnusedGlobalSymbols
     /**
      * Compresses a target image based on a difference from a source image.
+     *
      * {@code blockSize} defaults to 10.
-     * @param {png.Image} targetData The image we want to compress.
+     * @param {Image} targetData The image we want to compress.
      * @param {Buffer} targetBuffer
-     * @param {png.Image} sourceData The baseline image by which a compression will be performed.
+     * @param {Image} sourceData The baseline image by which a compression will be performed.
      * @param {int} [blockSize=10] How many pixels per block.
      * @return {Buffer} The compression result.
      * @throws java.io.IOException If there was a problem reading/writing from/to the streams which are created during the process.
      */
-    ImageDeltaCompressor.compressByRawBlocks = function (targetData, targetBuffer, sourceData, blockSize) {
-        if (!blockSize) {
-            blockSize = 10;
-        }
-
+    static compressByRawBlocks(targetData, targetBuffer, sourceData, blockSize = 10) {
         // If there's no image to compare to, or the images are in different
         // sizes, we simply return the encoded target.
         if (!targetData || !sourceData || (sourceData.width !== targetData.width) || (sourceData.height !== targetData.height)) {
@@ -112,21 +102,22 @@
         }
 
         // IMPORTANT: Notice that the pixel bytes are (A)RGB!
-        var targetPixels = targetData.data;
-        var sourcePixels = sourceData.data;
+        const targetPixels = targetData.data;
+        const sourcePixels = sourceData.data;
 
         // The number of bytes comprising a pixel (depends if there's an Alpha channel).
         // target.data[25] & 4 equal 0 if there is no alpha channel but 4 if there is an alpha channel.
-        var pixelLength = (targetData.data[25] & 4) === 4 ? 4 : 3;
-        var imageSize = {width: targetData.width, height: targetData.height};
+        // noinspection NonShortCircuitBooleanExpressionJS, MagicNumberJS
+        const pixelLength = (targetData.data[25] & 4) === 4 ? 4 : 3;
+        const imageSize = {width: targetData.width, height: targetData.height};
 
         // Calculating how many block columns and rows we've got.
-        var blockColumnsCount = parseInt((targetData.width / blockSize) + ((targetData.width % blockSize) === 0 ? 0 : 1));
-        var blockRowsCount = parseInt((targetData.height / blockSize) + ((targetData.height % blockSize) === 0 ? 0 : 1));
+        const blockColumnsCount = parseInt((targetData.width / blockSize) + ((targetData.width % blockSize) === 0 ? 0 : 1));
+        const blockRowsCount = parseInt((targetData.height / blockSize) + ((targetData.height % blockSize) === 0 ? 0 : 1));
 
         // Writing the header
-        var stream = new WritableBufferStream();
-        var blocksStream = new WritableBufferStream();
+        const stream = new WritableBufferStream();
+        const blocksStream = new WritableBufferStream();
         stream.write(PREAMBLE);
         stream.write(new Buffer([COMPRESS_BY_RAW_BLOCKS_FORMAT]));
 
@@ -135,18 +126,18 @@
         // Writing the block size (Big endian)
         stream.writeShort(blockSize);
 
-        var compareResult;
-        for (var channel = 0; channel < 3; ++channel) {
+        let compareResult;
+        for (let channel = 0; channel < 3; ++channel) {
 
             // The image is RGB, so all that's left is to skip the Alpha
             // channel if there is one.
-            var actualChannelIndex = (pixelLength === 4) ? channel + 1 : channel;
+            const actualChannelIndex = (pixelLength === 4) ? channel + 1 : channel;
 
-            var blockNumber = 0;
-            for (var blockRow = 0; blockRow < blockRowsCount; ++blockRow) {
-                for (var blockColumn = 0; blockColumn < blockColumnsCount; ++blockColumn) {
+            let blockNumber = 0;
+            for (let blockRow = 0; blockRow < blockRowsCount; ++blockRow) {
+                for (let blockColumn = 0; blockColumn < blockColumnsCount; ++blockColumn) {
 
-                    compareResult = _compareAndCopyBlocks(sourcePixels, targetPixels, imageSize, pixelLength, blockSize, blockColumn, blockRow, actualChannelIndex);
+                    compareResult = ImageDeltaCompressor._compareAndCopyBlocks(sourcePixels, targetPixels, imageSize, pixelLength, blockSize, blockColumn, blockRow, actualChannelIndex);
 
                     if (!compareResult.isIdentical) {
                         blocksStream.writeByte(channel);
@@ -176,6 +167,6 @@
 
         return stream.getBuffer();
     };
+}
 
-    module.exports = ImageDeltaCompressor;
-}());
+module.exports = ImageDeltaCompressor;
