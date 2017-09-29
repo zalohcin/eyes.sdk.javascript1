@@ -52,11 +52,9 @@ class MatchWindowTask {
     performMatch(userInputs, appOutput, tag, ignoreMismatch, imageMatchSettings) {
         // Prepare match data.
         const options = new MatchWindowData.Options(tag, userInputs, ignoreMismatch, false, false, false, imageMatchSettings);
-        return appOutput.getAppOutput().then(appOutput => {
-            const data = new MatchWindowData(userInputs, appOutput, tag, ignoreMismatch, options);
-            // Perform match.
-            return this._serverConnector.matchWindow(this._runningSession, data);
-        });
+        const data = new MatchWindowData(userInputs, appOutput.getAppOutput(), tag, ignoreMismatch, options);
+        // Perform match.
+        return this._serverConnector.matchWindow(this._runningSession, data);
     }
 
     /**
@@ -224,6 +222,7 @@ class MatchWindowTask {
         return this._promiseFactory.resolve();
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Region}
      */

@@ -3,7 +3,7 @@
 const dateformat = require('dateformat');
 
 const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
-const DATE_FORMAT_RFC1123 = "dddd, dd mmm yyyy HH:MM:ss 'GMT'";
+const DATE_FORMAT_RFC1123 = "ddd, dd mmm yyyy HH:MM:ss 'GMT'";
 
 /**
  * Collection of utility methods.

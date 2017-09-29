@@ -99,7 +99,10 @@ class PromiseFactory {
             return this.resolve();
         }
 
-        return action().then(this.promiseWhile(condition, action));
+        const that = this;
+        return action().then(() => {
+            return that.promiseWhile(condition, action)
+        });
     }
 
     //noinspection JSUnusedGlobalSymbols

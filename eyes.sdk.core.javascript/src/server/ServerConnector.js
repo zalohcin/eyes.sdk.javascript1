@@ -173,12 +173,11 @@ class ServerConnector {
     startSession(sessionStartInfo) {
         ArgumentGuard.notNull(sessionStartInfo, "sessionStartInfo");
 
-        const startInfo = sessionStartInfo.asObject();
-        this._logger.verbose(`ServerConnector.startSession called with: ${startInfo}`);
+        this._logger.verbose(`ServerConnector.startSession called with: ${sessionStartInfo}`);
 
         const options = GeneralUtils.clone(this._httpOptions);
         options.uri = this._endPoint;
-        options.body = {startInfo: startInfo};
+        options.body = {startInfo: sessionStartInfo};
         options.json = true;
         options.method = "post";
 
@@ -192,7 +191,7 @@ class ServerConnector {
                     return reject(new Error(err));
                 }
 
-                that._logger.verbose(`ServerConnector.startSession - result ${body} status code ${response.statusCode}`);
+                that._logger.verbose('ServerConnector.startSession - result', body, 'status code ', response.statusCode);
 
                 // noinspection MagicNumberJS
                 const validStatusCodes = [200, 201];
@@ -206,7 +205,7 @@ class ServerConnector {
                     return resolve(runningSession);
                 }
 
-                return reject(new Error(`ServerConnector.startSession - unexpected status (${response})`));
+                return reject(new Error(`ServerConnector.startSession - unexpected status (${responseToString(response)})`));
             });
         });
     }
@@ -245,10 +244,10 @@ class ServerConnector {
 
                 const testResults = new TestResults();
                 Object.assign(testResults, result.body);
-                return resolve(testResults);
+                return testResults;
             }
 
-            throw new Error(`ServerConnector.stopSession - unexpected status (${result.response})`);
+            throw new Error(`ServerConnector.stopSession - unexpected status (${responseToString(result.response)})`);
         });
     }
 
@@ -281,13 +280,12 @@ class ServerConnector {
                     return reject(new Error(err));
                 }
 
-                body = JSON.parse(body); // we need to do it manually, because our content-type is not json
-
-                that._logger.verbose(`ServerConnector.matchWindow - result ${body} status code ${response.statusCode}`);
+                that._logger.verbose('ServerConnector.matchWindow - result', body, 'status code ', response.statusCode);
 
                 // noinspection MagicNumberJS
                 const validStatusCodes = [200];
                 if (validStatusCodes.includes(response.statusCode)) {
+                    body = JSON.parse(body); // we need to do it manually, because our content-type is not json
                     that._logger.verbose('ServerConnector.matchWindow - post succeeded');
 
                     const matchResult = new MatchResult();
@@ -295,7 +293,7 @@ class ServerConnector {
                     return resolve(matchResult);
                 }
 
-                return reject(new Error(`ServerConnector.matchWindow - unexpected status (${response})`));
+                return reject(new Error(`ServerConnector.matchWindow - unexpected status (${responseToString(response)})`));
             });
         });
     }
@@ -331,13 +329,12 @@ class ServerConnector {
                     return reject(new Error(err));
                 }
 
-                body = JSON.parse(body); // we need to do it manually, because our content-type is not json
-
-                that._logger.verbose(`ServerConnector.replaceWindow - result ${body} status code ${response.statusCode}`);
+                that._logger.verbose('ServerConnector.replaceWindow - result', body, 'status code ', response.statusCode);
 
                 // noinspection MagicNumberJS
                 const validStatusCodes = [200];
                 if (validStatusCodes.includes(response.statusCode)) {
+                    body = JSON.parse(body); // we need to do it manually, because our content-type is not json
                     that._logger.verbose('ServerConnector.replaceWindow - post succeeded');
 
                     const matchResult = new MatchResult();
@@ -345,7 +342,7 @@ class ServerConnector {
                     return resolve(matchResult);
                 }
 
-                return reject(new Error(`ServerConnector.replaceWindow - unexpected status (${response})`));
+                return reject(new Error(`ServerConnector.replaceWindow - unexpected status (${responseToString(response)})`));
             });
         });
     }
@@ -367,7 +364,7 @@ function sendLongRequest(promiseFactory, logger, options, delay, name) {
                 return reject(new Error(err));
             }
 
-            logger.verbose(`ServerConnector.${name} - result ${body} status code ${response.statusCode}`);
+            logger.verbose(`ServerConnector.${name} - result`, body, 'status code ', response.statusCode);
             // noinspection MagicNumberJS
             if (response.statusCode !== 202) {
                 return resolve({response: response, body: body});
@@ -386,6 +383,15 @@ function sendLongRequest(promiseFactory, logger, options, delay, name) {
             });
         });
     });
+}
+
+/**
+ * @private
+ * @param response
+ * @return {string}
+ */
+function responseToString(response) {
+    return `statusCode: ${response.statusCode}, statusMessage: ${response.statusMessage}`;
 }
 
 /**

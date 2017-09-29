@@ -12,12 +12,12 @@ class AppOutputWithScreenshot {
      */
     constructor(appOutput, screenshot) {
         this._appOutput = appOutput;
-        this.screenshot = screenshot;
+        this._screenshot = screenshot;
     }
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {Promise<AppOutput>}
+     * @return {AppOutput}
      */
     getAppOutput() {
         return this._appOutput;
@@ -25,10 +25,10 @@ class AppOutputWithScreenshot {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {Promise<EyesScreenshot>}
+     * @return {EyesScreenshot}
      */
     getScreenshot() {
-        return this.screenshot;
+        return this._screenshot;
     }
 }
 

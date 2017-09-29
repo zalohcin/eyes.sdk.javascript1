@@ -793,7 +793,7 @@ class EyesBase {
                     });
                 } else {
                     that._finallyClose();
-                    return that._promiseFactory.resolve(testResults);
+                    return resolve(testResults);
                 }
             }
 
@@ -1560,7 +1560,7 @@ class EyesBase {
             that._runningSession = runningSession;
             that._logger.verbose(`Server session ID is ${that._runningSession.getId()}`);
 
-            const testInfo = `'${testName}' of '${that.getAppName()}' "${appEnvironment}`;
+            const testInfo = `'${that._testName}' of '${that.getAppName()}' "${appEnvironment}`;
             if (that._runningSession.getIsNewSession()) {
                 that._logger.log(`--- New test started - ${testInfo}`);
                 that._shouldMatchWindowRunOnceOnTimeout = true;
