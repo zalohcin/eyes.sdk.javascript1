@@ -1,11 +1,10 @@
 'use strict';
 
-class OSNames {
-    static Unknown = 'Unknown';
-    static Windows = 'Windows';
-    static IOS = 'IOS';
-    static Macintosh = 'Macintosh';
-    static ChromeOS = 'ChromeOS';
-}
+class OSNames {}
+OSNames.Unknown = 'Unknown';
+OSNames.Windows = 'Windows';
+OSNames.IOS = 'IOS';
+OSNames.Macintosh = 'Macintosh';
+OSNames.ChromeOS = 'ChromeOS';
 
 module.exports = OSNames;

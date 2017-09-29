@@ -7,9 +7,6 @@ const ArgumentGuard = require('../ArgumentGuard');
  */
 class Location {
 
-    // noinspection JSUnusedGlobalSymbols
-    static ZERO = new Location(0, 0);
-
     /**
      * Creates a Location instance.
      *
@@ -108,5 +105,7 @@ class Location {
         return `${this._x}_${this._y}`;
     }
 }
+
+Location.ZERO = new Location(0, 0);
 
 module.exports = Location;

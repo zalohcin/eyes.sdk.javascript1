@@ -1,16 +1,17 @@
 'use strict';
 
+const DEFAULT_PREFIX = "screenshot_";
+const DEFAULT_PATH = "";
+
 /**
  * Interface for saving debug screenshots.
  *
  * @abstract
  */
 class DebugScreenshotsProvider {
-    static DEFAULT_PREFIX = "screenshot_";
-    static DEFAULT_PATH = "";
 
     constructor() {
-        this._prefix = this.DEFAULT_PREFIX;
+        this._prefix = DEFAULT_PREFIX;
         this._path = null;
     }
 
@@ -20,7 +21,7 @@ class DebugScreenshotsProvider {
     }
 
     setPrefix(value) {
-        this._prefix = value || this.DEFAULT_PREFIX;
+        this._prefix = value || DEFAULT_PREFIX;
     }
 
     getPath() {
@@ -31,7 +32,7 @@ class DebugScreenshotsProvider {
         if (value) {
             value = value.endsWith("/") ? value : value + '/';
         } else {
-            value = this.DEFAULT_PATH;
+            value = DEFAULT_PATH;
         }
 
         this._path = value;

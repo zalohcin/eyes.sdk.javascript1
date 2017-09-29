@@ -4,15 +4,12 @@ const dateformat = require('dateformat');
 
 const DebugScreenshotsProvider = require('./DebugScreenshotsProvider');
 
+const DATE_FORMAT = "yyyy_mm_dd_HH_MM_ss_l";
+
 /**
  * A debug screenshot provider for saving screenshots to file.
  */
 class NullDebugScreenshotProvider extends DebugScreenshotsProvider {
-
-    /**
-     * @private
-     */
-    static DATE_FORMAT = "yyyy_mm_dd_HH_MM_ss_l";
 
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -25,12 +22,12 @@ class NullDebugScreenshotProvider extends DebugScreenshotsProvider {
         return image.saveImage(filename.replace(' ', '_'));
     }
 
-    // noinspection JSUnusedGlobalSymbols
+    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
      * @return {Promise<void>}
      */
     getFormattedTimeStamp() {
-        return dateformat(new Date(), this.DATE_FORMAT);
+        return dateformat(new Date(), DATE_FORMAT);
     }
 }
 

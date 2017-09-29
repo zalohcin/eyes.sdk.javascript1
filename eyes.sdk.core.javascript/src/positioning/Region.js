@@ -10,9 +10,6 @@ const CoordinatesType = require('./CoordinatesType');
  */
 class Region {
 
-    // noinspection JSUnusedGlobalSymbols
-    static EMPTY = new Region(0, 0, 0, 0);
-
     /**
      * Creates a Region instance.
      *
@@ -419,5 +416,7 @@ function _getSubRegionsWithVaryingSize(containerRegion, maxSubRegionSize) {
     }
     return subRegions;
 }
+
+Region.EMPTY = new Region(0, 0, 0, 0);
 
 module.exports = Region;

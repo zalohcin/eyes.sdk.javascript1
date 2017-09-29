@@ -54,14 +54,12 @@ const SessionEventHandler = require('./SessionEventHandler');
 const BatchInfo = require('./BatchInfo');
 const TestResults = require('./server/TestResults');
 
+const DEFAULT_MATCH_TIMEOUT = 2000;
+
 /**
  * Core/Base class for Eyes - to allow code reuse for different SDKs (images, selenium, etc).
  */
 class EyesBase {
-
-    static DEFAULT_EYES_SERVER = "https://eyesapi.applitools.com";
-    static DEFAULT_MATCH_TIMEOUT = 2000;
-    static USE_DEFAULT_TIMEOUT = -1;
 
     /** @type {Boolean} */ _shouldMatchWindowRunOnceOnTimeout;
 
@@ -166,7 +164,7 @@ class EyesBase {
         this._defaultMatchSettings = new ImageMatchSettings();
 
         this._serverConnector = new ServerConnector(this._promiseFactory, this._logger, serverUrl);
-        this._matchTimeout = this.DEFAULT_MATCH_TIMEOUT;
+        this._matchTimeout = DEFAULT_MATCH_TIMEOUT;
         this._failureReports = FailureReports.ON_CLOSE;
     }
 
@@ -1810,5 +1808,8 @@ class EyesBase {
     }
 
 }
+
+EyesBase.DEFAULT_EYES_SERVER = "https://eyesapi.applitools.com";
+EyesBase.USE_DEFAULT_TIMEOUT = -1;
 
 module.exports = EyesBase;

@@ -1,12 +1,11 @@
 'use strict';
 
-class BrowserNames {
-    static Edge = 'Edge';
-    static IE = 'IE';
-    static Firefox = 'Firefox';
-    static Chrome = 'Chrome';
-    static Safari = 'Safari';
-    static Chromium = 'Chromium';
-}
+class BrowserNames {}
+BrowserNames.Edge = 'Edge';
+BrowserNames.IE = 'IE';
+BrowserNames.Firefox = 'Firefox';
+BrowserNames.Chrome = 'Chrome';
+BrowserNames.Safari = 'Safari';
+BrowserNames.Chromium = 'Chromium';
 
 module.exports = BrowserNames;

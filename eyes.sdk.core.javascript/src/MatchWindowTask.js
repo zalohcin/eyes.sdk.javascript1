@@ -5,12 +5,12 @@ const ArgumentGuard = require('./ArgumentGuard');
 const GeneralUtils = require('./GeneralUtils');
 const MatchWindowData = require('./match/MatchWindowData');
 
+const MATCH_INTERVAL = 500; // Milliseconds
+
 /**
  * Handles matching of output with the expected output (including retry and 'ignore mismatch' when needed).
  */
 class MatchWindowTask {
-
-    static MATCH_INTERVAL = 500; // Milliseconds
 
     /**
      * @type {EyesScreenshot}
@@ -162,7 +162,7 @@ class MatchWindowTask {
         // The match retry loop.
         const promise = this._promiseFactory.promiseWhile(() => (retry < retryTimeout), () => {
             // Wait before trying again.
-            return GeneralUtils.sleep(MatchWindowTask.MATCH_INTERVAL, that._promiseFactory).then(() => {
+            return GeneralUtils.sleep(MATCH_INTERVAL, that._promiseFactory).then(() => {
                 return that._tryTakeScreenshot(userInputs, region, tag, true, imageMatchSettings).then(scr => {
                     screenshot = scr;
 

@@ -8,23 +8,7 @@ const Trigger = require('./Trigger');
  */
 class MouseTrigger extends Trigger {
 
-    // noinspection JSUnusedGlobalSymbols, LocalVariableNamingConventionJS
     /**
-     * @readonly
-     * @enum {String}
-     */
-    static MouseAction = {
-        None: 'None',
-        Click: 'Click',
-        RightClick: 'RightClick',
-        DoubleClick: 'DoubleClick',
-        Move: 'Move',
-        Down: 'Down',
-        Up: 'Up'
-    };
-
-    /**
-     *
      * @param {MouseTrigger.MouseAction} mouseAction
      * @param {Region} control
      * @param {Location} location
@@ -80,6 +64,20 @@ class MouseTrigger extends Trigger {
         return `${this._mouseAction} [${this._control}] ${this._location}`;
     }
 }
+
+/**
+ * @readonly
+ * @enum {String}
+ */
+MouseTrigger.MouseAction = {
+    None: 'None',
+    Click: 'Click',
+    RightClick: 'RightClick',
+    DoubleClick: 'DoubleClick',
+    Move: 'Move',
+    Down: 'Down',
+    Up: 'Up'
+};
 
 Object.freeze(MouseTrigger.MouseAction);
 module.exports = MouseTrigger;

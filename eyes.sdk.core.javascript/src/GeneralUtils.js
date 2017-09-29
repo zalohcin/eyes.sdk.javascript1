@@ -2,20 +2,13 @@
 
 const dateformat = require('dateformat');
 
+const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
+const DATE_FORMAT_RFC1123 = "dddd, dd mmm yyyy HH:MM:ss 'GMT'";
+
 /**
  * Collection of utility methods.
  */
 class GeneralUtils {
-
-    /**
-     * @private
-     */
-    static DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
-
-    /**
-     * @private
-     */
-    static DATE_FORMAT_RFC1123 = "dddd, dd mmm yyyy HH:MM:ss 'GMT'";
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -154,7 +147,7 @@ class GeneralUtils {
      * @return {String} String formatted as ISO-8601 (yyyy-MM-dd'T'HH:mm:ss'Z')
      */
     static getIso8601Data(date = new Date()) {
-        return dateformat(date, this.DATE_FORMAT_ISO8601);
+        return dateformat(date, DATE_FORMAT_ISO8601);
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -165,7 +158,7 @@ class GeneralUtils {
      * @return {String} String formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
      */
     static getRfc1123Date(date = new Date()) {
-        return dateformat(date, this.DATE_FORMAT_RFC1123);
+        return dateformat(date, DATE_FORMAT_RFC1123);
     };
 
     //noinspection JSUnusedGlobalSymbols
