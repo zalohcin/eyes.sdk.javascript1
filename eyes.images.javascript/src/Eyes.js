@@ -71,7 +71,7 @@ class Eyes extends EyesBase {
             return this._promiseFactory.resolve(new Error(err));
         }
 
-        logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
+        this._logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
         return this._checkImage(new NullRegionProvider(), image, tag, ignoreMismatch, retryTimeout);
     }
 
@@ -195,11 +195,8 @@ class Eyes extends EyesBase {
             return this._promiseFactory.resolve(new Error(err));
         }
 
-        const that = this;
-        return this._promiseFactory.makePromise((resolve) => {
-            that._viewportSize = RectangleSize.fromRectangleSize(size);
-            resolve();
-        });
+        this._viewportSizeHandler.set(RectangleSize.fromRectangleSize(size));
+        return this._promiseFactory.resolve();
     }
 
     //noinspection JSUnusedGlobalSymbols

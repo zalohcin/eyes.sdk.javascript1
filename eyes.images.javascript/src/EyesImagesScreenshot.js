@@ -1,6 +1,6 @@
 'use strict';
 
-const {EyesScreenshot, Region, RectangleSize, Location, CoordinatesType, ImageUtils} = require('eyes.sdk');
+const {EyesScreenshot, Region, RectangleSize, Location, CoordinatesType, ArgumentGuard} = require('eyes.sdk');
 
 /**
  * Encapsulates a screenshot taken by the images SDK.
@@ -16,7 +16,7 @@ class EyesImagesScreenshot extends EyesScreenshot {
 
         // The screenshot region in coordinates relative to the "entire screen"
         // (e.g., relative to the default content in case of a web page).
-        this._bounds = new Region(location, new RectangleSize(image.getWidth(), image.getHeight()));
+        this._bounds = Region.fromLocationAndSize(location, new RectangleSize(image.getWidth(), image.getHeight()));
     }
 
     /**
@@ -57,7 +57,7 @@ class EyesImagesScreenshot extends EyesScreenshot {
         ArgumentGuard.notNull(from, "from");
         ArgumentGuard.notNull(to, "to");
 
-        const result = new Location(location);
+        const result = Location.fromLocation(location);
 
         if (from === to) {
             return result;
