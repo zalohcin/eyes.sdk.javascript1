@@ -37,7 +37,7 @@ class Logger {
      * @param {*} args
      */
     verbose(...args) {
-        this._logHandler.onMessage(true, this._getPrefix() + GeneralUtils.stringify(args));
+        this._logHandler.onMessage(true, this._getPrefix() + GeneralUtils.stringify(...args));
     }
 
     /**
@@ -46,7 +46,7 @@ class Logger {
      * @param {*} args
      */
     log(...args) {
-        this._logHandler.onMessage(false, this._getPrefix() + GeneralUtils.stringify(args));
+        this._logHandler.onMessage(false, this._getPrefix() + GeneralUtils.stringify(...args));
     }
 
     // noinspection JSMethodCanBeStatic
