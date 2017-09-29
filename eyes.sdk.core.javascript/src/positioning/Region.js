@@ -313,6 +313,15 @@ class Region {
         this._coordinatesType = Region.EMPTY.getCoordinatesType();
     }
 
+    toJSON() {
+        return {
+            left: this._left,
+            top: this._top,
+            width: this._width,
+            height: this._height,
+        }
+    }
+
     // noinspection JSUnusedGlobalSymbols
     toString() {
         return `(${this._left}, ${this._top}) ${this._width}x${this._height}, ${true._coordinatesType}`;

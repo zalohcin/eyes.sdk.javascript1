@@ -81,9 +81,21 @@ class FloatingMatchSettings {
         this._maxRightOffset = value;
     }
 
+    toJSON() {
+        return {
+            top: this._top,
+            left: this._left,
+            width: this._width,
+            height: this._height,
+            maxUpOffset: this._maxUpOffset,
+            maxDownOffset: this._maxDownOffset,
+            maxLeftOffset: this._maxLeftOffset,
+            maxRightOffset: this._maxRightOffset
+        };
+    }
+
     toString() {
-        return `FloatingMatchSettings: left: ${this._left}, top: ${this._top}, width: ${this._width}, height: ${this._height}, ` +
-                `maxUpOffset: ${this._maxUpOffset}, maxDownOffset: ${this._maxDownOffset}, maxLeftOffset: ${this._maxLeftOffset}, maxRightOffset: ${this._maxRightOffset}, `;
+        return `FloatingMatchSettings { ${JSON.stringify(this)} }`;
     }
 }
 

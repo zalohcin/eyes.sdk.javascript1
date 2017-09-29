@@ -106,8 +106,22 @@ class ImageMatchSettings {
         this._floatingMatchSettings = value;
     }
 
+    toJSON() {
+        return {
+            matchLevel: this._matchLevel,
+            exact: this._exact,
+            ignoreCaret: this._ignoreCaret,
+            ignoreRegions: this._ignoreRegions,
+            floatingMatchSettings: this._floatingMatchSettings
+        };
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
     toString() {
-        return `Match level: ${this._matchLevel}, Exact match settings: ${this._exact}`;
+        return `ImageMatchSettings { ${JSON.stringify(this)} }`;
     }
 }
 

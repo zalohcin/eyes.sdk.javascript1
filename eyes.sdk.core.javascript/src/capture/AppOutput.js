@@ -21,6 +21,21 @@ class AppOutput {
     getScreenshot64() {
         return this._screenshot64;
     }
+
+    toJSON() {
+        return {
+            title: this._title,
+            // screenshot64: this._screenshot64 // ignored
+        };
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    toString() {
+        return `AppOutput { ${JSON.stringify(this)} }`;
+    }
 }
 
 module.exports = AppOutput;

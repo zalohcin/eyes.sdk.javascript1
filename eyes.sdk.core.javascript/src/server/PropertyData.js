@@ -26,6 +26,21 @@ class PropertyData {
     setValue(value) {
         this._value = value;
     }
+
+    toJSON() {
+        return {
+            name: this._name,
+            value: this._value,
+        };
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    toString() {
+        return `PropertyData { ${JSON.stringify(this)} }`;
+    }
 }
 
 module.exports = PropertyData;

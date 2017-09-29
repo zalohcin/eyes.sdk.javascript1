@@ -95,6 +95,13 @@ class Location {
         return new Location(Math.ceil(this._x * scaleRatio), Math.ceil(this._y * scaleRatio));
     }
 
+    toJSON() {
+        return {
+            x: this._x,
+            y: this._y
+        }
+    }
+
     // noinspection JSUnusedGlobalSymbols
     toString() {
         return `(${this._x}, ${this._y})`;

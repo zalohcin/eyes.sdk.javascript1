@@ -99,7 +99,7 @@ class SessionStartInfo {
         return this._properties;
     }
 
-    asObject() {
+    toJSON() {
         return {
             agentId: this._agentId,
             sessionType: this._sessionType,
@@ -115,6 +115,10 @@ class SessionStartInfo {
             parentBranchName: this._parentBranchName,
             properties: this._properties
         };
+    }
+
+    toString() {
+        return `SessionStartInfo { ${JSON.stringify(this)} }`;
     }
 }
 

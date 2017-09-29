@@ -17,7 +17,7 @@ class BatchInfo {
     constructor(name = null, startedAt = new Date(), id = GeneralUtils.guid()) {
         ArgumentGuard.notNull(startedAt, "startedAt");
 
-        this.id = id;
+        this._id = id;
         this._name = name;
         this._startedAt = GeneralUtils.getIso8601Data(startedAt);
     }
@@ -26,7 +26,7 @@ class BatchInfo {
      * @return {String} The id of the current batch.
      */
     getId() {
-        return this.id;
+        return this._id;
     }
 
     /**
@@ -35,7 +35,7 @@ class BatchInfo {
      */
     setId(value) {
         ArgumentGuard.notNullOrEmpty(value, "id");
-        this.id = value;
+        this._id = value;
     }
 
     /**
@@ -52,12 +52,20 @@ class BatchInfo {
         return new Date(this._startedAt);
     }
 
+    toJSON() {
+        return {
+            id: this._id,
+            name: this._name,
+            startedAt: this._startedAt
+        };
+    }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * @return {String}
      */
     toString() {
-        return `'${this._name}' - ${this._startedAt}`;
+        return `BatchInfo { ${JSON.stringify(this)} }`;
     }
 }
 

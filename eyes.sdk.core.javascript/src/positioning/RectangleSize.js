@@ -89,6 +89,13 @@ class RectangleSize {
         return new RectangleSize(Math.ceil(this._width * scaleRatio), Math.ceil(this._height * scaleRatio));
     }
 
+    toJSON() {
+        return {
+            width: this._width,
+            height: this._height
+        }
+    }
+
     // noinspection JSUnusedGlobalSymbols
     toString() {
         return `${this._width}x${this._height}`;

@@ -34,6 +34,22 @@ class RunningSession {
     setUrl(value) {
         this.url = value;
     }
+
+    toJSON() {
+        return {
+            id: this.id,
+            url: this.url,
+            isNewSession: this.isNewSession
+        };
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    toString() {
+        return `RunningSession { ${JSON.stringify(this)} }`;
+    }
 }
 
 module.exports = RunningSession;

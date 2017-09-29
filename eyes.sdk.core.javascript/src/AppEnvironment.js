@@ -103,12 +103,21 @@ class AppEnvironment {
         this._displaySize = value;
     }
 
+    toJSON() {
+        return {
+            inferred: this._inferred,
+            hostOS: this._hostOS,
+            hostApp: this._hostApp,
+            displaySize: this._displaySize
+        };
+    }
+
     // noinspection JSUnusedGlobalSymbols
     /**
      * @return {String}
      */
     toString() {
-        return `[os = ${this._hostOS} hostingApp = ${this._hostApp} displaySize = ${this._displaySize}]`;
+        return `AppEnvironment { ${JSON.stringify(this)} }`;
     }
 }
 

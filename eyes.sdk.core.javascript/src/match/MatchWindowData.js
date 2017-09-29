@@ -54,6 +54,26 @@ class Options {
     getImageMatchSettings() {
         return this._imageMatchSettings;
     }
+
+    toJSON() {
+        return {
+            name: this._name,
+            userInputs: this._userInputs,
+            ignoreMismatch: this._ignoreMismatch,
+            ignoreMatch: this._ignoreMatch,
+            forceMismatch: this._forceMismatch,
+            forceMatch: this._forceMatch,
+            imageMatchSettings: this._imageMatchSettings
+        };
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    toString() {
+        return `Options { ${JSON.stringify(this)} }`;
+    }
 }
 
 /**
@@ -99,8 +119,22 @@ class MatchWindowData {
         return this._options;
     }
 
+    toJSON() {
+        return {
+            tag: this._tag,
+            userInputs: this._userInputs,
+            appOutput: this._appOutput,
+            ignoreMismatch: this._ignoreMismatch,
+            options: this._options
+        };
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
     toString() {
-        return `MatchWindowData { tag: ${this._tag}, userInputs: ${this._userInputs}, ignoreMismatch: ${this._ignoreMismatch}, options: ${this._options}`;
+        return `MatchWindowData { ${JSON.stringify(this)} }`;
     }
 }
 
