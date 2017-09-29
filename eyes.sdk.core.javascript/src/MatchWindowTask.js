@@ -13,21 +13,6 @@ const MATCH_INTERVAL = 500; // Milliseconds
 class MatchWindowTask {
 
     /**
-     * @type {EyesScreenshot}
-     */
-    _lastScreenshot;
-
-    /**
-     * @type {MatchResult}
-     */
-    _matchResult;
-
-    /**
-     * @type {Region}
-     */
-    _lastScreenshotBounds;
-
-    /**
      * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
      * @param {Logger} logger A logger instance.
      * @param {ServerConnector} serverConnector Our gateway to the agent
@@ -47,6 +32,10 @@ class MatchWindowTask {
         this._runningSession = runningSession;
         this._defaultRetryTimeout = retryTimeout;
         this._appOutputProvider = appOutputProvider;
+
+        /** @type {EyesScreenshot} */ this._lastScreenshot = undefined;
+        /** @type {MatchResult} */ this._matchResult = undefined;
+        /** @type {Region} */ this._lastScreenshotBounds = undefined;
     }
 
     /**

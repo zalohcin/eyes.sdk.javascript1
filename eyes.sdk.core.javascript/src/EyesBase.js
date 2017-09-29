@@ -61,88 +61,18 @@ const DEFAULT_MATCH_TIMEOUT = 2000;
  */
 class EyesBase {
 
-    /** @type {Boolean} */ _shouldMatchWindowRunOnceOnTimeout;
-
-    /** @type {MatchWindowTask} */ _matchWindowTask;
-
-    /** @type {ServerConnector} */ _serverConnector;
-    /** @type {RunningSession} */ _runningSession;
-    /** @type {SessionStartInfo} */ _sessionStartInfo;
-    /** @type {PropertyHandler<RectangleSize>} */ _viewportSizeHandler;
-    /** @type {EyesScreenshot} */ _lastScreenshot;
-    /** @type {PropertyHandler<ScaleProvider>} */ _scaleProviderHandler;
-    /** @type {PropertyHandler<CutProvider>} */ _cutProviderHandler;
-    /** @type {PositionProvider} */  _positionProvider;
-
-    /**
-     * Will be checked <b>before</b> any argument validation. If true, all method will immediately return without performing any action.
-     * @type {Boolean}
-     */
-    _isDisabled;
-
-    /** @type {Logger} */ _logger;
-    /** @type {Boolean} */ _isOpen;
-    /** @type {String} */ _agentId;
-
-    /**
-     * Will be set for separately for each test.
-     * @type {String}
-     */
-    _currentAppName;
-
-    /**
-     * The default app name if no current name was provided. If this is {@code null} then there is no default appName.
-     * @type {String}
-     */
-    _appName;
-
-    /** @type {SessionType} */ _sessionType;
-    /** @type {String} */ _testName;
-    /** @type {ImageMatchSettings} */ _defaultMatchSettings;
-    /** @type {int} */ _matchTimeout;
-    /** @type {BatchInfo} */ _batch;
-    /** @type {String} */ _hostApp;
-    /** @type {String} */ _hostOS;
-    /** @type {String} */ _baselineEnvName;
-    /** @type {String} */ _environmentName;
-    /** @type {String} */ _branchName;
-    /** @type {String} */ _parentBranchName;
-    /** @type {FailureReports} */ _failureReports;
-    /** @type {Trigger[]} */ _userInputs = [];
-    /** @type {PropertyData[]} */ _properties = [];
-
-    /**
-     * Used for automatic save of a test run. New tests are automatically saved by default.
-     * @type {Boolean}
-     */
-    _saveNewTests = true;
-    /**
-     * @type {Boolean}
-     */
-    _saveFailedTests = false;
-
-    /** @type {DebugScreenshotsProvider} */ _debugScreenshotsProvider;
-    /** @type {Boolean} */ _isViewportSizeSet;
-
-    /** @type {int} */ _stitchingOverlap = 50;
-
-    /**
-     * The session ID of webdriver instance
-     *
-     * @type {String}
-     */
-    _autSessionId;
-
-    /** @type {int} */ _validationId = -1;
-    /** @type {SessionEventHandler[]} */ _sessionEventHandlers = [];
-
+    // noinspection FunctionTooLongJS
     /**
      * Creates a new {@code EyesBase}instance that interacts with the Eyes Server at the specified url.
      *
      * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
      * @param {String} serverUrl The Eyes server URL.
+     * @param {Boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method will immediately return without performing any action.
      **/
-    constructor(promiseFactory, serverUrl) {
+    constructor(promiseFactory, serverUrl, isDisabled = false) {
+        /** @type {Boolean} */
+        this._isDisabled = isDisabled;
+
         if(this._isDisabled) {
             this._userInputs = null;
             return;
@@ -151,21 +81,95 @@ class EyesBase {
         ArgumentGuard.notNull(promiseFactory, "promiseFactory");
         ArgumentGuard.notNull(serverUrl, "serverUrl");
 
+        /** @type {Logger} */
         this._logger = new Logger();
+        /** @type {PromiseFactory} */
         this._promiseFactory = promiseFactory;
+        /** @type {PropertyHandler<ScaleProvider>} */
         this._scaleProviderHandler = new SimplePropertyHandler();
         this._scaleProviderHandler.set(new NullScaleProvider());
+        /** @type {PropertyHandler<CutProvider>} */
         this._cutProviderHandler = new SimplePropertyHandler();
         this._cutProviderHandler.set(new NullCutProvider());
+        /** @type {PositionProvider} */
         this._positionProvider = new InvalidPositionProvider();
+        /** @type {PropertyHandler<RectangleSize>} */
         this._viewportSizeHandler = new SimplePropertyHandler();
         this._viewportSizeHandler.set(null);
+        /** @type {DebugScreenshotsProvider} */
         this._debugScreenshotsProvider = new NullDebugScreenshotProvider();
+        /** @type {ImageMatchSettings} */
         this._defaultMatchSettings = new ImageMatchSettings();
 
+        /** @type {ServerConnector} */
         this._serverConnector = new ServerConnector(this._promiseFactory, this._logger, serverUrl);
+        /** @type {int} */
         this._matchTimeout = DEFAULT_MATCH_TIMEOUT;
+        /** @type {FailureReports} */
         this._failureReports = FailureReports.ON_CLOSE;
+
+
+        /** @type {Trigger[]} */
+        this._userInputs = [];
+        /** @type {PropertyData[]} */
+        this._properties = [];
+        /** @type {int} */
+
+        this._stitchingOverlap = 50;
+        /** @type {int} */
+
+        this._validationId = -1;
+        /** @type {SessionEventHandler[]} */
+        this._sessionEventHandlers = [];
+
+        /**
+         * Used for automatic save of a test run. New tests are automatically saved by default.
+         * @type {Boolean}
+         */
+        this._saveNewTests = true;
+        /**
+         * @type {Boolean}
+         */
+        this._saveFailedTests = false;
+
+        /** @type {Boolean} */ this._shouldMatchWindowRunOnceOnTimeout = undefined;
+        /** @type {MatchWindowTask} */ this._matchWindowTask = undefined;
+
+        /** @type {RunningSession} */ this._runningSession = undefined;
+        /** @type {SessionStartInfo} */ this._sessionStartInfo = undefined;
+        /** @type {EyesScreenshot} */ this._lastScreenshot = undefined;
+        /** @type {Boolean} */ this._isViewportSizeSet = undefined;
+
+        /** @type {Boolean} */ this._isOpen = undefined;
+        /** @type {String} */ this._agentId = undefined;
+
+        /** @type {SessionType} */ this._sessionType = undefined;
+        /** @type {String} */ this._testName = undefined;
+        /** @type {BatchInfo} */ this._batch = undefined;
+        /** @type {String} */ this._hostApp = undefined;
+        /** @type {String} */ this._hostOS = undefined;
+        /** @type {String} */ this._baselineEnvName = undefined;
+        /** @type {String} */ this._environmentName = undefined;
+        /** @type {String} */ this._branchName = undefined;
+        /** @type {String} */ this._parentBranchName = undefined;
+
+        /**
+         * Will be set for separately for each test.
+         * @type {String}
+         */
+        this._currentAppName = undefined;
+
+        /**
+         * The default app name if no current name was provided. If this is {@code null} then there is no default appName.
+         * @type {String}
+         */
+        this._appName = undefined;
+
+        /**
+         * The session ID of webdriver instance
+         * @type {String}
+         */
+        this._autSessionId = undefined;
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -649,7 +653,7 @@ class EyesBase {
     /**
      * @return {String} The prefix for the screenshots' names.
      */
-    public getDebugScreenshotsPrefix() {
+    getDebugScreenshotsPrefix() {
         return this._debugScreenshotsProvider.getPrefix();
     }
 
@@ -657,7 +661,7 @@ class EyesBase {
     /**
      * @param {DebugScreenshotsProvider} debugScreenshotsProvider
      */
-    public setDebugScreenshotsProvider(debugScreenshotsProvider) {
+    setDebugScreenshotsProvider(debugScreenshotsProvider) {
         this._debugScreenshotsProvider = debugScreenshotsProvider;
     }
 
@@ -665,7 +669,7 @@ class EyesBase {
     /**
      * @return {DebugScreenshotsProvider}
      */
-    public getDebugScreenshotsProvider() {
+    getDebugScreenshotsProvider() {
         return this._debugScreenshotsProvider;
     }
 
@@ -1332,7 +1336,7 @@ class EyesBase {
         this._logger.verbose(`Timeout = '${this._serverConnector.getTimeout()}'`);
         this._logger.log(`matchTimeout = '${this._matchTimeout}'`);
         this._logger.log(`Default match settings = '${this._defaultMatchSettings}'`);
-        this._logger.log(`FailureReports = '${this._failureReports}' `);
+        this._logger.log(`FailureReports = '${this._failureReports}'`);
     }
 
     /**
