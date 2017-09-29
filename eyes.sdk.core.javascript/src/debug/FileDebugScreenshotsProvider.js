@@ -9,7 +9,7 @@ const DATE_FORMAT = "yyyy_mm_dd_HH_MM_ss_l";
 /**
  * A debug screenshot provider for saving screenshots to file.
  */
-class NullDebugScreenshotProvider extends DebugScreenshotsProvider {
+class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
 
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -31,4 +31,4 @@ class NullDebugScreenshotProvider extends DebugScreenshotsProvider {
     }
 }
 
-module.exports = NullDebugScreenshotProvider;
+module.exports = FileDebugScreenshotsProvider;
