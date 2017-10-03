@@ -27,7 +27,7 @@ class FixedCutProvider extends CutProvider {
      */
     cut(image, promiseFactory) {
         const that = this;
-        let promise = promiseFactory.resolve();
+        let promise = promiseFactory.resolve(image);
 
         if (this._header > 0) {
             promise = promise.then(() => {
