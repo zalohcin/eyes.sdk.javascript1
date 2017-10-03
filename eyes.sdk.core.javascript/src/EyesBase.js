@@ -819,16 +819,16 @@ class EyesBase {
                     if (throwEx) {
                         that._finallyClose();
                         const message = `Test '${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}' detected differences! ${instructions}`;
-                        return reject(new DiffsFoundError(results, message));
+                        return that._promiseFactory.reject(new DiffsFoundError(results, message));
                     }
                     return resolve(results);
                 }
 
-                if (isNewSession) {
+                if (isNewSession && !that._saveNewTests) {
                     let instructions = "Please approve the new baseline at " + sessionResultsUrl;
                     that._logger.log(`--- New test ended. ${instructions}`);
 
-                    if (throwEx && !that._saveNewTests) {
+                    if (throwEx) {
                         that._finallyClose();
                         const message = `'${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}'. ${instructions}`;
                         return that._promiseFactory.reject(new NewTestError(results, message));
