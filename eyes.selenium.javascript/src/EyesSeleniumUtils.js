@@ -1,98 +1,83 @@
-/*
- ---
+'use strict';
 
- name: EyesSeleniumUtils
+const {MutableImage, CoordinatesType, GeneralUtils, GeometryUtils, ImageUtils} = require('eyes.sdk');
 
- description: Handles browser related functionality.
-
- ---
+/**
+ * @private
+ * @type {string}
  */
+const JS_GET_VIEWPORT_SIZE =
+    "var height = undefined; " +
+    "var width = undefined; " +
+    "if (window.innerHeight) { height = window.innerHeight; } " +
+    "else if (document.documentElement && document.documentElement.clientHeight) { height = document.documentElement.clientHeight; } " +
+    "else { var b = document.getElementsByTagName('body')[0]; if (b.clientHeight) {height = b.clientHeight;} }; " +
+    "if (window.innerWidth) { width = window.innerWidth; } " +
+    "else if (document.documentElement && document.documentElement.clientWidth) { width = document.documentElement.clientWidth; } " +
+    "else { var b = document.getElementsByTagName('body')[0]; if (b.clientWidth) { width = b.clientWidth;} }; " +
+    "return [width, height];";
 
-(function () {
-    "use strict";
+/**
+ * @private
+ * @type {string}
+ */
+const JS_GET_CURRENT_SCROLL_POSITION =
+    "var doc = document.documentElement; " +
+    "var x = window.scrollX || ((window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0)); " +
+    "var y = window.scrollY || ((window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)); " +
+    "return [x, y];";
 
-    var EyesSDK = require('eyes.sdk'),
-        EyesUtils = require('eyes.utils');
-    var MutableImage = EyesSDK.MutableImage,
-        CoordinatesType = EyesSDK.CoordinatesType,
-        GeneralUtils = EyesUtils.GeneralUtils,
-        GeometryUtils = EyesUtils.GeometryUtils,
-        ImageUtils = EyesUtils.ImageUtils;
+/**
+ * @private
+ * @type {string}
+ */
+const JS_GET_CONTENT_ENTIRE_SIZE =
+    "var scrollWidth = document.documentElement.scrollWidth; " +
+    "var bodyScrollWidth = document.body.scrollWidth; " +
+    "var totalWidth = Math.max(scrollWidth, bodyScrollWidth); " +
+    "var clientHeight = document.documentElement.clientHeight; " +
+    "var bodyClientHeight = document.body.clientHeight; " +
+    "var scrollHeight = document.documentElement.scrollHeight; " +
+    "var bodyScrollHeight = document.body.scrollHeight; " +
+    "var maxDocElementHeight = Math.max(clientHeight, scrollHeight); " +
+    "var maxBodyHeight = Math.max(bodyClientHeight, bodyScrollHeight); " +
+    "var totalHeight = Math.max(maxDocElementHeight, maxBodyHeight); " +
+    "return [totalWidth, totalHeight];";
 
-    var EyesSeleniumUtils = {};
+/**
+ * @return {string}
+ */
+function JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle) {
+    return "var elem = arguments[0]; var styleProp = '" + propStyle + "'; " +
+        "if (window.getComputedStyle) { " +
+        "return window.getComputedStyle(elem, null).getPropertyValue(styleProp);" +
+        "} else if (elem.currentStyle) { " +
+        "return elem.currentStyle[styleProp];" +
+        "} else { " +
+        "return null;" +
+        "}";
+}
 
-    /**
-     * @private
-     * @type {string}
-     */
-    var JS_GET_VIEWPORT_SIZE =
-        "var height = undefined; " +
-        "var width = undefined; " +
-        "if (window.innerHeight) { height = window.innerHeight; } " +
-        "else if (document.documentElement && document.documentElement.clientHeight) { height = document.documentElement.clientHeight; } " +
-        "else { var b = document.getElementsByTagName('body')[0]; if (b.clientHeight) {height = b.clientHeight;} }; " +
-        "if (window.innerWidth) { width = window.innerWidth; } " +
-        "else if (document.documentElement && document.documentElement.clientWidth) { width = document.documentElement.clientWidth; } " +
-        "else { var b = document.getElementsByTagName('body')[0]; if (b.clientWidth) { width = b.clientWidth;} }; " +
-        "return [width, height];";
+/**
+ * @return {string}
+ */
+const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
+    "var styles = window.getComputedStyle(document.body, null);" +
+    "var overflow = styles.getPropertyValue('overflow');" +
+    "var overflowX = styles.getPropertyValue('overflow-x');" +
+    "var overflowY = styles.getPropertyValue('overflow-y');" +
+    "return overflow == 'hidden' || overflowX == 'hidden' || overflowY == 'hidden'";
 
-    /**
-     * @private
-     * @type {string}
-     */
-    var JS_GET_CURRENT_SCROLL_POSITION =
-        "var doc = document.documentElement; " +
-        "var x = window.scrollX || ((window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0)); " +
-        "var y = window.scrollY || ((window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)); " +
-        "return [x, y];";
+/**
+ * @private
+ * @type {string[]}
+ */
+const JS_TRANSFORM_KEYS = ["transform", "-webkit-transform"];
 
-    /**
-     * @private
-     * @type {string}
-     */
-    var JS_GET_CONTENT_ENTIRE_SIZE =
-        "var scrollWidth = document.documentElement.scrollWidth; " +
-        "var bodyScrollWidth = document.body.scrollWidth; " +
-        "var totalWidth = Math.max(scrollWidth, bodyScrollWidth); " +
-        "var clientHeight = document.documentElement.clientHeight; " +
-        "var bodyClientHeight = document.body.clientHeight; " +
-        "var scrollHeight = document.documentElement.scrollHeight; " +
-        "var bodyScrollHeight = document.body.scrollHeight; " +
-        "var maxDocElementHeight = Math.max(clientHeight, scrollHeight); " +
-        "var maxBodyHeight = Math.max(bodyClientHeight, bodyScrollHeight); " +
-        "var totalHeight = Math.max(maxDocElementHeight, maxBodyHeight); " +
-        "return [totalWidth, totalHeight];";
-
-    /**
-     * @return {string}
-     */
-    var JS_GET_COMPUTED_STYLE_FORMATTED_STR = function (propStyle) {
-        return "var elem = arguments[0]; var styleProp = '" + propStyle + "'; " +
-            "if (window.getComputedStyle) { " +
-            "return window.getComputedStyle(elem, null).getPropertyValue(styleProp);" +
-            "} else if (elem.currentStyle) { " +
-            "return elem.currentStyle[styleProp];" +
-            "} else { " +
-            "return null;" +
-            "}";
-    };
-
-    /**
-     * @return {string}
-     */
-    var JS_GET_IS_BODY_OVERFLOW_HIDDEN =
-        "var styles = window.getComputedStyle(document.body, null);" +
-        "var overflow = styles.getPropertyValue('overflow');" +
-        "var overflowX = styles.getPropertyValue('overflow-x');" +
-        "var overflowY = styles.getPropertyValue('overflow-y');" +
-        "return overflow == 'hidden' || overflowX == 'hidden' || overflowY == 'hidden'";
-
-    /**
-     * @private
-     * @type {string[]}
-     */
-    var JS_TRANSFORM_KEYS = ["transform", "-webkit-transform"];
-
+/**
+ * Handles browser related functionality.
+ */
+class EyesSeleniumUtils {
     /**
      * Executes a script using the browser's executeScript function - and optionally waits a timeout.
      *
@@ -103,13 +88,11 @@
      *        let the browser a chance to stabilize (e.g., finish rendering).
      * @return {Promise<void>} A promise which resolves to the result of the script's execution on the tab.
      */
-    EyesSeleniumUtils.executeScript = function executeScript(browser, script, promiseFactory, stabilizationTimeMs) {
-        return browser.executeScript(script).then(function (result) {
+    static executeScript(browser, script, promiseFactory, stabilizationTimeMs) {
+        return browser.executeScript(script).then(result => {
             if (stabilizationTimeMs) {
                 return GeneralUtils.sleep(stabilizationTimeMs, promiseFactory)
-                    .then(function () {
-                        return result;
-                    });
+                    .then(() => result);
             }
 
             return result;
@@ -124,11 +107,9 @@
      * @param {string} propStyle The style property which value we would like to extract.
      * @return {Promise<string>} The value of the style property of the element, or {@code null}.
      */
-    EyesSeleniumUtils.getComputedStyle = function (browser, element, propStyle) {
-        var scriptToExec = JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle);
-        return browser.executeScript(scriptToExec, element).then(function(computedStyle) {
-            return computedStyle;
-        });
+    static getComputedStyle(browser, element, propStyle) {
+        const scriptToExec = JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle);
+        return browser.executeScript(scriptToExec, element).then(computedStyle => computedStyle);
     };
 
     /**
@@ -140,17 +121,17 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<{x: number, y: number}>} The location of the content of the element.
      */
-    EyesSeleniumUtils.getLocationWithBordersAddition = function (logger, element, location, promiseFactory) {
-        logger.verbose("BordersAdditionFrameLocationProvider(logger, element, [" + location.x + "," + location.y + "])");
+    static getLocationWithBordersAddition(logger, element, location, promiseFactory) {
+        logger.verbose(`BordersAdditionFrameLocationProvider(logger, element, [${location.x},${location.y}])`);
         if (element.getRemoteWebElement !== undefined) {
             element = element.getRemoteWebElement();
         }
 
-        var leftBorderWidth, topBorderWidth;
-        return _getLeftBorderWidth(logger, promiseFactory, element).then(function (val) {
+        let leftBorderWidth, topBorderWidth;
+        return EyesSeleniumUtils._getLeftBorderWidth(logger, promiseFactory, element).then(val => {
             leftBorderWidth = val;
-            return _getTopBorderWidth(logger, promiseFactory, element);
-        }).then(function (val) {
+            return EyesSeleniumUtils._getTopBorderWidth(logger, promiseFactory, element);
+        }).then(val => {
             topBorderWidth = val;
             logger.verbose("Done!");
             // Frame borders also have effect on the frame's location.
@@ -167,21 +148,19 @@
      * @param {WebElement} element
      * @return {Promise<number>}
      */
-    function _getLeftBorderWidth(logger, promiseFactory, element) {
-        return promiseFactory.makePromise(function (resolve) {
+    static _getLeftBorderWidth(logger, promiseFactory, element) {
+        return promiseFactory.makePromise(resolve => {
             logger.verbose("Get element border left width...");
-            return EyesSeleniumUtils.getComputedStyle(element.getDriver(), element, "border-left-width").then(function (styleValue) {
-                return styleValue;
-            }, function (err) {
+            return EyesSeleniumUtils.getComputedStyle(element.getDriver(), element, "border-left-width").then(styleValue => styleValue, err => {
                 logger.verbose("Using getComputedStyle failed: ", err);
                 logger.verbose("Using getCssValue...");
                 return element.getCssValue("border-left-width");
-            }).then(function (propValue) {
+            }).then(propValue => {
                 logger.verbose("Done!");
-                var leftBorderWidth = Math.round(parseFloat(propValue.trim().replace("px", "")));
+                const leftBorderWidth = Math.round(parseFloat(propValue.trim().replace("px", "")));
                 logger.verbose("border-left-width: ", leftBorderWidth);
                 resolve(leftBorderWidth);
-            }, function (err) {
+            }, err => {
                 logger.verbose("Couldn't get the element's border-left-width: ", err, ". Falling back to default");
                 resolve(0);
             });
@@ -197,21 +176,19 @@
      * @param {WebElement} element
      * @return {Promise<number>}
      */
-    function _getTopBorderWidth(logger, promiseFactory, element) {
-        return promiseFactory.makePromise(function (resolve) {
+    static _getTopBorderWidth(logger, promiseFactory, element) {
+        return promiseFactory.makePromise(resolve => {
             logger.verbose("Get element's border top width...");
-            return EyesSeleniumUtils.getComputedStyle(element.getDriver(), element, "border-top-width").then(function (styleValue) {
-                return styleValue;
-            }, function (err) {
+            return EyesSeleniumUtils.getComputedStyle(element.getDriver(), element, "border-top-width").then(styleValue => styleValue, err => {
                 logger.verbose("Using getComputedStyle failed: ", err);
                 logger.verbose("Using getCssValue...");
                 return element.getCssValue("border-top-width");
-            }).then(function (propValue) {
+            }).then(propValue => {
                 logger.verbose("Done!");
-                var topBorderWidth = Math.round(parseFloat(propValue.trim().replace("px", "")));
+                const topBorderWidth = Math.round(parseFloat(propValue.trim().replace("px", "")));
                 logger.verbose("border-top-width: ", topBorderWidth);
                 resolve(topBorderWidth);
-            }, function (err) {
+            }, err => {
                 logger.verbose("Couldn't get the element's border-top-width: ", err, ". Falling back to default");
                 resolve(0);
             });
@@ -225,10 +202,8 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<number>} A promise which resolves to the device pixel ratio (float type).
      */
-    EyesSeleniumUtils.getDevicePixelRatio = function getDevicePixelRatio(browser, promiseFactory) {
-        return EyesSeleniumUtils.executeScript(browser, 'return window.devicePixelRatio', promiseFactory, undefined).then(function (results) {
-            return parseFloat(results);
-        });
+    static getDevicePixelRatio(browser, promiseFactory) {
+        return EyesSeleniumUtils.executeScript(browser, 'return window.devicePixelRatio', promiseFactory, undefined).then(results => parseFloat(results));
     };
 
     /**
@@ -238,10 +213,10 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<object.<string, string>>} A promise which resolves to the current transform value.
      */
-    EyesSeleniumUtils.getCurrentTransform = function getCurrentTransform(browser, promiseFactory) {
-        var script = "return { ";
-        for (var i = 0, l = JS_TRANSFORM_KEYS.length; i < l; i++) {
-            script += "'" + JS_TRANSFORM_KEYS[i] + "': document.documentElement.style['" + JS_TRANSFORM_KEYS[i] + "'],";
+    static getCurrentTransform(browser, promiseFactory) {
+        let script = "return { ";
+        for (let i = 0, l = JS_TRANSFORM_KEYS.length; i < l; i++) {
+            script += `'${JS_TRANSFORM_KEYS[i]}': document.documentElement.style['${JS_TRANSFORM_KEYS[i]}'],`;
         }
         script += " }";
 
@@ -254,13 +229,13 @@
      * @param {WebDriver} browser The browser to use.
      * @param {object.<string, string>} transforms The transforms to set. Keys are used as style keys and values are the values for those styles.
      * @param {PromiseFactory} promiseFactory
-     * @returns {Promise<void>}
+     * @return {Promise<void>}
      */
-    EyesSeleniumUtils.setTransforms = function (browser, transforms, promiseFactory) {
-        var script = "";
-        for (var key in transforms) {
+    static setTransforms(browser, transforms, promiseFactory) {
+        let script = "";
+        for (const key in transforms) {
             if (transforms.hasOwnProperty(key)) {
-                script += "document.documentElement.style['" + key + "'] = '" + transforms[key] + "';";
+                script += `document.documentElement.style['${key}'] = '${transforms[key]}';`;
             }
         }
 
@@ -275,13 +250,13 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<void>} A promise which resolves to the previous transform once the updated transform is set.
      */
-    EyesSeleniumUtils.setTransform = function setTransform(browser, transformToSet, promiseFactory) {
-        var transforms = {};
+    static setTransformsetTransform(browser, transformToSet, promiseFactory) {
+        const transforms = {};
         if (!transformToSet) {
             transformToSet = '';
         }
 
-        for (var i = 0, l = JS_TRANSFORM_KEYS.length; i < l; i++) {
+        for (let i = 0, l = JS_TRANSFORM_KEYS.length; i < l; i++) {
             transforms[JS_TRANSFORM_KEYS[i]] = transformToSet;
         }
 
@@ -296,8 +271,8 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<void>} A promise which resolves to the previous transform when the scroll is executed.
      */
-    EyesSeleniumUtils.translateTo = function translateTo(browser, point, promiseFactory) {
-        return EyesSeleniumUtils.setTransform(browser, 'translate(-' + point.x + 'px, -' + point.y + 'px)', promiseFactory);
+    static translateTo(browser, point, promiseFactory) {
+        return EyesSeleniumUtils.setTransform(browser, `translate(-${point.x}px, -${point.y}px)`, promiseFactory);
     };
 
     /**
@@ -308,9 +283,9 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<void>} A promise which resolves after the action is performed and timeout passed.
      */
-    EyesSeleniumUtils.scrollTo = function scrollTo(browser, point, promiseFactory) {
+    static scrollTo(browser, point, promiseFactory) {
         return EyesSeleniumUtils.executeScript(browser,
-            'window.scrollTo(' + parseInt(point.x, 10) + ', ' + parseInt(point.y, 10) + ');',
+            `window.scrollTo(${parseInt(point.x, 10)}, ${parseInt(point.y, 10)});`,
             promiseFactory, 250);
     };
 
@@ -321,12 +296,12 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<{x: number, y: number}>} A promise which resolves to the current scroll position.
      */
-    EyesSeleniumUtils.getCurrentScrollPosition = function getCurrentScrollPosition(browser, promiseFactory) {
-        return EyesSeleniumUtils.executeScript(browser, JS_GET_CURRENT_SCROLL_POSITION, promiseFactory, undefined).then(function (results) {
+    static getCurrentScrollPosition(browser, promiseFactory) {
+        return EyesSeleniumUtils.executeScript(browser, JS_GET_CURRENT_SCROLL_POSITION, promiseFactory, undefined).then(results => {
             // If we can't find the current scroll position, we use 0 as default.
-            var x = parseInt(results[0], 10) || 0;
-            var y = parseInt(results[1], 10) || 0;
-            return {x: x, y: y};
+            const x = parseInt(results[0], 10) || 0;
+            const y = parseInt(results[1], 10) || 0;
+            return {x, y};
         });
     };
 
@@ -337,15 +312,15 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<{width: number, height: number}>} A promise which resolves to an object containing the width/height of the page.
      */
-    EyesSeleniumUtils.getEntirePageSize = function getEntirePageSize(browser, promiseFactory) {
+    static getEntirePageSize(browser, promiseFactory) {
         // IMPORTANT: Notice there's a major difference between scrollWidth
         // and scrollHeight. While scrollWidth is the maximum between an
         // element's width and its content width, scrollHeight might be
         // smaller (!) than the clientHeight, which is why we take the
         // maximum between them.
-        return EyesSeleniumUtils.executeScript(browser, JS_GET_CONTENT_ENTIRE_SIZE, promiseFactory).then(function (results) {
-            var totalWidth = parseInt(results[0], 10) || 0;
-            var totalHeight = parseInt(results[1], 10) || 0;
+        return EyesSeleniumUtils.executeScript(browser, JS_GET_CONTENT_ENTIRE_SIZE, promiseFactory).then(results => {
+            const totalWidth = parseInt(results[0], 10) || 0;
+            const totalHeight = parseInt(results[1], 10) || 0;
             return {width: totalWidth, height: totalHeight};
         });
     };
@@ -358,8 +333,8 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<string>} A promise which resolves to the original overflow of the document.
      */
-    EyesSeleniumUtils.setOverflow = function setOverflow(browser, overflowValue, promiseFactory) {
-        var script;
+    static setOverflow(browser, overflowValue, promiseFactory) {
+        let script;
         if (overflowValue === null) {
             script =
                 "var origOverflow = document.documentElement.style.overflow; " +
@@ -383,8 +358,8 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<string>} A promise which resolves to the original overflow of the document.
      */
-    EyesSeleniumUtils.setBodyOverflow = function setOverflow(browser, overflowValue, promiseFactory) {
-        var script;
+    static setBodyOverflow(browser, overflowValue, promiseFactory) {
+        let script;
         if (overflowValue === null) {
             script =
                 "var origOverflow = document.body.style.overflow; " +
@@ -407,7 +382,7 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<string>} The previous value of the overflow property (could be {@code null}).
      */
-    EyesSeleniumUtils.hideScrollbars = function (browser, promiseFactory) {
+    static hideScrollbars(browser, promiseFactory) {
         return EyesSeleniumUtils.setOverflow(browser, "hidden", promiseFactory);
     };
 
@@ -418,21 +393,19 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<{width: number, height: number}>} The viewport size.
      */
-    EyesSeleniumUtils.getViewportSize = function (browser, promiseFactory) {
-        return promiseFactory.makePromise(function (resolve, reject) {
-            return EyesSeleniumUtils.executeScript(browser, JS_GET_VIEWPORT_SIZE, promiseFactory, undefined).then(function (results) {
-                if (isNaN(results[0]) || isNaN(results[1])) {
-                    reject("Can't parse values.");
-                } else {
-                    resolve({
-                        width: parseInt(results[0], 10) || 0,
-                        height: parseInt(results[1], 10) || 0
-                    });
-                }
-            }, function (err) {
-                reject(err);
-            });
-        });
+    static getViewportSize(browser, promiseFactory) {
+        return promiseFactory.makePromise((resolve, reject) => EyesSeleniumUtils.executeScript(browser, JS_GET_VIEWPORT_SIZE, promiseFactory, undefined).then(results => {
+            if (isNaN(results[0]) || isNaN(results[1])) {
+                reject("Can't parse values.");
+            } else {
+                resolve({
+                    width: parseInt(results[0], 10) || 0,
+                    height: parseInt(results[1], 10) || 0
+                });
+            }
+        }, err => {
+            reject(err);
+        }));
     };
 
     /**
@@ -441,15 +414,15 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<{width: number, height: number}>} The viewport size of the current context, or the display size if the viewport size cannot be retrieved.
      */
-    EyesSeleniumUtils.getViewportSizeOrDisplaySize = function (logger, browser, promiseFactory) {
+    static getViewportSizeOrDisplaySize(logger, browser, promiseFactory) {
         logger.verbose("getViewportSizeOrDisplaySize()");
 
-        return EyesSeleniumUtils.getViewportSize(browser, promiseFactory).catch(function (err) {
+        return EyesSeleniumUtils.getViewportSize(browser, promiseFactory).catch(err => {
             logger.verbose("Failed to extract viewport size using Javascript:", err);
 
             // If we failed to extract the viewport size using JS, will use the window size instead.
             logger.verbose("Using window size as viewport size.");
-            return browser.manage().window().getSize().then(function (size) {
+            return browser.manage().window().getSize().then(size => {
                 logger.verbose(String.format("Done! Size is", size));
                 return size;
             });
@@ -463,16 +436,12 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<boolean>}
      */
-    EyesSeleniumUtils.setBrowserSize = function (logger, browser, requiredSize, promiseFactory) {
-        return _setBrowserSize(logger, browser, requiredSize, 3, promiseFactory).then(function () {
-            return true;
-        }, function () {
-            return false;
-        });
+    static setBrowserSize(logger, browser, requiredSize, promiseFactory) {
+        return EyesSeleniumUtils._setBrowserSize(logger, browser, requiredSize, 3, promiseFactory).then(() => true, () => false);
     };
 
-    function _setBrowserSize(logger, browser, requiredSize, retries, promiseFactory) {
-        return promiseFactory.makePromise(function (resolve, reject) {
+    static _setBrowserSize(logger, browser, requiredSize, retries, promiseFactory) {
+        return promiseFactory.makePromise((resolve, reject) => {
             logger.verbose("Trying to set browser size to:", requiredSize);
 
             return browser.manage().window().setSize(requiredSize.width, requiredSize.height).then(function () {
@@ -491,9 +460,9 @@
                     return;
                 }
 
-                _setBrowserSize(logger, browser, requiredSize, retries - 1, promiseFactory).then(function () {
+                EyesSeleniumUtils._setBrowserSize(logger, browser, requiredSize, retries - 1, promiseFactory).then(() => {
                     resolve();
-                }, function (err) {
+                }, err => {
                     reject(err);
                 });
             });
@@ -508,10 +477,10 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<boolean>}
      */
-    EyesSeleniumUtils.setBrowserSizeByViewportSize = function (logger, browser, actualViewportSize, requiredViewportSize, promiseFactory) {
-        return browser.manage().window().getSize().then(function (browserSize) {
+    static setBrowserSizeByViewportSize(logger, browser, actualViewportSize, requiredViewportSize, promiseFactory) {
+        return browser.manage().window().getSize().then(browserSize => {
             logger.verbose("Current browser size:", browserSize);
-            var requiredBrowserSize = {
+            const requiredBrowserSize = {
                 width: browserSize.width + (requiredViewportSize.width - actualViewportSize.width),
                 height: browserSize.height + (requiredViewportSize.height - actualViewportSize.height)
             };
@@ -526,16 +495,16 @@
      * @param {WebDriver} browser The browser to use.
      * @param {{width: number, height: number}} requiredSize The viewport size.
      * @param {PromiseFactory} promiseFactory
-     * @returns {Promise<void>}
+     * @return {Promise<void>}
      */
-    EyesSeleniumUtils.setViewportSize = function (logger, browser, requiredSize, promiseFactory) {
+    static setViewportSize(logger, browser, requiredSize, promiseFactory) {
         // First we will set the window size to the required size.
         // Then we'll check the viewport size and increase the window size accordingly.
         logger.verbose("setViewportSize(", requiredSize, ")");
-        return promiseFactory.makePromise(function (resolve, reject) {
+        return promiseFactory.makePromise((resolve, reject) => {
             try {
-                var actualViewportSize;
-                EyesSeleniumUtils.getViewportSize(browser, promiseFactory).then(function (viewportSize) {
+                let actualViewportSize;
+                EyesSeleniumUtils.getViewportSize(browser, promiseFactory).then(viewportSize => {
                     actualViewportSize = viewportSize;
                     logger.verbose("Initial viewport size:", actualViewportSize);
 
@@ -547,7 +516,7 @@
 
                     // We move the window to (0,0) to have the best chance to be able to
                     // set the viewport size as requested.
-                    browser.manage().window().setPosition(0, 0).catch(function () {
+                    browser.manage().window().setPosition(0, 0).catch(() => {
                         logger.verbose("Warning: Failed to move the browser window to (0,0)");
                     }).then(function () {
                         return EyesSeleniumUtils.setBrowserSizeByViewportSize(logger, browser, actualViewportSize, requiredSize, promiseFactory);
@@ -573,25 +542,25 @@
                                 return;
                             }
 
-                            return browser.manage().window().getSize().then(function (browserSize) {
-                                var MAX_DIFF = 3;
-                                var widthDiff = actualViewportSize.width - requiredSize.width;
-                                var widthStep = widthDiff > 0 ? -1 : 1; // -1 for smaller size, 1 for larger
-                                var heightDiff = actualViewportSize.height - requiredSize.height;
-                                var heightStep = heightDiff > 0 ? -1 : 1;
+                            return browser.manage().window().getSize().then(browserSize => {
+                                const MAX_DIFF = 3;
+                                const widthDiff = actualViewportSize.width - requiredSize.width;
+                                const widthStep = widthDiff > 0 ? -1 : 1; // -1 for smaller size, 1 for larger
+                                const heightDiff = actualViewportSize.height - requiredSize.height;
+                                const heightStep = heightDiff > 0 ? -1 : 1;
 
-                                var currWidthChange = 0;
-                                var currHeightChange = 0;
+                                const currWidthChange = 0;
+                                const currHeightChange = 0;
                                 // We try the zoom workaround only if size difference is reasonable.
                                 if (Math.abs(widthDiff) <= MAX_DIFF && Math.abs(heightDiff) <= MAX_DIFF) {
                                     logger.verbose("Trying workaround for zoom...");
-                                    var retriesLeft = Math.abs((widthDiff === 0 ? 1 : widthDiff) * (heightDiff === 0 ? 1 : heightDiff)) * 2;
-                                    var lastRequiredBrowserSize = null;
-                                    return _setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
+                                    const retriesLeft = Math.abs((widthDiff === 0 ? 1 : widthDiff) * (heightDiff === 0 ? 1 : heightDiff)) * 2;
+                                    const lastRequiredBrowserSize = null;
+                                    return EyesSeleniumUtils._setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
                                         widthDiff, widthStep, heightDiff, heightStep, currWidthChange, currHeightChange,
-                                        retriesLeft, lastRequiredBrowserSize, promiseFactory).then(function () {
+                                        retriesLeft, lastRequiredBrowserSize, promiseFactory).then(() => {
                                         resolve();
-                                    }, function () {
+                                    }, () => {
                                         reject("Failed to set viewport size: zoom workaround failed.");
                                     });
                                 }
@@ -600,7 +569,7 @@
                             });
                         });
                     });
-                }).catch(function (err) {
+                }).catch(err => {
                     reject(err);
                 });
             } catch (err) {
@@ -627,7 +596,7 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<void>}
      */
-    function _setWindowSize(
+    static _setWindowSize(
         logger,
         browser,
         requiredSize,
@@ -643,8 +612,8 @@
         lastRequiredBrowserSize,
         promiseFactory
     ) {
-        return promiseFactory.makePromise(function (resolve, reject) {
-            logger.verbose("Retries left: " + retriesLeft);
+        return promiseFactory.makePromise((resolve, reject) => {
+            logger.verbose(`Retries left: ${retriesLeft}`);
             // We specifically use "<=" (and not "<"), so to give an extra resize attempt
             // in addition to reaching the diff, due to floating point issues.
             if (Math.abs(currWidthChange) <= Math.abs(widthDiff) && actualViewportSize.width !== requiredSize.width) {
@@ -655,23 +624,23 @@
                 currHeightChange += heightStep;
             }
 
-            var requiredBrowserSize = {
+            const requiredBrowserSize = {
                 width: browserSize.width + currWidthChange,
                 height: browserSize.height + currHeightChange
             };
 
             if (lastRequiredBrowserSize && requiredBrowserSize.width === lastRequiredBrowserSize.width && requiredBrowserSize.height === lastRequiredBrowserSize.height) {
                 logger.verbose("Browser size is as required but viewport size does not match!");
-                logger.verbose("Browser size: " + requiredBrowserSize + " , Viewport size: " + actualViewportSize);
+                logger.verbose(`Browser size: ${requiredBrowserSize} , Viewport size: ${actualViewportSize}`);
                 logger.verbose("Stopping viewport size attempts.");
                 resolve();
                 return;
             }
 
-            return EyesSeleniumUtils.setBrowserSize(logger, browser, requiredBrowserSize, promiseFactory).then(function () {
+            return EyesSeleniumUtils.setBrowserSize(logger, browser, requiredBrowserSize, promiseFactory).then(() => {
                 lastRequiredBrowserSize = requiredBrowserSize;
                 return EyesSeleniumUtils.getViewportSize(browser, promiseFactory);
-            }).then(function (actualViewportSize) {
+            }).then(actualViewportSize => {
                 logger.verbose("Current viewport size:", actualViewportSize);
                 if (actualViewportSize.width === requiredSize.width && actualViewportSize.height === requiredSize.height) {
                     resolve();
@@ -679,11 +648,11 @@
                 }
 
                 if ((Math.abs(currWidthChange) <= Math.abs(widthDiff) || Math.abs(currHeightChange) <= Math.abs(heightDiff)) && (--retriesLeft > 0)) {
-                    return _setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
+                    return EyesSeleniumUtils._setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
                         widthDiff, widthStep, heightDiff, heightStep, currWidthChange, currHeightChange,
-                        retriesLeft, lastRequiredBrowserSize, promiseFactory).then(function () {
+                        retriesLeft, lastRequiredBrowserSize, promiseFactory).then(() => {
                         resolve();
-                    }, function (err) {
+                    }, err => {
                         reject(err);
                     });
                 }
@@ -717,7 +686,7 @@
      * @param {string} [debugScreenshotsPath=null]
      * @return {Promise<void>}
      */
-    var _processPart = function (
+    static _processPart(
         part,
         parts,
         imageObj,
@@ -753,11 +722,11 @@
                     return;
                 }
 
-                var partPosition = {x: part.left, y: part.top};
+                const partPosition = {x: part.left, y: part.top};
                 return positionProvider.setPosition(partPosition).then(function () {
                     return positionProvider.getCurrentPosition();
                 }).then(function (currentPosition) {
-                    return _captureViewport(browser, promiseFactory, viewportSize, scaleProviderFactory, cutProvider, entirePageSize,
+                    return EyesSeleniumUtils._captureViewport(browser, promiseFactory, viewportSize, scaleProviderFactory, cutProvider, entirePageSize,
                         pixelRatio, rotationDegrees, automaticRotation, automaticRotationDegrees, isLandscape,
                         waitBeforeScreenshots, regionInScreenshot, saveDebugScreenshots, debugScreenshotsPath).then(function (partImage) {
                         return partImage.asObject();
@@ -794,7 +763,7 @@
      * @param {string} [debugScreenshotsPath=null]
      * @return {Promise<MutableImage>}
      */
-    var _captureViewport = function (
+    static _captureViewport(
         browser,
         promiseFactory,
         viewportSize,
@@ -811,14 +780,14 @@
         saveDebugScreenshots,
         debugScreenshotsPath
     ) {
-        var mutableImage, scaleRatio = 1;
+        let mutableImage, scaleRatio = 1;
         return GeneralUtils.sleep(waitBeforeScreenshots, promiseFactory).then(function () {
             return browser.takeScreenshot().then(function (screenshot64) {
                 return new MutableImage(new Buffer(screenshot64, 'base64'), promiseFactory);
             }).then(function (image) {
                 mutableImage = image;
                 if (saveDebugScreenshots) {
-                    var filename = "screenshot " + (new Date()).getTime()+ " original.png";
+                    const filename = "screenshot " + (new Date()).getTime()+ " original.png";
                     return mutableImage.saveImage(debugScreenshotsPath + filename.replace(/ /g, '_'));
                 }
             }).then(function () {
@@ -835,17 +804,17 @@
                 }
 
                 if (scaleProviderFactory) {
-                    var scaleProvider = scaleProviderFactory.getScaleProvider(imageSize.width);
+                    const scaleProvider = scaleProviderFactory.getScaleProvider(imageSize.width);
                     scaleRatio = scaleProvider.getScaleRatio();
                 }
 
                 if (regionInScreenshot) {
-                    var scaledRegion = GeometryUtils.scaleRegion(regionInScreenshot, 1 / scaleRatio);
+                    const scaledRegion = GeometryUtils.scaleRegion(regionInScreenshot, 1 / scaleRatio);
                     return mutableImage.cropImage(scaledRegion);
                 }
             }).then(function () {
                 if (saveDebugScreenshots) {
-                    var filename = "screenshot " +  (new Date()).getTime() + " cropped.png";
+                    const filename = "screenshot " +  (new Date()).getTime() + " cropped.png";
                     return mutableImage.saveImage(debugScreenshotsPath + filename.replace(/ /g, '_'));
                 }
             }).then(function () {
@@ -854,7 +823,7 @@
                 }
             }).then(function () {
                 if (saveDebugScreenshots) {
-                    var filename = "screenshot " + (new Date()).getTime() + " scaled.png";
+                    const filename = "screenshot " + (new Date()).getTime() + " scaled.png";
                     return mutableImage.saveImage(debugScreenshotsPath + filename.replace(/ /g, '_'));
                 }
             }).then(function () {
@@ -900,9 +869,9 @@
      * @param {RegionProvider} [regionProvider]
      * @param {boolean} [saveDebugScreenshots=false]
      * @param {string} [debugScreenshotsPath=null]
-     * @returns {Promise<MutableImage>}
+     * @return {Promise<MutableImage>}
      */
-    EyesSeleniumUtils.getScreenshot = function getScreenshot(
+    static getScreenshot(
         browser,
         promiseFactory,
         viewportSize,
@@ -922,43 +891,33 @@
         saveDebugScreenshots,
         debugScreenshotsPath
     ) {
-        var MIN_SCREENSHOT_PART_HEIGHT = 10,
-            MAX_SCROLLBAR_SIZE = 50;
-        var originalPosition,
-            originalOverflow,
-            originalBodyOverflow,
-            entirePageSize,
-            regionInScreenshot,
-            pixelRatio,
-            imageObject,
-            screenshot;
+        const MIN_SCREENSHOT_PART_HEIGHT = 10, MAX_SCROLLBAR_SIZE = 50;
+        let originalPosition, originalOverflow, originalBodyOverflow, entirePageSize, regionInScreenshot, pixelRatio, imageObject, screenshot;
 
         hideScrollbars = hideScrollbars === null ? useCssTransition : hideScrollbars;
 
         // step #1 - get entire page size for future use (scaling and stitching)
-        return positionProvider.getEntireSize().then(function (pageSize) {
+        return positionProvider.getEntireSize().then(pageSize => {
             entirePageSize = pageSize;
-        }, function () {
+        }, () => {
             // Couldn't get entire page size, using viewport size as default.
             entirePageSize = viewportSize;
-        }).then(function () {
-            // step #2 - get the device pixel ratio (scaling)
-            return EyesSeleniumUtils.getDevicePixelRatio(browser, promiseFactory).then(function (ratio) {
-                pixelRatio = ratio;
-            }, function () {
-                // Couldn't get pixel ratio, using 1 as default.
-                pixelRatio = 1;
-            });
-        }).then(function () {
+        }).then(() => // step #2 - get the device pixel ratio (scaling)
+        EyesSeleniumUtils.getDevicePixelRatio(browser, promiseFactory).then(ratio => {
+            pixelRatio = ratio;
+        }, () => {
+            // Couldn't get pixel ratio, using 1 as default.
+            pixelRatio = 1;
+        })).then(() => {
             // step #3 - hide the scrollbars if instructed
             if (hideScrollbars) {
-                return EyesSeleniumUtils.setOverflow(browser, "hidden", promiseFactory).then(function (originalVal) {
+                return EyesSeleniumUtils.setOverflow(browser, "hidden", promiseFactory).then(originalVal => {
                     originalOverflow = originalVal;
 
                     if (useCssTransition) {
-                        return EyesSeleniumUtils.executeScript(browser, JS_GET_IS_BODY_OVERFLOW_HIDDEN, promiseFactory).then(function (isBodyOverflowHidden) {
+                        return EyesSeleniumUtils.executeScript(browser, JS_GET_IS_BODY_OVERFLOW_HIDDEN, promiseFactory).then(isBodyOverflowHidden => {
                             if (isBodyOverflowHidden) {
-                                return EyesSeleniumUtils.setBodyOverflow(browser, "initial", promiseFactory).then(function (originalBodyVal) {
+                                return EyesSeleniumUtils.setBodyOverflow(browser, "initial", promiseFactory).then(originalBodyVal => {
                                     originalBodyOverflow = originalBodyVal;
                                 });
                             }
@@ -966,32 +925,32 @@
                     }
                 });
             }
-        }).then(function () {
+        }).then(() => {
             // step #4 - if this is a full page screenshot we need to scroll to position 0,0 before taking the first
             if (fullPage) {
-                return positionProvider.getState().then(function (state) {
+                return positionProvider.getState().then(state => {
                     originalPosition = state;
                     return positionProvider.setPosition({x: 0, y: 0});
-                }).then(function () {
-                    return positionProvider.getCurrentPosition();
-                }).then(function (location) {
+                }).then(() => {
+                    return positionProvider.getCurrentPosition()
+                }).then(location => {
                     if (location.x !== 0 || location.y !== 0) {
                         throw new Error("Could not scroll to the x/y corner of the screen");
                     }
                 });
             }
-        }).then(function () {
+        }).then(() => {
             if (regionProvider) {
-                return _captureViewport(browser, promiseFactory, viewportSize, scaleProviderFactory, cutProvider, entirePageSize, pixelRatio,
+                return EyesSeleniumUtils._captureViewport(browser, promiseFactory, viewportSize, scaleProviderFactory, cutProvider, entirePageSize, pixelRatio,
                     rotationDegrees, automaticRotation, automaticRotationDegrees, isLandscape, waitBeforeScreenshots).then(function (image) {
-                        return regionProvider.getRegionInLocation(image, CoordinatesType.SCREENSHOT_AS_IS, promiseFactory);
-                    }).then(function (region) {
-                        regionInScreenshot = region;
-                    });
+                    return regionProvider.getRegionInLocation(image, CoordinatesType.SCREENSHOT_AS_IS, promiseFactory);
+                }).then(function (region) {
+                    regionInScreenshot = region;
+                });
             }
-        }).then(function () {
+        }).then(() => {
             // step #5 - Take screenshot of the 0,0 tile / current viewport
-            return _captureViewport(browser, promiseFactory, viewportSize, scaleProviderFactory, cutProvider, entirePageSize, pixelRatio, rotationDegrees,
+            return EyesSeleniumUtils._captureViewport(browser, promiseFactory, viewportSize, scaleProviderFactory, cutProvider, entirePageSize, pixelRatio, rotationDegrees,
                 automaticRotation, automaticRotationDegrees, isLandscape, waitBeforeScreenshots,
                 checkFrameOrElement ? regionInScreenshot : null, saveDebugScreenshots, debugScreenshotsPath)
                 .then(function (image) {
@@ -1015,23 +974,23 @@
 
                 // We use a smaller size than the actual screenshot size in order to eliminate duplication
                 // of bottom scroll bars, as well as footer-like elements with fixed position.
-                var screenshotPartSize = {
+                const screenshotPartSize = {
                     width: imageObject.width,
                     height: Math.max(imageObject.height - MAX_SCROLLBAR_SIZE, MIN_SCREENSHOT_PART_HEIGHT)
                 };
 
-                var screenshotParts = GeometryUtils.getSubRegions({
+                const screenshotParts = GeometryUtils.getSubRegions({
                     left: 0, top: 0, width: entirePageSize.width,
                     height: entirePageSize.height
                 }, screenshotPartSize, false);
 
-                var parts = [];
-                var promise = promiseFactory.makePromise(function (resolve) {
+                const parts = [];
+                let promise = promiseFactory.makePromise(function (resolve) {
                     resolve();
                 });
 
                 screenshotParts.forEach(function (part) {
-                    promise = _processPart(part, parts, imageObject, browser, promise, promiseFactory,
+                    promise = EyesSeleniumUtils._processPart(part, parts, imageObject, browser, promise, promiseFactory,
                         viewportSize, positionProvider, scaleProviderFactory, cutProvider, entirePageSize, pixelRatio, rotationDegrees, automaticRotation,
                         automaticRotationDegrees, isLandscape, waitBeforeScreenshots, checkFrameOrElement ? regionInScreenshot : null, saveDebugScreenshots, debugScreenshotsPath);
                 });
@@ -1046,22 +1005,20 @@
             if (hideScrollbars) {
                 return EyesSeleniumUtils.setOverflow(browser, originalOverflow, promiseFactory);
             }
-        }).then(function () {
+        }).then(() => {
             if (originalBodyOverflow) {
                 return EyesSeleniumUtils.setBodyOverflow(browser, originalBodyOverflow, promiseFactory);
             }
-        }).then(function () {
+        }).then(() => {
             if (fullPage) {
                 return positionProvider.restoreState(originalPosition);
             }
-        }).then(function () {
+        }).then(() => {
             if (!checkFrameOrElement && regionInScreenshot) {
                 return screenshot.cropImage(regionInScreenshot);
             }
-        }).then(function () {
-            return screenshot;
-        });
+        }).then(() => screenshot);
     };
+}
 
-    module.exports = EyesSeleniumUtils;
-}());
+module.exports = EyesSeleniumUtils;

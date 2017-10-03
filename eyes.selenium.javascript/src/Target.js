@@ -1,21 +1,17 @@
-(function () {
-    'use strict';
+'use strict';
 
-    var EyesUtils = require('eyes.utils');
-    var GeometryUtils = EyesUtils.GeometryUtils;
+const {GeometryUtils} = require('../node_modules/eyes.sdk');
 
-    /**
-     * @typedef {{left: number, top: number, width: number, height: number}} Region
-     * @typedef {{left: number, top: number, width: number, height: number,
+/**
+ * @typedef {{left: number, top: number, width: number, height: number}} Region
+ * @typedef {{left: number, top: number, width: number, height: number,
      *            maxLeftOffset: number, maxRightOffset: number, maxUpOffset: number, maxDownOffset: number}} FloatingRegion
-     * @typedef {{element: webdriver.WebElement|EyesRemoteWebElement|webdriver.By,
+ * @typedef {{element: webdriver.WebElement|EyesRemoteWebElement|webdriver.By,
      *            maxLeftOffset: number, maxRightOffset: number, maxUpOffset: number, maxDownOffset: number}} FloatingElement
-     */
+ */
 
-    /**
-     * @constructor
-     **/
-    function Target(region, frame) {
+class Target {
+    constructor(region, frame) {
         this._region = region;
         this._frame = frame;
 
@@ -36,71 +32,71 @@
      * @param {int} ms Milliseconds to wait
      * @return {Target}
      */
-    Target.prototype.timeout = function (ms) {
+    timeout(ms) {
         this._timeout = ms;
         return this;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * @param {boolean} [stitchContent=true]
      * @return {Target}
      */
-    Target.prototype.fully = function (stitchContent) {
+    fully(stitchContent) {
         if (stitchContent !== false) {
             stitchContent = true;
         }
 
         this._stitchContent = stitchContent;
         return this;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * @param {boolean} [ignoreMismatch=true]
      * @return {Target}
      */
-    Target.prototype.ignoreMismatch = function (ignoreMismatch) {
+    ignoreMismatch(ignoreMismatch) {
         if (ignoreMismatch !== false) {
             ignoreMismatch = true;
         }
 
         this._ignoreMismatch = ignoreMismatch;
         return this;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * @param {MatchLevel} matchLevel
      * @return {Target}
      */
-    Target.prototype.matchLevel = function (matchLevel) {
+    matchLevel(matchLevel) {
         this._matchLevel = matchLevel;
         return this;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * @param {boolean} [ignoreCaret=true]
      * @return {Target}
      */
-    Target.prototype.ignoreCaret = function (ignoreCaret) {
+    ignoreCaret(ignoreCaret) {
         if (ignoreCaret !== false) {
             ignoreCaret = true;
         }
 
         this._ignoreCaret = ignoreCaret;
         return this;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * @param {...(Region|webdriver.WebElement|EyesRemoteWebElement|webdriver.By|
-     *          {element: (webdriver.WebElement|EyesRemoteWebElement|webdriver.By)})} ignoreRegion
+         *          {element: (webdriver.WebElement|EyesRemoteWebElement|webdriver.By)})} ignoreRegion
      * @return {Target}
      */
-    Target.prototype.ignore = function (ignoreRegion) {
-        for (var i = 0, l = arguments.length; i < l; i++) {
+    ignore(ignoreRegion) {
+        for (let i = 0, l = arguments.length; i < l; i++) {
             if (!arguments[i]) {
                 throw new Error("Ignore region can't be null or empty.");
             }
@@ -114,15 +110,15 @@
             }
         }
         return this;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * @param {...(FloatingRegion|FloatingElement)} floatingRegion
      * @return {Target}
      */
-    Target.prototype.floating = function (floatingRegion) {
-        for (var i = 0, l = arguments.length; i < l; i++) {
+    floating(floatingRegion) {
+        for (let i = 0, l = arguments.length; i < l; i++) {
             if (!arguments[i]) {
                 throw new Error("Floating region can't be null or empty.");
             }
@@ -135,98 +131,98 @@
             }
         }
         return this;
-    };
+    }
 
     /**
-     * @returns {Region|webdriver.WebElement|EyesRemoteWebElement|webdriver.By|null}
+     * @return {Region|webdriver.WebElement|EyesRemoteWebElement|webdriver.By|null}
      */
-    Target.prototype.getRegion = function () {
+    getRegion() {
         return this._region;
-    };
+    }
 
     /**
-     * @returns {boolean}
+     * @return {boolean}
      */
-    Target.prototype.isUsingRegion = function () {
+    isUsingRegion() {
         return !!this._region;
-    };
+    }
 
     /**
-     * @returns {webdriver.WebElement|EyesRemoteWebElement|String|null}
+     * @return {webdriver.WebElement|EyesRemoteWebElement|String|null}
      */
-    Target.prototype.getFrame = function () {
+    getFrame() {
         return this._frame;
-    };
+    }
 
     /**
-     * @returns {boolean}
+     * @return {boolean}
      */
-    Target.prototype.isUsingFrame = function () {
+    isUsingFrame() {
         return !!this._frame;
-    };
+    }
 
     /**
-     * @returns {int|null}
+     * @return {int|null}
      */
-    Target.prototype.getTimeout = function () {
+    getTimeout() {
         return this._timeout;
-    };
+    }
 
     /**
-     * @returns {boolean}
+     * @return {boolean}
      */
-    Target.prototype.getStitchContent = function () {
+    getStitchContent() {
         return this._stitchContent;
-    };
+    }
 
     /**
-     * @returns {boolean}
+     * @return {boolean}
      */
-    Target.prototype.getIgnoreMismatch = function () {
+    getIgnoreMismatch() {
         return this._ignoreMismatch;
-    };
+    }
 
     /**
-     * @returns {boolean}
+     * @return {boolean}
      */
-    Target.prototype.getMatchLevel = function () {
+    getMatchLevel() {
         return this._matchLevel;
-    };
+    }
 
     /**
-     * @returns {boolean|null}
+     * @return {boolean|null}
      */
-    Target.prototype.getIgnoreCaret = function () {
+    getIgnoreCaret() {
         return this._ignoreCaret;
-    };
+    }
 
     /**
-     * @returns {Region[]}
+     * @return {Region[]}
      */
-    Target.prototype.getIgnoreRegions = function () {
+    getIgnoreRegions() {
         return this._ignoreRegions;
-    };
+    }
 
     /**
-     * @returns {{element: (webdriver.WebElement|EyesRemoteWebElement|webdriver.By)}[]}
+     * @return {{element: (webdriver.WebElement|EyesRemoteWebElement|webdriver.By)}[]}
      */
-    Target.prototype.getIgnoreObjects = function () {
+    getIgnoreObjects() {
         return this._ignoreObjects;
-    };
+    }
 
     /**
-     * @returns {FloatingRegion[]}
+     * @return {FloatingRegion[]}
      */
-    Target.prototype.getFloatingRegions = function () {
+    getFloatingRegions() {
         return this._floatingRegions;
-    };
+    }
 
     /**
-     * @returns {FloatingElement[]}
+     * @return {FloatingElement[]}
      */
-    Target.prototype.getFloatingObjects = function () {
+    getFloatingObjects() {
         return this._floatingObjects;
-    };
+    }
 
     /**
      * Validate current window
@@ -234,9 +230,9 @@
      * @return {Target}
      * @constructor
      */
-    Target.window = function () {
+    static window() {
         return new Target();
-    };
+    }
 
     /**
      * Validate region (in current window or frame) using region's rect, element or element's locator
@@ -246,9 +242,9 @@
      * @return {Target}
      * @constructor
      */
-    Target.region = function (region, frame) {
+    static region(region, frame) {
         return new Target(region, frame);
-    };
+    }
 
     /**
      * Validate frame
@@ -257,9 +253,9 @@
      * @return {Target}
      * @constructor
      */
-    Target.frame = function (frame) {
+    static frame(frame) {
         return new Target(null, frame);
-    };
+    }
+}
 
-    module.exports = Target;
-}());
+module.exports = Target;

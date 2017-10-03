@@ -1,20 +1,18 @@
-(function() {
-    'use strict';
+'use strict';
 
-    var EyesSDK = require('eyes.sdk'),
-        EyesUtils = require('eyes.utils');
-    var PositionProvider = EyesSDK.PositionProvider,
-        ArgumentGuard = EyesUtils.ArgumentGuard;
+const {ArgumentGuard, PositionProvider} = require('../node_modules/eyes.sdk');
+
+class ElementPositionProvider extends PositionProvider {
 
     /**
-     * @constructor
      * @param {Logger} logger A Logger instance.
      * @param {EyesWebDriver} eyesDriver
      * @param {EyesRemoteWebElement} element
      * @param {PromiseFactory} promiseFactory
-     * @augments PositionProvider
      */
-    function ElementPositionProvider(logger, eyesDriver, element, promiseFactory) {
+    constructor(logger, eyesDriver, element, promiseFactory) {
+        super();
+
         ArgumentGuard.notNull(logger, "logger");
         ArgumentGuard.notNull(eyesDriver, "executor");
         ArgumentGuard.notNull(element, "element");
@@ -25,49 +23,49 @@
         this._element = element;
     }
 
-    ElementPositionProvider.prototype = new PositionProvider();
-    ElementPositionProvider.prototype.constructor = ElementPositionProvider;
-
     /**
-     * @returns {Promise<{x: number, y: number}>} The scroll position of the current frame.
+     * @return {Promise<{x: number, y: number}>} The scroll position of the current frame.
      */
-    ElementPositionProvider.prototype.getCurrentPosition = function () {
-        var that = this, elScrollLeft;
+    getCurrentPosition() {
+        const that = this;
+        let elScrollLeft;
         that._logger.verbose("getCurrentPosition()");
 
-        return that._element.getScrollLeft().then(function (value) {
+        return that._element.getScrollLeft().then(value => {
             elScrollLeft = value;
             return that._element.getScrollTop();
-        }).then(function (value) {
-            var location = { x: elScrollLeft, y: value };
+        }).then(value => {
+            const location = { x: elScrollLeft, y: value };
             that._logger.verbose("Current position: ", location);
             return location;
         });
-    };
+    }
 
     /**
      * Go to the specified location.
      * @param {{x: number, y: number}} location The position to scroll to.
-     * @returns {Promise<void>}
+     * @return {Promise<void>}
      */
-    ElementPositionProvider.prototype.setPosition = function (location) {
-        var that = this;
+    setPosition(location) {
+        const that = this;
         that._logger.verbose("Scrolling to:", location);
-        return that._element.scrollTo(location).then(function () {
+        return that._element.scrollTo(location).then(() => {
             that._logger.verbose("Done scrolling!");
         });
-    };
+    }
 
     /**
-     * @returns {Promise<{width: number, height: number}>} The entire size of the container which the position is relative to.
+     * @return {Promise<{width: number, height: number}>} The entire size of the container which the position is relative to.
      */
-    ElementPositionProvider.prototype.getEntireSize = function () {
-        var that = this, elScrollWidth, elScrollHeight;
+    getEntireSize() {
+        const that = this;
+        let elScrollWidth;
+        let elScrollHeight;
         that._logger.verbose("getEntireSize()");
-        return that._element.getScrollWidth().then(function (value) {
+        return that._element.getScrollWidth().then(value => {
             elScrollWidth = value;
             return that._element.getScrollHeight();
-        }).then(function (value) {
+        }).then(value => {
             elScrollHeight = value;
 
             that._logger.verbose("Entire size: ", elScrollWidth, ",", elScrollHeight);
@@ -77,25 +75,25 @@
                 height: elScrollHeight
             };
         });
-    };
+    }
 
     /**
-     * @returns {Promise<{x: number, y: number}>}
+     * @return {Promise<{x: number, y: number}>}
      */
-    ElementPositionProvider.prototype.getState = function () {
+    getState() {
         return this.getCurrentPosition();
-    };
+    }
 
     /**
      * @param {{x: number, y: number}} state The initial state of position
-     * @returns {Promise<void>}
+     * @return {Promise<void>}
      */
-    ElementPositionProvider.prototype.restoreState = function (state) {
-        var that = this;
-        return this.setPosition(state).then(function () {
+    restoreState(state) {
+        const that = this;
+        return this.setPosition(state).then(() => {
             that._logger.verbose("Position restored.");
         });
-    };
+    }
+}
 
-    module.exports = ElementPositionProvider;
-}());
+module.exports = ElementPositionProvider;

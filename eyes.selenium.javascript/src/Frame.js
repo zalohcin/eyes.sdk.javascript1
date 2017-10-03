@@ -1,70 +1,84 @@
-(function() {
-    'use strict';
+'use strict';
 
-    var EyesUtils = require('eyes.utils');
-    var ArgumentGuard = EyesUtils.ArgumentGuard;
+const {ArgumentGuard} = require('../node_modules/eyes.sdk');
+
+/**
+ * Encapsulates a frame/iframe. This is a generic type class,
+ * and it's actual type is determined by the reference used by the user in
+ * order to switch into the frame.
+ */
+class Frame {
 
     /**
-     * @constructor
-     * @param {Object} logger A Logger instance.
+     * @param {Logger} logger A Logger instance.
      * @param {WebElement} reference The web element for the frame, used as a reference to switch into the frame.
-     * @param {string} frameId The id of the frame. Can be used later for comparing two frames.
-     * @param {{x: number, y: number}} location The location of the frame within the current frame.
-     * @param {{width: number, height: number}} size The frame element size (i.e., the size of the frame on the screen, not the internal document size).
-     * @param {{x: number, y: number}} parentScrollPosition The scroll position the frame's parent was in when the frame was switched to.
+     * @param {Location} location The location of the frame within the current frame.
+     * @param {RectangleSize} size The frame element size (i.e., the size of the frame on the screen, not the internal document size).
+     * @param {RectangleSize} innerSize The frame element inner size (i.e., the size of the frame actual size, without borders).
+     * @param {Location} parentScrollPosition The scroll position the frame's parent was in when the frame was switched to.
+     * @param {Location} originalLocation The scroll location of the frame.
      */
-    function Frame(logger, reference, frameId, location, size, parentScrollPosition) {
+    constructor(logger, reference, location, size, innerSize, parentScrollPosition, originalLocation) {
         ArgumentGuard.notNull(logger, "logger");
         ArgumentGuard.notNull(reference, "reference");
-        ArgumentGuard.notNull(frameId, "frameId");
         ArgumentGuard.notNull(location, "location");
         ArgumentGuard.notNull(size, "size");
+        ArgumentGuard.notNull(innerSize, "innerSize");
         ArgumentGuard.notNull(parentScrollPosition, "parentScrollPosition");
+        ArgumentGuard.notNull(originalLocation, "originalLocation");
 
-        logger.verbose("Frame(logger, reference, " + frameId + ", ", location, ", ", size, ", ", parentScrollPosition, ")");
+        logger.verbose(`Frame(logger, reference, ${location}, ${size}, ${innerSize}, ${parentScrollPosition})`);
 
         this._logger = logger;
         this._reference = reference;
-        this._id = frameId;
-        this._parentScrollPosition = parentScrollPosition;
-        this._size = size;
         this._location = location;
+        this._size = size;
+        this._innerSize = innerSize;
+        this._parentScrollPosition = parentScrollPosition;
+        this._originalLocation = originalLocation;
     }
 
     /**
-     * @returns {WebElement}
+     * @return {WebElement}
      */
-    Frame.prototype.getReference = function () {
+    getReference() {
         return this._reference;
-    };
+    }
 
     /**
-     * @returns {string}
+     * @return {Location}
      */
-    Frame.prototype.getId = function () {
-        return this._id;
-    };
-
-    /**
-     * @returns {{x: number, y: number}}
-     */
-    Frame.prototype.getLocation = function () {
+    getLocation() {
         return this._location;
-    };
+    }
 
     /**
-     * @returns {{width: number, height: number}}
+     * @return {RectangleSize}
      */
-    Frame.prototype.getSize = function () {
+    getSize() {
         return this._size;
-    };
+    }
 
     /**
-     * @returns {{x: number, y: number}}
+     * @return {RectangleSize}
      */
-    Frame.prototype.getParentScrollPosition = function () {
-        return this._parentScrollPosition;
-    };
+    getInnerSize() {
+        return this._innerSize;
+    }
 
-    module.exports = Frame;
-}());
+    /**
+     * @return {Location}
+     */
+    getParentScrollPosition() {
+        return this._parentScrollPosition;
+    }
+
+    /**
+     * @return {Location}
+     */
+    getOriginalLocation() {
+        return this._originalLocation;
+    }
+}
+
+module.exports = Frame;

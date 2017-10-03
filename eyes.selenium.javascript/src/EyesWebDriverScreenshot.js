@@ -1,78 +1,71 @@
-(function () {
-    'use strict';
+'use strict';
 
-    var EyesSDK = require('eyes.sdk'),
-        EyesUtils = require('eyes.utils'),
-        ScrollPositionProvider = require('./ScrollPositionProvider'),
-        FrameChain = require('./FrameChain'),
-        Frame = require('./Frame');
-    var EyesScreenshot = EyesSDK.EyesScreenshot,
-        CoordinatesType = EyesSDK.CoordinatesType,
-        ArgumentGuard = EyesUtils.ArgumentGuard,
-        GeneralUtils = EyesUtils.GeneralUtils,
-        GeometryUtils = EyesUtils.GeometryUtils;
+const {ArgumentGuard, GeometryUtils, GeneralUtils, EyesScreenshot, CoordinatesType} = require('../node_modules/eyes.sdk');
 
-    /**
-     * @readonly
-     * @enum {number}
-     */
-    var ScreenshotType = {
-        VIEWPORT: 1,
-        ENTIRE_FRAME: 2
-    };
+const ScrollPositionProvider = require('./ScrollPositionProvider');
+const FrameChain = require('./FrameChain');
 
-    /**
-     *
-     * @param {Object} logger
-     * @param {FrameChain} frameChain
-     * @param {ScreenshotType} screenshotType
-     * @returns {{x: number, y: number}}
-     */
-    var calcFrameLocationInScreenshot = function (logger, frameChain, screenshotType) {
-        logger.verbose("Getting first frame..");
-        var firstFrame = frameChain.getFrame(0);
+/**
+ * @readonly
+ * @enum {number}
+ */
+const ScreenshotType = {
+    VIEWPORT: 1,
+    ENTIRE_FRAME: 2
+};
+
+/**
+ *
+ * @param {Object} logger
+ * @param {FrameChain} frameChain
+ * @param {ScreenshotType} screenshotType
+ * @return {{x: number, y: number}}
+ */
+function calcFrameLocationInScreenshot(logger, frameChain, screenshotType) {
+    logger.verbose("Getting first frame..");
+    const firstFrame = frameChain.getFrame(0);
+    logger.verbose("Done!");
+    let locationInScreenshot = GeometryUtils.createLocationFromLocation(firstFrame.getLocation());
+
+    // We only consider scroll of the default content if this is a viewport screenshot.
+    if (screenshotType === ScreenshotType.VIEWPORT) {
+        const defaultContentScroll = firstFrame.getParentScrollPosition();
+        locationInScreenshot = GeometryUtils.locationOffset(locationInScreenshot, defaultContentScroll);
+    }
+
+    logger.verbose("Iterating over frames..");
+    let frame;
+    for (let i = 1, l = frameChain.size(); i < l; ++i) {
+        logger.verbose("Getting next frame...");
+        frame = frameChain.getFrames()[i];
         logger.verbose("Done!");
-        var locationInScreenshot = GeometryUtils.createLocationFromLocation(firstFrame.getLocation());
 
-        // We only consider scroll of the default content if this is a viewport screenshot.
-        if (screenshotType == ScreenshotType.VIEWPORT) {
-            var defaultContentScroll = firstFrame.getParentScrollPosition();
-            locationInScreenshot = GeometryUtils.locationOffset(locationInScreenshot, defaultContentScroll);
-        }
+        const frameLocation = frame.getLocation();
 
-        logger.verbose("Iterating over frames..");
-        var frame;
-        for (var i = 1, l = frameChain.size(); i < l; ++i) {
-            logger.verbose("Getting next frame...");
-            frame = frameChain.getFrames()[i];
-            logger.verbose("Done!");
+        // For inner frames we must consider the scroll
+        const frameParentScrollPosition = frame.getParentScrollPosition();
 
-            var frameLocation = frame.getLocation();
+        // Offsetting the location in the screenshot
+        locationInScreenshot = GeometryUtils.locationOffset(locationInScreenshot, {
+            x: frameLocation.x - frameParentScrollPosition.x,
+            y: frameLocation.y - frameParentScrollPosition.y
+        });
+    }
 
-            // For inner frames we must consider the scroll
-            var frameParentScrollPosition = frame.getParentScrollPosition();
+    logger.verbose("Done!");
+    return locationInScreenshot;
+}
 
-            // Offsetting the location in the screenshot
-            locationInScreenshot = GeometryUtils.locationOffset(locationInScreenshot, {
-                x: frameLocation.x - frameParentScrollPosition.x,
-                y: frameLocation.y - frameParentScrollPosition.y
-            });
-        }
-
-        logger.verbose("Done!");
-        return locationInScreenshot;
-    };
+class EyesWebDriverScreenshot extends EyesScreenshot {
 
     /**
      * @param {Object} logger A Logger instance.
      * @param {EyesWebDriver} driver The web driver used to get the screenshot.
      * @param {Object} image The actual screenshot image.
      * @param {Object} promiseFactory
-     * @augments EyesScreenshot
-     * @constructor
      */
-    function EyesWebDriverScreenshot(logger, driver, image, promiseFactory) {
-        EyesScreenshot.call(this, image);
+    constructor(logger, driver, image, promiseFactory) {
+        super(image);
 
         ArgumentGuard.notNull(logger, "logger");
         ArgumentGuard.notNull(driver, "driver");
@@ -86,26 +79,25 @@
         EyesScreenshot.call(this._image);
     }
 
-    EyesWebDriverScreenshot.prototype = new EyesScreenshot();
-    EyesWebDriverScreenshot.prototype.constructor = EyesWebDriverScreenshot;
-
     /**
      * @param {ScreenshotType} [screenshotType] The screenshot's type (e.g., viewport/full page).
      * @param {{x: number, y: number}} [frameLocationInScreenshot] The current frame's location in the screenshot.
      * @param {{width: number, height: number}} [frameSize] The full internal size of the frame.
-     * @returns {Promise<void>}
+     * @return {Promise<void>}
      */
-    EyesWebDriverScreenshot.prototype.buildScreenshot = function (screenshotType, frameLocationInScreenshot, frameSize) {
-        var that = this, viewportSize, imageSize;
-        var positionProvider = new ScrollPositionProvider(this._logger, this._driver, this._promiseFactory);
+    buildScreenshot(screenshotType, frameLocationInScreenshot, frameSize) {
+        const that = this;
+        let viewportSize;
+        let imageSize;
+        const positionProvider = new ScrollPositionProvider(this._logger, this._driver, this._promiseFactory);
 
-        return this._driver.getDefaultContentViewportSize(false).then(function (vs) {
+        return this._driver.getDefaultContentViewportSize(false).then(vs => {
             viewportSize = vs;
             return that._image.getSize();
-        }).then(function (is) {
+        }).then(is => {
             imageSize = is;
             return positionProvider.getEntireSize();
-        }).then(function (ppEs) {
+        }).then(ppEs => {
             // If we're inside a frame, then the frame size is given by the frame
             // chain. Otherwise, it's the size of the entire page.
             if (!frameSize) {
@@ -124,7 +116,7 @@
             }
 
             return positionProvider.getCurrentPosition();
-        }).then(function (ppCp) {
+        }).then(ppCp => {
             // Getting the scroll position. For native Appium apps we can't get the scroll position, so we use (0,0)
             if (ppCp) {
                 that._currentFrameScrollPosition = ppCp;
@@ -132,7 +124,7 @@
                 that._currentFrameScrollPosition = GeometryUtils.createLocation(0, 0);
             }
 
-            if (screenshotType == null) {
+            if (screenshotType === null) {
                 if (imageSize.width <= viewportSize.width && imageSize.height <= viewportSize.height) {
                     screenshotType = ScreenshotType.VIEWPORT;
                 } else {
@@ -142,7 +134,7 @@
             that._screenshotType = screenshotType;
 
             // This is used for frame related calculations.
-            if (frameLocationInScreenshot == null) {
+            if (frameLocationInScreenshot === null) {
                 if (that._frameChain.size() > 0) {
                     frameLocationInScreenshot = calcFrameLocationInScreenshot(that._logger, that._frameChain, that._screenshotType);
                 } else {
@@ -160,23 +152,23 @@
 
             that._logger.verbose("EyesWebDriverScreenshot - Done!");
         });
-    };
+    }
 
     /**
      * @return {{left: number, top: number, width: number, height: number}} The region of the frame which is available in the screenshot,
      * in screenshot coordinates.
      */
-    EyesWebDriverScreenshot.prototype.getFrameWindow = function () {
+    getFrameWindow() {
         return this._frameWindow;
-    };
+    }
 
     /**
      * @return {FrameChain} A copy of the frame chain which was available when the
      * screenshot was created.
      */
-    EyesWebDriverScreenshot.prototype.getFrameChain = function () {
+    getFrameChain() {
         return new FrameChain(this._logger, this._frameWindow);
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -187,36 +179,36 @@
      * @param {boolean} throwIfClipped Throw an EyesException if the region is not fully contained in the screenshot.
      * @return {Promise<EyesWebDriverScreenshot>} A screenshot instance containing the given region.
      */
-    EyesWebDriverScreenshot.prototype.convertLocationFromRegion = function (region, coordinatesType, throwIfClipped) {
+    convertLocationFromRegion(region, coordinatesType, throwIfClipped) {
         this._logger.verbose("getSubScreenshot(", region, ", ", coordinatesType, ", ", throwIfClipped, ")");
 
         ArgumentGuard.notNull(region, "region");
         ArgumentGuard.notNull(coordinatesType, "coordinatesType");
 
         // We calculate intersection based on as-is coordinates.
-        var asIsSubScreenshotRegion = this.getIntersectedRegion(region, coordinatesType, CoordinatesType.SCREENSHOT_AS_IS);
+        const asIsSubScreenshotRegion = this.getIntersectedRegion(region, coordinatesType, CoordinatesType.SCREENSHOT_AS_IS);
 
-        var sizeFromRegion = GeometryUtils.createSizeFromRegion(region);
-        var sizeFromSubRegion = GeometryUtils.createSizeFromRegion(asIsSubScreenshotRegion);
+        const sizeFromRegion = GeometryUtils.createSizeFromRegion(region);
+        const sizeFromSubRegion = GeometryUtils.createSizeFromRegion(asIsSubScreenshotRegion);
         if (GeometryUtils.isRegionEmpty(asIsSubScreenshotRegion) || (throwIfClipped &&
-            !(sizeFromRegion.height == sizeFromSubRegion.height && sizeFromRegion.width == sizeFromSubRegion.width))) {
+                !(sizeFromRegion.height === sizeFromSubRegion.height && sizeFromRegion.width === sizeFromSubRegion.width))) {
             throw new Error("Region ", region, ", (", coordinatesType, ") is out of screenshot bounds ", this._frameWindow);
         }
 
-        var subScreenshotImage = this._image.cropImage(asIsSubScreenshotRegion);
+        const subScreenshotImage = this._image.cropImage(asIsSubScreenshotRegion);
 
         // The frame location in the sub screenshot is the negative of the
         // context-as-is location of the region.
-        var contextAsIsRegionLocation = this.convertLocationFromLocation(GeometryUtils.createLocationFromRegion(asIsSubScreenshotRegion), CoordinatesType.SCREENSHOT_AS_IS, CoordinatesType.CONTEXT_AS_IS);
+        const contextAsIsRegionLocation = this.convertLocationFromLocation(GeometryUtils.createLocationFromRegion(asIsSubScreenshotRegion), CoordinatesType.SCREENSHOT_AS_IS, CoordinatesType.CONTEXT_AS_IS);
 
-        var frameLocationInSubScreenshot = GeometryUtils.createLocation(-contextAsIsRegionLocation.x, -contextAsIsRegionLocation.y);
+        const frameLocationInSubScreenshot = GeometryUtils.createLocation(-contextAsIsRegionLocation.x, -contextAsIsRegionLocation.y);
 
-        var that = this, result = new EyesWebDriverScreenshot(this._logger, this._driver, subScreenshotImage, this._promiseFactory);
-        return result.buildScreenshot(this._screenshotType, frameLocationInSubScreenshot, null).then(function () {
+        const that = this, result = new EyesWebDriverScreenshot(this._logger, this._driver, subScreenshotImage, this._promiseFactory);
+        return result.buildScreenshot(this._screenshotType, frameLocationInSubScreenshot, null).then(() => {
             that._logger.verbose("Done!");
             return result;
         });
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -228,12 +220,12 @@
      * @param {CoordinatesType} to The target coordinates type for {@code location}.
      * @return {{x: number, y: number}} A new location which is the transformation of {@code location} to the {@code to} coordinates type.
      */
-    EyesWebDriverScreenshot.prototype.convertLocationFromLocation = function (location, from, to) {
+    convertLocationFromLocation(location, from, to) {
         ArgumentGuard.notNull(location, "location");
         ArgumentGuard.notNull(from, "from");
         ArgumentGuard.notNull(to, "to");
 
-        var result = {x: location.x, y: location.y};
+        let result = {x: location.x, y: location.y};
 
         if (from == to) {
             return result;
@@ -245,7 +237,7 @@
         // if it is actually a sub-screenshot of a region).
         if (this._frameChain.size() == 0 && this._screenshotType == ScreenshotType.ENTIRE_FRAME) {
             if ((from == CoordinatesType.CONTEXT_RELATIVE
-                || from == CoordinatesType.CONTEXT_AS_IS)
+                    || from == CoordinatesType.CONTEXT_AS_IS)
                 && to == CoordinatesType.SCREENSHOT_AS_IS) {
 
                 // If this is not a sub-screenshot, this will have no effect.
@@ -274,7 +266,7 @@
                         break;
 
                     default:
-                        throw new Error("Cannot convert from '" + from + "' to '" + to + "'");
+                        throw new Error(`Cannot convert from '${from}' to '${to}'`);
                 }
                 break;
 
@@ -292,7 +284,7 @@
                         break;
 
                     default:
-                        throw new Error("Cannot convert from '" + from + "' to '" + to + "'");
+                        throw new Error(`Cannot convert from '${from}' to '${to}'`);
                 }
                 break;
 
@@ -316,31 +308,31 @@
                         break;
 
                     default:
-                        throw new Error("Cannot convert from '" + from + "' to '" + to + "'");
+                        throw new Error(`Cannot convert from '${from}' to '${to}'`);
                 }
                 break;
 
             default:
-                throw new Error("Cannot convert from '" + from + "' to '" + to + "'");
+                throw new Error(`Cannot convert from '${from}' to '${to}'`);
         }
         return result;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * @param {{x: number, y: number}} location
      * @param {CoordinatesType} coordinatesType
-     * @returns {{x: number, y: number}}
+     * @return {{x: number, y: number}}
      */
-    EyesWebDriverScreenshot.prototype.getLocationInScreenshot = function (location, coordinatesType) {
+    getLocationInScreenshot(location, coordinatesType) {
         this._location = this.convertLocationFromLocation(location, coordinatesType, CoordinatesType.SCREENSHOT_AS_IS);
 
         // Making sure it's within the screenshot bounds
         if (!GeometryUtils.isRegionContainsLocation(this._frameWindow, location)) {
-            throw new Error("Location " + location + " ('" + coordinatesType + "') is not visible in screenshot!");
+            throw new Error(`Location ${location} ('${coordinatesType}') is not visible in screenshot!`);
         }
         return this._location;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -348,14 +340,14 @@
      * @param {{left: number, top: number, width: number, height: number}} region
      * @param {CoordinatesType} originalCoordinatesType
      * @param {CoordinatesType} resultCoordinatesType
-     * @returns {{left: number, top: number, width: number, height: number}}
+     * @return {{left: number, top: number, width: number, height: number}}
      */
-    EyesWebDriverScreenshot.prototype.getIntersectedRegion = function (region, originalCoordinatesType, resultCoordinatesType) {
+    getIntersectedRegion(region, originalCoordinatesType, resultCoordinatesType) {
         if (GeometryUtils.isRegionEmpty(region)) {
             return GeneralUtils.clone(region);
         }
 
-        var intersectedRegion = this.convertRegionLocation(region, originalCoordinatesType, CoordinatesType.SCREENSHOT_AS_IS);
+        let intersectedRegion = this.convertRegionLocation(region, originalCoordinatesType, CoordinatesType.SCREENSHOT_AS_IS);
 
         switch (originalCoordinatesType) {
             // If the request was context based, we intersect with the frame
@@ -371,7 +363,7 @@
                 break;
 
             default:
-                throw new Error("Unknown coordinates type: '" + originalCoordinatesType + "'");
+                throw new Error(`Unknown coordinates type: '${originalCoordinatesType}'`);
         }
 
         // If the intersection is empty we don't want to convert the
@@ -384,7 +376,7 @@
         intersectedRegion = this.convertRegionLocation(intersectedRegion, CoordinatesType.SCREENSHOT_AS_IS, resultCoordinatesType);
 
         return intersectedRegion;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -394,18 +386,18 @@
      * @return {Promise.<{left: number, top: number, width: number, height: number}>} The intersected region, in {@code SCREENSHOT_AS_IS} coordinates
      * type.
      */
-    EyesWebDriverScreenshot.prototype.getIntersectedRegionFromElement = function (element) {
+    getIntersectedRegionFromElement(element) {
         ArgumentGuard.notNull(element, "element");
 
-        var pl, ds;
-        return element.getLocation().then(function (location) {
+        let pl, ds;
+        return element.getLocation().then(location => {
             pl = location;
             return element.getSize();
         }).then(function (size) {
             ds = size;
 
             // Since the element coordinates are in context relative
-            var region = this.getIntersectedRegion(GeometryUtils.createRegionFromLocationAndSize(pl, ds), CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.CONTEXT_RELATIVE);
+            let region = this.getIntersectedRegion(GeometryUtils.createRegionFromLocationAndSize(pl, ds), CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.CONTEXT_RELATIVE);
 
             if (!GeometryUtils.isRegionEmpty(region)) {
                 region = this.convertRegionLocation(region, CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.SCREENSHOT_AS_IS);
@@ -413,7 +405,7 @@
 
             return region;
         });
-    };
+    }
+}
 
-    module.exports = EyesWebDriverScreenshot;
-}());
+module.exports = EyesWebDriverScreenshot;

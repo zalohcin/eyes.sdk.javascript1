@@ -1,36 +1,32 @@
-(function () {
-    "use strict";
+'use strict';
 
-    var EyesUtils = require('eyes.utils'),
-        EyesSDK = require('eyes.sdk'),
-        EyesWebDriverScreenshot = require('./EyesWebDriverScreenshot');
-    var RegionProvider = EyesSDK.RegionProvider,
-        GeometryUtils = EyesUtils.GeometryUtils;
+const {GeometryUtils, RegionProvider} = require('eyes.sdk');
+
+const EyesWebDriverScreenshot = require('./EyesWebDriverScreenshot');
+
+class EyesRegionProvider extends RegionProvider {
 
     /**
      * @param {Logger} logger
      * @param driver
      * @param {{left: number, top: number, width: number, height: number}} region
      * @param {CoordinatesType} coordinatesType
-     * @augments RegionProvider
-     * @constructor
      */
-    function EyesRegionProvider(logger, driver, region, coordinatesType) {
+    constructor(logger, driver, region, coordinatesType) {
+        super();
+
         this._logger = logger;
         this._driver = driver;
         this._region = region || GeometryUtils.createRegion(0, 0, 0, 0);
         this._coordinatesType = coordinatesType || null;
     }
 
-    EyesRegionProvider.prototype = new RegionProvider();
-    EyesRegionProvider.prototype.constructor = EyesRegionProvider;
-
     /**
      * @return {{left: number, top: number, width: number, height: number}} A region with "as is" viewport coordinates.
      */
-    EyesRegionProvider.prototype.getRegion = function () {
+    getRegion() {
         return this._region;
-    };
+    }
 
     /**
      * @param {MutableImage} image
@@ -38,29 +34,28 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<{left: number, top: number, width: number, height: number}>} A region in selected viewport coordinates.
      */
-    EyesRegionProvider.prototype.getRegionInLocation = function (image, toCoordinatesType, promiseFactory) {
-        var that = this;
-        return promiseFactory.makePromise(function (resolve) {
-            if (that._coordinatesType == toCoordinatesType) {
+    getRegionInLocation(image, toCoordinatesType, promiseFactory) {
+        const that = this;
+        return promiseFactory.makePromise(resolve => {
+            if (that._coordinatesType === toCoordinatesType) {
                 resolve(that._region);
                 return;
             }
 
-            var ewds = new EyesWebDriverScreenshot(that._logger, that._driver, image, promiseFactory);
-            return ewds.buildScreenshot().then(function () {
-                var newRegion = ewds.convertRegionLocation(that._region, that._coordinatesType, toCoordinatesType);
+            const ewds = new EyesWebDriverScreenshot(that._logger, that._driver, image, promiseFactory);
+            return ewds.buildScreenshot().then(() => {
+                const newRegion = ewds.convertRegionLocation(that._region, that._coordinatesType, toCoordinatesType);
                 resolve(newRegion);
             });
         });
-    };
+    }
 
     /**
      * @return {CoordinatesType} The type of coordinates on which the region is based.
      */
-    EyesRegionProvider.prototype.getCoordinatesType = function () {
+    getCoordinatesType() {
         return this._coordinatesType;
-    };
+    }
+}
 
-    module.exports = EyesRegionProvider;
-
-}());
+module.exports = EyesRegionProvider;

@@ -1,72 +1,56 @@
-/*
- ---
+'use strict';
 
- name: Eyes
+const webdriver = require('selenium-webdriver');
+const {EyesBase, FixedScaleProvider, FixedScaleProviderFactory, NullScaleProvider, ScaleProviderIdentityFactory,
+    PromiseFactory, ArgumentGuard, SimplePropertyHandler, GeometryUtils, Logger, CoordinatesType, MutableImage,
+    ContextBasedScaleProviderFactory} = require('eyes.sdk');
 
- description: The main type - to be used by the users of the library to access all functionality.
+const EyesWebDriver = require('./EyesWebDriver'),
+    EyesSeleniumUtils = require('./EyesSeleniumUtils'),
+    EyesRemoteWebElement = require('./EyesRemoteWebElement'),
+    EyesWebDriverScreenshot = require('./EyesWebDriverScreenshot'),
+    ElementFinderWrapper = require('./ElementFinderWrappers').ElementFinderWrapper,
+    ElementArrayFinderWrapper = require('./ElementFinderWrappers').ElementArrayFinderWrapper,
+    ScrollPositionProvider = require('./ScrollPositionProvider'),
+    CssTranslatePositionProvider = require('./CssTranslatePositionProvider'),
+    ElementPositionProvider = require('./ElementPositionProvider'),
+    EyesRegionProvider = require('./EyesRegionProvider'),
+    Target = require('./Target');
 
- provides: [Eyes]
- requires: [eyes.sdk, EyesWebDriver, ViewportSize, selenium-webdriver]
+const VERSION = require('../package.json').version;
 
- ---
+const // ms
+    DEFAULT_WAIT_BEFORE_SCREENSHOTS = 100,
+    UNKNOWN_DEVICE_PIXEL_RATIO = 0,
+    DEFAULT_DEVICE_PIXEL_RATIO = 1;
+
+/**
+ * @readonly
+ * @enum {string}
  */
+const StitchMode = {
+    // Uses scrolling to get to the different parts of the page.
+    Scroll: 'Scroll',
 
-(function () {
-    'use strict';
+    // Uses CSS transitions to get to the different parts of the page.
+    CSS: 'CSS'
+};
 
-    var promise = require('q'),
-        webdriver = require('selenium-webdriver'),
-        EyesSDK = require('eyes.sdk'),
-        EyesUtils = require('eyes.utils'),
-        EyesWebDriver = require('./EyesWebDriver'),
-        EyesSeleniumUtils = require('./EyesSeleniumUtils'),
-        EyesRemoteWebElement = require('./EyesRemoteWebElement'),
-        EyesWebDriverScreenshot = require('./EyesWebDriverScreenshot'),
-        ElementFinderWrapper = require('./ElementFinderWrappers').ElementFinderWrapper,
-        ElementArrayFinderWrapper = require('./ElementFinderWrappers').ElementArrayFinderWrapper,
-        ScrollPositionProvider = require('./ScrollPositionProvider'),
-        CssTranslatePositionProvider = require('./CssTranslatePositionProvider'),
-        ElementPositionProvider = require('./ElementPositionProvider'),
-        EyesRegionProvider = require('./EyesRegionProvider'),
-        Target = require('./Target');
-    var EyesBase = EyesSDK.EyesBase,
-        FixedScaleProvider = EyesSDK.FixedScaleProvider,
-        ContextBasedScaleProviderFactory = EyesSDK.ContextBasedScaleProviderFactory,
-        FixedScaleProviderFactory = EyesSDK.FixedScaleProviderFactory,
-        NullScaleProvider = EyesSDK.NullScaleProvider,
-        Logger = EyesSDK.Logger,
-        CoordinatesType = EyesSDK.CoordinatesType,
-        MutableImage = EyesSDK.MutableImage,
-        ScaleProviderIdentityFactory = EyesSDK.ScaleProviderIdentityFactory,
-        PromiseFactory = EyesUtils.PromiseFactory,
-        ArgumentGuard = EyesUtils.ArgumentGuard,
-        SimplePropertyHandler = EyesUtils.SimplePropertyHandler,
-        GeometryUtils = EyesUtils.GeometryUtils;
-
-    var DEFAULT_WAIT_BEFORE_SCREENSHOTS = 100, // ms
-        UNKNOWN_DEVICE_PIXEL_RATIO = 0,
-        DEFAULT_DEVICE_PIXEL_RATIO = 1;
-
-    /**
-     * @readonly
-     * @enum {string}
-     */
-    var StitchMode = {
-        // Uses scrolling to get to the different parts of the page.
-        Scroll: 'Scroll',
-
-        // Uses CSS transitions to get to the different parts of the page.
-        CSS: 'CSS'
-    };
+/**
+ * The main type - to be used by the users of the library to access all functionality.
+ */
+class Eyes extends EyesBase {
 
     /**
      * Initializes an Eyes instance.
+     *
      * @param {String} [serverUrl] - The Eyes server URL.
      * @param {Boolean} [isDisabled] - set to true to disable Applitools Eyes and use the webdriver directly.
-     * @augments EyesBase
-     * @constructor
      **/
-    function Eyes(serverUrl, isDisabled) {
+    constructor(serverUrl, isDisabled) {
+        const promiseFactory = new PromiseFactory();
+        super(promiseFactory, serverUrl || EyesBase.DEFAULT_EYES_SERVER, isDisabled);
+
         this._forceFullPage = false;
         this._imageRotationDegrees = 0;
         this._automaticRotation = true;
@@ -74,31 +58,13 @@
         this._hideScrollbars = null;
         this._checkFrameOrElement = false;
         this._stitchMode = StitchMode.Scroll;
-        this._promiseFactory = new PromiseFactory();
+        this._promiseFactory = promiseFactory;
         this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS;
-
-        EyesBase.call(this, this._promiseFactory, serverUrl || EyesBase.DEFAULT_EYES_SERVER, isDisabled);
     }
 
-    Eyes.prototype = new EyesBase();
-    Eyes.prototype.constructor = Eyes;
-
     //noinspection JSUnusedGlobalSymbols
-    Eyes.prototype._getBaseAgentId = function () {
-        return 'selenium-js/0.0.71';
-    };
-
-    function _init(that, flow) {
-        // Set PromiseFactory to work with the protractor control flow and promises
-        that._promiseFactory.setFactoryMethods(function (asyncAction) {
-            return flow.execute(function () {
-                var deferred = promise.defer();
-                asyncAction(deferred.fulfill, deferred.reject);
-                return deferred.promise;
-            });
-        }, function () {
-            return promise.defer();
-        });
+    _getBaseAgentId() {
+        return `selenium-js/${VERSION}`;
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -112,8 +78,8 @@
      * @return {Promise<WebDriver>} A wrapped WebDriver which enables Eyes trigger recording and
      * frame handling.
      */
-    Eyes.prototype.open = function (driver, appName, testName, viewportSize) {
-        var that = this;
+    open(driver, appName, testName, viewportSize) {
+        const that = this;
 
         that._flow = driver.controlFlow();
         _init(that, that._flow);
@@ -123,12 +89,12 @@
             that._logger.verbose("Running using Protractor module");
 
             // extend protractor element to return ours
-            var originalElementFn = global.element;
-            global.element = function (locator) {
+            const originalElementFn = global.element;
+            global.element = function element(locator) {
                 return new ElementFinderWrapper(originalElementFn(locator), that._driver, that._logger);
             };
 
-            global.element.all = function (locator) {
+            global.element.all = function all(locator) {
                 return new ElementArrayFinderWrapper(originalElementFn.all(locator), that._driver, that._logger);
             };
         } else {
@@ -141,79 +107,67 @@
         that.setStitchMode(that._stitchMode);
 
         if (this._isDisabled) {
-            return that._flow.execute(function () {
-                return driver;
-            });
+            return that._flow.execute(() => driver);
         }
 
-        return that._flow.execute(function () {
-            return driver.getCapabilities().then(function (capabilities) {
-                var platformName, platformVersion, orientation;
-                if (capabilities.caps_) {
-                    platformName = capabilities.caps_.platformName;
-                    platformVersion = capabilities.caps_.platformVersion;
-                    orientation = capabilities.caps_.orientation || capabilities.caps_.deviceOrientation;
-                } else {
-                    platformName = capabilities.get('platform') || capabilities.get('platformName');
-                    platformVersion = capabilities.get('version') || capabilities.get('platformVersion');
-                    orientation = capabilities.get('orientation') || capabilities.get('deviceOrientation');
-                }
+        return that._flow.execute(() => driver.getCapabilities().then(capabilities => {
+            let platformName, platformVersion, orientation;
+            if (capabilities.caps_) {
+                platformName = capabilities.caps_.platformName;
+                platformVersion = capabilities.caps_.platformVersion;
+                orientation = capabilities.caps_.orientation || capabilities.caps_.deviceOrientation;
+            } else {
+                platformName = capabilities.get('platform') || capabilities.get('platformName');
+                platformVersion = capabilities.get('version') || capabilities.get('platformVersion');
+                orientation = capabilities.get('orientation') || capabilities.get('deviceOrientation');
+            }
 
-                var majorVersion;
-                if (!platformVersion || platformVersion.length < 1) {
-                    return;
+            let majorVersion;
+            if (!platformVersion || platformVersion.length < 1) {
+                return;
+            }
+            majorVersion = platformVersion.split('.', 2)[0];
+            if (platformName.toUpperCase() === 'ANDROID') {
+                // We only automatically set the OS, if the user hadn't manually set it previously.
+                if (!that.getHostOS()) {
+                    that.setHostOS(`Android ${majorVersion}`);
                 }
-                majorVersion = platformVersion.split('.', 2)[0];
-                if (platformName.toUpperCase() === 'ANDROID') {
-                    // We only automatically set the OS, if the user hadn't manually set it previously.
-                    if (!that.getHostOS()) {
-                        that.setHostOS('Android ' + majorVersion);
-                    }
-                } else if (platformName.toUpperCase() === 'IOS') {
-                    if (!that.getHostOS()) {
-                        that.setHostOS('iOS ' + majorVersion);
-                    }
-                } else {
-                    return;
+            } else if (platformName.toUpperCase() === 'IOS') {
+                if (!that.getHostOS()) {
+                    that.setHostOS(`iOS ${majorVersion}`);
                 }
+            } else {
+                return;
+            }
 
-                if (orientation && orientation.toUpperCase() === 'LANDSCAPE') {
-                    that._isLandscape = true;
-                }
-            }).then(function () {
-                return EyesBase.prototype.open.call(that, appName, testName, viewportSize);
-            }).then(function () {
-                return that._driver;
-            });
-        });
-    };
+            if (orientation && orientation.toUpperCase() === 'LANDSCAPE') {
+                that._isLandscape = true;
+            }
+        }).then(() => EyesBase.prototype.open.call(that, appName, testName, viewportSize)).then(() => that._driver));
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Ends the test.
      * @param throwEx - If true, an exception will be thrown for failed/new tests.
-     * @returns {*} The test results.
+     * @return {*} The test results.
      */
-    Eyes.prototype.close = function (throwEx) {
-        var that = this;
+    close(throwEx) {
+        const that = this;
 
         if (this._isDisabled) {
-            return that._flow.execute(function () {
+            return that._flow.execute(() => {
             });
         }
         if (throwEx === undefined) {
             throwEx = true;
         }
 
-        return that._flow.execute(function () {
-            return EyesBase.prototype.close.call(that, throwEx)
-                .then(function (results) {
-                    return results;
-                }, function (err) {
-                    throw err;
-                });
-        });
-    };
+        return that._flow.execute(() => EyesBase.prototype.close.call(that, throwEx)
+            .then(results => results, err => {
+                throw err;
+            }));
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -222,13 +176,13 @@
      * @param {Target} target - Target instance which describes whether we want a window/region/frame
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
-    Eyes.prototype.check = function (name, target) {
+    check(name, target) {
         ArgumentGuard.notNullOrEmpty(name, "Name");
         ArgumentGuard.notNull(target, "Target");
 
-        var that = this;
+        const that = this;
 
-        var promise = that._promiseFactory.makePromise(function (resolve) {
+        let promise = that._promiseFactory.makePromise(resolve => {
             resolve();
         });
 
@@ -238,32 +192,28 @@
         }
 
         if (target.getIgnoreObjects().length) {
-            target.getIgnoreObjects().forEach(function (obj) {
-                promise = promise.then(function() {
-                    return findElementByLocator(that, obj.element);
-                }).then(function (element) {
+            target.getIgnoreObjects().forEach(obj => {
+                promise = promise.then(() => findElementByLocator(that, obj.element)).then(element => {
                     if (!isElementObject(element)) {
-                        throw new Error("Unsupported ignore region type: " + typeof element);
+                        throw new Error(`Unsupported ignore region type: ${typeof element}`);
                     }
 
                     return getRegionFromWebElement(element);
-                }).then(function (region) {
+                }).then(region => {
                     target.ignore(region);
                 });
             });
         }
 
         if (target.getFloatingObjects().length) {
-            target.getFloatingObjects().forEach(function (obj) {
-                promise = promise.then(function() {
-                    return findElementByLocator(that, obj.element);
-                }).then(function (element) {
+            target.getFloatingObjects().forEach(obj => {
+                promise = promise.then(() => findElementByLocator(that, obj.element)).then(element => {
                     if (!isElementObject(element)) {
-                        throw new Error("Unsupported floating region type: " + typeof element);
+                        throw new Error(`Unsupported floating region type: ${typeof element}`);
                     }
 
                     return getRegionFromWebElement(element);
-                }).then(function (region) {
+                }).then(region => {
                     region.maxLeftOffset = obj.maxLeftOffset;
                     region.maxRightOffset = obj.maxRightOffset;
                     region.maxUpOffset = obj.maxUpOffset;
@@ -274,10 +224,14 @@
         }
 
         that._logger.verbose("match starting with params", name, target.getStitchContent(), target.getTimeout());
-        var regionObject,
+        let regionObject,
             regionProvider,
-            isFrameSwitched = false, // if we will switch frame then we need to restore parent
-            originalForceFullPage, originalOverflow, originalPositionProvider, originalHideScrollBars;
+            // if we will switch frame then we need to restore parent
+            isFrameSwitched = false,
+            originalForceFullPage,
+            originalOverflow,
+            originalPositionProvider,
+            originalHideScrollBars;
 
         if (target.getStitchContent()) {
             originalForceFullPage = that._forceFullPage;
@@ -286,12 +240,10 @@
 
         // If frame specified
         if (target.isUsingFrame()) {
-            promise = promise.then(function () {
-                return findElementByLocator(that, target.getFrame());
-            }).then(function (frame) {
+            promise = promise.then(() => findElementByLocator(that, target.getFrame())).then(frame => {
                 that._logger.verbose("Switching to frame...");
                 return that._driver.switchTo().frame(frame);
-            }).then(function () {
+            }).then(() => {
                 isFrameSwitched = true;
                 that._logger.verbose("Done!");
 
@@ -300,7 +252,7 @@
                     that._checkFrameOrElement = true;
                     originalHideScrollBars = that._hideScrollbars;
                     that._hideScrollbars = true;
-                    return getRegionProviderForCurrentFrame(that).then(function (regionProvider) {
+                    return getRegionProviderForCurrentFrame(that).then(regionProvider => {
                         that._regionToCheck = regionProvider;
                     });
                 }
@@ -309,13 +261,11 @@
 
         // if region specified
         if (target.isUsingRegion()) {
-            promise = promise.then(function () {
-                return findElementByLocator(that, target.getRegion());
-            }).then(function (region) {
+            promise = promise.then(() => findElementByLocator(that, target.getRegion())).then(region => {
                 regionObject = region;
 
                 if (isElementObject(regionObject)) {
-                    var regionPromise;
+                    let regionPromise;
                     if (target.getStitchContent()) {
                         that._checkFrameOrElement = true;
 
@@ -323,33 +273,31 @@
                         that.setPositionProvider(new ElementPositionProvider(that._logger, that._driver, regionObject, that._promiseFactory));
 
                         // Set overflow to "hidden".
-                        regionPromise = regionObject.getOverflow().then(function (value) {
+                        regionPromise = regionObject.getOverflow().then(value => {
                             originalOverflow = value;
                             return regionObject.setOverflow("hidden");
-                        }).then(function () {
-                            return getRegionProviderForElement(that, regionObject);
-                        }).then(function (regionProvider) {
+                        }).then(() => getRegionProviderForElement(that, regionObject)).then(regionProvider => {
                             that._regionToCheck = regionProvider;
                         });
                     } else {
                         regionPromise = getRegionFromWebElement(regionObject);
                     }
 
-                    return regionPromise.then(function (region) {
+                    return regionPromise.then(region => {
                         regionProvider = new EyesRegionProvider(that._logger, that._driver, region, CoordinatesType.CONTEXT_RELATIVE);
                     });
                 } else if (GeometryUtils.isRegion(regionObject)) {
                     // if regionObject is simple region
                     regionProvider = new EyesRegionProvider(that._logger, that._driver, regionObject, CoordinatesType.CONTEXT_AS_IS);
                 } else {
-                    throw new Error("Unsupported region type: " + typeof regionObject);
+                    throw new Error(`Unsupported region type: ${typeof regionObject}`);
                 }
             });
         }
 
-        return promise.then(function () {
+        return promise.then(() => {
             that._logger.verbose("Call to checkWindowBase...");
-            var imageMatchSettings = {
+            const imageMatchSettings = {
                 matchLevel: target.getMatchLevel(),
                 ignoreCaret: target.getIgnoreCaret(),
                 ignore: target.getIgnoreRegions(),
@@ -357,14 +305,14 @@
                 exact: null
             };
             return EyesBase.prototype.checkWindow.call(that, name, target.getIgnoreMismatch(), target.getTimeout(), regionProvider, imageMatchSettings);
-        }).then(function (result) {
+        }).then(result => {
             that._logger.verbose("Processing results...");
             if (result.asExpected || !that._failureReportOverridden) {
                 return result;
             } else {
                 throw EyesBase.buildTestError(result, that._sessionStartInfo.scenarioIdOrName, that._sessionStartInfo.appIdOrName);
             }
-        }).then(function () {
+        }).then(() => {
             that._logger.verbose("Done!");
             that._logger.verbose("Restoring temporal variables...");
 
@@ -392,125 +340,18 @@
             if (originalOverflow !== undefined) {
                 return regionObject.setOverflow(originalOverflow);
             }
-        }).then(function () {
+        }).then(() => {
             that._logger.verbose("Done!");
 
             // restore parent frame, if another frame was selected
             if (isFrameSwitched) {
                 that._logger.verbose("Switching back to parent frame...");
-                return that._driver.switchTo().parentFrame().then(function () {
+                return that._driver.switchTo().parentFrame().then(() => {
                     that._logger.verbose("Done!");
                 });
             }
         });
-    };
-
-    var findElementByLocator = function (that, elementObject) {
-        return that._promiseFactory.makePromise(function (resolve) {
-            if (isLocatorObject(elementObject)) {
-                that._logger.verbose("Trying to find element...", elementObject);
-                return resolve(that._driver.findElement(elementObject));
-            } else if (elementObject instanceof ElementFinderWrapper) {
-                return resolve(elementObject.getWebElement());
-            }
-
-            resolve(elementObject);
-        });
-    };
-
-    var isElementObject = function (o) {
-        return o instanceof EyesRemoteWebElement;
-    };
-
-    var isLocatorObject = function (o) {
-        return o instanceof webdriver.By || o.findElementsOverride !== undefined || (o.using !== undefined && o.value !== undefined);
-    };
-
-    /**
-     * Get the region provider for a certain element.
-     * @param {Eyes} eyes - The eyes instance.
-     * @param {EyesRemoteWebElement|webdriver.WebElement} element - The element to get a region for.
-     * @return {Promise<EyesRegionProvider>} The region for a certain element.
-     */
-    var getRegionProviderForElement = function (eyes, element) {
-        var elementLocation, elementSize,
-            borderLeftWidth, borderRightWidth, borderTopWidth;
-
-        eyes._logger.verbose("getRegionProviderForElement");
-        return element.getLocation().then(function (value) {
-            elementLocation = value;
-            return element.getSize();
-        }).then(function (value) {
-            elementSize = value;
-            return element.getBorderLeftWidth();
-        }).then(function (value) {
-            borderLeftWidth = value;
-            return element.getBorderRightWidth();
-        }).then(function (value) {
-            borderRightWidth = value;
-            return element.getBorderTopWidth();
-        }).then(function (value) {
-            borderTopWidth = value;
-            return element.getBorderBottomWidth();
-        }).then(function (value) { // borderBottomWidth
-            var elementRegion = GeometryUtils.createRegion(
-                elementLocation.x + borderLeftWidth,
-                elementLocation.y + borderTopWidth,
-                elementSize.width - borderLeftWidth - borderRightWidth,
-                elementSize.height - borderTopWidth - value
-            );
-
-            eyes._logger.verbose("Done! Element region", elementRegion);
-            return new EyesRegionProvider(eyes._logger, eyes._driver, elementRegion, CoordinatesType.CONTEXT_RELATIVE);
-        });
-    };
-
-    /**
-     * Get region provider for the current frame.
-     * @param {Eyes} eyes - The eyes instance.
-     * @return {Promise<EyesRegionProvider>} The region provider for the certain frame.
-     */
-    var getRegionProviderForCurrentFrame = function (eyes) {
-        var screenshot, scaleProviderFactory, mutableImage;
-        eyes._logger.verbose("getRegionProviderForCurrentFrame");
-        return eyes.updateScalingParams().then(function (factory) {
-            scaleProviderFactory = factory;
-            eyes._logger.verbose("Getting screenshot as base64...");
-            return eyes._driver.takeScreenshot();
-        }).then(function (image64) {
-            return MutableImage.fromBase64(image64, eyes._promiseFactory);
-        }).then(function (image) {
-            mutableImage = image;
-            return mutableImage.getSize();
-        }).then(function (imageSize) {
-            eyes._logger.verbose("Scaling image...");
-            var scaleProvider = scaleProviderFactory.getScaleProvider(imageSize.width);
-            return mutableImage.scaleImage(scaleProvider.getScaleRatio());
-        }).then(function (scaledImage) {
-            eyes._logger.verbose("Done! Building required object...");
-            screenshot = new EyesWebDriverScreenshot(eyes._logger, eyes._driver, scaledImage, eyes._promiseFactory);
-            return screenshot.buildScreenshot();
-        }).then(function () {
-            var frameRegion = screenshot.getFrameWindow();
-            eyes._logger.verbose("Done! Frame region", frameRegion);
-            return new EyesRegionProvider(eyes._logger, eyes._driver, frameRegion, CoordinatesType.SCREENSHOT_AS_IS);
-        })
-    };
-
-    /**
-     * Get the region for a certain web element.
-     * @param {EyesRemoteWebElement|webdriver.WebElement} element - The web element to get the region from.
-     * @return {Promise<{left: number, top: number, width: number, height: number}>} The region.
-     */
-    var getRegionFromWebElement = function (element) {
-        var elementSize;
-        return element.getSize().then(function (size) {
-            elementSize = size;
-            return element.getLocation();
-        }).then(function (point) {
-            return GeometryUtils.createRegionFromLocationAndSize(point, elementSize);
-        });
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -520,23 +361,23 @@
      * @param {int} matchTimeout - The amount of time to retry matching (Milliseconds).
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
-    Eyes.prototype.checkWindow = function (tag, matchTimeout) {
+    checkWindow(tag, matchTimeout) {
         return this.check(tag, Target.window().timeout(matchTimeout));
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Matches the frame given as parameter, by switching into the frame and
      * using stitching to get an image of the frame.
-     * @param {EyesRemoteWebElement} - element The element which is the frame to switch to. (as
+     * @param {EyesRemoteWebElement} element - The element which is the frame to switch to. (as
      * would be used in a call to driver.switchTo().frame() ).
      * @param {int} matchTimeout - The amount of time to retry matching (milliseconds).
      * @param {string} tag - An optional tag to be associated with the match.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
-    Eyes.prototype.checkFrame = function (element, matchTimeout, tag) {
+    checkFrame(element, matchTimeout, tag) {
         return this.check(tag, Target.frame(element).timeout(matchTimeout));
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -547,9 +388,9 @@
      * @param {string} tag - An optional tag to be associated with the match.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
-    Eyes.prototype.checkElement = function (element, matchTimeout, tag) {
+    checkElement(element, matchTimeout, tag) {
         return this.check(tag, Target.region(element).timeout(matchTimeout).fully());
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -560,9 +401,9 @@
      * @param {string} tag - An optional tag to be associated with the match.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
-    Eyes.prototype.checkElementBy = function (locator, matchTimeout, tag) {
+    checkElementBy(locator, matchTimeout, tag) {
         return this.check(tag, Target.region(locator).timeout(matchTimeout).fully());
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -573,9 +414,9 @@
      * @param {int} matchTimeout - The amount of time to retry matching.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
-    Eyes.prototype.checkRegion = function (region, tag, matchTimeout) {
+    checkRegion(region, tag, matchTimeout) {
         return this.check(tag, Target.region(region).timeout(matchTimeout));
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -585,9 +426,9 @@
      * @param {int} matchTimeout - The amount of time to retry matching.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
-    Eyes.prototype.checkRegionByElement = function (element, tag, matchTimeout) {
+    checkRegionByElement(element, tag, matchTimeout) {
         return this.check(tag, Target.region(element).timeout(matchTimeout));
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -597,9 +438,9 @@
      * @param {int} matchTimeout - The amount of time to retry matching.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
-    Eyes.prototype.checkRegionBy = function (by, tag, matchTimeout) {
+    checkRegionBy(by, tag, matchTimeout) {
         return this.check(tag, Target.region(by).timeout(matchTimeout));
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -613,42 +454,60 @@
      *                  {@link #checkElement(By, int, String)} on the region.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
-    Eyes.prototype.checkRegionInFrame = function (frameNameOrId, locator, matchTimeout, tag, stitchContent) {
+    checkRegionInFrame(frameNameOrId, locator, matchTimeout, tag, stitchContent) {
         return this.check(tag, Target.region(locator, frameNameOrId).timeout(matchTimeout).fully(stitchContent));
-    };
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Sets the stitching overlap in pixels.
+     *
+     * @param {int} pixels The width (in pixels) of the overlap.
+     */
+    setStitchOverlap(pixels) {
+        this._stitchingOverlap = pixels;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {int} the stitching overlap in pixels.
+     */
+    getStitchOverlap() {
+        return this._stitchingOverlap;
+    }
 
     /**
      * @protected
-     * @returns {ScaleProviderFactory}
+     * @return {ScaleProviderFactory}
      */
-    Eyes.prototype.updateScalingParams = function () {
-        var that = this;
-        return that._promiseFactory.makePromise(function (resolve) {
+    updateScalingParams() {
+        const that = this;
+        return that._promiseFactory.makePromise(resolve => {
             if (that._devicePixelRatio === UNKNOWN_DEVICE_PIXEL_RATIO && that._scaleProviderHandler.get() instanceof NullScaleProvider) {
-                var factory, enSize, vpSize;
+                let factory, enSize, vpSize;
                 that._logger.verbose("Trying to extract device pixel ratio...");
 
-                return EyesSeleniumUtils.getDevicePixelRatio(that._driver, that._promiseFactory).then(function (ratio) {
+                return EyesSeleniumUtils.getDevicePixelRatio(that._driver, that._promiseFactory).then(ratio => {
                     that._devicePixelRatio = ratio;
-                }, function (err) {
+                }, err => {
                     that._logger.verbose("Failed to extract device pixel ratio! Using default.", err);
                     that._devicePixelRatio = DEFAULT_DEVICE_PIXEL_RATIO;
-                }).then(function () {
-                    that._logger.verbose("Device pixel ratio: " + that._devicePixelRatio);
+                }).then(() => {
+                    that._logger.verbose(`Device pixel ratio: ${that._devicePixelRatio}`);
                     that._logger.verbose("Setting scale provider..");
                     return that._positionProvider.getEntireSize();
-                }).then(function (entireSize) {
+                }).then(entireSize => {
                     enSize = entireSize;
                     return that.getViewportSize();
-                }).then(function (viewportSize) {
+                }).then(viewportSize => {
                     vpSize = viewportSize;
                     factory = new ContextBasedScaleProviderFactory(enSize, vpSize, that._devicePixelRatio, that._scaleProviderHandler);
-                }, function (err) {
+                }, err => {
                     // This can happen in Appium for example.
                     that._logger.verbose("Failed to set ContextBasedScaleProvider.", err);
                     that._logger.verbose("Using FixedScaleProvider instead...");
                     factory = new FixedScaleProviderFactory(1/that._devicePixelRatio, that._scaleProviderHandler);
-                }).then(function () {
+                }).then(() => {
                     that._logger.verbose("Done!");
                     resolve(factory);
                 });
@@ -657,87 +516,81 @@
             // If we already have a scale provider set, we'll just use it, and pass a mock as provider handler.
             resolve(new ScaleProviderIdentityFactory(that._scaleProviderHandler.get(), new SimplePropertyHandler()));
         });
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Get an updated screenshot.
-     * @returns {Promise.<MutableImage>} - The image of the new screenshot.
+     * @return {Promise.<MutableImage>} - The image of the new screenshot.
      */
-    Eyes.prototype.getScreenShot = function () {
-        var that = this;
-        return that.updateScalingParams().then(function (scaleProviderFactory) {
-            return EyesSeleniumUtils.getScreenshot(
-                that._driver,
-                that._promiseFactory,
-                that._viewportSize,
-                that._positionProvider,
-                scaleProviderFactory,
-                that._cutProviderHandler.get(),
-                that._forceFullPage,
-                that._hideScrollbars,
-                that._stitchMode === StitchMode.CSS,
-                that._imageRotationDegrees,
-                that._automaticRotation,
-                that._os === 'Android' ? 90 : 270,
-                that._isLandscape,
-                that._waitBeforeScreenshots,
-                that._checkFrameOrElement,
-                that._regionToCheck,
-                that._saveDebugScreenshots,
-                that._debugScreenshotsPath
-            );
-        });
-    };
+    getScreenShot() {
+        const that = this;
+        return that.updateScalingParams().then(scaleProviderFactory => EyesSeleniumUtils.getScreenshot(
+            that._driver,
+            that._promiseFactory,
+            that._viewportSize,
+            that._positionProvider,
+            scaleProviderFactory,
+            that._cutProviderHandler.get(),
+            that._forceFullPage,
+            that._hideScrollbars,
+            that._stitchMode === StitchMode.CSS,
+            that._imageRotationDegrees,
+            that._automaticRotation,
+            that._hostOS === 'Android' ? 90 : 270,
+            that._isLandscape,
+            that._waitBeforeScreenshots,
+            that._checkFrameOrElement,
+            that._regionToCheck,
+            that._saveDebugScreenshots,
+            that._debugScreenshotsPath
+        ));
+    }
 
     //noinspection JSUnusedGlobalSymbols
-    Eyes.prototype.getTitle = function () {
+    getTitle() {
         return this._driver.getTitle();
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
-    Eyes.prototype._waitTimeout = function (ms) {
+    _waitTimeout(ms) {
         return this._flow.timeout(ms);
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
-    Eyes.prototype.getInferredEnvironment = function () {
-        var res = 'useragent:';
+    getInferredEnvironment() {
+        const res = 'useragent:';
         return this._driver.executeScript('return navigator.userAgent')
-            .then(function (userAgent) {
-                return res + userAgent;
-            }, function () {
-                return res;
-            });
-    };
+            .then(userAgent => res + userAgent, () => res);
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Set the failure report.
      * @param mode - Use one of the values in EyesBase.FailureReport.
      */
-    Eyes.prototype.setFailureReport = function (mode) {
+    setFailureReport(mode) {
         if (mode === EyesBase.FailureReport.Immediate) {
             this._failureReportOverridden = true;
             mode = EyesBase.FailureReport.OnClose;
         }
 
-        EyesBase.prototype.setFailureReport.call(this, mode);
-    };
+        super.setFailureReport(mode);
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Get the viewport size.
-     * @returns {*} The viewport size.
+     * @return {*} The viewport size.
      */
-    Eyes.prototype.getViewportSize = function () {
+    getViewportSize() {
         return EyesSeleniumUtils.getViewportSizeOrDisplaySize(this._logger, this._driver, this._promiseFactory);
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
-    Eyes.prototype.setViewportSize = function (size) {
+    setViewportSize(size) {
         return EyesSeleniumUtils.setViewportSize(this._logger, this._driver, size, this._promiseFactory);
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -747,18 +600,16 @@
      * @param {{width: number, height: number}} size - The required viewport size.
      * @return {Promise<void>} The viewport size of the browser.
      */
-    Eyes.setViewportSize = function (driver, size) {
-        var promiseFactory = new PromiseFactory();
-        promiseFactory.setFactoryMethods(function (asyncAction) {
-            var deferred = promise.defer();
+    static setViewportSize(driver, size) {
+        const promiseFactory = new PromiseFactory();
+        promiseFactory.setFactoryMethods(asyncAction => {
+            const deferred = promise.defer();
             asyncAction(deferred.fulfill, deferred.reject);
             return deferred.promise;
-        }, function () {
-            return promise.defer();
-        });
+        }, () => promise.defer());
 
         return EyesSeleniumUtils.setViewportSize(new Logger(), driver, size, promiseFactory);
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -766,65 +617,65 @@
      * @param {boolean} force - Whether to force a full page screenshot or not.
      * @return {void}
      */
-    Eyes.prototype.setForceFullPageScreenshot = function (force) {
+    setForceFullPageScreenshot(force) {
         this._forceFullPage = force;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Get whether to force a full page screenshot or not.
      * @return {boolean} true if the option is on, otherwise false.
      */
-    Eyes.prototype.getForceFullPageScreenshot = function () {
+    getForceFullPageScreenshot() {
         return this._forceFullPage;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Set the image rotation degrees.
      * @param degrees - The amount of degrees to set the rotation to.
      */
-    Eyes.prototype.setForcedImageRotation = function (degrees) {
+    setForcedImageRotation(degrees) {
         if (typeof degrees !== 'number') {
             throw new TypeError('degrees must be a number! set to 0 to clear');
         }
         this._imageRotationDegrees = degrees;
         this._automaticRotation = false;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Get the rotation degrees.
-     * @returns {*|number} - The rotation degrees.
+     * @return {*|number} - The rotation degrees.
      */
-    Eyes.prototype.getForcedImageRotation = function () {
+    getForcedImageRotation() {
         return this._imageRotationDegrees || 0;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Hide the scrollbars when taking screenshots.
      * @param {boolean} hide - Whether to hide the scrollbars or not.
      */
-    Eyes.prototype.setHideScrollbars = function (hide) {
+    setHideScrollbars(hide) {
         this._hideScrollbars = hide;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Hide the scrollbars when taking screenshots.
      * @return {boolean|null} - true if the hide scrollbars option is on, otherwise false.
      */
-    Eyes.prototype.getHideScrollbars = function () {
+    getHideScrollbars() {
         return this._hideScrollbars;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Set the stitch mode.
      * @param {StitchMode} mode - The desired stitch mode settings.
      */
-    Eyes.prototype.setStitchMode = function (mode) {
+    setStitchMode(mode) {
         this._stitchMode = mode;
         if (this._driver) {
             switch (mode) {
@@ -835,16 +686,16 @@
                     this.setPositionProvider(new ScrollPositionProvider(this._logger, this._driver, this._promiseFactory));
             }
         }
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Get the stitch mode.
      * @return {StitchMode} The currently set StitchMode.
      */
-    Eyes.prototype.getStitchMode = function () {
+    getStitchMode() {
         return this._stitchMode;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -852,45 +703,153 @@
      * screen parts of a full page screenshot.
      * @param waitBeforeScreenshots - The wait time in milliseconds.
      */
-    Eyes.prototype.setWaitBeforeScreenshots = function (waitBeforeScreenshots) {
+    setWaitBeforeScreenshots(waitBeforeScreenshots) {
         if (waitBeforeScreenshots <= 0) {
             this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS;
         } else {
             this._waitBeforeScreenshots = waitBeforeScreenshots;
         }
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Get the wait time before each screenshot.
-     * @returns {number|*} the wait time between before each screen capture, in milliseconds.
+     * @return {number|*} the wait time between before each screen capture, in milliseconds.
      */
-    Eyes.prototype.getWaitBeforeScreenshots = function () {
+    getWaitBeforeScreenshots() {
         return this._waitBeforeScreenshots;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Get the session id.
-     * @returns {Promise} A promise which resolves to the webdriver's session ID.
+     * @return {Promise} A promise which resolves to the webdriver's session ID.
      */
-    Eyes.prototype.getAUTSessionId = function () {
-        return this._promiseFactory.makePromise(function (resolve) {
+    getAUTSessionId() {
+        return this._promiseFactory.makePromise(resolve => {
             if (!this._driver) {
                 resolve(undefined);
                 return;
             }
-            this._driver.getSession()
-                .then(function (session) {
-                    resolve(session.getId());
-                });
-        }.bind(this));
-    };
+            this._driver.getSession().then(session => {
+                resolve(session.getId());
+            });
+        });
+    }
+}
 
-    /**
-     * @readonly
-     * @enum {string}
-     */
-    Eyes.StitchMode = Object.freeze(StitchMode);
-    module.exports = Eyes;
-}());
+function _init(that, flow) {
+    // Set PromiseFactory to work with the protractor control flow and promises
+    that._promiseFactory.setFactoryMethods(asyncAction => flow.execute(() => {
+        return new Promise(asyncAction);
+    }), null);
+}
+
+function findElementByLocator(that, elementObject) {
+    return that._promiseFactory.makePromise(resolve => {
+        if (isLocatorObject(elementObject)) {
+            that._logger.verbose("Trying to find element...", elementObject);
+            return resolve(that._driver.findElement(elementObject));
+        } else if (elementObject instanceof ElementFinderWrapper) {
+            return resolve(elementObject.getWebElement());
+        }
+
+        resolve(elementObject);
+    });
+}
+
+function isElementObject(o) {
+    return o instanceof EyesRemoteWebElement;
+}
+
+function isLocatorObject(o) {
+    return o instanceof webdriver.By || o.findElementsOverride !== undefined || (o.using !== undefined && o.value !== undefined);
+}
+
+/**
+ * Get the region provider for a certain element.
+ * @param {Eyes} eyes - The eyes instance.
+ * @param {EyesRemoteWebElement|webdriver.WebElement} element - The element to get a region for.
+ * @return {Promise<EyesRegionProvider>} The region for a certain element.
+ */
+function getRegionProviderForElement(eyes, element) {
+    let elementLocation, elementSize, borderLeftWidth, borderRightWidth, borderTopWidth;
+
+    eyes._logger.verbose("getRegionProviderForElement");
+    return element.getLocation().then(value => {
+        elementLocation = value;
+        return element.getSize();
+    }).then(value => {
+        elementSize = value;
+        return element.getBorderLeftWidth();
+    }).then(value => {
+        borderLeftWidth = value;
+        return element.getBorderRightWidth();
+    }).then(value => {
+        borderRightWidth = value;
+        return element.getBorderTopWidth();
+    }).then(value => {
+        borderTopWidth = value;
+        return element.getBorderBottomWidth();
+    }).then(value => { // borderBottomWidth
+        const elementRegion = GeometryUtils.createRegion(
+            elementLocation.x + borderLeftWidth,
+            elementLocation.y + borderTopWidth,
+            elementSize.width - borderLeftWidth - borderRightWidth,
+            elementSize.height - borderTopWidth - value
+        );
+
+        eyes._logger.verbose("Done! Element region", elementRegion);
+        return new EyesRegionProvider(eyes._logger, eyes._driver, elementRegion, CoordinatesType.CONTEXT_RELATIVE);
+    });
+}
+
+/**
+ * Get region provider for the current frame.
+ * @param {Eyes} eyes - The eyes instance.
+ * @return {Promise<EyesRegionProvider>} The region provider for the certain frame.
+ */
+function getRegionProviderForCurrentFrame(eyes) {
+    let screenshot, scaleProviderFactory, mutableImage;
+    eyes._logger.verbose("getRegionProviderForCurrentFrame");
+    return eyes.updateScalingParams().then(factory => {
+        scaleProviderFactory = factory;
+        eyes._logger.verbose("Getting screenshot as base64...");
+        return eyes._driver.takeScreenshot();
+    }).then(image64 => MutableImage.fromBase64(image64, eyes._promiseFactory)).then(image => {
+        mutableImage = image;
+        return mutableImage.getSize();
+    }).then(imageSize => {
+        eyes._logger.verbose("Scaling image...");
+        const scaleProvider = scaleProviderFactory.getScaleProvider(imageSize.width);
+        return mutableImage.scaleImage(scaleProvider.getScaleRatio());
+    }).then(scaledImage => {
+        eyes._logger.verbose("Done! Building required object...");
+        screenshot = new EyesWebDriverScreenshot(eyes._logger, eyes._driver, scaledImage, eyes._promiseFactory);
+        return screenshot.buildScreenshot();
+    }).then(() => {
+        const frameRegion = screenshot.getFrameWindow();
+        eyes._logger.verbose("Done! Frame region", frameRegion);
+        return new EyesRegionProvider(eyes._logger, eyes._driver, frameRegion, CoordinatesType.SCREENSHOT_AS_IS);
+    });
+}
+
+/**
+ * Get the region for a certain web element.
+ * @param {EyesRemoteWebElement|webdriver.WebElement} element - The web element to get the region from.
+ * @return {Promise<{left: number, top: number, width: number, height: number}>} The region.
+ */
+function getRegionFromWebElement(element) {
+    let elementSize;
+    return element.getSize().then(size => {
+        elementSize = size;
+        return element.getLocation();
+    }).then(point => GeometryUtils.createRegionFromLocationAndSize(point, elementSize));
+}
+
+/**
+ * @readonly
+ * @enum {string}
+ */
+Eyes.StitchMode = Object.freeze(StitchMode);
+module.exports = Eyes;
