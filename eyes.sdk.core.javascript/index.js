@@ -54,6 +54,8 @@ exports.RectangleSize = require('./src/positioning/RectangleSize');
 exports.Region = require('./src/positioning/Region');
 exports.RegionProvider = require('./src/positioning/RegionProvider');
 
+exports.ContextBasedScaleProvider = require('./src/scaling/ContextBasedScaleProvider');
+exports.ContextBasedScaleProviderFactory = require('./src/scaling/ContextBasedScaleProviderFactory');
 exports.FixedScaleProvider = require('./src/scaling/FixedScaleProvider');
 exports.FixedScaleProviderFactory = require('./src/scaling/FixedScaleProviderFactory');
 exports.NullScaleProvider = require('./src/scaling/NullScaleProvider');
