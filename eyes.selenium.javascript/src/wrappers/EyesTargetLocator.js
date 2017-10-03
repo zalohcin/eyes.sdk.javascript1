@@ -1,9 +1,9 @@
 'use strict';
 
-const {ArgumentGuard, GeneralUtils} = require('../node_modules/eyes.sdk');
+const {ArgumentGuard, GeneralUtils} = require('eyes.sdk');
 
-const FrameChain = require('./FrameChain');
-const ScrollPositionProvider = require('./ScrollPositionProvider');
+const FrameChain = require('../frames/FrameChain');
+const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
 const EyesRemoteWebElement = require('./EyesRemoteWebElement');
 
 /**

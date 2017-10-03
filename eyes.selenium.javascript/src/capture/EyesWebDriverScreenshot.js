@@ -1,9 +1,9 @@
 'use strict';
 
-const {ArgumentGuard, GeometryUtils, GeneralUtils, EyesScreenshot, CoordinatesType} = require('../node_modules/eyes.sdk');
+const {ArgumentGuard, GeometryUtils, GeneralUtils, EyesScreenshot, CoordinatesType} = require('eyes.sdk');
 
-const ScrollPositionProvider = require('./ScrollPositionProvider');
-const FrameChain = require('./FrameChain');
+const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
+const FrameChain = require('../frames/FrameChain');
 
 /**
  * @readonly

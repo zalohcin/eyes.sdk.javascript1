@@ -1,6 +1,6 @@
 'use strict';
 
-const {ArgumentGuard, GeometryUtils} = require('../node_modules/eyes.sdk');
+const {ArgumentGuard, GeometryUtils} = require('eyes.sdk');
 
 const Frame = require('./Frame');
 

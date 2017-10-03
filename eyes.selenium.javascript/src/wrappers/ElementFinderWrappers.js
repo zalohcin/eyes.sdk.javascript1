@@ -1,6 +1,6 @@
 'use strict';
 
-const {GeneralUtils} = require('../node_modules/eyes.sdk');
+const {GeneralUtils} = require('eyes.sdk');
 
 const EyesRemoteWebElement = require('./EyesRemoteWebElement');
 

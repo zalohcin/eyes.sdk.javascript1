@@ -1,13 +1,13 @@
 'use strict';
 
 const webdriver = require('selenium-webdriver');
-const {GeneralUtils} = require('../node_modules/eyes.sdk');
+const {GeneralUtils} = require('eyes.sdk');
 
-const Frame = require('./Frame');
-const FrameChain = require('./FrameChain');
-const EyesSeleniumUtils = require('./EyesSeleniumUtils');
+const Frame = require('../frames/Frame');
+const FrameChain = require('../frames/FrameChain');
+const EyesSeleniumUtils = require('../EyesSeleniumUtils');
 const EyesRemoteWebElement = require('./EyesRemoteWebElement');
-const ScrollPositionProvider = require('./ScrollPositionProvider');
+const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
 const EyesTargetLocator = require('./EyesTargetLocator');
 
 /**

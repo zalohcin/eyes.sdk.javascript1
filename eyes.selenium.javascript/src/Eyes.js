@@ -5,17 +5,17 @@ const {EyesBase, FixedScaleProvider, FixedScaleProviderFactory, NullScaleProvide
     PromiseFactory, ArgumentGuard, SimplePropertyHandler, GeometryUtils, Logger, CoordinatesType, MutableImage,
     ContextBasedScaleProviderFactory} = require('eyes.sdk');
 
-const EyesWebDriver = require('./EyesWebDriver'),
+const EyesWebDriver = require('./wrappers/EyesWebDriver'),
     EyesSeleniumUtils = require('./EyesSeleniumUtils'),
-    EyesRemoteWebElement = require('./EyesRemoteWebElement'),
-    EyesWebDriverScreenshot = require('./EyesWebDriverScreenshot'),
-    ElementFinderWrapper = require('./ElementFinderWrappers').ElementFinderWrapper,
-    ElementArrayFinderWrapper = require('./ElementFinderWrappers').ElementArrayFinderWrapper,
-    ScrollPositionProvider = require('./ScrollPositionProvider'),
-    CssTranslatePositionProvider = require('./CssTranslatePositionProvider'),
-    ElementPositionProvider = require('./ElementPositionProvider'),
+    EyesRemoteWebElement = require('./wrappers/EyesRemoteWebElement'),
+    EyesWebDriverScreenshot = require('./capture/EyesWebDriverScreenshot'),
+    ElementFinderWrapper = require('./wrappers/ElementFinderWrappers').ElementFinderWrapper,
+    ElementArrayFinderWrapper = require('./wrappers/ElementFinderWrappers').ElementArrayFinderWrapper,
+    ScrollPositionProvider = require('./positioning/ScrollPositionProvider'),
+    CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider'),
+    ElementPositionProvider = require('./positioning/ElementPositionProvider'),
     EyesRegionProvider = require('./EyesRegionProvider'),
-    Target = require('./Target');
+    Target = require('./fluent/Target');
 
 const VERSION = require('../package.json').version;
 

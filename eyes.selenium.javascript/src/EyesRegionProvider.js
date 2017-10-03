@@ -2,7 +2,7 @@
 
 const {GeometryUtils, RegionProvider} = require('eyes.sdk');
 
-const EyesWebDriverScreenshot = require('./EyesWebDriverScreenshot');
+const EyesWebDriverScreenshot = require('./capture/EyesWebDriverScreenshot');
 
 class EyesRegionProvider extends RegionProvider {
 

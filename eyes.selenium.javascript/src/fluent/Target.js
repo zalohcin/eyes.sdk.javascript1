@@ -1,6 +1,6 @@
 'use strict';
 
-const {GeometryUtils} = require('../node_modules/eyes.sdk');
+const {GeometryUtils} = require('eyes.sdk');
 
 /**
  * @typedef {{left: number, top: number, width: number, height: number}} Region

@@ -1,8 +1,8 @@
 'use strict';
 
-const {PositionProvider, ArgumentGuard} = require('../node_modules/eyes.sdk');
+const {PositionProvider, ArgumentGuard} = require('eyes.sdk');
 
-const EyesSeleniumUtils = require('./EyesSeleniumUtils');
+const EyesSeleniumUtils = require('../EyesSeleniumUtils');
 
 class CssTranslatePositionProvider extends PositionProvider {
 

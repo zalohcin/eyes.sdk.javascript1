@@ -1,6 +1,6 @@
 'use strict';
 
-const {ArgumentGuard, PositionProvider} = require('../node_modules/eyes.sdk');
+const {ArgumentGuard, PositionProvider} = require('eyes.sdk');
 
 class ElementPositionProvider extends PositionProvider {
 

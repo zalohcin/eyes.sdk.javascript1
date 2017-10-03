@@ -1,8 +1,8 @@
 'use strict';
 
-const {ArgumentGuard, PositionProvider} = require('../node_modules/eyes.sdk');
+const {ArgumentGuard, PositionProvider} = require('eyes.sdk');
 
-const EyesSeleniumUtils = require('./EyesSeleniumUtils');
+const EyesSeleniumUtils = require('../EyesSeleniumUtils');
 
 class ScrollPositionProvider extends PositionProvider {
 

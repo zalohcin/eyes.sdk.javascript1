@@ -1,6 +1,6 @@
 'use strict';
 
-const {GeneralUtils, GeometryUtils, MouseAction} = require('../node_modules/eyes.sdk');
+const {GeneralUtils, GeometryUtils, MouseAction} = require('eyes.sdk');
 
 const JS_GET_SCROLL_LEFT = "return arguments[0].scrollLeft;";
 

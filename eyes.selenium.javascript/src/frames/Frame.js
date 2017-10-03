@@ -1,6 +1,6 @@
 'use strict';
 
-const {ArgumentGuard} = require('../node_modules/eyes.sdk');
+const {ArgumentGuard} = require('eyes.sdk');
 
 /**
  * Encapsulates a frame/iframe. This is a generic type class,
