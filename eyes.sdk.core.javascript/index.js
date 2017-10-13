@@ -76,7 +76,6 @@ exports.MouseTrigger = require('./src/triggers/MouseTrigger');
 exports.TextTrigger = require('./src/triggers/TextTrigger');
 exports.Trigger = require('./src/triggers/Trigger');
 
-
 exports.AppEnvironment = require('./src/AppEnvironment');
 exports.ArgumentGuard = require('./src/ArgumentGuard');
 exports.BatchInfo = require('./src/BatchInfo');
@@ -90,3 +89,4 @@ exports.PromiseFactory = require('./src/PromiseFactory');
 exports.RemoteSessionEventHandler = require('./src/RemoteSessionEventHandler');
 exports.SessionEventHandler = require('./src/SessionEventHandler');
 exports.StreamUtils = require('./src/StreamUtils');
+// exports.UserAgent = require('./src/UserAgent');

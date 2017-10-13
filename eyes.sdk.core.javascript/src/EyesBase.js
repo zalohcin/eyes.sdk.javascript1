@@ -108,16 +108,12 @@ class EyesBase {
         /** @type {FailureReports} */
         this._failureReports = FailureReports.ON_CLOSE;
 
-
         /** @type {Trigger[]} */
         this._userInputs = [];
         /** @type {PropertyData[]} */
         this._properties = [];
-        /** @type {int} */
 
-        this._stitchingOverlap = 50;
         /** @type {int} */
-
         this._validationId = -1;
         /** @type {SessionEventHandler[]} */
         this._sessionEventHandlers = [];
@@ -692,24 +688,6 @@ class EyesBase {
         return ignoreCaret || true;
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Sets the stitching overlap in pixels.
-     *
-     * @param {int} pixels The width (in pixels) of the overlap.
-     */
-    setStitchOverlap(pixels) {
-        this._stitchingOverlap = pixels;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {int} the stitching overlap in pixels.
-     */
-    getStitchOverlap() {
-        return this._stitchingOverlap;
-    }
-
     /**
      * Ends the currently running test.
      *
@@ -770,6 +748,7 @@ class EyesBase {
      * @return {Promise} A promise which resolves (or rejected, dependeing on 'throwEx' and the test result) after ending the session.
      */
     _endSession(isAborted, throwEx) {
+        let serverResults, serverError;
         const that = this;
         return that._promiseFactory.makePromise((resolve, reject) => {
             that._logger.verbose(`${isAborted ? 'Aborting' : 'Closing'} server session...`);
@@ -805,7 +784,6 @@ class EyesBase {
             that._logger.verbose(`Automatically save test? ${save}`);
 
             // Session was started, call the server to end the session.
-            let serverResults;
             return that._serverConnector.stopSession(that._runningSession, isAborted, save).then(results => {
                 results.setIsNew(isNewSession);
                 results.setUrl(sessionResultsUrl);
@@ -842,9 +820,13 @@ class EyesBase {
                 serverResults = null;
                 that._logger.log(err);
                 return reject(err);
-            }).then(() => that._notifyEvent('testEnded', that._autSessionId, serverResults)).then(() => {
-                that._finallyClose();
             });
+        }).catch(err => {
+            serverError = err;
+        }).then(() => that._notifyEvent('testEnded', that._autSessionId, serverResults)).then(() => {
+            that._finallyClose();
+            if (serverError) throw serverError;
+            return serverResults;
         });
     }
 
