@@ -89,4 +89,4 @@ exports.PromiseFactory = require('./src/PromiseFactory');
 exports.RemoteSessionEventHandler = require('./src/RemoteSessionEventHandler');
 exports.SessionEventHandler = require('./src/SessionEventHandler');
 exports.StreamUtils = require('./src/StreamUtils');
-// exports.UserAgent = require('./src/UserAgent');
+exports.UserAgent = require('./src/UserAgent');

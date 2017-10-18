@@ -1,7 +1,7 @@
 const {describe, it} = require("mocha");
 const assert = require("assert");
 
-const GeneralUtils = require("../../src/GeneralUtils");
+const GeneralUtils = require("../src/GeneralUtils");
 
 describe('GeneralUtils', function(){
     describe('#urlConcat()', function(){

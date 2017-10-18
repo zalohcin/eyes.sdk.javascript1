@@ -95,6 +95,9 @@ class Location {
         return new Location(Math.ceil(this._x * scaleRatio), Math.ceil(this._y * scaleRatio));
     }
 
+    /**
+     * @return {{x: Number, y: Number}}
+     */
     toJSON() {
         return {
             x: this._x,
