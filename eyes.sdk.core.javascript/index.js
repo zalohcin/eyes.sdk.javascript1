@@ -13,6 +13,7 @@ exports.DebugScreenshotsProvider = require('./src/debug/DebugScreenshotsProvider
 exports.FileDebugScreenshotsProvider = require('./src/debug/FileDebugScreenshotsProvider');
 exports.NullDebugScreenshotProvider = require('./src/debug/NullDebugScreenshotProvider');
 
+exports.EyesError = require('./src/errors/EyesError');
 exports.DiffsFoundError = require('./src/errors/DiffsFoundError');
 exports.NewTestError = require('./src/errors/NewTestError');
 exports.TestFailedError = require('./src/errors/TestFailedError');
