@@ -1036,19 +1036,17 @@ class EyesBase {
             return this._promiseFactory.reject(err);
         }
 
+        const validationInfo = new SessionEventHandler.ValidationInfo();
+        // noinspection IncrementDecrementResultUsedJS
+        validationInfo.setValidationId(++this._validationId);
+        validationInfo.setTag(tag);
+
+        // default result
+        const validationResult = new SessionEventHandler.ValidationResult();
+
         const that = this;
-        let validationInfo, validationResult, matchResult;
-        return this._ensureRunningSession().then(() => {
-            validationInfo = new SessionEventHandler.ValidationInfo();
-            // noinspection IncrementDecrementResultUsedJS
-            validationInfo.setValidationId(++that._validationId);
-            validationInfo.setTag(tag);
-
-            // default result
-            validationResult = new SessionEventHandler.ValidationResult();
-
-            return that._notifyEvent('validationWillStart', that._autSessionId, validationInfo);
-        }).then(() => {
+        let matchResult;
+        return that._notifyEvent('validationWillStart', that._autSessionId, validationInfo).then(() => {
             return that._matchWindow(regionProvider, tag, ignoreMismatch, checkSettings);
         }).then(result => {
             matchResult = result;
