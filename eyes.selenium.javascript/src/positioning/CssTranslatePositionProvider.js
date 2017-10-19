@@ -3,6 +3,7 @@
 const {PositionProvider, ArgumentGuard} = require('eyes.sdk');
 
 const EyesSeleniumUtils = require('../EyesSeleniumUtils');
+const CssTranslatePositionMemento = require('./CssTranslatePositionMemento');
 
 /**
  * A {@link PositionProvider} which is based on CSS translates. This is
@@ -77,7 +78,7 @@ class CssTranslatePositionProvider extends PositionProvider {
         const that = this;
         return EyesSeleniumUtils.getCurrentTransform(this._driver, this._promiseFactory).then(transforms => {
             that._logger.verbose("Current transform", transforms);
-            return transforms;
+            return new CssTranslatePositionMemento(transforms());
         });
     }
 
@@ -87,7 +88,8 @@ class CssTranslatePositionProvider extends PositionProvider {
      */
     restoreState(state) {
         const that = this;
-        return EyesSeleniumUtils.setTransforms(this._driver, state, this._promiseFactory).then(() => {
+        /** @type {CssTranslatePositionMemento} state */
+        return EyesSeleniumUtils.setTransforms(this._driver, state.getTransform(), this._promiseFactory).then(() => {
             that._logger.verbose("Transform (position) restored.");
         });
     }

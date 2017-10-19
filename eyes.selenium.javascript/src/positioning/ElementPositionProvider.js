@@ -2,6 +2,8 @@
 
 const {ArgumentGuard, PositionProvider, RectangleSize, Location} = require('eyes.sdk');
 
+const ElementPositionMemento = require('./ElementPositionMemento');
+
 class ElementPositionProvider extends PositionProvider {
 
     /**
@@ -80,7 +82,7 @@ class ElementPositionProvider extends PositionProvider {
      * @inheritDoc
      */
     getState() {
-        return this.getCurrentPosition();
+        return this.getCurrentPosition().then(position => new ElementPositionMemento(position));
     }
 
     /**
@@ -89,7 +91,8 @@ class ElementPositionProvider extends PositionProvider {
      */
     restoreState(state) {
         const that = this;
-        return this.setPosition(state).then(() => {
+        /** @type {ScrollPositionMemento} state */
+        return this.setPosition(new Location(state.getX(), state.getY())).then(() => {
             that._logger.verbose("Position restored.");
         });
     }

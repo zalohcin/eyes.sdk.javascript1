@@ -45,7 +45,7 @@ class PositionProvider {
     // noinspection JSMethodCanBeStatic
     /**
      * @abstract
-     * @return {Promise<object>}
+     * @return {Promise<PositionMemento>}
      */
     getState() {
         throw new TypeError('The method `getState` from `PositionProvider` should be implemented!');
@@ -54,7 +54,7 @@ class PositionProvider {
     // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
     /**
      * @abstract
-     * @param {Object} state The initial state of position
+     * @param {PositionMemento} state The initial state of position
      * @return {Promise<void>}
      */
     restoreState(state) {

@@ -1,8 +1,9 @@
 'use strict';
 
-const {ArgumentGuard, PositionProvider} = require('eyes.sdk');
+const {ArgumentGuard, PositionProvider, Location} = require('eyes.sdk');
 
 const EyesSeleniumUtils = require('../EyesSeleniumUtils');
+const ScrollPositionMemento = require('./ScrollPositionMemento');
 
 class ScrollPositionProvider extends PositionProvider {
 
@@ -68,7 +69,7 @@ class ScrollPositionProvider extends PositionProvider {
      * @inheritDoc
      */
     getState() {
-        return this.getCurrentPosition();
+        return this.getCurrentPosition().then(position => new ScrollPositionMemento(position));
     }
 
     /**
@@ -77,7 +78,8 @@ class ScrollPositionProvider extends PositionProvider {
      */
     restoreState(state) {
         const that = this;
-        return this.setPosition(state).then(() => {
+        /** @type {ScrollPositionMemento} state */
+        return this.setPosition(new Location(state.getX(), state.getY())).then(() => {
             that._logger.verbose("Position restored.");
         });
     }
