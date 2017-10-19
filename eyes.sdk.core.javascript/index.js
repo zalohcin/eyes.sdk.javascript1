@@ -82,6 +82,7 @@ exports.ArgumentGuard = require('./src/ArgumentGuard');
 exports.BatchInfo = require('./src/BatchInfo');
 exports.BrowserNames = require('./src/BrowserNames');
 exports.EyesBase = require('./src/EyesBase');
+exports.EyesJsExecutor = require('./src/EyesJsExecutor');
 exports.FailureReports = require('./src/FailureReports');
 exports.GeneralUtils = require('./src/GeneralUtils');
 exports.MatchWindowTask = require('./src/MatchWindowTask');
