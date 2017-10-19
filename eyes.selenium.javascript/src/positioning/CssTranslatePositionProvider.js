@@ -4,6 +4,10 @@ const {PositionProvider, ArgumentGuard} = require('eyes.sdk');
 
 const EyesSeleniumUtils = require('../EyesSeleniumUtils');
 
+/**
+ * A {@link PositionProvider} which is based on CSS translates. This is
+ * useful when we want to stitch a page which contains fixed position elements.
+ */
 class CssTranslatePositionProvider extends PositionProvider {
 
     /**
@@ -15,33 +19,38 @@ class CssTranslatePositionProvider extends PositionProvider {
         super();
         ArgumentGuard.notNull(logger, "logger");
         ArgumentGuard.notNull(executor, "executor");
+        ArgumentGuard.notNull(promiseFactory, "promiseFactory");
 
         this._logger = logger;
         this._driver = executor;
         this._promiseFactory = promiseFactory;
-        this._lastSetPosition = null;
+        this._lastSetPosition = undefined;
+
+        this._logger.verbose("creating CssTranslatePositionProvider");
     }
 
     /**
-     * @return {Promise<{x: number, y: number}>} The scroll position of the current frame.
+     * @override
+     * @inheritDoc
      */
     getCurrentPosition() {
-        const that = this;
-        return that._promiseFactory.makePromise(resolve => {
-            that._logger.verbose("getCurrentPosition()");
-            that._logger.verbose("position to return: ", that._lastSetPosition);
-            resolve(that._lastSetPosition);
-        });
+        this._logger.verbose("position to return: ", this._lastSetPosition);
+        return this._promiseFactory.resolve(this._lastSetPosition);
     }
 
     /**
-     * Go to the specified location.
-     * @param {{x: number, y: number}} location The position to scroll to.
-     * @return {Promise<void>}
+     * @override
+     * @inheritDoc
      */
     setPosition(location) {
+        try {
+            ArgumentGuard.notNull(location, "location");
+        } catch (err) {
+            return this._promiseFactory.reject(err);
+        }
+
         const that = this;
-        that._logger.verbose("Setting position to:", location);
+        this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`);
         return EyesSeleniumUtils.translateTo(this._driver, location, this._promiseFactory).then(() => {
             that._logger.verbose("Done!");
             that._lastSetPosition = location;
@@ -49,18 +58,20 @@ class CssTranslatePositionProvider extends PositionProvider {
     }
 
     /**
-     * @return {Promise<{width: number, height: number}>} The entire size of the container which the position is relative to.
+     * @override
+     * @inheritDoc
      */
     getEntireSize() {
         const that = this;
-        return EyesSeleniumUtils.getEntirePageSize(this._driver, this._promiseFactory).then(result => {
-            that._logger.verbose("Entire size: ", result);
-            return result;
+        return EyesSeleniumUtils.getCurrentFrameContentEntireSize(this._driver, this._promiseFactory).then(entireSize => {
+            that._logger.verbose(`CssTranslatePositionProvider - Entire size: ${entireSize}`);
+            return entireSize;
         });
     }
 
     /**
-     * @return {Promise<object.<string, string>>}
+     * @override
+     * @inheritDoc
      */
     getState() {
         const that = this;
@@ -71,8 +82,8 @@ class CssTranslatePositionProvider extends PositionProvider {
     }
 
     /**
-     * @param {object.<string, string>} state The initial state of position
-     * @return {Promise<void>}
+     * @override
+     * @inheritDoc
      */
     restoreState(state) {
         const that = this;

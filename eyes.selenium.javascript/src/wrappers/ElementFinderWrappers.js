@@ -28,16 +28,16 @@ class ElementFinderWrapper {
         GeneralUtils.mixin(this, finder);
 
         this._logger = logger;
-        this._eyesDriver = eyesDriver;
+        this._eyes = eyesDriver;
         this._finder = finder;
 
         const that = this;
         ELEMENT_FINDER_TO_ELEMENT_FINDER_FUNCTIONS.forEach(fnName => {
-            that[fnName] = (...args) => new ElementFinderWrapper(that._finder[fnName](...args), that._eyesDriver, that._logger);
+            that[fnName] = (...args) => new ElementFinderWrapper(that._finder[fnName](...args), that._eyes, that._logger);
         });
 
         ELEMENT_FINDER_TO_ELEMENT_ARRAY_FINDER_FUNCTIONS.forEach(fnName => {
-            that[fnName] = (...args) => new ElementArrayFinderWrapper(that._finder[fnName](...args), that._eyesDriver, that._logger);
+            that[fnName] = (...args) => new ElementArrayFinderWrapper(that._finder[fnName](...args), that._eyes, that._logger);
         });
     }
 
@@ -48,7 +48,7 @@ class ElementFinderWrapper {
      */
     getWebElement() {
         this._logger.verbose("ElementFinderWrapper:getWebElement - called");
-        return new EyesRemoteWebElement(this._finder.getWebElement.apply(this._finder), this._eyesDriver, this._logger);
+        return new EyesRemoteWebElement(this._finder.getWebElement.apply(this._finder), this._eyes, this._logger);
     }
 
     /**
@@ -87,13 +87,13 @@ class ElementArrayFinderWrapper {
         GeneralUtils.mixin(this, arrayFinder);
 
         this._logger = logger;
-        this._eyesDriver = eyesDriver;
+        this._eyes = eyesDriver;
         this._arrayFinder = arrayFinder;
 
         const that = this;
         // Wrap the functions that return objects that require pre-wrapping
         ELEMENT_ARRAY_FINDER_TO_ELEMENT_FINDER_FUNCTIONS.forEach(fnName => {
-            that[fnName] = (...args) => new ElementFinderWrapper(that._arrayFinder[fnName](...args), that._eyesDriver, that._logger);
+            that[fnName] = (...args) => new ElementFinderWrapper(that._arrayFinder[fnName](...args), that._eyes, that._logger);
         });
 
         // Patch this internal function.
@@ -101,7 +101,7 @@ class ElementArrayFinderWrapper {
         that._arrayFinder.asElementFinders_ = () => originalFn.apply(that._arrayFinder).then(arr => {
             const list = [];
             arr.forEach(finder => {
-                list.push(new ElementFinderWrapper(finder, that._eyesDriver, that._logger));
+                list.push(new ElementFinderWrapper(finder, that._eyes, that._logger));
             });
             return list;
         })
@@ -118,7 +118,7 @@ class ElementArrayFinderWrapper {
         return that._arrayFinder.getWebElements.apply(that._arrayFinder).then(elements => {
             const res = [];
             elements.forEach(el => {
-                res.push(new EyesRemoteWebElement(el, that._eyesDriver, that._logger));
+                res.push(new EyesRemoteWebElement(el, that._eyes, that._logger));
             });
             return res;
         });

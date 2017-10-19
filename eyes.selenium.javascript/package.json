@@ -26,12 +26,11 @@
     "license": "Apache-2.0",
     "main": "index",
     "dependencies": {
-        "eyes.sdk": "1.0.0"
+        "eyes.sdk": "1.0.0",
+        "selenium-webdriver": "^3.0.0"
     },
     "devDependencies": {
-        "selenium-webdriver": "^3.0.0",
-        "protractor": "^5.1.2",
-        "ava": "^0.18.0"
+        "protractor": "^5.1.2"
     },
     "scripts": {
         "test": "ava",

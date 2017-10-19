@@ -15,8 +15,8 @@ const JS_GET_OVERFLOW = "return arguments[0].style.overflow;";
 const JS_GET_LOCATION = "var rect = arguments[0].getBoundingClientRect(); return [rect.left, rect.top]";
 
 /**
- * @param {string} styleProp
- * @return {string}
+ * @param {String} styleProp
+ * @return {String}
  */
 const JS_GET_COMPUTED_STYLE_FORMATTED_STR = function (styleProp) {
     return "var elem = arguments[0], styleProp = '"+ styleProp +"'; " +
@@ -32,7 +32,7 @@ const JS_GET_COMPUTED_STYLE_FORMATTED_STR = function (styleProp) {
 /**
  * @param {int} scrollLeft
  * @param {int} scrollTop
- * @return {string}
+ * @return {String}
  */
 const JS_SCROLL_TO_FORMATTED_STR = function (scrollLeft, scrollTop) {
     return "arguments[0].scrollLeft = " + scrollLeft + "; " +
@@ -40,8 +40,8 @@ const JS_SCROLL_TO_FORMATTED_STR = function (scrollLeft, scrollTop) {
 };
 
 /**
- * @param {string} overflow
- * @return {string}
+ * @param {String} overflow
+ * @return {String}
  */
 const JS_SET_OVERFLOW_FORMATTED_STR = function (overflow) {
     return "arguments[0].style.overflow = '" + overflow + "'";
@@ -63,7 +63,7 @@ class EyesRemoteWebElement {
     constructor(remoteWebElement, eyesDriver, logger) {
         this._element = remoteWebElement;
         this._logger = logger;
-        this._eyesDriver = eyesDriver;
+        this._eyes = eyesDriver;
         GeneralUtils.mixin(this, remoteWebElement);
 
         // remove then method, which comes from thenableWebElement (Selenium 3+)
@@ -80,7 +80,7 @@ class EyesRemoteWebElement {
 
     sendKeys() {
         const that = this, args = Array.prototype.slice.call(arguments, 0);
-        return EyesRemoteWebElement.registerSendKeys(that._element, that._eyesDriver, that._logger, args).then(() => that._element.sendKeys(...args));
+        return EyesRemoteWebElement.registerSendKeys(that._element, that._eyes, that._logger, args).then(() => that._element.sendKeys(...args));
     }
 
     static registerClick(element, eyesDriver, logger) {
@@ -94,26 +94,26 @@ class EyesRemoteWebElement {
     click() {
         const that = this;
         that._logger.verbose("click on element");
-        return EyesRemoteWebElement.registerClick(that._element, that._eyesDriver, that._logger).then(() => that._element.click());
+        return EyesRemoteWebElement.registerClick(that._element, that._eyes, that._logger).then(() => that._element.click());
     }
 
     findElement(locator) {
         const that = this;
-        return this._element.findElement(locator).then(element => new EyesRemoteWebElement(element, that._eyesDriver, that._logger));
+        return this._element.findElement(locator).then(element => new EyesRemoteWebElement(element, that._eyes, that._logger));
     }
 
     findElements(locator) {
         const that = this;
-        return this._element.findElements(locator).then(elements => elements.map(element => new EyesRemoteWebElement(element, that._eyesDriver, that._logger)));
+        return this._element.findElements(locator).then(elements => elements.map(element => new EyesRemoteWebElement(element, that._eyes, that._logger)));
     }
 
     /**
      * Returns the computed value of the style property for the current element.
-     * @param {string} propStyle The style property which value we would like to extract.
+     * @param {String} propStyle The style property which value we would like to extract.
      * @return {promise.Promise.<string>} The value of the style property of the element, or {@code null}.
      */
     getComputedStyle(propStyle) {
-        return this._eyesDriver.executeScript(JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle), this._element);
+        return this._eyes.executeScript(JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle), this._element);
     }
 
     /**
@@ -127,28 +127,28 @@ class EyesRemoteWebElement {
      * @return {promise.Promise.<int>} The value of the scrollLeft property of the element.
      */
     getScrollLeft() {
-        return this._eyesDriver.executeScript(JS_GET_SCROLL_LEFT, this._element).then(value => parseInt(value, 10));
+        return this._eyes.executeScript(JS_GET_SCROLL_LEFT, this._element).then(value => parseInt(value, 10));
     }
 
     /**
      * @return {promise.Promise.<int>} The value of the scrollTop property of the element.
      */
     getScrollTop() {
-        return this._eyesDriver.executeScript(JS_GET_SCROLL_TOP, this._element).then(value => parseInt(value, 10));
+        return this._eyes.executeScript(JS_GET_SCROLL_TOP, this._element).then(value => parseInt(value, 10));
     }
 
     /**
      * @return {promise.Promise.<int>} The value of the scrollWidth property of the element.
      */
     getScrollWidth() {
-        return this._eyesDriver.executeScript(JS_GET_SCROLL_WIDTH, this._element).then(value => parseInt(value, 10));
+        return this._eyes.executeScript(JS_GET_SCROLL_WIDTH, this._element).then(value => parseInt(value, 10));
     }
 
     /**
      * @return {promise.Promise.<int>} The value of the scrollHeight property of the element.
      */
     getScrollHeight() {
-        return this._eyesDriver.executeScript(JS_GET_SCROLL_HEIGHT, this._element).then(value => parseInt(value, 10));
+        return this._eyes.executeScript(JS_GET_SCROLL_HEIGHT, this._element).then(value => parseInt(value, 10));
     }
 
     /**
@@ -196,7 +196,7 @@ class EyesRemoteWebElement {
         // and therefore we should use our own client-side script for retrieving exact values and rounding up them
 
         // this._element.getLocation()
-        return this._eyesDriver.executeScript(JS_GET_LOCATION, this._element).then(value => {
+        return this._eyes.executeScript(JS_GET_LOCATION, this._element).then(value => {
             const x = Math.ceil(value[0]) || 0;
             const y = Math.ceil(value[1]) || 0;
             return GeometryUtils.createLocation(x, y);
@@ -209,22 +209,22 @@ class EyesRemoteWebElement {
      * @return {promise.Promise.<void>}
      */
     scrollTo(location) {
-        return this._eyesDriver.executeScript(JS_SCROLL_TO_FORMATTED_STR(location.x, location.y), this._element);
+        return this._eyes.executeScript(JS_SCROLL_TO_FORMATTED_STR(location.x, location.y), this._element);
     }
 
     /**
      * @return {promise.Promise.<string>} The overflow of the element.
      */
     getOverflow() {
-        return this._eyesDriver.executeScript(JS_GET_OVERFLOW, this._element);
+        return this._eyes.executeScript(JS_GET_OVERFLOW, this._element);
     }
 
     /**
-     * @param {string} overflow The overflow to set
+     * @param {String} overflow The overflow to set
      * @return {promise.Promise.<void>} The overflow of the element.
      */
     setOverflow(overflow) {
-        return this._eyesDriver.executeScript(JS_SET_OVERFLOW_FORMATTED_STR(overflow), this._element);
+        return this._eyes.executeScript(JS_SET_OVERFLOW_FORMATTED_STR(overflow), this._element);
     }
 
     /**

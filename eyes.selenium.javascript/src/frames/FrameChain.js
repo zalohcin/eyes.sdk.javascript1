@@ -1,6 +1,6 @@
 'use strict';
 
-const {ArgumentGuard, GeometryUtils} = require('eyes.sdk');
+const {ArgumentGuard, Location} = require('eyes.sdk');
 
 const Frame = require('./Frame');
 
@@ -8,34 +8,34 @@ class FrameChain {
 
     /**
      * Creates a new frame chain.
-     * @param {Object} logger A Logger instance.
-     * @param {FrameChain} other A frame chain from which the current frame chain will be created.
+     *
+     * @param {Logger} logger A Logger instance.
+     * @param {FrameChain} [other] A frame chain from which the current frame chain will be created.
      */
     constructor(logger, other) {
         ArgumentGuard.notNull(logger, "logger");
 
         this._logger = logger;
+        this._frames = [];
 
-        if (other && other instanceof FrameChain) {
+        if (other) {
             this._logger.verbose(`Frame chain copy constructor (size ${other.size()})`);
-            this._frames = [];
-            for (let i = 0, l = other.size(); i < l; i++) {
-                this._frames.push(new Frame(logger,
-                    other.getFrames()[i].getReference(),
-                    other.getFrames()[i].getId(),
-                    other.getFrames()[i].getLocation(),
-                    other.getFrames()[i].getSize(),
-                    other.getFrames()[i].getParentScrollPosition())
+            other.getFrames().forEach(otherFrame => {
+                this._frames.push(new Frame(logger, otherFrame.getReference(),
+                    otherFrame.getLocation(),
+                    otherFrame.getSize(), otherFrame.getInnerSize(),
+                    otherFrame.getParentScrollPosition(),
+                    otherFrame.getOriginalLocation())
                 );
-            }
+            });
             this._logger.verbose("Done!");
-        } else {
-            this._frames = [];
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Compares two frame chains.
+     *
      * @param {FrameChain} c1 Frame chain to be compared against c2.
      * @param {FrameChain} c2 Frame chain to be compared against c1.
      * @return {boolean} True if both frame chains represent the same frame, false otherwise.
@@ -45,12 +45,12 @@ class FrameChain {
         const lc2 = c2.size();
 
         // different chains size means different frames
-        if (lc1 != lc2) {
+        if (lc1 !== lc2) {
             return false;
         }
 
         for (let i = 0; i < lc1; ++i) {
-            if (c1.getFrames()[i].getId() != c1.getFrames()[i].getId()) {
+            if (c1.getFrame(i).getReference() !== c1.getFrames[i].getReference()) {
                 return false;
             }
         }
@@ -59,26 +59,6 @@ class FrameChain {
     }
 
     /**
-     * @return {Array.<Frame>} frames stored in chain
-     */
-    getFrames() {
-        return this._frames;
-    }
-
-    /**
-     * @param {int} index Index of needed frame
-     * @return {Frame} frame by index in array
-     */
-    getFrame(index) {
-        if (this._frames.length > index) {
-            return this._frames[index];
-        }
-
-        throw new Error("No frames for given index");
-    }
-
-    /**
-     *
      * @return {int} The number of frames in the chain.
      */
     size() {
@@ -89,56 +69,103 @@ class FrameChain {
      * Removes all current frames in the frame chain.
      */
     clear() {
-        return this._frames = [];
+        this._frames = [];
     }
 
     /**
-     * Removes the last inserted frame element. Practically means we switched
-     * back to the parent of the current frame
+     * Removes the last inserted frame element. Practically means we switched back to the parent of the current frame
      */
     pop() {
-        return this._frames.pop();
+        this._frames.pop();
+    }
+
+    /**
+     * @return {Frame} Returns the top frame in the chain.
+     */
+    peek() {
+        return this._frames[this._frames.length - 1];
     }
 
     /**
      * Appends a frame to the frame chain.
+     *
      * @param {Frame} frame The frame to be added.
      */
     push(frame) {
         return this._frames.push(frame);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {{x: number, y: number}} The location of the current frame in the page.
+     * @return {Location} The location of the current frame in the page.
      */
     getCurrentFrameOffset() {
-        let result = {x: 0, y: 0};
+        const result = new Location(0, 0);
 
-        for (let i = 0, l = this._frames.length; i < l; i++) {
-            result = GeometryUtils.locationOffset(result, this._frames[i].getLocation());
-        }
+        this._frames.forEach(frame => {
+            result.offsetByLocation(frame.getLocation());
+        });
 
         return result;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {{x: number, y: number}} The outermost frame's location, or NoFramesException.
+     * @return {Location} The outermost frame's location, or NoFramesException.
      */
     getDefaultContentScrollPosition() {
         if (this._frames.length === 0) {
-            throw new Error("No frames in frame chain");
+            throw new Error("NoFramesError: No frames in frame chain");
         }
-        return this._frames[0].getParentScrollPosition();
+        return Location.fromLocation(this._frames[0].getParentScrollPosition());
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {{width: number, height: number}} The size of the current frame.
+     * @return {RectangleSize} The size of the current frame.
      */
     getCurrentFrameSize() {
         this._logger.verbose("getCurrentFrameSize()");
         const result = this._frames[this._frames.length - 1].getSize();
         this._logger.verbose("Done!");
         return result;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {RectangleSize} The inner size of the current frame.
+     */
+    getCurrentFrameInnerSize() {
+        this._logger.verbose("getCurrentFrameInnerSize()");
+        const result = this._frames[this._frames.length - 1].getInnerSize();
+        this._logger.verbose("Done!");
+        return result;
+    }
+
+    /**
+     * @return Iterator.<Frame> iterator to go over the frames in the chain.
+     */
+    [Symbol.iterator]() {
+        return this._frames.values()
+    }
+
+    /**
+     * @return {Frame[]} All frames stored in chain
+     */
+    getFrames() {
+        return this._frames;
+    }
+
+    /**
+     * @param {int} index Index of needed frame
+     * @return {Frame} Frame by index in array
+     */
+    getFrame(index) {
+        if (this._frames.length > index) {
+            return this._frames[index];
+        }
+
+        throw new Error("No frames for given index");
     }
 }
 

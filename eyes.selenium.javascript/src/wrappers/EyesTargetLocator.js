@@ -32,7 +32,7 @@ function OnWillSwitch() {
 
     /**
      * Will be called before switching into a window.
-     * @param {string} nameOrHandle The name/handle of the window to be switched to.
+     * @param {String} nameOrHandle The name/handle of the window to be switched to.
      */
     this.prototype.willSwitchToWindow = nameOrHandle => {
     };
@@ -204,7 +204,7 @@ class EyesTargetLocator {
     }
 
     /**
-     * @param {string} nameOrHandle
+     * @param {String} nameOrHandle
      * @return {Promise.<void>}
      */
     window(nameOrHandle) {

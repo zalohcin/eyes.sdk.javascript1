@@ -4,7 +4,7 @@ const {MutableImage, CoordinatesType, GeneralUtils, GeometryUtils, ImageUtils} =
 
 /**
  * @private
- * @type {string}
+ * @type {String}
  */
 const JS_GET_VIEWPORT_SIZE =
     "var height = undefined; " +
@@ -19,7 +19,7 @@ const JS_GET_VIEWPORT_SIZE =
 
 /**
  * @private
- * @type {string}
+ * @type {String}
  */
 const JS_GET_CURRENT_SCROLL_POSITION =
     "var doc = document.documentElement; " +
@@ -29,7 +29,7 @@ const JS_GET_CURRENT_SCROLL_POSITION =
 
 /**
  * @private
- * @type {string}
+ * @type {String}
  */
 const JS_GET_CONTENT_ENTIRE_SIZE =
     "var scrollWidth = document.documentElement.scrollWidth; " +
@@ -45,7 +45,7 @@ const JS_GET_CONTENT_ENTIRE_SIZE =
     "return [totalWidth, totalHeight];";
 
 /**
- * @return {string}
+ * @return {String}
  */
 function JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle) {
     return "var elem = arguments[0]; var styleProp = '" + propStyle + "'; " +
@@ -59,7 +59,7 @@ function JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle) {
 }
 
 /**
- * @return {string}
+ * @return {String}
  */
 const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
     "var styles = window.getComputedStyle(document.body, null);" +
@@ -82,7 +82,7 @@ class EyesSeleniumUtils {
      * Executes a script using the browser's executeScript function - and optionally waits a timeout.
      *
      * @param {WebDriver} browser The driver using which to execute the script.
-     * @param {string} script The code to execute on the given driver.
+     * @param {String} script The code to execute on the given driver.
      * @param {PromiseFactory} promiseFactory
      * @param {number|undefined} [stabilizationTimeMs] The amount of time to wait after script execution to
      *        let the browser a chance to stabilize (e.g., finish rendering).
@@ -104,7 +104,7 @@ class EyesSeleniumUtils {
      *
      * @param {WebDriver} browser The driver which will execute the script to get computed style.
      * @param {WebElement} element
-     * @param {string} propStyle The style property which value we would like to extract.
+     * @param {String} propStyle The style property which value we would like to extract.
      * @return {Promise<string>} The value of the style property of the element, or {@code null}.
      */
     static getComputedStyle(browser, element, propStyle) {
@@ -246,7 +246,7 @@ class EyesSeleniumUtils {
      * Set the given transform to document.documentElement for all style keys defined in {@link JS_TRANSFORM_KEYS}
      *
      * @param {WebDriver} browser The driver which will execute the script to set the transform.
-     * @param {string} transformToSet The transform to set.
+     * @param {String} transformToSet The transform to set.
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<void>} A promise which resolves to the previous transform once the updated transform is set.
      */
@@ -283,7 +283,7 @@ class EyesSeleniumUtils {
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<void>} A promise which resolves after the action is performed and timeout passed.
      */
-    static scrollTo(browser, point, promiseFactory) {
+    static setCurrentScrollPosition(browser, point, promiseFactory) {
         return EyesSeleniumUtils.executeScript(browser,
             `window.scrollTo(${parseInt(point.x, 10)}, ${parseInt(point.y, 10)});`,
             promiseFactory, 250);
@@ -312,7 +312,7 @@ class EyesSeleniumUtils {
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<{width: number, height: number}>} A promise which resolves to an object containing the width/height of the page.
      */
-    static getEntirePageSize(browser, promiseFactory) {
+    static getCurrentFrameContentEntireSize(browser, promiseFactory) {
         // IMPORTANT: Notice there's a major difference between scrollWidth
         // and scrollHeight. While scrollWidth is the maximum between an
         // element's width and its content width, scrollHeight might be
@@ -329,7 +329,7 @@ class EyesSeleniumUtils {
      * Updates the document's documentElement "overflow" value (mainly used to remove/allow scrollbars).
      *
      * @param {WebDriver} browser The driver used to update the web page.
-     * @param {string} overflowValue The values of the overflow to set.
+     * @param {String} overflowValue The values of the overflow to set.
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<string>} A promise which resolves to the original overflow of the document.
      */
@@ -354,7 +354,7 @@ class EyesSeleniumUtils {
      * Updates the document's body "overflow" value
      *
      * @param {WebDriver} browser The driver used to update the web page.
-     * @param {string} overflowValue The values of the overflow to set.
+     * @param {String} overflowValue The values of the overflow to set.
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<string>} A promise which resolves to the original overflow of the document.
      */
@@ -683,7 +683,7 @@ class EyesSeleniumUtils {
      * @param {int} waitBeforeScreenshots
      * @param {{left: number, top: number, width: number, height: number}} regionInScreenshot
      * @param {boolean} [saveDebugScreenshots=false]
-     * @param {string} [debugScreenshotsPath=null]
+     * @param {String} [debugScreenshotsPath=null]
      * @return {Promise<void>}
      */
     static _processPart(
@@ -760,7 +760,7 @@ class EyesSeleniumUtils {
      * @param {int} waitBeforeScreenshots
      * @param {{left: number, top: number, width: number, height: number}} [regionInScreenshot]
      * @param {boolean} [saveDebugScreenshots=false]
-     * @param {string} [debugScreenshotsPath=null]
+     * @param {String} [debugScreenshotsPath=null]
      * @return {Promise<MutableImage>}
      */
     static _captureViewport(
@@ -868,7 +868,7 @@ class EyesSeleniumUtils {
      * @param {boolean} checkFrameOrElement
      * @param {RegionProvider} [regionProvider]
      * @param {boolean} [saveDebugScreenshots=false]
-     * @param {string} [debugScreenshotsPath=null]
+     * @param {String} [debugScreenshotsPath=null]
      * @return {Promise<MutableImage>}
      */
     static getScreenshot(

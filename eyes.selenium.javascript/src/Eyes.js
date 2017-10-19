@@ -1,88 +1,276 @@
 'use strict';
 
-const webdriver = require('selenium-webdriver');
-const {EyesBase, FixedScaleProvider, FixedScaleProviderFactory, NullScaleProvider, ScaleProviderIdentityFactory,
-    PromiseFactory, ArgumentGuard, SimplePropertyHandler, GeometryUtils, Logger, CoordinatesType, MutableImage,
-    ContextBasedScaleProviderFactory} = require('eyes.sdk');
+const {WebDriver, WebElement, By} = require('selenium-webdriver').webdriver;
+const {
+    EyesBase, FixedScaleProvider, FixedScaleProviderFactory, NullScaleProvider,
+    ScaleProviderIdentityFactory, PromiseFactory, ArgumentGuard, SimplePropertyHandler,
+    GeometryUtils, Logger, CoordinatesType, MutableImage, ContextBasedScaleProviderFactory,
+    EyesError, UserAgent, ReadOnlyPropertyHandler
+} = require('eyes.sdk');
 
-const EyesWebDriver = require('./wrappers/EyesWebDriver'),
-    EyesSeleniumUtils = require('./EyesSeleniumUtils'),
-    EyesRemoteWebElement = require('./wrappers/EyesRemoteWebElement'),
-    EyesWebDriverScreenshot = require('./capture/EyesWebDriverScreenshot'),
-    ElementFinderWrapper = require('./wrappers/ElementFinderWrappers').ElementFinderWrapper,
-    ElementArrayFinderWrapper = require('./wrappers/ElementFinderWrappers').ElementArrayFinderWrapper,
-    ScrollPositionProvider = require('./positioning/ScrollPositionProvider'),
-    CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider'),
-    ElementPositionProvider = require('./positioning/ElementPositionProvider'),
-    EyesRegionProvider = require('./EyesRegionProvider'),
-    Target = require('./fluent/Target');
+const ImageProviderFactory = require('./capture/ImageProviderFactory');
+const FrameChain = require('./frames/FrameChain');
+const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory');
+const EyesWebDriver = require('./wrappers/EyesWebDriver');
+const EyesSeleniumUtils = require('./EyesSeleniumUtils');
+const EyesRemoteWebElement = require('./wrappers/EyesRemoteWebElement');
+const EyesWebDriverScreenshot = require('./capture/EyesWebDriverScreenshot');
+const ElementFinderWrapper = require('./wrappers/ElementFinderWrappers').ElementFinderWrapper;
+const ElementArrayFinderWrapper = require('./wrappers/ElementFinderWrappers').ElementArrayFinderWrapper;
+const ScrollPositionProvider = require('./positioning/ScrollPositionProvider');
+const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider');
+const ElementPositionProvider = require('./positioning/ElementPositionProvider');
+const EyesRegionProvider = require('./EyesRegionProvider');
+const StitchMode = require('./StitchMode');
+const Target = require('./fluent/Target');
 
 const VERSION = require('../package.json').version;
 
-const // ms
-    DEFAULT_WAIT_BEFORE_SCREENSHOTS = 100,
-    UNKNOWN_DEVICE_PIXEL_RATIO = 0,
-    DEFAULT_DEVICE_PIXEL_RATIO = 1;
+const USE_DEFAULT_MATCH_TIMEOUT = -1;
+const RESPONSE_TIME_DEFAULT_DEADLINE = 10; // Seconds
+const RESPONSE_TIME_DEFAULT_DIFF_FROM_DEADLINE = 20; // Seconds
+const DEFAULT_WAIT_BEFORE_SCREENSHOTS = 100; // Milliseconds
 
 /**
- * @readonly
- * @enum {string}
- */
-const StitchMode = {
-    // Uses scrolling to get to the different parts of the page.
-    Scroll: 'Scroll',
-
-    // Uses CSS transitions to get to the different parts of the page.
-    CSS: 'CSS'
-};
-
-/**
- * The main type - to be used by the users of the library to access all functionality.
+ * The main API gateway for the SDK.
  */
 class Eyes extends EyesBase {
 
     /**
-     * Initializes an Eyes instance.
+     * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
      *
-     * @param {String} [serverUrl] - The Eyes server URL.
-     * @param {Boolean} [isDisabled] - set to true to disable Applitools Eyes and use the webdriver directly.
+     * @param {String} [serverUrl] The Eyes server URL.
+     * @param {Boolean} [isDisabled] Set to true to disable Applitools Eyes and use the webdriver directly.
      **/
-    constructor(serverUrl, isDisabled) {
+    constructor(serverUrl = EyesBase.DEFAULT_EYES_SERVER, isDisabled = false) {
         const promiseFactory = new PromiseFactory();
-        super(promiseFactory, serverUrl || EyesBase.DEFAULT_EYES_SERVER, isDisabled);
+        super(promiseFactory, serverUrl, isDisabled);
 
-        this._forceFullPage = false;
+        /** @type {EyesWebDriver} */
+        this._driver = undefined;
+        /** @type {boolean} */
+        this._dontGetTitle = false;
+
+        /** @type {boolean} */
+        this._forceFullPageScreenshot = false;
+        /** @type {boolean} */
+        this._checkFrameOrElement = false;
+
+        /** @type {Region} */
+        this._regionToCheck = null;
+        /** @type {boolean} */
+        this._hideScrollbars = false;
+        /** @type {ImageRotation} */
+        this._rotation = undefined;
+        /** @type {number} */
+        this._devicePixelRatio = Eyes.UNKNOWN_DEVICE_PIXEL_RATIO;
+        /** @type {StitchMode} */
+        this._stitchMode = StitchMode.SCROLL;
+        /** @type {int} */
+        this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS;
+        /** @type {RegionVisibilityStrategy} */
+        this._regionVisibilityStrategy = new MoveToRegionVisibilityStrategy(logger);
+        /** @type {ElementPositionProvider} */
+        this._elementPositionProvider = undefined;
+        /** @type {SeleniumJavaScriptExecutor} */
+        this._jsExecutor = undefined;
+
+        /** @type {UserAgent} */
+        this._userAgent = undefined;
+        /** @type {ImageProvider} */
+        this._imageProvider = undefined;
+        /** @type {RegionPositionCompensation} */
+        this._regionPositionCompensation = undefined;
+
+        /** @type {boolean} */
+        this._stitchContent = false;
+        /**
+         * @type {int}
+         * @protected
+         */
+        this._stitchingOverlap = 50;
+
+
         this._imageRotationDegrees = 0;
         this._automaticRotation = true;
         this._isLandscape = false;
-        this._hideScrollbars = null;
-        this._checkFrameOrElement = false;
-        this._stitchMode = StitchMode.Scroll;
         this._promiseFactory = promiseFactory;
-        this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS;
+    }
+
+    // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
+    /**
+     * @override
+     */
+    getBaseAgentId() {
+        return `selenium-js/${VERSION}`;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {Region}
+     */
+    getRegionToCheck() {
+        return this._regionToCheck;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {boolean}
+     */
+    shouldStitchContent() {
+        return this._stitchContent;
+    }
+
+    /**
+     * @return {?EyesWebDriver}
+     */
+    getDriver() {
+        return this._driver;
     }
 
     //noinspection JSUnusedGlobalSymbols
-    _getBaseAgentId() {
-        return `selenium-js/${VERSION}`;
+    /**
+     * Forces a full page screenshot (by scrolling and stitching) if the browser only ﻿supports viewport screenshots).
+     *
+     * @param {boolean} shouldForce Whether to force a full page screenshot or not.
+     */
+    setForceFullPageScreenshot(shouldForce) {
+        this._forceFullPageScreenshot = shouldForce;
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {boolean} Whether Eyes should force a full page screenshot.
+     */
+    getForceFullPageScreenshot() {
+        return this._forceFullPageScreenshot;
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Sets the time to wait just before taking a screenshot (e.g., to allow positioning to stabilize when performing a full page stitching).
+     *
+     * @param {int} waitBeforeScreenshots The time to wait (Milliseconds). Values smaller or equal to 0, will cause the default value to be used.
+     */
+    setWaitBeforeScreenshots(waitBeforeScreenshots) {
+        if (waitBeforeScreenshots <= 0) {
+            this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS;
+        } else {
+            this._waitBeforeScreenshots = waitBeforeScreenshots;
+        }
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {int} The time to wait just before taking a screenshot.
+     */
+    getWaitBeforeScreenshots() {
+        return this._waitBeforeScreenshots;
+    }
+
+    // TODO: setScrollToRegion, getScrollToRegion
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Set the type of stitching used for full page screenshots. When the page includes fixed position header/sidebar, use {@link StitchMode#CSS}.
+     * Default is {@link StitchMode#SCROLL}.
+     *
+     * @param {StitchMode} mode The stitch mode to set.
+     */
+    setStitchMode(mode) {
+        this._logger.verbose(`setting stitch mode to ${mode}`);
+
+        this._stitchMode = mode;
+        if (this._driver) {
+            switch (mode) {
+                case StitchMode.CSS:
+                    this.setPositionProvider(new CssTranslatePositionProvider(this._logger, this._driver, this._promiseFactory));
+                    break;
+                default:
+                    this.setPositionProvider(new ScrollPositionProvider(this._logger, this._driver, this._promiseFactory));
+            }
+        }
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {StitchMode}  The current stitch mode settings.
+     */
+    getStitchMode() {
+        return this._stitchMode;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Sets the stitching overlap in pixels.
+     *
+     * @param {int} pixels The width (in pixels) of the overlap.
+     */
+    setStitchOverlap(pixels) {
+        this._stitchingOverlap = pixels;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {int} Returns the stitching overlap in pixels.
+     */
+    getStitchOverlap() {
+        return this._stitchingOverlap;
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Hide the scrollbars when taking screenshots.
+     *
+     * @param {boolean} shouldHide Whether to hide the scrollbars or not.
+     */
+    setHideScrollbars(shouldHide) {
+        this._hideScrollbars = shouldHide;
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {boolean} Whether or not scrollbars are hidden when taking screenshots.
+     */
+    getHideScrollbars() {
+        return this._hideScrollbars;
+    }
+
+    // TODO: getRotation, setRotation
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {number} The device pixel ratio, or {@link #UNKNOWN_DEVICE_PIXEL_RATIO} if the DPR is not known yet or if it wasn't possible to extract it.
+     */
+    getDevicePixelRatio() {
+        return this._devicePixelRatio;
     }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Starts a test.
-     * @param {WebDriver} driver - The web driver that controls the browser hosting the application under test.
-     * @param {string} appName - The name of the application under test.
-     * @param {string} testName - The test name.
-     * @param {{width: number, height: number}} viewportSize - The required browser's
-     * viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
-     * @return {Promise<WebDriver>} A wrapped WebDriver which enables Eyes trigger recording and
-     * frame handling.
+     *
+     * @param {WebDriver} driver The web driver that controls the browser hosting the application under test.
+     * @param {String} appName The name of the application under test.
+     * @param {String} testName The test name.
+     * @param {RectangleSize} [viewportSize=null] The required browser's viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
+     * @param {SessionType} [sessionType=null] The type of test (e.g.,  standard test / visual performance test).
+     * @return {Promise<EyesWebDriver>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
      */
-    open(driver, appName, testName, viewportSize) {
-        const that = this;
+    open(driver, appName, testName, viewportSize = null, sessionType = null) {
+        ArgumentGuard.notNull(driver, "driver");
 
+        const that = this;
         that._flow = driver.controlFlow();
-        _init(that, that._flow);
+        // Set PromiseFactory to work with the protractor control flow and promises
+        that._promiseFactory.setFactoryMethods(asyncAction => that._flow.execute(() => {
+            return new Promise(asyncAction);
+        }), null);
+
+        if (this.getIsDisabled()) {
+            this._logger.verbose("Ignored");
+            return this._promiseFactory.resolve(driver);
+        }
 
         if (typeof protractor !== 'undefined') {
             that._isProtractorLoaded = true;
@@ -102,54 +290,47 @@ class Eyes extends EyesBase {
             that._logger.verbose("Running using Selenium module");
         }
 
-        that._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO;
-        that._driver = new EyesWebDriver(driver, that, that._logger, that._promiseFactory);
-        that.setStitchMode(that._stitchMode);
-
-        if (this._isDisabled) {
-            return that._flow.execute(() => driver);
+        if (driver instanceof WebDriver) {
+            that._driver = new EyesWebDriver(logger, that, driver, that._promiseFactory);
+        } else if (driver instanceof EyesWebDriver) {
+            that._driver = driver;
+        } else {
+            const errMsg = `Driver is not a RemoteWebDriver (${driver.constructor.name})`;
+            that._logger.log(errMsg);
+            throw new EyesError(errMsg);
         }
 
-        return that._flow.execute(() => driver.getCapabilities().then(capabilities => {
-            let platformName, platformVersion, orientation;
-            if (capabilities.caps_) {
-                platformName = capabilities.caps_.platformName;
-                platformVersion = capabilities.caps_.platformVersion;
-                orientation = capabilities.caps_.orientation || capabilities.caps_.deviceOrientation;
-            } else {
-                platformName = capabilities.get('platform') || capabilities.get('platformName');
-                platformVersion = capabilities.get('version') || capabilities.get('platformVersion');
-                orientation = capabilities.get('orientation') || capabilities.get('deviceOrientation');
+        return that._driver.getUserAgent().then(uaString => {
+            that._userAgent = UserAgent.parseUserAgentString(uaString, true);
+
+            that._imageProvider = ImageProviderFactory.getImageProvider(that._userAgent, that, that._logger, that._driver);
+            that._regionPositionCompensation = RegionPositionCompensationFactory.getRegionPositionCompensation(that._userAgent, that, that._logger);
+
+            return super.openBase(appName, testName, viewportSize, sessionType);
+        }).then(() => {
+            that._devicePixelRatio = Eyes.UNKNOWN_DEVICE_PIXEL_RATIO;
+            that._jsExecutor = new SeleniumJavaScriptExecutor(that._driver);
+
+            // Setting the correct position provider.
+            const stitchMode = that.getStitchMode();
+            that._logger.verbose("initializing position provider. stitchMode: " + stitchMode);
+            switch (stitchMode) {
+                case StitchMode.CSS:
+                    that.setPositionProvider(new CssTranslatePositionProvider(that._logger, that._jsExecutor, that._promiseFactory));
+                    break;
+                default:
+                    that.setPositionProvider(new ScrollPositionProvider(that._logger, that._jsExecutor, that._promiseFactory));
             }
 
-            let majorVersion;
-            if (!platformVersion || platformVersion.length < 1) {
-                return;
-            }
-            majorVersion = platformVersion.split('.', 2)[0];
-            if (platformName.toUpperCase() === 'ANDROID') {
-                // We only automatically set the OS, if the user hadn't manually set it previously.
-                if (!that.getHostOS()) {
-                    that.setHostOS(`Android ${majorVersion}`);
-                }
-            } else if (platformName.toUpperCase() === 'IOS') {
-                if (!that.getHostOS()) {
-                    that.setHostOS(`iOS ${majorVersion}`);
-                }
-            } else {
-                return;
-            }
-
-            if (orientation && orientation.toUpperCase() === 'LANDSCAPE') {
-                that._isLandscape = true;
-            }
-        }).then(() => EyesBase.prototype.open.call(that, appName, testName, viewportSize)).then(() => that._driver));
+            that._driver.setRotation(rotation);
+            return that._driver;
+        });
     }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Ends the test.
-     * @param throwEx - If true, an exception will be thrown for failed/new tests.
+     * @param throwEx If true, an exception will be thrown for failed/new tests.
      * @return {*} The test results.
      */
     close(throwEx) {
@@ -172,8 +353,8 @@ class Eyes extends EyesBase {
     //noinspection JSUnusedGlobalSymbols
     /**
      * Preform visual validation
-     * @param {string} name - A name to be associated with the match
-     * @param {Target} target - Target instance which describes whether we want a window/region/frame
+     * @param {String} name A name to be associated with the match
+     * @param {Target} target Target instance which describes whether we want a window/region/frame
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
     check(name, target) {
@@ -187,7 +368,7 @@ class Eyes extends EyesBase {
         });
 
         if (that._isDisabled) {
-            that._logger.verbose("match ignored - ", name);
+            that._logger.verbose("match ignored ", name);
             return promise;
         }
 
@@ -234,8 +415,8 @@ class Eyes extends EyesBase {
             originalHideScrollBars;
 
         if (target.getStitchContent()) {
-            originalForceFullPage = that._forceFullPage;
-            that._forceFullPage = true;
+            originalForceFullPage = that._forceFullPageScreenshot;
+            that._forceFullPageScreenshot = true;
         }
 
         // If frame specified
@@ -326,7 +507,7 @@ class Eyes extends EyesBase {
 
             // restore initial values
             if (originalForceFullPage !== undefined) {
-                that._forceFullPage = originalForceFullPage;
+                that._forceFullPageScreenshot = originalForceFullPage;
             }
 
             if (originalHideScrollBars !== undefined) {
@@ -357,8 +538,8 @@ class Eyes extends EyesBase {
     /**
      * Takes a snapshot of the application under test and matches it with
      * the expected output.
-     * @param {string} tag - An optional tag to be associated with the snapshot.
-     * @param {int} matchTimeout - The amount of time to retry matching (Milliseconds).
+     * @param {String} tag An optional tag to be associated with the snapshot.
+     * @param {int} matchTimeout The amount of time to retry matching (Milliseconds).
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
     checkWindow(tag, matchTimeout) {
@@ -369,10 +550,10 @@ class Eyes extends EyesBase {
     /**
      * Matches the frame given as parameter, by switching into the frame and
      * using stitching to get an image of the frame.
-     * @param {EyesRemoteWebElement} element - The element which is the frame to switch to. (as
+     * @param {EyesRemoteWebElement} element The element which is the frame to switch to. (as
      * would be used in a call to driver.switchTo().frame() ).
-     * @param {int} matchTimeout - The amount of time to retry matching (milliseconds).
-     * @param {string} tag - An optional tag to be associated with the match.
+     * @param {int} matchTimeout The amount of time to retry matching (milliseconds).
+     * @param {String} tag An optional tag to be associated with the match.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
     checkFrame(element, matchTimeout, tag) {
@@ -383,9 +564,9 @@ class Eyes extends EyesBase {
     /**
      * Takes a snapshot of the application under test and matches a specific
      * element with the expected region output.
-     * @param {webdriver.WebElement|EyesRemoteWebElement} element - The element to check.
-     * @param {int|null} matchTimeout - The amount of time to retry matching (milliseconds).
-     * @param {string} tag - An optional tag to be associated with the match.
+     * @param {WebElement|EyesRemoteWebElement} element The element to check.
+     * @param {int|null} matchTimeout The amount of time to retry matching (milliseconds).
+     * @param {String} tag An optional tag to be associated with the match.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
     checkElement(element, matchTimeout, tag) {
@@ -396,9 +577,9 @@ class Eyes extends EyesBase {
     /**
      * Takes a snapshot of the application under test and matches a specific
      * element with the expected region output.
-     * @param {webdriver.By} locator - The element to check.
-     * @param {int|null} matchTimeout - The amount of time to retry matching (milliseconds).
-     * @param {string} tag - An optional tag to be associated with the match.
+     * @param {By} locator The element to check.
+     * @param {int|null} matchTimeout The amount of time to retry matching (milliseconds).
+     * @param {String} tag An optional tag to be associated with the match.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
     checkElementBy(locator, matchTimeout, tag) {
@@ -408,10 +589,10 @@ class Eyes extends EyesBase {
     //noinspection JSUnusedGlobalSymbols
     /**
      * Visually validates a region in the screenshot.
-     * @param {{left: number, top: number, width: number, height: number}} region - The region to
+     * @param {{left: number, top: number, width: number, height: number}} region The region to
      * validate (in screenshot coordinates).
-     * @param {string} tag - An optional tag to be associated with the screenshot.
-     * @param {int} matchTimeout - The amount of time to retry matching.
+     * @param {String} tag An optional tag to be associated with the screenshot.
+     * @param {int} matchTimeout The amount of time to retry matching.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
     checkRegion(region, tag, matchTimeout) {
@@ -421,9 +602,9 @@ class Eyes extends EyesBase {
     //noinspection JSUnusedGlobalSymbols
     /**
      * Visually validates a region in the screenshot.
-     * @param {webdriver.WebElement|EyesRemoteWebElement} element - The element defining the region to validate.
-     * @param {string} tag - An optional tag to be associated with the screenshot.
-     * @param {int} matchTimeout - The amount of time to retry matching.
+     * @param {WebElement|EyesRemoteWebElement} element The element defining the region to validate.
+     * @param {String} tag An optional tag to be associated with the screenshot.
+     * @param {int} matchTimeout The amount of time to retry matching.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
     checkRegionByElement(element, tag, matchTimeout) {
@@ -433,9 +614,9 @@ class Eyes extends EyesBase {
     //noinspection JSUnusedGlobalSymbols
     /**
      * Visually validates a region in the screenshot.
-     * @param {webdriver.By} by - The WebDriver selector used for finding the region to validate.
-     * @param {string} tag - An optional tag to be associated with the screenshot.
-     * @param {int} matchTimeout - The amount of time to retry matching.
+     * @param {By} by The WebDriver selector used for finding the region to validate.
+     * @param {String} tag An optional tag to be associated with the screenshot.
+     * @param {int} matchTimeout The amount of time to retry matching.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
     checkRegionBy(by, tag, matchTimeout) {
@@ -446,11 +627,11 @@ class Eyes extends EyesBase {
     /**
      * Switches into the given frame, takes a snapshot of the application under
      * test and matches a region specified by the given selector.
-     * @param {string} frameNameOrId - The name or id of the frame to switch to. (as would be used in a call to driver.switchTo().frame()).
-     * @param {webdriver.By} locator - A Selector specifying the region to check.
-     * @param {int|null} matchTimeout - The amount of time to retry matching. (Milliseconds)
-     * @param {string} tag - An optional tag to be associated with the snapshot.
-     * @param {boolean} stitchContent - If {@code true}, stitch the internal content of the region (i.e., perform
+     * @param {String} frameNameOrId The name or id of the frame to switch to. (as would be used in a call to driver.switchTo().frame()).
+     * @param {By} locator A Selector specifying the region to check.
+     * @param {int|null} matchTimeout The amount of time to retry matching. (Milliseconds)
+     * @param {String} tag An optional tag to be associated with the snapshot.
+     * @param {boolean} stitchContent If {@code true}, stitch the internal content of the region (i.e., perform
      *                  {@link #checkElement(By, int, String)} on the region.
      * @return {ManagedPromise} A promise which is resolved when the validation is finished.
      */
@@ -458,70 +639,259 @@ class Eyes extends EyesBase {
         return this.check(tag, Target.region(locator, frameNameOrId).timeout(matchTimeout).fully(stitchContent));
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
-     * Sets the stitching overlap in pixels.
+     * Updates the state of scaling related parameters.
      *
-     * @param {int} pixels The width (in pixels) of the overlap.
-     */
-    setStitchOverlap(pixels) {
-        this._stitchingOverlap = pixels;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {int} the stitching overlap in pixels.
-     */
-    getStitchOverlap() {
-        return this._stitchingOverlap;
-    }
-
-    /**
      * @protected
-     * @return {ScaleProviderFactory}
+     * @return {Promise<ScaleProviderFactory>}
      */
     updateScalingParams() {
-        const that = this;
-        return that._promiseFactory.makePromise(resolve => {
-            if (that._devicePixelRatio === UNKNOWN_DEVICE_PIXEL_RATIO && that._scaleProviderHandler.get() instanceof NullScaleProvider) {
-                let factory, enSize, vpSize;
-                that._logger.verbose("Trying to extract device pixel ratio...");
+        // Update the scaling params only if we haven't done so yet, and the user hasn't set anything else manually.
+        if (this._devicePixelRatio === Eyes.UNKNOWN_DEVICE_PIXEL_RATIO && this._scaleProviderHandler.get() instanceof NullScaleProvider) {
+            this._logger.verbose("Trying to extract device pixel ratio...");
 
-                return EyesSeleniumUtils.getDevicePixelRatio(that._driver, that._promiseFactory).then(ratio => {
-                    that._devicePixelRatio = ratio;
-                }, err => {
-                    that._logger.verbose("Failed to extract device pixel ratio! Using default.", err);
-                    that._devicePixelRatio = DEFAULT_DEVICE_PIXEL_RATIO;
-                }).then(() => {
-                    that._logger.verbose(`Device pixel ratio: ${that._devicePixelRatio}`);
-                    that._logger.verbose("Setting scale provider..");
-                    return that._positionProvider.getEntireSize();
-                }).then(entireSize => {
-                    enSize = entireSize;
-                    return that.getViewportSize();
-                }).then(viewportSize => {
-                    vpSize = viewportSize;
-                    factory = new ContextBasedScaleProviderFactory(enSize, vpSize, that._devicePixelRatio, that._scaleProviderHandler);
-                }, err => {
-                    // This can happen in Appium for example.
-                    that._logger.verbose("Failed to set ContextBasedScaleProvider.", err);
-                    that._logger.verbose("Using FixedScaleProvider instead...");
-                    factory = new FixedScaleProviderFactory(1/that._devicePixelRatio, that._scaleProviderHandler);
-                }).then(() => {
-                    that._logger.verbose("Done!");
-                    resolve(factory);
-                });
-            }
+            const that = this;
+            return EyesSeleniumUtils.getDevicePixelRatio(that._driver, that._promiseFactory).then(ratio => {
+                that._devicePixelRatio = ratio;
+            }).catch(err => {
+                that._logger.verbose("Failed to extract device pixel ratio! Using default.", err);
+                that._devicePixelRatio = Eyes.DEFAULT_DEVICE_PIXEL_RATIO;
+            }).then(() => {
+                that._logger.verbose(`Device pixel ratio: ${that._devicePixelRatio}`);
+                return that._positionProvider.getEntireSize();
+            }).then(entireSize => {
+                that._logger.verbose("Setting scale provider...");
+                return new ContextBasedScaleProviderFactory(that._logger, entireSize, that._viewportSizeHandler.get(), that._devicePixelRatio, EyesSeleniumUtils.isMobileDevice(driver), that._scaleProviderHandler);
+            }).catch(err => {
+                that._logger.verbose("Failed to set ContextBasedScaleProvider.", err);
+                that._logger.verbose("Using FixedScaleProvider instead...");
+                return new FixedScaleProviderFactory(1 / that._devicePixelRatio, that._scaleProviderHandler);
+            }).then(factory => {
+                that._logger.verbose("Done!");
+                return factory;
+            });
+        }
 
-            // If we already have a scale provider set, we'll just use it, and pass a mock as provider handler.
-            resolve(new ScaleProviderIdentityFactory(that._scaleProviderHandler.get(), new SimplePropertyHandler()));
+        // If we already have a scale provider set, we'll just use it, and pass a mock as provider handler.
+        const nullProvider = new SimplePropertyHandler();
+        return this._promiseFactory.resolve(new ScaleProviderIdentityFactory(this._scaleProviderHandler.get(), nullProvider));
+    }
+
+    /**
+     * Adds a mouse trigger.
+     *
+     * @param {MouseTrigger.MouseAction} action  Mouse action.
+     * @param {Region} control The control on which the trigger is activated (context relative coordinates).
+     * @param {Location} cursor  The cursor's position relative to the control.
+     */
+    addMouseTrigger(action, control, cursor) {
+        if (this.getIsDisabled()) {
+            this._logger.verbose(`Ignoring ${action} (disabled)`);
+            return;
+        }
+
+        // Triggers are actually performed on the previous window.
+        if (!this._lastScreenshot) {
+            this._logger.verbose(`Ignoring ${action} (no screenshot)`, );
+            return;
+        }
+
+        if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
+            this._logger.verbose(`Ignoring ${action} (different frame)`);
+            return;
+        }
+
+        super.addMouseTriggerBase(action, control, cursor);
+    }
+
+    /**
+     * Adds a mouse trigger.
+     *
+     * @param {MouseTrigger.MouseAction} action  Mouse action.
+     * @param {WebElement} element The WebElement on which the click was called.
+     * @return {Promise<void>}
+     */
+    addMouseTriggerForElement(action, element) {
+        if (this.getIsDisabled()) {
+            this._logger.verbose(`Ignoring ${action} (disabled)`);
+            return this._promiseFactory.resolve();
+        }
+
+        // Triggers are actually performed on the previous window.
+        if (!this._lastScreenshot) {
+            this._logger.verbose(`Ignoring ${action} (no screenshot)`, );
+            return this._promiseFactory.resolve();
+        }
+
+        if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
+            this._logger.verbose(`Ignoring ${action} (different frame)`);
+            return this._promiseFactory.resolve();
+        }
+
+        ArgumentGuard.notNull(element, "element");
+
+        let p1;
+        return element.getLocation().then(loc => {
+            p1 = loc;
+            return element.getSize();
+        }).then(ds => {
+            let elementRegion = new Region(p1.x, p1.y, ds.width, ds.height);
+
+            // Get the element region which is intersected with the screenshot,
+            // so we can calculate the correct cursor position.
+            elementRegion = this._lastScreenshot.getIntersectedRegion(elementRegion, CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.CONTEXT_RELATIVE);
+            super.addMouseTriggerBase(action, elementRegion, elementRegion.getMiddleOffset());
         });
+    }
+
+    /**
+     * Adds a keyboard trigger.
+     *
+     * @param {Region} control The control on which the trigger is activated (context relative coordinates).
+     * @param {String} text  The trigger's text.
+     */
+    addTextTrigger(control, text) {
+        if (this.getIsDisabled()) {
+            this._logger.verbose(`Ignoring ${action} (disabled)`);
+            return;
+        }
+
+        // Triggers are actually performed on the previous window.
+        if (!this._lastScreenshot) {
+            this._logger.verbose(`Ignoring ${action} (no screenshot)`, );
+            return;
+        }
+
+        if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
+            this._logger.verbose(`Ignoring ${action} (different frame)`);
+            return;
+        }
+
+        super.addTextTriggerBase(control, text);
+    }
+
+    /**
+     * Adds a keyboard trigger.
+     *
+     * @param {WebElement} element The element for which we sent keys.
+     * @param {String} text  The trigger's text.
+     * @return {Promise<void>}
+     */
+    addTextTriggerForElement(element, text) {
+        if (this.getIsDisabled()) {
+            this._logger.verbose(`Ignoring ${action} (disabled)`);
+            return this._promiseFactory.resolve();
+        }
+
+        // Triggers are actually performed on the previous window.
+        if (!this._lastScreenshot) {
+            this._logger.verbose(`Ignoring ${action} (no screenshot)`, );
+            return this._promiseFactory.resolve();
+        }
+
+        if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
+            this._logger.verbose(`Ignoring ${action} (different frame)`);
+            return this._promiseFactory.resolve();
+        }
+
+        ArgumentGuard.notNull(element, "element");
+
+        let p1;
+        return element.getLocation().then(loc => {
+            p1 = loc;
+            return element.getSize();
+        }).then(ds => {
+            let elementRegion = new Region(p1.x, p1.y, ds.width, ds.height);
+
+            // Get the element region which is intersected with the screenshot,
+            // so we can calculate the correct cursor position.
+            elementRegion = this._lastScreenshot.getIntersectedRegion(elementRegion, CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.CONTEXT_RELATIVE);
+            super.addTextTrigger(elementRegion, text);
+        });
+    }
+
+    /**
+     * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
+     *
+     * @override
+     * @inheritDoc
+     * @return {Promise.<RectangleSize>}
+     */
+    getViewportSize() {
+        return this._driver.getDefaultContentViewportSize();
+    }
+
+    /**
+     * Call this method if for some reason you don't want to call {@link #open(WebDriver, String, String)} (or one of its variants) yet.
+     *
+     * @param {WebDriver} driver The driver to use for getting the viewport.
+     * @param {PromiseFactory} [promiseFactory]
+     * @return {Promise.<RectangleSize>} The viewport size of the current context.
+     */
+    static getViewportSize(driver, promiseFactory) {
+        ArgumentGuard.notNull(driver, "driver");
+
+        if (!promiseFactory) {
+            promiseFactory = new PromiseFactory();
+            promiseFactory.setFactoryMethods(asyncAction =>  new Promise(asyncAction), null);
+        }
+
+        return EyesSeleniumUtils.getViewportSizeOrDisplaySize(new Logger(), driver, promiseFactory);
+    }
+
+    /**
+     * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
+     *
+     * @protected
+     * @override
+     * @inheritDoc
+     * @param {RectangleSize} size
+     */
+    setViewportSize(size) {
+        if (this._viewportSizeHandler instanceof ReadOnlyPropertyHandler) {
+            logger.verbose("Ignored (viewport size given explicitly)");
+            return;
+        }
+
+        const originalFrame = this._driver.getFrameChain();
+        this._driver.switchTo().defaultContent();
+
+        try {
+            EyesSeleniumUtils.setViewportSize(logger, driver, size);
+        } catch (err) {
+            // Just in case the user catches this error
+            ((EyesTargetLocator) driver.switchTo()).frames(originalFrame);
+
+            throw new TestFailedException("Failed to set the viewport size", e);
+        }
+
+        ((EyesTargetLocator) driver.switchTo()).frames(originalFrame);
+        this._viewportSizeHandler.set(new RectangleSize(size.getWidth(), size.getHeight()));
+    }
+
+    /**
+     * Set the viewport size using the driver. Call this method if for some reason you don't want to call {@link #open(WebDriver, String, String)} (or one of its variants) yet.
+     *
+     * @param {WebDriver} driver The driver to use for setting the viewport.
+     * @param {RectangleSize} size The required viewport size.
+     * @param {PromiseFactory} [promiseFactory]
+     * @return {Promise<void>}
+     */
+    static setViewportSize(driver, size, promiseFactory) {
+        ArgumentGuard.notNull(driver, "driver");
+
+        if (!promiseFactory) {
+            promiseFactory = new PromiseFactory();
+            promiseFactory.setFactoryMethods(asyncAction =>  new Promise(asyncAction), null);
+        }
+
+        EyesSeleniumUtils.setViewportSize(new Logger(), driver, size, promiseFactory);
     }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Get an updated screenshot.
-     * @return {Promise.<MutableImage>} - The image of the new screenshot.
+     * @return {Promise.<MutableImage>} The image of the new screenshot.
      */
     getScreenShot() {
         const that = this;
@@ -532,7 +902,7 @@ class Eyes extends EyesBase {
             that._positionProvider,
             scaleProviderFactory,
             that._cutProviderHandler.get(),
-            that._forceFullPage,
+            that._forceFullPageScreenshot,
             that._hideScrollbars,
             that._stitchMode === StitchMode.CSS,
             that._imageRotationDegrees,
@@ -567,7 +937,7 @@ class Eyes extends EyesBase {
     //noinspection JSUnusedGlobalSymbols
     /**
      * Set the failure report.
-     * @param mode - Use one of the values in EyesBase.FailureReport.
+     * @param mode Use one of the values in EyesBase.FailureReport.
      */
     setFailureReport(mode) {
         if (mode === EyesBase.FailureReport.Immediate) {
@@ -580,60 +950,8 @@ class Eyes extends EyesBase {
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * Get the viewport size.
-     * @return {*} The viewport size.
-     */
-    getViewportSize() {
-        return EyesSeleniumUtils.getViewportSizeOrDisplaySize(this._logger, this._driver, this._promiseFactory);
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    setViewportSize(size) {
-        return EyesSeleniumUtils.setViewportSize(this._logger, this._driver, size, this._promiseFactory);
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Set the viewport size using the driver. Call this method if for some reason
-     * you don't want to call {@link #open(WebDriver, String, String)} (or one of its variants) yet.
-     * @param {WebDriver} driver - The driver to use for setting the viewport.
-     * @param {{width: number, height: number}} size - The required viewport size.
-     * @return {Promise<void>} The viewport size of the browser.
-     */
-    static setViewportSize(driver, size) {
-        const promiseFactory = new PromiseFactory();
-        promiseFactory.setFactoryMethods(asyncAction => {
-            const deferred = promise.defer();
-            asyncAction(deferred.fulfill, deferred.reject);
-            return deferred.promise;
-        }, () => promise.defer());
-
-        return EyesSeleniumUtils.setViewportSize(new Logger(), driver, size, promiseFactory);
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Set the full page screenshot option.
-     * @param {boolean} force - Whether to force a full page screenshot or not.
-     * @return {void}
-     */
-    setForceFullPageScreenshot(force) {
-        this._forceFullPage = force;
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Get whether to force a full page screenshot or not.
-     * @return {boolean} true if the option is on, otherwise false.
-     */
-    getForceFullPageScreenshot() {
-        return this._forceFullPage;
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
      * Set the image rotation degrees.
-     * @param degrees - The amount of degrees to set the rotation to.
+     * @param degrees The amount of degrees to set the rotation to.
      */
     setForcedImageRotation(degrees) {
         if (typeof degrees !== 'number') {
@@ -646,78 +964,10 @@ class Eyes extends EyesBase {
     //noinspection JSUnusedGlobalSymbols
     /**
      * Get the rotation degrees.
-     * @return {*|number} - The rotation degrees.
+     * @return {*|number} The rotation degrees.
      */
     getForcedImageRotation() {
         return this._imageRotationDegrees || 0;
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Hide the scrollbars when taking screenshots.
-     * @param {boolean} hide - Whether to hide the scrollbars or not.
-     */
-    setHideScrollbars(hide) {
-        this._hideScrollbars = hide;
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Hide the scrollbars when taking screenshots.
-     * @return {boolean|null} - true if the hide scrollbars option is on, otherwise false.
-     */
-    getHideScrollbars() {
-        return this._hideScrollbars;
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Set the stitch mode.
-     * @param {StitchMode} mode - The desired stitch mode settings.
-     */
-    setStitchMode(mode) {
-        this._stitchMode = mode;
-        if (this._driver) {
-            switch (mode) {
-                case StitchMode.CSS:
-                    this.setPositionProvider(new CssTranslatePositionProvider(this._logger, this._driver, this._promiseFactory));
-                    break;
-                default:
-                    this.setPositionProvider(new ScrollPositionProvider(this._logger, this._driver, this._promiseFactory));
-            }
-        }
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Get the stitch mode.
-     * @return {StitchMode} The currently set StitchMode.
-     */
-    getStitchMode() {
-        return this._stitchMode;
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Sets the wait time between before each screen capture, including between
-     * screen parts of a full page screenshot.
-     * @param waitBeforeScreenshots - The wait time in milliseconds.
-     */
-    setWaitBeforeScreenshots(waitBeforeScreenshots) {
-        if (waitBeforeScreenshots <= 0) {
-            this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS;
-        } else {
-            this._waitBeforeScreenshots = waitBeforeScreenshots;
-        }
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Get the wait time before each screenshot.
-     * @return {number|*} the wait time between before each screen capture, in milliseconds.
-     */
-    getWaitBeforeScreenshots() {
-        return this._waitBeforeScreenshots;
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -763,13 +1013,13 @@ function isElementObject(o) {
 }
 
 function isLocatorObject(o) {
-    return o instanceof webdriver.By || o.findElementsOverride !== undefined || (o.using !== undefined && o.value !== undefined);
+    return o instanceof By || o.findElementsOverride !== undefined || (o.using !== undefined && o.value !== undefined);
 }
 
 /**
  * Get the region provider for a certain element.
- * @param {Eyes} eyes - The eyes instance.
- * @param {EyesRemoteWebElement|webdriver.WebElement} element - The element to get a region for.
+ * @param {Eyes} eyes The eyes instance.
+ * @param {EyesRemoteWebElement|WebElement} element The element to get a region for.
  * @return {Promise<EyesRegionProvider>} The region for a certain element.
  */
 function getRegionProviderForElement(eyes, element) {
@@ -806,7 +1056,7 @@ function getRegionProviderForElement(eyes, element) {
 
 /**
  * Get region provider for the current frame.
- * @param {Eyes} eyes - The eyes instance.
+ * @param {Eyes} eyes The eyes instance.
  * @return {Promise<EyesRegionProvider>} The region provider for the certain frame.
  */
 function getRegionProviderForCurrentFrame(eyes) {
@@ -836,7 +1086,7 @@ function getRegionProviderForCurrentFrame(eyes) {
 
 /**
  * Get the region for a certain web element.
- * @param {EyesRemoteWebElement|webdriver.WebElement} element - The web element to get the region from.
+ * @param {EyesRemoteWebElement|WebElement} element The web element to get the region from.
  * @return {Promise<{left: number, top: number, width: number, height: number}>} The region.
  */
 function getRegionFromWebElement(element) {
@@ -847,9 +1097,6 @@ function getRegionFromWebElement(element) {
     }).then(point => GeometryUtils.createRegionFromLocationAndSize(point, elementSize));
 }
 
-/**
- * @readonly
- * @enum {string}
- */
-Eyes.StitchMode = Object.freeze(StitchMode);
+Eyes.UNKNOWN_DEVICE_PIXEL_RATIO = 0;
+Eyes.DEFAULT_DEVICE_PIXEL_RATIO = 1;
 module.exports = Eyes;

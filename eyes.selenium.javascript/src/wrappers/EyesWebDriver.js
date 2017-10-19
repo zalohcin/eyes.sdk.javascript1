@@ -11,43 +11,82 @@ const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
 const EyesTargetLocator = require('./EyesTargetLocator');
 
 /**
- * Wraps a Remote Web Driver.
+ * An Eyes implementation of the interfaces implemented by {@link WebDriver}.
+ * Used so we'll be able to return the users an object with the same functionality as {@link WebDriver}.
  */
 class EyesWebDriver {
 
     /**
-     *
-     * C'tor = initializes the module settings
-     *
-     * @param {Object} remoteWebDriver
-     * @param {Eyes} eyes An instance of Eyes
-     * @param {Object} logger
+     * @param {Logger} logger
+     * @param {Eyes} eyes
+     * @param {WebDriver} driver
      * @param {PromiseFactory} promiseFactory
      **/
-    constructor(remoteWebDriver, eyes, logger, promiseFactory) {
-        this._eyesDriver = eyes;
+    constructor(logger, eyes, driver, promiseFactory) {
+        ArgumentGuard.notNull(logger, "logger");
+        ArgumentGuard.notNull(eyes, "eyes");
+        ArgumentGuard.notNull(driver, "driver");
+        ArgumentGuard.notNull(promiseFactory, "promiseFactory");
+
         this._logger = logger;
+        this._eyes = eyes;
+        this._driver = driver;
         this._promiseFactory = promiseFactory;
+
+        this._rotation = null;
+        this._elementsIds = new Map();
+        this._frameChain = new FrameChain(logger);
         this._defaultContentViewportSize = null;
-        this._frameChain = new FrameChain(this._logger, null);
-        /** @type webdriver.By|ProtractorBy */
-        this._byFunctions = eyes._isProtractorLoaded ? global.by : webdriver.By;
-        this.setRemoteWebDriver(remoteWebDriver);
+
+        // // initializing "touch" if possible
+        // let executeMethod = null;
+        // try {
+        //     executeMethod = new RemoteExecuteMethod(driver);
+        // } catch (err) {
+        //     // If an exception occurred, we simply won't instantiate "touch".
+        // }
+        //
+        // if (executeMethod) {
+        //     touch = new EyesTouchScreen(logger, this, new RemoteTouchScreen(executeMethod));
+        // } else {
+        //     touch = null;
+        // }
+
+       this._logger.verbose("Driver session is " + this.getSessionId());
+
+        // /** @type webdriver.By|ProtractorBy */
+        // this._byFunctions = eyes._isProtractorLoaded ? global.by : webdriver.By;
+        // this.setRemoteWebDriver(remoteWebDriver);
     }
 
     //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {Eyes}
+     */
     getEyes() {
-        return this._eyesDriver;
+        return this._eyes;
     }
 
     //noinspection JSUnusedGlobalSymbols
-    setEyes(eyes) {
-        this._eyesDriver = eyes;
-    }
-
-    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {WebDriver}
+     */
     getRemoteWebDriver() {
         return this._driver;
+    }
+
+    /**
+     * @return {ImageRotation} The image rotation data.
+     */
+    getRotation() {
+        return this._rotation;
+    }
+
+    /**
+     * @param {ImageRotation} rotation The image rotation data.
+     */
+    setRotation(rotation) {
+        this._rotation = rotation;
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -60,8 +99,11 @@ class EyesWebDriver {
     }
 
     //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {Promise<String>}
+     */
     getUserAgent() {
-        return this._driver.executeScript('return navigator.userAgent');
+        return this._driver.executeScript('return navigator.userAgent;');
     }
 
     //noinspection JSCheckFunctionSignatures
@@ -86,7 +128,7 @@ class EyesWebDriver {
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * @param {string} cssSelector
+     * @param {String} cssSelector
      * @return {EyesRemoteWebElement}
      */
     findElementByCssSelector(cssSelector) {
@@ -95,7 +137,7 @@ class EyesWebDriver {
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * @param {string} cssSelector
+     * @param {String} cssSelector
      * @return {Promise.<EyesRemoteWebElement[]>}
      */
     findElementsByCssSelector(cssSelector) {
@@ -104,7 +146,7 @@ class EyesWebDriver {
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * @param {string} name
+     * @param {String} name
      * @return {EyesRemoteWebElement}
      */
     findElementById(name) {
@@ -113,7 +155,7 @@ class EyesWebDriver {
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * @param {string} name
+     * @param {String} name
      * @return {Promise.<EyesRemoteWebElement[]>}
      */
     findElementsById(name) {
@@ -122,7 +164,7 @@ class EyesWebDriver {
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * @param {string} name
+     * @param {String} name
      * @return {EyesRemoteWebElement}
      */
     findElementByName(name) {
@@ -131,7 +173,7 @@ class EyesWebDriver {
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * @param {string} name
+     * @param {String} name
      * @return {Promise.<EyesRemoteWebElement[]>}
      */
     findElementsByName(name) {
@@ -224,7 +266,7 @@ class EyesWebDriver {
      * @param {boolean} forceQuery If true, we will perform the query even if we have a cached viewport size.
      * @return {Promise<{width: number, height: number}>} The viewport size of the default content (outer most frame).
      */
-    getDefaultContentViewportSize(forceQuery) {
+    getDefaultContentViewportSize(forceQuery = false) {
         const that = this;
         return this._promiseFactory.makePromise(resolve => {
             that._logger.verbose("getDefaultContentViewportSize()");
@@ -269,6 +311,14 @@ class EyesWebDriver {
      */
     getFrameChain() {
         return new FrameChain(this._logger, this._frameChain);
+    }
+
+    /**
+     *
+     * @return {String} A copy of the current frame chain.
+     */
+    getSessionId() {
+        return this._driver.getSession().getId();
     }
 }
 

@@ -1,92 +1,91 @@
 'use strict';
 
-const {ArgumentGuard, PositionProvider} = require('eyes.sdk');
+const {ArgumentGuard, PositionProvider, RectangleSize, Location} = require('eyes.sdk');
 
 class ElementPositionProvider extends PositionProvider {
 
     /**
      * @param {Logger} logger A Logger instance.
-     * @param {EyesWebDriver} eyesDriver
+     * @param {EyesWebDriver} driver
      * @param {EyesRemoteWebElement} element
      * @param {PromiseFactory} promiseFactory
      */
-    constructor(logger, eyesDriver, element, promiseFactory) {
+    constructor(logger, driver, element, promiseFactory) {
         super();
-
         ArgumentGuard.notNull(logger, "logger");
-        ArgumentGuard.notNull(eyesDriver, "executor");
+        ArgumentGuard.notNull(driver, "executor");
         ArgumentGuard.notNull(element, "element");
+        ArgumentGuard.notNull(promiseFactory, "promiseFactory");
 
         this._logger = logger;
-        this._eyesDriver = eyesDriver;
+        this._driver = driver;
         this._promiseFactory = promiseFactory;
         this._element = element;
+
+        this._logger.verbose("creating ElementPositionProvider");
     }
 
     /**
-     * @return {Promise<{x: number, y: number}>} The scroll position of the current frame.
+     * @override
+     * @inheritDoc
      */
     getCurrentPosition() {
-        const that = this;
-        let elScrollLeft;
-        that._logger.verbose("getCurrentPosition()");
+        this._logger.verbose("getCurrentScrollPosition()");
 
-        return that._element.getScrollLeft().then(value => {
-            elScrollLeft = value;
+        const that = this;
+        let scrollLeft;
+        return that._element.getScrollLeft().then(_scrollLeft => {
+            scrollLeft = _scrollLeft;
             return that._element.getScrollTop();
-        }).then(value => {
-            const location = { x: elScrollLeft, y: value };
-            that._logger.verbose("Current position: ", location);
+        }).then(_scrollTop => {
+            const location = new Location(scrollLeft, _scrollTop);
+            that._logger.verbose(`Current position: ${location}`);
             return location;
         });
     }
 
     /**
-     * Go to the specified location.
-     * @param {{x: number, y: number}} location The position to scroll to.
-     * @return {Promise<void>}
+     * @override
+     * @inheritDoc
      */
     setPosition(location) {
         const that = this;
-        that._logger.verbose("Scrolling to:", location);
+        that._logger.verbose(`Scrolling element to: ${location}`);
         return that._element.scrollTo(location).then(() => {
-            that._logger.verbose("Done scrolling!");
+            that._logger.verbose("Done scrolling element!");
         });
     }
 
     /**
-     * @return {Promise<{width: number, height: number}>} The entire size of the container which the position is relative to.
+     * @override
+     * @inheritDoc
      */
     getEntireSize() {
+        this._logger.verbose("ElementPositionProvider - getEntireSize()");
+
         const that = this;
-        let elScrollWidth;
-        let elScrollHeight;
-        that._logger.verbose("getEntireSize()");
-        return that._element.getScrollWidth().then(value => {
-            elScrollWidth = value;
+        let scrollWidth;
+        return that._element.getScrollWidth().then(_scrollWidth => {
+            scrollWidth = _scrollWidth;
             return that._element.getScrollHeight();
-        }).then(value => {
-            elScrollHeight = value;
-
-            that._logger.verbose("Entire size: ", elScrollWidth, ",", elScrollHeight);
-
-            return {
-                width: elScrollWidth,
-                height: elScrollHeight
-            };
+        }).then(_scrollHeight => {
+            const size = new RectangleSize(scrollWidth, _scrollHeight);
+            that._logger.verbose(`ElementPositionProvider - Entire size: ${size}`);
+            return size;
         });
     }
 
     /**
-     * @return {Promise<{x: number, y: number}>}
+     * @override
+     * @inheritDoc
      */
     getState() {
         return this.getCurrentPosition();
     }
 
     /**
-     * @param {{x: number, y: number}} state The initial state of position
-     * @return {Promise<void>}
+     * @override
+     * @inheritDoc
      */
     restoreState(state) {
         const that = this;
