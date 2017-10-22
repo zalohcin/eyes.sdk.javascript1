@@ -9,7 +9,7 @@ class ScrollPositionProvider extends PositionProvider {
 
     /**
      * @param {Logger} logger A Logger instance.
-     * @param {EyesWebDriver} executor
+     * @param {EyesJsExecutor} executor
      * @param {PromiseFactory} promiseFactory
      */
     constructor(logger, executor, promiseFactory) {
@@ -20,7 +20,7 @@ class ScrollPositionProvider extends PositionProvider {
         ArgumentGuard.notNull(promiseFactory, "promiseFactory");
 
         this._logger = logger;
-        this._driver = executor;
+        this._executor = executor;
         this._promiseFactory = promiseFactory;
 
         this._logger.verbose("creating ScrollPositionProvider");
@@ -34,7 +34,7 @@ class ScrollPositionProvider extends PositionProvider {
         this._logger.verbose("ScrollPositionProvider - getCurrentPosition()");
 
         const that = this;
-        return EyesSeleniumUtils.getCurrentScrollPosition(this._driver, this._promiseFactory).then(result => {
+        return EyesSeleniumUtils.getCurrentScrollPosition(this._executor, this._promiseFactory).then(result => {
             that._logger.verbose(`Current position: ${result}`);
             return result;
         });
@@ -47,7 +47,7 @@ class ScrollPositionProvider extends PositionProvider {
     setPosition(location) {
         const that = this;
         that._logger.verbose(`ScrollPositionProvider - Scrolling to ${location}`);
-        return EyesSeleniumUtils.setCurrentScrollPosition(this._driver, location, this._promiseFactory).then(() => {
+        return EyesSeleniumUtils.setCurrentScrollPosition(this._executor, location, this._promiseFactory).then(() => {
             that._logger.verbose("ScrollPositionProvider - Done scrolling!");
         });
     }
@@ -58,7 +58,7 @@ class ScrollPositionProvider extends PositionProvider {
      */
     getEntireSize() {
         const that = this;
-        return EyesSeleniumUtils.getCurrentFrameContentEntireSize(this._driver, this._promiseFactory).then(result => {
+        return EyesSeleniumUtils.getCurrentFrameContentEntireSize(this._executor, this._promiseFactory).then(result => {
             that._logger.verbose(`ScrollPositionProvider - Entire size: ${result}`);
             return result;
         });

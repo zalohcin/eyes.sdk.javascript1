@@ -2,10 +2,10 @@
 
 const {MutableImage, CoordinatesType, GeneralUtils, GeometryUtils, ImageUtils} = require('eyes.sdk');
 
-/**
- * @private
- * @type {String}
- */
+const EyesWebDriver = require('./wrappers/EyesWebDriver');
+
+const NATIVE_APP = 'NATIVE_APP';
+
 const JS_GET_VIEWPORT_SIZE =
     "var height = undefined; " +
     "var width = undefined; " +
@@ -17,20 +17,15 @@ const JS_GET_VIEWPORT_SIZE =
     "else { var b = document.getElementsByTagName('body')[0]; if (b.clientWidth) { width = b.clientWidth;} }; " +
     "return [width, height];";
 
-/**
- * @private
- * @type {String}
- */
 const JS_GET_CURRENT_SCROLL_POSITION =
     "var doc = document.documentElement; " +
     "var x = window.scrollX || ((window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0)); " +
     "var y = window.scrollY || ((window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)); " +
     "return [x, y];";
 
-/**
- * @private
- * @type {String}
- */
+// IMPORTANT: Notice there's a major difference between scrollWidth and scrollHeight.
+// While scrollWidth is the maximum between an element's width and its content width,
+// scrollHeight might be smaller (!) than the clientHeight, which is why we take the maximum between them.
 const JS_GET_CONTENT_ENTIRE_SIZE =
     "var scrollWidth = document.documentElement.scrollWidth; " +
     "var bodyScrollWidth = document.body.scrollWidth; " +
@@ -43,6 +38,8 @@ const JS_GET_CONTENT_ENTIRE_SIZE =
     "var maxBodyHeight = Math.max(bodyClientHeight, bodyScrollHeight); " +
     "var totalHeight = Math.max(maxDocElementHeight, maxBodyHeight); " +
     "return [totalWidth, totalHeight];";
+
+const JS_TRANSFORM_KEYS = ["transform", "-webkit-transform"];
 
 /**
  * @return {String}
@@ -58,9 +55,6 @@ function JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle) {
         "}";
 }
 
-/**
- * @return {String}
- */
 const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
     "var styles = window.getComputedStyle(document.body, null);" +
     "var overflow = styles.getPropertyValue('overflow');" +
@@ -69,15 +63,93 @@ const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
     "return overflow == 'hidden' || overflowX == 'hidden' || overflowY == 'hidden'";
 
 /**
- * @private
- * @type {string[]}
- */
-const JS_TRANSFORM_KEYS = ["transform", "-webkit-transform"];
-
-/**
  * Handles browser related functionality.
  */
 class EyesSeleniumUtils {
+
+    static getPageLocation(coordinates) {
+        // TODO
+    }
+
+    static getViewportLocation(coordinates) {
+        // TODO
+    }
+
+    /**
+     * For EyesWebDriver instances, returns the underlying WebDriver. For all other types - return the driver received
+     * as parameter.
+     *
+     * @param {EyesWebDriver|WebDriver} driver The driver instance for which to get the underlying WebDriver.
+     * @return {WebDriver} The underlying WebDriver
+     */
+    static getUnderlyingDriver(driver) {
+        if (driver instanceof EyesWebDriver) {
+            driver = driver.getRemoteWebDriver();
+        }
+
+        return driver;
+    }
+
+    /**
+     *
+     * @param {EyesWebDriver|WebDriver} driver The driver for which to check if it represents a mobile device.
+     * @return {Boolean} {@code true} if the platform running the test is a mobile platform. {@code false} otherwise.
+     */
+    static isMobileDevice(driver) {
+        driver = EyesSeleniumUtils.getUnderlyingDriver(driver);
+        return driver instanceof AppiumDriver;
+    }
+
+    static isLandscapeOrientation(driver) {
+        // TODO
+    }
+
+    /**
+     * Sets the overflow of the current context's document element.
+     *
+     * @param {EyesJsExecutor} executor The executor to use for setting the overflow.
+     * @param {String} value The overflow value to set.
+     * @return {Promise<string>} The previous value of overflow (could be {@code null} if undefined).
+     */
+    static setOverflow(executor, value) {
+        let script;
+        if (!value) {
+            script =
+                "var origOverflow = document.documentElement.style.overflow; " +
+                "document.documentElement.style.overflow = undefined; " +
+                "return origOverflow";
+        } else {
+            script =
+                "var origOverflow = document.documentElement.style.overflow; " +
+                "document.documentElement.style.overflow = \"" + value + "\"; " +
+                "return origOverflow";
+        }
+
+        return executor.executeScript(script).catch(err => {
+            throw new Error('EyesDriverOperationException: failed to set overflow', err);
+        });
+    };
+
+    /**
+     * Hides the scrollbars of the current context's document element.
+     *
+     * @param {EyesJsExecutor} executor The executor to use for hiding the scrollbars.
+     * @param {int} stabilizationTimeout The amount of time to wait for the "hide scrollbars" action to take effect (Milliseconds). Zero/negative values are ignored.
+     * @return {Promise<String>} The previous value of the overflow property (could be {@code null}).
+     */
+    static hideScrollbars(executor, stabilizationTimeout) {
+        return EyesSeleniumUtils.setOverflow(executor, "hidden").then(result => {
+            if (stabilizationTimeout > 0) {
+                try {
+                    Thread.sleep(stabilizationTimeout);
+                } catch (InterruptedException e) {
+                    // Nothing to do.
+                }
+            }
+            return result;
+        });
+    };
+
     /**
      * Executes a script using the browser's executeScript function - and optionally waits a timeout.
      *
@@ -326,31 +398,6 @@ class EyesSeleniumUtils {
     };
 
     /**
-     * Updates the document's documentElement "overflow" value (mainly used to remove/allow scrollbars).
-     *
-     * @param {WebDriver} browser The driver used to update the web page.
-     * @param {String} overflowValue The values of the overflow to set.
-     * @param {PromiseFactory} promiseFactory
-     * @return {Promise<string>} A promise which resolves to the original overflow of the document.
-     */
-    static setOverflow(browser, overflowValue, promiseFactory) {
-        let script;
-        if (overflowValue === null) {
-            script =
-                "var origOverflow = document.documentElement.style.overflow; " +
-                "document.documentElement.style.overflow = undefined; " +
-                "return origOverflow";
-        } else {
-            script =
-                "var origOverflow = document.documentElement.style.overflow; " +
-                "document.documentElement.style.overflow = \"" + overflowValue + "\"; " +
-                "return origOverflow";
-        }
-
-        return EyesSeleniumUtils.executeScript(browser, script, promiseFactory, 100);
-    };
-
-    /**
      * Updates the document's body "overflow" value
      *
      * @param {WebDriver} browser The driver used to update the web page.
@@ -373,17 +420,6 @@ class EyesSeleniumUtils {
         }
 
         return EyesSeleniumUtils.executeScript(browser, script, promiseFactory, 100);
-    };
-
-    /**
-     * Hides the scrollbars of the current context's document element.
-     *
-     * @param {WebDriver} browser The browser to use for hiding the scrollbars.
-     * @param {PromiseFactory} promiseFactory
-     * @return {Promise<string>} The previous value of the overflow property (could be {@code null}).
-     */
-    static hideScrollbars(browser, promiseFactory) {
-        return EyesSeleniumUtils.setOverflow(browser, "hidden", promiseFactory);
     };
 
     /**

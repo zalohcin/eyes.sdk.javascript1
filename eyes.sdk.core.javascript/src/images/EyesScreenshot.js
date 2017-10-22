@@ -11,7 +11,7 @@ const Region = require('../positioning/Region');
 class EyesScreenshot {
 
     /**
-     * @param {Object} image
+     * @param {MutableImage} image
      **/
     constructor(image) {
         if (new.target === EyesScreenshot) {

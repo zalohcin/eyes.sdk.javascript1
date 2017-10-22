@@ -264,7 +264,7 @@ class EyesWebDriver {
 
     /**
      * @param {boolean} forceQuery If true, we will perform the query even if we have a cached viewport size.
-     * @return {Promise<{width: number, height: number}>} The viewport size of the default content (outer most frame).
+     * @return {Promise<RectangleSize>} The viewport size of the default content (outer most frame).
      */
     getDefaultContentViewportSize(forceQuery = false) {
         const that = this;

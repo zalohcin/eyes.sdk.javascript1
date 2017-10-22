@@ -4,7 +4,7 @@ const {WebDriver, WebElement, By} = require('selenium-webdriver').webdriver;
 const {
     EyesBase, FixedScaleProvider, FixedScaleProviderFactory, NullScaleProvider,
     ScaleProviderIdentityFactory, PromiseFactory, ArgumentGuard, SimplePropertyHandler,
-    GeometryUtils, Logger, CoordinatesType, MutableImage, ContextBasedScaleProviderFactory,
+    Logger, CoordinatesType, MutableImage, ContextBasedScaleProviderFactory,
     EyesError, UserAgent, ReadOnlyPropertyHandler
 } = require('eyes.sdk');
 
@@ -1042,7 +1042,7 @@ function getRegionProviderForElement(eyes, element) {
         borderTopWidth = value;
         return element.getBorderBottomWidth();
     }).then(value => { // borderBottomWidth
-        const elementRegion = GeometryUtils.createRegion(
+        const elementRegion = new Region(
             elementLocation.x + borderLeftWidth,
             elementLocation.y + borderTopWidth,
             elementSize.width - borderLeftWidth - borderRightWidth,
@@ -1087,14 +1087,10 @@ function getRegionProviderForCurrentFrame(eyes) {
 /**
  * Get the region for a certain web element.
  * @param {EyesRemoteWebElement|WebElement} element The web element to get the region from.
- * @return {Promise<{left: number, top: number, width: number, height: number}>} The region.
+ * @return {Promise<Region>} The region.
  */
 function getRegionFromWebElement(element) {
-    let elementSize;
-    return element.getSize().then(size => {
-        elementSize = size;
-        return element.getLocation();
-    }).then(point => GeometryUtils.createRegionFromLocationAndSize(point, elementSize));
+    return element.getSize().then(size => element.getLocation().then(point => new Region(point.x, point.y, size.width, size.height)));
 }
 
 Eyes.UNKNOWN_DEVICE_PIXEL_RATIO = 0;
