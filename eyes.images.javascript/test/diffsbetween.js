@@ -12,10 +12,10 @@ eyes.setHostOS('Mac OS X 10.10');
 eyes.setHostApp("My browser");
 
 // load images from local storage
-const image1 = fs.readFileSync('DSC_2976.png');
-const image2 = fs.readFileSync('DSC_2977.png');
-const image1Size = new RectangleSize(4000, 2667);
-const image2Size = new RectangleSize(4000, 2667);
+const image1 = fs.readFileSync('image3.png');
+const image2 = fs.readFileSync('image4.png');
+const image1Size = new RectangleSize(1000, 633);
+const image2Size = new RectangleSize(1000, 633);
 
 const appName = "eyes.images.javascript - diffbetweentwo";
 // get random name for our test, each test is "unique" test on eyes server
