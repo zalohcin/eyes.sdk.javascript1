@@ -47,7 +47,7 @@ class MatchWindowTask {
      * @param {String} tag                Optional tag to be associated with the match (can be {@code null}).
      * @param {Boolean} ignoreMismatch     Whether to instruct the server to ignore the match attempt in case of a mismatch.
      * @param {ImageMatchSettings} imageMatchSettings The settings to use.
-     * @return {Promise<MatchResult>} The match result.
+     * @return {Promise.<MatchResult>} The match result.
      */
     performMatch(userInputs, appOutput, tag, ignoreMismatch, imageMatchSettings) {
         // Prepare match data.
@@ -69,7 +69,7 @@ class MatchWindowTask {
      * @param {ImageMatchSettings} imageMatchSettings     The settings to use.
      * @param {int} retryTimeout           The amount of time to retry matching in milliseconds or a
      *                               negative value to use the default retry timeout.
-     * @return {Promise<MatchResult>} Returns the results of the match
+     * @return {Promise.<MatchResult>} Returns the results of the match
      */
     matchWindow(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, imageMatchSettings, retryTimeout) {
         if (retryTimeout < 0) {
@@ -98,7 +98,7 @@ class MatchWindowTask {
      * @param {Boolean} ignoreMismatch
      * @param {ImageMatchSettings} imageMatchSettings
      * @param {int} retryTimeout
-     * @return {Promise<EyesScreenshot>}
+     * @return {Promise.<EyesScreenshot>}
      */
     _takeScreenshot(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, imageMatchSettings, retryTimeout) {
         const that = this;
@@ -138,38 +138,38 @@ class MatchWindowTask {
      * @param {Boolean} ignoreMismatch
      * @param {ImageMatchSettings} imageMatchSettings
      * @param {int} retryTimeout
-     * @return {Promise<EyesScreenshot>}
+     * @return {Promise.<EyesScreenshot>}
      */
     _retryTakingScreenshot(userInputs, region, tag, ignoreMismatch, imageMatchSettings, retryTimeout) {
         const that = this;
         const start = GeneralUtils.currentTimeMillis(); // Start the retry timer.
-
-        let screenshot, retry = GeneralUtils.currentTimeMillis() - start;
+        const retry = GeneralUtils.currentTimeMillis() - start;
 
         // The match retry loop.
-        const promise = this._promiseFactory.promiseWhile(() => (retry < retryTimeout), () => {
-            // Wait before trying again.
-            return GeneralUtils.sleep(MATCH_INTERVAL, that._promiseFactory).then(() => {
-                return that._tryTakeScreenshot(userInputs, region, tag, true, imageMatchSettings).then(scr => {
-                    screenshot = scr;
-
-                    if (that._matchResult.getAsExpected()) {
-                        // noinspection ReuseOfLocalVariableJS
-                        retry = retryTimeout; //break;
-                    } else {
-                        // noinspection ReuseOfLocalVariableJS
-                        retry = GeneralUtils.currentTimeMillis() - start;
-                    }
-                });
-            });
-        });
-
-        return promise.then(() => {
+        return that._takingScreenshotLoop(userInputs, region, tag, ignoreMismatch, imageMatchSettings, retryTimeout, retry, start).then(screenshot => {
             // if we're here because we haven't found a match yet, try once more
             if (!this._matchResult.getAsExpected()) {
                 return this._tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, imageMatchSettings);
             }
             return screenshot;
+        });
+    }
+
+    _takingScreenshotLoop(userInputs, region, tag, ignoreMismatch, imageMatchSettings, retryTimeout, retry, start, screenshot) {
+        if (retry >= retryTimeout) {
+            return this._promiseFactory.resolve(screenshot);
+        }
+
+        const that = this;
+        return GeneralUtils.sleep(MATCH_INTERVAL, that._promiseFactory).then(() => {
+            return that._tryTakeScreenshot(userInputs, region, tag, true, imageMatchSettings).then(screenshot => {
+                if (that._matchResult.getAsExpected()) {
+                    return screenshot;
+                } else {
+                    return that._takingScreenshotLoop(userInputs, region, tag, ignoreMismatch, imageMatchSettings,
+                        retryTimeout, GeneralUtils.currentTimeMillis() - start, start, screenshot);
+                }
+            });
         });
     }
 
@@ -180,7 +180,7 @@ class MatchWindowTask {
      * @param {String} tag
      * @param {Boolean} ignoreMismatch
      * @param {ImageMatchSettings} imageMatchSettings
-     * @return {Promise<EyesScreenshot>}
+     * @return {Promise.<EyesScreenshot>}
      */
     _tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, imageMatchSettings) {
         const that = this;
