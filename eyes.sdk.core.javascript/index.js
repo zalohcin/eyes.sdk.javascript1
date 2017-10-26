@@ -16,7 +16,7 @@ exports.NullDebugScreenshotProvider = require('./src/debug/NullDebugScreenshotPr
 exports.EyesError = require('./src/errors/EyesError');
 exports.DiffsFoundError = require('./src/errors/DiffsFoundError');
 exports.NewTestError = require('./src/errors/NewTestError');
-exports.TestFailedError = require('./src/errors/TestFailedError');
+exports.FailedTestError = require('./src/errors/FailedTestError');
 
 exports.CheckSettings = require('./src/fluent/CheckSettings');
 exports.CheckTarget = require('./src/fluent/CheckTarget');

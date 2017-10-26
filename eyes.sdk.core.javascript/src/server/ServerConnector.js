@@ -179,7 +179,7 @@ class ServerConnector {
      * a completely new session.
      *
      * @param {SessionStartInfo} sessionStartInfo The start parameters for the session.
-     * @return {Promise<RunningSession>} RunningSession object which represents the current running session
+     * @return {Promise.<RunningSession>} RunningSession object which represents the current running session
      */
     startSession(sessionStartInfo) {
         ArgumentGuard.notNull(sessionStartInfo, "sessionStartInfo");
@@ -212,7 +212,7 @@ class ServerConnector {
      * @param {RunningSession} runningSession The running session to be stopped.
      * @param {Boolean} isAborted
      * @param {Boolean} save
-     * @return {Promise<TestResults>} TestResults object for the stopped running session
+     * @return {Promise.<TestResults>} TestResults object for the stopped running session
      */
     stopSession(runningSession, isAborted, save) {
         ArgumentGuard.notNull(runningSession, "runningSession");
@@ -246,7 +246,7 @@ class ServerConnector {
      *
      * @param {RunningSession} runningSession The current agent's running session.
      * @param {MatchWindowData} matchWindowData Encapsulation of a capture taken from the application.
-     * @return {Promise<MatchResult>} The results of the window matching.
+     * @return {Promise.<MatchResult>} The results of the window matching.
      */
     matchWindow(runningSession, matchWindowData) {
         ArgumentGuard.notNull(runningSession, "runningSession");
@@ -281,7 +281,7 @@ class ServerConnector {
      * @param {RunningSession} runningSession The current agent's running session.
      * @param {Number} stepIndex The zero based index of the step in which to replace the actual image.
      * @param {MatchWindowData} matchWindowData Encapsulation of a capture taken from the application.
-     * @return {Promise<MatchResult>} The results of the window matching.
+     * @return {Promise.<MatchResult>} The results of the window matching.
      */
     replaceWindow(runningSession, stepIndex, matchWindowData) {
         ArgumentGuard.notNull(runningSession, "runningSession");
@@ -317,7 +317,7 @@ class ServerConnector {
  * @param {String} uri
  * @param {String} method
  * @param {Object} options
- * @return {Promise<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
+ * @return {Promise.<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
  */
 function sendLongRequest(that, name, uri, method, options = {}) {
     const headers = {
@@ -336,7 +336,7 @@ function sendLongRequest(that, name, uri, method, options = {}) {
  * @param {ServerConnector} that
  * @param {String} name
  * @param {{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}} results
- * @return {Promise<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
+ * @return {Promise.<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
  */
 function longRequestCheckStatus(that, name, results) {
     switch (results.status) {
@@ -364,7 +364,7 @@ function longRequestCheckStatus(that, name, results) {
  * @param {String} name
  * @param {String} uri
  * @param {int} delay
- * @return {Promise<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
+ * @return {Promise.<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
  */
 function longRequestLoop(that, name, uri, delay) {
     delay = Math.min(MAX_LONG_REQUEST_DELAY, Math.floor(delay * LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR));
@@ -386,7 +386,7 @@ function longRequestLoop(that, name, uri, delay) {
  * @param {String} uri
  * @param {String} method
  * @param {Object} options
- * @return {Promise<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
+ * @return {Promise.<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
  */
 function sendRequest(that, name, uri, method, options = {}) {
     const req = GeneralUtils.clone(that._httpOptions);

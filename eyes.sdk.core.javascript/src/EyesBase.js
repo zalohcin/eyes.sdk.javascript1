@@ -36,7 +36,7 @@ const MatchWindowData = require('./match/MatchWindowData');
 
 const DiffsFoundError = require('./errors/DiffsFoundError');
 const NewTestError = require('./errors/NewTestError');
-const TestFailedError = require('./errors/TestFailedError');
+const FailedTestError = require('./errors/FailedTestError');
 
 const CheckSettings = require('./fluent/CheckSettings');
 
@@ -692,7 +692,7 @@ class EyesBase {
      * Ends the currently running test.
      *
      * @param {Boolean} throwEx If true, then the returned promise will 'reject' for failed/aborted tests.
-     * @return {Promise<TestResults>} A promise which resolves/rejects (depending on the value of 'throwEx') to the test results.
+     * @return {Promise.<TestResults>} A promise which resolves/rejects (depending on the value of 'throwEx') to the test results.
      */
     close(throwEx = true) {
         const that = this;
@@ -717,7 +717,7 @@ class EyesBase {
     /**
      * If a test is running, aborts it. Otherwise, does nothing.
      *
-     * @return {Promise<void>} A promise which resolves to the test results.
+     * @return {Promise.<void>} A promise which resolves to the test results.
      */
     abortIfNotClosed() {
         const that = this;
@@ -790,9 +790,9 @@ class EyesBase {
                 serverResults = results;
                 that._logger.verbose(`Results: ${results}`);
 
-                if (!isNewSession && (results.getMismatches() > 0 || results.getMissing() > 0)) {
+                if (serverResults.getStatus() === "Unresolved" && !isNewSession) {
                     let instructions = `See details at ${sessionResultsUrl}`;
-                    that._logger.log(`--- Failed test ended. ${instructions}`);
+                    that._logger.log(`--- Unresolved test ended. ${instructions}`);
 
                     if (throwEx) {
                         that._finallyClose();
@@ -802,7 +802,7 @@ class EyesBase {
                     return resolve(results);
                 }
 
-                if (isNewSession && !that._saveNewTests) {
+                if (serverResults.getStatus() === "Unresolved" && isNewSession && !that._saveNewTests) {
                     let instructions = "Please approve the new baseline at " + sessionResultsUrl;
                     that._logger.log(`--- New test ended. ${instructions}`);
 
@@ -810,6 +810,18 @@ class EyesBase {
                         that._finallyClose();
                         const message = `'${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}'. ${instructions}`;
                         return that._promiseFactory.reject(new NewTestError(results, message));
+                    }
+                    return resolve(results);
+                }
+
+                if (serverResults.getStatus() === "Failed") {
+                    let instructions = `See details at ${sessionResultsUrl}`;
+                    that._logger.log(`--- Failed test ended. ${instructions}`);
+
+                    if (throwEx) {
+                        that._finallyClose();
+                        const message = `'${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}'. ${instructions}`;
+                        return that._promiseFactory.reject(new FailedTestError(results, message));
                     }
                     return resolve(results);
                 }
@@ -1018,7 +1030,7 @@ class EyesBase {
      * @param {String} tag An optional tag to be associated with the snapshot.
      * @param {Boolean} ignoreMismatch Whether to ignore this check if a mismatch is found.
      * @param {CheckSettings} [checkSettings]  The settings to use.
-     * @return {Promise<MatchResult>} The result of matching the output with the expected output.
+     * @return {Promise.<MatchResult>} The result of matching the output with the expected output.
      * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
      */
     checkWindowBase(regionProvider, tag = "", ignoreMismatch, checkSettings = new CheckSettings(EyesBase.USE_DEFAULT_TIMEOUT)) {
@@ -1077,7 +1089,7 @@ class EyesBase {
      * @param {string} [tag] The updated tag for the step.
      * @param {string} [title] The updated title for the step.
      * @param {Array} [userInputs] The updated userInputs for the step.
-     * @return {Promise<MatchResult>} A promise which resolves when replacing is done, or rejects on error.
+     * @return {Promise.<MatchResult>} A promise which resolves when replacing is done, or rejects on error.
      */
     replaceWindow(stepIndex, screenshot, tag = "", title = "", userInputs = []) {
         this._logger.verbose('EyesBase.replaceWindow - running');
@@ -1201,7 +1213,7 @@ class EyesBase {
         }
 
         if (this.getFailureReports() === FailureReports.IMMEDIATE) {
-            throw new TestFailedError(null, `Mismatch found in '${this._sessionStartInfo.getScenarioIdOrName()}' of '${this._sessionStartInfo.getAppIdOrName()}'`);
+            throw new FailedTestError(null, `Mismatch found in '${this._sessionStartInfo.getScenarioIdOrName()}' of '${this._sessionStartInfo.getAppIdOrName()}'`);
         }
     }
 
@@ -1583,7 +1595,7 @@ class EyesBase {
      * @private
      * @param {Region} region A callback for getting the region of the screenshot which will be set in the application output.
      * @param {EyesScreenshot} lastScreenshot Previous application screenshot (used for compression) or {@code null} if not available.
-     * @return {Promise<AppOutputWithScreenshot>} The updated app output and screenshot.
+     * @return {Promise.<AppOutputWithScreenshot>} The updated app output and screenshot.
      */
      _getAppOutputWithScreenshot(region, lastScreenshot) {
         const that = this;
@@ -1622,7 +1634,7 @@ class EyesBase {
      * @private
      * @param {EyesScreenshot} screenshot The screenshot to compress.
      * @param {EyesScreenshot} lastScreenshot The previous screenshot, or null.
-     * @return {Promise<Buffer>} A base64 encoded compressed screenshot.
+     * @return {Promise.<Buffer>} A base64 encoded compressed screenshot.
      */
     _compressScreenshot64(screenshot, lastScreenshot) {
         ArgumentGuard.notNull(screenshot, "screenshot");
@@ -1724,7 +1736,7 @@ class EyesBase {
      * @protected
      * @abstract
      * Get the session id.
-     * @return {Promise<String>} A promise which resolves to the webdriver's session ID.
+     * @return {Promise.<String>} A promise which resolves to the webdriver's session ID.
      */
     getAUTSessionId() {
         throw new TypeError('getAUTSessionId method is not implemented!');

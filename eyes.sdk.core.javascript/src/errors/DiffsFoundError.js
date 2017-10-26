@@ -1,11 +1,11 @@
 'use strict';
 
-const TestFailedError = require('./TestFailedError');
+const FailedTestError = require('./FailedTestError');
 
 /**
  * Indicates that a test did not pass (i.e., test either failed or is a new test).
  */
-class DiffsFoundError extends TestFailedError {
+class DiffsFoundError extends FailedTestError {
 
     /**
      * Creates a new DiffsFoundError instance.

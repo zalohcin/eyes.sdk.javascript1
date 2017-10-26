@@ -43,7 +43,7 @@ class DebugScreenshotsProvider {
      * @abstract
      * @param {MutableImage} image
      * @param {String} suffix
-     * @return {Promise<void>}
+     * @return {Promise.<void>}
      */
     save(image, suffix) {
         throw new TypeError('The method `save` from `DebugScreenshotsProvider` should be implemented!');

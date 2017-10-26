@@ -15,7 +15,7 @@ class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
     /**
      * @param {MutableImage} image
      * @param {String} suffix
-     * @return {Promise<void>}
+     * @return {Promise.<void>}
      */
     save(image, suffix) {
         const filename = this.path + this.prefix + this.getFormattedTimeStamp() + "_" + suffix + ".png";
@@ -24,7 +24,7 @@ class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
 
     // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
     /**
-     * @return {Promise<void>}
+     * @return {Promise.<void>}
      */
     getFormattedTimeStamp() {
         return dateformat(new Date(), DATE_FORMAT);

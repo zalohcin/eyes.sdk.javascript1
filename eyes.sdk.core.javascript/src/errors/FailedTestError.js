@@ -3,10 +3,10 @@
 /**
  * Indicates that a test did not pass (i.e., test either failed or is a new test).
  */
-class TestFailedError extends Error {
+class FailedTestError extends Error {
 
     /**
-     * Creates a new TestFailedError instance.
+     * Creates a new FailedTestError instance.
      *
      * @param {TestResults} [testResults] The results of the current test if available, {@code null} otherwise.
      * @param {String} [msg]
@@ -16,8 +16,8 @@ class TestFailedError extends Error {
         super(msg, id);
         this._testResults = testResults;
 
-        if (new.target === TestFailedError) {
-            Error.captureStackTrace(this, TestFailedError);
+        if (new.target === FailedTestError) {
+            Error.captureStackTrace(this, FailedTestError);
         }
     }
 
@@ -30,4 +30,4 @@ class TestFailedError extends Error {
     }
 }
 
-module.exports = TestFailedError;
+module.exports = FailedTestError;

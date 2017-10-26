@@ -17,7 +17,7 @@ class EyesScreenshotFactory {
     /**
      * @abstract
      * @param {MutableImage} image
-     * @return {Promise<EyesScreenshot>}
+     * @return {Promise.<EyesScreenshot>}
      */
     makeScreenshot(image) {
         throw new TypeError('The method `makeScreenshot` from `EyesScreenshotFactory` should be implemented!');

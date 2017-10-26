@@ -1,11 +1,11 @@
 'use strict';
 
-const TestFailedError = require('./TestFailedError');
+const FailedTestError = require('./FailedTestError');
 
 /**
  * Indicates that a new test (i.e., a test for which no baseline exists) ended.
  */
-class NewTestError extends TestFailedError {
+class NewTestError extends FailedTestError {
 
     /**
      * Creates a new NewTestError instance.

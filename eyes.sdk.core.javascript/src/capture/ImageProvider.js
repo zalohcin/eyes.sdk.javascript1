@@ -16,7 +16,7 @@ class ImageProvider {
     // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
     /**
      * @abstract
-     * @return {Promise<MutableImage>}
+     * @return {Promise.<MutableImage>}
      */
     getImage() {
         throw new TypeError('The method `getImage` from `ImageProvider` should be implemented!');

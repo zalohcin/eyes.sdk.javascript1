@@ -23,7 +23,7 @@ class FixedCutProvider extends CutProvider {
     /**
      * @param {MutableImage} image The image to cut.
      * @param {PromiseFactory} promiseFactory
-     * @return {Promise<MutableImage>} A new cut image.
+     * @return {Promise.<MutableImage>} A new cut image.
      */
     cut(image, promiseFactory) {
         const that = this;

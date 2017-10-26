@@ -13,7 +13,7 @@ class InvalidPositionProvider extends PositionProvider {
 
     // noinspection JSMethodCanBeStatic
     /**
-     * @return {Promise<Location>} The current position, or {@code null} if position is not available.
+     * @return {Promise.<Location>} The current position, or {@code null} if position is not available.
      */
     getCurrentPosition() {
         throw new TypeError('This class does not implement methods!');
@@ -31,7 +31,7 @@ class InvalidPositionProvider extends PositionProvider {
 
     // noinspection JSMethodCanBeStatic
     /**
-     * @return {Promise<RectangleSize>} The entire size of the container which the position is relative to.
+     * @return {Promise.<RectangleSize>} The entire size of the container which the position is relative to.
      */
     getEntireSize() {
         throw new TypeError('This class does not implement methods!');
@@ -39,7 +39,7 @@ class InvalidPositionProvider extends PositionProvider {
 
     // noinspection JSMethodCanBeStatic
     /**
-     * @return {Promise<object>}
+     * @return {Promise.<object>}
      */
     getState() {
         throw new TypeError('This class does not implement methods!');
@@ -48,7 +48,7 @@ class InvalidPositionProvider extends PositionProvider {
     // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
     /**
      * @param {Object} state The initial state of position
-     * @return {Promise<void>}
+     * @return {Promise.<void>}
      */
     restoreState(state) {
         throw new TypeError('This class does not implement methods!');

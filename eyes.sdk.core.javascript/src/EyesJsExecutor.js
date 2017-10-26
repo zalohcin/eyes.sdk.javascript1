@@ -16,10 +16,20 @@ class EyesJsExecutor {
      * @abstract
      * @param {String} script
      * @param {Object...} args
-     * @return {Promise<any>}
+     * @return {Promise.<any>}
      */
     executeScript(script, ...args) {
         throw new TypeError('The method `executeScript` from `EyesJsExecutor` should be implemented!');
+    }
+
+    // noinspection JSMethodCanBeStatic
+    /**
+     * @abstract
+     * @param {int} millis
+     * @return {Promise.<void>}
+     */
+    sleep(millis) {
+        throw new TypeError('The method `sleep` from `EyesJsExecutor` should be implemented!');
     }
 }
 
