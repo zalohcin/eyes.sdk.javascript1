@@ -72,7 +72,7 @@ class Eyes extends EyesBase {
         }
 
         this._logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
-        return this._checkImage(new NullRegionProvider(), image, tag, ignoreMismatch, retryTimeout);
+        return this._checkImage(new NullRegionProvider(this.getPromiseFactory()), image, tag, ignoreMismatch, retryTimeout);
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -102,7 +102,7 @@ class Eyes extends EyesBase {
         }
 
         this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
-        return this._checkImage(new RegionProvider(region), image, tag, ignoreMismatch, retryTimeout);
+        return this._checkImage(new RegionProvider(region, this.getPromiseFactory()), image, tag, ignoreMismatch, retryTimeout);
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -195,7 +195,7 @@ class Eyes extends EyesBase {
             return this._promiseFactory.resolve(new Error(err));
         }
 
-        this._viewportSizeHandler.set(RectangleSize.fromRectangleSize(size));
+        this._viewportSizeHandler.set(RectangleSize.copy(size));
         return this._promiseFactory.resolve();
     }
 
@@ -256,7 +256,7 @@ class Eyes extends EyesBase {
         image = this._normalizeImageType(image);
 
         if (!this._viewportSizeHandler.get()) {
-            this._viewportSize = RectangleSize.fromRectangleSize(image.getSize());
+            this._viewportSize = RectangleSize.copy(image.getSize());
         }
 
         this._screenshot = new EyesImagesScreenshot(image);

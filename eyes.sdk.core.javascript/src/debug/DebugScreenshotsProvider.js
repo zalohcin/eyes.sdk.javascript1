@@ -15,7 +15,6 @@ class DebugScreenshotsProvider {
         this._path = null;
     }
 
-
     getPrefix() {
         return this._prefix;
     }
@@ -38,16 +37,13 @@ class DebugScreenshotsProvider {
         this._path = value;
     }
 
-    // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
     /**
      * @abstract
      * @param {MutableImage} image
      * @param {String} suffix
-     * @return {Promise.<void>}
+     * @return {Promise}
      */
-    save(image, suffix) {
-        throw new TypeError('The method `save` from `DebugScreenshotsProvider` should be implemented!');
-    }
+    save(image, suffix) {}
 }
 
 module.exports = DebugScreenshotsProvider;

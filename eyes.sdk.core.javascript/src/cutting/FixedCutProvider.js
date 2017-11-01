@@ -22,38 +22,37 @@ class FixedCutProvider extends CutProvider {
 
     /**
      * @param {MutableImage} image The image to cut.
-     * @param {PromiseFactory} promiseFactory
      * @return {Promise.<MutableImage>} A new cut image.
      */
-    cut(image, promiseFactory) {
+    cut(image) {
         const that = this;
-        let promise = promiseFactory.resolve(image);
+        let promise = image.resolve();
 
         if (this._header > 0) {
             promise = promise.then(() => {
                 const region = new Region(0, that._header, image.getWidth(), image.getHeight() - that._header);
-                return image.cropImage(region);
+                return image.crop(region);
             });
         }
 
         if (this._footer > 0) {
             promise = promise.then(() => {
                 const region = new Region(0, 0, image.getWidth(), image.getHeight() - that._footer);
-                return image.cropImage(region);
+                return image.crop(region);
             });
         }
 
         if (this._left > 0) {
             promise = promise.then(() => {
                 const region = new Region(that._left, 0, image.getWidth() - that._left, image.getHeight());
-                return image.cropImage(region);
+                return image.crop(region);
             });
         }
 
         if (this._right > 0) {
             promise = promise.then(() => {
                 const region = new Region(0, 0, image.getWidth() - that._right, image.getHeight());
-                return image.cropImage(region);
+                return image.crop(region);
             });
         }
 

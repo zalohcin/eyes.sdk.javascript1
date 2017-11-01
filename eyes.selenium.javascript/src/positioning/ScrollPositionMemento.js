@@ -13,7 +13,7 @@ class ScrollPositionMemento extends PositionMemento {
     constructor(position) {
         super();
 
-        this._position = Location.fromLocation(position);
+        this._position = Location.copy(position);
     }
 
     /**

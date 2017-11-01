@@ -1,43 +1,40 @@
 {
-    "name": "eyes.selenium",
-    "version": "1.0.0",
-    "description": "Applitools Eyes SDK For Selenium JavaScript WebDriver",
-    "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
-    "keywords": [
-        "eyes.selenium",
-        "Test Automation",
-        "Visual Regression",
-        "tests",
-        "SDK",
-        "Applitools",
-        "Eyes",
-        "automation",
-        "selenium",
-        "testing",
-        "webdriver",
-        "webdriverjs"
-    ],
-    "homepage": "http://www.applitools.com/",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/applitools/Eyes.Selenium.JavaScript.git"
-    },
-    "license": "Apache-2.0",
-    "main": "index",
-    "dependencies": {
-        "eyes.sdk": "1.0.0",
-        "selenium-webdriver": "^3.0.0"
-    },
-    "devDependencies": {
-        "mocha": "^3.5.0"
-    },
-    "scripts": {
-        "test": "mocha"
-    },
-    "ava": {
-        "concurrency": 1
-    },
-    "engines": {
-        "node": ">=6.9.0"
-    }
+  "name": "eyes.selenium",
+  "version": "1.0.0",
+  "description": "Applitools Eyes SDK For Selenium JavaScript WebDriver",
+  "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
+  "keywords": [
+    "eyes.selenium",
+    "Test Automation",
+    "Visual Regression",
+    "tests",
+    "SDK",
+    "Applitools",
+    "Eyes",
+    "automation",
+    "selenium",
+    "testing",
+    "webdriver",
+    "webdriverjs"
+  ],
+  "homepage": "http://www.applitools.com/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/applitools/Eyes.Selenium.JavaScript.git"
+  },
+  "license": "Apache-2.0",
+  "main": "index",
+  "dependencies": {
+    "eyes.sdk": "1.0.0",
+    "selenium-webdriver": "^3.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.5.0"
+  },
+  "scripts": {
+    "test": "mocha 'test/**/*.spec.js' --timeout 300000"
+  },
+  "engines": {
+    "node": ">=6.9.0"
+  }
 }

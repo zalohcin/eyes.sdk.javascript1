@@ -32,16 +32,21 @@ class Region {
         this._coordinatesType = coordinatesType;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
-     * Creates a Region from another Region instance.
+     * Creates a new instance of Region from Region or object
      *
-     * @param {Region} other A Region instance from which to create the Region.
-     * @return {Region}
+     * @param {Region|{left: number, top: number, width: number, height: number}|null} object
+     * @return {Region|null}
      */
-    static fromRegion(other) {
-        ArgumentGuard.notNull(other, "other");
-        return new Region(other.getLeft(), other.getTop(), other.getWidth(), other.getHeight(), other.getCoordinatesType());
+    static copy(object) {
+        // noinspection OverlyComplexBooleanExpressionJS
+        if (object.hasOwnProperty('left') && object.hasOwnProperty('top') && object.hasOwnProperty('width') && object.hasOwnProperty('height')) {
+            return new Region(object.left, object.top, object.width, object.height);
+        } else if (object instanceof Region) {
+            return new Region(object.getLeft(), object.getTop(), object.getWidth(), object.getHeight(), object.getCoordinatesType());
+        }
+
+        return null;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -145,10 +150,11 @@ class Region {
             return false;
         }
 
-        return (this.getLeft() === obj.getLeft())
-            && (this.getTop() === obj.getTop())
-            && (this.getWidth() === obj.getWidth())
-            && (this.getHeight() === obj.getHeight());
+        // noinspection OverlyComplexBooleanExpressionJS
+        return this.getLeft() === obj.getLeft() &&
+            this.getTop() === obj.getTop() &&
+            this.getWidth() === obj.getWidth() &&
+            this.getHeight() === obj.getHeight();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -156,10 +162,11 @@ class Region {
      * @return {Boolean} {@code true} if the region is empty; {@code false} otherwise.
      */
     isEmpty() {
-        return this.getLeft() === Region.EMPTY.getLeft()
-            && this.getTop() === Region.EMPTY .getTop()
-            && this.getWidth() === Region.EMPTY.getWidth()
-            && this.getHeight() === Region.EMPTY.getHeight();
+        // noinspection OverlyComplexBooleanExpressionJS
+        return this.getLeft() === Region.EMPTY.getLeft() &&
+            this.getTop() === Region.EMPTY .getTop() &&
+            this.getWidth() === Region.EMPTY.getWidth() &&
+            this.getHeight() === Region.EMPTY.getHeight();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -178,12 +185,12 @@ class Region {
     /**
      * @return {Location}
      */
-    static getMiddleOffset() {
+    getMiddleOffset() {
         const middleX = this._width / 2;
         const middleY = this._height / 2;
 
         return new Location(middleX, middleY);
-    };
+    }
 
     // noinspection JSUnusedGlobalSymbols
     /**
@@ -214,7 +221,7 @@ class Region {
         }
 
         return _getSubRegionsWithVaryingSize(this, subRegionSize);
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -229,8 +236,9 @@ class Region {
 
         const bottom = this._top + this._height;
         const otherBottom = other.getTop() + other.getHeight();
+        // noinspection OverlyComplexBooleanExpressionJS
         return this._top <= other.getTop() && this._left <= other.getLeft() && bottom >= otherBottom && right >= otherRight;
-    };
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -240,11 +248,12 @@ class Region {
      * @return {Boolean} True if the location is contained within this region, false otherwise.
      */
     containsLocation(location) {
-        return location.getX() >= this._left
-            && location.getX() <= (this._left + this._width)
-            && location.getY() >= this._top
-            && location.getY() <= (this._top + this._height);
-    };
+        // noinspection OverlyComplexBooleanExpressionJS
+        return location.getX() >= this._left &&
+            location.getX() <= (this._left + this._width) &&
+            location.getY() >= this._top &&
+            location.getY() <= (this._top + this._height);
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -262,9 +271,10 @@ class Region {
         const otherRight = otherLeft + other.getWidth();
         const otherBottom = otherTop + other.getHeight();
 
-        return (((this._left <= otherLeft && otherLeft <= right) || (otherLeft <= this._left && this._left <= otherRight))
-            && ((this._top <= otherTop && otherTop <= bottom) || (otherTop <= this._top && this._top <= otherBottom)));
-    };
+        // noinspection OverlyComplexBooleanExpressionJS
+        return (((this._left <= otherLeft && otherLeft <= right) || (otherLeft <= this._left && this._left <= otherRight)) &&
+            ((this._top <= otherTop && otherTop <= bottom) || (otherTop <= this._top && this._top <= otherBottom)));
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -300,7 +310,7 @@ class Region {
         this._top = intersectionTop;
         this._width = intersectionWidth;
         this._height = intersectionHeight;
-    };
+    }
 
     /**
      * @private
@@ -319,7 +329,7 @@ class Region {
             top: this._top,
             width: this._width,
             height: this._height,
-        }
+        };
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -328,6 +338,7 @@ class Region {
     }
 }
 
+// noinspection FunctionWithMultipleLoopsJS
 /**
  * @private
  * @param {Region} containerRegion The region to divide into sub-regions.
@@ -357,7 +368,7 @@ function _getSubRegionsWithFixedSize(containerRegion, subRegionSize) {
 
     // If the requested size is greater or equal to the entire region size, we return a copy of the region.
     if (subRegionWidth === containerRegion.getWidth() && subRegionHeight === containerRegion.getHeight()) {
-        subRegions.push(Region.fromRegion(containerRegion));
+        subRegions.push(Region.copy(containerRegion));
         return subRegions;
     }
 
@@ -386,6 +397,7 @@ function _getSubRegionsWithFixedSize(containerRegion, subRegionSize) {
     return subRegions;
 }
 
+// noinspection FunctionWithMultipleLoopsJS
 /**
  * @private
  * @param {Region} containerRegion The region to divide into sub-regions.

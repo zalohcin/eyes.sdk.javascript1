@@ -22,7 +22,9 @@ function _parseImage(that) {
 
         return ImageUtils.parseImage(that._imageBuffer, that._promiseFactory).then(imageData => {
             that._imageBmp = imageData;
+            // noinspection JSUnresolvedVariable
             that._width = imageData.width;
+            // noinspection JSUnresolvedVariable
             that._height = imageData.height;
             that._isParsed = true;
             resolve();
@@ -75,13 +77,21 @@ class MutableImage {
      * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
      **/
     constructor(image, promiseFactory) {
+        /** @type {Buffer} */
         this._imageBuffer = image;
+        /** @type {PromiseFactory} */
         this._promiseFactory = promiseFactory;
+        /** @type {boolean} */
         this._isParsed = false;
+        /** @type {png.Image} */
         this._imageBmp = undefined;
+        /** @type {int} */
         this._width = 0;
+        /** @type {int} */
         this._height = 0;
+        /** @type {int} */
         this._top = 0;
+        /** @type {int} */
         this._left = 0;
     }
 
@@ -102,7 +112,7 @@ class MutableImage {
      * E.g., A screenshot of the browser's viewport of a web page.
      *
      * @param {Location} coordinates
-     * @return {Promise.<void>}
+     * @return {Promise}
      */
     setCoordinates(coordinates) {
         this._left = coordinates.getX();
@@ -161,9 +171,9 @@ class MutableImage {
      * @param {Number} scaleRatio
      * @return {Promise.<MutableImage>}
      */
-    scaleImage(scaleRatio) {
+    scale(scaleRatio) {
         if (scaleRatio === 1) {
-            return this._promiseFactory.resolve();
+            return this._promiseFactory.resolve(this);
         }
 
         const that = this;
@@ -187,7 +197,7 @@ class MutableImage {
      * @param {Region} region
      * @return {Promise.<MutableImage>}
      */
-    cropImage(region) {
+    crop(region) {
         const that = this;
         return _parseImage(that).then(() => {
             if (that._isParsed) {
@@ -213,7 +223,7 @@ class MutableImage {
         const that = this;
         return _packImage(that).then(() => {
             const newImage = new MutableImage(Buffer.from(that._imageBuffer), that._promiseFactory);
-            return newImage.cropImage(region);
+            return newImage.crop(region);
         });
     }
 
@@ -224,7 +234,7 @@ class MutableImage {
      * @param {Number} degrees
      * @return {Promise.<MutableImage>}
      */
-    rotateImage(degrees) {
+    rotate(degrees) {
         const that = this;
         if (degrees === 0) {
             return that._promiseFactory.makePromise(resolve => {
@@ -246,14 +256,33 @@ class MutableImage {
         });
     }
 
+    /**
+     * @param {int} dx
+     * @param {int} dy
+     * @param {MutableImage} srcImage
+     * @return {Promise}
+     */
+    copyRasterData(dx, dy, srcImage) {
+        const that = this;
+        return _parseImage(that).then(() => srcImage.getImageData()).then(srcImageBmp => {
+            let width = srcImage.getWidth(), height = srcImage.getHeight();
+            const maxWidth = that.getWidth() - dx, maxHeight = that.getHeight() - dy;
+
+            if (maxWidth < width) {width = maxWidth;}
+            if (maxHeight < height) {height = maxHeight;}
+
+            ImageUtils.copyPixels(that._imageBmp, {x: dx, y: dy}, srcImageBmp, {x: 0, y: 0}, {width: width, height: height});
+        });
+    }
+
     //noinspection JSUnusedGlobalSymbols
     /**
      * Write image to local directory
      *
      * @param {String} filename
-     * @return {Promise.<void>}
+     * @return {Promise}
      */
-    saveImage(filename) {
+    save(filename) {
         const that = this;
         return that.getImageBuffer().then(imageBuffer => ImageUtils.saveImage(imageBuffer, filename, that._promiseFactory));
     }
@@ -269,11 +298,27 @@ class MutableImage {
 
     //noinspection JSUnusedGlobalSymbols
     /**
+     * @return {?Promise.<Buffer>}
+     */
+    getImageBase64() {
+        const that = this;
+        return _packImage(that).then(() => that._imageBuffer.toString('base64'));
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
      * @return {?Promise.<png.Image>}
      */
     getImageData() {
         const that = this;
         return _parseImage(that).then(() => that._imageBmp);
+    }
+
+    /**
+     * @return {Promise.<MutableImage>}
+     */
+    resolve() {
+        return this._promiseFactory.resolve(this);
     }
 
     /**
@@ -283,6 +328,21 @@ class MutableImage {
      */
     static fromBase64(image64, promiseFactory) {
         return new MutableImage(new Buffer(image64, 'base64'), promiseFactory);
+    }
+
+    /**
+     * @param {int} width
+     * @param {int} height
+     * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
+     * @return {MutableImage}
+     */
+    static newImage(width, height, promiseFactory) {
+        const result = new MutableImage(null, promiseFactory);
+        result._isParsed = true;
+        result._imageBmp = new Image({filterType: 4, width: width, height: height});
+        result._width = width;
+        result._height = height;
+        return result;
     }
 }
 

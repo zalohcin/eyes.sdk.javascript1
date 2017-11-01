@@ -5,12 +5,11 @@ const Region = require('./Region');
 
 class NullRegionProvider extends RegionProvider {
 
-    // noinspection JSMethodCanBeStatic
     /**
-     * @return {Region} A region with "as is" viewport coordinates.
+     * @param {PromiseFactory} promiseFactory
      */
-    getRegion() {
-        return Region.EMPTY;
+    constructor(promiseFactory) {
+        super(Region.EMPTY, promiseFactory);
     }
 }
 

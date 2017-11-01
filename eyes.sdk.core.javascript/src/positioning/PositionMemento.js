@@ -7,11 +7,6 @@
  * @abstract
  **/
 class PositionMemento {
-    constructor() {
-        if (new.target === PositionMemento) {
-            throw new TypeError("Can not construct `PositionMemento` instance directly, should be used implementation!");
-        }
-    }
 }
 
 module.exports = PositionMemento;

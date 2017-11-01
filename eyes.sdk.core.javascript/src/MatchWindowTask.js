@@ -61,18 +61,17 @@ class MatchWindowTask {
      * Repeatedly obtains an application snapshot and matches it with the next
      * expected output, until a match is found or the timeout expires.
      *
-     * @param {Trigger[]} userInputs             User input preceding this match.
-     * @param {Region} region                 Window region to capture.
-     * @param {String} tag                    Optional tag to be associated with the match (can be {@code null}).
+     * @param {Trigger[]} userInputs User input preceding this match.
+     * @param {Region} region Window region to capture.
+     * @param {String} tag Optional tag to be associated with the match (can be {@code null}).
      * @param {Boolean} shouldRunOnceOnTimeout Force a single match attempt at the end of the match timeout.
-     * @param {Boolean} ignoreMismatch         Whether to instruct the server to ignore the match attempt in case of a mismatch.
-     * @param {ImageMatchSettings} imageMatchSettings     The settings to use.
-     * @param {int} retryTimeout           The amount of time to retry matching in milliseconds or a
-     *                               negative value to use the default retry timeout.
+     * @param {Boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
+     * @param {ImageMatchSettings} imageMatchSettings The settings to use.
+     * @param {int} retryTimeout The amount of time to retry matching in milliseconds or a negative value to use the default retry timeout.
      * @return {Promise.<MatchResult>} Returns the results of the match
      */
     matchWindow(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, imageMatchSettings, retryTimeout) {
-        if (retryTimeout < 0) {
+        if (!retryTimeout || retryTimeout < 0) {
             retryTimeout = this._defaultRetryTimeout;
         }
 

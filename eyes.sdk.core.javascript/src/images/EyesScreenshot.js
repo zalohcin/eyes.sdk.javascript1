@@ -96,7 +96,7 @@ class EyesScreenshot {
         ArgumentGuard.notNull(region, "region");
 
         if (region.isEmpty()) {
-            return Region.fromRegion(region);
+            return Region.copy(region);
         }
 
         ArgumentGuard.notNull(from, "from");

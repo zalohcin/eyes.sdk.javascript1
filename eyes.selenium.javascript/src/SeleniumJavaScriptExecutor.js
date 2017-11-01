@@ -5,12 +5,12 @@ const {EyesJsExecutor} = require('eyes.sdk');
 class SeleniumJavaScriptExecutor extends EyesJsExecutor {
 
     /**
-     * @param {EyesWebDriver} driver
+     * @param {EyesWebDriver|WebDriver} driver
      */
     constructor(driver) {
         super();
 
-        this._driver = driver;
+        this._executor = driver;
     }
 
     /**
@@ -18,7 +18,15 @@ class SeleniumJavaScriptExecutor extends EyesJsExecutor {
      * @inheritDoc
      */
     executeScript(script, ...args) {
-        return this._driver.executeScript(script, args);
+        return this._executor.executeScript(script, args);
+    }
+
+    /**
+     * @override
+     * @inheritDoc
+     */
+    sleep(millis) {
+        return this._executor.sleep(millis);
     }
 }
 

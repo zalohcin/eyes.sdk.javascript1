@@ -3,26 +3,22 @@
 const {ArgumentGuard, PositionProvider, RectangleSize, Location} = require('eyes.sdk');
 
 const ElementPositionMemento = require('./ElementPositionMemento');
+const EyesWebElement = require('./../wrappers/EyesWebElement');
 
 class ElementPositionProvider extends PositionProvider {
 
     /**
      * @param {Logger} logger A Logger instance.
      * @param {EyesWebDriver} driver
-     * @param {EyesRemoteWebElement} element
-     * @param {PromiseFactory} promiseFactory
+     * @param {EyesWebElement} element
      */
-    constructor(logger, driver, element, promiseFactory) {
+    constructor(logger, driver, element) {
         super();
         ArgumentGuard.notNull(logger, "logger");
-        ArgumentGuard.notNull(driver, "executor");
         ArgumentGuard.notNull(element, "element");
-        ArgumentGuard.notNull(promiseFactory, "promiseFactory");
 
         this._logger = logger;
-        this._driver = driver;
-        this._promiseFactory = promiseFactory;
-        this._element = element;
+        this._element = (element instanceof EyesWebElement) ? element : new EyesWebElement(logger, driver, element);
 
         this._logger.verbose("creating ElementPositionProvider");
     }
@@ -79,19 +75,20 @@ class ElementPositionProvider extends PositionProvider {
 
     /**
      * @override
-     * @inheritDoc
+     * @return {Promise.<ElementPositionMemento>}
      */
     getState() {
         return this.getCurrentPosition().then(position => new ElementPositionMemento(position));
     }
 
+    // noinspection JSCheckFunctionSignatures
     /**
      * @override
-     * @inheritDoc
+     * @param {ElementPositionMemento} state The initial state of position
+     * @return {Promise}
      */
     restoreState(state) {
         const that = this;
-        /** @type {ScrollPositionMemento} state */
         return this.setPosition(new Location(state.getX(), state.getY())).then(() => {
             that._logger.verbose("Position restored.");
         });

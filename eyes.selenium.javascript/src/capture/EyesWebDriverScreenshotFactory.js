@@ -10,7 +10,7 @@ const EyesWebDriverScreenshot = require('./EyesWebDriverScreenshot');
 class EyesWebDriverScreenshotFactory extends EyesScreenshotFactory {
 
     /**
-     * @param {Object} logger
+     * @param {Logger} logger
      * @param {EyesWebDriver} driver
      * @param {PromiseFactory} promiseFactory
      */
@@ -18,7 +18,7 @@ class EyesWebDriverScreenshotFactory extends EyesScreenshotFactory {
         super();
 
         this._logger = logger;
-        this._driver = driver;
+        this._executor = driver;
         this._promiseFactory = promiseFactory;
     }
 
@@ -27,7 +27,7 @@ class EyesWebDriverScreenshotFactory extends EyesScreenshotFactory {
      * @inheritDoc
      */
     makeScreenshot(image) {
-        const result = new EyesWebDriverScreenshot(this._logger, this._driver, this._image, this._promiseFactory);
+        const result = new EyesWebDriverScreenshot(this._logger, this._executor, this._image, this._promiseFactory);
         return result.init();
     }
 }

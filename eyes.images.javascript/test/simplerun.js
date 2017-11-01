@@ -13,25 +13,13 @@ eyes.setHostOS('Mac OS X 10.10');
 eyes.setHostApp("My browser");
 
 // load images from local storage
-const image1 = fs.readFileSync('DSC_2976_middle.png');
-const image2 = fs.readFileSync('DSC_2977_middle.png');
+const image1 = fs.readFileSync('image1.png');
+const image2 = fs.readFileSync('image2.png');
 
 // noinspection MagicNumberJS
-return eyes.open("eyes.images.javascript", "First new test, long", new RectangleSize(800, 600)).then(() => {
+return eyes.open("eyes.images.javascript", "First test5_3", new RectangleSize(800, 600)).then(() => {
     // Notice since eyes.checkImage returns a promise, you need to call it with "return" in order for the wrapping "then" to wait on it.
     return eyes.checkImage(image2, 'My second image');
-}).then(() => {
-    // Notice since eyes.checkImage returns a promise, you need to call it with "return" in order for the wrapping "then" to wait on it.
-    return eyes.checkImage(image1, 'My second image2');
-}).then(() => {
-    // Notice since eyes.checkImage returns a promise, you need to call it with "return" in order for the wrapping "then" to wait on it.
-    return eyes.checkImage(image2, 'My second image3');
-}).then(() => {
-    // Notice since eyes.checkImage returns a promise, you need to call it with "return" in order for the wrapping "then" to wait on it.
-    return eyes.checkImage(image1, 'My second image4');
-}).then(() => {
-    // Notice since eyes.checkImage returns a promise, you need to call it with "return" in order for the wrapping "then" to wait on it.
-    return eyes.checkImage(image2, 'My second image5');
 }).then(() => {
     console.log(`Running session: ${eyes.getRunningSession()}`);
     // noinspection MagicNumberJS
@@ -39,19 +27,7 @@ return eyes.open("eyes.images.javascript", "First new test, long", new Rectangle
     return eyes.checkImage(image1, 'My first image');
 }).then(() => {
     // noinspection MagicNumberJS
-    return eyes.checkRegion(image2, new Region(495, 100, 355, 360), 'Specific region');
-}).then(() => {
-    // noinspection MagicNumberJS
-    return eyes.checkRegion(image1, new Region(395, 100, 355, 360), 'Specific region2');
-}).then(() => {
-    // noinspection MagicNumberJS
-    return eyes.checkRegion(image2, new Region(395, 100, 355, 360), 'Specific region3');
-}).then(() => {
-    // noinspection MagicNumberJS
-    return eyes.checkRegion(image1, new Region(495, 200, 355, 360), 'Specific region4');
-}).then(() => {
-    // noinspection MagicNumberJS
-    return eyes.checkRegion(image2, new Region(495, 100, 155, 360), 'Specific region5');
+    return eyes.checkRegion(image1, new Region(495, 100, 355, 360), 'Specific region');
 }).then(() => {
     // We're calling close with "false" so that the promise will resolve even if the test failed and not reject.
     // This will make waiting on firstTestPromise simpler (we just handle "resolve" part of the "then").

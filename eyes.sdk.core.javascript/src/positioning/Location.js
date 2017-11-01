@@ -21,15 +21,20 @@ class Location {
         this._y = y;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
-     * Creates a location from another location instance.
+     * Creates a new instance of Location from Location or object
      *
-     * @param {Location} other A location instance from which to create the location.
+     * @param {Location|{x: number, y: number}|null} object
+     * @return {Location|null}
      */
-    static fromLocation(other) {
-        ArgumentGuard.notNull(other, "other");
-        return new Location(other.getX(), other.getY());
+    static copy(object) {
+        if (object instanceof Location) {
+            return new Location(object.getX(), object.getY());
+        } else if (object.hasOwnProperty('x') && object.hasOwnProperty('y')) {
+            return new Location(object.x, object.y);
+        }
+
+        return null;
     }
 
     /**

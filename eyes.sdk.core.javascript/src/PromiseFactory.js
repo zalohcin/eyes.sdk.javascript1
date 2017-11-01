@@ -95,20 +95,22 @@ class PromiseFactory {
      */
     all(iterable) {
         const args = Array.prototype.slice.call(iterable);
-
         return this.makePromise((resolve, reject) => {
-            if (args.length === 0) return resolve([]);
+            if (args.length === 0) {return resolve([]);}
             let remaining = args.length;
 
+            // noinspection NestedFunctionJS
             function resolveFn(curr, i) {
                 try {
+                    // noinspection OverlyComplexBooleanExpressionJS
                     if (curr && (typeof curr === 'object' || typeof curr === 'function') && typeof curr.then === 'function') {
                         // noinspection JSUnresolvedFunction
                         curr.then.call(curr, val => resolveFn(val, i), reject);
                         return;
                     }
                     args[i] = curr;
-                    if (--remaining === 0) resolve(args);
+                    --remaining;
+                    if (remaining === 0) {resolve(args);}
                 } catch (ex) {
                     reject(ex);
                 }
@@ -117,41 +119,6 @@ class PromiseFactory {
             for (let i = 0; i < args.length; i++) {
                 resolveFn(args[i], i);
             }
-        });
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Iterate over an array, or a promise of an array, which contains promises (or a mix of promises and values) with the given
-     * iterator function with the signature (value, index, length) where value is the resolved value of a respective promise in the input array.
-     * Iteration happens serially. If the iterator function returns a promise or a thenable, then the result of the promise is awaited before continuing with next iteration.
-     * If any promise in the input array is rejected, then the returned promise is rejected as well.
-     *
-     * @Template T
-     * @param {Iterable.<T>} iterable
-     * @param {function(item: T, index: int, length: int)} iterator
-     * @return {Promise<Iterable.<T>>} resolves to the original array unmodified.
-     */
-    each(iterable, iterator) {
-        // noinspection JSUnresolvedFunction
-        const args = Array.prototype.slice.call(iterable);
-
-        if (args.length === 0) {
-            return this.resolve();
-        }
-
-        const empty = this.resolve();
-        return this.makePromise((resolve, reject) => {
-            if (args.length === 0) return resolve();
-
-            function reduce(prev, curr, i) {
-                if (curr && (typeof curr === 'object' || typeof curr === 'function') && typeof curr.then === 'function') {
-                    return curr.then.call(curr, val => reduce(prev, val, i), reject);
-                }
-                return prev.then(() => iterator(curr, i, args.length));
-            }
-
-            return args.reduce(reduce, empty).then(() => resolve(args));
         });
     }
 

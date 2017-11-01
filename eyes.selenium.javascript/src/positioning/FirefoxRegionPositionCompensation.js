@@ -11,7 +11,7 @@ class FirefoxRegionPositionCompensation extends RegionPositionCompensation {
     constructor(eyes, logger) {
         super();
 
-        this._eyes = eyes;
+        this._executor = eyes;
         this._logger = logger;
     }
 
@@ -24,7 +24,7 @@ class FirefoxRegionPositionCompensation extends RegionPositionCompensation {
             return region;
         }
 
-        const eyesWebDriver = this._eyes.getDriver();
+        const eyesWebDriver = this._executor.getDriver();
         const frameChain = eyesWebDriver.getFrameChain();
         if (frameChain.size() > 0) {
             return region;

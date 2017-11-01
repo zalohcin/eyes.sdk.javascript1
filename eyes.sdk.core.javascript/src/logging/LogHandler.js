@@ -3,15 +3,11 @@
 /**
  * Handles log messages produces by the Eyes API.
  *
- * @interface
+ * @abstract
  */
 class LogHandler {
 
     constructor() {
-        if (new.target === LogHandler) {
-            throw new TypeError("Can not construct `LogHandler` instance directly, should be used implementation!");
-        }
-
         this._isVerbose = false;
     }
 
@@ -36,20 +32,22 @@ class LogHandler {
         return this._isVerbose;
     }
 
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    open() {
-        throw new TypeError('The method `open` from `LogHandler` should be implemented!');
-    }
+    /**
+     * @abstract
+     */
+    open() {}
 
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-    close() {
-        throw new TypeError('The method `close` from `LogHandler` should be implemented!');
-    }
+    /**
+     * @abstract
+     */
+    close() {}
 
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic, JSUnusedLocalSymbols
-    onMessage(verbose, logString) {
-        throw new TypeError('The method `onMessage` from `LogHandler` should be implemented!');
-    }
+    /**
+     * @abstract
+     * @param {boolean} verbose
+     * @param {String} logString
+     */
+    onMessage(verbose, logString) {}
 }
 
 module.exports = LogHandler;

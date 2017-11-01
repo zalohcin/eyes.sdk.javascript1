@@ -87,26 +87,4 @@ describe('PromiseFactory', () => {
             });
         });
     });
-
-    describe('#each()', () => {
-        it('should iterate an array serially, make an action with each value', done => {
-            const p1 = promiseFactory.makePromise(resolve => {
-                setTimeout(resolve, 100, 1);
-            });
-            const p2 = promiseFactory.makePromise(resolve => {
-                setTimeout(resolve, 100, 3);
-            });
-            const p3 = promiseFactory.makePromise(resolve => {
-                setTimeout(resolve, 120, 4);
-            });
-
-            const b = [];
-            promiseFactory.each([p1, 2, p2, p3], (value, index, length) => {
-                b.push(value, index, length);
-            }).then(() => {
-                assert.deepEqual(b, [1, 0, 4, 2, 1, 4, 3, 2, 4, 4, 3, 4]);
-                done();
-            });
-        });
-    });
 });

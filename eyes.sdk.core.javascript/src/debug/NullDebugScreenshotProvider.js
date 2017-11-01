@@ -11,7 +11,7 @@ class NullDebugScreenshotProvider extends DebugScreenshotsProvider {
     /**
      * @param {MutableImage} image
      * @param {String} suffix
-     * @return {Promise.<void>}
+     * @return {Promise}
      */
     save(image, suffix) {
         // Do nothing.

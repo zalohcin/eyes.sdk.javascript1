@@ -73,7 +73,7 @@ class EyesBase {
         /** @type {Boolean} */
         this._isDisabled = isDisabled;
 
-        if(this._isDisabled) {
+        if (this._isDisabled) {
             this._userInputs = null;
             return;
         }
@@ -696,28 +696,29 @@ class EyesBase {
      */
     close(throwEx = true) {
         const that = this;
+        return that.getPromiseFactory().makePromise((resolve, reject) => {
+            that._logger.verbose(`"EyesBase.close(${throwEx})`);
 
-        that._logger.verbose(`"EyesBase.close(${throwEx})`);
+            if (that._isDisabled) {
+                that._logger.verbose("Eyes close ignored. (disabled)");
+                that._finallyClose();
+                return resolve(new TestResults());
+            }
 
-        if (that._isDisabled) {
-            that._logger.verbose("Eyes close ignored. (disabled)");
-            that._finallyClose();
-            return that._promiseFactory.resolve(new TestResults());
-        }
+            if (!that._isOpen) {
+                that._logger.log(`Close called with Eyes not open`);
+                that._finallyClose();
+                return reject(`Close called with Eyes not open`);
+            }
 
-        if (!that._isOpen) {
-            that._logger.log(`Close called with Eyes not open`);
-            that._finallyClose();
-            return that._promiseFactory.reject(`Close called with Eyes not open`);
-        }
-
-        return that._endSession(false, throwEx);
+            return that._endSession(false, throwEx).then(results => resolve(results));
+        });
     }
 
     /**
      * If a test is running, aborts it. Otherwise, does nothing.
      *
-     * @return {Promise.<void>} A promise which resolves to the test results.
+     * @return {Promise} A promise which resolves to the test results.
      */
     abortIfNotClosed() {
         const that = this;
@@ -736,7 +737,8 @@ class EyesBase {
             return that._promiseFactory.resolve();
         }
 
-        return this._endSession(true, false).catch(() => {});
+        return this._endSession(true, false).catch(() => {
+        });
     }
 
     /**
@@ -780,6 +782,7 @@ class EyesBase {
             const sessionResultsUrl = that._runningSession.getUrl();
 
             that._logger.verbose("Ending server session...");
+            // noinspection OverlyComplexBooleanExpressionJS
             const save = !isAborted && ((isNewSession && that._saveNewTests) || (!isNewSession && that._saveFailedTests));
             that._logger.verbose(`Automatically save test? ${save}`);
 
@@ -837,7 +840,9 @@ class EyesBase {
             serverError = err;
         }).then(() => that._notifyEvent('testEnded', that._autSessionId, serverResults)).then(() => {
             that._finallyClose();
-            if (serverError) throw serverError;
+            if (serverError) {
+                throw serverError;
+            }
             return serverResults;
         });
     }
@@ -872,7 +877,7 @@ class EyesBase {
                 const promise = handler[eventName](...param1).then(null, err => {
                     that._logger.verbose(`'${eventName}' notification handler returned an error: ${err}`);
                 });
-                notificationPromises.push(promise)
+                notificationPromises.push(promise);
             });
 
             that._promiseFactory.all(notificationPromises).then(() => {
@@ -890,10 +895,10 @@ class EyesBase {
     setHostOS(hostOS) {
         this._logger.log(`Host OS: ${hostOS}`);
 
-        if (!hostOS) {
-            this._hostOS = null;
-        } else {
+        if (hostOS) {
             this._hostOS = hostOS.trim();
+        } else {
+            this._hostOS = null;
         }
     }
 
@@ -914,10 +919,10 @@ class EyesBase {
     setHostApp(hostApp) {
         this._logger.log(`Host OS: ${hostApp}`);
 
-        if (!hostApp) {
-            this._hostApp = null;
-        } else {
+        if (hostApp) {
             this._hostApp = hostApp.trim();
+        } else {
+            this._hostApp = null;
         }
     }
 
@@ -937,10 +942,10 @@ class EyesBase {
     setBaselineName(baselineName) {
         this._logger.log(`Baseline environment name: ${baselineName}`);
 
-        if(!baselineName) {
-            this._baselineEnvName = null;
-        } else {
+        if (baselineName) {
             this._baselineEnvName = baselineName.trim();
+        } else {
+            this._baselineEnvName = null;
         }
     }
 
@@ -962,10 +967,10 @@ class EyesBase {
     setBaselineEnvName(baselineEnvName) {
         this._logger.log(`Baseline environment name: ${baselineEnvName}`);
 
-        if(!baselineEnvName) {
-            this._baselineEnvName = null;
-        } else {
+        if (baselineEnvName) {
             this._baselineEnvName = baselineEnvName.trim();
+        } else {
+            this._baselineEnvName = null;
         }
     }
 
@@ -988,10 +993,10 @@ class EyesBase {
     setEnvName(envName) {
         this._logger.log(`Environment name: ${envName}`);
 
-        if(!envName) {
-            this._environmentName = null;
-        } else {
+        if (envName) {
             this._environmentName = envName.trim();
+        } else {
+            this._environmentName = null;
         }
     }
 
@@ -1027,13 +1032,13 @@ class EyesBase {
      *
      * @protected
      * @param {RegionProvider} regionProvider Returns the region to check or the empty rectangle to check the entire window.
-     * @param {String} tag An optional tag to be associated with the snapshot.
-     * @param {Boolean} ignoreMismatch Whether to ignore this check if a mismatch is found.
+     * @param {String} [tag=''] An optional tag to be associated with the snapshot.
+     * @param {Boolean} [ignoreMismatch=false] Whether to ignore this check if a mismatch is found.
      * @param {CheckSettings} [checkSettings]  The settings to use.
      * @return {Promise.<MatchResult>} The result of matching the output with the expected output.
      * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
      */
-    checkWindowBase(regionProvider, tag = "", ignoreMismatch, checkSettings = new CheckSettings(EyesBase.USE_DEFAULT_TIMEOUT)) {
+    checkWindowBase(regionProvider, tag = "", ignoreMismatch = false, checkSettings = new CheckSettings(EyesBase.USE_DEFAULT_TIMEOUT)) {
         if (this._isDisabled) {
             this._logger.verbose("Ignored");
             const result = new MatchResult();
@@ -1130,36 +1135,39 @@ class EyesBase {
      * @param {CheckSettings} checkSettings
      * @return {Promise.<MatchResult>}
      */
-     _matchWindow(regionProvider, tag, ignoreMismatch, checkSettings) {
-        const checkSettingsInternal = (checkSettings instanceof CheckSettings) ? checkSettings : null;
-
+    _matchWindow(regionProvider, tag, ignoreMismatch, checkSettings) {
         let retryTimeout = -1;
         let imageMatchSettings = null;
-        if (checkSettingsInternal) {
-            retryTimeout = checkSettingsInternal.getTimeout();
 
-            let matchLevel = checkSettingsInternal.getMatchLevel();
-            matchLevel = !matchLevel ? this.getDefaultMatchSettings().getMatchLevel() : matchLevel;
+        const that = this;
+        return that.getPromiseFactory().resolve().then(() => {
+            if (checkSettings) {
+                retryTimeout = checkSettings.getTimeout();
 
-            imageMatchSettings = new ImageMatchSettings(matchLevel, null);
+                let matchLevel = checkSettings.getMatchLevel();
+                matchLevel = matchLevel ? matchLevel : that.getDefaultMatchSettings().getMatchLevel();
 
-            this._collectIgnoreRegions(checkSettingsInternal, imageMatchSettings);
-            this._collectFloatingRegions(checkSettingsInternal, imageMatchSettings);
+                imageMatchSettings = new ImageMatchSettings(matchLevel, null);
 
-            let ignoreCaret = checkSettingsInternal.getIgnoreCaret();
-            imageMatchSettings.setIgnoreCaret(!ignoreCaret ? this.getDefaultMatchSettings().getIgnoreCaret() : ignoreCaret);
-        }
+                return that._collectIgnoreRegions(checkSettings, imageMatchSettings).then(() => {
+                    return that._collectFloatingRegions(checkSettings, imageMatchSettings);
+                }).then(() => {
+                    let ignoreCaret = checkSettings.getIgnoreCaret();
+                    imageMatchSettings.setIgnoreCaret(ignoreCaret ? ignoreCaret : that.getDefaultMatchSettings().getIgnoreCaret());
+                });
+            }
+        }).then(() => {
+            // noinspection JSUnresolvedVariable
+            that._logger.verbose(`CheckWindowBase(${regionProvider.constructor.name}, '${tag}', ${ignoreMismatch}, ${retryTimeout})`);
 
-        // noinspection JSUnresolvedVariable
-        this._logger.verbose(`CheckWindowBase(${regionProvider.constructor.name}, '${tag}', ${ignoreMismatch}, ${retryTimeout})`);
-
-        this._logger.verbose("Calling match window...");
-        return this._matchWindowTask.matchWindow(
-            this.getUserInputs(), regionProvider.getRegion(),
-            tag, this._shouldMatchWindowRunOnceOnTimeout,
-            ignoreMismatch, imageMatchSettings,
-            retryTimeout
-        );
+            return regionProvider.getRegion();
+        }).then(region => {
+            that._logger.verbose("Calling match window...");
+            return that._matchWindowTask.matchWindow(
+                that.getUserInputs(), region, tag, that._shouldMatchWindowRunOnceOnTimeout,
+                ignoreMismatch, imageMatchSettings, retryTimeout
+            );
+        });
     }
 
     // noinspection JSMethodCanBeStatic
@@ -1167,16 +1175,14 @@ class EyesBase {
      * @private
      * @param {CheckSettings} checkSettings
      * @param {ImageMatchSettings} imageMatchSettings
+     * @return {Promise}
      */
     _collectIgnoreRegions(checkSettings, imageMatchSettings) {
-        /**
-         * @type {Array<Region>}
-         */
-        const ignoreRegions = [];
-        for (const ignoreRegionProvider in checkSettings.getIgnoreRegions()) {
-            ignoreRegions.push(ignoreRegionProvider.getRegion());
-        }
-        imageMatchSettings.setIgnoreRegions(ignoreRegions);
+        const regionPromises = checkSettings.getIgnoreRegions().map(container => container.getRegion(this), this);
+
+        return this.getPromiseFactory().all(regionPromises).then(ignoreRegions => {
+            imageMatchSettings.setIgnoreRegions(ignoreRegions);
+        });
     }
 
     // noinspection JSMethodCanBeStatic
@@ -1184,16 +1190,14 @@ class EyesBase {
      * @private
      * @param {CheckSettings} checkSettings
      * @param {ImageMatchSettings} imageMatchSettings
+     * @return {Promise}
      */
     _collectFloatingRegions(checkSettings, imageMatchSettings) {
-        /**
-         * @type {Array<FloatingMatchSettings>}
-         */
-        const floatingRegions = [];
-        for (const floatingRegionProvider in checkSettings.getFloatingRegions()) {
-            floatingRegions.push(floatingRegionProvider.getRegion());
-        }
-        imageMatchSettings.setFloatingRegions(floatingRegions);
+        const regionPromises = checkSettings.getFloatingRegions().map(container => container.getRegion(this), this);
+
+        return this.getPromiseFactory().all(regionPromises).then(floatingRegions => {
+            imageMatchSettings.setFloatingRegions(floatingRegions);
+        });
     }
 
     /**
@@ -1222,13 +1226,10 @@ class EyesBase {
      * Starts a test.
      *
      * @protected
-     * @param {String} appName      The name of the application under test.
-     * @param {String} testName     The test name.
-     * @param {RectangleSize} viewportSize The client's viewport size (i.e., the visible part
-     *                     of the document's body) or {@code null} to allow
-     *                     any viewport size.
-     * @param {SessionType} sessionType  The type of test (e.g., Progression for timing
-     *                     tests), or {@code null} to use the default.
+     * @param {String} appName The name of the application under test.
+     * @param {String} testName The test name.
+     * @param {RectangleSize} viewportSize The client's viewport size (i.e., the visible part of the document's body) or {@code null} to allow any viewport size.
+     * @param {SessionType} sessionType  The type of test (e.g., Progression for timing tests), or {@code null} to use the default.
      * @return {Promise}
      */
     openBase(appName, testName, viewportSize, sessionType) {
@@ -1286,7 +1287,7 @@ class EyesBase {
             return this._promiseFactory.resolve();
         }
 
-        const that =this;
+        const that = this;
         that._logger.log("No running session, calling start session...");
         return that.startSession().then(() => {
             that._logger.log("Done!");
@@ -1354,7 +1355,7 @@ class EyesBase {
      * @param {RectangleSize} explicitViewportSize The size of the viewport. {@code null} disables the explicit size.
      */
     setExplicitViewportSize(explicitViewportSize) {
-        if(!explicitViewportSize) {
+        if (!explicitViewportSize) {
             this._viewportSizeHandler = new SimplePropertyHandler();
             this._viewportSizeHandler.set(null);
             this._isViewportSizeSet = false;
@@ -1362,7 +1363,7 @@ class EyesBase {
         }
 
         this._logger.verbose("Viewport size explicitly set to " + explicitViewportSize);
-        this._viewportSizeHandler = new ReadOnlyPropertyHandler(logger, new RectangleSize(explicitViewportSize.getWidth(), explicitViewportSize.getHeight()));
+        this._viewportSizeHandler = new ReadOnlyPropertyHandler(this._logger, new RectangleSize(explicitViewportSize.getWidth(), explicitViewportSize.getHeight()));
         this._isViewportSizeSet = true;
     }
 
@@ -1400,7 +1401,7 @@ class EyesBase {
         ArgumentGuard.notNull(text, "text");
 
         // We don't want to change the objects we received.
-        control = Region.fromRegion(control);
+        control = Region.copy(control);
 
         if (!this._lastScreenshot) {
             this._logger.verbose(`Ignoring '${text}' (no screenshot)`);
@@ -1445,9 +1446,9 @@ class EyesBase {
         }
 
         // Getting the location of the cursor in the screenshot
-        let cursorInScreenshot = Location.fromLocation(cursor);
+        let cursorInScreenshot = Location.copy(cursor);
         // First we need to getting the cursor's coordinates relative to the context (and not to the control).
-        cursorInScreenshot.offset(control.getLocation());
+        cursorInScreenshot.offsetByLocation(control.getLocation());
         try {
             cursorInScreenshot = this._lastScreenshot.getLocationInScreenshot(cursorInScreenshot, CoordinatesType.CONTEXT_RELATIVE);
         } catch (ignore) {
@@ -1522,9 +1523,9 @@ class EyesBase {
         }).then(() => {
             return that._notifyEvent('testStarted', that._autSessionId);
         }).then(() => {
-            return that._notifyEvent('setSizeWillStart', that._autSessionId, that._viewportSize)
+            return that._notifyEvent('setSizeWillStart', that._autSessionId, that._viewportSize);
         }).then(() => {
-            return that._ensureViewportSize()
+            return that._ensureViewportSize();
         }).then(() => {
             return that._notifyEvent('setSizeEnded', that._autSessionId);
         }, err => {
@@ -1597,7 +1598,7 @@ class EyesBase {
      * @param {EyesScreenshot} lastScreenshot Previous application screenshot (used for compression) or {@code null} if not available.
      * @return {Promise.<AppOutputWithScreenshot>} The updated app output and screenshot.
      */
-     _getAppOutputWithScreenshot(region, lastScreenshot) {
+    _getAppOutputWithScreenshot(region, lastScreenshot) {
         const that = this;
         that._logger.verbose("getting screenshot...");
         // Getting the screenshot (abstract function implemented by each SDK).
@@ -1759,7 +1760,7 @@ class EyesBase {
      * @protected
      * @abstract
      * @param {RectangleSize} size The required viewport size.
-     * @return {Promise.<void>}
+     * @return {Promise}
      */
     setViewportSize(size) {
         throw new TypeError('setViewportSize method is not implemented!');
@@ -1801,6 +1802,13 @@ class EyesBase {
      */
     getTitle() {
         throw new TypeError('getTitle method is not implemented!');
+    }
+
+    /**
+     * @return {PromiseFactory}
+     */
+    getPromiseFactory() {
+        return this._promiseFactory;
     }
 
 }

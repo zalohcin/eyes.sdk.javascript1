@@ -2,10 +2,10 @@
 
 const MatchLevel = require('../match/MatchLevel');
 const Region = require('../positioning/Region');
-const RegionProvider = require('../positioning/RegionProvider');
-const FloatingRegionProvider = require('../positioning/FloatingRegionProvider');
 const IgnoreRegionByRectangle = require('./IgnoreRegionByRectangle');
 const FloatingRegionByRectangle = require('./FloatingRegionByRectangle');
+const GetRegion = require('./GetRegion');
+const GetFloatingRegion = require('./GetFloatingRegion');
 
 /**
  * The Match settings object to use in the various Eyes.Check methods.
@@ -14,9 +14,9 @@ class CheckSettings {
 
     /**
      * @param {?int} [timeout=-1]
-     * @param {Region} [region]
+     * @param {Region} [region=undefined]
      */
-    constructor(timeout = -1, region) {
+    constructor(timeout = -1, region = undefined) {
         this._matchLevel = undefined;
         this._ignoreCaret = undefined;
         this._stitchContent = false;
@@ -29,7 +29,9 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {CheckSettings}
+     * Shortcut to set the match level to {@code MatchLevel.LAYOUT}.
+     *
+     * @return {CheckSettings} This instance of the settings object.
      */
     layout() {
         this._matchLevel = MatchLevel.Layout;
@@ -38,7 +40,9 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {CheckSettings}
+     * Shortcut to set the match level to {@code MatchLevel.EXACT}.
+     *
+     * @return {CheckSettings} This instance of the settings object.
      */
     exact() {
         this._matchLevel = MatchLevel.Exact;
@@ -47,7 +51,9 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {CheckSettings}
+     * Shortcut to set the match level to {@code MatchLevel.STRICT}.
+     *
+     * @return {CheckSettings} This instance of the settings object.
      */
     strict() {
         this._matchLevel = MatchLevel.Strict;
@@ -56,7 +62,9 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {CheckSettings}
+     * Shortcut to set the match level to {@code MatchLevel.CONTENT}.
+     *
+     * @return {CheckSettings} This instance of the settings object.
      */
     content() {
         this._matchLevel = MatchLevel.Content;
@@ -65,8 +73,10 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @param {MatchLevel} matchLevel
-     * @return {CheckSettings}
+     * Set the match level by which to compare the screenshot.
+     *
+     * @param {MatchLevel} matchLevel The match level to use.
+     * @return {CheckSettings} This instance of the settings object.
      */
     matchLevel(matchLevel) {
         this._matchLevel = matchLevel;
@@ -83,8 +93,10 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @param {Boolean} [ignoreCaret=true]
-     * @return {CheckSettings}
+     * Defines if to detect and ignore a blinking caret in the screenshot.
+     *
+     * @param {boolean} [ignoreCaret=true] Whether or not to detect and ignore a blinking caret in the screenshot.
+     * @return {CheckSettings} This instance of the settings object.
      */
     ignoreCaret(ignoreCaret = true) {
         this._ignoreCaret = ignoreCaret;
@@ -101,7 +113,9 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {CheckSettings}
+     * Defines that the screenshot will contain the entire element or region, even if it's outside the view.
+     *
+     * @return {CheckSettings} This instance of the settings object.
      */
     fully() {
         this._stitchContent = true;
@@ -128,11 +142,15 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @param {int} timeoutMilliseconds
-     * @return {CheckSettings}
+     * Defines the timeout to use when acquiring and comparing screenshots.
+     *
+     * @param {int} timeoutMilliseconds The timeout to use in milliseconds.
+     * @return {CheckSettings} This instance of the settings object.
      */
     timeout(timeoutMilliseconds) {
-        this._timeout = timeoutMilliseconds;
+        if (Number.isInteger(timeoutMilliseconds)) {
+            this._timeout = timeoutMilliseconds;
+        }
         return this;
     }
 
@@ -164,15 +182,19 @@ class CheckSettings {
     }
 
     // noinspection JSUnusedGlobalSymbols
+
+
     /**
-     * @param {RegionProvider|Region} arg
-     * @return {CheckSettings}
+     * Adds a region to ignore.
+     *
+     * @param {GetRegion|Region} regionOrContainer The region or region container to ignore when validating the screenshot.
+     * @return {CheckSettings} This instance of the settings object.
      */
-    ignore(arg) {
-        if (arg instanceof Region) {
-            this._ignoreRegions.push(new IgnoreRegionByRectangle(arg));
-        } else if (arg instanceof RegionProvider) {
-            this._ignoreRegions.push(arg);
+    ignore(regionOrContainer) {
+        if (regionOrContainer instanceof Region) {
+            this._ignoreRegions.push(new IgnoreRegionByRectangle(regionOrContainer));
+        } else if (regionOrContainer instanceof GetRegion) {
+            this._ignoreRegions.push(regionOrContainer);
         } else {
             throw new TypeError("ignore method called with argument of unknown type!");
         }
@@ -182,15 +204,17 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @param {RegionProvider...|Region...} args
-     * @return {CheckSettings}
+     * Adds one or more ignore regions.
+     *
+     * @param {GetRegion...|Region...} regionsOrContainers One or more regions or region containers to ignore when validating the screenshot.
+     * @return {CheckSettings} This instance of the settings object.
      */
-    ignores(...args) {
-        if (!args) {
+    ignores(...regionsOrContainers) {
+        if (!regionsOrContainers) {
             throw new TypeError("ignores method called without arguments!");
         }
 
-        for (const region in args) {
+        for (const region of regionsOrContainers) {
             // noinspection JSCheckFunctionSignatures
             this.ignore(region);
         }
@@ -200,7 +224,7 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {RegionProvider[]}
+     * @return {GetRegion[]}
      */
     getIgnoreRegions() {
         return this._ignoreRegions;
@@ -208,18 +232,20 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @param {FloatingRegionProvider|Region} arg
-     * @param {int} [maxUpOffset]
-     * @param {int} [maxDownOffset]
-     * @param {int} [maxLeftOffset]
-     * @param {int} [maxRightOffset]
-     * @return {CheckSettings}
+     * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger region.
+     *
+     * @param {GetFloatingRegion|Region} regionOrContainer The content rectangle or region container
+     * @param {int} [maxUpOffset] How much the content can move up.
+     * @param {int} [maxDownOffset] How much the content can move down.
+     * @param {int} [maxLeftOffset] How much the content can move to the left.
+     * @param {int} [maxRightOffset] How much the content can move to the right.
+     * @return {CheckSettings} This instance of the settings object.
      */
-    floating(arg, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
-        if (arg instanceof Region) {
-            this._floatingRegions.push(new FloatingRegionByRectangle(Region.fromRegion(arg), maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset));
-        } else if (arg instanceof FloatingRegionProvider) {
-            this._floatingRegions.push(arg);
+    floating(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
+        if (regionOrContainer instanceof Region) {
+            this._floatingRegions.push(new FloatingRegionByRectangle(Region.copy(regionOrContainer), maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset));
+        } else if (regionOrContainer instanceof GetFloatingRegion) {
+            this._floatingRegions.push(regionOrContainer);
         } else {
             throw new TypeError("floating method called with argument of unknown type!");
         }
@@ -229,16 +255,18 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @param {int} maxOffset
-     * @param {Region...} regions
-     * @return {CheckSettings}
+     * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger region.
+     *
+     * @param {int} maxOffset How much each of the content rectangles can move in any direction.
+     * @param {Region...} regionsOrContainers One or more content rectangles or region containers
+     * @return {CheckSettings} This instance of the settings object.
      */
-    floatings(maxOffset, ...regions) {
-        if (!args) {
+    floatings(maxOffset, ...regionsOrContainers) {
+        if (!regionsOrContainers) {
             throw new TypeError("floatings method called without arguments!");
         }
 
-        for (const region in regions) {
+        for (const region of regionsOrContainers) {
             // noinspection JSCheckFunctionSignatures
             this.floating(region, maxOffset, maxOffset, maxOffset, maxOffset);
         }
@@ -248,7 +276,7 @@ class CheckSettings {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {FloatingRegionProvider[]}
+     * @return {GetFloatingRegion[]}
      */
     getFloatingRegions() {
         return this._floatingRegions;

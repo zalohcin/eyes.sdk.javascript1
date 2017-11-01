@@ -3,60 +3,64 @@
 const {ImageProvider, MutableImage, Region} = require('eyes.sdk');
 
 const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
+const SeleniumJavaScriptExecutor = require('../SeleniumJavaScriptExecutor');
 
 class SafariScreenshotImageProvider extends ImageProvider {
 
     /**
      * @param {Eyes} eyes
-     * @param {Object} logger A Logger instance.
+     * @param {Logger} logger A Logger instance.
      * @param {EyesWebDriver} driver
      * @param {PromiseFactory} promiseFactory
      */
     constructor(eyes, logger, driver, promiseFactory) {
         super();
 
-        this._eyes = eyes;
+        this._executor = eyes;
         this._logger = logger;
-        this._driver = driver;
+        this._executor = driver;
         this._promiseFactory = promiseFactory;
-        this._jsExecutor = new SeleniumJavaScriptExecutor(eyes.getDriver());
+
+        this._jsExecutor = new SeleniumJavaScriptExecutor(driver);
     }
 
     /**
      * @override
-     * @return {Promise<MutableImage>}
+     * @return {Promise.<MutableImage>}
      */
     getImage() {
-        this._logger.verbose("Getting screenshot as base64...");
-
-        let image;
         const that = this;
-        return this._driver.takeScreenshot().then(screenshot64 => {
+        this._logger.verbose("Getting screenshot as base64...");
+        return this._executor.takeScreenshot().then(screenshot64 => {
             that._logger.verbose("Done getting base64! Creating MutableImage...");
-            image = MutableImage.fromBase64(screenshot64, that._promiseFactory);
+            const image = MutableImage.fromBase64(screenshot64, that._promiseFactory);
 
-            return that._eyes.getDebugScreenshotsProvider().save(image, "SAFARI");
-        }).then(() => {
-            if (!that._eyes.getForceFullPageScreenshot()) {
-                const currentFrameChain = that._eyes.getDriver().getFrameChain();
+            return that._executor.getDebugScreenshotsProvider().save(image, "SAFARI").then(() => {
+                if (!that._executor.getForceFullPageScreenshot()) {
+                    const currentFrameChain = that._executor.getDriver().getFrameChain();
 
-                let loc;
-                if (currentFrameChain.size() === 0) {
-                    const positionProvider = new ScrollPositionProvider(that._logger, that._jsExecutor, that._promiseFactory);
-                    loc = positionProvider.getCurrentPosition();
-                } else {
-                    loc = currentFrameChain.getDefaultContentScrollPosition();
+                    let promise;
+                    if (currentFrameChain.size() === 0) {
+                        const positionProvider = new ScrollPositionProvider(that._logger, that._jsExecutor);
+                        promise = positionProvider.getCurrentPosition();
+                    } else {
+                        promise = that._promiseFactory.resolve(currentFrameChain.getDefaultContentScrollPosition());
+                    }
+
+                    return promise.then(loc => {
+                        that._logger.verbose("frame.getLocation(): " + loc);
+                        return that._executor.getViewportSize().then(viewportSize => {
+                            const scaleRatio = that._executor.getDevicePixelRatio();
+                            viewportSize = viewportSize.scale(scaleRatio);
+                            loc = loc.scale(scaleRatio);
+
+                            return image.crop(Region.fromLocationAndSize(loc, viewportSize));
+                        });
+                    });
                 }
 
-                const scaleRatio = that._eyes.getDevicePixelRatio();
-                let viewportSize = that._eyes.getViewportSize();
-                viewportSize = viewportSize.scale(scaleRatio);
-                loc = loc.scale(scaleRatio);
-
-                return image.cropImage(new Region(loc, viewportSize));
-            }
-
-            return image;
+                return image;
+            });
         });
     }
 }

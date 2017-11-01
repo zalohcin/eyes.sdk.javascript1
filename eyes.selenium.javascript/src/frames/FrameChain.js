@@ -4,6 +4,10 @@ const {ArgumentGuard, Location} = require('eyes.sdk');
 
 const Frame = require('./Frame');
 
+/**
+ * @class FrameChain
+ * @extends {Iterable.<Frame>}
+ */
 class FrameChain {
 
     /**
@@ -117,7 +121,7 @@ class FrameChain {
         if (this._frames.length === 0) {
             throw new Error("NoFramesError: No frames in frame chain");
         }
-        return Location.fromLocation(this._frames[0].getParentScrollPosition());
+        return Location.copy(this._frames[0].getParentScrollPosition());
     }
 
     // noinspection JSUnusedGlobalSymbols

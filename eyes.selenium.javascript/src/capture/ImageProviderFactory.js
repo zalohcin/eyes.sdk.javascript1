@@ -20,16 +20,16 @@ class ImageProviderFactory {
             if (userAgent.getBrowser() === BrowserNames.Firefox) {
                 try {
                     if (parseInt(userAgent.getBrowserMajorVersion(), 10) >= 48) {
-                        return new FirefoxScreenshotImageProvider(eyes, logger, driver);
+                        return new FirefoxScreenshotImageProvider(eyes, logger, driver, eyes._promiseFactory);
                     }
                 } catch (ignored) {
-                    return new TakesScreenshotImageProvider(logger, driver);
+                    return new TakesScreenshotImageProvider(logger, driver, eyes._promiseFactory);
                 }
             } else if (userAgent.getBrowser() === BrowserNames.Safari) {
-                return new SafariScreenshotImageProvider(eyes, logger, driver);
+                return new SafariScreenshotImageProvider(eyes, logger, driver, eyes._promiseFactory);
             }
         }
-        return new TakesScreenshotImageProvider(logger, driver);
+        return new TakesScreenshotImageProvider(logger, driver, eyes._promiseFactory);
     }
 }
 

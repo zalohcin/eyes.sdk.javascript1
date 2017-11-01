@@ -15,7 +15,7 @@ class ImageRotation {
     /**
      * @return {int} The degrees by which to rotate.
      */
-    getCurrentPosition() {
+    getRotation() {
         return this._rotation;
     }
 }

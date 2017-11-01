@@ -21,15 +21,20 @@ class RectangleSize {
         this._height = height;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
-     * Creates a RectangleSize from another RectangleSize instance.
+     * Creates a new instance of RectangleSize from RectangleSize or object
      *
-     * @param {RectangleSize} other A RectangleSize instance from which to create the RectangleSize.
+     * @param {RectangleSize|{width: number, height: number}|null} object
+     * @return {RectangleSize|null}
      */
-    static fromRectangleSize(other) {
-        ArgumentGuard.notNull(other, "other");
-        return new RectangleSize(other.getWidth(), other.getHeight);
+    static copy(object) {
+        if (object instanceof RectangleSize) {
+            return new RectangleSize(object.getWidth(), object.getHeight());
+        } else if (object.hasOwnProperty('width') && object.hasOwnProperty('height')) {
+            return new RectangleSize(object.width, object.height);
+        }
+
+        return null;
     }
 
     // noinspection JSUnusedGlobalSymbols

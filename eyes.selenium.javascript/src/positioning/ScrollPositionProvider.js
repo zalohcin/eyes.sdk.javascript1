@@ -10,18 +10,15 @@ class ScrollPositionProvider extends PositionProvider {
     /**
      * @param {Logger} logger A Logger instance.
      * @param {EyesJsExecutor} executor
-     * @param {PromiseFactory} promiseFactory
      */
-    constructor(logger, executor, promiseFactory) {
+    constructor(logger, executor) {
         super();
 
         ArgumentGuard.notNull(logger, "logger");
         ArgumentGuard.notNull(executor, "executor");
-        ArgumentGuard.notNull(promiseFactory, "promiseFactory");
 
         this._logger = logger;
         this._executor = executor;
-        this._promiseFactory = promiseFactory;
 
         this._logger.verbose("creating ScrollPositionProvider");
     }
@@ -34,7 +31,9 @@ class ScrollPositionProvider extends PositionProvider {
         this._logger.verbose("ScrollPositionProvider - getCurrentPosition()");
 
         const that = this;
-        return EyesSeleniumUtils.getCurrentScrollPosition(this._executor, this._promiseFactory).then(result => {
+        return EyesSeleniumUtils.getCurrentScrollPosition(this._executor).catch(err => {
+            throw new Error("EyesDriverOperationException: Failed to extract current scroll position! Error: " + err);
+        }).then(result => {
             that._logger.verbose(`Current position: ${result}`);
             return result;
         });
@@ -47,7 +46,7 @@ class ScrollPositionProvider extends PositionProvider {
     setPosition(location) {
         const that = this;
         that._logger.verbose(`ScrollPositionProvider - Scrolling to ${location}`);
-        return EyesSeleniumUtils.setCurrentScrollPosition(this._executor, location, this._promiseFactory).then(() => {
+        return EyesSeleniumUtils.setCurrentScrollPosition(this._executor, location).then(() => {
             that._logger.verbose("ScrollPositionProvider - Done scrolling!");
         });
     }
@@ -58,7 +57,7 @@ class ScrollPositionProvider extends PositionProvider {
      */
     getEntireSize() {
         const that = this;
-        return EyesSeleniumUtils.getCurrentFrameContentEntireSize(this._executor, this._promiseFactory).then(result => {
+        return EyesSeleniumUtils.getCurrentFrameContentEntireSize(this._executor).then(result => {
             that._logger.verbose(`ScrollPositionProvider - Entire size: ${result}`);
             return result;
         });
@@ -66,19 +65,20 @@ class ScrollPositionProvider extends PositionProvider {
 
     /**
      * @override
-     * @inheritDoc
+     * @return {Promise.<ScrollPositionMemento>}
      */
     getState() {
         return this.getCurrentPosition().then(position => new ScrollPositionMemento(position));
     }
 
+    // noinspection JSCheckFunctionSignatures
     /**
      * @override
-     * @inheritDoc
+     * @param {ScrollPositionMemento} state The initial state of position
+     * @return {Promise}
      */
     restoreState(state) {
         const that = this;
-        /** @type {ScrollPositionMemento} state */
         return this.setPosition(new Location(state.getX(), state.getY())).then(() => {
             that._logger.verbose("Position restored.");
         });

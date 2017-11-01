@@ -48,7 +48,7 @@ class InvalidPositionProvider extends PositionProvider {
     // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
     /**
      * @param {Object} state The initial state of position
-     * @return {Promise.<void>}
+     * @return {Promise}
      */
     restoreState(state) {
         throw new TypeError('This class does not implement methods!');

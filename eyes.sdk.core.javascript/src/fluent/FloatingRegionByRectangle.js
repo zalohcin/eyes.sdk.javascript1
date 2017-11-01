@@ -1,8 +1,9 @@
 'use strict';
 
+const GetFloatingRegion = require('./GetFloatingRegion');
 const FloatingMatchSettings = require('../positioning/FloatingMatchSettings');
 
-class FloatingRegionByRectangle {
+class FloatingRegionByRectangle extends GetFloatingRegion {
 
     /**
      * @param {Region} rect
@@ -12,6 +13,7 @@ class FloatingRegionByRectangle {
      * @param {int} maxRightOffset
      */
     constructor(rect, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
+        super();
         this._rect = rect;
         this._maxUpOffset = maxUpOffset;
         this._maxDownOffset = maxDownOffset;
@@ -20,16 +22,17 @@ class FloatingRegionByRectangle {
     }
 
     /**
-     *
-     * @return {FloatingMatchSettings}
+     * @override
      */
-    getRegion() {
-        return new FloatingMatchSettings(
+    getRegion(eyesBase) {
+        const region = new FloatingMatchSettings(
             this._rect.getLeft(), this._rect.getTop(),
             this._rect.getWidth(), this._rect.getHeight(),
             this._maxUpOffset, this._maxDownOffset,
             this._maxLeftOffset, this._maxRightOffset
         );
+
+        return eyesBase.getPromiseFactory().resolve(region);
     }
 }
 

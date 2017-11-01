@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-const {Image} = require('png-async');
+const png = require('png-async');
 
 const {ReadableBufferStream, WritableBufferStream} = require('../StreamUtils');
 
@@ -16,7 +16,7 @@ class ImageUtils {
      *
      * @param {Buffer} buffer Original image as PNG Buffer
      * @param {PromiseFactory} promiseFactory
-     * @return {Promise.<Image>} Decoded png image with byte buffer
+     * @return {Promise.<png.Image>} Decoded png image with byte buffer
      **/
     static parseImage(buffer, promiseFactory) {
         return promiseFactory.makePromise(resolve => {
@@ -26,7 +26,7 @@ class ImageUtils {
 
             // pass the file to PNG using read stream
             const imageReadableStream = new ReadableBufferStream(buffer, undefined);
-            const image = new Image({filterType: 4});
+            const image = new png.Image({filterType: 4});
             // noinspection JSUnresolvedFunction
             imageReadableStream.pipe(image).on('parsed', () => {
                 resolve(image);
@@ -38,7 +38,7 @@ class ImageUtils {
     /**
      * Repacks a parsed Image to a PNG buffer.
      *
-     * @param {Image} image Parsed image as returned from parseImage
+     * @param {png.Image} image Parsed image as returned from parseImage
      * @param {PromiseFactory} promiseFactory
      * @return {Promise.<Buffer>} PNG buffer which can be written to file or base64 string
      **/
@@ -60,10 +60,10 @@ class ImageUtils {
     /**
      * Scaled a parsed image by a given factor.
      *
-     * @param {Image} image - will be modified
+     * @param {png.Image} image - will be modified
      * @param {Number} scaleRatio factor to multiply the image dimensions by (lower than 1 for scale down)
      * @param {PromiseFactory} promiseFactory
-     * @return {Promise.<void>}
+     * @return {Promise}
      **/
     static scaleImage(image, scaleRatio, promiseFactory) {
         if (scaleRatio === 1) {
@@ -82,11 +82,11 @@ class ImageUtils {
     /**
      * Resize a parsed image by a given dimensions.
      *
-     * @param {Image} image - will be modified
+     * @param {png.Image} image - will be modified
      * @param {int} targetWidth The width to resize the image to
      * @param {int} targetHeight The height to resize the image to
      * @param {PromiseFactory} promiseFactory
-     * @return {Promise.<void>}
+     * @return {Promise}
      **/
     static resizeImage(image, targetWidth, targetHeight, promiseFactory) {
         return promiseFactory.makePromise(resolve => {
@@ -284,10 +284,10 @@ class ImageUtils {
     /**
      * Crops a parsed image - the image is changed
      *
-     * @param {Image} image
+     * @param {png.Image} image
      * @param {Region} region Region to crop
      * @param {PromiseFactory} promiseFactory
-     * @return {Promise.<Image>}
+     * @return {Promise.<png.Image>}
      **/
     static cropImage(image, region, promiseFactory) {
         return promiseFactory.makePromise((resolve, reject) => {
@@ -328,10 +328,10 @@ class ImageUtils {
     /**
      * Rotates a parsed image - the image is changed
      *
-     * @param {Image} image
+     * @param {png.Image} image
      * @param {Number} deg how many degrees to rotate (in actuality it's only by multipliers of 90)
      * @param {PromiseFactory} promiseFactory
-     * @return {Promise.<Image>}
+     * @return {Promise.<png.Image>}
      **/
     static rotateImage(image, deg, promiseFactory) {
         return promiseFactory.makePromise((resolve, reject) => {
@@ -374,9 +374,9 @@ class ImageUtils {
     /**
      * Copies pixels from the source image to the destination image.
      *
-     * @param {Image} dstImage The destination image.
+     * @param {png.Image} dstImage The destination image.
      * @param {{x: number, y: number}} dstPosition The pixel which is the starting point to copy to.
-     * @param {Image} srcImage The source image.
+     * @param {png.Image} srcImage The source image.
      * @param {{x: number, y: number}} srcPosition The pixel from which to start copying.
      * @param {{width: number, height: number}} size The region to be copied.
      * @return {void}
@@ -415,11 +415,11 @@ class ImageUtils {
      * @param {Array<{position: {x: number, y: number}, size: {width: number, height: number}, image: Buffer}>} parts
      *         The parts to stitch into an image.
      * @param {PromiseFactory} promiseFactory
-     * @return {Promise.<Image>} A promise which resolves to the stitched image.
+     * @return {Promise.<png.Image>} A promise which resolves to the stitched image.
      */
     static stitchImage(fullSize, parts, promiseFactory) {
         return promiseFactory.makePromise(resolve => {
-            const stitchedImage = new Image({filterType: 4, width: fullSize.width, height: fullSize.height});
+            const stitchedImage = new png.Image({filterType: 4, width: fullSize.width, height: fullSize.height});
             let stitchingPromise = promiseFactory.makePromise(resolve => { resolve(); });
 
             for (let i = 0; i < parts.length; ++i) {
@@ -484,7 +484,7 @@ class ImageUtils {
      * @param {Buffer} imageBuffer
      * @param {String} filename
      * @param {PromiseFactory} promiseFactory
-     * @return {Promise.<void>}
+     * @return {Promise}
      */
     static saveImage(imageBuffer, filename, promiseFactory) {
         return promiseFactory.makePromise((resolve, reject) => {

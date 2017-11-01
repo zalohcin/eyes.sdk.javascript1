@@ -57,7 +57,7 @@ class EyesImagesScreenshot extends EyesScreenshot {
         ArgumentGuard.notNull(from, "from");
         ArgumentGuard.notNull(to, "to");
 
-        const result = Location.fromLocation(location);
+        const result = Location.copy(location);
 
         if (from === to) {
             return result;

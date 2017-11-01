@@ -129,7 +129,7 @@ class GeneralUtils {
      *
      * @param {int} ms The amount of time to sleep in milliseconds.
      * @param {PromiseFactory} promiseFactory
-     * @return {Promise.<void>} A promise which is resolved when sleep is done.
+     * @return {Promise} A promise which is resolved when sleep is done.
      */
     static sleep(ms, promiseFactory) {
         return promiseFactory.makePromise(resolve => {

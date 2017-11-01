@@ -33,7 +33,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         ArgumentGuard.notNull(promiseFactory, "promiseFactory");
 
         this._logger = logger;
-        this._driver = driver;
+        this._executor = driver;
         this._promiseFactory = promiseFactory;
         /** @type {FrameChain} */
         this._frameChain = driver.getFrameChain();
@@ -57,11 +57,12 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         this._frameWindow = null;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Creates a frame(!) window screenshot.
      *
      * @param {RectangleSize} entireFrameSize The full internal size of the frame.
-     * @return {Promise<void>}
+     * @return {Promise.<EyesWebDriverScreenshot>}
      */
     initFromFrameSize(entireFrameSize) {
         // The frame comprises the entire screenshot.
@@ -70,38 +71,39 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         this._currentFrameScrollPosition = new Location(0, 0);
         this._frameLocationInScreenshot = new Location(0, 0);
         this._frameWindow = Region.fromLocationAndSize(new Location(0, 0), entireFrameSize);
-        return this._promiseFactory.resolve();
+        return this._promiseFactory.resolve(this);
     }
 
     /**
      * @param {ScreenshotType} [screenshotType] The screenshot's type (e.g., viewport/full page).
      * @param {Location} [frameLocationInScreenshot[ The current frame's location in the screenshot.
-     * @return {Promise<void>}
+     * @return {Promise.<EyesWebDriverScreenshot>}
      */
     init(screenshotType, frameLocationInScreenshot) {
         const that = this;
         return that._updateScreenshotType(screenshotType, that._image).then(screenshotType => {
             that._screenshotType = screenshotType;
 
-            const jsExecutor = new SeleniumJavaScriptExecutor(that._driver);
-            const positionProvider = new ScrollPositionProvider(that._logger, jsExecutor, that._promiseFactory);
+            const jsExecutor = new SeleniumJavaScriptExecutor(that._executor);
+            const positionProvider = new ScrollPositionProvider(that._logger, jsExecutor);
 
-            that._frameChain = that._driver.getFrameChain();
+            that._frameChain = that._executor.getFrameChain();
             return that._getFrameSize(positionProvider).then(frameSize => {
                 return that._getUpdatedScrollPosition(positionProvider).then(currentFrameScrollPosition => {
                     that._currentFrameScrollPosition = currentFrameScrollPosition;
-                    frameLocationInScreenshot = that._getUpdatedFrameLocationInScreenshot(frameLocationInScreenshot);
-
+                    return that._getUpdatedFrameLocationInScreenshot(frameLocationInScreenshot);
+                }).then(frameLocationInScreenshot => {
                     that._frameLocationInScreenshot = frameLocationInScreenshot;
 
                     that._logger.verbose("Calculating frame window...");
-                    that._frameWindow = new Region(frameLocationInScreenshot, frameSize);
+                    that._frameWindow = Region.fromLocationAndSize(frameLocationInScreenshot, frameSize);
                     that._frameWindow.intersect(new Region(0, 0, that._image.getWidth(), that._image.getHeight()));
                     if (that._frameWindow.getWidth() <= 0 || that._frameWindow.getHeight() <= 0) {
                         throw new Error("Got empty frame window for screenshot!");
                     }
 
                     that._logger.verbose("Done!");
+                    return that;
                 });
             });
         });
@@ -109,25 +111,99 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
 
     /**
      * @private
+     * @return {Promise.<Location>}
+     */
+    _getDefaultContentScrollPosition() {
+        const jsExecutor = new SeleniumJavaScriptExecutor(this._executor);
+        const positionProvider = new ScrollPositionProvider(this._logger, jsExecutor);
+        if (this._frameChain.size() === 0) {
+            return positionProvider.getCurrentPosition();
+        }
+
+        /** @type {TargetLocator} */
+        const switchTo = this._executor.getRemoteWebDriver().switchTo();
+
+        const that = this;
+        return switchTo.defaultContent().then(() => {
+            return positionProvider.getCurrentPosition();
+        }).then(defaultContentScrollPosition => {
+            return that._switchFrameLoop(switchTo).then(() => defaultContentScrollPosition);
+        });
+    }
+
+    /**
+     * @private
+     * @param {TargetLocator} switchTo
+     * @return {Promise.<Location>}
+     */
+    _switchFrameLoop(switchTo) {
+        return this._frameChain.getFrames().reduce((promise, frame) => {
+            return promise.then(() => {
+                const frameElement = frame.getReference();
+                return switchTo.frame(frameElement);
+            });
+        }, this._promiseFactory.resolve());
+    }
+
+    /**
+     * @private
+     * @return {Promise.<Location>}
+     */
+    _calcFrameLocationInScreenshot() {
+        this._logger.verbose("Getting first frame..");
+        const firstFrame = this._frameChain.getFrame(0);
+        this._logger.verbose("Done!");
+        let promise = this._promiseFactory.resolve();
+        let locationInScreenshot = Location.copy(firstFrame.getLocation());
+
+        // We only consider scroll of the default content if this is a viewport screenshot.
+        if (this._screenshotType === ScreenshotType.VIEWPORT) {
+            promise = promise.then(() => this._getDefaultContentScrollPosition()).then(windowScroll => {
+                locationInScreenshot = locationInScreenshot.offset(-windowScroll.getX(), -windowScroll.getY());
+            });
+        }
+
+        const that = this;
+        return promise.then(() => {
+            that._logger.verbose("Iterating over frames..");
+            let frame;
+            for (let i = 1, l = that._frameChain.size(); i < l; ++i) {
+                that._logger.verbose("Getting next frame...");
+                frame = that._frameChain.getFrame(i);
+                that._logger.verbose("Done!");
+                const frameLocation = frame.getLocation();
+                // For inner frames we must consider the scroll
+                const frameParentScrollPosition = frame.getParentScrollPosition();
+                // Offsetting the location in the screenshot
+                locationInScreenshot = locationInScreenshot.offset(frameLocation.getX() - frameParentScrollPosition.getX(), frameLocation.getY() - frameParentScrollPosition.getY());
+            }
+
+            that._logger.verbose("Done!");
+            return locationInScreenshot;
+        })
+    }
+
+    /**
+     * @private
      * @param {Location} frameLocationInScreenshot
-     * @return {Location}
+     * @return {Promise.<Location>}
      */
     _getUpdatedFrameLocationInScreenshot(frameLocationInScreenshot) {
         // This is used for frame related calculations.
         if (!frameLocationInScreenshot) {
             if (this._frameChain.size() > 0) {
-                frameLocationInScreenshot = calcFrameLocationInScreenshot(this._logger, this._frameChain, this._screenshotType);
+               return this._calcFrameLocationInScreenshot();
             } else {
-                frameLocationInScreenshot = new Location(0, 0);
+                return this._promiseFactory.resolve(new Location(0, 0));
             }
         }
-        return frameLocationInScreenshot;
+        return this._promiseFactory.resolve(frameLocationInScreenshot);
     }
 
     /**
      * @private
      * @param {ScrollPositionProvider} positionProvider
-     * @return {Promise<Location>}
+     * @return {Promise.<Location>}
      */
     _getUpdatedScrollPosition(positionProvider) {
         return positionProvider.getCurrentPosition().catch(() => {
@@ -138,7 +214,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     /**
      * @private
      * @param {ScrollPositionProvider} positionProvider
-     * @return {Promise<RectangleSize>}
+     * @return {Promise.<RectangleSize>}
      */
     _getFrameSize(positionProvider) {
         if (this._frameChain.size() !== 0) {
@@ -148,7 +224,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
             // In that case we'll use the viewport size as the frame's size.
             const that = this;
             return positionProvider.getEntireSize().catch(() => {
-                return that._driver.getDefaultContentViewportSize();
+                return that._executor.getDefaultContentViewportSize();
             });
         }
     }
@@ -157,16 +233,16 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
      * @private
      * @param {ScreenshotType} screenshotType
      * @param {MutableImage} image
-     * @return {Promise<ScreenshotType>}
+     * @return {Promise.<ScreenshotType>}
      */
     _updateScreenshotType(screenshotType, image) {
         if (!screenshotType) {
             const that = this;
-            return that._driver.getDefaultContentViewportSize().then(viewportSize => {
-                const scaleViewport = that._driver.getEyes().shouldStitchContent();
+            return that._executor.getDefaultContentViewportSize().then(viewportSize => {
+                const scaleViewport = that._executor.getEyes().shouldStitchContent();
 
                 if (scaleViewport) {
-                    const pixelRatio = that._driver.getEyes().getDevicePixelRatio();
+                    const pixelRatio = that._executor.getEyes().getDevicePixelRatio();
                     viewportSize = viewportSize.scale(pixelRatio);
                 }
 
@@ -201,7 +277,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
      * @override
      * @param {Region} region The region for which we should get the sub screenshot.
      * @param {Boolean} throwIfClipped Throw an EyesException if the region is not fully contained in the screenshot.
-     * @return {Promise<EyesWebDriverScreenshot>} A screenshot instance containing the given region.
+     * @return {Promise.<EyesWebDriverScreenshot>} A screenshot instance containing the given region.
      */
     getSubScreenshot(region, throwIfClipped) {
         this._logger.verbose(`getSubScreenshot([${region}], ${throwIfClipped})`);
@@ -222,7 +298,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
 
             const frameLocationInSubScreenshot = new Location(-contextAsIsRegionLocation.getX(), -contextAsIsRegionLocation.getY());
 
-            const result = new EyesWebDriverScreenshot(that._logger, that._driver, subScreenshotImage, that._promiseFactory);
+            const result = new EyesWebDriverScreenshot(that._logger, that._executor, subScreenshotImage, that._promiseFactory);
             return result.init(that._screenshotType, frameLocationInSubScreenshot);
         }).then(result => {
             that._logger.verbose("Done!");
@@ -245,7 +321,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         ArgumentGuard.notNull(from, "from");
         ArgumentGuard.notNull(to, "to");
 
-        let result = Location.fromLocation(location);
+        let result = Location.copy(location);
 
         if (from === to) {
             return result;
@@ -342,7 +418,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
      */
     getIntersectedRegion(region, originalCoordinatesType, resultCoordinatesType = originalCoordinatesType) {
         if (region.isEmpty()) {
-            return Region.fromRegion(region);
+            return Region.copy(region);
         }
 
         let intersectedRegion = this.convertRegionLocation(region, originalCoordinatesType, CoordinatesType.SCREENSHOT_AS_IS);
@@ -398,42 +474,6 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
             });
         });
     }
-}
-
-/**
- * @private
- * @param {Logger} logger
- * @param {FrameChain} frameChain
- * @param {ScreenshotType} screenshotType
- * @return {Location}
- */
-function calcFrameLocationInScreenshot(logger, frameChain, screenshotType) {
-    logger.verbose("Getting first frame..");
-    const firstFrame = frameChain.getFrame(0);
-    logger.verbose("Done!");
-    let locationInScreenshot = Location.fromLocation(firstFrame.getLocation());
-
-    // We only consider scroll of the default content if this is a viewport screenshot.
-    if (screenshotType === ScreenshotType.VIEWPORT) {
-        const defaultContentScroll = firstFrame.getParentScrollPosition();
-        locationInScreenshot = locationInScreenshot.offset(-defaultContentScroll.getX(), -defaultContentScroll.getY())
-    }
-
-    logger.verbose("Iterating over frames..");
-    let frame;
-    for (let i = 1, l = frameChain.size(); i < l; ++i) {
-        logger.verbose("Getting next frame...");
-        frame = frameChain.getFrame(i);
-        logger.verbose("Done!");
-        const frameLocation = frame.getLocation();
-        // For inner frames we must consider the scroll
-        const frameParentScrollPosition = frame.getParentScrollPosition();
-        // Offsetting the location in the screenshot
-        locationInScreenshot = locationInScreenshot.offset(frameLocation.getX() - frameParentScrollPosition.getX(), frameLocation.getY() - frameParentScrollPosition.getY());
-    }
-
-    logger.verbose("Done!");
-    return locationInScreenshot;
 }
 
 EyesWebDriverScreenshot.ScreenshotType = Object.freeze(ScreenshotType);

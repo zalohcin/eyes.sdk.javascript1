@@ -21,6 +21,8 @@ exports.FailedTestError = require('./src/errors/FailedTestError');
 exports.CheckSettings = require('./src/fluent/CheckSettings');
 exports.CheckTarget = require('./src/fluent/CheckTarget');
 exports.FloatingRegionByRectangle = require('./src/fluent/FloatingRegionByRectangle');
+exports.GetFloatingRegion = require('./src/fluent/GetFloatingRegion');
+exports.GetRegion = require('./src/fluent/GetRegion');
 exports.IgnoreRegionByRectangle = require('./src/fluent/IgnoreRegionByRectangle');
 
 exports.PropertyHandler = require('./src/handlers/PropertyHandler');
@@ -46,9 +48,9 @@ exports.MatchWindowDataWithScreenshot = require('./src/match/MatchWindowDataWith
 
 exports.CoordinatesType = require('./src/positioning/CoordinatesType');
 exports.FloatingMatchSettings = require('./src/positioning/FloatingMatchSettings');
-exports.FloatingRegionProvider = require('./src/positioning/FloatingRegionProvider');
 exports.InvalidPositionProvider = require('./src/positioning/InvalidPositionProvider');
 exports.Location = require('./src/positioning/Location');
+exports.PositionMemento = require('./src/positioning/PositionMemento');
 exports.NullRegionProvider = require('./src/positioning/NullRegionProvider');
 exports.PositionProvider = require('./src/positioning/PositionProvider');
 exports.RectangleSize = require('./src/positioning/RectangleSize');
