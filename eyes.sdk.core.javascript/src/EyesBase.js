@@ -35,14 +35,17 @@ const ImageMatchSettings = require('./match/ImageMatchSettings');
 const MatchWindowData = require('./match/MatchWindowData');
 
 const DiffsFoundError = require('./errors/DiffsFoundError');
+const EyesError = require('./errors/EyesError');
 const NewTestError = require('./errors/NewTestError');
-const FailedTestError = require('./errors/FailedTestError');
+const OutOfBoundsError = require('./errors/OutOfBoundsError');
+const TestFailedError = require('./errors/TestFailedError');
 
 const CheckSettings = require('./fluent/CheckSettings');
 
 const SessionStartInfo = require('./server/SessionStartInfo');
 const SessionType = require('./server/SessionType');
 const PropertyData = require('./server/PropertyData');
+const TestResultsStatus = require('./server/TestResultsStatus');
 
 const FailureReports = require('./FailureReports');
 const GeneralUtils = require('./GeneralUtils');
@@ -793,38 +796,36 @@ class EyesBase {
                 serverResults = results;
                 that._logger.verbose(`Results: ${results}`);
 
-                if (serverResults.getStatus() === "Unresolved" && !isNewSession) {
-                    let instructions = `See details at ${sessionResultsUrl}`;
-                    that._logger.log(`--- Unresolved test ended. ${instructions}`);
+                if (serverResults.getStatus() === TestResultsStatus.Unresolved) {
+                    if (serverResults.getIsNew()) {
+                        let instructions = "Please approve the new baseline at " + sessionResultsUrl;
+                        that._logger.log(`--- New test ended. ${instructions}`);
 
-                    if (throwEx) {
-                        that._finallyClose();
-                        const message = `Test '${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}' detected differences! ${instructions}`;
-                        return that._promiseFactory.reject(new DiffsFoundError(results, message));
+                        if (throwEx && !that._saveNewTests) {
+                            that._finallyClose();
+                            const message = `'${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}'. ${instructions}`;
+                            return that._promiseFactory.reject(new NewTestError(results, message));
+                        }
+                        return resolve(results);
+                    } else {
+                        let instructions = `See details at ${sessionResultsUrl}`;
+                        that._logger.log(`--- Failed test ended. ${instructions}`);
+
+                        if (throwEx) {
+                            that._finallyClose();
+                            const message = `Test '${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()} detected differences!'. ${instructions}`;
+                            return that._promiseFactory.reject(new DiffsFoundError(results, message));
+                        }
+                        return resolve(results);
                     }
-                    return resolve(results);
-                }
-
-                if (serverResults.getStatus() === "Unresolved" && isNewSession && !that._saveNewTests) {
-                    let instructions = "Please approve the new baseline at " + sessionResultsUrl;
-                    that._logger.log(`--- New test ended. ${instructions}`);
-
-                    if (throwEx) {
-                        that._finallyClose();
-                        const message = `'${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}'. ${instructions}`;
-                        return that._promiseFactory.reject(new NewTestError(results, message));
-                    }
-                    return resolve(results);
-                }
-
-                if (serverResults.getStatus() === "Failed") {
+                } else if (serverResults.getStatus() === TestResultsStatus.Failed) {
                     let instructions = `See details at ${sessionResultsUrl}`;
                     that._logger.log(`--- Failed test ended. ${instructions}`);
 
                     if (throwEx) {
                         that._finallyClose();
                         const message = `'${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}'. ${instructions}`;
-                        return that._promiseFactory.reject(new FailedTestError(results, message));
+                        return that._promiseFactory.reject(new TestFailedError(results, message));
                     }
                     return resolve(results);
                 }
@@ -1217,7 +1218,7 @@ class EyesBase {
         }
 
         if (this.getFailureReports() === FailureReports.IMMEDIATE) {
-            throw new FailedTestError(null, `Mismatch found in '${this._sessionStartInfo.getScenarioIdOrName()}' of '${this._sessionStartInfo.getAppIdOrName()}'`);
+            throw new TestFailedError(null, `Mismatch found in '${this._sessionStartInfo.getScenarioIdOrName()}' of '${this._sessionStartInfo.getAppIdOrName()}'`);
         }
     }
 
@@ -1451,7 +1452,7 @@ class EyesBase {
         cursorInScreenshot.offsetByLocation(control.getLocation());
         try {
             cursorInScreenshot = this._lastScreenshot.getLocationInScreenshot(cursorInScreenshot, CoordinatesType.CONTEXT_RELATIVE);
-        } catch (ignore) {
+        } catch (ignore if ignore instanceof OutOfBoundsError) {
             this._logger.verbose(`"Ignoring ${action} (out of bounds)`);
             return;
         }

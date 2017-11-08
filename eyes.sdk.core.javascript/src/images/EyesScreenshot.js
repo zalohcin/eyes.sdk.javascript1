@@ -64,7 +64,7 @@ class EyesScreenshot {
      * @param {Location} location The location as coordinates inside the current frame.
      * @param {CoordinatesType} coordinatesType The coordinates type of {@code location}.
      * @return {Location} The corresponding location inside the screenshot, in screenshot as-is coordinates type.
-     * @throws com.applitools.eyes.OutOfBoundsException If the location is not inside the frame's region in the screenshot.
+     * @throws OutOfBoundsError If the location is not inside the frame's region in the screenshot.
      */
     getLocationInScreenshot(location, coordinatesType) {
         throw new TypeError('The method `getLocationInScreenshot` from `EyesScreenshot` should be implemented!');

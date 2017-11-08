@@ -1,25 +1,21 @@
 'use strict';
 
-const FailedTestError = require('./FailedTestError');
+const TestFailedError = require('./TestFailedError');
 
 /**
  * Indicates that a new test (i.e., a test for which no baseline exists) ended.
  */
-class NewTestError extends FailedTestError {
+class NewTestError extends TestFailedError {
 
     /**
      * Creates a new NewTestError instance.
      *
-     * @param {TestResults} [testResults] The results of the current test if available, {@code null} otherwise.
-     * @param {String} [msg]
-     * @param [id]
+     * @param {TestResults} testResults The results of the current test if available, {@code null} otherwise.
+     * @param {String} message The error description string
+     * @param [params...] Other params for Error constructor
      */
-    constructor(testResults, msg, id) {
-        super(testResults, msg, id);
-
-        if (new.target === NewTestError) {
-            Error.captureStackTrace(this, NewTestError);
-        }
+    constructor(testResults, message, ...params) {
+        super(testResults, message, ...params);
     }
 }
 

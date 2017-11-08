@@ -4,6 +4,7 @@ const {ArgumentGuard, PositionProvider, Location} = require('eyes.sdk');
 
 const EyesSeleniumUtils = require('../EyesSeleniumUtils');
 const ScrollPositionMemento = require('./ScrollPositionMemento');
+const EyesDriverOperationError = require('./../errors/EyesDriverOperationError');
 
 class ScrollPositionProvider extends PositionProvider {
 
@@ -32,7 +33,7 @@ class ScrollPositionProvider extends PositionProvider {
 
         const that = this;
         return EyesSeleniumUtils.getCurrentScrollPosition(this._executor).catch(err => {
-            throw new Error("EyesDriverOperationException: Failed to extract current scroll position! Error: " + err);
+            throw new EyesDriverOperationError("Failed to extract current scroll position!", err);
         }).then(result => {
             that._logger.verbose(`Current position: ${result}`);
             return result;

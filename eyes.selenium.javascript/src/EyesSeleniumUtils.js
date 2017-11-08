@@ -2,6 +2,8 @@
 
 const {Location, RectangleSize, ArgumentGuard} = require('eyes.sdk');
 
+const EyesDriverOperationError = require('./errors/EyesDriverOperationError');
+
 const NATIVE_APP = 'NATIVE_APP';
 
 const JS_GET_VIEWPORT_SIZE =
@@ -101,6 +103,8 @@ class EyesSeleniumUtils {
         return driver.getCapabilities().then(capabilities => {
             const capsOrientation = capabilities.get('orientation') || capabilities.get('deviceOrientation');
             return capsOrientation === 'LANDSCAPE';
+        }).catch(err => {
+            throw new EyesDriverOperationError("Failed to get orientation!", err);
         });
     }
 
@@ -126,7 +130,7 @@ class EyesSeleniumUtils {
         }
 
         return executor.executeScript(script).catch(err => {
-            throw new Error('EyesDriverOperationException: failed to set overflow', err);
+            throw new EyesDriverOperationError('Failed to set overflow', err);
         });
     }
 
@@ -153,7 +157,7 @@ class EyesSeleniumUtils {
         }
 
         return executor.executeScript(script).catch(err => {
-            throw new Error('EyesDriverOperationException: failed to set body overflow', err);
+            throw new EyesDriverOperationError('Failed to set body overflow', err);
         });
     }
 
@@ -210,8 +214,8 @@ class EyesSeleniumUtils {
         // scrollHeight might be smaller (!) than the clientHeight, which is why we take the maximum between them.
         return executor.executeScript(JS_GET_CONTENT_ENTIRE_SIZE).then(result => {
             return new RectangleSize(parseInt(result[0], 10) || 0, parseInt(result[1], 10) || 0);
-        }).catch(ignored => {
-            throw new Error("EyesDriverOperationError: failed to extract entire size!");
+        }).catch(err => {
+            throw new EyesDriverOperationError("Failed to extract entire size!", err);
         });
     }
 

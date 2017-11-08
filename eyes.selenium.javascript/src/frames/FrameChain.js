@@ -3,6 +3,7 @@
 const {ArgumentGuard, Location} = require('eyes.sdk');
 
 const Frame = require('./Frame');
+const NoFramesError = require('./../errors/NoFramesError');
 
 /**
  * @class FrameChain
@@ -119,7 +120,7 @@ class FrameChain {
      */
     getDefaultContentScrollPosition() {
         if (this._frames.length === 0) {
-            throw new Error("NoFramesError: No frames in frame chain");
+            throw new NoFramesError("No frames in frame chain");
         }
         return Location.copy(this._frames[0].getParentScrollPosition());
     }

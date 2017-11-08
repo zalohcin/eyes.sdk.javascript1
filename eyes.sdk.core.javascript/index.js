@@ -13,10 +13,12 @@ exports.DebugScreenshotsProvider = require('./src/debug/DebugScreenshotsProvider
 exports.FileDebugScreenshotsProvider = require('./src/debug/FileDebugScreenshotsProvider');
 exports.NullDebugScreenshotProvider = require('./src/debug/NullDebugScreenshotProvider');
 
-exports.EyesError = require('./src/errors/EyesError');
+exports.CoordinatesTypeConversionError = require('./src/errors/CoordinatesTypeConversionError');
 exports.DiffsFoundError = require('./src/errors/DiffsFoundError');
+exports.EyesError = require('./src/errors/EyesError');
 exports.NewTestError = require('./src/errors/NewTestError');
-exports.FailedTestError = require('./src/errors/FailedTestError');
+exports.OutOfBoundsError = require('./src/errors/OutOfBoundsError');
+exports.TestFailedError = require('./src/errors/TestFailedError');
 
 exports.CheckSettings = require('./src/fluent/CheckSettings');
 exports.CheckTarget = require('./src/fluent/CheckTarget');
@@ -74,6 +76,7 @@ exports.ServerConnector = require('./src/server/ServerConnector');
 exports.SessionStartInfo = require('./src/server/SessionStartInfo');
 exports.SessionType = require('./src/server/SessionType');
 exports.TestResults = require('./src/server/TestResults');
+exports.TestResultsStatus = require('./src/server/TestResultsStatus');
 
 exports.MouseTrigger = require('./src/triggers/MouseTrigger');
 exports.TextTrigger = require('./src/triggers/TextTrigger');

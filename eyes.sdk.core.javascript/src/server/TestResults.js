@@ -8,7 +8,7 @@ const ArgumentGuard = require('../ArgumentGuard');
 class TestResults {
 
     constructor() {
-        /** @type {String} */
+        /** @type {TestResultsStatus} */
         this.status = null;
 
         /** @type {Object} */
@@ -48,7 +48,7 @@ class TestResults {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {String}
+     * @return {TestResultsStatus}
      */
     getStatus() {
         return this.status;
@@ -56,7 +56,7 @@ class TestResults {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @param {String} value
+     * @param {TestResultsStatus} value
      */
     setStatus(value) {
         this.status = value;

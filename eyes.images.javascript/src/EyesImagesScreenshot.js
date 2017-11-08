@@ -1,6 +1,6 @@
 'use strict';
 
-const {EyesScreenshot, Region, RectangleSize, Location, CoordinatesType, ArgumentGuard} = require('eyes.sdk');
+const {EyesScreenshot, Region, RectangleSize, Location, CoordinatesType, ArgumentGuard, CoordinatesTypeConversionError, OutOfBoundsError} = require('eyes.sdk');
 
 /**
  * Encapsulates a screenshot taken by the images SDK.
@@ -33,7 +33,7 @@ class EyesImagesScreenshot extends EyesScreenshot {
         const subScreenshotRegion = this.getIntersectedRegion(region, region.getCoordinatesType(), CoordinatesType.SCREENSHOT_AS_IS);
 
         if (subScreenshotRegion.isEmpty() || (throwIfClipped && !subScreenshotRegion.getSize().equals(region.getSize()))) {
-            throw new TypeError(`Region [${region}] is out of screenshot bounds [${this._bounds}]`);
+            throw new OutOfBoundsError(`Region [${region}] is out of screenshot bounds [${this._bounds}]`);
         }
 
         const that = this;
@@ -68,7 +68,7 @@ class EyesImagesScreenshot extends EyesScreenshot {
                 if (to === CoordinatesType.CONTEXT_RELATIVE) {
                     result.offset(this._bounds.getLeft(), this._bounds.getTop());
                 } else {
-                    throw new TypeError(`CoordinatesTypeConversionError: ${from} ${to}`);
+                    throw new CoordinatesTypeConversionError(from, to);
                 }
                 break;
 
@@ -76,12 +76,12 @@ class EyesImagesScreenshot extends EyesScreenshot {
                 if (to === CoordinatesType.SCREENSHOT_AS_IS) {
                     result.offset(-this._bounds.getLeft(), -this._bounds.getTop());
                 } else {
-                    throw new TypeError(`CoordinatesTypeConversionError: ${from} ${to}`);
+                    throw new CoordinatesTypeConversionError(from, to);
                 }
                 break;
 
             default:
-                throw new TypeError(`CoordinatesTypeConversionError: ${from} ${to}`);
+                throw new CoordinatesTypeConversionError(from, to);
         }
         return result;
     }
@@ -100,7 +100,7 @@ class EyesImagesScreenshot extends EyesScreenshot {
         location = this.convertLocation(location, coordinatesType, CoordinatesType.CONTEXT_RELATIVE);
 
         if (!this._bounds.contains(location)) {
-            throw new TypeError(`Location ${location} ('${coordinatesType}') is not visible in screenshot!`);
+            throw new OutOfBoundsError(`Location ${location} ('${coordinatesType}') is not visible in screenshot!`);
         }
 
         return this.convertLocation(location, CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.SCREENSHOT_AS_IS);

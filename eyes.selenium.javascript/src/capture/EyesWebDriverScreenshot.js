@@ -1,6 +1,6 @@
 'use strict';
 
-const {ArgumentGuard, EyesScreenshot, CoordinatesType, Region, Location} = require('eyes.sdk');
+const {ArgumentGuard, EyesScreenshot, CoordinatesType, Region, Location, CoordinatesTypeConversionError, OutOfBoundsError} = require('eyes.sdk');
 
 const SeleniumJavaScriptExecutor = require('../SeleniumJavaScriptExecutor');
 const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
@@ -288,7 +288,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         const asIsSubScreenshotRegion = this.getIntersectedRegion(region, region.getCoordinatesType(), CoordinatesType.SCREENSHOT_AS_IS);
 
         if (asIsSubScreenshotRegion.isEmpty() || (throwIfClipped && !asIsSubScreenshotRegion.getSize().equals(region.getSize()))) {
-            throw new Error(`OutOfBoundsException: Region [${region}] is out of screenshot bounds [${this._frameWindow}]`);
+            throw new OutOfBoundsError(`Region [${region}] is out of screenshot bounds [${this._frameWindow}]`);
         }
 
         const that = this;
@@ -349,7 +349,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
                         result = result.offset(this._frameLocationInScreenshot.getX(), this._frameLocationInScreenshot.getY());
                         break;
                     default:
-                        throw new Error(`CoordinatesTypeConversionError: cannot convert from '${from}' to '${to}'`);
+                        throw new CoordinatesTypeConversionError(from, to);
                 }
                 break;
 
@@ -365,7 +365,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
                         result = result.offset(-this._currentFrameScrollPosition.getX(), -this._currentFrameScrollPosition.getY());
                         break;
                     default:
-                        throw new Error(`CoordinatesTypeConversionError: cannot convert from '${from}' to '${to}'`);
+                        throw new CoordinatesTypeConversionError(from, to);
                 }
                 break;
 
@@ -381,12 +381,12 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
                         result = result.offset(-this._frameLocationInScreenshot.getX(), -this._frameLocationInScreenshot.getY());
                         break;
                     default:
-                        throw new Error(`CoordinatesTypeConversionError: cannot convert from '${from}' to '${to}'`);
+                        throw new CoordinatesTypeConversionError(from, to);
                 }
                 break;
 
             default:
-                throw new Error(`CoordinatesTypeConversionError: cannot convert from '${from}' to '${to}'`);
+                throw new CoordinatesTypeConversionError(from, to);
         }
         return result;
     }
@@ -403,7 +403,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
 
         // Making sure it's within the screenshot bounds
         if (!this._frameWindow.containsLocation(location)) {
-            throw new Error(`OutOfBoundsException: location ${location} ('${coordinatesType}') is not visible in screenshot!`);
+            throw new OutOfBoundsError(`Location ${location} ('${coordinatesType}') is not visible in screenshot!`);
         }
         return this._location;
     }
@@ -434,7 +434,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
                 intersectedRegion.intersect(new Region(0, 0, this._image.getWidth(), this._.getHeight()));
                 break;
             default:
-                throw new Error(`CoordinatesTypeConversionException: unknown coordinates type: '${originalCoordinatesType}'`);
+                throw new CoordinatesTypeConversionError(from, to);
         }
 
         // If the intersection is empty we don't want to convert the coordinates.

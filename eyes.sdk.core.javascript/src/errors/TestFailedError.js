@@ -1,24 +1,23 @@
 'use strict';
 
+const EyesError = require('./EyesError');
+
 /**
  * Indicates that a test did not pass (i.e., test either failed or is a new test).
  */
-class FailedTestError extends Error {
+class TestFailedError extends EyesError {
 
     /**
-     * Creates a new FailedTestError instance.
+     * Creates a new TestFailedError instance.
      *
      * @param {TestResults} [testResults] The results of the current test if available, {@code null} otherwise.
-     * @param {String} [msg]
-     * @param [id]
+     * @param {String} [message] The error description string
+     * @param [params...] Other params for Error constructor
      */
-    constructor(testResults, msg, id) {
-        super(msg, id);
-        this._testResults = testResults;
+    constructor(testResults, message, ...params) {
+        super(message, ...params);
 
-        if (new.target === FailedTestError) {
-            Error.captureStackTrace(this, FailedTestError);
-        }
+        this._testResults = testResults;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -30,4 +29,4 @@ class FailedTestError extends Error {
     }
 }
 
-module.exports = FailedTestError;
+module.exports = TestFailedError;

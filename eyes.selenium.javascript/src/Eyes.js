@@ -4,7 +4,7 @@ const {WebDriver} = require('selenium-webdriver');
 const {
     EyesBase, FixedScaleProviderFactory, NullScaleProvider, RegionProvider, NullRegionProvider,
     ScaleProviderIdentityFactory, PromiseFactory, ArgumentGuard, SimplePropertyHandler,
-    Logger, CoordinatesType, ContextBasedScaleProviderFactory, FailedTestError,
+    Logger, CoordinatesType, ContextBasedScaleProviderFactory, TestFailedError,
     EyesError, UserAgent, ReadOnlyPropertyHandler, Region, Location, RectangleSize
 } = require('eyes.sdk');
 
@@ -945,7 +945,7 @@ class Eyes extends EyesBase {
             return EyesSeleniumUtils.setViewportSize(that._logger, that._driver, size).catch(err => {
                 // Just in case the user catches that error
                 return that._driver.switchTo().frames(originalFrame).then(() => {
-                    throw new FailedTestError("Failed to set the viewport size", err);
+                    throw new TestFailedError("Failed to set the viewport size", err);
                 });
             });
         }).then(() => {

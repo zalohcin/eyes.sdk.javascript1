@@ -1,25 +1,21 @@
 'use strict';
 
-const FailedTestError = require('./FailedTestError');
+const TestFailedError = require('./TestFailedError');
 
 /**
- * Indicates that a test did not pass (i.e., test either failed or is a new test).
+ * Indicates that an existing test ended, and that differences where found from the baseline.
  */
-class DiffsFoundError extends FailedTestError {
+class DiffsFoundError extends TestFailedError {
 
     /**
      * Creates a new DiffsFoundError instance.
      *
-     * @param {TestResults} [testResults] The results of the current test if available, {@code null} otherwise.
-     * @param {String} [msg]
-     * @param [id]
+     * @param {TestResults} testResults The results of the current test if available, {@code null} otherwise.
+     * @param {String} message The error description string
+     * @param [params...] Other params for Error constructor
      */
-    constructor(testResults, msg, id) {
-        super(testResults, msg, id);
-
-        if (new.target === DiffsFoundError) {
-            Error.captureStackTrace(this, DiffsFoundError);
-        }
+    constructor(testResults, message, ...params) {
+        super(testResults, message, ...params);
     }
 }
 
