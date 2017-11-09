@@ -21,9 +21,9 @@
   "license": "Apache-2.0",
   "main": "index",
   "dependencies": {
-    "dateformat": "^2.0.0",
+    "dateformat": "^3.0.0",
     "stack-trace": "^0.0.10",
-    "request": "^2.81.0",
+    "request": "^2.83.0",
     "png-async": "^0.9.2"
   },
   "devDependencies": {
@@ -35,7 +35,7 @@
   "browser": {
     "fs": "browserify-fs",
     "zlib": "browserify-zlib",
-    "./src/FileLogHandler": false
+    "./src/logging/FileLogHandler": false
   },
   "engines": {
     "node": ">= 6.9.0"
