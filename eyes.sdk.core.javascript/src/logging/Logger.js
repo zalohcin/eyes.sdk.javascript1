@@ -1,6 +1,6 @@
 'use strict';
 
-const StackTrace = require('stack-trace');
+const stackTrace = require('stack-trace');
 
 const ArgumentGuard = require('../ArgumentGuard');
 const GeneralUtils = require('../GeneralUtils');
@@ -55,7 +55,7 @@ class Logger {
      * @return {String} The name of the method which called the logger, if possible, or an empty string.
      */
     _getPrefix() {
-        const trace = StackTrace.get();
+        const trace = stackTrace.get();
 
         let prefix = "";
         // getStackTrace()<-getPrefix()<-log()/verbose()<-"actual caller"

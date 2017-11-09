@@ -1,6 +1,7 @@
 'use strict';
 
-const winston = require('winston');
+const path = require('path');
+const fs = require('fs');
 
 const GeneralUtils = require('../GeneralUtils');
 const LogHandler = require('./LogHandler');
@@ -12,13 +13,15 @@ class FileLogHandler extends LogHandler {
 
     /**
      * @param {Boolean} isVerbose Whether to handle or ignore verbose log messages.
-     * @param {String} filename The file in which to save the logs.
+     * @param {String} [filename] The file in which to save the logs.
+     * @param {boolean} [append=true] Whether to append the logs if the current file exists, or to overwrite the existing file.
      **/
-    constructor(isVerbose, filename = "eyes.log") {
+    constructor(isVerbose, filename = "eyes.log", append = true) {
         super();
 
         // this._append = append;
         this._filename = filename;
+        this._append = append;
         this.setIsVerbose(isVerbose);
     }
 
@@ -27,25 +30,23 @@ class FileLogHandler extends LogHandler {
      */
     open() {
         this.close();
-        this._logger = new (winston.Logger)({
-            exitOnError: false,
-            transports: [
-                new (winston.transports.File)({
-                    filename: this._filename,
-                    timestamp: GeneralUtils.getIso8601Data,
-                    json: false
-                })
-            ]
-        });
+
+        const file = path.normalize(this._filename);
+        const opts = {
+            flags: this._append ? 'a' : 'w',
+            encoding: 'utf8'
+        };
+
+        this._writer = fs.createWriteStream(file, opts);
     }
 
     /**
      * Close the winston file logger
      */
     close() {
-        if (this._logger) {
-            this._logger.close();
-            this._logger = undefined;
+        if (this._writer) {
+            this._writer.end('\n');
+            this._writer = undefined;
         }
     }
 
@@ -57,8 +58,8 @@ class FileLogHandler extends LogHandler {
      * @param {String} logString The string to log.
      */
     onMessage(verbose, logString) {
-        if (this._logger && (!verbose || this._isVerbose)) {
-            this._logger.info(`Eyes: ${logString}`);
+        if (this._writer && (!verbose || this._isVerbose)) {
+            this._writer.write(`${GeneralUtils.getIso8601Data()} Eyes: ${logString}\n`);
         }
     }
 }

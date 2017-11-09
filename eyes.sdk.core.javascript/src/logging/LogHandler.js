@@ -44,7 +44,7 @@ class LogHandler {
 
     /**
      * @abstract
-     * @param {boolean} verbose
+     * @param {Boolean} verbose
      * @param {String} logString
      */
     onMessage(verbose, logString) {}

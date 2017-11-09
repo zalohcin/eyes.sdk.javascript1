@@ -26,11 +26,11 @@ class ConsoleLogHandler extends LogHandler {
      * Handle a message to be logged.
      *
      * @param {Boolean} verbose - is the message verbose
-     * @param {String} message
+     * @param {String} logString
      */
-    onMessage(verbose, message) {
+    onMessage(verbose, logString) {
         if (!verbose || this._isVerbose) {
-            console.log(`${GeneralUtils.getIso8601Data()} - Eyes: ${message}`);
+            console.log(`${GeneralUtils.getIso8601Data()} Eyes: ${logString}`);
         }
     }
 }

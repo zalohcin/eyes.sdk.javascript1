@@ -870,7 +870,7 @@ class EyesBase {
     _notifyEvent(eventName, ...param1) {
         const that = this;
         return that._promiseFactory.makePromise(resolve => {
-            that._logger.verbose("Notifying event: ", eventName);
+            that._logger.verbose("Notifying event:", eventName);
             const notificationPromises = [];
 
             that._sessionEventHandlers.forEach(function (handler) {
@@ -1452,9 +1452,13 @@ class EyesBase {
         cursorInScreenshot.offsetByLocation(control.getLocation());
         try {
             cursorInScreenshot = this._lastScreenshot.getLocationInScreenshot(cursorInScreenshot, CoordinatesType.CONTEXT_RELATIVE);
-        } catch (ignore if ignore instanceof OutOfBoundsError) {
-            this._logger.verbose(`"Ignoring ${action} (out of bounds)`);
-            return;
+        } catch (err) {
+            if (err instanceof OutOfBoundsError) {
+                this._logger.verbose(`"Ignoring ${action} (out of bounds)`);
+                return;
+            }
+
+            throw err;
         }
 
         const controlScreenshotIntersect = this._lastScreenshot.getIntersectedRegion(control, CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.SCREENSHOT_AS_IS);
