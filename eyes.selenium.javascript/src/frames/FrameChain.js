@@ -122,7 +122,7 @@ class FrameChain {
         if (this._frames.length === 0) {
             throw new NoFramesError("No frames in frame chain");
         }
-        return Location.copy(this._frames[0].getParentScrollPosition());
+        return new Location(this._frames[0].getParentScrollPosition());
     }
 
     // noinspection JSUnusedGlobalSymbols

@@ -53,7 +53,7 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
                         viewportSize = viewportSize.scale(scaleRatio);
                         loc = loc.scale(scaleRatio);
 
-                        return image.crop(Region.fromLocationAndSize(loc, viewportSize));
+                        return image.crop(new Region(loc, viewportSize));
                     });
                 }
 

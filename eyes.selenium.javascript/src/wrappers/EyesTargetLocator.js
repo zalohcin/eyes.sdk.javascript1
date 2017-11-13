@@ -135,10 +135,13 @@ class EyesTargetLocator extends TargetLocator {
         that._logger.verbose("EyesTargetLocator.parentFrame()");
         if (that._driver.getFrameChain().size() !== 0) {
             that._logger.verbose("Making preparations..");
-            const parentFrame = that._driver.getFrameChain().peek();
             return that.willSwitchToFrame(EyesTargetLocator.TargetType.PARENT_FRAME, null).then(() => {
                 that._logger.verbose("Done! Switching to parent frame..");
-                return that._targetLocator.frame(parentFrame.getReference());
+
+                // the command is not exists in selenium js sdk, we should define it manually
+                that._driver.getExecutor().defineCommand('switchToParentFrame', 'POST', '/session/:sessionId/frame/parent');
+                // noinspection JSCheckFunctionSignatures
+                return that._driver.schedule(new command.Command('switchToParentFrame'), 'WebDriver.switchTo().parentFrame()');
             }).then(() => {
                 that._logger.verbose("Done!");
                 return that._driver;
@@ -291,10 +294,10 @@ class EyesTargetLocator extends TargetLocator {
                     frameId = id_;
                     return eyesFrame.getLocation();
                 }).then(pl => {
-                    location = Location.copy(pl);
+                    location = new Location(pl);
                     return eyesFrame.getSize();
                 }).then(ds => {
-                    rectangleSize = RectangleSize.copy(ds);
+                    rectangleSize = new RectangleSize(ds);
                     return eyesFrame.getClientWidth();
                 }).then(clientWidth_ => {
                     clientWidth = clientWidth_;

@@ -13,13 +13,51 @@ class Region {
     /**
      * Creates a Region instance.
      *
-     * @param {Number} left The left offset of this region.
-     * @param {Number} top The top offset of this region.
-     * @param {Number} width The width of the region.
-     * @param {Number} height The height of the region.
-     * @param {CoordinatesType} [coordinatesType=SCREENSHOT_AS_IS] The coordinatesType of the region.
+     * The constructor accept next attributes:
+     * - (left: number, top: number, width: number, height: number, coordinatesType: CoordinatesType): from `left`, `top`, `width`, `height` and `coordinatesType` values
+     * - (region: Region): from another instance of Region
+     * - (object: {left: number, top: number, width: number, height: number}): from object
+     * - (location: Location, size: RectangleSize, coordinatesType: CoordinatesType): from location and size
+     *
+     * @param {Number|Region|Location|{left: number, top: number, width: number, height: number, coordinatesType: CoordinatesType}} arg1 The left offset of this region.
+     * @param {Number|RectangleSize} [arg2] The top offset of this region.
+     * @param {Number|CoordinatesType} [arg3] The width of the region.
+     * @param {Number} [arg4] The height of the region.
+     * @param {CoordinatesType} [arg5=SCREENSHOT_AS_IS] The coordinatesType of the region.
      */
-    constructor(left, top, width, height, coordinatesType = CoordinatesType.SCREENSHOT_AS_IS) {
+    constructor(arg1, arg2, arg3, arg4, arg5) {
+        let left = arg1, top = arg2, width = arg3, height = arg4, coordinatesType = arg5;
+
+        if (arg1 instanceof Object) {
+            // noinspection IfStatementWithTooManyBranchesJS
+            if (arg1 instanceof Region) {
+                left = arg1.getLeft();
+                top = arg1.getTop();
+                width = arg1.getWidth();
+                height = arg1.getHeight();
+                coordinatesType = arg1.getCoordinatesType();
+            } else if (arg1 instanceof Location && arg2 instanceof RectangleSize) {
+                left = arg1.getX();
+                top = arg1.getY();
+                width = arg2.getWidth();
+                height = arg2.getHeight();
+                coordinatesType = arg3;
+            } else if (ArgumentGuard.hasProperties(arg1, ['left', 'top', 'width', 'height'])) {
+                // noinspection JSUnresolvedVariable
+                left = arg1.left;
+                // noinspection JSUnresolvedVariable
+                top = arg1.top;
+                // noinspection JSUnresolvedVariable
+                width = arg1.width;
+                // noinspection JSUnresolvedVariable
+                height = arg1.height;
+                // noinspection JSUnresolvedVariable
+                coordinatesType = arg1.coordinatesType;
+            } else {
+                throw new TypeError("The constructor is not support the object " + arg1);
+            }
+        }
+
         ArgumentGuard.isInteger(left, "left");
         ArgumentGuard.isInteger(top, "top");
         ArgumentGuard.greaterThanOrEqualToZero(width, "width", true);
@@ -29,40 +67,7 @@ class Region {
         this._top = top;
         this._width = width;
         this._height = height;
-        this._coordinatesType = coordinatesType;
-    }
-
-    /**
-     * Creates a new instance of Region from Region or object
-     *
-     * @param {Region|{left: number, top: number, width: number, height: number}|null} object
-     * @return {Region|null}
-     */
-    static copy(object) {
-        // noinspection OverlyComplexBooleanExpressionJS
-        if (object.hasOwnProperty('left') && object.hasOwnProperty('top') && object.hasOwnProperty('width') && object.hasOwnProperty('height')) {
-            return new Region(object.left, object.top, object.width, object.height);
-        } else if (object instanceof Region) {
-            return new Region(object.getLeft(), object.getTop(), object.getWidth(), object.getHeight(), object.getCoordinatesType());
-        }
-
-        return null;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Creates a Region from Location and Size objects
-     *
-     * @param {Location} location A Region instance from which to create the Region.
-     * @param {RectangleSize} size A Region instance from which to create the Region.
-     * @param {CoordinatesType} [coordinatesType=SCREENSHOT_AS_IS] The coordinatesType of the region.
-     * @return {Region}
-     */
-    static fromLocationAndSize(location, size, coordinatesType = CoordinatesType.SCREENSHOT_AS_IS) {
-        ArgumentGuard.notNull(location, "location");
-        ArgumentGuard.notNull(size, "size");
-
-        return new Region(location.getX(), location.getY(), size.getWidth(), size.getHeight(), coordinatesType);
+        this._coordinatesType = coordinatesType || CoordinatesType.SCREENSHOT_AS_IS;
     }
 
     /**
@@ -178,7 +183,7 @@ class Region {
      * @return {Region} A region with an offset location.
      */
     offset(dx, dy) {
-        return Region.fromLocationAndSize(this.getLocation().offset(dx, dy), this.getSize(), this.getCoordinatesType());
+        return new Region(this.getLocation().offset(dx, dy), this.getSize(), this.getCoordinatesType());
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -201,7 +206,7 @@ class Region {
      * @return {Region} A new region which is a scaled version of the current region.
      */
     scale(scaleRatio) {
-        return Region.fromLocationAndSize(this.getLocation().scale(scaleRatio), this.getSize().scale(scaleRatio), this.getCoordinatesType());
+        return new Region(this.getLocation().scale(scaleRatio), this.getSize().scale(scaleRatio), this.getCoordinatesType());
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -368,7 +373,7 @@ function _getSubRegionsWithFixedSize(containerRegion, subRegionSize) {
 
     // If the requested size is greater or equal to the entire region size, we return a copy of the region.
     if (subRegionWidth === containerRegion.getWidth() && subRegionHeight === containerRegion.getHeight()) {
-        subRegions.push(Region.copy(containerRegion));
+        subRegions.push(new Region(containerRegion));
         return subRegions;
     }
 

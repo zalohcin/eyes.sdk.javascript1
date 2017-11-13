@@ -10,31 +10,34 @@ class Location {
     /**
      * Creates a Location instance.
      *
-     * @param {Number} x The X coordinate of this location.
-     * @param {Number} y The Y coordinate of this location.
+     * The constructor accept next attributes:
+     * - (x: number, y: number): from `x` and `y` values
+     * - (location: Location): from another instance of Location
+     * - (object: {x: number, y: number}): from object
+     *
+     * @param {Number|Location|{x: number, y: number}} arg1 The X coordinate of this location.
+     * @param {Number} [arg2] The Y coordinate of the location.
      */
-    constructor(x, y) {
+    constructor(arg1, arg2) {
+        let x = arg1, y = arg2;
+
+        if (arg1 instanceof Object) {
+            if (arg1 instanceof Location) {
+                x = arg1.getX();
+                y = arg1.getY();
+            } else if (ArgumentGuard.hasProperties(arg1, ['x', 'y'])) {
+                x = arg1.x;
+                y = arg1.y;
+            } else {
+                throw new TypeError("The constructor is not support the object " + arg1);
+            }
+        }
+
         ArgumentGuard.isInteger(x, "x");
         ArgumentGuard.isInteger(y, "y");
 
         this._x = x;
         this._y = y;
-    }
-
-    /**
-     * Creates a new instance of Location from Location or object
-     *
-     * @param {Location|{x: number, y: number}|null} object
-     * @return {Location|null}
-     */
-    static copy(object) {
-        if (object instanceof Location) {
-            return new Location(object.getX(), object.getY());
-        } else if (object.hasOwnProperty('x') && object.hasOwnProperty('y')) {
-            return new Location(object.x, object.y);
-        }
-
-        return null;
     }
 
     /**

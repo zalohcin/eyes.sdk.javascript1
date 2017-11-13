@@ -1,6 +1,7 @@
 'use strict';
 
 const ArgumentGuard = require('../ArgumentGuard');
+const TestResultsStatus = require('./TestResultsStatus');
 
 /**
  * Eyes test results.
@@ -43,7 +44,7 @@ class TestResults {
      * @return {Boolean} Whether or not this test passed.
      */
     isPassed() {
-        return (!this.isNew && this.mismatches === 0 && this.missing === 0);
+        return this.status === TestResultsStatus.Passed;
     }
 
     // noinspection JSUnusedGlobalSymbols

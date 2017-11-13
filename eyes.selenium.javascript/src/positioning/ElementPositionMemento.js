@@ -13,7 +13,7 @@ class ElementPositionMemento extends PositionMemento {
     constructor(position) {
         super();
 
-        this._position = Location.copy(position);
+        this._position = new Location(position);
     }
 
     /**

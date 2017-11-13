@@ -96,7 +96,7 @@ class EyesScreenshot {
         ArgumentGuard.notNull(region, "region");
 
         if (region.isEmpty()) {
-            return Region.copy(region);
+            return new Region(region);
         }
 
         ArgumentGuard.notNull(from, "from");
@@ -104,7 +104,7 @@ class EyesScreenshot {
 
         const updatedLocation = this.convertLocation(region.getLocation(), from, to);
 
-        return Region.fromLocationAndSize(updatedLocation, region.getSize());
+        return new Region(updatedLocation, region.getSize());
     }
 }
 

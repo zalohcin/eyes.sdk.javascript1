@@ -18,7 +18,7 @@ class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
      * @return {Promise}
      */
     save(image, suffix) {
-        const filename = this.path + this.prefix + this.getFormattedTimeStamp() + "_" + suffix + ".png";
+        const filename = this._path + this._prefix + this.getFormattedTimeStamp() + "_" + suffix + ".png";
         return image.save(filename.replace(' ', '_'));
     }
 

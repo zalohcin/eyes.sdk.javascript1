@@ -205,7 +205,7 @@ class EyesWebDriver extends IWebDriver {
         return this._driver.findElements(locator).then(elements => elements.map(element => {
             element = new EyesWebElement(that._logger, that, element);
             // For Remote web elements, we can keep the IDs
-            that._elementsIds.put(element.getId(), element);
+            that._elementsIds.set(element.getId(), element);
             return element;
         }));
     }

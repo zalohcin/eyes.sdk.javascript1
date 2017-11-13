@@ -354,7 +354,7 @@ function longRequestCheckStatus(that, name, results) {
         case HTTP_STATUS_CODES.GONE:
             return that._promiseFactory.reject(new Error('The server task has gone.'));
         default:
-            return that._promiseFactory.reject(new Error('Unknown error processing long request'));
+            return that._promiseFactory.reject(new Error(`Unknown error processing long request: ${JSON.stringify(results)}`));
     }
 }
 

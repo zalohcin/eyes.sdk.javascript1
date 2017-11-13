@@ -796,12 +796,13 @@ class EyesBase {
                 serverResults = results;
                 that._logger.verbose(`Results: ${results}`);
 
-                if (serverResults.getStatus() === TestResultsStatus.Unresolved) {
+                const status = results.getStatus();
+                if (status === TestResultsStatus.Unresolved) {
                     if (serverResults.getIsNew()) {
                         let instructions = "Please approve the new baseline at " + sessionResultsUrl;
                         that._logger.log(`--- New test ended. ${instructions}`);
 
-                        if (throwEx && !that._saveNewTests) {
+                        if (throwEx) {
                             that._finallyClose();
                             const message = `'${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}'. ${instructions}`;
                             return that._promiseFactory.reject(new NewTestError(results, message));
@@ -818,7 +819,7 @@ class EyesBase {
                         }
                         return resolve(results);
                     }
-                } else if (serverResults.getStatus() === TestResultsStatus.Failed) {
+                } else if (status === TestResultsStatus.Failed) {
                     let instructions = `See details at ${sessionResultsUrl}`;
                     that._logger.log(`--- Failed test ended. ${instructions}`);
 
@@ -828,10 +829,10 @@ class EyesBase {
                         return that._promiseFactory.reject(new TestFailedError(results, message));
                     }
                     return resolve(results);
+                } else {
+                    that._logger.log(`--- Test passed. See details at ${sessionResultsUrl}`);
+                    return resolve(results);
                 }
-
-                that._logger.log(`--- Test passed. See details at ${sessionResultsUrl}`);
-                return resolve(results);
             }, err => {
                 serverResults = null;
                 that._logger.log(err);
@@ -1229,12 +1230,14 @@ class EyesBase {
      * @protected
      * @param {String} appName The name of the application under test.
      * @param {String} testName The test name.
-     * @param {RectangleSize} viewportSize The client's viewport size (i.e., the visible part of the document's body) or {@code null} to allow any viewport size.
+     * @param {RectangleSize|{width: number, height: number}} viewportSize The client's viewport size (i.e., the visible part of the document's body) or {@code null} to allow any viewport size.
      * @param {SessionType} sessionType  The type of test (e.g., Progression for timing tests), or {@code null} to use the default.
      * @return {Promise}
      */
     openBase(appName, testName, viewportSize, sessionType) {
         this._logger.getLogHandler().open();
+
+        viewportSize = new RectangleSize(viewportSize);
 
         try {
             if (this._isDisabled) {
@@ -1402,7 +1405,7 @@ class EyesBase {
         ArgumentGuard.notNull(text, "text");
 
         // We don't want to change the objects we received.
-        control = Region.copy(control);
+        control = new Region(control);
 
         if (!this._lastScreenshot) {
             this._logger.verbose(`Ignoring '${text}' (no screenshot)`);
@@ -1447,7 +1450,7 @@ class EyesBase {
         }
 
         // Getting the location of the cursor in the screenshot
-        let cursorInScreenshot = Location.copy(cursor);
+        let cursorInScreenshot = new Location(cursor);
         // First we need to getting the cursor's coordinates relative to the context (and not to the control).
         cursorInScreenshot.offsetByLocation(control.getLocation());
         try {

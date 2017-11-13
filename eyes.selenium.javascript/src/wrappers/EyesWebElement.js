@@ -334,15 +334,10 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     getLocation() {
-        // The workaround is similar to Java one,
-        // https://github.com/applitools/eyes.sdk.java3/blob/master/eyes.selenium.java/src/main/java/com/applitools/eyes/selenium/EyesRemoteWebElement.java#L453
-        // but we can't get raw data (including decimal values) from remote Selenium webdriver
-        // and therefore we should use our own client-side script for retrieving exact values and rounding up them
-
-        // return this._webElement.getLocation();
-        return this._eyesDriver.executeScript(JS_GET_LOCATION, this._webElement).then(value => {
-            const x = Math.ceil(value[0]) || 0;
-            const y = Math.ceil(value[1]) || 0;
+        // The workaround is similar to Java one, but in js we always get raw data with decimal value which we should round up.
+        return this._webElement.getLocation().then(value => {
+            const x = Math.ceil(value.x) || 0;
+            const y = Math.ceil(value.y) || 0;
             return {x, y};
         });
     }

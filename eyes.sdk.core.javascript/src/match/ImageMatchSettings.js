@@ -111,8 +111,8 @@ class ImageMatchSettings {
             matchLevel: this._matchLevel,
             exact: this._exact,
             ignoreCaret: this._ignoreCaret,
-            ignoreRegions: this._ignoreRegions,
-            floatingMatchSettings: this._floatingMatchSettings
+            ignore: this._ignoreRegions,
+            floating: this._floatingMatchSettings
         };
     }
 

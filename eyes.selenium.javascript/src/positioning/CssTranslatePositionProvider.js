@@ -78,7 +78,7 @@ class CssTranslatePositionProvider extends PositionProvider {
         const that = this;
         return EyesSeleniumUtils.getCurrentTransform(this._executor).then(transforms => {
             that._logger.verbose("Current transform", transforms);
-            return new CssTranslatePositionMemento(transforms());
+            return new CssTranslatePositionMemento(transforms);
         });
     }
 

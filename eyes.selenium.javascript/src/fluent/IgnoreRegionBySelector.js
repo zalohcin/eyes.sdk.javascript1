@@ -22,7 +22,7 @@ class IgnoreRegionBySelector extends GetRegion {
         return eyesBase.getDriver().findElement(that._element).then(element => {
             return element.getLocation().then(point => {
                 return element.getSize().then(size => {
-                    return new Region(point.x, point.y, size.width, size.height);
+                    return new Region(Math.ceil(point.x), Math.ceil(point.y), size.width, size.height);
                 });
             });
         });

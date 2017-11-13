@@ -312,10 +312,11 @@ class EyesSeleniumUtils {
      */
     static setBrowserSizeByViewportSize(logger, driver, actualViewportSize, requiredViewportSize) {
         return driver.manage().window().getSize().then(/** {width:number, height:number} */ browserSize => {
-            logger.verbose(`Current browser size: ${browserSize}`);
+            const currentSize = new RectangleSize(browserSize);
+            logger.verbose(`Current browser size: ${currentSize}`);
             const requiredBrowserSize = new RectangleSize(
-                browserSize.width + (requiredViewportSize.getWidth() - actualViewportSize.getWidth()),
-                browserSize.height + (requiredViewportSize.getHeight() - actualViewportSize.getHeight())
+                currentSize.getWidth() + (requiredViewportSize.getWidth() - actualViewportSize.getWidth()),
+                currentSize.getHeight() + (requiredViewportSize.getHeight() - actualViewportSize.getHeight())
             );
             return EyesSeleniumUtils.setBrowserSize(logger, driver, requiredBrowserSize);
         });

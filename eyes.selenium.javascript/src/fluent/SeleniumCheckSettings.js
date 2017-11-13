@@ -181,7 +181,7 @@ class SeleniumCheckSettings extends CheckSettings {
         } else {
             throw new TypeError("frame method called with argument of unknown type!");
         }
-        this._frameChain.add(fl);
+        this._frameChain.push(fl);
         return this;
     }
 
@@ -242,7 +242,7 @@ class SeleniumCheckSettings extends CheckSettings {
      * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger region.
      *
      * @override
-     * @param {GetFloatingRegion|Region|By|WebElement|EyesWebElement} regionOrContainer The content rectangle or region container
+     * @param {GetFloatingRegion|Region|FloatingMatchSettings|By|WebElement|EyesWebElement} regionOrContainer The content rectangle or region container
      * @param {int} [maxUpOffset] How much the content can move up.
      * @param {int} [maxDownOffset] How much the content can move down.
      * @param {int} [maxLeftOffset] How much the content can move to the left.

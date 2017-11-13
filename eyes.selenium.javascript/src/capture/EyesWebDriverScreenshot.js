@@ -70,7 +70,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
 
         this._currentFrameScrollPosition = new Location(0, 0);
         this._frameLocationInScreenshot = new Location(0, 0);
-        this._frameWindow = Region.fromLocationAndSize(new Location(0, 0), entireFrameSize);
+        this._frameWindow = new Region(new Location(0, 0), entireFrameSize);
         return this._promiseFactory.resolve(this);
     }
 
@@ -96,7 +96,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
                     that._frameLocationInScreenshot = frameLocationInScreenshot;
 
                     that._logger.verbose("Calculating frame window...");
-                    that._frameWindow = Region.fromLocationAndSize(frameLocationInScreenshot, frameSize);
+                    that._frameWindow = new Region(frameLocationInScreenshot, frameSize);
                     that._frameWindow.intersect(new Region(0, 0, that._image.getWidth(), that._image.getHeight()));
                     if (that._frameWindow.getWidth() <= 0 || that._frameWindow.getHeight() <= 0) {
                         throw new Error("Got empty frame window for screenshot!");
@@ -154,7 +154,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         const firstFrame = this._frameChain.getFrame(0);
         this._logger.verbose("Done!");
         let promise = this._promiseFactory.resolve();
-        let locationInScreenshot = Location.copy(firstFrame.getLocation());
+        let locationInScreenshot = new Location(firstFrame.getLocation());
 
         // We only consider scroll of the default content if this is a viewport screenshot.
         if (this._screenshotType === ScreenshotType.VIEWPORT) {
@@ -321,7 +321,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         ArgumentGuard.notNull(from, "from");
         ArgumentGuard.notNull(to, "to");
 
-        let result = Location.copy(location);
+        let result = new Location(location);
 
         if (from === to) {
             return result;
@@ -418,7 +418,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
      */
     getIntersectedRegion(region, originalCoordinatesType, resultCoordinatesType = originalCoordinatesType) {
         if (region.isEmpty()) {
-            return Region.copy(region);
+            return new Region(region);
         }
 
         let intersectedRegion = this.convertRegionLocation(region, originalCoordinatesType, CoordinatesType.SCREENSHOT_AS_IS);
@@ -431,7 +431,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
                 break;
             // If the request is screenshot based, we intersect with the image
             case CoordinatesType.SCREENSHOT_AS_IS:
-                intersectedRegion.intersect(new Region(0, 0, this._image.getWidth(), this._.getHeight()));
+                intersectedRegion.intersect(new Region(0, 0, this._image.getWidth(), this._image.getHeight()));
                 break;
             default:
                 throw new CoordinatesTypeConversionError(from, to);

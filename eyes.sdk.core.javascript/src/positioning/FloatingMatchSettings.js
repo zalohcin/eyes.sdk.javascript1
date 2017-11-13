@@ -1,5 +1,7 @@
 'use strict';
 
+const Region = require('./Region');
+
 /**
  * Encapsulates floating match settings for the a session.
  */
@@ -79,6 +81,10 @@ class FloatingMatchSettings {
 
     setMaxRightOffset(value) {
         this._maxRightOffset = value;
+    }
+
+    getRegion() {
+        return new Region(this._left, this._top, this._width, this._height);
     }
 
     toJSON() {

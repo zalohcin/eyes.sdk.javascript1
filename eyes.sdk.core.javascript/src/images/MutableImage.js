@@ -339,7 +339,7 @@ class MutableImage {
     static newImage(width, height, promiseFactory) {
         const result = new MutableImage(null, promiseFactory);
         result._isParsed = true;
-        result._imageBmp = new Image({filterType: 4, width: width, height: height});
+        result._imageBmp = ImageUtils.createImage(width, height);
         result._width = width;
         result._height = height;
         return result;

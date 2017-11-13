@@ -2,6 +2,7 @@
 
 const MatchLevel = require('../match/MatchLevel');
 const Region = require('../positioning/Region');
+const FloatingMatchSettings = require('../positioning/FloatingMatchSettings');
 const IgnoreRegionByRectangle = require('./IgnoreRegionByRectangle');
 const FloatingRegionByRectangle = require('./FloatingRegionByRectangle');
 const GetRegion = require('./GetRegion');
@@ -234,7 +235,7 @@ class CheckSettings {
     /**
      * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger region.
      *
-     * @param {GetFloatingRegion|Region} regionOrContainer The content rectangle or region container
+     * @param {GetFloatingRegion|Region|FloatingMatchSettings} regionOrContainer The content rectangle or region container
      * @param {int} [maxUpOffset] How much the content can move up.
      * @param {int} [maxDownOffset] How much the content can move down.
      * @param {int} [maxLeftOffset] How much the content can move to the left.
@@ -242,8 +243,13 @@ class CheckSettings {
      * @return {CheckSettings} This instance of the settings object.
      */
     floating(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
-        if (regionOrContainer instanceof Region) {
-            this._floatingRegions.push(new FloatingRegionByRectangle(Region.copy(regionOrContainer), maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset));
+        if (regionOrContainer instanceof FloatingMatchSettings) {
+            this._floatingRegions.push(new FloatingRegionByRectangle(regionOrContainer.getRegion(),
+                regionOrContainer.getMaxUpOffset(), regionOrContainer.getMaxDownOffset(),
+                regionOrContainer.getMaxLeftOffset(), regionOrContainer.getMaxRightOffset()
+            ));
+        } else if (regionOrContainer instanceof Region) {
+            this._floatingRegions.push(new FloatingRegionByRectangle(new Region(regionOrContainer), maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset));
         } else if (regionOrContainer instanceof GetFloatingRegion) {
             this._floatingRegions.push(regionOrContainer);
         } else {

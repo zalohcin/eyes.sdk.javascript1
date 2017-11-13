@@ -195,7 +195,7 @@ class Eyes extends EyesBase {
             return this._promiseFactory.resolve(new Error(err));
         }
 
-        this._viewportSizeHandler.set(RectangleSize.copy(size));
+        this._viewportSizeHandler.set(new RectangleSize(size));
         return this._promiseFactory.resolve();
     }
 
@@ -256,7 +256,7 @@ class Eyes extends EyesBase {
         image = this._normalizeImageType(image);
 
         if (!this._viewportSizeHandler.get()) {
-            this._viewportSize = RectangleSize.copy(image.getSize());
+            this._viewportSize = new RectangleSize(image.getSize());
         }
 
         this._screenshot = new EyesImagesScreenshot(image);

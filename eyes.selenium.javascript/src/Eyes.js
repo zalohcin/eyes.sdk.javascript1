@@ -294,8 +294,6 @@ class Eyes extends EyesBase {
     open(driver, appName, testName, viewportSize = null, sessionType = null) {
         ArgumentGuard.notNull(driver, "driver");
 
-        viewportSize = RectangleSize.copy(viewportSize);
-
         const that = this;
         that._flow = driver.controlFlow();
         // Set PromiseFactory to work with the protractor control flow and promises
@@ -369,65 +367,67 @@ class Eyes extends EyesBase {
         ArgumentGuard.notNull(checkSettings, "checkSettings");
 
         const that = this;
-        that._logger.verbose(`check(\"${name}", checkSettings) - begin`);
-        that._stitchContent = checkSettings.getStitchContent();
-        const targetRegion = checkSettings.getTargetRegion();
+        return that.getPromiseFactory().resolve().then(() => {
+            that._logger.verbose(`check("${name}", checkSettings) - begin`);
+            that._stitchContent = checkSettings.getStitchContent();
+            const targetRegion = checkSettings.getTargetRegion();
 
-        let switchedToFrameCount;
-        return this._switchToFrame(checkSettings).then(switchedToFrameCount_ => {
-            switchedToFrameCount = switchedToFrameCount_;
+            let switchedToFrameCount;
+            return this._switchToFrame(checkSettings).then(switchedToFrameCount_ => {
+                switchedToFrameCount = switchedToFrameCount_;
 
-            if (targetRegion) {
-                return super.checkWindowBase(new RegionProvider(targetRegion, that.getPromiseFactory()), name, false, checkSettings);
-            }
-
-            if (checkSettings) {
-                const targetSelector = checkSettings.getTargetSelector();
-                let targetElement = checkSettings.getTargetElement();
-                if (!targetElement && targetSelector) {
-                    targetElement = that._driver.findElement(targetSelector);
+                if (targetRegion) {
+                    return super.checkWindowBase(new RegionProvider(targetRegion, that.getPromiseFactory()), name, false, checkSettings);
                 }
 
-                if (targetElement) {
-                    if (that._stitchContent) {
-                        return that._checkElement(targetElement, name, checkSettings);
-                    } else {
-                        return that._checkRegion(targetElement, name, checkSettings);
+                if (checkSettings) {
+                    const targetSelector = checkSettings.getTargetSelector();
+                    let targetElement = checkSettings.getTargetElement();
+                    if (!targetElement && targetSelector) {
+                        targetElement = that._driver.findElement(targetSelector);
                     }
-                }
 
-                if (checkSettings.getFrameChain().length > 0) {
-                    if (that._stitchContent) {
-                        return that._checkFullFrameOrElement(name, checkSettings);
-                    } else {
-                        const frame = that._driver.getFrameChain().peek();
-                        const element = frame.getReference();
-                        return that._driver.switchTo().parentFrame().then(() => {
-                            switchedToFrameCount--;
+                    if (targetElement) {
+                        if (that._stitchContent) {
+                            return that._checkElement(targetElement, name, checkSettings);
+                        } else {
+                            return that._checkRegion(targetElement, name, checkSettings);
+                        }
+                    }
 
-                            const CustomRegionProvider = class extends RegionProvider {
-                                /** @override */
-                                getRegion() {
-                                    return element.getLocation().then(point => {
-                                        return element.getSize().then(size => {
-                                            return new Region(point.x, point.y, size.width, size.height, CoordinatesType.CONTEXT_RELATIVE);
+                    if (checkSettings.getFrameChain().length > 0) {
+                        if (that._stitchContent) {
+                            return that._checkFullFrameOrElement(name, checkSettings);
+                        } else {
+                            const frame = that._driver.getFrameChain().peek();
+                            const element = frame.getReference();
+                            return that._driver.switchTo().parentFrame().then(() => {
+                                switchedToFrameCount--;
+
+                                const CustomRegionProvider = class extends RegionProvider {
+                                    /** @override */
+                                    getRegion() {
+                                        return element.getLocation().then(point => {
+                                            return element.getSize().then(size => {
+                                                return new Region(point.x, point.y, size.width, size.height, CoordinatesType.CONTEXT_RELATIVE);
+                                            });
                                         });
-                                    });
-                                }
-                            };
+                                    }
+                                };
 
-                            return that.checkWindowBase(new CustomRegionProvider(), name, false, checkSettings);
-                        });
+                                return that.checkWindowBase(new CustomRegionProvider(), name, false, checkSettings);
+                            });
+                        }
                     }
-                }
 
-                return super.checkWindowBase(new NullRegionProvider(that.getPromiseFactory()), name, false, checkSettings);
-            }
-        }).then(() => {
-            return that._switchToParentFrame(switchedToFrameCount);
-        }).then(() => {
-            that._stitchContent = false;
-            that._logger.verbose("check - done!");
+                    return super.checkWindowBase(new NullRegionProvider(that.getPromiseFactory()), name, false, checkSettings);
+                }
+            }).then(() => {
+                return that._switchToParentFrame(switchedToFrameCount);
+            }).then(() => {
+                that._stitchContent = false;
+                that._logger.verbose("check - done!");
+            });
         });
     }
 
@@ -551,10 +551,10 @@ class Eyes extends EyesBase {
 
         const that = this;
         return element.getLocation().then(point => {
-            const elementLocation = Location.copy(point);
+            const elementLocation = new Location(point);
             return element.getSize().then(size => {
-                const elementSize = RectangleSize.copy(size);
-                const region = Region.fromLocationAndSize(elementLocation, elementSize, CoordinatesType.CONTEXT_RELATIVE);
+                const elementSize = new RectangleSize(size);
+                const region = new Region(elementLocation, elementSize, CoordinatesType.CONTEXT_RELATIVE);
                 return super.checkWindowBase(new RegionProvider(region, that.getPromiseFactory()), name, false, checkSettings).then(() => {
                     that._logger.verbose("Done! trying to scroll back to original position..");
                 });
@@ -951,7 +951,7 @@ class Eyes extends EyesBase {
         }).then(() => {
             return that._driver.switchTo().frames(originalFrame);
         }).then(() => {
-            that._viewportSizeHandler.set(RectangleSize.copy(size));
+            that._viewportSizeHandler.set(new RectangleSize(size));
         });
     }
 

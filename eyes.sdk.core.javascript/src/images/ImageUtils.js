@@ -10,7 +10,6 @@ const {ReadableBufferStream, WritableBufferStream} = require('../StreamUtils');
  */
 class ImageUtils {
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Processes a PNG buffer - returns it as parsed Image.
      *
@@ -34,7 +33,6 @@ class ImageUtils {
         });
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Repacks a parsed Image to a PNG buffer.
      *
@@ -50,13 +48,25 @@ class ImageUtils {
 
             // Write back to a temp png file
             const imageWritableStream = new WritableBufferStream();
+            // noinspection JSUnresolvedFunction
             image.pack().pipe(imageWritableStream).on('finish', () => {
                 resolve(imageWritableStream.getBuffer());
             });
         });
     }
 
-    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Create a new empty image of given size
+     *
+     * @param width
+     * @param height
+     * @return {png.Image}
+     **/
+    static createImage(width, height) {
+        // noinspection JSValidateTypes
+        return new png.Image({filterType: 4, width: width, height: height});
+    }
+
     /**
      * Scaled a parsed image by a given factor.
      *
@@ -78,7 +88,6 @@ class ImageUtils {
         return ImageUtils.resizeImage(image, scaledWidth, scaledHeight, promiseFactory);
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Resize a parsed image by a given dimensions.
      *
@@ -280,7 +289,6 @@ class ImageUtils {
         return dst;
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Crops a parsed image - the image is changed
      *
@@ -324,7 +332,6 @@ class ImageUtils {
         });
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Rotates a parsed image - the image is changed
      *
@@ -370,7 +377,6 @@ class ImageUtils {
         });
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Copies pixels from the source image to the destination image.
      *
@@ -407,7 +413,6 @@ class ImageUtils {
         }
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Stitches the given parts to a full image.
      *
@@ -459,7 +464,6 @@ class ImageUtils {
         }));
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Get png size from image buffer. Don't require parsing the image
      *
@@ -467,10 +471,11 @@ class ImageUtils {
      * @return {{width: number, height: number}}
      */
     static getImageSizeFromBuffer(imageBuffer) {
+        // noinspection OverlyComplexBooleanExpressionJS, MagicNumberJS
         if (imageBuffer[12] === 0x49 && imageBuffer[13] === 0x48 && imageBuffer[14] === 0x44 && imageBuffer[15] === 0x52) {
-            // noinspection MagicNumberJS
+            // noinspection OverlyComplexArithmeticExpressionJS, MagicNumberJS
             const width = (imageBuffer[16] * 256 * 256 * 256) + (imageBuffer[17] * 256 * 256) + (imageBuffer[18] * 256) + imageBuffer[19];
-            // noinspection MagicNumberJS
+            // noinspection OverlyComplexArithmeticExpressionJS, MagicNumberJS
             const height = (imageBuffer[20] * 256 * 256 * 256) + (imageBuffer[21] * 256 * 256) + (imageBuffer[22] * 256) + imageBuffer[23];
             return {width, height};
         }
@@ -478,7 +483,6 @@ class ImageUtils {
         throw new TypeError("Buffer contains unsupported image type.");
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      *
      * @param {Buffer} imageBuffer

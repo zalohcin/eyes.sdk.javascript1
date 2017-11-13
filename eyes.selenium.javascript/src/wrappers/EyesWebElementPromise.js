@@ -58,7 +58,7 @@ class EyesWebElementPromise extends EyesWebElement {
         this.catch = el.catch.bind(el);
 
         // For Remote web elements, we can keep the IDs, for Id based lookup (mainly used for Javascript related activities).
-        driver._elementsIds.put(el, this);
+        driver._elementsIds.set(el, this);
     }
 }
 

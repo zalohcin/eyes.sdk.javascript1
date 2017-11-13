@@ -128,7 +128,7 @@ class FullPageCaptureAlgorithm {
             that._logger.verbose(`"Total size: ${entireSize}, image part size: ${partImageSize}`);
 
             // Getting the list of sub-regions composing the whole region (we'll take screenshot for each one).
-            const entirePage = Region.fromLocationAndSize(Location.ZERO, entireSize);
+            const entirePage = new Region(Location.ZERO, entireSize);
             const imageParts = entirePage.getSubRegions(partImageSize);
 
             that._logger.verbose("Creating stitchedImage container. Size: " + entireSize);
@@ -177,27 +177,27 @@ class FullPageCaptureAlgorithm {
                             that._logger.verbose("Getting image...");
                             return imageProvider.getImage().then(partImage_ => {
                                 partImage = partImage_;
-                                return debugScreenshotsProvider.save(partImage, "original-scrolled-" + positionProvider.getCurrentPosition().toStringForFilename());
+                                return debugScreenshotsProvider.save(partImage, "original-scrolled-" + currentPosition.toStringForFilename());
                             });
                         }).then(() => {
                             // FIXME - cropping should be overlaid (see previous comment re cropping)
                             return cutProvider.cut(partImage).then(partImage_ => {
                                 partImage = partImage_;
-                                return debugScreenshotsProvider.save(partImage, "original-scrolled-cut-" + positionProvider.getCurrentPosition().toStringForFilename());
+                                return debugScreenshotsProvider.save(partImage, "original-scrolled-cut-" + currentPosition.toStringForFilename());
                             });
                         }).then(() => {
                             that._logger.verbose("Done!");
                             if (!regionInScreenshot.isEmpty()) {
                                 return partImage.getImagePart(regionInScreenshot).then(partImage_ => {
                                     partImage = partImage_;
-                                    return _saveDebugScreenshotPart(debugScreenshotsProvider, partImage, partRegion, "original-scrolled-" + positionProvider.getCurrentPosition().toStringForFilename());
+                                    return _saveDebugScreenshotPart(debugScreenshotsProvider, partImage, partRegion, "original-scrolled-" + currentPosition.toStringForFilename());
                                 });
                             }
                         }).then(() => {
                             // FIXME - scaling should be refactored
-                            return partImage.scale(regionInScreenshot).then(partImage_ => {
+                            return partImage.scale(scaleProvider.getScaleRatio()).then(partImage_ => {
                                 partImage = partImage_;
-                                return _saveDebugScreenshotPart(debugScreenshotsProvider, partImage, partRegion, "original-scrolled-" + positionProvider.getCurrentPosition().toStringForFilename() + "-scaled-");
+                                return _saveDebugScreenshotPart(debugScreenshotsProvider, partImage, partRegion, "original-scrolled-" + currentPosition.toStringForFilename() + "-scaled-");
                             });
                         }).then(() => {
                             that._logger.verbose("Stitching part into the image container...");
@@ -292,7 +292,7 @@ function _setPositionLoop(originProvider, requiredPosition, retries, waitMillis,
     }).then(() => {
         return originProvider.getCurrentPosition();
     }).then(currentPosition => {
-        if (!currentPosition.equal(requiredPosition) && (--retries > 0)) {
+        if (!currentPosition.equals(requiredPosition) && (--retries > 0)) {
             return _setPositionLoop(originProvider, requiredPosition, retries, waitMillis, promiseFactory);
         }
 

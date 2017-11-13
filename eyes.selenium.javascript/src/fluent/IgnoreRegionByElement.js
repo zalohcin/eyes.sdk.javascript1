@@ -21,7 +21,7 @@ class IgnoreRegionByElement extends GetRegion {
         const that = this;
         return that._element.getLocation().then(point => {
             return that._element.getSize().then(size => {
-                return new Region(point.x, point.y, size.width, size.height);
+                return new Region(Math.ceil(point.x), Math.ceil(point.y), size.width, size.height);
             });
         });
     }

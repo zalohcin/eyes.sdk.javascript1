@@ -31,7 +31,7 @@ class FloatingRegionBySelector extends GetFloatingRegion {
             return element.getLocation().then(point => {
                 return element.getSize().then(size => {
                     return new FloatingMatchSettings(
-                        point.x, point.y, size.width, size.height,
+                        Math.ceil(point.x), Math.ceil(point.y), size.width, size.height,
                         that._maxUpOffset, that._maxDownOffset, that._maxLeftOffset, that._maxRightOffset
                     );
                 });

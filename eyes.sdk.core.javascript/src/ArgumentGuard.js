@@ -162,6 +162,27 @@ class ArgumentGuard {
             throw new Error(`IllegalType: ${value} is not member of ${enumObject}`);
         }
     };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Check if object contains all required properties
+     *
+     * @param {Object} object The input object.
+     * @param {Array.<String>|String} properties The array of properties to test
+     */
+    static hasProperties(object, properties) {
+        if (!Array.isArray(properties)) {
+            properties = [properties];
+        }
+
+        for (const property of properties) {
+            if (!object.hasOwnProperty(property)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
 }
 
 module.exports = ArgumentGuard;

@@ -10,31 +10,34 @@ class RectangleSize {
     /**
      * Creates a RectangleSize instance.
      *
-     * @param {Number} width The width of the rectangle.
-     * @param {Number} height The height of the rectangle.
+     * The constructor accept next attributes:
+     * - (width: number, height: number): from `width` and `height` values
+     * - (size: RectangleSize): from another instance of RectangleSize
+     * - (object: {width: number, height: number}): from object
+     *
+     * @param {Number|RectangleSize|{width: number, height: number}} arg1 The width of the rectangle.
+     * @param {Number} [arg2] The height of the rectangle.
      */
-    constructor(width, height) {
+    constructor(arg1, arg2) {
+        let width = arg1, height = arg2;
+
+        if (arg1 instanceof Object) {
+            if (arg1 instanceof RectangleSize) {
+                width = arg1.getWidth();
+                height = arg1.getHeight();
+            } else if (ArgumentGuard.hasProperties(arg1, ['width', 'height'])) {
+                width = arg1.width;
+                height = arg1.height;
+            } else {
+                throw new TypeError("The constructor is not support the object " + arg1);
+            }
+        }
+
         ArgumentGuard.greaterThanOrEqualToZero(width, "width", true);
         ArgumentGuard.greaterThanOrEqualToZero(height, "height", true);
 
         this._width = width;
         this._height = height;
-    }
-
-    /**
-     * Creates a new instance of RectangleSize from RectangleSize or object
-     *
-     * @param {RectangleSize|{width: number, height: number}|null} object
-     * @return {RectangleSize|null}
-     */
-    static copy(object) {
-        if (object instanceof RectangleSize) {
-            return new RectangleSize(object.getWidth(), object.getHeight());
-        } else if (object.hasOwnProperty('width') && object.hasOwnProperty('height')) {
-            return new RectangleSize(object.width, object.height);
-        }
-
-        return null;
     }
 
     // noinspection JSUnusedGlobalSymbols
