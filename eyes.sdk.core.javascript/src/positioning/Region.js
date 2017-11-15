@@ -19,7 +19,7 @@ class Region {
      * - (object: {left: number, top: number, width: number, height: number}): from object
      * - (location: Location, size: RectangleSize, coordinatesType: CoordinatesType): from location and size
      *
-     * @param {Number|Region|Location|{left: number, top: number, width: number, height: number, coordinatesType: CoordinatesType}} arg1 The left offset of this region.
+     * @param {Number|Region|Location|{left: number, top: number, width: number, height: number, coordinatesType?: CoordinatesType}} arg1 The left offset of this region.
      * @param {Number|RectangleSize} [arg2] The top offset of this region.
      * @param {Number|CoordinatesType} [arg3] The width of the region.
      * @param {Number} [arg4] The height of the region.
@@ -112,7 +112,6 @@ class Region {
         return new Location(this._left, this._top);
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Set the (top,left) position of the current region
      *
@@ -131,7 +130,6 @@ class Region {
         return new RectangleSize(this._width, this._height);
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Set the (width,height) size of the current region
      *
@@ -143,7 +141,6 @@ class Region {
         this._height = size.getHeight();
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Indicates whether some other Region is "equal to" this one.
      *
@@ -162,7 +159,6 @@ class Region {
             this.getHeight() === obj.getHeight();
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Boolean} {@code true} if the region is empty; {@code false} otherwise.
      */
@@ -174,7 +170,6 @@ class Region {
             this.getHeight() === Region.EMPTY.getHeight();
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Get a Region translated by the specified amount.
      *
@@ -186,7 +181,6 @@ class Region {
         return new Region(this.getLocation().offset(dx, dy), this.getSize(), this.getCoordinatesType());
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * @return {Location}
      */
@@ -197,7 +191,6 @@ class Region {
         return new Location(middleX, middleY);
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Get a region which is a scaled version of the current region.
      * IMPORTANT: This also scales the LOCATION(!!) of the region (not just its size).
@@ -209,7 +202,6 @@ class Region {
         return new Region(this.getLocation().scale(scaleRatio), this.getSize().scale(scaleRatio), this.getCoordinatesType());
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Returns a list of sub-regions which compose the current region.
      *
@@ -228,39 +220,30 @@ class Region {
         return _getSubRegionsWithVaryingSize(this, subRegionSize);
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
-     * Check if a specified region is contained within the another region.
+     * Check if a specified region is contained within the another region or location.
      *
-     * @param {Region} other The region to check if it is contained within the current region.
-     * @return {Boolean} True if the region is contained within the another region, false otherwise.
+     * @param {Region|Location} locationOrRegion The region or location to check if it is contained within the current region.
+     * @return {Boolean} True if the region is contained within given object, false otherwise.
      */
-    containsRegion(other) {
-        const right = this._left + this._width;
-        const otherRight = other.getLeft() + other.getWidth();
-
-        const bottom = this._top + this._height;
-        const otherBottom = other.getTop() + other.getHeight();
-        // noinspection OverlyComplexBooleanExpressionJS
-        return this._top <= other.getTop() && this._left <= other.getLeft() && bottom >= otherBottom && right >= otherRight;
+    contains(locationOrRegion) {
+        if (locationOrRegion instanceof Location) {
+            // noinspection OverlyComplexBooleanExpressionJS
+            return locationOrRegion.getX() >= this._left &&
+                locationOrRegion.getX() <= (this._left + this._width) &&
+                locationOrRegion.getY() >= this._top &&
+                locationOrRegion.getY() <= (this._top + this._height);
+        } else if (locationOrRegion instanceof Region) {
+            // noinspection OverlyComplexBooleanExpressionJS
+            return this._top <= locationOrRegion.getTop() &&
+                this._left <= locationOrRegion.getLeft() &&
+                (this._top + this._height) >= (locationOrRegion.getTop() + locationOrRegion.getHeight()) &&
+                (this._left + this._width) >= (locationOrRegion.getLeft() + locationOrRegion.getWidth());
+        } else {
+            throw new TypeError('Unsupported type of given object.');
+        }
     }
 
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Check if a specified location is contained within this this.
-     *
-     * @param {Location} location The location to test.
-     * @return {Boolean} True if the location is contained within this region, false otherwise.
-     */
-    containsLocation(location) {
-        // noinspection OverlyComplexBooleanExpressionJS
-        return location.getX() >= this._left &&
-            location.getX() <= (this._left + this._width) &&
-            location.getY() >= this._top &&
-            location.getY() <= (this._top + this._height);
-    }
-
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Check if a region is intersected with the current region.
      *
@@ -281,7 +264,6 @@ class Region {
             ((this._top <= otherTop && otherTop <= bottom) || (otherTop <= this._top && this._top <= otherBottom)));
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Replaces this region with the intersection of itself and {@code other}
      *
@@ -289,7 +271,7 @@ class Region {
      */
     intersect(other) {
         if (!this.isIntersected(other)) {
-            this._makeEmpty();
+            this.makeEmpty();
             return;
         }
 
@@ -318,9 +300,9 @@ class Region {
     }
 
     /**
-     * @private
+     * @protected
      */
-    _makeEmpty() {
+    makeEmpty() {
         this._left = Region.EMPTY.getLeft();
         this._top = Region.EMPTY.getTop();
         this._width = Region.EMPTY.getWidth();
@@ -337,7 +319,6 @@ class Region {
         };
     }
 
-    // noinspection JSUnusedGlobalSymbols
     toString() {
         return `(${this._left}, ${this._top}) ${this._width}x${this._height}, ${true._coordinatesType}`;
     }

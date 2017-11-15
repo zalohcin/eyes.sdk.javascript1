@@ -1,6 +1,6 @@
 'use strict';
 
-const request = require('request');
+const axios = require('axios');
 
 const ProxySettings = require('./ProxySettings');
 const RunningSession = require('./RunningSession');
@@ -10,17 +10,15 @@ const GeneralUtils = require('../GeneralUtils');
 const ArgumentGuard = require('../ArgumentGuard');
 
 // Constants
-// noinspection MagicNumberJS
-const TIMEOUT = 5 * 60 * 1000; // ms
+const DEFAULT_TIMEOUT_MS = 300000; // 5 min
 const API_PATH = '/api/sessions/running';
+const LONG_REQUEST_DELAY_MS = 2000; // ms
+const MAX_LONG_REQUEST_DELAY_MS = 10000; // ms
+const LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR = 1.5;
 const DEFAULT_HEADERS = {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
 };
-
-const LONG_REQUEST_DELAY = 2000; // ms
-const MAX_LONG_REQUEST_DELAY = 10000; // ms
-const LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR = 1.5;
 
 const HTTP_STATUS_CODES = {
     CREATED: 201,
@@ -46,14 +44,14 @@ class ServerConnector {
 
         this._apiKey = null;
         this._proxySettings = null;
-        this._timeout = TIMEOUT;
+        this._timeout = DEFAULT_TIMEOUT_MS;
 
         this._httpOptions = {
             proxy: null,
-            strictSSL: false,
             headers: DEFAULT_HEADERS,
-            timeout: TIMEOUT,
-            qs: {}
+            timeout: DEFAULT_TIMEOUT_MS,
+            responseType: 'json',
+            params: {}
         };
     }
 
@@ -83,7 +81,7 @@ class ServerConnector {
         ArgumentGuard.notNull(apiKey, "apiKey");
         this._apiKey = apiKey;
 
-        this._httpOptions.qs.apiKey = apiKey;
+        this._httpOptions.params.apiKey = apiKey;
     }
 
     /**
@@ -108,32 +106,14 @@ class ServerConnector {
             this._proxySettings = new ProxySettings(arg1, username, password);
         }
 
-        this._httpOptions.proxy = this._proxySettings.toProxyString();
+        this._httpOptions.proxy = this._proxySettings.toProxyObject();
     }
 
     /**
-     * @return {ProxySettings} The current proxy settings used by the request component, or {@code null} if no proxy is set.
+     * @return {ProxySettings} The current proxy settings, or {@code null} if no proxy is set.
      */
     getProxy() {
         return this._proxySettings;
-    }
-
-    // noinspection JSMethodCanBeStatic
-    /**
-     * Activate/Deactivate HTTP client debugging.
-     *
-     * @param {Boolean} isDebug Whether or not to activate debugging.
-     */
-    setDebugMode(isDebug) {
-        request.debug = isDebug;
-    }
-
-    // noinspection JSMethodCanBeStatic
-    /**
-     * @return {Boolean} Whether or not debug mode is active.
-     */
-    getIsDebugMode() {
-        return request.debug;
     }
 
     /**
@@ -142,14 +122,14 @@ class ServerConnector {
      * @param shouldRemove {Boolean}
      */
     setRemoveSession(shouldRemove) {
-        this._httpOptions.qs.removeSession = shouldRemove;
+        this._httpOptions.params.removeSession = shouldRemove;
     }
 
     /**
      * @return {Boolean} Whether sessions are removed immediately after they are finished.
      */
     getRemoveSession() {
-        return !!this._httpOptions.qs.removeSession;
+        return !!this._httpOptions.params.removeSession;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -187,22 +167,20 @@ class ServerConnector {
 
         const that = this;
         const uri = this._endPoint;
-        const options = {
-            body: JSON.stringify({startInfo: sessionStartInfo})
-        };
+        const options = {data: {startInfo: sessionStartInfo}};
 
-        return sendRequest(that, 'startSession', uri, 'post', options).then(results => {
+        return sendRequest(that, 'startSession', uri, 'post', options).then(response => {
             const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED];
-            if (validStatusCodes.includes(results.status)) {
+            if (validStatusCodes.includes(response.status)) {
                 that._logger.verbose('ServerConnector.startSession - post succeeded');
 
                 const runningSession = new RunningSession();
-                Object.assign(runningSession, results.body);
-                runningSession.setNewSession(results.status === HTTP_STATUS_CODES.CREATED);
+                Object.assign(runningSession, response.data);
+                runningSession.setNewSession(response.status === HTTP_STATUS_CODES.CREATED);
                 return runningSession;
             }
 
-            throw new Error(`ServerConnector.startSession - unexpected status (${results.response})`);
+            throw new Error(`ServerConnector.startSession - unexpected status (${response.statusText})`);
         });
     }
 
@@ -221,23 +199,23 @@ class ServerConnector {
         const that = this;
         const uri = GeneralUtils.urlConcat(this._endPoint, runningSession.getId());
         const options = {
-            query: {
+            params: {
                 aborted: isAborted,
                 updateBaseline: save
             }
         };
 
-        return sendLongRequest(that, 'stopSession', uri, 'delete', options).then(results => {
+        return sendLongRequest(that, 'stopSession', uri, 'delete', options).then(response => {
             const validStatusCodes = [HTTP_STATUS_CODES.OK];
-            if (validStatusCodes.includes(results.status)) {
+            if (validStatusCodes.includes(response.status)) {
                 that._logger.verbose('ServerConnector.stopSession - post succeeded');
 
                 const testResults = new TestResults();
-                Object.assign(testResults, results.body);
+                Object.assign(testResults, response.data);
                 return testResults;
             }
 
-            throw new Error(`ServerConnector.stopSession - unexpected status (${results.response})`);
+            throw new Error(`ServerConnector.stopSession - unexpected status (${response.statusText})`);
         });
     }
 
@@ -257,20 +235,20 @@ class ServerConnector {
         const uri = GeneralUtils.urlConcat(this._endPoint, runningSession.getId());
         const options = {
             contentType: 'application/octet-stream',
-            body: Buffer.concat([createDataBytes(matchWindowData), matchWindowData.getAppOutput().getScreenshot64()])
+            data: Buffer.concat([createDataBytes(matchWindowData), matchWindowData.getAppOutput().getScreenshot64()])
         };
 
-        return sendLongRequest(that, 'matchWindow', uri, 'post', options).then(results => {
+        return sendLongRequest(that, 'matchWindow', uri, 'post', options).then(response => {
             const validStatusCodes = [HTTP_STATUS_CODES.OK];
-            if (validStatusCodes.includes(results.status)) {
+            if (validStatusCodes.includes(response.status)) {
                 that._logger.verbose('ServerConnector.matchWindow - post succeeded');
 
                 const matchResult = new MatchResult();
-                Object.assign(matchResult, results.body);
+                Object.assign(matchResult, response.data);
                 return matchResult;
             }
 
-            throw new Error(`ServerConnector.matchWindow - unexpected status (${results.response})`);
+            throw new Error(`ServerConnector.matchWindow - unexpected status (${response.statusText})`);
         });
     }
 
@@ -295,17 +273,17 @@ class ServerConnector {
             body: Buffer.concat([createDataBytes(matchWindowData), matchWindowData.getAppOutput().getScreenshot64()])
         };
 
-        return sendLongRequest(that, 'replaceWindow', uri, 'put', options).then(results => {
+        return sendLongRequest(that, 'replaceWindow', uri, 'put', options).then(response => {
             const validStatusCodes = [HTTP_STATUS_CODES.OK];
-            if (validStatusCodes.includes(results.status)) {
+            if (validStatusCodes.includes(response.status)) {
                 that._logger.verbose('ServerConnector.replaceWindow - post succeeded');
 
                 const matchResult = new MatchResult();
-                Object.assign(matchResult, results.body);
+                Object.assign(matchResult, response.data);
                 return matchResult;
             }
 
-            throw new Error(`ServerConnector.replaceWindow - unexpected status (${results.response})`);
+            throw new Error(`ServerConnector.replaceWindow - unexpected status (${response.statusText})`);
         });
     }
 }
@@ -317,7 +295,7 @@ class ServerConnector {
  * @param {String} uri
  * @param {String} method
  * @param {Object} options
- * @return {Promise.<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
+ * @return {Promise.<AxiosResponse>}
  */
 function sendLongRequest(that, name, uri, method, options = {}) {
     const headers = {
@@ -326,8 +304,8 @@ function sendLongRequest(that, name, uri, method, options = {}) {
     };
 
     options.headers = options.headers ? Object.assign(options.headers, headers) : headers;
-    return sendRequest(that, name, uri, method, options).then(results => {
-        return longRequestCheckStatus(that, name, results);
+    return sendRequest(that, name, uri, method, options).then(response => {
+        return longRequestCheckStatus(that, name, response);
     });
 }
 
@@ -335,26 +313,26 @@ function sendLongRequest(that, name, uri, method, options = {}) {
  * @private
  * @param {ServerConnector} that
  * @param {String} name
- * @param {{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}} results
- * @return {Promise.<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
+ * @param {AxiosResponse} response
+ * @return {Promise.<AxiosResponse>}
  */
-function longRequestCheckStatus(that, name, results) {
-    switch (results.status) {
+function longRequestCheckStatus(that, name, response) {
+    switch (response.status) {
         case HTTP_STATUS_CODES.OK:
-            return that._promiseFactory.resolve(results);
+            return that._promiseFactory.resolve(response);
         case HTTP_STATUS_CODES.ACCEPTED:
-            const uri = results.response.headers['location'];
-            return longRequestLoop(that, name, uri, LONG_REQUEST_DELAY).then(results => {
-                return longRequestCheckStatus(that, name, results);
+            const uri = response.headers['location'];
+            return longRequestLoop(that, name, uri, LONG_REQUEST_DELAY_MS).then(response => {
+                return longRequestCheckStatus(that, name, response);
             });
         case HTTP_STATUS_CODES.CREATED:
-            const deleteUri = results.response.headers['location'];
+            const deleteUri = response.headers['location'];
             const options = {headers: {'Eyes-Date': GeneralUtils.getRfc1123Date()}};
             return sendRequest(that, name, deleteUri, 'delete', options);
         case HTTP_STATUS_CODES.GONE:
             return that._promiseFactory.reject(new Error('The server task has gone.'));
         default:
-            return that._promiseFactory.reject(new Error(`Unknown error processing long request: ${JSON.stringify(results)}`));
+            return that._promiseFactory.reject(new Error(`Unknown error processing long request: ${JSON.stringify(response)}`));
     }
 }
 
@@ -364,17 +342,20 @@ function longRequestCheckStatus(that, name, results) {
  * @param {String} name
  * @param {String} uri
  * @param {int} delay
- * @return {Promise.<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
+ * @return {Promise.<AxiosResponse>}
  */
 function longRequestLoop(that, name, uri, delay) {
-    delay = Math.min(MAX_LONG_REQUEST_DELAY, Math.floor(delay * LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR));
+    delay = Math.min(MAX_LONG_REQUEST_DELAY_MS, Math.floor(delay * LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR));
     that._logger.verbose(`${name}: Still running... Retrying in ${delay} ms`);
 
     return GeneralUtils.sleep(delay, that._promiseFactory).then(() => {
         const options = {headers: {'Eyes-Date': GeneralUtils.getRfc1123Date()}};
         return sendRequest(that, name, uri, 'get', options);
-    }).then(result => {
-        if (result.status !== HTTP_STATUS_CODES.OK) return result;
+    }).then(response => {
+        if (response.status !== HTTP_STATUS_CODES.OK) {
+            return response;
+        }
+
         return longRequestLoop(that, name, uri, delay);
     });
 }
@@ -383,39 +364,28 @@ function longRequestLoop(that, name, uri, delay) {
  * @private
  * @param {ServerConnector} that
  * @param {String} name
- * @param {String} uri
+ * @param {String} url
  * @param {String} method
  * @param {Object} options
- * @return {Promise.<{status: int, body: Object, response: {statusCode: int, statusMessage: String, headers: Object}}>}
+ * @return {Promise.<AxiosResponse>}
  */
-function sendRequest(that, name, uri, method, options = {}) {
-    const req = GeneralUtils.clone(that._httpOptions);
-    req.uri = uri;
-    req.method = method;
-    if (options.query) req.qs = Object.assign(req.qs, options.query);
-    if (options.headers) req.headers = Object.assign(req.headers, options.headers);
-    if (options.body) req.body = options.body;
-    if (options.contentType) req.headers['Content-Type'] = options.contentType;
+function sendRequest(that, name, url, method, options = {}) {
+    const request = GeneralUtils.clone(that._httpOptions);
+    request.url = url;
+    request.method = method;
+    if (options.params) { request.params = Object.assign(request.params, options.params); }
+    if (options.headers) { request.headers = Object.assign(request.headers, options.headers); }
+    if (options.data) { request.data = options.data; }
+    if (options.contentType) { request.headers['Content-Type'] = options.contentType; }
 
-    return that._promiseFactory.makePromise((resolve, reject) => {
-        that._logger.verbose(`ServerConnector.${name} will now post call to: ${req.uri}`);
-        request(req, (err, response, body) => {
-            if (err) {
-                that._logger.log(`ServerConnector.${name} - post failed`);
-                return reject(new Error(err));
-            }
-
-            that._logger.verbose(`ServerConnector.${name} - result ${body}, status code ${response.statusCode}`);
-            return resolve({
-                status: response.statusCode,
-                body: body ? JSON.parse(body) : null,
-                response: {
-                    statusCode: response.statusCode,
-                    statusMessage: response.statusMessage,
-                    headers: response.headers
-                }
-            });
-        });
+    that._logger.verbose(`ServerConnector.${name} will now post call to: ${request.url}`);
+    // noinspection JSUnresolvedFunction
+    return axios(request).then(function(response) {
+        that._logger.verbose(`ServerConnector.${name} - result ${response.statusText}, status code ${response.status}`);
+        return response;
+    }).catch(error => {
+        that._logger.log(`ServerConnector.${name} - post failed: ${error.response.statusText}`);
+        throw error;
     });
 }
 

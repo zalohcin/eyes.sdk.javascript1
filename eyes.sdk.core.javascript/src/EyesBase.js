@@ -58,6 +58,7 @@ const BatchInfo = require('./BatchInfo');
 const TestResults = require('./server/TestResults');
 
 const DEFAULT_MATCH_TIMEOUT = 2000;
+const MIN_MATCH_TIMEOUT = 500;
 
 /**
  * Core/Base class for Eyes - to allow code reuse for different SDKs (images, selenium, etc).
@@ -351,8 +352,6 @@ class EyesBase {
      * @param {int} ms Total number of ms to wait for a match.
      */
     setMatchTimeout(ms) {
-        // noinspection MagicNumberJS
-        const MIN_MATCH_TIMEOUT = 500;
         if (this._isDisabled) {
             this._logger.verbose("Ignored");
             return;
@@ -1694,24 +1693,6 @@ class EyesBase {
      */
     getRemoveSession() {
         return this._serverConnector.getRemoveSession();
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * Activate/Deactivate HTTP client debugging.
-     *
-     * @param {Boolean} isDebug Whether or not debug mode is active.
-     */
-    setDebugMode(isDebug) {
-        this._serverConnector.setDebugMode(isDebug);
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {Boolean} Whether or not HTTP client debugging mode is active.
-     */
-    getIsDebugMode() {
-        return this._serverConnector.getIsDebugMode();
     }
 
     //noinspection JSUnusedGlobalSymbols

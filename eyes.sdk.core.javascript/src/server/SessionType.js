@@ -10,12 +10,12 @@ const SessionType = {
     /**
      * Default type of sessions.
      */
-    SEQUENTIAL: 1,
+    SEQUENTIAL: 'SEQUENTIAL',
 
     /**
      * A timing test session
      */
-    PROGRESSION: 2
+    PROGRESSION: 'PROGRESSION'
 };
 
 Object.freeze(SessionType);

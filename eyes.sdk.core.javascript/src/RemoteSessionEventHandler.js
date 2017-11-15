@@ -1,12 +1,12 @@
 'use strict';
 
-const request = require('request');
+const axios = require('axios');
 
 const GeneralUtils = require('./GeneralUtils');
 const SessionEventHandler = require('./SessionEventHandler');
 
 // Constants
-const DEFAULT_CONNECTION_TIMEOUT_MS = 30 * 1000;
+const DEFAULT_CONNECTION_TIMEOUT_MS = 30000;
 const SERVER_SUFFIX = '/applitools/sessions';
 
 module.exports.createSessionEventHandler = (serverUrl, accessKey) => {
@@ -48,19 +48,13 @@ module.exports.createSessionEventHandler = (serverUrl, accessKey) => {
 
 
     // *** Overriding callbacks
-    const _sendNotification = (requestOptions, resolve, reject) => request(requestOptions, (err, response) => {
-        if (err) {
-            reject(new Error(err));
-            return;
-        }
-        resolve(response.statusCode);
-    });
+    const _sendNotification = (requestOptions, resolve, reject) => axios(requestOptions).then(() => resolve(response.statusCode)).catch(err => reject(err));
 
     sessionHandler.testStarted = function (autSessionId) {
         return this._promiseFactory.makePromise((resolve, reject) => {
             const options = Object.create(this._defaultHttpOptions);
             options.uri = "";
-            options.body = {autSessionId: autSessionId};
+            options.data = {autSessionId: autSessionId};
             options.method = "post";
             _sendNotification(options, resolve, reject);
         });
@@ -70,7 +64,7 @@ module.exports.createSessionEventHandler = (serverUrl, accessKey) => {
         return this._promiseFactory.makePromise((resolve, reject) => {
             const options = Object.create(this._defaultHttpOptions);
             options.uri = autSessionId;
-            options.body = {action: "testEnd", testResults: testResults};
+            options.data = {action: "testEnd", testResults: testResults};
             options.method = 'put';
             _sendNotification(options, resolve, reject);
         });
@@ -80,7 +74,7 @@ module.exports.createSessionEventHandler = (serverUrl, accessKey) => {
         return this._promiseFactory.makePromise((resolve, reject) => {
             const options = Object.create(this._defaultHttpOptions);
             options.uri = autSessionId;
-            options.body = {action: 'initStart'};
+            options.data = {action: 'initStart'};
             options.method = "put";
             _sendNotification(options, resolve, reject);
         });
@@ -90,7 +84,7 @@ module.exports.createSessionEventHandler = (serverUrl, accessKey) => {
         return this._promiseFactory.makePromise((resolve, reject) => {
             const options = Object.create(this._defaultHttpOptions);
             options.uri = autSessionId;
-            options.body = {action: "initEnd"};
+            options.data = {action: "initEnd"};
             options.method = 'put';
             _sendNotification(options, resolve, reject);
         });
@@ -100,7 +94,7 @@ module.exports.createSessionEventHandler = (serverUrl, accessKey) => {
         return this._promiseFactory.makePromise((resolve, reject) => {
             const options = Object.create(this._defaultHttpOptions);
             options.uri = autSessionId;
-            options.body = {action: "setSizeStart", size: size};
+            options.data = {action: "setSizeStart", size: size};
             options.method = "put";
             _sendNotification(options, resolve, reject);
         });
@@ -110,7 +104,7 @@ module.exports.createSessionEventHandler = (serverUrl, accessKey) => {
         return this._promiseFactory.makePromise((resolve, reject) => {
             const options = Object.create(this._defaultHttpOptions);
             options.uri = autSessionId;
-            options.body = {action: "setSizeEnd"};
+            options.data = {action: "setSizeEnd"};
             options.method = 'put';
             _sendNotification(options, resolve, reject);
         });
@@ -120,7 +114,7 @@ module.exports.createSessionEventHandler = (serverUrl, accessKey) => {
         return this._promiseFactory.makePromise((resolve, reject) => {
             const options = Object.create(this._defaultHttpOptions);
             options.uri = `${autSessionId}/validations`;
-            options.body = validationInfo.toObject();
+            options.data = validationInfo.toObject();
             options.method = 'post';
             _sendNotification(options, resolve, reject);
         });
@@ -130,7 +124,7 @@ module.exports.createSessionEventHandler = (serverUrl, accessKey) => {
         return this._promiseFactory.makePromise((resolve, reject) => {
             const options = Object.create(this._defaultHttpOptions);
             options.uri = `${autSessionId}/validations/${validationId}`;
-            options.body = {action: "validationEnd", asExpected: validationResult.asExpected};
+            options.data = {action: "validationEnd", asExpected: validationResult.asExpected};
             options.method = 'put';
             _sendNotification(options, resolve, reject);
         });

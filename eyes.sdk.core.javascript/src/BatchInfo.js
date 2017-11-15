@@ -46,7 +46,7 @@ class BatchInfo {
     }
 
     /**
-     * @return {Date} The batch start date and time in ISO 8601 format.
+     * @return {Date} The batch start date
      */
     getStartedAt() {
         return new Date(this._startedAt);

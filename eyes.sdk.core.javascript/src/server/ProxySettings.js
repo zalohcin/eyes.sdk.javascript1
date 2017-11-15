@@ -1,5 +1,6 @@
 'use strict';
 
+const url = require('url');
 const ArgumentGuard = require('../ArgumentGuard');
 
 /**
@@ -19,34 +20,51 @@ class ProxySettings {
         this._uri = uri;
         this._username = username;
         this._password = password;
+
+        this._url = url.parse(uri);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getUri() {
         return this._uri;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getUsername() {
         return this._username;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getPassword() {
         return this._password;
     }
 
-    toProxyString() {
-        let protocol = 'http', uri = this._uri, auth = '';
+    // noinspection FunctionWithMoreThanThreeNegationsJS
+    /**
+     * @return {{host: string, port: int, auth: {username: string, password: string}}}
+     */
+    toProxyObject() {
+        const proxy = {};
 
-        const i = this._uri.indexOf('://');
-        if (i !== -1) {
-            protocol = this._uri.slice(0, i);
-            uri = this._uri.slice(i + 3);
+        proxy.host = this._url.hostname;
+        proxy.port = this._url.port;
+
+        if (!this._username && this._url.auth) {
+            const i = this._url.auth.indexOf(':');
+            if (i !== -1) {
+                proxy.auth = {
+                    username: this._url.auth.slice(0, i),
+                    password: this._url.auth.slice(i + 1)
+                };
+            }
+        } else if (this._username) {
+            proxy.auth = {
+                username: this._username,
+                password: this._password,
+            };
         }
 
-        if (this._username) {
-            auth = `${this._username}:${this._password}@`;
-        }
-
-        return `${protocol}://${auth}${uri}`;
+        return proxy;
     }
 }
 

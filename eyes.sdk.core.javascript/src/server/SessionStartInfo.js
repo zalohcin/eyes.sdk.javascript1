@@ -46,55 +46,67 @@ class SessionStartInfo {
         this._properties = properties;
     }
 
-
+    /** @return {String} */
     getAgentId() {
         return this._agentId;
     }
 
+    /** @return {SessionType} */
     getSessionType() {
         return this._sessionType;
     }
 
+    /** @return {String} */
     getAppIdOrName() {
         return this._appIdOrName;
     }
 
+    /** @return {String} */
     getVerId() {
         return this._verId;
     }
 
+    /** @return {String} */
     getScenarioIdOrName() {
         return this._scenarioIdOrName;
     }
 
+    /** @return {BatchInfo} */
     getBatchInfo() {
         return this._batchInfo;
     }
 
+    /** @return {String} */
     getBaselineEnvName() {
         return this._baselineEnvName;
     }
 
+    /** @return {String} */
     getEnvironmentName() {
         return this._environmentName;
     }
 
+    /** @return {AppEnvironment} */
     getEnvironment() {
         return this._environment;
     }
 
+    /** @return {ImageMatchSettings} */
     getDefaultMatchSettings() {
         return this._defaultMatchSettings;
     }
 
+    /** @return {String} */
     getBranchName() {
         return this._branchName;
     }
 
+    /** @return {String} */
     getParentBranchName() {
         return this._parentBranchName;
     }
 
+    /** @return {PropertyData[]} */
     getProperties() {
         return this._properties;
     }
