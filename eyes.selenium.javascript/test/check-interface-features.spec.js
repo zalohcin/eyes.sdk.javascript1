@@ -17,12 +17,10 @@ describe('Eyes.Selenium.JavaScript - check-interface-features', () => {
     });
 
     it("test check interface features", function() {
-        // noinspection MagicNumberJS
         return eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(1000, 700)).then(driver => {
             driver.get("https://astappev.github.io/test-html-pages/");
 
             // Entire window, equivalent to eyes.checkWindow()
-            // noinspection MagicNumberJS
             eyes.check("Entire window", Target.window()
                     .matchLevel(MatchLevel.Layout)
                     .ignore(By.id("overflowing-div"))
@@ -33,7 +31,6 @@ describe('Eyes.Selenium.JavaScript - check-interface-features', () => {
             );
 
             // Region by rect, equivalent to eyes.checkFrame()
-            // noinspection MagicNumberJS
             eyes.check("Region by rect", Target.region(new Region(50, 50, 200, 200))
                 .floating(new FloatingMatchSettings(50, 50, 60, 50, 10, 10, 10, 10))
             );

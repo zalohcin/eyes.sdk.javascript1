@@ -28,7 +28,9 @@ const Target = require('./fluent/Target');
 
 const VERSION = require('../package.json').version;
 
+const DEFAULT_STITCHING_OVERLAP = 50; // px
 const DEFAULT_WAIT_BEFORE_SCREENSHOTS = 100; // Milliseconds
+const DEFAULT_WAIT_SCROLL_STABILIZATION = 200; // Milliseconds
 
 /**
  * The main API gateway for the SDK.
@@ -83,12 +85,8 @@ class Eyes extends EyesBase {
 
         /** @type {boolean} */
         this._stitchContent = false;
-        // noinspection MagicNumberJS
-        /**
-         * @type {int}
-         * @protected
-         */
-        this._stitchingOverlap = 50;
+        /** @type {int} */
+        this._stitchingOverlap = DEFAULT_STITCHING_OVERLAP;
 
         this._imageRotationDegrees = 0;
         this._automaticRotation = true;
@@ -994,8 +992,7 @@ class Eyes extends EyesBase {
             scaleProviderFactory = scaleProviderFactory_;
 
             if (that._hideScrollbars) {
-                // noinspection MagicNumberJS
-                return EyesSeleniumUtils.hideScrollbars(that._jsExecutor, 200).then(originalOverflow_ => {
+                return EyesSeleniumUtils.hideScrollbars(that._jsExecutor, DEFAULT_WAIT_SCROLL_STABILIZATION).then(originalOverflow_ => {
                     originalOverflow = originalOverflow_;
                 }).catch(err => {
                     that._logger.log("WARNING: Failed to hide scrollbars! Error: " + err);

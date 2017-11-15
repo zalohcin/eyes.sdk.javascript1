@@ -402,7 +402,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         this._location = this.convertLocation(location, coordinatesType, CoordinatesType.SCREENSHOT_AS_IS);
 
         // Making sure it's within the screenshot bounds
-        if (!this._frameWindow.containsLocation(location)) {
+        if (!this._frameWindow.contains(location)) {
             throw new OutOfBoundsError(`Location ${location} ('${coordinatesType}') is not visible in screenshot!`);
         }
         return this._location;

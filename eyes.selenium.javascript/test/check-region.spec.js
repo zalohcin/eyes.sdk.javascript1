@@ -17,12 +17,10 @@ describe('Eyes.Selenium.JavaScript - check region', () => {
     });
 
     it("test check region methods", function() {
-        // noinspection MagicNumberJS
         return eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(800, 560)).then(driver => {
             driver.get('https://astappev.github.io/test-html-pages/');
 
             // Region by rect, equivalent to eyes.checkFrame()
-            // noinspection MagicNumberJS
             eyes.check("Region by rect", Target.region(new Region(50, 50, 200, 200)));
 
             // Region by element, equivalent to eyes.checkRegionByElement()
