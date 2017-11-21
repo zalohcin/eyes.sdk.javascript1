@@ -1,5 +1,6 @@
 'use strict';
 
+const GeneralUtils = require('../GeneralUtils');
 const ArgumentGuard = require('../ArgumentGuard');
 
 /**
@@ -27,30 +28,37 @@ class Options {
         this._imageMatchSettings = imageMatchSettings;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getName() {
         return this._name;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getUserInputs() {
         return this._userInputs;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getIgnoreMismatch() {
         return this._ignoreMismatch;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getIgnoreMatch() {
         return this._ignoreMatch;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getForceMismatch() {
         return this._forceMismatch;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getForceMatch() {
         return this._forceMatch;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getImageMatchSettings() {
         return this._imageMatchSettings;
     }
@@ -72,7 +80,7 @@ class Options {
      * @return {String}
      */
     toString() {
-        return `Options { ${JSON.stringify(this)} }`;
+        return `Options { ${GeneralUtils.toJson(this)} }`;
     }
 }
 
@@ -99,22 +107,27 @@ class MatchWindowData {
         this._options = options;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getUserInputs() {
         return this._userInputs;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getAppOutput() {
         return this._appOutput;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getTag() {
         return this._tag;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getIgnoreMismatch() {
         return this._ignoreMismatch;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getOptions() {
         return this._options;
     }
@@ -134,7 +147,7 @@ class MatchWindowData {
      * @return {String}
      */
     toString() {
-        return `MatchWindowData { ${JSON.stringify(this)} }`;
+        return `MatchWindowData { ${GeneralUtils.toJson(this)} }`;
     }
 }
 

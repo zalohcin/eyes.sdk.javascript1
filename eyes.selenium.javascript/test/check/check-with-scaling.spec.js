@@ -1,12 +1,12 @@
-const {Builder, By} = require('selenium-webdriver');
-const {Options} = require('selenium-webdriver/chrome');
-const {ConsoleLogHandler, RectangleSize} = require('eyes.sdk');
-const {Eyes, Target} = require('../index');
+const { Builder, By } = require('selenium-webdriver');
+const { Options } = require('selenium-webdriver/chrome');
+const { ConsoleLogHandler, RectangleSize } = require('eyes.sdk');
+const { Eyes, Target } = require('../../index');
 
 let driver = null, eyes = null;
 describe('Eyes.Selenium.JavaScript - check-with-scaling', () => {
 
-    before(function() {
+    before(function () {
         const options = new Options().addArguments("--force-device-scale-factor=1.25");
         // noinspection JSCheckFunctionSignatures
         driver = new Builder()
@@ -20,7 +20,7 @@ describe('Eyes.Selenium.JavaScript - check-with-scaling', () => {
         eyes.setLogHandler(new ConsoleLogHandler(true));
     });
 
-    it("test check with scaling", function() {
+    it("test check with scaling", function () {
         return eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(800, 560)).then(driver => {
             driver.get('https://astappev.github.io/test-html-pages/');
 
@@ -34,7 +34,7 @@ describe('Eyes.Selenium.JavaScript - check-with-scaling', () => {
         });
     });
 
-    afterEach(function() {
+    afterEach(function () {
         return driver.quit().then(() => eyes.abortIfNotClosed());
     });
 });

@@ -23,16 +23,15 @@
   "main": "index",
   "scripts": {
     "browserify": "browserify eyes-browser-loader.js > dist/eyes-browser.js",
-    "uglify": "uglifyjs dist/eyes-browser.js > dist/eyes-browser.min.js"
+    "uglify": "uglifyjs dist/eyes-browser.js > dist/eyes-browser.min.js",
+    "build": "npm run browserify && npm run uglify"
   },
   "dependencies": {
     "eyes.sdk": "1.0.0"
   },
   "devDependencies": {
-    "browserify": "latest",
-    "uglify-js": "latest",
-    "browserify-fs": "^1.0.0",
-    "browserify-zlib": "ipfs/browserify-zlib#9993eff"
+    "browserify": "^14.5.0",
+    "uglify-es": "^3.1.9"
   },
   "browser": {
     "rsvp": false

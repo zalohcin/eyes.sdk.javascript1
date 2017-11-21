@@ -44,11 +44,7 @@ class CssTranslatePositionProvider extends PositionProvider {
      * @inheritDoc
      */
     setPosition(location) {
-        try {
-            ArgumentGuard.notNull(location, "location");
-        } catch (err) {
-            return this._promiseFactory.reject(err);
-        }
+        ArgumentGuard.notNull(location, "location");
 
         const that = this;
         this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`);

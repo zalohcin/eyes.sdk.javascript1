@@ -332,7 +332,7 @@ function longRequestCheckStatus(that, name, response) {
         case HTTP_STATUS_CODES.GONE:
             return that._promiseFactory.reject(new Error('The server task has gone.'));
         default:
-            return that._promiseFactory.reject(new Error(`Unknown error processing long request: ${JSON.stringify(response)}`));
+            return that._promiseFactory.reject(new Error(`Unknown error processing long request: ${GeneralUtils.toJson(response)}`));
     }
 }
 
@@ -397,7 +397,7 @@ function sendRequest(that, name, url, method, options = {}) {
  * @return {Buffer} a buffer of bytes which represents the stringified JSON, prefixed with size.
  */
 function createDataBytes(jsonData) {
-    const dataStr = JSON.stringify(jsonData);
+    const dataStr = GeneralUtils.toJson(jsonData);
     const dataLen = Buffer.byteLength(dataStr, 'utf8');
 
     // The result buffer will contain the length of the data + 4 bytes of size

@@ -6,6 +6,10 @@ const Location = require('./Location');
 const CoordinatesType = require('./CoordinatesType');
 
 /**
+ * @typedef {{left: number, top: number, width: number, height: number, coordinatesType?: CoordinatesType}} RegionObj
+ */
+
+/**
  * A Region in a two-dimensional plane.
  */
 class Region {
@@ -19,7 +23,7 @@ class Region {
      * - (object: {left: number, top: number, width: number, height: number}): from object
      * - (location: Location, size: RectangleSize, coordinatesType: CoordinatesType): from location and size
      *
-     * @param {Number|Region|Location|{left: number, top: number, width: number, height: number, coordinatesType?: CoordinatesType}} arg1 The left offset of this region.
+     * @param {Number|Region|Location|RegionObj} arg1 The left offset of this region.
      * @param {Number|RectangleSize} [arg2] The top offset of this region.
      * @param {Number|CoordinatesType} [arg3] The width of the region.
      * @param {Number} [arg4] The height of the region.
@@ -36,25 +40,25 @@ class Region {
                 width = arg1.getWidth();
                 height = arg1.getHeight();
                 coordinatesType = arg1.getCoordinatesType();
-            } else if (arg1 instanceof Location && arg2 instanceof RectangleSize) {
+            } else if (arg1 instanceof Location || arg2 instanceof RectangleSize) {
+                ArgumentGuard.notNull(arg1, "Location");
+                ArgumentGuard.notNull(arg2, "RectangleSize");
+
                 left = arg1.getX();
                 top = arg1.getY();
                 width = arg2.getWidth();
                 height = arg2.getHeight();
                 coordinatesType = arg3;
-            } else if (ArgumentGuard.hasProperties(arg1, ['left', 'top', 'width', 'height'])) {
-                // noinspection JSUnresolvedVariable
+            } else if (arg1 instanceof Object) {
+                ArgumentGuard.hasProperties(arg1, ['left', 'top', 'width', 'height'], 'RegionObject');
+
                 left = arg1.left;
-                // noinspection JSUnresolvedVariable
                 top = arg1.top;
-                // noinspection JSUnresolvedVariable
                 width = arg1.width;
-                // noinspection JSUnresolvedVariable
                 height = arg1.height;
-                // noinspection JSUnresolvedVariable
                 coordinatesType = arg1.coordinatesType;
             } else {
-                throw new TypeError("The constructor is not support the object " + arg1);
+                throw new TypeError(`The Region constructor for ${typeof arg1} type not found.`);
             }
         }
 

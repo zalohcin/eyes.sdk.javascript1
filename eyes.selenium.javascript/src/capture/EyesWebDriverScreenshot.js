@@ -5,6 +5,7 @@ const {ArgumentGuard, EyesScreenshot, CoordinatesType, Region, Location, Coordin
 const SeleniumJavaScriptExecutor = require('../SeleniumJavaScriptExecutor');
 const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
 const FrameChain = require('../frames/FrameChain');
+const EyesWebElement = require('../wrappers/EyesWebElement');
 
 /**
  * @readonly
@@ -33,7 +34,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         ArgumentGuard.notNull(promiseFactory, "promiseFactory");
 
         this._logger = logger;
-        this._executor = driver;
+        this._driver = driver;
         this._promiseFactory = promiseFactory;
         /** @type {FrameChain} */
         this._frameChain = driver.getFrameChain();
@@ -84,10 +85,10 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         return that._updateScreenshotType(screenshotType, that._image).then(screenshotType => {
             that._screenshotType = screenshotType;
 
-            const jsExecutor = new SeleniumJavaScriptExecutor(that._executor);
+            const jsExecutor = new SeleniumJavaScriptExecutor(that._driver);
             const positionProvider = new ScrollPositionProvider(that._logger, jsExecutor);
 
-            that._frameChain = that._executor.getFrameChain();
+            that._frameChain = that._driver.getFrameChain();
             return that._getFrameSize(positionProvider).then(frameSize => {
                 return that._getUpdatedScrollPosition(positionProvider).then(currentFrameScrollPosition => {
                     that._currentFrameScrollPosition = currentFrameScrollPosition;
@@ -114,14 +115,14 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
      * @return {Promise.<Location>}
      */
     _getDefaultContentScrollPosition() {
-        const jsExecutor = new SeleniumJavaScriptExecutor(this._executor);
+        const jsExecutor = new SeleniumJavaScriptExecutor(this._driver);
         const positionProvider = new ScrollPositionProvider(this._logger, jsExecutor);
         if (this._frameChain.size() === 0) {
             return positionProvider.getCurrentPosition();
         }
 
         /** @type {TargetLocator} */
-        const switchTo = this._executor.getRemoteWebDriver().switchTo();
+        const switchTo = this._driver.getRemoteWebDriver().switchTo();
 
         const that = this;
         return switchTo.defaultContent().then(() => {
@@ -139,7 +140,10 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     _switchFrameLoop(switchTo) {
         return this._frameChain.getFrames().reduce((promise, frame) => {
             return promise.then(() => {
-                const frameElement = frame.getReference();
+                let frameElement = frame.getReference();
+                if (frameElement instanceof EyesWebElement) {
+                    frameElement = frameElement.getWebElement();
+                }
                 return switchTo.frame(frameElement);
             });
         }, this._promiseFactory.resolve());
@@ -217,15 +221,15 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
      * @return {Promise.<RectangleSize>}
      */
     _getFrameSize(positionProvider) {
-        if (this._frameChain.size() !== 0) {
-            return this._promiseFactory.resolve(this._frameChain.getCurrentFrameInnerSize());
-        } else {
+        if (this._frameChain.size() === 0) {
             // get entire page size might throw an exception for applications which don't support Javascript (e.g., Appium).
             // In that case we'll use the viewport size as the frame's size.
             const that = this;
             return positionProvider.getEntireSize().catch(() => {
-                return that._executor.getDefaultContentViewportSize();
+                return that._driver.getDefaultContentViewportSize();
             });
+        } else {
+            return this._promiseFactory.resolve(this._frameChain.getCurrentFrameInnerSize());
         }
     }
 
@@ -238,11 +242,11 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     _updateScreenshotType(screenshotType, image) {
         if (!screenshotType) {
             const that = this;
-            return that._executor.getDefaultContentViewportSize().then(viewportSize => {
-                const scaleViewport = that._executor.getEyes().shouldStitchContent();
+            return that._driver.getDefaultContentViewportSize().then(viewportSize => {
+                const scaleViewport = that._driver.getEyes().shouldStitchContent();
 
                 if (scaleViewport) {
-                    const pixelRatio = that._executor.getEyes().getDevicePixelRatio();
+                    const pixelRatio = that._driver.getEyes().getDevicePixelRatio();
                     viewportSize = viewportSize.scale(pixelRatio);
                 }
 
@@ -298,7 +302,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
 
             const frameLocationInSubScreenshot = new Location(-contextAsIsRegionLocation.getX(), -contextAsIsRegionLocation.getY());
 
-            const result = new EyesWebDriverScreenshot(that._logger, that._executor, subScreenshotImage, that._promiseFactory);
+            const result = new EyesWebDriverScreenshot(that._logger, that._driver, subScreenshotImage, that._promiseFactory);
             return result.init(that._screenshotType, frameLocationInSubScreenshot);
         }).then(result => {
             that._logger.verbose("Done!");
@@ -434,7 +438,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
                 intersectedRegion.intersect(new Region(0, 0, this._image.getWidth(), this._image.getHeight()));
                 break;
             default:
-                throw new CoordinatesTypeConversionError(from, to);
+                throw new CoordinatesTypeConversionError(`Unknown coordinates type: '${originalCoordinatesType}'`);
         }
 
         // If the intersection is empty we don't want to convert the coordinates.

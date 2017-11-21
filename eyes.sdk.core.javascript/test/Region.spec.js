@@ -1,5 +1,6 @@
 const assert = require("assert");
 
+const GeneralUtils = require('../src/GeneralUtils');
 const RectangleSize = require("../src/positioning/RectangleSize");
 const Location = require("../src/positioning/Location");
 const Region = require("../src/positioning/Region");
@@ -19,16 +20,19 @@ describe('Region', () => {
         assert.equal(region.getHeight(), height, "height");
 
         // This should still be ok
+        // noinspection JSUnusedAssignment
         region = new Region(1, 2, 0, 0);
 
         // Making sure negative positions are valid.
         try {
+            // noinspection JSUnusedAssignment
             region = new Region(-1, 2, 3, 4);
         } catch (ignore) {
             assert.fail("Left can be <= 0");
         }
 
         try {
+            // noinspection JSUnusedAssignment
             region = new Region(1, -2, 3, 4);
         } catch (ignore) {
             assert.fail("Top can be <= 0");
@@ -36,30 +40,35 @@ describe('Region', () => {
 
         // noinspection EmptyCatchBlockJS
         try {
+            // noinspection JSUnusedAssignment
             region = new Region(1, 2, -1, 0);
             assert.fail("Width must be >=0");
         } catch (ignore) {}
 
         // noinspection EmptyCatchBlockJS
         try {
+            // noinspection JSUnusedAssignment
             region = new Region(1, 2, 3, -1);
             assert.fail("Height must be >=0");
         } catch (ignore) {}
 
         // noinspection EmptyCatchBlockJS
         try {
+            // noinspection JSUnusedAssignment
             region = new Region(null, new RectangleSize(3, 4));
             assert.fail("Location must not be null!");
         } catch (ignore) {}
 
         // noinspection EmptyCatchBlockJS
         try {
+            // noinspection JSUnusedAssignment
             region = new Region(new Location(1, 2), null);
             assert.fail("Size must not be null!");
         } catch (ignore) {}
 
         // noinspection EmptyCatchBlockJS
         try {
+            // noinspection JSUnusedAssignment
             region = new Region(null, null);
             assert.fail("Location and size must not be null!");
         } catch (ignore) {}
@@ -122,6 +131,7 @@ describe('Region', () => {
         const r2 = new Region(r1);
         assert.equal(r1.equals(r2), true, "Regions should be equal!");
 
+        // noinspection JSAccessibilityCheck
         r2.makeEmpty();
         assert.equal(r1.equals(r2), false, "Regions should be differ!");
     });
@@ -182,7 +192,7 @@ describe('Region', () => {
         const expectedSerialization = `{"left":${left},"top":${top},"width":${width},"height":${height}}`;
 
         const region = new Region(left, top, width, height);
-        const actualSerialization = JSON.stringify(region);
+        const actualSerialization = GeneralUtils.toJson(region);
 
         assert.strictEqual(expectedSerialization, actualSerialization, "Region serialization does not match!");
     });

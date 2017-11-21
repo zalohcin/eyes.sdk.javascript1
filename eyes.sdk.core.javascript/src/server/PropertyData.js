@@ -1,5 +1,7 @@
 'use strict';
 
+const GeneralUtils = require('../GeneralUtils');
+
 class PropertyData {
 
     /**
@@ -11,18 +13,22 @@ class PropertyData {
         this._value = value;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getName() {
         return this._name;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setName(value) {
         this._name = value;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getValue() {
         return this._value;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setValue(value) {
         this._value = value;
     }
@@ -39,7 +45,7 @@ class PropertyData {
      * @return {String}
      */
     toString() {
-        return `PropertyData { ${JSON.stringify(this)} }`;
+        return `PropertyData { ${GeneralUtils.toJson(this)} }`;
     }
 }
 

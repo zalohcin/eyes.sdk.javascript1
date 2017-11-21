@@ -1,6 +1,7 @@
 'use strict';
 
 const dateformat = require('dateformat');
+const isBuffer = require('is-buffer');
 
 const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
 const DATE_FORMAT_RFC1123 = "ddd, dd mmm yyyy HH:MM:ss 'GMT'";
@@ -43,6 +44,29 @@ class GeneralUtils {
     };
 
     //noinspection JSUnusedGlobalSymbols
+    /**
+     * Mixin methods from one object into another.
+     * Follow the prototype chain and apply form root to current - but skip the top (Object)
+     *
+     * @param {Object} to The object to which methods will be added
+     * @param {Object} from The object from which methods will be copied
+     */
+    static mixin(to, from) {
+        let index, protos = [], proto = from;
+        while (!!proto) {
+            protos.push(Object.getOwnPropertyNames(proto));
+            proto = Object.getPrototypeOf(proto);
+        }
+
+        for (index = protos.length - 2; index >= 0; index--) {
+            protos[index].forEach(function(method) {
+                if (!to[method] && typeof from[method] === 'function' && method !== 'constructor') {
+                    _mixin(to, from, method);
+                }
+            });
+        }
+    };
+
     /**
      * Generate GUID
      *
@@ -123,7 +147,6 @@ class GeneralUtils {
         GeneralUtils.definePropertyWithDefaultConfig(obj, name, getFunc, setFunc);
     };
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Waits a specified amount of time before resolving the returned promise.
      *
@@ -139,7 +162,6 @@ class GeneralUtils {
         });
     };
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Convert a Date object to a ISO-8601 date string
      *
@@ -150,7 +172,6 @@ class GeneralUtils {
         return dateformat(date, DATE_FORMAT_ISO8601);
     };
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Convert a Date object to a RFC-1123 date string
      *
@@ -161,7 +182,6 @@ class GeneralUtils {
         return dateformat(date, DATE_FORMAT_RFC1123);
     };
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Convert object(s) to a string
      *
@@ -171,7 +191,7 @@ class GeneralUtils {
     static stringify(...args) {
         return args.map(function (arg) {
             if (typeof arg === 'object') {
-                return JSON.stringify(arg);
+                return GeneralUtils.toJson(arg);
             }
 
             return arg;
@@ -184,6 +204,51 @@ class GeneralUtils {
     static currentTimeMillis() {
         return (new Date).getTime();
     }
+
+    /**
+     * @param value
+     * @return {boolean}
+     */
+    static isString(value) {
+        return typeof value === 'string' || value instanceof String;
+    }
+
+    /**
+     * @param value
+     * @return {boolean}
+     */
+    static isNumber(value) {
+        return typeof value === 'number' || value instanceof Number;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param value
+     * @return {boolean}
+     */
+    static isBoolean(value) {
+        return typeof value === 'boolean' || value instanceof Boolean;
+    }
+
+    /**
+     * @param value
+     * @return {boolean}
+     */
+    static isBuffer(value) {
+        return isBuffer(value);
+    }
+}
+
+/**
+ * @private
+ * @param {Object} to
+ * @param {Object} from
+ * @param {string} fnName
+ */
+function _mixin(to, from, fnName) {
+    to[fnName] = function () {
+        return from[fnName].apply(from, arguments);
+    };
 }
 
 module.exports = GeneralUtils;

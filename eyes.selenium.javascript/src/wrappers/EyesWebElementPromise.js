@@ -1,6 +1,6 @@
 'use strict';
 
-const {WebElement} = require('selenium-webdriver');
+const {WebElementPromise} = require('selenium-webdriver');
 const {CancellableThenable} = require('selenium-webdriver/lib/promise');
 
 const EyesWebElement = require('./EyesWebElement');
@@ -26,18 +26,7 @@ class EyesWebElementPromise extends EyesWebElement {
      * @param {!promise.Thenable<!WebElement>} el A promise that will resolve to the promised element.
      */
     constructor(logger, driver, el) {
-        const webElement = new WebElement(driver.getRemoteWebDriver(), 'unused');
-
-        /**
-         * Defers returning the element ID until the wrapped WebElement has been resolved.
-         * @override
-         */
-        webElement.getId = function() {
-            return el.then(function(el) {
-                return el.getId();
-            });
-        };
-
+        const webElement = new WebElementPromise(driver.getRemoteWebDriver(), el);
         super(logger, driver, webElement);
 
         /**
@@ -45,15 +34,18 @@ class EyesWebElementPromise extends EyesWebElement {
          * @param {(string|Error)=} opt_reason
          * @override
          */
-        this.cancel = function(opt_reason) {
+        this.cancel = function cancel(opt_reason) {
             if (CancellableThenable.isImplementation(el)) {
+                // noinspection JSUnresolvedFunction
                 /** @type {!CancellableThenable} */(el).cancel(opt_reason);
             }
         };
 
+        // noinspection JSUnresolvedVariable
         /** @override */
         this.then = el.then.bind(el);
 
+        // noinspection JSUnresolvedVariable
         /** @override */
         this.catch = el.catch.bind(el);
 

@@ -47,5 +47,3 @@ exports.Eyes = require('./src/Eyes');
 exports.EyesSeleniumUtils = require('./src/EyesSeleniumUtils');
 exports.SeleniumJavaScriptExecutor = require('./src/SeleniumJavaScriptExecutor');
 exports.StitchMode = require('./src/StitchMode');
-
-exports.CoreSDK = require('eyes.sdk');

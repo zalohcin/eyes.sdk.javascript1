@@ -29,6 +29,7 @@ class BatchInfo {
         return this._id;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Sets a unique identifier for the batch. Sessions with batch info which includes the same ID will be grouped together.
      * @param {String} value The batch's ID
@@ -38,6 +39,7 @@ class BatchInfo {
         this._id = value;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * @return The name of the batch or {@code null} if anonymous.
      */
@@ -45,6 +47,7 @@ class BatchInfo {
         return this._name;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Date} The batch start date
      */
@@ -65,7 +68,7 @@ class BatchInfo {
      * @return {String}
      */
     toString() {
-        return `BatchInfo { ${JSON.stringify(this)} }`;
+        return `BatchInfo { ${GeneralUtils.toJson(this)} }`;
     }
 }
 

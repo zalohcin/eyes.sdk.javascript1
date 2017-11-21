@@ -5,6 +5,7 @@ const fs = require("fs");
 const Location = require('../positioning/Location');
 const RectangleSize = require('../positioning/RectangleSize');
 const ImageUtils = require('./ImageUtils');
+const GeneralUtils = require('../GeneralUtils');
 
 const disabled = !fs.open;
 
@@ -73,10 +74,14 @@ function _retrieveImageSize(that) {
 class MutableImage {
 
     /**
-     * @param {Buffer} image Encoded bytes of image
+     * @param {Buffer|String} image Encoded bytes of image (buffer or base64 string)
      * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
      **/
     constructor(image, promiseFactory) {
+        if (GeneralUtils.isString(image)) {
+            image = new Buffer(image, 'base64');
+        }
+
         /** @type {Buffer} */
         this._imageBuffer = image;
         /** @type {PromiseFactory} */
@@ -120,7 +125,6 @@ class MutableImage {
         return this._promiseFactory.resolve();
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Size of the image. Parses the image if necessary
      *
@@ -131,7 +135,6 @@ class MutableImage {
         return new RectangleSize(this._width, this._height);
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * @return {Number}
      */
@@ -140,7 +143,6 @@ class MutableImage {
         return this._width;
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * @return {Number}
      */
@@ -164,7 +166,6 @@ class MutableImage {
         }));
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Scales the image in place (used to downsize by 2 for retina display chrome bug - and tested accordingly).
      *
@@ -190,7 +191,6 @@ class MutableImage {
         });
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Crops the image according to the given region.
      *
@@ -212,7 +212,6 @@ class MutableImage {
         });
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Crops the image according to the given region and return new image, do not override existing
      *
@@ -227,7 +226,6 @@ class MutableImage {
         });
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Rotates the image according to the given degrees.
      *
@@ -275,7 +273,6 @@ class MutableImage {
         });
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Write image to local directory
      *
@@ -287,7 +284,6 @@ class MutableImage {
         return that.getImageBuffer().then(imageBuffer => ImageUtils.saveImage(imageBuffer, filename, that._promiseFactory));
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * @return {?Promise.<Buffer>}
      */
@@ -296,7 +292,6 @@ class MutableImage {
         return _packImage(that).then(() => that._imageBuffer);
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * @return {?Promise.<Buffer>}
      */
@@ -305,7 +300,6 @@ class MutableImage {
         return _packImage(that).then(() => that._imageBuffer.toString('base64'));
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * @return {?Promise.<png.Image>}
      */
@@ -322,15 +316,7 @@ class MutableImage {
     }
 
     /**
-     * @param {String} image64 base64 encoded bytes of image
-     * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
-     * @return {MutableImage}
-     */
-    static fromBase64(image64, promiseFactory) {
-        return new MutableImage(new Buffer(image64, 'base64'), promiseFactory);
-    }
-
-    /**
+     * @constructor
      * @param {int} width
      * @param {int} height
      * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.

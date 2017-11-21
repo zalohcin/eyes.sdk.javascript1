@@ -3,6 +3,10 @@
 const ArgumentGuard = require('../ArgumentGuard');
 
 /**
+ * @typedef {{width: number, height: number}} RectangleSizeObj
+ */
+
+/**
  * Represents a region.
  */
 class RectangleSize {
@@ -15,7 +19,7 @@ class RectangleSize {
      * - (size: RectangleSize): from another instance of RectangleSize
      * - (object: {width: number, height: number}): from object
      *
-     * @param {Number|RectangleSize|{width: number, height: number}} arg1 The width of the rectangle.
+     * @param {Number|RectangleSize|RectangleSizeObj} arg1 The width of the rectangle.
      * @param {Number} [arg2] The height of the rectangle.
      */
     constructor(arg1, arg2) {
@@ -25,7 +29,9 @@ class RectangleSize {
             if (arg1 instanceof RectangleSize) {
                 width = arg1.getWidth();
                 height = arg1.getHeight();
-            } else if (ArgumentGuard.hasProperties(arg1, ['width', 'height'])) {
+            } else if (arg1 instanceof Object) {
+                ArgumentGuard.hasProperties(arg1, ['width', 'height'], 'RectangleSizeObject');
+
                 width = arg1.width;
                 height = arg1.height;
             } else {

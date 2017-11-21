@@ -1,5 +1,7 @@
 'use strict';
 
+const GeneralUtils = require('../GeneralUtils');
+
 /**
  * An application output (title, image, etc).
  */
@@ -14,6 +16,7 @@ class AppOutput {
         this._screenshot64 = screenshot64;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getTitle() {
         return this._title;
     }
@@ -34,7 +37,7 @@ class AppOutput {
      * @return {String}
      */
     toString() {
-        return `AppOutput { ${JSON.stringify(this)} }`;
+        return `AppOutput { ${GeneralUtils.toJson(this)} }`;
     }
 }
 

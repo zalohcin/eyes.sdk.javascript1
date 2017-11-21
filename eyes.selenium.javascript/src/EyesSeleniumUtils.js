@@ -331,11 +331,7 @@ class EyesSeleniumUtils {
      * @return {Promise}
      */
     static setViewportSize(logger, driver, requiredSize) {
-        try {
-            ArgumentGuard.notNull(requiredSize, "requiredSize");
-        } catch (err) {
-            return driver.controlFlow().promise((resolve, reject) => reject(err));
-        }
+        ArgumentGuard.notNull(requiredSize, "requiredSize");
 
         // First we will set the window size to the required size.
         // Then we'll check the viewport size and increase the window size accordingly.

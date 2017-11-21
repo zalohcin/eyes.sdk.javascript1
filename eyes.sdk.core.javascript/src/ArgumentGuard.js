@@ -169,19 +169,18 @@ class ArgumentGuard {
      *
      * @param {Object} object The input object.
      * @param {Array.<String>|String} properties The array of properties to test
+     * @param {String} paramName The input parameter name.
      */
-    static hasProperties(object, properties) {
+    static hasProperties(object, properties, paramName) {
         if (!Array.isArray(properties)) {
             properties = [properties];
         }
 
         for (const property of properties) {
             if (!object.hasOwnProperty(property)) {
-                return false;
+                throw new Error(`IllegalArgument: ${paramName} don't have '${property}' property`);
             }
         }
-
-        return true;
     };
 }
 

@@ -1,5 +1,6 @@
 'use strict';
 
+const GeneralUtils = require('../GeneralUtils');
 const Region = require('./Region');
 
 /**
@@ -23,6 +24,7 @@ class FloatingMatchSettings {
         return this._left;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setLeft(value) {
         this._left = value;
     }
@@ -31,6 +33,7 @@ class FloatingMatchSettings {
         return this._top;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setTop(value) {
         this._top = value;
     }
@@ -39,6 +42,7 @@ class FloatingMatchSettings {
         return this._width;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setWidth(value) {
         this._width = value;
     }
@@ -47,6 +51,7 @@ class FloatingMatchSettings {
         return this._height;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setHeight(value) {
         this._height = value;
     }
@@ -55,6 +60,7 @@ class FloatingMatchSettings {
         return this._maxUpOffset;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setMaxUpOffset(value) {
         this._maxUpOffset = value;
     }
@@ -63,6 +69,7 @@ class FloatingMatchSettings {
         return this._maxDownOffset;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setMaxDownOffset(value) {
         this._maxDownOffset = value;
     }
@@ -71,6 +78,7 @@ class FloatingMatchSettings {
         return this._maxLeftOffset;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setMaxLeftOffset(value) {
         this._maxLeftOffset = value;
     }
@@ -79,6 +87,7 @@ class FloatingMatchSettings {
         return this._maxRightOffset;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setMaxRightOffset(value) {
         this._maxRightOffset = value;
     }
@@ -101,7 +110,7 @@ class FloatingMatchSettings {
     }
 
     toString() {
-        return `FloatingMatchSettings { ${JSON.stringify(this)} }`;
+        return `FloatingMatchSettings { ${GeneralUtils.toJson(this)} }`;
     }
 }
 

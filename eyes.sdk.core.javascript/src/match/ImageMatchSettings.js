@@ -1,5 +1,6 @@
 'use strict';
 
+const GeneralUtils = require('../GeneralUtils');
 const MatchLevel = require('./MatchLevel');
 
 /**
@@ -121,7 +122,7 @@ class ImageMatchSettings {
      * @return {String}
      */
     toString() {
-        return `ImageMatchSettings { ${JSON.stringify(this)} }`;
+        return `ImageMatchSettings { ${GeneralUtils.toJson(this)} }`;
     }
 }
 

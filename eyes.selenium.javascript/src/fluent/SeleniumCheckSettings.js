@@ -1,14 +1,13 @@
 'use strict';
 
 const {By, WebElement} = require('selenium-webdriver');
-const {CheckSettings, Region} = require('eyes.sdk');
+const {GeneralUtils, CheckSettings, Region} = require('eyes.sdk');
 
 const IgnoreRegionBySelector = require('./IgnoreRegionBySelector');
 const IgnoreRegionByElement = require('./IgnoreRegionByElement');
 const FloatingRegionBySelector = require('./FloatingRegionBySelector');
 const FloatingRegionByElement = require('./FloatingRegionByElement');
 const FrameLocator = require('./FrameLocator');
-const EyesWebElement = require('../wrappers/EyesWebElement');
 
 class SeleniumCheckSettings extends CheckSettings {
 
@@ -172,11 +171,11 @@ class SeleniumCheckSettings extends CheckSettings {
         // noinspection IfStatementWithTooManyBranchesJS
         if (Number.isInteger(frame)) {
             fl.setFrameIndex(frame);
-        } else if (typeof frame === 'string' || frame instanceof String) {
+        } else if (GeneralUtils.isString(frame)) {
             fl.setFrameNameOrId(frame);
-        } else if (frame instanceof By) {
+        } else if (frame instanceof By || isProtractorBy(frame)) {
             fl.setFrameSelector(frame);
-        } else if (frame instanceof WebElement || frame instanceof EyesWebElement) {
+        } else if (frame instanceof WebElement) {
             fl.setFrameElement(frame);
         } else {
             throw new TypeError("frame method called with argument of unknown type!");
@@ -193,9 +192,9 @@ class SeleniumCheckSettings extends CheckSettings {
         // noinspection IfStatementWithTooManyBranchesJS
         if (region instanceof Region) {
             super.updateTargetRegion(region);
-        } else if (region instanceof By) {
+        } else if (region instanceof By || isProtractorBy(region)) {
             this._targetSelector = region;
-        } else if (region instanceof WebElement || region instanceof EyesWebElement) {
+        } else if (region instanceof WebElement) {
             this._targetElement = region;
         } else {
             throw new TypeError("region method called with argument of unknown type!");
@@ -212,9 +211,9 @@ class SeleniumCheckSettings extends CheckSettings {
      * @return {SeleniumCheckSettings} This instance of the settings object.
      */
     ignore(regionOrContainer) {
-        if (regionOrContainer instanceof By) {
+        if (regionOrContainer instanceof By || isProtractorBy(regionOrContainer)) {
             this._ignoreRegions.push(new IgnoreRegionBySelector(regionOrContainer));
-        } else if (regionOrContainer instanceof WebElement || regionOrContainer instanceof EyesWebElement) {
+        } else if (regionOrContainer instanceof WebElement) {
             this._ignoreRegions.push(new IgnoreRegionByElement(regionOrContainer));
         } else {
             super.ignore(regionOrContainer);
@@ -250,9 +249,9 @@ class SeleniumCheckSettings extends CheckSettings {
      * @return {SeleniumCheckSettings} This instance of the settings object.
      */
     floating(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
-        if (regionOrContainer instanceof By) {
+        if (regionOrContainer instanceof By || isProtractorBy(regionOrContainer)) {
             this._floatingRegions.push(new FloatingRegionBySelector(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset));
-        } else if (regionOrContainer instanceof WebElement || regionOrContainer instanceof EyesWebElement) {
+        } else if (regionOrContainer instanceof WebElement) {
             this._floatingRegions.push(new FloatingRegionByElement(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset));
         } else {
             super.floating(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset);
@@ -274,6 +273,14 @@ class SeleniumCheckSettings extends CheckSettings {
         super.floatings(maxOffset, ...regionsOrContainers);
         return this;
     }
+}
+
+/**
+ * @private
+ * @return {boolean}
+ */
+function isProtractorBy(value) {
+    return value.hasOwnProperty('using') && value.hasOwnProperty('value');
 }
 
 module.exports = SeleniumCheckSettings;

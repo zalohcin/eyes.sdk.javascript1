@@ -13,8 +13,6 @@ const JS_GET_SCROLL_HEIGHT = "return arguments[0].scrollHeight;";
 
 const JS_GET_OVERFLOW = "return arguments[0].style.overflow;";
 
-const JS_GET_LOCATION = "var rect = arguments[0].getBoundingClientRect(); return [rect.left, rect.top]";
-
 const JS_GET_CLIENT_WIDTH = "return arguments[0].clientWidth;";
 const JS_GET_CLIENT_HEIGHT = "return arguments[0].clientHeight;";
 
@@ -22,7 +20,7 @@ const JS_GET_CLIENT_HEIGHT = "return arguments[0].clientHeight;";
  * @param {String} styleProp
  * @return {String}
  */
-const JS_GET_COMPUTED_STYLE_FORMATTED_STR = (styleProp) => {
+const JS_GET_COMPUTED_STYLE_FORMATTED_STR = function getScript(styleProp) {
     return "var elem = arguments[0], styleProp = '"+ styleProp +"'; " +
         "if (window.getComputedStyle) { " +
         "   return window.getComputedStyle(elem, null).getPropertyValue(styleProp);" +
@@ -38,7 +36,7 @@ const JS_GET_COMPUTED_STYLE_FORMATTED_STR = (styleProp) => {
  * @param {int} scrollTop
  * @return {String}
  */
-const JS_SCROLL_TO_FORMATTED_STR = (scrollLeft, scrollTop) => {
+const JS_SCROLL_TO_FORMATTED_STR = function getScript(scrollLeft, scrollTop) {
     return "arguments[0].scrollLeft = " + scrollLeft + "; " +
         "arguments[0].scrollTop = " + scrollTop + ";";
 };
@@ -47,7 +45,7 @@ const JS_SCROLL_TO_FORMATTED_STR = (scrollLeft, scrollTop) => {
  * @param {String} overflow
  * @return {String}
  */
-const JS_SET_OVERFLOW_FORMATTED_STR = (overflow) => {
+const JS_SET_OVERFLOW_FORMATTED_STR = function getScript(overflow) {
     return "arguments[0].style.overflow = '" + overflow + "'";
 };
 
@@ -63,12 +61,12 @@ class EyesWebElement extends WebElement {
      *
      **/
     constructor(logger, eyesDriver, webElement) {
+        // noinspection JSCheckFunctionSignatures
+        super(eyesDriver.getRemoteWebDriver(), 'unused');
+
         ArgumentGuard.notNull(logger, "logger");
         ArgumentGuard.notNull(eyesDriver, "eyesDriver");
         ArgumentGuard.notNull(webElement, "webElement");
-
-        // noinspection JSCheckFunctionSignatures
-        super(eyesDriver.getRemoteWebDriver(), webElement.getId());
 
         this._logger = logger;
         this._eyesDriver = eyesDriver;
@@ -80,13 +78,13 @@ class EyesWebElement extends WebElement {
      */
     getBounds() {
         const that = this;
-        return that._webElement.getLocation().then(/** @type {{x: number, y: number}} */ location_ => {
+        return that.getLocation().then(/** @type {{x: number, y: number}} */ location_ => {
             let left = location_.x;
             let top = location_.y;
             let width = 0;
             let height = 0;
 
-            return that._webElement.getSize().then(/** @type {{width: number, height: number}} */ size_ => {
+            return that.getSize().then(/** @type {{width: number, height: number}} */ size_ => {
                 width = size_.width;
                 height = size_.height;
             }).catch(err => {
@@ -114,7 +112,7 @@ class EyesWebElement extends WebElement {
      * @return {Promise.<String>} The value of the style property of the element, or {@code null}.
      */
     getComputedStyle(propStyle) {
-        return this._eyesDriver.executeScript(JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle), this._webElement);
+        return this.executeScript(JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle));
     }
 
     /**
@@ -129,42 +127,42 @@ class EyesWebElement extends WebElement {
      * @return {Promise.<int>} The value of the scrollLeft property of the element.
      */
     getScrollLeft() {
-        return this._eyesDriver.executeScript(JS_GET_SCROLL_LEFT, this._webElement).then(result => Math.ceil(parseFloat(result)));
+        return this.executeScript(JS_GET_SCROLL_LEFT).then(result => Math.ceil(parseFloat(result)));
     }
 
     /**
      * @return {Promise.<int>} The value of the scrollTop property of the element.
      */
     getScrollTop() {
-        return this._eyesDriver.executeScript(JS_GET_SCROLL_TOP, this._webElement).then(result => Math.ceil(parseFloat(result)));
+        return this.executeScript(JS_GET_SCROLL_TOP).then(result => Math.ceil(parseFloat(result)));
     }
 
     /**
      * @return {Promise.<int>} The value of the scrollWidth property of the element.
      */
     getScrollWidth() {
-        return this._eyesDriver.executeScript(JS_GET_SCROLL_WIDTH, this._webElement).then(result => Math.ceil(parseFloat(result)));
+        return this.executeScript(JS_GET_SCROLL_WIDTH).then(result => Math.ceil(parseFloat(result)));
     }
 
     /**
      * @return {Promise.<int>} The value of the scrollHeight property of the element.
      */
     getScrollHeight() {
-        return this._eyesDriver.executeScript(JS_GET_SCROLL_HEIGHT, this._webElement).then(result => Math.ceil(parseFloat(result)));
+        return this.executeScript(JS_GET_SCROLL_HEIGHT).then(result => Math.ceil(parseFloat(result)));
     }
 
     /**
      * @return {Promise.<int>}
      */
     getClientWidth() {
-        return this._eyesDriver.executeScript(JS_GET_CLIENT_WIDTH, this._webElement).then(result => Math.ceil(parseFloat(result)));
+        return this.executeScript(JS_GET_CLIENT_WIDTH).then(result => Math.ceil(parseFloat(result)));
     }
 
     /**
      * @return {Promise.<int>}
      */
     getClientHeight() {
-        return this._eyesDriver.executeScript(JS_GET_CLIENT_HEIGHT, this._webElement).then(result => Math.ceil(parseFloat(result)));
+        return this.executeScript(JS_GET_CLIENT_HEIGHT).then(result => Math.ceil(parseFloat(result)));
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -206,14 +204,14 @@ class EyesWebElement extends WebElement {
      * @return {Promise}
      */
     scrollTo(location) {
-        return this._eyesDriver.executeScript(JS_SCROLL_TO_FORMATTED_STR(location.getX(), location.getY()), this._webElement);
+        return this.executeScript(JS_SCROLL_TO_FORMATTED_STR(location.getX(), location.getY()));
     }
 
     /**
      * @return {Promise.<String>} The overflow of the element.
      */
     getOverflow() {
-        return this._eyesDriver.executeScript(JS_GET_OVERFLOW, this._webElement);
+        return this.executeScript(JS_GET_OVERFLOW);
     }
 
     /**
@@ -221,7 +219,16 @@ class EyesWebElement extends WebElement {
      * @return {Promise} The overflow of the element.
      */
     setOverflow(overflow) {
-        return this._eyesDriver.executeScript(JS_SET_OVERFLOW_FORMATTED_STR(overflow), this._webElement);
+        return this.executeScript(JS_SET_OVERFLOW_FORMATTED_STR(overflow));
+    }
+
+    /**
+     * @param {String} script The script to execute with the element as last parameter
+     * @returns {Promise} The result returned from the script
+     */
+    executeScript(script) {
+        // noinspection JSValidateTypes
+        return this._eyesDriver.executeScript(script, this._webElement);
     }
 
     /**
@@ -402,7 +409,7 @@ class EyesWebElement extends WebElement {
     /**
      * @return {WebElement} The original element object
      */
-    getRemoteWebElement() {
+    getWebElement() {
         return this._webElement;
     }
 }

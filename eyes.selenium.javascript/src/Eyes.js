@@ -2,10 +2,9 @@
 
 const {WebDriver} = require('selenium-webdriver');
 const {
-    EyesBase, FixedScaleProviderFactory, NullScaleProvider, RegionProvider, NullRegionProvider,
-    ScaleProviderIdentityFactory, PromiseFactory, ArgumentGuard, SimplePropertyHandler,
-    Logger, CoordinatesType, ContextBasedScaleProviderFactory, TestFailedError,
-    EyesError, UserAgent, ReadOnlyPropertyHandler, Region, Location, RectangleSize
+    EyesBase, FixedScaleProviderFactory, NullScaleProvider, RegionProvider, NullRegionProvider, ContextBasedScaleProviderFactory,
+    ScaleProviderIdentityFactory, ArgumentGuard, SimplePropertyHandler, Logger,CoordinatesType, TestFailedError,
+    EyesError, UserAgent, ReadOnlyPropertyHandler, Region, Location, RectangleSize, FailureReports
 } = require('eyes.sdk');
 
 const ImageProviderFactory = require('./capture/ImageProviderFactory');
@@ -40,12 +39,12 @@ class Eyes extends EyesBase {
     /**
      * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
      *
-     * @param {String} [serverUrl] The Eyes server URL.
-     * @param {Boolean} [isDisabled] Set to true to disable Applitools Eyes and use the webdriver directly.
+     * @param {String} [serverUrl=EyesBase.DEFAULT_EYES_SERVER] The Eyes server URL.
+     * @param {Boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
+     * @param {PromiseFactory} [promiseFactory] If not specified will be created using `Promise` object
      **/
-    constructor(serverUrl = EyesBase.DEFAULT_EYES_SERVER, isDisabled = false) {
-        const promiseFactory = new PromiseFactory();
-        super(promiseFactory, serverUrl, isDisabled);
+    constructor(serverUrl, isDisabled, promiseFactory) {
+        super(serverUrl, isDisabled, promiseFactory);
 
         /** @type {EyesWebDriver} */
         this._driver = undefined;
@@ -295,9 +294,10 @@ class Eyes extends EyesBase {
         const that = this;
         that._flow = driver.controlFlow();
         // Set PromiseFactory to work with the protractor control flow and promises
-        that.getPromiseFactory().setFactoryMethods(asyncAction => that._flow.execute(() => {
-            return new Promise(asyncAction);
-        }), null);
+        const promiseFn = that.getPromiseFactory().getFactoryMethod();
+        that.getPromiseFactory().setFactoryMethod(asyncAction => that._flow.execute(() => {
+            return promiseFn(asyncAction);
+        }));
 
         if (this.getIsDisabled()) {
             this._logger.verbose("Ignored");
@@ -403,6 +403,7 @@ class Eyes extends EyesBase {
                                 switchedToFrameCount--;
 
                                 const CustomRegionProvider = class extends RegionProvider {
+                                    // noinspection JSUnusedGlobalSymbols
                                     /** @override */
                                     getRegion() {
                                         return element.getLocation().then(point => {
@@ -501,6 +502,7 @@ class Eyes extends EyesBase {
         this._logger.verbose("checkFullFrameOrElement()");
 
         const CustomRegionProvider = class extends RegionProvider {
+            // noinspection JSUnusedGlobalSymbols
             /** @override */
             getRegion () {
                 if (that._checkFrameOrElement) {
@@ -931,16 +933,18 @@ class Eyes extends EyesBase {
      * @protected
      * @override
      */
-    setViewportSize(size) {
+    setViewportSize(viewportSize) {
         if (this._viewportSizeHandler instanceof ReadOnlyPropertyHandler) {
             this._logger.verbose("Ignored (viewport size given explicitly)");
             return;
         }
 
+        ArgumentGuard.notNull(viewportSize, "viewportSize");
+
         const that = this;
         const originalFrame = this._driver.getFrameChain();
         return this._driver.switchTo().defaultContent().then(() => {
-            return EyesSeleniumUtils.setViewportSize(that._logger, that._driver, size).catch(err => {
+            return EyesSeleniumUtils.setViewportSize(that._logger, that._driver, new RectangleSize(viewportSize)).catch(err => {
                 // Just in case the user catches that error
                 return that._driver.switchTo().frames(originalFrame).then(() => {
                     throw new TestFailedError("Failed to set the viewport size", err);
@@ -949,7 +953,7 @@ class Eyes extends EyesBase {
         }).then(() => {
             return that._driver.switchTo().frames(originalFrame);
         }).then(() => {
-            that._viewportSizeHandler.set(new RectangleSize(size));
+            that._viewportSizeHandler.set(new RectangleSize(viewportSize));
         });
     }
 
@@ -970,12 +974,14 @@ class Eyes extends EyesBase {
      * Set the viewport size using the driver. Call this method if for some reason you don't want to call {@link #open(WebDriver, String, String)} (or one of its variants) yet.
      *
      * @param {EyesWebDriver} driver The driver to use for setting the viewport.
-     * @param {RectangleSize} size The required viewport size.
+     * @param {RectangleSize} viewportSize The required viewport size.
      * @return {Promise}
      */
-    static setViewportSize(driver, size) {
+    static setViewportSize(driver, viewportSize) {
         ArgumentGuard.notNull(driver, "driver");
-        return EyesSeleniumUtils.setViewportSize(new Logger(), driver, size);
+        ArgumentGuard.notNull(viewportSize, "viewportSize");
+
+        return EyesSeleniumUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize));
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -1084,6 +1090,7 @@ class Eyes extends EyesBase {
         });
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @override */
     getTitle() {
         const that = this;
@@ -1098,6 +1105,7 @@ class Eyes extends EyesBase {
         return this.getPromiseFactory().resolve("");
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @override */
     getInferredEnvironment() {
         return this._driver.getUserAgent().then(userAgent => "useragent:" + userAgent).catch(() => null);
@@ -1160,12 +1168,12 @@ class Eyes extends EyesBase {
     //noinspection JSUnusedGlobalSymbols
     /**
      * Set the failure report.
-     * @param mode Use one of the values in EyesBase.FailureReport.
+     * @param {FailureReports} mode Use one of the values in FailureReports.
      */
     setFailureReport(mode) {
-        if (mode === EyesBase.FailureReport.Immediate) {
+        if (mode === FailureReports.IMMEDIATE) {
             this._failureReportOverridden = true;
-            mode = EyesBase.FailureReport.OnClose;
+            mode = FailureReports.ON_CLOSE;
         }
 
         super.setFailureReport(mode);

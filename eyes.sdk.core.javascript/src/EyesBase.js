@@ -35,7 +35,6 @@ const ImageMatchSettings = require('./match/ImageMatchSettings');
 const MatchWindowData = require('./match/MatchWindowData');
 
 const DiffsFoundError = require('./errors/DiffsFoundError');
-const EyesError = require('./errors/EyesError');
 const NewTestError = require('./errors/NewTestError');
 const OutOfBoundsError = require('./errors/OutOfBoundsError');
 const TestFailedError = require('./errors/TestFailedError');
@@ -55,6 +54,7 @@ const ServerConnector = require('./server/ServerConnector');
 const MatchWindowTask = require('./MatchWindowTask');
 const SessionEventHandler = require('./SessionEventHandler');
 const BatchInfo = require('./BatchInfo');
+const PromiseFactory = require('./PromiseFactory');
 const TestResults = require('./server/TestResults');
 
 const DEFAULT_MATCH_TIMEOUT = 2000;
@@ -69,11 +69,11 @@ class EyesBase {
     /**
      * Creates a new {@code EyesBase}instance that interacts with the Eyes Server at the specified url.
      *
-     * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
-     * @param {String} serverUrl The Eyes server URL.
+     * @param {String} [serverUrl] The Eyes server URL.
      * @param {Boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method will immediately return without performing any action.
+     * @param {PromiseFactory} [promiseFactory] An object which will be used for creating deferreds/promises.
      **/
-    constructor(promiseFactory, serverUrl, isDisabled = false) {
+    constructor(serverUrl = EyesBase.DEFAULT_EYES_SERVER, isDisabled = false, promiseFactory = new PromiseFactory(asyncAction => new Promise(asyncAction))) {
         /** @type {Boolean} */
         this._isDisabled = isDisabled;
 
@@ -804,7 +804,7 @@ class EyesBase {
                         if (throwEx) {
                             that._finallyClose();
                             const message = `'${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}'. ${instructions}`;
-                            return that._promiseFactory.reject(new NewTestError(results, message));
+                            return reject(new NewTestError(results, message));
                         }
                         return resolve(results);
                     } else {
@@ -814,7 +814,7 @@ class EyesBase {
                         if (throwEx) {
                             that._finallyClose();
                             const message = `Test '${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()} detected differences!'. ${instructions}`;
-                            return that._promiseFactory.reject(new DiffsFoundError(results, message));
+                            return reject(new DiffsFoundError(results, message));
                         }
                         return resolve(results);
                     }
@@ -825,14 +825,14 @@ class EyesBase {
                     if (throwEx) {
                         that._finallyClose();
                         const message = `'${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}'. ${instructions}`;
-                        return that._promiseFactory.reject(new TestFailedError(results, message));
+                        return reject(new TestFailedError(results, message));
                     }
                     return resolve(results);
                 } else {
                     that._logger.log(`--- Test passed. See details at ${sessionResultsUrl}`);
                     return resolve(results);
                 }
-            }, err => {
+            }).catch(err => {
                 serverResults = null;
                 that._logger.log(err);
                 return reject(err);
@@ -1047,12 +1047,8 @@ class EyesBase {
             return this._promiseFactory.resolve(result);
         }
 
-        try {
-            ArgumentGuard.isValidState(this._isOpen, "Eyes not open");
-            ArgumentGuard.notNull(regionProvider, "regionProvider");
-        } catch (err) {
-            return this._promiseFactory.reject(err);
-        }
+        ArgumentGuard.isValidState(this._isOpen, "Eyes not open");
+        ArgumentGuard.notNull(regionProvider, "regionProvider");
 
         const validationInfo = new SessionEventHandler.ValidationInfo();
         // noinspection IncrementDecrementResultUsedJS
@@ -1107,11 +1103,7 @@ class EyesBase {
             return this._promiseFactory.resolve(result);
         }
 
-        try {
-            ArgumentGuard.isValidState(this._isOpen, "Eyes not open");
-        } catch (err) {
-            return this._promiseFactory.reject(err);
-        }
+        ArgumentGuard.isValidState(this._isOpen, "Eyes not open");
 
         this._logger.verbose("EyesBase.replaceWindow - calling serverConnector.replaceWindow");
 
@@ -1236,7 +1228,7 @@ class EyesBase {
     openBase(appName, testName, viewportSize, sessionType) {
         this._logger.getLogHandler().open();
 
-        viewportSize = new RectangleSize(viewportSize);
+        if (viewportSize) { viewportSize = new RectangleSize(viewportSize); }
 
         try {
             if (this._isDisabled) {

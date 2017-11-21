@@ -1,7 +1,6 @@
 'use strict';
 
 const by = require('selenium-webdriver/lib/by');
-const command = require('selenium-webdriver/lib/command');
 const {IWebDriver} = require('selenium-webdriver/lib/webdriver');
 const {ArgumentGuard, MutableImage} = require('eyes.sdk');
 
@@ -60,7 +59,8 @@ class EyesWebDriver extends IWebDriver {
      * @return {WebDriver}
      */
     getRemoteWebDriver() {
-        return this._driver;
+        // noinspection JSUnresolvedVariable
+        return this._driver.driver || this._driver;
     }
 
     /** @override */
@@ -181,24 +181,14 @@ class EyesWebDriver extends IWebDriver {
      * @return {EyesWebElementPromise} A promise that will resolve to a EyesWebElement.
      */
     findElement(locator) {
-        let id;
-        locator = by.checkedLocator(locator);
-        if (typeof locator === 'function') {
-            // noinspection JSAccessibilityCheck
-            id = this._driver.findElementInternal_(locator, this._driver);
-        } else {
-            // noinspection JSUnresolvedVariable
-            let cmd = new command.Command(command.Name.FIND_ELEMENT).setParameter('using', locator.using).setParameter('value', locator.value);
-            // noinspection JSCheckFunctionSignatures
-            id = this.schedule(cmd, 'WebDriver.findElement(' + locator + ')');
-        }
-        return new EyesWebElementPromise(this._logger, this, id);
+        return new EyesWebElementPromise(this._logger, this, this._driver.findElement(locator));
     }
 
     // noinspection JSCheckFunctionSignatures
     /**
      * @override
-     * @return {!Promise.<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
+     * @param {!(by.By|By|Function)} locator The locator strategy to use when searching for the element.
+     * @return {!Promise.<!Array<!EyesWebElement>>} A promise that will be resolved to an array of the located {@link EyesWebElement}s.
      */
     findElements(locator) {
         const that = this;
@@ -216,7 +206,7 @@ class EyesWebDriver extends IWebDriver {
         // Get the image as base64.
         // noinspection JSValidateTypes
         return this._driver.takeScreenshot().then(screenshot64 => {
-            const screenshot = MutableImage.fromBase64(screenshot64, that.getPromiseFactory());
+            const screenshot = new MutableImage(screenshot64, that.getPromiseFactory());
             return EyesWebDriver.normalizeRotation(that._logger, that._driver, screenshot, that._rotation, that.getPromiseFactory());
         }).then(screenshot => {
             return screenshot.getImageBase64();
@@ -486,8 +476,8 @@ class EyesWebDriver extends IWebDriver {
         });
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
-     *
      * @return {Promise.<String>} A copy of the current frame chain.
      */
     getSessionId() {
@@ -498,7 +488,7 @@ class EyesWebDriver extends IWebDriver {
      * Rotates the image as necessary. The rotation is either manually forced by passing a non-null ImageRotation, or automatically inferred.
      *
      * @param {Logger} logger The underlying driver which produced the screenshot.
-     * @param {WebDriver} driver The underlying driver which produced the screenshot.
+     * @param {IWebDriver} driver The underlying driver which produced the screenshot.
      * @param {MutableImage} image The image to normalize.
      * @param {ImageRotation} rotation The degrees by which to rotate the image:
      *                 positive values = clockwise rotation,

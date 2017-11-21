@@ -1,6 +1,6 @@
 'use strict';
 
-const {ArgumentGuard, EyesBase, RegionProvider, MutableImage, PromiseFactory, RectangleSize, NullRegionProvider, CheckSettings} = require('eyes.sdk');
+const {ArgumentGuard, GeneralUtils, EyesBase, RegionProvider, MutableImage, RectangleSize, NullRegionProvider, CheckSettings} = require('eyes.sdk');
 const EyesImagesScreenshot = require('./EyesImagesScreenshot');
 
 const VERSION = require('../package.json').version;
@@ -13,17 +13,11 @@ class Eyes extends EyesBase {
     /**
      * Initializes an Eyes instance.
      *
-     * @param {String} [serverUrl]
-     * @param {PromiseFactory} [promiseFactory] If not specified will be created using `Promise` class
+     * @param {String} [serverUrl=EyesBase.DEFAULT_EYES_SERVER] The Eyes server URL.
+     * @param {PromiseFactory} [promiseFactory] If not specified will be created using `Promise` object
      **/
     constructor(serverUrl, promiseFactory) {
-        if (!promiseFactory) {
-            promiseFactory = new PromiseFactory((asyncAction) => {
-                return new Promise(asyncAction);
-            }, null);
-        }
-
-        super(promiseFactory, serverUrl || EyesBase.DEFAULT_EYES_SERVER);
+        super(serverUrl, promiseFactory);
 
         this._title = undefined;
         this._screenshot = undefined;
@@ -65,11 +59,7 @@ class Eyes extends EyesBase {
             return this._promiseFactory.resolve(false);
         }
 
-        try {
-            ArgumentGuard.notNull(image, "image cannot be null!");
-        } catch (err) {
-            return this._promiseFactory.resolve(new Error(err));
-        }
+        ArgumentGuard.notNull(image, "image cannot be null!");
 
         this._logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
         return this._checkImage(new NullRegionProvider(this.getPromiseFactory()), image, tag, ignoreMismatch, retryTimeout);
@@ -94,12 +84,8 @@ class Eyes extends EyesBase {
             return this._promiseFactory.resolve(false);
         }
 
-        try {
-            ArgumentGuard.notNull(image, "image cannot be null!");
-            ArgumentGuard.notNull(region, "region cannot be null!");
-        } catch (err) {
-            return this._promiseFactory.resolve(new Error(err));
-        }
+        ArgumentGuard.notNull(image, "image cannot be null!");
+        ArgumentGuard.notNull(region, "region cannot be null!");
 
         this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
         return this._checkImage(new RegionProvider(region, this.getPromiseFactory()), image, tag, ignoreMismatch, retryTimeout);
@@ -123,12 +109,8 @@ class Eyes extends EyesBase {
             return this._promiseFactory.resolve(false);
         }
 
-        try {
-            ArgumentGuard.notNull(image, "image cannot be null!");
-            ArgumentGuard.notNull(stepIndex, "stepIndex cannot be null!");
-        } catch (err) {
-            return this._promiseFactory.resolve(new Error(err));
-        }
+        ArgumentGuard.notNull(image, "image cannot be null!");
+        ArgumentGuard.notNull(stepIndex, "stepIndex cannot be null!");
 
         image = this._normalizeImageType(image);
 
@@ -185,17 +167,13 @@ class Eyes extends EyesBase {
     /**
      * Set the viewport size.
      *
-     * @param {RectangleSize} size The required viewport size.
+     * @param {RectangleSize} viewportSize The required viewport size.
      * @return {Promise<void>}
      */
-    setViewportSize(size) {
-        try {
-            ArgumentGuard.notNull(size, "size");
-        } catch (err) {
-            return this._promiseFactory.resolve(new Error(err));
-        }
+    setViewportSize(viewportSize) {
+        ArgumentGuard.notNull(viewportSize, "size");
 
-        this._viewportSizeHandler.set(new RectangleSize(size));
+        this._viewportSizeHandler.set(new RectangleSize(viewportSize));
         return this._promiseFactory.resolve();
     }
 
@@ -275,10 +253,8 @@ class Eyes extends EyesBase {
     _normalizeImageType(image) {
         if (image instanceof MutableImage) {
             return image;
-        } else if (Buffer.isBuffer(image)) {
+        } else if (GeneralUtils.isBuffer(image) || GeneralUtils.isString(image)) {
             return new MutableImage(image, this._promiseFactory);
-        } else if (typeof image === 'string' || image instanceof String) {
-            return MutableImage.fromBase64(image, this._promiseFactory);
         }
 
         throw new TypeError("unsupported type of image!");

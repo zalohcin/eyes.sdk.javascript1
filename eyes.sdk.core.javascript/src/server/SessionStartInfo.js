@@ -1,5 +1,6 @@
 'use strict';
 
+const GeneralUtils = require('../GeneralUtils');
 const ArgumentGuard = require('../ArgumentGuard');
 
 /**
@@ -46,66 +47,79 @@ class SessionStartInfo {
         this._properties = properties;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {String} */
     getAgentId() {
         return this._agentId;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {SessionType} */
     getSessionType() {
         return this._sessionType;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {String} */
     getAppIdOrName() {
         return this._appIdOrName;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {String} */
     getVerId() {
         return this._verId;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {String} */
     getScenarioIdOrName() {
         return this._scenarioIdOrName;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {BatchInfo} */
     getBatchInfo() {
         return this._batchInfo;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {String} */
     getBaselineEnvName() {
         return this._baselineEnvName;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {String} */
     getEnvironmentName() {
         return this._environmentName;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {AppEnvironment} */
     getEnvironment() {
         return this._environment;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {ImageMatchSettings} */
     getDefaultMatchSettings() {
         return this._defaultMatchSettings;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {String} */
     getBranchName() {
         return this._branchName;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {String} */
     getParentBranchName() {
         return this._parentBranchName;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /** @return {PropertyData[]} */
     getProperties() {
         return this._properties;
@@ -130,7 +144,7 @@ class SessionStartInfo {
     }
 
     toString() {
-        return `SessionStartInfo { ${JSON.stringify(this)} }`;
+        return `SessionStartInfo { ${GeneralUtils.toJson(this)} }`;
     }
 }
 

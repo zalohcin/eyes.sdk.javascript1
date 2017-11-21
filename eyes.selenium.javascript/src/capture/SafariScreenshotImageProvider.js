@@ -33,7 +33,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
         this._logger.verbose("Getting screenshot as base64...");
         return this._executor.takeScreenshot().then(screenshot64 => {
             that._logger.verbose("Done getting base64! Creating MutableImage...");
-            const image = MutableImage.fromBase64(screenshot64, that._promiseFactory);
+            const image = new MutableImage(screenshot64, that._promiseFactory);
 
             return that._executor.getDebugScreenshotsProvider().save(image, "SAFARI").then(() => {
                 if (!that._executor.getForceFullPageScreenshot()) {

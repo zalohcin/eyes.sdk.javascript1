@@ -1,5 +1,7 @@
 'use strict';
 
+const GeneralUtils = require('../GeneralUtils');
+
 /**
  * Encapsulates data for the session currently running in the agent.
  */
@@ -23,6 +25,7 @@ class RunningSession {
         return this.id;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setId(value) {
         this.id = value;
     }
@@ -31,6 +34,7 @@ class RunningSession {
         return this.url;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     setUrl(value) {
         this.url = value;
     }
@@ -48,7 +52,7 @@ class RunningSession {
      * @return {String}
      */
     toString() {
-        return `RunningSession { ${JSON.stringify(this)} }`;
+        return `RunningSession { ${GeneralUtils.toJson(this)} }`;
     }
 }
 

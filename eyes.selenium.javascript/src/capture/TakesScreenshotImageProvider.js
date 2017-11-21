@@ -30,7 +30,7 @@ class TakesScreenshotImageProvider extends ImageProvider {
         const that = this;
         return this._executor.takeScreenshot().then(screenshot64 => {
             that._logger.verbose("Done getting base64! Creating MutableImage...");
-            return MutableImage.fromBase64(screenshot64, that._promiseFactory);
+            return new MutableImage(screenshot64, that._promiseFactory);
         });
     }
 }

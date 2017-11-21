@@ -1,34 +1,33 @@
 'use strict';
 
 /**
- * After initialization, provides factory methods for creating deferreds/promises.
+ * After initialization, provides factory methods for creating promises.
  */
 class PromiseFactory {
 
     /**
-     * @param {function} promiseFactoryFunc A function which receives as a parameter
-     *                   the same function you would pass to a Promise constructor.
-     * @param {function} deferredFactoryFunc A function which returns a deferred.
+     * @param {function} promiseFactoryFunc A function which receives as a parameter the same function you would pass to a Promise constructor.
      */
-    constructor(promiseFactoryFunc, deferredFactoryFunc) {
+    constructor(promiseFactoryFunc) {
         this._promiseFactoryFunc = promiseFactoryFunc;
-        this._deferredFactoryFunc = deferredFactoryFunc;
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
-     * Sets the factory methods which will be used to create promises and deferred-s.
+     * Sets the factory method which will be used to create promises.
      *
-     * @param {function} promiseFactoryFunc A function which receives as a parameter
-     *                   the same function you would pass to a Promise constructor.
-     * @param {function} deferredFactoryFunc A function which returns a deferred.
+     * @param {function} promiseFactoryFunc A function which receives as a parameter the same function you would pass to a Promise constructor.
      */
-    setFactoryMethods(promiseFactoryFunc, deferredFactoryFunc) {
+    setFactoryMethod(promiseFactoryFunc) {
         this._promiseFactoryFunc = promiseFactoryFunc;
-        this._deferredFactoryFunc = deferredFactoryFunc;
     }
 
-    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {function} A function which receives as a parameter the same function you would pass to a Promise constructor.
+     */
+    getFactoryMethod() {
+        return this._promiseFactoryFunc;
+    }
+
     /**
      * The Promise object represents the eventual completion (or failure) of an asynchronous operation, and its resulting value.
      *
@@ -69,7 +68,6 @@ class PromiseFactory {
         });
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * The method returns a promise that resolves or rejects as soon as one of the promises in the iterable resolves or rejects, with the value or reason from that promise.
      *
@@ -85,7 +83,6 @@ class PromiseFactory {
         });
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * The method returns a single Promise that resolves when all of the promises in the iterable argument have resolved or when the iterable argument contains no promises.
      * It rejects with the reason of the first promise that rejects.
@@ -120,19 +117,6 @@ class PromiseFactory {
                 resolveFn(args[i], i);
             }
         });
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * @deprecated
-     * @return {*}
-     */
-    makeDeferred() {
-        if (this._deferredFactoryFunc) {
-            return this._deferredFactoryFunc();
-        }
-
-        throw new Error('Promise factory was not initialized with proper callback');
     }
 }
 

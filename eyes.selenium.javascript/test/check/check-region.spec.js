@@ -1,11 +1,11 @@
-const {Builder, By} = require('selenium-webdriver');
-const {ConsoleLogHandler, RectangleSize, Region} = require('eyes.sdk');
-const {Eyes, Target} = require('../index');
+const { Builder, By } = require('selenium-webdriver');
+const { ConsoleLogHandler, RectangleSize, Region } = require('eyes.sdk');
+const { Eyes, Target } = require('../../index');
 
 let driver = null, eyes = null;
 describe('Eyes.Selenium.JavaScript - check region', () => {
 
-    before(function() {
+    before(function () {
         driver = new Builder()
             .forBrowser('chrome')
             .usingServer('http://localhost:4444/wd/hub')
@@ -16,7 +16,7 @@ describe('Eyes.Selenium.JavaScript - check region', () => {
         eyes.setLogHandler(new ConsoleLogHandler(true));
     });
 
-    it("test check region methods", function() {
+    it("test check region methods", function () {
         return eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(800, 560)).then(driver => {
             driver.get('https://astappev.github.io/test-html-pages/');
 
@@ -45,7 +45,7 @@ describe('Eyes.Selenium.JavaScript - check region', () => {
         });
     });
 
-    afterEach(function() {
+    afterEach(function () {
         return driver.quit().then(() => eyes.abortIfNotClosed());
     });
 });

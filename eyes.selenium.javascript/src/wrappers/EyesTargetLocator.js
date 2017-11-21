@@ -2,7 +2,7 @@
 
 const command = require('selenium-webdriver/lib/command');
 const {TargetLocator} = require('selenium-webdriver/lib/webdriver');
-const {Location, RectangleSize, ArgumentGuard} = require('eyes.sdk');
+const {Location, RectangleSize, ArgumentGuard, GeneralUtils} = require('eyes.sdk');
 
 const Frame = require('../frames/Frame');
 const FrameChain = require('../frames/FrameChain');
@@ -51,51 +51,53 @@ class EyesTargetLocator extends TargetLocator {
      *   is the same as calling {@link #defaultContent defaultContent()}.
      *
      * @override
-     * @param {number|string|WebElement|null} locator The frame locator.
+     * @param {number|string|WebElement|null} arg1 The frame locator.
      * @return {Promise.<EyesWebDriver>}
      */
-    frame(locator) {
+    frame(arg1) {
         const that = this;
-        if (!locator) {
+        if (!arg1) {
             that._logger.verbose("EyesTargetLocator.frame(null)");
             return that.defaultContent();
         }
 
-        if (Number.isInteger(locator)) {
-            that._logger.verbose(`EyesTargetLocator.frame(${locator})`);
+        if (Number.isInteger(arg1)) {
+            const frameIndex = arg1;
+            that._logger.verbose(`EyesTargetLocator.frame(${frameIndex})`);
             // Finding the target element so and reporting it using onWillSwitch.
             that._logger.verbose("Getting frames list...");
             return that._driver.findElementsByCssSelector("frame, iframe").then(frames => {
-                if (locator > frames.length) {
-                    throw new TypeError(`Frame index [${locator}] is invalid!`);
+                if (frameIndex > frames.length) {
+                    throw new TypeError(`Frame index [${frameIndex}] is invalid!`);
                 }
 
                 that._logger.verbose("Done! getting the specific frame...");
                 that._logger.verbose("Done! Making preparations...");
-                return that.willSwitchToFrame(EyesTargetLocator.TargetType.FRAME, frames[locator]);
+                return that.willSwitchToFrame(EyesTargetLocator.TargetType.FRAME, frames[frameIndex]);
             }).then(() => {
                 that._logger.verbose("Done! Switching to frame...");
-                return that._targetLocator.frame(locator);
+                return that._targetLocator.frame(frameIndex);
             }).then(() => {
                 that._logger.verbose("Done!");
                 return that._driver;
             });
         }
 
-        if (typeof locator === 'string' || locator instanceof String) {
-            that._logger.verbose(`EyesTargetLocator.frame(${locator})`);
+        if (GeneralUtils.isString(arg1)) {
+            const frameNameOrId = arg1;
+            that._logger.verbose(`EyesTargetLocator.frame(${frameNameOrId})`);
             // Finding the target element so we can report it.
             // We use find elements(plural) to avoid exception when the element is not found.
             that._logger.verbose("Getting frames by name...");
             let frames;
-            return that._driver.findElementsByName(locator).then(framesByName => {
+            return that._driver.findElementsByName(frameNameOrId).then(framesByName => {
                 if (framesByName.length === 0) {
                     that._logger.verbose("No frames Found! Trying by id...");
                     // If there are no frames by that name, we'll try the id
-                    return that._driver.findElementsById(locator).then(framesById => {
+                    return that._driver.findElementsById(frameNameOrId).then(framesById => {
                         if (framesById.length === 0) {
                             // No such frame, bummer
-                            throw new TypeError(`No frame with name or id '${locator}' exists!`);
+                            throw new TypeError(`No frame with name or id '${frameNameOrId}' exists!`);
                         }
                         return framesById;
                     });
@@ -107,18 +109,26 @@ class EyesTargetLocator extends TargetLocator {
                 return that.willSwitchToFrame(EyesTargetLocator.TargetType.FRAME, frames[0]);
             }).then(() => {
                 that._logger.verbose("Done! Switching to frame...");
-                return that._targetLocator.frame(frames[0]);
+                let frameElement = frames[0];
+                if (frameElement instanceof EyesWebElement) {
+                    frameElement = frameElement.getWebElement();
+                }
+                return that._targetLocator.frame(frameElement);
             }).then(() => {
                 that._logger.verbose("Done!");
                 return that._driver;
             });
         }
 
+        let frameElement = arg1;
         that._logger.verbose("EyesTargetLocator.frame(element)");
         that._logger.verbose("Making preparations..");
-        return that.willSwitchToFrame(EyesTargetLocator.TargetType.FRAME, locator).then(() => {
+        return that.willSwitchToFrame(EyesTargetLocator.TargetType.FRAME, frameElement).then(() => {
             that._logger.verbose("Done! Switching to frame...");
-            return that._targetLocator.frame(locator);
+            if (frameElement instanceof EyesWebElement) {
+                frameElement = frameElement.getWebElement();
+            }
+            return that._targetLocator.frame(frameElement);
         }).then(() => {
             that._logger.verbose("Done!");
             return that._driver;

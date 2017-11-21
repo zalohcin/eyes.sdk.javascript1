@@ -1,5 +1,7 @@
 'use strict';
 
+const GeneralUtils = require('./GeneralUtils');
+
 /**
  * The environment in which the application under test is executing.
  */
@@ -19,6 +21,7 @@ class AppEnvironment {
         this._displaySize = displaySize;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Creates a new AppEnvironment instance.
      *
@@ -31,6 +34,7 @@ class AppEnvironment {
         return env;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Gets the information inferred from the execution environment or {@code null} if no information could be inferred.
      *
@@ -67,6 +71,7 @@ class AppEnvironment {
         this._hostOS = value;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Gets the application hosting the application under test or {@code null} if unknown.
      *
@@ -85,6 +90,7 @@ class AppEnvironment {
         this._hostApp = value;
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Gets the display size of the application or {@code null} if unknown.
      *
@@ -117,7 +123,7 @@ class AppEnvironment {
      * @return {String}
      */
     toString() {
-        return `AppEnvironment { ${JSON.stringify(this)} }`;
+        return `AppEnvironment { ${GeneralUtils.toJson(this)} }`;
     }
 }
 
