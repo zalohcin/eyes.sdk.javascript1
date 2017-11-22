@@ -40,3 +40,4 @@ yarn.lock
 tests
 
 dist/*
+eyes-browser.js

@@ -1,34 +1,39 @@
 {
-    "name": "eyes.sdk",
-    "version": "0.0.63",
-    "description": "Applitools Eyes SDK For JavaScript",
-    "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
-    "keywords": [
-        "Test Automation",
-        "Visual Regression",
-        "tests",
-        "SDK",
-        "Applitools",
-        "Eyes",
-        "automation",
-        "testing"
-    ],
-    "homepage": "http://www.applitools.com/",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/applitools/Eyes.Sdk.JavaScript.git"
-    },
-    "license": "Apache-2.0",
-    "main": "index",
-    "dependencies": {
-        "request": "^2.81.0",
-        "winston": "*",
-        "eyes.utils": "0.0.25"
-    },
-    "browser": {
-        "./src/FileLogHandler": false
-    },
-    "engines": {
-        "node": ">= 6.9.0"
-    }
+  "name": "eyes.sdk",
+  "version": "1.0.0",
+  "description": "Applitools Eyes SDK For JavaScript",
+  "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
+  "keywords": [
+    "Test Automation",
+    "Visual Regression",
+    "tests",
+    "SDK",
+    "Applitools",
+    "Eyes",
+    "automation",
+    "testing"
+  ],
+  "homepage": "http://www.applitools.com/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/applitools/Eyes.Sdk.JavaScript.git"
+  },
+  "license": "Apache-2.0",
+  "main": "index",
+  "dependencies": {
+    "dateformat": "^3.0.0",
+    "stack-trace": "^0.0.10",
+    "is-buffer": "^1.1.6",
+    "png-async": "^0.9.2",
+    "axios": "^0.17.1"
+  },
+  "devDependencies": {
+    "mocha": "^4.0.0"
+  },
+  "scripts": {
+    "test": "mocha ./test/**/*.spec.js"
+  },
+  "engines": {
+    "node": ">= 6.9.0"
+  }
 }

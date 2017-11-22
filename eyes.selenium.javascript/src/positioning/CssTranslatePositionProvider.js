@@ -1,0 +1,96 @@
+'use strict';
+
+const {PositionProvider, ArgumentGuard} = require('eyes.sdk');
+
+const EyesSeleniumUtils = require('../EyesSeleniumUtils');
+const CssTranslatePositionMemento = require('./CssTranslatePositionMemento');
+
+/**
+ * A {@link PositionProvider} which is based on CSS translates. This is
+ * useful when we want to stitch a page which contains fixed position elements.
+ */
+class CssTranslatePositionProvider extends PositionProvider {
+
+    /**
+     * @param {Logger} logger A Logger instance.
+     * @param {SeleniumJavaScriptExecutor} executor
+     * @param {PromiseFactory} promiseFactory
+     */
+    constructor(logger, executor, promiseFactory) {
+        super();
+        ArgumentGuard.notNull(logger, "logger");
+        ArgumentGuard.notNull(executor, "executor");
+        ArgumentGuard.notNull(promiseFactory, "promiseFactory");
+
+        this._logger = logger;
+        this._executor = executor;
+        this._promiseFactory = promiseFactory;
+        this._lastSetPosition = undefined;
+
+        this._logger.verbose("creating CssTranslatePositionProvider");
+    }
+
+    /**
+     * @override
+     * @inheritDoc
+     */
+    getCurrentPosition() {
+        this._logger.verbose("position to return: ", this._lastSetPosition);
+        return this._promiseFactory.resolve(this._lastSetPosition);
+    }
+
+    /**
+     * @override
+     * @inheritDoc
+     */
+    setPosition(location) {
+        ArgumentGuard.notNull(location, "location");
+
+        const that = this;
+        this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`);
+        return EyesSeleniumUtils.translateTo(this._executor, location).then(() => {
+            that._logger.verbose("Done!");
+            that._lastSetPosition = location;
+        });
+    }
+
+    /**
+     * @override
+     * @inheritDoc
+     */
+    getEntireSize() {
+        const that = this;
+        return EyesSeleniumUtils.getCurrentFrameContentEntireSize(this._executor).then(entireSize => {
+            that._logger.verbose(`CssTranslatePositionProvider - Entire size: ${entireSize}`);
+            return entireSize;
+        });
+    }
+
+    /**
+     * @override
+     * @return {Promise.<CssTranslatePositionMemento>}
+     */
+    getState() {
+        const that = this;
+        return EyesSeleniumUtils.getCurrentTransform(this._executor).then(transforms => {
+            that._logger.verbose("Current transform", transforms);
+            return new CssTranslatePositionMemento(transforms);
+        });
+    }
+
+    // noinspection JSCheckFunctionSignatures
+    /**
+     * @override
+     * @param {CssTranslatePositionMemento} state The initial state of position
+     * @return {Promise}
+     */
+    restoreState(state) {
+        const that = this;
+        /** @type {CssTranslatePositionMemento} state */
+        return EyesSeleniumUtils.setTransforms(this._executor, state.getTransform()).then(() => {
+            that._logger.verbose("Transform (position) restored.");
+        });
+    }
+}
+
+module.exports = CssTranslatePositionProvider;

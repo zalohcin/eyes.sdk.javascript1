@@ -1,0 +1,41 @@
+{
+  "name": "eyes.protractor",
+  "version": "1.0.0",
+  "description": "Applitools Eyes SDK For Selenium JavaScript WebDriver",
+  "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
+  "keywords": [
+    "eyes.selenium",
+    "Test Automation",
+    "Visual Regression",
+    "tests",
+    "SDK",
+    "Applitools",
+    "Eyes",
+    "automation",
+    "selenium",
+    "testing",
+    "webdriver",
+    "webdriverjs",
+    "protractor"
+  ],
+  "homepage": "http://www.applitools.com/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/applitools/Eyes.Selenium.JavaScript.git"
+  },
+  "license": "Apache-2.0",
+  "main": "index",
+  "dependencies": {
+    "eyes.selenium": "1.0.0"
+  },
+  "devDependencies": {
+    "protractor": "^5.2.0"
+  },
+  "scripts": {
+    "test": "npm run protractor",
+    "protractor": "protractor test/protractor.conf.js"
+  },
+  "engines": {
+    "node": ">=6.9.0"
+  }
+}

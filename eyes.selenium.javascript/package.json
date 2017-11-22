@@ -1,50 +1,40 @@
 {
-    "name": "eyes.selenium",
-    "version": "0.0.71",
-    "description": "Applitools Eyes SDK For Selenium JavaScript WebDriver",
-    "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
-    "keywords": [
-        "eyes.selenium",
-        "Test Automation",
-        "Visual Regression",
-        "tests",
-        "SDK",
-        "Applitools",
-        "Eyes",
-        "automation",
-        "selenium",
-        "testing",
-        "webdriver",
-        "webdriverjs",
-        "protractor"
-    ],
-    "homepage": "http://www.applitools.com/",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/applitools/Eyes.Selenium.JavaScript.git"
-    },
-    "license": "Apache-2.0",
-    "main": "index",
-    "dependencies": {
-        "eyes.utils": "0.0.25",
-        "eyes.sdk": "0.0.63",
-        "q": "^1.4.1"
-    },
-    "devDependencies": {
-        "selenium-webdriver": "^3.0.0",
-        "protractor": "^5.1.2",
-        "ava": "^0.18.0"
-    },
-    "scripts": {
-        "test": "ava",
-        "test-protractor": "npm run test-protractor-default && npm run test-protractor-scaling",
-        "test-protractor-default": "protractor protractor.conf.js --suite=simple,checkInterface",
-        "test-protractor-scaling": "protractor protractor.conf.js --suite=scalingMethods --capabilities.chromeOptions.args='--force-device-scale-factor=1.25'"
-    },
-    "ava": {
-        "concurrency": 1
-    },
-    "engines": {
-        "node": ">=6.9.0"
-    }
+  "name": "eyes.selenium",
+  "version": "1.0.0",
+  "description": "Applitools Eyes SDK For Selenium JavaScript WebDriver",
+  "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
+  "keywords": [
+    "eyes.selenium",
+    "Test Automation",
+    "Visual Regression",
+    "tests",
+    "SDK",
+    "Applitools",
+    "Eyes",
+    "automation",
+    "selenium",
+    "testing",
+    "webdriver",
+    "webdriverjs"
+  ],
+  "homepage": "http://www.applitools.com/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/applitools/Eyes.Selenium.JavaScript.git"
+  },
+  "license": "Apache-2.0",
+  "main": "index",
+  "dependencies": {
+    "eyes.sdk": "1.0.0",
+    "selenium-webdriver": "^3.6.0"
+  },
+  "devDependencies": {
+    "mocha": "^4.0.0"
+  },
+  "scripts": {
+    "test": "mocha ./test/**/*.spec.js -b -t 300000"
+  },
+  "engines": {
+    "node": ">=6.9.0"
+  }
 }
