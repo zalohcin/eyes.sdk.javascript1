@@ -1,7 +1,9 @@
 'use strict';
 
-const {ArgumentGuard, GeneralUtils, EyesBase, RegionProvider, MutableImage, RectangleSize, NullRegionProvider, CheckSettings} = require('eyes.sdk');
-const EyesImagesScreenshot = require('./EyesImagesScreenshot');
+const {ArgumentGuard, GeneralUtils, EyesBase, RegionProvider, MutableImage, RectangleSize, NullRegionProvider} = require('eyes.sdk');
+
+const EyesImagesScreenshot = require('./capture/EyesImagesScreenshot');
+const Target = require('./fluent/Target');
 
 const VERSION = require('../package.json').version;
 
@@ -42,6 +44,22 @@ class Eyes extends EyesBase {
         return super.openBase(appName, testName, imageSize, null);
     }
 
+    /**
+     * @param {string} name
+     * @param {ImagesCheckSettings} checkSettings
+     * @return {Promise.<boolean>}
+     */
+    check(name, checkSettings) {
+        ArgumentGuard.notNull(checkSettings, "checkSettings");
+
+        if (this.getIsDisabled()) {
+            this._logger.verbose(`check('${name}', checkSettings): Ignored`);
+            return this.getPromiseFactory().resolve(false);
+        }
+
+        return this._checkImage(name, false, checkSettings);
+    }
+
     //noinspection JSUnusedGlobalSymbols
     /**
      * Perform visual validation for the current image.
@@ -55,22 +73,22 @@ class Eyes extends EyesBase {
      */
     checkImage(image, tag, ignoreMismatch, retryTimeout) {
         if (this.getIsDisabled()) {
-            this._logger.verbose(`CheckImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
+            this._logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
             return this._promiseFactory.resolve(false);
         }
 
         ArgumentGuard.notNull(image, "image cannot be null!");
 
         this._logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
-        return this._checkImage(new NullRegionProvider(this.getPromiseFactory()), image, tag, ignoreMismatch, retryTimeout);
+        // noinspection JSCheckFunctionSignatures
+        return this._checkImage(tag, ignoreMismatch, Target.image(image).timeout(retryTimeout));
     }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Perform visual validation for the current image.
-     * IMPORTANT! Changed order of parameters: image first, region second!
      *
-     * @param {Object} region The region of the image which should be verified, or {undefined}/{null} if the entire image should be verified.
+     * @param {Region|RegionObject} region The region of the image which should be verified, or {undefined}/{null} if the entire image should be verified.
      * @param {String|Buffer|MutableImage} image The image base64 string, image buffer or MutableImage.
      * @param {String} [tag] An optional tag to be associated with the validation checkpoint.
      * @param {Boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
@@ -79,16 +97,17 @@ class Eyes extends EyesBase {
      * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
      */
     checkRegion(image, region, tag, ignoreMismatch, retryTimeout) {
+        ArgumentGuard.notNull(image, "image");
+        ArgumentGuard.notNull(region, "region");
+
         if (this.getIsDisabled()) {
             this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
             return this._promiseFactory.resolve(false);
         }
 
-        ArgumentGuard.notNull(image, "image cannot be null!");
-        ArgumentGuard.notNull(region, "region cannot be null!");
-
         this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
-        return this._checkImage(new RegionProvider(region, this.getPromiseFactory()), image, tag, ignoreMismatch, retryTimeout);
+        // noinspection JSCheckFunctionSignatures
+        return this._checkImage(tag, ignoreMismatch, Target.region(image, region).timeout(retryTimeout));
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -104,15 +123,17 @@ class Eyes extends EyesBase {
      * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
      */
     replaceImage(stepIndex, image, tag, title, userInputs) {
+        ArgumentGuard.notNull(stepIndex, "stepIndex");
+        ArgumentGuard.notNull(image, "image");
+
         if (this.getIsDisabled()) {
             this._logger.verbose(`replaceImage('${stepIndex}', Image, '${tag}', '${title}', '${userInputs}'): Ignored`);
             return this._promiseFactory.resolve(false);
         }
 
-        ArgumentGuard.notNull(image, "image cannot be null!");
-        ArgumentGuard.notNull(stepIndex, "stepIndex cannot be null!");
-
-        image = this._normalizeImageType(image);
+        if (GeneralUtils.isBuffer(image) || GeneralUtils.isString(image)) {
+            image = new MutableImage(image, this.getPromiseFactory());
+        }
 
         this._logger.verbose(`replaceImage('${stepIndex}', Image, '${tag}', '${title}', '${userInputs}')`);
         return super.replaceWindow(stepIndex, image, tag, title, userInputs).then(results => {
@@ -223,15 +244,26 @@ class Eyes extends EyesBase {
      * Internal function for performing an image verification for an image (or a region of an image).
      *
      * @private
-     * @param {RegionProvider} regionProvider The region of the image which should be verified, or {undefined}/{null} if the entire image should be verified.
-     * @param {String|Buffer|MutableImage} image The image base64 string, image buffer or MutableImage.
-     * @param {String} tag An optional tag to be associated with the validation checkpoint.
+     * @param {String} name An optional tag to be associated with the validation checkpoint.
      * @param {Boolean} ignoreMismatch True if the server should ignore a negative result for the visual validation.
-     * @param {int} retryTimeout The amount of time to retry matching in milliseconds or a negative value to use the default retry timeout.
+     * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
      * @return {Promise<Boolean>}
      */
-    _checkImage(regionProvider, image, tag, ignoreMismatch, retryTimeout) {
-        image = this._normalizeImageType(image);
+    _checkImage(name, ignoreMismatch, checkSettings) {
+        let image, regionProvider;
+        if (checkSettings.getMutableImage()) {
+            image = checkSettings.getMutableImage();
+        } else if (checkSettings.getImageBuffer()) {
+            image = new MutableImage(checkSettings.getImageBuffer(), this.getPromiseFactory());
+        } else if (checkSettings.getImageString()) {
+            image = new MutableImage(checkSettings.getImageString(), this.getPromiseFactory());
+        }
+
+        if (checkSettings.getTargetRegion()) {
+            regionProvider = new RegionProvider(checkSettings.getTargetRegion(), this.getPromiseFactory());
+        } else {
+            regionProvider = new NullRegionProvider(this.getPromiseFactory());
+        }
 
         if (!this._viewportSizeHandler.get()) {
             this._viewportSize = new RectangleSize(image.getSize());
@@ -239,25 +271,12 @@ class Eyes extends EyesBase {
 
         this._screenshot = new EyesImagesScreenshot(image);
 
-        this._title = tag || '';
-        return super.checkWindowBase(regionProvider, tag, ignoreMismatch, new CheckSettings(retryTimeout)).then(results => {
-            return results.getAsExpected();
+        // Set the title to be linked to the screenshot.
+        this._title = name || '';
+
+        return super.checkWindowBase(regionProvider, name, ignoreMismatch, checkSettings).then(mr => {
+            return mr.getAsExpected();
         });
-    }
-
-    /**
-     * @private
-     * @param {String|Buffer|MutableImage} image
-     * @return {MutableImage}
-     */
-    _normalizeImageType(image) {
-        if (image instanceof MutableImage) {
-            return image;
-        } else if (GeneralUtils.isBuffer(image) || GeneralUtils.isString(image)) {
-            return new MutableImage(image, this._promiseFactory);
-        }
-
-        throw new TypeError("unsupported type of image!");
     }
 }
 
