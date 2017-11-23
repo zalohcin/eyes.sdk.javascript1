@@ -3,6 +3,7 @@
 const fs = require('fs');
 const png = require('png-async');
 
+const ArgumentGuard = require('../ArgumentGuard');
 const {ReadableBufferStream, WritableBufferStream} = require('../StreamUtils');
 
 /**
@@ -341,9 +342,13 @@ class ImageUtils {
      * @return {Promise.<png.Image>}
      **/
     static rotateImage(image, deg, promiseFactory) {
-        return promiseFactory.makePromise((resolve, reject) => {
-            if (typeof deg !== "number") {
-                return reject(new Error('deg must be a number!'));
+        ArgumentGuard.notNull(image, "image");
+        ArgumentGuard.isInteger(deg, "deg");
+
+        return promiseFactory.makePromise(resolve => {
+            // noinspection MagicNumberJS
+            if (deg % 360 === 0) {
+                return resolve(image);
             }
 
             // noinspection MagicNumberJS
@@ -373,7 +378,7 @@ class ImageUtils {
                 i--;
             }
 
-            resolve(image);
+            return resolve(image);
         });
     }
 
@@ -411,57 +416,6 @@ class ImageUtils {
                 dstImage.data[dstIndex + 3] = srcImage.data[srcIndex + 3];
             }
         }
-    }
-
-    /**
-     * Stitches the given parts to a full image.
-     *
-     * @param {{width: number, height: number}} fullSize The size of the stitched image.
-     * @param {Array<{position: {x: number, y: number}, size: {width: number, height: number}, image: Buffer}>} parts
-     *         The parts to stitch into an image.
-     * @param {PromiseFactory} promiseFactory
-     * @return {Promise.<png.Image>} A promise which resolves to the stitched image.
-     */
-    static stitchImage(fullSize, parts, promiseFactory) {
-        return promiseFactory.makePromise(resolve => {
-            const stitchedImage = new png.Image({filterType: 4, width: fullSize.width, height: fullSize.height});
-            let stitchingPromise = promiseFactory.makePromise(resolve => { resolve(); });
-
-            for (let i = 0; i < parts.length; ++i) {
-                stitchingPromise = ImageUtils._stitchPart(stitchingPromise, stitchedImage, parts[i], promiseFactory);
-            }
-
-            const lastPart = parts[parts.length - 1];
-            const actualImageWidth = lastPart.position.x + lastPart.size.width;
-            const actualImageHeight = lastPart.position.y + lastPart.size.height;
-
-            stitchingPromise.then(() => {
-                // If the actual image size is smaller than the extracted size, we crop the image.
-                if (actualImageWidth < stitchedImage.width || actualImageHeight < stitchedImage.height) {
-                    const newWidth = stitchedImage.width > actualImageWidth ? actualImageWidth : stitchedImage.width;
-                    const newHeight = stitchedImage.height > actualImageHeight ? actualImageHeight : stitchedImage.height;
-                    return ImageUtils.cropImage(stitchedImage, {
-                        left: 0,
-                        top: 0,
-                        width: newWidth,
-                        height: newHeight
-                    }, promiseFactory);
-                }
-            }).then(() => ImageUtils.packImage(stitchedImage, promiseFactory)).then(buffer => {
-                resolve(buffer);
-            });
-        });
-    }
-
-    static _stitchPart(stitchingPromise, stitchedImage, part, promiseFactory) {
-        //noinspection JSUnresolvedFunction
-        return stitchingPromise.then(() => promiseFactory.makePromise(resolve => {
-            //noinspection JSUnresolvedFunction
-            ImageUtils.parseImage(part.image, promiseFactory).then(pngImage => {
-                ImageUtils.copyPixels(stitchedImage, part.position, pngImage, {x: 0, y: 0}, part.size);
-                resolve(stitchedImage);
-            });
-        }));
     }
 
     /**

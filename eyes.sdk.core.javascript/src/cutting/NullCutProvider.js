@@ -1,10 +1,17 @@
 'use strict';
 
-const FixedCutProvider = require('./FixedCutProvider');
+const UnscaledFixedCutProvider = require('./UnscaledFixedCutProvider');
 
-class NullCutProvider extends FixedCutProvider {
+class NullCutProvider extends UnscaledFixedCutProvider {
     constructor() {
         super(0, 0, 0, 0);
+    }
+
+    /**
+     * @override
+     */
+    scale(scaleRatio) {
+        return this;
     }
 }
 

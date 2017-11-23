@@ -31,9 +31,12 @@ class EyesWebDriver extends IWebDriver {
         this._eyes = eyes;
         this._driver = driver;
 
-        this._rotation = null;
         this._elementsIds = new Map();
         this._frameChain = new FrameChain(logger);
+
+        /** @type {ImageRotation} */
+        this._rotation = null;
+        /** @type {RectangleSize} */
         this._defaultContentViewportSize = null;
 
         //this._logger.verbose("Driver session is " + this.getSessionId());
@@ -54,7 +57,6 @@ class EyesWebDriver extends IWebDriver {
         return this._eyes.getPromiseFactory();
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * @return {WebDriver}
      */
@@ -112,6 +114,8 @@ class EyesWebDriver extends IWebDriver {
     executeScript(script, ...var_args) {
         const logger = this._logger;
         this._logger.verbose("Execute script...");
+        EyesSeleniumUtils.handleSpecialCommands(script, ...var_args);
+        // noinspection JSValidateTypes
         return this._driver.executeScript(script, ...var_args).then(result => {
             logger.verbose("Done!");
             return result;
@@ -120,6 +124,7 @@ class EyesWebDriver extends IWebDriver {
 
     /** @override */
     executeAsyncScript(script, ...var_args) {
+        EyesSeleniumUtils.handleSpecialCommands(script, ...var_args);
         return this._driver.executeAsyncScript(script, ...var_args);
     }
 
@@ -429,13 +434,14 @@ class EyesWebDriver extends IWebDriver {
             return that.getPromiseFactory().resolve(that._defaultContentViewportSize);
         }
 
+        const switchTo = that.switchTo();
         const currentFrames = new FrameChain(that._logger, that.getFrameChain());
 
         let promise = that.getPromiseFactory().resolve();
 
         // Optimization
         if (currentFrames.size() > 0) {
-            promise = promise.then(() => that.switchTo().defaultContent());
+            promise = promise.then(() => switchTo.defaultContent());
         }
 
         promise = promise.then(() => {
@@ -447,7 +453,7 @@ class EyesWebDriver extends IWebDriver {
         });
 
         if (currentFrames.size() > 0) {
-            promise = promise.then(() => that.switchTo().frames(currentFrames));
+            promise = promise.then(() => switchTo.frames(currentFrames));
         }
 
         return promise.then(() => {
@@ -493,7 +499,8 @@ class EyesWebDriver extends IWebDriver {
      * @param {ImageRotation} rotation The degrees by which to rotate the image:
      *                 positive values = clockwise rotation,
      *                 negative values = counter-clockwise,
-     *                 0 = force no rotation, null = rotate automatically when needed.
+     *                 0 = force no rotation,
+     *                 null = rotate automatically as needed.
      * @param {PromiseFactory} promiseFactory
      * @return {Promise.<MutableImage>} A normalized image.
      */
@@ -504,33 +511,11 @@ class EyesWebDriver extends IWebDriver {
 
         return promiseFactory.resolve().then(() => {
             if (rotation) {
-                if (rotation.getRotation() !== 0) {
-                    return image.rotate(rotation.getRotation());
-                }
-                return image;
+                return rotation.getRotation();
             } else {
-                logger.verbose("Trying to automatically normalize rotation...");
-                return EyesSeleniumUtils.isMobileDevice(driver).then(isMobileDevice => {
-                    if (isMobileDevice) {
-                        return EyesSeleniumUtils.isLandscapeOrientation(driver).then(isLandscapeOrientation => {
-                            if (isLandscapeOrientation && image.getHeight() > image.getWidth()) {
-                                // For Android, we need to rotate images to the right, and for iOS to the left.
-                                return EyesSeleniumUtils.isAndroid(driver).then(isAndroid => {
-                                    // noinspection MagicNumberJS
-                                    return image.rotate(isAndroid ? 90 : -90);
-                                });
-                            }
-                            return image;
-                        });
-                    }
-                    return image;
-                });
+                return EyesSeleniumUtils.tryAutomaticRotation(logger, driver, image);
             }
-        }).catch(err => {
-            logger.verbose("Got exception: " + err);
-            logger.verbose("Skipped automatic rotation handling.");
-            return image;
-        });
+        }).then(degrees => image.rotate(degrees));
     }
 }
 

@@ -29,7 +29,6 @@ class FrameChain {
                 this._frames.push(new Frame(logger, otherFrame.getReference(),
                     otherFrame.getLocation(),
                     otherFrame.getSize(), otherFrame.getInnerSize(),
-                    otherFrame.getParentScrollPosition(),
                     otherFrame.getOriginalLocation())
                 );
             });
@@ -55,7 +54,7 @@ class FrameChain {
         }
 
         for (let i = 0; i < lc1; ++i) {
-            if (c1.getFrame(i).getReference() !== c1.getFrames[i].getReference()) {
+            if (c1.getFrame(i).getReference() !== c2.getFrame(i).getReference()) {
                 return false;
             }
         }
@@ -79,9 +78,11 @@ class FrameChain {
 
     /**
      * Removes the last inserted frame element. Practically means we switched back to the parent of the current frame
+     *
+     * @return {Frame}
      */
     pop() {
-        this._frames.pop();
+        return this._frames.pop();
     }
 
     /**
@@ -105,10 +106,10 @@ class FrameChain {
      * @return {Location} The location of the current frame in the page.
      */
     getCurrentFrameOffset() {
-        const result = new Location(0, 0);
+        let result = new Location(0, 0);
 
         this._frames.forEach(frame => {
-            result.offsetByLocation(frame.getLocation());
+            result = result.offsetByLocation(frame.getLocation());
         });
 
         return result;
@@ -122,7 +123,7 @@ class FrameChain {
         if (this._frames.length === 0) {
             throw new NoFramesError("No frames in frame chain");
         }
-        return new Location(this._frames[0].getParentScrollPosition());
+        return new Location(this._frames[0].getOriginalLocation());
     }
 
     // noinspection JSUnusedGlobalSymbols

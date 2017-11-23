@@ -9,11 +9,13 @@ class CssTranslatePositionMemento extends PositionMemento {
 
     /**
      * @param {Object.<String, String>} transforms The current transforms. The keys are the style keys from which each of the transforms were taken.
+     * @param {Location} position
      */
-    constructor(transforms) {
+    constructor(transforms, position) {
         super();
 
         this._transforms = transforms;
+        this._position = position;
     }
 
     /**
@@ -21,6 +23,13 @@ class CssTranslatePositionMemento extends PositionMemento {
      */
     getTransform() {
         return this._transforms;
+    }
+
+    /**
+     * @return {Location}
+     */
+    getPosition() {
+        return this._position;
     }
 }
 

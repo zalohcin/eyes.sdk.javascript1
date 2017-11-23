@@ -3,6 +3,8 @@
 const {Location, RectangleSize, ArgumentGuard} = require('eyes.sdk');
 
 const EyesDriverOperationError = require('./errors/EyesDriverOperationError');
+const ImageOrientationHandler = require('./ImageOrientationHandler');
+const JavascriptHandler = require('./JavascriptHandler');
 
 const NATIVE_APP = 'NATIVE_APP';
 
@@ -50,62 +52,83 @@ const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
     "var overflowY = styles.getPropertyValue('overflow-y');" +
     "return overflow == 'hidden' || overflowX == 'hidden' || overflowY == 'hidden'";
 
+let imageOrientationHandlerHandler = new class ImageOrientationHandlerImpl extends ImageOrientationHandler {
+    /** @override */
+    isLandscapeOrientation(driver) {
+        // noinspection JSValidateTypes
+        return driver.getCapabilities().then(capabilities => {
+            return EyesSeleniumUtils.isLandscapeOrientationFromCaps(capabilities);
+        }).catch(err => {
+            throw new EyesDriverOperationError("Failed to get orientation!", err);
+        });
+    }
+
+    /** @override */
+    tryAutomaticRotation(logger, driver, image) {
+        // noinspection JSValidateTypes
+        return driver.controlFlow().execute(() => 0);
+    }
+};
+
+let javascriptHandler = new class JavascriptHandlerImpl extends JavascriptHandler {
+    /** @override */
+    handle(script, ...args) {
+        throw new Error('You should init javascriptHandler before, using setJavascriptHandler method.');
+    }
+};
+
 /**
  * Handles browser related functionality.
  */
 class EyesSeleniumUtils {
 
     /**
-     * @param {IWebDriver} driver The driver for which to check if it represents a mobile device.
-     * @return {Promise.<Boolean>} {@code true} if the platform running the test is a mobile platform. {@code false} otherwise.
+     * @param {ImageOrientationHandler} imageOrientationHandler
      */
-    static isMobileDevice(driver) {
-        return driver.getCapabilities().then(capabilities => {
-            return capabilities.get('automationName') === 'Appium';
-        });
-    }
-
-    /**
-     * @param {IWebDriver} driver The driver to test.
-     * @return {Promise.<Boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
-     */
-    static isAndroid(driver) {
-        return driver.getCapabilities().then(capabilities => {
-            return capabilities.get('platform') === 'ANDROID';
-        });
-    }
-
-    /**
-     * @param {IWebDriver} driver The driver to test.
-     * @return {Promise.<Boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
-     */
-    static isIOS(driver) {
-        return driver.getCapabilities().then(capabilities => {
-            return ['MAC', 'IOS'].includes(capabilities.get('platform'));
-        });
-    }
-
-    /**
-     * @param {IWebDriver} driver The driver to get the platform version from.
-     * @return {Promise.<String>} The platform version or {@code null} if it is undefined.
-     */
-    static getPlatformVersion(driver) {
-        return driver.getCapabilities().then(capabilities => {
-            return capabilities.get('platformVersion');
-        });
+    static setImageOrientationHandlerHandler(imageOrientationHandler) {
+        imageOrientationHandlerHandler = imageOrientationHandler;
     }
 
     /**
      * @param {IWebDriver} driver The driver for which to check the orientation.
-     * @return {Promise.<Boolean>} {@code true} if this is a mobile device and is in landscape orientation. {@code false} otherwise.
+     * @returns {Promise.<Boolean>} {@code true} if this is a mobile device and is in landscape orientation. {@code false} otherwise.
      */
     static isLandscapeOrientation(driver) {
-        return driver.getCapabilities().then(capabilities => {
-            const capsOrientation = capabilities.get('orientation') || capabilities.get('deviceOrientation');
-            return capsOrientation === 'LANDSCAPE';
-        }).catch(err => {
-            throw new EyesDriverOperationError("Failed to get orientation!", err);
-        });
+        return imageOrientationHandlerHandler.isLandscapeOrientation(driver);
+    }
+
+    /**
+     * @param {Capabilities} capabilities The driver's capabilities.
+     * @return {Boolean} {@code true} if this is a mobile device and is in landscape orientation. {@code false} otherwise.
+     */
+    static isLandscapeOrientationFromCaps(capabilities) {
+        const capsOrientation = capabilities.get('orientation') || capabilities.get('deviceOrientation');
+        return capsOrientation === 'LANDSCAPE';
+    }
+
+    /**
+     * @param {Logger} logger
+     * @param {IWebDriver} driver
+     * @param {MutableImage} image
+     * @returns {Promise.<int>}
+     */
+    static tryAutomaticRotation(logger, driver, image){
+        return imageOrientationHandlerHandler.tryAutomaticRotation(logger, driver, image);
+    }
+
+    /**
+     * @param {JavascriptHandler} handler
+     */
+    static setJavascriptHandler(handler) {
+        javascriptHandler = handler;
+    }
+
+    /**
+     * @param {String} script
+     * @param {Object...} args
+     */
+    static handleSpecialCommands(script, ...args) {
+        return javascriptHandler.handle(script, ...args);
     }
 
     /**

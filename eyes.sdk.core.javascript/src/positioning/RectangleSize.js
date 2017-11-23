@@ -3,7 +3,7 @@
 const ArgumentGuard = require('../ArgumentGuard');
 
 /**
- * @typedef {{width: number, height: number}} RectangleSizeObj
+ * @typedef {{width: number, height: number}} RectangleSizeObject
  */
 
 /**
@@ -19,7 +19,7 @@ class RectangleSize {
      * - (size: RectangleSize): from another instance of RectangleSize
      * - (object: {width: number, height: number}): from object
      *
-     * @param {Number|RectangleSize|RectangleSizeObj} arg1 The width of the rectangle.
+     * @param {Number|RectangleSize|RectangleSizeObject} arg1 The width of the rectangle.
      * @param {Number} [arg2] The height of the rectangle.
      */
     constructor(arg1, arg2) {

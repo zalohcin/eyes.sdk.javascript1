@@ -74,7 +74,7 @@ class CssTranslatePositionProvider extends PositionProvider {
         const that = this;
         return EyesSeleniumUtils.getCurrentTransform(this._executor).then(transforms => {
             that._logger.verbose("Current transform", transforms);
-            return new CssTranslatePositionMemento(transforms);
+            return new CssTranslatePositionMemento(transforms, that._lastSetPosition);
         });
     }
 
@@ -86,9 +86,9 @@ class CssTranslatePositionProvider extends PositionProvider {
      */
     restoreState(state) {
         const that = this;
-        /** @type {CssTranslatePositionMemento} state */
         return EyesSeleniumUtils.setTransforms(this._executor, state.getTransform()).then(() => {
             that._logger.verbose("Transform (position) restored.");
+            that._lastSetPosition = state.getPosition();
         });
     }
 }

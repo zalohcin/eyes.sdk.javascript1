@@ -12,7 +12,7 @@ class CheckTarget {
     }
 
     /**
-     * @param {Region} rect
+     * @param {Region|RegionObject} rect
      * @return {CheckSettings}
      */
     static region(rect) {

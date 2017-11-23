@@ -234,10 +234,9 @@ class MutableImage {
      */
     rotate(degrees) {
         const that = this;
-        if (degrees === 0) {
-            return that._promiseFactory.makePromise(resolve => {
-                resolve(that);
-            });
+        // noinspection MagicNumberJS
+        if (degrees === 0 || degrees === 360) {
+            return that._promiseFactory.resolve(that);
         }
 
         return _parseImage(that).then(() => {

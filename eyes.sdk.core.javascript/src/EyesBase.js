@@ -89,21 +89,10 @@ class EyesBase {
         this._logger = new Logger();
         /** @type {PromiseFactory} */
         this._promiseFactory = promiseFactory;
-        /** @type {PropertyHandler<ScaleProvider>} */
-        this._scaleProviderHandler = new SimplePropertyHandler();
-        this._scaleProviderHandler.set(new NullScaleProvider());
-        /** @type {PropertyHandler<CutProvider>} */
-        this._cutProviderHandler = new SimplePropertyHandler();
-        this._cutProviderHandler.set(new NullCutProvider());
-        /** @type {PositionProvider} */
-        this._positionProvider = new InvalidPositionProvider();
-        /** @type {PropertyHandler<RectangleSize>} */
-        this._viewportSizeHandler = new SimplePropertyHandler();
-        this._viewportSizeHandler.set(null);
-        /** @type {DebugScreenshotsProvider} */
-        this._debugScreenshotsProvider = new NullDebugScreenshotProvider();
-        /** @type {ImageMatchSettings} */
-        this._defaultMatchSettings = new ImageMatchSettings();
+
+        Region.initLogger(this._logger);
+
+        this._initProviders();
 
         /** @type {ServerConnector} */
         this._serverConnector = new ServerConnector(this._promiseFactory, this._logger, serverUrl);
@@ -111,6 +100,8 @@ class EyesBase {
         this._matchTimeout = DEFAULT_MATCH_TIMEOUT;
         /** @type {FailureReports} */
         this._failureReports = FailureReports.ON_CLOSE;
+        /** @type {ImageMatchSettings} */
+        this._defaultMatchSettings = new ImageMatchSettings();
 
         /** @type {Trigger[]} */
         this._userInputs = [];
@@ -170,6 +161,23 @@ class EyesBase {
          * @type {String}
          */
         this._autSessionId = undefined;
+    }
+
+    /** @private */
+    _initProviders() {
+        /** @type {PropertyHandler<ScaleProvider>} */
+        this._scaleProviderHandler = new SimplePropertyHandler();
+        this._scaleProviderHandler.set(new NullScaleProvider());
+        /** @type {PropertyHandler<CutProvider>} */
+        this._cutProviderHandler = new SimplePropertyHandler();
+        this._cutProviderHandler.set(new NullCutProvider());
+        /** @type {PositionProvider} */
+        this._positionProvider = new InvalidPositionProvider();
+        /** @type {PropertyHandler<RectangleSize>} */
+        this._viewportSizeHandler = new SimplePropertyHandler();
+        this._viewportSizeHandler.set(null);
+        /** @type {DebugScreenshotsProvider} */
+        this._debugScreenshotsProvider = new NullDebugScreenshotProvider();
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -798,34 +806,28 @@ class EyesBase {
                 const status = results.getStatus();
                 if (status === TestResultsStatus.Unresolved) {
                     if (serverResults.getIsNew()) {
-                        let instructions = "Please approve the new baseline at " + sessionResultsUrl;
-                        that._logger.log(`--- New test ended. ${instructions}`);
+                        that._logger.log(`--- New test ended. Please approve the new baseline at ${sessionResultsUrl}`);
 
                         if (throwEx) {
                             that._finallyClose();
-                            const message = `'${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}'. ${instructions}`;
-                            return reject(new NewTestError(results, message));
+                            return reject(new NewTestError(results, that._sessionStartInfo));
                         }
                         return resolve(results);
                     } else {
-                        let instructions = `See details at ${sessionResultsUrl}`;
-                        that._logger.log(`--- Failed test ended. ${instructions}`);
+                        that._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`);
 
                         if (throwEx) {
                             that._finallyClose();
-                            const message = `Test '${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()} detected differences!'. ${instructions}`;
-                            return reject(new DiffsFoundError(results, message));
+                            return reject(new DiffsFoundError(results, that._sessionStartInfo));
                         }
                         return resolve(results);
                     }
                 } else if (status === TestResultsStatus.Failed) {
-                    let instructions = `See details at ${sessionResultsUrl}`;
-                    that._logger.log(`--- Failed test ended. ${instructions}`);
+                    that._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`);
 
                     if (throwEx) {
                         that._finallyClose();
-                        const message = `'${that._sessionStartInfo.getScenarioIdOrName()}' of '${that._sessionStartInfo.getAppIdOrName()}'. ${instructions}`;
-                        return reject(new TestFailedError(results, message));
+                        return reject(new TestFailedError(results, that._sessionStartInfo));
                     }
                     return resolve(results);
                 } else {
@@ -1061,7 +1063,7 @@ class EyesBase {
         const that = this;
         let matchResult;
         return that._notifyEvent('validationWillStart', that._autSessionId, validationInfo).then(() => {
-            return that._matchWindow(regionProvider, tag, ignoreMismatch, checkSettings);
+            return EyesBase.matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, that);
         }).then(result => {
             matchResult = result;
             that._logger.verbose("MatchWindow Done!");
@@ -1126,40 +1128,40 @@ class EyesBase {
      * @param {String} tag
      * @param {Boolean} ignoreMismatch
      * @param {CheckSettings} checkSettings
+     * @param {EyesBase} self
      * @return {Promise.<MatchResult>}
      */
-    _matchWindow(regionProvider, tag, ignoreMismatch, checkSettings) {
+    static matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, self) {
         let retryTimeout = -1;
+        const defaultMatchSettings = self.getDefaultMatchSettings();
         let imageMatchSettings = null;
 
-        const that = this;
-        return that.getPromiseFactory().resolve().then(() => {
+        return self.getPromiseFactory().resolve().then(() => {
             if (checkSettings) {
                 retryTimeout = checkSettings.getTimeout();
 
                 let matchLevel = checkSettings.getMatchLevel();
-                matchLevel = matchLevel ? matchLevel : that.getDefaultMatchSettings().getMatchLevel();
+                matchLevel = matchLevel ? matchLevel : defaultMatchSettings.getMatchLevel();
 
                 imageMatchSettings = new ImageMatchSettings(matchLevel, null);
 
-                return that._collectIgnoreRegions(checkSettings, imageMatchSettings).then(() => {
-                    return that._collectFloatingRegions(checkSettings, imageMatchSettings);
+                return EyesBase.collectIgnoreRegions(checkSettings, imageMatchSettings, self).then(() => {
+                    return EyesBase.collectFloatingRegions(checkSettings, imageMatchSettings, self);
                 }).then(() => {
                     let ignoreCaret = checkSettings.getIgnoreCaret();
-                    imageMatchSettings.setIgnoreCaret(ignoreCaret ? ignoreCaret : that.getDefaultMatchSettings().getIgnoreCaret());
+                    imageMatchSettings.setIgnoreCaret(ignoreCaret ? ignoreCaret : defaultMatchSettings.getIgnoreCaret());
                 });
             }
         }).then(() => {
             // noinspection JSUnresolvedVariable
-            that._logger.verbose(`CheckWindowBase(${regionProvider.constructor.name}, '${tag}', ${ignoreMismatch}, ${retryTimeout})`);
+            self._logger.verbose(`CheckWindowBase(${regionProvider.constructor.name}, '${tag}', ${ignoreMismatch}, ${retryTimeout})`);
 
+            return self._ensureRunningSession();
+        }).then(() => {
             return regionProvider.getRegion();
         }).then(region => {
-            that._logger.verbose("Calling match window...");
-            return that._matchWindowTask.matchWindow(
-                that.getUserInputs(), region, tag, that._shouldMatchWindowRunOnceOnTimeout,
-                ignoreMismatch, imageMatchSettings, retryTimeout
-            );
+            self._logger.verbose("Calling match window...");
+            return self._matchWindowTask.matchWindow(self.getUserInputs(), region, tag, self._shouldMatchWindowRunOnceOnTimeout, ignoreMismatch, imageMatchSettings, retryTimeout);
         });
     }
 
@@ -1168,12 +1170,13 @@ class EyesBase {
      * @private
      * @param {CheckSettings} checkSettings
      * @param {ImageMatchSettings} imageMatchSettings
+     * @param {EyesBase} self
      * @return {Promise}
      */
-    _collectIgnoreRegions(checkSettings, imageMatchSettings) {
-        const regionPromises = checkSettings.getIgnoreRegions().map(container => container.getRegion(this), this);
+    static collectIgnoreRegions(checkSettings, imageMatchSettings, self) {
+        const regionPromises = checkSettings.getIgnoreRegions().map(container => container.getRegion(self), self);
 
-        return this.getPromiseFactory().all(regionPromises).then(ignoreRegions => {
+        return self.getPromiseFactory().all(regionPromises).then(ignoreRegions => {
             imageMatchSettings.setIgnoreRegions(ignoreRegions);
         });
     }
@@ -1183,12 +1186,13 @@ class EyesBase {
      * @private
      * @param {CheckSettings} checkSettings
      * @param {ImageMatchSettings} imageMatchSettings
+     * @param {EyesBase} self
      * @return {Promise}
      */
-    _collectFloatingRegions(checkSettings, imageMatchSettings) {
-        const regionPromises = checkSettings.getFloatingRegions().map(container => container.getRegion(this), this);
+    static collectFloatingRegions(checkSettings, imageMatchSettings, self) {
+        const regionPromises = checkSettings.getFloatingRegions().map(container => container.getRegion(self), self);
 
-        return this.getPromiseFactory().all(regionPromises).then(floatingRegions => {
+        return self.getPromiseFactory().all(regionPromises).then(floatingRegions => {
             imageMatchSettings.setFloatingRegions(floatingRegions);
         });
     }
@@ -1250,16 +1254,19 @@ class EyesBase {
             this._logOpenBase();
             const that = this;
             return this._validateSessionOpen().then(() => {
+                that._initProviders();
+
                 that._isViewportSizeSet = false;
 
                 that._currentAppName = appName || that._appName;
                 that._testName = testName;
                 that._viewportSizeHandler.set(viewportSize);
                 that._sessionType = sessionType || SessionType.SEQUENTIAL;
-                that._scaleProviderHandler.set(new NullScaleProvider());
                 that._validationId = -1;
 
-                return that._ensureRunningSession();
+                if (viewportSize) {
+                    return that._ensureRunningSession();
+                }
             }).then(() => {
                 return that.getAUTSessionId();
             }).then(autSessionId => {
@@ -1593,7 +1600,7 @@ class EyesBase {
 
     /**
      * @private
-     * @param {Region} region A callback for getting the region of the screenshot which will be set in the application output.
+     * @param {Region} region The region of the screenshot which will be set in the application output.
      * @param {EyesScreenshot} lastScreenshot Previous application screenshot (used for compression) or {@code null} if not available.
      * @return {Promise.<AppOutputWithScreenshot>} The updated app output and screenshot.
      */

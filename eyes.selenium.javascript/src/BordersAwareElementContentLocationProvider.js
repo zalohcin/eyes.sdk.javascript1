@@ -25,8 +25,8 @@ class BordersAwareElementContentLocationProvider {
         logger.verbose(`BordersAdditionFrameLocationProvider(logger, element, ${location})`);
 
         // Frame borders also have effect on the frame's location.
-        return _getBorderWidth(logger, 'left', element).then(leftBorderWidth => {
-            return _getBorderWidth(logger, 'top', element).then(topBorderWidth => {
+        return getPropertyValue(logger, element, "border-left-width").then(leftBorderWidth => {
+            return getPropertyValue(logger, element, "border-top-width").then(topBorderWidth => {
                 const contentLocation = new Location(location).offset(leftBorderWidth, topBorderWidth);
                 logger.verbose("Done!");
                 return contentLocation;
@@ -36,46 +36,43 @@ class BordersAwareElementContentLocationProvider {
 }
 
 /**
- * Return width of left border
- *
  * @private
  * @param {Logger} logger
- * @param {String} border
- * @param {WebElement|EyesWebElement} element
- * @return {Promise.<Number>}
+ * @param {EyesWebElement} element
+ * @param {String} propName
+ * @return {Promise.<int>}
  */
-function _getBorderWidth(logger, border, element) {
-    logger.verbose(`Get element border ${border} width...`);
-    const borderStyle = `border-${border}-width`;
+function getPropertyValue(logger, element, propName) {
+    logger.verbose(`Get element's ${propName}...`);
 
     let promise;
     if (element instanceof EyesWebElement) {
         logger.verbose("Element is an EyesWebElement, using 'getComputedStyle'.");
-        promise = element.getComputedStyle(borderStyle).catch(err => {
+        promise = element.getComputedStyle(propName).catch(err => {
             logger.verbose(`Using getComputedStyle failed: ${err}`);
             logger.verbose("Using getCssValue...");
-            return element.getCssValue(borderStyle);
+            return element.getCssValue(propName);
         }).then(result => {
             logger.verbose("Done!");
             return result;
         });
     } else {
         // OK, this is weird, we got an element which is not EyesWebElement?? Log it and try to move on.
-        logger.verbose(`Element is not an EyesWebElement! (when trying to get ${borderStyle}) Element's class: ${element.constructor.name}`);
+        logger.verbose(`Element is not an EyesWebElement! (when trying to get ${propName}) Element's class: ${element.constructor.name}`);
         logger.verbose("Using getCssValue...");
-        promise = element.getCssValue(borderStyle).then(result => {
+        promise = element.getCssValue(propName).then(result => {
             logger.verbose("Done!");
             return result;
         });
     }
 
     return promise.catch(err => {
-        logger.verbose(`Couldn't get the element's ${borderStyle}: ${err}.  Falling back to default`);
+        logger.verbose(`Couldn't get the element's ${propName}: ${err}.  Falling back to default`);
         return 0;
     }).then(result => {
-        // Convert border value from the format "2px" to int.
-        const borderWidth = Math.round(parseFloat(result.trim().replace("px", "")));
-        logger.verbose(`${borderStyle}: ${borderWidth}`);
+        // Convert value from the format "2px" to int.
+        const borderWidth = Math.round(Number(result.trim().replace("px", "")));
+        logger.verbose(`${propName}: ${borderWidth}`);
         return borderWidth;
     });
 }

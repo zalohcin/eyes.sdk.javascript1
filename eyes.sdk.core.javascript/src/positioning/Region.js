@@ -6,8 +6,10 @@ const Location = require('./Location');
 const CoordinatesType = require('./CoordinatesType');
 
 /**
- * @typedef {{left: number, top: number, width: number, height: number, coordinatesType?: CoordinatesType}} RegionObj
+ * @typedef {{left: number, top: number, width: number, height: number, coordinatesType?: CoordinatesType}} RegionObject
  */
+
+let logger = null;
 
 /**
  * A Region in a two-dimensional plane.
@@ -23,7 +25,7 @@ class Region {
      * - (object: {left: number, top: number, width: number, height: number}): from object
      * - (location: Location, size: RectangleSize, coordinatesType: CoordinatesType): from location and size
      *
-     * @param {Number|Region|Location|RegionObj} arg1 The left offset of this region.
+     * @param {Number|Region|Location|RegionObject} arg1 The left offset of this region.
      * @param {Number|RectangleSize} [arg2] The top offset of this region.
      * @param {Number|CoordinatesType} [arg3] The width of the region.
      * @param {Number} [arg4] The height of the region.
@@ -52,8 +54,8 @@ class Region {
             } else if (arg1 instanceof Object) {
                 ArgumentGuard.hasProperties(arg1, ['left', 'top', 'width', 'height'], 'RegionObject');
 
-                left = arg1.left;
-                top = arg1.top;
+                left = Math.ceil(arg1.left);
+                top = Math.ceil(arg1.top);
                 width = arg1.width;
                 height = arg1.height;
                 coordinatesType = arg1.coordinatesType;
@@ -72,6 +74,13 @@ class Region {
         this._width = width;
         this._height = height;
         this._coordinatesType = coordinatesType || CoordinatesType.SCREENSHOT_AS_IS;
+    }
+
+    /**
+     * @param {Logger} newLogger
+     */
+    static initLogger(newLogger){
+        logger = newLogger;
     }
 
     /**
@@ -274,6 +283,10 @@ class Region {
      * @param {Region} other The region with which to intersect.
      */
     intersect(other) {
+        if (logger) {
+            logger.verbose(`intersecting this region (${this}) with ${other} ...`);
+        }
+
         if (!this.isIntersected(other)) {
             this.makeEmpty();
             return;

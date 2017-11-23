@@ -3,7 +3,7 @@
 const ArgumentGuard = require('../ArgumentGuard');
 
 /**
- * @typedef {{x: number, y: number}} LocationObj
+ * @typedef {{x: number, y: number}} LocationObject
  */
 
 /**
@@ -19,7 +19,7 @@ class Location {
      * - (location: Location): from another instance of Location
      * - (object: {x: number, y: number}): from object
      *
-     * @param {Number|Location|LocationObj} arg1 The X coordinate of this location.
+     * @param {Number|Location|LocationObject} arg1 The X coordinate of this location.
      * @param {Number} [arg2] The Y coordinate of the location.
      */
     constructor(arg1, arg2) {
@@ -32,8 +32,8 @@ class Location {
             } else if (arg1 instanceof Object) {
                 ArgumentGuard.hasProperties(arg1, ['x', 'y'], 'LocationObject');
 
-                x = arg1.x;
-                y = arg1.y;
+                x = Math.ceil(arg1.x);
+                y = Math.ceil(arg1.y);
             } else {
                 throw new TypeError("The constructor is not support the object " + arg1);
             }

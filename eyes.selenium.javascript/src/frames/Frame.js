@@ -15,26 +15,23 @@ class Frame {
      * @param {Location} location The location of the frame within the current frame.
      * @param {RectangleSize} size The frame element size (i.e., the size of the frame on the screen, not the internal document size).
      * @param {RectangleSize} innerSize The frame element inner size (i.e., the size of the frame actual size, without borders).
-     * @param {Location} parentScrollPosition The scroll position the frame's parent was in when the frame was switched to.
      * @param {Location} originalLocation The scroll location of the frame.
      */
-    constructor(logger, reference, location, size, innerSize, parentScrollPosition, originalLocation) {
+    constructor(logger, reference, location, size, innerSize, originalLocation) {
         ArgumentGuard.notNull(logger, "logger");
         ArgumentGuard.notNull(reference, "reference");
         ArgumentGuard.notNull(location, "location");
         ArgumentGuard.notNull(size, "size");
         ArgumentGuard.notNull(innerSize, "innerSize");
-        ArgumentGuard.notNull(parentScrollPosition, "parentScrollPosition");
         ArgumentGuard.notNull(originalLocation, "originalLocation");
 
-        logger.verbose(`Frame(logger, reference, ${location}, ${size}, ${innerSize}, ${parentScrollPosition})`);
+        logger.verbose(`Frame(logger, reference, ${location}, ${size}, ${innerSize})`);
 
         this._logger = logger;
         this._reference = reference;
         this._location = location;
         this._size = size;
         this._innerSize = innerSize;
-        this._parentScrollPosition = parentScrollPosition;
         this._originalLocation = originalLocation;
     }
 
@@ -64,13 +61,6 @@ class Frame {
      */
     getInnerSize() {
         return this._innerSize;
-    }
-
-    /**
-     * @return {Location}
-     */
-    getParentScrollPosition() {
-        return this._parentScrollPosition;
     }
 
     /**
