@@ -78,8 +78,8 @@ class MutableImage {
      * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
      **/
     constructor(image, promiseFactory) {
-        if (GeneralUtils.isString(image)) {
-            image = new Buffer(image, 'base64');
+        if (GeneralUtils.isBase64(image)) {
+            return MutableImage.fromBase64(image, promiseFactory);
         }
 
         /** @type {Buffer} */
@@ -98,6 +98,15 @@ class MutableImage {
         this._top = 0;
         /** @type {int} */
         this._left = 0;
+    }
+
+    /**
+     * @param {String} str Base64 string of image
+     * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
+     * @return {MutableImage}
+     **/
+    static fromBase64(str, promiseFactory) {
+        return new MutableImage(new Buffer(str, 'base64'), promiseFactory);
     }
 
     //noinspection JSUnusedGlobalSymbols

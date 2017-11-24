@@ -1,6 +1,6 @@
 'use strict';
 
-const {ArgumentGuard, GeneralUtils, EyesBase, RegionProvider, MutableImage, RectangleSize, NullRegionProvider} = require('eyes.sdk');
+const {ArgumentGuard, GeneralUtils, EyesBase, EyesError, ImageUtils, RegionProvider, MutableImage, RectangleSize, NullRegionProvider} = require('eyes.sdk');
 
 const EyesImagesScreenshot = require('./capture/EyesImagesScreenshot');
 const Target = require('./fluent/Target');
@@ -31,7 +31,6 @@ class Eyes extends EyesBase {
         return 'eyes.images/' + VERSION;
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Starts a test.
      *
@@ -60,11 +59,10 @@ class Eyes extends EyesBase {
         return this._checkImage(name, false, checkSettings);
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Perform visual validation for the current image.
      *
-     * @param {String|Buffer|MutableImage} image The image base64 string, image buffer or MutableImage.
+     * @param {String|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
      * @param {String} [tag] Tag to be associated with the validation checkpoint.
      * @param {Boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
      * @param {int} [retryTimeout] timeout for performing the match (ms).
@@ -84,12 +82,11 @@ class Eyes extends EyesBase {
         return this._checkImage(tag, ignoreMismatch, Target.image(image).timeout(retryTimeout));
     }
 
-    //noinspection JSUnusedGlobalSymbols
     /**
      * Perform visual validation for the current image.
      *
      * @param {Region|RegionObject} region The region of the image which should be verified, or {undefined}/{null} if the entire image should be verified.
-     * @param {String|Buffer|MutableImage} image The image base64 string, image buffer or MutableImage.
+     * @param {String|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
      * @param {String} [tag] An optional tag to be associated with the validation checkpoint.
      * @param {Boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
      * @param {int} [retryTimeout] timeout for performing the match (ms).
@@ -108,6 +105,70 @@ class Eyes extends EyesBase {
         this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
         // noinspection JSCheckFunctionSignatures
         return this._checkImage(tag, ignoreMismatch, Target.region(image, region).timeout(retryTimeout));
+    }
+
+    /**
+     * Internal function for performing an image verification for an image (or a region of an image).
+     *
+     * @private
+     * @param {String} name An optional tag to be associated with the validation checkpoint.
+     * @param {Boolean} ignoreMismatch True if the server should ignore a negative result for the visual validation.
+     * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
+     * @return {Promise<Boolean>}
+     */
+    _checkImage(name, ignoreMismatch, checkSettings) {
+        const that = this;
+        return this._normalizeImage(checkSettings).then(image => {
+            that._screenshot = new EyesImagesScreenshot(image);
+
+            if (!that._viewportSizeHandler.get()) {
+                return that.setViewportSize(image.getSize());
+            }
+        }).then(() => {
+            let regionProvider;
+            if (checkSettings.getTargetRegion()) {
+                regionProvider = new RegionProvider(checkSettings.getTargetRegion(), that.getPromiseFactory());
+            } else {
+                regionProvider = new NullRegionProvider(that.getPromiseFactory());
+            }
+
+            // Set the title to be linked to the screenshot.
+            that._title = name || '';
+
+            return super.checkWindowBase(regionProvider, name, ignoreMismatch, checkSettings);
+        }).then(mr => {
+            return mr.getAsExpected();
+        });
+    }
+
+    /**
+     * @private
+     * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
+     * @return {Promise.<MutableImage>}
+     */
+    _normalizeImage(checkSettings) {
+        const promiseFactory = this.getPromiseFactory();
+        return promiseFactory.makePromise((resolve, reject) => {
+            if (checkSettings.getMutableImage()) {
+                return resolve(checkSettings.getMutableImage());
+            }
+
+            if (checkSettings.getImageBuffer()) {
+                return resolve(new MutableImage(checkSettings.getImageBuffer(), promiseFactory));
+            }
+
+            if (checkSettings.getImageString()) {
+                return resolve(MutableImage.fromBase64(checkSettings.getImageString(), promiseFactory));
+            }
+
+            if (checkSettings.getImagePath()) {
+                return ImageUtils.readImage(checkSettings.getImagePath(), promiseFactory).then(data => {
+                    return resolve(new MutableImage(data, promiseFactory));
+                }).catch(err => reject(new EyesError(`Can't read image [${err.message}]`)));
+            }
+
+            reject(new EyesError(`Can't recognize supported image from checkSettings.`));
+        });
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -238,45 +299,6 @@ class Eyes extends EyesBase {
      */
     getTitle() {
         return this._promiseFactory.resolve(this._title);
-    }
-
-    /**
-     * Internal function for performing an image verification for an image (or a region of an image).
-     *
-     * @private
-     * @param {String} name An optional tag to be associated with the validation checkpoint.
-     * @param {Boolean} ignoreMismatch True if the server should ignore a negative result for the visual validation.
-     * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
-     * @return {Promise<Boolean>}
-     */
-    _checkImage(name, ignoreMismatch, checkSettings) {
-        let image, regionProvider;
-        if (checkSettings.getMutableImage()) {
-            image = checkSettings.getMutableImage();
-        } else if (checkSettings.getImageBuffer()) {
-            image = new MutableImage(checkSettings.getImageBuffer(), this.getPromiseFactory());
-        } else if (checkSettings.getImageString()) {
-            image = new MutableImage(checkSettings.getImageString(), this.getPromiseFactory());
-        }
-
-        if (checkSettings.getTargetRegion()) {
-            regionProvider = new RegionProvider(checkSettings.getTargetRegion(), this.getPromiseFactory());
-        } else {
-            regionProvider = new NullRegionProvider(this.getPromiseFactory());
-        }
-
-        if (!this._viewportSizeHandler.get()) {
-            this._viewportSize = new RectangleSize(image.getSize());
-        }
-
-        this._screenshot = new EyesImagesScreenshot(image);
-
-        // Set the title to be linked to the screenshot.
-        this._title = name || '';
-
-        return super.checkWindowBase(regionProvider, name, ignoreMismatch, checkSettings).then(mr => {
-            return mr.getAsExpected();
-        });
     }
 }
 

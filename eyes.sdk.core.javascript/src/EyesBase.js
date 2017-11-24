@@ -721,7 +721,7 @@ class EyesBase {
                 return reject(`Close called with Eyes not open`);
             }
 
-            return that._endSession(false, throwEx).then(results => resolve(results));
+            return that._endSession(false, throwEx).then(resolve, reject);
         });
     }
 
@@ -732,22 +732,22 @@ class EyesBase {
      */
     abortIfNotClosed() {
         const that = this;
+        return that.getPromiseFactory().makePromise((resolve, reject) => {
+            that._logger.verbose(`"EyesBase.abortIfNotClosed()`);
 
-        that._logger.verbose(`"EyesBase.abortIfNotClosed()`);
+            if (that._isDisabled) {
+                that._logger.verbose("Eyes abortIfNotClosed ignored. (disabled)");
+                that._finallyClose();
+                return resolve(new TestResults());
+            }
 
-        if (that._isDisabled) {
-            that._logger.verbose("Eyes abortIfNotClosed ignored. (disabled)");
-            that._finallyClose();
-            return this._promiseFactory.resolve(new TestResults());
-        }
+            if (!that._isOpen) {
+                that._logger.log(`Session not open, nothing to do.`);
+                that._finallyClose();
+                return resolve();
+            }
 
-        if (!that._isOpen) {
-            that._logger.log(`Session not open, nothing to do.`);
-            that._finallyClose();
-            return that._promiseFactory.resolve();
-        }
-
-        return this._endSession(true, false).catch(() => {
+            return this._endSession(true, false).then(resolve, reject);
         });
     }
 
@@ -836,7 +836,7 @@ class EyesBase {
                 }
             }).catch(err => {
                 serverResults = null;
-                that._logger.log(err);
+                that._logger.log(`Failed to abort server session: ${err.message}`);
                 return reject(err);
             });
         }).catch(err => {

@@ -7,14 +7,16 @@ class ImagesCheckSettings extends CheckSettings {
     /**
      * @param {MutableImage} [image]
      * @param {Buffer} [buffer]
-     * @param {String} [string]
+     * @param {String} [base64]
+     * @param {String} [path]
      */
-    constructor(image, buffer, string) {
+    constructor(image, buffer, base64, path) {
         super();
 
         this._image = image;
         this._buffer = buffer;
-        this._string = string;
+        this._base64 = base64;
+        this._path = path;
 
         this._targetRegion = undefined;
     }
@@ -37,7 +39,14 @@ class ImagesCheckSettings extends CheckSettings {
      * @return {String}
      */
     getImageString() {
-        return this._string;
+        return this._base64;
+    }
+
+    /**
+     * @return {String}
+     */
+    getImagePath() {
+        return this._path;
     }
 
     /**

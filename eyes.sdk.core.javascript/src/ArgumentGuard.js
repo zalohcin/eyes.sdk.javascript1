@@ -1,6 +1,6 @@
 'use strict';
 
-const isBuffer = require('is-buffer');
+const GeneralUtils = require('./GeneralUtils');
 
 /**
  * Argument validation utilities.
@@ -133,7 +133,7 @@ class ArgumentGuard {
      * @param {Object} param The input parameter.
      */
     static isString(param) {
-        if (typeof value !== 'string' && !(value instanceof String)) {
+        if (!GeneralUtils.isString(param)) {
             throw new Error(`IllegalType: \`${param}\` is not a string`);
         }
     };
@@ -145,8 +145,20 @@ class ArgumentGuard {
      * @param {Object} param The input parameter.
      */
     static isBuffer(param) {
-        if (!isBuffer(param)) {
+        if (!GeneralUtils.isBuffer(param)) {
             throw new Error(`IllegalType: \`${param}\` is not a buffer`);
+        }
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Fails if param is not a base64 string.
+     *
+     * @param {Object} param The input parameter.
+     */
+    static isBase64(param) {
+        if (!GeneralUtils.isBase64(param)) {
+            throw new Error(`IllegalType: \`${param}\` is not a base64 string`);
         }
     };
 

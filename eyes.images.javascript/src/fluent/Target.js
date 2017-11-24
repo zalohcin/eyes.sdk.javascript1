@@ -13,10 +13,18 @@ class Target {
     static image(image) {
         if (image instanceof MutableImage) {
             return new ImagesCheckSettings(image);
-        } else if (GeneralUtils.isBuffer(image)) {
-            return new ImagesCheckSettings(undefined, image);
-        } else if (GeneralUtils.isString(image)) {
-            return new ImagesCheckSettings(undefined, undefined, image);
+        }
+
+        if (GeneralUtils.isBuffer(image)) {
+            return new ImagesCheckSettings(null, image);
+        }
+
+        if (GeneralUtils.isString(image)) {
+            if (GeneralUtils.isBase64(image)) {
+                return new ImagesCheckSettings(null, null, image);
+            }
+
+            return new ImagesCheckSettings(null, null, null, image);
         }
 
         throw new TypeError(`IllegalType: unsupported type of image!`);
@@ -29,7 +37,7 @@ class Target {
     static buffer(buffer) {
         ArgumentGuard.isBuffer(buffer);
 
-        return new ImagesCheckSettings(undefined, buffer);
+        return new ImagesCheckSettings(null, buffer);
     }
 
     /**
@@ -37,9 +45,19 @@ class Target {
      * @return {ImagesCheckSettings}
      */
     static base64(string) {
-        ArgumentGuard.isBuffer(string);
+        ArgumentGuard.isBase64(string);
 
-        return new ImagesCheckSettings(undefined, undefined, string);
+        return new ImagesCheckSettings(null, null, string);
+    }
+
+    /**
+     * @param {String} string
+     * @return {ImagesCheckSettings}
+     */
+    static path(string) {
+        ArgumentGuard.isString(string);
+
+        return new ImagesCheckSettings(null, null, null, string);
     }
 
     /**

@@ -448,10 +448,26 @@ class ImageUtils {
         return promiseFactory.makePromise((resolve, reject) => {
             fs.writeFile(filename, imageBuffer, err => {
                 if (err) {
-                    reject(err);
+                    return reject(err);
                 }
+                return resolve();
+            });
+        });
+    }
 
-                resolve();
+    /**
+     *
+     * @param {String} path
+     * @param {PromiseFactory} promiseFactory
+     * @return {Promise.<Buffer>}
+     */
+    static readImage(path, promiseFactory) {
+        return promiseFactory.makePromise((resolve, reject) => {
+            fs.readFile(path, (err, data) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(data);
             });
         });
     }

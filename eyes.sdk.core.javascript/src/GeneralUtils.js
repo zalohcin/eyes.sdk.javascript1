@@ -7,6 +7,8 @@ const stackTrace = require('stack-trace');
 const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
 const DATE_FORMAT_RFC1123 = "ddd, dd mmm yyyy HH:MM:ss 'GMT'";
 
+const BASE64_CHARS_PATTERN = /[^A-Z0-9+\/=]/i;
+
 /**
  * Collection of utility methods.
  */
@@ -237,6 +239,20 @@ class GeneralUtils {
      */
     static isBuffer(value) {
         return isBuffer(value);
+    }
+
+    static isBase64(str) {
+        if (!GeneralUtils.isString(str)) {
+            return false;
+        }
+
+        const len = str.length;
+        if (!len || len % 4 !== 0 || BASE64_CHARS_PATTERN.test(str)) {
+            return false;
+        }
+
+        const firstPaddingChar = str.indexOf('=');
+        return firstPaddingChar === -1 || firstPaddingChar === len - 1 || (firstPaddingChar === len - 2 && str[len - 1] === '=');
     }
 
     /**

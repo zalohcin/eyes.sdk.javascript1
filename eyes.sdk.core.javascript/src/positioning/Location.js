@@ -27,16 +27,10 @@ class Location {
 
         if (arg1 instanceof Object) {
             if (arg1 instanceof Location) {
-                x = arg1.getX();
-                y = arg1.getY();
-            } else if (arg1 instanceof Object) {
-                ArgumentGuard.hasProperties(arg1, ['x', 'y'], 'LocationObject');
-
-                x = Math.ceil(arg1.x);
-                y = Math.ceil(arg1.y);
-            } else {
-                throw new TypeError("The constructor is not support the object " + arg1);
+                return Location.fromLocation(arg1);
             }
+
+            return Location.fromObject(arg1);
         }
 
         ArgumentGuard.isInteger(x, "x");
@@ -44,6 +38,31 @@ class Location {
 
         this._x = x;
         this._y = y;
+    }
+
+    /**
+     * Creates a new instance of Location from other Location
+     *
+     * @param {Location} other
+     * @return {Location}
+     */
+    static fromLocation(other) {
+        ArgumentGuard.isValidType(other, Location);
+
+        return new Location(other.getX(), other.getY());
+    }
+
+    /**
+     * Creates a new instance of Location from object
+     *
+     * @param {LocationObject} object
+     * @return {Location}
+     */
+    static fromObject(object) {
+        ArgumentGuard.isValidType(object, Object);
+        ArgumentGuard.hasProperties(object, ['x', 'y'], 'object');
+
+        return new Location(Math.ceil(object.x), Math.ceil(object.y));
     }
 
     /**

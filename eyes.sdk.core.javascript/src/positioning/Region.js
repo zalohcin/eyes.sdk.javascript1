@@ -35,33 +35,15 @@ class Region {
         let left = arg1, top = arg2, width = arg3, height = arg4, coordinatesType = arg5;
 
         if (arg1 instanceof Object) {
-            // noinspection IfStatementWithTooManyBranchesJS
             if (arg1 instanceof Region) {
-                left = arg1.getLeft();
-                top = arg1.getTop();
-                width = arg1.getWidth();
-                height = arg1.getHeight();
-                coordinatesType = arg1.getCoordinatesType();
-            } else if (arg1 instanceof Location || arg2 instanceof RectangleSize) {
-                ArgumentGuard.notNull(arg1, "Location");
-                ArgumentGuard.notNull(arg2, "RectangleSize");
-
-                left = arg1.getX();
-                top = arg1.getY();
-                width = arg2.getWidth();
-                height = arg2.getHeight();
-                coordinatesType = arg3;
-            } else if (arg1 instanceof Object) {
-                ArgumentGuard.hasProperties(arg1, ['left', 'top', 'width', 'height'], 'RegionObject');
-
-                left = Math.ceil(arg1.left);
-                top = Math.ceil(arg1.top);
-                width = arg1.width;
-                height = arg1.height;
-                coordinatesType = arg1.coordinatesType;
-            } else {
-                throw new TypeError(`The Region constructor for ${typeof arg1} type not found.`);
+                return Region.fromRegion(arg1);
             }
+
+            if (arg1 instanceof Location || arg2 instanceof RectangleSize) {
+                return Region.fromLocationAndSize(arg1, arg2, arg3);
+            }
+
+            return Region.fromObject(arg1);
         }
 
         ArgumentGuard.isInteger(left, "left");
@@ -74,6 +56,47 @@ class Region {
         this._width = width;
         this._height = height;
         this._coordinatesType = coordinatesType || CoordinatesType.SCREENSHOT_AS_IS;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Creates a new instance of Region from Location and Size
+     *
+     * @param {Location} location A Location instance from which to create the Region
+     * @param {RectangleSize} size A RectangleSize instance from which to create the Region
+     * @param {CoordinatesType} [coordinatesType=SCREENSHOT_AS_IS] The coordinatesType of the region
+     * @return {Region}
+     */
+    static fromLocationAndSize(location, size, coordinatesType = CoordinatesType.SCREENSHOT_AS_IS) {
+        ArgumentGuard.isValidType(location, Location);
+        ArgumentGuard.isValidType(size, RectangleSize);
+
+        return new Region(location.getX(), location.getY(), size.getWidth(), size.getHeight(), coordinatesType);
+    }
+
+    /**
+     * Creates a new instance of Region from other Region
+     *
+     * @param {Region} other
+     * @return {Region}
+     */
+    static fromRegion(other) {
+        ArgumentGuard.isValidType(other, Region);
+
+        return new Region(other.getLeft(), other.getTop(), other.getWidth(), other.getHeight(), other.getCoordinatesType());
+    }
+
+    /**
+     * Creates a new instance of Region from object
+     *
+     * @param {RegionObject} object
+     * @return {Region}
+     */
+    static fromObject(object) {
+        ArgumentGuard.isValidType(object, Object);
+        ArgumentGuard.hasProperties(object, ['left', 'top', 'width', 'height'], 'object');
+
+        return new Region(Math.ceil(object.left), Math.ceil(object.top), object.width, object.height, object.coordinatesType);
     }
 
     /**

@@ -27,16 +27,10 @@ class RectangleSize {
 
         if (arg1 instanceof Object) {
             if (arg1 instanceof RectangleSize) {
-                width = arg1.getWidth();
-                height = arg1.getHeight();
-            } else if (arg1 instanceof Object) {
-                ArgumentGuard.hasProperties(arg1, ['width', 'height'], 'RectangleSizeObject');
-
-                width = arg1.width;
-                height = arg1.height;
-            } else {
-                throw new TypeError("The constructor is not support the object " + arg1);
+                return RectangleSize.fromRectangleSize(arg1);
             }
+
+            return RectangleSize.fromObject(arg1);
         }
 
         ArgumentGuard.greaterThanOrEqualToZero(width, "width", true);
@@ -44,6 +38,31 @@ class RectangleSize {
 
         this._width = width;
         this._height = height;
+    }
+
+    /**
+     * Creates a new instance of RectangleSize from other RectangleSize
+     *
+     * @param {RectangleSize} other
+     * @return {RectangleSize}
+     */
+    static fromRectangleSize(other) {
+        ArgumentGuard.isValidType(other, RectangleSize);
+
+        return new RectangleSize(other.getWidth(), other.getHeight());
+    }
+
+    /**
+     * Creates a new instance of RectangleSize from other RectangleSize
+     *
+     * @param {RectangleSizeObject} object
+     * @return {RectangleSize}
+     */
+    static fromObject(object) {
+        ArgumentGuard.isValidType(object, Object);
+        ArgumentGuard.hasProperties(object, ['width', 'height'], 'object');
+
+        return new RectangleSize(object.width, object.height);
     }
 
     // noinspection JSUnusedGlobalSymbols
