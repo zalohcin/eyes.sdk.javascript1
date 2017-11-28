@@ -1,0 +1,42 @@
+{
+  "name": "eyes.appium",
+  "version": "1.0.0",
+  "description": "Applitools Eyes SDK For Appium JavaScript WebDriver",
+  "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
+  "keywords": [
+    "eyes.appium",
+    "Test Automation",
+    "Visual Regression",
+    "tests",
+    "SDK",
+    "Applitools",
+    "Eyes",
+    "automation",
+    "selenium",
+    "testing",
+    "webdriver",
+    "webdriverjs",
+    "appium"
+  ],
+  "homepage": "http://www.applitools.com/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
+  },
+  "license": "Apache-2.0",
+  "main": "index",
+  "dependencies": {
+    "eyes.sdk": "1.0.0",
+    "eyes.selenium": "1.0.0",
+    "selenium-webdriver": "^3.6.0"
+  },
+  "devDependencies": {
+    "mocha": "^4.0.0"
+  },
+  "scripts": {
+    "test": "mocha ./test/**/*.spec.js -t 900000"
+  },
+  "engines": {
+    "node": ">=6.9.0"
+  }
+}
