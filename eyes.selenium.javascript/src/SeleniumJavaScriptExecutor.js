@@ -11,7 +11,7 @@ class SeleniumJavaScriptExecutor extends EyesJsExecutor {
     constructor(driver, promiseFactory) {
         super();
 
-        if (!driver.hasOwnProperty('getPromiseFactory')) {
+        if (!driver.getPromiseFactory) {
             ArgumentGuard.notNull(promiseFactory, 'promiseFactory')
         }
 
