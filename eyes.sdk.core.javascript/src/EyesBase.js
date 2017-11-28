@@ -780,7 +780,7 @@ class EyesBase {
                 if (that._autSessionId) {
                     return that._notifyEvent('testEnded', that._autSessionId, null).then(() => {
                         that._finallyClose();
-                        return testResults;
+                        return resolve(testResults);
                     });
                 } else {
                     that._finallyClose();

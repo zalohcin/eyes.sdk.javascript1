@@ -344,16 +344,11 @@ class Eyes extends EyesBase {
 
     /** @private */
     _initDriver(driver) {
-        if (driver instanceof WebDriver) {
-            this._driver = new EyesWebDriver(this._logger, this, driver);
-        } else if (driver instanceof EyesWebDriver) {
+        if (driver instanceof EyesWebDriver) {
             // noinspection JSValidateTypes
             this._driver = driver;
         } else {
-            // noinspection JSUnresolvedVariable
-            const errMsg = `Driver is not a RemoteWebDriver (${driver.constructor.name})`;
-            this._logger.log(errMsg);
-            throw new EyesError(errMsg);
+            this._driver = new EyesWebDriver(this._logger, this, driver);
         }
     }
 
@@ -364,7 +359,7 @@ class Eyes extends EyesBase {
         this._logger.verbose("initializing position provider. stitchMode: " + stitchMode);
         switch (stitchMode) {
             case StitchMode.CSS:
-                this.setPositionProvider(new CssTranslatePositionProvider(this._logger, this._jsExecutor, this.getPromiseFactory()));
+                this.setPositionProvider(new CssTranslatePositionProvider(this._logger, this._jsExecutor));
                 break;
             default:
                 this.setPositionProvider(new ScrollPositionProvider(this._logger, this._jsExecutor));

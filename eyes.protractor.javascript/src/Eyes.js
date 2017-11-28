@@ -2,16 +2,15 @@
 
 const {ProtractorBrowser} = require('protractor');
 const {EyesError} = require('eyes.sdk');
-const EyesSelenium = require('eyes.selenium');
-const ElementFinderWrapper = require('./ElementFinderWrappers').ElementFinderWrapper;
-const ElementArrayFinderWrapper = require('./ElementFinderWrappers').ElementArrayFinderWrapper;
+const {EyesWebDriver} = require('eyes.selenium');
+const {ElementFinderWrapper, ElementArrayFinderWrapper} = require('./ElementFinderWrappers');
 
 const VERSION = require('../package.json').version;
 
 /**
  * The main type - to be used by the users of the library to access all functionality.
  */
-class Eyes extends EyesSelenium.Eyes {
+class Eyes extends require('eyes.selenium').Eyes {
 
     //noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
     getBaseAgentId() {
@@ -38,8 +37,8 @@ class Eyes extends EyesSelenium.Eyes {
     /** @private */
     _initDriver(driver) {
         if (driver instanceof ProtractorBrowser) {
-            this._driver = new EyesSelenium.EyesWebDriver(this._logger, this, driver);
-        } else if (driver instanceof EyesSelenium.EyesWebDriver) {
+            this._driver = new EyesWebDriver(this._logger, this, driver);
+        } else if (driver instanceof EyesWebDriver) {
             // noinspection JSValidateTypes
             this._driver = driver;
         } else {
