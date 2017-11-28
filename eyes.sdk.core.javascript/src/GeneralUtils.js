@@ -224,7 +224,6 @@ class GeneralUtils {
         return typeof value === 'number' || value instanceof Number;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @param value
      * @return {boolean}

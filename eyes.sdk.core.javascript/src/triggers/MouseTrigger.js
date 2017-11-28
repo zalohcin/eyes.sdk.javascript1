@@ -56,10 +56,7 @@ class MouseTrigger extends Trigger {
         return Trigger.TriggerType.Mouse;
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {String}
-     */
+    /** @override */
     toString() {
         return `${this._mouseAction} [${this._control}] ${this._location}`;
     }

@@ -58,7 +58,6 @@ class Region {
         this._coordinatesType = coordinatesType || CoordinatesType.SCREENSHOT_AS_IS;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Creates a new instance of Region from Location and Size
      *
@@ -359,6 +358,7 @@ class Region {
         };
     }
 
+    /** @override */
     toString() {
         return `(${this._left}, ${this._top}) ${this._width}x${this._height}, ${true._coordinatesType}`;
     }

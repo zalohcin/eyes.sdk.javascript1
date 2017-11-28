@@ -60,7 +60,6 @@ class UserAgent {
         this._browserMinorVersion = undefined;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @param {String} userAgent User agent string to parse
      * @param {boolean} unknowns Whether to treat unknown products as {@code UNKNOWN} or throw an exception.
@@ -185,7 +184,6 @@ class UserAgent {
         return result;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {string}
      */
@@ -193,7 +191,6 @@ class UserAgent {
         return this._browser;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {string}
      */
@@ -201,7 +198,6 @@ class UserAgent {
         return this._browserMajorVersion;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {string}
      */
@@ -209,7 +205,6 @@ class UserAgent {
         return this._browserMinorVersion;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {string}
      */
@@ -217,7 +212,6 @@ class UserAgent {
         return this._OS;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {string}
      */
@@ -225,7 +219,6 @@ class UserAgent {
         return this._OSMajorVersion;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {string}
      */

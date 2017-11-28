@@ -237,7 +237,6 @@ class EyesWebDriver extends IWebDriver {
         return new EyesTargetLocator(this._logger, this, this._driver.switchTo());
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Found elements are sometimes accessed by their IDs (e.g. tapping an element in Appium).
      *

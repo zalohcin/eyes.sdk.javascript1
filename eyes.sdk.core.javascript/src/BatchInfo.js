@@ -63,10 +63,7 @@ class BatchInfo {
         };
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {String}
-     */
+    /** @override */
     toString() {
         return `BatchInfo { ${GeneralUtils.toJson(this)} }`;
     }

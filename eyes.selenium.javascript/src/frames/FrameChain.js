@@ -36,7 +36,6 @@ class FrameChain {
         }
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Compares two frame chains.
      *
@@ -101,7 +100,6 @@ class FrameChain {
         return this._frames.push(frame);
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Location} The location of the current frame in the page.
      */
@@ -115,7 +113,6 @@ class FrameChain {
         return result;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Location} The outermost frame's location, or NoFramesException.
      */
@@ -137,7 +134,6 @@ class FrameChain {
         return result;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {RectangleSize} The inner size of the current frame.
      */

@@ -1029,7 +1029,6 @@ class EyesBase {
         this._positionProvider = positionProvider;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Takes a snapshot of the application under test and matches it with the expected output.
      *
@@ -1084,7 +1083,6 @@ class EyesBase {
         });
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Replaces an actual image in the current running session.
      *
@@ -1218,7 +1216,6 @@ class EyesBase {
         }
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Starts a test.
      *
@@ -1385,7 +1382,6 @@ class EyesBase {
         this._userInputs.push(trigger);
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Adds a text trigger.
      *

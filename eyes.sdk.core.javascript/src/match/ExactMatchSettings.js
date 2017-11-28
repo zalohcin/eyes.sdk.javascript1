@@ -86,6 +86,7 @@ class ExactMatchSettings {
         this._matchThreshold = value;
     }
 
+    /** @override */
     toString() {
         return `[min diff intensity: ${this._minDiffIntensity}, min diff width ${this._minDiffWidth}, ` +
                `min diff height ${this._minDiffHeight}, match threshold: ${this._matchThreshold}]`;

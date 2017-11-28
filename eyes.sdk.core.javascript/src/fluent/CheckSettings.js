@@ -84,7 +84,6 @@ class CheckSettings {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {MatchLevel}
      */
@@ -104,7 +103,6 @@ class CheckSettings {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Boolean}
      */
@@ -133,7 +131,6 @@ class CheckSettings {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Boolean}
      */
@@ -155,7 +152,6 @@ class CheckSettings {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {int}
      */
@@ -163,7 +159,6 @@ class CheckSettings {
         return this._timeout;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @protected
      * @param {Region|RegionObject} region
@@ -172,7 +167,6 @@ class CheckSettings {
         this._targetRegion = region;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Region}
      */
@@ -223,7 +217,6 @@ class CheckSettings {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {GetRegion[]}
      */
@@ -280,7 +273,6 @@ class CheckSettings {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {GetFloatingRegion[]}
      */

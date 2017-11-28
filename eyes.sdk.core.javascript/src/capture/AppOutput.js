@@ -32,10 +32,7 @@ class AppOutput {
         };
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {String}
-     */
+    /** @override */
     toString() {
         return `AppOutput { ${GeneralUtils.toJson(this)} }`;
     }

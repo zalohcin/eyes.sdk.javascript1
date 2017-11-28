@@ -40,10 +40,7 @@ class PropertyData {
         };
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {String}
-     */
+    /** @override */
     toString() {
         return `PropertyData { ${GeneralUtils.toJson(this)} }`;
     }

@@ -79,7 +79,6 @@ class Location {
         return this._y;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Indicates whether some other Location is "equal to" this one.
      *
@@ -94,7 +93,6 @@ class Location {
         return this.getX() === obj.getX() && this.getY() === obj.getY();
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Get a location translated by the specified amount.
      *
@@ -106,7 +104,6 @@ class Location {
         return new Location(this._x + dx, this._y + dy);
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Get a location translated by the specified amount.
      *
@@ -117,7 +114,6 @@ class Location {
         return this.offset(amount.getX(), amount.getY());
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Get a scaled location.
      *
@@ -138,12 +134,11 @@ class Location {
         }
     }
 
-    // noinspection JSUnusedGlobalSymbols
+    /** @override */
     toString() {
         return `(${this._x}, ${this._y})`;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     toStringForFilename() {
         return `${this._x}_${this._y}`;
     }

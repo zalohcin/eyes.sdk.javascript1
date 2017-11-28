@@ -143,6 +143,7 @@ class SessionStartInfo {
         };
     }
 
+    /** @override */
     toString() {
         return `SessionStartInfo { ${GeneralUtils.toJson(this)} }`;
     }

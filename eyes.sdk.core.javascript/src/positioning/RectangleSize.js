@@ -65,7 +65,6 @@ class RectangleSize {
         return new RectangleSize(object.width, object.height);
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Parses a string into a {link RectangleSize} instance.
      *
@@ -96,7 +95,6 @@ class RectangleSize {
         return this._height;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Indicates whether some other RectangleSize is "equal to" this one.
      *
@@ -111,7 +109,6 @@ class RectangleSize {
         return this.getWidth() === obj.getWidth() && this.getHeight() === obj.getHeight();
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Get a scaled version of the current size.
      *
@@ -129,7 +126,7 @@ class RectangleSize {
         }
     }
 
-    // noinspection JSUnusedGlobalSymbols
+    /** @override */
     toString() {
         return `${this._width}x${this._height}`;
     }

@@ -58,7 +58,6 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         this._frameWindow = null;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Creates a frame(!) window screenshot.
      *
