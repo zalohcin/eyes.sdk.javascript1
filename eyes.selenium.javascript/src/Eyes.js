@@ -531,7 +531,7 @@ class Eyes extends EyesBase {
                                 return that._debugScreenshotsProvider.save(screenshotImage_, "checkFullFrameOrElement");
                             }).then(() => {
                                 const scaleProvider = scaleProviderFactory.getScaleProvider(screenshotImage.getWidth());
-                                // TODO: do we need to scale image?
+                                // TODO: do we need to scale the image? We don't do it in Java
                                 return screenshotImage.scale(scaleProvider.getScaleRatio());
                             }).then(screenshotImage_ => {
                                 screenshotImage = screenshotImage_;
@@ -1081,13 +1081,23 @@ class Eyes extends EyesBase {
         const that = this;
         that._logger.verbose("getScreenshot()");
 
-        let result, scaleProviderFactory, originalOverflow, error;
+        let result, scaleProviderFactory, originalOverflow, originalBodyOverflow, error;
         return that._updateScalingParams().then(scaleProviderFactory_ => {
             scaleProviderFactory = scaleProviderFactory_;
 
             if (that._hideScrollbars) {
                 return EyesSeleniumUtils.hideScrollbars(that._jsExecutor, DEFAULT_WAIT_SCROLL_STABILIZATION).then(originalOverflow_ => {
                     originalOverflow = originalOverflow_;
+
+                    if (that._stitchMode === StitchMode.CSS) {
+                        return EyesSeleniumUtils.isBodyOverflowHidden(that._jsExecutor).then(isBodyOverflowHidden => {
+                            if (isBodyOverflowHidden) {
+                                return EyesSeleniumUtils.setBodyOverflow(that._jsExecutor, "initial").then((originalBodyVal) => {
+                                    originalBodyOverflow = originalBodyVal;
+                                });
+                            }
+                        });
+                    }
                 }).catch(err => {
                     that._logger.log("WARNING: Failed to hide scrollbars! Error: " + err);
                 });
@@ -1180,6 +1190,10 @@ class Eyes extends EyesBase {
                     // Bummer, but we'll continue with the screenshot anyway :)
                     that._logger.log("WARNING: Failed to revert overflow! Error: " + err);
                 });
+            }
+        }).then(() => {
+            if (originalBodyOverflow) {
+                return EyesSeleniumUtils.setBodyOverflow(that._jsExecutor, originalBodyOverflow);
             }
         }).then(() => {
             if (error) {

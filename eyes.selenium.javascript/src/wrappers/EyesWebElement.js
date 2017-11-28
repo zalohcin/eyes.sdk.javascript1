@@ -397,15 +397,6 @@ class EyesWebElement extends WebElement {
         return this._webElement.takeScreenshot(opt_scroll);
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {EyesWebDriver}
-     */
-    getRemoteWebDriver() {
-        return this._eyesDriver;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {WebElement} The original element object
      */

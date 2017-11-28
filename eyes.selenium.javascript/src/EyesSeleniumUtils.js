@@ -43,8 +43,6 @@ const JS_GET_CONTENT_ENTIRE_SIZE =
 
 const JS_TRANSFORM_KEYS = ["transform", "-webkit-transform"];
 
-// TODO: investigate usage in old sdk
-// noinspection JSUnusedLocalSymbols
 const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
     "var styles = window.getComputedStyle(document.body, null);" +
     "var overflow = styles.getPropertyValue('overflow');" +
@@ -157,7 +155,16 @@ class EyesSeleniumUtils {
         });
     }
 
-    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {EyesJsExecutor|IWebDriver} executor The executor to use.
+     * @return {Promise.<Boolean>} A promise which resolves to the {@code true} if body overflow is hidden, {@code false} otherwise.
+     */
+    static isBodyOverflowHidden(executor) {
+        return executor.executeScript(JS_GET_IS_BODY_OVERFLOW_HIDDEN).catch(err => {
+            throw new EyesDriverOperationError('Failed to get state of body overflow', err);
+        });
+    }
+
     /**
      * Updates the document's body "overflow" value
      *
@@ -184,7 +191,6 @@ class EyesSeleniumUtils {
         });
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Hides the scrollbars of the current context's document element.
      *
