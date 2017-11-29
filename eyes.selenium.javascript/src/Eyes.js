@@ -1,10 +1,9 @@
 'use strict';
 
-const {WebDriver} = require('selenium-webdriver');
 const {
     EyesBase, FixedScaleProviderFactory, NullScaleProvider, RegionProvider, NullRegionProvider, ContextBasedScaleProviderFactory,
     ScaleProviderIdentityFactory, ArgumentGuard, SimplePropertyHandler, Logger,CoordinatesType, TestFailedError, NullCutProvider,
-    EyesError, UserAgent, ReadOnlyPropertyHandler, Region, Location, RectangleSize, FailureReports, ScreenshotType
+    UserAgent, ReadOnlyPropertyHandler, Region, Location, RectangleSize, FailureReports
 } = require('eyes.sdk');
 
 const ImageProviderFactory = require('./capture/ImageProviderFactory');
@@ -16,6 +15,7 @@ const EyesWebDriver = require('./wrappers/EyesWebDriver');
 const EyesSeleniumUtils = require('./EyesSeleniumUtils');
 const EyesWebElement = require('./wrappers/EyesWebElement');
 const EyesWebDriverScreenshot = require('./capture/EyesWebDriverScreenshot');
+const ImageRotation = require('./positioning/ImageRotation');
 const ScrollPositionProvider = require('./positioning/ScrollPositionProvider');
 const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider');
 const ElementPositionProvider = require('./positioning/ElementPositionProvider');
@@ -84,16 +84,13 @@ class Eyes extends EyesBase {
         /** @type {RegionPositionCompensation} */
         this._regionPositionCompensation = undefined;
 
-        /** @type {WebElement} */
+        /** @type {EyesWebElement} */
         this._targetElement = null;
 
         /** @type {boolean} */
         this._stitchContent = false;
         /** @type {int} */
         this._stitchingOverlap = DEFAULT_STITCHING_OVERLAP;
-
-        this._imageRotationDegrees = 0;
-        this._automaticRotation = true;
 
         this._init();
     }
@@ -521,6 +518,7 @@ class Eyes extends EyesBase {
             /** @override */
             getRegion () {
                 if (that._checkFrameOrElement) {
+                    // noinspection JSUnresolvedFunction
                     return that._ensureFrameVisible().then(fc => {
                         // FIXME - Scaling should be handled in a single place instead
                         // noinspection JSUnresolvedFunction
@@ -600,7 +598,7 @@ class Eyes extends EyesBase {
                 }).then(p => {
                     elementLocation = new Location(p.x, p.y);
 
-                    if (originalFC.size() > 0 && !element.equals(originalFC.peek().getReference())) {
+                    if (originalFC.size() > 0 && !EyesWebElement.equals(element, originalFC.peek().getReference())) {
                         return switchTo.frames(originalFC);
                     }
                 }).then(() => {
@@ -1243,24 +1241,21 @@ class Eyes extends EyesBase {
     //noinspection JSUnusedGlobalSymbols
     /**
      * Set the image rotation degrees.
-     * TODO: re-implement usage
      * @param degrees The amount of degrees to set the rotation to.
+     * @deprecated use {@link setRotation} instead
      */
     setForcedImageRotation(degrees) {
-        if (typeof degrees !== 'number') {
-            throw new TypeError('degrees must be a number! set to 0 to clear');
-        }
-        this._imageRotationDegrees = degrees;
-        this._automaticRotation = false;
+        this.setRotation(new ImageRotation(degrees))
     }
 
     //noinspection JSUnusedGlobalSymbols
     /**
      * Get the rotation degrees.
-     * @return {*|number} The rotation degrees.
+     * @return {number} The rotation degrees.
+     * @deprecated use {@link getRotation} instead
      */
     getForcedImageRotation() {
-        return this._imageRotationDegrees || 0;
+        return this.getRotation().getRotation();
     }
 
     //noinspection JSUnusedGlobalSymbols
