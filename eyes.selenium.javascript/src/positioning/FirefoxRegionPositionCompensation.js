@@ -1,5 +1,6 @@
 'use strict';
 
+const {Region} = require('eyes.sdk');
 const RegionPositionCompensation = require('./RegionPositionCompensation');
 
 class FirefoxRegionPositionCompensation extends RegionPositionCompensation {
@@ -11,7 +12,7 @@ class FirefoxRegionPositionCompensation extends RegionPositionCompensation {
     constructor(eyes, logger) {
         super();
 
-        this._executor = eyes;
+        this._eyes = eyes;
         this._logger = logger;
     }
 
@@ -24,7 +25,7 @@ class FirefoxRegionPositionCompensation extends RegionPositionCompensation {
             return region;
         }
 
-        const eyesWebDriver = this._executor.getDriver();
+        const eyesWebDriver = this._eyes.getDriver();
         const frameChain = eyesWebDriver.getFrameChain();
         if (frameChain.size() > 0) {
             return region;

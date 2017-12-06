@@ -1,7 +1,7 @@
-const { Builder } = require('selenium-webdriver');
-const { ConsoleLogHandler } = require('eyes.sdk');
-const { Target } = require('eyes.selenium');
-const { Eyes } = require('../../index');
+const {Builder} = require('selenium-webdriver');
+const {ConsoleLogHandler, Region} = require('eyes.sdk');
+const {Target} = require('eyes.selenium');
+const {Eyes} = require('../../index');
 
 let driver = null, eyes = null;
 describe('Eyes.Appium.JavaScript - appium-native', () => {
@@ -26,9 +26,9 @@ describe('Eyes.Appium.JavaScript - appium-native', () => {
     });
 
     it("test check window in Contacts app", function () {
-        return eyes.open(driver, this.test.parent.title, this.test.title).then(driver => {
+        return eyes.open(driver, this.test.parent.title, this.test.title).then(() => {
 
-            eyes.check("Contact list!", Target.window());
+            eyes.check("Contact list!", Target.window().ignore(new Region(418, 2, 60, 30)));
 
             return eyes.close();
         });

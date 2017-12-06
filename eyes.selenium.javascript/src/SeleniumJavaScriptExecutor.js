@@ -15,18 +15,18 @@ class SeleniumJavaScriptExecutor extends EyesJsExecutor {
             ArgumentGuard.notNull(promiseFactory, 'promiseFactory')
         }
 
-        this._executor = driver;
+        this._driver = driver;
         this._promiseFactory = promiseFactory || driver.getPromiseFactory();
     }
 
     /** @override */
     executeScript(script, ...args) {
-        return this._executor.executeScript(script, args);
+        return this._driver.executeScript(script, args);
     }
 
     /** @override */
     sleep(millis) {
-        return this._executor.sleep(millis);
+        return this._driver.sleep(millis);
     }
 
     /** @override */

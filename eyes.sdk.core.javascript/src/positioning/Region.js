@@ -95,6 +95,7 @@ class Region {
         ArgumentGuard.isValidType(object, Object);
         ArgumentGuard.hasProperties(object, ['left', 'top', 'width', 'height'], 'object');
 
+        // noinspection JSSuspiciousNameCombination
         return new Region(Math.ceil(object.left), Math.ceil(object.top), object.width, object.height, object.coordinatesType);
     }
 

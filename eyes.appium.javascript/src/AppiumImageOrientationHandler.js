@@ -5,8 +5,6 @@ const {ImageOrientationHandler, EyesDriverOperationError} = require('eyes.seleni
 
 const EyesAppiumUtils = require('./EyesAppiumUtils');
 
-const NATIVE_APP = "NATIVE_APP";
-
 class AppiumImageOrientationHandler extends ImageOrientationHandler {
 
     /**

@@ -91,8 +91,8 @@ class MatchWindowData {
      *                      Can be array of size 0, but MUST NOT be null.
      * @param {AppOutput} appOutput The appOutput for the current matchWindow call.
      * @param {String} tag The tag of the window to be matched.
-     * @param {Boolean} ignoreMismatch
-     * @param {Options} options
+     * @param {?Boolean} ignoreMismatch
+     * @param {?Options} options
      */
     constructor(userInputs, appOutput, tag, ignoreMismatch, options) {
         ArgumentGuard.notNull(userInputs, "userInputs");

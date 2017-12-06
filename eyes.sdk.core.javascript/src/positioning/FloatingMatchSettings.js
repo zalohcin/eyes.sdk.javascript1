@@ -9,8 +9,8 @@ const Region = require('./Region');
 class FloatingMatchSettings {
 
     constructor(left, top, width, height, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
-        this._top = top;
         this._left = left;
+        this._top = top;
         this._width = width;
         this._height = height;
 
