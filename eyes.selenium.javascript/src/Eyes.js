@@ -57,6 +57,9 @@ class Eyes extends EyesBase {
         /** @type {boolean} */
         this._checkFrameOrElement = false;
 
+        /** @type {String} */
+        this._originalOverflow = false;
+
         /** @type {Region} */
         this._regionToCheck = null;
 
@@ -1070,6 +1073,50 @@ class Eyes extends EyesBase {
         return EyesSeleniumUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize));
     }
 
+    /** @override */
+    beforeOpen() {
+        return this._tryHideScrollbars();
+    }
+
+    /** @override */
+    beforeMatchWindow() {
+        return this._tryHideScrollbars();
+    }
+
+    /**
+     * @private
+     * @return {Promise}
+     */
+    _tryHideScrollbars() {
+        if (this._hideScrollbars) {
+            const that = this;
+            return EyesSeleniumUtils.hideScrollbars(that._driver, 200).then(overflow => {
+                that._originalOverflow = overflow;
+            }).catch(err => {
+                that._logger.log("WARNING: Failed to hide scrollbars! Error: " + err);
+            });
+        }
+
+        return this.getPromiseFactory().resolve();
+    }
+
+    /*
+    /**
+     * @protected
+     * @return {Promise}
+     * /
+    _afterMatchWindow() {
+        if (this.hideScrollbars) {
+            try {
+                EyesSeleniumUtils.setOverflow(this.driver, this.originalOverflow);
+            } catch (EyesDriverOperationException e) {
+                // Bummer, but we'll continue with the screenshot anyway :)
+                logger.log("WARNING: Failed to revert overflow! Error: " + e.getMessage());
+            }
+        }
+    }
+    */
+
     //noinspection JSUnusedGlobalSymbols
     /**
      * @protected
@@ -1079,32 +1126,14 @@ class Eyes extends EyesBase {
         const that = this;
         that._logger.verbose("getScreenshot()");
 
-        let result, scaleProviderFactory, originalOverflow, originalBodyOverflow, error;
+        let result, scaleProviderFactory, originalBodyOverflow, error;
         return that._updateScalingParams().then(scaleProviderFactory_ => {
             scaleProviderFactory = scaleProviderFactory_;
 
-            if (that._hideScrollbars) {
-                return EyesSeleniumUtils.hideScrollbars(that._jsExecutor, DEFAULT_WAIT_SCROLL_STABILIZATION).then(originalOverflow_ => {
-                    originalOverflow = originalOverflow_;
-
-                    if (that._stitchMode === StitchMode.CSS) {
-                        return EyesSeleniumUtils.isBodyOverflowHidden(that._jsExecutor).then(isBodyOverflowHidden => {
-                            if (isBodyOverflowHidden) {
-                                return EyesSeleniumUtils.setBodyOverflow(that._jsExecutor, "initial").then((originalBodyVal) => {
-                                    originalBodyOverflow = originalBodyVal;
-                                });
-                            }
-                        });
-                    }
-                }).catch(err => {
-                    that._logger.log("WARNING: Failed to hide scrollbars! Error: " + err);
-                });
-            }
-        }).then(() => {
             const screenshotFactory = new EyesWebDriverScreenshotFactory(that._logger, that._driver, that.getPromiseFactory());
 
             const originalFrameChain = new FrameChain(that._logger, that._driver.getFrameChain());
-            const algo = new FullPageCaptureAlgorithm(that._logger, that._userAgent, that.getPromiseFactory());
+            const algo = new FullPageCaptureAlgorithm(that._logger, that._userAgent, that._jsExecutor, that.getPromiseFactory());
             const switchTo = that._driver.switchTo();
 
             if (that._checkFrameOrElement) {
@@ -1182,13 +1211,6 @@ class Eyes extends EyesBase {
             });
         }).catch(error_ => {
             error = error_;
-        }).then(() => {
-            if (that._hideScrollbars) {
-                return EyesSeleniumUtils.setOverflow(that._driver, originalOverflow).catch(err => {
-                    // Bummer, but we'll continue with the screenshot anyway :)
-                    that._logger.log("WARNING: Failed to revert overflow! Error: " + err);
-                });
-            }
         }).then(() => {
             if (originalBodyOverflow) {
                 return EyesSeleniumUtils.setBodyOverflow(that._jsExecutor, originalBodyOverflow);

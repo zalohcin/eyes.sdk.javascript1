@@ -6,8 +6,6 @@ const EyesDriverOperationError = require('./errors/EyesDriverOperationError');
 const ImageOrientationHandler = require('./ImageOrientationHandler');
 const JavascriptHandler = require('./JavascriptHandler');
 
-const NATIVE_APP = 'NATIVE_APP';
-
 const JS_GET_VIEWPORT_SIZE =
     "var height = undefined; " +
     "var width = undefined; " +
@@ -28,7 +26,7 @@ const JS_GET_CURRENT_SCROLL_POSITION =
 // IMPORTANT: Notice there's a major difference between scrollWidth and scrollHeight.
 // While scrollWidth is the maximum between an element's width and its content width,
 // scrollHeight might be smaller (!) than the clientHeight, which is why we take the maximum between them.
-const JS_GET_CONTENT_ENTIRE_SIZE =
+const JS_COMPUTE_CONTENT_ENTIRE_SIZE =
     "var scrollWidth = document.documentElement.scrollWidth; " +
     "var bodyScrollWidth = document.body.scrollWidth; " +
     "var totalWidth = Math.max(scrollWidth, bodyScrollWidth); " +
@@ -38,8 +36,11 @@ const JS_GET_CONTENT_ENTIRE_SIZE =
     "var bodyScrollHeight = document.body.scrollHeight; " +
     "var maxDocElementHeight = Math.max(clientHeight, scrollHeight); " +
     "var maxBodyHeight = Math.max(bodyClientHeight, bodyScrollHeight); " +
-    "var totalHeight = Math.max(maxDocElementHeight, maxBodyHeight); " +
-    "return [totalWidth, totalHeight];";
+    "var totalHeight = Math.max(maxDocElementHeight, maxBodyHeight); ";
+
+const JS_RETURN_CONTENT_ENTIRE_SIZE = JS_COMPUTE_CONTENT_ENTIRE_SIZE + "return [totalWidth, totalHeight];";
+
+const JS_SCROLL_TO_BOTTOM_RIGHT = JS_COMPUTE_CONTENT_ENTIRE_SIZE + "window.scrollTo(totalWidth, totalHeight);";
 
 const JS_TRANSFORM_KEYS = ["transform", "-webkit-transform"];
 
@@ -232,6 +233,16 @@ class EyesSeleniumUtils {
     }
 
     /**
+     * Scrolls current frame to its bottom right.
+     *
+     * @param {EyesJsExecutor|IWebDriver} executor The executor to use.
+     * @return {Promise} A promise which resolves after the action is performed and timeout passed.
+     */
+    static scrollToBottomRight(executor) {
+        return executor.executeScript(JS_SCROLL_TO_BOTTOM_RIGHT);
+    }
+
+    /**
      * Get the entire page size.
      *
      * @param {EyesJsExecutor|IWebDriver} executor The executor to use.
@@ -241,7 +252,7 @@ class EyesSeleniumUtils {
         // IMPORTANT: Notice there's a major difference between scrollWidth and scrollHeight.
         // While scrollWidth is the maximum between an element's width and its content width,
         // scrollHeight might be smaller (!) than the clientHeight, which is why we take the maximum between them.
-        return executor.executeScript(JS_GET_CONTENT_ENTIRE_SIZE).then(result => {
+        return executor.executeScript(JS_RETURN_CONTENT_ENTIRE_SIZE).then(result => {
             return new RectangleSize(parseInt(result[0], 10) || 0, parseInt(result[1], 10) || 0);
         }).catch(err => {
             throw new EyesDriverOperationError("Failed to extract entire size!", err);

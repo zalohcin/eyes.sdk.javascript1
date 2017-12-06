@@ -1,6 +1,6 @@
 'use strict';
 
-const {GetRegion, Region} = require('eyes.sdk');
+const {GetRegion, Region, Location, CoordinatesType} = require('eyes.sdk');
 
 class IgnoreRegionBySelector extends GetRegion {
 
@@ -16,13 +16,15 @@ class IgnoreRegionBySelector extends GetRegion {
     /**
      * @override
      * @param {Eyes} eyesBase
+     * @param {EyesScreenshot} screenshot
      */
-    getRegion(eyesBase) {
+    getRegion(eyesBase, screenshot) {
         const that = this;
         return eyesBase.getDriver().findElement(that._element).then(element => {
             return element.getLocation().then(point => {
                 return element.getSize().then(size => {
-                    return new Region(Math.ceil(point.x), Math.ceil(point.y), size.width, size.height);
+                    const lTag = screenshot.convertLocation(new Location(point), CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.SCREENSHOT_AS_IS);
+                    return new Region(lTag.getX(), lTag.getY(), size.width, size.height);
                 });
             });
         });

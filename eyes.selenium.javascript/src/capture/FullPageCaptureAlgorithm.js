@@ -11,15 +11,19 @@ class FullPageCaptureAlgorithm {
     /**
      * @param {Logger} logger
      * @param {UserAgent} userAgent
+     * @param {EyesJsExecutor} jsExecutor
      * @param {PromiseFactory} promiseFactory
      */
-    constructor(logger, userAgent, promiseFactory) {
+    constructor(logger, userAgent, jsExecutor, promiseFactory) {
         ArgumentGuard.notNull(logger, "logger");
+        // TODO: why do we need userAgent here?
         // ArgumentGuard.notNull(userAgent, "userAgent");
+        ArgumentGuard.notNull(jsExecutor, "jsExecutor");
         ArgumentGuard.notNull(promiseFactory, "promiseFactory");
 
         this._logger = logger;
         this._userAgent = userAgent;
+        this._jsExecutor = jsExecutor;
         this._promiseFactory = promiseFactory;
     }
 
@@ -115,10 +119,10 @@ class FullPageCaptureAlgorithm {
         }).then(() => {
             return positionProvider.getEntireSize().then(entireSize_ => {
                 entireSize = entireSize_;
-                that._logger.verbose("Entire size of region context: " + entireSize);
+                that._logger.verbose(`Entire size of region context: ${entireSize}`);
             }).catch(err => {
                 that._logger.log("WARNING: Failed to extract entire size of region context" + err);
-                that._logger.log("Using image size instead: " + image.getWidth() + "x" + image.getHeight());
+                that._logger.log(`Using image size instead: ${image.getWidth()}x${image.getHeight()}`);
                 entireSize = new RectangleSize(image.getWidth(), image.getHeight());
             });
         }).then(() => {

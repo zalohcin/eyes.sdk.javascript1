@@ -165,19 +165,26 @@ class EyesBase {
 
     /** @private */
     _initProviders() {
+        // TODO: do we need to reset all the providers when user call to open? It may be unexpected.
         /** @type {PropertyHandler<ScaleProvider>} */
         this._scaleProviderHandler = new SimplePropertyHandler();
         this._scaleProviderHandler.set(new NullScaleProvider());
-        /** @type {PropertyHandler<CutProvider>} */
-        this._cutProviderHandler = new SimplePropertyHandler();
-        this._cutProviderHandler.set(new NullCutProvider());
         /** @type {PositionProvider} */
         this._positionProvider = new InvalidPositionProvider();
         /** @type {PropertyHandler<RectangleSize>} */
         this._viewportSizeHandler = new SimplePropertyHandler();
         this._viewportSizeHandler.set(null);
-        /** @type {DebugScreenshotsProvider} */
-        this._debugScreenshotsProvider = new NullDebugScreenshotProvider();
+
+        if (!this._cutProviderHandler) {
+            /** @type {PropertyHandler<CutProvider>} */
+            this._cutProviderHandler = new SimplePropertyHandler();
+            this._cutProviderHandler.set(new NullCutProvider());
+        }
+
+        if (!this._debugScreenshotsProvider) {
+            /** @type {DebugScreenshotsProvider} */
+            this._debugScreenshotsProvider = new NullDebugScreenshotProvider();
+        }
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -1061,10 +1068,14 @@ class EyesBase {
 
         const that = this;
         let matchResult;
-        return that._notifyEvent('validationWillStart', that._autSessionId, validationInfo).then(() => {
+        return that.beforeMatchWindow().then(() => {
+            return that._notifyEvent('validationWillStart', that._autSessionId, validationInfo);
+        }).then(() => {
             return EyesBase.matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, that);
         }).then(result => {
             matchResult = result;
+            return that.afterMatchWindow();
+        }).then(() => {
             that._logger.verbose("MatchWindow Done!");
 
             validationResult.setAsExpected(matchResult.getAsExpected());
@@ -1081,6 +1092,22 @@ class EyesBase {
         }).then(() => {
             return matchResult;
         });
+    }
+
+    /**
+     * @protected
+     * @return {Promise<T>}
+     */
+    beforeMatchWindow() {
+        return this.getPromiseFactory().resolve();
+    }
+
+    /**
+     * @protected
+     * @return {Promise<T>}
+     */
+    afterMatchWindow() {
+        return this.getPromiseFactory().resolve();
     }
 
     /**
@@ -1143,12 +1170,8 @@ class EyesBase {
 
                 imageMatchSettings = new ImageMatchSettings(matchLevel, null);
 
-                return EyesBase.collectIgnoreRegions(checkSettings, imageMatchSettings, self).then(() => {
-                    return EyesBase.collectFloatingRegions(checkSettings, imageMatchSettings, self);
-                }).then(() => {
-                    let ignoreCaret = checkSettings.getIgnoreCaret();
-                    imageMatchSettings.setIgnoreCaret(ignoreCaret ? ignoreCaret : defaultMatchSettings.getIgnoreCaret());
-                });
+                let ignoreCaret = checkSettings.getIgnoreCaret();
+                imageMatchSettings.setIgnoreCaret(ignoreCaret ? ignoreCaret : defaultMatchSettings.getIgnoreCaret());
             }
         }).then(() => {
             // noinspection JSUnresolvedVariable
@@ -1159,39 +1182,7 @@ class EyesBase {
             return regionProvider.getRegion();
         }).then(region => {
             self._logger.verbose("Calling match window...");
-            return self._matchWindowTask.matchWindow(self.getUserInputs(), region, tag, self._shouldMatchWindowRunOnceOnTimeout, ignoreMismatch, imageMatchSettings, retryTimeout);
-        });
-    }
-
-    // noinspection JSMethodCanBeStatic
-    /**
-     * @private
-     * @param {CheckSettings} checkSettings
-     * @param {ImageMatchSettings} imageMatchSettings
-     * @param {EyesBase} self
-     * @return {Promise}
-     */
-    static collectIgnoreRegions(checkSettings, imageMatchSettings, self) {
-        const regionPromises = checkSettings.getIgnoreRegions().map(container => container.getRegion(self), self);
-
-        return self.getPromiseFactory().all(regionPromises).then(ignoreRegions => {
-            imageMatchSettings.setIgnoreRegions(ignoreRegions);
-        });
-    }
-
-    // noinspection JSMethodCanBeStatic
-    /**
-     * @private
-     * @param {CheckSettings} checkSettings
-     * @param {ImageMatchSettings} imageMatchSettings
-     * @param {EyesBase} self
-     * @return {Promise}
-     */
-    static collectFloatingRegions(checkSettings, imageMatchSettings, self) {
-        const regionPromises = checkSettings.getFloatingRegions().map(container => container.getRegion(self), self);
-
-        return self.getPromiseFactory().all(regionPromises).then(floatingRegions => {
-            imageMatchSettings.setFloatingRegions(floatingRegions);
+            return self._matchWindowTask.matchWindow(self.getUserInputs(), region, tag, self._shouldMatchWindowRunOnceOnTimeout, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout);
         });
     }
 
@@ -1255,6 +1246,8 @@ class EyesBase {
 
                 that._isViewportSizeSet = false;
 
+                return that.beforeOpen();
+            }).then(() => {
                 that._currentAppName = appName || that._appName;
                 that._testName = testName;
                 that._viewportSizeHandler.set(viewportSize);
@@ -1269,12 +1262,30 @@ class EyesBase {
             }).then(autSessionId => {
                 that._autSessionId = autSessionId;
                 that._isOpen = true;
+            }).then(() => {
+                return that.afterOpen();
             });
         } catch (err) {
             this._logger.log(err);
             this._logger.getLogHandler().close();
             return this._promiseFactory.reject(err);
         }
+    }
+
+    /**
+     * @protected
+     * @return {Promise<T>}
+     */
+    beforeOpen() {
+        return this.getPromiseFactory().resolve();
+    }
+
+    /**
+     * @protected
+     * @return {Promise<T>}
+     */
+    afterOpen() {
+        return this.getPromiseFactory().resolve();
     }
 
     /**
@@ -1304,6 +1315,7 @@ class EyesBase {
                 that._serverConnector,
                 that._runningSession,
                 that._matchTimeout,
+                that,
                 outputProvider
             );
         });
@@ -1362,7 +1374,7 @@ class EyesBase {
         }
 
         this._logger.verbose("Viewport size explicitly set to " + explicitViewportSize);
-        this._viewportSizeHandler = new ReadOnlyPropertyHandler(this._logger, new RectangleSize(explicitViewportSize.getWidth(), explicitViewportSize.getHeight()));
+        this._viewportSizeHandler = new ReadOnlyPropertyHandler(this._logger, new RectangleSize(explicitViewportSize));
         this._isViewportSizeSet = true;
     }
 
@@ -1406,7 +1418,7 @@ class EyesBase {
             return;
         }
 
-        control = this._lastScreenshot.getIntersectedRegion(control, CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.SCREENSHOT_AS_IS);
+        control = this._lastScreenshot.getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
         if (control.isEmpty()) {
             this._logger.verbose(`Ignoring '${text}' (out of bounds)`);
             return;
@@ -1458,7 +1470,7 @@ class EyesBase {
             throw err;
         }
 
-        const controlScreenshotIntersect = this._lastScreenshot.getIntersectedRegion(control, CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.SCREENSHOT_AS_IS);
+        const controlScreenshotIntersect = this._lastScreenshot.getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
 
         // If the region is NOT empty, we'll give the coordinates relative to
         // the control.
@@ -1550,19 +1562,19 @@ class EyesBase {
                 that._defaultMatchSettings, that._branchName, that._parentBranchName, that._properties);
 
             that._logger.verbose("Starting server session...");
-            return that._serverConnector.startSession(that._sessionStartInfo);
-        }).then(runningSession => {
-            that._runningSession = runningSession;
-            that._logger.verbose(`Server session ID is ${that._runningSession.getId()}`);
+            return that._serverConnector.startSession(that._sessionStartInfo).then(runningSession => {
+                that._runningSession = runningSession;
+                that._logger.verbose(`Server session ID is ${that._runningSession.getId()}`);
 
-            const testInfo = `'${that._testName}' of '${that.getAppName()}' "${appEnvironment}`;
-            if (that._runningSession.getIsNewSession()) {
-                that._logger.log(`--- New test started - ${testInfo}`);
-                that._shouldMatchWindowRunOnceOnTimeout = true;
-            } else {
-                that._logger.log(`--- Test started - ${testInfo}`);
-                that._shouldMatchWindowRunOnceOnTimeout = false;
-            }
+                const testInfo = `'${that._testName}' of '${that.getAppName()}' "${appEnvironment}`;
+                if (that._runningSession.getIsNewSession()) {
+                    that._logger.log(`--- New test started - ${testInfo}`);
+                    that._shouldMatchWindowRunOnceOnTimeout = true;
+                } else {
+                    that._logger.log(`--- Test started - ${testInfo}`);
+                    that._shouldMatchWindowRunOnceOnTimeout = false;
+                }
+            });
         });
     }
 
@@ -1604,28 +1616,32 @@ class EyesBase {
         const that = this;
         that._logger.verbose("getting screenshot...");
         // Getting the screenshot (abstract function implemented by each SDK).
-        let scr, compressedScr;
-        return that.getScreenshot().then(screenshot => {
+        let screenshot, compressedScreenshot, title;
+        return that.getScreenshot().then(screenshot_ => {
             that._logger.verbose("Done getting screenshot!");
 
             // Cropping by region if necessary
             if (!region.isEmpty()) {
-                return screenshot.getSubScreenshot(region, false);
+                return screenshot_.getSubScreenshot(region, false);
             }
-            return screenshot;
-        }).then(screenshot => {
-            scr = screenshot;
-            return that._debugScreenshotsProvider.save(screenshot.getImage(), "SUB_SCREENSHOT");
+            return screenshot_;
+        }).then(screenshot_ => {
+            screenshot = screenshot_;
+            return that._debugScreenshotsProvider.save(screenshot_.getImage(), "SUB_SCREENSHOT");
         }).then(() => {
             that._logger.verbose("Compressing screenshot...");
-            return that._compressScreenshot64(scr, lastScreenshot);
-        }).then(compressedScreenshot => {
-            compressedScr = compressedScreenshot;
-            that._logger.verbose("Done! Getting title...");
-            return that.getTitle();
-        }).then(title => {
-            that._logger.verbose("Done!");
-            const result = new AppOutputWithScreenshot(new AppOutput(title, compressedScr), scr);
+            return that._compressScreenshot64(screenshot, lastScreenshot).then(compressedScreenshot_ => {
+                compressedScreenshot = compressedScreenshot_;
+                that._logger.verbose("Done!");
+            });
+        }).then(() => {
+            that._logger.verbose("Getting title...");
+            return that.getTitle().then(title_ => {
+                title = title_;
+                that._logger.verbose("Done!");
+            });
+        }).then(() => {
+            const result = new AppOutputWithScreenshot(new AppOutput(title, compressedScreenshot), screenshot);
             that._logger.verbose("Done!");
             return result;
         });
