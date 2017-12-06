@@ -14,16 +14,14 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
     /**
      * @param {Eyes} eyes
      * @param {Logger} logger
-     * @param {EyesWebDriver} driver
-     * @param {PromiseFactory} promiseFactory
+     * @param {EyesWebDriver} tsInstance
      */
-    constructor(eyes, logger, driver, promiseFactory) {
+    constructor(eyes, logger, tsInstance) {
         super();
 
-        this._executor = eyes;
+        this._eyes = eyes;
         this._logger = logger;
-        this._executor = driver;
-        this._promiseFactory = promiseFactory;
+        this._tsInstance = tsInstance;
     }
 
     /**
@@ -33,23 +31,23 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
     getImage() {
         const that = this;
         this._logger.verbose("Getting screenshot as base64...");
-        return this._executor.takeScreenshot().then(screenshot64 => {
+        return this._tsInstance.takeScreenshot().then(screenshot64 => {
             that._logger.verbose("Done getting base64! Creating BufferedImage...");
-            const image = new MutableImage(screenshot64, that._promiseFactory);
+            const image = new MutableImage(screenshot64, that._eyes.getPromiseFactory());
 
-            return that._executor.getDebugScreenshotsProvider().save(image, "FIREFOX_FRAME").then(() => {
-                const frameChain = that._executor.getFrameChain();
+            return that._eyes.getDebugScreenshotsProvider().save(image, "FIREFOX_FRAME").then(() => {
+                const frameChain = that._eyes.getFrameChain();
                 if (frameChain.size() > 0) {
                     //Frame frame = frameChain.peek();
                     //Region region = eyes.getRegionToCheck();
-                    const screenshot = new EyesWebDriverScreenshot(that._logger, that._executor, image, that._promiseFactory);
+                    const screenshot = new EyesWebDriverScreenshot(that._logger, that._eyes, image, that._eyes.getPromiseFactory());
                     return screenshot.init().then(() => {
-                        return that._executor.getViewportSize();
+                        return that._eyes.getViewportSize();
                     }).then(viewportSize => {
                         let loc = screenshot.getFrameWindow().getLocation();
                         that._logger.verbose("frame.getLocation(): " + loc);
 
-                        const scaleRatio = that._executor.getDevicePixelRatio();
+                        const scaleRatio = that._eyes.getDevicePixelRatio();
                         viewportSize = viewportSize.scale(scaleRatio);
                         loc = loc.scale(scaleRatio);
 
