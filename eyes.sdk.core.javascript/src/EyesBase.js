@@ -177,7 +177,9 @@ class EyesBase {
         this._viewportSizeHandler = new SimplePropertyHandler();
         this._viewportSizeHandler.set(null);
         /** @type {DebugScreenshotsProvider} */
-        this._debugScreenshotsProvider = new NullDebugScreenshotProvider();
+        if (!this._debugScreenshotsProvider) {
+            this._debugScreenshotsProvider = new NullDebugScreenshotProvider();
+        }
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -1029,7 +1031,20 @@ class EyesBase {
         this._positionProvider = positionProvider;
     }
 
-    /**
+
+  /**
+   * @protected
+   * @abstract
+   */
+  beforeMatchWindow() {}
+
+  /**
+   * @protected
+   * @abstract
+   */
+  afterMatchWindow() {}
+
+  /**
      * Takes a snapshot of the application under test and matches it with the expected output.
      *
      * @protected
@@ -1062,9 +1077,13 @@ class EyesBase {
         const that = this;
         let matchResult;
         return that._notifyEvent('validationWillStart', that._autSessionId, validationInfo).then(() => {
+            return that.beforeMatchWindow();
+        }).then(() => {
             return EyesBase.matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, that);
         }).then(result => {
             matchResult = result;
+            return that.afterMatchWindow();
+        }).then(() => {
             that._logger.verbose("MatchWindow Done!");
 
             validationResult.setAsExpected(matchResult.getAsExpected());
@@ -1216,6 +1235,18 @@ class EyesBase {
         }
     }
 
+  /**
+   * @protected
+   * @abstract
+   */
+  beforeOpen() {}
+
+  /**
+   * @protected
+   * @abstract
+   */
+  afterOpen() {}
+
     /**
      * Starts a test.
      *
@@ -1255,6 +1286,8 @@ class EyesBase {
 
                 that._isViewportSizeSet = false;
 
+                return that.beforeOpen();
+            }).then(() => {
                 that._currentAppName = appName || that._appName;
                 that._testName = testName;
                 that._viewportSizeHandler.set(viewportSize);
@@ -1269,6 +1302,8 @@ class EyesBase {
             }).then(autSessionId => {
                 that._autSessionId = autSessionId;
                 that._isOpen = true;
+            }).then(() => {
+                return that.afterOpen();
             });
         } catch (err) {
             this._logger.log(err);
