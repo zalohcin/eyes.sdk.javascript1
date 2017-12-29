@@ -1031,20 +1031,21 @@ class EyesBase {
         this._positionProvider = positionProvider;
     }
 
+    /**
+     * @protected
+     * @abstract
+     */
+    beforeMatchWindow() {
+    }
 
-  /**
-   * @protected
-   * @abstract
-   */
-  beforeMatchWindow() {}
+    /**
+     * @protected
+     * @abstract
+     */
+    afterMatchWindow() {
+    }
 
-  /**
-   * @protected
-   * @abstract
-   */
-  afterMatchWindow() {}
-
-  /**
+    /**
      * Takes a snapshot of the application under test and matches it with the expected output.
      *
      * @protected
@@ -1235,17 +1236,19 @@ class EyesBase {
         }
     }
 
-  /**
-   * @protected
-   * @abstract
-   */
-  beforeOpen() {}
+    /**
+     * @protected
+     * @abstract
+     */
+    beforeOpen() {
+    }
 
-  /**
-   * @protected
-   * @abstract
-   */
-  afterOpen() {}
+    /**
+     * @protected
+     * @abstract
+     */
+    afterOpen() {
+    }
 
     /**
      * Starts a test.
@@ -1260,7 +1263,9 @@ class EyesBase {
     openBase(appName, testName, viewportSize, sessionType) {
         this._logger.getLogHandler().open();
 
-        if (viewportSize) { viewportSize = new RectangleSize(viewportSize); }
+        if (viewportSize) {
+            viewportSize = new RectangleSize(viewportSize);
+        }
 
         try {
             if (this._isDisabled) {
