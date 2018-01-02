@@ -20,7 +20,7 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
     constructor(eyes, logger, driver, promiseFactory) {
         super();
 
-        this._executor = eyes;
+        this._eyes = eyes;
         this._logger = logger;
         this._executor = driver;
         this._promiseFactory = promiseFactory;
@@ -37,19 +37,19 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
             that._logger.verbose("Done getting base64! Creating BufferedImage...");
             const image = new MutableImage(screenshot64, that._promiseFactory);
 
-            return that._executor.getDebugScreenshotsProvider().save(image, "FIREFOX_FRAME").then(() => {
+            return that._eyes.getDebugScreenshotsProvider().save(image, "FIREFOX_FRAME").then(() => {
                 const frameChain = that._executor.getFrameChain();
                 if (frameChain.size() > 0) {
                     //Frame frame = frameChain.peek();
                     //Region region = eyes.getRegionToCheck();
                     const screenshot = new EyesWebDriverScreenshot(that._logger, that._executor, image, that._promiseFactory);
                     return screenshot.init().then(() => {
-                        return that._executor.getViewportSize();
+                        return that._eyes.getViewportSize();
                     }).then(viewportSize => {
                         let loc = screenshot.getFrameWindow().getLocation();
                         that._logger.verbose("frame.getLocation(): " + loc);
 
-                        const scaleRatio = that._executor.getDevicePixelRatio();
+                        const scaleRatio = that._eyes.getDevicePixelRatio();
                         viewportSize = viewportSize.scale(scaleRatio);
                         loc = loc.scale(scaleRatio);
 
