@@ -3,7 +3,7 @@
 const ArgumentGuard = require('../ArgumentGuard');
 
 /**
- * @typedef {{width: number, height: number}} RectangleSizeObj
+ * @typedef {{width: number, height: number}} RectangleSizeObject
  */
 
 /**
@@ -19,7 +19,7 @@ class RectangleSize {
      * - (size: RectangleSize): from another instance of RectangleSize
      * - (object: {width: number, height: number}): from object
      *
-     * @param {Number|RectangleSize|RectangleSizeObj} arg1 The width of the rectangle.
+     * @param {Number|RectangleSize|RectangleSizeObject} arg1 The width of the rectangle.
      * @param {Number} [arg2] The height of the rectangle.
      */
     constructor(arg1, arg2) {
@@ -27,16 +27,10 @@ class RectangleSize {
 
         if (arg1 instanceof Object) {
             if (arg1 instanceof RectangleSize) {
-                width = arg1.getWidth();
-                height = arg1.getHeight();
-            } else if (arg1 instanceof Object) {
-                ArgumentGuard.hasProperties(arg1, ['width', 'height'], 'RectangleSizeObject');
-
-                width = arg1.width;
-                height = arg1.height;
-            } else {
-                throw new TypeError("The constructor is not support the object " + arg1);
+                return RectangleSize.fromRectangleSize(arg1);
             }
+
+            return RectangleSize.fromObject(arg1);
         }
 
         ArgumentGuard.greaterThanOrEqualToZero(width, "width", true);
@@ -46,7 +40,31 @@ class RectangleSize {
         this._height = height;
     }
 
-    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Creates a new instance of RectangleSize from other RectangleSize
+     *
+     * @param {RectangleSize} other
+     * @return {RectangleSize}
+     */
+    static fromRectangleSize(other) {
+        ArgumentGuard.isValidType(other, RectangleSize);
+
+        return new RectangleSize(other.getWidth(), other.getHeight());
+    }
+
+    /**
+     * Creates a new instance of RectangleSize from other RectangleSize
+     *
+     * @param {RectangleSizeObject} object
+     * @return {RectangleSize}
+     */
+    static fromObject(object) {
+        ArgumentGuard.isValidType(object, Object);
+        ArgumentGuard.hasProperties(object, ['width', 'height'], 'object');
+
+        return new RectangleSize(object.width, object.height);
+    }
+
     /**
      * Parses a string into a {link RectangleSize} instance.
      *
@@ -77,7 +95,6 @@ class RectangleSize {
         return this._height;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Indicates whether some other RectangleSize is "equal to" this one.
      *
@@ -92,7 +109,6 @@ class RectangleSize {
         return this.getWidth() === obj.getWidth() && this.getHeight() === obj.getHeight();
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Get a scaled version of the current size.
      *
@@ -110,7 +126,7 @@ class RectangleSize {
         }
     }
 
-    // noinspection JSUnusedGlobalSymbols
+    /** @override */
     toString() {
         return `${this._width}x${this._height}`;
     }

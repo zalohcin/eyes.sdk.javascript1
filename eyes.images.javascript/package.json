@@ -17,24 +17,24 @@
   "homepage": "http://www.applitools.com/",
   "repository": {
     "type": "git",
-    "url": "git://github.com/applitools/eyes.images.javascript.git"
+    "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE",
   "main": "index",
-  "scripts": {
-    "browserify": "browserify eyes-browser-loader.js > dist/eyes-browser.js",
-    "uglify": "uglifyjs dist/eyes-browser.js > dist/eyes-browser.min.js",
-    "build": "npm run browserify && npm run uglify"
-  },
   "dependencies": {
     "eyes.sdk": "1.0.0"
   },
   "devDependencies": {
+    "mocha": "^4.0.0",
     "browserify": "^14.5.0",
     "uglify-es": "^3.1.9"
   },
-  "browser": {
-    "rsvp": false
+  "scripts": {
+    "test": "mocha ./test/**/*.spec.js -t 300000",
+
+    "browserify": "browserify eyes-images-loader.js > dist/eyes-images.js",
+    "uglify": "uglifyjs dist/eyes-images.js > dist/eyes-images.min.js",
+    "build": "npm run browserify && npm run uglify"
   },
   "engines": {
     "node": ">= 6.9.0"

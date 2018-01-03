@@ -1,2 +1,4 @@
 exports.Eyes = require('./src/Eyes');
-exports.ElementFinderWrappers = require('./src/ElementFinderWrappers');
+const ElementFinderWrappers = require('./src/ElementFinderWrappers');
+exports.ElementFinderWrapper = ElementFinderWrappers.ElementFinderWrapper;
+exports.ElementArrayFinderWrapper = ElementFinderWrappers.ElementArrayFinderWrapper;

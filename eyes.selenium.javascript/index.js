@@ -45,5 +45,7 @@ exports.EyesWebElementPromise = require('./src/wrappers/EyesWebElementPromise');
 exports.BordersAwareElementContentLocationProvider = require('./src/BordersAwareElementContentLocationProvider');
 exports.Eyes = require('./src/Eyes');
 exports.EyesSeleniumUtils = require('./src/EyesSeleniumUtils');
+exports.ImageOrientationHandler = require('./src/ImageOrientationHandler');
+exports.JavascriptHandler = require('./src/JavascriptHandler');
 exports.SeleniumJavaScriptExecutor = require('./src/SeleniumJavaScriptExecutor');
 exports.StitchMode = require('./src/StitchMode');

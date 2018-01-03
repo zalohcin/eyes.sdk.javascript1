@@ -1,0 +1,40 @@
+const { Builder } = require('selenium-webdriver');
+const { ConsoleLogHandler } = require('eyes.sdk');
+const { Target } = require('eyes.selenium');
+const { Eyes } = require('../../index');
+
+let driver = null, eyes = null;
+describe('Eyes.Appium.JavaScript - appium-native', () => {
+
+    before(function () {
+        driver = new Builder()
+            .withCapabilities({
+                'platformName': 'Android',
+                'deviceName': 'android-24-google_apis-x86_64-v24.4.1-wd-manager',
+                'platformVersion': '7.0',
+                'app': 'http://saucelabs.com/example_files/ContactManager.apk',
+                'browserName': '',
+                'clearSystemFiles': 'true',
+                'noReset': 'true'
+            })
+            .usingServer('http://localhost:4723/wd/hub')
+            .build();
+
+        eyes = new Eyes();
+        eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
+        eyes.setLogHandler(new ConsoleLogHandler(true));
+    });
+
+    it("test check window in Contacts app", function () {
+        return eyes.open(driver, this.test.parent.title, this.test.title).then(driver => {
+
+            eyes.check("Contact list!", Target.window());
+
+            return eyes.close();
+        });
+    });
+
+    afterEach(function () {
+        return driver.quit().then(() => eyes.abortIfNotClosed());
+    });
+});

@@ -75,11 +75,10 @@ class EyesScreenshot {
      * Get the intersection of the given region with the screenshot.
      * @abstract
      * @param {Region} region The region to intersect.
-     * @param {CoordinatesType} originalCoordinatesType The coordinates type of {@code region}.
-     * @param {CoordinatesType} resultCoordinatesType The coordinates type of the resulting region.
+     * @param {CoordinatesType} coordinatesType The coordinates type of {@code region}.
      * @return {Region} The intersected region, in {@code resultCoordinatesType} coordinates.
      */
-    getIntersectedRegion(region, originalCoordinatesType, resultCoordinatesType) {
+    getIntersectedRegion(region, coordinatesType) {
         throw new TypeError('The method `getIntersectedRegion` from `EyesScreenshot` should be implemented!');
     }
 

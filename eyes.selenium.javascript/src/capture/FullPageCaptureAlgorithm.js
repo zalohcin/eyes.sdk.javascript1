@@ -1,6 +1,6 @@
 'use strict';
 
-const {ArgumentGuard, Location, Region, RectangleSize, CoordinatesType, GeneralUtils, MutableImage} = require('eyes.sdk');
+const {ArgumentGuard, Location, Region, RectangleSize, CoordinatesType, GeneralUtils, MutableImage, NullCutProvider} = require('eyes.sdk');
 
 const NullRegionPositionCompensation = require('../positioning/NullRegionPositionCompensation');
 
@@ -15,7 +15,7 @@ class FullPageCaptureAlgorithm {
      */
     constructor(logger, userAgent, promiseFactory) {
         ArgumentGuard.notNull(logger, "logger");
-        ArgumentGuard.notNull(userAgent, "userAgent");
+        // ArgumentGuard.notNull(userAgent, "userAgent");
         ArgumentGuard.notNull(promiseFactory, "promiseFactory");
 
         this._logger = logger;
@@ -47,7 +47,7 @@ class FullPageCaptureAlgorithm {
         ArgumentGuard.notNull(positionProvider, "positionProvider");
 
         this._logger.verbose(`getStitchedRegion: originProvider: ${originProvider.constructor.name} ; positionProvider: ${positionProvider.constructor.name} ; cutProvider: ${cutProvider.constructor.name}`);
-        this._logger.verbose("Region to check: " + region);
+        this._logger.verbose(`Region to check: ${region}`);
 
         const that = this;
         let originalPosition, currentPosition, /** @type {MutableImage} */ image, scaleProvider, pixelRatio, regionInScreenshot, entireSize;
@@ -79,10 +79,12 @@ class FullPageCaptureAlgorithm {
 
             // FIXME - cropping should be overlaid, so a single cut provider will only handle a single part of the image.
             cutProvider = cutProvider.scale(pixelRatio);
-            return cutProvider.cut(image).then(image_ => {
-                image = image_;
-                return debugScreenshotsProvider.save(image, "original-cut");
-            });
+            if (!(cutProvider instanceof NullCutProvider)) {
+                return cutProvider.cut(image).then(image_ => {
+                    image = image_;
+                    return debugScreenshotsProvider.save(image, "original-cut");
+                });
+            }
         }).then(() => {
             that._logger.verbose("Done! Creating screenshot object...");
 
@@ -93,6 +95,10 @@ class FullPageCaptureAlgorithm {
 
             regionInScreenshot = _getRegionInScreenshot(that._logger, region, image, pixelRatio, screenshot, regionPositionCompensation);
 
+            if (!regionInScreenshot.getSize().equals(region.getSize())) {
+                regionInScreenshot = _getRegionInScreenshot(that._logger, region, image, pixelRatio, screenshot, regionPositionCompensation);
+            }
+
             if (!regionInScreenshot.isEmpty()) {
                 return image.getImagePart(regionInScreenshot).then(image_ => {
                     image = image_;
@@ -100,10 +106,12 @@ class FullPageCaptureAlgorithm {
                 });
             }
         }).then(() => {
-            return image.scale(scaleProvider.getScaleRatio()).then(image_ => {
-                image = image_;
-                return debugScreenshotsProvider.save(image, "scaled");
-            });
+            if (pixelRatio !== 1) {
+                return image.scale(scaleProvider.getScaleRatio()).then(image_ => {
+                    image = image_;
+                    return debugScreenshotsProvider.save(image, "scaled");
+                });
+            }
         }).then(() => {
             return positionProvider.getEntireSize().then(entireSize_ => {
                 entireSize = entireSize_;
@@ -181,24 +189,30 @@ class FullPageCaptureAlgorithm {
                             });
                         }).then(() => {
                             // FIXME - cropping should be overlaid (see previous comment re cropping)
-                            return cutProvider.cut(partImage).then(partImage_ => {
-                                partImage = partImage_;
-                                return debugScreenshotsProvider.save(partImage, "original-scrolled-cut-" + currentPosition.toStringForFilename());
-                            });
+                            if (!(cutProvider instanceof NullCutProvider)) {
+                                that._logger.verbose("cutting...");
+                                return cutProvider.cut(partImage).then(partImage_ => {
+                                    partImage = partImage_;
+                                    return debugScreenshotsProvider.save(partImage, "original-scrolled-cut-" + currentPosition.toStringForFilename());
+                                });
+                            }
                         }).then(() => {
-                            that._logger.verbose("Done!");
                             if (!regionInScreenshot.isEmpty()) {
+                                that._logger.verbose("cropping...");
                                 return partImage.getImagePart(regionInScreenshot).then(partImage_ => {
                                     partImage = partImage_;
                                     return _saveDebugScreenshotPart(debugScreenshotsProvider, partImage, partRegion, "original-scrolled-" + currentPosition.toStringForFilename());
                                 });
                             }
                         }).then(() => {
-                            // FIXME - scaling should be refactored
-                            return partImage.scale(scaleProvider.getScaleRatio()).then(partImage_ => {
-                                partImage = partImage_;
-                                return _saveDebugScreenshotPart(debugScreenshotsProvider, partImage, partRegion, "original-scrolled-" + currentPosition.toStringForFilename() + "-scaled-");
-                            });
+                            if (pixelRatio !== 1) {
+                                that._logger.verbose("scaling...");
+                                // FIXME - scaling should be refactored
+                                return partImage.scale(scaleProvider.getScaleRatio()).then(partImage_ => {
+                                    partImage = partImage_;
+                                    return _saveDebugScreenshotPart(debugScreenshotsProvider, partImage, partRegion, "original-scrolled-" + currentPosition.toStringForFilename() + "-scaled-");
+                                });
+                            }
                         }).then(() => {
                             that._logger.verbose("Stitching part into the image container...");
 
@@ -256,7 +270,7 @@ class FullPageCaptureAlgorithm {
  */
 function _getRegionInScreenshot(logger, region, image, pixelRatio, screenshot, regionPositionCompensation) {
     // Region regionInScreenshot = screenshot.convertRegionLocation(regionProvider.getRegion(), regionProvider.getCoordinatesType(), CoordinatesType.SCREENSHOT_AS_IS);
-    let regionInScreenshot = screenshot.getIntersectedRegion(region, region.getCoordinatesType(), CoordinatesType.SCREENSHOT_AS_IS);
+    let regionInScreenshot = screenshot.getIntersectedRegion(region, CoordinatesType.SCREENSHOT_AS_IS);
 
     logger.verbose("Done! Region in screenshot: " + regionInScreenshot);
     regionInScreenshot = regionInScreenshot.scale(pixelRatio);

@@ -11,7 +11,6 @@ const DATE_FORMAT = "yyyy_mm_dd_HH_MM_ss_l";
  */
 class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @param {MutableImage} image
      * @param {String} suffix
@@ -22,7 +21,7 @@ class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
         return image.save(filename.replace(' ', '_'));
     }
 
-    // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
+    // noinspection JSMethodCanBeStatic
     /**
      * @return {Promise}
      */

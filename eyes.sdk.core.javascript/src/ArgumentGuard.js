@@ -1,5 +1,7 @@
 'use strict';
 
+const GeneralUtils = require('./GeneralUtils');
+
 /**
  * Argument validation utilities.
  */
@@ -126,6 +128,42 @@ class ArgumentGuard {
 
     //noinspection JSUnusedGlobalSymbols
     /**
+     * Fails if param is not a string.
+     *
+     * @param {Object} param The input parameter.
+     */
+    static isString(param) {
+        if (!GeneralUtils.isString(param)) {
+            throw new Error(`IllegalType: \`${param}\` is not a string`);
+        }
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Fails if param is not a buffer.
+     *
+     * @param {Object} param The input parameter.
+     */
+    static isBuffer(param) {
+        if (!GeneralUtils.isBuffer(param)) {
+            throw new Error(`IllegalType: \`${param}\` is not a buffer`);
+        }
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Fails if param is not a base64 string.
+     *
+     * @param {Object} param The input parameter.
+     */
+    static isBase64(param) {
+        if (!GeneralUtils.isBase64(param)) {
+            throw new Error(`IllegalType: \`${param}\` is not a base64 string`);
+        }
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
      * Fails if isValid is false.
      *
      * @param {Boolean} isValid Whether the current state is valid.
@@ -146,7 +184,7 @@ class ArgumentGuard {
      */
     static isValidType(param, type) {
         if (!(param instanceof type)) {
-            throw new Error(`IllegalType: ${param} is not instance of ${type}`);
+            throw new Error(`IllegalType: ${param} is not instance of ${type.constructor.name}`);
         }
     };
 

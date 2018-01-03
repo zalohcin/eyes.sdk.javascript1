@@ -21,11 +21,12 @@
   "homepage": "http://www.applitools.com/",
   "repository": {
     "type": "git",
-    "url": "git://github.com/applitools/Eyes.Selenium.JavaScript.git"
+    "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE",
   "main": "index",
   "dependencies": {
+    "eyes.sdk": "1.0.0",
     "eyes.selenium": "1.0.0"
   },
   "devDependencies": {

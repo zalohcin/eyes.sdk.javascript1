@@ -30,7 +30,7 @@ class EyesImagesScreenshot extends EyesScreenshot {
         ArgumentGuard.notNull(region, "region");
 
         // We want to get the sub-screenshot in as-is coordinates type.
-        const subScreenshotRegion = this.getIntersectedRegion(region, region.getCoordinatesType(), CoordinatesType.SCREENSHOT_AS_IS);
+        const subScreenshotRegion = this.getIntersectedRegion(region, CoordinatesType.SCREENSHOT_AS_IS);
 
         if (subScreenshotRegion.isEmpty() || (throwIfClipped && !subScreenshotRegion.getSize().equals(region.getSize()))) {
             throw new OutOfBoundsError(`Region [${region}] is out of screenshot bounds [${this._bounds}]`);
@@ -110,19 +110,18 @@ class EyesImagesScreenshot extends EyesScreenshot {
      * Get the intersected region.
      *
      * @param {Region} region The region to intersect.
-     * @param {CoordinatesType} originalCoordinatesType The coordinates type of {@code region}.
      * @param {CoordinatesType} resultCoordinatesType The coordinates type of the resulting region.
      * @return {Region} The region of the intersected region.
      */
-    getIntersectedRegion(region, originalCoordinatesType, resultCoordinatesType) {
+    getIntersectedRegion(region, resultCoordinatesType) {
         ArgumentGuard.notNull(region, "region");
-        ArgumentGuard.notNull(originalCoordinatesType, "coordinatesType");
+        ArgumentGuard.notNull(resultCoordinatesType, "coordinatesType");
 
         if (region.isEmpty()) {
             return new Region(region);
         }
 
-        const intersectedRegion = this.convertRegionLocation(region, originalCoordinatesType, CoordinatesType.CONTEXT_RELATIVE);
+        const intersectedRegion = this.convertRegionLocation(region, region.getCoordinatesType(), CoordinatesType.CONTEXT_RELATIVE);
         intersectedRegion.intersect(this._bounds);
 
         // If the intersection is empty we don't want to convert the coordinates.

@@ -109,6 +109,7 @@ class FloatingMatchSettings {
         };
     }
 
+    /** @override */
     toString() {
         return `FloatingMatchSettings { ${GeneralUtils.toJson(this)} }`;
     }

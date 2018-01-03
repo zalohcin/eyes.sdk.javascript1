@@ -16,9 +16,9 @@
   "homepage": "http://www.applitools.com/",
   "repository": {
     "type": "git",
-    "url": "git://github.com/applitools/Eyes.Sdk.JavaScript.git"
+    "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE",
   "main": "index",
   "dependencies": {
     "dateformat": "^3.0.0",
@@ -28,10 +28,16 @@
     "axios": "^0.17.1"
   },
   "devDependencies": {
-    "mocha": "^4.0.0"
+    "mocha": "^4.0.0",
+    "browserify": "^14.5.0",
+    "uglify-es": "^3.1.9"
   },
   "scripts": {
-    "test": "mocha ./test/**/*.spec.js"
+    "test": "mocha ./test/**/*.spec.js",
+
+    "browserify": "browserify eyes-sdk-loader.js > dist/eyes-sdk.js",
+    "uglify": "uglifyjs dist/eyes-sdk.js > dist/eyes-sdk.min.js",
+    "build": "npm run browserify && npm run uglify"
   },
   "engines": {
     "node": ">= 6.9.0"

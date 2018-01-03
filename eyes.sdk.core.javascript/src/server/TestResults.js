@@ -329,9 +329,10 @@ class TestResults {
         this.isAborted = value;
     }
 
+    /** @override */
     toString() {
         const isNewTestStr = this.isNew ? "New test" : "Existing test";
-        return `${isNewTestStr} [steps: ${this.steps}, matches: ${this.matches}, mismatches:${this.mismatches}, missing: ${this.missing}] , URL: ${this.url}`;
+        return `${isNewTestStr} [steps: ${this.steps}, matches: ${this.matches}, mismatches: ${this.mismatches}, missing: ${this.missing}] , URL: ${this.url}, status: ${this.status}`;
     }
 }
 

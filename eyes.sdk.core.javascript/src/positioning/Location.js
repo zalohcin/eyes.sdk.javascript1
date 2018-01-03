@@ -3,7 +3,7 @@
 const ArgumentGuard = require('../ArgumentGuard');
 
 /**
- * @typedef {{x: number, y: number}} LocationObj
+ * @typedef {{x: number, y: number}} LocationObject
  */
 
 /**
@@ -19,7 +19,7 @@ class Location {
      * - (location: Location): from another instance of Location
      * - (object: {x: number, y: number}): from object
      *
-     * @param {Number|Location|LocationObj} arg1 The X coordinate of this location.
+     * @param {Number|Location|LocationObject} arg1 The X coordinate of this location.
      * @param {Number} [arg2] The Y coordinate of the location.
      */
     constructor(arg1, arg2) {
@@ -27,16 +27,10 @@ class Location {
 
         if (arg1 instanceof Object) {
             if (arg1 instanceof Location) {
-                x = arg1.getX();
-                y = arg1.getY();
-            } else if (arg1 instanceof Object) {
-                ArgumentGuard.hasProperties(arg1, ['x', 'y'], 'LocationObject');
-
-                x = arg1.x;
-                y = arg1.y;
-            } else {
-                throw new TypeError("The constructor is not support the object " + arg1);
+                return Location.fromLocation(arg1);
             }
+
+            return Location.fromObject(arg1);
         }
 
         ArgumentGuard.isInteger(x, "x");
@@ -44,6 +38,31 @@ class Location {
 
         this._x = x;
         this._y = y;
+    }
+
+    /**
+     * Creates a new instance of Location from other Location
+     *
+     * @param {Location} other
+     * @return {Location}
+     */
+    static fromLocation(other) {
+        ArgumentGuard.isValidType(other, Location);
+
+        return new Location(other.getX(), other.getY());
+    }
+
+    /**
+     * Creates a new instance of Location from object
+     *
+     * @param {LocationObject} object
+     * @return {Location}
+     */
+    static fromObject(object) {
+        ArgumentGuard.isValidType(object, Object);
+        ArgumentGuard.hasProperties(object, ['x', 'y'], 'object');
+
+        return new Location(Math.ceil(object.x), Math.ceil(object.y));
     }
 
     /**
@@ -60,7 +79,6 @@ class Location {
         return this._y;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Indicates whether some other Location is "equal to" this one.
      *
@@ -75,7 +93,6 @@ class Location {
         return this.getX() === obj.getX() && this.getY() === obj.getY();
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Get a location translated by the specified amount.
      *
@@ -87,7 +104,6 @@ class Location {
         return new Location(this._x + dx, this._y + dy);
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Get a location translated by the specified amount.
      *
@@ -98,7 +114,6 @@ class Location {
         return this.offset(amount.getX(), amount.getY());
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * Get a scaled location.
      *
@@ -119,12 +134,11 @@ class Location {
         }
     }
 
-    // noinspection JSUnusedGlobalSymbols
+    /** @override */
     toString() {
         return `(${this._x}, ${this._y})`;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     toStringForFilename() {
         return `${this._x}_${this._y}`;
     }

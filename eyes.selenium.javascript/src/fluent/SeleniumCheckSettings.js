@@ -12,7 +12,7 @@ const FrameLocator = require('./FrameLocator');
 class SeleniumCheckSettings extends CheckSettings {
 
     /**
-     * @param {Region|By|WebElement|EyesWebElement} [region]
+     * @param {Region|RegionObject|By|WebElement|EyesWebElement} [region]
      * @param {Integer|String|By|WebElement|EyesWebElement} [frame]
      */
     constructor(region, frame) {
@@ -185,7 +185,7 @@ class SeleniumCheckSettings extends CheckSettings {
     }
 
     /**
-     * @param {Region|By|WebElement|EyesWebElement} region The region to validate.
+     * @param {Region|RegionObject|By|WebElement|EyesWebElement} region The region to validate.
      * @return {SeleniumCheckSettings}
      */
     region(region) {

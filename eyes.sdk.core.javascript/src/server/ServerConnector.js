@@ -44,7 +44,6 @@ class ServerConnector {
 
         this._apiKey = null;
         this._proxySettings = null;
-        this._timeout = DEFAULT_TIMEOUT_MS;
 
         this._httpOptions = {
             proxy: null,
@@ -140,9 +139,7 @@ class ServerConnector {
      */
     setTimeout(timeout) {
         ArgumentGuard.greaterThanOrEqualToZero(timeout, "timeout");
-        this._timeout = timeout;
-
-        this._httpOptions.timeout = this._timeout;
+        this._httpOptions.timeout = timeout;
     }
 
     /**
@@ -150,7 +147,7 @@ class ServerConnector {
      * @return {int} The timeout for web requests (in seconds).
      */
     getTimeout() {
-        return this._timeout;
+        return this._httpOptions.timeout;
     }
 
     /**

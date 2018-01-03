@@ -75,10 +75,7 @@ class Options {
         };
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {String}
-     */
+    /** @override */
     toString() {
         return `Options { ${GeneralUtils.toJson(this)} }`;
     }
@@ -142,10 +139,7 @@ class MatchWindowData {
         };
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {String}
-     */
+    /** @override */
     toString() {
         return `MatchWindowData { ${GeneralUtils.toJson(this)} }`;
     }

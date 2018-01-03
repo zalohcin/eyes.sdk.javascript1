@@ -26,7 +26,6 @@ class RegionPositionCompensationFactory {
                 }
             } else if (userAgent.getBrowser() === BrowserNames.Safari) {
                 return new SafariRegionPositionCompensation();
-                //regionInScreenshot = regionInScreenshot.offset(0, (int) Math.ceil(pixelRatio));
             }
         }
         return new NullRegionPositionCompensation();

@@ -47,10 +47,7 @@ class TextTrigger extends Trigger {
         return Trigger.TriggerType.Text;
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {String}
-     */
+    /** @override */
     toString() {
         return `Text [${this._control}] ${this._text}`;
     }

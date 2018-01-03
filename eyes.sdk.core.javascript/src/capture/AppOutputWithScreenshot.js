@@ -15,7 +15,6 @@ class AppOutputWithScreenshot {
         this._screenshot = screenshot;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {AppOutput}
      */
@@ -23,7 +22,6 @@ class AppOutputWithScreenshot {
         return this._appOutput;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {EyesScreenshot}
      */

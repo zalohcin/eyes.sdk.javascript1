@@ -117,10 +117,7 @@ class ImageMatchSettings {
         };
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {String}
-     */
+    /** @override */
     toString() {
         return `ImageMatchSettings { ${GeneralUtils.toJson(this)} }`;
     }

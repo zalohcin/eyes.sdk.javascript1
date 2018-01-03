@@ -1,7 +1,7 @@
 'use strict';
 
 const {WebElement} = require('selenium-webdriver');
-const {Region, MouseTrigger, ArgumentGuard} = require('eyes.sdk');
+const {Region, MouseTrigger, ArgumentGuard, CoordinatesType} = require('eyes.sdk');
 
 const JS_GET_SCROLL_LEFT = "return arguments[0].scrollLeft;";
 
@@ -100,7 +100,7 @@ class EyesWebElement extends WebElement {
                     top = 0;
                 }
 
-                return new Region(left, top, width, height);
+                return new Region(left, top, width, height, CoordinatesType.CONTEXT_RELATIVE);
             });
         });
     }
@@ -397,15 +397,6 @@ class EyesWebElement extends WebElement {
         return this._webElement.takeScreenshot(opt_scroll);
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {EyesWebDriver}
-     */
-    getRemoteWebDriver() {
-        return this._eyesDriver;
-    }
-
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {WebElement} The original element object
      */

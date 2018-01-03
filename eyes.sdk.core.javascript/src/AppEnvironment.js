@@ -118,10 +118,7 @@ class AppEnvironment {
         };
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {String}
-     */
+    /** @override */
     toString() {
         return `AppEnvironment { ${GeneralUtils.toJson(this)} }`;
     }

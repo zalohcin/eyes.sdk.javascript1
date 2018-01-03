@@ -47,10 +47,7 @@ class RunningSession {
         };
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    /**
-     * @return {String}
-     */
+    /** @override */
     toString() {
         return `RunningSession { ${GeneralUtils.toJson(this)} }`;
     }

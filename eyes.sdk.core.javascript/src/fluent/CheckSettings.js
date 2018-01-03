@@ -15,9 +15,9 @@ class CheckSettings {
 
     /**
      * @param {?int} [timeout=-1]
-     * @param {Region} [region=undefined]
+     * @param {Region|RegionObject} [region]
      */
-    constructor(timeout = -1, region = undefined) {
+    constructor(timeout = -1, region) {
         this._matchLevel = undefined;
         this._ignoreCaret = undefined;
         this._stitchContent = false;
@@ -84,7 +84,6 @@ class CheckSettings {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {MatchLevel}
      */
@@ -104,7 +103,6 @@ class CheckSettings {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Boolean}
      */
@@ -133,7 +131,6 @@ class CheckSettings {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Boolean}
      */
@@ -149,13 +146,12 @@ class CheckSettings {
      * @return {CheckSettings} This instance of the settings object.
      */
     timeout(timeoutMilliseconds) {
-        if (Number.isInteger(timeoutMilliseconds)) {
+        if (timeoutMilliseconds && Number.isInteger(timeoutMilliseconds)) {
             this._timeout = timeoutMilliseconds;
         }
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {int}
      */
@@ -163,28 +159,26 @@ class CheckSettings {
         return this._timeout;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
-     * TODO: why the name is not setTargetRegion?
-     *
      * @protected
-     * @param {Region} region
+     * @param {Region|RegionObject} region
      */
     updateTargetRegion(region) {
         this._targetRegion = region;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Region}
      */
     getTargetRegion() {
+        if (this._targetRegion && !(this._targetRegion instanceof Region)) {
+            this._targetRegion = new Region(this._targetRegion);
+        }
+
         return this._targetRegion;
     }
 
     // noinspection JSUnusedGlobalSymbols
-
-
     /**
      * Adds a region to ignore.
      *
@@ -223,7 +217,6 @@ class CheckSettings {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {GetRegion[]}
      */
@@ -280,7 +273,6 @@ class CheckSettings {
         return this;
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {GetFloatingRegion[]}
      */
