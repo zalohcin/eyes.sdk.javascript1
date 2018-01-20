@@ -78,6 +78,7 @@ class EyesWebElement extends WebElement {
      */
     getBounds() {
         const that = this;
+        // noinspection JSValidateTypes
         return that.getLocation().then(/** @type {{x: number, y: number}} */ location_ => {
             let left = location_.x;
             let top = location_.y;
@@ -228,7 +229,7 @@ class EyesWebElement extends WebElement {
      */
     executeScript(script) {
         // noinspection JSValidateTypes
-        return this._eyesDriver.executeScript(script, this._webElement);
+        return this._eyesDriver.executeScript(script, this.getWebElement());
     }
 
     /**
@@ -236,7 +237,7 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     getDriver() {
-        return this._webElement.getDriver();
+        return this.getWebElement().getDriver();
     }
 
     /**
@@ -244,7 +245,7 @@ class EyesWebElement extends WebElement {
      * @return {promise.Thenable.<string>}
      */
     getId() {
-        return this._webElement.getId();
+        return this.getWebElement().getId();
     }
 
     /**
@@ -253,7 +254,8 @@ class EyesWebElement extends WebElement {
      */
     findElement(locator) {
         const that = this;
-        return this._webElement.findElement(locator).then(element => new EyesWebElement(that._logger, that._eyesDriver, element));
+        // noinspection JSValidateTypes
+        return this.getWebElement().findElement(locator).then(element => new EyesWebElement(that._logger, that._eyesDriver, element));
     }
 
     /**
@@ -262,7 +264,7 @@ class EyesWebElement extends WebElement {
      */
     findElements(locator) {
         const that = this;
-        return this._webElement.findElements(locator).then(elements => elements.map(element => new EyesWebElement(that._logger, that._eyesDriver, element)));
+        return this.getWebElement().findElements(locator).then(elements => elements.map(element => new EyesWebElement(that._logger, that._eyesDriver, element)));
     }
 
     // noinspection JSCheckFunctionSignatures
@@ -278,7 +280,7 @@ class EyesWebElement extends WebElement {
             that._eyesDriver.getEyes().addMouseTrigger(MouseTrigger.MouseAction.Click, this);
             that._logger.verbose(`click(${currentControl})`);
 
-            return that._webElement.click();
+            return that.getWebElement().click();
         });
     }
 
@@ -289,10 +291,11 @@ class EyesWebElement extends WebElement {
      */
     sendKeys(...keysToSend) {
         const that = this;
+        // noinspection JSValidateTypes
         return keysToSend.reduce((promise, keys) => {
-            return promise.then(() => that._eyesDriver.getEyes().addTextTriggerForElement(this._webElement, String(keys)));
+            return promise.then(() => that._eyesDriver.getEyes().addTextTriggerForElement(that, String(keys)));
         }, that._eyesDriver.getPromiseFactory().resolve()).then(() => {
-            return that._webElement.sendKeys(...keysToSend);
+            return that.getWebElement().sendKeys(...keysToSend);
         });
     }
 
@@ -301,7 +304,7 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     getTagName() {
-        return this._webElement.getTagName();
+        return this.getWebElement().getTagName();
     }
 
     /**
@@ -309,7 +312,7 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     getCssValue(cssStyleProperty) {
-        return this._webElement.getCssValue(cssStyleProperty);
+        return this.getWebElement().getCssValue(cssStyleProperty);
     }
 
     /**
@@ -317,7 +320,7 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     getAttribute(attributeName) {
-        return this._webElement.getAttribute(attributeName);
+        return this.getWebElement().getAttribute(attributeName);
     }
 
     /**
@@ -325,7 +328,7 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     getText() {
-        return this._webElement.getText();
+        return this.getWebElement().getText();
     }
 
     /**
@@ -333,7 +336,7 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     getSize() {
-        return this._webElement.getSize();
+        return this.getWebElement().getSize();
     }
 
     /**
@@ -342,8 +345,9 @@ class EyesWebElement extends WebElement {
      */
     getLocation() {
         // The workaround is similar to Java one, but in js we always get raw data with decimal value which we should round up.
-        return this._webElement.getLocation().then(value => {
+        return this.getWebElement().getLocation().then(value => {
             const x = Math.ceil(value.x) || 0;
+            // noinspection JSSuspiciousNameCombination
             const y = Math.ceil(value.y) || 0;
             return {x, y};
         });
@@ -354,7 +358,7 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     isEnabled() {
-        return this._webElement.isEnabled();
+        return this.getWebElement().isEnabled();
     }
 
     /**
@@ -362,7 +366,7 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     isSelected() {
-        return this._webElement.isSelected();
+        return this.getWebElement().isSelected();
     }
 
     /**
@@ -370,7 +374,7 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     submit() {
-        return this._webElement.submit();
+        return this.getWebElement().submit();
     }
 
     /**
@@ -378,7 +382,7 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     clear() {
-        return this._webElement.clear();
+        return this.getWebElement().clear();
     }
 
     /**
@@ -386,7 +390,7 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     isDisplayed() {
-        return this._webElement.isDisplayed();
+        return this.getWebElement().isDisplayed();
     }
 
     /**
@@ -394,13 +398,19 @@ class EyesWebElement extends WebElement {
      * @inheritDoc
      */
     takeScreenshot(opt_scroll) {
-        return this._webElement.takeScreenshot(opt_scroll);
+        return this.getWebElement().takeScreenshot(opt_scroll);
     }
 
     /**
      * @return {WebElement} The original element object
      */
     getWebElement() {
+        // noinspection JSUnresolvedVariable
+        if (this._webElement.getWebElement) {
+            // noinspection JSUnresolvedFunction
+            return this._webElement.getWebElement();
+        }
+
         return this._webElement;
     }
 }

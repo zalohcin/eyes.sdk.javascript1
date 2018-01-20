@@ -246,7 +246,7 @@ class EyesSeleniumUtils {
      * Get the entire page size.
      *
      * @param {EyesJsExecutor|IWebDriver} executor The executor to use.
-     * @return {Promise.<{width: number, height: number}>} A promise which resolves to an object containing the width/height of the page.
+     * @return {Promise.<RectangleSize>} A promise which resolves to an object containing the width/height of the page.
      */
     static getCurrentFrameContentEntireSize(executor) {
         // IMPORTANT: Notice there's a major difference between scrollWidth and scrollHeight.
@@ -402,7 +402,7 @@ class EyesSeleniumUtils {
                 logger.verbose("Trying workaround for maximization...");
                 return EyesSeleniumUtils.setBrowserSizeByViewportSize(logger, driver, actualViewportSize, requiredSize).then(() => {
                     return EyesSeleniumUtils.getViewportSize(driver);
-                }).then(actualViewportSize => {
+                }).then(/** RectangleSize */ actualViewportSize => {
                     logger.verbose(`Current viewport size: ${actualViewportSize}`);
                     if (actualViewportSize.equals(requiredSize)) {
                         return;

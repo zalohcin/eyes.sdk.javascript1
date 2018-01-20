@@ -26,7 +26,7 @@ class Eyes extends EyesBase {
         this._inferred = "";
     }
 
-    //noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /** @override */
     getBaseAgentId() {
         return 'eyes.images/' + VERSION;
     }
@@ -136,7 +136,7 @@ class Eyes extends EyesBase {
             that._title = name || '';
 
             return super.checkWindowBase(regionProvider, name, ignoreMismatch, checkSettings);
-        }).then(mr => {
+        }).then(/** MatchResult */ mr => {
             return mr.getAsExpected();
         });
     }
