@@ -1220,7 +1220,9 @@ class EyesBase {
     openBase(appName, testName, viewportSize, sessionType) {
         this._logger.getLogHandler().open();
 
-        if (viewportSize) { viewportSize = new RectangleSize(viewportSize); }
+        if (viewportSize) {
+            viewportSize = new RectangleSize(viewportSize);
+        }
 
         try {
             if (this._isDisabled) {
