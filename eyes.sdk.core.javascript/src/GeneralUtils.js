@@ -1,7 +1,6 @@
 'use strict';
 
 const dateformat = require('dateformat');
-const isBuffer = require('is-buffer');
 const stackTrace = require('stack-trace');
 
 const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
@@ -237,7 +236,7 @@ class GeneralUtils {
      * @return {boolean}
      */
     static isBuffer(value) {
-        return isBuffer(value);
+        return value != null && !!value.constructor && typeof value.constructor.isBuffer === 'function' && value.constructor.isBuffer(value);
     }
 
     static isBase64(str) {
