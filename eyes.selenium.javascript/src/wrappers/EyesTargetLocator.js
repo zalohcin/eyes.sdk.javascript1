@@ -308,7 +308,7 @@ class EyesTargetLocator extends TargetLocator {
         const eyesFrame = (targetFrame instanceof EyesWebElement) ? targetFrame : new EyesWebElement(this._logger, this._driver, targetFrame);
 
         const that = this;
-        let location, elementSize, clientSize, contentLocation, originalLocation;
+        let location, elementSize, clientSize, contentLocation, originalLocation, originalOverflow;
         return eyesFrame.getLocation().then(pl => {
             location = new Location(pl);
         }).then(() => {
@@ -332,7 +332,11 @@ class EyesTargetLocator extends TargetLocator {
                 originalLocation = location;
             });
         }).then(() => {
-            const frame = new Frame(that._logger, targetFrame, contentLocation, elementSize, clientSize, originalLocation);
+            return eyesFrame.getOverflow().then(overflow => {
+                originalOverflow = overflow;
+            });
+        }).then(() => {
+            const frame = new Frame(that._logger, targetFrame, contentLocation, elementSize, clientSize, originalLocation, originalOverflow);
             that._driver.getFrameChain().push(frame);
         });
     }

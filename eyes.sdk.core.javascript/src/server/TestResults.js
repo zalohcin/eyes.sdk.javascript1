@@ -12,34 +12,227 @@ class TestResults {
         /** @type {TestResultsStatus} */
         this.status = null;
 
-        /** @type {Object} */
-        this.appUrls = null;
-        /** @type {Object} */
-        this.apiUrls = null;
-        /** @type {Object} */
-        this.stepsInfo = null;
-
+        /** @type {int} */
         this.steps = null;
+        /** @type {int} */
         this.matches = null;
+        /** @type {int} */
         this.mismatches = null;
+        /** @type {int} */
         this.missing = null;
+        /** @type {int} */
         this.exactMatches = null;
+        /** @type {int} */
         this.strictMatches = null;
+        /** @type {int} */
         this.contentMatches = null;
+        /** @type {int} */
         this.layoutMatches = null;
+        /** @type {int} */
         this.noneMatches = null;
 
         /** @type {String} */
         this.url = null;
-
         /** @type {Boolean} */
         this.isNew = null;
+        /** @type {String} */
+        this.name = null;
+        /** @type {String} */
+        this.secretToken = null;
+        /** @type {String} */
+        this.id = null;
+        /** @type {String} */
+        this.appName = null;
+        /** @type {String} */
+        this.batchName = null;
+        /** @type {String} */
+        this.batchId = null;
+        /** @type {String} */
+        this.branchName = null;
+        /** @type {String} */
+        this.hostOS = null;
+        /** @type {String} */
+        this.hostApp = null;
+        /** @type {{width: int, height: width}} */
+        this.hostDisplaySize = null;
+        /** @type {int} */
+        this.duration = null;
         /** @type {Boolean} */
         this.isDifferent = null;
         /** @type {Boolean} */
         this.isAborted = null;
+        /** @type {{batch: string, session: string}} */
+        this.appUrls = null;
+        /** @type {{batch: string, session: string}} */
+        this.apiUrls = null;
+        /** @type {{name: string, isDifferent: boolean, hasBaselineImage: boolean, hasCurrentImage: boolean}[]} */
+        this.stepsInfo = null;
+
+        /** @type {Date} */
+        this.startedAt = null;
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {int}
+     */
+    getDuration() {
+        return this.duration;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {int} value
+     */
+    setDuration(value) {
+        this.duration = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {{width: int, height: width}}
+     */
+    getHostDisplaySize() {
+        return this.hostDisplaySize;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {{width: int, height: width}} value
+     */
+    setHostDisplaySize(value) {
+        this.hostDisplaySize = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    getHostApp() {
+        return this.hostApp;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {String} value
+     */
+    setHostApp(value) {
+        this.hostApp = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    getHostOS() {
+        return this.hostOS;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {String} value
+     */
+    setHostOS(value) {
+        this.hostOS = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    getName() {
+        return this.name;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {String} value
+     */
+    setName(value) {
+        this.name = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    getSecretToken() {
+        return this.secretToken;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {String} value
+     */
+    setSecretToken(value) {
+        this.secretToken = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    getId() {
+        return this.id;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {String} value
+     */
+    setId(value) {
+        this.id = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    getAppName() {
+        return this.appName;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {String} value
+     */
+    setAppName(value) {
+        this.appName = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    getBatchName() {
+        return this.batchName;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {String} value
+     */
+    setBatchName(value) {
+        this.batchName = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String}
+     */
+    getBatchId() {
+        return this.batchId;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {String} value
+     */
+    setBatchId(value) {
+        this.batchId = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
     /**
      * @return {Boolean} Whether or not this test passed.
      */
@@ -65,7 +258,7 @@ class TestResults {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {Object}
+     * @return {{batch: string, session: string}}
      */
     getAppUrls() {
         return this.appUrls;
@@ -73,7 +266,7 @@ class TestResults {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @param {Object} value
+     * @param {{batch: string, session: string}} value
      */
     setAppUrls(value) {
         this.appUrls = value;
@@ -81,7 +274,7 @@ class TestResults {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {Object}
+     * @return {{batch: string, session: string}}
      */
     getApiUrls() {
         return this.apiUrls;
@@ -89,7 +282,7 @@ class TestResults {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @param {Object} value
+     * @param {{batch: string, session: string}} value
      */
     setApiUrls(value) {
         this.apiUrls = value;
@@ -97,7 +290,7 @@ class TestResults {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @return {Object}
+     * @return {{name: string, isDifferent: boolean, hasBaselineImage: boolean, hasCurrentImage: boolean}[]}
      */
     getStepsInfo() {
         return this.stepsInfo;
@@ -105,7 +298,7 @@ class TestResults {
 
     // noinspection JSUnusedGlobalSymbols
     /**
-     * @param {Object} value
+     * @param {{name: string, isDifferent: boolean, hasBaselineImage: boolean, hasCurrentImage: boolean}[]} value
      */
     setStepsInfo(value) {
         this.stepsInfo = value;
@@ -327,6 +520,22 @@ class TestResults {
      */
     setIsAborted(value) {
         this.isAborted = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {Date}
+     */
+    getStartedAt() {
+        return this.startedAt;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {Date} value
+     */
+    setStartedAt(value) {
+        this.startedAt = value;
     }
 
     /** @override */

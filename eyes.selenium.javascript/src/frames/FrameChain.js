@@ -29,7 +29,8 @@ class FrameChain {
                 this._frames.push(new Frame(logger, otherFrame.getReference(),
                     otherFrame.getLocation(),
                     otherFrame.getSize(), otherFrame.getInnerSize(),
-                    otherFrame.getOriginalLocation())
+                    otherFrame.getOriginalLocation(),
+                    otherFrame.getOriginalOverflow())
                 );
             });
             this._logger.verbose("Done!");

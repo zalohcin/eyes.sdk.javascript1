@@ -297,7 +297,7 @@ class ServerConnector {
 function sendLongRequest(that, name, uri, method, options = {}) {
     const headers = {
         'Eyes-Expect': '202+location',
-        'Eyes-Date': GeneralUtils.getRfc1123Date()
+        'Eyes-Date': GeneralUtils.toRfc1123DateTime()
     };
 
     options.headers = options.headers ? Object.assign(options.headers, headers) : headers;
@@ -324,7 +324,7 @@ function longRequestCheckStatus(that, name, response) {
             });
         case HTTP_STATUS_CODES.CREATED:
             const deleteUri = response.headers['location'];
-            const options = {headers: {'Eyes-Date': GeneralUtils.getRfc1123Date()}};
+            const options = {headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
             return sendRequest(that, name, deleteUri, 'delete', options);
         case HTTP_STATUS_CODES.GONE:
             return that._promiseFactory.reject(new Error('The server task has gone.'));
@@ -346,7 +346,7 @@ function longRequestLoop(that, name, uri, delay) {
     that._logger.verbose(`${name}: Still running... Retrying in ${delay} ms`);
 
     return GeneralUtils.sleep(delay, that._promiseFactory).then(() => {
-        const options = {headers: {'Eyes-Date': GeneralUtils.getRfc1123Date()}};
+        const options = {headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
         return sendRequest(that, name, uri, 'get', options);
     }).then(response => {
         if (response.status !== HTTP_STATUS_CODES.OK) {

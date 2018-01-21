@@ -1,6 +1,6 @@
 'use strict';
 
-const {ImageProvider, MutableImage, Region} = require('eyes.sdk');
+const {ImageProvider, MutableImage, Region, OSNames} = require('eyes.sdk');
 
 const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
 const SeleniumJavaScriptExecutor = require('../SeleniumJavaScriptExecutor');
@@ -43,7 +43,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
         }).then(viewportSize_ => {
             viewportSize = viewportSize_.scale(scaleRatio);
 
-            if (that._userAgent.getOS() === "IOS") {
+            if (that._userAgent.getOS() === OSNames.IOS) {
                 return image.crop(new Region(0, Math.ceil(64 * scaleRatio), viewportSize.getWidth(), viewportSize.getHeight())).then(croppedImage => {
                     image = croppedImage;
                 });

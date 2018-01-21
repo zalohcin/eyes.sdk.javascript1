@@ -3,7 +3,8 @@
 const dateformat = require('dateformat');
 const stackTrace = require('stack-trace');
 
-const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
+const DATE_FORMAT_ISO8601_FOR_OUTPUT = "yyyy-mm-dd'T'HH:MM:ss'Z'";
+const DATE_FORMAT_ISO8601_FOR_INPUT = "yyyy-mm-dd'T'HH:MM:ssXXX";
 const DATE_FORMAT_RFC1123 = "ddd, dd mmm yyyy HH:MM:ss 'GMT'";
 
 const BASE64_CHARS_PATTERN = /[^A-Z0-9+\/=]/i;
@@ -170,8 +171,8 @@ class GeneralUtils {
      * @param {Date} [date] Date which will be converted
      * @return {String} String formatted as ISO-8601 (yyyy-MM-dd'T'HH:mm:ss'Z')
      */
-    static getIso8601Data(date = new Date()) {
-        return dateformat(date, DATE_FORMAT_ISO8601);
+    static toISO8601DateTime(date = new Date()) {
+        return dateformat(date, DATE_FORMAT_ISO8601_FOR_OUTPUT);
     };
 
     /**
@@ -180,8 +181,18 @@ class GeneralUtils {
      * @param {Date} [date] Date which will be converted
      * @return {String} String formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
      */
-    static getRfc1123Date(date = new Date()) {
+    static toRfc1123DateTime(date = new Date()) {
         return dateformat(date, DATE_FORMAT_RFC1123);
+    };
+
+    /**
+     * Creates {@link Date} instance from an ISO 8601 formatted string.
+     *
+     * @param {String} dateTime An ISO 8601 formatted string.
+     * @return {Date} A {@link Date} instance representing the given date and time.
+     */
+    static fromISO8601DateTime(dateTime) {
+        return new Date(dateTime);
     };
 
     /**

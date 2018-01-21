@@ -118,24 +118,30 @@ class FullPageCaptureAlgorithm {
                 });
             }
         }).then(() => {
-            const spp = new ScrollPositionProvider(that._logger, that._jsExecutor);
-            let originalCurrentPosition;
-            return spp.getCurrentPosition().then(originalCurrentPosition_ => {
-                originalCurrentPosition = originalCurrentPosition_;
-                return spp.scrollToBottomRight();
-            }).then(() => {
-                return spp.getCurrentPosition();
-            }).then(localCurrentPosition => {
-                entireSize = new RectangleSize(
-                    localCurrentPosition.getX() + image.getWidth(),
-                    localCurrentPosition.getY() + image.getHeight());
-            }).then(() => {
-                that._logger.verbose(`Entire size of region context: ${entireSize}`);
-                return spp.setPosition(originalCurrentPosition);
-            }).catch(err => {
-                that._logger.log("WARNING: Failed to extract entire size of region context" + err);
-                that._logger.log(`Using image size instead: ${image.getWidth()}x${image.getHeight()}`);
-                entireSize = new RectangleSize(image.getWidth(), image.getHeight());
+            const checkingAnElement = !region.isEmpty();
+            return positionProvider.getEntireSize().then(entireSize_ => {
+                entireSize = entireSize_;
+                if (!checkingAnElement) {
+                    const spp = new ScrollPositionProvider(that._logger, that._jsExecutor);
+                    let originalCurrentPosition;
+                    return spp.getCurrentPosition().then(originalCurrentPosition_ => {
+                        originalCurrentPosition = originalCurrentPosition_;
+                        return spp.scrollToBottomRight();
+                    }).then(() => {
+                        return spp.getCurrentPosition();
+                    }).then(localCurrentPosition => {
+                        entireSize = new RectangleSize(
+                            localCurrentPosition.getX() + image.getWidth(),
+                            localCurrentPosition.getY() + image.getHeight());
+                    }).then(() => {
+                        that._logger.verbose(`Entire size of region context: ${entireSize}`);
+                        return spp.setPosition(originalCurrentPosition);
+                    }).catch(err => {
+                        that._logger.log("WARNING: Failed to extract entire size of region context" + err);
+                        that._logger.log(`Using image size instead: ${image.getWidth()}x${image.getHeight()}`);
+                        entireSize = new RectangleSize(image.getWidth(), image.getHeight());
+                    });
+                }
             });
         }).then(() => {
             // Notice that this might still happen even if we used "getImagePart", since "entirePageSize" might be that of a frame.

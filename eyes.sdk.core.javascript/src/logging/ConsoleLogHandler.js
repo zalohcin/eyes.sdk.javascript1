@@ -30,7 +30,7 @@ class ConsoleLogHandler extends LogHandler {
      */
     onMessage(verbose, logString) {
         if (!verbose || this._isVerbose) {
-            console.log(`${GeneralUtils.getIso8601Data()} Eyes: ${logString}`);
+            console.log(`${GeneralUtils.toISO8601DateTime()} Eyes: ${logString}`);
         }
     }
 }

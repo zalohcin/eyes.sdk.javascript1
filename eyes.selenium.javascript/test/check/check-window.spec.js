@@ -14,6 +14,7 @@ describe('Eyes.Selenium.JavaScript - check window', () => {
         eyes = new Eyes();
         eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
         eyes.setLogHandler(new ConsoleLogHandler(true));
+        eyes.setHideScrollbars(true);
     });
 
     it("test check window methods", function () {

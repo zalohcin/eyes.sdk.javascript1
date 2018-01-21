@@ -59,7 +59,7 @@ class FileLogHandler extends LogHandler {
      */
     onMessage(verbose, logString) {
         if (this._writer && (!verbose || this._isVerbose)) {
-            this._writer.write(`${GeneralUtils.getIso8601Data()} Eyes: ${logString}\n`);
+            this._writer.write(`${GeneralUtils.toISO8601DateTime()} Eyes: ${logString}\n`);
         }
     }
 }
