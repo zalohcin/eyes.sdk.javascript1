@@ -1,7 +1,9 @@
 exports.AppOutput = require('./src/capture/AppOutput');
 exports.AppOutputProvider = require('./src/capture/AppOutputProvider');
 exports.AppOutputWithScreenshot = require('./src/capture/AppOutputWithScreenshot');
+exports.EyesScreenshot = require('./src/capture/EyesScreenshot');
 exports.EyesScreenshotFactory = require('./src/capture/EyesScreenshotFactory');
+exports.EyesSimpleScreenshot = require('./src/capture/EyesSimpleScreenshot');
 exports.ImageProvider = require('./src/capture/ImageProvider');
 
 exports.CutProvider = require('./src/cutting/CutProvider');
@@ -31,7 +33,6 @@ exports.PropertyHandler = require('./src/handlers/PropertyHandler');
 exports.ReadOnlyPropertyHandler = require('./src/handlers/ReadOnlyPropertyHandler');
 exports.SimplePropertyHandler = require('./src/handlers/SimplePropertyHandler');
 
-exports.EyesScreenshot = require('./src/images/EyesScreenshot');
 exports.ImageDeltaCompressor = require('./src/images/ImageDeltaCompressor');
 exports.ImageUtils = require('./src/images/ImageUtils');
 exports.MutableImage = require('./src/images/MutableImage');
@@ -87,6 +88,7 @@ exports.ArgumentGuard = require('./src/ArgumentGuard');
 exports.BatchInfo = require('./src/BatchInfo');
 exports.BrowserNames = require('./src/BrowserNames');
 exports.EyesBase = require('./src/EyesBase');
+exports.EyesJsBrowserUtils = require('./src/EyesJsBrowserUtils');
 exports.EyesJsExecutor = require('./src/EyesJsExecutor');
 exports.FailureReports = require('./src/FailureReports');
 exports.GeneralUtils = require('./src/GeneralUtils');
