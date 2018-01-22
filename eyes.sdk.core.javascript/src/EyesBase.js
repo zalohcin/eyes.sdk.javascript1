@@ -107,6 +107,8 @@ class EyesBase {
         this._userInputs = [];
         /** @type {PropertyData[]} */
         this._properties = [];
+        /** @type {boolean} */
+        this._render = false;
 
         /** @type {int} */
         this._validationId = -1;
@@ -1213,11 +1215,11 @@ class EyesBase {
      * @protected
      * @param {String} appName The name of the application under test.
      * @param {String} testName The test name.
-     * @param {RectangleSize|{width: number, height: number}} viewportSize The client's viewport size (i.e., the visible part of the document's body) or {@code null} to allow any viewport size.
-     * @param {SessionType} sessionType  The type of test (e.g., Progression for timing tests), or {@code null} to use the default.
+     * @param {RectangleSize|{width: number, height: number}} [viewportSize] The client's viewport size (i.e., the visible part of the document's body) or {@code null} to allow any viewport size.
+     * @param {SessionType} [sessionType=SessionType.SEQUENTIAL]  The type of test (e.g., Progression for timing tests), or {@code null} to use the default.
      * @return {Promise}
      */
-    openBase(appName, testName, viewportSize, sessionType) {
+    openBase(appName, testName, viewportSize, sessionType = SessionType.SEQUENTIAL) {
         this._logger.getLogHandler().open();
 
         if (viewportSize) {
@@ -1253,7 +1255,7 @@ class EyesBase {
                 that._currentAppName = appName || that._appName;
                 that._testName = testName;
                 that._viewportSizeHandler.set(viewportSize);
-                that._sessionType = sessionType || SessionType.SEQUENTIAL;
+                that._sessionType = sessionType;
                 that._validationId = -1;
 
                 if (viewportSize) {
@@ -1561,7 +1563,7 @@ class EyesBase {
         }).then(() => {
             that._sessionStartInfo = new SessionStartInfo(that.getBaseAgentId(), that._sessionType,
                 that.getAppName(), null, that._testName, testBatch, that._baselineEnvName, that._environmentName, appEnvironment,
-                that._defaultMatchSettings, that._branchName, that._parentBranchName, that._properties);
+                that._defaultMatchSettings, that._branchName, that._parentBranchName, that._properties, that._render);
 
             that._logger.verbose("Starting server session...");
             return that._serverConnector.startSession(that._sessionStartInfo).then(runningSession => {

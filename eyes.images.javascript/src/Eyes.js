@@ -1,10 +1,8 @@
 'use strict';
 
-const {ArgumentGuard, GeneralUtils, EyesBase, EyesError, ImageUtils, RegionProvider, MutableImage, RectangleSize, NullRegionProvider} = require('eyes.sdk');
+const {ArgumentGuard, GeneralUtils, EyesBase, EyesError, ImageUtils, RegionProvider, MutableImage, RectangleSize, NullRegionProvider, EyesSimpleScreenshot} = require('eyes.sdk');
 
-const EyesImagesScreenshot = require('./capture/EyesImagesScreenshot');
 const Target = require('./fluent/Target');
-
 const VERSION = require('../package.json').version;
 
 /**
@@ -19,7 +17,7 @@ class Eyes extends EyesBase {
      * @param {PromiseFactory} [promiseFactory] If not specified will be created using `Promise` object
      **/
     constructor(serverUrl, promiseFactory) {
-        super(serverUrl, promiseFactory);
+        super(serverUrl, false, promiseFactory);
 
         this._title = undefined;
         this._screenshot = undefined;
@@ -40,7 +38,7 @@ class Eyes extends EyesBase {
      * @return {Promise}
      */
     open(appName, testName, imageSize) {
-        return super.openBase(appName, testName, imageSize, null);
+        return super.openBase(appName, testName, imageSize);
     }
 
     /**
@@ -72,7 +70,7 @@ class Eyes extends EyesBase {
     checkImage(image, tag, ignoreMismatch, retryTimeout) {
         if (this.getIsDisabled()) {
             this._logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
-            return this._promiseFactory.resolve(false);
+            return this.getPromiseFactory().resolve(false);
         }
 
         ArgumentGuard.notNull(image, "image cannot be null!");
@@ -99,7 +97,7 @@ class Eyes extends EyesBase {
 
         if (this.getIsDisabled()) {
             this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
-            return this._promiseFactory.resolve(false);
+            return this.getPromiseFactory().resolve(false);
         }
 
         this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
@@ -119,7 +117,7 @@ class Eyes extends EyesBase {
     _checkImage(name, ignoreMismatch, checkSettings) {
         const that = this;
         return this._normalizeImage(checkSettings).then(image => {
-            that._screenshot = new EyesImagesScreenshot(image);
+            that._screenshot = new EyesSimpleScreenshot(image);
 
             if (!that._viewportSizeHandler.get()) {
                 return that.setViewportSize(image.getSize());
@@ -189,7 +187,7 @@ class Eyes extends EyesBase {
 
         if (this.getIsDisabled()) {
             this._logger.verbose(`replaceImage('${stepIndex}', Image, '${tag}', '${title}', '${userInputs}'): Ignored`);
-            return this._promiseFactory.resolve(false);
+            return this.getPromiseFactory().resolve(false);
         }
 
         if (GeneralUtils.isBuffer(image) || GeneralUtils.isString(image)) {
@@ -232,7 +230,7 @@ class Eyes extends EyesBase {
      * @return {Promise<?String>}
      */
     getAUTSessionId() {
-        return this._promiseFactory.resolve(undefined);
+        return this.getPromiseFactory().resolve(undefined);
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -242,7 +240,7 @@ class Eyes extends EyesBase {
      * @return {Promise<RectangleSize>}
      */
     getViewportSize() {
-        return this._promiseFactory.resolve(this._viewportSizeHandler.get());
+        return this.getPromiseFactory().resolve(this._viewportSizeHandler.get());
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -256,7 +254,7 @@ class Eyes extends EyesBase {
         ArgumentGuard.notNull(viewportSize, "size");
 
         this._viewportSizeHandler.set(new RectangleSize(viewportSize));
-        return this._promiseFactory.resolve();
+        return this.getPromiseFactory().resolve();
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -267,7 +265,7 @@ class Eyes extends EyesBase {
      * @return {Promise<String>} A promise which resolves to the inferred environment string.
      */
     getInferredEnvironment() {
-        return this._promiseFactory.resolve(this._inferred);
+        return this.getPromiseFactory().resolve(this._inferred);
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -284,10 +282,10 @@ class Eyes extends EyesBase {
     /**
      * Get the screenshot.
      *
-     * @return {Promise<EyesImagesScreenshot>} The screenshot.
+     * @return {Promise<EyesSimpleScreenshot>} The screenshot.
      */
     getScreenshot() {
-        return this._promiseFactory.resolve(this._screenshot);
+        return this.getPromiseFactory().resolve(this._screenshot);
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -298,7 +296,7 @@ class Eyes extends EyesBase {
      * @return {Promise<String>} The current title of of the AUT.
      */
     getTitle() {
-        return this._promiseFactory.resolve(this._title);
+        return this.getPromiseFactory().resolve(this._title);
     }
 }
 

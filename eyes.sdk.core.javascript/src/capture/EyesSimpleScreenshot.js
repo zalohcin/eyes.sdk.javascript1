@@ -1,11 +1,18 @@
 'use strict';
 
-const {EyesScreenshot, Region, RectangleSize, Location, CoordinatesType, ArgumentGuard, CoordinatesTypeConversionError, OutOfBoundsError} = require('eyes.sdk');
+const ArgumentGuard = require('../ArgumentGuard');
+const Region = require('../positioning/Region');
+const RectangleSize = require('../positioning/RectangleSize');
+const Location = require('../positioning/Location');
+const CoordinatesType = require('../positioning/CoordinatesType');
+const OutOfBoundsError = require('../errors/OutOfBoundsError');
+const CoordinatesTypeConversionError = require('../errors/CoordinatesTypeConversionError');
+const EyesScreenshot = require('./EyesScreenshot');
 
 /**
  * Encapsulates a screenshot taken by the images SDK.
  */
-class EyesImagesScreenshot extends EyesScreenshot {
+class EyesSimpleScreenshot extends EyesScreenshot {
 
     /**
      * @param {MutableImage} image The screenshot image.
@@ -17,6 +24,15 @@ class EyesImagesScreenshot extends EyesScreenshot {
         // The screenshot region in coordinates relative to the "entire screen"
         // (e.g., relative to the default content in case of a web page).
         this._bounds = new Region(location, new RectangleSize(image.getWidth(), image.getHeight()));
+    }
+
+    /**
+     * Get size of screenshot
+     *
+     * @return {RectangleSize}
+     */
+    getSize() {
+        return this._bounds.getSize();
     }
 
     /**
@@ -40,7 +56,7 @@ class EyesImagesScreenshot extends EyesScreenshot {
         return this._image.getImagePart(subScreenshotRegion).then(subScreenshotImage => {
             // Notice that we need the bounds-relative coordinates as parameter for new sub-screenshot.
             const relativeSubScreenshotRegion = that.convertRegionLocation(subScreenshotRegion, CoordinatesType.SCREENSHOT_AS_IS, CoordinatesType.CONTEXT_RELATIVE);
-            return new EyesImagesScreenshot(subScreenshotImage, relativeSubScreenshotRegion.getLocation());
+            return new EyesSimpleScreenshot(subScreenshotImage, relativeSubScreenshotRegion.getLocation());
         });
     }
 
@@ -136,4 +152,4 @@ class EyesImagesScreenshot extends EyesScreenshot {
     }
 }
 
-module.exports = EyesImagesScreenshot;
+module.exports = EyesSimpleScreenshot;
