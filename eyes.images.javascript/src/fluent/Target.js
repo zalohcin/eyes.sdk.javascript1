@@ -61,6 +61,19 @@ class Target {
     }
 
     /**
+     * @param {String} string
+     * @param {RectangleSize} [imageSize]
+     * @return {ImagesCheckSettings}
+     */
+    static url(string, imageSize) {
+        ArgumentGuard.isString(string);
+
+        const checkSettings = new ImagesCheckSettings(null, null, null, null, string);
+        checkSettings.setImageSize(imageSize);
+        return checkSettings;
+    }
+
+    /**
      * @param {String|Buffer|MutableImage} image
      * @param {Region|RegionObject} rect
      * @return {ImagesCheckSettings}

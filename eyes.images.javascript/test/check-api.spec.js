@@ -16,6 +16,8 @@ describe('Eyes.Images.JavaScript - check api', () => {
         }).then(() => {
             return eyes.check("TestCheckRegion_Fluent", Target.region(__dirname + "/resources/minions-800x500.png", new Region({left: 315, top: 290, width: 190, height: 135})));
         }).then(() => {
+            return eyes.check("TestCheckImage_ByUrl", Target.url("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_120x44dp.png"));
+        }).then(() => {
             return eyes.close();
         });
     });

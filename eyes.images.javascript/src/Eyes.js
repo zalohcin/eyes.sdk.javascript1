@@ -13,7 +13,7 @@ class Eyes extends EyesBase {
     /**
      * Initializes an Eyes instance.
      *
-     * @param {String} [serverUrl=EyesBase.DEFAULT_EYES_SERVER] The Eyes server URL.
+     * @param {String} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
      * @param {PromiseFactory} [promiseFactory] If not specified will be created using `Promise` object
      **/
     constructor(serverUrl, promiseFactory) {
@@ -21,6 +21,7 @@ class Eyes extends EyesBase {
 
         this._title = undefined;
         this._screenshot = undefined;
+        this._screenshotUrl = undefined;
         this._inferred = "";
     }
 
@@ -116,25 +117,34 @@ class Eyes extends EyesBase {
      */
     _checkImage(name, ignoreMismatch, checkSettings) {
         const that = this;
-        return this._normalizeImage(checkSettings).then(image => {
-            that._screenshot = new EyesSimpleScreenshot(image);
-
-            if (!that._viewportSizeHandler.get()) {
-                return that.setViewportSize(image.getSize());
-            }
-        }).then(() => {
-            let regionProvider;
-            if (checkSettings.getTargetRegion()) {
-                regionProvider = new RegionProvider(checkSettings.getTargetRegion(), that.getPromiseFactory());
-            } else {
-                regionProvider = new NullRegionProvider(that.getPromiseFactory());
-            }
-
+        let regionProvider = new NullRegionProvider(that.getPromiseFactory());
+        return this.getPromiseFactory().resolve().then(() => {
             // Set the title to be linked to the screenshot.
             that._title = name || '';
 
+            if (checkSettings.getImageUrl()) {
+                that._screenshotUrl = checkSettings.getImageUrl();
+                if (!that._viewportSizeHandler.get() && checkSettings.getImageSize()) {
+                    return that.setViewportSize(checkSettings.getImageSize());
+                }
+            } else {
+                if (checkSettings.getTargetRegion()) {
+                    regionProvider = new RegionProvider(checkSettings.getTargetRegion(), that.getPromiseFactory());
+                }
+
+                return this._normalizeImage(checkSettings).then(image => {
+                    that._screenshot = new EyesSimpleScreenshot(image);
+                    if (!that._viewportSizeHandler.get()) {
+                        return that.setViewportSize(image.getSize());
+                    }
+                });
+            }
+        }).then(() => {
             return super.checkWindowBase(regionProvider, name, ignoreMismatch, checkSettings);
         }).then(/** MatchResult */ mr => {
+            that._screenshotUrl = null;
+            that._screenshot = null;
+            that._title = null;
             return mr.getAsExpected();
         });
     }
@@ -286,6 +296,16 @@ class Eyes extends EyesBase {
      */
     getScreenshot() {
         return this.getPromiseFactory().resolve(this._screenshot);
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Get the screenshot URL.
+     *
+     * @return {Promise<String>} The screenshot URL.
+     */
+    getScreenshotUrl() {
+        return this.getPromiseFactory().resolve(this._screenshotUrl);
     }
 
     //noinspection JSUnusedGlobalSymbols
