@@ -21,7 +21,7 @@ class ProxySettings {
         this._username = username;
         this._password = password;
 
-        this._url = url.parse(uri);
+        this._url = url.parse(uri.includes('://') ? uri : 'http://' + uri);
     }
 
     // noinspection JSUnusedGlobalSymbols

@@ -41,24 +41,27 @@ const TestFailedError = require('./errors/TestFailedError');
 
 const CheckSettings = require('./fluent/CheckSettings');
 
+const RenderWindowTask = require('./rendering/RenderWindowTask');
+
 const SessionStartInfo = require('./server/SessionStartInfo');
 const SessionType = require('./server/SessionType');
 const PropertyData = require('./server/PropertyData');
 const TestResultsStatus = require('./server/TestResultsStatus');
+const TestResults = require('./server/TestResults');
+const ServerConnector = require('./server/ServerConnector');
 
 const FailureReports = require('./FailureReports');
 const GeneralUtils = require('./GeneralUtils');
 const ArgumentGuard = require('./ArgumentGuard');
 const AppEnvironment = require('./AppEnvironment');
-const ServerConnector = require('./server/ServerConnector');
-const MatchWindowTask = require('./MatchWindowTask');
+const MatchWindowTask = require('./match/MatchWindowTask');
 const SessionEventHandler = require('./SessionEventHandler');
 const BatchInfo = require('./BatchInfo');
 const PromiseFactory = require('./PromiseFactory');
-const TestResults = require('./server/TestResults');
 
 const DEFAULT_MATCH_TIMEOUT = 2000;
 const MIN_MATCH_TIMEOUT = 500;
+const USE_DEFAULT_TIMEOUT = -1;
 
 /**
  * Core/Base class for Eyes - to allow code reuse for different SDKs (images, selenium, etc).
@@ -73,7 +76,7 @@ class EyesBase {
      * @param {Boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method will immediately return without performing any action.
      * @param {PromiseFactory} [promiseFactory] An object which will be used for creating deferreds/promises.
      **/
-    constructor(serverUrl = EyesBase.DEFAULT_EYES_SERVER, isDisabled = false, promiseFactory = new PromiseFactory(asyncAction => new Promise(asyncAction))) {
+    constructor(serverUrl = EyesBase.getDefaultServerUrl(), isDisabled = false, promiseFactory = new PromiseFactory(asyncAction => new Promise(asyncAction))) {
         /** @type {Boolean} */
         this._isDisabled = isDisabled;
 
@@ -96,6 +99,7 @@ class EyesBase {
 
         /** @type {ServerConnector} */
         this._serverConnector = new ServerConnector(this._promiseFactory, this._logger, serverUrl);
+        this._serverConnector.setRenderingServerUrl(EyesBase.getDefaultRenderingServerUrl());
         /** @type {int} */
         this._matchTimeout = DEFAULT_MATCH_TIMEOUT;
         /** @type {FailureReports} */
@@ -124,6 +128,8 @@ class EyesBase {
          * @type {Boolean}
          */
         this._saveFailedTests = false;
+
+        /** @type {RenderWindowTask} */ this._renderWindowTask = new RenderWindowTask(this._promiseFactory, this._logger, this._serverConnector);
 
         /** @type {Boolean} */ this._shouldMatchWindowRunOnceOnTimeout = undefined;
         /** @type {MatchWindowTask} */ this._matchWindowTask = undefined;
@@ -234,7 +240,7 @@ class EyesBase {
         if (serverUrl) {
             this._serverConnector.setServerUrl(serverUrl);
         } else {
-            this._serverConnector.setServerUrl(this.getDefaultServerUrl());
+            this._serverConnector.setServerUrl(EyesBase.getDefaultServerUrl());
         }
     }
 
@@ -244,6 +250,47 @@ class EyesBase {
      */
     getServerUrl() {
         return this._serverConnector.getServerUrl();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Sets the authToken for rendering server.
+     *
+     * @param authToken {String} The authToken to be used.
+     */
+    setRenderingAuthToken(authToken) {
+        ArgumentGuard.notNull(authToken, "authToken");
+        this._serverConnector.setRenderingAuthToken(authToken);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String} The currently authToken or {@code null} if no key is set.
+     */
+    getRenderingAuthToken() {
+        return this._serverConnector.getRenderingAuthToken();
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Sets the current rendering server URL used by the rest client.
+     *
+     * @param serverUrl {String} The URI of the rendering server, or {@code null} to use the default server.
+     */
+    setRenderingServerUrl(serverUrl) {
+        if (serverUrl) {
+            this._serverConnector.setRenderingServerUrl(serverUrl);
+        } else {
+            this._serverConnector.setRenderingServerUrl(EyesBase.getDefaultRenderingServerUrl());
+        }
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String} The URI of the eyes server.
+     */
+    getRenderingServerUrl() {
+        return this._serverConnector.getRenderingServerUrl();
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -536,12 +583,18 @@ class EyesBase {
         return this._isOpen;
     }
 
-    // noinspection JSMethodCanBeStatic
     /**
      * @return {String}
      */
-    getDefaultServerUrl() {
+    static getDefaultServerUrl() {
         return "https://eyesapi.applitools.com";
+    }
+
+    /**
+     * @return {String}
+     */
+    static getDefaultRenderingServerUrl() {
+        return "http://rgrid.applitools.com";
     }
 
     /**
@@ -615,6 +668,22 @@ class EyesBase {
      */
     clearProperties() {
         this._properties.length = 0;
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {boolean} value If true, createSession request will return renderingInfo properties
+     */
+    setRender(value) {
+        this._render = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {boolean}
+     */
+    getRender() {
+        return this._render;
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -1049,7 +1118,7 @@ class EyesBase {
      * @return {Promise.<MatchResult>} The result of matching the output with the expected output.
      * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
      */
-    checkWindowBase(regionProvider, tag = "", ignoreMismatch = false, checkSettings = new CheckSettings(EyesBase.USE_DEFAULT_TIMEOUT)) {
+    checkWindowBase(regionProvider, tag = "", ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
         if (this._isDisabled) {
             this._logger.verbose("Ignored");
             const result = new MatchResult();
@@ -1147,6 +1216,22 @@ class EyesBase {
                 reject(err);
             });
         });
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Create a screenshot of a page on RenderingGrid server
+     *
+     * @param {RGridDom} rGridDom The DOM of a page with resources
+     * @return {Promise.<RunningRender>} The results of the render
+     */
+    renderWindow(rGridDom) {
+        ArgumentGuard.isValidState(this._isOpen, "Eyes not open");
+        ArgumentGuard.notNull(this._runningSession, "Session not created.");
+
+        const webhook = this._runningSession.getRenderingInfo().getResultsUrl();
+        const renderWidth = this._viewportSizeHandler.get().getWidth();
+        return this._renderWindowTask.renderWindow(webhook, rGridDom, renderWidth);
     }
 
     /**
@@ -1570,6 +1655,11 @@ class EyesBase {
                 that._runningSession = runningSession;
                 that._logger.verbose(`Server session ID is ${that._runningSession.getId()}`);
 
+                if (runningSession.getRenderingInfo()) {
+                    that._serverConnector.setRenderingAuthToken(runningSession.getRenderingInfo().getAccessToken());
+                    that._serverConnector.setRenderingServerUrl(runningSession.getRenderingInfo().getServiceUrl());
+                }
+
                 const testInfo = `'${that._testName}' of '${that.getAppName()}' "${appEnvironment}`;
                 if (that._runningSession.getIsNewSession()) {
                     that._logger.log(`--- New test started - ${testInfo}`);
@@ -1620,23 +1710,34 @@ class EyesBase {
         const that = this;
         that._logger.verbose("getting screenshot...");
         // Getting the screenshot (abstract function implemented by each SDK).
-        let screenshot, compressedScreenshot, title;
+        let title, screenshot, screenshot64, screenshotUrl;
         return that.getScreenshot().then(screenshot_ => {
             that._logger.verbose("Done getting screenshot!");
 
-            // Cropping by region if necessary
-            if (!region.isEmpty()) {
-                return screenshot_.getSubScreenshot(region, false);
+            if (screenshot_) {
+                return that._promiseFactory.resolve().then(() => {
+                    screenshot = screenshot_;
+
+                    // Cropping by region if necessary
+                    if (!region.isEmpty()) {
+                        return screenshot.getSubScreenshot(region, false).then(subScreenshot => {
+                            screenshot = subScreenshot;
+                            return that._debugScreenshotsProvider.save(subScreenshot.getImage(), "SUB_SCREENSHOT");
+                        });
+                    }
+                }).then(() => {
+                    that._logger.verbose("Compressing screenshot...");
+                    return that._compressScreenshot64(screenshot, lastScreenshot).then(compressedScreenshot => {
+                        screenshot64 = compressedScreenshot;
+                        that._logger.verbose("Done!");
+                    });
+                });
             }
-            return screenshot_;
-        }).then(screenshot_ => {
-            screenshot = screenshot_;
-            return that._debugScreenshotsProvider.save(screenshot_.getImage(), "SUB_SCREENSHOT");
-        }).then(() => {
-            that._logger.verbose("Compressing screenshot...");
-            return that._compressScreenshot64(screenshot, lastScreenshot).then(compressedScreenshot_ => {
-                compressedScreenshot = compressedScreenshot_;
-                that._logger.verbose("Done!");
+
+            that._logger.verbose("getting screenshot url...");
+            return that.getScreenshotUrl().then(screenshotUrl_ => {
+                that._logger.verbose("Done getting screenshot url!");
+                screenshotUrl = screenshotUrl_;
             });
         }).then(() => {
             that._logger.verbose("Getting title...");
@@ -1645,7 +1746,7 @@ class EyesBase {
                 that._logger.verbose("Done!");
             });
         }).then(() => {
-            const result = new AppOutputWithScreenshot(new AppOutput(title, compressedScreenshot), screenshot);
+            const result = new AppOutputWithScreenshot(new AppOutput(title, screenshot64, screenshotUrl), screenshot);
             that._logger.verbose("Done!");
             return result;
         });
@@ -1798,6 +1899,18 @@ class EyesBase {
 
     // noinspection JSMethodCanBeStatic
     /**
+     * An updated screenshot.
+     *
+     * @protected
+     * @abstract
+     * @return {Promise.<String>}
+     */
+    getScreenshotUrl() {
+        throw new TypeError('getScreenshotUrl method is not implemented!');
+    }
+
+    // noinspection JSMethodCanBeStatic
+    /**
      * The current title of of the AUT.
      *
      * @protected
@@ -1816,8 +1929,5 @@ class EyesBase {
     }
 
 }
-
-EyesBase.DEFAULT_EYES_SERVER = "https://eyesapi.applitools.com";
-EyesBase.USE_DEFAULT_TIMEOUT = -1;
 
 module.exports = EyesBase;

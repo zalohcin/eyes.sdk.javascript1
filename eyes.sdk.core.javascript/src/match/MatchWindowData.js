@@ -133,7 +133,7 @@ class MatchWindowData {
         return {
             tag: this._tag,
             userInputs: this._userInputs,
-            appOutput: this._appOutput,
+            appOutput: this._appOutput.toJSON() || this._appOutput,
             ignoreMismatch: this._ignoreMismatch,
             options: this._options
         };
@@ -141,7 +141,13 @@ class MatchWindowData {
 
     /** @override */
     toString() {
-        return `MatchWindowData { ${GeneralUtils.toJson(this)} }`;
+        const object = this.toJSON();
+
+        if (object.appOutput.screenshot64) {
+            object.appOutput.screenshot64 = "REMOVED_FROM_OUTPUT";
+        }
+
+        return `MatchWindowData { ${GeneralUtils.toJson(object)} }`;
     }
 }
 

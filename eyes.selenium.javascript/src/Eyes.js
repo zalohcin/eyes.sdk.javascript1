@@ -40,7 +40,7 @@ class Eyes extends EyesBase {
     /**
      * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
      *
-     * @param {String} [serverUrl=EyesBase.DEFAULT_EYES_SERVER] The Eyes server URL.
+     * @param {String} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
      * @param {Boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
      * @param {PromiseFactory} [promiseFactory] If not specified will be created using `Promise` object
      **/
