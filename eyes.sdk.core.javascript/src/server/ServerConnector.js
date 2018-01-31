@@ -367,8 +367,7 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.render called with ${renderRequest} for render: ${runningRender}`);
 
         const that = this;
-        // const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/svc/render');
-        const uri = 'http://rgrid.applitools.com/svc/rendering-api-app/render';
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/render');
         const options = {
             headers: {
                 'X-Auth-Token': that._renderingAuthToken,
@@ -406,9 +405,7 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.checkResourceExists called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
         const that = this;
-        // const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/svc/resources/sha256/${resource.getSha256Hash()}`);
-        const uri = `http://rgrid.applitools.com/svc/snapshot-server-app/sha256/${resource.getSha256Hash()}`;
-
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`);
         const options = {
             headers: {
                 'X-Auth-Token': that._renderingAuthToken,
@@ -442,9 +439,7 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
         const that = this;
-        // const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/svc/resources/sha256/${resource.getSha256Hash()}`);
-        const uri = `http://rgrid.applitools.com/svc/snapshot-server-app/sha256/${resource.getSha256Hash()}`;
-
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`);
         const options = {
             contentType: resource.getContentType(),
             headers: {
@@ -478,9 +473,7 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.renderStatus called for render: ${runningRender}`);
 
         const that = this;
-        // const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/svc/render-status/' + runningRender.getRenderId());
-        const uri = 'http://rgrid.applitools.com/svc/rendering-job-dispatcher/render-status';
-
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status');
         const options = {
             headers: {
                 'X-Auth-Token': that._renderingAuthToken,

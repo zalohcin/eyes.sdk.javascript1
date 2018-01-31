@@ -99,7 +99,6 @@ class EyesBase {
 
         /** @type {ServerConnector} */
         this._serverConnector = new ServerConnector(this._promiseFactory, this._logger, serverUrl);
-        this._serverConnector.setRenderingServerUrl(EyesBase.getDefaultRenderingServerUrl());
         /** @type {int} */
         this._matchTimeout = DEFAULT_MATCH_TIMEOUT;
         /** @type {FailureReports} */
@@ -218,7 +217,6 @@ class EyesBase {
      * @param apiKey {String} The api key to be used.
      */
     setApiKey(apiKey) {
-        ArgumentGuard.notNull(apiKey, "apiKey");
         this._serverConnector.setApiKey(apiKey);
     }
 
@@ -259,7 +257,6 @@ class EyesBase {
      * @param authToken {String} The authToken to be used.
      */
     setRenderingAuthToken(authToken) {
-        ArgumentGuard.notNull(authToken, "authToken");
         this._serverConnector.setRenderingAuthToken(authToken);
     }
 
@@ -278,11 +275,7 @@ class EyesBase {
      * @param serverUrl {String} The URI of the rendering server, or {@code null} to use the default server.
      */
     setRenderingServerUrl(serverUrl) {
-        if (serverUrl) {
-            this._serverConnector.setRenderingServerUrl(serverUrl);
-        } else {
-            this._serverConnector.setRenderingServerUrl(EyesBase.getDefaultRenderingServerUrl());
-        }
+        this._serverConnector.setRenderingServerUrl(serverUrl);
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -588,13 +581,6 @@ class EyesBase {
      */
     static getDefaultServerUrl() {
         return "https://eyesapi.applitools.com";
-    }
-
-    /**
-     * @return {String}
-     */
-    static getDefaultRenderingServerUrl() {
-        return "http://rgrid.applitools.com";
     }
 
     /**
