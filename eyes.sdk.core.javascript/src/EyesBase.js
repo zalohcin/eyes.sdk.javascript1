@@ -878,6 +878,16 @@ class EyesBase {
             return that._serverConnector.stopSession(that._runningSession, isAborted, save).then(results => {
                 results.setIsNew(isNewSession);
                 results.setUrl(sessionResultsUrl);
+
+                // for backwards compatibility with outdated servers
+                if (!results.getStatus()) {
+                    if (results.getMissing() === 0 && results.getMismatches() === 0) {
+                        results.setStatus(TestResultsStatus.Passed);
+                    } else {
+                        results.setStatus(TestResultsStatus.Unresolved);
+                    }
+                }
+
                 serverResults = results;
                 that._logger.verbose(`Results: ${results}`);
 
