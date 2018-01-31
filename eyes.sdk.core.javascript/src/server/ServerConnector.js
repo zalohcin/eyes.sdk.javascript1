@@ -9,9 +9,13 @@ const MatchResult = require('./MatchResult');
 const GeneralUtils = require('../GeneralUtils');
 const ArgumentGuard = require('../ArgumentGuard');
 
+const RenderingInfo = require('../rendering/RenderingInfo');
+const RunningRender = require('../rendering/RunningRender');
+const RenderStatusResults = require('../rendering/RenderStatusResults');
+
 // Constants
 const DEFAULT_TIMEOUT_MS = 300000; // 5 min
-const API_PATH = '/api/sessions/running';
+const EYES_API_PATH = '/api/sessions/running';
 const LONG_REQUEST_DELAY_MS = 2000; // ms
 const MAX_LONG_REQUEST_DELAY_MS = 10000; // ms
 const LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR = 1.5;
@@ -24,7 +28,8 @@ const HTTP_STATUS_CODES = {
     CREATED: 201,
     ACCEPTED: 202,
     OK: 200,
-    GONE: 410
+    GONE: 410,
+    NOT_FOUND: 404
 };
 
 /**
@@ -40,11 +45,13 @@ class ServerConnector {
     constructor(promiseFactory, logger, serverUrl) {
         this._promiseFactory = promiseFactory;
         this._logger = logger;
-        this.setServerUrl(serverUrl);
-
+        this._serverUrl = serverUrl;
         this._apiKey = null;
-        this._proxySettings = null;
 
+        this._renderingServerUrl = null;
+        this._renderingAuthToken = null;
+
+        this._proxySettings = null;
         this._httpOptions = {
             proxy: null,
             headers: DEFAULT_HEADERS,
@@ -60,8 +67,8 @@ class ServerConnector {
      * @param serverUrl {String} The URI of the rest server.
      */
     setServerUrl(serverUrl) {
+        ArgumentGuard.notNull(serverUrl, "serverUrl");
         this._serverUrl = serverUrl;
-        this._endPoint = GeneralUtils.urlConcat(serverUrl, API_PATH);
     }
 
     /**
@@ -79,8 +86,6 @@ class ServerConnector {
     setApiKey(apiKey) {
         ArgumentGuard.notNull(apiKey, "apiKey");
         this._apiKey = apiKey;
-
-        this._httpOptions.params.apiKey = apiKey;
     }
 
     /**
@@ -92,6 +97,43 @@ class ServerConnector {
     }
 
     /**
+     * Sets the current rendering server URL used by the client.
+     *
+     * @param serverUrl {String} The URI of the rendering server.
+     */
+    setRenderingServerUrl(serverUrl) {
+        ArgumentGuard.notNull(serverUrl, "serverUrl");
+        this._renderingServerUrl = serverUrl;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String} The URI of the rendering server.
+     */
+    getRenderingServerUrl() {
+        return this._renderingServerUrl;
+    }
+
+    /**
+     * Sets the API key of your applitools Eyes account.
+     *
+     * @param {String} authToken The api key to set.
+     */
+    setRenderingAuthToken(authToken) {
+        ArgumentGuard.notNull(authToken, "authToken");
+        this._renderingAuthToken = authToken;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     *
+     * @return {String} The currently set API key or {@code null} if no key is set.
+     */
+    getRenderingAuthToken() {
+        return this._renderingAuthToken;
+    }
+
+    /**
      * Sets the proxy settings to be used by the rest client.
      *
      * @param {ProxySettings|String} arg1 The proxy setting or url to be used. If {@code null} then no proxy is set.
@@ -99,6 +141,12 @@ class ServerConnector {
      * @param {String} [password]
      */
     setProxy(arg1, username, password) {
+        if (!arg1) {
+            this._proxySettings = undefined;
+            delete this._httpOptions.proxy;
+            return;
+        }
+
         if (arg1 instanceof ProxySettings) {
             this._proxySettings = arg1;
         } else {
@@ -163,17 +211,24 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.startSession called with: ${sessionStartInfo}`);
 
         const that = this;
-        const uri = this._endPoint;
-        const options = {data: {startInfo: sessionStartInfo}};
+        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH);
+        const options = {
+            params: {
+                apiKey: that._apiKey,
+            },
+            data: {startInfo: sessionStartInfo}
+        };
 
         return sendRequest(that, 'startSession', uri, 'post', options).then(response => {
             const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED];
             if (validStatusCodes.includes(response.status)) {
                 that._logger.verbose('ServerConnector.startSession - post succeeded');
 
-                const runningSession = new RunningSession();
-                Object.assign(runningSession, response.data);
+                const runningSession = new RunningSession(response.data);
                 runningSession.setNewSession(response.status === HTTP_STATUS_CODES.CREATED);
+                if (response.data.renderingInfo) {
+                    runningSession.setRenderingInfo(new RenderingInfo(response.data.renderingInfo));
+                }
                 return runningSession;
             }
 
@@ -194,9 +249,10 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.stopSession called with isAborted: ${isAborted}, save: ${save} for session: ${runningSession}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._endPoint, runningSession.getId());
+        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, runningSession.getId());
         const options = {
             params: {
+                apiKey: that._apiKey,
                 aborted: isAborted,
                 updateBaseline: save
             }
@@ -229,11 +285,23 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.matchWindow called with ${matchWindowData} for session: ${runningSession}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._endPoint, runningSession.getId());
-        const options = {
-            contentType: 'application/octet-stream',
-            data: Buffer.concat([createDataBytes(matchWindowData), matchWindowData.getAppOutput().getScreenshot64()])
+        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, runningSession.getId());
+        let options = {
+            params: {
+                apiKey: that._apiKey,
+            },
+            data: matchWindowData
         };
+
+        if (matchWindowData.getAppOutput().getScreenshot64()) {
+            // if there is screenshot64, then we will send application/octet-stream body instead of application/json
+            const screenshot64 = matchWindowData.getAppOutput().getScreenshot64();
+            matchWindowData.getAppOutput().setScreenshot64(null); // remove screenshot64 from json
+            options.contentType = 'application/octet-stream';
+            // noinspection JSValidateTypes
+            options.data = Buffer.concat([createDataBytes(matchWindowData), screenshot64]);
+            matchWindowData.getAppOutput().setScreenshot64(screenshot64);
+        }
 
         return sendLongRequest(that, 'matchWindow', uri, 'post', options).then(response => {
             const validStatusCodes = [HTTP_STATUS_CODES.OK];
@@ -264,9 +332,12 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.replaceWindow called with ${matchWindowData} for session: ${runningSession}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._endPoint, runningSession.getId() + '/' + stepIndex);
+        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, runningSession.getId(), stepIndex);
         const options = {
             contentType: 'application/octet-stream',
+            params: {
+                apiKey: that._apiKey,
+            },
             body: Buffer.concat([createDataBytes(matchWindowData), matchWindowData.getAppOutput().getScreenshot64()])
         };
 
@@ -283,6 +354,146 @@ class ServerConnector {
             throw new Error(`ServerConnector.replaceWindow - unexpected status (${response.statusText})`);
         });
     }
+
+    /**
+     * Initiate a rendering using RenderingGrid API
+     *
+     * @param {RenderRequest} renderRequest The current agent's running session.
+     * @param {RunningRender} [runningRender] The running render (for second request only)
+     * @return {Promise.<RunningRender>} The results of the render request
+     */
+    render(renderRequest, runningRender) {
+        ArgumentGuard.notNull(renderRequest, "renderRequest");
+        this._logger.verbose(`ServerConnector.render called with ${renderRequest} for render: ${runningRender}`);
+
+        const that = this;
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/render');
+        const options = {
+            headers: {
+                'X-Auth-Token': that._renderingAuthToken,
+            },
+            data: renderRequest.toJSON()
+        };
+
+        if (runningRender) {
+            options.data.renderId = runningRender.getRenderId();
+        }
+
+        return sendRequest(that, 'render', uri, 'post', options).then(response => {
+            const validStatusCodes = [HTTP_STATUS_CODES.OK];
+            if (validStatusCodes.includes(response.status)) {
+                const runningRender = new RunningRender();
+                Object.assign(runningRender, response.data);
+                that._logger.verbose('ServerConnector.render - post succeeded', runningRender);
+                return runningRender;
+            }
+
+            throw new Error(`ServerConnector.render - unexpected status (${response.statusText})`);
+        });
+    }
+
+    /**
+     * Check if resource exists on the server
+     *
+     * @param {RunningRender} runningRender The running render (for second request only)
+     * @param {RGridResource} resource The resource to use
+     * @return {Promise.<boolean>} Whether resource exists on the server or not
+     */
+    renderCheckResource(runningRender, resource) {
+        ArgumentGuard.notNull(runningRender, "runningRender");
+        ArgumentGuard.notNull(resource, "resource");
+        this._logger.verbose(`ServerConnector.checkResourceExists called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
+
+        const that = this;
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`);
+        const options = {
+            headers: {
+                'X-Auth-Token': that._renderingAuthToken,
+            },
+            params: {
+                'render-id': runningRender.getRenderId(),
+            },
+        };
+
+        return sendRequest(that, 'checkResourceExists', uri, 'HEAD', options).then(response => {
+            const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.NOT_FOUND];
+            if (validStatusCodes.includes(response.status)) {
+                that._logger.verbose('ServerConnector.checkResourceExists - request succeeded');
+                return response.status === HTTP_STATUS_CODES.OK;
+            }
+
+            throw new Error(`ServerConnector.checkResourceExists - unexpected status (${response.statusText})`);
+        });
+    }
+
+    /**
+     * Upload resource to the server
+     *
+     * @param {RunningRender} runningRender The running render (for second request only)
+     * @param {RGridResource} resource The resource to upload
+     * @return {Promise.<boolean>} True if resource was uploaded
+     */
+    renderPutResource(runningRender, resource) {
+        ArgumentGuard.notNull(runningRender, "runningRender");
+        ArgumentGuard.notNull(resource, "resource");
+        this._logger.verbose(`ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
+
+        const that = this;
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`);
+        const options = {
+            contentType: resource.getContentType(),
+            headers: {
+                'X-Auth-Token': that._renderingAuthToken,
+            },
+            params: {
+                'render-id': runningRender.getRenderId(),
+            },
+            data: resource.getContent()
+        };
+
+        return sendRequest(that, 'putResource', uri, 'PUT', options).then(response => {
+            const validStatusCodes = [HTTP_STATUS_CODES.OK];
+            if (validStatusCodes.includes(response.status)) {
+                that._logger.verbose('ServerConnector.putResource - request succeeded');
+                return true;
+            }
+
+            throw new Error(`ServerConnector.putResource - unexpected status (${response.statusText})`);
+        });
+    }
+
+    /**
+     * Get the rendering status for current render
+     *
+     * @param {RunningRender} runningRender The running render
+     * @return {Promise.<RenderStatusResults>} The render's status
+     */
+    renderStatus(runningRender) {
+        ArgumentGuard.notNull(runningRender, "runningRender");
+        this._logger.verbose(`ServerConnector.renderStatus called for render: ${runningRender}`);
+
+        const that = this;
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status');
+        const options = {
+            headers: {
+                'X-Auth-Token': that._renderingAuthToken,
+            },
+            params: {
+                'render-id': runningRender.getRenderId(),
+            }
+        };
+
+        return sendRequest(that, 'render-status', uri, 'get', options).then(response => {
+            const validStatusCodes = [HTTP_STATUS_CODES.OK];
+            if (validStatusCodes.includes(response.status)) {
+                const renderStatusResults = new RenderStatusResults(response.data);
+                that._logger.verbose('ServerConnector.renderStatus - get succeeded', renderStatusResults);
+                return renderStatusResults;
+            }
+
+            throw new Error(`ServerConnector.renderStatus - unexpected status (${response.statusText})`);
+        });
+    }
 }
 
 /**
@@ -297,7 +508,7 @@ class ServerConnector {
 function sendLongRequest(that, name, uri, method, options = {}) {
     const headers = {
         'Eyes-Expect': '202+location',
-        'Eyes-Date': GeneralUtils.getRfc1123Date()
+        'Eyes-Date': GeneralUtils.toRfc1123DateTime()
     };
 
     options.headers = options.headers ? Object.assign(options.headers, headers) : headers;
@@ -324,7 +535,7 @@ function longRequestCheckStatus(that, name, response) {
             });
         case HTTP_STATUS_CODES.CREATED:
             const deleteUri = response.headers['location'];
-            const options = {headers: {'Eyes-Date': GeneralUtils.getRfc1123Date()}};
+            const options = {headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
             return sendRequest(that, name, deleteUri, 'delete', options);
         case HTTP_STATUS_CODES.GONE:
             return that._promiseFactory.reject(new Error('The server task has gone.'));
@@ -346,7 +557,7 @@ function longRequestLoop(that, name, uri, delay) {
     that._logger.verbose(`${name}: Still running... Retrying in ${delay} ms`);
 
     return GeneralUtils.sleep(delay, that._promiseFactory).then(() => {
-        const options = {headers: {'Eyes-Date': GeneralUtils.getRfc1123Date()}};
+        const options = {headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
         return sendRequest(that, name, uri, 'get', options);
     }).then(response => {
         if (response.status !== HTTP_STATUS_CODES.OK) {

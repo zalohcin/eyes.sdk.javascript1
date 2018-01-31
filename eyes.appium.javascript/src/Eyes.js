@@ -14,7 +14,7 @@ const VERSION = require('../package.json').version;
  */
 class Eyes extends require('eyes.selenium').Eyes {
 
-    //noinspection JSUnusedGlobalSymbols,JSMethodCanBeStatic
+    /** @override */
     getBaseAgentId() {
         return 'eyes.appium/' + VERSION;
     }
@@ -35,7 +35,6 @@ class Eyes extends require('eyes.selenium').Eyes {
         });
     }
 
-    // noinspection JSUnusedGlobalSymbols
     /** @override */
     getAppEnvironment() {
         const that = this;

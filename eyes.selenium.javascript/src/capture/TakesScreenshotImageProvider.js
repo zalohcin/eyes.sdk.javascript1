@@ -9,15 +9,13 @@ class TakesScreenshotImageProvider extends ImageProvider {
 
     /**
      * @param {Logger} logger A Logger instance.
-     * @param {EyesWebDriver} driver
-     * @param {PromiseFactory} promiseFactory
+     * @param {EyesWebDriver} tsInstance
      */
-    constructor(logger, driver, promiseFactory) {
+    constructor(logger, tsInstance) {
         super();
 
         this._logger = logger;
-        this._executor = driver;
-        this._promiseFactory = promiseFactory;
+        this._tsInstance = tsInstance;
     }
 
     /**
@@ -28,9 +26,9 @@ class TakesScreenshotImageProvider extends ImageProvider {
         this._logger.verbose("Getting screenshot as base64...");
 
         const that = this;
-        return this._executor.takeScreenshot().then(screenshot64 => {
+        return this._tsInstance.takeScreenshot().then(screenshot64 => {
             that._logger.verbose("Done getting base64! Creating MutableImage...");
-            return new MutableImage(screenshot64, that._promiseFactory);
+            return new MutableImage(screenshot64, that._tsInstance.getPromiseFactory());
         });
     }
 }

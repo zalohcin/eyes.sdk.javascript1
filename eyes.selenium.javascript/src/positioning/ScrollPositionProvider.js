@@ -84,6 +84,13 @@ class ScrollPositionProvider extends PositionProvider {
             that._logger.verbose("Position restored.");
         });
     }
+
+    /**
+     * @return {Promise}
+     */
+    scrollToBottomRight() {
+        return EyesSeleniumUtils.scrollToBottomRight(this._executor);
+    }
 }
 
 module.exports = ScrollPositionProvider;

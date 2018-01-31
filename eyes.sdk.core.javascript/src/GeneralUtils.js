@@ -1,10 +1,10 @@
 'use strict';
 
 const dateformat = require('dateformat');
-const isBuffer = require('is-buffer');
 const stackTrace = require('stack-trace');
 
-const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
+const DATE_FORMAT_ISO8601_FOR_OUTPUT = "yyyy-mm-dd'T'HH:MM:ss'Z'";
+const DATE_FORMAT_ISO8601_FOR_INPUT = "yyyy-mm-dd'T'HH:MM:ssXXX";
 const DATE_FORMAT_RFC1123 = "ddd, dd mmm yyyy HH:MM:ss 'GMT'";
 
 const BASE64_CHARS_PATTERN = /[^A-Z0-9+\/=]/i;
@@ -16,24 +16,35 @@ class GeneralUtils {
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * Concatenate the url to the suffix - making sure there are no double slashes
+     * Concatenate the url to the suffixes - making sure there are no double slashes
      *
-     * @param {String} url - The left side of the URL.
-     * @param {String} suffix - the right side.
+     * @param {String} url The left side of the URL.
+     * @param {String...} suffixes The right side.
      * @return {String} the URL
      **/
-    static urlConcat(url, suffix) {
-        let left = url;
-        if (url.lastIndexOf("/") === (url.length - 1)) {
-            left = url.slice(0, url.length - 1);
+    static urlConcat(url, ...suffixes) {
+        let concatUrl = GeneralUtils.stripTrailingSlash(url);
+
+        for (let suffix of suffixes) {
+            if (!suffix.startsWith('/')) {
+                concatUrl += '/';
+            }
+
+            concatUrl += GeneralUtils.stripTrailingSlash(suffix);
         }
 
-        if (suffix.indexOf("/") === 0) {
-            return left + suffix;
-        }
-
-        return left + "/" + suffix;
+        return concatUrl;
     };
+
+    /**
+     * If given URL ends with '/', the method with cut it and return URL without it
+     *
+     * @param {String} url
+     * @return {String}
+     */
+    static stripTrailingSlash(url) {
+        return url.endsWith('/') ? url.slice(0, -1) : url;
+    }
 
     //noinspection JSUnusedGlobalSymbols
     /**
@@ -171,8 +182,8 @@ class GeneralUtils {
      * @param {Date} [date] Date which will be converted
      * @return {String} String formatted as ISO-8601 (yyyy-MM-dd'T'HH:mm:ss'Z')
      */
-    static getIso8601Data(date = new Date()) {
-        return dateformat(date, DATE_FORMAT_ISO8601);
+    static toISO8601DateTime(date = new Date()) {
+        return dateformat(date, DATE_FORMAT_ISO8601_FOR_OUTPUT, true);
     };
 
     /**
@@ -181,8 +192,18 @@ class GeneralUtils {
      * @param {Date} [date] Date which will be converted
      * @return {String} String formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
      */
-    static getRfc1123Date(date = new Date()) {
-        return dateformat(date, DATE_FORMAT_RFC1123);
+    static toRfc1123DateTime(date = new Date()) {
+        return dateformat(date, DATE_FORMAT_RFC1123, true);
+    };
+
+    /**
+     * Creates {@link Date} instance from an ISO 8601 formatted string.
+     *
+     * @param {String} dateTime An ISO 8601 formatted string.
+     * @return {Date} A {@link Date} instance representing the given date and time.
+     */
+    static fromISO8601DateTime(dateTime) {
+        return new Date(dateTime);
     };
 
     /**
@@ -237,7 +258,7 @@ class GeneralUtils {
      * @return {boolean}
      */
     static isBuffer(value) {
-        return isBuffer(value);
+        return value != null && !!value.constructor && typeof value.constructor.isBuffer === 'function' && value.constructor.isBuffer(value);
     }
 
     static isBase64(str) {
@@ -268,6 +289,19 @@ class GeneralUtils {
      */
     static getStackTrace() {
         return stackTrace.get();
+    }
+
+    /**
+     * Simple method that decode JSON Web Tokens
+     *
+     * @param {String} token
+     * @return {Object}
+     */
+    static jwtDecode(token) {
+        let payloadSeg = token.split('.')[1];
+        payloadSeg += new Array(5 - payloadSeg.length % 4).join('=');
+        payloadSeg = payloadSeg.replace(/-/g, '+').replace(/_/g, '/');
+        return JSON.parse(new Buffer(payloadSeg, 'base64').toString());
     }
 }
 

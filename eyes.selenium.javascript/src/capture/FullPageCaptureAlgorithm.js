@@ -3,6 +3,7 @@
 const {ArgumentGuard, Location, Region, RectangleSize, CoordinatesType, GeneralUtils, MutableImage, NullCutProvider} = require('eyes.sdk');
 
 const NullRegionPositionCompensation = require('../positioning/NullRegionPositionCompensation');
+const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
 
 const MIN_SCREENSHOT_PART_HEIGHT = 10;
 
@@ -11,15 +12,19 @@ class FullPageCaptureAlgorithm {
     /**
      * @param {Logger} logger
      * @param {UserAgent} userAgent
+     * @param {EyesJsExecutor} jsExecutor
      * @param {PromiseFactory} promiseFactory
      */
-    constructor(logger, userAgent, promiseFactory) {
+    constructor(logger, userAgent, jsExecutor, promiseFactory) {
         ArgumentGuard.notNull(logger, "logger");
+        // TODO: why do we need userAgent here?
         // ArgumentGuard.notNull(userAgent, "userAgent");
+        ArgumentGuard.notNull(jsExecutor, "jsExecutor");
         ArgumentGuard.notNull(promiseFactory, "promiseFactory");
 
         this._logger = logger;
         this._userAgent = userAgent;
+        this._jsExecutor = jsExecutor;
         this._promiseFactory = promiseFactory;
     }
 
@@ -113,13 +118,30 @@ class FullPageCaptureAlgorithm {
                 });
             }
         }).then(() => {
+            const checkingAnElement = !region.isEmpty();
             return positionProvider.getEntireSize().then(entireSize_ => {
                 entireSize = entireSize_;
-                that._logger.verbose("Entire size of region context: " + entireSize);
-            }).catch(err => {
-                that._logger.log("WARNING: Failed to extract entire size of region context" + err);
-                that._logger.log("Using image size instead: " + image.getWidth() + "x" + image.getHeight());
-                entireSize = new RectangleSize(image.getWidth(), image.getHeight());
+                if (!checkingAnElement) {
+                    const spp = new ScrollPositionProvider(that._logger, that._jsExecutor);
+                    let originalCurrentPosition;
+                    return spp.getCurrentPosition().then(originalCurrentPosition_ => {
+                        originalCurrentPosition = originalCurrentPosition_;
+                        return spp.scrollToBottomRight();
+                    }).then(() => {
+                        return spp.getCurrentPosition();
+                    }).then(localCurrentPosition => {
+                        entireSize = new RectangleSize(
+                            localCurrentPosition.getX() + image.getWidth(),
+                            localCurrentPosition.getY() + image.getHeight());
+                    }).then(() => {
+                        that._logger.verbose(`Entire size of region context: ${entireSize}`);
+                        return spp.setPosition(originalCurrentPosition);
+                    }).catch(err => {
+                        that._logger.log("WARNING: Failed to extract entire size of region context" + err);
+                        that._logger.log(`Using image size instead: ${image.getWidth()}x${image.getHeight()}`);
+                        entireSize = new RectangleSize(image.getWidth(), image.getHeight());
+                    });
+                }
             });
         }).then(() => {
             // Notice that this might still happen even if we used "getImagePart", since "entirePageSize" might be that of a frame.

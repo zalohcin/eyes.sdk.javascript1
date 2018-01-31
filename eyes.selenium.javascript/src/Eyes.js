@@ -40,7 +40,7 @@ class Eyes extends EyesBase {
     /**
      * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
      *
-     * @param {String} [serverUrl=EyesBase.DEFAULT_EYES_SERVER] The Eyes server URL.
+     * @param {String} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
      * @param {Boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
      * @param {PromiseFactory} [promiseFactory] If not specified will be created using `Promise` object
      **/
@@ -56,6 +56,11 @@ class Eyes extends EyesBase {
         this._forceFullPageScreenshot = false;
         /** @type {boolean} */
         this._checkFrameOrElement = false;
+
+        /** @type {String} */
+        this._originalDefaultContentOverflow = false;
+        /** @type {String} */
+        this._originalFrameOverflow = false;
 
         /** @type {Region} */
         this._regionToCheck = null;
@@ -673,11 +678,14 @@ class Eyes extends EyesBase {
                 if (displayStyle !== "inline") {
                     that._elementPositionProvider = new ElementPositionProvider(that._logger, that._driver, eyesElement);
                 }
-                return eyesElement.getOverflow();
-            }).then(originalOverflow_ => {
-                originalOverflow = originalOverflow_;
-                // Set overflow to "hidden".
-                return eyesElement.setOverflow("hidden");
+            }).then(() => {
+                if (that._hideScrollbars) {
+                    return eyesElement.getOverflow().then(originalOverflow_ => {
+                        originalOverflow = originalOverflow_;
+                        // Set overflow to "hidden".
+                        return eyesElement.setOverflow("hidden");
+                    });
+                }
             }).then(() => {
                 return eyesElement.getClientWidth().then(elementWidth => {
                     return eyesElement.getClientHeight().then(elementHeight => {
@@ -1070,6 +1078,108 @@ class Eyes extends EyesBase {
         return EyesSeleniumUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize));
     }
 
+    /** @override */
+    beforeOpen() {
+        return this._tryHideScrollbars();
+    }
+
+    /** @override */
+    beforeMatchWindow() {
+        return this._tryHideScrollbars();
+    }
+
+    /**
+     * @private
+     * @return {Promise}
+     */
+    _tryHideScrollbars() {
+        if (this._hideScrollbars) {
+            const that = this;
+            const originalFC = new FrameChain(that._logger, that._driver.getFrameChain());
+            const fc = new FrameChain(that._logger, that._driver.getFrameChain());
+            return EyesSeleniumUtils.hideScrollbars(that._driver, 200).then(overflow => {
+                that._originalOverflow = overflow;
+                return that._tryHideScrollbarsLoop(fc);
+            }).then(() => {
+                return that._driver.switchTo().frames(originalFC);
+            }).catch(err => {
+                that._logger.log("WARNING: Failed to hide scrollbars! Error: " + err);
+            });
+        }
+
+        return this.getPromiseFactory().resolve();
+    }
+
+    /**
+     * @private
+     * @param {FrameChain} fc
+     * @return {Promise}
+     */
+    _tryHideScrollbarsLoop(fc) {
+        if (fc.size() > 0) {
+            const that = this;
+            return that._driver.getRemoteWebDriver().switchTo().parentFrame().then(() => {
+                const frame = fc.pop();
+                return EyesSeleniumUtils.hideScrollbars(that._driver, 200);
+            }).then(() => {
+                return that._tryHideScrollbarsLoop(fc);
+            });
+        }
+
+        return this.getPromiseFactory().resolve();
+    }
+
+    /**
+     * @private
+     * @return {Promise}
+     */
+    _tryRestoreScrollbars() {
+        if (this._hideScrollbars) {
+            const that = this;
+            const originalFC = new FrameChain(that._logger, that._driver.getFrameChain());
+            const fc = new FrameChain(that._logger, that._driver.getFrameChain());
+            return that._tryRestoreScrollbarsLoop(fc).then(() => {
+                return that._driver.switchTo().frames(originalFC);
+            });
+        }
+    }
+
+    /**
+     * @private
+     * @param {FrameChain} fc
+     * @return {Promise}
+     */
+    _tryRestoreScrollbarsLoop(fc) {
+        if (fc.size() > 0) {
+            const that = this;
+            return that._driver.getRemoteWebDriver().switchTo().parentFrame().then(() => {
+                const frame = fc.pop();
+                return frame.getReference().setOverflow(frame.getOriginalOverflow());
+            }).then(() => {
+                return that._tryRestoreScrollbarsLoop(fc);
+            });
+        }
+
+        return this.getPromiseFactory().resolve();
+    }
+
+    /*
+    /**
+     * @protected
+     * @return {Promise}
+     * /
+    _afterMatchWindow() {
+        if (this.hideScrollbars) {
+            try {
+                EyesSeleniumUtils.setOverflow(this.driver, this.originalOverflow);
+            } catch (EyesDriverOperationException e) {
+                // Bummer, but we'll continue with the screenshot anyway :)
+                logger.log("WARNING: Failed to revert overflow! Error: " + e.getMessage());
+            }
+        }
+    }
+    */
+
     //noinspection JSUnusedGlobalSymbols
     /**
      * @protected
@@ -1079,32 +1189,14 @@ class Eyes extends EyesBase {
         const that = this;
         that._logger.verbose("getScreenshot()");
 
-        let result, scaleProviderFactory, originalOverflow, originalBodyOverflow, error;
+        let result, scaleProviderFactory, originalBodyOverflow, error;
         return that._updateScalingParams().then(scaleProviderFactory_ => {
             scaleProviderFactory = scaleProviderFactory_;
 
-            if (that._hideScrollbars) {
-                return EyesSeleniumUtils.hideScrollbars(that._jsExecutor, DEFAULT_WAIT_SCROLL_STABILIZATION).then(originalOverflow_ => {
-                    originalOverflow = originalOverflow_;
-
-                    if (that._stitchMode === StitchMode.CSS) {
-                        return EyesSeleniumUtils.isBodyOverflowHidden(that._jsExecutor).then(isBodyOverflowHidden => {
-                            if (isBodyOverflowHidden) {
-                                return EyesSeleniumUtils.setBodyOverflow(that._jsExecutor, "initial").then((originalBodyVal) => {
-                                    originalBodyOverflow = originalBodyVal;
-                                });
-                            }
-                        });
-                    }
-                }).catch(err => {
-                    that._logger.log("WARNING: Failed to hide scrollbars! Error: " + err);
-                });
-            }
-        }).then(() => {
             const screenshotFactory = new EyesWebDriverScreenshotFactory(that._logger, that._driver, that.getPromiseFactory());
 
             const originalFrameChain = new FrameChain(that._logger, that._driver.getFrameChain());
-            const algo = new FullPageCaptureAlgorithm(that._logger, that._userAgent, that.getPromiseFactory());
+            const algo = new FullPageCaptureAlgorithm(that._logger, that._userAgent, that._jsExecutor, that.getPromiseFactory());
             const switchTo = that._driver.switchTo();
 
             if (that._checkFrameOrElement) {
@@ -1182,13 +1274,6 @@ class Eyes extends EyesBase {
             });
         }).catch(error_ => {
             error = error_;
-        }).then(() => {
-            if (that._hideScrollbars) {
-                return EyesSeleniumUtils.setOverflow(that._driver, originalOverflow).catch(err => {
-                    // Bummer, but we'll continue with the screenshot anyway :)
-                    that._logger.log("WARNING: Failed to revert overflow! Error: " + err);
-                });
-            }
         }).then(() => {
             if (originalBodyOverflow) {
                 return EyesSeleniumUtils.setBodyOverflow(that._jsExecutor, originalBodyOverflow);

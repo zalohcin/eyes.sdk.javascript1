@@ -85,7 +85,6 @@ class EyesScreenshot {
     /**
      * Converts a region's location coordinates with the {@code from} coordinates type to the {@code to} coordinates type.
      *
-     * @abstract
      * @param {Region} region The region which location's coordinates needs to be converted.
      * @param {CoordinatesType} from The current coordinates type for {@code region}.
      * @param {CoordinatesType} to The target coordinates type for {@code region}.

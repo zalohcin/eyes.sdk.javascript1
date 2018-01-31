@@ -26,7 +26,6 @@ class ElementFinderWrapper extends EyesWebElement {
      * @param {ElementFinder} finder
      **/
     constructor(logger, eyesDriver, finder) {
-        // noinspection JSCheckFunctionSignatures
         super(logger, eyesDriver, finder.getWebElement());
         GeneralUtils.mixin(this, finder);
 
@@ -96,6 +95,7 @@ class ElementArrayFinderWrapper {
     getWebElements() {
         const that = this;
         that._logger.verbose("ElementArrayFinderWrapper:getWebElements - called");
+        // noinspection JSValidateTypes
         return that._arrayFinder.getWebElements().then(elements => {
             const res = [];
             elements.forEach(el => {

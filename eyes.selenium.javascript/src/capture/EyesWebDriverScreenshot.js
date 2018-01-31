@@ -68,9 +68,9 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         // The frame comprises the entire screenshot.
         this._screenshotType = ScreenshotType.ENTIRE_FRAME;
 
-        this._currentFrameScrollPosition = new Location(0, 0);
-        this._frameLocationInScreenshot = new Location(0, 0);
-        this._frameWindow = new Region(new Location(0, 0), entireFrameSize);
+        this._currentFrameScrollPosition = Location.ZERO;
+        this._frameLocationInScreenshot = Location.ZERO;
+        this._frameWindow = new Region(Location.ZERO, entireFrameSize);
         return this._promiseFactory.resolve(this);
     }
 
@@ -283,7 +283,8 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         return this._image.getImagePart(asIsSubScreenshotRegion).then(subScreenshotImage => {
             const result = new EyesWebDriverScreenshot(that._logger, that._driver, subScreenshotImage, that._promiseFactory);
             return result.initFromFrameSize(new RectangleSize(subScreenshotImage.getWidth(), subScreenshotImage.getHeight()));
-        }).then(result => {
+        }).then(/** EyesWebDriverScreenshot */ result => {
+            result._frameLocationInScreenshot = new Location(-region.getLeft(), -region.getTop());
             that._logger.verbose("Done!");
             return result;
         });

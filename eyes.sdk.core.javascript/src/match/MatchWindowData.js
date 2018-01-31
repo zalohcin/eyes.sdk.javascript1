@@ -91,8 +91,8 @@ class MatchWindowData {
      *                      Can be array of size 0, but MUST NOT be null.
      * @param {AppOutput} appOutput The appOutput for the current matchWindow call.
      * @param {String} tag The tag of the window to be matched.
-     * @param {Boolean} ignoreMismatch
-     * @param {Options} options
+     * @param {?Boolean} ignoreMismatch
+     * @param {?Options} options
      */
     constructor(userInputs, appOutput, tag, ignoreMismatch, options) {
         ArgumentGuard.notNull(userInputs, "userInputs");
@@ -133,7 +133,7 @@ class MatchWindowData {
         return {
             tag: this._tag,
             userInputs: this._userInputs,
-            appOutput: this._appOutput,
+            appOutput: this._appOutput.toJSON() || this._appOutput,
             ignoreMismatch: this._ignoreMismatch,
             options: this._options
         };
@@ -141,7 +141,13 @@ class MatchWindowData {
 
     /** @override */
     toString() {
-        return `MatchWindowData { ${GeneralUtils.toJson(this)} }`;
+        const object = this.toJSON();
+
+        if (object.appOutput.screenshot64) {
+            object.appOutput.screenshot64 = "REMOVED_FROM_OUTPUT";
+        }
+
+        return `MatchWindowData { ${GeneralUtils.toJson(object)} }`;
     }
 }
 

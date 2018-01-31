@@ -22,9 +22,10 @@ class SessionStartInfo {
      * @param {String} branchName
      * @param {String} parentBranchName
      * @param {PropertyData[]} properties
+     * @param {boolean} [render=false]
      */
     constructor(agentId, sessionType, appIdOrName, verId, scenarioIdOrName, batchInfo, baselineEnvName, environmentName,
-                environment, defaultMatchSettings, branchName, parentBranchName, properties) {
+                environment, defaultMatchSettings, branchName, parentBranchName, properties, render = false) {
         ArgumentGuard.notNullOrEmpty(agentId, "agentId");
         ArgumentGuard.notNullOrEmpty(appIdOrName, "appIdOrName");
         ArgumentGuard.notNullOrEmpty(scenarioIdOrName, "scenarioIdOrName");
@@ -45,6 +46,7 @@ class SessionStartInfo {
         this._branchName = branchName;
         this._parentBranchName = parentBranchName;
         this._properties = properties;
+        this._render = render;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -125,6 +127,12 @@ class SessionStartInfo {
         return this._properties;
     }
 
+    // noinspection JSUnusedGlobalSymbols
+    /** @return {boolean} */
+    getRender() {
+        return this._render;
+    }
+
     toJSON() {
         return {
             agentId: this._agentId,
@@ -139,7 +147,8 @@ class SessionStartInfo {
             defaultMatchSettings: this._defaultMatchSettings,
             branchName: this._branchName,
             parentBranchName: this._parentBranchName,
-            properties: this._properties
+            properties: this._properties,
+            render: this._render
         };
     }
 

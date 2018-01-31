@@ -1,7 +1,9 @@
 exports.AppOutput = require('./src/capture/AppOutput');
 exports.AppOutputProvider = require('./src/capture/AppOutputProvider');
 exports.AppOutputWithScreenshot = require('./src/capture/AppOutputWithScreenshot');
+exports.EyesScreenshot = require('./src/capture/EyesScreenshot');
 exports.EyesScreenshotFactory = require('./src/capture/EyesScreenshotFactory');
+exports.EyesSimpleScreenshot = require('./src/capture/EyesSimpleScreenshot');
 exports.ImageProvider = require('./src/capture/ImageProvider');
 
 exports.CutProvider = require('./src/cutting/CutProvider');
@@ -31,7 +33,6 @@ exports.PropertyHandler = require('./src/handlers/PropertyHandler');
 exports.ReadOnlyPropertyHandler = require('./src/handlers/ReadOnlyPropertyHandler');
 exports.SimplePropertyHandler = require('./src/handlers/SimplePropertyHandler');
 
-exports.EyesScreenshot = require('./src/images/EyesScreenshot');
 exports.ImageDeltaCompressor = require('./src/images/ImageDeltaCompressor');
 exports.ImageUtils = require('./src/images/ImageUtils');
 exports.MutableImage = require('./src/images/MutableImage');
@@ -47,6 +48,7 @@ exports.ImageMatchSettings = require('./src/match/ImageMatchSettings');
 exports.MatchLevel = require('./src/match/MatchLevel');
 exports.MatchWindowData = require('./src/match/MatchWindowData');
 exports.MatchWindowDataWithScreenshot = require('./src/match/MatchWindowDataWithScreenshot');
+exports.MatchWindowTask = require('./src/match/MatchWindowTask');
 
 exports.CoordinatesType = require('./src/positioning/CoordinatesType');
 exports.FloatingMatchSettings = require('./src/positioning/FloatingMatchSettings');
@@ -58,6 +60,15 @@ exports.PositionProvider = require('./src/positioning/PositionProvider');
 exports.RectangleSize = require('./src/positioning/RectangleSize');
 exports.Region = require('./src/positioning/Region');
 exports.RegionProvider = require('./src/positioning/RegionProvider');
+
+exports.RenderingInfo = require('./src/rendering/RenderingInfo');
+exports.RenderRequest = require('./src/rendering/RenderRequest');
+exports.RenderStatus = require('./src/rendering/RenderStatus');
+exports.RenderStatusResults = require('./src/rendering/RenderStatusResults');
+exports.RenderWindowTask = require('./src/rendering/RenderWindowTask');
+exports.RGridDom = require('./src/rendering/RGridDom');
+exports.RGridResource = require('./src/rendering/RGridResource');
+exports.RunningRender = require('./src/rendering/RunningRender');
 
 exports.ContextBasedScaleProvider = require('./src/scaling/ContextBasedScaleProvider');
 exports.ContextBasedScaleProviderFactory = require('./src/scaling/ContextBasedScaleProviderFactory');
@@ -87,10 +98,10 @@ exports.ArgumentGuard = require('./src/ArgumentGuard');
 exports.BatchInfo = require('./src/BatchInfo');
 exports.BrowserNames = require('./src/BrowserNames');
 exports.EyesBase = require('./src/EyesBase');
+exports.EyesJsBrowserUtils = require('./src/EyesJsBrowserUtils');
 exports.EyesJsExecutor = require('./src/EyesJsExecutor');
 exports.FailureReports = require('./src/FailureReports');
 exports.GeneralUtils = require('./src/GeneralUtils');
-exports.MatchWindowTask = require('./src/MatchWindowTask');
 exports.OSNames = require('./src/OSNames');
 exports.PromiseFactory = require('./src/PromiseFactory');
 exports.RemoteSessionEventHandler = require('./src/RemoteSessionEventHandler');

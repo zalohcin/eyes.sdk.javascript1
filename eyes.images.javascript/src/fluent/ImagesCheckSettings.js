@@ -1,6 +1,6 @@
 'use strict';
 
-const {CheckSettings} = require('eyes.sdk');
+const {CheckSettings, RectangleSize} = require('eyes.sdk');
 
 class ImagesCheckSettings extends CheckSettings {
 
@@ -9,15 +9,18 @@ class ImagesCheckSettings extends CheckSettings {
      * @param {Buffer} [buffer]
      * @param {String} [base64]
      * @param {String} [path]
+     * @param {String} [url]
      */
-    constructor(image, buffer, base64, path) {
+    constructor(image, buffer, base64, path, url) {
         super();
 
         this._image = image;
-        this._buffer = buffer;
-        this._base64 = base64;
-        this._path = path;
+        this._imageBuffer = buffer;
+        this._imageBase64 = base64;
+        this._imagePath = path;
+        this._imageUrl = url;
 
+        this._imageSize = undefined;
         this._targetRegion = undefined;
     }
 
@@ -32,21 +35,42 @@ class ImagesCheckSettings extends CheckSettings {
      * @return {Buffer}
      */
     getImageBuffer() {
-        return this._buffer;
+        return this._imageBuffer;
     }
 
     /**
      * @return {String}
      */
     getImageString() {
-        return this._base64;
+        return this._imageBase64;
     }
 
     /**
      * @return {String}
      */
     getImagePath() {
-        return this._path;
+        return this._imagePath;
+    }
+
+    /**
+     * @return {String}
+     */
+    getImageUrl() {
+        return this._imageUrl;
+    }
+
+    /**
+     * @return {RectangleSize}
+     */
+    getImageSize() {
+        return this._imageSize;
+    }
+
+    /**
+     * @param {RectangleSize} imageSize
+     */
+    setImageSize(imageSize) {
+        this._imageSize = imageSize;
     }
 
     /**

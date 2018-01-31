@@ -1,6 +1,6 @@
 'use strict';
 
-const {GetFloatingRegion, FloatingMatchSettings} = require('eyes.sdk');
+const {GetFloatingRegion, FloatingMatchSettings, Location, CoordinatesType} = require('eyes.sdk');
 
 class FloatingRegionByElement extends GetFloatingRegion {
 
@@ -24,15 +24,14 @@ class FloatingRegionByElement extends GetFloatingRegion {
     /**
      * @override
      * @param {Eyes} eyesBase
+     * @param {EyesScreenshot} screenshot
      */
-    getRegion(eyesBase) {
+    getRegion(eyesBase, screenshot) {
         const that = this;
         return that._element.getLocation().then(point => {
             return that._element.getSize().then(size => {
-                return new FloatingMatchSettings(
-                    Math.ceil(point.x), Math.ceil(point.y), size.width, size.height,
-                    that._maxUpOffset, that._maxDownOffset, that._maxLeftOffset, that._maxRightOffset
-                );
+                const lTag = screenshot.convertLocation(new Location(point), CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.SCREENSHOT_AS_IS);
+                return new FloatingMatchSettings(lTag.getX(), lTag.getY(), size.width, size.height, that._maxUpOffset, that._maxDownOffset, that._maxLeftOffset, that._maxRightOffset);
             });
         });
     }

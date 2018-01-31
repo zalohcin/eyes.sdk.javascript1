@@ -27,5 +27,19 @@ describe('GeneralUtils', function(){
                 right = "/subdomain/index.html";
             assert.equal(GeneralUtils.urlConcat(left + "/", right), left + right);
         });
+        it('should return the correct Url when given multiple suffixes', function () {
+            assert.equal(GeneralUtils.urlConcat("http://www.applitools.com/", "/subdomain/", "/index.html"), "http://www.applitools.com/subdomain/index.html");
+        });
+    });
+
+    describe('#jwtDecode()', function(){
+        it('decoded should be equal with original', function() {
+            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ";
+            const decoded = GeneralUtils.jwtDecode(token);
+
+            assert.equal(decoded.admin, true);
+            assert.equal(decoded.name, "John Doe");
+            assert.equal(decoded.sub, "1234567890");
+        });
     });
 });

@@ -41,24 +41,27 @@ const TestFailedError = require('./errors/TestFailedError');
 
 const CheckSettings = require('./fluent/CheckSettings');
 
+const RenderWindowTask = require('./rendering/RenderWindowTask');
+
 const SessionStartInfo = require('./server/SessionStartInfo');
 const SessionType = require('./server/SessionType');
 const PropertyData = require('./server/PropertyData');
 const TestResultsStatus = require('./server/TestResultsStatus');
+const TestResults = require('./server/TestResults');
+const ServerConnector = require('./server/ServerConnector');
 
 const FailureReports = require('./FailureReports');
 const GeneralUtils = require('./GeneralUtils');
 const ArgumentGuard = require('./ArgumentGuard');
 const AppEnvironment = require('./AppEnvironment');
-const ServerConnector = require('./server/ServerConnector');
-const MatchWindowTask = require('./MatchWindowTask');
+const MatchWindowTask = require('./match/MatchWindowTask');
 const SessionEventHandler = require('./SessionEventHandler');
 const BatchInfo = require('./BatchInfo');
 const PromiseFactory = require('./PromiseFactory');
-const TestResults = require('./server/TestResults');
 
 const DEFAULT_MATCH_TIMEOUT = 2000;
 const MIN_MATCH_TIMEOUT = 500;
+const USE_DEFAULT_TIMEOUT = -1;
 
 /**
  * Core/Base class for Eyes - to allow code reuse for different SDKs (images, selenium, etc).
@@ -73,7 +76,7 @@ class EyesBase {
      * @param {Boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method will immediately return without performing any action.
      * @param {PromiseFactory} [promiseFactory] An object which will be used for creating deferreds/promises.
      **/
-    constructor(serverUrl = EyesBase.DEFAULT_EYES_SERVER, isDisabled = false, promiseFactory = new PromiseFactory(asyncAction => new Promise(asyncAction))) {
+    constructor(serverUrl = EyesBase.getDefaultServerUrl(), isDisabled = false, promiseFactory = new PromiseFactory(asyncAction => new Promise(asyncAction))) {
         /** @type {Boolean} */
         this._isDisabled = isDisabled;
 
@@ -107,6 +110,8 @@ class EyesBase {
         this._userInputs = [];
         /** @type {PropertyData[]} */
         this._properties = [];
+        /** @type {boolean} */
+        this._render = false;
 
         /** @type {int} */
         this._validationId = -1;
@@ -122,6 +127,8 @@ class EyesBase {
          * @type {Boolean}
          */
         this._saveFailedTests = false;
+
+        /** @type {RenderWindowTask} */ this._renderWindowTask = new RenderWindowTask(this._promiseFactory, this._logger, this._serverConnector);
 
         /** @type {Boolean} */ this._shouldMatchWindowRunOnceOnTimeout = undefined;
         /** @type {MatchWindowTask} */ this._matchWindowTask = undefined;
@@ -165,19 +172,24 @@ class EyesBase {
 
     /** @private */
     _initProviders() {
+        // TODO: do we need to reset all the providers when user call to open? It may be unexpected.
         /** @type {PropertyHandler<ScaleProvider>} */
         this._scaleProviderHandler = new SimplePropertyHandler();
         this._scaleProviderHandler.set(new NullScaleProvider());
-        /** @type {PropertyHandler<CutProvider>} */
-        this._cutProviderHandler = new SimplePropertyHandler();
-        this._cutProviderHandler.set(new NullCutProvider());
         /** @type {PositionProvider} */
         this._positionProvider = new InvalidPositionProvider();
         /** @type {PropertyHandler<RectangleSize>} */
         this._viewportSizeHandler = new SimplePropertyHandler();
         this._viewportSizeHandler.set(null);
-        /** @type {DebugScreenshotsProvider} */
+
+        if (!this._cutProviderHandler) {
+            /** @type {PropertyHandler<CutProvider>} */
+            this._cutProviderHandler = new SimplePropertyHandler();
+            this._cutProviderHandler.set(new NullCutProvider());
+        }
+
         if (!this._debugScreenshotsProvider) {
+            /** @type {DebugScreenshotsProvider} */
             this._debugScreenshotsProvider = new NullDebugScreenshotProvider();
         }
     }
@@ -205,7 +217,6 @@ class EyesBase {
      * @param apiKey {String} The api key to be used.
      */
     setApiKey(apiKey) {
-        ArgumentGuard.notNull(apiKey, "apiKey");
         this._serverConnector.setApiKey(apiKey);
     }
 
@@ -227,7 +238,7 @@ class EyesBase {
         if (serverUrl) {
             this._serverConnector.setServerUrl(serverUrl);
         } else {
-            this._serverConnector.setServerUrl(this.getDefaultServerUrl());
+            this._serverConnector.setServerUrl(EyesBase.getDefaultServerUrl());
         }
     }
 
@@ -237,6 +248,42 @@ class EyesBase {
      */
     getServerUrl() {
         return this._serverConnector.getServerUrl();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Sets the authToken for rendering server.
+     *
+     * @param authToken {String} The authToken to be used.
+     */
+    setRenderingAuthToken(authToken) {
+        this._serverConnector.setRenderingAuthToken(authToken);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String} The currently authToken or {@code null} if no key is set.
+     */
+    getRenderingAuthToken() {
+        return this._serverConnector.getRenderingAuthToken();
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Sets the current rendering server URL used by the rest client.
+     *
+     * @param serverUrl {String} The URI of the rendering server, or {@code null} to use the default server.
+     */
+    setRenderingServerUrl(serverUrl) {
+        this._serverConnector.setRenderingServerUrl(serverUrl);
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String} The URI of the eyes server.
+     */
+    getRenderingServerUrl() {
+        return this._serverConnector.getRenderingServerUrl();
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -529,11 +576,10 @@ class EyesBase {
         return this._isOpen;
     }
 
-    // noinspection JSMethodCanBeStatic
     /**
      * @return {String}
      */
-    getDefaultServerUrl() {
+    static getDefaultServerUrl() {
         return "https://eyesapi.applitools.com";
     }
 
@@ -608,6 +654,22 @@ class EyesBase {
      */
     clearProperties() {
         this._properties.length = 0;
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {boolean} value If true, createSession request will return renderingInfo properties
+     */
+    setRender(value) {
+        this._render = value;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {boolean}
+     */
+    getRender() {
+        return this._render;
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -802,6 +864,16 @@ class EyesBase {
             return that._serverConnector.stopSession(that._runningSession, isAborted, save).then(results => {
                 results.setIsNew(isNewSession);
                 results.setUrl(sessionResultsUrl);
+
+                // for backwards compatibility with outdated servers
+                if (!results.getStatus()) {
+                    if (results.getMissing() === 0 && results.getMismatches() === 0) {
+                        results.setStatus(TestResultsStatus.Passed);
+                    } else {
+                        results.setStatus(TestResultsStatus.Unresolved);
+                    }
+                }
+
                 serverResults = results;
                 that._logger.verbose(`Results: ${results}`);
 
@@ -1032,20 +1104,6 @@ class EyesBase {
     }
 
     /**
-     * @protected
-     * @abstract
-     */
-    beforeMatchWindow() {
-    }
-
-    /**
-     * @protected
-     * @abstract
-     */
-    afterMatchWindow() {
-    }
-
-    /**
      * Takes a snapshot of the application under test and matches it with the expected output.
      *
      * @protected
@@ -1056,7 +1114,7 @@ class EyesBase {
      * @return {Promise.<MatchResult>} The result of matching the output with the expected output.
      * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
      */
-    checkWindowBase(regionProvider, tag = "", ignoreMismatch = false, checkSettings = new CheckSettings(EyesBase.USE_DEFAULT_TIMEOUT)) {
+    checkWindowBase(regionProvider, tag = "", ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
         if (this._isDisabled) {
             this._logger.verbose("Ignored");
             const result = new MatchResult();
@@ -1077,8 +1135,8 @@ class EyesBase {
 
         const that = this;
         let matchResult;
-        return that._notifyEvent('validationWillStart', that._autSessionId, validationInfo).then(() => {
-            return that.beforeMatchWindow();
+        return that.beforeMatchWindow().then(() => {
+            return that._notifyEvent('validationWillStart', that._autSessionId, validationInfo);
         }).then(() => {
             return EyesBase.matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, that);
         }).then(result => {
@@ -1101,6 +1159,22 @@ class EyesBase {
         }).then(() => {
             return matchResult;
         });
+    }
+
+    /**
+     * @protected
+     * @return {Promise<T>}
+     */
+    beforeMatchWindow() {
+        return this.getPromiseFactory().resolve();
+    }
+
+    /**
+     * @protected
+     * @return {Promise<T>}
+     */
+    afterMatchWindow() {
+        return this.getPromiseFactory().resolve();
     }
 
     /**
@@ -1140,6 +1214,22 @@ class EyesBase {
         });
     }
 
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Create a screenshot of a page on RenderingGrid server
+     *
+     * @param {RGridDom} rGridDom The DOM of a page with resources
+     * @return {Promise.<RunningRender>} The results of the render
+     */
+    renderWindow(rGridDom) {
+        ArgumentGuard.isValidState(this._isOpen, "Eyes not open");
+        ArgumentGuard.notNull(this._runningSession, "Session not created.");
+
+        const webhook = this._runningSession.getRenderingInfo().getResultsUrl();
+        const renderWidth = this._viewportSizeHandler.get().getWidth();
+        return this._renderWindowTask.renderWindow(webhook, rGridDom, renderWidth);
+    }
+
     /**
      * @private
      * @param {RegionProvider} regionProvider
@@ -1163,12 +1253,8 @@ class EyesBase {
 
                 imageMatchSettings = new ImageMatchSettings(matchLevel, null);
 
-                return EyesBase.collectIgnoreRegions(checkSettings, imageMatchSettings, self).then(() => {
-                    return EyesBase.collectFloatingRegions(checkSettings, imageMatchSettings, self);
-                }).then(() => {
-                    let ignoreCaret = checkSettings.getIgnoreCaret();
-                    imageMatchSettings.setIgnoreCaret(ignoreCaret ? ignoreCaret : defaultMatchSettings.getIgnoreCaret());
-                });
+                let ignoreCaret = checkSettings.getIgnoreCaret();
+                imageMatchSettings.setIgnoreCaret(ignoreCaret ? ignoreCaret : defaultMatchSettings.getIgnoreCaret());
             }
         }).then(() => {
             // noinspection JSUnresolvedVariable
@@ -1179,39 +1265,7 @@ class EyesBase {
             return regionProvider.getRegion();
         }).then(region => {
             self._logger.verbose("Calling match window...");
-            return self._matchWindowTask.matchWindow(self.getUserInputs(), region, tag, self._shouldMatchWindowRunOnceOnTimeout, ignoreMismatch, imageMatchSettings, retryTimeout);
-        });
-    }
-
-    // noinspection JSMethodCanBeStatic
-    /**
-     * @private
-     * @param {CheckSettings} checkSettings
-     * @param {ImageMatchSettings} imageMatchSettings
-     * @param {EyesBase} self
-     * @return {Promise}
-     */
-    static collectIgnoreRegions(checkSettings, imageMatchSettings, self) {
-        const regionPromises = checkSettings.getIgnoreRegions().map(container => container.getRegion(self), self);
-
-        return self.getPromiseFactory().all(regionPromises).then(ignoreRegions => {
-            imageMatchSettings.setIgnoreRegions(ignoreRegions);
-        });
-    }
-
-    // noinspection JSMethodCanBeStatic
-    /**
-     * @private
-     * @param {CheckSettings} checkSettings
-     * @param {ImageMatchSettings} imageMatchSettings
-     * @param {EyesBase} self
-     * @return {Promise}
-     */
-    static collectFloatingRegions(checkSettings, imageMatchSettings, self) {
-        const regionPromises = checkSettings.getFloatingRegions().map(container => container.getRegion(self), self);
-
-        return self.getPromiseFactory().all(regionPromises).then(floatingRegions => {
-            imageMatchSettings.setFloatingRegions(floatingRegions);
+            return self._matchWindowTask.matchWindow(self.getUserInputs(), region, tag, self._shouldMatchWindowRunOnceOnTimeout, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout);
         });
     }
 
@@ -1237,30 +1291,16 @@ class EyesBase {
     }
 
     /**
-     * @protected
-     * @abstract
-     */
-    beforeOpen() {
-    }
-
-    /**
-     * @protected
-     * @abstract
-     */
-    afterOpen() {
-    }
-
-    /**
      * Starts a test.
      *
      * @protected
      * @param {String} appName The name of the application under test.
      * @param {String} testName The test name.
-     * @param {RectangleSize|{width: number, height: number}} viewportSize The client's viewport size (i.e., the visible part of the document's body) or {@code null} to allow any viewport size.
-     * @param {SessionType} sessionType  The type of test (e.g., Progression for timing tests), or {@code null} to use the default.
+     * @param {RectangleSize|{width: number, height: number}} [viewportSize] The client's viewport size (i.e., the visible part of the document's body) or {@code null} to allow any viewport size.
+     * @param {SessionType} [sessionType=SessionType.SEQUENTIAL]  The type of test (e.g., Progression for timing tests), or {@code null} to use the default.
      * @return {Promise}
      */
-    openBase(appName, testName, viewportSize, sessionType) {
+    openBase(appName, testName, viewportSize, sessionType = SessionType.SEQUENTIAL) {
         this._logger.getLogHandler().open();
 
         if (viewportSize) {
@@ -1296,7 +1336,7 @@ class EyesBase {
                 that._currentAppName = appName || that._appName;
                 that._testName = testName;
                 that._viewportSizeHandler.set(viewportSize);
-                that._sessionType = sessionType || SessionType.SEQUENTIAL;
+                that._sessionType = sessionType;
                 that._validationId = -1;
 
                 if (viewportSize) {
@@ -1315,6 +1355,22 @@ class EyesBase {
             this._logger.getLogHandler().close();
             return this._promiseFactory.reject(err);
         }
+    }
+
+    /**
+     * @protected
+     * @return {Promise<T>}
+     */
+    beforeOpen() {
+        return this.getPromiseFactory().resolve();
+    }
+
+    /**
+     * @protected
+     * @return {Promise<T>}
+     */
+    afterOpen() {
+        return this.getPromiseFactory().resolve();
     }
 
     /**
@@ -1344,6 +1400,7 @@ class EyesBase {
                 that._serverConnector,
                 that._runningSession,
                 that._matchTimeout,
+                that,
                 outputProvider
             );
         });
@@ -1402,7 +1459,7 @@ class EyesBase {
         }
 
         this._logger.verbose("Viewport size explicitly set to " + explicitViewportSize);
-        this._viewportSizeHandler = new ReadOnlyPropertyHandler(this._logger, new RectangleSize(explicitViewportSize.getWidth(), explicitViewportSize.getHeight()));
+        this._viewportSizeHandler = new ReadOnlyPropertyHandler(this._logger, new RectangleSize(explicitViewportSize));
         this._isViewportSizeSet = true;
     }
 
@@ -1446,7 +1503,7 @@ class EyesBase {
             return;
         }
 
-        control = this._lastScreenshot.getIntersectedRegion(control, CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.SCREENSHOT_AS_IS);
+        control = this._lastScreenshot.getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
         if (control.isEmpty()) {
             this._logger.verbose(`Ignoring '${text}' (out of bounds)`);
             return;
@@ -1498,7 +1555,7 @@ class EyesBase {
             throw err;
         }
 
-        const controlScreenshotIntersect = this._lastScreenshot.getIntersectedRegion(control, CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.SCREENSHOT_AS_IS);
+        const controlScreenshotIntersect = this._lastScreenshot.getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
 
         // If the region is NOT empty, we'll give the coordinates relative to
         // the control.
@@ -1587,22 +1644,27 @@ class EyesBase {
         }).then(() => {
             that._sessionStartInfo = new SessionStartInfo(that.getBaseAgentId(), that._sessionType,
                 that.getAppName(), null, that._testName, testBatch, that._baselineEnvName, that._environmentName, appEnvironment,
-                that._defaultMatchSettings, that._branchName, that._parentBranchName, that._properties);
+                that._defaultMatchSettings, that._branchName, that._parentBranchName, that._properties, that._render);
 
             that._logger.verbose("Starting server session...");
-            return that._serverConnector.startSession(that._sessionStartInfo);
-        }).then(runningSession => {
-            that._runningSession = runningSession;
-            that._logger.verbose(`Server session ID is ${that._runningSession.getId()}`);
+            return that._serverConnector.startSession(that._sessionStartInfo).then(runningSession => {
+                that._runningSession = runningSession;
+                that._logger.verbose(`Server session ID is ${that._runningSession.getId()}`);
 
-            const testInfo = `'${that._testName}' of '${that.getAppName()}' "${appEnvironment}`;
-            if (that._runningSession.getIsNewSession()) {
-                that._logger.log(`--- New test started - ${testInfo}`);
-                that._shouldMatchWindowRunOnceOnTimeout = true;
-            } else {
-                that._logger.log(`--- Test started - ${testInfo}`);
-                that._shouldMatchWindowRunOnceOnTimeout = false;
-            }
+                if (runningSession.getRenderingInfo()) {
+                    that._serverConnector.setRenderingAuthToken(runningSession.getRenderingInfo().getAccessToken());
+                    that._serverConnector.setRenderingServerUrl(runningSession.getRenderingInfo().getServiceUrl());
+                }
+
+                const testInfo = `'${that._testName}' of '${that.getAppName()}' "${appEnvironment}`;
+                if (that._runningSession.getIsNewSession()) {
+                    that._logger.log(`--- New test started - ${testInfo}`);
+                    that._shouldMatchWindowRunOnceOnTimeout = true;
+                } else {
+                    that._logger.log(`--- Test started - ${testInfo}`);
+                    that._shouldMatchWindowRunOnceOnTimeout = false;
+                }
+            });
         });
     }
 
@@ -1644,28 +1706,43 @@ class EyesBase {
         const that = this;
         that._logger.verbose("getting screenshot...");
         // Getting the screenshot (abstract function implemented by each SDK).
-        let scr, compressedScr;
-        return that.getScreenshot().then(screenshot => {
+        let title, screenshot, screenshot64, screenshotUrl;
+        return that.getScreenshot().then(screenshot_ => {
             that._logger.verbose("Done getting screenshot!");
 
-            // Cropping by region if necessary
-            if (!region.isEmpty()) {
-                return screenshot.getSubScreenshot(region, false);
+            if (screenshot_) {
+                return that._promiseFactory.resolve().then(() => {
+                    screenshot = screenshot_;
+
+                    // Cropping by region if necessary
+                    if (!region.isEmpty()) {
+                        return screenshot.getSubScreenshot(region, false).then(subScreenshot => {
+                            screenshot = subScreenshot;
+                            return that._debugScreenshotsProvider.save(subScreenshot.getImage(), "SUB_SCREENSHOT");
+                        });
+                    }
+                }).then(() => {
+                    that._logger.verbose("Compressing screenshot...");
+                    return that._compressScreenshot64(screenshot, lastScreenshot).then(compressedScreenshot => {
+                        screenshot64 = compressedScreenshot;
+                        that._logger.verbose("Done!");
+                    });
+                });
             }
-            return screenshot;
-        }).then(screenshot => {
-            scr = screenshot;
-            return that._debugScreenshotsProvider.save(screenshot.getImage(), "SUB_SCREENSHOT");
+
+            that._logger.verbose("getting screenshot url...");
+            return that.getScreenshotUrl().then(screenshotUrl_ => {
+                that._logger.verbose("Done getting screenshot url!");
+                screenshotUrl = screenshotUrl_;
+            });
         }).then(() => {
-            that._logger.verbose("Compressing screenshot...");
-            return that._compressScreenshot64(scr, lastScreenshot);
-        }).then(compressedScreenshot => {
-            compressedScr = compressedScreenshot;
-            that._logger.verbose("Done! Getting title...");
-            return that.getTitle();
-        }).then(title => {
-            that._logger.verbose("Done!");
-            const result = new AppOutputWithScreenshot(new AppOutput(title, compressedScr), scr);
+            that._logger.verbose("Getting title...");
+            return that.getTitle().then(title_ => {
+                title = title_;
+                that._logger.verbose("Done!");
+            });
+        }).then(() => {
+            const result = new AppOutputWithScreenshot(new AppOutput(title, screenshot64, screenshotUrl), screenshot);
             that._logger.verbose("Done!");
             return result;
         });
@@ -1818,6 +1895,18 @@ class EyesBase {
 
     // noinspection JSMethodCanBeStatic
     /**
+     * An updated screenshot.
+     *
+     * @protected
+     * @abstract
+     * @return {Promise.<String>}
+     */
+    getScreenshotUrl() {
+        throw new TypeError('getScreenshotUrl method is not implemented!');
+    }
+
+    // noinspection JSMethodCanBeStatic
+    /**
      * The current title of of the AUT.
      *
      * @protected
@@ -1836,8 +1925,5 @@ class EyesBase {
     }
 
 }
-
-EyesBase.DEFAULT_EYES_SERVER = "https://eyesapi.applitools.com";
-EyesBase.USE_DEFAULT_TIMEOUT = -1;
 
 module.exports = EyesBase;

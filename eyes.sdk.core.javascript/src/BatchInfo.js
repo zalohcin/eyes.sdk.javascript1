@@ -19,7 +19,7 @@ class BatchInfo {
 
         this._id = id;
         this._name = name;
-        this._startedAt = GeneralUtils.getIso8601Data(startedAt);
+        this._startedAt = GeneralUtils.toISO8601DateTime(startedAt);
     }
 
     /**

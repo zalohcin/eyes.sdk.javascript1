@@ -24,7 +24,7 @@ class FloatingRegionByRectangle extends GetFloatingRegion {
     /**
      * @override
      */
-    getRegion(eyesBase) {
+    getRegion(eyesBase, screenshot) {
         const region = new FloatingMatchSettings(
             this._rect.getLeft(), this._rect.getTop(),
             this._rect.getWidth(), this._rect.getHeight(),
