@@ -101,6 +101,8 @@ class EyesBase {
         this._serverConnector = new ServerConnector(this._promiseFactory, this._logger, serverUrl);
         /** @type {int} */
         this._matchTimeout = DEFAULT_MATCH_TIMEOUT;
+        /** @type {Boolean} */
+        this._compareWithParentBranch = false;
         /** @type {FailureReports} */
         this._failureReports = FailureReports.ON_CLOSE;
         /** @type {ImageMatchSettings} */
@@ -761,6 +763,22 @@ class EyesBase {
         const ignoreCaret = this._defaultMatchSettings.getIgnoreCaret();
         return ignoreCaret || true;
     }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {Boolean} compareWithParentBranch New compareWithParentBranch value, default is false
+     */
+    setCompareWithParentBranch(compareWithParentBranch) {
+        this._compareWithParentBranch = compareWithParentBranch;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {Boolean} The currently compareWithParentBranch value
+     */
+    isCompareWithParentBranch() {
+        return this._compareWithParentBranch;
+    };
 
     /**
      * Ends the currently running test.
@@ -1642,9 +1660,17 @@ class EyesBase {
             that._logger.verbose(`Application environment is ${appEnvironment}`);
             return that._notifyEvent('initEnded', that._autSessionId);
         }).then(() => {
-            that._sessionStartInfo = new SessionStartInfo(that.getBaseAgentId(), that._sessionType,
-                that.getAppName(), null, that._testName, testBatch, that._baselineEnvName, that._environmentName, appEnvironment,
-                that._defaultMatchSettings, that._branchName, that._parentBranchName, that._properties, that._render);
+            that._sessionStartInfo = new SessionStartInfo(
+                that.getBaseAgentId(),
+                that._sessionType,
+                that.getAppName(), null, that._testName,
+                testBatch,
+                that._baselineEnvName, that._environmentName, appEnvironment,
+                that._defaultMatchSettings,
+                that._branchName, that._parentBranchName, that._compareWithParentBranch,
+                that._properties,
+                that._render
+            );
 
             that._logger.verbose("Starting server session...");
             return that._serverConnector.startSession(that._sessionStartInfo).then(runningSession => {
