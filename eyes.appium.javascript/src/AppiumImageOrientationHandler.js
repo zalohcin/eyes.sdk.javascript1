@@ -1,7 +1,7 @@
 'use strict';
 
-const {ArgumentGuard} = require('eyes.sdk.core');
-const {ImageOrientationHandler, EyesDriverOperationError} = require('eyes.selenium');
+const {ArgumentGuard} = require('@applitools/eyes.sdk.core');
+const {ImageOrientationHandler, EyesDriverOperationError} = require('@applitools/eyes.selenium');
 
 const EyesAppiumUtils = require('./EyesAppiumUtils');
 

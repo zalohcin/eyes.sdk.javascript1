@@ -1,6 +1,6 @@
 const {Builder} = require('selenium-webdriver');
-const {ConsoleLogHandler, Region} = require('eyes.sdk.core');
-const {Target} = require('eyes.selenium');
+const {ConsoleLogHandler, Region} = require('@applitools/eyes.sdk.core');
+const {Target} = require('@applitools/eyes.selenium');
 const {Eyes} = require('../../index');
 
 let driver = null, eyes = null;

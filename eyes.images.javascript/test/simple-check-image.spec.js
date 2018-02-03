@@ -1,4 +1,4 @@
-const {ConsoleLogHandler, RectangleSize, Region, Location, MouseTrigger} = require('eyes.sdk.core');
+const {ConsoleLogHandler, RectangleSize, Region, Location, MouseTrigger} = require('@applitools/eyes.sdk.core');
 const {Eyes} = require('../index');
 
 let eyes = null;

@@ -2,7 +2,7 @@
 
 const by = require('selenium-webdriver/lib/by');
 const {IWebDriver} = require('selenium-webdriver/lib/webdriver');
-const {ArgumentGuard, MutableImage} = require('eyes.sdk.core');
+const {ArgumentGuard, MutableImage} = require('@applitools/eyes.sdk.core');
 
 const FrameChain = require('../frames/FrameChain');
 const EyesSeleniumUtils = require('../EyesSeleniumUtils');

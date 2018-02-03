@@ -4,7 +4,7 @@ const {
     EyesBase, FixedScaleProviderFactory, NullScaleProvider, RegionProvider, NullRegionProvider, ContextBasedScaleProviderFactory,
     ScaleProviderIdentityFactory, ArgumentGuard, SimplePropertyHandler, Logger,CoordinatesType, TestFailedError, NullCutProvider,
     UserAgent, ReadOnlyPropertyHandler, Region, Location, RectangleSize, FailureReports
-} = require('eyes.sdk.core');
+} = require('@applitools/eyes.sdk.core');
 
 const ImageProviderFactory = require('./capture/ImageProviderFactory');
 const EyesWebDriverScreenshotFactory = require('./capture/EyesWebDriverScreenshotFactory');

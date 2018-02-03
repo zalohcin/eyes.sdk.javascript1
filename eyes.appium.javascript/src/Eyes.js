@@ -1,7 +1,7 @@
 'use strict';
 
-const {ContextBasedScaleProviderFactory} = require('eyes.sdk.core');
-const {EyesSeleniumUtils} = require('eyes.selenium');
+const {ContextBasedScaleProviderFactory} = require('@applitools/eyes.sdk.core');
+const {EyesSeleniumUtils} = require('@applitools/eyes.selenium');
 
 const AppiumImageOrientationHandler = require('./AppiumImageOrientationHandler');
 const AppiumJavascriptHandler = require('./AppiumJavascriptHandler');
@@ -12,7 +12,7 @@ const VERSION = require('../package.json').version;
 /**
  * Applitools SDK for Appium integration.
  */
-class Eyes extends require('eyes.selenium').Eyes {
+class Eyes extends require('@applitools/eyes.selenium').Eyes {
 
     /** @override */
     getBaseAgentId() {

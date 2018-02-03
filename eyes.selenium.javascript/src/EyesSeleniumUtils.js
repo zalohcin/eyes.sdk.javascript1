@@ -1,6 +1,6 @@
 'use strict';
 
-const {RectangleSize, ArgumentGuard, EyesJsBrowserUtils} = require('eyes.sdk.core');
+const {RectangleSize, ArgumentGuard, EyesJsBrowserUtils} = require('@applitools/eyes.sdk.core');
 
 const EyesDriverOperationError = require('./errors/EyesDriverOperationError');
 const ImageOrientationHandler = require('./ImageOrientationHandler');

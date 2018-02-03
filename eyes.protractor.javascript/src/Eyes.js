@@ -7,7 +7,7 @@ const VERSION = require('../package.json').version;
 /**
  * The main type - to be used by the users of the library to access all functionality.
  */
-class Eyes extends require('eyes.selenium').Eyes {
+class Eyes extends require('@applitools/eyes.selenium').Eyes {
 
     /** @override */
     getBaseAgentId() {
