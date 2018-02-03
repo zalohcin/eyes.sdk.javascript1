@@ -176,25 +176,29 @@ class ImageUtils {
 
     static _interpolateScale(bufColumns, wDst, hDst, wDst2, m, wM, hM) {
         const buf = new Buffer(wDst * hDst * 4);
-        for (let i = 0; i < wDst; i++) {
-            for (let j = 0; j < hDst; j++) {
-                let r = 0, g = 0, b = 0, a = 0;
+        for (let i = 0; i < hDst; i++) {
+            for (let j = 0; j < wDst; j++) {
+                let r = 0, g = 0, b = 0, a = 0, realColors = 0;
                 for (let y = 0; y < hM; y++) {
                     const yPos = i * hM + y;
                     for (let x = 0; x < wM; x++) {
                         const xPos = j * wM + x;
                         const xyPos = (yPos * wDst2 + xPos) * 4;
-                        r += bufColumns[xyPos];
-                        g += bufColumns[xyPos + 1];
-                        b += bufColumns[xyPos + 2];
-                        a += bufColumns[xyPos + 3];
+                        const pixelAlpha = bufColumns[xyPos + 3];
+                        if (pixelAlpha) {
+                            r += bufColumns[xyPos];
+                            g += bufColumns[xyPos + 1];
+                            b += bufColumns[xyPos + 2];
+                            realColors++;
+                        }
+                        a += pixelAlpha;
                     }
                 }
 
                 const pos = (i * wDst + j) * 4;
-                buf[pos] = Math.round(r / m);
-                buf[pos + 1] = Math.round(g / m);
-                buf[pos + 2] = Math.round(b / m);
+                buf[pos] = realColors ? Math.round(r / realColors) : 0;
+                buf[pos + 1] = realColors ? Math.round(g / realColors) : 0;
+                buf[pos + 2] = realColors ? Math.round(b / realColors) : 0;
                 buf[pos + 3] = Math.round(a / m);
             }
         }
@@ -203,6 +207,9 @@ class ImageUtils {
     }
 
     static _doBicubicInterpolation(src, dst) {
+        // The implementation was taken from
+        // https://github.com/oliver-moran/jimp/blob/master/resize2.js
+
         // when dst smaller than src/2, interpolate first to a multiple between 0.5 and 1.0 src, then sum squares
         const wM = Math.max(1, Math.floor(src.width / dst.width));
         const wDst2 = dst.width * wM;
@@ -210,11 +217,11 @@ class ImageUtils {
         const hDst2 = dst.height * hM;
 
         // Pass 1 - interpolate rows
-        // buf1 has width of dst2 and height of src
+        // bufRows has width of dst2 and height of src
         const bufRows = ImageUtils._interpolateRows(src.data, src.width, src.height, wDst2);
 
         // Pass 2 - interpolate columns
-        // buf2 has width and height of dst2
+        // bufColumns has width and height of dst2
         const bufColumns = ImageUtils._interpolateColumns(bufRows, src.height, wDst2, hDst2);
 
         // Pass 3 - scale to dst
