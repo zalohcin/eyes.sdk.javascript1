@@ -16,8 +16,8 @@ class AppEnvironment {
      */
     constructor(os, hostingApp, displaySize) {
         this._inferred = null;
-        this._hostOS = os;
-        this._hostApp = hostingApp;
+        this._os = os;
+        this._hostingApp = hostingApp;
         this._displaySize = displaySize;
     }
 
@@ -59,7 +59,7 @@ class AppEnvironment {
      * @return {String}
      */
     getOs() {
-        return this._hostOS;
+        return this._os;
     }
 
     /**
@@ -68,7 +68,7 @@ class AppEnvironment {
      * @param {String} value
      */
     setOs(value) {
-        this._hostOS = value;
+        this._os = value;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -78,7 +78,7 @@ class AppEnvironment {
      * @return {String}
      */
     getHostingApp() {
-        return this._hostApp;
+        return this._hostingApp;
     }
 
     /**
@@ -87,7 +87,7 @@ class AppEnvironment {
      * @param {String} value
      */
     setHostingApp(value) {
-        this._hostApp = value;
+        this._hostingApp = value;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -112,8 +112,8 @@ class AppEnvironment {
     toJSON() {
         return {
             inferred: this._inferred,
-            hostOS: this._hostOS,
-            hostApp: this._hostApp,
+            os: this._os,
+            hostingApp: this._hostingApp,
             displaySize: this._displaySize
         };
     }
