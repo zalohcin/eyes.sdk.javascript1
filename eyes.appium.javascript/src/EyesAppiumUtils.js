@@ -1,6 +1,6 @@
 'use strict';
 
-const {EyesSeleniumUtils} = require('eyes.selenium');
+const {EyesSeleniumUtils} = require('@applitools/eyes.selenium');
 
 class EyesAppiumUtils extends EyesSeleniumUtils {
 

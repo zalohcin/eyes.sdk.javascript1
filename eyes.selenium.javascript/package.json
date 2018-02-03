@@ -1,5 +1,5 @@
 {
-  "name": "eyes.selenium",
+  "name": "@applitools/eyes.selenium",
   "version": "1.0.0",
   "description": "Applitools Eyes SDK For Selenium JavaScript WebDriver",
   "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
@@ -25,7 +25,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "main": "index",
   "dependencies": {
-    "eyes.sdk.core": "1.0.0",
+    "@applitools/eyes.sdk.core": "1.0.0",
     "selenium-webdriver": "^3.6.0"
   },
   "devDependencies": {
