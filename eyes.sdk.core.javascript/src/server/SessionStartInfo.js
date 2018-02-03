@@ -21,11 +21,12 @@ class SessionStartInfo {
      * @param {ImageMatchSettings} defaultMatchSettings
      * @param {String} branchName
      * @param {String} parentBranchName
+     * @param {Boolean} compareWithParentBranch
      * @param {PropertyData[]} properties
-     * @param {boolean} [render=false]
+     * @param {Boolean} render=false
      */
     constructor(agentId, sessionType, appIdOrName, verId, scenarioIdOrName, batchInfo, baselineEnvName, environmentName,
-                environment, defaultMatchSettings, branchName, parentBranchName, properties, render = false) {
+                environment, defaultMatchSettings, branchName, parentBranchName, compareWithParentBranch, properties, render) {
         ArgumentGuard.notNullOrEmpty(agentId, "agentId");
         ArgumentGuard.notNullOrEmpty(appIdOrName, "appIdOrName");
         ArgumentGuard.notNullOrEmpty(scenarioIdOrName, "scenarioIdOrName");
@@ -45,6 +46,7 @@ class SessionStartInfo {
         this._defaultMatchSettings = defaultMatchSettings;
         this._branchName = branchName;
         this._parentBranchName = parentBranchName;
+        this._compareWithParentBranch = compareWithParentBranch;
         this._properties = properties;
         this._render = render;
     }
@@ -122,6 +124,12 @@ class SessionStartInfo {
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /** @return {Boolean} */
+    getCompareWithParentBranch() {
+        return this._compareWithParentBranch;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
     /** @return {PropertyData[]} */
     getProperties() {
         return this._properties;
@@ -147,6 +155,7 @@ class SessionStartInfo {
             defaultMatchSettings: this._defaultMatchSettings,
             branchName: this._branchName,
             parentBranchName: this._parentBranchName,
+            compareWithParentBranch: this._compareWithParentBranch,
             properties: this._properties,
             render: this._render
         };
