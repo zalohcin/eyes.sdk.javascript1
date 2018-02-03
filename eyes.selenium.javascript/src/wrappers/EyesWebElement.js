@@ -1,7 +1,7 @@
 'use strict';
 
 const {WebElement} = require('selenium-webdriver');
-const {Region, MouseTrigger, ArgumentGuard, CoordinatesType} = require('eyes.sdk');
+const {Region, MouseTrigger, ArgumentGuard, CoordinatesType} = require('eyes.sdk.core');
 
 const JS_GET_SCROLL_LEFT = "return arguments[0].scrollLeft;";
 

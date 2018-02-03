@@ -1,5 +1,5 @@
 {
-  "name": "eyes.sdk.for-browser",
+  "name": "eyes.sdk.core.for-browser",
   "private": true,
   "version": "1.0.0",
   "description": "Applitools Eyes SDK For JavaScript",
@@ -20,7 +20,7 @@
     "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "dependencies": {
-    "eyes.sdk": "^1.0.0"
+    "eyes.sdk.core": "^1.0.0"
   },
   "devDependencies": {
     "browserify": "^14.5.0",

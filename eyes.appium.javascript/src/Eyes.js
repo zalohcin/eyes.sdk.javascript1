@@ -1,6 +1,6 @@
 'use strict';
 
-const {ContextBasedScaleProviderFactory} = require('eyes.sdk');
+const {ContextBasedScaleProviderFactory} = require('eyes.sdk.core');
 const {EyesSeleniumUtils} = require('eyes.selenium');
 
 const AppiumImageOrientationHandler = require('./AppiumImageOrientationHandler');

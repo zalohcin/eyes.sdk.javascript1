@@ -1,6 +1,6 @@
 'use strict';
 
-const {ArgumentGuard, GeneralUtils, EyesBase, EyesError, ImageUtils, RegionProvider, MutableImage, RectangleSize, NullRegionProvider, EyesSimpleScreenshot} = require('eyes.sdk');
+const {ArgumentGuard, GeneralUtils, EyesBase, EyesError, ImageUtils, RegionProvider, MutableImage, RectangleSize, NullRegionProvider, EyesSimpleScreenshot} = require('eyes.sdk.core');
 
 const Target = require('./fluent/Target');
 const VERSION = require('../package.json').version;

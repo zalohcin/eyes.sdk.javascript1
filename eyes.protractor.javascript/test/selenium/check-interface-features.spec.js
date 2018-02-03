@@ -1,4 +1,4 @@
-const { ConsoleLogHandler, MatchLevel, Region, RectangleSize, FloatingMatchSettings } = require('eyes.sdk');
+const { ConsoleLogHandler, MatchLevel, Region, RectangleSize, FloatingMatchSettings } = require('eyes.sdk.core');
 const { Target } = require('eyes.selenium');
 const { Eyes } = require('../../index');
 

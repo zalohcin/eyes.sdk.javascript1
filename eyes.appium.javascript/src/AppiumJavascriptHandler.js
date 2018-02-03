@@ -1,6 +1,6 @@
 'use strict';
 
-const {MouseTrigger} = require('eyes.sdk');
+const {MouseTrigger} = require('eyes.sdk.core');
 const {JavascriptHandler} = require('eyes.selenium');
 const AppiumJsCommandExtractor = require('./AppiumJsCommandExtractor');
 

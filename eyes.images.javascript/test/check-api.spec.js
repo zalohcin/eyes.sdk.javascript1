@@ -1,4 +1,4 @@
-const {ConsoleLogHandler, Region} = require('eyes.sdk');
+const {ConsoleLogHandler, Region} = require('eyes.sdk.core');
 const {Eyes, Target} = require('../index');
 
 let eyes = null;

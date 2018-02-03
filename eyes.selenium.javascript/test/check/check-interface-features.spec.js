@@ -1,5 +1,5 @@
 const { Builder, By } = require('selenium-webdriver');
-const { ConsoleLogHandler, MatchLevel, Region, RectangleSize, FloatingMatchSettings } = require('eyes.sdk');
+const { ConsoleLogHandler, MatchLevel, Region, RectangleSize, FloatingMatchSettings } = require('eyes.sdk.core');
 const { Eyes, Target } = require('../../index');
 
 let driver = null, eyes = null;

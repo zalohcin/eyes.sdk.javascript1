@@ -1,5 +1,5 @@
 {
-  "name": "eyes.sdk",
+  "name": "eyes.sdk.core",
   "version": "1.0.0",
   "description": "Applitools Eyes SDK For JavaScript",
   "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",

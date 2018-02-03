@@ -1,6 +1,6 @@
 'use strict';
 
-const {EyesJsExecutor, ArgumentGuard} = require('eyes.sdk');
+const {EyesJsExecutor, ArgumentGuard} = require('eyes.sdk.core');
 
 class SeleniumJavaScriptExecutor extends EyesJsExecutor {
 

@@ -1,5 +1,5 @@
 const { Builder } = require('selenium-webdriver');
-const { RectangleSize } = require('eyes.sdk');
+const { RectangleSize } = require('eyes.sdk.core');
 const { Eyes, EyesWebDriver, Target } = require('../index');
 const assert = require("assert");
 

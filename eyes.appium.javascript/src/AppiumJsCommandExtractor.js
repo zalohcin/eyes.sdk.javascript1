@@ -1,6 +1,6 @@
 'use strict';
 
-const {MouseAction, MouseTrigger} = require('eyes.sdk');
+const {MouseAction, MouseTrigger} = require('eyes.sdk.core');
 
 const COMMAND_PREFIX = "mobile: ";
 const TAP_COMMAND = COMMAND_PREFIX + "tap";
