@@ -1,6 +1,6 @@
 'use strict';
 
-const {ArgumentGuard, PositionProvider, Location} = require('eyes.sdk');
+const {ArgumentGuard, PositionProvider, Location} = require('eyes.sdk.core');
 
 const EyesSeleniumUtils = require('../EyesSeleniumUtils');
 const ScrollPositionMemento = require('./ScrollPositionMemento');

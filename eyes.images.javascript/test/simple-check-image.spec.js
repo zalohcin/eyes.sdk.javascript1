@@ -1,4 +1,4 @@
-const {ConsoleLogHandler, RectangleSize, Region, Location, MouseTrigger} = require('eyes.sdk');
+const {ConsoleLogHandler, RectangleSize, Region, Location, MouseTrigger} = require('eyes.sdk.core');
 const {Eyes} = require('../index');
 
 let eyes = null;

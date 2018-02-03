@@ -1,6 +1,6 @@
 'use strict';
 
-const {ImageProvider, MutableImage, Region, OSNames} = require('eyes.sdk');
+const {ImageProvider, MutableImage, Region, OSNames} = require('eyes.sdk.core');
 
 const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
 const SeleniumJavaScriptExecutor = require('../SeleniumJavaScriptExecutor');

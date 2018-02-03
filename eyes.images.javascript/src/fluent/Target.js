@@ -1,6 +1,6 @@
 'use strict';
 
-const {MutableImage, GeneralUtils, ArgumentGuard} = require('eyes.sdk');
+const {MutableImage, GeneralUtils, ArgumentGuard} = require('eyes.sdk.core');
 
 const ImagesCheckSettings = require('./ImagesCheckSettings');
 
