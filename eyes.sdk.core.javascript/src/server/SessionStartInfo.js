@@ -22,11 +22,12 @@ class SessionStartInfo {
      * @param {String} branchName
      * @param {String} parentBranchName
      * @param {Boolean} compareWithParentBranch
+     * @param {Boolean} ignoreBaseline
      * @param {PropertyData[]} properties
      * @param {Boolean} render=false
      */
     constructor(agentId, sessionType, appIdOrName, verId, scenarioIdOrName, batchInfo, baselineEnvName, environmentName,
-                environment, defaultMatchSettings, branchName, parentBranchName, compareWithParentBranch, properties, render) {
+                environment, defaultMatchSettings, branchName, parentBranchName, compareWithParentBranch, ignoreBaseline, properties, render) {
         ArgumentGuard.notNullOrEmpty(agentId, "agentId");
         ArgumentGuard.notNullOrEmpty(appIdOrName, "appIdOrName");
         ArgumentGuard.notNullOrEmpty(scenarioIdOrName, "scenarioIdOrName");
@@ -47,6 +48,7 @@ class SessionStartInfo {
         this._branchName = branchName;
         this._parentBranchName = parentBranchName;
         this._compareWithParentBranch = compareWithParentBranch;
+        this._ignoreBaseline = ignoreBaseline;
         this._properties = properties;
         this._render = render;
     }
@@ -130,6 +132,12 @@ class SessionStartInfo {
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /** @return {String} */
+    getIgnoreBaseline() {
+        return this._ignoreBaseline;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
     /** @return {PropertyData[]} */
     getProperties() {
         return this._properties;
@@ -156,6 +164,7 @@ class SessionStartInfo {
             branchName: this._branchName,
             parentBranchName: this._parentBranchName,
             compareWithParentBranch: this._compareWithParentBranch,
+            ignoreBaseline: this._ignoreBaseline,
             properties: this._properties,
             render: this._render
         };
