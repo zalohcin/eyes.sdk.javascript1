@@ -132,7 +132,7 @@ class SessionStartInfo {
     }
 
     // noinspection JSUnusedGlobalSymbols
-    /** @return {String} */
+    /** @return {Boolean} */
     getIgnoreBaseline() {
         return this._ignoreBaseline;
     }
