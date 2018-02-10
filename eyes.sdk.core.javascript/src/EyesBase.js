@@ -103,6 +103,8 @@ class EyesBase {
         this._matchTimeout = DEFAULT_MATCH_TIMEOUT;
         /** @type {Boolean} */
         this._compareWithParentBranch = false;
+        /** @type {Boolean} */
+        this._ignoreBaseline = false;
         /** @type {FailureReports} */
         this._failureReports = FailureReports.ON_CLOSE;
         /** @type {ImageMatchSettings} */
@@ -778,6 +780,22 @@ class EyesBase {
      */
     isCompareWithParentBranch() {
         return this._compareWithParentBranch;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @param {Boolean} ignoreBaseline New ignoreBaseline value, default is false
+     */
+    setIgnoreBaseline(ignoreBaseline) {
+        this._ignoreBaseline = ignoreBaseline;
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {Boolean} The currently ignoreBaseline value
+     */
+    isIgnoreBaseline() {
+        return this._ignoreBaseline;
     };
 
     /**
@@ -1668,7 +1686,7 @@ class EyesBase {
                 that._baselineEnvName, that._environmentName, appEnvironment,
                 that._defaultMatchSettings,
                 that._branchName, that._parentBranchName, that._compareWithParentBranch,
-                that._properties,
+                that._ignoreBaseline, that._properties,
                 that._render
             );
 
