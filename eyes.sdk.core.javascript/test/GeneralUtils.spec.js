@@ -30,6 +30,9 @@ describe('GeneralUtils', function(){
         it('should return the correct Url when given multiple suffixes', function () {
             assert.equal(GeneralUtils.urlConcat("http://www.applitools.com/", "/subdomain/", "/index.html"), "http://www.applitools.com/subdomain/index.html");
         });
+        it('should return the correct Url when given multiple suffixes and query params', function () {
+            assert.equal(GeneralUtils.urlConcat("http://www.applitools.com/", "/subdomain/", "?param=1"), "http://www.applitools.com/subdomain?param=1");
+        });
     });
 
     describe('#jwtDecode()', function(){

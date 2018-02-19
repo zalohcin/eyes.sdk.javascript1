@@ -405,17 +405,14 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.checkResourceExists called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`);
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`, '?render-id=' + runningRender.getRenderId());
         const options = {
             headers: {
                 'X-Auth-Token': that._renderingAuthToken,
-            },
-            params: {
-                'render-id': runningRender.getRenderId(),
-            },
+            }
         };
 
-        return sendRequest(that, 'checkResourceExists', uri, 'HEAD', options).then(response => {
+        return sendRequest(that, 'renderCheckResource', uri, 'HEAD', options).then(response => {
             const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.NOT_FOUND];
             if (validStatusCodes.includes(response.status)) {
                 that._logger.verbose('ServerConnector.checkResourceExists - request succeeded');
@@ -439,19 +436,16 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`);
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`, '?render-id=' + runningRender.getRenderId());
         const options = {
             contentType: resource.getContentType(),
             headers: {
                 'X-Auth-Token': that._renderingAuthToken,
             },
-            params: {
-                'render-id': runningRender.getRenderId(),
-            },
             data: resource.getContent()
         };
 
-        return sendRequest(that, 'putResource', uri, 'PUT', options).then(response => {
+        return sendRequest(that, 'renderPutResource', uri, 'PUT', options).then(response => {
             const validStatusCodes = [HTTP_STATUS_CODES.OK];
             if (validStatusCodes.includes(response.status)) {
                 that._logger.verbose('ServerConnector.putResource - request succeeded');
@@ -473,17 +467,14 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.renderStatus called for render: ${runningRender}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status');
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status', '?render-id=' + runningRender.getRenderId());
         const options = {
             headers: {
                 'X-Auth-Token': that._renderingAuthToken,
-            },
-            params: {
-                'render-id': runningRender.getRenderId(),
             }
         };
 
-        return sendRequest(that, 'render-status', uri, 'get', options).then(response => {
+        return sendRequest(that, 'renderStatus', uri, 'get', options).then(response => {
             const validStatusCodes = [HTTP_STATUS_CODES.OK];
             if (validStatusCodes.includes(response.status)) {
                 const renderStatusResults = new RenderStatusResults(response.data);
