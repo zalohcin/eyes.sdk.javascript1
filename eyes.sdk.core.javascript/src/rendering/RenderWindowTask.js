@@ -48,7 +48,11 @@ class RenderWindowTask {
      */
     _getRenderStatus(runningRender) {
         const that = this;
-        return that._serverConnector.renderStatus(runningRender).then(renderStatusResults => {
+        return that._serverConnector.renderStatus(runningRender).catch(err => {
+            return GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory).then(() => {
+                return that._getRenderStatus(runningRender);
+            });
+        }).then(renderStatusResults => {
 
             if (renderStatusResults.getStatus() === RenderStatus.RENDERING) {
                 return GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory).then(() => {
@@ -59,10 +63,6 @@ class RenderWindowTask {
             }
 
             return renderStatusResults;
-        }).catch(err => {
-            return GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory).then(() => {
-                return that._getRenderStatus(runningRender);
-            });
         });
     }
 
