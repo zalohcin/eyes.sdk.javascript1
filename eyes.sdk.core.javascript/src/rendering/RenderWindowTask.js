@@ -55,7 +55,7 @@ class RenderWindowTask {
                     return that._getRenderStatus(runningRender);
                 });
             } else if (renderStatusResults.getStatus() === RenderStatus.ERROR) {
-                that._promiseFactory.reject(renderStatusResults.getError());
+                return that._promiseFactory.reject(renderStatusResults.getError());
             }
 
             return renderStatusResults;
