@@ -48,21 +48,21 @@ class RenderWindowTask {
      */
     _getRenderStatus(runningRender) {
         const that = this;
-        return that._serverConnector.renderStatus(runningRender).then(renderStatusResults => {
+        return that._serverConnector.renderStatus(runningRender).catch(err => {
+            return GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory).then(() => {
+                return that._getRenderStatus(runningRender);
+            });
+        }).then(renderStatusResults => {
 
             if (renderStatusResults.getStatus() === RenderStatus.RENDERING) {
                 return GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory).then(() => {
                     return that._getRenderStatus(runningRender);
                 });
             } else if (renderStatusResults.getStatus() === RenderStatus.ERROR) {
-                that._promiseFactory.reject(renderStatusResults.getError());
+                return that._promiseFactory.reject(renderStatusResults.getError());
             }
 
             return renderStatusResults;
-        }).catch(err => {
-            return GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory).then(() => {
-                return that._getRenderStatus(runningRender);
-            });
         });
     }
 

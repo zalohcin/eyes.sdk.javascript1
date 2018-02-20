@@ -25,12 +25,13 @@ class GeneralUtils {
     static urlConcat(url, ...suffixes) {
         let concatUrl = GeneralUtils.stripTrailingSlash(url);
 
-        for (let suffix of suffixes) {
-            if (!suffix.startsWith('/')) {
+        for (let i = 0, l = suffixes.length; i < l; ++i) {
+            const isLast = i === l - 1;
+            if (!suffixes[i].startsWith('/') && !(isLast && suffixes[i].startsWith('?'))) {
                 concatUrl += '/';
             }
 
-            concatUrl += GeneralUtils.stripTrailingSlash(suffix);
+            concatUrl += GeneralUtils.stripTrailingSlash(suffixes[i]);
         }
 
         return concatUrl;
