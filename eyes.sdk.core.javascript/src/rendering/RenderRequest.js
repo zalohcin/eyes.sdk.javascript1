@@ -9,19 +9,19 @@ const GeneralUtils = require('../GeneralUtils');
 class RenderRequest {
 
     /**
-     * @param {String} webhook
+     * @param {string} webhook
+     * @param {string} url
      * @param {RGridDom} dom
      * @param {number} [renderWidth]
      */
-    constructor(webhook, dom, renderWidth) {
+    constructor(webhook, url, dom, renderWidth) {
         ArgumentGuard.notNullOrEmpty(webhook, "webhook");
+        ArgumentGuard.notNull(url, "url");
         ArgumentGuard.notNull(dom, "dom");
 
         this._webhook = webhook;
-
-        this._url = dom.getUrl();
+        this._url = url;
         this._dom = dom;
-
         this._renderWidth = renderWidth;
     }
 

@@ -1254,16 +1254,17 @@ class EyesBase {
     /**
      * Create a screenshot of a page on RenderingGrid server
      *
+     * @param {String} url The url of the page to be rendered
      * @param {RGridDom} rGridDom The DOM of a page with resources
      * @return {Promise.<RunningRender>} The results of the render
      */
-    renderWindow(rGridDom) {
+    renderWindow(url, rGridDom) {
         ArgumentGuard.isValidState(this._isOpen, "Eyes not open");
         ArgumentGuard.notNull(this._runningSession, "Session not created.");
 
         const webhook = this._runningSession.getRenderingInfo().getResultsUrl();
         const renderWidth = this._viewportSizeHandler.get().getWidth();
-        return this._renderWindowTask.renderWindow(webhook, rGridDom, renderWidth);
+        return this._renderWindowTask.renderWindow(webhook, url, rGridDom, renderWidth);
     }
 
     /**

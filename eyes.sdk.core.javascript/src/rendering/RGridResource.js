@@ -59,16 +59,12 @@ class RGridResource {
 
     getSha256Hash() {
         if (!this._sha256hash) {
-            this._sha256hash = this._computeHash();
+            this._sha256hash = crypto.createHash('sha256')
+                .update(this._content)
+                .digest('hex');
         }
 
         return this._sha256hash;
-    }
-
-    _computeHash() {
-        return crypto.createHash('sha256')
-            .update(this._content)
-            .digest('hex');
     }
 
     getHashAsObject() {
