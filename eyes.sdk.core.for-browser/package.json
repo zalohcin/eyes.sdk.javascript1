@@ -23,12 +23,12 @@
     "@applitools/eyes.sdk.core": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^14.5.0",
-    "uglify-es": "^3.1.9"
+    "browserify": "^16.1.0",
+    "uglify-es": "^3.3.9"
   },
   "scripts": {
-    "browserify": "browserify eyes-sdk-loader.js > dist/eyes-sdk.js",
-    "uglify": "uglifyjs dist/eyes-sdk.js > dist/eyes-sdk.min.js",
+    "browserify": "browserify eyes-sdk-core-loader.js > eyes-sdk-core.dist.js",
+    "uglify": "uglifyjs eyes-sdk-core.dist.js > eyes-sdk-core.dist.min.js",
     "build": "npm run browserify && npm run uglify"
   },
   "engines": {

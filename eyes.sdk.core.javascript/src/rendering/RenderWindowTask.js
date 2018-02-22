@@ -26,37 +26,37 @@ class RenderWindowTask {
 
     /**
      * @param {String} webhook
+     * @param {String} url
      * @param {RGridDom} rGridDom
      * @param {number} renderWidth
      * @return {Promise.<String>} Rendered image URL
      */
-    renderWindow(webhook, rGridDom, renderWidth) {
-        const renderRequest = new RenderRequest(webhook, rGridDom, renderWidth);
+    renderWindow(webhook, url, rGridDom, renderWidth) {
+        const renderRequest = new RenderRequest(webhook, url, rGridDom, renderWidth);
 
         const that = this;
-        return that._postRender(rGridDom, renderRequest).then(runningRender => {
-            return that._getRenderStatus(runningRender);
+        return that.postRender(rGridDom, renderRequest).then(runningRender => {
+            return that.getRenderStatus(runningRender);
         }).then(/** RenderStatusResults */ renderStatus => {
             return renderStatus.getImageLocation();
         });
     }
 
     /**
-     * @private
      * @param {RunningRender} runningRender
      * @return {Promise.<RenderStatusResults>}
      */
-    _getRenderStatus(runningRender) {
+    getRenderStatus(runningRender) {
         const that = this;
         return that._serverConnector.renderStatus(runningRender).catch(err => {
             return GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory).then(() => {
-                return that._getRenderStatus(runningRender);
+                return that.getRenderStatus(runningRender);
             });
         }).then(renderStatusResults => {
 
             if (renderStatusResults.getStatus() === RenderStatus.RENDERING) {
                 return GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory).then(() => {
-                    return that._getRenderStatus(runningRender);
+                    return that.getRenderStatus(runningRender);
                 });
             } else if (renderStatusResults.getStatus() === RenderStatus.ERROR) {
                 return that._promiseFactory.reject(renderStatusResults.getError());
@@ -67,18 +67,19 @@ class RenderWindowTask {
     }
 
     /**
-     * @private
      * @param {RGridDom} rGridDom
      * @param {RenderRequest} renderRequest
      * @param {RunningRender} [runningRender]
      * @return {Promise.<RunningRender>}
      */
-    _postRender(rGridDom, renderRequest, runningRender) {
+    postRender(rGridDom, renderRequest, runningRender) {
         const that = this;
         return that._serverConnector.render(renderRequest, runningRender).then(runningRender => {
 
             if (runningRender.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES) {
-                return that._putResources(rGridDom, renderRequest, runningRender);
+                return that.putResources(rGridDom, renderRequest, runningRender).then(() => {
+                    return that.postRender(rGridDom, renderRequest, runningRender);
+                });
             }
 
             return runningRender;
@@ -86,31 +87,28 @@ class RenderWindowTask {
     }
 
     /**
-     * @private
      * @param {RGridDom} rGridDom
      * @param {RenderRequest} renderRequest
      * @param {RunningRender} [runningRender]
      * @return {Promise.<RunningRender>}
      */
-    _putResources(rGridDom, renderRequest, runningRender) {
+    putResources(rGridDom, renderRequest, runningRender) {
         const that = this;
-        return that._promiseFactory.resolve().then(() => {
-            if (runningRender.getNeedMoreDom()) {
-                return that._serverConnector.renderPutResource(runningRender, rGridDom.asResource());
-            }
-        }).then(() => {
-            if (runningRender.getNeedMoreResources()) {
-                const promises = [];
-                for (const resource of rGridDom.getResources()) {
-                    if (runningRender.getNeedMoreResources().includes(resource.getUrl())) {
-                        promises.push(that._serverConnector.renderPutResource(runningRender, resource));
-                    }
+        const promises = [];
+
+        if (runningRender.getNeedMoreDom()) {
+            promises.push(that._serverConnector.renderPutResource(runningRender, rGridDom.asResource()));
+        }
+
+        if (runningRender.getNeedMoreResources()) {
+            for (const resource of rGridDom.getResources()) {
+                if (runningRender.getNeedMoreResources().includes(resource.getUrl())) {
+                    promises.push(that._serverConnector.renderPutResource(runningRender, resource));
                 }
-                return that._promiseFactory.all(promises);
             }
-        }).then(() => {
-            return that._postRender(rGridDom, renderRequest, runningRender);
-        });
+        }
+
+        return that._promiseFactory.all(promises);
     }
 }
 

@@ -6,27 +6,11 @@ const RGridResource = require('./RGridResource');
 class RGridDom {
 
     constructor() {
-        this._url = null;
         this._domNodes = null;
         this._resources = null;
 
         this._sha256hash = null;
         this._asString = null;
-    }
-
-    /**
-     * @return {String} The url of the current page
-     */
-    getUrl() {
-        return this._url;
-    }
-
-    /**
-     * @param {String} value The page's url
-     */
-    setUrl(value) {
-        ArgumentGuard.notNull(value, "url");
-        this._url = value;
     }
 
     /**
@@ -61,7 +45,6 @@ class RGridDom {
 
     asResource() {
         const res = new RGridResource();
-        res.setUrl(this.getUrl());
         res.setContent(this.asString());
         res.setContentType('x-applitools-html/cdt');
         return res;
@@ -75,7 +58,6 @@ class RGridDom {
             }
 
             this._asString = JSON.stringify({
-                url: this._url,
                 resources: resources,
                 domNodes: this._domNodes,
             });
@@ -86,16 +68,12 @@ class RGridDom {
 
     getSha256Hash() {
         if (!this._sha256hash) {
-            this._sha256hash = this._computeHash();
+            this._sha256hash = crypto.createHash('sha256')
+                .update(this.asString())
+                .digest('hex');
         }
 
         return this._sha256hash;
-    }
-
-    _computeHash() {
-        return crypto.createHash('sha256')
-            .update(this.asString())
-            .digest('hex');
     }
 
     getHashAsObject() {
