@@ -338,7 +338,7 @@ class ServerConnector {
             params: {
                 apiKey: that._apiKey,
             },
-            body: Buffer.concat([createDataBytes(matchWindowData), matchWindowData.getAppOutput().getScreenshot64()])
+            data: Buffer.concat([createDataBytes(matchWindowData), matchWindowData.getAppOutput().getScreenshot64()])
         };
 
         return sendLongRequest(that, 'replaceWindow', uri, 'put', options).then(response => {
@@ -405,11 +405,14 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.checkResourceExists called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`, '?render-id=' + runningRender.getRenderId());
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`);
         const options = {
             headers: {
                 'X-Auth-Token': that._renderingAuthToken,
-            }
+            },
+            params: {
+                'render-id': runningRender.getRenderId(),
+            },
         };
 
         return sendRequest(that, 'renderCheckResource', uri, 'HEAD', options).then(response => {
@@ -436,11 +439,14 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`, '?render-id=' + runningRender.getRenderId());
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`);
         const options = {
             contentType: resource.getContentType(),
             headers: {
                 'X-Auth-Token': that._renderingAuthToken,
+            },
+            params: {
+                'render-id': runningRender.getRenderId(),
             },
             data: resource.getContent()
         };
@@ -467,10 +473,13 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.renderStatus called for render: ${runningRender}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status', '?render-id=' + runningRender.getRenderId());
+        const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status');
         const options = {
             headers: {
                 'X-Auth-Token': that._renderingAuthToken,
+            },
+            params: {
+                'render-id': runningRender.getRenderId(),
             }
         };
 
@@ -577,13 +586,14 @@ function sendRequest(that, name, url, method, options = {}) {
     if (options.data) { request.data = options.data; }
     if (options.contentType) { request.headers['Content-Type'] = options.contentType; }
 
-    that._logger.verbose(`ServerConnector.${name} will now post call to: ${request.url}`);
+    that._logger.verbose(`ServerConnector.${name} will now post call to ${request.url} with params ${GeneralUtils.toJson(request.params)}`);
     // noinspection JSUnresolvedFunction
     return axios(request).then(function(response) {
         that._logger.verbose(`ServerConnector.${name} - result ${response.statusText}, status code ${response.status}`);
         return response;
     }).catch(error => {
-        that._logger.log(`ServerConnector.${name} - post failed: ${error.response.statusText}`);
+        const reasonMessage = error.response && error.response.statusText ? error.response.statusText : error.message;
+        that._logger.log(`ServerConnector.${name} - post failed: ${reasonMessage}`);
         throw error;
     });
 }
