@@ -45,4 +45,22 @@ describe('GeneralUtils', function(){
             assert.equal(decoded.sub, "1234567890");
         });
     });
+
+    describe('#elapsedString()', function(){
+        it('should return correct amount of seconds', function() {
+            assert.equal(GeneralUtils.elapsedString(6000), '6s 0ms');
+        });
+
+        it('should return correct amount of sec and ms', function() {
+            assert.equal(GeneralUtils.elapsedString(6456), '6s 456ms');
+        });
+
+        it('should return correct amount of min, sec', function() {
+            assert.equal(GeneralUtils.elapsedString(61000), '1m 1s 0ms');
+        });
+
+        it('should return correct amount of min, sec and ms', function() {
+            assert.equal(GeneralUtils.elapsedString(156458), '2m 36s 458ms');
+        });
+    });
 });

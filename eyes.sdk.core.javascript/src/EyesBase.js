@@ -55,6 +55,7 @@ const GeneralUtils = require('./GeneralUtils');
 const ArgumentGuard = require('./ArgumentGuard');
 const AppEnvironment = require('./AppEnvironment');
 const MatchWindowTask = require('./match/MatchWindowTask');
+const MatchSingleWindowTask = require('./match/MatchSingleWindowTask');
 const SessionEventHandler = require('./SessionEventHandler');
 const BatchInfo = require('./BatchInfo');
 const PromiseFactory = require('./PromiseFactory');
@@ -498,6 +499,11 @@ class EyesBase {
      * @return {BatchInfo} The currently set batch info.
      */
     getBatch() {
+        if (!this._batch) {
+            this._logger.verbose("No batch set");
+            this._batch = new BatchInfo();
+        }
+
         return this._batch;
     }
 
@@ -1198,6 +1204,84 @@ class EyesBase {
     }
 
     /**
+     * Takes a snapshot of the application under test and matches it with the expected output.
+     *
+     * @protected
+     * @param {RegionProvider} regionProvider Returns the region to check or the empty rectangle to check the entire window.
+     * @param {String} [tag=''] An optional tag to be associated with the snapshot.
+     * @param {Boolean} [ignoreMismatch=false] Whether to ignore this check if a mismatch is found.
+     * @param {CheckSettings} [checkSettings]  The settings to use.
+     * @return {Promise.<TestResults>} The result of matching the output with the expected output.
+     * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
+     */
+    checkSingleWindowBase(regionProvider, tag = "", ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
+        if (this._isDisabled) {
+            this._logger.verbose("checkSingleWindowBase Ignored");
+            const result = new MatchResult();
+            result.setAsExpected(true);
+            return this._promiseFactory.resolve(result);
+        }
+
+        ArgumentGuard.isValidState(this._isOpen, "Eyes not open");
+        ArgumentGuard.notNull(regionProvider, "regionProvider");
+
+        let testResult;
+        const that = this;
+        return that._ensureViewportSize().then(() => {
+            return that.getAppEnvironment();
+        }).then(appEnvironment => {
+            that._sessionStartInfo = new SessionStartInfo(
+                that.getBaseAgentId(),
+                that._sessionType,
+                that.getAppName(), null, that._testName,
+                that.getBatch(),
+                that._baselineEnvName, that._environmentName, appEnvironment,
+                that._defaultMatchSettings,
+                that._branchName, that._parentBranchName, that._compareWithParentBranch,
+                that._ignoreBaseline, that._properties,
+                that._render
+            );
+
+            const outputProvider = new AppOutputProvider();
+            // A callback which will call getAppOutput
+            // noinspection AnonymousFunctionJS
+            outputProvider.getAppOutput = (region, lastScreenshot) => {
+                return that._getAppOutputWithScreenshot(region, lastScreenshot);
+            };
+
+            that._matchWindowTask = new MatchSingleWindowTask(
+                that._promiseFactory,
+                that._logger,
+                that._serverConnector,
+                that._matchTimeout,
+                that,
+                outputProvider,
+                that._sessionStartInfo
+            );
+
+            return that.beforeMatchWindow();
+        }).then(() => {
+            return EyesBase.matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, that, true);
+        }).then(result => {
+            testResult = result;
+            return that.afterMatchWindow();
+        }).then(() => {
+            that._logger.verbose("MatchSingleWindow Done!");
+
+            if (!ignoreMismatch) {
+                that.clearUserInputs();
+            }
+
+            const matchResult = new MatchResult();
+            matchResult.setAsExpected(!testResult.getIsDifferent());
+            that._validateResult(tag, matchResult);
+
+            that._logger.verbose("Done!");
+            return testResult;
+        });
+    }
+
+    /**
      * @protected
      * @return {Promise<T>}
      */
@@ -1250,23 +1334,6 @@ class EyesBase {
         });
     }
 
-    //noinspection JSUnusedGlobalSymbols
-    /**
-     * Create a screenshot of a page on RenderingGrid server
-     *
-     * @param {String} url The url of the page to be rendered
-     * @param {RGridDom} rGridDom The DOM of a page with resources
-     * @return {Promise.<RunningRender>} The results of the render
-     */
-    renderWindow(url, rGridDom) {
-        ArgumentGuard.isValidState(this._isOpen, "Eyes not open");
-        ArgumentGuard.notNull(this._runningSession, "Session not created.");
-
-        const webhook = this._runningSession.getRenderingInfo().getResultsUrl();
-        const renderWidth = this._viewportSizeHandler.get().getWidth();
-        return this._renderWindowTask.renderWindow(webhook, url, rGridDom, renderWidth);
-    }
-
     /**
      * @private
      * @param {RegionProvider} regionProvider
@@ -1274,9 +1341,10 @@ class EyesBase {
      * @param {Boolean} ignoreMismatch
      * @param {CheckSettings} checkSettings
      * @param {EyesBase} self
+     * @param {Boolean} [skipStartingSession=false]
      * @return {Promise.<MatchResult>}
      */
-    static matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, self) {
+    static matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, self, skipStartingSession = false) {
         let retryTimeout = -1;
         const defaultMatchSettings = self.getDefaultMatchSettings();
         let imageMatchSettings = null;
@@ -1297,7 +1365,9 @@ class EyesBase {
             // noinspection JSUnresolvedVariable
             self._logger.verbose(`CheckWindowBase(${regionProvider.constructor.name}, '${tag}', ${ignoreMismatch}, ${retryTimeout})`);
 
-            return self._ensureRunningSession();
+            if (!skipStartingSession) {
+                return self._ensureRunningSession();
+            }
         }).then(() => {
             return regionProvider.getRegion();
         }).then(region => {
@@ -1318,7 +1388,7 @@ class EyesBase {
 
         this._shouldMatchWindowRunOnceOnTimeout = true;
 
-        if (!this._runningSession.getIsNewSession()) {
+        if (this._runningSession && !this._runningSession.getIsNewSession()) {
             this._logger.log(`Mismatch! (${tag})`);
         }
 
@@ -1645,14 +1715,8 @@ class EyesBase {
         }
 
         const that = this;
-        let testBatch, appEnvironment;
-        if (that._batch) {
-            that._logger.verbose(`Batch is ${that._batch}`);
-            testBatch = that._batch;
-        } else {
-            that._logger.verbose("No batch set");
-            testBatch = new BatchInfo();
-        }
+        that._logger.verbose(`Batch is ${that._batch}`);
+        let testBatch = that.getBatch(), appEnvironment;
 
         return that.getAUTSessionId().then(autSessionId => {
             that._autSessionId = autSessionId;

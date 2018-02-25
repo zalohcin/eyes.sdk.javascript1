@@ -23,9 +23,12 @@ class MatchWindowTask {
      */
     constructor(promiseFactory, logger, serverConnector, runningSession, retryTimeout, eyes, appOutputProvider) {
         ArgumentGuard.notNull(serverConnector, "serverConnector");
-        ArgumentGuard.notNull(runningSession, "runningSession");
         ArgumentGuard.greaterThanOrEqualToZero(retryTimeout, "retryTimeout");
         ArgumentGuard.notNull(appOutputProvider, "appOutputProvider");
+        if (new.target === MatchWindowTask) {
+            // only if target is current class, because session should be null for MatchSingleWindowTask
+            ArgumentGuard.notNull(runningSession, "runningSession");
+        }
 
         this._promiseFactory = promiseFactory;
         this._logger = logger;
@@ -68,7 +71,6 @@ class MatchWindowTask {
     }
 
     /**
-     * @private
      * @param {CheckSettings} checkSettings
      * @param {ImageMatchSettings} imageMatchSettings
      * @param {EyesBase} eyes
@@ -85,7 +87,6 @@ class MatchWindowTask {
     }
 
     /**
-     * @private
      * @param {CheckSettings} checkSettings
      * @param {ImageMatchSettings} imageMatchSettings
      * @param {EyesBase} eyes
@@ -116,13 +117,14 @@ class MatchWindowTask {
      * @return {Promise.<MatchResult>} Returns the results of the match
      */
     matchWindow(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout) {
-        if (!retryTimeout || retryTimeout < 0) {
+        if (retryTimeout === undefined || retryTimeout === null || retryTimeout < 0) {
             retryTimeout = this._defaultRetryTimeout;
         }
 
         const that = this;
         this._logger.verbose(`retryTimeout = ${retryTimeout}`);
         return that._takeScreenshot(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout).then(screenshot => {
+            // TODO: we need to return screenshot somehow, because it is used for compression
             if (ignoreMismatch) {
                 return that._matchResult;
             }
@@ -168,9 +170,8 @@ class MatchWindowTask {
 
         return promise.then(screenshot => {
             // noinspection MagicNumberJS
-            const elapsedTime = (GeneralUtils.currentTimeMillis() - elapsedTimeStart) / 1000;
-            that._logger.verbose(`Completed in ${elapsedTime} seconds`);
-            //matchResult.setScreenshot(screenshot);
+            const elapsedTime = GeneralUtils.currentTimeMillis() - elapsedTimeStart;
+            that._logger.verbose(`Completed in ${GeneralUtils.elapsedString(elapsedTime)}`);
             return screenshot;
         });
     }
@@ -207,7 +208,7 @@ class MatchWindowTask {
         }
 
         const that = this;
-        return GeneralUtils.sleep(MATCH_INTERVAL, that._promiseFactory).then(() => {
+        return GeneralUtils.sleep(MatchWindowTask.MATCH_INTERVAL, that._promiseFactory).then(() => {
             return that._tryTakeScreenshot(userInputs, region, tag, true, checkSettings, imageMatchSettings).then(screenshot => {
                 if (that._matchResult.getAsExpected()) {
                     return screenshot;
@@ -279,4 +280,5 @@ class MatchWindowTask {
 
 }
 
+MatchWindowTask.MATCH_INTERVAL = MATCH_INTERVAL;
 module.exports = MatchWindowTask;

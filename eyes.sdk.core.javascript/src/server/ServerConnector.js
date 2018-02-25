@@ -15,7 +15,7 @@ const RenderStatusResults = require('../rendering/RenderStatusResults');
 
 // Constants
 const DEFAULT_TIMEOUT_MS = 300000; // 5 min
-const EYES_API_PATH = '/api/sessions/running';
+const EYES_API_PATH = '/api/sessions';
 const LONG_REQUEST_DELAY_MS = 2000; // ms
 const MAX_LONG_REQUEST_DELAY_MS = 10000; // ms
 const LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR = 1.5;
@@ -211,7 +211,7 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.startSession called with: ${sessionStartInfo}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH);
+        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running');
         const options = {
             params: {
                 apiKey: that._apiKey,
@@ -249,7 +249,7 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.stopSession called with isAborted: ${isAborted}, save: ${save} for session: ${runningSession}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, runningSession.getId());
+        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId());
         const options = {
             params: {
                 apiKey: that._apiKey,
@@ -285,7 +285,7 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.matchWindow called with ${matchWindowData} for session: ${runningSession}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, runningSession.getId());
+        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId());
         let options = {
             params: {
                 apiKey: that._apiKey,
@@ -317,6 +317,49 @@ class ServerConnector {
         });
     }
 
+    /**
+     * Matches the current window in single request.
+     *
+     * @param {MatchSingleWindowData} matchSingleWindowData Encapsulation of a capture taken from the application.
+     * @return {Promise.<TestResults>} The results of the window matching.
+     */
+    matchSingleWindow(matchSingleWindowData) {
+        ArgumentGuard.notNull(matchSingleWindowData, "matchSingleWindowData");
+        this._logger.verbose(`ServerConnector.matchSingleWindow called with ${matchSingleWindowData}`);
+
+        const that = this;
+        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH);
+        let options = {
+            params: {
+                apiKey: that._apiKey,
+            },
+            data: matchSingleWindowData
+        };
+
+        if (matchSingleWindowData.getAppOutput().getScreenshot64()) {
+            // if there is screenshot64, then we will send application/octet-stream body instead of application/json
+            const screenshot64 = matchSingleWindowData.getAppOutput().getScreenshot64();
+            matchSingleWindowData.getAppOutput().setScreenshot64(null); // remove screenshot64 from json
+            options.contentType = 'application/octet-stream';
+            // noinspection JSValidateTypes
+            options.data = Buffer.concat([createDataBytes(matchSingleWindowData), screenshot64]);
+            matchSingleWindowData.getAppOutput().setScreenshot64(screenshot64);
+        }
+
+        return sendLongRequest(that, 'matchSingleWindow', uri, 'post', options).then(response => {
+            const validStatusCodes = [HTTP_STATUS_CODES.OK];
+            if (validStatusCodes.includes(response.status)) {
+                that._logger.verbose('ServerConnector.matchSingleWindow - post succeeded');
+
+                const matchSingleResult = new TestResults();
+                Object.assign(matchSingleResult, response.data);
+                return matchSingleResult;
+            }
+
+            throw new Error(`ServerConnector.matchSingleWindow - unexpected status (${response.statusText})`);
+        });
+    }
+
     //noinspection JSValidateJSDoc
     /**
      * Replaces an actual image in the current running session.
@@ -332,7 +375,7 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.replaceWindow called with ${matchWindowData} for session: ${runningSession}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, runningSession.getId(), stepIndex);
+        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId(), stepIndex);
         const options = {
             contentType: 'application/octet-stream',
             params: {
@@ -352,6 +395,34 @@ class ServerConnector {
             }
 
             throw new Error(`ServerConnector.replaceWindow - unexpected status (${response.statusText})`);
+        });
+    }
+
+    /**
+     * Initiate a rendering using RenderingGrid API
+     *
+     * @return {Promise.<RenderingInfo>} The results of the render request
+     */
+    renderInfo() {
+        this._logger.verbose(`ServerConnector.renderInfo called.`);
+
+        const that = this;
+        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/renderinfo');
+        const options = {
+            params: {
+                apiKey: that._apiKey,
+            },
+        };
+
+        return sendRequest(that, 'renderInfo', uri, 'get', options).then(response => {
+            const validStatusCodes = [HTTP_STATUS_CODES.OK];
+            if (validStatusCodes.includes(response.status)) {
+                const renderingInfo = new RenderingInfo(response.data);
+                that._logger.verbose('ServerConnector.renderInfo - post succeeded', renderingInfo);
+                return renderingInfo;
+            }
+
+            throw new Error(`ServerConnector.renderInfo - unexpected status (${response.statusText})`);
         });
     }
 

@@ -9,6 +9,9 @@ const DATE_FORMAT_RFC1123 = "ddd, dd mmm yyyy HH:MM:ss 'GMT'";
 
 const BASE64_CHARS_PATTERN = /[^A-Z0-9+\/=]/i;
 
+const MS_IN_S = 1000;
+const MS_IN_M = 60000;
+
 /**
  * Collection of utility methods.
  */
@@ -208,6 +211,25 @@ class GeneralUtils {
     };
 
     /**
+     * Format elapsed time by template (#m #s #ms)
+     *
+     * @param {number} elapsedMs
+     * @return {string} formatted string
+     */
+    static elapsedString(elapsedMs) {
+        const min = Math.floor(elapsedMs / MS_IN_M);
+        if (min > 0) { elapsedMs -= min * MS_IN_M; }
+        const sec = Math.floor(elapsedMs / MS_IN_S);
+        if (sec > 0) { elapsedMs -= sec * MS_IN_S; }
+
+        if (min > 0) {
+            return `${min}m ${sec}s ${elapsedMs}ms`;
+        } else {
+            return `${sec}s ${elapsedMs}ms`;
+        }
+    }
+
+    /**
      * Convert object(s) to a string
      *
      * @param {*} args
@@ -227,7 +249,7 @@ class GeneralUtils {
      * @return {int}
      */
     static currentTimeMillis() {
-        return (new Date).getTime();
+        return Date.now();
     }
 
     /**
