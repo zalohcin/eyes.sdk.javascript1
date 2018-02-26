@@ -73,9 +73,9 @@ class EyesBase {
     /**
      * Creates a new {@code EyesBase}instance that interacts with the Eyes Server at the specified url.
      *
-     * @param {String} [serverUrl] The Eyes server URL.
-     * @param {Boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method will immediately return without performing any action.
-     * @param {PromiseFactory} [promiseFactory] An object which will be used for creating deferreds/promises.
+     * @param {?String} [serverUrl] The Eyes server URL.
+     * @param {?Boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method will immediately return without performing any action.
+     * @param {?PromiseFactory} [promiseFactory] An object which will be used for creating deferreds/promises.
      **/
     constructor(serverUrl = EyesBase.getDefaultServerUrl(), isDisabled = false, promiseFactory = new PromiseFactory(asyncAction => new Promise(asyncAction))) {
         /** @type {Boolean} */
@@ -1256,7 +1256,8 @@ class EyesBase {
                 that._matchTimeout,
                 that,
                 outputProvider,
-                that._sessionStartInfo
+                that._sessionStartInfo,
+                that._saveNewTests
             );
 
             return that.beforeMatchWindow();
