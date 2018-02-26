@@ -576,7 +576,7 @@ class ServerConnector {
  * @param {Object} options
  * @return {Promise.<AxiosResponse>}
  */
-function sendLongRequest(that, name, uri, method, options = {}) {
+const sendLongRequest = (that, name, uri, method, options = {}) => {
     const headers = {
         'Eyes-Expect': '202+location',
         'Eyes-Date': GeneralUtils.toRfc1123DateTime()
@@ -586,7 +586,7 @@ function sendLongRequest(that, name, uri, method, options = {}) {
     return sendRequest(that, name, uri, method, options).then(response => {
         return longRequestCheckStatus(that, name, response);
     });
-}
+};
 
 /**
  * @private
@@ -595,7 +595,7 @@ function sendLongRequest(that, name, uri, method, options = {}) {
  * @param {AxiosResponse} response
  * @return {Promise.<AxiosResponse>}
  */
-function longRequestCheckStatus(that, name, response) {
+const longRequestCheckStatus = (that, name, response) => {
     switch (response.status) {
         case HTTP_STATUS_CODES.OK:
             return that._promiseFactory.resolve(response);
@@ -613,7 +613,7 @@ function longRequestCheckStatus(that, name, response) {
         default:
             return that._promiseFactory.reject(new Error(`Unknown error processing long request: ${GeneralUtils.toJson(response)}`));
     }
-}
+};
 
 /**
  * @private
@@ -623,7 +623,7 @@ function longRequestCheckStatus(that, name, response) {
  * @param {int} delay
  * @return {Promise.<AxiosResponse>}
  */
-function longRequestLoop(that, name, uri, delay) {
+const longRequestLoop = (that, name, uri, delay) => {
     delay = Math.min(MAX_LONG_REQUEST_DELAY_MS, Math.floor(delay * LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR));
     that._logger.verbose(`${name}: Still running... Retrying in ${delay} ms`);
 
@@ -637,7 +637,7 @@ function longRequestLoop(that, name, uri, delay) {
 
         return longRequestLoop(that, name, uri, delay);
     });
-}
+};
 
 /**
  * @private
@@ -648,7 +648,7 @@ function longRequestLoop(that, name, uri, delay) {
  * @param {Object} options
  * @return {Promise.<AxiosResponse>}
  */
-function sendRequest(that, name, url, method, options = {}) {
+const sendRequest = (that, name, url, method, options = {}) => {
     const request = GeneralUtils.clone(that._httpOptions);
     request.url = url;
     request.method = method;
@@ -657,9 +657,12 @@ function sendRequest(that, name, url, method, options = {}) {
     if (options.data) { request.data = options.data; }
     if (options.contentType) { request.headers['Content-Type'] = options.contentType; }
 
+    if (request.proxy && request.proxy.protocol === 'http:') {
+        request.transport = require('http');
+    }
+
     that._logger.verbose(`ServerConnector.${name} will now post call to ${request.url} with params ${GeneralUtils.toJson(request.params)}`);
-    // noinspection JSUnresolvedFunction
-    return axios(request).then(function(response) {
+    return axios(request).then((response) => {
         that._logger.verbose(`ServerConnector.${name} - result ${response.statusText}, status code ${response.status}`);
         return response;
     }).catch(error => {
@@ -667,7 +670,7 @@ function sendRequest(that, name, url, method, options = {}) {
         that._logger.log(`ServerConnector.${name} - post failed: ${reasonMessage}`);
         throw error;
     });
-}
+};
 
 /**
  * Creates a bytes representation of the given JSON.
@@ -676,7 +679,7 @@ function sendRequest(that, name, url, method, options = {}) {
  * @param {Object} jsonData The data from for which to create the bytes representation.
  * @return {Buffer} a buffer of bytes which represents the stringified JSON, prefixed with size.
  */
-function createDataBytes(jsonData) {
+const createDataBytes = (jsonData) => {
     const dataStr = GeneralUtils.toJson(jsonData);
     const dataLen = Buffer.byteLength(dataStr, 'utf8');
 
@@ -685,6 +688,6 @@ function createDataBytes(jsonData) {
     result.writeUInt32BE(dataLen, 0);
     result.write(dataStr, 4, dataLen);
     return result;
-}
+};
 
 module.exports = ServerConnector;
