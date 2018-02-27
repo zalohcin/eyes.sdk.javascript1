@@ -11,6 +11,8 @@ var StitchMode = EyesLeanFT.StitchMode;
 
 describe("Eyes.LeanFT.JavaScript - check-interface", function () {
 
+    this.timeout(5 * 60 * 1000);
+
     var browser = null, eyes = null;
 
     before(function (done) {
@@ -30,7 +32,7 @@ describe("Eyes.LeanFT.JavaScript - check-interface", function () {
         var appName = this.test.parent.title;
         var testName = this.currentTest.title;
 
-        Web.Browser.launch(Web.BrowserType.Firefox).then(function(launched_browser){
+        Web.Browser.launch(Web.BrowserType.Chrome).then(function(launched_browser){
             return eyes.open(launched_browser, appName, testName, {width: 1000, height: 700});
         }).then(function (launched_browser) {
             browser = launched_browser;

@@ -8,6 +8,8 @@ var ConsoleLogHandler = EyesLeanFT.ConsoleLogHandler;
 
 describe("Eyes.LeanFT.JavaScrip - hello world", function () {
 
+    this.timeout(5 * 60 * 1000);
+
     var browser = null, eyes = null;
 
     before(function (done) {
@@ -26,7 +28,7 @@ describe("Eyes.LeanFT.JavaScrip - hello world", function () {
         var appName = this.test.parent.title;
         var testName = this.currentTest.title;
 
-        Web.Browser.launch(Web.BrowserType.Firefox).then(function(launched_browser){
+        Web.Browser.launch(Web.BrowserType.Chrome).then(function(launched_browser){
             return eyes.open(launched_browser, appName, testName);
         }).then(function (launched_browser) {
             browser = launched_browser;

@@ -133,28 +133,31 @@
    * @returns {*} The test results.
    */
     Eyes.prototype.close = function (throwEx) {
-        var that = this;
+        throwEx = throwEx || true;
 
         if (this._isDisabled) {
-            return that._promiseFactory.makePromise(function (resolve) {
-                Reporter.startReportingContext("Eyes.close()");
-                resolve();
-            });
-        }
-        if (throwEx === undefined) {
-            throwEx = true;
+            return this._promiseFactory.resolve();
         }
 
+        var that = this;
         return this._promiseFactory.makePromise(function (resolve, reject) {
+            Reporter.startReportingContext("Eyes.close()");
             return EyesBase.prototype.close.call(that, throwEx).then(function (results) {
+                reportStepsVerification(results.stepsInfo);
+                Reporter.endReportingContext();
                 resolve(results);
             }, function (err) {
+                reportStepsVerification(err.results.stepsInfo);
+                Reporter.endReportingContext();
                 reject(err);
             });
-        }).then(function (results) {
-            for (var i = 0, l = results.steps; i < l; ++i) {
-                var testResult = results.stepsInfo[i];
-                Reporter.reportVerification(testResult.isDifferent ? "Failed" : "Passed", new Reporter.VerificationData({
+        });
+
+        function reportStepsVerification(stepsInfo) {
+            for (var i = 0, l = stepsInfo.length; i < l; ++i) {
+                var testResult = stepsInfo[i];
+                var status = testResult.isDifferent ? "Failed" : "Passed";
+                Reporter.reportVerification(status, new Reporter.VerificationData({
                     name: testResult.name,
                     description: "Result of Applitools visual validation #" + (i + 1),
                     parameters: [
@@ -163,8 +166,7 @@
                     ]
                 }));
             }
-            Reporter.endReportingContext();
-        });
+        }
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -182,7 +184,8 @@
 
         var promise = that._promiseFactory.makePromise(function (resolve) {
             that._checkWindowIndex++;
-            Reporter.startReportingContext("Eyes.check()#" + that._checkWindowIndex, "Applitools visual validation #" + that._checkWindowIndex);
+            var repName = name || '#' + that._checkWindowIndex;
+            Reporter.startReportingContext("Eyes.check(" + repName + ")", "Applitools visual validation #" + that._checkWindowIndex);
             resolve();
         });
 

@@ -11,6 +11,8 @@ var ConsoleLogHandler = EyesLeanFT.ConsoleLogHandler;
 
 describe("Eyes.LeanFT.JavaScript - notepad", function () {
 
+    this.timeout(5 * 60 * 1000);
+
     var notepadWindow = null, eyes = null;
 
     before(function (done) {
@@ -50,8 +52,7 @@ describe("Eyes.LeanFT.JavaScript - notepad", function () {
 
         Keyboard.sendString("Applitools LeanFT Test");
 
-        var ENTER_KEY_SCAN_CODE = 28;
-        Keyboard.pressKey(ENTER_KEY_SCAN_CODE);
+        Keyboard.pressKey(Keyboard.Keys.enter);
 
         eyes.checkWindow("After");
 
