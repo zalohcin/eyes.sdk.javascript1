@@ -1,9 +1,9 @@
 eyes.leanft
 =============
 
-Applitools Eyes SDK For LeanFT
-[![Build Status](https://travis-ci.org/applitools/eyes.leanft.javascript.svg?branch=master)](https://travis-ci.org/applitools/eyes.leanft.javascript)
+[![npm](https://img.shields.io/npm/v/eyes.leanft.svg?style=for-the-badge)](https://www.npmjs.com/package/eyes.leanft)
 
+Applitools Eyes SDK For LeanFT
 
 Getting Started
 ---------------
