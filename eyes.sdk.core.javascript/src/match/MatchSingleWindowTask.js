@@ -18,12 +18,14 @@ class MatchSingleWindowTask extends MatchWindowTask {
      * @param {EyesBase} eyes The eyes object.
      * @param {AppOutputProvider} appOutputProvider A callback for getting the application output when performing match.
      * @param {SessionStartInfo} startInfo The start parameters for the session.
+     * @param {Boolean} saveNewTests Used for automatic save of a test run. New tests are automatically saved by default.
      */
-    constructor(promiseFactory, logger, serverConnector, retryTimeout, eyes, appOutputProvider, startInfo) {
+    constructor(promiseFactory, logger, serverConnector, retryTimeout, eyes, appOutputProvider, startInfo, saveNewTests) {
         super(promiseFactory, logger, serverConnector, null, retryTimeout, eyes, appOutputProvider);
 
         /** @type {SessionStartInfo} */ this._startInfo = startInfo;
         /** @type {TestResults} */ this._matchResult = undefined;
+        /** @type {Boolean} */ this._saveNewTests = saveNewTests;
     }
 
     /**
@@ -49,6 +51,7 @@ class MatchSingleWindowTask extends MatchWindowTask {
             const options = new MatchWindowData.Options(tag, userInputs, ignoreMismatch, false, false, false, imageMatchSettings);
             const data = new MatchSingleWindowData(that._startInfo, userInputs, appOutput.getAppOutput(), tag, ignoreMismatch, options);
             data.setRemoveSessionIfMatching(ignoreMismatch);
+            data.setUpdateBaselineIfNew(that._saveNewTests);
 
             // Perform match.
             return this._serverConnector.matchSingleWindow(data);

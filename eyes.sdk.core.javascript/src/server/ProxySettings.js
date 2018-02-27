@@ -41,11 +41,12 @@ class ProxySettings {
 
     // noinspection FunctionWithMoreThanThreeNegationsJS
     /**
-     * @return {{host: string, port: int, auth: {username: string, password: string}}}
+     * @return {{protocol: string, host: string, port: int, auth: {username: string, password: string}}}
      */
     toProxyObject() {
         const proxy = {};
 
+        proxy.protocol = this._url.protocol;
         proxy.host = this._url.hostname;
         proxy.port = this._url.port;
 

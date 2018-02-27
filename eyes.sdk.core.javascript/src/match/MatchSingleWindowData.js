@@ -24,7 +24,7 @@ class MatchSingleWindowData extends MatchWindowData {
         this._startInfo = startInfo;
         this._updateBaseline = false;
         this._updateBaselineIfDifferent = false;
-        this._updateBaselineIfNew = false;
+        this._updateBaselineIfNew = true;
         this._removeSession = false;
         this._removeSessionIfMatching = false;
         /** @type {string} */
