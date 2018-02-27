@@ -4,6 +4,7 @@
     var VERSION = require('./../package.json').version;
 
     var promise = require('q'),
+        LFT = require("leanft"),
         LeanftSdkWeb = require("leanft.sdk.web"),
         EyesSDK = require('eyes.sdk'),
         EyesUtils = require('eyes.utils'),
@@ -16,7 +17,8 @@
         ElementPositionProvider = require('./ElementPositionProvider').ElementPositionProvider,
         EyesRegionProvider = require('./EyesRegionProvider').EyesRegionProvider,
         Target = require('./Target').Target;
-    var WebBaseDescription = LeanftSdkWeb.Behaviors.WebBaseDescription,
+    var Reporter = LFT.Reporter,
+        WebBaseDescription = LeanftSdkWeb.Behaviors.WebBaseDescription,
         WebBaseTestObject = LeanftSdkWeb.Behaviors.WebBaseTestObject,
         EyesBase = EyesSDK.EyesBase,
         ContextBasedScaleProviderFactory = EyesSDK.ContextBasedScaleProviderFactory,
@@ -64,6 +66,7 @@
         this._stitchMode = StitchMode.Scroll;
         this._promiseFactory = new PromiseFactory();
         this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS;
+        this._checkWindowIndex = 0;
 
         EyesBase.call(this, this._promiseFactory, serverUrl || EyesBase.DEFAULT_EYES_SERVER, isDisabled);
     }
@@ -89,6 +92,7 @@
     Eyes.prototype.open = function (browser, appName, testName, viewportSize) {
         var that = this;
 
+        Reporter.startReportingContext("Eyes.open()");
         var browserClassName = browser.constructor.name;
         if (browserClassName === 'Browser') {
             that._driver = new EyesWebBrowser(browser, that, that._logger, that._promiseFactory);
@@ -117,6 +121,7 @@
         return EyesBase.prototype.open.call(that, appName, testName, viewportSize).then(function () {
             that._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO;
             that.setStitchMode(that._stitchMode);
+            Reporter.endReportingContext();
             return that._driver;
         });
     };
@@ -132,6 +137,7 @@
 
         if (this._isDisabled) {
             return that._promiseFactory.makePromise(function (resolve) {
+                Reporter.startReportingContext("Eyes.close()");
                 resolve();
             });
         }
@@ -139,12 +145,25 @@
             throwEx = true;
         }
 
-        this._promiseFactory.makePromise(function (resolve, reject) {
+        return this._promiseFactory.makePromise(function (resolve, reject) {
             return EyesBase.prototype.close.call(that, throwEx).then(function (results) {
                 resolve(results);
             }, function (err) {
                 reject(err);
             });
+        }).then(function (results) {
+            for (var i = 0, l = results.steps; i < l; ++i) {
+                var testResult = results.stepsInfo[i];
+                Reporter.reportVerification(testResult.isDifferent ? "Failed" : "Passed", new Reporter.VerificationData({
+                    name: testResult.name,
+                    description: "Result of Applitools visual validation #" + (i + 1),
+                    parameters: [
+                        {name: "currentImage", value: testResult.apiUrls.currentImage},
+                        {name: "baselineImage", value: testResult.appUrls.step}
+                    ]
+                }));
+            }
+            Reporter.endReportingContext();
         });
     };
 
@@ -162,6 +181,8 @@
         var that = this;
 
         var promise = that._promiseFactory.makePromise(function (resolve) {
+            that._checkWindowIndex++;
+            Reporter.startReportingContext("Eyes.check()#" + that._checkWindowIndex, "Applitools visual validation #" + that._checkWindowIndex);
             resolve();
         });
 
@@ -289,6 +310,7 @@
                 return regionObject.setOverflow(originalOverflow);
             }
         }).then(function () {
+            Reporter.endReportingContext();
             that._logger.verbose("Done!");
         });
     };
