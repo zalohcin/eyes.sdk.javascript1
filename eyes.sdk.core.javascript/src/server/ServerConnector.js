@@ -375,7 +375,7 @@ class ServerConnector {
         this._logger.verbose(`ServerConnector.replaceWindow called with ${matchWindowData} for session: ${runningSession}`);
 
         const that = this;
-        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId(), stepIndex);
+        const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId(), String(stepIndex));
         const options = {
             contentType: 'application/octet-stream',
             params: {
@@ -398,6 +398,7 @@ class ServerConnector {
         });
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Initiate a rendering using RenderingGrid API
      *
@@ -463,6 +464,7 @@ class ServerConnector {
         });
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Check if resource exists on the server
      *
@@ -582,6 +584,7 @@ const sendLongRequest = (that, name, uri, method, options = {}) => {
         'Eyes-Date': GeneralUtils.toRfc1123DateTime()
     };
 
+    // extend headers of the request
     options.headers = options.headers ? Object.assign(options.headers, headers) : headers;
     return sendRequest(that, name, uri, method, options).then(response => {
         return longRequestCheckStatus(that, name, response);
@@ -606,7 +609,7 @@ const longRequestCheckStatus = (that, name, response) => {
             });
         case HTTP_STATUS_CODES.CREATED:
             const deleteUri = response.headers['location'];
-            const options = {headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
+            const options = {params: {apiKey: that._apiKey}, headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
             return sendRequest(that, name, deleteUri, 'delete', options);
         case HTTP_STATUS_CODES.GONE:
             return that._promiseFactory.reject(new Error('The server task has gone.'));
@@ -628,7 +631,7 @@ const longRequestLoop = (that, name, uri, delay) => {
     that._logger.verbose(`${name}: Still running... Retrying in ${delay} ms`);
 
     return GeneralUtils.sleep(delay, that._promiseFactory).then(() => {
-        const options = {headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
+        const options = {params: {apiKey: that._apiKey}, headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
         return sendRequest(that, name, uri, 'get', options);
     }).then(response => {
         if (response.status !== HTTP_STATUS_CODES.OK) {
