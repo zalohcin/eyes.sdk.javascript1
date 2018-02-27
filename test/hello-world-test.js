@@ -1,61 +1,67 @@
-import test from 'ava';
-import LFT from 'leanft';
-import {Web} from 'leanft';
-import {Eyes, ConsoleLogHandler} from '../index';
+var LFT = require('leanft');
+var Web = LFT.Web;
+var whenDone = LFT.whenDone;
 
-const appName = "Eyes.LeanFT.JavaScrip - hello world";
-let browser = null, eyes = null;
+var EyesLeanFT = require('../index');
+var Eyes = EyesLeanFT.Eyes;
+var ConsoleLogHandler = EyesLeanFT.ConsoleLogHandler;
 
-test.cb.before(t => {
-    LFT.init();
+describe("Eyes.LeanFT.JavaScrip - hello world", function () {
 
-    eyes = new Eyes();
-    eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
-    eyes.setLogHandler(new ConsoleLogHandler(true));
-    eyes.setForceFullPageScreenshot(true);
+    var browser = null, eyes = null;
 
-    LFT.whenDone(t.end);
-});
+    before(function (done) {
+        LFT.init();
 
-test.cb.beforeEach(t => {
-    LFT.beforeTest();
+        eyes = new Eyes();
+        eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
+        eyes.setLogHandler(new ConsoleLogHandler(true));
+        eyes.setForceFullPageScreenshot(true);
 
-    const testName = t.title.replace("beforeEach for ", "");
-    Web.Browser.launch(Web.BrowserType.Chrome).then(function(launched_browser){
-        return eyes.open(launched_browser, appName, testName);
-    }).then(function (launched_browser) {
-        browser = launched_browser;
+        whenDone(done);
     });
 
-    LFT.whenDone(t.end);
-});
+    beforeEach(function (done) {
+        LFT.beforeTest();
+        var appName = this.test.parent.title;
+        var testName = this.currentTest.title;
 
-test.cb('LeanFT Hello World', t => {
-    browser.navigate("https://www.applitools.com/helloworld");
-    browser.sync();
+        Web.Browser.launch(Web.BrowserType.Firefox).then(function(launched_browser){
+            return eyes.open(launched_browser, appName, testName);
+        }).then(function (launched_browser) {
+            browser = launched_browser;
+        });
 
-    eyes.checkWindow("Hello!");
+        whenDone(done);
+    });
 
-    let button = browser.$(Web.Element({tagName: "button"}));
-    button.click();
+    it("LeanFT Hello World", function (done) {
+        browser.navigate("https://www.applitools.com/helloworld");
+        browser.sync();
 
-    eyes.checkWindow("Click!");
+        eyes.checkWindow("Hello!");
 
-    eyes.close();
+        var button = browser.$(Web.Element({tagName: "button"}));
+        button.click();
 
-    LFT.whenDone(t.end);
-});
+        eyes.checkWindow("Click!");
 
-test.cb.afterEach.always(t => {
-    LFT.afterTest();
-    if (browser){
-        browser.close();
-    }
-    LFT.whenDone(t.end);
-});
+        eyes.close();
 
-test.cb.after.always(t => {
-    LFT.cleanup();
-    eyes.abortIfNotClosed();
-    LFT.whenDone(t.end);
+        whenDone(done);
+    });
+
+    afterEach(function (done) {
+        LFT.afterTest();
+        if (browser){
+            browser.close();
+        }
+        whenDone(done);
+    });
+
+    after(function (done) {
+        LFT.cleanup();
+        eyes.abortIfNotClosed();
+        whenDone(done);
+    });
 });

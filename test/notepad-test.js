@@ -1,70 +1,73 @@
-import test from 'ava';
-import LFT from 'leanft';
-import {StdWin, Desktop, Keyboard} from 'leanft';
-import {Eyes, ConsoleLogHandler} from '../index';
-import {spawn} from 'child_process';
+var spawn = require('child_process').spawn;
+var LFT = require('leanft');
+var Keyboard = LFT.Keyboard;
+var Desktop = LFT.Desktop;
+var StdWin = LFT.StdWin;
+var whenDone = LFT.whenDone;
 
-const appName = "Eyes.LeanFT.JavaScript - notepad";
-let browser = null, notepadWindow = null, eyes = null;
+var EyesLeanFT = require('../index');
+var Eyes = EyesLeanFT.Eyes;
+var ConsoleLogHandler = EyesLeanFT.ConsoleLogHandler;
 
-test.cb.before(t => {
-    LFT.init();
+describe("Eyes.LeanFT.JavaScript - notepad", function () {
 
-    eyes = new Eyes();
-    eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
-    eyes.setLogHandler(new ConsoleLogHandler(true));
+    var notepadWindow = null, eyes = null;
 
-    LFT.whenDone(t.end);
-});
+    before(function (done) {
+        LFT.init();
 
-test.cb.beforeEach(t => {
-    LFT.beforeTest();
+        eyes = new Eyes();
+        eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
+        eyes.setLogHandler(new ConsoleLogHandler(true));
 
-    // Launch the Notepad application.
-    spawn('C:/Windows/System32/notepad.exe');
+        whenDone(done);
+    });
 
-    // Locate the Notepad window and assign it to a Window object.
-    notepadWindow = Desktop.$(StdWin.Window({
-        windowClassRegExp: "Notepad",
-        windowTitleRegExp: " Notepad"
-    }));
+    beforeEach(function (done) {
+        LFT.beforeTest();
+        whenDone(done);
+    });
 
-    const testName = t.title.replace("beforeEach for ", "");
-    eyes.open(notepadWindow, appName, testName);
+    // This example shows usage of the low level keyboard and mouse operations
+    it("LeanFT Notepad Test", function (done) {
+        // Launch the Notepad application.
+        spawn('C:/Windows/System32/notepad.exe');
 
-    LFT.whenDone(t.end);
-});
+        // Locate the Notepad window and assign it to a Window object.
+        notepadWindow = Desktop.$(StdWin.Window({
+            windowClassRegExp: "Notepad",
+            windowTitleRegExp: " Notepad"
+        }));
 
-// This example shows usage of the low level keyboard and mouse operations
-test.cb('LeanFT Notepad Test', t => {
+        var appName = this.test.parent.title;
+        var testName = this.test.title;
+        eyes.open(notepadWindow, appName, testName);
 
-    // Move the notepad window to the top left area of the screen
-    notepadWindow.move(0, 0);
+        // Move the notepad window to the top left area of the screen
+        notepadWindow.move(0, 0);
 
-    eyes.checkWindow("Before");
+        eyes.checkWindow("Before");
 
-    Keyboard.sendString("Applitools LeanFT Test");
+        Keyboard.sendString("Applitools LeanFT Test");
 
-    var ENTER_KEY_SCAN_CODE = 28;
-    Keyboard.pressKey(ENTER_KEY_SCAN_CODE);
+        var ENTER_KEY_SCAN_CODE = 28;
+        Keyboard.pressKey(ENTER_KEY_SCAN_CODE);
 
-    eyes.checkWindow("After");
+        eyes.checkWindow("After");
 
-    eyes.close();
+        eyes.close();
 
-    LFT.whenDone(t.end);
-});
+        whenDone(done);
+    });
 
-test.cb.afterEach.always(t => {
-    LFT.afterTest();
-    if (browser){
-        browser.close();
-    }
-    LFT.whenDone(t.end);
-});
+    afterEach(function (done) {
+        LFT.afterTest();
+        whenDone(done);
+    });
 
-test.cb.after.always(t => {
-    LFT.cleanup();
-    eyes.abortIfNotClosed();
-    LFT.whenDone(t.end);
+    after(function (done) {
+        LFT.cleanup();
+        eyes.abortIfNotClosed();
+        whenDone(done);
+    });
 });

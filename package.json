@@ -28,7 +28,7 @@
     "q": "^1.4.1"
   },
   "devDependencies": {
-    "ava": "^0.18.0",
+    "mocha": "^5.0.1",
     "uglify-js": "^3.0.28",
     "webpack": "^3.5.5",
     "webpack-node-externals": "^1.6.0"
@@ -39,7 +39,7 @@
     "leanft.sdk.stdwin": "*"
   },
   "scripts": {
-    "test": "ava",
+    "test": "mocha ./test/**/*.js -t 300000",
     "build": "webpack",
     "minify": "uglifyjs -c -m reserved=[module.exports] --warn bundle.js -o bundle.js",
     "prepublishOnly": "npm run build && npm run minify"
