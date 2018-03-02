@@ -118,6 +118,9 @@ class EyesBase {
         /** @type {boolean} */
         this._render = false;
 
+        /** @type {boolean} */
+        this._useImageDeltaCompression = false;
+
         /** @type {int} */
         this._validationId = -1;
         /** @type {SessionEventHandler[]} */
@@ -1814,7 +1817,7 @@ class EyesBase {
         const that = this;
         that._logger.verbose("getting screenshot...");
         // Getting the screenshot (abstract function implemented by each SDK).
-        let title, screenshot, screenshot64, screenshotUrl;
+        let title, screenshot, screenshotBuffer, screenshotUrl;
         return that.getScreenshot().then(screenshot_ => {
             that._logger.verbose("Done getting screenshot!");
 
@@ -1830,18 +1833,31 @@ class EyesBase {
                         });
                     }
                 }).then(() => {
-                    that._logger.verbose("Compressing screenshot...");
-                    return that._compressScreenshot64(screenshot, lastScreenshot).then(compressedScreenshot => {
-                        screenshot64 = compressedScreenshot;
-                        that._logger.verbose("Done!");
+                    return screenshot.getImage().getImageBuffer().then(targetBuffer => {
+                        screenshotBuffer = targetBuffer;
+
+                        if (that._useImageDeltaCompression && lastScreenshot) {
+                            that._logger.verbose("Compressing screenshot...");
+
+                            return lastScreenshot.getImage().getImageData().then(sourceData => {
+                                return screenshot.getImage().getImageData().then(targetData => {
+                                    return ImageDeltaCompressor.compressByRawBlocks(targetData, targetBuffer, sourceData);
+                                });
+                            }).then(compressedScreenshot => {
+                                screenshotBuffer = compressedScreenshot;
+                                that._logger.verbose("Done!");
+                            }).catch(err => {
+                                that._logger.verbose("Failed to compress screenshot!", err);
+                            });
+                        }
                     });
                 });
             }
 
             that._logger.verbose("getting screenshot url...");
             return that.getScreenshotUrl().then(screenshotUrl_ => {
-                that._logger.verbose("Done getting screenshot url!");
                 screenshotUrl = screenshotUrl_;
+                that._logger.verbose("Done getting screenshotUrl!");
             });
         }).then(() => {
             that._logger.verbose("Getting title...");
@@ -1850,44 +1866,9 @@ class EyesBase {
                 that._logger.verbose("Done!");
             });
         }).then(() => {
-            const result = new AppOutputWithScreenshot(new AppOutput(title, screenshot64, screenshotUrl), screenshot);
+            const result = new AppOutputWithScreenshot(new AppOutput(title, screenshotBuffer, screenshotUrl), screenshot);
             that._logger.verbose("Done!");
             return result;
-        });
-    }
-
-    /**
-     * Compresses a given screenshot.
-     *
-     * @private
-     * @param {EyesScreenshot} screenshot The screenshot to compress.
-     * @param {EyesScreenshot} lastScreenshot The previous screenshot, or null.
-     * @return {Promise.<Buffer>} A base64 encoded compressed screenshot.
-     */
-    _compressScreenshot64(screenshot, lastScreenshot) {
-        ArgumentGuard.notNull(screenshot, "screenshot");
-
-        let targetData, sourceData;
-        return this._promiseFactory.makePromise(resolve => {
-            if (lastScreenshot) {
-                return lastScreenshot.getImage().getImageData().then(imageData => {
-                    sourceData = imageData;
-                    return screenshot.getImage().getImageData();
-                }).then(imageData => {
-                    targetData = imageData;
-                    resolve();
-                });
-            } else {
-                resolve();
-            }
-        }).then(() => {
-            return screenshot.getImage().getImageBuffer();
-        }).then(targetBuffer => {
-            try {
-                return ImageDeltaCompressor.compressByRawBlocks(targetData, targetBuffer, sourceData);
-            } catch (err) {
-                throw new Error(`Failed to compress screenshot! ${err}`);
-            }
         });
     }
 
