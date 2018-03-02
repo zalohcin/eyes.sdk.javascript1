@@ -124,7 +124,6 @@ class MatchWindowTask {
         const that = this;
         this._logger.verbose(`retryTimeout = ${retryTimeout}`);
         return that._takeScreenshot(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout).then(screenshot => {
-            // TODO: we need to return screenshot somehow, because it is used for compression
             if (ignoreMismatch) {
                 return that._matchResult;
             }
@@ -268,6 +267,14 @@ class MatchWindowTask {
         }
 
         return this._promiseFactory.resolve();
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {EyesScreenshot}
+     */
+    getLastScreenshot() {
+        return this._lastScreenshot;
     }
 
     // noinspection JSUnusedGlobalSymbols

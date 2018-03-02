@@ -140,7 +140,6 @@ class EyesBase {
 
         /** @type {RunningSession} */ this._runningSession = undefined;
         /** @type {SessionStartInfo} */ this._sessionStartInfo = undefined;
-        /** @type {EyesScreenshot} */ this._lastScreenshot = undefined;
         /** @type {Boolean} */ this._isViewportSizeSet = undefined;
 
         /** @type {Boolean} */ this._isOpen = undefined;
@@ -873,7 +872,6 @@ class EyesBase {
 
             that._isOpen = false;
 
-            that._lastScreenshot = null;
             that.clearUserInputs();
 
             // If a session wasn't started, use empty results.
@@ -1191,7 +1189,6 @@ class EyesBase {
 
             if (!ignoreMismatch) {
                 that.clearUserInputs();
-                that._lastScreenshot = matchResult.getScreenshot();
             }
 
             that._validateResult(tag, matchResult);
@@ -1203,6 +1200,7 @@ class EyesBase {
         });
     }
 
+    // noinspection JSUnusedGlobalSymbols
     /**
      * Takes a snapshot of the application under test and matches it with the expected output.
      *
@@ -1263,7 +1261,7 @@ class EyesBase {
             return that.beforeMatchWindow();
         }).then(() => {
             return EyesBase.matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, that, true);
-        }).then(result => {
+        }).then(/** TestResults */ result => {
             testResult = result;
             return that.afterMatchWindow();
         }).then(() => {
@@ -1606,12 +1604,12 @@ class EyesBase {
         // We don't want to change the objects we received.
         control = new Region(control);
 
-        if (!this._lastScreenshot) {
+        if (!this._matchWindowTask || !this._matchWindowTask.getLastScreenshot()) {
             this._logger.verbose(`Ignoring '${text}' (no screenshot)`);
             return;
         }
 
-        control = this._lastScreenshot.getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
+        control = this._matchWindowTask.getLastScreenshot().getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
         if (control.isEmpty()) {
             this._logger.verbose(`Ignoring '${text}' (out of bounds)`);
             return;
@@ -1643,7 +1641,7 @@ class EyesBase {
         ArgumentGuard.notNull(cursor, "cursor");
 
         // Triggers are actually performed on the previous window.
-        if (!this._lastScreenshot) {
+        if (!this._matchWindowTask || !this._matchWindowTask.getLastScreenshot()) {
             this._logger.verbose(`Ignoring ${action} (no screenshot)`);
             return;
         }
@@ -1653,7 +1651,7 @@ class EyesBase {
         // First we need to getting the cursor's coordinates relative to the context (and not to the control).
         cursorInScreenshot.offsetByLocation(control.getLocation());
         try {
-            cursorInScreenshot = this._lastScreenshot.getLocationInScreenshot(cursorInScreenshot, CoordinatesType.CONTEXT_RELATIVE);
+            cursorInScreenshot = this._matchWindowTask.getLastScreenshot().getLocationInScreenshot(cursorInScreenshot, CoordinatesType.CONTEXT_RELATIVE);
         } catch (err) {
             if (err instanceof OutOfBoundsError) {
                 this._logger.verbose(`"Ignoring ${action} (out of bounds)`);
@@ -1663,7 +1661,7 @@ class EyesBase {
             throw err;
         }
 
-        const controlScreenshotIntersect = this._lastScreenshot.getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
+        const controlScreenshotIntersect = this._matchWindowTask.getLastScreenshot().getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
 
         // If the region is NOT empty, we'll give the coordinates relative to
         // the control.
