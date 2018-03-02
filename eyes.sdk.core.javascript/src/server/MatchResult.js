@@ -8,7 +8,6 @@ class MatchResult {
     constructor() {
         this.asExpected = null;
         this.windowId = null;
-        this.screenshot = null;
     }
 
     getAsExpected() {
@@ -25,14 +24,6 @@ class MatchResult {
 
     setWindowId(value) {
         this.windowId = value;
-    }
-
-    getScreenshot() {
-        return this.screenshot;
-    }
-
-    setScreenshot(value) {
-        this.screenshot = value;
     }
 }
 
