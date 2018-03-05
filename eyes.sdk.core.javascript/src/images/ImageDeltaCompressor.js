@@ -15,9 +15,9 @@ class ImageDeltaCompressor {
     /**
      * Compresses a target image based on a difference from a source image.
      *
-     * @param {Image} targetData The image we want to compress.
+     * @param {Image|png.Image} targetData The image we want to compress.
      * @param {Buffer} targetBuffer The image we want to compress in its png buffer representation.
-     * @param {Image} sourceData The baseline image by which a compression will be performed.
+     * @param {Image|png.Image} sourceData The baseline image by which a compression will be performed.
      * @param {int} [blockSize=10] How many pixels per block.
      * @return {Buffer} The compression result.
      */

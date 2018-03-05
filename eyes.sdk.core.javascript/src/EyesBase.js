@@ -119,7 +119,7 @@ class EyesBase {
         this._render = false;
 
         /** @type {boolean} */
-        this._useImageDeltaCompression = false;
+        this._useImageDeltaCompression = true;
 
         /** @type {int} */
         this._validationId = -1;
@@ -1842,11 +1842,14 @@ class EyesBase {
 
                             return lastScreenshot.getImage().getImageData().then(sourceData => {
                                 return screenshot.getImage().getImageData().then(targetData => {
-                                    return ImageDeltaCompressor.compressByRawBlocks(targetData, targetBuffer, sourceData);
+                                    screenshotBuffer = ImageDeltaCompressor.compressByRawBlocks(targetData, targetBuffer, sourceData);
+                                    const savedSize = targetBuffer.length - screenshotBuffer.length;
+                                    if (savedSize === 0) {
+                                        that._logger.verbose("Compression skipped, because of significant difference.");
+                                    } else {
+                                        that._logger.verbose(`Compression finished, saved size is ${savedSize}.`);
+                                    }
                                 });
-                            }).then(/** Buffer */ compressedScreenshot => {
-                                screenshotBuffer = compressedScreenshot;
-                                that._logger.verbose("Done!");
                             }).catch(err => {
                                 that._logger.log("Failed to compress screenshot!", err);
                             });
