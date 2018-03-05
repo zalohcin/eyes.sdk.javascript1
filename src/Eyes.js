@@ -92,7 +92,7 @@
     Eyes.prototype.open = function (browser, appName, testName, viewportSize) {
         var that = this;
 
-        Reporter.startReportingContext("Eyes.open()");
+        Reporter.startReportingContext("Applitools.open()");
         var browserClassName = browser.constructor.name;
         if (browserClassName === 'Browser') {
             that._driver = new EyesWebBrowser(browser, that, that._logger, that._promiseFactory);
@@ -141,31 +141,46 @@
 
         var that = this;
         return this._promiseFactory.makePromise(function (resolve, reject) {
-            Reporter.startReportingContext("Eyes.close()");
+            Reporter.startReportingContext("Applitools.close()");
+            var testResults, testError;
             return EyesBase.prototype.close.call(that, throwEx).then(function (results) {
-                reportStepsVerification(results.stepsInfo);
-                Reporter.endReportingContext();
-                resolve(results);
+                testResults = results;
             }, function (err) {
-                reportStepsVerification(err.results.stepsInfo);
+                testError = err;
+                testResults = err.results;
+            }).then(function () {
+                for (var i = 0, l = testResults.stepsInfo.length; i < l; ++i) {
+                    var testResult = testResults.stepsInfo[i];
+                    var status = testResult.isDifferent ? "Failed" : "Passed";
+                    var params = [];
+                    objectToArray(testResult, params);
+
+                    Reporter.reportVerification(status, new Reporter.VerificationData({
+                        name: testResult.name,
+                        description: "Result of Applitools visual validation #" + (i + 1),
+                        parameters: params
+                    }));
+                }
+
                 Reporter.endReportingContext();
-                reject(err);
+
+                if (testError) return reject(testError);
+                return resolve(testResults);
             });
         });
 
-        function reportStepsVerification(stepsInfo) {
-            for (var i = 0, l = stepsInfo.length; i < l; ++i) {
-                var testResult = stepsInfo[i];
-                var status = testResult.isDifferent ? "Failed" : "Passed";
-                Reporter.reportVerification(status, new Reporter.VerificationData({
-                    name: testResult.name,
-                    description: "Result of Applitools visual validation #" + (i + 1),
-                    parameters: [
-                        {name: "currentImage", value: testResult.apiUrls.currentImage},
-                        {name: "baselineImage", value: testResult.appUrls.step}
-                    ]
-                }));
+        function objectToArray(obj, array, parentName) {
+            var keys = Object.keys(obj);
+            for (var i = 0, l = keys.length; i < l; i++) {
+                var name = parentName ? (parentName + '.' + keys[i]) : keys[i];
+                var value = obj[keys[i]];
+                if (typeof value === "object") {
+                    objectToArray(value, array, name);
+                } else {
+                    array.push({name: name, value: value});
+                }
             }
+            return array;
         }
     };
 
@@ -185,7 +200,7 @@
         var promise = that._promiseFactory.makePromise(function (resolve) {
             that._checkWindowIndex++;
             var repName = name || '#' + that._checkWindowIndex;
-            Reporter.startReportingContext("Eyes.check(" + repName + ")", "Applitools visual validation #" + that._checkWindowIndex);
+            Reporter.startReportingContext("Applitools.check(" + repName + ")", "Applitools visual validation #" + that._checkWindowIndex);
             resolve();
         });
 
