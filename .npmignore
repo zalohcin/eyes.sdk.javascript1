@@ -1,8 +1,28 @@
+# Logs
+logs
+*.log
+
+# JetBrains
+.idea
+
+# VS Code
+.vscode
+
+# Runtime data
+pids
+*.pid
+*.seed
+RunResults
+
+# Source code
 src/*
-test/*
-dist/*
 index.js
+
+# Tests
+test/*
+
+# Webpack config
 webpack.config.js
 
-# build file, should be included
+# bundle file, should be included
 !bundle.js
