@@ -3,3 +3,6 @@ test/*
 dist/*
 index.js
 webpack.config.js
+
+# build file, should be included
+!bundle.js
