@@ -2,34 +2,34 @@
 
 const Logger = require('./logging/Logger');
 
-const Region = require('./positioning/Region');
-const Location = require('./positioning/Location');
-const RectangleSize = require('./positioning/RectangleSize');
-const CoordinatesType = require('./positioning/CoordinatesType');
+const Region = require('./geometry/Region');
+const Location = require('./geometry/Location');
+const RectangleSize = require('./geometry/RectangleSize');
+const CoordinatesType = require('./geometry/CoordinatesType');
 
 const FileDebugScreenshotsProvider = require('./debug/FileDebugScreenshotsProvider');
 const NullDebugScreenshotProvider = require('./debug/NullDebugScreenshotProvider');
 
-const SimplePropertyHandler = require('./handlers/SimplePropertyHandler');
-const ReadOnlyPropertyHandler = require('./handlers/ReadOnlyPropertyHandler');
+const SimplePropertyHandler = require('./utils/SimplePropertyHandler');
+const ReadOnlyPropertyHandler = require('./utils/ReadOnlyPropertyHandler');
 
 const ImageDeltaCompressor = require('./images/ImageDeltaCompressor');
 
 const AppOutputProvider = require('./capture/AppOutputProvider');
 const AppOutputWithScreenshot = require('./capture/AppOutputWithScreenshot');
-const AppOutput = require('./capture/AppOutput');
+const AppOutput = require('./match/AppOutput');
 
 const FixedScaleProvider = require('./scaling/FixedScaleProvider');
 const NullScaleProvider = require('./scaling/NullScaleProvider');
 
-const NullCutProvider = require('./cutting/NullCutProvider');
+const NullCutProvider = require('./cropping/NullCutProvider');
 
 const InvalidPositionProvider = require('./positioning/InvalidPositionProvider');
 
 const TextTrigger = require('./triggers/TextTrigger');
 const MouseTrigger = require('./triggers/MouseTrigger');
 
-const MatchResult = require('./server/MatchResult');
+const MatchResult = require('./match/MatchResult');
 const MatchLevel = require('./match/MatchLevel');
 const ImageMatchSettings = require('./match/ImageMatchSettings');
 const MatchWindowData = require('./match/MatchWindowData');
@@ -41,21 +41,21 @@ const TestFailedError = require('./errors/TestFailedError');
 
 const CheckSettings = require('./fluent/CheckSettings');
 
-const RenderWindowTask = require('./rendering/RenderWindowTask');
+const RenderWindowTask = require('./RenderWindowTask');
 
 const SessionStartInfo = require('./server/SessionStartInfo');
 const SessionType = require('./server/SessionType');
 const PropertyData = require('./server/PropertyData');
-const TestResultsStatus = require('./server/TestResultsStatus');
-const TestResults = require('./server/TestResults');
+const TestResultsStatus = require('./TestResultsStatus');
+const TestResults = require('./TestResults');
 const ServerConnector = require('./server/ServerConnector');
 
 const FailureReports = require('./FailureReports');
-const GeneralUtils = require('./GeneralUtils');
+const GeneralUtils = require('./utils/GeneralUtils');
 const ArgumentGuard = require('./ArgumentGuard');
 const AppEnvironment = require('./AppEnvironment');
-const MatchWindowTask = require('./match/MatchWindowTask');
-const MatchSingleWindowTask = require('./match/MatchSingleWindowTask');
+const MatchWindowTask = require('./MatchWindowTask');
+const MatchSingleWindowTask = require('./MatchSingleWindowTask');
 const SessionEventHandler = require('./SessionEventHandler');
 const BatchInfo = require('./BatchInfo');
 const PromiseFactory = require('./PromiseFactory');

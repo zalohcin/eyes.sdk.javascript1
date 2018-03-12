@@ -1,7 +1,7 @@
 'use strict';
 
 const zlib = require('zlib');
-const WritableBufferStream = require('../StreamUtils').WritableBufferStream;
+const {WritableBufferStream} = require('../utils/StreamUtils');
 
 const PREAMBLE = new Buffer("applitools", "utf8");
 const COMPRESS_BY_RAW_BLOCKS_FORMAT = 3;
