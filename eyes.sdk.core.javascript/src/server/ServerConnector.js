@@ -93,7 +93,7 @@ class ServerConnector {
      * @return {String} The currently set API key or {@code null} if no key is set.
      */
     getApiKey() {
-        return this._apiKey;
+        return this._apiKey || process.env.APPLITOOLS_API_KEY;
     }
 
     /**
@@ -214,7 +214,7 @@ class ServerConnector {
         const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running');
         const options = {
             params: {
-                apiKey: that._apiKey,
+                apiKey: that.getApiKey(),
             },
             data: {startInfo: sessionStartInfo}
         };
@@ -248,7 +248,7 @@ class ServerConnector {
         const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId());
         const options = {
             params: {
-                apiKey: that._apiKey,
+                apiKey: that.getApiKey(),
                 aborted: isAborted,
                 updateBaseline: save
             }
@@ -281,7 +281,7 @@ class ServerConnector {
         const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId());
         let options = {
             params: {
-                apiKey: that._apiKey,
+                apiKey: that.getApiKey(),
             },
             data: matchWindowData
         };
@@ -321,7 +321,7 @@ class ServerConnector {
         const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH);
         let options = {
             params: {
-                apiKey: that._apiKey,
+                apiKey: that.getApiKey(),
             },
             data: matchSingleWindowData
         };
@@ -366,7 +366,7 @@ class ServerConnector {
         const options = {
             contentType: 'application/octet-stream',
             params: {
-                apiKey: that._apiKey,
+                apiKey: that.getApiKey(),
             },
             data: Buffer.concat([createDataBytes(matchWindowData), matchWindowData.getAppOutput().getScreenshot64()])
         };
@@ -395,7 +395,7 @@ class ServerConnector {
         const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/renderinfo');
         const options = {
             params: {
-                apiKey: that._apiKey,
+                apiKey: that.getApiKey(),
             },
         };
 
@@ -589,7 +589,7 @@ const longRequestCheckStatus = (that, name, response) => {
             });
         case HTTP_STATUS_CODES.CREATED:
             const deleteUri = response.headers['location'];
-            const options = {params: {apiKey: that._apiKey}, headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
+            const options = {params: {apiKey: that.getApiKey()}, headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
             return sendRequest(that, name, deleteUri, 'delete', options);
         case HTTP_STATUS_CODES.GONE:
             return that._promiseFactory.reject(new Error('The server task has gone.'));
@@ -611,7 +611,7 @@ const longRequestLoop = (that, name, uri, delay) => {
     that._logger.verbose(`${name}: Still running... Retrying in ${delay} ms`);
 
     return GeneralUtils.sleep(delay, that._promiseFactory).then(() => {
-        const options = {params: {apiKey: that._apiKey}, headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
+        const options = {params: {apiKey: that.getApiKey()}, headers: {'Eyes-Date': GeneralUtils.toRfc1123DateTime()}};
         return sendRequest(that, name, uri, 'get', options);
     }).then(response => {
         if (response.status !== HTTP_STATUS_CODES.OK) {

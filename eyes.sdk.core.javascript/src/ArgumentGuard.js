@@ -23,6 +23,19 @@ class ArgumentGuard {
 
     //noinspection JSUnusedGlobalSymbols
     /**
+     * Fails if the input parameter contains some special characters or punctuation
+     *
+     * @param {Object} param The input parameter.
+     * @param {String} paramName The input parameter name.
+     */
+    static alphanumeric(param, paramName) {
+        if (!param.match(/^[a-z0-9]+$/i)) {
+            throw new Error(`IllegalArgument: ${paramName} is not alphanumeric`);
+        }
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
      * Fails if the input parameter is null.
      *
      * @param {Object} param The input parameter.

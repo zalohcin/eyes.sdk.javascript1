@@ -14,12 +14,10 @@ class BatchInfo {
      * @param {Date} [startedAt] Batch start time, defaults to the current time.
      * @param {String} [id]
      */
-    constructor(name = null, startedAt = new Date(), id = GeneralUtils.guid()) {
-        ArgumentGuard.notNull(startedAt, "startedAt");
-
-        this._id = id;
-        this._name = name;
-        this._startedAt = GeneralUtils.toISO8601DateTime(startedAt);
+    constructor(name, startedAt, id) {
+        this._id = id || process.env.APPLITOOLS_BATCH_ID || GeneralUtils.guid();
+        this._name = name || process.env.APPLITOOLS_BATCH_NAME;
+        this._startedAt = GeneralUtils.toISO8601DateTime(startedAt || new Date());
     }
 
     /**
@@ -52,15 +50,12 @@ class BatchInfo {
      * @return {Date} The batch start date
      */
     getStartedAt() {
-        return new Date(this._startedAt);
+        return GeneralUtils.fromISO8601DateTime(this._startedAt);
     }
 
+    /** @override */
     toJSON() {
-        return {
-            id: this._id,
-            name: this._name,
-            startedAt: this._startedAt
-        };
+        return GeneralUtils.toPlain(this);
     }
 
     /** @override */

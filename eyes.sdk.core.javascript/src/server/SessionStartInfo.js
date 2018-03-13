@@ -1,5 +1,6 @@
 'use strict';
 
+const GeneralUtils = require('../utils/GeneralUtils');
 const ArgumentGuard = require('../ArgumentGuard');
 
 /**
@@ -20,13 +21,16 @@ class SessionStartInfo {
      * @param {ImageMatchSettings} defaultMatchSettings
      * @param {String} branchName
      * @param {String} parentBranchName
+     * @param {String} baselineBranchName
      * @param {Boolean} compareWithParentBranch
      * @param {Boolean} ignoreBaseline
      * @param {PropertyData[]} properties
      * @param {Boolean} render=false
      */
-    constructor(agentId, sessionType, appIdOrName, verId, scenarioIdOrName, batchInfo, baselineEnvName, environmentName,
-                environment, defaultMatchSettings, branchName, parentBranchName, compareWithParentBranch, ignoreBaseline, properties, render) {
+    constructor(agentId, sessionType, appIdOrName, verId, scenarioIdOrName, batchInfo,
+                baselineEnvName, environmentName, environment, defaultMatchSettings,
+                branchName, parentBranchName, baselineBranchName, compareWithParentBranch,
+                ignoreBaseline, properties, render) {
         ArgumentGuard.notNullOrEmpty(agentId, "agentId");
         ArgumentGuard.notNullOrEmpty(appIdOrName, "appIdOrName");
         ArgumentGuard.notNullOrEmpty(scenarioIdOrName, "scenarioIdOrName");
@@ -46,6 +50,7 @@ class SessionStartInfo {
         this._defaultMatchSettings = defaultMatchSettings;
         this._branchName = branchName;
         this._parentBranchName = parentBranchName;
+        this._baselineBranchName = baselineBranchName;
         this._compareWithParentBranch = compareWithParentBranch;
         this._ignoreBaseline = ignoreBaseline;
         this._properties = properties;
@@ -125,6 +130,12 @@ class SessionStartInfo {
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /** @return {String} */
+    getBaselineBranchName() {
+        return this._baselineBranchName;
+    }
+
+    // noinspection JSUnusedGlobalSymbols
     /** @return {Boolean} */
     getCompareWithParentBranch() {
         return this._compareWithParentBranch;
@@ -148,25 +159,9 @@ class SessionStartInfo {
         return this._render;
     }
 
+    /** @override */
     toJSON() {
-        return {
-            agentId: this._agentId,
-            sessionType: this._sessionType,
-            appIdOrName: this._appIdOrName,
-            verId: this._verId,
-            scenarioIdOrName: this._scenarioIdOrName,
-            batchInfo: this._batchInfo,
-            baselineEnvName: this._baselineEnvName,
-            environmentName: this._environmentName,
-            environment: this._environment,
-            defaultMatchSettings: this._defaultMatchSettings,
-            branchName: this._branchName,
-            parentBranchName: this._parentBranchName,
-            compareWithParentBranch: this._compareWithParentBranch,
-            ignoreBaseline: this._ignoreBaseline,
-            properties: this._properties,
-            render: this._render
-        };
+        return GeneralUtils.toPlain(this);
     }
 
     /** @override */

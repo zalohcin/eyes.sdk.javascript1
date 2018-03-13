@@ -11,7 +11,7 @@ const {Eyes, Target} = require('../../index'); // should be replaced to '@applit
 
     // Initialize the eyes SDK and set your private API key.
     const eyes = new Eyes();
-    eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
+    // eyes.setApiKey('Your API Key');
     eyes.setLogHandler(new ConsoleLogHandler(false));
 
     try {

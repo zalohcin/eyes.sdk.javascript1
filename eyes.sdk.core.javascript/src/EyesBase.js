@@ -158,6 +158,7 @@ class EyesBase {
         /** @type {String} */ this._environmentName = undefined;
         /** @type {String} */ this._branchName = undefined;
         /** @type {String} */ this._parentBranchName = undefined;
+        /** @type {String} */ this._baselineBranchName = undefined;
 
         /**
          * Will be set for separately for each test.
@@ -225,6 +226,8 @@ class EyesBase {
      * @param apiKey {String} The api key to be used.
      */
     setApiKey(apiKey) {
+        ArgumentGuard.notNull(apiKey, "apiKey");
+        ArgumentGuard.alphanumeric(apiKey, "apiKey");
         this._serverConnector.setApiKey(apiKey);
     }
 
@@ -365,7 +368,7 @@ class EyesBase {
      * @return {String} The current branch name.
      */
     getBranchName() {
-        return this._branchName;
+        return this._branchName || process.env.APPLITOOLS_BRANCH;
     }
 
     //noinspection JSUnusedGlobalSymbols
@@ -383,7 +386,25 @@ class EyesBase {
      * @return {String} The name of the current parent branch under which new branches will be created.
      */
     getParentBranchName() {
-        return this._parentBranchName;
+        return this._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH;
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Sets the baseline branch under which new branches are created.
+     *
+     * @param baselineBranchName {String} Branch name or {@code null} to specify the default branch.
+     */
+    setBaselineBranchName(baselineBranchName) {
+        this._baselineBranchName = baselineBranchName;
+    }
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * @return {String} The name of the baseline branch
+     */
+    getBaselineBranchName() {
+        return this._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH;
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -488,7 +509,7 @@ class EyesBase {
             return;
         }
 
-        if (arg1 instanceof BatchInfo) {
+        if (arguments.length === 1) {
             this._batch = arg1;
         } else {
             this._batch = new BatchInfo(arg1, batchDate, batchId);
@@ -1239,7 +1260,7 @@ class EyesBase {
                 that.getBatch(),
                 that._baselineEnvName, that._environmentName, appEnvironment,
                 that._defaultMatchSettings,
-                that._branchName, that._parentBranchName, that._compareWithParentBranch,
+                that.getBranchName(), that.getParentBranchName(), that.getBaselineBranchName(), that._compareWithParentBranch,
                 that._ignoreBaseline, that._properties,
                 that._render
             );
@@ -1719,8 +1740,7 @@ class EyesBase {
 
         const that = this;
         that._logger.verbose(`Batch is ${that._batch}`);
-        let testBatch = that.getBatch(), appEnvironment;
-
+        let appEnvironment;
         return that.getAUTSessionId().then(autSessionId => {
             that._autSessionId = autSessionId;
         }).then(() => {
@@ -1750,10 +1770,10 @@ class EyesBase {
                 that.getBaseAgentId(),
                 that._sessionType,
                 that.getAppName(), null, that._testName,
-                testBatch,
+                that.getBatch(),
                 that._baselineEnvName, that._environmentName, appEnvironment,
                 that._defaultMatchSettings,
-                that._branchName, that._parentBranchName, that._compareWithParentBranch,
+                that.getBranchName(), that.getParentBranchName(), that.getBaselineBranchName(), that._compareWithParentBranch,
                 that._ignoreBaseline, that._properties,
                 that._render
             );
