@@ -6,12 +6,11 @@
  * @interface
  */
 class EyesScreenshotFactory {
-
-    /**
-     * @param {MutableImage} image
-     * @return {Promise.<EyesScreenshot>}
-     */
-    makeScreenshot(image) {}
+  /**
+   * @param {MutableImage} image
+   * @return {Promise.<EyesScreenshot>}
+   */
+  makeScreenshot(image) {}
 }
 
 module.exports = EyesScreenshotFactory;

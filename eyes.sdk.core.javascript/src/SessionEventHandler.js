@@ -6,132 +6,127 @@ const GeneralUtils = require('./utils/GeneralUtils');
  * Encapsulates the information for the validation about to execute.
  */
 class ValidationInfo {
+  constructor() {
+    this._validationId = null;
+    this._tag = null;
+  }
 
-    constructor() {
-        this._validationId = null;
-        this._tag = null;
-    }
+  setValidationId(value) {
+    this._validationId = value;
+  }
 
-    setValidationId(value) {
-        this._validationId = value;
-    }
+  getValidationId() {
+    return this._validationId;
+  }
 
-    getValidationId() {
-        return this._validationId;
-    }
+  setTag(value) {
+    this._tag = value;
+  }
 
-    setTag(value) {
-        this._tag = value;
-    }
+  // noinspection JSUnusedGlobalSymbols
+  getTag() {
+    return this._tag;
+  }
 
-    getTag() {
-        return this._tag;
-    }
-
-    //noinspection JSUnusedGlobalSymbols
-    toObject() {
-        return {
-            validationId: this._validationId,
-            tag: this._tag
-        };
-    }
+  // noinspection JSUnusedGlobalSymbols
+  toObject() {
+    return {
+      validationId: this._validationId,
+      tag: this._tag,
+    };
+  }
 }
-
-GeneralUtils.defineStandardProperty(ValidationInfo.prototype, "validationId");
-GeneralUtils.defineStandardProperty(ValidationInfo.prototype, "tag");
 
 /**
  * Encapsulates the information for the validation about to execute.
  */
 class ValidationResult {
-    constructor() {
-        this._asExpected = null;
-    }
+  constructor() {
+    this._asExpected = null;
+  }
 
-    setAsExpected(value) {
-        this._asExpected = value;
-    }
+  setAsExpected(value) {
+    this._asExpected = value;
+  }
 
-    getAsExpected() {
-        return this._asExpected;
-    }
+  getAsExpected() {
+    return this._asExpected;
+  }
 }
 
-GeneralUtils.defineStandardProperty(ValidationResult.prototype, "asExpected");
-
-//noinspection JSLint
 /**
- * The base object for session event handler. Specific implementations should use this object as prototype (via
- * the factory method).
+ * The base class for session event handler. Specific implementations should use this class as abstract.
  *
- * @type {{testStarted: _baseSessionEventHandler.testStarted, testEnded: _baseSessionEventHandler.testEnded, validationWillStart: _baseSessionEventHandler.validationWillStart, validationEnded: _baseSessionEventHandler.validationEnded}}
- * @private
+ * @abstract
  */
-const _baseSessionEventHandler = {
-    /**
-     * Called when the data gathering for creating a session phase had started.
-     *
-     */
-    initStarted() {},
+class SessionEventHandler {
+  constructor() {
+    this._promiseFactory = undefined;
+  }
 
-    /**
-     * Called when the data garthering phase had ended.
-     *
-     */
-    initEnded() {},
+  setPromiseFactory(value) {
+    this._promiseFactory = value;
+  }
 
-    /**
-     * Called when setting the size of the appolication window is about to start.
-     *
-     * @param sizeToSet {Object} an object with 'width' and 'height' properties.
-     */
-    setSizeWillStart(sizeToSet) {},
+  getPromiseFactory() {
+    return this._promiseFactory;
+  }
 
-    /**
-     * Called 'set size' operation has ended (either failed/success).
-     *
-     */
-    setSizeEnded() {},
+  /**
+   * Called when the data gathering for creating a session phase had started.
+   */
+  initStarted() {}
 
-    /**
-     * Called after a session had started.
-     *
-     * @param autSessionId {String} The AUT session ID.
-     */
-    testStarted(autSessionId) {},
+  /**
+   * Called when the data garthering phase had ended.
+   */
+  initEnded() {}
 
-    /**
-     * Called after a session had ended.
-     *
-     * @param autSessionId {String} The AUT session ID.
-     * @param testResults {Object} The test results.
-     */
-    testEnded(autSessionId, testResults) {},
+  /**
+   * Called when setting the size of the appolication window is about to start.
+   *
+   * @param sizeToSet {Object} an object with 'width' and 'height' properties.
+   */
+  setSizeWillStart(sizeToSet) {}
 
-    /**
-     * Called before a new validation will be started.
-     *
-     * @param autSessionId {String} The AUT session ID.
-     * @param validationInfo {ValidationInfo} The validation parameters.
-     */
-    validationWillStart(autSessionId, validationInfo) {},
+  /**
+   * Called 'set size' operation has ended (either failed/success).
+   */
+  setSizeEnded() {}
 
-    /**
-     * Called when a validation had ended.
-     *
-     * @param autSessionId {String} The AUT session ID.
-     * @param validationId {String} The ID of the validation which had ended.
-     * @param validationResult {ValidationResult} The validation results.
-     */
-    validationEnded(autSessionId, validationId, validationResult) {}
-};
+  /**
+   * Called after a session had started.
+   *
+   * @param autSessionId {String} The AUT session ID.
+   */
+  testStarted(autSessionId) {}
 
-// get/set promiseFactory
-GeneralUtils.defineStandardProperty(_baseSessionEventHandler, "promiseFactory");
+  /**
+   * Called after a session had ended.
+   *
+   * @param autSessionId {String} The AUT session ID.
+   * @param testResults {Object} The test results.
+   */
+  testEnded(autSessionId, testResults) {}
 
-// Factory
-const createSessionEventHandler = () => Object.create(_baseSessionEventHandler);
+  /**
+   * Called before a new validation will be started.
+   *
+   * @param autSessionId {String} The AUT session ID.
+   * @param validationInfo {ValidationInfo} The validation parameters.
+   */
+  validationWillStart(autSessionId, validationInfo) {}
 
-module.exports.ValidationInfo = ValidationInfo;
-module.exports.ValidationResult = ValidationResult;
-module.exports.createSessionEventHandler = createSessionEventHandler;
+  /**
+   * Called when a validation had ended.
+   *
+   * @param autSessionId {String} The AUT session ID.
+   * @param validationId {String} The ID of the validation which had ended.
+   * @param validationResult {ValidationResult} The validation results.
+   */
+  validationEnded(autSessionId, validationId, validationResult) {}
+}
+
+SessionEventHandler.ValidationInfo = ValidationInfo;
+SessionEventHandler.ValidationResult = ValidationResult;
+module.exports = SessionEventHandler;

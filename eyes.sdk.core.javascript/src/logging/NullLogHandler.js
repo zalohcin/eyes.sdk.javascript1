@@ -6,11 +6,11 @@ const LogHandler = require('./LogHandler');
  * Ignores all log messages.
  */
 class NullLogHandler extends LogHandler {
-    open() {}
+  open() {}
 
-    close() {}
+  close() {}
 
-    onMessage(verbose, logString) {}
+  onMessage(verbose, logString) {}
 }
 
 module.exports = NullLogHandler;

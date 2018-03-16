@@ -3,21 +3,20 @@
 const CheckSettings = require('./CheckSettings');
 
 class CheckTarget {
+  /**
+   * @return {CheckSettings}
+   */
+  static window() {
+    return new CheckSettings();
+  }
 
-    /**
-     * @return {CheckSettings}
-     */
-    static window() {
-        return new CheckSettings();
-    }
-
-    /**
-     * @param {Region|RegionObject} rect
-     * @return {CheckSettings}
-     */
-    static region(rect) {
-        return new CheckSettings(undefined, rect);
-    }
+  /**
+   * @param {Region|RegionObject} rect
+   * @return {CheckSettings}
+   */
+  static region(rect) {
+    return new CheckSettings(undefined, rect);
+  }
 }
 
 module.exports = CheckTarget;

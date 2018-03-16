@@ -6,11 +6,10 @@
  * @interface
  */
 class ImageProvider {
-
-    /**
-     * @return {Promise.<MutableImage>}
-     */
-    getImage() {}
+  /**
+   * @return {Promise.<MutableImage>}
+   */
+  getImage() {}
 }
 
 module.exports = ImageProvider;

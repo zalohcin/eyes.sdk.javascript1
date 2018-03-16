@@ -7,15 +7,15 @@
  * @enum {Number}
  */
 const SessionType = {
-    /**
-     * Default type of sessions.
-     */
-    SEQUENTIAL: 'SEQUENTIAL',
+  /**
+   * Default type of sessions.
+   */
+  SEQUENTIAL: 'SEQUENTIAL',
 
-    /**
-     * A timing test session
-     */
-    PROGRESSION: 'PROGRESSION'
+  /**
+   * A timing test session
+   */
+  PROGRESSION: 'PROGRESSION',
 };
 
 Object.freeze(SessionType);

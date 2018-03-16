@@ -7,7 +7,7 @@
 const TestResultsStatus = {
   Passed: 'Passed',
   Unresolved: 'Unresolved',
-  Failed: 'Failed'
+  Failed: 'Failed',
 };
 
 Object.freeze(TestResultsStatus);

@@ -1,10 +1,16 @@
 'use strict';
 
-class OSNames {}
-OSNames.Unknown = 'Unknown';
-OSNames.Windows = 'Windows';
-OSNames.IOS = 'IOS';
-OSNames.Macintosh = 'Macintosh';
-OSNames.ChromeOS = 'ChromeOS';
+/**
+ * @readonly
+ * @enum {String}
+ */
+const OSNames = {
+  Unknown: 'Unknown',
+  Windows: 'Windows',
+  IOS: 'IOS',
+  Macintosh: 'Macintosh',
+  ChromeOS: 'ChromeOS',
+};
 
+Object.freeze(OSNames);
 module.exports = OSNames;

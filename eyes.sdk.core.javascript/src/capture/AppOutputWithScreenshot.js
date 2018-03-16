@@ -5,29 +5,28 @@
  * (We specifically avoid inheritance so we don't have to deal with serialization issues).
  */
 class AppOutputWithScreenshot {
+  /**
+   * @param {AppOutput} appOutput
+   * @param {EyesScreenshot} screenshot
+   */
+  constructor(appOutput, screenshot) {
+    this._appOutput = appOutput;
+    this._screenshot = screenshot;
+  }
 
-    /**
-     * @param {AppOutput} appOutput
-     * @param {EyesScreenshot} screenshot
-     */
-    constructor(appOutput, screenshot) {
-        this._appOutput = appOutput;
-        this._screenshot = screenshot;
-    }
+  /**
+   * @return {AppOutput}
+   */
+  getAppOutput() {
+    return this._appOutput;
+  }
 
-    /**
-     * @return {AppOutput}
-     */
-    getAppOutput() {
-        return this._appOutput;
-    }
-
-    /**
-     * @return {EyesScreenshot}
-     */
-    getScreenshot() {
-        return this._screenshot;
-    }
+  /**
+   * @return {EyesScreenshot}
+   */
+  getScreenshot() {
+    return this._screenshot;
+  }
 }
 
 module.exports = AppOutputWithScreenshot;

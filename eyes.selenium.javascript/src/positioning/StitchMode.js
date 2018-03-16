@@ -7,15 +7,15 @@
  * @enum {Number}
  */
 const StitchMode = {
-    /**
-     * Standard JS scrolling.
-     */
-    SCROLL: 'Scroll',
+  /**
+   * Standard JS scrolling.
+   */
+  SCROLL: 'Scroll',
 
-    /**
-     * CSS translation based stitching.
-     */
-    CSS: 'CSS'
+  /**
+   * CSS translation based stitching.
+   */
+  CSS: 'CSS',
 };
 
 Object.freeze(StitchMode);

@@ -1,34 +1,33 @@
 'use strict';
 
-const {PositionMemento, Location} = require('@applitools/eyes.sdk.core');
+const { PositionMemento, Location } = require('@applitools/eyes.sdk.core');
 
 /**
  * Encapsulates state for {@link ElementPositionProvider} instances.
  */
 class ElementPositionMemento extends PositionMemento {
+  /**
+   * @param {Location} position The current location to be saved.
+   */
+  constructor(position) {
+    super();
 
-    /**
-     * @param {Location} position The current location to be saved.
-     */
-    constructor(position) {
-        super();
+    this._position = new Location(position);
+  }
 
-        this._position = new Location(position);
-    }
+  /**
+   * @return {int}
+   */
+  getX() {
+    return this._position.getX();
+  }
 
-    /**
-     * @return {int}
-     */
-    getX() {
-        return this._position.getX();
-    }
-
-    /**
-     * @return {int}
-     */
-    getY() {
-        return this._position.getY();
-    }
+  /**
+   * @return {int}
+   */
+  getY() {
+    return this._position.getY();
+  }
 }
 
 module.exports = ElementPositionMemento;
