@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const ProxySettings = require('../src/server/ProxySettings');
+const ProxySettings = require('../lib/server/ProxySettings');
 
 describe('ProxySettings', () => {
   it('should parse url with host and port', () => {

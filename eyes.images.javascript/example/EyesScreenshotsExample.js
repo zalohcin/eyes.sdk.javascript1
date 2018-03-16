@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
-const { ConsoleLogHandler, RectangleSize } = require('@applitools/eyes.sdk.core');
-const { Eyes, Target } = require('../../index'); // should be replaced to '@applitools/eyes.images'
+const { ConsoleLogHandler, RectangleSize } = require('../../eyes.sdk.core.javascript/index');
+const { Eyes, Target } = require('../index'); // should be replaced to '@applitools/eyes.images'
 
 (async () => {
   // Initialize the eyes SDK and set your private API key.

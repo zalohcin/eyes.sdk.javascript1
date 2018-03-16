@@ -1,5 +1,5 @@
-exports.Eyes = require('./src/Eyes');
-exports.AppiumImageOrientationHandler = require('./src/AppiumImageOrientationHandler');
-exports.AppiumJavascriptHandler = require('./src/AppiumJavascriptHandler');
-exports.AppiumJsCommandExtractor = require('./src/AppiumJsCommandExtractor');
-exports.EyesAppiumUtils = require('./src/EyesAppiumUtils');
+exports.Eyes = require('./lib/Eyes');
+exports.AppiumImageOrientationHandler = require('./lib/AppiumImageOrientationHandler');
+exports.AppiumJavascriptHandler = require('./lib/AppiumJavascriptHandler');
+exports.AppiumJsCommandExtractor = require('./lib/AppiumJsCommandExtractor');
+exports.EyesAppiumUtils = require('./lib/EyesAppiumUtils');

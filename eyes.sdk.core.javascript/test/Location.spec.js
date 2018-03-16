@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const Location = require('../src/geometry/Location');
+const Location = require('../lib/geometry/Location');
 
 describe('Location', () => {
   const top = 1;

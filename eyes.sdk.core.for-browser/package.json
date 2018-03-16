@@ -27,8 +27,8 @@
     "uglify-es": "^3.3.9"
   },
   "scripts": {
-    "browserify": "browserify eyes-sdk-core-loader.js > eyes-sdk-core.dist.js",
-    "uglify": "uglifyjs eyes-sdk-core.dist.js > eyes-sdk-core.dist.min.js",
+    "browserify": "browserify index.js > dist/eyes-sdk-core.browser.js",
+    "uglify": "uglifyjs dist/eyes-sdk-core.browser.js > dist/eyes-sdk-core.browser.min.js",
     "build": "npm run browserify && npm run uglify"
   },
   "engines": {

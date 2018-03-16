@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const PromiseFactory = require('../src/PromiseFactory');
+const PromiseFactory = require('../lib/PromiseFactory');
 
 // construct
 const promiseFactory = new PromiseFactory(asyncAction => new Promise(asyncAction), null);

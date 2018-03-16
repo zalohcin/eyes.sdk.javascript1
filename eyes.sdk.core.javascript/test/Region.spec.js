@@ -2,9 +2,9 @@
 
 const assert = require('assert');
 
-const RectangleSize = require('../src/geometry/RectangleSize');
-const Location = require('../src/geometry/Location');
-const Region = require('../src/geometry/Region');
+const RectangleSize = require('../lib/geometry/RectangleSize');
+const Location = require('../lib/geometry/Location');
+const Region = require('../lib/geometry/Region');
 
 describe('Region', () => {
   const top = 1;
