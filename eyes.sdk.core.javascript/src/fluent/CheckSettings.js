@@ -146,9 +146,7 @@ class CheckSettings {
      * @return {CheckSettings} This instance of the settings object.
      */
     timeout(timeoutMilliseconds) {
-        if (timeoutMilliseconds && Number.isInteger(timeoutMilliseconds)) {
-            this._timeout = timeoutMilliseconds;
-        }
+        this._timeout = timeoutMilliseconds;
         return this;
     }
 

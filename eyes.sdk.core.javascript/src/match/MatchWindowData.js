@@ -110,6 +110,7 @@ class MatchWindowData {
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /** @return {AppOutput} */
     getAppOutput() {
         return this._appOutput;
     }
@@ -125,6 +126,7 @@ class MatchWindowData {
     }
 
     // noinspection JSUnusedGlobalSymbols
+    /** @return {Options} */
     getOptions() {
         return this._options;
     }
