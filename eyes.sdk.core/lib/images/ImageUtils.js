@@ -15,7 +15,7 @@ class ImageUtils {
    *
    * @param {Buffer} buffer Original image as PNG Buffer
    * @param {PromiseFactory} promiseFactory
-   * @return {Promise.<png.Image>} Decoded png image with byte buffer
+   * @return {Promise.<png.Image|Image>} Decoded png image with byte buffer
    */
   static parseImage(buffer, promiseFactory) {
     return promiseFactory.makePromise(resolve => {
@@ -34,7 +34,7 @@ class ImageUtils {
   /**
    * Repacks a parsed Image to a PNG buffer.
    *
-   * @param {png.Image} image Parsed image as returned from parseImage
+   * @param {png.Image|Image} image Parsed image as returned from parseImage
    * @param {PromiseFactory} promiseFactory
    * @return {Promise.<Buffer>} PNG buffer which can be written to file or base64 string
    */
@@ -56,7 +56,7 @@ class ImageUtils {
    *
    * @param width
    * @param height
-   * @return {png.Image}
+   * @return {png.Image|Image}
    */
   static createImage(width, height) {
     // noinspection JSValidateTypes
@@ -66,7 +66,7 @@ class ImageUtils {
   /**
    * Scaled a parsed image by a given factor.
    *
-   * @param {png.Image} image - will be modified
+   * @param {png.Image|Image} image - will be modified
    * @param {Number} scaleRatio factor to multiply the image dimensions by (lower than 1 for scale down)
    * @param {PromiseFactory} promiseFactory
    * @return {Promise}
@@ -87,7 +87,7 @@ class ImageUtils {
   /**
    * Resize a parsed image by a given dimensions.
    *
-   * @param {png.Image} image - will be modified
+   * @param {png.Image|Image} image - will be modified
    * @param {int} targetWidth The width to resize the image to
    * @param {int} targetHeight The height to resize the image to
    * @param {PromiseFactory} promiseFactory
@@ -304,10 +304,10 @@ class ImageUtils {
   /**
    * Crops a parsed image - the image is changed
    *
-   * @param {png.Image} image
+   * @param {png.Image|Image} image
    * @param {Region} region Region to crop
    * @param {PromiseFactory} promiseFactory
-   * @return {Promise.<png.Image>}
+   * @return {Promise.<png.Image|Image>}
    */
   static cropImage(image, region, promiseFactory) {
     return promiseFactory.makePromise((resolve, reject) => {
@@ -350,44 +350,34 @@ class ImageUtils {
   }
 
   /**
-   * Rotates a parsed image - the image is changed
+   * Rotates an image clockwise by a number of degrees rounded to the nearest 90 degrees.
    *
-   * @param {png.Image} image
-   * @param {Number} deg how many degrees to rotate (in actuality it's only by multipliers of 90)
+   * @param {png.Image|Image} image A parsed image, the image will be changed
+   * @param {int} degrees The number of degrees to rotate the image by
    * @param {PromiseFactory} promiseFactory
-   * @return {Promise.<png.Image>}
+   * @return {Promise.<png.Image|Image>}
    */
-  static rotateImage(image, deg, promiseFactory) {
-    ArgumentGuard.notNull(image, 'image');
-    ArgumentGuard.isInteger(deg, 'deg');
-
-    // TODO: refactor it
+  static rotateImage(image, degrees, promiseFactory) {
     return promiseFactory.makePromise(resolve => {
-      // noinspection MagicNumberJS
-      if (deg % 360 === 0) {
-        return resolve(image);
-      }
+      ArgumentGuard.notNull(image, 'image');
+      ArgumentGuard.isInteger(degrees, 'deg');
 
-      // noinspection MagicNumberJS
-      let i = Math.round(deg / 90) % 4;
-      if (i < 0) {
-        i += 4;
-      }
+      let i = Math.round(degrees / 90) % 4;
+      while (i < 0) { i += 4; }
 
       while (i > 0) {
-        const buffer = Buffer.alloc(image.data.length);
-        let offset = 0;
+        const dstBuffer = Buffer.alloc(image.data.length);
+        let dstOffset = 0;
         for (let x = 0; x < image.width; x += 1) {
           for (let y = image.height - 1; y >= 0; y -= 1) {
-            const idx = ((image.width * y) + x) * 4;
-            // TODO: remove buffers `noAssert` argument
-            const data = image.data.readUInt32BE(idx, true);
-            buffer.writeUInt32BE(data, offset, true);
-            offset += 4;
+            const srcOffset = ((image.width * y) + x) * 4;
+            const data = image.data.readUInt32BE(srcOffset);
+            dstBuffer.writeUInt32BE(data, dstOffset);
+            dstOffset += 4;
           }
         }
 
-        image.data = Buffer.from(buffer);
+        image.data = Buffer.from(dstBuffer);
         const tmp = image.width;
         // noinspection JSSuspiciousNameCombination
         image.width = image.height;
@@ -403,9 +393,9 @@ class ImageUtils {
   /**
    * Copies pixels from the source image to the destination image.
    *
-   * @param {png.Image} dstImage The destination image.
+   * @param {png.Image|Image} dstImage The destination image.
    * @param {{x: number, y: number}} dstPosition The pixel which is the starting point to copy to.
-   * @param {png.Image} srcImage The source image.
+   * @param {png.Image|Image} srcImage The source image.
    * @param {{x: number, y: number}} srcPosition The pixel from which to start copying.
    * @param {{width: number, height: number}} size The region to be copied.
    * @return {void}

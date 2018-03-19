@@ -81,7 +81,7 @@ class MutableImage {
     this._promiseFactory = promiseFactory;
     /** @type {boolean} */
     this._isParsed = false;
-    /** @type {png.Image} */
+    /** @type {png.Image|Image} */
     this._imageBmp = undefined;
     /** @type {int} */
     this._width = 0;
@@ -247,15 +247,15 @@ class MutableImage {
   }
 
   /**
-   * Rotates the image according to the given degrees.
+   * Rotates an image clockwise by a number of degrees rounded to the nearest 90 degrees.
    *
-   * @param {Number} degrees
+   * @param {Number} degrees The number of degrees to rotate the image by
    * @return {Promise.<MutableImage>}
    */
   rotate(degrees) {
     const that = this;
     // noinspection MagicNumberJS
-    if (degrees === 0 || degrees === 360) {
+    if (degrees % 360 === 0) {
       return that._promiseFactory.resolve(that);
     }
 
@@ -330,7 +330,7 @@ class MutableImage {
   }
 
   /**
-   * @return {?Promise.<png.Image>}
+   * @return {?Promise.<png.Image|Image>}
    */
   getImageData() {
     const that = this;
