@@ -123,6 +123,9 @@
             that.setStitchMode(that._stitchMode);
             Reporter.endReportingContext();
             return that._driver;
+        }, function (err) {
+            Reporter.endReportingContext();
+            throw err;
         });
     };
 
@@ -133,7 +136,7 @@
    * @returns {*} The test results.
    */
     Eyes.prototype.close = function (throwEx) {
-        throwEx = throwEx || true;
+        throwEx = throwEx !== undefined ? throwEx : true;
 
         if (this._isDisabled) {
             return this._promiseFactory.resolve();
