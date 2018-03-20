@@ -62,6 +62,17 @@ describe('UserAgent', () => {
       assert.equal(userAgent.getBrowserMinorVersion(), '0');
     });
 
+    it('should return Edge as browser, Windows as OS', () => {
+      const uaString = 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136';
+      const userAgent = UserAgent.parseUserAgentString(uaString, true);
+      assert.equal(userAgent.getOS(), 'Windows');
+      assert.equal(userAgent.getOSMajorVersion(), '10');
+      assert.equal(userAgent.getOSMinorVersion(), '0');
+      assert.equal(userAgent.getBrowser(), 'Edge');
+      assert.equal(userAgent.getBrowserMajorVersion(), '12');
+      assert.equal(userAgent.getBrowserMinorVersion(), '10136');
+    });
+
     it('should return IE as browser, Windows as OS', () => {
       const uaString = 'Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0)';
       const userAgent = UserAgent.parseUserAgentString(uaString, true);

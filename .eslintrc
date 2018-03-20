@@ -28,6 +28,7 @@
     "no-unused-vars": ["warn"],
     "no-param-reassign": ["warn"],
     "global-require": ["warn"],
+    "prefer-destructuring": ["warn"],
     "prefer-arrow-callback": ["warn", {"allowUnboundThis": false}],
     "object-curly-newline": ["off"],
     "no-underscore-dangle": ["off"],
