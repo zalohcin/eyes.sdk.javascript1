@@ -147,7 +147,7 @@ class UserAgent {
 
         if (result._OS === OSNames.Windows) {
             if (EDGE_REGEX.test(userAgent)) {
-                const edgeMatch = browserRegexes[i].exec(userAgent);
+                const edgeMatch = EDGE_REGEX.exec(userAgent);
                 result._browser = BrowserNames.Edge;
                 result._browserMajorVersion = edgeMatch[2];
                 result._browserMinorVersion = edgeMatch[3];
