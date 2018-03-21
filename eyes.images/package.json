@@ -1,0 +1,48 @@
+{
+  "name": "@applitools/eyes.images",
+  "version": "1.0.0",
+  "description": "Applitools Eyes SDK for working directly with images",
+  "keywords": [
+    "eyes.images",
+    "applitools",
+    "eyes",
+    "test automation",
+    "visual regression",
+    "automation",
+    "testing",
+    "tests"
+  ],
+  "homepage": "https://applitools.com/",
+  "author": {
+    "name": "Applitools Team",
+    "email": "team@applitools.com",
+    "url": "http://www.applitools.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
+  },
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
+  },
+  "directories": {
+    "example": "./example",
+    "lib": "./lib",
+    "test": "./test"
+  },
+  "main": "./index.js",
+  "dependencies": {
+    "@applitools/eyes.sdk.core": "~1.4.2"
+  },
+  "devDependencies": {
+    "mocha": "^5.0.4",
+    "node-fetch": "^2.1.1"
+  },
+  "scripts": {
+    "test": "mocha ./test/**/*.spec.js -t 900000"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": {
+    "node": ">= 6.9.0"
+  }
+}

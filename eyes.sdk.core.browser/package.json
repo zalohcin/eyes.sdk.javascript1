@@ -1,0 +1,50 @@
+{
+  "name": "@applitools/eyes.sdk.core.browser",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Applitools Eyes SDK for browser",
+  "keywords": [
+    "eyes.sdk.core",
+    "applitools",
+    "eyes",
+    "test automation",
+    "visual regression",
+    "automation",
+    "testing",
+    "tests",
+    "sdk"
+  ],
+  "homepage": "https://applitools.com/",
+  "author": {
+    "name": "Applitools Team",
+    "email": "team@applitools.com",
+    "url": "http://www.applitools.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
+  },
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
+  },
+  "directories": {
+    "dist": "./dist"
+  },
+  "main": "./index.js",
+  "dependencies": {
+    "@applitools/eyes.sdk.core": "~1.4.2"
+  },
+  "devDependencies": {
+    "browserify": "^16.1.1",
+    "uglify-es": "^3.3.9"
+  },
+  "scripts": {
+    "browserify": "browserify index.js > dist/eyes-sdk-core.browser.js",
+    "uglify": "uglifyjs dist/eyes-sdk-core.browser.js > dist/eyes-sdk-core.browser.min.js",
+    "build": "npm run browserify && npm run uglify"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": {
+    "node": ">= 6.9.0"
+  }
+}
