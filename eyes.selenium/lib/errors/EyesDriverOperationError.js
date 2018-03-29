@@ -7,4 +7,4 @@ const { EyesError } = require('@applitools/eyes.sdk.core');
  */
 class EyesDriverOperationError extends EyesError {}
 
-module.exports = EyesDriverOperationError;
+exports.EyesDriverOperationError = EyesDriverOperationError;

@@ -1,13 +1,13 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
-const Region = require('../geometry/Region');
-const RectangleSize = require('../geometry/RectangleSize');
-const Location = require('../geometry/Location');
-const CoordinatesType = require('../geometry/CoordinatesType');
-const OutOfBoundsError = require('../errors/OutOfBoundsError');
-const CoordinatesTypeConversionError = require('../errors/CoordinatesTypeConversionError');
-const EyesScreenshot = require('./EyesScreenshot');
+const { ArgumentGuard } = require('../ArgumentGuard');
+const { Region } = require('../geometry/Region');
+const { RectangleSize } = require('../geometry/RectangleSize');
+const { Location } = require('../geometry/Location');
+const { CoordinatesType } = require('../geometry/CoordinatesType');
+const { OutOfBoundsError } = require('../errors/OutOfBoundsError');
+const { CoordinatesTypeConversionError } = require('../errors/CoordinatesTypeConversionError');
+const { EyesScreenshot } = require('./EyesScreenshot');
 
 /**
  * Encapsulates a screenshot taken by the images SDK.
@@ -165,4 +165,4 @@ class EyesSimpleScreenshot extends EyesScreenshot {
   }
 }
 
-module.exports = EyesSimpleScreenshot;
+exports.EyesSimpleScreenshot = EyesSimpleScreenshot;

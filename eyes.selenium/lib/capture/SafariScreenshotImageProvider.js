@@ -2,8 +2,8 @@
 
 const { ImageProvider, MutableImage, Region, OSNames } = require('@applitools/eyes.sdk.core');
 
-const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
-const SeleniumJavaScriptExecutor = require('../SeleniumJavaScriptExecutor');
+const { ScrollPositionProvider } = require('../positioning/ScrollPositionProvider');
+const { SeleniumJavaScriptExecutor } = require('../SeleniumJavaScriptExecutor');
 
 class SafariScreenshotImageProvider extends ImageProvider {
   /**
@@ -73,4 +73,4 @@ class SafariScreenshotImageProvider extends ImageProvider {
   }
 }
 
-module.exports = SafariScreenshotImageProvider;
+exports.SafariScreenshotImageProvider = SafariScreenshotImageProvider;

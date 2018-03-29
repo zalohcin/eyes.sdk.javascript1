@@ -2,16 +2,16 @@
 
 const axios = require('axios');
 
-const ProxySettings = require('./ProxySettings');
-const RunningSession = require('./RunningSession');
-const TestResults = require('../TestResults');
-const MatchResult = require('../match/MatchResult');
-const GeneralUtils = require('../utils/GeneralUtils');
-const ArgumentGuard = require('../ArgumentGuard');
+const { ProxySettings } = require('./ProxySettings');
+const { RunningSession } = require('./RunningSession');
+const { TestResults } = require('../TestResults');
+const { MatchResult } = require('../match/MatchResult');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ArgumentGuard } = require('../ArgumentGuard');
 
-const RenderingInfo = require('../renderer/RenderingInfo');
-const RunningRender = require('../renderer/RunningRender');
-const RenderStatusResults = require('../renderer/RenderStatusResults');
+const { RenderingInfo } = require('../renderer/RenderingInfo');
+const { RunningRender } = require('../renderer/RunningRender');
+const { RenderStatusResults } = require('../renderer/RenderStatusResults');
 
 // Constants
 const DEFAULT_TIMEOUT_MS = 300000; // 5 min
@@ -700,4 +700,4 @@ class ServerConnector {
   }
 }
 
-module.exports = ServerConnector;
+exports.ServerConnector = ServerConnector;

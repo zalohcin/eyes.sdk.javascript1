@@ -37,4 +37,4 @@ class Eyes extends EyesSelenium {
   }
 }
 
-module.exports = Eyes;
+exports.Eyes = Eyes;

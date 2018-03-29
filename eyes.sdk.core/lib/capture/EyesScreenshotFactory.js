@@ -13,4 +13,4 @@ class EyesScreenshotFactory {
   makeScreenshot(image) {}
 }
 
-module.exports = EyesScreenshotFactory;
+exports.EyesScreenshotFactory = EyesScreenshotFactory;

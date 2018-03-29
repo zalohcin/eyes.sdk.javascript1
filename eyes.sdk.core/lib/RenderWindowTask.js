@@ -1,9 +1,9 @@
 'use strict';
 
-const ArgumentGuard = require('./ArgumentGuard');
-const GeneralUtils = require('./utils/GeneralUtils');
-const RenderStatus = require('./renderer/RenderStatus');
-const RenderRequest = require('./renderer/RenderRequest');
+const { ArgumentGuard } = require('./ArgumentGuard');
+const { GeneralUtils } = require('./utils/GeneralUtils');
+const { RenderStatus } = require('./renderer/RenderStatus');
+const { RenderRequest } = require('./renderer/RenderRequest');
 
 const GET_STATUS_INTERVAL = 500; // Milliseconds
 
@@ -106,4 +106,4 @@ class RenderWindowTask {
   }
 }
 
-module.exports = RenderWindowTask;
+exports.RenderWindowTask = RenderWindowTask;

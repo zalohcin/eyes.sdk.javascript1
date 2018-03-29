@@ -1,6 +1,6 @@
 'use strict';
 
-const PositionProvider = require('./PositionProvider');
+const { PositionProvider } = require('./PositionProvider');
 
 /**
  * An implementation of {@link PositionProvider} which throws an exception for every method. Can be used as a
@@ -53,4 +53,4 @@ class InvalidPositionProvider extends PositionProvider {
   }
 }
 
-module.exports = InvalidPositionProvider;
+exports.InvalidPositionProvider = InvalidPositionProvider;

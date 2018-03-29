@@ -2,7 +2,7 @@
 
 const { Location } = require('@applitools/eyes.sdk.core');
 
-const RegionVisibilityStrategy = require('./RegionVisibilityStrategy');
+const { RegionVisibilityStrategy } = require('./RegionVisibilityStrategy');
 
 const VISIBILITY_OFFSET = 100; // Pixels
 
@@ -61,4 +61,4 @@ class MoveToRegionVisibilityStrategy extends RegionVisibilityStrategy {
   }
 }
 
-module.exports = MoveToRegionVisibilityStrategy;
+exports.MoveToRegionVisibilityStrategy = MoveToRegionVisibilityStrategy;

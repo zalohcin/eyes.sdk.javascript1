@@ -2,8 +2,8 @@
 
 const { PositionProvider, ArgumentGuard } = require('@applitools/eyes.sdk.core');
 
-const EyesSeleniumUtils = require('../EyesSeleniumUtils');
-const CssTranslatePositionMemento = require('./CssTranslatePositionMemento');
+const { EyesSeleniumUtils } = require('../EyesSeleniumUtils');
+const { CssTranslatePositionMemento } = require('./CssTranslatePositionMemento');
 
 /**
  * A {@link PositionProvider} which is based on CSS translates. This is useful when we want to stitch a page which
@@ -89,4 +89,4 @@ class CssTranslatePositionProvider extends PositionProvider {
   }
 }
 
-module.exports = CssTranslatePositionProvider;
+exports.CssTranslatePositionProvider = CssTranslatePositionProvider;

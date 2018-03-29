@@ -1,12 +1,12 @@
 'use strict';
 
-const MatchLevel = require('../match/MatchLevel');
-const Region = require('../geometry/Region');
-const FloatingMatchSettings = require('../match/FloatingMatchSettings');
-const IgnoreRegionByRectangle = require('./IgnoreRegionByRectangle');
-const FloatingRegionByRectangle = require('./FloatingRegionByRectangle');
-const GetRegion = require('./GetRegion');
-const GetFloatingRegion = require('./GetFloatingRegion');
+const { MatchLevel } = require('../match/MatchLevel');
+const { Region } = require('../geometry/Region');
+const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
+const { IgnoreRegionByRectangle } = require('./IgnoreRegionByRectangle');
+const { FloatingRegionByRectangle } = require('./FloatingRegionByRectangle');
+const { GetRegion } = require('./GetRegion');
+const { GetFloatingRegion } = require('./GetFloatingRegion');
 
 /**
  * The Match settings object to use in the various Eyes.Check methods.
@@ -293,4 +293,4 @@ class CheckSettings {
   }
 }
 
-module.exports = CheckSettings;
+exports.CheckSettings = CheckSettings;

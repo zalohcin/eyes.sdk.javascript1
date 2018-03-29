@@ -1,7 +1,7 @@
 'use strict';
 
-const EyesError = require('./EyesError');
-const SessionStartInfo = require('../server/SessionStartInfo');
+const { EyesError } = require('./EyesError');
+const { SessionStartInfo } = require('../server/SessionStartInfo');
 
 /**
  * Indicates that a test did not pass (i.e., test either failed or is a new test).
@@ -33,4 +33,4 @@ class TestFailedError extends EyesError {
   }
 }
 
-module.exports = TestFailedError;
+exports.TestFailedError = TestFailedError;

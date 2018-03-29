@@ -2,7 +2,7 @@
 
 const dateformat = require('dateformat');
 
-const DebugScreenshotsProvider = require('./DebugScreenshotsProvider');
+const { DebugScreenshotsProvider } = require('./DebugScreenshotsProvider');
 
 const DATE_FORMAT = 'yyyy_mm_dd_HH_MM_ss_l';
 
@@ -29,4 +29,4 @@ class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
   }
 }
 
-module.exports = FileDebugScreenshotsProvider;
+exports.FileDebugScreenshotsProvider = FileDebugScreenshotsProvider;

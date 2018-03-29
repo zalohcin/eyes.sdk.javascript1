@@ -3,7 +3,7 @@
 const fs = require('fs');
 const png = require('png-async');
 
-const ArgumentGuard = require('../ArgumentGuard');
+const { ArgumentGuard } = require('../ArgumentGuard');
 const { ReadableBufferStream, WritableBufferStream } = require('../utils/StreamUtils');
 
 /**
@@ -483,4 +483,4 @@ class ImageUtils {
   }
 }
 
-module.exports = ImageUtils;
+exports.ImageUtils = ImageUtils;

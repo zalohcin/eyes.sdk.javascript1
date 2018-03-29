@@ -14,4 +14,4 @@ const BrowserNames = {
 };
 
 Object.freeze(BrowserNames);
-module.exports = BrowserNames;
+exports.BrowserNames = BrowserNames;

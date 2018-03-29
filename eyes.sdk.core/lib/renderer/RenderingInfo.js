@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class RenderingInfo {
   constructor() {
@@ -71,4 +71,4 @@ class RenderingInfo {
   }
 }
 
-module.exports = RenderingInfo;
+exports.RenderingInfo = RenderingInfo;

@@ -22,25 +22,25 @@ const {
   FailureReports,
 } = require('@applitools/eyes.sdk.core');
 
-const ImageProviderFactory = require('./capture/ImageProviderFactory');
-const EyesWebDriverScreenshotFactory = require('./capture/EyesWebDriverScreenshotFactory');
-const FullPageCaptureAlgorithm = require('./capture/FullPageCaptureAlgorithm');
-const FrameChain = require('./frames/FrameChain');
-const EyesWebDriver = require('./wrappers/EyesWebDriver');
-const EyesSeleniumUtils = require('./EyesSeleniumUtils');
-const EyesWebElement = require('./wrappers/EyesWebElement');
-const EyesWebDriverScreenshot = require('./capture/EyesWebDriverScreenshot');
-const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory');
-const ImageRotation = require('./positioning/ImageRotation');
-const ScrollPositionProvider = require('./positioning/ScrollPositionProvider');
-const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider');
-const ElementPositionProvider = require('./positioning/ElementPositionProvider');
-const StitchMode = require('./positioning/StitchMode');
-const MoveToRegionVisibilityStrategy = require('./regionVisibility/MoveToRegionVisibilityStrategy');
-const NopRegionVisibilityStrategy = require('./regionVisibility/NopRegionVisibilityStrategy');
-const SeleniumJavaScriptExecutor = require('./SeleniumJavaScriptExecutor');
-const JavascriptHandler = require('./JavascriptHandler');
-const Target = require('./fluent/Target');
+const { ImageProviderFactory } = require('./capture/ImageProviderFactory');
+const { EyesWebDriverScreenshotFactory } = require('./capture/EyesWebDriverScreenshotFactory');
+const { FullPageCaptureAlgorithm } = require('./capture/FullPageCaptureAlgorithm');
+const { FrameChain } = require('./frames/FrameChain');
+const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
+const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
+const { EyesWebElement } = require('./wrappers/EyesWebElement');
+const { EyesWebDriverScreenshot } = require('./capture/EyesWebDriverScreenshot');
+const { RegionPositionCompensationFactory } = require('./positioning/RegionPositionCompensationFactory');
+const { ImageRotation } = require('./positioning/ImageRotation');
+const { ScrollPositionProvider } = require('./positioning/ScrollPositionProvider');
+const { CssTranslatePositionProvider } = require('./positioning/CssTranslatePositionProvider');
+const { ElementPositionProvider } = require('./positioning/ElementPositionProvider');
+const { StitchMode } = require('./positioning/StitchMode');
+const { MoveToRegionVisibilityStrategy } = require('./regionVisibility/MoveToRegionVisibilityStrategy');
+const { NopRegionVisibilityStrategy } = require('./regionVisibility/NopRegionVisibilityStrategy');
+const { SeleniumJavaScriptExecutor } = require('./SeleniumJavaScriptExecutor');
+const { JavascriptHandler } = require('./JavascriptHandler');
+const { Target } = require('./fluent/Target');
 
 const VERSION = require('../package.json').version;
 
@@ -1499,4 +1499,4 @@ class Eyes extends EyesBase {
 
 Eyes.UNKNOWN_DEVICE_PIXEL_RATIO = 0;
 Eyes.DEFAULT_DEVICE_PIXEL_RATIO = 1;
-module.exports = Eyes;
+exports.Eyes = Eyes;

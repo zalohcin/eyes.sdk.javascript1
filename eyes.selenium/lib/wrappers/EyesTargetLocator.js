@@ -4,12 +4,12 @@ const command = require('selenium-webdriver/lib/command');
 const { TargetLocator } = require('selenium-webdriver/lib/webdriver');
 const { Location, RectangleSize, ArgumentGuard, GeneralUtils } = require('@applitools/eyes.sdk.core');
 
-const Frame = require('../frames/Frame');
-const FrameChain = require('../frames/FrameChain');
-const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
-const SeleniumJavaScriptExecutor = require('./../SeleniumJavaScriptExecutor');
-const EyesWebElement = require('./EyesWebElement');
-const EyesWebElementPromise = require('./EyesWebElementPromise');
+const { Frame } = require('../frames/Frame');
+const { FrameChain } = require('../frames/FrameChain');
+const { ScrollPositionProvider } = require('../positioning/ScrollPositionProvider');
+const { SeleniumJavaScriptExecutor } = require('../SeleniumJavaScriptExecutor');
+const { EyesWebElement } = require('./EyesWebElement');
+const { EyesWebElementPromise } = require('./EyesWebElementPromise');
 
 /**
  * Wraps a target locator so we can keep track of which frames have been switched to.
@@ -380,4 +380,4 @@ class EyesTargetLocator extends TargetLocator {
   }
 }
 
-module.exports = EyesTargetLocator;
+exports.EyesTargetLocator = EyesTargetLocator;

@@ -1,7 +1,5 @@
 'use strict';
 
-const GeneralUtils = require('./utils/GeneralUtils');
-
 /**
  * Encapsulates the information for the validation about to execute.
  */
@@ -129,4 +127,6 @@ class SessionEventHandler {
 
 SessionEventHandler.ValidationInfo = ValidationInfo;
 SessionEventHandler.ValidationResult = ValidationResult;
-module.exports = SessionEventHandler;
+exports.SessionEventHandler = SessionEventHandler;
+exports.ValidationInfo = ValidationInfo;
+exports.ValidationResult = ValidationResult;

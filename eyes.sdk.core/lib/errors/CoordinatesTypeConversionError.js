@@ -1,6 +1,6 @@
 'use strict';
 
-const EyesError = require('./EyesError');
+const { EyesError } = require('./EyesError');
 
 /**
  * Encapsulates an error converting between two coordinate types.
@@ -22,4 +22,4 @@ class CoordinatesTypeConversionError extends EyesError {
   }
 }
 
-module.exports = CoordinatesTypeConversionError;
+exports.CoordinatesTypeConversionError = CoordinatesTypeConversionError;

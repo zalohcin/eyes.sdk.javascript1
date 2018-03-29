@@ -1,9 +1,9 @@
 'use strict';
 
-const GeneralUtils = require('./utils/GeneralUtils');
-const MatchWindowData = require('./match/MatchWindowData');
-const MatchWindowTask = require('./MatchWindowTask');
-const MatchSingleWindowData = require('./match/MatchSingleWindowData');
+const { GeneralUtils } = require('./utils/GeneralUtils');
+const { MatchWindowData } = require('./match/MatchWindowData');
+const { MatchWindowTask } = require('./MatchWindowTask');
+const { MatchSingleWindowData } = require('./match/MatchSingleWindowData');
 
 /**
  * Handles matching of output with the expected output (including retry and 'ignore mismatch' when needed).
@@ -147,4 +147,4 @@ class MatchSingleWindowTask extends MatchWindowTask {
   }
 }
 
-module.exports = MatchSingleWindowTask;
+exports.MatchSingleWindowTask = MatchSingleWindowTask;

@@ -1,7 +1,7 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
-const ScaleProvider = require('./ScaleProvider');
+const { ArgumentGuard } = require('../ArgumentGuard');
+const { ScaleProvider } = require('./ScaleProvider');
 
 // Allowed deviations for viewport size and default content entire size.
 const ALLOWED_VS_DEVIATION = 1;
@@ -92,4 +92,4 @@ class ContextBasedScaleProvider extends ScaleProvider {
   }
 }
 
-module.exports = ContextBasedScaleProvider;
+exports.ContextBasedScaleProvider = ContextBasedScaleProvider;

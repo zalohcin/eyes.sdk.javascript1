@@ -12,4 +12,4 @@ class ImageProvider {
   getImage() {}
 }
 
-module.exports = ImageProvider;
+exports.ImageProvider = ImageProvider;

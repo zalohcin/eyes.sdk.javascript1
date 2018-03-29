@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class BatchInfo {
   constructor() {
@@ -64,4 +64,4 @@ class BatchInfo {
   }
 }
 
-module.exports = BatchInfo;
+exports.BatchInfo = BatchInfo;

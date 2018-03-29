@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class StartInfo {
   constructor() {
@@ -169,4 +169,4 @@ class StartInfo {
   }
 }
 
-module.exports = StartInfo;
+exports.StartInfo = StartInfo;

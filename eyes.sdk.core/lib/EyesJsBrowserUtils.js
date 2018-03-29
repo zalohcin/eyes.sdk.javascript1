@@ -1,8 +1,8 @@
 'use strict';
 
-const EyesError = require('./errors/EyesError');
-const RectangleSize = require('./geometry/RectangleSize');
-const Location = require('./geometry/Location');
+const { EyesError } = require('./errors/EyesError');
+const { RectangleSize } = require('./geometry/RectangleSize');
+const { Location } = require('./geometry/Location');
 
 const JS_GET_VIEWPORT_SIZE =
   'var height = undefined; ' +
@@ -270,4 +270,4 @@ class EyesJsBrowserUtils {
   }
 }
 
-module.exports = EyesJsBrowserUtils;
+exports.EyesJsBrowserUtils = EyesJsBrowserUtils;

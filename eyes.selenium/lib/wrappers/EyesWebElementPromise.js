@@ -3,7 +3,7 @@
 const { WebElementPromise } = require('selenium-webdriver');
 const { CancellableThenable } = require('selenium-webdriver/lib/promise');
 
-const EyesWebElement = require('./EyesWebElement');
+const { EyesWebElement } = require('./EyesWebElement');
 
 /**
  * EyesWebElementPromise is a promise that will be fulfilled with a WebElement.
@@ -56,4 +56,4 @@ class EyesWebElementPromise extends EyesWebElement {
 
 CancellableThenable.addImplementation(EyesWebElementPromise);
 
-module.exports = EyesWebElementPromise;
+exports.EyesWebElementPromise = EyesWebElementPromise;

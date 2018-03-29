@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class SessionResults {
   constructor() {
@@ -402,4 +402,4 @@ class SessionResults {
   }
 }
 
-module.exports = SessionResults;
+exports.SessionResults = SessionResults;

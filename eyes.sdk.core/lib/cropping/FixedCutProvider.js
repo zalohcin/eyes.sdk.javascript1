@@ -1,7 +1,7 @@
 'use strict';
 
-const Region = require('../geometry/Region');
-const CutProvider = require('./CutProvider');
+const { Region } = require('../geometry/Region');
+const { CutProvider } = require('./CutProvider');
 
 class FixedCutProvider extends CutProvider {
   /**
@@ -74,4 +74,4 @@ class FixedCutProvider extends CutProvider {
   }
 }
 
-module.exports = FixedCutProvider;
+exports.FixedCutProvider = FixedCutProvider;

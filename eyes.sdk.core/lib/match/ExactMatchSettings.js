@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 /**
  * Encapsulates match settings for the a session.
@@ -104,4 +104,4 @@ class ExactMatchSettings {
   }
 }
 
-module.exports = ExactMatchSettings;
+exports.ExactMatchSettings = ExactMatchSettings;

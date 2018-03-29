@@ -43,4 +43,4 @@ class DebugScreenshotsProvider {
   save(image, suffix) {}
 }
 
-module.exports = DebugScreenshotsProvider;
+exports.DebugScreenshotsProvider = DebugScreenshotsProvider;

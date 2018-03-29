@@ -19,4 +19,4 @@ class ImageRotation {
   }
 }
 
-module.exports = ImageRotation;
+exports.ImageRotation = ImageRotation;

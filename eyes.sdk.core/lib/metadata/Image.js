@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class Image {
   constructor() {
@@ -51,4 +51,4 @@ class Image {
   }
 }
 
-module.exports = Image;
+exports.Image = Image;

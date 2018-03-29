@@ -11,4 +11,4 @@ const TestResultsStatus = {
 };
 
 Object.freeze(TestResultsStatus);
-module.exports = TestResultsStatus;
+exports.TestResultsStatus = TestResultsStatus;

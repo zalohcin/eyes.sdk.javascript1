@@ -1,6 +1,6 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
+const { ArgumentGuard } = require('../ArgumentGuard');
 
 /**
  * Encapsulates data required to start render using the RenderingGrid API.
@@ -56,9 +56,9 @@ class RenderRequest {
   /** @override */
   toJSON() {
     const resources = {};
-    for (const resource of this._dom.getResources()) {
+    this._dom.getResources().forEach(resource => {
       resources[resource.getUrl()] = resource.getHashAsObject();
-    }
+    });
 
     return {
       webhook: this._webhook,
@@ -76,4 +76,4 @@ class RenderRequest {
   }
 }
 
-module.exports = RenderRequest;
+exports.RenderRequest = RenderRequest;

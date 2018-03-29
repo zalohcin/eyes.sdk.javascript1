@@ -18,4 +18,4 @@ class EyesError extends Error {
   }
 }
 
-module.exports = EyesError;
+exports.EyesError = EyesError;

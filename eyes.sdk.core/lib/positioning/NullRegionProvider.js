@@ -1,7 +1,7 @@
 'use strict';
 
-const RegionProvider = require('./RegionProvider');
-const Region = require('../geometry/Region');
+const { RegionProvider } = require('./RegionProvider');
+const { Region } = require('../geometry/Region');
 
 class NullRegionProvider extends RegionProvider {
   /**
@@ -12,4 +12,4 @@ class NullRegionProvider extends RegionProvider {
   }
 }
 
-module.exports = NullRegionProvider;
+exports.NullRegionProvider = NullRegionProvider;

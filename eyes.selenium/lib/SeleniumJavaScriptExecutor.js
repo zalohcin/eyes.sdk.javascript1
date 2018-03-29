@@ -34,4 +34,4 @@ class SeleniumJavaScriptExecutor extends EyesJsExecutor {
   }
 }
 
-module.exports = SeleniumJavaScriptExecutor;
+exports.SeleniumJavaScriptExecutor = SeleniumJavaScriptExecutor;

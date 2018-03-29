@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class Annotations {
   constructor() {
@@ -90,4 +90,4 @@ class Annotations {
   }
 }
 
-module.exports = Annotations;
+exports.Annotations = Annotations;

@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class ExpectedAppOutput {
   constructor() {
@@ -90,4 +90,4 @@ class ExpectedAppOutput {
   }
 }
 
-module.exports = ExpectedAppOutput;
+exports.ExpectedAppOutput = ExpectedAppOutput;

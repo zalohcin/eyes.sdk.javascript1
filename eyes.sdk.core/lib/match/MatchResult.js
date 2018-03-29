@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 /**
  * The result of a window match by the agent.
@@ -52,4 +52,4 @@ class MatchResult {
   }
 }
 
-module.exports = MatchResult;
+exports.MatchResult = MatchResult;

@@ -1,7 +1,7 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
-const Trigger = require('./Trigger');
+const { ArgumentGuard } = require('../ArgumentGuard');
+const { Trigger } = require('./Trigger');
 
 /**
  * Encapsulates a text input by the user.
@@ -52,4 +52,4 @@ class TextTrigger extends Trigger {
   }
 }
 
-module.exports = TextTrigger;
+exports.TextTrigger = TextTrigger;

@@ -19,4 +19,4 @@ class ImageOrientationHandler {
   tryAutomaticRotation(logger, driver, image) {}
 }
 
-module.exports = ImageOrientationHandler;
+exports.ImageOrientationHandler = ImageOrientationHandler;

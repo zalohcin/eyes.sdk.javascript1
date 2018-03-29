@@ -1,7 +1,7 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
-const ArgumentGuard = require('../ArgumentGuard');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ArgumentGuard } = require('../ArgumentGuard');
 
 /**
  * Encapsulates the "Options" section of the MatchExpectedOutput body data.
@@ -158,4 +158,4 @@ class MatchWindowData {
 }
 
 MatchWindowData.Options = Options;
-module.exports = MatchWindowData;
+exports.MatchWindowData = MatchWindowData;

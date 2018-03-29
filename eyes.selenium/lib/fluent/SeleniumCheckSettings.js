@@ -3,11 +3,11 @@
 const { By, WebElement } = require('selenium-webdriver');
 const { GeneralUtils, CheckSettings, Region } = require('@applitools/eyes.sdk.core');
 
-const IgnoreRegionBySelector = require('./IgnoreRegionBySelector');
-const IgnoreRegionByElement = require('./IgnoreRegionByElement');
-const FloatingRegionBySelector = require('./FloatingRegionBySelector');
-const FloatingRegionByElement = require('./FloatingRegionByElement');
-const FrameLocator = require('./FrameLocator');
+const { IgnoreRegionBySelector } = require('./IgnoreRegionBySelector');
+const { IgnoreRegionByElement } = require('./IgnoreRegionByElement');
+const { FloatingRegionBySelector } = require('./FloatingRegionBySelector');
+const { FloatingRegionByElement } = require('./FloatingRegionByElement');
+const { FrameLocator } = require('./FrameLocator');
 
 /**
  * @return {boolean}
@@ -299,4 +299,4 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 }
 
-module.exports = SeleniumCheckSettings;
+exports.SeleniumCheckSettings = SeleniumCheckSettings;

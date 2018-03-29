@@ -8,4 +8,4 @@
  */
 window.EyesSdkCore = require('@applitools/eyes.sdk.core');
 
-console.log('EyesSDK loaded into the \'window\' object');
+console.log('EyesSDK loaded into the \'window\' object'); // eslint-disable-line no-console

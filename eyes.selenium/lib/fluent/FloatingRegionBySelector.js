@@ -58,4 +58,4 @@ class FloatingRegionBySelector extends GetFloatingRegion {
   }
 }
 
-module.exports = FloatingRegionBySelector;
+exports.FloatingRegionBySelector = FloatingRegionBySelector;

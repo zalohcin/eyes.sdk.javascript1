@@ -78,4 +78,4 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
   }
 }
 
-module.exports = EyesAppiumUtils;
+exports.EyesAppiumUtils = EyesAppiumUtils;

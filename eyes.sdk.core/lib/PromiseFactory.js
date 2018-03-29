@@ -126,4 +126,4 @@ class PromiseFactory {
   }
 }
 
-module.exports = PromiseFactory;
+exports.PromiseFactory = PromiseFactory;

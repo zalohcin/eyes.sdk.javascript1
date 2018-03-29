@@ -121,4 +121,4 @@ class AppEnvironment {
   }
 }
 
-module.exports = AppEnvironment;
+exports.AppEnvironment = AppEnvironment;

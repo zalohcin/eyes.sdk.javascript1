@@ -12,4 +12,4 @@ class GetRegion {
   getRegion(eyesBase, screenshot) {}
 }
 
-module.exports = GetRegion;
+exports.GetRegion = GetRegion;

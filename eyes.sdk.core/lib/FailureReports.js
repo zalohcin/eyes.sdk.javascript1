@@ -19,4 +19,4 @@ const FailureReports = {
 };
 
 Object.freeze(FailureReports);
-module.exports = FailureReports;
+exports.FailureReports = FailureReports;

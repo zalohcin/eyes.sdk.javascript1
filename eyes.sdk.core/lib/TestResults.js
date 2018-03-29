@@ -1,8 +1,8 @@
 'use strict';
 
-const RectangleSize = require('./geometry/RectangleSize');
-const GeneralUtils = require('./utils/GeneralUtils');
-const TestResultsStatus = require('./TestResultsStatus');
+const { RectangleSize } = require('./geometry/RectangleSize');
+const { GeneralUtils } = require('./utils/GeneralUtils');
+const { TestResultsStatus } = require('./TestResultsStatus');
 
 class SessionUrls {
   constructor() {
@@ -608,10 +608,9 @@ class TestResults {
   /** @override */
   toString() {
     const isNewTestStr = this._isNew ? 'New test' : 'Existing test';
-    return `${isNewTestStr} [steps: ${this._steps}, matches: ${this._matches}, mismatches: ${
-      this._mismatches
-      }, missing: ${this._missing}] , URL: ${this._url}, status: ${this._status}`;
+    return `${isNewTestStr} [steps: ${this._steps}, matches: ${this._matches}, mismatches: ${this._mismatches}, ` +
+      `missing: ${this._missing}] , URL: ${this._url}, status: ${this._status}`;
   }
 }
 
-module.exports = TestResults;
+exports.TestResults = TestResults;

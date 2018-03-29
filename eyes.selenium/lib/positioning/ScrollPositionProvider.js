@@ -2,9 +2,9 @@
 
 const { ArgumentGuard, PositionProvider, Location } = require('@applitools/eyes.sdk.core');
 
-const EyesSeleniumUtils = require('../EyesSeleniumUtils');
-const ScrollPositionMemento = require('./ScrollPositionMemento');
-const EyesDriverOperationError = require('../errors/EyesDriverOperationError');
+const { EyesSeleniumUtils } = require('../EyesSeleniumUtils');
+const { ScrollPositionMemento } = require('./ScrollPositionMemento');
+const { EyesDriverOperationError } = require('../errors/EyesDriverOperationError');
 
 class ScrollPositionProvider extends PositionProvider {
   /**
@@ -94,4 +94,4 @@ class ScrollPositionProvider extends PositionProvider {
   }
 }
 
-module.exports = ScrollPositionProvider;
+exports.ScrollPositionProvider = ScrollPositionProvider;

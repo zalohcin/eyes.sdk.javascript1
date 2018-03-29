@@ -8,4 +8,4 @@
  */
 window.EyesImages = require('@applitools/eyes.images');
 
-console.log("EyesImages loaded into the 'window' object");
+console.log("EyesImages loaded into the 'window' object"); // eslint-disable-line no-console

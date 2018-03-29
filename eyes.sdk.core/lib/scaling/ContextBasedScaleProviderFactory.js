@@ -1,7 +1,7 @@
 'use strict';
 
-const ScaleProviderFactory = require('./ScaleProviderFactory');
-const ContextBasedScaleProvider = require('./ContextBasedScaleProvider');
+const { ScaleProviderFactory } = require('./ScaleProviderFactory');
+const { ContextBasedScaleProvider } = require('./ContextBasedScaleProvider');
 
 /**
  * Factory implementation for creating {@link ContextBasedScaleProvider} instances.
@@ -47,4 +47,4 @@ class ContextBasedScaleProviderFactory extends ScaleProviderFactory {
   }
 }
 
-module.exports = ContextBasedScaleProviderFactory;
+exports.ContextBasedScaleProviderFactory = ContextBasedScaleProviderFactory;

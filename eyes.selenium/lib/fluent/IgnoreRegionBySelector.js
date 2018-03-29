@@ -35,4 +35,4 @@ class IgnoreRegionBySelector extends GetRegion {
   }
 }
 
-module.exports = IgnoreRegionBySelector;
+exports.IgnoreRegionBySelector = IgnoreRegionBySelector;

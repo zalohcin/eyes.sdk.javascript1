@@ -1,6 +1,6 @@
 'use strict';
 
-const SeleniumCheckSettings = require('./SeleniumCheckSettings');
+const { SeleniumCheckSettings } = require('./SeleniumCheckSettings');
 
 class Target {
   /**
@@ -37,4 +37,4 @@ class Target {
   }
 }
 
-module.exports = Target;
+exports.Target = Target;

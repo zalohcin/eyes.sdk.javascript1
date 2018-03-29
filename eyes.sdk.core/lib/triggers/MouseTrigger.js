@@ -1,7 +1,7 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
-const Trigger = require('./Trigger');
+const { ArgumentGuard } = require('../ArgumentGuard');
+const { Trigger } = require('./Trigger');
 
 /**
  * Encapsulates a text input by the user.
@@ -76,4 +76,4 @@ MouseTrigger.MouseAction = {
 };
 
 Object.freeze(MouseTrigger.MouseAction);
-module.exports = MouseTrigger;
+exports.MouseTrigger = MouseTrigger;

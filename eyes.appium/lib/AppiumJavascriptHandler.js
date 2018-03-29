@@ -2,7 +2,8 @@
 
 const { MouseTrigger } = require('@applitools/eyes.sdk.core');
 const { JavascriptHandler } = require('@applitools/eyes.selenium');
-const AppiumJsCommandExtractor = require('./AppiumJsCommandExtractor');
+
+const { AppiumJsCommandExtractor } = require('./AppiumJsCommandExtractor');
 
 class AppiumJavascriptHandler extends JavascriptHandler {
   /**
@@ -42,4 +43,4 @@ class AppiumJavascriptHandler extends JavascriptHandler {
   }
 }
 
-module.exports = AppiumJavascriptHandler;
+exports.AppiumJsCommandExtractor = AppiumJavascriptHandler;

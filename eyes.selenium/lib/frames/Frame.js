@@ -80,4 +80,4 @@ class Frame {
   }
 }
 
-module.exports = Frame;
+exports.Frame = Frame;

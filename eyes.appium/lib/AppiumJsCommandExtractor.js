@@ -116,4 +116,4 @@ class AppiumJsCommandExtractor {
   }
 }
 
-module.exports = AppiumJsCommandExtractor;
+exports.AppiumJsCommandExtractor = AppiumJsCommandExtractor;

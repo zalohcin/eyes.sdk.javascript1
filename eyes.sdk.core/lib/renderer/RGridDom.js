@@ -2,9 +2,9 @@
 
 const crypto = require('crypto');
 
-const GeneralUtils = require('../utils/GeneralUtils');
-const ArgumentGuard = require('../ArgumentGuard');
-const RGridResource = require('./RGridResource');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ArgumentGuard } = require('../ArgumentGuard');
+const { RGridResource } = require('./RGridResource');
 
 class RGridDom {
   constructor() {
@@ -101,4 +101,4 @@ class RGridDom {
   }
 }
 
-module.exports = RGridDom;
+exports.RGridDom = RGridDom;

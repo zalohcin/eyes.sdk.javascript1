@@ -36,4 +36,4 @@ class PositionProvider {
   restoreState(state) {}
 }
 
-module.exports = PositionProvider;
+exports.PositionProvider = PositionProvider;

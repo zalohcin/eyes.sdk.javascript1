@@ -27,4 +27,4 @@ const CoordinatesType = {
 };
 
 Object.freeze(CoordinatesType);
-module.exports = CoordinatesType;
+exports.CoordinatesType = CoordinatesType;

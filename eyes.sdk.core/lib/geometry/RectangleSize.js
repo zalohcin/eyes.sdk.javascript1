@@ -1,6 +1,6 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
+const { ArgumentGuard } = require('../ArgumentGuard');
 
 /**
  * @typedef {{width: number, height: number}} RectangleSizeObject
@@ -132,4 +132,4 @@ class RectangleSize {
   }
 }
 
-module.exports = RectangleSize;
+exports.RectangleSize = RectangleSize;

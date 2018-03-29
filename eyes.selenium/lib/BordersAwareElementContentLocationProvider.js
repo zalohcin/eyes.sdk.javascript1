@@ -2,7 +2,7 @@
 
 const { ArgumentGuard, Location } = require('@applitools/eyes.sdk.core');
 
-const EyesWebElement = require('./wrappers/EyesWebElement');
+const { EyesWebElement } = require('./wrappers/EyesWebElement');
 
 /**
  * @private
@@ -80,4 +80,4 @@ class BordersAwareElementContentLocationProvider {
   }
 }
 
-module.exports = BordersAwareElementContentLocationProvider;
+exports.BordersAwareElementContentLocationProvider = BordersAwareElementContentLocationProvider;

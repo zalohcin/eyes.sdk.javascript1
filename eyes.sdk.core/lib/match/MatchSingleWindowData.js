@@ -1,7 +1,7 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
-const MatchWindowData = require('./MatchWindowData');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { MatchWindowData } = require('./MatchWindowData');
 
 /**
  * Encapsulates the data to be sent to the agent on a "matchWindow" command.
@@ -131,4 +131,4 @@ class MatchSingleWindowData extends MatchWindowData {
   }
 }
 
-module.exports = MatchSingleWindowData;
+exports.MatchSingleWindowData = MatchSingleWindowData;

@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class ImageMatchSettings {
   constructor() {
@@ -168,4 +168,4 @@ class ImageMatchSettings {
   }
 }
 
-module.exports = ImageMatchSettings;
+exports.ImageMatchSettings = ImageMatchSettings;

@@ -1,7 +1,7 @@
 'use strict';
 
-const ArgumentGuard = require('./ArgumentGuard');
-const GeneralUtils = require('./utils/GeneralUtils');
+const { ArgumentGuard } = require('./ArgumentGuard');
+const { GeneralUtils } = require('./utils/GeneralUtils');
 
 /**
  * A batch of tests.
@@ -65,4 +65,4 @@ class BatchInfo {
   }
 }
 
-module.exports = BatchInfo;
+exports.BatchInfo = BatchInfo;
