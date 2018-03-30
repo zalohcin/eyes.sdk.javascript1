@@ -1741,11 +1741,10 @@ class EyesBase {
       .getLastScreenshot()
       .getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
 
-    // If the region is NOT empty, we'll give the coordinates relative to
-    // the control.
+    // If the region is NOT empty, we'll give the coordinates relative to the control.
     if (!controlScreenshotIntersect.isEmpty()) {
-      const l = controlScreenshotIntersect.location;
-      cursorInScreenshot.offset(-l.x, -l.y);
+      const l = controlScreenshotIntersect.getLocation();
+      cursorInScreenshot.offset(-l.getX(), -l.getY());
     }
 
     const trigger = new MouseTrigger(action, controlScreenshotIntersect, cursorInScreenshot);
