@@ -379,4 +379,4 @@ class GeneralUtils {
   }
 }
 
-exports.GeneralUtils= GeneralUtils;
+exports.GeneralUtils = GeneralUtils;

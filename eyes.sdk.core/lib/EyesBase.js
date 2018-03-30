@@ -35,6 +35,7 @@ const { ImageMatchSettings } = require('./match/ImageMatchSettings');
 const { MatchWindowData } = require('./match/MatchWindowData');
 
 const { DiffsFoundError } = require('./errors/DiffsFoundError');
+const { EyesError } = require('./errors/EyesError');
 const { NewTestError } = require('./errors/NewTestError');
 const { OutOfBoundsError } = require('./errors/OutOfBoundsError');
 const { TestFailedError } = require('./errors/TestFailedError');
@@ -1391,10 +1392,6 @@ class EyesBase {
       .then(result => {
         that._logger.verbose('EyesBase.replaceWindow done');
         return result;
-      })
-      .catch(err => {
-        that._logger.log(err);
-        throw err;
       });
   }
 
@@ -1534,7 +1531,7 @@ class EyesBase {
         })
         .then(() => that.afterOpen());
     } catch (err) {
-      this._logger.log(err);
+      this._logger.log(err.message);
       this._logger.getLogHandler().close();
       return this._promiseFactory.reject(err);
     }
@@ -1804,13 +1801,11 @@ class EyesBase {
       .then(() => that._notifyEvent('testStarted', that._autSessionId))
       .then(() => that._notifyEvent('setSizeWillStart', that._autSessionId, that._viewportSize))
       .then(() => that._ensureViewportSize()
-        .catch(err => {
-          that._logger.log(err);
-          return that._notifyEvent('setSizeEnded', that._autSessionId).then(() => {
+        .catch(err => that._notifyEvent('setSizeEnded', that._autSessionId)
+          .then(() => {
             // Throw to skip execution of all consecutive "then" blocks.
-            throw new Error('Failed to set/get viewport size.');
-          });
-        }))
+            throw new EyesError('Failed to set/get viewport size', err);
+          })))
       .then(() => that._notifyEvent('setSizeEnded', that._autSessionId))
       .then(() => that._notifyEvent('initStarted', that._autSessionId))
       .then(() => that.getAppEnvironment())
