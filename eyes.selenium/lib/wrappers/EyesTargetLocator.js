@@ -215,28 +215,27 @@ class EyesTargetLocator extends TargetLocator {
       return that._driver.switchTo()
         .defaultContent()
         .then(() => frameChain.getFrames()
-          .reduce((promise, frame) => promise.then(() => {
-            that._logger.verbose('Switching to frame...');
-            return that._driver.switchTo()
-              .frame(frame.getReference())
-              .then(() => {
-                that._logger.verbose('Done!');
-              });
-          }, that._driver.getPromiseFactory().resolve())))
+          .reduce((promise, frame) => promise
+            .then(() => {
+              that._logger.verbose('Switching to frame...');
+              return that._driver.switchTo().frame(frame.getReference());
+            }).then(() => {
+              that._logger.verbose('Done!');
+            }), that._driver.getPromiseFactory().resolve()))
         .then(() => {
           that._logger.verbose('Done switching into nested frames!');
           return that._driver;
         });
     } else if (Array.isArray(obj)) {
       that._logger.verbose('EyesTargetLocator.frames(framesPath)');
-      return obj.reduce((promise, frameNameOrId) => promise.then(() => {
-        that._logger.verbose('Switching to frame...');
-        return that._driver.switchTo()
-          .frame(frameNameOrId)
-          .then(() => {
-            that._logger.verbose('Done!');
-          });
-      }), that._driver.getPromiseFactory().resolve())
+      return obj.reduce((promise, frameNameOrId) => promise
+        .then(() => {
+          that._logger.verbose('Switching to frame...');
+          return that._driver.switchTo().frame(frameNameOrId);
+        })
+        .then(() => {
+          that._logger.verbose('Done!');
+        }), that._driver.getPromiseFactory().resolve())
         .then(() => {
           that._logger.verbose('Done switching into nested frames!');
           return that._driver;
