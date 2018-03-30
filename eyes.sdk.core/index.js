@@ -55,15 +55,7 @@ exports.MatchSingleWindowData = require('./lib/match/MatchSingleWindowData').Mat
 exports.MatchWindowData = require('./lib/match/MatchWindowData').MatchWindowData;
 exports.MatchWindowDataWithScreenshot = require('./lib/match/MatchWindowDataWithScreenshot').MatchWindowDataWithScreenshot;
 
-exports.ActualAppOutput = require('./lib/metadata/ActualAppOutput').ActualAppOutput;
-exports.Annotations = require('./lib/metadata/Annotations').Annotations;
-exports.BatchInfo = require('./lib/metadata/BatchInfo').BatchInfo;
-exports.Branch = require('./lib/metadata/Branch').Branch;
-exports.ExpectedAppOutput = require('./lib/metadata/ExpectedAppOutput').ExpectedAppOutput;
-exports.Image = require('./lib/metadata/Image').Image;
-exports.ImageMatchSettings = require('./lib/metadata/ImageMatchSettings').ImageMatchSettings;
-exports.SessionResults = require('./lib/metadata/SessionResults').SessionResults;
-exports.StartInfo = require('./lib/metadata/StartInfo').StartInfo;
+exports.metadata = require('./lib/metadata/index');
 
 exports.InvalidPositionProvider = require('./lib/positioning/InvalidPositionProvider').InvalidPositionProvider;
 exports.NullRegionProvider = require('./lib/positioning/NullRegionProvider').NullRegionProvider;

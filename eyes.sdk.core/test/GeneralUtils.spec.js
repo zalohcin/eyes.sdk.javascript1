@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { GeneralUtils } = require('../lib/utils/GeneralUtils');
+const { GeneralUtils } = require('../index');
 
 describe('GeneralUtils', () => {
   describe('urlConcat()', () => {

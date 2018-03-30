@@ -2,8 +2,7 @@
 
 const assert = require('assert');
 
-const { ImageUtils } = require('../lib/images/ImageUtils');
-const { PromiseFactory } = require('../lib/PromiseFactory');
+const { ImageUtils, PromiseFactory } = require('../index');
 const { makeImageMock } = require('./helpers');
 
 // construct

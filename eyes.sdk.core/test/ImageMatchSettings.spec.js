@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { ImageMatchSettings } = require('../lib/match/ImageMatchSettings');
+const { ImageMatchSettings } = require('../index');
 
 describe('ImageMatchSettings', () => {
   it('toJSON()', () => {
