@@ -146,7 +146,7 @@ class Eyes extends EyesBase {
    * @override
    */
   getBaseAgentId() {
-    return `selenium-js/${VERSION}`;
+    return `eyes.selenium/${VERSION}`;
   }
 
   // noinspection JSUnusedGlobalSymbols
