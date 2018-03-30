@@ -43,4 +43,4 @@ class AppiumJavascriptHandler extends JavascriptHandler {
   }
 }
 
-exports.AppiumJsCommandExtractor = AppiumJavascriptHandler;
+exports.AppiumJavascriptHandler = AppiumJavascriptHandler;
