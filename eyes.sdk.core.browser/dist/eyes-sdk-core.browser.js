@@ -33019,15 +33019,7 @@ exports.MatchSingleWindowData = require('./lib/match/MatchSingleWindowData').Mat
 exports.MatchWindowData = require('./lib/match/MatchWindowData').MatchWindowData;
 exports.MatchWindowDataWithScreenshot = require('./lib/match/MatchWindowDataWithScreenshot').MatchWindowDataWithScreenshot;
 
-exports.ActualAppOutput = require('./lib/metadata/ActualAppOutput').ActualAppOutput;
-exports.Annotations = require('./lib/metadata/Annotations').Annotations;
-exports.BatchInfo = require('./lib/metadata/BatchInfo').BatchInfo;
-exports.Branch = require('./lib/metadata/Branch').Branch;
-exports.ExpectedAppOutput = require('./lib/metadata/ExpectedAppOutput').ExpectedAppOutput;
-exports.Image = require('./lib/metadata/Image').Image;
-exports.ImageMatchSettings = require('./lib/metadata/ImageMatchSettings').ImageMatchSettings;
-exports.SessionResults = require('./lib/metadata/SessionResults').SessionResults;
-exports.StartInfo = require('./lib/metadata/StartInfo').StartInfo;
+exports.metadata = require('./lib/metadata/index');
 
 exports.InvalidPositionProvider = require('./lib/positioning/InvalidPositionProvider').InvalidPositionProvider;
 exports.NullRegionProvider = require('./lib/positioning/NullRegionProvider').NullRegionProvider;
@@ -33088,7 +33080,7 @@ exports.SessionEventHandler = require('./lib/SessionEventHandler').SessionEventH
 exports.TestResults = require('./lib/TestResults').TestResults;
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus;
 
-},{"./lib/AppEnvironment":190,"./lib/ArgumentGuard":191,"./lib/BatchInfo":192,"./lib/EyesBase":193,"./lib/EyesJsBrowserUtils":194,"./lib/EyesJsExecutor":195,"./lib/FailureReports":196,"./lib/MatchSingleWindowTask":197,"./lib/MatchWindowTask":198,"./lib/PromiseFactory":199,"./lib/RemoteSessionEventHandler":200,"./lib/RenderWindowTask":201,"./lib/SessionEventHandler":202,"./lib/TestResults":203,"./lib/TestResultsStatus":204,"./lib/capture/AppOutputProvider":205,"./lib/capture/AppOutputWithScreenshot":206,"./lib/capture/EyesScreenshot":207,"./lib/capture/EyesScreenshotFactory":208,"./lib/capture/EyesSimpleScreenshot":209,"./lib/capture/ImageProvider":210,"./lib/cropping/CutProvider":211,"./lib/cropping/FixedCutProvider":212,"./lib/cropping/NullCutProvider":213,"./lib/cropping/UnscaledFixedCutProvider":214,"./lib/debug/DebugScreenshotsProvider":215,"./lib/debug/FileDebugScreenshotsProvider":216,"./lib/debug/NullDebugScreenshotProvider":217,"./lib/errors/CoordinatesTypeConversionError":218,"./lib/errors/DiffsFoundError":219,"./lib/errors/EyesError":220,"./lib/errors/NewTestError":221,"./lib/errors/OutOfBoundsError":222,"./lib/errors/TestFailedError":223,"./lib/fluent/CheckSettings":224,"./lib/fluent/CheckTarget":225,"./lib/fluent/FloatingRegionByRectangle":226,"./lib/fluent/GetFloatingRegion":227,"./lib/fluent/GetRegion":228,"./lib/fluent/IgnoreRegionByRectangle":229,"./lib/geometry/CoordinatesType":230,"./lib/geometry/Location":231,"./lib/geometry/RectangleSize":232,"./lib/geometry/Region":233,"./lib/images/ImageDeltaCompressor":234,"./lib/images/ImageUtils":235,"./lib/images/MutableImage":236,"./lib/logging/ConsoleLogHandler":237,"./lib/logging/FileLogHandler":238,"./lib/logging/LogHandler":239,"./lib/logging/Logger":240,"./lib/logging/NullLogHandler":241,"./lib/match/AppOutput":242,"./lib/match/ExactMatchSettings":243,"./lib/match/FloatingMatchSettings":244,"./lib/match/ImageMatchSettings":245,"./lib/match/MatchLevel":246,"./lib/match/MatchResult":247,"./lib/match/MatchSingleWindowData":248,"./lib/match/MatchWindowData":249,"./lib/match/MatchWindowDataWithScreenshot":250,"./lib/metadata/ActualAppOutput":251,"./lib/metadata/Annotations":252,"./lib/metadata/BatchInfo":253,"./lib/metadata/Branch":254,"./lib/metadata/ExpectedAppOutput":255,"./lib/metadata/Image":256,"./lib/metadata/ImageMatchSettings":257,"./lib/metadata/SessionResults":258,"./lib/metadata/StartInfo":259,"./lib/positioning/InvalidPositionProvider":260,"./lib/positioning/NullRegionProvider":261,"./lib/positioning/PositionMemento":262,"./lib/positioning/PositionProvider":263,"./lib/positioning/RegionProvider":264,"./lib/renderer/RGridDom":265,"./lib/renderer/RGridResource":266,"./lib/renderer/RenderRequest":267,"./lib/renderer/RenderStatus":268,"./lib/renderer/RenderStatusResults":269,"./lib/renderer/RenderingInfo":270,"./lib/renderer/RunningRender":271,"./lib/scaling/ContextBasedScaleProvider":272,"./lib/scaling/ContextBasedScaleProviderFactory":273,"./lib/scaling/FixedScaleProvider":274,"./lib/scaling/FixedScaleProviderFactory":275,"./lib/scaling/NullScaleProvider":276,"./lib/scaling/ScaleProvider":277,"./lib/scaling/ScaleProviderFactory":278,"./lib/scaling/ScaleProviderIdentityFactory":279,"./lib/server/PropertyData":280,"./lib/server/ProxySettings":281,"./lib/server/RunningSession":282,"./lib/server/ServerConnector":283,"./lib/server/SessionStartInfo":284,"./lib/server/SessionType":285,"./lib/triggers/MouseTrigger":286,"./lib/triggers/TextTrigger":287,"./lib/triggers/Trigger":288,"./lib/utils/BrowserNames":289,"./lib/utils/GeneralUtils":290,"./lib/utils/OSNames":291,"./lib/utils/PropertyHandler":292,"./lib/utils/ReadOnlyPropertyHandler":293,"./lib/utils/SimplePropertyHandler":294,"./lib/utils/StreamUtils":295,"./lib/utils/UserAgent":296}],190:[function(require,module,exports){
+},{"./lib/AppEnvironment":190,"./lib/ArgumentGuard":191,"./lib/BatchInfo":192,"./lib/EyesBase":193,"./lib/EyesJsBrowserUtils":194,"./lib/EyesJsExecutor":195,"./lib/FailureReports":196,"./lib/MatchSingleWindowTask":197,"./lib/MatchWindowTask":198,"./lib/PromiseFactory":199,"./lib/RemoteSessionEventHandler":200,"./lib/RenderWindowTask":201,"./lib/SessionEventHandler":202,"./lib/TestResults":203,"./lib/TestResultsStatus":204,"./lib/capture/AppOutputProvider":205,"./lib/capture/AppOutputWithScreenshot":206,"./lib/capture/EyesScreenshot":207,"./lib/capture/EyesScreenshotFactory":208,"./lib/capture/EyesSimpleScreenshot":209,"./lib/capture/ImageProvider":210,"./lib/cropping/CutProvider":211,"./lib/cropping/FixedCutProvider":212,"./lib/cropping/NullCutProvider":213,"./lib/cropping/UnscaledFixedCutProvider":214,"./lib/debug/DebugScreenshotsProvider":215,"./lib/debug/FileDebugScreenshotsProvider":216,"./lib/debug/NullDebugScreenshotProvider":217,"./lib/errors/CoordinatesTypeConversionError":218,"./lib/errors/DiffsFoundError":219,"./lib/errors/EyesError":220,"./lib/errors/NewTestError":221,"./lib/errors/OutOfBoundsError":222,"./lib/errors/TestFailedError":223,"./lib/fluent/CheckSettings":224,"./lib/fluent/CheckTarget":225,"./lib/fluent/FloatingRegionByRectangle":226,"./lib/fluent/GetFloatingRegion":227,"./lib/fluent/GetRegion":228,"./lib/fluent/IgnoreRegionByRectangle":229,"./lib/geometry/CoordinatesType":230,"./lib/geometry/Location":231,"./lib/geometry/RectangleSize":232,"./lib/geometry/Region":233,"./lib/images/ImageDeltaCompressor":234,"./lib/images/ImageUtils":235,"./lib/images/MutableImage":236,"./lib/logging/ConsoleLogHandler":237,"./lib/logging/FileLogHandler":238,"./lib/logging/LogHandler":239,"./lib/logging/Logger":240,"./lib/logging/NullLogHandler":241,"./lib/match/AppOutput":242,"./lib/match/ExactMatchSettings":243,"./lib/match/FloatingMatchSettings":244,"./lib/match/ImageMatchSettings":245,"./lib/match/MatchLevel":246,"./lib/match/MatchResult":247,"./lib/match/MatchSingleWindowData":248,"./lib/match/MatchWindowData":249,"./lib/match/MatchWindowDataWithScreenshot":250,"./lib/metadata/index":260,"./lib/positioning/InvalidPositionProvider":261,"./lib/positioning/NullRegionProvider":262,"./lib/positioning/PositionMemento":263,"./lib/positioning/PositionProvider":264,"./lib/positioning/RegionProvider":265,"./lib/renderer/RGridDom":266,"./lib/renderer/RGridResource":267,"./lib/renderer/RenderRequest":268,"./lib/renderer/RenderStatus":269,"./lib/renderer/RenderStatusResults":270,"./lib/renderer/RenderingInfo":271,"./lib/renderer/RunningRender":272,"./lib/scaling/ContextBasedScaleProvider":273,"./lib/scaling/ContextBasedScaleProviderFactory":274,"./lib/scaling/FixedScaleProvider":275,"./lib/scaling/FixedScaleProviderFactory":276,"./lib/scaling/NullScaleProvider":277,"./lib/scaling/ScaleProvider":278,"./lib/scaling/ScaleProviderFactory":279,"./lib/scaling/ScaleProviderIdentityFactory":280,"./lib/server/PropertyData":281,"./lib/server/ProxySettings":282,"./lib/server/RunningSession":283,"./lib/server/ServerConnector":284,"./lib/server/SessionStartInfo":285,"./lib/server/SessionType":286,"./lib/triggers/MouseTrigger":287,"./lib/triggers/TextTrigger":288,"./lib/triggers/Trigger":289,"./lib/utils/BrowserNames":290,"./lib/utils/GeneralUtils":291,"./lib/utils/OSNames":292,"./lib/utils/PropertyHandler":293,"./lib/utils/ReadOnlyPropertyHandler":294,"./lib/utils/SimplePropertyHandler":295,"./lib/utils/StreamUtils":296,"./lib/utils/UserAgent":297}],190:[function(require,module,exports){
 'use strict';
 
 /**
@@ -33453,7 +33445,7 @@ class ArgumentGuard {
 
 exports.ArgumentGuard = ArgumentGuard;
 
-},{"./utils/GeneralUtils":290}],192:[function(require,module,exports){
+},{"./utils/GeneralUtils":291}],192:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -33525,7 +33517,7 @@ class BatchInfo {
 exports.BatchInfo = BatchInfo;
 
 }).call(this,require('_process'))
-},{"./ArgumentGuard":191,"./utils/GeneralUtils":290,"_process":138}],193:[function(require,module,exports){
+},{"./ArgumentGuard":191,"./utils/GeneralUtils":291,"_process":138}],193:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -33564,6 +33556,7 @@ const { ImageMatchSettings } = require('./match/ImageMatchSettings');
 const { MatchWindowData } = require('./match/MatchWindowData');
 
 const { DiffsFoundError } = require('./errors/DiffsFoundError');
+const { EyesError } = require('./errors/EyesError');
 const { NewTestError } = require('./errors/NewTestError');
 const { OutOfBoundsError } = require('./errors/OutOfBoundsError');
 const { TestFailedError } = require('./errors/TestFailedError');
@@ -34920,10 +34913,6 @@ class EyesBase {
       .then(result => {
         that._logger.verbose('EyesBase.replaceWindow done');
         return result;
-      })
-      .catch(err => {
-        that._logger.log(err);
-        throw err;
       });
   }
 
@@ -35063,7 +35052,7 @@ class EyesBase {
         })
         .then(() => that.afterOpen());
     } catch (err) {
-      this._logger.log(err);
+      this._logger.log(err.message);
       this._logger.getLogHandler().close();
       return this._promiseFactory.reject(err);
     }
@@ -35273,11 +35262,10 @@ class EyesBase {
       .getLastScreenshot()
       .getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
 
-    // If the region is NOT empty, we'll give the coordinates relative to
-    // the control.
+    // If the region is NOT empty, we'll give the coordinates relative to the control.
     if (!controlScreenshotIntersect.isEmpty()) {
-      const l = controlScreenshotIntersect.location;
-      cursorInScreenshot.offset(-l.x, -l.y);
+      const l = controlScreenshotIntersect.getLocation();
+      cursorInScreenshot.offset(-l.getX(), -l.getY());
     }
 
     const trigger = new MouseTrigger(action, controlScreenshotIntersect, cursorInScreenshot);
@@ -35333,13 +35321,11 @@ class EyesBase {
       .then(() => that._notifyEvent('testStarted', that._autSessionId))
       .then(() => that._notifyEvent('setSizeWillStart', that._autSessionId, that._viewportSize))
       .then(() => that._ensureViewportSize()
-        .catch(err => {
-          that._logger.log(err);
-          return that._notifyEvent('setSizeEnded', that._autSessionId).then(() => {
+        .catch(err => that._notifyEvent('setSizeEnded', that._autSessionId)
+          .then(() => {
             // Throw to skip execution of all consecutive "then" blocks.
-            throw new Error('Failed to set/get viewport size.');
-          });
-        }))
+            throw new EyesError('Failed to set/get viewport size', err);
+          })))
       .then(() => that._notifyEvent('setSizeEnded', that._autSessionId))
       .then(() => that._notifyEvent('initStarted', that._autSessionId))
       .then(() => that.getAppEnvironment())
@@ -35642,7 +35628,7 @@ class EyesBase {
 exports.EyesBase = EyesBase;
 
 }).call(this,require('_process'))
-},{"./AppEnvironment":190,"./ArgumentGuard":191,"./BatchInfo":192,"./FailureReports":196,"./MatchSingleWindowTask":197,"./MatchWindowTask":198,"./PromiseFactory":199,"./RenderWindowTask":201,"./SessionEventHandler":202,"./TestResults":203,"./TestResultsStatus":204,"./capture/AppOutputProvider":205,"./capture/AppOutputWithScreenshot":206,"./cropping/NullCutProvider":213,"./debug/FileDebugScreenshotsProvider":216,"./debug/NullDebugScreenshotProvider":217,"./errors/DiffsFoundError":219,"./errors/NewTestError":221,"./errors/OutOfBoundsError":222,"./errors/TestFailedError":223,"./fluent/CheckSettings":224,"./geometry/CoordinatesType":230,"./geometry/Location":231,"./geometry/RectangleSize":232,"./geometry/Region":233,"./images/ImageDeltaCompressor":234,"./logging/Logger":240,"./match/AppOutput":242,"./match/ImageMatchSettings":245,"./match/MatchLevel":246,"./match/MatchResult":247,"./match/MatchWindowData":249,"./positioning/InvalidPositionProvider":260,"./scaling/FixedScaleProvider":274,"./scaling/NullScaleProvider":276,"./server/PropertyData":280,"./server/ServerConnector":283,"./server/SessionStartInfo":284,"./server/SessionType":285,"./triggers/MouseTrigger":286,"./triggers/TextTrigger":287,"./utils/GeneralUtils":290,"./utils/ReadOnlyPropertyHandler":293,"./utils/SimplePropertyHandler":294,"_process":138}],194:[function(require,module,exports){
+},{"./AppEnvironment":190,"./ArgumentGuard":191,"./BatchInfo":192,"./FailureReports":196,"./MatchSingleWindowTask":197,"./MatchWindowTask":198,"./PromiseFactory":199,"./RenderWindowTask":201,"./SessionEventHandler":202,"./TestResults":203,"./TestResultsStatus":204,"./capture/AppOutputProvider":205,"./capture/AppOutputWithScreenshot":206,"./cropping/NullCutProvider":213,"./debug/FileDebugScreenshotsProvider":216,"./debug/NullDebugScreenshotProvider":217,"./errors/DiffsFoundError":219,"./errors/EyesError":220,"./errors/NewTestError":221,"./errors/OutOfBoundsError":222,"./errors/TestFailedError":223,"./fluent/CheckSettings":224,"./geometry/CoordinatesType":230,"./geometry/Location":231,"./geometry/RectangleSize":232,"./geometry/Region":233,"./images/ImageDeltaCompressor":234,"./logging/Logger":240,"./match/AppOutput":242,"./match/ImageMatchSettings":245,"./match/MatchLevel":246,"./match/MatchResult":247,"./match/MatchWindowData":249,"./positioning/InvalidPositionProvider":261,"./scaling/FixedScaleProvider":275,"./scaling/NullScaleProvider":277,"./server/PropertyData":281,"./server/ServerConnector":284,"./server/SessionStartInfo":285,"./server/SessionType":286,"./triggers/MouseTrigger":287,"./triggers/TextTrigger":288,"./utils/GeneralUtils":291,"./utils/ReadOnlyPropertyHandler":294,"./utils/SimplePropertyHandler":295,"_process":138}],194:[function(require,module,exports){
 'use strict';
 
 const { EyesError } = require('./errors/EyesError');
@@ -36130,7 +36116,7 @@ class MatchSingleWindowTask extends MatchWindowTask {
 
 exports.MatchSingleWindowTask = MatchSingleWindowTask;
 
-},{"./MatchWindowTask":198,"./match/MatchSingleWindowData":248,"./match/MatchWindowData":249,"./utils/GeneralUtils":290}],198:[function(require,module,exports){
+},{"./MatchWindowTask":198,"./match/MatchSingleWindowData":248,"./match/MatchWindowData":249,"./utils/GeneralUtils":291}],198:[function(require,module,exports){
 'use strict';
 
 const { Region } = require('./geometry/Region');
@@ -36508,7 +36494,7 @@ class MatchWindowTask {
 MatchWindowTask.MATCH_INTERVAL = MATCH_INTERVAL;
 exports.MatchWindowTask = MatchWindowTask;
 
-},{"./ArgumentGuard":191,"./geometry/Region":233,"./match/MatchWindowData":249,"./utils/GeneralUtils":290}],199:[function(require,module,exports){
+},{"./ArgumentGuard":191,"./geometry/Region":233,"./match/MatchWindowData":249,"./utils/GeneralUtils":291}],199:[function(require,module,exports){
 'use strict';
 
 /**
@@ -36797,7 +36783,7 @@ class RemoteSessionEventHandler extends SessionEventHandler {
 
 exports.RemoteSessionEventHandler = RemoteSessionEventHandler;
 
-},{"./SessionEventHandler":202,"./utils/GeneralUtils":290,"axios":297}],201:[function(require,module,exports){
+},{"./SessionEventHandler":202,"./utils/GeneralUtils":291,"axios":298}],201:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('./ArgumentGuard');
@@ -36908,7 +36894,7 @@ class RenderWindowTask {
 
 exports.RenderWindowTask = RenderWindowTask;
 
-},{"./ArgumentGuard":191,"./renderer/RenderRequest":267,"./renderer/RenderStatus":268,"./utils/GeneralUtils":290}],202:[function(require,module,exports){
+},{"./ArgumentGuard":191,"./renderer/RenderRequest":268,"./renderer/RenderStatus":269,"./utils/GeneralUtils":291}],202:[function(require,module,exports){
 'use strict';
 
 /**
@@ -37660,7 +37646,7 @@ class TestResults {
 
 exports.TestResults = TestResults;
 
-},{"./TestResultsStatus":204,"./geometry/RectangleSize":232,"./utils/GeneralUtils":290}],204:[function(require,module,exports){
+},{"./TestResultsStatus":204,"./geometry/RectangleSize":232,"./utils/GeneralUtils":291}],204:[function(require,module,exports){
 'use strict';
 
 /**
@@ -38332,7 +38318,7 @@ class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
 
 exports.FileDebugScreenshotsProvider = FileDebugScreenshotsProvider;
 
-},{"./DebugScreenshotsProvider":215,"dateformat":322}],217:[function(require,module,exports){
+},{"./DebugScreenshotsProvider":215,"dateformat":323}],217:[function(require,module,exports){
 'use strict';
 
 const { DebugScreenshotsProvider } = require('./DebugScreenshotsProvider');
@@ -38409,7 +38395,7 @@ class DiffsFoundError extends TestFailedError {
 
 exports.DiffsFoundError = DiffsFoundError;
 
-},{"../server/SessionStartInfo":284,"./TestFailedError":223}],220:[function(require,module,exports){
+},{"../server/SessionStartInfo":285,"./TestFailedError":223}],220:[function(require,module,exports){
 'use strict';
 
 /**
@@ -38418,15 +38404,20 @@ exports.DiffsFoundError = DiffsFoundError;
 class EyesError extends Error {
   /**
    * @param {string} [message] The error description string
-   * @param [params...] Other params for Error constructor
+   * @param {Error} [error] Another error to inherit from
    */
-  constructor(message, ...params) {
-    super(message, ...params);
+  constructor(message, error) {
+    super(message);
 
     /** @override */
     this.name = this.constructor.name;
 
-    Error.captureStackTrace(this, this.constructor);
+    if (error instanceof Error) {
+      this.message = `${message}: ${error.message}`;
+      this.stack = error.stack;
+    } else {
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 }
 
@@ -38460,7 +38451,7 @@ class NewTestError extends TestFailedError {
 
 exports.NewTestError = NewTestError;
 
-},{"../server/SessionStartInfo":284,"./TestFailedError":223}],222:[function(require,module,exports){
+},{"../server/SessionStartInfo":285,"./TestFailedError":223}],222:[function(require,module,exports){
 'use strict';
 
 const { EyesError } = require('./EyesError');
@@ -38511,7 +38502,7 @@ class TestFailedError extends EyesError {
 
 exports.TestFailedError = TestFailedError;
 
-},{"../server/SessionStartInfo":284,"./EyesError":220}],224:[function(require,module,exports){
+},{"../server/SessionStartInfo":285,"./EyesError":220}],224:[function(require,module,exports){
 'use strict';
 
 const { MatchLevel } = require('../match/MatchLevel');
@@ -39965,7 +39956,7 @@ class ImageDeltaCompressor {
 exports.ImageDeltaCompressor = ImageDeltaCompressor;
 
 }).call(this,require("buffer").Buffer)
-},{"../utils/StreamUtils":295,"buffer":52,"zlib":49}],235:[function(require,module,exports){
+},{"../utils/StreamUtils":296,"buffer":52,"zlib":49}],235:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -40455,7 +40446,7 @@ class ImageUtils {
 exports.ImageUtils = ImageUtils;
 
 }).call(this,require("buffer").Buffer)
-},{"../ArgumentGuard":191,"../utils/StreamUtils":295,"buffer":52,"fs":50,"png-async":328}],236:[function(require,module,exports){
+},{"../ArgumentGuard":191,"../utils/StreamUtils":296,"buffer":52,"fs":50,"png-async":329}],236:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -40807,7 +40798,7 @@ class MutableImage {
 exports.MutableImage = MutableImage;
 
 }).call(this,require("buffer").Buffer)
-},{"../geometry/Location":231,"../geometry/RectangleSize":232,"../utils/GeneralUtils":290,"./ImageUtils":235,"buffer":52,"fs":50}],237:[function(require,module,exports){
+},{"../geometry/Location":231,"../geometry/RectangleSize":232,"../utils/GeneralUtils":291,"./ImageUtils":235,"buffer":52,"fs":50}],237:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -40846,7 +40837,7 @@ class ConsoleLogHandler extends LogHandler {
 
 exports.ConsoleLogHandler = ConsoleLogHandler;
 
-},{"../utils/GeneralUtils":290,"./LogHandler":239}],238:[function(require,module,exports){
+},{"../utils/GeneralUtils":291,"./LogHandler":239}],238:[function(require,module,exports){
 'use strict';
 
 const path = require('path');
@@ -40914,7 +40905,7 @@ class FileLogHandler extends LogHandler {
 
 exports.FileLogHandler = FileLogHandler;
 
-},{"../utils/GeneralUtils":290,"./LogHandler":239,"fs":50,"path":131}],239:[function(require,module,exports){
+},{"../utils/GeneralUtils":291,"./LogHandler":239,"fs":50,"path":131}],239:[function(require,module,exports){
 'use strict';
 
 /**
@@ -41038,7 +41029,7 @@ class Logger {
 
 exports.Logger = Logger;
 
-},{"../ArgumentGuard":191,"../utils/GeneralUtils":290,"./NullLogHandler":241}],241:[function(require,module,exports){
+},{"../ArgumentGuard":191,"../utils/GeneralUtils":291,"./NullLogHandler":241}],241:[function(require,module,exports){
 'use strict';
 
 const { LogHandler } = require('./LogHandler');
@@ -41249,7 +41240,7 @@ class ExactMatchSettings {
 
 exports.ExactMatchSettings = ExactMatchSettings;
 
-},{"../utils/GeneralUtils":290}],244:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],244:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -41388,7 +41379,7 @@ class FloatingMatchSettings {
 
 exports.FloatingMatchSettings = FloatingMatchSettings;
 
-},{"../geometry/Region":233,"../utils/GeneralUtils":290}],245:[function(require,module,exports){
+},{"../geometry/Region":233,"../utils/GeneralUtils":291}],245:[function(require,module,exports){
 'use strict';
 
 const { MatchLevel } = require('./MatchLevel');
@@ -41607,7 +41598,7 @@ class MatchResult {
 
 exports.MatchResult = MatchResult;
 
-},{"../utils/GeneralUtils":290}],248:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],248:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -41743,7 +41734,7 @@ class MatchSingleWindowData extends MatchWindowData {
 
 exports.MatchSingleWindowData = MatchSingleWindowData;
 
-},{"../utils/GeneralUtils":290,"./MatchWindowData":249}],249:[function(require,module,exports){
+},{"../utils/GeneralUtils":291,"./MatchWindowData":249}],249:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -41906,7 +41897,7 @@ class MatchWindowData {
 MatchWindowData.Options = Options;
 exports.MatchWindowData = MatchWindowData;
 
-},{"../ArgumentGuard":191,"../utils/GeneralUtils":290}],250:[function(require,module,exports){
+},{"../ArgumentGuard":191,"../utils/GeneralUtils":291}],250:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -41950,7 +41941,7 @@ class MatchWindowDataWithScreenshot {
 
 exports.MatchWindowDataWithScreenshot = MatchWindowDataWithScreenshot;
 
-},{"../utils/GeneralUtils":290}],251:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],251:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -42125,7 +42116,7 @@ class ActualAppOutput {
 
 exports.ActualAppOutput = ActualAppOutput;
 
-},{"../utils/GeneralUtils":290}],252:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],252:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -42220,7 +42211,7 @@ class Annotations {
 
 exports.Annotations = Annotations;
 
-},{"../utils/GeneralUtils":290}],253:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],253:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -42289,7 +42280,7 @@ class BatchInfo {
 
 exports.BatchInfo = BatchInfo;
 
-},{"../utils/GeneralUtils":290}],254:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],254:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -42358,7 +42349,7 @@ class Branch {
 
 exports.Branch = Branch;
 
-},{"../utils/GeneralUtils":290}],255:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],255:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -42453,7 +42444,7 @@ class ExpectedAppOutput {
 
 exports.ExpectedAppOutput = ExpectedAppOutput;
 
-},{"../utils/GeneralUtils":290}],256:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],256:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -42509,7 +42500,7 @@ class Image {
 
 exports.Image = Image;
 
-},{"../utils/GeneralUtils":290}],257:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],257:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -42682,7 +42673,7 @@ class ImageMatchSettings {
 
 exports.ImageMatchSettings = ImageMatchSettings;
 
-},{"../utils/GeneralUtils":290}],258:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],258:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -43089,7 +43080,7 @@ class SessionResults {
 
 exports.SessionResults = SessionResults;
 
-},{"../utils/GeneralUtils":290}],259:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],259:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -43263,7 +43254,20 @@ class StartInfo {
 
 exports.StartInfo = StartInfo;
 
-},{"../utils/GeneralUtils":290}],260:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],260:[function(require,module,exports){
+'use strict';
+
+exports.ActualAppOutput = require('./ActualAppOutput').ActualAppOutput;
+exports.Annotations = require('./Annotations').Annotations;
+exports.BatchInfo = require('./BatchInfo').BatchInfo;
+exports.Branch = require('./Branch').Branch;
+exports.ExpectedAppOutput = require('./ExpectedAppOutput').ExpectedAppOutput;
+exports.Image = require('./Image').Image;
+exports.ImageMatchSettings = require('./ImageMatchSettings').ImageMatchSettings;
+exports.SessionResults = require('./SessionResults').SessionResults;
+exports.StartInfo = require('./StartInfo').StartInfo;
+
+},{"./ActualAppOutput":251,"./Annotations":252,"./BatchInfo":253,"./Branch":254,"./ExpectedAppOutput":255,"./Image":256,"./ImageMatchSettings":257,"./SessionResults":258,"./StartInfo":259}],261:[function(require,module,exports){
 'use strict';
 
 const { PositionProvider } = require('./PositionProvider');
@@ -43321,7 +43325,7 @@ class InvalidPositionProvider extends PositionProvider {
 
 exports.InvalidPositionProvider = InvalidPositionProvider;
 
-},{"./PositionProvider":263}],261:[function(require,module,exports){
+},{"./PositionProvider":264}],262:[function(require,module,exports){
 'use strict';
 
 const { RegionProvider } = require('./RegionProvider');
@@ -43338,7 +43342,7 @@ class NullRegionProvider extends RegionProvider {
 
 exports.NullRegionProvider = NullRegionProvider;
 
-},{"../geometry/Region":233,"./RegionProvider":264}],262:[function(require,module,exports){
+},{"../geometry/Region":233,"./RegionProvider":265}],263:[function(require,module,exports){
 'use strict';
 
 /**
@@ -43351,7 +43355,7 @@ class PositionMemento {}
 
 exports.PositionMemento = PositionMemento;
 
-},{}],263:[function(require,module,exports){
+},{}],264:[function(require,module,exports){
 'use strict';
 
 /**
@@ -43392,7 +43396,7 @@ class PositionProvider {
 
 exports.PositionProvider = PositionProvider;
 
-},{}],264:[function(require,module,exports){
+},{}],265:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -43425,7 +43429,7 @@ class RegionProvider {
 
 exports.RegionProvider = RegionProvider;
 
-},{"../ArgumentGuard":191}],265:[function(require,module,exports){
+},{"../ArgumentGuard":191}],266:[function(require,module,exports){
 'use strict';
 
 const crypto = require('crypto');
@@ -43531,7 +43535,7 @@ class RGridDom {
 
 exports.RGridDom = RGridDom;
 
-},{"../ArgumentGuard":191,"../utils/GeneralUtils":290,"./RGridResource":266,"crypto":62}],266:[function(require,module,exports){
+},{"../ArgumentGuard":191,"../utils/GeneralUtils":291,"./RGridResource":267,"crypto":62}],267:[function(require,module,exports){
 'use strict';
 
 const crypto = require('crypto');
@@ -43625,7 +43629,7 @@ class RGridResource {
 
 exports.RGridResource = RGridResource;
 
-},{"../ArgumentGuard":191,"../utils/GeneralUtils":290,"crypto":62}],267:[function(require,module,exports){
+},{"../ArgumentGuard":191,"../utils/GeneralUtils":291,"crypto":62}],268:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -43706,7 +43710,7 @@ class RenderRequest {
 
 exports.RenderRequest = RenderRequest;
 
-},{"../ArgumentGuard":191}],268:[function(require,module,exports){
+},{"../ArgumentGuard":191}],269:[function(require,module,exports){
 'use strict';
 
 /**
@@ -43738,7 +43742,7 @@ const RenderStatus = {
 Object.freeze(RenderStatus);
 exports.RenderStatus = RenderStatus;
 
-},{}],269:[function(require,module,exports){
+},{}],270:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -43807,7 +43811,7 @@ class RenderStatusResults {
 
 exports.RenderStatusResults = RenderStatusResults;
 
-},{"../utils/GeneralUtils":290}],270:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],271:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -43883,7 +43887,7 @@ class RenderingInfo {
 
 exports.RenderingInfo = RenderingInfo;
 
-},{"../utils/GeneralUtils":290}],271:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],272:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -43978,7 +43982,7 @@ class RunningRender {
 
 exports.RunningRender = RunningRender;
 
-},{"../utils/GeneralUtils":290}],272:[function(require,module,exports){
+},{"../utils/GeneralUtils":291}],273:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -44075,7 +44079,7 @@ class ContextBasedScaleProvider extends ScaleProvider {
 
 exports.ContextBasedScaleProvider = ContextBasedScaleProvider;
 
-},{"../ArgumentGuard":191,"./ScaleProvider":277}],273:[function(require,module,exports){
+},{"../ArgumentGuard":191,"./ScaleProvider":278}],274:[function(require,module,exports){
 'use strict';
 
 const { ScaleProviderFactory } = require('./ScaleProviderFactory');
@@ -44127,7 +44131,7 @@ class ContextBasedScaleProviderFactory extends ScaleProviderFactory {
 
 exports.ContextBasedScaleProviderFactory = ContextBasedScaleProviderFactory;
 
-},{"./ContextBasedScaleProvider":272,"./ScaleProviderFactory":278}],274:[function(require,module,exports){
+},{"./ContextBasedScaleProvider":273,"./ScaleProviderFactory":279}],275:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -44154,7 +44158,7 @@ class FixedScaleProvider extends ScaleProvider {
 
 exports.FixedScaleProvider = FixedScaleProvider;
 
-},{"../ArgumentGuard":191,"./ScaleProvider":277}],275:[function(require,module,exports){
+},{"../ArgumentGuard":191,"./ScaleProvider":278}],276:[function(require,module,exports){
 'use strict';
 
 const { FixedScaleProvider } = require('./FixedScaleProvider');
@@ -44185,7 +44189,7 @@ class FixedScaleProviderFactory extends ScaleProviderFactory {
 
 exports.FixedScaleProviderFactory = FixedScaleProviderFactory;
 
-},{"./FixedScaleProvider":274,"./ScaleProviderFactory":278}],276:[function(require,module,exports){
+},{"./FixedScaleProvider":275,"./ScaleProviderFactory":279}],277:[function(require,module,exports){
 'use strict';
 
 const { FixedScaleProvider } = require('./FixedScaleProvider');
@@ -44201,7 +44205,7 @@ class NullScaleProvider extends FixedScaleProvider {
 
 exports.NullScaleProvider = NullScaleProvider;
 
-},{"./FixedScaleProvider":274}],277:[function(require,module,exports){
+},{"./FixedScaleProvider":275}],278:[function(require,module,exports){
 'use strict';
 
 /**
@@ -44218,7 +44222,7 @@ class ScaleProvider {
 
 exports.ScaleProvider = ScaleProvider;
 
-},{}],278:[function(require,module,exports){
+},{}],279:[function(require,module,exports){
 'use strict';
 
 class ScaleProviderFactory {
@@ -44259,7 +44263,7 @@ class ScaleProviderFactory {
 
 exports.ScaleProviderFactory = ScaleProviderFactory;
 
-},{}],279:[function(require,module,exports){
+},{}],280:[function(require,module,exports){
 'use strict';
 
 const { ScaleProviderFactory } = require('./ScaleProviderFactory');
@@ -44291,7 +44295,7 @@ class ScaleProviderIdentityFactory extends ScaleProviderFactory {
 
 exports.ScaleProviderIdentityFactory = ScaleProviderIdentityFactory;
 
-},{"./ScaleProviderFactory":278}],280:[function(require,module,exports){
+},{"./ScaleProviderFactory":279}],281:[function(require,module,exports){
 'use strict';
 
 class PropertyData {
@@ -44343,7 +44347,7 @@ class PropertyData {
 
 exports.PropertyData = PropertyData;
 
-},{}],281:[function(require,module,exports){
+},{}],282:[function(require,module,exports){
 'use strict';
 
 const url = require('url');
@@ -44416,7 +44420,7 @@ class ProxySettings {
 
 exports.ProxySettings = ProxySettings;
 
-},{"../ArgumentGuard":191,"url":181}],282:[function(require,module,exports){
+},{"../ArgumentGuard":191,"url":181}],283:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -44539,7 +44543,7 @@ class RunningSession {
 
 exports.RunningSession = RunningSession;
 
-},{"../renderer/RenderingInfo":270,"../utils/GeneralUtils":290}],283:[function(require,module,exports){
+},{"../renderer/RenderingInfo":271,"../utils/GeneralUtils":291}],284:[function(require,module,exports){
 (function (process,Buffer){
 'use strict';
 
@@ -45246,7 +45250,7 @@ class ServerConnector {
 exports.ServerConnector = ServerConnector;
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"../ArgumentGuard":191,"../TestResults":203,"../match/MatchResult":247,"../renderer/RenderStatusResults":269,"../renderer/RenderingInfo":270,"../renderer/RunningRender":271,"../utils/GeneralUtils":290,"./ProxySettings":281,"./RunningSession":282,"_process":138,"axios":297,"buffer":52,"http":175}],284:[function(require,module,exports){
+},{"../ArgumentGuard":191,"../TestResults":203,"../match/MatchResult":247,"../renderer/RenderStatusResults":270,"../renderer/RenderingInfo":271,"../renderer/RunningRender":272,"../utils/GeneralUtils":291,"./ProxySettings":282,"./RunningSession":283,"_process":138,"axios":298,"buffer":52,"http":175}],285:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -45435,7 +45439,7 @@ class SessionStartInfo {
 
 exports.SessionStartInfo = SessionStartInfo;
 
-},{"../ArgumentGuard":191,"../utils/GeneralUtils":290}],285:[function(require,module,exports){
+},{"../ArgumentGuard":191,"../utils/GeneralUtils":291}],286:[function(require,module,exports){
 'use strict';
 
 /**
@@ -45459,7 +45463,7 @@ const SessionType = {
 Object.freeze(SessionType);
 exports.SessionType = SessionType;
 
-},{}],286:[function(require,module,exports){
+},{}],287:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -45540,7 +45544,7 @@ MouseTrigger.MouseAction = {
 Object.freeze(MouseTrigger.MouseAction);
 exports.MouseTrigger = MouseTrigger;
 
-},{"../ArgumentGuard":191,"./Trigger":288}],287:[function(require,module,exports){
+},{"../ArgumentGuard":191,"./Trigger":289}],288:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -45597,7 +45601,7 @@ class TextTrigger extends Trigger {
 
 exports.TextTrigger = TextTrigger;
 
-},{"../ArgumentGuard":191,"./Trigger":288}],288:[function(require,module,exports){
+},{"../ArgumentGuard":191,"./Trigger":289}],289:[function(require,module,exports){
 'use strict';
 
 /**
@@ -45636,7 +45640,7 @@ Trigger.TriggerType = {
 Object.freeze(Trigger.TriggerType);
 exports.Trigger = Trigger;
 
-},{}],289:[function(require,module,exports){
+},{}],290:[function(require,module,exports){
 'use strict';
 
 /**
@@ -45655,7 +45659,7 @@ const BrowserNames = {
 Object.freeze(BrowserNames);
 exports.BrowserNames = BrowserNames;
 
-},{}],290:[function(require,module,exports){
+},{}],291:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -46038,10 +46042,10 @@ class GeneralUtils {
   }
 }
 
-exports.GeneralUtils= GeneralUtils;
+exports.GeneralUtils = GeneralUtils;
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":52,"dateformat":322,"stack-trace":331}],291:[function(require,module,exports){
+},{"buffer":52,"dateformat":323,"stack-trace":332}],292:[function(require,module,exports){
 'use strict';
 
 /**
@@ -46059,7 +46063,7 @@ const OSNames = {
 Object.freeze(OSNames);
 exports.OSNames = OSNames;
 
-},{}],292:[function(require,module,exports){
+},{}],293:[function(require,module,exports){
 'use strict';
 
 /**
@@ -46082,7 +46086,7 @@ class PropertyHandler {
 
 exports.PropertyHandler = PropertyHandler;
 
-},{}],293:[function(require,module,exports){
+},{}],294:[function(require,module,exports){
 'use strict';
 
 const { PropertyHandler } = require('./PropertyHandler');
@@ -46115,7 +46119,7 @@ class ReadOnlyPropertyHandler extends PropertyHandler {
 
 exports.ReadOnlyPropertyHandler = ReadOnlyPropertyHandler;
 
-},{"./PropertyHandler":292}],294:[function(require,module,exports){
+},{"./PropertyHandler":293}],295:[function(require,module,exports){
 'use strict';
 
 const { PropertyHandler } = require('./PropertyHandler');
@@ -46146,7 +46150,7 @@ class SimplePropertyHandler extends PropertyHandler {
 
 exports.SimplePropertyHandler = SimplePropertyHandler;
 
-},{"./PropertyHandler":292}],295:[function(require,module,exports){
+},{"./PropertyHandler":293}],296:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -46255,7 +46259,7 @@ exports.ReadableBufferStream = ReadableBufferStream;
 exports.WritableBufferStream = WritableBufferStream;
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":52,"stream":174}],296:[function(require,module,exports){
+},{"buffer":52,"stream":174}],297:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -46485,9 +46489,9 @@ class UserAgent {
 
 exports.UserAgent = UserAgent;
 
-},{"../ArgumentGuard":191,"./BrowserNames":289,"./OSNames":291}],297:[function(require,module,exports){
+},{"../ArgumentGuard":191,"./BrowserNames":290,"./OSNames":292}],298:[function(require,module,exports){
 module.exports = require('./lib/axios');
-},{"./lib/axios":299}],298:[function(require,module,exports){
+},{"./lib/axios":300}],299:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -46671,7 +46675,7 @@ module.exports = function xhrAdapter(config) {
 };
 
 }).call(this,require('_process'))
-},{"../core/createError":305,"./../core/settle":308,"./../helpers/btoa":312,"./../helpers/buildURL":313,"./../helpers/cookies":315,"./../helpers/isURLSameOrigin":317,"./../helpers/parseHeaders":319,"./../utils":321,"_process":138}],299:[function(require,module,exports){
+},{"../core/createError":306,"./../core/settle":309,"./../helpers/btoa":313,"./../helpers/buildURL":314,"./../helpers/cookies":316,"./../helpers/isURLSameOrigin":318,"./../helpers/parseHeaders":320,"./../utils":322,"_process":138}],300:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -46725,7 +46729,7 @@ module.exports = axios;
 // Allow use of default import syntax in TypeScript
 module.exports.default = axios;
 
-},{"./cancel/Cancel":300,"./cancel/CancelToken":301,"./cancel/isCancel":302,"./core/Axios":303,"./defaults":310,"./helpers/bind":311,"./helpers/spread":320,"./utils":321}],300:[function(require,module,exports){
+},{"./cancel/Cancel":301,"./cancel/CancelToken":302,"./cancel/isCancel":303,"./core/Axios":304,"./defaults":311,"./helpers/bind":312,"./helpers/spread":321,"./utils":322}],301:[function(require,module,exports){
 'use strict';
 
 /**
@@ -46746,7 +46750,7 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
-},{}],301:[function(require,module,exports){
+},{}],302:[function(require,module,exports){
 'use strict';
 
 var Cancel = require('./Cancel');
@@ -46805,14 +46809,14 @@ CancelToken.source = function source() {
 
 module.exports = CancelToken;
 
-},{"./Cancel":300}],302:[function(require,module,exports){
+},{"./Cancel":301}],303:[function(require,module,exports){
 'use strict';
 
 module.exports = function isCancel(value) {
   return !!(value && value.__CANCEL__);
 };
 
-},{}],303:[function(require,module,exports){
+},{}],304:[function(require,module,exports){
 'use strict';
 
 var defaults = require('./../defaults');
@@ -46893,7 +46897,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = Axios;
 
-},{"./../defaults":310,"./../utils":321,"./InterceptorManager":304,"./dispatchRequest":306}],304:[function(require,module,exports){
+},{"./../defaults":311,"./../utils":322,"./InterceptorManager":305,"./dispatchRequest":307}],305:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -46947,7 +46951,7 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 
 module.exports = InterceptorManager;
 
-},{"./../utils":321}],305:[function(require,module,exports){
+},{"./../utils":322}],306:[function(require,module,exports){
 'use strict';
 
 var enhanceError = require('./enhanceError');
@@ -46967,7 +46971,7 @@ module.exports = function createError(message, config, code, request, response) 
   return enhanceError(error, config, code, request, response);
 };
 
-},{"./enhanceError":307}],306:[function(require,module,exports){
+},{"./enhanceError":308}],307:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -47055,7 +47059,7 @@ module.exports = function dispatchRequest(config) {
   });
 };
 
-},{"../cancel/isCancel":302,"../defaults":310,"./../helpers/combineURLs":314,"./../helpers/isAbsoluteURL":316,"./../utils":321,"./transformData":309}],307:[function(require,module,exports){
+},{"../cancel/isCancel":303,"../defaults":311,"./../helpers/combineURLs":315,"./../helpers/isAbsoluteURL":317,"./../utils":322,"./transformData":310}],308:[function(require,module,exports){
 'use strict';
 
 /**
@@ -47078,7 +47082,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   return error;
 };
 
-},{}],308:[function(require,module,exports){
+},{}],309:[function(require,module,exports){
 'use strict';
 
 var createError = require('./createError');
@@ -47106,7 +47110,7 @@ module.exports = function settle(resolve, reject, response) {
   }
 };
 
-},{"./createError":305}],309:[function(require,module,exports){
+},{"./createError":306}],310:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -47128,7 +47132,7 @@ module.exports = function transformData(data, headers, fns) {
   return data;
 };
 
-},{"./../utils":321}],310:[function(require,module,exports){
+},{"./../utils":322}],311:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -47228,7 +47232,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 }).call(this,require('_process'))
-},{"./adapters/http":298,"./adapters/xhr":298,"./helpers/normalizeHeaderName":318,"./utils":321,"_process":138}],311:[function(require,module,exports){
+},{"./adapters/http":299,"./adapters/xhr":299,"./helpers/normalizeHeaderName":319,"./utils":322,"_process":138}],312:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -47241,7 +47245,7 @@ module.exports = function bind(fn, thisArg) {
   };
 };
 
-},{}],312:[function(require,module,exports){
+},{}],313:[function(require,module,exports){
 'use strict';
 
 // btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
@@ -47279,7 +47283,7 @@ function btoa(input) {
 
 module.exports = btoa;
 
-},{}],313:[function(require,module,exports){
+},{}],314:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -47347,7 +47351,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   return url;
 };
 
-},{"./../utils":321}],314:[function(require,module,exports){
+},{"./../utils":322}],315:[function(require,module,exports){
 'use strict';
 
 /**
@@ -47363,7 +47367,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
     : baseURL;
 };
 
-},{}],315:[function(require,module,exports){
+},{}],316:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -47418,7 +47422,7 @@ module.exports = (
   })()
 );
 
-},{"./../utils":321}],316:[function(require,module,exports){
+},{"./../utils":322}],317:[function(require,module,exports){
 'use strict';
 
 /**
@@ -47434,7 +47438,7 @@ module.exports = function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 };
 
-},{}],317:[function(require,module,exports){
+},{}],318:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -47504,7 +47508,7 @@ module.exports = (
   })()
 );
 
-},{"./../utils":321}],318:[function(require,module,exports){
+},{"./../utils":322}],319:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -47518,7 +47522,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
   });
 };
 
-},{"../utils":321}],319:[function(require,module,exports){
+},{"../utils":322}],320:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -47573,7 +47577,7 @@ module.exports = function parseHeaders(headers) {
   return parsed;
 };
 
-},{"./../utils":321}],320:[function(require,module,exports){
+},{"./../utils":322}],321:[function(require,module,exports){
 'use strict';
 
 /**
@@ -47602,7 +47606,7 @@ module.exports = function spread(callback) {
   };
 };
 
-},{}],321:[function(require,module,exports){
+},{}],322:[function(require,module,exports){
 'use strict';
 
 var bind = require('./helpers/bind');
@@ -47907,7 +47911,7 @@ module.exports = {
   trim: trim
 };
 
-},{"./helpers/bind":311,"is-buffer":323}],322:[function(require,module,exports){
+},{"./helpers/bind":312,"is-buffer":324}],323:[function(require,module,exports){
 /*
  * Date Format 1.2.3
  * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
@@ -48138,9 +48142,9 @@ function kindOf(val) {
   }
 })(this);
 
-},{}],323:[function(require,module,exports){
+},{}],324:[function(require,module,exports){
 arguments[4][108][0].apply(exports,arguments)
-},{"dup":108}],324:[function(require,module,exports){
+},{"dup":108}],325:[function(require,module,exports){
 (function (Buffer){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
@@ -48291,7 +48295,7 @@ var ChunkStream = (function (_super) {
 module.exports = ChunkStream;
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":52,"stream":174}],325:[function(require,module,exports){
+},{"buffer":52,"stream":174}],326:[function(require,module,exports){
 'use strict';
 exports.PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 exports.TYPE_IHDR = 0x49484452;
@@ -48304,7 +48308,7 @@ exports.COLOR_PALETTE = 1;
 exports.COLOR_COLOR = 2;
 exports.COLOR_ALPHA = 4;
 
-},{}],326:[function(require,module,exports){
+},{}],327:[function(require,module,exports){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
 var __extends = (this && this.__extends) || function (d, b) {
@@ -48384,7 +48388,7 @@ var CrcStream = (function (_super) {
 }(stream.Writable));
 module.exports = CrcStream;
 
-},{"stream":174}],327:[function(require,module,exports){
+},{"stream":174}],328:[function(require,module,exports){
 (function (Buffer){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
@@ -48656,7 +48660,7 @@ var Filter = (function (_super) {
 module.exports = Filter;
 
 }).call(this,require("buffer").Buffer)
-},{"./chunk-stream":324,"buffer":52}],328:[function(require,module,exports){
+},{"./chunk-stream":325,"buffer":52}],329:[function(require,module,exports){
 (function (Buffer){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
@@ -48788,7 +48792,7 @@ var Image = (function (_super) {
 exports.Image = Image;
 
 }).call(this,require("buffer").Buffer)
-},{"./packer":329,"./parser":330,"buffer":52,"stream":174}],329:[function(require,module,exports){
+},{"./packer":330,"./parser":331,"buffer":52,"stream":174}],330:[function(require,module,exports){
 (function (Buffer){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
@@ -48875,7 +48879,7 @@ var Packer = (function (_super) {
 module.exports = Packer;
 
 }).call(this,require("buffer").Buffer)
-},{"./constants":325,"./crc":326,"./filter":327,"./index":328,"buffer":52,"stream":174,"zlib":49}],330:[function(require,module,exports){
+},{"./constants":326,"./crc":327,"./filter":328,"./index":329,"buffer":52,"stream":174,"zlib":49}],331:[function(require,module,exports){
 (function (Buffer){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
@@ -49139,7 +49143,7 @@ var Parser = (function (_super) {
 module.exports = Parser;
 
 }).call(this,require("buffer").Buffer)
-},{"./chunk-stream":324,"./constants":325,"./crc":326,"./filter":327,"buffer":52,"zlib":49}],331:[function(require,module,exports){
+},{"./chunk-stream":325,"./constants":326,"./crc":327,"./filter":328,"buffer":52,"zlib":49}],332:[function(require,module,exports){
 exports.get = function(belowFn) {
   var oldLimit = Error.stackTraceLimit;
   Error.stackTraceLimit = Infinity;
