@@ -2,9 +2,9 @@
 
 const { RectangleSize, ArgumentGuard, EyesJsBrowserUtils } = require('@applitools/eyes.sdk.core');
 
-const EyesDriverOperationError = require('./errors/EyesDriverOperationError');
-const ImageOrientationHandler = require('./ImageOrientationHandler');
-const JavascriptHandler = require('./JavascriptHandler');
+const { EyesDriverOperationError } = require('./errors/EyesDriverOperationError');
+const { ImageOrientationHandler } = require('./ImageOrientationHandler');
+const { JavascriptHandler } = require('./JavascriptHandler');
 
 let imageOrientationHandlerHandler = new class ImageOrientationHandlerImpl extends ImageOrientationHandler {
   /** @override */
@@ -340,4 +340,4 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
   }
 }
 
-module.exports = EyesSeleniumUtils;
+exports.EyesSeleniumUtils = EyesSeleniumUtils;

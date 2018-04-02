@@ -18,4 +18,4 @@ class RegionVisibilityStrategy {
   returnToOriginalPosition(positionProvider) {}
 }
 
-module.exports = RegionVisibilityStrategy;
+exports.RegionVisibilityStrategy = RegionVisibilityStrategy;

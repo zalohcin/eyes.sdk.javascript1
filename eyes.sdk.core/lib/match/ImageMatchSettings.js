@@ -1,6 +1,6 @@
 'use strict';
 
-const MatchLevel = require('./MatchLevel');
+const { MatchLevel } = require('./MatchLevel');
 
 /**
  * Encapsulates match settings for the a session.
@@ -122,4 +122,4 @@ class ImageMatchSettings {
   }
 }
 
-module.exports = ImageMatchSettings;
+exports.ImageMatchSettings = ImageMatchSettings;

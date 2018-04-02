@@ -1,6 +1,6 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
+const { ArgumentGuard } = require('../ArgumentGuard');
 
 /**
  * @typedef {{x: number, y: number}} LocationObject
@@ -147,4 +147,4 @@ class Location {
 
 Location.ZERO = new Location(0, 0);
 
-module.exports = Location;
+exports.Location = Location;

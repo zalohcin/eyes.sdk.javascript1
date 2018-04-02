@@ -109,5 +109,5 @@ class ElementArrayFinderWrapper {
   }
 }
 
-module.exports.ElementFinderWrapper = ElementFinderWrapper;
-module.exports.ElementArrayFinderWrapper = ElementArrayFinderWrapper;
+exports.ElementFinderWrapper = ElementFinderWrapper;
+exports.ElementArrayFinderWrapper = ElementArrayFinderWrapper;

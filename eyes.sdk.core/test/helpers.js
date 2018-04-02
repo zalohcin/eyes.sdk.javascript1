@@ -18,10 +18,8 @@ const invColors = {};
 Object.keys(colors).forEach(key => { invColors[colors[key]] = key; });
 
 const getResourcePath = fileName => path.resolve(__dirname, '..', 'test', 'resources', fileName);
-exports.getResourcePath = getResourcePath;
 
 const getResource = fileName => fs.readFileSync(getResourcePath(fileName));
-exports.getResource = getResource;
 
 const makeImageMock = (...args) => {
   const width = args[0].length;
@@ -46,7 +44,6 @@ const makeImageMock = (...args) => {
 
   return imageMock;
 };
-exports.makeImageMock = makeImageMock;
 
 // Helps to debug image data
 const imageMock2String = imageMock => {
@@ -75,4 +72,8 @@ const imageMock2String = imageMock => {
 
   return lines.map(line => `'${line}'`).join('\n');
 };
+
+exports.makeImageMock = makeImageMock;
 exports.imageMock2String = imageMock2String;
+exports.getResourcePath = getResourcePath;
+exports.getResource = getResource;

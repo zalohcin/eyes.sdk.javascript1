@@ -2,8 +2,8 @@
 
 const { ArgumentGuard, Location } = require('@applitools/eyes.sdk.core');
 
-const Frame = require('./Frame');
-const NoFramesError = require('./../errors/NoFramesError');
+const { Frame } = require('./Frame');
+const { NoFramesError } = require('../errors/NoFramesError');
 
 /**
  * @class FrameChain
@@ -172,4 +172,4 @@ class FrameChain {
   }
 }
 
-module.exports = FrameChain;
+exports.FrameChain = FrameChain;

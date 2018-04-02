@@ -1,7 +1,7 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
-const ArgumentGuard = require('../ArgumentGuard');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ArgumentGuard } = require('../ArgumentGuard');
 
 /**
  * Encapsulates data required to start session using the Session API.
@@ -184,4 +184,4 @@ class SessionStartInfo {
   }
 }
 
-module.exports = SessionStartInfo;
+exports.SessionStartInfo = SessionStartInfo;

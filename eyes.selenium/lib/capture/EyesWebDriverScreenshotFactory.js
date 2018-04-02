@@ -2,7 +2,7 @@
 
 const { EyesScreenshotFactory } = require('@applitools/eyes.sdk.core');
 
-const EyesWebDriverScreenshot = require('./EyesWebDriverScreenshot');
+const { EyesWebDriverScreenshot } = require('./EyesWebDriverScreenshot');
 
 /**
  * Encapsulates the instantiation of an {@link EyesWebDriverScreenshot} .
@@ -31,4 +31,4 @@ class EyesWebDriverScreenshotFactory extends EyesScreenshotFactory {
   }
 }
 
-module.exports = EyesWebDriverScreenshotFactory;
+exports.EyesWebDriverScreenshotFactory = EyesWebDriverScreenshotFactory;

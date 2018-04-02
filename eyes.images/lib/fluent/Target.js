@@ -2,7 +2,7 @@
 
 const { MutableImage, GeneralUtils, ArgumentGuard } = require('@applitools/eyes.sdk.core');
 
-const ImagesCheckSettings = require('./ImagesCheckSettings');
+const { ImagesCheckSettings } = require('./ImagesCheckSettings');
 
 class Target {
   /**
@@ -85,4 +85,4 @@ class Target {
   }
 }
 
-module.exports = Target;
+exports.Target = Target;

@@ -1,6 +1,6 @@
 'use strict';
 
-const CheckSettings = require('./CheckSettings');
+const { CheckSettings } = require('./CheckSettings');
 
 class CheckTarget {
   /**
@@ -19,4 +19,4 @@ class CheckTarget {
   }
 }
 
-module.exports = CheckTarget;
+exports.CheckTarget = CheckTarget;

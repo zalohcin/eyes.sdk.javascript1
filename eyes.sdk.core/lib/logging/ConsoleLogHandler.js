@@ -1,7 +1,7 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
-const LogHandler = require('./LogHandler');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { LogHandler } = require('./LogHandler');
 
 /**
  * Write log massages to the browser/node console
@@ -34,4 +34,4 @@ class ConsoleLogHandler extends LogHandler {
   }
 }
 
-module.exports = ConsoleLogHandler;
+exports.ConsoleLogHandler = ConsoleLogHandler;

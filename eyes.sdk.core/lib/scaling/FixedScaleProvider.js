@@ -1,7 +1,7 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
-const ScaleProvider = require('./ScaleProvider');
+const { ArgumentGuard } = require('../ArgumentGuard');
+const { ScaleProvider } = require('./ScaleProvider');
 
 class FixedScaleProvider extends ScaleProvider {
   /**
@@ -22,4 +22,4 @@ class FixedScaleProvider extends ScaleProvider {
   }
 }
 
-module.exports = FixedScaleProvider;
+exports.FixedScaleProvider = FixedScaleProvider;

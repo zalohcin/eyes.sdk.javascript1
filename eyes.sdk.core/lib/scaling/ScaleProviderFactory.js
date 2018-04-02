@@ -36,4 +36,4 @@ class ScaleProviderFactory {
   }
 }
 
-module.exports = ScaleProviderFactory;
+exports.ScaleProviderFactory = ScaleProviderFactory;

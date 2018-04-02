@@ -1,7 +1,8 @@
 'use strict';
 
+const { Eyes: EyesSelenium } = require('@applitools/eyes.selenium');
+
 const { ElementFinderWrapper, ElementArrayFinderWrapper } = require('./ElementFinderWrappers');
-const EyesSelenium = require('@applitools/eyes.selenium').Eyes;
 
 const VERSION = require('../package.json').version;
 
@@ -37,4 +38,4 @@ class Eyes extends EyesSelenium {
   }
 }
 
-module.exports = Eyes;
+exports.Eyes = Eyes;

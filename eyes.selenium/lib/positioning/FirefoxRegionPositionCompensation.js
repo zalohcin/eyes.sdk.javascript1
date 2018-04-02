@@ -1,7 +1,7 @@
 'use strict';
 
 const { Region } = require('@applitools/eyes.sdk.core');
-const RegionPositionCompensation = require('./RegionPositionCompensation');
+const { RegionPositionCompensation } = require('./RegionPositionCompensation');
 
 class FirefoxRegionPositionCompensation extends RegionPositionCompensation {
   /**
@@ -40,4 +40,4 @@ class FirefoxRegionPositionCompensation extends RegionPositionCompensation {
   }
 }
 
-module.exports = FirefoxRegionPositionCompensation;
+exports.FirefoxRegionPositionCompensation = FirefoxRegionPositionCompensation;

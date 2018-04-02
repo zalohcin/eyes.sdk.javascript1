@@ -13,4 +13,4 @@ const OSNames = {
 };
 
 Object.freeze(OSNames);
-module.exports = OSNames;
+exports.OSNames = OSNames;

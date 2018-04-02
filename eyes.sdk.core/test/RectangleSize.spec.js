@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const RectangleSize = require('../lib/geometry/RectangleSize');
+const { RectangleSize } = require('../index');
 
 describe('RectangleSize', () => {
   const width = 4;

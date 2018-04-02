@@ -1,7 +1,7 @@
 'use strict';
 
-const TestFailedError = require('./TestFailedError');
-const SessionStartInfo = require('../server/SessionStartInfo');
+const { TestFailedError } = require('./TestFailedError');
+const { SessionStartInfo } = require('../server/SessionStartInfo');
 
 /**
  * Indicates that a new test (i.e., a test for which no baseline exists) ended.
@@ -23,4 +23,4 @@ class NewTestError extends TestFailedError {
   }
 }
 
-module.exports = NewTestError;
+exports.NewTestError = NewTestError;

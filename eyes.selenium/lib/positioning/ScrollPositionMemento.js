@@ -30,4 +30,4 @@ class ScrollPositionMemento extends PositionMemento {
   }
 }
 
-module.exports = ScrollPositionMemento;
+exports.ScrollPositionMemento = ScrollPositionMemento;

@@ -30,4 +30,4 @@ class ElementPositionMemento extends PositionMemento {
   }
 }
 
-module.exports = ElementPositionMemento;
+exports.ElementPositionMemento = ElementPositionMemento;

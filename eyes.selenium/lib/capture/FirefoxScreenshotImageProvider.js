@@ -2,7 +2,7 @@
 
 const { ImageProvider, MutableImage, Region } = require('@applitools/eyes.sdk.core');
 
-const EyesWebDriverScreenshot = require('./EyesWebDriverScreenshot');
+const { EyesWebDriverScreenshot } = require('./EyesWebDriverScreenshot');
 
 /**
  * This class is needed because in certain versions of firefox, a frame screenshot only brings the frame viewport.
@@ -65,4 +65,4 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
   }
 }
 
-module.exports = FirefoxScreenshotImageProvider;
+exports.FirefoxScreenshotImageProvider = FirefoxScreenshotImageProvider;

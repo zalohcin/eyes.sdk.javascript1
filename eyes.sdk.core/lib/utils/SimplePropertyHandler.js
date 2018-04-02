@@ -1,6 +1,6 @@
 'use strict';
 
-const PropertyHandler = require('./PropertyHandler');
+const { PropertyHandler } = require('./PropertyHandler');
 
 /**
  * A simple implementation of {@link PropertyHandler}. Allows get/set.
@@ -26,4 +26,4 @@ class SimplePropertyHandler extends PropertyHandler {
   }
 }
 
-module.exports = SimplePropertyHandler;
+exports.SimplePropertyHandler = SimplePropertyHandler;

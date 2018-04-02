@@ -3,8 +3,8 @@
 const path = require('path');
 const fs = require('fs');
 
-const GeneralUtils = require('../utils/GeneralUtils');
-const LogHandler = require('./LogHandler');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { LogHandler } = require('./LogHandler');
 
 /**
  * Write log massages to the browser/node console
@@ -63,4 +63,4 @@ class FileLogHandler extends LogHandler {
   }
 }
 
-module.exports = FileLogHandler;
+exports.FileLogHandler = FileLogHandler;

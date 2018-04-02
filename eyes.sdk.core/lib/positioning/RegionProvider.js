@@ -1,6 +1,6 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
+const { ArgumentGuard } = require('../ArgumentGuard');
 
 /**
  * Encapsulates a getRegion "callback" and how the region's coordinates should be used.
@@ -28,4 +28,4 @@ class RegionProvider {
   }
 }
 
-module.exports = RegionProvider;
+exports.RegionProvider = RegionProvider;

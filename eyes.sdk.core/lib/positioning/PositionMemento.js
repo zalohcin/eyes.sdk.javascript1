@@ -8,4 +8,4 @@
  */
 class PositionMemento {}
 
-module.exports = PositionMemento;
+exports.PositionMemento = PositionMemento;

@@ -49,4 +49,4 @@ class LogHandler {
   onMessage(verbose, logString) {}
 }
 
-module.exports = LogHandler;
+exports.LogHandler = LogHandler;

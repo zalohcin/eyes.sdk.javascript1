@@ -47,4 +47,4 @@ class PropertyData {
   }
 }
 
-module.exports = PropertyData;
+exports.PropertyData = PropertyData;

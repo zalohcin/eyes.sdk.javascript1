@@ -70,4 +70,4 @@ class FrameLocator {
   }
 }
 
-module.exports = FrameLocator;
+exports.FrameLocator = FrameLocator;

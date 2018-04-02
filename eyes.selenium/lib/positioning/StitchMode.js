@@ -19,4 +19,4 @@ const StitchMode = {
 };
 
 Object.freeze(StitchMode);
-module.exports = StitchMode;
+exports.StitchMode = StitchMode;

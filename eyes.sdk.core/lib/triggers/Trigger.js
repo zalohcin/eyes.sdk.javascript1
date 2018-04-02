@@ -34,4 +34,4 @@ Trigger.TriggerType = {
 };
 
 Object.freeze(Trigger.TriggerType);
-module.exports = Trigger;
+exports.Trigger = Trigger;

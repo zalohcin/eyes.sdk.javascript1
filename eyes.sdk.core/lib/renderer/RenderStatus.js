@@ -27,4 +27,4 @@ const RenderStatus = {
 };
 
 Object.freeze(RenderStatus);
-module.exports = RenderStatus;
+exports.RenderStatus = RenderStatus;

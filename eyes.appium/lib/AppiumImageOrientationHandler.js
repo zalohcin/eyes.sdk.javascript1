@@ -3,7 +3,7 @@
 const { ArgumentGuard } = require('@applitools/eyes.sdk.core');
 const { ImageOrientationHandler, EyesDriverOperationError } = require('@applitools/eyes.selenium');
 
-const EyesAppiumUtils = require('./EyesAppiumUtils');
+const { EyesAppiumUtils } = require('./EyesAppiumUtils');
 
 class AppiumImageOrientationHandler extends ImageOrientationHandler {
   /**
@@ -57,4 +57,4 @@ class AppiumImageOrientationHandler extends ImageOrientationHandler {
   }
 }
 
-module.exports = AppiumImageOrientationHandler;
+exports.AppiumImageOrientationHandler = AppiumImageOrientationHandler;

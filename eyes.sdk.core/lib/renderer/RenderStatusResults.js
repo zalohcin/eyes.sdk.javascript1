@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 /**
  * Encapsulates data for the render currently running in the client.
@@ -64,4 +64,4 @@ class RenderStatusResults {
   }
 }
 
-module.exports = RenderStatusResults;
+exports.RenderStatusResults = RenderStatusResults;

@@ -34,4 +34,4 @@ class CssTranslatePositionMemento extends PositionMemento {
   }
 }
 
-module.exports = CssTranslatePositionMemento;
+exports.CssTranslatePositionMemento = CssTranslatePositionMemento;

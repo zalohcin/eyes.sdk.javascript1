@@ -82,4 +82,4 @@ class ImagesCheckSettings extends CheckSettings {
   }
 }
 
-module.exports = ImagesCheckSettings;
+exports.ImagesCheckSettings = ImagesCheckSettings;

@@ -2,8 +2,8 @@
 
 const axios = require('axios');
 
-const SessionEventHandler = require('./SessionEventHandler');
-const GeneralUtils = require('./utils/GeneralUtils');
+const { SessionEventHandler } = require('./SessionEventHandler');
+const { GeneralUtils } = require('./utils/GeneralUtils');
 
 // Constants
 const DEFAULT_CONNECTION_TIMEOUT_MS = 30000;
@@ -153,4 +153,4 @@ class RemoteSessionEventHandler extends SessionEventHandler {
   }
 }
 
-module.exports = RemoteSessionEventHandler;
+exports.RemoteSessionEventHandler = RemoteSessionEventHandler;

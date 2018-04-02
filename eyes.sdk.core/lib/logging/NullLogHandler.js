@@ -1,6 +1,6 @@
 'use strict';
 
-const LogHandler = require('./LogHandler');
+const { LogHandler } = require('./LogHandler');
 
 /**
  * Ignores all log messages.
@@ -13,4 +13,4 @@ class NullLogHandler extends LogHandler {
   onMessage(verbose, logString) {}
 }
 
-module.exports = NullLogHandler;
+exports.NullLogHandler = NullLogHandler;

@@ -1,8 +1,8 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
-const BrowserNames = require('./BrowserNames');
-const OSNames = require('./OSNames');
+const { ArgumentGuard } = require('../ArgumentGuard');
+const { BrowserNames } = require('./BrowserNames');
+const { OSNames } = require('./OSNames');
 
 const MAJOR_MINOR = '([^ .;_)]+)[_.]([^ .;_)]+)';
 const PRODUCT = `(?:(%s)/${MAJOR_MINOR})`;
@@ -225,4 +225,4 @@ class UserAgent {
   }
 }
 
-module.exports = UserAgent;
+exports.UserAgent = UserAgent;

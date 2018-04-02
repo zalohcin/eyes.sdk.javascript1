@@ -23,4 +23,4 @@ class CutProvider {
   scale(scaleRatio) {}
 }
 
-module.exports = CutProvider;
+exports.CutProvider = CutProvider;

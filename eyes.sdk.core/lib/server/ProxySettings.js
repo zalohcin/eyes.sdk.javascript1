@@ -1,7 +1,7 @@
 'use strict';
 
 const url = require('url');
-const ArgumentGuard = require('../ArgumentGuard');
+const { ArgumentGuard } = require('../ArgumentGuard');
 
 /**
  * Encapsulates settings for sending Eyes communication via proxy.
@@ -68,4 +68,4 @@ class ProxySettings {
   }
 }
 
-module.exports = ProxySettings;
+exports.ProxySettings = ProxySettings;

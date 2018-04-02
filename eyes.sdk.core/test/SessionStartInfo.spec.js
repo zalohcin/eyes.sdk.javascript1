@@ -2,12 +2,14 @@
 
 const assert = require('assert');
 
-const AppEnvironment = require('../lib/AppEnvironment');
-const BatchInfo = require('../lib/BatchInfo');
-const SessionType = require('../lib/server/SessionType');
-const PropertyData = require('../lib/server/PropertyData');
-const SessionStartInfo = require('../lib/server/SessionStartInfo');
-const ImageMatchSettings = require('../lib/match/ImageMatchSettings');
+const {
+  AppEnvironment,
+  BatchInfo,
+  SessionType,
+  PropertyData,
+  SessionStartInfo,
+  ImageMatchSettings,
+} = require('../index');
 
 describe('SessionStartInfo', () => {
   it('toJSON()', () => {

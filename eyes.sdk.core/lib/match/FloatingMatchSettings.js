@@ -1,7 +1,7 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
-const Region = require('../geometry/Region');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { Region } = require('../geometry/Region');
 
 /**
  * Encapsulates floating match settings for the a session.
@@ -134,4 +134,4 @@ class FloatingMatchSettings {
   }
 }
 
-module.exports = FloatingMatchSettings;
+exports.FloatingMatchSettings = FloatingMatchSettings;

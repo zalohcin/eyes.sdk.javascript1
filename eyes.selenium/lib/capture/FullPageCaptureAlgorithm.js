@@ -11,8 +11,8 @@ const {
   NullCutProvider,
 } = require('@applitools/eyes.sdk.core');
 
-const NullRegionPositionCompensation = require('../positioning/NullRegionPositionCompensation');
-const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
+const { NullRegionPositionCompensation } = require('../positioning/NullRegionPositionCompensation');
+const { ScrollPositionProvider } = require('../positioning/ScrollPositionProvider');
 
 const MIN_SCREENSHOT_PART_HEIGHT = 10;
 
@@ -377,4 +377,4 @@ class FullPageCaptureAlgorithm {
   }
 }
 
-module.exports = FullPageCaptureAlgorithm;
+exports.FullPageCaptureAlgorithm = FullPageCaptureAlgorithm;

@@ -21,4 +21,4 @@ class JavascriptHandler {
   }
 }
 
-module.exports = JavascriptHandler;
+exports.JavascriptHandler = JavascriptHandler;

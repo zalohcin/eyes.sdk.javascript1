@@ -11,9 +11,9 @@ const {
   OutOfBoundsError,
 } = require('@applitools/eyes.sdk.core');
 
-const SeleniumJavaScriptExecutor = require('../SeleniumJavaScriptExecutor');
-const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
-const FrameChain = require('../frames/FrameChain');
+const { SeleniumJavaScriptExecutor } = require('../SeleniumJavaScriptExecutor');
+const { ScrollPositionProvider } = require('../positioning/ScrollPositionProvider');
+const { FrameChain } = require('../frames/FrameChain');
 
 /**
  * @readonly
@@ -500,4 +500,5 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
 }
 
 EyesWebDriverScreenshot.ScreenshotType = Object.freeze(ScreenshotType);
-module.exports = EyesWebDriverScreenshot;
+exports.EyesWebDriverScreenshot = EyesWebDriverScreenshot;
+exports.ScreenshotType = ScreenshotType;

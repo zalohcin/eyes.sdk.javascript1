@@ -1,7 +1,7 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
-const RenderingInfo = require('../renderer/RenderingInfo');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { RenderingInfo } = require('../renderer/RenderingInfo');
 
 /**
  * Encapsulates data for the session currently running in the agent.
@@ -118,4 +118,4 @@ class RunningSession {
   }
 }
 
-module.exports = RunningSession;
+exports.RunningSession = RunningSession;

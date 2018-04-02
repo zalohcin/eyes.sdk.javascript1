@@ -30,4 +30,4 @@ const MatchLevel = {
 };
 
 Object.freeze(MatchLevel);
-module.exports = MatchLevel;
+exports.MatchLevel = MatchLevel;

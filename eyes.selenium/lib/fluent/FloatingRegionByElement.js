@@ -50,4 +50,4 @@ class FloatingRegionByElement extends GetFloatingRegion {
   }
 }
 
-module.exports = FloatingRegionByElement;
+exports.FloatingRegionByElement = FloatingRegionByElement;

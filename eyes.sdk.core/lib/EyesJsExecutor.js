@@ -32,4 +32,4 @@ class EyesJsExecutor {
   getPromiseFactory() {}
 }
 
-module.exports = EyesJsExecutor;
+exports.EyesJsExecutor = EyesJsExecutor;

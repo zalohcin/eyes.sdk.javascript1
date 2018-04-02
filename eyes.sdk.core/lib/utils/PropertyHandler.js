@@ -18,4 +18,4 @@ class PropertyHandler {
   get() {}
 }
 
-module.exports = PropertyHandler;
+exports.PropertyHandler = PropertyHandler;

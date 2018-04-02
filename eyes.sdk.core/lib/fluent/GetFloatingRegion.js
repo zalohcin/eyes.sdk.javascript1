@@ -12,4 +12,4 @@ class GetFloatingRegion {
   getRegion(eyesBase, screenshot) {}
 }
 
-module.exports = GetFloatingRegion;
+exports.GetFloatingRegion = GetFloatingRegion;

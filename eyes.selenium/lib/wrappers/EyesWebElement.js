@@ -418,4 +418,4 @@ class EyesWebElement extends WebElement {
   }
 }
 
-module.exports = EyesWebElement;
+exports.EyesWebElement = EyesWebElement;

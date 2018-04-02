@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class Branch {
   constructor() {
@@ -64,4 +64,4 @@ class Branch {
   }
 }
 
-module.exports = Branch;
+exports.Branch = Branch;

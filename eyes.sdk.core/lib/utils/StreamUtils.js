@@ -101,7 +101,5 @@ class WritableBufferStream extends Stream.Writable {
   }
 }
 
-module.exports = {
-  ReadableBufferStream,
-  WritableBufferStream,
-};
+exports.ReadableBufferStream = ReadableBufferStream;
+exports.WritableBufferStream = WritableBufferStream;

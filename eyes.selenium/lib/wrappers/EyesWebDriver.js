@@ -4,11 +4,11 @@ const by = require('selenium-webdriver/lib/by');
 const { IWebDriver } = require('selenium-webdriver/lib/webdriver');
 const { ArgumentGuard, MutableImage } = require('@applitools/eyes.sdk.core');
 
-const FrameChain = require('../frames/FrameChain');
-const EyesSeleniumUtils = require('../EyesSeleniumUtils');
-const EyesWebElement = require('./EyesWebElement');
-const EyesWebElementPromise = require('./EyesWebElementPromise');
-const EyesTargetLocator = require('./EyesTargetLocator');
+const { FrameChain } = require('../frames/FrameChain');
+const { EyesSeleniumUtils } = require('../EyesSeleniumUtils');
+const { EyesWebElement } = require('./EyesWebElement');
+const { EyesWebElementPromise } = require('./EyesWebElementPromise');
+const { EyesTargetLocator } = require('./EyesTargetLocator');
 
 /**
  * An Eyes implementation of the interfaces implemented by {@link IWebDriver}.
@@ -525,4 +525,4 @@ class EyesWebDriver extends IWebDriver {
   }
 }
 
-module.exports = EyesWebDriver;
+exports.EyesWebDriver = EyesWebDriver;

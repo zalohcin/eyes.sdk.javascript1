@@ -1,4 +1,5 @@
-exports.Eyes = require('./lib/Eyes');
-const ElementFinderWrappers = require('./lib/ElementFinderWrappers');
-exports.ElementFinderWrapper = ElementFinderWrappers.ElementFinderWrapper;
-exports.ElementArrayFinderWrapper = ElementFinderWrappers.ElementArrayFinderWrapper;
+'use strict';
+
+exports.Eyes = require('./lib/Eyes').Eyes;
+exports.ElementFinderWrapper = require('./lib/ElementFinderWrappers').ElementFinderWrapper;
+exports.ElementArrayFinderWrapper = require('./lib/ElementFinderWrappers').ElementArrayFinderWrapper;

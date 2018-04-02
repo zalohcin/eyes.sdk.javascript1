@@ -1,8 +1,8 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
-const GeneralUtils = require('../utils/GeneralUtils');
-const NullLogHandler = require('./NullLogHandler');
+const { ArgumentGuard } = require('../ArgumentGuard');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { NullLogHandler } = require('./NullLogHandler');
 
 /**
  * Write log massages using the provided Log Handler
@@ -65,4 +65,4 @@ class Logger {
   }
 }
 
-module.exports = Logger;
+exports.Logger = Logger;

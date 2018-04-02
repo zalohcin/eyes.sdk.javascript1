@@ -1,64 +1,65 @@
 'use strict';
 
-const Logger = require('./logging/Logger');
+const { Logger } = require('./logging/Logger');
 
-const Region = require('./geometry/Region');
-const Location = require('./geometry/Location');
-const RectangleSize = require('./geometry/RectangleSize');
-const CoordinatesType = require('./geometry/CoordinatesType');
+const { Region } = require('./geometry/Region');
+const { Location } = require('./geometry/Location');
+const { RectangleSize } = require('./geometry/RectangleSize');
+const { CoordinatesType } = require('./geometry/CoordinatesType');
 
-const FileDebugScreenshotsProvider = require('./debug/FileDebugScreenshotsProvider');
-const NullDebugScreenshotProvider = require('./debug/NullDebugScreenshotProvider');
+const { FileDebugScreenshotsProvider } = require('./debug/FileDebugScreenshotsProvider');
+const { NullDebugScreenshotProvider } = require('./debug/NullDebugScreenshotProvider');
 
-const SimplePropertyHandler = require('./utils/SimplePropertyHandler');
-const ReadOnlyPropertyHandler = require('./utils/ReadOnlyPropertyHandler');
+const { SimplePropertyHandler } = require('./utils/SimplePropertyHandler');
+const { ReadOnlyPropertyHandler } = require('./utils/ReadOnlyPropertyHandler');
 
-const ImageDeltaCompressor = require('./images/ImageDeltaCompressor');
+const { ImageDeltaCompressor } = require('./images/ImageDeltaCompressor');
 
-const AppOutputProvider = require('./capture/AppOutputProvider');
-const AppOutputWithScreenshot = require('./capture/AppOutputWithScreenshot');
-const AppOutput = require('./match/AppOutput');
+const { AppOutputProvider } = require('./capture/AppOutputProvider');
+const { AppOutputWithScreenshot } = require('./capture/AppOutputWithScreenshot');
+const { AppOutput } = require('./match/AppOutput');
 
-const FixedScaleProvider = require('./scaling/FixedScaleProvider');
-const NullScaleProvider = require('./scaling/NullScaleProvider');
+const { FixedScaleProvider } = require('./scaling/FixedScaleProvider');
+const { NullScaleProvider } = require('./scaling/NullScaleProvider');
 
-const NullCutProvider = require('./cropping/NullCutProvider');
+const { NullCutProvider } = require('./cropping/NullCutProvider');
 
-const InvalidPositionProvider = require('./positioning/InvalidPositionProvider');
+const { InvalidPositionProvider } = require('./positioning/InvalidPositionProvider');
 
-const TextTrigger = require('./triggers/TextTrigger');
-const MouseTrigger = require('./triggers/MouseTrigger');
+const { TextTrigger } = require('./triggers/TextTrigger');
+const { MouseTrigger } = require('./triggers/MouseTrigger');
 
-const MatchResult = require('./match/MatchResult');
-const MatchLevel = require('./match/MatchLevel');
-const ImageMatchSettings = require('./match/ImageMatchSettings');
-const MatchWindowData = require('./match/MatchWindowData');
+const { MatchResult } = require('./match/MatchResult');
+const { MatchLevel } = require('./match/MatchLevel');
+const { ImageMatchSettings } = require('./match/ImageMatchSettings');
+const { MatchWindowData } = require('./match/MatchWindowData');
 
-const DiffsFoundError = require('./errors/DiffsFoundError');
-const NewTestError = require('./errors/NewTestError');
-const OutOfBoundsError = require('./errors/OutOfBoundsError');
-const TestFailedError = require('./errors/TestFailedError');
+const { DiffsFoundError } = require('./errors/DiffsFoundError');
+const { EyesError } = require('./errors/EyesError');
+const { NewTestError } = require('./errors/NewTestError');
+const { OutOfBoundsError } = require('./errors/OutOfBoundsError');
+const { TestFailedError } = require('./errors/TestFailedError');
 
-const CheckSettings = require('./fluent/CheckSettings');
+const { CheckSettings } = require('./fluent/CheckSettings');
 
-const RenderWindowTask = require('./RenderWindowTask');
+const { RenderWindowTask } = require('./RenderWindowTask');
 
-const SessionStartInfo = require('./server/SessionStartInfo');
-const SessionType = require('./server/SessionType');
-const PropertyData = require('./server/PropertyData');
-const TestResultsStatus = require('./TestResultsStatus');
-const TestResults = require('./TestResults');
-const ServerConnector = require('./server/ServerConnector');
+const { SessionStartInfo } = require('./server/SessionStartInfo');
+const { SessionType } = require('./server/SessionType');
+const { PropertyData } = require('./server/PropertyData');
+const { TestResultsStatus } = require('./TestResultsStatus');
+const { TestResults } = require('./TestResults');
+const { ServerConnector } = require('./server/ServerConnector');
 
-const FailureReports = require('./FailureReports');
-const GeneralUtils = require('./utils/GeneralUtils');
-const ArgumentGuard = require('./ArgumentGuard');
-const AppEnvironment = require('./AppEnvironment');
-const MatchWindowTask = require('./MatchWindowTask');
-const MatchSingleWindowTask = require('./MatchSingleWindowTask');
-const SessionEventHandler = require('./SessionEventHandler');
-const BatchInfo = require('./BatchInfo');
-const PromiseFactory = require('./PromiseFactory');
+const { FailureReports } = require('./FailureReports');
+const { GeneralUtils } = require('./utils/GeneralUtils');
+const { ArgumentGuard } = require('./ArgumentGuard');
+const { AppEnvironment } = require('./AppEnvironment');
+const { MatchWindowTask } = require('./MatchWindowTask');
+const { MatchSingleWindowTask } = require('./MatchSingleWindowTask');
+const { SessionEventHandler } = require('./SessionEventHandler');
+const { BatchInfo } = require('./BatchInfo');
+const { PromiseFactory } = require('./PromiseFactory');
 
 const DEFAULT_MATCH_TIMEOUT = 2000;
 const MIN_MATCH_TIMEOUT = 500;
@@ -1391,10 +1392,6 @@ class EyesBase {
       .then(result => {
         that._logger.verbose('EyesBase.replaceWindow done');
         return result;
-      })
-      .catch(err => {
-        that._logger.log(err);
-        throw err;
       });
   }
 
@@ -1534,7 +1531,7 @@ class EyesBase {
         })
         .then(() => that.afterOpen());
     } catch (err) {
-      this._logger.log(err);
+      this._logger.log(err.message);
       this._logger.getLogHandler().close();
       return this._promiseFactory.reject(err);
     }
@@ -1744,11 +1741,10 @@ class EyesBase {
       .getLastScreenshot()
       .getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
 
-    // If the region is NOT empty, we'll give the coordinates relative to
-    // the control.
+    // If the region is NOT empty, we'll give the coordinates relative to the control.
     if (!controlScreenshotIntersect.isEmpty()) {
-      const l = controlScreenshotIntersect.location;
-      cursorInScreenshot.offset(-l.x, -l.y);
+      const l = controlScreenshotIntersect.getLocation();
+      cursorInScreenshot.offset(-l.getX(), -l.getY());
     }
 
     const trigger = new MouseTrigger(action, controlScreenshotIntersect, cursorInScreenshot);
@@ -1804,13 +1800,11 @@ class EyesBase {
       .then(() => that._notifyEvent('testStarted', that._autSessionId))
       .then(() => that._notifyEvent('setSizeWillStart', that._autSessionId, that._viewportSize))
       .then(() => that._ensureViewportSize()
-        .catch(err => {
-          that._logger.log(err);
-          return that._notifyEvent('setSizeEnded', that._autSessionId).then(() => {
+        .catch(err => that._notifyEvent('setSizeEnded', that._autSessionId)
+          .then(() => {
             // Throw to skip execution of all consecutive "then" blocks.
-            throw new Error('Failed to set/get viewport size.');
-          });
-        }))
+            throw new EyesError('Failed to set/get viewport size', err);
+          })))
       .then(() => that._notifyEvent('setSizeEnded', that._autSessionId))
       .then(() => that._notifyEvent('initStarted', that._autSessionId))
       .then(() => that.getAppEnvironment())
@@ -2110,4 +2104,4 @@ class EyesBase {
   }
 }
 
-module.exports = EyesBase;
+exports.EyesBase = EyesBase;

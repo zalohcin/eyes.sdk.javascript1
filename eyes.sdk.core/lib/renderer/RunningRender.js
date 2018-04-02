@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 /**
  * Encapsulates data for the render currently running in the client.
@@ -90,4 +90,4 @@ class RunningRender {
   }
 }
 
-module.exports = RunningRender;
+exports.RunningRender = RunningRender;

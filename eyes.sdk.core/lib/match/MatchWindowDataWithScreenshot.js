@@ -1,6 +1,6 @@
 'use strict';
 
-const GeneralUtils = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 /**
  * A container for a MatchWindowData along with the screenshot used for creating it. (We specifically avoid inheritance
@@ -39,4 +39,4 @@ class MatchWindowDataWithScreenshot {
   }
 }
 
-module.exports = MatchWindowDataWithScreenshot;
+exports.MatchWindowDataWithScreenshot = MatchWindowDataWithScreenshot;

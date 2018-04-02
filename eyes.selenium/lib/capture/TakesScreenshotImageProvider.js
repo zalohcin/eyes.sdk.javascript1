@@ -32,4 +32,4 @@ class TakesScreenshotImageProvider extends ImageProvider {
   }
 }
 
-module.exports = TakesScreenshotImageProvider;
+exports.TakesScreenshotImageProvider = TakesScreenshotImageProvider;

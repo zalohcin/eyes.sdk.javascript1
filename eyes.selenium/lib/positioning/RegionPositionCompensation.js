@@ -12,4 +12,4 @@ class RegionPositionCompensation {
   compensateRegionPosition(region, pixelRatio) {}
 }
 
-module.exports = RegionPositionCompensation;
+exports.RegionPositionCompensation = RegionPositionCompensation;

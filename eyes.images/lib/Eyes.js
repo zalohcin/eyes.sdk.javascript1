@@ -13,7 +13,7 @@ const {
   EyesSimpleScreenshot,
 } = require('@applitools/eyes.sdk.core');
 
-const Target = require('./fluent/Target');
+const { Target } = require('./fluent/Target');
 const VERSION = require('../package.json').version;
 
 /**
@@ -331,4 +331,4 @@ class Eyes extends EyesBase {
   }
 }
 
-module.exports = Eyes;
+exports.Eyes = Eyes;

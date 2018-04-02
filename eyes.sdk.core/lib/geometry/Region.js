@@ -1,9 +1,9 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
-const RectangleSize = require('./RectangleSize');
-const Location = require('./Location');
-const CoordinatesType = require('./CoordinatesType');
+const { ArgumentGuard } = require('../ArgumentGuard');
+const { RectangleSize } = require('./RectangleSize');
+const { Location } = require('./Location');
+const { CoordinatesType } = require('./CoordinatesType');
 
 /**
  * @typedef {{left: number, top: number, width: number, height: number, coordinatesType?: CoordinatesType}} RegionObject
@@ -494,4 +494,4 @@ class Region {
 
 Region.EMPTY = new Region(0, 0, 0, 0);
 
-module.exports = Region;
+exports.Region = Region;

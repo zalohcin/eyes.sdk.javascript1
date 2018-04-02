@@ -6,16 +6,21 @@
 class EyesError extends Error {
   /**
    * @param {string} [message] The error description string
-   * @param [params...] Other params for Error constructor
+   * @param {Error} [error] Another error to inherit from
    */
-  constructor(message, ...params) {
-    super(message, ...params);
+  constructor(message, error) {
+    super(message);
 
     /** @override */
     this.name = this.constructor.name;
 
-    Error.captureStackTrace(this, this.constructor);
+    if (error instanceof Error) {
+      this.message = `${message}: ${error.message}`;
+      this.stack = error.stack;
+    } else {
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 }
 
-module.exports = EyesError;
+exports.EyesError = EyesError;

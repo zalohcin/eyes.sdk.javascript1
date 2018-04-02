@@ -79,4 +79,4 @@ class AppOutput {
   }
 }
 
-module.exports = AppOutput;
+exports.AppOutput = AppOutput;

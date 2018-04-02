@@ -2,10 +2,10 @@
 
 const fs = require('fs');
 
-const Location = require('../geometry/Location');
-const RectangleSize = require('../geometry/RectangleSize');
-const ImageUtils = require('./ImageUtils');
-const GeneralUtils = require('../utils/GeneralUtils');
+const { Location } = require('../geometry/Location');
+const { RectangleSize } = require('../geometry/RectangleSize');
+const { ImageUtils } = require('./ImageUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 const disabled = !fs.open;
 
@@ -345,4 +345,4 @@ class MutableImage {
   }
 }
 
-module.exports = MutableImage;
+exports.MutableImage = MutableImage;

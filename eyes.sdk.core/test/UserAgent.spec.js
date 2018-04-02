@@ -1,9 +1,8 @@
 'use strict';
 
-const { describe, it } = require('mocha');
 const assert = require('assert');
 
-const UserAgent = require('../lib/utils/UserAgent');
+const { UserAgent } = require('../index');
 
 describe('UserAgent', () => {
   describe('#parseUserAgentString()', () => {

@@ -1,7 +1,7 @@
 'use strict';
 
-const FixedScaleProvider = require('./FixedScaleProvider');
-const ScaleProviderFactory = require('./ScaleProviderFactory');
+const { FixedScaleProvider } = require('./FixedScaleProvider');
+const { ScaleProviderFactory } = require('./ScaleProviderFactory');
 
 class FixedScaleProviderFactory extends ScaleProviderFactory {
   /**
@@ -26,4 +26,4 @@ class FixedScaleProviderFactory extends ScaleProviderFactory {
   }
 }
 
-module.exports = FixedScaleProviderFactory;
+exports.FixedScaleProviderFactory = FixedScaleProviderFactory;

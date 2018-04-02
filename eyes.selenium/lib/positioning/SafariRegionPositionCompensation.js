@@ -2,7 +2,7 @@
 
 const { Region } = require('@applitools/eyes.sdk.core');
 
-const RegionPositionCompensation = require('./RegionPositionCompensation');
+const { RegionPositionCompensation } = require('./RegionPositionCompensation');
 
 class SafariRegionPositionCompensation extends RegionPositionCompensation {
   /**
@@ -22,4 +22,4 @@ class SafariRegionPositionCompensation extends RegionPositionCompensation {
   }
 }
 
-module.exports = SafariRegionPositionCompensation;
+exports.SafariRegionPositionCompensation = SafariRegionPositionCompensation;

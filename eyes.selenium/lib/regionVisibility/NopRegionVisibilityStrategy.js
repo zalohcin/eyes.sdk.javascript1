@@ -1,6 +1,6 @@
 'use strict';
 
-const RegionVisibilityStrategy = require('./RegionVisibilityStrategy');
+const { RegionVisibilityStrategy } = require('./RegionVisibilityStrategy');
 
 class NopRegionVisibilityStrategy extends RegionVisibilityStrategy {
   // noinspection JSCommentMatchesSignature
@@ -34,4 +34,4 @@ class NopRegionVisibilityStrategy extends RegionVisibilityStrategy {
   }
 }
 
-module.exports = NopRegionVisibilityStrategy;
+exports.NopRegionVisibilityStrategy = NopRegionVisibilityStrategy;

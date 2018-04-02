@@ -379,4 +379,4 @@ class GeneralUtils {
   }
 }
 
-module.exports = GeneralUtils;
+exports.GeneralUtils = GeneralUtils;

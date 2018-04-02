@@ -33,4 +33,4 @@ class IgnoreRegionByElement extends GetRegion {
   }
 }
 
-module.exports = IgnoreRegionByElement;
+exports.IgnoreRegionByElement = IgnoreRegionByElement;

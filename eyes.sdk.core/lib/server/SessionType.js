@@ -19,4 +19,4 @@ const SessionType = {
 };
 
 Object.freeze(SessionType);
-module.exports = SessionType;
+exports.SessionType = SessionType;

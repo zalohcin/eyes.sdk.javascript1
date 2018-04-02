@@ -2,8 +2,8 @@
 
 const { ArgumentGuard, PositionProvider, RectangleSize, Location } = require('@applitools/eyes.sdk.core');
 
-const ElementPositionMemento = require('./ElementPositionMemento');
-const EyesWebElement = require('./../wrappers/EyesWebElement');
+const { ElementPositionMemento } = require('./ElementPositionMemento');
+const { EyesWebElement } = require('../wrappers/EyesWebElement');
 
 class ElementPositionProvider extends PositionProvider {
   /**
@@ -98,4 +98,4 @@ class ElementPositionProvider extends PositionProvider {
   }
 }
 
-module.exports = ElementPositionProvider;
+exports.ElementPositionProvider = ElementPositionProvider;

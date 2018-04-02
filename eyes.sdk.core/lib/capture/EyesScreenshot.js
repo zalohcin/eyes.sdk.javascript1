@@ -1,7 +1,7 @@
 'use strict';
 
-const ArgumentGuard = require('../ArgumentGuard');
-const Region = require('../geometry/Region');
+const { ArgumentGuard } = require('../ArgumentGuard');
+const { Region } = require('../geometry/Region');
 
 /**
  * Base class for handling screenshots.
@@ -105,4 +105,4 @@ class EyesScreenshot {
   }
 }
 
-module.exports = EyesScreenshot;
+exports.EyesScreenshot = EyesScreenshot;
