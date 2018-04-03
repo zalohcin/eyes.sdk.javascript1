@@ -8,7 +8,6 @@ let eyes = null;
 describe('Eyes.Protractor.JavaScript - check region', () => {
   beforeAll(function () {
     eyes = new Eyes();
-    eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
     eyes.setLogHandler(new ConsoleLogHandler(true));
   });
 

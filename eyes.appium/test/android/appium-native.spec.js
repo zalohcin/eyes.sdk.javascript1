@@ -22,7 +22,6 @@ describe('Eyes.Appium.JavaScript - appium-native', function () {
       .build();
 
     eyes = new Eyes();
-    eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
     eyes.setLogHandler(new ConsoleLogHandler(true));
   });
 

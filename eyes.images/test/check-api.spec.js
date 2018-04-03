@@ -7,7 +7,6 @@ let eyes = null;
 describe('Eyes.Images.JavaScript - check api', function () {
   before(function () {
     eyes = new Eyes();
-    eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
     eyes.setLogHandler(new ConsoleLogHandler(true));
   });
 
