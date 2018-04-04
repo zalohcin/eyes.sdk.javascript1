@@ -1347,7 +1347,7 @@ class EyesBase {
 
   /**
    * @protected
-   * @return {Promise<T>}
+   * @return {Promise.<T>}
    */
   beforeMatchWindow() {
     return this.getPromiseFactory().resolve();
@@ -1355,7 +1355,7 @@ class EyesBase {
 
   /**
    * @protected
-   * @return {Promise<T>}
+   * @return {Promise.<T>}
    */
   afterMatchWindow() {
     return this.getPromiseFactory().resolve();
@@ -1539,7 +1539,7 @@ class EyesBase {
 
   /**
    * @protected
-   * @return {Promise<T>}
+   * @return {Promise.<T>}
    */
   beforeOpen() {
     return this.getPromiseFactory().resolve();
@@ -1547,7 +1547,7 @@ class EyesBase {
 
   /**
    * @protected
-   * @return {Promise<T>}
+   * @return {Promise.<T>}
    */
   afterOpen() {
     return this.getPromiseFactory().resolve();
