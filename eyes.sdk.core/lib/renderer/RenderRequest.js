@@ -11,8 +11,9 @@ class RenderRequest {
    * @param {string} url
    * @param {RGridDom} dom
    * @param {number} [renderWidth]
+   * @param {string} [browserName]
    */
-  constructor(webhook, url, dom, renderWidth) {
+  constructor(webhook, url, dom, renderWidth, browserName) {
     ArgumentGuard.notNullOrEmpty(webhook, 'webhook');
     ArgumentGuard.notNull(url, 'url');
     ArgumentGuard.notNull(dom, 'dom');
@@ -21,6 +22,7 @@ class RenderRequest {
     this._url = url;
     this._dom = dom;
     this._renderWidth = renderWidth;
+    this._browserName = browserName;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -53,6 +55,12 @@ class RenderRequest {
     return this._renderWidth;
   }
 
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getBrowserName() {
+    return this._browserName;
+  }
+
   /** @override */
   toJSON() {
     const resources = {};
@@ -64,9 +72,13 @@ class RenderRequest {
       webhook: this._webhook,
       url: this._url,
 
+      renderWidth: this._renderWidth,
+      browser: {
+        name: this._browserName,
+      },
+
       dom: this._dom.getHashAsObject(),
       resources,
-      renderWidth: this._renderWidth,
     };
   }
 

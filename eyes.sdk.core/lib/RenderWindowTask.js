@@ -3,9 +3,8 @@
 const { ArgumentGuard } = require('./ArgumentGuard');
 const { GeneralUtils } = require('./utils/GeneralUtils');
 const { RenderStatus } = require('./renderer/RenderStatus');
-const { RenderRequest } = require('./renderer/RenderRequest');
 
-const GET_STATUS_INTERVAL = 500; // Milliseconds
+const RETRY_REQUEST_INTERVAL = 500; // Milliseconds
 
 class RenderWindowTask {
   /**
@@ -25,19 +24,32 @@ class RenderWindowTask {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {String} webhook
-   * @param {String} url
-   * @param {RGridDom} rGridDom
-   * @param {number} renderWidth
+   * @param {RenderRequest} renderRequest
    * @return {Promise.<String>} Rendered image URL
    */
-  renderWindow(webhook, url, rGridDom, renderWidth) {
-    const renderRequest = new RenderRequest(webhook, url, rGridDom, renderWidth);
-
+  renderWindow(renderRequest) {
     const that = this;
-    return that.postRender(rGridDom, renderRequest)
+    return that.postRender(renderRequest)
       .then(runningRender => that.getRenderStatus(runningRender))
-      .then(/** RenderStatusResults */ renderStatus => renderStatus.getImageLocation());
+      .then(renderStatus => renderStatus.getImageLocation());
+  }
+
+  /**
+   * @param {RenderRequest} renderRequest
+   * @param {RunningRender} [runningRender]
+   * @return {Promise.<RunningRender>}
+   */
+  postRender(renderRequest, runningRender) {
+    const that = this;
+    return that._serverConnector.render(renderRequest, runningRender)
+      .then(newRender => {
+        if (newRender.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES) {
+          return that.putResources(renderRequest.getDom(), newRender)
+            .then(() => that.postRender(renderRequest, newRender));
+        }
+
+        return newRender;
+      });
   }
 
   /**
@@ -47,11 +59,11 @@ class RenderWindowTask {
   getRenderStatus(runningRender) {
     const that = this;
     return that._serverConnector.renderStatus(runningRender)
-      .catch(() => GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory)
+      .catch(() => GeneralUtils.sleep(RETRY_REQUEST_INTERVAL, that._promiseFactory)
         .then(() => that.getRenderStatus(runningRender)))
       .then(renderStatusResults => {
         if (renderStatusResults.getStatus() === RenderStatus.RENDERING) {
-          return GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory)
+          return GeneralUtils.sleep(RETRY_REQUEST_INTERVAL, that._promiseFactory)
             .then(() => that.getRenderStatus(runningRender));
         } else if (renderStatusResults.getStatus() === RenderStatus.ERROR) {
           return that._promiseFactory.reject(renderStatusResults.getError());
@@ -63,30 +75,10 @@ class RenderWindowTask {
 
   /**
    * @param {RGridDom} rGridDom
-   * @param {RenderRequest} renderRequest
-   * @param {RunningRender} [runningRender]
+   * @param {RunningRender} runningRender
    * @return {Promise.<RunningRender>}
    */
-  postRender(rGridDom, renderRequest, runningRender) {
-    const that = this;
-    return that._serverConnector.render(renderRequest, runningRender)
-      .then(newRender => {
-        if (newRender.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES) {
-          return that.putResources(rGridDom, renderRequest, newRender)
-            .then(() => that.postRender(rGridDom, renderRequest, newRender));
-        }
-
-        return newRender;
-      });
-  }
-
-  /**
-   * @param {RGridDom} rGridDom
-   * @param {RenderRequest} renderRequest
-   * @param {RunningRender} [runningRender]
-   * @return {Promise.<RunningRender>}
-   */
-  putResources(rGridDom, renderRequest, runningRender) {
+  putResources(rGridDom, runningRender) {
     const that = this;
     const promises = [];
 
