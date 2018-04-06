@@ -338,10 +338,11 @@ class MutableImage {
   }
 
   /**
+   * @param [value=this] What to resolve
    * @return {Promise.<MutableImage>}
    */
-  resolve() {
-    return this._promiseFactory.resolve(this);
+  resolve(value = this) {
+    return this._promiseFactory.resolve(value);
   }
 }
 

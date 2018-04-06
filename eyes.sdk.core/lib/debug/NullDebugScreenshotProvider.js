@@ -14,6 +14,7 @@ class NullDebugScreenshotProvider extends DebugScreenshotsProvider {
    */
   save(image, suffix) {
     // Do nothing.
+    return image.resolve(null);
   }
 }
 
