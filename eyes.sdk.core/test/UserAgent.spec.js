@@ -93,5 +93,16 @@ describe('UserAgent', () => {
       assert.equal(userAgent.getBrowserMajorVersion(), undefined);
       assert.equal(userAgent.getBrowserMinorVersion(), undefined);
     });
+
+    it('should return Safari as browser, Mac OS X as OS', () => {
+      const uaString = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/604.3.5 (KHTML, like Gecko) Version/11.0.1 Safari/604.3.5';
+      const userAgent = UserAgent.parseUserAgentString(uaString, true);
+      assert.equal(userAgent.getOS(), 'Mac OS X');
+      assert.equal(userAgent.getOSMajorVersion(), '10');
+      assert.equal(userAgent.getOSMinorVersion(), '13');
+      assert.equal(userAgent.getBrowser(), 'Safari');
+      assert.equal(userAgent.getBrowserMajorVersion(), '11');
+      assert.equal(userAgent.getBrowserMinorVersion(), '0');
+    });
   });
 });

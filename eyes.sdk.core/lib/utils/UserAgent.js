@@ -175,8 +175,8 @@ class UserAgent {
     // Explicit browser version (if available)
     if (VERSION_REGEX.test(userAgent)) {
       const versionMatch = VERSION_REGEX.exec(userAgent);
-      result._browserMajorVersion = versionMatch.group('major');
-      result._browserMinorVersion = versionMatch.group('minor');
+      result._browserMajorVersion = versionMatch[2];
+      result._browserMinorVersion = versionMatch[3];
     }
 
     return result;
