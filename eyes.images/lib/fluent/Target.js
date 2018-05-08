@@ -6,7 +6,7 @@ const { ImagesCheckSettings } = require('./ImagesCheckSettings');
 
 class Target {
   /**
-   * @param {String|Buffer|MutableImage} image
+   * @param {string|Buffer|MutableImage} image
    * @return {ImagesCheckSettings}
    */
   static image(image) {
@@ -40,7 +40,7 @@ class Target {
   }
 
   /**
-   * @param {String} string
+   * @param {string} string
    * @return {ImagesCheckSettings}
    */
   static base64(string) {
@@ -50,7 +50,7 @@ class Target {
   }
 
   /**
-   * @param {String} string
+   * @param {string} string
    * @return {ImagesCheckSettings}
    */
   static path(string) {
@@ -60,7 +60,7 @@ class Target {
   }
 
   /**
-   * @param {String} string
+   * @param {string} string
    * @param {RectangleSize} [imageSize]
    * @return {ImagesCheckSettings}
    */
@@ -73,7 +73,7 @@ class Target {
   }
 
   /**
-   * @param {String|Buffer|MutableImage} image
+   * @param {string|Buffer|MutableImage} image
    * @param {Region|RegionObject} rect
    * @return {ImagesCheckSettings}
    */

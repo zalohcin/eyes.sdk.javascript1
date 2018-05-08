@@ -23,7 +23,7 @@ class Eyes extends EyesBase {
   /**
    * Initializes an Eyes instance.
    *
-   * @param {String} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
+   * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
    * @param {PromiseFactory} [promiseFactory] If not specified will be created using `Promise` object
    */
   constructor(serverUrl, promiseFactory) {
@@ -43,11 +43,11 @@ class Eyes extends EyesBase {
   /**
    * Starts a test.
    *
-   * @param {String} appName The application being tested.
-   * @param {String} testName The test's name.
+   * @param {string} appName The application being tested.
+   * @param {string} testName The test's name.
    * @param {RectangleSize} [imageSize] Determines the resolution used for the baseline. {@code null} will
    *   automatically grab the resolution from the image.
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   open(appName, testName, imageSize) {
     return super.openBase(appName, testName, imageSize);
@@ -56,7 +56,7 @@ class Eyes extends EyesBase {
   /**
    * @param {string} name
    * @param {ImagesCheckSettings} checkSettings
-   * @return {Promise.<boolean>}
+   * @return {Promise<boolean>}
    */
   check(name, checkSettings) {
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
@@ -72,11 +72,11 @@ class Eyes extends EyesBase {
   /**
    * Perform visual validation for the current image.
    *
-   * @param {String|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
-   * @param {String} [tag] Tag to be associated with the validation checkpoint.
-   * @param {Boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
-   * @param {int} [retryTimeout] timeout for performing the match (ms).
-   * @return {Promise<Boolean>} True if the image matched the expected output, false otherwise.
+   * @param {string|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
+   * @param {string} [tag] Tag to be associated with the validation checkpoint.
+   * @param {boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
+   * @param {number} [retryTimeout] timeout for performing the match (ms).
+   * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   checkImage(image, tag, ignoreMismatch, retryTimeout) {
@@ -97,11 +97,11 @@ class Eyes extends EyesBase {
    *
    * @param {Region|RegionObject} region The region of the image which should be verified, or {undefined}/{null} if the
    *   entire image should be verified.
-   * @param {String|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
-   * @param {String} [tag] An optional tag to be associated with the validation checkpoint.
-   * @param {Boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
-   * @param {int} [retryTimeout] timeout for performing the match (ms).
-   * @return {Promise<Boolean>} True if the image matched the expected output, false otherwise.
+   * @param {string|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
+   * @param {string} [tag] An optional tag to be associated with the validation checkpoint.
+   * @param {boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
+   * @param {number} [retryTimeout] timeout for performing the match (ms).
+   * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   checkRegion(image, region, tag, ignoreMismatch, retryTimeout) {
@@ -122,10 +122,10 @@ class Eyes extends EyesBase {
    * Internal function for performing an image verification for an image (or a region of an image).
    *
    * @private
-   * @param {String} name An optional tag to be associated with the validation checkpoint.
-   * @param {Boolean} ignoreMismatch True if the server should ignore a negative result for the visual validation.
+   * @param {string} name An optional tag to be associated with the validation checkpoint.
+   * @param {boolean} ignoreMismatch True if the server should ignore a negative result for the visual validation.
    * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
-   * @return {Promise<Boolean>}
+   * @return {Promise<boolean>}
    */
   _checkImage(name, ignoreMismatch, checkSettings) {
     const that = this;
@@ -165,7 +165,7 @@ class Eyes extends EyesBase {
   /**
    * @private
    * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
-   * @return {Promise.<MutableImage>}
+   * @return {Promise<MutableImage>}
    */
   _normalizeImage(checkSettings) {
     const promiseFactory = this.getPromiseFactory();
@@ -197,11 +197,11 @@ class Eyes extends EyesBase {
    * Replaces the actual image in a running session.
    *
    * @param {number} stepIndex The zero based index of the step in which to replace the image.
-   * @param {String|Buffer|MutableImage} image The image base64 string, image buffer or MutableImage.
-   * @param {String} [tag] A tag to be associated with the validation checkpoint.
-   * @param {String} [title] A title to be associated with the validation checkpoint.
-   * @param {Array} [userInputs] An array of user inputs to which lead to the validation checkpoint.
-   * @return {Promise<Boolean>} True if the image matched the expected output, false otherwise.
+   * @param {string|Buffer|MutableImage} image The image base64 string, image buffer or MutableImage.
+   * @param {string} [tag] A tag to be associated with the validation checkpoint.
+   * @param {string} [title] A title to be associated with the validation checkpoint.
+   * @param {Trigger[]} [userInputs] An array of user inputs to which lead to the validation checkpoint.
+   * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   replaceImage(stepIndex, image, tag, title, userInputs) {
@@ -238,7 +238,7 @@ class Eyes extends EyesBase {
    * Adds a keyboard trigger.
    *
    * @param {Region} control The control's context-relative region.
-   * @param {String} text The trigger's text.
+   * @param {string} text The trigger's text.
    */
   addTextTrigger(control, text) {
     super.addTextTriggerBase(control, text);
@@ -248,7 +248,7 @@ class Eyes extends EyesBase {
   /**
    * Get the AUT session id.
    *
-   * @return {Promise<?String>}
+   * @return {Promise<?string>}
    */
   getAUTSessionId() {
     return this.getPromiseFactory().resolve(undefined);
@@ -283,7 +283,7 @@ class Eyes extends EyesBase {
    * Get the inferred environment.
    *
    * @protected
-   * @return {Promise<String>} A promise which resolves to the inferred environment string.
+   * @return {Promise<string>} A promise which resolves to the inferred environment string.
    */
   getInferredEnvironment() {
     return this.getPromiseFactory().resolve(this._inferred);
@@ -293,7 +293,7 @@ class Eyes extends EyesBase {
   /**
    * Sets the inferred environment for the test.
    *
-   * @param {String} inferred The inferred environment string.
+   * @param {string} inferred The inferred environment string.
    */
   setInferredEnvironment(inferred) {
     this._inferred = inferred;
@@ -313,7 +313,7 @@ class Eyes extends EyesBase {
   /**
    * Get the screenshot URL.
    *
-   * @return {Promise<String>} The screenshot URL.
+   * @return {Promise<string>} The screenshot URL.
    */
   getScreenshotUrl() {
     return this.getPromiseFactory().resolve(this._screenshotUrl);
@@ -324,7 +324,7 @@ class Eyes extends EyesBase {
    * Get the title.
    *
    * @protected
-   * @return {Promise<String>} The current title of of the AUT.
+   * @return {Promise<string>} The current title of of the AUT.
    */
   getTitle() {
     return this.getPromiseFactory().resolve(this._title);

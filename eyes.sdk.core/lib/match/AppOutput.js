@@ -5,10 +5,10 @@
  */
 class AppOutput {
   /**
-   * @param {String} title The title of the screen of the application being captured.
+   * @param {string} title The title of the screen of the application being captured.
    * @param {Buffer} [screenshot64] Base64 encoding of the screenshot's bytes (the byte can be in either in compressed
    *   or uncompressed form)
-   * @param {String} [screenshotUrl] The URL that points to the screenshot
+   * @param {string} [screenshotUrl] The URL that points to the screenshot
    */
   constructor(title, screenshot64, screenshotUrl) {
     this._title = title;
@@ -17,13 +17,13 @@ class AppOutput {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getTitle() {
     return this._title;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setTitle(value) {
     this._title = value;
   }
@@ -39,13 +39,13 @@ class AppOutput {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getScreenshotUrl() {
     return this._screenshotUrl;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setScreenshotUrl(value) {
     this._screenshotUrl = value;
   }

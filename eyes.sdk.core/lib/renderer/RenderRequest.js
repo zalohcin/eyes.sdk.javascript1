@@ -26,13 +26,13 @@ class RenderRequest {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getWebhook() {
     return this._webhook;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getUrl() {
     return this._url;
   }

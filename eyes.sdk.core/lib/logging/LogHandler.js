@@ -14,7 +14,7 @@ class LogHandler {
   /**
    * Whether to handle or ignore verbose log messages.
    *
-   * @param {Boolean} isVerbose
+   * @param {boolean} isVerbose
    */
   setIsVerbose(isVerbose) {
     // noinspection PointlessBooleanExpressionJS
@@ -25,7 +25,7 @@ class LogHandler {
   /**
    * Whether to handle or ignore verbose log messages.
    *
-   * @return {Boolean} isVerbose
+   * @return {boolean} isVerbose
    */
   getIsVerbose() {
     return this._isVerbose;
@@ -43,8 +43,8 @@ class LogHandler {
 
   /**
    * @abstract
-   * @param {Boolean} verbose
-   * @param {String} logString
+   * @param {boolean} verbose
+   * @param {string} logString
    */
   onMessage(verbose, logString) {}
 }

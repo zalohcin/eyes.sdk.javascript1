@@ -35,11 +35,11 @@ const HTTP_STATUS_CODES = {
 /**
  * @private
  * @param {ServerConnector} that
- * @param {String} name
- * @param {String} url
- * @param {String} method
- * @param {Object} options
- * @return {Promise.<AxiosResponse>}
+ * @param {string} name
+ * @param {string} url
+ * @param {string} method
+ * @param {object} options
+ * @return {Promise<AxiosResponse>}
  */
 const sendRequest = (that, name, url, method, options = {}) => {
   const request = GeneralUtils.clone(that._httpOptions);
@@ -78,10 +78,10 @@ const sendRequest = (that, name, url, method, options = {}) => {
 /**
  * @private
  * @param {ServerConnector} that
- * @param {String} name
- * @param {String} uri
- * @param {int} delay
- * @return {Promise.<AxiosResponse>}
+ * @param {string} name
+ * @param {string} uri
+ * @param {number} delay
+ * @return {Promise<AxiosResponse>}
  */
 const longRequestLoop = (that, name, uri, delay) => {
   delay = Math.min(MAX_LONG_REQUEST_DELAY_MS, Math.floor(delay * LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR));
@@ -106,9 +106,9 @@ const longRequestLoop = (that, name, uri, delay) => {
 /**
  * @private
  * @param {ServerConnector} that
- * @param {String} name
+ * @param {string} name
  * @param {AxiosResponse} response
- * @return {Promise.<AxiosResponse>}
+ * @return {Promise<AxiosResponse>}
  */
 const longRequestCheckStatus = (that, name, response) => {
   switch (response.status) {
@@ -140,11 +140,11 @@ const longRequestCheckStatus = (that, name, response) => {
 /**
  * @private
  * @param {ServerConnector} that
- * @param {String} name
- * @param {String} uri
- * @param {String} method
- * @param {Object} options
- * @return {Promise.<AxiosResponse>}
+ * @param {string} name
+ * @param {string} uri
+ * @param {string} method
+ * @param {object} options
+ * @return {Promise<AxiosResponse>}
  */
 const sendLongRequest = (that, name, uri, method, options = {}) => {
   const headers = {
@@ -162,7 +162,7 @@ const sendLongRequest = (that, name, uri, method, options = {}) => {
  * Creates a bytes representation of the given JSON.
  *
  * @private
- * @param {Object} jsonData The data from for which to create the bytes representation.
+ * @param {object} jsonData The data from for which to create the bytes representation.
  * @return {Buffer} a buffer of bytes which represents the stringified JSON, prefixed with size.
  */
 const createDataBytes = jsonData => {
@@ -183,7 +183,7 @@ class ServerConnector {
   /**
    * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
    * @param {Logger} logger
-   * @param {String} serverUrl
+   * @param {string} serverUrl
    */
   constructor(promiseFactory, logger, serverUrl) {
     this._promiseFactory = promiseFactory;
@@ -207,7 +207,7 @@ class ServerConnector {
   /**
    * Sets the current server URL used by the rest client.
    *
-   * @param serverUrl {String} The URI of the rest server.
+   * @param serverUrl {string} The URI of the rest server.
    */
   setServerUrl(serverUrl) {
     ArgumentGuard.notNull(serverUrl, 'serverUrl');
@@ -215,7 +215,7 @@ class ServerConnector {
   }
 
   /**
-   * @return {String} The URI of the eyes server.
+   * @return {string} The URI of the eyes server.
    */
   getServerUrl() {
     return this._serverUrl;
@@ -224,7 +224,7 @@ class ServerConnector {
   /**
    * Sets the API key of your applitools Eyes account.
    *
-   * @param {String} apiKey The api key to set.
+   * @param {string} apiKey The api key to set.
    */
   setApiKey(apiKey) {
     ArgumentGuard.notNull(apiKey, 'apiKey');
@@ -233,7 +233,7 @@ class ServerConnector {
 
   /**
    *
-   * @return {String} The currently set API key or {@code null} if no key is set.
+   * @return {string} The currently set API key or {@code null} if no key is set.
    */
   getApiKey() {
     return this._apiKey || process.env.APPLITOOLS_API_KEY;
@@ -242,7 +242,7 @@ class ServerConnector {
   /**
    * Sets the current rendering server URL used by the client.
    *
-   * @param serverUrl {String} The URI of the rendering server.
+   * @param serverUrl {string} The URI of the rendering server.
    */
   setRenderingServerUrl(serverUrl) {
     ArgumentGuard.notNull(serverUrl, 'serverUrl');
@@ -251,7 +251,7 @@ class ServerConnector {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The URI of the rendering server.
+   * @return {string} The URI of the rendering server.
    */
   getRenderingServerUrl() {
     return this._renderingServerUrl;
@@ -260,7 +260,7 @@ class ServerConnector {
   /**
    * Sets the API key of your applitools Eyes account.
    *
-   * @param {String} authToken The api key to set.
+   * @param {string} authToken The api key to set.
    */
   setRenderingAuthToken(authToken) {
     ArgumentGuard.notNull(authToken, 'authToken');
@@ -270,7 +270,7 @@ class ServerConnector {
   // noinspection JSUnusedGlobalSymbols
   /**
    *
-   * @return {String} The currently set API key or {@code null} if no key is set.
+   * @return {string} The currently set API key or {@code null} if no key is set.
    */
   getRenderingAuthToken() {
     return this._renderingAuthToken;
@@ -279,9 +279,9 @@ class ServerConnector {
   /**
    * Sets the proxy settings to be used by the rest client.
    *
-   * @param {ProxySettings|String} arg1 The proxy setting or url to be used. If {@code null} then no proxy is set.
-   * @param {String} [username]
-   * @param {String} [password]
+   * @param {ProxySettings|string} arg1 The proxy setting or url to be used. If {@code null} then no proxy is set.
+   * @param {string} [username]
+   * @param {string} [password]
    */
   setProxy(arg1, username, password) {
     if (!arg1) {
@@ -309,14 +309,14 @@ class ServerConnector {
   /**
    * Whether sessions are removed immediately after they are finished.
    *
-   * @param shouldRemove {Boolean}
+   * @param shouldRemove {boolean}
    */
   setRemoveSession(shouldRemove) {
     this._httpOptions.params.removeSession = shouldRemove;
   }
 
   /**
-   * @return {Boolean} Whether sessions are removed immediately after they are finished.
+   * @return {boolean} Whether sessions are removed immediately after they are finished.
    */
   getRemoveSession() {
     return !!this._httpOptions.params.removeSession;
@@ -326,7 +326,7 @@ class ServerConnector {
   /**
    * Sets the connect and read timeouts for web requests.
    *
-   * @param {int} timeout Connect/Read timeout in milliseconds. 0 equals infinity.
+   * @param {number} timeout Connect/Read timeout in milliseconds. 0 equals infinity.
    */
   setTimeout(timeout) {
     ArgumentGuard.greaterThanOrEqualToZero(timeout, 'timeout');
@@ -335,7 +335,7 @@ class ServerConnector {
 
   /**
    *
-   * @return {int} The timeout for web requests (in seconds).
+   * @return {number} The timeout for web requests (in seconds).
    */
   getTimeout() {
     return this._httpOptions.timeout;
@@ -346,7 +346,7 @@ class ServerConnector {
    * linked to an existing session, or to a completely new session.
    *
    * @param {SessionStartInfo} sessionStartInfo The start parameters for the session.
-   * @return {Promise.<RunningSession>} RunningSession object which represents the current running session
+   * @return {Promise<RunningSession>} RunningSession object which represents the current running session
    */
   startSession(sessionStartInfo) {
     ArgumentGuard.notNull(sessionStartInfo, 'sessionStartInfo');
@@ -380,9 +380,9 @@ class ServerConnector {
    * Stops the running session.
    *
    * @param {RunningSession} runningSession The running session to be stopped.
-   * @param {Boolean} isAborted
-   * @param {Boolean} save
-   * @return {Promise.<TestResults>} TestResults object for the stopped running session
+   * @param {boolean} isAborted
+   * @param {boolean} save
+   * @return {Promise<TestResults>} TestResults object for the stopped running session
    */
   stopSession(runningSession, isAborted, save) {
     ArgumentGuard.notNull(runningSession, 'runningSession');
@@ -414,7 +414,7 @@ class ServerConnector {
    *
    * @param {RunningSession} runningSession The current agent's running session.
    * @param {MatchWindowData} matchWindowData Encapsulation of a capture taken from the application.
-   * @return {Promise.<MatchResult>} The results of the window matching.
+   * @return {Promise<MatchResult>} The results of the window matching.
    */
   matchWindow(runningSession, matchWindowData) {
     ArgumentGuard.notNull(runningSession, 'runningSession');
@@ -455,7 +455,7 @@ class ServerConnector {
    * Matches the current window in single request.
    *
    * @param {MatchSingleWindowData} matchSingleWindowData Encapsulation of a capture taken from the application.
-   * @return {Promise.<TestResults>} The results of the window matching.
+   * @return {Promise<TestResults>} The results of the window matching.
    */
   matchSingleWindow(matchSingleWindowData) {
     ArgumentGuard.notNull(matchSingleWindowData, 'matchSingleWindowData');
@@ -496,9 +496,9 @@ class ServerConnector {
    * Replaces an actual image in the current running session.
    *
    * @param {RunningSession} runningSession The current agent's running session.
-   * @param {Number} stepIndex The zero based index of the step in which to replace the actual image.
+   * @param {number} stepIndex The zero based index of the step in which to replace the actual image.
    * @param {MatchWindowData} matchWindowData Encapsulation of a capture taken from the application.
-   * @return {Promise.<MatchResult>} The results of the window matching.
+   * @return {Promise<MatchResult>} The results of the window matching.
    */
   replaceWindow(runningSession, stepIndex, matchWindowData) {
     ArgumentGuard.notNull(runningSession, 'runningSession');
@@ -537,7 +537,7 @@ class ServerConnector {
   /**
    * Initiate a rendering using RenderingGrid API
    *
-   * @return {Promise.<RenderingInfo>} The results of the render request
+   * @return {Promise<RenderingInfo>} The results of the render request
    */
   renderInfo() {
     this._logger.verbose('ServerConnector.renderInfo called.');
@@ -566,7 +566,7 @@ class ServerConnector {
    *
    * @param {RenderRequest} renderRequest The current agent's running session.
    * @param {RunningRender} [runningRender] The running render (for second request only)
-   * @return {Promise.<RunningRender>} The results of the render request
+   * @return {Promise<RunningRender>} The results of the render request
    */
   render(renderRequest, runningRender) {
     ArgumentGuard.notNull(renderRequest, 'renderRequest');
@@ -602,7 +602,7 @@ class ServerConnector {
    *
    * @param {RunningRender} runningRender The running render (for second request only)
    * @param {RGridResource} resource The resource to use
-   * @return {Promise.<boolean>} Whether resource exists on the server or not
+   * @return {Promise<boolean>} Whether resource exists on the server or not
    */
   renderCheckResource(runningRender, resource) {
     ArgumentGuard.notNull(runningRender, 'runningRender');
@@ -636,7 +636,7 @@ class ServerConnector {
    *
    * @param {RunningRender} runningRender The running render (for second request only)
    * @param {RGridResource} resource The resource to upload
-   * @return {Promise.<boolean>} True if resource was uploaded
+   * @return {Promise<boolean>} True if resource was uploaded
    */
   renderPutResource(runningRender, resource) {
     ArgumentGuard.notNull(runningRender, 'runningRender');
@@ -671,7 +671,7 @@ class ServerConnector {
    * Get the rendering status for current render
    *
    * @param {RunningRender} runningRender The running render
-   * @return {Promise.<RenderStatusResults>} The render's status
+   * @return {Promise<RenderStatusResults>} The render's status
    */
   renderStatus(runningRender) {
     ArgumentGuard.notNull(runningRender, 'runningRender');

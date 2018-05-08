@@ -7,7 +7,7 @@ const { NoFramesError } = require('../errors/NoFramesError');
 
 /**
  * @class FrameChain
- * @extends {Iterable.<Frame>}
+ * @extends {Iterable<Frame>}
  */
 class FrameChain {
   /**
@@ -63,7 +63,7 @@ class FrameChain {
   }
 
   /**
-   * @return {int} The number of frames in the chain.
+   * @return {number} The number of frames in the chain.
    */
   size() {
     return this._frames.length;
@@ -146,7 +146,7 @@ class FrameChain {
   }
 
   /**
-   * @return Iterator.<Frame> iterator to go over the frames in the chain.
+   * @return Iterator<Frame> iterator to go over the frames in the chain.
    */
   [Symbol.iterator]() {
     return this._frames.values();
@@ -160,7 +160,7 @@ class FrameChain {
   }
 
   /**
-   * @param {int} index Index of needed frame
+   * @param {number} index Index of needed frame
    * @return {Frame} Frame by index in array
    */
   getFrame(index) {

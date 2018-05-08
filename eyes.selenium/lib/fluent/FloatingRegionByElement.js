@@ -5,10 +5,10 @@ const { GetFloatingRegion, FloatingMatchSettings, Location, CoordinatesType } = 
 class FloatingRegionByElement extends GetFloatingRegion {
   /**
    * @param {WebElement} webElement
-   * @param {int} maxUpOffset
-   * @param {int} maxDownOffset
-   * @param {int} maxLeftOffset
-   * @param {int} maxRightOffset
+   * @param {number} maxUpOffset
+   * @param {number} maxDownOffset
+   * @param {number} maxLeftOffset
+   * @param {number} maxRightOffset
    */
   constructor(webElement, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
     super();

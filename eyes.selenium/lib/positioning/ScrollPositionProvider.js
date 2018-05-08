@@ -67,7 +67,7 @@ class ScrollPositionProvider extends PositionProvider {
 
   /**
    * @override
-   * @return {Promise.<ScrollPositionMemento>}
+   * @return {Promise<ScrollPositionMemento>}
    */
   getState() {
     return this.getCurrentPosition().then(position => new ScrollPositionMemento(position));
@@ -77,7 +77,7 @@ class ScrollPositionProvider extends PositionProvider {
   /**
    * @override
    * @param {ScrollPositionMemento} state The initial state of position
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   restoreState(state) {
     const that = this;
@@ -87,7 +87,7 @@ class ScrollPositionProvider extends PositionProvider {
   }
 
   /**
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   scrollToBottomRight() {
     return EyesSeleniumUtils.scrollToBottomRight(this._executor);

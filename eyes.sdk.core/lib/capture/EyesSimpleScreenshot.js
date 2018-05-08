@@ -38,8 +38,8 @@ class EyesSimpleScreenshot extends EyesScreenshot {
    * Get sub screenshot.
    *
    * @param {Region} region The region for which we should get the sub screenshot.
-   * @param {Boolean} throwIfClipped Throw an EyesException if the region is not fully contained in the screenshot.
-   * @return {Promise.<EyesScreenshot>} Sub screenshot.
+   * @param {boolean} throwIfClipped Throw an EyesException if the region is not fully contained in the screenshot.
+   * @return {Promise<EyesScreenshot>} Sub screenshot.
    */
   getSubScreenshot(region, throwIfClipped) {
     ArgumentGuard.notNull(region, 'region');

@@ -25,7 +25,7 @@ class RenderWindowTask {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {RenderRequest} renderRequest
-   * @return {Promise.<String>} Rendered image URL
+   * @return {Promise<string>} Rendered image URL
    */
   renderWindow(renderRequest) {
     const that = this;
@@ -37,7 +37,7 @@ class RenderWindowTask {
   /**
    * @param {RenderRequest} renderRequest
    * @param {RunningRender} [runningRender]
-   * @return {Promise.<RunningRender>}
+   * @return {Promise<RunningRender>}
    */
   postRender(renderRequest, runningRender) {
     const that = this;
@@ -54,7 +54,7 @@ class RenderWindowTask {
 
   /**
    * @param {RunningRender} runningRender
-   * @return {Promise.<RenderStatusResults>}
+   * @return {Promise<RenderStatusResults>}
    */
   getRenderStatus(runningRender) {
     const that = this;
@@ -76,7 +76,7 @@ class RenderWindowTask {
   /**
    * @param {RGridDom} rGridDom
    * @param {RunningRender} runningRender
-   * @return {Promise.<RunningRender>}
+   * @return {Promise<RunningRender>}
    */
   putResources(rGridDom, runningRender) {
     const that = this;

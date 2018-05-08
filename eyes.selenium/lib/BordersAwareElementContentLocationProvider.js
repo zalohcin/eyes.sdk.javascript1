@@ -8,8 +8,8 @@ const { EyesWebElement } = require('./wrappers/EyesWebElement');
  * @private
  * @param {Logger} logger
  * @param {EyesWebElement} element
- * @param {String} propName
- * @return {Promise.<int>}
+ * @param {string} propName
+ * @return {Promise<number>}
  */
 const getPropertyValue = (logger, element, propName) => {
   logger.verbose(`Get element's ${propName}...`);
@@ -60,7 +60,7 @@ class BordersAwareElementContentLocationProvider {
    * @param {Logger} logger The logger to use.
    * @param {EyesWebElement} element The element for which we want to find the content's location.
    * @param {Location} location The location of the element.
-   * @return {Promise.<Location>} The location of the content of the element.
+   * @return {Promise<Location>} The location of the content of the element.
    */
   getLocation(logger, element, location) {
     ArgumentGuard.notNull(logger, 'logger');

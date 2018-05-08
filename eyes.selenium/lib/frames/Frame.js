@@ -16,7 +16,7 @@ class Frame {
    * @param {RectangleSize} innerSize The frame element inner size (i.e., the size of the frame actual size, without
    *   borders).
    * @param {Location} originalLocation The scroll location of the frame.
-   * @param {String} originalOverflow The original overflow value of the frame.
+   * @param {string} originalOverflow The original overflow value of the frame.
    */
   constructor(logger, reference, location, size, innerSize, originalLocation, originalOverflow) {
     ArgumentGuard.notNull(logger, 'logger');
@@ -73,7 +73,7 @@ class Frame {
   }
 
   /**
-   * @return {String}
+   * @return {string}
    */
   getOriginalOverflow() {
     return this._originalOverflow;

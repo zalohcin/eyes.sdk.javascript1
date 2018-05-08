@@ -57,8 +57,8 @@ class EyesJsBrowserUtils {
    * Sets the overflow of the current context's document element.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {String} value The overflow value to set.
-   * @return {Promise.<String>} The previous value of overflow (could be {@code null} if undefined).
+   * @param {string} value The overflow value to set.
+   * @return {Promise<string>} The previous value of overflow (could be {@code null} if undefined).
    */
   static setOverflow(executor, value) {
     let script;
@@ -81,7 +81,7 @@ class EyesJsBrowserUtils {
 
   /**
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<Boolean>} A promise which resolves to the {@code true} if body overflow is hidden, {@code false}
+   * @return {Promise<boolean>} A promise which resolves to the {@code true} if body overflow is hidden, {@code false}
    *   otherwise.
    */
   static isBodyOverflowHidden(executor) {
@@ -94,8 +94,8 @@ class EyesJsBrowserUtils {
    * Updates the document's body "overflow" value
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {String} overflowValue The values of the overflow to set.
-   * @return {Promise.<String>} A promise which resolves to the original overflow of the document.
+   * @param {string} overflowValue The values of the overflow to set.
+   * @return {Promise<string>} A promise which resolves to the original overflow of the document.
    */
   static setBodyOverflow(executor, overflowValue) {
     let script;
@@ -120,9 +120,9 @@ class EyesJsBrowserUtils {
    * Hides the scrollbars of the current context's document element.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {int} stabilizationTimeout The amount of time to wait for the "hide scrollbars" action to take effect
+   * @param {number} stabilizationTimeout The amount of time to wait for the "hide scrollbars" action to take effect
    *   (Milliseconds). Zero/negative values are ignored.
-   * @return {Promise.<String>} The previous value of the overflow property (could be {@code null}).
+   * @return {Promise<string>} The previous value of the overflow property (could be {@code null}).
    */
   static hideScrollbars(executor, stabilizationTimeout) {
     return EyesJsBrowserUtils.setOverflow(executor, 'hidden').then(result => {
@@ -137,7 +137,7 @@ class EyesJsBrowserUtils {
    * Gets the current scroll position.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<Location>} The current scroll position of the current frame.
+   * @return {Promise<Location>} The current scroll position of the current frame.
    */
   static getCurrentScrollPosition(executor) {
     return executor.executeScript(JS_GET_CURRENT_SCROLL_POSITION)
@@ -150,7 +150,7 @@ class EyesJsBrowserUtils {
    *
    * @param {EyesJsExecutor} executor The executor to use.
    * @param {Location} location Location to scroll to
-   * @return {Promise} A promise which resolves after the action is performed and timeout passed.
+   * @return {Promise<void>} A promise which resolves after the action is performed and timeout passed.
    */
   static setCurrentScrollPosition(executor, location) {
     return executor.executeScript(`window.scrollTo(${location.getY()}, ${location.getY()})`);
@@ -160,7 +160,7 @@ class EyesJsBrowserUtils {
    * Scrolls current frame to its bottom right.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise} A promise which resolves after the action is performed and timeout passed.
+   * @return {Promise<void>} A promise which resolves after the action is performed and timeout passed.
    */
   static scrollToBottomRight(executor) {
     return executor.executeScript(JS_SCROLL_TO_BOTTOM_RIGHT);
@@ -170,7 +170,7 @@ class EyesJsBrowserUtils {
    * Get the entire page size.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<RectangleSize>} A promise which resolves to an object containing the width/height of the page.
+   * @return {Promise<RectangleSize>} A promise which resolves to an object containing the width/height of the page.
    */
   static getCurrentFrameContentEntireSize(executor) {
     // IMPORTANT: Notice there's a major difference between scrollWidth and scrollHeight.
@@ -187,7 +187,7 @@ class EyesJsBrowserUtils {
    * Tries to get the viewport size using Javascript. If fails, gets the entire browser window size!
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<RectangleSize>} The viewport size.
+   * @return {Promise<RectangleSize>} The viewport size.
    */
   static getViewportSize(executor) {
     return executor.executeScript(JS_GET_VIEWPORT_SIZE)
@@ -198,7 +198,7 @@ class EyesJsBrowserUtils {
    * Gets the device pixel ratio.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<number>} A promise which resolves to the device pixel ratio (float type).
+   * @return {Promise<number>} A promise which resolves to the device pixel ratio (float type).
    */
   static getDevicePixelRatio(executor) {
     return executor.executeScript('return window.devicePixelRatio')
@@ -209,7 +209,7 @@ class EyesJsBrowserUtils {
    * Get the current transform of page.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<Object.<String, String>>} A promise which resolves to the current transform value.
+   * @return {Promise<Map<string, string>>} A promise which resolves to the current transform value.
    */
   static getCurrentTransform(executor) {
     let script = 'return { ';
@@ -224,9 +224,9 @@ class EyesJsBrowserUtils {
    * Sets transforms for document.documentElement according to the given map of style keys and values.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {Object.<String, String>} transforms The transforms to set. Keys are used as style keys and values are the
+   * @param {Map<string, string>} transforms The transforms to set. Keys are used as style keys and values are the
    *   values for those styles.
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   static setTransforms(executor, transforms) {
     let script = '';
@@ -242,8 +242,8 @@ class EyesJsBrowserUtils {
    * Set the given transform to document.documentElement for all style keys defined in {@link JS_TRANSFORM_KEYS}
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {String} transform The transform to set.
-   * @return {Promise} A promise which resolves to the previous transform once the updated transform is set.
+   * @param {string} transform The transform to set.
+   * @return {Promise<void>} A promise which resolves to the previous transform once the updated transform is set.
    */
   static setTransform(executor, transform) {
     const transforms = {};
@@ -263,7 +263,7 @@ class EyesJsBrowserUtils {
    *
    * @param {EyesJsExecutor} executor The executor to use.
    * @param {Location} position The position to translate to.
-   * @return {Promise} A promise which resolves to the previous transform when the scroll is executed.
+   * @return {Promise<void>} A promise which resolves to the previous transform when the scroll is executed.
    */
   static translateTo(executor, position) {
     return EyesJsBrowserUtils.setTransform(executor, `translate(-${position.getX()}px, -${position.getY()}px)`);

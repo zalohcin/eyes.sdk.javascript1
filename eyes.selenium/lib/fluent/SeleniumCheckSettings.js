@@ -19,7 +19,7 @@ const isProtractorBy = value =>
 class SeleniumCheckSettings extends CheckSettings {
   /**
    * @param {Region|RegionObject|By|WebElement|EyesWebElement} [region]
-   * @param {Integer|String|By|WebElement|EyesWebElement} [frame]
+   * @param {Integer|string|By|WebElement|EyesWebElement} [frame]
    */
   constructor(region, frame) {
     super();
@@ -147,7 +147,7 @@ class SeleniumCheckSettings extends CheckSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @override
-   * @param {Boolean} [stitchContent=true]
+   * @param {boolean} [stitchContent=true]
    * @return {SeleniumCheckSettings}
    */
   stitchContent(stitchContent = true) {
@@ -160,7 +160,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * Defines the timeout to use when acquiring and comparing screenshots.
    *
    * @override
-   * @param {int} timeoutMilliseconds The timeout to use in milliseconds.
+   * @param {number} timeoutMilliseconds The timeout to use in milliseconds.
    * @return {SeleniumCheckSettings} This instance of the settings object.
    */
   timeout(timeoutMilliseconds) {
@@ -169,7 +169,7 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {Integer|String|By|WebElement|EyesWebElement} frame The frame to switch to.
+   * @param {Integer|string|By|WebElement|EyesWebElement} frame The frame to switch to.
    * @return {SeleniumCheckSettings}
    */
   frame(frame) {
@@ -251,10 +251,10 @@ class SeleniumCheckSettings extends CheckSettings {
    * @override
    * @param {GetFloatingRegion|Region|FloatingMatchSettings|By|WebElement|EyesWebElement} regionOrContainer The content
    *   rectangle or region container
-   * @param {int} [maxUpOffset] How much the content can move up.
-   * @param {int} [maxDownOffset] How much the content can move down.
-   * @param {int} [maxLeftOffset] How much the content can move to the left.
-   * @param {int} [maxRightOffset] How much the content can move to the right.
+   * @param {number} [maxUpOffset] How much the content can move up.
+   * @param {number} [maxDownOffset] How much the content can move down.
+   * @param {number} [maxLeftOffset] How much the content can move to the left.
+   * @param {number} [maxRightOffset] How much the content can move to the right.
    * @return {SeleniumCheckSettings} This instance of the settings object.
    */
   floating(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
@@ -288,7 +288,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * Adds a floating region. A floating region is a region that can be placed within the boundaries of a bigger region.
    *
    * @override
-   * @param {int} maxOffset How much each of the content rectangles can move in any direction.
+   * @param {number} maxOffset How much each of the content rectangles can move in any direction.
    * @param {(GetFloatingRegion|Region|By|WebElement|EyesWebElement)...} regionsOrContainers One or more content
    *   rectangles or region containers
    * @return {SeleniumCheckSettings} This instance of the settings object.

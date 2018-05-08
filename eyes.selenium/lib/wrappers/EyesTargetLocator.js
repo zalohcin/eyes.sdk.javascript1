@@ -50,7 +50,7 @@ class EyesTargetLocator extends TargetLocator {
    *
    * @override
    * @param {number|string|WebElement|null} arg1 The frame locator.
-   * @return {Promise.<EyesWebDriver>}
+   * @return {Promise<EyesWebDriver>}
    */
   frame(arg1) {
     const that = this;
@@ -146,7 +146,7 @@ class EyesTargetLocator extends TargetLocator {
    * Change focus to the parent context. If the current context is the top level browsing context, the context remains
    * unchanged.
    *
-   * @return {Promise.<EyesWebDriver>}
+   * @return {Promise<EyesWebDriver>}
    */
   parentFrame() {
     const that = this;
@@ -173,7 +173,7 @@ class EyesTargetLocator extends TargetLocator {
    * scroll) in a single call.
    *
    * @param {FrameChain} frameChain The path to the frame to switch to.
-   * @return {Promise.<EyesWebDriver>} The WebDriver with the switched context.
+   * @return {Promise<EyesWebDriver>} The WebDriver with the switched context.
    */
   framesDoScroll(frameChain) {
     const that = this;
@@ -205,7 +205,7 @@ class EyesTargetLocator extends TargetLocator {
    *
    * @param {FrameChain|string[]} obj The path to the frame to switch to. Or the path to the frame to check. This is a
    *   list of frame names/IDs (where each frame is nested in the previous frame).
-   * @return {Promise.<EyesWebDriver>} The WebDriver with the switched context.
+   * @return {Promise<EyesWebDriver>} The WebDriver with the switched context.
    */
   frames(obj) {
     const that = this;
@@ -250,7 +250,7 @@ class EyesTargetLocator extends TargetLocator {
    *
    * @override
    * @param {string} nameOrHandle The name or window handle of the window to switch focus to.
-   * @return {Promise.<EyesWebDriver>}
+   * @return {Promise<EyesWebDriver>}
    */
   window(nameOrHandle) {
     const that = this;
@@ -268,7 +268,7 @@ class EyesTargetLocator extends TargetLocator {
    * Schedules a command to switch focus of all future commands to the topmost frame on the page.
    *
    * @override
-   * @return {Promise.<EyesWebDriver>}
+   * @return {Promise<EyesWebDriver>}
    */
   defaultContent() {
     const that = this;
@@ -324,7 +324,7 @@ class EyesTargetLocator extends TargetLocator {
    * Will be called before switching into a frame.
    *
    * @param {WebElement} targetFrame The element about to be switched to.
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   willSwitchToFrame(targetFrame) {
     ArgumentGuard.notNull(targetFrame, 'targetFrame');

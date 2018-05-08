@@ -17,8 +17,8 @@ const JS_GET_CLIENT_WIDTH = 'return arguments[0].clientWidth;';
 const JS_GET_CLIENT_HEIGHT = 'return arguments[0].clientHeight;';
 
 /**
- * @param {String} styleProp
- * @return {String}
+ * @param {string} styleProp
+ * @return {string}
  */
 const JS_GET_COMPUTED_STYLE_FORMATTED_STR = styleProp =>
   `var elem = arguments[0], styleProp = '${styleProp}'; ` +
@@ -31,17 +31,17 @@ const JS_GET_COMPUTED_STYLE_FORMATTED_STR = styleProp =>
   '}';
 
 /**
- * @param {int} scrollLeft
- * @param {int} scrollTop
- * @return {String}
+ * @param {number} scrollLeft
+ * @param {number} scrollTop
+ * @return {string}
  */
 const JS_SCROLL_TO_FORMATTED_STR = (scrollLeft, scrollTop) =>
   `arguments[0].scrollLeft = ${scrollLeft}; ` +
   `arguments[0].scrollTop = ${scrollTop};`;
 
 /**
- * @param {String} overflow
- * @return {String}
+ * @param {string} overflow
+ * @return {string}
  */
 const JS_SET_OVERFLOW_FORMATTED_STR = overflow =>
   `arguments[0].style.overflow = '${overflow}'`;
@@ -70,7 +70,7 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @return {Promise.<Region>}
+   * @return {Promise<Region>}
    */
   getBounds() {
     const that = this;
@@ -108,58 +108,58 @@ class EyesWebElement extends WebElement {
   /**
    * Returns the computed value of the style property for the current element.
    *
-   * @param {String} propStyle The style property which value we would like to extract.
-   * @return {Promise.<String>} The value of the style property of the element, or {@code null}.
+   * @param {string} propStyle The style property which value we would like to extract.
+   * @return {Promise<string>} The value of the style property of the element, or {@code null}.
    */
   getComputedStyle(propStyle) {
     return this.executeScript(JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle));
   }
 
   /**
-   * @param {String} propStyle The style property which value we would like to extract.
-   * @return {Promise.<int>} The integer value of a computed style.
+   * @param {string} propStyle The style property which value we would like to extract.
+   * @return {Promise<number>} The integer value of a computed style.
    */
   getComputedStyleInteger(propStyle) {
     return this.getComputedStyle(propStyle).then(result => Math.round(parseFloat(result.trim().replace('px', ''))));
   }
 
   /**
-   * @return {Promise.<int>} The value of the scrollLeft property of the element.
+   * @return {Promise<number>} The value of the scrollLeft property of the element.
    */
   getScrollLeft() {
     return this.executeScript(JS_GET_SCROLL_LEFT).then(result => Math.ceil(parseFloat(result)));
   }
 
   /**
-   * @return {Promise.<int>} The value of the scrollTop property of the element.
+   * @return {Promise<number>} The value of the scrollTop property of the element.
    */
   getScrollTop() {
     return this.executeScript(JS_GET_SCROLL_TOP).then(result => Math.ceil(parseFloat(result)));
   }
 
   /**
-   * @return {Promise.<int>} The value of the scrollWidth property of the element.
+   * @return {Promise<number>} The value of the scrollWidth property of the element.
    */
   getScrollWidth() {
     return this.executeScript(JS_GET_SCROLL_WIDTH).then(result => Math.ceil(parseFloat(result)));
   }
 
   /**
-   * @return {Promise.<int>} The value of the scrollHeight property of the element.
+   * @return {Promise<number>} The value of the scrollHeight property of the element.
    */
   getScrollHeight() {
     return this.executeScript(JS_GET_SCROLL_HEIGHT).then(result => Math.ceil(parseFloat(result)));
   }
 
   /**
-   * @return {Promise.<int>}
+   * @return {Promise<number>}
    */
   getClientWidth() {
     return this.executeScript(JS_GET_CLIENT_WIDTH).then(result => Math.ceil(parseFloat(result)));
   }
 
   /**
-   * @return {Promise.<int>}
+   * @return {Promise<number>}
    */
   getClientHeight() {
     return this.executeScript(JS_GET_CLIENT_HEIGHT).then(result => Math.ceil(parseFloat(result)));
@@ -167,7 +167,7 @@ class EyesWebElement extends WebElement {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Promise.<int>} The width of the left border.
+   * @return {Promise<number>} The width of the left border.
    */
   getBorderLeftWidth() {
     return this.getComputedStyleInteger('border-left-width');
@@ -175,7 +175,7 @@ class EyesWebElement extends WebElement {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Promise.<int>} The width of the right border.
+   * @return {Promise<number>} The width of the right border.
    */
   getBorderRightWidth() {
     return this.getComputedStyleInteger('border-right-width');
@@ -183,7 +183,7 @@ class EyesWebElement extends WebElement {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Promise.<int>} The width of the top border.
+   * @return {Promise<number>} The width of the top border.
    */
   getBorderTopWidth() {
     return this.getComputedStyleInteger('border-top-width');
@@ -191,7 +191,7 @@ class EyesWebElement extends WebElement {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Promise.<int>} The width of the bottom border.
+   * @return {Promise<number>} The width of the bottom border.
    */
   getBorderBottomWidth() {
     return this.getComputedStyleInteger('border-bottom-width');
@@ -201,30 +201,30 @@ class EyesWebElement extends WebElement {
    * Scrolls to the specified location inside the element.
    *
    * @param {Location} location The location to scroll to.
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   scrollTo(location) {
     return this.executeScript(JS_SCROLL_TO_FORMATTED_STR(location.getX(), location.getY()));
   }
 
   /**
-   * @return {Promise.<String>} The overflow of the element.
+   * @return {Promise<string>} The overflow of the element.
    */
   getOverflow() {
     return this.executeScript(JS_GET_OVERFLOW);
   }
 
   /**
-   * @param {String} overflow The overflow to set
-   * @return {Promise} The overflow of the element.
+   * @param {string} overflow The overflow to set
+   * @return {Promise<void>} The overflow of the element.
    */
   setOverflow(overflow) {
     return this.executeScript(JS_SET_OVERFLOW_FORMATTED_STR(overflow));
   }
 
   /**
-   * @param {String} script The script to execute with the element as last parameter
-   * @returns {Promise} The result returned from the script
+   * @param {string} script The script to execute with the element as last parameter
+   * @return {Promise<*>} The result returned from the script
    */
   executeScript(script) {
     // noinspection JSValidateTypes
@@ -232,7 +232,7 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @Override
+   * @override
    * @inheritDoc
    */
   getDriver() {
@@ -240,15 +240,15 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @Override
-   * @return {promise.Thenable.<string>}
+   * @override
+   * @inheritDoc
    */
   getId() {
     return this.getWebElement().getId();
   }
 
   /**
-   * @Override
+   * @override
    * @inheritDoc
    */
   findElement(locator) {
@@ -260,7 +260,7 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @Override
+   * @override
    * @inheritDoc
    */
   findElements(locator) {
@@ -272,9 +272,9 @@ class EyesWebElement extends WebElement {
 
   // noinspection JSCheckFunctionSignatures
   /**
-   * @Override
+   * @override
    * @inheritDoc
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   click() {
     // Letting the driver know about the current action.
@@ -288,7 +288,7 @@ class EyesWebElement extends WebElement {
 
   // noinspection JSCheckFunctionSignatures
   /**
-   * @Override
+   * @override
    * @inheritDoc
    */
   sendKeys(...keysToSend) {
