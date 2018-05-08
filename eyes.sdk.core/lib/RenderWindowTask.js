@@ -1,9 +1,12 @@
 'use strict';
 
+const PromisePool = require('es6-promise-pool');
+
 const { ArgumentGuard } = require('./ArgumentGuard');
 const { GeneralUtils } = require('./utils/GeneralUtils');
 const { RenderStatus } = require('./renderer/RenderStatus');
 
+const DEFAULT_CONCURRENCY_LIMIT = 100;
 const RETRY_REQUEST_INTERVAL = 500; // Milliseconds
 
 class RenderWindowTask {
@@ -76,25 +79,32 @@ class RenderWindowTask {
   /**
    * @param {RGridDom} rGridDom
    * @param {RunningRender} runningRender
-   * @return {Promise<RunningRender>}
+   * @param {number} [concurrency]
+   * @return {Promise<void>}
    */
-  putResources(rGridDom, runningRender) {
+  putResources(rGridDom, runningRender, concurrency = DEFAULT_CONCURRENCY_LIMIT) {
     const that = this;
-    const promises = [];
+    let promise = that._promiseFactory.resolve();
 
     if (runningRender.getNeedMoreDom()) {
-      promises.push(that._serverConnector.renderPutResource(runningRender, rGridDom.asResource()));
+      promise = promise.then(() => that._serverConnector.renderPutResource(runningRender, rGridDom.asResource()));
     }
 
     if (runningRender.getNeedMoreResources()) {
-      rGridDom.getResources().forEach(resource => {
-        if (runningRender.getNeedMoreResources().includes(resource.getUrl())) {
-          promises.push(that._serverConnector.renderPutResource(runningRender, resource));
+      const resources = rGridDom.getResources();
+
+      const pool = new PromisePool(function* generatePutResourcesPromises() {
+        for (let l = resources.length - 1; l >= 0; l -= 1) {
+          if (runningRender.getNeedMoreResources().includes(resources[l].getUrl())) {
+            yield that._serverConnector.renderPutResource(runningRender, resources[l]);
+          }
         }
-      });
+      }, concurrency);
+
+      promise = promise.then(() => pool.start());
     }
 
-    return that._promiseFactory.all(promises);
+    return promise;
   }
 }
 
