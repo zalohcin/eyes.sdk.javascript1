@@ -10,10 +10,10 @@ class RenderRequest {
    * @param {string} webhook
    * @param {string} url
    * @param {RGridDom} dom
-   * @param {number} [renderWidth]
+   * @param {RenderInfo} [renderInfo]
    * @param {string} [browserName]
    */
-  constructor(webhook, url, dom, renderWidth, browserName) {
+  constructor(webhook, url, dom, renderInfo, browserName) {
     ArgumentGuard.notNullOrEmpty(webhook, 'webhook');
     ArgumentGuard.notNull(url, 'url');
     ArgumentGuard.notNull(dom, 'dom');
@@ -21,7 +21,7 @@ class RenderRequest {
     this._webhook = webhook;
     this._url = url;
     this._dom = dom;
-    this._renderWidth = renderWidth;
+    this._renderInfo = renderInfo;
     this._browserName = browserName;
   }
 
@@ -50,9 +50,9 @@ class RenderRequest {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {number} */
-  getRenderWidth() {
-    return this._renderWidth;
+  /** @return {RenderInfo} */
+  getRenderInfo() {
+    return this._renderInfo;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -72,7 +72,7 @@ class RenderRequest {
       webhook: this._webhook,
       url: this._url,
 
-      renderWidth: this._renderWidth,
+      renderInfo: this._renderInfo.toJSON(),
       browser: {
         name: this._browserName,
       },
