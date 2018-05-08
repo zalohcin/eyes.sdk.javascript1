@@ -477,13 +477,9 @@ class Region {
     this._coordinatesType = Region.EMPTY.getCoordinatesType();
   }
 
+  /** @override */
   toJSON() {
-    return {
-      left: this._left,
-      top: this._top,
-      width: this._width,
-      height: this._height,
-    };
+    return { left: this._left, top: this._top, width: this._width, height: this._height };
   }
 
   /** @override */

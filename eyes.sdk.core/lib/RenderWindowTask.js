@@ -3,11 +3,9 @@
 const PromisePool = require('es6-promise-pool');
 
 const { ArgumentGuard } = require('./ArgumentGuard');
-const { GeneralUtils } = require('./utils/GeneralUtils');
 const { RenderStatus } = require('./renderer/RenderStatus');
 
 const DEFAULT_CONCURRENCY_LIMIT = 100;
-const RETRY_REQUEST_INTERVAL = 500; // Milliseconds
 
 class RenderWindowTask {
   /**
@@ -57,17 +55,15 @@ class RenderWindowTask {
 
   /**
    * @param {RunningRender} runningRender
+   * @param {boolean} [delayBeforeRequest=false]
    * @return {Promise<RenderStatusResults>}
    */
-  getRenderStatus(runningRender) {
+  getRenderStatus(runningRender, delayBeforeRequest = false) {
     const that = this;
-    return that._serverConnector.renderStatus(runningRender)
-      .catch(() => GeneralUtils.sleep(RETRY_REQUEST_INTERVAL, that._promiseFactory)
-        .then(() => that.getRenderStatus(runningRender)))
+    return that._serverConnector.renderStatus(runningRender, delayBeforeRequest)
       .then(renderStatusResults => {
         if (renderStatusResults.getStatus() === RenderStatus.RENDERING) {
-          return GeneralUtils.sleep(RETRY_REQUEST_INTERVAL, that._promiseFactory)
-            .then(() => that.getRenderStatus(runningRender));
+          return that.getRenderStatus(runningRender, true);
         } else if (renderStatusResults.getStatus() === RenderStatus.ERROR) {
           return that._promiseFactory.reject(renderStatusResults.getError());
         }

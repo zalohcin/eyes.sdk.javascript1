@@ -34,6 +34,7 @@ class PropertyData {
     this._value = value;
   }
 
+  /** @override */
   toJSON() {
     return {
       name: this._name,

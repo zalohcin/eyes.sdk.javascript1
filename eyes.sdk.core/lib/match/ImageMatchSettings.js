@@ -1,6 +1,7 @@
 'use strict';
 
 const { MatchLevel } = require('./MatchLevel');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 /**
  * Encapsulates match settings for the a session.
@@ -16,9 +17,9 @@ class ImageMatchSettings {
     this._exact = exact;
     this._ignoreCaret = ignoreCaret;
     /** @type {Region[]} */
-    this._ignoreRegions = [];
+    this._ignore = [];
     /** @type {FloatingMatchSettings[]} */
-    this._floatingMatchSettings = [];
+    this._floating = [];
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -75,7 +76,7 @@ class ImageMatchSettings {
    * @return {Region[]} the array of regions to ignore.
    */
   getIgnoreRegions() {
-    return this._ignoreRegions;
+    return this._ignore;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -84,7 +85,7 @@ class ImageMatchSettings {
    * @param {Region[]} value The array of regions to ignore.
    */
   setIgnoreRegions(value) {
-    this._ignoreRegions = value;
+    this._ignore = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -93,7 +94,7 @@ class ImageMatchSettings {
    * @return {FloatingMatchSettings[]} an array of floating regions.
    */
   getFloatingRegions() {
-    return this._floatingMatchSettings;
+    return this._floating;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -102,18 +103,12 @@ class ImageMatchSettings {
    * @param {FloatingMatchSettings[]} value The array of floating regions.
    */
   setFloatingRegions(value) {
-    this._floatingMatchSettings = value;
+    this._floating = value;
   }
 
   /** @override */
   toJSON() {
-    return {
-      matchLevel: this._matchLevel,
-      exact: this._exact,
-      ignoreCaret: this._ignoreCaret,
-      ignore: this._ignoreRegions,
-      floating: this._floatingMatchSettings,
-    };
+    return GeneralUtils.toPlain(this);
   }
 
   /** @override */

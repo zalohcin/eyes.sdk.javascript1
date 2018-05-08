@@ -119,11 +119,9 @@ class RectangleSize {
     return new RectangleSize(Math.ceil(this._width * scaleRatio), Math.ceil(this._height * scaleRatio));
   }
 
+  /** @override */
   toJSON() {
-    return {
-      width: this._width,
-      height: this._height,
-    };
+    return { width: this._width, height: this._height };
   }
 
   /** @override */

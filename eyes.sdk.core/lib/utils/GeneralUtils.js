@@ -1,5 +1,6 @@
 'use strict';
 
+const merge = require('deepmerge');
 const dateformat = require('dateformat');
 const stackTrace = require('stack-trace');
 
@@ -128,6 +129,20 @@ class GeneralUtils {
     });
 
     return inst;
+  }
+
+  /**
+   * Merge two objects x and y deeply, returning a new merged object with the elements from both x and y.
+   * If an element at the same key is present for both x and y, the value from y will appear in the result.
+   * Merging creates a new object, so that neither x or y are be modified.
+   * @see package 'deepmerge'
+   *
+   * @param {object} x
+   * @param {object} y
+   * @return {object}
+   */
+  static mergeDeep(x, y) {
+    return merge(x, y, { isMergeableObject: GeneralUtils.isPlainObject });
   }
 
   /**
@@ -317,6 +332,22 @@ class GeneralUtils {
    */
   static isBoolean(value) {
     return typeof value === 'boolean' || value instanceof Boolean;
+  }
+
+  /**
+   * @param value
+   * @return {boolean}
+   */
+  static isObject(value) {
+    return value != null && typeof value === 'object' && Array.isArray(value) === false;
+  }
+
+  /**
+   * @param value
+   * @return {boolean}
+   */
+  static isPlainObject(value) {
+    return GeneralUtils.isObject(value) && value.constructor === Object;
   }
 
   /**

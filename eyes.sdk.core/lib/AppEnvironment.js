@@ -1,5 +1,7 @@
 'use strict';
 
+const { GeneralUtils } = require('./utils/GeneralUtils');
+
 /**
  * The environment in which the application under test is executing.
  */
@@ -106,13 +108,9 @@ class AppEnvironment {
     this._displaySize = value;
   }
 
+  /** @override */
   toJSON() {
-    return {
-      inferred: this._inferred,
-      os: this._os,
-      hostingApp: this._hostingApp,
-      displaySize: this._displaySize,
-    };
+    return GeneralUtils.toPlain(this);
   }
 
   /** @override */
