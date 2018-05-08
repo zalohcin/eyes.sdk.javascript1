@@ -3,7 +3,6 @@
 const path = require('path');
 const fs = require('fs');
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
 const { LogHandler } = require('./LogHandler');
 
 /**
@@ -57,7 +56,7 @@ class FileLogHandler extends LogHandler {
    */
   onMessage(verbose, logString) {
     if (this._writer && (!verbose || this._isVerbose)) {
-      this._writer.write(`${GeneralUtils.toISO8601DateTime()} Eyes: ${logString}\n`);
+      this._writer.write(`${this.formatMessage(logString)}\n`);
     }
   }
 }

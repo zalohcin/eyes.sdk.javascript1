@@ -841,7 +841,7 @@ class EyesBase {
   /**
    * Ends the currently running test.
    *
-   * @param {boolean} throwEx If true, then the returned promise will 'reject' for failed/aborted tests.
+   * @param {boolean} [throwEx=true] If true, then the returned promise will 'reject' for failed/aborted tests.
    * @return {Promise<TestResults>} A promise which resolves/rejects (depending on the value of 'throwEx') to the test
    *   results.
    */
@@ -1838,6 +1838,7 @@ class EyesBase {
         return that._serverConnector.startSession(that._sessionStartInfo).then(runningSession => {
           that._runningSession = runningSession;
           that._logger.verbose(`Server session ID is ${that._runningSession.getId()}`);
+          that._logger.getLogHandler().setSessionId(runningSession.getSessionId());
 
           if (runningSession.getRenderingInfo()) {
             that._serverConnector.setRenderingAuthToken(runningSession.getRenderingInfo().getAccessToken());

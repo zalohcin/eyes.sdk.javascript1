@@ -1,6 +1,5 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
 const { LogHandler } = require('./LogHandler');
 
 /**
@@ -29,7 +28,7 @@ class ConsoleLogHandler extends LogHandler {
    */
   onMessage(verbose, logString) {
     if (!verbose || this._isVerbose) {
-      console.log(`${GeneralUtils.toISO8601DateTime()} Eyes: ${logString}`); // eslint-disable-line
+      console.log(this.formatMessage(logString)); // eslint-disable-line
     }
   }
 }
