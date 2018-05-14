@@ -23,6 +23,7 @@ class RenderRequest {
     this._dom = dom;
     this._renderInfo = renderInfo;
     this._browserName = browserName;
+    this._renderId = undefined;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -61,6 +62,18 @@ class RenderRequest {
     return this._browserName;
   }
 
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getRenderId() {
+    return this._renderId;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setRenderId(value) {
+    this._renderId = value;
+  }
+
   /** @override */
   toJSON() {
     const resources = {};
@@ -68,18 +81,28 @@ class RenderRequest {
       resources[resource.getUrl()] = resource.getHashAsObject();
     });
 
-    return {
+    const object = {
       webhook: this._webhook,
       url: this._url,
-
-      renderInfo: this._renderInfo.toJSON(),
-      browser: {
-        name: this._browserName,
-      },
-
       dom: this._dom.getHashAsObject(),
       resources,
     };
+
+    if (this._renderId) {
+      object.renderId = this._renderId;
+    }
+
+    if (this._browserName) {
+      object.browser = {
+        name: this._browserName,
+      };
+    }
+
+    if (this._renderInfo) {
+      object.renderInfo = this._renderInfo.toJSON();
+    }
+
+    return object;
   }
 
   /** @override */

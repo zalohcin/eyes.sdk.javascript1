@@ -37,19 +37,46 @@ class RenderWindowTask {
 
   /**
    * @param {RenderRequest} renderRequest
-   * @param {RunningRender} [runningRender]
    * @return {Promise<RunningRender>}
    */
-  postRender(renderRequest, runningRender) {
+  postRender(renderRequest) {
     const that = this;
-    return that._serverConnector.render(renderRequest, runningRender)
+    return that._serverConnector.render(renderRequest)
       .then(newRender => {
         if (newRender.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES) {
+          renderRequest.setRenderId(newRender.getRenderId());
+
           return that.putResources(renderRequest.getDom(), newRender)
-            .then(() => that.postRender(renderRequest, newRender));
+            .then(() => that.postRender(renderRequest));
         }
 
         return newRender;
+      });
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {RenderRequest[]} renderRequests
+   * @return {Promise<RunningRender>}
+   */
+  postRenderBatch(renderRequests) {
+    return this._serverConnector.render(renderRequests);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {RenderRequest} renderRequest
+   * @return {Promise<void>}
+   */
+  checkAndPutResources(renderRequest) {
+    const that = this;
+    return that._serverConnector.render(renderRequest)
+      .then(newRender => {
+        if (newRender.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES) {
+          return that.putResources(renderRequest.getDom(), newRender);
+        }
+
+        return null;
       });
   }
 
@@ -60,7 +87,7 @@ class RenderWindowTask {
    */
   getRenderStatus(runningRender, delayBeforeRequest = false) {
     const that = this;
-    return that._serverConnector.renderStatus(runningRender, delayBeforeRequest)
+    return that._serverConnector.renderStatus(runningRender.getRenderId(), delayBeforeRequest)
       .then(renderStatusResults => {
         if (renderStatusResults.getStatus() === RenderStatus.RENDERING) {
           return that.getRenderStatus(runningRender, true);
@@ -70,6 +97,15 @@ class RenderWindowTask {
 
         return renderStatusResults;
       });
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {string[]} renderIds
+   * @return {Promise<RenderStatusResults[]>}
+   */
+  getRenderStatusBatch(renderIds) {
+    return this._serverConnector.renderStatus(renderIds);
   }
 
   /**

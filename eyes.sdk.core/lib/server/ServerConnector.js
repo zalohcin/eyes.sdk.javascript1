@@ -565,33 +565,34 @@ class ServerConnector {
   /**
    * Initiate a rendering using RenderingGrid API
    *
-   * @param {RenderRequest} renderRequest The current agent's running session.
-   * @param {RunningRender} [runningRender] The running render (for second request only)
-   * @return {Promise<RunningRender>} The results of the render request
+   * @param {RenderRequest[]|RenderRequest} renderRequest The current agent's running session.
+   * @return {Promise<RunningRender[]|RunningRender>} The results of the render request
    */
-  render(renderRequest, runningRender) {
+  render(renderRequest) {
     ArgumentGuard.notNull(renderRequest, 'renderRequest');
-    this._logger.verbose(`ServerConnector.render called with ${renderRequest} for render: ${runningRender}`);
+    this._logger.verbose(`ServerConnector.render called with ${renderRequest}`);
 
     const that = this;
+    const isBatch = Array.isArray(renderRequest);
     const options = GeneralUtils.mergeDeep(that._httpOptions, {
       method: 'POST',
       url: GeneralUtils.urlConcat(this._renderingServerUrl, '/render'),
       headers: {
         'X-Auth-Token': that._renderingAuthToken,
       },
-      data: renderRequest,
+      data: isBatch ? renderRequest : [renderRequest],
     });
-
-    if (runningRender) {
-      options.data.renderId = runningRender.getRenderId();
-    }
 
     return sendRequest(that, 'render', options).then(response => {
       const validStatusCodes = [HTTP_STATUS_CODES.OK];
       if (validStatusCodes.includes(response.status)) {
         that._logger.verbose('ServerConnector.render - post succeeded', response.data);
-        return RunningRender.fromObject(response.data);
+
+        if (isBatch) {
+          return Array.from(response.data).map(resultsData => RunningRender.fromObject(resultsData));
+        }
+
+        return RunningRender.fromObject(response.data[0]);
       }
 
       throw new Error(`ServerConnector.render - unexpected status (${response.statusText})`);
@@ -676,24 +677,23 @@ class ServerConnector {
   /**
    * Get the rendering status for current render
    *
-   * @param {RunningRender} runningRender The running render
+   * @param {string[]|string} renderId The running renderId
    * @param {boolean} [delayBeforeRequest=false] If {@code true}, then the request will be delayed
-   * @return {Promise<RenderStatusResults>} The render's status
+   * @return {Promise<RenderStatusResults[]|RenderStatusResults>} The render's status
    */
-  renderStatus(runningRender, delayBeforeRequest = false) {
-    ArgumentGuard.notNull(runningRender, 'runningRender');
-    this._logger.verbose(`ServerConnector.renderStatus called for render: ${runningRender}`);
+  renderStatus(renderId, delayBeforeRequest = false) {
+    ArgumentGuard.notNull(renderId, 'runningRender');
+    this._logger.verbose(`ServerConnector.renderStatus called for render: ${renderId}`);
 
     const that = this;
+    const isBatch = Array.isArray(renderId);
     const options = GeneralUtils.mergeDeep(that._httpOptions, {
-      method: 'GET',
+      method: 'POST',
       url: GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status'),
       headers: {
         'X-Auth-Token': that._renderingAuthToken,
       },
-      params: {
-        'render-id': runningRender.getRenderId(),
-      },
+      data: isBatch ? renderId : [renderId],
     });
 
     let promise = that._promiseFactory.resolve();
@@ -705,7 +705,12 @@ class ServerConnector {
       const validStatusCodes = [HTTP_STATUS_CODES.OK];
       if (validStatusCodes.includes(response.status)) {
         that._logger.verbose('ServerConnector.renderStatus - get succeeded', response.data);
-        return RenderStatusResults.fromObject(response.data);
+
+        if (isBatch) {
+          return Array.from(response.data).map(resultsData => RenderStatusResults.fromObject(resultsData));
+        }
+
+        return RenderStatusResults.fromObject(response.data[0]);
       }
 
       throw new Error(`ServerConnector.renderStatus - unexpected status (${response.statusText})`);
