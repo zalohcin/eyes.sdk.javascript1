@@ -674,8 +674,18 @@ class ServerConnector {
    * @return {Promise.<RenderStatusResults>} The render's status
    */
   renderStatus(runningRender) {
-    ArgumentGuard.notNull(runningRender, 'runningRender');
-    this._logger.verbose(`ServerConnector.renderStatus called for render: ${runningRender}`);
+    return this.renderStatusById(runningRender.getRenderId());
+  }
+
+  /**
+   * Get the rendering status for current render
+   *
+   * @param {String} renderId The render ID of previous render request
+   * @return {Promise.<RenderStatusResults>} The render's status
+   */
+  renderStatusById(renderId) {
+    ArgumentGuard.notNull(renderId, 'renderId');
+    this._logger.verbose(`ServerConnector.renderStatusById called for render: ${renderId}`);
 
     const that = this;
     const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status');
@@ -684,7 +694,7 @@ class ServerConnector {
         'X-Auth-Token': that._renderingAuthToken,
       },
       params: {
-        'render-id': runningRender.getRenderId(),
+        'render-id': renderId,
       },
     };
 
