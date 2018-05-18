@@ -941,6 +941,7 @@ class EyesBase {
         .stopSession(that._runningSession, isAborted, save)
         .then(results => {
           results.setIsNew(isNewSession);
+          results.setIsSaved(save);
           results.setUrl(sessionResultsUrl);
 
           // for backwards compatibility with outdated servers
@@ -1818,7 +1819,7 @@ class EyesBase {
           that.getBaseAgentId(),
           that._sessionType,
           that.getAppName(),
-          null,
+          undefined,
           that._testName,
           that.getBatch(),
           that._baselineEnvName,

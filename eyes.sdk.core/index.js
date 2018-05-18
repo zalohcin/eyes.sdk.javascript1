@@ -99,6 +99,7 @@ exports.PropertyHandler = require('./lib/utils/PropertyHandler').PropertyHandler
 exports.ReadOnlyPropertyHandler = require('./lib/utils/ReadOnlyPropertyHandler').ReadOnlyPropertyHandler;
 exports.SimplePropertyHandler = require('./lib/utils/SimplePropertyHandler').SimplePropertyHandler;
 exports.StreamUtils = require('./lib/utils/StreamUtils').ReadableBufferStream;
+exports.TestResultsFormatter = require('./lib/utils/TestResultsFormatter').TestResultsFormatter;
 exports.UserAgent = require('./lib/utils/UserAgent').UserAgent;
 
 exports.ArgumentGuard = require('./lib/ArgumentGuard').ArgumentGuard;

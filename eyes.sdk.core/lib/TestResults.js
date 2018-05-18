@@ -234,6 +234,7 @@ class TestResults {
     this._startedAt = null;
     this._duration = null;
     this._isNew = null;
+    this._isSaved = null;
     this._isDifferent = null;
     this._isAborted = null;
     // this._defaultMatchSettings = null;
@@ -419,6 +420,16 @@ class TestResults {
   /** @param {boolean} value Whether or not this test has an existing baseline. */
   setIsNew(value) {
     this._isNew = value;
+  }
+
+  /** @return {boolean} Whether or not test was automatically saved as a baseline. */
+  getIsSaved() {
+    return this._isSaved;
+  }
+
+  /** @param {boolean} value Whether or not test was automatically saved as a baseline. */
+  setIsSaved(value) {
+    this._isSaved = value;
   }
 
   /** @return {boolean} */
