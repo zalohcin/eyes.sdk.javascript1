@@ -677,11 +677,21 @@ class ServerConnector {
   /**
    * Get the rendering status for current render
    *
+   * @param {RunningRender} runningRender The running render
+   * @return {Promise.<RenderStatusResults>} The render's status
+   */
+  renderStatus(runningRender) {
+    return this.renderStatusById(runningRender.getRenderId());
+  }
+
+  /**
+   * Get the rendering status for current render
+   *
    * @param {string[]|string} renderId The running renderId
    * @param {boolean} [delayBeforeRequest=false] If {@code true}, then the request will be delayed
    * @return {Promise<RenderStatusResults[]|RenderStatusResults>} The render's status
    */
-  renderStatus(renderId, delayBeforeRequest = false) {
+  renderStatusById(renderId, delayBeforeRequest = false) {
     ArgumentGuard.notNull(renderId, 'runningRender');
     this._logger.verbose(`ServerConnector.renderStatus called for render: ${renderId}`);
 
