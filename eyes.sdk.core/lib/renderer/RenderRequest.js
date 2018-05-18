@@ -11,9 +11,10 @@ class RenderRequest {
    * @param {string} url
    * @param {RGridDom} dom
    * @param {RenderInfo} [renderInfo]
+   * @param {string} [platform]
    * @param {string} [browserName]
    */
-  constructor(webhook, url, dom, renderInfo, browserName) {
+  constructor(webhook, url, dom, renderInfo, platform, browserName) {
     ArgumentGuard.notNullOrEmpty(webhook, 'webhook');
     ArgumentGuard.notNull(url, 'url');
     ArgumentGuard.notNull(dom, 'dom');
@@ -22,6 +23,7 @@ class RenderRequest {
     this._url = url;
     this._dom = dom;
     this._renderInfo = renderInfo;
+    this._platform = platform;
     this._browserName = browserName;
     this._renderId = undefined;
   }
@@ -96,6 +98,10 @@ class RenderRequest {
       object.browser = {
         name: this._browserName,
       };
+
+      if (this._platform) {
+        object.browser.platform = this._platform;
+      }
     }
 
     if (this._renderInfo) {
