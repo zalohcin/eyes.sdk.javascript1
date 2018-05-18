@@ -87,7 +87,7 @@ class RenderWindowTask {
    */
   getRenderStatus(runningRender, delayBeforeRequest = false) {
     const that = this;
-    return that._serverConnector.renderStatus(runningRender.getRenderId(), delayBeforeRequest)
+    return that._serverConnector.renderStatus(runningRender, delayBeforeRequest)
       .then(renderStatusResults => {
         if (renderStatusResults.getStatus() === RenderStatus.RENDERING) {
           return that.getRenderStatus(runningRender, true);
@@ -105,7 +105,7 @@ class RenderWindowTask {
    * @return {Promise<RenderStatusResults[]>}
    */
   getRenderStatusBatch(renderIds) {
-    return this._serverConnector.renderStatus(renderIds);
+    return this._serverConnector.renderStatusById(renderIds);
   }
 
   /**

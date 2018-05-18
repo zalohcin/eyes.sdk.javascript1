@@ -678,10 +678,11 @@ class ServerConnector {
    * Get the rendering status for current render
    *
    * @param {RunningRender} runningRender The running render
+   * @param {boolean} [delayBeforeRequest=false] If {@code true}, then the request will be delayed
    * @return {Promise.<RenderStatusResults>} The render's status
    */
-  renderStatus(runningRender) {
-    return this.renderStatusById(runningRender.getRenderId());
+  renderStatus(runningRender, delayBeforeRequest = false) {
+    return this.renderStatusById(runningRender.getRenderId(), delayBeforeRequest);
   }
 
   /**
