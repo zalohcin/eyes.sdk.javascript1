@@ -1,5 +1,5 @@
 (function () {
-    "use strict";
+    'use strict';
 
     var EyesUtils = require('eyes.utils'),
         EyesSDK = require('eyes.sdk'),
@@ -61,8 +61,5 @@
         return this._coordinatesType;
     };
 
-    module.exports = {
-        EyesRegionProvider: EyesRegionProvider
-    };
-
+    exports.EyesRegionProvider = EyesRegionProvider;
 }());

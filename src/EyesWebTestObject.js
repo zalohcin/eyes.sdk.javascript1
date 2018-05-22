@@ -1,15 +1,5 @@
-/*
- ---
-
- name: EyesRemoteWebElement
-
- description: Wraps a Remote Web Element.
-
- ---
- */
-
 (function () {
-    "use strict";
+    'use strict';
 
     var EyesSDK = require('eyes.sdk'),
         EyesUtils = require('eyes.utils');
@@ -36,8 +26,8 @@
     };
 
     /**
-     * @param {int} scrollLeft
-     * @param {int} scrollTop
+     * @param {number} scrollLeft
+     * @param {number} scrollTop
      * @return {string}
      */
     var JS_SCROLL_TO_COMMAND = function (scrollLeft, scrollTop) {
@@ -53,8 +43,7 @@
     };
 
     /**
-     *
-     * C'tor = initializes the module settings
+     * Wraps a Remote Web Element.
      *
      * @constructor
      * @param {WebBaseTestObject} remoteWebElement
@@ -69,7 +58,7 @@
         GeneralUtils.mixin(this, remoteWebElement);
     }
 
-    function _getRectangle(location, size) {
+    function getRectangle(location, size) {
         size = size || {height: 0, width: 0};
         location = location || {x: 0, y: 0};
 
@@ -96,22 +85,22 @@
         };
     }
 
-    function _getBounds(element) {
+    function getBounds(element) {
         return element.location().then(function (location) {
             return element.size().then(function (size) {
-                return _getRectangle(location, size);
+                return getRectangle(location, size);
             }, function () {
-                return _getRectangle(location);
+                return getRectangle(location);
             });
         }, function () {
-            return _getRectangle();
+            return getRectangle();
         });
     }
 
     EyesWebTestObject.registerSendKeys = function (element, eyesDriver, logger, args) {
         var text = args.join('');
         logger.verbose("registerSendKeys: text is", text);
-        return _getBounds(element).then(function (rect) {
+        return getBounds(element).then(function (rect) {
             eyesDriver.getEyes().addKeyboardTrigger(rect, text);
         });
     };
@@ -125,7 +114,7 @@
 
     EyesWebTestObject.registerClick = function (element, eyesDriver, logger) {
         logger.verbose("apply click on element");
-        return _getBounds(element).then(function (rect) {
+        return getBounds(element).then(function (rect) {
             var offset = {x: rect.width / 2, y: rect.height / 2};
             eyesDriver.getEyes().addMouseTrigger(MouseAction.Click, rect, offset);
         });
@@ -158,14 +147,14 @@
     /**
      * Returns the computed value of the style property for the current element.
      * @param {string} propStyle The style property which value we would like to extract.
-     * @return {promise.Promise.<string>} The value of the style property of the element, or {@code null}.
+     * @return {promise.Promise<string>} The value of the style property of the element, or {@code null}.
      */
     EyesWebTestObject.prototype.getComputedStyle = function (propStyle) {
         return this._element.getComputedStyle(propStyle);
     };
 
     /**
-     * @return {promise.Promise.<int>} The integer value of a computed style.
+     * @return {promise.Promise<number>} The integer value of a computed style.
      */
     EyesWebTestObject.prototype.getComputedStyleInteger = function (propStyle) {
         return this.getComputedStyle(propStyle).then(function (value) {
@@ -174,7 +163,7 @@
     };
 
     /**
-     * @return {promise.Promise.<int>} The value of the scrollLeft property of the element.
+     * @return {promise.Promise<number>} The value of the scrollLeft property of the element.
      */
     EyesWebTestObject.prototype.getScrollLeft  = function () {
         return this.executeScript(JS_GET_SCROLL_LEFT).then(function (value) {
@@ -183,7 +172,7 @@
     };
 
     /**
-     * @return {promise.Promise.<int>} The value of the scrollTop property of the element.
+     * @return {promise.Promise<number>} The value of the scrollTop property of the element.
      */
     EyesWebTestObject.prototype.getScrollTop  = function () {
         return this.executeScript(JS_GET_SCROLL_TOP).then(function (value) {
@@ -192,7 +181,7 @@
     };
 
     /**
-     * @return {promise.Promise.<int>} The value of the scrollWidth property of the element.
+     * @return {promise.Promise<number>} The value of the scrollWidth property of the element.
      */
     EyesWebTestObject.prototype.getScrollWidth  = function () {
         return this.executeScript(JS_GET_SCROLL_WIDTH).then(function (value) {
@@ -201,7 +190,7 @@
     };
 
     /**
-     * @return {promise.Promise.<int>} The value of the scrollHeight property of the element.
+     * @return {promise.Promise<number>} The value of the scrollHeight property of the element.
      */
     EyesWebTestObject.prototype.getScrollHeight  = function () {
         return this.executeScript(JS_GET_SCROLL_HEIGHT).then(function (value) {
@@ -210,28 +199,28 @@
     };
 
     /**
-     * @return {promise.Promise.<int>} The width of the left border.
+     * @return {promise.Promise<number>} The width of the left border.
      */
     EyesWebTestObject.prototype.getBorderLeftWidth = function () {
         return this.getComputedStyleInteger("border-left-width");
     };
 
     /**
-     * @return {promise.Promise.<int>} The width of the right border.
+     * @return {promise.Promise<number>} The width of the right border.
      */
     EyesWebTestObject.prototype.getBorderRightWidth = function () {
         return this.getComputedStyleInteger("border-right-width");
     };
 
     /**
-     * @return {promise.Promise.<int>} The width of the top border.
+     * @return {promise.Promise<number>} The width of the top border.
      */
     EyesWebTestObject.prototype.getBorderTopWidth = function () {
         return this.getComputedStyleInteger("border-top-width");
     };
 
     /**
-     * @return {promise.Promise.<int>} The width of the bottom border.
+     * @return {promise.Promise<number>} The width of the bottom border.
      */
     EyesWebTestObject.prototype.getBorderBottomWidth = function () {
         return this.getComputedStyleInteger("border-bottom-width");
@@ -267,14 +256,14 @@
     /**
      * Scrolls to the specified location inside the element.
      * @param {{x: number, y: number}} location The location to scroll to.
-     * @return {promise.Promise.<void>}
+     * @return {promise.Promise<void>}
      */
     EyesWebTestObject.prototype.scrollTo = function (location) {
         return this.executeScript(JS_SCROLL_TO_COMMAND(location.x, location.y));
     };
 
     /**
-     * @return {promise.Promise.<string>} The overflow of the element.
+     * @return {promise.Promise<string>} The overflow of the element.
      */
     EyesWebTestObject.prototype.getOverflow = function () {
         return this.getComputedStyle("overflow");
@@ -282,7 +271,7 @@
 
     /**
      * @param {string} overflow The overflow to set
-     * @return {promise.Promise.<void>} The overflow of the element.
+     * @return {promise.Promise<void>} The overflow of the element.
      */
     EyesWebTestObject.prototype.setOverflow = function (overflow) {
         return this.executeScript(JS_SET_OVERFLOW_COMMAND(overflow));
@@ -290,7 +279,7 @@
 
     /**
      * @param {string} script
-     * @return {promise.Promise.<void>} The overflow of the element.
+     * @return {promise.Promise<void>} The overflow of the element.
      */
     EyesWebTestObject.prototype.executeScript = function (script) {
         var that = this;
@@ -306,7 +295,5 @@
         return this._element;
     };
 
-    module.exports = {
-        EyesWebTestObject: EyesWebTestObject
-    };
+    exports.EyesWebTestObject = EyesWebTestObject;
 }());

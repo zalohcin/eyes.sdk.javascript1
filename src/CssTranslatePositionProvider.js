@@ -28,7 +28,7 @@
     CssTranslatePositionProvider.prototype.constructor = CssTranslatePositionProvider;
 
     /**
-     * @returns {Promise<{x: number, y: number}>} The scroll position of the current frame.
+     * @return {Promise<{x: number, y: number}>} The scroll position of the current frame.
      */
     CssTranslatePositionProvider.prototype.getCurrentPosition = function () {
         var that = this;
@@ -42,7 +42,7 @@
     /**
      * Go to the specified location.
      * @param {{x: number, y: number}} location The position to scroll to.
-     * @returns {Promise<void>}
+     * @return {Promise<void>}
      */
     CssTranslatePositionProvider.prototype.setPosition = function (location) {
         var that = this;
@@ -54,7 +54,7 @@
     };
 
     /**
-     * @returns {Promise<{width: number, height: number}>} The entire size of the container which the position is relative to.
+     * @return {Promise<{width: number, height: number}>} The entire size of the container which the position is relative to.
      */
     CssTranslatePositionProvider.prototype.getEntireSize = function () {
         var that = this;
@@ -65,7 +65,7 @@
     };
 
     /**
-     * @returns {Promise<object.<string, string>>}
+     * @return {Promise<Map<string, string>>}
      */
     CssTranslatePositionProvider.prototype.getState = function () {
         var that = this;
@@ -76,8 +76,8 @@
     };
 
     /**
-     * @param {object.<string, string>} state The initial state of position
-     * @returns {Promise<void>}
+     * @param {Map<string, string>} state The initial state of position
+     * @return {Promise<void>}
      */
     CssTranslatePositionProvider.prototype.restoreState = function (state) {
         var that = this;
@@ -86,7 +86,5 @@
         });
     };
 
-    module.exports = {
-        CssTranslatePositionProvider: CssTranslatePositionProvider,
-    }
+    exports.CssTranslatePositionProvider = CssTranslatePositionProvider;
 }());

@@ -32,7 +32,7 @@
 
     //noinspection JSUnusedGlobalSymbols
     /**
-     * @param {int} ms Milliseconds to wait
+     * @param {number} ms Milliseconds to wait
      * @return {Target}
      */
     Target.prototype.timeout = function (ms) {
@@ -137,77 +137,77 @@
     };
 
     /**
-     * @returns {Region|WebBaseDescription|WebBaseTestObject|null}
+     * @return {Region|WebBaseDescription|WebBaseTestObject|null}
      */
     Target.prototype.getRegion = function () {
         return this._region;
     };
 
     /**
-     * @returns {boolean}
+     * @return {boolean}
      */
     Target.prototype.isUsingRegion = function () {
         return !!this._region;
     };
 
     /**
-     * @returns {int|null}
+     * @return {int|null}
      */
     Target.prototype.getTimeout = function () {
         return this._timeout;
     };
 
     /**
-     * @returns {boolean}
+     * @return {boolean}
      */
     Target.prototype.getStitchContent = function () {
         return this._stitchContent;
     };
 
     /**
-     * @returns {boolean}
+     * @return {boolean}
      */
     Target.prototype.getIgnoreMismatch = function () {
         return this._ignoreMismatch;
     };
 
     /**
-     * @returns {boolean}
+     * @return {boolean}
      */
     Target.prototype.getMatchLevel = function () {
         return this._matchLevel;
     };
 
     /**
-     * @returns {boolean|null}
+     * @return {boolean|null}
      */
     Target.prototype.getIgnoreCaret = function () {
         return this._ignoreCaret;
     };
 
     /**
-     * @returns {Region[]}
+     * @return {Region[]}
      */
     Target.prototype.getIgnoreRegions = function () {
         return this._ignoreRegions;
     };
 
     /**
-     * @returns {{element: (WebBaseDescription|WebBaseTestObject)}[]}
+     * @return {{element: (WebBaseDescription|WebBaseTestObject)}[]}
      */
     Target.prototype.getIgnoreObjects = function () {
         return this._ignoreObjects;
     };
 
     /**
-     * @returns {FloatingRegion[]}
+     * @return {FloatingRegion[]}
      */
     Target.prototype.getFloatingRegions = function () {
         return this._floatingRegions;
     };
 
     /**
-     * @returns {FloatingElement[]}
+     * @return {FloatingElement[]}
      */
     Target.prototype.getFloatingObjects = function () {
         return this._floatingObjects;
@@ -234,7 +234,5 @@
         return new Target(region);
     };
 
-    module.exports = {
-        Target: Target
-    };
+    exports.Target = Target;
 }());

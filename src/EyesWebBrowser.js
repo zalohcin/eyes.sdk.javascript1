@@ -1,18 +1,15 @@
 (function () {
-    "use strict";
+    'use strict';
     var EyesUtils = require('eyes.utils'),
         EyesLeanFTUtils = require('./EyesLeanFTUtils').EyesLeanFTUtils,
         EyesWebTestObject = require('./EyesWebTestObject').EyesWebTestObject;
     var GeneralUtils = EyesUtils.GeneralUtils;
 
     /**
-     *
-     * C'tor = initializes the module settings
-     *
      * @constructor
-     * @param {Object} remoteWebDriver
+     * @param {Web.Browser} remoteWebDriver
      * @param {Eyes} eyes An instance of Eyes
-     * @param {Object} logger
+     * @param {Logger} logger
      * @param {PromiseFactory} promiseFactory
      * @augments Web.Browser
      **/
@@ -93,7 +90,7 @@
     /**
      *
      * @param {string} script
-     * @returns {Promise.<*>}
+     * @return {Promise<*>}
      */
     EyesWebBrowser.prototype.executeScript = function (script) {
         return this._browser.page.runScript(script);
@@ -101,7 +98,7 @@
 
     /**
      *
-     * @return {String} Browser's session identity
+     * @return {string} Browser's session identity
      */
     EyesWebBrowser.prototype.getSessionId = function () {
         return this._browser._session._communication._sessionID;
@@ -109,20 +106,18 @@
 
     /**
      *
-     * @return {Promise.<String>}
+     * @return {Promise<string>}
      */
     EyesWebBrowser.prototype.getTitle = function () {
         return this._browser.page.title();
     };
 
     /**
-     * @return {String} Base64 representation of this test object.
+     * @return {string} Base64 representation of this test object.
      */
     EyesWebBrowser.prototype.takeScreenshot = function () {
         return this._browser.page.snapshot();
     };
 
-    module.exports = {
-        EyesWebBrowser: EyesWebBrowser
-    };
+    exports.EyesWebBrowser = EyesWebBrowser;
 }());

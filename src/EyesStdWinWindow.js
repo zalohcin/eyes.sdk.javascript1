@@ -1,16 +1,13 @@
 (function () {
-    "use strict";
+    'use strict';
     var EyesUtils = require('eyes.utils');
     var GeneralUtils = EyesUtils.GeneralUtils;
 
     /**
-     *
-     * C'tor = initializes the module settings
-     *
      * @constructor
-     * @param {Object} remoteWebDriver
+     * @param {StdWin.Window} remoteWebDriver
      * @param {Eyes} eyes An instance of Eyes
-     * @param {Object} logger
+     * @param {Logger} logger
      * @param {PromiseFactory} promiseFactory
      * @augments StdWin.Window
      **/
@@ -70,7 +67,7 @@
 
     /**
      * @param {string} script
-     * @returns {Promise.<*>}
+     * @return {Promise<*>}
      */
     EyesStdWinWindow.prototype.executeScript = function (script) {
         throw new Error("Unimplemented method executeScript!");
@@ -78,7 +75,7 @@
 
     /**
      *
-     * @return {String} Browser's session identity
+     * @return {string} Browser's session identity
      */
     EyesStdWinWindow.prototype.getSessionId = function () {
         throw new Error("Unimplemented method getSessionId!");
@@ -86,20 +83,18 @@
 
     /**
      *
-     * @return {Promise.<String>}
+     * @return {Promise<string>}
      */
     EyesStdWinWindow.prototype.getTitle = function () {
         return this._browser.windowTitleRegExp();
     };
 
     /**
-     * @return {String} Base64 representation of this test object.
+     * @return {string} Base64 representation of this test object.
      */
     EyesStdWinWindow.prototype.takeScreenshot = function () {
         return this._browser.snapshot();
     };
 
-    module.exports = {
-        EyesStdWinWindow: EyesStdWinWindow
-    };
+    exports.EyesStdWinWindow = EyesStdWinWindow;
 }());

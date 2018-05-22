@@ -1,15 +1,5 @@
-/*
- ---
-
- name: EyesLeanFTUtils
-
- description: Handles browser related functionality.
-
- ---
- */
-
 (function () {
-    "use strict";
+    'use strict';
 
     var EyesSDK = require('eyes.sdk'),
         EyesUtils = require('eyes.utils');
@@ -19,6 +9,10 @@
         GeometryUtils = EyesUtils.GeometryUtils,
         ImageUtils = EyesUtils.ImageUtils;
 
+    /**
+     * Handles browser related functionality.
+     * @constructor
+     */
     function EyesLeanFTUtils () {}
 
     /**
@@ -172,7 +166,7 @@
      *
      * @param {Web.Browser} browser The driver which will execute the script to get the scroll position.
      * @param {PromiseFactory} promiseFactory
-     * @return {Promise<object.<string, string>>} A promise which resolves to the current transform value.
+     * @return {Promise<Map<string, string>>} A promise which resolves to the current transform value.
      */
     EyesLeanFTUtils.getCurrentTransform = function getCurrentTransform(browser, promiseFactory) {
         var script = "return { ";
@@ -190,9 +184,9 @@
      * Sets transforms for document.documentElement according to the given map of style keys and values.
      *
      * @param {Web.Browser} browser The browser to use.
-     * @param {object.<string, string>} transforms The transforms to set. Keys are used as style keys and values are the values for those styles.
+     * @param {Map<string, string>} transforms The transforms to set. Keys are used as style keys and values are the values for those styles.
      * @param {PromiseFactory} promiseFactory
-     * @returns {Promise<void>}
+     * @return {Promise<void>}
      */
     EyesLeanFTUtils.setTransforms = function (browser, transforms, promiseFactory) {
         var script = "";
@@ -385,14 +379,14 @@
      * @return {Promise<boolean>}
      */
     EyesLeanFTUtils.setBrowserSize = function (logger, browser, requiredSize, promiseFactory) {
-        return _setBrowserSize(logger, browser, requiredSize, 3, promiseFactory).then(function () {
+        return setBrowserSize(logger, browser, requiredSize, 3, promiseFactory).then(function () {
             return true;
         }, function () {
             return false;
         });
     };
 
-    function _setBrowserSize(logger, browser, requiredSize, retries, promiseFactory) {
+    function setBrowserSize(logger, browser, requiredSize, retries, promiseFactory) {
         return promiseFactory.makePromise(function (resolve, reject) {
             logger.verbose("Trying to set browser size to:", requiredSize);
 
@@ -412,7 +406,7 @@
                     return;
                 }
 
-                _setBrowserSize(logger, browser, requiredSize, retries - 1, promiseFactory).then(function () {
+                setBrowserSize(logger, browser, requiredSize, retries - 1, promiseFactory).then(function () {
                     resolve();
                 }, function (err) {
                     reject(err);
@@ -447,7 +441,7 @@
      * @param {Web.Browser} browser The browser to use.
      * @param {{width: number, height: number}} requiredSize The viewport size.
      * @param {PromiseFactory} promiseFactory
-     * @returns {Promise<void>}
+     * @return {Promise<void>}
      */
     EyesLeanFTUtils.setViewportSize = function (logger, browser, requiredSize, promiseFactory) {
         // First we will set the window size to the required size.
@@ -508,7 +502,7 @@
                                     logger.verbose("Trying workaround for zoom...");
                                     var retriesLeft = Math.abs((widthDiff === 0 ? 1 : widthDiff) * (heightDiff === 0 ? 1 : heightDiff)) * 2;
                                     var lastRequiredBrowserSize = null;
-                                    return _setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
+                                    return setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
                                         widthDiff, widthStep, heightDiff, heightStep, currWidthChange, currHeightChange,
                                         retriesLeft, lastRequiredBrowserSize, promiseFactory).then(function () {
                                         resolve();
@@ -548,7 +542,7 @@
      * @param {PromiseFactory} promiseFactory
      * @return {Promise<void>}
      */
-    function _setWindowSize(logger,
+    function setWindowSize(logger,
                             browser,
                             requiredSize,
                             actualViewportSize,
@@ -598,7 +592,7 @@
                 }
 
                 if ((Math.abs(currWidthChange) <= Math.abs(widthDiff) || Math.abs(currHeightChange) <= Math.abs(heightDiff)) && (--retriesLeft > 0)) {
-                    return _setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
+                    return setWindowSize(logger, browser, requiredSize, actualViewportSize, browserSize,
                         widthDiff, widthStep, heightDiff, heightStep, currWidthChange, currHeightChange,
                         retriesLeft, lastRequiredBrowserSize, promiseFactory).then(function () {
                         resolve();
@@ -615,7 +609,7 @@
     /**
      * @private
      * @param {{left: number, top: number, width: number, height: number}} part
-     * @param {Array<{position: {x: number, y: number}, size: {width: number, height: number}, image: Buffer}>} parts
+     * @param {{position: {x: number, y: number}, size: {width: number, height: number}, image: Buffer}[]} parts
      * @param {{imageBuffer: Buffer, width: number, height: number}} imageObj
      * @param {Web.Browser} browser
      * @param {Promise<void>} promise
@@ -630,7 +624,7 @@
      * @param {boolean} automaticRotation
      * @param {number} automaticRotationDegrees
      * @param {boolean} isLandscape
-     * @param {int} waitBeforeScreenshots
+     * @param {number} waitBeforeScreenshots
      * @param {{left: number, top: number, width: number, height: number}} regionInScreenshot
      * @param {boolean} [saveDebugScreenshots=false]
      * @param {string} [debugScreenshotsPath=null]
@@ -727,7 +721,7 @@
      * @param {boolean} automaticRotation
      * @param {number} automaticRotationDegrees
      * @param {boolean} isLandscape
-     * @param {int} waitBeforeScreenshots
+     * @param {number} waitBeforeScreenshots
      * @param {{left: number, top: number, width: number, height: number}} [regionInScreenshot]
      * @param {boolean} [saveDebugScreenshots=false]
      * @param {string} [debugScreenshotsPath=null]
@@ -832,12 +826,12 @@
      * @param {boolean} automaticRotation
      * @param {number} automaticRotationDegrees
      * @param {boolean} isLandscape
-     * @param {int} waitBeforeScreenshots
+     * @param {number} waitBeforeScreenshots
      * @param {boolean} checkFrameOrElement
      * @param {RegionProvider} [regionProvider]
      * @param {boolean} [saveDebugScreenshots=false]
      * @param {string} [debugScreenshotsPath=null]
-     * @returns {Promise<MutableImage>}
+     * @return {Promise<MutableImage>}
      */
     EyesLeanFTUtils.getScreenshot = function getScreenshot(browser,
                                                            promiseFactory,
@@ -983,7 +977,5 @@
         });
     };
 
-    module.exports = {
-        EyesLeanFTUtils: EyesLeanFTUtils
-    };
+    exports.EyesLeanFTUtils = EyesLeanFTUtils;
 }());
