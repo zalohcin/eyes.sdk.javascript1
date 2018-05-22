@@ -3,8 +3,7 @@
 
     var VERSION = require('./../package.json').version;
 
-    var promise = require('q'),
-        LFT = require("leanft"),
+    var LFT = require("leanft"),
         LeanftSdkWeb = require("leanft.sdk.web"),
         EyesSDK = require('eyes.sdk'),
         EyesUtils = require('eyes.utils'),
@@ -104,12 +103,15 @@
 
         that._promiseFactory.setFactoryMethods(function (asyncAction) {
             return browser._session._promiseManager.syncedBranchThen(function () {
-                var deferred = promise.defer();
-                asyncAction(deferred.fulfill, deferred.reject);
-                return deferred.promise;
+                return new Promise(asyncAction);
             });
         }, function () {
-            return promise.defer();
+            var defer = {};
+            defer.promise = new Promise(function (resolve, reject) {
+                defer.resolve = resolve;
+                defer.reject = reject;
+            });
+            return defer;
         });
 
         if (this._isDisabled) {
@@ -644,14 +646,9 @@
      * @return {Promise<void>} The viewport size of the browser.
      */
     Eyes.setViewportSize = function (browser, size) {
-        var promiseFactory = new PromiseFactory();
-        promiseFactory.setFactoryMethods(function (asyncAction) {
-            var deferred = promise.defer();
-            asyncAction(deferred.fulfill, deferred.reject);
-            return deferred.promise;
-        }, function () {
-            return promise.defer();
-        });
+        var promiseFactory = new PromiseFactory(function (asyncAction) {
+            return new Promise(asyncAction);
+        }, undefined);
 
         return EyesLeanFTUtils.setViewportSize(new Logger(), browser, size, promiseFactory);
     };
