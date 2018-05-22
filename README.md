@@ -16,6 +16,8 @@ Install the LeanFT JavaScript SDK in your tested project:
 | Windows     | <LeanFT installation folder>\SDK\JavaScript\js_installation.bat . |
 | Linux / Mac | <LeanFT installation folder>/sdk/JavaScript/js_installation.sh .  |
 
-Examples
----------------
-See test folder for usage examples
+## Usage
+
+Please check the applitools website for usage instructions:
+
+- https://applitools.com/resources/tutorial/leanft/javascript
