@@ -157,7 +157,9 @@
                 for (var i = 0, l = testResults.stepsInfo.length; i < l; ++i) {
                     var testResult = testResults.stepsInfo[i];
                     var status = testResult.isDifferent ? "Failed" : "Passed";
-                    var params = [];
+                    var params = [
+                        {name: 'secretToken', value: testResults.secretToken}
+                    ];
                     objectToArray(testResult, params);
 
                     Reporter.reportVerification(status, new Reporter.VerificationData({
