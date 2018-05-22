@@ -2,26 +2,36 @@
   "name": "eyes.leanft",
   "version": "1.2.4",
   "description": "Applitools Eyes SDK For LeanFT JavaScript",
-  "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
   "keywords": [
     "eyes.leanft",
-    "Test Automation",
-    "Visual Regression",
-    "tests",
-    "SDK",
-    "Applitools",
-    "Eyes",
+    "applitools",
+    "eyes",
+    "test automation",
+    "visual regression",
     "automation",
-    "leanft",
-    "testing"
+    "tests",
+    "testing",
+    "leanft"
   ],
-  "homepage": "http://www.applitools.com/",
+  "homepage": "https://applitools.com",
+  "author": {
+    "name": "Applitools Team",
+    "email": "team@applitools.com",
+    "url": "https://applitools.com"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/applitools/eyes.leanft.javascript.git"
   },
-  "license": "Apache-2.0",
-  "main": "bundle",
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.leanft.javascript/issues"
+  },
+  "files": [
+    "README.md",
+    "LICENSE",
+    "bundle.js"
+  ],
+  "main": "./bundle.js",
   "dependencies": {
     "eyes.utils": "0.0.28",
     "eyes.sdk": "0.0.70"
@@ -55,6 +65,7 @@
     "minify": "uglifyjs -c -m reserved=[module.exports] --warn bundle.js -o bundle.js",
     "prepublishOnly": "npm run build && npm run minify"
   },
+  "license": "SEE LICENSE IN LICENSE",
   "engines": {
     "node": ">=6.9.0"
   }
