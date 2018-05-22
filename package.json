@@ -23,19 +23,17 @@
   "license": "Apache-2.0",
   "main": "bundle",
   "dependencies": {
-    "eyes.utils": "0.0.26",
-    "eyes.sdk": "0.0.68"
+    "eyes.utils": "0.0.28",
+    "eyes.sdk": "0.0.70"
   },
   "devDependencies": {
-    "mocha": "^5.0.1",
-    "uglify-js": "^3.3.12",
-    "webpack": "^3.11.0",
-    "webpack-node-externals": "^1.6.0"
+    "mocha": "^5.2.0",
+    "uglify-js": "^3.3.26",
+    "webpack": "^3.12.0",
+    "webpack-node-externals": "^1.7.2"
   },
   "optionalDependencies": {
     "leanft": "*",
-    "leanft.sdk.stdwin": "*",
-    "leanft.sdk.web": "*",
     "leanft.report": "*",
     "leanft.report.builder": "*",
     "leanft.sdk.apitesting.uft": "*",
@@ -45,7 +43,9 @@
     "leanft.sdk.mobile": "*",
     "leanft.sdk.sapgui": "*",
     "leanft.sdk.sapui5": "*",
+    "leanft.sdk.stdwin": "*",
     "leanft.sdk.te": "*",
+    "leanft.sdk.web": "*",
     "leanft.sdk.winforms": "*",
     "leanft.sdk.wpf": "*"
   },
