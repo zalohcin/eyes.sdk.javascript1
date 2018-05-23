@@ -63,12 +63,12 @@ describe("Eyes.LeanFT.JavaScript - notepad", function () {
 
     afterEach(function (done) {
         LFT.afterTest();
+        eyes.abortIfNotClosed();
         whenDone(done);
     });
 
     after(function (done) {
         LFT.cleanup();
-        eyes.abortIfNotClosed();
         whenDone(done);
     });
 });

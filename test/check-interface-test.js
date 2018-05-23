@@ -84,12 +84,12 @@ describe("Eyes.LeanFT.JavaScript - check-interface", function () {
         if (browser){
             browser.close();
         }
+        eyes.abortIfNotClosed();
         whenDone(done);
     });
 
     after(function (done) {
         LFT.cleanup();
-        eyes.abortIfNotClosed();
         whenDone(done);
     });
 });

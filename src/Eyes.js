@@ -132,11 +132,11 @@
     };
 
     //noinspection JSUnusedGlobalSymbols
-  /**
-   * Ends the test.
-   * @param throwEx - If true, an exception will be thrown for failed/new tests.
-   * @return {*} The test results.
-   */
+    /**
+    * Ends the test.
+    * @param [throwEx] If true, an exception will be thrown for failed/new tests.
+    * @return {Promise<TestResults>} The test results.
+    */
     Eyes.prototype.close = function (throwEx) {
         throwEx = throwEx !== undefined ? throwEx : true;
 
@@ -189,6 +189,31 @@
             }
             return array;
         }
+    };
+
+    //noinspection JSUnusedGlobalSymbols
+    /**
+     * Aborts the currently running test.
+     * @return {Promise<TestResults>} A promise which resolves to the test results.
+     */
+    Eyes.prototype.abortIfNotClosed = function () {
+        var isEyesWasOpen = false;
+        if (this._isOpen) {
+            isEyesWasOpen = true;
+            Reporter.startReportingContext("Applitools.abortIfNotClosed()");
+        }
+
+        return EyesBase.prototype.abortIfNotClosed.call(this).then(function (results) {
+            if (isEyesWasOpen) {
+                Reporter.endReportingContext();
+            }
+            return results;
+        }, function (err) {
+            if (isEyesWasOpen) {
+                Reporter.endReportingContext();
+            }
+            throw err;
+        });
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -337,6 +362,9 @@
         }).then(function () {
             Reporter.endReportingContext();
             that._logger.verbose("Done!");
+        }, function (err) {
+            Reporter.endReportingContext();
+            throw err;
         });
     };
 

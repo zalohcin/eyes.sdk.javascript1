@@ -58,12 +58,12 @@ describe("Eyes.LeanFT.JavaScrip - hello world", function () {
         if (browser){
             browser.close();
         }
+        eyes.abortIfNotClosed();
         whenDone(done);
     });
 
     after(function (done) {
         LFT.cleanup();
-        eyes.abortIfNotClosed();
         whenDone(done);
     });
 });
