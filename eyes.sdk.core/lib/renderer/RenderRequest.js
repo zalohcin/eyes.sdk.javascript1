@@ -10,9 +10,11 @@ class RenderRequest {
    * @param {string} webhook
    * @param {string} url
    * @param {RGridDom} dom
-   * @param {number} [renderWidth]
+   * @param {RenderInfo} [renderInfo]
+   * @param {string} [platform]
+   * @param {string} [browserName]
    */
-  constructor(webhook, url, dom, renderWidth) {
+  constructor(webhook, url, dom, renderInfo, platform, browserName) {
     ArgumentGuard.notNullOrEmpty(webhook, 'webhook');
     ArgumentGuard.notNull(url, 'url');
     ArgumentGuard.notNull(dom, 'dom');
@@ -20,17 +22,20 @@ class RenderRequest {
     this._webhook = webhook;
     this._url = url;
     this._dom = dom;
-    this._renderWidth = renderWidth;
+    this._renderInfo = renderInfo;
+    this._platform = platform;
+    this._browserName = browserName;
+    this._renderId = undefined;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getWebhook() {
     return this._webhook;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getUrl() {
     return this._url;
   }
@@ -48,9 +53,27 @@ class RenderRequest {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {number} */
-  getRenderWidth() {
-    return this._renderWidth;
+  /** @return {RenderInfo} */
+  getRenderInfo() {
+    return this._renderInfo;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getBrowserName() {
+    return this._browserName;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getRenderId() {
+    return this._renderId;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setRenderId(value) {
+    this._renderId = value;
   }
 
   /** @override */
@@ -60,14 +83,32 @@ class RenderRequest {
       resources[resource.getUrl()] = resource.getHashAsObject();
     });
 
-    return {
+    const object = {
       webhook: this._webhook,
       url: this._url,
-
       dom: this._dom.getHashAsObject(),
       resources,
-      renderWidth: this._renderWidth,
     };
+
+    if (this._renderId) {
+      object.renderId = this._renderId;
+    }
+
+    if (this._browserName) {
+      object.browser = {
+        name: this._browserName,
+      };
+
+      if (this._platform) {
+        object.browser.platform = this._platform;
+      }
+    }
+
+    if (this._renderInfo) {
+      object.renderInfo = this._renderInfo.toJSON();
+    }
+
+    return object;
   }
 
   /** @override */

@@ -5,7 +5,7 @@ const { EyesSeleniumUtils } = require('@applitools/eyes.selenium');
 class EyesAppiumUtils extends EyesSeleniumUtils {
   /**
    * @param {IWebDriver} driver The driver for which to check if it represents a mobile device.
-   * @return {Promise.<Boolean>} {@code true} if the platform running the test is a mobile platform. {@code false}
+   * @return {Promise<boolean>} {@code true} if the platform running the test is a mobile platform. {@code false}
    *   otherwise.
    */
   static isMobileDevice(driver) {
@@ -15,7 +15,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
 
   /**
    * @param {Capabilities} capabilities The driver's capabilities.
-   * @return {Boolean} {@code true} if the platform running the test is a mobile platform. {@code false} otherwise.
+   * @return {boolean} {@code true} if the platform running the test is a mobile platform. {@code false} otherwise.
    */
   static isMobileDeviceFromCaps(capabilities) {
     return EyesAppiumUtils.isAndroidFromCaps(capabilities) || EyesAppiumUtils.isIOSFromCaps(capabilities);
@@ -24,7 +24,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {IWebDriver} driver The driver to test.
-   * @return {Promise.<Boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
+   * @return {Promise<boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static isAndroid(driver) {
     return driver.getCapabilities()
@@ -33,7 +33,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
 
   /**
    * @param {Capabilities} capabilities The driver's capabilities.
-   * @return {Boolean} {@code true} if the driver is an Android driver. {@code false} otherwise.
+   * @return {boolean} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static isAndroidFromCaps(capabilities) {
     return capabilities.get('platformName')
@@ -43,7 +43,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {IWebDriver} driver The driver to test.
-   * @return {Promise.<Boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
+   * @return {Promise<boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static isIOS(driver) {
     return driver.getCapabilities()
@@ -52,7 +52,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
 
   /**
    * @param {Capabilities} capabilities The driver's capabilities.
-   * @return {Boolean} {@code true} if the driver is an Android driver. {@code false} otherwise.
+   * @return {boolean} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static isIOSFromCaps(capabilities) {
     return ['MAC', 'IOS'].includes(capabilities.get('platformName')
@@ -62,7 +62,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {IWebDriver} driver The driver to get the platform version from.
-   * @return {Promise.<String>} The platform version or {@code null} if it is undefined.
+   * @return {Promise<string>} The platform version or {@code null} if it is undefined.
    */
   static getPlatformVersion(driver) {
     return driver.getCapabilities()
@@ -71,7 +71,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
 
   /**
    * @param {Capabilities} capabilities The driver's capabilities.
-   * @return {Boolean} The platform version or {@code null} if it is undefined.
+   * @return {boolean} The platform version or {@code null} if it is undefined.
    */
   static getPlatformVersionFromCaps(capabilities) {
     return capabilities.get('platformVersion');

@@ -70,7 +70,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    * Creates a frame(!) window screenshot.
    *
    * @param {RectangleSize} entireFrameSize The full internal size of the frame.
-   * @return {Promise.<EyesWebDriverScreenshot>}
+   * @return {Promise<EyesWebDriverScreenshot>}
    */
   initFromFrameSize(entireFrameSize) {
     // The frame comprises the entire screenshot.
@@ -85,7 +85,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
   /**
    * @param {ScreenshotType} [screenshotType] The screenshot's type (e.g., viewport/full page).
    * @param {Location} [frameLocationInScreenshot[ The current frame's location in the screenshot.
-   * @return {Promise.<EyesWebDriverScreenshot>}
+   * @return {Promise<EyesWebDriverScreenshot>}
    */
   init(screenshotType, frameLocationInScreenshot) {
     const that = this;
@@ -121,7 +121,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    * @param {Logger} logger
    * @param {FrameChain} currentFrames
    * @param {EyesWebDriver} driver
-   * @return {Promise.<Location>}
+   * @return {Promise<Location>}
    */
   static getDefaultContentScrollPosition(logger, currentFrames, driver) {
     const jsExecutor = new SeleniumJavaScriptExecutor(driver);
@@ -144,7 +144,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    * @param {EyesWebDriver} driver
    * @param {FrameChain} frameChain
    * @param {ScreenshotType} screenshotType
-   * @return {Promise.<Location>}
+   * @return {Promise<Location>}
    */
   static calcFrameLocationInScreenshot(logger, driver, frameChain, screenshotType) {
     return EyesWebDriverScreenshot.getDefaultContentScrollPosition(logger, frameChain, driver).then(windowScroll => {
@@ -182,7 +182,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
   /**
    * @private
    * @param {Location} frameLocationInScreenshot
-   * @return {Promise.<Location>}
+   * @return {Promise<Location>}
    */
   _getUpdatedFrameLocationInScreenshot(frameLocationInScreenshot) {
     this._logger.verbose(`frameLocationInScreenshot: ${frameLocationInScreenshot}`);
@@ -202,7 +202,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
   /**
    * @private
    * @param {PositionProvider} positionProvider
-   * @return {Promise.<Location>}
+   * @return {Promise<Location>}
    */
   static getUpdatedScrollPosition(positionProvider) {
     return positionProvider.getCurrentPosition()
@@ -218,7 +218,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
   /**
    * @private
    * @param {PositionProvider} positionProvider
-   * @return {Promise.<RectangleSize>}
+   * @return {Promise<RectangleSize>}
    */
   _getFrameSize(positionProvider) {
     if (this._frameChain.size() === 0) {
@@ -235,7 +235,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    * @private
    * @param {ScreenshotType} screenshotType
    * @param {MutableImage} image
-   * @return {Promise.<ScreenshotType>}
+   * @return {Promise<ScreenshotType>}
    */
   _updateScreenshotType(screenshotType, image) {
     if (!screenshotType) {
@@ -279,8 +279,8 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    *
    * @override
    * @param {Region} region The region for which we should get the sub screenshot.
-   * @param {Boolean} throwIfClipped Throw an EyesException if the region is not fully contained in the screenshot.
-   * @return {Promise.<EyesWebDriverScreenshot>} A screenshot instance containing the given region.
+   * @param {boolean} throwIfClipped Throw an EyesException if the region is not fully contained in the screenshot.
+   * @return {Promise<EyesWebDriverScreenshot>} A screenshot instance containing the given region.
    */
   getSubScreenshot(region, throwIfClipped) {
     this._logger.verbose(`getSubScreenshot([${region}], ${throwIfClipped})`);
@@ -471,7 +471,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    * Gets the elements region in the screenshot.
    *
    * @param {WebElement} element The element which region we want to intersect.
-   * @return {Promise.<Region>} The intersected region, in {@code SCREENSHOT_AS_IS} coordinates type.
+   * @return {Promise<Region>} The intersected region, in {@code SCREENSHOT_AS_IS} coordinates type.
    */
   getIntersectedRegionFromElement(element) {
     ArgumentGuard.notNull(element, 'element');

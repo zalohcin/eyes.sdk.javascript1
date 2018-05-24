@@ -25,7 +25,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
 
   /**
    * @override
-   * @return {Promise.<MutableImage>}
+   * @return {Promise<MutableImage>}
    */
   getImage() {
     let /** @type MutableImage */ image, scaleRatio, viewportSize;

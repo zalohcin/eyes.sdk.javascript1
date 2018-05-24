@@ -35,9 +35,9 @@ let javascriptHandler = new class JavascriptHandlerImpl extends JavascriptHandle
  * @param {Logger} logger
  * @param {IWebDriver} driver
  * @param {RectangleSize} requiredSize
- * @param {int} sleep
- * @param {int} retriesLeft
- * @return {Promise.<boolean>}
+ * @param {number} sleep
+ * @param {number} retriesLeft
+ * @return {Promise<boolean>}
  */
 const setBrowserSizeLoop = (logger, driver, requiredSize, sleep, retriesLeft) => {
   logger.verbose(`Trying to set browser size to: ${requiredSize}`);
@@ -152,7 +152,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
 
   /**
    * @param {IWebDriver} driver The driver for which to check the orientation.
-   * @returns {Promise.<Boolean>} {@code true} if this is a mobile device and is in landscape orientation. {@code
+   * @return {Promise<boolean>} {@code true} if this is a mobile device and is in landscape orientation. {@code
    *   false} otherwise.
    */
   static isLandscapeOrientation(driver) {
@@ -161,7 +161,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
 
   /**
    * @param {Capabilities} capabilities The driver's capabilities.
-   * @return {Boolean} {@code true} if this is a mobile device and is in landscape orientation. {@code false} otherwise.
+   * @return {boolean} {@code true} if this is a mobile device and is in landscape orientation. {@code false} otherwise.
    */
   static isLandscapeOrientationFromCaps(capabilities) {
     const capsOrientation = capabilities.get('orientation') || capabilities.get('deviceOrientation');
@@ -172,7 +172,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    * @param {Logger} logger
    * @param {IWebDriver} driver
    * @param {MutableImage} image
-   * @returns {Promise.<int>}
+   * @return {Promise<number>}
    */
   static tryAutomaticRotation(logger, driver, image) {
     return imageOrientationHandlerHandler.tryAutomaticRotation(logger, driver, image);
@@ -186,8 +186,8 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
   }
 
   /**
-   * @param {String} script
-   * @param {Object...} args
+   * @param {string} script
+   * @param {object...} args
    */
   static handleSpecialCommands(script, ...args) {
     return javascriptHandler.handle(script, ...args);
@@ -196,7 +196,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
   /**
    * @param {Logger} logger The logger to use.
    * @param {IWebDriver} driver The web driver to use.
-   * @return {Promise.<RectangleSize>} The viewport size of the current context, or the display size if the viewport
+   * @return {Promise<RectangleSize>} The viewport size of the current context, or the display size if the viewport
    *   size cannot be retrieved.
    */
   static getViewportSizeOrDisplaySize(logger, driver) {
@@ -233,7 +233,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    * @param {Logger} logger The logger to use.
    * @param {IWebDriver} driver The web driver to use.
    * @param {RectangleSize} requiredSize The size to set
-   * @return {Promise.<Boolean>}
+   * @return {Promise<boolean>}
    */
   static setBrowserSize(logger, driver, requiredSize) {
     // noinspection MagicNumberJS
@@ -248,7 +248,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    * @param {IWebDriver} driver The web driver to use.
    * @param {RectangleSize} actualViewportSize
    * @param {RectangleSize} requiredViewportSize
-   * @return {Promise.<Boolean>}
+   * @return {Promise<boolean>}
    */
   static setBrowserSizeByViewportSize(logger, driver, actualViewportSize, requiredViewportSize) {
     return driver.manage().window().getSize().then(/** {width: number, height: number} */browserSize => {
@@ -268,7 +268,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    * @param {Logger} logger The logger to use.
    * @param {IWebDriver} driver The web driver to use.
    * @param {RectangleSize} requiredSize The viewport size.
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   static setViewportSize(logger, driver, requiredSize) {
     ArgumentGuard.notNull(requiredSize, 'requiredSize');

@@ -7,13 +7,13 @@ class RegionVisibilityStrategy {
   /**
    * @param {PositionProvider} positionProvider
    * @param {Location} location
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   moveToRegion(positionProvider, location) {}
 
   /**
    * @param {PositionProvider} positionProvider
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   returnToOriginalPosition(positionProvider) {}
 }

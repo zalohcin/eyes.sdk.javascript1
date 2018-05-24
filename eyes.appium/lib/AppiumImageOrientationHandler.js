@@ -9,7 +9,7 @@ class AppiumImageOrientationHandler extends ImageOrientationHandler {
   /**
    * @override
    * @param {IWebDriver} driver
-   * @return {Promise.<Boolean>}
+   * @return {Promise<boolean>}
    */
   isLandscapeOrientation(driver) {
     // noinspection JSUnresolvedFunction
@@ -26,7 +26,7 @@ class AppiumImageOrientationHandler extends ImageOrientationHandler {
    * @param {Logger} logger
    * @param {IWebDriver} driver
    * @param {MutableImage} image
-   * @return {Promise.<Boolean>}
+   * @return {Promise<boolean>}
    */
   tryAutomaticRotation(logger, driver, image) {
     ArgumentGuard.notNull(logger, 'logger');

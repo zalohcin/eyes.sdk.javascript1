@@ -50,10 +50,10 @@ const getRegionInScreenshot = (logger, region, image, pixelRatio, screenshot, re
 /**
  * @param {PositionProvider} originProvider
  * @param {Location} requiredPosition
- * @param {int} retries
- * @param {int} waitMillis
+ * @param {number} retries
+ * @param {number} waitMillis
  * @param {PromiseFactory} promiseFactory
- * @return {Promise.<Location>}
+ * @return {Promise<Location>}
  */
 const setPositionLoop = (originProvider, requiredPosition, retries, waitMillis, promiseFactory) =>
   originProvider.setPosition(requiredPosition)
@@ -71,8 +71,8 @@ const setPositionLoop = (originProvider, requiredPosition, retries, waitMillis, 
  * @param {DebugScreenshotsProvider} debugScreenshotsProvider
  * @param {MutableImage} image
  * @param {Region} region
- * @param {String} name
- * @return {Promise}
+ * @param {string} name
+ * @return {Promise<void>}
  */
 const saveDebugScreenshotPart = (debugScreenshotsProvider, image, region, name) => {
   const suffix = `part-${name}-${region.getLeft()}_${region.getTop()}_${region.getWidth()}x${region.getHeight()}`;
@@ -109,13 +109,13 @@ class FullPageCaptureAlgorithm {
    * @param {PositionProvider} positionProvider A provider of the scrolling implementation.
    * @param {ScaleProviderFactory} scaleProviderFactory A factory for getting the scale provider.
    * @param {CutProvider} cutProvider
-   * @param {int} waitBeforeScreenshots Time to wait before each screenshot (milliseconds).
+   * @param {number} waitBeforeScreenshots Time to wait before each screenshot (milliseconds).
    * @param {DebugScreenshotsProvider} debugScreenshotsProvider
    * @param {EyesScreenshotFactory} screenshotFactory The factory to use for creating screenshots from the images.
-   * @param {int} stitchingOverlap The width of the overlapping parts when stitching an image.
+   * @param {number} stitchingOverlap The width of the overlapping parts when stitching an image.
    * @param {RegionPositionCompensation} regionPositionCompensation A strategy for compensating region positions for
    *   some browsers.
-   * @return {Promise.<MutableImage>} An image which represents the stitched region.
+   * @return {Promise<MutableImage>} An image which represents the stitched region.
    */
   getStitchedRegion(
     imageProvider,

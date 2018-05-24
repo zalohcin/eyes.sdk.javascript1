@@ -6,7 +6,7 @@
 class ImageOrientationHandler {
   /**
    * @param {IWebDriver} driver
-   * @return {Promise.<Boolean>}
+   * @return {Promise<boolean>}
    */
   isLandscapeOrientation(driver) {}
 
@@ -14,7 +14,7 @@ class ImageOrientationHandler {
    * @param {Logger} logger
    * @param {IWebDriver} driver
    * @param {MutableImage} image
-   * @return {Promise.<Boolean>}
+   * @return {Promise<boolean>}
    */
   tryAutomaticRotation(logger, driver, image) {}
 }

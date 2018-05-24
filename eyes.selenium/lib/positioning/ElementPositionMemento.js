@@ -16,14 +16,14 @@ class ElementPositionMemento extends PositionMemento {
   }
 
   /**
-   * @return {int}
+   * @return {number}
    */
   getX() {
     return this._position.getX();
   }
 
   /**
-   * @return {int}
+   * @return {number}
    */
   getY() {
     return this._position.getY();

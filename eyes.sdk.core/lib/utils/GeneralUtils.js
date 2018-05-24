@@ -1,5 +1,6 @@
 'use strict';
 
+const merge = require('deepmerge');
 const dateformat = require('dateformat');
 const stackTrace = require('stack-trace');
 
@@ -13,8 +14,8 @@ const MS_IN_M = 60000;
 
 /**
  * @private
- * @param {Object} to
- * @param {Object} from
+ * @param {object} to
+ * @param {object} from
  * @param {string} fnName
  */
 const mixin = (to, from, fnName) => {
@@ -28,9 +29,9 @@ class GeneralUtils {
   /**
    * Concatenate the url to the suffixes - making sure there are no double slashes
    *
-   * @param {String} url The left side of the URL.
-   * @param {String...} suffixes The right side.
-   * @return {String} the URL
+   * @param {string} url The left side of the URL.
+   * @param {string...} suffixes The right side.
+   * @return {string} the URL
    */
   static urlConcat(url, ...suffixes) {
     let concatUrl = GeneralUtils.stripTrailingSlash(url);
@@ -50,8 +51,8 @@ class GeneralUtils {
   /**
    * If given URL ends with '/', the method with cut it and return URL without it
    *
-   * @param {String} url
-   * @return {String}
+   * @param {string} url
+   * @return {string}
    */
   static stripTrailingSlash(url) {
     return url.endsWith('/') ? url.slice(0, -1) : url;
@@ -62,8 +63,8 @@ class GeneralUtils {
    * Convert object into json string
    *
    * @deprecated use JSON.stringify instead
-   * @param {Object} object
-   * @return {String}
+   * @param {object} object
+   * @return {string}
    */
   static toJson(object) {
     return JSON.stringify(object);
@@ -72,9 +73,9 @@ class GeneralUtils {
   /**
    * Convert a class to plain object
    *
-   * @param {Object} object
-   * @param {Array.<string>} [exclude]
-   * @return {Object}
+   * @param {object} object
+   * @param {string[]} [exclude]
+   * @return {object}
    */
   static toPlain(object, exclude = []) {
     if (object == null) {
@@ -100,8 +101,8 @@ class GeneralUtils {
    *
    * @template T
    * @param {T} inst
-   * @param {Object} object
-   * @param {Object} [mapping]
+   * @param {object} object
+   * @param {object} [mapping]
    * @return {T}
    */
   static assignTo(inst, object, mapping = {}) {
@@ -131,11 +132,25 @@ class GeneralUtils {
   }
 
   /**
-   * Mixin methods from one object into another.
-   * Follow the prototype chain and apply form root to current - but skip the top (Object)
+   * Merge two objects x and y deeply, returning a new merged object with the elements from both x and y.
+   * If an element at the same key is present for both x and y, the value from y will appear in the result.
+   * Merging creates a new object, so that neither x or y are be modified.
+   * @see package 'deepmerge'
    *
-   * @param {Object} to The object to which methods will be added
-   * @param {Object} from The object from which methods will be copied
+   * @param {object} x
+   * @param {object} y
+   * @return {object}
+   */
+  static mergeDeep(x, y) {
+    return merge(x, y, { isMergeableObject: GeneralUtils.isPlainObject });
+  }
+
+  /**
+   * Mixin methods from one object into another.
+   * Follow the prototype chain and apply form root to current - but skip the top (object)
+   *
+   * @param {object} to The object to which methods will be added
+   * @param {object} from The object from which methods will be copied
    */
   static mixin(to, from) {
     let index;
@@ -158,7 +173,7 @@ class GeneralUtils {
   /**
    * Generate GUID
    *
-   * @return {String}
+   * @return {string}
    */
   static guid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -173,7 +188,7 @@ class GeneralUtils {
   /**
    * Clone object
    *
-   * @param {Date|Array|Object} obj
+   * @param {Date|Array|object} obj
    * @return {*}
    */
   static clone(obj) {
@@ -206,9 +221,9 @@ class GeneralUtils {
   /**
    * Waits a specified amount of time before resolving the returned promise.
    *
-   * @param {int} ms The amount of time to sleep in milliseconds.
+   * @param {number} ms The amount of time to sleep in milliseconds.
    * @param {PromiseFactory} promiseFactory
-   * @return {Promise} A promise which is resolved when sleep is done.
+   * @return {Promise<void>} A promise which is resolved when sleep is done.
    */
   static sleep(ms, promiseFactory) {
     return promiseFactory.makePromise(resolve => {
@@ -222,7 +237,7 @@ class GeneralUtils {
    * Convert a Date object to a ISO-8601 date string
    *
    * @param {Date} [date] Date which will be converted
-   * @return {String} String formatted as ISO-8601 (yyyy-MM-dd'T'HH:mm:ss'Z')
+   * @return {string} string formatted as ISO-8601 (yyyy-MM-dd'T'HH:mm:ss'Z')
    */
   static toISO8601DateTime(date = new Date()) {
     return dateformat(date, DATE_FORMAT_ISO8601_FOR_OUTPUT, true);
@@ -232,7 +247,7 @@ class GeneralUtils {
    * Convert a Date object to a RFC-1123 date string
    *
    * @param {Date} [date] Date which will be converted
-   * @return {String} String formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
+   * @return {string} string formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
    */
   static toRfc1123DateTime(date = new Date()) {
     return dateformat(date, DATE_FORMAT_RFC1123, true);
@@ -241,7 +256,7 @@ class GeneralUtils {
   /**
    * Creates {@link Date} instance from an ISO 8601 formatted string.
    *
-   * @param {String} dateTime An ISO 8601 formatted string.
+   * @param {string} dateTime An ISO 8601 formatted string.
    * @return {Date} A {@link Date} instance representing the given date and time.
    */
   static fromISO8601DateTime(dateTime) {
@@ -274,7 +289,7 @@ class GeneralUtils {
    * Convert object(s) to a string
    *
    * @param {*} args
-   * @return {String}
+   * @return {string}
    */
   static stringify(...args) {
     return args
@@ -289,7 +304,7 @@ class GeneralUtils {
   }
 
   /**
-   * @return {int}
+   * @return {number}
    */
   static currentTimeMillis() {
     return Date.now();
@@ -323,6 +338,22 @@ class GeneralUtils {
    * @param value
    * @return {boolean}
    */
+  static isObject(value) {
+    return value != null && typeof value === 'object' && Array.isArray(value) === false;
+  }
+
+  /**
+   * @param value
+   * @return {boolean}
+   */
+  static isPlainObject(value) {
+    return GeneralUtils.isObject(value) && value.constructor === Object;
+  }
+
+  /**
+   * @param value
+   * @return {boolean}
+   */
   static isBuffer(value) {
     return (
       value != null &&
@@ -349,7 +380,7 @@ class GeneralUtils {
   }
 
   /**
-   * @typedef {Object} CallSite
+   * @typedef {object} CallSite
    * @property {function} getTypeName returns the type of this as a string.
    * @property {function} getFunctionName returns the name of the current function, typically its name property.
    * @property {function} getMethodName returns the name of the property of this or one of its prototypes that holds
@@ -359,7 +390,7 @@ class GeneralUtils {
    * @property {function} getColumnNumber if this function was defined in a script returns the current column number
    * @property {function} isNative is this call in native V8 code?
    *
-   * @return {Array.<CallSite>}
+   * @return {CallSite[]}
    */
   static getStackTrace() {
     return stackTrace.get();
@@ -368,8 +399,8 @@ class GeneralUtils {
   /**
    * Simple method that decode JSON Web Tokens
    *
-   * @param {String} token
-   * @return {Object}
+   * @param {string} token
+   * @return {object}
    */
   static jwtDecode(token) {
     let payloadSeg = token.split('.')[1];

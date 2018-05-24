@@ -19,7 +19,7 @@ class TakesScreenshotImageProvider extends ImageProvider {
 
   /**
    * @override
-   * @return {Promise.<MutableImage>}
+   * @return {Promise<MutableImage>}
    */
   getImage() {
     this._logger.verbose('Getting screenshot as base64...');

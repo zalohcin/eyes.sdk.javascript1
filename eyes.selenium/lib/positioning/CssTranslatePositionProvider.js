@@ -64,7 +64,7 @@ class CssTranslatePositionProvider extends PositionProvider {
 
   /**
    * @override
-   * @return {Promise.<CssTranslatePositionMemento>}
+   * @return {Promise<CssTranslatePositionMemento>}
    */
   getState() {
     const that = this;
@@ -78,7 +78,7 @@ class CssTranslatePositionProvider extends PositionProvider {
   /**
    * @override
    * @param {CssTranslatePositionMemento} state The initial state of position
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   restoreState(state) {
     const that = this;
