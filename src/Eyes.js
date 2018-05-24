@@ -131,6 +131,35 @@
         });
     };
 
+    function stepsInfoToArray(stepInfo, parentName) {
+        var params = [];
+        var keys = Object.keys(stepInfo);
+        for (var i = 0, l = keys.length; i < l; i++) {
+            var name = parentName ? (parentName + '.' + keys[i]) : keys[i];
+            var value = stepInfo[keys[i]];
+            if (typeof value === "object") {
+                params.concat(stepsInfoToArray(value, name));
+            } else {
+                params.push({name: name, value: value});
+            }
+        }
+        return params;
+    }
+
+    function reportVerifications(testResults) {
+        var params = [{name: 'secretToken', value: testResults.secretToken}];
+        for (var i = 0, l = testResults.stepsInfo.length; i < l; ++i) {
+            var stepInfo = testResults.stepsInfo[i];
+            var status = stepInfo.hasCurrentImage && !stepInfo.isDifferent ?  "Passed" : "Failed";
+
+            Reporter.reportVerification(status, new Reporter.VerificationData({
+                name: stepInfo.name,
+                description: "Result of Applitools visual validation #" + (i + 1),
+                parameters: params.concat(stepsInfoToArray(stepInfo))
+            }));
+        }
+    }
+
     //noinspection JSUnusedGlobalSymbols
     /**
     * Ends the test.
@@ -154,41 +183,13 @@
                 testError = err;
                 testResults = err.results;
             }).then(function () {
-                for (var i = 0, l = testResults.stepsInfo.length; i < l; ++i) {
-                    var testResult = testResults.stepsInfo[i];
-                    var status = testResult.isDifferent ? "Failed" : "Passed";
-                    var params = [
-                        {name: 'secretToken', value: testResults.secretToken}
-                    ];
-                    objectToArray(testResult, params);
-
-                    Reporter.reportVerification(status, new Reporter.VerificationData({
-                        name: testResult.name,
-                        description: "Result of Applitools visual validation #" + (i + 1),
-                        parameters: params
-                    }));
-                }
-
+                reportVerifications(testResults);
                 Reporter.endReportingContext();
 
                 if (testError) return reject(testError);
                 return resolve(testResults);
             });
         });
-
-        function objectToArray(obj, array, parentName) {
-            var keys = Object.keys(obj);
-            for (var i = 0, l = keys.length; i < l; i++) {
-                var name = parentName ? (parentName + '.' + keys[i]) : keys[i];
-                var value = obj[keys[i]];
-                if (typeof value === "object") {
-                    objectToArray(value, array, name);
-                } else {
-                    array.push({name: name, value: value});
-                }
-            }
-            return array;
-        }
     };
 
     //noinspection JSUnusedGlobalSymbols
@@ -203,11 +204,12 @@
             Reporter.startReportingContext("Applitools.abortIfNotClosed()");
         }
 
-        return EyesBase.prototype.abortIfNotClosed.call(this).then(function (results) {
+        return EyesBase.prototype.abortIfNotClosed.call(this).then(function (testResults) {
             if (isEyesWasOpen) {
+                reportVerifications(testResults);
                 Reporter.endReportingContext();
             }
-            return results;
+            return testResults;
         }, function (err) {
             if (isEyesWasOpen) {
                 Reporter.endReportingContext();
