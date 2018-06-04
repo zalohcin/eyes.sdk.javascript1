@@ -57,7 +57,7 @@ const sendRequest = (that, name, options, retry = 1, delayBeforeRetry = false) =
       that._logger.log(`ServerConnector.${name} - post failed: ${reasonMessage}`);
 
       const validStatusCodes = [HTTP_STATUS_CODES.NOT_FOUND, HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR];
-      if (retry > 0 && validStatusCodes.includes(error.response.status)) {
+      if (retry > 0 && error.response.status && validStatusCodes.includes(error.response.status)) {
         if (delayBeforeRetry) {
           return GeneralUtils.sleep(RETRY_REQUEST_INTERVAL, that._promiseFactory)
             .then(() => sendRequest(that, name, options, retry - 1, delayBeforeRetry));
