@@ -620,10 +620,9 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @protected
    * @return {string} The full agent id composed of both the base agent id and the user given agent id.
    */
-  _getFullAgentId() {
+  getFullAgentId() {
     const agentId = this.getAgentId();
     if (!agentId) {
       return this.getBaseAgentId();
@@ -1512,7 +1511,7 @@ class EyesBase {
 
       ArgumentGuard.notNull(testName, 'testName');
 
-      this._logger.verbose(`Agent = ${this._getFullAgentId()}`);
+      this._logger.verbose(`Agent = ${this.getFullAgentId()}`);
       this._logger.verbose(`openBase('${appName}', '${testName}', '${viewportSize}')`);
 
       this._validateApiKey();
