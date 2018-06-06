@@ -396,8 +396,7 @@ class EyesBase {
    * @return {string} The current branch name.
    */
   getBranchName() {
-    // noinspection JSUnresolvedVariable
-    return this._branchName || process.env.APPLITOOLS_BRANCH;
+    return this._branchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -415,8 +414,7 @@ class EyesBase {
    * @return {string} The name of the current parent branch under which new branches will be created.
    */
   getParentBranchName() {
-    // noinspection JSUnresolvedVariable
-    return this._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH;
+    return this._parentBranchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -434,8 +432,7 @@ class EyesBase {
    * @return {string} The name of the baseline branch
    */
   getBaselineBranchName() {
-    // noinspection JSUnresolvedVariable
-    return this._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH;
+    return this._baselineBranchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -1310,9 +1307,9 @@ class EyesBase {
           that._environmentName,
           appEnvironment,
           that._defaultMatchSettings,
-          that.getBranchName(),
-          that.getParentBranchName(),
-          that.getBaselineBranchName(),
+          that._branchName || process.env.APPLITOOLS_BRANCH,
+          that._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH,
+          that._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH,
           that._compareWithParentBranch,
           that._ignoreBaseline,
           that._render,
@@ -1838,9 +1835,9 @@ class EyesBase {
           that._environmentName,
           appEnvironment,
           that._defaultMatchSettings,
-          that.getBranchName(),
-          that.getParentBranchName(),
-          that.getBaselineBranchName(),
+          that._branchName || process.env.APPLITOOLS_BRANCH,
+          that._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH,
+          that._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH,
           that._compareWithParentBranch,
           that._ignoreBaseline,
           that._render,
