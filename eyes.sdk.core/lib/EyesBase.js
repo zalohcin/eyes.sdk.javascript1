@@ -2138,6 +2138,13 @@ class EyesBase {
   getPromiseFactory() {
     return this._promiseFactory;
   }
+
+  /**
+   * @param {string} message
+   */
+  log(message) {
+    this._logger.log(message);
+  }
 }
 
 exports.EyesBase = EyesBase;
