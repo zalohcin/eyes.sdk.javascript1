@@ -60,6 +60,12 @@ class RenderRequest {
 
   // noinspection JSUnusedGlobalSymbols
   /** @return {string} */
+  getPlatform() {
+    return this._platform;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
   getBrowserName() {
     return this._browserName;
   }

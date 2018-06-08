@@ -33,6 +33,7 @@ const HTTP_STATUS_CODES = {
   GONE: 410,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
+  GATEWAY_TIMEOUT: 504,
 };
 
 /**
@@ -56,8 +57,13 @@ const sendRequest = (that, name, options, retry = 1, delayBeforeRetry = false) =
       const reasonMessage = error.response && error.response.statusText ? error.response.statusText : error.message;
       that._logger.log(`ServerConnector.${name} - post failed: ${reasonMessage}`);
 
-      const validStatusCodes = [HTTP_STATUS_CODES.NOT_FOUND, HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR];
-      if (retry > 0 && error.response.status && validStatusCodes.includes(error.response.status)) {
+      const validStatusCodes = [
+        HTTP_STATUS_CODES.NOT_FOUND,
+        HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+        HTTP_STATUS_CODES.GATEWAY_TIMEOUT,
+      ];
+
+      if (retry > 0 && ((error.response && validStatusCodes.includes(error.response.status)) || error.code === 'ECONNRESET')) {
         if (delayBeforeRetry) {
           return GeneralUtils.sleep(RETRY_REQUEST_INTERVAL, that._promiseFactory)
             .then(() => sendRequest(that, name, options, retry - 1, delayBeforeRetry));
@@ -709,7 +715,10 @@ class ServerConnector {
 
     let promise = that._promiseFactory.resolve();
     if (delayBeforeRequest) {
-      promise = promise.then(() => GeneralUtils.sleep(RETRY_REQUEST_INTERVAL, that._promiseFactory));
+      promise = promise.then(() => {
+        that._logger.verbose(`ServerConnector.renderStatus request delayed for ${RETRY_REQUEST_INTERVAL} ms.`);
+        return GeneralUtils.sleep(RETRY_REQUEST_INTERVAL, that._promiseFactory);
+      });
     }
 
     return promise.then(() => sendRequest(that, 'renderStatus', options, 3, true).then(response => {

@@ -102,10 +102,11 @@ class RenderWindowTask {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string[]} renderIds
+   * @param {boolean} [delayBeforeRequest=false] If {@code true}, then the request will be delayed
    * @return {Promise<RenderStatusResults[]>}
    */
-  getRenderStatusBatch(renderIds) {
-    return this._serverConnector.renderStatusById(renderIds);
+  getRenderStatusBatch(renderIds, delayBeforeRequest) {
+    return this._serverConnector.renderStatusById(renderIds, delayBeforeRequest);
   }
 
   /**
