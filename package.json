@@ -33,12 +33,12 @@
   ],
   "main": "./bundle.js",
   "dependencies": {
-    "eyes.utils": "0.0.28",
-    "eyes.sdk": "0.0.70"
+    "eyes.utils": "0.0.29",
+    "eyes.sdk": "0.0.71"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
-    "uglify-js": "^3.3.26",
+    "uglify-js": "^3.4.0",
     "webpack": "^3.12.0",
     "webpack-node-externals": "^1.7.2"
   },
