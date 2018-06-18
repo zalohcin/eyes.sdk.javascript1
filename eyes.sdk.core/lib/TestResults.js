@@ -41,12 +41,19 @@ class SessionUrls {
   setSession(value) {
     this._session = value;
   }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
+  }
 }
 
 class ApiUrls {
   constructor() {
     this._baselineImage = null;
     this._currentImage = null;
+    this._checkpointImage = null;
+    this._checkpointImageThumbnail = null;
     this._diffImage = null;
   }
 
@@ -84,6 +91,30 @@ class ApiUrls {
 
   // noinspection JSUnusedGlobalSymbols
   /** @return {string} */
+  getCheckpointImage() {
+    return this._checkpointImage;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setCheckpointImage(value) {
+    this._checkpointImage = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getCheckpointImageThumbnail() {
+    return this._checkpointImageThumbnail;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setCheckpointImageThumbnail(value) {
+    this._checkpointImageThumbnail = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
   getDiffImage() {
     return this._diffImage;
   }
@@ -93,11 +124,17 @@ class ApiUrls {
   setDiffImage(value) {
     this._diffImage = value;
   }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
+  }
 }
 
 class AppUrls {
   constructor() {
     this._step = null;
+    this._stepEditor = null;
   }
 
   /**
@@ -118,6 +155,23 @@ class AppUrls {
   /** @param {string} value */
   setStep(value) {
     this._step = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getStepEditor() {
+    return this._stepEditor;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setStepEditor(value) {
+    this._stepEditor = value;
+  }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
   }
 }
 
@@ -212,6 +266,11 @@ class StepInfo {
   /** @param {ApiUrls} value */
   setApiUrls(value) {
     this._apiUrls = value;
+  }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
   }
 }
 
@@ -533,8 +592,8 @@ class TestResults {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {number} value The number of visual checkpoints that were available in the baseline but were not found in the
-   *   current test.
+   * @param {number} value The number of visual checkpoints that were available in the baseline but were not found
+   *   in the current test.
    */
   setMissing(value) {
     this._missing = value;
@@ -617,10 +676,14 @@ class TestResults {
   }
 
   /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
+  }
+
+  /** @override */
   toString() {
-    const isNewTestStr = this._isNew ? 'New test' : 'Existing test';
-    return `${isNewTestStr} [steps: ${this._steps}, matches: ${this._matches}, mismatches: ${this._mismatches}, ` +
-      `missing: ${this._missing}] , URL: ${this._url}, status: ${this._status}`;
+    const isNewTestStr = this._isNew ? 'new test' : 'existing test';
+    return `TestResults of ${isNewTestStr} ${GeneralUtils.toString(this, ['_secretToken'])}`;
   }
 }
 

@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { PromiseFactory } = require('../index');
+const { PromiseFactory } = require('../../index');
 
 // construct
 const promiseFactory = new PromiseFactory(asyncAction => new Promise(asyncAction));

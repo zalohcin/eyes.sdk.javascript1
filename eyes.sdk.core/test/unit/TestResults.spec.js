@@ -1,0 +1,135 @@
+'use strict';
+
+const assert = require('assert');
+
+const { TestResults } = require('../../index');
+
+describe('TestResults', () => {
+  it('constructor', () => {
+    const testResults = new TestResults();
+    assert.equal(testResults.toString(), 'TestResults (Existing test) { {"name":null,"status":null,"appName":null,' +
+      '"batchName":null,"batchId":null,"branchName":null,"hostOS":null,"hostApp":null,"hostDisplaySize":null,' +
+      '"startedAt":null,"duration":null,"isNew":null,"isSaved":null,"isDifferent":null,"isAborted":null,' +
+      '"appUrls":null,"apiUrls":null,"stepsInfo":null,"steps":null,"matches":null,"mismatches":null,"missing":null,' +
+      '"exactMatches":null,"strictMatches":null,"contentMatches":null,"layoutMatches":null,"noneMatches":null,' +
+      '"url":null} }');
+  });
+
+  it('fromObject', () => {
+    const testResults = TestResults.fromObject({
+      name: 'a name',
+      secretToken: 'a secret token',
+      id: 'an id',
+      status: 'Passed',
+      appName: 'an app name',
+      baselineId: 'a baseline id',
+      batchName: 'a batch name',
+      batchId: 'a batch id',
+      branchName: 'default',
+      hostOS: 'Windows 10.0',
+      hostApp: 'Chrome',
+      hostDisplaySize: {
+        width: 800,
+        height: 560,
+      },
+      startedAt: '2018-06-18T15:53:49.4700558+00:00',
+      duration: 7,
+      isNew: false,
+      isDifferent: false,
+      isAborted: false,
+      defaultMatchSettings: {
+        matchLevel: 'Strict',
+        ignore: [],
+        strict: [],
+        content: [],
+        layout: [],
+        floating: [],
+        splitTopHeight: 0,
+        splitBottomHeight: 0,
+        ignoreCaret: false,
+        scale: 1,
+        remainder: 0,
+      },
+      appUrls: {
+        batch: 'https://eyes.applitools.com/app/test-results/123?accountId=abc',
+        session: 'https://eyes.applitools.com/app/test-results/123/567?accountId=abc',
+      },
+      apiUrls: {
+        batch: 'https://eyesapi.applitools.com/api/sessions/batches/123',
+        session: 'https://eyesapi.applitools.com/api/sessions/batches/123/567',
+      },
+      stepsInfo: [
+        {
+          name: 'Partial window',
+          isDifferent: false,
+          hasBaselineImage: true,
+          hasCurrentImage: true,
+          hasCheckpointImage: true,
+          appUrls: {
+            step: 'https://eyes.applitools.com/app/test-results/123/567/steps/1?accountId=abc',
+            stepEditor: 'https://eyes.applitools.com/app/test-results/123/567/steps/1/edit?accountId=abc',
+          },
+          apiUrls: {
+            baselineImage: 'https://eyesapi.applitools.com/api/images/se~c96494e0-4010-4107-a4bf-c21e97370700',
+            currentImage: 'https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/1/images/checkpoint',
+            checkpointImage: 'https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/1/images/checkpoint',
+            checkpointImageThumbnail: 'https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/1/images/...',
+            diffImage: 'https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/1/images/diff',
+          },
+        },
+        {
+          name: 'Entire window',
+          isDifferent: false,
+          hasBaselineImage: true,
+          hasCurrentImage: true,
+          hasCheckpointImage: true,
+          appUrls: {
+            step: 'https://eyes.applitools.com/app/test-results/123/567/steps/2?accountId=abc',
+            stepEditor: 'https://eyes.applitools.com/app/test-results/123/567/steps/2/edit?accountId=abc',
+          },
+          apiUrls: {
+            baselineImage: 'https://eyesapi.applitools.com/api/images/se~47d0195f-170e-4468-ae35-421903166e60',
+            currentImage: 'https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/2/images/checkpoint',
+            checkpointImage: 'https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/2/images/checkpoint',
+            checkpointImageThumbnail: 'https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/2/images/...',
+            diffImage: 'https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/2/images/diff',
+          },
+        },
+      ],
+      steps: 2,
+      matches: 2,
+      mismatches: 0,
+      missing: 0,
+      exactMatches: 0,
+      strictMatches: 0,
+      contentMatches: 0,
+      layoutMatches: 0,
+      noneMatches: 0,
+      url: null,
+    });
+    assert.equal(testResults.toString(), 'TestResults of existing test {"name":"a name","status":"Passed",' +
+      '"appName":"an app name","batchName":"a batch name","batchId":"a batch id","branchName":"default","hostOS":' +
+      '"Windows 10.0","hostApp":"Chrome","hostDisplaySize":{"width":800,"height":560},"startedAt":"2018-06-18T15:53:' +
+      '49.470Z","duration":7,"isNew":false,"isSaved":null,"isDifferent":false,"isAborted":false,"appUrls":{"batch":' +
+      '"https://eyes.applitools.com/app/test-results/123?accountId=abc","session":"https://eyes.applitools.com/app/' +
+      'test-results/123/567?accountId=abc"},"apiUrls":{"batch":"https://eyesapi.applitools.com/api/sessions/batches/' +
+      '123","session":"https://eyesapi.applitools.com/api/sessions/batches/123/567"},"stepsInfo":[{"name":"Partial ' +
+      'window","isDifferent":false,"hasBaselineImage":true,"hasCurrentImage":true,"appUrls":{"step":"https://eyes.' +
+      'applitools.com/app/test-results/123/567/steps/1?accountId=abc","stepEditor":"https://eyes.applitools.com/app/' +
+      'test-results/123/567/steps/1/edit?accountId=abc"},"apiUrls":{"baselineImage":"https://eyesapi.applitools.com/' +
+      'api/images/se~c96494e0-4010-4107-a4bf-c21e97370700","currentImage":"https://eyesapi.applitools.com/api/' +
+      'sessions/batches/123/567/steps/1/images/checkpoint","checkpointImage":"https://eyesapi.applitools.com/api/' +
+      'sessions/batches/123/567/steps/1/images/checkpoint","checkpointImageThumbnail":"https://eyesapi.applitools.' +
+      'com/api/sessions/batches/123/567/steps/1/images/...","diffImage":"https://eyesapi.applitools.com/api/sessions/' +
+      'batches/123/567/steps/1/images/diff"}},{"name":"Entire window","isDifferent":false,"hasBaselineImage":true,' +
+      '"hasCurrentImage":true,"appUrls":{"step":"https://eyes.applitools.com/app/test-results/123/567/steps/2?' +
+      'accountId=abc","stepEditor":"https://eyes.applitools.com/app/test-results/123/567/steps/2/edit?accountId=' +
+      'abc"},"apiUrls":{"baselineImage":"https://eyesapi.applitools.com/api/images/se~47d0195f-170e-4468-ae35-' +
+      '421903166e60","currentImage":"https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/2/images/' +
+      'checkpoint","checkpointImage":"https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/2/images/' +
+      'checkpoint","checkpointImageThumbnail":"https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/2/' +
+      'images/...","diffImage":"https://eyesapi.applitools.com/api/sessions/batches/123/567/steps/2/images/diff"}}],' +
+      '"steps":2,"matches":2,"mismatches":0,"missing":0,"exactMatches":0,"strictMatches":0,"contentMatches":0,' +
+      '"layoutMatches":0,"noneMatches":0,"url":null}');
+  });
+});

@@ -2,8 +2,8 @@
 
 const assert = require('assert');
 
-const { ImageUtils, PromiseFactory } = require('../index');
-const { makeImageMock } = require('./helpers');
+const { ImageUtils, PromiseFactory } = require('../../index');
+const { makeImageMock } = require('../helpers');
 
 // construct
 const promiseFactory = new PromiseFactory(asyncAction => new Promise(asyncAction));

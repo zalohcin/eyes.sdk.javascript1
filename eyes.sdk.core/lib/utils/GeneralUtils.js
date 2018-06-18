@@ -60,18 +60,32 @@ class GeneralUtils {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Convert object into json string
-   *
-   * @deprecated use JSON.stringify instead
    * @param {object} object
    * @return {string}
+   * @deprecated use GeneralUtils.toString instead
    */
   static toJson(object) {
+    return GeneralUtils.toString(object);
+  }
+
+  /**
+   * Convert object into json string
+   *
+   * @param {object} object
+   * @param {string[]} [exclude]
+   * @return {string}
+   */
+  static toString(object, exclude = []) {
+    if (!GeneralUtils.isPlainObject(object)) {
+      object = GeneralUtils.toPlain(object, exclude);
+    }
+
     return JSON.stringify(object);
   }
 
   /**
    * Convert a class to plain object
+   * Makes all private properties public (remove '_' char from prop names)
    *
    * @param {object} object
    * @param {string[]} [exclude]

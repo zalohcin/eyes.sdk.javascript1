@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { RectangleSize, Location, Region } = require('../index');
+const { RectangleSize, Location, Region } = require('../../index');
 
 describe('Region', () => {
   const top = 1;
