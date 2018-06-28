@@ -7,7 +7,6 @@ let eyes = null;
 describe('Eyes.Images.JavaScript - simple check image', function () {
   before(function () {
     eyes = new Eyes();
-    eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
     eyes.setLogHandler(new ConsoleLogHandler(true));
 
     // eyes.setProxy('http://localhost:9999');

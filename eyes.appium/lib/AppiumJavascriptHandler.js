@@ -18,9 +18,9 @@ class AppiumJavascriptHandler extends JavascriptHandler {
 
   /**
    * @override
-   * @param {!String} script
-   * @param {Object...} args
-   * @return {Promise.<void>}
+   * @param {!string} script
+   * @param {object...} args
+   * @return {Promise<void>}
    */
   handle(script, ...args) {
     // Appium commands are sometimes sent as Javascript

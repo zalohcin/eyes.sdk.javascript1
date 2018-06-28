@@ -6,7 +6,7 @@ class FrameLocator {
     this._frameElement = null;
     /** @type {By} */
     this._frameSelector = null;
-    /** @type {String} */
+    /** @type {string} */
     this._frameNameOrId = null;
     /** @type {Integer} */
     this._frameIndex = null;
@@ -20,7 +20,7 @@ class FrameLocator {
   }
 
   /**
-   * @return {String}
+   * @return {string}
    */
   getFrameNameOrId() {
     return this._frameNameOrId;

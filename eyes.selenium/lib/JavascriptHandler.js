@@ -12,9 +12,9 @@ class JavascriptHandler {
   }
 
   /**
-   * @param {!String} script
-   * @param {Object...} args
-   * @return {Promise.<void>}
+   * @param {!string} script
+   * @param {object...} args
+   * @return {Promise<void>}
    */
   handle(script, ...args) {
     return this._promiseFactory.resolve();

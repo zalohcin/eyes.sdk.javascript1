@@ -78,7 +78,7 @@ class ElementPositionProvider extends PositionProvider {
 
   /**
    * @override
-   * @return {Promise.<ElementPositionMemento>}
+   * @return {Promise<ElementPositionMemento>}
    */
   getState() {
     return this.getCurrentPosition().then(position => new ElementPositionMemento(position));
@@ -88,7 +88,7 @@ class ElementPositionProvider extends PositionProvider {
   /**
    * @override
    * @param {ElementPositionMemento} state The initial state of position
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   restoreState(state) {
     const that = this;

@@ -16,11 +16,10 @@
     "webdriverjs",
     "appium"
   ],
-  "homepage": "https://applitools.com/",
+  "homepage": "https://applitools.com",
   "author": {
     "name": "Applitools Team",
-    "email": "team@applitools.com",
-    "url": "http://www.applitools.com"
+    "email": "team@applitools.com"
   },
   "repository": {
     "type": "git",

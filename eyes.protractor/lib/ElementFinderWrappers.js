@@ -92,7 +92,7 @@ class ElementArrayFinderWrapper {
   /**
    * Wrap the getWebElements function
    *
-   * @return {Promise.<EyesWebElementPromise[]>}
+   * @return {Promise<EyesWebElementPromise[]>}
    */
   getWebElements() {
     const that = this;

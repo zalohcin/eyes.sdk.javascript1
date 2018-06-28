@@ -11,7 +11,7 @@ class AppiumJsCommandExtractor {
   /**
    * Used for identifying if a javascript script is a command to Appium.
    *
-   * @param {String} script The script to test whether it's an Appium command.
+   * @param {string} script The script to test whether it's an Appium command.
    * @return {boolean} True if the script is an Appium command, false otherwise.
    */
   static isAppiumJsCommand(script) {
@@ -21,12 +21,12 @@ class AppiumJsCommandExtractor {
   /**
    * Given a command and its parameters, returns the equivalent trigger.
    *
-   * @param {Map<String, EyesWebElement>} elementsIds A mapping of known elements' IDs to elements.
+   * @param {Map<string, EyesWebElement>} elementsIds A mapping of known elements' IDs to elements.
    * @param {{width: number, height: number}} viewportSize The dimensions of the current viewport
    * @param {PromiseFactory} promiseFactory
-   * @param {String} script The Appium command from which the trigger would be extracted
-   * @param {Object...} args The trigger's parameters.
-   * @return {Promise.<Trigger>} The trigger which represents the given command.
+   * @param {string} script The Appium command from which the trigger would be extracted
+   * @param {object...} args The trigger's parameters.
+   * @return {Promise<Trigger>} The trigger which represents the given command.
    */
   static extractTrigger(elementsIds, viewportSize, promiseFactory, script, ...args) {
     if (script === TAP_COMMAND) {
@@ -35,12 +35,12 @@ class AppiumJsCommandExtractor {
         return promiseFactory.resolve(null);
       }
 
-      /** @type {Map<String, String>} */
+      /** @type {Map<string, string>} */
       let tapObject = new Map();
 
-      /** @type {int} */
+      /** @type {number} */
       let tapCount;
-      /** @type {String} */
+      /** @type {string} */
       let xObj, yObj, tapCountObj;
 
       try {

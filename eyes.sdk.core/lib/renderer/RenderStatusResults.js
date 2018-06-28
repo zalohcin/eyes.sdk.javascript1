@@ -7,17 +7,22 @@ const { GeneralUtils } = require('../utils/GeneralUtils');
  */
 class RenderStatusResults {
   constructor() {
-    this._status = null;
-    this._imageLocation = null;
-    this._error = null;
+    this._status = undefined;
+    this._imageLocation = undefined;
+    this._error = undefined;
   }
 
   /**
-   * @param {Object} object
+   * @param {object} object
    * @return {RenderStatusResults}
    */
   static fromObject(object) {
     return GeneralUtils.assignTo(new RenderStatusResults(), object);
+  }
+
+  /** @return {boolean} */
+  isEmpty() {
+    return (this._status === undefined && this._imageLocation === undefined && this._error === undefined);
   }
 
   /** @return {RenderStatus} */
@@ -26,29 +31,29 @@ class RenderStatusResults {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setStatus(value) {
     this._status = value;
   }
 
-  /** @return {String} */
+  /** @return {string} */
   getImageLocation() {
     return this._imageLocation;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setImageLocation(value) {
     this._imageLocation = value;
   }
 
-  /** @return {String} */
+  /** @return {string} */
   getError() {
     return this._error;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setError(value) {
     this._error = value;
   }
