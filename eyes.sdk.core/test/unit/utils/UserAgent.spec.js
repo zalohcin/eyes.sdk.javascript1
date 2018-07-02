@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { UserAgent } = require('../index');
+const { UserAgent } = require('../../../index');
 
 describe('UserAgent', () => {
   describe('#parseUserAgentString()', () => {
