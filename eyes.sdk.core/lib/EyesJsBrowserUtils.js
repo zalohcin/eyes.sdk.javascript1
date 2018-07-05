@@ -49,6 +49,14 @@ const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
   'var overflowY = styles.getPropertyValue("overflow-y");' +
   'return overflow == "hidden" || overflowX == "hidden" || overflowY == "hidden"';
 
+const JS_GET_SET_OVERFLOW_STR = (elementName, overflowValue) => {
+  return `var element = ${elementName};
+          var overflowValue = "${overflowValue}";
+          var origOverflow = element.style.overflow;
+          element.style.overflow = overflowValue;
+          return origOverflow;`;
+};
+
 /**
  * Handles browser related functionality.
  */
@@ -58,23 +66,16 @@ class EyesJsBrowserUtils {
    *
    * @param {EyesJsExecutor} executor The executor to use.
    * @param {string} value The overflow value to set.
+   * @param {WebElement} scrollbarsRoot
    * @return {Promise<string>} The previous value of overflow (could be {@code null} if undefined).
    */
-  static setOverflow(executor, value) {
-    let script;
-    if (value) {
-      script =
-        'var origOverflow = document.documentElement.style.overflow; ' +
-        `document.documentElement.style.overflow = "${value}"; ` +
-        'return origOverflow;';
-    } else {
-      script =
-        'var origOverflow = document.documentElement.style.overflow; ' +
-        'document.documentElement.style.overflow = undefined; ' +
-        'return origOverflow;';
-    }
+  static setOverflow(executor, value, scrollbarsRoot) {
+    const script = JS_GET_SET_OVERFLOW_STR(
+      scrollbarsRoot ? "arguments[0]" : "document.documentElement",
+      value === null ? "undefined" : value
+    );
 
-    return executor.executeScript(script).catch(err => {
+    return executor.executeScript(script, scrollbarsRoot).catch(err => {
       throw new EyesError('Failed to set overflow', err);
     });
   }
@@ -98,18 +99,7 @@ class EyesJsBrowserUtils {
    * @return {Promise<string>} A promise which resolves to the original overflow of the document.
    */
   static setBodyOverflow(executor, overflowValue) {
-    let script;
-    if (overflowValue === null) {
-      script =
-        'var origOverflow = document.body.style.overflow; ' +
-        'document.body.style.overflow = undefined; ' +
-        'return origOverflow;';
-    } else {
-      script =
-        'var origOverflow = document.body.style.overflow; ' +
-        `document.body.style.overflow = "${overflowValue}"; ` +
-        'return origOverflow;';
-    }
+    const script = JS_GET_SET_OVERFLOW_STR("document.body", overflowValue === null ? "undefined" : overflowValue);
 
     return executor.executeScript(script).catch(err => {
       throw new EyesError('Failed to set body overflow', err);
@@ -122,10 +112,11 @@ class EyesJsBrowserUtils {
    * @param {EyesJsExecutor} executor The executor to use.
    * @param {number} stabilizationTimeout The amount of time to wait for the "hide scrollbars" action to take effect
    *   (Milliseconds). Zero/negative values are ignored.
+   * @param {WebElement} scrollbarsRoot
    * @return {Promise<string>} The previous value of the overflow property (could be {@code null}).
    */
-  static hideScrollbars(executor, stabilizationTimeout) {
-    return EyesJsBrowserUtils.setOverflow(executor, 'hidden').then(result => {
+  static hideScrollbars(executor, stabilizationTimeout, scrollbarsRoot) {
+    return EyesJsBrowserUtils.setOverflow(executor, 'hidden', scrollbarsRoot).then(result => {
       if (stabilizationTimeout > 0) {
         return executor.sleep(stabilizationTimeout).then(() => result);
       }

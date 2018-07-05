@@ -101,6 +101,10 @@ class Eyes extends EyesBase {
 
     /** @type {boolean} */
     this._hideScrollbars = false;
+
+    /** @type {WebElement} */
+    this._scrollRootElement = undefined;
+
     /** @type {ImageRotation} */
     this._rotation = undefined;
     /** @type {number} */
@@ -302,6 +306,21 @@ class Eyes extends EyesBase {
    */
   getHideScrollbars() {
     return this._hideScrollbars;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {WebElement|By} element
+   */
+  setScrollRootElement(element) {
+    this._scrollRootElement = this._driver.findElement(element);
+  }
+
+  /**
+   * @return {WebElement}
+   */
+  getScrollRootElement() {
+    return this._scrollRootElement;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -1178,19 +1197,25 @@ class Eyes extends EyesBase {
    * @return {Promise<void>}
    */
   _tryHideScrollbars() {
-    if (this._hideScrollbars) {
+    if (this._hideScrollbars || this._scrollRootElement) {
       const that = this;
       const originalFC = new FrameChain(that._logger, that._driver.getFrameChain());
       const fc = new FrameChain(that._logger, that._driver.getFrameChain());
-      return EyesSeleniumUtils.hideScrollbars(that._driver, 200)
-        .then(overflow => {
-          that._originalOverflow = overflow;
-          return that._tryHideScrollbarsLoop(fc);
-        })
-        .then(() => that._driver.switchTo().frames(originalFC))
-        .catch(err => {
-          that._logger.log(`WARNING: Failed to hide scrollbars! Error: ${err}`);
-        });
+      let hideScrollbarsPromise = that._hideScrollbars ?
+        EyesSeleniumUtils.hideScrollbars(that._driver, 200) : that.getPromiseFactory().resolve();
+      let hideScrollbarsScrollRootElementPromise = that._scrollRootElement ?
+        EyesSeleniumUtils.hideScrollbars(that._driver, 200, that._scrollRootElement) : that.getPromiseFactory().resolve();
+      return Promise.all([
+        hideScrollbarsPromise,
+        hideScrollbarsScrollRootElementPromise
+      ]).then(overflows => {
+        if (that._hideScrollbars) {
+          that._originalOverflow = overflows[0];
+        }
+        return that._tryHideScrollbarsLoop(fc);
+      }).then(() => that._driver.switchTo().frames(originalFC)).catch(err => {
+        that._logger.log(`WARNING: Failed to hide scrollbars! Error: ${err}`);
+      });
     }
 
     return this.getPromiseFactory().resolve();
@@ -1202,14 +1227,14 @@ class Eyes extends EyesBase {
    * @return {Promise<void>}
    */
   _tryHideScrollbarsLoop(fc) {
-    if (fc.size() > 0) {
+    if (this._hideScrollbars && fc.size() > 0) {
       const that = this;
       return that._driver.getRemoteWebDriver()
         .switchTo()
         .parentFrame()
         .then(() => {
           const frame = fc.pop();
-          return EyesSeleniumUtils.hideScrollbars(that._driver, 200);
+          return EyesSeleniumUtils.hideScrollbars(that._driver, 200, that._scrollRootElement);
         })
         .then(() => that._tryHideScrollbarsLoop(fc));
     }
@@ -1244,8 +1269,7 @@ class Eyes extends EyesBase {
         .parentFrame()
         .then(() => {
           const frame = fc.pop();
-          return frame.getReference()
-            .setOverflow(frame.getOriginalOverflow());
+          return frame.getReference().setOverflow(frame.getOriginalOverflow());
         })
         .then(() => that._tryRestoreScrollbarsLoop(fc));
     }
