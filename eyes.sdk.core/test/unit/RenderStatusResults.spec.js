@@ -4,7 +4,7 @@ const assert = require('assert');
 
 const { RenderStatusResults } = require('../../index');
 
-describe.only('RenderStatusResults', () => {
+describe('RenderStatusResults', () => {
   it('constructor', () => {
     const results = new RenderStatusResults();
     assert.equal(results.hasOwnProperty('_status'), true);
