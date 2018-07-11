@@ -89,4 +89,35 @@ describe('GeneralUtils', () => {
       assert.equal(GeneralUtils.elapsedString(156458), '2m 36s 458ms');
     });
   });
+
+  describe.only('stringify', () => {
+    it('should return the same args for non-objects', () => {
+      assert.equal(GeneralUtils.stringify(4), 4);
+      assert.equal(GeneralUtils.stringify('str'), 'str');
+    });
+    
+    it('should call JSON.stringify for plain objects', () => {
+      assert.equal(GeneralUtils.stringify({prop: 'value'}), JSON.stringify({prop: 'value'}));
+    });
+
+    it('should return the stack for errors', () => {
+      assert.notEqual(GeneralUtils.stringify(new Error('bla')).match(/^Error: [^\n]+(\n\s+at [^\n]+)+$/), null);
+    });
+
+    it('should call toString on non-plain objects', () => {
+      const {RenderInfo} = require('../../../lib/renderer/RenderInfo');
+      assert.equal(
+        GeneralUtils.stringify(RenderInfo.fromObject({width: 3, height:4, sizeMode:'bla'})),
+        'RenderInfo { {"width":3,"height":4,"sizeMode":"bla"} }'
+      );
+    });
+
+    it('should return stringified function', () => {
+      assert.equal(GeneralUtils.stringify(() => { return 'bla'; }), '() => { return \'bla\'; }');
+    });
+
+    it('should concat multiple arguments', () => {
+      assert.equal(GeneralUtils.stringify(4, 'str', {prop: 'bla'}, ), '4 str {"prop":"bla"}');
+    });
+  })
 });

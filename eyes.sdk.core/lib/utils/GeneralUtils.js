@@ -308,12 +308,19 @@ class GeneralUtils {
   static stringify(...args) {
     return args
       .map(arg => {
-        if (typeof arg === 'object') {
-          if (typeof arg.toString === 'function') {
-            return arg.toString();
-          }
-
+        if (GeneralUtils.isPlainObject(arg)) {
           return JSON.stringify(arg);
+        }
+
+        if (arg instanceof Error) {
+          return arg.stack;
+        }
+
+        if (
+          typeof arg === 'function' ||
+          (typeof arg === 'object' && typeof arg.toString === 'function')
+        ) {
+          return arg.toString();
         }
 
         return arg;
