@@ -10,6 +10,8 @@ class RenderStatusResults {
     this._status = undefined;
     this._imageLocation = undefined;
     this._error = undefined;
+    this._os = undefined;
+    this._userAgent = undefined;
   }
 
   /**
@@ -22,7 +24,13 @@ class RenderStatusResults {
 
   /** @return {boolean} */
   isEmpty() {
-    return (this._status === undefined && this._imageLocation === undefined && this._error === undefined);
+    return (
+      this._status === undefined &&
+      this._imageLocation === undefined &&
+      this._error === undefined &&
+      this._os === undefined &&
+      this._userAgent === undefined
+    );
   }
 
   /** @return {RenderStatus} */
@@ -58,6 +66,28 @@ class RenderStatusResults {
     this._error = value;
   }
 
+  /** @return {string} */
+  getOS() {
+    return this._os;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setOS(value) {
+    this._os = value;
+  }
+
+  /** @return {string} */
+  getUserAgent() {
+    return this._userAgent;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setUserAgent(value) {
+    this._userAgent = value;
+  }
+  
   /** @override */
   toJSON() {
     return GeneralUtils.toPlain(this);

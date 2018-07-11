@@ -704,7 +704,7 @@ class ServerConnector {
    * @return {Promise<RenderStatusResults[]|RenderStatusResults>} The render's status
    */
   renderStatusById(renderId, delayBeforeRequest = false) {
-    ArgumentGuard.notNull(renderId, 'runningRender');
+    ArgumentGuard.notNull(renderId, 'renderId');
     this._logger.verbose(`ServerConnector.renderStatus called for render: ${renderId}`);
 
     const that = this;

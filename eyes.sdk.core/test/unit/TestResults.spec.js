@@ -7,12 +7,12 @@ const { TestResults } = require('../../index');
 describe('TestResults', () => {
   it('constructor', () => {
     const testResults = new TestResults();
-    assert.equal(testResults.toString(), 'TestResults (Existing test) { {"name":null,"status":null,"appName":null,' +
+    assert.equal(testResults.toString(), 'TestResults of existing test {"name":null,"status":null,"appName":null,' +
       '"batchName":null,"batchId":null,"branchName":null,"hostOS":null,"hostApp":null,"hostDisplaySize":null,' +
       '"startedAt":null,"duration":null,"isNew":null,"isSaved":null,"isDifferent":null,"isAborted":null,' +
       '"appUrls":null,"apiUrls":null,"stepsInfo":null,"steps":null,"matches":null,"mismatches":null,"missing":null,' +
       '"exactMatches":null,"strictMatches":null,"contentMatches":null,"layoutMatches":null,"noneMatches":null,' +
-      '"url":null} }');
+      '"url":null}');
   });
 
   it('fromObject', () => {
