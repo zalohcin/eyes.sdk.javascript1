@@ -4,7 +4,7 @@ const assert = require('assert');
 
 const { RenderRequest } = require('../../index');
 
-describe.only('RenderRequest', () => {
+describe('RenderRequest', () => {
   describe('constructor', () => {
     it("doesn't allow empty webhook", () => {
       assert.throws(() => new RenderRequest(), /IllegalArgument: webhook is null or empty/);
