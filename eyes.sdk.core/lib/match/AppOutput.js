@@ -9,11 +9,13 @@ class AppOutput {
    * @param {Buffer} [screenshot64] Base64 encoding of the screenshot's bytes (the byte can be in either in compressed
    *   or uncompressed form)
    * @param {string} [screenshotUrl] The URL that points to the screenshot
+   * @param {string} [domUrl] URL that points to a dom capture of the provided screenshot
    */
-  constructor(title, screenshot64, screenshotUrl) {
+  constructor(title, screenshot64, screenshotUrl, domUrl) {
     this._title = title;
     this._screenshot64 = screenshot64;
     this._screenshotUrl = screenshotUrl;
+    this._domUrl = domUrl;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -49,6 +51,18 @@ class AppOutput {
   setScreenshotUrl(value) {
     this._screenshotUrl = value;
   }
+  
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getDomUrl() {
+    return this._domUrl;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setDomUrl(value) {
+    this._domUrl = value;
+  }
 
   /** @override */
   toJSON() {
@@ -62,6 +76,10 @@ class AppOutput {
 
     if (this._screenshotUrl) {
       object.screenshotUrl = this._screenshotUrl;
+    }
+
+    if (this._domUrl) {
+      object.domUrl = this._domUrl;
     }
 
     return object;
