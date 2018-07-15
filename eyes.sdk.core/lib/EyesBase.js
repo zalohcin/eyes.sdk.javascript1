@@ -2114,7 +2114,7 @@ class EyesBase {
    * @return {Promise<string>}
    */
   getDomUrl() {
-    throw new TypeError('getDomUrl method is not implemented!');
+    return this.getPromiseFactory().resolve();
   }
 
   /**
