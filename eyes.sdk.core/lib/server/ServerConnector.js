@@ -734,7 +734,7 @@ class ServerConnector {
           renderStatus = renderStatus[0]; // eslint-disable-line prefer-destructuring
         }
 
-        that._logger.verbose('ServerConnector.renderStatus - get succeeded', renderStatus);
+        that._logger.verbose(`ServerConnector.renderStatus - get succeeded for ${renderId} -`, renderStatus);
         return renderStatus;
       }
 
