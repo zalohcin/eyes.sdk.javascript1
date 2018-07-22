@@ -90,7 +90,7 @@ describe('GeneralUtils', () => {
     });
   });
 
-  describe.only('stringify', () => {
+  describe('stringify', () => {
     it('should return the same args for non-objects', () => {
       assert.equal(GeneralUtils.stringify(4), 4);
       assert.equal(GeneralUtils.stringify('str'), 'str');
