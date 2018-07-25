@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { GeneralUtils } = require('../../../index');
+const { GeneralUtils, RenderInfo, EyesError } = require('../../../index');
 
 describe('GeneralUtils', () => {
   describe('urlConcat()', () => {
@@ -57,7 +57,8 @@ describe('GeneralUtils', () => {
     it('should return formatted string', () => {
       const input = '2018-03-09T17:31:22Z';
       // noinspection MagicNumberJS
-      assert.equal(GeneralUtils.fromISO8601DateTime(input).getTime(), 1520616682000);
+      assert.equal(GeneralUtils.fromISO8601DateTime(input)
+        .getTime(), 1520616682000);
     });
   });
 
@@ -90,34 +91,40 @@ describe('GeneralUtils', () => {
     });
   });
 
-  describe.only('stringify', () => {
+  describe('stringify()', () => {
     it('should return the same args for non-objects', () => {
       assert.equal(GeneralUtils.stringify(4), 4);
       assert.equal(GeneralUtils.stringify('str'), 'str');
     });
-    
+
     it('should call JSON.stringify for plain objects', () => {
-      assert.equal(GeneralUtils.stringify({prop: 'value'}), JSON.stringify({prop: 'value'}));
+      assert.equal(GeneralUtils.stringify({ prop: 'value' }), JSON.stringify({ prop: 'value' }));
     });
 
     it('should return the stack for errors', () => {
-      assert.notEqual(GeneralUtils.stringify(new Error('bla')).match(/^Error: [^\n]+(\n\s+at [^\n]+)+$/), null);
+      const pattern = RegExp(/^Error: bla(\n\s+at [^\n]+)+$/);
+      assert.ok(pattern.test(GeneralUtils.stringify(new Error('bla'))));
+    });
+
+    it('should return the stack for errors (custom error)', () => {
+      const pattern = RegExp(/^EyesError: tra(\n\s+at [^\n]+)+$/);
+      assert.ok(pattern.test(GeneralUtils.stringify(new EyesError('tra'))));
     });
 
     it('should call toString on non-plain objects', () => {
-      const {RenderInfo} = require('../../../lib/renderer/RenderInfo');
       assert.equal(
-        GeneralUtils.stringify(RenderInfo.fromObject({width: 3, height:4, sizeMode:'bla'})),
+        GeneralUtils.stringify(RenderInfo.fromObject({ width: 3, height: 4, sizeMode: 'bla' })),
         'RenderInfo { {"width":3,"height":4,"sizeMode":"bla"} }'
       );
     });
 
     it('should return stringified function', () => {
+      // eslint-disable-next-line
       assert.equal(GeneralUtils.stringify(() => { return 'bla'; }), '() => { return \'bla\'; }');
     });
 
     it('should concat multiple arguments', () => {
-      assert.equal(GeneralUtils.stringify(4, 'str', {prop: 'bla'}, ), '4 str {"prop":"bla"}');
+      assert.equal(GeneralUtils.stringify(4, 'str', { prop: 'bla' }), '4 str {"prop":"bla"}');
     });
-  })
+  });
 });
