@@ -10,9 +10,6 @@ const { CoordinatesType } = require('./geometry/CoordinatesType');
 const { FileDebugScreenshotsProvider } = require('./debug/FileDebugScreenshotsProvider');
 const { NullDebugScreenshotProvider } = require('./debug/NullDebugScreenshotProvider');
 
-const { SimplePropertyHandler } = require('./utils/SimplePropertyHandler');
-const { ReadOnlyPropertyHandler } = require('./utils/ReadOnlyPropertyHandler');
-
 const { ImageDeltaCompressor } = require('./images/ImageDeltaCompressor');
 
 const { AppOutputProvider } = require('./capture/AppOutputProvider');
@@ -40,6 +37,9 @@ const { NewTestError } = require('./errors/NewTestError');
 const { OutOfBoundsError } = require('./errors/OutOfBoundsError');
 const { TestFailedError } = require('./errors/TestFailedError');
 
+const { SessionEventHandler } = require('./events/SessionEventHandler');
+const { SessionEventHandlers } = require('./events/SessionEventHandlers');
+
 const { CheckSettings } = require('./fluent/CheckSettings');
 
 const { RenderWindowTask } = require('./RenderWindowTask');
@@ -51,13 +51,15 @@ const { TestResultsStatus } = require('./TestResultsStatus');
 const { TestResults } = require('./TestResults');
 const { ServerConnector } = require('./server/ServerConnector');
 
-const { FailureReports } = require('./FailureReports');
+const { SimplePropertyHandler } = require('./utils/SimplePropertyHandler');
+const { ReadOnlyPropertyHandler } = require('./utils/ReadOnlyPropertyHandler');
 const { GeneralUtils } = require('./utils/GeneralUtils');
+
+const { FailureReports } = require('./FailureReports');
 const { ArgumentGuard } = require('./ArgumentGuard');
 const { AppEnvironment } = require('./AppEnvironment');
 const { MatchWindowTask } = require('./MatchWindowTask');
 const { MatchSingleWindowTask } = require('./MatchSingleWindowTask');
-const { SessionEventHandler } = require('./SessionEventHandler');
 const { BatchInfo } = require('./BatchInfo');
 const { PromiseFactory } = require('./PromiseFactory');
 
@@ -128,8 +130,8 @@ class EyesBase {
 
     /** @type {number} */
     this._validationId = -1;
-    /** @type {SessionEventHandler[]} */
-    this._sessionEventHandlers = [];
+    /** @type {SessionEventHandlers} */
+    this._sessionEventHandlers = new SessionEventHandlers(this._logger, this._promiseFactory);
 
     /**
      * Used for automatic save of a test run. New tests are automatically saved by default.
@@ -916,16 +918,10 @@ class EyesBase {
         that._logger.log('--- Empty test ended.');
 
         const testResults = new TestResults();
-
-        if (that._autSessionId) {
-          return that._notifyEvent('testEnded', that._autSessionId, null).then(() => {
-            that._finallyClose();
-            return resolve(testResults);
-          });
-        }
-
-        that._finallyClose();
-        return resolve(testResults);
+        return that._sessionEventHandlers.testEnded(that._autSessionId, testResults).then(() => {
+          that._finallyClose();
+          return resolve(testResults);
+        });
       }
 
       const isNewSession = that._runningSession.getIsNewSession();
@@ -955,38 +951,40 @@ class EyesBase {
 
           serverResults = results;
           that._logger.verbose(`Results: ${results}`);
+        })
+        .then(() => {
+          const status = serverResults.getStatus();
 
-          const status = results.getStatus();
           if (status === TestResultsStatus.Unresolved) {
             if (serverResults.getIsNew()) {
               that._logger.log(`--- New test ended. Please approve the new baseline at ${sessionResultsUrl}`);
 
               if (throwEx) {
                 that._finallyClose();
-                return reject(new NewTestError(results, that._sessionStartInfo));
+                return reject(new NewTestError(serverResults, that._sessionStartInfo));
               }
-              return resolve(results);
+              return resolve(serverResults);
             }
 
             that._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`);
 
             if (throwEx) {
               that._finallyClose();
-              return reject(new DiffsFoundError(results, that._sessionStartInfo));
+              return reject(new DiffsFoundError(serverResults, that._sessionStartInfo));
             }
-            return resolve(results);
+            return resolve(serverResults);
           } else if (status === TestResultsStatus.Failed) {
             that._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`);
 
             if (throwEx) {
               that._finallyClose();
-              return reject(new TestFailedError(results, that._sessionStartInfo));
+              return reject(new TestFailedError(serverResults, that._sessionStartInfo));
             }
-            return resolve(results);
+            return resolve(serverResults);
           }
 
           that._logger.log(`--- Test passed. See details at ${sessionResultsUrl}`);
-          return resolve(results);
+          return resolve(serverResults);
         })
         .catch(err => {
           serverResults = null;
@@ -997,7 +995,7 @@ class EyesBase {
       .catch(err => {
         serverError = err;
       })
-      .then(() => that._notifyEvent('testEnded', that._autSessionId, serverResults))
+      .then(() => that._sessionEventHandlers.testEnded(that._autSessionId, serverResults))
       .then(() => {
         that._finallyClose();
         if (serverError) {
@@ -1016,33 +1014,6 @@ class EyesBase {
     this._runningSession = null;
     this._currentAppName = null;
     this._logger.getLogHandler().close();
-  }
-
-  /**
-   * Notifies all handlers of an event.
-   *
-   * @private
-   * @param {string} eventName The event to notify
-   * @param {...object} [param1] The first of what may be a list of "hidden" parameters, to be passed to the event
-   *   notification function. May also be undefined.
-   * @return {Promise<void>} A promise which resolves when the event was delivered/failed to all handlers.
-   */
-  _notifyEvent(eventName, ...param1) {
-    const that = this;
-    return that._promiseFactory.makePromise(resolve => {
-      that._logger.verbose('Notifying event:', eventName);
-      const notificationPromises = [];
-
-      that._sessionEventHandlers.forEach(handler => {
-        // Call the event with the rest of the (hidden) parameters supplied to this function.
-        const promise = handler[eventName](...param1).then(null, err => {
-          that._logger.verbose(`'${eventName}' notification handler returned an error: ${err}`);
-        });
-        notificationPromises.push(promise);
-      });
-
-      that._promiseFactory.all(notificationPromises).then(() => resolve());
-    });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -1225,7 +1196,7 @@ class EyesBase {
     let matchResult;
     return that
       .beforeMatchWindow()
-      .then(() => that._notifyEvent('validationWillStart', that._autSessionId, validationInfo))
+      .then(() => that._sessionEventHandlers.validationWillStart(that._autSessionId, validationInfo))
       .then(() => EyesBase.matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, that))
       .then(result => {
         matchResult = result;
@@ -1243,12 +1214,7 @@ class EyesBase {
         that._validateResult(tag, matchResult);
 
         that._logger.verbose('Done!');
-        return that._notifyEvent(
-          'validationEnded',
-          that._autSessionId,
-          validationInfo.getValidationId(),
-          validationResult
-        );
+        return that._sessionEventHandlers.validationEnded(that._autSessionId, validationInfo.getValidationId(), validationResult);
       })
       .then(() => matchResult);
   }
@@ -1507,6 +1473,7 @@ class EyesBase {
 
       this._validateApiKey();
       this._logOpenBase();
+
       const that = this;
       return this._validateSessionOpen()
         .then(() => {
@@ -1798,21 +1765,20 @@ class EyesBase {
       .then(autSessionId => {
         that._autSessionId = autSessionId;
       })
-      .then(() => that._notifyEvent('testStarted', that._autSessionId))
-      .then(() => that._notifyEvent('setSizeWillStart', that._autSessionId, that._viewportSize))
+      .then(() => that._sessionEventHandlers.testStarted(that._autSessionId))
+      .then(() => that._sessionEventHandlers.setSizeWillStart(that._viewportSize))
       .then(() => that._ensureViewportSize()
-        .catch(err => that._notifyEvent('setSizeEnded', that._autSessionId)
-          .then(() => {
-            // Throw to skip execution of all consecutive "then" blocks.
-            throw new EyesError('Failed to set/get viewport size', err);
-          })))
-      .then(() => that._notifyEvent('setSizeEnded', that._autSessionId))
-      .then(() => that._notifyEvent('initStarted', that._autSessionId))
+        .catch(err => {
+          // Throw to skip execution of all consecutive "then" blocks.
+          throw new EyesError('Failed to set/get viewport size', err);
+        }))
+      .then(() => that._sessionEventHandlers.setSizeEnded())
+      .then(() => that._sessionEventHandlers.initStarted())
       .then(() => that.getAppEnvironment())
       .then(appEnv => {
         appEnvironment = appEnv;
         that._logger.verbose(`Application environment is ${appEnvironment}`);
-        return that._notifyEvent('initEnded', that._autSessionId);
+        return that._sessionEventHandlers.initEnded();
       })
       .then(() => {
         that._sessionStartInfo = new SessionStartInfo(
@@ -1962,11 +1928,32 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * @return {SessionEventHandlers}
+   */
+  getSessionEventHandlers() {
+    return this._sessionEventHandlers;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
    * @param {SessionEventHandler} eventHandler
    */
   addSessionEventHandler(eventHandler) {
     eventHandler.setPromiseFactory(this._promiseFactory);
-    this._sessionEventHandlers.push(eventHandler);
+    this._sessionEventHandlers.addEventHandler(eventHandler);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {SessionEventHandler} eventHandler
+   */
+  removeSessionEventHandler(eventHandler) {
+    this._sessionEventHandlers.removeEventHandler(eventHandler);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  clearSessionEventHandlers() {
+    this._sessionEventHandlers.clearEventHandlers();
   }
 
   // noinspection JSUnusedGlobalSymbols
