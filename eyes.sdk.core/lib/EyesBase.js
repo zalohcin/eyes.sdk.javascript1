@@ -518,7 +518,7 @@ class EyesBase {
       return;
     }
 
-    if (arguments.length === 1) {
+    if (batchOrName instanceof BatchInfo) {
       this._batch = batchOrName;
     } else {
       this._batch = new BatchInfo(batchOrName, batchDate, batchId);
