@@ -188,14 +188,14 @@ class ServerConnector {
     this._promiseFactory = promiseFactory;
     this._logger = logger;
     this._serverUrl = serverUrl;
-    this._apiKey = null;
+    this._apiKey = undefined;
 
-    this._renderingServerUrl = null;
-    this._renderingAuthToken = null;
+    this._renderingServerUrl = undefined;
+    this._renderingAuthToken = undefined;
 
-    this._proxySettings = null;
+    this._proxySettings = undefined;
     this._httpOptions = {
-      proxy: null,
+      proxy: undefined,
       headers: DEFAULT_HEADERS,
       timeout: DEFAULT_TIMEOUT_MS,
       responseType: 'json',

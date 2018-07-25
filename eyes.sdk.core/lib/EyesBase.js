@@ -1057,7 +1057,7 @@ class EyesBase {
     if (hostOS) {
       this._hostOS = hostOS.trim();
     } else {
-      this._hostOS = null;
+      this._hostOS = undefined;
     }
   }
 
@@ -1081,7 +1081,7 @@ class EyesBase {
     if (hostApp) {
       this._hostApp = hostApp.trim();
     } else {
-      this._hostApp = null;
+      this._hostApp = undefined;
     }
   }
 
@@ -1105,7 +1105,7 @@ class EyesBase {
     if (baselineName) {
       this._baselineEnvName = baselineName.trim();
     } else {
-      this._baselineEnvName = null;
+      this._baselineEnvName = undefined;
     }
   }
 
@@ -1130,7 +1130,7 @@ class EyesBase {
     if (baselineEnvName) {
       this._baselineEnvName = baselineEnvName.trim();
     } else {
-      this._baselineEnvName = null;
+      this._baselineEnvName = undefined;
     }
   }
 
@@ -1156,7 +1156,7 @@ class EyesBase {
     if (envName) {
       this._environmentName = envName.trim();
     } else {
-      this._environmentName = null;
+      this._environmentName = undefined;
     }
   }
 
@@ -1409,7 +1409,7 @@ class EyesBase {
   static matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, self, skipStartingSession = false) {
     let retryTimeout = -1;
     const defaultMatchSettings = self.getDefaultMatchSettings();
-    let imageMatchSettings = null;
+    let imageMatchSettings;
 
     return self.getPromiseFactory().resolve()
       .then(() => {

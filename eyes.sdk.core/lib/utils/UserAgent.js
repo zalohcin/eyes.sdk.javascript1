@@ -88,7 +88,7 @@ class UserAgent {
       }
     }
 
-    let osmatch = null;
+    let osmatch;
     if (matchers.length === 0) {
       if (unknowns) {
         result._OS = OSNames.Unknown;
