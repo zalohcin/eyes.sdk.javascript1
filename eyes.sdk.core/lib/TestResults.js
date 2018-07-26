@@ -279,6 +279,7 @@ class StepInfo {
  */
 class TestResults {
   constructor() {
+    this._id = undefined;
     this._name = undefined;
     this._secretToken = undefined;
     // this._id = undefined;
@@ -325,6 +326,18 @@ class TestResults {
       stepsInfo: steps => Array.from(steps)
         .map(step => StepInfo.fromObject(step)),
     });
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getId() {
+    return this._id;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setId(value) {
+    this._id = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
