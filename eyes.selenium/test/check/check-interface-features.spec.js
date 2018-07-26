@@ -19,7 +19,7 @@ describe('Eyes.Selenium.JavaScript - check-interface-features', () => {
 
   it('test check interface features', function () {
     return eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(1000, 700)).then(driver => {
-      driver.get('https://astappev.github.io/test-html-pages/');
+      driver.get('https://astappiev.github.io/test-html-pages/');
 
       // Entire window, equivalent to eyes.checkWindow()
       eyes.check('Entire window', Target.window()

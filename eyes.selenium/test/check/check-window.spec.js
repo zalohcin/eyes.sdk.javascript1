@@ -20,7 +20,7 @@ describe('Eyes.Selenium.JavaScript - check window', () => {
 
   it('test check window methods', function () {
     return eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(800, 560)).then(driver => {
-      driver.get('https://astappev.github.io/test-html-pages/');
+      driver.get('https://astappiev.github.io/test-html-pages/');
 
       eyes.check('Partial window', Target.window());
 
