@@ -5,8 +5,7 @@ const { RectangleSize } = require('./geometry/RectangleSize');
 const { Location } = require('./geometry/Location');
 
 const JS_GET_VIEWPORT_SIZE =
-  'var height = undefined; ' +
-  'var width = undefined; ' +
+  'var height, width; ' +
   'if (window.innerHeight) { height = window.innerHeight; } ' +
   'else if (document.documentElement && document.documentElement.clientHeight) { height = document.documentElement.clientHeight; } ' +
   'else { var b = document.getElementsByTagName("body")[0]; if (b.clientHeight) {height = b.clientHeight;} }; ' +
@@ -49,13 +48,11 @@ const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
   'var overflowY = styles.getPropertyValue("overflow-y");' +
   'return overflow == "hidden" || overflowX == "hidden" || overflowY == "hidden"';
 
-const JS_GET_SET_OVERFLOW_STR = (elementName, overflowValue) => {
-  return `var element = ${elementName};
-          var overflowValue = "${overflowValue}";
-          var origOverflow = element.style.overflow;
-          element.style.overflow = overflowValue;
-          return origOverflow;`;
-};
+const JS_GET_SET_OVERFLOW_STR = (elementName, overflowValue) =>
+  `var element = ${elementName}; var overflowValue = "${overflowValue}"; ` +
+  'var origOverflow = element.style.overflow; ' +
+  'element.style.overflow = overflowValue; ' +
+  'return origOverflow;';
 
 /**
  * Handles browser related functionality.
@@ -71,8 +68,8 @@ class EyesJsBrowserUtils {
    */
   static setOverflow(executor, value, scrollbarsRoot) {
     const script = JS_GET_SET_OVERFLOW_STR(
-      scrollbarsRoot ? "arguments[0]" : "document.documentElement",
-      value === null ? "undefined" : value
+      scrollbarsRoot ? 'arguments[0]' : 'document.documentElement',
+      value === null ? 'undefined' : value
     );
 
     return executor.executeScript(script, scrollbarsRoot).catch(err => {
@@ -99,7 +96,7 @@ class EyesJsBrowserUtils {
    * @return {Promise<string>} A promise which resolves to the original overflow of the document.
    */
   static setBodyOverflow(executor, overflowValue) {
-    const script = JS_GET_SET_OVERFLOW_STR("document.body", overflowValue === null ? "undefined" : overflowValue);
+    const script = JS_GET_SET_OVERFLOW_STR('document.body', overflowValue === null ? 'undefined' : overflowValue);
 
     return executor.executeScript(script).catch(err => {
       throw new EyesError('Failed to set body overflow', err);
