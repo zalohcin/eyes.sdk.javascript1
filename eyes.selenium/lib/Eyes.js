@@ -1197,25 +1197,20 @@ class Eyes extends EyesBase {
    * @return {Promise<void>}
    */
   _tryHideScrollbars() {
-    if (this._hideScrollbars || this._scrollRootElement) {
+    if (this._hideScrollbars) {
       const that = this;
       const originalFC = new FrameChain(that._logger, that._driver.getFrameChain());
       const fc = new FrameChain(that._logger, that._driver.getFrameChain());
-      let hideScrollbarsPromise = that._hideScrollbars ?
-        EyesSeleniumUtils.hideScrollbars(that._driver, 200) : that.getPromiseFactory().resolve();
-      let hideScrollbarsScrollRootElementPromise = that._scrollRootElement ?
-        EyesSeleniumUtils.hideScrollbars(that._driver, 200, that._scrollRootElement) : that.getPromiseFactory().resolve();
-      return Promise.all([
-        hideScrollbarsPromise,
-        hideScrollbarsScrollRootElementPromise
-      ]).then(overflows => {
-        if (that._hideScrollbars) {
-          that._originalOverflow = overflows[0];
-        }
-        return that._tryHideScrollbarsLoop(fc);
-      }).then(() => that._driver.switchTo().frames(originalFC)).catch(err => {
-        that._logger.log(`WARNING: Failed to hide scrollbars! Error: ${err}`);
-      });
+      return EyesSeleniumUtils.hideScrollbars(that._driver, 200, that._scrollRootElement)
+        .then(overflow => {
+          that._originalOverflow = overflow;
+          if (!that._scrollRootElement) {
+            return that._tryHideScrollbarsLoop(fc).then(() => that._driver.switchTo().frames(originalFC));
+          }
+        })
+        .catch(err => {
+          that._logger.log(`WARNING: Failed to hide scrollbars! Error: ${err}`);
+        });
     }
 
     return this.getPromiseFactory().resolve();
@@ -1227,14 +1222,14 @@ class Eyes extends EyesBase {
    * @return {Promise<void>}
    */
   _tryHideScrollbarsLoop(fc) {
-    if (this._hideScrollbars && fc.size() > 0) {
+    if (fc.size() > 0) {
       const that = this;
       return that._driver.getRemoteWebDriver()
         .switchTo()
         .parentFrame()
         .then(() => {
           const frame = fc.pop();
-          return EyesSeleniumUtils.hideScrollbars(that._driver, 200, that._scrollRootElement);
+          return EyesSeleniumUtils.hideScrollbars(that._driver, 200);
         })
         .then(() => that._tryHideScrollbarsLoop(fc));
     }
