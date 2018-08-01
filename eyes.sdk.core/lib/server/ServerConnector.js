@@ -657,6 +657,7 @@ class ServerConnector {
   renderPutResource(runningRender, resource) {
     ArgumentGuard.notNull(runningRender, 'runningRender');
     ArgumentGuard.notNull(resource, 'resource');
+    ArgumentGuard.notNull(resource.getContent(), 'resource.getContent()');
     // eslint-disable-next-line max-len
     this._logger.verbose(`ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
