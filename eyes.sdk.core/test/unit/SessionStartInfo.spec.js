@@ -29,7 +29,7 @@ describe('SessionStartInfo', () => {
     const actualSerialization = JSON.stringify(ssi);
     const expectedSerialization = '{"agentId":"some agent","sessionType":"SEQUENTIAL","appIdOrName":"my app",' +
       `"verId":"1.0.0","scenarioIdOrName":"some scenario","batchInfo":${JSON.stringify(batchInfo)},` +
-      '"baselineEnvName":"some baseline name","environmentName":"env name","environment":{"inferred":null},' +
+      '"baselineEnvName":"some baseline name","environmentName":"env name","environment":{},' +
       '"defaultMatchSettings":{"matchLevel":"Strict","ignore":[],"layout":[],"strict":[],"content":[],"floating":[]},' +
       '"branchName":"some branch name","parentBranchName":"parent branch name","baselineBranchName":"base branch",' +
       '"compareWithParentBranch":false,"ignoreBaseline":false,"saveDiffs":false,"render":false,' +

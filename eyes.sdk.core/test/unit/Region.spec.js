@@ -200,7 +200,7 @@ describe('Region', () => {
   });
 
   it('toJSON()', () => {
-    const expectedSerialization = `{"left":${left},"top":${top},"width":${width},"height":${height}}`;
+    const expectedSerialization = `{"left":${left},"top":${top},"width":${width},"height":${height},"coordinatesType":"SCREENSHOT_AS_IS"}`;
 
     const region = new Region(left, top, width, height);
     const actualSerialization = JSON.stringify(region);

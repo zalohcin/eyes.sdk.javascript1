@@ -89,16 +89,19 @@ class GeneralUtils {
    *
    * @param {object} object
    * @param {string[]} [exclude]
+   * @param {object} [rename]
    * @return {object}
    */
-  static toPlain(object, exclude = []) {
+  static toPlain(object, exclude = [], rename = {}) {
     if (object == null) {
       throw new TypeError('Cannot make null plain.');
     }
 
     const plainObject = {};
     Object.keys(object).forEach(objectKey => {
-      const publicKey = objectKey.replace('_', '');
+      let publicKey = objectKey.replace('_', '');
+      if (rename[publicKey]) publicKey = rename[publicKey];
+
       if (Object.prototype.hasOwnProperty.call(object, objectKey) && !exclude.includes(objectKey)) {
         if (object[objectKey] instanceof Object && typeof object[objectKey].toJSON === 'function') {
           plainObject[publicKey] = object[objectKey].toJSON();

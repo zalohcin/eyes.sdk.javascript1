@@ -2136,10 +2136,10 @@ class EyesBase {
   }
 
   /**
-   * @param {string} message
+   * @param {string...} args
    */
-  log(message) {
-    this._logger.log(message);
+  log(...args) {
+    this._logger.log(...args);
   }
 }
 

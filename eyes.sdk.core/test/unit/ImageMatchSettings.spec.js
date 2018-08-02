@@ -25,7 +25,7 @@ describe('ImageMatchSettings', () => {
       const ims = new ImageMatchSettings();
       ims.setIgnoreRegions([new Region(10, 20, 30, 40)]);
       const expectedSerialization = '{"matchLevel":"Strict","ignore":[{"left":10,"top":20,"width":30,"height":40,' +
-        '"coordinatesType":1}],"layout":[],"strict":[],"content":[],"floating":[]}';
+        '"coordinatesType":"SCREENSHOT_AS_IS"}],"layout":[],"strict":[],"content":[],"floating":[]}';
       assert.equal(JSON.stringify(ims), expectedSerialization, 'ImageMatchSettings serialization does not match!');
     });
   });
