@@ -113,10 +113,11 @@ class CheckSettings {
   /**
    * Defines that the screenshot will contain the entire element or region, even if it's outside the view.
    *
+   * @param {boolean} [fully=true]
    * @return {CheckSettings} This instance of the settings object.
    */
-  fully() {
-    this._stitchContent = true;
+  fully(fully = true) {
+    this._stitchContent = fully;
     return this;
   }
 

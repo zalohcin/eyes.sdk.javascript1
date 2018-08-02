@@ -12,8 +12,7 @@ const { FrameLocator } = require('./FrameLocator');
 /**
  * @return {boolean}
  */
-const isProtractorBy = value =>
-  Object.prototype.hasOwnProperty.call(value, 'using') &&
+const isProtractorBy = value => Object.prototype.hasOwnProperty.call(value, 'using') &&
   Object.prototype.hasOwnProperty.call(value, 'value');
 
 class SeleniumCheckSettings extends CheckSettings {
@@ -60,10 +59,8 @@ class SeleniumCheckSettings extends CheckSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Shortcut to set the match level to {@code MatchLevel.LAYOUT}.
-   *
    * @override
-   * @return {SeleniumCheckSettings} This instance of the settings object.
+   * @inheritDoc
    */
   layout() {
     super.layout();
@@ -72,10 +69,8 @@ class SeleniumCheckSettings extends CheckSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Shortcut to set the match level to {@code MatchLevel.EXACT}.
-   *
    * @override
-   * @return {SeleniumCheckSettings} This instance of the settings object.
+   * @inheritDoc
    */
   exact() {
     super.exact();
@@ -84,10 +79,8 @@ class SeleniumCheckSettings extends CheckSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Shortcut to set the match level to {@code MatchLevel.STRICT}.
-   *
    * @override
-   * @return {SeleniumCheckSettings} This instance of the settings object.
+   * @inheritDoc
    */
   strict() {
     super.strict();
@@ -96,10 +89,8 @@ class SeleniumCheckSettings extends CheckSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Shortcut to set the match level to {@code MatchLevel.CONTENT}.
-   *
    * @override
-   * @return {SeleniumCheckSettings} This instance of the settings object.
+   * @inheritDoc
    */
   content() {
     super.content();
@@ -108,11 +99,8 @@ class SeleniumCheckSettings extends CheckSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Set the match level by which to compare the screenshot.
-   *
    * @override
-   * @param {MatchLevel} matchLevel The match level to use.
-   * @return {SeleniumCheckSettings} This instance of the settings object.
+   * @inheritDoc
    */
   matchLevel(matchLevel) {
     super.matchLevel(matchLevel);
@@ -121,47 +109,38 @@ class SeleniumCheckSettings extends CheckSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Defines if to detect and ignore a blinking caret in the screenshot.
-   *
    * @override
-   * @param {boolean} [ignoreCaret=true] Whether or not to detect and ignore a blinking caret in the screenshot.
-   * @return {SeleniumCheckSettings} This instance of the settings object.
+   * @inheritDoc
    */
-  ignoreCaret(ignoreCaret = true) {
+  ignoreCaret(ignoreCaret) {
     super.ignoreCaret(ignoreCaret);
     return this;
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Defines that the screenshot will contain the entire element or region, even if it's outside the view.
-   *
    * @override
-   * @return {SeleniumCheckSettings} This instance of the settings object.
+   * @inheritDoc
    */
-  fully() {
-    super.fully();
+  fully(fully) {
+    super.fully(fully);
     return this;
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * @override
-   * @param {boolean} [stitchContent=true]
-   * @return {SeleniumCheckSettings}
+   * @inheritDoc
    */
-  stitchContent(stitchContent = true) {
+  stitchContent(stitchContent) {
     super.stitchContent(stitchContent);
     return this;
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Defines the timeout to use when acquiring and comparing screenshots.
-   *
    * @override
-   * @param {number} timeoutMilliseconds The timeout to use in milliseconds.
-   * @return {SeleniumCheckSettings} This instance of the settings object.
+   * @inheritDoc
    */
   timeout(timeoutMilliseconds) {
     super.timeout(timeoutMilliseconds);
