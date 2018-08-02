@@ -87,7 +87,7 @@ class RenderStatusResults {
   setUserAgent(value) {
     this._userAgent = value;
   }
-  
+
   /** @override */
   toJSON() {
     return GeneralUtils.toPlain(this);

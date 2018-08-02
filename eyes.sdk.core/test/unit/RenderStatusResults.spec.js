@@ -25,7 +25,7 @@ describe('RenderStatusResults', () => {
       error,
       imageLocation,
       os,
-      userAgent
+      userAgent,
     });
 
     assert.equal(results.getStatus(), status);
@@ -46,7 +46,7 @@ describe('RenderStatusResults', () => {
       error,
       imageLocation,
       os,
-      userAgent
+      userAgent,
     });
 
     assert.equal(JSON.stringify(results), '{"status":"some status","imageLocation":"some image location","error":"some error","os":"some os","userAgent":"some user agent"}');
@@ -63,9 +63,9 @@ describe('RenderStatusResults', () => {
       error,
       imageLocation,
       os,
-      userAgent
+      userAgent,
     });
 
     assert.equal(results.toString(), 'RenderStatusResults { {"status":"some status","imageLocation":"some image location","error":"some error","os":"some os","userAgent":"some user agent"} }');
-  })
-})
+  });
+});
