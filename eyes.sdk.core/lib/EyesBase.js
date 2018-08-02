@@ -661,6 +661,13 @@ class EyesBase {
     }
   }
 
+  /**
+   * @returns {boolean}
+   */
+  getIsCutProviderExplicitlySet() {
+    return this._cutProviderHandler && !(this._cutProviderHandler.get() instanceof NullCutProvider);
+  }
+
   // noinspection JSUnusedGlobalSymbols
   /**
    * Manually set the scale ratio for the images being validated.
