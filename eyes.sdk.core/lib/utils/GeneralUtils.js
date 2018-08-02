@@ -378,6 +378,14 @@ class GeneralUtils {
    * @param value
    * @return {boolean}
    */
+  static isArray(value) {
+    return Array.isArray(value);
+  }
+
+  /**
+   * @param value
+   * @return {boolean}
+   */
   static isBuffer(value) {
     return (
       value != null &&

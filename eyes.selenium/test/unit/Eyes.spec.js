@@ -1,9 +1,10 @@
 'use strict';
 
+const assert = require('assert');
+
 const { Builder } = require('selenium-webdriver');
 const { RectangleSize } = require('@applitools/eyes.sdk.core');
-const { Eyes, EyesWebDriver, Target } = require('../index');
-const assert = require('assert');
+const { Eyes, EyesWebDriver, Target } = require('../../index');
 
 let driver, eyes;
 describe('Eyes', function () {
