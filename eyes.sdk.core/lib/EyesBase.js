@@ -37,7 +37,8 @@ const { NewTestError } = require('./errors/NewTestError');
 const { OutOfBoundsError } = require('./errors/OutOfBoundsError');
 const { TestFailedError } = require('./errors/TestFailedError');
 
-const { SessionEventHandler } = require('./events/SessionEventHandler');
+const { ValidationInfo } = require('./events/ValidationInfo');
+const { ValidationResult } = require('./events/ValidationResult');
 const { SessionEventHandlers } = require('./events/SessionEventHandlers');
 
 const { CheckSettings } = require('./fluent/CheckSettings');
@@ -131,7 +132,7 @@ class EyesBase {
     /** @type {number} */
     this._validationId = -1;
     /** @type {SessionEventHandlers} */
-    this._sessionEventHandlers = new SessionEventHandlers(this._logger, this._promiseFactory);
+    this._sessionEventHandlers = new SessionEventHandlers(this._promiseFactory);
 
     /**
      * Used for automatic save of a test run. New tests are automatically saved by default.
@@ -1185,12 +1186,12 @@ class EyesBase {
     ArgumentGuard.notNull(regionProvider, 'regionProvider');
 
     this._validationId += 1;
-    const validationInfo = new SessionEventHandler.ValidationInfo();
+    const validationInfo = new ValidationInfo();
     validationInfo.setValidationId(this._validationId);
     validationInfo.setTag(tag);
 
     // default result
-    const validationResult = new SessionEventHandler.ValidationResult();
+    const validationResult = new ValidationResult();
 
     const that = this;
     let matchResult;
@@ -1275,8 +1276,7 @@ class EyesBase {
         const outputProvider = new AppOutputProvider();
         // A callback which will call getAppOutput
         // noinspection AnonymousFunctionJS
-        outputProvider.getAppOutput = (region, lastScreenshot) =>
-          that._getAppOutputWithScreenshot(region, lastScreenshot);
+        outputProvider.getAppOutput = (region, lastScreenshot) => that._getAppOutputWithScreenshot(region, lastScreenshot);
 
         that._matchWindowTask = new MatchSingleWindowTask(
           that._promiseFactory,
@@ -1537,8 +1537,7 @@ class EyesBase {
 
       const outputProvider = new AppOutputProvider();
       // A callback which will call getAppOutput
-      outputProvider.getAppOutput = (region, lastScreenshot) =>
-        that._getAppOutputWithScreenshot(region, lastScreenshot);
+      outputProvider.getAppOutput = (region, lastScreenshot) => that._getAppOutputWithScreenshot(region, lastScreenshot);
 
       that._matchWindowTask = new MatchWindowTask(
         that._promiseFactory,
