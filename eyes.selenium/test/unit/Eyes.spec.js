@@ -1,5 +1,6 @@
 'use strict';
 
+require('chromedriver');
 const assert = require('assert');
 
 const { Builder } = require('selenium-webdriver');
@@ -8,6 +9,8 @@ const { Eyes, EyesWebDriver, Target } = require('../../index');
 
 let driver, eyes;
 describe('Eyes', function () {
+  this.timeout(60 * 1000);
+
   before(function () {
     driver = new Builder()
       .forBrowser('chrome')

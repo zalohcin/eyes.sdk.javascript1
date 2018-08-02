@@ -187,40 +187,85 @@ class SeleniumCheckSettings extends CheckSettings {
     return this;
   }
 
-  // noinspection JSCheckFunctionSignatures
+  // noinspection JSMethodCanBeStatic
   /**
-   * Adds a region to ignore.
-   *
    * @override
-   * @param {GetRegion|Region|By|WebElement|EyesWebElement} regionOrContainer The region or region container to ignore
-   *   when validating the screenshot.
-   * @return {SeleniumCheckSettings} This instance of the settings object.
+   * @protected
+   * @param {By|WebElement|EyesWebElement|GetRegion|Region} region
+   * @return {GetRegion}
    */
-  ignore(regionOrContainer) {
-    if (regionOrContainer instanceof By || isProtractorBy(regionOrContainer)) {
-      this._ignoreRegions.push(new IgnoreRegionBySelector(regionOrContainer));
-    } else if (regionOrContainer instanceof WebElement) {
-      this._ignoreRegions.push(new IgnoreRegionByElement(regionOrContainer));
-    } else {
-      super.ignore(regionOrContainer);
+  _regionToRegionProvider(region) {
+    if (region instanceof By || isProtractorBy(region)) {
+      return new IgnoreRegionBySelector(region);
     }
 
-    return this;
+    if (region instanceof WebElement) {
+      return new IgnoreRegionByElement(region);
+    }
+
+    return super._regionToRegionProvider(region);
+  }
+
+  /**
+   * @deprecated use {@link ignoreRegions} instead
+   */
+  ignore(...regions) {
+    return this.ignoreRegions(...regions);
+  }
+
+  /**
+   * @deprecated use {@link ignoreRegions} instead
+   */
+  ignores(...regions) {
+    return this.ignoreRegions(...regions);
   }
 
   // noinspection JSUnusedGlobalSymbols
-  // noinspection JSCheckFunctionSignatures
   /**
-   * Adds one or more ignore regions.
-   *
    * @override
-   * @param {(GetRegion|Region|By|WebElement|EyesWebElement)...} regionsOrContainers One or more regions or region
-   *   containers to ignore when validating the screenshot.
+   * Adds one or more ignore regions.
+   * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to ignore when validating.
    * @return {SeleniumCheckSettings} This instance of the settings object.
    */
-  ignores(...regionsOrContainers) {
-    super.ignores(...regionsOrContainers);
-    return this;
+  ignoreRegions(...regions) {
+    // noinspection JSValidateTypes
+    return super.ignoreRegions(...regions);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @override
+   * Adds one or more layout regions.
+   * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to match using the Layout method.
+   * @return {SeleniumCheckSettings} This instance of the settings object.
+   */
+  layoutRegions(...regions) {
+    // noinspection JSValidateTypes
+    return super.layoutRegions(...regions);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @override
+   * Adds one or more strict regions.
+   * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to match using the Strict method.
+   * @return {SeleniumCheckSettings} This instance of the settings object.
+   */
+  strictRegions(...regions) {
+    // noinspection JSValidateTypes
+    return super.strictRegions(...regions);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @override
+   * Adds one or more content regions.
+   * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to match using the Content method.
+   * @return {SeleniumCheckSettings} This instance of the settings object.
+   */
+  contentRegions(...regions) {
+    // noinspection JSValidateTypes
+    return super.contentRegions(...regions);
   }
 
   // noinspection JSCheckFunctionSignatures

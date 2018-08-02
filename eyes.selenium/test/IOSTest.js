@@ -5,7 +5,9 @@ const { ConsoleLogHandler, BatchInfo } = require('@applitools/eyes.sdk.core');
 const { TestUtils } = require('./TestUtils');
 const { Eyes, Target, StitchMode } = require('../index');
 
-describe('IOSTest', () => {
+describe('IOSTest', function () {
+  this.timeout(5 * 60 * 1000);
+
   const batchInfo = new BatchInfo('Java3 Tests');
 
   const dataProvider = [];
