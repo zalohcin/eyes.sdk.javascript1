@@ -468,12 +468,15 @@ class Eyes extends EyesBase {
                   return that._checkElement(name, checkSettings);
                 }
                 return that._checkRegion(name, checkSettings);
-              } else if (checkSettings.getFrameChain().length > 0) {
+              }
+
+              if (checkSettings.getFrameChain().length > 0) {
                 if (that._stitchContent) {
                   return that._checkFullFrameOrElement(name, checkSettings);
                 }
                 return that._checkFrameFluent(name, checkSettings);
               }
+
               return super.checkWindowBase(new NullRegionProvider(that.getPromiseFactory()), name, false, checkSettings);
             }
           })
@@ -622,10 +625,9 @@ class Eyes extends EyesBase {
       }
     };
 
-    return super.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings)
-      .then(() => {
-        that._checkFrameOrElement = false;
-      });
+    return super.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings).then(() => {
+      that._checkFrameOrElement = false;
+    });
   }
 
   /**

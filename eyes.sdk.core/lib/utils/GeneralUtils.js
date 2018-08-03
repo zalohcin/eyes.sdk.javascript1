@@ -314,7 +314,8 @@ class GeneralUtils {
     return args
       .map(arg => {
         if (arg != null && typeof arg === 'object') {
-          if (arg.constructor !== Object) { // Not plain object
+          if (arg.constructor !== Object) {
+            // Not plain object
             if (arg instanceof Error && arg.stack) {
               return arg.stack;
             }

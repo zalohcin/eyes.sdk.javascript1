@@ -16,7 +16,7 @@ const getPropertyValue = (logger, element, propName) => {
 
   let promise;
   if (element instanceof EyesWebElement) {
-    logger.verbose('Element is an EyesWebElement, using \'getComputedStyle\'.');
+    logger.verbose("Element is an EyesWebElement, using 'getComputedStyle'.");
     promise = element.getComputedStyle(propName)
       .catch(err => {
         logger.verbose(`Using getComputedStyle failed: ${err}`);

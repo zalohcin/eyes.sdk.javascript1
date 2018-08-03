@@ -159,8 +159,7 @@ const sendLongRequest = (that, name, options = {}) => {
   options.headers['Eyes-Expect'] = '202+location'; // eslint-disable-line no-param-reassign
   options.headers['Eyes-Date'] = GeneralUtils.toRfc1123DateTime(); // eslint-disable-line no-param-reassign
 
-  return sendRequest(that, name, options)
-    .then(response => longRequestCheckStatus(that, name, response));
+  return sendRequest(that, name, options).then(response => longRequestCheckStatus(that, name, response));
 };
 
 /**

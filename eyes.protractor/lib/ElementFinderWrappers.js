@@ -33,13 +33,11 @@ class ElementFinderWrapper extends EyesWebElement {
 
     const that = this;
     ELEMENT_FINDER_TO_ELEMENT_FINDER_FUNCTIONS.forEach(fnName => {
-      that[fnName] = (...args) =>
-        new ElementFinderWrapper(that._logger, that._eyesDriver, that._finder[fnName](...args));
+      that[fnName] = (...args) => new ElementFinderWrapper(that._logger, that._eyesDriver, that._finder[fnName](...args));
     });
 
     ELEMENT_FINDER_TO_ELEMENT_ARRAY_FINDER_FUNCTIONS.forEach(fnName => {
-      that[fnName] = (...args) =>
-        new ElementArrayFinderWrapper(that._logger, that._eyesDriver, that._finder[fnName](...args));
+      that[fnName] = (...args) => new ElementArrayFinderWrapper(that._logger, that._eyesDriver, that._finder[fnName](...args));
     });
   }
 
@@ -71,21 +69,18 @@ class ElementArrayFinderWrapper {
     const that = this;
     // Wrap the functions that return objects that require pre-wrapping
     ELEMENT_ARRAY_FINDER_TO_ELEMENT_FINDER_FUNCTIONS.forEach(fnName => {
-      that[fnName] = (...args) =>
-        new ElementFinderWrapper(that._logger, that._eyesDriver, that._arrayFinder[fnName](...args));
+      that[fnName] = (...args) => new ElementFinderWrapper(that._logger, that._eyesDriver, that._arrayFinder[fnName](...args));
     });
 
     // Patch this internal function.
     const originalFn = that._arrayFinder.asElementFinders_;
-    that._arrayFinder.asElementFinders_ = () =>
-      originalFn.apply(that._arrayFinder)
-        .then(arr => {
-          const list = [];
-          arr.forEach(finder => {
-            list.push(new ElementFinderWrapper(that._logger, that._eyesDriver, finder));
-          });
-          return list;
-        });
+    that._arrayFinder.asElementFinders_ = () => originalFn.apply(that._arrayFinder).then(arr => {
+      const list = [];
+      arr.forEach(finder => {
+        list.push(new ElementFinderWrapper(that._logger, that._eyesDriver, finder));
+      });
+      return list;
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -98,14 +93,13 @@ class ElementArrayFinderWrapper {
     const that = this;
     that._logger.verbose('ElementArrayFinderWrapper:getWebElements - called');
     // noinspection JSValidateTypes
-    return that._arrayFinder.getWebElements()
-      .then(elements => {
-        const res = [];
-        elements.forEach(el => {
-          res.push(new EyesWebElementPromise(this._logger, this._eyesDriver, el));
-        });
-        return res;
+    return that._arrayFinder.getWebElements().then(elements => {
+      const res = [];
+      elements.forEach(el => {
+        res.push(new EyesWebElementPromise(this._logger, this._eyesDriver, el));
       });
+      return res;
+    });
   }
 }
 

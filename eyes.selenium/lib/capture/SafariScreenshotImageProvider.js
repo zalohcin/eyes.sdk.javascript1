@@ -108,13 +108,12 @@ class SafariScreenshotImageProvider extends ImageProvider {
             that._logger.verbose(`computed physical viewport size: ${viewportSize}`);
             that._logger.verbose('cropping IOS browser image');
 
-            return image
-              .crop(new Region(
-                Math.ceil(leftBarWidth * scaleRatio),
-                Math.ceil((topBarHeight + urlBarHeight) * scaleRatio),
-                viewportSize.getWidth(),
-                viewportSize.getHeight()
-              ));
+            return image.crop(new Region(
+              Math.ceil(leftBarWidth * scaleRatio),
+              Math.ceil((topBarHeight + urlBarHeight) * scaleRatio),
+              viewportSize.getWidth(),
+              viewportSize.getHeight()
+            ));
           }
 
           if (!that._eyes.getForceFullPageScreenshot()) {

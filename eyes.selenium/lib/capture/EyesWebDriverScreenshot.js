@@ -193,9 +193,12 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
         this._frameChain,
         this._screenshotType
       );
-    } else if (!frameLocationInScreenshot) {
+    }
+
+    if (!frameLocationInScreenshot) {
       return this._promiseFactory.resolve(new Location(0, 0));
     }
+
     return this._promiseFactory.resolve(frameLocationInScreenshot);
   }
 

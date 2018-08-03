@@ -55,17 +55,16 @@ const getRegionInScreenshot = (logger, region, image, pixelRatio, screenshot, re
  * @param {PromiseFactory} promiseFactory
  * @return {Promise<Location>}
  */
-const setPositionLoop = (originProvider, requiredPosition, retries, waitMillis, promiseFactory) =>
-  originProvider.setPosition(requiredPosition)
-    .then(() => GeneralUtils.sleep(waitMillis, promiseFactory)) // Give the scroll time to stabilize
-    .then(() => originProvider.getCurrentPosition())
-    .then(currentPosition => {
-      if (!currentPosition.equals(requiredPosition) && retries - 1 > 0) {
-        return setPositionLoop(originProvider, requiredPosition, retries, waitMillis, promiseFactory);
-      }
+const setPositionLoop = (originProvider, requiredPosition, retries, waitMillis, promiseFactory) => originProvider.setPosition(requiredPosition)
+  .then(() => GeneralUtils.sleep(waitMillis, promiseFactory)) // Give the scroll time to stabilize
+  .then(() => originProvider.getCurrentPosition())
+  .then(currentPosition => {
+    if (!currentPosition.equals(requiredPosition) && retries - 1 > 0) {
+      return setPositionLoop(originProvider, requiredPosition, retries, waitMillis, promiseFactory);
+    }
 
-      return currentPosition;
-    });
+    return currentPosition;
+  });
 
 /**
  * @param {DebugScreenshotsProvider} debugScreenshotsProvider

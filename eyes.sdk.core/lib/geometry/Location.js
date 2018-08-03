@@ -105,7 +105,6 @@ class Location {
     return new Location(this._x + dx, this._y + dy);
   }
 
-
   /**
    *
    * @param {Location} other
@@ -114,7 +113,6 @@ class Location {
   offsetNegative(other) {
     return new Location(this._x - other.getX(), this._y - other.getY());
   }
-
 
   /**
    * Get a location translated by the specified amount.

@@ -1016,7 +1016,9 @@ class EyesBase {
               return reject(new DiffsFoundError(serverResults, that._sessionStartInfo));
             }
             return resolve(serverResults);
-          } else if (status === TestResultsStatus.Failed) {
+          }
+
+          if (status === TestResultsStatus.Failed) {
             that._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`);
 
             if (throwEx) {
@@ -1319,7 +1321,8 @@ class EyesBase {
         const outputProvider = new AppOutputProvider();
         // A callback which will call getAppOutput
         // noinspection AnonymousFunctionJS
-        outputProvider.getAppOutput = (region, lastScreenshot) => that._getAppOutputWithScreenshot(region, lastScreenshot);
+        outputProvider.getAppOutput = (region, lastScreenshot) =>
+          that._getAppOutputWithScreenshot(region, lastScreenshot);
 
         that._matchWindowTask = new MatchSingleWindowTask(
           that._promiseFactory,
@@ -1398,11 +1401,10 @@ class EyesBase {
     const replaceWindowData = new MatchWindowData(userInputs, new AppOutput(title, screenshot), tag, null, null);
 
     const that = this;
-    return that._serverConnector.replaceWindow(that._runningSession, stepIndex, replaceWindowData)
-      .then(result => {
-        that._logger.verbose('EyesBase.replaceWindow done');
-        return result;
-      });
+    return that._serverConnector.replaceWindow(that._runningSession, stepIndex, replaceWindowData).then(result => {
+      that._logger.verbose('EyesBase.replaceWindow done');
+      return result;
+    });
   }
 
   /**
@@ -1580,7 +1582,8 @@ class EyesBase {
 
       const outputProvider = new AppOutputProvider();
       // A callback which will call getAppOutput
-      outputProvider.getAppOutput = (region, lastScreenshot) => that._getAppOutputWithScreenshot(region, lastScreenshot);
+      outputProvider.getAppOutput = (region, lastScreenshot) =>
+        that._getAppOutputWithScreenshot(region, lastScreenshot);
 
       that._matchWindowTask = new MatchWindowTask(
         that._promiseFactory,

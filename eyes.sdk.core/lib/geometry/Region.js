@@ -391,8 +391,7 @@ class Region {
    * @return {Region} A region with an offset location.
    */
   offset(dx, dy) {
-    return new Region(this.getLocation()
-      .offset(dx, dy), this.getSize(), this.getCoordinatesType());
+    return new Region(this.getLocation().offset(dx, dy), this.getSize(), this.getCoordinatesType());
   }
 
   /**
@@ -454,7 +453,9 @@ class Region {
         locationOrRegion.getY() >= this._top &&
         locationOrRegion.getY() <= this._top + this._height
       );
-    } else if (locationOrRegion instanceof Region) {
+    }
+
+    if (locationOrRegion instanceof Region) {
       // noinspection OverlyComplexBooleanExpressionJS
       return (
         this._top <= locationOrRegion.getTop() &&
@@ -463,6 +464,7 @@ class Region {
         this._left + this._width >= locationOrRegion.getLeft() + locationOrRegion.getWidth()
       );
     }
+
     throw new TypeError('Unsupported type of given object.');
   }
 

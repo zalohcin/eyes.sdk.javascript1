@@ -226,7 +226,9 @@ class EyesTargetLocator extends TargetLocator {
           that._logger.verbose('Done switching into nested frames!');
           return that._driver;
         });
-    } else if (Array.isArray(obj)) {
+    }
+
+    if (Array.isArray(obj)) {
       that._logger.verbose('EyesTargetLocator.frames(framesPath)');
       return obj.reduce((promise, frameNameOrId) => promise
         .then(() => {

@@ -4,6 +4,8 @@ const { ArgumentGuard } = require('../ArgumentGuard');
 const { BrowserNames } = require('./BrowserNames');
 const { OSNames } = require('./OSNames');
 
+/* eslint-disable prefer-destructuring */
+
 const MAJOR_MINOR = '([^ .;_)]+)[_.]([^ .;_)]+)';
 const PRODUCT = `(?:(%s)/${MAJOR_MINOR})`;
 
@@ -11,17 +13,17 @@ const PRODUCT = `(?:(%s)/${MAJOR_MINOR})`;
 const VALUES_FOR_BROWSER_REGEX_EXCEPT_IE = ['Opera', 'Chrome', 'Safari', 'Firefox', 'Edge'];
 const IE_BROWSER_REGEX = new RegExp(`(?:MS(IE) ${MAJOR_MINOR})`);
 
-const getBrowserRegexes = () => {
-  const browserRegexes = [];
+const getBrowserRegExes = () => {
+  const browserRegExes = [];
 
   for (let i = 0; i < VALUES_FOR_BROWSER_REGEX_EXCEPT_IE.length; i += 1) {
     const browser = VALUES_FOR_BROWSER_REGEX_EXCEPT_IE[i];
-    browserRegexes.push(new RegExp(PRODUCT.replace('%s', browser)));
+    browserRegExes.push(new RegExp(PRODUCT.replace('%s', browser)));
   }
 
   // Last pattern is IE
-  browserRegexes.push(IE_BROWSER_REGEX);
-  return browserRegexes;
+  browserRegExes.push(IE_BROWSER_REGEX);
+  return browserRegExes;
 };
 
 const VERSION_REGEX = new RegExp(PRODUCT.replace('%s', 'Version'));
@@ -51,11 +53,18 @@ const EDGE_REGEX = new RegExp(PRODUCT.replace('%s', 'Edge'));
  */
 class UserAgent {
   constructor() {
+    /** @type {string} */
     this._OS = undefined;
+    /** @type {string} */
     this._OSMajorVersion = undefined;
+    /** @type {string} */
     this._OSMinorVersion = undefined;
+
+    /** @type {string} */
     this._browser = undefined;
+    /** @type {string} */
     this._browserMajorVersion = undefined;
+    /** @type {string} */
     this._browserMinorVersion = undefined;
   }
 
@@ -133,7 +142,7 @@ class UserAgent {
 
     // Browser
     let browserOK = false;
-    const browserRegexes = getBrowserRegexes();
+    const browserRegexes = getBrowserRegExes();
     for (let i = 0; i < browserRegexes.length; i += 1) {
       if (browserRegexes[i].test(userAgent)) {
         const matcher = browserRegexes[i].exec(userAgent);
@@ -156,10 +165,10 @@ class UserAgent {
       // IE11 and later is "hidden" on purpose.
       // http://blogs.msdn.com/b/ieinternals/archive/2013/09/21/internet-explorer-11-user-agent-string-ua-string-sniffing-compatibility-with-gecko-webkit.aspx
       if (HIDDEN_IE_REGEX.test(userAgent)) {
-        const iematch = HIDDEN_IE_REGEX.exec(userAgent);
+        const ieMatch = HIDDEN_IE_REGEX.exec(userAgent);
         result._browser = BrowserNames.IE;
-        result._browserMajorVersion = iematch[2];
-        result._browserMinorVersion = iematch[3];
+        result._browserMajorVersion = ieMatch[2];
+        result._browserMinorVersion = ieMatch[3];
         browserOK = true;
       }
     }

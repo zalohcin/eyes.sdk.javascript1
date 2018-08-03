@@ -43,39 +43,38 @@ class Eyes extends EyesSelenium {
         // If hostOs isn't set, we'll try and extract and OS ourselves.
         if (!appEnv.getOs()) {
           that._logger.log('No OS set, checking for mobile OS...');
-          return that._driver.getCapabilities()
-            .then(capabilities => {
-              if (EyesAppiumUtils.isMobileDeviceFromCaps(capabilities)) {
-                let platformName = null;
-                that._logger.log('Mobile device detected! Checking device type..');
-                if (EyesAppiumUtils.isAndroidFromCaps(capabilities)) {
-                  that._logger.log('Android detected.');
-                  platformName = 'Android';
-                } else if (EyesAppiumUtils.isIOSFromCaps(capabilities)) {
-                  that._logger.log('iOS detected.');
-                  platformName = 'iOS';
-                } else {
-                  that._logger.log('Unknown device type.');
-                }
-
-                // We only set the OS if we identified the device type.
-                if (platformName) {
-                  let os = platformName;
-                  const platformVersion = EyesAppiumUtils.getPlatformVersionFromCaps(capabilities);
-                  if (platformVersion) {
-                    const majorVersion = platformVersion.split('.', 2)[0];
-                    if (majorVersion) {
-                      os += ` ${majorVersion}`;
-                    }
-                  }
-
-                  that._logger.verbose(`Setting OS: ${os}`);
-                  appEnv.setOs(os);
-                }
+          return that._driver.getCapabilities().then(capabilities => {
+            if (EyesAppiumUtils.isMobileDeviceFromCaps(capabilities)) {
+              let platformName = null;
+              that._logger.log('Mobile device detected! Checking device type..');
+              if (EyesAppiumUtils.isAndroidFromCaps(capabilities)) {
+                that._logger.log('Android detected.');
+                platformName = 'Android';
+              } else if (EyesAppiumUtils.isIOSFromCaps(capabilities)) {
+                that._logger.log('iOS detected.');
+                platformName = 'iOS';
               } else {
-                that._logger.log('No mobile OS detected.');
+                that._logger.log('Unknown device type.');
               }
-            });
+
+              // We only set the OS if we identified the device type.
+              if (platformName) {
+                let os = platformName;
+                const platformVersion = EyesAppiumUtils.getPlatformVersionFromCaps(capabilities);
+                if (platformVersion) {
+                  const majorVersion = platformVersion.split('.', 2)[0];
+                  if (majorVersion) {
+                    os += ` ${majorVersion}`;
+                  }
+                }
+
+                that._logger.verbose(`Setting OS: ${os}`);
+                appEnv.setOs(os);
+              }
+            } else {
+              that._logger.log('No mobile OS detected.');
+            }
+          });
         }
       })
       .then(() => {

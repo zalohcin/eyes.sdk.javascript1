@@ -323,8 +323,7 @@ class TestResults {
       startedAt: GeneralUtils.fromISO8601DateTime,
       appUrls: SessionUrls.fromObject,
       apiUrls: SessionUrls.fromObject,
-      stepsInfo: steps => Array.from(steps)
-        .map(step => StepInfo.fromObject(step)),
+      stepsInfo: steps => Array.from(steps).map(step => StepInfo.fromObject(step)),
     });
   }
 
