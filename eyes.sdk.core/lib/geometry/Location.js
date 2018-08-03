@@ -109,7 +109,7 @@ class Location {
   /**
    *
    * @param {Location} other
-   * @returns {Location}
+   * @return {Location}
    */
   offsetNegative(other) {
     return new Location(this._x - other.getX(), this._y - other.getY());

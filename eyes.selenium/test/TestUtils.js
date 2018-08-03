@@ -10,7 +10,7 @@ class TestUtils {
    * Generates the cartesian product of the sets.
    *
    * @param {...(Array|Object)} sets - variable number of sets of n elements.
-   * @returns {Generator} yields each product as an array
+   * @return {Generator} yields each product as an array
    */
   static* cartesianProduct(...sets) {
     const data = [];

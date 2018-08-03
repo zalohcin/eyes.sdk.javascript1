@@ -35,7 +35,7 @@
     "one-var-declaration-per-line": ["off"],
     "class-methods-use-this": ["off"],
     "operator-linebreak": ["off"],
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/test/**/*.js", "**/*.spec.js"]}]
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/test/**/*.js", "**/*.spec.js", "**/example/*.js"]}]
   },
   "overrides": [{
     "files": ["**/test/**/*.js", "**/*.spec.js"],
