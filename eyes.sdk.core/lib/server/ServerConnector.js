@@ -46,6 +46,12 @@ const HTTP_STATUS_CODES = {
  * @return {Promise<AxiosResponse>}
  */
 const sendRequest = (that, name, options, retry = 1, delayBeforeRetry = false) => {
+  if (options.data instanceof Buffer && options.data.length === 0) {
+    // This 'if' fixes a bug in Axios whereby Axios doesn't send a content-length when the buffer is of length 0.
+    // This behavior makes the rendering-grid's nginx get stuck as it doesn't know when the body ends.
+    // https://github.com/axios/axios/issues/1701
+    options.data = ''
+  }
   // eslint-disable-next-line max-len
   that._logger.verbose(`ServerConnector.${name} will now post call to ${options.url} with params ${JSON.stringify(options.params)}`);
   return axios(options)
