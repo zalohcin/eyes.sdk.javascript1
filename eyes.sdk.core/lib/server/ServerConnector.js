@@ -56,12 +56,12 @@ const sendRequest = (that, name, options, retry = 1, delayBeforeRetry = false) =
   that._logger.verbose(`ServerConnector.${name} will now post call to ${options.url} with params ${JSON.stringify(options.params)}`);
   return axios(options)
     .then(response => {
-      that._logger.verbose(`ServerConnector.${name} - result ${response.statusText}, status code ${response.status}`);
+      that._logger.verbose(`ServerConnector.${name} - result ${response.statusText}, status code ${response.status}, url ${options.url}`);
       return response;
     })
     .catch(error => {
       const reasonMessage = error.response && error.response.statusText ? error.response.statusText : error.message;
-      that._logger.log(`ServerConnector.${name} - post failed: ${reasonMessage}`);
+      that._logger.log(`ServerConnector.${name} - post failed on ${options.url}: ${reasonMessage} with params ${JSON.stringify(options.params).slice(0, 100)}`);
 
       const validStatusCodes = [
         HTTP_STATUS_CODES.NOT_FOUND,
@@ -663,6 +663,7 @@ class ServerConnector {
   renderPutResource(runningRender, resource) {
     ArgumentGuard.notNull(runningRender, 'runningRender');
     ArgumentGuard.notNull(resource, 'resource');
+    ArgumentGuard.notNull(resource.getContent(), 'resource.getContent()');
     // eslint-disable-next-line max-len
     this._logger.verbose(`ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
