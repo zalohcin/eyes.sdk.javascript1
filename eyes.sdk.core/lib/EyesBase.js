@@ -1906,7 +1906,7 @@ class EyesBase {
     const that = this;
     that._logger.verbose('getting screenshot...');
     // Getting the screenshot (abstract function implemented by each SDK).
-    let title, screenshot, screenshotBuffer, screenshotUrl;
+    let title, screenshot, screenshotBuffer, screenshotUrl, domUrl;
     return that.getScreenshot()
       .then(newScreenshot => {
         that._logger.verbose('Done getting screenshot!');
@@ -1956,6 +1956,13 @@ class EyesBase {
           });
       })
       .then(() => {
+        that._logger.verbose('Getting domUrl...');
+        return that.getDomUrl().then(newDomUrl => {
+          domUrl = newDomUrl;
+          that._logger.verbose('Done!');
+        });
+      })
+      .then(() => {
         that._logger.verbose('Getting title...');
         return that.getTitle().then(newTitle => {
           title = newTitle;
@@ -1963,7 +1970,7 @@ class EyesBase {
         });
       })
       .then(() => {
-        const result = new AppOutputWithScreenshot(new AppOutput(title, screenshotBuffer, screenshotUrl), screenshot);
+        const result = new AppOutputWithScreenshot(new AppOutput(title, screenshotBuffer, screenshotUrl, domUrl), screenshot);
         that._logger.verbose('Done!');
         return result;
       });
@@ -2126,6 +2133,18 @@ class EyesBase {
    */
   getTitle() {
     throw new TypeError('getTitle method is not implemented!');
+  }
+
+  // noinspection JSMethodCanBeStatic
+  /**
+   * A url pointing to a DOM capture of the AUT at the time of screenshot
+   *
+   * @protected
+   * @abstract
+   * @return {Promise<string>}
+   */
+  getDomUrl() {
+    return this.getPromiseFactory().resolve();
   }
 
   /**

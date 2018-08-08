@@ -1,12 +1,15 @@
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { Region } = require('../geometry/Region');
 
 class RenderInfo {
   constructor() {
     this._width = undefined;
     this._height = undefined;
     this._sizeMode = undefined;
+    this._selector = undefined;
+    this._region = undefined;
   }
 
   /**
@@ -14,7 +17,10 @@ class RenderInfo {
    * @return {RenderInfo}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new RenderInfo(), object);
+    const mapping = {};
+    if (object.region) mapping.region = Region.fromObject;
+    
+    return GeneralUtils.assignTo(new RenderInfo(), object, mapping);
   }
 
   /**
@@ -60,9 +66,38 @@ class RenderInfo {
     this._sizeMode = value;
   }
 
+  /** @return {string} */
+  getSelector() {
+    return this._selector;
+  }
+
+  /** @param {string} value */
+  setSelector(value) {
+    this._selector = value;
+  }
+
+  /** @return {Region} */
+  getRegion() {
+    return this._region;
+  }
+
+  /** @param {Region} value */
+  setRegion(value) {
+    this._region = value;
+  }
+
   /** @override */
   toJSON() {
-    return GeneralUtils.toPlain(this);
+    const obj = GeneralUtils.toPlain(this);
+    
+    // TODO remove this when rendering-grid changes x/y to left/top
+    if (obj.region) {
+      obj.region.x = obj.region.left;
+      obj.region.y = obj.region.top;
+      delete obj.region.left;
+      delete obj.region.top;
+    }
+    return obj;
   }
 
   /** @override */

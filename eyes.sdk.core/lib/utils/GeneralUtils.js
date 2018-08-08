@@ -12,6 +12,8 @@ const BASE64_CHARS_PATTERN = /[^A-Z0-9+/=]/i;
 const MS_IN_S = 1000;
 const MS_IN_M = 60000;
 
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
 /**
  * @private
  * @param {object} to
@@ -102,7 +104,7 @@ class GeneralUtils {
       let publicKey = objectKey.replace('_', '');
       if (rename[publicKey]) publicKey = rename[publicKey];
 
-      if (Object.prototype.hasOwnProperty.call(object, objectKey) && !exclude.includes(objectKey)) {
+      if (hasOwnProperty.call(object, objectKey) && !exclude.includes(objectKey)) {
         if (object[objectKey] instanceof Object && typeof object[objectKey].toJSON === 'function') {
           plainObject[publicKey] = object[objectKey].toJSON();
         } else {
@@ -134,10 +136,10 @@ class GeneralUtils {
     Object.keys(object).forEach(objectKey => {
       const privateKey = `_${objectKey}`;
       if (
-        Object.prototype.hasOwnProperty.call(object, objectKey) &&
-        Object.prototype.hasOwnProperty.call(inst, privateKey)
+        hasOwnProperty.call(object, objectKey) &&
+        hasOwnProperty.call(inst, privateKey)
       ) {
-        if (Object.prototype.hasOwnProperty.call(mapping, objectKey)) {
+        if (hasOwnProperty.call(mapping, objectKey)) {
           inst[privateKey] = mapping[objectKey].call(null, object[objectKey]);
         } else {
           inst[privateKey] = object[objectKey];

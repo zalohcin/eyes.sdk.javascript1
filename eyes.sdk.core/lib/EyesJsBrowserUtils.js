@@ -5,8 +5,7 @@ const { RectangleSize } = require('./geometry/RectangleSize');
 const { Location } = require('./geometry/Location');
 
 const JS_GET_VIEWPORT_SIZE =
-  'var height = undefined; ' +
-  'var width = undefined; ' +
+  'var height, width; ' +
   'if (window.innerHeight) { height = window.innerHeight; } ' +
   'else if (document.documentElement && document.documentElement.clientHeight) { height = document.documentElement.clientHeight; } ' +
   'else { var b = document.getElementsByTagName("body")[0]; if (b.clientHeight) {height = b.clientHeight;} }; ' +
@@ -49,6 +48,13 @@ const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
   'var overflowY = styles.getPropertyValue("overflow-y");' +
   'return overflow == "hidden" || overflowX == "hidden" || overflowY == "hidden"';
 
+const JS_GET_SET_OVERFLOW_STR = (elementName, overflowValue) => (
+  `var element = ${elementName}; var overflowValue = "${overflowValue}"; ` +
+  'var origOverflow = element.style.overflow; ' +
+  'element.style.overflow = overflowValue; ' +
+  'return origOverflow;'
+);
+
 /**
  * Handles browser related functionality.
  */
@@ -57,24 +63,17 @@ class EyesJsBrowserUtils {
    * Sets the overflow of the current context's document element.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {string} value The overflow value to set.
+   * @param {?string} value The overflow value to set.
+   * @param {WebElement} [scrollbarsRoot]
    * @return {Promise<string>} The previous value of overflow (could be {@code null} if undefined).
    */
-  static setOverflow(executor, value) {
-    let script;
-    if (value) {
-      script =
-        'var origOverflow = document.documentElement.style.overflow; ' +
-        `document.documentElement.style.overflow = "${value}"; ` +
-        'return origOverflow;';
-    } else {
-      script =
-        'var origOverflow = document.documentElement.style.overflow; ' +
-        'document.documentElement.style.overflow = undefined; ' +
-        'return origOverflow;';
-    }
+  static setOverflow(executor, value, scrollbarsRoot) {
+    const script = JS_GET_SET_OVERFLOW_STR(
+      scrollbarsRoot ? 'arguments[0]' : 'document.documentElement',
+      value || 'undefined'
+    );
 
-    return executor.executeScript(script).catch(err => {
+    return executor.executeScript(script, scrollbarsRoot).catch(err => {
       throw new EyesError('Failed to set overflow', err);
     });
   }
@@ -94,22 +93,11 @@ class EyesJsBrowserUtils {
    * Updates the document's body "overflow" value
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {string} overflowValue The values of the overflow to set.
+   * @param {?string} overflowValue The values of the overflow to set.
    * @return {Promise<string>} A promise which resolves to the original overflow of the document.
    */
   static setBodyOverflow(executor, overflowValue) {
-    let script;
-    if (overflowValue === null) {
-      script =
-        'var origOverflow = document.body.style.overflow; ' +
-        'document.body.style.overflow = undefined; ' +
-        'return origOverflow;';
-    } else {
-      script =
-        'var origOverflow = document.body.style.overflow; ' +
-        `document.body.style.overflow = "${overflowValue}"; ` +
-        'return origOverflow;';
-    }
+    const script = JS_GET_SET_OVERFLOW_STR('document.body', overflowValue || 'undefined');
 
     return executor.executeScript(script).catch(err => {
       throw new EyesError('Failed to set body overflow', err);
@@ -122,10 +110,11 @@ class EyesJsBrowserUtils {
    * @param {EyesJsExecutor} executor The executor to use.
    * @param {number} stabilizationTimeout The amount of time to wait for the "hide scrollbars" action to take effect
    *   (Milliseconds). Zero/negative values are ignored.
+   * @param {WebElement} [scrollbarsRoot]
    * @return {Promise<string>} The previous value of the overflow property (could be {@code null}).
    */
-  static hideScrollbars(executor, stabilizationTimeout) {
-    return EyesJsBrowserUtils.setOverflow(executor, 'hidden').then(result => {
+  static hideScrollbars(executor, stabilizationTimeout, scrollbarsRoot) {
+    return EyesJsBrowserUtils.setOverflow(executor, 'hidden', scrollbarsRoot).then(result => {
       if (stabilizationTimeout > 0) {
         return executor.sleep(stabilizationTimeout).then(() => result);
       }
@@ -246,11 +235,11 @@ class EyesJsBrowserUtils {
    * @return {Promise<void>} A promise which resolves to the previous transform once the updated transform is set.
    */
   static setTransform(executor, transform) {
-    const transforms = {};
     if (!transform) {
       transform = '';
     }
 
+    const transforms = {};
     for (let i = 0, l = JS_TRANSFORM_KEYS.length; i < l; i += 1) {
       transforms[JS_TRANSFORM_KEYS[i]] = transform;
     }

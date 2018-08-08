@@ -14,7 +14,7 @@ class RenderRequest {
    * @param {string} [platform]
    * @param {string} [browserName]
    */
-  constructor(webhook, url, dom, renderInfo, platform, browserName) {
+  constructor(webhook, url, dom, renderInfo, platform, browserName, scriptHooks) {
     ArgumentGuard.notNullOrEmpty(webhook, 'webhook');
     ArgumentGuard.notNull(url, 'url');
     ArgumentGuard.notNull(dom, 'dom');
@@ -26,6 +26,7 @@ class RenderRequest {
     this._platform = platform;
     this._browserName = browserName;
     this._renderId = undefined;
+    this._scriptHooks = scriptHooks;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -81,6 +82,20 @@ class RenderRequest {
   setRenderId(value) {
     this._renderId = value;
   }
+  
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getScriptHooks() {
+    return this._scriptHooks;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setScriptHooks(value) {
+    this._scriptHooks = value;
+  }
+
+
 
   /** @override */
   toJSON() {
@@ -112,6 +127,10 @@ class RenderRequest {
 
     if (this._renderInfo) {
       object.renderInfo = this._renderInfo.toJSON();
+    }
+
+    if (this._scriptHooks) {
+      object.scriptHooks = this._scriptHooks;
     }
 
     return object;

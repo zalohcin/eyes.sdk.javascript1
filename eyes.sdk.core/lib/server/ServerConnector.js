@@ -46,16 +46,22 @@ const HTTP_STATUS_CODES = {
  * @return {Promise<AxiosResponse>}
  */
 const sendRequest = (that, name, options, retry = 1, delayBeforeRetry = false) => {
+  if (options.data instanceof Buffer && options.data.length === 0) {
+    // This 'if' fixes a bug in Axios whereby Axios doesn't send a content-length when the buffer is of length 0.
+    // This behavior makes the rendering-grid's nginx get stuck as it doesn't know when the body ends.
+    // https://github.com/axios/axios/issues/1701
+    options.data = ''
+  }
   // eslint-disable-next-line max-len
   that._logger.verbose(`ServerConnector.${name} will now post call to ${options.url} with params ${JSON.stringify(options.params)}`);
   return axios(options)
     .then(response => {
-      that._logger.verbose(`ServerConnector.${name} - result ${response.statusText}, status code ${response.status}`);
+      that._logger.verbose(`ServerConnector.${name} - result ${response.statusText}, status code ${response.status}, url ${options.url}`);
       return response;
     })
     .catch(error => {
       const reasonMessage = error.response && error.response.statusText ? error.response.statusText : error.message;
-      that._logger.log(`ServerConnector.${name} - post failed: ${reasonMessage}`);
+      that._logger.log(`ServerConnector.${name} - post failed on ${options.url}: ${reasonMessage} with params ${JSON.stringify(options.params).slice(0, 100)}`);
 
       const validStatusCodes = [
         HTTP_STATUS_CODES.NOT_FOUND,
@@ -657,6 +663,7 @@ class ServerConnector {
   renderPutResource(runningRender, resource) {
     ArgumentGuard.notNull(runningRender, 'runningRender');
     ArgumentGuard.notNull(resource, 'resource');
+    ArgumentGuard.notNull(resource.getContent(), 'resource.getContent()');
     // eslint-disable-next-line max-len
     this._logger.verbose(`ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
@@ -734,7 +741,7 @@ class ServerConnector {
           renderStatus = renderStatus[0]; // eslint-disable-line prefer-destructuring
         }
 
-        that._logger.verbose('ServerConnector.renderStatus - get succeeded', renderStatus);
+        that._logger.verbose(`ServerConnector.renderStatus - get succeeded for ${renderId} -`, renderStatus);
         return renderStatus;
       }
 
