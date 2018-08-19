@@ -1,0 +1,65 @@
+{
+  "name": "@applitools/visual-grid-client",
+  "version": "4.0.6",
+  "description": "",
+  "main": "src/visual-grid-client.js",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "src",
+    "browser.js"
+  ],
+  "scripts": {
+    "test:mocha": "mocha --no-timeouts 'test/**/*.test.js'",
+    "test:unit": "mocha --no-timeouts 'test/unit/**/*.test.js'",
+    "test:it": "mocha --no-timeouts 'test/it/**/*.test.js'",
+    "test:e2e": "mocha --no-timeouts 'test/e2e/**/*.test.js'",
+    "eslint": "eslint '**/*.js'",
+    "test": "npm run test:mocha && npm run eslint",
+    "prepublishOnly": "npm version patch"
+  },
+  "keywords": [
+    "applitools",
+    "testing",
+    "browser",
+    "grid",
+    "visual-testing",
+    "nodejs",
+    "javascript"
+  ],
+  "author": "Amit Zur <amit.zur@applitools.com>",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/applitools/visual-grid-client",
+    "type": "git"
+  },
+  "dependencies": {
+    "@applitools/eyes.sdk.core": "^1.8.0",
+    "@applitools/functional-commons": "^1.0.18",
+    "cssom": "git+https://github.com/amitzur/CSSOM.git#925260ff2c8f8387cf76df4d5776a06044a644c8",
+    "he": "^1.1.1",
+    "lodash.mapkeys": "^4.6.0",
+    "lodash.mapvalues": "^4.6.0",
+    "mime-types": "^2.1.19",
+    "mkdirp": "^0.5.1",
+    "node-fetch": "^2.2.0",
+    "throat": "^4.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-spies": "^1.0.0",
+    "cookie-parser": "^1.4.3",
+    "eslint": "^4.19.1",
+    "eslint-plugin-mocha-no-only": "^0.0.6",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-prettier": "^2.6.2",
+    "express": "^4.16.3",
+    "jsdom": "^11.12.0",
+    "mocha": "^5.2.0",
+    "morgan": "^1.9.0",
+    "nock": "^9.6.0",
+    "prettier": "^1.14.2",
+    "puppeteer": "^1.7.0"
+  }
+}
