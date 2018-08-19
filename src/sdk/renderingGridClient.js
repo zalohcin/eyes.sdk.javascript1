@@ -1,4 +1,5 @@
 'use strict';
+const throatPkg = require('throat');
 const getBatch = require('./getBatch');
 const createLogger = require('./createLogger');
 const makeGetAllResources = require('./getAllResources');
@@ -14,6 +15,8 @@ const makeOpenEyes = require('./openEyes');
 const makeWaitForTestResults = require('./waitForTestResults');
 const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
 
+const RENDER_CONCURRENCY_FACTOR = 5;
+
 function makeRenderingGridClient({
   getConfig,
   updateConfig,
@@ -28,6 +31,8 @@ function makeRenderingGridClient({
   if (isNaN(openEyesConcurrency)) {
     throw new Error('concurrency is not a number');
   }
+
+  const renderThroat = throatPkg(openEyesConcurrency * RENDER_CONCURRENCY_FACTOR);
 
   let error;
   const logger = createLogger(showLogs);
@@ -57,6 +62,7 @@ function makeRenderingGridClient({
     waitForRenderedStatus,
     getAllResources,
     resourceCache,
+    renderThroat,
   });
   const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(
     openEyesWithConfig,

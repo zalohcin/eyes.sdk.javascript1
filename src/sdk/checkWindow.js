@@ -25,6 +25,7 @@ function makeCheckWindow({
   resourceCache,
   wrappers,
   renderWrapper,
+  renderThroat,
 }) {
   return async function checkWindow({
     resourceUrls = [],
@@ -53,6 +54,8 @@ function makeCheckWindow({
     const renderPromise = presult(startRender());
     const uploadPromise = presult(uploadDom());
 
+    let renderJobs; // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
+
     setCheckWindowPromises(
       browsers.map((_browser, i) => checkWindowJob(getCheckWindowPromises()[i], i).catch(setError)),
     );
@@ -66,6 +69,10 @@ function makeCheckWindow({
       }
 
       const [renderErr, renderIds] = await renderPromise;
+
+      if (renderJobs) {
+        renderJobs[index]();
+      }
 
       if (getError()) {
         logger.log(
@@ -123,7 +130,18 @@ function makeCheckWindow({
 
     async function startRender() {
       const renderInfo = await renderInfoPromise;
+
+      if (getError()) {
+        logger.log(`aborting startRender because there was an error in getRenderInfo`);
+        return;
+      }
+
       const resources = await getResourcesPromise;
+
+      if (getError()) {
+        logger.log(`aborting startRender because there was an error in getAllResources`);
+        return;
+      }
 
       const renderRequests = createRenderRequests({
         url,
@@ -136,7 +154,9 @@ function makeCheckWindow({
         region,
         scriptHooks,
       });
-      const renderIds = await renderBatch(renderRequests, renderWrapper);
+
+      let renderIds = await renderThroat(() => renderBatch(renderRequests, renderWrapper));
+      renderJobs = renderIds.map(createRenderJob);
 
       if (saveDebugData) {
         for (const renderId of renderIds) {
@@ -156,6 +176,16 @@ function makeCheckWindow({
       );
     }
   };
+
+  /**
+   * Run a function down the renderThroat and return a way to resolve it. Once resolved (in another place) it makes room in the throat for the next renders that
+   */
+  function createRenderJob() {
+    let resolve;
+    const p = new Promise(res => (resolve = res));
+    renderThroat(() => p);
+    return resolve;
+  }
 }
 
 module.exports = makeCheckWindow;

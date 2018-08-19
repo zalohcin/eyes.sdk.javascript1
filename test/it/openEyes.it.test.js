@@ -334,6 +334,33 @@ describe('openEyes', () => {
     expect(error.message).to.equal('close');
   });
 
+  it('runs open/close with max concurrency', async () => {
+    const wrapper1 = createFakeWrapper(baseUrl);
+    const wrapper2 = createFakeWrapper(baseUrl);
+    const wrapper3 = createFakeWrapper(baseUrl);
+
+    let flag;
+    wrapper3.open = async () => {
+      flag = true;
+    };
+
+    const {getConfig, updateConfig, getInitialConfig} = initConfig();
+    openEyes = makeRenderingGridClient({
+      getConfig,
+      updateConfig,
+      getInitialConfig,
+      concurrency: 2,
+      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+    }).openEyes;
+
+    const {close} = await openEyes({wrappers: [wrapper1], apiKey});
+    await openEyes({wrappers: [wrapper2], apiKey});
+    openEyes({wrappers: [wrapper3], apiKey});
+    expect(flag).to.equal(undefined);
+    await close();
+    expect(flag).to.equal(true);
+  });
+
   it('ends throat job when close throws', async () => {
     wrapper.close = async () => {
       await psetTimeout(0);
