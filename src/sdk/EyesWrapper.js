@@ -35,7 +35,7 @@ class EyesWrapper extends EyesBase {
    *
    * @return {Promise.<RenderingInfo>}
    */
-  async getRenderInfo() {
+  getRenderInfo() {
     return this._serverConnector.renderInfo();
   }
 
@@ -50,23 +50,23 @@ class EyesWrapper extends EyesBase {
    * @param {RenderRequest[]} renderRequests The requests to be sent to the rendering grid
    * @return {Promise.<String[]>} The results of the render
    */
-  async renderBatch(renderRequests) {
-    return await this._renderWindowTask.postRenderBatch(renderRequests);
+  renderBatch(renderRequests) {
+    return this._serverConnector.render(renderRequests);
   }
 
-  async putResource(runningRender, resource) {
-    return await this._serverConnector.renderPutResource(runningRender, resource);
+  putResource(runningRender, resource) {
+    return this._serverConnector.renderPutResource(runningRender, resource);
   }
 
-  async getRenderStatus(renderId) {
-    return await this._serverConnector.renderStatusById(renderId);
+  getRenderStatus(renderId) {
+    return this._serverConnector.renderStatusById(renderId);
   }
 
-  async checkWindow({screenshotUrl, tag, domUrl, checkSettings}) {
+  checkWindow({screenshotUrl, tag, domUrl, checkSettings}) {
     const regionProvider = new NullRegionProvider(this.getPromiseFactory()); // TODO receive from outside?
     this.screenshotUrl = screenshotUrl;
     this.domUrl = domUrl;
-    return await this.checkWindowBase(regionProvider, tag, false, checkSettings);
+    return this.checkWindowBase(regionProvider, tag, false, checkSettings);
   }
 
   async getScreenshot() {
