@@ -139,7 +139,7 @@ function makeOpenEyes({
     }
 
     function disabledFunc(name) {
-      return () => {
+      return async () => {
         logger.log(`${name}: isDisabled=true, skipping checks`);
       };
     }
