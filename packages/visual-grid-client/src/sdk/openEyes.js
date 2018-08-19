@@ -13,6 +13,7 @@ function makeOpenEyes({
   waitForRenderedStatus,
   getAllResources,
   resourceCache,
+  renderThroat,
 }) {
   return async function openEyes({
     appName,
@@ -120,6 +121,7 @@ function makeOpenEyes({
       resourceCache,
       wrappers,
       renderWrapper,
+      renderThroat,
     });
 
     const close = makeCloseEyes({getError, logger, getCheckWindowPromises, wrappers});
