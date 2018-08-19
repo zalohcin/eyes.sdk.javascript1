@@ -12,6 +12,7 @@ const makePutResources = require('./putResources');
 const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
 const makeWaitForTestResults = require('./waitForTestResults');
+const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
 
 function makeRenderingGridClient({
   getConfig,
@@ -20,7 +21,14 @@ function makeRenderingGridClient({
   showLogs,
   renderStatusTimeout,
   renderStatusInterval,
+  concurrency = Infinity,
 }) {
+  const openEyesConcurrency = Number(getConfig({concurrency}).concurrency);
+
+  if (isNaN(openEyesConcurrency)) {
+    throw new Error('concurrency is not a number');
+  }
+
   let error;
   const logger = createLogger(showLogs);
   const resourceCache = createResourceCache();
@@ -50,6 +58,10 @@ function makeRenderingGridClient({
     getAllResources,
     resourceCache,
   });
+  const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(
+    openEyesWithConfig,
+    openEyesConcurrency,
+  );
   const waitForTestResults = makeWaitForTestResults({logger, getError});
 
   const defaultBatch = getBatch(getInitialConfig());
@@ -57,7 +69,7 @@ function makeRenderingGridClient({
   updateConfig(defaultBatch);
 
   return {
-    openEyes: openEyesWithConfig,
+    openEyes: openEyesLimitedConcurrency,
     waitForTestResults,
     getError,
   };
@@ -70,7 +82,7 @@ function makeRenderingGridClient({
     return error;
   }
 
-  async function openEyesWithConfig(args) {
+  function openEyesWithConfig(args) {
     const config = getConfig(args);
     return openEyes(config);
   }

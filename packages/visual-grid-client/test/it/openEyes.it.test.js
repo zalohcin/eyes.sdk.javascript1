@@ -319,6 +319,48 @@ describe('openEyes', () => {
     expect(error.message).to.equal('checkWindow');
   });
 
+  it('throws error during close', async () => {
+    let error;
+    wrapper.close = async () => {
+      await psetTimeout(0);
+      throw new Error('close');
+    };
+    const {close} = await openEyes({
+      wrappers: [wrapper],
+      apiKey,
+    });
+
+    error = await close().then(x => x, err => err);
+    expect(error.message).to.equal('close');
+  });
+
+  it('ends throat job when close throws', async () => {
+    wrapper.close = async () => {
+      await psetTimeout(0);
+      throw new Error('close');
+    };
+
+    const {getConfig, updateConfig, getInitialConfig} = initConfig();
+    openEyes = makeRenderingGridClient({
+      getConfig,
+      updateConfig,
+      getInitialConfig,
+      concurrency: 1,
+      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+    }).openEyes;
+
+    const {close} = await openEyes({wrappers: [wrapper], apiKey});
+    const err1 = await close().then(x => x, err => err);
+    expect(err1.message).to.equal('close');
+    const {close: close2} = await Promise.race([
+      openEyes({wrappers: [wrapper], apiKey}),
+      psetTimeout(100).then(() => ({close: 'not resolved'})),
+    ]);
+    expect(close2).not.to.equal('not resolved');
+    const err2 = await close2().then(x => x, err => err);
+    expect(err2.message).to.equal('close');
+  });
+
   it('handles render status timeout when second checkWindow starts AFTER timeout of previous checkWindow', async () => {
     wrapper.getRenderStatus = async () => {
       await psetTimeout(0);
