@@ -10,23 +10,23 @@ npm install @applitools/visual-grid-client
 
 ## Using the package
 
-* Requiring the module returns an object with three properties:
-
 ```js
 const {makeVisualGridClient, createLogger, initConfig} = require('@applitools/visual-grid-client')
 
 ```
 
-See below for the API.
+See below for the full API.
 
 ## API
 
-### `makeVisualGridClient`
+### makeVisualGridClient
 
 * To create a visualGridClient, call `makeVisualGridClient`:
 
 ```js
-const visualGridClient = makeVisualGridClient({...initConfig(), showLogs: true, renderStatusTimeout: 60000, renderStatusInterval: 1000})
+const visualGridClient = makeVisualGridClient({...initConfig(),
+                                              showLogs: true,
+                                              renderStatusTimeout: 60000, renderStatusInterval: 1000})
 ```
 
 Where:
@@ -39,14 +39,17 @@ Where:
 
 The visualGridClient, returned by `makeVisualGridClient`, is an object with three functions:
 
-* `openEyes`: to start a set of tests, where each step is a set of renderings according to the browser
+* `openEyes(configOverride)`: to start a set of tests, where each step is a set of renderings according to the browser
   stuff in the configuration.
   This function will return an object with functions (see below) allowing you to create renderings (or "steps" in
   Applitools parlance) for the test.
-* `waitForTestResults`: ???
-* `getError`: ???
+* `waitForTestResults(promises[])`: A convenience async function. Pass a set of promises returned by the various `close`-es
+  of `openEyes`, and it will wait on all of them and return an array of results, or throw if there was a difference
+  detected in one of the `close`-s.
+* `getError()`: This function will return an error if there was one during the running of the tests. Poll
+  it sometimes to see if you need to abort anything.
 
-### `openEyes`
+### openEyes
 
 `openEyes` will create a test. Actually, it will create a series of test, one for each browser configuration
 defined in the `browser` property of the configuraion.
@@ -56,16 +59,15 @@ defined in the `browser` property of the configuraion.
 
 * Returns an object with the following functions:
 
-* `checkWindow(_lots_ of parameters - see below)`: creates a "step" that checks the window according to the baseline. Note that this
+* `checkWindow(...)`: creates a "step" that checks the window according to the baseline. Note that this
   function will not fail, and you need to call `waitForTestResults` to wait for the failure or success
   of a batch of steps in the test.
-* `close()`: closes the test (or series of tests) created by `openEyes`. Again, this will not fail or succeed,
-  but you need to call `waitForTestResults`...
-* `abort()`: if you want to abort this test (or series of tests).
+* `close()`: async closes the test (or series of tests) created by `openEyes`.
+* `abort()`: if you want to abort this test (or series of tests). Async.
 
-### `checkWindow`
+### `checkWindow(...)`
 
-* `checkWindow` should receive an object with the following parameters:
+`checkWindow` receives an object with the following parameters:
 
 * `tag`: the name of the step, as seen in Applitools Eyes.
 * `url`: the URL appearing in the address bar of the browser. All relative URLs in the CDT will be relative to it.
@@ -76,11 +78,50 @@ defined in the `browser` property of the configuraion.
   This is an object with `x`, `y`, `width`, `height` properties.
 * `ignore`: TBD
 * `domCapture`: ???
-* `scriptHooks`: ???
+* `scriptHooks`: a set of scripts to be run by the browser during the rendering.
+   An object with the following properties:
+  * `beforeCaptureScreenshot`: a script that runs after the page is loaded but before taking the screenshot.
 * `resourceUrls`?: By default, an empty array. Additional resource URLs not found in the CDT.
-* `resourceContents`: ???
+* `resourceContents`: a map of all resource values (buffers). The keys are URLs (relative to the `url` property).
+  The value  is an object with the following properties:
+  * `url`: again???
+  * `type`: the content type of the resource.
+  * `value`: a `Buffer` of the resource content.
+
+### close()
+
+`close` receives no parameters, and returns a promise.
+
+* The promise will be resolved (with `undefined` as value) if all tests defined in the `openEyes` passed.
+* The promise will be rejected (with `DiffsFoundError`
+   as defined in [Applitools Eyes SDK Core](https://www.npmjs.com/package/@applitools/eyes.sdk.core))
+   if there were differences found in some tests defined in the `openEyes`.
 
 ### The CDT format
+
+```js
+{
+  domNodes: [
+    {
+      nodeType: number, // like in the DOM Standard
+      nodeName: ‘...’ , // for elements and DocumentType
+      nodeValue: ‘...’, // for text nodes
+      attributes: [{name, value}, ...],
+      childNodeIndexes: [index, index, ...]
+    },
+    //...
+  ],
+  resources: [
+    {
+      hashFormat: 'sha256', // currently the only hash format allowed
+      hash: '....', // the hash of the resource.
+      contentType: '...', // the mime type of the resource.
+    },
+    //...
+  ]
+}
+
+```
 
 ## Configuration
 
