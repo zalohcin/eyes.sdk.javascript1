@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "4.0.9",
+  "version": "4.0.10",
   "description": "",
   "main": "src/visual-grid-client.js",
   "engines": {
