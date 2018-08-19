@@ -12,7 +12,7 @@ npm install @applitools/visual-grid-client
 
 ```js
 const {makeVisualGridClient, initConfig} = require('@applitools/visual-grid-client')
-
+const domNodesToCdt = require('@applitools/visual-grid-client/src/browser-util/domNodesToCdt')
 ```
 
 See below for the full API.
@@ -50,13 +50,13 @@ The visualGridClient, returned by `makeVisualGridClient`, is an object with thre
 
 ### openEyes
 
-`openEyes` will create a test. Actually, it will create a series of test, one for each browser configuration
+Async function `openEyes` will create a test. Actually, it will create a series of test, one for each browser configuration
 defined in the `browser` property of the configuraion.
 
 * `openEyes` accepts a configuration object that will override the default configuration found by
   `makeVisualGridClient`, per this test.
 
-* Returns an object with the following functions:
+* Returns a promise to an object with the following functions:
 
 * `checkWindow(...)`: creates a "step" that checks the window according to the baseline. Note that this
   function will not fail, and you need to call `waitForTestResults` to wait for the failure or success
@@ -70,7 +70,8 @@ defined in the `browser` property of the configuraion.
 
 * `tag`: the name of the step, as seen in Applitools Eyes.
 * `url`: the URL appearing in the address bar of the browser. All relative URLs in the CDT will be relative to it.
-* `cdt`: the HTML and set and resources, in the `x-applitools-html/cdt` format (see below)
+* `cdt`: the HTML and set and resources, in the `x-applitools-html/cdt` format (see below).
+  you can use `domNodesToCdt` to create a CDT from a `document`.
 * `sizeMode`: the target of the rendering. Can be one of `viewport`, `full-page`, `selector`, `region`
 * `selector`: if the `sizeMode` is selector, this is the selector we are targetting.
 * `region`: if the `sizeMode` is region, this is the region we are targetting.
@@ -121,6 +122,11 @@ defined in the `browser` property of the configuraion.
 }
 
 ```
+
+### domNodesToCdt
+
+Accepts a document object conforming to the DOM specification (browser document is fine, as is the JSDOM document).
+Returns a cdt, ready to be passed to `checkWindow`
 
 ## Configuration
 
