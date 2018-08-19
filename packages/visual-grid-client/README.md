@@ -137,3 +137,59 @@ Returns a cdt, ready to be passed to `checkWindow`
 ## Logging
 
 ???
+
+## Example
+
+Example [Mocha](https://www.npmjs.com/package/mocha) test that uses the visual grid client:
+
+```js
+const path = require('path')
+const fs = require('fs')
+const {makeVisualGridClient, initConfig} = require('@applitools/visual-grid-client')
+const domNodesToCdt = require('@applitools/visual-grid-client/src/browser-util/domNodesToCdt')
+const {JSDOM} = require('jsdom')
+
+describe('visual-grid-client test', function() {
+  let visualGridClient
+  let closePromises = []
+
+  before(() => {
+    visualGridClient = makeVisualGridClient({
+      ...initConfig(),
+      showLogs: true,
+      renderStatusTimeout: 60000,
+      renderStatusInterval: 1000,
+    })
+  })
+
+  after(() => visualGridClient.waitForTestResults(closePromises))
+
+  let checkWindow, close
+  beforeEach(async () => {
+    ;({checkWindow, close} = await visualGridClient.openEyes({
+      appName: 'visual grid client with a cat',
+      testName: 'visual-grid-client test',
+    }))
+  })
+  afterEach(() => closePromises.push(close()))
+
+  it('should work', async () => {
+    checkWindow({
+      tag: 'first test',
+      url: 'http://localhost/index.html',
+      cdt: domNodesToCdt(
+        new JSDOM(fs.readFileSync(path.join(__dirname, 'resources/index.html'), 'utf-8')).window
+          .document,
+      ),
+      sizeMode: 'viewport',
+      resourceContents: {
+        'cat.jpeg': {
+          url: 'cat.jpeg',
+          type: 'image/jpeg',
+          value: fs.readFileSync(path.join(__dirname, 'resources/cat.jpeg')),
+        },
+      },
+    })
+  })
+})
+```
