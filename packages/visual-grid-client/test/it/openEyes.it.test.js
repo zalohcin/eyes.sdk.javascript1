@@ -63,7 +63,7 @@ describe('openEyes', () => {
       apiKey,
     });
 
-    await checkWindow({cdt: [], tag: 'good1', url: `${baseUrl}/test.html`});
+    checkWindow({cdt: [], tag: 'good1', url: `${baseUrl}/test.html`});
     expect((await close())[0].map(r => r.getAsExpected())).to.eql([true]);
   });
 
@@ -72,7 +72,7 @@ describe('openEyes', () => {
       wrappers: [wrapper],
       apiKey,
     });
-    await checkWindow({cdt: [], resourceUrls: [], tag: 'bad!', url: `${baseUrl}/test.html`});
+    checkWindow({cdt: [], resourceUrls: [], tag: 'bad!', url: `${baseUrl}/test.html`});
     await psetTimeout(0); // because FakeEyesWrapper throws, and then the error is set async and will be read in the next call to close()
     expect((await presult(close()))[0].message).to.equal(
       `Tag bad! should be one of the good tags good1,good2`,
@@ -87,7 +87,7 @@ describe('openEyes', () => {
 
     const resourceUrls = wrapper.goodResourceUrls;
     const cdt = loadJsonFixture('test.cdt.json');
-    await checkWindow({resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`});
+    checkWindow({resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`});
 
     expect((await close())[0].map(r => r.getAsExpected())).to.eql([true]);
   });
@@ -101,7 +101,7 @@ describe('openEyes', () => {
     const cdt = loadJsonFixture('test.cdt.json');
     cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = "hi, I'm green";
 
-    await checkWindow({resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`});
+    checkWindow({resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`});
 
     expect((await presult(close()))[0].message).to.equal('mismatch');
   });
@@ -119,7 +119,7 @@ describe('openEyes', () => {
 
     const resourceUrls = wrapper.goodResourceUrls;
     const cdt = loadJsonFixture('test.cdt.json');
-    await checkWindow({resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`});
+    checkWindow({resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`});
     expect(
       (await close()).map(wrapperResult => wrapperResult.map(r2 => r2.getAsExpected())),
     ).to.eql([[true], [true], [true]]);
@@ -148,7 +148,7 @@ describe('openEyes', () => {
 
     const resourceUrls = wrapper.goodResourceUrls;
     const cdt = loadJsonFixture('test.cdt.json');
-    await checkWindow({
+    checkWindow({
       resourceUrls,
       cdt,
       tag: 'good1',
@@ -192,9 +192,9 @@ describe('openEyes', () => {
 
     const resourceUrls = wrapper.goodResourceUrls;
     const cdt = loadJsonFixture('test.cdt.json');
-    await checkWindow({resourceUrls, cdt, tag: 'one', url: `${baseUrl}/test.html`});
-    await checkWindow({resourceUrls, cdt, tag: 'two', url: `${baseUrl}/test.html`});
-    await checkWindow({resourceUrls, cdt, tag: 'three', url: `${baseUrl}/test.html`});
+    checkWindow({resourceUrls, cdt, tag: 'one', url: `${baseUrl}/test.html`});
+    checkWindow({resourceUrls, cdt, tag: 'two', url: `${baseUrl}/test.html`});
+    checkWindow({resourceUrls, cdt, tag: 'three', url: `${baseUrl}/test.html`});
     expect(await close()).to.eql([['one1', 'two1', 'three1'], ['one2', 'two2', 'three2']]);
   });
 
@@ -215,7 +215,7 @@ describe('openEyes', () => {
 
     wrapper.goodResourceUrls = [`${baseUrl}/blob.css`, `${baseUrl}/smurfs4.jpg`];
 
-    await checkWindow({cdt: [], resourceContents, tag: 'good1', url: `${baseUrl}/test.html`});
+    checkWindow({cdt: [], resourceContents, tag: 'good1', url: `${baseUrl}/test.html`});
     expect((await close())[0].map(r => r.getAsExpected())).to.eql([true]);
   });
 
@@ -225,7 +225,7 @@ describe('openEyes', () => {
       apiKey,
     });
 
-    await checkWindow({cdt: [], url: 'some url', selector: 'some selector'});
+    checkWindow({cdt: [], url: 'some url', selector: 'some selector'});
     expect((await close())[0].map(r => r.getAsExpected())).to.eql([true]);
   });
 
@@ -235,7 +235,7 @@ describe('openEyes', () => {
       apiKey,
     });
 
-    await checkWindow({cdt: [], url: 'some url', region: {width: 1, height: 2, left: 3, top: 4}});
+    checkWindow({cdt: [], url: 'some url', region: {width: 1, height: 2, left: 3, top: 4}});
     expect((await close())[0].map(r => r.getAsExpected())).to.eql([true]);
   });
 
@@ -249,7 +249,7 @@ describe('openEyes', () => {
 
     const resourceUrls = wrapper.goodResourceUrls;
     const cdt = loadJsonFixture('test.cdt.json');
-    await checkWindow({
+    checkWindow({
       resourceUrls,
       cdt,
       tag: 'good1',
@@ -271,11 +271,9 @@ describe('openEyes', () => {
       apiKey,
     });
 
-    error = await checkWindow({resourceUrls: [], cdt: [], url: `bla`}).then(x => x, err => err);
-    expect(error).to.equal(undefined);
+    checkWindow({resourceUrls: [], cdt: [], url: `bla`});
     await psetTimeout(50);
-    error = await checkWindow({resourceUrls: [], cdt: [], url: `bla`}).then(x => x, err => err);
-    expect(error.message).to.equal('getRenderInfo');
+    expect(() => checkWindow({resourceUrls: [], cdt: [], url: `bla`})).to.throw(/^getRenderInfo$/);
     error = await close().then(x => x, err => err);
     expect(error.message).to.equal('getRenderInfo');
   });
@@ -291,11 +289,9 @@ describe('openEyes', () => {
       apiKey,
     });
 
-    error = await checkWindow({resourceUrls: [], cdt: [], url: `bla`}).then(x => x, err => err);
-    expect(error).to.equal(undefined);
+    checkWindow({resourceUrls: [], cdt: [], url: `bla`});
     await psetTimeout(0);
-    error = await checkWindow({resourceUrls: [], cdt: [], url: `bla`}).then(x => x, err => err);
-    expect(error.message).to.equal('renderBatch');
+    expect(() => checkWindow({resourceUrls: [], cdt: [], url: `bla`})).to.throw(/^renderBatch$/);
     error = await close().then(x => x, err => err);
     expect(error.message).to.equal('renderBatch');
   });
@@ -310,11 +306,9 @@ describe('openEyes', () => {
       apiKey,
     });
 
-    error = await checkWindow({resourceUrls: [], cdt: [], url: `bla`}).then(x => x, err => err);
-    expect(error).to.equal(undefined);
+    checkWindow({resourceUrls: [], cdt: [], url: `bla`});
     await psetTimeout(0);
-    error = await checkWindow({resourceUrls: [], cdt: [], url: `bla`}).then(x => x, err => err);
-    expect(error.message).to.equal('checkWindow');
+    expect(() => checkWindow({resourceUrls: [], cdt: [], url: `bla`})).to.throw(/^checkWindow$/);
     error = await close().then(x => x, err => err);
     expect(error.message).to.equal('checkWindow');
   });
@@ -388,6 +382,122 @@ describe('openEyes', () => {
     expect(err2.message).to.equal('close');
   });
 
+  describe('max concurrency for render', () => {
+    beforeEach(() => {
+      const {getConfig, updateConfig, getInitialConfig} = initConfig();
+      openEyes = makeRenderingGridClient({
+        getConfig,
+        updateConfig,
+        getInitialConfig,
+        concurrency: 2,
+        renderConcurrencyFactor: 1,
+        showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      }).openEyes;
+    });
+
+    let counter;
+    let finishRenders;
+    beforeEach(() => {
+      counter = 0;
+      finishRenders = [];
+      wrapper.getRenderStatus = () =>
+        new Promise(resolve => {
+          counter++;
+          finishRenders.push(() =>
+            resolve([
+              RenderStatusResults.fromObject({
+                status: RenderStatus.RENDERED,
+                imageLocation: JSON.stringify({isGood: true}),
+              }),
+            ]),
+          );
+        });
+    });
+
+    it('runs renders with max concurrency', async () => {
+      const {checkWindow, close} = await openEyes({wrappers: [wrapper], apiKey});
+      checkWindow({url: '', cdt: [], sizeMode: null});
+      await psetTimeout(0);
+      checkWindow({url: '', cdt: [], sizeMode: null});
+      await psetTimeout(0);
+      checkWindow({url: '', cdt: [], sizeMode: null});
+      await psetTimeout(0);
+      const expected1 = counter;
+      finishRenders[0]();
+      await psetTimeout(0);
+      const expected2 = counter;
+      finishRenders[1]();
+      finishRenders[2]();
+      await close();
+      expect(expected1).to.equal(2);
+      expect(expected2).to.equal(3);
+      expect(counter).to.equal(3);
+    });
+
+    it('runs renders with max concurrency for multiple browsers', async () => {
+      const {checkWindow, close} = await openEyes({
+        wrappers: [wrapper, wrapper],
+        browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+        apiKey,
+      });
+
+      checkWindow({url: '', cdt: [], sizeMode: null});
+      await psetTimeout(0);
+      checkWindow({url: '', cdt: [], sizeMode: null});
+      await psetTimeout(0);
+      const expected1 = counter;
+      finishRenders[0]();
+      await psetTimeout(0);
+      const expected2 = counter;
+      finishRenders[1]();
+      finishRenders[2]();
+      finishRenders[3]();
+      await close();
+      expect(expected1).to.equal(2);
+      expect(expected2).to.equal(4);
+      expect(counter).to.equal(4);
+    });
+
+    it('runs renders with max concurrency between open/close', async () => {
+      const {checkWindow, close} = await openEyes({
+        wrappers: [wrapper],
+        apiKey,
+      });
+
+      const {checkWindow: checkWindow2, close: close2} = await openEyes({
+        wrappers: [wrapper],
+        apiKey,
+      });
+
+      checkWindow({url: '', cdt: [], sizeMode: null});
+      await psetTimeout(0);
+
+      checkWindow2({url: '', cdt: [], sizeMode: null});
+      await psetTimeout(0);
+
+      checkWindow({url: '', cdt: [], sizeMode: null});
+      await psetTimeout(0);
+
+      checkWindow2({url: '', cdt: [], sizeMode: null});
+      await psetTimeout(0);
+
+      const expected1 = counter;
+      finishRenders[0]();
+      await psetTimeout(0);
+
+      const expected2 = counter;
+      finishRenders[1]();
+      finishRenders[2]();
+      finishRenders[3]();
+
+      await close();
+      await close2();
+      expect(expected1).to.equal(2);
+      expect(expected2).to.equal(4);
+      expect(counter).to.equal(4);
+    });
+  });
+
   it('handles render status timeout when second checkWindow starts AFTER timeout of previous checkWindow', async () => {
     wrapper.getRenderStatus = async () => {
       await psetTimeout(0);
@@ -411,15 +521,12 @@ describe('openEyes', () => {
       apiKey,
     });
 
-    const [err1] = await presult(
-      checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'}),
-    );
-    expect(err1).to.equal(undefined);
+    checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'});
     await psetTimeout(150);
-    const [err2] = await presult(
-      checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'}),
+    expect(() => checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'})).to.throw(
+      /^failed to render screenshot$/,
     );
-    expect(err2.message).to.equal('failed to render screenshot');
+
     const [err3] = await presult(close());
     expect(err3.message).to.equal('failed to render screenshot');
   });
@@ -447,15 +554,9 @@ describe('openEyes', () => {
       apiKey,
     });
 
-    const [err1] = await presult(
-      checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'}),
-    );
-    expect(err1).to.equal(undefined);
+    checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'});
     await psetTimeout(0);
-    const [err2] = await presult(
-      checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'}),
-    );
-    expect(err2).to.equal(undefined);
+    checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'});
     await psetTimeout(200);
     const [err3] = await presult(close());
     expect(err3.message).to.equal('failed to render screenshot');
@@ -508,7 +609,7 @@ describe('openEyes', () => {
       wrappers: [{_logger: console}],
     });
 
-    expect(await checkWindow({})).to.equal(undefined);
+    checkWindow({});
     expect(await close()).to.equal(undefined);
   });
 
@@ -528,7 +629,7 @@ describe('openEyes', () => {
       apiKey,
     });
     const region = {left: 1, top: 2, width: 3, height: 4};
-    await checkWindow({
+    checkWindow({
       url: '',
       // resourceUrls: [],
       cdt: [],

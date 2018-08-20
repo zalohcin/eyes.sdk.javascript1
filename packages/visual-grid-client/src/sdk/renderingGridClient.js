@@ -15,8 +15,6 @@ const makeOpenEyes = require('./openEyes');
 const makeWaitForTestResults = require('./waitForTestResults');
 const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
 
-const RENDER_CONCURRENCY_FACTOR = 5;
-
 function makeRenderingGridClient({
   getConfig,
   updateConfig,
@@ -25,6 +23,7 @@ function makeRenderingGridClient({
   renderStatusTimeout,
   renderStatusInterval,
   concurrency = Infinity,
+  renderConcurrencyFactor = 5,
 }) {
   const openEyesConcurrency = Number(getConfig({concurrency}).concurrency);
 
@@ -32,7 +31,7 @@ function makeRenderingGridClient({
     throw new Error('concurrency is not a number');
   }
 
-  const renderThroat = throatPkg(openEyesConcurrency * RENDER_CONCURRENCY_FACTOR);
+  const renderThroat = throatPkg(openEyesConcurrency * renderConcurrencyFactor);
 
   let error;
   const logger = createLogger(showLogs);
