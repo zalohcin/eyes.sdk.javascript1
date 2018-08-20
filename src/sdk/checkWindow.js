@@ -27,7 +27,7 @@ function makeCheckWindow({
   renderWrapper,
   renderThroat,
 }) {
-  return async function checkWindow({
+  return function checkWindow({
     resourceUrls = [],
     resourceContents = {},
     url,
@@ -70,10 +70,6 @@ function makeCheckWindow({
 
       const [renderErr, renderIds] = await renderPromise;
 
-      if (renderJobs) {
-        renderJobs[index]();
-      }
-
       if (getError()) {
         logger.log(
           `aborting checkWindow after render request complete but before waiting for rendered status`,
@@ -103,6 +99,10 @@ function makeCheckWindow({
         logger.log(`screenshot available for ${renderId} at ${imageLocation}`);
       } else {
         logger.log(`screenshot NOT available for ${renderId}`);
+      }
+
+      if (renderJobs) {
+        renderJobs[index]();
       }
 
       const wrapper = wrappers[index];
