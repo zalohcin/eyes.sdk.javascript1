@@ -12,7 +12,7 @@ npm install @applitools/visual-grid-client
 
 ```js
 const {makeVisualGridClient, initConfig} = require('@applitools/visual-grid-client')
-const domNodesToCdt = require('@applitools/visual-grid-client/src/browser-util/domNodesToCdt')
+const {domNodesToCdt} = require('@applitools/visual-grid-client/browser')
 ```
 
 See below for the full API.
@@ -138,7 +138,7 @@ Example [Mocha](https://www.npmjs.com/package/mocha) test that uses the visual g
 const path = require('path')
 const fs = require('fs')
 const {makeVisualGridClient, initConfig} = require('@applitools/visual-grid-client')
-const domNodesToCdt = require('@applitools/visual-grid-client/src/browser-util/domNodesToCdt')
+const {domNodesToCdt} = require('@applitools/visual-grid-client/browser')
 const {JSDOM} = require('jsdom')
 
 describe('visual-grid-client test', function() {
