@@ -604,13 +604,14 @@ describe('openEyes', () => {
   });
 
   it("doesn't do anything when isDisabled", async () => {
-    const {checkWindow, close} = await openEyes({
+    const {checkWindow, close, abort} = await openEyes({
       isDisabled: true,
       wrappers: [{_logger: console}],
     });
 
     checkWindow({});
     expect(await close()).to.equal(undefined);
+    expect(await abort()).to.equal(undefined);
   });
 
   it('throws missing apiKey msg', async () => {
