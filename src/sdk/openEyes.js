@@ -50,6 +50,7 @@ function makeOpenEyes({
       return {
         checkWindow: disabledFunc('checkWindow'),
         close: disabledFunc('close'),
+        abort: disabledFunc('abort'),
       };
     }
 
