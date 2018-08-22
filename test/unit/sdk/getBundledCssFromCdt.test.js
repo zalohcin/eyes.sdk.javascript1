@@ -166,4 +166,20 @@ describe('getBundledCssFromCdt', () => {
 
     expect(bundledCss).to.equal(expected);
   });
+
+  it('handles missing content in resource from cache', () => {
+    const baseUrl = 'http://some.url';
+    const url = `${baseUrl}/test.css`;
+    const cdt = [
+      {nodeName: 'head', childNodeIndexes: [1]},
+      {
+        nodeName: 'link',
+        attributes: [{name: 'rel', value: 'stylesheet'}, {name: 'href', value: 'test.css'}],
+      },
+    ];
+    const resourceCache = createResourceCache();
+    resourceCache.setValue(url, {url, type: 'text/css'});
+    const bundledCss = getBundledCssFromCdt(cdt, resourceCache, baseUrl);
+    expect(bundledCss).to.equal('');
+  });
 });

@@ -39,7 +39,15 @@ function makeGetBundledCssFromCdt(logger) {
         resourceUrl = absolutizeUrl(getHrefAttr(node), baseUrl);
         const resource = resourceCache.getValue(resourceUrl);
         if (resource) {
-          cssText = resource.content.toString();
+          if (resource.content) {
+            cssText = resource.content.toString();
+          } else {
+            logger.log(
+              `getBundledCssFromCdt: warning - ${
+                resource.url
+              } doesn't contain content. That means it might have been served with a different content type than text/css, possibly failed authentication.`,
+            );
+          }
         } else {
           logger.log(`getBundledCssFromCdt: not found link[href] at ${resourceUrl}`);
         }
