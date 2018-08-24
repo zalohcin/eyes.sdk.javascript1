@@ -562,6 +562,13 @@ class Eyes extends EyesBase {
       return switchTo.frame(frameLocator.getFrameNameOrId()).then(() => true);
     }
 
+    if (frameLocator.getFrameElement()) {
+      const frameElement = frameLocator.getFrameElement();
+      if (frameElement) {
+        return switchTo.frame(frameElement).then(() => true);
+      }
+    }
+
     if (frameLocator.getFrameSelector()) {
       const frameElement = this._driver.findElement(frameLocator.getFrameSelector());
       if (frameElement) {
