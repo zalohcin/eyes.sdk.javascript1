@@ -80,6 +80,7 @@ function makeRenderingGridClient({
   };
 
   function setError(err) {
+    logger.log('error set', err);
     error = err;
   }
 
