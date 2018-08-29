@@ -3,6 +3,7 @@
 const { GeneralUtils } = require('../utils/GeneralUtils');
 const { Region } = require('../geometry/Region');
 const {ScreenOrientation} = require('./ScreenOrientation');
+const {EmulationDevice} = require('./EmulationDevice');
 
 class EmulationInfo {
   /**
@@ -21,7 +22,7 @@ class EmulationInfo {
    */
   static fromObject(object) {
     const mapping = {};
-    if (object.device) mapping.region = EmulationDevice.fromObject;
+    if (object.device) mapping.device = EmulationDevice.fromObject;
     
     return GeneralUtils.assignTo(new EmulationInfo(), object, mapping);
   }

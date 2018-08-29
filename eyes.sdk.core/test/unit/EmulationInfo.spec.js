@@ -25,6 +25,19 @@ describe('EmulationInfo', () => {
     assert.equal(emulationInfo2.getScreenOrientation(), undefined);
   });
 
+  it('fromObject', () => {
+    const deviceObj = { width: 1, height: 2, deviceScaleFactor: 3, mobile: true };
+    const device = EmulationDevice.fromObject(deviceObj);
+    
+    const emulationInfo = EmulationInfo.fromObject({
+      screenOrientation: ScreenOrientation.LANDSCAPE,
+      device: deviceObj
+    });
+
+    assert.deepEqual(emulationInfo.getDevice(), device);
+    assert.equal(emulationInfo.getScreenOrientation(), ScreenOrientation.LANDSCAPE);
+  });
+
   it('toJSON', () => {
     const device = new EmulationDevice({width: 1, height: 2});
     const emulationInfo = new EmulationInfo({ device, screenOrientation: ScreenOrientation.LANDSCAPE });
