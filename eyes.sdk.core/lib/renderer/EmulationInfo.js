@@ -15,6 +15,17 @@ class EmulationInfo {
     this._screenOrientation = screenOrientation;
   }
 
+  /**
+   * @param {Object} object
+   * @return {EmulationInfo}
+   */
+  static fromObject(object) {
+    const mapping = {};
+    if (object.device) mapping.region = EmulationDevice.fromObject;
+    
+    return GeneralUtils.assignTo(new EmulationInfo(), object, mapping);
+  }
+
   /** @return {EmulationDevice} */
   getDevice() {
     return this._device;

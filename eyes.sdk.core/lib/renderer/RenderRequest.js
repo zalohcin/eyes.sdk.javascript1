@@ -14,9 +14,8 @@ class RenderRequest {
    * @param {string} [platform]
    * @param {string} [browserName]
    * @param {Object} [scriptHooks]
-   * @param {EmulationInfo} [emulationInfo]
    */
-  constructor(webhook, url, dom, renderInfo, platform, browserName, scriptHooks, emulationInfo) {
+  constructor(webhook, url, dom, renderInfo, platform, browserName, scriptHooks) {
     ArgumentGuard.notNullOrEmpty(webhook, 'webhook');
     ArgumentGuard.notNull(url, 'url');
     ArgumentGuard.notNull(dom, 'dom');
@@ -29,7 +28,6 @@ class RenderRequest {
     this._browserName = browserName;
     this._renderId = undefined;
     this._scriptHooks = scriptHooks;
-    this._emulationInfo = emulationInfo
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -98,20 +96,6 @@ class RenderRequest {
     this._scriptHooks = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
-  getEmulationInfo() {
-    return this._emulationInfo;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
-  setEmulationInfo(value) {
-    this._emulationInfo = value;
-  }
-
-
-
   /** @override */
   toJSON() {
     const resources = {};
@@ -146,10 +130,6 @@ class RenderRequest {
 
     if (this._scriptHooks) {
       object.scriptHooks = this._scriptHooks;
-    }
-
-    if (this._emulationInfo) {
-      object.emulationInfo = this._emulationInfo.toJSON();
     }
 
     return object;

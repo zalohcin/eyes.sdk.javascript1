@@ -20,7 +20,7 @@ describe('RenderRequest', () => {
     });
 
     it("fills values", () => {
-      const renderRequest = new RenderRequest('webhook', 'url', 'dom', 'renderInfo', 'platform', 'browserName', 'scriptHooks', 'emulationInfo');
+      const renderRequest = new RenderRequest('webhook', 'url', 'dom', 'renderInfo', 'platform', 'browserName', 'scriptHooks');
       assert.equal(renderRequest.getWebhook(), 'webhook');
       assert.equal(renderRequest.getUrl(), 'url');
       assert.equal(renderRequest.getDom(), 'dom');
@@ -28,7 +28,6 @@ describe('RenderRequest', () => {
       assert.equal(renderRequest.getPlatform(), 'platform');
       assert.equal(renderRequest.getBrowserName(), 'browserName');
       assert.equal(renderRequest.getScriptHooks(), 'scriptHooks');
-      assert.equal(renderRequest.getEmulationInfo(), 'emulationInfo');
     });
   });
 
@@ -58,11 +57,7 @@ describe('RenderRequest', () => {
         toJSON() { return 'renderInfoToJSON'; }
       };
 
-      const emulationInfo = {
-        toJSON() { return 'emulationInfo'; }
-      };
-
-      const renderRequest = new RenderRequest('webhook', 'url', dom, renderInfo, 'platform', 'browserName', 'scriptHooks', emulationInfo);
+      const renderRequest = new RenderRequest('webhook', 'url', dom, renderInfo, 'platform', 'browserName', 'scriptHooks');
       const expected = {
         webhook: 'webhook',
         url: 'url',
@@ -77,7 +72,6 @@ describe('RenderRequest', () => {
           platform: 'platform',
         },
         scriptHooks: 'scriptHooks',
-        emulationInfo: 'emulationInfo',
       }
       assert.deepEqual(renderRequest.toJSON(), expected);
     });
@@ -118,12 +112,8 @@ describe('RenderRequest', () => {
         toJSON() { return 'renderInfoToJSON'; }
       };
 
-      const emulationInfo = {
-        toJSON() { return 'emulationInfo'; }
-      };
-
-      const renderRequest = new RenderRequest('webhook', 'url', dom, renderInfo, 'platform', 'browserName', 'scriptHooks', emulationInfo);
-      assert.equal(renderRequest.toString(), 'RenderRequest { {"webhook":"webhook","url":"url","dom":"dom_hashAsObject","resources":{"url1":"hashAsObject1","url2":"hashAsObject2"},"browser":{"name":"browserName","platform":"platform"},"renderInfo":"renderInfoToJSON","scriptHooks":"scriptHooks","emulationInfo":"emulationInfo"} }');
+      const renderRequest = new RenderRequest('webhook', 'url', dom, renderInfo, 'platform', 'browserName', 'scriptHooks');
+      assert.equal(renderRequest.toString(), 'RenderRequest { {"webhook":"webhook","url":"url","dom":"dom_hashAsObject","resources":{"url1":"hashAsObject1","url2":"hashAsObject2"},"browser":{"name":"browserName","platform":"platform"},"renderInfo":"renderInfoToJSON","scriptHooks":"scriptHooks"} }');
     });
   })
 });

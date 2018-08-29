@@ -10,6 +10,14 @@ class EmulationDevice {
     this._mobile = mobile;
   }
 
+    /**
+   * @param {Object} object
+   * @return {EmulationDevice}
+   */
+  static fromObject(object) {
+    return GeneralUtils.assignTo(new EmulationDevice(), object);
+  }
+
   /** @return {number} */
   getWidth() {
     return this._width;
