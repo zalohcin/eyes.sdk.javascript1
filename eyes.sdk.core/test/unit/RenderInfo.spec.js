@@ -4,7 +4,7 @@ const assert = require('assert');
 
 const { RenderInfo, Region, RectangleSize } = require('../../index');
 
-describe.only('RenderInfo', () => {
+describe('RenderInfo', () => {
   it('constructor', () => {
     const renderInfo = new RenderInfo();
     assert.equal(renderInfo.hasOwnProperty('_width'), true);
