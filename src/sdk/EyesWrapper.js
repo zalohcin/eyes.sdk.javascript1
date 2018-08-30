@@ -87,7 +87,7 @@ class EyesWrapper extends EyesBase {
     this.inferredEnvironment = value;
   }
 
-  setViewportSize(viewportSize) {
+  async setViewportSize(viewportSize) {
     this._viewportSizeHandler.set(viewportSize);
   }
 
