@@ -12,6 +12,8 @@ describe('RenderStatusResults', () => {
     assert.equal(results.hasOwnProperty('_error'), true);
     assert.equal(results.hasOwnProperty('_os'), true);
     assert.equal(results.hasOwnProperty('_userAgent'), true);
+    assert.equal(results.hasOwnProperty('_width'), true);
+    assert.equal(results.hasOwnProperty('_height'), true);
   });
 
   it('fromObject', () => {
@@ -25,7 +27,9 @@ describe('RenderStatusResults', () => {
       error,
       imageLocation,
       os,
-      userAgent
+      userAgent,
+      width: 1,
+      height: 2,
     });
 
     assert.equal(results.getStatus(), status);
@@ -33,6 +37,8 @@ describe('RenderStatusResults', () => {
     assert.equal(results.getImageLocation(), imageLocation);
     assert.equal(results.getOS(), os);
     assert.equal(results.getUserAgent(), userAgent);
+    assert.equal(results.getWidth(), 1);
+    assert.equal(results.getHeight(), 2);
   });
 
   it('toJSON', () => {
@@ -46,10 +52,12 @@ describe('RenderStatusResults', () => {
       error,
       imageLocation,
       os,
-      userAgent
+      userAgent,
+      width: 1,
+      height: 2,
     });
 
-    assert.equal(JSON.stringify(results), '{"status":"some status","imageLocation":"some image location","error":"some error","os":"some os","userAgent":"some user agent"}');
+    assert.equal(JSON.stringify(results), '{"status":"some status","imageLocation":"some image location","error":"some error","os":"some os","userAgent":"some user agent","width":1,"height":2}');
   });
 
   it('toString', () => {
@@ -63,9 +71,11 @@ describe('RenderStatusResults', () => {
       error,
       imageLocation,
       os,
-      userAgent
+      userAgent,
+      width: 1,
+      height: 2,
     });
 
-    assert.equal(results.toString(), 'RenderStatusResults { {"status":"some status","imageLocation":"some image location","error":"some error","os":"some os","userAgent":"some user agent"} }');
+    assert.equal(results.toString(), 'RenderStatusResults { {"status":"some status","imageLocation":"some image location","error":"some error","os":"some os","userAgent":"some user agent","width":1,"height":2} }');
   })
 })
