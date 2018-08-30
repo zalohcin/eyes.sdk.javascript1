@@ -3,19 +3,16 @@ const {MatchResult, RenderStatusResults, RenderStatus} = require('@applitools/ey
 const {URL} = require('url');
 const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture');
 const SOME_BATCH = 'SOME_BATCH';
-const crypto = require('crypto');
+const getSha256Hash = require('./getSha256Hash');
 const FakeRunningRender = require('./FakeRunningRender');
 
 function compare(o1, o2) {
   return JSON.stringify(o1) === JSON.stringify(o2);
 }
 
-function getSha256Hash(content) {
-  return crypto
-    .createHash('sha256')
-    .update(content)
-    .digest('hex');
-}
+const devices = {
+  'iPhone 4': {width: 320, height: 480},
+};
 
 class FakeEyesWrapper {
   constructor({goodFilename, goodResourceUrls, goodTags}) {
@@ -40,6 +37,7 @@ class FakeEyesWrapper {
     this.sizeMode = renderInfo.getSizeMode();
     this.selector = renderInfo.getSelector();
     this.region = renderInfo.getRegion();
+    this.emulationInfo = renderInfo.getEmulationInfo();
 
     return renderRequests.map(renderRequest => this.getRunningRenderForRequest(renderRequest));
   }
@@ -61,21 +59,31 @@ class FakeEyesWrapper {
     const browserName = renderRequest.getBrowserName();
     const selector = renderInfo.getSelector();
     const region = renderInfo.getRegion();
+    const emulationInfo = renderInfo.getEmulationInfo();
 
     const isGood = isGoodCdt && isGoodResources;
-    const renderId = JSON.stringify({isGood, region, browserName, selector, sizeMode});
+    const renderId = JSON.stringify({
+      isGood,
+      region,
+      browserName,
+      selector,
+      sizeMode,
+      emulationInfo,
+    });
 
     return new FakeRunningRender(renderId, RenderStatus.RENDERED);
   }
 
   async getRenderStatus(renderIds) {
-    return renderIds.map(renderId =>
-      RenderStatusResults.fromObject({
+    return renderIds.map(renderId => {
+      const {browserName, emulationInfo} = JSON.parse(renderId);
+      return RenderStatusResults.fromObject({
         status: RenderStatus.RENDERED,
         imageLocation: renderId,
-        userAgent: JSON.parse(renderId).browserName,
-      }),
-    );
+        userAgent: browserName,
+        width: emulationInfo && emulationInfo.deviceName && devices[emulationInfo.deviceName],
+      });
+    });
   }
 
   async getRenderInfo() {
@@ -89,14 +97,20 @@ class FakeEyesWrapper {
       throw new Error(`Tag ${tag} should be one of the good tags ${this.goodTags}`);
 
     const result = new MatchResult();
-    const {isGood, sizeMode, browserName: _browserName, selector, region} = JSON.parse(
-      screenshotUrl,
-    );
+    const {
+      isGood,
+      sizeMode,
+      browserName: _browserName,
+      selector,
+      region,
+      emulationInfo,
+    } = JSON.parse(screenshotUrl);
     const asExpected =
       isGood &&
       (!this.sizeMode || sizeMode === this.sizeMode) &&
       (!this.selector || selector === this.selector) &&
-      compare(region, this.region);
+      compare(region, this.region) &&
+      compare(emulationInfo, this.emulationInfo);
     result.setAsExpected(asExpected);
     result.__domUrl = domUrl;
     result.__checkSettings = checkSettings;
@@ -206,6 +220,10 @@ class FakeEyesWrapper {
 
   setInferredEnvironment(value) {
     this.inferredEnvironment = value;
+  }
+
+  setViewportSize(value) {
+    this.viewportSize = value;
   }
 }
 

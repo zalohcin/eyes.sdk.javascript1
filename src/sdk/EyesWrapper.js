@@ -1,5 +1,5 @@
 'use strict';
-const {EyesBase, RectangleSize, NullRegionProvider} = require('@applitools/eyes.sdk.core');
+const {EyesBase, NullRegionProvider} = require('@applitools/eyes.sdk.core');
 
 const VERSION = require('../../package.json').version;
 
@@ -13,7 +13,9 @@ class EyesWrapper extends EyesBase {
   async open(appName, testName, viewportSize) {
     await super.openBase(appName, testName);
 
-    this._viewportSizeHandler.set(new RectangleSize(viewportSize)); // Not doing this causes an exception at a later
+    if (viewportSize) {
+      this.setViewportSize(viewportSize);
+    }
   }
 
   /** @override */
@@ -83,6 +85,10 @@ class EyesWrapper extends EyesBase {
 
   setInferredEnvironment(value) {
     this.inferredEnvironment = value;
+  }
+
+  setViewportSize(viewportSize) {
+    this._viewportSizeHandler.set(viewportSize);
   }
 
   async getTitle() {

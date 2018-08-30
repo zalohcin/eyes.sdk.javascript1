@@ -655,4 +655,17 @@ describe('openEyes', () => {
     expect(wrapper1.aborted).to.equal(true);
     expect(wrapper2.aborted).to.equal(true);
   });
+
+  it('renders deviceEmulation', async () => {
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      browser: {deviceName: 'iPhone 4', screenOrientation: 'bla'},
+      apiKey,
+    });
+
+    checkWindow({url: '', cdt: []});
+    const [[results]] = await close();
+    expect(wrapper.viewportSize.toJSON()).to.eql({width: 320, height: 480});
+    expect(results.getAsExpected()).to.equal(true);
+  });
 });
