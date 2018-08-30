@@ -7,6 +7,7 @@ const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
 const createCheckSettings = require('./createCheckSettings');
 const {presult} = require('@applitools/functional-commons');
+const {RectangleSize} = require('@applitools/eyes.sdk.core');
 
 function makeCheckWindow({
   getError,
@@ -89,7 +90,7 @@ function makeCheckWindow({
           browsers[index],
         )}`,
       );
-      const [{imageLocation, userAgent}] = await waitForRenderedStatus(
+      const [{imageLocation, userAgent, width, height}] = await waitForRenderedStatus(
         [renderId],
         renderWrapper,
         getError,
@@ -107,6 +108,9 @@ function makeCheckWindow({
 
       const wrapper = wrappers[index];
       wrapper.setInferredEnvironment(`useragent:${userAgent}`);
+      if (width) {
+        wrapper.setViewportSize(new RectangleSize(width, height));
+      }
 
       await prevJobPromise;
 

@@ -1,6 +1,6 @@
 'use strict';
 const EyesWrapper = require('./EyesWrapper');
-const {BatchInfo} = require('@applitools/eyes.sdk.core');
+const {BatchInfo, RectangleSize} = require('@applitools/eyes.sdk.core');
 
 function initWrappers({count, apiKey, logHandler}) {
   return Array.from(new Array(count), () => new EyesWrapper({apiKey, logHandler}));
@@ -70,7 +70,12 @@ function configureWrappers({
 }
 
 function openWrappers({wrappers, browsers, appName, testName}) {
-  return Promise.all(wrappers.map((wrapper, i) => wrapper.open(appName, testName, browsers[i])));
+  return Promise.all(
+    wrappers.map((wrapper, i) => {
+      const viewportSize = browsers[i].width && new RectangleSize(browsers[i]);
+      return wrapper.open(appName, testName, viewportSize);
+    }),
+  );
 }
 
 const apiKeyFailMsg =
