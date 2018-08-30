@@ -1,7 +1,6 @@
 'use strict';
 const {describe, it} = require('mocha');
 const {expect} = require('chai');
-const getSha256Hash = require('../../util/getSha256Hash');
 const createEmulationInfo = require('../../../src/sdk/createEmulationInfo');
 
 describe('createEmulationInfo', () => {

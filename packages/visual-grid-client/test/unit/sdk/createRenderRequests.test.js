@@ -134,7 +134,13 @@ describe('createRenderRequests', () => {
         dom,
         resources: {},
         renderInfo: {
-          emulationInfo: {width: 1, height: 2, deviceScaleFactor: 3, screenOrientation: undefined},
+          emulationInfo: {
+            width: 1,
+            height: 2,
+            deviceScaleFactor: 3,
+            screenOrientation: undefined,
+            mobile: undefined,
+          },
           height: 2,
           width: 1,
           selector: undefined,
