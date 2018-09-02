@@ -23,7 +23,6 @@ function makeCheckWindow({
   setCheckWindowPromises,
   browsers,
   setError,
-  resourceCache,
   wrappers,
   renderWrapper,
   renderThroat,
@@ -173,7 +172,7 @@ function makeCheckWindow({
 
     async function uploadDom() {
       const renderInfo = await renderInfoPromise;
-      const bundledCss = getBundledCssFromCdt(cdt, resourceCache, url);
+      const bundledCss = getBundledCssFromCdt(cdt, url);
       return await uploadResource(
         renderInfo.getResultsUrl(),
         JSON.stringify({dom: domCapture, css: bundledCss}),

@@ -39,7 +39,7 @@ function makeRenderingGridClient({
   const extractCssResources = makeExtractCssResources(logger);
   const fetchResource = makeFetchResource(logger);
   const extractCssResourcesFromCdt = makeExtractCssResourcesFromCdt(extractCssResources);
-  const getBundledCssFromCdt = makeGetBundledCssFromCdt(logger);
+  const getBundledCssFromCdt = makeGetBundledCssFromCdt({resourceCache, logger});
   const putResources = makePutResources();
   const renderBatch = makeRenderBatch({putResources, resourceCache, logger});
   const waitForRenderedStatus = makeWaitForRenderedStatus({
@@ -61,7 +61,6 @@ function makeRenderingGridClient({
     renderBatch,
     waitForRenderedStatus,
     getAllResources,
-    resourceCache,
     renderThroat,
   });
   const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(
