@@ -27,8 +27,8 @@ function getCss(newText, url) {
   return `\n/** ${url} **/\n${newText}`;
 }
 
-function makeGetBundledCssFromCdt(logger) {
-  function getBundledCssFromCdt(cdt, resourceCache, baseUrl) {
+function makeGetBundledCssFromCdt({resourceCache, logger}) {
+  return function getBundledCssFromCdt(cdt, baseUrl) {
     let bundledCss = '';
     traverseCdt(cdt, node => {
       let cssText, resourceUrl;
@@ -62,7 +62,7 @@ function makeGetBundledCssFromCdt(logger) {
       }
     });
     return bundledCss;
-  }
+  };
 
   function getBundledCssFromCssText(cssText, resourceCache, resourceUrl) {
     try {
@@ -89,8 +89,6 @@ function makeGetBundledCssFromCdt(logger) {
       logger.log(`couldn't parse ${resourceUrl}`, ex);
     }
   }
-
-  return (cdt, resourceCache, baseUrl) => getBundledCssFromCdt(cdt, resourceCache, baseUrl);
 }
 
 module.exports = makeGetBundledCssFromCdt;

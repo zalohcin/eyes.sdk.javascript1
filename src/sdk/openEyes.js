@@ -12,7 +12,6 @@ function makeOpenEyes({
   renderBatch,
   waitForRenderedStatus,
   getAllResources,
-  resourceCache,
   renderThroat,
 }) {
   return async function openEyes({
@@ -119,7 +118,6 @@ function makeOpenEyes({
       setCheckWindowPromises,
       browsers,
       setError,
-      resourceCache,
       wrappers,
       renderWrapper,
       renderThroat,
