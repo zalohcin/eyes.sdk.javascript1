@@ -12,20 +12,7 @@ const psetTimeout = p(setTimeout);
 const {presult} = require('@applitools/functional-commons');
 
 describe('waitForTestResults', () => {
-  let waitForTestResults, openEyes;
   const apiKey = 'some api key';
-
-  beforeEach(() => {
-    const client = makeRenderingGridClient({
-      getConfig,
-      updateConfig,
-      getInitialConfig,
-      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-    });
-
-    waitForTestResults = client.waitForTestResults;
-    openEyes = client.openEyes;
-  });
 
   let baseUrl, closeServer;
   before(async () => {
@@ -48,6 +35,20 @@ describe('waitForTestResults', () => {
       .reply(201, '', {location: 'uploaded_location'});
   });
 
+  let waitForTestResults, openEyes;
+  beforeEach(() => {
+    const client = makeRenderingGridClient({
+      getConfig,
+      updateConfig,
+      getInitialConfig,
+      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      wrapper,
+    });
+
+    waitForTestResults = client.waitForTestResults;
+    openEyes = client.openEyes;
+  });
+
   let prevEnv;
   beforeEach(() => {
     prevEnv = process.env;
@@ -58,11 +59,23 @@ describe('waitForTestResults', () => {
     process.env = prevEnv;
   });
 
-  it('throws errors set during openEyes', async () => {
+  it('throws errors set during makeRenderingGridClient', async () => {
     wrapper.getRenderInfo = async () => {
       await psetTimeout(0);
       throw new Error('getRenderInfo');
     };
+
+    const client = makeRenderingGridClient({
+      getConfig,
+      updateConfig,
+      getInitialConfig,
+      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      wrapper,
+    });
+
+    waitForTestResults = client.waitForTestResults;
+    openEyes = client.openEyes;
+
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,

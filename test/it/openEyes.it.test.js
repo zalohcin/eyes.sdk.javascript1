@@ -37,15 +37,16 @@ describe('openEyes', () => {
     prevEnv = process.env;
     process.env = {};
 
+    wrapper = createFakeWrapper(baseUrl);
+
     const {getConfig, updateConfig, getInitialConfig} = initConfig();
     openEyes = makeRenderingGridClient({
       getConfig,
       updateConfig,
       getInitialConfig,
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      wrapper,
     }).openEyes;
-
-    wrapper = createFakeWrapper(baseUrl);
 
     nock(wrapper.baseUrl)
       .persist()
@@ -260,12 +261,48 @@ describe('openEyes', () => {
     expect(await wrapper.getInferredEnvironment()).to.equal('useragent:ucbrowser');
   });
 
-  it('handles error during getRenderInfo', async () => {
+  it('openEyes handles error during getRenderInfo', async () => {
+    wrapper.getRenderInfo = async () => {
+      await psetTimeout(0);
+      throw new Error('getRenderInfo');
+    };
+
+    const {getConfig, updateConfig, getInitialConfig} = initConfig();
+    openEyes = makeRenderingGridClient({
+      getConfig,
+      updateConfig,
+      getInitialConfig,
+      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      wrapper,
+    }).openEyes;
+
+    await psetTimeout(50);
+
+    const [error] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        apiKey,
+      }),
+    );
+    expect(error.message).to.equal('getRenderInfo');
+  });
+
+  it('checkWindow handles error during getRenderInfo', async () => {
     let error;
     wrapper.getRenderInfo = async () => {
       await psetTimeout(0);
       throw new Error('getRenderInfo');
     };
+
+    const {getConfig, updateConfig, getInitialConfig} = initConfig();
+    openEyes = makeRenderingGridClient({
+      getConfig,
+      updateConfig,
+      getInitialConfig,
+      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      wrapper,
+    }).openEyes;
+
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
@@ -345,6 +382,7 @@ describe('openEyes', () => {
       getInitialConfig,
       concurrency: 2,
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      wrapper: wrapper1,
     }).openEyes;
 
     const {close} = await openEyes({wrappers: [wrapper1], apiKey});
@@ -368,6 +406,7 @@ describe('openEyes', () => {
       getInitialConfig,
       concurrency: 1,
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      wrapper,
     }).openEyes;
 
     const {close} = await openEyes({wrappers: [wrapper], apiKey});
@@ -392,6 +431,7 @@ describe('openEyes', () => {
         concurrency: 2,
         renderConcurrencyFactor: 1,
         showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+        wrapper,
       }).openEyes;
     });
 
@@ -514,6 +554,7 @@ describe('openEyes', () => {
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       renderStatusTimeout: 50,
       renderStatusInterval: 50,
+      wrapper,
     }).openEyes;
 
     const {checkWindow, close} = await openEyes({
@@ -547,6 +588,7 @@ describe('openEyes', () => {
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       renderStatusTimeout: 150,
       renderStatusInterval: 50,
+      wrapper,
     }).openEyes;
 
     const {checkWindow, close} = await openEyes({

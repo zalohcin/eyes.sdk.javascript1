@@ -14,6 +14,7 @@ const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
 const makeWaitForTestResults = require('./waitForTestResults');
 const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
+const EyesWrapper = require('./EyesWrapper');
 
 function makeRenderingGridClient({
   getConfig,
@@ -24,6 +25,7 @@ function makeRenderingGridClient({
   renderStatusInterval,
   concurrency = Infinity,
   renderConcurrencyFactor = 5,
+  wrapper,
 }) {
   const openEyesConcurrency = Number(getConfig({concurrency}).concurrency);
 
@@ -55,6 +57,23 @@ function makeRenderingGridClient({
     fetchCache,
   });
 
+  wrapper =
+    wrapper || new EyesWrapper({apiKey: getConfig().apiKey, logHandler: logger.getLogHandler()}); // TODO when organizing config, make this a default value in the function parameters
+
+  const renderInfoPromise = wrapper
+    .getRenderInfo()
+    .then(renderInfo => {
+      wrapper.setRenderingInfo(renderInfo);
+      return renderInfo;
+    })
+    .catch(err => {
+      if (err.response && err.response.status === 401) {
+        setError(new Error('Unauthorized access to Eyes server. Please check your API key.'));
+      } else {
+        setError(err);
+      }
+    });
+
   const openEyes = makeOpenEyes({
     setError,
     getError,
@@ -64,6 +83,8 @@ function makeRenderingGridClient({
     waitForRenderedStatus,
     getAllResources,
     renderThroat,
+    renderInfoPromise,
+    renderWrapper: wrapper,
   });
   const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(
     openEyesWithConfig,
