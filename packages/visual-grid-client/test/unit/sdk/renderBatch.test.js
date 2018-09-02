@@ -6,6 +6,7 @@ const {RenderStatus} = require('@applitools/eyes.sdk.core');
 const FakeRunningRender = require('../../util/FakeRunningRender');
 const FakeRenderRequest = require('../../util/FakeRenderRequest');
 const createResourceCache = require('../../../src/sdk/createResourceCache');
+const testLogger = require('../../util/testLogger');
 
 function createFakeWrapper() {
   return {
@@ -37,10 +38,7 @@ describe('renderBatch', () => {
     renderBatch = makeRenderBatch({
       putResources,
       resourceCache: cache,
-      logger: {
-        verbose: console.log,
-        log: console.log,
-      },
+      logger: testLogger,
     });
   });
 
