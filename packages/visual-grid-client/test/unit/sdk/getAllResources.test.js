@@ -10,7 +10,7 @@ const {RGridResource} = require('@applitools/eyes.sdk.core');
 const testServer = require('../../util/testServer');
 const testLogger = require('../../util/testLogger');
 const {loadFixtureBuffer} = require('../../util/loadFixture');
-const {isCss} = makeGetAllResources;
+const isCss = require('../../../src/sdk/isCss');
 
 function toRGridResource({url, type, value}) {
   const resource = new RGridResource();
