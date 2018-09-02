@@ -6,11 +6,11 @@ const psetTimeout = t =>
     setTimeout(res, t);
   });
 
-function makeWaitForRenderedStatus(timeout = 120000, getStatusInterval = 500) {
+function makeWaitForRenderedStatus({timeout = 120000, getStatusInterval = 500, logger}) {
   return async function waitForRenderedStatus(renderIds, wrapper, stopCondition = () => {}) {
     async function getStatus() {
       if (timeoutReached) {
-        wrapper._logger.verbose(`waitForRenderedStatus: timeout reached for ${renderIds}`);
+        logger.verbose(`waitForRenderedStatus: timeout reached for ${renderIds}`);
         throw new Error(`failed to render screenshot`);
       }
 
@@ -35,7 +35,7 @@ function makeWaitForRenderedStatus(timeout = 120000, getStatusInterval = 500) {
         if (timeoutReached) {
           throw ex;
         }
-        wrapper._logger.log(`error during getRenderStatus: ${ex}`);
+        logger.log(`error during getRenderStatus: ${ex}`);
         await psetTimeout(getStatusInterval);
         return await getStatus();
       }
