@@ -38,7 +38,7 @@ function makeRenderingGridClient({
   const resourceCache = createResourceCache();
   const fetchCache = createResourceCache();
   const extractCssResources = makeExtractCssResources(logger);
-  const fetchResource = makeFetchResource({logger, fetchCache});
+  const fetchResource = makeFetchResource(logger);
   const extractCssResourcesFromCdt = makeExtractCssResourcesFromCdt(extractCssResources);
   const getBundledCssFromCdt = makeGetBundledCssFromCdt({resourceCache, logger});
   const putResources = makePutResources();
@@ -52,6 +52,7 @@ function makeRenderingGridClient({
     resourceCache,
     extractCssResources,
     fetchResource,
+    fetchCache,
   });
 
   const openEyes = makeOpenEyes({
