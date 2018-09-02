@@ -31,13 +31,15 @@ function putResources(rGridDom, runningRender, wrapper) {
 }
 
 describe('renderBatch', () => {
-  let cache, renderBatch;
+  let resourceCache, renderBatch, fetchCache;
 
   beforeEach(() => {
-    cache = createResourceCache();
+    resourceCache = createResourceCache();
+    fetchCache = createResourceCache();
     renderBatch = makeRenderBatch({
       putResources,
-      resourceCache: cache,
+      resourceCache,
+      fetchCache,
       logger: testLogger,
     });
   });
@@ -95,14 +97,14 @@ describe('renderBatch', () => {
       {dom: 'dom3', renderId: 'id3'},
     ]);
 
-    expect(cache.getValue('url-1')).to.eql({
+    expect(resourceCache.getValue('url-1')).to.eql({
       url: 'url-1',
       type: 'contentType',
       hash: 'sha256hash',
       content: undefined,
     });
 
-    expect(cache.getValue('url-2')).to.eql({
+    expect(resourceCache.getValue('url-2')).to.eql({
       url: 'url-2',
       type: 'text/css',
       hash: 'sha256hash-2',
