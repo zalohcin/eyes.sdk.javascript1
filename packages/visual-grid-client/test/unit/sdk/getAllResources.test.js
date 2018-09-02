@@ -26,12 +26,14 @@ describe('getAllResources', () => {
 
   beforeEach(() => {
     const extractCssResources = makeExtractCssResources(testLogger);
-    const fetchResource = makeFetchResource({
-      logger: testLogger,
+    const fetchResource = makeFetchResource(testLogger);
+    resourceCache = createResourceCache();
+    getAllResources = makeGetAllResources({
+      resourceCache,
+      extractCssResources,
+      fetchResource,
       fetchCache: createResourceCache(),
     });
-    resourceCache = createResourceCache();
-    getAllResources = makeGetAllResources({resourceCache, extractCssResources, fetchResource});
   });
 
   it('works for absolute urls', async () => {

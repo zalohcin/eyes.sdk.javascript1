@@ -22,13 +22,23 @@ function fromFetchedToRGridResource({url, type, value}) {
   return rGridResource;
 }
 
-function makeProcessResource({resourceCache, getOrFetchResources, extractCssResources}) {
-  return async function processResource(resource) {
+function makeProcessResource({
+  resourceCache,
+  getOrFetchResources,
+  extractCssResources,
+  fetchCache,
+}) {
+  return function processResource(resource) {
+    const {url} = resource;
+    return fetchCache.getValue(url) || fetchCache.setValue(url, doProcessResource(resource));
+  };
+
+  async function doProcessResource(resource) {
     let {dependentResources, fetchedResources} = await getDependantResources(resource);
     const rGridResource = fromFetchedToRGridResource(resource);
     resourceCache.setDependencies(resource.url, dependentResources);
     return Object.assign({[resource.url]: rGridResource}, fetchedResources);
-  };
+  }
 
   async function getDependantResources({url, type, value}) {
     let dependentResources, fetchedResources;
@@ -40,11 +50,12 @@ function makeProcessResource({resourceCache, getOrFetchResources, extractCssReso
   }
 }
 
-function makeGetAllResources({resourceCache, fetchResource, extractCssResources}) {
+function makeGetAllResources({resourceCache, fetchResource, extractCssResources, fetchCache}) {
   const processResource = makeProcessResource({
     resourceCache,
     extractCssResources,
     getOrFetchResources,
+    fetchCache,
   });
 
   return getOrFetchResources;
