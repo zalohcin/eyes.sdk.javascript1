@@ -13,6 +13,7 @@ function createResourceCache() {
   function setValue(key, value) {
     const entry = getOrInit(key);
     entry.value = value;
+    return value;
   }
 
   function setDependencies(key, dependencies) {
@@ -34,6 +35,10 @@ function createResourceCache() {
     return ret;
   }
 
+  function remove(key) {
+    delete cache[key];
+  }
+
   const cache = {};
 
   return {
@@ -41,6 +46,7 @@ function createResourceCache() {
     setValue,
     setDependencies,
     getWithDependencies,
+    remove,
   };
 }
 

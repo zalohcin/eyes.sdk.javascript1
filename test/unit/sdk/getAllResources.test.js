@@ -26,7 +26,10 @@ describe('getAllResources', () => {
 
   beforeEach(() => {
     const extractCssResources = makeExtractCssResources(testLogger);
-    const fetchResource = makeFetchResource(testLogger);
+    const fetchResource = makeFetchResource({
+      logger: testLogger,
+      fetchCache: createResourceCache(),
+    });
     resourceCache = createResourceCache();
     getAllResources = makeGetAllResources({resourceCache, extractCssResources, fetchResource});
   });
