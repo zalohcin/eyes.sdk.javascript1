@@ -41,11 +41,12 @@ function makeRenderingGridClient({
   const extractCssResourcesFromCdt = makeExtractCssResourcesFromCdt(extractCssResources);
   const getBundledCssFromCdt = makeGetBundledCssFromCdt(logger);
   const putResources = makePutResources();
-  const renderBatch = makeRenderBatch({putResources, resourceCache});
-  const waitForRenderedStatus = makeWaitForRenderedStatus(
-    renderStatusTimeout,
-    renderStatusInterval,
-  );
+  const renderBatch = makeRenderBatch({putResources, resourceCache, logger});
+  const waitForRenderedStatus = makeWaitForRenderedStatus({
+    timeout: renderStatusTimeout,
+    getStatusInterval: renderStatusInterval,
+    logger,
+  });
   const getAllResources = makeGetAllResources({
     resourceCache,
     extractCssResources,

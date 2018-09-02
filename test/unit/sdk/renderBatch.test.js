@@ -22,10 +22,6 @@ function createFakeWrapper() {
       this.resourcesPutted.push({dom, renderId: runningRender.getRenderId()});
     },
     resourcesPutted: [],
-    _logger: {
-      verbose: console.log,
-      log: console.log,
-    },
   };
 }
 
@@ -38,7 +34,14 @@ describe('renderBatch', () => {
 
   beforeEach(() => {
     cache = createResourceCache();
-    renderBatch = makeRenderBatch({putResources, resourceCache: cache});
+    renderBatch = makeRenderBatch({
+      putResources,
+      resourceCache: cache,
+      logger: {
+        verbose: console.log,
+        log: console.log,
+      },
+    });
   });
 
   it('works', async () => {
