@@ -142,7 +142,7 @@ class EyesJsBrowserUtils {
    * @return {Promise<void>} A promise which resolves after the action is performed and timeout passed.
    */
   static setCurrentScrollPosition(executor, location) {
-    return executor.executeScript(`window.scrollTo(${location.getY()}, ${location.getY()})`);
+    return executor.executeScript(`window.scrollTo(${location.getX()}, ${location.getY()})`);
   }
 
   /**
