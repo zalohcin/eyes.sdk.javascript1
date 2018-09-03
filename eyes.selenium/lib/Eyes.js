@@ -624,6 +624,7 @@ class Eyes extends EyesBase {
               .then(/** EyesWebDriverScreenshot */ screenshot => {
                 that._logger.verbose('replacing regionToCheck');
                 that.setRegionToCheck(screenshot.getFrameWindow());
+                return that.getPromiseFactory().resolve(Region.EMPTY);
               });
           }));
         }
