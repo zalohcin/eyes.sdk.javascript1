@@ -76,6 +76,9 @@ exports.RenderStatusResults = require('./lib/renderer/RenderStatusResults').Rend
 exports.RGridDom = require('./lib/renderer/RGridDom').RGridDom;
 exports.RGridResource = require('./lib/renderer/RGridResource').RGridResource;
 exports.RunningRender = require('./lib/renderer/RunningRender').RunningRender;
+exports.EmulationInfo = require('./lib/renderer/EmulationInfo').EmulationInfo;
+exports.EmulationDevice = require('./lib/renderer/EmulationDevice').EmulationDevice;
+exports.ScreenOrientation = require('./lib/renderer/ScreenOrientation').ScreenOrientation;
 
 exports.ContextBasedScaleProvider = require('./lib/scaling/ContextBasedScaleProvider').ContextBasedScaleProvider;
 exports.ContextBasedScaleProviderFactory = require('./lib/scaling/ContextBasedScaleProviderFactory').ContextBasedScaleProviderFactory;

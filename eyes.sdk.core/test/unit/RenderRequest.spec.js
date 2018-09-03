@@ -55,7 +55,7 @@ describe('RenderRequest', () => {
 
       const renderInfo = {
         toJSON() { return 'renderInfoToJSON'; }
-      }
+      };
 
       const renderRequest = new RenderRequest('webhook', 'url', dom, renderInfo, 'platform', 'browserName', 'scriptHooks');
       const expected = {
@@ -71,7 +71,7 @@ describe('RenderRequest', () => {
           name: 'browserName',
           platform: 'platform',
         },
-        scriptHooks: 'scriptHooks'
+        scriptHooks: 'scriptHooks',
       }
       assert.deepEqual(renderRequest.toJSON(), expected);
     });
@@ -110,7 +110,7 @@ describe('RenderRequest', () => {
 
       const renderInfo = {
         toJSON() { return 'renderInfoToJSON'; }
-      }
+      };
 
       const renderRequest = new RenderRequest('webhook', 'url', dom, renderInfo, 'platform', 'browserName', 'scriptHooks');
       assert.equal(renderRequest.toString(), 'RenderRequest { {"webhook":"webhook","url":"url","dom":"dom_hashAsObject","resources":{"url1":"hashAsObject1","url2":"hashAsObject2"},"browser":{"name":"browserName","platform":"platform"},"renderInfo":"renderInfoToJSON","scriptHooks":"scriptHooks"} }');

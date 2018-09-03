@@ -12,6 +12,8 @@ class RenderStatusResults {
     this._error = undefined;
     this._os = undefined;
     this._userAgent = undefined;
+    this._width = undefined;
+    this._height = undefined;
   }
 
   /**
@@ -38,7 +40,6 @@ class RenderStatusResults {
     return this._status;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @param {string} value */
   setStatus(value) {
     this._status = value;
@@ -49,7 +50,6 @@ class RenderStatusResults {
     return this._imageLocation;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @param {string} value */
   setImageLocation(value) {
     this._imageLocation = value;
@@ -60,7 +60,6 @@ class RenderStatusResults {
     return this._error;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @param {string} value */
   setError(value) {
     this._error = value;
@@ -71,7 +70,6 @@ class RenderStatusResults {
     return this._os;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @param {string} value */
   setOS(value) {
     this._os = value;
@@ -82,10 +80,29 @@ class RenderStatusResults {
     return this._userAgent;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @param {string} value */
   setUserAgent(value) {
     this._userAgent = value;
+  }
+
+  /** @return {number} */
+  getWidth() {
+    return this._width;
+  }
+
+  /** @param {number} value */
+  setWidth(value) {
+    this._width = value;
+  }
+
+  /** @return {number} */
+  getHeight() {
+    return this._height;
+  }
+
+  /** @param {number} value */
+  setHeight(value) {
+    this._height = value;
   }
 
   /** @override */
