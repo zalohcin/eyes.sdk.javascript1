@@ -18,7 +18,7 @@ function makeUploadResource(logger) {
 
     const location = resp.headers.get('location');
 
-    logger.log('resource uploaded to ', location);
+    logger.log('resource uploaded to', location);
 
     return location;
   };

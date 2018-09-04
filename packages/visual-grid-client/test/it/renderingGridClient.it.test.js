@@ -1,12 +1,20 @@
 'use strict';
-const {describe, it, beforeEach} = require('mocha');
+const {describe, it, beforeEach, before} = require('mocha');
 const {expect} = require('chai');
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient');
 const {initConfig} = require('../../src/sdk/config');
-const {getConfig, updateConfig, getInitialConfig} = initConfig();
 
 describe('renderingGridClient', () => {
   let wrapper;
+
+  let getConfig, updateConfig, getInitialConfig;
+  before(() => {
+    const config = initConfig();
+    getConfig = config.getConfig;
+    updateConfig = config.updateConfig;
+    getInitialConfig = config.getInitialConfig;
+  });
+
   beforeEach(() => {
     wrapper = {
       getRenderInfo: async () => 'renderInfo',
