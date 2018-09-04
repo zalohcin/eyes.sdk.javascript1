@@ -34,9 +34,6 @@ describe('openEyes', () => {
   });
 
   beforeEach(() => {
-    prevEnv = process.env;
-    process.env = {};
-
     wrapper = createFakeWrapper(baseUrl);
 
     const {getConfig, updateConfig, getInitialConfig} = initConfig();
@@ -51,14 +48,19 @@ describe('openEyes', () => {
     nock(wrapper.baseUrl)
       .persist()
       .post(wrapper.resultsRoute)
-      .reply(201, '', {location: 'uploaded_location'});
+      .reply(201, (_url, body) => body, {
+        location: (_req, _res, body) => body,
+      });
+
+    prevEnv = process.env;
+    process.env = {};
   });
 
   afterEach(() => {
     process.env = prevEnv;
   });
 
-  it("doesn't throw exception", async () => {
+  it.only("doesn't throw exception", async () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,

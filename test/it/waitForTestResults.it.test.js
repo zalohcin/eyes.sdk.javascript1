@@ -4,7 +4,6 @@ const {expect} = require('chai');
 const testServer = require('../util/testServer');
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient');
 const {initConfig} = require('../../src/sdk/config');
-const {getConfig, updateConfig, getInitialConfig} = initConfig();
 const nock = require('nock');
 const createFakeWrapper = require('../util/createFakeWrapper');
 const {promisify: p} = require('util');
@@ -13,6 +12,14 @@ const {presult} = require('@applitools/functional-commons');
 
 describe('waitForTestResults', () => {
   const apiKey = 'some api key';
+
+  let getConfig, updateConfig, getInitialConfig;
+  before(() => {
+    const config = initConfig();
+    getConfig = config.getConfig;
+    updateConfig = config.updateConfig;
+    getInitialConfig = config.getInitialConfig;
+  });
 
   let baseUrl, closeServer;
   before(async () => {
