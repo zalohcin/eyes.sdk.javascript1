@@ -1,5 +1,4 @@
 'use strict';
-const uploadResource = require('./uploadResource');
 const absolutizeUrl = require('./absolutizeUrl');
 const mapKeys = require('lodash.mapkeys');
 const mapValues = require('lodash.mapvalues');
@@ -26,6 +25,7 @@ function makeCheckWindow({
   wrappers,
   renderWrapper,
   renderThroat,
+  uploadResource,
 }) {
   return function checkWindow({
     resourceUrls = [],

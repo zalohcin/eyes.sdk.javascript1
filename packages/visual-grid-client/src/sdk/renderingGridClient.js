@@ -14,6 +14,7 @@ const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
 const makeWaitForTestResults = require('./waitForTestResults');
 const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
+const makeUploadResource = require('./uploadResource');
 const EyesWrapper = require('./EyesWrapper');
 
 function makeRenderingGridClient({
@@ -45,6 +46,7 @@ function makeRenderingGridClient({
   const getBundledCssFromCdt = makeGetBundledCssFromCdt({resourceCache, logger});
   const putResources = makePutResources();
   const renderBatch = makeRenderBatch({putResources, resourceCache, fetchCache, logger});
+  const uploadResource = makeUploadResource(logger);
   const waitForRenderedStatus = makeWaitForRenderedStatus({
     timeout: renderStatusTimeout,
     getStatusInterval: renderStatusInterval,
@@ -85,6 +87,7 @@ function makeRenderingGridClient({
     renderThroat,
     renderInfoPromise,
     renderWrapper: wrapper,
+    uploadResource,
   });
   const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(
     openEyesWithConfig,

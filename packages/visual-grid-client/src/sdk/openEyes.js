@@ -15,6 +15,7 @@ function makeOpenEyes({
   renderThroat,
   renderInfoPromise,
   renderWrapper,
+  uploadResource,
 }) {
   return async function openEyes({
     appName,
@@ -112,6 +113,7 @@ function makeOpenEyes({
       wrappers,
       renderWrapper,
       renderThroat,
+      uploadResource,
     });
 
     const close = makeCloseEyes({getError, logger, getCheckWindowPromises, wrappers});
