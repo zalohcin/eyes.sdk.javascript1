@@ -643,7 +643,7 @@ class EyesBase {
    * @return {string}
    */
   static getDefaultServerUrl() {
-    return 'https://eyesapi.applitools.com';
+    return process.env.APPLITOOLS_SERVER_URL || 'https://eyesapi.applitools.com';
   }
 
   /**
