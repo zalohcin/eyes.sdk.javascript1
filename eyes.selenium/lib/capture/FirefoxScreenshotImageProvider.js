@@ -43,7 +43,7 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
             // Region region = eyes.getRegionToCheck();
             const screenshot = new EyesWebDriverScreenshot(
               that._logger,
-              that._eyes,
+              that._eyes.getDriver(),
               image,
               that._eyes.getPromiseFactory()
             );
