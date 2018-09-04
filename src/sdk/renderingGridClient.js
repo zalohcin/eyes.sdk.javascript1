@@ -14,6 +14,8 @@ const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
 const makeWaitForTestResults = require('./waitForTestResults');
 const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
+const makeUploadResource = require('./uploadResource');
+const EyesWrapper = require('./EyesWrapper');
 
 function makeRenderingGridClient({
   getConfig,
@@ -24,6 +26,7 @@ function makeRenderingGridClient({
   renderStatusInterval,
   concurrency = Infinity,
   renderConcurrencyFactor = 5,
+  wrapper,
 }) {
   const openEyesConcurrency = Number(getConfig({concurrency}).concurrency);
 
@@ -36,21 +39,42 @@ function makeRenderingGridClient({
   let error;
   const logger = createLogger(showLogs);
   const resourceCache = createResourceCache();
+  const fetchCache = createResourceCache();
   const extractCssResources = makeExtractCssResources(logger);
   const fetchResource = makeFetchResource(logger);
   const extractCssResourcesFromCdt = makeExtractCssResourcesFromCdt(extractCssResources);
-  const getBundledCssFromCdt = makeGetBundledCssFromCdt(logger);
+  const getBundledCssFromCdt = makeGetBundledCssFromCdt({resourceCache, logger});
   const putResources = makePutResources();
-  const renderBatch = makeRenderBatch({putResources, resourceCache});
-  const waitForRenderedStatus = makeWaitForRenderedStatus(
-    renderStatusTimeout,
-    renderStatusInterval,
-  );
+  const renderBatch = makeRenderBatch({putResources, resourceCache, fetchCache, logger});
+  const uploadResource = makeUploadResource(logger);
+  const waitForRenderedStatus = makeWaitForRenderedStatus({
+    timeout: renderStatusTimeout,
+    getStatusInterval: renderStatusInterval,
+    logger,
+  });
   const getAllResources = makeGetAllResources({
     resourceCache,
     extractCssResources,
     fetchResource,
+    fetchCache,
   });
+
+  wrapper =
+    wrapper || new EyesWrapper({apiKey: getConfig().apiKey, logHandler: logger.getLogHandler()}); // TODO when organizing config, make this a default value in the function parameters
+
+  const renderInfoPromise = wrapper
+    .getRenderInfo()
+    .then(renderInfo => {
+      wrapper.setRenderingInfo(renderInfo);
+      return renderInfo;
+    })
+    .catch(err => {
+      if (err.response && err.response.status === 401) {
+        setError(new Error('Unauthorized access to Eyes server. Please check your API key.'));
+      } else {
+        setError(err);
+      }
+    });
 
   const openEyes = makeOpenEyes({
     setError,
@@ -60,8 +84,10 @@ function makeRenderingGridClient({
     renderBatch,
     waitForRenderedStatus,
     getAllResources,
-    resourceCache,
     renderThroat,
+    renderInfoPromise,
+    renderWrapper: wrapper,
+    uploadResource,
   });
   const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(
     openEyesWithConfig,

@@ -10,7 +10,7 @@ const {RGridResource} = require('@applitools/eyes.sdk.core');
 const testServer = require('../../util/testServer');
 const testLogger = require('../../util/testLogger');
 const {loadFixtureBuffer} = require('../../util/loadFixture');
-const {isCss} = makeGetAllResources;
+const isCss = require('../../../src/sdk/isCss');
 
 function toRGridResource({url, type, value}) {
   const resource = new RGridResource();
@@ -28,7 +28,12 @@ describe('getAllResources', () => {
     const extractCssResources = makeExtractCssResources(testLogger);
     const fetchResource = makeFetchResource(testLogger);
     resourceCache = createResourceCache();
-    getAllResources = makeGetAllResources({resourceCache, extractCssResources, fetchResource});
+    getAllResources = makeGetAllResources({
+      resourceCache,
+      extractCssResources,
+      fetchResource,
+      fetchCache: createResourceCache(),
+    });
   });
 
   it('works for absolute urls', async () => {

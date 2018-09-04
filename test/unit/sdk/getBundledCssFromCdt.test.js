@@ -1,5 +1,5 @@
 'use strict';
-const {describe, it} = require('mocha');
+const {describe, it, beforeEach} = require('mocha');
 const {expect} = require('chai');
 const createResourceCache = require('../../../src/sdk/createResourceCache');
 const {NODE_TYPES} = require('../../../src/browser-util/domNodesToCdt');
@@ -9,7 +9,14 @@ const {loadJsonFixture, loadFixture} = require('../../util/loadFixture');
 const {getCss} = makeGetBundledCssFromCdt;
 
 describe('getBundledCssFromCdt', () => {
-  const getBundledCssFromCdt = makeGetBundledCssFromCdt(testLogger);
+  let getBundledCssFromCdt, resourceCache;
+  beforeEach(() => {
+    resourceCache = createResourceCache();
+    getBundledCssFromCdt = makeGetBundledCssFromCdt({
+      resourceCache,
+      logger: testLogger,
+    });
+  });
 
   it('bundles relative urls in link tags', () => {
     const baseUrl = 'http://some.url';
@@ -22,9 +29,8 @@ describe('getBundledCssFromCdt', () => {
         attributes: [{name: 'rel', value: 'stylesheet'}, {name: 'href', value: 'test.css'}],
       },
     ];
-    const resourceCache = createResourceCache();
     resourceCache.setValue(url, {url, type: 'text/css', content: testCss});
-    const bundledCss = getBundledCssFromCdt(cdt, resourceCache, baseUrl);
+    const bundledCss = getBundledCssFromCdt(cdt, baseUrl);
     expect(bundledCss).to.equal(getCss(testCss, url));
   });
 
@@ -35,8 +41,7 @@ describe('getBundledCssFromCdt', () => {
       {nodeName: 'style', childNodeIndexes: [2]},
       {nodeType: NODE_TYPES.TEXT, nodeValue: styleCss},
     ];
-    const resourceCache = createResourceCache();
-    const bundledCss = getBundledCssFromCdt(cdt, resourceCache, '');
+    const bundledCss = getBundledCssFromCdt(cdt, '');
     expect(bundledCss).to.equal(getCss(styleCss, ''));
   });
 
@@ -54,9 +59,8 @@ describe('getBundledCssFromCdt', () => {
         ],
       },
     ];
-    const resourceCache = createResourceCache();
     resourceCache.setValue(url, {url, type: 'text/css', content: testCss});
-    const bundledCss = getBundledCssFromCdt(cdt, resourceCache, 'http://other'); // note baseUrl is other url, since the href is absolute so the baseUrl is not used
+    const bundledCss = getBundledCssFromCdt(cdt, 'http://other'); // note baseUrl is other url, since the href is absolute so the baseUrl is not used
     expect(bundledCss).to.equal(getCss(testCss, url));
   });
 
@@ -71,9 +75,8 @@ describe('getBundledCssFromCdt', () => {
       {nodeName: 'style', childNodeIndexes: [2]},
       {nodeType: NODE_TYPES.TEXT, nodeValue: styleCss},
     ];
-    const resourceCache = createResourceCache();
     resourceCache.setValue(nestedUrl, {url: nestedUrl, type: 'text/css', content: nestedValue});
-    const bundledCss = getBundledCssFromCdt(cdt, resourceCache, baseUrl);
+    const bundledCss = getBundledCssFromCdt(cdt, baseUrl);
     const expected = `${getCss(nestedValue, nestedUrl)}${getCss(styleCss, baseUrl)}`;
     expect(bundledCss).to.equal(expected);
   });
@@ -95,10 +98,9 @@ describe('getBundledCssFromCdt', () => {
         ],
       },
     ];
-    const resourceCache = createResourceCache();
     resourceCache.setValue(url, {url, type: 'text/css', content: testCss});
     resourceCache.setValue(nestedUrl, {url: nestedUrl, type: 'text/css', content: nestedValue});
-    const bundledCss = getBundledCssFromCdt(cdt, resourceCache, 'http://other'); // note baseUrl is other url, since the href is absolute so the baseUrl is not used
+    const bundledCss = getBundledCssFromCdt(cdt, 'http://other'); // note baseUrl is other url, since the href is absolute so the baseUrl is not used
     const expected = `${getCss(nestedValue, nestedUrl)}${getCss(testCss, url)}`;
     expect(bundledCss).to.equal(expected);
   });
@@ -106,7 +108,6 @@ describe('getBundledCssFromCdt', () => {
   it('works for test.cdt.json', () => {
     const baseUrl = 'http://some.url';
     const type = 'text/css ;charset=utf-8';
-    const resourceCache = createResourceCache();
     const testCssUrl = `${baseUrl}/test.css`;
     const testCssValue = loadFixture('test.css');
     const importedUrl = `${baseUrl}/imported.css`;
@@ -150,11 +151,7 @@ describe('getBundledCssFromCdt', () => {
       type,
       content: blobValue,
     });
-    const bundledCss = getBundledCssFromCdt(
-      loadJsonFixture('test.cdt.json'),
-      resourceCache,
-      baseUrl,
-    );
+    const bundledCss = getBundledCssFromCdt(loadJsonFixture('test.cdt.json'), baseUrl);
 
     let expected = `${getCss(importedNestedValue, importedNestedUrl)}${getCss(
       importedValue,
@@ -177,9 +174,8 @@ describe('getBundledCssFromCdt', () => {
         attributes: [{name: 'rel', value: 'stylesheet'}, {name: 'href', value: 'test.css'}],
       },
     ];
-    const resourceCache = createResourceCache();
     resourceCache.setValue(url, {url, type: 'text/css'});
-    const bundledCss = getBundledCssFromCdt(cdt, resourceCache, baseUrl);
+    const bundledCss = getBundledCssFromCdt(cdt, baseUrl);
     expect(bundledCss).to.equal('');
   });
 });

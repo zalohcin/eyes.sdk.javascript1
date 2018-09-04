@@ -12,8 +12,10 @@ function makeOpenEyes({
   renderBatch,
   waitForRenderedStatus,
   getAllResources,
-  resourceCache,
   renderThroat,
+  renderInfoPromise,
+  renderWrapper,
+  uploadResource,
 }) {
   return async function openEyes({
     appName,
@@ -43,6 +45,10 @@ function makeOpenEyes({
     ignoreBaseline,
     serverUrl,
   }) {
+    if (getError()) {
+      throw getError();
+    }
+
     const logger = createLogger(showLogs);
 
     if (isDisabled) {
@@ -64,7 +70,6 @@ function makeOpenEyes({
     wrappers =
       wrappers ||
       initWrappers({count: browsers.length, apiKey, logHandler: logger.getLogHandler()});
-    const renderWrapper = wrappers[0];
 
     configureWrappers({
       wrappers,
@@ -91,20 +96,6 @@ function makeOpenEyes({
 
     await openWrappers({wrappers, browsers, appName, testName});
 
-    const renderInfoPromise = renderWrapper
-      .getRenderInfo()
-      .then(renderInfo => {
-        renderWrapper.setRenderingInfo(renderInfo);
-        return renderInfo;
-      })
-      .catch(err => {
-        if (err.response && err.response.status === 401) {
-          setError(new Error('Unauthorized access to Eyes server. Please check your API key.'));
-        } else {
-          setError(err);
-        }
-      });
-
     const checkWindow = makeCheckWindow({
       getError,
       saveDebugData,
@@ -119,10 +110,10 @@ function makeOpenEyes({
       setCheckWindowPromises,
       browsers,
       setError,
-      resourceCache,
       wrappers,
       renderWrapper,
       renderThroat,
+      uploadResource,
     });
 
     const close = makeCloseEyes({getError, logger, getCheckWindowPromises, wrappers});

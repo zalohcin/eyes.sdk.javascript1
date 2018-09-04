@@ -6,6 +6,7 @@ const {RenderStatus} = require('@applitools/eyes.sdk.core');
 const FakeRunningRender = require('../../util/FakeRunningRender');
 const FakeRenderRequest = require('../../util/FakeRenderRequest');
 const createResourceCache = require('../../../src/sdk/createResourceCache');
+const testLogger = require('../../util/testLogger');
 
 function createFakeWrapper() {
   return {
@@ -22,10 +23,6 @@ function createFakeWrapper() {
       this.resourcesPutted.push({dom, renderId: runningRender.getRenderId()});
     },
     resourcesPutted: [],
-    _logger: {
-      verbose: console.log,
-      log: console.log,
-    },
   };
 }
 
@@ -34,11 +31,17 @@ function putResources(rGridDom, runningRender, wrapper) {
 }
 
 describe('renderBatch', () => {
-  let cache, renderBatch;
+  let resourceCache, renderBatch, fetchCache;
 
   beforeEach(() => {
-    cache = createResourceCache();
-    renderBatch = makeRenderBatch({putResources, resourceCache: cache});
+    resourceCache = createResourceCache();
+    fetchCache = createResourceCache();
+    renderBatch = makeRenderBatch({
+      putResources,
+      resourceCache,
+      fetchCache,
+      logger: testLogger,
+    });
   });
 
   it('works', async () => {
@@ -94,14 +97,14 @@ describe('renderBatch', () => {
       {dom: 'dom3', renderId: 'id3'},
     ]);
 
-    expect(cache.getValue('url-1')).to.eql({
+    expect(resourceCache.getValue('url-1')).to.eql({
       url: 'url-1',
       type: 'contentType',
       hash: 'sha256hash',
       content: undefined,
     });
 
-    expect(cache.getValue('url-2')).to.eql({
+    expect(resourceCache.getValue('url-2')).to.eql({
       url: 'url-2',
       type: 'text/css',
       hash: 'sha256hash-2',

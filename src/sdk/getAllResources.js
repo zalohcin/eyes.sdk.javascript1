@@ -22,7 +22,24 @@ function fromFetchedToRGridResource({url, type, value}) {
   return rGridResource;
 }
 
-function makeGetAllResources({resourceCache, fetchResource, extractCssResources}) {
+function makeProcessResource({
+  resourceCache,
+  getOrFetchResources,
+  extractCssResources,
+  fetchCache,
+}) {
+  return function processResource(resource) {
+    const {url} = resource;
+    return fetchCache.getValue(url) || fetchCache.setValue(url, doProcessResource(resource));
+  };
+
+  async function doProcessResource(resource) {
+    let {dependentResources, fetchedResources} = await getDependantResources(resource);
+    const rGridResource = fromFetchedToRGridResource(resource);
+    resourceCache.setDependencies(resource.url, dependentResources);
+    return Object.assign({[resource.url]: rGridResource}, fetchedResources);
+  }
+
   async function getDependantResources({url, type, value}) {
     let dependentResources, fetchedResources;
     if (isCss(type)) {
@@ -31,15 +48,19 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources}
     }
     return {dependentResources, fetchedResources};
   }
+}
 
-  async function processResource(resource) {
-    let {dependentResources, fetchedResources} = await getDependantResources(resource);
-    const rGridResource = fromFetchedToRGridResource(resource);
-    resourceCache.setDependencies(resource.url, dependentResources);
-    return Object.assign({[resource.url]: rGridResource}, fetchedResources);
-  }
+function makeGetAllResources({resourceCache, fetchResource, extractCssResources, fetchCache}) {
+  const processResource = makeProcessResource({
+    resourceCache,
+    extractCssResources,
+    getOrFetchResources,
+    fetchCache,
+  });
 
-  async function getOrFetchResources(resourceUrls, preResources = {}) {
+  return getOrFetchResources;
+
+  async function getOrFetchResources(resourceUrls = [], preResources = {}) {
     const resources = {};
 
     for (const url in preResources) {
@@ -70,10 +91,6 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources}
 
     return resources;
   }
-
-  return async (absoluteUrls = [], preResources) =>
-    await getOrFetchResources(absoluteUrls, preResources);
 }
 
 module.exports = makeGetAllResources;
-module.exports.isCss = isCss;

@@ -1,5 +1,4 @@
 'use strict';
-const uploadResource = require('./uploadResource');
 const absolutizeUrl = require('./absolutizeUrl');
 const mapKeys = require('lodash.mapkeys');
 const mapValues = require('lodash.mapvalues');
@@ -23,10 +22,10 @@ function makeCheckWindow({
   setCheckWindowPromises,
   browsers,
   setError,
-  resourceCache,
   wrappers,
   renderWrapper,
   renderThroat,
+  uploadResource,
 }) {
   return function checkWindow({
     resourceUrls = [],
@@ -173,7 +172,7 @@ function makeCheckWindow({
 
     async function uploadDom() {
       const renderInfo = await renderInfoPromise;
-      const bundledCss = getBundledCssFromCdt(cdt, resourceCache, url);
+      const bundledCss = getBundledCssFromCdt(cdt, url);
       return await uploadResource(
         renderInfo.getResultsUrl(),
         JSON.stringify({dom: domCapture, css: bundledCss}),

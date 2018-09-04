@@ -3,7 +3,7 @@
 const {RenderStatus} = require('@applitools/eyes.sdk.core');
 const toCacheEntry = require('./toCacheEntry');
 
-function makeRenderBatch({putResources, resourceCache}) {
+function makeRenderBatch({putResources, resourceCache, fetchCache, logger}) {
   return async function renderBatch(renderRequests, wrapper) {
     const runningRenders = await wrapper.renderBatch(renderRequests);
 
@@ -13,10 +13,12 @@ function makeRenderBatch({putResources, resourceCache}) {
         if (runningRender.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES) {
           renderRequest.setRenderId(runningRender.getRenderId());
           await putResources(renderRequest.getDom(), runningRender, wrapper);
-          for (const resource of renderRequest.getResources()) {
-            wrapper._logger.verbose('adding resource to cache: ', resource.getUrl());
-            resourceCache.setValue(resource.getUrl(), toCacheEntry(resource));
-          }
+        }
+        for (const resource of renderRequest.getResources()) {
+          logger.verbose('adding resource to cache: ', resource.getUrl());
+          const url = resource.getUrl();
+          fetchCache.remove(url);
+          resourceCache.setValue(url, toCacheEntry(resource));
         }
       }),
     );
@@ -24,7 +26,7 @@ function makeRenderBatch({putResources, resourceCache}) {
     if (runningRenders.some(rr => rr.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES)) {
       const runningRenders2 = await wrapper.renderBatch(renderRequests, wrapper);
       if (runningRenders2.some(rr => rr.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES)) {
-        wrapper._logger.log('unexpectedly got "need more resources" on second render request');
+        logger.log('unexpectedly got "need more resources" on second render request');
         throw new Error('Unexpected error while taking screenshot');
       }
     }
