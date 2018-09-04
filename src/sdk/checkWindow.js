@@ -89,7 +89,7 @@ function makeCheckWindow({
           browsers[index],
         )}`,
       );
-      const [{imageLocation, userAgent, width, height}] = await waitForRenderedStatus(
+      const [{imageLocation, userAgent, deviceSize}] = await waitForRenderedStatus(
         [renderId],
         renderWrapper,
         getError,
@@ -107,8 +107,8 @@ function makeCheckWindow({
 
       const wrapper = wrappers[index];
       wrapper.setInferredEnvironment(`useragent:${userAgent}`);
-      if (width) {
-        wrapper.setViewportSize(new RectangleSize(width, height));
+      if (deviceSize) {
+        wrapper.setViewportSize(RectangleSize.fromObject(deviceSize));
       }
 
       await prevJobPromise;
