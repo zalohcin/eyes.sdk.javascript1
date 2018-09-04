@@ -40,7 +40,7 @@ class MoveToRegionVisibilityStrategy extends RegionVisibilityStrategy {
         let dstY = location.getY() - VISIBILITY_OFFSET;
         dstY = dstY < 0 ? 0 : dstY;
 
-        return this._positionProvider.setPosition(new Location(dstX, dstY));
+        return positionProvider.setPosition(new Location(dstX, dstY));
       })
       .then(() => {
         that._logger.verbose('Done!');

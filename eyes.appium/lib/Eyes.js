@@ -27,7 +27,7 @@ class Eyes extends EyesSelenium {
   /** @override */
   _getScaleProviderFactory() {
     const that = this;
-    return this._positionProvider.getEntireSize()
+    return this._positionProviderHandler.get().getEntireSize()
       .then(entireSize => EyesAppiumUtils.isMobileDevice(this._driver)
         .then(isMobileDevice => new ContextBasedScaleProviderFactory(that._logger, entireSize, that._viewportSizeHandler.get(), that._devicePixelRatio, isMobileDevice, that._scaleProviderHandler)));
   }

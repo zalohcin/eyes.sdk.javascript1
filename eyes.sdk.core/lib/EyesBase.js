@@ -198,7 +198,7 @@ class EyesBase {
     if (hardReset) {
       this._scaleProviderHandler = undefined;
       this._cutProviderHandler = undefined;
-      this._positionProvider = undefined;
+      this._positionProviderHandler = undefined;
       this._viewportSizeHandler = undefined;
       this._debugScreenshotsProvider = undefined;
     }
@@ -215,9 +215,10 @@ class EyesBase {
       this._cutProviderHandler.set(new NullCutProvider());
     }
 
-    if (!this._positionProvider) {
-      /** @type {PositionProvider} */
-      this._positionProvider = new InvalidPositionProvider();
+    if (!this._positionProviderHandler) {
+      /** @type {PropertyHandler<PositionProvider>} */
+      this._positionProviderHandler = new SimplePropertyHandler();
+      this._positionProviderHandler.set(new InvalidPositionProvider());
     }
 
     if (!this._viewportSizeHandler) {
@@ -1191,7 +1192,7 @@ class EyesBase {
    * @return {PositionProvider} The currently set position provider.
    */
   getPositionProvider() {
-    return this._positionProvider;
+    return this._positionProviderHandler.get();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -1199,7 +1200,11 @@ class EyesBase {
    * @param {PositionProvider} positionProvider The position provider to be used.
    */
   setPositionProvider(positionProvider) {
-    this._positionProvider = positionProvider;
+    if (positionProvider) {
+      this._positionProviderHandler = new ReadOnlyPropertyHandler(this._logger, positionProvider);
+    } else {
+      this._positionProviderHandler = new SimplePropertyHandler(new InvalidPositionProvider());
+    }
   }
 
   /**
