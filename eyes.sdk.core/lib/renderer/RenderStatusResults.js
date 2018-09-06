@@ -1,6 +1,7 @@
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { RectangleSize } = require('../geometry/RectangleSize');
 
 /**
  * Encapsulates data for the render currently running in the client.
@@ -12,8 +13,7 @@ class RenderStatusResults {
     this._error = undefined;
     this._os = undefined;
     this._userAgent = undefined;
-    this._width = undefined;
-    this._height = undefined;
+    this._deviceSize = undefined;
   }
 
   /**
@@ -21,6 +21,8 @@ class RenderStatusResults {
    * @return {RenderStatusResults}
    */
   static fromObject(object) {
+    const mapping = {};
+    if (object.deviceSize) mapping.deviceSize = RectangleSize.fromObject;
     return GeneralUtils.assignTo(new RenderStatusResults(), object);
   }
 
@@ -31,7 +33,8 @@ class RenderStatusResults {
       this._imageLocation === undefined &&
       this._error === undefined &&
       this._os === undefined &&
-      this._userAgent === undefined
+      this._userAgent === undefined &&
+      this._deviceSize === undefined
     );
   }
 
@@ -85,24 +88,14 @@ class RenderStatusResults {
     this._userAgent = value;
   }
 
-  /** @return {number} */
-  getWidth() {
-    return this._width;
+  /** @return {RectangleSize} */
+  getDeviceSize() {
+    return this._deviceSize;
   }
 
-  /** @param {number} value */
-  setWidth(value) {
-    this._width = value;
-  }
-
-  /** @return {number} */
-  getHeight() {
-    return this._height;
-  }
-
-  /** @param {number} value */
-  setHeight(value) {
-    this._height = value;
+  /** @param {RectangleSize} value */
+  setDeviceSize(value) {
+    this._deviceSize = value;
   }
 
   /** @override */
