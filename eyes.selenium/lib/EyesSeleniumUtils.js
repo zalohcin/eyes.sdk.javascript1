@@ -6,7 +6,7 @@ const { EyesDriverOperationError } = require('./errors/EyesDriverOperationError'
 const { ImageOrientationHandler } = require('./ImageOrientationHandler');
 const { JavascriptHandler } = require('./JavascriptHandler');
 
-let imageOrientationHandlerHandler = new class ImageOrientationHandlerImpl extends ImageOrientationHandler {
+let imageOrientationHandler = new class ImageOrientationHandlerImpl extends ImageOrientationHandler {
   /** @override */
   isLandscapeOrientation(driver) {
     // noinspection JSValidateTypes
@@ -144,10 +144,10 @@ const setViewportSizeLoop = (
  */
 class EyesSeleniumUtils extends EyesJsBrowserUtils {
   /**
-   * @param {ImageOrientationHandler} imageOrientationHandler
+   * @param {ImageOrientationHandler} value
    */
-  static setImageOrientationHandlerHandler(imageOrientationHandler) {
-    imageOrientationHandlerHandler = imageOrientationHandler;
+  static setimageOrientationHandler(value) {
+    imageOrientationHandler = value;
   }
 
   /**
@@ -156,7 +156,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    *   false} otherwise.
    */
   static isLandscapeOrientation(driver) {
-    return imageOrientationHandlerHandler.isLandscapeOrientation(driver);
+    return imageOrientationHandler.isLandscapeOrientation(driver);
   }
 
   /**
@@ -175,7 +175,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    * @return {Promise<number>}
    */
   static tryAutomaticRotation(logger, driver, image) {
-    return imageOrientationHandlerHandler.tryAutomaticRotation(logger, driver, image);
+    return imageOrientationHandler.tryAutomaticRotation(logger, driver, image);
   }
 
   /**

@@ -418,10 +418,10 @@ class Eyes extends EyesBase {
     this._logger.verbose(`initializing position provider. stitchMode: ${stitchMode}`);
     switch (stitchMode) {
       case StitchMode.CSS:
-        this.setPositionProvider(new CssTranslatePositionProvider(this._logger, this._jsExecutor));
+        this._positionProviderHandler.set(new CssTranslatePositionProvider(this._logger, this._jsExecutor));
         break;
       default:
-        this.setPositionProvider(new ScrollPositionProvider(this._logger, this._jsExecutor));
+        this._positionProviderHandler.set(new ScrollPositionProvider(this._logger, this._jsExecutor));
     }
   }
 
@@ -468,12 +468,15 @@ class Eyes extends EyesBase {
                   return that._checkElement(name, checkSettings);
                 }
                 return that._checkRegion(name, checkSettings);
-              } else if (checkSettings.getFrameChain().length > 0) {
+              }
+
+              if (checkSettings.getFrameChain().length > 0) {
                 if (that._stitchContent) {
                   return that._checkFullFrameOrElement(name, checkSettings);
                 }
                 return that._checkFrameFluent(name, checkSettings);
               }
+
               return super.checkWindowBase(new NullRegionProvider(that.getPromiseFactory()), name, false, checkSettings);
             }
           })
@@ -559,6 +562,13 @@ class Eyes extends EyesBase {
       return switchTo.frame(frameLocator.getFrameNameOrId()).then(() => true);
     }
 
+    if (frameLocator.getFrameElement()) {
+      const frameElement = frameLocator.getFrameElement();
+      if (frameElement) {
+        return switchTo.frame(frameElement).then(() => true);
+      }
+    }
+
     if (frameLocator.getFrameSelector()) {
       const frameElement = this._driver.findElement(frameLocator.getFrameSelector());
       if (frameElement) {
@@ -614,6 +624,7 @@ class Eyes extends EyesBase {
               .then(/** EyesWebDriverScreenshot */ screenshot => {
                 that._logger.verbose('replacing regionToCheck');
                 that.setRegionToCheck(screenshot.getFrameWindow());
+                return that.getPromiseFactory().resolve(Region.EMPTY);
               });
           }));
         }
@@ -622,10 +633,9 @@ class Eyes extends EyesBase {
       }
     };
 
-    return super.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings)
-      .then(() => {
-        that._checkFrameOrElement = false;
-      });
+    return super.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings).then(() => {
+      that._checkFrameOrElement = false;
+    });
   }
 
   /**
@@ -637,7 +647,7 @@ class Eyes extends EyesBase {
     const originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
     const fc = new FrameChain(this._logger, this._driver.getFrameChain());
     // noinspection JSValidateTypes
-    return ensureFrameVisibleLoop(this._positionProvider, fc, this._driver.switchTo(), this.getPromiseFactory())
+    return ensureFrameVisibleLoop(this._positionProviderHandler.get(), fc, this._driver.switchTo(), this.getPromiseFactory())
       .then(() => that._driver.switchTo().frames(originalFC))
       .then(() => originalFC);
   }
@@ -677,7 +687,7 @@ class Eyes extends EyesBase {
                 return switchTo.frames(originalFC);
               }
             })
-            .then(() => that._positionProvider.setPosition(elementLocation));
+            .then(() => that._positionProviderHandler.get().setPosition(elementLocation));
         }
       });
   }
@@ -737,12 +747,15 @@ class Eyes extends EyesBase {
    */
   _checkElement(name, checkSettings) {
     const eyesElement = this._targetElement;
-    const originalPositionProvider = this._positionProvider;
     const scrollPositionProvider = new ScrollPositionProvider(this._logger, this._jsExecutor);
 
     const that = this;
-    let originalScrollPosition, originalOverflow, error;
-    return scrollPositionProvider.getCurrentPosition()
+    let originalScrollPosition, originalOverflow, error, originalPositionMemento;
+    return this._positionProviderHandler.get().getState()
+      .then(positionMemento => {
+        originalPositionMemento = positionMemento;
+        return scrollPositionProvider.getCurrentPosition();
+      })
       .then(newScrollPosition => {
         originalScrollPosition = newScrollPosition;
         return eyesElement.getLocation();
@@ -792,9 +805,9 @@ class Eyes extends EyesBase {
           return eyesElement.setOverflow(originalOverflow);
         }
       })
+      .then(() => this._positionProviderHandler.get().restoreState(originalPositionMemento))
       .then(() => {
         that._checkFrameOrElement = false;
-        that._positionProvider = originalPositionProvider;
         that._regionToCheck = null;
         that._elementPositionProvider = null;
 
@@ -858,7 +871,7 @@ class Eyes extends EyesBase {
    */
   _getScaleProviderFactory() {
     const that = this;
-    return this._positionProvider.getEntireSize()
+    return this._positionProviderHandler.get().getEntireSize()
       .then(entireSize => new ContextBasedScaleProviderFactory(
         that._logger,
         entireSize,
@@ -1315,7 +1328,7 @@ class Eyes extends EyesBase {
             .then(() => algo.getStitchedRegion(
               that._imageProvider,
               that._regionToCheck,
-              that._positionProvider,
+              that._positionProviderHandler.get(),
               that.getElementPositionProvider(),
               scaleProviderFactory,
               that._cutProviderHandler.get(),
@@ -1352,7 +1365,7 @@ class Eyes extends EyesBase {
               that._imageProvider,
               Region.EMPTY,
               new ScrollPositionProvider(that._logger, this._jsExecutor),
-              that._positionProvider,
+              that._positionProviderHandler.get(),
               scaleProviderFactory,
               that._cutProviderHandler.get(),
               that.getWaitBeforeScreenshots(),
@@ -1515,7 +1528,7 @@ class Eyes extends EyesBase {
    * @return {PositionProvider} The currently set position provider.
    */
   getElementPositionProvider() {
-    return this._elementPositionProvider ? this._elementPositionProvider : this._positionProvider;
+    return this._elementPositionProvider ? this._elementPositionProvider : this._positionProviderHandler.get();
   }
 }
 

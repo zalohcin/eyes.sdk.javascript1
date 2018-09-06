@@ -7,19 +7,14 @@ const { TestResults } = require('../../index');
 describe('TestResults', () => {
   it('constructor', () => {
     const testResults = new TestResults();
-    assert.equal(testResults.toString(), 'TestResults of existing test {"name":null,"status":null,"appName":null,' +
-      '"batchName":null,"batchId":null,"branchName":null,"hostOS":null,"hostApp":null,"hostDisplaySize":null,' +
-      '"startedAt":null,"duration":null,"isNew":null,"isSaved":null,"isDifferent":null,"isAborted":null,' +
-      '"appUrls":null,"apiUrls":null,"stepsInfo":null,"steps":null,"matches":null,"mismatches":null,"missing":null,' +
-      '"exactMatches":null,"strictMatches":null,"contentMatches":null,"layoutMatches":null,"noneMatches":null,' +
-      '"url":null}');
+    assert.equal(testResults.toString(), 'TestResults of existing test {}');
   });
 
   it('fromObject', () => {
     const testResults = TestResults.fromObject({
+      id: 'an id',
       name: 'a name',
       secretToken: 'a secret token',
-      id: 'an id',
       status: 'Passed',
       appName: 'an app name',
       baselineId: 'a baseline id',
@@ -107,10 +102,10 @@ describe('TestResults', () => {
       noneMatches: 0,
       url: null,
     });
-    assert.equal(testResults.toString(), 'TestResults of existing test {"name":"a name","status":"Passed",' +
+    assert.equal(testResults.toString(), 'TestResults of existing test {"id":"an id","name":"a name","status":"Passed",' +
       '"appName":"an app name","batchName":"a batch name","batchId":"a batch id","branchName":"default","hostOS":' +
       '"Windows 10.0","hostApp":"Chrome","hostDisplaySize":{"width":800,"height":560},"startedAt":"2018-06-18T15:53:' +
-      '49.470Z","duration":7,"isNew":false,"isSaved":null,"isDifferent":false,"isAborted":false,"appUrls":{"batch":' +
+      '49.470Z","duration":7,"isNew":false,"isDifferent":false,"isAborted":false,"appUrls":{"batch":' +
       '"https://eyes.applitools.com/app/test-results/123?accountId=abc","session":"https://eyes.applitools.com/app/' +
       'test-results/123/567?accountId=abc"},"apiUrls":{"batch":"https://eyesapi.applitools.com/api/sessions/batches/' +
       '123","session":"https://eyesapi.applitools.com/api/sessions/batches/123/567"},"stepsInfo":[{"name":"Partial ' +

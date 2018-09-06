@@ -9,8 +9,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    *   otherwise.
    */
   static isMobileDevice(driver) {
-    return driver.getCapabilities()
-      .then(capabilities => EyesAppiumUtils.isMobileDeviceFromCaps(capabilities));
+    return driver.getCapabilities().then(capabilities => EyesAppiumUtils.isMobileDeviceFromCaps(capabilities));
   }
 
   /**
@@ -27,8 +26,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {Promise<boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static isAndroid(driver) {
-    return driver.getCapabilities()
-      .then(capabilities => EyesAppiumUtils.isAndroidFromCaps(capabilities));
+    return driver.getCapabilities().then(capabilities => EyesAppiumUtils.isAndroidFromCaps(capabilities));
   }
 
   /**
@@ -36,8 +34,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {boolean} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static isAndroidFromCaps(capabilities) {
-    return capabilities.get('platformName')
-      .toUpperCase() === 'ANDROID';
+    return capabilities.get('platformName').toUpperCase() === 'ANDROID';
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -46,8 +43,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {Promise<boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static isIOS(driver) {
-    return driver.getCapabilities()
-      .then(capabilities => EyesAppiumUtils.isIOSFromCaps(capabilities));
+    return driver.getCapabilities().then(capabilities => EyesAppiumUtils.isIOSFromCaps(capabilities));
   }
 
   /**
@@ -55,8 +51,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {boolean} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static isIOSFromCaps(capabilities) {
-    return ['MAC', 'IOS'].includes(capabilities.get('platformName')
-      .toUpperCase());
+    return ['MAC', 'IOS'].includes(capabilities.get('platformName').toUpperCase());
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -65,8 +60,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {Promise<string>} The platform version or {@code null} if it is undefined.
    */
   static getPlatformVersion(driver) {
-    return driver.getCapabilities()
-      .then(capabilities => EyesAppiumUtils.getPlatformVersionFromCaps(capabilities));
+    return driver.getCapabilities().then(capabilities => EyesAppiumUtils.getPlatformVersionFromCaps(capabilities));
   }
 
   /**

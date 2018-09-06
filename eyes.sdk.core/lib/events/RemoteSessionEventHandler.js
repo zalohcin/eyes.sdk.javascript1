@@ -3,17 +3,16 @@
 const axios = require('axios');
 
 const { SessionEventHandler } = require('./SessionEventHandler');
-const { GeneralUtils } = require('./utils/GeneralUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 // Constants
 const DEFAULT_CONNECTION_TIMEOUT_MS = 30000;
 const SERVER_SUFFIX = '/applitools/sessions';
 
 // *** Overriding callbacks
-const sendNotification = (requestOptions, resolve, reject) =>
-  axios(requestOptions)
-    .then(response => resolve(response.status))
-    .catch(err => reject(err));
+const sendNotification = (requestOptions, resolve, reject) => axios(requestOptions)
+  .then(response => resolve(response.status))
+  .catch(err => reject(err));
 
 class RemoteSessionEventHandler extends SessionEventHandler {
   constructor(serverUrl, accessKey) {

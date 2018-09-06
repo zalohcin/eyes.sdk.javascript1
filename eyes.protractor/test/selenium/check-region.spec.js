@@ -13,7 +13,7 @@ describe('Eyes.Protractor.JavaScript - check region', () => {
 
   it('test check region methods', function () {
     return eyes.open(browser, global.appName, global.testName, new RectangleSize(800, 560)).then(() => {
-      browser.get('https://astappev.github.io/test-html-pages/');
+      browser.get('https://astappiev.github.io/test-html-pages/');
 
       // Region by rect, equivalent to eyes.checkFrame()
       eyes.check('Region by rect', Target.region(new Region(50, 50, 200, 200)));

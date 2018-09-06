@@ -104,7 +104,7 @@ class RenderStatusResults {
   setHeight(value) {
     this._height = value;
   }
-  
+
   /** @override */
   toJSON() {
     return GeneralUtils.toPlain(this);

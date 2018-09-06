@@ -19,7 +19,7 @@ describe('Eyes.Protractor.JavaScript - check-interface-features', () => {
 
   it('test check interface features', function () {
     return eyes.open(browser, global.appName, global.testName, new RectangleSize(1000, 700)).then(() => {
-      browser.get('https://astappev.github.io/test-html-pages/');
+      browser.get('https://astappiev.github.io/test-html-pages/');
 
       // Entire window, equivalent to eyes.checkWindow()
       eyes.check('Entire window', Target.window()

@@ -16,6 +16,11 @@ exports.DebugScreenshotsProvider = require('./lib/debug/DebugScreenshotsProvider
 exports.FileDebugScreenshotsProvider = require('./lib/debug/FileDebugScreenshotsProvider').FileDebugScreenshotsProvider;
 exports.NullDebugScreenshotProvider = require('./lib/debug/NullDebugScreenshotProvider').NullDebugScreenshotProvider;
 
+exports.RemoteSessionEventHandler = require('./lib/events/RemoteSessionEventHandler').RemoteSessionEventHandler;
+exports.SessionEventHandler = require('./lib/events/SessionEventHandler').SessionEventHandler;
+exports.ValidationInfo = require('./lib/events/ValidationInfo').ValidationInfo;
+exports.ValidationResult = require('./lib/events/ValidationResult').ValidationResult;
+
 exports.CoordinatesTypeConversionError = require('./lib/errors/CoordinatesTypeConversionError').CoordinatesTypeConversionError;
 exports.DiffsFoundError = require('./lib/errors/DiffsFoundError').DiffsFoundError;
 exports.EyesError = require('./lib/errors/EyesError').EyesError;
@@ -115,8 +120,6 @@ exports.FailureReports = require('./lib/FailureReports').FailureReports;
 exports.MatchSingleWindowTask = require('./lib/MatchSingleWindowTask').MatchSingleWindowTask;
 exports.MatchWindowTask = require('./lib/MatchWindowTask').MatchWindowTask;
 exports.PromiseFactory = require('./lib/PromiseFactory').PromiseFactory;
-exports.RemoteSessionEventHandler = require('./lib/RemoteSessionEventHandler').RemoteSessionEventHandler;
 exports.RenderWindowTask = require('./lib/RenderWindowTask').RenderWindowTask;
-exports.SessionEventHandler = require('./lib/SessionEventHandler').SessionEventHandler;
 exports.TestResults = require('./lib/TestResults').TestResults;
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus;

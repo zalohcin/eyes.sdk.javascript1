@@ -21,7 +21,7 @@ const JS_GET_CLIENT_HEIGHT = 'return arguments[0].clientHeight;';
  * @return {string}
  */
 const JS_GET_COMPUTED_STYLE_FORMATTED_STR = styleProp =>
-  `var elem = arguments[0], styleProp = '${styleProp}'; ` +
+  `var elem = arguments[0], styleProp = '${styleProp}'; ` + // eslint-disable-line implicit-arrow-linebreak
   'if (window.getComputedStyle) { ' +
   '   return window.getComputedStyle(elem, null).getPropertyValue(styleProp);' +
   '} else if (elem.currentStyle) { ' +
@@ -36,15 +36,14 @@ const JS_GET_COMPUTED_STYLE_FORMATTED_STR = styleProp =>
  * @return {string}
  */
 const JS_SCROLL_TO_FORMATTED_STR = (scrollLeft, scrollTop) =>
-  `arguments[0].scrollLeft = ${scrollLeft}; ` +
+  `arguments[0].scrollLeft = ${scrollLeft}; ` + // eslint-disable-line implicit-arrow-linebreak
   `arguments[0].scrollTop = ${scrollTop};`;
 
 /**
  * @param {string} overflow
  * @return {string}
  */
-const JS_SET_OVERFLOW_FORMATTED_STR = overflow =>
-  `arguments[0].style.overflow = '${overflow}'`;
+const JS_SET_OVERFLOW_FORMATTED_STR = overflow => `arguments[0].style.overflow = '${overflow}'`;
 
 /**
  * Wraps a Selenium Web Element.

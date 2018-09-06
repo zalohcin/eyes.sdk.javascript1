@@ -1,15 +1,17 @@
 'use strict';
 
+require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
 const { ConsoleLogHandler, MatchLevel, Region, RectangleSize, FloatingMatchSettings } = require('@applitools/eyes.sdk.core');
 const { Eyes, Target } = require('../../index');
 
 let driver, eyes;
-describe('Eyes.Selenium.JavaScript - check-interface-features', () => {
+describe('Eyes.Selenium.JavaScript - check-interface-features', function () {
+  this.timeout(5 * 60 * 1000);
+
   before(function () {
     driver = new Builder()
       .forBrowser('chrome')
-      .usingServer('http://localhost:4444/wd/hub')
       .build();
 
     eyes = new Eyes();
@@ -19,7 +21,7 @@ describe('Eyes.Selenium.JavaScript - check-interface-features', () => {
 
   it('test check interface features', function () {
     return eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(1000, 700)).then(driver => {
-      driver.get('https://astappev.github.io/test-html-pages/');
+      driver.get('https://astappiev.github.io/test-html-pages/');
 
       // Entire window, equivalent to eyes.checkWindow()
       eyes.check('Entire window', Target.window()

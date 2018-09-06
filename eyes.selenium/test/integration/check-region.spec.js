@@ -1,15 +1,17 @@
 'use strict';
 
+require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
 const { ConsoleLogHandler, RectangleSize, Region } = require('@applitools/eyes.sdk.core');
 const { Eyes, Target } = require('../../index');
 
 let driver, eyes;
-describe('Eyes.Selenium.JavaScript - check region', () => {
+describe('Eyes.Selenium.JavaScript - check region', function () {
+  this.timeout(5 * 60 * 1000);
+
   before(function () {
     driver = new Builder()
       .forBrowser('chrome')
-      .usingServer('http://localhost:4444/wd/hub')
       .build();
 
     eyes = new Eyes();
@@ -19,7 +21,7 @@ describe('Eyes.Selenium.JavaScript - check region', () => {
 
   it('test check region methods', function () {
     return eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(800, 560)).then(driver => {
-      driver.get('https://astappev.github.io/test-html-pages/');
+      driver.get('https://astappiev.github.io/test-html-pages/');
 
       // Region by rect, equivalent to eyes.checkFrame()
       eyes.check('Region by rect', Target.region(new Region(50, 50, 200, 200)));

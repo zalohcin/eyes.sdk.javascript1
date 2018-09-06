@@ -13,7 +13,7 @@ describe('Eyes.Protractor.JavaScript - click-sendkeys', () => {
 
   it('test click and sendKeys methods methods', function () {
     return eyes.open(browser, global.appName, global.testName, new RectangleSize(800, 560)).then(() => {
-      browser.get('https://astappev.github.io/test-html-pages/');
+      browser.get('https://astappiev.github.io/test-html-pages/');
 
       eyes.check('Entire window', Target.window().fully());
 
