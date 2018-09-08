@@ -724,5 +724,8 @@ describe('openEyes', () => {
     await psetTimeout(0);
     await openEyes({apiKey, wrappers: [wrapper2]});
     expect(flag).to.equal(true);
+    expect(wrapper2.renderingInfo.getResultsUrl()).to.equal(
+      (await wrapper.getRenderInfo()).getResultsUrl(),
+    );
   });
 });

@@ -98,7 +98,10 @@ function makeOpenEyes({
     const renderWrapper = wrappers[0];
 
     const renderInfoPromise = getLazyRenderInfo()
-      ? Promise.resolve(getLazyRenderInfo())
+      ? Promise.resolve(getLazyRenderInfo()).then(() => {
+          renderWrapper.setRenderingInfo(getLazyRenderInfo());
+          return getLazyRenderInfo();
+        })
       : renderWrapper
           .getRenderInfo()
           .then(_renderInfo => {
