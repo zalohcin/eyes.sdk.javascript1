@@ -17,7 +17,7 @@ const {
   IgnoreRegionByRectangle,
 } = require('@applitools/eyes.sdk.core');
 const {initConfig} = require('../../src/sdk/config');
-const {apiKeyFailMsg} = require('../../src/sdk/wrapperUtils');
+const {apiKeyFailMsg, authorizationErrMsg} = require('../../src/sdk/wrapperUtils');
 
 describe('openEyes', () => {
   let baseUrl, closeServer, wrapper, openEyes, prevEnv;
@@ -34,6 +34,10 @@ describe('openEyes', () => {
   });
 
   beforeEach(() => {
+    const {APPLITOOLS_SHOW_LOGS} = process.env;
+    prevEnv = process.env;
+    process.env = {};
+
     wrapper = createFakeWrapper(baseUrl);
 
     const {getConfig, updateConfig, getInitialConfig} = initConfig();
@@ -41,7 +45,7 @@ describe('openEyes', () => {
       getConfig,
       updateConfig,
       getInitialConfig,
-      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      showLogs: APPLITOOLS_SHOW_LOGS,
       wrapper,
     }).openEyes;
 
@@ -51,16 +55,13 @@ describe('openEyes', () => {
       .reply(201, (_url, body) => body, {
         location: (_req, _res, body) => body,
       });
-
-    prevEnv = process.env;
-    process.env = {};
   });
 
   afterEach(() => {
     process.env = prevEnv;
   });
 
-  it.only("doesn't throw exception", async () => {
+  it("doesn't throw exception", async () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
@@ -289,11 +290,12 @@ describe('openEyes', () => {
     expect(error.message).to.equal('getRenderInfo');
   });
 
-  it('checkWindow handles error during getRenderInfo', async () => {
-    let error;
+  it('openEyes handles authorization error during getRenderInfo', async () => {
     wrapper.getRenderInfo = async () => {
       await psetTimeout(0);
-      throw new Error('getRenderInfo');
+      const err = new Error('');
+      err.response = {status: 401};
+      throw err;
     };
 
     const {getConfig, updateConfig, getInitialConfig} = initConfig();
@@ -305,16 +307,15 @@ describe('openEyes', () => {
       wrapper,
     }).openEyes;
 
-    const {checkWindow, close} = await openEyes({
-      wrappers: [wrapper],
-      apiKey,
-    });
-
-    checkWindow({resourceUrls: [], cdt: [], url: `bla`});
     await psetTimeout(50);
-    expect(() => checkWindow({resourceUrls: [], cdt: [], url: `bla`})).to.throw(/^getRenderInfo$/);
-    error = await close().then(x => x, err => err);
-    expect(error.message).to.equal('getRenderInfo');
+
+    const [error] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        apiKey,
+      }),
+    );
+    expect(error.message).to.equal(authorizationErrMsg);
   });
 
   it('handles error during rendering', async () => {
@@ -330,7 +331,7 @@ describe('openEyes', () => {
 
     checkWindow({resourceUrls: [], cdt: [], url: `bla`});
     await psetTimeout(0);
-    expect(() => checkWindow({resourceUrls: [], cdt: [], url: `bla`})).to.throw(/^renderBatch$/);
+    checkWindow({resourceUrls: [], cdt: [], url: `bla`});
     error = await close().then(x => x, err => err);
     expect(error.message).to.equal('renderBatch');
   });
@@ -347,7 +348,7 @@ describe('openEyes', () => {
 
     checkWindow({resourceUrls: [], cdt: [], url: `bla`});
     await psetTimeout(0);
-    expect(() => checkWindow({resourceUrls: [], cdt: [], url: `bla`})).to.throw(/^checkWindow$/);
+    checkWindow({resourceUrls: [], cdt: [], url: `bla`});
     error = await close().then(x => x, err => err);
     expect(error.message).to.equal('checkWindow');
   });
@@ -566,9 +567,7 @@ describe('openEyes', () => {
 
     checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'});
     await psetTimeout(150);
-    expect(() => checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'})).to.throw(
-      /^failed to render screenshot$/,
-    );
+    checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'});
 
     const [err3] = await presult(close());
     expect(err3.message).to.equal('failed to render screenshot');
@@ -711,5 +710,19 @@ describe('openEyes', () => {
     const [[results]] = await close();
     expect(wrapper.viewportSize.toJSON()).to.eql({width: 320, height: 480});
     expect(results.getAsExpected()).to.equal(true);
+  });
+
+  it('sets renderInfo lazily', async () => {
+    let flag = true;
+    const wrapper2 = createFakeWrapper(baseUrl);
+    wrapper2.getRenderInfo = async () => {
+      flag = false;
+      return {getResultsUrl: () => 'result_url'};
+    };
+
+    await openEyes({apiKey, wrappers: [wrapper]});
+    await psetTimeout(0);
+    await openEyes({apiKey, wrappers: [wrapper2]});
+    expect(flag).to.equal(true);
   });
 });

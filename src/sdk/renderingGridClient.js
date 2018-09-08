@@ -15,7 +15,6 @@ const makeOpenEyes = require('./openEyes');
 const makeWaitForTestResults = require('./waitForTestResults');
 const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
 const makeUploadResource = require('./uploadResource');
-const EyesWrapper = require('./EyesWrapper');
 
 function makeRenderingGridClient({
   getConfig,
@@ -26,7 +25,6 @@ function makeRenderingGridClient({
   renderStatusInterval,
   concurrency = Infinity,
   renderConcurrencyFactor = 5,
-  wrapper,
 }) {
   const openEyesConcurrency = Number(getConfig({concurrency}).concurrency);
 
@@ -34,9 +32,8 @@ function makeRenderingGridClient({
     throw new Error('concurrency is not a number');
   }
 
+  let lazyRenderInfo;
   const renderThroat = throatPkg(openEyesConcurrency * renderConcurrencyFactor);
-
-  let error;
   const logger = createLogger(showLogs);
   const resourceCache = createResourceCache();
   const fetchCache = createResourceCache();
@@ -59,41 +56,22 @@ function makeRenderingGridClient({
     fetchCache,
   });
 
-  wrapper =
-    wrapper || new EyesWrapper({apiKey: getConfig().apiKey, logHandler: logger.getLogHandler()}); // TODO when organizing config, make this a default value in the function parameters
-
-  const renderInfoPromise = wrapper
-    .getRenderInfo()
-    .then(renderInfo => {
-      wrapper.setRenderingInfo(renderInfo);
-      return renderInfo;
-    })
-    .catch(err => {
-      if (err.response && err.response.status === 401) {
-        setError(new Error('Unauthorized access to Eyes server. Please check your API key.'));
-      } else {
-        setError(err);
-      }
-    });
-
   const openEyes = makeOpenEyes({
-    setError,
-    getError,
     extractCssResourcesFromCdt,
     getBundledCssFromCdt,
     renderBatch,
     waitForRenderedStatus,
     getAllResources,
     renderThroat,
-    renderInfoPromise,
-    renderWrapper: wrapper,
+    getLazyRenderInfo,
+    setLazyRenderInfo,
     uploadResource,
   });
   const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(
     openEyesWithConfig,
     openEyesConcurrency,
   );
-  const waitForTestResults = makeWaitForTestResults({logger, getError});
+  const waitForTestResults = makeWaitForTestResults({logger});
 
   const defaultBatch = getBatch(getInitialConfig());
   logger.log('new default batch', defaultBatch);
@@ -102,21 +80,19 @@ function makeRenderingGridClient({
   return {
     openEyes: openEyesLimitedConcurrency,
     waitForTestResults,
-    getError,
   };
-
-  function setError(err) {
-    logger.log('error set', err);
-    error = err;
-  }
-
-  function getError() {
-    return error;
-  }
 
   function openEyesWithConfig(args) {
     const config = getConfig(args);
     return openEyes(config);
+  }
+
+  function getLazyRenderInfo() {
+    return lazyRenderInfo;
+  }
+
+  function setLazyRenderInfo(renderInfo) {
+    lazyRenderInfo = renderInfo;
   }
 }
 

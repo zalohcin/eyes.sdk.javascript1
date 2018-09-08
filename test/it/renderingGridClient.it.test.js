@@ -50,16 +50,4 @@ describe('renderingGridClient', () => {
 
     expect(getConfig().batchId).not.to.equal(batchId);
   });
-
-  it('gets rendering info', async () => {
-    makeRenderingGridClient({
-      getConfig,
-      updateConfig,
-      getInitialConfig,
-      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-      wrapper,
-    });
-    await Promise.resolve();
-    expect(wrapper.renderingInfo).to.equal('renderInfo');
-  });
 });
