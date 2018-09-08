@@ -90,7 +90,9 @@ class FakeEyesWrapper {
     return {getResultsUrl: () => `${this.baseUrl}${this.resultsRoute}`};
   }
 
-  setRenderingInfo() {}
+  setRenderingInfo(val) {
+    this.renderingInfo = val;
+  }
 
   async checkWindow({screenshotUrl, tag, domUrl, checkSettings}) {
     if (tag && this.goodTags && !this.goodTags.includes(tag))
