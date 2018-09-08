@@ -84,10 +84,13 @@ const apiKeyFailMsg =
 const propertiesFailMsg =
   'Argument "properties" should be an array of objects, each one with a "name" and "value" properties';
 
+const authorizationErrMsg = 'Unauthorized access to Eyes server. Please check your API key.';
+
 module.exports = {
   initWrappers,
   configureWrappers,
   openWrappers,
   apiKeyFailMsg,
   propertiesFailMsg,
+  authorizationErrMsg,
 };

@@ -81,7 +81,7 @@ class FakeEyesWrapper {
         status: RenderStatus.RENDERED,
         imageLocation: renderId,
         userAgent: browserName,
-        width: emulationInfo && emulationInfo.deviceName && devices[emulationInfo.deviceName],
+        deviceSize: emulationInfo && emulationInfo.deviceName && devices[emulationInfo.deviceName],
       });
     });
   }

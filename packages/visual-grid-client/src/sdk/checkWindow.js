@@ -16,7 +16,7 @@ function makeCheckWindow({
   renderBatch,
   waitForRenderedStatus,
   getAllResources,
-  renderInfoPromise,
+  renderInfo,
   logger,
   getCheckWindowPromises,
   setCheckWindowPromises,
@@ -41,7 +41,8 @@ function makeCheckWindow({
     ignore,
   }) {
     if (getError()) {
-      throw getError();
+      logger.log('aborting checkWindow synchronously');
+      return;
     }
     const resourceUrlsWithCss = resourceUrls.concat(extractCssResourcesFromCdt(cdt, url));
     const absoluteUrls = resourceUrlsWithCss.map(resourceUrl => absolutizeUrl(resourceUrl, url));
@@ -132,8 +133,6 @@ function makeCheckWindow({
     }
 
     async function startRender() {
-      const renderInfo = await renderInfoPromise;
-
       if (getError()) {
         logger.log(`aborting startRender because there was an error in getRenderInfo`);
         return;
@@ -171,7 +170,6 @@ function makeCheckWindow({
     }
 
     async function uploadDom() {
-      const renderInfo = await renderInfoPromise;
       const bundledCss = getBundledCssFromCdt(cdt, url);
       return await uploadResource(
         renderInfo.getResultsUrl(),

@@ -1,20 +1,24 @@
 'use strict';
 const makeCheckWindow = require('./checkWindow');
 const makeCloseEyes = require('./closeEyes');
-const {initWrappers, configureWrappers, openWrappers, apiKeyFailMsg} = require('./wrapperUtils');
+const {
+  initWrappers,
+  configureWrappers,
+  openWrappers,
+  apiKeyFailMsg,
+  authorizationErrMsg,
+} = require('./wrapperUtils');
 const createLogger = require('./createLogger');
 
 function makeOpenEyes({
-  getError,
-  setError,
   extractCssResourcesFromCdt,
   getBundledCssFromCdt,
   renderBatch,
   waitForRenderedStatus,
   getAllResources,
   renderThroat,
-  renderInfoPromise,
-  renderWrapper,
+  getLazyRenderInfo,
+  setLazyRenderInfo,
   uploadResource,
 }) {
   return async function openEyes({
@@ -45,10 +49,7 @@ function makeOpenEyes({
     ignoreBaseline,
     serverUrl,
   }) {
-    if (getError()) {
-      throw getError();
-    }
-
+    let error;
     const logger = createLogger(showLogs);
 
     if (isDisabled) {
@@ -94,7 +95,34 @@ function makeOpenEyes({
       serverUrl,
     });
 
-    await openWrappers({wrappers, browsers, appName, testName});
+    const renderWrapper = wrappers[0];
+
+    const renderInfoPromise = getLazyRenderInfo()
+      ? Promise.resolve(getLazyRenderInfo())
+      : renderWrapper
+          .getRenderInfo()
+          .then(_renderInfo => {
+            setLazyRenderInfo(_renderInfo);
+            renderWrapper.setRenderingInfo(_renderInfo);
+            return _renderInfo;
+          })
+          .catch(err => {
+            if (err.response && err.response.status === 401) {
+              err = new Error(authorizationErrMsg);
+            }
+
+            setLazyRenderInfo(err);
+            return err;
+          });
+
+    const [renderInfo] = await Promise.all([
+      renderInfoPromise,
+      openWrappers({wrappers, browsers, appName, testName}),
+    ]);
+
+    if (renderInfo instanceof Error) {
+      throw renderInfo;
+    }
 
     const checkWindow = makeCheckWindow({
       getError,
@@ -104,7 +132,7 @@ function makeOpenEyes({
       renderBatch,
       waitForRenderedStatus,
       getAllResources,
-      renderInfoPromise,
+      renderInfo,
       logger,
       getCheckWindowPromises,
       setCheckWindowPromises,
@@ -123,6 +151,15 @@ function makeOpenEyes({
       close,
       abort,
     };
+
+    function setError(err) {
+      logger.log('error set in test', testName, err);
+      error = err;
+    }
+
+    function getError() {
+      return error;
+    }
 
     function getCheckWindowPromises() {
       return checkWindowPromises;
