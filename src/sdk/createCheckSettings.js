@@ -8,7 +8,7 @@ function createCheckSettings({ignore}) {
       ignore = [ignore];
     }
     for (const region of ignore) {
-      checkSettings.ignore(Region.fromObject(region));
+      checkSettings.ignoreRegions(Region.fromObject(region));
     }
   }
   return checkSettings;
