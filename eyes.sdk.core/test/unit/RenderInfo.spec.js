@@ -80,7 +80,7 @@ describe('RenderInfo', () => {
     
     const renderInfo = RenderInfo.fromObject(renderInfoObj);
     const renderInfoWithAdjustedLeftTop = Object.assign(renderInfoObj, {
-      region: { x: 3, y: 4, width: 5, height: 6 },
+      region: { x: 3, y: 4, width: 5, height: 6, coordinatesType: "SCREENSHOT_AS_IS" },
     });
 
     assert.deepEqual(renderInfo.toJSON(), renderInfoWithAdjustedLeftTop);
@@ -99,6 +99,6 @@ describe('RenderInfo', () => {
     };
     
     const renderInfo = RenderInfo.fromObject(renderInfoObj);
-    assert.deepEqual(renderInfo.toString(), 'RenderInfo { {"width":1,"height":2,"sizeMode":"some size mode","selector":"some selector","region":{"width":5,"height":6,"x":3,"y":4},"emulationInfo":{"deviceName":"deviceName","screenOrientation":"portrait"}} }');
+    assert.deepEqual(renderInfo.toString(), 'RenderInfo { {"width":1,"height":2,"sizeMode":"some size mode","selector":"some selector","region":{"width":5,"height":6,"coordinatesType":"SCREENSHOT_AS_IS","x":3,"y":4},"emulationInfo":{"deviceName":"deviceName","screenOrientation":"portrait"}} }');
   });
 });
