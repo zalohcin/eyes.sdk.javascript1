@@ -7,14 +7,12 @@ const makeExtractCssResources = require('./extractCssResources');
 const makeFetchResource = require('./fetchResource');
 const makeExtractCssResourcesFromCdt = require('./extractCssResourcesFromCdt');
 const createResourceCache = require('./createResourceCache');
-const makeGetBundledCssFromCdt = require('./getBundledCssFromCdt');
 const makeWaitForRenderedStatus = require('./waitForRenderedStatus');
 const makePutResources = require('./putResources');
 const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
 const makeWaitForTestResults = require('./waitForTestResults');
 const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
-const makeUploadResource = require('./uploadResource');
 
 function makeRenderingGridClient({
   getConfig,
@@ -40,10 +38,8 @@ function makeRenderingGridClient({
   const extractCssResources = makeExtractCssResources(logger);
   const fetchResource = makeFetchResource(logger);
   const extractCssResourcesFromCdt = makeExtractCssResourcesFromCdt(extractCssResources);
-  const getBundledCssFromCdt = makeGetBundledCssFromCdt({resourceCache, logger});
   const putResources = makePutResources();
   const renderBatch = makeRenderBatch({putResources, resourceCache, fetchCache, logger});
-  const uploadResource = makeUploadResource(logger);
   const waitForRenderedStatus = makeWaitForRenderedStatus({
     timeout: renderStatusTimeout,
     getStatusInterval: renderStatusInterval,
@@ -58,14 +54,12 @@ function makeRenderingGridClient({
 
   const openEyes = makeOpenEyes({
     extractCssResourcesFromCdt,
-    getBundledCssFromCdt,
     renderBatch,
     waitForRenderedStatus,
     getAllResources,
     renderThroat,
     getLazyRenderInfo,
     setLazyRenderInfo,
-    uploadResource,
   });
   const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(
     openEyesWithConfig,
