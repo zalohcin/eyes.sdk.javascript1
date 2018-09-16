@@ -93,8 +93,22 @@ describe('waitForTestResults', () => {
 
     checkWindow2({cdt: [], url: ''});
     const closePromise2 = close2();
-    const [err, results] = await waitForTestResults([closePromise, closePromise2]);
+
+    const {checkWindow: checkWindow3, close: close3} = await openEyes({
+      wrappers: [wrapper],
+      isDisabled: true,
+    });
+
+    checkWindow3({cdt: [], url: ''});
+    const closePromise3 = close3();
+
+    const [err, results, skipped] = await waitForTestResults([
+      closePromise,
+      closePromise2,
+      closePromise3,
+    ]);
     expect(err.message).to.equal(errMsg);
     expect(results.map(r => r.getAsExpected())[0]).to.equal(true);
+    expect(skipped).to.equal(undefined);
   });
 });
