@@ -48,7 +48,7 @@ describe('createRenderRequests', () => {
           height: 2,
           selector,
           sizeMode,
-          region: {x: 1, y: 2, width: 3, height: 4},
+          region: {x: 1, y: 2, width: 3, height: 4, coordinatesType: 'SCREENSHOT_AS_IS'},
         },
       },
       {
@@ -63,7 +63,7 @@ describe('createRenderRequests', () => {
           height: 4,
           selector,
           sizeMode,
-          region: {x: 1, y: 2, width: 3, height: 4},
+          region: {x: 1, y: 2, width: 3, height: 4, coordinatesType: 'SCREENSHOT_AS_IS'},
         },
       },
     ]);
