@@ -12,6 +12,7 @@ function makeCheckWindow({
   getError,
   saveDebugData,
   extractCssResourcesFromCdt,
+  getBundledCssFromCdt,
   renderBatch,
   waitForRenderedStatus,
   getAllResources,
@@ -24,6 +25,7 @@ function makeCheckWindow({
   wrappers,
   renderWrapper,
   renderThroat,
+  uploadResource,
 }) {
   return function checkWindow({
     resourceUrls = [],
@@ -34,6 +36,7 @@ function makeCheckWindow({
     sizeMode = 'full-page',
     selector,
     region,
+    domCapture,
     scriptHooks,
     ignore,
   }) {
@@ -50,6 +53,7 @@ function makeCheckWindow({
 
     const getResourcesPromise = getAllResources(absoluteUrls, absoluteResourceContents);
     const renderPromise = presult(startRender());
+    const uploadPromise = presult(uploadDom());
 
     let renderJobs; // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
@@ -86,7 +90,7 @@ function makeCheckWindow({
           browsers[index],
         )}`,
       );
-      const [{imageLocation, domLocation, userAgent, deviceSize}] = await waitForRenderedStatus(
+      const [{imageLocation, userAgent, deviceSize}] = await waitForRenderedStatus(
         [renderId],
         renderWrapper,
         getError,
@@ -117,14 +121,15 @@ function makeCheckWindow({
         return;
       }
 
+      const [uploadErr, domUrl] = await uploadPromise;
+      if (uploadErr) {
+        setError(uploadErr);
+        return;
+      }
+
       const checkSettings = createCheckSettings({ignore});
 
-      await wrapper.checkWindow({
-        screenshotUrl: imageLocation,
-        tag,
-        domUrl: domLocation,
-        checkSettings,
-      });
+      await wrapper.checkWindow({screenshotUrl: imageLocation, tag, domUrl, checkSettings});
     }
 
     async function startRender() {
@@ -162,6 +167,14 @@ function makeCheckWindow({
       }
 
       return renderIds;
+    }
+
+    async function uploadDom() {
+      const bundledCss = getBundledCssFromCdt(cdt, url);
+      return await uploadResource(
+        renderInfo.getResultsUrl(),
+        JSON.stringify({dom: domCapture, css: bundledCss}),
+      );
     }
   };
 
