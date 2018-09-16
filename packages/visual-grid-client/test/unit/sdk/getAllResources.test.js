@@ -110,9 +110,9 @@ describe('getAllResources', () => {
     const type = 'type';
     const value = 'value';
     const rGridResource = toRGridResource({url, type, value});
-    rGridResource._content = null; // yuck! but this is the symmetrical yuck of getAllResources::fromCacheToRGridResource since we save resource in cache without content, but with SHA256
+    rGridResource._content = undefined; // yuck! but this is the symmetrical yuck of getAllResources::fromCacheToRGridResource since we save resource in cache without content, but with SHA256
 
-    resourceCache.setValue(url, {url, type, hash: null});
+    resourceCache.setValue(url, {url, type, hash: undefined});
 
     const expected = {
       [url]: rGridResource,
@@ -177,29 +177,29 @@ describe('getAllResources', () => {
     const cssType = 'text/css; charset=UTF-8';
     const fontType = 'application/font-woff2';
 
-    resourceCache.setValue(jpgUrl1, {url: jpgUrl1, type: jpgType, hash: null});
-    resourceCache.setValue(jpgUrl2, {url: jpgUrl2, type: jpgType, hash: null});
-    resourceCache.setValue(jpgUrl3, {url: jpgUrl3, type: jpgType, hash: null});
+    resourceCache.setValue(jpgUrl1, {url: jpgUrl1, type: jpgType, hash: undefined});
+    resourceCache.setValue(jpgUrl2, {url: jpgUrl2, type: jpgType, hash: undefined});
+    resourceCache.setValue(jpgUrl3, {url: jpgUrl3, type: jpgType, hash: undefined});
     resourceCache.setValue(cssUrl, {
       url: cssUrl,
       type: cssType,
-      hash: null,
+      hash: undefined,
       content: loadFixtureBuffer('test.css'),
     });
     resourceCache.setValue(importedUrl, {
       url: importedUrl,
       type: cssType,
-      hash: null,
+      hash: undefined,
       content: loadFixtureBuffer('imported.css'),
     });
     resourceCache.setValue(importedNestedUrl, {
       url: importedNestedUrl,
       type: cssType,
-      hash: null,
+      hash: undefined,
       content: loadFixtureBuffer('imported-nested.css'),
     });
-    resourceCache.setValue(fontZillaUrl, {url: fontZillaUrl, type: fontType, hash: null});
-    resourceCache.setValue(fontShadowUrl, {url: fontShadowUrl, type: fontType, hash: null});
+    resourceCache.setValue(fontZillaUrl, {url: fontZillaUrl, type: fontType, hash: undefined});
+    resourceCache.setValue(fontShadowUrl, {url: fontShadowUrl, type: fontType, hash: undefined});
 
     resourceCache.setDependencies(cssUrl, [importedUrl, fontZillaUrl]);
     resourceCache.setDependencies(importedUrl, [
@@ -226,7 +226,7 @@ describe('getAllResources', () => {
       },
       (o, url) => {
         const rGridResource = toRGridResource({type: o.type, value: o.value, url});
-        if (!isCss(rGridResource.getContentType())) rGridResource._content = null; // yuck! but this is the symmetrical yuck of getAllResources::fromCacheToRGridResource since we save resource in cache without content, but with SHA256
+        if (!isCss(rGridResource.getContentType())) rGridResource._content = undefined; // yuck! but this is the symmetrical yuck of getAllResources::fromCacheToRGridResource since we save resource in cache without content, but with SHA256
         return rGridResource;
       },
     );
