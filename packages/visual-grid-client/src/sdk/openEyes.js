@@ -12,12 +12,14 @@ const createLogger = require('./createLogger');
 
 function makeOpenEyes({
   extractCssResourcesFromCdt,
+  getBundledCssFromCdt,
   renderBatch,
   waitForRenderedStatus,
   getAllResources,
   renderThroat,
   getLazyRenderInfo,
   setLazyRenderInfo,
+  uploadResource,
 }) {
   return async function openEyes({
     appName,
@@ -129,6 +131,7 @@ function makeOpenEyes({
       getError,
       saveDebugData,
       extractCssResourcesFromCdt,
+      getBundledCssFromCdt,
       renderBatch,
       waitForRenderedStatus,
       getAllResources,
@@ -141,6 +144,7 @@ function makeOpenEyes({
       wrappers,
       renderWrapper,
       renderThroat,
+      uploadResource,
     });
 
     const close = makeCloseEyes({getError, logger, getCheckWindowPromises, wrappers});
