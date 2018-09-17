@@ -10,6 +10,7 @@ class RenderStatusResults {
   constructor() {
     this._status = undefined;
     this._imageLocation = undefined;
+    this._domLocation = undefined;
     this._error = undefined;
     this._os = undefined;
     this._userAgent = undefined;
@@ -31,6 +32,7 @@ class RenderStatusResults {
     return (
       this._status === undefined &&
       this._imageLocation === undefined &&
+      this._domLocation === undefined &&
       this._error === undefined &&
       this._os === undefined &&
       this._userAgent === undefined &&
@@ -56,6 +58,16 @@ class RenderStatusResults {
   /** @param {string} value */
   setImageLocation(value) {
     this._imageLocation = value;
+  }
+
+  /** @return {string} */
+  getDomLocation() {
+    return this._domLocation;
+  }
+
+  /** @param {string} value */
+  setDomLocation(value) {
+    this._domLocation = value;
   }
 
   /** @return {string} */
