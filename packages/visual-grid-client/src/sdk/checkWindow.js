@@ -24,6 +24,8 @@ function makeCheckWindow({
   wrappers,
   renderWrapper,
   renderThroat,
+  stepCounter,
+  testName,
 }) {
   return function checkWindow({
     resourceUrls = [],
@@ -37,6 +39,7 @@ function makeCheckWindow({
     scriptHooks,
     ignore,
   }) {
+    logger.log(`running checkWindow for test ${testName} step #${++stepCounter}`);
     if (getError()) {
       logger.log('aborting checkWindow synchronously');
       return;
@@ -82,7 +85,7 @@ function makeCheckWindow({
       const renderId = renderIds[index];
 
       logger.log(
-        `render request complete for ${renderId}. tag=${tag} sizeMode=${sizeMode} browser: ${JSON.stringify(
+        `render request complete for ${renderId}. test=${testName} stepCount=${stepCounter} tag=${tag} sizeMode=${sizeMode} browser: ${JSON.stringify(
           browsers[index],
         )}`,
       );
@@ -108,6 +111,8 @@ function makeCheckWindow({
         wrapper.setViewportSize(RectangleSize.fromObject(deviceSize));
       }
 
+      logger.log(`checkWindow waiting for prev job. test=${testName}, stepCount=${stepCounter}`);
+
       await prevJobPromise;
 
       if (getError()) {
@@ -119,6 +124,7 @@ function makeCheckWindow({
 
       const checkSettings = createCheckSettings({ignore});
 
+      logger.log(`running wrapper.checkWindow for test ${testName} stepCount #${stepCounter}`);
       await wrapper.checkWindow({
         screenshotUrl: imageLocation,
         tag,
