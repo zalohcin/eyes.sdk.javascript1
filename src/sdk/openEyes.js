@@ -125,6 +125,8 @@ function makeOpenEyes({
       throw renderInfo;
     }
 
+    let stepCounter = 0;
+
     const checkWindow = makeCheckWindow({
       getError,
       saveDebugData,
@@ -141,6 +143,8 @@ function makeOpenEyes({
       wrappers,
       renderWrapper,
       renderThroat,
+      stepCounter,
+      testName,
     });
 
     const close = makeCloseEyes({getError, logger, getCheckWindowPromises, wrappers});
