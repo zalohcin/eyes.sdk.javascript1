@@ -16,8 +16,8 @@ function makeOpenEyes({
   waitForRenderedStatus,
   getAllResources,
   renderThroat,
-  getLazyRenderInfo,
-  setLazyRenderInfo,
+  getRenderInfoPromise,
+  setRenderInfoPromise,
 }) {
   return async function openEyes({
     appName,
@@ -95,26 +95,17 @@ function makeOpenEyes({
 
     const renderWrapper = wrappers[0];
 
-    const renderInfoPromise = getLazyRenderInfo()
-      ? Promise.resolve(getLazyRenderInfo()).then(() => {
-          renderWrapper.setRenderingInfo(getLazyRenderInfo());
-          return getLazyRenderInfo();
-        })
-      : renderWrapper
-          .getRenderInfo()
-          .then(_renderInfo => {
-            setLazyRenderInfo(_renderInfo);
-            renderWrapper.setRenderingInfo(_renderInfo);
-            return _renderInfo;
-          })
-          .catch(err => {
-            if (err.response && err.response.status === 401) {
-              err = new Error(authorizationErrMsg);
-            }
+    const renderInfoPromise =
+      getRenderInfoPromise() ||
+      setRenderInfoPromise(
+        renderWrapper.getRenderInfo().catch(err => {
+          if (err.response && err.response.status === 401) {
+            err = new Error(authorizationErrMsg);
+          }
 
-            setLazyRenderInfo(err);
-            return err;
-          });
+          return err;
+        }),
+      );
 
     const [renderInfo] = await Promise.all([
       renderInfoPromise,
@@ -124,6 +115,8 @@ function makeOpenEyes({
     if (renderInfo instanceof Error) {
       throw renderInfo;
     }
+
+    renderWrapper.setRenderingInfo(renderInfo);
 
     let stepCounter = 0;
 

@@ -30,7 +30,7 @@ function makeRenderingGridClient({
     throw new Error('concurrency is not a number');
   }
 
-  let lazyRenderInfo;
+  let renderInfoPromise;
   const renderThroat = throatPkg(openEyesConcurrency * renderConcurrencyFactor);
   const logger = createLogger(showLogs);
   const resourceCache = createResourceCache();
@@ -57,8 +57,8 @@ function makeRenderingGridClient({
     waitForRenderedStatus,
     getAllResources,
     renderThroat,
-    getLazyRenderInfo,
-    setLazyRenderInfo,
+    getRenderInfoPromise,
+    setRenderInfoPromise,
   });
   const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(
     openEyesWithConfig,
@@ -80,12 +80,13 @@ function makeRenderingGridClient({
     return openEyes(config);
   }
 
-  function getLazyRenderInfo() {
-    return lazyRenderInfo;
+  function getRenderInfoPromise() {
+    return renderInfoPromise;
   }
 
-  function setLazyRenderInfo(renderInfo) {
-    lazyRenderInfo = renderInfo;
+  function setRenderInfoPromise(promise) {
+    renderInfoPromise = promise;
+    return promise;
   }
 }
 
