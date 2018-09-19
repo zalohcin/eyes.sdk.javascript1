@@ -36,7 +36,7 @@ function makeRenderingGridClient({
   const resourceCache = createResourceCache();
   const fetchCache = createResourceCache();
   const extractCssResources = makeExtractCssResources(logger);
-  const fetchResource = makeFetchResource(logger);
+  const fetchResource = makeFetchResource({logger, fetchCache});
   const extractCssResourcesFromCdt = makeExtractCssResourcesFromCdt(extractCssResources);
   const putResources = makePutResources();
   const renderBatch = makeRenderBatch({putResources, resourceCache, fetchCache, logger});
@@ -49,7 +49,6 @@ function makeRenderingGridClient({
     resourceCache,
     extractCssResources,
     fetchResource,
-    fetchCache,
   });
 
   const openEyes = makeOpenEyes({
