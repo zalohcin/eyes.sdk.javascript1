@@ -26,13 +26,15 @@ describe('getAllResources', () => {
 
   beforeEach(() => {
     const extractCssResources = makeExtractCssResources(testLogger);
-    const fetchResource = makeFetchResource(testLogger);
+    const fetchResource = makeFetchResource({
+      logger: testLogger,
+      fetchCache: createResourceCache(),
+    });
     resourceCache = createResourceCache();
     getAllResources = makeGetAllResources({
       resourceCache,
       extractCssResources,
       fetchResource,
-      fetchCache: createResourceCache(),
     });
   });
 
@@ -97,7 +99,7 @@ describe('getAllResources', () => {
 
     try {
       const resources = await getAllResources([jpgUrl, cssUrl, jsonUrl, jsUrl]);
-      expect(resources).to.deep.equal(expected);
+      expect(resources).to.eql(expected);
     } catch (ex) {
       throw ex;
     } finally {
@@ -119,7 +121,7 @@ describe('getAllResources', () => {
     };
 
     const resourcesFromCache = await getAllResources([url]);
-    expect(resourcesFromCache).to.deep.equal(expected);
+    expect(resourcesFromCache).to.eql(expected);
   });
 
   it('works for urls with long paths', async () => {
@@ -138,7 +140,7 @@ describe('getAllResources', () => {
 
     try {
       const resources = await getAllResources([absoluteUrl]);
-      expect(resources).to.deep.equal(expected);
+      expect(resources).to.eql(expected);
     } catch (ex) {
       throw ex;
     } finally {
@@ -232,7 +234,7 @@ describe('getAllResources', () => {
     );
 
     const resourcesFromCache = await getAllResources([cssUrl]);
-    expect(resourcesFromCache).to.deep.equal(expected);
+    expect(resourcesFromCache).to.eql(expected);
   });
 
   it("doesn't crash with unsupported protocols", async () => {
