@@ -714,18 +714,21 @@ describe('openEyes', () => {
 
   it('sets renderInfo lazily', async () => {
     let flag = true;
+    wrapper.getRenderInfo = async function() {
+      await psetTimeout(50);
+      return 'bla';
+    };
     const wrapper2 = createFakeWrapper(baseUrl);
     wrapper2.getRenderInfo = async () => {
       flag = false;
-      return {getResultsUrl: () => 'result_url'};
+      return 'kuku';
     };
 
-    await openEyes({apiKey, wrappers: [wrapper]});
+    const p = openEyes({apiKey, wrappers: [wrapper]});
     await psetTimeout(0);
     await openEyes({apiKey, wrappers: [wrapper2]});
     expect(flag).to.equal(true);
-    expect(wrapper2.renderingInfo.getResultsUrl()).to.equal(
-      (await wrapper.getRenderInfo()).getResultsUrl(),
-    );
+    expect(wrapper2.renderingInfo).to.equal('bla');
+    await p;
   });
 });
