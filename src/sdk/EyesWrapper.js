@@ -64,10 +64,11 @@ class EyesWrapper extends EyesBase {
     return this._serverConnector.renderStatusById(renderId);
   }
 
-  checkWindow({screenshotUrl, tag, domUrl, checkSettings}) {
+  checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation}) {
     const regionProvider = new NullRegionProvider(this.getPromiseFactory()); // TODO receive from outside?
     this.screenshotUrl = screenshotUrl;
     this.domUrl = domUrl;
+    this.imageLocation = imageLocation;
     return this.checkWindowBase(regionProvider, tag, false, checkSettings);
   }
 
@@ -97,6 +98,10 @@ class EyesWrapper extends EyesBase {
 
   async getDomUrl() {
     return await this.domUrl;
+  }
+
+  async getImageLocation() {
+    return await this.imageLocation;
   }
 }
 

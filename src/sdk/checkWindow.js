@@ -6,7 +6,8 @@ const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
 const createCheckSettings = require('./createCheckSettings');
 const {presult} = require('@applitools/functional-commons');
-const {RectangleSize} = require('@applitools/eyes.sdk.core');
+const {RectangleSize, Location} = require('@applitools/eyes.sdk.core');
+const calculateIgnoreRegions = require('./calculateIgnoreRegions');
 
 function makeCheckWindow({
   getError,
@@ -89,14 +90,12 @@ function makeCheckWindow({
           browsers[index],
         )}`,
       );
-      const [{imageLocation, domLocation, userAgent, deviceSize}] = await waitForRenderedStatus(
-        [renderId],
-        renderWrapper,
-        getError,
-      );
+      const [
+        {imageLocation: screenshotUrl, domLocation, userAgent, deviceSize, selectorRegions},
+      ] = await waitForRenderedStatus([renderId], renderWrapper, getError);
 
-      if (imageLocation) {
-        logger.log(`screenshot available for ${renderId} at ${imageLocation}`);
+      if (screenshotUrl) {
+        logger.log(`screenshot available for ${renderId} at ${screenshotUrl}`);
       } else {
         logger.log(`screenshot NOT available for ${renderId}`);
       }
@@ -122,14 +121,22 @@ function makeCheckWindow({
         return;
       }
 
-      const checkSettings = createCheckSettings({ignore});
+      const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0] : undefined;
+      const imageLocation = imageLocationRegion
+        ? Location.fromObject({x: imageLocationRegion.getLeft(), y: imageLocationRegion.getLeft()})
+        : undefined;
+
+      const ignoreRegions = calculateIgnoreRegions({ignore, selectorRegions, imageLocationRegion});
+
+      const checkSettings = createCheckSettings({ignore: ignoreRegions});
 
       logger.log(`running wrapper.checkWindow for test ${testName} stepCount #${stepCounter}`);
       await wrapper.checkWindow({
-        screenshotUrl: imageLocation,
+        screenshotUrl,
         tag,
         domUrl: domLocation,
         checkSettings,
+        imageLocation,
       });
     }
 
@@ -156,6 +163,7 @@ function makeCheckWindow({
         selector,
         region,
         scriptHooks,
+        ignore,
       });
 
       let renderIds = await renderThroat(() => renderBatch(renderRequests, renderWrapper));

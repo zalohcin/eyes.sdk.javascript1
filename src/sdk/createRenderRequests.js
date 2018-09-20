@@ -14,6 +14,7 @@ function createRenderRequests({
   selector,
   region,
   scriptHooks,
+  ignore,
 }) {
   const rGridDom = createRGridDom({resources, cdt});
 
@@ -28,6 +29,17 @@ function createRenderRequests({
         height,
       });
 
+      let selectorsToFindRegionsFor = sizeMode === 'selector' ? [selector] : undefined;
+      const ignoreBySelector = ignore
+        ? [].concat(ignore).filter(ignoreRegion => ignoreRegion.selector)
+        : undefined;
+
+      if (ignoreBySelector && ignoreBySelector.length) {
+        selectorsToFindRegionsFor = (selectorsToFindRegionsFor || []).concat(
+          ignoreBySelector.map(({selector}) => selector),
+        );
+      }
+
       return new RenderRequest(
         renderInfo.getResultsUrl(),
         url,
@@ -36,6 +48,7 @@ function createRenderRequests({
         'Linux',
         name,
         scriptHooks,
+        selectorsToFindRegionsFor,
       );
     },
   );
