@@ -1974,6 +1974,7 @@ class EyesBase {
           title = newTitle;
           domUrl = newDomUrl;
           imageLocation = newImageLocation;
+          that._logger.verbose('Done getting title, domUrl, imageLocation!')
         });
       })
       .then(() => {
