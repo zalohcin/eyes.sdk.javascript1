@@ -11,11 +11,12 @@ class AppOutput {
    * @param {string} [screenshotUrl] The URL that points to the screenshot
    * @param {string} [domUrl] URL that points to a dom capture of the provided screenshot
    */
-  constructor(title, screenshot64, screenshotUrl, domUrl) {
+  constructor(title, screenshot64, screenshotUrl, domUrl, imageLocation) {
     this._title = title;
     this._screenshot64 = screenshot64;
     this._screenshotUrl = screenshotUrl;
     this._domUrl = domUrl;
+    this._imageLocation = imageLocation;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -64,6 +65,16 @@ class AppOutput {
     this._domUrl = value;
   }
 
+  /** @return {Location} */
+  getLocation() {
+    return this._imageLocation;
+  }
+
+  /** @param {Location} value */
+  setDomUrl(value) {
+    this._imageLocation = value;
+  }
+
   /** @override */
   toJSON() {
     const object = {
@@ -80,6 +91,10 @@ class AppOutput {
 
     if (this._domUrl) {
       object.domUrl = this._domUrl;
+    }
+
+    if (this._imageLocation) {
+      object.location = this._imageLocation.toJSON();
     }
 
     return object;

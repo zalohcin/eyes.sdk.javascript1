@@ -1914,7 +1914,7 @@ class EyesBase {
     const that = this;
     that._logger.verbose('getting screenshot...');
     // Getting the screenshot (abstract function implemented by each SDK).
-    let title, screenshot, screenshotBuffer, screenshotUrl, domUrl;
+    let title, screenshot, screenshotBuffer, screenshotUrl, domUrl, imageLocation;
     return that.getScreenshot()
       .then(newScreenshot => {
         that._logger.verbose('Done getting screenshot!');
@@ -1964,21 +1964,20 @@ class EyesBase {
           });
       })
       .then(() => {
-        that._logger.verbose('Getting domUrl...');
-        return that.getDomUrl().then(newDomUrl => {
-          domUrl = newDomUrl;
-          that._logger.verbose('Done!');
-        });
-      })
-      .then(() => {
-        that._logger.verbose('Getting title...');
-        return that.getTitle().then(newTitle => {
+        that._logger.verbose('Getting title, domUrl, imageLocation...');
+        return that._promiseFactory.all([
+          that.getTitle(),
+          that.getDomUrl(),
+          that.getImageLocation(),
+
+        ]).then(([newTitle, newDomUrl, newImageLocation]) => {
           title = newTitle;
-          that._logger.verbose('Done!');
+          domUrl = newDomUrl;
+          imageLocation = newImageLocation;
         });
       })
       .then(() => {
-        const result = new AppOutputWithScreenshot(new AppOutput(title, screenshotBuffer, screenshotUrl, domUrl), screenshot);
+        const result = new AppOutputWithScreenshot(new AppOutput(title, screenshotBuffer, screenshotUrl, domUrl, imageLocation), screenshot);
         that._logger.verbose('Done!');
         return result;
       });
@@ -2154,6 +2153,19 @@ class EyesBase {
   getDomUrl() {
     return this.getPromiseFactory().resolve();
   }
+  
+  /**
+   * The location of the image relative to the logical full page image, when cropping an image e.g. with checkRegion 
+   *
+   * @protected
+   * @abstract
+   * @return {Promise<Location>}
+   */
+  getImageLocation() {
+    return this.getPromiseFactory().resolve();
+  }
+
+
 
   /**
    * @return {PromiseFactory}
