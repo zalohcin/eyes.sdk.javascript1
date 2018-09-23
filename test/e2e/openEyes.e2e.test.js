@@ -6,16 +6,14 @@ const makeRenderingGridClient = require('../../src/sdk/renderingGridClient');
 const testServer = require('../util/testServer');
 const {DiffsFoundError} = require('@applitools/eyes.sdk.core');
 const {loadJsonFixture, loadFixtureBuffer} = require('../util/loadFixture');
-const {initConfig} = require('../../src/sdk/config');
 
 describe('openEyes', () => {
   let baseUrl, closeServer, openEyes;
   const apiKey = process.env.APPLITOOLS_API_KEY; // TODO bad for tests. what to do
 
   beforeEach(() => {
-    openEyes = makeRenderingGridClient(
-      Object.assign({showLogs: process.env.APPLITOOLS_SHOW_LOGS}, initConfig()),
-    ).openEyes;
+    openEyes = makeRenderingGridClient(Object.assign({showLogs: process.env.APPLITOOLS_SHOW_LOGS}))
+      .openEyes;
   });
 
   before(async () => {

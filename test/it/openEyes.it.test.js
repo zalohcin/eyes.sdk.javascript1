@@ -16,7 +16,6 @@ const {
   Region,
   IgnoreRegionByRectangle,
 } = require('@applitools/eyes.sdk.core');
-const {initConfig} = require('../../src/sdk/config');
 const {apiKeyFailMsg, authorizationErrMsg} = require('../../src/sdk/wrapperUtils');
 
 describe('openEyes', () => {
@@ -40,14 +39,7 @@ describe('openEyes', () => {
 
     wrapper = createFakeWrapper(baseUrl);
 
-    const {getConfig, updateConfig, getInitialConfig} = initConfig();
-    openEyes = makeRenderingGridClient({
-      getConfig,
-      updateConfig,
-      getInitialConfig,
-      showLogs: APPLITOOLS_SHOW_LOGS,
-      wrapper,
-    }).openEyes;
+    openEyes = makeRenderingGridClient({showLogs: APPLITOOLS_SHOW_LOGS}).openEyes;
 
     nock(wrapper.baseUrl)
       .persist()
@@ -270,14 +262,7 @@ describe('openEyes', () => {
       throw new Error('getRenderInfo');
     };
 
-    const {getConfig, updateConfig, getInitialConfig} = initConfig();
-    openEyes = makeRenderingGridClient({
-      getConfig,
-      updateConfig,
-      getInitialConfig,
-      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-      wrapper,
-    }).openEyes;
+    openEyes = makeRenderingGridClient({showLogs: process.env.APPLITOOLS_SHOW_LOGS}).openEyes;
 
     await psetTimeout(50);
 
@@ -298,14 +283,7 @@ describe('openEyes', () => {
       throw err;
     };
 
-    const {getConfig, updateConfig, getInitialConfig} = initConfig();
-    openEyes = makeRenderingGridClient({
-      getConfig,
-      updateConfig,
-      getInitialConfig,
-      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-      wrapper,
-    }).openEyes;
+    openEyes = makeRenderingGridClient({showLogs: process.env.APPLITOOLS_SHOW_LOGS}).openEyes;
 
     await psetTimeout(50);
 
@@ -378,14 +356,9 @@ describe('openEyes', () => {
       flag = true;
     };
 
-    const {getConfig, updateConfig, getInitialConfig} = initConfig();
     openEyes = makeRenderingGridClient({
-      getConfig,
-      updateConfig,
-      getInitialConfig,
       concurrency: 2,
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-      wrapper: wrapper1,
     }).openEyes;
 
     const {close} = await openEyes({wrappers: [wrapper1], apiKey});
@@ -402,14 +375,9 @@ describe('openEyes', () => {
       throw new Error('close');
     };
 
-    const {getConfig, updateConfig, getInitialConfig} = initConfig();
     openEyes = makeRenderingGridClient({
-      getConfig,
-      updateConfig,
-      getInitialConfig,
       concurrency: 1,
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-      wrapper,
     }).openEyes;
 
     const {close} = await openEyes({wrappers: [wrapper], apiKey});
@@ -426,15 +394,10 @@ describe('openEyes', () => {
 
   describe('max concurrency for render', () => {
     beforeEach(() => {
-      const {getConfig, updateConfig, getInitialConfig} = initConfig();
       openEyes = makeRenderingGridClient({
-        getConfig,
-        updateConfig,
-        getInitialConfig,
         concurrency: 2,
         renderConcurrencyFactor: 1,
         showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-        wrapper,
       }).openEyes;
     });
 
@@ -549,15 +512,10 @@ describe('openEyes', () => {
       return [rs];
     };
 
-    const {getConfig, updateConfig, getInitialConfig} = initConfig();
     openEyes = makeRenderingGridClient({
-      getConfig,
-      updateConfig,
-      getInitialConfig,
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       renderStatusTimeout: 50,
       renderStatusInterval: 50,
-      wrapper,
     }).openEyes;
 
     const {checkWindow, close} = await openEyes({
@@ -581,15 +539,10 @@ describe('openEyes', () => {
       return [rs];
     };
 
-    const {getConfig, updateConfig, getInitialConfig} = initConfig();
     openEyes = makeRenderingGridClient({
-      getConfig,
-      updateConfig,
-      getInitialConfig,
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       renderStatusTimeout: 150,
       renderStatusInterval: 50,
-      wrapper,
     }).openEyes;
 
     const {checkWindow, close} = await openEyes({

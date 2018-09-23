@@ -7,17 +7,17 @@ const explorer = cosmiconfig('applitools', {
   searchPlaces: ['package.json', 'applitools.config.js', 'eyes.config.js', 'eyes.json'],
 });
 
-function initConfig(configParams) {
+function initConfig({configParams, configPath} = {}) {
   let defaultConfig = {};
   try {
-    const result = explorer.searchSync();
+    const result = configPath ? explorer.loadSync(configPath) : explorer.searchSync();
     if (result) {
       const {config, filepath} = result;
       logger.log('loading configuration from', filepath);
       defaultConfig = config;
     }
   } catch (ex) {
-    logger.log('an error occurred while searching for configuration', ex);
+    logger.log(`an error occurred while loading configuration. configPath=${configPath}\n`, ex);
   }
 
   configParams = configParams
