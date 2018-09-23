@@ -62,12 +62,18 @@ describe('config', () => {
   });
 
   it('handles custom configParams', () => {
-    const {getConfig} = initConfig(['bla']);
+    const {getConfig} = initConfig({configParams: ['bla']});
     expect(getConfig().bla).to.equal(undefined);
     process.env.APPLITOOLS_BLA = 'aaa';
-    const {getConfig: getConfigWithBla} = initConfig(['bla']);
+    const {getConfig: getConfigWithBla} = initConfig({configParams: ['bla']});
     delete process.env.APPLITOOLS_BLA;
     expect(getConfigWithBla().bla).to.equal('aaa');
+  });
+
+  it('handles custom configPath', () => {
+    const {getConfig} = initConfig({configPath: resolve(configPath, 'eyes.json')});
+    const expectedConfig = {saveDebugData: true, apiKey: 'default api key'};
+    expect(getConfig()).to.eql(expectedConfig);
   });
 });
 

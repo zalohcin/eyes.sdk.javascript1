@@ -3,21 +3,12 @@ const {describe, it, before, after, beforeEach, afterEach} = require('mocha');
 const {expect} = require('chai');
 const testServer = require('../util/testServer');
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient');
-const {initConfig} = require('../../src/sdk/config');
 const nock = require('nock');
 const createFakeWrapper = require('../util/createFakeWrapper');
 const {presult} = require('@applitools/functional-commons');
 
 describe('waitForTestResults', () => {
   const apiKey = 'some api key';
-
-  let getConfig, updateConfig, getInitialConfig;
-  before(() => {
-    const config = initConfig();
-    getConfig = config.getConfig;
-    updateConfig = config.updateConfig;
-    getInitialConfig = config.getInitialConfig;
-  });
 
   let baseUrl, closeServer;
   before(async () => {
@@ -40,20 +31,6 @@ describe('waitForTestResults', () => {
       .reply(201, '', {location: 'uploaded_location'});
   });
 
-  let waitForTestResults, openEyes;
-  beforeEach(() => {
-    const client = makeRenderingGridClient({
-      getConfig,
-      updateConfig,
-      getInitialConfig,
-      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-      wrapper,
-    });
-
-    waitForTestResults = client.waitForTestResults;
-    openEyes = client.openEyes;
-  });
-
   let prevEnv;
   beforeEach(() => {
     prevEnv = process.env;
@@ -65,20 +42,13 @@ describe('waitForTestResults', () => {
   });
 
   it('returns errors and results', async () => {
-    const client = makeRenderingGridClient({
-      getConfig,
-      updateConfig,
-      getInitialConfig,
+    const {openEyes, waitForTestResults} = makeRenderingGridClient({
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-      wrapper,
+      apiKey,
     });
-
-    waitForTestResults = client.waitForTestResults;
-    openEyes = client.openEyes;
 
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
-      apiKey,
     });
 
     const errMsg = 'Tag bad should be one of the good tags good1,good2';
