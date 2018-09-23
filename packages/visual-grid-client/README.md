@@ -11,7 +11,7 @@ npm install @applitools/visual-grid-client
 ## Using the package
 
 ```js
-const {makeVisualGridClient, initConfig} = require('@applitools/visual-grid-client')
+const {makeVisualGridClient} = require('@applitools/visual-grid-client')
 const {domNodesToCdt} = require('@applitools/visual-grid-client/browser')
 ```
 
@@ -24,8 +24,8 @@ See below for the full API.
 * To create a visualGridClient, call `makeVisualGridClient`:
 
 ```js
-const {makeVisualGridClient, initConfig} = require('@applitools/visual-grid-client')
-const visualGridClient = makeVisualGridClient(initConfig())
+const {makeVisualGridClient} = require('@applitools/visual-grid-client')
+const visualGridClient = makeVisualGridClient()
 ```
 
 The visualGridClient, returned by `makeVisualGridClient`, is an object with three functions:
@@ -137,7 +137,7 @@ Example [Mocha](https://www.npmjs.com/package/mocha) test that uses the visual g
 ```js
 const path = require('path')
 const fs = require('fs')
-const {makeVisualGridClient, initConfig} = require('@applitools/visual-grid-client')
+const {makeVisualGridClient} = require('@applitools/visual-grid-client')
 const {domNodesToCdt} = require('@applitools/visual-grid-client/browser')
 const {JSDOM} = require('jsdom')
 
@@ -147,7 +147,6 @@ describe('visual-grid-client test', function() {
 
   before(() => {
     visualGridClient = makeVisualGridClient({
-      ...initConfig(),
       showLogs: true,
       renderStatusTimeout: 60000,
       renderStatusInterval: 1000,

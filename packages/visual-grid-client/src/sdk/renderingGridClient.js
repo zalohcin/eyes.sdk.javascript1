@@ -1,6 +1,5 @@
 'use strict';
 const throatPkg = require('throat');
-const getBatch = require('./getBatch');
 const createLogger = require('./createLogger');
 const makeGetAllResources = require('./getAllResources');
 const makeExtractCssResources = require('./extractCssResources');
@@ -14,17 +13,38 @@ const makeOpenEyes = require('./openEyes');
 const makeWaitForTestResults = require('./waitForTestResults');
 const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
 
+// TODO when supporting only Node version >= 8.6.0 then we can use ...config for all the params that are just passed on to makeOpenEyes
 function makeRenderingGridClient({
-  getConfig,
-  updateConfig,
-  getInitialConfig,
   showLogs,
   renderStatusTimeout,
   renderStatusInterval,
   concurrency = Infinity,
   renderConcurrencyFactor = 5,
+  appName,
+  browser = {width: 1024, height: 768},
+  apiKey,
+  saveDebugData,
+  batchName,
+  batchId,
+  properties,
+  baselineBranchName,
+  baselineEnvName,
+  baselineName,
+  envName,
+  ignoreCaret,
+  isDisabled,
+  matchLevel,
+  matchTimeout,
+  parentBranchName,
+  branchName,
+  proxy,
+  saveFailedTests,
+  saveNewTests,
+  compareWithParentBranch,
+  ignoreBaseline,
+  serverUrl,
 }) {
-  const openEyesConcurrency = Number(getConfig({concurrency}).concurrency);
+  const openEyesConcurrency = Number(concurrency);
 
   if (isNaN(openEyesConcurrency)) {
     throw new Error('concurrency is not a number');
@@ -52,6 +72,30 @@ function makeRenderingGridClient({
   });
 
   const openEyes = makeOpenEyes({
+    appName,
+    browser,
+    apiKey,
+    saveDebugData,
+    batchName,
+    batchId,
+    properties,
+    baselineBranchName,
+    baselineEnvName,
+    baselineName,
+    envName,
+    ignoreCaret,
+    isDisabled,
+    matchLevel,
+    matchTimeout,
+    parentBranchName,
+    branchName,
+    proxy,
+    saveFailedTests,
+    saveNewTests,
+    compareWithParentBranch,
+    ignoreBaseline,
+    serverUrl,
+    logger,
     extractCssResourcesFromCdt,
     renderBatch,
     waitForRenderedStatus,
@@ -60,25 +104,13 @@ function makeRenderingGridClient({
     getRenderInfoPromise,
     setRenderInfoPromise,
   });
-  const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(
-    openEyesWithConfig,
-    openEyesConcurrency,
-  );
+  const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(openEyes, openEyesConcurrency);
   const waitForTestResults = makeWaitForTestResults({logger});
-
-  const defaultBatch = getBatch(getInitialConfig());
-  logger.log('new default batch', defaultBatch);
-  updateConfig(defaultBatch);
 
   return {
     openEyes: openEyesLimitedConcurrency,
     waitForTestResults,
   };
-
-  function openEyesWithConfig(args) {
-    const config = getConfig(args);
-    return openEyes(config);
-  }
 
   function getRenderInfoPromise() {
     return renderInfoPromise;
