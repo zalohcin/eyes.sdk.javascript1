@@ -12,6 +12,7 @@ const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
 const makeWaitForTestResults = require('./waitForTestResults');
 const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
+const getBatch = require('./getBatch');
 
 // TODO when supporting only Node version >= 8.6.0 then we can use ...config for all the params that are just passed on to makeOpenEyes
 function makeRenderingGridClient({
@@ -71,13 +72,15 @@ function makeRenderingGridClient({
     fetchResource,
   });
 
+  const {batchId: defaultBatchId, batchName: defaultBatchName} = getBatch({batchName, batchId});
+
   const openEyes = makeOpenEyes({
     appName,
     browser,
     apiKey,
     saveDebugData,
-    batchName,
-    batchId,
+    batchName: defaultBatchName,
+    batchId: defaultBatchId,
     properties,
     baselineBranchName,
     baselineEnvName,
