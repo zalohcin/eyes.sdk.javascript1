@@ -1,23 +1,28 @@
 'use strict';
-const {resolve} = require('path');
 const createLogger = require('./createLogger');
-const configParams = require('./configParams');
+const defaultConfigParams = require('./configParams');
+const cosmiconfig = require('cosmiconfig');
 const logger = createLogger(process.env.APPLITOOLS_SHOW_LOGS); // TODO when switching to DEBUG sometime remove this env var
+const explorer = cosmiconfig('applitools', {
+  searchPlaces: ['package.json', 'applitools.config.js', 'eyes.config.js', 'eyes.json'],
+});
 
-const configFilename = 'eyes.json';
-
-function toEnvVarName(camelCaseStr) {
-  return camelCaseStr.replace(/(.)([A-Z])/g, '$1_$2').toUpperCase();
-}
-
-function initConfig(configFolder = '') {
-  const configPath = resolve(configFolder, configFilename);
+function initConfig(configParams) {
   let defaultConfig = {};
   try {
-    defaultConfig = require(configPath);
+    const result = explorer.searchSync();
+    if (result) {
+      const {config, filepath} = result;
+      logger.log('loading configuration from', filepath);
+      defaultConfig = config;
+    }
   } catch (ex) {
-    logger.log(`no eyes.json config file found at ${configPath}`);
+    logger.log('an error occurred while searching for configuration', ex);
   }
+
+  configParams = configParams
+    ? uniq(defaultConfigParams.concat(configParams))
+    : defaultConfigParams;
 
   const envConfig = {};
   for (const p of configParams) {
@@ -46,6 +51,14 @@ function initConfig(configFolder = '') {
       Object.assign(priorConfig, partialConfig);
     },
   };
+}
+
+function toEnvVarName(camelCaseStr) {
+  return camelCaseStr.replace(/(.)([A-Z])/g, '$1_$2').toUpperCase();
+}
+
+function uniq(arr) {
+  return Array.from(new Set(arr));
 }
 
 module.exports = {
