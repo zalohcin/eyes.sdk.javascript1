@@ -10,6 +10,7 @@ class AppOutput {
    *   or uncompressed form)
    * @param {string} [screenshotUrl] The URL that points to the screenshot
    * @param {string} [domUrl] URL that points to a dom capture of the provided screenshot
+   * @param {Location} [imageLocation] Location of the provided screenshot relative to the logical full-page screenshot (e.g. in checkRegion)
    */
   constructor(title, screenshot64, screenshotUrl, domUrl, imageLocation) {
     this._title = title;
@@ -66,12 +67,12 @@ class AppOutput {
   }
 
   /** @return {Location} */
-  getLocation() {
+  getImageLocation() {
     return this._imageLocation;
   }
 
   /** @param {Location} value */
-  setDomUrl(value) {
+  setImageLocation(value) {
     this._imageLocation = value;
   }
 
