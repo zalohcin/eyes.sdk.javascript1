@@ -7,7 +7,7 @@ const explorer = cosmiconfig('applitools', {
   searchPlaces: ['package.json', 'applitools.config.js', 'eyes.config.js', 'eyes.json'],
 });
 
-function initConfig({configParams, configPath} = {}) {
+function makeGetConfig({configParams, configPath} = {}) {
   let defaultConfig = {};
   try {
     const result = configPath ? explorer.loadSync(configPath) : explorer.searchSync();
@@ -33,23 +33,10 @@ function initConfig({configParams, configPath} = {}) {
     if (envConfig[p] === undefined) delete envConfig[p];
   }
 
-  const priorConfig = Object.assign({}, defaultConfig, envConfig);
-  const initialConfig = Object.assign({}, priorConfig);
+  const config = Object.assign({}, defaultConfig, envConfig);
 
-  logger.log(`running with initial config: ${JSON.stringify(initialConfig)}`);
-
-  return {
-    getConfig(config) {
-      const ret = Object.assign({}, priorConfig, config);
-      logger.log(`getConfig ${JSON.stringify(ret)}`);
-      return ret;
-    },
-    getInitialConfig() {
-      return Object.assign({}, initialConfig);
-    },
-    updateConfig(partialConfig) {
-      Object.assign(priorConfig, partialConfig);
-    },
+  return function getConfig() {
+    return config;
   };
 }
 
@@ -62,6 +49,6 @@ function uniq(arr) {
 }
 
 module.exports = {
-  initConfig,
+  makeGetConfig,
   toEnvVarName,
 };
