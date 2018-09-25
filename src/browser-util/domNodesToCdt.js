@@ -36,6 +36,19 @@ function domNodesToCdt(docNode) {
     const {nodeType} = elementNode;
     if (nodeType === NODE_TYPES.ELEMENT) {
       if (elementNode.nodeName !== 'SCRIPT') {
+        if (
+          elementNode.nodeName === 'STYLE' &&
+          !elementNode.textContent &&
+          elementNode.sheet &&
+          elementNode.sheet.cssRules.length
+        ) {
+          elementNode.appendChild(
+            docNode.createTextNode(
+              [...elementNode.sheet.cssRules].map(rule => rule.cssText).join(''),
+            ),
+          );
+        }
+
         node = {
           nodeType: NODE_TYPES.ELEMENT,
           nodeName: elementNode.nodeName,
