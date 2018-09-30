@@ -1,5 +1,10 @@
 'use strict';
-const {MatchResult, RenderStatusResults, RenderStatus} = require('@applitools/eyes.sdk.core');
+const {
+  MatchResult,
+  RenderStatusResults,
+  RenderStatus,
+  Location,
+} = require('@applitools/eyes.sdk.core');
 const {URL} = require('url');
 const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture');
 const SOME_BATCH = 'SOME_BATCH';
@@ -12,6 +17,11 @@ function compare(o1, o2) {
 
 const devices = {
   'iPhone 4': {width: 320, height: 480},
+};
+
+const selectorsToLocations = {
+  sel1: {x: 1, y: 2, width: 3, height: 4},
+  sel2: {x: 5, y: 6, width: 7, height: 8},
 };
 
 class FakeEyesWrapper {
@@ -38,6 +48,7 @@ class FakeEyesWrapper {
     this.selector = renderInfo.getSelector();
     this.region = renderInfo.getRegion();
     this.emulationInfo = renderInfo.getEmulationInfo();
+    this.selectorsToFindRegionsFor = renderRequests[0].getSelectorsToFindRegionsFor();
 
     return renderRequests.map(renderRequest => this.getRunningRenderForRequest(renderRequest));
   }
@@ -60,6 +71,7 @@ class FakeEyesWrapper {
     const selector = renderInfo.getSelector();
     const region = renderInfo.getRegion();
     const emulationInfo = renderInfo.getEmulationInfo();
+    const selectorsToFindRegionsFor = renderRequest.getSelectorsToFindRegionsFor();
 
     const isGood = isGoodCdt && isGoodResources;
     const renderId = JSON.stringify({
@@ -69,6 +81,7 @@ class FakeEyesWrapper {
       selector,
       sizeMode,
       emulationInfo,
+      selectorsToFindRegionsFor,
     });
 
     return new FakeRunningRender(renderId, RenderStatus.RENDERED);
@@ -76,12 +89,15 @@ class FakeEyesWrapper {
 
   async getRenderStatus(renderIds) {
     return renderIds.map(renderId => {
-      const {browserName, emulationInfo} = JSON.parse(renderId);
+      const {browserName, emulationInfo, selectorsToFindRegionsFor} = JSON.parse(renderId);
       return RenderStatusResults.fromObject({
         status: RenderStatus.RENDERED,
         imageLocation: renderId,
         userAgent: browserName,
         deviceSize: emulationInfo && emulationInfo.deviceName && devices[emulationInfo.deviceName],
+        selectorRegions: selectorsToFindRegionsFor
+          ? selectorsToFindRegionsFor.map(selector => selectorsToLocations[selector])
+          : undefined,
       });
     });
   }
@@ -94,7 +110,7 @@ class FakeEyesWrapper {
     this.renderingInfo = val;
   }
 
-  async checkWindow({screenshotUrl, tag, domUrl, checkSettings}) {
+  async checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation}) {
     if (tag && this.goodTags && !this.goodTags.includes(tag))
       throw new Error(`Tag ${tag} should be one of the good tags ${this.goodTags}`);
 
@@ -106,14 +122,25 @@ class FakeEyesWrapper {
       selector,
       region,
       emulationInfo,
+      selectorsToFindRegionsFor,
     } = JSON.parse(screenshotUrl);
+
+    const expectedImageLocation =
+      sizeMode === 'selector'
+        ? Location.fromObject(selectorsToLocations[selectorsToFindRegionsFor[0]])
+        : undefined;
+
     const asExpected =
       isGood &&
       (!this.sizeMode || sizeMode === this.sizeMode) &&
       (!this.selector || selector === this.selector) &&
       compare(region, this.region) &&
-      compare(emulationInfo, this.emulationInfo);
+      compare(emulationInfo, this.emulationInfo) &&
+      compare(selectorsToFindRegionsFor, this.selectorsToFindRegionsFor) &&
+      compare(imageLocation, expectedImageLocation);
+
     result.setAsExpected(asExpected);
+
     result.__domUrl = domUrl;
     result.__checkSettings = checkSettings;
     result.__tag = tag;
@@ -230,3 +257,5 @@ class FakeEyesWrapper {
 }
 
 module.exports = FakeEyesWrapper;
+module.exports.selectorsToLocations = selectorsToLocations;
+module.exports.devices = devices;

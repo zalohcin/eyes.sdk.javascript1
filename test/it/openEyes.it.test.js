@@ -633,8 +633,80 @@ describe('openEyes', () => {
       ignore: [region],
     });
     const [results] = await close();
+    expect(results[0].getAsExpected()).to.equal(true);
     expect(results[0].__checkSettings.getIgnoreRegions()).to.eql([
       new IgnoreRegionByRectangle(Region.fromObject(region)),
+    ]);
+  });
+
+  it('handles ignore regions with selector', async () => {
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      apiKey,
+    });
+
+    const ignoreSelector1 = {selector: 'sel1'};
+    const region1FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel1'];
+    const region1 = Region.fromObject({
+      left: region1FromStatusResults.x,
+      top: region1FromStatusResults.y,
+      width: region1FromStatusResults.width,
+      height: region1FromStatusResults.height,
+    });
+
+    const ignoreSelector2 = {selector: 'sel2'};
+    const region2FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel2'];
+    const region2 = Region.fromObject({
+      left: region2FromStatusResults.x,
+      top: region2FromStatusResults.y,
+      width: region2FromStatusResults.width,
+      height: region2FromStatusResults.height,
+    });
+
+    checkWindow({
+      url: '',
+      // resourceUrls: [],
+      cdt: [],
+      ignore: [ignoreSelector1, ignoreSelector2],
+    });
+    const [results] = await close();
+    expect(results[0].getAsExpected()).to.equal(true);
+    expect(results[0].__checkSettings.getIgnoreRegions()).to.eql([
+      new IgnoreRegionByRectangle(region1),
+      new IgnoreRegionByRectangle(region2),
+    ]);
+  });
+
+  it('handles ignore regions with selector, when sizeMode===selector', async () => {
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      apiKey,
+    });
+    const selector = 'sel1';
+    const ignoreRegion = {left: 1, top: 2, width: 3, height: 4};
+    const ignoreSelector = {selector: 'sel2'};
+    const imageOffset = FakeEyesWrapper.selectorsToLocations[selector];
+    const expectedSelectorRegion = FakeEyesWrapper.selectorsToLocations['sel2'];
+    checkWindow({
+      url: '',
+      // resourceUrls: [],
+      cdt: [],
+      sizeMode: 'selector',
+      selector,
+      ignore: [ignoreRegion, ignoreSelector],
+    });
+    const [results] = await close();
+    expect(results[0].getAsExpected()).to.equal(true);
+    expect(results[0].__checkSettings.getIgnoreRegions()).to.eql([
+      new IgnoreRegionByRectangle(Region.fromObject(ignoreRegion)),
+      new IgnoreRegionByRectangle(
+        Region.fromObject({
+          left: expectedSelectorRegion.x - imageOffset.x,
+          top: expectedSelectorRegion.y - imageOffset.y,
+          width: expectedSelectorRegion.width,
+          height: expectedSelectorRegion.height,
+        }),
+      ),
     ]);
   });
 
@@ -653,15 +725,16 @@ describe('openEyes', () => {
   });
 
   it('renders deviceEmulation', async () => {
+    const deviceName = 'iPhone 4';
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
-      browser: {deviceName: 'iPhone 4', screenOrientation: 'bla'},
+      browser: {deviceName, screenOrientation: 'bla'},
       apiKey,
     });
 
     checkWindow({url: '', cdt: []});
     const [[results]] = await close();
-    expect(wrapper.viewportSize.toJSON()).to.eql({width: 320, height: 480});
+    expect(wrapper.viewportSize.toJSON()).to.eql(FakeEyesWrapper.devices['iPhone 4']);
     expect(results.getAsExpected()).to.equal(true);
   });
 
