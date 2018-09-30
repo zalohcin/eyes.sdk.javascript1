@@ -123,7 +123,7 @@ function makeCheckWindow({
 
       const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0] : undefined;
       const imageLocation = imageLocationRegion
-        ? Location.fromObject({x: imageLocationRegion.getLeft(), y: imageLocationRegion.getLeft()})
+        ? Location.fromObject({x: imageLocationRegion.getLeft(), y: imageLocationRegion.getTop()})
         : undefined;
 
       const ignoreRegions = calculateIgnoreRegions({ignore, selectorRegions, imageLocationRegion});

@@ -435,6 +435,10 @@
       {
         "name": "style",
         "value": "margin-bottom:10px;"
+      },
+      {
+        "name": "class",
+        "value": "region"
       }
     ],
     "childNodeIndexes": [
