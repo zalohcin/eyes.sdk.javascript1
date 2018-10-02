@@ -150,4 +150,45 @@ describe('createRenderRequests', () => {
       },
     ]);
   });
+
+  it('handles ignore and floating regions', () => {
+    const url = 'url';
+    const cdt = '';
+    const resources = [];
+    const browsers = [{width: 1, height: 2}];
+    const renderInfo = {getResultsUrl: () => 'resultsUrl'};
+    const ignore = ['kuku', {selector: 'bla'}];
+    const floating = [{some: 'thing'}, {selector: 'sel'}];
+    const renderRequests = createRenderRequests({
+      url,
+      resources,
+      cdt,
+      browsers,
+      renderInfo,
+      ignore,
+      floating,
+    });
+
+    const dom = {
+      hash: getSha256Hash(JSON.stringify({resources: {}, domNodes: ''})),
+      hashFormat: 'sha256',
+    };
+
+    expect(renderRequests.map(r => r.toJSON())).to.eql([
+      {
+        webhook: 'resultsUrl',
+        url,
+        dom,
+        resources: {},
+        renderInfo: {
+          height: 2,
+          width: 1,
+          selector: undefined,
+          region: undefined,
+          sizeMode: undefined,
+        },
+        selectorsToFindRegionsFor: ['bla', 'sel'],
+      },
+    ]);
+  });
 });
