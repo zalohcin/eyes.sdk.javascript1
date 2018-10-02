@@ -25,6 +25,7 @@ module.exports = ({port = 0, showLog = false} = {}) => {
   });
   app.use('/auth', express.static(path.resolve(__dirname, '../fixtures')));
   app.use('/', express.static(path.resolve(__dirname, '../fixtures')));
+  app.get('/err*', (_req, res) => res.sendStatus(500));
 
   return new Promise((resolve, _reject) => {
     const server = app.listen(port, () => {
