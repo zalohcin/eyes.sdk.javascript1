@@ -105,4 +105,41 @@ describe('openEyes', () => {
     });
     expect(await close().then(() => 'ok', err => err)).to.be.instanceOf(DiffsFoundError);
   });
+
+  it('passes with correct screenshot (iframe)', async () => {
+    const {checkWindow, close} = await openEyes({
+      appName: 'some app',
+      testName: 'passes with correct screenshot (iframe)',
+      apiKey,
+      browser: [
+        {width: 640, height: 480, name: 'chrome'},
+        {width: 800, height: 600, name: 'firefox'},
+      ],
+      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,
+    });
+
+    const resourceUrls = ['smurfs.jpg', 'test.css'];
+    const pageCdt = loadJsonFixture('inner-frame.cdt.json');
+    const resourceContents = {
+      [`test.html`]: {
+        url: `test.html`,
+        type: 'x-applitools-html/cdt',
+        value: JSON.stringify({
+          domNodes: loadJsonFixture('test.cdt.json'),
+          resources: {},
+        }),
+      },
+    };
+
+    await checkWindow({
+      resourceUrls,
+      resourceContents,
+      cdt: pageCdt,
+      tag: 'first',
+      url: `${baseUrl}/inner-frame.html`,
+    });
+
+    await close();
+  });
 });
