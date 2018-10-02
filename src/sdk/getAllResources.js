@@ -40,7 +40,7 @@ function makeProcessResource({resourceCache, getOrFetchResources, extractCssReso
   }
 }
 
-function makeGetAllResources({resourceCache, fetchResource, extractCssResources}) {
+function makeGetAllResources({resourceCache, fetchResource, extractCssResources, logger}) {
   const processResource = makeProcessResource({
     resourceCache,
     extractCssResources,
@@ -72,9 +72,11 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources}
 
     await Promise.all(
       missingResourceUrls.map(url =>
-        fetchResource(url).then(async resource =>
-          Object.assign(resources, await processResource(resource)),
-        ),
+        fetchResource(url)
+          .then(async resource => Object.assign(resources, await processResource(resource)))
+          .catch(ex => {
+            logger.log(`error fetching resource at ${url}: ${ex}`);
+          }),
       ),
     );
 

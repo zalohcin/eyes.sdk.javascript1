@@ -70,6 +70,7 @@ function makeRenderingGridClient({
     resourceCache,
     extractCssResources,
     fetchResource,
+    logger,
   });
 
   const {batchId: defaultBatchId, batchName: defaultBatchName} = getBatch({batchName, batchId});

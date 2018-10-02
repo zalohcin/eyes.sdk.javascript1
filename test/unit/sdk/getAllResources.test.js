@@ -35,6 +35,7 @@ describe('getAllResources', () => {
       resourceCache,
       extractCssResources,
       fetchResource,
+      logger: testLogger,
     });
   });
 
@@ -377,5 +378,29 @@ describe('getAllResources', () => {
         value: imgBuffer,
       }),
     });
+  });
+
+  it("doesn't fail when fetchResource fails", async () => {
+    let output = '';
+
+    const extractCssResources = makeExtractCssResources(testLogger);
+    const fetchResource = makeFetchResource({
+      logger: testLogger,
+      fetchCache: createResourceCache(),
+    });
+    resourceCache = createResourceCache();
+    getAllResources = makeGetAllResources({
+      resourceCache,
+      extractCssResources,
+      fetchResource,
+      logger: {
+        log: (...args) => {
+          output += args.join('');
+        },
+      },
+    });
+    const resources = await getAllResources(['http://localhost:1234/err/bla.css']);
+    expect(resources).to.eql({});
+    expect(output).to.contain('error fetching resource at http://localhost:1234/err/bla.css');
   });
 });
