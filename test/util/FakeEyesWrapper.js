@@ -22,6 +22,7 @@ const devices = {
 const selectorsToLocations = {
   sel1: {x: 1, y: 2, width: 3, height: 4},
   sel2: {x: 5, y: 6, width: 7, height: 8},
+  sel3: {x: 100, y: 101, width: 102, height: 103},
 };
 
 class FakeEyesWrapper {

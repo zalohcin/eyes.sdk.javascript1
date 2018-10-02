@@ -3,6 +3,7 @@
 const {RenderRequest, RenderInfo} = require('@applitools/eyes.sdk.core');
 const createRGridDom = require('./createRGridDom');
 const createEmulationInfo = require('./createEmulationInfo');
+const calculateSelectorsToFindRegionsFor = require('./calculateSelectorsToFindRegionsFor');
 
 function createRenderRequests({
   url,
@@ -15,8 +16,15 @@ function createRenderRequests({
   region,
   scriptHooks,
   ignore,
+  floating,
 }) {
   const rGridDom = createRGridDom({resources, cdt});
+  const selectorsToFindRegionsFor = calculateSelectorsToFindRegionsFor({
+    sizeMode,
+    selector,
+    ignore,
+    floating,
+  });
 
   return browsers.map(
     ({width, height, name, deviceName, screenOrientation, deviceScaleFactor, mobile}) => {
@@ -28,17 +36,6 @@ function createRenderRequests({
         width,
         height,
       });
-
-      let selectorsToFindRegionsFor = sizeMode === 'selector' ? [selector] : undefined;
-      const ignoreBySelector = ignore
-        ? [].concat(ignore).filter(ignoreRegion => ignoreRegion.selector)
-        : undefined;
-
-      if (ignoreBySelector && ignoreBySelector.length) {
-        selectorsToFindRegionsFor = (selectorsToFindRegionsFor || []).concat(
-          ignoreBySelector.map(({selector}) => selector),
-        );
-      }
 
       return new RenderRequest(
         renderInfo.getResultsUrl(),

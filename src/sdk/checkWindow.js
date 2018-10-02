@@ -7,7 +7,7 @@ const createRenderRequests = require('./createRenderRequests');
 const createCheckSettings = require('./createCheckSettings');
 const {presult} = require('@applitools/functional-commons');
 const {RectangleSize, Location} = require('@applitools/eyes.sdk.core');
-const calculateIgnoreRegions = require('./calculateIgnoreRegions');
+const calculateIgnoreAndFloatingRegions = require('./calculateIgnoreAndFloatingRegions');
 
 function makeCheckWindow({
   getError,
@@ -39,6 +39,7 @@ function makeCheckWindow({
     region,
     scriptHooks,
     ignore,
+    floating,
   }) {
     logger.log(`running checkWindow for test ${testName} step #${++stepCounter}`);
     if (getError()) {
@@ -126,9 +127,14 @@ function makeCheckWindow({
         ? Location.fromObject({x: imageLocationRegion.getLeft(), y: imageLocationRegion.getTop()})
         : undefined;
 
-      const ignoreRegions = calculateIgnoreRegions({ignore, selectorRegions, imageLocationRegion});
+      const {ignoreRegions, floatingRegions} = calculateIgnoreAndFloatingRegions({
+        ignore,
+        floating,
+        selectorRegions,
+        imageLocationRegion,
+      });
 
-      const checkSettings = createCheckSettings({ignore: ignoreRegions});
+      const checkSettings = createCheckSettings({ignore: ignoreRegions, floating: floatingRegions});
 
       logger.log(`running wrapper.checkWindow for test ${testName} stepCount #${stepCounter}`);
       await wrapper.checkWindow({
@@ -164,6 +170,7 @@ function makeCheckWindow({
         region,
         scriptHooks,
         ignore,
+        floating,
       });
 
       let renderIds = await renderThroat(() => renderBatch(renderRequests, renderWrapper));

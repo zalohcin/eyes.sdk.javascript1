@@ -15,6 +15,7 @@ const {
   RenderStatusResults,
   Region,
   IgnoreRegionByRectangle,
+  FloatingRegionByRectangle,
 } = require('@applitools/eyes.sdk.core');
 const {apiKeyFailMsg, authorizationErrMsg} = require('../../src/sdk/wrapperUtils');
 
@@ -706,6 +707,84 @@ describe('openEyes', () => {
           width: expectedSelectorRegion.width,
           height: expectedSelectorRegion.height,
         }),
+      ),
+    ]);
+  });
+
+  it('handles ignore regions with selector and floating regions with selector, when sizeMode===selector', async () => {
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      apiKey,
+    });
+    const selector = 'sel1';
+    const ignoreRegion = {left: 1, top: 2, width: 3, height: 4};
+    const ignoreSelector = {selector: 'sel2'};
+    const imageOffset = FakeEyesWrapper.selectorsToLocations[selector];
+    const expectedSelectorRegion = FakeEyesWrapper.selectorsToLocations['sel2'];
+
+    const floatingRegion = {
+      left: 10,
+      top: 11,
+      width: 12,
+      height: 13,
+      maxUpOffset: 14,
+      maxDownOffset: 15,
+      maxLeftOffset: 16,
+      maxRightOffset: 17,
+    };
+
+    const expectedFloatingRegion = FakeEyesWrapper.selectorsToLocations['sel3'];
+    const floatingSelector = {
+      selector: 'sel3',
+      maxUpOffset: 18,
+      maxDownOffset: 19,
+      maxLeftOffset: 20,
+      maxRightOffset: 21,
+    };
+
+    checkWindow({
+      url: '',
+      // resourceUrls: [],
+      cdt: [],
+      sizeMode: 'selector',
+      selector,
+      ignore: [ignoreRegion, ignoreSelector],
+      floating: [floatingRegion, floatingSelector],
+    });
+
+    const [results] = await close();
+
+    expect(results[0].getAsExpected()).to.equal(true);
+    expect(results[0].__checkSettings.getIgnoreRegions()).to.eql([
+      new IgnoreRegionByRectangle(Region.fromObject(ignoreRegion)),
+      new IgnoreRegionByRectangle(
+        Region.fromObject({
+          left: expectedSelectorRegion.x - imageOffset.x,
+          top: expectedSelectorRegion.y - imageOffset.y,
+          width: expectedSelectorRegion.width,
+          height: expectedSelectorRegion.height,
+        }),
+      ),
+    ]);
+    expect(results[0].__checkSettings.getFloatingRegions()).to.eql([
+      new FloatingRegionByRectangle(
+        Region.fromObject(floatingRegion),
+        floatingRegion.maxUpOffset,
+        floatingRegion.maxDownOffset,
+        floatingRegion.maxLeftOffset,
+        floatingRegion.maxRightOffset,
+      ),
+      new FloatingRegionByRectangle(
+        Region.fromObject({
+          left: expectedFloatingRegion.x - imageOffset.x,
+          top: expectedFloatingRegion.y - imageOffset.y,
+          width: expectedFloatingRegion.width,
+          height: expectedFloatingRegion.height,
+        }),
+        floatingSelector.maxUpOffset,
+        floatingSelector.maxDownOffset,
+        floatingSelector.maxLeftOffset,
+        floatingSelector.maxRightOffset,
       ),
     ]);
   });
