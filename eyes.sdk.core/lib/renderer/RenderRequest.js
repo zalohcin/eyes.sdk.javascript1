@@ -15,7 +15,7 @@ class RenderRequest {
    * @param {string} [browserName]
    * @param {Object} [scriptHooks]
    */
-  constructor(webhook, url, dom, renderInfo, platform, browserName, scriptHooks, selectorsToFindRegionsFor) {
+  constructor(webhook, url, dom, renderInfo, platform, browserName, scriptHooks, selectorsToFindRegionsFor, sendDom) {
     ArgumentGuard.notNullOrEmpty(webhook, 'webhook');
     ArgumentGuard.notNull(url, 'url');
     ArgumentGuard.notNull(dom, 'dom');
@@ -29,6 +29,7 @@ class RenderRequest {
     this._renderId = undefined;
     this._scriptHooks = scriptHooks;
     this._selectorsToFindRegionsFor = selectorsToFindRegionsFor;
+    this._sendDom = sendDom;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -109,6 +110,16 @@ class RenderRequest {
     this._selectorsToFindRegionsFor = value;
   }
 
+  /** @return {boolean} */
+  getSendDom() {
+    return this._sendDom;
+  }
+
+  /** @param {boolean} value */
+  setSendDom(value) {
+    this._sendDom = value;
+  }
+
   /** @override */
   toJSON() {
     const resources = {};
@@ -147,6 +158,10 @@ class RenderRequest {
 
     if (this._selectorsToFindRegionsFor) {
       object.selectorsToFindRegionsFor = this._selectorsToFindRegionsFor;
+    }
+
+    if (this._sendDom) {
+      object.sendDom = this._sendDom;
     }
 
     return object;
