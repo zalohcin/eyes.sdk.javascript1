@@ -17,6 +17,7 @@ function createRenderRequests({
   scriptHooks,
   ignore,
   floating,
+  sendDom,
 }) {
   const rGridDom = createRGridDom({resources, cdt});
   const selectorsToFindRegionsFor = calculateSelectorsToFindRegionsFor({
@@ -46,6 +47,7 @@ function createRenderRequests({
         name,
         scriptHooks,
         selectorsToFindRegionsFor,
+        sendDom,
       );
     },
   );

@@ -16,6 +16,7 @@ describe('createRenderRequests', () => {
     const selector = 'selector';
     const region = {left: 1, top: 2, width: 3, height: 4};
     const scriptHooks = 'scriptHooks';
+    const sendDom = 'sendDom';
     const renderInfo = {getResultsUrl: () => 'resultsUrl'};
     const renderRequests = createRenderRequests({
       url,
@@ -27,6 +28,7 @@ describe('createRenderRequests', () => {
       selector,
       region,
       scriptHooks,
+      sendDom,
     });
 
     const resourcesObj = {url1: 'hash1', url2: 'hash2'};
@@ -43,6 +45,7 @@ describe('createRenderRequests', () => {
         resources: resourcesObj,
         browser: {name: 'b1', platform: 'Linux'},
         scriptHooks,
+        sendDom,
         renderInfo: {
           width: 1,
           height: 2,
@@ -58,6 +61,7 @@ describe('createRenderRequests', () => {
         resources: resourcesObj,
         browser: {name: 'b2', platform: 'Linux'},
         scriptHooks,
+        sendDom,
         renderInfo: {
           width: 3,
           height: 4,

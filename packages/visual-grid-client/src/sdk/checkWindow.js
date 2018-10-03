@@ -40,6 +40,7 @@ function makeCheckWindow({
     scriptHooks,
     ignore,
     floating,
+    sendDom = true,
   }) {
     logger.log(`running checkWindow for test ${testName} step #${++stepCounter}`);
     if (getError()) {
@@ -171,6 +172,7 @@ function makeCheckWindow({
         scriptHooks,
         ignore,
         floating,
+        sendDom,
       });
 
       let renderIds = await renderThroat(() => renderBatch(renderRequests, renderWrapper));
