@@ -8,6 +8,7 @@ const createCheckSettings = require('./createCheckSettings');
 const {presult} = require('@applitools/functional-commons');
 const {RectangleSize, Location} = require('@applitools/eyes.sdk.core');
 const calculateIgnoreAndFloatingRegions = require('./calculateIgnoreAndFloatingRegions');
+const createRGridDom = require('./createRGridDom');
 
 function makeCheckWindow({
   getError,
@@ -31,6 +32,7 @@ function makeCheckWindow({
   return function checkWindow({
     resourceUrls = [],
     resourceContents = {},
+    frames = {},
     url,
     cdt,
     tag,
@@ -47,10 +49,21 @@ function makeCheckWindow({
       logger.log('aborting checkWindow synchronously');
       return;
     }
+
+    const framesAsResources = mapValues(frames, (value, key) => {
+      return {
+        url: key,
+        type: 'x-applitools-html/cdt',
+        value: JSON.stringify(createRGridDom({cdt: value.cdt, resources: {}}).toJSON()),
+      };
+    });
+
+    const resources = Object.assign(framesAsResources, resourceContents);
+
     const resourceUrlsWithCss = resourceUrls.concat(extractCssResourcesFromCdt(cdt, url));
     const absoluteUrls = resourceUrlsWithCss.map(resourceUrl => absolutizeUrl(resourceUrl, url));
     const absoluteResourceContents = mapValues(
-      mapKeys(resourceContents, (_value, key) => absolutizeUrl(key, url)),
+      mapKeys(resources, (_value, key) => absolutizeUrl(key, url)),
       ({url: resourceUrl, type, value}) => ({url: absolutizeUrl(resourceUrl, url), type, value}),
     );
 

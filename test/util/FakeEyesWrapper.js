@@ -26,13 +26,14 @@ const selectorsToLocations = {
 };
 
 class FakeEyesWrapper {
-  constructor({goodFilename, goodResourceUrls, goodTags}) {
+  constructor({goodFilename, goodResourceUrls = [], goodTags, goodResources = []}) {
     this._logger = {
       verbose: console.log,
       log: console.log,
     };
     this.goodFilename = goodFilename;
     this.goodResourceUrls = goodResourceUrls;
+    this.goodResources = goodResources;
     this.goodTags = goodTags;
     this.batch;
     this.baseUrl = 'http://fake';
@@ -166,10 +167,17 @@ class FakeEyesWrapper {
   }
 
   get expectedResources() {
-    return this.goodResourceUrls.map(resourceUrl => ({
+    const urlResources = this.goodResourceUrls.map(resourceUrl => ({
       url: resourceUrl,
       hash: getSha256Hash(loadFixtureBuffer(new URL(resourceUrl).pathname.slice(1))),
     }));
+
+    const recs = this.goodResources.map(resource => ({
+      url: resource.url,
+      //content: resource.content,
+      hash: getSha256Hash(resource.content),
+    }));
+    return [...urlResources, ...recs];
   }
 
   getBatch() {
