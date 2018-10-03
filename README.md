@@ -69,6 +69,8 @@ defined in the `browser` property of the configuraion.
 * `region`: if the `sizeMode` is region, this is the region we are targetting.
   This is an object with `x`, `y`, `width`, `height` properties.
 * `ignore`: TBD
+* `floating`: TBD
+* `sendDom`: TBD
 * `domCapture`: TBD
 * `scriptHooks`: a set of scripts to be run by the browser during the rendering.
    An object with the following properties:
