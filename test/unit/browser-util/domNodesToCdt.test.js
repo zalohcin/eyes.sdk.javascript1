@@ -92,4 +92,17 @@ describe('domNodesToCdt', () => {
       await server.close();
     }
   });
+
+  //this is for generating the cdt files
+  it.skip('works for test-iframe.html', () => {
+    const docNode = getDocNode(loadFixture('test-iframe.html'));
+    const cdt = domNodesToCdt(docNode);
+    const iframeDocNode = getDocNode(loadFixture('inner-frame.html'));
+    const iframeCdt = domNodesToCdt(iframeDocNode);
+
+    const expectedCdt = loadJsonFixture('test-iframe.cdt.json');
+    const expectedFrameCdt = loadJsonFixture('inner-frame.cdt.json');
+    expect(cdt).to.deep.equal(expectedCdt);
+    expect(iframeCdt).to.deep.equal(expectedFrameCdt);
+  });
 });
