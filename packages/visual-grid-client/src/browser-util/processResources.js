@@ -126,7 +126,7 @@ function processPage(doc) {
   });
 }
 
-const processResources = new Function(
+const processDocument = new Function(
   'doc',
   '{\n' +
     isSameOrigin.toString() +
@@ -153,5 +153,5 @@ module.exports = {
   extractLinks,
   processPage,
   fetchLocalResources,
-  processResources,
+  processDocument,
 };
