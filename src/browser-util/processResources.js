@@ -91,7 +91,7 @@ function fetchLocalResources(blobUrls, fetch = window.fetch) {
 
 function processPage(doc) {
   let links = extractLinks(doc);
-  return fetchLocalResources(uniq(links.urlsToFetch), doc.defaultView).then(blobs => {
+  return fetchLocalResources(uniq(links.urlsToFetch), doc.defaultView.fetch).then(blobs => {
     return Promise.all(links.requiresMoreParsing.map(frame => processPage(frame))).then(
       framesResults => {
         const aggUrls = framesResults.reduce(
