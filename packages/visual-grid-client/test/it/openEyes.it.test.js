@@ -56,11 +56,12 @@ describe('openEyes', () => {
 
   it('converts frames to resources', async () => {
     const frameUrl = `test.html`;
-    const frames = {
-      [frameUrl]: {
+    const frames = [
+      {
+        url: frameUrl,
         cdt: loadJsonFixture('test.cdt.json'),
       },
-    };
+    ];
     const frameWrapper = new FakeEyesWrapper({
       goodFilename: 'inner-frame.html',
       goodResources: [

@@ -32,7 +32,7 @@ function makeCheckWindow({
   return function checkWindow({
     resourceUrls = [],
     resourceContents = {},
-    frames = {},
+    frames = [],
     url,
     cdt,
     tag,
@@ -50,11 +50,11 @@ function makeCheckWindow({
       return;
     }
 
-    const framesAsResources = mapValues(frames, (value, key) => {
+    const framesAsResources = frames.map(frame => {
       return {
-        url: key,
+        url: frame.url,
         type: 'x-applitools-html/cdt',
-        value: JSON.stringify(createRGridDom({cdt: value.cdt, resources: {}}).toJSON()),
+        value: JSON.stringify(createRGridDom({cdt: frame.cdt, resources: {}}).toJSON()),
       };
     });
 
