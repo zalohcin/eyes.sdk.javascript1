@@ -73,7 +73,8 @@ function extractLinks(document) {
   };
 }
 
-function fetchLocalResources(blobUrls) {
+//eslint-disable-next-line no-undef
+function fetchLocalResources(blobUrls, fetch = window.fetch) {
   return Promise.all(
     blobUrls.map(blobUrl =>
       //eslint-disable-next-line no-undef
@@ -90,29 +91,35 @@ function fetchLocalResources(blobUrls) {
 
 function processPage(doc) {
   let links = extractLinks(doc);
-  return fetchLocalResources(uniq(links.urlsToFetch)).then(blobs => {
+  return fetchLocalResources(uniq(links.urlsToFetch), doc.defaultView).then(blobs => {
     return Promise.all(links.requiresMoreParsing.map(frame => processPage(frame))).then(
       framesResults => {
         const aggUrls = framesResults.reduce(
           (urls, frame) => (urls = urls.concat(frame.resourceUrls)),
           links.externalUrls,
         );
+
         const aggBlobs = framesResults.reduce(
           (blobAgg, frame) => (blobAgg = blobAgg.concat(frame.blobs)),
           blobs,
         );
+
         const allFrames = framesResults
-          .reduce((framesAgg, frame) => framesAgg.concat(frame.frames), [])
+          .reduce(
+            (framesAgg, frame) => framesAgg.concat(frame.frames),
+            framesResults.map(f => ({cdt: f.cdt, url: f.url})),
+          )
           .map(f => ({
             cdt: f.cdt,
             url: f.url,
           }));
+
         return {
           cdt: domNodesToCdt(doc),
           url: doc.defaultView.location.href,
           resourceUrls: uniq(aggUrls),
           blobs: uniq(aggBlobs),
-          frames: allFrames.concat(framesResults.map(f => ({cdt: f.cdt, url: f.url}))),
+          frames: uniq(allFrames),
         };
       },
     );
