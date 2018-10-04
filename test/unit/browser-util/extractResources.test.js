@@ -2,7 +2,7 @@
 const {describe, it, before, after} = require('mocha');
 const {expect} = require('chai');
 const puppeteer = require('puppeteer');
-const {processResources} = require('../../../src/browser-util/processResources');
+const {processDocument} = require('../../../src/browser-util/processResources');
 const testServer = require('../../util/testServer');
 const {loadFixture} = require('../../util/loadFixture');
 
@@ -19,7 +19,7 @@ const serialize = ({resourceUrls, blobs}) => {
   };
 };
 
-const extractResources = new Function(`return (${processResources})(document).then(${serialize})`);
+const extractResources = new Function(`return (${processDocument})(document).then(${serialize})`);
 
 describe('extractResources', () => {
   let browser, page;

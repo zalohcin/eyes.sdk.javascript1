@@ -9,12 +9,12 @@ const {
   extractLinks,
   isSameOrigin,
   splitOnOrigin,
-  processResources,
+  processDocument,
   uniq,
 } = require('../../../src/browser-util/processResources');
 const testServer = require('../../util/testServer');
 
-describe('processResources', () => {
+describe('processDocument', () => {
   global.fetch = fetch;
   it('extracts external Urls', async () => {
     const dom = new JSDOM('<html><body><img src="https://www.google.com/cat.jpg"/></body></html>', {
@@ -30,7 +30,7 @@ describe('processResources', () => {
       url: new URL('http://www.applitools.com/temp'),
     });
 
-    const retVal = await dom.window.eval(`(${processResources})(document)`);
+    const retVal = await dom.window.eval(`(${processDocument})(document)`);
     expect(retVal.resourceUrls).to.deep.equal(['https://www.google.com/cat.jpg']);
   });
 
@@ -62,14 +62,14 @@ describe('processResources', () => {
 
     it('extracts external Urls from frames', async () => {
       await page.goto(`${baseUrl}/test-iframe.html`);
-      const retVal = await page.evaluate(`(${processResources})(document)`);
+      const retVal = await page.evaluate(`(${processDocument})(document)`);
 
       expect(retVal.resourceUrls).to.be.any;
     });
   });
 });
 
-describe('processResources', () => {
+describe('processDocument', () => {
   let browser, page;
   const origin = 'http://www.example.com';
   before(async () => {
