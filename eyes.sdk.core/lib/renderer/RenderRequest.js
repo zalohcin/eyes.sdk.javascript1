@@ -15,20 +15,23 @@ class RenderRequest {
    * @param {string} [browserName]
    * @param {Object} [scriptHooks]
    */
-  constructor(webhook, url, dom, renderInfo, platform, browserName, scriptHooks, selectorsToFindRegionsFor) {
+  constructor({webhook, url, dom, resources, renderInfo, platform, browserName, scriptHooks, selectorsToFindRegionsFor, sendDom} = {}) {
     ArgumentGuard.notNullOrEmpty(webhook, 'webhook');
     ArgumentGuard.notNull(url, 'url');
     ArgumentGuard.notNull(dom, 'dom');
+    ArgumentGuard.notNull(resources, 'resources');
 
     this._webhook = webhook;
     this._url = url;
     this._dom = dom;
+    this._resources = resources;
     this._renderInfo = renderInfo;
     this._platform = platform;
     this._browserName = browserName;
     this._renderId = undefined;
     this._scriptHooks = scriptHooks;
     this._selectorsToFindRegionsFor = selectorsToFindRegionsFor;
+    this._sendDom = sendDom;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -52,7 +55,7 @@ class RenderRequest {
   // noinspection JSUnusedGlobalSymbols
   /** @return {RGridResource[]} */
   getResources() {
-    return this._dom.getResources();
+    return this._resources;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -109,10 +112,20 @@ class RenderRequest {
     this._selectorsToFindRegionsFor = value;
   }
 
+  /** @return {boolean} */
+  getSendDom() {
+    return this._sendDom;
+  }
+
+  /** @param {boolean} value */
+  setSendDom(value) {
+    this._sendDom = value;
+  }
+
   /** @override */
   toJSON() {
     const resources = {};
-    this._dom.getResources().forEach(resource => {
+    this.getResources().forEach(resource => {
       resources[resource.getUrl()] = resource.getHashAsObject();
     });
 
@@ -147,6 +160,10 @@ class RenderRequest {
 
     if (this._selectorsToFindRegionsFor) {
       object.selectorsToFindRegionsFor = this._selectorsToFindRegionsFor;
+    }
+
+    if (this._sendDom) {
+      object.sendDom = this._sendDom;
     }
 
     return object;
