@@ -167,7 +167,7 @@ describe('createRenderRequests', () => {
     const renderRequests = createRenderRequests({
       url,
       resources,
-      cdt,
+      dom: createRGridDom({resources: {}, cdt}),
       browsers,
       renderInfo,
       ignore,
