@@ -15,22 +15,22 @@ const puppeteer = require('puppeteer');
 
 describe('checkWindow', () => {
   let server, baseUrl;
-  let browser;
+  let browser, page;
 
   before(async () => {
     server = await testServer();
     baseUrl = `http://localhost:${server.port}`;
     browser = await puppeteer.launch();
+    page = await browser.newPage();
   });
 
   after(async () => {
     await server.close();
+    await page.close();
     await browser.close();
   });
 
   it('works', async () => {
-    const page = await browser.newPage();
-
     await page.goto(`${baseUrl}/iframes/frame.html`);
 
     const serialize = ({resourceUrls, blobs, frames, url, cdt, allBlobs}) => {

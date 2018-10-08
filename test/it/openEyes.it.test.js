@@ -54,7 +54,7 @@ describe('openEyes', () => {
     process.env = prevEnv;
   });
 
-  it('converts frames to resources', async () => {
+  it.skip('converts frames to resources', async () => {
     const frameUrl = `${baseUrl}/test.html`;
     const frames = [
       {
