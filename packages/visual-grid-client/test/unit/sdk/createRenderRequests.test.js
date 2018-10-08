@@ -3,6 +3,7 @@ const {describe, it} = require('mocha');
 const {expect} = require('chai');
 const getSha256Hash = require('../../util/getSha256Hash');
 const createRenderRequests = require('../../../src/sdk/createRenderRequests');
+const createRGridDom = require('../../../src/sdk/createRGridDom');
 
 describe('createRenderRequests', () => {
   it('works', () => {
@@ -21,7 +22,7 @@ describe('createRenderRequests', () => {
     const renderRequests = createRenderRequests({
       url,
       resources,
-      cdt,
+      dom: createRGridDom({resources: {['url1']: r1, ['url2']: r2}, cdt}),
       browsers,
       renderInfo,
       sizeMode,
@@ -84,7 +85,7 @@ describe('createRenderRequests', () => {
     const renderRequests = createRenderRequests({
       url,
       resources,
-      cdt,
+      dom: createRGridDom({resources: {}, cdt}),
       browsers,
       renderInfo,
     });
@@ -121,7 +122,7 @@ describe('createRenderRequests', () => {
     const renderRequests = createRenderRequests({
       url,
       resources,
-      cdt,
+      dom: createRGridDom({resources: {}, cdt}),
       browsers,
       renderInfo,
     });

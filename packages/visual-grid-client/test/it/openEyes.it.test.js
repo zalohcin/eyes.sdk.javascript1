@@ -55,11 +55,13 @@ describe('openEyes', () => {
   });
 
   it('converts frames to resources', async () => {
-    const frameUrl = `test.html`;
+    const frameUrl = `${baseUrl}/test.html`;
     const frames = [
       {
         url: frameUrl,
         cdt: loadJsonFixture('test.cdt.json'),
+        resourceUrls: [],
+        resourceContents: {},
       },
     ];
     const frameWrapper = new FakeEyesWrapper({
@@ -67,7 +69,7 @@ describe('openEyes', () => {
       goodResources: [
         {
           url: `${baseUrl}/test.html`,
-          content: JSON.stringify({domNodes: loadJsonFixture('test.cdt.json'), resources: []}),
+          content: JSON.stringify({resources: [], domNodes: loadJsonFixture('test.cdt.json')}),
         },
       ],
     });
@@ -77,8 +79,8 @@ describe('openEyes', () => {
       apiKey,
     });
     checkWindow({cdt: [], frames, tag: 'good1', url: `${baseUrl}/inner-frame.html`});
-
-    expect((await close())[0].map(r => r.getAsExpected())).to.eql([true]);
+    const ttt = await close();
+    expect(ttt[0].map(r => r.getAsExpected())).to.eql([true]);
   });
 
   it("doesn't throw exception", async () => {

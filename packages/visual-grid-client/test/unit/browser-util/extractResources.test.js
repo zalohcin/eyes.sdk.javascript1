@@ -107,7 +107,7 @@ describe('extractResources', () => {
       const shortenedBlobUrl = blobUrl.replace(/^blob:http:\/\/localhost:\d+\/(.+)/, '$1');
       expect(blobs).to.eql([
         {
-          url: shortenedBlobUrl,
+          url: `${baseUrl}/${shortenedBlobUrl}`,
           type: 'text/css',
           value: loadFixture('blob.css'),
         },
@@ -135,7 +135,7 @@ describe('extractResources', () => {
       expect(resourceUrls).to.eql(['http://localhost:8585/blob.css']);
       expect(blobs).to.eql([
         {
-          url: 'imported2.css',
+          url: `${baseUrl}/imported2.css`,
           type: 'text/css; charset=UTF-8',
           value: loadFixture('imported2.css'),
         },

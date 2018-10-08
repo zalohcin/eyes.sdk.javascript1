@@ -1,14 +1,13 @@
 'use strict';
 
 const {RenderRequest, RenderInfo} = require('@applitools/eyes.sdk.core');
-const createRGridDom = require('./createRGridDom');
 const createEmulationInfo = require('./createEmulationInfo');
 const calculateSelectorsToFindRegionsFor = require('./calculateSelectorsToFindRegionsFor');
 
 function createRenderRequests({
   url,
   resources,
-  cdt,
+  dom,
   browsers,
   renderInfo,
   sizeMode,
@@ -19,7 +18,6 @@ function createRenderRequests({
   floating,
   sendDom,
 }) {
-  const rGridDom = createRGridDom({resources, cdt});
   const selectorsToFindRegionsFor = calculateSelectorsToFindRegionsFor({
     sizeMode,
     selector,
@@ -38,17 +36,25 @@ function createRenderRequests({
         height,
       });
 
-      return new RenderRequest(
-        renderInfo.getResultsUrl(),
+      return new RenderRequest({
+        webhook: renderInfo.getResultsUrl(),
         url,
-        rGridDom,
-        RenderInfo.fromObject({width, height, sizeMode, selector, region, emulationInfo}),
-        'Linux',
-        name,
+        resources,
+        dom,
+        renderInfo: RenderInfo.fromObject({
+          width,
+          height,
+          sizeMode,
+          selector,
+          region,
+          emulationInfo,
+        }),
+        platform: 'Linux',
+        browserName: name,
         scriptHooks,
         selectorsToFindRegionsFor,
         sendDom,
-      );
+      });
     },
   );
 }
