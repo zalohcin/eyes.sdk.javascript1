@@ -53,7 +53,7 @@ describe('putResources', () => {
       },
     };
 
-    const result1 = await putResources(dom1, [r1, r2, r3], runningRender1, wrapper);
+    const result1 = await putResources(dom1, runningRender1, wrapper, [r1, r2, r3]);
     expect(result1).to.eql([
       `renderId1_${getKey(dom1.asResource())}`,
       `renderId1_${getKey(r1)}`,

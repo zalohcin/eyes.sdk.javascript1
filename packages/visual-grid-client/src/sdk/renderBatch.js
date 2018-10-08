@@ -14,9 +14,9 @@ function makeRenderBatch({putResources, resourceCache, fetchCache, logger}) {
           renderRequest.setRenderId(runningRender.getRenderId());
           await putResources(
             renderRequest.getDom(),
-            renderRequest.getResources(),
             runningRender,
             wrapper,
+            renderRequest.getResources(),
           );
         }
         for (const resource of renderRequest.getResources()) {
