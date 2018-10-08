@@ -3,7 +3,7 @@
 const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping');
-const makeParseInlineCssFromCdt = require('./parseInlineCssFromCdt').default;
+const makeParseInlineCssFromCdt = require('./parseInlineCssFromCdt');
 const createCheckSettings = require('./createCheckSettings');
 
 const {presult} = require('@applitools/functional-commons');
