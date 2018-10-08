@@ -1,5 +1,5 @@
 'use strict';
-const {describe, it} = require('mocha');
+const {describe, it, before, after} = require('mocha');
 const {expect} = require('chai');
 const testLogger = require('../../util/testLogger');
 const makeExtractCssResourcesFromCdt = require('../../../src/sdk/extractCssResourcesFromCdt');
@@ -14,12 +14,23 @@ const {processDocument} = require('../../../src/browser-util/processResources');
 const puppeteer = require('puppeteer');
 
 describe('checkWindow', () => {
-  it('', async () => {
-    const server = await testServer();
-    const baseUrl = `http://localhost:${server.port}`;
+  let server, baseUrl;
+  let browser;
 
-    const browser = await puppeteer.launch();
+  before(async () => {
+    server = await testServer();
+    baseUrl = `http://localhost:${server.port}`;
+    browser = await puppeteer.launch();
+  });
+
+  after(async () => {
+    await server.close();
+    await browser.close();
+  });
+
+  it('works', async () => {
     const page = await browser.newPage();
+
     await page.goto(`${baseUrl}/iframes/frame.html`);
 
     const serialize = ({resourceUrls, blobs, frames, url, cdt, allBlobs}) => {
@@ -75,7 +86,7 @@ describe('checkWindow', () => {
       getAllResources: makeGetAllResources({
         resourceCache: createResourceCache(),
         extractCssResources: makeExtractCssResources(),
-        fetchResource: makeFetchResource({logger: testLogger, fetchCache: createResourceCache()}),
+        fetchResource: makeFetchResource(testLogger),
       }),
       browsers: [],
       setCheckWindowPromises: x => x,
