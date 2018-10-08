@@ -97,9 +97,9 @@ describe('domNodesToCdt', () => {
   it.skip('works for test-iframe.html', () => {
     const docNode = getDocNode(loadFixture('test-iframe.html'));
     const cdt = domNodesToCdt(docNode);
-    const iframeDocNode = getDocNode(loadFixture('inner-frame.html'));
+    const iframeDocNode = getDocNode(loadFixture('iframes/frame.html'));
     const iframeCdt = domNodesToCdt(iframeDocNode);
-
+    // fs.writeFileSync('test-iframe.cdt.json', JSON.stringify(cdt, null, 3));
     const expectedCdt = loadJsonFixture('test-iframe.cdt.json');
     const expectedFrameCdt = loadJsonFixture('inner-frame.cdt.json');
     expect(cdt).to.deep.equal(expectedCdt);

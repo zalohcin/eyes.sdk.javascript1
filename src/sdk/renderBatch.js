@@ -12,7 +12,12 @@ function makeRenderBatch({putResources, resourceCache, fetchCache, logger}) {
         const renderRequest = renderRequests[i];
         if (runningRender.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES) {
           renderRequest.setRenderId(runningRender.getRenderId());
-          await putResources(renderRequest.getDom(), runningRender, wrapper);
+          await putResources(
+            renderRequest.getDom(),
+            renderRequest.getResources(),
+            runningRender,
+            wrapper,
+          );
         }
         for (const resource of renderRequest.getResources()) {
           logger.verbose('adding resource to cache: ', resource.getUrl());

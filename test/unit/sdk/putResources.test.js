@@ -17,6 +17,51 @@ describe('putResources', () => {
     return `${resource.getUrl() || 'dom'}_${resource.getSha256Hash()}`;
   }
 
+  it('adds resources from all resources - not just the dom', async () => {
+    const dom1 = new RGridDom();
+    dom1.setDomNodes({domNodes: 'domNodes1'});
+    const r1 = new RGridResource();
+    r1.setUrl('url1');
+    r1.setContent('content1');
+
+    const r2 = new RGridResource();
+    r2.setUrl('url2');
+    r2.setContent('content2');
+
+    const r3 = new RGridResource();
+    r3.setContent('content3');
+    r3.setUrl('url3');
+
+    const resources1 = [r1, r2];
+    dom1.setResources(resources1);
+    const wrapper = {
+      async putResource(runningRender, resource) {
+        const key = getKey(resource);
+        await psetTimeout(0);
+        return `${runningRender.getRenderId()}_${key}`;
+      },
+    };
+    const runningRender1 = {
+      getNeedMoreDom() {
+        return true;
+      },
+      getNeedMoreResources() {
+        return ['url1', 'url2', 'url3'];
+      },
+      getRenderId() {
+        return 'renderId1';
+      },
+    };
+
+    const result1 = await putResources(dom1, [r1, r2, r3], runningRender1, wrapper);
+    expect(result1).to.eql([
+      `renderId1_${getKey(dom1.asResource())}`,
+      `renderId1_${getKey(r1)}`,
+      `renderId1_${getKey(r2)}`,
+      `renderId1_${getKey(r3)}`,
+    ]);
+  });
+
   it('works', async () => {
     const r1 = new RGridResource();
     r1.setUrl('url1');

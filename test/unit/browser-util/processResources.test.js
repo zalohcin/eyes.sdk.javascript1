@@ -13,6 +13,7 @@ const {
   uniq,
 } = require('../../../src/browser-util/processResources');
 const testServer = require('../../util/testServer');
+const absolutizeUrl = require('../../../src/sdk/absolutizeUrl');
 
 describe('processDocument', () => {
   global.fetch = fetch;
@@ -65,6 +66,31 @@ describe('processDocument', () => {
       const retVal = await page.evaluate(`(${processDocument})(document)`);
 
       expect(retVal.resourceUrls).to.be.any;
+    });
+
+    it('extracts all blobs, from sub resources too', async () => {
+      const serialize = ({resourceUrls, blobs, allBlobs}) => {
+        //eslint-disable-next-line
+        const decoder = new TextDecoder('utf-8');
+        return {
+          resourceUrls,
+          blobs: blobs.map(({url, type, value}) => ({
+            url,
+            type,
+            value: decoder.decode(value),
+          })),
+          allBlobs: allBlobs.map(({url, type, value}) => ({
+            url,
+            type,
+            value: decoder.decode(value),
+          })),
+        };
+      };
+
+      await page.goto(`${baseUrl}/test-iframe.html`);
+      const retVal = await page.evaluate(`(${processDocument})(document).then(${serialize})`);
+      expect(retVal.allBlobs.filter(o => !o.value)).to.be.empty;
+      expect(retVal.allBlobs.map(b => b.url)).to.include(`${baseUrl}/smurfs.jpg`);
     });
   });
 });
@@ -158,6 +184,8 @@ describe('processDocument', () => {
       '{' +
         uniq.toString() +
         '\n' +
+        absolutizeUrl.toString() +
+        '\n' +
         isSameOrigin.toString() +
         '\n' +
         splitOnOrigin.toString() +
@@ -182,7 +210,7 @@ describe('processDocument', () => {
       const server = await testServer();
       try {
         const baseUrl = `http://localhost:${server.port}`;
-        await page.goto(`${baseUrl}/inner-frame.html`);
+        await page.goto(`${baseUrl}/iframes/frame.html`);
 
         const result = await page.evaluate(`(${wrapper.toString()})(document)`);
 

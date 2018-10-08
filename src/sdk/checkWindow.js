@@ -1,14 +1,14 @@
 'use strict';
-const absolutizeUrl = require('./absolutizeUrl');
-const mapKeys = require('lodash.mapkeys');
-const mapValues = require('lodash.mapvalues');
+
 const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
+const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping');
+const makeParseInlineCssFromCdt = require('./parseInlineCssFromCdt').default;
 const createCheckSettings = require('./createCheckSettings');
+
 const {presult} = require('@applitools/functional-commons');
 const {RectangleSize, Location} = require('@applitools/eyes.sdk.core');
 const calculateIgnoreAndFloatingRegions = require('./calculateIgnoreAndFloatingRegions');
-const createRGridDom = require('./createRGridDom');
 
 function makeCheckWindow({
   getError,
@@ -49,25 +49,16 @@ function makeCheckWindow({
       logger.log('aborting checkWindow synchronously');
       return;
     }
-
-    const framesAsResources = frames.map(frame => {
-      return {
-        url: frame.url,
-        type: 'x-applitools-html/cdt',
-        value: JSON.stringify(createRGridDom({cdt: frame.cdt, resources: {}}).toJSON()),
-      };
+    const getResourcesPromise = makeCreateRGridDOMAndGetResourceMapping(
+      getAllResources,
+      makeParseInlineCssFromCdt(extractCssResourcesFromCdt),
+    )({
+      resourceUrls,
+      resourceContents,
+      cdt,
+      url,
+      frames,
     });
-
-    const resources = Object.assign(framesAsResources, resourceContents);
-
-    const resourceUrlsWithCss = resourceUrls.concat(extractCssResourcesFromCdt(cdt, url));
-    const absoluteUrls = resourceUrlsWithCss.map(resourceUrl => absolutizeUrl(resourceUrl, url));
-    const absoluteResourceContents = mapValues(
-      mapKeys(resources, (_value, key) => absolutizeUrl(key, url)),
-      ({url: resourceUrl, type, value}) => ({url: absolutizeUrl(resourceUrl, url), type, value}),
-    );
-
-    const getResourcesPromise = getAllResources(absoluteUrls, absoluteResourceContents);
     const renderPromise = presult(startRender());
 
     let renderJobs; // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
@@ -166,7 +157,7 @@ function makeCheckWindow({
         return;
       }
 
-      const resources = await getResourcesPromise;
+      const {rGridDom: dom, allResources: resources} = await getResourcesPromise;
 
       if (getError()) {
         logger.log(`aborting startRender because there was an error in getAllResources`);
@@ -175,8 +166,8 @@ function makeCheckWindow({
 
       const renderRequests = createRenderRequests({
         url,
-        resources,
-        cdt,
+        dom,
+        resources: Object.values(resources),
         browsers,
         renderInfo,
         sizeMode,
