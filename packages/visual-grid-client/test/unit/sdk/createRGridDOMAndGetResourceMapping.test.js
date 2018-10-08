@@ -30,7 +30,7 @@ describe('createRGridDOMAndGetResourceMapping', () => {
       makeGetAllResources({
         resourceCache: createResourceCache(),
         extractCssResources: makeExtractCssResources(testLogger),
-        fetchResource: makeFetchResource(testLogger),
+        fetchResource: makeFetchResource({logger: testLogger}),
         fetchCache: createResourceCache(),
       }),
       makeParseInlineCssFromCdt(
