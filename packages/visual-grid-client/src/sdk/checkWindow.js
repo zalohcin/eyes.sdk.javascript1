@@ -9,7 +9,6 @@ const createCheckSettings = require('./createCheckSettings');
 const {presult} = require('@applitools/functional-commons');
 const {RectangleSize, Location} = require('@applitools/eyes.sdk.core');
 const calculateIgnoreAndFloatingRegions = require('./calculateIgnoreAndFloatingRegions');
-const createRGridDom = require('./createRGridDom');
 
 function makeCheckWindow({
   getError,
