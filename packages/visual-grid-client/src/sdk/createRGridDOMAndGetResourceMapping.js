@@ -9,7 +9,7 @@ function makeCreateRGridDOMAndGetResourceMapping(getAllResources, parseInlineCss
     cdt,
     resourceUrls,
     resourceContents,
-    frames,
+    frames = [],
   }) {
     const {absoluteUrls, absoluteResourceContents} = parseInlineCssFromCdt({
       resourceUrls,

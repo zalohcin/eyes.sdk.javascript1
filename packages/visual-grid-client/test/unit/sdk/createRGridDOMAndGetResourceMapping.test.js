@@ -25,12 +25,13 @@ describe('createRGridDOMAndGetResourceMapping', () => {
     await server.close();
   });
 
-  it('', async () => {
+  it('works', async () => {
     const fut = makeCreateRGridDOMAndGetResourceMapping(
       makeGetAllResources({
         resourceCache: createResourceCache(),
         extractCssResources: makeExtractCssResources(testLogger),
-        fetchResource: makeFetchResource({logger: testLogger, fetchCache: createResourceCache()}),
+        fetchResource: makeFetchResource(testLogger),
+        fetchCache: createResourceCache(),
       }),
       makeParseInlineCssFromCdt(
         makeExtractCssResourcesFromCdt(makeExtractCssResources(testLogger)),
