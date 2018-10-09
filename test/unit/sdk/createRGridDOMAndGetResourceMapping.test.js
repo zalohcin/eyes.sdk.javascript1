@@ -26,17 +26,19 @@ describe('createRGridDOMAndGetResourceMapping', () => {
   });
 
   it('works', async () => {
-    const fut = makeCreateRGridDOMAndGetResourceMapping(
-      makeGetAllResources({
-        resourceCache: createResourceCache(),
-        extractCssResources: makeExtractCssResources(testLogger),
-        fetchResource: makeFetchResource({logger: testLogger}),
-        fetchCache: createResourceCache(),
-      }),
-      makeParseInlineCssFromCdt(
-        makeExtractCssResourcesFromCdt(makeExtractCssResources(testLogger)),
-      ),
-    );
+    const getAllResources = makeGetAllResources({
+      resourceCache: createResourceCache(),
+      extractCssResources: makeExtractCssResources(testLogger),
+      fetchResource: makeFetchResource({logger: testLogger}),
+      fetchCache: createResourceCache(),
+    });
+    const extractCssResources = makeExtractCssResources(testLogger);
+    const extractCssResourcesFromCdt = makeExtractCssResourcesFromCdt(extractCssResources);
+    const parseInlineCssFromCdt = makeParseInlineCssFromCdt(extractCssResourcesFromCdt);
+    const fut = makeCreateRGridDOMAndGetResourceMapping({
+      getAllResources,
+      parseInlineCssFromCdt,
+    });
     const resourceUrls = ['smurfs.jpg', 'test.css'];
     const cdt = loadJsonFixture('test.cdt.json');
 
