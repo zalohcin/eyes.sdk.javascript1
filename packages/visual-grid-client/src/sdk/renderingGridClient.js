@@ -12,6 +12,8 @@ const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
 const makeWaitForTestResults = require('./waitForTestResults');
 const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
+const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping');
+const makeParseInlineCssFromCdt = require('./parseInlineCssFromCdt');
 const getBatch = require('./getBatch');
 
 // TODO when supporting only Node version >= 8.6.0 then we can use ...config for all the params that are just passed on to makeOpenEyes
@@ -72,6 +74,11 @@ function makeRenderingGridClient({
     fetchResource,
     logger,
   });
+  const parseInlineCssFromCdt = makeParseInlineCssFromCdt(extractCssResourcesFromCdt);
+  const createRGridDOMAndGetResourceMapping = makeCreateRGridDOMAndGetResourceMapping({
+    getAllResources,
+    parseInlineCssFromCdt,
+  });
 
   const {batchId: defaultBatchId, batchName: defaultBatchName} = getBatch({batchName, batchId});
 
@@ -100,13 +107,12 @@ function makeRenderingGridClient({
     ignoreBaseline,
     serverUrl,
     logger,
-    extractCssResourcesFromCdt,
     renderBatch,
     waitForRenderedStatus,
-    getAllResources,
     renderThroat,
     getRenderInfoPromise,
     setRenderInfoPromise,
+    createRGridDOMAndGetResourceMapping,
   });
   const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(openEyes, openEyesConcurrency);
   const waitForTestResults = makeWaitForTestResults({logger});

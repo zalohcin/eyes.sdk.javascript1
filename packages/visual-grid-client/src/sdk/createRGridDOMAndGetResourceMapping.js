@@ -3,7 +3,7 @@
 const {RGridResource} = require('@applitools/eyes.sdk.core');
 const createRGridDom = require('./createRGridDom');
 
-function makeCreateRGridDOMAndGetResourceMapping(getAllResources, parseInlineCssFromCdt) {
+function makeCreateRGridDOMAndGetResourceMapping({getAllResources, parseInlineCssFromCdt}) {
   return async function createRGridDOMAndGetResourceMapping({
     url,
     cdt,

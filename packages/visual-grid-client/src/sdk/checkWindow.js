@@ -2,8 +2,6 @@
 
 const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
-const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping');
-const makeParseInlineCssFromCdt = require('./parseInlineCssFromCdt');
 const createCheckSettings = require('./createCheckSettings');
 
 const {presult} = require('@applitools/functional-commons');
@@ -13,10 +11,9 @@ const calculateIgnoreAndFloatingRegions = require('./calculateIgnoreAndFloatingR
 function makeCheckWindow({
   getError,
   saveDebugData,
-  extractCssResourcesFromCdt,
+  createRGridDOMAndGetResourceMapping,
   renderBatch,
   waitForRenderedStatus,
-  getAllResources,
   renderInfo,
   logger,
   getCheckWindowPromises,
@@ -49,10 +46,7 @@ function makeCheckWindow({
       logger.log('aborting checkWindow synchronously');
       return;
     }
-    const getResourcesPromise = makeCreateRGridDOMAndGetResourceMapping(
-      getAllResources,
-      makeParseInlineCssFromCdt(extractCssResourcesFromCdt),
-    )({
+    const getResourcesPromise = createRGridDOMAndGetResourceMapping({
       resourceUrls,
       resourceContents,
       cdt,
