@@ -128,8 +128,8 @@ describe('putResources', () => {
       },
     };
 
-    const p1 = putResources(dom1, runningRender1, wrapper);
-    const p2 = putResources(dom2, runningRender2, wrapper);
+    const p1 = putResources(dom1, runningRender1, wrapper, [r1, r2, r3]);
+    const p2 = putResources(dom2, runningRender2, wrapper, [r1, r2, r3]);
 
     const result1 = await p1;
     const result2 = await p2;
