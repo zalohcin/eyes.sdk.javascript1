@@ -18,8 +18,7 @@ function makePutResources(concurrency = DEFAULT_CONCURRENCY_LIMIT) {
 
     const needMoreResources = runningRender.getNeedMoreResources();
     if (needMoreResources) {
-      const availableReosurces = Array.from(new Set(allResources.concat(rGridDom.getResources())));
-      for (const resource of availableReosurces) {
+      for (const resource of allResources) {
         if (needMoreResources.includes(resource.getUrl())) {
           processResource(resource, resources, existingPromises);
         }
