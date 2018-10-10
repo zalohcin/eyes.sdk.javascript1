@@ -1,5 +1,5 @@
 'use strict';
-const {describe, it, before, after} = require('mocha');
+const {describe, it, before, after, beforeEach} = require('mocha');
 const {expect} = require('chai');
 const {JSDOM} = require('jsdom');
 const makeCreateRGridDOMAndGetResourceMapping = require('../../../src/sdk/createRGridDOMAndGetResourceMapping');
@@ -12,11 +12,15 @@ const makeExtractCssResources = require('../../../src/sdk/extractCssResources');
 const makeFetchResource = require('../../../src/sdk/fetchResource');
 const testLogger = require('../../util/testLogger');
 const testServer = require('../../util/testServer');
-const {loadJsonFixture} = require('../../util/loadFixture');
+const {loadJsonFixture, loadFixtureBuffer} = require('../../util/loadFixture');
+const toRGridResource = require('../../util/toRGridResource');
+const createRGridDom = require('../../../src/sdk/createRGridDom');
+const getTestCssResources = require('../../util/getTestCssResources');
 
 describe('createRGridDOMAndGetResourceMapping', () => {
   let server;
   let baseUrl;
+  let fut;
   before(async () => {
     server = await testServer();
     baseUrl = `http://localhost:${server.port}`;
@@ -25,7 +29,7 @@ describe('createRGridDOMAndGetResourceMapping', () => {
     await server.close();
   });
 
-  it('works', async () => {
+  beforeEach(() => {
     const getAllResources = makeGetAllResources({
       resourceCache: createResourceCache(),
       extractCssResources: makeExtractCssResources(testLogger),
@@ -35,38 +39,105 @@ describe('createRGridDOMAndGetResourceMapping', () => {
     const extractCssResources = makeExtractCssResources(testLogger);
     const extractCssResourcesFromCdt = makeExtractCssResourcesFromCdt(extractCssResources);
     const parseInlineCssFromCdt = makeParseInlineCssFromCdt(extractCssResourcesFromCdt);
-    const fut = makeCreateRGridDOMAndGetResourceMapping({
+    fut = makeCreateRGridDOMAndGetResourceMapping({
       getAllResources,
       parseInlineCssFromCdt,
     });
-    const resourceUrls = ['smurfs.jpg', 'test.css'];
-    const cdt = loadJsonFixture('test.cdt.json');
+  });
 
-    const res = await fut({
+  it('works', async () => {
+    const imgName = 'smurfs.jpg';
+    const imgPath = `iframes/inner/${imgName}`;
+    const imgUrl = `${baseUrl}/${imgPath}`;
+    const imgResource = toRGridResource({
+      url: imgUrl,
+      type: 'image/jpeg',
+      value: loadFixtureBuffer(imgPath),
+    });
+
+    const imported2Url = `${baseUrl}/imported2.css`;
+    const testCdt = loadJsonFixture('test.cdt.json');
+    const testUrl = `${baseUrl}/test.html`;
+    const testDom = createRGridDom({
+      cdt: testCdt,
+      resources: Object.assign(getTestCssResources(baseUrl), {
+        [imported2Url]: toRGridResource({
+          url: imported2Url,
+          type: 'text/css; charset=UTF-8',
+          value: loadFixtureBuffer('imported2.css'),
+        }),
+      }),
+    });
+    const expectedTestResource = toRGridResource({
+      url: testUrl,
+      type: 'x-applitools-html/cdt',
+      value: testDom._getContentAsCdt(),
+    });
+
+    const innerFrameUrl = `${baseUrl}/iframes/inner/test.html`;
+    const innerFrameCdt = domNodesToCdt(
+      (await JSDOM.fromURL(innerFrameUrl, {resources: 'usable'})).window.document,
+    );
+
+    const innerFrameDom = createRGridDom({
+      cdt: innerFrameCdt,
+      resources: {
+        [imgUrl]: imgResource,
+      },
+    });
+
+    const expectedInnerFrameResource = toRGridResource({
+      url: innerFrameUrl,
+      type: 'x-applitools-html/cdt',
+      value: innerFrameDom._getContentAsCdt(),
+    });
+
+    const frameCdt = loadJsonFixture('inner-frame.cdt.json');
+
+    const expectedRGridDom = createRGridDom({
+      cdt: frameCdt,
+      resources: {
+        [testUrl]: expectedTestResource,
+        [innerFrameUrl]: expectedInnerFrameResource,
+      },
+    });
+
+    const {rGridDom, allResources} = await fut({
       url: `${baseUrl}/iframes/frame.html`,
-      cdt: loadJsonFixture('inner-frame.cdt.json'),
-      resourceUrls,
+      cdt: frameCdt,
+      resourceUrls: [],
       resourceContents: {},
       frames: [
         {
-          url: `${baseUrl}/test.html`,
-          cdt,
-          resourceUrls,
+          url: testUrl,
+          cdt: testCdt,
+          resourceUrls: ['test.css'],
           resourceContents: {},
-          frames: [],
         },
         {
-          url: `${baseUrl}/iframes/inner/test.html`,
-          cdt: domNodesToCdt(
-            (await JSDOM.fromURL(`${baseUrl}/iframes/inner/test.html`, {resources: 'usable'}))
-              .window.document,
-          ),
-          resourceUrls,
+          url: innerFrameUrl,
+          cdt: innerFrameCdt,
+          resourceUrls: [imgName],
           resourceContents: {},
-          frames: [],
         },
       ],
     });
-    expect(Object.keys(res.allResources).filter(url => url.endsWith('.html'))).to.not.be.empty;
+
+    expect(rGridDom.getResources()).to.eql(expectedRGridDom.getResources());
+
+    // first, a sanity check
+    expect(Object.keys(allResources).filter(url => url.endsWith('.html'))).to.not.be.empty;
+
+    // The following expect is actually included in the expect after it, but it has a better output than the latter.
+    expect(JSON.parse(allResources[testUrl].toJSON().content)).to.eql(
+      JSON.parse(expectedTestResource.toJSON().content),
+    );
+    expect(allResources[testUrl]).to.eql(expectedTestResource);
+
+    // The following expect is actually included in the expect after it, but it has a better output than the latter.
+    expect(JSON.parse(allResources[innerFrameUrl].toJSON().content)).to.eql(
+      JSON.parse(expectedInnerFrameResource.toJSON().content),
+    );
+    expect(allResources[innerFrameUrl]).to.eql(expectedInnerFrameResource);
   });
 });

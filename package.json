@@ -35,7 +35,7 @@
     "type": "git"
   },
   "dependencies": {
-    "@applitools/eyes.sdk.core": "^1.11.0",
+    "@applitools/eyes.sdk.core": "^2.0.0",
     "@applitools/functional-commons": "^1.0.19",
     "@applitools/http-commons": "^1.1.1",
     "cosmiconfig": "^5.0.6",

@@ -54,35 +54,6 @@ describe('openEyes', () => {
     process.env = prevEnv;
   });
 
-  it.skip('converts frames to resources', async () => {
-    const frameUrl = `${baseUrl}/test.html`;
-    const frames = [
-      {
-        url: frameUrl,
-        cdt: loadJsonFixture('test.cdt.json'),
-        resourceUrls: [],
-        resourceContents: {},
-      },
-    ];
-    const frameWrapper = new FakeEyesWrapper({
-      goodFilename: 'inner-frame.html',
-      goodResources: [
-        {
-          url: `${baseUrl}/test.html`,
-          content: JSON.stringify({resources: [], domNodes: loadJsonFixture('test.cdt.json')}),
-        },
-      ],
-    });
-
-    const {checkWindow, close} = await openEyes({
-      wrappers: [frameWrapper],
-      apiKey,
-    });
-    checkWindow({cdt: [], frames, tag: 'good1', url: `${baseUrl}/inner-frame.html`});
-    const ttt = await close();
-    expect(ttt[0].map(r => r.getAsExpected())).to.eql([true]);
-  });
-
   it("doesn't throw exception", async () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
@@ -864,5 +835,27 @@ describe('openEyes', () => {
     expect(flag).to.equal(true);
     expect(wrapper2.renderingInfo).to.equal('bla');
     await p;
+  });
+
+  it('handles iframes', async () => {
+    const frameUrl = `${baseUrl}/test.html`;
+    const frames = [
+      {
+        url: frameUrl,
+        cdt: loadJsonFixture('test.cdt.json'),
+        resourceUrls: wrapper.goodResourceUrls,
+        resourceContents: wrapper.goodResources,
+      },
+    ];
+
+    const url = `${baseUrl}/inner-frame.html`;
+
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      apiKey,
+    });
+    checkWindow({cdt: [], frames, url});
+    const ttt = await close();
+    expect(ttt[0].map(r => r.getAsExpected())).to.eql([true]);
   });
 });
