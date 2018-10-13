@@ -131,9 +131,10 @@ class ArgumentGuard {
    *
    * @param {number} param The input parameter.
    * @param {string} paramName The input parameter name.
+   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
-  static isInteger(param, paramName) {
-    if (!Number.isInteger(param)) {
+  static isInteger(param, paramName, strict = true) {
+    if ((strict || !(param === undefined || param === null)) && !Number.isInteger(param)) {
       throw new Error(`IllegalArgument: ${paramName} is not integer`);
     }
   }
@@ -143,10 +144,40 @@ class ArgumentGuard {
    * Fails if param is not a string.
    *
    * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
-  static isString(param) {
-    if (!GeneralUtils.isString(param)) {
-      throw new Error(`IllegalType: \`${param}\` is not a string`);
+  static isString(param, paramName, strict = true) {
+    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isString(param)) {
+      throw new Error(`IllegalType: ${paramName} is not a string`);
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Fails if param is not a number.
+   *
+   * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
+   */
+  static isNumber(param, paramName, strict = true) {
+    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isNumber(param)) {
+      throw new Error(`IllegalType: ${paramName} is not a number`);
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Fails if param is not a boolean.
+   *
+   * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
+   */
+  static isBoolean(param, paramName, strict = true) {
+    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isBoolean(param)) {
+      throw new Error(`IllegalType: ${paramName} is not a boolean`);
     }
   }
 
@@ -155,10 +186,12 @@ class ArgumentGuard {
    * Fails if param is not a buffer.
    *
    * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
-  static isBuffer(param) {
-    if (!GeneralUtils.isBuffer(param)) {
-      throw new Error(`IllegalType: \`${param}\` is not a buffer`);
+  static isBuffer(param, paramName, strict = true) {
+    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isBuffer(param)) {
+      throw new Error(`IllegalType: ${paramName} is not a buffer`);
     }
   }
 

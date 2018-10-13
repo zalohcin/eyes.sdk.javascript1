@@ -423,10 +423,11 @@ class GeneralUtils {
    * @property {function} getColumnNumber if this function was defined in a script returns the current column number
    * @property {function} isNative is this call in native V8 code?
    *
+   * @param {Error} [error]
    * @return {CallSite[]}
    */
-  static getStackTrace() {
-    return stackTrace.get();
+  static getStackTrace(error) {
+    return stackTrace.get(error);
   }
 
   /**

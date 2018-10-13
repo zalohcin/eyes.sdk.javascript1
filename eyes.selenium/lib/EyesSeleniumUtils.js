@@ -142,6 +142,25 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
   }
 
   /**
+   * @param {IWebDriver} driver The driver for which to check if it represents a mobile device.
+   * @return {Promise<boolean>} {@code true} if the platform running the test is a mobile platform. {@code false}
+   *   otherwise.
+   */
+  static async isMobileDevice(driver) {
+    const capabilities = await driver.getCapabilities();
+    return EyesSeleniumUtils.isMobileDeviceFromCaps(capabilities);
+  }
+
+  /**
+   * @param {Capabilities} capabilities The driver's capabilities.
+   * @return {boolean} {@code true} if the platform running the test is a mobile platform. {@code false} otherwise.
+   */
+  static isMobileDeviceFromCaps(capabilities) {
+    const platformName = (capabilities.get('platformName') || capabilities.get('platform')).toUpperCase();
+    return platformName === 'ANDROID' || ['MAC', 'IOS'].includes(platformName);
+  }
+
+  /**
    * @param {IWebDriver} driver The driver for which to check the orientation.
    * @return {Promise<boolean>} {@code true} if this is a mobile device and is in landscape orientation. {@code
    *   false} otherwise.

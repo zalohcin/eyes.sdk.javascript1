@@ -3,24 +3,6 @@
 const { EyesSeleniumUtils } = require('@applitools/eyes.selenium');
 
 class EyesAppiumUtils extends EyesSeleniumUtils {
-  /**
-   * @param {IWebDriver} driver The driver for which to check if it represents a mobile device.
-   * @return {Promise<boolean>} {@code true} if the platform running the test is a mobile platform. {@code false}
-   *   otherwise.
-   */
-  static async isMobileDevice(driver) {
-    const capabilities = await driver.getCapabilities();
-    return EyesAppiumUtils.isMobileDeviceFromCaps(capabilities);
-  }
-
-  /**
-   * @param {Capabilities} capabilities The driver's capabilities.
-   * @return {boolean} {@code true} if the platform running the test is a mobile platform. {@code false} otherwise.
-   */
-  static isMobileDeviceFromCaps(capabilities) {
-    return EyesAppiumUtils.isAndroidFromCaps(capabilities) || EyesAppiumUtils.isIOSFromCaps(capabilities);
-  }
-
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {IWebDriver} driver The driver to test.

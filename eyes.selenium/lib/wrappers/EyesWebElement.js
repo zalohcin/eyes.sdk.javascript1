@@ -73,7 +73,7 @@ class EyesWebElement extends WebElement {
    */
   async getBounds() {
     const rect = await this.getRect();
-    let { x: left, y: top, width, height } = rect.width;
+    let { x: left, y: top, width, height } = rect;
 
     if (left < 0) {
       width = Math.max(0, width + left);

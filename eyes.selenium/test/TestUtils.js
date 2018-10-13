@@ -1,5 +1,6 @@
 'use strict';
 
+const assert = require('assert');
 const { GeneralUtils } = require('@applitools/eyes.sdk.core');
 
 /**
@@ -32,6 +33,19 @@ class TestUtils {
     }
 
     yield* cartesianUtil(0);
+  }
+
+  static async throwsAsync(fn, error, message) {
+    let f = () => {};
+    try {
+      await fn();
+    } catch (e) {
+      f = () => {
+        throw e;
+      };
+    } finally {
+      assert.throws(f, error, message);
+    }
   }
 }
 

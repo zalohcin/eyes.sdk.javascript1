@@ -966,9 +966,9 @@ class EyesBase {
       throw err;
     } finally {
       // Making sure that we reset the running session even if an exception was thrown during close.
-      this._matchWindowTask = undefined;
+      this._matchWindowTask = null;
       this._autSessionId = undefined;
-      this._runningSession = undefined;
+      this._runningSession = null;
       this._currentAppName = undefined;
       this._logger.getLogHandler().close();
     }
@@ -1171,7 +1171,7 @@ class EyesBase {
       this._logger.verbose('Ignored');
       const result = new MatchResult();
       result.setAsExpected(true);
-      return Promise.resolve(result);
+      return result;
     }
 
     ArgumentGuard.isValidState(this._isOpen, 'Eyes not open');

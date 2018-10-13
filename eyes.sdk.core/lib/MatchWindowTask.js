@@ -134,11 +134,20 @@ class MatchWindowTask {
    * @param {boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
    * @param {CheckSettings} checkSettings The internal settings to use.
    * @param {ImageMatchSettings} imageMatchSettings The settings to use.
-   * @param {number} retryTimeout The amount of time to retry matching in milliseconds or a negative value to use the
+   * @param {number} [retryTimeout] The amount of time to retry matching in milliseconds or a negative value to use the
    *   default retry timeout.
    * @return {Promise<MatchResult>} Returns the results of the match
    */
   async matchWindow(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout) {
+    ArgumentGuard.notNull(userInputs, 'userInputs');
+    ArgumentGuard.notNull(region, 'region');
+    ArgumentGuard.isString(tag, 'tag');
+    ArgumentGuard.isBoolean(shouldRunOnceOnTimeout, 'shouldRunOnceOnTimeout');
+    ArgumentGuard.isBoolean(ignoreMismatch, 'ignoreMismatch');
+    ArgumentGuard.notNull(checkSettings, 'checkSettings');
+    ArgumentGuard.notNull(imageMatchSettings, 'imageMatchSettings');
+    ArgumentGuard.isNumber(retryTimeout, 'retryTimeout', false);
+
     if (retryTimeout === undefined || retryTimeout === null || retryTimeout < 0) {
       retryTimeout = this._defaultRetryTimeout;
     }

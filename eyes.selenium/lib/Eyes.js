@@ -20,6 +20,7 @@ const {
   Location,
   RectangleSize,
   FailureReports,
+  MatchResult,
 } = require('@applitools/eyes.sdk.core');
 
 const { ImageProviderFactory } = require('./capture/ImageProviderFactory');
@@ -124,7 +125,7 @@ class Eyes extends EyesBase {
     /** @type {RegionPositionCompensation} */
     this._regionPositionCompensation = undefined;
 
-    /** @type {EyesWebElement} */
+    /** @type {EyesWebElement|WebElement} */
     this._targetElement = null;
 
     /** @type {boolean} */
@@ -429,55 +430,111 @@ class Eyes extends EyesBase {
   async check(name, checkSettings) {
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
 
-    let matchResult;
+    if (!EyesSeleniumUtils.isMobileDevice(this._driver)) {
+      this._logger.verbose(`URL: ${await this._driver.getCurrentUrl()}`);
+    }
+
     this._logger.verbose(`check("${name}", checkSettings) - begin`);
     this._stitchContent = checkSettings.getStitchContent();
     const targetRegion = checkSettings.getTargetRegion();
 
-    this._regionToCheck = null;
+    this._originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
+
     const switchedToFrameCount = await this._switchToFrame(checkSettings);
 
-    if (targetRegion) {
-      matchResult = await super.checkWindowBase(new RegionProvider(targetRegion), name, false, checkSettings);
-    }
+    this._scrollRootElement = null;
+    this._regionToCheck = null;
 
-    if (checkSettings) {
-      const targetSelector = checkSettings.getTargetSelector();
+    let result = null;
+
+    const switchTo = this._driver.switchTo();
+    let originalFC = null;
+
+    if (targetRegion) {
+      originalFC = await this._tryHideScrollbars();
+      result = await super.checkWindowBase(new RegionProvider(targetRegion), name, false, checkSettings);
+    } else if (checkSettings) {
       let targetElement = checkSettings.getTargetElement();
+
+      const targetSelector = checkSettings.getTargetSelector();
       if (!targetElement && targetSelector) {
-        targetElement = this._driver.findElement(targetSelector);
+        targetElement = await this._driver.findElement(targetSelector);
       }
 
       if (targetElement) {
+        originalFC = await this._tryHideScrollbars();
         this._targetElement = targetElement instanceof EyesWebElement ? targetElement :
           new EyesWebElement(this._logger, this._driver, targetElement);
         if (this._stitchContent) {
-          await this._checkElement(name, checkSettings);
+          result = await this._checkElement(name, checkSettings);
+        } else {
+          result = await this._checkRegion(name, checkSettings);
         }
-        await this._checkRegion(name, checkSettings);
-      }
-
-      if (checkSettings.getFrameChain().length > 0) {
+        this._targetElement = null;
+      } else if (checkSettings.getFrameChain().length > 0) {
+        originalFC = await this._tryHideScrollbars();
         if (this._stitchContent) {
-          await this._checkFullFrameOrElement(name, checkSettings);
+          result = await this._checkFullFrameOrElement(name, checkSettings);
+        } else {
+          result = await this._checkFrameFluent(name, checkSettings);
         }
-        await this._checkFrameFluent(name, checkSettings);
+      } else {
+        if (!EyesSeleniumUtils.isMobileDevice(this._driver)) {
+          // required to prevent cut line on the last stitched part of the page on some browsers (like firefox).
+          await switchTo.defaultContent();
+          originalFC = await this._tryHideScrollbars();
+        }
+        result = await super.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
       }
-
-      matchResult = await super.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
     }
 
-    this._targetElement = null;
+    if (!result) {
+      result = new MatchResult();
+    }
+
     await this._switchToParentFrame(switchedToFrameCount);
 
+    if (this._positionMemento != null) {
+      await this._positionProviderHandler.restoreState(this._positionMemento);
+      this._positionMemento = null;
+    }
+
+    await switchTo.resetScroll();
+
+    if (originalFC) {
+      await this._tryRestoreScrollbars(originalFC);
+    }
+
+    await this._trySwitchToFrames(this._driver, switchTo, this._originalFC);
+
     this._stitchContent = false;
+
     this._logger.verbose('check - done!');
-    return matchResult;
+    return result;
+  }
+
+  /**
+   * @param driver
+   * @param switchTo
+   * @param frames
+   * @return {Promise<void>}
+   * @private
+   */
+  async _trySwitchToFrames(driver, switchTo, frames) {
+    if (EyesSeleniumUtils.isMobileDevice(driver)) {
+      return;
+    }
+
+    try {
+      await switchTo.frames(frames);
+    } catch (err) {
+      this._logger.log(`WARNING: Failed to swtich to original frame chain! ${err}`);
+    }
   }
 
   /**
    * @private
-   * @return {Promise<void>}
+   * @return {Promise<MatchResult>}
    */
   async _checkFrameFluent(name, checkSettings) {
     const frameChain = new FrameChain(this._logger, this._driver.getFrameChain());
@@ -485,8 +542,9 @@ class Eyes extends EyesBase {
     this._targetElement = targetFrame.getReference();
 
     await this._driver.switchTo().framesDoScroll(frameChain);
-    await this._checkRegion(name, checkSettings);
+    const result = await this._checkRegion(name, checkSettings);
     this._targetElement = null;
+    return result;
   }
 
   /**
@@ -557,7 +615,7 @@ class Eyes extends EyesBase {
 
   /**
    * @private
-   * @return {Promise<void>}
+   * @return {Promise<MatchResult>}
    */
   async _checkFullFrameOrElement(name, checkSettings) {
     this._checkFrameOrElement = true;
@@ -572,8 +630,9 @@ class Eyes extends EyesBase {
       }
     };
 
-    await super.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings);
+    const result = await super.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings);
     this._checkFrameOrElement = false;
+    return result;
   }
 
   /**
@@ -674,7 +733,7 @@ class Eyes extends EyesBase {
 
   /**
    * @private
-   * @return {Promise<void>}
+   * @return {Promise<MatchResult>}
    */
   async _checkRegion(name, checkSettings) {
     const self = this;
@@ -693,19 +752,20 @@ class Eyes extends EyesBase {
       }
     };
 
-    await super.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings);
+    const result = await super.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings);
     this._logger.verbose('Done! trying to scroll back to original position..');
+    return result;
   }
 
   /**
    * @private
-   * @return {Promise<void>}
+   * @return {Promise<MatchResult>}
    */
   async _checkElement(name, checkSettings) {
     const eyesElement = this._targetElement;
     const scrollPositionProvider = new ScrollPositionProvider(this._logger, this._jsExecutor);
 
-    let originalOverflow, error;
+    let result, originalOverflow, error;
     const originalPositionMemento = await this._positionProviderHandler.get().getState();
     const originalScrollPosition = await scrollPositionProvider.getCurrentPosition();
     const rect = await eyesElement.getRect();
@@ -736,7 +796,7 @@ class Eyes extends EyesBase {
       this._logger.verbose('replacing regionToCheck');
       this._regionToCheck = elementRegion;
 
-      await super.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
+      result = await super.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
     } catch (error_) {
       error = error_;
     }
@@ -756,6 +816,8 @@ class Eyes extends EyesBase {
     if (error) {
       throw error;
     }
+
+    return result;
   }
 
   /**
@@ -902,10 +964,12 @@ class Eyes extends EyesBase {
    * @param {By} by The WebDriver selector used for finding the region to validate.
    * @param {string} tag An optional tag to be associated with the screenshot.
    * @param {number} matchTimeout The amount of time to retry matching.
+   * @param {boolean} stitchContent If {@code true}, stitch the internal content of the region (i.e., perform
+   *   {@link #checkElement(By, number, string)} on the region.
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
    */
-  async checkRegionBy(by, tag, matchTimeout) {
-    return this.check(tag, Target.region(by).timeout(matchTimeout));
+  async checkRegionBy(by, tag, matchTimeout, stitchContent) {
+    return this.check(tag, Target.region(by).timeout(matchTimeout).stitchContent(stitchContent));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -1119,21 +1183,21 @@ class Eyes extends EyesBase {
   }
 
   /** @override */
-  beforeOpen() {
-    return this._tryHideScrollbars();
-  }
-
-  /** @override */
-  beforeMatchWindow() {
-    return this._tryHideScrollbars();
+  async beforeOpen() {
+    this._scrollRootElement = null;
+    await this._tryHideScrollbars();
   }
 
   /**
    * @private
-   * @return {Promise<void>}
+   * @return {Promise<FrameChain>}
    */
   async _tryHideScrollbars() {
-    if (this._hideScrollbars) {
+    if (EyesSeleniumUtils.isMobileDevice(this._driver)) {
+      return new FrameChain(this._logger);
+    }
+
+    if (this._hideScrollbars || (this._stitchMode === StitchMode.CSS && this._stitchContent)) {
       const originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
       const fc = new FrameChain(this._logger, this._driver.getFrameChain());
 
@@ -1147,6 +1211,8 @@ class Eyes extends EyesBase {
         this._logger.log(`WARNING: Failed to hide scrollbars! Error: ${err}`);
       }
     }
+
+    return new FrameChain(this._logger);
   }
 
   /**
@@ -1156,7 +1222,7 @@ class Eyes extends EyesBase {
    */
   async _tryHideScrollbarsLoop(fc) {
     if (fc.size() > 0) {
-      await this._driver.getRemoteWebDriver().switchTo().parentFrame();
+      await this._driver.switchTo().parentFrame();
 
       const frame = fc.pop();
       await EyesSeleniumUtils.hideScrollbars(this._driver, 200);
@@ -1166,15 +1232,22 @@ class Eyes extends EyesBase {
 
   /**
    * @private
+   * @param {FrameChain} frameChain
    * @return {Promise<void>}
    */
-  async _tryRestoreScrollbars() {
-    if (this._hideScrollbars) {
+  async _tryRestoreScrollbars(frameChain) {
+    if (EyesSeleniumUtils.isMobileDevice(this._driver)) {
+      return;
+    }
+
+    if (this._hideScrollbars || (this._stitchMode === StitchMode.CSS && this._stitchContent)) {
+      await this._driver.switchTo().frames(frameChain);
       const originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
       const fc = new FrameChain(this._logger, this._driver.getFrameChain());
       await this._tryRestoreScrollbarsLoop(fc);
       await this._driver.switchTo().frames(originalFC);
     }
+    this._driver.getFrameChain().clear();
   }
 
   /**
@@ -1184,7 +1257,7 @@ class Eyes extends EyesBase {
    */
   async _tryRestoreScrollbarsLoop(fc) {
     if (fc.size() > 0) {
-      await this._driver.getRemoteWebDriver().switchTo().parentFrame();
+      await this._driver.switchTo().parentFrame();
 
       const frame = fc.pop();
       await frame.getReference().setOverflow(frame.getOriginalOverflow());
@@ -1227,7 +1300,7 @@ class Eyes extends EyesBase {
     let result;
     if (this._checkFrameOrElement) {
       this._logger.verbose('Check frame/element requested');
-      await switchTo.framesDoScroll(originalFrameChain);
+      await switchTo.frames(originalFrameChain);
 
       const entireFrameOrElement = await algo.getStitchedRegion(
         this._imageProvider,

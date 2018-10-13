@@ -58,8 +58,8 @@ class EyesWebDriver extends IWebDriver {
   }
 
   /** @inheritDoc */
-  schedule(command, description) {
-    return this._driver.schedule(command, description);
+  execute(command, description) {
+    return this._driver.execute(command, description);
   }
 
   /** @inheritDoc */

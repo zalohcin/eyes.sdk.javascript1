@@ -34,7 +34,7 @@ class Target {
    * @return {ImagesCheckSettings}
    */
   static buffer(buffer) {
-    ArgumentGuard.isBuffer(buffer);
+    ArgumentGuard.isBuffer(buffer, 'buffer');
 
     return new ImagesCheckSettings(null, buffer);
   }
@@ -54,7 +54,7 @@ class Target {
    * @return {ImagesCheckSettings}
    */
   static path(string) {
-    ArgumentGuard.isString(string);
+    ArgumentGuard.isString(string, 'path');
 
     return new ImagesCheckSettings(null, null, null, string);
   }
@@ -65,7 +65,7 @@ class Target {
    * @return {ImagesCheckSettings}
    */
   static url(string, imageSize) {
-    ArgumentGuard.isString(string);
+    ArgumentGuard.isString(string, 'url');
 
     const checkSettings = new ImagesCheckSettings(null, null, null, null, string);
     checkSettings.setImageSize(imageSize);

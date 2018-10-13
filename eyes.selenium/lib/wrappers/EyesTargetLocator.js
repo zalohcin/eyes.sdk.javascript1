@@ -1,6 +1,6 @@
 'use strict';
 
-const command = require('selenium-webdriver/lib/command');
+const { Command, Name } = require('selenium-webdriver/lib/command');
 const { TargetLocator } = require('selenium-webdriver/lib/webdriver');
 const { Location, RectangleSize, ArgumentGuard, GeneralUtils } = require('@applitools/eyes.sdk.core');
 
@@ -34,6 +34,11 @@ class EyesTargetLocator extends TargetLocator {
     this._targetLocator = targetLocator;
     this._jsExecutor = new SeleniumJavaScriptExecutor(driver);
     this._scrollPosition = new ScrollPositionProvider(this._logger, this._jsExecutor);
+    this._defaultContentPositionMemento = null;
+
+    // TODO: remove once selenium SDK 4 is fixed
+    // the command is not exists in selenium js sdk, we should define it manually
+    this._driver.getExecutor().defineCommand(Name.SWITCH_TO_FRAME_PARENT, 'POST', '/session/:sessionId/frame/parent');
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -131,8 +136,24 @@ class EyesTargetLocator extends TargetLocator {
       this._logger.verbose('Making preparations...');
       this._driver.getFrameChain().pop();
       this._logger.verbose('Done! Switching to parent frame..');
-      await this._targetLocator.parentFrame();
+      await EyesTargetLocator._parentFrame(this._targetLocator, this._driver.getFrameChain());
       this._logger.verbose('Done!');
+    }
+  }
+
+  /**
+   * @param {TargetLocator} targetLocator
+   * @param {FrameChain} frameChainToParent
+   * @return {Promise<void>}
+   */
+  static async _parentFrame(targetLocator, frameChainToParent) {
+    try {
+      await targetLocator.parentFrame();
+    } catch (ignored) {
+      await targetLocator.defaultContent();
+      for (const frame of frameChainToParent) {
+        await targetLocator.frame(frame.getReference());
+      }
     }
   }
 
@@ -146,6 +167,7 @@ class EyesTargetLocator extends TargetLocator {
   async framesDoScroll(frameChain) {
     this._logger.verbose('EyesTargetLocator.framesDoScroll(frameChain)');
     await this._driver.switchTo().defaultContent();
+    this._defaultContentPositionMemento = await this._scrollPosition.getState();
 
     for (const frame of frameChain.getFrames()) {
       this._logger.verbose('Scrolling by parent scroll position...');
@@ -230,10 +252,7 @@ class EyesTargetLocator extends TargetLocator {
     this._logger.verbose('EyesTargetLocator.activeElement()');
     this._logger.verbose('Switching to element...');
     // noinspection JSCheckFunctionSignatures
-    const id = this._driver.schedule(
-      new command.Command(command.Name.GET_ACTIVE_ELEMENT),
-      'WebDriver.switchTo().activeElement()'
-    );
+    const id = this._driver.execute(new Command(Name.GET_ACTIVE_ELEMENT));
 
     this._logger.verbose('Done!');
     return new EyesWebElementPromise(this._logger, this._driver, id);
@@ -252,6 +271,15 @@ class EyesTargetLocator extends TargetLocator {
     const result = this._targetLocator.alert();
     this._logger.verbose('Done!');
     return result;
+  }
+
+  /**
+   * @return {Promise<void>}
+   */
+  async resetScroll() {
+    if (this._defaultContentPositionMemento != null) {
+      await this._scrollPosition.restoreState(this._defaultContentPositionMemento);
+    }
   }
 
   /**
