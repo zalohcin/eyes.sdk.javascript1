@@ -269,8 +269,6 @@ describe('getAllResources', () => {
       );
 
       expect(resources).to.eql(expected);
-    } catch (ex) {
-      throw ex;
     } finally {
       await closeServer();
     }
@@ -367,5 +365,47 @@ describe('getAllResources', () => {
     const resources = await getAllResources(['http://localhost:1234/err/bla.css']);
     expect(resources).to.eql({});
     expect(output).to.contain('error fetching resource at http://localhost:1234/err/bla.css');
+  });
+
+  it('handles the case when the same resource appears both in resourceUrls and preResources', async () => {
+    const server = await testServer();
+    const baseUrl = `http://localhost:${server.port}`;
+    const url = `${baseUrl}/smurfs.jpg`;
+    const preResources = {
+      [url]: {url, type: 'bla-type', value: 'bla-value'},
+    };
+
+    try {
+      const resources = await getAllResources([url], preResources);
+      expect(resources).to.eql(mapValues(preResources, toRGridResource));
+    } finally {
+      await server.close();
+    }
+  });
+
+  it('handles the case when the same resource appears both in preResources and as a dependency of another resource', async () => {
+    const server = await testServer();
+    const baseUrl = `http://localhost:${server.port}`;
+    const url = `${baseUrl}/smurfs.jpg`;
+    const preResources = {
+      [url]: {url, type: 'bla-type', value: 'bla-value'},
+    };
+    const cssName = 'single-resource.css';
+    const cssUrl = `${baseUrl}/${cssName}`;
+    const cssValue = loadFixtureBuffer(cssName);
+
+    try {
+      const resources = await getAllResources([cssUrl], preResources);
+      expect(resources).to.eql(
+        mapValues(
+          Object.assign(preResources, {
+            [cssUrl]: {url: cssUrl, type: 'text/css; charset=UTF-8', value: cssValue},
+          }),
+          toRGridResource,
+        ),
+      );
+    } finally {
+      await server.close();
+    }
   });
 });
