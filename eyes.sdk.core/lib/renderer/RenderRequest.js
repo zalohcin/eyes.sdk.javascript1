@@ -31,7 +31,6 @@ class RenderRequest {
     this._renderId = undefined;
     this._scriptHooks = scriptHooks;
     this._selectorsToFindRegionsFor = selectorsToFindRegionsFor;
-    this._sendDom = sendDom;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -87,7 +86,7 @@ class RenderRequest {
   setRenderId(value) {
     this._renderId = value;
   }
-  
+
   // noinspection JSUnusedGlobalSymbols
   /** @return {string} */
   getScriptHooks() {
@@ -110,16 +109,6 @@ class RenderRequest {
   /** @param {string[]} value */
   setSelectorsToFindRegionsFor(value) {
     this._selectorsToFindRegionsFor = value;
-  }
-
-  /** @return {boolean} */
-  getSendDom() {
-    return this._sendDom;
-  }
-
-  /** @param {boolean} value */
-  setSendDom(value) {
-    this._sendDom = value;
   }
 
   /** @override */
@@ -160,10 +149,6 @@ class RenderRequest {
 
     if (this._selectorsToFindRegionsFor) {
       object.selectorsToFindRegionsFor = this._selectorsToFindRegionsFor;
-    }
-
-    if (this._sendDom) {
-      object.sendDom = this._sendDom;
     }
 
     return object;
