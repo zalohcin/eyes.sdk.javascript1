@@ -45,7 +45,9 @@
     "mocha.parallel": "^0.15.6"
   },
   "scripts": {
-    "test": "mocha ./test/**/*.spec.js -t 900000"
+    "test:unit": "mocha ./test/unit/**/*.spec.js -t 900000",
+    "test:integration": "mocha ./test/integration/**/*.spec.js -t 900000",
+    "test": "npm run test:unit && npm run test:integration"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

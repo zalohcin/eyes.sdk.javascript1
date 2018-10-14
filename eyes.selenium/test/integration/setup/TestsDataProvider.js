@@ -6,7 +6,7 @@ const { Options: FirefoxOptions } = require('selenium-webdriver/firefox');
 const { Options: SafariOptions } = require('selenium-webdriver/safari');
 const { Options: IeOptions } = require('selenium-webdriver/ie');
 
-const { TestUtils } = require('../TestUtils');
+const { TestUtils } = require('../../TestUtils');
 
 /**
  * Collection of utility methods.

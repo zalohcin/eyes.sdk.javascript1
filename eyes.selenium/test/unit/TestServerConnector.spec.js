@@ -1,8 +1,9 @@
 'use strict';
 
 require('chromedriver');
-const { Builder } = require('selenium-webdriver');
-const { RectangleSize } = require('../../../eyes.sdk.core/index');
+const { Builder, Capabilities } = require('selenium-webdriver');
+const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
+const { RectangleSize } = require('@applitools/eyes.sdk.core');
 const { Eyes, Target } = require('../../index');
 
 let driver, eyes;
@@ -10,12 +11,18 @@ describe('TestServerConnector', function () {
   this.timeout(5 * 60 * 1000);
 
   before(async function () {
-    driver = await new Builder().forBrowser('chrome').build();
+    const chromeOptions = new ChromeOptions();
+    chromeOptions.addArguments('disable-infobars');
+    chromeOptions.headless();
+    driver = await new Builder()
+      .withCapabilities(Capabilities.chrome())
+      .setChromeOptions(chromeOptions)
+      .build();
 
     eyes = new Eyes();
   });
 
-  it('TestSessionSummary_Status_Failed', async function () {
+  it('TestServerConnector', async function () {
     await eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(800, 599));
 
     await driver.get('https://applitools.com/helloworld');

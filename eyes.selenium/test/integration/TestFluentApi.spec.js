@@ -3,8 +3,8 @@
 const { By } = require('selenium-webdriver');
 const { Region, FloatingMatchSettings } = require('@applitools/eyes.sdk.core');
 
-const { TestsDataProvider } = require('./TestsDataProvider');
-const { TestSetup } = require('./TestSetup');
+const { TestsDataProvider } = require('./setup/TestsDataProvider');
+const { TestSetup } = require('./setup/TestSetup');
 const { Target } = require('../../index');
 
 let eyes, driver;

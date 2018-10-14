@@ -14,15 +14,10 @@ describe('TestServerStatus', function () {
   before(async function () {
     const chromeOptions = new ChromeOptions();
     chromeOptions.addArguments('disable-infobars');
-
-    const caps = Capabilities.chrome();
-    caps.set('username', process.env.SAUCE_USERNAME);
-    caps.set('accesskey', process.env.SAUCE_ACCESS_KEY);
-    // noinspection JSCheckFunctionSignatures
+    chromeOptions.headless();
     driver = await new Builder()
-      .withCapabilities(caps)
+      .withCapabilities(Capabilities.chrome())
       .setChromeOptions(chromeOptions)
-      .usingServer(process.env.SELENIUM_SERVER_URL)
       .build();
 
     eyes = new Eyes();
@@ -32,7 +27,7 @@ describe('TestServerStatus', function () {
   it('TestSessionSummary_Status_Failed', async function () {
     driver = await eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(800, 599));
 
-    await driver.get('http://applitools.github.io/demo/TestPages/FramesTestPage/');
+    await driver.get('https://applitools.com/helloworld');
 
     await eyes.check('TestSessionSummary_Status_Failed', Target.window());
 
@@ -43,7 +38,7 @@ describe('TestServerStatus', function () {
     const uuid = GeneralUtils.guid();
     driver = await eyes.open(driver, this.test.parent.title, this.test.title + uuid, new RectangleSize(800, 599));
 
-    await driver.get('http://applitools.github.io/demo/TestPages/FramesTestPage/');
+    await driver.get('https://applitools.com/helloworld');
 
     await eyes.check('TestSessionSummary_Status_New', Target.window());
 

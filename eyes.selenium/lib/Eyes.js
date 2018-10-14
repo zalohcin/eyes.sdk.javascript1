@@ -356,7 +356,7 @@ class Eyes extends EyesBase {
   /**
    * Starts a test.
    *
-   * @param {WebDriver} driver The web driver that controls the browser hosting the application under test.
+   * @param {WebDriver|ThenableWebDriver} driver The web driver that controls the browser hosting the application under test.
    * @param {string} appName The name of the application under test.
    * @param {string} testName The test name.
    * @param {RectangleSize|{width: number, height: number}} [viewportSize=null] The required browser's viewport size
@@ -424,11 +424,12 @@ class Eyes extends EyesBase {
    * Preform visual validation
    *
    * @param {string} name A name to be associated with the match
-   * @param {SeleniumCheckSettings} checkSettings Target instance which describes whether we want a window/region/frame
+   * @param {SeleniumCheckSettings|CheckSettings} checkSettings Target instance which describes whether we want a window/region/frame
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
    */
   async check(name, checkSettings) {
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
+    ArgumentGuard.isValidState(this._isOpen, 'Eyes not open');
 
     if (!EyesSeleniumUtils.isMobileDevice(this._driver)) {
       this._logger.verbose(`URL: ${await this._driver.getCurrentUrl()}`);

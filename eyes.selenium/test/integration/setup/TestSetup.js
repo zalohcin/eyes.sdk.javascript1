@@ -7,8 +7,7 @@ const { deepEqual } = require('assert');
 const { Capabilities, Builder } = require('selenium-webdriver');
 const { ConsoleLogHandler, FileLogHandler, BatchInfo, RectangleSize, GeneralUtils, metadata } = require('@applitools/eyes.sdk.core');
 
-const { SessionResults } = metadata;
-const { StitchMode, Eyes } = require('../../index');
+const { StitchMode, Eyes } = require('../../../index');
 
 class TestSetup {
   constructor(testClassName, testSuitName, testedPage = 'http://applitools.github.io/demo/TestPages/FramesTestPage/') {
@@ -109,6 +108,9 @@ class TestSetup {
       this._desiredCaps.set('name', `${testName} (${this._eyes.getFullAgentId()})`);
     }
 
+    // In case if need to test with scaling factor
+    // this._caps.addArguments('--force-device-scale-factor=1.25')
+
     const formattedDate = dateformat(new Date(), 'yyyy_MM_dd_HH_mm_ss_SSS', true);
     const extendedTestName = `${testName}_${this._caps.getBrowserName()}_${this._platform}_${formattedDate}`;
 
@@ -152,7 +154,7 @@ class TestSetup {
         const apiSessionUri = `${apiSessionUrl}?format=json&AccessToken=${results.getSecretToken()}&apiKey=${this._eyes.getApiKey()}`;
 
         const response = await axios.get(apiSessionUri);
-        const resultObject = SessionResults.fromObject(JSON.parse(response));
+        const resultObject = metadata.SessionResults.fromObject(JSON.parse(response));
         const actualAppOutput = resultObject.getActualAppOutput();
 
         if (actualAppOutput.length > 0) {

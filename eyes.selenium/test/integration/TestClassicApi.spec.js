@@ -2,8 +2,8 @@
 
 const { By } = require('selenium-webdriver');
 
-const { TestsDataProvider } = require('./TestsDataProvider');
-const { TestSetup } = require('./TestSetup');
+const { TestsDataProvider } = require('./setup/TestsDataProvider');
+const { TestSetup } = require('./setup/TestSetup');
 
 let eyes, driver;
 const testSuitName = 'Eyes Selenium SDK - Classic API';

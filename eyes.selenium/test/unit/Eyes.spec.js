@@ -3,16 +3,25 @@
 require('chromedriver');
 const assert = require('assert');
 
-const { Builder } = require('selenium-webdriver');
+const { Builder, Capabilities } = require('selenium-webdriver');
+const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 const { RectangleSize } = require('@applitools/eyes.sdk.core');
+
+const { TestUtils } = require('../TestUtils');
 const { Eyes, EyesWebDriver, Target } = require('../../index');
 
 let driver, eyes;
 describe('Eyes', function () {
   this.timeout(60 * 1000);
 
-  beforeEach(async function () {
-    driver = await new Builder().forBrowser('chrome').build();
+  before(async function () {
+    const chromeOptions = new ChromeOptions();
+    chromeOptions.addArguments('disable-infobars');
+    chromeOptions.headless();
+    driver = await new Builder()
+      .withCapabilities(Capabilities.chrome())
+      .setChromeOptions(chromeOptions)
+      .build();
 
     eyes = new Eyes();
   });
@@ -25,16 +34,15 @@ describe('Eyes', function () {
     });
 
     it('should throw IllegalState: Eyes not open', async function () {
-      try {
-        await eyes.check('test', Target.window());
-      } catch (err) {
-        assert.equal(err.message, 'IllegalState: Eyes not open');
-      }
+      await TestUtils.throwsAsync(async () => eyes.check('test', Target.window()), 'IllegalState: Eyes not open');
     });
   });
 
   afterEach(async function () {
-    await driver.quit();
     await eyes.abortIfNotClosed();
+  });
+
+  after(async function () {
+    await driver.quit();
   });
 });
