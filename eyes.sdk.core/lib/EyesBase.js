@@ -960,6 +960,7 @@ class EyesBase {
         this._logger.log(`--- Test passed. See details at ${sessionResultsUrl}`);
       }
 
+      results.setServerConnector(this._serverConnector);
       return results;
     } catch (err) {
       this._logger.log(`Failed to abort server session: ${err.message}`);

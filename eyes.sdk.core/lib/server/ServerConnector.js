@@ -420,6 +420,35 @@ class ServerConnector {
   }
 
   /**
+   * Deletes the given test result
+   *
+   * @param {TestResults} testResults The session to delete by test results.
+   * @return {Promise<void>}
+   */
+  async deleteSession(testResults) {
+    ArgumentGuard.notNull(testResults, 'testResults');
+    this._logger.verbose(`ServerConnector.deleteSession called with ${JSON.stringify(testResults)}`);
+
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'DELETE',
+      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/batches/', testResults.getBatchId(), '/', testResults.getId()),
+      params: {
+        apiKey: this.getApiKey(),
+        accessToken: testResults.getSecretToken(),
+      },
+    });
+
+    const response = await sendRequest(this, 'deleteSession', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK];
+    if (validStatusCodes.includes(response.status)) {
+      this._logger.verbose('ServerConnector.deleteSession - post succeeded');
+      return;
+    }
+
+    throw new Error(`ServerConnector.stopSession - unexpected status (${response.statusText})`);
+  }
+
+  /**
    * Matches the current window (held by the WebDriver) to the expected window.
    *
    * @param {RunningSession} runningSession The current agent's running session.

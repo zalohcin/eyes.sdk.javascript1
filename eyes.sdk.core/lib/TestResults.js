@@ -311,6 +311,8 @@ class TestResults {
     this._layoutMatches = undefined;
     this._noneMatches = undefined;
     this._url = undefined;
+
+    this._serverConnector = undefined;
   }
 
   /**
@@ -685,6 +687,20 @@ class TestResults {
   /** @return {boolean} Whether or not this test passed. */
   isPassed() {
     return this._status === TestResultsStatus.Passed;
+  }
+
+  /**
+   * @param {ServerConnector} serverConnector
+   */
+  setServerConnector(serverConnector) {
+    this._serverConnector = serverConnector;
+  }
+
+  /**
+   * @return {Promise<void>}
+   */
+  async delete() {
+    return this._serverConnector.deleteSession(this);
   }
 
   /** @override */
