@@ -5,6 +5,14 @@ const {URL} = require('url');
 const isCss = require('./isCss');
 const toCacheEntry = require('./toCacheEntry');
 
+function assignWithoutOverride(obj1, obj2) {
+  for (const p in obj2) {
+    if (!obj1[p]) {
+      obj1[p] = obj2[p];
+    }
+  }
+}
+
 function fromCacheToRGridResource({url, type, hash, content}) {
   const resource = new RGridResource();
   resource.setUrl(url);
@@ -64,7 +72,7 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources,
     for (const url of resourceUrls) {
       const cacheEntry = resourceCache.getWithDependencies(url);
       if (cacheEntry) {
-        Object.assign(resources, mapValues(cacheEntry, fromCacheToRGridResource));
+        assignWithoutOverride(resources, mapValues(cacheEntry, fromCacheToRGridResource));
       } else if (/^https?:$/i.test(new URL(url).protocol)) {
         missingResourceUrls.push(url);
       }
@@ -73,7 +81,7 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources,
     await Promise.all(
       missingResourceUrls.map(url =>
         fetchResource(url)
-          .then(async resource => Object.assign(resources, await processResource(resource)))
+          .then(async resource => assignWithoutOverride(resources, await processResource(resource)))
           .catch(ex => {
             logger.log(`error fetching resource at ${url}: ${ex}`);
           }),
