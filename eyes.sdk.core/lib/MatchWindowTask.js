@@ -37,8 +37,8 @@ class MatchWindowTask {
     this._eyes = eyes;
     this._appOutputProvider = appOutputProvider;
 
-    /** @type {EyesScreenshot} */ this._lastScreenshot = undefined;
     /** @type {MatchResult} */ this._matchResult = undefined;
+    /** @type {EyesScreenshot} */ this._lastScreenshot = undefined;
     /** @type {Region} */ this._lastScreenshotBounds = undefined;
   }
 
@@ -329,7 +329,7 @@ class MatchWindowTask {
    */
   _tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings) {
     const that = this;
-    return that._appOutputProvider.getAppOutput(region, that._lastScreenshot)
+    return that._appOutputProvider.getAppOutput(region, that._lastScreenshot, checkSettings)
       .then(appOutput => {
         const screenshot = appOutput.getScreenshot();
         return that.performMatch(userInputs, appOutput, tag, ignoreMismatch, checkSettings, imageMatchSettings)

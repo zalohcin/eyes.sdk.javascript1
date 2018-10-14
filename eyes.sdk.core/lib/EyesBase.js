@@ -187,6 +187,8 @@ class EyesBase {
      * @type {string}
      */
     this._autSessionId = undefined;
+
+    /** @type {boolean} */ this._sendDom = false;
   }
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
@@ -1326,8 +1328,8 @@ class EyesBase {
         const outputProvider = new AppOutputProvider();
         // A callback which will call getAppOutput
         // noinspection AnonymousFunctionJS
-        outputProvider.getAppOutput = (region, lastScreenshot) =>
-          that._getAppOutputWithScreenshot(region, lastScreenshot);
+        outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
+          that._getAppOutputWithScreenshot(region, lastScreenshot, checkSettingsLocal);
 
         that._matchWindowTask = new MatchSingleWindowTask(
           that._promiseFactory,
@@ -1377,6 +1379,14 @@ class EyesBase {
    */
   afterMatchWindow() {
     return this.getPromiseFactory().resolve();
+  }
+
+  /**
+   * @protected
+   * @return {Promise.<?string>}
+   */
+  tryCaptureDom() {
+    return this.getPromiseFactory().resolve(null);
   }
 
   /**
@@ -1437,6 +1447,9 @@ class EyesBase {
 
           const ignoreCaret = checkSettings.getIgnoreCaret() || defaultMatchSettings.getIgnoreCaret();
           imageMatchSettings.setIgnoreCaret(ignoreCaret);
+
+          const useDom = checkSettings.getSendDom() || self._sendDom;
+          imageMatchSettings.setUseDom(useDom);
         }
       })
       .then(() => {
@@ -1463,6 +1476,19 @@ class EyesBase {
           retryTimeout
         );
       });
+  }
+
+  /**
+   * @private
+   * @param {string} domJson
+   * @return {Promise<?string>}
+   */
+  _tryPostDomSnapshot(domJson) {
+    if (!domJson) {
+      return this._promiseFactory.resolve(null);
+    }
+
+    return this._serverConnector.postDomSnapshot(domJson);
   }
 
   /**
@@ -1587,8 +1613,8 @@ class EyesBase {
 
       const outputProvider = new AppOutputProvider();
       // A callback which will call getAppOutput
-      outputProvider.getAppOutput = (region, lastScreenshot) =>
-        that._getAppOutputWithScreenshot(region, lastScreenshot);
+      outputProvider.getAppOutput = (region, lastScreenshot, checkSettings) =>
+        that._getAppOutputWithScreenshot(region, lastScreenshot, checkSettings);
 
       that._matchWindowTask = new MatchWindowTask(
         that._promiseFactory,
@@ -1906,11 +1932,11 @@ class EyesBase {
   /**
    * @private
    * @param {Region} region The region of the screenshot which will be set in the application output.
-   * @param {EyesScreenshot} lastScreenshot Previous application screenshot (used for compression) or {@code null} if
-   *   not available.
+   * @param {EyesScreenshot} lastScreenshot Previous application screenshot (for compression) or `null` if not available.
+   * @param {CheckSettings} checkSettings The check settings object of the current test.
    * @return {Promise<AppOutputWithScreenshot>} The updated app output and screenshot.
    */
-  _getAppOutputWithScreenshot(region, lastScreenshot) {
+  _getAppOutputWithScreenshot(region, lastScreenshot, checkSettings) {
     const that = this;
     that._logger.verbose('getting screenshot...');
     // Getting the screenshot (abstract function implemented by each SDK).
@@ -1964,18 +1990,23 @@ class EyesBase {
           });
       })
       .then(() => {
-        that._logger.verbose('Getting title, domUrl, imageLocation...');
+        that._logger.verbose('Getting title, imageLocation...');
         return that._promiseFactory.all([
           that.getTitle(),
-          that.getDomUrl(),
           that.getImageLocation(),
-
-        ]).then(([newTitle, newDomUrl, newImageLocation]) => {
+        ]).then(([newTitle, newImageLocation]) => {
           title = newTitle;
-          domUrl = newDomUrl;
           imageLocation = newImageLocation;
-          that._logger.verbose('Done getting title, domUrl, imageLocation!')
+          that._logger.verbose('Done getting title, imageLocation!');
         });
+      })
+      .then(() => {
+        if (checkSettings.getSendDom() || that._sendDom) {
+          return that.tryCaptureDom().then(domJson => that._tryPostDomSnapshot(domJson).then(newDomUrl => {
+            domUrl = newDomUrl;
+            that._logger.verbose(`domUrl: ${domUrl}`);
+          }));
+        }
       })
       .then(() => {
         const result = new AppOutputWithScreenshot(new AppOutput(title, screenshotBuffer, screenshotUrl, domUrl, imageLocation), screenshot);
@@ -2143,20 +2174,22 @@ class EyesBase {
     throw new TypeError('getTitle method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
-   * A url pointing to a DOM capture of the AUT at the time of screenshot
-   *
-   * @protected
-   * @abstract
-   * @return {Promise<string>}
+   * @param {boolean} sendDom
    */
-  getDomUrl() {
-    return this.getPromiseFactory().resolve();
+  setSendDom(sendDom) {
+    this._sendDom = sendDom;
   }
-  
+
   /**
-   * The location of the image relative to the logical full page image, when cropping an image e.g. with checkRegion 
+   * @return {boolean}
+   */
+  getSendDom() {
+    return this._sendDom;
+  }
+
+  /**
+   * The location of the image relative to the logical full page image, when cropping an image e.g. with checkRegion
    *
    * @protected
    * @abstract
@@ -2165,8 +2198,6 @@ class EyesBase {
   getImageLocation() {
     return this.getPromiseFactory().resolve();
   }
-
-
 
   /**
    * @return {PromiseFactory}
