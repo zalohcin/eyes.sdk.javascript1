@@ -1,15 +1,16 @@
 'use strict';
 
 const axios = require('axios');
+const zlib = require('zlib');
 
 const { ProxySettings } = require('./ProxySettings');
+const { RenderingInfo } = require('./RenderingInfo');
 const { RunningSession } = require('./RunningSession');
 const { TestResults } = require('../TestResults');
 const { MatchResult } = require('../match/MatchResult');
 const { GeneralUtils } = require('../utils/GeneralUtils');
 const { ArgumentGuard } = require('../ArgumentGuard');
 
-const { RenderingInfo } = require('../renderer/RenderingInfo');
 const { RunningRender } = require('../renderer/RunningRender');
 const { RenderStatusResults } = require('../renderer/RenderStatusResults');
 
@@ -752,6 +753,38 @@ class ServerConnector {
     }
 
     throw new Error(`ServerConnector.renderStatus - unexpected status (${response.statusText})`);
+  }
+
+  /**
+   * @param {string} domJson
+   * @return {Promise<string>}
+   */
+  postDomSnapshot(domJson) {
+    ArgumentGuard.notNull(domJson, 'domJson');
+    this._logger.verbose('ServerConnector.postDomSnapshot called');
+
+    const that = this;
+    const options = GeneralUtils.mergeDeep(that._httpOptions, {
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running/data'),
+      params: {
+        apiKey: that.getApiKey(),
+      },
+      headers: {
+        'Content-Type': 'application/octet-stream',
+      },
+    });
+
+    options.data = zlib.gzipSync(Buffer.from(domJson));
+    return sendRequest(that, 'postDomSnapshot', options).then(response => {
+      const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED];
+      if (validStatusCodes.includes(response.status)) {
+        that._logger.verbose('ServerConnector.postDomSnapshot - post succeeded');
+        return response.headers.location;
+      }
+
+      throw new Error(`ServerConnector.postDomSnapshot - unexpected status (${response.statusText})`);
+    });
   }
 }
 

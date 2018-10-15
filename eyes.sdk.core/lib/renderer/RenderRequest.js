@@ -15,14 +15,16 @@ class RenderRequest {
    * @param {string} [browserName]
    * @param {Object} [scriptHooks]
    */
-  constructor(webhook, url, dom, renderInfo, platform, browserName, scriptHooks, selectorsToFindRegionsFor) {
+  constructor({webhook, url, dom, resources, renderInfo, platform, browserName, scriptHooks, selectorsToFindRegionsFor, sendDom} = {}) {
     ArgumentGuard.notNullOrEmpty(webhook, 'webhook');
     ArgumentGuard.notNull(url, 'url');
     ArgumentGuard.notNull(dom, 'dom');
+    ArgumentGuard.notNull(resources, 'resources');
 
     this._webhook = webhook;
     this._url = url;
     this._dom = dom;
+    this._resources = resources;
     this._renderInfo = renderInfo;
     this._platform = platform;
     this._browserName = browserName;
@@ -52,7 +54,7 @@ class RenderRequest {
   // noinspection JSUnusedGlobalSymbols
   /** @return {RGridResource[]} */
   getResources() {
-    return this._dom.getResources();
+    return this._resources;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -84,7 +86,7 @@ class RenderRequest {
   setRenderId(value) {
     this._renderId = value;
   }
-  
+
   // noinspection JSUnusedGlobalSymbols
   /** @return {string} */
   getScriptHooks() {
@@ -112,7 +114,7 @@ class RenderRequest {
   /** @override */
   toJSON() {
     const resources = {};
-    this._dom.getResources().forEach(resource => {
+    this.getResources().forEach(resource => {
       resources[resource.getUrl()] = resource.getHashAsObject();
     });
 

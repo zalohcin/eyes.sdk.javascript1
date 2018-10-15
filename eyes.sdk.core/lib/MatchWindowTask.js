@@ -3,6 +3,7 @@
 const { Region } = require('./geometry/Region');
 const { ArgumentGuard } = require('./ArgumentGuard');
 const { GeneralUtils } = require('./utils/GeneralUtils');
+const { PerformanceUtils } = require('./utils/PerformanceUtils');
 const { MatchWindowData } = require('./match/MatchWindowData');
 
 const MATCH_INTERVAL = 500; // Milliseconds
@@ -35,8 +36,8 @@ class MatchWindowTask {
     this._eyes = eyes;
     this._appOutputProvider = appOutputProvider;
 
-    /** @type {EyesScreenshot} */ this._lastScreenshot = undefined;
     /** @type {MatchResult} */ this._matchResult = undefined;
+    /** @type {EyesScreenshot} */ this._lastScreenshot = undefined;
     /** @type {Region} */ this._lastScreenshotBounds = undefined;
   }
 
@@ -176,9 +177,9 @@ class MatchWindowTask {
    * @return {Promise<EyesScreenshot>}
    */
   async _takeScreenshot(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout) {
-    let screenshot;
-    const elapsedTimeStart = GeneralUtils.currentTimeMillis();
+    const timeStart = PerformanceUtils.start();
 
+    let screenshot;
     // If the wait to load time is 0, or "run once" is true, we perform a single check window.
     if (retryTimeout === 0 || shouldRunOnceOnTimeout) {
       if (shouldRunOnceOnTimeout) {
@@ -190,9 +191,7 @@ class MatchWindowTask {
       screenshot = await this._retryTakingScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout);
     }
 
-    // noinspection MagicNumberJS
-    const elapsedTime = GeneralUtils.currentTimeMillis() - elapsedTimeStart;
-    this._logger.verbose(`Completed in ${GeneralUtils.elapsedString(elapsedTime)}`);
+    this._logger.verbose(`Completed in ${timeStart.end().summary}`);
     return screenshot;
   }
 
@@ -265,7 +264,7 @@ class MatchWindowTask {
    * @return {Promise<EyesScreenshot>}
    */
   async _tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings) {
-    const appOutput = await this._appOutputProvider.getAppOutput(region, this._lastScreenshot);
+    const appOutput = await this._appOutputProvider.getAppOutput(region, this._lastScreenshot, checkSettings);
     const screenshot = appOutput.getScreenshot();
     this._matchResult = await this.performMatch(userInputs, appOutput, tag, ignoreMismatch, checkSettings, imageMatchSettings);
     return screenshot;

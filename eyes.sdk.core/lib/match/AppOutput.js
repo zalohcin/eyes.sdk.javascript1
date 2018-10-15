@@ -53,7 +53,7 @@ class AppOutput {
   setScreenshotUrl(value) {
     this._screenshotUrl = value;
   }
-  
+
   // noinspection JSUnusedGlobalSymbols
   /** @return {string} */
   getDomUrl() {

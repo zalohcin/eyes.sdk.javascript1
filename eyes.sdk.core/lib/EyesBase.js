@@ -181,6 +181,8 @@ class EyesBase {
      * @type {string}
      */
     this._autSessionId = undefined;
+
+    /** @type {boolean} */ this._sendDom = false;
   }
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
@@ -1256,8 +1258,8 @@ class EyesBase {
     const outputProvider = new AppOutputProvider();
     // A callback which will call getAppOutput
     // noinspection AnonymousFunctionJS
-    outputProvider.getAppOutput = (region, lastScreenshot) =>
-      this._getAppOutputWithScreenshot(region, lastScreenshot);
+    outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
+      this._getAppOutputWithScreenshot(region, lastScreenshot, checkSettingsLocal);
 
     this._matchWindowTask = new MatchSingleWindowTask(
       this._logger,
@@ -1304,6 +1306,14 @@ class EyesBase {
    */
   afterMatchWindow() {
     return Promise.resolve();
+  }
+
+  /**
+   * @protected
+   * @return {Promise.<?string>}
+   */
+  tryCaptureDom() {
+    return this.getPromiseFactory().resolve(null);
   }
 
   /**
@@ -1360,6 +1370,9 @@ class EyesBase {
 
       const ignoreCaret = checkSettings.getIgnoreCaret() || defaultMatchSettings.getIgnoreCaret();
       imageMatchSettings.setIgnoreCaret(ignoreCaret);
+
+      const useDom = checkSettings.getSendDom() || self._sendDom;
+      imageMatchSettings.setUseDom(useDom);
     }
 
     // noinspection JSUnresolvedVariable
@@ -1376,6 +1389,19 @@ class EyesBase {
       self.getUserInputs(), region, tag, self._shouldMatchWindowRunOnceOnTimeout,
       ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout
     );
+  }
+
+  /**
+   * @private
+   * @param {string} domJson
+   * @return {Promise<?string>}
+   */
+  async _tryPostDomSnapshot(domJson) {
+    if (!domJson) {
+      return null;
+    }
+
+    return this._serverConnector.postDomSnapshot(domJson);
   }
 
   /**
@@ -1497,8 +1523,8 @@ class EyesBase {
     // noinspection JSClosureCompilerSyntax
     const outputProvider = new AppOutputProvider();
     // A callback which will call getAppOutput
-    outputProvider.getAppOutput = (region, lastScreenshot) =>
-      this._getAppOutputWithScreenshot(region, lastScreenshot);
+    outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
+      this._getAppOutputWithScreenshot(region, lastScreenshot, checkSettingsLocal);
 
     this._matchWindowTask = new MatchWindowTask(
       this._logger,
@@ -1797,11 +1823,11 @@ class EyesBase {
   /**
    * @private
    * @param {Region} region The region of the screenshot which will be set in the application output.
-   * @param {EyesScreenshot} lastScreenshot Previous application screenshot (used for compression) or {@code null} if
-   *   not available.
+   * @param {EyesScreenshot} lastScreenshot Previous application screenshot (for compression) or `null` if not available.
+   * @param {CheckSettings} checkSettings The check settings object of the current test.
    * @return {Promise<AppOutputWithScreenshot>} The updated app output and screenshot.
    */
-  async _getAppOutputWithScreenshot(region, lastScreenshot) {
+  async _getAppOutputWithScreenshot(region, lastScreenshot, checkSettings) {
     this._logger.verbose('getting screenshot...');
     let screenshot, screenshotUrl, screenshotBuffer;
 
@@ -1842,11 +1868,17 @@ class EyesBase {
       this._logger.verbose('Done getting screenshotUrl!');
     }
 
-    this._logger.verbose('Getting title, domUrl, imageLocation...');
+    this._logger.verbose('Getting title, imageLocation...');
     const title = await this.getTitle();
-    const domUrl = await this.getDomUrl();
     const imageLocation = await this.getImageLocation();
-    this._logger.verbose('Done getting title, domUrl, imageLocation!');
+    this._logger.verbose('Done getting title, imageLocation!');
+
+    let domUrl;
+    if (checkSettings.getSendDom() || this._sendDom) {
+      const domJson = await this.tryCaptureDom();
+      domUrl = await this._tryPostDomSnapshot(domJson);
+      this._logger.verbose(`domUrl: ${domUrl}`);
+    }
 
     const appOutput = new AppOutput(title, screenshotBuffer, screenshotUrl, domUrl, imageLocation);
     const result = new AppOutputWithScreenshot(appOutput, screenshot);
@@ -2012,16 +2044,18 @@ class EyesBase {
     throw new TypeError('getTitle method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
-   * A url pointing to a DOM capture of the AUT at the time of screenshot
-   *
-   * @protected
-   * @abstract
-   * @return {Promise<string>}
+   * @param {boolean} sendDom
    */
-  getDomUrl() {
-    return Promise.resolve(undefined);
+  setSendDom(sendDom) {
+    this._sendDom = sendDom;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  getSendDom() {
+    return this._sendDom;
   }
 
   // noinspection JSMethodCanBeStatic
