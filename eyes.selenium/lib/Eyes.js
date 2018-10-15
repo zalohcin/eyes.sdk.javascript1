@@ -25,6 +25,7 @@ const {
 const { ImageProviderFactory } = require('./capture/ImageProviderFactory');
 const { EyesWebDriverScreenshotFactory } = require('./capture/EyesWebDriverScreenshotFactory');
 const { FullPageCaptureAlgorithm } = require('./capture/FullPageCaptureAlgorithm');
+const { DomCapture } = require('./capture/DomCapture');
 const { FrameChain } = require('./frames/FrameChain');
 const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
 const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
@@ -119,6 +120,8 @@ class Eyes extends EyesBase {
     this._elementPositionProvider = undefined;
     /** @type {SeleniumJavaScriptExecutor} */
     this._jsExecutor = undefined;
+    /** @type {string} */
+    this._domUrl = undefined;
 
     /** @type {UserAgent} */
     this._userAgent = undefined;
@@ -375,6 +378,10 @@ class Eyes extends EyesBase {
     if (this.getIsDisabled()) {
       this._logger.verbose('Ignored');
       return this.getPromiseFactory().resolve(driver);
+    }
+
+    if (this._stitchMode === StitchMode.CSS) {
+      this.setSendDom(true);
     }
 
     that._initDriver(driver);
@@ -1205,6 +1212,30 @@ class Eyes extends EyesBase {
     return this._tryHideScrollbars();
   }
 
+  /** @override */
+  async tryCaptureDom() {
+    try {
+      this._logger.verbose('Getting window DOM...');
+      return await DomCapture.getFullWindowDom(this._logger, this.getDriver());
+    } catch (ignored) {
+      return '';
+    }
+  }
+
+  /**
+   * @override
+   */
+  getDomUrl() {
+    return this.getPromiseFactory().resolve(this._domUrl);
+  }
+
+  /**
+   * @override
+   */
+  setDomUrl(domUrl) {
+    this._domUrl = domUrl;
+  }
+
   /**
    * @private
    * @return {Promise<void>}
@@ -1227,6 +1258,18 @@ class Eyes extends EyesBase {
     }
 
     return this.getPromiseFactory().resolve();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  getImageLocation() {
+    let location = Location.ZERO;
+    if (this._regionToCheck) {
+      location = this._regionToCheck.getLocation();
+    }
+
+    return this.getPromiseFactory().resolve(location);
   }
 
   /**
