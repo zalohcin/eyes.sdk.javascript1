@@ -5,7 +5,7 @@ const axios = require('axios');
 const dateformat = require('dateformat');
 const { deepEqual } = require('assert');
 const { Capabilities, Builder } = require('selenium-webdriver');
-const { ConsoleLogHandler, FileLogHandler, BatchInfo, RectangleSize, GeneralUtils, metadata } = require('@applitools/eyes.sdk.core');
+const { ConsoleLogHandler, FileLogHandler, BatchInfo, RectangleSize, metadata } = require('@applitools/eyes.sdk.core');
 
 const { StitchMode, Eyes } = require('../../../index');
 
@@ -43,7 +43,7 @@ class TestSetup {
     this._eyes.setStitchMode(StitchMode.CSS);
     this._eyes.setHideScrollbars(true);
 
-    const batchInfo = new BatchInfo('Java3 Tests');
+    const batchInfo = new BatchInfo('SeleniumJS Tests');
     const batchId = process.env.APPLITOOLS_BATCH_ID;
     if (batchId) {
       batchInfo.setId(batchId);
@@ -58,10 +58,16 @@ class TestSetup {
     this._forceFPS = forceFPS;
   }
 
+  /**
+   * @return {Eyes}
+   */
   getEyes() {
     return this._eyes;
   }
 
+  /**
+   * @return {EyesWebDriver}
+   */
   getDriver() {
     return this._driver;
   }
@@ -154,7 +160,7 @@ class TestSetup {
         const apiSessionUri = `${apiSessionUrl}?format=json&AccessToken=${results.getSecretToken()}&apiKey=${this._eyes.getApiKey()}`;
 
         const response = await axios.get(apiSessionUri);
-        const resultObject = metadata.SessionResults.fromObject(JSON.parse(response));
+        const resultObject = metadata.SessionResults.fromObject(response.data);
         const actualAppOutput = resultObject.getActualAppOutput();
 
         if (actualAppOutput.length > 0) {
@@ -174,7 +180,7 @@ class TestSetup {
         }
       }
     } catch (err) {
-      console.log(GeneralUtils.getStackTrace(err));
+      console.log(err.stack);
     } finally {
       await this._eyes.abortIfNotClosed();
       if (this._driver) {

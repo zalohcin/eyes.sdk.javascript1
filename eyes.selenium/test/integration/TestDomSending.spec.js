@@ -1,36 +1,51 @@
 'use strict';
 
-require('chromedriver');
-const { Builder } = require('selenium-webdriver');
-const { ConsoleLogHandler, RectangleSize } = require('@applitools/eyes.sdk.core');
-const { Eyes, Target } = require('../../index');
+const { By } = require('selenium-webdriver');
 
-let driver, eyes;
-describe('Eyes.Selenium.JavaScript - send dom', function () {
-  this.timeout(5 * 60 * 1000);
+const { TestsDataProvider } = require('./setup/TestsDataProvider');
+const { TestSetup } = require('./setup/TestSetup');
+const { Target } = require('../../index');
 
-  before(function () {
-    driver = new Builder()
-      .forBrowser('chrome')
-      .build();
+let /** @type {Eyes} */ eyes, /** @type {EyesWebDriver} */ driver;
+const testSuitName = 'Eyes Selenium SDK - Dom Sending';
+const testedPageUrl = 'http://applitools.github.io/demo/TestPages/DomTest/dom_capture.html';
 
-    eyes = new Eyes();
-    eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
-    eyes.setLogHandler(new ConsoleLogHandler(true));
-    // eyes.setProxy('http://localhost:8888');
-  });
+const dataProvider = TestsDataProvider.dp();
+dataProvider.forEach(row => {
+  const testSetup = new TestSetup('TestDomSending', testSuitName, testedPageUrl);
+  testSetup.setData(...row, false);
 
-  it('should happen something', function () {
-    return eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(800, 560)).then(driver => {
-      driver.get('http://applitools.github.io/demo/TestPages/DomTest/dom_capture.html');
+  testSetup.getEyes().setSendDom(true);
+  testSetup.getEyes().setProxy('http://localhost:8888');
 
-      eyes.check('A Window', Target.window().sendDom(true));
+  describe(testSetup.toString(), function () {
+    this.timeout(5 * 60 * 1000);
 
-      return eyes.close();
+    beforeEach(async function () {
+      await testSetup.beforeMethod(this.currentTest.title);
+      eyes = testSetup.getEyes();
+      driver = testSetup.getDriver();
     });
-  });
 
-  afterEach(function () {
-    return driver.quit().then(() => eyes.abortIfNotClosed());
+    afterEach(async function () {
+      await testSetup.afterMethod();
+    });
+
+    // it('TestDomOfTestPage', async function () {
+    //   await eyes.check('A Window', Target.window());
+    // });
+
+    // it('TestDomOfApplitoolsPage', async function () {
+    //   await driver.get('https://applitools.com');
+    //   await eyes.check('A Window', Target.window());
+    // });
+
+    it('TestDomOfBookingPage', async function () {
+      await driver.get('https://booking.com');
+      await driver.findElement(By.css('input.sb-searchbox__input.sb-destination__input')).sendKeys('Kiev, Ukraine');
+      await driver.findElement(By.css('button.sb-searchbox__button')).click();
+      await driver.sleep(200);
+      await eyes.check('A Window', Target.window());
+    });
   });
 });

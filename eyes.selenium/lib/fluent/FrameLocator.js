@@ -8,12 +8,12 @@ class FrameLocator {
     this._frameSelector = null;
     /** @type {string} */
     this._frameNameOrId = null;
-    /** @type {Integer} */
+    /** @type {number} */
     this._frameIndex = null;
   }
 
   /**
-   * @return {Integer}
+   * @return {number}
    */
   getFrameIndex() {
     return this._frameIndex;

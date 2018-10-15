@@ -1250,13 +1250,13 @@ class Eyes extends EyesBase {
   /**
    * @inheritDoc
    */
-  getImageLocation() {
+  async getImageLocation() {
     let location = Location.ZERO;
     if (this._regionToCheck) {
       location = this._regionToCheck.getLocation();
     }
 
-    return this.getPromiseFactory().resolve(location);
+    return location;
   }
 
   /**
