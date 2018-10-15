@@ -35,7 +35,7 @@
     "type": "git"
   },
   "dependencies": {
-    "@applitools/eyes.sdk.core": "^2.0.0",
+    "@applitools/eyes.sdk.core": "2.0.x",
     "@applitools/functional-commons": "^1.0.19",
     "@applitools/http-commons": "^1.1.1",
     "cosmiconfig": "^5.0.6",
@@ -55,13 +55,13 @@
     "eslint": "^4.19.1",
     "eslint-plugin-mocha-no-only": "^0.0.6",
     "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-prettier": "^2.6.2",
-    "express": "^4.16.3",
+    "eslint-plugin-prettier": "^2.7.0",
+    "express": "^4.16.4",
     "jsdom": "^11.12.0",
     "mocha": "^5.2.0",
     "morgan": "^1.9.1",
     "nock": "^9.6.1",
     "prettier": "^1.14.3",
-    "puppeteer": "^1.8.0"
+    "puppeteer": "^1.9.0"
   }
 }
