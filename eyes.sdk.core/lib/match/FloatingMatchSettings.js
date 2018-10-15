@@ -28,6 +28,14 @@ class FloatingMatchSettings {
     this._maxRightOffset = maxRightOffset;
   }
 
+  /**
+   * @param {object} object
+   * @return {FloatingMatchSettings}
+   */
+  static fromObject(object) {
+    return GeneralUtils.assignTo(new FloatingMatchSettings(), object);
+  }
+
   // noinspection JSUnusedGlobalSymbols
   /** @return {number} */
   getLeft() {

@@ -1,6 +1,8 @@
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { Region } = require('../geometry/Region');
+const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 
 class Annotations {
   constructor() {
@@ -16,7 +18,13 @@ class Annotations {
    * @return {Annotations}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new Annotations(), object);
+    return GeneralUtils.assignTo(new Annotations(), object, {
+      floating: FloatingMatchSettings.fromObject,
+      ignore: Region.fromObject,
+      strict: Region.fromObject,
+      content: Region.fromObject,
+      layout: Region.fromObject,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols

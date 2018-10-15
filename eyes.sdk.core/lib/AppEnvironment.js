@@ -1,5 +1,6 @@
 'use strict';
 
+const { RectangleSize } = require('./geometry/RectangleSize');
 const { GeneralUtils } = require('./utils/GeneralUtils');
 
 /**
@@ -18,6 +19,16 @@ class AppEnvironment {
     this._os = os;
     this._hostingApp = hostingApp;
     this._displaySize = displaySize;
+  }
+
+  /**
+   * @param {object} object
+   * @return {AppEnvironment}
+   */
+  static fromObject(object) {
+    return GeneralUtils.assignTo(new AppEnvironment(), object, {
+      displaySize: RectangleSize.fromObject,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols

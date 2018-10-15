@@ -1,6 +1,8 @@
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ImageMatchSettings } = require('./ImageMatchSettings');
+const { Image } = require('./Image');
 
 class ActualAppOutput {
   constructor() {
@@ -24,7 +26,12 @@ class ActualAppOutput {
    * @return {ActualAppOutput}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new ActualAppOutput(), object);
+    return GeneralUtils.assignTo(new ActualAppOutput(), object, {
+      image: Image.fromObject,
+      thumbprint: Image.fromObject,
+      imageMatchSettings: ImageMatchSettings.fromObject,
+      occurredAt: GeneralUtils.fromISO8601DateTime,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols

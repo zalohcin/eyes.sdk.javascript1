@@ -1,6 +1,9 @@
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ImageMatchSettings } = require('./ImageMatchSettings');
+const { BatchInfo } = require('./BatchInfo');
+const { AppEnvironment } = require('../AppEnvironment');
 
 class StartInfo {
   constructor() {
@@ -24,7 +27,11 @@ class StartInfo {
    * @return {StartInfo}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new StartInfo(), object);
+    return GeneralUtils.assignTo(new StartInfo(), object, {
+      batchInfo: BatchInfo.fromObject,
+      defaultMatchSettings: ImageMatchSettings.fromObject,
+      environment: AppEnvironment.fromObject,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols

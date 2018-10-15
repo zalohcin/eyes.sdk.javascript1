@@ -1,6 +1,8 @@
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { Annotations } = require('./Annotations');
+const { Image } = require('./Image');
 
 class ExpectedAppOutput {
   constructor() {
@@ -16,7 +18,12 @@ class ExpectedAppOutput {
    * @return {ExpectedAppOutput}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new ExpectedAppOutput(), object);
+    return GeneralUtils.assignTo(new ExpectedAppOutput(), object, {
+      image: Image.fromObject,
+      thumbprint: Image.fromObject,
+      // _occurredAt: Image.fromObject,
+      annotations: Annotations.fromObject,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols

@@ -14,7 +14,9 @@ class BatchInfo {
    * @return {BatchInfo}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new BatchInfo(), object);
+    return GeneralUtils.assignTo(new BatchInfo(), object, {
+      startedAt: GeneralUtils.fromISO8601DateTime,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols

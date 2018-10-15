@@ -1,6 +1,8 @@
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { Region } = require('../geometry/Region');
+const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 
 class ImageMatchSettings {
   constructor() {
@@ -22,7 +24,13 @@ class ImageMatchSettings {
    * @return {ImageMatchSettings}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new ImageMatchSettings(), object);
+    return GeneralUtils.assignTo(new ImageMatchSettings(), object, {
+      ignore: Region.fromObject,
+      strict: Region.fromObject,
+      content: Region.fromObject,
+      layout: Region.fromObject,
+      floating: FloatingMatchSettings.fromObject,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -98,25 +106,25 @@ class ImageMatchSettings {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getSplitTopHeight() {
     return this._splitTopHeight;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setSplitTopHeight(value) {
     this._splitTopHeight = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getSplitBottomHeight() {
     return this._splitBottomHeight;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setSplitBottomHeight(value) {
     this._splitBottomHeight = value;
   }
@@ -134,25 +142,25 @@ class ImageMatchSettings {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getScale() {
     return this._scale;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setScale(value) {
     this._scale = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getRemainder() {
     return this._remainder;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setRemainder(value) {
     this._remainder = value;
   }

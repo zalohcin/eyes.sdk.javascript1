@@ -1,6 +1,7 @@
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { RectangleSize } = require('../geometry/RectangleSize');
 
 class Image {
   constructor() {
@@ -13,7 +14,9 @@ class Image {
    * @return {Image}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new Image(), object);
+    return GeneralUtils.assignTo(new Image(), object, {
+      size: RectangleSize.fromObject,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols

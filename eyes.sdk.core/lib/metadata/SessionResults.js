@@ -1,6 +1,11 @@
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ActualAppOutput } = require('./ActualAppOutput');
+const { ExpectedAppOutput } = require('./ExpectedAppOutput');
+const { Branch } = require('./Branch');
+const { StartInfo } = require('./StartInfo');
+const { AppEnvironment } = require('../AppEnvironment');
 
 class SessionResults {
   constructor() {
@@ -40,7 +45,14 @@ class SessionResults {
    * @return {SessionResults}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new SessionResults(), object);
+    return GeneralUtils.assignTo(new SessionResults(), object, {
+      actualAppOutput: results => Array.from(results).map(result => ActualAppOutput.fromObject(result)),
+      expectedAppOutput: results => Array.from(results).map(result => ExpectedAppOutput.fromObject(result)),
+      baselineEnv: AppEnvironment.fromObject,
+      branch: Branch.fromObject,
+      env: AppEnvironment.fromObject,
+      startInfo: StartInfo.fromObject,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -56,13 +68,13 @@ class SessionResults {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getRevision() {
     return this._revision;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setRevision(value) {
     this._revision = value;
   }
@@ -188,13 +200,13 @@ class SessionResults {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getDuration() {
     return this._duration;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setDuration(value) {
     this._duration = value;
   }

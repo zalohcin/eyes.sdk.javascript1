@@ -7,6 +7,7 @@ class Branch {
     this._id = undefined;
     this._name = undefined;
     this._isDeleted = undefined;
+    this._updateInfo = undefined;
   }
 
   /**
@@ -51,6 +52,18 @@ class Branch {
   /** @param {boolean} value */
   setIsDeleted(value) {
     this._isDeleted = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {object} */
+  getUpdateInfo() {
+    return this._updateInfo;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {object} value */
+  setUpdateInfo(value) {
+    this._updateInfo = value;
   }
 
   /** @override */
