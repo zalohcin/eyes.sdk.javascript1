@@ -1990,18 +1990,20 @@ class EyesBase {
           });
       })
       .then(() => {
-        that._logger.verbose('Getting title, imageLocation...');
+        that._logger.verbose('Getting title, domUrl, imageLocation...');
         return that._promiseFactory.all([
           that.getTitle(),
+          that.getDomUrl(),
           that.getImageLocation(),
-        ]).then(([newTitle, newImageLocation]) => {
+        ]).then(([newTitle, newDomUrl, newImageLocation]) => {
           title = newTitle;
+          domUrl = newDomUrl;
           imageLocation = newImageLocation;
-          that._logger.verbose('Done getting title, imageLocation!');
+          that._logger.verbose('Done getting title, domUrl, imageLocation!');
         });
       })
       .then(() => {
-        if (checkSettings.getSendDom() || that._sendDom) {
+        if (!domUrl && (checkSettings.getSendDom() || that._sendDom)) {
           return that.tryCaptureDom().then(domJson => that._tryPostDomSnapshot(domJson).then(newDomUrl => {
             domUrl = newDomUrl;
             that._logger.verbose(`domUrl: ${domUrl}`);
@@ -2172,6 +2174,18 @@ class EyesBase {
    */
   getTitle() {
     throw new TypeError('getTitle method is not implemented!');
+  }
+
+  // noinspection JSMethodCanBeStatic
+  /**
+   * A url pointing to a DOM capture of the AUT at the time of screenshot
+   *
+   * @protected
+   * @abstract
+   * @return {Promise<string>}
+   */
+  getDomUrl() {
+    return this.getPromiseFactory().resolve();
   }
 
   /**
