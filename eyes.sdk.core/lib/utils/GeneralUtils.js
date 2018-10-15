@@ -285,6 +285,7 @@ class GeneralUtils {
   /**
    * Format elapsed time by template (#m #s #ms)
    *
+   * @deprecated use {PerformanceUtils.elapsedTime} instead
    * @param {number} elapsedMs
    * @return {string} formatted string
    */

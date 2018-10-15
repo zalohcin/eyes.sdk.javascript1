@@ -103,6 +103,7 @@ exports.Trigger = require('./lib/triggers/Trigger').Trigger;
 exports.BrowserNames = require('./lib/utils/BrowserNames').BrowserNames;
 exports.GeneralUtils = require('./lib/utils/GeneralUtils').GeneralUtils;
 exports.OSNames = require('./lib/utils/OSNames').OSNames;
+exports.PerformanceUtils = require('./lib/utils/PerformanceUtils').PerformanceUtils;
 exports.PropertyHandler = require('./lib/utils/PropertyHandler').PropertyHandler;
 exports.ReadOnlyPropertyHandler = require('./lib/utils/ReadOnlyPropertyHandler').ReadOnlyPropertyHandler;
 exports.SimplePropertyHandler = require('./lib/utils/SimplePropertyHandler').SimplePropertyHandler;
