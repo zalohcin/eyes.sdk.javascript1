@@ -1868,13 +1868,13 @@ class EyesBase {
       this._logger.verbose('Done getting screenshotUrl!');
     }
 
-    this._logger.verbose('Getting title, imageLocation...');
+    this._logger.verbose('Getting title, domUrl, imageLocation...');
     const title = await this.getTitle();
+    let domUrl = await this.getDomUrl();
     const imageLocation = await this.getImageLocation();
-    this._logger.verbose('Done getting title, imageLocation!');
+    this._logger.verbose('Done getting title, domUrl, imageLocation!');
 
-    let domUrl;
-    if (checkSettings.getSendDom() || this._sendDom) {
+    if (!domUrl && (checkSettings.getSendDom() || this._sendDom)) {
       const domJson = await this.tryCaptureDom();
       domUrl = await this._tryPostDomSnapshot(domJson);
       this._logger.verbose(`domUrl: ${domUrl}`);
@@ -1955,7 +1955,7 @@ class EyesBase {
    * @abstract
    * @return {string} The base agent id of the SDK.
    */
-  getBaseAgentId() {
+  async getBaseAgentId() {
     throw new TypeError('getBaseAgentId method is not implemented!');
   }
 
@@ -1966,7 +1966,7 @@ class EyesBase {
    * Get the session id.
    * @return {Promise<string>} A promise which resolves to the webdriver's session ID.
    */
-  getAUTSessionId() {
+  async getAUTSessionId() {
     throw new TypeError('getAUTSessionId method is not implemented!');
   }
 
@@ -1978,7 +1978,7 @@ class EyesBase {
    * @abstract
    * @return {Promise<RectangleSize>}
    */
-  getViewportSize() {
+  async getViewportSize() {
     throw new TypeError('getViewportSize method is not implemented!');
   }
 
@@ -1989,7 +1989,7 @@ class EyesBase {
    * @param {RectangleSize} size The required viewport size.
    * @return {Promise<void>}
    */
-  setViewportSize(size) {
+  async setViewportSize(size) {
     throw new TypeError('setViewportSize method is not implemented!');
   }
 
@@ -2004,7 +2004,7 @@ class EyesBase {
    * @abstract
    * @return {Promise<string>} The inferred environment string or {@code null} if none is available.
    */
-  getInferredEnvironment() {
+  async getInferredEnvironment() {
     throw new TypeError('getInferredEnvironment method is not implemented!');
   }
 
@@ -2016,7 +2016,7 @@ class EyesBase {
    * @abstract
    * @return {Promise<EyesScreenshot>}
    */
-  getScreenshot() {
+  async getScreenshot() {
     throw new TypeError('getScreenshot method is not implemented!');
   }
 
@@ -2028,7 +2028,7 @@ class EyesBase {
    * @abstract
    * @return {Promise<string>}
    */
-  getScreenshotUrl() {
+  async getScreenshotUrl() {
     throw new TypeError('getScreenshotUrl method is not implemented!');
   }
 
@@ -2040,7 +2040,7 @@ class EyesBase {
    * @abstract
    * @return {Promise<string>}
    */
-  getTitle() {
+  async getTitle() {
     throw new TypeError('getTitle method is not implemented!');
   }
 
@@ -2060,10 +2060,20 @@ class EyesBase {
 
   // noinspection JSMethodCanBeStatic
   /**
+   * A url pointing to a DOM capture of the AUT at the time of screenshot
+   *
+   * @protected
+   * @return {Promise<string>}
+   */
+  getDomUrl() {
+    return Promise.resolve(undefined);
+  }
+
+  // noinspection JSMethodCanBeStatic
+  /**
    * The location of the image relative to the logical full page image, when cropping an image e.g. with checkRegion
    *
    * @protected
-   * @abstract
    * @return {Promise<Location>}
    */
   getImageLocation() {
