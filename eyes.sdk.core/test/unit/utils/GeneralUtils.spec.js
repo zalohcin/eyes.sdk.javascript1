@@ -40,6 +40,23 @@ describe('GeneralUtils', () => {
     });
   });
 
+  describe('isAbsoluteUrl()', () => {
+    it('should detect this urls as absolute', () => {
+      assert.ok(GeneralUtils.isAbsoluteUrl('http://applitools.com'));
+      assert.ok(GeneralUtils.isAbsoluteUrl('https://applitools.com'));
+      assert.ok(GeneralUtils.isAbsoluteUrl('file://applitools.com'));
+      assert.ok(GeneralUtils.isAbsoluteUrl('mailto:someone@applitools.com'));
+      assert.ok(GeneralUtils.isAbsoluteUrl('data:text/plain;base64,SGVsbG8sIFdvcmxkIQ%3D%3D'));
+    });
+
+    it('should detect this urls as relative', () => {
+      assert.ok(!GeneralUtils.isAbsoluteUrl('//applitools.com'));
+      assert.ok(!GeneralUtils.isAbsoluteUrl('/foo/bar'));
+      assert.ok(!GeneralUtils.isAbsoluteUrl('foo/bar'));
+      assert.ok(!GeneralUtils.isAbsoluteUrl('foo'));
+    });
+  });
+
   describe('toISO8601DateTime()', () => {
     it('should return formatted string', () => {
       // noinspection MagicNumberJS
@@ -53,6 +70,14 @@ describe('GeneralUtils', () => {
       // noinspection MagicNumberJS
       const date = new Date(1520616682000);
       assert.equal(GeneralUtils.toRfc1123DateTime(date), 'Fri, 09 Mar 2018 17:31:22 GMT');
+    });
+  });
+
+  describe('toLogFileDateTime()', () => {
+    it('should return formatted string', () => {
+      // noinspection MagicNumberJS
+      const date = new Date(1520616682332);
+      assert.equal(GeneralUtils.toLogFileDateTime(date), '2018_03_09_18_31_22_332');
     });
   });
 

@@ -1,6 +1,7 @@
 'use strict';
 
 const { MatchLevel } = require('./MatchLevel');
+const { ArgumentGuard } = require('../ArgumentGuard');
 const { GeneralUtils } = require('../utils/GeneralUtils');
 
 /**
@@ -44,6 +45,7 @@ class ImageMatchSettings {
    * @param {MatchLevel} value The match level to use.
    */
   setMatchLevel(value) {
+    ArgumentGuard.isValidEnumValue(value, MatchLevel);
     this._matchLevel = value;
   }
 

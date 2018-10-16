@@ -3,11 +3,10 @@
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
-const isAbsoluteUrl = require('is-absolute-url');
 const axios = require('axios');
 const cssParser = require('css');
 const cssUrlParser = require('css-url-parser');
-const { Location, PerformanceUtils } = require('@applitools/eyes.sdk.core');
+const { Location, GeneralUtils, PerformanceUtils } = require('@applitools/eyes.sdk.core');
 
 class DomCapture {
   static get CAPTURE_FRAME_SCRIPT() {
@@ -214,7 +213,7 @@ class DomCapture {
    * @return {Promise<string>}
    */
   static async getFrameBundledCss(logger, driver, baseUri) {
-    if (!isAbsoluteUrl(baseUri)) {
+    if (!GeneralUtils.isAbsoluteUrl(baseUri)) {
       logger.verbose('WARNING! Base URL is not an absolute URL!');
     }
 
@@ -313,7 +312,7 @@ class DomCapture {
       logger.verbose('Given URL to download: {0}', value);
       // let href = cssParser.parse(value);
       let href = value;
-      if (!isAbsoluteUrl(href)) {
+      if (!GeneralUtils.isAbsoluteUrl(href)) {
         href = url.resolve(baseUri, href.toString());
       }
 

@@ -1,10 +1,7 @@
 'use strict';
 
-const dateformat = require('dateformat');
-
+const { GeneralUtils } = require('../utils/GeneralUtils');
 const { DebugScreenshotsProvider } = require('./DebugScreenshotsProvider');
-
-const DATE_FORMAT = 'yyyy_mm_dd_HH_MM_ss_l';
 
 /**
  * A debug screenshot provider for saving screenshots to file.
@@ -25,7 +22,7 @@ class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
    * @return {string}
    */
   getFormattedTimeStamp() {
-    return dateformat(new Date(), DATE_FORMAT);
+    return GeneralUtils.toLogFileDateTime();
   }
 }
 

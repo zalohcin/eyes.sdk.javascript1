@@ -1,16 +1,14 @@
 'use strict';
 
 const merge = require('deepmerge');
-const dateformat = require('dateformat');
+const dateFormat = require('dateformat');
 const stackTrace = require('stack-trace');
 
-const DATE_FORMAT_ISO8601_FOR_OUTPUT = "yyyy-mm-dd'T'HH:MM:ss'Z'";
+const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
 const DATE_FORMAT_RFC1123 = "ddd, dd mmm yyyy HH:MM:ss 'GMT'";
+const DATE_FORMAT_LOGFILE = 'yyyy_mm_dd_HH_MM_ss_l';
 
 const BASE64_CHARS_PATTERN = /[^A-Z0-9+/=]/i;
-
-const MS_IN_S = 1000;
-const MS_IN_M = 60000;
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -60,14 +58,14 @@ class GeneralUtils {
     return url.endsWith('/') ? url.slice(0, -1) : url;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {object} object
-   * @return {string}
-   * @deprecated use GeneralUtils.toString instead
+   * Check if an URL is absolute
+   *
+   * @param {string} url
+   * @return {boolean} the URL
    */
-  static toJson(object) {
-    return GeneralUtils.toString(object);
+  static isAbsoluteUrl(url) {
+    return /^[a-z][a-z0-9+.-]*:/.test(url);
   }
 
   /**
@@ -254,7 +252,7 @@ class GeneralUtils {
    * @return {string} string formatted as ISO-8601 (yyyy-MM-dd'T'HH:mm:ss'Z')
    */
   static toISO8601DateTime(date = new Date()) {
-    return dateformat(date, DATE_FORMAT_ISO8601_FOR_OUTPUT, true);
+    return dateFormat(date, DATE_FORMAT_ISO8601, true);
   }
 
   /**
@@ -264,7 +262,17 @@ class GeneralUtils {
    * @return {string} string formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
    */
   static toRfc1123DateTime(date = new Date()) {
-    return dateformat(date, DATE_FORMAT_RFC1123, true);
+    return dateFormat(date, DATE_FORMAT_RFC1123, true);
+  }
+
+  /**
+   * Convert a Date object to a RFC-1123 date string
+   *
+   * @param {Date} [date] Date which will be converted
+   * @return {string} string formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
+   */
+  static toLogFileDateTime(date = new Date()) {
+    return dateFormat(date, DATE_FORMAT_LOGFILE, false);
   }
 
   /**
@@ -275,29 +283,6 @@ class GeneralUtils {
    */
   static fromISO8601DateTime(dateTime) {
     return new Date(dateTime);
-  }
-
-  /**
-   * Format elapsed time by template (#m #s #ms)
-   *
-   * @deprecated use {PerformanceUtils.elapsedTime} instead
-   * @param {number} elapsedMs
-   * @return {string} formatted string
-   */
-  static elapsedString(elapsedMs) {
-    const min = Math.floor(elapsedMs / MS_IN_M);
-    if (min > 0) {
-      elapsedMs -= min * MS_IN_M;
-    }
-    const sec = Math.floor(elapsedMs / MS_IN_S);
-    if (sec > 0) {
-      elapsedMs -= sec * MS_IN_S;
-    }
-
-    if (min > 0) {
-      return `${min}m ${sec}s ${elapsedMs}ms`;
-    }
-    return `${sec}s ${elapsedMs}ms`;
   }
 
   /**
@@ -327,13 +312,6 @@ class GeneralUtils {
         return arg;
       })
       .join(' ');
-  }
-
-  /**
-   * @return {number}
-   */
-  static currentTimeMillis() {
-    return Date.now();
   }
 
   /**

@@ -597,12 +597,11 @@ class EyesBase {
   /**
    * The test-wide match level to use when checking application screenshot with the expected output.
    *
-   * @deprecated This function is deprecated. Please use {@link #setDefaultMatchSettings} instead.
+   * @deprecated Please use {@link #setDefaultMatchSettings} instead.
    * @param {MatchLevel} matchLevel The test-wide match level to use when checking application screenshot with the
    *   expected output.
    */
   setMatchLevel(matchLevel) {
-    ArgumentGuard.isValidEnumValue(matchLevel, MatchLevel);
     this._defaultMatchSettings.setMatchLevel(matchLevel);
   }
 
@@ -1068,13 +1067,7 @@ class EyesBase {
    *   inference.
    */
   setBaselineName(baselineName) {
-    this._logger.log(`Baseline name: ${baselineName}`);
-
-    if (baselineName) {
-      this._baselineEnvName = baselineName.trim();
-    } else {
-      this._baselineEnvName = undefined;
-    }
+    this.setBaselineEnvName(baselineName);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -1083,7 +1076,7 @@ class EyesBase {
    * @return {string} The baseline name, if it was specified.
    */
   getBaselineName() {
-    return this._baselineEnvName;
+    return this.getBaselineEnvName();
   }
 
   // noinspection JSUnusedGlobalSymbols

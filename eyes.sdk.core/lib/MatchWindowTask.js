@@ -207,8 +207,8 @@ class MatchWindowTask {
    * @return {Promise<EyesScreenshot>}
    */
   async _retryTakingScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout) {
-    const start = GeneralUtils.currentTimeMillis(); // Start the retry timer.
-    const retry = GeneralUtils.currentTimeMillis() - start;
+    const start = Date.now(); // Start the retry timer.
+    const retry = Date.now() - start;
 
     // The match retry loop.
     const screenshot = await this._takingScreenshotLoop(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout, retry, start);
@@ -247,10 +247,7 @@ class MatchWindowTask {
       return newScreenshot;
     }
 
-    return this._takingScreenshotLoop(
-      userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout,
-      GeneralUtils.currentTimeMillis() - start, start, newScreenshot
-    );
+    return this._takingScreenshotLoop(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout, Date.now() - start, start, newScreenshot);
   }
 
   /**

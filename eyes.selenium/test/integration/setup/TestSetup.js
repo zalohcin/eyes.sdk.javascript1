@@ -2,10 +2,9 @@
 
 const path = require('path');
 const axios = require('axios');
-const dateformat = require('dateformat');
 const { deepEqual } = require('assert');
 const { Capabilities, Builder } = require('selenium-webdriver');
-const { ConsoleLogHandler, FileLogHandler, BatchInfo, RectangleSize, metadata } = require('@applitools/eyes.sdk.core');
+const { ConsoleLogHandler, FileLogHandler, GeneralUtils, BatchInfo, RectangleSize, metadata } = require('@applitools/eyes.sdk.core');
 
 const { StitchMode, Eyes } = require('../../../index');
 
@@ -117,8 +116,7 @@ class TestSetup {
     // In case if need to test with scaling factor
     // this._caps.addArguments('--force-device-scale-factor=1.25')
 
-    const formattedDate = dateformat(new Date(), 'yyyy_MM_dd_HH_mm_ss_SSS', true);
-    const extendedTestName = `${testName}_${this._caps.getBrowserName()}_${this._platform}_${formattedDate}`;
+    const extendedTestName = `${testName}_${this._caps.getBrowserName()}_${this._platform}_${GeneralUtils.toLogFileDateTime()}`;
 
     // noinspection EmptyCatchBlockJS
     this._webDriver = await new Builder().withCapabilities(this._caps).usingServer(seleniumServerUrl).build();
