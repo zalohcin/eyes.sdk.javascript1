@@ -136,7 +136,7 @@ class EyesTargetLocator extends TargetLocator {
       this._logger.verbose('Making preparations...');
       this._driver.getFrameChain().pop();
       this._logger.verbose('Done! Switching to parent frame..');
-      await EyesTargetLocator._parentFrame(this._targetLocator, this._driver.getFrameChain());
+      await EyesTargetLocator.tryParentFrame(this._targetLocator, this._driver.getFrameChain());
       this._logger.verbose('Done!');
     }
   }
@@ -146,7 +146,7 @@ class EyesTargetLocator extends TargetLocator {
    * @param {FrameChain} frameChainToParent
    * @return {Promise<void>}
    */
-  static async _parentFrame(targetLocator, frameChainToParent) {
+  static async tryParentFrame(targetLocator, frameChainToParent) {
     try {
       await targetLocator.parentFrame();
     } catch (ignored) {

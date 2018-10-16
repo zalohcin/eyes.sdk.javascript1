@@ -35,10 +35,10 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
     const image = new MutableImage(screenshot64);
     await this._eyes.getDebugScreenshotsProvider().save(image, 'FIREFOX_FRAME');
 
-    const frameChain = this._tsInstance.getFrameChain();
+    const frameChain = this._eyes.getDriver().getFrameChain();
     if (frameChain.size() > 0) {
       // Frame frame = frameChain.peek();
-      // Region region = eyes.getRegionToCheck();
+      // Region region = this._eyes.getRegionToCheck();
       const screenshot = await EyesWebDriverScreenshot.fromScreenshotType(this._logger, this._eyes.getDriver(), image);
 
       const viewportSize = await this._eyes.getViewportSize();
