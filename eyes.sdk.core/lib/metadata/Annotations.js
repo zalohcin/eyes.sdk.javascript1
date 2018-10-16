@@ -19,11 +19,11 @@ class Annotations {
    */
   static fromObject(object) {
     return GeneralUtils.assignTo(new Annotations(), object, {
-      floating: FloatingMatchSettings.fromObject,
-      ignore: Region.fromObject,
-      strict: Region.fromObject,
-      content: Region.fromObject,
-      layout: Region.fromObject,
+      ignore: results => Array.from(results).map(result => Region.fromObject(result)),
+      strict: results => Array.from(results).map(result => Region.fromObject(result)),
+      content: results => Array.from(results).map(result => Region.fromObject(result)),
+      layout: results => Array.from(results).map(result => Region.fromObject(result)),
+      floating: results => Array.from(results).map(result => FloatingMatchSettings.fromObject(result)),
     });
   }
 

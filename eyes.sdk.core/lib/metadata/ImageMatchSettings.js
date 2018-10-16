@@ -25,11 +25,11 @@ class ImageMatchSettings {
    */
   static fromObject(object) {
     return GeneralUtils.assignTo(new ImageMatchSettings(), object, {
-      ignore: Region.fromObject,
-      strict: Region.fromObject,
-      content: Region.fromObject,
-      layout: Region.fromObject,
-      floating: FloatingMatchSettings.fromObject,
+      ignore: results => Array.from(results).map(result => Region.fromObject(result)),
+      strict: results => Array.from(results).map(result => Region.fromObject(result)),
+      content: results => Array.from(results).map(result => Region.fromObject(result)),
+      layout: results => Array.from(results).map(result => Region.fromObject(result)),
+      floating: results => Array.from(results).map(result => FloatingMatchSettings.fromObject(result)),
     });
   }
 

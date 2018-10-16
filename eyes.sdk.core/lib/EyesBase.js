@@ -1306,7 +1306,7 @@ class EyesBase {
    * @return {Promise.<?string>}
    */
   tryCaptureDom() {
-    return this.getPromiseFactory().resolve(null);
+    return Promise.resolve(undefined);
   }
 
   /**
@@ -1511,6 +1511,7 @@ class EyesBase {
 
     this._logger.verbose('No running session, calling start session...');
     await this.startSession();
+    this._logger.setSessionId(this._runningSession.getSessionId());
     this._logger.verbose('Done!');
 
     // noinspection JSClosureCompilerSyntax
