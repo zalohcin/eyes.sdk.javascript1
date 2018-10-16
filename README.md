@@ -71,7 +71,6 @@ defined in the `browser` property of the configuraion.
 * `ignore`: TBD
 * `floating`: TBD
 * `sendDom`: TBD
-* `domCapture`: TBD
 * `scriptHooks`: a set of scripts to be run by the browser during the rendering.
    An object with the following properties:
   * `beforeCaptureScreenshot`: a script that runs after the page is loaded but before taking the screenshot.
