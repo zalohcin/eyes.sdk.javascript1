@@ -92,6 +92,7 @@ function makeOpenEyes({
 
     configureWrappers({
       wrappers,
+      browsers,
       isDisabled,
       batchName,
       batchId,

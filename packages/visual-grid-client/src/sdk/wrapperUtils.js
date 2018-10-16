@@ -24,6 +24,7 @@ function validateAndAddProperties(wrapper, properties) {
 
 function configureWrappers({
   wrappers,
+  browsers,
   isDisabled,
   batchName,
   batchId,
@@ -45,7 +46,14 @@ function configureWrappers({
   serverUrl,
 }) {
   const batchInfo = new BatchInfo(batchName, null, batchId);
-  for (const wrapper of wrappers) {
+  for (let i = 0, ii = wrappers.length; i < ii; i++) {
+    const wrapper = wrappers[i];
+    const browser = browsers[i];
+
+    if (browser.deviceName) {
+      wrapper.setDeviceInfo(browser.deviceName);
+    }
+
     validateAndAddProperties(wrapper, properties);
     wrapper.setBatch(batchInfo);
 

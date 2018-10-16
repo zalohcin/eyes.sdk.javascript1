@@ -263,6 +263,10 @@ class FakeEyesWrapper {
   setViewportSize(value) {
     this.viewportSize = value;
   }
+
+  setDeviceInfo(value) {
+    this.deviceInfo = value;
+  }
 }
 
 module.exports = FakeEyesWrapper;
