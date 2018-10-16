@@ -560,8 +560,13 @@ describe('openEyes', () => {
   });
 
   it('sets configuration on wrappers', () => {
+    const wrappers = [
+      createFakeWrapper(baseUrl),
+      createFakeWrapper(baseUrl),
+      createFakeWrapper(baseUrl),
+    ];
     openEyes({
-      wrappers: [wrapper],
+      wrappers,
       url: 'bla',
       apiKey,
       baselineBranchName: 'baselineBranchName',
@@ -580,24 +585,31 @@ describe('openEyes', () => {
       compareWithParentBranch: 'compareWithParentBranch',
       ignoreBaseline: 'ignoreBaseline',
       serverUrl: 'serverUrl',
+      browser: [{deviceName: 'device1'}, {deviceName: 'device2'}, {}],
     });
 
-    expect(wrapper.baselineBranchName).to.equal('baselineBranchName');
-    expect(wrapper.baselineEnvName).to.equal('baselineEnvName');
-    expect(wrapper.baselineName).to.equal('baselineName');
-    expect(wrapper.envName).to.equal('envName');
-    expect(wrapper.ignoreCaret).to.equal('ignoreCaret');
-    expect(wrapper.isDisabled).to.equal(false);
-    expect(wrapper.matchLevel).to.equal('matchLevel');
-    expect(wrapper.matchTimeout).to.equal('matchTimeout');
-    expect(wrapper.parentBranchName).to.equal('parentBranchName');
-    expect(wrapper.branchName).to.equal('branchName');
-    expect(wrapper.proxy).to.equal('proxy');
-    expect(wrapper.saveFailedTests).to.equal('saveFailedTests');
-    expect(wrapper.saveNewTests).to.equal('saveNewTests');
-    expect(wrapper.compareWithParentBranch).to.equal('compareWithParentBranch');
-    expect(wrapper.ignoreBaseline).to.equal('ignoreBaseline');
-    expect(wrapper.serverUrl).to.equal('serverUrl');
+    for (const wrapper of wrappers) {
+      expect(wrapper.baselineBranchName).to.equal('baselineBranchName');
+      expect(wrapper.baselineEnvName).to.equal('baselineEnvName');
+      expect(wrapper.baselineName).to.equal('baselineName');
+      expect(wrapper.envName).to.equal('envName');
+      expect(wrapper.ignoreCaret).to.equal('ignoreCaret');
+      expect(wrapper.isDisabled).to.equal(false);
+      expect(wrapper.matchLevel).to.equal('matchLevel');
+      expect(wrapper.matchTimeout).to.equal('matchTimeout');
+      expect(wrapper.parentBranchName).to.equal('parentBranchName');
+      expect(wrapper.branchName).to.equal('branchName');
+      expect(wrapper.proxy).to.equal('proxy');
+      expect(wrapper.saveFailedTests).to.equal('saveFailedTests');
+      expect(wrapper.saveNewTests).to.equal('saveNewTests');
+      expect(wrapper.compareWithParentBranch).to.equal('compareWithParentBranch');
+      expect(wrapper.ignoreBaseline).to.equal('ignoreBaseline');
+      expect(wrapper.serverUrl).to.equal('serverUrl');
+    }
+
+    expect(wrappers[0].deviceInfo).to.equal('device1');
+    expect(wrappers[1].deviceInfo).to.equal('device2');
+    expect(wrappers[2].deviceInfo).to.be.undefined;
   });
 
   it("doesn't do anything when isDisabled", async () => {
@@ -814,6 +826,7 @@ describe('openEyes', () => {
     checkWindow({url: '', cdt: []});
     const [[results]] = await close();
     expect(wrapper.viewportSize.toJSON()).to.eql(FakeEyesWrapper.devices['iPhone 4']);
+    expect(wrapper.deviceInfo).to.equal(deviceName);
     expect(results.getAsExpected()).to.equal(true);
   });
 
