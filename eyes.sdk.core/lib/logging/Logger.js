@@ -9,6 +9,14 @@ const { NullLogHandler } = require('./NullLogHandler');
 class Logger {
   constructor() {
     this._logHandler = new NullLogHandler(); // Default.
+    this._sessionId = '';
+  }
+
+  /**
+   * @param {string} sessionId
+   */
+  setSessionId(sessionId) {
+    this._sessionId = sessionId;
   }
 
   /**
@@ -32,7 +40,7 @@ class Logger {
    * @param {*} args
    */
   verbose(...args) {
-    this._logHandler.onMessage(true, this._getPrefix() + GeneralUtils.stringify(...args));
+    this._logHandler.onMessage(true, `[VERBOSE] ${this._getPrefix()}${GeneralUtils.stringify(...args)}`);
   }
 
   /**
@@ -41,7 +49,7 @@ class Logger {
    * @param {*} args
    */
   log(...args) {
-    this._logHandler.onMessage(false, this._getPrefix() + GeneralUtils.stringify(...args));
+    this._logHandler.onMessage(false, `[LOG    ] ${this._getPrefix()}${GeneralUtils.stringify(...args)}`);
   }
 
   // noinspection JSMethodCanBeStatic
@@ -52,10 +60,17 @@ class Logger {
   _getPrefix() {
     const trace = GeneralUtils.getStackTrace();
 
-    let prefix = '';
-    // getStackTrace()<-getPrefix()<-log()/verbose()<-"actual caller"
-    if (trace && trace.length >= 2 && trace[2].getMethodName()) {
-      prefix = `${trace[2].getMethodName()}(): `;
+    let prefix = `{${this._sessionId}} `;
+    // getStackTrace() <- _getPrefix() <- log()/verbose() <- "actual caller"
+    if (trace && trace.length >= 3) {
+      const className = trace[3].getTypeName();
+      const methodName = trace[3].getMethodName();
+
+      if (className && methodName) {
+        prefix += `${className}.${methodName}(): `;
+      } else {
+        prefix += '(): ';
+      }
     }
 
     return prefix;
