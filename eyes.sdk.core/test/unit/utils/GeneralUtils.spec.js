@@ -76,24 +76,6 @@ describe('GeneralUtils', () => {
     });
   });
 
-  describe('elapsedString()', () => {
-    it('should return correct amount of seconds', () => {
-      assert.equal(GeneralUtils.elapsedString(6000), '6s 0ms');
-    });
-
-    it('should return correct amount of sec and ms', () => {
-      assert.equal(GeneralUtils.elapsedString(6456), '6s 456ms');
-    });
-
-    it('should return correct amount of min, sec', () => {
-      assert.equal(GeneralUtils.elapsedString(61000), '1m 1s 0ms');
-    });
-
-    it('should return correct amount of min, sec and ms', () => {
-      assert.equal(GeneralUtils.elapsedString(156458), '2m 36s 458ms');
-    });
-  });
-
   describe('stringify()', () => {
     it('should return the same args for non-objects', () => {
       assert.equal(GeneralUtils.stringify(4), 4);
