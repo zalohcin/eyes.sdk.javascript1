@@ -2,11 +2,13 @@
 
 const fs = require('fs');
 const path = require('path');
+
 const url = require('url');
 const isAbsoluteUrl = require('is-absolute-url');
 const axios = require('axios');
 const cssParser = require('css');
 const cssUrlParser = require('css-url-parser');
+
 const { Location, PerformanceUtils } = require('@applitools/eyes.sdk.core');
 
 class DomCapture {

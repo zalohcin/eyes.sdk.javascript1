@@ -22,10 +22,11 @@ const {
   FailureReports,
 } = require('@applitools/eyes.sdk.core');
 
+const { DomCapture } = require('@applitools/dom-utils');
+
 const { ImageProviderFactory } = require('./capture/ImageProviderFactory');
 const { EyesWebDriverScreenshotFactory } = require('./capture/EyesWebDriverScreenshotFactory');
 const { FullPageCaptureAlgorithm } = require('./capture/FullPageCaptureAlgorithm');
-const { DomCapture } = require('./capture/DomCapture');
 const { FrameChain } = require('./frames/FrameChain');
 const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
 const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
