@@ -8,22 +8,22 @@ describe('RenderRequest', () => {
   describe('constructor', () => {
     it("doesn't allow empty webhook", () => {
       assert.throws(() => new RenderRequest(), /IllegalArgument: webhook is null or empty/);
-      assert.throws(() => new RenderRequest({webhook: ''}), /IllegalArgument: webhook is null or empty/);
+      assert.throws(() => new RenderRequest({ webhook: '' }), /IllegalArgument: webhook is null or empty/);
     });
-    
+
     it("doesn't allow empty url", () => {
-      assert.throws(() => new RenderRequest({webhook: 'webhook'}), /IllegalArgument: url is null or undefined/);
+      assert.throws(() => new RenderRequest({ webhook: 'webhook' }), /IllegalArgument: url is null or undefined/);
     });
 
     it("doesn't allow empty dom", () => {
-      assert.throws(() => new RenderRequest({webhook: 'webhook', url: 'url'}), /IllegalArgument: dom is null or undefined/);
+      assert.throws(() => new RenderRequest({ webhook: 'webhook', url: 'url' }), /IllegalArgument: dom is null or undefined/);
     });
 
     it("doesn't allow empty resources", () => {
-      assert.throws(() => new RenderRequest({webhook: 'webhook', url: 'url', dom: 'dom'}), /IllegalArgument: resources is null or undefined/);
+      assert.throws(() => new RenderRequest({ webhook: 'webhook', url: 'url', dom: 'dom' }), /IllegalArgument: resources is null or undefined/);
     });
 
-    it("fills values", () => {
+    it('fills values', () => {
       const renderRequest = new RenderRequest({
         webhook: 'webhook',
         url: 'url',
@@ -34,7 +34,7 @@ describe('RenderRequest', () => {
         browserName: 'browserName',
         scriptHooks: 'scriptHooks',
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
-        sendDom: 'sendDom'
+        sendDom: 'sendDom',
       });
       assert.equal(renderRequest.getWebhook(), 'webhook');
       assert.equal(renderRequest.getUrl(), 'url');
@@ -53,18 +53,18 @@ describe('RenderRequest', () => {
     it('returns the correct object', () => {
       const resource1 = {
         getUrl() { return 'url1'; },
-        getHashAsObject() { return 'hashAsObject1'; }
+        getHashAsObject() { return 'hashAsObject1'; },
       };
       const resource2 = {
         getUrl() { return 'url2'; },
-        getHashAsObject() { return 'hashAsObject2' }
+        getHashAsObject() { return 'hashAsObject2'; },
       };
       const dom = {
-        getHashAsObject() { return 'dom_hashAsObject'; }
+        getHashAsObject() { return 'dom_hashAsObject'; },
       };
 
       const renderInfo = {
-        toJSON() { return 'renderInfoToJSON'; }
+        toJSON() { return 'renderInfoToJSON'; },
       };
 
       const renderRequest = new RenderRequest({
@@ -77,7 +77,7 @@ describe('RenderRequest', () => {
         browserName: 'browserName',
         scriptHooks: 'scriptHooks',
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
-        sendDom: 'sendDom'
+        sendDom: 'sendDom',
       });
       const expected = {
         webhook: 'webhook',
@@ -88,20 +88,20 @@ describe('RenderRequest', () => {
           url2: 'hashAsObject2',
         },
         renderInfo: 'renderInfoToJSON',
-        browser: { 
+        browser: {
           name: 'browserName',
           platform: 'platform',
         },
         scriptHooks: 'scriptHooks',
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
-        sendDom: 'sendDom'
-      }
+        sendDom: 'sendDom',
+      };
       assert.deepEqual(renderRequest.toJSON(), expected);
     });
 
     it('doesn\'t include platform if there is no browserName', () => {
       const dom = {
-        getHashAsObject() { return 'dom_hashAsObject'; }
+        getHashAsObject() { return 'dom_hashAsObject'; },
       };
       const renderRequest = new RenderRequest({
         webhook: 'webhook',
@@ -109,14 +109,14 @@ describe('RenderRequest', () => {
         dom,
         resources: [],
         renderInfo: null,
-        platform: 'platform'
+        platform: 'platform',
       });
       const expected = {
         webhook: 'webhook',
         url: 'url',
         dom: 'dom_hashAsObject',
-        resources: {}
-      }
+        resources: {},
+      };
       assert.deepEqual(renderRequest.toJSON(), expected);
     });
   });
@@ -125,18 +125,18 @@ describe('RenderRequest', () => {
     it('returns the correct string', () => {
       const resource1 = {
         getUrl() { return 'url1'; },
-        getHashAsObject() { return 'hashAsObject1'; }
+        getHashAsObject() { return 'hashAsObject1'; },
       };
       const resource2 = {
         getUrl() { return 'url2'; },
-        getHashAsObject() { return 'hashAsObject2' }
+        getHashAsObject() { return 'hashAsObject2'; },
       };
       const dom = {
-        getHashAsObject() { return 'dom_hashAsObject'; }
+        getHashAsObject() { return 'dom_hashAsObject'; },
       };
 
       const renderInfo = {
-        toJSON() { return 'renderInfoToJSON'; }
+        toJSON() { return 'renderInfoToJSON'; },
       };
 
       const renderRequest = new RenderRequest({
@@ -149,9 +149,9 @@ describe('RenderRequest', () => {
         browserName: 'browserName',
         scriptHooks: 'scriptHooks',
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
-        sendDom: 'sendDom'
+        sendDom: 'sendDom',
       });
       assert.equal(renderRequest.toString(), 'RenderRequest { {"webhook":"webhook","url":"url","dom":"dom_hashAsObject","resources":{"url1":"hashAsObject1","url2":"hashAsObject2"},"browser":{"name":"browserName","platform":"platform"},"renderInfo":"renderInfoToJSON","scriptHooks":"scriptHooks","selectorsToFindRegionsFor":"selectorsToFindRegionsFor","sendDom":"sendDom"} }');
     });
-  })
+  });
 });

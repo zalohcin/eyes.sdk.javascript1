@@ -11,15 +11,15 @@ describe('EmulationInfo', () => {
     assert.equal(emulationInfo.hasOwnProperty('_deviceName'), true);
     assert.equal(emulationInfo.hasOwnProperty('_screenOrientation'), true);
   });
-  
+
   it('constructor with arguments', () => {
-    const device = new EmulationDevice({width: 1, height: 2});
-    const emulationInfo = new EmulationInfo({device, screenOrientation: ScreenOrientation.PORTRAIT});
+    const device = new EmulationDevice({ width: 1, height: 2 });
+    const emulationInfo = new EmulationInfo({ device, screenOrientation: ScreenOrientation.PORTRAIT });
     assert.equal(emulationInfo.getDevice(), device);
     assert.equal(emulationInfo.getDeviceName(), undefined);
     assert.equal(emulationInfo.getScreenOrientation(), ScreenOrientation.PORTRAIT);
 
-    const emulationInfo2 = new EmulationInfo({deviceName: 'name'});
+    const emulationInfo2 = new EmulationInfo({ deviceName: 'name' });
     assert.equal(emulationInfo2.getDevice(), undefined);
     assert.equal(emulationInfo2.getDeviceName(), 'name');
     assert.equal(emulationInfo2.getScreenOrientation(), undefined);
@@ -28,10 +28,10 @@ describe('EmulationInfo', () => {
   it('fromObject', () => {
     const deviceObj = { width: 1, height: 2, deviceScaleFactor: 3, mobile: true };
     const device = EmulationDevice.fromObject(deviceObj);
-    
+
     const emulationInfo = EmulationInfo.fromObject({
       screenOrientation: ScreenOrientation.LANDSCAPE,
-      device: deviceObj
+      device: deviceObj,
     });
 
     assert.deepEqual(emulationInfo.getDevice(), device);
@@ -39,7 +39,7 @@ describe('EmulationInfo', () => {
   });
 
   it('toJSON', () => {
-    const device = new EmulationDevice({width: 1, height: 2});
+    const device = new EmulationDevice({ width: 1, height: 2 });
     const emulationInfo = new EmulationInfo({ device, screenOrientation: ScreenOrientation.LANDSCAPE });
     assert.deepEqual(emulationInfo.toJSON(), { width: 1, height: 2, mobile: undefined, deviceScaleFactor: undefined, screenOrientation: ScreenOrientation.LANDSCAPE });
 
@@ -48,7 +48,7 @@ describe('EmulationInfo', () => {
   });
 
   it('toString', () => {
-    const device = new EmulationDevice({width: 1, height: 2});
+    const device = new EmulationDevice({ width: 1, height: 2 });
     const emulationInfo = new EmulationInfo({ device, screenOrientation: ScreenOrientation.LANDSCAPE });
     assert.deepEqual(emulationInfo.toString(), 'EmulationInfo { {"screenOrientation":"landscape","width":1,"height":2} }');
 
