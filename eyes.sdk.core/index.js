@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint-disable max-len */
+
 exports.AppOutputProvider = require('./lib/capture/AppOutputProvider').AppOutputProvider;
 exports.AppOutputWithScreenshot = require('./lib/capture/AppOutputWithScreenshot').AppOutputWithScreenshot;
 exports.EyesScreenshot = require('./lib/capture/EyesScreenshot').EyesScreenshot;
