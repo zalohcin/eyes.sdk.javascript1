@@ -13,13 +13,13 @@ const { Location, PerformanceUtils } = require('@applitools/eyes.sdk.core');
 
 class DomCapture {
   static get CAPTURE_FRAME_SCRIPT() {
-    const scriptPath = path.join(__dirname, '..', './resources/CaptureFrame.js');
+    const scriptPath = path.join(__dirname, './resources/CaptureFrame.js');
     const buffer = fs.readFileSync(scriptPath);
     return buffer.toString();
   }
 
   static get CAPTURE_CSSOM_SCRIPT() {
-    const scriptPath = path.join(__dirname, '..', './resources/CaptureCssom.js');
+    const scriptPath = path.join(__dirname, './resources/CaptureCssom.js');
     const buffer = fs.readFileSync(scriptPath);
     return buffer.toString();
   }
