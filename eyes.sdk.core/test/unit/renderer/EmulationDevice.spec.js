@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { EmulationDevice } = require('../../index');
+const { EmulationDevice } = require('../../../index');
 
 describe('EmulationDevice', () => {
   it('constructor without arguments', () => {

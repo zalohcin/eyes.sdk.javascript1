@@ -2,8 +2,8 @@
 
 const assert = require('assert');
 
-const { ImageUtils } = require('../../index');
-const { makeImageMock } = require('../helpers');
+const { ImageUtils } = require('../../../index');
+const { makeImageMock } = require('./helpers');
 
 describe('ImageUtils', function () {
   this.timeout(60 * 1000);

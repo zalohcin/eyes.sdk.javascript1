@@ -9,7 +9,7 @@ const {
   PropertyData,
   SessionStartInfo,
   ImageMatchSettings,
-} = require('../../index');
+} = require('../../../index');
 
 describe('SessionStartInfo', () => {
   it('toJSON()', () => {

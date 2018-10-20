@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { RenderStatusResults } = require('../../index');
+const { RenderStatusResults } = require('../../../index');
 
 describe('RenderStatusResults', () => {
   it('constructor', () => {
@@ -24,8 +24,8 @@ describe('RenderStatusResults', () => {
     const domLocation = 'some dom location';
     const os = 'some os';
     const userAgent = 'some user agent';
-    const deviceSize = {width: 1, height: 2};
-    const selectorRegions = [{x: 1, y: 2, width: 3, height: 4}];
+    const deviceSize = { width: 1, height: 2 };
+    const selectorRegions = [{ x: 1, y: 2, width: 3, height: 4 }];
     const results = RenderStatusResults.fromObject({
       status,
       error,
@@ -34,7 +34,7 @@ describe('RenderStatusResults', () => {
       os,
       userAgent,
       deviceSize,
-      selectorRegions
+      selectorRegions,
     });
 
     assert.equal(results.getStatus(), status);
@@ -44,7 +44,7 @@ describe('RenderStatusResults', () => {
     assert.equal(results.getOS(), os);
     assert.equal(results.getUserAgent(), userAgent);
     assert.deepEqual(results.getDeviceSize().toJSON(), deviceSize);
-    assert.deepEqual(results.getSelectorRegions().map(region => region.toJSON()), [{left: 1, top: 2, width: 3, height: 4, coordinatesType: 'SCREENSHOT_AS_IS'}]);
+    assert.deepEqual(results.getSelectorRegions().map(region => region.toJSON()), [{ left: 1, top: 2, width: 3, height: 4, coordinatesType: 'SCREENSHOT_AS_IS' }]);
   });
 
   it('toJSON', () => {
@@ -54,8 +54,8 @@ describe('RenderStatusResults', () => {
     const domLocation = 'some dom location';
     const os = 'some os';
     const userAgent = 'some user agent';
-    const deviceSize = {width: 1, height: 2};
-    const selectorRegions = [{x: 1, y: 2, width: 3, height: 4}];
+    const deviceSize = { width: 1, height: 2 };
+    const selectorRegions = [{ x: 1, y: 2, width: 3, height: 4 }];
     const results = RenderStatusResults.fromObject({
       status,
       error,
@@ -64,7 +64,7 @@ describe('RenderStatusResults', () => {
       os,
       userAgent,
       deviceSize,
-      selectorRegions
+      selectorRegions,
     });
 
     assert.equal(JSON.stringify(results), '{"status":"some status","imageLocation":"some image location","domLocation":"some dom location","error":"some error","os":"some os","userAgent":"some user agent","deviceSize":{"width":1,"height":2},"selectorRegions":[{"left":1,"top":2,"width":3,"height":4,"coordinatesType":"SCREENSHOT_AS_IS"}]}');
@@ -77,8 +77,8 @@ describe('RenderStatusResults', () => {
     const domLocation = 'some dom location';
     const os = 'some os';
     const userAgent = 'some user agent';
-    const deviceSize = {width: 1, height: 2};
-    const selectorRegions = [{x: 1, y: 2, width: 3, height: 4}];
+    const deviceSize = { width: 1, height: 2 };
+    const selectorRegions = [{ x: 1, y: 2, width: 3, height: 4 }];
     const results = RenderStatusResults.fromObject({
       status,
       error,
@@ -87,9 +87,9 @@ describe('RenderStatusResults', () => {
       os,
       userAgent,
       deviceSize,
-      selectorRegions
+      selectorRegions,
     });
 
     assert.equal(results.toString(), 'RenderStatusResults { {"status":"some status","imageLocation":"some image location","domLocation":"some dom location","error":"some error","os":"some os","userAgent":"some user agent","deviceSize":{"width":1,"height":2},"selectorRegions":[{"left":1,"top":2,"width":3,"height":4,"coordinatesType":"SCREENSHOT_AS_IS"}]} }');
-  })
-})
+  });
+});
