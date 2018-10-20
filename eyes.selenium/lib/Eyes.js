@@ -1218,7 +1218,8 @@ class Eyes extends EyesBase {
     try {
       this._logger.verbose('Getting window DOM...');
       return await DomCapture.getFullWindowDom(this._logger, this.getDriver());
-    } catch (ignored) {
+    } catch (err) {
+      this._logger.log(`Error capturing DOM of the page: ${err}`);
       return '';
     }
   }
