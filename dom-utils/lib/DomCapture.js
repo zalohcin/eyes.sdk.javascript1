@@ -307,10 +307,11 @@ class DomCapture {
    * @param {Logger} logger
    * @param {string} baseUri
    * @param {string} value
+   * @param {number} [retriesCount=1]
    * @return {Promise<string>}
    * @private
    */
-  static async _downloadCss(logger, baseUri, value) {
+  static async _downloadCss(logger, baseUri, value, retriesCount = 1) {
     try {
       logger.verbose('Given URL to download: {0}', value);
       // let href = cssParser.parse(value);
@@ -323,9 +324,13 @@ class DomCapture {
       const response = await axios(href);
       const css = response.data;
       logger.verbose(`downloading CSS in length of ${css.length} chars took ${timeStart.end().summary}`);
-      return Promise.resolve(css);
+      return css;
     } catch (ex) {
       logger.verbose(ex.toString());
+      if (retriesCount > 0) {
+        retriesCount--;
+        return DomCapture._downloadCss(logger, baseUri, value, retriesCount);
+      }
       return '';
     }
   }
