@@ -114,7 +114,11 @@ function makeRenderingGridClient({
     setRenderInfoPromise,
     createRGridDOMAndGetResourceMapping,
   });
-  const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(openEyes, openEyesConcurrency);
+  const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency({
+    openEyes,
+    concurrency: openEyesConcurrency,
+    logger,
+  });
   const waitForTestResults = makeWaitForTestResults({logger});
 
   return {

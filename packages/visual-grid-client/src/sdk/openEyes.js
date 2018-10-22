@@ -68,6 +68,7 @@ function makeOpenEyes({
     ignoreBaseline = _ignoreBaseline,
     serverUrl = _serverUrl,
   }) {
+    logger.log(`openEyes: testName=${testName}, browser=`, browser);
     let error;
 
     if (isDisabled) {

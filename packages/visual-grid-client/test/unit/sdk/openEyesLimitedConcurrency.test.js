@@ -26,7 +26,11 @@ describe('openEyesLimitedConcurrency', () => {
         },
       };
     };
-    const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency(openEyes, 2);
+    const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency({
+      openEyes,
+      concurrency: 2,
+      logger: console,
+    });
     await Promise.all([
       openEyesLimitedConcurrency(1).then(runClose),
       openEyesLimitedConcurrency(2).then(runClose),
