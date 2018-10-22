@@ -403,10 +403,10 @@ class EyesWebDriver extends IWebDriver {
   }
 
   /**
-   * @param {boolean} [forceQuery=false] If true, we will perform the query even if we have a cached viewport size.
+   * @param {boolean} [forceQuery=true] If true, we will perform the query even if we have a cached viewport size.
    * @return {Promise<RectangleSize>} The viewport size of the default content (outer most frame).
    */
-  async getDefaultContentViewportSize(forceQuery = false) {
+  async getDefaultContentViewportSize(forceQuery = true) {
     this._logger.verbose('getDefaultContentViewportSize()');
     if (this._defaultContentViewportSize && !forceQuery) {
       this._logger.verbose('Using cached viewport size: ', this._defaultContentViewportSize);

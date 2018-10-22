@@ -1176,12 +1176,12 @@ class Eyes extends EyesBase {
    * @inheritDoc
    */
   async getViewportSize() {
-    const viewportSize = this._viewportSizeHandler.get();
-    if (viewportSize) {
-      return viewportSize;
+    let viewportSize = this._viewportSizeHandler.get();
+    if (!viewportSize) {
+      viewportSize = await this._driver.getDefaultContentViewportSize();
     }
 
-    return this._driver.getDefaultContentViewportSize();
+    return viewportSize;
   }
 
   // noinspection JSUnusedGlobalSymbols

@@ -1,27 +1,19 @@
 'use strict';
 
 const { Builder, Capabilities, By } = require('selenium-webdriver');
-const { ConsoleLogHandler, BatchInfo } = require('@applitools/eyes.sdk.core');
-const { TestUtils } = require('./TestUtils');
-const { Eyes, Target, StitchMode } = require('../index');
+const { ConsoleLogHandler, BatchInfo, GeneralUtils } = require('@applitools/eyes.sdk.core');
+const { Eyes, Target, StitchMode } = require('../../index');
 
-describe('IOSTest', function () {
-  this.timeout(5 * 60 * 1000);
+describe('AndroidTest', function () {
+  this.timeout(50 * 60 * 1000);
 
   const batchInfo = new BatchInfo('Java3 Tests');
 
   const dataProvider = [];
-  dataProvider.push(...TestUtils.cartesianProduct(
-    'iPhone X Simulator',
+  dataProvider.push(...GeneralUtils.cartesianProduct(
+    'Google Pixel GoogleAPI Emulator',
     ['portrait', 'landscape'],
-    '11.0',
-    [false, true]
-  ));
-
-  dataProvider.push(...TestUtils.cartesianProduct(
-    ['iPhone 7 Simulator', 'iPhone 6 Plus Simulator'],
-    ['portrait', 'landscape'],
-    ['10.0', '11.0'],
+    '7.1',
     [false, true]
   ));
 
@@ -40,8 +32,8 @@ describe('IOSTest', function () {
       caps.set('deviceName', deviceName);
       caps.set('deviceOrientation', deviceOrientation);
       caps.set('platformVersion', platformVersion);
-      caps.set('platformName', 'iOS');
-      caps.set('browserName', 'Safari');
+      caps.set('platformName', 'Android');
+      caps.set('browserName', 'Chrome');
 
       caps.set('username', process.env.SAUCE_USERNAME);
       caps.set('accesskey', process.env.SAUCE_ACCESS_KEY);
@@ -55,7 +47,7 @@ describe('IOSTest', function () {
       eyes.addProperty('Orientation', deviceOrientation);
       eyes.addProperty('Stitched', fully ? 'True' : 'False');
 
-      return eyes.open(driver, 'Eyes Selenium SDK - iOS Safari Cropping', testName).then(driver => {
+      return eyes.open(driver, 'Eyes Selenium SDK - Android Chrome Cropping', testName).then(driver => {
         driver.get('https://www.applitools.com/customers');
 
         eyes.check('Initial view', Target.region(By.css('body')).fully(fully));

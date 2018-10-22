@@ -7,8 +7,8 @@ const { Builder, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 const { RectangleSize } = require('@applitools/eyes.sdk.core');
 
-const { TestUtils } = require('../TestUtils');
 const { Eyes, EyesWebDriver, Target } = require('../../index');
+const { throwsAsync } = require('../utils');
 
 let driver, eyes;
 describe('Eyes', function () {
@@ -34,7 +34,7 @@ describe('Eyes', function () {
     });
 
     it('should throw IllegalState: Eyes not open', async function () {
-      await TestUtils.throwsAsync(async () => eyes.check('test', Target.window()), 'IllegalState: Eyes not open');
+      await throwsAsync(async () => eyes.check('test', Target.window()), 'IllegalState: Eyes not open');
     });
   });
 

@@ -6,7 +6,7 @@ const { Options: FirefoxOptions } = require('selenium-webdriver/firefox');
 const { Options: SafariOptions } = require('selenium-webdriver/safari');
 const { Options: IeOptions } = require('selenium-webdriver/ie');
 
-const { TestUtils } = require('../../TestUtils');
+const { GeneralUtils } = require('@applitools/eyes.sdk.core');
 
 /**
  * Collection of utility methods.
@@ -33,7 +33,7 @@ class TestsDataProvider {
     const platforms = testPlatforms.split(';');
 
     const permutations = [];
-    permutations.push(...TestUtils.cartesianProduct(
+    permutations.push(...GeneralUtils.cartesianProduct(
       [
         chromeOptions,
         // firefoxOptions,

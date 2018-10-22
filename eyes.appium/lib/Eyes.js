@@ -13,25 +13,25 @@ const VERSION = require('../package.json').version;
  * Applitools SDK for Appium integration.
  */
 class Eyes extends EyesSelenium {
-  /** @override */
+  /** @inheritDoc */
   getBaseAgentId() {
     return `eyes.appium/${VERSION}`;
   }
 
-  /** @override */
+  /** @inheritDoc */
   _init() {
     EyesSeleniumUtils.setImageOrientationHandler(new AppiumImageOrientationHandler());
     EyesSeleniumUtils.setJavascriptHandler(new AppiumJavascriptHandler(this._driver));
   }
 
-  /** @override */
+  /** @inheritDoc */
   async _getScaleProviderFactory() {
     const entireSize = await this._positionProviderHandler.get().getEntireSize();
     const isMobileDevice = await EyesAppiumUtils.isMobileDevice(this._driver);
     return new ContextBasedScaleProviderFactory(this._logger, entireSize, this._viewportSizeHandler.get(), this._devicePixelRatio, isMobileDevice, this._scaleProviderHandler);
   }
 
-  /** @override */
+  /** @inheritDoc */
   async getAppEnvironment() {
     const appEnv = await super.getAppEnvironment();
 

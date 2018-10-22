@@ -18,8 +18,9 @@ const { Eyes, Target } = require('../index'); // should be replaced to '@applito
 
   try {
     // Start the test and set the browser's viewport size to 800x600.
-    await eyes.open(driver, 'Eyes Web Selenium Example', 'My first region test!', new RectangleSize(800, 600));
+    await eyes.open(driver, 'Eyes Examples', 'My advanced JavaScript test!', new RectangleSize(800, 600));
 
+    // Navigate the browser to the "test pages" web-site.
     await driver.get('http://applitools.github.io/demo/TestPages/FramesTestPage/');
 
     // Region by rect, equivalent to eyes.checkFrame()

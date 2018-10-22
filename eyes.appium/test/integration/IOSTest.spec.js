@@ -1,20 +1,26 @@
 'use strict';
 
 const { Builder, Capabilities, By } = require('selenium-webdriver');
-const { ConsoleLogHandler, BatchInfo } = require('@applitools/eyes.sdk.core');
-const { TestUtils } = require('../../eyes.selenium/test/TestUtils');
-const { Eyes, Target, StitchMode } = require('../../eyes.selenium/index');
+const { ConsoleLogHandler, BatchInfo, GeneralUtils } = require('@applitools/eyes.sdk.core');
+const { Eyes, Target, StitchMode } = require('../../index');
 
-describe('AndroidTest', function () {
-  this.timeout(50 * 60 * 1000);
+describe('IOSTest', function () {
+  this.timeout(5 * 60 * 1000);
 
   const batchInfo = new BatchInfo('Java3 Tests');
 
   const dataProvider = [];
-  dataProvider.push(...TestUtils.cartesianProduct(
-    'Google Pixel GoogleAPI Emulator',
+  dataProvider.push(...GeneralUtils.cartesianProduct(
+    'iPhone X Simulator',
     ['portrait', 'landscape'],
-    '7.1',
+    '11.0',
+    [false, true]
+  ));
+
+  dataProvider.push(...GeneralUtils.cartesianProduct(
+    ['iPhone 7 Simulator', 'iPhone 6 Plus Simulator'],
+    ['portrait', 'landscape'],
+    ['10.0', '11.0'],
     [false, true]
   ));
 
@@ -33,8 +39,8 @@ describe('AndroidTest', function () {
       caps.set('deviceName', deviceName);
       caps.set('deviceOrientation', deviceOrientation);
       caps.set('platformVersion', platformVersion);
-      caps.set('platformName', 'Android');
-      caps.set('browserName', 'Chrome');
+      caps.set('platformName', 'iOS');
+      caps.set('browserName', 'Safari');
 
       caps.set('username', process.env.SAUCE_USERNAME);
       caps.set('accesskey', process.env.SAUCE_ACCESS_KEY);
@@ -48,7 +54,7 @@ describe('AndroidTest', function () {
       eyes.addProperty('Orientation', deviceOrientation);
       eyes.addProperty('Stitched', fully ? 'True' : 'False');
 
-      return eyes.open(driver, 'Eyes Selenium SDK - Android Chrome Cropping', testName).then(driver => {
+      return eyes.open(driver, 'Eyes Selenium SDK - iOS Safari Cropping', testName).then(driver => {
         driver.get('https://www.applitools.com/customers');
 
         eyes.check('Initial view', Target.region(By.css('body')).fully(fully));

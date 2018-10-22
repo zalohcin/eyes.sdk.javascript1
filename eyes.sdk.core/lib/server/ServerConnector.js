@@ -37,6 +37,12 @@ const HTTP_STATUS_CODES = {
   GATEWAY_TIMEOUT: 504,
 };
 
+const HTTP_FAILED_CODES = [
+  HTTP_STATUS_CODES.NOT_FOUND,
+  HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_CODES.GATEWAY_TIMEOUT,
+];
+
 /**
  * @private
  * @param {ServerConnector} self
@@ -58,19 +64,20 @@ async function sendRequest(self, name, options, retry = 1, delayBeforeRetry = fa
   self._logger.verbose(`ServerConnector.${name} will now post call to ${options.url} with params ${JSON.stringify(options.params)}`);
   try {
     const response = await axios(options);
+
+    // eslint-disable-next-line max-len
     self._logger.verbose(`ServerConnector.${name} - result ${response.statusText}, status code ${response.status}, url ${options.url}`);
     return response;
   } catch (err) {
-    const reasonMessage = err.response && err.response.statusText ? err.response.statusText : err.message;
-    self._logger.log(`ServerConnector.${name} - post failed on ${options.url}: ${reasonMessage} with params ${JSON.stringify(options.params).slice(0, 100)}`);
+    let reasonMsg = err.message;
+    if (err.response && err.response.statusText) {
+      reasonMsg += ` (${err.response.statusText})`;
+    }
 
-    const validStatusCodes = [
-      HTTP_STATUS_CODES.NOT_FOUND,
-      HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
-      HTTP_STATUS_CODES.GATEWAY_TIMEOUT,
-    ];
+    // eslint-disable-next-line max-len
+    self._logger.log(`ServerConnector.${name} - post failed on ${options.url}: ${reasonMsg} with params ${JSON.stringify(options.params).slice(0, 100)}`);
 
-    if (retry > 0 && ((err.response && validStatusCodes.includes(err.response.status)) || err.code === 'ECONNRESET')) {
+    if (retry > 0 && ((err.response && HTTP_FAILED_CODES.includes(err.response.status)) || err.code === 'ECONNRESET')) {
       if (delayBeforeRetry) {
         await GeneralUtils.sleep(RETRY_REQUEST_INTERVAL);
         return sendRequest(self, name, options, retry - 1, delayBeforeRetry);
@@ -79,7 +86,7 @@ async function sendRequest(self, name, options, retry = 1, delayBeforeRetry = fa
       return sendRequest(self, name, options, retry - 1, delayBeforeRetry);
     }
 
-    throw err;
+    throw new Error(reasonMsg);
   }
 }
 
@@ -759,7 +766,7 @@ class ServerConnector {
    * @param {string} domJson
    * @return {Promise<string>}
    */
-  postDomSnapshot(domJson) {
+  async postDomSnapshot(domJson) {
     ArgumentGuard.notNull(domJson, 'domJson');
     this._logger.verbose('ServerConnector.postDomSnapshot called');
 
@@ -776,15 +783,15 @@ class ServerConnector {
     });
 
     options.data = zlib.gzipSync(Buffer.from(domJson));
-    return sendRequest(that, 'postDomSnapshot', options).then(response => {
-      const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED];
-      if (validStatusCodes.includes(response.status)) {
-        that._logger.verbose('ServerConnector.postDomSnapshot - post succeeded');
-        return response.headers.location;
-      }
 
-      throw new Error(`ServerConnector.postDomSnapshot - unexpected status (${response.statusText})`);
-    });
+    const response = await sendRequest(this, 'postDomSnapshot', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED];
+    if (validStatusCodes.includes(response.status)) {
+      that._logger.verbose('ServerConnector.postDomSnapshot - post succeeded');
+      return response.headers.location;
+    }
+
+    throw new Error(`ServerConnector.postDomSnapshot - unexpected status (${response.statusText})`);
   }
 }
 

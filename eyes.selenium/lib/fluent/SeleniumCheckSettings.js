@@ -8,6 +8,7 @@ const { IgnoreRegionByElement } = require('./IgnoreRegionByElement');
 const { FloatingRegionBySelector } = require('./FloatingRegionBySelector');
 const { FloatingRegionByElement } = require('./FloatingRegionByElement');
 const { FrameLocator } = require('./FrameLocator');
+const { EyesWebElement } = require('../wrappers/EyesWebElement');
 
 /**
  * @return {boolean}
@@ -152,7 +153,7 @@ class SeleniumCheckSettings extends CheckSettings {
       super.updateTargetRegion(region);
     } else if (region instanceof By || isProtractorBy(region)) {
       this._targetSelector = region;
-    } else if (region instanceof WebElement) {
+    } else if (region instanceof WebElement || region instanceof EyesWebElement) {
       this._targetElement = region;
     } else {
       throw new TypeError('region method called with argument of unknown type!');

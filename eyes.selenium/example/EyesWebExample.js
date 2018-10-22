@@ -18,7 +18,7 @@ const { Eyes, Target } = require('../index'); // should be replaced to '@applito
 
   try {
     // Start the test and set the browser's viewport size to 800x600.
-    await eyes.open(driver, 'Eyes Web Selenium Example', 'My first Javascript test!', new RectangleSize(800, 600));
+    await eyes.open(driver, 'Eyes Examples', 'My first Javascript test!', new RectangleSize(800, 600));
 
     // Navigate the browser to the "hello world!" web-site.
     await driver.get('https://applitools.com/helloworld');

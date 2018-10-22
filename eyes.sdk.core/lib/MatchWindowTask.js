@@ -114,14 +114,13 @@ class MatchWindowTask {
    * @param {AppOutputWithScreenshot} appOutput
    * @return {Promise<void>}
    */
-  static collectFloatingRegions(checkSettings, imageMatchSettings, eyes, appOutput) {
+  static async collectFloatingRegions(checkSettings, imageMatchSettings, eyes, appOutput) {
     const screenshot = appOutput.getScreenshot();
     const regionPromises = checkSettings.getFloatingRegions()
       .map(container => container.getRegion(eyes, screenshot), eyes);
 
-    return Promise.all(regionPromises).then(floatingRegions => {
-      imageMatchSettings.setFloatingRegions(floatingRegions);
-    });
+    const floatingRegions = await Promise.all(regionPromises);
+    imageMatchSettings.setFloatingRegions(floatingRegions);
   }
 
   /**

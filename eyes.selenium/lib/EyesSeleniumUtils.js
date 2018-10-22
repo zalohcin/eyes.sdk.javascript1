@@ -212,7 +212,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
   static async getViewportSizeOrDisplaySize(logger, driver) {
     try {
       logger.verbose('getViewportSizeOrDisplaySize()');
-      return EyesSeleniumUtils.getViewportSize(driver);
+      return await EyesSeleniumUtils.getViewportSize(driver);
     } catch (err) {
       logger.verbose('Failed to extract viewport size using Javascript:', err);
 
