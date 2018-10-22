@@ -62,10 +62,10 @@ class CheckSettings {
   /**
    * Defines whether to send the document DOM or not.
    *
-   * @param {boolean} sendDom When {@code true} sends the DOM to the server (the default).
+   * @param {boolean} [sendDom=true] When {@code true} sends the DOM to the server (the default).
    * @return {CheckSettings} This instance of the settings object.
    */
-  sendDom(sendDom) {
+  sendDom(sendDom = true) {
     this._sendDom = sendDom;
     return this;
   }

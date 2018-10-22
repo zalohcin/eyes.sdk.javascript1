@@ -2038,6 +2038,18 @@ class EyesBase {
     throw new TypeError('getTitle method is not implemented!');
   }
 
+  // noinspection JSMethodCanBeStatic
+  /**
+   * A url pointing to a DOM capture of the AUT at the time of screenshot
+   *
+   * @protected
+   * @abstract
+   * @return {Promise<string>}
+   */
+  getDomUrl() {
+    return this.getPromiseFactory().resolve();
+  }
+
   /**
    * @param {boolean} sendDom
    */
@@ -2050,17 +2062,6 @@ class EyesBase {
    */
   getSendDom() {
     return this._sendDom;
-  }
-
-  // noinspection JSMethodCanBeStatic
-  /**
-   * A url pointing to a DOM capture of the AUT at the time of screenshot
-   *
-   * @protected
-   * @return {Promise<string>}
-   */
-  getDomUrl() {
-    return Promise.resolve(undefined);
   }
 
   // noinspection JSMethodCanBeStatic
