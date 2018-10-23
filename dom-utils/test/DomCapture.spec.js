@@ -45,6 +45,15 @@ async function captureDom(logger_, driver_, url, testName) {
 }
 
 /**
+ * @param {string} testName
+ * @return {Promise<object>}
+ */
+async function getExpectedDom(testName) {
+  const expectedDomBuffer = await fs.readFileSync(path.join(__dirname, `./resources/${testName}.json`));
+  return JSON.parse(expectedDomBuffer);
+}
+
+/**
  * @param {string} domUrl
  * @return {Promise<string>}
  */
@@ -61,20 +70,21 @@ describe('DomCapture', function () {
     chromeOptions = new ChromeOptions().headless();
 
     logger = new Logger();
-    if (process.env.CI) {
-      logger.setLogHandler(new ConsoleLogHandler(true));
-    } else {
-      const dateString = dateformat(new Date(), 'yyyy_mm_dd_HH_MM_ss_l');
-      const extendedTestName = `${this.test.parent.title}_${dateString}`;
-      const logsPath = process.env.APPLITOOLS_LOGS_PATH || '.';
-      const pathName = path.join(logsPath, 'JavaScript', extendedTestName);
-      logger.setLogHandler(new FileLogHandler(true, path.join(pathName, 'log.log')));
-      logger.getLogHandler().open();
-    }
+    // if (process.env.CI) {
+    logger.setLogHandler(new ConsoleLogHandler(true));
+    // } else {
+    //   const dateString = dateformat(new Date(), 'yyyy_mm_dd_HH_MM_ss_l');
+    //   const extendedTestName = `${this.test.parent.title}_${dateString}`;
+    //   const logsPath = process.env.APPLITOOLS_LOGS_PATH || '.';
+    //   const pathName = path.join(logsPath, 'JavaScript', extendedTestName);
+    //   logger.setLogHandler(new FileLogHandler(true, path.join(pathName, 'log.log')));
+    //   logger.getLogHandler().open();
+    // }
   });
 
   beforeEach(async function () {
     driver = await new Builder().forBrowser('chrome').setChromeOptions(chromeOptions).build();
+    await driver.manage().window().setRect({ x: 0, y: 0, width: 800, height: 600 });
   });
 
   it('TestSendDOM_Simple_HTML', async function () {
@@ -82,15 +92,23 @@ describe('DomCapture', function () {
     const actualDomJson = JSON.parse(actualDomJsonString);
 
     const expectedDomJson = await getExpectedDomFromUrl('https://applitools-dom-capture-origin-1.surge.sh/test.dom.json');
-    assert.deepEqual(expectedDomJson, actualDomJson);
+    assert.deepEqual(actualDomJson, expectedDomJson);
   });
 
   it('TestSendDOM_1', async function () {
-    await captureDom(logger, driver, 'http://applitools.github.io/demo/TestPages/DomTest/dom_capture.html', this.test.title);
+    const actualDomJsonString = await captureDom(logger, driver, 'http://applitools.github.io/demo/TestPages/DomTest/dom_capture.html', this.test.title);
+    const actualDomJson = JSON.parse(actualDomJsonString);
+
+    const expectedDomJson = await getExpectedDom(this.test.title);
+    assert.deepEqual(actualDomJson, expectedDomJson);
   });
 
   it('TestSendDOM_2', async function () {
-    await captureDom(logger, driver, 'http://applitools.github.io/demo/TestPages/DomTest/dom_capture_2.html', this.test.title);
+    const actualDomJsonString = await captureDom(logger, driver, 'http://applitools.github.io/demo/TestPages/DomTest/dom_capture_2.html', this.test.title);
+    const actualDomJson = JSON.parse(actualDomJsonString);
+
+    const expectedDomJson = await getExpectedDom(this.test.title);
+    assert.deepEqual(actualDomJson, expectedDomJson);
   });
 
   it('TestSendDOM_Booking1', async function () {
