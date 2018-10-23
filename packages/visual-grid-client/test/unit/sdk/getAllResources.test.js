@@ -383,7 +383,7 @@ describe('getAllResources', () => {
     }
   });
 
-  it('handles the case when the same resource appears both in preResources and as a dependency of another resource', async () => {
+  it('handles the case when the same resource appears both in preResources and as a dependency of another resourceUrl', async () => {
     const server = await testServer();
     const baseUrl = `http://localhost:${server.port}`;
     const url = `${baseUrl}/smurfs.jpg`;
@@ -404,6 +404,26 @@ describe('getAllResources', () => {
           toRGridResource,
         ),
       );
+    } finally {
+      await server.close();
+    }
+  });
+
+  it('handles the case when the same resource appears both in preResources and as a dependency of another preResource', async () => {
+    const server = await testServer();
+    const baseUrl = `http://localhost:${server.port}`;
+    const jpgUrl = `${baseUrl}/smurfs.jpg`;
+    const cssName = 'single-resource.css';
+    const cssUrl = `${baseUrl}/${cssName}`;
+    const cssValue = loadFixtureBuffer(cssName);
+    const preResources = {
+      [jpgUrl]: {url: jpgUrl, type: 'bla-type', value: 'bla-value'},
+      [cssUrl]: {url: cssUrl, type: 'text/css', value: cssValue},
+    };
+
+    try {
+      const resources = await getAllResources([], preResources);
+      expect(resources).to.eql(mapValues(preResources, toRGridResource));
     } finally {
       await server.close();
     }
