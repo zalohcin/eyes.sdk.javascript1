@@ -30,13 +30,20 @@ function writeDomJson(logger_, domJson, testName) {
  * @param {WebDriver} driver_
  * @param {string} url
  * @param {string} testName
+ * @param {function} [initCode]
  * @return {Promise<string>}
  */
-async function captureDom(logger_, driver_, url, testName) {
+async function captureDom(logger_, driver_, url, testName, initCode) {
   try {
     await driver_.get(url);
+
+    if (initCode) {
+      await initCode(driver_);
+    }
+
     const actualDomJsonString = await DomCapture.getFullWindowDom(logger_, driver_);
     writeDomJson(logger_, actualDomJsonString, testName);
+
     return actualDomJsonString;
   } catch (err) {
     logger_.log(`Error: ${err}`);
@@ -91,7 +98,7 @@ describe('DomCapture', function () {
     const actualDomJsonString = await captureDom(logger, driver, 'https://applitools-dom-capture-origin-1.surge.sh/test.html', this.test.title);
     const actualDomJson = JSON.parse(actualDomJsonString);
 
-    const expectedDomJson = await getExpectedDomFromUrl('https://applitools-dom-capture-origin-1.surge.sh/test.dom.json');
+    const expectedDomJson = await getExpectedDom(this.test.title);
     assert.deepEqual(actualDomJson, expectedDomJson);
   });
 
@@ -112,16 +119,29 @@ describe('DomCapture', function () {
   });
 
   it('TestSendDOM_Booking1', async function () {
-    await captureDom(logger, driver, 'https://www.booking.com/searchresults.en-gb.html?label=gen173nr-1FCAEoggJCAlhYSDNYBGhqiAEBmAEuwgEKd2luZG93cyAxMMgBDNgBAegBAfgBC5ICAXmoAgM;sid=ce4701a88873eed9fbb22893b9c6eae4;city=-2600941;from_idr=1&;ilp=1;d_dcp=1', this.test.title);
+    const actualDomJsonString = await captureDom(logger, driver, 'https://www.booking.com/searchresults.en-gb.html?label=gen173nr-1FCAEoggJCAlhYSDNYBGhqiAEBmAEuwgEKd2luZG93cyAxMMgBDNgBAegBAfgBC5ICAXmoAgM;sid=ce4701a88873eed9fbb22893b9c6eae4;city=-2600941;from_idr=1&;ilp=1;d_dcp=1', this.test.title);
+    const actualDomJson = JSON.parse(actualDomJsonString);
+
+    const expectedDomJson = await getExpectedDom(this.test.title);
+    assert.deepEqual(actualDomJson, expectedDomJson);
   });
 
   it('TestSendDOM_Booking2', async function () {
-    await captureDom(logger, driver, 'https://booking.kayak.com/flights/TLV-MIA/2018-09-25/2018-10-31?sort=bestflight_a', this.test.title);
+    const actualDomJsonString = await captureDom(logger, driver, 'https://booking.kayak.com/flights/TLV-MIA/2018-09-25/2018-10-31?sort=bestflight_a', this.test.title);
+    const actualDomJson = JSON.parse(actualDomJsonString);
+
+    const expectedDomJson = await getExpectedDom(this.test.title);
+    assert.deepEqual(actualDomJson, expectedDomJson);
   });
 
   it('TestSendDOM_BestBuy1', async function () {
-    await captureDom(logger, driver, 'https://www.bestbuy.com/site/apple-macbook-pro-13-display-intel-core-i5-8-gb-memory-256gb-flash-storage-silver/6936477.p?skuId=6936477', this.test.title);
-    await driver.findElement(By.css('.us-link')).click();
+    const actualDomJsonString = await captureDom(logger, driver, 'https://www.bestbuy.com/site/apple-macbook-pro-13-display-intel-core-i5-8-gb-memory-256gb-flash-storage-silver/6936477.p?skuId=6936477', this.test.title, async driver => {
+      await driver.findElement(By.css('.us-link')).click();
+    });
+    const actualDomJson = JSON.parse(actualDomJsonString);
+
+    const expectedDomJson = await getExpectedDom(this.test.title);
+    assert.deepEqual(actualDomJson, expectedDomJson);
   });
 
   afterEach(async function () {
