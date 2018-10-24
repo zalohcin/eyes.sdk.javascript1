@@ -30,68 +30,65 @@ function fromFetchedToRGridResource({url, type, value}) {
   return rGridResource;
 }
 
-function makeProcessResource({resourceCache, getOrFetchResources, extractCssResources}) {
-  return async function processResource(resource) {
-    let {dependentResources, fetchedResources} = await getDependantResources(resource);
-    const rGridResource = fromFetchedToRGridResource(resource);
-    resourceCache.setDependencies(resource.url, dependentResources);
-    return Object.assign({[resource.url]: rGridResource}, fetchedResources);
-  };
-
-  async function getDependantResources({url, type, value}) {
-    let dependentResources, fetchedResources;
-    if (isCss(type)) {
-      dependentResources = extractCssResources(value.toString(), url);
-      fetchedResources = await getOrFetchResources(dependentResources);
-    }
-    return {dependentResources, fetchedResources};
-  }
-}
-
 function makeGetAllResources({resourceCache, fetchResource, extractCssResources, logger}) {
-  const processResource = makeProcessResource({
-    resourceCache,
-    extractCssResources,
-    getOrFetchResources,
-  });
+  return function getAllResources(resourceUrls, preResources) {
+    const handledResources = new Set();
+    return getOrFetchResources(resourceUrls, preResources);
 
-  return getOrFetchResources;
-
-  async function getOrFetchResources(resourceUrls = [], preResources = {}) {
-    const resources = {};
-
-    for (const url in preResources) {
-      resourceCache.setValue(url, toCacheEntry(fromFetchedToRGridResource(preResources[url])));
-    }
-
-    for (const url in preResources) {
-      assignContentfulResources(resources, await processResource(preResources[url]));
-    }
-
-    const missingResourceUrls = [];
-    for (const url of resourceUrls) {
-      const cacheEntry = resourceCache.getWithDependencies(url);
-      if (cacheEntry) {
-        assignContentfulResources(resources, mapValues(cacheEntry, fromCacheToRGridResource));
-      } else if (/^https?:$/i.test(new URL(url).protocol)) {
-        missingResourceUrls.push(url);
+    async function getOrFetchResources(resourceUrls = [], preResources = {}) {
+      const resources = {};
+      for (const url in preResources) {
+        resourceCache.setValue(url, toCacheEntry(fromFetchedToRGridResource(preResources[url])));
       }
+
+      for (const url in preResources) {
+        handledResources.add(url);
+        assignContentfulResources(resources, await processResource(preResources[url]));
+      }
+
+      const unhandledResourceUrls = resourceUrls.filter(url => !handledResources.has(url));
+      const missingResourceUrls = [];
+      for (const url of unhandledResourceUrls) {
+        handledResources.add(url);
+        const cacheEntry = resourceCache.getWithDependencies(url);
+        if (cacheEntry) {
+          assignContentfulResources(resources, mapValues(cacheEntry, fromCacheToRGridResource));
+        } else if (/^https?:$/i.test(new URL(url).protocol)) {
+          missingResourceUrls.push(url);
+        }
+      }
+
+      await Promise.all(
+        missingResourceUrls.map(url =>
+          fetchResource(url)
+            .then(async resource =>
+              assignContentfulResources(resources, await processResource(resource)),
+            )
+            .catch(ex => {
+              logger.log(`error fetching resource at ${url}: ${ex}`);
+            }),
+        ),
+      );
+
+      return resources;
     }
 
-    await Promise.all(
-      missingResourceUrls.map(url =>
-        fetchResource(url)
-          .then(async resource =>
-            assignContentfulResources(resources, await processResource(resource)),
-          )
-          .catch(ex => {
-            logger.log(`error fetching resource at ${url}: ${ex}`);
-          }),
-      ),
-    );
+    async function processResource(resource) {
+      let {dependentResources, fetchedResources} = await getDependantResources(resource);
+      const rGridResource = fromFetchedToRGridResource(resource);
+      resourceCache.setDependencies(resource.url, dependentResources);
+      return Object.assign({[resource.url]: rGridResource}, fetchedResources);
+    }
 
-    return resources;
-  }
+    async function getDependantResources({url, type, value}) {
+      let dependentResources, fetchedResources;
+      if (isCss(type)) {
+        dependentResources = extractCssResources(value.toString(), url);
+        fetchedResources = await getOrFetchResources(dependentResources);
+      }
+      return {dependentResources, fetchedResources};
+    }
+  };
 }
 
 module.exports = makeGetAllResources;

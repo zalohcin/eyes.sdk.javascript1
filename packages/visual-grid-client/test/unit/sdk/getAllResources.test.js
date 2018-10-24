@@ -261,11 +261,11 @@ describe('getAllResources', () => {
 
       const expected = mapValues(
         {
-          [cssUrl]: {type: cssType, value: cssValue},
-          [imgUrl]: {type: imgType, value: imgValue},
-          [fontZillaUrl]: {type: fontZillaType, value: fontZillaValue},
+          [cssUrl]: {url: cssUrl, type: cssType, value: cssValue},
+          [imgUrl]: {url: imgUrl, type: imgType, value: imgValue},
+          [fontZillaUrl]: {url: fontZillaUrl, type: fontZillaType, value: fontZillaValue},
         },
-        ({type, value}, url) => toRGridResource({type, value, url}),
+        toRGridResource,
       );
 
       expect(resources).to.eql(expected);
@@ -424,6 +424,66 @@ describe('getAllResources', () => {
     try {
       const resources = await getAllResources([], preResources);
       expect(resources).to.eql(mapValues(preResources, toRGridResource));
+    } finally {
+      await server.close();
+    }
+  });
+
+  it('handles recursive reference inside a dependency', async () => {
+    const server = await testServer();
+    const baseUrl = `http://localhost:${server.port}`;
+    const name = 'recursive.css';
+    const url = `${baseUrl}/${name}`;
+    try {
+      const resources = await getAllResources([url]);
+      expect(resources).to.eql(
+        mapValues(
+          {
+            [url]: {url, type: 'text/css; charset=UTF-8', value: loadFixtureBuffer(name)},
+          },
+          toRGridResource,
+        ),
+      );
+    } finally {
+      await server.close();
+    }
+  });
+
+  it('handles recursive reference inside a dependency from a preResource', async () => {
+    const server = await testServer();
+    const baseUrl = `http://localhost:${server.port}`;
+    const name = 'recursive.css';
+    const url = `${baseUrl}/${name}`;
+    const value = loadFixtureBuffer(name);
+    const preResources = {
+      [url]: {url, type: 'text/css; charset=UTF-8', value},
+    };
+    try {
+      const resources = await getAllResources([], preResources);
+      expect(resources).to.eql(mapValues(preResources, toRGridResource));
+    } finally {
+      await server.close();
+    }
+  });
+
+  it('handles mutually recursive references', async () => {
+    const server = await testServer();
+    const baseUrl = `http://localhost:${server.port}`;
+    const name1 = 'recursive-1.css';
+    const url1 = `${baseUrl}/${name1}`;
+    const name2 = 'recursive-2.css';
+    const url2 = `${baseUrl}/${name2}`;
+    try {
+      const resources = await getAllResources([url1]);
+      expect(resources).to.eql(
+        mapValues(
+          {
+            [url1]: {url: url1, type: 'text/css; charset=UTF-8', value: loadFixtureBuffer(name1)},
+            [url2]: {url: url2, type: 'text/css; charset=UTF-8', value: loadFixtureBuffer(name2)},
+          },
+          toRGridResource,
+        ),
+      );
     } finally {
       await server.close();
     }
