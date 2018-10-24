@@ -23,6 +23,11 @@ class DomCapture {
     return buffer.toString();
   }
 
+  constructor() {
+    this._level = 0;
+    this._frameIndices = [0];
+  }
+
   /**
    * @param {Logger} logger A Logger instance.
    * @param {EyesWebDriver} driver
@@ -36,7 +41,7 @@ class DomCapture {
       await positionProvider.setPosition(Location.ZERO);
     }
 
-    const dom = await this.getWindowDom(logger, driver);
+    const dom = await DomCapture.getWindowDom(logger, driver);
 
     if (positionProvider) {
       await positionProvider.restoreState(originalPosition);
@@ -78,10 +83,14 @@ class DomCapture {
         'top',
         'left',
       ],
-      ignoredTagNames: ['HEAD', 'SCRIPT'],
+      ignoredTagNames: [
+        'HEAD',
+        'SCRIPT',
+      ],
     };
 
-    return DomCapture._getFrameDom(logger, driver, argsObj);
+    const domCapture = new DomCapture();
+    return domCapture._getFrameDom(logger, driver, argsObj);
   }
 
   /**
@@ -91,14 +100,13 @@ class DomCapture {
    * @return {Promise.<object>}
    * @private
    */
-  static async _getFrameDom(logger, driver, argsObj) {
+  async _getFrameDom(logger, driver, argsObj) {
     try {
       const json = await driver.executeScript(DomCapture.CAPTURE_FRAME_SCRIPT, argsObj);
-      const currentUrl = await driver.getCurrentUrl();
-
       const domTree = JSON.parse(json);
 
-      await DomCapture._traverseDomTree(logger, driver, argsObj, domTree, -1, currentUrl);
+      const currentUrl = await driver.getCurrentUrl();
+      await this._traverseDomTree(logger, driver, argsObj, domTree, -1, currentUrl);
 
       return domTree;
     } catch (e) {
@@ -116,55 +124,63 @@ class DomCapture {
    * @return {Promise<void>}
    * @private
    */
-  static async _traverseDomTree(logger, driver, argsObj, domTree, frameIndex, baseUri) {
-    if (!domTree.tagName) {
-      return;
-    }
-
+  async _traverseDomTree(logger, driver, argsObj, domTree, frameIndex, baseUri) {
     const tagNameObj = domTree.tagName;
+    if (!tagNameObj) return;
 
+    let frameHasContent = true;
     if (frameIndex > -1) {
+      this._level += 1;
+      logger.verbose(`switching to frame ${frameIndex} (level: ${this._level})`);
       let timeStart = PerformanceUtils.start();
       await driver.switchTo().frame(frameIndex);
+      this._frameIndices.push(0);
       logger.verbose(`switching to frame took ${timeStart.end().summary}`);
 
-      timeStart = PerformanceUtils.start();
-      const json = await driver.executeScript(DomCapture.CAPTURE_FRAME_SCRIPT, argsObj);
-      logger.verbose(`executing javascript to capture frame's script took ${timeStart.end().summary}`);
+      const childNodesObj = domTree.childNodes;
+      if (!childNodesObj || childNodesObj.length) {
+        frameHasContent = false;
+        timeStart = PerformanceUtils.start();
+        const json = await driver.executeScript(DomCapture.CAPTURE_FRAME_SCRIPT, argsObj);
+        logger.verbose(`executing javascript to capture frame's script took ${timeStart.end().summary}`);
+        const dom = JSON.parse(json);
 
-      const dom = JSON.parse(json);
+        domTree.childNodes = [dom];
 
-      domTree.childNodes = dom;
-      let srcUrl = null;
-      if (domTree.attributes) {
-        const attrsNodeObj = domTree.attributes;
-        const attrsNode = attrsNodeObj;
-        if (attrsNode.src) {
+        let srcUrl = null;
+        const attrsNode = domTree.attributes;
+        if (attrsNode) {
           const srcUrlObj = attrsNode.src;
-          srcUrl = srcUrlObj.toString();
+          if (srcUrlObj) {
+            srcUrl = srcUrlObj.toString();
+          }
         }
-      }
-      if (srcUrl == null) {
-        logger.verbose('WARNING! IFRAME WITH NO SRC');
-      }
+        if (!srcUrl) {
+          logger.verbose('WARNING! IFRAME WITH NO SRC');
+        }
 
-      const srcUri = url.resolve(baseUri, srcUrl);
-      await DomCapture._traverseDomTree(logger, driver, argsObj, dom, -1, srcUri);
+        const srcUri = url.resolve(baseUri, srcUrl);
+        await this._traverseDomTree(logger, driver, argsObj, dom, -1, srcUri);
+      }
 
       timeStart = PerformanceUtils.start();
       await driver.switchTo().parentFrame();
+      this._level -= 1;
+      this._frameIndices.pop();
       logger.verbose(`switching to parent frame took ${timeStart.end().summary}`);
     }
 
-    const tagName = tagNameObj;
-    const isHTML = tagName.toUpperCase() === 'HTML';
+    if (frameHasContent) {
+      const tagName = tagNameObj;
+      const isHTML = tagName.toUpperCase() === 'HTML';
 
-    if (isHTML) {
-      const css = await DomCapture.getFrameBundledCss(logger, driver, baseUri);
-      domTree.css = css;
+      if (isHTML) {
+        const css = await this._getFrameBundledCss(logger, driver, baseUri);
+        domTree.css = css;
+      }
+
+      await this._loop(logger, driver, argsObj, domTree, baseUri);
     }
-
-    await DomCapture._loop(logger, driver, argsObj, domTree, baseUri);
   }
 
   /**
@@ -176,36 +192,28 @@ class DomCapture {
    * @return {Promise<void>}
    * @private
    */
-  static async _loop(logger, driver, argsObj, domTree, baseUri) {
-    if (!domTree.childNodes) {
-      return;
-    }
-
+  async _loop(logger, driver, argsObj, domTree, baseUri) {
     const childNodes = domTree.childNodes;
-    let index = 0;
+    if (!childNodes) return;
 
-    const timeStart = PerformanceUtils.start();
-    for (const node of childNodes) {
-      const domSubTree = node;
+    let index = this._frameIndices[this._frameIndices.length - 1];
+    for (const domSubTree of childNodes) {
       if (domSubTree) {
         const tagName = domSubTree.tagName;
         const isIframe = tagName.toUpperCase() === 'IFRAME';
 
         if (isIframe) {
-          await DomCapture._traverseDomTree(logger, driver, argsObj, domSubTree, index, baseUri);
+          this._frameIndices.pop();
+          this._frameIndices.push(index + 1);
+          await this._traverseDomTree(logger, driver, argsObj, domSubTree, index, baseUri);
           index += 1;
         } else {
           const childSubNodesObj = domSubTree.childNodes;
-          if (!childSubNodesObj || childSubNodesObj.length === 0) {
-            continue;
-          }
-
-          await DomCapture._traverseDomTree(logger, driver, argsObj, domSubTree, -1, baseUri);
-          return;
+          if (!childSubNodesObj || childSubNodesObj.length === 0) continue;
+          await this._traverseDomTree(logger, driver, argsObj, domSubTree, -1, baseUri);
         }
       }
     }
-    logger.verbose(`looping through ${childNodes.length} child nodes (out of which ${index} inner iframes) took ${timeStart.end().summary}`);
   }
 
   /**
@@ -213,11 +221,14 @@ class DomCapture {
    * @param {EyesWebDriver} driver
    * @param {string} baseUri
    * @return {Promise<string>}
+   * @private
    */
-  static async getFrameBundledCss(logger, driver, baseUri) {
+  async _getFrameBundledCss(logger, driver, baseUri) {
     if (!GeneralUtils.isAbsoluteUrl(baseUri)) {
       logger.verbose('WARNING! Base URL is not an absolute URL!');
     }
+
+    logger.verbose(`enter with baseUri: ${baseUri} (level ${this._level})`);
 
     let sb = '';
     let timeStart = PerformanceUtils.start();
@@ -230,11 +241,11 @@ class DomCapture {
       logger.verbose(`splitting css result item took ${timeStart.end().summary}`);
       let css;
       if (kind === 'text:') {
-        css = await DomCapture._parseAndSerializeCss(logger, baseUri, value);
+        css = await this._parseAndSerializeCss(logger, baseUri, value);
       } else {
-        css = await DomCapture._downloadCss(logger, baseUri, value);
+        css = await this._downloadCss(logger, baseUri, value);
       }
-      css = await DomCapture._parseAndSerializeCss(logger, baseUri, css);
+      css = await this._parseAndSerializeCss(logger, baseUri, css);
       timeStart = PerformanceUtils.start();
       sb += css;
       logger.verbose(`appending CSS to StringBuilder took ${timeStart.end().summary}`);
@@ -249,12 +260,12 @@ class DomCapture {
    * @return {Promise<string>}
    * @private
    */
-  static async _parseAndSerializeCss(logger, baseUri, css) {
+  async _parseAndSerializeCss(logger, baseUri, css) {
     const timeStart = PerformanceUtils.start();
     const stylesheet = cssParser.parse(css);
     logger.verbose(`parsing CSS string took ${timeStart.end().summary}`);
 
-    css = await DomCapture._serializeCss(logger, baseUri, stylesheet.stylesheet);
+    css = await this._serializeCss(logger, baseUri, stylesheet.stylesheet);
     return css;
   }
 
@@ -265,7 +276,7 @@ class DomCapture {
    * @return {Promise<string>}
    * @private
    */
-  static async _serializeCss(logger, baseUri, stylesheet) {
+  async _serializeCss(logger, baseUri, stylesheet) {
     const timeStart = PerformanceUtils.start();
     let sb = '';
 
@@ -275,12 +286,12 @@ class DomCapture {
       if (ruleSet.type === 'import') {
         logger.verbose('encountered @import rule');
         const href = cssUrlParser(ruleSet.import);
-        css = await DomCapture._downloadCss(logger, baseUri, href[0]);
+        css = await this._downloadCss(logger, baseUri, href[0]);
         css = css.trim();
         logger.verbose('imported CSS (whitespaces trimmed) length: {0}', css.length);
         addAsIs = css.length === 0;
         if (!addAsIs) {
-          css = await DomCapture._parseAndSerializeCss(logger, baseUri, css);
+          css = await this._parseAndSerializeCss(logger, baseUri, css);
           sb += css;
         }
       }
@@ -310,7 +321,7 @@ class DomCapture {
    * @return {Promise<string>}
    * @private
    */
-  static async _downloadCss(logger, baseUri, value, retriesCount = 1) {
+  async _downloadCss(logger, baseUri, value, retriesCount = 1) {
     try {
       logger.verbose('Given URL to download: {0}', value);
       // let href = cssParser.parse(value);
@@ -327,8 +338,8 @@ class DomCapture {
     } catch (ex) {
       logger.verbose(ex.toString());
       if (retriesCount > 0) {
-        retriesCount--;
-        return DomCapture._downloadCss(logger, baseUri, value, retriesCount);
+        retriesCount -= 1;
+        return this._downloadCss(logger, baseUri, value, retriesCount);
       }
       return '';
     }
