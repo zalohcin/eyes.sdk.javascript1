@@ -1,9 +1,9 @@
 {
-  "name": "@applitools/eyes.selenium",
+  "name": "@applitools/eyes-selenium",
   "version": "4.0.0",
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
-    "eyes.selenium",
+    "eyes-selenium",
     "applitools",
     "eyes",
     "test automation",

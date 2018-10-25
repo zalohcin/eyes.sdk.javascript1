@@ -1,6 +1,6 @@
 'use strict';
 
-const parent = require('@applitools/eyes.selenium');
+const parent = require('@applitools/eyes-selenium');
 
 // Overridden & new classes
 exports.Eyes = require('./lib/Eyes').Eyes;

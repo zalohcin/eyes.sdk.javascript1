@@ -35,7 +35,7 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/eyes-sdk-core": "~1.11.0",
-    "@applitools/eyes.selenium": "~1.9.0-alpha"
+    "@applitools/eyes-selenium": "~1.9.0-alpha"
   },
   "devDependencies": {
     "protractor": "^5.3.0"

@@ -35,7 +35,7 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/eyes-sdk-core": "^4.0.0",
-    "@applitools/eyes.selenium": "^4.0.0",
+    "@applitools/eyes-selenium": "^4.0.0",
     "selenium-webdriver": "~4.0.0-alpha.1"
   },
   "devDependencies": {
