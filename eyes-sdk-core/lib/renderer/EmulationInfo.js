@@ -1,13 +1,11 @@
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
-const { Region } = require('../geometry/Region');
-const { ScreenOrientation } = require('./ScreenOrientation');
 const { EmulationDevice } = require('./EmulationDevice');
 
 class EmulationInfo {
   /**
-   * @param {device: EmulationDevice, deviceName: string, screenOrientation: ScreenOrientation}
+   * @param {{device: EmulationDevice, deviceName: string, screenOrientation: ScreenOrientation}}
    * @return {EmulationInfo}
    */
   constructor({ device, deviceName, screenOrientation } = {}) {

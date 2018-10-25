@@ -7,12 +7,12 @@ const { RenderInfo, Region, RectangleSize, EmulationInfo, ScreenOrientation } = 
 describe('RenderInfo', () => {
   it('constructor', () => {
     const renderInfo = new RenderInfo();
-    assert.equal(renderInfo.hasOwnProperty('_width'), true);
-    assert.equal(renderInfo.hasOwnProperty('_height'), true);
-    assert.equal(renderInfo.hasOwnProperty('_sizeMode'), true);
-    assert.equal(renderInfo.hasOwnProperty('_selector'), true);
-    assert.equal(renderInfo.hasOwnProperty('_region'), true);
-    assert.equal(renderInfo.hasOwnProperty('_emulationInfo'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_width'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_height'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_sizeMode'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_selector'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_region'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_emulationInfo'), true);
   });
 
   it('fromObject', () => {

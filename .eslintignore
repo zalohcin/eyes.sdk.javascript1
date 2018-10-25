@@ -1,0 +1,3 @@
+**/node_modules/**
+**/eyes-sdk-core-browser/dist/**
+**/eyes-images-browser/dist/**

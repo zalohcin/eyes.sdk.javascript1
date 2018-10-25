@@ -7,14 +7,14 @@ const { RenderStatusResults } = require('../../../index');
 describe('RenderStatusResults', () => {
   it('constructor', () => {
     const results = new RenderStatusResults();
-    assert.equal(results.hasOwnProperty('_status'), true);
-    assert.equal(results.hasOwnProperty('_imageLocation'), true);
-    assert.equal(results.hasOwnProperty('_domLocation'), true);
-    assert.equal(results.hasOwnProperty('_error'), true);
-    assert.equal(results.hasOwnProperty('_os'), true);
-    assert.equal(results.hasOwnProperty('_userAgent'), true);
-    assert.equal(results.hasOwnProperty('_deviceSize'), true);
-    assert.equal(results.hasOwnProperty('_selectorRegions'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(results, '_status'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(results, '_imageLocation'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(results, '_domLocation'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(results, '_error'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(results, '_os'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(results, '_userAgent'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(results, '_deviceSize'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(results, '_selectorRegions'), true);
   });
 
   it('fromObject', () => {

@@ -7,10 +7,10 @@ const { EmulationDevice } = require('../../../index');
 describe('EmulationDevice', () => {
   it('constructor without arguments', () => {
     const emulationDevice = new EmulationDevice();
-    assert.equal(emulationDevice.hasOwnProperty('_width'), true);
-    assert.equal(emulationDevice.hasOwnProperty('_height'), true);
-    assert.equal(emulationDevice.hasOwnProperty('_deviceScaleFactor'), true);
-    assert.equal(emulationDevice.hasOwnProperty('_mobile'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(emulationDevice, '_width'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(emulationDevice, '_height'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(emulationDevice, '_deviceScaleFactor'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(emulationDevice, '_mobile'), true);
   });
 
   it('constructor with arguments', () => {

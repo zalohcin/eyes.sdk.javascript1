@@ -27,7 +27,6 @@ const { TextTrigger } = require('./triggers/TextTrigger');
 const { MouseTrigger } = require('./triggers/MouseTrigger');
 
 const { MatchResult } = require('./match/MatchResult');
-const { MatchLevel } = require('./match/MatchLevel');
 const { ImageMatchSettings } = require('./match/ImageMatchSettings');
 const { MatchWindowData } = require('./match/MatchWindowData');
 
@@ -1298,6 +1297,7 @@ class EyesBase {
     return Promise.resolve();
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @protected
    * @return {Promise.<?string>}
@@ -2043,8 +2043,8 @@ class EyesBase {
    * @abstract
    * @return {Promise<string>}
    */
-  async getDomUrl() {
-    return undefined;
+  getDomUrl() {
+    return Promise.resolve(undefined);
   }
 
   /**
@@ -2054,6 +2054,7 @@ class EyesBase {
     this._sendDom = sendDom;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */

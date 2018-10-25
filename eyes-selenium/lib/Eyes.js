@@ -50,22 +50,6 @@ const VERSION = require('../package.json').version;
 
 const DEFAULT_STITCHING_OVERLAP = 50; // px
 const DEFAULT_WAIT_BEFORE_SCREENSHOTS = 100; // Milliseconds
-const DEFAULT_WAIT_SCROLL_STABILIZATION = 200; // Milliseconds
-
-/**
- * @param positionProvider
- * @param frameChain
- * @param switchTo
- * @return {Promise<void>}
- */
-async function ensureFrameVisibleLoop(positionProvider, frameChain, switchTo) {
-  if (frameChain.size() > 0) {
-    const frame = frameChain.pop();
-    await switchTo.parentFrame();
-    await positionProvider.setPosition(frame.getLocation());
-    await ensureFrameVisibleLoop(positionProvider, frameChain, switchTo);
-  }
-}
 
 /**
  * The main API gateway for the SDK.
@@ -586,6 +570,8 @@ class Eyes extends EyesBase {
       await this._driver.switchTo().parentFrame();
       return this._switchToParentFrame(switchedToFrameCount - 1);
     }
+
+    return switchedToFrameCount;
   }
 
   /**

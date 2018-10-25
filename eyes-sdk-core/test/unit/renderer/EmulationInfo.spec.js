@@ -7,9 +7,9 @@ const { EmulationDevice, EmulationInfo, ScreenOrientation } = require('../../../
 describe('EmulationInfo', () => {
   it('constructor without arguments', () => {
     const emulationInfo = new EmulationInfo();
-    assert.equal(emulationInfo.hasOwnProperty('_device'), true);
-    assert.equal(emulationInfo.hasOwnProperty('_deviceName'), true);
-    assert.equal(emulationInfo.hasOwnProperty('_screenOrientation'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(emulationInfo, '_device'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(emulationInfo, '_deviceName'), true);
+    assert.equal(Object.prototype.hasOwnProperty.call(emulationInfo, '_screenOrientation'), true);
   });
 
   it('constructor with arguments', () => {
