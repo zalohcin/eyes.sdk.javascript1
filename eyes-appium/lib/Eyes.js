@@ -15,7 +15,7 @@ const VERSION = require('../package.json').version;
 class Eyes extends EyesSelenium {
   /** @inheritDoc */
   getBaseAgentId() {
-    return `eyes.appium/${VERSION}`;
+    return `eyes-appium/${VERSION}`;
   }
 
   /** @inheritDoc */
