@@ -7,9 +7,10 @@ const path = require('path');
 const axios = require('axios');
 const dateformat = require('dateformat');
 const { Builder, By } = require('selenium-webdriver');
+const { Name } = require('selenium-webdriver/lib/command');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 
-const { Logger, ConsoleLogHandler, FileLogHandler } = require('@applitools/eyes.sdk.core');
+const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils } = require('@applitools/eyes.sdk.core');
 const { DomCapture } = require('../index');
 
 /**
@@ -41,7 +42,9 @@ async function captureDom(logger_, driver_, url, testName, initCode) {
       await initCode(driver_);
     }
 
+    const timeStart = PerformanceUtils.start();
     const actualDomJsonString = await DomCapture.getFullWindowDom(logger_, driver_);
+    logger_.log(`Capturing actual dom took ${timeStart.end().summary}`);
     writeDomJson(logger_, actualDomJsonString, testName);
 
     return actualDomJsonString;
@@ -91,6 +94,9 @@ describe('DomCapture', function () {
 
   beforeEach(async function () {
     driver = await new Builder().forBrowser('chrome').setChromeOptions(chromeOptions).build();
+    // TODO: remove once selenium SDK 4 is fixed
+    // the command is not exists in selenium js sdk, we should define it manually
+    driver.getExecutor().defineCommand(Name.SWITCH_TO_FRAME_PARENT, 'POST', '/session/:sessionId/frame/parent');
     await driver.manage().window().setRect({ x: 0, y: 0, width: 800, height: 600 });
   });
 
