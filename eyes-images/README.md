@@ -1,18 +1,18 @@
-eyes-images
-===========
+@applitools/eyes-images
+===================
 
-Applitools Eyes Javascript SDK for working directly with images.
+The simplest implemnetation of Applitools Eyes SDK, uploads images for validation
+
+[![npm](https://img.shields.io/npm/v/@applitools/eyes-images.svg?style=for-the-badge)](https://www.npmjs.com/package/@applitools/eyes-images)
 
 ## Installation
 
-Install eyes-images
+Install eyes-images as a local dev dependency in your tested project:
 
-```bash
-npm install eyes-images --save-dev
-```
+    npm install @applitools/eyes-images
 
 ## Usage
 
 Please check the applitools website for usage instructions:
 
-- Javascript Screenshot example: https://applitools.com/resources/tutorial/screenshots/javascript#step-2
+- Screenshots JavaScript Tutorial: https://applitools.com/tutorials/screenshots-javascript.html

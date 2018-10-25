@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-appium",
-  "version": "1.0.0",
+  "version": "4.0.0",
   "description": "Applitools Eyes SDK for Appium WebDriver",
   "keywords": [
     "eyes-appium",

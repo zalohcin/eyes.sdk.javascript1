@@ -1,7 +1,7 @@
 {
   "name": "@applitools/eyes-images",
-  "version": "1.0.0",
-  "description": "Applitools Eyes SDK for working directly with images",
+  "version": "4.0.0",
+  "description": "The simplest implemnetation of Applitools Eyes SDK, uploads images for validation",
   "keywords": [
     "eyes-images",
     "applitools",
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "mocha": "^5.2.0",
-    "node-fetch": "^2.2.0"
+    "axios": "^0.18.0"
   },
   "scripts": {
     "test": "mocha ./test/**/*.spec.js -t 900000"
