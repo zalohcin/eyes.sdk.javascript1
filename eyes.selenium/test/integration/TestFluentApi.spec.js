@@ -1,7 +1,7 @@
 'use strict';
 
 const { By } = require('selenium-webdriver');
-const { Region, FloatingMatchSettings } = require('@applitools/eyes.sdk.core');
+const { Region, FloatingMatchSettings } = require('@applitools/eyes-sdk-core');
 
 const { TestsDataProvider } = require('./setup/TestsDataProvider');
 const { TestSetup } = require('./setup/TestSetup');

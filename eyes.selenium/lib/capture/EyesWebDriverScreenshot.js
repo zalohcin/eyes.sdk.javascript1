@@ -9,7 +9,7 @@ const {
   RectangleSize,
   CoordinatesTypeConversionError,
   OutOfBoundsError,
-} = require('@applitools/eyes.sdk.core');
+} = require('@applitools/eyes-sdk-core');
 
 const { SeleniumJavaScriptExecutor } = require('../SeleniumJavaScriptExecutor');
 const { ScrollPositionProvider } = require('../positioning/ScrollPositionProvider');

@@ -1,6 +1,6 @@
 'use strict';
 
-const { ArgumentGuard } = require('@applitools/eyes.sdk.core');
+const { ArgumentGuard } = require('@applitools/eyes-sdk-core');
 
 /**
  * Encapsulates a frame/iframe. This is a generic type class, and it's actual type is determined by the reference used

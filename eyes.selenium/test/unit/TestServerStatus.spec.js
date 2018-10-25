@@ -3,7 +3,7 @@
 require('chromedriver');
 const { Builder, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { RectangleSize, DiffsFoundError, GeneralUtils, NewTestError } = require('@applitools/eyes.sdk.core');
+const { RectangleSize, DiffsFoundError, GeneralUtils, NewTestError } = require('@applitools/eyes-sdk-core');
 
 const { Eyes, Target } = require('../../index');
 const { throwsAsync } = require('../utils');

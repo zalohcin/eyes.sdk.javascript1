@@ -6,7 +6,7 @@ const { Options: FirefoxOptions } = require('selenium-webdriver/firefox');
 const { Options: SafariOptions } = require('selenium-webdriver/safari');
 const { Options: IeOptions } = require('selenium-webdriver/ie');
 
-const { GeneralUtils } = require('@applitools/eyes.sdk.core');
+const { GeneralUtils } = require('@applitools/eyes-sdk-core');
 
 /**
  * Collection of utility methods.

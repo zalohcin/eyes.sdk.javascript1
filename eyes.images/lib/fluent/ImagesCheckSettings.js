@@ -1,6 +1,6 @@
 'use strict';
 
-const { CheckSettings, RectangleSize } = require('@applitools/eyes.sdk.core');
+const { CheckSettings, RectangleSize } = require('@applitools/eyes-sdk-core');
 
 class ImagesCheckSettings extends CheckSettings {
   /**

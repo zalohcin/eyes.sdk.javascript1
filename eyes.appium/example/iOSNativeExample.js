@@ -1,7 +1,7 @@
 'use strict';
 
 const { Builder, Capabilities } = require('selenium-webdriver');
-const { ConsoleLogHandler } = require('@applitools/eyes.sdk.core');
+const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
 const { Eyes, Target } = require('../index'); // should be replaced to '@applitools/eyes.appium'
 
 (async () => {

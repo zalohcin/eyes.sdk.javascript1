@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('@applitools/eyes.sdk.core');
+const { GeneralUtils } = require('@applitools/eyes-sdk-core');
 const { EyesWebElementPromise, EyesWebElement } = require('@applitools/eyes.selenium');
 
 // functions in ElementFinder that return a new ElementFinder and therefore we must wrap and return our own

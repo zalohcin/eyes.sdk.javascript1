@@ -21,7 +21,7 @@ const {
   RectangleSize,
   FailureReports,
   MatchResult,
-} = require('@applitools/eyes.sdk.core');
+} = require('@applitools/eyes-sdk-core');
 
 const { DomCapture } = require('@applitools/dom-utils');
 

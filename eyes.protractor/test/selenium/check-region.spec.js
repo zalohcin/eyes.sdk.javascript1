@@ -1,6 +1,6 @@
 'use strict';
 
-const { ConsoleLogHandler, RectangleSize, Region } = require('@applitools/eyes.sdk.core');
+const { ConsoleLogHandler, RectangleSize, Region } = require('@applitools/eyes-sdk-core');
 const { Target } = require('@applitools/eyes.selenium');
 const { Eyes } = require('../../index');
 

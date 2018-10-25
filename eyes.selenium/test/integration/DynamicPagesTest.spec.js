@@ -2,7 +2,7 @@
 
 require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
-const { ConsoleLogHandler, RectangleSize } = require('@applitools/eyes.sdk.core');
+const { ConsoleLogHandler, RectangleSize } = require('@applitools/eyes-sdk-core');
 const { Eyes, Target } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;

@@ -1,11 +1,12 @@
 {
-  "name": "@applitools/eyes.sdk.core",
+  "name": "@applitools/eyes-sdk-core",
   "version": "4.0.0",
   "description": "The core components of Eyes JavaScript SDK",
   "keywords": [
-    "eyes.sdk.core",
     "applitools",
     "eyes",
+    "eyes-sdk",
+    "eyes-sdk-core",
     "test automation",
     "visual regression",
     "automation",

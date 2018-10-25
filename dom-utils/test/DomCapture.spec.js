@@ -10,7 +10,7 @@ const { Builder, By } = require('selenium-webdriver');
 const { Name } = require('selenium-webdriver/lib/command');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 
-const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils } = require('@applitools/eyes.sdk.core');
+const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils } = require('@applitools/eyes-sdk-core');
 const { DomCapture } = require('../index');
 
 /**

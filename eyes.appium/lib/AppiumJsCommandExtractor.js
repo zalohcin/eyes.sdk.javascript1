@@ -1,6 +1,6 @@
 'use strict';
 
-const { MouseTrigger, Location, Region } = require('@applitools/eyes.sdk.core');
+const { MouseTrigger, Location, Region } = require('@applitools/eyes-sdk-core');
 
 const COMMAND_PREFIX = 'mobile: ';
 const TAP_COMMAND = `${COMMAND_PREFIX}tap`;

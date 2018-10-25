@@ -1,6 +1,6 @@
 'use strict';
 
-const { ArgumentGuard, PositionProvider, Location } = require('@applitools/eyes.sdk.core');
+const { ArgumentGuard, PositionProvider, Location } = require('@applitools/eyes-sdk-core');
 
 const { EyesSeleniumUtils } = require('../EyesSeleniumUtils');
 const { ScrollPositionMemento } = require('./ScrollPositionMemento');

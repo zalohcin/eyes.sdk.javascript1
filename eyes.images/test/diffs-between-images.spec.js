@@ -1,6 +1,6 @@
 'use strict';
 
-const { ConsoleLogHandler } = require('@applitools/eyes.sdk.core');
+const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
 const { Eyes } = require('../index');
 
 let eyes = null;

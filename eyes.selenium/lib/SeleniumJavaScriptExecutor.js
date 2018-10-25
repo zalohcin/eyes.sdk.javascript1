@@ -1,6 +1,6 @@
 'use strict';
 
-const { EyesJsExecutor } = require('@applitools/eyes.sdk.core');
+const { EyesJsExecutor } = require('@applitools/eyes-sdk-core');
 
 class SeleniumJavaScriptExecutor extends EyesJsExecutor {
   /**

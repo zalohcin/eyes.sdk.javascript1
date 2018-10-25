@@ -4,7 +4,7 @@ const path = require('path');
 const axios = require('axios');
 const { deepEqual } = require('assert');
 const { Capabilities, Builder } = require('selenium-webdriver');
-const { ConsoleLogHandler, FileLogHandler, GeneralUtils, BatchInfo, RectangleSize, metadata } = require('@applitools/eyes.sdk.core');
+const { ConsoleLogHandler, FileLogHandler, GeneralUtils, BatchInfo, RectangleSize, metadata } = require('@applitools/eyes-sdk-core');
 
 const { StitchMode, Eyes } = require('../../../index');
 

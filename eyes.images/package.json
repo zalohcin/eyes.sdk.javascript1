@@ -31,7 +31,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes.sdk.core": "~1.11.0"
+    "@applitools/eyes-sdk-core": "~1.11.0"
   },
   "devDependencies": {
     "mocha": "^5.2.0",

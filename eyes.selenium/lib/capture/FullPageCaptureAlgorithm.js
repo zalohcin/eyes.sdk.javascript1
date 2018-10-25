@@ -9,7 +9,7 @@ const {
   GeneralUtils,
   MutableImage,
   NullCutProvider,
-} = require('@applitools/eyes.sdk.core');
+} = require('@applitools/eyes-sdk-core');
 
 const { NullRegionPositionCompensation } = require('../positioning/NullRegionPositionCompensation');
 

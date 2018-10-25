@@ -5,7 +5,7 @@ const assert = require('assert');
 
 const { Builder, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { RectangleSize } = require('@applitools/eyes.sdk.core');
+const { RectangleSize } = require('@applitools/eyes-sdk-core');
 
 const { Eyes, EyesWebDriver, Target } = require('../../index');
 const { throwsAsync } = require('../utils');

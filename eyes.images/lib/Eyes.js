@@ -11,7 +11,7 @@ const {
   RectangleSize,
   NullRegionProvider,
   EyesSimpleScreenshot,
-} = require('@applitools/eyes.sdk.core');
+} = require('@applitools/eyes-sdk-core');
 
 const { Target } = require('./fluent/Target');
 const VERSION = require('../package.json').version;

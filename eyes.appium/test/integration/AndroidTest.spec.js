@@ -1,7 +1,7 @@
 'use strict';
 
 const { Builder, Capabilities, By } = require('selenium-webdriver');
-const { ConsoleLogHandler, BatchInfo, GeneralUtils } = require('@applitools/eyes.sdk.core');
+const { ConsoleLogHandler, BatchInfo, GeneralUtils } = require('@applitools/eyes-sdk-core');
 const { Eyes, Target, StitchMode } = require('../../index');
 
 describe('AndroidTest', function () {
