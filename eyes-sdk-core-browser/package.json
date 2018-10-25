@@ -1,5 +1,5 @@
 {
-  "name": "@applitools/eyes-sdk-core.browser",
+  "name": "@applitools/eyes-sdk-core-browser",
   "private": true,
   "version": "4.0.0",
   "description": "Applitools Eyes SDK for browser",
