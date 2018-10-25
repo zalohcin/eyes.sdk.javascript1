@@ -1,9 +1,9 @@
 {
-  "name": "@applitools/eyes.protractor",
+  "name": "@applitools/eyes-protractor",
   "version": "1.0.0",
   "description": "Applitools Eyes SDK for Protractor",
   "keywords": [
-    "eyes.protractor",
+    "eyes-protractor",
     "applitools",
     "eyes",
     "test automation",

@@ -12,7 +12,7 @@ const VERSION = require('../package.json').version;
 class Eyes extends EyesSelenium {
   /** @override */
   getBaseAgentId() {
-    return `eyes.protractor/${VERSION}`;
+    return `eyes-protractor/${VERSION}`;
   }
 
   /** @override */
