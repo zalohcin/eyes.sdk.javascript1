@@ -1,5 +1,5 @@
 {
-  "name": "@applitools/eyes-images.browser",
+  "name": "@applitools/eyes-images-browser",
   "private": true,
   "version": "1.0.0",
   "description": "Applitools Eyes Images SDK for browser",
