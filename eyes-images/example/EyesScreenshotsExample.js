@@ -1,6 +1,6 @@
 'use strict';
 
-const fetch = require('node-fetch');
+const axios = require('axios');
 const { ConsoleLogHandler, RectangleSize } = require('@applitools/eyes-sdk-core');
 const { Eyes, Target } = require('../index'); // should be replaced to '@applitools/eyes-images'
 
@@ -17,10 +17,11 @@ const { Eyes, Target } = require('../index'); // should be replaced to '@applito
     await eyes.open('Image test', 'Javascript screenshot test!', new RectangleSize(800, 600));
 
     // Load page image and validate.
-    const img = await (await fetch('https://applitools.com/images/tutorials/applitools_hero.png')).buffer();
+    const response = await axios('https://www.google.com/logos/doodles/2018/tyrus-wongs-108th-birthday-6464919774953472.2-s.png', { responseType: 'arraybuffer' });
+    const img = Buffer.from(response.data, 'binary');
 
     // Visual validation.
-    await eyes.check('Contact-us page', Target.image(img));
+    await eyes.check('Google logo', Target.image(img));
 
     // End the test.
     await eyes.close();

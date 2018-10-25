@@ -55,7 +55,7 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @return {Promise<CssTranslatePositionMemento>}
    */
   async getState() {
-    const transforms = await EyesSeleniumUtils.getCurrentTransform(this._executor)
+    const transforms = await EyesSeleniumUtils.getCurrentTransform(this._executor);
     this._logger.verbose('Current transform', transforms);
     return new CssTranslatePositionMemento(transforms, this._lastSetPosition);
   }

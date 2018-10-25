@@ -852,8 +852,11 @@ class Eyes extends EyesBase {
       const elementHeight = await eyesElement.getClientHeight();
 
       const elementRegion = new Region(
-        rect.x + borderLeftWidth, rect.y + borderTopWidth,
-        elementWidth, elementHeight, CoordinatesType.SCREENSHOT_AS_IS
+        rect.x + borderLeftWidth,
+        rect.y + borderTopWidth,
+        elementWidth,
+        elementHeight,
+        CoordinatesType.SCREENSHOT_AS_IS
       );
 
       this._logger.verbose(`Element region: ${elementRegion}`);
@@ -1381,9 +1384,16 @@ class Eyes extends EyesBase {
 
     const scaleProviderFactory = await this._updateScalingParams();
     const algo = new FullPageCaptureAlgorithm(
-      this._logger, this._regionPositionCompensation, this.getWaitBeforeScreenshots(), this._debugScreenshotsProvider,
-      this._screenshotFactory, new ScrollPositionProvider(this._logger, this._jsExecutor), scaleProviderFactory,
-      this._cutProviderHandler.get(), this.getStitchOverlap(), this._imageProvider
+      this._logger,
+      this._regionPositionCompensation,
+      this.getWaitBeforeScreenshots(),
+      this._debugScreenshotsProvider,
+      this._screenshotFactory,
+      new ScrollPositionProvider(this._logger, this._jsExecutor),
+      scaleProviderFactory,
+      this._cutProviderHandler.get(),
+      this.getStitchOverlap(),
+      this._imageProvider
     );
 
     let activeElement = null;

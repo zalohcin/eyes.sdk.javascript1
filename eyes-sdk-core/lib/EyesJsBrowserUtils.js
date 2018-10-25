@@ -81,12 +81,11 @@ const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
   'var overflowY = styles.getPropertyValue("overflow-y");' +
   'return overflow == "hidden" || overflowX == "hidden" || overflowY == "hidden"';
 
-const JS_GET_SET_OVERFLOW_STR = (elementName, overflowValue) => (
+const JS_GET_SET_OVERFLOW_STR = (elementName, overflowValue) =>
   `var element = ${elementName}; var overflowValue = "${overflowValue}"; ` +
   'var origOverflow = element.style.overflow; ' +
   'element.style.overflow = overflowValue; ' +
-  'return origOverflow;'
-);
+  'return origOverflow;';
 
 /**
  * Handles browser related functionality.

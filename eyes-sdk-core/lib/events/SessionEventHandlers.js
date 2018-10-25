@@ -14,7 +14,7 @@ class SessionEventHandlers extends SessionEventHandler {
    * @param {SessionEventHandler} handler
    */
   addEventHandler(handler) {
-    if (handler === this) { return; }
+    if (handler === this) return;
     this._eventHandlers.push(handler);
   }
 
@@ -22,7 +22,7 @@ class SessionEventHandlers extends SessionEventHandler {
    * @param {SessionEventHandler} handler
    */
   removeEventHandler(handler) {
-    if (handler === this) { return; }
+    if (handler === this) return;
     const index = this._eventHandlers.indexOf(handler);
     this._eventHandlers.splice(index, 1);
   }

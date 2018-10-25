@@ -45,7 +45,8 @@ class ImageUtils {
       // Write back to a temp png file
       const imageWritableStream = new WritableBufferStream();
       // noinspection JSUnresolvedFunction
-      return image.pack().pipe(imageWritableStream).on('finish', () => resolve(imageWritableStream.getBuffer()));
+      return image.pack().pipe(imageWritableStream)
+        .on('finish', () => resolve(imageWritableStream.getBuffer()));
     });
   }
 
@@ -356,7 +357,9 @@ class ImageUtils {
     ArgumentGuard.isInteger(degrees, 'deg');
 
     let i = Math.round(degrees / 90) % 4;
-    while (i < 0) { i += 4; }
+    while (i < 0) {
+      i += 4;
+    }
 
     while (i > 0) {
       const dstBuffer = Buffer.alloc(image.data.length);

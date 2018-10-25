@@ -3,14 +3,14 @@
 const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class EmulationDevice {
-  constructor({width, height, deviceScaleFactor, mobile} = {}) {
+  constructor({ width, height, deviceScaleFactor, mobile } = {}) {
     this._width = width;
     this._height = height;
     this._deviceScaleFactor = deviceScaleFactor;
     this._mobile = mobile;
   }
 
-    /**
+  /**
    * @param {Object} object
    * @return {EmulationDevice}
    */

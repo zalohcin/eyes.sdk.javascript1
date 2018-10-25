@@ -2,15 +2,15 @@
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
 const { Region } = require('../geometry/Region');
-const {ScreenOrientation} = require('./ScreenOrientation');
-const {EmulationDevice} = require('./EmulationDevice');
+const { ScreenOrientation } = require('./ScreenOrientation');
+const { EmulationDevice } = require('./EmulationDevice');
 
 class EmulationInfo {
   /**
    * @param {device: EmulationDevice, deviceName: string, screenOrientation: ScreenOrientation}
    * @return {EmulationInfo}
    */
-  constructor({device, deviceName, screenOrientation} = {}) {
+  constructor({ device, deviceName, screenOrientation } = {}) {
     this._device = device;
     this._deviceName = deviceName;
     this._screenOrientation = screenOrientation;
@@ -23,7 +23,7 @@ class EmulationInfo {
   static fromObject(object) {
     const mapping = {};
     if (object.device) mapping.device = EmulationDevice.fromObject;
-    
+
     return GeneralUtils.assignTo(new EmulationInfo(), object, mapping);
   }
 
@@ -63,9 +63,9 @@ class EmulationInfo {
       return Object.assign({
         screenOrientation: this._screenOrientation,
       }, this._device.toJSON());
-    } else {
-      return GeneralUtils.toPlain(this, ['_device']);
     }
+
+    return GeneralUtils.toPlain(this, ['_device']);
   }
 
   /** @override */

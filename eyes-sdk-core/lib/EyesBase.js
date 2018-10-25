@@ -79,10 +79,7 @@ class EyesBase {
    * @param {?boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method
    *   will immediately return without performing any action.
    */
-  constructor(
-    serverUrl = EyesBase.getDefaultServerUrl(),
-    isDisabled = false
-  ) {
+  constructor(serverUrl = EyesBase.getDefaultServerUrl(), isDisabled = false) {
     /** @type {boolean} */
     this._isDisabled = isDisabled;
 
@@ -2046,8 +2043,8 @@ class EyesBase {
    * @abstract
    * @return {Promise<string>}
    */
-  getDomUrl() {
-    return this.getPromiseFactory().resolve();
+  async getDomUrl() {
+    return undefined;
   }
 
   /**
