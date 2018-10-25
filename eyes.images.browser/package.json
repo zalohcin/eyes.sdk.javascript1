@@ -1,10 +1,10 @@
 {
-  "name": "@applitools/eyes.images.browser",
+  "name": "@applitools/eyes-images.browser",
   "private": true,
   "version": "1.0.0",
   "description": "Applitools Eyes Images SDK for browser",
   "keywords": [
-    "eyes.images",
+    "eyes-images",
     "applitools",
     "eyes",
     "test automation",
@@ -31,7 +31,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes.images": "^1.0.0"
+    "@applitools/eyes-images": "^1.0.0"
   },
   "devDependencies": {
     "browserify": "^16.1.1",

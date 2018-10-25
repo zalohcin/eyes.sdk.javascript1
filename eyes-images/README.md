@@ -1,14 +1,14 @@
-eyes.images
+eyes-images
 ===========
 
 Applitools Eyes Javascript SDK for working directly with images.
 
 ## Installation
 
-Install eyes.images
+Install eyes-images
 
 ```bash
-npm install eyes.images --save-dev
+npm install eyes-images --save-dev
 ```
 
 ## Usage

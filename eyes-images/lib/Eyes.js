@@ -36,7 +36,7 @@ class Eyes extends EyesBase {
 
   /** @override */
   getBaseAgentId() {
-    return `eyes.images/${VERSION}`;
+    return `eyes-images/${VERSION}`;
   }
 
   /**

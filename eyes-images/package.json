@@ -1,9 +1,9 @@
 {
-  "name": "@applitools/eyes.images",
+  "name": "@applitools/eyes-images",
   "version": "1.0.0",
   "description": "Applitools Eyes SDK for working directly with images",
   "keywords": [
-    "eyes.images",
+    "eyes-images",
     "applitools",
     "eyes",
     "test automation",
@@ -31,7 +31,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "~1.11.0"
+    "@applitools/eyes-sdk-core": "^4.0.0"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
