@@ -1,0 +1,10 @@
+{
+  "name": "eyes-sdk-javascript1",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^5.7.0"
+  },
+  "scripts": {
+    "lint": "eslint . --cache --ext js"
+  }
+}

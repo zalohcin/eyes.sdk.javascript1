@@ -57,12 +57,12 @@ class Eyes extends EyesBase {
    * @param {ImagesCheckSettings} checkSettings
    * @return {Promise<boolean>}
    */
-  check(name, checkSettings) {
+  async check(name, checkSettings) {
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
 
     if (this.getIsDisabled()) {
       this._logger.verbose(`check('${name}', checkSettings): Ignored`);
-      return Promise.resolve(false);
+      return false;
     }
 
     return this._checkImage(name, false, checkSettings);
@@ -78,10 +78,10 @@ class Eyes extends EyesBase {
    * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
-  checkImage(image, tag, ignoreMismatch, retryTimeout) {
+  async checkImage(image, tag, ignoreMismatch, retryTimeout) {
     if (this.getIsDisabled()) {
       this._logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
-      return Promise.resolve(false);
+      return false;
     }
 
     ArgumentGuard.notNull(image, 'image cannot be null!');
@@ -103,13 +103,13 @@ class Eyes extends EyesBase {
    * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
-  checkRegion(image, region, tag, ignoreMismatch, retryTimeout) {
+  async checkRegion(image, region, tag, ignoreMismatch, retryTimeout) {
     ArgumentGuard.notNull(image, 'image');
     ArgumentGuard.notNull(region, 'region');
 
     if (this.getIsDisabled()) {
       this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
-      return Promise.resolve(false);
+      return false;
     }
 
     this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
