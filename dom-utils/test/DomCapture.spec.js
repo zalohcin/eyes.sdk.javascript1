@@ -7,7 +7,6 @@ const path = require('path');
 const axios = require('axios');
 const dateformat = require('dateformat');
 const { Builder, By } = require('selenium-webdriver');
-const { Name } = require('selenium-webdriver/lib/command');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 
 const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils } = require('@applitools/eyes-sdk-core');
@@ -74,7 +73,7 @@ async function getExpectedDomFromUrl(domUrl) {
 
 let /** @type {Logger} */ logger, /** @type {ChromeOptions} */ chromeOptions, /** @type {WebDriver} */ driver;
 describe('DomCapture', function () {
-  this.timeout(60 * 1000);
+  this.timeout(5 * 60 * 1000);
 
   before(function () {
     chromeOptions = new ChromeOptions().headless();
@@ -96,7 +95,7 @@ describe('DomCapture', function () {
     driver = await new Builder().forBrowser('chrome').setChromeOptions(chromeOptions).build();
     // TODO: remove once selenium SDK 4 is fixed
     // the command is not exists in selenium js sdk, we should define it manually
-    driver.getExecutor().defineCommand(Name.SWITCH_TO_FRAME_PARENT, 'POST', '/session/:sessionId/frame/parent');
+    driver.getExecutor().defineCommand('switchToFrameParent', 'POST', '/session/:sessionId/frame/parent');
     await driver.manage().window().setRect({ x: 0, y: 0, width: 800, height: 600 });
   });
 
@@ -134,6 +133,14 @@ describe('DomCapture', function () {
 
   it('TestSendDOM_Booking2', async function () {
     const actualDomJsonString = await captureDom(logger, driver, 'https://booking.kayak.com/flights/TLV-MIA/2018-09-25/2018-10-31?sort=bestflight_a', this.test.title);
+    const actualDomJson = JSON.parse(actualDomJsonString);
+
+    const expectedDomJson = await getExpectedDom(this.test.title);
+    assert.deepEqual(actualDomJson, expectedDomJson);
+  });
+
+  it('TestSendDOM_NSA', async function () {
+    const actualDomJsonString = await captureDom(logger, driver, 'https://nikita-andreev.github.io/applitools/dom_capture.html?aaa', this.test.title);
     const actualDomJson = JSON.parse(actualDomJsonString);
 
     const expectedDomJson = await getExpectedDom(this.test.title);
