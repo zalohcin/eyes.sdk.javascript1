@@ -4,12 +4,11 @@ const fs = require('fs');
 const path = require('path');
 
 const url = require('url');
-const isAbsoluteUrl = require('is-absolute-url');
 const axios = require('axios');
-const cssParser = require('css');
+const shadyCss = require('shady-css-parser');
 const cssUrlParser = require('css-url-parser');
 
-const { Location, PerformanceUtils } = require('@applitools/eyes.sdk.core');
+const { Location, GeneralUtils, PerformanceUtils } = require('@applitools/eyes.sdk.core');
 
 class DomCapture {
   static get CAPTURE_FRAME_SCRIPT() {
@@ -22,6 +21,10 @@ class DomCapture {
     const scriptPath = path.join(__dirname, './resources/CaptureCssom.js');
     const buffer = fs.readFileSync(scriptPath);
     return buffer.toString();
+  }
+
+  constructor() {
+    this._frameBundledCssPromises = [];
   }
 
   /**
@@ -37,7 +40,7 @@ class DomCapture {
       await positionProvider.setPosition(Location.ZERO);
     }
 
-    const dom = await this.getWindowDom(logger, driver);
+    const dom = await DomCapture.getWindowDom(logger, driver);
 
     if (positionProvider) {
       await positionProvider.restoreState(originalPosition);
@@ -51,7 +54,7 @@ class DomCapture {
    * @param {EyesWebDriver} driver
    * @return {Promise.<string>}
    */
-  static getWindowDom(logger, driver) {
+  static async getWindowDom(logger, driver) {
     const argsObj = {
       styleProps: [
         'background-color',
@@ -65,182 +68,136 @@ class DomCapture {
         'margin',
       ],
       attributeProps: null,
-      /*
-      [
-        {all: ["id", "class"]},
-        {IMG: ["src"]},
-        {IFRAME: ["src"]},
-        {A: ["href"]},
-      ]
-      */
       rectProps: [
         'width',
         'height',
         'top',
         'left',
       ],
-      ignoredTagNames: ['HEAD', 'SCRIPT'],
+      ignoredTagNames: [
+        'HEAD',
+        'SCRIPT',
+      ],
     };
 
-    return DomCapture._getFrameDom(logger, driver, argsObj);
+    const json = await driver.executeScript(DomCapture.CAPTURE_FRAME_SCRIPT, argsObj);
+    const domTree = JSON.parse(json);
+
+    const domCapture = new DomCapture();
+    await domCapture._getFrameDom(logger, driver, { childNodes: [domTree], tagName: 'OUTER_HTML' });
+    await Promise.all(domCapture._frameBundledCssPromises);
+    return domTree;
   }
 
   /**
    * @param {Logger} logger
    * @param {EyesWebDriver} driver
-   * @param {object} argsObj
+   * @param {object} domTree
    * @return {Promise.<object>}
    * @private
    */
-  static async _getFrameDom(logger, driver, argsObj) {
-    try {
-      const json = await driver.executeScript(DomCapture.CAPTURE_FRAME_SCRIPT, argsObj);
-      const currentUrl = await driver.getCurrentUrl();
+  async _getFrameDom(logger, driver, domTree) {
+    const tagName = domTree.tagName;
 
-      const domTree = JSON.parse(json);
-
-      await DomCapture._traverseDomTree(logger, driver, argsObj, domTree, -1, currentUrl);
-
-      return domTree;
-    } catch (e) {
-      throw new Error(`Error: ${e}`);
-    }
-  }
-
-  /**
-   * @param {Logger} logger
-   * @param {EyesWebDriver} driver
-   * @param {object} argsObj
-   * @param {object} domTree
-   * @param {number} frameIndex
-   * @param {string} baseUri
-   * @return {Promise<void>}
-   * @private
-   */
-  static async _traverseDomTree(logger, driver, argsObj, domTree, frameIndex, baseUri) {
-    if (!domTree.tagName) {
+    if (!tagName) {
       return;
     }
 
-    const tagNameObj = domTree.tagName;
+    let frameIndex = 0;
 
-    if (frameIndex > -1) {
-      let timeStart = PerformanceUtils.start();
+    await this._loop(logger, driver, domTree, async domSubTree => {
       await driver.switchTo().frame(frameIndex);
-      logger.verbose(`switching to frame took ${timeStart.end().summary}`);
-
-      timeStart = PerformanceUtils.start();
-      const json = await driver.executeScript(DomCapture.CAPTURE_FRAME_SCRIPT, argsObj);
-      logger.verbose(`executing javascript to capture frame's script took ${timeStart.end().summary}`);
-
-      const dom = JSON.parse(json);
-
-      domTree.childNodes = dom;
-      let srcUrl = null;
-      if (domTree.attributes) {
-        const attrsNodeObj = domTree.attributes;
-        const attrsNode = attrsNodeObj;
-        if (attrsNode.src) {
-          const srcUrlObj = attrsNode.src;
-          srcUrl = srcUrlObj.toString();
-        }
-      }
-      if (srcUrl == null) {
-        logger.verbose('WARNING! IFRAME WITH NO SRC');
-      }
-
-      const srcUri = url.resolve(baseUri, srcUrl);
-      await DomCapture._traverseDomTree(logger, driver, argsObj, dom, -1, srcUri);
-
-      timeStart = PerformanceUtils.start();
+      await this._getFrameDom(logger, driver, domSubTree);
       await driver.switchTo().parentFrame();
-      logger.verbose(`switching to parent frame took ${timeStart.end().summary}`);
-    }
-
-    const tagName = tagNameObj;
-    const isHTML = tagName.toUpperCase() === 'HTML';
-
-    if (isHTML) {
-      const css = await DomCapture.getFrameBundledCss(logger, driver, baseUri);
-      domTree.css = css;
-    }
-
-    await DomCapture._loop(logger, driver, argsObj, domTree, baseUri);
+      frameIndex += 1;
+    });
   }
+
 
   /**
    * @param {Logger} logger
    * @param {EyesWebDriver} driver
-   * @param {object} argsObj
    * @param {object} domTree
-   * @param {string} baseUri
+   * @param {function} fn
    * @return {Promise<void>}
    * @private
    */
-  static async _loop(logger, driver, argsObj, domTree, baseUri) {
-    if (!domTree.childNodes) {
+  async _loop(logger, driver, domTree, fn) {
+    const childNodes = domTree.childNodes;
+    if (!childNodes) {
       return;
     }
 
-    const childNodes = domTree.childNodes;
-    let index = 0;
-
-    const timeStart = PerformanceUtils.start();
-    for (const node of childNodes) {
-      const domSubTree = node;
-      if (domSubTree) {
-        const tagName = domSubTree.tagName;
-        const isIframe = tagName.toUpperCase() === 'IFRAME';
-
-        if (isIframe) {
-          await DomCapture._traverseDomTree(logger, driver, argsObj, domSubTree, index, baseUri);
-          index += 1;
+    const iterateChildNodes = async nodeChilds => {
+      for (const node of nodeChilds) {
+        if (node && node.tagName.toUpperCase() === 'IFRAME') {
+          await fn(node);
         } else {
-          const childSubNodesObj = domSubTree.childNodes;
-          if (!childSubNodesObj || childSubNodesObj.length === 0) {
-            continue;
+          if (node && node.tagName.toUpperCase() === 'HTML') {
+            await this._getFrameBundledCss(logger, driver, node);
           }
 
-          await DomCapture._traverseDomTree(logger, driver, argsObj, domSubTree, -1, baseUri);
-          return;
+          if (node.childNodes) {
+            await iterateChildNodes(node.childNodes);
+          }
         }
       }
-    }
-    logger.verbose(`looping through ${childNodes.length} child nodes (out of which ${index} inner iframes) took ${timeStart.end().summary}`);
+    };
+
+    await iterateChildNodes(childNodes);
   }
 
   /**
    * @param {Logger} logger
    * @param {EyesWebDriver} driver
-   * @param {string} baseUri
-   * @return {Promise<string>}
+   * @param node
+   * @return {Promise<void>}
+   * @private
    */
-  static async getFrameBundledCss(logger, driver, baseUri) {
-    if (!isAbsoluteUrl(baseUri)) {
+  async _getFrameBundledCss(logger, driver, node) {
+    const currentUrl = await driver.getCurrentUrl();
+
+    if (!GeneralUtils.isAbsoluteUrl(currentUrl)) {
       logger.verbose('WARNING! Base URL is not an absolute URL!');
     }
 
-    let sb = '';
-    let timeStart = PerformanceUtils.start();
+    const timeStart = PerformanceUtils.start();
     const result = await driver.executeScript(DomCapture.CAPTURE_CSSOM_SCRIPT);
     logger.verbose(`executing javascript to capture css took ${timeStart.end().summary}`);
+
+    const promise = this._processFrameBundledCss(logger, driver, currentUrl, node, result);
+    this._frameBundledCssPromises.push(promise);
+  }
+
+  /**
+   * @param {Logger} logger
+   * @param {EyesWebDriver} driver
+   * @param {string} currentUrl
+   * @param node
+   * @param result
+   * @return {Promise<void>}
+   * @private
+   */
+  async _processFrameBundledCss(logger, driver, currentUrl, node, result) {
+    let sb = '';
     for (const item of result) {
-      timeStart = PerformanceUtils.start();
+      let timeStart = PerformanceUtils.start();
       const kind = item.substring(0, 5);
       const value = item.substring(5);
       logger.verbose(`splitting css result item took ${timeStart.end().summary}`);
       let css;
       if (kind === 'text:') {
-        css = await DomCapture._parseAndSerializeCss(logger, baseUri, value);
+        css = await this._parseAndSerializeCss(logger, currentUrl, value);
       } else {
-        css = await DomCapture._downloadCss(logger, baseUri, value);
+        css = await this._downloadCss(logger, currentUrl, value);
       }
-      css = await DomCapture._parseAndSerializeCss(logger, baseUri, css);
+      css = await this._parseAndSerializeCss(logger, currentUrl, css);
       timeStart = PerformanceUtils.start();
       sb += css;
       logger.verbose(`appending CSS to StringBuilder took ${timeStart.end().summary}`);
     }
-    return sb;
+
+    node.css = sb;
   }
 
   /**
@@ -250,12 +207,18 @@ class DomCapture {
    * @return {Promise<string>}
    * @private
    */
-  static async _parseAndSerializeCss(logger, baseUri, css) {
+  async _parseAndSerializeCss(logger, baseUri, css) {
     const timeStart = PerformanceUtils.start();
-    const stylesheet = cssParser.parse(css);
+    let stylesheet;
+    try {
+      const parser = new shadyCss.Parser();
+      stylesheet = parser.parse(css);
+    } catch (ignored) {
+      return '';
+    }
     logger.verbose(`parsing CSS string took ${timeStart.end().summary}`);
 
-    css = await DomCapture._serializeCss(logger, baseUri, stylesheet.stylesheet);
+    css = await this._serializeCss(logger, baseUri, stylesheet);
     return css;
   }
 
@@ -266,36 +229,32 @@ class DomCapture {
    * @return {Promise<string>}
    * @private
    */
-  static async _serializeCss(logger, baseUri, stylesheet) {
+  async _serializeCss(logger, baseUri, stylesheet) {
     const timeStart = PerformanceUtils.start();
     let sb = '';
 
     let css;
     for (const ruleSet of stylesheet.rules) {
       let addAsIs = true;
-      if (ruleSet.type === 'import') {
+      if (ruleSet.name === 'import') {
         logger.verbose('encountered @import rule');
-        const href = cssUrlParser(ruleSet.import);
-        css = await DomCapture._downloadCss(logger, baseUri, href[0]);
+        const href = cssUrlParser(ruleSet.parameters);
+        css = await this._downloadCss(logger, baseUri, href[0]);
         css = css.trim();
-        logger.verbose('imported CSS (whitespaces trimmed) length: {0}', css.length);
+        logger.verbose(`imported CSS (whitespaces trimmed) length: ${css.length}`);
         addAsIs = css.length === 0;
         if (!addAsIs) {
-          css = await DomCapture._parseAndSerializeCss(logger, baseUri, css);
+          css = await this._parseAndSerializeCss(logger, baseUri, css);
           sb += css;
         }
       }
 
       if (addAsIs) {
         const node = {
-          stylesheet: {
-            rules: [ruleSet],
-          },
+          rules: [ruleSet],
         };
-        sb += cssParser.stringify(node, { compress: true });
-
-        // sb += ruleSet.toString();
-        // sb += css;
+        const stringifier = new shadyCss.Stringifier();
+        sb += stringifier.stringify(ruleSet);
       }
     }
 
@@ -311,12 +270,12 @@ class DomCapture {
    * @return {Promise<string>}
    * @private
    */
-  static async _downloadCss(logger, baseUri, value, retriesCount = 1) {
+  async _downloadCss(logger, baseUri, value, retriesCount = 1) {
     try {
-      logger.verbose('Given URL to download: {0}', value);
+      logger.verbose(`Given URL to download: ${value}`);
       // let href = cssParser.parse(value);
       let href = value;
-      if (!isAbsoluteUrl(href)) {
+      if (!GeneralUtils.isAbsoluteUrl(href)) {
         href = url.resolve(baseUri, href.toString());
       }
 
@@ -328,8 +287,8 @@ class DomCapture {
     } catch (ex) {
       logger.verbose(ex.toString());
       if (retriesCount > 0) {
-        retriesCount--;
-        return DomCapture._downloadCss(logger, baseUri, value, retriesCount);
+        retriesCount -= 1;
+        return this._downloadCss(logger, baseUri, value, retriesCount);
       }
       return '';
     }
