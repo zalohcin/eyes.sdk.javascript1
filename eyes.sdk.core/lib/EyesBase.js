@@ -188,7 +188,7 @@ class EyesBase {
      */
     this._autSessionId = undefined;
 
-    /** @type {boolean} */ this._sendDom = false;
+    /** @type {boolean} */ this._sendDom = true;
   }
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
