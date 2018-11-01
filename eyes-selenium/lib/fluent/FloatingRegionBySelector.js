@@ -21,7 +21,7 @@ class FloatingRegionBySelector extends GetFloatingRegion {
 
   // noinspection JSCheckFunctionSignatures
   /**
-   * @override
+   * @inheritDoc
    * @param {Eyes} eyes
    * @param {EyesScreenshot} screenshot
    * @return {Promise<FloatingMatchSettings>}
@@ -36,16 +36,16 @@ class FloatingRegionBySelector extends GetFloatingRegion {
       CoordinatesType.SCREENSHOT_AS_IS
     );
 
-    return new FloatingMatchSettings(
-      lTag.getX(),
-      lTag.getY(),
-      rect.width,
-      rect.height,
-      this._maxUpOffset,
-      this._maxDownOffset,
-      this._maxLeftOffset,
-      this._maxRightOffset
-    );
+    return new FloatingMatchSettings({
+      left: lTag.getX(),
+      top: lTag.getY(),
+      width: rect.width,
+      height: rect.height,
+      maxUpOffset: this._maxUpOffset,
+      maxDownOffset: this._maxDownOffset,
+      maxLeftOffset: this._maxLeftOffset,
+      maxRightOffset: this._maxRightOffset,
+    });
   }
 }
 

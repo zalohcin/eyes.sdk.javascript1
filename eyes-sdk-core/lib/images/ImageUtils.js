@@ -6,6 +6,8 @@ const png = require('png-async');
 const { ArgumentGuard } = require('../ArgumentGuard');
 const { ReadableBufferStream, WritableBufferStream } = require('../utils/StreamUtils');
 
+const QUARTER_OF_CIRCLE_DEGREES = 90;
+
 /**
  * Provide means of image manipulations.
  */
@@ -233,7 +235,6 @@ class ImageUtils {
   }
 
   static _scaleImageIncrementally(src, dst) {
-    let incrementCount = 0;
     let currentWidth = src.width;
     let currentHeight = src.height;
     const targetWidth = dst.width;
@@ -290,9 +291,6 @@ class ImageUtils {
       dst.data = incrementalImage.data;
       dst.width = incrementalImage.width;
       dst.height = incrementalImage.height;
-
-      // Track how many times we go through this cycle to scale the image.
-      incrementCount += 1;
     } while (currentWidth !== targetWidth || currentHeight !== targetHeight);
 
     return dst;
@@ -356,7 +354,7 @@ class ImageUtils {
     ArgumentGuard.notNull(image, 'image');
     ArgumentGuard.isInteger(degrees, 'deg');
 
-    let i = Math.round(degrees / 90) % 4;
+    let i = Math.round(degrees / QUARTER_OF_CIRCLE_DEGREES) % 4;
     while (i < 0) {
       i += 4;
     }

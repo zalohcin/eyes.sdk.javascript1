@@ -10,12 +10,12 @@ const VERSION = require('../package.json').version;
  * The main type - to be used by the users of the library to access all functionality.
  */
 class Eyes extends EyesSelenium {
-  /** @override */
+  /** @inheritDoc */
   getBaseAgentId() {
     return `eyes-protractor/${VERSION}`;
   }
 
-  /** @override */
+  /** @inheritDoc */
   open(driver, appName, testName, viewportSize, sessionType) {
     if (typeof protractor === 'undefined') {
       throw new Error('Protractor component not found.');

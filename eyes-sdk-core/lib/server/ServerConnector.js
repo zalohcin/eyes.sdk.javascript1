@@ -384,7 +384,7 @@ class ServerConnector {
     const response = await sendRequest(this, 'startSession', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED];
     if (validStatusCodes.includes(response.status)) {
-      const runningSession = RunningSession.fromObject(response.data);
+      const runningSession = new RunningSession(response.data);
       runningSession.setNewSession(response.status === HTTP_STATUS_CODES.CREATED);
       this._logger.verbose('ServerConnector.startSession - post succeeded', runningSession);
       return runningSession;
@@ -419,7 +419,7 @@ class ServerConnector {
     const response = await sendLongRequest(this, 'stopSession', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      const testResults = TestResults.fromObject(response.data);
+      const testResults = new TestResults(response.data);
       this._logger.verbose('ServerConnector.stopSession - post succeeded', testResults);
       return testResults;
     }
@@ -490,7 +490,7 @@ class ServerConnector {
     const response = await sendLongRequest(this, 'matchWindow', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      const matchResult = MatchResult.fromObject(response.data);
+      const matchResult = new MatchResult(response.data);
       this._logger.verbose('ServerConnector.matchWindow - post succeeded', matchResult);
       return matchResult;
     }
@@ -530,7 +530,7 @@ class ServerConnector {
     const response = await sendLongRequest(this, 'matchSingleWindow', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      const testResults = TestResults.fromObject(response.data);
+      const testResults = new TestResults(response.data);
       this._logger.verbose('ServerConnector.matchSingleWindow - post succeeded', testResults);
       return testResults;
     }
@@ -567,7 +567,7 @@ class ServerConnector {
     const response = await sendLongRequest(this, 'replaceWindow', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      const matchResult = MatchResult.fromObject(response.data);
+      const matchResult = new MatchResult(response.data);
       this._logger.verbose('ServerConnector.replaceWindow - post succeeded', matchResult);
       return matchResult;
     }
@@ -595,7 +595,7 @@ class ServerConnector {
     const response = await sendRequest(this, 'renderInfo', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      const renderingInfo = RenderingInfo.fromObject(response.data);
+      const renderingInfo = new RenderingInfo(response.data);
       this._logger.verbose('ServerConnector.renderInfo - post succeeded', renderingInfo);
       return renderingInfo;
     }
@@ -626,7 +626,7 @@ class ServerConnector {
     const response = await sendRequest(this, 'render', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      let runningRender = Array.from(response.data).map(resultsData => RunningRender.fromObject(resultsData));
+      let runningRender = Array.from(response.data).map(resultsData => new RunningRender(resultsData));
       if (!isBatch) {
         runningRender = runningRender[0]; // eslint-disable-line prefer-destructuring
       }
@@ -715,7 +715,7 @@ class ServerConnector {
    *
    * @param {RunningRender} runningRender The running render
    * @param {boolean} [delayBeforeRequest=false] If {@code true}, then the request will be delayed
-   * @return {Promise.<RenderStatusResults>} The render's status
+   * @return {Promise<RenderStatusResults>} The render's status
    */
   renderStatus(runningRender, delayBeforeRequest = false) {
     return this.renderStatusById(runningRender.getRenderId(), delayBeforeRequest);
@@ -750,7 +750,7 @@ class ServerConnector {
     const response = await sendRequest(this, 'renderStatus', options, 3, true);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      let renderStatus = Array.from(response.data).map(resultsData => RenderStatusResults.fromObject(resultsData));
+      let renderStatus = Array.from(response.data).map(resultsData => new RenderStatusResults(resultsData));
       if (!isBatch) {
         renderStatus = renderStatus[0]; // eslint-disable-line prefer-destructuring
       }

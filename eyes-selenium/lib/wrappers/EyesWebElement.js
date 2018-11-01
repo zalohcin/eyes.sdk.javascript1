@@ -69,6 +69,30 @@ class EyesWebElement extends WebElement {
   }
 
   /**
+   * Compares two WebElements for equality.
+   *
+   * @param {!EyesWebElement|WebElement} a A WebElement.
+   * @param {!EyesWebElement|WebElement} b A WebElement.
+   * @return {!Promise<boolean>} A promise that will be
+   *     resolved to whether the two WebElements are equal.
+   */
+  static async equals(a, b) {
+    if (a instanceof EyesWebElement) {
+      a = a.getWebElement();
+    }
+
+    if (b instanceof EyesWebElement) {
+      b = b.getWebElement();
+    }
+
+    try {
+      return super.equals(a, b);
+    } catch (ignore) {
+      return false;
+    }
+  }
+
+  /**
    * @return {Promise<Region>}
    */
   async getBounds() {

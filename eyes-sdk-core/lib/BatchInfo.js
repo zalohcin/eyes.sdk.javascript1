@@ -9,22 +9,35 @@ const { GeneralUtils } = require('./utils/GeneralUtils');
 class BatchInfo {
   /**
    * Creates a new BatchInfo instance.
-   * @param {string} [name] Name of batch or {@code null} if anonymous.
-   * @param {Date} [startedAt] Batch start time, defaults to the current time.
-   * @param {string} [id] ID of the batch, should be generated using GeneralUtils.guid().
+   *
+   * @signature `new BatchInfo(batchInfo)`
+   * @signature `new BatchInfo(name, startedAt?, id?)`
+   * @signature `new BatchInfo({id: string, name: string, startedAt: Date|string})`
+   *
+   * @param {BatchInfo|{id?: string, name?: string, startedAt?: Date|string}|string} [varArg] BatchInfo or the name of
+   *   this batch.
+   * @param {string} [optStartedAt] Batch start time, defaults to the current time.
+   * @param {string} [optId] ID of the batch, should be generated using GeneralUtils.guid().
    */
-  constructor(name, startedAt, id) {
+  constructor(varArg = {}, optStartedAt, optId) {
+    if (varArg instanceof BatchInfo) {
+      return new BatchInfo({ id: varArg.getId(), name: varArg.getName(), startedAt: varArg.getStartedAt() });
+    }
+
+    if (GeneralUtils.isString(varArg)) {
+      return new BatchInfo({ id: optId, name: varArg, startedAt: optStartedAt });
+    }
+
+    const { id, name } = varArg;
+    let { startedAt } = varArg;
+
+    if (startedAt && !(startedAt instanceof Date)) {
+      startedAt = GeneralUtils.fromISO8601DateTime(startedAt);
+    }
+
     this._id = id || process.env.APPLITOOLS_BATCH_ID || GeneralUtils.guid();
     this._name = name || process.env.APPLITOOLS_BATCH_NAME;
-    this._startedAt = GeneralUtils.toISO8601DateTime(startedAt || new Date());
-  }
-
-  /**
-   * @param {object} object
-   * @return {BatchInfo}
-   */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new BatchInfo(), object);
+    this._startedAt = startedAt || new Date();
   }
 
   /**
@@ -59,7 +72,7 @@ class BatchInfo {
    * @return {Date} The batch start date
    */
   getStartedAt() {
-    return GeneralUtils.fromISO8601DateTime(this._startedAt);
+    return this._startedAt;
   }
 
   /** @override */

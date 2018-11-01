@@ -13,16 +13,8 @@ class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
    * @return {Promise<void>}
    */
   save(image, suffix) {
-    const filename = `${this._path}${this._prefix}${this.getFormattedTimeStamp()}_${suffix}.png`;
+    const filename = `${this._path}${this._prefix}${GeneralUtils.toLogFileDateTime()}_${suffix}.png`;
     return image.save(filename.replace(' ', '_'));
-  }
-
-  // noinspection JSMethodCanBeStatic
-  /**
-   * @return {string}
-   */
-  getFormattedTimeStamp() {
-    return GeneralUtils.toLogFileDateTime();
   }
 }
 

@@ -105,7 +105,7 @@ class FrameChain {
    * @return {Location} The location of the current frame in the page.
    */
   getCurrentFrameOffset() {
-    let result = new Location(0, 0);
+    let result = new Location(Location.ZERO);
 
     this._frames.forEach(frame => {
       result = result.offsetByLocation(frame.getLocation());

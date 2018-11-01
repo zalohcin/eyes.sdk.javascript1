@@ -17,7 +17,7 @@ class EyesSimpleScreenshot extends EyesScreenshot {
    * @param {MutableImage} image The screenshot image.
    * @param {Location} [location] The top/left coordinates of the screenshot in context relative coordinates type.
    */
-  constructor(image, location = new Location(0, 0)) {
+  constructor(image, location = Location.ZERO) {
     super(image);
 
     // The screenshot region in coordinates relative to the "entire screen"

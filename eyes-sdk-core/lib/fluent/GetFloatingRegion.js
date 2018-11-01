@@ -1,7 +1,9 @@
 'use strict';
 
+/* eslint-disable no-unused-vars */
+
 /**
- * @interface
+ * @abstract
  */
 class GetFloatingRegion {
   // noinspection JSMethodCanBeStatic
@@ -11,7 +13,7 @@ class GetFloatingRegion {
    * @return {Promise<FloatingMatchSettings>}
    */
   async getRegion(eyesBase, screenshot) {
-    throw new Error('The method should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 }
 

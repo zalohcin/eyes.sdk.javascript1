@@ -3,67 +3,35 @@
 const { ArgumentGuard } = require('../ArgumentGuard');
 
 /**
- * @typedef {{x: number, y: number}} LocationObject
- */
-
-/**
  * A location in a two-dimensional plane.
  */
 class Location {
   /**
    * Creates a Location instance.
    *
-   * The constructor accept next attributes:
-   * - (x: number, y: number): from `x` and `y` values
-   * - (location: Location): from another instance of Location
-   * - (object: {x: number, y: number}): from object
+   * @signature `new Location(location)`
+   * @signature `new Location(x, y)`
+   * @signature `new Location({x: number, y: number})`
    *
-   * @param {number|Location|LocationObject} arg1 The X coordinate of this location.
-   * @param {number} [arg2] The Y coordinate of the location.
+   * @param {Location|{x: number, y: number}|number} varArg Location object or the X coordinate of this location.
+   * @param {number} [optY] The Y coordinate of this location.
    */
-  constructor(arg1, arg2) {
-    const x = arg1;
-    const y = arg2;
-
-    if (arg1 instanceof Object) {
-      if (arg1 instanceof Location) {
-        return Location.fromLocation(arg1);
-      }
-
-      return Location.fromObject(arg1);
+  constructor(varArg, optY) {
+    if (arguments.length === 2) {
+      return new Location({ x: varArg, y: optY });
     }
 
-    ArgumentGuard.isInteger(x, 'x');
-    ArgumentGuard.isInteger(y, 'y');
+    if (varArg instanceof Location) {
+      return new Location({ x: varArg.getX(), y: varArg.getY() });
+    }
 
-    this._x = x;
-    this._y = y;
-  }
+    const { x, y } = varArg;
+    ArgumentGuard.isNumber(x, 'x');
+    ArgumentGuard.isNumber(y, 'y');
 
-  /**
-   * Creates a new instance of Location from other Location
-   *
-   * @param {Location} other
-   * @return {Location}
-   */
-  static fromLocation(other) {
-    ArgumentGuard.isValidType(other, Location);
-
-    return new Location(other.getX(), other.getY());
-  }
-
-  /**
-   * Creates a new instance of Location from object
-   *
-   * @param {LocationObject} object
-   * @return {Location}
-   */
-  static fromObject(object) {
-    ArgumentGuard.isValidType(object, Object);
-    ArgumentGuard.hasProperties(object, ['x', 'y'], 'object');
-
-    // noinspection JSSuspiciousNameCombination
-    return new Location(Math.ceil(object.x), Math.ceil(object.y));
+    // TODO: remove call to Math.ceil
+    this._x = Math.ceil(x);
+    this._y = Math.ceil(y);
   }
 
   /**
@@ -102,7 +70,7 @@ class Location {
    * @return {Location} A location translated by the specified amount.
    */
   offset(dx, dy) {
-    return new Location(this._x + dx, this._y + dy);
+    return new Location({ x: this._x + dx, y: this._y + dy });
   }
 
   /**
@@ -111,7 +79,7 @@ class Location {
    * @return {Location}
    */
   offsetNegative(other) {
-    return new Location(this._x - other.getX(), this._y - other.getY());
+    return new Location({ x: this._x - other.getX(), y: this._y - other.getY() });
   }
 
   /**
@@ -131,7 +99,7 @@ class Location {
    * @return {Location} A scaled copy of the current location.
    */
   scale(scaleRatio) {
-    return new Location(Math.ceil(this._x * scaleRatio), Math.ceil(this._y * scaleRatio));
+    return new Location({ x: Math.ceil(this._x * scaleRatio), y: Math.ceil(this._y * scaleRatio) });
   }
 
   /** @override */
@@ -149,6 +117,6 @@ class Location {
   }
 }
 
-Location.ZERO = new Location(0, 0);
+Location.ZERO = new Location({ x: 0, y: 0 });
 
 exports.Location = Location;

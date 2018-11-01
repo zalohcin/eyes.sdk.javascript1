@@ -14,21 +14,16 @@ class AppEnvironment {
    * @param {string} [hostingApp]
    * @param {RectangleSize} [displaySize]
    */
-  constructor(os, hostingApp, displaySize) {
-    this._inferred = undefined;
+  constructor({ os, hostingApp, displaySize } = {}) {
+    if (displaySize && !(displaySize instanceof RectangleSize)) {
+      displaySize = new RectangleSize(displaySize);
+    }
+
     this._os = os;
     this._hostingApp = hostingApp;
     this._displaySize = displaySize;
-  }
 
-  /**
-   * @param {object} object
-   * @return {AppEnvironment}
-   */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new AppEnvironment(), object, {
-      displaySize: RectangleSize.fromObject,
-    });
+    this._inferred = null;
   }
 
   // noinspection JSUnusedGlobalSymbols

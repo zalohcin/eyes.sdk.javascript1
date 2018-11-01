@@ -21,19 +21,17 @@ class FloatingRegionByRectangle extends GetFloatingRegion {
   }
 
   /** @inheritDoc */
-  async getRegion(eyesBase, screenshot) {
-    const region = new FloatingMatchSettings(
-      this._rect.getLeft(),
-      this._rect.getTop(),
-      this._rect.getWidth(),
-      this._rect.getHeight(),
-      this._maxUpOffset,
-      this._maxDownOffset,
-      this._maxLeftOffset,
-      this._maxRightOffset
-    );
-
-    return region;
+  async getRegion(eyesBase, screenshot) { // eslint-disable-line no-unused-vars
+    return new FloatingMatchSettings({
+      left: this._rect.getLeft(),
+      top: this._rect.getTop(),
+      width: this._rect.getWidth(),
+      height: this._rect.getHeight(),
+      maxUpOffset: this._maxUpOffset,
+      maxDownOffset: this._maxDownOffset,
+      maxLeftOffset: this._maxLeftOffset,
+      maxRightOffset: this._maxRightOffset,
+    });
   }
 }
 

@@ -11,7 +11,11 @@ class MatchWindowDataWithScreenshot {
    * @param {MatchWindowData} matchWindowData
    * @param {EyesScreenshot} screenshot
    */
-  constructor(matchWindowData, screenshot) {
+  constructor({ matchWindowData, screenshot } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     this._matchWindowData = matchWindowData;
     this._screenshot = screenshot;
   }

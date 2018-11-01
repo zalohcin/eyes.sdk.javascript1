@@ -21,7 +21,11 @@ class Options {
    *   match.
    * @param {ImageMatchSettings} imageMatchSettings
    */
-  constructor(name, userInputs, ignoreMismatch, ignoreMatch, forceMismatch, forceMatch, imageMatchSettings) {
+  constructor({ name, userInputs, ignoreMismatch, ignoreMatch, forceMismatch, forceMatch, imageMatchSettings } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     ArgumentGuard.notNull(userInputs, 'userInputs');
 
     this._name = name;
@@ -95,10 +99,14 @@ class MatchWindowData {
    *   call. Can be array of size 0, but MUST NOT be null.
    * @param {AppOutput} appOutput The appOutput for the current matchWindow call.
    * @param {string} tag The tag of the window to be matched.
-   * @param {?boolean} ignoreMismatch
-   * @param {?Options} options
+   * @param {boolean} [ignoreMismatch]
+   * @param {Options} [options]
    */
-  constructor(userInputs, appOutput, tag, ignoreMismatch, options) {
+  constructor({ userInputs, appOutput, tag, ignoreMismatch, options } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     ArgumentGuard.notNull(userInputs, 'userInputs');
 
     this._userInputs = userInputs;
@@ -157,5 +165,5 @@ class MatchWindowData {
   }
 }
 
-MatchWindowData.Options = Options;
+exports.Options = Options;
 exports.MatchWindowData = MatchWindowData;

@@ -65,8 +65,8 @@ class MutableImage {
    * @param {Buffer|string} image Encoded bytes of image (buffer or base64 string)
    */
   constructor(image) {
-    if (GeneralUtils.isBase64(image)) {
-      return MutableImage.fromBase64(image);
+    if (GeneralUtils.isString(image)) {
+      image = Buffer.from(image, 'base64');
     }
 
     /** @type {Buffer} */
@@ -83,14 +83,6 @@ class MutableImage {
     this._top = 0;
     /** @type {number} */
     this._left = 0;
-  }
-
-  /**
-   * @param {string} str Base64 string of image
-   * @return {MutableImage}
-   */
-  static fromBase64(str) {
-    return new MutableImage(Buffer.from(str, 'base64'));
   }
 
   /**
@@ -115,7 +107,7 @@ class MutableImage {
    * @return {Location} The coordinates of the image in the larger context (if any)
    */
   getCoordinates() {
-    return new Location(this._left, this._top);
+    return new Location({ x: this._left, y: this._top });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -137,7 +129,7 @@ class MutableImage {
    */
   getSize() {
     retrieveImageSize(this);
-    return new RectangleSize(this._width, this._height);
+    return new RectangleSize({ width: this._width, height: this._height });
   }
 
   /**

@@ -4,7 +4,7 @@ const { Region } = require('./geometry/Region');
 const { ArgumentGuard } = require('./ArgumentGuard');
 const { GeneralUtils } = require('./utils/GeneralUtils');
 const { PerformanceUtils } = require('./utils/PerformanceUtils');
-const { MatchWindowData } = require('./match/MatchWindowData');
+const { MatchWindowData, Options } = require('./match/MatchWindowData');
 
 const MATCH_INTERVAL = 500; // Milliseconds
 
@@ -47,19 +47,19 @@ class MatchWindowTask {
    * @protected
    * @param {Trigger[]} userInputs The user inputs related to the current appOutput.
    * @param {AppOutputWithScreenshot} appOutput The application output to be matched.
-   * @param {string} tag Optional tag to be associated with the match (can be {@code null}).
+   * @param {string} name Optional tag to be associated with the match (can be {@code null}).
    * @param {boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
    * @param {CheckSettings} checkSettings The internal settings to use.
    * @param {ImageMatchSettings} imageMatchSettings The settings to use.
    * @return {Promise<MatchResult>} The match result.
    */
-  async performMatch(userInputs, appOutput, tag, ignoreMismatch, checkSettings, imageMatchSettings) {
+  async performMatch(userInputs, appOutput, name, ignoreMismatch, checkSettings, imageMatchSettings) {
     await MatchWindowTask.collectIgnoreRegions(checkSettings, imageMatchSettings, this._eyes, appOutput);
     await MatchWindowTask.collectFloatingRegions(checkSettings, imageMatchSettings, this._eyes, appOutput);
 
     // Prepare match data.
-    const options = new MatchWindowData.Options(tag, userInputs, ignoreMismatch, false, false, false, imageMatchSettings);
-    const data = new MatchWindowData(userInputs, appOutput.getAppOutput(), tag, ignoreMismatch, options);
+    const options = new Options({ name, userInputs, ignoreMismatch, ignoreMatch: false, forceMismatch: false, forceMatch: false, imageMatchSettings });
+    const data = new MatchWindowData({ userInputs, appOutput: appOutput.getAppOutput(), tag: name, ignoreMismatch, options });
     // Perform match.
     return this._serverConnector.matchWindow(this._runningSession, data);
   }

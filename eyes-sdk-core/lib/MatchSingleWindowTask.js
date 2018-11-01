@@ -1,9 +1,8 @@
 'use strict';
 
 const { GeneralUtils } = require('./utils/GeneralUtils');
-const { MatchWindowData } = require('./match/MatchWindowData');
 const { MatchWindowTask } = require('./MatchWindowTask');
-const { MatchSingleWindowData } = require('./match/MatchSingleWindowData');
+const { MatchSingleWindowData, Options } = require('./match/MatchSingleWindowData');
 
 /**
  * Handles matching of output with the expected output (including retry and 'ignore mismatch' when needed).
@@ -26,25 +25,26 @@ class MatchSingleWindowTask extends MatchWindowTask {
     /** @type {boolean} */ this._saveNewTests = saveNewTests;
   }
 
+  // noinspection JSCheckFunctionSignatures
   /**
    * Creates the match data and calls the server connector matchWindow method.
    *
    * @protected
    * @param {Trigger[]} userInputs The user inputs related to the current appOutput.
    * @param {AppOutputWithScreenshot} appOutput The application output to be matched.
-   * @param {string} tag Optional tag to be associated with the match (can be {@code null}).
+   * @param {string} name Optional tag to be associated with the match (can be {@code null}).
    * @param {boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
    * @param {CheckSettings} checkSettings The internal settings to use.
    * @param {ImageMatchSettings} imageMatchSettings The settings to use.
    * @return {Promise<TestResults>} The match result.
    */
-  async performMatch(userInputs, appOutput, tag, ignoreMismatch, checkSettings, imageMatchSettings) {
+  async performMatch(userInputs, appOutput, name, ignoreMismatch, checkSettings, imageMatchSettings) {
     await MatchWindowTask.collectIgnoreRegions(checkSettings, imageMatchSettings, this._eyes, appOutput);
     await MatchWindowTask.collectFloatingRegions(checkSettings, imageMatchSettings, this._eyes, appOutput);
 
     // Prepare match data.
-    const options = new MatchWindowData.Options(tag, userInputs, ignoreMismatch, false, false, false, imageMatchSettings);
-    const data = new MatchSingleWindowData(this._startInfo, userInputs, appOutput.getAppOutput(), tag, ignoreMismatch, options);
+    const options = new Options({ name, userInputs, ignoreMismatch, ignoreMatch: false, forceMismatch: false, forceMatch: false, imageMatchSettings });
+    const data = new MatchSingleWindowData({ startInfo: this._startInfo, userInputs, appOutput: appOutput.getAppOutput(), tag: name, ignoreMismatch, options });
     data.setRemoveSessionIfMatching(ignoreMismatch);
     data.setUpdateBaselineIfNew(this._saveNewTests);
 

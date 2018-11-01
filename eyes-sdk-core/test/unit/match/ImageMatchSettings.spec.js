@@ -14,7 +14,7 @@ describe('ImageMatchSettings', () => {
     });
 
     it('with modified exact and ignore caret', () => {
-      const ims = new ImageMatchSettings(MatchLevel.Content, new ExactMatchSettings(), true);
+      const ims = new ImageMatchSettings({ matchLevel: MatchLevel.Content, exact: new ExactMatchSettings(), ignoreCaret: true });
       const expectedSerialization = '{"matchLevel":"Content","exact":{"minDiffIntensity":0,"minDiffWidth":0,' +
         '"minDiffHeight":0,"matchThreshold":0},"ignoreCaret":true,"ignore":[],"layout":[],"strict":[],' +
         '"content":[],"floating":[]}';

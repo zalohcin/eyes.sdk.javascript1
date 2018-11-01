@@ -5,13 +5,13 @@ const assert = require('assert');
 const { TestResults } = require('../../index');
 
 describe('TestResults', () => {
-  it('constructor', () => {
+  it('empty constructor', () => {
     const testResults = new TestResults();
     assert.equal(testResults.toString(), 'TestResults of existing test {}');
   });
 
-  it('fromObject', () => {
-    const testResults = TestResults.fromObject({
+  it('constructor with object', () => {
+    const testResults = new TestResults({
       id: 'an id',
       name: 'a name',
       secretToken: 'a secret token',

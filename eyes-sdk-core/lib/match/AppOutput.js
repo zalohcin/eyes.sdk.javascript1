@@ -6,15 +6,20 @@
 class AppOutput {
   /**
    * @param {string} title The title of the screen of the application being captured.
-   * @param {Buffer} [screenshot64] Base64 encoding of the screenshot's bytes (the byte can be in either in compressed
+   * @param {Buffer} [screenshot] Base64 encoding of the screenshot's bytes (the byte can be in either in compressed
    *   or uncompressed form)
    * @param {string} [screenshotUrl] The URL that points to the screenshot
    * @param {string} [domUrl] URL that points to a dom capture of the provided screenshot
-   * @param {Location} [imageLocation] Location of the provided screenshot relative to the logical full-page screenshot (e.g. in checkRegion)
+   * @param {Location} [imageLocation] Location of the provided screenshot relative to the logical full-page
+   *   screenshot (e.g. in checkRegion)
    */
-  constructor(title, screenshot64, screenshotUrl, domUrl, imageLocation) {
+  constructor({ title, screenshot, screenshotUrl, domUrl, imageLocation } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     this._title = title;
-    this._screenshot64 = screenshot64;
+    this._screenshot64 = screenshot;
     this._screenshotUrl = screenshotUrl;
     this._domUrl = domUrl;
     this._imageLocation = imageLocation;

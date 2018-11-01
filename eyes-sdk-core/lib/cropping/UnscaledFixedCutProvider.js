@@ -45,7 +45,7 @@ class UnscaledFixedCutProvider extends CutProvider {
   }
 
   /** @inheritDoc */
-  scale(scaleRatio) {
+  scale(scaleRatio) { // eslint-disable-line no-unused-vars
     return new UnscaledFixedCutProvider(this._header, this._footer, this._left, this._right);
   }
 }

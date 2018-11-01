@@ -5,17 +5,13 @@ const { GeneralUtils } = require('./utils/GeneralUtils');
 const { TestResultsStatus } = require('./TestResultsStatus');
 
 class SessionUrls {
-  constructor() {
-    this._batch = undefined;
-    this._session = undefined;
-  }
-
   /**
-   * @param {object} object
-   * @return {SessionUrls}
+   * @param {string} batch
+   * @param {string} session
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new SessionUrls(), object);
+  constructor({ batch, session } = {}) {
+    this._batch = batch;
+    this._session = session;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -49,20 +45,19 @@ class SessionUrls {
 }
 
 class ApiUrls {
-  constructor() {
-    this._baselineImage = undefined;
-    this._currentImage = undefined;
-    this._checkpointImage = undefined;
-    this._checkpointImageThumbnail = undefined;
-    this._diffImage = undefined;
-  }
-
   /**
-   * @param {object} object
-   * @return {ApiUrls}
+   * @param {string} baselineImage
+   * @param {string} currentImage
+   * @param {string} checkpointImage
+   * @param {string} checkpointImageThumbnail
+   * @param {string} diffImage
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new ApiUrls(), object);
+  constructor({ baselineImage, currentImage, checkpointImage, checkpointImageThumbnail, diffImage } = {}) {
+    this._baselineImage = baselineImage;
+    this._currentImage = currentImage;
+    this._checkpointImage = checkpointImage;
+    this._checkpointImageThumbnail = checkpointImageThumbnail;
+    this._diffImage = diffImage;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -132,17 +127,13 @@ class ApiUrls {
 }
 
 class AppUrls {
-  constructor() {
-    this._step = undefined;
-    this._stepEditor = undefined;
-  }
-
   /**
-   * @param {object} object
-   * @return {AppUrls}
+   * @param {string} step
+   * @param {string} stepEditor
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new AppUrls(), object);
+  constructor({ step, stepEditor } = {}) {
+    this._step = step;
+    this._stepEditor = stepEditor;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -176,24 +167,29 @@ class AppUrls {
 }
 
 class StepInfo {
-  constructor() {
-    this._name = undefined;
-    this._isDifferent = undefined;
-    this._hasBaselineImage = undefined;
-    this._hasCurrentImage = undefined;
-    this._appUrls = undefined;
-    this._apiUrls = undefined;
-  }
-
   /**
-   * @param {object} object
-   * @return {StepInfo}
+   * @param {string} name
+   * @param {boolean} isDifferent
+   * @param {boolean} hasBaselineImage
+   * @param {boolean} hasCurrentImage
+   * @param {AppUrls|object} appUrls
+   * @param {ApiUrls|object} apiUrls
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new StepInfo(), object, {
-      appUrls: AppUrls.fromObject,
-      apiUrls: ApiUrls.fromObject,
-    });
+  constructor({ name, isDifferent, hasBaselineImage, hasCurrentImage, appUrls, apiUrls } = {}) {
+    if (appUrls && !(appUrls instanceof AppUrls)) {
+      appUrls = new AppUrls(appUrls);
+    }
+
+    if (apiUrls && !(apiUrls instanceof ApiUrls)) {
+      apiUrls = new ApiUrls(apiUrls);
+    }
+
+    this._name = name;
+    this._isDifferent = isDifferent;
+    this._hasBaselineImage = hasBaselineImage;
+    this._hasCurrentImage = hasCurrentImage;
+    this._appUrls = appUrls;
+    this._apiUrls = apiUrls;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -278,55 +274,96 @@ class StepInfo {
  * Eyes test results.
  */
 class TestResults {
-  constructor() {
-    this._id = undefined;
-    this._name = undefined;
-    this._secretToken = undefined;
-    // this._id = undefined;
-    this._status = undefined;
-    this._appName = undefined;
-    this._batchName = undefined;
-    this._batchId = undefined;
-    this._branchName = undefined;
-    this._hostOS = undefined;
-    this._hostApp = undefined;
-    this._hostDisplaySize = undefined;
-    this._startedAt = undefined;
-    this._duration = undefined;
-    this._isNew = undefined;
-    this._isSaved = undefined;
-    this._isDifferent = undefined;
-    this._isAborted = undefined;
-    // this._defaultMatchSettings = undefined;
-    this._appUrls = undefined;
-    this._apiUrls = undefined;
-    this._stepsInfo = undefined;
-    this._steps = undefined;
-    this._matches = undefined;
-    this._mismatches = undefined;
-    this._missing = undefined;
-    this._exactMatches = undefined;
-    this._strictMatches = undefined;
-    this._contentMatches = undefined;
-    this._layoutMatches = undefined;
-    this._noneMatches = undefined;
-    this._url = undefined;
-
-    this._serverConnector = undefined;
-  }
-
+  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * @param {object} object
-   * @return {TestResults}
+   * @param {string} [id]
+   * @param {string} [name]
+   * @param {string} [secretToken]
+   * @param {TestResultsStatus} [status]
+   * @param {string} [appName]
+   * @param {string} [batchName]
+   * @param {string} [batchId]
+   * @param {string} [branchName]
+   * @param {string} [hostOS]
+   * @param {string} [hostApp]
+   * @param {RectangleSize|object} [hostDisplaySize]
+   * @param {Date|string} [startedAt]
+   * @param {number} [duration]
+   * @param {boolean} [isNew]
+   * @param {boolean} [isSaved]
+   * @param {boolean} [isDifferent]
+   * @param {boolean} [isAborted]
+   * @param {SessionUrls|object} [appUrls]
+   * @param {SessionUrls|object} [apiUrls]
+   * @param {StepInfo[]|object[]} [stepsInfo]
+   * @param {number} [steps]
+   * @param {number} [matches]
+   * @param {number} [mismatches]
+   * @param {number} [missing]
+   * @param {number} [exactMatches]
+   * @param {number} [strictMatches]
+   * @param {number} [contentMatches]
+   * @param {number} [layoutMatches]
+   * @param {number} [noneMatches]
+   * @param {string} [url]
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new TestResults(), object, {
-      hostDisplaySize: RectangleSize.fromObject,
-      startedAt: GeneralUtils.fromISO8601DateTime,
-      appUrls: SessionUrls.fromObject,
-      apiUrls: SessionUrls.fromObject,
-      stepsInfo: steps => Array.from(steps).map(step => StepInfo.fromObject(step)),
-    });
+  constructor({ id, name, secretToken, status, appName, batchName, batchId, branchName, hostOS, hostApp,
+    hostDisplaySize, startedAt, duration, isNew, isSaved, isDifferent, isAborted, appUrls, apiUrls, stepsInfo, steps,
+    matches, mismatches, missing, exactMatches, strictMatches, contentMatches, layoutMatches, noneMatches, url } = {}) {
+    if (hostDisplaySize && !(hostDisplaySize instanceof RectangleSize)) {
+      hostDisplaySize = new RectangleSize(hostDisplaySize);
+    }
+
+    if (appUrls && !(appUrls instanceof SessionUrls)) {
+      appUrls = new SessionUrls(appUrls);
+    }
+
+    if (apiUrls && !(apiUrls instanceof SessionUrls)) {
+      apiUrls = new SessionUrls(apiUrls);
+    }
+
+    if (startedAt && !(startedAt instanceof Date)) {
+      startedAt = GeneralUtils.fromISO8601DateTime(startedAt);
+    }
+
+    if (stepsInfo && stepsInfo.length > 0 && !(stepsInfo[0] instanceof StepInfo)) {
+      stepsInfo = stepsInfo.map(step => new StepInfo(step));
+    }
+
+    this._id = id;
+    this._name = name;
+    this._secretToken = secretToken;
+    // this._id = undefined;
+    this._status = status;
+    this._appName = appName;
+    this._batchName = batchName;
+    this._batchId = batchId;
+    this._branchName = branchName;
+    this._hostOS = hostOS;
+    this._hostApp = hostApp;
+    this._hostDisplaySize = hostDisplaySize;
+    this._startedAt = startedAt;
+    this._duration = duration;
+    this._isNew = isNew;
+    this._isSaved = isSaved;
+    this._isDifferent = isDifferent;
+    this._isAborted = isAborted;
+    // this._defaultMatchSettings = undefined;
+    this._appUrls = appUrls;
+    this._apiUrls = apiUrls;
+    this._stepsInfo = stepsInfo;
+    this._steps = steps;
+    this._matches = matches;
+    this._mismatches = mismatches;
+    this._missing = missing;
+    this._exactMatches = exactMatches;
+    this._strictMatches = strictMatches;
+    this._contentMatches = contentMatches;
+    this._layoutMatches = layoutMatches;
+    this._noneMatches = noneMatches;
+    this._url = url;
+
+    this._serverConnector = null;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -696,6 +733,7 @@ class TestResults {
     this._serverConnector = serverConnector;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise<void>}
    */

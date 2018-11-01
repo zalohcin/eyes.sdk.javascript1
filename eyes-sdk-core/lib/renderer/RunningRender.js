@@ -6,21 +6,19 @@ const { GeneralUtils } = require('../utils/GeneralUtils');
  * Encapsulates data for the render currently running in the client.
  */
 class RunningRender {
-  constructor() {
-    this._renderId = false;
-    this._jobId = false;
-
-    this._renderStatus = undefined;
-    this._needMoreResources = undefined;
-    this._needMoreDom = undefined;
-  }
-
   /**
-   * @param {object} object
-   * @return {RunningRender}
+   * @param {string} renderId
+   * @param {string} jobId
+   * @param {RenderStatus} renderStatus
+   * @param {string[]} needMoreResources
+   * @param {boolean} needMoreDom
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new RunningRender(), object);
+  constructor({ renderId, jobId, renderStatus, needMoreResources, needMoreDom } = {}) {
+    this._renderId = renderId;
+    this._jobId = jobId;
+    this._renderStatus = renderStatus;
+    this._needMoreResources = needMoreResources;
+    this._needMoreDom = needMoreDom;
   }
 
   /** @return {string} */

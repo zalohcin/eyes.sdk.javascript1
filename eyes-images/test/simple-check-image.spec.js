@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint-disable no-console */
+
 const { ConsoleLogHandler, RectangleSize, Region, Location, MouseTrigger } = require('@applitools/eyes-sdk-core');
 const { Eyes } = require('../index');
 

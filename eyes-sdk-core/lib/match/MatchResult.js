@@ -6,17 +6,13 @@ const { GeneralUtils } = require('../utils/GeneralUtils');
  * The result of a window match by the agent.
  */
 class MatchResult {
-  constructor() {
-    this._asExpected = undefined;
-    this._windowId = undefined;
-  }
-
   /**
-   * @param {object} object
-   * @return {MatchResult}
+   * @param {boolean} [asExpected]
+   * @param {number} [windowId]
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new MatchResult(), object);
+  constructor({ asExpected, windowId } = {}) {
+    this._asExpected = asExpected;
+    this._windowId = windowId;
   }
 
   /** @return {boolean} */

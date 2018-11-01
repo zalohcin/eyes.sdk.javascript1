@@ -13,12 +13,12 @@ class NopRegionVisibilityStrategy extends RegionVisibilityStrategy {
   }
 
   /** @inheritDoc */
-  async moveToRegion(positionProvider, location) {
+  async moveToRegion(positionProvider, location) { // eslint-disable-line no-unused-vars
     this._logger.verbose('Ignored (no op).');
   }
 
   /** @inheritDoc */
-  async returnToOriginalPosition(positionProvider) {
+  async returnToOriginalPosition(positionProvider) { // eslint-disable-line no-unused-vars
     this._logger.verbose('Ignored (no op).');
   }
 }

@@ -4,39 +4,42 @@ const { GeneralUtils } = require('../utils/GeneralUtils');
 const { RectangleSize } = require('../geometry/RectangleSize');
 const { Region } = require('../geometry/Region');
 
-function regionFromRGridObj({ x, y, width, height }) {
-  return Region.fromObject({
-    left: x,
-    top: y,
-    width,
-    height,
-  });
-}
-
 /**
  * Encapsulates data for the render currently running in the client.
  */
 class RenderStatusResults {
-  constructor() {
-    this._status = undefined;
-    this._imageLocation = undefined;
-    this._domLocation = undefined;
-    this._error = undefined;
-    this._os = undefined;
-    this._userAgent = undefined;
-    this._deviceSize = undefined;
-    this._selectorRegions = undefined;
-  }
-
   /**
-   * @param {object} object
-   * @return {RenderStatusResults}
+   * @param {RenderStatus} status
+   * @param {string} imageLocation
+   * @param {string} domLocation
+   * @param {string} error
+   * @param {string} os
+   * @param {string} userAgent
+   * @param {RectangleSize|object} deviceSize
+   * @param {Region[]||object[]} selectorRegions
    */
-  static fromObject(object) {
-    const mapping = {};
-    if (object.deviceSize) mapping.deviceSize = RectangleSize.fromObject;
-    if (object.selectorRegions) mapping.selectorRegions = regions => (regions ? regions.map(regionFromRGridObj) : regions);
-    return GeneralUtils.assignTo(new RenderStatusResults(), object, mapping);
+  constructor({ status, imageLocation, domLocation, error, os, userAgent, deviceSize, selectorRegions } = {}) {
+    if (deviceSize && !(deviceSize instanceof RectangleSize)) {
+      deviceSize = new RectangleSize(deviceSize);
+    }
+
+    if (selectorRegions && selectorRegions.length > 0 && !(selectorRegions[0] instanceof Region)) {
+      selectorRegions = selectorRegions.map(region => new Region({
+        left: region.x,
+        top: region.y,
+        width: region.width,
+        height: region.height,
+      }));
+    }
+
+    this._status = status;
+    this._imageLocation = imageLocation;
+    this._domLocation = domLocation;
+    this._error = error;
+    this._os = os;
+    this._userAgent = userAgent;
+    this._deviceSize = deviceSize;
+    this._selectorRegions = selectorRegions;
   }
 
   /** @return {boolean} */
@@ -58,7 +61,7 @@ class RenderStatusResults {
     return this._status;
   }
 
-  /** @param {string} value */
+  /** @param {RenderStatus} value */
   setStatus(value) {
     this._status = value;
   }

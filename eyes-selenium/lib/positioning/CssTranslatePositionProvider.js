@@ -51,7 +51,7 @@ class CssTranslatePositionProvider extends PositionProvider {
   }
 
   /**
-   * @override
+   * @inheritDoc
    * @return {Promise<CssTranslatePositionMemento>}
    */
   async getState() {
@@ -62,7 +62,7 @@ class CssTranslatePositionProvider extends PositionProvider {
 
   // noinspection JSCheckFunctionSignatures
   /**
-   * @override
+   * @inheritDoc
    * @param {CssTranslatePositionMemento} state The initial state of position
    * @return {Promise<void>}
    */

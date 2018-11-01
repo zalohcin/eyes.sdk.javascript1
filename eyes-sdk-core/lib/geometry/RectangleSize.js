@@ -13,26 +13,24 @@ class RectangleSize {
   /**
    * Creates a RectangleSize instance.
    *
-   * The constructor accept next attributes:
-   * - (width: number, height: number): from `width` and `height` values
-   * - (size: RectangleSize): from another instance of RectangleSize
-   * - (object: {width: number, height: number}): from object
+   * @signature `new RectangleSize(rectangleSize)`
+   * @signature `new RectangleSize(width, height)`
+   * @signature `new RectangleSize({width: number, height: number})`
    *
-   * @param {number|RectangleSize|RectangleSizeObject} arg1 The width of the rectangle.
-   * @param {number} [arg2] The height of the rectangle.
+   * @param {RectangleSize|{width: number, height: number}|number} varArg RectangleSize object or the width of this
+   *   rectangle.
+   * @param {number} [optHeight] The height of the rectangle.
    */
-  constructor(arg1, arg2) {
-    const width = arg1;
-    const height = arg2;
-
-    if (arg1 instanceof Object) {
-      if (arg1 instanceof RectangleSize) {
-        return RectangleSize.fromRectangleSize(arg1);
-      }
-
-      return RectangleSize.fromObject(arg1);
+  constructor(varArg, optHeight) {
+    if (arguments.length === 2) {
+      return new RectangleSize({ width: varArg, height: optHeight });
     }
 
+    if (varArg instanceof RectangleSize) {
+      return new RectangleSize({ width: varArg.getWidth(), height: varArg.getHeight() });
+    }
+
+    const { width, height } = varArg;
     ArgumentGuard.greaterThanOrEqualToZero(width, 'width', true);
     ArgumentGuard.greaterThanOrEqualToZero(height, 'height', true);
 
@@ -41,32 +39,7 @@ class RectangleSize {
   }
 
   /**
-   * Creates a new instance of RectangleSize from other RectangleSize
-   *
-   * @param {RectangleSize} other
-   * @return {RectangleSize}
-   */
-  static fromRectangleSize(other) {
-    ArgumentGuard.isValidType(other, RectangleSize);
-
-    return new RectangleSize(other.getWidth(), other.getHeight());
-  }
-
-  /**
-   * Creates a new instance of RectangleSize from other RectangleSize
-   *
-   * @param {RectangleSizeObject} object
-   * @return {RectangleSize}
-   */
-  static fromObject(object) {
-    ArgumentGuard.isValidType(object, Object);
-    ArgumentGuard.hasProperties(object, ['width', 'height'], 'object');
-
-    return new RectangleSize(object.width, object.height);
-  }
-
-  /**
-   * Parses a string into a {link RectangleSize} instance.
+   * Parses a string into a {@link RectangleSize} instance.
    *
    * @param {string} size A string representing width and height separated by "x".
    * @return {RectangleSize} An instance representing the input size.
@@ -78,7 +51,7 @@ class RectangleSize {
       throw new Error(`IllegalArgument: Not a valid size string: ${size}`);
     }
 
-    return new RectangleSize(parseInt(parts[0], 10), parseInt(parts[1], 10));
+    return new RectangleSize({ width: parseInt(parts[0], 10), height: parseInt(parts[1], 10) });
   }
 
   /** @return {boolean} */
@@ -121,7 +94,10 @@ class RectangleSize {
    * @return {RectangleSize} A scaled copy of the current size.
    */
   scale(scaleRatio) {
-    return new RectangleSize(Math.ceil(this._width * scaleRatio), Math.ceil(this._height * scaleRatio));
+    return new RectangleSize({
+      width: Math.ceil(this._width * scaleRatio),
+      height: Math.ceil(this._height * scaleRatio),
+    });
   }
 
   /** @override */

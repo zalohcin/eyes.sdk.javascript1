@@ -3,19 +3,17 @@
 const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class EmulationDevice {
+  /**
+   * @param {number} width
+   * @param {number} height
+   * @param {string} deviceScaleFactor
+   * @param {string} mobile
+   */
   constructor({ width, height, deviceScaleFactor, mobile } = {}) {
     this._width = width;
     this._height = height;
     this._deviceScaleFactor = deviceScaleFactor;
     this._mobile = mobile;
-  }
-
-  /**
-   * @param {Object} object
-   * @return {EmulationDevice}
-   */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new EmulationDevice(), object);
   }
 
   /** @return {number} */

@@ -163,7 +163,7 @@ class SeleniumCheckSettings extends CheckSettings {
 
   // noinspection JSMethodCanBeStatic
   /**
-   * @override
+   * @inheritDoc
    * @protected
    * @param {By|WebElement|EyesWebElement|GetRegion|Region} region
    * @return {GetRegion}

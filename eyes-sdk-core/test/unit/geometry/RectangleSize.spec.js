@@ -10,13 +10,13 @@ describe('RectangleSize', () => {
 
   // noinspection FunctionTooLongJS
   it('simple constructor', () => {
-    const size = new RectangleSize(width, height);
+    const size = new RectangleSize({ width, height });
     assert.equal(size.getWidth(), width, 'width');
     assert.equal(size.getHeight(), height, 'height');
   });
 
   it('copy constructor', () => {
-    const original = new RectangleSize(width, height);
+    const original = new RectangleSize({ width, height });
     const other = new RectangleSize(original);
 
     assert.equal(other.getWidth(), width, 'width');
@@ -43,7 +43,7 @@ describe('RectangleSize', () => {
   });
 
   it('equals()', () => {
-    const l1 = new RectangleSize(1, 2);
+    const l1 = new RectangleSize({ width: 1, height: 2 });
     let l2 = new RectangleSize(l1);
     assert.equal(l1.equals(l2), true, 'RectangleSizes should be equal!');
 
@@ -53,7 +53,7 @@ describe('RectangleSize', () => {
   });
 
   it('scale()', () => {
-    let size = new RectangleSize(width, height);
+    let size = new RectangleSize({ width, height });
     size = size.scale(2);
     assert.equal(size.getWidth(), width * 2, 'width');
     assert.equal(size.getHeight(), height * 2, 'height');
@@ -62,7 +62,7 @@ describe('RectangleSize', () => {
   it('toJSON()', () => {
     const expectedSerialization = `{"width":${width},"height":${height}}`;
 
-    const size = new RectangleSize(width, height);
+    const size = new RectangleSize({ width, height });
     const actualSerialization = JSON.stringify(size);
 
     assert.strictEqual(expectedSerialization, actualSerialization, 'RectangleSize serialization does not match!');

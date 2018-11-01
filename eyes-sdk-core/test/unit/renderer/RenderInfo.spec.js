@@ -15,11 +15,11 @@ describe('RenderInfo', () => {
     assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_emulationInfo'), true);
   });
 
-  it('fromObject', () => {
+  it('constructor with object', () => {
     const regionObj = { left: 3, top: 4, width: 5, height: 6 };
     const emulationInfoObj = { deviceName: 'deviceName' };
 
-    const renderInfo = RenderInfo.fromObject({
+    const renderInfo = new RenderInfo({
       width: 1,
       height: 2,
       sizeMode: 'some size mode',
@@ -28,8 +28,8 @@ describe('RenderInfo', () => {
       emulationInfo: emulationInfoObj,
     });
 
-    const region = Region.fromObject(regionObj);
-    const emulationInfo = EmulationInfo.fromObject(emulationInfoObj);
+    const region = new Region(regionObj);
+    const emulationInfo = new EmulationInfo(emulationInfoObj);
 
     assert.equal(renderInfo.getWidth(), 1);
     assert.equal(renderInfo.getHeight(), 2);
@@ -39,13 +39,13 @@ describe('RenderInfo', () => {
     assert.deepEqual(renderInfo.getEmulationInfo(), emulationInfo);
   });
 
-  it('fromObject handles undefined region', () => {
-    const renderInfo = RenderInfo.fromObject({});
+  it('constructor handles undefined region', () => {
+    const renderInfo = new RenderInfo();
     assert.equal(renderInfo.getRegion(), undefined);
   });
 
   it('fromRectangleSize', () => {
-    const rectangleSize = RectangleSize.fromObject({ width: 1, height: 2 });
+    const rectangleSize = new RectangleSize({ width: 1, height: 2 });
     const renderInfo = RenderInfo.fromRectangleSize(rectangleSize, 'some size mode');
 
     assert.equal(renderInfo.getWidth(), 1);
@@ -56,7 +56,7 @@ describe('RenderInfo', () => {
   });
 
   it('fromRectangleSize has a default sizeMode', () => {
-    const rectangleSize = RectangleSize.fromObject({ width: 1, height: 2 });
+    const rectangleSize = new RectangleSize({ width: 1, height: 2 });
     const renderInfo = RenderInfo.fromRectangleSize(rectangleSize);
 
     assert.equal(renderInfo.getWidth(), 1);
@@ -78,7 +78,7 @@ describe('RenderInfo', () => {
       emulationInfo,
     };
 
-    const renderInfo = RenderInfo.fromObject(renderInfoObj);
+    const renderInfo = new RenderInfo(renderInfoObj);
     const renderInfoWithAdjustedLeftTop = Object.assign(renderInfoObj, {
       region: { x: 3, y: 4, width: 5, height: 6, coordinatesType: 'SCREENSHOT_AS_IS' },
     });
@@ -98,7 +98,7 @@ describe('RenderInfo', () => {
       emulationInfo,
     };
 
-    const renderInfo = RenderInfo.fromObject(renderInfoObj);
+    const renderInfo = new RenderInfo(renderInfoObj);
     assert.deepEqual(renderInfo.toString(), 'RenderInfo { {"width":1,"height":2,"sizeMode":"some size mode","selector":"some selector","region":{"width":5,"height":6,"coordinatesType":"SCREENSHOT_AS_IS","x":3,"y":4},"emulationInfo":{"deviceName":"deviceName","screenOrientation":"portrait"}} }');
   });
 });

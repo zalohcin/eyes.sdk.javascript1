@@ -8,7 +8,7 @@ const { DebugScreenshotsProvider } = require('./DebugScreenshotsProvider');
 class NullDebugScreenshotProvider extends DebugScreenshotsProvider {
   // noinspection JSMethodCanBeStatic
   /** @inheritDoc */
-  async save(image, suffix) {
+  async save(image, suffix) { // eslint-disable-line no-unused-vars
     // Do nothing.
   }
 }

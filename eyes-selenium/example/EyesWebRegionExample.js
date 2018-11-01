@@ -11,7 +11,7 @@ const { Eyes, Target } = require('../index'); // should be replaced to '@applito
     .withCapabilities(Capabilities.chrome())
     .build();
 
-    // Initialize the eyes SDK and set your private API key.
+  // Initialize the eyes SDK and set your private API key.
   const eyes = new Eyes();
   // eyes.setApiKey('Your API Key');
   eyes.setLogHandler(new ConsoleLogHandler(false));

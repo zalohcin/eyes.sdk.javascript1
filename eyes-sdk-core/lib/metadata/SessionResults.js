@@ -41,6 +41,7 @@ class SessionResults {
   }
 
   /**
+   * @deprecated
    * @param {object} object
    * @return {SessionResults}
    */
@@ -48,9 +49,9 @@ class SessionResults {
     return GeneralUtils.assignTo(new SessionResults(), object, {
       actualAppOutput: results => Array.from(results).map(result => ActualAppOutput.fromObject(result)),
       expectedAppOutput: results => Array.from(results).map(result => ExpectedAppOutput.fromObject(result)),
-      baselineEnv: AppEnvironment.fromObject,
+      baselineEnv: obj => new AppEnvironment(obj),
       branch: Branch.fromObject,
-      env: AppEnvironment.fromObject,
+      env: obj => new AppEnvironment(obj),
       startInfo: StartInfo.fromObject,
     });
   }

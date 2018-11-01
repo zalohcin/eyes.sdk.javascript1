@@ -35,7 +35,7 @@ describe('Location', () => {
   });
 
   it('equals()', () => {
-    const l1 = new Location(1, 2);
+    const l1 = new Location({ x: 1, y: 2 });
     let l2 = new Location(l1);
     assert.equal(l1.equals(l2), true, 'Locations should be equal!');
 
@@ -45,14 +45,14 @@ describe('Location', () => {
   });
 
   it('offset()', () => {
-    let location = new Location(left, top);
+    let location = new Location({ x: left, y: top });
     location = location.offset(5, 5);
     assert.equal(location.getX(), left + 5, 'x');
     assert.equal(location.getY(), top + 5, 'y');
   });
 
   it('scale()', () => {
-    let location = new Location(left, top);
+    let location = new Location({ x: left, y: top });
     location = location.scale(2);
     assert.equal(location.getX(), left * 2, 'x');
     assert.equal(location.getY(), top * 2, 'y');
@@ -61,7 +61,7 @@ describe('Location', () => {
   it('toJSON()', () => {
     const expectedSerialization = `{"x":${left},"y":${top}}`;
 
-    const location = new Location(left, top);
+    const location = new Location({ x: left, y: top });
     const actualSerialization = JSON.stringify(location);
 
     assert.strictEqual(expectedSerialization, actualSerialization, 'Location serialization does not match!');

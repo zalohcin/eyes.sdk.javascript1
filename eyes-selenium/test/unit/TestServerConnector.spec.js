@@ -23,7 +23,7 @@ describe('TestServerConnector', function () {
   });
 
   it('TestServerConnector', async function () {
-    await eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(800, 599));
+    await eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize({ width: 800, height: 599 }));
 
     await driver.get('https://applitools.com/helloworld');
 

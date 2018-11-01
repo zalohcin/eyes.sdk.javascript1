@@ -19,8 +19,7 @@ let imageOrientationHandler = new class ImageOrientationHandlerImpl extends Imag
   }
 
   /** @inheritDoc */
-  async tryAutomaticRotation(logger, driver, image) {
-    // noinspection JSValidateTypes
+  async tryAutomaticRotation(logger, driver, image) { // eslint-disable-line no-unused-vars
     return 0;
   }
 }();
@@ -41,7 +40,7 @@ async function setBrowserSizeLoop(logger, driver, requiredSize, sleep, retriesLe
   await driver.sleep(sleep);
 
   const rect = await driver.manage().window().getRect();
-  const currentSize = new RectangleSize(rect.width, rect.height);
+  const currentSize = new RectangleSize(rect);
   logger.verbose(`Current browser size: ${currentSize}`);
   if (currentSize.equals(requiredSize)) {
     return true;
@@ -99,10 +98,10 @@ async function setViewportSizeLoop(
     currHeightChange += heightStep;
   }
 
-  const requiredBrowserSize = new RectangleSize(
-    browserSize.getWidth() + currWidthChange,
-    browserSize.getHeight() + currHeightChange
-  );
+  const requiredBrowserSize = new RectangleSize({
+    width: browserSize.getWidth() + currWidthChange,
+    height: browserSize.getHeight() + currHeightChange,
+  });
 
   if (requiredBrowserSize.equals(lastRequiredBrowserSize)) {
     logger.verbose('Browser size is as required but viewport size does not match!');
@@ -233,7 +232,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
       }
 
       logger.verbose(`Done! Size ${width} x ${height}`);
-      return new RectangleSize(width, height);
+      return new RectangleSize({ width, height });
     }
   }
 
@@ -262,10 +261,10 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
     const browserSize = await driver.manage().window().getRect();
     const currentSize = new RectangleSize(browserSize);
     logger.verbose(`Current browser size: ${currentSize}`);
-    const requiredBrowserSize = new RectangleSize(
-      currentSize.getWidth() + (requiredViewportSize.getWidth() - actualViewportSize.getWidth()),
-      currentSize.getHeight() + (requiredViewportSize.getHeight() - actualViewportSize.getHeight())
-    );
+    const requiredBrowserSize = new RectangleSize({
+      width: currentSize.getWidth() + (requiredViewportSize.getWidth() - actualViewportSize.getWidth()),
+      height: currentSize.getHeight() + (requiredViewportSize.getHeight() - actualViewportSize.getHeight()),
+    });
     return EyesSeleniumUtils.setBrowserSize(logger, driver, requiredBrowserSize);
   }
 
@@ -325,7 +324,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
     const heightStep = heightDiff > 0 ? -1 : 1;
 
     const rect = await driver.manage().window().getRect();
-    const browserSize = new RectangleSize(rect.width, rect.height);
+    const browserSize = new RectangleSize(rect);
 
     const currWidthChange = 0;
     const currHeightChange = 0;

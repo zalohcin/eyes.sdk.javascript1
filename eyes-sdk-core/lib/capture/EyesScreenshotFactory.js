@@ -1,17 +1,20 @@
 'use strict';
 
+/* eslint-disable no-unused-vars */
+
 /**
  * Encapsulates the instantiation of an EyesScreenshot object.
  *
- * @interface
+ * @abstract
  */
 class EyesScreenshotFactory {
+  // noinspection JSMethodCanBeStatic
   /**
    * @param {MutableImage} image
    * @return {Promise<EyesScreenshot>}
    */
   async makeScreenshot(image) {
-    throw new Error('The method should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 }
 

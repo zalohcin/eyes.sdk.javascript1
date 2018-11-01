@@ -7,9 +7,13 @@ const { ArgumentGuard } = require('../ArgumentGuard');
 const { RGridResource } = require('./RGridResource');
 
 class RGridDom {
-  constructor() {
-    this._domNodes = undefined;
-    this._resources = [];
+  /**
+   * @param {object} [domNodes]
+   * @param {RGridResource[]} [resources]
+   */
+  constructor({ domNodes, resources } = {}) {
+    this._domNodes = domNodes;
+    this._resources = resources || [];
 
     this._sha256hash = undefined;
     this._contentAsCdt = undefined;

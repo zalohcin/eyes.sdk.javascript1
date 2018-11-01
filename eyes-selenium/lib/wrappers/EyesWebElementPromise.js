@@ -27,11 +27,11 @@ class EyesWebElementPromise extends EyesWebElement {
     super(logger, driver, webElement);
 
     // noinspection JSUnresolvedVariable
-    /** @override */
+    /** @inheritDoc */
     this.then = el.then.bind(el);
 
     // noinspection JSUnresolvedVariable
-    /** @override */
+    /** @inheritDoc */
     this.catch = el.catch.bind(el);
 
     /**

@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint-disable no-unused-vars */
+
 /**
  * Encapsulates a callback which returns an application output.
  *
@@ -14,7 +16,7 @@ class AppOutputProvider {
    * @return {Promise<AppOutputWithScreenshot>}
    */
   getAppOutput(region, lastScreenshot, checkSettings) {
-    throw new TypeError('The method `getAppOutput` from `AppOutputProvider` should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 }
 

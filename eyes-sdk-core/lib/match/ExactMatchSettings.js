@@ -18,7 +18,11 @@ class ExactMatchSettings {
    * @param {number} [matchThreshold=0] The maximum percentage(!) of different pixels (after intensity, width and
    *   height filtering) which is still considered as a match. Valid values are fractions between 0-1.
    */
-  constructor(minDiffIntensity, minDiffWidth, minDiffHeight, matchThreshold) {
+  constructor({ minDiffIntensity, minDiffWidth, minDiffHeight, matchThreshold } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     this._minDiffIntensity = minDiffIntensity || 0;
     this._minDiffWidth = minDiffWidth || 0;
     this._minDiffHeight = minDiffHeight || 0;

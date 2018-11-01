@@ -31,8 +31,8 @@ class ScaleProviderFactory {
    *   factory, but this is not mandatory.
    * @return {ScaleProvider} The scale provider to be used.
    */
-  getScaleProviderImpl(imageToScaleWidth) {
-    throw new Error('The method `getScaleProviderImpl` from `ScaleProviderFactory` should be implemented!');
+  getScaleProviderImpl(imageToScaleWidth) { // eslint-disable-line no-unused-vars
+    throw new TypeError('The method is not implemented!');
   }
 }
 

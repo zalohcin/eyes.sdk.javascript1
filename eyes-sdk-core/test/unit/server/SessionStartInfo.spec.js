@@ -19,12 +19,26 @@ describe('SessionStartInfo', () => {
 
     const batchInfo = new BatchInfo('batch name');
 
-    const ssi = new SessionStartInfo(
-      'some agent', SessionType.SEQUENTIAL,
-      'my app', '1.0.0', 'some scenario', batchInfo,
-      'some baseline name', 'env name', new AppEnvironment(), new ImageMatchSettings(),
-      'some branch name', 'parent branch name', 'base branch', false, false, false, false, properties
-    );
+    const ssi = new SessionStartInfo({
+      agentId: 'some agent',
+      sessionType: SessionType.SEQUENTIAL,
+      appIdOrName: 'my app',
+      verId: '1.0.0',
+      scenarioIdOrName: 'some scenario',
+      batchInfo,
+      baselineEnvName: 'some baseline name',
+      environmentName: 'env name',
+      environment: new AppEnvironment(),
+      defaultMatchSettings: new ImageMatchSettings(),
+      branchName: 'some branch name',
+      parentBranchName: 'parent branch name',
+      baselineBranchName: 'base branch',
+      compareWithParentBranch: false,
+      ignoreBaseline: false,
+      render: false,
+      saveDiffs: false,
+      properties,
+    });
 
     const actualSerialization = JSON.stringify(ssi);
     const expectedSerialization = '{"agentId":"some agent","sessionType":"SEQUENTIAL","appIdOrName":"my app",' +

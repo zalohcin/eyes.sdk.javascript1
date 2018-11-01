@@ -1,9 +1,11 @@
 'use strict';
 
+/* eslint-disable no-unused-vars */
+
 /**
  * An interface for JsExecutors
  *
- * @interface
+ * @abstract
  */
 class EyesJsExecutor {
   /**

@@ -22,7 +22,7 @@ class TestSetup {
     this._driver = undefined;
     /** @type {WebDriver} */
     this._webDriver = undefined;
-    this._testedPageSize = new RectangleSize(800, 600);
+    this._testedPageSize = new RectangleSize({ width: 800, height: 600 });
     this._desiredCaps = new Capabilities();
 
     this._expectedFloatingRegions = [];
@@ -178,7 +178,7 @@ class TestSetup {
         }
       }
     } catch (err) {
-      console.log(err.stack);
+      console.log(err.stack); // eslint-disable-line no-console
     } finally {
       await this._eyes.abortIfNotClosed();
       if (this._driver) {

@@ -8,7 +8,7 @@ class NullCutProvider extends UnscaledFixedCutProvider {
   }
 
   /** @inheritDoc */
-  scale(scaleRatio) {
+  scale(scaleRatio) { // eslint-disable-line no-unused-vars
     return this;
   }
 }

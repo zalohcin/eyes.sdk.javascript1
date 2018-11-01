@@ -56,6 +56,7 @@ class FullPageCaptureAlgorithm {
     await this._debugScreenshotsProvider.save(image, suffix);
   }
 
+  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * Returns a stitching of a region.
    *
@@ -134,7 +135,10 @@ class FullPageCaptureAlgorithm {
     // The screenshot part is a bit smaller than the screenshot size,
     // in order to eliminate duplicate bottom scroll bars, as well as fixed
     // position footers.
-    const partImageSize = new RectangleSize(image.getWidth(), Math.max(image.getHeight() - this._stitchingOverlap, MIN_SCREENSHOT_PART_HEIGHT));
+    const partImageSize = new RectangleSize({
+      width: image.getWidth(),
+      height: Math.max(image.getHeight() - this._stitchingOverlap, MIN_SCREENSHOT_PART_HEIGHT),
+    });
     this._logger.verbose(`entire page region: ${fullArea}, image part size: ${partImageSize}`);
 
     // Getting the list of sub-regions composing the whole region (we'll take screenshot for each one).
@@ -151,12 +155,11 @@ class FullPageCaptureAlgorithm {
     await stitchedImage.copyRasterData(0, 0, initialPart);
     this._logger.verbose('Done!');
 
-    lastSuccessfulLocation = new Location(0, 0);
     lastSuccessfulPartSize = new RectangleSize(image.getWidth(), image.getHeight());
 
     // Take screenshot and stitch for each screenshot part.
     this._logger.verbose('Getting the rest of the image parts...');
-    let partImage = null;
+    let partImage;
     for (const partRegion of imageParts) {
       // Skipping screenshot for 0,0 (already taken)
       // if (partRegion.getLeft() === 0 && partRegion.getTop() === 0) {

@@ -17,7 +17,11 @@ class FloatingMatchSettings {
    * @param {number} maxLeftOffset
    * @param {number} maxRightOffset
    */
-  constructor(left, top, width, height, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
+  constructor({ left, top, width, height, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     this._left = left;
     this._top = top;
     this._width = width;
@@ -26,14 +30,6 @@ class FloatingMatchSettings {
     this._maxDownOffset = maxDownOffset;
     this._maxLeftOffset = maxLeftOffset;
     this._maxRightOffset = maxRightOffset;
-  }
-
-  /**
-   * @param {object} object
-   * @return {FloatingMatchSettings}
-   */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new FloatingMatchSettings(), object);
   }
 
   // noinspection JSUnusedGlobalSymbols

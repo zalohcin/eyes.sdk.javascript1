@@ -9,8 +9,6 @@ const { CoordinatesType } = require('./CoordinatesType');
  * @typedef {{left: number, top: number, width: number, height: number, coordinatesType?: CoordinatesType}} RegionObject
  */
 
-let logger = null;
-
 // noinspection FunctionWithMultipleLoopsJS
 /**
  * @private
@@ -120,102 +118,45 @@ class Region {
   /**
    * Creates a Region instance.
    *
-   * The constructor accept next attributes:
-   * - (left: number, top: number, width: number, height: number, coordinatesType: CoordinatesType): from `left`,
-   * `top`, `width`, `height` and `coordinatesType` values
-   * - (region: Region): from another instance of Region
-   * - (object: {left: number, top: number, width: number, height: number}): from object
-   * - (location: Location, size: RectangleSize, coordinatesType: CoordinatesType): from location and size
+   * @signature `new Region(region)`
+   * @signature `new Region(location, size, ?coordinatesType)`
+   * @signature `new Region(left, top, width, height, ?coordinatesType)`
+   * @signature `new Region({left: number, top: number, width: number, height: number, coordinatesType?: string})`
    *
-   * @param {number|Region|Location|RegionObject} arg1 The left offset of this region.
-   * @param {number|RectangleSize} [arg2] The top offset of this region.
-   * @param {number|CoordinatesType} [arg3] The width of the region.
-   * @param {number} [arg4] The height of the region.
-   * @param {CoordinatesType} [arg5=SCREENSHOT_AS_IS] The coordinatesType of the region.
+   * @param {Region|Location|RegionObject|number} varArg Region object ir the left offset of this region.
+   * @param {RectangleSize|number} [optTop] The top offset of this region.
+   * @param {CoordinatesType|number} [optWidth] The width of the region.
+   * @param {number} [optHeight] The height of the region.
+   * @param {CoordinatesType} [optCoordinatesType=SCREENSHOT_AS_IS] The coordinatesType of the region.
    */
-  constructor(arg1, arg2, arg3, arg4, arg5) {
-    const left = arg1;
-    const top = arg2;
-    const width = arg3;
-    const height = arg4;
-    const coordinatesType = arg5;
-
-    if (arg1 instanceof Object) {
-      if (arg1 instanceof Region) {
-        return Region.fromRegion(arg1);
-      }
-
-      if (arg1 instanceof Location || arg2 instanceof RectangleSize) {
-        return Region.fromLocationAndSize(arg1, arg2, arg3);
-      }
-
-      return Region.fromObject(arg1);
+  constructor(varArg, optTop, optWidth, optHeight, optCoordinatesType) {
+    if (arguments.length === 2 || arguments.length === 3) {
+      // eslint-disable-next-line max-len
+      return new Region({ left: varArg.getX(), top: varArg.getY(), width: optTop.getWidth(), height: optTop.getHeight(), coordinatesType: optWidth });
     }
 
-    ArgumentGuard.isInteger(left, 'left');
-    ArgumentGuard.isInteger(top, 'top');
+    if (arguments.length === 4 || arguments.length === 5) {
+      // eslint-disable-next-line max-len
+      return new Region({ left: varArg, top: optTop, width: optWidth, height: optHeight, coordinatesType: optCoordinatesType });
+    }
+
+    if (varArg instanceof Region) {
+      // eslint-disable-next-line max-len
+      return new Region({ left: varArg.getLeft(), top: varArg.getTop(), width: varArg.getWidth(), height: varArg.getHeight(), coordinatesType: varArg.getCoordinatesType() });
+    }
+
+    const { left, top, width, height, coordinatesType } = varArg;
+    ArgumentGuard.isNumber(left, 'left');
+    ArgumentGuard.isNumber(top, 'top');
     ArgumentGuard.greaterThanOrEqualToZero(width, 'width', true);
     ArgumentGuard.greaterThanOrEqualToZero(height, 'height', true);
 
-    this._left = left;
-    this._top = top;
+    // TODO: remove call to Math.ceil
+    this._left = Math.ceil(left);
+    this._top = Math.ceil(top);
     this._width = width;
     this._height = height;
     this._coordinatesType = coordinatesType || CoordinatesType.SCREENSHOT_AS_IS;
-  }
-
-  /**
-   * Creates a new instance of Region from Location and Size
-   *
-   * @param {Location} location A Location instance from which to create the Region
-   * @param {RectangleSize} size A RectangleSize instance from which to create the Region
-   * @param {CoordinatesType} [coordinatesType=SCREENSHOT_AS_IS] The coordinatesType of the region
-   * @return {Region}
-   */
-  static fromLocationAndSize(location, size, coordinatesType = CoordinatesType.SCREENSHOT_AS_IS) {
-    ArgumentGuard.isValidType(location, Location);
-    ArgumentGuard.isValidType(size, RectangleSize);
-
-    return new Region(location.getX(), location.getY(), size.getWidth(), size.getHeight(), coordinatesType);
-  }
-
-  /**
-   * Creates a new instance of Region from other Region
-   *
-   * @param {Region} other
-   * @return {Region}
-   */
-  static fromRegion(other) {
-    ArgumentGuard.isValidType(other, Region);
-
-    return new Region(other.getLeft(), other.getTop(), other.getWidth(), other.getHeight(), other.getCoordinatesType());
-  }
-
-  /**
-   * Creates a new instance of Region from object
-   *
-   * @param {RegionObject} object
-   * @return {Region}
-   */
-  static fromObject(object) {
-    ArgumentGuard.isValidType(object, Object);
-    ArgumentGuard.hasProperties(object, ['left', 'top', 'width', 'height'], 'object');
-
-    // noinspection JSSuspiciousNameCombination
-    return new Region(
-      Math.ceil(object.left),
-      Math.ceil(object.top),
-      object.width,
-      object.height,
-      object.coordinatesType
-    );
-  }
-
-  /**
-   * @param {Logger} newLogger
-   */
-  static initLogger(newLogger) {
-    logger = newLogger;
   }
 
   /**
@@ -311,7 +252,7 @@ class Region {
    * @return {Location} The (top,left) position of the current region.
    */
   getLocation() {
-    return new Location(this._left, this._top);
+    return new Location({ x: this._left, y: this._top });
   }
 
   /**
@@ -329,7 +270,7 @@ class Region {
    * @return {RectangleSize} The size of the region.
    */
   getSize() {
-    return new RectangleSize(this._width, this._height);
+    return new RectangleSize({ width: this._width, height: this._height });
   }
 
   /**
@@ -401,7 +342,7 @@ class Region {
     const middleX = this._width / 2;
     const middleY = this._height / 2;
 
-    return new Location(middleX, middleY);
+    return new Location({ x: middleX, y: middleY });
   }
 
   /**
@@ -496,10 +437,6 @@ class Region {
    * @param {Region} other The region with which to intersect.
    */
   intersect(other) {
-    if (logger) {
-      logger.verbose(`intersecting this region (${this}) with ${other} ...`);
-    }
-
     if (!this.isIntersected(other)) {
       this.makeEmpty();
       return;

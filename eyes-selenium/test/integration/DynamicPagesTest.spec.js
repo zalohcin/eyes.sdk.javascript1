@@ -2,7 +2,7 @@
 
 require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
-const { ConsoleLogHandler, RectangleSize } = require('@applitools/eyes-sdk-core');
+const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
 const { Eyes, Target } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
@@ -20,7 +20,7 @@ describe('DynamicPagesTest', function () {
   });
 
   beforeEach(async function () {
-    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title, new RectangleSize(1200, 800));
+    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title, { width: 1200, height: 800 });
   });
 
   it('TestNbcNews', async function () {

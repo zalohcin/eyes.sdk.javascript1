@@ -11,21 +11,33 @@ const DEFAULT_PATH = '';
 class DebugScreenshotsProvider {
   constructor() {
     this._prefix = DEFAULT_PREFIX;
-    this._path = undefined;
+    this._path = null;
   }
 
+  /**
+   * @return {string}
+   */
   getPrefix() {
     return this._prefix;
   }
 
+  /**
+   * @param {string} value
+   */
   setPrefix(value) {
     this._prefix = value || DEFAULT_PREFIX;
   }
 
+  /**
+   * @return {string}
+   */
   getPath() {
     return this._path;
   }
 
+  /**
+   * @param {string} value
+   */
   setPath(value) {
     if (value) {
       this._path = value.endsWith('/') ? value : `${value}/`;
@@ -34,13 +46,16 @@ class DebugScreenshotsProvider {
     }
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @abstract
    * @param {MutableImage} image
    * @param {string} suffix
    * @return {Promise<void>}
    */
-  save(image, suffix) {}
+  save(image, suffix) { // eslint-disable-line no-unused-vars
+    throw new TypeError('The method is not implemented!');
+  }
 }
 
 exports.DebugScreenshotsProvider = DebugScreenshotsProvider;

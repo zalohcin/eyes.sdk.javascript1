@@ -5,7 +5,7 @@
 /**
  * Encapsulates cutting logic.
  *
- * @interface
+ * @abstract
  */
 class CutProvider {
   // noinspection JSMethodCanBeStatic
@@ -14,7 +14,7 @@ class CutProvider {
    * @return {Promise<MutableImage>} A new cut image.
    */
   async cut(image) {
-    throw new Error('The method should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -25,7 +25,7 @@ class CutProvider {
    * @return {CutProvider} A new scale cut provider instance.
    */
   scale(scaleRatio) {
-    throw new Error('The method should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 }
 

@@ -31,7 +31,7 @@ class DomCapture {
    * @param {Logger} logger A Logger instance.
    * @param {EyesWebDriver} driver
    * @param {PositionProvider} [positionProvider]
-   * @return {Promise.<string>}
+   * @return {Promise<string>}
    */
   static async getFullWindowDom(logger, driver, positionProvider) {
     let originalPosition;
@@ -52,7 +52,7 @@ class DomCapture {
   /**
    * @param {Logger} logger A Logger instance.
    * @param {EyesWebDriver} driver
-   * @return {Promise.<string>}
+   * @return {Promise<string>}
    */
   static async getWindowDom(logger, driver) {
     const argsObj = {
@@ -93,11 +93,11 @@ class DomCapture {
    * @param {Logger} logger
    * @param {EyesWebDriver} driver
    * @param {object} domTree
-   * @return {Promise.<object>}
+   * @return {Promise<object>}
    * @private
    */
   async _getFrameDom(logger, driver, domTree) {
-    const tagName = domTree.tagName;
+    const { tagName } = domTree;
 
     if (!tagName) {
       return;
@@ -123,7 +123,7 @@ class DomCapture {
    * @private
    */
   async _loop(logger, driver, domTree, fn) {
-    const childNodes = domTree.childNodes;
+    const { childNodes } = domTree;
     if (!childNodes) {
       return;
     }
@@ -250,9 +250,6 @@ class DomCapture {
       }
 
       if (addAsIs) {
-        const node = {
-          rules: [ruleSet],
-        };
         const stringifier = new shadyCss.Stringifier();
         sb += stringifier.stringify(ruleSet);
       }

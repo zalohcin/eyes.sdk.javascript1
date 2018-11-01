@@ -10,7 +10,7 @@ class NullLogHandler extends LogHandler {
 
   close() {}
 
-  onMessage(verbose, logString) {}
+  onMessage(verbose, logString) {} // eslint-disable-line no-unused-vars
 }
 
 exports.NullLogHandler = NullLogHandler;

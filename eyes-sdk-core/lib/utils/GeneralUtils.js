@@ -10,7 +10,7 @@ const DATE_FORMAT_LOGFILE = 'yyyy_mm_dd_HH_MM_ss_l';
 
 const BASE64_CHARS_PATTERN = /[^A-Z0-9+/=]/i;
 
-const hasOwnProperty = Object.prototype.hasOwnProperty;
+const { hasOwnProperty } = Object.prototype;
 
 /**
  * @private
@@ -100,7 +100,9 @@ class GeneralUtils {
     const plainObject = {};
     Object.keys(object).forEach(objectKey => {
       let publicKey = objectKey.replace('_', '');
-      if (rename[publicKey]) publicKey = rename[publicKey];
+      if (rename[publicKey]) {
+        publicKey = rename[publicKey];
+      }
 
       if (hasOwnProperty.call(object, objectKey) && !exclude.includes(objectKey)) {
         if (object[objectKey] instanceof Object && typeof object[objectKey].toJSON === 'function') {
@@ -133,10 +135,7 @@ class GeneralUtils {
 
     Object.keys(object).forEach(objectKey => {
       const privateKey = `_${objectKey}`;
-      if (
-        hasOwnProperty.call(object, objectKey) &&
-        hasOwnProperty.call(inst, privateKey)
-      ) {
+      if (hasOwnProperty.call(object, objectKey) && hasOwnProperty.call(inst, privateKey)) {
         if (hasOwnProperty.call(mapping, objectKey)) {
           inst[privateKey] = mapping[objectKey].call(null, object[objectKey]);
         } else {
@@ -401,7 +400,7 @@ class GeneralUtils {
    * @property {function} getLineNumber if this function was defined in a script returns the current line number
    * @property {function} getColumnNumber if this function was defined in a script returns the current column number
    * @property {function} isNative is this call in native V8 code?
-   *
+   *//**
    * @param {Error} [error]
    * @return {CallSite[]}
    */

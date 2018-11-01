@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 
 /**
- * @interface
+ * @abstract
  */
 class ImageOrientationHandler {
   // noinspection JSMethodCanBeStatic
@@ -20,7 +20,7 @@ class ImageOrientationHandler {
    * @param {Logger} logger
    * @param {IWebDriver} driver
    * @param {MutableImage} image
-   * @return {Promise<boolean>}
+   * @return {Promise<number>}
    */
   async tryAutomaticRotation(logger, driver, image) {
     throw Error('Method is not implemented!');

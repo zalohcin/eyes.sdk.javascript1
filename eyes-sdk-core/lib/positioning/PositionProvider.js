@@ -1,9 +1,11 @@
 'use strict';
 
+/* eslint-disable no-unused-vars */
+
 /**
  * Encapsulates page/element positioning.
  *
- * @interface
+ * @abstract
  */
 class PositionProvider {
   // noinspection JSMethodCanBeStatic
@@ -11,7 +13,7 @@ class PositionProvider {
    * @return {Promise<Location>} The current position, or {@code null} if position is not available.
    */
   async getCurrentPosition() {
-    throw new Error('The method should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -22,7 +24,7 @@ class PositionProvider {
    * @return {Promise<void>}
    */
   async setPosition(location) {
-    throw new Error('The method should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -30,7 +32,7 @@ class PositionProvider {
    * @return {Promise<RectangleSize>} The entire size of the container which the position is relative to.
    */
   async getEntireSize() {
-    throw new Error('The method should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -38,7 +40,7 @@ class PositionProvider {
    * @return {Promise<PositionMemento>}
    */
   async getState() {
-    throw new Error('The method should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -47,7 +49,7 @@ class PositionProvider {
    * @return {Promise<void>}
    */
   async restoreState(state) {
-    throw new Error('The method should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 }
 

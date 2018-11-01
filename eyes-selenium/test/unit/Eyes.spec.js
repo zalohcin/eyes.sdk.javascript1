@@ -5,7 +5,6 @@ const assert = require('assert');
 
 const { Builder, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { RectangleSize } = require('@applitools/eyes-sdk-core');
 
 const { Eyes, EyesWebDriver, Target } = require('../../index');
 const { throwsAsync } = require('../utils');
@@ -28,7 +27,7 @@ describe('Eyes', function () {
 
   describe('#open()', function () {
     it('should return EyesWebDriver', async function () {
-      driver = await eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize(800, 560));
+      driver = await eyes.open(driver, this.test.parent.title, this.test.title, { width: 800, height: 560 });
       assert.equal(driver instanceof EyesWebDriver, true);
       await eyes.close();
     });

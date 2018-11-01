@@ -137,7 +137,7 @@ dataProvider.forEach(row => {
       await eyes.check('Fluent - Window with floating region by region', Target.window()
         .floating(new Region(10, 10, 20, 20), 3, 3, 20, 30));
 
-      testSetup.setExpectedFloatingsRegions(new FloatingMatchSettings(10, 10, 20, 20, 3, 3, 20, 30));
+      testSetup.setExpectedFloatingsRegions(new FloatingMatchSettings({ left: 10, top: 10, width: 20, height: 20, maxUpOffset: 3, maxDownOffset: 3, maxLeftOffset: 20, maxRightOffset: 30 }));
     });
 
     it('TestCheckElementFully_Fluent', async function () {

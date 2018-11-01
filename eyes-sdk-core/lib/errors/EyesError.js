@@ -9,10 +9,13 @@ class EyesError extends Error {
    * @param {Error} [error] Another error to inherit from
    */
   constructor(message, error) {
-    super(message);
+    super();
 
-    /** @override */
+    /** @inheritDoc */
     this.name = this.constructor.name;
+
+    /** @inheritDoc */
+    this.message = message;
 
     if (error instanceof Error) {
       this.message = `${message}: ${error.message}`;

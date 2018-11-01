@@ -25,11 +25,11 @@ describe('EmulationInfo', () => {
     assert.equal(emulationInfo2.getScreenOrientation(), undefined);
   });
 
-  it('fromObject', () => {
+  it('constructor with object', () => {
     const deviceObj = { width: 1, height: 2, deviceScaleFactor: 3, mobile: true };
-    const device = EmulationDevice.fromObject(deviceObj);
+    const device = new EmulationDevice(deviceObj);
 
-    const emulationInfo = EmulationInfo.fromObject({
+    const emulationInfo = new EmulationInfo({
       screenOrientation: ScreenOrientation.LANDSCAPE,
       device: deviceObj,
     });

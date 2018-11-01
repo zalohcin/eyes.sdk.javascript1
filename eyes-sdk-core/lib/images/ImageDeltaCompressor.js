@@ -106,6 +106,7 @@ const compareAndCopyBlockChannelData = (
  * Provides image compression based on delta between consecutive images
  */
 class ImageDeltaCompressor {
+  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * Compresses a target image based on a difference from a source image.
    *

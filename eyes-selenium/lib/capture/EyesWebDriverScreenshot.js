@@ -185,7 +185,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     }
 
     if (!frameLocationInScreenshot) {
-      return new Location(0, 0);
+      return new Location(Location.ZERO);
     }
 
     return frameLocationInScreenshot;
@@ -201,11 +201,11 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     try {
       const currentPosition = await positionProvider.getCurrentPosition();
       if (!currentPosition) {
-        return new Location(0, 0);
+        return new Location(Location.ZERO);
       }
       return currentPosition;
     } catch (ignored) {
-      return new Location(0, 0);
+      return new Location(Location.ZERO);
     }
   }
 

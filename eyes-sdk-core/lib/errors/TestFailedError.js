@@ -10,16 +10,16 @@ class TestFailedError extends EyesError {
   /**
    * Creates a new TestFailedError instance.
    *
-   * @param {TestResults} [testResults] The results of the current test if available, {@code null} otherwise.
-   * @param {string|SessionStartInfo} [message] The error description
-   * @param [params...] Other params for Error constructor
+   * @param {?TestResults} testResults The results of the current test if available, {@code null} otherwise.
+   * @param {string|SessionStartInfo} messageOrSession The error description or SessionStartInfo with test details.
    */
-  constructor(testResults, message, ...params) {
-    if (message instanceof SessionStartInfo) {
-      message = `'${message.getScenarioIdOrName()}' of '${message.getAppIdOrName()}'. See details at ${testResults.getUrl()}`;
+  constructor(testResults, messageOrSession) {
+    if (messageOrSession instanceof SessionStartInfo) {
+      const testName = `'${messageOrSession.getScenarioIdOrName()}' of '${messageOrSession.getAppIdOrName()}'`;
+      messageOrSession = `${testName}. See details at ${testResults.getUrl()}`;
     }
 
-    super(message, ...params);
+    super(messageOrSession);
     this._testResults = testResults;
   }
 

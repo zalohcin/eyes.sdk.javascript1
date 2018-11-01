@@ -1,9 +1,11 @@
 'use strict';
 
+/* eslint-disable no-unused-vars */
+
 /**
  * Encapsulates getter/setter behavior. (e.g., set only once etc.).
  *
- * @interface
+ * @abstract
  */
 class PropertyHandler {
   /**

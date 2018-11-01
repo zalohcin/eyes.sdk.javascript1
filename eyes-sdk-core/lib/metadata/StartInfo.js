@@ -23,6 +23,7 @@ class StartInfo {
   }
 
   /**
+   * @deprecated
    * @param {object} object
    * @return {StartInfo}
    */
@@ -30,7 +31,7 @@ class StartInfo {
     return GeneralUtils.assignTo(new StartInfo(), object, {
       batchInfo: BatchInfo.fromObject,
       defaultMatchSettings: ImageMatchSettings.fromObject,
-      environment: AppEnvironment.fromObject,
+      environment: obj => new AppEnvironment(obj),
     });
   }
 

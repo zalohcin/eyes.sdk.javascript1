@@ -6,10 +6,15 @@ const { GeneralUtils } = require('../utils/GeneralUtils');
 const { ArgumentGuard } = require('../ArgumentGuard');
 
 class RGridResource {
-  constructor() {
-    this._url = undefined;
-    this._contentType = undefined;
-    this._content = undefined;
+  /**
+   * @param {string} [url]
+   * @param {string} [contentType]
+   * @param {Buffer} [content]
+   */
+  constructor({ url, contentType, content } = {}) {
+    this._url = url;
+    this._contentType = contentType;
+    this._content = content;
 
     this._sha256hash = undefined;
   }

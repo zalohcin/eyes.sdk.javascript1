@@ -3,7 +3,7 @@
 /**
  * Encapsulates scaling logic.
  *
- * @interface
+ * @abstract
  */
 class ScaleProvider {
   /**

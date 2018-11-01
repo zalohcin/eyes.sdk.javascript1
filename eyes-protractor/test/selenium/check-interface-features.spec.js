@@ -27,12 +27,12 @@ describe('Eyes.Protractor.JavaScript - check-interface-features', () => {
         .ignore(by.id('overflowing-div'))
         .ignore(element(by.name('frame1')))
         .ignores(new Region(400, 100, 50, 50), new Region(400, 200, 50, 100))
-        .floating(new FloatingMatchSettings(500, 100, 75, 100, 25, 10, 30, 15))
+        .floating(new FloatingMatchSettings({ left: 500, top: 100, width: 75, height: 100, maxUpOffset: 25, maxDownOffset: 10, maxLeftOffset: 30, maxRightOffset: 15 }))
         .floating(by.id('overflowing-div-image'), 5, 25, 10, 25));
 
       // Region by rect, equivalent to eyes.checkFrame()
       eyes.check('Region by rect', Target.region(new Region(50, 50, 200, 200))
-        .floating(new FloatingMatchSettings(50, 50, 60, 50, 10, 10, 10, 10)));
+        .floating(new FloatingMatchSettings({ left: 50, top: 50, width: 60, height: 50, maxUpOffset: 10, maxDownOffset: 10, maxLeftOffset: 10, maxRightOffset: 10 })));
 
       return eyes.close();
     });

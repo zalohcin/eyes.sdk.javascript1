@@ -58,7 +58,7 @@ describe('Region', () => {
     // noinspection EmptyCatchBlockJS
     try {
       // noinspection JSUnusedAssignment
-      region = new Region(null, new RectangleSize(3, 4));
+      region = new Region(null, new RectangleSize({ width: 3, height: 4 }));
       assert.fail('Location must not be null!');
     } catch (ignore) {
       // ignore
@@ -67,17 +67,8 @@ describe('Region', () => {
     // noinspection EmptyCatchBlockJS
     try {
       // noinspection JSUnusedAssignment
-      region = new Region(new Location(1, 2), null);
+      region = new Region(new Location({ x: left, y: top }), null);
       assert.fail('Size must not be null!');
-    } catch (ignore) {
-      // ignore
-    }
-
-    // noinspection EmptyCatchBlockJS
-    try {
-      // noinspection JSUnusedAssignment
-      region = new Region(null, null);
-      assert.fail('Location and size must not be null!');
     } catch (ignore) {
       // ignore
     }
@@ -110,7 +101,7 @@ describe('Region', () => {
 
   it('location and size constructor', () => {
     const original = new Region(left, top, width, height);
-    const other = new Region(new Location(left, top), new RectangleSize(width, height));
+    const other = new Region(new Location({ x: left, y: top }), new RectangleSize(width, height));
 
     assert.equal(original.getLeft(), other.getLeft(), 'left');
     assert.equal(original.getTop(), other.getTop(), 'top');
@@ -123,18 +114,18 @@ describe('Region', () => {
 
   it('getLocation()', () => {
     const region = new Region(left, top, width, height);
-    assert.deepEqual(region.getLocation(), new Location(left, top), 'invalid location');
+    assert.deepEqual(region.getLocation(), new Location({ x: left, y: top }), 'invalid location');
 
-    region.setLocation(new Location(5, 6));
+    region.setLocation(new Location({ x: 5, y: 6 }));
     assert.deepEqual(region.getLocation(), new Location(5, 6), 'invalid location');
   });
 
   it('getSize()', () => {
     const region = new Region(left, top, width, height);
-    assert.deepEqual(region.getSize(), new RectangleSize(width, height), 'invalid location');
+    assert.deepEqual(region.getSize(), new RectangleSize({ width, height }), 'invalid location');
 
-    region.setSize(new RectangleSize(5, 6));
-    assert.deepEqual(region.getSize(), new RectangleSize(5, 6), 'invalid location');
+    region.setSize(new RectangleSize({ width: 5, height: 6 }));
+    assert.deepEqual(region.getSize(), new RectangleSize({ width: 5, height: 6 }), 'invalid location');
   });
 
   it('equals()', () => {
@@ -163,15 +154,15 @@ describe('Region', () => {
       new Region(8, 6, 3, 5),
     ];
 
-    assert.deepEqual(region.getSubRegions(new RectangleSize(7, 5)), expectedSubRegions);
+    assert.deepEqual(region.getSubRegions(new RectangleSize({ width: 7, height: 5 })), expectedSubRegions);
   });
 
   it('contains()', () => {
     const region = new Region(1, 1, 10, 10);
     const containedRegion = new Region(2, 2, 5, 5);
     const outsideRegion = new Region(8, 5, 5, 5);
-    const containedLocation = new Location(2, 5);
-    const outsideLocation = new Location(20, 5);
+    const containedLocation = new Location({ x: 2, y: 5 });
+    const outsideLocation = new Location({ x: 20, y: 5 });
 
     assert.equal(region.contains(containedRegion), true, 'region contains containedRegion');
     assert.equal(region.contains(outsideRegion), false, 'region doesn\'t contain region');
@@ -180,13 +171,13 @@ describe('Region', () => {
   });
 
   it('intersect()', () => {
-    const l1 = new Location(10, 10);
-    const l2 = new Location(20, 30);
-    const s1 = new RectangleSize(50, 100);
-    const s2 = new RectangleSize(100, 50);
+    const l1 = new Location({ x: 10, y: 10 });
+    const l2 = new Location({ x: 20, y: 30 });
+    const s1 = new RectangleSize({ width: 50, height: 100 });
+    const s2 = new RectangleSize({ width: 100, height: 50 });
 
-    const region1 = new Region(l1, s1);
-    const region2 = new Region(l2, s2);
+    const region1 = new Region({ left: l1.getX(), top: l1.getY(), width: s1.getWidth(), height: s1.getHeight() });
+    const region2 = new Region({ left: l2.getX(), top: l2.getY(), width: s2.getWidth(), height: s2.getHeight() });
 
     region1.intersect(region2);
     assert.equal(20, region1.getLeft(), 'intersected x');

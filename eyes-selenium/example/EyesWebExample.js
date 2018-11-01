@@ -2,7 +2,7 @@
 
 require('chromedriver');
 const { Builder, Capabilities, By } = require('selenium-webdriver');
-const { ConsoleLogHandler, RectangleSize } = require('@applitools/eyes-sdk-core');
+const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
 const { Eyes, Target } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
 
 (async () => {
@@ -11,14 +11,14 @@ const { Eyes, Target } = require('../index'); // should be replaced to '@applito
     .withCapabilities(Capabilities.chrome())
     .build();
 
-    // Initialize the eyes SDK and set your private API key.
+  // Initialize the eyes SDK and set your private API key.
   const eyes = new Eyes();
   // eyes.setApiKey('Your API Key');
   eyes.setLogHandler(new ConsoleLogHandler(false));
 
   try {
     // Start the test and set the browser's viewport size to 800x600.
-    await eyes.open(driver, 'Eyes Examples', 'My first Javascript test!', new RectangleSize(800, 600));
+    await eyes.open(driver, 'Eyes Examples', 'My first Javascript test!', { width: 800, height: 600 });
 
     // Navigate the browser to the "hello world!" web-site.
     await driver.get('https://applitools.com/helloworld');

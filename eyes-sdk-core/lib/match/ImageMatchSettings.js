@@ -9,13 +9,17 @@ const { GeneralUtils } = require('../utils/GeneralUtils');
  */
 class ImageMatchSettings {
   /**
-   * @param {MatchLevel} matchLevel The "strictness" level to use.
+   * @param {MatchLevel} [matchLevel=MatchLevel.Strict] The "strictness" level to use.
    * @param {ExactMatchSettings} [exact] Additional threshold parameters when the {@code Exact} match level is used.
    * @param {boolean} [ignoreCaret]
    * @param {boolean} [useDom]
    */
-  constructor(matchLevel = MatchLevel.Strict, exact, ignoreCaret, useDom) {
-    this._matchLevel = matchLevel;
+  constructor({ matchLevel, exact, ignoreCaret, useDom } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
+    this._matchLevel = matchLevel || MatchLevel.Strict;
     this._exact = exact;
     this._ignoreCaret = ignoreCaret;
     this._useDom = useDom;
@@ -91,7 +95,7 @@ class ImageMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {boolean}
+   * @param {boolean} value
    */
   setUseDom(value) {
     this._useDom = value;

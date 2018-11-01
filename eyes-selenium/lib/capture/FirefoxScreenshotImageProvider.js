@@ -24,7 +24,7 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
   }
 
   /**
-   * @override
+   * @inheritDoc
    * @return {Promise<MutableImage>}
    */
   async getImage() {

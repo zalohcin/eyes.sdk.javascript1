@@ -123,7 +123,7 @@ describe('GeneralUtils', () => {
 
     it('should call toString on non-plain objects', () => {
       assert.equal(
-        GeneralUtils.stringify(RenderInfo.fromObject({ width: 3, height: 4, sizeMode: 'bla' })),
+        GeneralUtils.stringify(new RenderInfo({ width: 3, height: 4, sizeMode: 'bla' })),
         'RenderInfo { {"width":3,"height":4,"sizeMode":"bla"} }'
       );
     });

@@ -733,9 +733,9 @@ class Eyes extends EyesBase {
       await this._ensureFrameVisible();
 
       const rect = await element.getRect();
-      const elementLocation = new Location(rect.x, rect.y);
+      const elementLocation = new Location(rect);
 
-      if (originalFC.size() > 0 && !EyesWebElement.equals(element, originalFC.peek().getReference())) {
+      if (originalFC.size() > 0 && await !EyesWebElement.equals(element, originalFC.peek().getReference())) {
         await switchTo.frames(originalFC);
       }
 
@@ -763,7 +763,7 @@ class Eyes extends EyesBase {
     } catch (err) {
       this._logger.log(`WARNING: ${err}`);
       this._logger.log('Assuming position is 0,0');
-      location = new Location(0, 0);
+      location = new Location(Location.ZERO);
     }
 
     const size = await this.getViewportSize();
@@ -1276,7 +1276,6 @@ class Eyes extends EyesBase {
     if (this._hideScrollbars || (this._stitchMode === StitchMode.CSS && this._stitchContent)) {
       const originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
       const fc = new FrameChain(this._logger, this._driver.getFrameChain());
-      const frame = fc.peek();
       while (fc.size() > 0) {
         if (this._stitchContent || fc.size() !== originalFC.size()) {
           await EyesSeleniumUtils.hideScrollbars(this._driver, 200, this._scrollRootElement);
@@ -1407,7 +1406,7 @@ class Eyes extends EyesBase {
 
       // Save the current frame path.
       const originalFramePosition = originalFrameChain.size() > 0 ?
-        originalFrameChain.getDefaultContentScrollPosition() : new Location(0, 0);
+        originalFrameChain.getDefaultContentScrollPosition() : new Location(Location.ZERO);
 
       await switchTo.defaultContent();
 

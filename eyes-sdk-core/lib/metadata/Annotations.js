@@ -14,16 +14,17 @@ class Annotations {
   }
 
   /**
+   * @deprecated
    * @param {object} object
    * @return {Annotations}
    */
   static fromObject(object) {
     return GeneralUtils.assignTo(new Annotations(), object, {
-      ignore: results => Array.from(results).map(result => Region.fromObject(result)),
-      strict: results => Array.from(results).map(result => Region.fromObject(result)),
-      content: results => Array.from(results).map(result => Region.fromObject(result)),
-      layout: results => Array.from(results).map(result => Region.fromObject(result)),
-      floating: results => Array.from(results).map(result => FloatingMatchSettings.fromObject(result)),
+      ignore: results => Array.from(results).map(result => new Region(result)),
+      strict: results => Array.from(results).map(result => new Region(result)),
+      content: results => Array.from(results).map(result => new Region(result)),
+      layout: results => Array.from(results).map(result => new Region(result)),
+      floating: results => Array.from(results).map(result => new FloatingMatchSettings(result)),
     });
   }
 

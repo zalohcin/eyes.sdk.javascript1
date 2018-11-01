@@ -5,24 +5,18 @@ const { EmulationDevice } = require('./EmulationDevice');
 
 class EmulationInfo {
   /**
-   * @param {{device: EmulationDevice, deviceName: string, screenOrientation: ScreenOrientation}}
-   * @return {EmulationInfo}
+   * @param {EmulationDevice|object} device
+   * @param {string} deviceName
+   * @param {ScreenOrientation} screenOrientation
    */
   constructor({ device, deviceName, screenOrientation } = {}) {
+    if (device && !(device instanceof EmulationDevice)) {
+      device = new EmulationDevice(device);
+    }
+
     this._device = device;
     this._deviceName = deviceName;
     this._screenOrientation = screenOrientation;
-  }
-
-  /**
-   * @param {Object} object
-   * @return {EmulationInfo}
-   */
-  static fromObject(object) {
-    const mapping = {};
-    if (object.device) mapping.device = EmulationDevice.fromObject;
-
-    return GeneralUtils.assignTo(new EmulationInfo(), object, mapping);
   }
 
   /** @return {EmulationDevice} */

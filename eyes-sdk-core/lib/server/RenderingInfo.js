@@ -3,18 +3,15 @@
 const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class RenderingInfo {
-  constructor() {
-    this._serviceUrl = undefined;
-    this._accessToken = undefined;
-    this._resultsUrl = undefined;
-  }
-
   /**
-   * @param {object} object
-   * @return {RenderingInfo}
+   * @param {string} serviceUrl
+   * @param {string} accessToken
+   * @param {string} resultsUrl
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new RenderingInfo(), object);
+  constructor({ serviceUrl, accessToken, resultsUrl } = {}) {
+    this._serviceUrl = serviceUrl;
+    this._accessToken = accessToken;
+    this._resultsUrl = resultsUrl;
   }
 
   /** @return {string} */

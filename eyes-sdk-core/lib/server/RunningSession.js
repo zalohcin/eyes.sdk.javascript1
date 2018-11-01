@@ -7,25 +7,27 @@ const { RenderingInfo } = require('./RenderingInfo');
  * Encapsulates data for the session currently running in the agent.
  */
 class RunningSession {
-  constructor() {
-    this._id = undefined;
-    this._sessionId = undefined;
-    this._batchId = undefined;
-    this._baselineId = undefined;
-    this._url = undefined;
-    this._renderingInfo = undefined;
+  /**
+   * @param {string} id
+   * @param {string} sessionId
+   * @param {string} batchId
+   * @param {string} baselineId
+   * @param {string} url
+   * @param {RenderingInfo|object} renderingInfo
+   */
+  constructor({ id, sessionId, batchId, baselineId, url, renderingInfo } = {}) {
+    if (renderingInfo && !(renderingInfo instanceof RenderingInfo)) {
+      renderingInfo = new RenderingInfo(renderingInfo);
+    }
+
+    this._id = id;
+    this._sessionId = sessionId;
+    this._batchId = batchId;
+    this._baselineId = baselineId;
+    this._url = url;
+    this._renderingInfo = renderingInfo;
 
     this._isNewSession = false;
-  }
-
-  /**
-   * @param {object} object
-   * @return {RunningSession}
-   */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new RunningSession(), object, {
-      renderingInfo: RenderingInfo.fromObject,
-    });
   }
 
   /** @return {string} */

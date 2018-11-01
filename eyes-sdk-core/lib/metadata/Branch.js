@@ -11,6 +11,7 @@ class Branch {
   }
 
   /**
+   * @deprecated
    * @param {object} object
    * @return {Branch}
    */

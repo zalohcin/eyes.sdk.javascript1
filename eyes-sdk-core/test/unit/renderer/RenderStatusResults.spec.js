@@ -17,7 +17,7 @@ describe('RenderStatusResults', () => {
     assert.equal(Object.prototype.hasOwnProperty.call(results, '_selectorRegions'), true);
   });
 
-  it('fromObject', () => {
+  it('constructor with object', () => {
     const status = 'some status';
     const error = 'some error';
     const imageLocation = 'some image location';
@@ -26,7 +26,7 @@ describe('RenderStatusResults', () => {
     const userAgent = 'some user agent';
     const deviceSize = { width: 1, height: 2 };
     const selectorRegions = [{ x: 1, y: 2, width: 3, height: 4 }];
-    const results = RenderStatusResults.fromObject({
+    const results = new RenderStatusResults({
       status,
       error,
       imageLocation,
@@ -56,7 +56,7 @@ describe('RenderStatusResults', () => {
     const userAgent = 'some user agent';
     const deviceSize = { width: 1, height: 2 };
     const selectorRegions = [{ x: 1, y: 2, width: 3, height: 4 }];
-    const results = RenderStatusResults.fromObject({
+    const results = new RenderStatusResults({
       status,
       error,
       imageLocation,
@@ -79,7 +79,7 @@ describe('RenderStatusResults', () => {
     const userAgent = 'some user agent';
     const deviceSize = { width: 1, height: 2 };
     const selectorRegions = [{ x: 1, y: 2, width: 3, height: 4 }];
-    const results = RenderStatusResults.fromObject({
+    const results = new RenderStatusResults({
       status,
       error,
       imageLocation,

@@ -14,6 +14,7 @@ class ExpectedAppOutput {
   }
 
   /**
+   * @deprecated
    * @param {object} object
    * @return {ExpectedAppOutput}
    */

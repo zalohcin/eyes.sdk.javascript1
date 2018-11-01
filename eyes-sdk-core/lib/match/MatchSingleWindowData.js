@@ -1,7 +1,7 @@
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
-const { MatchWindowData } = require('./MatchWindowData');
+const { MatchWindowData, Options } = require('./MatchWindowData');
 
 /**
  * Encapsulates the data to be sent to the agent on a "matchWindow" command.
@@ -13,10 +13,14 @@ class MatchSingleWindowData extends MatchWindowData {
    *   call. Can be array of size 0, but MUST NOT be null.
    * @param {AppOutput} appOutput The appOutput for the current matchWindow call.
    * @param {string} tag The tag of the window to be matched.
-   * @param {?boolean} ignoreMismatch
-   * @param {?Options} options
+   * @param {boolean} [ignoreMismatch]
+   * @param {Options} [options]
    */
-  constructor(startInfo, userInputs, appOutput, tag, ignoreMismatch, options) {
+  constructor({ startInfo, userInputs, appOutput, tag, ignoreMismatch, options } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     super(userInputs, appOutput, tag, ignoreMismatch, options);
 
     this._startInfo = startInfo;
@@ -131,4 +135,5 @@ class MatchSingleWindowData extends MatchWindowData {
   }
 }
 
+exports.Options = Options;
 exports.MatchSingleWindowData = MatchSingleWindowData;

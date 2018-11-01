@@ -9,44 +9,27 @@ const { ArgumentGuard } = require('../ArgumentGuard');
 class SessionStartInfo {
   /**
    * @param {string} agentId
-   * @param {SessionType} sessionType
+   * @param {SessionType} [sessionType]
    * @param {string} appIdOrName
-   * @param {string} verId
+   * @param {string} [verId]
    * @param {string} scenarioIdOrName
    * @param {BatchInfo} batchInfo
-   * @param {string} baselineEnvName
-   * @param {string} environmentName
+   * @param {string} [baselineEnvName]
+   * @param {string} [environmentName]
    * @param {AppEnvironment} environment
    * @param {ImageMatchSettings} defaultMatchSettings
-   * @param {string} branchName
-   * @param {string} parentBranchName
-   * @param {string} baselineBranchName
-   * @param {boolean} compareWithParentBranch
-   * @param {boolean} ignoreBaseline
-   * @param {boolean} saveDiffs
-   * @param {boolean} render
-   * @param {PropertyData[]} properties
+   * @param {string} [branchName]
+   * @param {string} [parentBranchName]
+   * @param {string} [baselineBranchName]
+   * @param {boolean} [compareWithParentBranch]
+   * @param {boolean} [ignoreBaseline]
+   * @param {boolean} [saveDiffs]
+   * @param {boolean} [render]
+   * @param {PropertyData[]} [properties]
    */
-  constructor(
-    agentId,
-    sessionType,
-    appIdOrName,
-    verId,
-    scenarioIdOrName,
-    batchInfo,
-    baselineEnvName,
-    environmentName,
-    environment,
-    defaultMatchSettings,
-    branchName,
-    parentBranchName,
-    baselineBranchName,
-    compareWithParentBranch,
-    ignoreBaseline,
-    saveDiffs,
-    render,
-    properties
-  ) {
+  constructor({ agentId, sessionType, appIdOrName, verId, scenarioIdOrName, batchInfo, baselineEnvName, environmentName,
+    environment, defaultMatchSettings, branchName, parentBranchName, baselineBranchName, compareWithParentBranch,
+    ignoreBaseline, saveDiffs, render, properties } = {}) {
     ArgumentGuard.notNullOrEmpty(agentId, 'agentId');
     ArgumentGuard.notNullOrEmpty(appIdOrName, 'appIdOrName');
     ArgumentGuard.notNullOrEmpty(scenarioIdOrName, 'scenarioIdOrName');

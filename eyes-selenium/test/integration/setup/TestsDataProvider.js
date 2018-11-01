@@ -33,15 +33,12 @@ class TestsDataProvider {
     const platforms = testPlatforms.split(';');
 
     const permutations = [];
-    permutations.push(...GeneralUtils.cartesianProduct(
-      [
-        chromeOptions,
-        // firefoxOptions,
-        // ie11Options,
-        // safariOptions,
-      ],
-      platforms
-    ));
+    permutations.push(...GeneralUtils.cartesianProduct([
+      chromeOptions,
+      firefoxOptions,
+      ie11Options,
+      safariOptions,
+    ], platforms));
 
     return permutations.filter(perm => {
       const [caps, platf] = perm;

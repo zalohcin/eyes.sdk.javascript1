@@ -10,12 +10,13 @@ class Image {
   }
 
   /**
+   * @deprecated
    * @param {object} object
    * @return {Image}
    */
   static fromObject(object) {
     return GeneralUtils.assignTo(new Image(), object, {
-      size: RectangleSize.fromObject,
+      size: obj => new RectangleSize(obj),
     });
   }
 

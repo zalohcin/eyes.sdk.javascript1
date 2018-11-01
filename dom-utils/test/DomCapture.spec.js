@@ -4,7 +4,6 @@ require('chromedriver');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
 const dateformat = require('dateformat');
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
@@ -62,15 +61,6 @@ async function getExpectedDom(testName) {
   return JSON.parse(expectedDomBuffer);
 }
 
-/**
- * @param {string} domUrl
- * @return {Promise<string>}
- */
-async function getExpectedDomFromUrl(domUrl) {
-  const response = await axios(domUrl);
-  return response.data;
-}
-
 let /** @type {Logger} */ logger, /** @type {ChromeOptions} */ chromeOptions, /** @type {WebDriver} */ driver;
 describe('DomCapture', function () {
   this.timeout(5 * 60 * 1000);
@@ -79,16 +69,16 @@ describe('DomCapture', function () {
     chromeOptions = new ChromeOptions().headless();
 
     logger = new Logger();
-    // if (process.env.CI) {
-    logger.setLogHandler(new ConsoleLogHandler(true));
-    // } else {
-    //   const dateString = dateformat(new Date(), 'yyyy_mm_dd_HH_MM_ss_l');
-    //   const extendedTestName = `${this.test.parent.title}_${dateString}`;
-    //   const logsPath = process.env.APPLITOOLS_LOGS_PATH || '.';
-    //   const pathName = path.join(logsPath, 'JavaScript', extendedTestName);
-    //   logger.setLogHandler(new FileLogHandler(true, path.join(pathName, 'log.log')));
-    //   logger.getLogHandler().open();
-    // }
+    if (process.env.CI) {
+      logger.setLogHandler(new ConsoleLogHandler(true));
+    } else {
+      const dateString = dateformat(new Date(), 'yyyy_mm_dd_HH_MM_ss_l');
+      const extendedTestName = `${this.test.parent.title}_${dateString}`;
+      const logsPath = process.env.APPLITOOLS_LOGS_PATH || '.';
+      const pathName = path.join(logsPath, 'JavaScript', extendedTestName);
+      logger.setLogHandler(new FileLogHandler(true, path.join(pathName, 'log.log')));
+      logger.getLogHandler().open();
+    }
   });
 
   beforeEach(async function () {

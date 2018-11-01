@@ -92,8 +92,6 @@ class EyesBase {
     /** @type {Logger} */
     this._logger = new Logger();
 
-    Region.initLogger(this._logger);
-
     this._initProviders();
 
     /** @type {ServerConnector} */
@@ -178,7 +176,7 @@ class EyesBase {
      */
     this._autSessionId = undefined;
 
-    /** @type {boolean} */ this._sendDom = false;
+    /** @type {boolean} */ this._sendDom = true;
   }
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
@@ -521,9 +519,9 @@ class EyesBase {
   /**
    * Sets the batch in which context future tests will run or {@code null} if tests are to run standalone.
    *
-   * @param batchOrName {BatchInfo|string} - the batch name or batch object
-   * @param [batchId] {string} - ID of the batch, should be generated using GeneralUtils.guid()
-   * @param [batchDate] {string} - start date of the batch, can be created as new Date().toUTCString()
+   * @param {BatchInfo|string} batchOrName - the batch name or batch object
+   * @param {string} [batchId] - ID of the batch, should be generated using GeneralUtils.guid()
+   * @param {string} [batchDate] - start date of the batch, can be created as new Date().toUTCString()
    */
   setBatch(batchOrName, batchId, batchDate) {
     if (this._isDisabled) {
@@ -531,12 +529,7 @@ class EyesBase {
       return;
     }
 
-    if (batchOrName instanceof BatchInfo) {
-      this._batch = batchOrName;
-    } else {
-      this._batch = new BatchInfo(batchOrName, batchDate, batchId);
-    }
-
+    this._batch = new BatchInfo(batchOrName, batchDate, batchId);
     this._logger.verbose(`setBatch(${this._batch})`);
   }
 
@@ -1222,26 +1215,26 @@ class EyesBase {
     await this._ensureViewportSize();
 
     const appEnvironment = await this.getAppEnvironment();
-    this._sessionStartInfo = new SessionStartInfo(
-      this.getBaseAgentId(),
-      this._sessionType,
-      this.getAppName(),
-      undefined,
-      this._testName,
-      this.getBatch(),
-      this._baselineEnvName,
-      this._environmentName,
-      appEnvironment,
-      this._defaultMatchSettings,
-      this._branchName || process.env.APPLITOOLS_BRANCH,
-      this._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH,
-      this._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH,
-      this._compareWithParentBranch,
-      this._ignoreBaseline,
-      this._render,
-      this._saveDiffs,
-      this._properties
-    );
+    this._sessionStartInfo = new SessionStartInfo({
+      agentId: this.getBaseAgentId(),
+      sessionType: this._sessionType,
+      appIdOrName: this.getAppName(),
+      verId: undefined,
+      scenarioIdOrName: this._testName,
+      batchInfo: this.getBatch(),
+      baselineEnvName: this._baselineEnvName,
+      environmentName: this._environmentName,
+      environment: appEnvironment,
+      defaultMatchSettings: this._defaultMatchSettings,
+      branchName: this._branchName || process.env.APPLITOOLS_BRANCH,
+      parentBranchName: this._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH,
+      baselineBranchName: this._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH,
+      compareWithParentBranch: this._compareWithParentBranch,
+      ignoreBaseline: this._ignoreBaseline,
+      render: this._render,
+      saveDiffs: this._saveDiffs,
+      properties: this._properties,
+    });
 
     // noinspection JSClosureCompilerSyntax
     const outputProvider = new AppOutputProvider();
@@ -1300,7 +1293,7 @@ class EyesBase {
   // noinspection JSMethodCanBeStatic
   /**
    * @protected
-   * @return {Promise.<?string>}
+   * @return {Promise<?string>}
    */
   tryCaptureDom() {
     return Promise.resolve(undefined);
@@ -1330,7 +1323,7 @@ class EyesBase {
 
     this._logger.verbose('EyesBase.replaceWindow - calling serverConnector.replaceWindow');
 
-    const replaceWindowData = new MatchWindowData(userInputs, new AppOutput(title, screenshot), tag, null, null);
+    const replaceWindowData = new MatchWindowData({ userInputs, appOutput: new AppOutput({ title, screenshot }), tag });
 
     const result = await this._serverConnector.replaceWindow(this._runningSession, stepIndex, replaceWindowData);
     this._logger.verbose('EyesBase.replaceWindow done');
@@ -1356,7 +1349,7 @@ class EyesBase {
       retryTimeout = checkSettings.getTimeout();
 
       const matchLevel = checkSettings.getMatchLevel() || defaultMatchSettings.getMatchLevel();
-      imageMatchSettings = new ImageMatchSettings(matchLevel, null);
+      imageMatchSettings = new ImageMatchSettings({ matchLevel });
 
       const ignoreCaret = checkSettings.getIgnoreCaret() || defaultMatchSettings.getIgnoreCaret();
       imageMatchSettings.setIgnoreCaret(ignoreCaret);
@@ -1660,10 +1653,12 @@ class EyesBase {
       return;
     }
 
+    // We don't want to change the objects we received.
+    const newControl = new Region(control);
     // Getting the location of the cursor in the screenshot
     let cursorInScreenshot = new Location(cursor);
     // First we need to getting the cursor's coordinates relative to the context (and not to the control).
-    cursorInScreenshot.offsetByLocation(control.getLocation());
+    cursorInScreenshot.offsetByLocation(newControl.getLocation());
     try {
       cursorInScreenshot = this._matchWindowTask
         .getLastScreenshot()
@@ -1679,7 +1674,7 @@ class EyesBase {
 
     const controlScreenshotIntersect = this._matchWindowTask
       .getLastScreenshot()
-      .getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
+      .getIntersectedRegion(newControl, CoordinatesType.SCREENSHOT_AS_IS);
 
     // If the region is NOT empty, we'll give the coordinates relative to the control.
     if (!controlScreenshotIntersect.isSizeEmpty()) {
@@ -1743,26 +1738,26 @@ class EyesBase {
     this._logger.verbose(`Application environment is ${appEnvironment}`);
     await this._sessionEventHandlers.initEnded();
 
-    this._sessionStartInfo = new SessionStartInfo(
-      this.getBaseAgentId(),
-      this._sessionType,
-      this.getAppName(),
-      undefined,
-      this._testName,
-      this.getBatch(),
-      this._baselineEnvName,
-      this._environmentName,
-      appEnvironment,
-      this._defaultMatchSettings,
-      this._branchName || process.env.APPLITOOLS_BRANCH,
-      this._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH,
-      this._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH,
-      this._compareWithParentBranch,
-      this._ignoreBaseline,
-      this._render,
-      this._saveDiffs,
-      this._properties
-    );
+    this._sessionStartInfo = new SessionStartInfo({
+      agentId: this.getBaseAgentId(),
+      sessionType: this._sessionType,
+      appIdOrName: this.getAppName(),
+      verId: undefined,
+      scenarioIdOrName: this._testName,
+      batchInfo: this.getBatch(),
+      baselineEnvName: this._baselineEnvName,
+      environmentName: this._environmentName,
+      environment: appEnvironment,
+      defaultMatchSettings: this._defaultMatchSettings,
+      branchName: this._branchName || process.env.APPLITOOLS_BRANCH,
+      parentBranchName: this._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH,
+      baselineBranchName: this._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH,
+      compareWithParentBranch: this._compareWithParentBranch,
+      ignoreBaseline: this._ignoreBaseline,
+      render: this._render,
+      saveDiffs: this._saveDiffs,
+      properties: this._properties,
+    });
 
     this._logger.verbose('Starting server session...');
     this._runningSession = await this._serverConnector.startSession(this._sessionStartInfo);
@@ -1871,7 +1866,7 @@ class EyesBase {
       this._logger.verbose(`domUrl: ${domUrl}`);
     }
 
-    const appOutput = new AppOutput(title, screenshotBuffer, screenshotUrl, domUrl, imageLocation);
+    const appOutput = new AppOutput({ title, screenshot: screenshotBuffer, screenshotUrl, domUrl, imageLocation });
     const result = new AppOutputWithScreenshot(appOutput, screenshot);
     this._logger.verbose('Done!');
     return result;
@@ -1947,18 +1942,18 @@ class EyesBase {
    * @return {string} The base agent id of the SDK.
    */
   async getBaseAgentId() {
-    throw new TypeError('getBaseAgentId method is not implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
   /**
-   * @protected
-   * @abstract
    * Get the session id.
+   *
+   * @protected
    * @return {Promise<string>} A promise which resolves to the webdriver's session ID.
    */
   async getAUTSessionId() {
-    throw new TypeError('getAUTSessionId method is not implemented!');
+    return Promise.resolve(undefined);
   }
 
   // noinspection JSMethodCanBeStatic
@@ -1970,7 +1965,7 @@ class EyesBase {
    * @return {Promise<RectangleSize>}
    */
   async getViewportSize() {
-    throw new TypeError('getViewportSize method is not implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -1980,8 +1975,8 @@ class EyesBase {
    * @param {RectangleSize} size The required viewport size.
    * @return {Promise<void>}
    */
-  async setViewportSize(size) {
-    throw new TypeError('setViewportSize method is not implemented!');
+  async setViewportSize(size) { // eslint-disable-line no-unused-vars
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -1996,7 +1991,7 @@ class EyesBase {
    * @return {Promise<string>} The inferred environment string or {@code null} if none is available.
    */
   async getInferredEnvironment() {
-    throw new TypeError('getInferredEnvironment method is not implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -2008,7 +2003,7 @@ class EyesBase {
    * @return {Promise<EyesScreenshot>}
    */
   async getScreenshot() {
-    throw new TypeError('getScreenshot method is not implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -2020,7 +2015,7 @@ class EyesBase {
    * @return {Promise<string>}
    */
   async getScreenshotUrl() {
-    throw new TypeError('getScreenshotUrl method is not implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -2032,7 +2027,7 @@ class EyesBase {
    * @return {Promise<string>}
    */
   async getTitle() {
-    throw new TypeError('getTitle method is not implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -2040,7 +2035,6 @@ class EyesBase {
    * A url pointing to a DOM capture of the AUT at the time of screenshot
    *
    * @protected
-   * @abstract
    * @return {Promise<string>}
    */
   getDomUrl() {

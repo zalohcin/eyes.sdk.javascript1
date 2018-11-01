@@ -11,7 +11,7 @@ class LogHandler {
   constructor() {
     this._isVerbose = false;
     this._isPrintSessionId = false;
-    this._sessionId = undefined;
+    this._sessionId = null;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -96,7 +96,7 @@ class LogHandler {
    * @param {boolean} verbose
    * @param {string} logString
    */
-  onMessage(verbose, logString) {}
+  onMessage(verbose, logString) {} // eslint-disable-line no-unused-vars
 }
 
 exports.LogHandler = LogHandler;

@@ -24,7 +24,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
   }
 
   /**
-   * @override
+   * @inheritDoc
    * @return {Promise<MutableImage>}
    */
   async getImage() {
@@ -95,10 +95,10 @@ class SafariScreenshotImageProvider extends ImageProvider {
         urlBarHeight = 50;
       }
 
-      viewportSize = new RectangleSize(
-        Math.ceil(imageWidth - ((leftBarWidth + rightBarWidth) * scaleRatio)),
-        Math.ceil(imageHeight - ((topBarHeight + urlBarHeight + bottomBarHeight) * scaleRatio))
-      );
+      viewportSize = new RectangleSize({
+        width: Math.ceil(imageWidth - ((leftBarWidth + rightBarWidth) * scaleRatio)),
+        height: Math.ceil(imageHeight - ((topBarHeight + urlBarHeight + bottomBarHeight) * scaleRatio)),
+      });
 
       this._logger.verbose(`computed physical viewport size: ${viewportSize}`);
       this._logger.verbose('cropping IOS browser image');

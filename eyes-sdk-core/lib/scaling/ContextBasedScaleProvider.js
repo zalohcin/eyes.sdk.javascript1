@@ -52,7 +52,7 @@ class ContextBasedScaleProvider extends ScaleProvider {
   }
 
   /**
-   * @override
+   * @inheritDoc
    * @return {number} The ratio by which an image will be scaled.
    */
   getScaleRatio() {

@@ -1,5 +1,7 @@
 'use strict';
 
+/* eslint-disable no-unused-vars */
+
 const { ArgumentGuard } = require('../ArgumentGuard');
 const { Region } = require('../geometry/Region');
 
@@ -13,10 +15,6 @@ class EyesScreenshot {
    * @param {MutableImage} image
    */
   constructor(image) {
-    if (new.target === EyesScreenshot) {
-      throw new TypeError('Can not construct `EyesScreenshot` instance directly, should be used implementation!');
-    }
-
     ArgumentGuard.notNull(image, 'image');
     this._image = image;
   }
@@ -38,7 +36,7 @@ class EyesScreenshot {
    * @return {Promise<EyesScreenshot>} A screenshot instance containing the given region.
    */
   getSubScreenshot(region, throwIfClipped) {
-    throw new TypeError('The method `getSubScreenshot` from `EyesScreenshot` should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
@@ -52,7 +50,7 @@ class EyesScreenshot {
    * @return {Location} A new location which is the transformation of {@code location} to the {@code to} type.
    */
   convertLocation(location, from, to) {
-    throw new TypeError('The method `convertLocation` from `EyesScreenshot` should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
@@ -66,7 +64,7 @@ class EyesScreenshot {
    * @throws OutOfBoundsError If the location is not inside the frame's region in the screenshot.
    */
   getLocationInScreenshot(location, coordinatesType) {
-    throw new TypeError('The method `getLocationInScreenshot` from `EyesScreenshot` should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
@@ -78,7 +76,7 @@ class EyesScreenshot {
    * @return {Region} The intersected region, in {@code resultCoordinatesType} coordinates.
    */
   getIntersectedRegion(region, coordinatesType) {
-    throw new TypeError('The method `getIntersectedRegion` from `EyesScreenshot` should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   /**

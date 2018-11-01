@@ -19,8 +19,7 @@ class ImagesCheckSettings extends CheckSettings {
     this._imagePath = path;
     this._imageUrl = url;
 
-    this._imageSize = undefined;
-    this._targetRegion = undefined;
+    this._imageSize = null;
   }
 
   /**

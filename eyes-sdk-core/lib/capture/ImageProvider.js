@@ -3,14 +3,15 @@
 /**
  * Encapsulates image retrieval.
  *
- * @interface
+ * @abstract
  */
 class ImageProvider {
+  // noinspection JSMethodCanBeStatic
   /**
    * @return {Promise<MutableImage>}
    */
   async getImage() {
-    throw new Error('The method should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 }
 

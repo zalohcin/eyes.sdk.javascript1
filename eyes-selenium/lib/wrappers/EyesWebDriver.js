@@ -166,7 +166,7 @@ class EyesWebDriver extends IWebDriver {
 
   // noinspection JSCheckFunctionSignatures
   /**
-   * @override
+   * @inheritDoc
    * @param {!(by.By|By|Function)} locator The locator strategy to use when searching for the element.
    * @return {EyesWebElementPromise} A promise that will resolve to a EyesWebElement.
    */
@@ -176,7 +176,7 @@ class EyesWebDriver extends IWebDriver {
 
   // noinspection JSCheckFunctionSignatures
   /**
-   * @override
+   * @inheritDoc
    * @param {!(by.By|By|Function)} locator The locator strategy to use when searching for the element.
    * @return {!Promise<!Array<!EyesWebElement>>} A promise that will be resolved to an array of the located
    *   {@link EyesWebElement}s.
@@ -210,7 +210,7 @@ class EyesWebDriver extends IWebDriver {
   }
 
   /**
-   * @override
+   * @inheritDoc
    * @return {EyesTargetLocator} The target locator interface for this instance.
    */
   switchTo() {

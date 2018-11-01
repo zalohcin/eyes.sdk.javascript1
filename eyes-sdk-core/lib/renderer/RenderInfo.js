@@ -5,25 +5,29 @@ const { Region } = require('../geometry/Region');
 const { EmulationInfo } = require('./EmulationInfo');
 
 class RenderInfo {
-  constructor() {
-    this._width = undefined;
-    this._height = undefined;
-    this._sizeMode = undefined;
-    this._selector = undefined;
-    this._region = undefined;
-    this._emulationInfo = undefined;
-  }
-
   /**
-   * @param {Object} object
-   * @return {RenderInfo}
+   * @param {number} width
+   * @param {number} height
+   * @param {string} sizeMode
+   * @param {string} selector
+   * @param {Region|object} region
+   * @param {EmulationInfo|object} emulationInfo
    */
-  static fromObject(object) {
-    const mapping = {};
-    if (object.region) mapping.region = Region.fromObject;
-    if (object.emulationInfo) mapping.emulationInfo = EmulationInfo.fromObject;
+  constructor({ width, height, sizeMode, selector, region, emulationInfo } = {}) {
+    if (region && !(region instanceof Region)) {
+      region = new Region(region);
+    }
 
-    return GeneralUtils.assignTo(new RenderInfo(), object, mapping);
+    if (emulationInfo && !(emulationInfo instanceof EmulationInfo)) {
+      emulationInfo = new EmulationInfo(emulationInfo);
+    }
+
+    this._width = width;
+    this._height = height;
+    this._sizeMode = sizeMode;
+    this._selector = selector;
+    this._region = region;
+    this._emulationInfo = emulationInfo;
   }
 
   /**
@@ -90,13 +94,13 @@ class RenderInfo {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /** @return {EmulationInfo} */
   getEmulationInfo() {
     return this._emulationInfo;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /** @param {EmulationInfo} value */
   setEmulationInfo(value) {
     this._emulationInfo = value;
   }

@@ -22,6 +22,7 @@ class ActualAppOutput {
   }
 
   /**
+   * @deprecated
    * @param {object} object
    * @return {ActualAppOutput}
    */

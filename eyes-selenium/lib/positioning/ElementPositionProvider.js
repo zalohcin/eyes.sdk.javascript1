@@ -50,7 +50,7 @@ class ElementPositionProvider extends PositionProvider {
   }
 
   /**
-   * @override
+   * @inheritDoc
    * @return {Promise<ElementPositionMemento>}
    */
   async getState() {
@@ -60,7 +60,7 @@ class ElementPositionProvider extends PositionProvider {
 
   // noinspection JSCheckFunctionSignatures
   /**
-   * @override
+   * @inheritDoc
    * @param {ElementPositionMemento} state The initial state of position
    * @return {Promise<void>}
    */

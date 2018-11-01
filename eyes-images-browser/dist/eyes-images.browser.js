@@ -7,11 +7,11 @@
  * This file is meant to be used as an input for Browserify for creating a browser version of the SDK, by adding
  * the EyesImages object to the global "window" instance.
  */
-window.EyesImages = require('@applitools/eyes.images');
+window.EyesImages = require('@applitools/eyes-images');
 
 console.log("EyesImages loaded into the 'window' object"); // eslint-disable-line no-console
 
-},{"@applitools/eyes.images":189}],2:[function(require,module,exports){
+},{"@applitools/eyes-images":189}],2:[function(require,module,exports){
 var asn1 = exports;
 
 asn1.bignum = require('bn.js');
@@ -22,7 +22,7 @@ asn1.constants = require('./asn1/constants');
 asn1.decoders = require('./asn1/decoders');
 asn1.encoders = require('./asn1/encoders');
 
-},{"./asn1/api":3,"./asn1/base":5,"./asn1/constants":9,"./asn1/decoders":11,"./asn1/encoders":14,"bn.js":18}],3:[function(require,module,exports){
+},{"./asn1/api":3,"./asn1/base":5,"./asn1/constants":9,"./asn1/decoders":11,"./asn1/encoders":14,"bn.js":21}],3:[function(require,module,exports){
 var asn1 = require('../asn1');
 var inherits = require('inherits');
 
@@ -85,7 +85,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"../asn1":2,"inherits":107,"vm":187}],4:[function(require,module,exports){
+},{"../asn1":2,"inherits":108,"vm":187}],4:[function(require,module,exports){
 var inherits = require('inherits');
 var Reporter = require('../base').Reporter;
 var Buffer = require('buffer').Buffer;
@@ -203,7 +203,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
   return out;
 };
 
-},{"../base":5,"buffer":52,"inherits":107}],5:[function(require,module,exports){
+},{"../base":5,"buffer":55,"inherits":108}],5:[function(require,module,exports){
 var base = exports;
 
 base.Reporter = require('./reporter').Reporter;
@@ -970,7 +970,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
   return this;
 };
 
-},{"inherits":107}],8:[function(require,module,exports){
+},{"inherits":108}],8:[function(require,module,exports){
 var constants = require('../constants');
 
 exports.tagClass = {
@@ -1361,7 +1361,7 @@ function derDecodeLen(buf, primitive, fail) {
   return len;
 }
 
-},{"../../asn1":2,"inherits":107}],11:[function(require,module,exports){
+},{"../../asn1":2,"inherits":108}],11:[function(require,module,exports){
 var decoders = exports;
 
 decoders.der = require('./der');
@@ -1418,7 +1418,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
   return DERDecoder.prototype.decode.call(this, input, options);
 };
 
-},{"./der":10,"buffer":52,"inherits":107}],13:[function(require,module,exports){
+},{"./der":10,"buffer":55,"inherits":108}],13:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -1715,7 +1715,7 @@ function encodeTag(tag, primitive, cls, reporter) {
   return res;
 }
 
-},{"../../asn1":2,"buffer":52,"inherits":107}],14:[function(require,module,exports){
+},{"../../asn1":2,"buffer":55,"inherits":108}],14:[function(require,module,exports){
 var encoders = exports;
 
 encoders.der = require('./der');
@@ -1744,7 +1744,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   return out.join('\n');
 };
 
-},{"./der":13,"inherits":107}],16:[function(require,module,exports){
+},{"./der":13,"inherits":108}],16:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2238,7 +2238,629 @@ var objectKeys = Object.keys || function (obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"util/":186}],17:[function(require,module,exports){
+},{"util/":19}],17:[function(require,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+},{}],18:[function(require,module,exports){
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+},{}],19:[function(require,module,exports){
+(function (process,global){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = require('./support/isBuffer');
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = require('inherits');
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":18,"_process":138,"inherits":17}],20:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -2260,65 +2882,97 @@ for (var i = 0, len = code.length; i < len; ++i) {
 revLookup['-'.charCodeAt(0)] = 62
 revLookup['_'.charCodeAt(0)] = 63
 
-function placeHoldersCount (b64) {
+function getLens (b64) {
   var len = b64.length
+
   if (len % 4 > 0) {
     throw new Error('Invalid string. Length must be a multiple of 4')
   }
 
-  // the number of equal signs (place holders)
-  // if there are two placeholders, than the two characters before it
-  // represent one byte
-  // if there is only one, then the three characters before it represent 2 bytes
-  // this is just a cheap hack to not do indexOf twice
-  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+  // Trim off extra bytes after placeholder bytes are found
+  // See: https://github.com/beatgammit/base64-js/issues/42
+  var validLen = b64.indexOf('=')
+  if (validLen === -1) validLen = len
+
+  var placeHoldersLen = validLen === len
+    ? 0
+    : 4 - (validLen % 4)
+
+  return [validLen, placeHoldersLen]
 }
 
+// base64 is 4/3 + up to two characters of the original data
 function byteLength (b64) {
-  // base64 is 4/3 + up to two characters of the original data
-  return (b64.length * 3 / 4) - placeHoldersCount(b64)
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function _byteLength (b64, validLen, placeHoldersLen) {
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
 }
 
 function toByteArray (b64) {
-  var i, l, tmp, placeHolders, arr
-  var len = b64.length
-  placeHolders = placeHoldersCount(b64)
+  var tmp
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
 
-  arr = new Arr((len * 3 / 4) - placeHolders)
+  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
+
+  var curByte = 0
 
   // if there are placeholders, only get up to the last complete 4 chars
-  l = placeHolders > 0 ? len - 4 : len
+  var len = placeHoldersLen > 0
+    ? validLen - 4
+    : validLen
 
-  var L = 0
-
-  for (i = 0; i < l; i += 4) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
-    arr[L++] = (tmp >> 16) & 0xFF
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
+  for (var i = 0; i < len; i += 4) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 18) |
+      (revLookup[b64.charCodeAt(i + 1)] << 12) |
+      (revLookup[b64.charCodeAt(i + 2)] << 6) |
+      revLookup[b64.charCodeAt(i + 3)]
+    arr[curByte++] = (tmp >> 16) & 0xFF
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
   }
 
-  if (placeHolders === 2) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[L++] = tmp & 0xFF
-  } else if (placeHolders === 1) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
+  if (placeHoldersLen === 2) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 2) |
+      (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 1) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 10) |
+      (revLookup[b64.charCodeAt(i + 1)] << 4) |
+      (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
   }
 
   return arr
 }
 
 function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+  return lookup[num >> 18 & 0x3F] +
+    lookup[num >> 12 & 0x3F] +
+    lookup[num >> 6 & 0x3F] +
+    lookup[num & 0x3F]
 }
 
 function encodeChunk (uint8, start, end) {
   var tmp
   var output = []
   for (var i = start; i < end; i += 3) {
-    tmp = ((uint8[i] << 16) & 0xFF0000) + ((uint8[i + 1] << 8) & 0xFF00) + (uint8[i + 2] & 0xFF)
+    tmp =
+      ((uint8[i] << 16) & 0xFF0000) +
+      ((uint8[i + 1] << 8) & 0xFF00) +
+      (uint8[i + 2] & 0xFF)
     output.push(tripletToBase64(tmp))
   }
   return output.join('')
@@ -2328,35 +2982,38 @@ function fromByteArray (uint8) {
   var tmp
   var len = uint8.length
   var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var output = ''
   var parts = []
   var maxChunkLength = 16383 // must be multiple of 3
 
   // go through the array every three bytes, we'll deal with trailing stuff later
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+    parts.push(encodeChunk(
+      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
+    ))
   }
 
   // pad the end with zeros, but make sure to not forget the extra bytes
   if (extraBytes === 1) {
     tmp = uint8[len - 1]
-    output += lookup[tmp >> 2]
-    output += lookup[(tmp << 4) & 0x3F]
-    output += '=='
+    parts.push(
+      lookup[tmp >> 2] +
+      lookup[(tmp << 4) & 0x3F] +
+      '=='
+    )
   } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
-    output += lookup[tmp >> 10]
-    output += lookup[(tmp >> 4) & 0x3F]
-    output += lookup[(tmp << 2) & 0x3F]
-    output += '='
+    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 10] +
+      lookup[(tmp >> 4) & 0x3F] +
+      lookup[(tmp << 2) & 0x3F] +
+      '='
+    )
   }
-
-  parts.push(output)
 
   return parts.join('')
 }
 
-},{}],18:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 (function (module, exports) {
   'use strict';
 
@@ -5785,7 +6442,7 @@ function fromByteArray (uint8) {
   };
 })(typeof module === 'undefined' || module, this);
 
-},{"buffer":20}],19:[function(require,module,exports){
+},{"buffer":23}],22:[function(require,module,exports){
 var r;
 
 module.exports = function rand(len) {
@@ -5852,9 +6509,9 @@ if (typeof self === 'object') {
   }
 }
 
-},{"crypto":20}],20:[function(require,module,exports){
+},{"crypto":23}],23:[function(require,module,exports){
 
-},{}],21:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 // based on the aes implimentation in triple sec
 // https://github.com/keybase/triplesec
 // which is in turn based on the one from crypto-js
@@ -6084,7 +6741,7 @@ AES.prototype.scrub = function () {
 
 module.exports.AES = AES
 
-},{"safe-buffer":165}],22:[function(require,module,exports){
+},{"safe-buffer":165}],25:[function(require,module,exports){
 var aes = require('./aes')
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('cipher-base')
@@ -6203,7 +6860,7 @@ StreamCipher.prototype.setAAD = function setAAD (buf) {
 
 module.exports = StreamCipher
 
-},{"./aes":21,"./ghash":26,"./incr32":27,"buffer-xor":51,"cipher-base":54,"inherits":107,"safe-buffer":165}],23:[function(require,module,exports){
+},{"./aes":24,"./ghash":29,"./incr32":30,"buffer-xor":54,"cipher-base":57,"inherits":108,"safe-buffer":165}],26:[function(require,module,exports){
 var ciphers = require('./encrypter')
 var deciphers = require('./decrypter')
 var modes = require('./modes/list.json')
@@ -6218,7 +6875,7 @@ exports.createDecipher = exports.Decipher = deciphers.createDecipher
 exports.createDecipheriv = exports.Decipheriv = deciphers.createDecipheriv
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"./decrypter":24,"./encrypter":25,"./modes/list.json":35}],24:[function(require,module,exports){
+},{"./decrypter":27,"./encrypter":28,"./modes/list.json":38}],27:[function(require,module,exports){
 var AuthCipher = require('./authCipher')
 var Buffer = require('safe-buffer').Buffer
 var MODES = require('./modes')
@@ -6300,6 +6957,9 @@ Splitter.prototype.flush = function () {
 
 function unpad (last) {
   var padded = last[15]
+  if (padded < 1 || padded > 16) {
+    throw new Error('unable to decrypt data')
+  }
   var i = -1
   while (++i < padded) {
     if (last[(i + (16 - padded))] !== padded) {
@@ -6341,7 +7001,7 @@ function createDecipher (suite, password) {
 exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
-},{"./aes":21,"./authCipher":22,"./modes":34,"./streamCipher":37,"cipher-base":54,"evp_bytestokey":90,"inherits":107,"safe-buffer":165}],25:[function(require,module,exports){
+},{"./aes":24,"./authCipher":25,"./modes":37,"./streamCipher":40,"cipher-base":57,"evp_bytestokey":92,"inherits":108,"safe-buffer":165}],28:[function(require,module,exports){
 var MODES = require('./modes')
 var AuthCipher = require('./authCipher')
 var Buffer = require('safe-buffer').Buffer
@@ -6457,7 +7117,7 @@ function createCipher (suite, password) {
 exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
-},{"./aes":21,"./authCipher":22,"./modes":34,"./streamCipher":37,"cipher-base":54,"evp_bytestokey":90,"inherits":107,"safe-buffer":165}],26:[function(require,module,exports){
+},{"./aes":24,"./authCipher":25,"./modes":37,"./streamCipher":40,"cipher-base":57,"evp_bytestokey":92,"inherits":108,"safe-buffer":165}],29:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var ZEROES = Buffer.alloc(16, 0)
 
@@ -6548,7 +7208,7 @@ GHASH.prototype.final = function (abl, bl) {
 
 module.exports = GHASH
 
-},{"safe-buffer":165}],27:[function(require,module,exports){
+},{"safe-buffer":165}],30:[function(require,module,exports){
 function incr32 (iv) {
   var len = iv.length
   var item
@@ -6565,7 +7225,7 @@ function incr32 (iv) {
 }
 module.exports = incr32
 
-},{}],28:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 var xor = require('buffer-xor')
 
 exports.encrypt = function (self, block) {
@@ -6584,7 +7244,7 @@ exports.decrypt = function (self, block) {
   return xor(out, pad)
 }
 
-},{"buffer-xor":51}],29:[function(require,module,exports){
+},{"buffer-xor":54}],32:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var xor = require('buffer-xor')
 
@@ -6619,7 +7279,7 @@ exports.encrypt = function (self, data, decrypt) {
   return out
 }
 
-},{"buffer-xor":51,"safe-buffer":165}],30:[function(require,module,exports){
+},{"buffer-xor":54,"safe-buffer":165}],33:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -6663,7 +7323,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":165}],31:[function(require,module,exports){
+},{"safe-buffer":165}],34:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -6690,7 +7350,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":165}],32:[function(require,module,exports){
+},{"safe-buffer":165}],35:[function(require,module,exports){
 var xor = require('buffer-xor')
 var Buffer = require('safe-buffer').Buffer
 var incr32 = require('../incr32')
@@ -6722,7 +7382,7 @@ exports.encrypt = function (self, chunk) {
   return xor(chunk, pad)
 }
 
-},{"../incr32":27,"buffer-xor":51,"safe-buffer":165}],33:[function(require,module,exports){
+},{"../incr32":30,"buffer-xor":54,"safe-buffer":165}],36:[function(require,module,exports){
 exports.encrypt = function (self, block) {
   return self._cipher.encryptBlock(block)
 }
@@ -6731,7 +7391,7 @@ exports.decrypt = function (self, block) {
   return self._cipher.decryptBlock(block)
 }
 
-},{}],34:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 var modeModules = {
   ECB: require('./ecb'),
   CBC: require('./cbc'),
@@ -6751,7 +7411,7 @@ for (var key in modes) {
 
 module.exports = modes
 
-},{"./cbc":28,"./cfb":29,"./cfb1":30,"./cfb8":31,"./ctr":32,"./ecb":33,"./list.json":35,"./ofb":36}],35:[function(require,module,exports){
+},{"./cbc":31,"./cfb":32,"./cfb1":33,"./cfb8":34,"./ctr":35,"./ecb":36,"./list.json":38,"./ofb":39}],38:[function(require,module,exports){
 module.exports={
   "aes-128-ecb": {
     "cipher": "AES",
@@ -6944,7 +7604,7 @@ module.exports={
   }
 }
 
-},{}],36:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -6964,7 +7624,7 @@ exports.encrypt = function (self, chunk) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":52,"buffer-xor":51}],37:[function(require,module,exports){
+},{"buffer":55,"buffer-xor":54}],40:[function(require,module,exports){
 var aes = require('./aes')
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('cipher-base')
@@ -6993,15 +7653,17 @@ StreamCipher.prototype._final = function () {
 
 module.exports = StreamCipher
 
-},{"./aes":21,"cipher-base":54,"inherits":107,"safe-buffer":165}],38:[function(require,module,exports){
-var ebtk = require('evp_bytestokey')
-var aes = require('browserify-aes/browser')
+},{"./aes":24,"cipher-base":57,"inherits":108,"safe-buffer":165}],41:[function(require,module,exports){
 var DES = require('browserify-des')
-var desModes = require('browserify-des/modes')
+var aes = require('browserify-aes/browser')
 var aesModes = require('browserify-aes/modes')
+var desModes = require('browserify-des/modes')
+var ebtk = require('evp_bytestokey')
+
 function createCipher (suite, password) {
-  var keyLen, ivLen
   suite = suite.toLowerCase()
+
+  var keyLen, ivLen
   if (aesModes[suite]) {
     keyLen = aesModes[suite].key
     ivLen = aesModes[suite].iv
@@ -7011,12 +7673,15 @@ function createCipher (suite, password) {
   } else {
     throw new TypeError('invalid suite type')
   }
+
   var keys = ebtk(password, false, keyLen, ivLen)
   return createCipheriv(suite, keys.key, keys.iv)
 }
+
 function createDecipher (suite, password) {
-  var keyLen, ivLen
   suite = suite.toLowerCase()
+
+  var keyLen, ivLen
   if (aesModes[suite]) {
     keyLen = aesModes[suite].key
     ivLen = aesModes[suite].iv
@@ -7026,53 +7691,42 @@ function createDecipher (suite, password) {
   } else {
     throw new TypeError('invalid suite type')
   }
+
   var keys = ebtk(password, false, keyLen, ivLen)
   return createDecipheriv(suite, keys.key, keys.iv)
 }
 
 function createCipheriv (suite, key, iv) {
   suite = suite.toLowerCase()
-  if (aesModes[suite]) {
-    return aes.createCipheriv(suite, key, iv)
-  } else if (desModes[suite]) {
-    return new DES({
-      key: key,
-      iv: iv,
-      mode: suite
-    })
-  } else {
-    throw new TypeError('invalid suite type')
-  }
+  if (aesModes[suite]) return aes.createCipheriv(suite, key, iv)
+  if (desModes[suite]) return new DES({ key: key, iv: iv, mode: suite })
+
+  throw new TypeError('invalid suite type')
 }
+
 function createDecipheriv (suite, key, iv) {
   suite = suite.toLowerCase()
-  if (aesModes[suite]) {
-    return aes.createDecipheriv(suite, key, iv)
-  } else if (desModes[suite]) {
-    return new DES({
-      key: key,
-      iv: iv,
-      mode: suite,
-      decrypt: true
-    })
-  } else {
-    throw new TypeError('invalid suite type')
-  }
+  if (aesModes[suite]) return aes.createDecipheriv(suite, key, iv)
+  if (desModes[suite]) return new DES({ key: key, iv: iv, mode: suite, decrypt: true })
+
+  throw new TypeError('invalid suite type')
 }
+
+function getCiphers () {
+  return Object.keys(desModes).concat(aes.getCiphers())
+}
+
 exports.createCipher = exports.Cipher = createCipher
 exports.createCipheriv = exports.Cipheriv = createCipheriv
 exports.createDecipher = exports.Decipher = createDecipher
 exports.createDecipheriv = exports.Decipheriv = createDecipheriv
-function getCiphers () {
-  return Object.keys(desModes).concat(aes.getCiphers())
-}
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"browserify-aes/browser":23,"browserify-aes/modes":34,"browserify-des":39,"browserify-des/modes":40,"evp_bytestokey":90}],39:[function(require,module,exports){
-(function (Buffer){
+},{"browserify-aes/browser":26,"browserify-aes/modes":37,"browserify-des":42,"browserify-des/modes":43,"evp_bytestokey":92}],42:[function(require,module,exports){
 var CipherBase = require('cipher-base')
 var des = require('des.js')
 var inherits = require('inherits')
+var Buffer = require('safe-buffer').Buffer
 
 var modes = {
   'des-ede3-cbc': des.CBC.instantiate(des.EDE),
@@ -7097,10 +7751,16 @@ function DES (opts) {
     type = 'encrypt'
   }
   var key = opts.key
+  if (!Buffer.isBuffer(key)) {
+    key = Buffer.from(key)
+  }
   if (modeName === 'des-ede' || modeName === 'des-ede-cbc') {
     key = Buffer.concat([key, key.slice(0, 8)])
   }
   var iv = opts.iv
+  if (!Buffer.isBuffer(iv)) {
+    iv = Buffer.from(iv)
+  }
   this._des = mode.create({
     key: key,
     iv: iv,
@@ -7108,14 +7768,13 @@ function DES (opts) {
   })
 }
 DES.prototype._update = function (data) {
-  return new Buffer(this._des.update(data))
+  return Buffer.from(this._des.update(data))
 }
 DES.prototype._final = function () {
-  return new Buffer(this._des.final())
+  return Buffer.from(this._des.final())
 }
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":52,"cipher-base":54,"des.js":63,"inherits":107}],40:[function(require,module,exports){
+},{"cipher-base":57,"des.js":65,"inherits":108,"safe-buffer":165}],43:[function(require,module,exports){
 exports['des-ecb'] = {
   key: 8,
   iv: 0
@@ -7141,7 +7800,7 @@ exports['des-ede'] = {
   iv: 0
 }
 
-},{}],41:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 var randomBytes = require('randombytes');
@@ -7185,10 +7844,10 @@ function getr(priv) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":18,"buffer":52,"randombytes":149}],42:[function(require,module,exports){
+},{"bn.js":21,"buffer":55,"randombytes":149}],45:[function(require,module,exports){
 module.exports = require('./browser/algorithms.json')
 
-},{"./browser/algorithms.json":43}],43:[function(require,module,exports){
+},{"./browser/algorithms.json":46}],46:[function(require,module,exports){
 module.exports={
   "sha224WithRSAEncryption": {
     "sign": "rsa",
@@ -7342,7 +8001,7 @@ module.exports={
   }
 }
 
-},{}],44:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports={
   "1.3.132.0.10": "secp256k1",
   "1.3.132.0.33": "p224",
@@ -7352,7 +8011,7 @@ module.exports={
   "1.3.132.0.35": "p521"
 }
 
-},{}],45:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('create-hash')
 var stream = require('stream')
@@ -7447,7 +8106,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./algorithms.json":43,"./sign":46,"./verify":47,"buffer":52,"create-hash":57,"inherits":107,"stream":174}],46:[function(require,module,exports){
+},{"./algorithms.json":46,"./sign":49,"./verify":50,"buffer":55,"create-hash":60,"inherits":108,"stream":174}],49:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var createHmac = require('create-hmac')
@@ -7596,7 +8255,7 @@ module.exports.getKey = getKey
 module.exports.makeKey = makeKey
 
 }).call(this,require("buffer").Buffer)
-},{"./curves.json":44,"bn.js":18,"browserify-rsa":41,"buffer":52,"create-hmac":60,"elliptic":73,"parse-asn1":130}],47:[function(require,module,exports){
+},{"./curves.json":47,"bn.js":21,"browserify-rsa":44,"buffer":55,"create-hmac":62,"elliptic":75,"parse-asn1":130}],50:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var BN = require('bn.js')
@@ -7683,7 +8342,7 @@ function checkValue (b, q) {
 module.exports = verify
 
 }).call(this,require("buffer").Buffer)
-},{"./curves.json":44,"bn.js":18,"buffer":52,"elliptic":73,"parse-asn1":130}],48:[function(require,module,exports){
+},{"./curves.json":47,"bn.js":21,"buffer":55,"elliptic":75,"parse-asn1":130}],51:[function(require,module,exports){
 (function (process,Buffer){
 'use strict';
 /* eslint camelcase: "off" */
@@ -8095,7 +8754,7 @@ Zlib.prototype._reset = function () {
 
 exports.Zlib = Zlib;
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":138,"assert":16,"buffer":52,"pako/lib/zlib/constants":117,"pako/lib/zlib/deflate.js":119,"pako/lib/zlib/inflate.js":121,"pako/lib/zlib/zstream":125}],49:[function(require,module,exports){
+},{"_process":138,"assert":16,"buffer":55,"pako/lib/zlib/constants":117,"pako/lib/zlib/deflate.js":119,"pako/lib/zlib/inflate.js":121,"pako/lib/zlib/zstream":125}],52:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -8707,9 +9366,9 @@ util.inherits(DeflateRaw, Zlib);
 util.inherits(InflateRaw, Zlib);
 util.inherits(Unzip, Zlib);
 }).call(this,require('_process'))
-},{"./binding":48,"_process":138,"assert":16,"buffer":52,"stream":174,"util":186}],50:[function(require,module,exports){
-arguments[4][20][0].apply(exports,arguments)
-},{"dup":20}],51:[function(require,module,exports){
+},{"./binding":51,"_process":138,"assert":16,"buffer":55,"stream":174,"util":186}],53:[function(require,module,exports){
+arguments[4][23][0].apply(exports,arguments)
+},{"dup":23}],54:[function(require,module,exports){
 (function (Buffer){
 module.exports = function xor (a, b) {
   var length = Math.min(a.length, b.length)
@@ -8723,7 +9382,7 @@ module.exports = function xor (a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":52}],52:[function(require,module,exports){
+},{"buffer":55}],55:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -8772,7 +9431,7 @@ function typedArraySupport () {
   // Can typed array instances can be augmented?
   try {
     var arr = new Uint8Array(1)
-    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
+    arr.__proto__ = { __proto__: Uint8Array.prototype, foo: function () { return 42 } }
     return arr.foo() === 42
   } catch (e) {
     return false
@@ -8780,26 +9439,24 @@ function typedArraySupport () {
 }
 
 Object.defineProperty(Buffer.prototype, 'parent', {
+  enumerable: true,
   get: function () {
-    if (!(this instanceof Buffer)) {
-      return undefined
-    }
+    if (!Buffer.isBuffer(this)) return undefined
     return this.buffer
   }
 })
 
 Object.defineProperty(Buffer.prototype, 'offset', {
+  enumerable: true,
   get: function () {
-    if (!(this instanceof Buffer)) {
-      return undefined
-    }
+    if (!Buffer.isBuffer(this)) return undefined
     return this.byteOffset
   }
 })
 
 function createBuffer (length) {
   if (length > K_MAX_LENGTH) {
-    throw new RangeError('Invalid typed array length')
+    throw new RangeError('The value "' + length + '" is invalid for option "size"')
   }
   // Return an augmented `Uint8Array` instance
   var buf = new Uint8Array(length)
@@ -8821,8 +9478,8 @@ function Buffer (arg, encodingOrOffset, length) {
   // Common case.
   if (typeof arg === 'number') {
     if (typeof encodingOrOffset === 'string') {
-      throw new Error(
-        'If encoding is specified then the first argument must be a string'
+      throw new TypeError(
+        'The "string" argument must be of type string. Received type number'
       )
     }
     return allocUnsafe(arg)
@@ -8831,7 +9488,7 @@ function Buffer (arg, encodingOrOffset, length) {
 }
 
 // Fix subarray() in ES2016. See: https://github.com/feross/buffer/pull/97
-if (typeof Symbol !== 'undefined' && Symbol.species &&
+if (typeof Symbol !== 'undefined' && Symbol.species != null &&
     Buffer[Symbol.species] === Buffer) {
   Object.defineProperty(Buffer, Symbol.species, {
     value: null,
@@ -8844,19 +9501,51 @@ if (typeof Symbol !== 'undefined' && Symbol.species &&
 Buffer.poolSize = 8192 // not used by this implementation
 
 function from (value, encodingOrOffset, length) {
-  if (typeof value === 'number') {
-    throw new TypeError('"value" argument must not be a number')
-  }
-
-  if (isArrayBuffer(value) || (value && isArrayBuffer(value.buffer))) {
-    return fromArrayBuffer(value, encodingOrOffset, length)
-  }
-
   if (typeof value === 'string') {
     return fromString(value, encodingOrOffset)
   }
 
-  return fromObject(value)
+  if (ArrayBuffer.isView(value)) {
+    return fromArrayLike(value)
+  }
+
+  if (value == null) {
+    throw TypeError(
+      'The first argument must be one of type string, Buffer, ArrayBuffer, Array, ' +
+      'or Array-like Object. Received type ' + (typeof value)
+    )
+  }
+
+  if (isInstance(value, ArrayBuffer) ||
+      (value && isInstance(value.buffer, ArrayBuffer))) {
+    return fromArrayBuffer(value, encodingOrOffset, length)
+  }
+
+  if (typeof value === 'number') {
+    throw new TypeError(
+      'The "value" argument must not be of type number. Received type number'
+    )
+  }
+
+  var valueOf = value.valueOf && value.valueOf()
+  if (valueOf != null && valueOf !== value) {
+    return Buffer.from(valueOf, encodingOrOffset, length)
+  }
+
+  var b = fromObject(value)
+  if (b) return b
+
+  if (typeof Symbol !== 'undefined' && Symbol.toPrimitive != null &&
+      typeof value[Symbol.toPrimitive] === 'function') {
+    return Buffer.from(
+      value[Symbol.toPrimitive]('string'), encodingOrOffset, length
+    )
+  }
+
+  throw new TypeError(
+    'The first argument must be one of type string, Buffer, ArrayBuffer, Array, ' +
+    'or Array-like Object. Received type ' + (typeof value)
+  )
 }
 
 /**
@@ -8880,7 +9569,7 @@ function assertSize (size) {
   if (typeof size !== 'number') {
     throw new TypeError('"size" argument must be of type number')
   } else if (size < 0) {
-    throw new RangeError('"size" argument must not be negative')
+    throw new RangeError('The value "' + size + '" is invalid for option "size"')
   }
 }
 
@@ -8995,20 +9684,16 @@ function fromObject (obj) {
     return buf
   }
 
-  if (obj) {
-    if (ArrayBuffer.isView(obj) || 'length' in obj) {
-      if (typeof obj.length !== 'number' || numberIsNaN(obj.length)) {
-        return createBuffer(0)
-      }
-      return fromArrayLike(obj)
+  if (obj.length !== undefined) {
+    if (typeof obj.length !== 'number' || numberIsNaN(obj.length)) {
+      return createBuffer(0)
     }
-
-    if (obj.type === 'Buffer' && Array.isArray(obj.data)) {
-      return fromArrayLike(obj.data)
-    }
+    return fromArrayLike(obj)
   }
 
-  throw new TypeError('The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object.')
+  if (obj.type === 'Buffer' && Array.isArray(obj.data)) {
+    return fromArrayLike(obj.data)
+  }
 }
 
 function checked (length) {
@@ -9029,12 +9714,17 @@ function SlowBuffer (length) {
 }
 
 Buffer.isBuffer = function isBuffer (b) {
-  return b != null && b._isBuffer === true
+  return b != null && b._isBuffer === true &&
+    b !== Buffer.prototype // so Buffer.isBuffer(Buffer.prototype) will be false
 }
 
 Buffer.compare = function compare (a, b) {
+  if (isInstance(a, Uint8Array)) a = Buffer.from(a, a.offset, a.byteLength)
+  if (isInstance(b, Uint8Array)) b = Buffer.from(b, b.offset, b.byteLength)
   if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
-    throw new TypeError('Arguments must be Buffers')
+    throw new TypeError(
+      'The "buf1", "buf2" arguments must be one of type Buffer or Uint8Array'
+    )
   }
 
   if (a === b) return 0
@@ -9095,7 +9785,7 @@ Buffer.concat = function concat (list, length) {
   var pos = 0
   for (i = 0; i < list.length; ++i) {
     var buf = list[i]
-    if (ArrayBuffer.isView(buf)) {
+    if (isInstance(buf, Uint8Array)) {
       buf = Buffer.from(buf)
     }
     if (!Buffer.isBuffer(buf)) {
@@ -9111,15 +9801,19 @@ function byteLength (string, encoding) {
   if (Buffer.isBuffer(string)) {
     return string.length
   }
-  if (ArrayBuffer.isView(string) || isArrayBuffer(string)) {
+  if (ArrayBuffer.isView(string) || isInstance(string, ArrayBuffer)) {
     return string.byteLength
   }
   if (typeof string !== 'string') {
-    string = '' + string
+    throw new TypeError(
+      'The "string" argument must be one of type string, Buffer, or ArrayBuffer. ' +
+      'Received type ' + typeof string
+    )
   }
 
   var len = string.length
-  if (len === 0) return 0
+  var mustMatch = (arguments.length > 2 && arguments[2] === true)
+  if (!mustMatch && len === 0) return 0
 
   // Use a for loop to avoid recursion
   var loweredCase = false
@@ -9131,7 +9825,6 @@ function byteLength (string, encoding) {
         return len
       case 'utf8':
       case 'utf-8':
-      case undefined:
         return utf8ToBytes(string).length
       case 'ucs2':
       case 'ucs-2':
@@ -9143,7 +9836,9 @@ function byteLength (string, encoding) {
       case 'base64':
         return base64ToBytes(string).length
       default:
-        if (loweredCase) return utf8ToBytes(string).length // assume utf8
+        if (loweredCase) {
+          return mustMatch ? -1 : utf8ToBytes(string).length // assume utf8
+        }
         encoding = ('' + encoding).toLowerCase()
         loweredCase = true
     }
@@ -9290,16 +9985,20 @@ Buffer.prototype.equals = function equals (b) {
 Buffer.prototype.inspect = function inspect () {
   var str = ''
   var max = exports.INSPECT_MAX_BYTES
-  if (this.length > 0) {
-    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
-    if (this.length > max) str += ' ... '
-  }
+  str = this.toString('hex', 0, max).replace(/(.{2})/g, '$1 ').trim()
+  if (this.length > max) str += ' ... '
   return '<Buffer ' + str + '>'
 }
 
 Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
+  if (isInstance(target, Uint8Array)) {
+    target = Buffer.from(target, target.offset, target.byteLength)
+  }
   if (!Buffer.isBuffer(target)) {
-    throw new TypeError('Argument must be a Buffer')
+    throw new TypeError(
+      'The "target" argument must be one of type Buffer or Uint8Array. ' +
+      'Received type ' + (typeof target)
+    )
   }
 
   if (start === undefined) {
@@ -9378,7 +10077,7 @@ function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
   } else if (byteOffset < -0x80000000) {
     byteOffset = -0x80000000
   }
-  byteOffset = +byteOffset  // Coerce to Number.
+  byteOffset = +byteOffset // Coerce to Number.
   if (numberIsNaN(byteOffset)) {
     // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
     byteOffset = dir ? 0 : (buffer.length - 1)
@@ -9630,8 +10329,8 @@ function utf8Slice (buf, start, end) {
     var codePoint = null
     var bytesPerSequence = (firstByte > 0xEF) ? 4
       : (firstByte > 0xDF) ? 3
-      : (firstByte > 0xBF) ? 2
-      : 1
+        : (firstByte > 0xBF) ? 2
+          : 1
 
     if (i + bytesPerSequence <= end) {
       var secondByte, thirdByte, fourthByte, tempCodePoint
@@ -10294,7 +10993,7 @@ Buffer.prototype.fill = function fill (val, start, end, encoding) {
   } else {
     var bytes = Buffer.isBuffer(val)
       ? val
-      : new Buffer(val, encoding)
+      : Buffer.from(val, encoding)
     var len = bytes.length
     if (len === 0) {
       throw new TypeError('The value "' + val +
@@ -10449,19 +11148,20 @@ function blitBuffer (src, dst, offset, length) {
   return i
 }
 
-// ArrayBuffers from another context (i.e. an iframe) do not pass the `instanceof` check
-// but they should be treated as valid. See: https://github.com/feross/buffer/issues/166
-function isArrayBuffer (obj) {
-  return obj instanceof ArrayBuffer ||
-    (obj != null && obj.constructor != null && obj.constructor.name === 'ArrayBuffer' &&
-      typeof obj.byteLength === 'number')
+// ArrayBuffer or Uint8Array objects from other contexts (i.e. iframes) do not pass
+// the `instanceof` check but they should be treated as of that type.
+// See: https://github.com/feross/buffer/issues/166
+function isInstance (obj, type) {
+  return obj instanceof type ||
+    (obj != null && obj.constructor != null && obj.constructor.name != null &&
+      obj.constructor.name === type.name)
 }
-
 function numberIsNaN (obj) {
+  // For IE11 support
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":17,"ieee754":105}],53:[function(require,module,exports){
+},{"base64-js":20,"ieee754":107}],56:[function(require,module,exports){
 module.exports = {
   "100": "Continue",
   "101": "Switching Protocols",
@@ -10527,7 +11227,7 @@ module.exports = {
   "511": "Network Authentication Required"
 }
 
-},{}],54:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
 var StringDecoder = require('string_decoder').StringDecoder
@@ -10628,7 +11328,7 @@ CipherBase.prototype._toString = function (value, enc, fin) {
 
 module.exports = CipherBase
 
-},{"inherits":107,"safe-buffer":165,"stream":174,"string_decoder":179}],55:[function(require,module,exports){
+},{"inherits":108,"safe-buffer":165,"stream":174,"string_decoder":179}],58:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -10739,162 +11439,141 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":108}],56:[function(require,module,exports){
+},{"../../is-buffer/index.js":109}],59:[function(require,module,exports){
 (function (Buffer){
-var elliptic = require('elliptic');
-var BN = require('bn.js');
+var elliptic = require('elliptic')
+var BN = require('bn.js')
 
-module.exports = function createECDH(curve) {
-	return new ECDH(curve);
-};
+module.exports = function createECDH (curve) {
+  return new ECDH(curve)
+}
 
 var aliases = {
-	secp256k1: {
-		name: 'secp256k1',
-		byteLength: 32
-	},
-	secp224r1: {
-		name: 'p224',
-		byteLength: 28
-	},
-	prime256v1: {
-		name: 'p256',
-		byteLength: 32
-	},
-	prime192v1: {
-		name: 'p192',
-		byteLength: 24
-	},
-	ed25519: {
-		name: 'ed25519',
-		byteLength: 32
-	},
-	secp384r1: {
-		name: 'p384',
-		byteLength: 48
-	},
-	secp521r1: {
-		name: 'p521',
-		byteLength: 66
-	}
-};
+  secp256k1: {
+    name: 'secp256k1',
+    byteLength: 32
+  },
+  secp224r1: {
+    name: 'p224',
+    byteLength: 28
+  },
+  prime256v1: {
+    name: 'p256',
+    byteLength: 32
+  },
+  prime192v1: {
+    name: 'p192',
+    byteLength: 24
+  },
+  ed25519: {
+    name: 'ed25519',
+    byteLength: 32
+  },
+  secp384r1: {
+    name: 'p384',
+    byteLength: 48
+  },
+  secp521r1: {
+    name: 'p521',
+    byteLength: 66
+  }
+}
 
-aliases.p224 = aliases.secp224r1;
-aliases.p256 = aliases.secp256r1 = aliases.prime256v1;
-aliases.p192 = aliases.secp192r1 = aliases.prime192v1;
-aliases.p384 = aliases.secp384r1;
-aliases.p521 = aliases.secp521r1;
+aliases.p224 = aliases.secp224r1
+aliases.p256 = aliases.secp256r1 = aliases.prime256v1
+aliases.p192 = aliases.secp192r1 = aliases.prime192v1
+aliases.p384 = aliases.secp384r1
+aliases.p521 = aliases.secp521r1
 
-function ECDH(curve) {
-	this.curveType = aliases[curve];
-	if (!this.curveType ) {
-		this.curveType = {
-			name: curve
-		};
-	}
-	this.curve = new elliptic.ec(this.curveType.name);
-	this.keys = void 0;
+function ECDH (curve) {
+  this.curveType = aliases[curve]
+  if (!this.curveType) {
+    this.curveType = {
+      name: curve
+    }
+  }
+  this.curve = new elliptic.ec(this.curveType.name) // eslint-disable-line new-cap
+  this.keys = void 0
 }
 
 ECDH.prototype.generateKeys = function (enc, format) {
-	this.keys = this.curve.genKeyPair();
-	return this.getPublicKey(enc, format);
-};
+  this.keys = this.curve.genKeyPair()
+  return this.getPublicKey(enc, format)
+}
 
 ECDH.prototype.computeSecret = function (other, inenc, enc) {
-	inenc = inenc || 'utf8';
-	if (!Buffer.isBuffer(other)) {
-		other = new Buffer(other, inenc);
-	}
-	var otherPub = this.curve.keyFromPublic(other).getPublic();
-	var out = otherPub.mul(this.keys.getPrivate()).getX();
-	return formatReturnValue(out, enc, this.curveType.byteLength);
-};
+  inenc = inenc || 'utf8'
+  if (!Buffer.isBuffer(other)) {
+    other = new Buffer(other, inenc)
+  }
+  var otherPub = this.curve.keyFromPublic(other).getPublic()
+  var out = otherPub.mul(this.keys.getPrivate()).getX()
+  return formatReturnValue(out, enc, this.curveType.byteLength)
+}
 
 ECDH.prototype.getPublicKey = function (enc, format) {
-	var key = this.keys.getPublic(format === 'compressed', true);
-	if (format === 'hybrid') {
-		if (key[key.length - 1] % 2) {
-			key[0] = 7;
-		} else {
-			key [0] = 6;
-		}
-	}
-	return formatReturnValue(key, enc);
-};
+  var key = this.keys.getPublic(format === 'compressed', true)
+  if (format === 'hybrid') {
+    if (key[key.length - 1] % 2) {
+      key[0] = 7
+    } else {
+      key[0] = 6
+    }
+  }
+  return formatReturnValue(key, enc)
+}
 
 ECDH.prototype.getPrivateKey = function (enc) {
-	return formatReturnValue(this.keys.getPrivate(), enc);
-};
+  return formatReturnValue(this.keys.getPrivate(), enc)
+}
 
 ECDH.prototype.setPublicKey = function (pub, enc) {
-	enc = enc || 'utf8';
-	if (!Buffer.isBuffer(pub)) {
-		pub = new Buffer(pub, enc);
-	}
-	this.keys._importPublic(pub);
-	return this;
-};
+  enc = enc || 'utf8'
+  if (!Buffer.isBuffer(pub)) {
+    pub = new Buffer(pub, enc)
+  }
+  this.keys._importPublic(pub)
+  return this
+}
 
 ECDH.prototype.setPrivateKey = function (priv, enc) {
-	enc = enc || 'utf8';
-	if (!Buffer.isBuffer(priv)) {
-		priv = new Buffer(priv, enc);
-	}
-	var _priv = new BN(priv);
-	_priv = _priv.toString(16);
-	this.keys._importPrivate(_priv);
-	return this;
-};
+  enc = enc || 'utf8'
+  if (!Buffer.isBuffer(priv)) {
+    priv = new Buffer(priv, enc)
+  }
 
-function formatReturnValue(bn, enc, len) {
-	if (!Array.isArray(bn)) {
-		bn = bn.toArray();
-	}
-	var buf = new Buffer(bn);
-	if (len && buf.length < len) {
-		var zeros = new Buffer(len - buf.length);
-		zeros.fill(0);
-		buf = Buffer.concat([zeros, buf]);
-	}
-	if (!enc) {
-		return buf;
-	} else {
-		return buf.toString(enc);
-	}
+  var _priv = new BN(priv)
+  _priv = _priv.toString(16)
+  this.keys = this.curve.genKeyPair()
+  this.keys._importPrivate(_priv)
+  return this
+}
+
+function formatReturnValue (bn, enc, len) {
+  if (!Array.isArray(bn)) {
+    bn = bn.toArray()
+  }
+  var buf = new Buffer(bn)
+  if (len && buf.length < len) {
+    var zeros = new Buffer(len - buf.length)
+    zeros.fill(0)
+    buf = Buffer.concat([zeros, buf])
+  }
+  if (!enc) {
+    return buf
+  } else {
+    return buf.toString(enc)
+  }
 }
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":18,"buffer":52,"elliptic":73}],57:[function(require,module,exports){
-(function (Buffer){
+},{"bn.js":21,"buffer":55,"elliptic":75}],60:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
-var md5 = require('./md5')
+var MD5 = require('md5.js')
 var RIPEMD160 = require('ripemd160')
 var sha = require('sha.js')
-
 var Base = require('cipher-base')
-
-function HashNoConstructor (hash) {
-  Base.call(this, 'digest')
-
-  this._hash = hash
-  this.buffers = []
-}
-
-inherits(HashNoConstructor, Base)
-
-HashNoConstructor.prototype._update = function (data) {
-  this.buffers.push(data)
-}
-
-HashNoConstructor.prototype._final = function () {
-  var buf = Buffer.concat(this.buffers)
-  var r = this._hash(buf)
-  this.buffers = null
-
-  return r
-}
 
 function Hash (hash) {
   Base.call(this, 'digest')
@@ -10914,201 +11593,20 @@ Hash.prototype._final = function () {
 
 module.exports = function createHash (alg) {
   alg = alg.toLowerCase()
-  if (alg === 'md5') return new HashNoConstructor(md5)
-  if (alg === 'rmd160' || alg === 'ripemd160') return new Hash(new RIPEMD160())
+  if (alg === 'md5') return new MD5()
+  if (alg === 'rmd160' || alg === 'ripemd160') return new RIPEMD160()
 
   return new Hash(sha(alg))
 }
 
-}).call(this,require("buffer").Buffer)
-},{"./md5":59,"buffer":52,"cipher-base":54,"inherits":107,"ripemd160":164,"sha.js":167}],58:[function(require,module,exports){
-(function (Buffer){
-'use strict'
-var intSize = 4
-var zeroBuffer = new Buffer(intSize)
-zeroBuffer.fill(0)
+},{"cipher-base":57,"inherits":108,"md5.js":111,"ripemd160":164,"sha.js":167}],61:[function(require,module,exports){
+var MD5 = require('md5.js')
 
-var charSize = 8
-var hashSize = 16
-
-function toArray (buf) {
-  if ((buf.length % intSize) !== 0) {
-    var len = buf.length + (intSize - (buf.length % intSize))
-    buf = Buffer.concat([buf, zeroBuffer], len)
-  }
-
-  var arr = new Array(buf.length >>> 2)
-  for (var i = 0, j = 0; i < buf.length; i += intSize, j++) {
-    arr[j] = buf.readInt32LE(i)
-  }
-
-  return arr
+module.exports = function (buffer) {
+  return new MD5().update(buffer).digest()
 }
 
-module.exports = function hash (buf, fn) {
-  var arr = fn(toArray(buf), buf.length * charSize)
-  buf = new Buffer(hashSize)
-  for (var i = 0; i < arr.length; i++) {
-    buf.writeInt32LE(arr[i], i << 2, true)
-  }
-  return buf
-}
-
-}).call(this,require("buffer").Buffer)
-},{"buffer":52}],59:[function(require,module,exports){
-'use strict'
-/*
- * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
- * Digest Algorithm, as defined in RFC 1321.
- * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- * Distributed under the BSD License
- * See http://pajhome.org.uk/crypt/md5 for more info.
- */
-
-var makeHash = require('./make-hash')
-
-/*
- * Calculate the MD5 of an array of little-endian words, and a bit length
- */
-function core_md5 (x, len) {
-  /* append padding */
-  x[len >> 5] |= 0x80 << ((len) % 32)
-  x[(((len + 64) >>> 9) << 4) + 14] = len
-
-  var a = 1732584193
-  var b = -271733879
-  var c = -1732584194
-  var d = 271733878
-
-  for (var i = 0; i < x.length; i += 16) {
-    var olda = a
-    var oldb = b
-    var oldc = c
-    var oldd = d
-
-    a = md5_ff(a, b, c, d, x[i + 0], 7, -680876936)
-    d = md5_ff(d, a, b, c, x[i + 1], 12, -389564586)
-    c = md5_ff(c, d, a, b, x[i + 2], 17, 606105819)
-    b = md5_ff(b, c, d, a, x[i + 3], 22, -1044525330)
-    a = md5_ff(a, b, c, d, x[i + 4], 7, -176418897)
-    d = md5_ff(d, a, b, c, x[i + 5], 12, 1200080426)
-    c = md5_ff(c, d, a, b, x[i + 6], 17, -1473231341)
-    b = md5_ff(b, c, d, a, x[i + 7], 22, -45705983)
-    a = md5_ff(a, b, c, d, x[i + 8], 7, 1770035416)
-    d = md5_ff(d, a, b, c, x[i + 9], 12, -1958414417)
-    c = md5_ff(c, d, a, b, x[i + 10], 17, -42063)
-    b = md5_ff(b, c, d, a, x[i + 11], 22, -1990404162)
-    a = md5_ff(a, b, c, d, x[i + 12], 7, 1804603682)
-    d = md5_ff(d, a, b, c, x[i + 13], 12, -40341101)
-    c = md5_ff(c, d, a, b, x[i + 14], 17, -1502002290)
-    b = md5_ff(b, c, d, a, x[i + 15], 22, 1236535329)
-
-    a = md5_gg(a, b, c, d, x[i + 1], 5, -165796510)
-    d = md5_gg(d, a, b, c, x[i + 6], 9, -1069501632)
-    c = md5_gg(c, d, a, b, x[i + 11], 14, 643717713)
-    b = md5_gg(b, c, d, a, x[i + 0], 20, -373897302)
-    a = md5_gg(a, b, c, d, x[i + 5], 5, -701558691)
-    d = md5_gg(d, a, b, c, x[i + 10], 9, 38016083)
-    c = md5_gg(c, d, a, b, x[i + 15], 14, -660478335)
-    b = md5_gg(b, c, d, a, x[i + 4], 20, -405537848)
-    a = md5_gg(a, b, c, d, x[i + 9], 5, 568446438)
-    d = md5_gg(d, a, b, c, x[i + 14], 9, -1019803690)
-    c = md5_gg(c, d, a, b, x[i + 3], 14, -187363961)
-    b = md5_gg(b, c, d, a, x[i + 8], 20, 1163531501)
-    a = md5_gg(a, b, c, d, x[i + 13], 5, -1444681467)
-    d = md5_gg(d, a, b, c, x[i + 2], 9, -51403784)
-    c = md5_gg(c, d, a, b, x[i + 7], 14, 1735328473)
-    b = md5_gg(b, c, d, a, x[i + 12], 20, -1926607734)
-
-    a = md5_hh(a, b, c, d, x[i + 5], 4, -378558)
-    d = md5_hh(d, a, b, c, x[i + 8], 11, -2022574463)
-    c = md5_hh(c, d, a, b, x[i + 11], 16, 1839030562)
-    b = md5_hh(b, c, d, a, x[i + 14], 23, -35309556)
-    a = md5_hh(a, b, c, d, x[i + 1], 4, -1530992060)
-    d = md5_hh(d, a, b, c, x[i + 4], 11, 1272893353)
-    c = md5_hh(c, d, a, b, x[i + 7], 16, -155497632)
-    b = md5_hh(b, c, d, a, x[i + 10], 23, -1094730640)
-    a = md5_hh(a, b, c, d, x[i + 13], 4, 681279174)
-    d = md5_hh(d, a, b, c, x[i + 0], 11, -358537222)
-    c = md5_hh(c, d, a, b, x[i + 3], 16, -722521979)
-    b = md5_hh(b, c, d, a, x[i + 6], 23, 76029189)
-    a = md5_hh(a, b, c, d, x[i + 9], 4, -640364487)
-    d = md5_hh(d, a, b, c, x[i + 12], 11, -421815835)
-    c = md5_hh(c, d, a, b, x[i + 15], 16, 530742520)
-    b = md5_hh(b, c, d, a, x[i + 2], 23, -995338651)
-
-    a = md5_ii(a, b, c, d, x[i + 0], 6, -198630844)
-    d = md5_ii(d, a, b, c, x[i + 7], 10, 1126891415)
-    c = md5_ii(c, d, a, b, x[i + 14], 15, -1416354905)
-    b = md5_ii(b, c, d, a, x[i + 5], 21, -57434055)
-    a = md5_ii(a, b, c, d, x[i + 12], 6, 1700485571)
-    d = md5_ii(d, a, b, c, x[i + 3], 10, -1894986606)
-    c = md5_ii(c, d, a, b, x[i + 10], 15, -1051523)
-    b = md5_ii(b, c, d, a, x[i + 1], 21, -2054922799)
-    a = md5_ii(a, b, c, d, x[i + 8], 6, 1873313359)
-    d = md5_ii(d, a, b, c, x[i + 15], 10, -30611744)
-    c = md5_ii(c, d, a, b, x[i + 6], 15, -1560198380)
-    b = md5_ii(b, c, d, a, x[i + 13], 21, 1309151649)
-    a = md5_ii(a, b, c, d, x[i + 4], 6, -145523070)
-    d = md5_ii(d, a, b, c, x[i + 11], 10, -1120210379)
-    c = md5_ii(c, d, a, b, x[i + 2], 15, 718787259)
-    b = md5_ii(b, c, d, a, x[i + 9], 21, -343485551)
-
-    a = safe_add(a, olda)
-    b = safe_add(b, oldb)
-    c = safe_add(c, oldc)
-    d = safe_add(d, oldd)
-  }
-
-  return [a, b, c, d]
-}
-
-/*
- * These functions implement the four basic operations the algorithm uses.
- */
-function md5_cmn (q, a, b, x, s, t) {
-  return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s), b)
-}
-
-function md5_ff (a, b, c, d, x, s, t) {
-  return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t)
-}
-
-function md5_gg (a, b, c, d, x, s, t) {
-  return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t)
-}
-
-function md5_hh (a, b, c, d, x, s, t) {
-  return md5_cmn(b ^ c ^ d, a, b, x, s, t)
-}
-
-function md5_ii (a, b, c, d, x, s, t) {
-  return md5_cmn(c ^ (b | (~d)), a, b, x, s, t)
-}
-
-/*
- * Add integers, wrapping at 2^32. This uses 16-bit operations internally
- * to work around bugs in some JS interpreters.
- */
-function safe_add (x, y) {
-  var lsw = (x & 0xFFFF) + (y & 0xFFFF)
-  var msw = (x >> 16) + (y >> 16) + (lsw >> 16)
-  return (msw << 16) | (lsw & 0xFFFF)
-}
-
-/*
- * Bitwise rotate a 32-bit number to the left.
- */
-function bit_rol (num, cnt) {
-  return (num << cnt) | (num >>> (32 - cnt))
-}
-
-module.exports = function md5 (buf) {
-  return makeHash(buf, core_md5)
-}
-
-},{"./make-hash":58}],60:[function(require,module,exports){
+},{"md5.js":111}],62:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Legacy = require('./legacy')
@@ -11172,7 +11670,7 @@ module.exports = function createHmac (alg, key) {
   return new Hmac(alg, key)
 }
 
-},{"./legacy":61,"cipher-base":54,"create-hash/md5":59,"inherits":107,"ripemd160":164,"safe-buffer":165,"sha.js":167}],61:[function(require,module,exports){
+},{"./legacy":63,"cipher-base":57,"create-hash/md5":61,"inherits":108,"ripemd160":164,"safe-buffer":165,"sha.js":167}],63:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Buffer = require('safe-buffer').Buffer
@@ -11220,7 +11718,7 @@ Hmac.prototype._final = function () {
 }
 module.exports = Hmac
 
-},{"cipher-base":54,"inherits":107,"safe-buffer":165}],62:[function(require,module,exports){
+},{"cipher-base":57,"inherits":108,"safe-buffer":165}],64:[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -11319,7 +11817,7 @@ exports.constants = {
   'POINT_CONVERSION_HYBRID': 6
 }
 
-},{"browserify-cipher":38,"browserify-sign":45,"browserify-sign/algos":42,"create-ecdh":56,"create-hash":57,"create-hmac":60,"diffie-hellman":69,"pbkdf2":132,"public-encrypt":139,"randombytes":149,"randomfill":150}],63:[function(require,module,exports){
+},{"browserify-cipher":41,"browserify-sign":48,"browserify-sign/algos":45,"create-ecdh":59,"create-hash":60,"create-hmac":62,"diffie-hellman":71,"pbkdf2":132,"public-encrypt":139,"randombytes":149,"randomfill":150}],65:[function(require,module,exports){
 'use strict';
 
 exports.utils = require('./des/utils');
@@ -11328,7 +11826,7 @@ exports.DES = require('./des/des');
 exports.CBC = require('./des/cbc');
 exports.EDE = require('./des/ede');
 
-},{"./des/cbc":64,"./des/cipher":65,"./des/des":66,"./des/ede":67,"./des/utils":68}],64:[function(require,module,exports){
+},{"./des/cbc":66,"./des/cipher":67,"./des/des":68,"./des/ede":69,"./des/utils":70}],66:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -11395,7 +11893,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":107,"minimalistic-assert":113}],65:[function(require,module,exports){
+},{"inherits":108,"minimalistic-assert":113}],67:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -11538,7 +12036,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":113}],66:[function(require,module,exports){
+},{"minimalistic-assert":113}],68:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -11683,7 +12181,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"../des":63,"inherits":107,"minimalistic-assert":113}],67:[function(require,module,exports){
+},{"../des":65,"inherits":108,"minimalistic-assert":113}],69:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -11740,7 +12238,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"../des":63,"inherits":107,"minimalistic-assert":113}],68:[function(require,module,exports){
+},{"../des":65,"inherits":108,"minimalistic-assert":113}],70:[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -11998,7 +12496,7 @@ exports.padSplit = function padSplit(num, size, group) {
   return out.join(' ');
 };
 
-},{}],69:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 (function (Buffer){
 var generatePrime = require('./lib/generatePrime')
 var primes = require('./lib/primes.json')
@@ -12044,7 +12542,7 @@ exports.DiffieHellmanGroup = exports.createDiffieHellmanGroup = exports.getDiffi
 exports.createDiffieHellman = exports.DiffieHellman = createDiffieHellman
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/dh":70,"./lib/generatePrime":71,"./lib/primes.json":72,"buffer":52}],70:[function(require,module,exports){
+},{"./lib/dh":72,"./lib/generatePrime":73,"./lib/primes.json":74,"buffer":55}],72:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js');
 var MillerRabin = require('miller-rabin');
@@ -12212,7 +12710,7 @@ function formatReturnValue(bn, enc) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./generatePrime":71,"bn.js":18,"buffer":52,"miller-rabin":112,"randombytes":149}],71:[function(require,module,exports){
+},{"./generatePrime":73,"bn.js":21,"buffer":55,"miller-rabin":112,"randombytes":149}],73:[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -12319,7 +12817,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":18,"miller-rabin":112,"randombytes":149}],72:[function(require,module,exports){
+},{"bn.js":21,"miller-rabin":112,"randombytes":149}],74:[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -12354,7 +12852,7 @@ module.exports={
         "prime": "ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a92108011a723c12a787e6d788719a10bdba5b2699c327186af4e23c1a946834b6150bda2583e9ca2ad44ce8dbbbc2db04de8ef92e8efc141fbecaa6287c59474e6bc05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd0069127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c93402849236c3fab4d27c7026c1d4dcb2602646dec9751e763dba37bdf8ff9406ad9e530ee5db382f413001aeb06a53ed9027d831179727b0865a8918da3edbebcf9b14ed44ce6cbaced4bb1bdb7f1447e6cc254b332051512bd7af426fb8f401378cd2bf5983ca01c64b92ecf032ea15d1721d03f482d7ce6e74fef6d55e702f46980c82b5a84031900b1c9e59e7c97fbec7e8f323a97a7e36cc88be0f1d45b7ff585ac54bd407b22b4154aacc8f6d7ebf48e1d814cc5ed20f8037e0a79715eef29be32806a1d58bb7c5da76f550aa3d8a1fbff0eb19ccb1a313d55cda56c9ec2ef29632387fe8d76e3c0468043e8f663f4860ee12bf2d5b0b7474d6e694f91e6dbe115974a3926f12fee5e438777cb6a932df8cd8bec4d073b931ba3bc832b68d9dd300741fa7bf8afc47ed2576f6936ba424663aab639c5ae4f5683423b4742bf1c978238f16cbe39d652de3fdb8befc848ad922222e04a4037c0713eb57a81a23f0c73473fc646cea306b4bcbc8862f8385ddfa9d4b7fa2c087e879683303ed5bdd3a062b3cf5b3a278a66d2a13f83f44f82ddf310ee074ab6a364597e899a0255dc164f31cc50846851df9ab48195ded7ea1b1d510bd7ee74d73faf36bc31ecfa268359046f4eb879f924009438b481c6cd7889a002ed5ee382bc9190da6fc026e479558e4475677e9aa9e3050e2765694dfc81f56e880b96e7160c980dd98edd3dfffffffffffffffff"
     }
 }
-},{}],73:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 'use strict';
 
 var elliptic = exports;
@@ -12369,7 +12867,7 @@ elliptic.curves = require('./elliptic/curves');
 elliptic.ec = require('./elliptic/ec');
 elliptic.eddsa = require('./elliptic/eddsa');
 
-},{"../package.json":88,"./elliptic/curve":76,"./elliptic/curves":79,"./elliptic/ec":80,"./elliptic/eddsa":83,"./elliptic/utils":87,"brorand":19}],74:[function(require,module,exports){
+},{"../package.json":90,"./elliptic/curve":78,"./elliptic/curves":81,"./elliptic/ec":82,"./elliptic/eddsa":85,"./elliptic/utils":89,"brorand":22}],76:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -12746,7 +13244,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":73,"bn.js":18}],75:[function(require,module,exports){
+},{"../../elliptic":75,"bn.js":21}],77:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -12823,10 +13321,10 @@ EdwardsCurve.prototype.pointFromY = function pointFromY(y, odd) {
   if (!y.red)
     y = y.toRed(this.red);
 
-  // x^2 = (y^2 - 1) / (d y^2 + 1)
+  // x^2 = (y^2 - c^2) / (c^2 d y^2 - a)
   var y2 = y.redSqr();
-  var lhs = y2.redSub(this.one);
-  var rhs = y2.redMul(this.d).redAdd(this.one);
+  var lhs = y2.redSub(this.c2);
+  var rhs = y2.redMul(this.d).redMul(this.c2).redSub(this.a);
   var x2 = lhs.redMul(rhs.redInvm());
 
   if (x2.cmp(this.zero) === 0) {
@@ -12840,7 +13338,7 @@ EdwardsCurve.prototype.pointFromY = function pointFromY(y, odd) {
   if (x.redSqr().redSub(x2).cmp(this.zero) !== 0)
     throw new Error('invalid point');
 
-  if (x.isOdd() !== odd)
+  if (x.fromRed().isOdd() !== odd)
     x = x.redNeg();
 
   return this.point(x, y);
@@ -12917,7 +13415,8 @@ Point.prototype.inspect = function inspect() {
 Point.prototype.isInfinity = function isInfinity() {
   // XXX This code assumes that zero is always zero in red
   return this.x.cmpn(0) === 0 &&
-         this.y.cmp(this.z) === 0;
+    (this.y.cmp(this.z) === 0 ||
+    (this.zOne && this.y.cmp(this.curve.c) === 0));
 };
 
 Point.prototype._extDbl = function _extDbl() {
@@ -12998,7 +13497,7 @@ Point.prototype._projDbl = function _projDbl() {
     // E = C + D
     var e = c.redAdd(d);
     // H = (c * Z1)^2
-    var h = this.curve._mulC(this.c.redMul(this.z)).redSqr();
+    var h = this.curve._mulC(this.z).redSqr();
     // J = E - 2 * H
     var j = e.redSub(h).redSub(h);
     // X3 = c * (B - E) * J
@@ -13174,14 +13673,13 @@ Point.prototype.eqXToP = function eqXToP(x) {
     if (this.x.cmp(rx) === 0)
       return true;
   }
-  return false;
 };
 
 // Compatibility with BaseCurve
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":73,"../curve":76,"bn.js":18,"inherits":107}],76:[function(require,module,exports){
+},{"../../elliptic":75,"../curve":78,"bn.js":21,"inherits":108}],78:[function(require,module,exports){
 'use strict';
 
 var curve = exports;
@@ -13191,7 +13689,7 @@ curve.short = require('./short');
 curve.mont = require('./mont');
 curve.edwards = require('./edwards');
 
-},{"./base":74,"./edwards":75,"./mont":77,"./short":78}],77:[function(require,module,exports){
+},{"./base":76,"./edwards":77,"./mont":79,"./short":80}],79:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -13373,7 +13871,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":73,"../curve":76,"bn.js":18,"inherits":107}],78:[function(require,module,exports){
+},{"../../elliptic":75,"../curve":78,"bn.js":21,"inherits":108}],80:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -14297,7 +14795,6 @@ JPoint.prototype.eqXToP = function eqXToP(x) {
     if (this.x.cmp(rx) === 0)
       return true;
   }
-  return false;
 };
 
 JPoint.prototype.inspect = function inspect() {
@@ -14313,7 +14810,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":73,"../curve":76,"bn.js":18,"inherits":107}],79:[function(require,module,exports){
+},{"../../elliptic":75,"../curve":78,"bn.js":21,"inherits":108}],81:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -14520,7 +15017,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":73,"./precomputed/secp256k1":86,"hash.js":92}],80:[function(require,module,exports){
+},{"../elliptic":75,"./precomputed/secp256k1":88,"hash.js":94}],82:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -14762,7 +15259,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":73,"./key":81,"./signature":82,"bn.js":18,"hmac-drbg":104}],81:[function(require,module,exports){
+},{"../../elliptic":75,"./key":83,"./signature":84,"bn.js":21,"hmac-drbg":106}],83:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -14883,7 +15380,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"../../elliptic":73,"bn.js":18}],82:[function(require,module,exports){
+},{"../../elliptic":75,"bn.js":21}],84:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -15020,7 +15517,7 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":73,"bn.js":18}],83:[function(require,module,exports){
+},{"../../elliptic":75,"bn.js":21}],85:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -15140,7 +15637,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
-},{"../../elliptic":73,"./key":84,"./signature":85,"hash.js":92}],84:[function(require,module,exports){
+},{"../../elliptic":75,"./key":86,"./signature":87,"hash.js":94}],86:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -15238,7 +15735,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":73}],85:[function(require,module,exports){
+},{"../../elliptic":75}],87:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -15306,7 +15803,7 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":73,"bn.js":18}],86:[function(require,module,exports){
+},{"../../elliptic":75,"bn.js":21}],88:[function(require,module,exports){
 module.exports = {
   doubles: {
     step: 4,
@@ -16088,7 +16585,7 @@ module.exports = {
   }
 };
 
-},{}],87:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -16210,12 +16707,12 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":18,"minimalistic-assert":113,"minimalistic-crypto-utils":114}],88:[function(require,module,exports){
+},{"bn.js":21,"minimalistic-assert":113,"minimalistic-crypto-utils":114}],90:[function(require,module,exports){
 module.exports={
   "_from": "elliptic@^6.0.0",
-  "_id": "elliptic@6.4.0",
+  "_id": "elliptic@6.4.1",
   "_inBundle": false,
-  "_integrity": "sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=",
+  "_integrity": "sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
@@ -16232,10 +16729,10 @@ module.exports={
     "/browserify-sign",
     "/create-ecdh"
   ],
-  "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
-  "_shasum": "cac9af8762c85836187003c8dfe193e5e2eae5df",
+  "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz",
+  "_shasum": "c2d0b7776911b86722c632c3c06c60f2f819939a",
   "_spec": "elliptic@^6.0.0",
-  "_where": "E:\\projects\\applitools\\eyes.sdk.javascript1\\eyes.images.browser\\node_modules\\browserify-sign",
+  "_where": "E:\\projects\\applitools\\eyes.sdk.javascript1\\eyes-images-browser\\node_modules\\browserify-sign",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -16296,10 +16793,10 @@ module.exports={
     "unit": "istanbul test _mocha --reporter=spec test/index.js",
     "version": "grunt dist && git add dist/"
   },
-  "version": "6.4.0"
+  "version": "6.4.1"
 }
 
-},{}],89:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -16730,24 +17227,28 @@ EventEmitter.prototype.removeAllListeners =
       return this;
     };
 
-EventEmitter.prototype.listeners = function listeners(type) {
-  var evlistener;
-  var ret;
-  var events = this._events;
+function _listeners(target, type, unwrap) {
+  var events = target._events;
 
   if (!events)
-    ret = [];
-  else {
-    evlistener = events[type];
-    if (!evlistener)
-      ret = [];
-    else if (typeof evlistener === 'function')
-      ret = [evlistener.listener || evlistener];
-    else
-      ret = unwrapListeners(evlistener);
-  }
+    return [];
 
-  return ret;
+  var evlistener = events[type];
+  if (!evlistener)
+    return [];
+
+  if (typeof evlistener === 'function')
+    return unwrap ? [evlistener.listener || evlistener] : [evlistener];
+
+  return unwrap ? unwrapListeners(evlistener) : arrayClone(evlistener, evlistener.length);
+}
+
+EventEmitter.prototype.listeners = function listeners(type) {
+  return _listeners(this, type, true);
+};
+
+EventEmitter.prototype.rawListeners = function rawListeners(type) {
+  return _listeners(this, type, false);
 };
 
 EventEmitter.listenerCount = function(emitter, type) {
@@ -16820,7 +17321,7 @@ function functionBindPolyfill(context) {
   };
 }
 
-},{}],90:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var MD5 = require('md5.js')
 
@@ -16867,16 +17368,22 @@ function EVP_BytesToKey (password, salt, keyBits, ivLen) {
 
 module.exports = EVP_BytesToKey
 
-},{"md5.js":110,"safe-buffer":165}],91:[function(require,module,exports){
-(function (Buffer){
+},{"md5.js":111,"safe-buffer":165}],93:[function(require,module,exports){
 'use strict'
+var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
 var inherits = require('inherits')
+
+function throwIfNotStringOrBuffer (val, prefix) {
+  if (!Buffer.isBuffer(val) && typeof val !== 'string') {
+    throw new TypeError(prefix + ' must be a string or a buffer')
+  }
+}
 
 function HashBase (blockSize) {
   Transform.call(this)
 
-  this._block = new Buffer(blockSize)
+  this._block = Buffer.allocUnsafe(blockSize)
   this._blockSize = blockSize
   this._blockOffset = 0
   this._length = [0, 0, 0, 0]
@@ -16889,8 +17396,7 @@ inherits(HashBase, Transform)
 HashBase.prototype._transform = function (chunk, encoding, callback) {
   var error = null
   try {
-    if (encoding !== 'buffer') chunk = new Buffer(chunk, encoding)
-    this.update(chunk)
+    this.update(chunk, encoding)
   } catch (err) {
     error = err
   }
@@ -16901,7 +17407,7 @@ HashBase.prototype._transform = function (chunk, encoding, callback) {
 HashBase.prototype._flush = function (callback) {
   var error = null
   try {
-    this.push(this._digest())
+    this.push(this.digest())
   } catch (err) {
     error = err
   }
@@ -16910,9 +17416,9 @@ HashBase.prototype._flush = function (callback) {
 }
 
 HashBase.prototype.update = function (data, encoding) {
-  if (!Buffer.isBuffer(data) && typeof data !== 'string') throw new TypeError('Data must be a string or a buffer')
+  throwIfNotStringOrBuffer(data, 'Data')
   if (this._finalized) throw new Error('Digest already called')
-  if (!Buffer.isBuffer(data)) data = new Buffer(data, encoding || 'binary')
+  if (!Buffer.isBuffer(data)) data = Buffer.from(data, encoding)
 
   // consume data
   var block = this._block
@@ -16934,7 +17440,7 @@ HashBase.prototype.update = function (data, encoding) {
   return this
 }
 
-HashBase.prototype._update = function (data) {
+HashBase.prototype._update = function () {
   throw new Error('_update is not implemented')
 }
 
@@ -16944,6 +17450,12 @@ HashBase.prototype.digest = function (encoding) {
 
   var digest = this._digest()
   if (encoding !== undefined) digest = digest.toString(encoding)
+
+  // reset state
+  this._block.fill(0)
+  this._blockOffset = 0
+  for (var i = 0; i < 4; ++i) this._length[i] = 0
+
   return digest
 }
 
@@ -16953,8 +17465,7 @@ HashBase.prototype._digest = function () {
 
 module.exports = HashBase
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":52,"inherits":107,"stream":174}],92:[function(require,module,exports){
+},{"inherits":108,"safe-buffer":165,"stream":174}],94:[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -16971,7 +17482,7 @@ hash.sha384 = hash.sha.sha384;
 hash.sha512 = hash.sha.sha512;
 hash.ripemd160 = hash.ripemd.ripemd160;
 
-},{"./hash/common":93,"./hash/hmac":94,"./hash/ripemd":95,"./hash/sha":96,"./hash/utils":103}],93:[function(require,module,exports){
+},{"./hash/common":95,"./hash/hmac":96,"./hash/ripemd":97,"./hash/sha":98,"./hash/utils":105}],95:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -17065,7 +17576,7 @@ BlockHash.prototype._pad = function pad() {
   return res;
 };
 
-},{"./utils":103,"minimalistic-assert":113}],94:[function(require,module,exports){
+},{"./utils":105,"minimalistic-assert":113}],96:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -17114,7 +17625,7 @@ Hmac.prototype.digest = function digest(enc) {
   return this.outer.digest(enc);
 };
 
-},{"./utils":103,"minimalistic-assert":113}],95:[function(require,module,exports){
+},{"./utils":105,"minimalistic-assert":113}],97:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -17262,7 +17773,7 @@ var sh = [
   8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
 ];
 
-},{"./common":93,"./utils":103}],96:[function(require,module,exports){
+},{"./common":95,"./utils":105}],98:[function(require,module,exports){
 'use strict';
 
 exports.sha1 = require('./sha/1');
@@ -17271,7 +17782,7 @@ exports.sha256 = require('./sha/256');
 exports.sha384 = require('./sha/384');
 exports.sha512 = require('./sha/512');
 
-},{"./sha/1":97,"./sha/224":98,"./sha/256":99,"./sha/384":100,"./sha/512":101}],97:[function(require,module,exports){
+},{"./sha/1":99,"./sha/224":100,"./sha/256":101,"./sha/384":102,"./sha/512":103}],99:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -17347,7 +17858,7 @@ SHA1.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":93,"../utils":103,"./common":102}],98:[function(require,module,exports){
+},{"../common":95,"../utils":105,"./common":104}],100:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -17379,7 +17890,7 @@ SHA224.prototype._digest = function digest(enc) {
 };
 
 
-},{"../utils":103,"./256":99}],99:[function(require,module,exports){
+},{"../utils":105,"./256":101}],101:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -17486,7 +17997,7 @@ SHA256.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":93,"../utils":103,"./common":102,"minimalistic-assert":113}],100:[function(require,module,exports){
+},{"../common":95,"../utils":105,"./common":104,"minimalistic-assert":113}],102:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -17523,7 +18034,7 @@ SHA384.prototype._digest = function digest(enc) {
     return utils.split32(this.h.slice(0, 12), 'big');
 };
 
-},{"../utils":103,"./512":101}],101:[function(require,module,exports){
+},{"../utils":105,"./512":103}],103:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -17855,7 +18366,7 @@ function g1_512_lo(xh, xl) {
   return r;
 }
 
-},{"../common":93,"../utils":103,"minimalistic-assert":113}],102:[function(require,module,exports){
+},{"../common":95,"../utils":105,"minimalistic-assert":113}],104:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -17906,7 +18417,7 @@ function g1_256(x) {
 }
 exports.g1_256 = g1_256;
 
-},{"../utils":103}],103:[function(require,module,exports){
+},{"../utils":105}],105:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -18161,7 +18672,7 @@ function shr64_lo(ah, al, num) {
 }
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":107,"minimalistic-assert":113}],104:[function(require,module,exports){
+},{"inherits":108,"minimalistic-assert":113}],106:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -18276,7 +18787,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   return utils.encode(res, enc);
 };
 
-},{"hash.js":92,"minimalistic-assert":113,"minimalistic-crypto-utils":114}],105:[function(require,module,exports){
+},{"hash.js":94,"minimalistic-assert":113,"minimalistic-crypto-utils":114}],107:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -18362,43 +18873,9 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],106:[function(require,module,exports){
-
-var indexOf = [].indexOf;
-
-module.exports = function(arr, obj){
-  if (indexOf) return arr.indexOf(obj);
-  for (var i = 0; i < arr.length; ++i) {
-    if (arr[i] === obj) return i;
-  }
-  return -1;
-};
-},{}],107:[function(require,module,exports){
-if (typeof Object.create === 'function') {
-  // implementation from standard node.js 'util' module
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    ctor.prototype = Object.create(superCtor.prototype, {
-      constructor: {
-        value: ctor,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-  };
-} else {
-  // old school shim for old browsers
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    var TempCtor = function () {}
-    TempCtor.prototype = superCtor.prototype
-    ctor.prototype = new TempCtor()
-    ctor.prototype.constructor = ctor
-  }
-}
-
 },{}],108:[function(require,module,exports){
+arguments[4][17][0].apply(exports,arguments)
+},{"dup":17}],109:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -18421,18 +18898,18 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],109:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],110:[function(require,module,exports){
-(function (Buffer){
+},{}],111:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var HashBase = require('hash-base')
+var Buffer = require('safe-buffer').Buffer
 
 var ARRAY16 = new Array(16)
 
@@ -18546,7 +19023,7 @@ MD5.prototype._digest = function () {
   this._update()
 
   // produce result
-  var buffer = new Buffer(16)
+  var buffer = Buffer.allocUnsafe(16)
   buffer.writeInt32LE(this._a, 0)
   buffer.writeInt32LE(this._b, 4)
   buffer.writeInt32LE(this._c, 8)
@@ -18576,105 +19053,7 @@ function fnI (a, b, c, d, m, k, s) {
 
 module.exports = MD5
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":52,"hash-base":111,"inherits":107}],111:[function(require,module,exports){
-'use strict'
-var Buffer = require('safe-buffer').Buffer
-var Transform = require('stream').Transform
-var inherits = require('inherits')
-
-function throwIfNotStringOrBuffer (val, prefix) {
-  if (!Buffer.isBuffer(val) && typeof val !== 'string') {
-    throw new TypeError(prefix + ' must be a string or a buffer')
-  }
-}
-
-function HashBase (blockSize) {
-  Transform.call(this)
-
-  this._block = Buffer.allocUnsafe(blockSize)
-  this._blockSize = blockSize
-  this._blockOffset = 0
-  this._length = [0, 0, 0, 0]
-
-  this._finalized = false
-}
-
-inherits(HashBase, Transform)
-
-HashBase.prototype._transform = function (chunk, encoding, callback) {
-  var error = null
-  try {
-    this.update(chunk, encoding)
-  } catch (err) {
-    error = err
-  }
-
-  callback(error)
-}
-
-HashBase.prototype._flush = function (callback) {
-  var error = null
-  try {
-    this.push(this.digest())
-  } catch (err) {
-    error = err
-  }
-
-  callback(error)
-}
-
-HashBase.prototype.update = function (data, encoding) {
-  throwIfNotStringOrBuffer(data, 'Data')
-  if (this._finalized) throw new Error('Digest already called')
-  if (!Buffer.isBuffer(data)) data = Buffer.from(data, encoding)
-
-  // consume data
-  var block = this._block
-  var offset = 0
-  while (this._blockOffset + data.length - offset >= this._blockSize) {
-    for (var i = this._blockOffset; i < this._blockSize;) block[i++] = data[offset++]
-    this._update()
-    this._blockOffset = 0
-  }
-  while (offset < data.length) block[this._blockOffset++] = data[offset++]
-
-  // update length
-  for (var j = 0, carry = data.length * 8; carry > 0; ++j) {
-    this._length[j] += carry
-    carry = (this._length[j] / 0x0100000000) | 0
-    if (carry > 0) this._length[j] -= 0x0100000000 * carry
-  }
-
-  return this
-}
-
-HashBase.prototype._update = function () {
-  throw new Error('_update is not implemented')
-}
-
-HashBase.prototype.digest = function (encoding) {
-  if (this._finalized) throw new Error('Digest already called')
-  this._finalized = true
-
-  var digest = this._digest()
-  if (encoding !== undefined) digest = digest.toString(encoding)
-
-  // reset state
-  this._block.fill(0)
-  this._blockOffset = 0
-  for (var i = 0; i < 4; ++i) this._length[i] = 0
-
-  return digest
-}
-
-HashBase.prototype._digest = function () {
-  throw new Error('_digest is not implemented')
-}
-
-module.exports = HashBase
-
-},{"inherits":107,"safe-buffer":165,"stream":174}],112:[function(require,module,exports){
+},{"hash-base":93,"inherits":108,"safe-buffer":165}],112:[function(require,module,exports){
 var bn = require('bn.js');
 var brorand = require('brorand');
 
@@ -18791,7 +19170,7 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
   return false;
 };
 
-},{"bn.js":18,"brorand":19}],113:[function(require,module,exports){
+},{"bn.js":21,"brorand":22}],113:[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -24817,9 +25196,9 @@ module.exports = X509Certificate
 },{"asn1.js":2}],129:[function(require,module,exports){
 (function (Buffer){
 // adapted from https://github.com/apatil/pemstrip
-var findProc = /Proc-Type: 4,ENCRYPTED\n\r?DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)\n\r?\n\r?([0-9A-z\n\r\+\/\=]+)\n\r?/m
-var startRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----\n/m
-var fullRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----\n\r?([0-9A-z\n\r\+\/\=]+)\n\r?-----END \1-----$/m
+var findProc = /Proc-Type: 4,ENCRYPTED[\n\r]+DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)[\n\r]+([0-9A-z\n\r\+\/\=]+)[\n\r]+/m
+var startRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----/m
+var fullRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----([0-9A-z\n\r\+\/\=]+)-----END \1-----$/m
 var evp = require('evp_bytestokey')
 var ciphers = require('browserify-aes')
 module.exports = function (okey, password) {
@@ -24828,11 +25207,11 @@ module.exports = function (okey, password) {
   var decrypted
   if (!match) {
     var match2 = key.match(fullRegex)
-    decrypted = new Buffer(match2[2].replace(/\r?\n/g, ''), 'base64')
+    decrypted = new Buffer(match2[2].replace(/[\r\n]/g, ''), 'base64')
   } else {
     var suite = 'aes' + match[1]
     var iv = new Buffer(match[2], 'hex')
-    var cipherText = new Buffer(match[3].replace(/\r?\n/g, ''), 'base64')
+    var cipherText = new Buffer(match[3].replace(/[\r\n]/g, ''), 'base64')
     var cipherKey = evp(password, iv.slice(0, 8), parseInt(match[1], 10)).key
     var out = []
     var cipher = ciphers.createDecipheriv(suite, cipherKey, iv)
@@ -24848,7 +25227,7 @@ module.exports = function (okey, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"browserify-aes":23,"buffer":52,"evp_bytestokey":90}],130:[function(require,module,exports){
+},{"browserify-aes":26,"buffer":55,"evp_bytestokey":92}],130:[function(require,module,exports){
 (function (Buffer){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
@@ -24958,8 +25337,11 @@ function decrypt (data, password) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./aesid.json":126,"./asn1":127,"./fixProc":129,"browserify-aes":23,"buffer":52,"pbkdf2":132}],131:[function(require,module,exports){
+},{"./aesid.json":126,"./asn1":127,"./fixProc":129,"browserify-aes":26,"buffer":55,"pbkdf2":132}],131:[function(require,module,exports){
 (function (process){
+// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
+// backported and transplited with Babel, with backwards-compat fixes
+
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -25010,14 +25392,6 @@ function normalizeArray(parts, allowAboveRoot) {
 
   return parts;
 }
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
 
 // path.resolve([from ...], to)
 // posix version
@@ -25134,37 +25508,120 @@ exports.relative = function(from, to) {
 exports.sep = '/';
 exports.delimiter = ':';
 
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
+exports.dirname = function (path) {
+  if (typeof path !== 'string') path = path + '';
+  if (path.length === 0) return '.';
+  var code = path.charCodeAt(0);
+  var hasRoot = code === 47 /*/*/;
+  var end = -1;
+  var matchedSlash = true;
+  for (var i = path.length - 1; i >= 1; --i) {
+    code = path.charCodeAt(i);
+    if (code === 47 /*/*/) {
+        if (!matchedSlash) {
+          end = i;
+          break;
+        }
+      } else {
+      // We saw the first non-path separator
+      matchedSlash = false;
+    }
   }
 
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
+  if (end === -1) return hasRoot ? '/' : '.';
+  if (hasRoot && end === 1) {
+    // return '//';
+    // Backwards-compat fix:
+    return '/';
   }
-
-  return root + dir;
+  return path.slice(0, end);
 };
 
+function basename(path) {
+  if (typeof path !== 'string') path = path + '';
 
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
+  var start = 0;
+  var end = -1;
+  var matchedSlash = true;
+  var i;
+
+  for (i = path.length - 1; i >= 0; --i) {
+    if (path.charCodeAt(i) === 47 /*/*/) {
+        // If we reached a path separator that was not part of a set of path
+        // separators at the end of the string, stop now
+        if (!matchedSlash) {
+          start = i + 1;
+          break;
+        }
+      } else if (end === -1) {
+      // We saw the first non-path separator, mark this as the end of our
+      // path component
+      matchedSlash = false;
+      end = i + 1;
+    }
+  }
+
+  if (end === -1) return '';
+  return path.slice(start, end);
+}
+
+// Uses a mixed approach for backwards-compatibility, as ext behavior changed
+// in new Node.js versions, so only basename() above is backported here
+exports.basename = function (path, ext) {
+  var f = basename(path);
   if (ext && f.substr(-1 * ext.length) === ext) {
     f = f.substr(0, f.length - ext.length);
   }
   return f;
 };
 
+exports.extname = function (path) {
+  if (typeof path !== 'string') path = path + '';
+  var startDot = -1;
+  var startPart = 0;
+  var end = -1;
+  var matchedSlash = true;
+  // Track the state of characters (if any) we see before our first dot and
+  // after any path separator we find
+  var preDotState = 0;
+  for (var i = path.length - 1; i >= 0; --i) {
+    var code = path.charCodeAt(i);
+    if (code === 47 /*/*/) {
+        // If we reached a path separator that was not part of a set of path
+        // separators at the end of the string, stop now
+        if (!matchedSlash) {
+          startPart = i + 1;
+          break;
+        }
+        continue;
+      }
+    if (end === -1) {
+      // We saw the first non-path separator, mark this as the end of our
+      // extension
+      matchedSlash = false;
+      end = i + 1;
+    }
+    if (code === 46 /*.*/) {
+        // If this is our first dot, mark it as the start of our extension
+        if (startDot === -1)
+          startDot = i;
+        else if (preDotState !== 1)
+          preDotState = 1;
+    } else if (startDot !== -1) {
+      // We saw a non-dot and non-path separator before our dot, so we should
+      // have a good chance at having a non-empty extension
+      preDotState = -1;
+    }
+  }
 
-exports.extname = function(path) {
-  return splitPath(path)[3];
+  if (startDot === -1 || end === -1 ||
+      // We saw a non-dot character immediately before the dot
+      preDotState === 0 ||
+      // The (right-most) trimmed path component is exactly '..'
+      preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+    return '';
+  }
+  return path.slice(startDot, end);
 };
 
 function filter (xs, f) {
@@ -25187,9 +25644,7 @@ var substr = 'ab'.substr(-1) === 'b'
 
 }).call(this,require('_process'))
 },{"_process":138}],132:[function(require,module,exports){
-
 exports.pbkdf2 = require('./lib/async')
-
 exports.pbkdf2Sync = require('./lib/sync')
 
 },{"./lib/async":133,"./lib/sync":136}],133:[function(require,module,exports){
@@ -25233,6 +25688,7 @@ function checkNative (algo) {
   checks[algo] = prom
   return prom
 }
+
 function browserPbkdf2 (password, salt, iterations, length, algo) {
   return subtle.importKey(
     'raw', password, {name: 'PBKDF2'}, false, ['deriveBits']
@@ -25249,6 +25705,7 @@ function browserPbkdf2 (password, salt, iterations, length, algo) {
     return Buffer.from(res)
   })
 }
+
 function resolvePromise (promise, callback) {
   promise.then(function (out) {
     process.nextTick(function () {
@@ -25261,18 +25718,14 @@ function resolvePromise (promise, callback) {
   })
 }
 module.exports = function (password, salt, iterations, keylen, digest, callback) {
-  if (!Buffer.isBuffer(password)) password = Buffer.from(password, defaultEncoding)
-  if (!Buffer.isBuffer(salt)) salt = Buffer.from(salt, defaultEncoding)
-
-  checkParameters(iterations, keylen)
   if (typeof digest === 'function') {
     callback = digest
     digest = undefined
   }
-  if (typeof callback !== 'function') throw new Error('No callback provided to pbkdf2')
 
   digest = digest || 'sha1'
   var algo = toBrowser[digest.toLowerCase()]
+
   if (!algo || typeof global.Promise !== 'function') {
     return process.nextTick(function () {
       var out
@@ -25284,12 +25737,16 @@ module.exports = function (password, salt, iterations, keylen, digest, callback)
       callback(null, out)
     })
   }
+
+  checkParameters(password, salt, iterations, keylen)
+  if (typeof callback !== 'function') throw new Error('No callback provided to pbkdf2')
+  if (!Buffer.isBuffer(password)) password = Buffer.from(password, defaultEncoding)
+  if (!Buffer.isBuffer(salt)) salt = Buffer.from(salt, defaultEncoding)
+
   resolvePromise(checkNative(algo).then(function (resp) {
-    if (resp) {
-      return browserPbkdf2(password, salt, iterations, keylen, algo)
-    } else {
-      return sync(password, salt, iterations, keylen, digest)
-    }
+    if (resp) return browserPbkdf2(password, salt, iterations, keylen, algo)
+
+    return sync(password, salt, iterations, keylen, digest)
   }), callback)
 }
 
@@ -25309,8 +25766,19 @@ module.exports = defaultEncoding
 
 }).call(this,require('_process'))
 },{"_process":138}],135:[function(require,module,exports){
+(function (Buffer){
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
-module.exports = function (iterations, keylen) {
+
+function checkBuffer (buf, name) {
+  if (typeof buf !== 'string' && !Buffer.isBuffer(buf)) {
+    throw new TypeError(name + ' must be a buffer or string')
+  }
+}
+
+module.exports = function (password, salt, iterations, keylen) {
+  checkBuffer(password, 'Password')
+  checkBuffer(salt, 'Salt')
+
   if (typeof iterations !== 'number') {
     throw new TypeError('Iterations not a number')
   }
@@ -25328,9 +25796,10 @@ module.exports = function (iterations, keylen) {
   }
 }
 
-},{}],136:[function(require,module,exports){
+}).call(this,{"isBuffer":require("../../is-buffer/index.js")})
+},{"../../is-buffer/index.js":109}],136:[function(require,module,exports){
 var md5 = require('create-hash/md5')
-var rmd160 = require('ripemd160')
+var RIPEMD160 = require('ripemd160')
 var sha = require('sha.js')
 
 var checkParameters = require('./precondition')
@@ -25387,17 +25856,20 @@ function getDigest (alg) {
   function shaFunc (data) {
     return sha(alg).update(data).digest()
   }
+  function rmd160Func (data) {
+    return new RIPEMD160().update(data).digest()
+  }
 
-  if (alg === 'rmd160' || alg === 'ripemd160') return rmd160
+  if (alg === 'rmd160' || alg === 'ripemd160') return rmd160Func
   if (alg === 'md5') return md5
   return shaFunc
 }
 
 function pbkdf2 (password, salt, iterations, keylen, digest) {
+  checkParameters(password, salt, iterations, keylen)
+
   if (!Buffer.isBuffer(password)) password = Buffer.from(password, defaultEncoding)
   if (!Buffer.isBuffer(salt)) salt = Buffer.from(salt, defaultEncoding)
-
-  checkParameters(iterations, keylen)
 
   digest = digest || 'sha1'
 
@@ -25431,7 +25903,7 @@ function pbkdf2 (password, salt, iterations, keylen, digest) {
 
 module.exports = pbkdf2
 
-},{"./default-encoding":134,"./precondition":135,"create-hash/md5":59,"ripemd160":164,"safe-buffer":165,"sha.js":167}],137:[function(require,module,exports){
+},{"./default-encoding":134,"./precondition":135,"create-hash/md5":61,"ripemd160":164,"safe-buffer":165,"sha.js":167}],137:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -25666,266 +26138,259 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],139:[function(require,module,exports){
-exports.publicEncrypt = require('./publicEncrypt');
-exports.privateDecrypt = require('./privateDecrypt');
+exports.publicEncrypt = require('./publicEncrypt')
+exports.privateDecrypt = require('./privateDecrypt')
 
-exports.privateEncrypt = function privateEncrypt(key, buf) {
-  return exports.publicEncrypt(key, buf, true);
-};
-
-exports.publicDecrypt = function publicDecrypt(key, buf) {
-  return exports.privateDecrypt(key, buf, true);
-};
-},{"./privateDecrypt":141,"./publicEncrypt":142}],140:[function(require,module,exports){
-(function (Buffer){
-var createHash = require('create-hash');
-module.exports = function (seed, len) {
-  var t = new Buffer('');
-  var  i = 0, c;
-  while (t.length < len) {
-    c = i2ops(i++);
-    t = Buffer.concat([t, createHash('sha1').update(seed).update(c).digest()]);
-  }
-  return t.slice(0, len);
-};
-
-function i2ops(c) {
-  var out = new Buffer(4);
-  out.writeUInt32BE(c,0);
-  return out;
+exports.privateEncrypt = function privateEncrypt (key, buf) {
+  return exports.publicEncrypt(key, buf, true)
 }
-}).call(this,require("buffer").Buffer)
-},{"buffer":52,"create-hash":57}],141:[function(require,module,exports){
-(function (Buffer){
-var parseKeys = require('parse-asn1');
-var mgf = require('./mgf');
-var xor = require('./xor');
-var bn = require('bn.js');
-var crt = require('browserify-rsa');
-var createHash = require('create-hash');
-var withPublic = require('./withPublic');
-module.exports = function privateDecrypt(private_key, enc, reverse) {
-  var padding;
-  if (private_key.padding) {
-    padding = private_key.padding;
-  } else if (reverse) {
-    padding = 1;
-  } else {
-    padding = 4;
-  }
-  
-  var key = parseKeys(private_key);
-  var k = key.modulus.byteLength();
-  if (enc.length > k || new bn(enc).cmp(key.modulus) >= 0) {
-    throw new Error('decryption error');
-  }
-  var msg;
-  if (reverse) {
-    msg = withPublic(new bn(enc), key);
-  } else {
-    msg = crt(enc, key);
-  }
-  var zBuffer = new Buffer(k - msg.length);
-  zBuffer.fill(0);
-  msg = Buffer.concat([zBuffer, msg], k);
-  if (padding === 4) {
-    return oaep(key, msg);
-  } else if (padding === 1) {
-    return pkcs1(key, msg, reverse);
-  } else if (padding === 3) {
-    return msg;
-  } else {
-    throw new Error('unknown padding');
-  }
-};
 
-function oaep(key, msg){
-  var n = key.modulus;
-  var k = key.modulus.byteLength();
-  var mLen = msg.length;
-  var iHash = createHash('sha1').update(new Buffer('')).digest();
-  var hLen = iHash.length;
-  var hLen2 = 2 * hLen;
+exports.publicDecrypt = function publicDecrypt (key, buf) {
+  return exports.privateDecrypt(key, buf, true)
+}
+
+},{"./privateDecrypt":141,"./publicEncrypt":142}],140:[function(require,module,exports){
+var createHash = require('create-hash')
+var Buffer = require('safe-buffer').Buffer
+
+module.exports = function (seed, len) {
+  var t = Buffer.alloc(0)
+  var i = 0
+  var c
+  while (t.length < len) {
+    c = i2ops(i++)
+    t = Buffer.concat([t, createHash('sha1').update(seed).update(c).digest()])
+  }
+  return t.slice(0, len)
+}
+
+function i2ops (c) {
+  var out = Buffer.allocUnsafe(4)
+  out.writeUInt32BE(c, 0)
+  return out
+}
+
+},{"create-hash":60,"safe-buffer":165}],141:[function(require,module,exports){
+var parseKeys = require('parse-asn1')
+var mgf = require('./mgf')
+var xor = require('./xor')
+var BN = require('bn.js')
+var crt = require('browserify-rsa')
+var createHash = require('create-hash')
+var withPublic = require('./withPublic')
+var Buffer = require('safe-buffer').Buffer
+
+module.exports = function privateDecrypt (privateKey, enc, reverse) {
+  var padding
+  if (privateKey.padding) {
+    padding = privateKey.padding
+  } else if (reverse) {
+    padding = 1
+  } else {
+    padding = 4
+  }
+
+  var key = parseKeys(privateKey)
+  var k = key.modulus.byteLength()
+  if (enc.length > k || new BN(enc).cmp(key.modulus) >= 0) {
+    throw new Error('decryption error')
+  }
+  var msg
+  if (reverse) {
+    msg = withPublic(new BN(enc), key)
+  } else {
+    msg = crt(enc, key)
+  }
+  var zBuffer = Buffer.alloc(k - msg.length)
+  msg = Buffer.concat([zBuffer, msg], k)
+  if (padding === 4) {
+    return oaep(key, msg)
+  } else if (padding === 1) {
+    return pkcs1(key, msg, reverse)
+  } else if (padding === 3) {
+    return msg
+  } else {
+    throw new Error('unknown padding')
+  }
+}
+
+function oaep (key, msg) {
+  var k = key.modulus.byteLength()
+  var iHash = createHash('sha1').update(Buffer.alloc(0)).digest()
+  var hLen = iHash.length
   if (msg[0] !== 0) {
-    throw new Error('decryption error');
+    throw new Error('decryption error')
   }
-  var maskedSeed = msg.slice(1, hLen + 1);
-  var maskedDb =  msg.slice(hLen + 1);
-  var seed = xor(maskedSeed, mgf(maskedDb, hLen));
-  var db = xor(maskedDb, mgf(seed, k - hLen - 1));
+  var maskedSeed = msg.slice(1, hLen + 1)
+  var maskedDb = msg.slice(hLen + 1)
+  var seed = xor(maskedSeed, mgf(maskedDb, hLen))
+  var db = xor(maskedDb, mgf(seed, k - hLen - 1))
   if (compare(iHash, db.slice(0, hLen))) {
-    throw new Error('decryption error');
+    throw new Error('decryption error')
   }
-  var i = hLen;
+  var i = hLen
   while (db[i] === 0) {
-    i++;
+    i++
   }
   if (db[i++] !== 1) {
-    throw new Error('decryption error');
+    throw new Error('decryption error')
   }
-  return db.slice(i);
+  return db.slice(i)
 }
 
-function pkcs1(key, msg, reverse){
-  var p1 = msg.slice(0, 2);
-  var i = 2;
-  var status = 0;
+function pkcs1 (key, msg, reverse) {
+  var p1 = msg.slice(0, 2)
+  var i = 2
+  var status = 0
   while (msg[i++] !== 0) {
     if (i >= msg.length) {
-      status++;
-      break;
+      status++
+      break
     }
   }
-  var ps = msg.slice(2, i - 1);
-  var p2 = msg.slice(i - 1, i);
+  var ps = msg.slice(2, i - 1)
 
-  if ((p1.toString('hex') !== '0002' && !reverse) || (p1.toString('hex') !== '0001' && reverse)){
-    status++;
+  if ((p1.toString('hex') !== '0002' && !reverse) || (p1.toString('hex') !== '0001' && reverse)) {
+    status++
   }
   if (ps.length < 8) {
-    status++;
+    status++
   }
   if (status) {
-    throw new Error('decryption error');
+    throw new Error('decryption error')
   }
-  return  msg.slice(i);
+  return msg.slice(i)
 }
-function compare(a, b){
-  a = new Buffer(a);
-  b = new Buffer(b);
-  var dif = 0;
-  var len = a.length;
+function compare (a, b) {
+  a = Buffer.from(a)
+  b = Buffer.from(b)
+  var dif = 0
+  var len = a.length
   if (a.length !== b.length) {
-    dif++;
-    len = Math.min(a.length, b.length);
+    dif++
+    len = Math.min(a.length, b.length)
   }
-  var i = -1;
+  var i = -1
   while (++i < len) {
-    dif += (a[i] ^ b[i]);
+    dif += (a[i] ^ b[i])
   }
-  return dif;
+  return dif
 }
-}).call(this,require("buffer").Buffer)
-},{"./mgf":140,"./withPublic":143,"./xor":144,"bn.js":18,"browserify-rsa":41,"buffer":52,"create-hash":57,"parse-asn1":130}],142:[function(require,module,exports){
-(function (Buffer){
-var parseKeys = require('parse-asn1');
-var randomBytes = require('randombytes');
-var createHash = require('create-hash');
-var mgf = require('./mgf');
-var xor = require('./xor');
-var bn = require('bn.js');
-var withPublic = require('./withPublic');
-var crt = require('browserify-rsa');
 
-var constants = {
-  RSA_PKCS1_OAEP_PADDING: 4,
-  RSA_PKCS1_PADDIN: 1,
-  RSA_NO_PADDING: 3
-};
+},{"./mgf":140,"./withPublic":143,"./xor":144,"bn.js":21,"browserify-rsa":44,"create-hash":60,"parse-asn1":130,"safe-buffer":165}],142:[function(require,module,exports){
+var parseKeys = require('parse-asn1')
+var randomBytes = require('randombytes')
+var createHash = require('create-hash')
+var mgf = require('./mgf')
+var xor = require('./xor')
+var BN = require('bn.js')
+var withPublic = require('./withPublic')
+var crt = require('browserify-rsa')
+var Buffer = require('safe-buffer').Buffer
 
-module.exports = function publicEncrypt(public_key, msg, reverse) {
-  var padding;
-  if (public_key.padding) {
-    padding = public_key.padding;
+module.exports = function publicEncrypt (publicKey, msg, reverse) {
+  var padding
+  if (publicKey.padding) {
+    padding = publicKey.padding
   } else if (reverse) {
-    padding = 1;
+    padding = 1
   } else {
-    padding = 4;
+    padding = 4
   }
-  var key = parseKeys(public_key);
-  var paddedMsg;
+  var key = parseKeys(publicKey)
+  var paddedMsg
   if (padding === 4) {
-    paddedMsg = oaep(key, msg);
+    paddedMsg = oaep(key, msg)
   } else if (padding === 1) {
-    paddedMsg = pkcs1(key, msg, reverse);
+    paddedMsg = pkcs1(key, msg, reverse)
   } else if (padding === 3) {
-    paddedMsg = new bn(msg);
+    paddedMsg = new BN(msg)
     if (paddedMsg.cmp(key.modulus) >= 0) {
-      throw new Error('data too long for modulus');
+      throw new Error('data too long for modulus')
     }
   } else {
-    throw new Error('unknown padding');
+    throw new Error('unknown padding')
   }
   if (reverse) {
-    return crt(paddedMsg, key);
+    return crt(paddedMsg, key)
   } else {
-    return withPublic(paddedMsg, key);
+    return withPublic(paddedMsg, key)
   }
-};
+}
 
-function oaep(key, msg){
-  var k = key.modulus.byteLength();
-  var mLen = msg.length;
-  var iHash = createHash('sha1').update(new Buffer('')).digest();
-  var hLen = iHash.length;
-  var hLen2 = 2 * hLen;
+function oaep (key, msg) {
+  var k = key.modulus.byteLength()
+  var mLen = msg.length
+  var iHash = createHash('sha1').update(Buffer.alloc(0)).digest()
+  var hLen = iHash.length
+  var hLen2 = 2 * hLen
   if (mLen > k - hLen2 - 2) {
-    throw new Error('message too long');
+    throw new Error('message too long')
   }
-  var ps = new Buffer(k - mLen - hLen2 - 2);
-  ps.fill(0);
-  var dblen = k - hLen - 1;
-  var seed = randomBytes(hLen);
-  var maskedDb = xor(Buffer.concat([iHash, ps, new Buffer([1]), msg], dblen), mgf(seed, dblen));
-  var maskedSeed = xor(seed, mgf(maskedDb, hLen));
-  return new bn(Buffer.concat([new Buffer([0]), maskedSeed, maskedDb], k));
+  var ps = Buffer.alloc(k - mLen - hLen2 - 2)
+  var dblen = k - hLen - 1
+  var seed = randomBytes(hLen)
+  var maskedDb = xor(Buffer.concat([iHash, ps, Buffer.alloc(1, 1), msg], dblen), mgf(seed, dblen))
+  var maskedSeed = xor(seed, mgf(maskedDb, hLen))
+  return new BN(Buffer.concat([Buffer.alloc(1), maskedSeed, maskedDb], k))
 }
-function pkcs1(key, msg, reverse){
-  var mLen = msg.length;
-  var k = key.modulus.byteLength();
+function pkcs1 (key, msg, reverse) {
+  var mLen = msg.length
+  var k = key.modulus.byteLength()
   if (mLen > k - 11) {
-    throw new Error('message too long');
+    throw new Error('message too long')
   }
-  var ps;
+  var ps
   if (reverse) {
-    ps = new Buffer(k - mLen - 3);
-    ps.fill(0xff);
+    ps = Buffer.alloc(k - mLen - 3, 0xff)
   } else {
-    ps = nonZero(k - mLen - 3);
+    ps = nonZero(k - mLen - 3)
   }
-  return new bn(Buffer.concat([new Buffer([0, reverse?1:2]), ps, new Buffer([0]), msg], k));
+  return new BN(Buffer.concat([Buffer.from([0, reverse ? 1 : 2]), ps, Buffer.alloc(1), msg], k))
 }
-function nonZero(len, crypto) {
-  var out = new Buffer(len);
-  var i = 0;
-  var cache = randomBytes(len*2);
-  var cur = 0;
-  var num;
+function nonZero (len) {
+  var out = Buffer.allocUnsafe(len)
+  var i = 0
+  var cache = randomBytes(len * 2)
+  var cur = 0
+  var num
   while (i < len) {
     if (cur === cache.length) {
-      cache = randomBytes(len*2);
-      cur = 0;
+      cache = randomBytes(len * 2)
+      cur = 0
     }
-    num = cache[cur++];
+    num = cache[cur++]
     if (num) {
-      out[i++] = num;
+      out[i++] = num
     }
   }
-  return out;
-}
-}).call(this,require("buffer").Buffer)
-},{"./mgf":140,"./withPublic":143,"./xor":144,"bn.js":18,"browserify-rsa":41,"buffer":52,"create-hash":57,"parse-asn1":130,"randombytes":149}],143:[function(require,module,exports){
-(function (Buffer){
-var bn = require('bn.js');
-function withPublic(paddedMsg, key) {
-  return new Buffer(paddedMsg
-    .toRed(bn.mont(key.modulus))
-    .redPow(new bn(key.publicExponent))
-    .fromRed()
-    .toArray());
+  return out
 }
 
-module.exports = withPublic;
-}).call(this,require("buffer").Buffer)
-},{"bn.js":18,"buffer":52}],144:[function(require,module,exports){
-module.exports = function xor(a, b) {
-  var len = a.length;
-  var i = -1;
+},{"./mgf":140,"./withPublic":143,"./xor":144,"bn.js":21,"browserify-rsa":44,"create-hash":60,"parse-asn1":130,"randombytes":149,"safe-buffer":165}],143:[function(require,module,exports){
+var BN = require('bn.js')
+var Buffer = require('safe-buffer').Buffer
+
+function withPublic (paddedMsg, key) {
+  return Buffer.from(paddedMsg
+    .toRed(BN.mont(key.modulus))
+    .redPow(new BN(key.publicExponent))
+    .fromRed()
+    .toArray())
+}
+
+module.exports = withPublic
+
+},{"bn.js":21,"safe-buffer":165}],144:[function(require,module,exports){
+module.exports = function xor (a, b) {
+  var len = a.length
+  var i = -1
   while (++i < len) {
-    a[i] ^= b[i];
+    a[i] ^= b[i]
   }
   return a
-};
+}
+
 },{}],145:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
@@ -26854,10 +27319,13 @@ var Writable = require('./_stream_writable');
 
 util.inherits(Duplex, Readable);
 
-var keys = objectKeys(Writable.prototype);
-for (var v = 0; v < keys.length; v++) {
-  var method = keys[v];
-  if (!Duplex.prototype[method]) Duplex.prototype[method] = Writable.prototype[method];
+{
+  // avoid scope creep, the keys array can then be collected
+  var keys = objectKeys(Writable.prototype);
+  for (var v = 0; v < keys.length; v++) {
+    var method = keys[v];
+    if (!Duplex.prototype[method]) Duplex.prototype[method] = Writable.prototype[method];
+  }
 }
 
 function Duplex(options) {
@@ -26875,6 +27343,16 @@ function Duplex(options) {
 
   this.once('end', onend);
 }
+
+Object.defineProperty(Duplex.prototype, 'writableHighWaterMark', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function () {
+    return this._writableState.highWaterMark;
+  }
+});
 
 // the no-half-open enforcer
 function onend() {
@@ -26918,13 +27396,7 @@ Duplex.prototype._destroy = function (err, cb) {
 
   pna.nextTick(cb, err);
 };
-
-function forEach(xs, f) {
-  for (var i = 0, l = xs.length; i < l; i++) {
-    f(xs[i], i);
-  }
-}
-},{"./_stream_readable":154,"./_stream_writable":156,"core-util-is":55,"inherits":107,"process-nextick-args":137}],153:[function(require,module,exports){
+},{"./_stream_readable":154,"./_stream_writable":156,"core-util-is":58,"inherits":108,"process-nextick-args":137}],153:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -26972,7 +27444,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":155,"core-util-is":55,"inherits":107}],154:[function(require,module,exports){
+},{"./_stream_transform":155,"core-util-is":58,"inherits":108}],154:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -27852,6 +28324,16 @@ Readable.prototype.wrap = function (stream) {
   return this;
 };
 
+Object.defineProperty(Readable.prototype, 'readableHighWaterMark', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function () {
+    return this._readableState.highWaterMark;
+  }
+});
+
 // exposed for testing purposes only.
 Readable._fromList = fromList;
 
@@ -27977,12 +28459,6 @@ function endReadableNT(state, stream) {
   }
 }
 
-function forEach(xs, f) {
-  for (var i = 0, l = xs.length; i < l; i++) {
-    f(xs[i], i);
-  }
-}
-
 function indexOf(xs, x) {
   for (var i = 0, l = xs.length; i < l; i++) {
     if (xs[i] === x) return i;
@@ -27990,7 +28466,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":152,"./internal/streams/BufferList":157,"./internal/streams/destroy":158,"./internal/streams/stream":159,"_process":138,"core-util-is":55,"events":89,"inherits":107,"isarray":109,"process-nextick-args":137,"safe-buffer":165,"string_decoder/":179,"util":20}],155:[function(require,module,exports){
+},{"./_stream_duplex":152,"./internal/streams/BufferList":157,"./internal/streams/destroy":158,"./internal/streams/stream":159,"_process":138,"core-util-is":58,"events":91,"inherits":108,"isarray":110,"process-nextick-args":137,"safe-buffer":165,"string_decoder/":179,"util":23}],155:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -28205,8 +28681,8 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":152,"core-util-is":55,"inherits":107}],156:[function(require,module,exports){
-(function (process,global){
+},{"./_stream_duplex":152,"core-util-is":58,"inherits":108}],156:[function(require,module,exports){
+(function (process,global,setImmediate){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -28577,6 +29053,16 @@ function decodeChunk(state, chunk, encoding) {
   return chunk;
 }
 
+Object.defineProperty(Writable.prototype, 'writableHighWaterMark', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function () {
+    return this._writableState.highWaterMark;
+  }
+});
+
 // if we're already writing something, then just put this
 // in the queue, and wait our turn.  Otherwise, call _write
 // If we return false, then we need a drain event, so set that flag.
@@ -28884,8 +29370,8 @@ Writable.prototype._destroy = function (err, cb) {
   this.end();
   cb(err);
 };
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":152,"./internal/streams/destroy":158,"./internal/streams/stream":159,"_process":138,"core-util-is":55,"inherits":107,"process-nextick-args":137,"safe-buffer":165,"util-deprecate":183}],157:[function(require,module,exports){
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
+},{"./_stream_duplex":152,"./internal/streams/destroy":158,"./internal/streams/stream":159,"_process":138,"core-util-is":58,"inherits":108,"process-nextick-args":137,"safe-buffer":165,"timers":180,"util-deprecate":184}],157:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -28965,7 +29451,7 @@ if (util && util.inspect && util.inspect.custom) {
     return this.constructor.name + ' ' + obj;
   };
 }
-},{"safe-buffer":165,"util":20}],158:[function(require,module,exports){
+},{"safe-buffer":165,"util":23}],158:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -29043,7 +29529,7 @@ module.exports = {
 },{"process-nextick-args":137}],159:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":89}],160:[function(require,module,exports){
+},{"events":91}],160:[function(require,module,exports){
 module.exports = require('./readable').PassThrough
 
 },{"./readable":161}],161:[function(require,module,exports){
@@ -29062,10 +29548,47 @@ module.exports = require('./readable').Transform
 module.exports = require('./lib/_stream_writable.js');
 
 },{"./lib/_stream_writable.js":156}],164:[function(require,module,exports){
-(function (Buffer){
 'use strict'
+var Buffer = require('buffer').Buffer
 var inherits = require('inherits')
 var HashBase = require('hash-base')
+
+var ARRAY16 = new Array(16)
+
+var zl = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+  7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
+  3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
+  1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7, 15, 14, 5, 6, 2,
+  4, 0, 5, 9, 7, 12, 2, 10, 14, 1, 3, 8, 11, 6, 15, 13
+]
+
+var zr = [
+  5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12,
+  6, 11, 3, 7, 0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2,
+  15, 5, 1, 3, 7, 14, 6, 9, 11, 8, 12, 2, 10, 0, 4, 13,
+  8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14,
+  12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3, 9, 11
+]
+
+var sl = [
+  11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8,
+  7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12,
+  11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5,
+  11, 12, 14, 15, 14, 15, 9, 8, 9, 14, 5, 6, 8, 6, 5, 12,
+  9, 15, 5, 11, 6, 8, 13, 12, 5, 12, 13, 14, 11, 8, 5, 6
+]
+
+var sr = [
+  8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6,
+  9, 13, 15, 7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11,
+  9, 7, 15, 11, 8, 6, 6, 14, 12, 13, 5, 14, 13, 13, 7, 5,
+  15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8,
+  8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
+]
+
+var hl = [0x00000000, 0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xa953fd4e]
+var hr = [0x50a28be6, 0x5c4dd124, 0x6d703ef3, 0x7a6d76e9, 0x00000000]
 
 function RIPEMD160 () {
   HashBase.call(this, 64)
@@ -29081,222 +29604,56 @@ function RIPEMD160 () {
 inherits(RIPEMD160, HashBase)
 
 RIPEMD160.prototype._update = function () {
-  var m = new Array(16)
-  for (var i = 0; i < 16; ++i) m[i] = this._block.readInt32LE(i * 4)
+  var words = ARRAY16
+  for (var j = 0; j < 16; ++j) words[j] = this._block.readInt32LE(j * 4)
 
-  var al = this._a
-  var bl = this._b
-  var cl = this._c
-  var dl = this._d
-  var el = this._e
+  var al = this._a | 0
+  var bl = this._b | 0
+  var cl = this._c | 0
+  var dl = this._d | 0
+  var el = this._e | 0
 
-  // Mj = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-  // K = 0x00000000
-  // Sj = 11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8
-  al = fn1(al, bl, cl, dl, el, m[0], 0x00000000, 11); cl = rotl(cl, 10)
-  el = fn1(el, al, bl, cl, dl, m[1], 0x00000000, 14); bl = rotl(bl, 10)
-  dl = fn1(dl, el, al, bl, cl, m[2], 0x00000000, 15); al = rotl(al, 10)
-  cl = fn1(cl, dl, el, al, bl, m[3], 0x00000000, 12); el = rotl(el, 10)
-  bl = fn1(bl, cl, dl, el, al, m[4], 0x00000000, 5); dl = rotl(dl, 10)
-  al = fn1(al, bl, cl, dl, el, m[5], 0x00000000, 8); cl = rotl(cl, 10)
-  el = fn1(el, al, bl, cl, dl, m[6], 0x00000000, 7); bl = rotl(bl, 10)
-  dl = fn1(dl, el, al, bl, cl, m[7], 0x00000000, 9); al = rotl(al, 10)
-  cl = fn1(cl, dl, el, al, bl, m[8], 0x00000000, 11); el = rotl(el, 10)
-  bl = fn1(bl, cl, dl, el, al, m[9], 0x00000000, 13); dl = rotl(dl, 10)
-  al = fn1(al, bl, cl, dl, el, m[10], 0x00000000, 14); cl = rotl(cl, 10)
-  el = fn1(el, al, bl, cl, dl, m[11], 0x00000000, 15); bl = rotl(bl, 10)
-  dl = fn1(dl, el, al, bl, cl, m[12], 0x00000000, 6); al = rotl(al, 10)
-  cl = fn1(cl, dl, el, al, bl, m[13], 0x00000000, 7); el = rotl(el, 10)
-  bl = fn1(bl, cl, dl, el, al, m[14], 0x00000000, 9); dl = rotl(dl, 10)
-  al = fn1(al, bl, cl, dl, el, m[15], 0x00000000, 8); cl = rotl(cl, 10)
+  var ar = this._a | 0
+  var br = this._b | 0
+  var cr = this._c | 0
+  var dr = this._d | 0
+  var er = this._e | 0
 
-  // Mj = 7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8
-  // K = 0x5a827999
-  // Sj = 7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12
-  el = fn2(el, al, bl, cl, dl, m[7], 0x5a827999, 7); bl = rotl(bl, 10)
-  dl = fn2(dl, el, al, bl, cl, m[4], 0x5a827999, 6); al = rotl(al, 10)
-  cl = fn2(cl, dl, el, al, bl, m[13], 0x5a827999, 8); el = rotl(el, 10)
-  bl = fn2(bl, cl, dl, el, al, m[1], 0x5a827999, 13); dl = rotl(dl, 10)
-  al = fn2(al, bl, cl, dl, el, m[10], 0x5a827999, 11); cl = rotl(cl, 10)
-  el = fn2(el, al, bl, cl, dl, m[6], 0x5a827999, 9); bl = rotl(bl, 10)
-  dl = fn2(dl, el, al, bl, cl, m[15], 0x5a827999, 7); al = rotl(al, 10)
-  cl = fn2(cl, dl, el, al, bl, m[3], 0x5a827999, 15); el = rotl(el, 10)
-  bl = fn2(bl, cl, dl, el, al, m[12], 0x5a827999, 7); dl = rotl(dl, 10)
-  al = fn2(al, bl, cl, dl, el, m[0], 0x5a827999, 12); cl = rotl(cl, 10)
-  el = fn2(el, al, bl, cl, dl, m[9], 0x5a827999, 15); bl = rotl(bl, 10)
-  dl = fn2(dl, el, al, bl, cl, m[5], 0x5a827999, 9); al = rotl(al, 10)
-  cl = fn2(cl, dl, el, al, bl, m[2], 0x5a827999, 11); el = rotl(el, 10)
-  bl = fn2(bl, cl, dl, el, al, m[14], 0x5a827999, 7); dl = rotl(dl, 10)
-  al = fn2(al, bl, cl, dl, el, m[11], 0x5a827999, 13); cl = rotl(cl, 10)
-  el = fn2(el, al, bl, cl, dl, m[8], 0x5a827999, 12); bl = rotl(bl, 10)
+  // computation
+  for (var i = 0; i < 80; i += 1) {
+    var tl
+    var tr
+    if (i < 16) {
+      tl = fn1(al, bl, cl, dl, el, words[zl[i]], hl[0], sl[i])
+      tr = fn5(ar, br, cr, dr, er, words[zr[i]], hr[0], sr[i])
+    } else if (i < 32) {
+      tl = fn2(al, bl, cl, dl, el, words[zl[i]], hl[1], sl[i])
+      tr = fn4(ar, br, cr, dr, er, words[zr[i]], hr[1], sr[i])
+    } else if (i < 48) {
+      tl = fn3(al, bl, cl, dl, el, words[zl[i]], hl[2], sl[i])
+      tr = fn3(ar, br, cr, dr, er, words[zr[i]], hr[2], sr[i])
+    } else if (i < 64) {
+      tl = fn4(al, bl, cl, dl, el, words[zl[i]], hl[3], sl[i])
+      tr = fn2(ar, br, cr, dr, er, words[zr[i]], hr[3], sr[i])
+    } else { // if (i<80) {
+      tl = fn5(al, bl, cl, dl, el, words[zl[i]], hl[4], sl[i])
+      tr = fn1(ar, br, cr, dr, er, words[zr[i]], hr[4], sr[i])
+    }
 
-  // Mj = 3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12
-  // K = 0x6ed9eba1
-  // Sj = 11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5
-  dl = fn3(dl, el, al, bl, cl, m[3], 0x6ed9eba1, 11); al = rotl(al, 10)
-  cl = fn3(cl, dl, el, al, bl, m[10], 0x6ed9eba1, 13); el = rotl(el, 10)
-  bl = fn3(bl, cl, dl, el, al, m[14], 0x6ed9eba1, 6); dl = rotl(dl, 10)
-  al = fn3(al, bl, cl, dl, el, m[4], 0x6ed9eba1, 7); cl = rotl(cl, 10)
-  el = fn3(el, al, bl, cl, dl, m[9], 0x6ed9eba1, 14); bl = rotl(bl, 10)
-  dl = fn3(dl, el, al, bl, cl, m[15], 0x6ed9eba1, 9); al = rotl(al, 10)
-  cl = fn3(cl, dl, el, al, bl, m[8], 0x6ed9eba1, 13); el = rotl(el, 10)
-  bl = fn3(bl, cl, dl, el, al, m[1], 0x6ed9eba1, 15); dl = rotl(dl, 10)
-  al = fn3(al, bl, cl, dl, el, m[2], 0x6ed9eba1, 14); cl = rotl(cl, 10)
-  el = fn3(el, al, bl, cl, dl, m[7], 0x6ed9eba1, 8); bl = rotl(bl, 10)
-  dl = fn3(dl, el, al, bl, cl, m[0], 0x6ed9eba1, 13); al = rotl(al, 10)
-  cl = fn3(cl, dl, el, al, bl, m[6], 0x6ed9eba1, 6); el = rotl(el, 10)
-  bl = fn3(bl, cl, dl, el, al, m[13], 0x6ed9eba1, 5); dl = rotl(dl, 10)
-  al = fn3(al, bl, cl, dl, el, m[11], 0x6ed9eba1, 12); cl = rotl(cl, 10)
-  el = fn3(el, al, bl, cl, dl, m[5], 0x6ed9eba1, 7); bl = rotl(bl, 10)
-  dl = fn3(dl, el, al, bl, cl, m[12], 0x6ed9eba1, 5); al = rotl(al, 10)
+    al = el
+    el = dl
+    dl = rotl(cl, 10)
+    cl = bl
+    bl = tl
 
-  // Mj = 1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7, 15, 14, 5, 6, 2
-  // K = 0x8f1bbcdc
-  // Sj = 11, 12, 14, 15, 14, 15, 9, 8, 9, 14, 5, 6, 8, 6, 5, 12
-  cl = fn4(cl, dl, el, al, bl, m[1], 0x8f1bbcdc, 11); el = rotl(el, 10)
-  bl = fn4(bl, cl, dl, el, al, m[9], 0x8f1bbcdc, 12); dl = rotl(dl, 10)
-  al = fn4(al, bl, cl, dl, el, m[11], 0x8f1bbcdc, 14); cl = rotl(cl, 10)
-  el = fn4(el, al, bl, cl, dl, m[10], 0x8f1bbcdc, 15); bl = rotl(bl, 10)
-  dl = fn4(dl, el, al, bl, cl, m[0], 0x8f1bbcdc, 14); al = rotl(al, 10)
-  cl = fn4(cl, dl, el, al, bl, m[8], 0x8f1bbcdc, 15); el = rotl(el, 10)
-  bl = fn4(bl, cl, dl, el, al, m[12], 0x8f1bbcdc, 9); dl = rotl(dl, 10)
-  al = fn4(al, bl, cl, dl, el, m[4], 0x8f1bbcdc, 8); cl = rotl(cl, 10)
-  el = fn4(el, al, bl, cl, dl, m[13], 0x8f1bbcdc, 9); bl = rotl(bl, 10)
-  dl = fn4(dl, el, al, bl, cl, m[3], 0x8f1bbcdc, 14); al = rotl(al, 10)
-  cl = fn4(cl, dl, el, al, bl, m[7], 0x8f1bbcdc, 5); el = rotl(el, 10)
-  bl = fn4(bl, cl, dl, el, al, m[15], 0x8f1bbcdc, 6); dl = rotl(dl, 10)
-  al = fn4(al, bl, cl, dl, el, m[14], 0x8f1bbcdc, 8); cl = rotl(cl, 10)
-  el = fn4(el, al, bl, cl, dl, m[5], 0x8f1bbcdc, 6); bl = rotl(bl, 10)
-  dl = fn4(dl, el, al, bl, cl, m[6], 0x8f1bbcdc, 5); al = rotl(al, 10)
-  cl = fn4(cl, dl, el, al, bl, m[2], 0x8f1bbcdc, 12); el = rotl(el, 10)
+    ar = er
+    er = dr
+    dr = rotl(cr, 10)
+    cr = br
+    br = tr
+  }
 
-  // Mj = 4, 0, 5, 9, 7, 12, 2, 10, 14, 1, 3, 8, 11, 6, 15, 13
-  // K = 0xa953fd4e
-  // Sj = 9, 15, 5, 11, 6, 8, 13, 12, 5, 12, 13, 14, 11, 8, 5, 6
-  bl = fn5(bl, cl, dl, el, al, m[4], 0xa953fd4e, 9); dl = rotl(dl, 10)
-  al = fn5(al, bl, cl, dl, el, m[0], 0xa953fd4e, 15); cl = rotl(cl, 10)
-  el = fn5(el, al, bl, cl, dl, m[5], 0xa953fd4e, 5); bl = rotl(bl, 10)
-  dl = fn5(dl, el, al, bl, cl, m[9], 0xa953fd4e, 11); al = rotl(al, 10)
-  cl = fn5(cl, dl, el, al, bl, m[7], 0xa953fd4e, 6); el = rotl(el, 10)
-  bl = fn5(bl, cl, dl, el, al, m[12], 0xa953fd4e, 8); dl = rotl(dl, 10)
-  al = fn5(al, bl, cl, dl, el, m[2], 0xa953fd4e, 13); cl = rotl(cl, 10)
-  el = fn5(el, al, bl, cl, dl, m[10], 0xa953fd4e, 12); bl = rotl(bl, 10)
-  dl = fn5(dl, el, al, bl, cl, m[14], 0xa953fd4e, 5); al = rotl(al, 10)
-  cl = fn5(cl, dl, el, al, bl, m[1], 0xa953fd4e, 12); el = rotl(el, 10)
-  bl = fn5(bl, cl, dl, el, al, m[3], 0xa953fd4e, 13); dl = rotl(dl, 10)
-  al = fn5(al, bl, cl, dl, el, m[8], 0xa953fd4e, 14); cl = rotl(cl, 10)
-  el = fn5(el, al, bl, cl, dl, m[11], 0xa953fd4e, 11); bl = rotl(bl, 10)
-  dl = fn5(dl, el, al, bl, cl, m[6], 0xa953fd4e, 8); al = rotl(al, 10)
-  cl = fn5(cl, dl, el, al, bl, m[15], 0xa953fd4e, 5); el = rotl(el, 10)
-  bl = fn5(bl, cl, dl, el, al, m[13], 0xa953fd4e, 6); dl = rotl(dl, 10)
-
-  var ar = this._a
-  var br = this._b
-  var cr = this._c
-  var dr = this._d
-  var er = this._e
-
-  // M'j = 5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12
-  // K' = 0x50a28be6
-  // S'j = 8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6
-  ar = fn5(ar, br, cr, dr, er, m[5], 0x50a28be6, 8); cr = rotl(cr, 10)
-  er = fn5(er, ar, br, cr, dr, m[14], 0x50a28be6, 9); br = rotl(br, 10)
-  dr = fn5(dr, er, ar, br, cr, m[7], 0x50a28be6, 9); ar = rotl(ar, 10)
-  cr = fn5(cr, dr, er, ar, br, m[0], 0x50a28be6, 11); er = rotl(er, 10)
-  br = fn5(br, cr, dr, er, ar, m[9], 0x50a28be6, 13); dr = rotl(dr, 10)
-  ar = fn5(ar, br, cr, dr, er, m[2], 0x50a28be6, 15); cr = rotl(cr, 10)
-  er = fn5(er, ar, br, cr, dr, m[11], 0x50a28be6, 15); br = rotl(br, 10)
-  dr = fn5(dr, er, ar, br, cr, m[4], 0x50a28be6, 5); ar = rotl(ar, 10)
-  cr = fn5(cr, dr, er, ar, br, m[13], 0x50a28be6, 7); er = rotl(er, 10)
-  br = fn5(br, cr, dr, er, ar, m[6], 0x50a28be6, 7); dr = rotl(dr, 10)
-  ar = fn5(ar, br, cr, dr, er, m[15], 0x50a28be6, 8); cr = rotl(cr, 10)
-  er = fn5(er, ar, br, cr, dr, m[8], 0x50a28be6, 11); br = rotl(br, 10)
-  dr = fn5(dr, er, ar, br, cr, m[1], 0x50a28be6, 14); ar = rotl(ar, 10)
-  cr = fn5(cr, dr, er, ar, br, m[10], 0x50a28be6, 14); er = rotl(er, 10)
-  br = fn5(br, cr, dr, er, ar, m[3], 0x50a28be6, 12); dr = rotl(dr, 10)
-  ar = fn5(ar, br, cr, dr, er, m[12], 0x50a28be6, 6); cr = rotl(cr, 10)
-
-  // M'j = 6, 11, 3, 7, 0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2
-  // K' = 0x5c4dd124
-  // S'j = 9, 13, 15, 7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11
-  er = fn4(er, ar, br, cr, dr, m[6], 0x5c4dd124, 9); br = rotl(br, 10)
-  dr = fn4(dr, er, ar, br, cr, m[11], 0x5c4dd124, 13); ar = rotl(ar, 10)
-  cr = fn4(cr, dr, er, ar, br, m[3], 0x5c4dd124, 15); er = rotl(er, 10)
-  br = fn4(br, cr, dr, er, ar, m[7], 0x5c4dd124, 7); dr = rotl(dr, 10)
-  ar = fn4(ar, br, cr, dr, er, m[0], 0x5c4dd124, 12); cr = rotl(cr, 10)
-  er = fn4(er, ar, br, cr, dr, m[13], 0x5c4dd124, 8); br = rotl(br, 10)
-  dr = fn4(dr, er, ar, br, cr, m[5], 0x5c4dd124, 9); ar = rotl(ar, 10)
-  cr = fn4(cr, dr, er, ar, br, m[10], 0x5c4dd124, 11); er = rotl(er, 10)
-  br = fn4(br, cr, dr, er, ar, m[14], 0x5c4dd124, 7); dr = rotl(dr, 10)
-  ar = fn4(ar, br, cr, dr, er, m[15], 0x5c4dd124, 7); cr = rotl(cr, 10)
-  er = fn4(er, ar, br, cr, dr, m[8], 0x5c4dd124, 12); br = rotl(br, 10)
-  dr = fn4(dr, er, ar, br, cr, m[12], 0x5c4dd124, 7); ar = rotl(ar, 10)
-  cr = fn4(cr, dr, er, ar, br, m[4], 0x5c4dd124, 6); er = rotl(er, 10)
-  br = fn4(br, cr, dr, er, ar, m[9], 0x5c4dd124, 15); dr = rotl(dr, 10)
-  ar = fn4(ar, br, cr, dr, er, m[1], 0x5c4dd124, 13); cr = rotl(cr, 10)
-  er = fn4(er, ar, br, cr, dr, m[2], 0x5c4dd124, 11); br = rotl(br, 10)
-
-  // M'j = 15, 5, 1, 3, 7, 14, 6, 9, 11, 8, 12, 2, 10, 0, 4, 13
-  // K' = 0x6d703ef3
-  // S'j = 9, 7, 15, 11, 8, 6, 6, 14, 12, 13, 5, 14, 13, 13, 7, 5
-  dr = fn3(dr, er, ar, br, cr, m[15], 0x6d703ef3, 9); ar = rotl(ar, 10)
-  cr = fn3(cr, dr, er, ar, br, m[5], 0x6d703ef3, 7); er = rotl(er, 10)
-  br = fn3(br, cr, dr, er, ar, m[1], 0x6d703ef3, 15); dr = rotl(dr, 10)
-  ar = fn3(ar, br, cr, dr, er, m[3], 0x6d703ef3, 11); cr = rotl(cr, 10)
-  er = fn3(er, ar, br, cr, dr, m[7], 0x6d703ef3, 8); br = rotl(br, 10)
-  dr = fn3(dr, er, ar, br, cr, m[14], 0x6d703ef3, 6); ar = rotl(ar, 10)
-  cr = fn3(cr, dr, er, ar, br, m[6], 0x6d703ef3, 6); er = rotl(er, 10)
-  br = fn3(br, cr, dr, er, ar, m[9], 0x6d703ef3, 14); dr = rotl(dr, 10)
-  ar = fn3(ar, br, cr, dr, er, m[11], 0x6d703ef3, 12); cr = rotl(cr, 10)
-  er = fn3(er, ar, br, cr, dr, m[8], 0x6d703ef3, 13); br = rotl(br, 10)
-  dr = fn3(dr, er, ar, br, cr, m[12], 0x6d703ef3, 5); ar = rotl(ar, 10)
-  cr = fn3(cr, dr, er, ar, br, m[2], 0x6d703ef3, 14); er = rotl(er, 10)
-  br = fn3(br, cr, dr, er, ar, m[10], 0x6d703ef3, 13); dr = rotl(dr, 10)
-  ar = fn3(ar, br, cr, dr, er, m[0], 0x6d703ef3, 13); cr = rotl(cr, 10)
-  er = fn3(er, ar, br, cr, dr, m[4], 0x6d703ef3, 7); br = rotl(br, 10)
-  dr = fn3(dr, er, ar, br, cr, m[13], 0x6d703ef3, 5); ar = rotl(ar, 10)
-
-  // M'j = 8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14
-  // K' = 0x7a6d76e9
-  // S'j = 15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8
-  cr = fn2(cr, dr, er, ar, br, m[8], 0x7a6d76e9, 15); er = rotl(er, 10)
-  br = fn2(br, cr, dr, er, ar, m[6], 0x7a6d76e9, 5); dr = rotl(dr, 10)
-  ar = fn2(ar, br, cr, dr, er, m[4], 0x7a6d76e9, 8); cr = rotl(cr, 10)
-  er = fn2(er, ar, br, cr, dr, m[1], 0x7a6d76e9, 11); br = rotl(br, 10)
-  dr = fn2(dr, er, ar, br, cr, m[3], 0x7a6d76e9, 14); ar = rotl(ar, 10)
-  cr = fn2(cr, dr, er, ar, br, m[11], 0x7a6d76e9, 14); er = rotl(er, 10)
-  br = fn2(br, cr, dr, er, ar, m[15], 0x7a6d76e9, 6); dr = rotl(dr, 10)
-  ar = fn2(ar, br, cr, dr, er, m[0], 0x7a6d76e9, 14); cr = rotl(cr, 10)
-  er = fn2(er, ar, br, cr, dr, m[5], 0x7a6d76e9, 6); br = rotl(br, 10)
-  dr = fn2(dr, er, ar, br, cr, m[12], 0x7a6d76e9, 9); ar = rotl(ar, 10)
-  cr = fn2(cr, dr, er, ar, br, m[2], 0x7a6d76e9, 12); er = rotl(er, 10)
-  br = fn2(br, cr, dr, er, ar, m[13], 0x7a6d76e9, 9); dr = rotl(dr, 10)
-  ar = fn2(ar, br, cr, dr, er, m[9], 0x7a6d76e9, 12); cr = rotl(cr, 10)
-  er = fn2(er, ar, br, cr, dr, m[7], 0x7a6d76e9, 5); br = rotl(br, 10)
-  dr = fn2(dr, er, ar, br, cr, m[10], 0x7a6d76e9, 15); ar = rotl(ar, 10)
-  cr = fn2(cr, dr, er, ar, br, m[14], 0x7a6d76e9, 8); er = rotl(er, 10)
-
-  // M'j = 12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3, 9, 11
-  // K' = 0x00000000
-  // S'j = 8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
-  br = fn1(br, cr, dr, er, ar, m[12], 0x00000000, 8); dr = rotl(dr, 10)
-  ar = fn1(ar, br, cr, dr, er, m[15], 0x00000000, 5); cr = rotl(cr, 10)
-  er = fn1(er, ar, br, cr, dr, m[10], 0x00000000, 12); br = rotl(br, 10)
-  dr = fn1(dr, er, ar, br, cr, m[4], 0x00000000, 9); ar = rotl(ar, 10)
-  cr = fn1(cr, dr, er, ar, br, m[1], 0x00000000, 12); er = rotl(er, 10)
-  br = fn1(br, cr, dr, er, ar, m[5], 0x00000000, 5); dr = rotl(dr, 10)
-  ar = fn1(ar, br, cr, dr, er, m[8], 0x00000000, 14); cr = rotl(cr, 10)
-  er = fn1(er, ar, br, cr, dr, m[7], 0x00000000, 6); br = rotl(br, 10)
-  dr = fn1(dr, er, ar, br, cr, m[6], 0x00000000, 8); ar = rotl(ar, 10)
-  cr = fn1(cr, dr, er, ar, br, m[2], 0x00000000, 13); er = rotl(er, 10)
-  br = fn1(br, cr, dr, er, ar, m[13], 0x00000000, 6); dr = rotl(dr, 10)
-  ar = fn1(ar, br, cr, dr, er, m[14], 0x00000000, 5); cr = rotl(cr, 10)
-  er = fn1(er, ar, br, cr, dr, m[0], 0x00000000, 15); br = rotl(br, 10)
-  dr = fn1(dr, er, ar, br, cr, m[3], 0x00000000, 13); ar = rotl(ar, 10)
-  cr = fn1(cr, dr, er, ar, br, m[9], 0x00000000, 11); er = rotl(er, 10)
-  br = fn1(br, cr, dr, er, ar, m[11], 0x00000000, 11); dr = rotl(dr, 10)
-
-  // change state
+  // update state
   var t = (this._b + cl + dr) | 0
   this._b = (this._c + dl + er) | 0
   this._c = (this._d + el + ar) | 0
@@ -29320,7 +29677,7 @@ RIPEMD160.prototype._digest = function () {
   this._update()
 
   // produce result
-  var buffer = new Buffer(20)
+  var buffer = Buffer.alloc ? Buffer.alloc(20) : new Buffer(20)
   buffer.writeInt32LE(this._a, 0)
   buffer.writeInt32LE(this._b, 4)
   buffer.writeInt32LE(this._c, 8)
@@ -29355,8 +29712,7 @@ function fn5 (a, b, c, d, e, m, k, s) {
 
 module.exports = RIPEMD160
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":52,"hash-base":91,"inherits":107}],165:[function(require,module,exports){
+},{"buffer":55,"hash-base":93,"inherits":108}],165:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -29420,7 +29776,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":52}],166:[function(require,module,exports){
+},{"buffer":55}],166:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 // prototype class for hash functions
@@ -29616,7 +29972,7 @@ Sha.prototype._hash = function () {
 
 module.exports = Sha
 
-},{"./hash":166,"inherits":107,"safe-buffer":165}],169:[function(require,module,exports){
+},{"./hash":166,"inherits":108,"safe-buffer":165}],169:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -29717,7 +30073,7 @@ Sha1.prototype._hash = function () {
 
 module.exports = Sha1
 
-},{"./hash":166,"inherits":107,"safe-buffer":165}],170:[function(require,module,exports){
+},{"./hash":166,"inherits":108,"safe-buffer":165}],170:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -29772,7 +30128,7 @@ Sha224.prototype._hash = function () {
 
 module.exports = Sha224
 
-},{"./hash":166,"./sha256":171,"inherits":107,"safe-buffer":165}],171:[function(require,module,exports){
+},{"./hash":166,"./sha256":171,"inherits":108,"safe-buffer":165}],171:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -29909,7 +30265,7 @@ Sha256.prototype._hash = function () {
 
 module.exports = Sha256
 
-},{"./hash":166,"inherits":107,"safe-buffer":165}],172:[function(require,module,exports){
+},{"./hash":166,"inherits":108,"safe-buffer":165}],172:[function(require,module,exports){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
 var Hash = require('./hash')
@@ -29968,7 +30324,7 @@ Sha384.prototype._hash = function () {
 
 module.exports = Sha384
 
-},{"./hash":166,"./sha512":173,"inherits":107,"safe-buffer":165}],173:[function(require,module,exports){
+},{"./hash":166,"./sha512":173,"inherits":108,"safe-buffer":165}],173:[function(require,module,exports){
 var inherits = require('inherits')
 var Hash = require('./hash')
 var Buffer = require('safe-buffer').Buffer
@@ -30230,7 +30586,7 @@ Sha512.prototype._hash = function () {
 
 module.exports = Sha512
 
-},{"./hash":166,"inherits":107,"safe-buffer":165}],174:[function(require,module,exports){
+},{"./hash":166,"inherits":108,"safe-buffer":165}],174:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -30359,7 +30715,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":89,"inherits":107,"readable-stream/duplex.js":151,"readable-stream/passthrough.js":160,"readable-stream/readable.js":161,"readable-stream/transform.js":162,"readable-stream/writable.js":163}],175:[function(require,module,exports){
+},{"events":91,"inherits":108,"readable-stream/duplex.js":151,"readable-stream/passthrough.js":160,"readable-stream/readable.js":161,"readable-stream/transform.js":162,"readable-stream/writable.js":163}],175:[function(require,module,exports){
 (function (global){
 var ClientRequest = require('./lib/request')
 var response = require('./lib/response')
@@ -30447,7 +30803,7 @@ http.METHODS = [
 	'UNSUBSCRIBE'
 ]
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./lib/request":177,"./lib/response":178,"builtin-status-codes":53,"url":181,"xtend":188}],176:[function(require,module,exports){
+},{"./lib/request":177,"./lib/response":178,"builtin-status-codes":56,"url":182,"xtend":188}],176:[function(require,module,exports){
 (function (global){
 exports.fetch = isFunction(global.fetch) && isFunction(global.ReadableStream)
 
@@ -30584,6 +30940,7 @@ var ClientRequest = module.exports = function (opts) {
 		throw new Error('Invalid value for opts.mode')
 	}
 	self._mode = decideMode(preferBinary, useFetch)
+	self._fetchTimer = null
 
 	self.on('finish', function () {
 		self._onFinish()
@@ -30659,13 +31016,14 @@ ClientRequest.prototype._onFinish = function () {
 
 	if (self._mode === 'fetch') {
 		var signal = null
+		var fetchTimer = null
 		if (capability.abortController) {
 			var controller = new AbortController()
 			signal = controller.signal
 			self._fetchAbortController = controller
 
 			if ('requestTimeout' in opts && opts.requestTimeout !== 0) {
-				global.setTimeout(function () {
+				self._fetchTimer = global.setTimeout(function () {
 					self.emit('requestTimeout')
 					if (self._fetchAbortController)
 						self._fetchAbortController.abort()
@@ -30684,7 +31042,9 @@ ClientRequest.prototype._onFinish = function () {
 			self._fetchResponse = response
 			self._connect()
 		}, function (reason) {
-			self.emit('error', reason)
+			global.clearTimeout(self._fetchTimer)
+			if (!self._destroyed)
+				self.emit('error', reason)
 		})
 	} else {
 		var xhr = self._xhr = new global.XMLHttpRequest()
@@ -30784,7 +31144,7 @@ ClientRequest.prototype._connect = function () {
 	if (self._destroyed)
 		return
 
-	self._response = new IncomingMessage(self._xhr, self._fetchResponse, self._mode)
+	self._response = new IncomingMessage(self._xhr, self._fetchResponse, self._mode, self._fetchTimer)
 	self._response.on('error', function(err) {
 		self.emit('error', err)
 	})
@@ -30802,6 +31162,7 @@ ClientRequest.prototype._write = function (chunk, encoding, cb) {
 ClientRequest.prototype.abort = ClientRequest.prototype.destroy = function () {
 	var self = this
 	self._destroyed = true
+	global.clearTimeout(self._fetchTimer)
 	if (self._response)
 		self._response._destroyed = true
 	if (self._xhr)
@@ -30846,12 +31207,11 @@ var unsafeHeaders = [
 	'trailer',
 	'transfer-encoding',
 	'upgrade',
-	'user-agent',
 	'via'
 ]
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":176,"./response":178,"_process":138,"buffer":52,"inherits":107,"readable-stream":161,"to-arraybuffer":180}],178:[function(require,module,exports){
+},{"./capability":176,"./response":178,"_process":138,"buffer":55,"inherits":108,"readable-stream":161,"to-arraybuffer":181}],178:[function(require,module,exports){
 (function (process,global,Buffer){
 var capability = require('./capability')
 var inherits = require('inherits')
@@ -30865,7 +31225,7 @@ var rStates = exports.readyStates = {
 	DONE: 4
 }
 
-var IncomingMessage = exports.IncomingMessage = function (xhr, response, mode) {
+var IncomingMessage = exports.IncomingMessage = function (xhr, response, mode, fetchTimer) {
 	var self = this
 	stream.Readable.call(self)
 
@@ -30900,7 +31260,7 @@ var IncomingMessage = exports.IncomingMessage = function (xhr, response, mode) {
 				write: function (chunk) {
 					return new Promise(function (resolve, reject) {
 						if (self._destroyed) {
-							return
+							reject()
 						} else if(self.push(new Buffer(chunk))) {
 							resolve()
 						} else {
@@ -30909,6 +31269,7 @@ var IncomingMessage = exports.IncomingMessage = function (xhr, response, mode) {
 					})
 				},
 				close: function () {
+					global.clearTimeout(fetchTimer)
 					if (!self._destroyed)
 						self.push(null)
 				},
@@ -30919,7 +31280,11 @@ var IncomingMessage = exports.IncomingMessage = function (xhr, response, mode) {
 			})
 
 			try {
-				response.body.pipeTo(writable)
+				response.body.pipeTo(writable).catch(function (err) {
+					global.clearTimeout(fetchTimer)
+					if (!self._destroyed)
+						self.emit('error', err)
+				})
 				return
 			} catch (e) {} // pipeTo method isn't defined. Can't find a better way to feature test this
 		}
@@ -30930,12 +31295,14 @@ var IncomingMessage = exports.IncomingMessage = function (xhr, response, mode) {
 				if (self._destroyed)
 					return
 				if (result.done) {
+					global.clearTimeout(fetchTimer)
 					self.push(null)
 					return
 				}
 				self.push(new Buffer(result.value))
 				read()
-			}).catch(function(err) {
+			}).catch(function (err) {
+				global.clearTimeout(fetchTimer)
 				if (!self._destroyed)
 					self.emit('error', err)
 			})
@@ -31072,10 +31439,34 @@ IncomingMessage.prototype._onXHRProgress = function () {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./capability":176,"_process":138,"buffer":52,"inherits":107,"readable-stream":161}],179:[function(require,module,exports){
+},{"./capability":176,"_process":138,"buffer":55,"inherits":108,"readable-stream":161}],179:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 'use strict';
 
+/*<replacement>*/
+
 var Buffer = require('safe-buffer').Buffer;
+/*</replacement>*/
 
 var isEncoding = Buffer.isEncoding || function (encoding) {
   encoding = '' + encoding;
@@ -31187,10 +31578,10 @@ StringDecoder.prototype.fillLast = function (buf) {
 };
 
 // Checks the type of a UTF-8 byte, whether it's ASCII, a leading byte, or a
-// continuation byte.
+// continuation byte. If an invalid byte is detected, -2 is returned.
 function utf8CheckByte(byte) {
   if (byte <= 0x7F) return 0;else if (byte >> 5 === 0x06) return 2;else if (byte >> 4 === 0x0E) return 3;else if (byte >> 3 === 0x1E) return 4;
-  return -1;
+  return byte >> 6 === 0x02 ? -1 : -2;
 }
 
 // Checks at most 3 bytes at the end of a Buffer in order to detect an
@@ -31204,13 +31595,13 @@ function utf8CheckIncomplete(self, buf, i) {
     if (nb > 0) self.lastNeed = nb - 1;
     return nb;
   }
-  if (--j < i) return 0;
+  if (--j < i || nb === -2) return 0;
   nb = utf8CheckByte(buf[j]);
   if (nb >= 0) {
     if (nb > 0) self.lastNeed = nb - 2;
     return nb;
   }
-  if (--j < i) return 0;
+  if (--j < i || nb === -2) return 0;
   nb = utf8CheckByte(buf[j]);
   if (nb >= 0) {
     if (nb > 0) {
@@ -31224,7 +31615,7 @@ function utf8CheckIncomplete(self, buf, i) {
 // Validates as many continuation bytes for a multi-byte UTF-8 character as
 // needed or are available. If we see a non-continuation byte where we expect
 // one, we "replace" the validated continuation bytes we've seen so far with
-// UTF-8 replacement characters ('\ufffd'), to match v8's UTF-8 decoding
+// a single UTF-8 replacement character ('\ufffd'), to match v8's UTF-8 decoding
 // behavior. The continuation byte check is included three times in the case
 // where all of the continuation bytes for a character exist in the same buffer.
 // It is also done this way as a slight performance increase instead of using a
@@ -31232,17 +31623,17 @@ function utf8CheckIncomplete(self, buf, i) {
 function utf8CheckExtraBytes(self, buf, p) {
   if ((buf[0] & 0xC0) !== 0x80) {
     self.lastNeed = 0;
-    return '\ufffd'.repeat(p);
+    return '\ufffd';
   }
   if (self.lastNeed > 1 && buf.length > 1) {
     if ((buf[1] & 0xC0) !== 0x80) {
       self.lastNeed = 1;
-      return '\ufffd'.repeat(p + 1);
+      return '\ufffd';
     }
     if (self.lastNeed > 2 && buf.length > 2) {
       if ((buf[2] & 0xC0) !== 0x80) {
         self.lastNeed = 2;
-        return '\ufffd'.repeat(p + 2);
+        return '\ufffd';
       }
     }
   }
@@ -31273,11 +31664,11 @@ function utf8Text(buf, i) {
   return buf.toString('utf8', i, end);
 }
 
-// For UTF-8, a replacement character for each buffered byte of a (partial)
-// character needs to be added to the output.
+// For UTF-8, a replacement character is added when ending on a partial
+// character.
 function utf8End(buf) {
   var r = buf && buf.length ? this.write(buf) : '';
-  if (this.lastNeed) return r + '\ufffd'.repeat(this.lastTotal - this.lastNeed);
+  if (this.lastNeed) return r + '\ufffd';
   return r;
 }
 
@@ -31346,6 +31737,85 @@ function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
 },{"safe-buffer":165}],180:[function(require,module,exports){
+(function (setImmediate,clearImmediate){
+var nextTick = require('process/browser.js').nextTick;
+var apply = Function.prototype.apply;
+var slice = Array.prototype.slice;
+var immediateIds = {};
+var nextImmediateId = 0;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) { timeout.close(); };
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(window, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// That's not how node.js implements it but the exposed api is the same.
+exports.setImmediate = typeof setImmediate === "function" ? setImmediate : function(fn) {
+  var id = nextImmediateId++;
+  var args = arguments.length < 2 ? false : slice.call(arguments, 1);
+
+  immediateIds[id] = true;
+
+  nextTick(function onNextTick() {
+    if (immediateIds[id]) {
+      // fn.call() is faster so we optimize for the common use-case
+      // @see http://jsperf.com/call-apply-segu
+      if (args) {
+        fn.apply(null, args);
+      } else {
+        fn.call(null);
+      }
+      // Prevent ids from leaking
+      exports.clearImmediate(id);
+    }
+  });
+
+  return id;
+};
+
+exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
+  delete immediateIds[id];
+};
+}).call(this,require("timers").setImmediate,require("timers").clearImmediate)
+},{"process/browser.js":138,"timers":180}],181:[function(require,module,exports){
 var Buffer = require('buffer').Buffer
 
 module.exports = function (buf) {
@@ -31374,7 +31844,7 @@ module.exports = function (buf) {
 	}
 }
 
-},{"buffer":52}],181:[function(require,module,exports){
+},{"buffer":55}],182:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -32108,7 +32578,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":182,"punycode":145,"querystring":148}],182:[function(require,module,exports){
+},{"./util":183,"punycode":145,"querystring":148}],183:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -32126,7 +32596,7 @@ module.exports = {
   }
 };
 
-},{}],183:[function(require,module,exports){
+},{}],184:[function(require,module,exports){
 (function (global){
 
 /**
@@ -32197,608 +32667,18 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],184:[function(require,module,exports){
-arguments[4][107][0].apply(exports,arguments)
-},{"dup":107}],185:[function(require,module,exports){
-module.exports = function isBuffer(arg) {
-  return arg && typeof arg === 'object'
-    && typeof arg.copy === 'function'
-    && typeof arg.fill === 'function'
-    && typeof arg.readUInt8 === 'function';
-}
-},{}],186:[function(require,module,exports){
-(function (process,global){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-var formatRegExp = /%[sdj%]/g;
-exports.format = function(f) {
-  if (!isString(f)) {
-    var objects = [];
-    for (var i = 0; i < arguments.length; i++) {
-      objects.push(inspect(arguments[i]));
+},{}],185:[function(require,module,exports){
+arguments[4][18][0].apply(exports,arguments)
+},{"dup":18}],186:[function(require,module,exports){
+arguments[4][19][0].apply(exports,arguments)
+},{"./support/isBuffer":185,"_process":138,"dup":19,"inherits":108}],187:[function(require,module,exports){
+var indexOf = function (xs, item) {
+    if (xs.indexOf) return xs.indexOf(item);
+    else for (var i = 0; i < xs.length; i++) {
+        if (xs[i] === item) return i;
     }
-    return objects.join(' ');
-  }
-
-  var i = 1;
-  var args = arguments;
-  var len = args.length;
-  var str = String(f).replace(formatRegExp, function(x) {
-    if (x === '%%') return '%';
-    if (i >= len) return x;
-    switch (x) {
-      case '%s': return String(args[i++]);
-      case '%d': return Number(args[i++]);
-      case '%j':
-        try {
-          return JSON.stringify(args[i++]);
-        } catch (_) {
-          return '[Circular]';
-        }
-      default:
-        return x;
-    }
-  });
-  for (var x = args[i]; i < len; x = args[++i]) {
-    if (isNull(x) || !isObject(x)) {
-      str += ' ' + x;
-    } else {
-      str += ' ' + inspect(x);
-    }
-  }
-  return str;
+    return -1;
 };
-
-
-// Mark that a method should not be used.
-// Returns a modified function which warns once by default.
-// If --no-deprecation is set, then it is a no-op.
-exports.deprecate = function(fn, msg) {
-  // Allow for deprecating things in the process of starting up.
-  if (isUndefined(global.process)) {
-    return function() {
-      return exports.deprecate(fn, msg).apply(this, arguments);
-    };
-  }
-
-  if (process.noDeprecation === true) {
-    return fn;
-  }
-
-  var warned = false;
-  function deprecated() {
-    if (!warned) {
-      if (process.throwDeprecation) {
-        throw new Error(msg);
-      } else if (process.traceDeprecation) {
-        console.trace(msg);
-      } else {
-        console.error(msg);
-      }
-      warned = true;
-    }
-    return fn.apply(this, arguments);
-  }
-
-  return deprecated;
-};
-
-
-var debugs = {};
-var debugEnviron;
-exports.debuglog = function(set) {
-  if (isUndefined(debugEnviron))
-    debugEnviron = process.env.NODE_DEBUG || '';
-  set = set.toUpperCase();
-  if (!debugs[set]) {
-    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
-      var pid = process.pid;
-      debugs[set] = function() {
-        var msg = exports.format.apply(exports, arguments);
-        console.error('%s %d: %s', set, pid, msg);
-      };
-    } else {
-      debugs[set] = function() {};
-    }
-  }
-  return debugs[set];
-};
-
-
-/**
- * Echos the value of a value. Trys to print the value out
- * in the best way possible given the different types.
- *
- * @param {Object} obj The object to print out.
- * @param {Object} opts Optional options object that alters the output.
- */
-/* legacy: obj, showHidden, depth, colors*/
-function inspect(obj, opts) {
-  // default options
-  var ctx = {
-    seen: [],
-    stylize: stylizeNoColor
-  };
-  // legacy...
-  if (arguments.length >= 3) ctx.depth = arguments[2];
-  if (arguments.length >= 4) ctx.colors = arguments[3];
-  if (isBoolean(opts)) {
-    // legacy...
-    ctx.showHidden = opts;
-  } else if (opts) {
-    // got an "options" object
-    exports._extend(ctx, opts);
-  }
-  // set default options
-  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
-  if (isUndefined(ctx.depth)) ctx.depth = 2;
-  if (isUndefined(ctx.colors)) ctx.colors = false;
-  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
-  if (ctx.colors) ctx.stylize = stylizeWithColor;
-  return formatValue(ctx, obj, ctx.depth);
-}
-exports.inspect = inspect;
-
-
-// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-inspect.colors = {
-  'bold' : [1, 22],
-  'italic' : [3, 23],
-  'underline' : [4, 24],
-  'inverse' : [7, 27],
-  'white' : [37, 39],
-  'grey' : [90, 39],
-  'black' : [30, 39],
-  'blue' : [34, 39],
-  'cyan' : [36, 39],
-  'green' : [32, 39],
-  'magenta' : [35, 39],
-  'red' : [31, 39],
-  'yellow' : [33, 39]
-};
-
-// Don't use 'blue' not visible on cmd.exe
-inspect.styles = {
-  'special': 'cyan',
-  'number': 'yellow',
-  'boolean': 'yellow',
-  'undefined': 'grey',
-  'null': 'bold',
-  'string': 'green',
-  'date': 'magenta',
-  // "name": intentionally not styling
-  'regexp': 'red'
-};
-
-
-function stylizeWithColor(str, styleType) {
-  var style = inspect.styles[styleType];
-
-  if (style) {
-    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
-           '\u001b[' + inspect.colors[style][1] + 'm';
-  } else {
-    return str;
-  }
-}
-
-
-function stylizeNoColor(str, styleType) {
-  return str;
-}
-
-
-function arrayToHash(array) {
-  var hash = {};
-
-  array.forEach(function(val, idx) {
-    hash[val] = true;
-  });
-
-  return hash;
-}
-
-
-function formatValue(ctx, value, recurseTimes) {
-  // Provide a hook for user-specified inspect functions.
-  // Check that value is an object with an inspect function on it
-  if (ctx.customInspect &&
-      value &&
-      isFunction(value.inspect) &&
-      // Filter out the util module, it's inspect function is special
-      value.inspect !== exports.inspect &&
-      // Also filter out any prototype objects using the circular check.
-      !(value.constructor && value.constructor.prototype === value)) {
-    var ret = value.inspect(recurseTimes, ctx);
-    if (!isString(ret)) {
-      ret = formatValue(ctx, ret, recurseTimes);
-    }
-    return ret;
-  }
-
-  // Primitive types cannot have properties
-  var primitive = formatPrimitive(ctx, value);
-  if (primitive) {
-    return primitive;
-  }
-
-  // Look up the keys of the object.
-  var keys = Object.keys(value);
-  var visibleKeys = arrayToHash(keys);
-
-  if (ctx.showHidden) {
-    keys = Object.getOwnPropertyNames(value);
-  }
-
-  // IE doesn't make error fields non-enumerable
-  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
-  if (isError(value)
-      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
-    return formatError(value);
-  }
-
-  // Some type of object without properties can be shortcutted.
-  if (keys.length === 0) {
-    if (isFunction(value)) {
-      var name = value.name ? ': ' + value.name : '';
-      return ctx.stylize('[Function' + name + ']', 'special');
-    }
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    }
-    if (isDate(value)) {
-      return ctx.stylize(Date.prototype.toString.call(value), 'date');
-    }
-    if (isError(value)) {
-      return formatError(value);
-    }
-  }
-
-  var base = '', array = false, braces = ['{', '}'];
-
-  // Make Array say that they are Array
-  if (isArray(value)) {
-    array = true;
-    braces = ['[', ']'];
-  }
-
-  // Make functions say that they are functions
-  if (isFunction(value)) {
-    var n = value.name ? ': ' + value.name : '';
-    base = ' [Function' + n + ']';
-  }
-
-  // Make RegExps say that they are RegExps
-  if (isRegExp(value)) {
-    base = ' ' + RegExp.prototype.toString.call(value);
-  }
-
-  // Make dates with properties first say the date
-  if (isDate(value)) {
-    base = ' ' + Date.prototype.toUTCString.call(value);
-  }
-
-  // Make error with message first say the error
-  if (isError(value)) {
-    base = ' ' + formatError(value);
-  }
-
-  if (keys.length === 0 && (!array || value.length == 0)) {
-    return braces[0] + base + braces[1];
-  }
-
-  if (recurseTimes < 0) {
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    } else {
-      return ctx.stylize('[Object]', 'special');
-    }
-  }
-
-  ctx.seen.push(value);
-
-  var output;
-  if (array) {
-    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
-  } else {
-    output = keys.map(function(key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-    });
-  }
-
-  ctx.seen.pop();
-
-  return reduceToSingleString(output, base, braces);
-}
-
-
-function formatPrimitive(ctx, value) {
-  if (isUndefined(value))
-    return ctx.stylize('undefined', 'undefined');
-  if (isString(value)) {
-    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
-                                             .replace(/'/g, "\\'")
-                                             .replace(/\\"/g, '"') + '\'';
-    return ctx.stylize(simple, 'string');
-  }
-  if (isNumber(value))
-    return ctx.stylize('' + value, 'number');
-  if (isBoolean(value))
-    return ctx.stylize('' + value, 'boolean');
-  // For some reason typeof null is "object", so special case here.
-  if (isNull(value))
-    return ctx.stylize('null', 'null');
-}
-
-
-function formatError(value) {
-  return '[' + Error.prototype.toString.call(value) + ']';
-}
-
-
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-  var output = [];
-  for (var i = 0, l = value.length; i < l; ++i) {
-    if (hasOwnProperty(value, String(i))) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          String(i), true));
-    } else {
-      output.push('');
-    }
-  }
-  keys.forEach(function(key) {
-    if (!key.match(/^\d+$/)) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
-          key, true));
-    }
-  });
-  return output;
-}
-
-
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-  var name, str, desc;
-  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
-  if (desc.get) {
-    if (desc.set) {
-      str = ctx.stylize('[Getter/Setter]', 'special');
-    } else {
-      str = ctx.stylize('[Getter]', 'special');
-    }
-  } else {
-    if (desc.set) {
-      str = ctx.stylize('[Setter]', 'special');
-    }
-  }
-  if (!hasOwnProperty(visibleKeys, key)) {
-    name = '[' + key + ']';
-  }
-  if (!str) {
-    if (ctx.seen.indexOf(desc.value) < 0) {
-      if (isNull(recurseTimes)) {
-        str = formatValue(ctx, desc.value, null);
-      } else {
-        str = formatValue(ctx, desc.value, recurseTimes - 1);
-      }
-      if (str.indexOf('\n') > -1) {
-        if (array) {
-          str = str.split('\n').map(function(line) {
-            return '  ' + line;
-          }).join('\n').substr(2);
-        } else {
-          str = '\n' + str.split('\n').map(function(line) {
-            return '   ' + line;
-          }).join('\n');
-        }
-      }
-    } else {
-      str = ctx.stylize('[Circular]', 'special');
-    }
-  }
-  if (isUndefined(name)) {
-    if (array && key.match(/^\d+$/)) {
-      return str;
-    }
-    name = JSON.stringify('' + key);
-    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-      name = name.substr(1, name.length - 2);
-      name = ctx.stylize(name, 'name');
-    } else {
-      name = name.replace(/'/g, "\\'")
-                 .replace(/\\"/g, '"')
-                 .replace(/(^"|"$)/g, "'");
-      name = ctx.stylize(name, 'string');
-    }
-  }
-
-  return name + ': ' + str;
-}
-
-
-function reduceToSingleString(output, base, braces) {
-  var numLinesEst = 0;
-  var length = output.reduce(function(prev, cur) {
-    numLinesEst++;
-    if (cur.indexOf('\n') >= 0) numLinesEst++;
-    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
-  }, 0);
-
-  if (length > 60) {
-    return braces[0] +
-           (base === '' ? '' : base + '\n ') +
-           ' ' +
-           output.join(',\n  ') +
-           ' ' +
-           braces[1];
-  }
-
-  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-}
-
-
-// NOTE: These type checking functions intentionally don't use `instanceof`
-// because it is fragile and can be easily faked with `Object.create()`.
-function isArray(ar) {
-  return Array.isArray(ar);
-}
-exports.isArray = isArray;
-
-function isBoolean(arg) {
-  return typeof arg === 'boolean';
-}
-exports.isBoolean = isBoolean;
-
-function isNull(arg) {
-  return arg === null;
-}
-exports.isNull = isNull;
-
-function isNullOrUndefined(arg) {
-  return arg == null;
-}
-exports.isNullOrUndefined = isNullOrUndefined;
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-exports.isNumber = isNumber;
-
-function isString(arg) {
-  return typeof arg === 'string';
-}
-exports.isString = isString;
-
-function isSymbol(arg) {
-  return typeof arg === 'symbol';
-}
-exports.isSymbol = isSymbol;
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-exports.isUndefined = isUndefined;
-
-function isRegExp(re) {
-  return isObject(re) && objectToString(re) === '[object RegExp]';
-}
-exports.isRegExp = isRegExp;
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-exports.isObject = isObject;
-
-function isDate(d) {
-  return isObject(d) && objectToString(d) === '[object Date]';
-}
-exports.isDate = isDate;
-
-function isError(e) {
-  return isObject(e) &&
-      (objectToString(e) === '[object Error]' || e instanceof Error);
-}
-exports.isError = isError;
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-exports.isFunction = isFunction;
-
-function isPrimitive(arg) {
-  return arg === null ||
-         typeof arg === 'boolean' ||
-         typeof arg === 'number' ||
-         typeof arg === 'string' ||
-         typeof arg === 'symbol' ||  // ES6 symbol
-         typeof arg === 'undefined';
-}
-exports.isPrimitive = isPrimitive;
-
-exports.isBuffer = require('./support/isBuffer');
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-
-function pad(n) {
-  return n < 10 ? '0' + n.toString(10) : n.toString(10);
-}
-
-
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-              'Oct', 'Nov', 'Dec'];
-
-// 26 Feb 16:19:34
-function timestamp() {
-  var d = new Date();
-  var time = [pad(d.getHours()),
-              pad(d.getMinutes()),
-              pad(d.getSeconds())].join(':');
-  return [d.getDate(), months[d.getMonth()], time].join(' ');
-}
-
-
-// log is just a thin wrapper to console.log that prepends a timestamp
-exports.log = function() {
-  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
-};
-
-
-/**
- * Inherit the prototype methods from one constructor into another.
- *
- * The Function.prototype.inherits from lang.js rewritten as a standalone
- * function (not on Function.prototype). NOTE: If this file is to be loaded
- * during bootstrapping this function needs to be rewritten using some native
- * functions as prototype setup using normal JavaScript does not work as
- * expected during bootstrapping (see mirror.js in r114903).
- *
- * @param {function} ctor Constructor function which needs to inherit the
- *     prototype.
- * @param {function} superCtor Constructor function to inherit prototype from.
- */
-exports.inherits = require('inherits');
-
-exports._extend = function(origin, add) {
-  // Don't do anything if add isn't an object
-  if (!add || !isObject(add)) return origin;
-
-  var keys = Object.keys(add);
-  var i = keys.length;
-  while (i--) {
-    origin[keys[i]] = add[keys[i]];
-  }
-  return origin;
-};
-
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":185,"_process":138,"inherits":184}],187:[function(require,module,exports){
-var indexOf = require('indexof');
-
 var Object_keys = function (obj) {
     if (Object.keys) return Object.keys(obj)
     else {
@@ -32908,9 +32788,11 @@ Script.prototype.runInNewContext = function (context) {
     var ctx = Script.createContext(context);
     var res = this.runInContext(ctx);
 
-    forEach(Object_keys(ctx), function (key) {
-        context[key] = ctx[key];
-    });
+    if (context) {
+        forEach(Object_keys(ctx), function (key) {
+            context[key] = ctx[key];
+        });
+    }
 
     return res;
 };
@@ -32921,6 +32803,10 @@ forEach(Object_keys(Script.prototype), function (name) {
         return s[name].apply(s, [].slice.call(arguments, 1));
     };
 });
+
+exports.isContext = function (context) {
+    return context instanceof Context;
+};
 
 exports.createScript = function (code) {
     return exports.Script(code);
@@ -32936,7 +32822,7 @@ exports.createContext = Script.createContext = function (context) {
     return copy;
 };
 
-},{"indexof":106}],188:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -32979,7 +32865,7 @@ const {
   RectangleSize,
   NullRegionProvider,
   EyesSimpleScreenshot,
-} = require('@applitools/eyes.sdk.core');
+} = require('@applitools/eyes-sdk-core');
 
 const { Target } = require('./fluent/Target');
 const VERSION = require('../package.json').version;
@@ -32991,31 +32877,32 @@ class Eyes extends EyesBase {
   /**
    * Initializes an Eyes instance.
    *
-   * @param {String} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
-   * @param {PromiseFactory} [promiseFactory] If not specified will be created using `Promise` object
+   * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
+   * @param {?boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method
+   *   will immediately return without performing any action.
    */
-  constructor(serverUrl, promiseFactory) {
-    super(serverUrl, false, promiseFactory);
+  constructor(serverUrl, isDisabled) {
+    super(serverUrl, isDisabled);
 
-    this._title = undefined;
-    this._screenshot = undefined;
-    this._screenshotUrl = undefined;
+    this._title = null;
+    this._screenshot = null;
+    this._screenshotUrl = null;
     this._inferred = '';
   }
 
   /** @override */
   getBaseAgentId() {
-    return `eyes.images/${VERSION}`;
+    return `eyes-images/${VERSION}`;
   }
 
   /**
    * Starts a test.
    *
-   * @param {String} appName The application being tested.
-   * @param {String} testName The test's name.
+   * @param {string} appName The application being tested.
+   * @param {string} testName The test's name.
    * @param {RectangleSize} [imageSize] Determines the resolution used for the baseline. {@code null} will
    *   automatically grab the resolution from the image.
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   open(appName, testName, imageSize) {
     return super.openBase(appName, testName, imageSize);
@@ -33023,15 +32910,15 @@ class Eyes extends EyesBase {
 
   /**
    * @param {string} name
-   * @param {ImagesCheckSettings} checkSettings
-   * @return {Promise.<boolean>}
+   * @param {ImagesCheckSettings|CheckSettings} checkSettings
+   * @return {Promise<boolean>}
    */
-  check(name, checkSettings) {
+  async check(name, checkSettings) {
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
 
     if (this.getIsDisabled()) {
       this._logger.verbose(`check('${name}', checkSettings): Ignored`);
-      return this.getPromiseFactory().resolve(false);
+      return false;
     }
 
     return this._checkImage(name, false, checkSettings);
@@ -33040,24 +32927,23 @@ class Eyes extends EyesBase {
   /**
    * Perform visual validation for the current image.
    *
-   * @param {String|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
-   * @param {String} [tag] Tag to be associated with the validation checkpoint.
-   * @param {Boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
-   * @param {int} [retryTimeout] timeout for performing the match (ms).
-   * @return {Promise<Boolean>} True if the image matched the expected output, false otherwise.
+   * @param {string|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
+   * @param {string} [name] Tag to be associated with the validation checkpoint.
+   * @param {boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
+   * @param {number} [retryTimeout] timeout for performing the match (ms).
+   * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
-  checkImage(image, tag, ignoreMismatch, retryTimeout) {
-    if (this.getIsDisabled()) {
-      this._logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
-      return this.getPromiseFactory().resolve(false);
-    }
-
+  async checkImage(image, name, ignoreMismatch, retryTimeout) {
     ArgumentGuard.notNull(image, 'image cannot be null!');
 
-    this._logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
-    // noinspection JSCheckFunctionSignatures
-    return this._checkImage(tag, ignoreMismatch, Target.image(image).timeout(retryTimeout));
+    if (this.getIsDisabled()) {
+      this._logger.verbose(`checkImage(Image, '${name}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
+      return false;
+    }
+
+    this._logger.verbose(`checkImage(Image, '${name}', '${ignoreMismatch}', '${retryTimeout}')`);
+    return this._checkImage(name, ignoreMismatch, Target.image(image).timeout(retryTimeout));
   }
 
   /**
@@ -33065,99 +32951,97 @@ class Eyes extends EyesBase {
    *
    * @param {Region|RegionObject} region The region of the image which should be verified, or {undefined}/{null} if the
    *   entire image should be verified.
-   * @param {String|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
-   * @param {String} [tag] An optional tag to be associated with the validation checkpoint.
-   * @param {Boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
-   * @param {int} [retryTimeout] timeout for performing the match (ms).
-   * @return {Promise<Boolean>} True if the image matched the expected output, false otherwise.
+   * @param {string|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
+   * @param {string} [name] An optional tag to be associated with the validation checkpoint.
+   * @param {boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
+   * @param {number} [retryTimeout] timeout for performing the match (ms).
+   * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
-  checkRegion(image, region, tag, ignoreMismatch, retryTimeout) {
+  async checkRegion(image, region, name, ignoreMismatch, retryTimeout) {
     ArgumentGuard.notNull(image, 'image');
     ArgumentGuard.notNull(region, 'region');
 
     if (this.getIsDisabled()) {
-      this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
-      return this.getPromiseFactory().resolve(false);
+      this._logger.verbose(`checkRegion(Image, [${region}], '${name}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
+      return false;
     }
 
-    this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
+    this._logger.verbose(`checkRegion(Image, [${region}], '${name}', '${ignoreMismatch}', '${retryTimeout}')`);
     // noinspection JSCheckFunctionSignatures
-    return this._checkImage(tag, ignoreMismatch, Target.region(image, region).timeout(retryTimeout));
+    return this._checkImage(name, ignoreMismatch, Target.region(image, region).timeout(retryTimeout));
   }
 
   /**
    * Internal function for performing an image verification for an image (or a region of an image).
    *
    * @private
-   * @param {String} name An optional tag to be associated with the validation checkpoint.
-   * @param {Boolean} ignoreMismatch True if the server should ignore a negative result for the visual validation.
-   * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
-   * @return {Promise<Boolean>}
+   * @param {string} name An optional tag to be associated with the validation checkpoint.
+   * @param {boolean} ignoreMismatch True if the server should ignore a negative result for the visual validation.
+   * @param {ImagesCheckSettings|CheckSettings} checkSettings The settings to use when checking the image.
+   * @return {Promise<boolean>}
    */
-  _checkImage(name, ignoreMismatch, checkSettings) {
-    const that = this;
-    let regionProvider = new NullRegionProvider(that.getPromiseFactory());
-    return this.getPromiseFactory().resolve()
-      .then(() => {
-        // Set the title to be linked to the screenshot.
-        that._title = name || '';
+  async _checkImage(name = '', ignoreMismatch, checkSettings) {
+    try {
+      let regionProvider = new NullRegionProvider();
+      // Set the title to be linked to the screenshot.
+      this._title = name;
 
-        if (checkSettings.getImageUrl()) {
-          that._screenshotUrl = checkSettings.getImageUrl();
-          if (!that._viewportSizeHandler.get() && checkSettings.getImageSize()) {
-            return that.setViewportSize(checkSettings.getImageSize());
-          }
-        } else {
-          if (checkSettings.getTargetRegion()) {
-            regionProvider = new RegionProvider(checkSettings.getTargetRegion(), that.getPromiseFactory());
-          }
-
-          return this._normalizeImage(checkSettings).then(image => {
-            that._screenshot = new EyesSimpleScreenshot(image);
-            if (!that._viewportSizeHandler.get()) {
-              return that.setViewportSize(image.getSize());
-            }
-          });
+      if (checkSettings.getImageUrl()) {
+        this._screenshotUrl = checkSettings.getImageUrl();
+        if (!this._viewportSizeHandler.get() && checkSettings.getImageSize()) {
+          await this.setViewportSize(checkSettings.getImageSize());
         }
-      })
-      .then(() => super.checkWindowBase(regionProvider, name, ignoreMismatch, checkSettings))
-      .then(/** MatchResult */ mr => {
-        that._screenshotUrl = null;
-        that._screenshot = null;
-        that._title = null;
-        return mr.getAsExpected();
-      });
+      } else {
+        if (checkSettings.getTargetRegion()) {
+          regionProvider = new RegionProvider(checkSettings.getTargetRegion());
+        }
+
+        const image = await this._normalizeImage(checkSettings);
+        this._screenshot = new EyesSimpleScreenshot(image);
+        if (!this._viewportSizeHandler.get()) {
+          await this.setViewportSize(image.getSize());
+        }
+      }
+
+      const matchResult = await super.checkWindowBase(regionProvider, name, ignoreMismatch, checkSettings);
+      return matchResult.getAsExpected();
+    } finally {
+      this._screenshotUrl = null;
+      this._screenshot = null;
+      this._title = null;
+    }
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @private
    * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
-   * @return {Promise.<MutableImage>}
+   * @return {Promise<MutableImage>}
    */
-  _normalizeImage(checkSettings) {
-    const promiseFactory = this.getPromiseFactory();
-    return promiseFactory.makePromise((resolve, reject) => {
-      if (checkSettings.getMutableImage()) {
-        return resolve(checkSettings.getMutableImage());
-      }
+  async _normalizeImage(checkSettings) {
+    if (checkSettings.getMutableImage()) {
+      return checkSettings.getMutableImage();
+    }
 
-      if (checkSettings.getImageBuffer()) {
-        return resolve(new MutableImage(checkSettings.getImageBuffer(), promiseFactory));
-      }
+    if (checkSettings.getImageBuffer()) {
+      return new MutableImage(checkSettings.getImageBuffer());
+    }
 
-      if (checkSettings.getImageString()) {
-        return resolve(MutableImage.fromBase64(checkSettings.getImageString(), promiseFactory));
-      }
+    if (checkSettings.getImageString()) {
+      return new MutableImage(checkSettings.getImageString());
+    }
 
-      if (checkSettings.getImagePath()) {
-        return ImageUtils.readImage(checkSettings.getImagePath(), promiseFactory)
-          .then(data => resolve(new MutableImage(data, promiseFactory)))
-          .catch(err => reject(new EyesError(`Can't read image [${err.message}]`)));
+    if (checkSettings.getImagePath()) {
+      try {
+        const data = await ImageUtils.readImage(checkSettings.getImagePath());
+        return new MutableImage(data);
+      } catch (err) {
+        throw new EyesError(`Can't read image [${err.message}]`);
       }
+    }
 
-      return reject(new EyesError("Can't recognize supported image from checkSettings."));
-    });
+    throw new EyesError("Can't recognize supported image from checkSettings.");
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -33165,28 +33049,29 @@ class Eyes extends EyesBase {
    * Replaces the actual image in a running session.
    *
    * @param {number} stepIndex The zero based index of the step in which to replace the image.
-   * @param {String|Buffer|MutableImage} image The image base64 string, image buffer or MutableImage.
-   * @param {String} [tag] A tag to be associated with the validation checkpoint.
-   * @param {String} [title] A title to be associated with the validation checkpoint.
-   * @param {Array} [userInputs] An array of user inputs to which lead to the validation checkpoint.
-   * @return {Promise<Boolean>} True if the image matched the expected output, false otherwise.
+   * @param {string|Buffer|MutableImage} image The image base64 string, image buffer or MutableImage.
+   * @param {string} [tag] A tag to be associated with the validation checkpoint.
+   * @param {string} [title] A title to be associated with the validation checkpoint.
+   * @param {Trigger[]} [userInputs] An array of user inputs to which lead to the validation checkpoint.
+   * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
-  replaceImage(stepIndex, image, tag, title, userInputs) {
+  async replaceImage(stepIndex, image, tag, title, userInputs) {
     ArgumentGuard.notNull(stepIndex, 'stepIndex');
     ArgumentGuard.notNull(image, 'image');
 
     if (this.getIsDisabled()) {
       this._logger.verbose(`replaceImage('${stepIndex}', Image, '${tag}', '${title}', '${userInputs}'): Ignored`);
-      return this.getPromiseFactory().resolve(false);
+      return Promise.resolve(false);
     }
 
     if (GeneralUtils.isBuffer(image) || GeneralUtils.isString(image)) {
-      image = new MutableImage(image, this.getPromiseFactory());
+      image = new MutableImage(image);
     }
 
     this._logger.verbose(`replaceImage('${stepIndex}', Image, '${tag}', '${title}', '${userInputs}')`);
-    return super.replaceWindow(stepIndex, image, tag, title, userInputs).then(results => results.getAsExpected());
+    const results = await super.replaceWindow(stepIndex, image, tag, title, userInputs);
+    return results.getAsExpected();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -33206,20 +33091,10 @@ class Eyes extends EyesBase {
    * Adds a keyboard trigger.
    *
    * @param {Region} control The control's context-relative region.
-   * @param {String} text The trigger's text.
+   * @param {string} text The trigger's text.
    */
   addTextTrigger(control, text) {
     super.addTextTriggerBase(control, text);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Get the AUT session id.
-   *
-   * @return {Promise<?String>}
-   */
-  getAUTSessionId() {
-    return this.getPromiseFactory().resolve(undefined);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -33229,7 +33104,7 @@ class Eyes extends EyesBase {
    * @return {Promise<RectangleSize>}
    */
   getViewportSize() {
-    return this.getPromiseFactory().resolve(this._viewportSizeHandler.get());
+    return Promise.resolve(this._viewportSizeHandler.get());
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -33243,7 +33118,7 @@ class Eyes extends EyesBase {
     ArgumentGuard.notNull(viewportSize, 'size');
 
     this._viewportSizeHandler.set(new RectangleSize(viewportSize));
-    return this.getPromiseFactory().resolve();
+    return Promise.resolve();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -33251,17 +33126,17 @@ class Eyes extends EyesBase {
    * Get the inferred environment.
    *
    * @protected
-   * @return {Promise<String>} A promise which resolves to the inferred environment string.
+   * @return {Promise<string>} A promise which resolves to the inferred environment string.
    */
   getInferredEnvironment() {
-    return this.getPromiseFactory().resolve(this._inferred);
+    return Promise.resolve(this._inferred);
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the inferred environment for the test.
    *
-   * @param {String} inferred The inferred environment string.
+   * @param {string} inferred The inferred environment string.
    */
   setInferredEnvironment(inferred) {
     this._inferred = inferred;
@@ -33274,17 +33149,17 @@ class Eyes extends EyesBase {
    * @return {Promise<EyesSimpleScreenshot>} The screenshot.
    */
   getScreenshot() {
-    return this.getPromiseFactory().resolve(this._screenshot);
+    return Promise.resolve(this._screenshot);
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * Get the screenshot URL.
    *
-   * @return {Promise<String>} The screenshot URL.
+   * @return {Promise<string>} The screenshot URL.
    */
   getScreenshotUrl() {
-    return this.getPromiseFactory().resolve(this._screenshotUrl);
+    return Promise.resolve(this._screenshotUrl);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -33292,27 +33167,27 @@ class Eyes extends EyesBase {
    * Get the title.
    *
    * @protected
-   * @return {Promise<String>} The current title of of the AUT.
+   * @return {Promise<string>} The current title of of the AUT.
    */
   getTitle() {
-    return this.getPromiseFactory().resolve(this._title);
+    return Promise.resolve(this._title);
   }
 }
 
 exports.Eyes = Eyes;
 
-},{"../package.json":193,"./fluent/Target":192,"@applitools/eyes.sdk.core":194}],191:[function(require,module,exports){
+},{"../package.json":193,"./fluent/Target":192,"@applitools/eyes-sdk-core":194}],191:[function(require,module,exports){
 'use strict';
 
-const { CheckSettings, RectangleSize } = require('@applitools/eyes.sdk.core');
+const { CheckSettings } = require('@applitools/eyes-sdk-core');
 
 class ImagesCheckSettings extends CheckSettings {
   /**
    * @param {MutableImage} [image]
    * @param {Buffer} [buffer]
-   * @param {String} [base64]
-   * @param {String} [path]
-   * @param {String} [url]
+   * @param {string} [base64]
+   * @param {string} [path]
+   * @param {string} [url]
    */
   constructor(image, buffer, base64, path, url) {
     super();
@@ -33323,8 +33198,7 @@ class ImagesCheckSettings extends CheckSettings {
     this._imagePath = path;
     this._imageUrl = url;
 
-    this._imageSize = undefined;
-    this._targetRegion = undefined;
+    this._imageSize = null;
   }
 
   /**
@@ -33342,21 +33216,21 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
-   * @return {String}
+   * @return {string}
    */
   getImageString() {
     return this._imageBase64;
   }
 
   /**
-   * @return {String}
+   * @return {string}
    */
   getImagePath() {
     return this._imagePath;
   }
 
   /**
-   * @return {String}
+   * @return {string}
    */
   getImageUrl() {
     return this._imageUrl;
@@ -33388,16 +33262,16 @@ class ImagesCheckSettings extends CheckSettings {
 
 exports.ImagesCheckSettings = ImagesCheckSettings;
 
-},{"@applitools/eyes.sdk.core":194}],192:[function(require,module,exports){
+},{"@applitools/eyes-sdk-core":194}],192:[function(require,module,exports){
 'use strict';
 
-const { MutableImage, GeneralUtils, ArgumentGuard } = require('@applitools/eyes.sdk.core');
+const { MutableImage, GeneralUtils, ArgumentGuard } = require('@applitools/eyes-sdk-core');
 
 const { ImagesCheckSettings } = require('./ImagesCheckSettings');
 
 class Target {
   /**
-   * @param {String|Buffer|MutableImage} image
+   * @param {string|Buffer|MutableImage} image
    * @return {ImagesCheckSettings}
    */
   static image(image) {
@@ -33425,13 +33299,13 @@ class Target {
    * @return {ImagesCheckSettings}
    */
   static buffer(buffer) {
-    ArgumentGuard.isBuffer(buffer);
+    ArgumentGuard.isBuffer(buffer, 'buffer');
 
     return new ImagesCheckSettings(null, buffer);
   }
 
   /**
-   * @param {String} string
+   * @param {string} string
    * @return {ImagesCheckSettings}
    */
   static base64(string) {
@@ -33441,22 +33315,22 @@ class Target {
   }
 
   /**
-   * @param {String} string
+   * @param {string} string
    * @return {ImagesCheckSettings}
    */
   static path(string) {
-    ArgumentGuard.isString(string);
+    ArgumentGuard.isString(string, 'path');
 
     return new ImagesCheckSettings(null, null, null, string);
   }
 
   /**
-   * @param {String} string
+   * @param {string} string
    * @param {RectangleSize} [imageSize]
    * @return {ImagesCheckSettings}
    */
   static url(string, imageSize) {
-    ArgumentGuard.isString(string);
+    ArgumentGuard.isString(string, 'url');
 
     const checkSettings = new ImagesCheckSettings(null, null, null, null, string);
     checkSettings.setImageSize(imageSize);
@@ -33464,7 +33338,7 @@ class Target {
   }
 
   /**
-   * @param {String|Buffer|MutableImage} image
+   * @param {string|Buffer|MutableImage} image
    * @param {Region|RegionObject} rect
    * @return {ImagesCheckSettings}
    */
@@ -33478,13 +33352,13 @@ class Target {
 
 exports.Target = Target;
 
-},{"./ImagesCheckSettings":191,"@applitools/eyes.sdk.core":194}],193:[function(require,module,exports){
+},{"./ImagesCheckSettings":191,"@applitools/eyes-sdk-core":194}],193:[function(require,module,exports){
 module.exports={
-  "name": "@applitools/eyes.images",
-  "version": "1.0.0",
-  "description": "Applitools Eyes SDK for working directly with images",
+  "name": "@applitools/eyes-images",
+  "version": "4.0.0",
+  "description": "The simplest implemnetation of Applitools Eyes SDK, uploads images for validation",
   "keywords": [
-    "eyes.images",
+    "eyes-images",
     "applitools",
     "eyes",
     "test automation",
@@ -33493,11 +33367,10 @@ module.exports={
     "testing",
     "tests"
   ],
-  "homepage": "https://applitools.com/",
+  "homepage": "https://applitools.com",
   "author": {
     "name": "Applitools Team",
-    "email": "team@applitools.com",
-    "url": "http://www.applitools.com"
+    "email": "team@applitools.com"
   },
   "repository": {
     "type": "git",
@@ -33513,23 +33386,25 @@ module.exports={
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes.sdk.core": "~1.5.0"
+    "@applitools/eyes-sdk-core": "^4.0.0"
   },
   "devDependencies": {
-    "mocha": "^5.0.5",
-    "node-fetch": "^2.1.2"
+    "mocha": "^5.2.0",
+    "axios": "^0.18.0"
   },
   "scripts": {
     "test": "mocha ./test/**/*.spec.js -t 900000"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": ">= 6.9.0"
+    "node": ">= 8.9.0"
   }
 }
 
 },{}],194:[function(require,module,exports){
 'use strict';
+
+/* eslint-disable max-len */
 
 exports.AppOutputProvider = require('./lib/capture/AppOutputProvider').AppOutputProvider;
 exports.AppOutputWithScreenshot = require('./lib/capture/AppOutputWithScreenshot').AppOutputWithScreenshot;
@@ -33546,6 +33421,11 @@ exports.UnscaledFixedCutProvider = require('./lib/cropping/UnscaledFixedCutProvi
 exports.DebugScreenshotsProvider = require('./lib/debug/DebugScreenshotsProvider').DebugScreenshotsProvider;
 exports.FileDebugScreenshotsProvider = require('./lib/debug/FileDebugScreenshotsProvider').FileDebugScreenshotsProvider;
 exports.NullDebugScreenshotProvider = require('./lib/debug/NullDebugScreenshotProvider').NullDebugScreenshotProvider;
+
+exports.RemoteSessionEventHandler = require('./lib/events/RemoteSessionEventHandler').RemoteSessionEventHandler;
+exports.SessionEventHandler = require('./lib/events/SessionEventHandler').SessionEventHandler;
+exports.ValidationInfo = require('./lib/events/ValidationInfo').ValidationInfo;
+exports.ValidationResult = require('./lib/events/ValidationResult').ValidationResult;
 
 exports.CoordinatesTypeConversionError = require('./lib/errors/CoordinatesTypeConversionError').CoordinatesTypeConversionError;
 exports.DiffsFoundError = require('./lib/errors/DiffsFoundError').DiffsFoundError;
@@ -33594,13 +33474,16 @@ exports.PositionMemento = require('./lib/positioning/PositionMemento').PositionM
 exports.PositionProvider = require('./lib/positioning/PositionProvider').PositionProvider;
 exports.RegionProvider = require('./lib/positioning/RegionProvider').RegionProvider;
 
-exports.RenderingInfo = require('./lib/renderer/RenderingInfo').RenderingInfo;
+exports.RenderInfo = require('./lib/renderer/RenderInfo').RenderInfo;
 exports.RenderRequest = require('./lib/renderer/RenderRequest').RenderRequest;
 exports.RenderStatus = require('./lib/renderer/RenderStatus').RenderStatus;
 exports.RenderStatusResults = require('./lib/renderer/RenderStatusResults').RenderStatusResults;
 exports.RGridDom = require('./lib/renderer/RGridDom').RGridDom;
 exports.RGridResource = require('./lib/renderer/RGridResource').RGridResource;
 exports.RunningRender = require('./lib/renderer/RunningRender').RunningRender;
+exports.EmulationInfo = require('./lib/renderer/EmulationInfo').EmulationInfo;
+exports.EmulationDevice = require('./lib/renderer/EmulationDevice').EmulationDevice;
+exports.ScreenOrientation = require('./lib/renderer/ScreenOrientation').ScreenOrientation;
 
 exports.ContextBasedScaleProvider = require('./lib/scaling/ContextBasedScaleProvider').ContextBasedScaleProvider;
 exports.ContextBasedScaleProviderFactory = require('./lib/scaling/ContextBasedScaleProviderFactory').ContextBasedScaleProviderFactory;
@@ -33613,6 +33496,7 @@ exports.ScaleProviderIdentityFactory = require('./lib/scaling/ScaleProviderIdent
 
 exports.PropertyData = require('./lib/server/PropertyData').PropertyData;
 exports.ProxySettings = require('./lib/server/ProxySettings').ProxySettings;
+exports.RenderingInfo = require('./lib/server/RenderingInfo').RenderingInfo;
 exports.RunningSession = require('./lib/server/RunningSession').RunningSession;
 exports.ServerConnector = require('./lib/server/ServerConnector').ServerConnector;
 exports.SessionStartInfo = require('./lib/server/SessionStartInfo').SessionStartInfo;
@@ -33625,10 +33509,12 @@ exports.Trigger = require('./lib/triggers/Trigger').Trigger;
 exports.BrowserNames = require('./lib/utils/BrowserNames').BrowserNames;
 exports.GeneralUtils = require('./lib/utils/GeneralUtils').GeneralUtils;
 exports.OSNames = require('./lib/utils/OSNames').OSNames;
+exports.PerformanceUtils = require('./lib/utils/PerformanceUtils').PerformanceUtils;
 exports.PropertyHandler = require('./lib/utils/PropertyHandler').PropertyHandler;
 exports.ReadOnlyPropertyHandler = require('./lib/utils/ReadOnlyPropertyHandler').ReadOnlyPropertyHandler;
 exports.SimplePropertyHandler = require('./lib/utils/SimplePropertyHandler').SimplePropertyHandler;
 exports.StreamUtils = require('./lib/utils/StreamUtils').ReadableBufferStream;
+exports.TestResultsFormatter = require('./lib/utils/TestResultsFormatter').TestResultsFormatter;
 exports.UserAgent = require('./lib/utils/UserAgent').UserAgent;
 
 exports.ArgumentGuard = require('./lib/ArgumentGuard').ArgumentGuard;
@@ -33640,15 +33526,15 @@ exports.EyesJsExecutor = require('./lib/EyesJsExecutor').EyesJsExecutor;
 exports.FailureReports = require('./lib/FailureReports').FailureReports;
 exports.MatchSingleWindowTask = require('./lib/MatchSingleWindowTask').MatchSingleWindowTask;
 exports.MatchWindowTask = require('./lib/MatchWindowTask').MatchWindowTask;
-exports.PromiseFactory = require('./lib/PromiseFactory').PromiseFactory;
-exports.RemoteSessionEventHandler = require('./lib/RemoteSessionEventHandler').RemoteSessionEventHandler;
 exports.RenderWindowTask = require('./lib/RenderWindowTask').RenderWindowTask;
-exports.SessionEventHandler = require('./lib/SessionEventHandler').SessionEventHandler;
 exports.TestResults = require('./lib/TestResults').TestResults;
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus;
 
-},{"./lib/AppEnvironment":195,"./lib/ArgumentGuard":196,"./lib/BatchInfo":197,"./lib/EyesBase":198,"./lib/EyesJsBrowserUtils":199,"./lib/EyesJsExecutor":200,"./lib/FailureReports":201,"./lib/MatchSingleWindowTask":202,"./lib/MatchWindowTask":203,"./lib/PromiseFactory":204,"./lib/RemoteSessionEventHandler":205,"./lib/RenderWindowTask":206,"./lib/SessionEventHandler":207,"./lib/TestResults":208,"./lib/TestResultsStatus":209,"./lib/capture/AppOutputProvider":210,"./lib/capture/AppOutputWithScreenshot":211,"./lib/capture/EyesScreenshot":212,"./lib/capture/EyesScreenshotFactory":213,"./lib/capture/EyesSimpleScreenshot":214,"./lib/capture/ImageProvider":215,"./lib/cropping/CutProvider":216,"./lib/cropping/FixedCutProvider":217,"./lib/cropping/NullCutProvider":218,"./lib/cropping/UnscaledFixedCutProvider":219,"./lib/debug/DebugScreenshotsProvider":220,"./lib/debug/FileDebugScreenshotsProvider":221,"./lib/debug/NullDebugScreenshotProvider":222,"./lib/errors/CoordinatesTypeConversionError":223,"./lib/errors/DiffsFoundError":224,"./lib/errors/EyesError":225,"./lib/errors/NewTestError":226,"./lib/errors/OutOfBoundsError":227,"./lib/errors/TestFailedError":228,"./lib/fluent/CheckSettings":229,"./lib/fluent/CheckTarget":230,"./lib/fluent/FloatingRegionByRectangle":231,"./lib/fluent/GetFloatingRegion":232,"./lib/fluent/GetRegion":233,"./lib/fluent/IgnoreRegionByRectangle":234,"./lib/geometry/CoordinatesType":235,"./lib/geometry/Location":236,"./lib/geometry/RectangleSize":237,"./lib/geometry/Region":238,"./lib/images/ImageDeltaCompressor":239,"./lib/images/ImageUtils":240,"./lib/images/MutableImage":241,"./lib/logging/ConsoleLogHandler":242,"./lib/logging/FileLogHandler":243,"./lib/logging/LogHandler":244,"./lib/logging/Logger":245,"./lib/logging/NullLogHandler":246,"./lib/match/AppOutput":247,"./lib/match/ExactMatchSettings":248,"./lib/match/FloatingMatchSettings":249,"./lib/match/ImageMatchSettings":250,"./lib/match/MatchLevel":251,"./lib/match/MatchResult":252,"./lib/match/MatchSingleWindowData":253,"./lib/match/MatchWindowData":254,"./lib/match/MatchWindowDataWithScreenshot":255,"./lib/metadata/index":265,"./lib/positioning/InvalidPositionProvider":266,"./lib/positioning/NullRegionProvider":267,"./lib/positioning/PositionMemento":268,"./lib/positioning/PositionProvider":269,"./lib/positioning/RegionProvider":270,"./lib/renderer/RGridDom":271,"./lib/renderer/RGridResource":272,"./lib/renderer/RenderRequest":273,"./lib/renderer/RenderStatus":274,"./lib/renderer/RenderStatusResults":275,"./lib/renderer/RenderingInfo":276,"./lib/renderer/RunningRender":277,"./lib/scaling/ContextBasedScaleProvider":278,"./lib/scaling/ContextBasedScaleProviderFactory":279,"./lib/scaling/FixedScaleProvider":280,"./lib/scaling/FixedScaleProviderFactory":281,"./lib/scaling/NullScaleProvider":282,"./lib/scaling/ScaleProvider":283,"./lib/scaling/ScaleProviderFactory":284,"./lib/scaling/ScaleProviderIdentityFactory":285,"./lib/server/PropertyData":286,"./lib/server/ProxySettings":287,"./lib/server/RunningSession":288,"./lib/server/ServerConnector":289,"./lib/server/SessionStartInfo":290,"./lib/server/SessionType":291,"./lib/triggers/MouseTrigger":292,"./lib/triggers/TextTrigger":293,"./lib/triggers/Trigger":294,"./lib/utils/BrowserNames":295,"./lib/utils/GeneralUtils":296,"./lib/utils/OSNames":297,"./lib/utils/PropertyHandler":298,"./lib/utils/ReadOnlyPropertyHandler":299,"./lib/utils/SimplePropertyHandler":300,"./lib/utils/StreamUtils":301,"./lib/utils/UserAgent":302}],195:[function(require,module,exports){
+},{"./lib/AppEnvironment":195,"./lib/ArgumentGuard":196,"./lib/BatchInfo":197,"./lib/EyesBase":198,"./lib/EyesJsBrowserUtils":199,"./lib/EyesJsExecutor":200,"./lib/FailureReports":201,"./lib/MatchSingleWindowTask":202,"./lib/MatchWindowTask":203,"./lib/RenderWindowTask":204,"./lib/TestResults":205,"./lib/TestResultsStatus":206,"./lib/capture/AppOutputProvider":207,"./lib/capture/AppOutputWithScreenshot":208,"./lib/capture/EyesScreenshot":209,"./lib/capture/EyesScreenshotFactory":210,"./lib/capture/EyesSimpleScreenshot":211,"./lib/capture/ImageProvider":212,"./lib/cropping/CutProvider":213,"./lib/cropping/FixedCutProvider":214,"./lib/cropping/NullCutProvider":215,"./lib/cropping/UnscaledFixedCutProvider":216,"./lib/debug/DebugScreenshotsProvider":217,"./lib/debug/FileDebugScreenshotsProvider":218,"./lib/debug/NullDebugScreenshotProvider":219,"./lib/errors/CoordinatesTypeConversionError":220,"./lib/errors/DiffsFoundError":221,"./lib/errors/EyesError":222,"./lib/errors/NewTestError":223,"./lib/errors/OutOfBoundsError":224,"./lib/errors/TestFailedError":225,"./lib/events/RemoteSessionEventHandler":226,"./lib/events/SessionEventHandler":227,"./lib/events/ValidationInfo":229,"./lib/events/ValidationResult":230,"./lib/fluent/CheckSettings":231,"./lib/fluent/CheckTarget":232,"./lib/fluent/FloatingRegionByRectangle":233,"./lib/fluent/GetFloatingRegion":234,"./lib/fluent/GetRegion":235,"./lib/fluent/IgnoreRegionByRectangle":236,"./lib/geometry/CoordinatesType":237,"./lib/geometry/Location":238,"./lib/geometry/RectangleSize":239,"./lib/geometry/Region":240,"./lib/images/ImageDeltaCompressor":241,"./lib/images/ImageUtils":242,"./lib/images/MutableImage":243,"./lib/logging/ConsoleLogHandler":244,"./lib/logging/FileLogHandler":245,"./lib/logging/LogHandler":246,"./lib/logging/Logger":247,"./lib/logging/NullLogHandler":248,"./lib/match/AppOutput":249,"./lib/match/ExactMatchSettings":250,"./lib/match/FloatingMatchSettings":251,"./lib/match/ImageMatchSettings":252,"./lib/match/MatchLevel":253,"./lib/match/MatchResult":254,"./lib/match/MatchSingleWindowData":255,"./lib/match/MatchWindowData":256,"./lib/match/MatchWindowDataWithScreenshot":257,"./lib/metadata/index":267,"./lib/positioning/InvalidPositionProvider":268,"./lib/positioning/NullRegionProvider":269,"./lib/positioning/PositionMemento":270,"./lib/positioning/PositionProvider":271,"./lib/positioning/RegionProvider":272,"./lib/renderer/EmulationDevice":273,"./lib/renderer/EmulationInfo":274,"./lib/renderer/RGridDom":275,"./lib/renderer/RGridResource":276,"./lib/renderer/RenderInfo":277,"./lib/renderer/RenderRequest":278,"./lib/renderer/RenderStatus":279,"./lib/renderer/RenderStatusResults":280,"./lib/renderer/RunningRender":281,"./lib/renderer/ScreenOrientation":282,"./lib/scaling/ContextBasedScaleProvider":283,"./lib/scaling/ContextBasedScaleProviderFactory":284,"./lib/scaling/FixedScaleProvider":285,"./lib/scaling/FixedScaleProviderFactory":286,"./lib/scaling/NullScaleProvider":287,"./lib/scaling/ScaleProvider":288,"./lib/scaling/ScaleProviderFactory":289,"./lib/scaling/ScaleProviderIdentityFactory":290,"./lib/server/PropertyData":291,"./lib/server/ProxySettings":292,"./lib/server/RenderingInfo":293,"./lib/server/RunningSession":294,"./lib/server/ServerConnector":295,"./lib/server/SessionStartInfo":296,"./lib/server/SessionType":297,"./lib/triggers/MouseTrigger":298,"./lib/triggers/TextTrigger":299,"./lib/triggers/Trigger":300,"./lib/utils/BrowserNames":301,"./lib/utils/GeneralUtils":302,"./lib/utils/OSNames":303,"./lib/utils/PerformanceUtils":304,"./lib/utils/PropertyHandler":305,"./lib/utils/ReadOnlyPropertyHandler":306,"./lib/utils/SimplePropertyHandler":307,"./lib/utils/StreamUtils":308,"./lib/utils/TestResultsFormatter":309,"./lib/utils/UserAgent":310}],195:[function(require,module,exports){
 'use strict';
+
+const { RectangleSize } = require('./geometry/RectangleSize');
+const { GeneralUtils } = require('./utils/GeneralUtils');
 
 /**
  * The environment in which the application under test is executing.
@@ -33657,27 +33543,32 @@ class AppEnvironment {
   /**
    * Creates a new AppEnvironment instance.
    *
-   * @param {String} [os]
-   * @param {String} [hostingApp]
+   * @param {string} [os]
+   * @param {string} [hostingApp]
    * @param {RectangleSize} [displaySize]
    */
-  constructor(os, hostingApp, displaySize) {
-    this._inferred = null;
+  constructor({ os, hostingApp, displaySize } = {}) {
+    if (displaySize && !(displaySize instanceof RectangleSize)) {
+      displaySize = new RectangleSize(displaySize);
+    }
+
     this._os = os;
     this._hostingApp = hostingApp;
     this._displaySize = displaySize;
+
+    this._inferred = null;
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * Creates a new AppEnvironment instance.
    *
-   * @param {String} inferred
+   * @param {string} inferred
    * @return {AppEnvironment}
    */
   static fromInferred(inferred) {
     const env = new AppEnvironment();
-    env.inferred = inferred;
+    env.setInferred(inferred);
     return env;
   }
 
@@ -33685,7 +33576,7 @@ class AppEnvironment {
   /**
    * Gets the information inferred from the execution environment or {@code null} if no information could be inferred.
    *
-   * @return {String}
+   * @return {string}
    */
   geInferred() {
     return this._inferred;
@@ -33694,7 +33585,7 @@ class AppEnvironment {
   /**
    * Sets the inferred environment information.
    *
-   * @param {String} value
+   * @param {string} value
    */
   setInferred(value) {
     this._inferred = value;
@@ -33703,7 +33594,7 @@ class AppEnvironment {
   /**
    * Gets the OS hosting the application under test or {@code null} if unknown.
    *
-   * @return {String}
+   * @return {string}
    */
   getOs() {
     return this._os;
@@ -33712,7 +33603,7 @@ class AppEnvironment {
   /**
    * Sets the OS hosting the application under test or {@code null} if unknown.
    *
-   * @param {String} value
+   * @param {string} value
    */
   setOs(value) {
     this._os = value;
@@ -33722,7 +33613,7 @@ class AppEnvironment {
   /**
    * Gets the application hosting the application under test or {@code null} if unknown.
    *
-   * @return {String}
+   * @return {string}
    */
   getHostingApp() {
     return this._hostingApp;
@@ -33731,7 +33622,7 @@ class AppEnvironment {
   /**
    * Sets the application hosting the application under test or {@code null} if unknown.
    *
-   * @param {String} value
+   * @param {string} value
    */
   setHostingApp(value) {
     this._hostingApp = value;
@@ -33756,13 +33647,9 @@ class AppEnvironment {
     this._displaySize = value;
   }
 
+  /** @override */
   toJSON() {
-    return {
-      inferred: this._inferred,
-      os: this._os,
-      hostingApp: this._hostingApp,
-      displaySize: this._displaySize,
-    };
+    return GeneralUtils.toPlain(this);
   }
 
   /** @override */
@@ -33773,7 +33660,7 @@ class AppEnvironment {
 
 exports.AppEnvironment = AppEnvironment;
 
-},{}],196:[function(require,module,exports){
+},{"./geometry/RectangleSize":239,"./utils/GeneralUtils":302}],196:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('./utils/GeneralUtils');
@@ -33786,9 +33673,9 @@ class ArgumentGuard {
   /**
    * Fails if the input parameter equals the input value.
    *
-   * @param {Object} param The input parameter.
-   * @param {Object} value The input value.
-   * @param {String} paramName The input parameter name.
+   * @param {object} param The input parameter.
+   * @param {object} value The input value.
+   * @param {string} paramName The input parameter name.
    */
   static notEqual(param, value, paramName) {
     if (param === value) {
@@ -33800,8 +33687,8 @@ class ArgumentGuard {
   /**
    * Fails if the input parameter contains some special characters or punctuation
    *
-   * @param {Object} param The input parameter.
-   * @param {String} paramName The input parameter name.
+   * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
    */
   static alphanumeric(param, paramName) {
     if (!param.match(/^[a-z0-9]+$/i)) {
@@ -33813,8 +33700,8 @@ class ArgumentGuard {
   /**
    * Fails if the input parameter is null.
    *
-   * @param {Object} param The input parameter.
-   * @param {String} paramName The input parameter name.
+   * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
    */
   static notNull(param, paramName) {
     if (param === null || param === undefined) {
@@ -33826,8 +33713,8 @@ class ArgumentGuard {
   /**
    * Fails if the input parameter is not null.
    *
-   * @param {Object} param The input parameter.
-   * @param {String} paramName The input parameter name.
+   * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
    */
   static isNull(param, paramName) {
     if (param !== null && param !== undefined) {
@@ -33839,8 +33726,8 @@ class ArgumentGuard {
   /**
    * Fails if the input parameter string is null or empty.
    *
-   * @param {Object} param The input parameter.
-   * @param {String} paramName The input parameter name.
+   * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
    */
   static notNullOrEmpty(param, paramName) {
     if (!param) {
@@ -33852,9 +33739,9 @@ class ArgumentGuard {
   /**
    * Fails if the input integer parameter is negative.
    *
-   * @param {Number} param The input parameter.
-   * @param {String} paramName The input parameter name.
-   * @param {Boolean} isInteger Whether or not, the number should be en integer
+   * @param {number} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} isInteger Whether or not, the number should be en integer
    */
   static greaterThanOrEqualToZero(param, paramName, isInteger = false) {
     if (isInteger) {
@@ -33870,9 +33757,9 @@ class ArgumentGuard {
   /**
    * Fails if the input integer parameter is smaller than 1.
    *
-   * @param {Number} param The input parameter.
-   * @param {String} paramName The input parameter name.
-   * @param {Boolean} isInteger Whether or not, the number should be en integer
+   * @param {number} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} isInteger Whether or not, the number should be en integer
    */
   static greaterThanZero(param, paramName, isInteger = false) {
     if (isInteger) {
@@ -33889,7 +33776,7 @@ class ArgumentGuard {
    * Fails if the input integer parameter is equal to 0.
    * @param param The input parameter.
    * @param paramName The input parameter name.
-   * @param {Boolean} isInteger Whether or not, the number should be en integer
+   * @param {boolean} isInteger Whether or not, the number should be en integer
    */
   static notZero(param, paramName, isInteger = false) {
     if (isInteger) {
@@ -33905,11 +33792,12 @@ class ArgumentGuard {
   /**
    * Fails if the input number is not integer
    *
-   * @param {Number} param The input parameter.
-   * @param {String} paramName The input parameter name.
+   * @param {number} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
-  static isInteger(param, paramName) {
-    if (!Number.isInteger(param)) {
+  static isInteger(param, paramName, strict = true) {
+    if ((strict || !(param === undefined || param === null)) && !Number.isInteger(param)) {
       throw new Error(`IllegalArgument: ${paramName} is not integer`);
     }
   }
@@ -33918,11 +33806,41 @@ class ArgumentGuard {
   /**
    * Fails if param is not a string.
    *
-   * @param {Object} param The input parameter.
+   * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
-  static isString(param) {
-    if (!GeneralUtils.isString(param)) {
-      throw new Error(`IllegalType: \`${param}\` is not a string`);
+  static isString(param, paramName, strict = true) {
+    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isString(param)) {
+      throw new Error(`IllegalType: ${paramName} is not a string`);
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Fails if param is not a number.
+   *
+   * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
+   */
+  static isNumber(param, paramName, strict = true) {
+    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isNumber(param)) {
+      throw new Error(`IllegalType: ${paramName} is not a number`);
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Fails if param is not a boolean.
+   *
+   * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
+   */
+  static isBoolean(param, paramName, strict = true) {
+    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isBoolean(param)) {
+      throw new Error(`IllegalType: ${paramName} is not a boolean`);
     }
   }
 
@@ -33930,11 +33848,13 @@ class ArgumentGuard {
   /**
    * Fails if param is not a buffer.
    *
-   * @param {Object} param The input parameter.
+   * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
-  static isBuffer(param) {
-    if (!GeneralUtils.isBuffer(param)) {
-      throw new Error(`IllegalType: \`${param}\` is not a buffer`);
+  static isBuffer(param, paramName, strict = true) {
+    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isBuffer(param)) {
+      throw new Error(`IllegalType: ${paramName} is not a buffer`);
     }
   }
 
@@ -33942,7 +33862,7 @@ class ArgumentGuard {
   /**
    * Fails if param is not a base64 string.
    *
-   * @param {Object} param The input parameter.
+   * @param {object} param The input parameter.
    */
   static isBase64(param) {
     if (!GeneralUtils.isBase64(param)) {
@@ -33954,8 +33874,8 @@ class ArgumentGuard {
   /**
    * Fails if isValid is false.
    *
-   * @param {Boolean} isValid Whether the current state is valid.
-   * @param {String} errMsg A description of the error.
+   * @param {boolean} isValid Whether the current state is valid.
+   * @param {string} errMsg A description of the error.
    */
   static isValidState(isValid, errMsg) {
     if (!isValid) {
@@ -33967,8 +33887,8 @@ class ArgumentGuard {
   /**
    * Fails if isValid is false.
    *
-   * @param {Object} param The input parameter.
-   * @param {Object} type The expected param type
+   * @param {object} param The input parameter.
+   * @param {object} type The expected param type
    */
   static isValidType(param, type) {
     if (!(param instanceof type)) {
@@ -33981,7 +33901,7 @@ class ArgumentGuard {
    * Fails if isValid is false.
    *
    * @param {*} value The input value.
-   * @param {Object} enumObject The required enum object
+   * @param {object} enumObject The required enum object
    */
   static isValidEnumValue(value, enumObject) {
     if (!Object.prototype.hasOwnProperty.call(enumObject, value)) {
@@ -33993,9 +33913,9 @@ class ArgumentGuard {
   /**
    * Check if object contains all required properties
    *
-   * @param {Object} object The input object.
-   * @param {Array.<String>|String} properties The array of properties to test
-   * @param {String} paramName The input parameter name.
+   * @param {object} object The input object.
+   * @param {string|string[]} properties The array of properties to test
+   * @param {string} paramName The input parameter name.
    */
   static hasProperties(object, properties, paramName) {
     if (!Array.isArray(properties)) {
@@ -34012,7 +33932,7 @@ class ArgumentGuard {
 
 exports.ArgumentGuard = ArgumentGuard;
 
-},{"./utils/GeneralUtils":296}],197:[function(require,module,exports){
+},{"./utils/GeneralUtils":302}],197:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -34025,18 +33945,39 @@ const { GeneralUtils } = require('./utils/GeneralUtils');
 class BatchInfo {
   /**
    * Creates a new BatchInfo instance.
-   * @param {String} [name] Name of batch or {@code null} if anonymous.
-   * @param {Date} [startedAt] Batch start time, defaults to the current time.
-   * @param {String} [id]
+   *
+   * @signature `new BatchInfo(batchInfo)`
+   * @signature `new BatchInfo(name, startedAt?, id?)`
+   * @signature `new BatchInfo({id: string, name: string, startedAt: Date|string})`
+   *
+   * @param {BatchInfo|{id?: string, name?: string, startedAt?: Date|string}|string} [varArg] BatchInfo or the name of
+   *   this batch.
+   * @param {string} [optStartedAt] Batch start time, defaults to the current time.
+   * @param {string} [optId] ID of the batch, should be generated using GeneralUtils.guid().
    */
-  constructor(name, startedAt, id) {
+  constructor(varArg = {}, optStartedAt, optId) {
+    if (varArg instanceof BatchInfo) {
+      return new BatchInfo({ id: varArg.getId(), name: varArg.getName(), startedAt: varArg.getStartedAt() });
+    }
+
+    if (GeneralUtils.isString(varArg)) {
+      return new BatchInfo({ id: optId, name: varArg, startedAt: optStartedAt });
+    }
+
+    const { id, name } = varArg;
+    let { startedAt } = varArg;
+
+    if (startedAt && !(startedAt instanceof Date)) {
+      startedAt = GeneralUtils.fromISO8601DateTime(startedAt);
+    }
+
     this._id = id || process.env.APPLITOOLS_BATCH_ID || GeneralUtils.guid();
     this._name = name || process.env.APPLITOOLS_BATCH_NAME;
-    this._startedAt = GeneralUtils.toISO8601DateTime(startedAt || new Date());
+    this._startedAt = startedAt || new Date();
   }
 
   /**
-   * @return {String} The id of the current batch.
+   * @return {string} The id of the current batch.
    */
   getId() {
     return this._id;
@@ -34047,7 +33988,7 @@ class BatchInfo {
    * Sets a unique identifier for the batch. Sessions with batch info which includes the same ID will be grouped
    * together.
    *
-   * @param {String} value The batch's ID
+   * @param {string} value The batch's ID
    */
   setId(value) {
     ArgumentGuard.notNullOrEmpty(value, 'id');
@@ -34067,7 +34008,7 @@ class BatchInfo {
    * @return {Date} The batch start date
    */
   getStartedAt() {
-    return GeneralUtils.fromISO8601DateTime(this._startedAt);
+    return this._startedAt;
   }
 
   /** @override */
@@ -34084,7 +34025,7 @@ class BatchInfo {
 exports.BatchInfo = BatchInfo;
 
 }).call(this,require('_process'))
-},{"./ArgumentGuard":196,"./utils/GeneralUtils":296,"_process":138}],198:[function(require,module,exports){
+},{"./ArgumentGuard":196,"./utils/GeneralUtils":302,"_process":138}],198:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -34097,9 +34038,6 @@ const { CoordinatesType } = require('./geometry/CoordinatesType');
 
 const { FileDebugScreenshotsProvider } = require('./debug/FileDebugScreenshotsProvider');
 const { NullDebugScreenshotProvider } = require('./debug/NullDebugScreenshotProvider');
-
-const { SimplePropertyHandler } = require('./utils/SimplePropertyHandler');
-const { ReadOnlyPropertyHandler } = require('./utils/ReadOnlyPropertyHandler');
 
 const { ImageDeltaCompressor } = require('./images/ImageDeltaCompressor');
 
@@ -34118,7 +34056,6 @@ const { TextTrigger } = require('./triggers/TextTrigger');
 const { MouseTrigger } = require('./triggers/MouseTrigger');
 
 const { MatchResult } = require('./match/MatchResult');
-const { MatchLevel } = require('./match/MatchLevel');
 const { ImageMatchSettings } = require('./match/ImageMatchSettings');
 const { MatchWindowData } = require('./match/MatchWindowData');
 
@@ -34127,6 +34064,10 @@ const { EyesError } = require('./errors/EyesError');
 const { NewTestError } = require('./errors/NewTestError');
 const { OutOfBoundsError } = require('./errors/OutOfBoundsError');
 const { TestFailedError } = require('./errors/TestFailedError');
+
+const { ValidationInfo } = require('./events/ValidationInfo');
+const { ValidationResult } = require('./events/ValidationResult');
+const { SessionEventHandlers } = require('./events/SessionEventHandlers');
 
 const { CheckSettings } = require('./fluent/CheckSettings');
 
@@ -34139,15 +34080,16 @@ const { TestResultsStatus } = require('./TestResultsStatus');
 const { TestResults } = require('./TestResults');
 const { ServerConnector } = require('./server/ServerConnector');
 
-const { FailureReports } = require('./FailureReports');
+const { SimplePropertyHandler } = require('./utils/SimplePropertyHandler');
+const { ReadOnlyPropertyHandler } = require('./utils/ReadOnlyPropertyHandler');
 const { GeneralUtils } = require('./utils/GeneralUtils');
+
+const { FailureReports } = require('./FailureReports');
 const { ArgumentGuard } = require('./ArgumentGuard');
 const { AppEnvironment } = require('./AppEnvironment');
 const { MatchWindowTask } = require('./MatchWindowTask');
 const { MatchSingleWindowTask } = require('./MatchSingleWindowTask');
-const { SessionEventHandler } = require('./SessionEventHandler');
 const { BatchInfo } = require('./BatchInfo');
-const { PromiseFactory } = require('./PromiseFactory');
 
 const DEFAULT_MATCH_TIMEOUT = 2000;
 const MIN_MATCH_TIMEOUT = 500;
@@ -34161,17 +34103,12 @@ class EyesBase {
   /**
    * Creates a new {@code EyesBase}instance that interacts with the Eyes Server at the specified url.
    *
-   * @param {?String} [serverUrl] The Eyes server URL.
-   * @param {?Boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method
+   * @param {?string} [serverUrl] The Eyes server URL.
+   * @param {?boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method
    *   will immediately return without performing any action.
-   * @param {?PromiseFactory} [promiseFactory] An object which will be used for creating deferreds/promises.
    */
-  constructor(
-    serverUrl = EyesBase.getDefaultServerUrl(),
-    isDisabled = false,
-    promiseFactory = new PromiseFactory(asyncAction => new Promise(asyncAction))
-  ) {
-    /** @type {Boolean} */
+  constructor(serverUrl = EyesBase.getDefaultServerUrl(), isDisabled = false) {
+    /** @type {boolean} */
     this._isDisabled = isDisabled;
 
     if (this._isDisabled) {
@@ -34179,116 +34116,134 @@ class EyesBase {
       return;
     }
 
-    ArgumentGuard.notNull(promiseFactory, 'promiseFactory');
     ArgumentGuard.notNull(serverUrl, 'serverUrl');
 
     /** @type {Logger} */
     this._logger = new Logger();
-    /** @type {PromiseFactory} */
-    this._promiseFactory = promiseFactory;
-
-    Region.initLogger(this._logger);
 
     this._initProviders();
 
     /** @type {ServerConnector} */
-    this._serverConnector = new ServerConnector(this._promiseFactory, this._logger, serverUrl);
-    /** @type {int} */
+    this._serverConnector = new ServerConnector(this._logger, serverUrl);
+    /** @type {number} */
     this._matchTimeout = DEFAULT_MATCH_TIMEOUT;
-    /** @type {Boolean} */
+    /** @type {boolean} */
     this._compareWithParentBranch = false;
-    /** @type {Boolean} */
+    /** @type {boolean} */
     this._ignoreBaseline = false;
     /** @type {FailureReports} */
     this._failureReports = FailureReports.ON_CLOSE;
     /** @type {ImageMatchSettings} */
     this._defaultMatchSettings = new ImageMatchSettings();
+    this._defaultMatchSettings.setIgnoreCaret(true);
 
     /** @type {Trigger[]} */
     this._userInputs = [];
     /** @type {PropertyData[]} */
     this._properties = [];
-    /** @type {boolean} */
-    this._render = false;
 
     /** @type {boolean} */
     this._useImageDeltaCompression = true;
 
-    /** @type {int} */
+    /** @type {number} */
     this._validationId = -1;
-    /** @type {SessionEventHandler[]} */
-    this._sessionEventHandlers = [];
+    /** @type {SessionEventHandlers} */
+    this._sessionEventHandlers = new SessionEventHandlers();
 
     /**
      * Used for automatic save of a test run. New tests are automatically saved by default.
-     * @type {Boolean}
+     * @type {boolean}
      */
     this._saveNewTests = true;
     /**
-     * @type {Boolean}
+     * @type {boolean}
      */
     this._saveFailedTests = false;
 
     // noinspection JSUnusedGlobalSymbols
     /** @type {RenderWindowTask} */
-    this._renderWindowTask = new RenderWindowTask(this._promiseFactory, this._logger, this._serverConnector);
+    this._renderWindowTask = new RenderWindowTask(this._logger, this._serverConnector);
 
-    /** @type {Boolean} */ this._shouldMatchWindowRunOnceOnTimeout = undefined;
+    /** @type {boolean} */ this._shouldMatchWindowRunOnceOnTimeout = undefined;
     /** @type {MatchWindowTask} */ this._matchWindowTask = undefined;
 
     /** @type {RunningSession} */ this._runningSession = undefined;
     /** @type {SessionStartInfo} */ this._sessionStartInfo = undefined;
-    /** @type {Boolean} */ this._isViewportSizeSet = undefined;
+    /** @type {boolean} */ this._isViewportSizeSet = undefined;
 
-    /** @type {Boolean} */ this._isOpen = undefined;
-    /** @type {String} */ this._agentId = undefined;
+    /** @type {boolean} */ this._isOpen = undefined;
+    /** @type {string} */ this._agentId = undefined;
+    /** @type {boolean} */ this._render = false;
+    /** @type {boolean} */ this._saveDiffs = undefined;
 
     /** @type {SessionType} */ this._sessionType = undefined;
-    /** @type {String} */ this._testName = undefined;
+    /** @type {string} */ this._testName = undefined;
     /** @type {BatchInfo} */ this._batch = undefined;
-    /** @type {String} */ this._hostApp = undefined;
-    /** @type {String} */ this._hostOS = undefined;
-    /** @type {String} */ this._baselineEnvName = undefined;
-    /** @type {String} */ this._environmentName = undefined;
-    /** @type {String} */ this._branchName = undefined;
-    /** @type {String} */ this._parentBranchName = undefined;
-    /** @type {String} */ this._baselineBranchName = undefined;
+    /** @type {string} */ this._hostApp = undefined;
+    /** @type {string} */ this._hostOS = undefined;
+    /** @type {string} */ this._baselineEnvName = undefined;
+    /** @type {string} */ this._environmentName = undefined;
+    /** @type {string} */ this._branchName = undefined;
+    /** @type {string} */ this._parentBranchName = undefined;
+    /** @type {string} */ this._baselineBranchName = undefined;
 
     /**
      * Will be set for separately for each test.
-     * @type {String}
+     * @type {string}
      */
     this._currentAppName = undefined;
 
     /**
      * The default app name if no current name was provided. If this is {@code null} then there is no default appName.
-     * @type {String}
+     * @type {string}
      */
     this._appName = undefined;
 
     /**
      * The session ID of webdriver instance
-     * @type {String}
+     * @type {string}
      */
     this._autSessionId = undefined;
+
+    /** @type {boolean} */ this._sendDom = true;
   }
 
-  /** @private */
-  _initProviders() {
-    // TODO: do we need to reset all the providers when user call to open? It may be unexpected.
-    /** @type {PropertyHandler<ScaleProvider>} */
-    this._scaleProviderHandler = new SimplePropertyHandler();
-    this._scaleProviderHandler.set(new NullScaleProvider());
-    /** @type {PositionProvider} */
-    this._positionProvider = new InvalidPositionProvider();
-    /** @type {PropertyHandler<RectangleSize>} */
-    this._viewportSizeHandler = new SimplePropertyHandler();
-    this._viewportSizeHandler.set(null);
+  // noinspection FunctionWithMoreThanThreeNegationsJS
+  /**
+   * @param {boolean} [hardReset=false] If false, init providers only if they're not initialized.
+   * @private
+   */
+  _initProviders(hardReset = false) {
+    if (hardReset) {
+      this._scaleProviderHandler = undefined;
+      this._cutProviderHandler = undefined;
+      this._positionProviderHandler = undefined;
+      this._viewportSizeHandler = undefined;
+      this._debugScreenshotsProvider = undefined;
+    }
+
+    if (!this._scaleProviderHandler) {
+      /** @type {PropertyHandler<ScaleProvider>} */
+      this._scaleProviderHandler = new SimplePropertyHandler();
+      this._scaleProviderHandler.set(new NullScaleProvider());
+    }
 
     if (!this._cutProviderHandler) {
       /** @type {PropertyHandler<CutProvider>} */
       this._cutProviderHandler = new SimplePropertyHandler();
       this._cutProviderHandler.set(new NullCutProvider());
+    }
+
+    if (!this._positionProviderHandler) {
+      /** @type {PropertyHandler<PositionProvider>} */
+      this._positionProviderHandler = new SimplePropertyHandler();
+      this._positionProviderHandler.set(new InvalidPositionProvider());
+    }
+
+    if (!this._viewportSizeHandler) {
+      /** @type {PropertyHandler<RectangleSize>} */
+      this._viewportSizeHandler = new SimplePropertyHandler();
+      this._viewportSizeHandler.set(null);
     }
 
     if (!this._debugScreenshotsProvider) {
@@ -34301,14 +34256,14 @@ class EyesBase {
   /**
    * Sets the user given agent id of the SDK.
    *
-   * @param agentId {String} The agent ID to set.
+   * @param agentId {string} The agent ID to set.
    */
   setAgentId(agentId) {
     this._agentId = agentId;
   }
 
   /**
-   * @return {String} The user given agent id of the SDK.
+   * @return {string} The user given agent id of the SDK.
    */
   getAgentId() {
     return this._agentId;
@@ -34317,7 +34272,7 @@ class EyesBase {
   /**
    * Sets the API key of your applitools Eyes account.
    *
-   * @param apiKey {String} The api key to be used.
+   * @param apiKey {string} The api key to be used.
    */
   setApiKey(apiKey) {
     ArgumentGuard.notNull(apiKey, 'apiKey');
@@ -34327,7 +34282,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The currently set API key or {@code null} if no key is set.
+   * @return {string} The currently set API key or {@code null} if no key is set.
    */
   getApiKey() {
     return this._serverConnector.getApiKey();
@@ -34337,7 +34292,7 @@ class EyesBase {
   /**
    * Sets the current server URL used by the rest client.
    *
-   * @param serverUrl {String} The URI of the rest server, or {@code null} to use the default server.
+   * @param serverUrl {string} The URI of the rest server, or {@code null} to use the default server.
    */
   setServerUrl(serverUrl) {
     if (serverUrl) {
@@ -34349,7 +34304,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The URI of the eyes server.
+   * @return {string} The URI of the eyes server.
    */
   getServerUrl() {
     return this._serverConnector.getServerUrl();
@@ -34359,7 +34314,7 @@ class EyesBase {
   /**
    * Sets the authToken for rendering server.
    *
-   * @param authToken {String} The authToken to be used.
+   * @param authToken {string} The authToken to be used.
    */
   setRenderingAuthToken(authToken) {
     this._serverConnector.setRenderingAuthToken(authToken);
@@ -34367,7 +34322,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The currently authToken or {@code null} if no key is set.
+   * @return {string} The currently authToken or {@code null} if no key is set.
    */
   getRenderingAuthToken() {
     return this._serverConnector.getRenderingAuthToken();
@@ -34377,7 +34332,7 @@ class EyesBase {
   /**
    * Sets the current rendering server URL used by the rest client.
    *
-   * @param serverUrl {String} The URI of the rendering server, or {@code null} to use the default server.
+   * @param serverUrl {string} The URI of the rendering server, or {@code null} to use the default server.
    */
   setRenderingServerUrl(serverUrl) {
     this._serverConnector.setRenderingServerUrl(serverUrl);
@@ -34385,7 +34340,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The URI of the eyes server.
+   * @return {string} The URI of the eyes server.
    */
   getRenderingServerUrl() {
     return this._serverConnector.getRenderingServerUrl();
@@ -34395,10 +34350,10 @@ class EyesBase {
   /**
    * Sets the proxy settings to be used by the request module.
    *
-   * @param {ProxySettings|String} proxySettingsOrUrl The ProxySettings object or proxy url to be used by the
+   * @param {ProxySettings|string} proxySettingsOrUrl The ProxySettings object or proxy url to be used by the
    *   serverConnector. If {@code null} then no proxy is set.
-   * @param {String} [username]
-   * @param {String} [password]
+   * @param {string} [username]
+   * @param {string} [password]
    */
   setProxy(proxySettingsOrUrl, username, password) {
     return this._serverConnector.setProxy(proxySettingsOrUrl, username, password);
@@ -34414,7 +34369,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param isDisabled {Boolean} If true, all interactions with this API will be silently ignored.
+   * @param isDisabled {boolean} If true, all interactions with this API will be silently ignored.
    */
   setIsDisabled(isDisabled) {
     this._isDisabled = isDisabled;
@@ -34422,7 +34377,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} Whether eyes is disabled.
+   * @return {boolean} Whether eyes is disabled.
    */
   getIsDisabled() {
     return this._isDisabled;
@@ -34430,7 +34385,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param appName {String} The name of the application under test.
+   * @param appName {string} The name of the application under test.
    */
   setAppName(appName) {
     this._appName = appName;
@@ -34438,7 +34393,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The name of the application under test.
+   * @return {string} The name of the application under test.
    */
   getAppName() {
     return this._currentAppName || this._appName;
@@ -34450,7 +34405,7 @@ class EyesBase {
    * will be created under the specified parent branch (see {@link #setParentBranchName}). Changes to the baseline
    * or model of a branch do not propagate to other branches.
    *
-   * @param branchName {String} Branch name or {@code null} to specify the default branch.
+   * @param branchName {string} Branch name or {@code null} to specify the default branch.
    */
   setBranchName(branchName) {
     this._branchName = branchName;
@@ -34458,18 +34413,17 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The current branch name.
+   * @return {string} The current branch name.
    */
   getBranchName() {
-    // noinspection JSUnresolvedVariable
-    return this._branchName || process.env.APPLITOOLS_BRANCH;
+    return this._branchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the branch under which new branches are created.
    *
-   * @param parentBranchName {String} Branch name or {@code null} to specify the default branch.
+   * @param parentBranchName {string} Branch name or {@code null} to specify the default branch.
    */
   setParentBranchName(parentBranchName) {
     this._parentBranchName = parentBranchName;
@@ -34477,18 +34431,17 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The name of the current parent branch under which new branches will be created.
+   * @return {string} The name of the current parent branch under which new branches will be created.
    */
   getParentBranchName() {
-    // noinspection JSUnresolvedVariable
-    return this._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH;
+    return this._parentBranchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the baseline branch under which new branches are created.
    *
-   * @param baselineBranchName {String} Branch name or {@code null} to specify the default branch.
+   * @param baselineBranchName {string} Branch name or {@code null} to specify the default branch.
    */
   setBaselineBranchName(baselineBranchName) {
     this._baselineBranchName = baselineBranchName;
@@ -34496,11 +34449,10 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The name of the baseline branch
+   * @return {string} The name of the baseline branch
    */
   getBaselineBranchName() {
-    // noinspection JSUnresolvedVariable
-    return this._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH;
+    return this._baselineBranchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -34531,7 +34483,7 @@ class EyesBase {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the maximum time (in ms) a match operation tries to perform a match.
-   * @param {int} ms Total number of ms to wait for a match.
+   * @param {number} ms Total number of ms to wait for a match.
    */
   setMatchTimeout(ms) {
     if (this._isDisabled) {
@@ -34549,8 +34501,8 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {int} The maximum time in ms {@link #checkWindowBase(RegionProvider, String, boolean, int)} waits for a
-   *   match.
+   * @return {number} The maximum time in ms {@link #checkWindowBase(RegionProvider, string, boolean, number)} waits
+   *   for a match.
    */
   getMatchTimeout() {
     return this._matchTimeout;
@@ -34560,7 +34512,7 @@ class EyesBase {
   /**
    * Set whether or not new tests are saved by default.
    *
-   * @param {Boolean} saveNewTests True if new tests should be saved by default. False otherwise.
+   * @param {boolean} saveNewTests True if new tests should be saved by default. False otherwise.
    */
   setSaveNewTests(saveNewTests) {
     this._saveNewTests = saveNewTests;
@@ -34568,7 +34520,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} True if new tests are saved by default.
+   * @return {boolean} True if new tests are saved by default.
    */
   getSaveNewTests() {
     return this._saveNewTests;
@@ -34578,7 +34530,7 @@ class EyesBase {
   /**
    * Set whether or not failed tests are saved by default.
    *
-   * @param {Boolean} saveFailedTests True if failed tests should be saved by default, false otherwise.
+   * @param {boolean} saveFailedTests True if failed tests should be saved by default, false otherwise.
    */
   setSaveFailedTests(saveFailedTests) {
     this._saveFailedTests = saveFailedTests;
@@ -34586,7 +34538,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} True if failed tests are saved by default.
+   * @return {boolean} True if failed tests are saved by default.
    */
   getSaveFailedTests() {
     return this._saveFailedTests;
@@ -34596,9 +34548,9 @@ class EyesBase {
   /**
    * Sets the batch in which context future tests will run or {@code null} if tests are to run standalone.
    *
-   * @param batchOrName {BatchInfo|String} - the batch name or batch object
-   * @param [batchId] {String} - ID of the batch, should be generated using GeneralUtils.guid()
-   * @param [batchDate] {String} - start date of the batch, can be created as new Date().toUTCString()
+   * @param {BatchInfo|string} batchOrName - the batch name or batch object
+   * @param {string} [batchId] - ID of the batch, should be generated using GeneralUtils.guid()
+   * @param {string} [batchDate] - start date of the batch, can be created as new Date().toUTCString()
    */
   setBatch(batchOrName, batchId, batchDate) {
     if (this._isDisabled) {
@@ -34606,12 +34558,7 @@ class EyesBase {
       return;
     }
 
-    if (arguments.length === 1) {
-      this._batch = batchOrName;
-    } else {
-      this._batch = new BatchInfo(batchOrName, batchDate, batchId);
-    }
-
+    this._batch = new BatchInfo(batchOrName, batchDate, batchId);
     this._logger.verbose(`setBatch(${this._batch})`);
   }
 
@@ -34668,12 +34615,11 @@ class EyesBase {
   /**
    * The test-wide match level to use when checking application screenshot with the expected output.
    *
-   * @deprecated This function is deprecated. Please use {@link #setDefaultMatchSettings} instead.
+   * @deprecated Please use {@link #setDefaultMatchSettings} instead.
    * @param {MatchLevel} matchLevel The test-wide match level to use when checking application screenshot with the
    *   expected output.
    */
   setMatchLevel(matchLevel) {
-    ArgumentGuard.isValidEnumValue(matchLevel, MatchLevel);
     this._defaultMatchSettings.setMatchLevel(matchLevel);
   }
 
@@ -34688,10 +34634,9 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @protected
-   * @return {String} The full agent id composed of both the base agent id and the user given agent id.
+   * @return {string} The full agent id composed of both the base agent id and the user given agent id.
    */
-  _getFullAgentId() {
+  getFullAgentId() {
     const agentId = this.getAgentId();
     if (!agentId) {
       return this.getBaseAgentId();
@@ -34702,23 +34647,23 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} Whether a session is open.
+   * @return {boolean} Whether a session is open.
    */
   getIsOpen() {
     return this._isOpen;
   }
 
   /**
-   * @return {String}
+   * @return {string}
    */
   static getDefaultServerUrl() {
-    return 'https://eyesapi.applitools.com';
+    return process.env.APPLITOOLS_SERVER_URL || 'https://eyesapi.applitools.com';
   }
 
   /**
    * Sets a handler of log messages generated by this API.
    *
-   * @param {Object} logHandler Handles log messages generated by this API.
+   * @param {LogHandler} logHandler Handles log messages generated by this API.
    */
   setLogHandler(logHandler) {
     this._logger.setLogHandler(logHandler);
@@ -34746,11 +34691,18 @@ class EyesBase {
     }
   }
 
+  /**
+   * @return {boolean}
+   */
+  getIsCutProviderExplicitlySet() {
+    return this._cutProviderHandler && !(this._cutProviderHandler.get() instanceof NullCutProvider);
+  }
+
   // noinspection JSUnusedGlobalSymbols
   /**
    * Manually set the scale ratio for the images being validated.
    *
-   * @param {Number} [scaleRatio=1] The scale ratio to use, or {@code null} to reset back to automatic scaling.
+   * @param {number} [scaleRatio=1] The scale ratio to use, or {@code null} to reset back to automatic scaling.
    */
   setScaleRatio(scaleRatio) {
     if (scaleRatio) {
@@ -34762,7 +34714,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Number} The ratio used to scale the images being validated.
+   * @return {number} The ratio used to scale the images being validated.
    */
   getScaleRatio() {
     return this._scaleProviderHandler.get().getScaleRatio();
@@ -34772,8 +34724,8 @@ class EyesBase {
   /**
    * Adds a property to be sent to the server.
    *
-   * @param {String} name The property name.
-   * @param {String} value The property value.
+   * @param {string} name The property name.
+   * @param {string} value The property value.
    */
   addProperty(name, value) {
     const pd = new PropertyData(name, value);
@@ -34806,7 +34758,25 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {Boolean} saveDebugScreenshots If true, will save all screenshots to local directory.
+   * Automatically save differences as a baseline.
+   *
+   * @param {boolean} saveDiffs Sets whether to automatically save differences as baseline.
+   */
+  setSaveDiffs(saveDiffs) {
+    this._saveDiffs = saveDiffs;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {boolean} whether to automatically save differences as baseline.
+   */
+  getSaveDiffs() {
+    return this._saveDiffs;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {boolean} saveDebugScreenshots If true, will save all screenshots to local directory.
    */
   setSaveDebugScreenshots(saveDebugScreenshots) {
     const prev = this._debugScreenshotsProvider;
@@ -34821,7 +34791,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean}
+   * @return {boolean}
    */
   getSaveDebugScreenshots() {
     return !(this._debugScreenshotsProvider instanceof NullDebugScreenshotProvider);
@@ -34829,7 +34799,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {String} pathToSave Path where you want to save the debug screenshots.
+   * @param {string} pathToSave Path where you want to save the debug screenshots.
    */
   setDebugScreenshotsPath(pathToSave) {
     this._debugScreenshotsProvider.setPath(pathToSave);
@@ -34837,7 +34807,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The path where you want to save the debug screenshots.
+   * @return {string} The path where you want to save the debug screenshots.
    */
   getDebugScreenshotsPath() {
     return this._debugScreenshotsProvider.getPath();
@@ -34845,7 +34815,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {String} prefix The prefix for the screenshots' names.
+   * @param {string} prefix The prefix for the screenshots' names.
    */
   setDebugScreenshotsPrefix(prefix) {
     this._debugScreenshotsProvider.setPrefix(prefix);
@@ -34853,7 +34823,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The prefix for the screenshots' names.
+   * @return {string} The prefix for the screenshots' names.
    */
   getDebugScreenshotsPrefix() {
     return this._debugScreenshotsProvider.getPrefix();
@@ -34879,7 +34849,7 @@ class EyesBase {
   /**
    * Sets the ignore blinking caret value.
    *
-   * @param {Boolean} value The ignore value.
+   * @param {boolean} value The ignore value.
    */
   setIgnoreCaret(value) {
     this._defaultMatchSettings.setIgnoreCaret(value);
@@ -34887,7 +34857,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} Whether to ignore or the blinking caret or not when comparing images.
+   * @return {boolean} Whether to ignore or the blinking caret or not when comparing images.
    */
   getIgnoreCaret() {
     const ignoreCaret = this._defaultMatchSettings.getIgnoreCaret();
@@ -34896,7 +34866,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {Boolean} compareWithParentBranch New compareWithParentBranch value, default is false
+   * @param {boolean} compareWithParentBranch New compareWithParentBranch value, default is false
    */
   setCompareWithParentBranch(compareWithParentBranch) {
     this._compareWithParentBranch = compareWithParentBranch;
@@ -34904,7 +34874,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} The currently compareWithParentBranch value
+   * @return {boolean} The currently compareWithParentBranch value
    */
   isCompareWithParentBranch() {
     return this._compareWithParentBranch;
@@ -34912,7 +34882,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {Boolean} ignoreBaseline New ignoreBaseline value, default is false
+   * @param {boolean} ignoreBaseline New ignoreBaseline value, default is false
    */
   setIgnoreBaseline(ignoreBaseline) {
     this._ignoreBaseline = ignoreBaseline;
@@ -34920,7 +34890,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} The currently ignoreBaseline value
+   * @return {boolean} The currently ignoreBaseline value
    */
   isIgnoreBaseline() {
     return this._ignoreBaseline;
@@ -34929,214 +34899,142 @@ class EyesBase {
   /**
    * Ends the currently running test.
    *
-   * @param {Boolean} throwEx If true, then the returned promise will 'reject' for failed/aborted tests.
-   * @return {Promise.<TestResults>} A promise which resolves/rejects (depending on the value of 'throwEx') to the test
+   * @param {boolean} [throwEx=true] If true, then the returned promise will 'reject' for failed/aborted tests.
+   * @return {Promise<TestResults>} A promise which resolves/rejects (depending on the value of 'throwEx') to the test
    *   results.
    */
-  close(throwEx = true) {
-    const that = this;
-    return that.getPromiseFactory().makePromise((resolve, reject) => {
-      that._logger.verbose(`"EyesBase.close(${throwEx})`);
-
-      if (that._isDisabled) {
-        that._logger.verbose('Eyes close ignored. (disabled)');
-        that._finallyClose();
-        return resolve(new TestResults());
+  async close(throwEx = true) {
+    try {
+      if (this._isDisabled) {
+        this._logger.verbose('Eyes close ignored. (disabled)');
+        return null;
       }
 
-      if (!that._isOpen) {
-        that._logger.log('Close called with Eyes not open');
-        that._finallyClose();
-        return reject('Close called with Eyes not open');
+      this._logger.verbose(`"EyesBase.close(${throwEx})`);
+      ArgumentGuard.isValidState(this._isOpen, 'Eyes not open');
+
+      this._isOpen = false;
+
+      this._lastScreenshot = null;
+      this.clearUserInputs();
+
+      this._initProviders(true);
+
+      // If a session wasn't started, use empty results.
+      if (!this._runningSession) {
+        this._logger.verbose('Server session was not started');
+        this._logger.log('--- Empty test ended.');
+        return new TestResults();
       }
 
-      return that._endSession(false, throwEx).then(resolve, reject);
-    });
+      const isNewSession = this._runningSession.getIsNewSession();
+      const sessionResultsUrl = this._runningSession.getUrl();
+
+      this._logger.verbose('Ending server session...');
+      // noinspection OverlyComplexBooleanExpressionJS
+      const save = (isNewSession && this._saveNewTests) || (!isNewSession && this._saveFailedTests);
+      this._logger.verbose(`Automatically save test? ${save}`);
+
+      // Session was started, call the server to end the session.
+      const results = await this._serverConnector.stopSession(this._runningSession, false, save);
+      results.setIsNew(isNewSession);
+      results.setIsSaved(save);
+      results.setUrl(sessionResultsUrl);
+
+      // for backwards compatibility with outdated servers
+      if (!results.getStatus()) {
+        if (results.getMissing() === 0 && results.getMismatches() === 0) {
+          results.setStatus(TestResultsStatus.Passed);
+        } else {
+          results.setStatus(TestResultsStatus.Unresolved);
+        }
+      }
+
+      this._logger.verbose(`Results: ${results}`);
+
+      const status = results.getStatus();
+      await this._sessionEventHandlers.testEnded(await this.getAUTSessionId(), results);
+
+      if (status === TestResultsStatus.Unresolved) {
+        if (results.getIsNew()) {
+          this._logger.log(`--- New test ended. Please approve the new baseline at ${sessionResultsUrl}`);
+          if (throwEx) {
+            // noinspection ExceptionCaughtLocallyJS
+            throw new NewTestError(results, this._sessionStartInfo);
+          }
+        } else {
+          this._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`);
+          if (throwEx) {
+            // noinspection ExceptionCaughtLocallyJS
+            throw new DiffsFoundError(results, this._sessionStartInfo);
+          }
+        }
+      } else if (status === TestResultsStatus.Failed) {
+        this._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`);
+        if (throwEx) {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new TestFailedError(results, this._sessionStartInfo);
+        }
+      } else {
+        this._logger.log(`--- Test passed. See details at ${sessionResultsUrl}`);
+      }
+
+      results.setServerConnector(this._serverConnector);
+      return results;
+    } catch (err) {
+      this._logger.log(`Failed to abort server session: ${err.message}`);
+      throw err;
+    } finally {
+      // Making sure that we reset the running session even if an exception was thrown during close.
+      this._matchWindowTask = null;
+      this._autSessionId = undefined;
+      this._runningSession = null;
+      this._currentAppName = undefined;
+      this._logger.getLogHandler().close();
+    }
   }
 
   /**
    * If a test is running, aborts it. Otherwise, does nothing.
    *
-   * @return {Promise} A promise which resolves to the test results.
+   * @return {Promise<void>} A promise which resolves to the test results.
    */
-  abortIfNotClosed() {
-    const that = this;
-    return that.getPromiseFactory().makePromise((resolve, reject) => {
-      that._logger.verbose('"EyesBase.abortIfNotClosed()');
-
-      if (that._isDisabled) {
-        that._logger.verbose('Eyes abortIfNotClosed ignored. (disabled)');
-        that._finallyClose();
-        return resolve(new TestResults());
+  async abortIfNotClosed() {
+    try {
+      if (this._isDisabled) {
+        this._logger.verbose('Eyes abortIfNotClosed ignored. (disabled)');
+        return;
       }
 
-      if (!that._isOpen) {
-        that._logger.verbose('Session not open, nothing to do.');
-        that._finallyClose();
-        return resolve();
+      this._isOpen = false;
+
+      this._lastScreenshot = null;
+      this.clearUserInputs();
+
+      if (!this._runningSession) {
+        this._logger.verbose('Closed');
+        return;
       }
 
-      return this._endSession(true, false).then(resolve, reject);
-    });
-  }
-
-  /**
-   * Utility function for ending a session on the server.
-   *
-   * @private
-   * @param {Boolean} isAborted Whether or not the test was aborted.
-   * @param {Boolean} throwEx Whether 'reject' should be called if the results returned from the server indicate a test
-   *   failure.
-   * @return {Promise} A promise which resolves (or rejected, depending on 'throwEx' and the test result) after ending
-   *   the session.
-   */
-  _endSession(isAborted, throwEx) {
-    let serverResults, serverError;
-    const that = this;
-    return that._promiseFactory.makePromise((resolve, reject) => {
-      that._logger.verbose(`${isAborted ? 'Aborting' : 'Closing'} server session...`);
-      that._isOpen = false;
-      that.clearUserInputs();
-
-      // If a session wasn't started, use empty results.
-      if (!that._runningSession) {
-        that._logger.verbose('Server session was not started');
-        that._logger.log('--- Empty test ended.');
-
-        const testResults = new TestResults();
-
-        if (that._autSessionId) {
-          return that._notifyEvent('testEnded', that._autSessionId, null).then(() => {
-            that._finallyClose();
-            return resolve(testResults);
-          });
-        }
-
-        that._finallyClose();
-        return resolve(testResults);
+      this._logger.verbose('Aborting server session...');
+      try {
+        // When aborting we do not save the test.
+        await this._serverConnector.stopSession(this._runningSession, true, false);
+        this._logger.log('--- Test aborted.');
+      } catch (err) {
+        this._logger.log(`Failed to abort server session: ${err}`);
       }
-
-      const isNewSession = that._runningSession.getIsNewSession();
-      const sessionResultsUrl = that._runningSession.getUrl();
-
-      that._logger.verbose('Ending server session...');
-      // noinspection OverlyComplexBooleanExpressionJS
-      const save = !isAborted && ((isNewSession && that._saveNewTests) || (!isNewSession && that._saveFailedTests));
-      that._logger.verbose(`Automatically save test? ${save}`);
-
-      // Session was started, call the server to end the session.
-      return that._serverConnector
-        .stopSession(that._runningSession, isAborted, save)
-        .then(results => {
-          results.setIsNew(isNewSession);
-          results.setUrl(sessionResultsUrl);
-
-          // for backwards compatibility with outdated servers
-          if (!results.getStatus()) {
-            if (results.getMissing() === 0 && results.getMismatches() === 0) {
-              results.setStatus(TestResultsStatus.Passed);
-            } else {
-              results.setStatus(TestResultsStatus.Unresolved);
-            }
-          }
-
-          serverResults = results;
-          that._logger.verbose(`Results: ${results}`);
-
-          const status = results.getStatus();
-          if (status === TestResultsStatus.Unresolved) {
-            if (serverResults.getIsNew()) {
-              that._logger.log(`--- New test ended. Please approve the new baseline at ${sessionResultsUrl}`);
-
-              if (throwEx) {
-                that._finallyClose();
-                return reject(new NewTestError(results, that._sessionStartInfo));
-              }
-              return resolve(results);
-            }
-
-            that._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`);
-
-            if (throwEx) {
-              that._finallyClose();
-              return reject(new DiffsFoundError(results, that._sessionStartInfo));
-            }
-            return resolve(results);
-          } else if (status === TestResultsStatus.Failed) {
-            that._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`);
-
-            if (throwEx) {
-              that._finallyClose();
-              return reject(new TestFailedError(results, that._sessionStartInfo));
-            }
-            return resolve(results);
-          }
-
-          that._logger.log(`--- Test passed. See details at ${sessionResultsUrl}`);
-          return resolve(results);
-        })
-        .catch(err => {
-          serverResults = null;
-          that._logger.log(`Failed to abort server session: ${err.message}`);
-          return reject(err);
-        });
-    })
-      .catch(err => {
-        serverError = err;
-      })
-      .then(() => that._notifyEvent('testEnded', that._autSessionId, serverResults))
-      .then(() => {
-        that._finallyClose();
-        if (serverError) {
-          throw serverError;
-        }
-        return serverResults;
-      });
-  }
-
-  /**
-   * @private
-   */
-  _finallyClose() {
-    this._matchWindowTask = null;
-    this._autSessionId = null;
-    this._runningSession = null;
-    this._currentAppName = null;
-    this._logger.getLogHandler().close();
-  }
-
-  /**
-   * Notifies all handlers of an event.
-   *
-   * @private
-   * @param {String} eventName The event to notify
-   * @param {...Object} [param1] The first of what may be a list of "hidden" parameters, to be passed to the event
-   *   notification function. May also be undefined.
-   * @return {Promise} A promise which resolves when the event was delivered/failed to all handlers.
-   */
-  _notifyEvent(eventName, ...param1) {
-    const that = this;
-    return that._promiseFactory.makePromise(resolve => {
-      that._logger.verbose('Notifying event:', eventName);
-      const notificationPromises = [];
-
-      that._sessionEventHandlers.forEach(handler => {
-        // Call the event with the rest of the (hidden) parameters supplied to this function.
-        const promise = handler[eventName](...param1).then(null, err => {
-          that._logger.verbose(`'${eventName}' notification handler returned an error: ${err}`);
-        });
-        notificationPromises.push(promise);
-      });
-
-      that._promiseFactory.all(notificationPromises).then(() => resolve());
-    });
+    } finally {
+      this._runningSession = null;
+      this._logger.getLogHandler().close();
+    }
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the host OS name - overrides the one in the agent string.
    *
-   * @param {String} hostOS The host OS running the AUT.
+   * @param {string} hostOS The host OS running the AUT.
    */
   setHostOS(hostOS) {
     this._logger.log(`Host OS: ${hostOS}`);
@@ -35144,13 +35042,13 @@ class EyesBase {
     if (hostOS) {
       this._hostOS = hostOS.trim();
     } else {
-      this._hostOS = null;
+      this._hostOS = undefined;
     }
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The host OS as set by the user.
+   * @return {string} The host OS as set by the user.
    */
   getHostOS() {
     return this._hostOS;
@@ -35160,7 +35058,7 @@ class EyesBase {
   /**
    * Sets the host application - overrides the one in the agent string.
    *
-   * @param {String} hostApp The application running the AUT (e.g., Chrome).
+   * @param {string} hostApp The application running the AUT (e.g., Chrome).
    */
   setHostApp(hostApp) {
     this._logger.log(`Host App: ${hostApp}`);
@@ -35168,13 +35066,13 @@ class EyesBase {
     if (hostApp) {
       this._hostApp = hostApp.trim();
     } else {
-      this._hostApp = null;
+      this._hostApp = undefined;
     }
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The application name running the AUT.
+   * @return {string} The application name running the AUT.
    */
   getHostApp() {
     return this._hostApp;
@@ -35182,34 +35080,28 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @deprecated Only available for backward compatibility. See {@link #setBaselineEnvName(String)}.
-   * @param baselineName {String} If specified, determines the baseline to compare with and disables automatic baseline
+   * @deprecated Only available for backward compatibility. See {@link #setBaselineEnvName(string)}.
+   * @param baselineName {string} If specified, determines the baseline to compare with and disables automatic baseline
    *   inference.
    */
   setBaselineName(baselineName) {
-    this._logger.log(`Baseline name: ${baselineName}`);
-
-    if (baselineName) {
-      this._baselineEnvName = baselineName.trim();
-    } else {
-      this._baselineEnvName = null;
-    }
+    this.setBaselineEnvName(baselineName);
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * @deprecated Only available for backward compatibility. See {@link #getBaselineEnvName()}.
-   * @return {String} The baseline name, if it was specified.
+   * @return {string} The baseline name, if it was specified.
    */
   getBaselineName() {
-    return this._baselineEnvName;
+    return this.getBaselineEnvName();
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * If not {@code null}, determines the name of the environment of the baseline.
    *
-   * @param baselineEnvName {String} The name of the baseline's environment.
+   * @param baselineEnvName {string} The name of the baseline's environment.
    */
   setBaselineEnvName(baselineEnvName) {
     this._logger.log(`Baseline environment name: ${baselineEnvName}`);
@@ -35217,7 +35109,7 @@ class EyesBase {
     if (baselineEnvName) {
       this._baselineEnvName = baselineEnvName.trim();
     } else {
-      this._baselineEnvName = null;
+      this._baselineEnvName = undefined;
     }
   }
 
@@ -35225,7 +35117,7 @@ class EyesBase {
   /**
    * If not {@code null}, determines the name of the environment of the baseline.
    *
-   * @return {String} The name of the baseline's environment, or {@code null} if no such name was set.
+   * @return {string} The name of the baseline's environment, or {@code null} if no such name was set.
    */
   getBaselineEnvName() {
     return this._baselineEnvName;
@@ -35235,7 +35127,7 @@ class EyesBase {
   /**
    * If not {@code null} specifies a name for the environment in which the application under test is running.
    *
-   * @param envName {String} The name of the environment of the baseline.
+   * @param envName {string} The name of the environment of the baseline.
    */
   setEnvName(envName) {
     this._logger.log(`Environment name: ${envName}`);
@@ -35243,7 +35135,7 @@ class EyesBase {
     if (envName) {
       this._environmentName = envName.trim();
     } else {
-      this._environmentName = null;
+      this._environmentName = undefined;
     }
   }
 
@@ -35251,7 +35143,7 @@ class EyesBase {
   /**
    * If not {@code null} specifies a name for the environment in which the application under test is running.
    *
-   * @return {String} The name of the environment of the baseline, or {@code null} if no such name was set.
+   * @return {string} The name of the environment of the baseline, or {@code null} if no such name was set.
    */
   getEnvName() {
     return this._environmentName;
@@ -35262,7 +35154,7 @@ class EyesBase {
    * @return {PositionProvider} The currently set position provider.
    */
   getPositionProvider() {
-    return this._positionProvider;
+    return this._positionProviderHandler.get();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -35270,7 +35162,11 @@ class EyesBase {
    * @param {PositionProvider} positionProvider The position provider to be used.
    */
   setPositionProvider(positionProvider) {
-    this._positionProvider = positionProvider;
+    if (positionProvider) {
+      this._positionProviderHandler = new ReadOnlyPropertyHandler(this._logger, positionProvider);
+    } else {
+      this._positionProviderHandler = new SimplePropertyHandler(new InvalidPositionProvider());
+    }
   }
 
   /**
@@ -35278,66 +35174,48 @@ class EyesBase {
    *
    * @protected
    * @param {RegionProvider} regionProvider Returns the region to check or empty region to check the entire window.
-   * @param {String} [tag=''] An optional tag to be associated with the snapshot.
-   * @param {Boolean} [ignoreMismatch=false] Whether to ignore this check if a mismatch is found.
+   * @param {string} [tag=''] An optional tag to be associated with the snapshot.
+   * @param {boolean} [ignoreMismatch=false] Whether to ignore this check if a mismatch is found.
    * @param {CheckSettings} [checkSettings]  The settings to use.
-   * @return {Promise.<MatchResult>} The result of matching the output with the expected output.
+   * @return {Promise<MatchResult>} The result of matching the output with the expected output.
    * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
-  checkWindowBase(
-    regionProvider,
-    tag = '',
-    ignoreMismatch = false,
-    checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)
-  ) {
+  async checkWindowBase(regionProvider, tag = '', ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
     if (this._isDisabled) {
       this._logger.verbose('Ignored');
       const result = new MatchResult();
       result.setAsExpected(true);
-      return this._promiseFactory.resolve(result);
+      return result;
     }
 
     ArgumentGuard.isValidState(this._isOpen, 'Eyes not open');
     ArgumentGuard.notNull(regionProvider, 'regionProvider');
 
     this._validationId += 1;
-    const validationInfo = new SessionEventHandler.ValidationInfo();
+    const validationInfo = new ValidationInfo();
     validationInfo.setValidationId(this._validationId);
     validationInfo.setTag(tag);
 
     // default result
-    const validationResult = new SessionEventHandler.ValidationResult();
+    const validationResult = new ValidationResult();
 
-    const that = this;
-    let matchResult;
-    return that
-      .beforeMatchWindow()
-      .then(() => that._notifyEvent('validationWillStart', that._autSessionId, validationInfo))
-      .then(() => EyesBase.matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, that))
-      .then(result => {
-        matchResult = result;
-        return that.afterMatchWindow();
-      })
-      .then(() => {
-        that._logger.verbose('MatchWindow Done!');
+    await this.beforeMatchWindow();
+    await this._sessionEventHandlers.validationWillStart(this._autSessionId, validationInfo);
+    const matchResult = await EyesBase.matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, this);
+    await this.afterMatchWindow();
 
-        validationResult.setAsExpected(matchResult.getAsExpected());
+    this._logger.verbose('MatchWindow Done!');
+    validationResult.setAsExpected(matchResult.getAsExpected());
 
-        if (!ignoreMismatch) {
-          that.clearUserInputs();
-        }
+    if (!ignoreMismatch) {
+      this.clearUserInputs();
+    }
 
-        that._validateResult(tag, matchResult);
+    this._validateResult(tag, matchResult);
+    this._logger.verbose('Done!');
+    await this._sessionEventHandlers.validationEnded(this._autSessionId, validationInfo.getValidationId(), validationResult);
 
-        that._logger.verbose('Done!');
-        return that._notifyEvent(
-          'validationEnded',
-          that._autSessionId,
-          validationInfo.getValidationId(),
-          validationResult
-        );
-      })
-      .then(() => matchResult);
+    return matchResult;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -35346,199 +35224,201 @@ class EyesBase {
    *
    * @protected
    * @param {RegionProvider} regionProvider Returns the region to check or empty rectangle to check the entire window.
-   * @param {String} [tag=''] An optional tag to be associated with the snapshot.
-   * @param {Boolean} [ignoreMismatch=false] Whether to ignore this check if a mismatch is found.
+   * @param {string} [tag=''] An optional tag to be associated with the snapshot.
+   * @param {boolean} [ignoreMismatch=false] Whether to ignore this check if a mismatch is found.
    * @param {CheckSettings} [checkSettings]  The settings to use.
-   * @return {Promise.<TestResults>} The result of matching the output with the expected output.
+   * @return {Promise<TestResults>} The result of matching the output with the expected output.
    * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
-  checkSingleWindowBase(
-    regionProvider,
-    tag = '',
-    ignoreMismatch = false,
-    checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)
-  ) {
+  async checkSingleWindowBase(regionProvider, tag = '', ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
     if (this._isDisabled) {
       this._logger.verbose('checkSingleWindowBase Ignored');
-      const result = new MatchResult();
-      result.setAsExpected(true);
-      return this._promiseFactory.resolve(result);
+      const result = new TestResults();
+      result.setStatus(TestResultsStatus.Passed);
+      return result;
     }
 
     ArgumentGuard.isValidState(this._isOpen, 'Eyes not open');
     ArgumentGuard.notNull(regionProvider, 'regionProvider');
 
-    let testResult;
-    const that = this;
-    return that._ensureViewportSize()
-      .then(() => that.getAppEnvironment())
-      .then(appEnvironment => {
-        that._sessionStartInfo = new SessionStartInfo(
-          that.getBaseAgentId(),
-          that._sessionType,
-          that.getAppName(),
-          null,
-          that._testName,
-          that.getBatch(),
-          that._baselineEnvName,
-          that._environmentName,
-          appEnvironment,
-          that._defaultMatchSettings,
-          that.getBranchName(),
-          that.getParentBranchName(),
-          that.getBaselineBranchName(),
-          that._compareWithParentBranch,
-          that._ignoreBaseline,
-          that._properties,
-          that._render
-        );
+    await this._ensureViewportSize();
 
-        const outputProvider = new AppOutputProvider();
-        // A callback which will call getAppOutput
-        // noinspection AnonymousFunctionJS
-        outputProvider.getAppOutput = (region, lastScreenshot) =>
-          that._getAppOutputWithScreenshot(region, lastScreenshot);
+    const appEnvironment = await this.getAppEnvironment();
+    this._sessionStartInfo = new SessionStartInfo({
+      agentId: this.getBaseAgentId(),
+      sessionType: this._sessionType,
+      appIdOrName: this.getAppName(),
+      verId: undefined,
+      scenarioIdOrName: this._testName,
+      batchInfo: this.getBatch(),
+      baselineEnvName: this._baselineEnvName,
+      environmentName: this._environmentName,
+      environment: appEnvironment,
+      defaultMatchSettings: this._defaultMatchSettings,
+      branchName: this._branchName || process.env.APPLITOOLS_BRANCH,
+      parentBranchName: this._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH,
+      baselineBranchName: this._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH,
+      compareWithParentBranch: this._compareWithParentBranch,
+      ignoreBaseline: this._ignoreBaseline,
+      render: this._render,
+      saveDiffs: this._saveDiffs,
+      properties: this._properties,
+    });
 
-        that._matchWindowTask = new MatchSingleWindowTask(
-          that._promiseFactory,
-          that._logger,
-          that._serverConnector,
-          that._matchTimeout,
-          that,
-          outputProvider,
-          that._sessionStartInfo,
-          that._saveNewTests
-        );
+    // noinspection JSClosureCompilerSyntax
+    const outputProvider = new AppOutputProvider();
+    // A callback which will call getAppOutput
+    // noinspection AnonymousFunctionJS
+    outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
+      this._getAppOutputWithScreenshot(region, lastScreenshot, checkSettingsLocal);
 
-        return that.beforeMatchWindow();
-      })
-      .then(() => EyesBase.matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, that, true))
-      .then(/** TestResults */result => {
-        testResult = result;
-        return that.afterMatchWindow();
-      })
-      .then(() => {
-        that._logger.verbose('MatchSingleWindow Done!');
+    this._matchWindowTask = new MatchSingleWindowTask(
+      this._logger,
+      this._serverConnector,
+      this._matchTimeout,
+      this,
+      outputProvider,
+      this._sessionStartInfo,
+      this._saveNewTests
+    );
 
-        if (!ignoreMismatch) {
-          that.clearUserInputs();
-        }
+    await this.beforeMatchWindow();
+    const testResult = await EyesBase.matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, this, true);
+    await this.afterMatchWindow();
 
-        const matchResult = new MatchResult();
-        matchResult.setAsExpected(!testResult.getIsDifferent());
-        that._validateResult(tag, matchResult);
+    this._logger.verbose('MatchSingleWindow Done!');
 
-        that._logger.verbose('Done!');
-        return testResult;
-      });
+    if (!ignoreMismatch) {
+      this.clearUserInputs();
+    }
+
+    const matchResult = new MatchResult();
+    matchResult.setAsExpected(!testResult.getIsDifferent());
+    this._validateResult(tag, matchResult);
+
+    this._logger.verbose('Done!');
+    // noinspection JSValidateTypes
+    return testResult;
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @protected
-   * @return {Promise<T>}
+   * @return {Promise<void>}
    */
   beforeMatchWindow() {
-    return this.getPromiseFactory().resolve();
+    return Promise.resolve();
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @protected
-   * @return {Promise<T>}
+   * @return {Promise<void>}
    */
   afterMatchWindow() {
-    return this.getPromiseFactory().resolve();
+    return Promise.resolve();
+  }
+
+  // noinspection JSMethodCanBeStatic
+  /**
+   * @protected
+   * @return {Promise<?string>}
+   */
+  tryCaptureDom() {
+    return Promise.resolve(undefined);
   }
 
   /**
    * Replaces an actual image in the current running session.
    *
-   * @param {Number} stepIndex The zero based index of the step in which to replace the actual image.
+   * @param {number} stepIndex The zero based index of the step in which to replace the actual image.
    * @param {Buffer} screenshot The PNG bytes of the updated screenshot.
    * @param {string} [tag] The updated tag for the step.
    * @param {string} [title] The updated title for the step.
-   * @param {Array} [userInputs] The updated userInputs for the step.
-   * @return {Promise.<MatchResult>} A promise which resolves when replacing is done, or rejects on error.
+   * @param {Trigger[]} [userInputs] The updated userInputs for the step.
+   * @return {Promise<MatchResult>} A promise which resolves when replacing is done, or rejects on error.
    */
-  replaceWindow(stepIndex, screenshot, tag = '', title = '', userInputs = []) {
+  async replaceWindow(stepIndex, screenshot, tag = '', title = '', userInputs = []) {
     this._logger.verbose('EyesBase.replaceWindow - running');
 
     if (this._isDisabled) {
       this._logger.verbose('Ignored');
       const result = new MatchResult();
       result.setAsExpected(true);
-      return this._promiseFactory.resolve(result);
+      return result;
     }
 
     ArgumentGuard.isValidState(this._isOpen, 'Eyes not open');
 
     this._logger.verbose('EyesBase.replaceWindow - calling serverConnector.replaceWindow');
 
-    const replaceWindowData = new MatchWindowData(userInputs, new AppOutput(title, screenshot), tag, null, null);
+    const replaceWindowData = new MatchWindowData({ userInputs, appOutput: new AppOutput({ title, screenshot }), tag });
 
-    const that = this;
-    return that._serverConnector.replaceWindow(that._runningSession, stepIndex, replaceWindowData)
-      .then(result => {
-        that._logger.verbose('EyesBase.replaceWindow done');
-        return result;
-      });
+    const result = await this._serverConnector.replaceWindow(this._runningSession, stepIndex, replaceWindowData);
+    this._logger.verbose('EyesBase.replaceWindow done');
+    return result;
   }
 
   /**
    * @private
    * @param {RegionProvider} regionProvider
-   * @param {String} tag
-   * @param {Boolean} ignoreMismatch
+   * @param {string} tag
+   * @param {boolean} ignoreMismatch
    * @param {CheckSettings} checkSettings
    * @param {EyesBase} self
-   * @param {Boolean} [skipStartingSession=false]
-   * @return {Promise.<MatchResult>}
+   * @param {boolean} [skipStartingSession=false]
+   * @return {Promise<MatchResult>}
    */
-  static matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, self, skipStartingSession = false) {
+  static async matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, self, skipStartingSession = false) {
     let retryTimeout = -1;
     const defaultMatchSettings = self.getDefaultMatchSettings();
-    let imageMatchSettings = null;
 
-    return self.getPromiseFactory().resolve()
-      .then(() => {
-        if (checkSettings) {
-          retryTimeout = checkSettings.getTimeout();
+    let imageMatchSettings;
+    if (checkSettings) {
+      retryTimeout = checkSettings.getTimeout();
 
-          const matchLevel = checkSettings.getMatchLevel() || defaultMatchSettings.getMatchLevel();
-          imageMatchSettings = new ImageMatchSettings(matchLevel, null);
+      const matchLevel = checkSettings.getMatchLevel() || defaultMatchSettings.getMatchLevel();
+      imageMatchSettings = new ImageMatchSettings({ matchLevel });
 
-          const ignoreCaret = checkSettings.getIgnoreCaret() || defaultMatchSettings.getIgnoreCaret();
-          imageMatchSettings.setIgnoreCaret(ignoreCaret);
-        }
-      })
-      .then(() => {
-        // noinspection JSUnresolvedVariable
-        self._logger.verbose(`CheckWindowBase(${regionProvider.constructor.name}, '${tag}', ${ignoreMismatch}, ${retryTimeout})`);
+      const ignoreCaret = checkSettings.getIgnoreCaret() || defaultMatchSettings.getIgnoreCaret();
+      imageMatchSettings.setIgnoreCaret(ignoreCaret);
 
-        if (!skipStartingSession) {
-          return self._ensureRunningSession();
-        }
+      const useDom = checkSettings.getSendDom() || self._sendDom;
+      imageMatchSettings.setUseDom(useDom);
+    }
 
-        return true;
-      })
-      .then(() => regionProvider.getRegion())
-      .then(region => {
-        self._logger.verbose('Calling match window...');
-        return self._matchWindowTask.matchWindow(
-          self.getUserInputs(),
-          region,
-          tag,
-          self._shouldMatchWindowRunOnceOnTimeout,
-          ignoreMismatch,
-          checkSettings,
-          imageMatchSettings,
-          retryTimeout
-        );
-      });
+    // noinspection JSUnresolvedVariable
+    self._logger.verbose(`CheckWindowBase(${regionProvider.constructor.name}, '${tag}', ${ignoreMismatch}, ${retryTimeout})`);
+
+    if (!skipStartingSession) {
+      await self._ensureRunningSession();
+    }
+
+    const region = await regionProvider.getRegion();
+    self._logger.verbose('Calling match window...');
+
+    return self._matchWindowTask.matchWindow(
+      self.getUserInputs(), region, tag, self._shouldMatchWindowRunOnceOnTimeout,
+      ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout
+    );
   }
 
   /**
    * @private
-   * @param {String} tag
+   * @param {string} domJson
+   * @return {Promise<?string>}
+   */
+  async _tryPostDomSnapshot(domJson) {
+    if (!domJson) {
+      return null;
+    }
+
+    return this._serverConnector.postDomSnapshot(domJson);
+  }
+
+  /**
+   * @private
+   * @param {string} tag
    * @param {MatchResult} result
    */
   _validateResult(tag, result) {
@@ -35561,15 +35441,15 @@ class EyesBase {
    * Starts a test.
    *
    * @protected
-   * @param {String} appName The name of the application under test.
-   * @param {String} testName The test name.
+   * @param {string} appName The name of the application under test.
+   * @param {string} testName The test name.
    * @param {RectangleSize|{width: number, height: number}} [viewportSize] The client's viewport size (i.e., the
    *   visible part of the document's body) or {@code null} to allow any viewport size.
    * @param {SessionType} [sessionType=SessionType.SEQUENTIAL]  The type of test (e.g., Progression for timing tests),
    *   or {@code null} to use the default.
-   * @return {Promise}
+   * @return {Promise<void>}
    */
-  openBase(appName, testName, viewportSize, sessionType = SessionType.SEQUENTIAL) {
+  async openBase(appName, testName, viewportSize, sessionType = SessionType.SEQUENTIAL) {
     this._logger.getLogHandler().open();
 
     if (viewportSize) {
@@ -35579,97 +35459,94 @@ class EyesBase {
     try {
       if (this._isDisabled) {
         this._logger.verbose('Eyes Open ignored - disabled');
-        return this._promiseFactory.resolve();
+        return;
       }
 
       // If there's no default application name, one must be provided for the current test.
       if (!this._appName) {
         ArgumentGuard.notNull(appName, 'appName');
       }
-
       ArgumentGuard.notNull(testName, 'testName');
 
-      this._logger.verbose(`Agent = ${this._getFullAgentId()}`);
+      this._logger.verbose(`Agent = ${this.getFullAgentId()}`);
       this._logger.verbose(`openBase('${appName}', '${testName}', '${viewportSize}')`);
+
+      await this._sessionEventHandlers.testStarted(await this.getAUTSessionId());
 
       this._validateApiKey();
       this._logOpenBase();
-      const that = this;
-      return this._validateSessionOpen()
-        .then(() => {
-          that._initProviders();
-          that._isViewportSizeSet = false;
-          return that.beforeOpen();
-        })
-        .then(() => {
-          that._currentAppName = appName || that._appName;
-          that._testName = testName;
-          that._viewportSizeHandler.set(viewportSize);
-          that._sessionType = sessionType;
-          that._validationId = -1;
+      await this._validateSessionOpen();
 
-          if (viewportSize) {
-            return that._ensureRunningSession();
-          }
-        })
-        .then(() => that.getAUTSessionId())
-        .then(autSessionId => {
-          that._autSessionId = autSessionId;
-          that._isOpen = true;
-        })
-        .then(() => that.afterOpen());
+      this._initProviders();
+      this._isViewportSizeSet = false;
+      await this.beforeOpen();
+
+      this._currentAppName = appName || this._appName;
+      this._testName = testName;
+      this._viewportSizeHandler.set(viewportSize);
+      this._sessionType = sessionType;
+      this._validationId = -1;
+
+      if (viewportSize) {
+        await this._ensureRunningSession();
+      }
+
+      this._autSessionId = await this.getAUTSessionId();
+      this._isOpen = true;
+      await this.afterOpen();
     } catch (err) {
       this._logger.log(err.message);
       this._logger.getLogHandler().close();
-      return this._promiseFactory.reject(err);
+      throw err;
     }
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @protected
-   * @return {Promise<T>}
+   * @return {Promise<void>}
    */
   beforeOpen() {
-    return this.getPromiseFactory().resolve();
+    return Promise.resolve();
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @protected
-   * @return {Promise<T>}
+   * @return {Promise<void>}
    */
   afterOpen() {
-    return this.getPromiseFactory().resolve();
+    return Promise.resolve();
   }
 
   /**
    * @private
-   * @return {Promise}
+   * @return {Promise<void>}
    */
-  _ensureRunningSession() {
+  async _ensureRunningSession() {
     if (this._runningSession) {
-      return this._promiseFactory.resolve();
+      return;
     }
 
-    const that = this;
-    that._logger.verbose('No running session, calling start session...');
-    return that.startSession().then(() => {
-      that._logger.verbose('Done!');
+    this._logger.verbose('No running session, calling start session...');
+    await this.startSession();
+    this._logger.setSessionId(this._runningSession.getSessionId());
+    this._logger.verbose('Done!');
 
-      const outputProvider = new AppOutputProvider();
-      // A callback which will call getAppOutput
-      outputProvider.getAppOutput = (region, lastScreenshot) =>
-        that._getAppOutputWithScreenshot(region, lastScreenshot);
+    // noinspection JSClosureCompilerSyntax
+    const outputProvider = new AppOutputProvider();
+    // A callback which will call getAppOutput
+    outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
+      this._getAppOutputWithScreenshot(region, lastScreenshot, checkSettingsLocal);
 
-      that._matchWindowTask = new MatchWindowTask(
-        that._promiseFactory,
-        that._logger,
-        that._serverConnector,
-        that._runningSession,
-        that._matchTimeout,
-        that,
-        outputProvider
-      );
-    });
+    this._matchWindowTask = new MatchWindowTask(
+      this._logger,
+      this._serverConnector,
+      this._runningSession,
+      this._matchTimeout,
+      this,
+      outputProvider
+    );
   }
 
   /**
@@ -35696,18 +35573,15 @@ class EyesBase {
 
   /**
    * @private
-   * @return {Promise}
+   * @return {Promise<void>}
    */
-  _validateSessionOpen() {
+  async _validateSessionOpen() {
     if (this._isOpen) {
-      return this.abortIfNotClosed().then(() => {
-        const errMsg = 'A test is already running';
-        this._logger.log(errMsg);
-        throw new Error(errMsg);
-      });
+      await this.abortIfNotClosed();
+      const errMsg = 'A test is already running';
+      this._logger.log(errMsg);
+      throw new Error(errMsg);
     }
-
-    return this._promiseFactory.resolve();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -35750,7 +35624,7 @@ class EyesBase {
    *
    * @protected
    * @param {Region} control The control's position relative to the window.
-   * @param {String} text The trigger's text.
+   * @param {string} text The trigger's text.
    */
   addTextTriggerBase(control, text) {
     if (this._isDisabled) {
@@ -35772,7 +35646,7 @@ class EyesBase {
     newControl = this._matchWindowTask
       .getLastScreenshot()
       .getIntersectedRegion(newControl, CoordinatesType.SCREENSHOT_AS_IS);
-    if (newControl.isEmpty()) {
+    if (newControl.isSizeEmpty()) {
       this._logger.verbose(`Ignoring '${text}' (out of bounds)`);
       return;
     }
@@ -35808,10 +35682,12 @@ class EyesBase {
       return;
     }
 
+    // We don't want to change the objects we received.
+    const newControl = new Region(control);
     // Getting the location of the cursor in the screenshot
     let cursorInScreenshot = new Location(cursor);
     // First we need to getting the cursor's coordinates relative to the context (and not to the control).
-    cursorInScreenshot.offsetByLocation(control.getLocation());
+    cursorInScreenshot.offsetByLocation(newControl.getLocation());
     try {
       cursorInScreenshot = this._matchWindowTask
         .getLastScreenshot()
@@ -35827,10 +35703,10 @@ class EyesBase {
 
     const controlScreenshotIntersect = this._matchWindowTask
       .getLastScreenshot()
-      .getIntersectedRegion(control, CoordinatesType.SCREENSHOT_AS_IS);
+      .getIntersectedRegion(newControl, CoordinatesType.SCREENSHOT_AS_IS);
 
     // If the region is NOT empty, we'll give the coordinates relative to the control.
-    if (!controlScreenshotIntersect.isEmpty()) {
+    if (!controlScreenshotIntersect.isSizeEmpty()) {
       const l = controlScreenshotIntersect.getLocation();
       cursorInScreenshot.offset(-l.getX(), -l.getY());
     }
@@ -35843,9 +35719,9 @@ class EyesBase {
    * Application environment is the environment (e.g., the host OS) which runs the application under test.
    *
    * @protected
-   * @return {Promise.<AppEnvironment>} The current application environment.
+   * @return {Promise<AppEnvironment>} The current application environment.
    */
-  getAppEnvironment() {
+  async getAppEnvironment() {
     const appEnv = new AppEnvironment();
 
     // If hostOS isn't set, we'll try and extract and OS ourselves.
@@ -35857,193 +35733,180 @@ class EyesBase {
       appEnv.setHostingApp(this._hostApp);
     }
 
-    const that = this;
-    return this.getInferredEnvironment().then(inferred => {
-      appEnv.setInferred(inferred);
-      appEnv.setDisplaySize(that._viewportSizeHandler.get());
-      return appEnv;
-    });
+    const inferred = await this.getInferredEnvironment();
+    appEnv.setInferred(inferred);
+    appEnv.setDisplaySize(this._viewportSizeHandler.get());
+    return appEnv;
   }
 
   /**
    * Start eyes session on the eyes server.
    *
    * @protected
-   * @return {Promise}
+   * @return {Promise<void>}
    */
-  startSession() {
+  async startSession() {
     this._logger.verbose('startSession()');
 
     if (this._runningSession) {
-      return this._promiseFactory.resolve();
+      return;
     }
 
-    const that = this;
-    that._logger.verbose(`Batch is ${that._batch}`);
-    let appEnvironment;
-    return that.getAUTSessionId()
-      .then(autSessionId => {
-        that._autSessionId = autSessionId;
-      })
-      .then(() => that._notifyEvent('testStarted', that._autSessionId))
-      .then(() => that._notifyEvent('setSizeWillStart', that._autSessionId, that._viewportSize))
-      .then(() => that._ensureViewportSize()
-        .catch(err => that._notifyEvent('setSizeEnded', that._autSessionId)
-          .then(() => {
-            // Throw to skip execution of all consecutive "then" blocks.
-            throw new EyesError('Failed to set/get viewport size', err);
-          })))
-      .then(() => that._notifyEvent('setSizeEnded', that._autSessionId))
-      .then(() => that._notifyEvent('initStarted', that._autSessionId))
-      .then(() => that.getAppEnvironment())
-      .then(appEnv => {
-        appEnvironment = appEnv;
-        that._logger.verbose(`Application environment is ${appEnvironment}`);
-        return that._notifyEvent('initEnded', that._autSessionId);
-      })
-      .then(() => {
-        that._sessionStartInfo = new SessionStartInfo(
-          that.getBaseAgentId(),
-          that._sessionType,
-          that.getAppName(),
-          null,
-          that._testName,
-          that.getBatch(),
-          that._baselineEnvName,
-          that._environmentName,
-          appEnvironment,
-          that._defaultMatchSettings,
-          that.getBranchName(),
-          that.getParentBranchName(),
-          that.getBaselineBranchName(),
-          that._compareWithParentBranch,
-          that._ignoreBaseline,
-          that._properties,
-          that._render
-        );
+    this._logger.verbose(`Batch is ${this._batch}`);
+    this._autSessionId = await this.getAUTSessionId();
 
-        that._logger.verbose('Starting server session...');
-        return that._serverConnector.startSession(that._sessionStartInfo).then(runningSession => {
-          that._runningSession = runningSession;
-          that._logger.verbose(`Server session ID is ${that._runningSession.getId()}`);
+    try {
+      await this._ensureViewportSize();
+    } catch (err) {
+      // Throw to skip execution of all consecutive "then" blocks.
+      throw new EyesError('Failed to set/get viewport size', err);
+    }
 
-          if (runningSession.getRenderingInfo()) {
-            that._serverConnector.setRenderingAuthToken(runningSession.getRenderingInfo().getAccessToken());
-            that._serverConnector.setRenderingServerUrl(runningSession.getRenderingInfo().getServiceUrl());
-          }
+    await this._sessionEventHandlers.initStarted();
+    const appEnvironment = await this.getAppEnvironment();
+    this._logger.verbose(`Application environment is ${appEnvironment}`);
+    await this._sessionEventHandlers.initEnded();
 
-          const testInfo = `'${that._testName}' of '${that.getAppName()}' "${appEnvironment}`;
-          if (that._runningSession.getIsNewSession()) {
-            that._logger.log(`--- New test started - ${testInfo}`);
-            that._shouldMatchWindowRunOnceOnTimeout = true;
-          } else {
-            that._logger.log(`--- Test started - ${testInfo}`);
-            that._shouldMatchWindowRunOnceOnTimeout = false;
-          }
-        });
-      });
+    this._sessionStartInfo = new SessionStartInfo({
+      agentId: this.getBaseAgentId(),
+      sessionType: this._sessionType,
+      appIdOrName: this.getAppName(),
+      verId: undefined,
+      scenarioIdOrName: this._testName,
+      batchInfo: this.getBatch(),
+      baselineEnvName: this._baselineEnvName,
+      environmentName: this._environmentName,
+      environment: appEnvironment,
+      defaultMatchSettings: this._defaultMatchSettings,
+      branchName: this._branchName || process.env.APPLITOOLS_BRANCH,
+      parentBranchName: this._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH,
+      baselineBranchName: this._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH,
+      compareWithParentBranch: this._compareWithParentBranch,
+      ignoreBaseline: this._ignoreBaseline,
+      render: this._render,
+      saveDiffs: this._saveDiffs,
+      properties: this._properties,
+    });
+
+    this._logger.verbose('Starting server session...');
+    this._runningSession = await this._serverConnector.startSession(this._sessionStartInfo);
+    this._logger.verbose(`Server session ID is ${this._runningSession.getId()}`);
+    this._logger.getLogHandler().setSessionId(this._runningSession.getSessionId());
+
+    if (this._runningSession.getRenderingInfo()) {
+      this._serverConnector.setRenderingAuthToken(this._runningSession.getRenderingInfo().getAccessToken());
+      this._serverConnector.setRenderingServerUrl(this._runningSession.getRenderingInfo().getServiceUrl());
+    }
+
+    const testInfo = `'${this._testName}' of '${this.getAppName()}' "${appEnvironment}`;
+    if (this._runningSession.getIsNewSession()) {
+      this._logger.log(`--- New test started - ${testInfo}`);
+      this._shouldMatchWindowRunOnceOnTimeout = true;
+    } else {
+      this._logger.log(`--- Test started - ${testInfo}`);
+      this._shouldMatchWindowRunOnceOnTimeout = false;
+    }
   }
 
   /**
    * @private
-   * @return {Promise}
+   * @return {Promise<void>}
    */
-  _ensureViewportSize() {
+  async _ensureViewportSize() {
     if (!this._isViewportSizeSet) {
       try {
         if (this._viewportSizeHandler.get()) {
-          return this.setViewportSize(this._viewportSizeHandler.get());
-        }
+          const targetSize = this._viewportSizeHandler.get();
+          await this._sessionEventHandlers.setSizeWillStart(targetSize);
+          await this.setViewportSize(targetSize);
 
-        const that = this;
-        // If it's read-only, no point in making the getViewportSize() call..
-        if (!(this._viewportSizeHandler instanceof ReadOnlyPropertyHandler)) {
-          return this.getViewportSize().then(viewportSize => {
-            that._viewportSizeHandler.set(viewportSize);
-          });
+          // If it's read-only, no point in making the getViewportSize() call..
+        } else if (!(this._viewportSizeHandler instanceof ReadOnlyPropertyHandler)) {
+          const targetSize = await this.getViewportSize();
+          await this._sessionEventHandlers.setSizeWillStart(targetSize);
+          this._viewportSizeHandler.set(targetSize);
         }
 
         this._isViewportSizeSet = true;
+        await this._sessionEventHandlers.setSizeEnded();
       } catch (ignored) {
         this._isViewportSizeSet = false;
       }
     }
-
-    return this._promiseFactory.resolve();
   }
 
   /**
    * @private
    * @param {Region} region The region of the screenshot which will be set in the application output.
-   * @param {EyesScreenshot} lastScreenshot Previous application screenshot (used for compression) or {@code null} if
-   *   not available.
-   * @return {Promise.<AppOutputWithScreenshot>} The updated app output and screenshot.
+   * @param {EyesScreenshot} lastScreenshot Previous application screenshot (for compression) or `null` if not available.
+   * @param {CheckSettings} checkSettings The check settings object of the current test.
+   * @return {Promise<AppOutputWithScreenshot>} The updated app output and screenshot.
    */
-  _getAppOutputWithScreenshot(region, lastScreenshot) {
-    const that = this;
-    that._logger.verbose('getting screenshot...');
+  async _getAppOutputWithScreenshot(region, lastScreenshot, checkSettings) {
+    this._logger.verbose('getting screenshot...');
+    let screenshot, screenshotUrl, screenshotBuffer;
+
     // Getting the screenshot (abstract function implemented by each SDK).
-    let title, screenshot, screenshotBuffer, screenshotUrl;
-    return that.getScreenshot()
-      .then(newScreenshot => {
-        that._logger.verbose('Done getting screenshot!');
+    screenshot = await this.getScreenshot();
+    this._logger.verbose('Done getting screenshot!');
 
-        if (!newScreenshot) {
-          that._logger.verbose('getting screenshot url...');
-          return that.getScreenshotUrl().then(newScreenshotUrl => {
-            screenshotUrl = newScreenshotUrl;
-            that._logger.verbose('Done getting screenshotUrl!');
-          });
+    if (screenshot) {
+      // Cropping by region if necessary
+      if (!region.isSizeEmpty()) {
+        screenshot = await screenshot.getSubScreenshot(region, false);
+        await this._debugScreenshotsProvider.save(screenshot.getImage(), 'SUB_SCREENSHOT');
+      }
+
+      const targetBuffer = await screenshot.getImage().getImageBuffer();
+      screenshotBuffer = targetBuffer;
+
+      if (this._useImageDeltaCompression && lastScreenshot) {
+        try {
+          this._logger.verbose('Compressing screenshot...');
+          const sourceData = await lastScreenshot.getImage().getImageData();
+          const targetData = await screenshot.getImage().getImageData();
+
+          screenshotBuffer = ImageDeltaCompressor.compressByRawBlocks(targetData, targetBuffer, sourceData);
+          const savedSize = targetBuffer.length - screenshotBuffer.length;
+          if (savedSize === 0) {
+            this._logger.verbose('Compression skipped, because of significant difference.');
+          } else {
+            this._logger.verbose(`Compression finished, saved size is ${savedSize}.`);
+          }
+        } catch (err) {
+          this._logger.log('Failed to compress screenshot!', err);
         }
+      }
+    } else {
+      this._logger.verbose('getting screenshot url...');
+      screenshotUrl = await this.getScreenshotUrl();
+      this._logger.verbose('Done getting screenshotUrl!');
+    }
 
-        return that._promiseFactory.resolve()
-          .then(() => {
-            screenshot = newScreenshot;
+    this._logger.verbose('Getting title, domUrl, imageLocation...');
+    const title = await this.getTitle();
+    let domUrl = await this.getDomUrl();
+    const imageLocation = await this.getImageLocation();
+    this._logger.verbose('Done getting title, domUrl, imageLocation!');
 
-            // Cropping by region if necessary
-            if (!region.isEmpty()) {
-              return screenshot.getSubScreenshot(region, false).then(subScreenshot => {
-                screenshot = subScreenshot;
-                return that._debugScreenshotsProvider.save(subScreenshot.getImage(), 'SUB_SCREENSHOT');
-              });
-            }
-          })
-          .then(() => screenshot.getImage().getImageBuffer())
-          .then(targetBuffer => {
-            screenshotBuffer = targetBuffer;
+    if (!domUrl && (checkSettings.getSendDom() || this._sendDom)) {
+      const domJson = await this.tryCaptureDom();
+      domUrl = await this._tryPostDomSnapshot(domJson);
+      this._logger.verbose(`domUrl: ${domUrl}`);
+    }
 
-            if (that._useImageDeltaCompression && lastScreenshot) {
-              that._logger.verbose('Compressing screenshot...');
+    const appOutput = new AppOutput({ title, screenshot: screenshotBuffer, screenshotUrl, domUrl, imageLocation });
+    const result = new AppOutputWithScreenshot(appOutput, screenshot);
+    this._logger.verbose('Done!');
+    return result;
+  }
 
-              return lastScreenshot.getImage().getImageData()
-                .then(sourceData => screenshot.getImage().getImageData()
-                  .then(targetData => {
-                    screenshotBuffer = ImageDeltaCompressor.compressByRawBlocks(targetData, targetBuffer, sourceData);
-                    const savedSize = targetBuffer.length - screenshotBuffer.length;
-                    if (savedSize === 0) {
-                      that._logger.verbose('Compression skipped, because of significant difference.');
-                    } else {
-                      that._logger.verbose(`Compression finished, saved size is ${savedSize}.`);
-                    }
-                  }))
-                .catch(err => {
-                  that._logger.log('Failed to compress screenshot!', err);
-                });
-            }
-          });
-      })
-      .then(() => {
-        that._logger.verbose('Getting title...');
-        return that.getTitle().then(newTitle => {
-          title = newTitle;
-          that._logger.verbose('Done!');
-        });
-      })
-      .then(() => {
-        const result = new AppOutputWithScreenshot(new AppOutput(title, screenshotBuffer, screenshotUrl), screenshot);
-        that._logger.verbose('Done!');
-        return result;
-      });
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {SessionEventHandlers}
+   */
+  getSessionEventHandlers() {
+    return this._sessionEventHandlers;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -36051,15 +35914,27 @@ class EyesBase {
    * @param {SessionEventHandler} eventHandler
    */
   addSessionEventHandler(eventHandler) {
-    eventHandler.setPromiseFactory(this._promiseFactory);
-    this._sessionEventHandlers.push(eventHandler);
+    this._sessionEventHandlers.addEventHandler(eventHandler);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {SessionEventHandler} eventHandler
+   */
+  removeSessionEventHandler(eventHandler) {
+    this._sessionEventHandlers.removeEventHandler(eventHandler);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  clearSessionEventHandlers() {
+    this._sessionEventHandlers.clearEventHandlers();
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * Whether sessions are removed immediately after they are finished.
    *
-   * @param shouldRemove {Boolean}
+   * @param shouldRemove {boolean}
    */
   setRemoveSession(shouldRemove) {
     this._serverConnector.setRemoveSession(shouldRemove);
@@ -36067,7 +35942,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} Whether sessions are removed immediately after they are finished.
+   * @return {boolean} Whether sessions are removed immediately after they are finished.
    */
   getRemoveSession() {
     return this._serverConnector.getRemoveSession();
@@ -36075,7 +35950,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {?String} The name of the currently running test.
+   * @return {?string} The name of the currently running test.
    */
   getTestName() {
     return this._testName;
@@ -36093,21 +35968,21 @@ class EyesBase {
   /**
    * @protected
    * @abstract
-   * @return {String} The base agent id of the SDK.
+   * @return {string} The base agent id of the SDK.
    */
-  getBaseAgentId() {
-    throw new TypeError('getBaseAgentId method is not implemented!');
+  async getBaseAgentId() {
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
   /**
-   * @protected
-   * @abstract
    * Get the session id.
-   * @return {Promise.<String>} A promise which resolves to the webdriver's session ID.
+   *
+   * @protected
+   * @return {Promise<string>} A promise which resolves to the webdriver's session ID.
    */
-  getAUTSessionId() {
-    throw new TypeError('getAUTSessionId method is not implemented!');
+  async getAUTSessionId() {
+    return Promise.resolve(undefined);
   }
 
   // noinspection JSMethodCanBeStatic
@@ -36116,10 +35991,10 @@ class EyesBase {
    *
    * @protected
    * @abstract
-   * @return {Promise.<RectangleSize>}
+   * @return {Promise<RectangleSize>}
    */
-  getViewportSize() {
-    throw new TypeError('getViewportSize method is not implemented!');
+  async getViewportSize() {
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -36127,10 +36002,10 @@ class EyesBase {
    * @protected
    * @abstract
    * @param {RectangleSize} size The required viewport size.
-   * @return {Promise}
+   * @return {Promise<void>}
    */
-  setViewportSize(size) {
-    throw new TypeError('setViewportSize method is not implemented!');
+  async setViewportSize(size) { // eslint-disable-line no-unused-vars
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -36142,10 +36017,10 @@ class EyesBase {
    *
    * @protected
    * @abstract
-   * @return {Promise.<String>} The inferred environment string or {@code null} if none is available.
+   * @return {Promise<string>} The inferred environment string or {@code null} if none is available.
    */
-  getInferredEnvironment() {
-    throw new TypeError('getInferredEnvironment method is not implemented!');
+  async getInferredEnvironment() {
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -36154,10 +36029,10 @@ class EyesBase {
    *
    * @protected
    * @abstract
-   * @return {Promise.<EyesScreenshot>}
+   * @return {Promise<EyesScreenshot>}
    */
-  getScreenshot() {
-    throw new TypeError('getScreenshot method is not implemented!');
+  async getScreenshot() {
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -36166,10 +36041,10 @@ class EyesBase {
    *
    * @protected
    * @abstract
-   * @return {Promise.<String>}
+   * @return {Promise<string>}
    */
-  getScreenshotUrl() {
-    throw new TypeError('getScreenshotUrl method is not implemented!');
+  async getScreenshotUrl() {
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSMethodCanBeStatic
@@ -36178,24 +36053,61 @@ class EyesBase {
    *
    * @protected
    * @abstract
-   * @return {Promise.<String>}
+   * @return {Promise<string>}
    */
-  getTitle() {
-    throw new TypeError('getTitle method is not implemented!');
+  async getTitle() {
+    throw new TypeError('The method is not implemented!');
+  }
+
+  // noinspection JSMethodCanBeStatic
+  /**
+   * A url pointing to a DOM capture of the AUT at the time of screenshot
+   *
+   * @protected
+   * @return {Promise<string>}
+   */
+  getDomUrl() {
+    return Promise.resolve(undefined);
   }
 
   /**
-   * @return {PromiseFactory}
+   * @param {boolean} sendDom
    */
-  getPromiseFactory() {
-    return this._promiseFactory;
+  setSendDom(sendDom) {
+    this._sendDom = sendDom;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {boolean}
+   */
+  getSendDom() {
+    return this._sendDom;
+  }
+
+  // noinspection JSMethodCanBeStatic
+  /**
+   * The location of the image relative to the logical full page image, when cropping an image e.g. with checkRegion
+   *
+   * @protected
+   * @return {Promise<Location>}
+   */
+  getImageLocation() {
+    return Promise.resolve(undefined);
+  }
+
+  /**
+   * @param {string...} args
+   */
+  log(...args) {
+    this._logger.log(...args);
   }
 }
 
 exports.EyesBase = EyesBase;
 
 }).call(this,require('_process'))
-},{"./AppEnvironment":195,"./ArgumentGuard":196,"./BatchInfo":197,"./FailureReports":201,"./MatchSingleWindowTask":202,"./MatchWindowTask":203,"./PromiseFactory":204,"./RenderWindowTask":206,"./SessionEventHandler":207,"./TestResults":208,"./TestResultsStatus":209,"./capture/AppOutputProvider":210,"./capture/AppOutputWithScreenshot":211,"./cropping/NullCutProvider":218,"./debug/FileDebugScreenshotsProvider":221,"./debug/NullDebugScreenshotProvider":222,"./errors/DiffsFoundError":224,"./errors/EyesError":225,"./errors/NewTestError":226,"./errors/OutOfBoundsError":227,"./errors/TestFailedError":228,"./fluent/CheckSettings":229,"./geometry/CoordinatesType":235,"./geometry/Location":236,"./geometry/RectangleSize":237,"./geometry/Region":238,"./images/ImageDeltaCompressor":239,"./logging/Logger":245,"./match/AppOutput":247,"./match/ImageMatchSettings":250,"./match/MatchLevel":251,"./match/MatchResult":252,"./match/MatchWindowData":254,"./positioning/InvalidPositionProvider":266,"./scaling/FixedScaleProvider":280,"./scaling/NullScaleProvider":282,"./server/PropertyData":286,"./server/ServerConnector":289,"./server/SessionStartInfo":290,"./server/SessionType":291,"./triggers/MouseTrigger":292,"./triggers/TextTrigger":293,"./utils/GeneralUtils":296,"./utils/ReadOnlyPropertyHandler":299,"./utils/SimplePropertyHandler":300,"_process":138}],199:[function(require,module,exports){
+},{"./AppEnvironment":195,"./ArgumentGuard":196,"./BatchInfo":197,"./FailureReports":201,"./MatchSingleWindowTask":202,"./MatchWindowTask":203,"./RenderWindowTask":204,"./TestResults":205,"./TestResultsStatus":206,"./capture/AppOutputProvider":207,"./capture/AppOutputWithScreenshot":208,"./cropping/NullCutProvider":215,"./debug/FileDebugScreenshotsProvider":218,"./debug/NullDebugScreenshotProvider":219,"./errors/DiffsFoundError":221,"./errors/EyesError":222,"./errors/NewTestError":223,"./errors/OutOfBoundsError":224,"./errors/TestFailedError":225,"./events/SessionEventHandlers":228,"./events/ValidationInfo":229,"./events/ValidationResult":230,"./fluent/CheckSettings":231,"./geometry/CoordinatesType":237,"./geometry/Location":238,"./geometry/RectangleSize":239,"./geometry/Region":240,"./images/ImageDeltaCompressor":241,"./logging/Logger":247,"./match/AppOutput":249,"./match/ImageMatchSettings":252,"./match/MatchResult":254,"./match/MatchWindowData":256,"./positioning/InvalidPositionProvider":268,"./scaling/FixedScaleProvider":285,"./scaling/NullScaleProvider":287,"./server/PropertyData":291,"./server/ServerConnector":295,"./server/SessionStartInfo":296,"./server/SessionType":297,"./triggers/MouseTrigger":298,"./triggers/TextTrigger":299,"./utils/GeneralUtils":302,"./utils/ReadOnlyPropertyHandler":306,"./utils/SimplePropertyHandler":307,"_process":138}],199:[function(require,module,exports){
 'use strict';
 
 const { EyesError } = require('./errors/EyesError');
@@ -36203,8 +36115,7 @@ const { RectangleSize } = require('./geometry/RectangleSize');
 const { Location } = require('./geometry/Location');
 
 const JS_GET_VIEWPORT_SIZE =
-  'var height = undefined; ' +
-  'var width = undefined; ' +
+  'var height, width; ' +
   'if (window.innerHeight) { height = window.innerHeight; } ' +
   'else if (document.documentElement && document.documentElement.clientHeight) { height = document.documentElement.clientHeight; } ' +
   'else { var b = document.getElementsByTagName("body")[0]; if (b.clientHeight) {height = b.clientHeight;} }; ' +
@@ -36238,6 +36149,39 @@ const JS_RETURN_CONTENT_ENTIRE_SIZE = `${JS_COMPUTE_CONTENT_ENTIRE_SIZE}return [
 
 const JS_SCROLL_TO_BOTTOM_RIGHT = `${JS_COMPUTE_CONTENT_ENTIRE_SIZE}window.scrollTo(totalWidth, totalHeight);`;
 
+const JS_GET_OVERFLOW_AWARE_CONTENT_ENTIRE_SIZE =
+  'var scrollWidth = document.documentElement.scrollWidth; ' +
+  'var bodyScrollWidth = document.body.scrollWidth; ' +
+  'var bodyOverflowX = window.getComputedStyle(document.body).overflowX;' +
+  'var documentOverflowX = window.getComputedStyle(document.documentElement).overflowX;' +
+  'var totalWidth = undefined;' +
+  'if (bodyOverflowX !== "hidden" && documentOverflowX !== "hidden")' +
+  '{ totalWidth = Math.max(scrollWidth, bodyScrollWidth); }' +
+  'else if (bodyOverflowX !== "hidden" && documentOverflowX === "hidden")' +
+  '{ totalWidth = bodyScrollWidth; }' +
+  'else if (bodyOverflowX === "hidden" && documentOverflowX !== "hidden")' +
+  '{ totalWidth = scrollWidth; }' +
+  'else if (bodyOverflowX === "hidden" && documentOverflowX === "hidden")' +
+  '{ totalWidth = window.innerWidth; }' +
+  'var clientHeight = document.documentElement.clientHeight; ' +
+  'var bodyClientHeight = document.body.clientHeight; ' +
+  'var scrollHeight = document.documentElement.scrollHeight; ' +
+  'var bodyScrollHeight = document.body.scrollHeight; ' +
+  'var maxDocElementHeight = Math.max(clientHeight, scrollHeight); ' +
+  'var maxBodyHeight = Math.max(bodyClientHeight, bodyScrollHeight); ' +
+  'var bodyOverflowY = window.getComputedStyle(document.body).overflowY;' +
+  'var documentOverflowY = window.getComputedStyle(document.documentElement).overflowY;' +
+  'var totalHeight = undefined;' +
+  'if (bodyOverflowY !== "hidden" && documentOverflowY !== "hidden")' +
+  '{ totalHeight = Math.max(maxDocElementHeight, maxBodyHeight); }' +
+  'else if (bodyOverflowY !== "hidden" && documentOverflowY === "hidden")' +
+  '{ totalHeight = maxBodyHeight; }' +
+  'else if (bodyOverflowY === "hidden" && documentOverflowY !== "hidden")' +
+  '{ totalHeight = maxDocElementHeight; }' +
+  'else if (bodyOverflowY === "hidden" && documentOverflowY === "hidden")' +
+  '{ totalHeight = window.innerHeight; }' +
+  'return [totalWidth, totalHeight];';
+
 const JS_TRANSFORM_KEYS = ['transform', '-webkit-transform'];
 
 const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
@@ -36247,6 +36191,12 @@ const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
   'var overflowY = styles.getPropertyValue("overflow-y");' +
   'return overflow == "hidden" || overflowX == "hidden" || overflowY == "hidden"';
 
+const JS_GET_SET_OVERFLOW_STR = (elementName, overflowValue) =>
+  `var element = ${elementName}; var overflowValue = "${overflowValue}"; ` +
+  'var origOverflow = element.style.overflow; ' +
+  'element.style.overflow = overflowValue; ' +
+  'return origOverflow;';
+
 /**
  * Handles browser related functionality.
  */
@@ -36255,31 +36205,24 @@ class EyesJsBrowserUtils {
    * Sets the overflow of the current context's document element.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {String} value The overflow value to set.
-   * @return {Promise.<String>} The previous value of overflow (could be {@code null} if undefined).
+   * @param {?string} value The overflow value to set.
+   * @param {WebElement} [scrollbarsRoot]
+   * @return {Promise<string>} The previous value of overflow (could be {@code null} if undefined).
    */
-  static setOverflow(executor, value) {
-    let script;
-    if (value) {
-      script =
-        'var origOverflow = document.documentElement.style.overflow; ' +
-        `document.documentElement.style.overflow = "${value}"; ` +
-        'return origOverflow;';
-    } else {
-      script =
-        'var origOverflow = document.documentElement.style.overflow; ' +
-        'document.documentElement.style.overflow = undefined; ' +
-        'return origOverflow;';
-    }
+  static setOverflow(executor, value, scrollbarsRoot) {
+    const script = JS_GET_SET_OVERFLOW_STR(
+      scrollbarsRoot ? 'arguments[0]' : 'document.documentElement',
+      value || 'undefined'
+    );
 
-    return executor.executeScript(script).catch(err => {
+    return executor.executeScript(script, scrollbarsRoot).catch(err => {
       throw new EyesError('Failed to set overflow', err);
     });
   }
 
   /**
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<Boolean>} A promise which resolves to the {@code true} if body overflow is hidden, {@code false}
+   * @return {Promise<boolean>} A promise which resolves to the {@code true} if body overflow is hidden, {@code false}
    *   otherwise.
    */
   static isBodyOverflowHidden(executor) {
@@ -36292,22 +36235,11 @@ class EyesJsBrowserUtils {
    * Updates the document's body "overflow" value
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {String} overflowValue The values of the overflow to set.
-   * @return {Promise.<String>} A promise which resolves to the original overflow of the document.
+   * @param {?string} overflowValue The values of the overflow to set.
+   * @return {Promise<string>} A promise which resolves to the original overflow of the document.
    */
   static setBodyOverflow(executor, overflowValue) {
-    let script;
-    if (overflowValue === null) {
-      script =
-        'var origOverflow = document.body.style.overflow; ' +
-        'document.body.style.overflow = undefined; ' +
-        'return origOverflow;';
-    } else {
-      script =
-        'var origOverflow = document.body.style.overflow; ' +
-        `document.body.style.overflow = "${overflowValue}"; ` +
-        'return origOverflow;';
-    }
+    const script = JS_GET_SET_OVERFLOW_STR('document.body', overflowValue || 'undefined');
 
     return executor.executeScript(script).catch(err => {
       throw new EyesError('Failed to set body overflow', err);
@@ -36318,29 +36250,28 @@ class EyesJsBrowserUtils {
    * Hides the scrollbars of the current context's document element.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {int} stabilizationTimeout The amount of time to wait for the "hide scrollbars" action to take effect
+   * @param {number} stabilizationTimeout The amount of time to wait for the "hide scrollbars" action to take effect
    *   (Milliseconds). Zero/negative values are ignored.
-   * @return {Promise.<String>} The previous value of the overflow property (could be {@code null}).
+   * @param {WebElement} [scrollbarsRoot]
+   * @return {Promise<string>} The previous value of the overflow property (could be {@code null}).
    */
-  static hideScrollbars(executor, stabilizationTimeout) {
-    return EyesJsBrowserUtils.setOverflow(executor, 'hidden').then(result => {
-      if (stabilizationTimeout > 0) {
-        return executor.sleep(stabilizationTimeout).then(() => result);
-      }
-      return result;
-    });
+  static async hideScrollbars(executor, stabilizationTimeout, scrollbarsRoot) {
+    const result = await EyesJsBrowserUtils.setOverflow(executor, 'hidden', scrollbarsRoot);
+    if (stabilizationTimeout > 0) {
+      await executor.sleep(stabilizationTimeout);
+    }
+    return result;
   }
 
   /**
    * Gets the current scroll position.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<Location>} The current scroll position of the current frame.
+   * @return {Promise<Location>} The current scroll position of the current frame.
    */
-  static getCurrentScrollPosition(executor) {
-    return executor.executeScript(JS_GET_CURRENT_SCROLL_POSITION)
-      // If we can't find the current scroll position, we use 0 as default.
-      .then(result => new Location(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0));
+  static async getCurrentScrollPosition(executor) {
+    const result = await executor.executeScript(JS_GET_CURRENT_SCROLL_POSITION);
+    return new Location(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0);
   }
 
   /**
@@ -36348,17 +36279,17 @@ class EyesJsBrowserUtils {
    *
    * @param {EyesJsExecutor} executor The executor to use.
    * @param {Location} location Location to scroll to
-   * @return {Promise} A promise which resolves after the action is performed and timeout passed.
+   * @return {Promise<void>} A promise which resolves after the action is performed and timeout passed.
    */
   static setCurrentScrollPosition(executor, location) {
-    return executor.executeScript(`window.scrollTo(${location.getY()}, ${location.getY()})`);
+    return executor.executeScript(`window.scrollTo(${location.getX()}, ${location.getY()})`);
   }
 
   /**
    * Scrolls current frame to its bottom right.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise} A promise which resolves after the action is performed and timeout passed.
+   * @return {Promise<void>} A promise which resolves after the action is performed and timeout passed.
    */
   static scrollToBottomRight(executor) {
     return executor.executeScript(JS_SCROLL_TO_BOTTOM_RIGHT);
@@ -36368,46 +36299,62 @@ class EyesJsBrowserUtils {
    * Get the entire page size.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<RectangleSize>} A promise which resolves to an object containing the width/height of the page.
+   * @return {Promise<RectangleSize>} A promise which resolves to an object containing the width/height of the page.
    */
-  static getCurrentFrameContentEntireSize(executor) {
+  static async getCurrentFrameContentEntireSize(executor) {
     // IMPORTANT: Notice there's a major difference between scrollWidth and scrollHeight.
     // While scrollWidth is the maximum between an element's width and its content width,
     // scrollHeight might be smaller (!) than the clientHeight, which is why we take the maximum between them.
-    return executor.executeScript(JS_RETURN_CONTENT_ENTIRE_SIZE)
-      .then(result => new RectangleSize(parseInt(result[0], 10) || 0, parseInt(result[1], 10) || 0))
-      .catch(err => {
-        throw new EyesError('Failed to extract entire size!', err);
-      });
+    try {
+      const result = await executor.executeScript(JS_RETURN_CONTENT_ENTIRE_SIZE);
+      return new RectangleSize(parseInt(result[0], 10) || 0, parseInt(result[1], 10) || 0);
+    } catch (err) {
+      throw new EyesError('Failed to extract entire size!', err);
+    }
+  }
+
+  /**
+   * Get the entire page size.
+   *
+   * @param {EyesJsExecutor} executor The executor to use.
+   * @return {Promise<RectangleSize>} A promise which resolves to an object containing the width/height of the page.
+   */
+  static async getOverflowAwareContentEntireSize(executor) {
+    try {
+      const result = await executor.executeScript(JS_GET_OVERFLOW_AWARE_CONTENT_ENTIRE_SIZE);
+      return new RectangleSize(parseInt(result[0], 10) || 0, parseInt(result[1], 10) || 0);
+    } catch (err) {
+      throw new EyesError('Failed to extract overflow aware entire size!', err);
+    }
   }
 
   /**
    * Tries to get the viewport size using Javascript. If fails, gets the entire browser window size!
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<RectangleSize>} The viewport size.
+   * @return {Promise<RectangleSize>} The viewport size.
    */
-  static getViewportSize(executor) {
-    return executor.executeScript(JS_GET_VIEWPORT_SIZE)
-      .then(result => new RectangleSize(parseInt(result[0], 10) || 0, parseInt(result[1], 10) || 0));
+  static async getViewportSize(executor) {
+    const result = await executor.executeScript(JS_GET_VIEWPORT_SIZE);
+    return new RectangleSize(parseInt(result[0], 10) || 0, parseInt(result[1], 10) || 0);
   }
 
   /**
    * Gets the device pixel ratio.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<number>} A promise which resolves to the device pixel ratio (float type).
+   * @return {Promise<number>} A promise which resolves to the device pixel ratio (float type).
    */
-  static getDevicePixelRatio(executor) {
-    return executor.executeScript('return window.devicePixelRatio')
-      .then(result => parseFloat(result));
+  static async getDevicePixelRatio(executor) {
+    const result = await executor.executeScript('return window.devicePixelRatio');
+    return parseFloat(result);
   }
 
   /**
    * Get the current transform of page.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<Object.<String, String>>} A promise which resolves to the current transform value.
+   * @return {Promise<Map<string, string>>} A promise which resolves to the current transform value.
    */
   static getCurrentTransform(executor) {
     let script = 'return { ';
@@ -36422,9 +36369,9 @@ class EyesJsBrowserUtils {
    * Sets transforms for document.documentElement according to the given map of style keys and values.
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {Object.<String, String>} transforms The transforms to set. Keys are used as style keys and values are the
+   * @param {Map<string, string>} transforms The transforms to set. Keys are used as style keys and values are the
    *   values for those styles.
-   * @return {Promise}
+   * @return {Promise<void>}
    */
   static setTransforms(executor, transforms) {
     let script = '';
@@ -36440,15 +36387,15 @@ class EyesJsBrowserUtils {
    * Set the given transform to document.documentElement for all style keys defined in {@link JS_TRANSFORM_KEYS}
    *
    * @param {EyesJsExecutor} executor The executor to use.
-   * @param {String} transform The transform to set.
-   * @return {Promise} A promise which resolves to the previous transform once the updated transform is set.
+   * @param {string} transform The transform to set.
+   * @return {Promise<void>} A promise which resolves to the previous transform once the updated transform is set.
    */
   static setTransform(executor, transform) {
-    const transforms = {};
     if (!transform) {
       transform = '';
     }
 
+    const transforms = {};
     for (let i = 0, l = JS_TRANSFORM_KEYS.length; i < l; i += 1) {
       transforms[JS_TRANSFORM_KEYS[i]] = transform;
     }
@@ -36461,7 +36408,7 @@ class EyesJsBrowserUtils {
    *
    * @param {EyesJsExecutor} executor The executor to use.
    * @param {Location} position The position to translate to.
-   * @return {Promise} A promise which resolves to the previous transform when the scroll is executed.
+   * @return {Promise<void>} A promise which resolves to the previous transform when the scroll is executed.
    */
   static translateTo(executor, position) {
     return EyesJsBrowserUtils.setTransform(executor, `translate(-${position.getX()}px, -${position.getY()}px)`);
@@ -36470,13 +36417,15 @@ class EyesJsBrowserUtils {
 
 exports.EyesJsBrowserUtils = EyesJsBrowserUtils;
 
-},{"./errors/EyesError":225,"./geometry/Location":236,"./geometry/RectangleSize":237}],200:[function(require,module,exports){
+},{"./errors/EyesError":222,"./geometry/Location":238,"./geometry/RectangleSize":239}],200:[function(require,module,exports){
 'use strict';
+
+/* eslint-disable no-unused-vars */
 
 /**
  * An interface for JsExecutors
  *
- * @interface
+ * @abstract
  */
 class EyesJsExecutor {
   /**
@@ -36486,7 +36435,7 @@ class EyesJsExecutor {
    *
    * @param {!(string|Function)} script The script to execute.
    * @param {...*} varArgs The arguments to pass to the script.
-   * @return {Promise.<T>} A promise that will resolve to the scripts return value.
+   * @return {Promise<T>} A promise that will resolve to the scripts return value.
    * @template T
    */
   executeScript(script, ...varArgs) {}
@@ -36498,11 +36447,6 @@ class EyesJsExecutor {
    * @return {!Promise} A promise that will be resolved when the sleep has finished.
    */
   sleep(ms) {}
-
-  /**
-   * @return {PromiseFactory}
-   */
-  getPromiseFactory() {}
 }
 
 exports.EyesJsExecutor = EyesJsExecutor;
@@ -36514,7 +36458,7 @@ exports.EyesJsExecutor = EyesJsExecutor;
  * Determines how detected failures are reported.
  *
  * @readonly
- * @enum {Number}
+ * @enum {number}
  */
 const FailureReports = {
   /**
@@ -36535,161 +36479,121 @@ exports.FailureReports = FailureReports;
 'use strict';
 
 const { GeneralUtils } = require('./utils/GeneralUtils');
-const { MatchWindowData } = require('./match/MatchWindowData');
 const { MatchWindowTask } = require('./MatchWindowTask');
-const { MatchSingleWindowData } = require('./match/MatchSingleWindowData');
+const { MatchSingleWindowData, Options } = require('./match/MatchSingleWindowData');
 
 /**
  * Handles matching of output with the expected output (including retry and 'ignore mismatch' when needed).
  */
 class MatchSingleWindowTask extends MatchWindowTask {
   /**
-   * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
    * @param {Logger} logger A logger instance.
    * @param {ServerConnector} serverConnector Our gateway to the agent
-   * @param {int} retryTimeout The default total time to retry matching (ms).
+   * @param {number} retryTimeout The default total time to retry matching (ms).
    * @param {EyesBase} eyes The eyes object.
    * @param {AppOutputProvider} appOutputProvider A callback for getting the application output when performing match.
    * @param {SessionStartInfo} startInfo The start parameters for the session.
-   * @param {Boolean} saveNewTests Used for automatic save of a test run. New tests are automatically saved by default.
+   * @param {boolean} saveNewTests Used for automatic save of a test run. New tests are automatically saved by default.
    */
-  constructor(promiseFactory, logger, serverConnector, retryTimeout, eyes, appOutputProvider, startInfo, saveNewTests) {
-    super(promiseFactory, logger, serverConnector, null, retryTimeout, eyes, appOutputProvider);
+  constructor(logger, serverConnector, retryTimeout, eyes, appOutputProvider, startInfo, saveNewTests) {
+    super(logger, serverConnector, null, retryTimeout, eyes, appOutputProvider);
 
     /** @type {SessionStartInfo} */ this._startInfo = startInfo;
     /** @type {TestResults} */ this._matchResult = undefined;
-    /** @type {Boolean} */ this._saveNewTests = saveNewTests;
+    /** @type {boolean} */ this._saveNewTests = saveNewTests;
   }
 
+  // noinspection JSCheckFunctionSignatures
   /**
    * Creates the match data and calls the server connector matchWindow method.
    *
    * @protected
    * @param {Trigger[]} userInputs The user inputs related to the current appOutput.
    * @param {AppOutputWithScreenshot} appOutput The application output to be matched.
-   * @param {String} tag Optional tag to be associated with the match (can be {@code null}).
-   * @param {Boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
+   * @param {string} name Optional tag to be associated with the match (can be {@code null}).
+   * @param {boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
    * @param {CheckSettings} checkSettings The internal settings to use.
    * @param {ImageMatchSettings} imageMatchSettings The settings to use.
-   * @return {Promise.<TestResults>} The match result.
+   * @return {Promise<TestResults>} The match result.
    */
-  performMatch(userInputs, appOutput, tag, ignoreMismatch, checkSettings, imageMatchSettings) {
-    const that = this;
-    return that._promiseFactory.resolve()
-      .then(() => MatchWindowTask.collectIgnoreRegions(checkSettings, imageMatchSettings, that._eyes, appOutput))
-      .then(() => MatchWindowTask.collectFloatingRegions(checkSettings, imageMatchSettings, that._eyes, appOutput))
-      .then(() => {
-        // Prepare match data.
-        const options = new MatchWindowData.Options(
-          tag,
-          userInputs,
-          ignoreMismatch,
-          false,
-          false,
-          false,
-          imageMatchSettings
-        );
-        const data = new MatchSingleWindowData(
-          that._startInfo,
-          userInputs,
-          appOutput.getAppOutput(),
-          tag,
-          ignoreMismatch,
-          options
-        );
-        data.setRemoveSessionIfMatching(ignoreMismatch);
-        data.setUpdateBaselineIfNew(that._saveNewTests);
+  async performMatch(userInputs, appOutput, name, ignoreMismatch, checkSettings, imageMatchSettings) {
+    await MatchWindowTask.collectIgnoreRegions(checkSettings, imageMatchSettings, this._eyes, appOutput);
+    await MatchWindowTask.collectFloatingRegions(checkSettings, imageMatchSettings, this._eyes, appOutput);
 
-        // Perform match.
-        return this._serverConnector.matchSingleWindow(data);
-      });
+    // Prepare match data.
+    const options = new Options({ name, userInputs, ignoreMismatch, ignoreMatch: false, forceMismatch: false, forceMatch: false, imageMatchSettings });
+    const data = new MatchSingleWindowData({ startInfo: this._startInfo, userInputs, appOutput: appOutput.getAppOutput(), tag: name, ignoreMismatch, options });
+    data.setRemoveSessionIfMatching(ignoreMismatch);
+    data.setUpdateBaselineIfNew(this._saveNewTests);
+
+    // Perform match.
+    return this._serverConnector.matchSingleWindow(data);
   }
 
   /**
-   * @private
+   * @protected
    * @param {Trigger[]} userInputs
    * @param {Region} region
-   * @param {String} tag
-   * @param {Boolean} ignoreMismatch
+   * @param {string} tag
+   * @param {boolean} ignoreMismatch
    * @param {CheckSettings} checkSettings
    * @param {ImageMatchSettings} imageMatchSettings
-   * @param {int} retryTimeout
-   * @return {Promise.<EyesScreenshot>}
+   * @param {number} retryTimeout
+   * @return {Promise<EyesScreenshot>}
    */
-  _retryTakingScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout) {
-    const that = this;
-    const start = GeneralUtils.currentTimeMillis(); // Start the retry timer.
-    const retry = GeneralUtils.currentTimeMillis() - start;
+  async _retryTakingScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout) {
+    const start = Date.now(); // Start the retry timer.
+    const retry = Date.now() - start;
 
     // The match retry loop.
-    return that._takingScreenshotLoop(
-      userInputs,
-      region,
-      tag,
-      ignoreMismatch,
-      checkSettings,
-      imageMatchSettings,
-      retryTimeout,
-      retry,
-      start
-    )
-      .then(screenshot => {
-        // if we're here because we haven't found a match yet, try once more
-        if (this._matchResult.getIsDifferent()) {
-          return this._tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings);
-        }
-        return screenshot;
-      });
+    const screenshot = await this._takingScreenshotLoop(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout, retry, start);
+    // if we're here because we haven't found a match yet, try once more
+    if (this._matchResult.getIsDifferent()) {
+      return this._tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings);
+    }
+    return screenshot;
   }
 
-  _takingScreenshotLoop(
-    userInputs,
-    region,
-    tag,
-    ignoreMismatch,
-    checkSettings,
-    imageMatchSettings,
-    retryTimeout,
-    retry,
-    start,
-    screenshot
-  ) {
+  /**
+   * @protected
+   * @param {Trigger[]} userInputs
+   * @param {Region} region
+   * @param {string} tag
+   * @param {boolean} ignoreMismatch
+   * @param {CheckSettings} checkSettings
+   * @param {ImageMatchSettings} imageMatchSettings
+   * @param {number} retryTimeout
+   * @param {number} retry
+   * @param {number} start
+   * @param {EyesScreenshot} [screenshot]
+   * @return {Promise<EyesScreenshot>}
+   */
+  async _takingScreenshotLoop(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout, retry, start, screenshot) {
     if (retry >= retryTimeout) {
-      return this._promiseFactory.resolve(screenshot);
+      return screenshot;
     }
 
-    const that = this;
-    return GeneralUtils.sleep(MatchWindowTask.MATCH_INTERVAL, that._promiseFactory)
-      .then(() => that._tryTakeScreenshot(userInputs, region, tag, true, checkSettings, imageMatchSettings))
-      .then(newScreenshot => {
-        if (that._matchResult.getIsDifferent()) {
-          return that._takingScreenshotLoop(
-            userInputs,
-            region,
-            tag,
-            ignoreMismatch,
-            imageMatchSettings,
-            retryTimeout,
-            GeneralUtils.currentTimeMillis() - start,
-            start,
-            newScreenshot
-          );
-        }
+    await GeneralUtils.sleep(MatchWindowTask.MATCH_INTERVAL);
 
-        return newScreenshot;
-      });
+    const newScreenshot = await this._tryTakeScreenshot(userInputs, region, tag, true, checkSettings, imageMatchSettings);
+    if (this._matchResult.getIsDifferent()) {
+      return this._takingScreenshotLoop(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout, Date.now() - start, start, newScreenshot);
+    }
+
+    return newScreenshot;
   }
 }
 
 exports.MatchSingleWindowTask = MatchSingleWindowTask;
 
-},{"./MatchWindowTask":203,"./match/MatchSingleWindowData":253,"./match/MatchWindowData":254,"./utils/GeneralUtils":296}],203:[function(require,module,exports){
+},{"./MatchWindowTask":203,"./match/MatchSingleWindowData":255,"./utils/GeneralUtils":302}],203:[function(require,module,exports){
 'use strict';
 
 const { Region } = require('./geometry/Region');
 const { ArgumentGuard } = require('./ArgumentGuard');
 const { GeneralUtils } = require('./utils/GeneralUtils');
-const { MatchWindowData } = require('./match/MatchWindowData');
+const { PerformanceUtils } = require('./utils/PerformanceUtils');
+const { MatchWindowData, Options } = require('./match/MatchWindowData');
 
 const MATCH_INTERVAL = 500; // Milliseconds
 
@@ -36698,15 +36602,14 @@ const MATCH_INTERVAL = 500; // Milliseconds
  */
 class MatchWindowTask {
   /**
-   * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
    * @param {Logger} logger A logger instance.
    * @param {ServerConnector} serverConnector Our gateway to the agent
    * @param {RunningSession} runningSession The running session in which we should match the window
-   * @param {int} retryTimeout The default total time to retry matching (ms).
+   * @param {number} retryTimeout The default total time to retry matching (ms).
    * @param {EyesBase} eyes The eyes object.
    * @param {AppOutputProvider} appOutputProvider A callback for getting the application output when performing match.
    */
-  constructor(promiseFactory, logger, serverConnector, runningSession, retryTimeout, eyes, appOutputProvider) {
+  constructor(logger, serverConnector, runningSession, retryTimeout, eyes, appOutputProvider) {
     ArgumentGuard.notNull(serverConnector, 'serverConnector');
     ArgumentGuard.greaterThanOrEqualToZero(retryTimeout, 'retryTimeout');
     ArgumentGuard.notNull(appOutputProvider, 'appOutputProvider');
@@ -36715,7 +36618,6 @@ class MatchWindowTask {
       ArgumentGuard.notNull(runningSession, 'runningSession');
     }
 
-    this._promiseFactory = promiseFactory;
     this._logger = logger;
     this._serverConnector = serverConnector;
     this._runningSession = runningSession;
@@ -36723,8 +36625,8 @@ class MatchWindowTask {
     this._eyes = eyes;
     this._appOutputProvider = appOutputProvider;
 
-    /** @type {EyesScreenshot} */ this._lastScreenshot = undefined;
     /** @type {MatchResult} */ this._matchResult = undefined;
+    /** @type {EyesScreenshot} */ this._lastScreenshot = undefined;
     /** @type {Region} */ this._lastScreenshotBounds = undefined;
   }
 
@@ -36734,32 +36636,21 @@ class MatchWindowTask {
    * @protected
    * @param {Trigger[]} userInputs The user inputs related to the current appOutput.
    * @param {AppOutputWithScreenshot} appOutput The application output to be matched.
-   * @param {String} tag Optional tag to be associated with the match (can be {@code null}).
-   * @param {Boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
+   * @param {string} name Optional tag to be associated with the match (can be {@code null}).
+   * @param {boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
    * @param {CheckSettings} checkSettings The internal settings to use.
    * @param {ImageMatchSettings} imageMatchSettings The settings to use.
-   * @return {Promise.<MatchResult>} The match result.
+   * @return {Promise<MatchResult>} The match result.
    */
-  performMatch(userInputs, appOutput, tag, ignoreMismatch, checkSettings, imageMatchSettings) {
-    const that = this;
-    return that._promiseFactory.resolve()
-      .then(() => MatchWindowTask.collectIgnoreRegions(checkSettings, imageMatchSettings, that._eyes, appOutput))
-      .then(() => MatchWindowTask.collectFloatingRegions(checkSettings, imageMatchSettings, that._eyes, appOutput))
-      .then(() => {
-        // Prepare match data.
-        const options = new MatchWindowData.Options(
-          tag,
-          userInputs,
-          ignoreMismatch,
-          false,
-          false,
-          false,
-          imageMatchSettings
-        );
-        const data = new MatchWindowData(userInputs, appOutput.getAppOutput(), tag, ignoreMismatch, options);
-        // Perform match.
-        return this._serverConnector.matchWindow(that._runningSession, data);
-      });
+  async performMatch(userInputs, appOutput, name, ignoreMismatch, checkSettings, imageMatchSettings) {
+    await MatchWindowTask.collectIgnoreRegions(checkSettings, imageMatchSettings, this._eyes, appOutput);
+    await MatchWindowTask.collectFloatingRegions(checkSettings, imageMatchSettings, this._eyes, appOutput);
+
+    // Prepare match data.
+    const options = new Options({ name, userInputs, ignoreMismatch, ignoreMatch: false, forceMismatch: false, forceMatch: false, imageMatchSettings });
+    const data = new MatchWindowData({ userInputs, appOutput: appOutput.getAppOutput(), tag: name, ignoreMismatch, options });
+    // Perform match.
+    return this._serverConnector.matchWindow(this._runningSession, data);
   }
 
   /**
@@ -36767,17 +36658,42 @@ class MatchWindowTask {
    * @param {ImageMatchSettings} imageMatchSettings
    * @param {EyesBase} eyes
    * @param {AppOutputWithScreenshot} appOutput
-   * @return {Promise}
+   * @return {Promise<void>}
    */
-  static collectIgnoreRegions(checkSettings, imageMatchSettings, eyes, appOutput) {
-    const screenshot = appOutput.getScreenshot();
-    const regionPromises = checkSettings.getIgnoreRegions()
-      .map(container => container.getRegion(eyes, screenshot), eyes);
+  static async collectIgnoreRegions(checkSettings, imageMatchSettings, eyes, appOutput) {
+    const ignoreRegions =
+      await MatchWindowTask.collectRegions(checkSettings.getIgnoreRegions(), eyes, appOutput.getScreenshot());
+    imageMatchSettings.setIgnoreRegions(ignoreRegions);
 
-    return eyes.getPromiseFactory().all(regionPromises)
-      .then(ignoreRegions => {
-        imageMatchSettings.setIgnoreRegions(ignoreRegions);
-      });
+    const layoutRegions =
+      await MatchWindowTask.collectRegions(checkSettings.getLayoutRegions(), eyes, appOutput.getScreenshot());
+    imageMatchSettings.setLayoutRegions(layoutRegions);
+
+    const strictRegions =
+      await MatchWindowTask.collectRegions(checkSettings.getStrictRegions(), eyes, appOutput.getScreenshot());
+    imageMatchSettings.setStrictRegions(strictRegions);
+
+    const contentRegions =
+      await MatchWindowTask.collectRegions(checkSettings.getContentRegions(), eyes, appOutput.getScreenshot());
+    imageMatchSettings.setContentRegions(contentRegions);
+  }
+
+  /**
+   * @param {GetRegion[]} regionProviders
+   * @param {EyesBase} eyes
+   * @param {EyesScreenshot} screenshot
+   * @return {Promise<Region[]>}
+   */
+  static collectRegions(regionProviders, eyes, screenshot) {
+    const regionsPromises = [];
+    regionProviders.forEach(regionProvider => {
+      try {
+        regionsPromises.push(regionProvider.getRegion(eyes, screenshot));
+      } catch (e) {
+        eyes.log('WARNING - ignore region was out of bounds.', e);
+      }
+    });
+    return Promise.all(regionsPromises);
   }
 
   /**
@@ -36785,17 +36701,15 @@ class MatchWindowTask {
    * @param {ImageMatchSettings} imageMatchSettings
    * @param {EyesBase} eyes
    * @param {AppOutputWithScreenshot} appOutput
-   * @return {Promise}
+   * @return {Promise<void>}
    */
-  static collectFloatingRegions(checkSettings, imageMatchSettings, eyes, appOutput) {
+  static async collectFloatingRegions(checkSettings, imageMatchSettings, eyes, appOutput) {
     const screenshot = appOutput.getScreenshot();
     const regionPromises = checkSettings.getFloatingRegions()
       .map(container => container.getRegion(eyes, screenshot), eyes);
 
-    return eyes.getPromiseFactory().all(regionPromises)
-      .then(floatingRegions => {
-        imageMatchSettings.setFloatingRegions(floatingRegions);
-      });
+    const floatingRegions = await Promise.all(regionPromises);
+    imageMatchSettings.setFloatingRegions(floatingRegions);
   }
 
   /**
@@ -36804,207 +36718,141 @@ class MatchWindowTask {
    *
    * @param {Trigger[]} userInputs User input preceding this match.
    * @param {Region} region Window region to capture.
-   * @param {String} tag Optional tag to be associated with the match (can be {@code null}).
-   * @param {Boolean} shouldRunOnceOnTimeout Force a single match attempt at the end of the match timeout.
-   * @param {Boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
+   * @param {string} tag Optional tag to be associated with the match (can be {@code null}).
+   * @param {boolean} shouldRunOnceOnTimeout Force a single match attempt at the end of the match timeout.
+   * @param {boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
    * @param {CheckSettings} checkSettings The internal settings to use.
    * @param {ImageMatchSettings} imageMatchSettings The settings to use.
-   * @param {int} retryTimeout The amount of time to retry matching in milliseconds or a negative value to use the
+   * @param {number} [retryTimeout] The amount of time to retry matching in milliseconds or a negative value to use the
    *   default retry timeout.
-   * @return {Promise.<MatchResult>} Returns the results of the match
+   * @return {Promise<MatchResult>} Returns the results of the match
    */
-  matchWindow(
-    userInputs,
-    region,
-    tag,
-    shouldRunOnceOnTimeout,
-    ignoreMismatch,
-    checkSettings,
-    imageMatchSettings,
-    retryTimeout
-  ) {
+  async matchWindow(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout) {
+    ArgumentGuard.notNull(userInputs, 'userInputs');
+    ArgumentGuard.notNull(region, 'region');
+    ArgumentGuard.isString(tag, 'tag');
+    ArgumentGuard.isBoolean(shouldRunOnceOnTimeout, 'shouldRunOnceOnTimeout');
+    ArgumentGuard.isBoolean(ignoreMismatch, 'ignoreMismatch');
+    ArgumentGuard.notNull(checkSettings, 'checkSettings');
+    ArgumentGuard.notNull(imageMatchSettings, 'imageMatchSettings');
+    ArgumentGuard.isNumber(retryTimeout, 'retryTimeout', false);
+
     if (retryTimeout === undefined || retryTimeout === null || retryTimeout < 0) {
       retryTimeout = this._defaultRetryTimeout;
     }
 
-    const that = this;
     this._logger.verbose(`retryTimeout = ${retryTimeout}`);
-    return that._takeScreenshot(
-      userInputs,
-      region,
-      tag,
-      shouldRunOnceOnTimeout,
-      ignoreMismatch,
-      checkSettings,
-      imageMatchSettings,
-      retryTimeout
-    )
-      .then(screenshot => {
-        if (ignoreMismatch) {
-          return that._matchResult;
-        }
+    const screenshot = await this._takeScreenshot(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout);
+    if (ignoreMismatch) {
+      return this._matchResult;
+    }
 
-        that._updateLastScreenshot(screenshot);
-        that._updateBounds(region);
-        return that._matchResult;
-      });
+    this._updateLastScreenshot(screenshot);
+    this._updateBounds(region);
+    return this._matchResult;
   }
 
   /**
    * @private
    * @param {Trigger[]} userInputs
    * @param {Region} region
-   * @param {String} tag
-   * @param {Boolean} shouldRunOnceOnTimeout
-   * @param {Boolean} ignoreMismatch
+   * @param {string} tag
+   * @param {boolean} shouldRunOnceOnTimeout
+   * @param {boolean} ignoreMismatch
    * @param {CheckSettings} checkSettings
    * @param {ImageMatchSettings} imageMatchSettings
-   * @param {int} retryTimeout
-   * @return {Promise.<EyesScreenshot>}
+   * @param {number} retryTimeout
+   * @return {Promise<EyesScreenshot>}
    */
-  _takeScreenshot(
-    userInputs,
-    region,
-    tag,
-    shouldRunOnceOnTimeout,
-    ignoreMismatch,
-    checkSettings,
-    imageMatchSettings,
-    retryTimeout
-  ) {
-    const that = this;
-    const elapsedTimeStart = GeneralUtils.currentTimeMillis();
-    let promise = this._promiseFactory.resolve();
+  async _takeScreenshot(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout) {
+    const timeStart = PerformanceUtils.start();
+
+    let screenshot;
     // If the wait to load time is 0, or "run once" is true, we perform a single check window.
     if (retryTimeout === 0 || shouldRunOnceOnTimeout) {
       if (shouldRunOnceOnTimeout) {
-        promise = promise.then(() => GeneralUtils.sleep(retryTimeout, that._promiseFactory));
+        await GeneralUtils.sleep(retryTimeout);
       }
 
-      promise = promise.then(() => that._tryTakeScreenshot(
-        userInputs,
-        region,
-        tag,
-        ignoreMismatch,
-        checkSettings,
-        imageMatchSettings
-      ));
+      screenshot = await this._tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings);
     } else {
-      promise = promise.then(() => that._retryTakingScreenshot(
-        userInputs,
-        region,
-        tag,
-        ignoreMismatch,
-        checkSettings,
-        imageMatchSettings,
-        retryTimeout
-      ));
+      screenshot = await this._retryTakingScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout);
     }
 
-    return promise.then(screenshot => {
-      // noinspection MagicNumberJS
-      const elapsedTime = GeneralUtils.currentTimeMillis() - elapsedTimeStart;
-      that._logger.verbose(`Completed in ${GeneralUtils.elapsedString(elapsedTime)}`);
-      return screenshot;
-    });
+    this._logger.verbose(`Completed in ${timeStart.end().summary}`);
+    return screenshot;
   }
 
   /**
-   * @private
+   * @protected
    * @param {Trigger[]} userInputs
    * @param {Region} region
-   * @param {String} tag
-   * @param {Boolean} ignoreMismatch
+   * @param {string} tag
+   * @param {boolean} ignoreMismatch
    * @param {CheckSettings} checkSettings
    * @param {ImageMatchSettings} imageMatchSettings
-   * @param {int} retryTimeout
-   * @return {Promise.<EyesScreenshot>}
+   * @param {number} retryTimeout
+   * @return {Promise<EyesScreenshot>}
    */
-  _retryTakingScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout) {
-    const that = this;
-    const start = GeneralUtils.currentTimeMillis(); // Start the retry timer.
-    const retry = GeneralUtils.currentTimeMillis() - start;
+  async _retryTakingScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout) {
+    const start = Date.now(); // Start the retry timer.
+    const retry = Date.now() - start;
 
     // The match retry loop.
-    return that._takingScreenshotLoop(
-      userInputs,
-      region,
-      tag,
-      ignoreMismatch,
-      checkSettings,
-      imageMatchSettings,
-      retryTimeout,
-      retry,
-      start
-    )
-      .then(screenshot => {
-        // if we're here because we haven't found a match yet, try once more
-        if (!this._matchResult.getAsExpected()) {
-          return this._tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings);
-        }
-        return screenshot;
-      });
-  }
+    const screenshot = await this._takingScreenshotLoop(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout, retry, start);
 
-  _takingScreenshotLoop(
-    userInputs,
-    region,
-    tag,
-    ignoreMismatch,
-    checkSettings,
-    imageMatchSettings,
-    retryTimeout,
-    retry,
-    start,
-    screenshot
-  ) {
-    if (retry >= retryTimeout) {
-      return this._promiseFactory.resolve(screenshot);
+    // if we're here because we haven't found a match yet, try once more
+    if (!this._matchResult.getAsExpected()) {
+      return this._tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings);
     }
-
-    const that = this;
-    return GeneralUtils.sleep(MatchWindowTask.MATCH_INTERVAL, that._promiseFactory)
-      .then(() => that._tryTakeScreenshot(userInputs, region, tag, true, checkSettings, imageMatchSettings))
-      .then(newScreenshot => {
-        if (that._matchResult.getAsExpected()) {
-          return newScreenshot;
-        }
-
-        return that._takingScreenshotLoop(
-          userInputs,
-          region,
-          tag,
-          ignoreMismatch,
-          imageMatchSettings,
-          retryTimeout,
-          GeneralUtils.currentTimeMillis() - start,
-          start,
-          newScreenshot
-        );
-      });
+    return screenshot;
   }
 
   /**
-   * @private
+   * @protected
    * @param {Trigger[]} userInputs
    * @param {Region} region
-   * @param {String} tag
-   * @param {Boolean} ignoreMismatch
+   * @param {string} tag
+   * @param {boolean} ignoreMismatch
    * @param {CheckSettings} checkSettings
    * @param {ImageMatchSettings} imageMatchSettings
-   * @return {Promise.<EyesScreenshot>}
+   * @param {number} retryTimeout
+   * @param {number} retry
+   * @param {number} start
+   * @param {EyesScreenshot} [screenshot]
+   * @return {Promise<EyesScreenshot>}
    */
-  _tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings) {
-    const that = this;
-    return that._appOutputProvider.getAppOutput(region, that._lastScreenshot)
-      .then(appOutput => {
-        const screenshot = appOutput.getScreenshot();
-        return that.performMatch(userInputs, appOutput, tag, ignoreMismatch, checkSettings, imageMatchSettings)
-          .then(matchResult => {
-            that._matchResult = matchResult;
-            return screenshot;
-          });
-      });
+  async _takingScreenshotLoop(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout, retry, start, screenshot) {
+    if (retry >= retryTimeout) {
+      return screenshot;
+    }
+
+    await GeneralUtils.sleep(MatchWindowTask.MATCH_INTERVAL);
+
+    const newScreenshot = await this._tryTakeScreenshot(userInputs, region, tag, true, checkSettings, imageMatchSettings);
+
+    if (this._matchResult.getAsExpected()) {
+      return newScreenshot;
+    }
+
+    return this._takingScreenshotLoop(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout, Date.now() - start, start, newScreenshot);
+  }
+
+  /**
+   * @protected
+   * @param {Trigger[]} userInputs
+   * @param {Region} region
+   * @param {string} tag
+   * @param {boolean} ignoreMismatch
+   * @param {CheckSettings} checkSettings
+   * @param {ImageMatchSettings} imageMatchSettings
+   * @return {Promise<EyesScreenshot>}
+   */
+  async _tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings, imageMatchSettings) {
+    const appOutput = await this._appOutputProvider.getAppOutput(region, this._lastScreenshot, checkSettings);
+    const screenshot = appOutput.getScreenshot();
+    this._matchResult = await this.performMatch(userInputs, appOutput, tag, ignoreMismatch, checkSettings, imageMatchSettings);
+    return screenshot;
   }
 
   /**
@@ -37022,7 +36870,7 @@ class MatchWindowTask {
    * @param {Region} region
    */
   _updateBounds(region) {
-    if (region.isEmpty()) {
+    if (region.isSizeEmpty()) {
       if (this._lastScreenshot) {
         this._lastScreenshotBounds = new Region(
           0,
@@ -37038,7 +36886,7 @@ class MatchWindowTask {
       this._lastScreenshotBounds = region;
     }
 
-    return this._promiseFactory.resolve();
+    return Promise.resolve();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -37061,541 +36909,137 @@ class MatchWindowTask {
 MatchWindowTask.MATCH_INTERVAL = MATCH_INTERVAL;
 exports.MatchWindowTask = MatchWindowTask;
 
-},{"./ArgumentGuard":196,"./geometry/Region":238,"./match/MatchWindowData":254,"./utils/GeneralUtils":296}],204:[function(require,module,exports){
+},{"./ArgumentGuard":196,"./geometry/Region":240,"./match/MatchWindowData":256,"./utils/GeneralUtils":302,"./utils/PerformanceUtils":304}],204:[function(require,module,exports){
 'use strict';
 
-/**
- * After initialization, provides factory methods for creating promises.
- */
-class PromiseFactory {
-  /**
-   * @param {function} promiseFactoryFunc A function which receives as a parameter the same function you would pass to
-   *   a Promise constructor.
-   */
-  constructor(promiseFactoryFunc) {
-    this._promiseFactoryFunc = promiseFactoryFunc;
-  }
-
-  /**
-   * Sets the factory method which will be used to create promises.
-   *
-   * @param {function} promiseFactoryFunc A function which receives as a parameter the same function you would pass to
-   *   a Promise constructor.
-   */
-  setFactoryMethod(promiseFactoryFunc) {
-    this._promiseFactoryFunc = promiseFactoryFunc;
-  }
-
-  /**
-   * @return {function} A function which receives as a parameter the same function you would pass to a Promise
-   *   constructor.
-   */
-  getFactoryMethod() {
-    return this._promiseFactoryFunc;
-  }
-
-  /**
-   * The Promise object represents the eventual completion (or failure) of an asynchronous operation, and its resulting
-   * value.
-   *
-   * @param {function} executor A function that is passed with the arguments resolve and reject.
-   * @return {*}
-   */
-  makePromise(executor) {
-    if (this._promiseFactoryFunc) {
-      return this._promiseFactoryFunc(executor);
-    }
-
-    throw new Error('Promise factory was not initialized with proper callback');
-  }
-
-  /**
-   * The method returns a Promise object that is resolved with the given value.
-   *
-   * @template T
-   * @param {T} [value] argument to be resolved by this Promise. Can also be a Promise or a thenable to resolve.
-   * @return {Promise.<T>}
-   */
-  resolve(value) {
-    return this.makePromise(resolve => {
-      resolve(value);
-    });
-  }
-
-  /**
-   * The method returns a Promise object that is rejected with the given reason.
-   *
-   * @template T
-   * @param {T} [value] reason why this Promise rejected.
-   * @return {Promise.<T>}
-   */
-  reject(value) {
-    return this.makePromise((resolve, reject) => {
-      reject(value);
-    });
-  }
-
-  /**
-   * The method returns a promise that resolves or rejects as soon as one of the promises in the iterable resolves or
-   * rejects, with the value or reason from that promise.
-   *
-   * @param {Iterable.<Promise>} iterable
-   * @return {Promise.<*>}
-   */
-  race(iterable) {
-    return this.makePromise((resolve, reject) => {
-      // noinspection JSUnresolvedVariable
-      for (let i = 0, len = iterable.length; i < len; i += 1) {
-        iterable[i].then(resolve, reject);
-      }
-    });
-  }
-
-  /**
-   * The method returns a single Promise that resolves when all of the promises in the iterable argument have resolved
-   * or when the iterable argument contains no promises. It rejects with the reason of the first promise that rejects.
-   *
-   * @param {Iterable.<Promise>} iterable
-   * @return {Promise.<[*]>}
-   */
-  all(iterable) {
-    const args = Array.prototype.slice.call(iterable);
-    return this.makePromise((resolve, reject) => {
-      if (args.length === 0) {
-        return resolve([]);
-      }
-      let remaining = args.length;
-
-      const resolveFn = (curr, i) => {
-        try {
-          if (curr && (typeof curr === 'object' || typeof curr === 'function') && typeof curr.then === 'function') {
-            // noinspection JSUnresolvedFunction
-            curr.then.call(curr, val => resolveFn(val, i), reject);
-            return;
-          }
-          args[i] = curr;
-          remaining -= 1;
-          if (remaining === 0) {
-            resolve(args);
-          }
-        } catch (ex) {
-          reject(ex);
-        }
-      };
-
-      for (let i = 0; i < args.length; i += 1) {
-        resolveFn(args[i], i);
-      }
-    });
-  }
-}
-
-exports.PromiseFactory = PromiseFactory;
-
-},{}],205:[function(require,module,exports){
-'use strict';
-
-const axios = require('axios');
-
-const { SessionEventHandler } = require('./SessionEventHandler');
-const { GeneralUtils } = require('./utils/GeneralUtils');
-
-// Constants
-const DEFAULT_CONNECTION_TIMEOUT_MS = 30000;
-const SERVER_SUFFIX = '/applitools/sessions';
-
-// *** Overriding callbacks
-const sendNotification = (requestOptions, resolve, reject) =>
-  axios(requestOptions)
-    .then(response => resolve(response.status))
-    .catch(err => reject(err));
-
-class RemoteSessionEventHandler extends SessionEventHandler {
-  constructor(serverUrl, accessKey) {
-    super();
-
-    this._httpOptions = {
-      strictSSL: false,
-      baseUrl: undefined,
-      json: true,
-      params: {},
-    };
-
-    this.setTimeout(DEFAULT_CONNECTION_TIMEOUT_MS);
-    this.setServerUrl(serverUrl);
-    this.setAccessKey(accessKey);
-  }
-
-  setPromiseFactory(value) {
-    this._promiseFactory = value;
-  }
-
-  getPromiseFactory() {
-    return this._promiseFactory;
-  }
-
-  setTimeout(value) {
-    this._httpOptions.timeout = value;
-  }
-
-  getTimeout() {
-    return this._httpOptions.timeout;
-  }
-
-  setServerUrl(value) {
-    this._serverUrl = value;
-    this._httpOptions.baseUrl = GeneralUtils.urlConcat(value, SERVER_SUFFIX);
-  }
-
-  getServerUrl() {
-    return this._serverUrl;
-  }
-
-  setAccessKey(value) {
-    this._httpOptions.params.accessKey = value;
-  }
-
-  getAccessKey() {
-    return this._httpOptions.params.accessKey;
-  }
-
-  /** @inheritDoc */
-  initStarted(autSessionId) {
-    return this._promiseFactory.makePromise((resolve, reject) => {
-      const options = Object.create(this._httpOptions);
-      options.uri = autSessionId;
-      options.data = { action: 'initStart' };
-      options.method = 'put';
-      sendNotification(options, resolve, reject);
-    });
-  }
-
-  /** @inheritDoc */
-  initEnded(autSessionId) {
-    return this._promiseFactory.makePromise((resolve, reject) => {
-      const options = Object.create(this._httpOptions);
-      options.uri = autSessionId;
-      options.data = { action: 'initEnd' };
-      options.method = 'put';
-      sendNotification(options, resolve, reject);
-    });
-  }
-
-  /** @inheritDoc */
-  setSizeWillStart(autSessionId, sizeToSet) {
-    return this._promiseFactory.makePromise((resolve, reject) => {
-      const options = Object.create(this._httpOptions);
-      options.uri = autSessionId;
-      options.data = { action: 'setSizeStart', size: sizeToSet };
-      options.method = 'put';
-      sendNotification(options, resolve, reject);
-    });
-  }
-
-  /** @inheritDoc */
-  setSizeEnded(autSessionId) {
-    return this._promiseFactory.makePromise((resolve, reject) => {
-      const options = Object.create(this._httpOptions);
-      options.uri = autSessionId;
-      options.data = { action: 'setSizeEnd' };
-      options.method = 'put';
-      sendNotification(options, resolve, reject);
-    });
-  }
-
-  /** @inheritDoc */
-  testStarted(autSessionId) {
-    return this._promiseFactory.makePromise((resolve, reject) => {
-      const options = Object.create(this._httpOptions);
-      options.uri = '';
-      options.data = { autSessionId };
-      options.method = 'post';
-      sendNotification(options, resolve, reject);
-    });
-  }
-
-  /** @inheritDoc */
-  testEnded(autSessionId, testResults) {
-    return this._promiseFactory.makePromise((resolve, reject) => {
-      const options = Object.create(this._httpOptions);
-      options.uri = autSessionId;
-      options.data = { action: 'testEnd', testResults };
-      options.method = 'put';
-      sendNotification(options, resolve, reject);
-    });
-  }
-
-  /** @inheritDoc */
-  validationWillStart(autSessionId, validationInfo) {
-    return this._promiseFactory.makePromise((resolve, reject) => {
-      const options = Object.create(this._httpOptions);
-      options.uri = `${autSessionId}/validations`;
-      options.data = validationInfo.toObject();
-      options.method = 'post';
-      sendNotification(options, resolve, reject);
-    });
-  }
-
-  /** @inheritDoc */
-  validationEnded(autSessionId, validationId, validationResult) {
-    return this._promiseFactory.makePromise((resolve, reject) => {
-      const options = Object.create(this._httpOptions);
-      options.uri = `${autSessionId}/validations/${validationId}`;
-      options.data = { action: 'validationEnd', asExpected: validationResult.getAsExpected() };
-      options.method = 'put';
-      sendNotification(options, resolve, reject);
-    });
-  }
-}
-
-exports.RemoteSessionEventHandler = RemoteSessionEventHandler;
-
-},{"./SessionEventHandler":207,"./utils/GeneralUtils":296,"axios":303}],206:[function(require,module,exports){
-'use strict';
+const PromisePool = require('es6-promise-pool');
 
 const { ArgumentGuard } = require('./ArgumentGuard');
-const { GeneralUtils } = require('./utils/GeneralUtils');
 const { RenderStatus } = require('./renderer/RenderStatus');
-const { RenderRequest } = require('./renderer/RenderRequest');
 
-const GET_STATUS_INTERVAL = 500; // Milliseconds
+const DEFAULT_CONCURRENCY_LIMIT = 100;
 
 class RenderWindowTask {
   /**
-   * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
    * @param {Logger} logger A logger instance.
    * @param {ServerConnector} serverConnector Our gateway to the agent
    */
-  constructor(promiseFactory, logger, serverConnector) {
-    ArgumentGuard.notNull(promiseFactory, 'promiseFactory');
+  constructor(logger, serverConnector) {
     ArgumentGuard.notNull(logger, 'logger');
     ArgumentGuard.notNull(serverConnector, 'serverConnector');
 
-    this._promiseFactory = promiseFactory;
     this._logger = logger;
     this._serverConnector = serverConnector;
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {String} webhook
-   * @param {String} url
-   * @param {RGridDom} rGridDom
-   * @param {number} renderWidth
-   * @return {Promise.<String>} Rendered image URL
+   * @param {RenderRequest} renderRequest
+   * @return {Promise<string>} Rendered image URL
    */
-  renderWindow(webhook, url, rGridDom, renderWidth) {
-    const renderRequest = new RenderRequest(webhook, url, rGridDom, renderWidth);
+  async renderWindow(renderRequest) {
+    const runningRender = await this.postRender(renderRequest);
+    const renderStatus = await this.getRenderStatus(runningRender);
+    return renderStatus.getImageLocation();
+  }
 
-    const that = this;
-    return that.postRender(rGridDom, renderRequest)
-      .then(runningRender => that.getRenderStatus(runningRender))
-      .then(/** RenderStatusResults */ renderStatus => renderStatus.getImageLocation());
+  /**
+   * @param {RenderRequest} renderRequest
+   * @return {Promise<RunningRender>}
+   */
+  async postRender(renderRequest) {
+    const newRender = await this._serverConnector.render(renderRequest);
+    if (newRender.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES) {
+      renderRequest.setRenderId(newRender.getRenderId());
+
+      await this.putResources(renderRequest.getDom(), newRender);
+      return this.postRender(renderRequest);
+    }
+
+    return newRender;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {RenderRequest[]} renderRequests
+   * @return {Promise<RunningRender>}
+   */
+  postRenderBatch(renderRequests) {
+    return this._serverConnector.render(renderRequests);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {RenderRequest} renderRequest
+   * @return {Promise<void>}
+   */
+  async checkAndPutResources(renderRequest) {
+    const newRender = await this._serverConnector.render(renderRequest);
+    if (newRender.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES) {
+      return this.putResources(renderRequest.getDom(), newRender);
+    }
+
+    return null;
   }
 
   /**
    * @param {RunningRender} runningRender
-   * @return {Promise.<RenderStatusResults>}
+   * @param {boolean} [delayBeforeRequest=false]
+   * @return {Promise<RenderStatusResults>}
    */
-  getRenderStatus(runningRender) {
-    const that = this;
-    return that._serverConnector.renderStatus(runningRender)
-      .catch(() => GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory)
-        .then(() => that.getRenderStatus(runningRender)))
-      .then(renderStatusResults => {
-        if (renderStatusResults.getStatus() === RenderStatus.RENDERING) {
-          return GeneralUtils.sleep(GET_STATUS_INTERVAL, that._promiseFactory)
-            .then(() => that.getRenderStatus(runningRender));
-        } else if (renderStatusResults.getStatus() === RenderStatus.ERROR) {
-          return that._promiseFactory.reject(renderStatusResults.getError());
-        }
+  async getRenderStatus(runningRender, delayBeforeRequest = false) {
+    const renderStatusResults = await this._serverConnector.renderStatus(runningRender, delayBeforeRequest);
+    if (renderStatusResults.getStatus() === RenderStatus.RENDERING) {
+      return this.getRenderStatus(runningRender, true);
+    }
 
-        return renderStatusResults;
-      });
+    if (renderStatusResults.getStatus() === RenderStatus.ERROR) {
+      throw new Error(renderStatusResults.getError());
+    }
+
+    return renderStatusResults;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {string[]} renderIds
+   * @param {boolean} [delayBeforeRequest=false] If {@code true}, then the request will be delayed
+   * @return {Promise<RenderStatusResults[]>}
+   */
+  getRenderStatusBatch(renderIds, delayBeforeRequest) {
+    return this._serverConnector.renderStatusById(renderIds, delayBeforeRequest);
   }
 
   /**
    * @param {RGridDom} rGridDom
-   * @param {RenderRequest} renderRequest
-   * @param {RunningRender} [runningRender]
-   * @return {Promise.<RunningRender>}
+   * @param {RunningRender} runningRender
+   * @param {number} [concurrency]
+   * @return {Promise<void>}
    */
-  postRender(rGridDom, renderRequest, runningRender) {
-    const that = this;
-    return that._serverConnector.render(renderRequest, runningRender)
-      .then(newRender => {
-        if (newRender.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES) {
-          return that.putResources(rGridDom, renderRequest, newRender)
-            .then(() => that.postRender(rGridDom, renderRequest, newRender));
-        }
-
-        return newRender;
-      });
-  }
-
-  /**
-   * @param {RGridDom} rGridDom
-   * @param {RenderRequest} renderRequest
-   * @param {RunningRender} [runningRender]
-   * @return {Promise.<RunningRender>}
-   */
-  putResources(rGridDom, renderRequest, runningRender) {
-    const that = this;
-    const promises = [];
-
+  async putResources(rGridDom, runningRender, concurrency = DEFAULT_CONCURRENCY_LIMIT) {
     if (runningRender.getNeedMoreDom()) {
-      promises.push(that._serverConnector.renderPutResource(runningRender, rGridDom.asResource()));
+      await this._serverConnector.renderPutResource(runningRender, rGridDom.asResource());
     }
 
     if (runningRender.getNeedMoreResources()) {
-      rGridDom.getResources().forEach(resource => {
-        if (runningRender.getNeedMoreResources().includes(resource.getUrl())) {
-          promises.push(that._serverConnector.renderPutResource(runningRender, resource));
-        }
-      });
-    }
+      const resources = rGridDom.getResources();
 
-    return that._promiseFactory.all(promises);
+      const pool = new PromisePool(function* generatePutResourcesPromises() {
+        for (let l = resources.length - 1; l >= 0; l -= 1) {
+          if (runningRender.getNeedMoreResources().includes(resources[l].getUrl())) {
+            yield this._serverConnector.renderPutResource(runningRender, resources[l]);
+          }
+        }
+      }, concurrency);
+
+      await pool.start();
+    }
   }
 }
 
 exports.RenderWindowTask = RenderWindowTask;
 
-},{"./ArgumentGuard":196,"./renderer/RenderRequest":273,"./renderer/RenderStatus":274,"./utils/GeneralUtils":296}],207:[function(require,module,exports){
-'use strict';
-
-/**
- * Encapsulates the information for the validation about to execute.
- */
-class ValidationInfo {
-  constructor() {
-    this._validationId = null;
-    this._tag = null;
-  }
-
-  setValidationId(value) {
-    this._validationId = value;
-  }
-
-  getValidationId() {
-    return this._validationId;
-  }
-
-  setTag(value) {
-    this._tag = value;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  getTag() {
-    return this._tag;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  toObject() {
-    return {
-      validationId: this._validationId,
-      tag: this._tag,
-    };
-  }
-}
-
-/**
- * Encapsulates the information for the validation about to execute.
- */
-class ValidationResult {
-  constructor() {
-    this._asExpected = null;
-  }
-
-  setAsExpected(value) {
-    this._asExpected = value;
-  }
-
-  getAsExpected() {
-    return this._asExpected;
-  }
-}
-
-/**
- * The base class for session event handler. Specific implementations should use this class as abstract.
- *
- * @abstract
- */
-class SessionEventHandler {
-  constructor() {
-    this._promiseFactory = undefined;
-  }
-
-  setPromiseFactory(value) {
-    this._promiseFactory = value;
-  }
-
-  getPromiseFactory() {
-    return this._promiseFactory;
-  }
-
-  /**
-   * Called when the data gathering for creating a session phase had started.
-   */
-  initStarted() {}
-
-  /**
-   * Called when the data garthering phase had ended.
-   */
-  initEnded() {}
-
-  /**
-   * Called when setting the size of the appolication window is about to start.
-   *
-   * @param sizeToSet {Object} an object with 'width' and 'height' properties.
-   */
-  setSizeWillStart(sizeToSet) {}
-
-  /**
-   * Called 'set size' operation has ended (either failed/success).
-   */
-  setSizeEnded() {}
-
-  /**
-   * Called after a session had started.
-   *
-   * @param autSessionId {String} The AUT session ID.
-   */
-  testStarted(autSessionId) {}
-
-  /**
-   * Called after a session had ended.
-   *
-   * @param autSessionId {String} The AUT session ID.
-   * @param testResults {Object} The test results.
-   */
-  testEnded(autSessionId, testResults) {}
-
-  /**
-   * Called before a new validation will be started.
-   *
-   * @param autSessionId {String} The AUT session ID.
-   * @param validationInfo {ValidationInfo} The validation parameters.
-   */
-  validationWillStart(autSessionId, validationInfo) {}
-
-  /**
-   * Called when a validation had ended.
-   *
-   * @param autSessionId {String} The AUT session ID.
-   * @param validationId {String} The ID of the validation which had ended.
-   * @param validationResult {ValidationResult} The validation results.
-   */
-  validationEnded(autSessionId, validationId, validationResult) {}
-}
-
-SessionEventHandler.ValidationInfo = ValidationInfo;
-SessionEventHandler.ValidationResult = ValidationResult;
-exports.SessionEventHandler = SessionEventHandler;
-exports.ValidationInfo = ValidationInfo;
-exports.ValidationResult = ValidationResult;
-
-},{}],208:[function(require,module,exports){
+},{"./ArgumentGuard":196,"./renderer/RenderStatus":279,"es6-promise-pool":338}],205:[function(require,module,exports){
 'use strict';
 
 const { RectangleSize } = require('./geometry/RectangleSize');
@@ -37603,151 +37047,201 @@ const { GeneralUtils } = require('./utils/GeneralUtils');
 const { TestResultsStatus } = require('./TestResultsStatus');
 
 class SessionUrls {
-  constructor() {
-    this._batch = null;
-    this._session = null;
-  }
-
   /**
-   * @param {Object} object
-   * @return {SessionUrls}
+   * @param {string} batch
+   * @param {string} session
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new SessionUrls(), object);
+  constructor({ batch, session } = {}) {
+    this._batch = batch;
+    this._session = session;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBatch() {
     return this._batch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBatch(value) {
     this._batch = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getSession() {
     return this._session;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setSession(value) {
     this._session = value;
+  }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
   }
 }
 
 class ApiUrls {
-  constructor() {
-    this._baselineImage = null;
-    this._currentImage = null;
-    this._diffImage = null;
-  }
-
   /**
-   * @param {Object} object
-   * @return {ApiUrls}
+   * @param {string} baselineImage
+   * @param {string} currentImage
+   * @param {string} checkpointImage
+   * @param {string} checkpointImageThumbnail
+   * @param {string} diffImage
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new ApiUrls(), object);
+  constructor({ baselineImage, currentImage, checkpointImage, checkpointImageThumbnail, diffImage } = {}) {
+    this._baselineImage = baselineImage;
+    this._currentImage = currentImage;
+    this._checkpointImage = checkpointImage;
+    this._checkpointImageThumbnail = checkpointImageThumbnail;
+    this._diffImage = diffImage;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBaselineImage() {
     return this._baselineImage;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBaselineImage(value) {
     this._baselineImage = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getCurrentImage() {
     return this._currentImage;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setCurrentImage(value) {
     this._currentImage = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
+  getCheckpointImage() {
+    return this._checkpointImage;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setCheckpointImage(value) {
+    this._checkpointImage = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getCheckpointImageThumbnail() {
+    return this._checkpointImageThumbnail;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setCheckpointImageThumbnail(value) {
+    this._checkpointImageThumbnail = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
   getDiffImage() {
     return this._diffImage;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setDiffImage(value) {
     this._diffImage = value;
+  }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
   }
 }
 
 class AppUrls {
-  constructor() {
-    this._step = null;
-  }
-
   /**
-   * @param {Object} object
-   * @return {AppUrls}
+   * @param {string} step
+   * @param {string} stepEditor
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new AppUrls(), object);
+  constructor({ step, stepEditor } = {}) {
+    this._step = step;
+    this._stepEditor = stepEditor;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getStep() {
     return this._step;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setStep(value) {
     this._step = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getStepEditor() {
+    return this._stepEditor;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setStepEditor(value) {
+    this._stepEditor = value;
+  }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
   }
 }
 
 class StepInfo {
-  constructor() {
-    this._name = null;
-    this._isDifferent = null;
-    this._hasBaselineImage = null;
-    this._hasCurrentImage = null;
-    this._appUrls = null;
-    this._apiUrls = null;
-  }
-
   /**
-   * @param {Object} object
-   * @return {StepInfo}
+   * @param {string} name
+   * @param {boolean} isDifferent
+   * @param {boolean} hasBaselineImage
+   * @param {boolean} hasCurrentImage
+   * @param {AppUrls|object} appUrls
+   * @param {ApiUrls|object} apiUrls
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new StepInfo(), object, {
-      appUrls: AppUrls.fromObject,
-      apiUrls: ApiUrls.fromObject,
-    });
+  constructor({ name, isDifferent, hasBaselineImage, hasCurrentImage, appUrls, apiUrls } = {}) {
+    if (appUrls && !(appUrls instanceof AppUrls)) {
+      appUrls = new AppUrls(appUrls);
+    }
+
+    if (apiUrls && !(apiUrls instanceof ApiUrls)) {
+      apiUrls = new ApiUrls(apiUrls);
+    }
+
+    this._name = name;
+    this._isDifferent = isDifferent;
+    this._hasBaselineImage = hasBaselineImage;
+    this._hasCurrentImage = hasCurrentImage;
+    this._appUrls = appUrls;
+    this._apiUrls = apiUrls;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getName() {
     return this._name;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setName(value) {
     this._name = value;
   }
@@ -37811,80 +37305,141 @@ class StepInfo {
   setApiUrls(value) {
     this._apiUrls = value;
   }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
+  }
 }
 
 /**
  * Eyes test results.
  */
 class TestResults {
-  constructor() {
-    this._name = null;
-    this._secretToken = null;
-    // this._id = null;
-    this._status = null;
-    this._appName = null;
-    this._batchName = null;
-    this._batchId = null;
-    this._branchName = null;
-    this._hostOS = null;
-    this._hostApp = null;
-    this._hostDisplaySize = null;
-    this._startedAt = null;
-    this._duration = null;
-    this._isNew = null;
-    this._isDifferent = null;
-    this._isAborted = null;
-    // this._defaultMatchSettings = null;
-    this._appUrls = null;
-    this._apiUrls = null;
-    this._stepsInfo = null;
-    this._steps = null;
-    this._matches = null;
-    this._mismatches = null;
-    this._missing = null;
-    this._exactMatches = null;
-    this._strictMatches = null;
-    this._contentMatches = null;
-    this._layoutMatches = null;
-    this._noneMatches = null;
-    this._url = null;
-  }
-
+  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * @param {Object} object
-   * @return {TestResults}
+   * @param {string} [id]
+   * @param {string} [name]
+   * @param {string} [secretToken]
+   * @param {TestResultsStatus} [status]
+   * @param {string} [appName]
+   * @param {string} [batchName]
+   * @param {string} [batchId]
+   * @param {string} [branchName]
+   * @param {string} [hostOS]
+   * @param {string} [hostApp]
+   * @param {RectangleSize|object} [hostDisplaySize]
+   * @param {Date|string} [startedAt]
+   * @param {number} [duration]
+   * @param {boolean} [isNew]
+   * @param {boolean} [isSaved]
+   * @param {boolean} [isDifferent]
+   * @param {boolean} [isAborted]
+   * @param {SessionUrls|object} [appUrls]
+   * @param {SessionUrls|object} [apiUrls]
+   * @param {StepInfo[]|object[]} [stepsInfo]
+   * @param {number} [steps]
+   * @param {number} [matches]
+   * @param {number} [mismatches]
+   * @param {number} [missing]
+   * @param {number} [exactMatches]
+   * @param {number} [strictMatches]
+   * @param {number} [contentMatches]
+   * @param {number} [layoutMatches]
+   * @param {number} [noneMatches]
+   * @param {string} [url]
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new TestResults(), object, {
-      hostDisplaySize: RectangleSize.fromObject,
-      startedAt: GeneralUtils.fromISO8601DateTime,
-      appUrls: SessionUrls.fromObject,
-      apiUrls: SessionUrls.fromObject,
-      stepsInfo: steps => Array.from(steps)
-        .map(step => StepInfo.fromObject(step)),
-    });
+  constructor({ id, name, secretToken, status, appName, batchName, batchId, branchName, hostOS, hostApp,
+    hostDisplaySize, startedAt, duration, isNew, isSaved, isDifferent, isAborted, appUrls, apiUrls, stepsInfo, steps,
+    matches, mismatches, missing, exactMatches, strictMatches, contentMatches, layoutMatches, noneMatches, url } = {}) {
+    if (hostDisplaySize && !(hostDisplaySize instanceof RectangleSize)) {
+      hostDisplaySize = new RectangleSize(hostDisplaySize);
+    }
+
+    if (appUrls && !(appUrls instanceof SessionUrls)) {
+      appUrls = new SessionUrls(appUrls);
+    }
+
+    if (apiUrls && !(apiUrls instanceof SessionUrls)) {
+      apiUrls = new SessionUrls(apiUrls);
+    }
+
+    if (startedAt && !(startedAt instanceof Date)) {
+      startedAt = GeneralUtils.fromISO8601DateTime(startedAt);
+    }
+
+    if (stepsInfo && stepsInfo.length > 0 && !(stepsInfo[0] instanceof StepInfo)) {
+      stepsInfo = stepsInfo.map(step => new StepInfo(step));
+    }
+
+    this._id = id;
+    this._name = name;
+    this._secretToken = secretToken;
+    // this._id = undefined;
+    this._status = status;
+    this._appName = appName;
+    this._batchName = batchName;
+    this._batchId = batchId;
+    this._branchName = branchName;
+    this._hostOS = hostOS;
+    this._hostApp = hostApp;
+    this._hostDisplaySize = hostDisplaySize;
+    this._startedAt = startedAt;
+    this._duration = duration;
+    this._isNew = isNew;
+    this._isSaved = isSaved;
+    this._isDifferent = isDifferent;
+    this._isAborted = isAborted;
+    // this._defaultMatchSettings = undefined;
+    this._appUrls = appUrls;
+    this._apiUrls = apiUrls;
+    this._stepsInfo = stepsInfo;
+    this._steps = steps;
+    this._matches = matches;
+    this._mismatches = mismatches;
+    this._missing = missing;
+    this._exactMatches = exactMatches;
+    this._strictMatches = strictMatches;
+    this._contentMatches = contentMatches;
+    this._layoutMatches = layoutMatches;
+    this._noneMatches = noneMatches;
+    this._url = url;
+
+    this._serverConnector = null;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
+  getId() {
+    return this._id;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setId(value) {
+    this._id = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
   getName() {
     return this._name;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setName(value) {
     this._name = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getSecretToken() {
     return this._secretToken;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setSecretToken(value) {
     this._secretToken = value;
   }
@@ -37902,73 +37457,73 @@ class TestResults {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getAppName() {
     return this._appName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setAppName(value) {
     this._appName = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBatchName() {
     return this._batchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBatchName(value) {
     this._batchName = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBatchId() {
     return this._batchId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBatchId(value) {
     this._batchId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBranchName() {
     return this._branchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBranchName(value) {
     this._branchName = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getHostOS() {
     return this._hostOS;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setHostOS(value) {
     this._hostOS = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getHostApp() {
     return this._hostApp;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setHostApp(value) {
     this._hostApp = value;
   }
@@ -37998,46 +37553,56 @@ class TestResults {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {int} */
+  /** @return {number} */
   getDuration() {
     return this._duration;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {int} value */
+  /** @param {number} value */
   setDuration(value) {
     this._duration = value;
   }
 
-  /** @return {Boolean} Whether or not this is a new test. */
+  /** @return {boolean} Whether or not this is a new test. */
   getIsNew() {
     return this._isNew;
   }
 
-  /** @param {Boolean} value Whether or not this test has an existing baseline. */
+  /** @param {boolean} value Whether or not this test has an existing baseline. */
   setIsNew(value) {
     this._isNew = value;
   }
 
-  /** @return {Boolean} */
+  /** @return {boolean} Whether or not test was automatically saved as a baseline. */
+  getIsSaved() {
+    return this._isSaved;
+  }
+
+  /** @param {boolean} value Whether or not test was automatically saved as a baseline. */
+  setIsSaved(value) {
+    this._isSaved = value;
+  }
+
+  /** @return {boolean} */
   getIsDifferent() {
     return this._isDifferent;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIsDifferent(value) {
     this._isDifferent = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIsAborted() {
     return this._isAborted;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIsAborted(value) {
     this._isAborted = value;
   }
@@ -38079,146 +37644,165 @@ class TestResults {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {int} The total number of test steps. */
+  /** @return {number} The total number of test steps. */
   getSteps() {
     return this._steps;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {int} value The number of visual checkpoints in the test. */
+  /** @param {number} value The number of visual checkpoints in the test. */
   setSteps(value) {
     this._steps = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {int} The total number of test steps that matched the baseline. */
+  /** @return {number} The total number of test steps that matched the baseline. */
   getMatches() {
     return this._matches;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param value {int} The number of visual matches in the test. */
+  /** @param value {number} The number of visual matches in the test. */
   setMatches(value) {
     this._matches = value;
   }
 
-  /** @return {int} The total number of test steps that did not match the baseline. */
+  /** @return {number} The total number of test steps that did not match the baseline. */
   getMismatches() {
     return this._mismatches;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {int} value The number of mismatches in the test. */
+  /** @param {number} value The number of mismatches in the test. */
   setMismatches(value) {
     this._mismatches = value;
   }
 
-  /** @return {int} The total number of baseline test steps that were missing in the test. */
+  /** @return {number} The total number of baseline test steps that were missing in the test. */
   getMissing() {
     return this._missing;
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {int} value The number of visual checkpoints that were available in the baseline but were not found in the
-   *   current test.
+   * @param {number} value The number of visual checkpoints that were available in the baseline but were not found
+   *   in the current test.
    */
   setMissing(value) {
     this._missing = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {int} The total number of test steps that exactly matched the baseline. */
+  /** @return {number} The total number of test steps that exactly matched the baseline. */
   getExactMatches() {
     return this._exactMatches;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {int} value The number of matches performed with match level set to {@link MatchLevel#Exact} */
+  /** @param {number} value The number of matches performed with match level set to {@link MatchLevel#Exact} */
   setExactMatches(value) {
     this._exactMatches = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {int} The total number of test steps that strictly matched the baseline. */
+  /** @return {number} The total number of test steps that strictly matched the baseline. */
   getStrictMatches() {
     return this._strictMatches;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {int} value The number of matches performed with match level set to {@link MatchLevel#Strict} */
+  /** @param {number} value The number of matches performed with match level set to {@link MatchLevel#Strict} */
   setStrictMatches(value) {
     this._strictMatches = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {int} The total number of test steps that matched the baseline by content. */
+  /** @return {number} The total number of test steps that matched the baseline by content. */
   getContentMatches() {
     return this._contentMatches;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {int} value The number of matches performed with match level set to {@link MatchLevel#Content} */
+  /** @param {number} value The number of matches performed with match level set to {@link MatchLevel#Content} */
   setContentMatches(value) {
     this._contentMatches = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {int} The total number of test steps that matched the baseline by layout. */
+  /** @return {number} The total number of test steps that matched the baseline by layout. */
   getLayoutMatches() {
     return this._layoutMatches;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {int} value The number of matches performed with match level set to {@link MatchLevel#Layout} */
+  /** @param {number} value The number of matches performed with match level set to {@link MatchLevel#Layout} */
   setLayoutMatches(value) {
     this._layoutMatches = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {int} The total number of test steps that matched the baseline without performing any comparison. */
+  /** @return {number} The total number of test steps that matched the baseline without performing any comparison. */
   getNoneMatches() {
     return this._noneMatches;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {int} value The number of matches performed with match level set to {@link MatchLevel#None} */
+  /** @param {number} value The number of matches performed with match level set to {@link MatchLevel#None} */
   setNoneMatches(value) {
     this._noneMatches = value;
   }
 
-  /** @return {String} The URL where test results can be viewed. */
+  /** @return {string} The URL where test results can be viewed. */
   getUrl() {
     return this._url;
   }
 
-  /** @param {String} value The URL of the test results. */
+  /** @param {string} value The URL of the test results. */
   setUrl(value) {
     this._url = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} Whether or not this test passed. */
+  /** @return {boolean} Whether or not this test passed. */
   isPassed() {
     return this._status === TestResultsStatus.Passed;
   }
 
+  /**
+   * @param {ServerConnector} serverConnector
+   */
+  setServerConnector(serverConnector) {
+    this._serverConnector = serverConnector;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {Promise<void>}
+   */
+  async delete() {
+    return this._serverConnector.deleteSession(this);
+  }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
+  }
+
   /** @override */
   toString() {
-    const isNewTestStr = this._isNew ? 'New test' : 'Existing test';
-    return `${isNewTestStr} [steps: ${this._steps}, matches: ${this._matches}, mismatches: ${this._mismatches}, ` +
-      `missing: ${this._missing}] , URL: ${this._url}, status: ${this._status}`;
+    const isNewTestStr = this._isNew ? 'new test' : 'existing test';
+    return `TestResults of ${isNewTestStr} ${GeneralUtils.toString(this, ['_secretToken'])}`;
   }
 }
 
 exports.TestResults = TestResults;
 
-},{"./TestResultsStatus":209,"./geometry/RectangleSize":237,"./utils/GeneralUtils":296}],209:[function(require,module,exports){
+},{"./TestResultsStatus":206,"./geometry/RectangleSize":239,"./utils/GeneralUtils":302}],206:[function(require,module,exports){
 'use strict';
 
 /**
  * @readonly
- * @enum {String}
+ * @enum {string}
  */
 const TestResultsStatus = {
   Passed: 'Passed',
@@ -38229,8 +37813,10 @@ const TestResultsStatus = {
 Object.freeze(TestResultsStatus);
 exports.TestResultsStatus = TestResultsStatus;
 
-},{}],210:[function(require,module,exports){
+},{}],207:[function(require,module,exports){
 'use strict';
+
+/* eslint-disable no-unused-vars */
 
 /**
  * Encapsulates a callback which returns an application output.
@@ -38240,19 +37826,19 @@ exports.TestResultsStatus = TestResultsStatus;
 class AppOutputProvider {
   // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
-   * @abstract
    * @param {Region} region
    * @param {EyesScreenshot} lastScreenshot
-   * @return {Promise.<AppOutputWithScreenshot>}
+   * @param {CheckSettings} checkSettings
+   * @return {Promise<AppOutputWithScreenshot>}
    */
-  getAppOutput(region, lastScreenshot) {
-    throw new TypeError('The method `getAppOutput` from `AppOutputProvider` should be implemented!');
+  getAppOutput(region, lastScreenshot, checkSettings) {
+    throw new TypeError('The method is not implemented!');
   }
 }
 
 exports.AppOutputProvider = AppOutputProvider;
 
-},{}],211:[function(require,module,exports){
+},{}],208:[function(require,module,exports){
 'use strict';
 
 /**
@@ -38286,8 +37872,10 @@ class AppOutputWithScreenshot {
 
 exports.AppOutputWithScreenshot = AppOutputWithScreenshot;
 
-},{}],212:[function(require,module,exports){
+},{}],209:[function(require,module,exports){
 'use strict';
+
+/* eslint-disable no-unused-vars */
 
 const { ArgumentGuard } = require('../ArgumentGuard');
 const { Region } = require('../geometry/Region');
@@ -38302,10 +37890,6 @@ class EyesScreenshot {
    * @param {MutableImage} image
    */
   constructor(image) {
-    if (new.target === EyesScreenshot) {
-      throw new TypeError('Can not construct `EyesScreenshot` instance directly, should be used implementation!');
-    }
-
     ArgumentGuard.notNull(image, 'image');
     this._image = image;
   }
@@ -38323,11 +37907,11 @@ class EyesScreenshot {
    *
    * @abstract
    * @param {Region} region The region for which we should get the sub screenshot.
-   * @param {Boolean} throwIfClipped Throw an EyesException if the region is not fully contained in the screenshot.
-   * @return {Promise.<EyesScreenshot>} A screenshot instance containing the given region.
+   * @param {boolean} throwIfClipped Throw an EyesException if the region is not fully contained in the screenshot.
+   * @return {Promise<EyesScreenshot>} A screenshot instance containing the given region.
    */
   getSubScreenshot(region, throwIfClipped) {
-    throw new TypeError('The method `getSubScreenshot` from `EyesScreenshot` should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
@@ -38341,7 +37925,7 @@ class EyesScreenshot {
    * @return {Location} A new location which is the transformation of {@code location} to the {@code to} type.
    */
   convertLocation(location, from, to) {
-    throw new TypeError('The method `convertLocation` from `EyesScreenshot` should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
@@ -38355,7 +37939,7 @@ class EyesScreenshot {
    * @throws OutOfBoundsError If the location is not inside the frame's region in the screenshot.
    */
   getLocationInScreenshot(location, coordinatesType) {
-    throw new TypeError('The method `getLocationInScreenshot` from `EyesScreenshot` should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
@@ -38367,7 +37951,7 @@ class EyesScreenshot {
    * @return {Region} The intersected region, in {@code resultCoordinatesType} coordinates.
    */
   getIntersectedRegion(region, coordinatesType) {
-    throw new TypeError('The method `getIntersectedRegion` from `EyesScreenshot` should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 
   /**
@@ -38381,7 +37965,7 @@ class EyesScreenshot {
   convertRegionLocation(region, from, to) {
     ArgumentGuard.notNull(region, 'region');
 
-    if (region.isEmpty()) {
+    if (region.isSizeEmpty()) {
       return new Region(region);
     }
 
@@ -38396,25 +37980,30 @@ class EyesScreenshot {
 
 exports.EyesScreenshot = EyesScreenshot;
 
-},{"../ArgumentGuard":196,"../geometry/Region":238}],213:[function(require,module,exports){
+},{"../ArgumentGuard":196,"../geometry/Region":240}],210:[function(require,module,exports){
 'use strict';
+
+/* eslint-disable no-unused-vars */
 
 /**
  * Encapsulates the instantiation of an EyesScreenshot object.
  *
- * @interface
+ * @abstract
  */
 class EyesScreenshotFactory {
+  // noinspection JSMethodCanBeStatic
   /**
    * @param {MutableImage} image
-   * @return {Promise.<EyesScreenshot>}
+   * @return {Promise<EyesScreenshot>}
    */
-  makeScreenshot(image) {}
+  async makeScreenshot(image) {
+    throw new TypeError('The method is not implemented!');
+  }
 }
 
 exports.EyesScreenshotFactory = EyesScreenshotFactory;
 
-},{}],214:[function(require,module,exports){
+},{}],211:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -38434,7 +38023,7 @@ class EyesSimpleScreenshot extends EyesScreenshot {
    * @param {MutableImage} image The screenshot image.
    * @param {Location} [location] The top/left coordinates of the screenshot in context relative coordinates type.
    */
-  constructor(image, location = new Location(0, 0)) {
+  constructor(image, location = Location.ZERO) {
     super(image);
 
     // The screenshot region in coordinates relative to the "entire screen"
@@ -38455,29 +38044,28 @@ class EyesSimpleScreenshot extends EyesScreenshot {
    * Get sub screenshot.
    *
    * @param {Region} region The region for which we should get the sub screenshot.
-   * @param {Boolean} throwIfClipped Throw an EyesException if the region is not fully contained in the screenshot.
+   * @param {boolean} throwIfClipped Throw an EyesException if the region is not fully contained in the screenshot.
    * @return {Promise<EyesScreenshot>} Sub screenshot.
    */
-  getSubScreenshot(region, throwIfClipped) {
+  async getSubScreenshot(region, throwIfClipped) {
     ArgumentGuard.notNull(region, 'region');
 
     // We want to get the sub-screenshot in as-is coordinates type.
     const subScreenshotRegion = this.getIntersectedRegion(region, CoordinatesType.SCREENSHOT_AS_IS);
 
-    if (subScreenshotRegion.isEmpty() || (throwIfClipped && !subScreenshotRegion.getSize().equals(region.getSize()))) {
+    if (subScreenshotRegion.isSizeEmpty() ||
+      (throwIfClipped && !subScreenshotRegion.getSize().equals(region.getSize()))) {
       throw new OutOfBoundsError(`Region [${region}] is out of screenshot bounds [${this._bounds}]`);
     }
 
-    const that = this;
-    return this._image.getImagePart(subScreenshotRegion).then(subScreenshotImage => {
-      // Notice that we need the bounds-relative coordinates as parameter for new sub-screenshot.
-      const relativeSubScreenshotRegion = that.convertRegionLocation(
-        subScreenshotRegion,
-        CoordinatesType.SCREENSHOT_AS_IS,
-        CoordinatesType.CONTEXT_RELATIVE
-      );
-      return new EyesSimpleScreenshot(subScreenshotImage, relativeSubScreenshotRegion.getLocation());
-    });
+    const subScreenshotImage = await this._image.getImagePart(subScreenshotRegion);
+    // Notice that we need the bounds-relative coordinates as parameter for new sub-screenshot.
+    const relativeSubScreenshotRegion = this.convertRegionLocation(
+      subScreenshotRegion,
+      CoordinatesType.SCREENSHOT_AS_IS,
+      CoordinatesType.CONTEXT_RELATIVE
+    );
+    return new EyesSimpleScreenshot(subScreenshotImage, relativeSubScreenshotRegion.getLocation());
   }
 
   /**
@@ -38554,7 +38142,7 @@ class EyesSimpleScreenshot extends EyesScreenshot {
     ArgumentGuard.notNull(region, 'region');
     ArgumentGuard.notNull(resultCoordinatesType, 'coordinatesType');
 
-    if (region.isEmpty()) {
+    if (region.isSizeEmpty()) {
       return new Region(region);
     }
 
@@ -38566,7 +38154,7 @@ class EyesSimpleScreenshot extends EyesScreenshot {
     intersectedRegion.intersect(this._bounds);
 
     // If the intersection is empty we don't want to convert the coordinates.
-    if (region.isEmpty()) {
+    if (region.isSizeEmpty()) {
       return region;
     }
 
@@ -38584,52 +38172,61 @@ class EyesSimpleScreenshot extends EyesScreenshot {
 
 exports.EyesSimpleScreenshot = EyesSimpleScreenshot;
 
-},{"../ArgumentGuard":196,"../errors/CoordinatesTypeConversionError":223,"../errors/OutOfBoundsError":227,"../geometry/CoordinatesType":235,"../geometry/Location":236,"../geometry/RectangleSize":237,"../geometry/Region":238,"./EyesScreenshot":212}],215:[function(require,module,exports){
+},{"../ArgumentGuard":196,"../errors/CoordinatesTypeConversionError":220,"../errors/OutOfBoundsError":224,"../geometry/CoordinatesType":237,"../geometry/Location":238,"../geometry/RectangleSize":239,"../geometry/Region":240,"./EyesScreenshot":209}],212:[function(require,module,exports){
 'use strict';
 
 /**
  * Encapsulates image retrieval.
  *
- * @interface
+ * @abstract
  */
 class ImageProvider {
+  // noinspection JSMethodCanBeStatic
   /**
-   * @return {Promise.<MutableImage>}
+   * @return {Promise<MutableImage>}
    */
-  getImage() {}
+  async getImage() {
+    throw new TypeError('The method is not implemented!');
+  }
 }
 
 exports.ImageProvider = ImageProvider;
 
-},{}],216:[function(require,module,exports){
+},{}],213:[function(require,module,exports){
 'use strict';
+
+/* eslint-disable no-unused-vars */
 
 /**
  * Encapsulates cutting logic.
  *
- * @interface
+ * @abstract
  */
 class CutProvider {
+  // noinspection JSMethodCanBeStatic
   /**
-   * @abstract
    * @param {MutableImage} image The image to cut.
-   * @return {Promise.<MutableImage>} A new cut image.
+   * @return {Promise<MutableImage>} A new cut image.
    */
-  cut(image) {}
+  async cut(image) {
+    throw new TypeError('The method is not implemented!');
+  }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * Get a scaled version of the cut provider.
    *
-   * @abstract
-   * @param {Number} scaleRatio The ratio by which to scale the current cut parameters.
+   * @param {number} scaleRatio The ratio by which to scale the current cut parameters.
    * @return {CutProvider} A new scale cut provider instance.
    */
-  scale(scaleRatio) {}
+  scale(scaleRatio) {
+    throw new TypeError('The method is not implemented!');
+  }
 }
 
 exports.CutProvider = CutProvider;
 
-},{}],217:[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 'use strict';
 
 const { Region } = require('../geometry/Region');
@@ -38637,10 +38234,10 @@ const { CutProvider } = require('./CutProvider');
 
 class FixedCutProvider extends CutProvider {
   /**
-   * @param {Number} header The header to cut in pixels.
-   * @param {Number} footer The footer to cut in pixels.
-   * @param {Number} left The left to cut in pixels.
-   * @param {Number} right The right to cut in pixels.
+   * @param {number} header The header to cut in pixels.
+   * @param {number} footer The footer to cut in pixels.
+   * @param {number} left The left to cut in pixels.
+   * @param {number} right The right to cut in pixels.
    */
   constructor(header, footer, left, right) {
     super();
@@ -38651,51 +38248,32 @@ class FixedCutProvider extends CutProvider {
     this._right = right;
   }
 
-  /**
-   * @param {MutableImage} image The image to cut.
-   * @return {Promise.<MutableImage>} A new cut image.
-   */
-  cut(image) {
-    const that = this;
-    let promise = image.resolve();
-
+  /** @inheritDoc */
+  async cut(image) {
     if (this._header > 0) {
-      promise = promise.then(() => {
-        const region = new Region(0, that._header, image.getWidth(), image.getHeight() - that._header);
-        return image.crop(region);
-      });
+      const region = new Region(0, this._header, image.getWidth(), image.getHeight() - this._header);
+      await image.crop(region);
     }
 
     if (this._footer > 0) {
-      promise = promise.then(() => {
-        const region = new Region(0, 0, image.getWidth(), image.getHeight() - that._footer);
-        return image.crop(region);
-      });
+      const region = new Region(0, 0, image.getWidth(), image.getHeight() - this._footer);
+      await image.crop(region);
     }
 
     if (this._left > 0) {
-      promise = promise.then(() => {
-        const region = new Region(that._left, 0, image.getWidth() - that._left, image.getHeight());
-        return image.crop(region);
-      });
+      const region = new Region(this._left, 0, image.getWidth() - this._left, image.getHeight());
+      await image.crop(region);
     }
 
     if (this._right > 0) {
-      promise = promise.then(() => {
-        const region = new Region(0, 0, image.getWidth() - that._right, image.getHeight());
-        return image.crop(region);
-      });
+      const region = new Region(0, 0, image.getWidth() - this._right, image.getHeight());
+      await image.crop(region);
     }
 
-    return promise;
+    return image;
   }
 
-  /**
-   * Get a scaled version of the cut provider.
-   *
-   * @param {Number} scaleRatio The ratio by which to scale the current cut parameters.
-   * @return {CutProvider} A new scale cut provider instance.
-   */
+  /** @inheritDoc */
   scale(scaleRatio) {
     const scaledHeader = Math.ceil(this._header * scaleRatio);
     const scaledFooter = Math.ceil(this._footer * scaleRatio);
@@ -38708,7 +38286,7 @@ class FixedCutProvider extends CutProvider {
 
 exports.FixedCutProvider = FixedCutProvider;
 
-},{"../geometry/Region":238,"./CutProvider":216}],218:[function(require,module,exports){
+},{"../geometry/Region":240,"./CutProvider":213}],215:[function(require,module,exports){
 'use strict';
 
 const { UnscaledFixedCutProvider } = require('./UnscaledFixedCutProvider');
@@ -38718,17 +38296,15 @@ class NullCutProvider extends UnscaledFixedCutProvider {
     super(0, 0, 0, 0);
   }
 
-  /**
-   * @override
-   */
-  scale(scaleRatio) {
+  /** @inheritDoc */
+  scale(scaleRatio) { // eslint-disable-line no-unused-vars
     return this;
   }
 }
 
 exports.NullCutProvider = NullCutProvider;
 
-},{"./UnscaledFixedCutProvider":219}],219:[function(require,module,exports){
+},{"./UnscaledFixedCutProvider":216}],216:[function(require,module,exports){
 'use strict';
 
 const { Region } = require('../geometry/Region');
@@ -38736,10 +38312,10 @@ const { CutProvider } = require('./CutProvider');
 
 class UnscaledFixedCutProvider extends CutProvider {
   /**
-   * @param {Number} header The header to cut in pixels.
-   * @param {Number} footer The footer to cut in pixels.
-   * @param {Number} left The left to cut in pixels.
-   * @param {Number} right The right to cut in pixels.
+   * @param {number} header The header to cut in pixels.
+   * @param {number} footer The footer to cut in pixels.
+   * @param {number} left The left to cut in pixels.
+   * @param {number} right The right to cut in pixels.
    */
   constructor(header, footer, left, right) {
     super();
@@ -38750,60 +38326,40 @@ class UnscaledFixedCutProvider extends CutProvider {
     this._right = right;
   }
 
-  /**
-   *
-   * @param {MutableImage} image The image to cut.
-   * @return {Promise.<MutableImage>} A new cut image.
-   */
-  cut(image) {
-    const that = this;
-    let promise = image.resolve();
-
+  /** @inheritDoc */
+  async cut(image) {
     if (this._header > 0) {
-      promise = promise.then(() => {
-        const region = new Region(0, that._header, image.getWidth(), image.getHeight() - that._header);
-        return image.crop(region);
-      });
+      const region = new Region(0, this._header, image.getWidth(), image.getHeight() - this._header);
+      await image.crop(region);
     }
 
     if (this._footer > 0) {
-      promise = promise.then(() => {
-        const region = new Region(0, 0, image.getWidth(), image.getHeight() - that._footer);
-        return image.crop(region);
-      });
+      const region = new Region(0, 0, image.getWidth(), image.getHeight() - this._footer);
+      await image.crop(region);
     }
 
     if (this._left > 0) {
-      promise = promise.then(() => {
-        const region = new Region(that._left, 0, image.getWidth() - that._left, image.getHeight());
-        return image.crop(region);
-      });
+      const region = new Region(this._left, 0, image.getWidth() - this._left, image.getHeight());
+      await image.crop(region);
     }
 
     if (this._right > 0) {
-      promise = promise.then(() => {
-        const region = new Region(0, 0, image.getWidth() - that._right, image.getHeight());
-        return image.crop(region);
-      });
+      const region = new Region(0, 0, image.getWidth() - this._right, image.getHeight());
+      await image.crop(region);
     }
 
-    return promise;
+    return image;
   }
 
-  /**
-   * Get a scaled version of the cut provider.
-   *
-   * @param {Number} scaleRatio The ratio by which to scale the current cut parameters.
-   * @return {CutProvider} A new scale cut provider instance.
-   */
-  scale(scaleRatio) {
+  /** @inheritDoc */
+  scale(scaleRatio) { // eslint-disable-line no-unused-vars
     return new UnscaledFixedCutProvider(this._header, this._footer, this._left, this._right);
   }
 }
 
 exports.UnscaledFixedCutProvider = UnscaledFixedCutProvider;
 
-},{"../geometry/Region":238,"./CutProvider":216}],220:[function(require,module,exports){
+},{"../geometry/Region":240,"./CutProvider":213}],217:[function(require,module,exports){
 'use strict';
 
 const DEFAULT_PREFIX = 'screenshot_';
@@ -38820,18 +38376,30 @@ class DebugScreenshotsProvider {
     this._path = null;
   }
 
+  /**
+   * @return {string}
+   */
   getPrefix() {
     return this._prefix;
   }
 
+  /**
+   * @param {string} value
+   */
   setPrefix(value) {
     this._prefix = value || DEFAULT_PREFIX;
   }
 
+  /**
+   * @return {string}
+   */
   getPath() {
     return this._path;
   }
 
+  /**
+   * @param {string} value
+   */
   setPath(value) {
     if (value) {
       this._path = value.endsWith('/') ? value : `${value}/`;
@@ -38840,25 +38408,25 @@ class DebugScreenshotsProvider {
     }
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @abstract
    * @param {MutableImage} image
-   * @param {String} suffix
-   * @return {Promise}
+   * @param {string} suffix
+   * @return {Promise<void>}
    */
-  save(image, suffix) {}
+  save(image, suffix) { // eslint-disable-line no-unused-vars
+    throw new TypeError('The method is not implemented!');
+  }
 }
 
 exports.DebugScreenshotsProvider = DebugScreenshotsProvider;
 
-},{}],221:[function(require,module,exports){
+},{}],218:[function(require,module,exports){
 'use strict';
 
-const dateformat = require('dateformat');
-
+const { GeneralUtils } = require('../utils/GeneralUtils');
 const { DebugScreenshotsProvider } = require('./DebugScreenshotsProvider');
-
-const DATE_FORMAT = 'yyyy_mm_dd_HH_MM_ss_l';
 
 /**
  * A debug screenshot provider for saving screenshots to file.
@@ -38866,26 +38434,18 @@ const DATE_FORMAT = 'yyyy_mm_dd_HH_MM_ss_l';
 class FileDebugScreenshotsProvider extends DebugScreenshotsProvider {
   /**
    * @param {MutableImage} image
-   * @param {String} suffix
-   * @return {Promise}
+   * @param {string} suffix
+   * @return {Promise<void>}
    */
   save(image, suffix) {
-    const filename = `${this._path}${this._prefix}${this.getFormattedTimeStamp()}_${suffix}.png`;
+    const filename = `${this._path}${this._prefix}${GeneralUtils.toLogFileDateTime()}_${suffix}.png`;
     return image.save(filename.replace(' ', '_'));
-  }
-
-  // noinspection JSMethodCanBeStatic
-  /**
-   * @return {Promise}
-   */
-  getFormattedTimeStamp() {
-    return dateformat(new Date(), DATE_FORMAT);
   }
 }
 
 exports.FileDebugScreenshotsProvider = FileDebugScreenshotsProvider;
 
-},{"./DebugScreenshotsProvider":220,"dateformat":328}],222:[function(require,module,exports){
+},{"../utils/GeneralUtils":302,"./DebugScreenshotsProvider":217}],219:[function(require,module,exports){
 'use strict';
 
 const { DebugScreenshotsProvider } = require('./DebugScreenshotsProvider');
@@ -38894,20 +38454,16 @@ const { DebugScreenshotsProvider } = require('./DebugScreenshotsProvider');
  * A mock debug screenshot provider.
  */
 class NullDebugScreenshotProvider extends DebugScreenshotsProvider {
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
-  /**
-   * @param {MutableImage} image
-   * @param {String} suffix
-   * @return {Promise}
-   */
-  save(image, suffix) {
+  // noinspection JSMethodCanBeStatic
+  /** @inheritDoc */
+  async save(image, suffix) { // eslint-disable-line no-unused-vars
     // Do nothing.
   }
 }
 
 exports.NullDebugScreenshotProvider = NullDebugScreenshotProvider;
 
-},{"./DebugScreenshotsProvider":220}],223:[function(require,module,exports){
+},{"./DebugScreenshotsProvider":217}],220:[function(require,module,exports){
 'use strict';
 
 const { EyesError } = require('./EyesError');
@@ -38919,22 +38475,21 @@ class CoordinatesTypeConversionError extends EyesError {
   /**
    * Represents an error trying to convert between two coordinate types.
    *
-   * @param {CoordinatesType|String} from The source coordinates type or message.
+   * @param {CoordinatesType|string} fromOrMsg The source coordinates type or message.
    * @param {CoordinatesType} [to] The target coordinates type.
-   * @param [params...] Other params for Error constructor
    */
-  constructor(from, to, ...params) {
-    if (to) {
-      super(`Cannot convert from '${from}' to '${to}'`, ...params);
+  constructor(fromOrMsg, to) {
+    if (arguments.length === 2) {
+      super(`Cannot convert from '${fromOrMsg}' to '${to}'`);
     } else {
-      super(from, ...params);
+      super(fromOrMsg);
     }
   }
 }
 
 exports.CoordinatesTypeConversionError = CoordinatesTypeConversionError;
 
-},{"./EyesError":225}],224:[function(require,module,exports){
+},{"./EyesError":222}],221:[function(require,module,exports){
 'use strict';
 
 const { TestFailedError } = require('./TestFailedError');
@@ -38948,21 +38503,21 @@ class DiffsFoundError extends TestFailedError {
    * Creates a new DiffsFoundError instance.
    *
    * @param {TestResults} testResults The results of the current test if available, {@code null} otherwise.
-   * @param {String|SessionStartInfo} message The error description
-   * @param [params...] Other params for Error constructor
+   * @param {string|SessionStartInfo} messageOrSession The error description or SessionStartInfo with test details.
    */
-  constructor(testResults, message, ...params) {
-    if (message instanceof SessionStartInfo) {
-      message = `Test '${message.getScenarioIdOrName()}' of '${message.getAppIdOrName()}' detected differences!. See details at: ${testResults.getUrl()}`;
+  constructor(testResults, messageOrSession) {
+    if (messageOrSession instanceof SessionStartInfo) {
+      const testName = `'${messageOrSession.getScenarioIdOrName()}' of '${messageOrSession.getAppIdOrName()}'`;
+      messageOrSession = `Test ${testName} detected differences!. See details at: ${testResults.getUrl()}`;
     }
 
-    super(testResults, message, ...params);
+    super(testResults, messageOrSession);
   }
 }
 
 exports.DiffsFoundError = DiffsFoundError;
 
-},{"../server/SessionStartInfo":290,"./TestFailedError":228}],225:[function(require,module,exports){
+},{"../server/SessionStartInfo":296,"./TestFailedError":225}],222:[function(require,module,exports){
 'use strict';
 
 /**
@@ -38974,10 +38529,13 @@ class EyesError extends Error {
    * @param {Error} [error] Another error to inherit from
    */
   constructor(message, error) {
-    super(message);
+    super();
 
-    /** @override */
+    /** @inheritDoc */
     this.name = this.constructor.name;
+
+    /** @inheritDoc */
+    this.message = message;
 
     if (error instanceof Error) {
       this.message = `${message}: ${error.message}`;
@@ -38990,7 +38548,7 @@ class EyesError extends Error {
 
 exports.EyesError = EyesError;
 
-},{}],226:[function(require,module,exports){
+},{}],223:[function(require,module,exports){
 'use strict';
 
 const { TestFailedError } = require('./TestFailedError');
@@ -39004,21 +38562,21 @@ class NewTestError extends TestFailedError {
    * Creates a new NewTestError instance.
    *
    * @param {TestResults} testResults The results of the current test if available, {@code null} otherwise.
-   * @param {String|SessionStartInfo} message The error description
-   * @param [params...] Other params for Error constructor
+   * @param {string|SessionStartInfo} messageOrSession The error description or SessionStartInfo with test details.
    */
-  constructor(testResults, message, ...params) {
-    if (message instanceof SessionStartInfo) {
-      message = `'${message.getScenarioIdOrName()}' of '${message.getAppIdOrName()}'. Please approve the new baseline at ${testResults.getUrl()}`;
+  constructor(testResults, messageOrSession) {
+    if (messageOrSession instanceof SessionStartInfo) {
+      const testName = `'${messageOrSession.getScenarioIdOrName()}' of '${messageOrSession.getAppIdOrName()}'`;
+      messageOrSession = `${testName}. Please approve the new baseline at ${testResults.getUrl()}`;
     }
 
-    super(testResults, message, ...params);
+    super(testResults, messageOrSession);
   }
 }
 
 exports.NewTestError = NewTestError;
 
-},{"../server/SessionStartInfo":290,"./TestFailedError":228}],227:[function(require,module,exports){
+},{"../server/SessionStartInfo":296,"./TestFailedError":225}],224:[function(require,module,exports){
 'use strict';
 
 const { EyesError } = require('./EyesError');
@@ -39031,7 +38589,7 @@ class OutOfBoundsError extends EyesError {}
 
 exports.OutOfBoundsError = OutOfBoundsError;
 
-},{"./EyesError":225}],228:[function(require,module,exports){
+},{"./EyesError":222}],225:[function(require,module,exports){
 'use strict';
 
 const { EyesError } = require('./EyesError');
@@ -39044,16 +38602,16 @@ class TestFailedError extends EyesError {
   /**
    * Creates a new TestFailedError instance.
    *
-   * @param {TestResults} [testResults] The results of the current test if available, {@code null} otherwise.
-   * @param {String|SessionStartInfo} [message] The error description
-   * @param [params...] Other params for Error constructor
+   * @param {?TestResults} testResults The results of the current test if available, {@code null} otherwise.
+   * @param {string|SessionStartInfo} messageOrSession The error description or SessionStartInfo with test details.
    */
-  constructor(testResults, message, ...params) {
-    if (message instanceof SessionStartInfo) {
-      message = `'${message.getScenarioIdOrName()}' of '${message.getAppIdOrName()}'. See details at ${testResults.getUrl()}`;
+  constructor(testResults, messageOrSession) {
+    if (messageOrSession instanceof SessionStartInfo) {
+      const testName = `'${messageOrSession.getScenarioIdOrName()}' of '${messageOrSession.getAppIdOrName()}'`;
+      messageOrSession = `${testName}. See details at ${testResults.getUrl()}`;
     }
 
-    super(message, ...params);
+    super(messageOrSession);
     this._testResults = testResults;
   }
 
@@ -39069,7 +38627,406 @@ class TestFailedError extends EyesError {
 
 exports.TestFailedError = TestFailedError;
 
-},{"../server/SessionStartInfo":290,"./EyesError":225}],229:[function(require,module,exports){
+},{"../server/SessionStartInfo":296,"./EyesError":222}],226:[function(require,module,exports){
+'use strict';
+
+const axios = require('axios');
+
+const { SessionEventHandler } = require('./SessionEventHandler');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+
+// Constants
+const DEFAULT_CONNECTION_TIMEOUT_MS = 30000;
+const SERVER_SUFFIX = '/applitools/sessions';
+
+class RemoteSessionEventHandler extends SessionEventHandler {
+  constructor(serverUrl, accessKey) {
+    super();
+
+    this._autSessionId = null;
+    this._serverUrl = serverUrl;
+    this._httpOptions = {
+      strictSSL: false,
+      baseUrl: GeneralUtils.urlConcat(serverUrl, SERVER_SUFFIX),
+      json: true,
+      params: { accessKey },
+      timeout: DEFAULT_CONNECTION_TIMEOUT_MS,
+    };
+  }
+
+  /**
+   * @param {number} value
+   */
+  setTimeout(value) {
+    this._httpOptions.timeout = value;
+  }
+
+  /**
+   * @return {number}
+   */
+  getTimeout() {
+    return this._httpOptions.timeout;
+  }
+
+  /**
+   * @param {string} value
+   */
+  setServerUrl(value) {
+    this._serverUrl = value;
+    this._httpOptions.baseUrl = GeneralUtils.urlConcat(value, SERVER_SUFFIX);
+  }
+
+  /**
+   * @return {string}
+   */
+  getServerUrl() {
+    return this._serverUrl;
+  }
+
+  /**
+   * @param {string} value
+   */
+  setAccessKey(value) {
+    this._httpOptions.params.accessKey = value;
+  }
+
+  /**
+   * @return {string}
+   */
+  getAccessKey() {
+    return this._httpOptions.params.accessKey;
+  }
+
+  /** @inheritDoc */
+  initStarted() {
+    const options = Object.create(this._httpOptions);
+    options.uri = this._autSessionId;
+    options.data = { action: 'initStart' };
+    options.method = 'PUT';
+    return axios(options);
+  }
+
+  /** @inheritDoc */
+  initEnded() {
+    const options = Object.create(this._httpOptions);
+    options.uri = this._autSessionId;
+    options.data = { action: 'initEnd' };
+    options.method = 'PUT';
+    return axios(options);
+  }
+
+  /** @inheritDoc */
+  setSizeWillStart(sizeToSet) {
+    const options = Object.create(this._httpOptions);
+    options.uri = this._autSessionId;
+    options.data = { action: 'setSizeStart', size: sizeToSet };
+    options.method = 'PUT';
+    return axios(options);
+  }
+
+  /** @inheritDoc */
+  setSizeEnded() {
+    const options = Object.create(this._httpOptions);
+    options.uri = this._autSessionId;
+    options.data = { action: 'setSizeEnd' };
+    options.method = 'PUT';
+    return axios(options);
+  }
+
+  /** @inheritDoc */
+  testStarted(autSessionId) {
+    this._autSessionId = autSessionId;
+
+    const options = Object.create(this._httpOptions);
+    options.uri = '';
+    options.data = { autSessionId };
+    options.method = 'POST';
+    return axios(options);
+  }
+
+  /** @inheritDoc */
+  testEnded(autSessionId, testResults) {
+    const options = Object.create(this._httpOptions);
+    options.uri = autSessionId;
+    options.data = { action: 'testEnd', testResults };
+    options.method = 'PUT';
+    return axios(options);
+  }
+
+  /** @inheritDoc */
+  validationWillStart(autSessionId, validationInfo) {
+    const options = Object.create(this._httpOptions);
+    options.uri = `${autSessionId}/validations`;
+    options.data = validationInfo.toJSON();
+    options.method = 'POST';
+    return axios(options);
+  }
+
+  /** @inheritDoc */
+  validationEnded(autSessionId, validationId, validationResult) {
+    const options = Object.create(this._httpOptions);
+    options.uri = `${autSessionId}/validations/${validationId}`;
+    options.data = { action: 'validationEnd', asExpected: validationResult.getAsExpected() };
+    options.method = 'PUT';
+    return axios(options);
+  }
+}
+
+exports.RemoteSessionEventHandler = RemoteSessionEventHandler;
+
+},{"../utils/GeneralUtils":302,"./SessionEventHandler":227,"axios":311}],227:[function(require,module,exports){
+'use strict';
+
+/* eslint-disable no-unused-vars */
+
+/**
+ * The base class for session event handler. Specific implementations should use this class as abstract.
+ *
+ * @abstract
+ */
+class SessionEventHandler {
+  /**
+   * Called when the data gathering for creating a session phase had started.
+   * @return {Promise}
+   */
+  initStarted() {}
+
+  /**
+   * Called when the data gathering phase had ended.
+   * @return {Promise}
+   */
+  initEnded() {}
+
+  /**
+   * Called when setting the size of the application window is about to start.
+   *
+   * @param {RectangleSize} sizeToSet an object with 'width' and 'height' properties.
+   * @return {Promise}
+   */
+  setSizeWillStart(sizeToSet) {}
+
+  /**
+   * Called 'set size' operation has ended (either failed/success).
+   * @return {Promise}
+   */
+  setSizeEnded() {}
+
+  /**
+   * Called after a session had started.
+   *
+   * @param {string} autSessionId The AUT session ID.
+   * @return {Promise}
+   */
+  testStarted(autSessionId) {}
+
+  /**
+   * Called after a session had ended.
+   *
+   * @param {string} autSessionId The AUT session ID.
+   * @param {TestResults} testResults The test results.
+   * @return {Promise}
+   */
+  testEnded(autSessionId, testResults) {}
+
+  /**
+   * Called before a new validation will be started.
+   *
+   * @param {string} autSessionId The AUT session ID.
+   * @param {ValidationInfo} validationInfo The validation parameters.
+   * @return {Promise}
+   */
+  validationWillStart(autSessionId, validationInfo) {}
+
+  /**
+   * Called when a validation had ended.
+   *
+   * @param {string} autSessionId The AUT session ID.
+   * @param {string} validationId The ID of the validation which had ended.
+   * @param {ValidationResult} validationResult The validation results.
+   * @return {Promise}
+   */
+  validationEnded(autSessionId, validationId, validationResult) {}
+}
+
+exports.SessionEventHandler = SessionEventHandler;
+
+},{}],228:[function(require,module,exports){
+'use strict';
+
+const { SessionEventHandler } = require('./SessionEventHandler');
+
+class SessionEventHandlers extends SessionEventHandler {
+  constructor() {
+    super();
+
+    /** @type {SessionEventHandler[]} */
+    this._eventHandlers = [];
+  }
+
+  /**
+   * @param {SessionEventHandler} handler
+   */
+  addEventHandler(handler) {
+    if (handler === this) {
+      return;
+    }
+
+    this._eventHandlers.push(handler);
+  }
+
+  /**
+   * @param {SessionEventHandler} handler
+   */
+  removeEventHandler(handler) {
+    if (handler === this) {
+      return;
+    }
+
+    const index = this._eventHandlers.indexOf(handler);
+    this._eventHandlers.splice(index, 1);
+  }
+
+  clearEventHandlers() {
+    this._eventHandlers.length = 0;
+  }
+
+  /** @inheritDoc */
+  initStarted() {
+    return Promise.all(this._eventHandlers.map(eventHandler =>
+      eventHandler.initStarted()));
+  }
+
+  /** @inheritDoc */
+  initEnded() {
+    return Promise.all(this._eventHandlers.map(eventHandler =>
+      eventHandler.initEnded()));
+  }
+
+  /** @inheritDoc */
+  setSizeWillStart(sizeToSet) {
+    return Promise.all(this._eventHandlers.map(eventHandler =>
+      eventHandler.setSizeWillStart(sizeToSet)));
+  }
+
+  /** @inheritDoc */
+  setSizeEnded() {
+    return Promise.all(this._eventHandlers.map(eventHandler =>
+      eventHandler.setSizeEnded()));
+  }
+
+  /** @inheritDoc */
+  testStarted(autSessionId) {
+    return Promise.all(this._eventHandlers.map(eventHandler =>
+      eventHandler.testStarted(autSessionId)));
+  }
+
+  /** @inheritDoc */
+  testEnded(autSessionId, testResults) {
+    return Promise.all(this._eventHandlers.map(eventHandler =>
+      eventHandler.testEnded(autSessionId, testResults)));
+  }
+
+  /** @inheritDoc */
+  validationWillStart(autSessionId, validationInfo) {
+    return Promise.all(this._eventHandlers.map(eventHandler =>
+      eventHandler.validationWillStart(autSessionId, validationInfo)));
+  }
+
+  /** @inheritDoc */
+  validationEnded(autSessionId, validationId, validationResult) {
+    return Promise.all(this._eventHandlers.map(eventHandler =>
+      eventHandler.validationEnded(autSessionId, validationId, validationResult)));
+  }
+}
+
+exports.SessionEventHandlers = SessionEventHandlers;
+
+},{"./SessionEventHandler":227}],229:[function(require,module,exports){
+'use strict';
+
+const { GeneralUtils } = require('./../utils/GeneralUtils');
+
+/**
+ * Encapsulates the information for the validation about to execute.
+ */
+class ValidationInfo {
+  /**
+   * @param {number} [validationId]
+   * @param {string} [tag]
+   */
+  constructor(validationId, tag) {
+    this._validationId = validationId;
+    this._tag = tag;
+  }
+
+  /**
+   * @param {number} value
+   */
+  setValidationId(value) {
+    this._validationId = value;
+  }
+
+  /**
+   * @return {number}
+   */
+  getValidationId() {
+    return this._validationId;
+  }
+
+  /**
+   * @param {string} value
+   */
+  setTag(value) {
+    this._tag = value;
+  }
+
+  /**
+   * @return {string}
+   */
+  getTag() {
+    return this._tag;
+  }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
+  }
+}
+
+exports.ValidationInfo = ValidationInfo;
+
+},{"./../utils/GeneralUtils":302}],230:[function(require,module,exports){
+'use strict';
+
+/**
+ * Encapsulates the information for the validation about to execute.
+ */
+class ValidationResult {
+  /**
+   * @param {boolean} [asExpected]
+   */
+  constructor(asExpected) {
+    this._asExpected = asExpected;
+  }
+
+  /**
+   * @param {boolean} value
+   */
+  setAsExpected(value) {
+    this._asExpected = value;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  getAsExpected() {
+    return this._asExpected;
+  }
+}
+
+exports.ValidationResult = ValidationResult;
+
+},{}],231:[function(require,module,exports){
 'use strict';
 
 const { MatchLevel } = require('../match/MatchLevel');
@@ -39085,18 +39042,68 @@ const { GetFloatingRegion } = require('./GetFloatingRegion');
  */
 class CheckSettings {
   /**
-   * @param {?int} [timeout=-1]
+   * @param {?number} [timeout=-1]
    * @param {Region|RegionObject} [region]
    */
   constructor(timeout = -1, region) {
+    // /** @type {string} */
+    // this._name = undefined;
+    /** @type {boolean} */
+    this._sendDom = undefined;
+    /** @type {MatchLevel} */
     this._matchLevel = undefined;
-    this._ignoreCaret = undefined;
+    /** @type {boolean} */
+    this._ignoreCaret = false;
+    /** @type {boolean} */
     this._stitchContent = false;
     this._timeout = timeout;
     this._targetRegion = region;
 
     this._ignoreRegions = [];
+    this._layoutRegions = [];
+    this._strictRegions = [];
+    this._contentRegions = [];
     this._floatingRegions = [];
+  }
+
+  // TODO: finish implementation withName
+  // // noinspection JSUnusedGlobalSymbols
+  // /**
+  //  * A setter for the checkpoint name.
+  //  *
+  //  * @param {string} name A name by which to identify the checkpoint.
+  //  * @return {CheckSettings} This instance of the settings object.
+  //  */
+  // withName(name) {
+  //   this._name = name;
+  //   return this;
+  // }
+  //
+  // // noinspection JSUnusedGlobalSymbols
+  // /**
+  //  * @return {string}
+  //  */
+  // getName() {
+  //   return this._name;
+  // }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Defines whether to send the document DOM or not.
+   *
+   * @param {boolean} [sendDom=true] When {@code true} sends the DOM to the server (the default).
+   * @return {CheckSettings} This instance of the settings object.
+   */
+  sendDom(sendDom = true) {
+    this._sendDom = sendDom;
+    return this;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  getSendDom() {
+    return this._sendDom;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -39175,7 +39182,7 @@ class CheckSettings {
   }
 
   /**
-   * @return {Boolean}
+   * @return {boolean}
    */
   getIgnoreCaret() {
     return this._ignoreCaret;
@@ -39185,16 +39192,17 @@ class CheckSettings {
   /**
    * Defines that the screenshot will contain the entire element or region, even if it's outside the view.
    *
+   * @param {boolean} [fully=true]
    * @return {CheckSettings} This instance of the settings object.
    */
-  fully() {
-    this._stitchContent = true;
+  fully(fully = true) {
+    this._stitchContent = fully;
     return this;
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {Boolean} [stitchContent=true]
+   * @param {boolean} [stitchContent=true]
    * @return {CheckSettings}
    */
   stitchContent(stitchContent = true) {
@@ -39203,7 +39211,7 @@ class CheckSettings {
   }
 
   /**
-   * @return {Boolean}
+   * @return {boolean}
    */
   getStitchContent() {
     return this._stitchContent;
@@ -39213,7 +39221,7 @@ class CheckSettings {
   /**
    * Defines the timeout to use when acquiring and comparing screenshots.
    *
-   * @param {int} timeoutMilliseconds The timeout to use in milliseconds.
+   * @param {number} timeoutMilliseconds The timeout to use in milliseconds.
    * @return {CheckSettings} This instance of the settings object.
    */
   timeout(timeoutMilliseconds) {
@@ -39222,7 +39230,7 @@ class CheckSettings {
   }
 
   /**
-   * @return {int}
+   * @return {number}
    */
   getTimeout() {
     return this._timeout;
@@ -39247,41 +39255,106 @@ class CheckSettings {
     return this._targetRegion;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  // noinspection JSMethodCanBeStatic
   /**
-   * Adds a region to ignore.
-   *
-   * @param {GetRegion|Region} regionOrContainer The region or region container to ignore when validating the
-   *   screenshot.
-   * @return {CheckSettings} This instance of the settings object.
+   * @protected
+   * @param {GetRegion|Region} region
+   * @return {GetRegion}
    */
-  ignore(regionOrContainer) {
-    if (regionOrContainer instanceof Region) {
-      this._ignoreRegions.push(new IgnoreRegionByRectangle(regionOrContainer));
-    } else if (regionOrContainer instanceof GetRegion) {
-      this._ignoreRegions.push(regionOrContainer);
-    } else {
-      throw new TypeError('ignore method called with argument of unknown type!');
+  _regionToRegionProvider(region) {
+    if (region instanceof Region) {
+      return new IgnoreRegionByRectangle(region);
     }
 
-    return this;
+    if (region instanceof GetRegion) {
+      return region;
+    }
+
+    throw new TypeError('ignore method called with argument of unknown type!');
+  }
+
+  /**
+   * @deprecated use {@link ignoreRegions} instead
+   */
+  ignore(...regions) {
+    return this.ignoreRegions(...regions);
+  }
+
+  /**
+   * @deprecated use {@link ignoreRegions} instead
+   */
+  ignores(...regions) {
+    return this.ignoreRegions(...regions);
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * Adds one or more ignore regions.
    *
-   * @param {GetRegion...|Region...} regionsOrContainers One or more regions or region containers to ignore when
-   *   validating the screenshot.
+   * @param {(GetRegion|Region)...} regions A region to ignore when validating the screenshot.
    * @return {CheckSettings} This instance of the settings object.
    */
-  ignores(...regionsOrContainers) {
-    if (!regionsOrContainers) {
-      throw new TypeError('ignores method called without arguments!');
+  ignoreRegions(...regions) {
+    if (!regions) {
+      throw new TypeError('ignoreRegions method called without arguments!');
     }
 
-    regionsOrContainers.forEach(region => {
-      this.ignore(region);
+    regions.forEach(region => {
+      this._ignoreRegions.push(this._regionToRegionProvider(region));
+    });
+
+    return this;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Adds one or more layout regions.
+   * @param {(GetRegion|Region)...} regions A region to match using the Layout method.
+   * @return {CheckSettings} This instance of the settings object.
+   */
+  layoutRegions(...regions) {
+    if (!regions) {
+      throw new TypeError('layoutRegions method called without arguments!');
+    }
+
+    regions.forEach(region => {
+      this._layoutRegions.push(this._regionToRegionProvider(region));
+    });
+
+    return this;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Adds one or more strict regions.
+   * @param {(GetRegion|Region)...} regions A region to match using the Strict method.
+   * @return {CheckSettings} This instance of the settings object.
+   */
+  strictRegions(...regions) {
+    if (!regions) {
+      throw new TypeError('strictRegions method called without arguments!');
+    }
+
+    regions.forEach(region => {
+      this._strictRegions.push(this._regionToRegionProvider(region));
+    });
+
+    return this;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Adds one or more content regions.
+   * @param {(GetRegion|Region)...} regions A region to match using the Content method.
+   * @return {CheckSettings} This instance of the settings object.
+   */
+  contentRegions(...regions) {
+    if (!regions) {
+      throw new TypeError('contentRegions method called without arguments!');
+    }
+
+    regions.forEach(region => {
+      this._contentRegions.push(this._regionToRegionProvider(region));
     });
 
     return this;
@@ -39294,6 +39367,27 @@ class CheckSettings {
     return this._ignoreRegions;
   }
 
+  /**
+   * @return {GetRegion[]}
+   */
+  getStrictRegions() {
+    return this._strictRegions;
+  }
+
+  /**
+   * @return {GetRegion[]}
+   */
+  getLayoutRegions() {
+    return this._layoutRegions;
+  }
+
+  /**
+   * @return {GetRegion[]}
+   */
+  getContentRegions() {
+    return this._contentRegions;
+  }
+
   // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger
@@ -39301,10 +39395,10 @@ class CheckSettings {
    *
    * @param {GetFloatingRegion|Region|FloatingMatchSettings} regionOrContainer The content rectangle or region
    *   container
-   * @param {int} [maxUpOffset] How much the content can move up.
-   * @param {int} [maxDownOffset] How much the content can move down.
-   * @param {int} [maxLeftOffset] How much the content can move to the left.
-   * @param {int} [maxRightOffset] How much the content can move to the right.
+   * @param {number} [maxUpOffset] How much the content can move up.
+   * @param {number} [maxDownOffset] How much the content can move down.
+   * @param {number} [maxLeftOffset] How much the content can move to the left.
+   * @param {number} [maxRightOffset] How much the content can move to the right.
    * @return {CheckSettings} This instance of the settings object.
    */
   floating(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
@@ -39341,7 +39435,7 @@ class CheckSettings {
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a
    * bigger region.
    *
-   * @param {int} maxOffset How much each of the content rectangles can move in any direction.
+   * @param {number} maxOffset How much each of the content rectangles can move in any direction.
    * @param {Region...} regionsOrContainers One or more content rectangles or region containers
    * @return {CheckSettings} This instance of the settings object.
    */
@@ -39367,7 +39461,7 @@ class CheckSettings {
 
 exports.CheckSettings = CheckSettings;
 
-},{"../geometry/Region":238,"../match/FloatingMatchSettings":249,"../match/MatchLevel":251,"./FloatingRegionByRectangle":231,"./GetFloatingRegion":232,"./GetRegion":233,"./IgnoreRegionByRectangle":234}],230:[function(require,module,exports){
+},{"../geometry/Region":240,"../match/FloatingMatchSettings":251,"../match/MatchLevel":253,"./FloatingRegionByRectangle":233,"./GetFloatingRegion":234,"./GetRegion":235,"./IgnoreRegionByRectangle":236}],232:[function(require,module,exports){
 'use strict';
 
 const { CheckSettings } = require('./CheckSettings');
@@ -39391,7 +39485,7 @@ class CheckTarget {
 
 exports.CheckTarget = CheckTarget;
 
-},{"./CheckSettings":229}],231:[function(require,module,exports){
+},{"./CheckSettings":231}],233:[function(require,module,exports){
 'use strict';
 
 const { GetFloatingRegion } = require('./GetFloatingRegion');
@@ -39400,10 +39494,10 @@ const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 class FloatingRegionByRectangle extends GetFloatingRegion {
   /**
    * @param {Region} rect
-   * @param {int} maxUpOffset
-   * @param {int} maxDownOffset
-   * @param {int} maxLeftOffset
-   * @param {int} maxRightOffset
+   * @param {number} maxUpOffset
+   * @param {number} maxDownOffset
+   * @param {number} maxLeftOffset
+   * @param {number} maxRightOffset
    */
   constructor(rect, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
     super();
@@ -39414,62 +39508,68 @@ class FloatingRegionByRectangle extends GetFloatingRegion {
     this._maxRightOffset = maxRightOffset;
   }
 
-  /**
-   * @override
-   */
-  getRegion(eyesBase, screenshot) {
-    const region = new FloatingMatchSettings(
-      this._rect.getLeft(),
-      this._rect.getTop(),
-      this._rect.getWidth(),
-      this._rect.getHeight(),
-      this._maxUpOffset,
-      this._maxDownOffset,
-      this._maxLeftOffset,
-      this._maxRightOffset
-    );
-
-    return eyesBase.getPromiseFactory().resolve(region);
+  /** @inheritDoc */
+  async getRegion(eyesBase, screenshot) { // eslint-disable-line no-unused-vars
+    return new FloatingMatchSettings({
+      left: this._rect.getLeft(),
+      top: this._rect.getTop(),
+      width: this._rect.getWidth(),
+      height: this._rect.getHeight(),
+      maxUpOffset: this._maxUpOffset,
+      maxDownOffset: this._maxDownOffset,
+      maxLeftOffset: this._maxLeftOffset,
+      maxRightOffset: this._maxRightOffset,
+    });
   }
 }
 
 exports.FloatingRegionByRectangle = FloatingRegionByRectangle;
 
-},{"../match/FloatingMatchSettings":249,"./GetFloatingRegion":232}],232:[function(require,module,exports){
+},{"../match/FloatingMatchSettings":251,"./GetFloatingRegion":234}],234:[function(require,module,exports){
 'use strict';
 
+/* eslint-disable no-unused-vars */
+
 /**
- * @interface
+ * @abstract
  */
 class GetFloatingRegion {
+  // noinspection JSMethodCanBeStatic
   /**
    * @param {EyesBase} eyesBase
    * @param {EyesScreenshot} screenshot
-   * @return {Promise.<FloatingMatchSettings>}
+   * @return {Promise<FloatingMatchSettings>}
    */
-  getRegion(eyesBase, screenshot) {}
+  async getRegion(eyesBase, screenshot) {
+    throw new TypeError('The method is not implemented!');
+  }
 }
 
 exports.GetFloatingRegion = GetFloatingRegion;
 
-},{}],233:[function(require,module,exports){
+},{}],235:[function(require,module,exports){
 'use strict';
 
+/* eslint-disable no-unused-vars */
+
 /**
- * @interface
+ * @abstract
  */
 class GetRegion {
+  // noinspection JSMethodCanBeStatic
   /**
    * @param {EyesBase} eyesBase
    * @param {EyesScreenshot} screenshot
-   * @return {Promise.<Region>}
+   * @return {Promise<Region>}
    */
-  getRegion(eyesBase, screenshot) {}
+  async getRegion(eyesBase, screenshot) {
+    throw new TypeError('The method is not implemented!');
+  }
 }
 
 exports.GetRegion = GetRegion;
 
-},{}],234:[function(require,module,exports){
+},{}],236:[function(require,module,exports){
 'use strict';
 
 const { GetRegion } = require('./GetRegion');
@@ -39483,56 +39583,50 @@ class IgnoreRegionByRectangle extends GetRegion {
     this._region = region;
   }
 
-  /**
-   * @override
-   */
-  getRegion(eyesBase, screenshot) {
-    return eyesBase.getPromiseFactory().resolve(this._region);
+  /** @inheritDoc */
+  async getRegion(eyesBase, screenshot) { // eslint-disable-line no-unused-vars
+    return this._region;
   }
 }
 
 exports.IgnoreRegionByRectangle = IgnoreRegionByRectangle;
 
-},{"./GetRegion":233}],235:[function(require,module,exports){
+},{"./GetRegion":235}],237:[function(require,module,exports){
 'use strict';
 
 /**
  * Encapsulates the type of coordinates used by the region provider.
  *
  * @readonly
- * @enum {Number}
+ * @enum {number}
  */
 const CoordinatesType = {
   /**
    * The coordinates should be used "as is" on the screenshot image. Regardless of the current context.
    */
-  SCREENSHOT_AS_IS: 1,
+  SCREENSHOT_AS_IS: 'SCREENSHOT_AS_IS',
 
   /**
    * The coordinates should be used "as is" within the current context. For example, if we're inside a frame, the
    * coordinates are "as is", but within the current frame's viewport.
    */
-  CONTEXT_AS_IS: 2,
+  CONTEXT_AS_IS: 'CONTEXT_AS_IS',
 
   /**
    * Coordinates are relative to the context. For example, if we are in a context of a frame in a web page, then the
    * coordinates are relative to the  frame. In this case, if we want to crop an image region based on an element's
    * region, we will need to calculate their respective "as is" coordinates.
    */
-  CONTEXT_RELATIVE: 3,
+  CONTEXT_RELATIVE: 'CONTEXT_RELATIVE',
 };
 
 Object.freeze(CoordinatesType);
 exports.CoordinatesType = CoordinatesType;
 
-},{}],236:[function(require,module,exports){
+},{}],238:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
-
-/**
- * @typedef {{x: number, y: number}} LocationObject
- */
 
 /**
  * A location in a two-dimensional plane.
@@ -39541,68 +39635,40 @@ class Location {
   /**
    * Creates a Location instance.
    *
-   * The constructor accept next attributes:
-   * - (x: number, y: number): from `x` and `y` values
-   * - (location: Location): from another instance of Location
-   * - (object: {x: number, y: number}): from object
+   * @signature `new Location(location)`
+   * @signature `new Location(x, y)`
+   * @signature `new Location({x: number, y: number})`
    *
-   * @param {Number|Location|LocationObject} arg1 The X coordinate of this location.
-   * @param {Number} [arg2] The Y coordinate of the location.
+   * @param {Location|{x: number, y: number}|number} varArg Location object or the X coordinate of this location.
+   * @param {number} [optY] The Y coordinate of this location.
    */
-  constructor(arg1, arg2) {
-    const x = arg1;
-    const y = arg2;
-
-    if (arg1 instanceof Object) {
-      if (arg1 instanceof Location) {
-        return Location.fromLocation(arg1);
-      }
-
-      return Location.fromObject(arg1);
+  constructor(varArg, optY) {
+    if (arguments.length === 2) {
+      return new Location({ x: varArg, y: optY });
     }
 
-    ArgumentGuard.isInteger(x, 'x');
-    ArgumentGuard.isInteger(y, 'y');
+    if (varArg instanceof Location) {
+      return new Location({ x: varArg.getX(), y: varArg.getY() });
+    }
 
-    this._x = x;
-    this._y = y;
+    const { x, y } = varArg;
+    ArgumentGuard.isNumber(x, 'x');
+    ArgumentGuard.isNumber(y, 'y');
+
+    // TODO: remove call to Math.ceil
+    this._x = Math.ceil(x);
+    this._y = Math.ceil(y);
   }
 
   /**
-   * Creates a new instance of Location from other Location
-   *
-   * @param {Location} other
-   * @return {Location}
-   */
-  static fromLocation(other) {
-    ArgumentGuard.isValidType(other, Location);
-
-    return new Location(other.getX(), other.getY());
-  }
-
-  /**
-   * Creates a new instance of Location from object
-   *
-   * @param {LocationObject} object
-   * @return {Location}
-   */
-  static fromObject(object) {
-    ArgumentGuard.isValidType(object, Object);
-    ArgumentGuard.hasProperties(object, ['x', 'y'], 'object');
-
-    // noinspection JSSuspiciousNameCombination
-    return new Location(Math.ceil(object.x), Math.ceil(object.y));
-  }
-
-  /**
-   * @return {Number} The X coordinate of this location.
+   * @return {number} The X coordinate of this location.
    */
   getX() {
     return this._x;
   }
 
   /**
-   * @return {Number} The Y coordinate of this location.
+   * @return {number} The Y coordinate of this location.
    */
   getY() {
     return this._y;
@@ -39611,8 +39677,8 @@ class Location {
   /**
    * Indicates whether some other Location is "equal to" this one.
    *
-   * @param {Object|Location} obj The reference object with which to compare.
-   * @return {Boolean} {@code true} if this object is the same as the obj argument; {@code false} otherwise.
+   * @param {object|Location} obj The reference object with which to compare.
+   * @return {boolean} {@code true} if this object is the same as the obj argument; {@code false} otherwise.
    */
   equals(obj) {
     if (typeof obj !== typeof this || !(obj instanceof Location)) {
@@ -39625,12 +39691,21 @@ class Location {
   /**
    * Get a location translated by the specified amount.
    *
-   * @param {Number} dx The amount to offset the x-coordinate.
-   * @param {Number} dy The amount to offset the y-coordinate.
+   * @param {number} dx The amount to offset the x-coordinate.
+   * @param {number} dy The amount to offset the y-coordinate.
    * @return {Location} A location translated by the specified amount.
    */
   offset(dx, dy) {
-    return new Location(this._x + dx, this._y + dy);
+    return new Location({ x: this._x + dx, y: this._y + dy });
+  }
+
+  /**
+   *
+   * @param {Location} other
+   * @return {Location}
+   */
+  offsetNegative(other) {
+    return new Location({ x: this._x - other.getX(), y: this._y - other.getY() });
   }
 
   /**
@@ -39646,21 +39721,16 @@ class Location {
   /**
    * Get a scaled location.
    *
-   * @param {Number} scaleRatio The ratio by which to scale the results.
+   * @param {number} scaleRatio The ratio by which to scale the results.
    * @return {Location} A scaled copy of the current location.
    */
   scale(scaleRatio) {
-    return new Location(Math.ceil(this._x * scaleRatio), Math.ceil(this._y * scaleRatio));
+    return new Location({ x: Math.ceil(this._x * scaleRatio), y: Math.ceil(this._y * scaleRatio) });
   }
 
-  /**
-   * @return {{x: Number, y: Number}}
-   */
+  /** @override */
   toJSON() {
-    return {
-      x: this._x,
-      y: this._y,
-    };
+    return { x: this._x, y: this._y };
   }
 
   /** @override */
@@ -39673,11 +39743,11 @@ class Location {
   }
 }
 
-Location.ZERO = new Location(0, 0);
+Location.ZERO = new Location({ x: 0, y: 0 });
 
 exports.Location = Location;
 
-},{"../ArgumentGuard":196}],237:[function(require,module,exports){
+},{"../ArgumentGuard":196}],239:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -39693,26 +39763,24 @@ class RectangleSize {
   /**
    * Creates a RectangleSize instance.
    *
-   * The constructor accept next attributes:
-   * - (width: number, height: number): from `width` and `height` values
-   * - (size: RectangleSize): from another instance of RectangleSize
-   * - (object: {width: number, height: number}): from object
+   * @signature `new RectangleSize(rectangleSize)`
+   * @signature `new RectangleSize(width, height)`
+   * @signature `new RectangleSize({width: number, height: number})`
    *
-   * @param {Number|RectangleSize|RectangleSizeObject} arg1 The width of the rectangle.
-   * @param {Number} [arg2] The height of the rectangle.
+   * @param {RectangleSize|{width: number, height: number}|number} varArg RectangleSize object or the width of this
+   *   rectangle.
+   * @param {number} [optHeight] The height of the rectangle.
    */
-  constructor(arg1, arg2) {
-    const width = arg1;
-    const height = arg2;
-
-    if (arg1 instanceof Object) {
-      if (arg1 instanceof RectangleSize) {
-        return RectangleSize.fromRectangleSize(arg1);
-      }
-
-      return RectangleSize.fromObject(arg1);
+  constructor(varArg, optHeight) {
+    if (arguments.length === 2) {
+      return new RectangleSize({ width: varArg, height: optHeight });
     }
 
+    if (varArg instanceof RectangleSize) {
+      return new RectangleSize({ width: varArg.getWidth(), height: varArg.getHeight() });
+    }
+
+    const { width, height } = varArg;
     ArgumentGuard.greaterThanOrEqualToZero(width, 'width', true);
     ArgumentGuard.greaterThanOrEqualToZero(height, 'height', true);
 
@@ -39721,34 +39789,9 @@ class RectangleSize {
   }
 
   /**
-   * Creates a new instance of RectangleSize from other RectangleSize
+   * Parses a string into a {@link RectangleSize} instance.
    *
-   * @param {RectangleSize} other
-   * @return {RectangleSize}
-   */
-  static fromRectangleSize(other) {
-    ArgumentGuard.isValidType(other, RectangleSize);
-
-    return new RectangleSize(other.getWidth(), other.getHeight());
-  }
-
-  /**
-   * Creates a new instance of RectangleSize from other RectangleSize
-   *
-   * @param {RectangleSizeObject} object
-   * @return {RectangleSize}
-   */
-  static fromObject(object) {
-    ArgumentGuard.isValidType(object, Object);
-    ArgumentGuard.hasProperties(object, ['width', 'height'], 'object');
-
-    return new RectangleSize(object.width, object.height);
-  }
-
-  /**
-   * Parses a string into a {link RectangleSize} instance.
-   *
-   * @param {String} size A string representing width and height separated by "x".
+   * @param {string} size A string representing width and height separated by "x".
    * @return {RectangleSize} An instance representing the input size.
    */
   static parse(size) {
@@ -39758,18 +39801,23 @@ class RectangleSize {
       throw new Error(`IllegalArgument: Not a valid size string: ${size}`);
     }
 
-    return new RectangleSize(parseInt(parts[0], 10), parseInt(parts[1], 10));
+    return new RectangleSize({ width: parseInt(parts[0], 10), height: parseInt(parts[1], 10) });
+  }
+
+  /** @return {boolean} */
+  isEmpty() {
+    return this.getWidth() === 0 && this.getHeight() === 0;
   }
 
   /**
-   * @return {Number} The rectangle's width.
+   * @return {number} The rectangle's width.
    */
   getWidth() {
     return this._width;
   }
 
   /**
-   * @return {Number} The rectangle's height.
+   * @return {number} The rectangle's height.
    */
   getHeight() {
     return this._height;
@@ -39778,8 +39826,8 @@ class RectangleSize {
   /**
    * Indicates whether some other RectangleSize is "equal to" this one.
    *
-   * @param {Object|RectangleSize} obj The reference object with which to compare.
-   * @return {Boolean} {@code true} if this object is the same as the obj argument; {@code false} otherwise.
+   * @param {object|RectangleSize} obj The reference object with which to compare.
+   * @return {boolean} {@code true} if this object is the same as the obj argument; {@code false} otherwise.
    */
   equals(obj) {
     if (typeof obj !== typeof this || !(obj instanceof RectangleSize)) {
@@ -39792,18 +39840,19 @@ class RectangleSize {
   /**
    * Get a scaled version of the current size.
    *
-   * @param {Number} scaleRatio The ratio by which to scale the results.
+   * @param {number} scaleRatio The ratio by which to scale the results.
    * @return {RectangleSize} A scaled copy of the current size.
    */
   scale(scaleRatio) {
-    return new RectangleSize(Math.ceil(this._width * scaleRatio), Math.ceil(this._height * scaleRatio));
+    return new RectangleSize({
+      width: Math.ceil(this._width * scaleRatio),
+      height: Math.ceil(this._height * scaleRatio),
+    });
   }
 
+  /** @override */
   toJSON() {
-    return {
-      width: this._width,
-      height: this._height,
-    };
+    return { width: this._width, height: this._height };
   }
 
   /** @override */
@@ -39812,9 +39861,11 @@ class RectangleSize {
   }
 }
 
+RectangleSize.EMPTY = new RectangleSize(0, 0);
+
 exports.RectangleSize = RectangleSize;
 
-},{"../ArgumentGuard":196}],238:[function(require,module,exports){
+},{"../ArgumentGuard":196}],240:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -39826,14 +39877,12 @@ const { CoordinatesType } = require('./CoordinatesType');
  * @typedef {{left: number, top: number, width: number, height: number, coordinatesType?: CoordinatesType}} RegionObject
  */
 
-let logger = null;
-
 // noinspection FunctionWithMultipleLoopsJS
 /**
  * @private
  * @param {Region} containerRegion The region to divide into sub-regions.
  * @param {RectangleSize} subRegionSize The maximum size of each sub-region.
- * @return {Array.<Region>} The sub-regions composing the current region. If subRegionSize is equal or greater than
+ * @return {Region[]} The sub-regions composing the current region. If subRegionSize is equal or greater than
  *   the current region, only a single region is returned.
  */
 const getSubRegionsWithFixedSize = (containerRegion, subRegionSize) => {
@@ -39891,7 +39940,7 @@ const getSubRegionsWithFixedSize = (containerRegion, subRegionSize) => {
  * @private
  * @param {Region} containerRegion The region to divide into sub-regions.
  * @param {RectangleSize} maxSubRegionSize The maximum size of each sub-region (some regions might be smaller).
- * @return {Array.<Region>} The sub-regions composing the current region. If maxSubRegionSize is equal or greater than
+ * @return {Region[]} The sub-regions composing the current region. If maxSubRegionSize is equal or greater than
  *   the current region, only a single region is returned.
  */
 const getSubRegionsWithVaryingSize = (containerRegion, maxSubRegionSize) => {
@@ -39937,130 +39986,119 @@ class Region {
   /**
    * Creates a Region instance.
    *
-   * The constructor accept next attributes:
-   * - (left: number, top: number, width: number, height: number, coordinatesType: CoordinatesType): from `left`,
-   * `top`, `width`, `height` and `coordinatesType` values
-   * - (region: Region): from another instance of Region
-   * - (object: {left: number, top: number, width: number, height: number}): from object
-   * - (location: Location, size: RectangleSize, coordinatesType: CoordinatesType): from location and size
+   * @signature `new Region(region)`
+   * @signature `new Region(location, size, ?coordinatesType)`
+   * @signature `new Region(left, top, width, height, ?coordinatesType)`
+   * @signature `new Region({left: number, top: number, width: number, height: number, coordinatesType?: string})`
    *
-   * @param {Number|Region|Location|RegionObject} arg1 The left offset of this region.
-   * @param {Number|RectangleSize} [arg2] The top offset of this region.
-   * @param {Number|CoordinatesType} [arg3] The width of the region.
-   * @param {Number} [arg4] The height of the region.
-   * @param {CoordinatesType} [arg5=SCREENSHOT_AS_IS] The coordinatesType of the region.
+   * @param {Region|Location|RegionObject|number} varArg Region object ir the left offset of this region.
+   * @param {RectangleSize|number} [optTop] The top offset of this region.
+   * @param {CoordinatesType|number} [optWidth] The width of the region.
+   * @param {number} [optHeight] The height of the region.
+   * @param {CoordinatesType} [optCoordinatesType=SCREENSHOT_AS_IS] The coordinatesType of the region.
    */
-  constructor(arg1, arg2, arg3, arg4, arg5) {
-    const left = arg1;
-    const top = arg2;
-    const width = arg3;
-    const height = arg4;
-    const coordinatesType = arg5;
-
-    if (arg1 instanceof Object) {
-      if (arg1 instanceof Region) {
-        return Region.fromRegion(arg1);
-      }
-
-      if (arg1 instanceof Location || arg2 instanceof RectangleSize) {
-        return Region.fromLocationAndSize(arg1, arg2, arg3);
-      }
-
-      return Region.fromObject(arg1);
+  constructor(varArg, optTop, optWidth, optHeight, optCoordinatesType) {
+    if (arguments.length === 2 || arguments.length === 3) {
+      // eslint-disable-next-line max-len
+      return new Region({ left: varArg.getX(), top: varArg.getY(), width: optTop.getWidth(), height: optTop.getHeight(), coordinatesType: optWidth });
     }
 
-    ArgumentGuard.isInteger(left, 'left');
-    ArgumentGuard.isInteger(top, 'top');
+    if (arguments.length === 4 || arguments.length === 5) {
+      // eslint-disable-next-line max-len
+      return new Region({ left: varArg, top: optTop, width: optWidth, height: optHeight, coordinatesType: optCoordinatesType });
+    }
+
+    if (varArg instanceof Region) {
+      // eslint-disable-next-line max-len
+      return new Region({ left: varArg.getLeft(), top: varArg.getTop(), width: varArg.getWidth(), height: varArg.getHeight(), coordinatesType: varArg.getCoordinatesType() });
+    }
+
+    const { left, top, width, height, coordinatesType } = varArg;
+    ArgumentGuard.isNumber(left, 'left');
+    ArgumentGuard.isNumber(top, 'top');
     ArgumentGuard.greaterThanOrEqualToZero(width, 'width', true);
     ArgumentGuard.greaterThanOrEqualToZero(height, 'height', true);
 
-    this._left = left;
-    this._top = top;
+    // TODO: remove call to Math.ceil
+    this._left = Math.ceil(left);
+    this._top = Math.ceil(top);
     this._width = width;
     this._height = height;
     this._coordinatesType = coordinatesType || CoordinatesType.SCREENSHOT_AS_IS;
   }
 
   /**
-   * Creates a new instance of Region from Location and Size
-   *
-   * @param {Location} location A Location instance from which to create the Region
-   * @param {RectangleSize} size A RectangleSize instance from which to create the Region
-   * @param {CoordinatesType} [coordinatesType=SCREENSHOT_AS_IS] The coordinatesType of the region
-   * @return {Region}
-   */
-  static fromLocationAndSize(location, size, coordinatesType = CoordinatesType.SCREENSHOT_AS_IS) {
-    ArgumentGuard.isValidType(location, Location);
-    ArgumentGuard.isValidType(size, RectangleSize);
-
-    return new Region(location.getX(), location.getY(), size.getWidth(), size.getHeight(), coordinatesType);
-  }
-
-  /**
-   * Creates a new instance of Region from other Region
-   *
-   * @param {Region} other
-   * @return {Region}
-   */
-  static fromRegion(other) {
-    ArgumentGuard.isValidType(other, Region);
-
-    return new Region(other.getLeft(), other.getTop(), other.getWidth(), other.getHeight(), other.getCoordinatesType());
-  }
-
-  /**
-   * Creates a new instance of Region from object
-   *
-   * @param {RegionObject} object
-   * @return {Region}
-   */
-  static fromObject(object) {
-    ArgumentGuard.isValidType(object, Object);
-    ArgumentGuard.hasProperties(object, ['left', 'top', 'width', 'height'], 'object');
-
-    // noinspection JSSuspiciousNameCombination
-    return new Region(
-      Math.ceil(object.left),
-      Math.ceil(object.top),
-      object.width,
-      object.height,
-      object.coordinatesType
-    );
-  }
-
-  /**
-   * @param {Logger} newLogger
-   */
-  static initLogger(newLogger) {
-    logger = newLogger;
-  }
-
-  /**
-   * @return {Number} The region's left offset.
+   * @return {number} The region's left offset.
    */
   getLeft() {
     return this._left;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Number} The region's top offset.
+   * @param {number} value
+   */
+  setLeft(value) {
+    this._left = value;
+  }
+
+  /**
+   * @return {number} The region's top offset.
    */
   getTop() {
     return this._top;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Number} The region's width.
+   * @param {number} value
+   */
+  setTop(value) {
+    this._top = value;
+  }
+
+  /**
+   * @return {number} The region's right offset.
+   */
+  getRight() {
+    return this._left + this._width;
+  }
+
+  /**
+   * @return {number} The region's bottom offset.
+   */
+  getBottom() {
+    return this._top + this._height;
+  }
+
+  /**
+   * @return {number} The region's width.
    */
   getWidth() {
     return this._width;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Number} The region's height.
+   * @param {number} value
+   */
+  setWidth(value) {
+    this._width = value;
+  }
+
+  /**
+   * @return {number} The region's height.
    */
   getHeight() {
     return this._height;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {number} value
+   */
+  setHeight(value) {
+    this._height = value;
   }
 
   /**
@@ -40070,11 +40108,19 @@ class Region {
     return this._coordinatesType;
   }
 
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {CoordinatesType} value
+   */
+  setCoordinatesType(value) {
+    this._coordinatesType = value;
+  }
+
   /**
    * @return {Location} The (top,left) position of the current region.
    */
   getLocation() {
-    return new Location(this._left, this._top);
+    return new Location({ x: this._left, y: this._top });
   }
 
   /**
@@ -40092,7 +40138,7 @@ class Region {
    * @return {RectangleSize} The size of the region.
    */
   getSize() {
-    return new RectangleSize(this._width, this._height);
+    return new RectangleSize({ width: this._width, height: this._height });
   }
 
   /**
@@ -40109,8 +40155,8 @@ class Region {
   /**
    * Indicates whether some other Region is "equal to" this one.
    *
-   * @param {Object|Region} obj The reference object with which to compare.
-   * @return {Boolean} {@code true} if this object is the same as the obj argument; {@code false} otherwise.
+   * @param {object|Region} obj The reference object with which to compare.
+   * @return {boolean} {@code true} if this object is the same as the obj argument; {@code false} otherwise.
    */
   equals(obj) {
     if (typeof obj !== typeof this || !(obj instanceof Region)) {
@@ -40127,7 +40173,7 @@ class Region {
   }
 
   /**
-   * @return {Boolean} {@code true} if the region is empty; {@code false} otherwise.
+   * @return {boolean} {@code true} if the region is empty; {@code false} otherwise.
    */
   isEmpty() {
     // noinspection OverlyComplexBooleanExpressionJS
@@ -40140,15 +40186,21 @@ class Region {
   }
 
   /**
+   * @return {boolean} {@code true} if the region's size is 0, false otherwise.
+   */
+  isSizeEmpty() {
+    return this.getWidth() <= 0 || this.getHeight() <= 0;
+  }
+
+  /**
    * Get a Region translated by the specified amount.
    *
-   * @param {Number} dx The amount to offset the x-coordinate.
-   * @param {Number} dy The amount to offset the y-coordinate.
+   * @param {number} dx The amount to offset the x-coordinate.
+   * @param {number} dy The amount to offset the y-coordinate.
    * @return {Region} A region with an offset location.
    */
   offset(dx, dy) {
-    return new Region(this.getLocation()
-      .offset(dx, dy), this.getSize(), this.getCoordinatesType());
+    return new Region(this.getLocation().offset(dx, dy), this.getSize(), this.getCoordinatesType());
   }
 
   /**
@@ -40158,14 +40210,14 @@ class Region {
     const middleX = this._width / 2;
     const middleY = this._height / 2;
 
-    return new Location(middleX, middleY);
+    return new Location({ x: middleX, y: middleY });
   }
 
   /**
    * Get a region which is a scaled version of the current region.
    * IMPORTANT: This also scales the LOCATION(!!) of the region (not just its size).
    *
-   * @param {Number} scaleRatio The ratio by which to scale the results.
+   * @param {number} scaleRatio The ratio by which to scale the results.
    * @return {Region} A new region which is a scaled version of the current region.
    */
   scale(scaleRatio) {
@@ -40180,10 +40232,10 @@ class Region {
    * Returns a list of sub-regions which compose the current region.
    *
    * @param {RectangleSize} subRegionSize The default sub-region size to use.
-   * @param {Boolean} [isFixedSize=false] If {@code false}, then sub-regions might have a size which is smaller then
+   * @param {boolean} [isFixedSize=false] If {@code false}, then sub-regions might have a size which is smaller then
    *   {@code subRegionSize} (thus there will be no overlap of regions). Otherwise, all sub-regions will have the same
    *   size, but sub-regions might overlap.
-   * @return {Array.<Region>} The sub-regions composing the current region. If {@code subRegionSize} is equal or
+   * @return {Region[]} The sub-regions composing the current region. If {@code subRegionSize} is equal or
    *   greater than the current region, only a single region is returned.
    */
   getSubRegions(subRegionSize, isFixedSize = false) {
@@ -40199,7 +40251,7 @@ class Region {
    *
    * @param {Region|Location} locationOrRegion The region or location to check if it is contained within the current
    *   region.
-   * @return {Boolean} True if the region is contained within given object, false otherwise.
+   * @return {boolean} True if the region is contained within given object, false otherwise.
    */
   contains(locationOrRegion) {
     if (locationOrRegion instanceof Location) {
@@ -40210,7 +40262,9 @@ class Region {
         locationOrRegion.getY() >= this._top &&
         locationOrRegion.getY() <= this._top + this._height
       );
-    } else if (locationOrRegion instanceof Region) {
+    }
+
+    if (locationOrRegion instanceof Region) {
       // noinspection OverlyComplexBooleanExpressionJS
       return (
         this._top <= locationOrRegion.getTop() &&
@@ -40219,6 +40273,7 @@ class Region {
         this._left + this._width >= locationOrRegion.getLeft() + locationOrRegion.getWidth()
       );
     }
+
     throw new TypeError('Unsupported type of given object.');
   }
 
@@ -40226,7 +40281,7 @@ class Region {
    * Check if a region is intersected with the current region.
    *
    * @param {Region} other The region to check intersection with.
-   * @return {Boolean} True if the regions are intersected, false otherwise.
+   * @return {boolean} True if the regions are intersected, false otherwise.
    */
   isIntersected(other) {
     const right = this._left + this._width;
@@ -40250,10 +40305,6 @@ class Region {
    * @param {Region} other The region with which to intersect.
    */
   intersect(other) {
-    if (logger) {
-      logger.verbose(`intersecting this region (${this}) with ${other} ...`);
-    }
-
     if (!this.isIntersected(other)) {
       this.makeEmpty();
       return;
@@ -40294,18 +40345,20 @@ class Region {
     this._coordinatesType = Region.EMPTY.getCoordinatesType();
   }
 
+  /** @override */
   toJSON() {
     return {
       left: this._left,
       top: this._top,
       width: this._width,
       height: this._height,
+      coordinatesType: this._coordinatesType,
     };
   }
 
   /** @override */
   toString() {
-    return `(${this._left}, ${this._top}) ${this._width}x${this._height}, ${true._coordinatesType}`;
+    return `(${this._left}, ${this._top}) ${this._width}x${this._height}, ${this._coordinatesType}`;
   }
 }
 
@@ -40313,7 +40366,7 @@ Region.EMPTY = new Region(0, 0, 0, 0);
 
 exports.Region = Region;
 
-},{"../ArgumentGuard":196,"./CoordinatesType":235,"./Location":236,"./RectangleSize":237}],239:[function(require,module,exports){
+},{"../ArgumentGuard":196,"./CoordinatesType":237,"./Location":238,"./RectangleSize":239}],241:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -40326,7 +40379,7 @@ const DEFLATE_BUFFER_RATE = 0.6;
 
 /**
  * @param {Buffer} pixels
- * @param {int} pixelLength
+ * @param {number} pixelLength
  * @return {Buffer}
  */
 const rgbaToAbgrColors = (pixels, pixelLength) => {
@@ -40349,9 +40402,9 @@ const rgbaToAbgrColors = (pixels, pixelLength) => {
  * Computes the width and height of the image data contained in the block at the input column and row.
  *
  * @param {{width: number, height: number}} imageSize The image size in pixels.
- * @param {int} blockSize The block size for which we would like to compute the image data width and height.
- * @param {int} blockColumn The block column index
- * @param {int} blockRow The block row index
+ * @param {number} blockSize The block size for which we would like to compute the image data width and height.
+ * @param {number} blockColumn The block column index
+ * @param {number} blockRow The block row index
  * @return {{width: number, height: number}} The width and height of the image data contained in the block.
  */
 const getActualBlockSize = (imageSize, blockSize, blockColumn, blockRow) => {
@@ -40364,11 +40417,11 @@ const getActualBlockSize = (imageSize, blockSize, blockColumn, blockRow) => {
  * @param {Buffer} sourcePixels
  * @param {Buffer} targetPixels
  * @param {{width: number, height: number}} imageSize
- * @param {int} pixelLength
- * @param {int} blockSize
- * @param {int} blockColumn
- * @param {int} blockRow
- * @param {int} channel
+ * @param {number} pixelLength
+ * @param {number} blockSize
+ * @param {number} blockColumn
+ * @param {number} blockRow
+ * @param {number} channel
  * @return {{isIdentical: boolean, buffer: Buffer}}
  */
 const compareAndCopyBlockChannelData = (
@@ -40423,13 +40476,14 @@ const compareAndCopyBlockChannelData = (
  * Provides image compression based on delta between consecutive images
  */
 class ImageDeltaCompressor {
+  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * Compresses a target image based on a difference from a source image.
    *
    * @param {Image|png.Image} targetData The image we want to compress.
    * @param {Buffer} targetBuffer The image we want to compress in its png buffer representation.
    * @param {Image|png.Image} sourceData The baseline image by which a compression will be performed.
-   * @param {int} [blockSize=10] How many pixels per block.
+   * @param {number} [blockSize=10] How many pixels per block.
    * @return {Buffer} The compression result.
    */
   static compressByRawBlocks(targetData, targetBuffer, sourceData, blockSize = 10) {
@@ -40523,7 +40577,7 @@ class ImageDeltaCompressor {
 exports.ImageDeltaCompressor = ImageDeltaCompressor;
 
 }).call(this,require("buffer").Buffer)
-},{"../utils/StreamUtils":301,"buffer":52,"zlib":49}],240:[function(require,module,exports){
+},{"../utils/StreamUtils":308,"buffer":55,"zlib":52}],242:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -40533,6 +40587,8 @@ const png = require('png-async');
 const { ArgumentGuard } = require('../ArgumentGuard');
 const { ReadableBufferStream, WritableBufferStream } = require('../utils/StreamUtils');
 
+const QUARTER_OF_CIRCLE_DEGREES = 90;
+
 /**
  * Provide means of image manipulations.
  */
@@ -40541,11 +40597,10 @@ class ImageUtils {
    * Processes a PNG buffer - returns it as parsed Image.
    *
    * @param {Buffer} buffer Original image as PNG Buffer
-   * @param {PromiseFactory} promiseFactory
-   * @return {Promise.<png.Image|Image>} Decoded png image with byte buffer
+   * @return {Promise<png.Image|Image>} Decoded png image with byte buffer
    */
-  static parseImage(buffer, promiseFactory) {
-    return promiseFactory.makePromise(resolve => {
+  static parseImage(buffer) {
+    return new Promise(resolve => {
       if (!fs.open) {
         return resolve(buffer);
       }
@@ -40562,11 +40617,10 @@ class ImageUtils {
    * Repacks a parsed Image to a PNG buffer.
    *
    * @param {png.Image|Image} image Parsed image as returned from parseImage
-   * @param {PromiseFactory} promiseFactory
-   * @return {Promise.<Buffer>} PNG buffer which can be written to file or base64 string
+   * @return {Promise<Buffer>} PNG buffer which can be written to file or base64 string
    */
-  static packImage(image, promiseFactory) {
-    return promiseFactory.makePromise(resolve => {
+  static packImage(image) {
+    return new Promise(resolve => {
       if (!fs.open) {
         return resolve(image);
       }
@@ -40574,7 +40628,8 @@ class ImageUtils {
       // Write back to a temp png file
       const imageWritableStream = new WritableBufferStream();
       // noinspection JSUnresolvedFunction
-      return image.pack().pipe(imageWritableStream).on('finish', () => resolve(imageWritableStream.getBuffer()));
+      return image.pack().pipe(imageWritableStream)
+        .on('finish', () => resolve(imageWritableStream.getBuffer()));
     });
   }
 
@@ -40594,13 +40649,12 @@ class ImageUtils {
    * Scaled a parsed image by a given factor.
    *
    * @param {png.Image|Image} image - will be modified
-   * @param {Number} scaleRatio factor to multiply the image dimensions by (lower than 1 for scale down)
-   * @param {PromiseFactory} promiseFactory
-   * @return {Promise}
+   * @param {number} scaleRatio factor to multiply the image dimensions by (lower than 1 for scale down)
+   * @return {Promise<png.Image|Image>}
    */
-  static scaleImage(image, scaleRatio, promiseFactory) {
+  static scaleImage(image, scaleRatio) {
     if (scaleRatio === 1) {
-      return promiseFactory.makePromise(resolve => {
+      return new Promise(resolve => {
         resolve(image);
       });
     }
@@ -40608,20 +40662,19 @@ class ImageUtils {
     const ratio = image.height / image.width;
     const scaledWidth = Math.ceil(image.width * scaleRatio);
     const scaledHeight = Math.ceil(scaledWidth * ratio);
-    return ImageUtils.resizeImage(image, scaledWidth, scaledHeight, promiseFactory);
+    return ImageUtils.resizeImage(image, scaledWidth, scaledHeight);
   }
 
   /**
    * Resize a parsed image by a given dimensions.
    *
    * @param {png.Image|Image} image - will be modified
-   * @param {int} targetWidth The width to resize the image to
-   * @param {int} targetHeight The height to resize the image to
-   * @param {PromiseFactory} promiseFactory
-   * @return {Promise}
+   * @param {number} targetWidth The width to resize the image to
+   * @param {number} targetHeight The height to resize the image to
+   * @return {Promise<png.Image|Image>}
    */
-  static resizeImage(image, targetWidth, targetHeight, promiseFactory) {
-    return promiseFactory.makePromise(resolve => {
+  static resizeImage(image, targetWidth, targetHeight) {
+    return new Promise(resolve => {
       const dst = {
         data: Buffer.alloc(targetWidth * targetHeight * 4),
         width: targetWidth,
@@ -40763,7 +40816,6 @@ class ImageUtils {
   }
 
   static _scaleImageIncrementally(src, dst) {
-    let incrementCount = 0;
     let currentWidth = src.width;
     let currentHeight = src.height;
     const targetWidth = dst.width;
@@ -40820,9 +40872,6 @@ class ImageUtils {
       dst.data = incrementalImage.data;
       dst.width = incrementalImage.width;
       dst.height = incrementalImage.height;
-
-      // Track how many times we go through this cycle to scale the image.
-      incrementCount += 1;
     } while (currentWidth !== targetWidth || currentHeight !== targetHeight);
 
     return dst;
@@ -40833,11 +40882,10 @@ class ImageUtils {
    *
    * @param {png.Image|Image} image
    * @param {Region} region Region to crop
-   * @param {PromiseFactory} promiseFactory
-   * @return {Promise.<png.Image|Image>}
+   * @return {Promise<png.Image|Image>}
    */
-  static cropImage(image, region, promiseFactory) {
-    return promiseFactory.makePromise((resolve, reject) => {
+  static cropImage(image, region) {
+    return new Promise((resolve, reject) => {
       if (!region) {
         return resolve(image);
       }
@@ -40880,41 +40928,40 @@ class ImageUtils {
    * Rotates an image clockwise by a number of degrees rounded to the nearest 90 degrees.
    *
    * @param {png.Image|Image} image A parsed image, the image will be changed
-   * @param {int} degrees The number of degrees to rotate the image by
-   * @param {PromiseFactory} promiseFactory
-   * @return {Promise.<png.Image|Image>}
+   * @param {number} degrees The number of degrees to rotate the image by
+   * @return {Promise<png.Image|Image>}
    */
-  static rotateImage(image, degrees, promiseFactory) {
-    return promiseFactory.makePromise(resolve => {
-      ArgumentGuard.notNull(image, 'image');
-      ArgumentGuard.isInteger(degrees, 'deg');
+  static async rotateImage(image, degrees) {
+    ArgumentGuard.notNull(image, 'image');
+    ArgumentGuard.isInteger(degrees, 'deg');
 
-      let i = Math.round(degrees / 90) % 4;
-      while (i < 0) { i += 4; }
+    let i = Math.round(degrees / QUARTER_OF_CIRCLE_DEGREES) % 4;
+    while (i < 0) {
+      i += 4;
+    }
 
-      while (i > 0) {
-        const dstBuffer = Buffer.alloc(image.data.length);
-        let dstOffset = 0;
-        for (let x = 0; x < image.width; x += 1) {
-          for (let y = image.height - 1; y >= 0; y -= 1) {
-            const srcOffset = ((image.width * y) + x) * 4;
-            const data = image.data.readUInt32BE(srcOffset);
-            dstBuffer.writeUInt32BE(data, dstOffset);
-            dstOffset += 4;
-          }
+    while (i > 0) {
+      const dstBuffer = Buffer.alloc(image.data.length);
+      let dstOffset = 0;
+      for (let x = 0; x < image.width; x += 1) {
+        for (let y = image.height - 1; y >= 0; y -= 1) {
+          const srcOffset = ((image.width * y) + x) * 4;
+          const data = image.data.readUInt32BE(srcOffset);
+          dstBuffer.writeUInt32BE(data, dstOffset);
+          dstOffset += 4;
         }
-
-        image.data = Buffer.from(dstBuffer);
-        const tmp = image.width;
-        // noinspection JSSuspiciousNameCombination
-        image.width = image.height;
-        image.height = tmp;
-
-        i -= 1;
       }
 
-      return resolve(image);
-    });
+      image.data = Buffer.from(dstBuffer);
+      const tmp = image.width;
+      // noinspection JSSuspiciousNameCombination
+      image.width = image.height;
+      image.height = tmp;
+
+      i -= 1;
+    }
+
+    return image;
   }
 
   /**
@@ -40925,7 +40972,6 @@ class ImageUtils {
    * @param {png.Image|Image} srcImage The source image.
    * @param {{x: number, y: number}} srcPosition The pixel from which to start copying.
    * @param {{width: number, height: number}} size The region to be copied.
-   * @return {void}
    */
   static copyPixels(dstImage, dstPosition, srcImage, srcPosition, size) {
     let y, dstY, srcY, x, dstX, srcX, dstIndex, srcIndex;
@@ -40977,12 +41023,11 @@ class ImageUtils {
   /**
    *
    * @param {Buffer} imageBuffer
-   * @param {String} filename
-   * @param {PromiseFactory} promiseFactory
-   * @return {Promise}
+   * @param {string} filename
+   * @return {Promise<void>}
    */
-  static saveImage(imageBuffer, filename, promiseFactory) {
-    return promiseFactory.makePromise((resolve, reject) => {
+  static saveImage(imageBuffer, filename) {
+    return new Promise((resolve, reject) => {
       fs.writeFile(filename, imageBuffer, err => {
         if (err) {
           return reject(err);
@@ -40994,12 +41039,11 @@ class ImageUtils {
 
   /**
    *
-   * @param {String} path
-   * @param {PromiseFactory} promiseFactory
-   * @return {Promise.<Buffer>}
+   * @param {string} path
+   * @return {Promise<Buffer>}
    */
-  static readImage(path, promiseFactory) {
-    return promiseFactory.makePromise((resolve, reject) => {
+  static readImage(path) {
+    return new Promise((resolve, reject) => {
       fs.readFile(path, (err, data) => {
         if (err) {
           return reject(err);
@@ -41013,7 +41057,7 @@ class ImageUtils {
 exports.ImageUtils = ImageUtils;
 
 }).call(this,require("buffer").Buffer)
-},{"../ArgumentGuard":196,"../utils/StreamUtils":301,"buffer":52,"fs":50,"png-async":334}],241:[function(require,module,exports){
+},{"../ArgumentGuard":196,"../utils/StreamUtils":308,"buffer":55,"fs":53,"png-async":344}],243:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -41029,39 +41073,34 @@ const disabled = !fs.open;
 /**
  * Parses the image if possible - meaning dimensions and BMP are extracted and available
  *
- * @param {MutableImage} that The context of the current instance of MutableImage
+ * @param {MutableImage} mutableImage The context of the current instance of MutableImage
+ * @return {Promise<void>}
  */
-const parseImage = that => that._promiseFactory.makePromise(resolve => {
-  if (that._isParsed || disabled) {
-    return resolve();
+async function parseImage(mutableImage) {
+  if (mutableImage._isParsed || disabled) {
+    return;
   }
 
-  return ImageUtils.parseImage(that._imageBuffer, that._promiseFactory).then(imageData => {
-    that._imageBmp = imageData;
-    // noinspection JSUnresolvedVariable
-    that._width = imageData.width;
-    // noinspection JSUnresolvedVariable
-    that._height = imageData.height;
-    that._isParsed = true;
-    resolve();
-  });
-});
+  const imageData = await ImageUtils.parseImage(mutableImage._imageBuffer);
+  mutableImage._imageBmp = imageData;
+  mutableImage._width = imageData.width;
+  mutableImage._height = imageData.height;
+  mutableImage._isParsed = true;
+}
 
 /**
  * Packs the image if possible - meaning the buffer is updated according to the edited BMP
  *
- * @param {MutableImage} that The context of the current instance of MutableImage
+ * @param {MutableImage} mutableImage The context of the current instance of MutableImage
+ * @return {Promise<void>}
  */
-const packImage = that => that._promiseFactory.makePromise(resolve => {
-  if (!that._isParsed || that._imageBuffer || disabled) {
-    return resolve();
+async function packImage(mutableImage) {
+  if (!mutableImage._isParsed || mutableImage._imageBuffer || disabled) {
+    return;
   }
 
-  return ImageUtils.packImage(that._imageBmp, that._promiseFactory).then(buffer => {
-    that._imageBuffer = buffer;
-    resolve();
-  });
-});
+  mutableImage._imageBuffer = await ImageUtils.packImage(mutableImage._imageBmp);
+}
 
 /**
  * Retrieve image size - if image is not parsed, get image size from buffer
@@ -41084,49 +41123,36 @@ const retrieveImageSize = that => {
  */
 class MutableImage {
   /**
-   * @param {Buffer|String} image Encoded bytes of image (buffer or base64 string)
-   * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
+   * @param {Buffer|string} image Encoded bytes of image (buffer or base64 string)
    */
-  constructor(image, promiseFactory) {
-    if (GeneralUtils.isBase64(image)) {
-      return MutableImage.fromBase64(image, promiseFactory);
+  constructor(image) {
+    if (GeneralUtils.isString(image)) {
+      image = Buffer.from(image, 'base64');
     }
 
     /** @type {Buffer} */
     this._imageBuffer = image;
-    /** @type {PromiseFactory} */
-    this._promiseFactory = promiseFactory;
     /** @type {boolean} */
     this._isParsed = false;
     /** @type {png.Image|Image} */
     this._imageBmp = undefined;
-    /** @type {int} */
+    /** @type {number} */
     this._width = 0;
-    /** @type {int} */
+    /** @type {number} */
     this._height = 0;
-    /** @type {int} */
+    /** @type {number} */
     this._top = 0;
-    /** @type {int} */
+    /** @type {number} */
     this._left = 0;
   }
 
   /**
-   * @param {String} str Base64 string of image
-   * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
+   * @param {number} width
+   * @param {number} height
    * @return {MutableImage}
    */
-  static fromBase64(str, promiseFactory) {
-    return new MutableImage(Buffer.from(str, 'base64'), promiseFactory);
-  }
-
-  /**
-   * @param {int} width
-   * @param {int} height
-   * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
-   * @return {MutableImage}
-   */
-  static newImage(width, height, promiseFactory) {
-    const result = new MutableImage(null, promiseFactory);
+  static newImage(width, height) {
+    const result = new MutableImage(null);
     result._isParsed = true;
     result._imageBmp = ImageUtils.createImage(width, height);
     result._width = width;
@@ -41139,10 +41165,10 @@ class MutableImage {
    * Coordinates represent the image's position in a larger context (if any).
    * E.g., A screenshot of the browser's viewport of a web page.
    *
-   * @return {Promise.<Location>} The coordinates of the image in the larger context (if any)
+   * @return {Location} The coordinates of the image in the larger context (if any)
    */
   getCoordinates() {
-    return this._promiseFactory.resolve(new Location(this._left, this._top));
+    return new Location({ x: this._left, y: this._top });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -41151,12 +41177,10 @@ class MutableImage {
    * E.g., A screenshot of the browser's viewport of a web page.
    *
    * @param {Location} coordinates
-   * @return {Promise}
    */
   setCoordinates(coordinates) {
     this._left = coordinates.getX();
     this._top = coordinates.getY();
-    return this._promiseFactory.resolve();
   }
 
   /**
@@ -41166,11 +41190,11 @@ class MutableImage {
    */
   getSize() {
     retrieveImageSize(this);
-    return new RectangleSize(this._width, this._height);
+    return new RectangleSize({ width: this._width, height: this._height });
   }
 
   /**
-   * @return {Number}
+   * @return {number}
    */
   getWidth() {
     retrieveImageSize(this);
@@ -41178,7 +41202,7 @@ class MutableImage {
   }
 
   /**
-   * @return {Number}
+   * @return {number}
    */
   getHeight() {
     retrieveImageSize(this);
@@ -41189,63 +41213,59 @@ class MutableImage {
   /**
    * Return the image as buffer and image width and height.
    *
-   * @return {Promise.<{imageBuffer: Buffer, width: number, height: number}>}
+   * @return {Promise<{imageBuffer: Buffer, width: number, height: number}>}
    */
-  asObject() {
-    const that = this;
-    return packImage(that)
-      .then(() => retrieveImageSize(that))
-      .then(() => ({
-        imageBuffer: that._imageBuffer,
-        width: that._width,
-        height: that._height,
-      }));
+  async asObject() {
+    await packImage(this);
+    retrieveImageSize(this);
+
+    return {
+      imageBuffer: this._imageBuffer,
+      width: this._width,
+      height: this._height,
+    };
   }
 
   /**
    * Scales the image in place (used to downsize by 2 for retina display chrome bug - and tested accordingly).
    *
-   * @param {Number} scaleRatio
-   * @return {Promise.<MutableImage>}
+   * @param {number} scaleRatio
+   * @return {Promise<MutableImage>}
    */
-  scale(scaleRatio) {
+  async scale(scaleRatio) {
     if (scaleRatio === 1) {
-      return this._promiseFactory.resolve(this);
+      return this;
     }
 
-    const that = this;
-    return parseImage(that).then(() => {
-      if (that._isParsed) {
-        return ImageUtils.scaleImage(that._imageBmp, scaleRatio, that._promiseFactory).then(() => {
-          that._imageBuffer = null;
-          that._width = that._imageBmp.width;
-          that._height = that._imageBmp.height;
-          return that;
-        });
-      }
-      return that;
-    });
+    await parseImage(this);
+
+    if (this._isParsed) {
+      await ImageUtils.scaleImage(this._imageBmp, scaleRatio);
+      this._imageBuffer = null;
+      this._width = this._imageBmp.width;
+      this._height = this._imageBmp.height;
+    }
+
+    return this;
   }
 
   /**
    * Crops the image according to the given region.
    *
    * @param {Region} region
-   * @return {Promise.<MutableImage>}
+   * @return {Promise<MutableImage>}
    */
-  crop(region) {
-    const that = this;
-    return parseImage(that).then(() => {
-      if (that._isParsed) {
-        return ImageUtils.cropImage(that._imageBmp, region, that._promiseFactory).then(() => {
-          that._imageBuffer = null;
-          that._width = that._imageBmp.width;
-          that._height = that._imageBmp.height;
-          return that;
-        });
-      }
-      return that;
-    });
+  async crop(region) {
+    await parseImage(this);
+
+    if (this._isParsed) {
+      await ImageUtils.cropImage(this._imageBmp, region);
+      this._imageBuffer = null;
+      this._width = this._imageBmp.width;
+      this._height = this._imageBmp.height;
+    }
+
+    return this;
   }
 
   /**
@@ -41253,122 +41273,107 @@ class MutableImage {
    * !WARNING this method copy image and crop it. Use image.crop() when it is possible
    *
    * @param {Region} region
-   * @return {Promise.<MutableImage>}
+   * @return {Promise<MutableImage>}
    */
-  getImagePart(region) {
-    const that = this;
-    return packImage(that).then(() => {
-      const newImage = new MutableImage(Buffer.from(that._imageBuffer), that._promiseFactory);
-      return newImage.crop(region);
-    });
+  async getImagePart(region) {
+    await packImage(this);
+    const newImage = new MutableImage(Buffer.from(this._imageBuffer));
+    return newImage.crop(region);
   }
 
   /**
    * Rotates an image clockwise by a number of degrees rounded to the nearest 90 degrees.
    *
-   * @param {Number} degrees The number of degrees to rotate the image by
-   * @return {Promise.<MutableImage>}
+   * @param {number} degrees The number of degrees to rotate the image by
+   * @return {Promise<MutableImage>}
    */
-  rotate(degrees) {
-    const that = this;
+  async rotate(degrees) {
     // noinspection MagicNumberJS
     if (degrees % 360 === 0) {
-      return that._promiseFactory.resolve(that);
+      return this;
     }
 
-    return parseImage(that).then(() => {
-      if (that._isParsed) {
-        // If the region's coordinates are relative to the image, we convert them to absolute coordinates.
-        return ImageUtils.rotateImage(that._imageBmp, degrees, that._promiseFactory).then(() => {
-          that._imageBuffer = null;
-          that._width = that._imageBmp.width;
-          that._height = that._imageBmp.height;
-          return that;
-        });
-      }
-      return that;
-    });
+    await parseImage(this);
+
+    if (this._isParsed) {
+      // If the region's coordinates are relative to the image, we convert them to absolute coordinates.
+      await ImageUtils.rotateImage(this._imageBmp, degrees);
+      this._imageBuffer = null;
+      this._width = this._imageBmp.width;
+      this._height = this._imageBmp.height;
+    }
+
+    return this;
   }
 
   /**
-   * @param {int} dx
-   * @param {int} dy
+   * @param {number} dx
+   * @param {number} dy
    * @param {MutableImage} srcImage
-   * @return {Promise}
+   * @return {Promise<void>}
    */
-  copyRasterData(dx, dy, srcImage) {
-    const that = this;
-    return parseImage(that)
-      .then(() => srcImage.getImageData())
-      .then(srcImageBmp => {
-        let width = srcImage.getWidth();
-        let height = srcImage.getHeight();
-        const maxWidth = that.getWidth() - dx;
-        const maxHeight = that.getHeight() - dy;
+  async copyRasterData(dx, dy, srcImage) {
+    await parseImage(this);
 
-        if (maxWidth < width) {
-          width = maxWidth;
-        }
+    const srcImageBmp = await srcImage.getImageData();
+    let width = srcImage.getWidth();
+    let height = srcImage.getHeight();
+    const maxWidth = this.getWidth() - dx;
+    const maxHeight = this.getHeight() - dy;
 
-        if (maxHeight < height) {
-          height = maxHeight;
-        }
+    if (maxWidth < width) {
+      width = maxWidth;
+    }
 
-        ImageUtils.copyPixels(that._imageBmp, { x: dx, y: dy }, srcImageBmp, { x: 0, y: 0 }, { width, height });
-      });
+    if (maxHeight < height) {
+      height = maxHeight;
+    }
+
+    ImageUtils.copyPixels(this._imageBmp, { x: dx, y: dy }, srcImageBmp, { x: 0, y: 0 }, { width, height });
   }
 
   /**
    * Write image to local directory
    *
-   * @param {String} filename
-   * @return {Promise}
+   * @param {string} filename
+   * @return {Promise<void>}
    */
-  save(filename) {
-    const that = this;
-    return that.getImageBuffer()
-      .then(imageBuffer => ImageUtils.saveImage(imageBuffer, filename, that._promiseFactory));
+  async save(filename) {
+    const imageBuffer = await this.getImageBuffer();
+    await ImageUtils.saveImage(imageBuffer, filename);
   }
 
   /**
-   * @return {?Promise.<Buffer>}
+   * @return {?Promise<Buffer>}
    */
-  getImageBuffer() {
-    const that = this;
-    return packImage(that).then(() => that._imageBuffer);
+  async getImageBuffer() {
+    await packImage(this);
+    return this._imageBuffer;
   }
 
   /**
-   * @return {?Promise.<Buffer>}
+   * @return {?Promise<string>}
    */
-  getImageBase64() {
-    const that = this;
-    return packImage(that).then(() => that._imageBuffer.toString('base64'));
+  async getImageBase64() {
+    await packImage(this);
+    return this._imageBuffer.toString('base64');
   }
 
   /**
-   * @return {?Promise.<png.Image|Image>}
+   * @return {?Promise<png.Image|Image>}
    */
-  getImageData() {
-    const that = this;
-    return parseImage(that).then(() => that._imageBmp);
-  }
-
-  /**
-   * @return {Promise.<MutableImage>}
-   */
-  resolve() {
-    return this._promiseFactory.resolve(this);
+  async getImageData() {
+    await parseImage(this);
+    return this._imageBmp;
   }
 }
 
 exports.MutableImage = MutableImage;
 
 }).call(this,require("buffer").Buffer)
-},{"../geometry/Location":236,"../geometry/RectangleSize":237,"../utils/GeneralUtils":296,"./ImageUtils":240,"buffer":52,"fs":50}],242:[function(require,module,exports){
+},{"../geometry/Location":238,"../geometry/RectangleSize":239,"../utils/GeneralUtils":302,"./ImageUtils":242,"buffer":55,"fs":53}],244:[function(require,module,exports){
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
 const { LogHandler } = require('./LogHandler');
 
 /**
@@ -41376,7 +41381,7 @@ const { LogHandler } = require('./LogHandler');
  */
 class ConsoleLogHandler extends LogHandler {
   /**
-   * @param {Boolean} isVerbose Whether to handle or ignore verbose log messages.
+   * @param {boolean} isVerbose Whether to handle or ignore verbose log messages.
    */
   constructor(isVerbose) {
     super();
@@ -41392,40 +41397,49 @@ class ConsoleLogHandler extends LogHandler {
   /**
    * Handle a message to be logged.
    *
-   * @param {Boolean} verbose - is the message verbose
-   * @param {String} logString
+   * @param {boolean} verbose - is the message verbose
+   * @param {string} logString
    */
   onMessage(verbose, logString) {
     if (!verbose || this._isVerbose) {
-      console.log(`${GeneralUtils.toISO8601DateTime()} Eyes: ${logString}`);
+      console.log(this.formatMessage(logString)); // eslint-disable-line
     }
   }
 }
 
 exports.ConsoleLogHandler = ConsoleLogHandler;
 
-},{"../utils/GeneralUtils":296,"./LogHandler":244}],243:[function(require,module,exports){
+},{"./LogHandler":246}],245:[function(require,module,exports){
 'use strict';
 
 const path = require('path');
 const fs = require('fs');
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
 const { LogHandler } = require('./LogHandler');
+
+/**
+ * @param {string} filename
+ */
+function ensureDirectoryExistence(filename) {
+  const dirname = path.dirname(filename);
+  if (!fs.existsSync(dirname)) {
+    ensureDirectoryExistence(dirname);
+    fs.mkdirSync(dirname);
+  }
+}
 
 /**
  * Write log massages to the browser/node console
  */
 class FileLogHandler extends LogHandler {
   /**
-   * @param {Boolean} isVerbose Whether to handle or ignore verbose log messages.
-   * @param {String} [filename] The file in which to save the logs.
+   * @param {boolean} isVerbose Whether to handle or ignore verbose log messages.
+   * @param {string} [filename] The file in which to save the logs.
    * @param {boolean} [append=true] Whether to append the logs to existing file, or to overwrite the existing file.
    */
   constructor(isVerbose, filename = 'eyes.log', append = true) {
     super();
 
-    // this._append = append;
     this._filename = filename;
     this._append = append;
     this.setIsVerbose(isVerbose);
@@ -41443,6 +41457,7 @@ class FileLogHandler extends LogHandler {
       encoding: 'utf8',
     };
 
+    ensureDirectoryExistence(file);
     this._writer = fs.createWriteStream(file, opts);
   }
 
@@ -41460,20 +41475,22 @@ class FileLogHandler extends LogHandler {
   /**
    * Handle a message to be logged.
    *
-   * @param {Boolean} verbose Whether this message is flagged as verbose or not.
-   * @param {String} logString The string to log.
+   * @param {boolean} verbose Whether this message is flagged as verbose or not.
+   * @param {string} logString The string to log.
    */
   onMessage(verbose, logString) {
     if (this._writer && (!verbose || this._isVerbose)) {
-      this._writer.write(`${GeneralUtils.toISO8601DateTime()} Eyes: ${logString}\n`);
+      this._writer.write(`${this.formatMessage(logString)}\n`);
     }
   }
 }
 
 exports.FileLogHandler = FileLogHandler;
 
-},{"../utils/GeneralUtils":296,"./LogHandler":244,"fs":50,"path":131}],244:[function(require,module,exports){
+},{"./LogHandler":246,"fs":53,"path":131}],246:[function(require,module,exports){
 'use strict';
+
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 /**
  * Handles log messages produces by the Eyes API.
@@ -41483,13 +41500,15 @@ exports.FileLogHandler = FileLogHandler;
 class LogHandler {
   constructor() {
     this._isVerbose = false;
+    this._isPrintSessionId = false;
+    this._sessionId = null;
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * Whether to handle or ignore verbose log messages.
    *
-   * @param {Boolean} isVerbose
+   * @param {boolean} isVerbose
    */
   setIsVerbose(isVerbose) {
     // noinspection PointlessBooleanExpressionJS
@@ -41500,10 +41519,56 @@ class LogHandler {
   /**
    * Whether to handle or ignore verbose log messages.
    *
-   * @return {Boolean} isVerbose
+   * @return {boolean} isVerbose
    */
   getIsVerbose() {
     return this._isVerbose;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * If set to {@code true} then log output include session id, useful in multi-thread environment
+   *
+   * @param {boolean} [isPrintSessionId=false]
+   */
+  setPrintSessionId(isPrintSessionId) {
+    this._isPrintSessionId = isPrintSessionId || false;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {boolean}
+   */
+  getIsPrintSessionId() {
+    return this._isPrintSessionId;
+  }
+
+  /**
+   * @param {string} sessionId
+   */
+  setSessionId(sessionId) {
+    this._sessionId = sessionId;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string}
+   */
+  getSessionId() {
+    return this._sessionId;
+  }
+
+  /**
+   * @protected
+   * @param {string} logString
+   */
+  formatMessage(logString) {
+    let eyes = 'Eyes:';
+    if (this._isPrintSessionId) {
+      eyes = `Eyes[${this._sessionId}]:`;
+    }
+
+    return `${GeneralUtils.toISO8601DateTime()} ${eyes} ${logString}`;
   }
 
   /**
@@ -41518,18 +41583,17 @@ class LogHandler {
 
   /**
    * @abstract
-   * @param {Boolean} verbose
-   * @param {String} logString
+   * @param {boolean} verbose
+   * @param {string} logString
    */
-  onMessage(verbose, logString) {}
+  onMessage(verbose, logString) {} // eslint-disable-line no-unused-vars
 }
 
 exports.LogHandler = LogHandler;
 
-},{}],245:[function(require,module,exports){
+},{"../utils/GeneralUtils":302}],247:[function(require,module,exports){
 'use strict';
 
-const { ArgumentGuard } = require('../ArgumentGuard');
 const { GeneralUtils } = require('../utils/GeneralUtils');
 const { NullLogHandler } = require('./NullLogHandler');
 
@@ -41539,6 +41603,14 @@ const { NullLogHandler } = require('./NullLogHandler');
 class Logger {
   constructor() {
     this._logHandler = new NullLogHandler(); // Default.
+    this._sessionId = '';
+  }
+
+  /**
+   * @param {string} sessionId
+   */
+  setSessionId(sessionId) {
+    this._sessionId = sessionId;
   }
 
   /**
@@ -41549,13 +41621,11 @@ class Logger {
   }
 
   /**
-   * @param {Object} handler The log handler to set. If you want a log handler which does nothing, use
+   * @param {LogHandler} [handler] The log handler to set. If you want a log handler which does nothing, use
    *   {@link NullLogHandler}.
    */
   setLogHandler(handler) {
-    ArgumentGuard.notNull(handler, 'handler');
-
-    this._logHandler = handler;
+    this._logHandler = handler || new NullLogHandler();
   }
 
   /**
@@ -41564,7 +41634,7 @@ class Logger {
    * @param {*} args
    */
   verbose(...args) {
-    this._logHandler.onMessage(true, this._getPrefix() + GeneralUtils.stringify(...args));
+    this._logHandler.onMessage(true, `[VERBOSE] ${this._getPrefix()}${GeneralUtils.stringify(...args)}`);
   }
 
   /**
@@ -41573,21 +41643,28 @@ class Logger {
    * @param {*} args
    */
   log(...args) {
-    this._logHandler.onMessage(false, this._getPrefix() + GeneralUtils.stringify(...args));
+    this._logHandler.onMessage(false, `[LOG    ] ${this._getPrefix()}${GeneralUtils.stringify(...args)}`);
   }
 
   // noinspection JSMethodCanBeStatic
   /**
    * @private
-   * @return {String} The name of the method which called the logger, if possible, or an empty string.
+   * @return {string} The name of the method which called the logger, if possible, or an empty string.
    */
   _getPrefix() {
     const trace = GeneralUtils.getStackTrace();
 
-    let prefix = '';
-    // getStackTrace()<-getPrefix()<-log()/verbose()<-"actual caller"
-    if (trace && trace.length >= 2 && trace[2].getMethodName()) {
-      prefix = `${trace[2].getMethodName()}():`;
+    let prefix = `{${this._sessionId}} `;
+    // getStackTrace() <- _getPrefix() <- log()/verbose() <- "actual caller"
+    if (trace && trace.length >= 3) {
+      const className = trace[3].getTypeName();
+      const methodName = trace[3].getMethodName();
+
+      if (className && methodName) {
+        prefix += `${className}.${methodName}(): `;
+      } else {
+        prefix += '(): ';
+      }
     }
 
     return prefix;
@@ -41596,7 +41673,7 @@ class Logger {
 
 exports.Logger = Logger;
 
-},{"../ArgumentGuard":196,"../utils/GeneralUtils":296,"./NullLogHandler":246}],246:[function(require,module,exports){
+},{"../utils/GeneralUtils":302,"./NullLogHandler":248}],248:[function(require,module,exports){
 'use strict';
 
 const { LogHandler } = require('./LogHandler');
@@ -41609,12 +41686,12 @@ class NullLogHandler extends LogHandler {
 
   close() {}
 
-  onMessage(verbose, logString) {}
+  onMessage(verbose, logString) {} // eslint-disable-line no-unused-vars
 }
 
 exports.NullLogHandler = NullLogHandler;
 
-},{"./LogHandler":244}],247:[function(require,module,exports){
+},{"./LogHandler":246}],249:[function(require,module,exports){
 'use strict';
 
 /**
@@ -41622,25 +41699,34 @@ exports.NullLogHandler = NullLogHandler;
  */
 class AppOutput {
   /**
-   * @param {String} title The title of the screen of the application being captured.
-   * @param {Buffer} [screenshot64] Base64 encoding of the screenshot's bytes (the byte can be in either in compressed
+   * @param {string} title The title of the screen of the application being captured.
+   * @param {Buffer} [screenshot] Base64 encoding of the screenshot's bytes (the byte can be in either in compressed
    *   or uncompressed form)
-   * @param {String} [screenshotUrl] The URL that points to the screenshot
+   * @param {string} [screenshotUrl] The URL that points to the screenshot
+   * @param {string} [domUrl] URL that points to a dom capture of the provided screenshot
+   * @param {Location} [imageLocation] Location of the provided screenshot relative to the logical full-page
+   *   screenshot (e.g. in checkRegion)
    */
-  constructor(title, screenshot64, screenshotUrl) {
+  constructor({ title, screenshot, screenshotUrl, domUrl, imageLocation } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     this._title = title;
-    this._screenshot64 = screenshot64;
+    this._screenshot64 = screenshot;
     this._screenshotUrl = screenshotUrl;
+    this._domUrl = domUrl;
+    this._imageLocation = imageLocation;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getTitle() {
     return this._title;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setTitle(value) {
     this._title = value;
   }
@@ -41656,15 +41742,37 @@ class AppOutput {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getScreenshotUrl() {
     return this._screenshotUrl;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setScreenshotUrl(value) {
     this._screenshotUrl = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getDomUrl() {
+    return this._domUrl;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setDomUrl(value) {
+    this._domUrl = value;
+  }
+
+  /** @return {Location} */
+  getImageLocation() {
+    return this._imageLocation;
+  }
+
+  /** @param {Location} value */
+  setImageLocation(value) {
+    this._imageLocation = value;
   }
 
   /** @override */
@@ -41679,6 +41787,14 @@ class AppOutput {
 
     if (this._screenshotUrl) {
       object.screenshotUrl = this._screenshotUrl;
+    }
+
+    if (this._domUrl) {
+      object.domUrl = this._domUrl;
+    }
+
+    if (this._imageLocation) {
+      object.location = this._imageLocation.toJSON();
     }
 
     return object;
@@ -41698,7 +41814,7 @@ class AppOutput {
 
 exports.AppOutput = AppOutput;
 
-},{}],248:[function(require,module,exports){
+},{}],250:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -41710,16 +41826,20 @@ class ExactMatchSettings {
   /**
    * Encapsulate threshold settings for the "Exact" match level.
    *
-   * @param {Number} [minDiffIntensity=0] The minimum intensity difference of pixel to be considered a change. Valid
+   * @param {number} [minDiffIntensity=0] The minimum intensity difference of pixel to be considered a change. Valid
    *   values are 0-255.
-   * @param {Number} [minDiffWidth=0] The minimum width of an intensity filtered pixels cluster to be considered a
+   * @param {number} [minDiffWidth=0] The minimum width of an intensity filtered pixels cluster to be considered a
    *   change. Must be >= 0.
-   * @param {Number} [minDiffHeight=0] The minimum height of an intensity filtered pixels cluster to be considered a
+   * @param {number} [minDiffHeight=0] The minimum height of an intensity filtered pixels cluster to be considered a
    *   change. Must be >= 0.
-   * @param {Number} [matchThreshold=0] The maximum percentage(!) of different pixels (after intensity, width and
+   * @param {number} [matchThreshold=0] The maximum percentage(!) of different pixels (after intensity, width and
    *   height filtering) which is still considered as a match. Valid values are fractions between 0-1.
    */
-  constructor(minDiffIntensity, minDiffWidth, minDiffHeight, matchThreshold) {
+  constructor({ minDiffIntensity, minDiffWidth, minDiffHeight, matchThreshold } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     this._minDiffIntensity = minDiffIntensity || 0;
     this._minDiffWidth = minDiffWidth || 0;
     this._minDiffHeight = minDiffHeight || 0;
@@ -41728,7 +41848,7 @@ class ExactMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Number} The minimum intensity difference of pixel to be considered a change.
+   * @return {number} The minimum intensity difference of pixel to be considered a change.
    */
   getMinDiffIntensity() {
     return this._minDiffIntensity;
@@ -41736,7 +41856,7 @@ class ExactMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {Number} value The minimum intensity difference of pixel to be considered a change. Valid values are 0-255.
+   * @param {number} value The minimum intensity difference of pixel to be considered a change. Valid values are 0-255.
    */
   setMinDiffIntensity(value) {
     this._minDiffIntensity = value;
@@ -41744,7 +41864,7 @@ class ExactMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Number} The minimum width of an intensity filtered pixels cluster to be considered a change.
+   * @return {number} The minimum width of an intensity filtered pixels cluster to be considered a change.
    */
   getMinDiffWidth() {
     return this._minDiffWidth;
@@ -41752,7 +41872,7 @@ class ExactMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {Number} value The minimum width of an intensity filtered pixels cluster to be considered a change.
+   * @param {number} value The minimum width of an intensity filtered pixels cluster to be considered a change.
    *   Must be >= 0.
    */
   setMinDiffWidth(value) {
@@ -41761,7 +41881,7 @@ class ExactMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Number} The minimum width of an intensity filtered pixels cluster to be considered a change.
+   * @return {number} The minimum width of an intensity filtered pixels cluster to be considered a change.
    */
   getMinDiffHeight() {
     return this._minDiffHeight;
@@ -41769,7 +41889,7 @@ class ExactMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {Number} value The minimum height of an intensity filtered pixels cluster to be considered a change. Must
+   * @param {number} value The minimum height of an intensity filtered pixels cluster to be considered a change. Must
    *   be >= 0.
    */
   setMinDiffHeight(value) {
@@ -41778,7 +41898,7 @@ class ExactMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Number} The maximum percentage(!) of different pixels (after intensity, width and height filtering) which
+   * @return {number} The maximum percentage(!) of different pixels (after intensity, width and height filtering) which
    *   is still considered as a match.
    */
   getMatchThreshold() {
@@ -41787,7 +41907,7 @@ class ExactMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {Number} value The maximum percentage(!) of different pixels (after intensity, width and height filtering)
+   * @param {number} value The maximum percentage(!) of different pixels (after intensity, width and height filtering)
    *   which is still considered as a match. Valid values are fractions between 0-1.
    */
   setMatchThreshold(value) {
@@ -41807,7 +41927,7 @@ class ExactMatchSettings {
 
 exports.ExactMatchSettings = ExactMatchSettings;
 
-},{"../utils/GeneralUtils":296}],249:[function(require,module,exports){
+},{"../utils/GeneralUtils":302}],251:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -41827,7 +41947,11 @@ class FloatingMatchSettings {
    * @param {number} maxLeftOffset
    * @param {number} maxRightOffset
    */
-  constructor(left, top, width, height, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
+  constructor({ left, top, width, height, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     this._left = left;
     this._top = top;
     this._width = width;
@@ -41946,26 +42070,41 @@ class FloatingMatchSettings {
 
 exports.FloatingMatchSettings = FloatingMatchSettings;
 
-},{"../geometry/Region":238,"../utils/GeneralUtils":296}],250:[function(require,module,exports){
+},{"../geometry/Region":240,"../utils/GeneralUtils":302}],252:[function(require,module,exports){
 'use strict';
 
 const { MatchLevel } = require('./MatchLevel');
+const { ArgumentGuard } = require('../ArgumentGuard');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 /**
  * Encapsulates match settings for the a session.
  */
 class ImageMatchSettings {
   /**
-   * @param {MatchLevel} matchLevel The "strictness" level to use.
+   * @param {MatchLevel} [matchLevel=MatchLevel.Strict] The "strictness" level to use.
    * @param {ExactMatchSettings} [exact] Additional threshold parameters when the {@code Exact} match level is used.
-   * @param {Boolean} [ignoreCaret]
+   * @param {boolean} [ignoreCaret]
+   * @param {boolean} [useDom]
    */
-  constructor(matchLevel = MatchLevel.Strict, exact, ignoreCaret) {
-    this._matchLevel = matchLevel;
+  constructor({ matchLevel, exact, ignoreCaret, useDom } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
+    this._matchLevel = matchLevel || MatchLevel.Strict;
     this._exact = exact;
     this._ignoreCaret = ignoreCaret;
+    this._useDom = useDom;
+
     /** @type {Region[]} */
     this._ignoreRegions = [];
+    /** @type {Region[]} */
+    this._layoutRegions = [];
+    /** @type {Region[]} */
+    this._strictRegions = [];
+    /** @type {Region[]} */
+    this._contentRegions = [];
     /** @type {FloatingMatchSettings[]} */
     this._floatingMatchSettings = [];
   }
@@ -41983,6 +42122,7 @@ class ImageMatchSettings {
    * @param {MatchLevel} value The match level to use.
    */
   setMatchLevel(value) {
+    ArgumentGuard.isValidEnumValue(value, MatchLevel);
     this._matchLevel = value;
   }
 
@@ -42004,7 +42144,7 @@ class ImageMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} The parameters for the "IgnoreCaret" match settings.
+   * @return {boolean} The parameters for the "IgnoreCaret" match settings.
    */
   getIgnoreCaret() {
     return this._ignoreCaret;
@@ -42012,10 +42152,26 @@ class ImageMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {Boolean} value The parameters for the "ignoreCaret" match settings.
+   * @param {boolean} value The parameters for the "ignoreCaret" match settings.
    */
   setIgnoreCaret(value) {
     this._ignoreCaret = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {boolean}
+   */
+  getUseDom() {
+    return this._useDom;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {boolean} value
+   */
+  setUseDom(value) {
+    this._useDom = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -42030,10 +42186,64 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of regions to ignore.
-   * @param {Region[]} value The array of regions to ignore.
+   * @param {Region[]} ignoreRegions The array of regions to ignore.
    */
-  setIgnoreRegions(value) {
-    this._ignoreRegions = value;
+  setIgnoreRegions(ignoreRegions) {
+    this._ignoreRegions = ignoreRegions;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Sets an array of regions to check using the Layout method.
+   * @param {Region[]} layoutRegions The array of regions to ignore.
+   */
+  setLayoutRegions(layoutRegions) {
+    this._layoutRegions = layoutRegions;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Returns the array of regions to check using the Layout method.
+   * @return {Region[]} the array of regions to ignore.
+   */
+  getLayoutRegions() {
+    return this._layoutRegions;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Returns the array of regions to check using the Strict method.
+   * @return {Region[]} the array of regions to ignore.
+   */
+  getStrictRegions() {
+    return this._strictRegions;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Sets an array of regions to check using the Strict method.
+   * @param {Region[]} strictRegions The array of regions to ignore.
+   */
+  setStrictRegions(strictRegions) {
+    this._strictRegions = strictRegions;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Returns the array of regions to check using the Content method.
+   * @return {Region[]} the array of regions to ignore.
+   */
+  getContentRegions() {
+    return this._contentRegions;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Sets an array of regions to check using the Content method.
+   * @param {Region[]} contentRegions The array of regions to ignore.
+   */
+  setContentRegions(contentRegions) {
+    this._contentRegions = contentRegions;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -42048,21 +42258,21 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of floating regions.
-   * @param {FloatingMatchSettings[]} value The array of floating regions.
+   * @param {FloatingMatchSettings[]} floatingMatchSettings The array of floating regions.
    */
-  setFloatingRegions(value) {
-    this._floatingMatchSettings = value;
+  setFloatingRegions(floatingMatchSettings) {
+    this._floatingMatchSettings = floatingMatchSettings;
   }
 
   /** @override */
   toJSON() {
-    return {
-      matchLevel: this._matchLevel,
-      exact: this._exact,
-      ignoreCaret: this._ignoreCaret,
-      ignore: this._ignoreRegions,
-      floating: this._floatingMatchSettings,
-    };
+    return GeneralUtils.toPlain(this, [], {
+      ignoreRegions: 'ignore',
+      layoutRegions: 'layout',
+      strictRegions: 'strict',
+      contentRegions: 'content',
+      floatingMatchSettings: 'floating',
+    });
   }
 
   /** @override */
@@ -42073,14 +42283,14 @@ class ImageMatchSettings {
 
 exports.ImageMatchSettings = ImageMatchSettings;
 
-},{"./MatchLevel":251}],251:[function(require,module,exports){
+},{"../ArgumentGuard":196,"../utils/GeneralUtils":302,"./MatchLevel":253}],253:[function(require,module,exports){
 'use strict';
 
 /**
  * The extent in which two images match (or are expected to match).
  *
  * @readonly
- * @enum {Number}
+ * @enum {number}
  */
 const MatchLevel = {
   /** Images do not necessarily match. */
@@ -42108,7 +42318,7 @@ const MatchLevel = {
 Object.freeze(MatchLevel);
 exports.MatchLevel = MatchLevel;
 
-},{}],252:[function(require,module,exports){
+},{}],254:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -42117,17 +42327,13 @@ const { GeneralUtils } = require('../utils/GeneralUtils');
  * The result of a window match by the agent.
  */
 class MatchResult {
-  constructor() {
-    this._asExpected = null;
-    this._windowId = null;
-  }
-
   /**
-   * @param {Object} object
-   * @return {MatchResult}
+   * @param {boolean} [asExpected]
+   * @param {number} [windowId]
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new MatchResult(), object);
+  constructor({ asExpected, windowId } = {}) {
+    this._asExpected = asExpected;
+    this._windowId = windowId;
   }
 
   /** @return {boolean} */
@@ -42165,11 +42371,11 @@ class MatchResult {
 
 exports.MatchResult = MatchResult;
 
-},{"../utils/GeneralUtils":296}],253:[function(require,module,exports){
+},{"../utils/GeneralUtils":302}],255:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
-const { MatchWindowData } = require('./MatchWindowData');
+const { MatchWindowData, Options } = require('./MatchWindowData');
 
 /**
  * Encapsulates the data to be sent to the agent on a "matchWindow" command.
@@ -42180,11 +42386,15 @@ class MatchSingleWindowData extends MatchWindowData {
    * @param {Trigger[]} userInputs A list of triggers between the previous matchWindow call and the current matchWindow
    *   call. Can be array of size 0, but MUST NOT be null.
    * @param {AppOutput} appOutput The appOutput for the current matchWindow call.
-   * @param {String} tag The tag of the window to be matched.
-   * @param {?Boolean} ignoreMismatch
-   * @param {?Options} options
+   * @param {string} tag The tag of the window to be matched.
+   * @param {boolean} [ignoreMismatch]
+   * @param {Options} [options]
    */
-  constructor(startInfo, userInputs, appOutput, tag, ignoreMismatch, options) {
+  constructor({ startInfo, userInputs, appOutput, tag, ignoreMismatch, options } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     super(userInputs, appOutput, tag, ignoreMismatch, options);
 
     this._startInfo = startInfo;
@@ -42269,13 +42479,13 @@ class MatchSingleWindowData extends MatchWindowData {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getAgentId() {
     return this._agentId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} agentId */
+  /** @param {string} agentId */
   setAgentId(agentId) {
     this._agentId = agentId;
   }
@@ -42299,9 +42509,10 @@ class MatchSingleWindowData extends MatchWindowData {
   }
 }
 
+exports.Options = Options;
 exports.MatchSingleWindowData = MatchSingleWindowData;
 
-},{"../utils/GeneralUtils":296,"./MatchWindowData":254}],254:[function(require,module,exports){
+},{"../utils/GeneralUtils":302,"./MatchWindowData":256}],256:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -42312,20 +42523,24 @@ const { ArgumentGuard } = require('../ArgumentGuard');
  */
 class Options {
   /**
-   * @param {String} name The tag of the window to be matched.
+   * @param {string} name The tag of the window to be matched.
    * @param {Trigger[]} userInputs A list of triggers between the previous matchWindow call and the current matchWindow
    *   call. Can be array of size 0, but MUST NOT be null.
-   * @param {Boolean} ignoreMismatch Tells the server whether or not to store a mismatch for the current window as
+   * @param {boolean} ignoreMismatch Tells the server whether or not to store a mismatch for the current window as
    *   window in the session.
-   * @param {Boolean} ignoreMatch Tells the server whether or not to store a match for the current window as window in
+   * @param {boolean} ignoreMatch Tells the server whether or not to store a match for the current window as window in
    *   the session.
-   * @param {Boolean} forceMismatch Forces the server to skip the comparison process and mark the current window as a
+   * @param {boolean} forceMismatch Forces the server to skip the comparison process and mark the current window as a
    *   mismatch.
-   * @param {Boolean} forceMatch Forces the server to skip the comparison process and mark the current window as a
+   * @param {boolean} forceMatch Forces the server to skip the comparison process and mark the current window as a
    *   match.
    * @param {ImageMatchSettings} imageMatchSettings
    */
-  constructor(name, userInputs, ignoreMismatch, ignoreMatch, forceMismatch, forceMatch, imageMatchSettings) {
+  constructor({ name, userInputs, ignoreMismatch, ignoreMatch, forceMismatch, forceMatch, imageMatchSettings } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     ArgumentGuard.notNull(userInputs, 'userInputs');
 
     this._name = name;
@@ -42338,7 +42553,7 @@ class Options {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getName() {
     return this._name;
   }
@@ -42350,25 +42565,25 @@ class Options {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIgnoreMismatch() {
     return this._ignoreMismatch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIgnoreMatch() {
     return this._ignoreMatch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getForceMismatch() {
     return this._forceMismatch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getForceMatch() {
     return this._forceMatch;
   }
@@ -42398,11 +42613,15 @@ class MatchWindowData {
    * @param {Trigger[]} userInputs A list of triggers between the previous matchWindow call and the current matchWindow
    *   call. Can be array of size 0, but MUST NOT be null.
    * @param {AppOutput} appOutput The appOutput for the current matchWindow call.
-   * @param {String} tag The tag of the window to be matched.
-   * @param {?Boolean} ignoreMismatch
-   * @param {?Options} options
+   * @param {string} tag The tag of the window to be matched.
+   * @param {boolean} [ignoreMismatch]
+   * @param {Options} [options]
    */
-  constructor(userInputs, appOutput, tag, ignoreMismatch, options) {
+  constructor({ userInputs, appOutput, tag, ignoreMismatch, options } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     ArgumentGuard.notNull(userInputs, 'userInputs');
 
     this._userInputs = userInputs;
@@ -42425,13 +42644,13 @@ class MatchWindowData {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getTag() {
     return this._tag;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {?Boolean} */
+  /** @return {?boolean} */
   getIgnoreMismatch() {
     return this._ignoreMismatch;
   }
@@ -42461,10 +42680,10 @@ class MatchWindowData {
   }
 }
 
-MatchWindowData.Options = Options;
+exports.Options = Options;
 exports.MatchWindowData = MatchWindowData;
 
-},{"../ArgumentGuard":196,"../utils/GeneralUtils":296}],255:[function(require,module,exports){
+},{"../ArgumentGuard":196,"../utils/GeneralUtils":302}],257:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -42478,7 +42697,11 @@ class MatchWindowDataWithScreenshot {
    * @param {MatchWindowData} matchWindowData
    * @param {EyesScreenshot} screenshot
    */
-  constructor(matchWindowData, screenshot) {
+  constructor({ matchWindowData, screenshot } = {}) {
+    if (arguments.length > 1) {
+      throw new TypeError('Please, use object as a parameter to the constructor!');
+    }
+
     this._matchWindowData = matchWindowData;
     this._screenshot = screenshot;
   }
@@ -42508,34 +42731,42 @@ class MatchWindowDataWithScreenshot {
 
 exports.MatchWindowDataWithScreenshot = MatchWindowDataWithScreenshot;
 
-},{"../utils/GeneralUtils":296}],256:[function(require,module,exports){
+},{"../utils/GeneralUtils":302}],258:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ImageMatchSettings } = require('./ImageMatchSettings');
+const { Image } = require('./Image');
 
 class ActualAppOutput {
   constructor() {
-    this._image = null;
-    this._thumbprint = null;
-    this._imageMatchSettings = null;
-    this._ignoreExpectedOutputSettings = null;
-    this._isMatching = null;
-    this._areImagesMatching = null;
+    this._image = undefined;
+    this._thumbprint = undefined;
+    this._imageMatchSettings = undefined;
+    this._ignoreExpectedOutputSettings = undefined;
+    this._isMatching = undefined;
+    this._areImagesMatching = undefined;
 
-    this._occurredAt = null;
+    this._occurredAt = undefined;
 
-    this._userInputs = null;
-    this._windowTitle = null;
-    this._tag = null;
-    this._isPrimary = null;
+    this._userInputs = undefined;
+    this._windowTitle = undefined;
+    this._tag = undefined;
+    this._isPrimary = undefined;
   }
 
   /**
-   * @param {Object} object
+   * @deprecated
+   * @param {object} object
    * @return {ActualAppOutput}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new ActualAppOutput(), object);
+    return GeneralUtils.assignTo(new ActualAppOutput(), object, {
+      image: Image.fromObject,
+      thumbprint: Image.fromObject,
+      imageMatchSettings: ImageMatchSettings.fromObject,
+      occurredAt: GeneralUtils.fromISO8601DateTime,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -42575,37 +42806,37 @@ class ActualAppOutput {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIgnoreExpectedOutputSettings() {
     return this._ignoreExpectedOutputSettings;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIgnoreExpectedOutputSettings(value) {
     this._ignoreExpectedOutputSettings = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIsMatching() {
     return this._isMatching;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIsMatching(value) {
     this._isMatching = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getAreImagesMatching() {
     return this._areImagesMatching;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setAreImagesMatching(value) {
     this._areImagesMatching = value;
   }
@@ -42623,49 +42854,49 @@ class ActualAppOutput {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Object[]} */
+  /** @return {object[]} */
   getUserInputs() {
     return this._userInputs;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Object[]} value */
+  /** @param {object[]} value */
   setUserInputs(value) {
     this._userInputs = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getWindowTitle() {
     return this._windowTitle;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setWindowTitle(value) {
     this._windowTitle = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getTag() {
     return this._tag;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setTag(value) {
     this._tag = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIsPrimary() {
     return this._isPrimary;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIsPrimary(value) {
     this._isPrimary = value;
   }
@@ -42683,26 +42914,35 @@ class ActualAppOutput {
 
 exports.ActualAppOutput = ActualAppOutput;
 
-},{"../utils/GeneralUtils":296}],257:[function(require,module,exports){
+},{"../utils/GeneralUtils":302,"./Image":263,"./ImageMatchSettings":264}],259:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { Region } = require('../geometry/Region');
+const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 
 class Annotations {
   constructor() {
-    this._floating = null;
-    this._ignore = null;
-    this._strict = null;
-    this._content = null;
-    this._layout = null;
+    this._floating = undefined;
+    this._ignore = undefined;
+    this._strict = undefined;
+    this._content = undefined;
+    this._layout = undefined;
   }
 
   /**
-   * @param {Object} object
+   * @deprecated
+   * @param {object} object
    * @return {Annotations}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new Annotations(), object);
+    return GeneralUtils.assignTo(new Annotations(), object, {
+      ignore: results => Array.from(results).map(result => new Region(result)),
+      strict: results => Array.from(results).map(result => new Region(result)),
+      content: results => Array.from(results).map(result => new Region(result)),
+      layout: results => Array.from(results).map(result => new Region(result)),
+      floating: results => Array.from(results).map(result => new FloatingMatchSettings(result)),
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -42778,46 +43018,49 @@ class Annotations {
 
 exports.Annotations = Annotations;
 
-},{"../utils/GeneralUtils":296}],258:[function(require,module,exports){
+},{"../geometry/Region":240,"../match/FloatingMatchSettings":251,"../utils/GeneralUtils":302}],260:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class BatchInfo {
   constructor() {
-    this._id = null;
-    this._name = null;
-    this._startedAt = null;
+    this._id = undefined;
+    this._name = undefined;
+    this._startedAt = undefined;
   }
 
   /**
-   * @param {Object} object
+   * @deprecated
+   * @param {object} object
    * @return {BatchInfo}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new BatchInfo(), object);
+    return GeneralUtils.assignTo(new BatchInfo(), object, {
+      startedAt: GeneralUtils.fromISO8601DateTime,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getId() {
     return this._id;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setId(value) {
     this._id = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getName() {
     return this._name;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setName(value) {
     this._name = value;
   }
@@ -42847,20 +43090,22 @@ class BatchInfo {
 
 exports.BatchInfo = BatchInfo;
 
-},{"../utils/GeneralUtils":296}],259:[function(require,module,exports){
+},{"../utils/GeneralUtils":302}],261:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class Branch {
   constructor() {
-    this._id = null;
-    this._name = null;
-    this._isDeleted = null;
+    this._id = undefined;
+    this._name = undefined;
+    this._isDeleted = undefined;
+    this._updateInfo = undefined;
   }
 
   /**
-   * @param {Object} object
+   * @deprecated
+   * @param {object} object
    * @return {Branch}
    */
   static fromObject(object) {
@@ -42868,39 +43113,51 @@ class Branch {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getId() {
     return this._id;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setId(value) {
     this._id = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getName() {
     return this._name;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setName(value) {
     this._name = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIsDeleted() {
     return this._isDeleted;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIsDeleted(value) {
     this._isDeleted = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {object} */
+  getUpdateInfo() {
+    return this._updateInfo;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {object} value */
+  setUpdateInfo(value) {
+    this._updateInfo = value;
   }
 
   /** @override */
@@ -42916,36 +43173,44 @@ class Branch {
 
 exports.Branch = Branch;
 
-},{"../utils/GeneralUtils":296}],260:[function(require,module,exports){
+},{"../utils/GeneralUtils":302}],262:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { Annotations } = require('./Annotations');
+const { Image } = require('./Image');
 
 class ExpectedAppOutput {
   constructor() {
-    this._tag = null;
-    this._image = null;
-    this._thumbprint = null;
-    this._occurredAt = null;
-    this._annotations = null;
+    this._tag = undefined;
+    this._image = undefined;
+    this._thumbprint = undefined;
+    this._occurredAt = undefined;
+    this._annotations = undefined;
   }
 
   /**
-   * @param {Object} object
+   * @deprecated
+   * @param {object} object
    * @return {ExpectedAppOutput}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new ExpectedAppOutput(), object);
+    return GeneralUtils.assignTo(new ExpectedAppOutput(), object, {
+      image: Image.fromObject,
+      thumbprint: Image.fromObject,
+      // _occurredAt: Image.fromObject,
+      annotations: Annotations.fromObject,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getTag() {
     return this._tag;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setTag(value) {
     this._tag = value;
   }
@@ -43011,33 +43276,37 @@ class ExpectedAppOutput {
 
 exports.ExpectedAppOutput = ExpectedAppOutput;
 
-},{"../utils/GeneralUtils":296}],261:[function(require,module,exports){
+},{"../utils/GeneralUtils":302,"./Annotations":259,"./Image":263}],263:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { RectangleSize } = require('../geometry/RectangleSize');
 
 class Image {
   constructor() {
-    this._id = null;
-    this._size = null;
+    this._id = undefined;
+    this._size = undefined;
   }
 
   /**
-   * @param {Object} object
+   * @deprecated
+   * @param {object} object
    * @return {Image}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new Image(), object);
+    return GeneralUtils.assignTo(new Image(), object, {
+      size: obj => new RectangleSize(obj),
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getId() {
     return this._id;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setId(value) {
     this._id = value;
   }
@@ -43067,32 +43336,41 @@ class Image {
 
 exports.Image = Image;
 
-},{"../utils/GeneralUtils":296}],262:[function(require,module,exports){
+},{"../geometry/RectangleSize":239,"../utils/GeneralUtils":302}],264:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { Region } = require('../geometry/Region');
+const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 
 class ImageMatchSettings {
   constructor() {
-    this._matchLevel = null;
-    this._ignore = null;
-    this._strict = null;
-    this._content = null;
-    this._layout = null;
-    this._floating = null;
-    this._splitTopHeight = null;
-    this._splitBottomHeight = null;
-    this._ignoreCaret = null;
-    this._scale = null;
-    this._remainder = null;
+    this._matchLevel = undefined;
+    this._ignore = undefined;
+    this._strict = undefined;
+    this._content = undefined;
+    this._layout = undefined;
+    this._floating = undefined;
+    this._splitTopHeight = undefined;
+    this._splitBottomHeight = undefined;
+    this._ignoreCaret = undefined;
+    this._scale = undefined;
+    this._remainder = undefined;
   }
 
   /**
-   * @param {Object} object
+   * @deprecated
+   * @param {object} object
    * @return {ImageMatchSettings}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new ImageMatchSettings(), object);
+    return GeneralUtils.assignTo(new ImageMatchSettings(), object, {
+      ignore: results => Array.from(results).map(result => new Region(result)),
+      strict: results => Array.from(results).map(result => new Region(result)),
+      content: results => Array.from(results).map(result => new Region(result)),
+      layout: results => Array.from(results).map(result => new Region(result)),
+      floating: results => Array.from(results).map(result => new FloatingMatchSettings(result)),
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -43168,61 +43446,61 @@ class ImageMatchSettings {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getSplitTopHeight() {
     return this._splitTopHeight;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setSplitTopHeight(value) {
     this._splitTopHeight = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getSplitBottomHeight() {
     return this._splitBottomHeight;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setSplitBottomHeight(value) {
     this._splitBottomHeight = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIgnoreCaret() {
     return this._ignoreCaret;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIgnoreCaret(value) {
     this._ignoreCaret = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getScale() {
     return this._scale;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setScale(value) {
     this._scale = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getRemainder() {
     return this._remainder;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setRemainder(value) {
     this._remainder = value;
   }
@@ -43240,108 +43518,121 @@ class ImageMatchSettings {
 
 exports.ImageMatchSettings = ImageMatchSettings;
 
-},{"../utils/GeneralUtils":296}],263:[function(require,module,exports){
+},{"../geometry/Region":240,"../match/FloatingMatchSettings":251,"../utils/GeneralUtils":302}],265:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ActualAppOutput } = require('./ActualAppOutput');
+const { ExpectedAppOutput } = require('./ExpectedAppOutput');
+const { Branch } = require('./Branch');
+const { StartInfo } = require('./StartInfo');
+const { AppEnvironment } = require('../AppEnvironment');
 
 class SessionResults {
   constructor() {
-    this._id = null;
-    this._revision = null;
-    this._runningSessionId = null;
-    this._isAborted = null;
-    this._isStarred = null;
-    this._startInfo = null;
-    this._batchId = null;
-    this._secretToken = null;
-    this._state = null;
-    this._status = null;
-    this._isDefaultStatus = null;
-    this._startedAt = null;
-    this._duration = null;
-    this._isDifferent = null;
-    this._env = null;
-    this._branch = null;
-    this._expectedAppOutput = null;
-    this._actualAppOutput = null;
-    this._baselineId = null;
-    this._baselineRevId = null;
-    this._scenarioId = null;
-    this._scenarioName = null;
-    this._appId = null;
-    this._baselineModelId = null;
-    this._baselineEnvId = null;
-    this._baselineEnv = null;
-    this._appName = null;
-    this._baselineBranchName = null;
-    this._isNew = null;
+    this._id = undefined;
+    this._revision = undefined;
+    this._runningSessionId = undefined;
+    this._isAborted = undefined;
+    this._isStarred = undefined;
+    this._startInfo = undefined;
+    this._batchId = undefined;
+    this._secretToken = undefined;
+    this._state = undefined;
+    this._status = undefined;
+    this._isDefaultStatus = undefined;
+    this._startedAt = undefined;
+    this._duration = undefined;
+    this._isDifferent = undefined;
+    this._env = undefined;
+    this._branch = undefined;
+    this._expectedAppOutput = undefined;
+    this._actualAppOutput = undefined;
+    this._baselineId = undefined;
+    this._baselineRevId = undefined;
+    this._scenarioId = undefined;
+    this._scenarioName = undefined;
+    this._appId = undefined;
+    this._baselineModelId = undefined;
+    this._baselineEnvId = undefined;
+    this._baselineEnv = undefined;
+    this._appName = undefined;
+    this._baselineBranchName = undefined;
+    this._isNew = undefined;
   }
 
   /**
-   * @param {Object} object
+   * @deprecated
+   * @param {object} object
    * @return {SessionResults}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new SessionResults(), object);
+    return GeneralUtils.assignTo(new SessionResults(), object, {
+      actualAppOutput: results => Array.from(results).map(result => ActualAppOutput.fromObject(result)),
+      expectedAppOutput: results => Array.from(results).map(result => ExpectedAppOutput.fromObject(result)),
+      baselineEnv: obj => new AppEnvironment(obj),
+      branch: Branch.fromObject,
+      env: obj => new AppEnvironment(obj),
+      startInfo: StartInfo.fromObject,
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getId() {
     return this._id;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setId(value) {
     this._id = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getRevision() {
     return this._revision;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setRevision(value) {
     this._revision = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getRunningSessionId() {
     return this._runningSessionId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setRunningSessionId(value) {
     this._runningSessionId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIsAborted() {
     return this._isAborted;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIsAborted(value) {
     this._isAborted = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIsStarred() {
     return this._isStarred;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIsStarred(value) {
     this._isStarred = value;
   }
@@ -43359,97 +43650,97 @@ class SessionResults {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBatchId() {
     return this._batchId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBatchId(value) {
     this._batchId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getSecretToken() {
     return this._secretToken;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setSecretToken(value) {
     this._secretToken = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getState() {
     return this._state;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setState(value) {
     this._state = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getStatus() {
     return this._status;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setStatus(value) {
     this._status = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIsDefaultStatus() {
     return this._isDefaultStatus;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIsDefaultStatus(value) {
     this._isDefaultStatus = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getStartedAt() {
     return this._startedAt;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setStartedAt(value) {
     this._startedAt = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Integer} */
+  /** @return {number} */
   getDuration() {
     return this._duration;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Integer} value */
+  /** @param {number} value */
   setDuration(value) {
     this._duration = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIsDifferent() {
     return this._isDifferent;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIsDifferent(value) {
     this._isDifferent = value;
   }
@@ -43503,85 +43794,85 @@ class SessionResults {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBaselineId() {
     return this._baselineId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBaselineId(value) {
     this._baselineId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBaselineRevId() {
     return this._baselineRevId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBaselineRevId(value) {
     this._baselineRevId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getScenarioId() {
     return this._scenarioId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setScenarioId(value) {
     this._scenarioId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getScenarioName() {
     return this._scenarioName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setScenarioName(value) {
     this._scenarioName = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getAppId() {
     return this._appId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setAppId(value) {
     this._appId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBaselineModelId() {
     return this._baselineModelId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBaselineModelId(value) {
     this._baselineModelId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBaselineEnvId() {
     return this._baselineEnvId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBaselineEnvId(value) {
     this._baselineEnvId = value;
   }
@@ -43599,37 +43890,37 @@ class SessionResults {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getAppName() {
     return this._appName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setAppName(value) {
     this._appName = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBaselineBranchName() {
     return this._baselineBranchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBaselineBranchName(value) {
     this._baselineBranchName = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIsNew() {
     return this._isNew;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIsNew(value) {
     this._isNew = value;
   }
@@ -43647,91 +43938,100 @@ class SessionResults {
 
 exports.SessionResults = SessionResults;
 
-},{"../utils/GeneralUtils":296}],264:[function(require,module,exports){
+},{"../AppEnvironment":195,"../utils/GeneralUtils":302,"./ActualAppOutput":258,"./Branch":261,"./ExpectedAppOutput":262,"./StartInfo":266}],266:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ImageMatchSettings } = require('./ImageMatchSettings');
+const { BatchInfo } = require('./BatchInfo');
+const { AppEnvironment } = require('../AppEnvironment');
 
 class StartInfo {
   constructor() {
-    this._sessionType = null;
-    this._isTransient = null;
-    this._ignoreBaseline = null;
-    this._appIdOrName = null;
-    this._compareWithParentBranch = null;
-    this._scenarioIdOrName = null;
-    this._batchInfo = null;
-    this._environment = null;
-    this._matchLevel = null;
-    this._defaultMatchSettings = null;
-    this._agentId = null;
-    this._properties = null;
+    this._sessionType = undefined;
+    this._isTransient = undefined;
+    this._ignoreBaseline = undefined;
+    this._appIdOrName = undefined;
+    this._compareWithParentBranch = undefined;
+    this._scenarioIdOrName = undefined;
+    this._batchInfo = undefined;
+    this._environment = undefined;
+    this._matchLevel = undefined;
+    this._defaultMatchSettings = undefined;
+    this._agentId = undefined;
+    this._properties = undefined;
+    this._render = undefined;
   }
 
   /**
-   * @param {Object} object
+   * @deprecated
+   * @param {object} object
    * @return {StartInfo}
    */
   static fromObject(object) {
-    return GeneralUtils.assignTo(new StartInfo(), object);
+    return GeneralUtils.assignTo(new StartInfo(), object, {
+      batchInfo: BatchInfo.fromObject,
+      defaultMatchSettings: ImageMatchSettings.fromObject,
+      environment: obj => new AppEnvironment(obj),
+    });
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getSessionType() {
     return this._sessionType;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setSessionType(value) {
     this._sessionType = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIsTransient() {
     return this._isTransient;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setIsTransient(value) {
     this._isTransient = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getAppIdOrName() {
     return this._appIdOrName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setAppIdOrName(value) {
     this._appIdOrName = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getCompareWithParentBranch() {
     return this._compareWithParentBranch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setCompareWithParentBranch(value) {
     this._compareWithParentBranch = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getScenarioIdOrName() {
     return this._scenarioIdOrName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setScenarioIdOrName(value) {
     this._scenarioIdOrName = value;
   }
@@ -43761,13 +44061,13 @@ class StartInfo {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getMatchLevel() {
     return this._matchLevel;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setMatchLevel(value) {
     this._matchLevel = value;
   }
@@ -43785,27 +44085,39 @@ class StartInfo {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getAgentId() {
     return this._agentId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setAgentId(value) {
     this._agentId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Object[]} */
+  /** @return {object[]} */
   getProperties() {
     return this._properties;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Object[]} value */
+  /** @param {object[]} value */
   setProperties(value) {
     this._properties = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {boolean} */
+  getRender() {
+    return this._render;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {boolean} value */
+  setRender(value) {
+    this._render = value;
   }
 
   /** @override */
@@ -43821,7 +44133,7 @@ class StartInfo {
 
 exports.StartInfo = StartInfo;
 
-},{"../utils/GeneralUtils":296}],265:[function(require,module,exports){
+},{"../AppEnvironment":195,"../utils/GeneralUtils":302,"./BatchInfo":260,"./ImageMatchSettings":264}],267:[function(require,module,exports){
 'use strict';
 
 exports.ActualAppOutput = require('./ActualAppOutput').ActualAppOutput;
@@ -43834,7 +44146,7 @@ exports.ImageMatchSettings = require('./ImageMatchSettings').ImageMatchSettings;
 exports.SessionResults = require('./SessionResults').SessionResults;
 exports.StartInfo = require('./StartInfo').StartInfo;
 
-},{"./ActualAppOutput":256,"./Annotations":257,"./BatchInfo":258,"./Branch":259,"./ExpectedAppOutput":260,"./Image":261,"./ImageMatchSettings":262,"./SessionResults":263,"./StartInfo":264}],266:[function(require,module,exports){
+},{"./ActualAppOutput":258,"./Annotations":259,"./BatchInfo":260,"./Branch":261,"./ExpectedAppOutput":262,"./Image":263,"./ImageMatchSettings":264,"./SessionResults":265,"./StartInfo":266}],268:[function(require,module,exports){
 'use strict';
 
 const { PositionProvider } = require('./PositionProvider');
@@ -43842,74 +44154,26 @@ const { PositionProvider } = require('./PositionProvider');
 /**
  * An implementation of {@link PositionProvider} which throws an exception for every method. Can be used as a
  * placeholder until an actual implementation is set.
- *
- * @extends PositionProvider
  */
-class InvalidPositionProvider extends PositionProvider {
-  // noinspection JSMethodCanBeStatic
-  /**
-   * @return {Promise.<Location>} The current position, or {@code null} if position is not available.
-   */
-  getCurrentPosition() {
-    throw new TypeError('This class does not implement methods!');
-  }
-
-  // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
-  /**
-   * Go to the specified location.
-   *
-   * @param {Location} location The position to set.
-   */
-  setPosition(location) {
-    throw new TypeError('This class does not implement methods!');
-  }
-
-  // noinspection JSMethodCanBeStatic
-  /**
-   * @return {Promise.<RectangleSize>} The entire size of the container which the position is relative to.
-   */
-  getEntireSize() {
-    throw new TypeError('This class does not implement methods!');
-  }
-
-  // noinspection JSMethodCanBeStatic
-  /**
-   * @return {Promise.<object>}
-   */
-  getState() {
-    throw new TypeError('This class does not implement methods!');
-  }
-
-  // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
-  /**
-   * @param {Object} state The initial state of position
-   * @return {Promise}
-   */
-  restoreState(state) {
-    throw new TypeError('This class does not implement methods!');
-  }
-}
+class InvalidPositionProvider extends PositionProvider {}
 
 exports.InvalidPositionProvider = InvalidPositionProvider;
 
-},{"./PositionProvider":269}],267:[function(require,module,exports){
+},{"./PositionProvider":271}],269:[function(require,module,exports){
 'use strict';
 
 const { RegionProvider } = require('./RegionProvider');
 const { Region } = require('../geometry/Region');
 
 class NullRegionProvider extends RegionProvider {
-  /**
-   * @param {PromiseFactory} promiseFactory
-   */
-  constructor(promiseFactory) {
-    super(Region.EMPTY, promiseFactory);
+  constructor() {
+    super(Region.EMPTY);
   }
 }
 
 exports.NullRegionProvider = NullRegionProvider;
 
-},{"../geometry/Region":238,"./RegionProvider":270}],268:[function(require,module,exports){
+},{"../geometry/Region":240,"./RegionProvider":272}],270:[function(require,module,exports){
 'use strict';
 
 /**
@@ -43922,51 +44186,66 @@ class PositionMemento {}
 
 exports.PositionMemento = PositionMemento;
 
-},{}],269:[function(require,module,exports){
+},{}],271:[function(require,module,exports){
 'use strict';
+
+/* eslint-disable no-unused-vars */
 
 /**
  * Encapsulates page/element positioning.
  *
- * @interface
+ * @abstract
  */
 class PositionProvider {
+  // noinspection JSMethodCanBeStatic
   /**
-   * @return {Promise.<Location>} The current position, or {@code null} if position is not available.
+   * @return {Promise<Location>} The current position, or {@code null} if position is not available.
    */
-  getCurrentPosition() {}
+  async getCurrentPosition() {
+    throw new TypeError('The method is not implemented!');
+  }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * Go to the specified location.
    *
    * @param {Location} location The position to set.
-   * @return {Promise}
+   * @return {Promise<void>}
    */
-  setPosition(location) {}
+  async setPosition(location) {
+    throw new TypeError('The method is not implemented!');
+  }
 
+  // noinspection JSMethodCanBeStatic
   /**
-   * @return {Promise.<RectangleSize>} The entire size of the container which the position is relative to.
+   * @return {Promise<RectangleSize>} The entire size of the container which the position is relative to.
    */
-  getEntireSize() {}
+  async getEntireSize() {
+    throw new TypeError('The method is not implemented!');
+  }
 
+  // noinspection JSMethodCanBeStatic
   /**
-   * @return {Promise.<PositionMemento>}
+   * @return {Promise<PositionMemento>}
    */
-  getState() {}
+  async getState() {
+    throw new TypeError('The method is not implemented!');
+  }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @param {PositionMemento} state The initial state of position
-   * @return {Promise}
+   * @return {Promise<void>}
    */
-  restoreState(state) {}
+  async restoreState(state) {
+    throw new TypeError('The method is not implemented!');
+  }
 }
 
 exports.PositionProvider = PositionProvider;
 
-},{}],270:[function(require,module,exports){
+},{}],272:[function(require,module,exports){
 'use strict';
-
-const { ArgumentGuard } = require('../ArgumentGuard');
 
 /**
  * Encapsulates a getRegion "callback" and how the region's coordinates should be used.
@@ -43974,29 +44253,166 @@ const { ArgumentGuard } = require('../ArgumentGuard');
 class RegionProvider {
   /**
    * @param {Region} [region]
-   * @param {PromiseFactory} [promiseFactory]
    */
-  constructor(region, promiseFactory) {
-    if (region) {
-      ArgumentGuard.notNull(promiseFactory, 'promiseFactory');
-    }
-
+  constructor(region) {
     this._region = region;
-    this._promiseFactory = promiseFactory;
   }
 
   // noinspection JSMethodCanBeStatic
   /**
-   * @return {Promise.<Region>} A region with "as is" viewport coordinates.
+   * @return {Promise<Region>} A region with "as is" viewport coordinates.
    */
-  getRegion() {
-    return this._promiseFactory.resolve(this._region);
+  async getRegion() {
+    return this._region;
   }
 }
 
 exports.RegionProvider = RegionProvider;
 
-},{"../ArgumentGuard":196}],271:[function(require,module,exports){
+},{}],273:[function(require,module,exports){
+'use strict';
+
+const { GeneralUtils } = require('../utils/GeneralUtils');
+
+class EmulationDevice {
+  /**
+   * @param {number} width
+   * @param {number} height
+   * @param {string} deviceScaleFactor
+   * @param {string} mobile
+   */
+  constructor({ width, height, deviceScaleFactor, mobile } = {}) {
+    this._width = width;
+    this._height = height;
+    this._deviceScaleFactor = deviceScaleFactor;
+    this._mobile = mobile;
+  }
+
+  /** @return {number} */
+  getWidth() {
+    return this._width;
+  }
+
+  /** @param {number} value */
+  setWidth(value) {
+    this._width = value;
+  }
+
+  /** @return {number} */
+  getHeight() {
+    return this._height;
+  }
+
+  /** @param {number} value */
+  setHeight(value) {
+    this._height = value;
+  }
+
+  /** @return {string} */
+  getDeviceScaleFactor() {
+    return this._deviceScaleFactor;
+  }
+
+  /** @param {string} value */
+  setDeviceScaleFactor(value) {
+    this._deviceScaleFactor = value;
+  }
+
+  /** @return {string} */
+  getMobile() {
+    return this._mobile;
+  }
+
+  /** @param {string} value */
+  setMobile(value) {
+    this._mobile = value;
+  }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
+  }
+
+  /** @override */
+  toString() {
+    return `EmulationDevice { ${JSON.stringify(this)} }`;
+  }
+}
+
+exports.EmulationDevice = EmulationDevice;
+
+},{"../utils/GeneralUtils":302}],274:[function(require,module,exports){
+'use strict';
+
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { EmulationDevice } = require('./EmulationDevice');
+
+class EmulationInfo {
+  /**
+   * @param {EmulationDevice|object} device
+   * @param {string} deviceName
+   * @param {ScreenOrientation} screenOrientation
+   */
+  constructor({ device, deviceName, screenOrientation } = {}) {
+    if (device && !(device instanceof EmulationDevice)) {
+      device = new EmulationDevice(device);
+    }
+
+    this._device = device;
+    this._deviceName = deviceName;
+    this._screenOrientation = screenOrientation;
+  }
+
+  /** @return {EmulationDevice} */
+  getDevice() {
+    return this._device;
+  }
+
+  /** @param {EmulationDevice} value */
+  setDevice(value) {
+    this._device = value;
+  }
+
+  /** @return {string} */
+  getDeviceName() {
+    return this._deviceName;
+  }
+
+  /** @param {string} value */
+  setDeviceName(value) {
+    this._deviceName = value;
+  }
+
+  /** @return {ScreenOrientation} */
+  getScreenOrientation() {
+    return this._screenOrientation;
+  }
+
+  /** @param {ScreenOrientation} value */
+  setScreenOrientation(value) {
+    this._screenOrientation = value;
+  }
+
+  /** @override */
+  toJSON() {
+    if (this._device) {
+      return Object.assign({
+        screenOrientation: this._screenOrientation,
+      }, this._device.toJSON());
+    }
+
+    return GeneralUtils.toPlain(this, ['_device']);
+  }
+
+  /** @override */
+  toString() {
+    return `EmulationInfo { ${JSON.stringify(this)} }`;
+  }
+}
+
+exports.EmulationInfo = EmulationInfo;
+
+},{"../utils/GeneralUtils":302,"./EmulationDevice":273}],275:[function(require,module,exports){
 'use strict';
 
 const crypto = require('crypto');
@@ -44006,17 +44422,21 @@ const { ArgumentGuard } = require('../ArgumentGuard');
 const { RGridResource } = require('./RGridResource');
 
 class RGridDom {
-  constructor() {
-    this._domNodes = null;
-    this._resources = [];
+  /**
+   * @param {object} [domNodes]
+   * @param {RGridResource[]} [resources]
+   */
+  constructor({ domNodes, resources } = {}) {
+    this._domNodes = domNodes;
+    this._resources = resources || [];
 
-    this._sha256hash = null;
-    this._contentAsCdt = null;
+    this._sha256hash = undefined;
+    this._contentAsCdt = undefined;
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Object} The domNodes of the current page.
+   * @return {object} The domNodes of the current page.
    */
   getDomNodes() {
     return this._domNodes;
@@ -44024,7 +44444,7 @@ class RGridDom {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {Object} value The page's domNodes
+   * @param {object} value The page's domNodes
    */
   setDomNodes(value) {
     ArgumentGuard.notNull(value, 'domNodes');
@@ -44102,7 +44522,7 @@ class RGridDom {
 
 exports.RGridDom = RGridDom;
 
-},{"../ArgumentGuard":196,"../utils/GeneralUtils":296,"./RGridResource":272,"crypto":62}],272:[function(require,module,exports){
+},{"../ArgumentGuard":196,"../utils/GeneralUtils":302,"./RGridResource":276,"crypto":64}],276:[function(require,module,exports){
 'use strict';
 
 const crypto = require('crypto');
@@ -44111,16 +44531,21 @@ const { GeneralUtils } = require('../utils/GeneralUtils');
 const { ArgumentGuard } = require('../ArgumentGuard');
 
 class RGridResource {
-  constructor() {
-    this._url = null;
-    this._contentType = null;
-    this._content = null;
+  /**
+   * @param {string} [url]
+   * @param {string} [contentType]
+   * @param {Buffer} [content]
+   */
+  constructor({ url, contentType, content } = {}) {
+    this._url = url;
+    this._contentType = contentType;
+    this._content = content;
 
-    this._sha256hash = null;
+    this._sha256hash = undefined;
   }
 
   /**
-   * @return {String} The url of the current resource.
+   * @return {string} The url of the current resource.
    */
   getUrl() {
     return this._url;
@@ -44128,7 +44553,7 @@ class RGridResource {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {String} value The resource's url
+   * @param {string} value The resource's url
    */
   setUrl(value) {
     ArgumentGuard.notNull(value, 'url');
@@ -44136,14 +44561,14 @@ class RGridResource {
   }
 
   /**
-   * @return {String} The contentType of the current resource.
+   * @return {string} The contentType of the current resource.
    */
   getContentType() {
     return this._contentType;
   }
 
   /**
-   * @param {String} value The resource's contentType
+   * @param {string} value The resource's contentType
    */
   setContentType(value) {
     ArgumentGuard.notNull(value, 'contentType');
@@ -44180,6 +44605,7 @@ class RGridResource {
     return {
       hashFormat: 'sha256',
       hash: this.getSha256Hash(),
+      contentType: this.getContentType(),
     };
   }
 
@@ -44196,7 +44622,141 @@ class RGridResource {
 
 exports.RGridResource = RGridResource;
 
-},{"../ArgumentGuard":196,"../utils/GeneralUtils":296,"crypto":62}],273:[function(require,module,exports){
+},{"../ArgumentGuard":196,"../utils/GeneralUtils":302,"crypto":64}],277:[function(require,module,exports){
+'use strict';
+
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { Region } = require('../geometry/Region');
+const { EmulationInfo } = require('./EmulationInfo');
+
+class RenderInfo {
+  /**
+   * @param {number} width
+   * @param {number} height
+   * @param {string} sizeMode
+   * @param {string} selector
+   * @param {Region|object} region
+   * @param {EmulationInfo|object} emulationInfo
+   */
+  constructor({ width, height, sizeMode, selector, region, emulationInfo } = {}) {
+    if (region && !(region instanceof Region)) {
+      region = new Region(region);
+    }
+
+    if (emulationInfo && !(emulationInfo instanceof EmulationInfo)) {
+      emulationInfo = new EmulationInfo(emulationInfo);
+    }
+
+    this._width = width;
+    this._height = height;
+    this._sizeMode = sizeMode;
+    this._selector = selector;
+    this._region = region;
+    this._emulationInfo = emulationInfo;
+  }
+
+  /**
+   * @param {RectangleSize} size
+   * @param {string} [sizeMode='full-page'] supported values [viewport|full-page]
+   * @return {RenderInfo}
+   */
+  static fromRectangleSize(size, sizeMode = 'full-page') {
+    const renderInfo = new RenderInfo();
+    renderInfo.setWidth(size.getWidth());
+    renderInfo.setHeight(size.getHeight());
+    renderInfo.setSizeMode(sizeMode);
+    return renderInfo;
+  }
+
+  /** @return {number} */
+  getWidth() {
+    return this._width;
+  }
+
+  /** @param {number} value */
+  setWidth(value) {
+    this._width = value;
+  }
+
+  /** @return {number} */
+  getHeight() {
+    return this._height;
+  }
+
+  /** @param {number} value */
+  setHeight(value) {
+    this._height = value;
+  }
+
+  /** @return {string} */
+  getSizeMode() {
+    return this._sizeMode;
+  }
+
+  /** @param {string} value */
+  setSizeMode(value) {
+    this._sizeMode = value;
+  }
+
+  /** @return {string} */
+  getSelector() {
+    return this._selector;
+  }
+
+  /** @param {string} value */
+  setSelector(value) {
+    this._selector = value;
+  }
+
+  /** @return {Region} */
+  getRegion() {
+    return this._region;
+  }
+
+  /** @param {Region} value */
+  setRegion(value) {
+    this._region = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {EmulationInfo} */
+  getEmulationInfo() {
+    return this._emulationInfo;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {EmulationInfo} value */
+  setEmulationInfo(value) {
+    this._emulationInfo = value;
+  }
+
+  /** @override */
+  toJSON() {
+    const obj = GeneralUtils.toPlain(this, ['_emulationInfo']);
+
+    if (this._emulationInfo) {
+      obj.emulationInfo = this._emulationInfo.toJSON();
+    }
+
+    // TODO remove this when rendering-grid changes x/y to left/top
+    if (obj.region) {
+      obj.region.x = obj.region.left;
+      obj.region.y = obj.region.top;
+      delete obj.region.left;
+      delete obj.region.top;
+    }
+    return obj;
+  }
+
+  /** @override */
+  toString() {
+    return `RenderInfo { ${JSON.stringify(this)} }`;
+  }
+}
+
+exports.RenderInfo = RenderInfo;
+
+},{"../geometry/Region":240,"../utils/GeneralUtils":302,"./EmulationInfo":274}],278:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -44209,27 +44769,41 @@ class RenderRequest {
    * @param {string} webhook
    * @param {string} url
    * @param {RGridDom} dom
-   * @param {number} [renderWidth]
+   * @param {RGridResource[]} resources
+   * @param {RenderInfo} [renderInfo]
+   * @param {string} [platform]
+   * @param {string} [browserName]
+   * @param {Object} [scriptHooks]
+   * @param {string[]} selectorsToFindRegionsFor
+   * @param {boolean} sendDom
    */
-  constructor(webhook, url, dom, renderWidth) {
+  constructor({ webhook, url, dom, resources, renderInfo, platform, browserName, scriptHooks, selectorsToFindRegionsFor, sendDom } = {}) {
     ArgumentGuard.notNullOrEmpty(webhook, 'webhook');
     ArgumentGuard.notNull(url, 'url');
     ArgumentGuard.notNull(dom, 'dom');
+    ArgumentGuard.notNull(resources, 'resources');
 
     this._webhook = webhook;
     this._url = url;
     this._dom = dom;
-    this._renderWidth = renderWidth;
+    this._resources = resources;
+    this._renderInfo = renderInfo;
+    this._platform = platform;
+    this._browserName = browserName;
+    this._renderId = undefined;
+    this._scriptHooks = scriptHooks;
+    this._selectorsToFindRegionsFor = selectorsToFindRegionsFor;
+    this._sendDom = sendDom;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getWebhook() {
     return this._webhook;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getUrl() {
     return this._url;
   }
@@ -44243,30 +44817,118 @@ class RenderRequest {
   // noinspection JSUnusedGlobalSymbols
   /** @return {RGridResource[]} */
   getResources() {
-    return this._dom.getResources();
+    return this._resources;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {number} */
-  getRenderWidth() {
-    return this._renderWidth;
+  /** @return {RenderInfo} */
+  getRenderInfo() {
+    return this._renderInfo;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getPlatform() {
+    return this._platform;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getBrowserName() {
+    return this._browserName;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getRenderId() {
+    return this._renderId;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setRenderId(value) {
+    this._renderId = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getScriptHooks() {
+    return this._scriptHooks;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setScriptHooks(value) {
+    this._scriptHooks = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string[]} */
+  getSelectorsToFindRegionsFor() {
+    return this._selectorsToFindRegionsFor;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string[]} value */
+  setSelectorsToFindRegionsFor(value) {
+    this._selectorsToFindRegionsFor = value;
+  }
+
+  /** @return {boolean} */
+  getSendDom() {
+    return this._sendDom;
+  }
+
+  /** @param {boolean} value */
+  setSendDom(value) {
+    this._sendDom = value;
   }
 
   /** @override */
   toJSON() {
     const resources = {};
-    this._dom.getResources().forEach(resource => {
+    this.getResources().forEach(resource => {
       resources[resource.getUrl()] = resource.getHashAsObject();
     });
 
-    return {
+    const object = {
       webhook: this._webhook,
       url: this._url,
-
       dom: this._dom.getHashAsObject(),
       resources,
-      renderWidth: this._renderWidth,
     };
+
+    if (this._renderId) {
+      object.renderId = this._renderId;
+    }
+
+    if (this._browserName) {
+      object.browser = {
+        name: this._browserName,
+      };
+
+      if (this._platform) {
+        object.browser.platform = this._platform;
+      }
+    }
+
+    if (this._renderInfo) {
+      object.renderInfo = this._renderInfo.toJSON();
+    }
+
+    if (this._scriptHooks) {
+      object.scriptHooks = this._scriptHooks;
+    }
+
+    if (this._selectorsToFindRegionsFor) {
+      object.selectorsToFindRegionsFor = this._selectorsToFindRegionsFor;
+    }
+
+    if (this._sendDom) {
+      object.sendDom = this._sendDom;
+    }
+
+    return object;
   }
 
   /** @override */
@@ -44277,12 +44939,12 @@ class RenderRequest {
 
 exports.RenderRequest = RenderRequest;
 
-},{"../ArgumentGuard":196}],274:[function(require,module,exports){
+},{"../ArgumentGuard":196}],279:[function(require,module,exports){
 'use strict';
 
 /**
  * @readonly
- * @enum {String}
+ * @enum {string}
  */
 const RenderStatus = {
   /**
@@ -44309,27 +44971,63 @@ const RenderStatus = {
 Object.freeze(RenderStatus);
 exports.RenderStatus = RenderStatus;
 
-},{}],275:[function(require,module,exports){
+},{}],280:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { RectangleSize } = require('../geometry/RectangleSize');
+const { Region } = require('../geometry/Region');
 
 /**
  * Encapsulates data for the render currently running in the client.
  */
 class RenderStatusResults {
-  constructor() {
-    this._status = null;
-    this._imageLocation = null;
-    this._error = null;
+  /**
+   * @param {RenderStatus} status
+   * @param {string} imageLocation
+   * @param {string} domLocation
+   * @param {string} error
+   * @param {string} os
+   * @param {string} userAgent
+   * @param {RectangleSize|object} deviceSize
+   * @param {Region[]||object[]} selectorRegions
+   */
+  constructor({ status, imageLocation, domLocation, error, os, userAgent, deviceSize, selectorRegions } = {}) {
+    if (deviceSize && !(deviceSize instanceof RectangleSize)) {
+      deviceSize = new RectangleSize(deviceSize);
+    }
+
+    if (selectorRegions && selectorRegions.length > 0 && !(selectorRegions[0] instanceof Region)) {
+      selectorRegions = selectorRegions.map(region => new Region({
+        left: region.x,
+        top: region.y,
+        width: region.width,
+        height: region.height,
+      }));
+    }
+
+    this._status = status;
+    this._imageLocation = imageLocation;
+    this._domLocation = domLocation;
+    this._error = error;
+    this._os = os;
+    this._userAgent = userAgent;
+    this._deviceSize = deviceSize;
+    this._selectorRegions = selectorRegions;
   }
 
-  /**
-   * @param {Object} object
-   * @return {RenderStatusResults}
-   */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new RenderStatusResults(), object);
+  /** @return {boolean} */
+  isEmpty() {
+    return (
+      this._status === undefined &&
+      this._imageLocation === undefined &&
+      this._domLocation === undefined &&
+      this._error === undefined &&
+      this._os === undefined &&
+      this._userAgent === undefined &&
+      this._deviceSize === undefined &&
+      this._selectorRegions === undefined
+    );
   }
 
   /** @return {RenderStatus} */
@@ -44337,32 +45035,79 @@ class RenderStatusResults {
     return this._status;
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {RenderStatus} value */
   setStatus(value) {
     this._status = value;
   }
 
-  /** @return {String} */
+  /** @return {string} */
   getImageLocation() {
     return this._imageLocation;
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setImageLocation(value) {
     this._imageLocation = value;
   }
 
-  /** @return {String} */
+  /** @return {string} */
+  getDomLocation() {
+    return this._domLocation;
+  }
+
+  /** @param {string} value */
+  setDomLocation(value) {
+    this._domLocation = value;
+  }
+
+  /** @return {string} */
   getError() {
     return this._error;
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setError(value) {
     this._error = value;
+  }
+
+  /** @return {string} */
+  getOS() {
+    return this._os;
+  }
+
+  /** @param {string} value */
+  setOS(value) {
+    this._os = value;
+  }
+
+  /** @return {string} */
+  getUserAgent() {
+    return this._userAgent;
+  }
+
+  /** @param {string} value */
+  setUserAgent(value) {
+    this._userAgent = value;
+  }
+
+  /** @return {RectangleSize} */
+  getDeviceSize() {
+    return this._deviceSize;
+  }
+
+  /** @param {RectangleSize} value */
+  setDeviceSize(value) {
+    this._deviceSize = value;
+  }
+
+  /** @return {Region[]} */
+  getSelectorRegions() {
+    return this._selectorRegions;
+  }
+
+  /** @param {Region[]} value */
+  setSelectorRegions(value) {
+    this._selectorRegions = value;
   }
 
   /** @override */
@@ -44378,83 +45123,7 @@ class RenderStatusResults {
 
 exports.RenderStatusResults = RenderStatusResults;
 
-},{"../utils/GeneralUtils":296}],276:[function(require,module,exports){
-'use strict';
-
-const { GeneralUtils } = require('../utils/GeneralUtils');
-
-class RenderingInfo {
-  constructor() {
-    this._serviceUrl = null;
-    this._accessToken = null;
-    this._resultsUrl = null;
-  }
-
-  /**
-   * @param {Object} object
-   * @return {RenderingInfo}
-   */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new RenderingInfo(), object);
-  }
-
-  /** @return {String} */
-  getServiceUrl() {
-    return this._serviceUrl;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
-  setServiceUrl(value) {
-    this._serviceUrl = value;
-  }
-
-  /** @return {String} */
-  getAccessToken() {
-    return this._accessToken;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
-  setAccessToken(value) {
-    this._accessToken = value;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
-  getResultsUrl() {
-    return this._resultsUrl;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
-  setResultsUrl(value) {
-    this._resultsUrl = value;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /** @return {{sub: string, exp: int, iss: string}} */
-  getDecodedAccessToken() {
-    if (this._payload) {
-      this._payload = GeneralUtils.jwtDecode(this._accessToken);
-    }
-    return this._payload;
-  }
-
-  /** @override */
-  toJSON() {
-    return GeneralUtils.toPlain(this, ['_payload']);
-  }
-
-  /** @override */
-  toString() {
-    return `RenderingInfo { ${JSON.stringify(this)} }`;
-  }
-}
-
-exports.RenderingInfo = RenderingInfo;
-
-},{"../utils/GeneralUtils":296}],277:[function(require,module,exports){
+},{"../geometry/RectangleSize":239,"../geometry/Region":240,"../utils/GeneralUtils":302}],281:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -44463,42 +45132,40 @@ const { GeneralUtils } = require('../utils/GeneralUtils');
  * Encapsulates data for the render currently running in the client.
  */
 class RunningRender {
-  constructor() {
-    this._renderId = false;
-    this._jobId = false;
-
-    this._renderStatus = null;
-    this._needMoreResources = null;
-    this._needMoreDom = null;
-  }
-
   /**
-   * @param {Object} object
-   * @return {RunningRender}
+   * @param {string} renderId
+   * @param {string} jobId
+   * @param {RenderStatus} renderStatus
+   * @param {string[]} needMoreResources
+   * @param {boolean} needMoreDom
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new RunningRender(), object);
+  constructor({ renderId, jobId, renderStatus, needMoreResources, needMoreDom } = {}) {
+    this._renderId = renderId;
+    this._jobId = jobId;
+    this._renderStatus = renderStatus;
+    this._needMoreResources = needMoreResources;
+    this._needMoreDom = needMoreDom;
   }
 
-  /** @return {String} */
+  /** @return {string} */
   getRenderId() {
     return this._renderId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setRenderId(value) {
     this._renderId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getJobId() {
     return this._jobId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setJobId(value) {
     this._jobId = value;
   }
@@ -44514,24 +45181,24 @@ class RunningRender {
     this._renderStatus = value;
   }
 
-  /** @return {String[]} */
+  /** @return {string[]} */
   getNeedMoreResources() {
     return this._needMoreResources;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String[]} value */
+  /** @param {string[]} value */
   setNeedMoreResources(value) {
     this._needMoreResources = value;
   }
 
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getNeedMoreDom() {
     return this._needMoreDom;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setNeedMoreDom(value) {
     this._needMoreDom = value;
   }
@@ -44549,7 +45216,22 @@ class RunningRender {
 
 exports.RunningRender = RunningRender;
 
-},{"../utils/GeneralUtils":296}],278:[function(require,module,exports){
+},{"../utils/GeneralUtils":302}],282:[function(require,module,exports){
+'use strict';
+
+/**
+ * @readonly
+ * @enum {string}
+ */
+const ScreenOrientation = {
+  PORTRAIT: 'portrait',
+  LANDSCAPE: 'landscape',
+};
+
+Object.freeze(ScreenOrientation);
+exports.ScreenOrientation = ScreenOrientation;
+
+},{}],283:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -44561,8 +45243,8 @@ const ALLOWED_DCES_DEVIATION = 10;
 const UNKNOWN_SCALE_RATIO = 0;
 
 /**
- * @param {int} viewportWidth
- * @param {int} imageToScaleWidth
+ * @param {number} viewportWidth
+ * @param {number} imageToScaleWidth
  * @param {number} currentScaleRatio
  * @return {number}
  */
@@ -44604,7 +45286,7 @@ class ContextBasedScaleProvider extends ScaleProvider {
   }
 
   /**
-   * @override
+   * @inheritDoc
    * @return {number} The ratio by which an image will be scaled.
    */
   getScaleRatio() {
@@ -44615,7 +45297,7 @@ class ContextBasedScaleProvider extends ScaleProvider {
   /**
    * Set the scale ratio based on the given image.
    *
-   * @param {int} imageToScaleWidth The width of the image to scale, used for calculating the scale ratio.
+   * @param {number} imageToScaleWidth The width of the image to scale, used for calculating the scale ratio.
    */
   updateScaleRatio(imageToScaleWidth) {
     const viewportWidth = this._viewportSize.getWidth();
@@ -44646,7 +45328,7 @@ class ContextBasedScaleProvider extends ScaleProvider {
 
 exports.ContextBasedScaleProvider = ContextBasedScaleProvider;
 
-},{"../ArgumentGuard":196,"./ScaleProvider":283}],279:[function(require,module,exports){
+},{"../ArgumentGuard":196,"./ScaleProvider":288}],284:[function(require,module,exports){
 'use strict';
 
 const { ScaleProviderFactory } = require('./ScaleProviderFactory');
@@ -44678,8 +45360,8 @@ class ContextBasedScaleProviderFactory extends ScaleProviderFactory {
   /**
    * The implementation of getting/creating the scale provider, should be implemented by child classes.
    *
-   * @override
-   * @param {int} imageToScaleWidth The width of the image to scale. This parameter CAN be by class implementing the
+   * @inheritDoc
+   * @param {number} imageToScaleWidth The width of the image to scale. This parameter CAN be by class implementing the
    *   factory, but this is not mandatory.
    * @return {ScaleProvider} The scale provider to be used.
    */
@@ -44698,7 +45380,7 @@ class ContextBasedScaleProviderFactory extends ScaleProviderFactory {
 
 exports.ContextBasedScaleProviderFactory = ContextBasedScaleProviderFactory;
 
-},{"./ContextBasedScaleProvider":278,"./ScaleProviderFactory":284}],280:[function(require,module,exports){
+},{"./ContextBasedScaleProvider":283,"./ScaleProviderFactory":289}],285:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -44706,7 +45388,7 @@ const { ScaleProvider } = require('./ScaleProvider');
 
 class FixedScaleProvider extends ScaleProvider {
   /**
-   * @param {Number} scaleRatio The scale ratio to use.
+   * @param {number} scaleRatio The scale ratio to use.
    */
   constructor(scaleRatio) {
     super();
@@ -44716,7 +45398,7 @@ class FixedScaleProvider extends ScaleProvider {
   }
 
   /**
-   * @return {Number} The ratio by which an image will be scaled.
+   * @return {number} The ratio by which an image will be scaled.
    */
   getScaleRatio() {
     return this._scaleRatio;
@@ -44725,7 +45407,7 @@ class FixedScaleProvider extends ScaleProvider {
 
 exports.FixedScaleProvider = FixedScaleProvider;
 
-},{"../ArgumentGuard":196,"./ScaleProvider":283}],281:[function(require,module,exports){
+},{"../ArgumentGuard":196,"./ScaleProvider":288}],286:[function(require,module,exports){
 'use strict';
 
 const { FixedScaleProvider } = require('./FixedScaleProvider');
@@ -44733,7 +45415,7 @@ const { ScaleProviderFactory } = require('./ScaleProviderFactory');
 
 class FixedScaleProviderFactory extends ScaleProviderFactory {
   /**
-   * @param {Number} scaleRatio The scale ratio to use.
+   * @param {number} scaleRatio The scale ratio to use.
    * @param {PropertyHandler} scaleProviderHandler
    */
   constructor(scaleRatio, scaleProviderHandler) {
@@ -44745,18 +45427,18 @@ class FixedScaleProviderFactory extends ScaleProviderFactory {
   /**
    * The implementation of getting/creating the scale provider, should be implemented by child classes.
    *
-   * @param {int} imageToScaleWidth The width of the image to scale. This parameter CAN be by class implementing the
+   * @param {number} imageToScaleWidth The width of the image to scale. This parameter CAN be by class implementing the
    *   factory, but this is not mandatory.
    * @return {ScaleProvider} The scale provider to be used.
    */
-  getScaleProviderImpl(imageToScaleWidth) {
+  getScaleProviderImpl(imageToScaleWidth) { // eslint-disable-line no-unused-vars
     return this._fixedScaleProvider;
   }
 }
 
 exports.FixedScaleProviderFactory = FixedScaleProviderFactory;
 
-},{"./FixedScaleProvider":280,"./ScaleProviderFactory":284}],282:[function(require,module,exports){
+},{"./FixedScaleProvider":285,"./ScaleProviderFactory":289}],287:[function(require,module,exports){
 'use strict';
 
 const { FixedScaleProvider } = require('./FixedScaleProvider');
@@ -44772,24 +45454,24 @@ class NullScaleProvider extends FixedScaleProvider {
 
 exports.NullScaleProvider = NullScaleProvider;
 
-},{"./FixedScaleProvider":280}],283:[function(require,module,exports){
+},{"./FixedScaleProvider":285}],288:[function(require,module,exports){
 'use strict';
 
 /**
  * Encapsulates scaling logic.
  *
- * @interface
+ * @abstract
  */
 class ScaleProvider {
   /**
-   * @return {Number} The ratio by which an image will be scaled.
+   * @return {number} The ratio by which an image will be scaled.
    */
   getScaleRatio() {}
 }
 
 exports.ScaleProvider = ScaleProvider;
 
-},{}],284:[function(require,module,exports){
+},{}],289:[function(require,module,exports){
 'use strict';
 
 class ScaleProviderFactory {
@@ -44805,7 +45487,7 @@ class ScaleProviderFactory {
   /**
    * The main API for this factory.
    *
-   * @param {int} imageToScaleWidth The width of the image to scale. This parameter CAN be by class implementing the
+   * @param {number} imageToScaleWidth The width of the image to scale. This parameter CAN be by class implementing the
    *   factory, but this is not mandatory.
    * @return {ScaleProvider} A {@link ScaleProvider} instance.
    */
@@ -44819,18 +45501,18 @@ class ScaleProviderFactory {
   /**
    * The implementation of getting/creating the scale provider, should be implemented by child classes.
    *
-   * @param {int} imageToScaleWidth The width of the image to scale. This parameter CAN be by class implementing the
+   * @param {number} imageToScaleWidth The width of the image to scale. This parameter CAN be by class implementing the
    *   factory, but this is not mandatory.
    * @return {ScaleProvider} The scale provider to be used.
    */
-  getScaleProviderImpl(imageToScaleWidth) {
-    throw new Error('The method `getScaleProviderImpl` from `ScaleProviderFactory` should be implemented!');
+  getScaleProviderImpl(imageToScaleWidth) { // eslint-disable-line no-unused-vars
+    throw new TypeError('The method is not implemented!');
   }
 }
 
 exports.ScaleProviderFactory = ScaleProviderFactory;
 
-},{}],285:[function(require,module,exports){
+},{}],290:[function(require,module,exports){
 'use strict';
 
 const { ScaleProviderFactory } = require('./ScaleProviderFactory');
@@ -44851,24 +45533,24 @@ class ScaleProviderIdentityFactory extends ScaleProviderFactory {
   /**
    * The implementation of getting/creating the scale provider, should be implemented by child classes.
    *
-   * @param {int} imageToScaleWidth The width of the image to scale. This parameter CAN be by class implementing the
+   * @param {number} imageToScaleWidth The width of the image to scale. This parameter CAN be by class implementing the
    *   factory, but this is not mandatory.
    * @return {ScaleProvider} The scale provider to be used.
    */
-  getScaleProviderImpl(imageToScaleWidth) {
+  getScaleProviderImpl(imageToScaleWidth) { // eslint-disable-line no-unused-vars
     return this._scaleProvider;
   }
 }
 
 exports.ScaleProviderIdentityFactory = ScaleProviderIdentityFactory;
 
-},{"./ScaleProviderFactory":284}],286:[function(require,module,exports){
+},{"./ScaleProviderFactory":289}],291:[function(require,module,exports){
 'use strict';
 
 class PropertyData {
   /**
-   * @param {String} name
-   * @param {String} value
+   * @param {string} name
+   * @param {string} value
    */
   constructor(name, value) {
     this._name = name;
@@ -44876,29 +45558,30 @@ class PropertyData {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getName() {
     return this._name;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setName(value) {
     this._name = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getValue() {
     return this._value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setValue(value) {
     this._value = value;
   }
 
+  /** @override */
   toJSON() {
     return {
       name: this._name,
@@ -44914,7 +45597,7 @@ class PropertyData {
 
 exports.PropertyData = PropertyData;
 
-},{}],287:[function(require,module,exports){
+},{}],292:[function(require,module,exports){
 'use strict';
 
 const url = require('url');
@@ -44926,9 +45609,9 @@ const { ArgumentGuard } = require('../ArgumentGuard');
 class ProxySettings {
   /**
    *
-   * @param {String} uri The proxy's URI.
-   * @param {String} [username] The username to be sent to the proxy.
-   * @param {String} [password] The password to be sent to the proxy.
+   * @param {string} uri The proxy's URI.
+   * @param {string} [username] The username to be sent to the proxy.
+   * @param {string} [password] The password to be sent to the proxy.
    */
   constructor(uri, username, password) {
     ArgumentGuard.notNull(uri, 'uri');
@@ -44957,7 +45640,7 @@ class ProxySettings {
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * @return {{protocol: string, host: string, port: int, auth: {username: string, password: string}}}
+   * @return {{protocol: string, host: string, port: number, auth: {username: string, password: string}}}
    */
   toProxyObject() {
     const proxy = {};
@@ -44987,91 +45670,166 @@ class ProxySettings {
 
 exports.ProxySettings = ProxySettings;
 
-},{"../ArgumentGuard":196,"url":181}],288:[function(require,module,exports){
+},{"../ArgumentGuard":196,"url":182}],293:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
-const { RenderingInfo } = require('../renderer/RenderingInfo');
+
+class RenderingInfo {
+  /**
+   * @param {string} serviceUrl
+   * @param {string} accessToken
+   * @param {string} resultsUrl
+   */
+  constructor({ serviceUrl, accessToken, resultsUrl } = {}) {
+    this._serviceUrl = serviceUrl;
+    this._accessToken = accessToken;
+    this._resultsUrl = resultsUrl;
+  }
+
+  /** @return {string} */
+  getServiceUrl() {
+    return this._serviceUrl;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setServiceUrl(value) {
+    this._serviceUrl = value;
+  }
+
+  /** @return {string} */
+  getAccessToken() {
+    return this._accessToken;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setAccessToken(value) {
+    this._accessToken = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {string} */
+  getResultsUrl() {
+    return this._resultsUrl;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {string} value */
+  setResultsUrl(value) {
+    this._resultsUrl = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {{sub: string, exp: number, iss: string}} */
+  getDecodedAccessToken() {
+    if (this._payload) {
+      this._payload = GeneralUtils.jwtDecode(this._accessToken);
+    }
+    return this._payload;
+  }
+
+  /** @override */
+  toJSON() {
+    return GeneralUtils.toPlain(this, ['_payload']);
+  }
+
+  /** @override */
+  toString() {
+    return `RenderingInfo { ${JSON.stringify(this)} }`;
+  }
+}
+
+exports.RenderingInfo = RenderingInfo;
+
+},{"../utils/GeneralUtils":302}],294:[function(require,module,exports){
+'use strict';
+
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { RenderingInfo } = require('./RenderingInfo');
 
 /**
  * Encapsulates data for the session currently running in the agent.
  */
 class RunningSession {
-  constructor() {
-    this._id = null;
-    this._sessionId = null;
-    this._batchId = null;
-    this._baselineId = null;
-    this._url = null;
-    this._renderingInfo = null;
+  /**
+   * @param {string} id
+   * @param {string} sessionId
+   * @param {string} batchId
+   * @param {string} baselineId
+   * @param {string} url
+   * @param {RenderingInfo|object} renderingInfo
+   */
+  constructor({ id, sessionId, batchId, baselineId, url, renderingInfo } = {}) {
+    if (renderingInfo && !(renderingInfo instanceof RenderingInfo)) {
+      renderingInfo = new RenderingInfo(renderingInfo);
+    }
+
+    this._id = id;
+    this._sessionId = sessionId;
+    this._batchId = batchId;
+    this._baselineId = baselineId;
+    this._url = url;
+    this._renderingInfo = renderingInfo;
 
     this._isNewSession = false;
   }
 
-  /**
-   * @param {Object} object
-   * @return {RunningSession}
-   */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new RunningSession(), object, {
-      renderingInfo: RenderingInfo.fromObject,
-    });
-  }
-
-  /** @return {String} */
+  /** @return {string} */
   getId() {
     return this._id;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setId(value) {
     this._id = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getSessionId() {
     return this._sessionId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setSessionId(value) {
     this._sessionId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBatchId() {
     return this._batchId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBatchId(value) {
     this._batchId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBaselineId() {
     return this._baselineId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setBaselineId(value) {
     this._baselineId = value;
   }
 
-  /** @return {String} */
+  /** @return {string} */
   getUrl() {
     return this._url;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {String} value */
+  /** @param {string} value */
   setUrl(value) {
     this._url = value;
   }
@@ -45087,12 +45845,12 @@ class RunningSession {
     this._renderingInfo = value;
   }
 
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIsNewSession() {
     return this._isNewSession;
   }
 
-  /** @param {Boolean} value */
+  /** @param {boolean} value */
   setNewSession(value) {
     this._isNewSession = value;
   }
@@ -45110,29 +45868,32 @@ class RunningSession {
 
 exports.RunningSession = RunningSession;
 
-},{"../renderer/RenderingInfo":276,"../utils/GeneralUtils":296}],289:[function(require,module,exports){
+},{"../utils/GeneralUtils":302,"./RenderingInfo":293}],295:[function(require,module,exports){
 (function (process,Buffer){
 'use strict';
 
 const axios = require('axios');
+const zlib = require('zlib');
 
 const { ProxySettings } = require('./ProxySettings');
+const { RenderingInfo } = require('./RenderingInfo');
 const { RunningSession } = require('./RunningSession');
 const { TestResults } = require('../TestResults');
 const { MatchResult } = require('../match/MatchResult');
 const { GeneralUtils } = require('../utils/GeneralUtils');
 const { ArgumentGuard } = require('../ArgumentGuard');
 
-const { RenderingInfo } = require('../renderer/RenderingInfo');
 const { RunningRender } = require('../renderer/RunningRender');
 const { RenderStatusResults } = require('../renderer/RenderStatusResults');
 
 // Constants
-const DEFAULT_TIMEOUT_MS = 300000; // 5 min
 const EYES_API_PATH = '/api/sessions';
+const RETRY_REQUEST_INTERVAL = 500; // ms
 const LONG_REQUEST_DELAY_MS = 2000; // ms
 const MAX_LONG_REQUEST_DELAY_MS = 10000; // ms
+const DEFAULT_TIMEOUT_MS = 300000; // ms (5 min)
 const LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR = 1.5;
+
 const DEFAULT_HEADERS = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
@@ -45144,139 +45905,146 @@ const HTTP_STATUS_CODES = {
   OK: 200,
   GONE: 410,
   NOT_FOUND: 404,
+  INTERNAL_SERVER_ERROR: 500,
+  GATEWAY_TIMEOUT: 504,
 };
+
+const HTTP_FAILED_CODES = [
+  HTTP_STATUS_CODES.NOT_FOUND,
+  HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_CODES.GATEWAY_TIMEOUT,
+];
 
 /**
  * @private
- * @param {ServerConnector} that
- * @param {String} name
- * @param {String} url
- * @param {String} method
- * @param {Object} options
- * @return {Promise.<AxiosResponse>}
+ * @param {ServerConnector} self
+ * @param {string} name
+ * @param {object} options
+ * @param {number} [retry=1]
+ * @param {boolean} [delayBeforeRetry=false]
+ * @return {Promise<AxiosResponse>}
  */
-const sendRequest = (that, name, url, method, options = {}) => {
-  const request = GeneralUtils.clone(that._httpOptions);
-  request.url = url;
-  request.method = method;
-  if (options.params) {
-    request.params = Object.assign(request.params, options.params);
-  }
-  if (options.headers) {
-    request.headers = Object.assign(request.headers, options.headers);
-  }
-  if (options.data) {
-    request.data = options.data;
-  }
-  if (options.contentType) {
-    request.headers['Content-Type'] = options.contentType;
+async function sendRequest(self, name, options, retry = 1, delayBeforeRetry = false) {
+  if (options.data instanceof Buffer && options.data.length === 0) {
+    // This 'if' fixes a bug in Axios whereby Axios doesn't send a content-length when the buffer is of length 0.
+    // This behavior makes the rendering-grid's nginx get stuck as it doesn't know when the body ends.
+    // https://github.com/axios/axios/issues/1701
+    options.data = '';
   }
 
-  if (request.proxy && request.proxy.protocol === 'http:') {
-    request.transport = require('http');
-  }
+  // eslint-disable-next-line max-len
+  self._logger.verbose(`ServerConnector.${name} will now post call to ${options.url} with params ${JSON.stringify(options.params)}`);
+  try {
+    const response = await axios(options);
 
-  that._logger.verbose(`ServerConnector.${name} will now post call to ${request.url} with params ${JSON.stringify(request.params)}`);
-  return axios(request)
-    .then(response => {
-      that._logger.verbose(`ServerConnector.${name} - result ${response.statusText}, status code ${response.status}`);
-      return response;
-    })
-    .catch(error => {
-      const reasonMessage = error.response && error.response.statusText ? error.response.statusText : error.message;
-      that._logger.log(`ServerConnector.${name} - post failed: ${reasonMessage}`);
-      throw error;
-    });
-};
+    // eslint-disable-next-line max-len
+    self._logger.verbose(`ServerConnector.${name} - result ${response.statusText}, status code ${response.status}, url ${options.url}`);
+    return response;
+  } catch (err) {
+    let reasonMsg = err.message;
+    if (err.response && err.response.statusText) {
+      reasonMsg += ` (${err.response.statusText})`;
+    }
 
-/**
- * @private
- * @param {ServerConnector} that
- * @param {String} name
- * @param {String} uri
- * @param {int} delay
- * @return {Promise.<AxiosResponse>}
- */
-const longRequestLoop = (that, name, uri, delay) => {
-  delay = Math.min(MAX_LONG_REQUEST_DELAY_MS, Math.floor(delay * LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR));
-  that._logger.verbose(`${name}: Still running... Retrying in ${delay} ms`);
+    // eslint-disable-next-line max-len
+    self._logger.log(`ServerConnector.${name} - post failed on ${options.url}: ${reasonMsg} with params ${JSON.stringify(options.params).slice(0, 100)}`);
 
-  return GeneralUtils.sleep(delay, that._promiseFactory)
-    .then(() => {
-      const options = {
-        params: { apiKey: that.getApiKey() },
-        headers: { 'Eyes-Date': GeneralUtils.toRfc1123DateTime() },
-      };
-      return sendRequest(that, name, uri, 'get', options);
-    })
-    .then(response => {
-      if (response.status !== HTTP_STATUS_CODES.OK) {
-        return response;
+    if (retry > 0 && ((err.response && HTTP_FAILED_CODES.includes(err.response.status)) || err.code === 'ECONNRESET')) {
+      if (delayBeforeRetry) {
+        await GeneralUtils.sleep(RETRY_REQUEST_INTERVAL);
+        return sendRequest(self, name, options, retry - 1, delayBeforeRetry);
       }
-      return longRequestLoop(that, name, uri, delay);
-    });
-};
+
+      return sendRequest(self, name, options, retry - 1, delayBeforeRetry);
+    }
+
+    throw new Error(reasonMsg);
+  }
+}
 
 /**
  * @private
- * @param {ServerConnector} that
- * @param {String} name
- * @param {AxiosResponse} response
- * @return {Promise.<AxiosResponse>}
+ * @param {ServerConnector} self
+ * @param {string} name
+ * @param {object} options
+ * @param {number} delay
+ * @return {Promise<AxiosResponse>}
  */
-const longRequestCheckStatus = (that, name, response) => {
+async function longRequestLoop(self, name, options, delay) {
+  // eslint-disable-next-line no-param-reassign
+  delay = Math.min(MAX_LONG_REQUEST_DELAY_MS, Math.floor(delay * LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR));
+  self._logger.verbose(`${name}: Still running... Retrying in ${delay} ms`);
+
+  await GeneralUtils.sleep(delay);
+  options.headers['Eyes-Date'] = GeneralUtils.toRfc1123DateTime(); // eslint-disable-line no-param-reassign
+
+  const response = await sendRequest(self, name, options);
+  if (response.status !== HTTP_STATUS_CODES.OK) {
+    return response;
+  }
+  return longRequestLoop(self, name, options, delay);
+}
+
+/**
+ * @private
+ * @param {ServerConnector} self
+ * @param {string} name
+ * @param {AxiosResponse} response
+ * @return {Promise<AxiosResponse>}
+ */
+async function longRequestCheckStatus(self, name, response) {
   switch (response.status) {
     case HTTP_STATUS_CODES.OK: {
-      return that._promiseFactory.resolve(response);
+      return response;
     }
     case HTTP_STATUS_CODES.ACCEPTED: {
-      const uri = response.headers.location;
-      return longRequestLoop(that, name, uri, LONG_REQUEST_DELAY_MS)
-        .then(requestResponse => longRequestCheckStatus(that, name, requestResponse));
+      const options = GeneralUtils.mergeDeep(self._httpOptions, {
+        method: 'GET',
+        url: response.headers.location,
+        params: { apiKey: self.getApiKey() },
+      });
+      const requestResponse = await longRequestLoop(self, name, options, LONG_REQUEST_DELAY_MS);
+      return longRequestCheckStatus(self, name, requestResponse);
     }
     case HTTP_STATUS_CODES.CREATED: {
-      const deleteUri = response.headers.location;
-      const options = {
-        params: { apiKey: that.getApiKey() },
+      const options = GeneralUtils.mergeDeep(self._httpOptions, {
+        method: 'DELETE',
+        url: response.headers.location,
+        params: { apiKey: self.getApiKey() },
         headers: { 'Eyes-Date': GeneralUtils.toRfc1123DateTime() },
-      };
-      return sendRequest(that, name, deleteUri, 'delete', options);
+      });
+      return sendRequest(self, name, options);
     }
     case HTTP_STATUS_CODES.GONE: {
-      return that._promiseFactory.reject(new Error('The server task has gone.'));
+      throw new Error('The server task has gone.');
     }
     default: {
-      return that._promiseFactory.reject(new Error(`Unknown error processing long request: ${JSON.stringify(response)}`));
+      throw new Error(`Unknown error during long request: ${JSON.stringify(response)}`);
     }
   }
-};
+}
 
 /**
  * @private
- * @param {ServerConnector} that
- * @param {String} name
- * @param {String} uri
- * @param {String} method
- * @param {Object} options
- * @return {Promise.<AxiosResponse>}
+ * @param {ServerConnector} self
+ * @param {string} name
+ * @param {object} options
+ * @return {Promise<AxiosResponse>}
  */
-const sendLongRequest = (that, name, uri, method, options = {}) => {
-  const headers = {
-    'Eyes-Expect': '202+location',
-    'Eyes-Date': GeneralUtils.toRfc1123DateTime(),
-  };
-
+async function sendLongRequest(self, name, options = {}) {
   // extend headers of the request
-  options.headers = options.headers ? Object.assign(options.headers, headers) : headers;
-  return sendRequest(that, name, uri, method, options)
-    .then(response => longRequestCheckStatus(that, name, response));
-};
+  options.headers['Eyes-Expect'] = '202+location'; // eslint-disable-line no-param-reassign
+  options.headers['Eyes-Date'] = GeneralUtils.toRfc1123DateTime(); // eslint-disable-line no-param-reassign
+
+  const response = await sendRequest(self, name, options);
+  return longRequestCheckStatus(self, name, response);
+}
 
 /**
  * Creates a bytes representation of the given JSON.
  *
  * @private
- * @param {Object} jsonData The data from for which to create the bytes representation.
+ * @param {object} jsonData The data from for which to create the bytes representation.
  * @return {Buffer} a buffer of bytes which represents the stringified JSON, prefixed with size.
  */
 const createDataBytes = jsonData => {
@@ -45295,22 +46063,24 @@ const createDataBytes = jsonData => {
  */
 class ServerConnector {
   /**
-   * @param {PromiseFactory} promiseFactory An object which will be used for creating deferreds/promises.
    * @param {Logger} logger
-   * @param {String} serverUrl
+   * @param {string} serverUrl
    */
-  constructor(promiseFactory, logger, serverUrl) {
-    this._promiseFactory = promiseFactory;
+  constructor(logger, serverUrl) {
     this._logger = logger;
     this._serverUrl = serverUrl;
-    this._apiKey = null;
 
-    this._renderingServerUrl = null;
-    this._renderingAuthToken = null;
+    /** @type {string} */
+    this._apiKey = undefined;
+    /** @type {string} */
+    this._renderingServerUrl = undefined;
+    /** @type {string} */
+    this._renderingAuthToken = undefined;
+    /** @type {ProxySettings} */
+    this._proxySettings = undefined;
 
-    this._proxySettings = null;
     this._httpOptions = {
-      proxy: null,
+      proxy: undefined,
       headers: DEFAULT_HEADERS,
       timeout: DEFAULT_TIMEOUT_MS,
       responseType: 'json',
@@ -45321,7 +46091,7 @@ class ServerConnector {
   /**
    * Sets the current server URL used by the rest client.
    *
-   * @param serverUrl {String} The URI of the rest server.
+   * @param serverUrl {string} The URI of the rest server.
    */
   setServerUrl(serverUrl) {
     ArgumentGuard.notNull(serverUrl, 'serverUrl');
@@ -45329,7 +46099,7 @@ class ServerConnector {
   }
 
   /**
-   * @return {String} The URI of the eyes server.
+   * @return {string} The URI of the eyes server.
    */
   getServerUrl() {
     return this._serverUrl;
@@ -45338,7 +46108,7 @@ class ServerConnector {
   /**
    * Sets the API key of your applitools Eyes account.
    *
-   * @param {String} apiKey The api key to set.
+   * @param {string} apiKey The api key to set.
    */
   setApiKey(apiKey) {
     ArgumentGuard.notNull(apiKey, 'apiKey');
@@ -45347,16 +46117,17 @@ class ServerConnector {
 
   /**
    *
-   * @return {String} The currently set API key or {@code null} if no key is set.
+   * @return {string} The currently set API key or {@code null} if no key is set.
    */
   getApiKey() {
+    // noinspection JSUnresolvedVariable
     return this._apiKey || process.env.APPLITOOLS_API_KEY;
   }
 
   /**
    * Sets the current rendering server URL used by the client.
    *
-   * @param serverUrl {String} The URI of the rendering server.
+   * @param serverUrl {string} The URI of the rendering server.
    */
   setRenderingServerUrl(serverUrl) {
     ArgumentGuard.notNull(serverUrl, 'serverUrl');
@@ -45365,7 +46136,7 @@ class ServerConnector {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String} The URI of the rendering server.
+   * @return {string} The URI of the rendering server.
    */
   getRenderingServerUrl() {
     return this._renderingServerUrl;
@@ -45374,7 +46145,7 @@ class ServerConnector {
   /**
    * Sets the API key of your applitools Eyes account.
    *
-   * @param {String} authToken The api key to set.
+   * @param {string} authToken The api key to set.
    */
   setRenderingAuthToken(authToken) {
     ArgumentGuard.notNull(authToken, 'authToken');
@@ -45384,7 +46155,7 @@ class ServerConnector {
   // noinspection JSUnusedGlobalSymbols
   /**
    *
-   * @return {String} The currently set API key or {@code null} if no key is set.
+   * @return {string} The currently set API key or {@code null} if no key is set.
    */
   getRenderingAuthToken() {
     return this._renderingAuthToken;
@@ -45393,9 +46164,9 @@ class ServerConnector {
   /**
    * Sets the proxy settings to be used by the rest client.
    *
-   * @param {ProxySettings|String} arg1 The proxy setting or url to be used. If {@code null} then no proxy is set.
-   * @param {String} [username]
-   * @param {String} [password]
+   * @param {ProxySettings|string} arg1 The proxy setting or url to be used. If {@code null} then no proxy is set.
+   * @param {string} [username]
+   * @param {string} [password]
    */
   setProxy(arg1, username, password) {
     if (!arg1) {
@@ -45411,6 +46182,11 @@ class ServerConnector {
     }
 
     this._httpOptions.proxy = this._proxySettings.toProxyObject();
+
+    // TODO: remove hot-fix when axios release official fix
+    if (this._httpOptions.proxy.protocol === 'http:') {
+      this._httpOptions.transport = require('http'); // eslint-disable-line
+    }
   }
 
   /**
@@ -45423,14 +46199,14 @@ class ServerConnector {
   /**
    * Whether sessions are removed immediately after they are finished.
    *
-   * @param shouldRemove {Boolean}
+   * @param shouldRemove {boolean}
    */
   setRemoveSession(shouldRemove) {
     this._httpOptions.params.removeSession = shouldRemove;
   }
 
   /**
-   * @return {Boolean} Whether sessions are removed immediately after they are finished.
+   * @return {boolean} Whether sessions are removed immediately after they are finished.
    */
   getRemoveSession() {
     return !!this._httpOptions.params.removeSession;
@@ -45440,7 +46216,7 @@ class ServerConnector {
   /**
    * Sets the connect and read timeouts for web requests.
    *
-   * @param {int} timeout Connect/Read timeout in milliseconds. 0 equals infinity.
+   * @param {number} timeout Connect/Read timeout in milliseconds. 0 equals infinity.
    */
   setTimeout(timeout) {
     ArgumentGuard.greaterThanOrEqualToZero(timeout, 'timeout');
@@ -45449,7 +46225,7 @@ class ServerConnector {
 
   /**
    *
-   * @return {int} The timeout for web requests (in seconds).
+   * @return {number} The timeout for web requests (in seconds).
    */
   getTimeout() {
     return this._httpOptions.timeout;
@@ -45460,67 +46236,96 @@ class ServerConnector {
    * linked to an existing session, or to a completely new session.
    *
    * @param {SessionStartInfo} sessionStartInfo The start parameters for the session.
-   * @return {Promise.<RunningSession>} RunningSession object which represents the current running session
+   * @return {Promise<RunningSession>} RunningSession object which represents the current running session
    */
-  startSession(sessionStartInfo) {
+  async startSession(sessionStartInfo) {
     ArgumentGuard.notNull(sessionStartInfo, 'sessionStartInfo');
     this._logger.verbose(`ServerConnector.startSession called with: ${sessionStartInfo}`);
 
-    const that = this;
-    const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running');
-    const options = {
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running'),
       params: {
-        apiKey: that.getApiKey(),
+        apiKey: this.getApiKey(),
       },
       data: {
         startInfo: sessionStartInfo,
       },
-    };
-
-    return sendRequest(that, 'startSession', uri, 'post', options).then(response => {
-      const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED];
-      if (validStatusCodes.includes(response.status)) {
-        that._logger.verbose('ServerConnector.startSession - post succeeded', response.data);
-        const runningSession = RunningSession.fromObject(response.data);
-        runningSession.setNewSession(response.status === HTTP_STATUS_CODES.CREATED);
-        return runningSession;
-      }
-
-      throw new Error(`ServerConnector.startSession - unexpected status (${response.statusText})`);
     });
+
+    const response = await sendRequest(this, 'startSession', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED];
+    if (validStatusCodes.includes(response.status)) {
+      const runningSession = new RunningSession(response.data);
+      runningSession.setNewSession(response.status === HTTP_STATUS_CODES.CREATED);
+      this._logger.verbose('ServerConnector.startSession - post succeeded', runningSession);
+      return runningSession;
+    }
+
+    throw new Error(`ServerConnector.startSession - unexpected status (${response.statusText})`);
   }
 
   /**
    * Stops the running session.
    *
    * @param {RunningSession} runningSession The running session to be stopped.
-   * @param {Boolean} isAborted
-   * @param {Boolean} save
-   * @return {Promise.<TestResults>} TestResults object for the stopped running session
+   * @param {boolean} isAborted
+   * @param {boolean} save
+   * @return {Promise<TestResults>} TestResults object for the stopped running session
    */
-  stopSession(runningSession, isAborted, save) {
+  async stopSession(runningSession, isAborted, save) {
     ArgumentGuard.notNull(runningSession, 'runningSession');
-    this._logger.verbose(`ServerConnector.stopSession called with isAborted: ${isAborted}, save: ${save} for session: ${runningSession}`);
+    // eslint-disable-next-line max-len
+    this._logger.verbose(`ServerConnector.stopSession called with ${JSON.stringify({ isAborted, updateBaseline: save })} for session: ${runningSession}`);
 
-    const that = this;
-    const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId());
-    const options = {
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'DELETE',
+      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId()),
       params: {
-        apiKey: that.getApiKey(),
+        apiKey: this.getApiKey(),
         aborted: isAborted,
         updateBaseline: save,
       },
-    };
-
-    return sendLongRequest(that, 'stopSession', uri, 'delete', options).then(response => {
-      const validStatusCodes = [HTTP_STATUS_CODES.OK];
-      if (validStatusCodes.includes(response.status)) {
-        that._logger.verbose('ServerConnector.stopSession - post succeeded', response.data);
-        return TestResults.fromObject(response.data);
-      }
-
-      throw new Error(`ServerConnector.stopSession - unexpected status (${response.statusText})`);
     });
+
+    const response = await sendLongRequest(this, 'stopSession', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK];
+    if (validStatusCodes.includes(response.status)) {
+      const testResults = new TestResults(response.data);
+      this._logger.verbose('ServerConnector.stopSession - post succeeded', testResults);
+      return testResults;
+    }
+
+    throw new Error(`ServerConnector.stopSession - unexpected status (${response.statusText})`);
+  }
+
+  /**
+   * Deletes the given test result
+   *
+   * @param {TestResults} testResults The session to delete by test results.
+   * @return {Promise<void>}
+   */
+  async deleteSession(testResults) {
+    ArgumentGuard.notNull(testResults, 'testResults');
+    this._logger.verbose(`ServerConnector.deleteSession called with ${JSON.stringify(testResults)}`);
+
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'DELETE',
+      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/batches/', testResults.getBatchId(), '/', testResults.getId()),
+      params: {
+        apiKey: this.getApiKey(),
+        accessToken: testResults.getSecretToken(),
+      },
+    });
+
+    const response = await sendRequest(this, 'deleteSession', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK];
+    if (validStatusCodes.includes(response.status)) {
+      this._logger.verbose('ServerConnector.deleteSession - post succeeded');
+      return;
+    }
+
+    throw new Error(`ServerConnector.stopSession - unexpected status (${response.statusText})`);
   }
 
   /**
@@ -45528,81 +46333,81 @@ class ServerConnector {
    *
    * @param {RunningSession} runningSession The current agent's running session.
    * @param {MatchWindowData} matchWindowData Encapsulation of a capture taken from the application.
-   * @return {Promise.<MatchResult>} The results of the window matching.
+   * @return {Promise<MatchResult>} The results of the window matching.
    */
-  matchWindow(runningSession, matchWindowData) {
+  async matchWindow(runningSession, matchWindowData) {
     ArgumentGuard.notNull(runningSession, 'runningSession');
     ArgumentGuard.notNull(matchWindowData, 'matchWindowData');
     this._logger.verbose(`ServerConnector.matchWindow called with ${matchWindowData} for session: ${runningSession}`);
 
-    const that = this;
-    const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId());
-    const options = {
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId()),
       params: {
-        apiKey: that.getApiKey(),
+        apiKey: this.getApiKey(),
       },
       data: matchWindowData,
-    };
+    });
 
     if (matchWindowData.getAppOutput().getScreenshot64()) {
       // if there is screenshot64, then we will send application/octet-stream body instead of application/json
       const screenshot64 = matchWindowData.getAppOutput().getScreenshot64();
       matchWindowData.getAppOutput().setScreenshot64(null); // remove screenshot64 from json
-      options.contentType = 'application/octet-stream';
+      options.headers['Content-Type'] = 'application/octet-stream';
       // noinspection JSValidateTypes
       options.data = Buffer.concat([createDataBytes(matchWindowData), screenshot64]);
       matchWindowData.getAppOutput().setScreenshot64(screenshot64);
     }
 
-    return sendLongRequest(that, 'matchWindow', uri, 'post', options).then(response => {
-      const validStatusCodes = [HTTP_STATUS_CODES.OK];
-      if (validStatusCodes.includes(response.status)) {
-        that._logger.verbose('ServerConnector.matchWindow - post succeeded', response.data);
-        return MatchResult.fromObject(response.data);
-      }
+    const response = await sendLongRequest(this, 'matchWindow', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK];
+    if (validStatusCodes.includes(response.status)) {
+      const matchResult = new MatchResult(response.data);
+      this._logger.verbose('ServerConnector.matchWindow - post succeeded', matchResult);
+      return matchResult;
+    }
 
-      throw new Error(`ServerConnector.matchWindow - unexpected status (${response.statusText})`);
-    });
+    throw new Error(`ServerConnector.matchWindow - unexpected status (${response.statusText})`);
   }
 
   /**
    * Matches the current window in single request.
    *
    * @param {MatchSingleWindowData} matchSingleWindowData Encapsulation of a capture taken from the application.
-   * @return {Promise.<TestResults>} The results of the window matching.
+   * @return {Promise<TestResults>} The results of the window matching.
    */
-  matchSingleWindow(matchSingleWindowData) {
+  async matchSingleWindow(matchSingleWindowData) {
     ArgumentGuard.notNull(matchSingleWindowData, 'matchSingleWindowData');
     this._logger.verbose(`ServerConnector.matchSingleWindow called with ${matchSingleWindowData}`);
 
-    const that = this;
-    const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH);
-    const options = {
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH),
       params: {
-        apiKey: that.getApiKey(),
+        apiKey: this.getApiKey(),
       },
       data: matchSingleWindowData,
-    };
+    });
 
     if (matchSingleWindowData.getAppOutput().getScreenshot64()) {
       // if there is screenshot64, then we will send application/octet-stream body instead of application/json
       const screenshot64 = matchSingleWindowData.getAppOutput().getScreenshot64();
       matchSingleWindowData.getAppOutput().setScreenshot64(null); // remove screenshot64 from json
-      options.contentType = 'application/octet-stream';
+      options.headers['Content-Type'] = 'application/octet-stream';
       // noinspection JSValidateTypes
       options.data = Buffer.concat([createDataBytes(matchSingleWindowData), screenshot64]);
       matchSingleWindowData.getAppOutput().setScreenshot64(screenshot64);
     }
 
-    return sendLongRequest(that, 'matchSingleWindow', uri, 'post', options).then(response => {
-      const validStatusCodes = [HTTP_STATUS_CODES.OK];
-      if (validStatusCodes.includes(response.status)) {
-        that._logger.verbose('ServerConnector.matchSingleWindow - post succeeded', response.data);
-        return TestResults.fromObject(response.data);
-      }
+    const response = await sendLongRequest(this, 'matchSingleWindow', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK];
+    if (validStatusCodes.includes(response.status)) {
+      const testResults = new TestResults(response.data);
+      this._logger.verbose('ServerConnector.matchSingleWindow - post succeeded', testResults);
+      return testResults;
+    }
 
-      throw new Error(`ServerConnector.matchSingleWindow - unexpected status (${response.statusText})`);
-    });
+    throw new Error(`ServerConnector.matchSingleWindow - unexpected status (${response.statusText})`);
   }
 
   // noinspection JSValidateJSDoc
@@ -45610,104 +46415,99 @@ class ServerConnector {
    * Replaces an actual image in the current running session.
    *
    * @param {RunningSession} runningSession The current agent's running session.
-   * @param {Number} stepIndex The zero based index of the step in which to replace the actual image.
+   * @param {number} stepIndex The zero based index of the step in which to replace the actual image.
    * @param {MatchWindowData} matchWindowData Encapsulation of a capture taken from the application.
-   * @return {Promise.<MatchResult>} The results of the window matching.
+   * @return {Promise<MatchResult>} The results of the window matching.
    */
-  replaceWindow(runningSession, stepIndex, matchWindowData) {
+  async replaceWindow(runningSession, stepIndex, matchWindowData) {
     ArgumentGuard.notNull(runningSession, 'runningSession');
     ArgumentGuard.notNull(matchWindowData, 'matchWindowData');
     this._logger.verbose(`ServerConnector.replaceWindow called with ${matchWindowData} for session: ${runningSession}`);
 
-    const that = this;
-    const uri = GeneralUtils.urlConcat(
-      this._serverUrl,
-      EYES_API_PATH,
-      '/running',
-      runningSession.getId(),
-      String(stepIndex)
-    );
-
-    const options = {
-      contentType: 'application/octet-stream',
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'PUT',
+      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId(), stepIndex),
       params: {
-        apiKey: that.getApiKey(),
+        apiKey: this.getApiKey(),
+      },
+      headers: {
+        'Content-Type': 'application/octet-stream',
       },
       data: Buffer.concat([createDataBytes(matchWindowData), matchWindowData.getAppOutput().getScreenshot64()]),
-    };
-
-    return sendLongRequest(that, 'replaceWindow', uri, 'put', options).then(response => {
-      const validStatusCodes = [HTTP_STATUS_CODES.OK];
-      if (validStatusCodes.includes(response.status)) {
-        that._logger.verbose('ServerConnector.replaceWindow - post succeeded', response.data);
-        return MatchResult.fromObject(response.data);
-      }
-
-      throw new Error(`ServerConnector.replaceWindow - unexpected status (${response.statusText})`);
     });
+
+    const response = await sendLongRequest(this, 'replaceWindow', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK];
+    if (validStatusCodes.includes(response.status)) {
+      const matchResult = new MatchResult(response.data);
+      this._logger.verbose('ServerConnector.replaceWindow - post succeeded', matchResult);
+      return matchResult;
+    }
+
+    throw new Error(`ServerConnector.replaceWindow - unexpected status (${response.statusText})`);
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * Initiate a rendering using RenderingGrid API
    *
-   * @return {Promise.<RenderingInfo>} The results of the render request
+   * @return {Promise<RenderingInfo>} The results of the render request
    */
-  renderInfo() {
+  async renderInfo() {
     this._logger.verbose('ServerConnector.renderInfo called.');
 
-    const that = this;
-    const uri = GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/renderinfo');
-    const options = {
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'GET',
+      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/renderinfo'),
       params: {
-        apiKey: that.getApiKey(),
+        apiKey: this.getApiKey(),
       },
-    };
-
-    return sendRequest(that, 'renderInfo', uri, 'get', options).then(response => {
-      const validStatusCodes = [HTTP_STATUS_CODES.OK];
-      if (validStatusCodes.includes(response.status)) {
-        that._logger.verbose('ServerConnector.renderInfo - post succeeded', response.data);
-        return RenderingInfo.fromObject(response.data);
-      }
-
-      throw new Error(`ServerConnector.renderInfo - unexpected status (${response.statusText})`);
     });
+
+    const response = await sendRequest(this, 'renderInfo', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK];
+    if (validStatusCodes.includes(response.status)) {
+      const renderingInfo = new RenderingInfo(response.data);
+      this._logger.verbose('ServerConnector.renderInfo - post succeeded', renderingInfo);
+      return renderingInfo;
+    }
+
+    throw new Error(`ServerConnector.renderInfo - unexpected status (${response.statusText})`);
   }
 
   /**
    * Initiate a rendering using RenderingGrid API
    *
-   * @param {RenderRequest} renderRequest The current agent's running session.
-   * @param {RunningRender} [runningRender] The running render (for second request only)
-   * @return {Promise.<RunningRender>} The results of the render request
+   * @param {RenderRequest[]|RenderRequest} renderRequest The current agent's running session.
+   * @return {Promise<RunningRender[]|RunningRender>} The results of the render request
    */
-  render(renderRequest, runningRender) {
+  async render(renderRequest) {
     ArgumentGuard.notNull(renderRequest, 'renderRequest');
-    this._logger.verbose(`ServerConnector.render called with ${renderRequest} for render: ${runningRender}`);
+    this._logger.verbose(`ServerConnector.render called with ${renderRequest}`);
 
-    const that = this;
-    const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/render');
-    const options = {
+    const isBatch = Array.isArray(renderRequest);
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/render'),
       headers: {
-        'X-Auth-Token': that._renderingAuthToken,
+        'X-Auth-Token': this._renderingAuthToken,
       },
-      data: renderRequest.toJSON(),
-    };
+      data: isBatch ? renderRequest : [renderRequest],
+    });
 
-    if (runningRender) {
-      options.data.renderId = runningRender.getRenderId();
-    }
-
-    return sendRequest(that, 'render', uri, 'post', options).then(response => {
-      const validStatusCodes = [HTTP_STATUS_CODES.OK];
-      if (validStatusCodes.includes(response.status)) {
-        that._logger.verbose('ServerConnector.render - post succeeded', response.data);
-        return RunningRender.fromObject(response.data);
+    const response = await sendRequest(this, 'render', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK];
+    if (validStatusCodes.includes(response.status)) {
+      let runningRender = Array.from(response.data).map(resultsData => new RunningRender(resultsData));
+      if (!isBatch) {
+        runningRender = runningRender[0]; // eslint-disable-line prefer-destructuring
       }
 
-      throw new Error(`ServerConnector.render - unexpected status (${response.statusText})`);
-    });
+      this._logger.verbose('ServerConnector.render - post succeeded', runningRender);
+      return runningRender;
+    }
+
+    throw new Error(`ServerConnector.render - unexpected status (${response.statusText})`);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -45716,33 +46516,33 @@ class ServerConnector {
    *
    * @param {RunningRender} runningRender The running render (for second request only)
    * @param {RGridResource} resource The resource to use
-   * @return {Promise.<boolean>} Whether resource exists on the server or not
+   * @return {Promise<boolean>} Whether resource exists on the server or not
    */
-  renderCheckResource(runningRender, resource) {
+  async renderCheckResource(runningRender, resource) {
     ArgumentGuard.notNull(runningRender, 'runningRender');
     ArgumentGuard.notNull(resource, 'resource');
+    // eslint-disable-next-line max-len
     this._logger.verbose(`ServerConnector.checkResourceExists called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
-    const that = this;
-    const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`);
-    const options = {
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'HEAD',
+      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/resources/sha256/', resource.getSha256Hash()),
       headers: {
-        'X-Auth-Token': that._renderingAuthToken,
+        'X-Auth-Token': this._renderingAuthToken,
       },
       params: {
         'render-id': runningRender.getRenderId(),
       },
-    };
-
-    return sendRequest(that, 'renderCheckResource', uri, 'HEAD', options).then(response => {
-      const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.NOT_FOUND];
-      if (validStatusCodes.includes(response.status)) {
-        that._logger.verbose('ServerConnector.checkResourceExists - request succeeded');
-        return response.status === HTTP_STATUS_CODES.OK;
-      }
-
-      throw new Error(`ServerConnector.checkResourceExists - unexpected status (${response.statusText})`);
     });
+
+    const response = await sendRequest(this, 'renderCheckResource', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.NOT_FOUND];
+    if (validStatusCodes.includes(response.status)) {
+      this._logger.verbose('ServerConnector.checkResourceExists - request succeeded');
+      return response.status === HTTP_STATUS_CODES.OK;
+    }
+
+    throw new Error(`ServerConnector.checkResourceExists - unexpected status (${response.statusText})`);
   }
 
   /**
@@ -45750,74 +46550,127 @@ class ServerConnector {
    *
    * @param {RunningRender} runningRender The running render (for second request only)
    * @param {RGridResource} resource The resource to upload
-   * @return {Promise.<boolean>} True if resource was uploaded
+   * @return {Promise<boolean>} True if resource was uploaded
    */
-  renderPutResource(runningRender, resource) {
+  async renderPutResource(runningRender, resource) {
     ArgumentGuard.notNull(runningRender, 'runningRender');
     ArgumentGuard.notNull(resource, 'resource');
+    ArgumentGuard.notNull(resource.getContent(), 'resource.getContent()');
+    // eslint-disable-next-line max-len
     this._logger.verbose(`ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
-    const that = this;
-    const uri = GeneralUtils.urlConcat(this._renderingServerUrl, `/resources/sha256/${resource.getSha256Hash()}`);
-    const options = {
-      contentType: resource.getContentType(),
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'PUT',
+      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/resources/sha256/', resource.getSha256Hash()),
       headers: {
-        'X-Auth-Token': that._renderingAuthToken,
+        'X-Auth-Token': this._renderingAuthToken,
+        'Content-Type': resource.getContentType(),
       },
       params: {
         'render-id': runningRender.getRenderId(),
       },
       data: resource.getContent(),
-    };
-
-    return sendRequest(that, 'renderPutResource', uri, 'PUT', options).then(response => {
-      const validStatusCodes = [HTTP_STATUS_CODES.OK];
-      if (validStatusCodes.includes(response.status)) {
-        that._logger.verbose('ServerConnector.putResource - request succeeded');
-        return true;
-      }
-
-      throw new Error(`ServerConnector.putResource - unexpected status (${response.statusText})`);
     });
+
+    const response = await sendRequest(this, 'renderPutResource', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK];
+    if (validStatusCodes.includes(response.status)) {
+      this._logger.verbose('ServerConnector.putResource - request succeeded');
+      return true;
+    }
+
+    throw new Error(`ServerConnector.putResource - unexpected status (${response.statusText})`);
   }
 
   /**
    * Get the rendering status for current render
    *
    * @param {RunningRender} runningRender The running render
-   * @return {Promise.<RenderStatusResults>} The render's status
+   * @param {boolean} [delayBeforeRequest=false] If {@code true}, then the request will be delayed
+   * @return {Promise<RenderStatusResults>} The render's status
    */
-  renderStatus(runningRender) {
-    ArgumentGuard.notNull(runningRender, 'runningRender');
-    this._logger.verbose(`ServerConnector.renderStatus called for render: ${runningRender}`);
+  renderStatus(runningRender, delayBeforeRequest = false) {
+    return this.renderStatusById(runningRender.getRenderId(), delayBeforeRequest);
+  }
 
-    const that = this;
-    const uri = GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status');
-    const options = {
+  /**
+   * Get the rendering status for current render
+   *
+   * @param {string[]|string} renderId The running renderId
+   * @param {boolean} [delayBeforeRequest=false] If {@code true}, then the request will be delayed
+   * @return {Promise<RenderStatusResults[]|RenderStatusResults>} The render's status
+   */
+  async renderStatusById(renderId, delayBeforeRequest = false) {
+    ArgumentGuard.notNull(renderId, 'renderId');
+    this._logger.verbose(`ServerConnector.renderStatus called for render: ${renderId}`);
+
+    const isBatch = Array.isArray(renderId);
+    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status'),
       headers: {
-        'X-Auth-Token': that._renderingAuthToken,
+        'X-Auth-Token': this._renderingAuthToken,
       },
-      params: {
-        'render-id': runningRender.getRenderId(),
-      },
-    };
+      data: isBatch ? renderId : [renderId],
+    });
 
-    return sendRequest(that, 'renderStatus', uri, 'get', options).then(response => {
-      const validStatusCodes = [HTTP_STATUS_CODES.OK];
-      if (validStatusCodes.includes(response.status)) {
-        that._logger.verbose('ServerConnector.renderStatus - get succeeded', response.data);
-        return RenderStatusResults.fromObject(response.data);
+    if (delayBeforeRequest) {
+      this._logger.verbose(`ServerConnector.renderStatus request delayed for ${RETRY_REQUEST_INTERVAL} ms.`);
+      await GeneralUtils.sleep(RETRY_REQUEST_INTERVAL);
+    }
+
+    const response = await sendRequest(this, 'renderStatus', options, 3, true);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK];
+    if (validStatusCodes.includes(response.status)) {
+      let renderStatus = Array.from(response.data).map(resultsData => new RenderStatusResults(resultsData));
+      if (!isBatch) {
+        renderStatus = renderStatus[0]; // eslint-disable-line prefer-destructuring
       }
 
-      throw new Error(`ServerConnector.renderStatus - unexpected status (${response.statusText})`);
+      this._logger.verbose(`ServerConnector.renderStatus - get succeeded for ${renderId} -`, renderStatus);
+      return renderStatus;
+    }
+
+    throw new Error(`ServerConnector.renderStatus - unexpected status (${response.statusText})`);
+  }
+
+  /**
+   * @param {string} domJson
+   * @return {Promise<string>}
+   */
+  async postDomSnapshot(domJson) {
+    ArgumentGuard.notNull(domJson, 'domJson');
+    this._logger.verbose('ServerConnector.postDomSnapshot called');
+
+    const that = this;
+    const options = GeneralUtils.mergeDeep(that._httpOptions, {
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running/data'),
+      params: {
+        apiKey: that.getApiKey(),
+      },
+      headers: {
+        'Content-Type': 'application/octet-stream',
+      },
     });
+
+    options.data = zlib.gzipSync(Buffer.from(domJson));
+
+    const response = await sendRequest(this, 'postDomSnapshot', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED];
+    if (validStatusCodes.includes(response.status)) {
+      that._logger.verbose('ServerConnector.postDomSnapshot - post succeeded');
+      return response.headers.location;
+    }
+
+    throw new Error(`ServerConnector.postDomSnapshot - unexpected status (${response.statusText})`);
   }
 }
 
 exports.ServerConnector = ServerConnector;
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"../ArgumentGuard":196,"../TestResults":208,"../match/MatchResult":252,"../renderer/RenderStatusResults":275,"../renderer/RenderingInfo":276,"../renderer/RunningRender":277,"../utils/GeneralUtils":296,"./ProxySettings":287,"./RunningSession":288,"_process":138,"axios":303,"buffer":52,"http":175}],290:[function(require,module,exports){
+},{"../ArgumentGuard":196,"../TestResults":205,"../match/MatchResult":254,"../renderer/RenderStatusResults":280,"../renderer/RunningRender":281,"../utils/GeneralUtils":302,"./ProxySettings":292,"./RenderingInfo":293,"./RunningSession":294,"_process":138,"axios":311,"buffer":55,"http":175,"zlib":52}],296:[function(require,module,exports){
 'use strict';
 
 const { GeneralUtils } = require('../utils/GeneralUtils');
@@ -45828,43 +46681,28 @@ const { ArgumentGuard } = require('../ArgumentGuard');
  */
 class SessionStartInfo {
   /**
-   * @param {String} agentId
-   * @param {SessionType} sessionType
-   * @param {String} appIdOrName
-   * @param {String} verId
-   * @param {String} scenarioIdOrName
+   * @param {string} agentId
+   * @param {SessionType} [sessionType]
+   * @param {string} appIdOrName
+   * @param {string} [verId]
+   * @param {string} scenarioIdOrName
    * @param {BatchInfo} batchInfo
-   * @param {String} baselineEnvName
-   * @param {String} environmentName
+   * @param {string} [baselineEnvName]
+   * @param {string} [environmentName]
    * @param {AppEnvironment} environment
    * @param {ImageMatchSettings} defaultMatchSettings
-   * @param {String} branchName
-   * @param {String} parentBranchName
-   * @param {String} baselineBranchName
-   * @param {Boolean} compareWithParentBranch
-   * @param {Boolean} ignoreBaseline
-   * @param {PropertyData[]} properties
-   * @param {Boolean} render=false
+   * @param {string} [branchName]
+   * @param {string} [parentBranchName]
+   * @param {string} [baselineBranchName]
+   * @param {boolean} [compareWithParentBranch]
+   * @param {boolean} [ignoreBaseline]
+   * @param {boolean} [saveDiffs]
+   * @param {boolean} [render]
+   * @param {PropertyData[]} [properties]
    */
-  constructor(
-    agentId,
-    sessionType,
-    appIdOrName,
-    verId,
-    scenarioIdOrName,
-    batchInfo,
-    baselineEnvName,
-    environmentName,
-    environment,
-    defaultMatchSettings,
-    branchName,
-    parentBranchName,
-    baselineBranchName,
-    compareWithParentBranch,
-    ignoreBaseline,
-    properties,
-    render
-  ) {
+  constructor({ agentId, sessionType, appIdOrName, verId, scenarioIdOrName, batchInfo, baselineEnvName, environmentName,
+    environment, defaultMatchSettings, branchName, parentBranchName, baselineBranchName, compareWithParentBranch,
+    ignoreBaseline, saveDiffs, render, properties } = {}) {
     ArgumentGuard.notNullOrEmpty(agentId, 'agentId');
     ArgumentGuard.notNullOrEmpty(appIdOrName, 'appIdOrName');
     ArgumentGuard.notNullOrEmpty(scenarioIdOrName, 'scenarioIdOrName');
@@ -45887,12 +46725,13 @@ class SessionStartInfo {
     this._baselineBranchName = baselineBranchName;
     this._compareWithParentBranch = compareWithParentBranch;
     this._ignoreBaseline = ignoreBaseline;
-    this._properties = properties;
+    this._saveDiffs = saveDiffs;
     this._render = render;
+    this._properties = properties;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getAgentId() {
     return this._agentId;
   }
@@ -45904,19 +46743,19 @@ class SessionStartInfo {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getAppIdOrName() {
     return this._appIdOrName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getVerId() {
     return this._verId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getScenarioIdOrName() {
     return this._scenarioIdOrName;
   }
@@ -45928,13 +46767,13 @@ class SessionStartInfo {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBaselineEnvName() {
     return this._baselineEnvName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getEnvironmentName() {
     return this._environmentName;
   }
@@ -45952,31 +46791,31 @@ class SessionStartInfo {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBranchName() {
     return this._branchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getParentBranchName() {
     return this._parentBranchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {String} */
+  /** @return {string} */
   getBaselineBranchName() {
     return this._baselineBranchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getCompareWithParentBranch() {
     return this._compareWithParentBranch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Boolean} */
+  /** @return {boolean} */
   getIgnoreBaseline() {
     return this._ignoreBaseline;
   }
@@ -45993,6 +46832,12 @@ class SessionStartInfo {
     return this._render;
   }
 
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {boolean} */
+  getSaveDiffs() {
+    return this._saveDiffs;
+  }
+
   /** @override */
   toJSON() {
     return GeneralUtils.toPlain(this);
@@ -46006,14 +46851,14 @@ class SessionStartInfo {
 
 exports.SessionStartInfo = SessionStartInfo;
 
-},{"../ArgumentGuard":196,"../utils/GeneralUtils":296}],291:[function(require,module,exports){
+},{"../ArgumentGuard":196,"../utils/GeneralUtils":302}],297:[function(require,module,exports){
 'use strict';
 
 /**
  * The type of the session.
  *
  * @readonly
- * @enum {Number}
+ * @enum {number}
  */
 const SessionType = {
   /**
@@ -46030,7 +46875,7 @@ const SessionType = {
 Object.freeze(SessionType);
 exports.SessionType = SessionType;
 
-},{}],292:[function(require,module,exports){
+},{}],298:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -46096,7 +46941,7 @@ class MouseTrigger extends Trigger {
 
 /**
  * @readonly
- * @enum {String}
+ * @enum {string}
  */
 MouseTrigger.MouseAction = {
   None: 'None',
@@ -46111,7 +46956,7 @@ MouseTrigger.MouseAction = {
 Object.freeze(MouseTrigger.MouseAction);
 exports.MouseTrigger = MouseTrigger;
 
-},{"../ArgumentGuard":196,"./Trigger":294}],293:[function(require,module,exports){
+},{"../ArgumentGuard":196,"./Trigger":300}],299:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
@@ -46124,7 +46969,7 @@ class TextTrigger extends Trigger {
   /**
    *
    * @param {Region} control
-   * @param {String} text
+   * @param {string} text
    */
   constructor(control, text) {
     super();
@@ -46138,7 +46983,7 @@ class TextTrigger extends Trigger {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {String}
+   * @return {string}
    */
   getText() {
     return this._text;
@@ -46168,7 +47013,7 @@ class TextTrigger extends Trigger {
 
 exports.TextTrigger = TextTrigger;
 
-},{"../ArgumentGuard":196,"./Trigger":294}],294:[function(require,module,exports){
+},{"../ArgumentGuard":196,"./Trigger":300}],300:[function(require,module,exports){
 'use strict';
 
 /**
@@ -46177,25 +47022,18 @@ exports.TextTrigger = TextTrigger;
  * @abstract
  */
 class Trigger {
-  constructor() {
-    if (new.target === Trigger) {
-      throw new TypeError('Can not construct `Trigger` instance directly, should be used implementation!');
-    }
-  }
-
   // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
-   * @abstract
    * @return {Trigger.TriggerType}
    */
   getTriggerType() {
-    throw new TypeError('The method `getTriggerType` from `Trigger` should be implemented!');
+    throw new TypeError('The method is not implemented!');
   }
 }
 
 /**
  * @readonly
- * @enum {String}
+ * @enum {string}
  */
 Trigger.TriggerType = {
   Unknown: 'Unknown',
@@ -46207,12 +47045,12 @@ Trigger.TriggerType = {
 Object.freeze(Trigger.TriggerType);
 exports.Trigger = Trigger;
 
-},{}],295:[function(require,module,exports){
+},{}],301:[function(require,module,exports){
 'use strict';
 
 /**
  * @readonly
- * @enum {String}
+ * @enum {string}
  */
 const BrowserNames = {
   Edge: 'Edge',
@@ -46226,25 +47064,26 @@ const BrowserNames = {
 Object.freeze(BrowserNames);
 exports.BrowserNames = BrowserNames;
 
-},{}],296:[function(require,module,exports){
+},{}],302:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
-const dateformat = require('dateformat');
+const merge = require('deepmerge');
+const dateFormat = require('dateformat');
 const stackTrace = require('stack-trace');
 
-const DATE_FORMAT_ISO8601_FOR_OUTPUT = "yyyy-mm-dd'T'HH:MM:ss'Z'";
+const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
 const DATE_FORMAT_RFC1123 = "ddd, dd mmm yyyy HH:MM:ss 'GMT'";
+const DATE_FORMAT_LOGFILE = 'yyyy_mm_dd_HH_MM_ss_l';
 
 const BASE64_CHARS_PATTERN = /[^A-Z0-9+/=]/i;
 
-const MS_IN_S = 1000;
-const MS_IN_M = 60000;
+const { hasOwnProperty } = Object.prototype;
 
 /**
  * @private
- * @param {Object} to
- * @param {Object} from
+ * @param {object} to
+ * @param {object} from
  * @param {string} fnName
  */
 const mixin = (to, from, fnName) => {
@@ -46258,16 +47097,16 @@ class GeneralUtils {
   /**
    * Concatenate the url to the suffixes - making sure there are no double slashes
    *
-   * @param {String} url The left side of the URL.
-   * @param {String...} suffixes The right side.
-   * @return {String} the URL
+   * @param {string} url The left side of the URL.
+   * @param {string...} suffixes The right side.
+   * @return {string} the URL
    */
   static urlConcat(url, ...suffixes) {
     let concatUrl = GeneralUtils.stripTrailingSlash(url);
 
     for (let i = 0, l = suffixes.length; i < l; i += 1) {
       /** @type {string} */
-      const suffix = suffixes[i];
+      const suffix = String(suffixes[i]);
       if (!suffix.startsWith('/') && !(i === l - 1 && suffix.startsWith('?'))) {
         concatUrl += '/';
       }
@@ -46280,41 +47119,60 @@ class GeneralUtils {
   /**
    * If given URL ends with '/', the method with cut it and return URL without it
    *
-   * @param {String} url
-   * @return {String}
+   * @param {string} url
+   * @return {string}
    */
   static stripTrailingSlash(url) {
     return url.endsWith('/') ? url.slice(0, -1) : url;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Check if an URL is absolute
+   *
+   * @param {string} url
+   * @return {boolean} the URL
+   */
+  static isAbsoluteUrl(url) {
+    return /^[a-z][a-z0-9+.-]*:/.test(url);
+  }
+
   /**
    * Convert object into json string
    *
-   * @deprecated use JSON.stringify instead
-   * @param {Object} object
-   * @return {String}
+   * @param {object} object
+   * @param {string[]} [exclude]
+   * @return {string}
    */
-  static toJson(object) {
+  static toString(object, exclude = []) {
+    if (!GeneralUtils.isPlainObject(object)) {
+      object = GeneralUtils.toPlain(object, exclude);
+    }
+
     return JSON.stringify(object);
   }
 
   /**
    * Convert a class to plain object
+   * Makes all private properties public (remove '_' char from prop names)
    *
-   * @param {Object} object
-   * @param {Array.<string>} [exclude]
-   * @return {Object}
+   * @param {object} object
+   * @param {string[]} [exclude]
+   * @param {object} [rename]
+   * @return {object}
    */
-  static toPlain(object, exclude = []) {
+  static toPlain(object, exclude = [], rename = {}) {
     if (object == null) {
       throw new TypeError('Cannot make null plain.');
     }
 
     const plainObject = {};
     Object.keys(object).forEach(objectKey => {
-      const publicKey = objectKey.replace('_', '');
-      if (Object.prototype.hasOwnProperty.call(object, objectKey) && !exclude.includes(objectKey)) {
+      let publicKey = objectKey.replace('_', '');
+      if (rename[publicKey]) {
+        publicKey = rename[publicKey];
+      }
+
+      if (hasOwnProperty.call(object, objectKey) && !exclude.includes(objectKey)) {
         if (object[objectKey] instanceof Object && typeof object[objectKey].toJSON === 'function') {
           plainObject[publicKey] = object[objectKey].toJSON();
         } else {
@@ -46330,8 +47188,8 @@ class GeneralUtils {
    *
    * @template T
    * @param {T} inst
-   * @param {Object} object
-   * @param {Object} [mapping]
+   * @param {object} object
+   * @param {object} [mapping]
    * @return {T}
    */
   static assignTo(inst, object, mapping = {}) {
@@ -46345,11 +47203,8 @@ class GeneralUtils {
 
     Object.keys(object).forEach(objectKey => {
       const privateKey = `_${objectKey}`;
-      if (
-        Object.prototype.hasOwnProperty.call(object, objectKey) &&
-        Object.prototype.hasOwnProperty.call(inst, privateKey)
-      ) {
-        if (Object.prototype.hasOwnProperty.call(mapping, objectKey)) {
+      if (hasOwnProperty.call(object, objectKey) && hasOwnProperty.call(inst, privateKey)) {
+        if (hasOwnProperty.call(mapping, objectKey)) {
           inst[privateKey] = mapping[objectKey].call(null, object[objectKey]);
         } else {
           inst[privateKey] = object[objectKey];
@@ -46361,11 +47216,25 @@ class GeneralUtils {
   }
 
   /**
-   * Mixin methods from one object into another.
-   * Follow the prototype chain and apply form root to current - but skip the top (Object)
+   * Merge two objects x and y deeply, returning a new merged object with the elements from both x and y.
+   * If an element at the same key is present for both x and y, the value from y will appear in the result.
+   * Merging creates a new object, so that neither x or y are be modified.
+   * @see package 'deepmerge'
    *
-   * @param {Object} to The object to which methods will be added
-   * @param {Object} from The object from which methods will be copied
+   * @param {object} x
+   * @param {object} y
+   * @return {object}
+   */
+  static mergeDeep(x, y) {
+    return merge(x, y, { isMergeableObject: GeneralUtils.isPlainObject });
+  }
+
+  /**
+   * Mixin methods from one object into another.
+   * Follow the prototype chain and apply form root to current - but skip the top (object)
+   *
+   * @param {object} to The object to which methods will be added
+   * @param {object} from The object from which methods will be copied
    */
   static mixin(to, from) {
     let index;
@@ -46388,7 +47257,7 @@ class GeneralUtils {
   /**
    * Generate GUID
    *
-   * @return {String}
+   * @return {string}
    */
   static guid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -46403,7 +47272,7 @@ class GeneralUtils {
   /**
    * Clone object
    *
-   * @param {Date|Array|Object} obj
+   * @param {Date|Array|object} obj
    * @return {*}
    */
   static clone(obj) {
@@ -46436,42 +47305,47 @@ class GeneralUtils {
   /**
    * Waits a specified amount of time before resolving the returned promise.
    *
-   * @param {int} ms The amount of time to sleep in milliseconds.
-   * @param {PromiseFactory} promiseFactory
-   * @return {Promise} A promise which is resolved when sleep is done.
+   * @param {number} ms The amount of time to sleep in milliseconds.
+   * @return {Promise<void>} A promise which is resolved when sleep is done.
    */
-  static sleep(ms, promiseFactory) {
-    return promiseFactory.makePromise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, ms);
-    });
+  static sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**
    * Convert a Date object to a ISO-8601 date string
    *
    * @param {Date} [date] Date which will be converted
-   * @return {String} String formatted as ISO-8601 (yyyy-MM-dd'T'HH:mm:ss'Z')
+   * @return {string} string formatted as ISO-8601 (yyyy-MM-dd'T'HH:mm:ss'Z')
    */
   static toISO8601DateTime(date = new Date()) {
-    return dateformat(date, DATE_FORMAT_ISO8601_FOR_OUTPUT, true);
+    return dateFormat(date, DATE_FORMAT_ISO8601, true);
   }
 
   /**
    * Convert a Date object to a RFC-1123 date string
    *
    * @param {Date} [date] Date which will be converted
-   * @return {String} String formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
+   * @return {string} string formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
    */
   static toRfc1123DateTime(date = new Date()) {
-    return dateformat(date, DATE_FORMAT_RFC1123, true);
+    return dateFormat(date, DATE_FORMAT_RFC1123, true);
+  }
+
+  /**
+   * Convert a Date object to a RFC-1123 date string
+   *
+   * @param {Date} [date] Date which will be converted
+   * @return {string} string formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
+   */
+  static toLogFileDateTime(date = new Date()) {
+    return dateFormat(date, DATE_FORMAT_LOGFILE, false);
   }
 
   /**
    * Creates {@link Date} instance from an ISO 8601 formatted string.
    *
-   * @param {String} dateTime An ISO 8601 formatted string.
+   * @param {string} dateTime An ISO 8601 formatted string.
    * @return {Date} A {@link Date} instance representing the given date and time.
    */
   static fromISO8601DateTime(dateTime) {
@@ -46479,50 +47353,32 @@ class GeneralUtils {
   }
 
   /**
-   * Format elapsed time by template (#m #s #ms)
-   *
-   * @param {number} elapsedMs
-   * @return {string} formatted string
-   */
-  static elapsedString(elapsedMs) {
-    const min = Math.floor(elapsedMs / MS_IN_M);
-    if (min > 0) {
-      elapsedMs -= min * MS_IN_M;
-    }
-    const sec = Math.floor(elapsedMs / MS_IN_S);
-    if (sec > 0) {
-      elapsedMs -= sec * MS_IN_S;
-    }
-
-    if (min > 0) {
-      return `${min}m ${sec}s ${elapsedMs}ms`;
-    }
-    return `${sec}s ${elapsedMs}ms`;
-  }
-
-  /**
    * Convert object(s) to a string
    *
    * @param {*} args
-   * @return {String}
+   * @return {string}
    */
   static stringify(...args) {
     return args
       .map(arg => {
-        if (typeof arg === 'object') {
+        if (arg != null && typeof arg === 'object') {
+          if (arg.constructor !== Object) {
+            // Not plain object
+            if (arg instanceof Error && arg.stack) {
+              return arg.stack;
+            }
+
+            if (typeof arg.toString === 'function' && arg.toString !== Object.prototype.toString) {
+              return arg.toString();
+            }
+          }
+
           return JSON.stringify(arg);
         }
 
         return arg;
       })
       .join(' ');
-  }
-
-  /**
-   * @return {int}
-   */
-  static currentTimeMillis() {
-    return Date.now();
   }
 
   /**
@@ -46547,6 +47403,30 @@ class GeneralUtils {
    */
   static isBoolean(value) {
     return typeof value === 'boolean' || value instanceof Boolean;
+  }
+
+  /**
+   * @param value
+   * @return {boolean}
+   */
+  static isObject(value) {
+    return value != null && typeof value === 'object' && Array.isArray(value) === false;
+  }
+
+  /**
+   * @param value
+   * @return {boolean}
+   */
+  static isPlainObject(value) {
+    return GeneralUtils.isObject(value) && value.constructor === Object;
+  }
+
+  /**
+   * @param value
+   * @return {boolean}
+   */
+  static isArray(value) {
+    return Array.isArray(value);
   }
 
   /**
@@ -46579,7 +47459,7 @@ class GeneralUtils {
   }
 
   /**
-   * @typedef {Object} CallSite
+   * @typedef {object} CallSite
    * @property {function} getTypeName returns the type of this as a string.
    * @property {function} getFunctionName returns the name of the current function, typically its name property.
    * @property {function} getMethodName returns the name of the property of this or one of its prototypes that holds
@@ -46588,18 +47468,19 @@ class GeneralUtils {
    * @property {function} getLineNumber if this function was defined in a script returns the current line number
    * @property {function} getColumnNumber if this function was defined in a script returns the current column number
    * @property {function} isNative is this call in native V8 code?
-   *
-   * @return {Array.<CallSite>}
+   *//**
+   * @param {Error} [error]
+   * @return {CallSite[]}
    */
-  static getStackTrace() {
-    return stackTrace.get();
+  static getStackTrace(error) {
+    return stackTrace.get(error);
   }
 
   /**
    * Simple method that decode JSON Web Tokens
    *
-   * @param {String} token
-   * @return {Object}
+   * @param {string} token
+   * @return {object}
    */
   static jwtDecode(token) {
     let payloadSeg = token.split('.')[1];
@@ -46607,17 +47488,45 @@ class GeneralUtils {
     payloadSeg = payloadSeg.replace(/-/g, '+').replace(/_/g, '/');
     return JSON.parse(Buffer.from(payloadSeg, 'base64').toString());
   }
+
+  /**
+   * Generates the cartesian product of the sets.
+   *
+   * @param {...(Array|Object)} sets - variable number of sets of n elements.
+   * @return {Generator} yields each product as an array
+   */
+  static* cartesianProduct(...sets) {
+    const data = [];
+
+    function* cartesianUtil(index) {
+      if (index === sets.length) {
+        return yield data.slice();
+      }
+
+      if (GeneralUtils.isArray(sets[index])) {
+        for (let i = 0; i < sets[index].length; i += 1) {
+          data[index] = sets[index][i];
+          yield* cartesianUtil(index + 1);
+        }
+      } else {
+        data[index] = sets[index];
+        yield* cartesianUtil(index + 1);
+      }
+    }
+
+    yield* cartesianUtil(0);
+  }
 }
 
 exports.GeneralUtils = GeneralUtils;
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":52,"dateformat":328,"stack-trace":337}],297:[function(require,module,exports){
+},{"buffer":55,"dateformat":336,"deepmerge":337,"stack-trace":347}],303:[function(require,module,exports){
 'use strict';
 
 /**
  * @readonly
- * @enum {String}
+ * @enum {string}
  */
 const OSNames = {
   Unknown: 'Unknown',
@@ -46630,13 +47539,162 @@ const OSNames = {
 Object.freeze(OSNames);
 exports.OSNames = OSNames;
 
-},{}],298:[function(require,module,exports){
+},{}],304:[function(require,module,exports){
+(function (process){
 'use strict';
+
+const MS_IN_S = 1000;
+const MS_IN_M = 60000;
+const NS_IN_MS = 1000000;
+
+const timeStorage = {};
+
+class Time {
+  constructor(name) {
+    if (name) {
+      this._name = String(name);
+    }
+  }
+
+  reset() {
+    this._startTime = null;
+    this._elapsedTime = null;
+
+    this._result = null;
+  }
+
+  start() {
+    this.reset();
+    this._startTime = process.hrtime();
+  }
+
+  /**
+   * @return {{name: string, time: number, summary: string}}
+   */
+  end() {
+    if (!this._startTime) {
+      throw new Error('start() should be called first!');
+    }
+
+    this._elapsedTime = process.hrtime(this._startTime);
+    const elapsedMs = (this._elapsedTime[0] * MS_IN_S) + (this._elapsedTime[1] / NS_IN_MS);
+
+    this._result = {
+      name: this._name || '',
+      time: Number(elapsedMs.toFixed(3)),
+      summary: PerformanceUtils.elapsedString(elapsedMs),
+    };
+
+    return this._result;
+  }
+
+  /**
+   * @return {?{name: string, time: number, summary: string}}
+   */
+  result() {
+    return this._result;
+  }
+}
+
+/**
+ * Collection of utility methods for measure performance.
+ */
+class PerformanceUtils {
+  /**
+   * @param {string} [name] Instance name or {@code null} if don't want to store it
+   * @param {boolean} [storeResults=true]
+   * @return {Time}
+   */
+  static start(name, storeResults = true) {
+    const time = new Time(name);
+    time.storeResults = storeResults;
+    time.start();
+
+    if (name && storeResults) {
+      timeStorage[name] = time;
+    }
+    return time;
+  }
+
+  /**
+   * @param {string} name Instance name
+   * @param {boolean} [deleteResults=false]
+   * @return {{name: string, time: number, summary: string}}
+   */
+  static end(name, deleteResults = false) {
+    if (!name) {
+      throw new Error('Instance name required!');
+    }
+
+    const time = timeStorage[name];
+    if (!time) {
+      throw new Error(`No time instance with name: ${name}`);
+    }
+
+    if (time.result()) {
+      return time.result();
+    }
+
+    const result = time.end();
+    if (deleteResults) {
+      delete timeStorage[name];
+    }
+
+    return result;
+  }
+
+  /**
+   * @param {string} name Instance name
+   * @return {{name: string, time: number, summary: string}}
+   */
+  static result(name) {
+    if (!name) {
+      throw new Error('Instance name required!');
+    }
+
+    const time = timeStorage[name];
+    if (!time) {
+      throw new Error(`No time instance with name: ${name}`);
+    }
+
+    return time.result();
+  }
+
+  /**
+   * Format elapsed time by template (#m #s #ms)
+   *
+   * @param {number} milliseconds
+   * @return {string} formatted string
+   */
+  static elapsedString(milliseconds) {
+    const minutes = Math.floor(milliseconds / MS_IN_M);
+    if (minutes > 0) {
+      milliseconds -= minutes * MS_IN_M;
+    }
+    const seconds = Math.floor(milliseconds / MS_IN_S);
+    if (seconds > 0) {
+      milliseconds -= seconds * MS_IN_S;
+    }
+
+    if (minutes > 0) {
+      return `${minutes}m ${seconds}s ${milliseconds}ms`;
+    }
+    return `${seconds}s ${milliseconds}ms`;
+  }
+}
+
+exports.PerformanceUtils = PerformanceUtils;
+
+}).call(this,require('_process'))
+},{"_process":138}],305:[function(require,module,exports){
+'use strict';
+
+/* eslint-disable no-unused-vars */
 
 /**
  * Encapsulates getter/setter behavior. (e.g., set only once etc.).
  *
- * @interface
+ * @abstract
  */
 class PropertyHandler {
   /**
@@ -46653,7 +47711,7 @@ class PropertyHandler {
 
 exports.PropertyHandler = PropertyHandler;
 
-},{}],299:[function(require,module,exports){
+},{}],306:[function(require,module,exports){
 'use strict';
 
 const { PropertyHandler } = require('./PropertyHandler');
@@ -46664,7 +47722,7 @@ const { PropertyHandler } = require('./PropertyHandler');
 class ReadOnlyPropertyHandler extends PropertyHandler {
   /**
    * @param {Logger} [logger]
-   * @param {Object} [obj] The object to set.
+   * @param {object} [obj] The object to set.
    */
   constructor(logger, obj) {
     super();
@@ -46673,7 +47731,7 @@ class ReadOnlyPropertyHandler extends PropertyHandler {
   }
 
   /** @inheritDoc */
-  set(obj) {
+  set(obj) { // eslint-disable-line no-unused-vars
     this._logger.verbose('Ignored. (ReadOnlyPropertyHandler)');
     return false;
   }
@@ -46686,7 +47744,7 @@ class ReadOnlyPropertyHandler extends PropertyHandler {
 
 exports.ReadOnlyPropertyHandler = ReadOnlyPropertyHandler;
 
-},{"./PropertyHandler":298}],300:[function(require,module,exports){
+},{"./PropertyHandler":305}],307:[function(require,module,exports){
 'use strict';
 
 const { PropertyHandler } = require('./PropertyHandler');
@@ -46696,7 +47754,7 @@ const { PropertyHandler } = require('./PropertyHandler');
  */
 class SimplePropertyHandler extends PropertyHandler {
   /**
-   * @param {Object} [obj] The object to set.
+   * @param {object} [obj] The object to set.
    */
   constructor(obj) {
     super();
@@ -46717,7 +47775,7 @@ class SimplePropertyHandler extends PropertyHandler {
 
 exports.SimplePropertyHandler = SimplePropertyHandler;
 
-},{"./PropertyHandler":298}],301:[function(require,module,exports){
+},{"./PropertyHandler":305}],308:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -46726,7 +47784,7 @@ const Stream = require('stream');
 class ReadableBufferStream extends Stream.Readable {
   /**
    * @param {Buffer} buffer The buffer to be used as the stream's source.
-   * @param {Object} [options] An "options" object to be passed to the stream constructor.
+   * @param {object} [options] An "options" object to be passed to the stream constructor.
    */
   constructor(buffer, options) {
     super(options);
@@ -46746,7 +47804,7 @@ class ReadableBufferStream extends Stream.Readable {
 
 class WritableBufferStream extends Stream.Writable {
   /**
-   * @param {Object} [options] An "options" object to be passed to the stream constructor.
+   * @param {object} [options] An "options" object to be passed to the stream constructor.
    * @return {WritableBufferStream}
    */
   constructor(options) {
@@ -46758,7 +47816,7 @@ class WritableBufferStream extends Stream.Writable {
   /**
    * Override of the _write function, as require when implementing a Writable stream.
    * @param {Buffer|string} chunk The chunk to write to the stream.
-   * @param {String} enc If {@code chunk} is a string, this is the encoding of {@code chunk}.
+   * @param {string} enc If {@code chunk} is a string, this is the encoding of {@code chunk}.
    * @param {function} next The callback to call when finished handling {@code chunk}.
    * @private
    */
@@ -46771,7 +47829,7 @@ class WritableBufferStream extends Stream.Writable {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
+   * @return {boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
    *   emitted before continuing to write additional data, otherwise {@code true}.
    */
   writeInt(value) {
@@ -46782,7 +47840,7 @@ class WritableBufferStream extends Stream.Writable {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
+   * @return {boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
    *   emitted before continuing to write additional data, otherwise {@code true}.
    */
   writeShort(value) {
@@ -46793,7 +47851,7 @@ class WritableBufferStream extends Stream.Writable {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
+   * @return {boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
    *   emitted before continuing to write additional data, otherwise {@code true}.
    */
   writeByte(value) {
@@ -46826,12 +47884,190 @@ exports.ReadableBufferStream = ReadableBufferStream;
 exports.WritableBufferStream = WritableBufferStream;
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":52,"stream":174}],302:[function(require,module,exports){
+},{"buffer":55,"stream":174}],309:[function(require,module,exports){
+'use strict';
+
+const OK = 'ok';
+const NOT_OK = 'not ok';
+
+/**
+ * A utility class for aggregating and formatting test results.
+ */
+class TestResultsFormatter {
+  constructor() {
+    this._resultsList = [];
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Adds an additional results object to the currently stored results list.
+   *
+   * @param {TestResults} results A test results returned by a call to `eyes.close' or 'eyes.abortIfNotClosed'.
+   * @return {TestResultsFormatter} The updated 'TestResultsFormatter' instance.
+   */
+  addResults(results) {
+    if (results) {
+      this._resultsList.push(results);
+    }
+
+    return this;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Creates a TAP representation of the tests results list in hierarchic format.
+   *
+   * @param {boolean} [includeSubTests=true] If true, steps will be treated as "subtests". Default is true.
+   * @param {boolean} [markNewAsPassed=false] If true, new tests will be treated as "passed". Default is false.
+   * @return {string} A string which is the TAP representation of the results list.
+   */
+  asHierarchicTAPString(includeSubTests = true, markNewAsPassed = false) {
+    if (this._resultsList.length === 0) {
+      return '';
+    }
+
+    /** @type {TestResults} */
+    let currentResult;
+    let tapString = `1..${this._resultsList.length}\n`;
+
+    for (let i = 0; i < this._resultsList.length; i += 1) {
+      currentResult = this._resultsList[i];
+      const tapIndex = i + 1;
+
+      if (i > 0) {
+        tapString += '#\n';
+      }
+
+      const name = `Test: '${currentResult.getName()}', Application: '${currentResult.getAppName()}'`;
+
+      if (currentResult.isPassed()) {
+        tapString += `${OK} ${tapIndex} - [PASSED TEST] ${name}\n`;
+      } else {
+        // Test did not pass (might also be a new test).
+        if (currentResult.getIsNew()) {
+          // New test
+          const newResult = markNewAsPassed ? OK : NOT_OK;
+          tapString += `${newResult} ${tapIndex} - [NEW TEST] ${name}\n`;
+        } else {
+          // Failed / Aborted test.
+          tapString += `${NOT_OK} ${tapIndex} - `;
+          if (currentResult.getIsAborted()) {
+            tapString += `[ABORTED TEST] ${name}\n`;
+          } else {
+            tapString += `[FAILED TEST] ${name}\n`;
+          }
+          tapString += `#\tMismatches: ${currentResult.getMismatches()}\n`;
+        }
+        if (currentResult.getIsSaved()) {
+          tapString += '#\tTest was automatically saved as a baseline.\n';
+        }
+      }
+
+      const url = currentResult.getAppUrls() && currentResult.getAppUrls().getSession() ?
+        currentResult.getAppUrls().getSession() : "No URL (session didn't start).";
+
+      tapString += `#\tTest url: ${url}\n`;
+      if (includeSubTests) {
+        if (currentResult.getStepsInfo().length > 0) {
+          tapString += `\t1..${currentResult.getStepsInfo().length}\n`;
+          for (let j = 0; j < currentResult.getStepsInfo().length; j += 1) {
+            const currentStep = currentResult.getStepsInfo()[j];
+            tapString += '\t';
+            tapString += currentStep.getIsDifferent() ? NOT_OK : OK;
+            tapString += ` '${currentStep.getName()}', URL: ${currentStep.getAppUrls().getStep()}\n`;
+          }
+        } else {
+          tapString += '\tNo steps exist for this test.\n';
+        }
+      }
+    }
+
+    return tapString;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Creates a TAP representation of the tests results list in which each steps are colored as success/fail.
+   *
+   * @param {boolean} [markNewAsPassed=false] If true, new tests will be treated as "passed". Default is false.
+   * @return {string} A string which is the TAP representation of the results list.
+   */
+  asFlattenedTAPString(markNewAsPassed = false) {
+    if (this._resultsList.length === 0) {
+      return '';
+    }
+
+    /** @type {TestResults} */
+    let currentResult;
+    let tapString = '';
+    let stepsCounter = 0;
+
+    // We'll add the TAP plan at the beginning, after we calculate the total number of steps.
+    for (let i = 0; i < this._resultsList.length; i += 1) {
+      tapString += '#\n';
+
+      currentResult = this._resultsList[i];
+      const tapIndex = i + 1;
+
+      const name = `Test: '${currentResult.getName()}', Application: '${currentResult.getAppName()}'`;
+
+      if (currentResult.isPassed()) {
+        tapString += `# ${OK} ${tapIndex} - [PASSED TEST] ${name}\n`;
+      } else {
+        // Test did not pass (might also be a new test).
+        if (currentResult.getIsNew()) {
+          // New test
+          const newResult = markNewAsPassed ? OK : NOT_OK;
+          tapString += `# ${newResult} ${tapIndex} - [NEW TEST] ${name}\n`;
+        } else {
+          // Failed / Aborted test.
+          tapString += `# ${NOT_OK} ${tapIndex} - `;
+          if (currentResult.getIsAborted()) {
+            tapString += `[ABORTED TEST] ${name}\n`;
+          } else {
+            tapString += `[FAILED TEST] ${name}\n`;
+          }
+          tapString += `#\tMismatches: ${currentResult.getMismatches()}\n`;
+        }
+        if (currentResult.getIsSaved()) {
+          tapString += '#\tTest was automatically saved as a baseline.\n';
+        }
+      }
+
+      const url = currentResult.getAppUrls() && currentResult.getAppUrls().getSession() ?
+        currentResult.getAppUrls().getSession() : "No URL (session didn't start).";
+
+      tapString += `#\tTest url: ${url}\n`;
+      if (currentResult.getStepsInfo().length > 0) {
+        for (let j = 0; j < currentResult.getStepsInfo().length; j += 1) {
+          stepsCounter += 1;
+          const currentStep = currentResult.getStepsInfo()[j];
+          tapString += currentStep.getIsDifferent() ? NOT_OK : OK;
+          tapString += ` ${stepsCounter} '${currentStep.getName()}', URL: ${currentStep.getAppUrls().getStep()}\n`;
+        }
+      } else {
+        tapString += '#\tNo steps exist for this test.\n';
+      }
+    }
+
+    if (stepsCounter > 0) {
+      tapString = `1..${stepsCounter}\n${tapString}`;
+    }
+
+    return tapString;
+  }
+}
+
+exports.TestResultsFormatter = TestResultsFormatter;
+
+},{}],310:[function(require,module,exports){
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
 const { BrowserNames } = require('./BrowserNames');
 const { OSNames } = require('./OSNames');
+
+/* eslint-disable prefer-destructuring */
 
 const MAJOR_MINOR = '([^ .;_)]+)[_.]([^ .;_)]+)';
 const PRODUCT = `(?:(%s)/${MAJOR_MINOR})`;
@@ -46840,17 +48076,17 @@ const PRODUCT = `(?:(%s)/${MAJOR_MINOR})`;
 const VALUES_FOR_BROWSER_REGEX_EXCEPT_IE = ['Opera', 'Chrome', 'Safari', 'Firefox', 'Edge'];
 const IE_BROWSER_REGEX = new RegExp(`(?:MS(IE) ${MAJOR_MINOR})`);
 
-const getBrowserRegexes = () => {
-  const browserRegexes = [];
+const getBrowserRegExes = () => {
+  const browserRegExes = [];
 
   for (let i = 0; i < VALUES_FOR_BROWSER_REGEX_EXCEPT_IE.length; i += 1) {
     const browser = VALUES_FOR_BROWSER_REGEX_EXCEPT_IE[i];
-    browserRegexes.push(new RegExp(PRODUCT.replace('%s', browser)));
+    browserRegExes.push(new RegExp(PRODUCT.replace('%s', browser)));
   }
 
   // Last pattern is IE
-  browserRegexes.push(IE_BROWSER_REGEX);
-  return browserRegexes;
+  browserRegExes.push(IE_BROWSER_REGEX);
+  return browserRegExes;
 };
 
 const VERSION_REGEX = new RegExp(PRODUCT.replace('%s', 'Version'));
@@ -46880,16 +48116,23 @@ const EDGE_REGEX = new RegExp(PRODUCT.replace('%s', 'Edge'));
  */
 class UserAgent {
   constructor() {
+    /** @type {string} */
     this._OS = undefined;
+    /** @type {string} */
     this._OSMajorVersion = undefined;
+    /** @type {string} */
     this._OSMinorVersion = undefined;
+
+    /** @type {string} */
     this._browser = undefined;
+    /** @type {string} */
     this._browserMajorVersion = undefined;
+    /** @type {string} */
     this._browserMinorVersion = undefined;
   }
 
   /**
-   * @param {String} userAgent User agent string to parse
+   * @param {string} userAgent User agent string to parse
    * @param {boolean} unknowns Whether to treat unknown products as {@code UNKNOWN} or throw an exception.
    * @return {UserAgent} A representation of the user agent string.
    */
@@ -46917,7 +48160,7 @@ class UserAgent {
       }
     }
 
-    let osmatch = null;
+    let osmatch;
     if (matchers.length === 0) {
       if (unknowns) {
         result._OS = OSNames.Unknown;
@@ -46954,7 +48197,7 @@ class UserAgent {
       result._OS = OSNames.Windows;
       result._OSMajorVersion = '4';
       result._OSMinorVersion = '0';
-    } else if (result._OS === 'Mac_PowerPC') {
+    } else if (result._OS === 'Mac_PowerPC' || result._OS === 'Mac OS X') {
       result._OS = OSNames.Macintosh;
     } else if (result._OS === 'CrOS') {
       result._OS = OSNames.ChromeOS;
@@ -46962,7 +48205,7 @@ class UserAgent {
 
     // Browser
     let browserOK = false;
-    const browserRegexes = getBrowserRegexes();
+    const browserRegexes = getBrowserRegExes();
     for (let i = 0; i < browserRegexes.length; i += 1) {
       if (browserRegexes[i].test(userAgent)) {
         const matcher = browserRegexes[i].exec(userAgent);
@@ -46985,10 +48228,10 @@ class UserAgent {
       // IE11 and later is "hidden" on purpose.
       // http://blogs.msdn.com/b/ieinternals/archive/2013/09/21/internet-explorer-11-user-agent-string-ua-string-sniffing-compatibility-with-gecko-webkit.aspx
       if (HIDDEN_IE_REGEX.test(userAgent)) {
-        const iematch = HIDDEN_IE_REGEX.exec(userAgent);
+        const ieMatch = HIDDEN_IE_REGEX.exec(userAgent);
         result._browser = BrowserNames.IE;
-        result._browserMajorVersion = iematch[2];
-        result._browserMinorVersion = iematch[3];
+        result._browserMajorVersion = ieMatch[2];
+        result._browserMinorVersion = ieMatch[3];
         browserOK = true;
       }
     }
@@ -47004,8 +48247,8 @@ class UserAgent {
     // Explicit browser version (if available)
     if (VERSION_REGEX.test(userAgent)) {
       const versionMatch = VERSION_REGEX.exec(userAgent);
-      result._browserMajorVersion = versionMatch.group('major');
-      result._browserMinorVersion = versionMatch.group('minor');
+      result._browserMajorVersion = versionMatch[2];
+      result._browserMinorVersion = versionMatch[3];
     }
 
     return result;
@@ -47056,9 +48299,9 @@ class UserAgent {
 
 exports.UserAgent = UserAgent;
 
-},{"../ArgumentGuard":196,"./BrowserNames":295,"./OSNames":297}],303:[function(require,module,exports){
+},{"../ArgumentGuard":196,"./BrowserNames":301,"./OSNames":303}],311:[function(require,module,exports){
 module.exports = require('./lib/axios');
-},{"./lib/axios":305}],304:[function(require,module,exports){
+},{"./lib/axios":313}],312:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -47242,7 +48485,7 @@ module.exports = function xhrAdapter(config) {
 };
 
 }).call(this,require('_process'))
-},{"../core/createError":311,"./../core/settle":314,"./../helpers/btoa":318,"./../helpers/buildURL":319,"./../helpers/cookies":321,"./../helpers/isURLSameOrigin":323,"./../helpers/parseHeaders":325,"./../utils":327,"_process":138}],305:[function(require,module,exports){
+},{"../core/createError":319,"./../core/settle":322,"./../helpers/btoa":326,"./../helpers/buildURL":327,"./../helpers/cookies":329,"./../helpers/isURLSameOrigin":331,"./../helpers/parseHeaders":333,"./../utils":335,"_process":138}],313:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -47296,7 +48539,7 @@ module.exports = axios;
 // Allow use of default import syntax in TypeScript
 module.exports.default = axios;
 
-},{"./cancel/Cancel":306,"./cancel/CancelToken":307,"./cancel/isCancel":308,"./core/Axios":309,"./defaults":316,"./helpers/bind":317,"./helpers/spread":326,"./utils":327}],306:[function(require,module,exports){
+},{"./cancel/Cancel":314,"./cancel/CancelToken":315,"./cancel/isCancel":316,"./core/Axios":317,"./defaults":324,"./helpers/bind":325,"./helpers/spread":334,"./utils":335}],314:[function(require,module,exports){
 'use strict';
 
 /**
@@ -47317,7 +48560,7 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
-},{}],307:[function(require,module,exports){
+},{}],315:[function(require,module,exports){
 'use strict';
 
 var Cancel = require('./Cancel');
@@ -47376,14 +48619,14 @@ CancelToken.source = function source() {
 
 module.exports = CancelToken;
 
-},{"./Cancel":306}],308:[function(require,module,exports){
+},{"./Cancel":314}],316:[function(require,module,exports){
 'use strict';
 
 module.exports = function isCancel(value) {
   return !!(value && value.__CANCEL__);
 };
 
-},{}],309:[function(require,module,exports){
+},{}],317:[function(require,module,exports){
 'use strict';
 
 var defaults = require('./../defaults');
@@ -47464,7 +48707,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = Axios;
 
-},{"./../defaults":316,"./../utils":327,"./InterceptorManager":310,"./dispatchRequest":312}],310:[function(require,module,exports){
+},{"./../defaults":324,"./../utils":335,"./InterceptorManager":318,"./dispatchRequest":320}],318:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -47518,7 +48761,7 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 
 module.exports = InterceptorManager;
 
-},{"./../utils":327}],311:[function(require,module,exports){
+},{"./../utils":335}],319:[function(require,module,exports){
 'use strict';
 
 var enhanceError = require('./enhanceError');
@@ -47538,7 +48781,7 @@ module.exports = function createError(message, config, code, request, response) 
   return enhanceError(error, config, code, request, response);
 };
 
-},{"./enhanceError":313}],312:[function(require,module,exports){
+},{"./enhanceError":321}],320:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -47626,7 +48869,7 @@ module.exports = function dispatchRequest(config) {
   });
 };
 
-},{"../cancel/isCancel":308,"../defaults":316,"./../helpers/combineURLs":320,"./../helpers/isAbsoluteURL":322,"./../utils":327,"./transformData":315}],313:[function(require,module,exports){
+},{"../cancel/isCancel":316,"../defaults":324,"./../helpers/combineURLs":328,"./../helpers/isAbsoluteURL":330,"./../utils":335,"./transformData":323}],321:[function(require,module,exports){
 'use strict';
 
 /**
@@ -47649,7 +48892,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   return error;
 };
 
-},{}],314:[function(require,module,exports){
+},{}],322:[function(require,module,exports){
 'use strict';
 
 var createError = require('./createError');
@@ -47677,7 +48920,7 @@ module.exports = function settle(resolve, reject, response) {
   }
 };
 
-},{"./createError":311}],315:[function(require,module,exports){
+},{"./createError":319}],323:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -47699,7 +48942,7 @@ module.exports = function transformData(data, headers, fns) {
   return data;
 };
 
-},{"./../utils":327}],316:[function(require,module,exports){
+},{"./../utils":335}],324:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -47799,7 +49042,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 }).call(this,require('_process'))
-},{"./adapters/http":304,"./adapters/xhr":304,"./helpers/normalizeHeaderName":324,"./utils":327,"_process":138}],317:[function(require,module,exports){
+},{"./adapters/http":312,"./adapters/xhr":312,"./helpers/normalizeHeaderName":332,"./utils":335,"_process":138}],325:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -47812,7 +49055,7 @@ module.exports = function bind(fn, thisArg) {
   };
 };
 
-},{}],318:[function(require,module,exports){
+},{}],326:[function(require,module,exports){
 'use strict';
 
 // btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
@@ -47850,7 +49093,7 @@ function btoa(input) {
 
 module.exports = btoa;
 
-},{}],319:[function(require,module,exports){
+},{}],327:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -47918,7 +49161,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   return url;
 };
 
-},{"./../utils":327}],320:[function(require,module,exports){
+},{"./../utils":335}],328:[function(require,module,exports){
 'use strict';
 
 /**
@@ -47934,7 +49177,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
     : baseURL;
 };
 
-},{}],321:[function(require,module,exports){
+},{}],329:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -47989,7 +49232,7 @@ module.exports = (
   })()
 );
 
-},{"./../utils":327}],322:[function(require,module,exports){
+},{"./../utils":335}],330:[function(require,module,exports){
 'use strict';
 
 /**
@@ -48005,7 +49248,7 @@ module.exports = function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 };
 
-},{}],323:[function(require,module,exports){
+},{}],331:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -48075,7 +49318,7 @@ module.exports = (
   })()
 );
 
-},{"./../utils":327}],324:[function(require,module,exports){
+},{"./../utils":335}],332:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -48089,7 +49332,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
   });
 };
 
-},{"../utils":327}],325:[function(require,module,exports){
+},{"../utils":335}],333:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -48144,7 +49387,7 @@ module.exports = function parseHeaders(headers) {
   return parsed;
 };
 
-},{"./../utils":327}],326:[function(require,module,exports){
+},{"./../utils":335}],334:[function(require,module,exports){
 'use strict';
 
 /**
@@ -48173,7 +49416,7 @@ module.exports = function spread(callback) {
   };
 };
 
-},{}],327:[function(require,module,exports){
+},{}],335:[function(require,module,exports){
 'use strict';
 
 var bind = require('./helpers/bind');
@@ -48478,7 +49721,7 @@ module.exports = {
   trim: trim
 };
 
-},{"./helpers/bind":317,"is-buffer":329}],328:[function(require,module,exports){
+},{"./helpers/bind":325,"is-buffer":339}],336:[function(require,module,exports){
 /*
  * Date Format 1.2.3
  * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
@@ -48709,10 +49952,327 @@ function kindOf(val) {
   }
 })(this);
 
-},{}],329:[function(require,module,exports){
-arguments[4][108][0].apply(exports,arguments)
-},{"dup":108}],330:[function(require,module,exports){
-(function (Buffer){
+},{}],337:[function(require,module,exports){
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.deepmerge = factory());
+}(this, (function () { 'use strict';
+
+var isMergeableObject = function isMergeableObject(value) {
+	return isNonNullObject(value)
+		&& !isSpecial(value)
+};
+
+function isNonNullObject(value) {
+	return !!value && typeof value === 'object'
+}
+
+function isSpecial(value) {
+	var stringValue = Object.prototype.toString.call(value);
+
+	return stringValue === '[object RegExp]'
+		|| stringValue === '[object Date]'
+		|| isReactElement(value)
+}
+
+// see https://github.com/facebook/react/blob/b5ac963fb791d1298e7f396236383bc955f916c1/src/isomorphic/classic/element/ReactElement.js#L21-L25
+var canUseSymbol = typeof Symbol === 'function' && Symbol.for;
+var REACT_ELEMENT_TYPE = canUseSymbol ? Symbol.for('react.element') : 0xeac7;
+
+function isReactElement(value) {
+	return value.$$typeof === REACT_ELEMENT_TYPE
+}
+
+function emptyTarget(val) {
+	return Array.isArray(val) ? [] : {}
+}
+
+function cloneUnlessOtherwiseSpecified(value, options) {
+	return (options.clone !== false && options.isMergeableObject(value))
+		? deepmerge(emptyTarget(value), value, options)
+		: value
+}
+
+function defaultArrayMerge(target, source, options) {
+	return target.concat(source).map(function(element) {
+		return cloneUnlessOtherwiseSpecified(element, options)
+	})
+}
+
+function mergeObject(target, source, options) {
+	var destination = {};
+	if (options.isMergeableObject(target)) {
+		Object.keys(target).forEach(function(key) {
+			destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
+		});
+	}
+	Object.keys(source).forEach(function(key) {
+		if (!options.isMergeableObject(source[key]) || !target[key]) {
+			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
+		} else {
+			destination[key] = deepmerge(target[key], source[key], options);
+		}
+	});
+	return destination
+}
+
+function deepmerge(target, source, options) {
+	options = options || {};
+	options.arrayMerge = options.arrayMerge || defaultArrayMerge;
+	options.isMergeableObject = options.isMergeableObject || isMergeableObject;
+
+	var sourceIsArray = Array.isArray(source);
+	var targetIsArray = Array.isArray(target);
+	var sourceAndTargetTypesMatch = sourceIsArray === targetIsArray;
+
+	if (!sourceAndTargetTypesMatch) {
+		return cloneUnlessOtherwiseSpecified(source, options)
+	} else if (sourceIsArray) {
+		return options.arrayMerge(target, source, options)
+	} else {
+		return mergeObject(target, source, options)
+	}
+}
+
+deepmerge.all = function deepmergeAll(array, options) {
+	if (!Array.isArray(array)) {
+		throw new Error('first argument should be an array')
+	}
+
+	return array.reduce(function(prev, next) {
+		return deepmerge(prev, next, options)
+	}, {})
+};
+
+var deepmerge_1 = deepmerge;
+
+return deepmerge_1;
+
+})));
+
+},{}],338:[function(require,module,exports){
+(function (root, factory) {
+  /* istanbul ignore next */
+  if (typeof define === 'function' && define.amd) {
+    define([], factory)
+  } else if (typeof exports === 'object') {
+    module.exports = factory()
+  } else {
+    root.PromisePool = factory()
+    // Legacy API
+    root.promisePool = root.PromisePool
+  }
+})(this, function () {
+  'use strict'
+
+  var EventTarget = function () {
+    this._listeners = {}
+  }
+
+  EventTarget.prototype.addEventListener = function (type, listener) {
+    this._listeners[type] = this._listeners[type] || []
+    if (this._listeners[type].indexOf(listener) < 0) {
+      this._listeners[type].push(listener)
+    }
+  }
+
+  EventTarget.prototype.removeEventListener = function (type, listener) {
+    if (this._listeners[type]) {
+      var p = this._listeners[type].indexOf(listener)
+      if (p >= 0) {
+        this._listeners[type].splice(p, 1)
+      }
+    }
+  }
+
+  EventTarget.prototype.dispatchEvent = function (evt) {
+    if (this._listeners[evt.type] && this._listeners[evt.type].length) {
+      var listeners = this._listeners[evt.type].slice()
+      for (var i = 0, l = listeners.length; i < l; ++i) {
+        listeners[i].call(this, evt)
+      }
+    }
+  }
+
+  var isGenerator = function (func) {
+    return (typeof func.constructor === 'function' &&
+      func.constructor.name === 'GeneratorFunction')
+  }
+
+  var functionToIterator = function (func) {
+    return {
+      next: function () {
+        var promise = func()
+        return promise ? {value: promise} : {done: true}
+      }
+    }
+  }
+
+  var promiseToIterator = function (promise) {
+    var called = false
+    return {
+      next: function () {
+        if (called) {
+          return {done: true}
+        }
+        called = true
+        return {value: promise}
+      }
+    }
+  }
+
+  var toIterator = function (obj, Promise) {
+    var type = typeof obj
+    if (type === 'object') {
+      if (typeof obj.next === 'function') {
+        return obj
+      }
+      /* istanbul ignore else */
+      if (typeof obj.then === 'function') {
+        return promiseToIterator(obj)
+      }
+    }
+    if (type === 'function') {
+      return isGenerator(obj) ? obj() : functionToIterator(obj)
+    }
+    return promiseToIterator(Promise.resolve(obj))
+  }
+
+  var PromisePoolEvent = function (target, type, data) {
+    this.target = target
+    this.type = type
+    this.data = data
+  }
+
+  var PromisePool = function (source, concurrency, options) {
+    EventTarget.call(this)
+    if (typeof concurrency !== 'number' ||
+        Math.floor(concurrency) !== concurrency ||
+        concurrency < 1) {
+      throw new Error('Invalid concurrency')
+    }
+    this._concurrency = concurrency
+    this._options = options || {}
+    this._options.promise = this._options.promise || Promise
+    this._iterator = toIterator(source, this._options.promise)
+    this._done = false
+    this._size = 0
+    this._promise = null
+    this._callbacks = null
+  }
+  PromisePool.prototype = new EventTarget()
+  PromisePool.prototype.constructor = PromisePool
+
+  PromisePool.prototype.concurrency = function (value) {
+    if (typeof value !== 'undefined') {
+      this._concurrency = value
+      if (this.active()) {
+        this._proceed()
+      }
+    }
+    return this._concurrency
+  }
+
+  PromisePool.prototype.size = function () {
+    return this._size
+  }
+
+  PromisePool.prototype.active = function () {
+    return !!this._promise
+  }
+
+  PromisePool.prototype.promise = function () {
+    return this._promise
+  }
+
+  PromisePool.prototype.start = function () {
+    var that = this
+    var Promise = this._options.promise
+    this._promise = new Promise(function (resolve, reject) {
+      that._callbacks = {
+        reject: reject,
+        resolve: resolve
+      }
+      that._proceed()
+    })
+    return this._promise
+  }
+
+  PromisePool.prototype._fireEvent = function (type, data) {
+    this.dispatchEvent(new PromisePoolEvent(this, type, data))
+  }
+
+  PromisePool.prototype._settle = function (error) {
+    if (error) {
+      this._callbacks.reject(error)
+    } else {
+      this._callbacks.resolve()
+    }
+    this._promise = null
+    this._callbacks = null
+  }
+
+  PromisePool.prototype._onPooledPromiseFulfilled = function (promise, result) {
+    this._size--
+    if (this.active()) {
+      this._fireEvent('fulfilled', {
+        promise: promise,
+        result: result
+      })
+      this._proceed()
+    }
+  }
+
+  PromisePool.prototype._onPooledPromiseRejected = function (promise, error) {
+    this._size--
+    if (this.active()) {
+      this._fireEvent('rejected', {
+        promise: promise,
+        error: error
+      })
+      this._settle(error || new Error('Unknown error'))
+    }
+  }
+
+  PromisePool.prototype._trackPromise = function (promise) {
+    var that = this
+    promise
+      .then(function (result) {
+        that._onPooledPromiseFulfilled(promise, result)
+      }, function (error) {
+        that._onPooledPromiseRejected(promise, error)
+      })['catch'](function (err) {
+        that._settle(new Error('Promise processing failed: ' + err))
+      })
+  }
+
+  PromisePool.prototype._proceed = function () {
+    if (!this._done) {
+      var result = { done: false }
+      while (this._size < this._concurrency &&
+          !(result = this._iterator.next()).done) {
+        this._size++
+        this._trackPromise(result.value)
+      }
+      this._done = (result === null || !!result.done)
+    }
+    if (this._done && this._size === 0) {
+      this._settle()
+    }
+  }
+
+  PromisePool.PromisePoolEvent = PromisePoolEvent
+  // Legacy API
+  PromisePool.PromisePool = PromisePool
+
+  return PromisePool
+})
+
+},{}],339:[function(require,module,exports){
+arguments[4][109][0].apply(exports,arguments)
+},{"dup":109}],340:[function(require,module,exports){
+(function (Buffer,setImmediate){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
 var __extends = (this && this.__extends) || function (d, b) {
@@ -48861,8 +50421,8 @@ var ChunkStream = (function (_super) {
 }(stream.Duplex));
 module.exports = ChunkStream;
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":52,"stream":174}],331:[function(require,module,exports){
+}).call(this,require("buffer").Buffer,require("timers").setImmediate)
+},{"buffer":55,"stream":174,"timers":180}],341:[function(require,module,exports){
 'use strict';
 exports.PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 exports.TYPE_IHDR = 0x49484452;
@@ -48875,7 +50435,7 @@ exports.COLOR_PALETTE = 1;
 exports.COLOR_COLOR = 2;
 exports.COLOR_ALPHA = 4;
 
-},{}],332:[function(require,module,exports){
+},{}],342:[function(require,module,exports){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
 var __extends = (this && this.__extends) || function (d, b) {
@@ -48955,7 +50515,7 @@ var CrcStream = (function (_super) {
 }(stream.Writable));
 module.exports = CrcStream;
 
-},{"stream":174}],333:[function(require,module,exports){
+},{"stream":174}],343:[function(require,module,exports){
 (function (Buffer){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
@@ -49227,8 +50787,8 @@ var Filter = (function (_super) {
 module.exports = Filter;
 
 }).call(this,require("buffer").Buffer)
-},{"./chunk-stream":330,"buffer":52}],334:[function(require,module,exports){
-(function (Buffer){
+},{"./chunk-stream":340,"buffer":55}],344:[function(require,module,exports){
+(function (Buffer,setImmediate){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
 var __extends = (this && this.__extends) || function (d, b) {
@@ -49358,8 +50918,8 @@ var Image = (function (_super) {
 }(stream.Duplex));
 exports.Image = Image;
 
-}).call(this,require("buffer").Buffer)
-},{"./packer":335,"./parser":336,"buffer":52,"stream":174}],335:[function(require,module,exports){
+}).call(this,require("buffer").Buffer,require("timers").setImmediate)
+},{"./packer":345,"./parser":346,"buffer":55,"stream":174,"timers":180}],345:[function(require,module,exports){
 (function (Buffer){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
@@ -49446,7 +51006,7 @@ var Packer = (function (_super) {
 module.exports = Packer;
 
 }).call(this,require("buffer").Buffer)
-},{"./constants":331,"./crc":332,"./filter":333,"./index":334,"buffer":52,"stream":174,"zlib":49}],336:[function(require,module,exports){
+},{"./constants":341,"./crc":342,"./filter":343,"./index":344,"buffer":55,"stream":174,"zlib":52}],346:[function(require,module,exports){
 (function (Buffer){
 /// <reference path="../typings/index.d.ts" />
 'use strict';
@@ -49710,7 +51270,7 @@ var Parser = (function (_super) {
 module.exports = Parser;
 
 }).call(this,require("buffer").Buffer)
-},{"./chunk-stream":330,"./constants":331,"./crc":332,"./filter":333,"buffer":52,"zlib":49}],337:[function(require,module,exports){
+},{"./chunk-stream":340,"./constants":341,"./crc":342,"./filter":343,"buffer":55,"zlib":52}],347:[function(require,module,exports){
 exports.get = function(belowFn) {
   var oldLimit = Error.stackTraceLimit;
   Error.stackTraceLimit = Infinity;

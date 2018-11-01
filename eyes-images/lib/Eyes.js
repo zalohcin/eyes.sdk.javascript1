@@ -24,13 +24,15 @@ class Eyes extends EyesBase {
    * Initializes an Eyes instance.
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
+   * @param {?boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method
+   *   will immediately return without performing any action.
    */
-  constructor(serverUrl) {
-    super(serverUrl, false);
+  constructor(serverUrl, isDisabled) {
+    super(serverUrl, isDisabled);
 
-    this._title = undefined;
-    this._screenshot = undefined;
-    this._screenshotUrl = undefined;
+    this._title = null;
+    this._screenshot = null;
+    this._screenshotUrl = null;
     this._inferred = '';
   }
 
@@ -54,7 +56,7 @@ class Eyes extends EyesBase {
 
   /**
    * @param {string} name
-   * @param {ImagesCheckSettings} checkSettings
+   * @param {ImagesCheckSettings|CheckSettings} checkSettings
    * @return {Promise<boolean>}
    */
   async check(name, checkSettings) {
@@ -72,23 +74,22 @@ class Eyes extends EyesBase {
    * Perform visual validation for the current image.
    *
    * @param {string|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
-   * @param {string} [tag] Tag to be associated with the validation checkpoint.
+   * @param {string} [name] Tag to be associated with the validation checkpoint.
    * @param {boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
    * @param {number} [retryTimeout] timeout for performing the match (ms).
    * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
-  async checkImage(image, tag, ignoreMismatch, retryTimeout) {
+  async checkImage(image, name, ignoreMismatch, retryTimeout) {
+    ArgumentGuard.notNull(image, 'image cannot be null!');
+
     if (this.getIsDisabled()) {
-      this._logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
+      this._logger.verbose(`checkImage(Image, '${name}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
       return false;
     }
 
-    ArgumentGuard.notNull(image, 'image cannot be null!');
-
-    this._logger.verbose(`checkImage(Image, '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
-    // noinspection JSCheckFunctionSignatures
-    return this._checkImage(tag, ignoreMismatch, Target.image(image).timeout(retryTimeout));
+    this._logger.verbose(`checkImage(Image, '${name}', '${ignoreMismatch}', '${retryTimeout}')`);
+    return this._checkImage(name, ignoreMismatch, Target.image(image).timeout(retryTimeout));
   }
 
   /**
@@ -97,24 +98,24 @@ class Eyes extends EyesBase {
    * @param {Region|RegionObject} region The region of the image which should be verified, or {undefined}/{null} if the
    *   entire image should be verified.
    * @param {string|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
-   * @param {string} [tag] An optional tag to be associated with the validation checkpoint.
+   * @param {string} [name] An optional tag to be associated with the validation checkpoint.
    * @param {boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
    * @param {number} [retryTimeout] timeout for performing the match (ms).
    * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
-  async checkRegion(image, region, tag, ignoreMismatch, retryTimeout) {
+  async checkRegion(image, region, name, ignoreMismatch, retryTimeout) {
     ArgumentGuard.notNull(image, 'image');
     ArgumentGuard.notNull(region, 'region');
 
     if (this.getIsDisabled()) {
-      this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
+      this._logger.verbose(`checkRegion(Image, [${region}], '${name}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
       return false;
     }
 
-    this._logger.verbose(`checkRegion(Image, [${region}], '${tag}', '${ignoreMismatch}', '${retryTimeout}')`);
+    this._logger.verbose(`checkRegion(Image, [${region}], '${name}', '${ignoreMismatch}', '${retryTimeout}')`);
     // noinspection JSCheckFunctionSignatures
-    return this._checkImage(tag, ignoreMismatch, Target.region(image, region).timeout(retryTimeout));
+    return this._checkImage(name, ignoreMismatch, Target.region(image, region).timeout(retryTimeout));
   }
 
   /**
@@ -123,39 +124,42 @@ class Eyes extends EyesBase {
    * @private
    * @param {string} name An optional tag to be associated with the validation checkpoint.
    * @param {boolean} ignoreMismatch True if the server should ignore a negative result for the visual validation.
-   * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
+   * @param {ImagesCheckSettings|CheckSettings} checkSettings The settings to use when checking the image.
    * @return {Promise<boolean>}
    */
-  async _checkImage(name, ignoreMismatch, checkSettings) {
-    let regionProvider = new NullRegionProvider();
+  async _checkImage(name = '', ignoreMismatch, checkSettings) {
+    try {
+      let regionProvider = new NullRegionProvider();
+      // Set the title to be linked to the screenshot.
+      this._title = name;
 
-    // Set the title to be linked to the screenshot.
-    this._title = name || '';
+      if (checkSettings.getImageUrl()) {
+        this._screenshotUrl = checkSettings.getImageUrl();
+        if (!this._viewportSizeHandler.get() && checkSettings.getImageSize()) {
+          await this.setViewportSize(checkSettings.getImageSize());
+        }
+      } else {
+        if (checkSettings.getTargetRegion()) {
+          regionProvider = new RegionProvider(checkSettings.getTargetRegion());
+        }
 
-    if (checkSettings.getImageUrl()) {
-      this._screenshotUrl = checkSettings.getImageUrl();
-      if (!this._viewportSizeHandler.get() && checkSettings.getImageSize()) {
-        await this.setViewportSize(checkSettings.getImageSize());
-      }
-    } else {
-      if (checkSettings.getTargetRegion()) {
-        regionProvider = new RegionProvider(checkSettings.getTargetRegion());
+        const image = await this._normalizeImage(checkSettings);
+        this._screenshot = new EyesSimpleScreenshot(image);
+        if (!this._viewportSizeHandler.get()) {
+          await this.setViewportSize(image.getSize());
+        }
       }
 
-      const image = await this._normalizeImage(checkSettings);
-      this._screenshot = new EyesSimpleScreenshot(image);
-      if (!this._viewportSizeHandler.get()) {
-        await this.setViewportSize(image.getSize());
-      }
+      const matchResult = await super.checkWindowBase(regionProvider, name, ignoreMismatch, checkSettings);
+      return matchResult.getAsExpected();
+    } finally {
+      this._screenshotUrl = null;
+      this._screenshot = null;
+      this._title = null;
     }
-
-    const matchResult = await super.checkWindowBase(regionProvider, name, ignoreMismatch, checkSettings);
-    this._screenshotUrl = undefined;
-    this._screenshot = undefined;
-    this._title = undefined;
-    return matchResult.getAsExpected();
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @private
    * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
@@ -171,7 +175,7 @@ class Eyes extends EyesBase {
     }
 
     if (checkSettings.getImageString()) {
-      return MutableImage.fromBase64(checkSettings.getImageString());
+      return new MutableImage(checkSettings.getImageString());
     }
 
     if (checkSettings.getImagePath()) {
@@ -237,16 +241,6 @@ class Eyes extends EyesBase {
    */
   addTextTrigger(control, text) {
     super.addTextTriggerBase(control, text);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Get the AUT session id.
-   *
-   * @return {Promise<?string>}
-   */
-  getAUTSessionId() {
-    return Promise.resolve(undefined);
   }
 
   // noinspection JSUnusedGlobalSymbols

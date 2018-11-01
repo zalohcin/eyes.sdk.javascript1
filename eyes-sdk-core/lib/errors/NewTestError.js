@@ -11,15 +11,15 @@ class NewTestError extends TestFailedError {
    * Creates a new NewTestError instance.
    *
    * @param {TestResults} testResults The results of the current test if available, {@code null} otherwise.
-   * @param {string|SessionStartInfo} message The error description
-   * @param [params...] Other params for Error constructor
+   * @param {string|SessionStartInfo} messageOrSession The error description or SessionStartInfo with test details.
    */
-  constructor(testResults, message, ...params) {
-    if (message instanceof SessionStartInfo) {
-      message = `'${message.getScenarioIdOrName()}' of '${message.getAppIdOrName()}'. Please approve the new baseline at ${testResults.getUrl()}`;
+  constructor(testResults, messageOrSession) {
+    if (messageOrSession instanceof SessionStartInfo) {
+      const testName = `'${messageOrSession.getScenarioIdOrName()}' of '${messageOrSession.getAppIdOrName()}'`;
+      messageOrSession = `${testName}. Please approve the new baseline at ${testResults.getUrl()}`;
     }
 
-    super(testResults, message, ...params);
+    super(testResults, messageOrSession);
   }
 }
 

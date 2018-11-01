@@ -10,6 +10,7 @@ class BatchInfo {
   }
 
   /**
+   * @deprecated
    * @param {object} object
    * @return {BatchInfo}
    */

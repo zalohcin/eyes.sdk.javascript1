@@ -51,7 +51,7 @@ class ScrollPositionProvider extends PositionProvider {
   }
 
   /**
-   * @override
+   * @inheritDoc
    * @return {Promise<ScrollPositionMemento>}
    */
   async getState() {
@@ -61,7 +61,7 @@ class ScrollPositionProvider extends PositionProvider {
 
   // noinspection JSCheckFunctionSignatures
   /**
-   * @override
+   * @inheritDoc
    * @param {ScrollPositionMemento} state The initial state of position
    * @return {Promise<void>}
    */
