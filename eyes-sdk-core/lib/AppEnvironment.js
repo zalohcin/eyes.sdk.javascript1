@@ -23,7 +23,8 @@ class AppEnvironment {
     this._hostingApp = hostingApp;
     this._displaySize = displaySize;
 
-    this._inferred = null;
+    /** @type {string} */
+    this._inferred = undefined;
   }
 
   // noinspection JSUnusedGlobalSymbols

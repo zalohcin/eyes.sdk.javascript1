@@ -363,7 +363,8 @@ class TestResults {
     this._noneMatches = noneMatches;
     this._url = url;
 
-    this._serverConnector = null;
+    /** @type {ServerConnector} */
+    this._serverConnector = undefined;
   }
 
   // noinspection JSUnusedGlobalSymbols
