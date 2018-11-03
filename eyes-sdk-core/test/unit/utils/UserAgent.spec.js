@@ -83,6 +83,17 @@ describe('UserAgent', () => {
       assert.equal(userAgent.getBrowserMinorVersion(), '0');
     });
 
+    it('should return hidden IE as browser, Windows as OS', () => {
+      const uaString = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+      const userAgent = UserAgent.parseUserAgentString(uaString, true);
+      assert.equal(userAgent.getOS(), 'Windows');
+      assert.equal(userAgent.getOSMajorVersion(), '6');
+      assert.equal(userAgent.getOSMinorVersion(), '3');
+      assert.equal(userAgent.getBrowser(), 'IE');
+      assert.equal(userAgent.getBrowserMajorVersion(), '11');
+      assert.equal(userAgent.getBrowserMinorVersion(), '0');
+    });
+
     it('should return Unknown as browser, Unknown as OS', () => {
       const uaString = 'Googlebot/2.1 (+http://www.google.com/bot.html)';
       const userAgent = UserAgent.parseUserAgentString(uaString, true);

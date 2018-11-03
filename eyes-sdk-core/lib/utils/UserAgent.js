@@ -44,7 +44,7 @@ const OS_REGEXES = [
   new RegExp('(?:(SymbOS))'),
 ];
 
-const HIDDEN_IE_REGEX = new RegExp(`(?:(?:rv:${MAJOR_MINOR}\\) like Gecko))`);
+const HIDDEN_IE_REGEX = new RegExp(`(?:rv:${MAJOR_MINOR}\\) like Gecko)`);
 
 const EDGE_REGEX = new RegExp(PRODUCT.replace('%s', 'Edge'));
 
@@ -167,8 +167,8 @@ class UserAgent {
       if (HIDDEN_IE_REGEX.test(userAgent)) {
         const ieMatch = HIDDEN_IE_REGEX.exec(userAgent);
         result._browser = BrowserNames.IE;
-        result._browserMajorVersion = ieMatch[2];
-        result._browserMinorVersion = ieMatch[3];
+        result._browserMajorVersion = ieMatch[1];
+        result._browserMinorVersion = ieMatch[2];
         browserOK = true;
       }
     }
