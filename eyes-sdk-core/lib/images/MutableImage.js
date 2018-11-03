@@ -5,7 +5,7 @@ const fs = require('fs');
 const { Location } = require('../geometry/Location');
 const { RectangleSize } = require('../geometry/RectangleSize');
 const { ImageUtils } = require('./ImageUtils');
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { TypeUtils } = require('../utils/TypeUtils');
 
 const disabled = !fs.open;
 
@@ -65,7 +65,7 @@ class MutableImage {
    * @param {Buffer|string} image Encoded bytes of image (buffer or base64 string)
    */
   constructor(image) {
-    if (GeneralUtils.isString(image)) {
+    if (TypeUtils.isString(image)) {
       image = Buffer.from(image, 'base64');
     }
 

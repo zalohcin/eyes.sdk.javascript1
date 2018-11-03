@@ -1,6 +1,5 @@
 'use strict';
 
-const { GeneralUtils } = require('@applitools/eyes-sdk-core');
 const { EyesWebElementPromise, EyesWebElement } = require('@applitools/eyes-selenium');
 
 // functions in ElementFinder that return a new ElementFinder and therefore we must wrap and return our own
@@ -9,6 +8,31 @@ const ELEMENT_FINDER_TO_ELEMENT_FINDER_FUNCTIONS = ['clone', 'element', '$', 'ev
 const ELEMENT_FINDER_TO_ELEMENT_ARRAY_FINDER_FUNCTIONS = ['all', '$$'];
 // function in ElementArrayFinder that return a new ElementFinder and therefore we must wrap and return our own
 const ELEMENT_ARRAY_FINDER_TO_ELEMENT_FINDER_FUNCTIONS = ['get', 'first', 'last'];
+
+/**
+ * Mixin methods from one object into another.
+ * Follow the prototype chain and apply form root to current - but skip the top (object)
+ *
+ * @param {object} to The object to which methods will be added
+ * @param {object} from The object from which methods will be copied
+ */
+function mixin(to, from) {
+  let index;
+  let proto = from;
+  const protos = [];
+  while (proto) {
+    protos.push(Object.getOwnPropertyNames(proto));
+    proto = Object.getPrototypeOf(proto);
+  }
+
+  for (index = protos.length - 2; index >= 0; index -= 1) {
+    protos[index].forEach(method => {
+      if (!to[method] && typeof from[method] === 'function' && method !== 'constructor') {
+        to[method] = (...args) => from[method](...args);
+      }
+    });
+  }
+}
 
 /**
  * Wraps Protractor's ElementFinder to make sure we return our own Web Element.
@@ -25,7 +49,7 @@ class ElementFinderWrapper extends EyesWebElement {
    */
   constructor(logger, eyesDriver, finder) {
     super(logger, eyesDriver, finder.getWebElement());
-    GeneralUtils.mixin(this, finder);
+    mixin(this, finder);
 
     this._logger = logger;
     this._eyesDriver = eyesDriver;
@@ -59,7 +83,7 @@ class ElementArrayFinderWrapper {
    * @param {ElementArrayFinder} arrayFinder
    */
   constructor(logger, eyesDriver, arrayFinder) {
-    GeneralUtils.mixin(this, arrayFinder);
+    mixin(this, arrayFinder);
 
     this._logger = logger;
     this._eyesDriver = eyesDriver;

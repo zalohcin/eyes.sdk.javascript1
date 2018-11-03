@@ -2,7 +2,7 @@
 
 const { Command, Name } = require('selenium-webdriver/lib/command');
 const { TargetLocator } = require('selenium-webdriver/lib/webdriver');
-const { Location, RectangleSize, ArgumentGuard, GeneralUtils } = require('@applitools/eyes-sdk-core');
+const { Location, RectangleSize, ArgumentGuard, TypeUtils } = require('@applitools/eyes-sdk-core');
 
 const { Frame } = require('../frames/Frame');
 const { FrameChain } = require('../frames/FrameChain');
@@ -54,18 +54,18 @@ class EyesTargetLocator extends TargetLocator {
    *   is the same as calling {@link #defaultContent defaultContent()}.
    *
    * @override
-   * @param {number|string|WebElement|null} arg1 The frame locator.
+   * @param {number|string|WebElement|null} varArg The frame locator.
    * @return {Promise<void>} A promise that will be resolved when the driver has changed focus to the specified frame.
    */
-  async frame(arg1) {
-    if (!arg1) {
+  async frame(varArg) {
+    if (varArg == null) {
       this._logger.verbose('EyesTargetLocator.frame(null)');
       await this.defaultContent();
       return;
     }
 
-    if (Number.isInteger(arg1)) {
-      const frameIndex = arg1;
+    if (Number.isInteger(varArg)) {
+      const frameIndex = varArg;
       this._logger.verbose(`EyesTargetLocator.frame(${frameIndex})`);
       // Finding the target element so and reporting it using onWillSwitch.
       this._logger.verbose('Getting frames list...');
@@ -84,8 +84,8 @@ class EyesTargetLocator extends TargetLocator {
       return;
     }
 
-    if (GeneralUtils.isString(arg1)) {
-      const frameNameOrId = arg1;
+    if (TypeUtils.isString(varArg)) {
+      const frameNameOrId = varArg;
       this._logger.verbose(`EyesTargetLocator.frame(${frameNameOrId})`);
       // Finding the target element so we can report it.
       // We use find elements(plural) to avoid exception when the element is not found.
@@ -115,7 +115,7 @@ class EyesTargetLocator extends TargetLocator {
       return;
     }
 
-    let frameElement = arg1;
+    let frameElement = varArg;
     this._logger.verbose('EyesTargetLocator.frame(element)');
     this._logger.verbose('Making preparations...');
     await this.willSwitchToFrame(frameElement);
@@ -185,17 +185,16 @@ class EyesTargetLocator extends TargetLocator {
    * Switches into every frame in the frame chain. This is used as way to switch into nested frames (while considering
    * scroll) in a single call.
    *
-   * @param {FrameChain|string[]} obj The path to the frame to switch to. Or the path to the frame to check. This is a
+   * @param {FrameChain|string[]} varArg The path to the frame to switch to. Or the path to the frame to check. This is a
    *   list of frame names/IDs (where each frame is nested in the previous frame).
    * @return {Promise<void>} The WebDriver with the switched context.
    */
-  async frames(obj) {
-    if (obj instanceof FrameChain) {
-      const frameChain = obj;
+  async frames(varArg) {
+    if (varArg instanceof FrameChain) {
       this._logger.verbose('EyesTargetLocator.frames(frameChain)');
       await this._driver.switchTo().defaultContent();
 
-      for (const frame of frameChain.getFrames()) {
+      for (const frame of varArg.getFrames()) {
         this._logger.verbose('Switching to frame...');
         await this._driver.switchTo().frame(frame.getReference());
         this._logger.verbose('Done!');
@@ -205,10 +204,10 @@ class EyesTargetLocator extends TargetLocator {
       return;
     }
 
-    if (Array.isArray(obj)) {
+    if (Array.isArray(varArg)) {
       this._logger.verbose('EyesTargetLocator.frames(framesPath)');
 
-      for (const frameNameOrId of obj) {
+      for (const frameNameOrId of varArg) {
         this._logger.verbose('Switching to frame...');
         await this._driver.switchTo().frame(frameNameOrId);
         this._logger.verbose('Done!');

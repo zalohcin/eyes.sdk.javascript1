@@ -1,6 +1,6 @@
 'use strict';
 
-const { MutableImage, GeneralUtils, ArgumentGuard } = require('@applitools/eyes-sdk-core');
+const { MutableImage, TypeUtils, ArgumentGuard } = require('@applitools/eyes-sdk-core');
 
 const { ImagesCheckSettings } = require('./ImagesCheckSettings');
 
@@ -14,16 +14,16 @@ class Target {
       return new ImagesCheckSettings(image);
     }
 
-    if (GeneralUtils.isBuffer(image)) {
-      return new ImagesCheckSettings(null, image);
+    if (TypeUtils.isBuffer(image)) {
+      return new ImagesCheckSettings(undefined, image);
     }
 
-    if (GeneralUtils.isString(image)) {
-      if (GeneralUtils.isBase64(image)) {
-        return new ImagesCheckSettings(null, null, image);
+    if (TypeUtils.isString(image)) {
+      if (TypeUtils.isBase64(image)) {
+        return new ImagesCheckSettings(undefined, undefined, image);
       }
 
-      return new ImagesCheckSettings(null, null, null, image);
+      return new ImagesCheckSettings(undefined, undefined, undefined, image);
     }
 
     throw new TypeError('IllegalType: unsupported type of image!');
@@ -46,7 +46,7 @@ class Target {
   static base64(string) {
     ArgumentGuard.isBase64(string);
 
-    return new ImagesCheckSettings(null, null, string);
+    return new ImagesCheckSettings(undefined, undefined, string);
   }
 
   /**
@@ -56,7 +56,7 @@ class Target {
   static path(string) {
     ArgumentGuard.isString(string, 'path');
 
-    return new ImagesCheckSettings(null, null, null, string);
+    return new ImagesCheckSettings(undefined, undefined, undefined, string);
   }
 
   /**
@@ -67,7 +67,7 @@ class Target {
   static url(string, imageSize) {
     ArgumentGuard.isString(string, 'url');
 
-    const checkSettings = new ImagesCheckSettings(null, null, null, null, string);
+    const checkSettings = new ImagesCheckSettings(undefined, undefined, undefined, undefined, string);
     checkSettings.setImageSize(imageSize);
     return checkSettings;
   }

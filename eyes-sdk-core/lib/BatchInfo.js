@@ -2,6 +2,7 @@
 
 const { ArgumentGuard } = require('./ArgumentGuard');
 const { GeneralUtils } = require('./utils/GeneralUtils');
+const { TypeUtils } = require('./utils/TypeUtils');
 
 /**
  * A batch of tests.
@@ -24,7 +25,7 @@ class BatchInfo {
       return new BatchInfo({ id: varArg.getId(), name: varArg.getName(), startedAt: varArg.getStartedAt() });
     }
 
-    if (GeneralUtils.isString(varArg)) {
+    if (TypeUtils.isString(varArg)) {
       return new BatchInfo({ id: optId, name: varArg, startedAt: optStartedAt });
     }
 

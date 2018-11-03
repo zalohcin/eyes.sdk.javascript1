@@ -2,25 +2,12 @@
 
 const merge = require('deepmerge');
 const dateFormat = require('dateformat');
-const stackTrace = require('stack-trace');
+
+const { TypeUtils } = require('./TypeUtils');
 
 const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
 const DATE_FORMAT_RFC1123 = "ddd, dd mmm yyyy HH:MM:ss 'GMT'";
 const DATE_FORMAT_LOGFILE = 'yyyy_mm_dd_HH_MM_ss_l';
-
-const BASE64_CHARS_PATTERN = /[^A-Z0-9+/=]/i;
-
-const { hasOwnProperty } = Object.prototype;
-
-/**
- * @private
- * @param {object} to
- * @param {object} from
- * @param {string} fnName
- */
-const mixin = (to, from, fnName) => {
-  to[fnName] = () => from[fnName](...arguments);
-};
 
 /**
  * Collection of utility methods.
@@ -76,7 +63,7 @@ class GeneralUtils {
    * @return {string}
    */
   static toString(object, exclude = []) {
-    if (!GeneralUtils.isPlainObject(object)) {
+    if (!TypeUtils.isPlainObject(object)) {
       object = GeneralUtils.toPlain(object, exclude);
     }
 
@@ -104,7 +91,7 @@ class GeneralUtils {
         publicKey = rename[publicKey];
       }
 
-      if (hasOwnProperty.call(object, objectKey) && !exclude.includes(objectKey)) {
+      if (Object.prototype.hasOwnProperty.call(object, objectKey) && !exclude.includes(objectKey)) {
         if (object[objectKey] instanceof Object && typeof object[objectKey].toJSON === 'function') {
           plainObject[publicKey] = object[objectKey].toJSON();
         } else {
@@ -113,38 +100,6 @@ class GeneralUtils {
       }
     });
     return plainObject;
-  }
-
-  /**
-   * Assign all properties of the object that exists in the instance to it
-   *
-   * @template T
-   * @param {T} inst
-   * @param {object} object
-   * @param {object} [mapping]
-   * @return {T}
-   */
-  static assignTo(inst, object, mapping = {}) {
-    if (inst == null) {
-      throw new TypeError('Cannot assign object to null.');
-    }
-
-    if (object == null) {
-      throw new TypeError('Cannot assign empty object or null.');
-    }
-
-    Object.keys(object).forEach(objectKey => {
-      const privateKey = `_${objectKey}`;
-      if (hasOwnProperty.call(object, objectKey) && hasOwnProperty.call(inst, privateKey)) {
-        if (hasOwnProperty.call(mapping, objectKey)) {
-          inst[privateKey] = mapping[objectKey].call(null, object[objectKey]);
-        } else {
-          inst[privateKey] = object[objectKey];
-        }
-      }
-    });
-
-    return inst;
   }
 
   /**
@@ -158,32 +113,7 @@ class GeneralUtils {
    * @return {object}
    */
   static mergeDeep(x, y) {
-    return merge(x, y, { isMergeableObject: GeneralUtils.isPlainObject });
-  }
-
-  /**
-   * Mixin methods from one object into another.
-   * Follow the prototype chain and apply form root to current - but skip the top (object)
-   *
-   * @param {object} to The object to which methods will be added
-   * @param {object} from The object from which methods will be copied
-   */
-  static mixin(to, from) {
-    let index;
-    let proto = from;
-    const protos = [];
-    while (proto) {
-      protos.push(Object.getOwnPropertyNames(proto));
-      proto = Object.getPrototypeOf(proto);
-    }
-
-    for (index = protos.length - 2; index >= 0; index -= 1) {
-      protos[index].forEach(method => {
-        if (!to[method] && typeof from[method] === 'function' && method !== 'constructor') {
-          mixin(to, from, method);
-        }
-      });
-    }
+    return merge(x, y, { isMergeableObject: TypeUtils.isPlainObject });
   }
 
   /**
@@ -199,39 +129,6 @@ class GeneralUtils {
       const v = c === 'x' ? r : (r & 0x3) | 0x8; // eslint-disable-line no-bitwise
       return v.toString(16);
     });
-  }
-
-  /**
-   * Clone object
-   *
-   * @param {Date|Array|object} obj
-   * @return {*}
-   */
-  static clone(obj) {
-    // noinspection EqualityComparisonWithCoercionJS
-    if (obj == null || typeof obj !== 'object') {
-      return obj;
-    }
-
-    if (obj instanceof Date) {
-      return new Date(obj.getTime());
-    }
-
-    if (obj instanceof Array) {
-      return Array.from(obj);
-    }
-
-    if (obj instanceof Object) {
-      const copy = obj.constructor();
-      Object.keys(obj).forEach(attr => {
-        if (Object.prototype.hasOwnProperty.call(obj, attr)) {
-          copy[attr] = GeneralUtils.clone(obj[attr]);
-        }
-      });
-      return copy;
-    }
-
-    throw new Error("Unable to copy object! Its type isn't supported.");
   }
 
   /**
@@ -314,101 +211,6 @@ class GeneralUtils {
   }
 
   /**
-   * @param value
-   * @return {boolean}
-   */
-  static isString(value) {
-    return typeof value === 'string' || value instanceof String;
-  }
-
-  /**
-   * @param value
-   * @return {boolean}
-   */
-  static isNumber(value) {
-    return typeof value === 'number' || value instanceof Number;
-  }
-
-  /**
-   * @param value
-   * @return {boolean}
-   */
-  static isBoolean(value) {
-    return typeof value === 'boolean' || value instanceof Boolean;
-  }
-
-  /**
-   * @param value
-   * @return {boolean}
-   */
-  static isObject(value) {
-    return value != null && typeof value === 'object' && Array.isArray(value) === false;
-  }
-
-  /**
-   * @param value
-   * @return {boolean}
-   */
-  static isPlainObject(value) {
-    return GeneralUtils.isObject(value) && value.constructor === Object;
-  }
-
-  /**
-   * @param value
-   * @return {boolean}
-   */
-  static isArray(value) {
-    return Array.isArray(value);
-  }
-
-  /**
-   * @param value
-   * @return {boolean}
-   */
-  static isBuffer(value) {
-    return (
-      value != null &&
-      !!value.constructor &&
-      typeof value.constructor.isBuffer === 'function' &&
-      value.constructor.isBuffer(value)
-    );
-  }
-
-  static isBase64(str) {
-    if (!GeneralUtils.isString(str)) {
-      return false;
-    }
-
-    const len = str.length;
-    if (!len || len % 4 !== 0 || BASE64_CHARS_PATTERN.test(str)) {
-      return false;
-    }
-
-    const firstPaddingChar = str.indexOf('=');
-    return (
-      firstPaddingChar === -1 || firstPaddingChar === len - 1 || (firstPaddingChar === len - 2 && str[len - 1] === '=')
-    );
-  }
-
-  /**
-   * @typedef {object} CallSite
-   * @property {function} getTypeName returns the type of this as a string.
-   * @property {function} getFunctionName returns the name of the current function, typically its name property.
-   * @property {function} getMethodName returns the name of the property of this or one of its prototypes that holds
-   *   the current function
-   * @property {function} getFileName if this function was defined in a script returns the name of the script
-   * @property {function} getLineNumber if this function was defined in a script returns the current line number
-   * @property {function} getColumnNumber if this function was defined in a script returns the current column number
-   * @property {function} isNative is this call in native V8 code?
-   *//**
-   * @param {Error} [error]
-   * @return {CallSite[]}
-   */
-  static getStackTrace(error) {
-    return stackTrace.get(error);
-  }
-
-  /**
    * Simple method that decode JSON Web Tokens
    *
    * @param {string} token
@@ -422,31 +224,17 @@ class GeneralUtils {
   }
 
   /**
-   * Generates the cartesian product of the sets.
+   * Cartesian product of arrays
    *
-   * @param {...(Array|Object)} sets - variable number of sets of n elements.
-   * @return {Generator} yields each product as an array
+   * @param {...(Array|Object)} arrays Variable number of arrays of n elements
+   * @return {Array<Array>} Product of arrays as an array of X arrays of N elements,
+   *   where X is the product of the input arrays' lengths
    */
-  static* cartesianProduct(...sets) {
-    const data = [];
-
-    function* cartesianUtil(index) {
-      if (index === sets.length) {
-        return yield data.slice();
-      }
-
-      if (GeneralUtils.isArray(sets[index])) {
-        for (let i = 0; i < sets[index].length; i += 1) {
-          data[index] = sets[index][i];
-          yield* cartesianUtil(index + 1);
-        }
-      } else {
-        data[index] = sets[index];
-        yield* cartesianUtil(index + 1);
-      }
-    }
-
-    yield* cartesianUtil(0);
+  static cartesianProduct(...arrays) {
+    const getArrayOf = a => (Array.isArray(a) ? a : [a]);
+    const prod2 = (a, b) => getArrayOf(b).map(e1 => a.map(e2 => [e1, ...e2])).reduce((arr, e) => arr.concat(e), []);
+    const prod = (a, ...rest) => (rest.length > 0 ? prod(prod2(a, rest.pop()), ...rest) : a);
+    return prod([[]], ...arrays);
   }
 }
 

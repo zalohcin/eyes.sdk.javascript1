@@ -137,4 +137,22 @@ describe('GeneralUtils', () => {
       assert.equal(GeneralUtils.stringify(4, 'str', { prop: 'bla' }), '4 str {"prop":"bla"}');
     });
   });
+
+  describe('cartesianProduct()', () => {
+    it('should return product of collections', () => {
+      const dataProvider = GeneralUtils.cartesianProduct(
+        'Google Pixel GoogleAPI Emulator',
+        ['portrait', 'landscape'],
+        '7.1',
+        [false, true]
+      );
+
+      assert.deepStrictEqual(dataProvider, [
+        ['Google Pixel GoogleAPI Emulator', 'portrait', '7.1', false],
+        ['Google Pixel GoogleAPI Emulator', 'portrait', '7.1', true],
+        ['Google Pixel GoogleAPI Emulator', 'landscape', '7.1', false],
+        ['Google Pixel GoogleAPI Emulator', 'landscape', '7.1', true],
+      ]);
+    });
+  });
 });

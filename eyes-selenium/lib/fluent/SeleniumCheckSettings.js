@@ -1,7 +1,7 @@
 'use strict';
 
 const { By, WebElement } = require('selenium-webdriver');
-const { GeneralUtils, CheckSettings, Region } = require('@applitools/eyes-sdk-core');
+const { TypeUtils, CheckSettings, Region } = require('@applitools/eyes-sdk-core');
 
 const { IgnoreRegionBySelector } = require('./IgnoreRegionBySelector');
 const { IgnoreRegionByElement } = require('./IgnoreRegionByElement');
@@ -121,7 +121,7 @@ class SeleniumCheckSettings extends CheckSettings {
     // noinspection IfStatementWithTooManyBranchesJS
     if (Number.isInteger(frame)) {
       fl.setFrameIndex(frame);
-    } else if (GeneralUtils.isString(frame)) {
+    } else if (TypeUtils.isString(frame)) {
       fl.setFrameNameOrId(frame);
     } else if (frame instanceof By || isProtractorBy(frame)) {
       fl.setFrameSelector(frame);

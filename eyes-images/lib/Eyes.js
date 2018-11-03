@@ -2,7 +2,7 @@
 
 const {
   ArgumentGuard,
-  GeneralUtils,
+  TypeUtils,
   EyesBase,
   EyesError,
   ImageUtils,
@@ -211,7 +211,7 @@ class Eyes extends EyesBase {
       return Promise.resolve(false);
     }
 
-    if (GeneralUtils.isBuffer(image) || GeneralUtils.isString(image)) {
+    if (TypeUtils.isBuffer(image) || TypeUtils.isString(image)) {
       image = new MutableImage(image);
     }
 

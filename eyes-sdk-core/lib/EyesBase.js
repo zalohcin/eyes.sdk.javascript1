@@ -53,7 +53,6 @@ const { ServerConnector } = require('./server/ServerConnector');
 
 const { SimplePropertyHandler } = require('./utils/SimplePropertyHandler');
 const { ReadOnlyPropertyHandler } = require('./utils/ReadOnlyPropertyHandler');
-const { GeneralUtils } = require('./utils/GeneralUtils');
 
 const { FailureReports } = require('./FailureReports');
 const { ArgumentGuard } = require('./ArgumentGuard');
@@ -448,7 +447,8 @@ class EyesBase {
     if (this._isDisabled) {
       return null;
     }
-    return GeneralUtils.clone(this._userInputs);
+
+    return this._userInputs.map(input => Object.assign(Object.create(input), input));
   }
 
   // noinspection JSUnusedGlobalSymbols

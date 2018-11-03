@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('./utils/GeneralUtils');
+const { TypeUtils } = require('./utils/TypeUtils');
 
 /**
  * Argument validation utilities.
@@ -148,7 +148,7 @@ class ArgumentGuard {
    * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
   static isString(param, paramName, strict = true) {
-    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isString(param)) {
+    if ((strict || !(param === undefined || param === null)) && !TypeUtils.isString(param)) {
       throw new Error(`IllegalType: ${paramName} is not a string`);
     }
   }
@@ -162,7 +162,7 @@ class ArgumentGuard {
    * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
   static isNumber(param, paramName, strict = true) {
-    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isNumber(param)) {
+    if ((strict || !(param === undefined || param === null)) && !TypeUtils.isNumber(param)) {
       throw new Error(`IllegalType: ${paramName} is not a number`);
     }
   }
@@ -176,7 +176,7 @@ class ArgumentGuard {
    * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
   static isBoolean(param, paramName, strict = true) {
-    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isBoolean(param)) {
+    if ((strict || !(param === undefined || param === null)) && !TypeUtils.isBoolean(param)) {
       throw new Error(`IllegalType: ${paramName} is not a boolean`);
     }
   }
@@ -190,7 +190,7 @@ class ArgumentGuard {
    * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
   static isBuffer(param, paramName, strict = true) {
-    if ((strict || !(param === undefined || param === null)) && !GeneralUtils.isBuffer(param)) {
+    if ((strict || !(param === undefined || param === null)) && !TypeUtils.isBuffer(param)) {
       throw new Error(`IllegalType: ${paramName} is not a buffer`);
     }
   }
@@ -202,7 +202,7 @@ class ArgumentGuard {
    * @param {object} param The input parameter.
    */
   static isBase64(param) {
-    if (!GeneralUtils.isBase64(param)) {
+    if (!TypeUtils.isBase64(param)) {
       throw new Error(`IllegalType: \`${param}\` is not a base64 string`);
     }
   }
