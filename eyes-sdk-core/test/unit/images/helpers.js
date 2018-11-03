@@ -54,11 +54,12 @@ const imageMock2String = imageMock => {
     lines[row] = '';
     for (let col = 0; col < width; col += 1) {
       const i = ((width * row) + col) << 2;
-      const r = imageMock.data[i + 0];
+      const r = imageMock.data[i];
       const g = imageMock.data[i + 1];
       const b = imageMock.data[i + 2];
       const a = imageMock.data[i + 3];
 
+      // noinspection NonShortCircuitBooleanExpressionJS
       const color = (
         (((r & 0xFF) << 24) >>> 0) |
         ((g & 0xFF) << 16) |

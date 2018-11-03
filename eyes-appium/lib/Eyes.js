@@ -13,6 +13,7 @@ const VERSION = require('../package.json').version;
  * Applitools SDK for Appium integration.
  */
 class Eyes extends EyesSelenium {
+  // noinspection JSMethodCanBeStatic
   /** @inheritDoc */
   getBaseAgentId() {
     return `eyes-appium/${VERSION}`;

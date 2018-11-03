@@ -28,7 +28,9 @@ describe('IOSTest', function () {
     const [deviceName, deviceOrientation, platformVersion, fully] = row;
 
     let testName = `${deviceName} ${platformVersion} ${deviceOrientation}`;
-    if (fully) testName += ' fully';
+    if (fully) {
+      testName += ' fully';
+    }
 
     it(testName, function () {
       const eyes = new Eyes();

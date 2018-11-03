@@ -43,17 +43,10 @@ class TestsDataProvider {
     return permutations.filter(perm => {
       const [caps, platf] = perm;
 
-      const browser = caps.getBrowserName()
-        .toUpperCase()
-        .trim();
-      const platform = platf.toUpperCase()
-        .trim();
-      if ((platform.startsWith('WIN') && browser === 'SAFARI') ||
-        (platform.startsWith('MAC') && browser === 'INTERNET EXPLORER')) {
-        return false;
-      }
-
-      return true;
+      const browser = caps.getBrowserName().toUpperCase().trim();
+      const platform = platf.toUpperCase().trim();
+      return !(platform.startsWith('WIN') && browser === 'SAFARI') &&
+        !(platform.startsWith('MAC') && browser === 'INTERNET EXPLORER');
     });
   }
 }

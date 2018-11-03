@@ -64,7 +64,7 @@ class SessionEventHandler {
    * Called when a validation had ended.
    *
    * @param {string} autSessionId The AUT session ID.
-   * @param {string} validationId The ID of the validation which had ended.
+   * @param {number} validationId The ID of the validation which had ended.
    * @param {ValidationResult} validationResult The validation results.
    * @return {Promise}
    */

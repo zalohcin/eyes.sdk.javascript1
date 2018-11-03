@@ -7,9 +7,9 @@ class FrameLocator {
     /** @type {By} */
     this._frameSelector = null;
     /** @type {string} */
-    this._frameNameOrId = null;
+    this._frameNameOrId = undefined;
     /** @type {number} */
-    this._frameIndex = null;
+    this._frameIndex = undefined;
   }
 
   /**

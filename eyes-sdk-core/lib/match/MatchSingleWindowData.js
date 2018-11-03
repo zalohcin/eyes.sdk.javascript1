@@ -29,6 +29,7 @@ class MatchSingleWindowData extends MatchWindowData {
     this._updateBaselineIfNew = true;
     this._removeSession = false;
     this._removeSessionIfMatching = false;
+    /** @type {string} */
     this._agentId = undefined;
   }
 

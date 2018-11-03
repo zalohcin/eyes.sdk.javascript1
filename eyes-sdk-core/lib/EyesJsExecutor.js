@@ -5,7 +5,7 @@
 /**
  * An interface for JsExecutors
  *
- * @abstract
+ * @interface
  */
 class EyesJsExecutor {
   /**

@@ -17,8 +17,10 @@ class RenderRequest {
    * @param {Object} [scriptHooks]
    * @param {string[]} selectorsToFindRegionsFor
    * @param {boolean} sendDom
+   * @param {string} renderId
    */
-  constructor({ webhook, url, dom, resources, renderInfo, platform, browserName, scriptHooks, selectorsToFindRegionsFor, sendDom } = {}) {
+  constructor({ webhook, url, dom, resources, renderInfo, platform, browserName, scriptHooks, selectorsToFindRegionsFor,
+    sendDom, renderId } = {}) {
     ArgumentGuard.notNullOrEmpty(webhook, 'webhook');
     ArgumentGuard.notNull(url, 'url');
     ArgumentGuard.notNull(dom, 'dom');
@@ -31,7 +33,7 @@ class RenderRequest {
     this._renderInfo = renderInfo;
     this._platform = platform;
     this._browserName = browserName;
-    this._renderId = undefined;
+    this._renderId = renderId;
     this._scriptHooks = scriptHooks;
     this._selectorsToFindRegionsFor = selectorsToFindRegionsFor;
     this._sendDom = sendDom;

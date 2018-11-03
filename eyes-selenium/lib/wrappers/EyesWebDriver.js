@@ -13,6 +13,7 @@ const { EyesTargetLocator } = require('./EyesTargetLocator');
 /**
  * An Eyes implementation of the interfaces implemented by {@link IWebDriver}.
  * Used so we'll be able to return the users an object with the same functionality as {@link WebDriver}.
+ * @implements {EyesJsExecutor}
  */
 class EyesWebDriver extends IWebDriver {
   /**
@@ -58,8 +59,8 @@ class EyesWebDriver extends IWebDriver {
   }
 
   /** @inheritDoc */
-  execute(command, description) {
-    return this._driver.execute(command, description);
+  execute(command) {
+    return this._driver.execute(command);
   }
 
   /** @inheritDoc */
@@ -88,8 +89,8 @@ class EyesWebDriver extends IWebDriver {
   }
 
   /** @inheritDoc */
-  actions() {
-    return this._driver.actions();
+  actions(options) {
+    return this._driver.actions(options);
   }
 
   /** @inheritDoc */
@@ -98,11 +99,11 @@ class EyesWebDriver extends IWebDriver {
   }
 
   /** @inheritDoc */
-  async executeScript(script, ...varArgs) {
+  executeScript(script, ...varArgs) {
     this._logger.verbose('Execute script...');
     EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs);
     // noinspection JSValidateTypes
-    const result = await this._driver.executeScript(script, ...varArgs);
+    const result = this._driver.executeScript(script, ...varArgs);
     this._logger.verbose('Done!');
     return result;
   }

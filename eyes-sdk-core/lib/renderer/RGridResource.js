@@ -16,6 +16,7 @@ class RGridResource {
     this._contentType = contentType;
     this._content = content;
 
+    /** @type {string} */
     this._sha256hash = undefined;
   }
 

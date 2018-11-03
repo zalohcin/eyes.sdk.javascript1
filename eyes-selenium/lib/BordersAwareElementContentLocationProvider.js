@@ -56,7 +56,7 @@ class BordersAwareElementContentLocationProvider {
    * @param {Location} location The location of the element.
    * @return {Promise<Location>} The location of the content of the element.
    */
-  async getLocation(logger, element, location) {
+  static async getLocation(logger, element, location) {
     ArgumentGuard.notNull(logger, 'logger');
     ArgumentGuard.notNull(element, 'element');
     ArgumentGuard.notNull(location, 'location');

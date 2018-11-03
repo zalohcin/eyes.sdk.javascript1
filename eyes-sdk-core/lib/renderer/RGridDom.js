@@ -15,7 +15,9 @@ class RGridDom {
     this._domNodes = domNodes;
     this._resources = resources || [];
 
+    /** @type {string} */
     this._sha256hash = undefined;
+    /** @type {string} */
     this._contentAsCdt = undefined;
   }
 

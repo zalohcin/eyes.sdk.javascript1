@@ -74,11 +74,6 @@ class Eyes extends EyesBase {
     /** @type {boolean} */
     this._checkFrameOrElement = false;
 
-    /** @type {string} */
-    this._originalDefaultContentOverflow = false;
-    /** @type {string} */
-    this._originalFrameOverflow = false;
-
     /** @type {Region} */
     this._regionToCheck = null;
 
@@ -132,6 +127,7 @@ class Eyes extends EyesBase {
     this._init();
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @private
    */
@@ -431,7 +427,7 @@ class Eyes extends EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * Preform visual validation
    *
@@ -542,7 +538,7 @@ class Eyes extends EyesBase {
     try {
       await switchTo.frames(frames);
     } catch (err) {
-      this._logger.log(`WARNING: Failed to swtich to original frame chain! ${err}`);
+      this._logger.log(`WARNING: Failed to switch to original frame chain! ${err}`);
     }
   }
 
@@ -1205,7 +1201,7 @@ class Eyes extends EyesBase {
     this._viewportSizeHandler.set(new RectangleSize(viewportSize));
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  // noinspection JSUnusedGlobalSymbols, JSCheckFunctionSignatures
   /**
    * Call this method if for some reason you don't want to call {@link #open(WebDriver, string, string)} (or one of its
    * variants) yet.
@@ -1218,7 +1214,7 @@ class Eyes extends EyesBase {
     return EyesSeleniumUtils.getViewportSizeOrDisplaySize(new Logger(), driver);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  // noinspection JSUnusedGlobalSymbols, JSCheckFunctionSignatures
   /**
    * Set the viewport size using the driver. Call this method if for some reason you don't want to call
    * {@link #open(WebDriver, string, string)} (or one of its variants) yet.
@@ -1231,7 +1227,7 @@ class Eyes extends EyesBase {
     ArgumentGuard.notNull(driver, 'driver');
     ArgumentGuard.notNull(viewportSize, 'viewportSize');
 
-    return EyesSeleniumUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize));
+    await EyesSeleniumUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize));
   }
 
   /** @override */
@@ -1358,6 +1354,13 @@ class Eyes extends EyesBase {
   }
   */
 
+  /**
+   * @override
+   */
+  getScreenshotUrl() {
+    return Promise.resolve(undefined);
+  }
+
   // noinspection JSUnusedGlobalSymbols
   /**
    * @protected
@@ -1370,7 +1373,7 @@ class Eyes extends EyesBase {
     const switchTo = this._driver.switchTo();
 
     const scaleProviderFactory = await this._updateScalingParams();
-    const algo = new FullPageCaptureAlgorithm(
+    const fullPageCapture = new FullPageCaptureAlgorithm(
       this._logger,
       this._regionPositionCompensation,
       this.getWaitBeforeScreenshots(),
@@ -1398,7 +1401,7 @@ class Eyes extends EyesBase {
 
       await switchTo.frames(originalFrameChain);
 
-      const entireFrameOrElement = await algo.getStitchedRegion(this._regionToCheck, null, this.getElementPositionProvider());
+      const entireFrameOrElement = await fullPageCapture.getStitchedRegion(this._regionToCheck, null, this.getElementPositionProvider());
 
       this._logger.verbose('Building screenshot object...');
       const size = new RectangleSize(entireFrameOrElement.getWidth(), entireFrameOrElement.getHeight());
@@ -1412,7 +1415,7 @@ class Eyes extends EyesBase {
 
       await switchTo.defaultContent();
 
-      const fullPageImage = await algo.getStitchedRegion(Region.EMPTY, null, this._positionProviderHandler.get());
+      const fullPageImage = await fullPageCapture.getStitchedRegion(Region.EMPTY, null, this._positionProviderHandler.get());
 
       await switchTo.frames(originalFrameChain);
       result = await EyesWebDriverScreenshot.fromScreenshotType(this._logger, this._driver, fullPageImage, null, originalFramePosition);

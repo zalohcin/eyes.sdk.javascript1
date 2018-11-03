@@ -204,7 +204,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
 
   /**
    * @param {Logger} logger The logger to use.
-   * @param {IWebDriver} driver The web driver to use.
+   * @param {EyesWebDriver|WebDriver} driver The web driver to use.
    * @return {Promise<RectangleSize>} The viewport size of the current context, or the display size if the viewport
    *   size cannot be retrieved.
    */
@@ -219,6 +219,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
       logger.verbose('Using window size as viewport size.');
       let { width, height } = await driver.manage().window().getRect();
 
+      // noinspection EmptyCatchBlockJS
       try {
         const isLandscape = await EyesSeleniumUtils.isLandscapeOrientation(driver);
         if (isLandscape && height > width) {
@@ -272,7 +273,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    * Tries to set the viewport size
    *
    * @param {Logger} logger The logger to use.
-   * @param {IWebDriver} driver The web driver to use.
+   * @param {EyesWebDriver|WebDriver} driver The web driver to use.
    * @param {RectangleSize} requiredSize The viewport size.
    * @return {Promise<boolean>}
    */

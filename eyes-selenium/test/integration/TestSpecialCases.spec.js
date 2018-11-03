@@ -6,7 +6,7 @@ const { TestsDataProvider } = require('./setup/TestsDataProvider');
 const { TestSetup } = require('./setup/TestSetup');
 const { Target } = require('../../index');
 
-let eyes, driver;
+let /** @type {Eyes} */ eyes, /** @type {EyesWebDriver} */ driver;
 const testSuitName = 'Eyes Selenium SDK - Special Cases';
 const testedPageUrl = 'http://applitools.github.io/demo/TestPages/WixLikeTestPage/index.html';
 
@@ -29,16 +29,16 @@ dataProvider.forEach(row => {
     });
 
     it('TestCheckRegionInAVeryBigFrame', async function () {
-      await eyes.check('map', Target.frame('frame1').region(By.tagName('img')));
+      await eyes.check('map', Target.frame('frame1').region(By.css('img')));
     });
 
     it('TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame', async function () {
       await driver.switchTo().frame('frame1');
 
-      const element = await driver.findElement(By.cssSelector('img'));
+      const element = await driver.findElement(By.css('img'));
       await driver.executeScript('arguments[0].scrollIntoView(true);', element);
 
-      await eyes.check('', Target.region(By.cssSelector('img')));
+      await eyes.check('', Target.region(By.css('img')));
     });
   });
 });

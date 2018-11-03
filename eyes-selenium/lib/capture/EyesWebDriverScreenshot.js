@@ -71,14 +71,14 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    * @return {Promise<EyesWebDriverScreenshot>}
    */
   static async fromFrameSize(logger, driver, image, entireFrameSize) {
-    const ewds = new EyesWebDriverScreenshot(logger, driver, image);
+    const screenshot = new EyesWebDriverScreenshot(logger, driver, image);
     // The frame comprises the entire screenshot.
-    ewds._screenshotType = ScreenshotType.ENTIRE_FRAME;
+    screenshot._screenshotType = ScreenshotType.ENTIRE_FRAME;
 
-    ewds._currentFrameScrollPosition = Location.ZERO;
-    ewds._frameLocationInScreenshot = Location.ZERO;
-    ewds._frameWindow = new Region(Location.ZERO, entireFrameSize);
-    return ewds;
+    screenshot._currentFrameScrollPosition = Location.ZERO;
+    screenshot._frameLocationInScreenshot = Location.ZERO;
+    screenshot._frameWindow = new Region(Location.ZERO, entireFrameSize);
+    return screenshot;
   }
 
   /**
@@ -92,27 +92,27 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    * @return {Promise<EyesWebDriverScreenshot>}
    */
   static async fromScreenshotType(logger, driver, image, screenshotType, frameLocationInScreenshot) {
-    const ewds = new EyesWebDriverScreenshot(logger, driver, image);
+    const screenshot = new EyesWebDriverScreenshot(logger, driver, image);
 
-    ewds._screenshotType = await ewds._updateScreenshotType(screenshotType, image);
+    screenshot._screenshotType = await screenshot._updateScreenshotType(screenshotType, image);
     const positionProvider = driver.getEyes().getPositionProvider();
 
-    ewds._frameChain = driver.getFrameChain();
-    const frameSize = await ewds._getFrameSize(positionProvider);
+    screenshot._frameChain = driver.getFrameChain();
+    const frameSize = await screenshot._getFrameSize(positionProvider);
 
-    ewds._currentFrameScrollPosition = await ewds._getUpdatedScrollPosition(positionProvider);
-    ewds._frameLocationInScreenshot = await ewds._getUpdatedFrameLocationInScreenshot(frameLocationInScreenshot);
+    screenshot._currentFrameScrollPosition = await screenshot._getUpdatedScrollPosition(positionProvider);
+    screenshot._frameLocationInScreenshot = await screenshot._getUpdatedFrameLocationInScreenshot(frameLocationInScreenshot);
 
     logger.verbose('Calculating frame window...');
-    ewds._frameWindow = new Region(ewds._frameLocationInScreenshot, frameSize);
-    ewds._frameWindow.intersect(new Region(0, 0, image.getWidth(), image.getHeight()));
+    screenshot._frameWindow = new Region(screenshot._frameLocationInScreenshot, frameSize);
+    screenshot._frameWindow.intersect(new Region(0, 0, image.getWidth(), image.getHeight()));
 
-    if (ewds._frameWindow.getWidth() <= 0 || ewds._frameWindow.getHeight() <= 0) {
+    if (screenshot._frameWindow.getWidth() <= 0 || screenshot._frameWindow.getHeight() <= 0) {
       throw new Error('Got empty frame window for screenshot!');
     }
 
     logger.verbose('Done!');
-    return ewds;
+    return screenshot;
   }
 
   /**
