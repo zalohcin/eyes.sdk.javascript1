@@ -54,4 +54,10 @@ describe('createResourceCache', () => {
     cache.setValue('a', 'aaa');
     expect(cache.getWithDependencies('kaka')).to.equal(undefined);
   });
+
+  it('getWithDependencies handles recursive dependencies', () => {
+    cache.setValue('a', 'aaa');
+    cache.setDependencies('a', ['a']);
+    expect(cache.getWithDependencies('a')).to.eql({a: 'aaa'});
+  });
 });
