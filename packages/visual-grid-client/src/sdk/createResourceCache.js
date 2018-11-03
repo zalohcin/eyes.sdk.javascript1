@@ -29,7 +29,10 @@ function createResourceCache() {
     ret[key] = entry.value;
     if (entry.dependencies) {
       entry.dependencies.forEach(dep => {
-        Object.assign(ret, getWithDependencies(dep));
+        // stop condition to avoid infinite recursion
+        if (!ret[dep]) {
+          Object.assign(ret, getWithDependencies(dep));
+        }
       });
     }
     return ret;
@@ -37,6 +40,14 @@ function createResourceCache() {
 
   function remove(key) {
     delete cache[key];
+  }
+
+  // for debugging purposes
+  function toJSON() {
+    return Object.keys(cache).reduce((acc, curr) => {
+      acc[curr] = {length: cache[curr].value.length, dependencies: cache[curr].dependencies};
+      return acc;
+    }, {});
   }
 
   const cache = {};
@@ -47,6 +58,7 @@ function createResourceCache() {
     setDependencies,
     getWithDependencies,
     remove,
+    toJSON,
   };
 }
 
