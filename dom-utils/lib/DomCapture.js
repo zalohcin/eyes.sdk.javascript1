@@ -23,13 +23,20 @@ class DomCapture {
     return buffer.toString();
   }
 
-  constructor() {
+  /**
+   * @param {Logger} logger
+   * @param {EyesWebDriver|WebDriver} driver
+   */
+  constructor(logger, driver) {
+    this._logger = logger;
+    this._driver = driver;
+
     this._frameBundledCssPromises = [];
   }
 
   /**
    * @param {Logger} logger A Logger instance.
-   * @param {EyesWebDriver} driver
+   * @param {EyesWebDriver|WebDriver} driver
    * @param {PositionProvider} [positionProvider]
    * @return {Promise<string>}
    */
@@ -83,20 +90,18 @@ class DomCapture {
     const json = await driver.executeScript(DomCapture.CAPTURE_FRAME_SCRIPT, argsObj);
     const domTree = JSON.parse(json);
 
-    const domCapture = new DomCapture();
-    await domCapture._getFrameDom(logger, driver, { childNodes: [domTree], tagName: 'OUTER_HTML' });
+    const domCapture = new DomCapture(logger, driver);
+    await domCapture._getFrameDom({ childNodes: [domTree], tagName: 'OUTER_HTML' });
     await Promise.all(domCapture._frameBundledCssPromises);
     return domTree;
   }
 
   /**
-   * @param {Logger} logger
-   * @param {EyesWebDriver} driver
    * @param {object} domTree
    * @return {Promise<object>}
    * @private
    */
-  async _getFrameDom(logger, driver, domTree) {
+  async _getFrameDom(domTree) {
     const { tagName } = domTree;
 
     if (!tagName) {
@@ -105,24 +110,21 @@ class DomCapture {
 
     let frameIndex = 0;
 
-    await this._loop(logger, driver, domTree, async domSubTree => {
-      await driver.switchTo().frame(frameIndex);
-      await this._getFrameDom(logger, driver, domSubTree);
-      await driver.switchTo().parentFrame();
+    await this._loop(domTree, async domSubTree => {
+      await this._driver.switchTo().frame(frameIndex);
+      await this._getFrameDom(domSubTree);
+      await this._driver.switchTo().parentFrame();
       frameIndex += 1;
     });
   }
 
-
   /**
-   * @param {Logger} logger
-   * @param {EyesWebDriver} driver
    * @param {object} domTree
    * @param {function} fn
    * @return {Promise<void>}
    * @private
    */
-  async _loop(logger, driver, domTree, fn) {
+  async _loop(domTree, fn) {
     const { childNodes } = domTree;
     if (!childNodes) {
       return;
@@ -134,7 +136,7 @@ class DomCapture {
           await fn(node);
         } else {
           if (node && node.tagName.toUpperCase() === 'HTML') {
-            await this._getFrameBundledCss(logger, driver, node);
+            await this._getFrameBundledCss(node);
           }
 
           if (node.childNodes) {
@@ -148,66 +150,61 @@ class DomCapture {
   }
 
   /**
-   * @param {Logger} logger
-   * @param {EyesWebDriver} driver
    * @param node
    * @return {Promise<void>}
    * @private
    */
-  async _getFrameBundledCss(logger, driver, node) {
-    const currentUrl = await driver.getCurrentUrl();
+  async _getFrameBundledCss(node) {
+    const currentUrl = await this._driver.getCurrentUrl();
 
     if (!GeneralUtils.isAbsoluteUrl(currentUrl)) {
-      logger.verbose('WARNING! Base URL is not an absolute URL!');
+      this._logger.verbose('WARNING! Base URL is not an absolute URL!');
     }
 
     const timeStart = PerformanceUtils.start();
-    const result = await driver.executeScript(DomCapture.CAPTURE_CSSOM_SCRIPT);
-    logger.verbose(`executing javascript to capture css took ${timeStart.end().summary}`);
+    const result = await this._driver.executeScript(DomCapture.CAPTURE_CSSOM_SCRIPT);
+    this._logger.verbose(`executing javascript to capture css took ${timeStart.end().summary}`);
 
-    const promise = this._processFrameBundledCss(logger, driver, currentUrl, node, result);
+    const promise = this._processFrameBundledCss(currentUrl, node, result);
     this._frameBundledCssPromises.push(promise);
   }
 
   /**
-   * @param {Logger} logger
-   * @param {EyesWebDriver} driver
    * @param {string} currentUrl
    * @param node
    * @param result
    * @return {Promise<void>}
    * @private
    */
-  async _processFrameBundledCss(logger, driver, currentUrl, node, result) {
+  async _processFrameBundledCss(currentUrl, node, result) {
     let sb = '';
     for (const item of result) {
       let timeStart = PerformanceUtils.start();
       const kind = item.substring(0, 5);
       const value = item.substring(5);
-      logger.verbose(`splitting css result item took ${timeStart.end().summary}`);
+      this._logger.verbose(`splitting css result item took ${timeStart.end().summary}`);
       let css;
       if (kind === 'text:') {
-        css = await this._parseAndSerializeCss(logger, currentUrl, value);
+        css = await this._parseAndSerializeCss(currentUrl, value);
       } else {
-        css = await this._downloadCss(logger, currentUrl, value);
+        css = await this._downloadCss(currentUrl, value);
       }
-      css = await this._parseAndSerializeCss(logger, currentUrl, css);
+      css = await this._parseAndSerializeCss(currentUrl, css);
       timeStart = PerformanceUtils.start();
       sb += css;
-      logger.verbose(`appending CSS to StringBuilder took ${timeStart.end().summary}`);
+      this._logger.verbose(`appending CSS to StringBuilder took ${timeStart.end().summary}`);
     }
 
     node.css = sb;
   }
 
   /**
-   * @param {Logger} logger
    * @param {string} baseUri
    * @param {string} css
    * @return {Promise<string>}
    * @private
    */
-  async _parseAndSerializeCss(logger, baseUri, css) {
+  async _parseAndSerializeCss(baseUri, css) {
     const timeStart = PerformanceUtils.start();
     let stylesheet;
     try {
@@ -216,20 +213,19 @@ class DomCapture {
     } catch (ignored) {
       return '';
     }
-    logger.verbose(`parsing CSS string took ${timeStart.end().summary}`);
+    this._logger.verbose(`parsing CSS string took ${timeStart.end().summary}`);
 
-    css = await this._serializeCss(logger, baseUri, stylesheet);
+    css = await this._serializeCss(baseUri, stylesheet);
     return css;
   }
 
   /**
-   * @param {Logger} logger
    * @param {string} baseUri
    * @param {object} stylesheet
    * @return {Promise<string>}
    * @private
    */
-  async _serializeCss(logger, baseUri, stylesheet) {
+  async _serializeCss(baseUri, stylesheet) {
     const timeStart = PerformanceUtils.start();
     let sb = '';
 
@@ -237,14 +233,14 @@ class DomCapture {
     for (const ruleSet of stylesheet.rules) {
       let addAsIs = true;
       if (ruleSet.name === 'import') {
-        logger.verbose('encountered @import rule');
+        this._logger.verbose('encountered @import rule');
         const href = cssUrlParser(ruleSet.parameters);
-        css = await this._downloadCss(logger, baseUri, href[0]);
+        css = await this._downloadCss(baseUri, href[0]);
         css = css.trim();
-        logger.verbose(`imported CSS (whitespaces trimmed) length: ${css.length}`);
+        this._logger.verbose(`imported CSS (whitespaces trimmed) length: ${css.length}`);
         addAsIs = css.length === 0;
         if (!addAsIs) {
-          css = await this._parseAndSerializeCss(logger, baseUri, css);
+          css = await this._parseAndSerializeCss(baseUri, css);
           sb += css;
         }
       }
@@ -255,21 +251,20 @@ class DomCapture {
       }
     }
 
-    logger.verbose(`serializing CSS to StringBuilder took ${timeStart.end().summary}`);
+    this._logger.verbose(`serializing CSS to StringBuilder took ${timeStart.end().summary}`);
     return sb.toString();
   }
 
   /**
-   * @param {Logger} logger
    * @param {string} baseUri
    * @param {string} value
    * @param {number} [retriesCount=1]
    * @return {Promise<string>}
    * @private
    */
-  async _downloadCss(logger, baseUri, value, retriesCount = 1) {
+  async _downloadCss(baseUri, value, retriesCount = 1) {
     try {
-      logger.verbose(`Given URL to download: ${value}`);
+      this._logger.verbose(`Given URL to download: ${value}`);
       // let href = cssParser.parse(value);
       let href = value;
       if (!GeneralUtils.isAbsoluteUrl(href)) {
@@ -279,13 +274,13 @@ class DomCapture {
       const timeStart = PerformanceUtils.start();
       const response = await axios(href);
       const css = response.data;
-      logger.verbose(`downloading CSS in length of ${css.length} chars took ${timeStart.end().summary}`);
+      this._logger.verbose(`downloading CSS in length of ${css.length} chars took ${timeStart.end().summary}`);
       return css;
     } catch (ex) {
-      logger.verbose(ex.toString());
+      this._logger.verbose(ex.toString());
       if (retriesCount > 0) {
         retriesCount -= 1;
-        return this._downloadCss(logger, baseUri, value, retriesCount);
+        return this._downloadCss(baseUri, value, retriesCount);
       }
       return '';
     }

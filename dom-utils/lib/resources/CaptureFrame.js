@@ -20,10 +20,9 @@ function captureFrame({ styleProps, attributeProps, rectProps, ignoredTagNames }
       if (el.contentDocument) {
         obj.childNodes = [captureNode(el.contentDocument.documentElement)];
       }
-    } catch (ex) {
-    } finally {
-      return obj;
+    } catch (ignored) {
     }
+    return obj;
   }
 
   function elementToJSON(el) {
@@ -42,13 +41,12 @@ function captureFrame({ styleProps, attributeProps, rectProps, ignoredTagNames }
 
     if (!attributeProps) {
       if (el.hasAttributes()) {
-        var attrs = el.attributes;
+        const attrs = el.attributes;
         for (const p of attrs) {
           attributes[p.name] = p.value;
         }
       }
-    }
-    else {
+    } else {
       if (attributeProps.all) {
         for (const p of attributeProps.all) {
           if (el.hasAttribute(p)) attributes[p] = el.getAttribute(p);
@@ -61,6 +59,7 @@ function captureFrame({ styleProps, attributeProps, rectProps, ignoredTagNames }
         }
       }
     }
+
     return {
       tagName,
       style: notEmptyObj(style),

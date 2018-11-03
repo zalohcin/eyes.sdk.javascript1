@@ -4,11 +4,10 @@ require('chromedriver');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const dateformat = require('dateformat');
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 
-const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils } = require('@applitools/eyes-sdk-core');
+const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils, GeneralUtils } = require('@applitools/eyes-sdk-core');
 const { DomCapture } = require('../index');
 
 /**
@@ -69,15 +68,15 @@ describe('DomCapture', function () {
     chromeOptions = new ChromeOptions().headless();
 
     logger = new Logger();
-    if (process.env.CI) {
-      logger.setLogHandler(new ConsoleLogHandler(true));
-    } else {
-      const dateString = dateformat(new Date(), 'yyyy_mm_dd_HH_MM_ss_l');
+    if (process.env.CI == null && process.env.APPLITOOLS_LOGS_PATH != null) {
+      const dateString = GeneralUtils.toLogFileDateTime();
       const extendedTestName = `${this.test.parent.title}_${dateString}`;
       const logsPath = process.env.APPLITOOLS_LOGS_PATH || '.';
       const pathName = path.join(logsPath, 'JavaScript', extendedTestName);
       logger.setLogHandler(new FileLogHandler(true, path.join(pathName, 'log.log')));
       logger.getLogHandler().open();
+    } else {
+      logger.setLogHandler(new ConsoleLogHandler(true));
     }
   });
 
