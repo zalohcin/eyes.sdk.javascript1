@@ -235,9 +235,10 @@ class EyesTargetLocator extends TargetLocator {
       this._logger.verbose('Making preparations...');
       this._driver.getFrameChain().clear();
       this._logger.verbose('Done! Switching to default content...');
-      await this._targetLocator.defaultContent();
-      this._logger.verbose('Done!');
     }
+
+    await this._targetLocator.defaultContent();
+    this._logger.verbose('Done!');
   }
 
   // noinspection JSCheckFunctionSignatures

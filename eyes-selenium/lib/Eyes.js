@@ -735,7 +735,8 @@ class Eyes extends EyesBase {
       const rect = await element.getRect();
       const elementLocation = new Location(rect);
 
-      if (originalFC.size() > 0 && await !EyesWebElement.equals(element, originalFC.peek().getReference())) {
+      // const isEquals = await EyesWebElement.equals(element, originalFC.peek());
+      if (originalFC.size() > 0) {
         await switchTo.frames(originalFC);
       }
 
@@ -1286,6 +1287,7 @@ class Eyes extends EyesBase {
 
       this._originalOverflow = await EyesSeleniumUtils.hideScrollbars(this._driver, 200, this._scrollRootElement);
       await this._driver.switchTo().frames(originalFC);
+      return originalFC;
     }
 
     return new FrameChain(this._logger);

@@ -77,19 +77,19 @@ class EyesWebElement extends WebElement {
    *     resolved to whether the two WebElements are equal.
    */
   static async equals(a, b) {
-    if (a instanceof EyesWebElement) {
-      a = a.getWebElement();
-    }
+    if (a instanceof WebElement && b instanceof WebElement) {
+      if (a instanceof EyesWebElement) {
+        a = a.getWebElement();
+      }
 
-    if (b instanceof EyesWebElement) {
-      b = b.getWebElement();
-    }
+      if (b instanceof EyesWebElement) {
+        b = b.getWebElement();
+      }
 
-    try {
       return super.equals(a, b);
-    } catch (ignore) {
-      return false;
     }
+
+    return false;
   }
 
   /**
