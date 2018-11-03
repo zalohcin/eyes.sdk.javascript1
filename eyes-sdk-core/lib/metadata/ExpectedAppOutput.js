@@ -5,26 +5,36 @@ const { Annotations } = require('./Annotations');
 const { Image } = require('./Image');
 
 class ExpectedAppOutput {
-  constructor() {
-    this._tag = undefined;
-    this._image = undefined;
-    this._thumbprint = undefined;
-    this._occurredAt = undefined;
-    this._annotations = undefined;
-  }
-
+  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * @deprecated
-   * @param {object} object
-   * @return {ExpectedAppOutput}
+   * @param {string} tag
+   * @param {Image|object} image
+   * @param {Image|object} thumbprint
+   * @param {Date|string} occurredAt
+   * @param {Annotations|object} annotations
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new ExpectedAppOutput(), object, {
-      image: Image.fromObject,
-      thumbprint: Image.fromObject,
-      // _occurredAt: Image.fromObject,
-      annotations: Annotations.fromObject,
-    });
+  constructor({ tag, image, thumbprint, occurredAt, annotations } = {}) {
+    if (image && !(image instanceof Image)) {
+      image = new Image(image);
+    }
+
+    if (thumbprint && !(thumbprint instanceof Image)) {
+      thumbprint = new Image(thumbprint);
+    }
+
+    if (annotations && !(annotations instanceof Annotations)) {
+      annotations = new Annotations(annotations);
+    }
+
+    if (occurredAt && !(occurredAt instanceof Date)) {
+      occurredAt = GeneralUtils.fromISO8601DateTime(occurredAt);
+    }
+
+    this._tag = tag;
+    this._image = image;
+    this._thumbprint = thumbprint;
+    this._occurredAt = occurredAt;
+    this._annotations = annotations;
   }
 
   // noinspection JSUnusedGlobalSymbols

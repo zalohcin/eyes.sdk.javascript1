@@ -3,20 +3,17 @@
 const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class Branch {
-  constructor() {
-    this._id = undefined;
-    this._name = undefined;
-    this._isDeleted = undefined;
-    this._updateInfo = undefined;
-  }
-
   /**
-   * @deprecated
-   * @param {object} object
-   * @return {Branch}
+   * @param {string} id
+   * @param {string} name
+   * @param {boolean} isDeleted
+   * @param {object} updateInfo TODO: add typed
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new Branch(), object);
+  constructor({ id, name, isDeleted, updateInfo } = {}) {
+    this._id = id;
+    this._name = name;
+    this._isDeleted = isDeleted;
+    this._updateInfo = updateInfo;
   }
 
   // noinspection JSUnusedGlobalSymbols

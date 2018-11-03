@@ -5,34 +5,49 @@ const { ImageMatchSettings } = require('./ImageMatchSettings');
 const { Image } = require('./Image');
 
 class ActualAppOutput {
-  constructor() {
-    this._image = undefined;
-    this._thumbprint = undefined;
-    this._imageMatchSettings = undefined;
-    this._ignoreExpectedOutputSettings = undefined;
-    this._isMatching = undefined;
-    this._areImagesMatching = undefined;
-
-    this._occurredAt = undefined;
-
-    this._userInputs = undefined;
-    this._windowTitle = undefined;
-    this._tag = undefined;
-    this._isPrimary = undefined;
-  }
-
+  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * @deprecated
-   * @param {object} object
-   * @return {ActualAppOutput}
+   * @param {Image|object} image
+   * @param {Image|object} thumbprint
+   * @param {ImageMatchSettings|object} imageMatchSettings
+   * @param {boolean} ignoreExpectedOutputSettings
+   * @param {boolean} isMatching
+   * @param {boolean} areImagesMatching
+   * @param {Date|string} occurredAt
+   * @param {object[]} userInputs
+   * @param {string} windowTitle
+   * @param {string} tag
+   * @param {boolean} isPrimary
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new ActualAppOutput(), object, {
-      image: Image.fromObject,
-      thumbprint: Image.fromObject,
-      imageMatchSettings: ImageMatchSettings.fromObject,
-      occurredAt: GeneralUtils.fromISO8601DateTime,
-    });
+  constructor({ image, thumbprint, imageMatchSettings, ignoreExpectedOutputSettings, isMatching, areImagesMatching,
+    occurredAt, userInputs, windowTitle, tag, isPrimary } = {}) {
+    if (image && !(image instanceof Image)) {
+      image = new Image(image);
+    }
+
+    if (thumbprint && !(thumbprint instanceof Image)) {
+      thumbprint = new Image(thumbprint);
+    }
+
+    if (imageMatchSettings && !(imageMatchSettings instanceof ImageMatchSettings)) {
+      imageMatchSettings = new ImageMatchSettings(imageMatchSettings);
+    }
+
+    if (occurredAt && !(occurredAt instanceof Date)) {
+      occurredAt = GeneralUtils.fromISO8601DateTime(occurredAt);
+    }
+
+    this._image = image;
+    this._thumbprint = thumbprint;
+    this._imageMatchSettings = imageMatchSettings;
+    this._ignoreExpectedOutputSettings = ignoreExpectedOutputSettings;
+    this._isMatching = isMatching;
+    this._areImagesMatching = areImagesMatching;
+    this._occurredAt = occurredAt;
+    this._userInputs = userInputs;
+    this._windowTitle = windowTitle;
+    this._tag = tag;
+    this._isPrimary = isPrimary;
   }
 
   // noinspection JSUnusedGlobalSymbols

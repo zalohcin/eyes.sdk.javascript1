@@ -3,21 +3,19 @@
 const { GeneralUtils } = require('../utils/GeneralUtils');
 
 class BatchInfo {
-  constructor() {
-    this._id = undefined;
-    this._name = undefined;
-    this._startedAt = undefined;
-  }
-
   /**
-   * @deprecated
-   * @param {object} object
-   * @return {BatchInfo}
+   * @param {string} id
+   * @param {string} name
+   * @param {Date|string} startedAt
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new BatchInfo(), object, {
-      startedAt: GeneralUtils.fromISO8601DateTime,
-    });
+  constructor({ id, name, startedAt } = {}) {
+    if (startedAt && !(startedAt instanceof Date)) {
+      startedAt = GeneralUtils.fromISO8601DateTime(startedAt);
+    }
+
+    this._id = id;
+    this._name = name;
+    this._startedAt = startedAt;
   }
 
   // noinspection JSUnusedGlobalSymbols

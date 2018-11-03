@@ -4,20 +4,17 @@ const { GeneralUtils } = require('../utils/GeneralUtils');
 const { RectangleSize } = require('../geometry/RectangleSize');
 
 class Image {
-  constructor() {
-    this._id = undefined;
-    this._size = undefined;
-  }
-
   /**
-   * @deprecated
-   * @param {object} object
-   * @return {Image}
+   * @param {string} id
+   * @param {RectangleSize|object} size
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new Image(), object, {
-      size: obj => new RectangleSize(obj),
-    });
+  constructor({ id, size } = {}) {
+    if (size && !(size instanceof RectangleSize)) {
+      size = new RectangleSize(size);
+    }
+
+    this._id = id;
+    this._size = size;
   }
 
   // noinspection JSUnusedGlobalSymbols

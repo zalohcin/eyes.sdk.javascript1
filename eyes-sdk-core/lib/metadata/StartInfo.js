@@ -6,33 +6,48 @@ const { BatchInfo } = require('./BatchInfo');
 const { AppEnvironment } = require('../AppEnvironment');
 
 class StartInfo {
-  constructor() {
-    this._sessionType = undefined;
-    this._isTransient = undefined;
-    this._ignoreBaseline = undefined;
-    this._appIdOrName = undefined;
-    this._compareWithParentBranch = undefined;
-    this._scenarioIdOrName = undefined;
-    this._batchInfo = undefined;
-    this._environment = undefined;
-    this._matchLevel = undefined;
-    this._defaultMatchSettings = undefined;
-    this._agentId = undefined;
-    this._properties = undefined;
-    this._render = undefined;
-  }
-
   /**
-   * @deprecated
-   * @param {object} object
-   * @return {StartInfo}
+   * @param {string} sessionType
+   * @param {boolean} isTransient
+   * @param {boolean} ignoreBaseline
+   * @param {string} appIdOrName
+   * @param {boolean} compareWithParentBranch
+   * @param {string} scenarioIdOrName
+   * @param {BatchInfo|object} batchInfo
+   * @param {AppEnvironment|object} environment
+   * @param {MatchLevel|string} matchLevel
+   * @param {ImageMatchSettings|object} defaultMatchSettings
+   * @param {string} agentId
+   * @param {object[]} properties
+   * @param {boolean} render
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new StartInfo(), object, {
-      batchInfo: BatchInfo.fromObject,
-      defaultMatchSettings: ImageMatchSettings.fromObject,
-      environment: obj => new AppEnvironment(obj),
-    });
+  constructor({ sessionType, isTransient, ignoreBaseline, appIdOrName, compareWithParentBranch, scenarioIdOrName,
+    batchInfo, environment, matchLevel, defaultMatchSettings, agentId, properties, render } = {}) {
+    if (batchInfo && !(batchInfo instanceof BatchInfo)) {
+      batchInfo = new BatchInfo(batchInfo);
+    }
+
+    if (defaultMatchSettings && !(defaultMatchSettings instanceof ImageMatchSettings)) {
+      defaultMatchSettings = new ImageMatchSettings(defaultMatchSettings);
+    }
+
+    if (environment && !(environment instanceof AppEnvironment)) {
+      environment = new AppEnvironment(environment);
+    }
+
+    this._sessionType = sessionType;
+    this._isTransient = isTransient;
+    this._ignoreBaseline = ignoreBaseline;
+    this._appIdOrName = appIdOrName;
+    this._compareWithParentBranch = compareWithParentBranch;
+    this._scenarioIdOrName = scenarioIdOrName;
+    this._batchInfo = batchInfo;
+    this._environment = environment;
+    this._matchLevel = matchLevel;
+    this._defaultMatchSettings = defaultMatchSettings;
+    this._agentId = agentId;
+    this._properties = properties;
+    this._render = render;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -57,6 +72,18 @@ class StartInfo {
   /** @param {boolean} value */
   setIsTransient(value) {
     this._isTransient = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @return {boolean} */
+  getIgnoreBaseline() {
+    return this._ignoreBaseline;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /** @param {boolean} value */
+  setIgnoreBaseline(value) {
+    this._ignoreBaseline = value;
   }
 
   // noinspection JSUnusedGlobalSymbols

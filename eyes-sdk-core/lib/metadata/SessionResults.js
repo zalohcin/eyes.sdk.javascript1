@@ -8,52 +8,95 @@ const { StartInfo } = require('./StartInfo');
 const { AppEnvironment } = require('../AppEnvironment');
 
 class SessionResults {
-  constructor() {
-    this._id = undefined;
-    this._revision = undefined;
-    this._runningSessionId = undefined;
-    this._isAborted = undefined;
-    this._isStarred = undefined;
-    this._startInfo = undefined;
-    this._batchId = undefined;
-    this._secretToken = undefined;
-    this._state = undefined;
-    this._status = undefined;
-    this._isDefaultStatus = undefined;
-    this._startedAt = undefined;
-    this._duration = undefined;
-    this._isDifferent = undefined;
-    this._env = undefined;
-    this._branch = undefined;
-    this._expectedAppOutput = undefined;
-    this._actualAppOutput = undefined;
-    this._baselineId = undefined;
-    this._baselineRevId = undefined;
-    this._scenarioId = undefined;
-    this._scenarioName = undefined;
-    this._appId = undefined;
-    this._baselineModelId = undefined;
-    this._baselineEnvId = undefined;
-    this._baselineEnv = undefined;
-    this._appName = undefined;
-    this._baselineBranchName = undefined;
-    this._isNew = undefined;
-  }
-
+  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * @deprecated
-   * @param {object} object
-   * @return {SessionResults}
+   * @param {string} id
+   * @param {number} revision
+   * @param {string} runningSessionId
+   * @param {boolean} isAborted
+   * @param {boolean} isStarred
+   * @param {StartInfo|object} startInfo
+   * @param {string} batchId
+   * @param {string} secretToken
+   * @param {string} state
+   * @param {string} status
+   * @param {string} isDefaultStatus
+   * @param {string} startedAt
+   * @param {number} duration
+   * @param {boolean} isDifferent
+   * @param {AppEnvironment|object} env
+   * @param {Branch|object} branch
+   * @param {ExpectedAppOutput[]|object[]} expectedAppOutput
+   * @param {ActualAppOutput[]|object[]} actualAppOutput
+   * @param {string} baselineId
+   * @param {string} baselineRevId
+   * @param {string} scenarioId
+   * @param {string} scenarioName
+   * @param {string} appId
+   * @param {string} baselineModelId
+   * @param {string} baselineEnvId
+   * @param {AppEnvironment|object} baselineEnv
+   * @param {string} appName
+   * @param {string} baselineBranchName
+   * @param {boolean} isNew
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new SessionResults(), object, {
-      actualAppOutput: results => Array.from(results).map(result => ActualAppOutput.fromObject(result)),
-      expectedAppOutput: results => Array.from(results).map(result => ExpectedAppOutput.fromObject(result)),
-      baselineEnv: obj => new AppEnvironment(obj),
-      branch: Branch.fromObject,
-      env: obj => new AppEnvironment(obj),
-      startInfo: StartInfo.fromObject,
-    });
+  constructor({ id, revision, runningSessionId, isAborted, isStarred, startInfo, batchId, secretToken, state, status,
+    isDefaultStatus, startedAt, duration, isDifferent, env, branch, expectedAppOutput, actualAppOutput, baselineId,
+    baselineRevId, scenarioId, scenarioName, appId, baselineModelId, baselineEnvId, baselineEnv, appName,
+    baselineBranchName, isNew } = {}) {
+    if (env && !(env instanceof AppEnvironment)) {
+      env = new AppEnvironment(env);
+    }
+
+    if (baselineEnv && !(baselineEnv instanceof AppEnvironment)) {
+      baselineEnv = new AppEnvironment(baselineEnv);
+    }
+
+    if (branch && !(branch instanceof Branch)) {
+      branch = new Branch(branch);
+    }
+
+    if (startInfo && !(startInfo instanceof StartInfo)) {
+      startInfo = new StartInfo(startInfo);
+    }
+
+    if (actualAppOutput && actualAppOutput.length > 0 && !(actualAppOutput[0] instanceof ActualAppOutput)) {
+      actualAppOutput = actualAppOutput.map(output => new ActualAppOutput(output));
+    }
+
+    if (expectedAppOutput && expectedAppOutput.length > 0 && !(expectedAppOutput[0] instanceof ExpectedAppOutput)) {
+      expectedAppOutput = expectedAppOutput.map(output => new ExpectedAppOutput(output));
+    }
+
+    this._id = id;
+    this._revision = revision;
+    this._runningSessionId = runningSessionId;
+    this._isAborted = isAborted;
+    this._isStarred = isStarred;
+    this._startInfo = startInfo;
+    this._batchId = batchId;
+    this._secretToken = secretToken;
+    this._state = state;
+    this._status = status;
+    this._isDefaultStatus = isDefaultStatus;
+    this._startedAt = startedAt;
+    this._duration = duration;
+    this._isDifferent = isDifferent;
+    this._env = env;
+    this._branch = branch;
+    this._expectedAppOutput = expectedAppOutput;
+    this._actualAppOutput = actualAppOutput;
+    this._baselineId = baselineId;
+    this._baselineRevId = baselineRevId;
+    this._scenarioId = scenarioId;
+    this._scenarioName = scenarioName;
+    this._appId = appId;
+    this._baselineModelId = baselineModelId;
+    this._baselineEnvId = baselineEnvId;
+    this._baselineEnv = baselineEnv;
+    this._appName = appName;
+    this._baselineBranchName = baselineBranchName;
+    this._isNew = isNew;
   }
 
   // noinspection JSUnusedGlobalSymbols

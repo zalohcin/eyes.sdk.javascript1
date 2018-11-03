@@ -158,7 +158,7 @@ class TestSetup {
         const apiSessionUri = `${apiSessionUrl}?format=json&AccessToken=${results.getSecretToken()}&apiKey=${this._eyes.getApiKey()}`;
 
         const response = await axios.get(apiSessionUri);
-        const resultObject = metadata.SessionResults.fromObject(response.data);
+        const resultObject = new metadata.SessionResults(response.data);
         const actualAppOutput = resultObject.getActualAppOutput();
 
         if (actualAppOutput.length > 0) {

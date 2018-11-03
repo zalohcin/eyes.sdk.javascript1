@@ -5,27 +5,40 @@ const { Region } = require('../geometry/Region');
 const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 
 class Annotations {
-  constructor() {
-    this._floating = undefined;
-    this._ignore = undefined;
-    this._strict = undefined;
-    this._content = undefined;
-    this._layout = undefined;
-  }
-
+  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * @deprecated
-   * @param {object} object
-   * @return {Annotations}
+   * @param floating
+   * @param ignore
+   * @param strict
+   * @param content
+   * @param layout
    */
-  static fromObject(object) {
-    return GeneralUtils.assignTo(new Annotations(), object, {
-      ignore: results => Array.from(results).map(result => new Region(result)),
-      strict: results => Array.from(results).map(result => new Region(result)),
-      content: results => Array.from(results).map(result => new Region(result)),
-      layout: results => Array.from(results).map(result => new Region(result)),
-      floating: results => Array.from(results).map(result => new FloatingMatchSettings(result)),
-    });
+  constructor({ floating, ignore, strict, content, layout } = {}) {
+    if (ignore && ignore.length > 0 && !(ignore[0] instanceof Region)) {
+      ignore = ignore.map(region => new Region(region));
+    }
+
+    if (strict && strict.length > 0 && !(strict[0] instanceof Region)) {
+      strict = strict.map(region => new Region(region));
+    }
+
+    if (content && content.length > 0 && !(content[0] instanceof Region)) {
+      content = content.map(region => new Region(region));
+    }
+
+    if (layout && layout.length > 0 && !(layout[0] instanceof Region)) {
+      layout = layout.map(region => new Region(region));
+    }
+
+    if (floating && floating.length > 0 && !(floating[0] instanceof FloatingMatchSettings)) {
+      floating = floating.map(region => new FloatingMatchSettings(region));
+    }
+
+    this._floating = floating;
+    this._ignore = ignore;
+    this._strict = strict;
+    this._content = content;
+    this._layout = layout;
   }
 
   // noinspection JSUnusedGlobalSymbols
