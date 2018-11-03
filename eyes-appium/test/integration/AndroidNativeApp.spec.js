@@ -47,7 +47,7 @@ describe('AndroidNativeApp', function () {
 
   it('Region of window', async function () {
     const scrollableElement = await driver.findElement(new By('-android uiautomator', 'new UiSelector().scrollable(true)'));
-    await eyes.check(this.test.title, Target.region(scrollableElement).ignore(scrollableElement));
+    await eyes.check(this.test.title, Target.region(scrollableElement).ignoreRegions(scrollableElement));
 
     return eyes.close(false);
   });

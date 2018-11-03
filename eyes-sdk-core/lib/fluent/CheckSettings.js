@@ -43,7 +43,7 @@ class CheckSettings {
   //  * A setter for the checkpoint name.
   //  *
   //  * @param {string} name A name by which to identify the checkpoint.
-  //  * @return {CheckSettings} This instance of the settings object.
+  //  * @return {this} This instance of the settings object.
   //  */
   // withName(name) {
   //   this._name = name;
@@ -63,7 +63,7 @@ class CheckSettings {
    * Defines whether to send the document DOM or not.
    *
    * @param {boolean} [sendDom=true] When {@code true} sends the DOM to the server (the default).
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   sendDom(sendDom = true) {
     this._sendDom = sendDom;
@@ -81,7 +81,7 @@ class CheckSettings {
   /**
    * Shortcut to set the match level to {@code MatchLevel.LAYOUT}.
    *
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   layout() {
     this._matchLevel = MatchLevel.Layout;
@@ -92,7 +92,7 @@ class CheckSettings {
   /**
    * Shortcut to set the match level to {@code MatchLevel.EXACT}.
    *
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   exact() {
     this._matchLevel = MatchLevel.Exact;
@@ -103,7 +103,7 @@ class CheckSettings {
   /**
    * Shortcut to set the match level to {@code MatchLevel.STRICT}.
    *
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   strict() {
     this._matchLevel = MatchLevel.Strict;
@@ -114,7 +114,7 @@ class CheckSettings {
   /**
    * Shortcut to set the match level to {@code MatchLevel.CONTENT}.
    *
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   content() {
     this._matchLevel = MatchLevel.Content;
@@ -126,7 +126,7 @@ class CheckSettings {
    * Set the match level by which to compare the screenshot.
    *
    * @param {MatchLevel} matchLevel The match level to use.
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   matchLevel(matchLevel) {
     this._matchLevel = matchLevel;
@@ -145,7 +145,7 @@ class CheckSettings {
    * Defines if to detect and ignore a blinking caret in the screenshot.
    *
    * @param {boolean} [ignoreCaret=true] Whether or not to detect and ignore a blinking caret in the screenshot.
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   ignoreCaret(ignoreCaret = true) {
     this._ignoreCaret = ignoreCaret;
@@ -164,7 +164,7 @@ class CheckSettings {
    * Defines that the screenshot will contain the entire element or region, even if it's outside the view.
    *
    * @param {boolean} [fully=true]
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   fully(fully = true) {
     this._stitchContent = fully;
@@ -174,7 +174,7 @@ class CheckSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} [stitchContent=true]
-   * @return {CheckSettings}
+   * @return {this}
    */
   stitchContent(stitchContent = true) {
     this._stitchContent = stitchContent;
@@ -193,7 +193,7 @@ class CheckSettings {
    * Defines the timeout to use when acquiring and comparing screenshots.
    *
    * @param {number} timeoutMilliseconds The timeout to use in milliseconds.
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   timeout(timeoutMilliseconds) {
     this._timeout = timeoutMilliseconds;
@@ -244,26 +244,12 @@ class CheckSettings {
     throw new TypeError('ignore method called with argument of unknown type!');
   }
 
-  /**
-   * @deprecated use {@link ignoreRegions} instead
-   */
-  ignore(...regions) {
-    return this.ignoreRegions(...regions);
-  }
-
-  /**
-   * @deprecated use {@link ignoreRegions} instead
-   */
-  ignores(...regions) {
-    return this.ignoreRegions(...regions);
-  }
-
   // noinspection JSUnusedGlobalSymbols
   /**
    * Adds one or more ignore regions.
    *
    * @param {(GetRegion|Region)...} regions A region to ignore when validating the screenshot.
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   ignoreRegions(...regions) {
     if (!regions) {
@@ -281,7 +267,7 @@ class CheckSettings {
   /**
    * Adds one or more layout regions.
    * @param {(GetRegion|Region)...} regions A region to match using the Layout method.
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   layoutRegions(...regions) {
     if (!regions) {
@@ -299,7 +285,7 @@ class CheckSettings {
   /**
    * Adds one or more strict regions.
    * @param {(GetRegion|Region)...} regions A region to match using the Strict method.
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   strictRegions(...regions) {
     if (!regions) {
@@ -317,7 +303,7 @@ class CheckSettings {
   /**
    * Adds one or more content regions.
    * @param {(GetRegion|Region)...} regions A region to match using the Content method.
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
   contentRegions(...regions) {
     if (!regions) {
@@ -331,34 +317,6 @@ class CheckSettings {
     return this;
   }
 
-  /**
-   * @return {GetRegion[]}
-   */
-  getIgnoreRegions() {
-    return this._ignoreRegions;
-  }
-
-  /**
-   * @return {GetRegion[]}
-   */
-  getStrictRegions() {
-    return this._strictRegions;
-  }
-
-  /**
-   * @return {GetRegion[]}
-   */
-  getLayoutRegions() {
-    return this._layoutRegions;
-  }
-
-  /**
-   * @return {GetRegion[]}
-   */
-  getContentRegions() {
-    return this._contentRegions;
-  }
-
   // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger
@@ -370,9 +328,9 @@ class CheckSettings {
    * @param {number} [maxDownOffset] How much the content can move down.
    * @param {number} [maxLeftOffset] How much the content can move to the left.
    * @param {number} [maxRightOffset] How much the content can move to the right.
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
-  floating(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
+  floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
     // noinspection IfStatementWithTooManyBranchesJS
     if (regionOrContainer instanceof FloatingMatchSettings) {
       const floatingRegion = new FloatingRegionByRectangle(
@@ -408,18 +366,46 @@ class CheckSettings {
    *
    * @param {number} maxOffset How much each of the content rectangles can move in any direction.
    * @param {Region...} regionsOrContainers One or more content rectangles or region containers
-   * @return {CheckSettings} This instance of the settings object.
+   * @return {this} This instance of the settings object.
    */
-  floatings(maxOffset, ...regionsOrContainers) {
+  floatingRegions(maxOffset, ...regionsOrContainers) {
     if (!regionsOrContainers) {
       throw new TypeError('floatings method called without arguments!');
     }
 
     regionsOrContainers.forEach(region => {
-      this.floating(region, maxOffset, maxOffset, maxOffset, maxOffset);
+      this.floatingRegion(region, maxOffset, maxOffset, maxOffset, maxOffset);
     });
 
     return this;
+  }
+
+  /**
+   * @return {GetRegion[]}
+   */
+  getIgnoreRegions() {
+    return this._ignoreRegions;
+  }
+
+  /**
+   * @return {GetRegion[]}
+   */
+  getStrictRegions() {
+    return this._strictRegions;
+  }
+
+  /**
+   * @return {GetRegion[]}
+   */
+  getLayoutRegions() {
+    return this._layoutRegions;
+  }
+
+  /**
+   * @return {GetRegion[]}
+   */
+  getContentRegions() {
+    return this._contentRegions;
   }
 
   /**

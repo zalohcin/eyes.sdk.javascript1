@@ -73,7 +73,7 @@ class ImagesCheckSettings extends CheckSettings {
 
   /**
    * @param {Region|RegionObject} region The region to validate.
-   * @return {ImagesCheckSettings}
+   * @return {this}
    */
   region(region) {
     super.updateTargetRegion(region);

@@ -30,18 +30,18 @@ dataProvider.forEach(row => {
     });
 
     it('TestCheckWindowWithIgnoreRegion_Fluent', async function () {
-      await driver.findElement(By.tagName('input')).sendKeys('My Input');
+      await driver.findElement(By.css('input')).sendKeys('My Input');
       await eyes.check('Fluent - Window with Ignore region', Target.window()
         .fully()
         .timeout(5000)
-        .ignore(new Region(50, 50, 100, 100)));
+        .ignoreRegions(new Region(50, 50, 100, 100)));
 
       testSetup.setExpectedIgnoreRegions(new Region(50, 50, 100, 100));
     });
 
     it('TestCheckRegionWithIgnoreRegion_Fluent', async function () {
       await eyes.check('Fluent - Region with Ignore region', Target.region(By.id('overflowing-div'))
-        .ignore(new Region(50, 50, 100, 100)));
+        .ignoreRegions(new Region(50, 50, 100, 100)));
 
       testSetup.setExpectedIgnoreRegions(new Region(50, 50, 100, 100));
     });
@@ -69,7 +69,7 @@ dataProvider.forEach(row => {
     it('TestCheckRegionInFrameInFrame_Fluent', async function () {
       await eyes.check('Fluent - Region in Frame in Frame', Target.frame('frame1')
         .frame('frame1-1')
-        .region(By.tagName('img'))
+        .region(By.css('img'))
         .fully());
     });
 
@@ -91,13 +91,13 @@ dataProvider.forEach(row => {
         .region(By.id('inner-frame-div'))
         .fully()
         .timeout(5000)
-        .ignore(new Region(50, 50, 100, 100)));
+        .ignoreRegions(new Region(50, 50, 100, 100)));
 
       await eyes.check('Fluent - Inner frame div 2', Target.frame('frame1')
         .region(By.id('inner-frame-div'))
         .fully()
-        .ignore(new Region(50, 50, 100, 100))
-        .ignore(new Region(70, 170, 90, 90)));
+        .ignoreRegions(new Region(50, 50, 100, 100))
+        .ignoreRegions(new Region(70, 170, 90, 90)));
 
       await eyes.check('Fluent - Inner frame div 3', Target.frame('frame1')
         .region(By.id('inner-frame-div'))
@@ -111,7 +111,7 @@ dataProvider.forEach(row => {
       await eyes.check('Fluent - Full frame with floating region', Target.frame('frame1')
         .fully()
         .layout()
-        .floating(new Region(200, 200, 150, 150), 25, 25, 25, 25));
+        .floatingRegion(new Region(200, 200, 150, 150), 25, 25, 25, 25));
     });
 
     it('TestCheckFrameInFrame_Fully_Fluent2', async function () {
@@ -125,17 +125,17 @@ dataProvider.forEach(row => {
 
     it('TestCheckWindowWithIgnoreBySelector_Fluent', async function () {
       await eyes.check('Fluent - Window with ignore region by selector', Target.window()
-        .ignore(By.id('overflowing-div')));
+        .ignoreRegions(By.id('overflowing-div')));
     });
 
     it('TestCheckWindowWithFloatingBySelector_Fluent', async function () {
       await eyes.check('Fluent - Window with floating region by selector', Target.window()
-        .floating(By.id('overflowing-div'), 3, 3, 20, 30));
+        .floatingRegion(By.id('overflowing-div'), 3, 3, 20, 30));
     });
 
     it('TestCheckWindowWithFloatingByRegion_Fluent', async function () {
       await eyes.check('Fluent - Window with floating region by region', Target.window()
-        .floating(new Region(10, 10, 20, 20), 3, 3, 20, 30));
+        .floatingRegion(new Region(10, 10, 20, 20), 3, 3, 20, 30));
 
       testSetup.setExpectedFloatingsRegions(new FloatingMatchSettings({ left: 10, top: 10, width: 20, height: 20, maxUpOffset: 3, maxDownOffset: 3, maxLeftOffset: 20, maxRightOffset: 30 }));
     });
@@ -149,17 +149,17 @@ dataProvider.forEach(row => {
       const element = await driver.findElement(By.id('overflowing-div-image'));
       const ignoreElement = await driver.findElement(By.id('overflowing-div'));
       testSetup.setExpectedIgnoreRegions();
-      await eyes.check('Fluent - Region by element', Target.region(element).ignore(ignoreElement));
+      await eyes.check('Fluent - Region by element', Target.region(element).ignoreRegions(ignoreElement));
     });
 
     it('TestCheckElementWithIgnoreRegionBySameElement_Fluent', async function () {
       const element = await driver.findElement(By.id('overflowing-div-image'));
-      await eyes.check('Fluent - Region by element', Target.region(element).ignore(element));
+      await eyes.check('Fluent - Region by element', Target.region(element).ignoreRegions(element));
       testSetup.setExpectedIgnoreRegions(new Region(0, 0, 304, 184));
     });
 
     it('TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent', async function () {
-      await eyes.check('Fluent - Region by element', Target.window().fully().ignore(By.css('.ignore')));
+      await eyes.check('Fluent - Region by element', Target.window().fully().ignoreRegions(By.css('.ignore')));
       testSetup.setExpectedIgnoreRegions(
         new Region(172, 928, 456, 306),
         new Region(8, 1270, 784, 206),

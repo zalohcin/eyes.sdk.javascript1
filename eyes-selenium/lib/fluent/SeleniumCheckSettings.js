@@ -58,63 +58,54 @@ class SeleniumCheckSettings extends CheckSettings {
     return this._frameChain;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @inheritDoc */
   layout() {
     super.layout();
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @inheritDoc */
   exact() {
     super.exact();
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @inheritDoc */
   strict() {
     super.strict();
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @inheritDoc */
   content() {
     super.content();
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @inheritDoc */
   matchLevel(matchLevel) {
     super.matchLevel(matchLevel);
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @inheritDoc */
   ignoreCaret(ignoreCaret) {
     super.ignoreCaret(ignoreCaret);
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @inheritDoc */
   fully(fully) {
     super.fully(fully);
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @inheritDoc */
   stitchContent(stitchContent) {
     super.stitchContent(stitchContent);
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /** @inheritDoc */
   timeout(timeoutMilliseconds) {
     super.timeout(timeoutMilliseconds);
@@ -123,7 +114,7 @@ class SeleniumCheckSettings extends CheckSettings {
 
   /**
    * @param {Integer|string|By|WebElement|EyesWebElement} frame The frame to switch to.
-   * @return {SeleniumCheckSettings}
+   * @return {this}
    */
   frame(frame) {
     const fl = new FrameLocator();
@@ -145,7 +136,7 @@ class SeleniumCheckSettings extends CheckSettings {
 
   /**
    * @param {Region|RegionObject|By|WebElement|EyesWebElement} region The region to validate.
-   * @return {SeleniumCheckSettings}
+   * @return {this}
    */
   region(region) {
     // noinspection IfStatementWithTooManyBranchesJS
@@ -166,7 +157,6 @@ class SeleniumCheckSettings extends CheckSettings {
    * @inheritDoc
    * @protected
    * @param {By|WebElement|EyesWebElement|GetRegion|Region} region
-   * @return {GetRegion}
    */
   _regionToRegionProvider(region) {
     if (region instanceof By || isProtractorBy(region)) {
@@ -181,61 +171,35 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
-   * @deprecated use {@link ignoreRegions} instead
-   */
-  ignore(...regions) {
-    return this.ignoreRegions(...regions);
-  }
-
-  /**
-   * @deprecated use {@link ignoreRegions} instead
-   */
-  ignores(...regions) {
-    return this.ignoreRegions(...regions);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @override
-   * Adds one or more ignore regions.
+   * @inheritDoc
    * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to ignore when validating.
-   * @return {SeleniumCheckSettings} This instance of the settings object.
    */
   ignoreRegions(...regions) {
     // noinspection JSValidateTypes
     return super.ignoreRegions(...regions);
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
-   * @override
-   * Adds one or more layout regions.
+   * @inheritDoc
    * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to match using the Layout method.
-   * @return {SeleniumCheckSettings} This instance of the settings object.
    */
   layoutRegions(...regions) {
     // noinspection JSValidateTypes
     return super.layoutRegions(...regions);
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
-   * @override
-   * Adds one or more strict regions.
+   * @inheritDoc
    * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to match using the Strict method.
-   * @return {SeleniumCheckSettings} This instance of the settings object.
    */
   strictRegions(...regions) {
     // noinspection JSValidateTypes
     return super.strictRegions(...regions);
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
-   * @override
-   * Adds one or more content regions.
+   * @inheritDoc
    * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to match using the Content method.
-   * @return {SeleniumCheckSettings} This instance of the settings object.
    */
   contentRegions(...regions) {
     // noinspection JSValidateTypes
@@ -244,18 +208,15 @@ class SeleniumCheckSettings extends CheckSettings {
 
   // noinspection JSCheckFunctionSignatures
   /**
-   * Adds a floating region. A floating region is a region that can be placed within the boundaries of a bigger region.
-   *
-   * @override
+   * @inheritDoc
    * @param {GetFloatingRegion|Region|FloatingMatchSettings|By|WebElement|EyesWebElement} regionOrContainer The content
    *   rectangle or region container
    * @param {number} [maxUpOffset] How much the content can move up.
    * @param {number} [maxDownOffset] How much the content can move down.
    * @param {number} [maxLeftOffset] How much the content can move to the left.
    * @param {number} [maxRightOffset] How much the content can move to the right.
-   * @return {SeleniumCheckSettings} This instance of the settings object.
    */
-  floating(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
+  floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
     if (regionOrContainer instanceof By || isProtractorBy(regionOrContainer)) {
       const floatingRegion = new FloatingRegionBySelector(
         regionOrContainer,
@@ -275,25 +236,20 @@ class SeleniumCheckSettings extends CheckSettings {
       );
       this._floatingRegions.push(floatingRegion);
     } else {
-      super.floating(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset);
+      super.floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset);
     }
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   // noinspection JSCheckFunctionSignatures
   /**
-   * Adds a floating region. A floating region is a region that can be placed within the boundaries of a bigger region.
-   *
-   * @override
+   * @inheritDoc
    * @param {number} maxOffset How much each of the content rectangles can move in any direction.
    * @param {(GetFloatingRegion|Region|By|WebElement|EyesWebElement)...} regionsOrContainers One or more content
    *   rectangles or region containers
-   * @return {SeleniumCheckSettings} This instance of the settings object.
    */
-  floatings(maxOffset, ...regionsOrContainers) {
-    super.floatings(maxOffset, ...regionsOrContainers);
-    return this;
+  floatingRegions(maxOffset, ...regionsOrContainers) {
+    return super.floatingRegions(maxOffset, ...regionsOrContainers);
   }
 }
 
