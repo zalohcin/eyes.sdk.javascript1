@@ -6,44 +6,46 @@ const psetTimeout = t =>
     setTimeout(res, t);
   });
 
+const failMsg = 'failed to render screenshot';
+
 function makeWaitForRenderedStatus({timeout = 120000, getStatusInterval = 500, logger}) {
   return async function waitForRenderedStatus(renderIds, wrapper, stopCondition = () => {}) {
     async function getStatus() {
       if (timeoutReached) {
-        logger.verbose(`waitForRenderedStatus: timeout reached for ${renderIds}`);
-        throw new Error(`failed to render screenshot`);
+        logger.log(`waitForRenderedStatus: timeout reached for ${renderIds}`);
+        throw new Error(failMsg);
       }
 
+      let renderStatuses;
       try {
-        const renderStatuses = await wrapper.getRenderStatus(renderIds);
-        const error = renderStatuses.find(
-          rs => (rs.getStatus() === RenderStatus.ERROR ? rs.getError() : null),
-        );
-        if (error) {
-          throw error;
-        }
-
-        const statuses = renderStatuses.map(rs => rs.getStatus());
-        if (stillRendering(statuses) && !stopCondition()) {
-          await psetTimeout(getStatusInterval);
-          return await getStatus();
-        }
-
-        clearTimeout(timeoutId);
-        return renderStatuses.map(rs => rs.toJSON());
+        renderStatuses = await wrapper.getRenderStatus(renderIds);
       } catch (ex) {
-        if (timeoutReached) {
-          throw ex;
-        }
         logger.log(`error during getRenderStatus: ${ex}`);
         await psetTimeout(getStatusInterval);
-        return await getStatus();
+        return getStatus();
       }
+      const errorStatus = renderStatuses.find(
+        rs => (rs.getStatus() === RenderStatus.ERROR ? rs.getError() : null),
+      );
+      if (errorStatus) {
+        logger.log(`render error received: ${errorStatus.getError()}`);
+        clearTimeout(timeoutId);
+        throw new Error(failMsg);
+      }
+
+      const statuses = renderStatuses.map(rs => rs.getStatus());
+      if (stillRendering(statuses) && !stopCondition()) {
+        await psetTimeout(getStatusInterval);
+        return getStatus();
+      }
+
+      clearTimeout(timeoutId);
+      return renderStatuses.map(rs => rs.toJSON());
     }
 
     let timeoutReached = false;
     const timeoutId = setTimeout(() => (timeoutReached = true), timeout);
-    return await getStatus();
+    return getStatus();
   };
 }
 
@@ -52,3 +54,4 @@ function stillRendering(statuses) {
 }
 
 module.exports = makeWaitForRenderedStatus;
+module.exports.failMsg = failMsg;
