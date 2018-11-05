@@ -1,15 +1,14 @@
 {
   "name": "eyes-sdk-javascript1",
   "private": true,
-  "devDependencies": {
-    "eslint": "^5.8.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-config-airbnb-base": "^13.1.0"
-  },
   "scripts": {
     "lint": "eslint . --cache --ext js",
-    "lint:images": "eslint ./eyes-images --ext js",
-    "lint:sdk-core": "eslint ./eyes-sdk-core --ext js",
-    "lint:selenium": "eslint ./eyes-selenium --ext js"
+    "test": "mocha ./test/**/*.spec.js -t 900000"
+  },
+  "devDependencies": {
+    "lerna": "^3.4.3",
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
   }
 }
