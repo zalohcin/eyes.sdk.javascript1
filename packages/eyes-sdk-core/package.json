@@ -42,8 +42,7 @@
     "mocha": "^5.2.0"
   },
   "scripts": {
-    "test:unit": "mocha ./test/unit/**/*.spec.js -t 900000",
-    "test": "npm run test:unit"
+    "test": "mocha ./test/**/*.spec.js -t 900000"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

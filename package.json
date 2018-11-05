@@ -2,8 +2,10 @@
   "name": "eyes-sdk-javascript1",
   "private": true,
   "scripts": {
+    "install": "lerna bootstrap --hoist",
     "lint": "eslint . --cache --ext js",
-    "test": "mocha ./test/**/*.spec.js -t 900000"
+    "test": "lerna run test",
+    "test:integration": "lerna run test:integration"
   },
   "devDependencies": {
     "lerna": "^3.4.3",

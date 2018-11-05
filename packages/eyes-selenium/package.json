@@ -44,9 +44,8 @@
     "axios": "^0.18.0"
   },
   "scripts": {
-    "test:unit": "mocha ./test/unit/**/*.spec.js -t 900000",
-    "test:integration": "mocha ./test/integration/**/*.spec.js -t 900000",
-    "test": "npm run test:unit && npm run test:integration"
+    "test": "mocha ./test/unit/**/*.spec.js -t 900000",
+    "test:integration": "mocha ./test/integration/**/*.spec.js -t 900000"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
