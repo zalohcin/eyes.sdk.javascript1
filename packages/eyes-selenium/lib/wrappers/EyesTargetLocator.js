@@ -64,7 +64,7 @@ class EyesTargetLocator extends TargetLocator {
       return;
     }
 
-    if (Number.isInteger(varArg)) {
+    if (TypeUtils.isInteger(varArg)) {
       const frameIndex = varArg;
       this._logger.verbose(`EyesTargetLocator.frame(${frameIndex})`);
       // Finding the target element so and reporting it using onWillSwitch.

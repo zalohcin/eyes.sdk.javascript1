@@ -134,7 +134,7 @@ class ArgumentGuard {
    * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
   static isInteger(param, paramName, strict = true) {
-    if ((strict || !(param === undefined || param === null)) && !Number.isInteger(param)) {
+    if ((strict || !(param === undefined || param === null)) && !TypeUtils.isInteger(param)) {
       throw new Error(`IllegalArgument: ${paramName} is not integer`);
     }
   }
@@ -255,15 +255,9 @@ class ArgumentGuard {
    * @param {string} paramName The input parameter name.
    */
   static hasProperties(object, properties, paramName) {
-    if (!Array.isArray(properties)) {
-      properties = [properties];
+    if (!TypeUtils.has(object, properties)) {
+      throw new Error(`IllegalArgument: ${paramName} don't have all required properties '${properties}'`);
     }
-
-    properties.forEach(property => {
-      if (!Object.prototype.hasOwnProperty.call(object, property)) {
-        throw new Error(`IllegalArgument: ${paramName} don't have '${property}' property`);
-      }
-    });
   }
 }
 

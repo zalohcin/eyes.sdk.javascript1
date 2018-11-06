@@ -119,7 +119,7 @@ class SeleniumCheckSettings extends CheckSettings {
   frame(frame) {
     const fl = new FrameLocator();
     // noinspection IfStatementWithTooManyBranchesJS
-    if (Number.isInteger(frame)) {
+    if (TypeUtils.isInteger(frame)) {
       fl.setFrameIndex(frame);
     } else if (TypeUtils.isString(frame)) {
       fl.setFrameNameOrId(frame);

@@ -1,13 +1,17 @@
 'use strict';
 
-const BASE64_CHARS_PATTERN = /[^A-Z0-9+/=]/i;
+const { hasOwnProperty, toString } = Object.prototype;
+
+const BASE64_CHARS_PATTERN = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$/;
 
 /**
  * Collection of utility methods.
  */
 class TypeUtils {
   /**
-   * @param value
+   * Checks if `value` has a type `string` or created by the `String` constructor
+   *
+   * @param {*} value
    * @return {boolean}
    */
   static isString(value) {
@@ -15,7 +19,9 @@ class TypeUtils {
   }
 
   /**
-   * @param value
+   * Checks if `value` has a type `number` or created by the `Number` constructor
+   *
+   * @param {*} value
    * @return {boolean}
    */
   static isNumber(value) {
@@ -23,7 +29,19 @@ class TypeUtils {
   }
 
   /**
-   * @param value
+   * Checks if `value` has a type `number` or created by the `Number` constructor and the value is integer
+   *
+   * @param {*} value
+   * @return {boolean}
+   */
+  static isInteger(value) {
+    return TypeUtils.isNumber(value) && Number.isInteger(value);
+  }
+
+  /**
+   * Checks if `value` has a type `boolean` or created by the `Boolean` constructor
+   *
+   * @param {*} value
    * @return {boolean}
    */
   static isBoolean(value) {
@@ -31,23 +49,34 @@ class TypeUtils {
   }
 
   /**
-   * @param value
+   * Checks if `value` has a type `object` and not `null`.
+   *
+   * @param {*} value
    * @return {boolean}
    */
   static isObject(value) {
-    return value != null && typeof value === 'object' && Array.isArray(value) === false;
+    return typeof value === 'object' && value !== null;
   }
 
   /**
-   * @param value
+   * Checks if `value` is a plain object. An object created by either `{}`, `new Object()` or `Object.create(null)`.
+   *
+   * @param {*} value
    * @return {boolean}
    */
   static isPlainObject(value) {
-    return TypeUtils.isObject(value) && value.constructor === Object;
+    if (!TypeUtils.isObject(value) || toString.call(value) !== '[object Object]') {
+      return false;
+    }
+
+    const prototype = Object.getPrototypeOf(value);
+    return prototype === null || prototype === Object.getPrototypeOf({});
   }
 
   /**
-   * @param value
+   * Checks if `value` is an array.
+   *
+   * @param {*} value
    * @return {boolean}
    */
   static isArray(value) {
@@ -55,32 +84,47 @@ class TypeUtils {
   }
 
   /**
-   * @param value
+   * Checks if `value` is a Buffer.
+   *
+   * @param {*} value
    * @return {boolean}
    */
   static isBuffer(value) {
-    return (
-      value != null &&
-      !!value.constructor &&
-      typeof value.constructor.isBuffer === 'function' &&
-      value.constructor.isBuffer(value)
-    );
+    return Buffer.isBuffer(value);
   }
 
-  static isBase64(str) {
-    if (!TypeUtils.isString(str)) {
+  /**
+   * Checks if `value` is a base64 string.
+   *
+   * @param {*} value
+   * @return {boolean}
+   */
+  static isBase64(value) {
+    return TypeUtils.isString(value) && BASE64_CHARS_PATTERN.test(value);
+  }
+
+  /**
+   * Checks if `keys` is a direct property of `object`.
+   *
+   * @param {object} object The object to query.
+   * @param {string|string[]} keys The key(s) to check.
+   */
+  static has(object, keys) {
+    if (object == null) {
       return false;
     }
 
-    const len = str.length;
-    if (!len || len % 4 !== 0 || BASE64_CHARS_PATTERN.test(str)) {
-      return false;
+    if (!Array.isArray(keys)) {
+      keys = [keys];
     }
 
-    const firstPaddingChar = str.indexOf('=');
-    return (
-      firstPaddingChar === -1 || firstPaddingChar === len - 1 || (firstPaddingChar === len - 2 && str[len - 1] === '=')
-    );
+    for (const key of keys) {
+      if (!hasOwnProperty.call(object, key)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
 
