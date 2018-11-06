@@ -1,9 +1,10 @@
 'use strict';
 
-const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
+const assert = require('assert');
+const { ConsoleLogHandler, TestResultsStatus } = require('@applitools/eyes-sdk-core');
 const { Eyes } = require('../index');
 
-let eyes = null;
+let /** @type {Eyes} */ eyes = null;
 describe('Eyes.Images.JavaScript - find diffs between image', function () {
   this.timeout(5 * 60 * 1000);
 
@@ -23,7 +24,9 @@ describe('Eyes.Images.JavaScript - find diffs between image', function () {
 
     await eyes.open(this.test.parent.title, testName);
     await eyes.checkImage(image2);
-    await eyes.close();
+    const results = await eyes.close(false);
+
+    assert.equal(results.getStatus(), TestResultsStatus.Unresolved);
   });
 
   afterEach(async function () {
