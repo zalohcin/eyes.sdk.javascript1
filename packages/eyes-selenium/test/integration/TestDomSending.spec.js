@@ -16,7 +16,6 @@ dataProvider.forEach(row => {
   testSetup.setData(...row, false);
 
   testSetup.getEyes().setSendDom(true);
-  testSetup.getEyes().setProxy('http://localhost:8888');
 
   describe(testSetup.toString(), function () {
     this.timeout(5 * 60 * 1000);
