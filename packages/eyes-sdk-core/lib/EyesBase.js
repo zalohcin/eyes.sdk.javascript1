@@ -586,7 +586,6 @@ class EyesBase {
   /**
    * The test-wide match level to use when checking application screenshot with the expected output.
    *
-   * @deprecated Please use {@link #setDefaultMatchSettings} instead.
    * @param {MatchLevel} matchLevel The test-wide match level to use when checking application screenshot with the
    *   expected output.
    */
@@ -596,7 +595,6 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @deprecated Please use{@link #getDefaultMatchSettings} instead.
    * @return {MatchLevel} The test-wide match level.
    */
   getMatchLevel() {
