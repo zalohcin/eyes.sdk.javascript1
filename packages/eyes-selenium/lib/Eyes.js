@@ -1185,12 +1185,13 @@ class Eyes extends EyesBase {
     }
 
     ArgumentGuard.notNull(viewportSize, 'viewportSize');
+    viewportSize = new RectangleSize(viewportSize);
 
     const originalFrame = this._driver.getFrameChain();
     await this._driver.switchTo().defaultContent();
 
     try {
-      await EyesSeleniumUtils.setViewportSize(this._logger, this._driver, new RectangleSize(viewportSize));
+      await EyesSeleniumUtils.setViewportSize(this._logger, this._driver, viewportSize);
       this._effectiveViewport = new Region(Location.ZERO, viewportSize);
     } catch (err) {
       await this._driver.switchTo().frames(originalFrame); // Just in case the user catches that error
