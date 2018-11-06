@@ -943,7 +943,7 @@ class Eyes extends EyesBase {
   /**
    * Matches the frame given as parameter, by switching into the frame and using stitching to get an image of the frame.
    *
-   * @param {Integer|string|By|WebElement|EyesWebElement} element The element which is the frame to switch to.
+   * @param {number|string|By|WebElement|EyesWebElement} element The element which is the frame to switch to.
    * @param {number} matchTimeout The amount of time to retry matching (milliseconds).
    * @param {string} tag An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.

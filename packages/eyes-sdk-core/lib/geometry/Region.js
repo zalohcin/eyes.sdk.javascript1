@@ -1,6 +1,7 @@
 'use strict';
 
 const { ArgumentGuard } = require('../ArgumentGuard');
+const { TypeUtils } = require('../utils/TypeUtils');
 const { RectangleSize } = require('./RectangleSize');
 const { Location } = require('./Location');
 const { CoordinatesType } = require('./CoordinatesType');
@@ -157,6 +158,15 @@ class Region {
     this._width = width;
     this._height = height;
     this._coordinatesType = coordinatesType || CoordinatesType.SCREENSHOT_AS_IS;
+  }
+
+  /**
+   * @param {object} object
+   * @return {boolean}
+   */
+  static isRegionCompatible(object) {
+    return (object instanceof Region) ||
+      (TypeUtils.isPlainObject(object) && TypeUtils.has(object, ['left', 'top', 'width', 'height']));
   }
 
   /**

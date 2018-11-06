@@ -95,9 +95,9 @@ class Eyes extends EyesBase {
   /**
    * Perform visual validation for the current image.
    *
+   * @param {string|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
    * @param {Region|RegionObject} region The region of the image which should be verified, or {undefined}/{null} if the
    *   entire image should be verified.
-   * @param {string|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
    * @param {string} [name] An optional tag to be associated with the validation checkpoint.
    * @param {boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
    * @param {number} [retryTimeout] timeout for performing the match (ms).

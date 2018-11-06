@@ -28,7 +28,7 @@ class CheckSettings {
     /** @type {boolean} */
     this._stitchContent = false;
     this._timeout = timeout;
-    this._targetRegion = region;
+    this._targetRegion = region ? new Region(region) : undefined;
 
     this._ignoreRegions = [];
     this._layoutRegions = [];
@@ -212,36 +212,32 @@ class CheckSettings {
    * @param {Region|RegionObject} region
    */
   updateTargetRegion(region) {
-    this._targetRegion = region;
+    this._targetRegion = new Region(region);
   }
 
   /**
    * @return {Region}
    */
   getTargetRegion() {
-    if (this._targetRegion && !(this._targetRegion instanceof Region)) {
-      this._targetRegion = new Region(this._targetRegion);
-    }
-
     return this._targetRegion;
   }
 
   // noinspection JSMethodCanBeStatic
   /**
    * @protected
-   * @param {GetRegion|Region} region
+   * @param {GetRegion|Region|RegionObject} region
    * @return {GetRegion}
    */
   _regionToRegionProvider(region) {
-    if (region instanceof Region) {
-      return new IgnoreRegionByRectangle(region);
-    }
-
     if (region instanceof GetRegion) {
       return region;
     }
 
-    throw new TypeError('ignore method called with argument of unknown type!');
+    if (Region.isRegionCompatible(region)) {
+      return new IgnoreRegionByRectangle(new Region(region));
+    }
+
+    throw new TypeError('Method called with argument of unknown type!');
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -332,28 +328,26 @@ class CheckSettings {
    */
   floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
     // noinspection IfStatementWithTooManyBranchesJS
-    if (regionOrContainer instanceof FloatingMatchSettings) {
-      const floatingRegion = new FloatingRegionByRectangle(
+    if (regionOrContainer instanceof GetFloatingRegion) {
+      this._floatingRegions.push(regionOrContainer);
+    } else if (regionOrContainer instanceof FloatingMatchSettings) {
+      this._floatingRegions.push(new FloatingRegionByRectangle(
         regionOrContainer.getRegion(),
         regionOrContainer.getMaxUpOffset(),
         regionOrContainer.getMaxDownOffset(),
         regionOrContainer.getMaxLeftOffset(),
         regionOrContainer.getMaxRightOffset()
-      );
-      this._floatingRegions.push(floatingRegion);
-    } else if (regionOrContainer instanceof Region) {
-      const floatingRegion = new FloatingRegionByRectangle(
+      ));
+    } else if (Region.isRegionCompatible(regionOrContainer)) {
+      this._floatingRegions.push(new FloatingRegionByRectangle(
         new Region(regionOrContainer),
         maxUpOffset,
         maxDownOffset,
         maxLeftOffset,
         maxRightOffset
-      );
-      this._floatingRegions.push(floatingRegion);
-    } else if (regionOrContainer instanceof GetFloatingRegion) {
-      this._floatingRegions.push(regionOrContainer);
+      ));
     } else {
-      throw new TypeError('floating method called with argument of unknown type!');
+      throw new TypeError('Method called with argument of unknown type!');
     }
 
     return this;

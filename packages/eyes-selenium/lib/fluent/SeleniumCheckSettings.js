@@ -1,6 +1,6 @@
 'use strict';
 
-const { By, WebElement } = require('selenium-webdriver');
+const { WebElement } = require('selenium-webdriver');
 const { TypeUtils, CheckSettings, Region } = require('@applitools/eyes-sdk-core');
 
 const { IgnoreRegionBySelector } = require('./IgnoreRegionBySelector');
@@ -10,16 +10,10 @@ const { FloatingRegionByElement } = require('./FloatingRegionByElement');
 const { FrameLocator } = require('./FrameLocator');
 const { EyesWebElement } = require('../wrappers/EyesWebElement');
 
-/**
- * @return {boolean}
- */
-const isProtractorBy = value => Object.prototype.hasOwnProperty.call(value, 'using') &&
-  Object.prototype.hasOwnProperty.call(value, 'value');
-
 class SeleniumCheckSettings extends CheckSettings {
   /**
    * @param {Region|RegionObject|By|WebElement|EyesWebElement} [region]
-   * @param {Integer|string|By|WebElement|EyesWebElement} [frame]
+   * @param {number|string|By|WebElement|EyesWebElement} [frame]
    */
   constructor(region, frame) {
     super();
@@ -113,7 +107,7 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {Integer|string|By|WebElement|EyesWebElement} frame The frame to switch to.
+   * @param {number|string|By|WebElement|EyesWebElement} frame The frame to switch to.
    * @return {this}
    */
   frame(frame) {
@@ -123,7 +117,7 @@ class SeleniumCheckSettings extends CheckSettings {
       fl.setFrameIndex(frame);
     } else if (TypeUtils.isString(frame)) {
       fl.setFrameNameOrId(frame);
-    } else if (frame instanceof By || isProtractorBy(frame)) {
+    } else if (EyesWebElement.isLocator(frame)) {
       fl.setFrameSelector(frame);
     } else if (frame instanceof WebElement) {
       fl.setFrameElement(frame);
@@ -140,11 +134,11 @@ class SeleniumCheckSettings extends CheckSettings {
    */
   region(region) {
     // noinspection IfStatementWithTooManyBranchesJS
-    if (region instanceof Region) {
+    if (Region.isRegionCompatible(region)) {
       super.updateTargetRegion(region);
-    } else if (region instanceof By || isProtractorBy(region)) {
+    } else if (EyesWebElement.isLocator(region)) {
       this._targetSelector = region;
-    } else if (region instanceof WebElement || region instanceof EyesWebElement) {
+    } else if (region instanceof WebElement) {
       this._targetElement = region;
     } else {
       throw new TypeError('region method called with argument of unknown type!');
@@ -159,7 +153,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * @param {By|WebElement|EyesWebElement|GetRegion|Region} region
    */
   _regionToRegionProvider(region) {
-    if (region instanceof By || isProtractorBy(region)) {
+    if (EyesWebElement.isLocator(region)) {
       return new IgnoreRegionBySelector(region);
     }
 
@@ -217,7 +211,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * @param {number} [maxRightOffset] How much the content can move to the right.
    */
   floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
-    if (regionOrContainer instanceof By || isProtractorBy(regionOrContainer)) {
+    if (EyesWebElement.isLocator(regionOrContainer)) {
       const floatingRegion = new FloatingRegionBySelector(
         regionOrContainer,
         maxUpOffset,

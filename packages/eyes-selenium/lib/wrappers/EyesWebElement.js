@@ -1,7 +1,7 @@
 'use strict';
 
-const { WebElement } = require('selenium-webdriver');
-const { Region, MouseTrigger, ArgumentGuard, CoordinatesType } = require('@applitools/eyes-sdk-core');
+const { By, WebElement } = require('selenium-webdriver');
+const { Region, MouseTrigger, ArgumentGuard, CoordinatesType, TypeUtils } = require('@applitools/eyes-sdk-core');
 
 const JS_GET_SCROLL_LEFT = 'return arguments[0].scrollLeft;';
 
@@ -66,6 +66,14 @@ class EyesWebElement extends WebElement {
     this._logger = logger;
     this._eyesDriver = eyesDriver;
     this._webElement = webElement;
+  }
+
+  /**
+   * @param {object} object
+   * @return {boolean}
+   */
+  static isLocator(object) {
+    return (object instanceof By) || TypeUtils.has(object, ['using', 'value']);
   }
 
   /**
