@@ -87,10 +87,13 @@ function openWrappers({wrappers, browsers, appName, testName}) {
 }
 
 const apiKeyFailMsg =
-  'APPLITOOLS_API_KEY env variable is not defined. It is required to define this variable when running Cypress for Applitools visual tests to run successfully.';
+  'APPLITOOLS_API_KEY env variable is missing. It is required to define this variable when running Cypress for Applitools visual tests to run successfully.';
 
 const propertiesFailMsg =
   'Argument "properties" should be an array of objects, each one with a "name" and "value" properties';
+
+const appNameFailMsg =
+  'Argument "appName" is missing. It\'s possible to specify "appName" in either the config file, an env variable or by passing to the open method.';
 
 const authorizationErrMsg = 'Unauthorized access to Eyes server. Please check your API key.';
 
@@ -101,4 +104,5 @@ module.exports = {
   apiKeyFailMsg,
   propertiesFailMsg,
   authorizationErrMsg,
+  appNameFailMsg,
 };
