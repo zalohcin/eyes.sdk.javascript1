@@ -28,17 +28,12 @@ const {makeVisualGridClient} = require('@applitools/visual-grid-client')
 const visualGridClient = makeVisualGridClient()
 ```
 
-The visualGridClient, returned by `makeVisualGridClient`, is an object with three functions:
+The visualGridClient, returned by `makeVisualGridClient`, is an object with the following function:
 
 * `openEyes(configOverride)`: to start a set of tests, where each step is a set of renderings according to the browser
   stuff in the configuration.
   This function will return an object with functions (see below) allowing you to create renderings (or "steps" in
   Applitools parlance) for the test.
-* `waitForTestResults(promises[])`: A convenience async function. Pass a set of promises returned by the various `close`-es
-  of `openEyes`, and it will wait on all of them and return an array of results, or throw if there was a difference
-  detected in one of the `close`-s.
-* `getError()`: This function will return an error if there was one during the running of the tests. Poll
-  it sometimes to see if you need to abort anything.
 
 ### openEyes
 
@@ -51,7 +46,7 @@ defined in the `browser` property of the configuraion.
 * Returns a promise to an object with the following functions:
 
 * `checkWindow(...)`: creates a "step" that checks the window according to the baseline. Note that this
-  function will not fail, and you need to call `waitForTestResults` to wait for the failure or success
+  function will not fail, and you need to `await` the promises returned from `close()` to wait for the failure or success
   of a batch of steps in the test.
 * `close()`: async closes the test (or series of tests) created by `openEyes`.
 * `abort()`: if you want to abort this test (or series of tests). Async.
@@ -154,7 +149,7 @@ describe('visual-grid-client test', function() {
     })
   })
 
-  after(() => visualGridClient.waitForTestResults(closePromises))
+  after(() => Promise.all(closePromises))
 
   let checkWindow, close
   beforeEach(async () => {
