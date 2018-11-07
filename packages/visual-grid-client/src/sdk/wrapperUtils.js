@@ -97,6 +97,9 @@ const appNameFailMsg =
 
 const authorizationErrMsg = 'Unauthorized access to Eyes server. Please check your API key.';
 
+const blockedAccountErrMsg =
+  'Unable to access Eyes server. This might mean that your account is blocked, please contact Applitools support.';
+
 module.exports = {
   initWrappers,
   configureWrappers,
@@ -105,4 +108,5 @@ module.exports = {
   propertiesFailMsg,
   authorizationErrMsg,
   appNameFailMsg,
+  blockedAccountErrMsg,
 };

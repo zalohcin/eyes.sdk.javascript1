@@ -8,6 +8,7 @@ const {
   apiKeyFailMsg,
   authorizationErrMsg,
   appNameFailMsg,
+  blockedAccountErrMsg,
 } = require('./wrapperUtils');
 
 function makeOpenEyes({
@@ -126,8 +127,13 @@ function makeOpenEyes({
       getRenderInfoPromise() ||
       setRenderInfoPromise(
         renderWrapper.getRenderInfo().catch(err => {
-          if (err.response && err.response.status === 401) {
-            err = new Error(authorizationErrMsg);
+          if (err.response) {
+            if (err.response.status === 401) {
+              return new Error(authorizationErrMsg);
+            }
+            if (err.response.status === 403) {
+              return new Error(blockedAccountErrMsg);
+            }
           }
 
           return err;
