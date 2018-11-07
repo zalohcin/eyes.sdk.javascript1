@@ -10,7 +10,6 @@ const makeWaitForRenderedStatus = require('./waitForRenderedStatus');
 const makePutResources = require('./putResources');
 const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
-const makeWaitForTestResults = require('./waitForTestResults');
 const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping');
 const makeParseInlineCssFromCdt = require('./parseInlineCssFromCdt');
@@ -119,11 +118,9 @@ function makeRenderingGridClient({
     concurrency: openEyesConcurrency,
     logger,
   });
-  const waitForTestResults = makeWaitForTestResults({logger});
 
   return {
     openEyes: openEyesLimitedConcurrency,
-    waitForTestResults,
   };
 
   function getRenderInfoPromise() {
