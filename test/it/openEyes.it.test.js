@@ -17,7 +17,12 @@ const {
   IgnoreRegionByRectangle,
   FloatingRegionByRectangle,
 } = require('@applitools/eyes.sdk.core');
-const {apiKeyFailMsg, authorizationErrMsg, appNameFailMsg} = require('../../src/sdk/wrapperUtils');
+const {
+  apiKeyFailMsg,
+  authorizationErrMsg,
+  appNameFailMsg,
+  blockedAccountErrMsg,
+} = require('../../src/sdk/wrapperUtils');
 
 describe('openEyes', () => {
   let baseUrl, closeServer, wrapper, openEyes, prevEnv;
@@ -310,6 +315,28 @@ describe('openEyes', () => {
       }),
     );
     expect(error.message).to.equal(authorizationErrMsg);
+  });
+
+  it('openEyes handles blocked account error during getRenderInfo', async () => {
+    wrapper.getRenderInfo = async () => {
+      await psetTimeout(0);
+      const err = new Error('');
+      err.response = {status: 403};
+      throw err;
+    };
+
+    openEyes = makeRenderingGridClient({showLogs: process.env.APPLITOOLS_SHOW_LOGS}).openEyes;
+
+    await psetTimeout(50);
+
+    const [error] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        apiKey,
+        appName,
+      }),
+    );
+    expect(error.message).to.equal(blockedAccountErrMsg);
   });
 
   it('openEyes handles missing appName', async () => {
