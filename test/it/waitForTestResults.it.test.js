@@ -9,6 +9,7 @@ const {presult} = require('@applitools/functional-commons');
 
 describe('waitForTestResults', () => {
   const apiKey = 'some api key';
+  const appName = 'some app name';
 
   let baseUrl, closeServer;
   before(async () => {
@@ -45,6 +46,7 @@ describe('waitForTestResults', () => {
     const {openEyes, waitForTestResults} = makeRenderingGridClient({
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       apiKey,
+      appName,
     });
 
     const {checkWindow, close} = await openEyes({

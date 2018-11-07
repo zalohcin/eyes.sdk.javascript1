@@ -17,11 +17,12 @@ const {
   IgnoreRegionByRectangle,
   FloatingRegionByRectangle,
 } = require('@applitools/eyes.sdk.core');
-const {apiKeyFailMsg, authorizationErrMsg} = require('../../src/sdk/wrapperUtils');
+const {apiKeyFailMsg, authorizationErrMsg, appNameFailMsg} = require('../../src/sdk/wrapperUtils');
 
 describe('openEyes', () => {
   let baseUrl, closeServer, wrapper, openEyes, prevEnv;
   const apiKey = 'some api key';
+  const appName = 'some app name';
 
   before(async () => {
     const server = await testServer({port: 3456}); // TODO fixed port avoids 'need-more-resources' for dom. Is this desired? should both paths be tested?
@@ -58,6 +59,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
 
     checkWindow({cdt: [], tag: 'good1', url: `${baseUrl}/test.html`});
@@ -68,6 +70,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'bad!', url: `${baseUrl}/test.html`});
     await psetTimeout(0); // because FakeEyesWrapper throws, and then the error is set async and will be read in the next call to close()
@@ -80,6 +83,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
 
     const resourceUrls = wrapper.goodResourceUrls;
@@ -93,6 +97,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
     const resourceUrls = ['smurfs.jpg', 'test.css'];
     const cdt = loadJsonFixture('test.cdt.json');
@@ -112,6 +117,7 @@ describe('openEyes', () => {
       ],
       browser: [{width: 320, height: 480}, {width: 640, height: 768}, {width: 1600, height: 900}],
       apiKey,
+      appName,
     });
 
     const resourceUrls = wrapper.goodResourceUrls;
@@ -130,6 +136,7 @@ describe('openEyes', () => {
       apiKey,
       batchName,
       batchId,
+      appName,
     });
 
     expect(wrapper.getBatch().getName()).to.equal(batchName);
@@ -141,6 +148,7 @@ describe('openEyes', () => {
       wrappers: [wrapper],
       browser: {width: 320, height: 480},
       apiKey,
+      appName,
     });
 
     const resourceUrls = wrapper.goodResourceUrls;
@@ -185,6 +193,7 @@ describe('openEyes', () => {
       wrappers: [wrapper1, wrapper2],
       browser: [{width: 320, height: 480}, {width: 640, height: 768}],
       apiKey,
+      appName,
     });
 
     const resourceUrls = wrapper.goodResourceUrls;
@@ -199,6 +208,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
 
     const blobUrl = `blob.css`;
@@ -220,6 +230,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
 
     checkWindow({cdt: [], url: 'some url', selector: 'some selector'});
@@ -230,6 +241,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
 
     checkWindow({cdt: [], url: 'some url', region: {width: 1, height: 2, left: 3, top: 4}});
@@ -242,6 +254,7 @@ describe('openEyes', () => {
       browser: {width: 320, height: 480, name: 'ucbrowser'},
       url: `${baseUrl}/test.html`,
       apiKey,
+      appName,
     });
 
     const resourceUrls = wrapper.goodResourceUrls;
@@ -271,6 +284,7 @@ describe('openEyes', () => {
       openEyes({
         wrappers: [wrapper],
         apiKey,
+        appName,
       }),
     );
     expect(error.message).to.equal('getRenderInfo');
@@ -292,9 +306,15 @@ describe('openEyes', () => {
       openEyes({
         wrappers: [wrapper],
         apiKey,
+        appName,
       }),
     );
     expect(error.message).to.equal(authorizationErrMsg);
+  });
+
+  it('openEyes handles missing appName', async () => {
+    const [error] = await presult(openEyes({wrappers: [wrapper], apiKey}));
+    expect(error.message).to.equal(appNameFailMsg);
   });
 
   it('handles error during rendering', async () => {
@@ -306,6 +326,7 @@ describe('openEyes', () => {
       wrappers: [wrapper],
       url: `bla`,
       apiKey,
+      appName,
     });
 
     checkWindow({resourceUrls: [], cdt: [], url: `bla`});
@@ -323,6 +344,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
 
     checkWindow({resourceUrls: [], cdt: [], url: `bla`});
@@ -341,6 +363,7 @@ describe('openEyes', () => {
     const {close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
 
     error = await close().then(x => x, err => err);
@@ -362,9 +385,21 @@ describe('openEyes', () => {
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
     }).openEyes;
 
-    const {close} = await openEyes({wrappers: [wrapper1], apiKey});
-    await openEyes({wrappers: [wrapper2], apiKey});
-    openEyes({wrappers: [wrapper3], apiKey});
+    const {close} = await openEyes({
+      wrappers: [wrapper1],
+      apiKey,
+      appName,
+    });
+    await openEyes({
+      wrappers: [wrapper2],
+      apiKey,
+      appName,
+    });
+    openEyes({
+      wrappers: [wrapper3],
+      apiKey,
+      appName,
+    });
     expect(flag).to.equal(undefined);
     await close();
     expect(flag).to.equal(true);
@@ -381,11 +416,19 @@ describe('openEyes', () => {
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
     }).openEyes;
 
-    const {close} = await openEyes({wrappers: [wrapper], apiKey});
+    const {close} = await openEyes({
+      wrappers: [wrapper],
+      apiKey,
+      appName,
+    });
     const err1 = await close().then(x => x, err => err);
     expect(err1.message).to.equal('close');
     const {close: close2} = await Promise.race([
-      openEyes({wrappers: [wrapper], apiKey}),
+      openEyes({
+        wrappers: [wrapper],
+        apiKey,
+        appName,
+      }),
       psetTimeout(100).then(() => ({close: 'not resolved'})),
     ]);
     expect(close2).not.to.equal('not resolved');
@@ -422,7 +465,11 @@ describe('openEyes', () => {
     });
 
     it('runs renders with max concurrency', async () => {
-      const {checkWindow, close} = await openEyes({wrappers: [wrapper], apiKey});
+      const {checkWindow, close} = await openEyes({
+        wrappers: [wrapper],
+        apiKey,
+        appName,
+      });
       checkWindow({url: '', cdt: [], sizeMode: null});
       await psetTimeout(0);
       checkWindow({url: '', cdt: [], sizeMode: null});
@@ -446,6 +493,7 @@ describe('openEyes', () => {
         wrappers: [wrapper, wrapper],
         browser: [{width: 1, height: 1}, {width: 2, height: 2}],
         apiKey,
+        appName,
       });
 
       checkWindow({url: '', cdt: [], sizeMode: null});
@@ -469,11 +517,13 @@ describe('openEyes', () => {
       const {checkWindow, close} = await openEyes({
         wrappers: [wrapper],
         apiKey,
+        appName,
       });
 
       const {checkWindow: checkWindow2, close: close2} = await openEyes({
         wrappers: [wrapper],
         apiKey,
+        appName,
       });
 
       checkWindow({url: '', cdt: [], sizeMode: null});
@@ -522,6 +572,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
 
     checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'});
@@ -549,6 +600,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
 
     checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'});
@@ -569,6 +621,7 @@ describe('openEyes', () => {
       wrappers,
       url: 'bla',
       apiKey,
+      appName,
       baselineBranchName: 'baselineBranchName',
       baselineEnvName: 'baselineEnvName',
       baselineName: 'baselineName',
@@ -637,6 +690,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
     const region = {left: 1, top: 2, width: 3, height: 4};
     checkWindow({
@@ -656,6 +710,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
 
     const ignoreSelector1 = {selector: 'sel1'};
@@ -694,6 +749,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
     const selector = 'sel1';
     const ignoreRegion = {left: 1, top: 2, width: 3, height: 4};
@@ -727,6 +783,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
     const selector = 'sel1';
     const ignoreRegion = {left: 1, top: 2, width: 3, height: 4};
@@ -808,6 +865,7 @@ describe('openEyes', () => {
       wrappers: [wrapper1, wrapper2],
       browser: [{width: 1, height: 2}, {width: 3, height: 4}],
       apiKey,
+      appName,
     });
 
     await abort();
@@ -821,6 +879,7 @@ describe('openEyes', () => {
       wrappers: [wrapper],
       browser: {deviceName, screenOrientation: 'bla'},
       apiKey,
+      appName,
     });
 
     checkWindow({url: '', cdt: []});
@@ -842,9 +901,17 @@ describe('openEyes', () => {
       return 'kuku';
     };
 
-    const p = openEyes({apiKey, wrappers: [wrapper]});
+    const p = openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+    });
     await psetTimeout(0);
-    await openEyes({apiKey, wrappers: [wrapper2]});
+    await openEyes({
+      apiKey,
+      wrappers: [wrapper2],
+      appName,
+    });
     expect(flag).to.equal(true);
     expect(wrapper2.renderingInfo).to.equal('bla');
     await p;
@@ -866,6 +933,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
       apiKey,
+      appName,
     });
     checkWindow({cdt: [], frames, url});
     const ttt = await close();

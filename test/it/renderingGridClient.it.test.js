@@ -5,11 +5,13 @@ const makeRenderingGridClient = require('../../src/sdk/renderingGridClient');
 const createFakeWrapper = require('../util/createFakeWrapper');
 
 const apiKey = 'api key';
+const appName = 'app name';
 
 describe('renderingGridClient', () => {
   it('sets a new batch', async () => {
     const {openEyes} = makeRenderingGridClient({
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      appName,
     });
 
     const wrapper = createFakeWrapper('http://some_url');

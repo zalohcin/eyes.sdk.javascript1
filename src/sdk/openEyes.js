@@ -7,6 +7,7 @@ const {
   openWrappers,
   apiKeyFailMsg,
   authorizationErrMsg,
+  appNameFailMsg,
 } = require('./wrapperUtils');
 
 function makeOpenEyes({
@@ -82,6 +83,10 @@ function makeOpenEyes({
 
     if (!apiKey) {
       throw new Error(apiKeyFailMsg);
+    }
+
+    if (!appName) {
+      throw new Error(appNameFailMsg);
     }
 
     let checkWindowPromises = [];
