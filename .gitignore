@@ -10,6 +10,7 @@ logs
 
 # Dependency directory
 node_modules
+/packages/*/package-lock.json
 
 # Other
 .DS_STORE
