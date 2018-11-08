@@ -41,11 +41,20 @@
   "devDependencies": {
     "axios": "^0.18.0",
     "chromedriver": "^2.43.1",
+    "jest": "^23.6.0",
+    "jest-environment-selenium": "^2.0.0",
     "mocha": "^5.2.0"
   },
   "scripts": {
     "test": "mocha ./test/unit/**/*.spec.js -t 900000",
-    "test:integration": "mocha ./test/integration/**/*.spec.js -t 900000"
+    "test:integration": "mocha ./test/integration/**/*.spec.js -t 900000",
+    "test:perf": "jest"
+  },
+  "jest": {
+    "testEnvironment": "jest-environment-selenium",
+    "testMatch": [
+      "**/packages/**/__tests__/**/*.js"
+    ]
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
