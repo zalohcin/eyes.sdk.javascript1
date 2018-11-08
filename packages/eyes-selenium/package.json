@@ -35,13 +35,16 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/dom-utils": "^4.0.3",
-    "@applitools/eyes-sdk-core": "^4.0.3",
-    "selenium-webdriver": "^4.0.0-alpha.1"
+    "@applitools/eyes-sdk-core": "^4.0.3"
   },
   "devDependencies": {
     "axios": "^0.18.0",
     "chromedriver": "^2.43.1",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "selenium-webdriver": "^4.0.0-alpha.1"
+  },
+  "peerDependencies": {
+    "selenium-webdriver": "^4.0.0-alpha.1"
   },
   "scripts": {
     "test": "mocha ./test/unit/**/*.spec.js -t 900000",

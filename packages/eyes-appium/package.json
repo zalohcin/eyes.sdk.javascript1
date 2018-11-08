@@ -36,11 +36,14 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/eyes-sdk-core": "^4.0.3",
-    "@applitools/eyes-selenium": "^4.0.3",
-    "selenium-webdriver": "~4.0.0-alpha.1"
+    "@applitools/eyes-selenium": "^4.0.3"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "selenium-webdriver": "^4.0.0-alpha.1"
+  },
+  "peerDependencies": {
+    "selenium-webdriver": "^4.0.0-alpha.1"
   },
   "scripts": {
     "test:integration": "mocha ./test/**/*.spec.js -t 900000"

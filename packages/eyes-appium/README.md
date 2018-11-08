@@ -9,6 +9,7 @@ Applitools Eyes SDK for Appium WebDriver
 
 Install eyes-appium as a local dev dependency in your tested project:
 
+    npm install selenium-webdriver
     npm install @applitools/eyes-appium
 
 ## Usage
