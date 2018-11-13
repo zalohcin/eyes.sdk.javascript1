@@ -33,6 +33,15 @@ function uniq(arr) {
 function extractLinks(document) {
   const win = document.defaultView;
 
+  const srcsetUrls = [...document.querySelectorAll('img[srcset],source[srcset]')]
+    .map(srcsetEl =>
+      srcsetEl
+        .getAttribute('srcset')
+        .split(',')
+        .map(str => str.trim().split(/\s+/)[0]),
+    )
+    .reduce((acc, urls) => acc.concat(urls), []);
+
   const srcUrls = [...document.querySelectorAll('img[src],source[src]')].map(srcEl =>
     srcEl.getAttribute('src'),
   );
@@ -45,7 +54,12 @@ function extractLinks(document) {
     videoEl.getAttribute('poster'),
   );
 
-  const splitUrls = splitOnOrigin(win.location, [...srcUrls, ...cssUrls, ...videoPosterUrls]);
+  const splitUrls = splitOnOrigin(win.location, [
+    ...srcsetUrls,
+    ...srcUrls,
+    ...cssUrls,
+    ...videoPosterUrls,
+  ]);
 
   const iframes = [...document.querySelectorAll('iframe[src]')]
     .map(srcEl => {
