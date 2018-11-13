@@ -156,4 +156,51 @@ describe('extractResources', () => {
     const {resourceUrls} = await page.evaluate(extractResources);
     expect(resourceUrls).to.deep.equal(expected);
   });
+
+  it('extracts images from srcset', async () => {
+    const htmlStr = `
+      <img srcset="smurfs.jpg 151w,gargamel.jpg 1154w"
+        sizes="(max-width: 768px) 151px,750px"
+        src="smurfs.jpg" alt="Smurfs on small screen, gargamel on large">`;
+
+    await page.goto(`data:text/html,${htmlStr}`);
+
+    const expected = ['smurfs.jpg', 'gargamel.jpg'];
+
+    const {resourceUrls} = await page.evaluate(extractResources);
+    expect(resourceUrls).to.deep.equal(expected);
+  });
+
+  it('extracts images from srcset as blobs', async () => {
+    const server = await testServer({port: 7373});
+    await page.goto(`http://localhost:7373/srcset.html`);
+    try {
+      const {blobs} = await page.evaluate(extractResources);
+      expect(blobs).to.eql(
+        ['smurfs.jpg', 'smurfs1.jpg', 'gargamel1.jpg', 'gargamel.jpg', 'smurfs2.jpg'].map(name => ({
+          url: `http://localhost:7373/${name}`,
+          type: 'image/jpeg',
+          value: loadFixture(name),
+        })),
+      );
+    } finally {
+      await server.close();
+    }
+  });
+
+  it('extracts images from srcset with spaces and new lines', async () => {
+    const htmlStr = `
+      <img srcset="   smurfs.jpg   151w,
+                      gargamel.jpg 1154w
+                      "
+        sizes="(max-width: 768px) 151px,750px"
+        src="smurfs.jpg" alt="Smurfs on small screen, gargamel on large">`;
+
+    await page.goto(`data:text/html,${htmlStr}`);
+
+    const expected = ['smurfs.jpg', 'gargamel.jpg'];
+
+    const {resourceUrls} = await page.evaluate(extractResources);
+    expect(resourceUrls).to.deep.equal(expected);
+  });
 });
