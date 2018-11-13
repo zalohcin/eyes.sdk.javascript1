@@ -17,7 +17,8 @@
     "test:e2e": "mocha --no-timeouts 'test/e2e/**/*.test.js'",
     "eslint": "eslint '**/*.js'",
     "test": "npm run test:mocha && npm run eslint",
-    "prepublishOnly": "npm version patch"
+    "prepublishOnly": "npm version patch",
+    "changelog": "git changelog -f \"v$(jq -r '.version' < package.json)\""
   },
   "keywords": [
     "applitools",

@@ -185,3 +185,13 @@ describe('visual-grid-client test', function() {
   })
 })
 ```
+
+## Contributing
+
+### Generating a changelog
+
+The best way is to run `npm run changelog`. The prerequisite for that is to have [jq](https://stedolan.github.io/jq/) installed, and also define the following in git configuration:
+
+```sh
+git config changelog.format "* %s - %an [[%h](https://github.com/applitools/visual-grid-client/commit/%H)]"
+```
