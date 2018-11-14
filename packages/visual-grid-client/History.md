@@ -1,4 +1,18 @@
 
+v5.5.3 / 2018-11-14
+===================
+
+* 5.5.3 - Amit Zur [[d68c9b4](https://github.com/applitools/visual-grid-client/commit/d68c9b48bd303f7a11ad16df03b2d3e79bbf83a2)]
+* 5.5.2 - Amit Zur [[225ea7d](https://github.com/applitools/visual-grid-client/commit/225ea7d0e1c25eefde9a4c9d14326ba830eee250)]
+* update eyes-sdk-core major version to 4.1.0 - Amit Zur [[edc28fe](https://github.com/applitools/visual-grid-client/commit/edc28fe5a927711edd7a5d31048742c4b6943a0b)]
+* add a changelog - Amit Zur [[1bbb70d](https://github.com/applitools/visual-grid-client/commit/1bbb70dd6098609614f81e3b8001e38b7b071a46)]
+
+v5.5.2 / 2018-11-13
+===================
+
+* 5.5.2 - Amit Zur [[a891b48](https://github.com/applitools/visual-grid-client/commit/a891b4840b9056e0be2ad0cf704ad70f7f8ae7e0)]
+* stam - Amit Zur [[57f9bce](https://github.com/applitools/visual-grid-client/commit/57f9bce6de4872da66ef1e726da9b8cfdd929932)]
+
 v5.5.1 / 2018-11-13
 ===================
 
