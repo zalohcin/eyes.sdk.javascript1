@@ -3,7 +3,7 @@ const {
   Region,
   IgnoreRegionByRectangle,
   FloatingRegionByRectangle,
-} = require('@applitools/eyes.sdk.core');
+} = require('@applitools/eyes-sdk-core');
 const {describe, it} = require('mocha');
 const {expect} = require('chai');
 const createCheckSettings = require('../../../src/sdk/createCheckSettings');
@@ -12,13 +12,13 @@ describe('createCheckSettings', () => {
   it('handles single ignore region', () => {
     const checkSettings = createCheckSettings({ignore: {left: 1, top: 2, width: 3, height: 4}});
     expect(checkSettings.getIgnoreRegions()).to.eql([
-      new IgnoreRegionByRectangle(Region.fromObject({left: 1, top: 2, width: 3, height: 4})),
+      new IgnoreRegionByRectangle(new Region({left: 1, top: 2, width: 3, height: 4})),
     ]);
   });
 
   it('handles multiple ignore regions', () => {
     const ignore = [{left: 1, top: 2, width: 3, height: 4}, {left: 5, top: 6, width: 7, height: 8}];
-    const expected = ignore.map(region => new IgnoreRegionByRectangle(Region.fromObject(region)));
+    const expected = ignore.map(region => new IgnoreRegionByRectangle(new Region(region)));
     const checkSettings = createCheckSettings({ignore});
     expect(checkSettings.getIgnoreRegions()).to.eql(expected);
   });
@@ -44,13 +44,7 @@ describe('createCheckSettings', () => {
       },
     });
     expect(checkSettings.getFloatingRegions()).to.eql([
-      new FloatingRegionByRectangle(
-        Region.fromObject({left: 1, top: 2, width: 3, height: 4}),
-        5,
-        6,
-        7,
-        8,
-      ),
+      new FloatingRegionByRectangle(new Region({left: 1, top: 2, width: 3, height: 4}), 5, 6, 7, 8),
     ]);
   });
 
@@ -80,7 +74,7 @@ describe('createCheckSettings', () => {
     const expected = floating.map(
       region =>
         new FloatingRegionByRectangle(
-          Region.fromObject(region),
+          new Region(region),
           region.maxUpOffset,
           region.maxDownOffset,
           region.maxLeftOffset,

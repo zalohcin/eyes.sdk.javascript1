@@ -16,7 +16,7 @@ const {
   Region,
   IgnoreRegionByRectangle,
   FloatingRegionByRectangle,
-} = require('@applitools/eyes.sdk.core');
+} = require('@applitools/eyes-sdk-core');
 const {
   apiKeyFailMsg,
   authorizationErrMsg,
@@ -482,7 +482,7 @@ describe('openEyes', () => {
           counter++;
           finishRenders.push(() =>
             resolve([
-              RenderStatusResults.fromObject({
+              new RenderStatusResults({
                 status: RenderStatus.RENDERED,
                 imageLocation: JSON.stringify({isGood: true}),
               }),
@@ -729,7 +729,7 @@ describe('openEyes', () => {
     const [results] = await close();
     expect(results[0].getAsExpected()).to.equal(true);
     expect(results[0].__checkSettings.getIgnoreRegions()).to.eql([
-      new IgnoreRegionByRectangle(Region.fromObject(region)),
+      new IgnoreRegionByRectangle(new Region(region)),
     ]);
   });
 
@@ -742,7 +742,7 @@ describe('openEyes', () => {
 
     const ignoreSelector1 = {selector: 'sel1'};
     const region1FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel1'];
-    const region1 = Region.fromObject({
+    const region1 = new Region({
       left: region1FromStatusResults.x,
       top: region1FromStatusResults.y,
       width: region1FromStatusResults.width,
@@ -751,7 +751,7 @@ describe('openEyes', () => {
 
     const ignoreSelector2 = {selector: 'sel2'};
     const region2FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel2'];
-    const region2 = Region.fromObject({
+    const region2 = new Region({
       left: region2FromStatusResults.x,
       top: region2FromStatusResults.y,
       width: region2FromStatusResults.width,
@@ -794,9 +794,9 @@ describe('openEyes', () => {
     const [results] = await close();
     expect(results[0].getAsExpected()).to.equal(true);
     expect(results[0].__checkSettings.getIgnoreRegions()).to.eql([
-      new IgnoreRegionByRectangle(Region.fromObject(ignoreRegion)),
+      new IgnoreRegionByRectangle(new Region(ignoreRegion)),
       new IgnoreRegionByRectangle(
-        Region.fromObject({
+        new Region({
           left: expectedSelectorRegion.x - imageOffset.x,
           top: expectedSelectorRegion.y - imageOffset.y,
           width: expectedSelectorRegion.width,
@@ -852,9 +852,9 @@ describe('openEyes', () => {
 
     expect(results[0].getAsExpected()).to.equal(true);
     expect(results[0].__checkSettings.getIgnoreRegions()).to.eql([
-      new IgnoreRegionByRectangle(Region.fromObject(ignoreRegion)),
+      new IgnoreRegionByRectangle(new Region(ignoreRegion)),
       new IgnoreRegionByRectangle(
-        Region.fromObject({
+        new Region({
           left: expectedSelectorRegion.x - imageOffset.x,
           top: expectedSelectorRegion.y - imageOffset.y,
           width: expectedSelectorRegion.width,
@@ -864,14 +864,14 @@ describe('openEyes', () => {
     ]);
     expect(results[0].__checkSettings.getFloatingRegions()).to.eql([
       new FloatingRegionByRectangle(
-        Region.fromObject(floatingRegion),
+        new Region(floatingRegion),
         floatingRegion.maxUpOffset,
         floatingRegion.maxDownOffset,
         floatingRegion.maxLeftOffset,
         floatingRegion.maxRightOffset,
       ),
       new FloatingRegionByRectangle(
-        Region.fromObject({
+        new Region({
           left: expectedFloatingRegion.x - imageOffset.x,
           top: expectedFloatingRegion.y - imageOffset.y,
           width: expectedFloatingRegion.width,

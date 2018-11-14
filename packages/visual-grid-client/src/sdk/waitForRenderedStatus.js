@@ -1,5 +1,5 @@
 'use strict';
-const {RenderStatus} = require('@applitools/eyes.sdk.core');
+const {RenderStatus} = require('@applitools/eyes-sdk-core');
 
 const psetTimeout = t =>
   new Promise(res => {

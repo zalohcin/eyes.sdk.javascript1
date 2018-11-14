@@ -4,7 +4,7 @@ const {describe, it, before, after, beforeEach} = require('mocha');
 const {expect} = require('chai');
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient');
 const testServer = require('../util/testServer');
-const {DiffsFoundError} = require('@applitools/eyes.sdk.core');
+const {DiffsFoundError} = require('@applitools/eyes-sdk-core');
 const {loadJsonFixture, loadFixtureBuffer} = require('../util/loadFixture');
 
 describe('openEyes', () => {

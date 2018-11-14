@@ -3,13 +3,13 @@ const {describe, it} = require('mocha');
 const {expect} = require('chai');
 const makeWaitForRenderedStatus = require('../../../src/sdk/waitForRenderedStatus');
 const {failMsg} = makeWaitForRenderedStatus;
-const {RenderStatus, RenderStatusResults} = require('@applitools/eyes.sdk.core');
+const {RenderStatus, RenderStatusResults} = require('@applitools/eyes-sdk-core');
 const testLogger = require('../../util/testLogger');
 const psetTimeout = require('util').promisify(setTimeout);
 const {presult} = require('@applitools/functional-commons');
 
 function toRenderStatuses(plainStatuses) {
-  return plainStatuses.map(status => RenderStatusResults.fromObject({status}));
+  return plainStatuses.map(status => new RenderStatusResults({status}));
 }
 
 describe('waitForRenderedStatus', () => {
@@ -74,8 +74,8 @@ describe('waitForRenderedStatus', () => {
   it("throws error if there's an error in render", async () => {
     let output = '';
     const expectedStatuses = [
-      RenderStatusResults.fromObject({status: RenderStatus.RENDERING}),
-      RenderStatusResults.fromObject({status: RenderStatus.ERROR, error: 'bla'}),
+      new RenderStatusResults({status: RenderStatus.RENDERING}),
+      new RenderStatusResults({status: RenderStatus.ERROR, error: 'bla'}),
     ];
     const wrapper = {
       getRenderStatus: async () => expectedStatuses,

@@ -87,7 +87,7 @@ defined in the `browser` property of the configuraion.
 
 * The promise will be resolved (with `undefined` as value) if all tests defined in the `openEyes` passed.
 * The promise will be rejected (with `DiffsFoundError`
-   as defined in [Applitools Eyes SDK Core](https://www.npmjs.com/package/@applitools/eyes.sdk.core))
+   as defined in [Applitools Eyes SDK Core](https://www.npmjs.com/package/@applitools/eyes-sdk-core))
    if there were differences found in some tests defined in the `openEyes`.
 
 ### The CDT format

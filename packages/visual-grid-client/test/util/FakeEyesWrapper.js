@@ -4,7 +4,7 @@ const {
   RenderStatusResults,
   RenderStatus,
   Location,
-} = require('@applitools/eyes.sdk.core');
+} = require('@applitools/eyes-sdk-core');
 const {URL} = require('url');
 const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture');
 const SOME_BATCH = 'SOME_BATCH';
@@ -92,7 +92,7 @@ class FakeEyesWrapper {
   async getRenderStatus(renderIds) {
     return renderIds.map(renderId => {
       const {browserName, emulationInfo, selectorsToFindRegionsFor} = JSON.parse(renderId);
-      return RenderStatusResults.fromObject({
+      return new RenderStatusResults({
         status: RenderStatus.RENDERED,
         imageLocation: renderId,
         userAgent: browserName,
@@ -129,7 +129,7 @@ class FakeEyesWrapper {
 
     const expectedImageLocation =
       sizeMode === 'selector'
-        ? Location.fromObject(selectorsToLocations[selectorsToFindRegionsFor[0]])
+        ? new Location(selectorsToLocations[selectorsToFindRegionsFor[0]])
         : undefined;
 
     const asExpected =
