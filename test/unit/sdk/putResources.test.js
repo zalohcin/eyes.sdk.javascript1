@@ -2,7 +2,7 @@
 const {describe, it, beforeEach} = require('mocha');
 const {expect} = require('chai');
 const makePutResources = require('../../../src/sdk/putResources');
-const {RGridDom, RGridResource} = require('@applitools/eyes.sdk.core');
+const {RGridDom, RGridResource} = require('@applitools/eyes-sdk-core');
 const {promisify: p} = require('util');
 const psetTimeout = p(setTimeout);
 

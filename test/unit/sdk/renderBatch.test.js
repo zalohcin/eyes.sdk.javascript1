@@ -2,7 +2,7 @@
 const {describe, it, beforeEach} = require('mocha');
 const {expect} = require('chai');
 const makeRenderBatch = require('../../../src/sdk/renderBatch');
-const {RenderStatus} = require('@applitools/eyes.sdk.core');
+const {RenderStatus} = require('@applitools/eyes-sdk-core');
 const FakeRunningRender = require('../../util/FakeRunningRender');
 const FakeRenderRequest = require('../../util/FakeRenderRequest');
 const createResourceCache = require('../../../src/sdk/createResourceCache');

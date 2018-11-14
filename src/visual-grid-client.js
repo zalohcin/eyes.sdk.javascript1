@@ -7,7 +7,7 @@ const {
   TestResults,
   TestFailedError,
   TestResultsStatus,
-} = require('@applitools/eyes.sdk.core');
+} = require('@applitools/eyes-sdk-core');
 
 module.exports = {
   makeVisualGridClient,

@@ -1,6 +1,6 @@
 'use strict';
 
-const {RGridResource} = require('@applitools/eyes.sdk.core');
+const {RGridResource} = require('@applitools/eyes-sdk-core');
 const createRGridDom = require('./createRGridDom');
 
 function makeCreateRGridDOMAndGetResourceMapping({getAllResources, parseInlineCssFromCdt}) {

@@ -1,6 +1,6 @@
 'use strict';
 
-const {RenderStatus} = require('@applitools/eyes.sdk.core');
+const {RenderStatus} = require('@applitools/eyes-sdk-core');
 const toCacheEntry = require('./toCacheEntry');
 
 function makeRenderBatch({putResources, resourceCache, fetchCache, logger}) {

@@ -1,6 +1,6 @@
 'use strict';
 
-const {RenderRequest, RenderInfo} = require('@applitools/eyes.sdk.core');
+const {RenderRequest, RenderInfo} = require('@applitools/eyes-sdk-core');
 const createEmulationInfo = require('./createEmulationInfo');
 const calculateSelectorsToFindRegionsFor = require('./calculateSelectorsToFindRegionsFor');
 
@@ -41,7 +41,7 @@ function createRenderRequests({
         url,
         resources,
         dom,
-        renderInfo: RenderInfo.fromObject({
+        renderInfo: new RenderInfo({
           width,
           height,
           sizeMode,

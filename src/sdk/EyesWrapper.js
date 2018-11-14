@@ -1,5 +1,5 @@
 'use strict';
-const {EyesBase, NullRegionProvider} = require('@applitools/eyes.sdk.core');
+const {EyesBase, NullRegionProvider} = require('@applitools/eyes-sdk-core');
 
 const VERSION = require('../../package.json').version;
 
@@ -20,7 +20,7 @@ class EyesWrapper extends EyesBase {
 
   /** @override */
   getBaseAgentId() {
-    return `eyes.cypress/${VERSION}`; // TODO is this good? this class isn't called EyesCypressImpl anymore
+    return `eyes.cypress/${VERSION}`;
   }
 
   /**
@@ -28,14 +28,14 @@ class EyesWrapper extends EyesBase {
    *
    * @return {Promise<?String>}
    */
-  getAUTSessionId() {
-    return this.getPromiseFactory().resolve(undefined); // TODO is this good?
+  async getAUTSessionId() {
+    return; // TODO is this good?
   }
 
   /**
    * Get a RenderingInfo from eyes server
    *
-   * @return {Promise.<RenderingInfo>}
+   * @return {Promise<RenderingInfo>}
    */
   getRenderInfo() {
     return this._serverConnector.renderInfo();
@@ -65,7 +65,7 @@ class EyesWrapper extends EyesBase {
   }
 
   checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation}) {
-    const regionProvider = new NullRegionProvider(this.getPromiseFactory()); // TODO receive from outside?
+    const regionProvider = new NullRegionProvider();
     this.screenshotUrl = screenshotUrl;
     this.domUrl = domUrl;
     this.imageLocation = imageLocation;
@@ -73,11 +73,11 @@ class EyesWrapper extends EyesBase {
   }
 
   async getScreenshot() {
-    return await undefined; // TODO will I ever need this?
+    return;
   }
 
   async getScreenshotUrl() {
-    return await this.screenshotUrl;
+    return this.screenshotUrl;
   }
 
   async getInferredEnvironment() {
@@ -93,15 +93,15 @@ class EyesWrapper extends EyesBase {
   }
 
   async getTitle() {
-    return await 'some title'; // TODO what should this be? is it connected with the tag in `checkWindow` somehow?
+    return 'some title'; // TODO what should this be? is it connected with the tag in `checkWindow` somehow?
   }
 
   async getDomUrl() {
-    return await this.domUrl;
+    return this.domUrl;
   }
 
   async getImageLocation() {
-    return await this.imageLocation;
+    return this.imageLocation;
   }
 }
 

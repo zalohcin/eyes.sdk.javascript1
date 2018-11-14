@@ -5,7 +5,7 @@ const createRenderRequests = require('./createRenderRequests');
 const createCheckSettings = require('./createCheckSettings');
 
 const {presult} = require('@applitools/functional-commons');
-const {RectangleSize, Location} = require('@applitools/eyes.sdk.core');
+const {RectangleSize, Location} = require('@applitools/eyes-sdk-core');
 const calculateIgnoreAndFloatingRegions = require('./calculateIgnoreAndFloatingRegions');
 
 function makeCheckWindow({
@@ -107,7 +107,7 @@ function makeCheckWindow({
       const wrapper = wrappers[index];
       wrapper.setInferredEnvironment(`useragent:${userAgent}`);
       if (deviceSize) {
-        wrapper.setViewportSize(RectangleSize.fromObject(deviceSize));
+        wrapper.setViewportSize(new RectangleSize(deviceSize));
       }
 
       logger.log(`checkWindow waiting for prev job. test=${testName}, stepCount=${stepCounter}`);
@@ -123,7 +123,7 @@ function makeCheckWindow({
 
       const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0] : undefined;
       const imageLocation = imageLocationRegion
-        ? Location.fromObject({x: imageLocationRegion.getLeft(), y: imageLocationRegion.getTop()})
+        ? new Location({x: imageLocationRegion.getLeft(), y: imageLocationRegion.getTop()})
         : undefined;
 
       const {ignoreRegions, floatingRegions} = calculateIgnoreAndFloatingRegions({
