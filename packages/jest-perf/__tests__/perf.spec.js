@@ -1,17 +1,27 @@
 'use strict';
 
-const { Eyes } = require('../index.js');
+require('chromedriver');
+const { Eyes } = require('@applitools/eyes-selenium');
+const { Builder, Capabilities } = require('selenium-webdriver');
+const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 
 jest.setTimeout(3000000);
 describe('performance tests', () => {
-  let eyes;
-  beforeEach(() => {
+  let driver, eyes;
+  beforeEach(async () => {
+    const chromeOptions = new ChromeOptions();
+    chromeOptions.addArguments('disable-infobars');
+    driver = await (new Builder()
+      .withCapabilities(Capabilities.chrome())
+      .setChromeOptions(chromeOptions))
+      .build();
     eyes = new Eyes();
   });
   afterEach(async () => {
     if (eyes._isOpen) {
       await eyes.close();
     }
+    await driver.quit();
   });
   it('should run the test case fast', async () => {
     const startDate = new Date();
