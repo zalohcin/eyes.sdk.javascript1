@@ -5,7 +5,8 @@
     "install": "lerna bootstrap --hoist",
     "lint": "eslint . --cache --ext js",
     "test": "lerna run test",
-    "test:integration": "lerna run test:integration"
+    "test:integration": "lerna run test:integration",
+    "test:perf": "lerna run test:perf"
   },
   "devDependencies": {
     "lerna": "^3.4.3",
