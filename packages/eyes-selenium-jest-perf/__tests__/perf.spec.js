@@ -1,13 +1,16 @@
 'use strict';
 
 require('chromedriver');
+const { PerformanceUtils } = require('@applitools/eyes-sdk-core');
 const { Eyes } = require('@applitools/eyes-selenium');
 const { Builder, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 
 jest.setTimeout(3000000);
+
 describe('performance tests', () => {
   let driver, eyes;
+
   beforeEach(async () => {
     const chromeOptions = new ChromeOptions();
     chromeOptions.addArguments('disable-infobars');
@@ -17,14 +20,16 @@ describe('performance tests', () => {
       .build();
     eyes = new Eyes();
   });
+
   afterEach(async () => {
     if (eyes._isOpen) {
       await eyes.close();
     }
     await driver.quit();
   });
+
   it('should run the test case fast', async () => {
-    const startDate = new Date();
+    const startDate = PerformanceUtils.start();
     // eslint-disable-next-line no-undef
     const _driver = await eyes.open(driver, 'js sdk tests', 'window full perf');
     await _driver.get('https://applitools.com/helloworld');
@@ -34,6 +39,6 @@ describe('performance tests', () => {
     });
     eyes.setForceFullPageScreenshot(true);
     await eyes.checkWindow('check full page');
-    expect(new Date() - startDate).toBeLessThanOrEqual(8000);
+    expect(startDate.end().time).toBeLessThanOrEqual(8000);
   });
 });
