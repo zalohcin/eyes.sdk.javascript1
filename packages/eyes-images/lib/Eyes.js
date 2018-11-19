@@ -257,7 +257,7 @@ class Eyes extends EyesBase {
   /**
    * Set the viewport size.
    *
-   * @param {RectangleSize} viewportSize The required viewport size.
+   * @param {RectangleSize|RectangleSizeObject} viewportSize The required viewport size.
    * @return {Promise<void>}
    */
   setViewportSize(viewportSize) {
