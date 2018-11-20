@@ -37,6 +37,7 @@ describe('openEyes', () => {
       browser: [
         {width: 640, height: 480, name: 'chrome'},
         {width: 800, height: 600, name: 'firefox'},
+        {deviceName: 'iPhone X'},
       ],
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,
