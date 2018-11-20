@@ -1049,6 +1049,75 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * Sets the host OS name - overrides the one in the agent string.
+   *
+   * @param {string} hostOS The host OS running the AUT.
+   */
+  setHostOSInfo(hostOSInfo) {
+    this._logger.log(`Host OS Info: ${hostOSInfo}`);
+    if (hostOS) {
+      this._hostOSInfo = hostOSInfo.trim();
+    } else {
+      this._hostOSInfo = undefined;
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string} The host OS as set by the user.
+   */
+  getHostOSInfo() {
+    return this._hostOSInfo;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Sets the host application - overrides the one in the agent string.
+   *
+   * @param {string} hostApp The application running the AUT (e.g., Chrome).
+   */
+  setHostAppInfo(hostAppInfo) {
+    this._logger.log(`Host App Info: ${hostAppInfo}`);
+    if (hostAppInfo) {
+      this._hostAppInfo = hostAppInfo.trim();
+    } else {
+      this._hostAppInfo = undefined;
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string} The application name running the AUT.
+   */
+  getHostAppInfo() {
+    return this._hostAppInfo;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Sets the host application - overrides the one in the agent string.
+   *
+   * @param {string} hostApp The application running the AUT (e.g., Chrome).
+   */
+  setDeviceInfo(deviceInfo) {
+    this._logger.log(`Device Info: ${deviceInfo}`);
+    if (deviceInfo) {
+      this._deviceInfo = deviceInfo.trim();
+    } else {
+      this._deviceInfo = undefined;
+    }
+  }
+  
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string} The application name running the AUT.
+   */
+  getDeviceInfo() {
+    return this._deviceInfo;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
    * @deprecated Only available for backward compatibility. See {@link #setBaselineEnvName(string)}.
    * @param baselineName {string} If specified, determines the baseline to compare with and disables automatic baseline
    *   inference.
@@ -1700,6 +1769,18 @@ class EyesBase {
 
     if (this._hostApp) {
       appEnv.setHostingApp(this._hostApp);
+    }
+
+    if (this._deviceInfo) {
+      appEnv.setDeviceInfo(this._deviceInfo);
+    }
+
+    if (this._hostAppInfo) {
+      appEnv.setHostingAppInfo(this._hostAppInfo);
+    }
+
+    if (this._hostOSInfo) {
+      appEnv.setOsInfo(this._hostOSInfo);
     }
 
     const inferred = await this.getInferredEnvironment();
