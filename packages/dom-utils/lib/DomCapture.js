@@ -39,7 +39,7 @@ class DomCapture {
   /**
    * @param {Logger} logger A Logger instance.
    * @param {EyesWebDriver} driver
-   * @return {Promise<string>}
+   * @return {Promise<object>}
    */
   static async getWindowDom(logger, driver) {
     const captureDomScript = await getCaptureDomScript();
