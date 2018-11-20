@@ -167,7 +167,7 @@ class RenderRequest {
       object.selectorsToFindRegionsFor = this._selectorsToFindRegionsFor;
     }
 
-    if (this._sendDom) {
+    if (this._sendDom !== undefined) {
       object.sendDom = this._sendDom;
     }
 
