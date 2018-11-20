@@ -151,6 +151,9 @@ class EyesBase {
     /** @type {BatchInfo} */ this._batch = undefined;
     /** @type {string} */ this._hostApp = undefined;
     /** @type {string} */ this._hostOS = undefined;
+    /** @type {string} */ this._hostAppInfo = undefined;
+    /** @type {string} */ this._hostOSInfo = undefined;
+    /** @type {string} */ this._deviceInfo = undefined;
     /** @type {string} */ this._baselineEnvName = undefined;
     /** @type {string} */ this._environmentName = undefined;
     /** @type {string} */ this._branchName = undefined;
@@ -1107,7 +1110,7 @@ class EyesBase {
       this._deviceInfo = undefined;
     }
   }
-  
+
   // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string} The application name running the AUT.
