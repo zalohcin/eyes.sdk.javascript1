@@ -1,4 +1,14 @@
 
+v6.0.1 / 2018-11-20
+===================
+
+* 6.0.1 - Amit Zur [[6ffaa08](https://github.com/applitools/visual-grid-client/commit/6ffaa082371a372ad0aba0e895aecd3331412a84)]
+* update eyes-sdk-core to 4.2.0 to fix deviceInfo - Amit Zur [[eafa0c4](https://github.com/applitools/visual-grid-client/commit/eafa0c46bd38c4356328a4c5316e0362c2dbe9fc)]
+* add device emulation to e2e tests - Amit Zur [[7f6f33e](https://github.com/applitools/visual-grid-client/commit/7f6f33e213b1ccad7491ebaf5e75ff4014f8efcb)]
+* 6.0.0 - Amit Zur [[58d0df6](https://github.com/applitools/visual-grid-client/commit/58d0df64a495a8e8c866b83e4f8a6c88e65fae28)]
+* remove waitForTestResults - Amit Zur [[00344f7](https://github.com/applitools/visual-grid-client/commit/00344f71cb24919c51555df117355e7036999a30)]
+* changelog - Amit Zur [[09fe2cc](https://github.com/applitools/visual-grid-client/commit/09fe2cc7a440cb96dbf9ccf585c5cec5e4b47231)]
+
 v5.5.3 / 2018-11-14
 ===================
 
