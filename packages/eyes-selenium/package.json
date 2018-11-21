@@ -48,6 +48,7 @@
   },
   "scripts": {
     "test": "mocha ./test/unit/**/*.spec.js -t 900000",
+    "test:perf": "mocha ./test/perf/**/*.spec.js -t 900000",
     "test:integration": "mocha ./test/integration/**/*.spec.js -t 900000"
   },
   "license": "SEE LICENSE IN LICENSE",
