@@ -24,8 +24,8 @@ function makeWaitForRenderedStatus({timeout = 120000, getStatusInterval = 500, l
         await psetTimeout(getStatusInterval);
         return getStatus();
       }
-      const errorStatus = renderStatuses.find(
-        rs => (rs.getStatus() === RenderStatus.ERROR ? rs.getError() : null),
+      const errorStatus = renderStatuses.find(rs =>
+        rs.getStatus() === RenderStatus.ERROR ? rs.getError() : null,
       );
       if (errorStatus) {
         logger.log(`render error received: ${errorStatus.getError()}`);
