@@ -42,7 +42,7 @@ describe('MochaPerformanceTest', function () {
     console.log(`driver.get done in ${startDate.end().summary}`);
 
     startDate.start();
-    await eyes.setViewportSize({ width: 1280, height: 800 });
+    await eyes.setViewportSize({ width: 800, height: 600 });
     console.log(`eyes.setViewportSize done in ${startDate.end().summary}`);
 
     startDate.start();
