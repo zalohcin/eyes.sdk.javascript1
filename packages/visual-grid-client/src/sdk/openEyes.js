@@ -90,8 +90,6 @@ function makeOpenEyes({
       throw new Error(appNameFailMsg);
     }
 
-    let checkWindowPromises = [];
-
     const browsers = Array.isArray(browser) ? browser : [browser];
     wrappers =
       wrappers ||
@@ -152,6 +150,8 @@ function makeOpenEyes({
     renderWrapper.setRenderingInfo(renderInfo);
 
     let stepCounter = 0;
+
+    let checkWindowPromises = wrappers.map(() => Promise.resolve());
 
     const checkWindow = makeCheckWindow({
       getError,
