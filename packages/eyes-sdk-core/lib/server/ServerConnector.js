@@ -208,7 +208,7 @@ class ServerConnector {
     this._proxySettings = undefined;
 
     this._httpOptions = {
-      proxy: undefined,
+      proxy: false,
       headers: DEFAULT_HEADERS,
       timeout: DEFAULT_TIMEOUT_MS,
       responseType: 'json',
@@ -299,7 +299,7 @@ class ServerConnector {
   setProxy(arg1, username, password) {
     if (!arg1) {
       this._proxySettings = undefined;
-      delete this._httpOptions.proxy;
+      this._httpOptions.proxy = false;
       return;
     }
 
