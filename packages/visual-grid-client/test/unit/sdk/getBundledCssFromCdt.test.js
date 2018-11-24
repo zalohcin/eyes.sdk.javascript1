@@ -2,11 +2,15 @@
 const {describe, it, beforeEach} = require('mocha');
 const {expect} = require('chai');
 const createResourceCache = require('../../../src/sdk/createResourceCache');
-const {NODE_TYPES} = require('../../../src/browser-util/domNodesToCdt');
 const makeGetBundledCssFromCdt = require('../../../src/sdk/getBundledCssFromCdt');
 const testLogger = require('../../util/testLogger');
 const {loadJsonFixture, loadFixture} = require('../../util/loadFixture');
 const {getCss} = makeGetBundledCssFromCdt;
+
+const NODE_TYPES = {
+  ELEMENT: 1,
+  TEXT: 3,
+};
 
 describe('getBundledCssFromCdt', () => {
   let getBundledCssFromCdt, resourceCache;

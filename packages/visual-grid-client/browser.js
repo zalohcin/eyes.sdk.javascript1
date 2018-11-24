@@ -1,11 +1,8 @@
 'use strict';
 
-const domNodesToCdt = require('./src/browser-util/domNodesToCdt');
-const extractResources = require('./src/browser-util/extractResources');
-const {processDocument} = require('./src/browser-util/processResources');
+const {getProcessPageScript, getProcessPageAndSerializeScript} = require('@applitools/dom-capture');
 
 module.exports = {
-  domNodesToCdt,
-  extractResources,
-  processDocument,
+  getProcessPageScript,
+  getProcessPageAndSerializeScript,
 };

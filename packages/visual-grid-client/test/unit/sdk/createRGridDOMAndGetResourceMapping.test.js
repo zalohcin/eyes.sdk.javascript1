@@ -1,13 +1,11 @@
 'use strict';
 const {describe, it, before, after, beforeEach} = require('mocha');
 const {expect} = require('chai');
-const {JSDOM} = require('jsdom');
 const makeCreateRGridDOMAndGetResourceMapping = require('../../../src/sdk/createRGridDOMAndGetResourceMapping');
 const makeGetAllResources = require('../../../src/sdk/getAllResources');
 const createResourceCache = require('../../../src/sdk/createResourceCache');
 const makeExtractCssResourcesFromCdt = require('../../../src/sdk/extractCssResourcesFromCdt');
 const makeParseInlineCssFromCdt = require('../../../src/sdk/parseInlineCssFromCdt');
-const domNodesToCdt = require('../../../src/browser-util/domNodesToCdt');
 const makeExtractCssResources = require('../../../src/sdk/extractCssResources');
 const makeFetchResource = require('../../../src/sdk/fetchResource');
 const testLogger = require('../../util/testLogger');
@@ -75,9 +73,7 @@ describe('createRGridDOMAndGetResourceMapping', () => {
     });
 
     const innerFrameUrl = `${baseUrl}/iframes/inner/test.html`;
-    const innerFrameCdt = domNodesToCdt(
-      (await JSDOM.fromURL(innerFrameUrl, {resources: 'usable'})).window.document,
-    );
+    const innerFrameCdt = loadJsonFixture('iframes/inner/test.cdt.json');
 
     const innerFrameDom = createRGridDom({
       cdt: innerFrameCdt,
