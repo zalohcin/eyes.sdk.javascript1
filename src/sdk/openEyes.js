@@ -40,6 +40,7 @@ function makeOpenEyes({
   waitForRenderedStatus,
   createRGridDOMAndGetResourceMapping,
   renderThroat,
+  eyesTransactionThroat,
   getRenderInfoPromise,
   setRenderInfoPromise,
 }) {
@@ -138,16 +139,21 @@ function makeOpenEyes({
         }),
       );
 
-    const [renderInfo] = await Promise.all([
-      renderInfoPromise,
-      openWrappers({wrappers, browsers, appName, testName}),
-    ]);
+    const renderInfo = await renderInfoPromise;
 
     if (renderInfo instanceof Error) {
       throw renderInfo;
     }
 
     renderWrapper.setRenderingInfo(renderInfo);
+
+    const {openEyesPromises, resolveTests} = openWrappers({
+      wrappers,
+      browsers,
+      appName,
+      testName,
+      eyesTransactionThroat,
+    });
 
     let stepCounter = 0;
 
@@ -170,9 +176,16 @@ function makeOpenEyes({
       renderThroat,
       stepCounter,
       testName,
+      openEyesPromises,
     });
 
-    const close = makeCloseEyes({getError, logger, getCheckWindowPromises, wrappers});
+    const close = makeCloseEyes({
+      getError,
+      logger,
+      getCheckWindowPromises,
+      wrappers,
+      resolveTests,
+    });
 
     return {
       checkWindow,

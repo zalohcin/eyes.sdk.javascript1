@@ -81,13 +81,29 @@ function configureWrappers({
   }
 }
 
-function openWrappers({wrappers, browsers, appName, testName}) {
-  return Promise.all(
-    wrappers.map((wrapper, i) => {
+function openWrappers({wrappers, browsers, appName, testName, eyesTransactionThroat}) {
+  const openPromisesAndResolves = wrappers.map(() => {
+    let resolve;
+    const promise = new Promise(r => (resolve = r));
+    return {promise, resolve};
+  });
+  return wrappers
+    .map((wrapper, i) => {
       const viewportSize = browsers[i].width && new RectangleSize(browsers[i]);
-      return wrapper.open(appName, testName, viewportSize);
-    }),
-  );
+      return eyesTransactionThroat(() =>
+        wrapper.open(appName, testName, viewportSize).then(openPromisesAndResolves[i].resolve),
+      );
+    })
+    .reduce(
+      (acc, {resolve}, i) => ({
+        openEyesPromises: [...acc.openEyesPromises, openPromisesAndResolves[i].promise],
+        resolveTests: [...acc.resolveTests, resolve],
+      }),
+      {
+        openEyesPromises: [],
+        resolveTests: [],
+      },
+    );
 }
 
 const apiKeyFailMsg =
