@@ -12,7 +12,6 @@ npm install @applitools/visual-grid-client
 
 ```js
 const {makeVisualGridClient} = require('@applitools/visual-grid-client')
-const {domNodesToCdt} = require('@applitools/visual-grid-client/browser')
 ```
 
 See below for the full API.
@@ -134,22 +133,33 @@ Example [Mocha](https://www.npmjs.com/package/mocha) test that uses the visual g
 const path = require('path')
 const fs = require('fs')
 const {makeVisualGridClient} = require('@applitools/visual-grid-client')
-const {domNodesToCdt} = require('@applitools/visual-grid-client/browser')
-const {JSDOM} = require('jsdom')
+const {getProcessPageScript} = require('@applitools/dom-capture')
+const puppeteer = require('puppeteer')
 
 describe('visual-grid-client test', function() {
   let visualGridClient
   let closePromises = []
+  let processPage
+  let browser
+  let page
 
-  before(() => {
+  before(async () => {
+    browser = await puppeteer.launch()
+    page = await browser.newPage()
+
     visualGridClient = makeVisualGridClient({
       showLogs: true,
       renderStatusTimeout: 60000,
       renderStatusInterval: 1000,
     })
+
+    processPage = `(${await getProcessPageScript()})()`
   })
 
-  after(() => Promise.all(closePromises))
+  after(() => {
+    await browser.close()
+    return Promise.all(closePromises)
+  })
 
   let checkWindow, close
   beforeEach(async () => {
@@ -161,14 +171,13 @@ describe('visual-grid-client test', function() {
   afterEach(() => closePromises.push(close()))
 
   it('should work', async () => {
+    await page.goto('index.html')
     checkWindow({
       tag: 'first test',
       url: 'http://localhost/index.html',
-      cdt: domNodesToCdt(
-        new JSDOM(fs.readFileSync(path.join(__dirname, 'resources/index.html'), 'utf-8')).window
-          .document,
-      ),
+      cdt: await page.evaluate(processPage),
       sizeMode: 'viewport',
+      resourceUrls: ['http://imgur.com/dog.jpeg'],
       resourceContents: {
         'cat.jpeg': {
           url: 'cat.jpeg',
