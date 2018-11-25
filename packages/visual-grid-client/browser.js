@@ -1,8 +1,15 @@
 'use strict';
 
-const {getProcessPageScript, getProcessPageAndSerializeScript} = require('@applitools/dom-capture');
+const {
+  processPage,
+  processPageAndSerialize,
+  getProcessPageScript,
+  getProcessPageAndSerializeScript,
+} = require('@applitools/dom-capture');
 
 module.exports = {
+  processPage,
+  processPageAndSerialize,
   getProcessPageScript,
   getProcessPageAndSerializeScript,
 };
