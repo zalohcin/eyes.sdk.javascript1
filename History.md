@@ -1,4 +1,35 @@
 
+v7.1.2 / 2018-11-25
+===================
+
+* 7.1.2 - Amit Zur [[0521e7b](https://github.com/applitools/visual-grid-client/commit/0521e7be0b1e071fa6b323cd81b6e9b7efb37082)]
+* dc: remove browser utilities - Amit Zur [[cfcfb99](https://github.com/applitools/visual-grid-client/commit/cfcfb999d343ee54d796cfe54ed4242dd9f537fa)]
+
+v7.1.1 / 2018-11-25
+===================
+
+* 7.1.1 - Amit Zur [[cc1810f](https://github.com/applitools/visual-grid-client/commit/cc1810f083ad97f516b00677c6a8e0ca95e382c8)]
+
+v7.1.0 / 2018-11-25
+===================
+
+* 7.1.0 - Amit Zur [[2203549](https://github.com/applitools/visual-grid-client/commit/22035498250aba38f1cc2a8eb78cc9220ca6d270)]
+* export functions from dom-capture - Amit Zur [[375e1ae](https://github.com/applitools/visual-grid-client/commit/375e1aecb2aba880d9842084df19fd4d064382ef)]
+
+v7.0.1 / 2018-11-24
+===================
+
+* 7.0.1 - Amit Zur [[4930d9b](https://github.com/applitools/visual-grid-client/commit/4930d9b403614c195ca26c60118510e7425798e6)]
+
+v7.0.0 / 2018-11-24
+===================
+
+* 7.0.0 - Amit Zur [[5fced6f](https://github.com/applitools/visual-grid-client/commit/5fced6f2041e8c68cafe766ee6acac6862f809a5)]
+* remove browser-util and use dom-capture package - Amit Zur [[3d88639](https://github.com/applitools/visual-grid-client/commit/3d88639f5ad260d8ecc2321c085eae04cb42cdcd)]
+* optimize close by running granularly - Amit Zur [[f0e3709](https://github.com/applitools/visual-grid-client/commit/f0e370971ae2c6e06f33aec6a6b872564c54b142)]
+* update packages and freeze puppeteer on 1.9.0 - Amit Zur [[ab413c2](https://github.com/applitools/visual-grid-client/commit/ab413c2246497c4e62952d537325e618e5d2f6fc)]
+* changelog - Amit Zur [[bed6395](https://github.com/applitools/visual-grid-client/commit/bed63958df77798399908f33e356bcfb561c6600)]
+
 v6.0.1 / 2018-11-20
 ===================
 
