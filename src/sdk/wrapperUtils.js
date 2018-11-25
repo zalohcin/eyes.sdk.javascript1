@@ -1,6 +1,6 @@
 'use strict';
 const EyesWrapper = require('./EyesWrapper');
-const {BatchInfo, RectangleSize} = require('@applitools/eyes-sdk-core');
+const {BatchInfo, RectangleSize, ProxySettings} = require('@applitools/eyes-sdk-core');
 
 function initWrappers({count, apiKey, logHandler}) {
   return Array.from(new Array(count), () => new EyesWrapper({apiKey, logHandler}));
@@ -46,6 +46,10 @@ function configureWrappers({
   serverUrl,
 }) {
   const batchInfo = new BatchInfo({id: batchId, name: batchName});
+  proxy =
+    proxy && typeof proxy === 'object'
+      ? new ProxySettings(proxy.uri, proxy.username, proxy.password)
+      : proxy;
   for (let i = 0, ii = wrappers.length; i < ii; i++) {
     const wrapper = wrappers[i];
     const browser = browsers[i];

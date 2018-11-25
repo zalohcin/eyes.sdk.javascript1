@@ -16,6 +16,7 @@ const {
   Region,
   IgnoreRegionByRectangle,
   FloatingRegionByRectangle,
+  ProxySettings,
 } = require('@applitools/eyes-sdk-core');
 const {
   apiKeyFailMsg,
@@ -690,6 +691,26 @@ describe('openEyes', () => {
     expect(wrappers[0].deviceInfo).to.equal('device1');
     expect(wrappers[1].deviceInfo).to.equal('device2');
     expect(wrappers[2].deviceInfo).to.be.undefined;
+  });
+
+  it('sets proxy with username/password wrappers', () => {
+    openEyes({
+      wrappers: [wrapper],
+      apiKey,
+      appName,
+      proxy: {uri: 'uri', username: 'user', password: 'pass'},
+    });
+
+    expect(wrapper.proxy).to.eql(new ProxySettings('uri', 'user', 'pass'));
+
+    openEyes({
+      wrappers: [wrapper],
+      apiKey,
+      appName,
+      proxy: null,
+    });
+
+    expect(wrapper.proxy).to.be.null;
   });
 
   it("doesn't do anything when isDisabled", async () => {
