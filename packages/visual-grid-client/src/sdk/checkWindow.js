@@ -25,6 +25,7 @@ function makeCheckWindow({
   renderThroat,
   stepCounter,
   testName,
+  openEyesPromises,
 }) {
   return function checkWindow({
     resourceUrls = [],
@@ -41,7 +42,8 @@ function makeCheckWindow({
     floating,
     sendDom = true,
   }) {
-    logger.log(`running checkWindow for test ${testName} step #${++stepCounter}`);
+    const currStepCount = ++stepCounter;
+    logger.log(`running checkWindow for test ${testName} step #${currStepCount}`);
     if (getError()) {
       logger.log('aborting checkWindow synchronously');
       return;
@@ -86,7 +88,7 @@ function makeCheckWindow({
       const renderId = renderIds[index];
 
       logger.log(
-        `render request complete for ${renderId}. test=${testName} stepCount=${stepCounter} tag=${tag} sizeMode=${sizeMode} browser: ${JSON.stringify(
+        `render request complete for ${renderId}. test=${testName} stepCount=${currStepCount} tag=${tag} sizeMode=${sizeMode} browser: ${JSON.stringify(
           browsers[index],
         )}`,
       );
@@ -110,7 +112,7 @@ function makeCheckWindow({
         wrapper.setViewportSize(new RectangleSize(deviceSize));
       }
 
-      logger.log(`checkWindow waiting for prev job. test=${testName}, stepCount=${stepCounter}`);
+      logger.log(`checkWindow waiting for prev job. test=${testName}, stepCount=${currStepCount}`);
 
       await prevJobPromise;
 
@@ -135,7 +137,14 @@ function makeCheckWindow({
 
       const checkSettings = createCheckSettings({ignore: ignoreRegions, floating: floatingRegions});
 
-      logger.log(`running wrapper.checkWindow for test ${testName} stepCount #${stepCounter}`);
+      await openEyesPromises[index];
+
+      if (getError()) {
+        logger.log(`aborting checkWindow after waiting for openEyes promise`);
+        return;
+      }
+
+      logger.log(`running wrapper.checkWindow for test ${testName} stepCount #${currStepCount}`);
       await wrapper.checkWindow({
         screenshotUrl,
         tag,

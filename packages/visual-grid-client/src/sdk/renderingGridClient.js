@@ -10,10 +10,10 @@ const makeWaitForRenderedStatus = require('./waitForRenderedStatus');
 const makePutResources = require('./putResources');
 const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
-const makeOpenEyesLimitedConcurrency = require('./openEyesLimitedConcurrency');
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping');
 const makeParseInlineCssFromCdt = require('./parseInlineCssFromCdt');
 const getBatch = require('./getBatch');
+const transactionThroat = require('./transactionThroat');
 
 // TODO when supporting only Node version >= 8.6.0 then we can use ...config for all the params that are just passed on to makeOpenEyes
 function makeRenderingGridClient({
@@ -53,6 +53,7 @@ function makeRenderingGridClient({
   }
 
   let renderInfoPromise;
+  const eyesTransactionThroat = transactionThroat(openEyesConcurrency);
   const renderThroat = throatPkg(openEyesConcurrency * renderConcurrencyFactor);
   const logger = createLogger(showLogs);
   const resourceCache = createResourceCache();
@@ -112,15 +113,11 @@ function makeRenderingGridClient({
     getRenderInfoPromise,
     setRenderInfoPromise,
     createRGridDOMAndGetResourceMapping,
-  });
-  const openEyesLimitedConcurrency = makeOpenEyesLimitedConcurrency({
-    openEyes,
-    concurrency: openEyesConcurrency,
-    logger,
+    eyesTransactionThroat,
   });
 
   return {
-    openEyes: openEyesLimitedConcurrency,
+    openEyes,
   };
 
   function getRenderInfoPromise() {
