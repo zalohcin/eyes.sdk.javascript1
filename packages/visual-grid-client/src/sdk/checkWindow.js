@@ -88,7 +88,7 @@ function makeCheckWindow({
       const renderId = renderIds[index];
 
       logger.log(
-        `render request complete for ${renderId}. test=${testName} stepCount=${currStepCount} tag=${tag} sizeMode=${sizeMode} browser: ${JSON.stringify(
+        `render request complete for ${renderId}. test=${testName} stepCount #${currStepCount} tag=${tag} sizeMode=${sizeMode} browser: ${JSON.stringify(
           browsers[index],
         )}`,
       );
@@ -112,7 +112,7 @@ function makeCheckWindow({
         wrapper.setViewportSize(new RectangleSize(deviceSize));
       }
 
-      logger.log(`checkWindow waiting for prev job. test=${testName}, stepCount=${currStepCount}`);
+      logger.log(`checkWindow waiting for prev job. test=${testName}, stepCount #${currStepCount}`);
 
       await prevJobPromise;
 
@@ -136,6 +136,8 @@ function makeCheckWindow({
       });
 
       const checkSettings = createCheckSettings({ignore: ignoreRegions, floating: floatingRegions});
+
+      logger.log(`checkWindow waiting for openEyes. test=${testName}, stepCount #${currStepCount}`);
 
       await openEyesPromises[index];
 
