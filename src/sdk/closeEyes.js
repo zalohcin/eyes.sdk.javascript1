@@ -13,6 +13,7 @@ function makeCloseEyes({getError, logger, getCheckWindowPromises, wrappers, reso
         checkWindowPromise.then(async () => {
           if ((error = getError())) {
             logger.log('closeEyes() aborting after checkWindow');
+            resolveTests[i]();
             throw error;
           }
 

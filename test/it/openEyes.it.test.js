@@ -466,6 +466,39 @@ describe('openEyes', () => {
       expect(err2.message).to.equal('close');
     });
 
+    it('ends throat job when render throws', async () => {
+      wrapper.renderBatch = async () => {
+        await psetTimeout(0);
+        throw new Error('renderBatch');
+      };
+
+      openEyes = makeRenderingGridClient({
+        concurrency: 1,
+        showLogs: APPLITOOLS_SHOW_LOGS,
+      }).openEyes;
+
+      const {checkWindow, close} = await openEyes({
+        wrappers: [wrapper],
+        apiKey,
+        appName,
+      });
+      checkWindow({cdt: [], url: 'url'});
+      const err1 = await close().then(x => x, err => err);
+      expect(err1.message).to.equal('renderBatch');
+      const {checkWindow: checkWindow2, close: close2} = await Promise.race([
+        openEyes({
+          wrappers: [createFakeWrapper(baseUrl)],
+          apiKey,
+          appName,
+        }),
+        psetTimeout(100).then(() => ({close: 'not resolved'})),
+      ]);
+      expect(close2).not.to.equal('not resolved');
+      checkWindow2({cdt: [], url: 'url'});
+      const result2 = await close2().then(x => x, err => err);
+      expect(result2).not.to.be.an.instanceOf(Error);
+    });
+
     it("doesn't wait for eyes test to open in order to perform renderings", async () => {
       openEyes = makeRenderingGridClient({
         concurrency: 1,
