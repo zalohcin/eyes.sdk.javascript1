@@ -321,15 +321,21 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Sets the proxy settings to be used by the request module.
+   * Sets the proxy settings to be used for all requests to Eyes server.
+   * Alternatively, proxy can be set via global variables `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`.
    *
-   * @param {ProxySettings|string} proxySettingsOrUrl The ProxySettings object or proxy url to be used by the
-   *   serverConnector. If {@code null} then no proxy is set.
+   * @signature `setProxy(boolean)`
+   * @signature `setProxy(string)`
+   * @signature `setProxy(string, string, string)`
+   * @signature `setProxy(ProxySettings)`
+   *
+   * @param {ProxySettings|string|boolean} varArg The ProxySettings object or proxy url to be used.
+   *  Use {@code false} to disable proxy (even if it set via env variables). Use {@code null} to reset proxy settings.
    * @param {string} [username]
    * @param {string} [password]
    */
-  setProxy(proxySettingsOrUrl, username, password) {
-    return this._serverConnector.setProxy(proxySettingsOrUrl, username, password);
+  setProxy(varArg, username, password) {
+    return this._serverConnector.setProxy(varArg, username, password);
   }
 
   // noinspection JSUnusedGlobalSymbols
