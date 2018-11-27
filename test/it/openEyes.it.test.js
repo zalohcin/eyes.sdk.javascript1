@@ -708,13 +708,13 @@ describe('openEyes', () => {
       wrapper.getRenderStatus = () =>
         new Promise(resolve => {
           counter++;
-          finishRenders.push(() =>
-            resolve([
-              new RenderStatusResults({
+          finishRenders.push(
+            (
+              status = {
                 status: RenderStatus.RENDERED,
                 imageLocation: JSON.stringify({isGood: true}),
-              }),
-            ]),
+              },
+            ) => resolve([new RenderStatusResults(status)]),
           );
         });
     });
@@ -807,6 +807,50 @@ describe('openEyes', () => {
       expect(expected1).to.equal(2);
       expect(expected2).to.equal(4);
       expect(counter).to.equal(4);
+    });
+
+    it('resolves render job when error in getRenderStatus happens', async () => {
+      let renderBatchCounter = 0;
+      const renderBatch = wrapper.renderBatch;
+      wrapper.renderBatch = function() {
+        renderBatchCounter++;
+        return renderBatch.apply(this, arguments);
+      };
+
+      openEyes = makeRenderingGridClient({
+        concurrency: 1,
+        renderConcurrencyFactor: 1,
+        showLogs: APPLITOOLS_SHOW_LOGS,
+      }).openEyes;
+
+      const {checkWindow, close} = await openEyes({
+        wrappers: [wrapper],
+        apiKey,
+        appName,
+      });
+
+      checkWindow({url: '', cdt: [], selector: '111'});
+      await psetTimeout(0);
+      expect(renderBatchCounter).to.equal(1);
+      expect(counter).to.equal(1);
+
+      checkWindow({url: '', cdt: [], selector: '222'});
+      await psetTimeout(0);
+      expect(renderBatchCounter).to.equal(1);
+      expect(counter).to.equal(1);
+
+      finishRenders[0]({status: RenderStatus.ERROR, error: 'bla'});
+      await psetTimeout(0);
+      expect(renderBatchCounter).to.equal(2);
+      expect(counter).to.equal(1);
+
+      const [err] = await presult(close());
+      expect(err).to.be.an.instanceOf(Error);
+      expect(err.message).to.equal('failed to render screenshot');
+    });
+
+    it.skip('resolves render job when error in happens while in getRenderStatus (but not because of that specific render)', async () => {
+      // TODO
     });
   });
 

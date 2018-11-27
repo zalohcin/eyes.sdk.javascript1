@@ -60,7 +60,12 @@ function makeCheckWindow({
     let renderJobs; // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
     setCheckWindowPromises(
-      browsers.map((_browser, i) => checkWindowJob(getCheckWindowPromises()[i], i).catch(setError)),
+      browsers.map(
+        (_browser, i) =>
+          checkWindowJob(getCheckWindowPromises()[i], i)
+            .catch(setError)
+            .then(() => openEyesPromises[i]), // the checkWindow job must end after openEyes has finished, otherwise resolving the whole test in close will fail, because the test was never started. This situation could happen when a render fails and the checkWindow promise is rejected before waiting on openEyesPromise.
+      ),
     );
 
     async function checkWindowJob(prevJobPromise = presult(Promise.resolve()), index) {
@@ -77,11 +82,13 @@ function makeCheckWindow({
         logger.log(
           `aborting checkWindow after render request complete but before waiting for rendered status`,
         );
+        renderJobs && renderJobs[index]();
         return;
       }
 
       if (renderErr) {
         setError(renderErr);
+        renderJobs && renderJobs[index]();
         return;
       }
 
@@ -92,9 +99,27 @@ function makeCheckWindow({
           browsers[index],
         )}`,
       );
+
+      const [renderStatusErr, renderStatusResult] = await presult(
+        waitForRenderedStatus([renderId], renderWrapper, getError),
+      );
+
+      if (getError()) {
+        logger.log('aborting checkWindow after render status finished');
+        renderJobs && renderJobs[index]();
+        return;
+      }
+
+      if (renderStatusErr) {
+        logger.log('aborting checkWindow becuase render status failed');
+        setError(renderStatusErr);
+        renderJobs && renderJobs[index]();
+        return;
+      }
+
       const [
         {imageLocation: screenshotUrl, domLocation, userAgent, deviceSize, selectorRegions},
-      ] = await waitForRenderedStatus([renderId], renderWrapper, getError);
+      ] = renderStatusResult;
 
       if (screenshotUrl) {
         logger.log(`screenshot available for ${renderId} at ${screenshotUrl}`);
@@ -102,9 +127,7 @@ function makeCheckWindow({
         logger.log(`screenshot NOT available for ${renderId}`);
       }
 
-      if (renderJobs) {
-        renderJobs[index]();
-      }
+      renderJobs && renderJobs[index]();
 
       const wrapper = wrappers[index];
       wrapper.setInferredEnvironment(`useragent:${userAgent}`);
