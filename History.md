@@ -1,4 +1,41 @@
 
+v7.2.5 / 2018-11-28
+===================
+
+* 7.2.5 - Amit Zur [[fbe8df2](https://github.com/applitools/visual-grid-client/commit/fbe8df2a430592365de791ac62c4b6f4a31465cf)]
+* update eyes-sdk-core to 4.3.0 - Amit Zur [[e7257f9](https://github.com/applitools/visual-grid-client/commit/e7257f9dab24afd3b9f4b6feb46b5d34fc70d9e2)]
+
+v7.2.4 / 2018-11-28
+===================
+
+* 7.2.4 - Amit Zur [[c04fef4](https://github.com/applitools/visual-grid-client/commit/c04fef44d209e6466f2bb55850fba64787f658b8)]
+* add error message for 400 bad request - Amit Zur [[fae453b](https://github.com/applitools/visual-grid-client/commit/fae453b37e8afe9cc4d6db43a9a439c8cfcf56c0)]
+
+v7.2.3 / 2018-11-27
+===================
+
+* 7.2.3 - Amit Zur [[54f38c1](https://github.com/applitools/visual-grid-client/commit/54f38c11cdb6b8e6fb2870dca44653982083edbb)]
+* handle max concurrency for renders with failures - Amit Zur [[550b89c](https://github.com/applitools/visual-grid-client/commit/550b89c1af60749ec36d4dae420dae6d7c7c0086)]
+
+v7.2.2 / 2018-11-26
+===================
+
+* 7.2.2 - Amit Zur [[3e0bf86](https://github.com/applitools/visual-grid-client/commit/3e0bf869e0ffb037b20934a802fe52e0c4248bd4)]
+* resolve test also when failures happen in checkWindow - Amit Zur [[96c9a46](https://github.com/applitools/visual-grid-client/commit/96c9a46a9ada8ead6ff47898b34adad20277de01)]
+
+v7.2.1 / 2018-11-26
+===================
+
+* 7.2.1 - Amit Zur [[14b2d64](https://github.com/applitools/visual-grid-client/commit/14b2d641e5ee8fbac0102e725a2c8f73a50dcdc4)]
+
+v7.2.0 / 2018-11-26
+===================
+
+* 7.2.0 - Amit Zur [[404d5f6](https://github.com/applitools/visual-grid-client/commit/404d5f6b8cc770029f4294d793112de43067403a)]
+* concurrency optimization - don't stop on open - Amit Zur [[5f298d7](https://github.com/applitools/visual-grid-client/commit/5f298d7bbb6159a463f5f8dc6e7a1c0e87a09dd6)]
+* support username/password in proxy - Amit Zur [[3ef6d19](https://github.com/applitools/visual-grid-client/commit/3ef6d1905cd0a6b9054eb3899ac8ea456a3d193c)]
+* changelog - Amit Zur [[4cd92cb](https://github.com/applitools/visual-grid-client/commit/4cd92cb8a17e8be89dff401f5e53ceea760fad90)]
+
 v7.1.2 / 2018-11-25
 ===================
 
