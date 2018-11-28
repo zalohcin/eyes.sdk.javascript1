@@ -991,7 +991,7 @@ class EyesBase {
       this._logger.verbose('Aborting server session...');
       try {
         // When aborting we do not save the test.
-        await this._serverConnector.stopSession(this._runningSession, true, false);
+        return await this._serverConnector.stopSession(this._runningSession, true, false);
         this._logger.log('--- Test aborted.');
       } catch (err) {
         this._logger.log(`Failed to abort server session: ${err}`);
