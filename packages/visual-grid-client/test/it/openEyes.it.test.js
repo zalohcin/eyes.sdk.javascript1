@@ -24,6 +24,7 @@ const {
   authorizationErrMsg,
   appNameFailMsg,
   blockedAccountErrMsg,
+  badRequestErrMsg,
 } = require('../../src/sdk/wrapperUtils');
 
 describe('openEyes', () => {
@@ -339,6 +340,28 @@ describe('openEyes', () => {
       }),
     );
     expect(error.message).to.equal(blockedAccountErrMsg);
+  });
+
+  it('openEyes handles blocked account error during getRenderInfo', async () => {
+    wrapper.getRenderInfo = async () => {
+      await psetTimeout(0);
+      const err = new Error('');
+      err.response = {status: 400};
+      throw err;
+    };
+
+    openEyes = makeRenderingGridClient({showLogs: APPLITOOLS_SHOW_LOGS}).openEyes;
+
+    await psetTimeout(50);
+
+    const [error] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        apiKey,
+        appName,
+      }),
+    );
+    expect(error.message).to.equal(badRequestErrMsg);
   });
 
   it('openEyes handles missing appName', async () => {
