@@ -9,6 +9,7 @@ const {
   authorizationErrMsg,
   appNameFailMsg,
   blockedAccountErrMsg,
+  badRequestErrMsg,
 } = require('./wrapperUtils');
 
 function makeOpenEyes({
@@ -132,6 +133,9 @@ function makeOpenEyes({
             }
             if (err.response.status === 403) {
               return new Error(blockedAccountErrMsg);
+            }
+            if (err.response.status === 400) {
+              return new Error(badRequestErrMsg);
             }
           }
 
