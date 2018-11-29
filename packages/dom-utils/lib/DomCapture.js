@@ -252,7 +252,7 @@ class DomCapture {
     }
 
     this._logger.verbose(`serializing CSS to StringBuilder took ${timeStart.end().summary}`);
-    return sb.toString();
+    return sb;
   }
 
   /**
@@ -268,7 +268,7 @@ class DomCapture {
       // let href = cssParser.parse(value);
       let href = value;
       if (!GeneralUtils.isAbsoluteUrl(href)) {
-        href = url.resolve(baseUri, href.toString());
+        href = url.resolve(baseUri, href);
       }
 
       const timeStart = PerformanceUtils.start();
@@ -277,7 +277,7 @@ class DomCapture {
       this._logger.verbose(`downloading CSS in length of ${css.length} chars took ${timeStart.end().summary}`);
       return css;
     } catch (ex) {
-      this._logger.verbose(ex.toString());
+      this._logger.verbose(ex);
       if (retriesCount > 0) {
         retriesCount -= 1;
         return this._downloadCss(baseUri, value, retriesCount);
