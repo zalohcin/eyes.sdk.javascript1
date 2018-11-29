@@ -33,6 +33,7 @@ class Eyes extends EyesBase {
     this._title = null;
     this._screenshot = null;
     this._screenshotUrl = null;
+    this._domString = null;
     this._inferred = '';
   }
 
@@ -55,22 +56,6 @@ class Eyes extends EyesBase {
   }
 
   /**
-   * @param {string} name
-   * @param {ImagesCheckSettings|CheckSettings} checkSettings
-   * @return {Promise<boolean>}
-   */
-  async check(name, checkSettings) {
-    ArgumentGuard.notNull(checkSettings, 'checkSettings');
-
-    if (this.getIsDisabled()) {
-      this._logger.verbose(`check('${name}', checkSettings): Ignored`);
-      return false;
-    }
-
-    return this._checkImage(name, false, checkSettings);
-  }
-
-  /**
    * Perform visual validation for the current image.
    *
    * @param {string|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
@@ -80,16 +65,8 @@ class Eyes extends EyesBase {
    * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
-  async checkImage(image, name, ignoreMismatch, retryTimeout) {
-    ArgumentGuard.notNull(image, 'image cannot be null!');
-
-    if (this.getIsDisabled()) {
-      this._logger.verbose(`checkImage(Image, '${name}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
-      return false;
-    }
-
-    this._logger.verbose(`checkImage(Image, '${name}', '${ignoreMismatch}', '${retryTimeout}')`);
-    return this._checkImage(name, ignoreMismatch, Target.image(image).timeout(retryTimeout));
+  async checkImage(image, name, ignoreMismatch = false, retryTimeout = -1) {
+    return this.check(name, Target.image(image).ignoreMismatch(ignoreMismatch).timeout(retryTimeout));
   }
 
   /**
@@ -104,34 +81,29 @@ class Eyes extends EyesBase {
    * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
-  async checkRegion(image, region, name, ignoreMismatch, retryTimeout) {
-    ArgumentGuard.notNull(image, 'image');
-    ArgumentGuard.notNull(region, 'region');
-
-    if (this.getIsDisabled()) {
-      this._logger.verbose(`checkRegion(Image, [${region}], '${name}', '${ignoreMismatch}', '${retryTimeout}'): Ignored`);
-      return false;
-    }
-
-    this._logger.verbose(`checkRegion(Image, [${region}], '${name}', '${ignoreMismatch}', '${retryTimeout}')`);
-    // noinspection JSCheckFunctionSignatures
-    return this._checkImage(name, ignoreMismatch, Target.region(image, region).timeout(retryTimeout));
+  async checkRegion(image, region, name, ignoreMismatch = false, retryTimeout = -1) {
+    return this.check(name, Target.region(image, region).ignoreMismatch(ignoreMismatch).timeout(retryTimeout));
   }
 
   /**
-   * Internal function for performing an image verification for an image (or a region of an image).
-   *
-   * @private
    * @param {string} name An optional tag to be associated with the validation checkpoint.
-   * @param {boolean} ignoreMismatch True if the server should ignore a negative result for the visual validation.
    * @param {ImagesCheckSettings|CheckSettings} checkSettings The settings to use when checking the image.
-   * @return {Promise<boolean>}
+   * @return {Promise<boolean>} A promise which is resolved when the validation is finished. Indicates whether
+   *  matchResults was as expected or not.
    */
-  async _checkImage(name = '', ignoreMismatch, checkSettings) {
+  async check(name, checkSettings) {
+    ArgumentGuard.notNull(checkSettings, 'checkSettings');
+
+    if (this.getIsDisabled()) {
+      this._logger.verbose(`check('${name}', checkSettings): Ignored`);
+      return false;
+    }
+
     try {
       let regionProvider = new NullRegionProvider();
       // Set the title to be linked to the screenshot.
       this._title = name;
+      this._domString = checkSettings.getDomString();
 
       if (checkSettings.getImageUrl()) {
         this._screenshotUrl = checkSettings.getImageUrl();
@@ -150,9 +122,10 @@ class Eyes extends EyesBase {
         }
       }
 
-      const matchResult = await super.checkWindowBase(regionProvider, name, ignoreMismatch, checkSettings);
+      const matchResult = await super.checkWindowBase(regionProvider, name, checkSettings.getIgnoreMismatch(), checkSettings);
       return matchResult.getAsExpected();
     } finally {
+      this._domString = null;
       this._screenshotUrl = null;
       this._screenshot = null;
       this._title = null;
@@ -243,12 +216,7 @@ class Eyes extends EyesBase {
     super.addTextTriggerBase(control, text);
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Get the viewport size.
-   *
-   * @return {Promise<RectangleSize>}
-   */
+  /** @inheritDoc */
   getViewportSize() {
     return Promise.resolve(this._viewportSizeHandler.get());
   }
@@ -267,13 +235,7 @@ class Eyes extends EyesBase {
     return Promise.resolve();
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Get the inferred environment.
-   *
-   * @protected
-   * @return {Promise<string>} A promise which resolves to the inferred environment string.
-   */
+  /** @inheritDoc */
   getInferredEnvironment() {
     return Promise.resolve(this._inferred);
   }
@@ -288,33 +250,22 @@ class Eyes extends EyesBase {
     this._inferred = inferred;
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Get the screenshot.
-   *
-   * @return {Promise<EyesSimpleScreenshot>} The screenshot.
-   */
+  /** @inheritDoc */
   getScreenshot() {
     return Promise.resolve(this._screenshot);
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Get the screenshot URL.
-   *
-   * @return {Promise<string>} The screenshot URL.
-   */
+  /** @inheritDoc */
   getScreenshotUrl() {
     return Promise.resolve(this._screenshotUrl);
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Get the title.
-   *
-   * @protected
-   * @return {Promise<string>} The current title of of the AUT.
-   */
+  /** @inheritDoc */
+  async tryCaptureDom() {
+    return Promise.resolve(this._domString);
+  }
+
+  /** @inheritDoc */
   getTitle() {
     return Promise.resolve(this._title);
   }

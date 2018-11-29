@@ -20,9 +20,12 @@ class ImagesCheckSettings extends CheckSettings {
     this._imageUrl = url;
 
     this._imageSize = null;
+    this._domString = null;
+    this._ignoreMismatch = false;
   }
 
   /**
+   * @package
    * @return {MutableImage}
    */
   getMutableImage() {
@@ -30,6 +33,7 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
    * @return {Buffer}
    */
   getImageBuffer() {
@@ -37,6 +41,7 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
    * @return {string}
    */
   getImageString() {
@@ -44,6 +49,7 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
    * @return {string}
    */
   getImagePath() {
@@ -51,6 +57,7 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
    * @return {string}
    */
   getImageUrl() {
@@ -58,6 +65,16 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
+   * @param {RectangleSize} imageSize
+   * @return {this} This instance of the settings object.
+   */
+  imageSize(imageSize) {
+    this._imageSize = imageSize;
+    return this;
+  }
+
+  /**
+   * @package
    * @return {RectangleSize}
    */
   getImageSize() {
@@ -65,10 +82,40 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {RectangleSize} imageSize
+   * @param {String} domString
+   * @return {this} This instance of the settings object.
    */
-  setImageSize(imageSize) {
-    this._imageSize = imageSize;
+  withDom(domString) {
+    this._sendDom = true;
+    this._domString = domString;
+    return this;
+  }
+
+  /**
+   * @package
+   * @return {String}
+   */
+  getDomString() {
+    return this._domString;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {boolean} [ignoreMismatch=true] True if the server should ignore a negative result for the visual validation.
+   *  Default value is `false`, but if you call to .ignoreMismatch() without arguments it will set value to `true`.
+   * @return {this}
+   */
+  ignoreMismatch(ignoreMismatch = true) {
+    this._ignoreMismatch = ignoreMismatch;
+    return this;
+  }
+
+  /**
+   * @package
+   * @return {boolean}
+   */
+  getIgnoreMismatch() {
+    return this._ignoreMismatch;
   }
 
   /**

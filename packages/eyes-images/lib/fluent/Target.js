@@ -68,7 +68,7 @@ class Target {
     ArgumentGuard.isString(string, 'url');
 
     const checkSettings = new ImagesCheckSettings(undefined, undefined, undefined, undefined, string);
-    checkSettings.setImageSize(imageSize);
+    checkSettings.imageSize(imageSize);
     return checkSettings;
   }
 
