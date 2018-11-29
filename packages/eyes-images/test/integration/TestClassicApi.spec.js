@@ -1,6 +1,6 @@
 'use strict';
 
-const { ConsoleLogHandler, Region, MouseTrigger, Location } = require('@applitools/eyes-sdk-core');
+const { ConsoleLogHandler, Region, MouseTrigger, Location, ImageProvider, ImageUtils, MutableImage } = require('@applitools/eyes-sdk-core');
 const { Eyes } = require('../../index');
 
 let /** @type {Eyes} */ eyes;
@@ -31,6 +31,21 @@ describe('EyesImages.TestClassicApi', function () {
     eyes.addMouseTrigger(MouseTrigger.MouseAction.Click, new Region(288, 44, 92, 36), new Location(10, 10));
 
     await eyes.checkRegion(`${__dirname}/../resources/image1.png`, new Region(309, 227, 381, 215), this.test.title);
+    await eyes.close();
+  });
+
+  it('TestImageProvider', async function () {
+    const ImageProviderImpl = class ImageProviderImpl extends ImageProvider {
+      // noinspection JSUnusedGlobalSymbols
+      /** @override */
+      async getImage() {
+        const data = await ImageUtils.readImage(`${__dirname}/../resources/minions-800x500.png`);
+        return new MutableImage(data);
+      }
+    };
+
+    await eyes.setViewportSize({ width: 800, height: 500 });
+    await eyes.checkImage(new ImageProviderImpl(), this.test.title);
     await eyes.close();
   });
 

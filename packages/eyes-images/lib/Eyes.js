@@ -31,10 +31,12 @@ class Eyes extends EyesBase {
     super(serverUrl, isDisabled);
 
     this._title = null;
-    this._screenshot = null;
-    this._screenshotUrl = null;
     this._domString = null;
     this._inferred = '';
+
+    this._screenshot = null;
+    this._screenshotUrl = null;
+    this._screenshotProvider = null;
   }
 
   /** @override */
@@ -58,7 +60,7 @@ class Eyes extends EyesBase {
   /**
    * Perform visual validation for the current image.
    *
-   * @param {string|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
+   * @param {string|Buffer|ImageProvider|MutableImage} image The image path, base64 string, image buffer or MutableImage.
    * @param {string} [name] Tag to be associated with the validation checkpoint.
    * @param {boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
    * @param {number} [retryTimeout] timeout for performing the match (ms).
@@ -72,7 +74,7 @@ class Eyes extends EyesBase {
   /**
    * Perform visual validation for the current image.
    *
-   * @param {string|Buffer|MutableImage} image The image path, base64 string, image buffer or MutableImage.
+   * @param {string|Buffer|ImageProvider|MutableImage} image The image path, base64 string, image buffer or MutableImage.
    * @param {Region|RegionObject} region The region of the image which should be verified, or {undefined}/{null} if the
    *   entire image should be verified.
    * @param {string} [name] An optional tag to be associated with the validation checkpoint.
@@ -101,34 +103,40 @@ class Eyes extends EyesBase {
 
     try {
       let regionProvider = new NullRegionProvider();
+
       // Set the title to be linked to the screenshot.
       this._title = name;
       this._domString = checkSettings.getDomString();
 
+      if (checkSettings.getTargetRegion()) {
+        regionProvider = new RegionProvider(checkSettings.getTargetRegion());
+      }
+
       if (checkSettings.getImageUrl()) {
         this._screenshotUrl = checkSettings.getImageUrl();
+
         if (!this._viewportSizeHandler.get() && checkSettings.getImageSize()) {
           await this.setViewportSize(checkSettings.getImageSize());
         }
+      } else if (checkSettings.getImageProvider()) {
+        this._screenshotProvider = checkSettings.getImageProvider();
       } else {
-        if (checkSettings.getTargetRegion()) {
-          regionProvider = new RegionProvider(checkSettings.getTargetRegion());
-        }
+        this._screenshot = await this._normalizeImage(checkSettings);
 
-        const image = await this._normalizeImage(checkSettings);
-        this._screenshot = new EyesSimpleScreenshot(image);
         if (!this._viewportSizeHandler.get()) {
-          await this.setViewportSize(image.getSize());
+          await this.setViewportSize(this._screenshot.getSize());
         }
       }
 
       const matchResult = await super.checkWindowBase(regionProvider, name, checkSettings.getIgnoreMismatch(), checkSettings);
       return matchResult.getAsExpected();
     } finally {
-      this._domString = null;
-      this._screenshotUrl = null;
-      this._screenshot = null;
       this._title = null;
+      this._domString = null;
+
+      this._screenshot = null;
+      this._screenshotUrl = null;
+      this._screenshotProvider = null;
     }
   }
 
@@ -251,8 +259,12 @@ class Eyes extends EyesBase {
   }
 
   /** @inheritDoc */
-  getScreenshot() {
-    return Promise.resolve(this._screenshot);
+  async getScreenshot() {
+    if (this._screenshotProvider) {
+      this._screenshot = await this._screenshotProvider.getImage();
+    }
+
+    return new EyesSimpleScreenshot(this._screenshot);
   }
 
   /** @inheritDoc */

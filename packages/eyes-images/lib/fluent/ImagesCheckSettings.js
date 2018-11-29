@@ -18,6 +18,7 @@ class ImagesCheckSettings extends CheckSettings {
     this._imageBase64 = base64;
     this._imagePath = path;
     this._imageUrl = url;
+    this._imageProvider = null;
 
     this._imageSize = null;
     this._domString = null;
@@ -42,10 +43,26 @@ class ImagesCheckSettings extends CheckSettings {
 
   /**
    * @package
+   * @param {Buffer} imageBuffer
+   */
+  setImageBuffer(imageBuffer) {
+    this._imageBuffer = imageBuffer;
+  }
+
+  /**
+   * @package
    * @return {string}
    */
   getImageString() {
     return this._imageBase64;
+  }
+
+  /**
+   * @package
+   * @param {string} base64String
+   */
+  setImageString(base64String) {
+    this._imageBase64 = base64String;
   }
 
   /**
@@ -58,6 +75,14 @@ class ImagesCheckSettings extends CheckSettings {
 
   /**
    * @package
+   * @param {string} imagePath
+   */
+  setImagePath(imagePath) {
+    this._imagePath = imagePath;
+  }
+
+  /**
+   * @package
    * @return {string}
    */
   getImageUrl() {
@@ -65,10 +90,35 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
+   * @param {string} imageUrl
+   */
+  setImageUrl(imageUrl) {
+    this._imageUrl = imageUrl;
+  }
+
+  /**
+   * @package
+   * @return {ImageProvider}
+   */
+  getImageProvider() {
+    return this._imageProvider;
+  }
+
+  /**
+   * @package
+   * @param {ImageProvider} imageProvider
+   */
+  setImageProvider(imageProvider) {
+    this._imageProvider = imageProvider;
+  }
+
+  /**
+   * @package
    * @param {RectangleSize} imageSize
    * @return {this} This instance of the settings object.
    */
-  imageSize(imageSize) {
+  setImageSize(imageSize) {
     this._imageSize = imageSize;
     return this;
   }
