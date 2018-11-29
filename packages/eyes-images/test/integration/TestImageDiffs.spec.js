@@ -2,21 +2,22 @@
 
 const assert = require('assert');
 const { ConsoleLogHandler, TestResultsStatus } = require('@applitools/eyes-sdk-core');
-const { Eyes } = require('../index');
+const { Eyes } = require('../../index');
 
-let /** @type {Eyes} */ eyes = null;
-describe('Eyes.Images.JavaScript - find diffs between image', function () {
+let /** @type {Eyes} */ eyes;
+describe('EyesImages.TestImageDiffs', function () {
   this.timeout(5 * 60 * 1000);
 
-  before(async function () {
+  before(function () {
     eyes = new Eyes();
     eyes.setLogHandler(new ConsoleLogHandler(true));
+    // eyes.setProxy('http://localhost:8888');
   });
 
-  it('should be similar', async function () {
+  it('ShouldDetectDiffs', async function () {
     const testName = `${this.test.title}_${Math.random().toString(36).substring(2, 12)}`;
-    const image1 = `${__dirname}/resources/image1.png`;
-    const image2 = `${__dirname}/resources/image2.png`;
+    const image1 = `${__dirname}/../resources/image1.png`;
+    const image2 = `${__dirname}/../resources/image2.png`;
 
     await eyes.open(this.test.parent.title, testName);
     await eyes.checkImage(image1);
@@ -27,9 +28,5 @@ describe('Eyes.Images.JavaScript - find diffs between image', function () {
     const results = await eyes.close(false);
 
     assert.equal(results.getStatus(), TestResultsStatus.Unresolved);
-  });
-
-  afterEach(async function () {
-    await eyes.abortIfNotClosed();
   });
 });

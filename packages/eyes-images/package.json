@@ -38,7 +38,7 @@
     "mocha": "^5.2.0"
   },
   "scripts": {
-    "test:integration": "mocha ./test/**/*.spec.js -t 900000"
+    "test:integration": "mocha ./test/integration/**/*.spec.js -t 900000"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
