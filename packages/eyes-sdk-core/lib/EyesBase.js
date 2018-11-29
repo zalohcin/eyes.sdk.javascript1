@@ -1060,11 +1060,11 @@ class EyesBase {
   /**
    * Sets the host OS name - overrides the one in the agent string.
    *
-   * @param {string} hostOS The host OS running the AUT.
+   * @param {string} hostOSInfo The host OS running the AUT.
    */
   setHostOSInfo(hostOSInfo) {
     this._logger.log(`Host OS Info: ${hostOSInfo}`);
-    if (hostOS) {
+    if (hostOSInfo) {
       this._hostOSInfo = hostOSInfo.trim();
     } else {
       this._hostOSInfo = undefined;
@@ -1083,7 +1083,7 @@ class EyesBase {
   /**
    * Sets the host application - overrides the one in the agent string.
    *
-   * @param {string} hostApp The application running the AUT (e.g., Chrome).
+   * @param {string} hostAppInfo The application running the AUT (e.g., Chrome).
    */
   setHostAppInfo(hostAppInfo) {
     this._logger.log(`Host App Info: ${hostAppInfo}`);
@@ -1106,7 +1106,7 @@ class EyesBase {
   /**
    * Sets the host application - overrides the one in the agent string.
    *
-   * @param {string} hostApp The application running the AUT (e.g., Chrome).
+   * @param {string} deviceInfo The application running the AUT (e.g., Chrome).
    */
   setDeviceInfo(deviceInfo) {
     this._logger.log(`Device Info: ${deviceInfo}`);
