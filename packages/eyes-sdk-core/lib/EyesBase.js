@@ -975,13 +975,13 @@ class EyesBase {
   /**
    * If a test is running, aborts it. Otherwise, does nothing.
    *
-   * @return {Promise<void>} A promise which resolves to the test results.
+   * @return {Promise<?TestResults>} A promise which resolves to the test results.
    */
   async abortIfNotClosed() {
     try {
       if (this._isDisabled) {
         this._logger.verbose('Eyes abortIfNotClosed ignored. (disabled)');
-        return;
+        return null;
       }
 
       this._isOpen = false;
@@ -991,17 +991,17 @@ class EyesBase {
 
       if (!this._runningSession) {
         this._logger.verbose('Closed');
-        return;
+        return null;
       }
 
       this._logger.verbose('Aborting server session...');
-      try {
-        // When aborting we do not save the test.
-        return await this._serverConnector.stopSession(this._runningSession, true, false);
-        this._logger.log('--- Test aborted.');
-      } catch (err) {
-        this._logger.log(`Failed to abort server session: ${err}`);
-      }
+      const testResults = await this._serverConnector.stopSession(this._runningSession, true, false);
+
+      this._logger.log('--- Test aborted.');
+      return testResults;
+    } catch (err) {
+      this._logger.log(`Failed to abort server session: ${err}`);
+      return null;
     } finally {
       this._runningSession = null;
       this._logger.getLogHandler().close();
