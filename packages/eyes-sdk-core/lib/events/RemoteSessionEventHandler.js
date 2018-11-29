@@ -127,7 +127,7 @@ class RemoteSessionEventHandler extends SessionEventHandler {
   validationWillStart(autSessionId, validationInfo) {
     const options = Object.create(this._httpOptions);
     options.uri = `${autSessionId}/validations`;
-    options.data = validationInfo.toJSON();
+    options.data = validationInfo;
     options.method = 'POST';
     return axios(options);
   }
