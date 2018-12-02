@@ -60,12 +60,7 @@ function makeCheckWindow({
     let renderJobs; // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
     setCheckWindowPromises(
-      browsers.map(
-        (_browser, i) =>
-          checkWindowJob(getCheckWindowPromises()[i], i)
-            .catch(setError)
-            .then(() => openEyesPromises[i]), // the checkWindow job must end after openEyes has finished, otherwise resolving the whole test in close will fail, because the test was never started. This situation could happen when a render fails and the checkWindow promise is rejected before waiting on openEyesPromise.
-      ),
+      browsers.map((_browser, i) => checkWindowJob(getCheckWindowPromises()[i], i).catch(setError)),
     );
 
     async function checkWindowJob(prevJobPromise = presult(Promise.resolve()), index) {
