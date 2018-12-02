@@ -36,7 +36,7 @@
     "type": "git"
   },
   "dependencies": {
-    "@applitools/eyes-sdk-core": "^4.3.0",
+    "@applitools/eyes-sdk-core": "^4.4.0",
     "@applitools/functional-commons": "^1.0.27",
     "@applitools/http-commons": "^1.2.2",
     "cosmiconfig": "^5.0.7",
@@ -63,7 +63,7 @@
     "mocha": "^5.2.0",
     "morgan": "^1.9.1",
     "nock": "^9.6.1",
-    "prettier": "^1.15.2",
-    "puppeteer": "1.9.0"
+    "prettier": "^1.15.3",
+    "puppeteer": "^1.11.0"
   }
 }
