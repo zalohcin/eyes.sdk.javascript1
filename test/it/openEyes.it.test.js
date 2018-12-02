@@ -1281,4 +1281,34 @@ describe('openEyes', () => {
     const ttt = await close();
     expect(ttt[0].map(r => r.getAsExpected())).to.eql([true]);
   });
+
+  it('handles empty tests', async () => {
+    openEyes = makeRenderingGridClient({
+      concurrency: 1,
+      showLogs: APPLITOOLS_SHOW_LOGS,
+    }).openEyes;
+
+    const {close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+    });
+
+    const {close: close2} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+    });
+
+    const promise = presult(close2()).then(([err, result]) => {
+      expect(err).to.be.undefined;
+      expect(result).not.to.be.an.instanceOf(Error);
+    });
+
+    await psetTimeout(50);
+    const [err, result] = await presult(close());
+    expect(err).to.be.undefined;
+    expect(result).not.to.be.an.instanceOf(Error);
+    await promise;
+  });
 });

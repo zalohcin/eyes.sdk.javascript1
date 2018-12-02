@@ -189,6 +189,7 @@ function makeOpenEyes({
       getCheckWindowPromises,
       wrappers,
       resolveTests,
+      openEyesPromises,
     });
 
     return {
