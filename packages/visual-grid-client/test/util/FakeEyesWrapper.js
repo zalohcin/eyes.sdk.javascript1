@@ -267,6 +267,10 @@ class FakeEyesWrapper {
   setDeviceInfo(value) {
     this.deviceInfo = value;
   }
+
+  setBaseAgentId(value) {
+    this.agentId = value;
+  }
 }
 
 module.exports = FakeEyesWrapper;

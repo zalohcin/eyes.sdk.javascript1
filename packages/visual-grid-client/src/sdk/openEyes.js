@@ -44,6 +44,7 @@ function makeOpenEyes({
   eyesTransactionThroat,
   getRenderInfoPromise,
   setRenderInfoPromise,
+  agentId,
 }) {
   return async function openEyes({
     testName,
@@ -119,6 +120,7 @@ function makeOpenEyes({
       compareWithParentBranch,
       ignoreBaseline,
       serverUrl,
+      agentId,
     });
 
     const renderWrapper = wrappers[0];

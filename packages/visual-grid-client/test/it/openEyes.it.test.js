@@ -939,6 +939,12 @@ describe('openEyes', () => {
       createFakeWrapper(baseUrl),
       createFakeWrapper(baseUrl),
     ];
+
+    openEyes = makeRenderingGridClient({
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      agentId: 'agentId',
+    }).openEyes;
+
     openEyes({
       wrappers,
       url: 'bla',
@@ -961,6 +967,7 @@ describe('openEyes', () => {
       ignoreBaseline: 'ignoreBaseline',
       serverUrl: 'serverUrl',
       browser: [{deviceName: 'device1'}, {deviceName: 'device2'}, {}],
+      agentId: 'agentId',
     });
 
     for (const wrapper of wrappers) {
@@ -980,6 +987,7 @@ describe('openEyes', () => {
       expect(wrapper.compareWithParentBranch).to.equal('compareWithParentBranch');
       expect(wrapper.ignoreBaseline).to.equal('ignoreBaseline');
       expect(wrapper.serverUrl).to.equal('serverUrl');
+      expect(wrapper.agentId).to.equal('agentId');
     }
 
     expect(wrappers[0].deviceInfo).to.equal('device1');

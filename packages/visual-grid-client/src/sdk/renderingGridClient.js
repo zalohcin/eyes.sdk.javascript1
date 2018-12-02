@@ -45,6 +45,7 @@ function makeRenderingGridClient({
   compareWithParentBranch,
   ignoreBaseline,
   serverUrl,
+  agentId,
 }) {
   const openEyesConcurrency = Number(concurrency);
 
@@ -114,6 +115,7 @@ function makeRenderingGridClient({
     setRenderInfoPromise,
     createRGridDOMAndGetResourceMapping,
     eyesTransactionThroat,
+    agentId,
   });
 
   return {

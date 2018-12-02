@@ -20,7 +20,11 @@ class EyesWrapper extends EyesBase {
 
   /** @override */
   getBaseAgentId() {
-    return `eyes.cypress/${VERSION}`;
+    return this.agentId || `visual-grid-client/${VERSION}`;
+  }
+
+  setBaseAgentId(agentId) {
+    this.agentId = agentId;
   }
 
   /**
