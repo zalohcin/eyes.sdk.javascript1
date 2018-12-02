@@ -44,6 +44,7 @@ function configureWrappers({
   compareWithParentBranch,
   ignoreBaseline,
   serverUrl,
+  agentId,
 }) {
   const batchInfo = new BatchInfo({id: batchId, name: batchName});
   proxy =
@@ -78,6 +79,7 @@ function configureWrappers({
       wrapper.setCompareWithParentBranch(compareWithParentBranch);
     ignoreBaseline !== undefined && wrapper.setIgnoreBaseline(ignoreBaseline);
     serverUrl !== undefined && wrapper.setServerUrl(serverUrl);
+    agentId !== undefined && wrapper.setBaseAgentId(agentId);
   }
 }
 
