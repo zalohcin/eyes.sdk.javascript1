@@ -12,8 +12,9 @@ describe('openEyes', () => {
   const apiKey = process.env.APPLITOOLS_API_KEY; // TODO bad for tests. what to do
 
   beforeEach(() => {
-    openEyes = makeRenderingGridClient(Object.assign({showLogs: process.env.APPLITOOLS_SHOW_LOGS}))
-      .openEyes;
+    openEyes = makeRenderingGridClient(
+      Object.assign({showLogs: process.env.APPLITOOLS_SHOW_LOGS, apiKey}),
+    ).openEyes;
   });
 
   before(async () => {
@@ -33,7 +34,6 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       appName: 'some app',
       testName: 'passes with correct screenshot',
-      apiKey,
       browser: [
         {width: 640, height: 480, name: 'chrome'},
         {width: 800, height: 600, name: 'firefox'},
@@ -76,7 +76,6 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       appName: 'some app',
       testName: 'fails with incorrect screenshot',
-      apiKey,
       browser: [{width: 640, height: 480}, {width: 800, height: 600}],
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,

@@ -21,7 +21,6 @@ function makeCheckWindow({
   browsers,
   setError,
   wrappers,
-  renderWrapper,
   renderThroat,
   stepCounter,
   testName,
@@ -96,7 +95,7 @@ function makeCheckWindow({
       );
 
       const [renderStatusErr, renderStatusResult] = await presult(
-        waitForRenderedStatus([renderId], renderWrapper, getError),
+        waitForRenderedStatus([renderId], getError),
       );
 
       if (getError()) {
@@ -202,7 +201,7 @@ function makeCheckWindow({
         sendDom,
       });
 
-      let renderIds = await renderThroat(() => renderBatch(renderRequests, renderWrapper));
+      let renderIds = await renderThroat(() => renderBatch(renderRequests));
       renderJobs = renderIds.map(createRenderJob);
 
       if (saveDebugData) {

@@ -14,9 +14,17 @@ const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetR
 const makeParseInlineCssFromCdt = require('./parseInlineCssFromCdt');
 const getBatch = require('./getBatch');
 const transactionThroat = require('./transactionThroat');
+const getRenderMethods = require('./getRenderMethods');
+const {
+  authorizationErrMsg,
+  blockedAccountErrMsg,
+  badRequestErrMsg,
+  apiKeyFailMsg,
+} = require('./wrapperUtils');
 
 // TODO when supporting only Node version >= 8.6.0 then we can use ...config for all the params that are just passed on to makeOpenEyes
 function makeRenderingGridClient({
+  renderWrapper, // for tests
   showLogs,
   renderStatusTimeout,
   renderStatusInterval,
@@ -47,6 +55,9 @@ function makeRenderingGridClient({
   serverUrl,
   agentId,
 }) {
+  if (!apiKey) {
+    throw new Error(apiKeyFailMsg);
+  }
   const openEyesConcurrency = Number(concurrency);
 
   if (isNaN(openEyesConcurrency)) {
@@ -57,17 +68,37 @@ function makeRenderingGridClient({
   const eyesTransactionThroat = transactionThroat(openEyesConcurrency);
   const renderThroat = throatPkg(openEyesConcurrency * renderConcurrencyFactor);
   const logger = createLogger(showLogs);
+  const {
+    doGetRenderInfo,
+    doRenderBatch,
+    doPutResource,
+    doGetRenderStatus,
+    setRenderingInfo,
+  } = getRenderMethods({
+    renderWrapper,
+    apiKey,
+    logger,
+    serverUrl,
+    proxy,
+  });
   const resourceCache = createResourceCache();
   const fetchCache = createResourceCache();
   const extractCssResources = makeExtractCssResources(logger);
   const fetchResource = makeFetchResource({logger, fetchCache});
   const extractCssResourcesFromCdt = makeExtractCssResourcesFromCdt(extractCssResources);
-  const putResources = makePutResources();
-  const renderBatch = makeRenderBatch({putResources, resourceCache, fetchCache, logger});
+  const putResources = makePutResources({doPutResource});
+  const renderBatch = makeRenderBatch({
+    putResources,
+    resourceCache,
+    fetchCache,
+    logger,
+    doRenderBatch,
+  });
   const waitForRenderedStatus = makeWaitForRenderedStatus({
     timeout: renderStatusTimeout,
     getStatusInterval: renderStatusInterval,
     logger,
+    doGetRenderStatus,
   });
   const getAllResources = makeGetAllResources({
     resourceCache,
@@ -112,7 +143,8 @@ function makeRenderingGridClient({
     waitForRenderedStatus,
     renderThroat,
     getRenderInfoPromise,
-    setRenderInfoPromise,
+    getHandledRenderInfoPromise,
+    doGetRenderInfo,
     createRGridDOMAndGetResourceMapping,
     eyesTransactionThroat,
     agentId,
@@ -126,9 +158,29 @@ function makeRenderingGridClient({
     return renderInfoPromise;
   }
 
-  function setRenderInfoPromise(promise) {
-    renderInfoPromise = promise;
-    return promise;
+  function getHandledRenderInfoPromise(promise) {
+    renderInfoPromise = promise
+      .then(renderInfo => {
+        setRenderingInfo(renderInfo);
+        return renderInfo;
+      })
+      .catch(err => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            return new Error(authorizationErrMsg);
+          }
+          if (err.response.status === 403) {
+            return new Error(blockedAccountErrMsg);
+          }
+          if (err.response.status === 400) {
+            return new Error(badRequestErrMsg);
+          }
+        }
+
+        return err;
+      });
+
+    return renderInfoPromise;
   }
 }
 

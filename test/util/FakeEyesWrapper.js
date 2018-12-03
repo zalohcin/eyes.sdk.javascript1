@@ -112,6 +112,8 @@ class FakeEyesWrapper {
     this.renderingInfo = val;
   }
 
+  async putResource() {}
+
   async checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation}) {
     if (tag && this.goodTags && !this.goodTags.includes(tag))
       throw new Error(`Tag ${tag} should be one of the good tags ${this.goodTags}`);
