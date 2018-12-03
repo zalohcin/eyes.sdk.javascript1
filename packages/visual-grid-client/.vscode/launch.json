@@ -7,6 +7,13 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "render script",
+      "program": "${workspaceFolder}/scripts/render.js",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Mocha Tests",
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "args": [
@@ -18,7 +25,8 @@
       "cwd": "${workspaceRoot}",
       "protocol": "inspector",
       "console": "integratedTerminal",
-      "showAsyncStacks": true
+      "showAsyncStacks": true,
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }
