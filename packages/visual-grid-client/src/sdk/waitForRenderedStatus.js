@@ -8,8 +8,13 @@ const psetTimeout = t =>
 
 const failMsg = 'failed to render screenshot';
 
-function makeWaitForRenderedStatus({timeout = 120000, getStatusInterval = 500, logger}) {
-  return async function waitForRenderedStatus(renderIds, wrapper, stopCondition = () => {}) {
+function makeWaitForRenderedStatus({
+  timeout = 120000,
+  getStatusInterval = 500,
+  logger,
+  doGetRenderStatus,
+}) {
+  return async function waitForRenderedStatus(renderIds, stopCondition = () => {}) {
     async function getStatus() {
       if (timeoutReached) {
         logger.log(`waitForRenderedStatus: timeout reached for ${renderIds}`);
@@ -18,7 +23,7 @@ function makeWaitForRenderedStatus({timeout = 120000, getStatusInterval = 500, l
 
       let renderStatuses;
       try {
-        renderStatuses = await wrapper.getRenderStatus(renderIds);
+        renderStatuses = await doGetRenderStatus(renderIds);
       } catch (ex) {
         logger.log(`error during getRenderStatus: ${ex}`);
         await psetTimeout(getStatusInterval);

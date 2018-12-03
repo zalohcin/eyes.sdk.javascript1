@@ -108,6 +108,13 @@ function openWrappers({wrappers, browsers, appName, testName, eyesTransactionThr
     );
 }
 
+function createRenderWrapper({serverUrl, apiKey, logHandler, proxy}) {
+  const wrapper = new EyesWrapper({apiKey, logHandler});
+  serverUrl !== undefined && wrapper.setServerUrl(serverUrl);
+  proxy !== undefined && wrapper.setProxy(proxy);
+  return wrapper;
+}
+
 const apiKeyFailMsg =
   'APPLITOOLS_API_KEY env variable is missing. It is required to define this variable when running Cypress for Applitools visual tests to run successfully.';
 
@@ -129,6 +136,7 @@ module.exports = {
   initWrappers,
   configureWrappers,
   openWrappers,
+  createRenderWrapper,
   apiKeyFailMsg,
   propertiesFailMsg,
   authorizationErrMsg,

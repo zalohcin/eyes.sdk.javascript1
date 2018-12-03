@@ -1,21 +1,11 @@
 'use strict';
 const makeCheckWindow = require('./checkWindow');
 const makeCloseEyes = require('./closeEyes');
-const {
-  initWrappers,
-  configureWrappers,
-  openWrappers,
-  apiKeyFailMsg,
-  authorizationErrMsg,
-  appNameFailMsg,
-  blockedAccountErrMsg,
-  badRequestErrMsg,
-} = require('./wrapperUtils');
+const {initWrappers, configureWrappers, openWrappers, appNameFailMsg} = require('./wrapperUtils');
 
 function makeOpenEyes({
   appName: _appName,
   browser: _browser,
-  apiKey: _apiKey,
   saveDebugData: _saveDebugData,
   batchName: _batchName,
   batchId: _batchId,
@@ -30,12 +20,13 @@ function makeOpenEyes({
   matchTimeout: _matchTimeout,
   parentBranchName: _parentBranchName,
   branchName: _branchName,
-  proxy: _proxy,
   saveFailedTests: _saveFailedTests,
   saveNewTests: _saveNewTests,
   compareWithParentBranch: _compareWithParentBranch,
   ignoreBaseline: _ignoreBaseline,
-  serverUrl: _serverUrl,
+  apiKey,
+  proxy,
+  serverUrl,
   logger,
   renderBatch,
   waitForRenderedStatus,
@@ -43,7 +34,8 @@ function makeOpenEyes({
   renderThroat,
   eyesTransactionThroat,
   getRenderInfoPromise,
-  setRenderInfoPromise,
+  getHandledRenderInfoPromise,
+  doGetRenderInfo,
   agentId,
 }) {
   return async function openEyes({
@@ -51,7 +43,6 @@ function makeOpenEyes({
     wrappers,
     appName = _appName,
     browser = _browser,
-    apiKey = _apiKey,
     saveDebugData = _saveDebugData,
     batchName = _batchName,
     batchId = _batchId,
@@ -66,12 +57,10 @@ function makeOpenEyes({
     matchTimeout = _matchTimeout,
     parentBranchName = _parentBranchName,
     branchName = _branchName,
-    proxy = _proxy,
     saveFailedTests = _saveFailedTests,
     saveNewTests = _saveNewTests,
     compareWithParentBranch = _compareWithParentBranch,
     ignoreBaseline = _ignoreBaseline,
-    serverUrl = _serverUrl,
   }) {
     logger.log(`openEyes: testName=${testName}, browser=`, browser);
     let error;
@@ -83,10 +72,6 @@ function makeOpenEyes({
         close: disabledFunc('close'),
         abort: disabledFunc('abort'),
       };
-    }
-
-    if (!apiKey) {
-      throw new Error(apiKeyFailMsg);
     }
 
     if (!appName) {
@@ -123,35 +108,14 @@ function makeOpenEyes({
       agentId,
     });
 
-    const renderWrapper = wrappers[0];
-
     const renderInfoPromise =
-      getRenderInfoPromise() ||
-      setRenderInfoPromise(
-        renderWrapper.getRenderInfo().catch(err => {
-          if (err.response) {
-            if (err.response.status === 401) {
-              return new Error(authorizationErrMsg);
-            }
-            if (err.response.status === 403) {
-              return new Error(blockedAccountErrMsg);
-            }
-            if (err.response.status === 400) {
-              return new Error(badRequestErrMsg);
-            }
-          }
-
-          return err;
-        }),
-      );
+      getRenderInfoPromise() || getHandledRenderInfoPromise(doGetRenderInfo());
 
     const renderInfo = await renderInfoPromise;
 
     if (renderInfo instanceof Error) {
       throw renderInfo;
     }
-
-    renderWrapper.setRenderingInfo(renderInfo);
 
     const {openEyesPromises, resolveTests} = openWrappers({
       wrappers,
@@ -178,7 +142,6 @@ function makeOpenEyes({
       browsers,
       setError,
       wrappers,
-      renderWrapper,
       renderThroat,
       stepCounter,
       testName,

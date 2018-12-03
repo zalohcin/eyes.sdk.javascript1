@@ -15,34 +15,32 @@ function toRenderStatuses(plainStatuses) {
 describe('waitForRenderedStatus', () => {
   it('returns rendered result', async () => {
     const expectedStatuses = toRenderStatuses([RenderStatus.RENDERED, RenderStatus.RENDERED]);
-    const wrapper = {
-      getRenderStatus: async () => expectedStatuses,
-    };
-    const waitForRenderedStatus = makeWaitForRenderedStatus({logger: testLogger});
-    const statuses = await waitForRenderedStatus(['render1', 'render2'], wrapper);
+    const waitForRenderedStatus = makeWaitForRenderedStatus({
+      logger: testLogger,
+      doGetRenderStatus: async () => expectedStatuses,
+    });
+    const statuses = await waitForRenderedStatus(['render1', 'render2']);
     expect(statuses).to.eql(expectedStatuses.map(x => x.toJSON()));
   });
 
   it('polls until rendered', async () => {
     let counter = 0;
-    const wrapper = {
-      getRenderStatus: async () => {
+
+    const waitForRenderedStatus = makeWaitForRenderedStatus({
+      logger: testLogger,
+      getStatusInterval: 100,
+      doGetRenderStatus: async () => {
         if (counter++ < 2) {
           return toRenderStatuses([RenderStatus.RENDERING, RenderStatus.RENDERING]);
         } else {
           return toRenderStatuses([RenderStatus.RENDERED, RenderStatus.RENDERED]);
         }
       },
-    };
-
-    const waitForRenderedStatus = makeWaitForRenderedStatus({
-      logger: testLogger,
-      getStatusInterval: 100,
     });
 
     const notYetPromise = Promise.race([
       presult(
-        waitForRenderedStatus(['render1', 'render2'], wrapper).then(statuses => {
+        waitForRenderedStatus(['render1', 'render2']).then(statuses => {
           expect(statuses).to.eql(toRenderStatuses([RenderStatus.RENDERED, RenderStatus.RENDERED]));
         }),
       ),
@@ -60,14 +58,12 @@ describe('waitForRenderedStatus', () => {
     let stop = false;
     psetTimeout(50).then(() => (stop = true));
     const expectedStatuses = toRenderStatuses([RenderStatus.RENDERING]); // this is important, because of the stop condition we will get a result of RENDERING
-    const wrapper = {
-      getRenderStatus: async () => expectedStatuses,
-    };
     const waitForRenderedStatus = makeWaitForRenderedStatus({
       logger: testLogger,
       getStatusInterval: 50,
+      doGetRenderStatus: async () => expectedStatuses,
     });
-    const statuses = await waitForRenderedStatus(['render1', 'render2'], wrapper, () => stop);
+    const statuses = await waitForRenderedStatus(['render1', 'render2'], () => stop);
     expect(statuses).to.eql(expectedStatuses.map(x => x.toJSON()));
   });
 
@@ -77,31 +73,27 @@ describe('waitForRenderedStatus', () => {
       new RenderStatusResults({status: RenderStatus.RENDERING}),
       new RenderStatusResults({status: RenderStatus.ERROR, error: 'bla'}),
     ];
-    const wrapper = {
-      getRenderStatus: async () => expectedStatuses,
-    };
     const waitForRenderedStatus = makeWaitForRenderedStatus({
       logger: {log: (...args) => (output += args.join(', '))},
+      doGetRenderStatus: async () => expectedStatuses,
     });
-    const [err, _statuses] = await presult(waitForRenderedStatus(['render1', 'render2'], wrapper));
+    const [err, _statuses] = await presult(waitForRenderedStatus(['render1', 'render2']));
     expect(err).to.be.an.instanceOf(Error);
     expect(output).to.equal('render error received: bla');
     expect(err.message).to.equal(failMsg);
   });
 
   it('keeps trying if wrapper throws exception (e.g. 500 Internal server error)', async () => {
-    const wrapper = {
-      getRenderStatus: async () => {
-        throw new Error('bla');
-      },
-    };
     let output = '';
     const waitForRenderedStatus = makeWaitForRenderedStatus({
       logger: {log: (...args) => (output += args.join(', '))},
       timeout: 100,
       getStatusInterval: 50,
+      doGetRenderStatus: async () => {
+        throw new Error('bla');
+      },
     });
-    const [err, _statuses] = await presult(waitForRenderedStatus(['render1', 'render2'], wrapper));
+    const [err, _statuses] = await presult(waitForRenderedStatus(['render1', 'render2']));
     expect(err).to.be.an.instanceOf(Error);
     expect(err.message).to.equal(failMsg);
     expect(output).to.contain(
@@ -111,15 +103,13 @@ describe('waitForRenderedStatus', () => {
 
   it('throws error on timeout', async () => {
     const expectedStatuses = toRenderStatuses([RenderStatus.RENDERING, RenderStatus.RENDERING]);
-    const wrapper = {
-      getRenderStatus: async () => expectedStatuses,
-    };
     const waitForRenderedStatus = makeWaitForRenderedStatus({
       logger: testLogger,
       timeout: 200,
       getStatusInterval: 50,
+      doGetRenderStatus: async () => expectedStatuses,
     });
-    const [err, _statuses] = await presult(waitForRenderedStatus(['render1', 'render2'], wrapper));
+    const [err, _statuses] = await presult(waitForRenderedStatus(['render1', 'render2']));
     expect(err).to.be.an.instanceOf(Error);
     expect(err.message).to.equal(failMsg);
   });

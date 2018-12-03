@@ -1,5 +1,5 @@
 'use strict';
-const {describe, it, beforeEach} = require('mocha');
+const {describe, it} = require('mocha');
 const {expect} = require('chai');
 const makePutResources = require('../../../src/sdk/putResources');
 const {RGridDom, RGridResource} = require('@applitools/eyes-sdk-core');
@@ -8,10 +8,6 @@ const psetTimeout = p(setTimeout);
 
 describe('putResources', () => {
   let putResources;
-
-  beforeEach(() => {
-    putResources = makePutResources();
-  });
 
   function getKey(resource) {
     return `${resource.getUrl() || 'dom'}_${resource.getSha256Hash()}`;
@@ -34,13 +30,13 @@ describe('putResources', () => {
 
     const resources1 = [r1, r2];
     dom1.setResources(resources1);
-    const wrapper = {
-      async putResource(runningRender, resource) {
+    putResources = makePutResources({
+      doPutResource: async (runningRender, resource) => {
         const key = getKey(resource);
         await psetTimeout(0);
         return `${runningRender.getRenderId()}_${key}`;
       },
-    };
+    });
     const runningRender1 = {
       getNeedMoreDom() {
         return true;
@@ -53,7 +49,7 @@ describe('putResources', () => {
       },
     };
 
-    const result1 = await putResources(dom1, runningRender1, wrapper, [r1, r2, r3]);
+    const result1 = await putResources(dom1, runningRender1, [r1, r2, r3]);
     expect(result1).to.eql([
       `renderId1_${getKey(dom1.asResource())}`,
       `renderId1_${getKey(r1)}`,
@@ -119,17 +115,17 @@ describe('putResources', () => {
 
     const putCountPerResource = {};
 
-    const wrapper = {
-      async putResource(runningRender, resource) {
+    putResources = makePutResources({
+      doPutResource: async (runningRender, resource) => {
         const key = getKey(resource);
         putCountPerResource[key] = putCountPerResource[key] ? putCountPerResource[key] + 1 : 1;
         await psetTimeout(0);
         return `${runningRender.getRenderId()}_${key}`;
       },
-    };
+    });
 
-    const p1 = putResources(dom1, runningRender1, wrapper, [r1, r2, r3]);
-    const p2 = putResources(dom2, runningRender2, wrapper, [r1, r2, r3]);
+    const p1 = putResources(dom1, runningRender1, [r1, r2, r3]);
+    const p2 = putResources(dom2, runningRender2, [r1, r2, r3]);
 
     const result1 = await p1;
     const result2 = await p2;

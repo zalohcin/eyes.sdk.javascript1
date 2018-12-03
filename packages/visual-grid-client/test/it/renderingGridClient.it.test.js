@@ -9,12 +9,14 @@ const appName = 'app name';
 
 describe('renderingGridClient', () => {
   it('sets a new batch', async () => {
+    const wrapper = createFakeWrapper('http://some_url');
     const {openEyes} = makeRenderingGridClient({
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      apiKey,
       appName,
+      renderWrapper: wrapper,
     });
 
-    const wrapper = createFakeWrapper('http://some_url');
     await openEyes({
       wrappers: [wrapper],
       apiKey,
