@@ -95,7 +95,7 @@ function makeCheckWindow({
       );
 
       const [renderStatusErr, renderStatusResult] = await presult(
-        waitForRenderedStatus([renderId], getError),
+        waitForRenderedStatus(renderId, getError),
       );
 
       if (getError()) {
@@ -111,9 +111,13 @@ function makeCheckWindow({
         return;
       }
 
-      const [
-        {imageLocation: screenshotUrl, domLocation, userAgent, deviceSize, selectorRegions},
-      ] = renderStatusResult;
+      const {
+        imageLocation: screenshotUrl,
+        domLocation,
+        userAgent,
+        deviceSize,
+        selectorRegions,
+      } = renderStatusResult;
 
       if (screenshotUrl) {
         logger.log(`screenshot available for ${renderId} at ${screenshotUrl}`);
