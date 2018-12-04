@@ -1,9 +1,8 @@
 'use strict';
 
-const { BrowserNames } = require('@applitools/eyes-sdk-core');
+const { BrowserNames, NullRegionPositionCompensation } = require('@applitools/eyes-sdk-core');
 
 const { FirefoxRegionPositionCompensation } = require('./FirefoxRegionPositionCompensation');
-const { NullRegionPositionCompensation } = require('./NullRegionPositionCompensation');
 const { SafariRegionPositionCompensation } = require('./SafariRegionPositionCompensation');
 
 class RegionPositionCompensationFactory {

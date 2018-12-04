@@ -7,6 +7,7 @@ exports.AppOutputWithScreenshot = require('./lib/capture/AppOutputWithScreenshot
 exports.EyesScreenshot = require('./lib/capture/EyesScreenshot').EyesScreenshot;
 exports.EyesScreenshotFactory = require('./lib/capture/EyesScreenshotFactory').EyesScreenshotFactory;
 exports.EyesSimpleScreenshot = require('./lib/capture/EyesSimpleScreenshot').EyesSimpleScreenshot;
+exports.FullPageCaptureAlgorithm = require('./lib/capture/FullPageCaptureAlgorithm').FullPageCaptureAlgorithm;
 exports.ImageProvider = require('./lib/capture/ImageProvider').ImageProvider;
 
 exports.CutProvider = require('./lib/cropping/CutProvider').CutProvider;
@@ -65,9 +66,11 @@ exports.MatchWindowDataWithScreenshot = require('./lib/match/MatchWindowDataWith
 exports.metadata = require('./lib/metadata/index');
 
 exports.InvalidPositionProvider = require('./lib/positioning/InvalidPositionProvider').InvalidPositionProvider;
+exports.NullRegionPositionCompensation = require('./lib/positioning/NullRegionPositionCompensation').NullRegionPositionCompensation;
 exports.NullRegionProvider = require('./lib/positioning/NullRegionProvider').NullRegionProvider;
 exports.PositionMemento = require('./lib/positioning/PositionMemento').PositionMemento;
 exports.PositionProvider = require('./lib/positioning/PositionProvider').PositionProvider;
+exports.RegionPositionCompensation = require('./lib/positioning/RegionPositionCompensation').RegionPositionCompensation;
 exports.RegionProvider = require('./lib/positioning/RegionProvider').RegionProvider;
 
 exports.RenderInfo = require('./lib/renderer/RenderInfo').RenderInfo;
