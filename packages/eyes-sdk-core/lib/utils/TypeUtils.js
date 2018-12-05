@@ -9,6 +9,16 @@ const BASE64_CHARS_PATTERN = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/
  */
 class TypeUtils {
   /**
+   * Checks if `value` is `null` or `undefined`. But the `value` can be one of following: `0`, `NaN`, `false`, `""`.
+   *
+   * @param {*} value
+   * @return {boolean}
+   */
+  static isNull(value) {
+    return value == null;
+  }
+
+  /**
    * Checks if `value` has a type `string` or created by the `String` constructor
    *
    * @param {*} value

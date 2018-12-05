@@ -931,8 +931,8 @@ class Eyes extends EyesBase {
   /**
    * Takes a snapshot of the application under test and matches it with the expected output.
    *
-   * @param {string} tag An optional tag to be associated with the snapshot.
-   * @param {number} matchTimeout The amount of time to retry matching (Milliseconds).
+   * @param {string} [tag] An optional tag to be associated with the snapshot.
+   * @param {number} [matchTimeout] The amount of time to retry matching (Milliseconds).
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
    */
   async checkWindow(tag, matchTimeout) {
@@ -944,8 +944,8 @@ class Eyes extends EyesBase {
    * Matches the frame given as parameter, by switching into the frame and using stitching to get an image of the frame.
    *
    * @param {number|string|By|WebElement|EyesWebElement} element The element which is the frame to switch to.
-   * @param {number} matchTimeout The amount of time to retry matching (milliseconds).
-   * @param {string} tag An optional tag to be associated with the match.
+   * @param {number} [matchTimeout] The amount of time to retry matching (milliseconds).
+   * @param {string} [tag] An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
    */
   async checkFrame(element, matchTimeout, tag) {
@@ -957,8 +957,8 @@ class Eyes extends EyesBase {
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
    *
    * @param {WebElement|EyesWebElement} element The element to check.
-   * @param {?number} matchTimeout The amount of time to retry matching (milliseconds).
-   * @param {string} tag An optional tag to be associated with the match.
+   * @param {?number} [matchTimeout] The amount of time to retry matching (milliseconds).
+   * @param {string} [tag] An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
    */
   async checkElement(element, matchTimeout, tag) {
@@ -970,8 +970,8 @@ class Eyes extends EyesBase {
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
    *
    * @param {By} locator The element to check.
-   * @param {?number} matchTimeout The amount of time to retry matching (milliseconds).
-   * @param {string} tag An optional tag to be associated with the match.
+   * @param {?number} [matchTimeout] The amount of time to retry matching (milliseconds).
+   * @param {string} [tag] An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
    */
   async checkElementBy(locator, matchTimeout, tag) {
@@ -983,8 +983,8 @@ class Eyes extends EyesBase {
    * Visually validates a region in the screenshot.
    *
    * @param {Region} region The region to validate (in screenshot coordinates).
-   * @param {string} tag An optional tag to be associated with the screenshot.
-   * @param {number} matchTimeout The amount of time to retry matching.
+   * @param {string} [tag] An optional tag to be associated with the screenshot.
+   * @param {number} [matchTimeout] The amount of time to retry matching.
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
    */
   async checkRegion(region, tag, matchTimeout) {
@@ -996,8 +996,8 @@ class Eyes extends EyesBase {
    * Visually validates a region in the screenshot.
    *
    * @param {WebElement|EyesWebElement} element The element defining the region to validate.
-   * @param {string} tag An optional tag to be associated with the screenshot.
-   * @param {number} matchTimeout The amount of time to retry matching.
+   * @param {string} [tag] An optional tag to be associated with the screenshot.
+   * @param {number} [matchTimeout] The amount of time to retry matching.
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
    */
   async checkRegionByElement(element, tag, matchTimeout) {
@@ -1009,9 +1009,9 @@ class Eyes extends EyesBase {
    * Visually validates a region in the screenshot.
    *
    * @param {By} by The WebDriver selector used for finding the region to validate.
-   * @param {string} tag An optional tag to be associated with the screenshot.
-   * @param {number} matchTimeout The amount of time to retry matching.
-   * @param {boolean} stitchContent If {@code true}, stitch the internal content of the region (i.e., perform
+   * @param {string} [tag] An optional tag to be associated with the screenshot.
+   * @param {number} [matchTimeout] The amount of time to retry matching.
+   * @param {boolean} [stitchContent] If {@code true}, stitch the internal content of the region (i.e., perform
    *   {@link #checkElement(By, number, string)} on the region.
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
    */
@@ -1027,9 +1027,9 @@ class Eyes extends EyesBase {
    * @param {string} frameNameOrId The name or id of the frame to switch to. (as would be used in a call to
    *   driver.switchTo().frame()).
    * @param {By} locator A Selector specifying the region to check.
-   * @param {?number} matchTimeout The amount of time to retry matching. (Milliseconds)
-   * @param {string} tag An optional tag to be associated with the snapshot.
-   * @param {boolean} stitchContent If {@code true}, stitch the internal content of the region (i.e., perform
+   * @param {?number} [matchTimeout] The amount of time to retry matching. (Milliseconds)
+   * @param {string} [tag] An optional tag to be associated with the snapshot.
+   * @param {boolean} [stitchContent] If {@code true}, stitch the internal content of the region (i.e., perform
    *   {@link #checkElement(By, number, string)} on the region.
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
    */

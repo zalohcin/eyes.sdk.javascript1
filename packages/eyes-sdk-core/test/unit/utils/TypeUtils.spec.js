@@ -5,6 +5,32 @@ const assert = require('assert');
 const { TypeUtils } = require('../../../index');
 
 describe('TypeUtils', () => {
+  describe('isNull()', () => {
+    it('check null', () => {
+      assert.ok(TypeUtils.isNull(null));
+    });
+
+    it('check undefined', () => {
+      assert.ok(TypeUtils.isNull(undefined));
+    });
+
+    it('check number', () => {
+      assert.ok(!TypeUtils.isNull(0));
+    });
+
+    it('check NaN', () => {
+      assert.ok(!TypeUtils.isNull(NaN));
+    });
+
+    it('check string', () => {
+      assert.ok(!TypeUtils.isNull(''));
+    });
+
+    it('check boolean', () => {
+      assert.ok(!TypeUtils.isNull(false));
+    });
+  });
+
   describe('isString()', () => {
     it('check string object', () => {
       // noinspection JSPrimitiveTypeWrapperUsage

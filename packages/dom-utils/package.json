@@ -1,6 +1,6 @@
 {
   "name": "@applitools/dom-utils",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "Applitools DOM Utils is a shared utility package",
   "keywords": [
     "dom-utils",
@@ -25,7 +25,7 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/dom-capture": "4.0.1",
-    "@applitools/eyes-sdk-core": "^4.1.0",
+    "@applitools/eyes-sdk-core": "^4.3.0"
   },
   "devDependencies": {
     "chromedriver": "^2.43.1",

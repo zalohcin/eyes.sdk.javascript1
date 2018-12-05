@@ -151,6 +151,9 @@ class EyesBase {
     /** @type {BatchInfo} */ this._batch = undefined;
     /** @type {string} */ this._hostApp = undefined;
     /** @type {string} */ this._hostOS = undefined;
+    /** @type {string} */ this._hostAppInfo = undefined;
+    /** @type {string} */ this._hostOSInfo = undefined;
+    /** @type {string} */ this._deviceInfo = undefined;
     /** @type {string} */ this._baselineEnvName = undefined;
     /** @type {string} */ this._environmentName = undefined;
     /** @type {string} */ this._branchName = undefined;
@@ -318,15 +321,21 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Sets the proxy settings to be used by the request module.
+   * Sets the proxy settings to be used for all requests to Eyes server.
+   * Alternatively, proxy can be set via global variables `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`.
    *
-   * @param {ProxySettings|string} proxySettingsOrUrl The ProxySettings object or proxy url to be used by the
-   *   serverConnector. If {@code null} then no proxy is set.
+   * @signature `setProxy(boolean)`
+   * @signature `setProxy(string)`
+   * @signature `setProxy(string, string, string)`
+   * @signature `setProxy(ProxySettings)`
+   *
+   * @param {ProxySettings|string|boolean} varArg The ProxySettings object or proxy url to be used.
+   *  Use {@code false} to disable proxy (even if it set via env variables). Use {@code null} to reset proxy settings.
    * @param {string} [username]
    * @param {string} [password]
    */
-  setProxy(proxySettingsOrUrl, username, password) {
-    return this._serverConnector.setProxy(proxySettingsOrUrl, username, password);
+  setProxy(varArg, username, password) {
+    return this._serverConnector.setProxy(varArg, username, password);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -1049,6 +1058,75 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * Sets the host OS name - overrides the one in the agent string.
+   *
+   * @param {string} hostOS The host OS running the AUT.
+   */
+  setHostOSInfo(hostOSInfo) {
+    this._logger.log(`Host OS Info: ${hostOSInfo}`);
+    if (hostOS) {
+      this._hostOSInfo = hostOSInfo.trim();
+    } else {
+      this._hostOSInfo = undefined;
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string} The host OS as set by the user.
+   */
+  getHostOSInfo() {
+    return this._hostOSInfo;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Sets the host application - overrides the one in the agent string.
+   *
+   * @param {string} hostApp The application running the AUT (e.g., Chrome).
+   */
+  setHostAppInfo(hostAppInfo) {
+    this._logger.log(`Host App Info: ${hostAppInfo}`);
+    if (hostAppInfo) {
+      this._hostAppInfo = hostAppInfo.trim();
+    } else {
+      this._hostAppInfo = undefined;
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string} The application name running the AUT.
+   */
+  getHostAppInfo() {
+    return this._hostAppInfo;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Sets the host application - overrides the one in the agent string.
+   *
+   * @param {string} hostApp The application running the AUT (e.g., Chrome).
+   */
+  setDeviceInfo(deviceInfo) {
+    this._logger.log(`Device Info: ${deviceInfo}`);
+    if (deviceInfo) {
+      this._deviceInfo = deviceInfo.trim();
+    } else {
+      this._deviceInfo = undefined;
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string} The application name running the AUT.
+   */
+  getDeviceInfo() {
+    return this._deviceInfo;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
    * @deprecated Only available for backward compatibility. See {@link #setBaselineEnvName(string)}.
    * @param baselineName {string} If specified, determines the baseline to compare with and disables automatic baseline
    *   inference.
@@ -1700,6 +1778,18 @@ class EyesBase {
 
     if (this._hostApp) {
       appEnv.setHostingApp(this._hostApp);
+    }
+
+    if (this._deviceInfo) {
+      appEnv.setDeviceInfo(this._deviceInfo);
+    }
+
+    if (this._hostAppInfo) {
+      appEnv.setHostingAppInfo(this._hostAppInfo);
+    }
+
+    if (this._hostOSInfo) {
+      appEnv.setOsInfo(this._hostOSInfo);
     }
 
     const inferred = await this.getInferredEnvironment();

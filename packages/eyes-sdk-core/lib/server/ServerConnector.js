@@ -9,6 +9,7 @@ const { RunningSession } = require('./RunningSession');
 const { TestResults } = require('../TestResults');
 const { MatchResult } = require('../match/MatchResult');
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { TypeUtils } = require('../utils/TypeUtils');
 const { ArgumentGuard } = require('../ArgumentGuard');
 
 const { RunningRender } = require('../renderer/RunningRender');
@@ -292,21 +293,28 @@ class ServerConnector {
   /**
    * Sets the proxy settings to be used by the rest client.
    *
-   * @param {ProxySettings|string} arg1 The proxy setting or url to be used. If {@code null} then no proxy is set.
+   * @param {ProxySettings|string|boolean} varArg The ProxySettings object or proxy url to be used.
+   *  Use {@code false} to disable proxy (even if it set via env variables). Use {@code null} to reset proxy settings.
    * @param {string} [username]
    * @param {string} [password]
    */
-  setProxy(arg1, username, password) {
-    if (!arg1) {
+  setProxy(varArg, username, password) {
+    if (TypeUtils.isNull(varArg)) {
       this._proxySettings = undefined;
       delete this._httpOptions.proxy;
       return;
     }
 
-    if (arg1 instanceof ProxySettings) {
-      this._proxySettings = arg1;
+    if (varArg === false) {
+      this._proxySettings = undefined;
+      this._httpOptions.proxy = false;
+      return;
+    }
+
+    if (varArg instanceof ProxySettings) {
+      this._proxySettings = varArg;
     } else {
-      this._proxySettings = new ProxySettings(arg1, username, password);
+      this._proxySettings = new ProxySettings(varArg, username, password);
     }
 
     this._httpOptions.proxy = this._proxySettings.toProxyObject();
