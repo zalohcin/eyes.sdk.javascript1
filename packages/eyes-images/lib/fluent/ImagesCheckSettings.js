@@ -18,11 +18,15 @@ class ImagesCheckSettings extends CheckSettings {
     this._imageBase64 = base64;
     this._imagePath = path;
     this._imageUrl = url;
+    this._imageProvider = null;
 
     this._imageSize = null;
+    this._domString = null;
+    this._ignoreMismatch = false;
   }
 
   /**
+   * @package
    * @return {MutableImage}
    */
   getMutableImage() {
@@ -30,6 +34,7 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
    * @return {Buffer}
    */
   getImageBuffer() {
@@ -37,6 +42,15 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
+   * @param {Buffer} imageBuffer
+   */
+  setImageBuffer(imageBuffer) {
+    this._imageBuffer = imageBuffer;
+  }
+
+  /**
+   * @package
    * @return {string}
    */
   getImageString() {
@@ -44,6 +58,15 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
+   * @param {string} base64String
+   */
+  setImageString(base64String) {
+    this._imageBase64 = base64String;
+  }
+
+  /**
+   * @package
    * @return {string}
    */
   getImagePath() {
@@ -51,6 +74,15 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
+   * @param {string} imagePath
+   */
+  setImagePath(imagePath) {
+    this._imagePath = imagePath;
+  }
+
+  /**
+   * @package
    * @return {string}
    */
   getImageUrl() {
@@ -58,6 +90,41 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
+   * @param {string} imageUrl
+   */
+  setImageUrl(imageUrl) {
+    this._imageUrl = imageUrl;
+  }
+
+  /**
+   * @package
+   * @return {ImageProvider}
+   */
+  getImageProvider() {
+    return this._imageProvider;
+  }
+
+  /**
+   * @package
+   * @param {ImageProvider} imageProvider
+   */
+  setImageProvider(imageProvider) {
+    this._imageProvider = imageProvider;
+  }
+
+  /**
+   * @package
+   * @param {RectangleSize} imageSize
+   * @return {this} This instance of the settings object.
+   */
+  setImageSize(imageSize) {
+    this._imageSize = imageSize;
+    return this;
+  }
+
+  /**
+   * @package
    * @return {RectangleSize}
    */
   getImageSize() {
@@ -65,10 +132,40 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {RectangleSize} imageSize
+   * @param {String} domString
+   * @return {this} This instance of the settings object.
    */
-  setImageSize(imageSize) {
-    this._imageSize = imageSize;
+  withDom(domString) {
+    this._sendDom = true;
+    this._domString = domString;
+    return this;
+  }
+
+  /**
+   * @package
+   * @return {String}
+   */
+  getDomString() {
+    return this._domString;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {boolean} [ignoreMismatch=true] True if the server should ignore a negative result for the visual validation.
+   *  Default value is `false`, but if you call to .ignoreMismatch() without arguments it will set value to `true`.
+   * @return {this}
+   */
+  ignoreMismatch(ignoreMismatch = true) {
+    this._ignoreMismatch = ignoreMismatch;
+    return this;
+  }
+
+  /**
+   * @package
+   * @return {boolean}
+   */
+  getIgnoreMismatch() {
+    return this._ignoreMismatch;
   }
 
   /**

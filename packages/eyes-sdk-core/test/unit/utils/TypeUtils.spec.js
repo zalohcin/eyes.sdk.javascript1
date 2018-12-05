@@ -31,6 +31,32 @@ describe('TypeUtils', () => {
     });
   });
 
+  describe('isNotNull()', () => {
+    it('check null', () => {
+      assert.ok(!TypeUtils.isNotNull(null));
+    });
+
+    it('check undefined', () => {
+      assert.ok(!TypeUtils.isNotNull(undefined));
+    });
+
+    it('check number', () => {
+      assert.ok(TypeUtils.isNotNull(0));
+    });
+
+    it('check NaN', () => {
+      assert.ok(TypeUtils.isNotNull(NaN));
+    });
+
+    it('check string', () => {
+      assert.ok(TypeUtils.isNotNull(''));
+    });
+
+    it('check boolean', () => {
+      assert.ok(TypeUtils.isNotNull(false));
+    });
+  });
+
   describe('isString()', () => {
     it('check string object', () => {
       // noinspection JSPrimitiveTypeWrapperUsage

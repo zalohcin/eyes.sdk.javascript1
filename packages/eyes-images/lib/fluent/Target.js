@@ -1,74 +1,97 @@
 'use strict';
 
-const { MutableImage, TypeUtils, ArgumentGuard } = require('@applitools/eyes-sdk-core');
+const { MutableImage, TypeUtils, ArgumentGuard, ImageProvider } = require('@applitools/eyes-sdk-core');
 
 const { ImagesCheckSettings } = require('./ImagesCheckSettings');
 
 class Target {
   /**
-   * @param {string|Buffer|MutableImage} image
+   * @param {string|Buffer|ImageProvider|MutableImage} varArg
    * @return {ImagesCheckSettings}
    */
-  static image(image) {
-    if (image instanceof MutableImage) {
-      return new ImagesCheckSettings(image);
+  static image(varArg) {
+    if (varArg instanceof MutableImage) {
+      return new ImagesCheckSettings(varArg);
     }
 
-    if (TypeUtils.isBuffer(image)) {
-      return new ImagesCheckSettings(undefined, image);
+    if (varArg instanceof ImageProvider) {
+      return Target.imageProvider(varArg);
     }
 
-    if (TypeUtils.isString(image)) {
-      if (TypeUtils.isBase64(image)) {
-        return new ImagesCheckSettings(undefined, undefined, image);
+    if (TypeUtils.isBuffer(varArg)) {
+      return Target.buffer(varArg);
+    }
+
+    if (TypeUtils.isString(varArg)) {
+      if (TypeUtils.isBase64(varArg)) {
+        return Target.base64(varArg);
       }
 
-      return new ImagesCheckSettings(undefined, undefined, undefined, image);
+      return Target.url(varArg);
     }
 
     throw new TypeError('IllegalType: unsupported type of image!');
   }
 
   /**
-   * @param {Buffer} buffer
+   * @param {Buffer} imageBuffer
    * @return {ImagesCheckSettings}
    */
-  static buffer(buffer) {
-    ArgumentGuard.isBuffer(buffer, 'buffer');
+  static buffer(imageBuffer) {
+    ArgumentGuard.isBuffer(imageBuffer, 'buffer');
 
-    return new ImagesCheckSettings(null, buffer);
+    const checkSettings = new ImagesCheckSettings();
+    checkSettings.setImageBuffer(imageBuffer);
+    return checkSettings;
   }
 
   /**
-   * @param {string} string
+   * @param {string} imageBase64
    * @return {ImagesCheckSettings}
    */
-  static base64(string) {
-    ArgumentGuard.isBase64(string);
+  static base64(imageBase64) {
+    ArgumentGuard.isBase64(imageBase64);
 
-    return new ImagesCheckSettings(undefined, undefined, string);
+    const checkSettings = new ImagesCheckSettings();
+    checkSettings.setImageString(imageBase64);
+    return checkSettings;
   }
 
   /**
-   * @param {string} string
+   * @param {string} imagePath
    * @return {ImagesCheckSettings}
    */
-  static path(string) {
-    ArgumentGuard.isString(string, 'path');
+  static path(imagePath) {
+    ArgumentGuard.isString(imagePath, 'path');
 
-    return new ImagesCheckSettings(undefined, undefined, undefined, string);
+    const checkSettings = new ImagesCheckSettings();
+    checkSettings.setImagePath(imagePath);
+    return checkSettings;
   }
 
   /**
-   * @param {string} string
+   * @param {string} imageUrl
    * @param {RectangleSize} [imageSize]
    * @return {ImagesCheckSettings}
    */
-  static url(string, imageSize) {
-    ArgumentGuard.isString(string, 'url');
+  static url(imageUrl, imageSize) {
+    ArgumentGuard.isString(imageUrl, 'url');
 
-    const checkSettings = new ImagesCheckSettings(undefined, undefined, undefined, undefined, string);
+    const checkSettings = new ImagesCheckSettings();
+    checkSettings.setImageUrl(imageUrl);
     checkSettings.setImageSize(imageSize);
+    return checkSettings;
+  }
+
+  /**
+   * @param {ImageProvider} imageProvider
+   * @return {ImagesCheckSettings}
+   */
+  static imageProvider(imageProvider) {
+    ArgumentGuard.isValidType(imageProvider, ImageProvider);
+
+    const checkSettings = new ImagesCheckSettings();
+    checkSettings.setImageProvider(imageProvider);
     return checkSettings;
   }
 

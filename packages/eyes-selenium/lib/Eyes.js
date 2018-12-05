@@ -2,6 +2,7 @@
 
 const {
   EyesBase,
+  FullPageCaptureAlgorithm,
   FixedScaleProviderFactory,
   NullScaleProvider,
   RegionProvider,
@@ -27,7 +28,6 @@ const { DomCapture } = require('@applitools/dom-utils');
 
 const { ImageProviderFactory } = require('./capture/ImageProviderFactory');
 const { EyesWebDriverScreenshotFactory } = require('./capture/EyesWebDriverScreenshotFactory');
-const { FullPageCaptureAlgorithm } = require('./capture/FullPageCaptureAlgorithm');
 const { FrameChain } = require('./frames/FrameChain');
 const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
 const { EyesTargetLocator } = require('./wrappers/EyesTargetLocator');

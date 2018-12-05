@@ -19,6 +19,16 @@ class TypeUtils {
   }
 
   /**
+   * Checks if `value` is NOT `null` and NOT `undefined`.
+   *
+   * @param {*} value
+   * @return {boolean}
+   */
+  static isNotNull(value) {
+    return !TypeUtils.isNull(value);
+  }
+
+  /**
    * Checks if `value` has a type `string` or created by the `String` constructor
    *
    * @param {*} value
