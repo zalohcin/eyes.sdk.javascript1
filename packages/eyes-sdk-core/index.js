@@ -7,6 +7,7 @@ exports.AppOutputWithScreenshot = require('./lib/capture/AppOutputWithScreenshot
 exports.EyesScreenshot = require('./lib/capture/EyesScreenshot').EyesScreenshot;
 exports.EyesScreenshotFactory = require('./lib/capture/EyesScreenshotFactory').EyesScreenshotFactory;
 exports.EyesSimpleScreenshot = require('./lib/capture/EyesSimpleScreenshot').EyesSimpleScreenshot;
+exports.EyesSimpleScreenshotFactory = require('./lib/capture/EyesSimpleScreenshotFactory').EyesSimpleScreenshotFactory;
 exports.FullPageCaptureAlgorithm = require('./lib/capture/FullPageCaptureAlgorithm').FullPageCaptureAlgorithm;
 exports.ImageProvider = require('./lib/capture/ImageProvider').ImageProvider;
 
