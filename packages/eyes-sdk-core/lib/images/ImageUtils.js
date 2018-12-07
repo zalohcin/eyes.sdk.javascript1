@@ -20,10 +20,6 @@ class ImageUtils {
    */
   static parseImage(buffer) {
     return new Promise(resolve => {
-      if (!fs.open) {
-        return resolve(buffer);
-      }
-
       // pass the file to PNG using read stream
       const imageReadableStream = new ReadableBufferStream(buffer, undefined);
       const image = new png.Image({ filterType: 4 });
@@ -40,10 +36,6 @@ class ImageUtils {
    */
   static packImage(image) {
     return new Promise(resolve => {
-      if (!fs.open) {
-        return resolve(image);
-      }
-
       // Write back to a temp png file
       const imageWritableStream = new WritableBufferStream();
       // noinspection JSUnresolvedFunction
