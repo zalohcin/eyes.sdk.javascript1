@@ -19,6 +19,7 @@ function makeWaitForRenderedStatus({
   logger,
   doGetRenderStatus,
 }) {
+  let counter = 0;
   let isRunning;
   const pendingRenders = {};
   return async function waitForRenderedStatus(renderId, stopCondition = () => {}) {
@@ -34,8 +35,9 @@ function makeWaitForRenderedStatus({
     });
 
     async function getRenderStatusJob() {
+      counter++;
       const renderIds = Object.keys(pendingRenders);
-      logger.log(`[waitForRenderedStatus] render status job (${renderIds.length}): ${renderIds}`);
+      log(`render status job (${renderIds.length}): ${renderIds}`);
       if (renderIds.length === 0 || stopCondition()) {
         isRunning = false;
         return;
@@ -44,7 +46,7 @@ function makeWaitForRenderedStatus({
       const [err, renderStatuses] = await presult(doGetRenderStatus(renderIds));
 
       if (err) {
-        logger.log(`error during getRenderStatus: ${err}`);
+        log(`error during getRenderStatus: ${err}`);
         await psetTimeout(getStatusInterval);
         return getRenderStatusJob();
       }
@@ -56,23 +58,27 @@ function makeWaitForRenderedStatus({
         const pendingRender = pendingRenders[renderId];
         if (status === RenderStatus.ERROR) {
           delete pendingRenders[renderId];
-          logger.log(`render error received for ${renderId}: ${status.getError()}`);
+          log(`render error received for ${renderId}: ${rs.getError()}`);
           pendingRender.reject(new Error(failMsg));
         } else if (status === RenderStatus.RENDERED) {
           delete pendingRenders[renderId];
-          logger.log('render completed:', renderId);
+          log(`got "rendered" status for ${renderId}`);
           pendingRender.resolve(rs.toJSON());
         } else if (now - pendingRender.startTime > timeout) {
           delete pendingRenders[renderId];
-          logger.log(`timeout reached for ${renderId}`);
+          log(`timeout reached for ${renderId}`);
           pendingRender.reject(new Error(failMsg));
         }
       });
 
-      logger.log('[waitForRenderedStatus] awaiting', getStatusInterval);
+      log(`awaiting getStatusInterval=${getStatusInterval}`);
       await psetTimeout(getStatusInterval);
-      logger.log('[waitForRenderedStatus] awaited');
+      log('awaited');
       return getRenderStatusJob();
+
+      function log(msg) {
+        logger.log(`[waitForRenderedStatus] [${counter}] ${msg}`);
+      }
     }
   };
 }

@@ -11,6 +11,8 @@ const SOME_BATCH = 'SOME_BATCH';
 const getSha256Hash = require('./getSha256Hash');
 const FakeRunningRender = require('./FakeRunningRender');
 
+let salt = 0;
+
 function compare(o1, o2) {
   return JSON.stringify(o1) === JSON.stringify(o2);
 }
@@ -84,6 +86,7 @@ class FakeEyesWrapper {
       sizeMode,
       emulationInfo,
       selectorsToFindRegionsFor,
+      salt: salt++,
     });
 
     return new FakeRunningRender(renderId, RenderStatus.RENDERED);
