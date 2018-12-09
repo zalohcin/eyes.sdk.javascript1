@@ -4,7 +4,7 @@ const {RenderStatus} = require('@applitools/eyes-sdk-core');
 const toCacheEntry = require('./toCacheEntry');
 
 function makeRenderBatch({putResources, resourceCache, fetchCache, logger, doRenderBatch}) {
-  return async function renderBatch(renderRequests, wrapper) {
+  return async function renderBatch(renderRequests) {
     const runningRenders = await doRenderBatch(renderRequests);
 
     await Promise.all(
@@ -24,7 +24,7 @@ function makeRenderBatch({putResources, resourceCache, fetchCache, logger, doRen
     );
 
     if (runningRenders.some(rr => rr.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES)) {
-      const runningRenders2 = await doRenderBatch(renderRequests, wrapper);
+      const runningRenders2 = await doRenderBatch(renderRequests);
       if (runningRenders2.some(rr => rr.getRenderStatus() === RenderStatus.NEED_MORE_RESOURCES)) {
         logger.log('unexpectedly got "need more resources" on second render request');
         throw new Error('Unexpected error while taking screenshot');

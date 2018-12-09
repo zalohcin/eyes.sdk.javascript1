@@ -727,23 +727,39 @@ describe('openEyes', () => {
   });
 
   describe('max concurrency for render', () => {
-    let counter;
-    let finishRenders;
+    let renderCount;
+    let renderStatusCount;
+    let runningStatuses;
     beforeEach(() => {
-      counter = 0;
-      finishRenders = [];
-      wrapper.getRenderStatus = () =>
-        new Promise(resolve => {
-          counter++;
-          finishRenders.push(
-            (
-              status = {
-                status: RenderStatus.RENDERED,
+      renderCount = 0;
+      renderStatusCount = 0;
+      runningStatuses = [];
+      const renderBatch = wrapper.renderBatch;
+      wrapper.renderBatch = function(renderRequests) {
+        renderCount += renderRequests.length;
+        runningStatuses = runningStatuses.concat(renderRequests.map(() => RenderStatus.RENDERING));
+        return renderBatch.apply(this, arguments);
+      };
+      wrapper.getRenderStatus = async renderIds => {
+        // console.log('finishRenders', runningStatuses, 'renderIds', renderIds);
+        renderStatusCount++;
+        const statuses = runningStatuses
+          .filter(x => !!x)
+          .map(
+            status =>
+              new RenderStatusResults({
+                status: status,
                 imageLocation: JSON.stringify({isGood: true}),
-              },
-            ) => resolve([new RenderStatusResults(status)]),
+              }),
           );
-        });
+        runningStatuses = runningStatuses.map(flag =>
+          flag === RenderStatus.RENDERED ? false : flag,
+        );
+
+        expect(renderIds.length).to.equal(statuses.length);
+
+        return statuses;
+      };
     });
 
     beforeEach(() => {
@@ -763,20 +779,33 @@ describe('openEyes', () => {
       });
       checkWindow({url: '', cdt: [], sizeMode: null});
       await psetTimeout(0);
+      expect(renderCount).to.equal(1);
+      expect(renderStatusCount).to.equal(1);
+
       checkWindow({url: '', cdt: [], sizeMode: null});
       await psetTimeout(0);
+      expect(renderCount).to.equal(2);
+      expect(renderStatusCount).to.equal(1);
+
       checkWindow({url: '', cdt: [], sizeMode: null});
       await psetTimeout(0);
-      const expected1 = counter;
-      finishRenders[0]();
-      await psetTimeout(0);
-      const expected2 = counter;
-      finishRenders[1]();
-      finishRenders[2]();
+      expect(renderCount).to.equal(2); // concurrency is blocking this render
+      expect(renderStatusCount).to.equal(1);
+
+      await psetTimeout(600);
+
+      expect(renderCount).to.equal(2);
+      expect(renderStatusCount).to.equal(2); // second interval of /render-status complete
+
+      runningStatuses[0] = RenderStatus.RENDERED;
+
+      await psetTimeout(600);
+      expect(renderCount).to.equal(3);
+      expect(renderStatusCount).to.equal(3); // third interval of /render-status complete
+
+      runningStatuses[1] = RenderStatus.RENDERED;
+      runningStatuses[2] = RenderStatus.RENDERED;
       await close();
-      expect(expected1).to.equal(2);
-      expect(expected2).to.equal(3);
-      expect(counter).to.equal(3);
     });
 
     it('runs renders with max concurrency for multiple browsers', async () => {
@@ -790,17 +819,19 @@ describe('openEyes', () => {
       await psetTimeout(0);
       checkWindow({url: '', cdt: [], sizeMode: null});
       await psetTimeout(0);
-      const expected1 = counter;
-      finishRenders[0]();
-      await psetTimeout(0);
-      const expected2 = counter;
-      finishRenders[1]();
-      finishRenders[2]();
-      finishRenders[3]();
+      const expected1 = renderCount;
+      runningStatuses[0] = RenderStatus.RENDERED;
+      await psetTimeout(600);
+      const expected2 = renderCount;
+
+      runningStatuses[1] = RenderStatus.RENDERED;
+      runningStatuses[2] = RenderStatus.RENDERED;
+      runningStatuses[3] = RenderStatus.RENDERED;
+
       await close();
       expect(expected1).to.equal(2);
       expect(expected2).to.equal(4);
-      expect(counter).to.equal(4);
+      expect(renderCount).to.equal(4);
     });
 
     it('runs renders with max concurrency between open/close', async () => {
@@ -826,30 +857,23 @@ describe('openEyes', () => {
       checkWindow2({url: '', cdt: [], sizeMode: null});
       await psetTimeout(0);
 
-      const expected1 = counter;
-      finishRenders[0]();
-      await psetTimeout(0);
+      const expected1 = renderCount;
+      runningStatuses[0] = RenderStatus.RENDERED;
+      await psetTimeout(600);
 
-      const expected2 = counter;
-      finishRenders[1]();
-      finishRenders[2]();
-      finishRenders[3]();
+      const expected2 = renderCount;
+      runningStatuses[1] = RenderStatus.RENDERED;
+      runningStatuses[2] = RenderStatus.RENDERED;
+      runningStatuses[3] = RenderStatus.RENDERED;
 
       await close();
       await close2();
       expect(expected1).to.equal(2);
       expect(expected2).to.equal(4);
-      expect(counter).to.equal(4);
+      expect(renderCount).to.equal(4);
     });
 
     it('resolves render job when error in getRenderStatus happens', async () => {
-      let renderBatchCounter = 0;
-      const renderBatch = wrapper.renderBatch;
-      wrapper.renderBatch = function() {
-        renderBatchCounter++;
-        return renderBatch.apply(this, arguments);
-      };
-
       openEyes = makeRenderingGridClient({
         concurrency: 1,
         renderConcurrencyFactor: 1,
@@ -865,18 +889,18 @@ describe('openEyes', () => {
 
       checkWindow({url: '', cdt: [], selector: '111'});
       await psetTimeout(0);
-      expect(renderBatchCounter).to.equal(1);
-      expect(counter).to.equal(1);
+      expect(renderCount).to.equal(1);
+      expect(renderStatusCount).to.equal(1);
 
       checkWindow({url: '', cdt: [], selector: '222'});
       await psetTimeout(0);
-      expect(renderBatchCounter).to.equal(1);
-      expect(counter).to.equal(1);
+      expect(renderCount).to.equal(1);
+      expect(renderStatusCount).to.equal(1);
 
-      finishRenders[0]({status: RenderStatus.ERROR, error: 'bla'});
-      await psetTimeout(0);
-      expect(renderBatchCounter).to.equal(2);
-      expect(counter).to.equal(1);
+      runningStatuses[0] = RenderStatus.ERROR;
+      await psetTimeout(600);
+      expect(renderCount).to.equal(2);
+      expect(renderStatusCount).to.equal(2);
 
       const [err] = await presult(close());
       expect(err).to.be.an.instanceOf(Error);
