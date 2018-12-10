@@ -88,4 +88,24 @@ describe('getRenderStatus', () => {
     expect(err2.message).to.equal('fail');
     expect(calls).to.eql([['bla1', 'error']]);
   });
+
+  it('continues to run after an error happens', async () => {
+    const renderId1 = 'bla1';
+    const renderId2 = 'error';
+    const promise1 = getRenderStatus(renderId1);
+    const promise2 = getRenderStatus(renderId2);
+
+    const [err1, _rs1] = await presult(promise1);
+    const [err2, _rs2] = await presult(promise2);
+    expect(err1).to.be.an.instanceOf(Error);
+    expect(err1.message).to.equal('fail');
+    expect(err2).to.be.an.instanceOf(Error);
+    expect(err2.message).to.equal('fail');
+    expect(calls).to.eql([['bla1', 'error']]);
+
+    const renderId = 'bla';
+    const status = await getRenderStatus(renderId);
+    expect(status).to.eql(new RenderStatusResults({status: renderId}));
+    expect(calls).to.eql([['bla1', 'error'], ['bla']]);
+  });
 });

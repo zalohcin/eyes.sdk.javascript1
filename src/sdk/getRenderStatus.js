@@ -45,6 +45,7 @@ function makeGetRenderStatus({logger, doGetRenderStatus, getStatusInterval = 500
       for (const renderId of renderIds) {
         pendingRendersForJob[renderId].reject(err);
       }
+      isRunning = false;
       return;
     }
 
