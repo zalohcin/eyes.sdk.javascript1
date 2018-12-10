@@ -9,76 +9,45 @@ const psetTimeout = t =>
 
 const failMsg = 'failed to render screenshot';
 
-/*******************************
- *    This is THE STATUSER!    *
- *******************************/
-
-function makeWaitForRenderedStatus({
-  timeout = 120000,
-  getStatusInterval = 500,
-  logger,
-  doGetRenderStatus,
-}) {
-  let counter = 0;
-  let isRunning;
-  const pendingRenders = {};
+function makeWaitForRenderedStatus({timeout = 120000, logger, getRenderStatus}) {
   return async function waitForRenderedStatus(renderId, stopCondition = () => {}) {
-    return new Promise((resolve, reject) => {
-      logger.log(`[waitForRenderedStatus] adding job for ${renderId} isRunning=${isRunning}`);
-      if (!pendingRenders[renderId]) {
-        pendingRenders[renderId] = {resolve, reject, startTime: Date.now()};
-      }
-      if (!isRunning) {
-        isRunning = true;
-        getRenderStatusJob();
+    return new Promise(async (resolve, reject) => {
+      log(`waiting for ${renderId} to be rendered`);
+      const startTime = Date.now();
+      getRenderStatusJob();
+
+      async function getRenderStatusJob() {
+        if (stopCondition()) {
+          return reject(new Error(`aborted render ${renderId}`));
+        }
+
+        if (Date.now() - startTime > timeout) {
+          return reject(new Error(failMsg));
+        }
+
+        const [err, rs] = await presult(getRenderStatus(renderId));
+
+        if (err) {
+          log(`error during getRenderStatus for ${renderId}: ${err}`);
+          return getRenderStatusJob();
+        }
+
+        log(`render status result for ${renderId}: ${rs}`);
+
+        const status = rs.getStatus();
+        if (status === RenderStatus.ERROR) {
+          return reject(new Error(failMsg));
+        } else if (status === RenderStatus.RENDERED) {
+          return resolve(rs.toJSON());
+        }
+
+        await psetTimeout(0);
+        return getRenderStatusJob();
       }
     });
 
-    async function getRenderStatusJob() {
-      counter++;
-      const renderIds = Object.keys(pendingRenders);
-      log(`render status job (${renderIds.length}): ${renderIds}`);
-      if (renderIds.length === 0 || stopCondition()) {
-        isRunning = false;
-        return;
-      }
-
-      const [err, renderStatuses] = await presult(doGetRenderStatus(renderIds));
-
-      if (err) {
-        log(`error during getRenderStatus: ${err}`);
-        await psetTimeout(getStatusInterval);
-        return getRenderStatusJob();
-      }
-
-      const now = Date.now();
-      renderStatuses.forEach((rs, i) => {
-        const status = rs.getStatus();
-        const renderId = renderIds[i];
-        const pendingRender = pendingRenders[renderId];
-        if (status === RenderStatus.ERROR) {
-          delete pendingRenders[renderId];
-          log(`render error received for ${renderId}: ${rs.getError()}`);
-          pendingRender.reject(new Error(failMsg));
-        } else if (status === RenderStatus.RENDERED) {
-          delete pendingRenders[renderId];
-          log(`got "rendered" status for ${renderId}`);
-          pendingRender.resolve(rs.toJSON());
-        } else if (now - pendingRender.startTime > timeout) {
-          delete pendingRenders[renderId];
-          log(`timeout reached for ${renderId}`);
-          pendingRender.reject(new Error(failMsg));
-        }
-      });
-
-      log(`awaiting getStatusInterval=${getStatusInterval}`);
-      await psetTimeout(getStatusInterval);
-      log('awaited');
-      return getRenderStatusJob();
-
-      function log(msg) {
-        logger.log(`[waitForRenderedStatus] [${counter}] ${msg}`);
-      }
+    function log(msg) {
+      logger.log(`[waitForRenderedStatus] ${msg}`);
     }
   };
 }

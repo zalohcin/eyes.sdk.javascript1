@@ -741,7 +741,7 @@ describe('openEyes', () => {
         return renderBatch.apply(this, arguments);
       };
       wrapper.getRenderStatus = async renderIds => {
-        // console.log('finishRenders', runningStatuses, 'renderIds', renderIds);
+        // console.log('runningStatuses', runningStatuses, 'renderIds', renderIds);
         renderStatusCount++;
         const statuses = runningStatuses
           .filter(x => !!x)
@@ -752,8 +752,8 @@ describe('openEyes', () => {
                 imageLocation: JSON.stringify({isGood: true}),
               }),
           );
-        runningStatuses = runningStatuses.map(flag =>
-          flag === RenderStatus.RENDERED ? false : flag,
+        runningStatuses = runningStatuses.map(status =>
+          status === RenderStatus.RENDERED ? false : status,
         );
 
         expect(renderIds.length).to.equal(statuses.length);
@@ -780,28 +780,31 @@ describe('openEyes', () => {
       checkWindow({url: '', cdt: [], sizeMode: null});
       await psetTimeout(0);
       expect(renderCount).to.equal(1);
-      expect(renderStatusCount).to.equal(1);
+      expect(renderStatusCount).to.equal(0); // still batching initial renderIds for /render-status request
 
       checkWindow({url: '', cdt: [], sizeMode: null});
       await psetTimeout(0);
       expect(renderCount).to.equal(2);
-      expect(renderStatusCount).to.equal(1);
+      expect(renderStatusCount).to.equal(0); // still batching initial renderIds for /render-status request
 
       checkWindow({url: '', cdt: [], sizeMode: null});
       await psetTimeout(0);
       expect(renderCount).to.equal(2); // concurrency is blocking this render
-      expect(renderStatusCount).to.equal(1);
+      expect(renderStatusCount).to.equal(0); // still batching initial renderIds for /render-status request
 
-      await psetTimeout(600);
+      await psetTimeout(150);
 
       expect(renderCount).to.equal(2);
-      expect(renderStatusCount).to.equal(2); // second interval of /render-status complete
+      expect(renderStatusCount).to.equal(1);
 
       runningStatuses[0] = RenderStatus.RENDERED;
 
       await psetTimeout(600);
+      expect(renderStatusCount).to.equal(2);
+
+      await psetTimeout(500);
       expect(renderCount).to.equal(3);
-      expect(renderStatusCount).to.equal(3); // third interval of /render-status complete
+      expect(renderStatusCount).to.equal(3);
 
       runningStatuses[1] = RenderStatus.RENDERED;
       runningStatuses[2] = RenderStatus.RENDERED;
@@ -890,6 +893,9 @@ describe('openEyes', () => {
       checkWindow({url: '', cdt: [], selector: '111'});
       await psetTimeout(0);
       expect(renderCount).to.equal(1);
+      expect(renderStatusCount).to.equal(0);
+
+      await psetTimeout(150);
       expect(renderStatusCount).to.equal(1);
 
       checkWindow({url: '', cdt: [], selector: '222'});
@@ -913,11 +919,9 @@ describe('openEyes', () => {
   });
 
   it('handles render status timeout when second checkWindow starts AFTER timeout of previous checkWindow', async () => {
-    wrapper.getRenderStatus = async () => {
+    wrapper.getRenderStatus = async renderIds => {
       await psetTimeout(0);
-      const rs = new RenderStatusResults();
-      rs.setStatus(RenderStatus.RENDERING);
-      return [rs];
+      return renderIds.map(_renderId => new RenderStatusResults({status: RenderStatus.RENDERING}));
     };
 
     openEyes = makeRenderingGridClient({
@@ -942,11 +946,9 @@ describe('openEyes', () => {
   });
 
   it('handles render status timeout when second checkWindow starts BEFORE timeout of previous checkWindow', async () => {
-    wrapper.getRenderStatus = async () => {
+    wrapper.getRenderStatus = async renderIds => {
       await psetTimeout(0);
-      const rs = new RenderStatusResults();
-      rs.setStatus(RenderStatus.RENDERING);
-      return [rs];
+      return renderIds.map(_renderId => new RenderStatusResults({status: RenderStatus.RENDERING}));
     };
 
     openEyes = makeRenderingGridClient({

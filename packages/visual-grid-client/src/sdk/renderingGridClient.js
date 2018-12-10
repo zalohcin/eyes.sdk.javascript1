@@ -7,6 +7,7 @@ const makeFetchResource = require('./fetchResource');
 const makeExtractCssResourcesFromCdt = require('./extractCssResourcesFromCdt');
 const createResourceCache = require('./createResourceCache');
 const makeWaitForRenderedStatus = require('./waitForRenderedStatus');
+const makeGetRenderStatus = require('./getRenderStatus');
 const makePutResources = require('./putResources');
 const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
@@ -94,11 +95,15 @@ function makeRenderingGridClient({
     logger,
     doRenderBatch,
   });
-  const waitForRenderedStatus = makeWaitForRenderedStatus({
-    timeout: renderStatusTimeout,
-    getStatusInterval: renderStatusInterval,
+  const getRenderStatus = makeGetRenderStatus({
     logger,
     doGetRenderStatus,
+    getStatusInterval: renderStatusInterval,
+  });
+  const waitForRenderedStatus = makeWaitForRenderedStatus({
+    timeout: renderStatusTimeout,
+    logger,
+    getRenderStatus,
   });
   const getAllResources = makeGetAllResources({
     resourceCache,
