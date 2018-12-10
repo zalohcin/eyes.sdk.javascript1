@@ -36,7 +36,7 @@
     "type": "git"
   },
   "dependencies": {
-    "@applitools/eyes-sdk-core": "^4.4.0",
+    "@applitools/eyes-sdk-core": "^4.5.2",
     "@applitools/functional-commons": "^1.0.27",
     "@applitools/http-commons": "^1.2.2",
     "cosmiconfig": "^5.0.7",
@@ -50,7 +50,7 @@
     "throat": "^4.1.0"
   },
   "devDependencies": {
-    "@applitools/dom-capture": "^5.0.1",
+    "@applitools/dom-capture": "^5.0.2",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.3",
