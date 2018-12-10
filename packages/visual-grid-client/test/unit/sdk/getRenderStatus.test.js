@@ -92,20 +92,23 @@ describe('getRenderStatus', () => {
   it('continues to run after an error happens', async () => {
     const renderId1 = 'bla1';
     const renderId2 = 'error';
-    const promise1 = getRenderStatus(renderId1);
-    const promise2 = getRenderStatus(renderId2);
+    const promise1 = presult(getRenderStatus(renderId1));
+    const promise2 = presult(getRenderStatus(renderId2));
 
-    const [err1, _rs1] = await presult(promise1);
-    const [err2, _rs2] = await presult(promise2);
+    await psetTimeout(150);
+
+    const renderId3 = 'bla3';
+    const promise3 = await getRenderStatus(renderId3);
+
+    const [err1, _rs1] = await promise1;
+    const [err2, _rs2] = await promise2;
+    const rs3 = await promise3;
+
     expect(err1).to.be.an.instanceOf(Error);
     expect(err1.message).to.equal('fail');
     expect(err2).to.be.an.instanceOf(Error);
     expect(err2.message).to.equal('fail');
-    expect(calls).to.eql([['bla1', 'error']]);
-
-    const renderId = 'bla';
-    const status = await getRenderStatus(renderId);
-    expect(status).to.eql(new RenderStatusResults({status: renderId}));
-    expect(calls).to.eql([['bla1', 'error'], ['bla']]);
+    expect(calls).to.eql([['bla1', 'error'], ['bla3']]);
+    expect(rs3).to.eql(new RenderStatusResults({status: renderId3}));
   });
 });
