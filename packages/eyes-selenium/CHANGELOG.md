@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.3.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.3.2...@applitools/eyes-selenium@4.3.3) (2018-12-11)
+
+**Note:** Version bump only for package @applitools/eyes-selenium
+
+
+
+
+
 ## [4.3.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.3.1...@applitools/eyes-selenium@4.3.2) (2018-12-07)
 
 **Note:** Version bump only for package @applitools/eyes-selenium
@@ -89,6 +97,3 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 * Fix error when viewportSize in setViewportSize given as an object ([db6472a](https://github.com/lerna/lerna/commit/db6472a))
-
-
-
