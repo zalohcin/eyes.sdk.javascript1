@@ -145,7 +145,7 @@ class AppEnvironment {
   getHostingAppInfo() {
     return this._hostingAppInfo;
   }
-  
+
   /**
    * Sets the application hosting the application under test or {@code null} if unknown. (not part of test signature)
    *
@@ -174,12 +174,16 @@ class AppEnvironment {
     this._deviceInfo = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `AppEnvironment { ${JSON.stringify(this)} }`;
   }

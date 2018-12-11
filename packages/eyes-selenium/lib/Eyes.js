@@ -270,7 +270,7 @@ class Eyes extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {StitchMode}  The current stitch mode settings.
+   * @return {StitchMode} The current stitch mode settings.
    */
   getStitchMode() {
     return this._stitchMode;
@@ -403,7 +403,9 @@ class Eyes extends EyesBase {
     return this._driver;
   }
 
-  /** @private */
+  /**
+   * @private
+   */
   _initDriver(driver) {
     if (driver instanceof EyesWebDriver) {
       // noinspection JSValidateTypes
@@ -413,7 +415,9 @@ class Eyes extends EyesBase {
     }
   }
 
-  /** @private */
+  /**
+   * @private
+   */
   _initPositionProvider() {
     // Setting the correct position provider.
     const stitchMode = this.getStitchMode();
@@ -429,7 +433,7 @@ class Eyes extends EyesBase {
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * Preform visual validation
+   * Perform visual validation
    *
    * @param {string} name A name to be associated with the match
    * @param {SeleniumCheckSettings|CheckSettings} checkSettings Target instance which describes whether we want a
@@ -524,11 +528,11 @@ class Eyes extends EyesBase {
   }
 
   /**
+   * @private
    * @param driver
    * @param switchTo
    * @param frames
    * @return {Promise<void>}
-   * @private
    */
   async _trySwitchToFrames(driver, switchTo, frames) {
     if (await EyesSeleniumUtils.isMobileDevice(driver)) {
@@ -636,7 +640,9 @@ class Eyes extends EyesBase {
     const self = this;
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       // noinspection JSUnusedGlobalSymbols
-      /** @override */
+      /**
+       * @override
+       */
       async getRegion() {
         return self._getFullFrameOrElementRegion();
       }
@@ -777,7 +783,9 @@ class Eyes extends EyesBase {
     const self = this;
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       // noinspection JSUnusedGlobalSymbols
-      /** @override */
+      /**
+       * @override
+       */
       async getRegion() {
         const rect = await self._targetElement.getRect();
         return new Region(
@@ -1231,13 +1239,17 @@ class Eyes extends EyesBase {
     await EyesSeleniumUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize));
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   async beforeOpen() {
     this._scrollRootElement = null;
     await this._tryHideScrollbars();
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...');
@@ -1458,7 +1470,9 @@ class Eyes extends EyesBase {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @override */
+  /**
+   * @override
+   */
   async getTitle() {
     if (!this._dontGetTitle) {
       try {
@@ -1473,7 +1487,9 @@ class Eyes extends EyesBase {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @override */
+  /**
+   * @override
+   */
   async getInferredEnvironment() {
     try {
       const userAgent = await this._driver.getUserAgent();
@@ -1500,7 +1516,7 @@ class Eyes extends EyesBase {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Set the image rotation degrees.
-   * @param degrees The amount of degrees to set the rotation to.
+   * @param {number} degrees The amount of degrees to set the rotation to.
    * @deprecated use {@link setRotation} instead
    */
   setForcedImageRotation(degrees) {

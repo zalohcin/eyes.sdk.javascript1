@@ -37,7 +37,9 @@ describe('EyesImages.TestClassicApi', function () {
   it('TestImageProvider', async function () {
     const ImageProviderImpl = class ImageProviderImpl extends ImageProvider {
       // noinspection JSUnusedGlobalSymbols
-      /** @override */
+      /**
+       * @override
+       */
       async getImage() {
         const data = await ImageUtils.readImage(`${__dirname}/../resources/minions-800x500.png`);
         return new MutableImage(data);

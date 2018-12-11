@@ -58,47 +58,65 @@ class EyesWebDriver extends IWebDriver {
     return this._driver.driver || this._driver;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   execute(command) {
     return this._driver.execute(command);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   setFileDetector(detector) {
     return this._driver.setFileDetector(detector);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getExecutor() {
     return this._driver.getExecutor();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getSession() {
     return this._driver.getSession();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getCapabilities() {
     return this._driver.getCapabilities();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   quit() {
     return this._driver.quit();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   actions(options) {
     return this._driver.actions(options);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   touchActions() {
     return this._driver.touchActions();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   executeScript(script, ...varArgs) {
     this._logger.verbose('Execute script...');
     EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs);
@@ -108,59 +126,81 @@ class EyesWebDriver extends IWebDriver {
     return result;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   executeAsyncScript(script, ...varArgs) {
     EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs);
     return this._driver.executeAsyncScript(script, ...varArgs);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   call(fn, optScope, ...varArgs) {
     return this._driver.call(fn, optScope, ...varArgs);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   wait(condition, optTimeout, optMessage) {
     return this._driver.wait(condition, optTimeout, optMessage);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   sleep(ms) {
     return this._driver.sleep(ms);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getWindowHandle() {
     return this._driver.getWindowHandle();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getAllWindowHandles() {
     return this._driver.getAllWindowHandles();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getPageSource() {
     return this._driver.getPageSource();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   close() {
     return this._driver.close();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   get(url) {
     this._frameChain.clear();
     return this._driver.get(url);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getCurrentUrl() {
     return this._driver.getCurrentUrl();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getTitle() {
     return this._driver.getTitle();
   }
@@ -192,7 +232,9 @@ class EyesWebDriver extends IWebDriver {
     });
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async takeScreenshot() {
     const screenshot64 = await this._driver.takeScreenshot(); // Get the image as base64.
     const screenshot = new MutableImage(screenshot64);
@@ -200,12 +242,16 @@ class EyesWebDriver extends IWebDriver {
     return screenshot.getImageBase64();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   manage() {
     return this._driver.manage();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   navigate() {
     return this._driver.navigate();
   }

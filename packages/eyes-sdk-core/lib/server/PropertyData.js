@@ -11,30 +11,40 @@ class PropertyData {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getName() {
     return this._name;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setName(value) {
     this._name = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getValue() {
     return this._value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setValue(value) {
     this._value = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return {
       name: this._name,
@@ -42,7 +52,9 @@ class PropertyData {
     };
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `PropertyData { ${JSON.stringify(this)} }`;
   }

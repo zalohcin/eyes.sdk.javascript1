@@ -67,7 +67,9 @@ class RemoteSessionEventHandler extends SessionEventHandler {
     return this._httpOptions.params.accessKey;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   initStarted() {
     const options = Object.create(this._httpOptions);
     options.uri = this._autSessionId;
@@ -76,7 +78,9 @@ class RemoteSessionEventHandler extends SessionEventHandler {
     return axios(options);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   initEnded() {
     const options = Object.create(this._httpOptions);
     options.uri = this._autSessionId;
@@ -85,7 +89,9 @@ class RemoteSessionEventHandler extends SessionEventHandler {
     return axios(options);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   setSizeWillStart(sizeToSet) {
     const options = Object.create(this._httpOptions);
     options.uri = this._autSessionId;
@@ -94,7 +100,9 @@ class RemoteSessionEventHandler extends SessionEventHandler {
     return axios(options);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   setSizeEnded() {
     const options = Object.create(this._httpOptions);
     options.uri = this._autSessionId;
@@ -103,7 +111,9 @@ class RemoteSessionEventHandler extends SessionEventHandler {
     return axios(options);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   testStarted(autSessionId) {
     this._autSessionId = autSessionId;
 
@@ -114,7 +124,9 @@ class RemoteSessionEventHandler extends SessionEventHandler {
     return axios(options);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   testEnded(autSessionId, testResults) {
     const options = Object.create(this._httpOptions);
     options.uri = autSessionId;
@@ -123,7 +135,9 @@ class RemoteSessionEventHandler extends SessionEventHandler {
     return axios(options);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   validationWillStart(autSessionId, validationInfo) {
     const options = Object.create(this._httpOptions);
     options.uri = `${autSessionId}/validations`;
@@ -132,7 +146,9 @@ class RemoteSessionEventHandler extends SessionEventHandler {
     return axios(options);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   validationEnded(autSessionId, validationId, validationResult) {
     const options = Object.create(this._httpOptions);
     options.uri = `${autSessionId}/validations/${validationId}`;

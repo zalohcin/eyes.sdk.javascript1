@@ -42,7 +42,9 @@ class RenderStatusResults {
     this._selectorRegions = selectorRegions;
   }
 
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   isEmpty() {
     return (
       this._status === undefined &&
@@ -56,92 +58,128 @@ class RenderStatusResults {
     );
   }
 
-  /** @return {RenderStatus} */
+  /**
+   * @return {RenderStatus}
+   */
   getStatus() {
     return this._status;
   }
 
-  /** @param {RenderStatus} value */
+  /**
+   * @param {RenderStatus} value
+   */
   setStatus(value) {
     this._status = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getImageLocation() {
     return this._imageLocation;
   }
 
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setImageLocation(value) {
     this._imageLocation = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getDomLocation() {
     return this._domLocation;
   }
 
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setDomLocation(value) {
     this._domLocation = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getError() {
     return this._error;
   }
 
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setError(value) {
     this._error = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getOS() {
     return this._os;
   }
 
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setOS(value) {
     this._os = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getUserAgent() {
     return this._userAgent;
   }
 
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setUserAgent(value) {
     this._userAgent = value;
   }
 
-  /** @return {RectangleSize} */
+  /**
+   * @return {RectangleSize}
+   */
   getDeviceSize() {
     return this._deviceSize;
   }
 
-  /** @param {RectangleSize} value */
+  /**
+   * @param {RectangleSize} value
+   */
   setDeviceSize(value) {
     this._deviceSize = value;
   }
 
-  /** @return {Region[]} */
+  /**
+   * @return {Region[]}
+   */
   getSelectorRegions() {
     return this._selectorRegions;
   }
 
-  /** @param {Region[]} value */
+  /**
+   * @param {Region[]} value
+   */
   setSelectorRegions(value) {
     this._selectorRegions = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `RenderStatusResults { ${JSON.stringify(this)} }`;
   }

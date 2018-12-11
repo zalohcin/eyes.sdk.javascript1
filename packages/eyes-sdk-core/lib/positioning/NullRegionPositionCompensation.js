@@ -3,7 +3,9 @@
 const { RegionPositionCompensation } = require('./RegionPositionCompensation');
 
 class NullRegionPositionCompensation extends RegionPositionCompensation {
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   compensateRegionPosition(region, pixelRatio) { // eslint-disable-line no-unused-vars
     return region;
   }

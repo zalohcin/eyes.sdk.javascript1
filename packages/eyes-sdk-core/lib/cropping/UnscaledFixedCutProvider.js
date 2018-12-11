@@ -19,7 +19,9 @@ class UnscaledFixedCutProvider extends CutProvider {
     this._right = right;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async cut(image) {
     if (this._header > 0) {
       const region = new Region(0, this._header, image.getWidth(), image.getHeight() - this._header);
@@ -44,7 +46,9 @@ class UnscaledFixedCutProvider extends CutProvider {
     return image;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   scale(scaleRatio) { // eslint-disable-line no-unused-vars
     return new UnscaledFixedCutProvider(this._header, this._footer, this._left, this._right);
   }

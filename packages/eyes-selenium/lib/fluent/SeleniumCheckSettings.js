@@ -32,6 +32,7 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
    * @return {By}
    */
   getTargetSelector() {
@@ -39,6 +40,7 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
    * @return {WebElement}
    */
   getTargetElement() {
@@ -46,61 +48,80 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
    * @return {FrameLocator[]}
    */
   getFrameChain() {
     return this._frameChain;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   layout() {
     super.layout();
     return this;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   exact() {
     super.exact();
     return this;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   strict() {
     super.strict();
     return this;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   content() {
     super.content();
     return this;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   matchLevel(matchLevel) {
     super.matchLevel(matchLevel);
     return this;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   ignoreCaret(ignoreCaret) {
     super.ignoreCaret(ignoreCaret);
     return this;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   fully(fully) {
     super.fully(fully);
     return this;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   stitchContent(stitchContent) {
     super.stitchContent(stitchContent);
     return this;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   timeout(timeoutMilliseconds) {
     super.timeout(timeoutMilliseconds);
     return this;

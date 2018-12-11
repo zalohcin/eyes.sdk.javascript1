@@ -46,7 +46,9 @@ class TextTrigger extends Trigger {
     return Trigger.TriggerType.Text;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `Text [${this._control}] ${this._text}`;
   }

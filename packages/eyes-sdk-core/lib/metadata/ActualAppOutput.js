@@ -51,143 +51,191 @@ class ActualAppOutput {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Image} */
+  /**
+   * @return {Image}
+   */
   getImage() {
     return this._image;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Image} value */
+  /**
+   * @param {Image} value
+   */
   setImage(value) {
     this._image = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Image} */
+  /**
+   * @return {Image}
+   */
   getThumbprint() {
     return this._thumbprint;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Image} value */
+  /**
+   * @param {Image} value
+   */
   setThumbprint(value) {
     this._thumbprint = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {ImageMatchSettings} */
+  /**
+   * @return {ImageMatchSettings}
+   */
   getImageMatchSettings() {
     return this._imageMatchSettings;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {ImageMatchSettings} value */
+  /**
+   * @param {ImageMatchSettings} value
+   */
   setImageMatchSettings(value) {
     this._imageMatchSettings = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getIgnoreExpectedOutputSettings() {
     return this._ignoreExpectedOutputSettings;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {boolean} value */
+  /**
+   * @param {boolean} value
+   */
   setIgnoreExpectedOutputSettings(value) {
     this._ignoreExpectedOutputSettings = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getIsMatching() {
     return this._isMatching;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {boolean} value */
+  /**
+   * @param {boolean} value
+   */
   setIsMatching(value) {
     this._isMatching = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getAreImagesMatching() {
     return this._areImagesMatching;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {boolean} value */
+  /**
+   * @param {boolean} value
+   */
   setAreImagesMatching(value) {
     this._areImagesMatching = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Date} */
+  /**
+   * @return {Date}
+   */
   getOccurredAt() {
     return this._occurredAt;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Date} value */
+  /**
+   * @param {Date} value
+   */
   setOccurredAt(value) {
     this._occurredAt = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {object[]} */
+  /**
+   * @return {object[]}
+   */
   getUserInputs() {
     return this._userInputs;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {object[]} value */
+  /**
+   * @param {object[]} value
+   */
   setUserInputs(value) {
     this._userInputs = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getWindowTitle() {
     return this._windowTitle;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setWindowTitle(value) {
     this._windowTitle = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getTag() {
     return this._tag;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setTag(value) {
     this._tag = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getIsPrimary() {
     return this._isPrimary;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {boolean} value */
+  /**
+   * @param {boolean} value
+   */
   setIsPrimary(value) {
     this._isPrimary = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `ActualAppOutput { ${JSON.stringify(this)} }`;
   }

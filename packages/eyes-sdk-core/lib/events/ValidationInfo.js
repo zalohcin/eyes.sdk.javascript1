@@ -43,7 +43,9 @@ class ValidationInfo {
     return this._tag;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }

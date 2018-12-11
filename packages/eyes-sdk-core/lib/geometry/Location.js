@@ -102,12 +102,16 @@ class Location {
     return new Location({ x: Math.ceil(this._x * scaleRatio), y: Math.ceil(this._y * scaleRatio) });
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return { x: this._x, y: this._y };
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `(${this._x}, ${this._y})`;
   }

@@ -14,13 +14,17 @@ class SimplePropertyHandler extends PropertyHandler {
     this._obj = obj || null;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   set(obj) {
     this._obj = obj;
     return true;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   get() {
     return this._obj;
   }

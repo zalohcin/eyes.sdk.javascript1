@@ -85,12 +85,16 @@ class RGridResource {
     };
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this, ['_sha256hash']);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `RGridResource { ${JSON.stringify(this)} }`;
   }

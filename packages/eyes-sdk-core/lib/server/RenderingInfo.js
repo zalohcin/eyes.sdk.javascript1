@@ -14,42 +14,56 @@ class RenderingInfo {
     this._resultsUrl = resultsUrl;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getServiceUrl() {
     return this._serviceUrl;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setServiceUrl(value) {
     this._serviceUrl = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getAccessToken() {
     return this._accessToken;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setAccessToken(value) {
     this._accessToken = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getResultsUrl() {
     return this._resultsUrl;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setResultsUrl(value) {
     this._resultsUrl = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {{sub: string, exp: number, iss: string}} */
+  /**
+   * @return {{sub: string, exp: number, iss: string}}
+   */
   getDecodedAccessToken() {
     if (this._payload) {
       this._payload = GeneralUtils.jwtDecode(this._accessToken);
@@ -57,12 +71,16 @@ class RenderingInfo {
     return this._payload;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this, ['_payload']);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `RenderingInfo { ${JSON.stringify(this)} }`;
   }

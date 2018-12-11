@@ -19,47 +19,63 @@ class BatchInfo {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getId() {
     return this._id;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setId(value) {
     this._id = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getName() {
     return this._name;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setName(value) {
     this._name = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Date} */
+  /**
+   * @return {Date}
+   */
   getStartedAt() {
     return this._startedAt;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Date} value */
+  /**
+   * @param {Date} value
+   */
   setStartedAt(value) {
     this._startedAt = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `BatchInfo { ${JSON.stringify(this)} }`;
   }

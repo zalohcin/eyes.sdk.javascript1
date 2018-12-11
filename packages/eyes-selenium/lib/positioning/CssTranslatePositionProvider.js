@@ -27,13 +27,17 @@ class CssTranslatePositionProvider extends PositionProvider {
     this._logger.verbose('creating CssTranslatePositionProvider');
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getCurrentPosition() {
     this._logger.verbose('position to return: ', this._lastSetPosition);
     return this._lastSetPosition;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async setPosition(location) {
     ArgumentGuard.notNull(location, 'location');
 
@@ -43,7 +47,9 @@ class CssTranslatePositionProvider extends PositionProvider {
     this._lastSetPosition = location;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getEntireSize() {
     const entireSize = await EyesSeleniumUtils.getCurrentFrameContentEntireSize(this._executor);
     this._logger.verbose(`CssTranslatePositionProvider - Entire size: ${entireSize}`);

@@ -487,7 +487,9 @@ class Region {
     this._coordinatesType = Region.EMPTY.getCoordinatesType();
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return {
       left: this._left,
@@ -498,7 +500,9 @@ class Region {
     };
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `(${this._left}, ${this._top}) ${this._width}x${this._height}, ${this._coordinatesType}`;
   }

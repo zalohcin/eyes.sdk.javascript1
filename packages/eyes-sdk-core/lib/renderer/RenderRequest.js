@@ -40,94 +40,126 @@ class RenderRequest {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getWebhook() {
     return this._webhook;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getUrl() {
     return this._url;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {RGridDom} */
+  /**
+   * @return {RGridDom}
+   */
   getDom() {
     return this._dom;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {RGridResource[]} */
+  /**
+   * @return {RGridResource[]}
+   */
   getResources() {
     return this._resources;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {RenderInfo} */
+  /**
+   * @return {RenderInfo}
+   */
   getRenderInfo() {
     return this._renderInfo;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getPlatform() {
     return this._platform;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getBrowserName() {
     return this._browserName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getRenderId() {
     return this._renderId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setRenderId(value) {
     this._renderId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getScriptHooks() {
     return this._scriptHooks;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setScriptHooks(value) {
     this._scriptHooks = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string[]} */
+  /**
+   * @return {string[]}
+   */
   getSelectorsToFindRegionsFor() {
     return this._selectorsToFindRegionsFor;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string[]} value */
+  /**
+   * @param {string[]} value
+   */
   setSelectorsToFindRegionsFor(value) {
     this._selectorsToFindRegionsFor = value;
   }
 
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getSendDom() {
     return this._sendDom;
   }
 
-  /** @param {boolean} value */
+  /**
+   * @param {boolean} value
+   */
   setSendDom(value) {
     this._sendDom = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     const resources = {};
     this.getResources().forEach(resource => {
@@ -174,7 +206,9 @@ class RenderRequest {
     return object;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `RenderRequest { ${JSON.stringify(this)} }`;
   }

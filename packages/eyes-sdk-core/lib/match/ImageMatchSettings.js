@@ -191,7 +191,9 @@ class ImageMatchSettings {
     this._floatingMatchSettings = floatingMatchSettings;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this, [], {
       ignoreRegions: 'ignore',
@@ -202,7 +204,9 @@ class ImageMatchSettings {
     });
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `ImageMatchSettings { ${JSON.stringify(this)} }`;
   }

@@ -34,95 +34,127 @@ class MatchSingleWindowData extends MatchWindowData {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {SessionStartInfo} */
+  /**
+   * @return {SessionStartInfo}
+   */
   getStartInfo() {
     return this._startInfo;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {SessionStartInfo} startInfo */
+  /**
+   * @param {SessionStartInfo} startInfo
+   */
   setStartInfo(startInfo) {
     this._startInfo = startInfo;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getUpdateBaseline() {
     return this._updateBaseline;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {boolean} updateBaseline */
+  /**
+   * @param {boolean} updateBaseline
+   */
   setUpdateBaseline(updateBaseline) {
     this._updateBaseline = updateBaseline;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getUpdateBaselineIfDifferent() {
     return this._updateBaselineIfDifferent;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {boolean} updateBaselineIfDifferent */
+  /**
+   * @param {boolean} updateBaselineIfDifferent
+   */
   setUpdateBaselineIfDifferent(updateBaselineIfDifferent) {
     this._updateBaselineIfDifferent = updateBaselineIfDifferent;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getUpdateBaselineIfNew() {
     return this._updateBaselineIfNew;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {boolean} updateBaselineIfNew */
+  /**
+   * @param {boolean} updateBaselineIfNew
+   */
   setUpdateBaselineIfNew(updateBaselineIfNew) {
     this._updateBaselineIfNew = updateBaselineIfNew;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getRemoveSession() {
     return this._removeSession;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {boolean} removeSession */
+  /**
+   * @param {boolean} removeSession
+   */
   setRemoveSession(removeSession) {
     this._removeSession = removeSession;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getRemoveSessionIfMatching() {
     return this._removeSessionIfMatching;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {boolean} removeSessionIfMatching */
+  /**
+   * @param {boolean} removeSessionIfMatching
+   */
   setRemoveSessionIfMatching(removeSessionIfMatching) {
     this._removeSessionIfMatching = removeSessionIfMatching;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getAgentId() {
     return this._agentId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} agentId */
+  /**
+   * @param {string} agentId
+   */
   setAgentId(agentId) {
     this._agentId = agentId;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     const object = this.toJSON();
 

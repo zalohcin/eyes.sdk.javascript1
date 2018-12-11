@@ -58,119 +58,159 @@ class SessionStartInfo {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getAgentId() {
     return this._agentId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {SessionType} */
+  /**
+   * @return {SessionType}
+   */
   getSessionType() {
     return this._sessionType;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getAppIdOrName() {
     return this._appIdOrName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getVerId() {
     return this._verId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getScenarioIdOrName() {
     return this._scenarioIdOrName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {BatchInfo} */
+  /**
+   * @return {BatchInfo}
+   */
   getBatchInfo() {
     return this._batchInfo;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getBaselineEnvName() {
     return this._baselineEnvName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getEnvironmentName() {
     return this._environmentName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {AppEnvironment} */
+  /**
+   * @return {AppEnvironment}
+   */
   getEnvironment() {
     return this._environment;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {ImageMatchSettings} */
+  /**
+   * @return {ImageMatchSettings}
+   */
   getDefaultMatchSettings() {
     return this._defaultMatchSettings;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getBranchName() {
     return this._branchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getParentBranchName() {
     return this._parentBranchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getBaselineBranchName() {
     return this._baselineBranchName;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getCompareWithParentBranch() {
     return this._compareWithParentBranch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getIgnoreBaseline() {
     return this._ignoreBaseline;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {PropertyData[]} */
+  /**
+   * @return {PropertyData[]}
+   */
   getProperties() {
     return this._properties;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getRender() {
     return this._render;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getSaveDiffs() {
     return this._saveDiffs;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `SessionStartInfo { ${JSON.stringify(this)} }`;
   }

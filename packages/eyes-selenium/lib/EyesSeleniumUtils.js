@@ -7,7 +7,9 @@ const { ImageOrientationHandler } = require('./ImageOrientationHandler');
 const { JavascriptHandler } = require('./JavascriptHandler');
 
 let imageOrientationHandler = new class ImageOrientationHandlerImpl extends ImageOrientationHandler {
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async isLandscapeOrientation(driver) {
     // noinspection JSValidateTypes
     try {
@@ -18,7 +20,9 @@ let imageOrientationHandler = new class ImageOrientationHandlerImpl extends Imag
     }
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async tryAutomaticRotation(logger, driver, image) { // eslint-disable-line no-unused-vars
     return 0;
   }

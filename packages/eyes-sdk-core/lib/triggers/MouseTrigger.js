@@ -55,7 +55,9 @@ class MouseTrigger extends Trigger {
     return Trigger.TriggerType.Mouse;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `${this._mouseAction} [${this._control}] ${this._location}`;
   }

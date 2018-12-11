@@ -14,18 +14,24 @@ const VERSION = require('../package.json').version;
  */
 class Eyes extends EyesSelenium {
   // noinspection JSMethodCanBeStatic
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getBaseAgentId() {
     return `eyes-appium/${VERSION}`;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   _init() {
     EyesSeleniumUtils.setImageOrientationHandler(new AppiumImageOrientationHandler());
     EyesSeleniumUtils.setJavascriptHandler(new AppiumJavascriptHandler(this._driver));
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async _getScaleProviderFactory() {
     const entireSize = await this._positionProviderHandler.get().getEntireSize();
     const isMobileDevice = await EyesAppiumUtils.isMobileDevice(this._driver);
@@ -39,7 +45,9 @@ class Eyes extends EyesSelenium {
     );
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getAppEnvironment() {
     const appEnv = await super.getAppEnvironment();
 

@@ -22,7 +22,9 @@ class ElementPositionProvider extends PositionProvider {
     this._logger.verbose('creating ElementPositionProvider');
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getCurrentPosition() {
     this._logger.verbose('getCurrentScrollPosition()');
     const scrollLeftValue = await this._element.getScrollLeft();
@@ -32,14 +34,18 @@ class ElementPositionProvider extends PositionProvider {
     return location;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async setPosition(location) {
     this._logger.verbose(`Scrolling element to: ${location}`);
     await this._element.scrollTo(location);
     this._logger.verbose('Done scrolling element!');
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getEntireSize() {
     this._logger.verbose('ElementPositionProvider - getEntireSize()');
     const scrollWidthValue = await this._element.getScrollWidth();

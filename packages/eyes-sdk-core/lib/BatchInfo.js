@@ -76,12 +76,16 @@ class BatchInfo {
     return this._startedAt;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `BatchInfo { ${JSON.stringify(this)} }`;
   }

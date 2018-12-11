@@ -54,7 +54,9 @@ class RectangleSize {
     return new RectangleSize({ width: parseInt(parts[0], 10), height: parseInt(parts[1], 10) });
   }
 
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   isEmpty() {
     return this.getWidth() === 0 && this.getHeight() === 0;
   }
@@ -100,12 +102,16 @@ class RectangleSize {
     });
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return { width: this._width, height: this._height };
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `${this._width}x${this._height}`;
   }

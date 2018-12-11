@@ -16,13 +16,17 @@ class ReadOnlyPropertyHandler extends PropertyHandler {
     this._obj = obj || null;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   set(obj) { // eslint-disable-line no-unused-vars
     this._logger.verbose('Ignored. (ReadOnlyPropertyHandler)');
     return false;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   get() {
     return this._obj;
   }

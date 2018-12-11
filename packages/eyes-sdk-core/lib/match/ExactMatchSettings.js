@@ -97,12 +97,16 @@ class ExactMatchSettings {
     this._matchThreshold = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `ExactMatchSettings { ${JSON.stringify(this)} }`;
   }

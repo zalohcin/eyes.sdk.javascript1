@@ -129,7 +129,9 @@ class EyesTargetLocator extends TargetLocator {
     this._logger.verbose('Done!');
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async parentFrame() {
     this._logger.verbose('EyesTargetLocator.parentFrame()');
     if (this._driver.getFrameChain().size() !== 0) {
@@ -218,7 +220,9 @@ class EyesTargetLocator extends TargetLocator {
   }
 
   // noinspection JSCheckFunctionSignatures
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async window(nameOrHandle) {
     this._logger.verbose('EyesTargetLocator.window()');
     this._driver.getFrameChain().clear();
@@ -227,7 +231,9 @@ class EyesTargetLocator extends TargetLocator {
     this._logger.verbose('Done!');
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async defaultContent() {
     this._logger.verbose('EyesTargetLocator.defaultContent()');
     if (this._driver.getFrameChain().size() !== 0) {

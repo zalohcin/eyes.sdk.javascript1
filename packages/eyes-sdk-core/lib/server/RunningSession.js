@@ -30,91 +30,123 @@ class RunningSession {
     this._isNewSession = false;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getId() {
     return this._id;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setId(value) {
     this._id = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getSessionId() {
     return this._sessionId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setSessionId(value) {
     this._sessionId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getBatchId() {
     return this._batchId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setBatchId(value) {
     this._batchId = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getBaselineId() {
     return this._baselineId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setBaselineId(value) {
     this._baselineId = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getUrl() {
     return this._url;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setUrl(value) {
     this._url = value;
   }
 
-  /** @return {RenderingInfo} */
+  /**
+   * @return {RenderingInfo}
+   */
   getRenderingInfo() {
     return this._renderingInfo;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {RenderingInfo} value */
+  /**
+   * @param {RenderingInfo} value
+   */
   setRenderingInfo(value) {
     this._renderingInfo = value;
   }
 
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getIsNewSession() {
     return this._isNewSession;
   }
 
-  /** @param {boolean} value */
+  /**
+   * @param {boolean} value
+   */
   setNewSession(value) {
     this._isNewSession = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `RunningSession { ${JSON.stringify(this)} }`;
   }

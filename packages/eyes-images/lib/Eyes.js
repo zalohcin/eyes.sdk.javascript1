@@ -39,7 +39,9 @@ class Eyes extends EyesBase {
     this._screenshotProvider = null;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   getBaseAgentId() {
     return `eyes-images/${VERSION}`;
   }
@@ -224,7 +226,9 @@ class Eyes extends EyesBase {
     super.addTextTriggerBase(control, text);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getViewportSize() {
     return Promise.resolve(this._viewportSizeHandler.get());
   }
@@ -243,7 +247,9 @@ class Eyes extends EyesBase {
     return Promise.resolve();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getInferredEnvironment() {
     return Promise.resolve(this._inferred);
   }
@@ -258,7 +264,9 @@ class Eyes extends EyesBase {
     this._inferred = inferred;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getScreenshot() {
     if (this._screenshotProvider) {
       this._screenshot = await this._screenshotProvider.getImage();
@@ -267,17 +275,23 @@ class Eyes extends EyesBase {
     return new EyesSimpleScreenshot(this._screenshot);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getScreenshotUrl() {
     return Promise.resolve(this._screenshotUrl);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async tryCaptureDom() {
     return Promise.resolve(this._domString);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getTitle() {
     return Promise.resolve(this._title);
   }

@@ -96,12 +96,16 @@ class RGridDom {
     return this._contentAsCdt;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this, ['_contentAsCdt', '_sha256hash']);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `RGridDom { ${JSON.stringify(this)} }`;
   }

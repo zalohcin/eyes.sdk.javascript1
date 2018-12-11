@@ -253,24 +253,32 @@ class EyesWebElement extends WebElement {
     return this._eyesDriver.executeScript(script, this.getWebElement());
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getDriver() {
     return this.getWebElement().getDriver();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getId() {
     return this.getWebElement().getId();
   }
 
   // noinspection JSCheckFunctionSignatures
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async findElement(locator) {
     const element = await this.getWebElement().findElement(locator);
     return new EyesWebElement(this._logger, this._eyesDriver, element);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async findElements(locator) {
     const elements = await this.getWebElement().findElements(locator);
     return elements.map(element => new EyesWebElement(this._logger, this._eyesDriver, element));
@@ -290,7 +298,9 @@ class EyesWebElement extends WebElement {
   }
 
   // noinspection JSCheckFunctionSignatures
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async sendKeys(...keysToSend) {
     for (const keys of keysToSend) {
       await this._eyesDriver.getEyes().addTextTriggerForElement(this, String(keys));
@@ -299,27 +309,37 @@ class EyesWebElement extends WebElement {
     await this.getWebElement().sendKeys(...keysToSend);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getTagName() {
     return this.getWebElement().getTagName();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getCssValue(cssStyleProperty) {
     return this.getWebElement().getCssValue(cssStyleProperty);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getAttribute(attributeName) {
     return this.getWebElement().getAttribute(attributeName);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getText() {
     return this.getWebElement().getText();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getRect() {
     // The workaround is similar to Java one, but in js we always get raw data with decimal value which we should round up.
     const rect = await this.getWebElement().getRect();
@@ -332,32 +352,44 @@ class EyesWebElement extends WebElement {
     return { width, height, x, y };
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   isEnabled() {
     return this.getWebElement().isEnabled();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   isSelected() {
     return this.getWebElement().isSelected();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   submit() {
     return this.getWebElement().submit();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   clear() {
     return this.getWebElement().clear();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   isDisplayed() {
     return this.getWebElement().isDisplayed();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   takeScreenshot(optScroll) {
     return this.getWebElement().takeScreenshot(optScroll);
   }

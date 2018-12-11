@@ -6,7 +6,9 @@ const { ImageOrientationHandler, EyesDriverOperationError } = require('@applitoo
 const { EyesAppiumUtils } = require('./EyesAppiumUtils');
 
 class AppiumImageOrientationHandler extends ImageOrientationHandler {
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async isLandscapeOrientation(driver) {
     try {
       const capabilities = await driver.getCapabilities();
@@ -17,7 +19,9 @@ class AppiumImageOrientationHandler extends ImageOrientationHandler {
     }
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async tryAutomaticRotation(logger, driver, image) {
     ArgumentGuard.notNull(logger, 'logger');
     ArgumentGuard.notNull(driver, 'driver');
