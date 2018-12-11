@@ -758,7 +758,7 @@ class ServerConnector {
     const response = await sendRequest(this, 'renderStatus', options, 3, true);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      let renderStatus = Array.from(response.data).map(resultsData => resultsData === null ? null : new RenderStatusResults(resultsData));
+      let renderStatus = Array.from(response.data).map(resultsData => new RenderStatusResults(resultsData || {}));
       if (!isBatch) {
         renderStatus = renderStatus[0]; // eslint-disable-line prefer-destructuring
       }

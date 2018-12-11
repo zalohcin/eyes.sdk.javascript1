@@ -77,7 +77,7 @@ class RenderWindowTask {
    */
   async getRenderStatus(runningRender, delayBeforeRequest = false) {
     const renderStatusResults = await this._serverConnector.renderStatus(runningRender, delayBeforeRequest);
-    if (renderStatusResults.getStatus() === RenderStatus.RENDERING) {
+    if (renderStatusResults.getStatus() === undefined || renderStatusResults.getStatus() === RenderStatus.RENDERING) {
       return this.getRenderStatus(runningRender, true);
     }
 

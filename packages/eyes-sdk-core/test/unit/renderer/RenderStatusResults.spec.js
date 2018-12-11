@@ -17,6 +17,11 @@ describe('RenderStatusResults', () => {
     assert.equal(Object.prototype.hasOwnProperty.call(results, '_selectorRegions'), true);
   });
 
+  it('constructor empty', () => {
+    const results = new RenderStatusResults({});
+    assert.equal(results.getStatus(), undefined);
+  });
+
   it('constructor with object', () => {
     const status = 'some status';
     const error = 'some error';
