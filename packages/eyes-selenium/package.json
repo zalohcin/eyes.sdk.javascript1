@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-selenium",
-  "version": "4.3.3",
+  "version": "4.3.4",
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
     "eyes-selenium",
@@ -34,8 +34,8 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/dom-utils": "^4.3.3",
-    "@applitools/eyes-sdk-core": "^4.5.3"
+    "@applitools/dom-utils": "^4.3.4",
+    "@applitools/eyes-sdk-core": "^4.5.4"
   },
   "devDependencies": {
     "axios": "^0.18.0",

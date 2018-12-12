@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.5.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@4.5.3...@applitools/eyes-sdk-core@4.5.4) (2018-12-12)
+
+
+### Bug Fixes
+
+* **eyes-sdk-core:** update deepmerge dependency, fix issue with esmodule ([5cd5419](https://github.com/applitools/eyes.sdk.javascript1/commit/5cd5419))
+
+
+
+
+
 ## [4.5.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@4.5.2...@applitools/eyes-sdk-core@4.5.3) (2018-12-11)
 
 
