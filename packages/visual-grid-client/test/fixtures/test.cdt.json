@@ -3,16 +3,12 @@
     "nodeType": 9,
     "childNodeIndexes": [
       1,
-      64
+      79
     ]
   },
   {
     "nodeType": 10,
     "nodeName": "html"
-  },
-  {
-    "nodeType": 3,
-    "nodeValue": " "
   },
   {
     "nodeType": 3,
@@ -38,6 +34,25 @@
     "nodeValue": "\n  "
   },
   {
+    "nodeType": 1,
+    "nodeName": "LINK",
+    "attributes": [
+      {
+        "name": "href",
+        "value": "auth/auth.css"
+      },
+      {
+        "name": "rel",
+        "value": "stylesheet"
+      }
+    ],
+    "childNodeIndexes": []
+  },
+  {
+    "nodeType": 3,
+    "nodeValue": "\n  "
+  },
+  {
     "nodeType": 3,
     "nodeValue": "\n    @import 'imported2.css';\n  "
   },
@@ -46,7 +61,7 @@
     "nodeName": "STYLE",
     "attributes": [],
     "childNodeIndexes": [
-      6
+      7
     ]
   },
   {
@@ -70,6 +85,25 @@
   },
   {
     "nodeType": 3,
+    "nodeValue": "\n  "
+  },
+  {
+    "nodeType": 1,
+    "nodeName": "META",
+    "attributes": [
+      {
+        "name": "name",
+        "value": "viewport"
+      },
+      {
+        "name": "content",
+        "value": "width=device-width, initial-scale=1.0"
+      }
+    ],
+    "childNodeIndexes": []
+  },
+  {
+    "nodeType": 3,
     "nodeValue": "\n"
   },
   {
@@ -82,7 +116,11 @@
       },
       {
         "name": "href",
-        "value": "a-made-up-blob-url-1"
+        "value": "blob2"
+      },
+      {
+        "name": "data-blob",
+        "value": "blob2"
       }
     ],
     "childNodeIndexes": []
@@ -96,11 +134,14 @@
       3,
       4,
       5,
-      7,
+      6,
       8,
       9,
       10,
-      11
+      11,
+      12,
+      13,
+      14
     ]
   },
   {
@@ -125,7 +166,7 @@
       }
     ],
     "childNodeIndexes": [
-      15
+      18
     ]
   },
   {
@@ -146,7 +187,7 @@
       }
     ],
     "childNodeIndexes": [
-      18
+      21
     ]
   },
   {
@@ -171,7 +212,7 @@
       }
     ],
     "childNodeIndexes": [
-      21
+      24
     ]
   },
   {
@@ -196,7 +237,7 @@
       }
     ],
     "childNodeIndexes": [
-      24
+      27
     ]
   },
   {
@@ -212,7 +253,7 @@
     "nodeName": "DIV",
     "attributes": [],
     "childNodeIndexes": [
-      27
+      30
     ]
   },
   {
@@ -243,7 +284,7 @@
     "nodeName": "DIV",
     "attributes": [],
     "childNodeIndexes": [
-      32
+      35
     ]
   },
   {
@@ -278,7 +319,7 @@
     "nodeName": "DIV",
     "attributes": [],
     "childNodeIndexes": [
-      37
+      40
     ]
   },
   {
@@ -306,6 +347,10 @@
   },
   {
     "nodeType": 3,
+    "nodeValue": "\n      "
+  },
+  {
+    "nodeType": 3,
     "nodeValue": "background image from blob css:"
   },
   {
@@ -313,12 +358,12 @@
     "nodeName": "DIV",
     "attributes": [],
     "childNodeIndexes": [
-      42
+      46
     ]
   },
   {
     "nodeType": 3,
-    "nodeValue": "\n  "
+    "nodeValue": "\n      "
   },
   {
     "nodeType": 1,
@@ -337,11 +382,11 @@
   },
   {
     "nodeType": 3,
-    "nodeValue": "\n  "
+    "nodeValue": "\n      "
   },
   {
     "nodeType": 3,
-    "nodeValue": "\n      "
+    "nodeValue": "\n          "
   },
   {
     "nodeType": 3,
@@ -361,7 +406,7 @@
       }
     ],
     "childNodeIndexes": [
-      49
+      53
     ]
   },
   {
@@ -378,13 +423,13 @@
       }
     ],
     "childNodeIndexes": [
-      48,
-      50
+      52,
+      54
     ]
   },
   {
     "nodeType": 3,
-    "nodeValue": "\n      "
+    "nodeValue": "\n          "
   },
   {
     "nodeType": 3,
@@ -397,15 +442,19 @@
       {
         "name": "class",
         "value": "imported-nested"
+      },
+      {
+        "name": "style",
+        "value": "margin-bottom:10px;"
       }
     ],
     "childNodeIndexes": [
-      53
+      57
     ]
   },
   {
     "nodeType": 3,
-    "nodeValue": "\n      "
+    "nodeValue": "\n          "
   },
   {
     "nodeType": 3,
@@ -418,10 +467,91 @@
       {
         "name": "class",
         "value": "blob"
+      },
+      {
+        "name": "style",
+        "value": "margin-bottom:10px;"
       }
     ],
     "childNodeIndexes": [
-      56
+      60
+    ]
+  },
+  {
+    "nodeType": 3,
+    "nodeValue": "\n          "
+  },
+  {
+    "nodeType": 3,
+    "nodeValue": "auth - background should be olive"
+  },
+  {
+    "nodeType": 1,
+    "nodeName": "DIV",
+    "attributes": [
+      {
+        "name": "class",
+        "value": "auth"
+      },
+      {
+        "name": "style",
+        "value": "margin-bottom:10px;"
+      }
+    ],
+    "childNodeIndexes": [
+      63
+    ]
+  },
+  {
+    "nodeType": 3,
+    "nodeValue": "\n          "
+  },
+  {
+    "nodeType": 3,
+    "nodeValue": "auth nested - background should be hotpink"
+  },
+  {
+    "nodeType": 1,
+    "nodeName": "DIV",
+    "attributes": [
+      {
+        "name": "class",
+        "value": "auth-nested"
+      },
+      {
+        "name": "style",
+        "value": "margin-bottom:10px;"
+      }
+    ],
+    "childNodeIndexes": [
+      66
+    ]
+  },
+  {
+    "nodeType": 3,
+    "nodeValue": "\n      "
+  },
+  {
+    "nodeType": 1,
+    "nodeName": "DIV",
+    "attributes": [
+      {
+        "name": "style",
+        "value": "margin-bottom:10px;"
+      }
+    ],
+    "childNodeIndexes": [
+      51,
+      55,
+      56,
+      58,
+      59,
+      61,
+      62,
+      64,
+      65,
+      67,
+      68
     ]
   },
   {
@@ -433,22 +563,43 @@
     "nodeName": "DIV",
     "attributes": [
       {
-        "name": "style",
-        "value": "margin-bottom:10px;"
-      },
-      {
         "name": "class",
         "value": "region"
       }
     ],
     "childNodeIndexes": [
+      45,
       47,
-      51,
-      52,
-      54,
-      55,
-      57,
-      58
+      48,
+      49,
+      50,
+      69,
+      70
+    ]
+  },
+  {
+    "nodeType": 3,
+    "nodeValue": "\n  "
+  },
+  {
+    "nodeType": 3,
+    "nodeValue": "Absolutely positioned floating content"
+  },
+  {
+    "nodeType": 1,
+    "nodeName": "DIV",
+    "attributes": [
+      {
+        "name": "class",
+        "value": "absolutely"
+      },
+      {
+        "name": "style",
+        "value": "color:firebrick;display:flex;align-items:center;text-align:center;font-size:36px;font-family:'Zilla Slab';position:absolute;top:160px;left:190px;width:200px;height:200px;border:10px solid seagreen;border-radius:10px;"
+      }
+    ],
+    "childNodeIndexes": [
+      73
     ]
   },
   {
@@ -465,7 +616,11 @@
     "attributes": [
       {
         "name": "src",
-        "value": "a-made-up-blob-url-2"
+        "value": "blob1"
+      },
+      {
+        "name": "data-blob",
+        "value": "blob1"
       }
     ],
     "childNodeIndexes": []
@@ -475,8 +630,6 @@
     "nodeName": "BODY",
     "attributes": [],
     "childNodeIndexes": [
-      14,
-      16,
       17,
       19,
       20,
@@ -486,24 +639,24 @@
       26,
       28,
       29,
-      30,
       31,
+      32,
       33,
       34,
-      35,
       36,
+      37,
       38,
       39,
-      40,
       41,
+      42,
       43,
       44,
-      45,
-      46,
-      59,
-      60,
-      61,
-      62
+      71,
+      72,
+      74,
+      75,
+      76,
+      77
     ]
   },
   {
@@ -516,9 +669,9 @@
       }
     ],
     "childNodeIndexes": [
-      12,
-      13,
-      63
+      15,
+      16,
+      78
     ]
   }
 ]

@@ -5,10 +5,10 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
-module.exports = ({port = 0, showLog = false} = {}) => {
+module.exports = ({port = 0, showLogs = false} = {}) => {
   const app = express();
   app.use(cookieParser());
-  if (showLog) {
+  if (showLogs) {
     app.use(morgan('tiny'));
   }
   app.use('/add-cookie', (req, res) => {
@@ -31,7 +31,7 @@ module.exports = ({port = 0, showLog = false} = {}) => {
     const server = app.listen(port, () => {
       const serverPort = server.address().port;
       const close = p(server.close.bind(server));
-      showLog && console.log(`server running at port: ${serverPort}`);
+      showLogs && console.log(`server running at port: ${serverPort}`);
       resolve({port: serverPort, close});
     });
   });

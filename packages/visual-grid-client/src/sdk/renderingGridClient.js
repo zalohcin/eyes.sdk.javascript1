@@ -4,7 +4,6 @@ const createLogger = require('./createLogger');
 const makeGetAllResources = require('./getAllResources');
 const makeExtractCssResources = require('./extractCssResources');
 const makeFetchResource = require('./fetchResource');
-const makeExtractCssResourcesFromCdt = require('./extractCssResourcesFromCdt');
 const createResourceCache = require('./createResourceCache');
 const makeWaitForRenderedStatus = require('./waitForRenderedStatus');
 const makeGetRenderStatus = require('./getRenderStatus');
@@ -12,7 +11,6 @@ const makePutResources = require('./putResources');
 const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping');
-const makeParseInlineCssFromCdt = require('./parseInlineCssFromCdt');
 const getBatch = require('./getBatch');
 const transactionThroat = require('./transactionThroat');
 const getRenderMethods = require('./getRenderMethods');
@@ -86,7 +84,6 @@ function makeRenderingGridClient({
   const fetchCache = createResourceCache();
   const extractCssResources = makeExtractCssResources(logger);
   const fetchResource = makeFetchResource({logger, fetchCache});
-  const extractCssResourcesFromCdt = makeExtractCssResourcesFromCdt(extractCssResources);
   const putResources = makePutResources({doPutResource});
   const renderBatch = makeRenderBatch({
     putResources,
@@ -111,10 +108,8 @@ function makeRenderingGridClient({
     fetchResource,
     logger,
   });
-  const parseInlineCssFromCdt = makeParseInlineCssFromCdt(extractCssResourcesFromCdt);
   const createRGridDOMAndGetResourceMapping = makeCreateRGridDOMAndGetResourceMapping({
     getAllResources,
-    parseInlineCssFromCdt,
   });
 
   const {batchId: defaultBatchId, batchName: defaultBatchName} = getBatch({batchName, batchId});
