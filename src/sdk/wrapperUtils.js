@@ -56,7 +56,7 @@ function configureWrappers({
     const browser = browsers[i];
 
     if (browser.deviceName) {
-      wrapper.setDeviceInfo(browser.deviceName);
+      wrapper.setDeviceInfo(`${browser.deviceName} (Chrome emulation)`);
     }
 
     validateAndAddProperties(wrapper, properties);
