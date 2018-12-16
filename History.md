@@ -1,4 +1,101 @@
 
+v9.0.2 / 2018-12-16
+===================
+
+* 9.0.2 - Amit Zur [[35e667e](https://github.com/applitools/visual-grid-client/commit/35e667efab9a0814ed4a81f334fe39b3693be3a6)]
+* update eyes-sdk-core to 4.5.4 - Amit Zur [[6d67b8c](https://github.com/applitools/visual-grid-client/commit/6d67b8c8823a903776c5dbca30019d95610b1076)]
+
+v9.0.1 / 2018-12-16
+===================
+
+* 9.0.1 - Amit Zur [[911d9cb](https://github.com/applitools/visual-grid-client/commit/911d9cbf14e6b99ef9a89912428e7ac1be72ebd9)]
+
+v9.0.0 / 2018-12-16
+===================
+
+* 9.0.0 - Amit Zur [[0375336](https://github.com/applitools/visual-grid-client/commit/0375336e49b0b160fe43720254e5f03a249d6302)]
+* use dom-capture v6 to get css references from the browser - Amit Zur [[d7ff32f](https://github.com/applitools/visual-grid-client/commit/d7ff32fd092906d2e8b52269e2e587b5d537f86a)]
+
+v8.0.7 / 2018-12-11
+===================
+
+* 8.0.7 - Amit Zur [[f96d355](https://github.com/applitools/visual-grid-client/commit/f96d355d0f11b964216b1115503716fc640158c7)]
+* Merge branch 'master' into isomorphic - Amit Zur [[68ed496](https://github.com/applitools/visual-grid-client/commit/68ed49620a11742079c9745161a02e273c056d15)]
+* 8.0.5 - Amit Zur [[5289cc3](https://github.com/applitools/visual-grid-client/commit/5289cc365797f95f1670b0d7569c8c19d1d70d36)]
+* Merge branch 'master' into isomorphic - Amit Zur [[7df0905](https://github.com/applitools/visual-grid-client/commit/7df090558146eecf54620fe514d4b5a9cb78622d)]
+* 8.0.3 - Amit Zur [[75862a4](https://github.com/applitools/visual-grid-client/commit/75862a42edc92691b7ca8371538563539a677394)]
+* use isomorphic-fetch instead of node-fetch - Amit Zur [[ab73426](https://github.com/applitools/visual-grid-client/commit/ab734264f4b80a18819acf4ffb9e53a4cef46931)]
+
+v8.0.6 / 2018-12-11
+===================
+
+* 8.0.6 - Amit Zur [[98d40e6](https://github.com/applitools/visual-grid-client/commit/98d40e6ee7773554899f57f46e1693f8942e872d)]
+* 8.0.5 - Amit Zur [[818fe16](https://github.com/applitools/visual-grid-client/commit/818fe16037cbd8c1ab11aa3174f192a8e03866c4)]
+* update eyes-sdk-core to 4.5.3 to handle null render statuses - Amit Zur [[1c20103](https://github.com/applitools/visual-grid-client/commit/1c20103a7e82e0c617c925d7346cd8fdb8dc87c6)]
+
+v8.0.5 / 2018-12-11
+===================
+
+* 8.0.5 - Amit Zur [[5289cc3](https://github.com/applitools/visual-grid-client/commit/5289cc365797f95f1670b0d7569c8c19d1d70d36)]
+* Merge branch 'master' into isomorphic - Amit Zur [[7df0905](https://github.com/applitools/visual-grid-client/commit/7df090558146eecf54620fe514d4b5a9cb78622d)]
+* 8.0.3 - Amit Zur [[75862a4](https://github.com/applitools/visual-grid-client/commit/75862a42edc92691b7ca8371538563539a677394)]
+* use isomorphic-fetch instead of node-fetch - Amit Zur [[ab73426](https://github.com/applitools/visual-grid-client/commit/ab734264f4b80a18819acf4ffb9e53a4cef46931)]
+
+v8.0.4 / 2018-12-11
+===================
+
+* 8.0.4 - Amit Zur [[43f8793](https://github.com/applitools/visual-grid-client/commit/43f8793c1ac47a8fe8c42cd2904716e42efd350d)]
+* 8.0.3 - Amit Zur [[e134b89](https://github.com/applitools/visual-grid-client/commit/e134b89321ce9cb7e6e3a63842613da8954858f3)]
+* fix statuser to continue after errors - Amit Zur [[217e37b](https://github.com/applitools/visual-grid-client/commit/217e37bc86106cac4f2918df174889f5028ddbbf)]
+* fix statuser to run after errors - Amit Zur [[a814208](https://github.com/applitools/visual-grid-client/commit/a81420889d0152ad1983bce2b2b3c5fd2bd340bf)]
+
+v8.0.3 / 2018-12-11
+===================
+
+* 8.0.3 - Amit Zur [[75862a4](https://github.com/applitools/visual-grid-client/commit/75862a42edc92691b7ca8371538563539a677394)]
+* use isomorphic-fetch instead of node-fetch - Amit Zur [[ab73426](https://github.com/applitools/visual-grid-client/commit/ab734264f4b80a18819acf4ffb9e53a4cef46931)]
+
+v8.0.2 / 2018-12-11
+===================
+
+* 8.0.2 - Amit Zur [[b22f222](https://github.com/applitools/visual-grid-client/commit/b22f2222c7a087622ea0ec60cd68f43c1a09e3e8)]
+* update packages - Amit Zur [[c28fba6](https://github.com/applitools/visual-grid-client/commit/c28fba6c0079a6043d01f9995a443287b0286151)]
+
+v8.0.1 / 2018-12-11
+===================
+
+* 8.0.1 - Amit Zur [[c6be40a](https://github.com/applitools/visual-grid-client/commit/c6be40ab238c2c91298d73655f8a14e52c3219b3)]
+* tests for statuser - Amit Zur [[b4d14eb](https://github.com/applitools/visual-grid-client/commit/b4d14ebf2ad934536a166e6c943e4da2b09b9700)]
+* statuser is done! - Amit Zur [[de4f20a](https://github.com/applitools/visual-grid-client/commit/de4f20af4bd241f9269aac0d283ba4274d91d2c7)]
+* WIP - stabilize statuser (integration tests) - Amit Zur [[9ce3105](https://github.com/applitools/visual-grid-client/commit/9ce31052541bcf0a134778e1c62b59152e93212e)]
+* statuser (WIP - e2e passing but other tests not) - Amit Zur [[7defb6e](https://github.com/applitools/visual-grid-client/commit/7defb6ebfd1221c1ee772651f7909c74c97497e8)]
+
+v8.0.0 / 2018-12-03
+===================
+
+* 8.0.0 - Amit Zur [[8f6bfd9](https://github.com/applitools/visual-grid-client/commit/8f6bfd9424c47f0be1dde9462eead7792fcc2e3a)]
+* use a dedicated render wrapper (prep for statuser) - Amit Zur [[f4db432](https://github.com/applitools/visual-grid-client/commit/f4db43217369df0e06207b20138065e270158fc2)]
+* script to render a page using puppeteer - Amit Zur [[e8d8dcd](https://github.com/applitools/visual-grid-client/commit/e8d8dcdc29be552a79bdff3aeccbc88763e94d1c)]
+
+v7.2.8 / 2018-12-02
+===================
+
+* 7.2.8 - Amit Zur [[20007a2](https://github.com/applitools/visual-grid-client/commit/20007a26d74864e71422d5e84548516d8f2f4a7a)]
+* support configuring agentId - Amit Zur [[31c4c82](https://github.com/applitools/visual-grid-client/commit/31c4c82b2bb939c5c126347978d833f464bb4821)]
+
+v7.2.7 / 2018-12-02
+===================
+
+* 7.2.7 - Amit Zur [[c6eaf4b](https://github.com/applitools/visual-grid-client/commit/c6eaf4b702aadddd86cfb44914705e14cb8eb87b)]
+* update packages - Amit Zur [[2035c86](https://github.com/applitools/visual-grid-client/commit/2035c861a1d9647c199b1037046acd3695731fa6)]
+
+v7.2.6 / 2018-12-02
+===================
+
+* 7.2.6 - Amit Zur [[e2615cc](https://github.com/applitools/visual-grid-client/commit/e2615ccd9db22f302d31870a3ce030f29f2591f5)]
+* fix unopened transaction - Amit Zur [[fcc93e3](https://github.com/applitools/visual-grid-client/commit/fcc93e3adfb650b66a42f9f7743a96e49c0b9ec2)]
+* changelog - Amit Zur [[6d88901](https://github.com/applitools/visual-grid-client/commit/6d88901f61d14df230cff8075d2293f1606ea741)]
+
 v7.2.5 / 2018-11-28
 ===================
 
