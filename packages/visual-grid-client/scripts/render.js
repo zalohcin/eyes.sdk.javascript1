@@ -10,11 +10,13 @@ const testServer = require('../test/util/testServer');
   const {openEyes} = makeVisualGridClient({
     apiKey: process.env.APPLITOOLS_API_KEY,
     showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+    // proxy: 'http://localhost:8888',
   });
 
   const {checkWindow, close} = await openEyes({
     appName: 'render script',
     testName: 'render script',
+    browser: {deviceName: 'iPhone X'},
   });
 
   const browser = await puppeteer.launch();
