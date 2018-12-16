@@ -1030,9 +1030,9 @@ describe('openEyes', () => {
       expect(wrapper.agentId).to.equal('agentId');
     }
 
-    expect(wrappers[0].deviceInfo).to.equal('device1');
-    expect(wrappers[1].deviceInfo).to.equal('device2');
-    expect(wrappers[2].deviceInfo).to.be.undefined;
+    expect(wrappers[0].deviceInfo).to.equal('device1 (Chrome emulation)');
+    expect(wrappers[1].deviceInfo).to.equal('device2 (Chrome emulation)');
+    expect(wrappers[2].deviceInfo).to.equal('Desktop');
   });
 
   it('sets proxy with username/password wrappers', () => {
@@ -1282,7 +1282,7 @@ describe('openEyes', () => {
     checkWindow({url: '', cdt: []});
     const [[results]] = await close();
     expect(wrapper.viewportSize.toJSON()).to.eql(FakeEyesWrapper.devices['iPhone 4']);
-    expect(wrapper.deviceInfo).to.equal(deviceName);
+    expect(wrapper.deviceInfo).to.equal(`${deviceName} (Chrome emulation)`);
     expect(results.getAsExpected()).to.equal(true);
   });
 
