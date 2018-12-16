@@ -6,7 +6,7 @@ const VERSION = require('../../package.json').version;
 class EyesWrapper extends EyesBase {
   constructor({apiKey, logHandler} = {}) {
     super();
-    this.setApiKey(apiKey);
+    apiKey && this.setApiKey(apiKey);
     logHandler && this.setLogHandler(logHandler);
   }
 

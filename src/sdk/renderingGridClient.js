@@ -15,10 +15,10 @@ const getBatch = require('./getBatch');
 const transactionThroat = require('./transactionThroat');
 const getRenderMethods = require('./getRenderMethods');
 const {
+  createRenderWrapper,
   authorizationErrMsg,
   blockedAccountErrMsg,
   badRequestErrMsg,
-  apiKeyFailMsg,
 } = require('./wrapperUtils');
 
 // TODO when supporting only Node version >= 8.6.0 then we can use ...config for all the params that are just passed on to makeOpenEyes
@@ -54,9 +54,6 @@ function makeRenderingGridClient({
   serverUrl,
   agentId,
 }) {
-  if (!apiKey) {
-    throw new Error(apiKeyFailMsg);
-  }
   const openEyesConcurrency = Number(concurrency);
 
   if (isNaN(openEyesConcurrency)) {
@@ -67,19 +64,21 @@ function makeRenderingGridClient({
   const eyesTransactionThroat = transactionThroat(openEyesConcurrency);
   const renderThroat = throatPkg(openEyesConcurrency * renderConcurrencyFactor);
   const logger = createLogger(showLogs);
+  renderWrapper =
+    renderWrapper ||
+    createRenderWrapper({
+      apiKey,
+      logHandler: logger.getLogHandler(),
+      serverUrl,
+      proxy,
+    });
   const {
     doGetRenderInfo,
     doRenderBatch,
     doPutResource,
     doGetRenderStatus,
     setRenderingInfo,
-  } = getRenderMethods({
-    renderWrapper,
-    apiKey,
-    logger,
-    serverUrl,
-    proxy,
-  });
+  } = getRenderMethods(renderWrapper);
   const resourceCache = createResourceCache();
   const fetchCache = createResourceCache();
   const extractCssResources = makeExtractCssResources(logger);
@@ -144,7 +143,7 @@ function makeRenderingGridClient({
     renderThroat,
     getRenderInfoPromise,
     getHandledRenderInfoPromise,
-    doGetRenderInfo,
+    getRenderInfo,
     createRGridDOMAndGetResourceMapping,
     eyesTransactionThroat,
     agentId,
@@ -153,6 +152,14 @@ function makeRenderingGridClient({
   return {
     openEyes,
   };
+
+  function getRenderInfo() {
+    if (!renderWrapper.getApiKey()) {
+      renderWrapper.setApiKey(apiKey);
+    }
+
+    return doGetRenderInfo();
+  }
 
   function getRenderInfoPromise() {
     return renderInfoPromise;
