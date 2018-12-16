@@ -1,16 +1,6 @@
 'use strict';
 
-const {createRenderWrapper} = require('./wrapperUtils');
-
-function getRenderMethods({renderWrapper, apiKey, logger, serverUrl, proxy}) {
-  renderWrapper =
-    renderWrapper ||
-    createRenderWrapper({
-      apiKey,
-      logHandler: logger.getLogHandler(),
-      serverUrl,
-      proxy,
-    });
+function getRenderMethods(renderWrapper) {
   const doGetRenderInfo = renderWrapper.getRenderInfo.bind(renderWrapper);
   const doRenderBatch = renderWrapper.renderBatch.bind(renderWrapper);
   const doPutResource = renderWrapper.putResource.bind(renderWrapper);

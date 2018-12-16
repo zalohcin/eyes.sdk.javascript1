@@ -276,6 +276,14 @@ class FakeEyesWrapper {
   setBaseAgentId(value) {
     this.agentId = value;
   }
+
+  getApiKey() {
+    return this.apiKey;
+  }
+
+  setApiKey(value) {
+    this.apiKey = value;
+  }
 }
 
 module.exports = FakeEyesWrapper;

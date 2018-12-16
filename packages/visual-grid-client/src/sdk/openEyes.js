@@ -1,7 +1,13 @@
 'use strict';
 const makeCheckWindow = require('./checkWindow');
 const makeCloseEyes = require('./closeEyes');
-const {initWrappers, configureWrappers, openWrappers, appNameFailMsg} = require('./wrapperUtils');
+const {
+  initWrappers,
+  configureWrappers,
+  openWrappers,
+  appNameFailMsg,
+  apiKeyFailMsg,
+} = require('./wrapperUtils');
 
 function makeOpenEyes({
   appName: _appName,
@@ -35,7 +41,7 @@ function makeOpenEyes({
   eyesTransactionThroat,
   getRenderInfoPromise,
   getHandledRenderInfoPromise,
-  doGetRenderInfo,
+  getRenderInfo,
   agentId,
 }) {
   return async function openEyes({
@@ -63,6 +69,11 @@ function makeOpenEyes({
     ignoreBaseline = _ignoreBaseline,
   }) {
     logger.log(`openEyes: testName=${testName}, browser=`, browser);
+
+    if (!apiKey) {
+      throw new Error(apiKeyFailMsg);
+    }
+
     let error;
 
     if (isDisabled) {
@@ -109,7 +120,7 @@ function makeOpenEyes({
     });
 
     const renderInfoPromise =
-      getRenderInfoPromise() || getHandledRenderInfoPromise(doGetRenderInfo());
+      getRenderInfoPromise() || getHandledRenderInfoPromise(getRenderInfo());
 
     const renderInfo = await renderInfoPromise;
 
