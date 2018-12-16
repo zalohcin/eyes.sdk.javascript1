@@ -4,8 +4,6 @@ const {expect} = require('chai');
 const makeCreateRGridDOMAndGetResourceMapping = require('../../../src/sdk/createRGridDOMAndGetResourceMapping');
 const makeGetAllResources = require('../../../src/sdk/getAllResources');
 const createResourceCache = require('../../../src/sdk/createResourceCache');
-const makeExtractCssResourcesFromCdt = require('../../../src/sdk/extractCssResourcesFromCdt');
-const makeParseInlineCssFromCdt = require('../../../src/sdk/parseInlineCssFromCdt');
 const makeExtractCssResources = require('../../../src/sdk/extractCssResources');
 const makeFetchResource = require('../../../src/sdk/fetchResource');
 const testLogger = require('../../util/testLogger');
@@ -34,13 +32,7 @@ describe('createRGridDOMAndGetResourceMapping', () => {
       fetchResource: makeFetchResource({logger: testLogger}),
       fetchCache: createResourceCache(),
     });
-    const extractCssResources = makeExtractCssResources(testLogger);
-    const extractCssResourcesFromCdt = makeExtractCssResourcesFromCdt(extractCssResources);
-    const parseInlineCssFromCdt = makeParseInlineCssFromCdt(extractCssResourcesFromCdt);
-    fut = makeCreateRGridDOMAndGetResourceMapping({
-      getAllResources,
-      parseInlineCssFromCdt,
-    });
+    fut = makeCreateRGridDOMAndGetResourceMapping({getAllResources});
   });
 
   it('works', async () => {
@@ -53,18 +45,11 @@ describe('createRGridDOMAndGetResourceMapping', () => {
       value: loadFixtureBuffer(imgPath),
     });
 
-    const imported2Url = `${baseUrl}/imported2.css`;
     const testCdt = loadJsonFixture('test.cdt.json');
     const testUrl = `${baseUrl}/test.html`;
     const testDom = createRGridDom({
       cdt: testCdt,
-      resources: Object.assign(getTestCssResources(baseUrl), {
-        [imported2Url]: toRGridResource({
-          url: imported2Url,
-          type: 'text/css; charset=UTF-8',
-          value: loadFixtureBuffer('imported2.css'),
-        }),
-      }),
+      resources: getTestCssResources(baseUrl),
     });
     const expectedTestResource = toRGridResource({
       url: testUrl,
