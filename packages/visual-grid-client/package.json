@@ -50,7 +50,7 @@
     "throat": "^4.1.0"
   },
   "devDependencies": {
-    "@applitools/dom-capture": "^6.0.1",
+    "@applitools/dom-capture": "^6.0.4",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.3",
