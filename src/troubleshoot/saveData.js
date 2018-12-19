@@ -1,16 +1,15 @@
 'use strict';
 const fs = require('fs');
-const {promisify: p} = require('util');
 const {resolve} = require('path');
 const {renderDomNodesToHtml, createAbsolutizedDomNodes, getResourceName} = require('./cdt');
 const getFolderName = require('./getFolderName');
 const mapValues = require('lodash.mapvalues');
 const _mkdirp = require('mkdirp');
 
-const writeFile = p(fs.writeFile);
-const mkdirp = p(_mkdirp);
-
 async function saveData({renderId, cdt, resources, url, logger}) {
+  const {promisify: p} = require('util');
+  const writeFile = p(fs.writeFile);
+  const mkdirp = p(_mkdirp);
   logger.log(`saving data for renderId=${renderId}`);
   const folderName = getFolderName(renderId, new Date());
   const path = resolve(process.cwd(), '.applitools', folderName);

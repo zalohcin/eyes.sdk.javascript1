@@ -1,7 +1,6 @@
 'use strict';
 const makeVisualGridClient = require('./sdk/renderingGridClient');
-const createLogger = require('./sdk/createLogger');
-const {makeGetConfig} = require('./sdk/config');
+const configParams = require('./sdk/configParams');
 const {
   DiffsFoundError,
   TestResults,
@@ -10,9 +9,8 @@ const {
 } = require('@applitools/eyes-sdk-core');
 
 module.exports = {
+  configParams,
   makeVisualGridClient,
-  createLogger,
-  makeGetConfig,
   DiffsFoundError,
   TestResults,
   TestFailedError,

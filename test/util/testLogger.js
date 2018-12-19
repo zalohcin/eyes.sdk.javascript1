@@ -1,4 +1,4 @@
 'use strict';
-const createLogger = require('../../src/sdk/createLogger');
+const {createLogger} = require('@applitools/eyes-sdk-utils');
 
 module.exports = createLogger(process.env.APPLITOOLS_SHOW_LOGS);
