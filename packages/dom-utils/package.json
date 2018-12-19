@@ -25,7 +25,8 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/dom-capture": "4.0.1",
-    "@applitools/eyes-sdk-core": "^4.5.0"
+    "@applitools/eyes-sdk-core": "^4.5.0",
+    "axios": "0.18.0"
   },
   "devDependencies": {
     "chromedriver": "^2.43.1",

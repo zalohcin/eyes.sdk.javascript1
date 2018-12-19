@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
+const by = require('selenium-webdriver/lib/by');
 
 const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils, GeneralUtils } = require('@applitools/eyes-sdk-core');
 const { DomCapture } = require('../index');
@@ -85,6 +86,16 @@ describe('DomCapture', function () {
     // TODO: remove once selenium SDK 4 is fixed
     // the command is not exists in selenium js sdk, we should define it manually
     driver.getExecutor().defineCommand('switchToFrameParent', 'POST', '/session/:sessionId/frame/parent');
+    if (!driver.findElementByXPath) {
+      driver.findElementByXPath = (xPath) => {
+        return driver.findElement(by.By.xpath(xPath));
+      };
+    }
+    if (!driver.url) {
+      driver.url = (url) => {
+        return driver.get(url);
+      };
+    }
     await driver.manage().window().setRect({ x: 0, y: 0, width: 800, height: 600 });
   });
 
