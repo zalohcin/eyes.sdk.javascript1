@@ -1,0 +1,52 @@
+{
+  "name": "@applitools/eyes-sdk-utils",
+  "version": "1.0.0",
+  "description": "Utilities for working with Eyes JavaScript SDK and the visual grid",
+  "scripts": {
+    "test": "mocha --no-timeouts './test/**/*.test.js'"
+  },
+  "keywords": [
+    "applitools",
+    "eyes",
+    "eyes-sdk",
+    "eyes-sdk-core",
+    "test automation",
+    "visual regression",
+    "automation",
+    "testing",
+    "tests"
+  ],
+  "homepage": "https://applitools.com",
+  "author": {
+    "name": "Applitools Team",
+    "email": "team@applitools.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
+  },
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
+  },
+  "files": [
+    "lib"
+  ],
+  "main": "./index.js",
+  "dependencies": {
+    "@applitools/eyes-sdk-core": "^4.5.4",
+    "cosmiconfig": "^5.0.7"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^4.19.1",
+    "eslint-plugin-mocha-no-only": "^0.0.6",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-prettier": "^2.7.0",
+    "mocha": "^5.2.0",
+    "prettier": "^1.15.3"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": {
+    "node": ">= 8.9.0"
+  }
+}

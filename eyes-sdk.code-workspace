@@ -1,0 +1,38 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "packages/eyes-sdk-core"
+		},
+		{
+			"path": "packages/eyes-selenium-jest-perf"
+		},
+		{
+			"path": "packages/eyes-selenium"
+		},
+		{
+			"path": "packages/eyes-sdk-core-browser"
+		},
+		{
+			"path": "packages/eyes-protractor"
+		},
+		{
+			"path": "packages/eyes-images"
+		},
+		{
+			"path": "packages/eyes-images-browser"
+		},
+		{
+			"path": "packages/eyes-appium"
+		},
+		{
+			"path": "packages/dom-utils"
+		},
+		{
+			"path": "packages/eyes-sdk-utils"
+		}
+	],
+	"settings": {}
+}
