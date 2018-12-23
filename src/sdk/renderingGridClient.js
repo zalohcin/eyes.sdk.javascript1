@@ -1,6 +1,6 @@
 'use strict';
 const throatPkg = require('throat');
-const createLogger = require('@applitools/eyes-sdk-utils/lib/createLogger');
+const createLogger = require('./createLogger');
 const makeGetAllResources = require('./getAllResources');
 const makeExtractCssResources = require('./extractCssResources');
 const makeFetchResource = require('./fetchResource');
