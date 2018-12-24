@@ -1,7 +1,7 @@
-const {makeGetConfig} = require('./lib/config');
-const createLogger = require('./lib/createLogger');
+'use strict';
+
+const { ConfigUtils } = require('./lib/СonfigUtils');
 
 module.exports = {
-  makeGetConfig,
-  createLogger,
+  ConfigUtils,
 };
