@@ -134,7 +134,7 @@ class ArgumentGuard {
    * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
   static isInteger(param, paramName, strict = true) {
-    if ((strict || !(param === undefined || param === null)) && !TypeUtils.isInteger(param)) {
+    if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isInteger(param)) {
       throw new Error(`IllegalArgument: ${paramName} is not integer`);
     }
   }
@@ -148,7 +148,7 @@ class ArgumentGuard {
    * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
   static isString(param, paramName, strict = true) {
-    if ((strict || !(param === undefined || param === null)) && !TypeUtils.isString(param)) {
+    if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isString(param)) {
       throw new Error(`IllegalType: ${paramName} is not a string`);
     }
   }
@@ -162,7 +162,7 @@ class ArgumentGuard {
    * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
   static isNumber(param, paramName, strict = true) {
-    if ((strict || !(param === undefined || param === null)) && !TypeUtils.isNumber(param)) {
+    if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isNumber(param)) {
       throw new Error(`IllegalType: ${paramName} is not a number`);
     }
   }
@@ -176,7 +176,7 @@ class ArgumentGuard {
    * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
   static isBoolean(param, paramName, strict = true) {
-    if ((strict || !(param === undefined || param === null)) && !TypeUtils.isBoolean(param)) {
+    if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isBoolean(param)) {
       throw new Error(`IllegalType: ${paramName} is not a boolean`);
     }
   }
@@ -190,7 +190,7 @@ class ArgumentGuard {
    * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
    */
   static isBuffer(param, paramName, strict = true) {
-    if ((strict || !(param === undefined || param === null)) && !TypeUtils.isBuffer(param)) {
+    if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isBuffer(param)) {
       throw new Error(`IllegalType: ${paramName} is not a buffer`);
     }
   }
