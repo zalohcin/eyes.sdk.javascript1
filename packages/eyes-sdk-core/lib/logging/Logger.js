@@ -2,15 +2,23 @@
 
 const stackTrace = require('stack-trace');
 
+const { ArgumentGuard } = require('../ArgumentGuard');
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ConsoleLogHandler } = require('./ConsoleLogHandler');
 const { NullLogHandler } = require('./NullLogHandler');
 
 /**
  * Write log massages using the provided Log Handler
  */
 class Logger {
-  constructor() {
-    this._logHandler = new NullLogHandler(); // Default.
+  /**
+   * @param {boolean} [showLogs] Determines which log handler will be used ConsoleLogHandler (if set to {@code true})
+   *   or NullLogHandler (if not set or set to {@code false})
+   */
+  constructor(showLogs) {
+    ArgumentGuard.isBoolean(showLogs, 'showLogs', false);
+
+    this._logHandler = showLogs ? new ConsoleLogHandler(true) : new NullLogHandler();
     this._sessionId = '';
   }
 
