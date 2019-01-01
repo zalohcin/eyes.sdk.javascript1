@@ -11,9 +11,9 @@ const writeFile = p(fs.writeFile);
 const mkdirp = p(_mkdirp);
 
 async function saveData({renderId, cdt, resources, url, logger}) {
-  logger.log(`saving data for renderId=${renderId}`);
   const folderName = getFolderName(renderId, new Date());
   const path = resolve(process.cwd(), '.applitools', folderName);
+  logger.log(`saving data for renderId=${renderId} at ${path}`);
   try {
     await mkdirp(path);
   } catch (ex) {
