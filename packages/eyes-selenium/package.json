@@ -47,9 +47,10 @@
     "selenium-webdriver": "^4.0.0-alpha.1"
   },
   "scripts": {
-    "test": "mocha ./test/unit/**/*.spec.js -t 900000",
-    "test:perf": "mocha ./test/perf/**/*.spec.js -t 900000",
-    "test:integration": "mocha ./test/integration/**/*.spec.js -t 900000"
+    "test": "mocha ./test/**/*.spec.js --no-timeouts",
+    "test:unit": "mocha ./test/unit/**/*.spec.js --no-timeouts",
+    "test:perf": "mocha ./test/perf/**/*.spec.js --no-timeouts",
+    "test:integration": "mocha ./test/integration/**/*.spec.js --no-timeouts"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
