@@ -1399,20 +1399,9 @@ class EyesBase {
    */
   static async matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, self, skipStartingSession = false) {
     let retryTimeout = -1;
-    const defaultMatchSettings = self.getDefaultMatchSettings();
 
-    let imageMatchSettings;
     if (checkSettings) {
       retryTimeout = checkSettings.getTimeout();
-
-      const matchLevel = checkSettings.getMatchLevel() || defaultMatchSettings.getMatchLevel();
-      imageMatchSettings = new ImageMatchSettings({ matchLevel });
-
-      const ignoreCaret = checkSettings.getIgnoreCaret() || defaultMatchSettings.getIgnoreCaret();
-      imageMatchSettings.setIgnoreCaret(ignoreCaret);
-
-      const useDom = checkSettings.getSendDom() || self._sendDom;
-      imageMatchSettings.setUseDom(useDom);
     }
 
     // noinspection JSUnresolvedVariable
@@ -1427,7 +1416,7 @@ class EyesBase {
 
     return self._matchWindowTask.matchWindow(
       self.getUserInputs(), region, tag, self._shouldMatchWindowRunOnceOnTimeout,
-      ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout
+      ignoreMismatch, checkSettings, retryTimeout
     );
   }
 
