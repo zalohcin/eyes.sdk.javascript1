@@ -200,10 +200,9 @@ class ServerConnector {
 
     /** @type {string} */
     this._apiKey = undefined;
-    /** @type {string} */
-    this._renderingServerUrl = undefined;
-    /** @type {string} */
-    this._renderingAuthToken = undefined;
+    /** @type {RenderingInfo} */
+    this._renderingInfo = undefined;
+
     /** @type {ProxySettings} */
     this._proxySettings = undefined;
 
@@ -253,40 +252,18 @@ class ServerConnector {
   }
 
   /**
-   * Sets the current rendering server URL used by the client.
-   *
-   * @param serverUrl {string} The URI of the rendering server.
+   * @return {RenderingInfo}
    */
-  setRenderingServerUrl(serverUrl) {
-    ArgumentGuard.notNull(serverUrl, 'serverUrl');
-    this._renderingServerUrl = serverUrl;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} The URI of the rendering server.
-   */
-  getRenderingServerUrl() {
-    return this._renderingServerUrl;
+  getRenderingInfo() {
+    return this._renderingInfo;
   }
 
   /**
-   * Sets the API key of your applitools Eyes account.
-   *
-   * @param {string} authToken The api key to set.
+   * @param {RenderingInfo} renderingInfo
    */
-  setRenderingAuthToken(authToken) {
-    ArgumentGuard.notNull(authToken, 'authToken');
-    this._renderingAuthToken = authToken;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   *
-   * @return {string} The currently set API key or {@code null} if no key is set.
-   */
-  getRenderingAuthToken() {
-    return this._renderingAuthToken;
+  setRenderingInfo(renderingInfo) {
+    ArgumentGuard.notNull(renderingInfo, 'renderingInfo');
+    this._renderingInfo = renderingInfo;
   }
 
   /**
@@ -602,9 +579,9 @@ class ServerConnector {
     const response = await sendRequest(this, 'renderInfo', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      const renderingInfo = new RenderingInfo(response.data);
-      this._logger.verbose('ServerConnector.renderInfo - post succeeded', renderingInfo);
-      return renderingInfo;
+      this._renderingInfo = new RenderingInfo(response.data);
+      this._logger.verbose('ServerConnector.renderInfo - post succeeded', this._renderingInfo);
+      return this._renderingInfo;
     }
 
     throw new Error(`ServerConnector.renderInfo - unexpected status (${response.statusText})`);
@@ -623,9 +600,9 @@ class ServerConnector {
     const isBatch = Array.isArray(renderRequest);
     const options = GeneralUtils.mergeDeep(this._httpOptions, {
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/render'),
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render'),
       headers: {
-        'X-Auth-Token': this._renderingAuthToken,
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
       data: isBatch ? renderRequest : [renderRequest],
     });
@@ -661,9 +638,9 @@ class ServerConnector {
 
     const options = GeneralUtils.mergeDeep(this._httpOptions, {
       method: 'HEAD',
-      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/resources/sha256/', resource.getSha256Hash()),
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/resources/sha256/', resource.getSha256Hash()),
       headers: {
-        'X-Auth-Token': this._renderingAuthToken,
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
       params: {
         'render-id': runningRender.getRenderId(),
@@ -696,9 +673,9 @@ class ServerConnector {
 
     const options = GeneralUtils.mergeDeep(this._httpOptions, {
       method: 'PUT',
-      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/resources/sha256/', resource.getSha256Hash()),
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/resources/sha256/', resource.getSha256Hash()),
       headers: {
-        'X-Auth-Token': this._renderingAuthToken,
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
         'Content-Type': resource.getContentType(),
       },
       params: {
@@ -742,9 +719,9 @@ class ServerConnector {
     const isBatch = Array.isArray(renderId);
     const options = GeneralUtils.mergeDeep(this._httpOptions, {
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status'),
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render-status'),
       headers: {
-        'X-Auth-Token': this._renderingAuthToken,
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
       data: isBatch ? renderId : [renderId],
     });

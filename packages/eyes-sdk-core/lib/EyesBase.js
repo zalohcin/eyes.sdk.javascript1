@@ -1,6 +1,6 @@
 'use strict';
 
-const { Logger, ArgumentGuard } = require('@applitools/eyes-common');
+const { Logger, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 
 const { Region } = require('./geometry/Region');
 const { Location } = require('./geometry/Location');
@@ -282,40 +282,22 @@ class EyesBase {
     return this._serverConnector.getServerUrl();
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
-   * Sets the authToken for rendering server.
-   *
-   * @param authToken {string} The authToken to be used.
+   * @return {?RenderInfo}
    */
-  setRenderingAuthToken(authToken) {
-    this._serverConnector.setRenderingAuthToken(authToken);
+  async getRenderingInfo() {
+    if (TypeUtils.isNull(this._serverConnector.getRenderingInfo())) {
+      return this._serverConnector.renderInfo();
+    }
+
+    return this._serverConnector.getRenderingInfo();
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The currently authToken or {@code null} if no key is set.
+   * @param {RenderingInfo} renderingInfo
    */
-  getRenderingAuthToken() {
-    return this._serverConnector.getRenderingAuthToken();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the current rendering server URL used by the rest client.
-   *
-   * @param serverUrl {string} The URI of the rendering server, or {@code null} to use the default server.
-   */
-  setRenderingServerUrl(serverUrl) {
-    this._serverConnector.setRenderingServerUrl(serverUrl);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} The URI of the eyes server.
-   */
-  getRenderingServerUrl() {
-    return this._serverConnector.getRenderingServerUrl();
+  setRenderingInfo(renderingInfo) {
+    this._serverConnector.setRenderingInfo(renderingInfo);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -1852,8 +1834,7 @@ class EyesBase {
     this._logger.getLogHandler().setSessionId(this._runningSession.getSessionId());
 
     if (this._runningSession.getRenderingInfo()) {
-      this._serverConnector.setRenderingAuthToken(this._runningSession.getRenderingInfo().getAccessToken());
-      this._serverConnector.setRenderingServerUrl(this._runningSession.getRenderingInfo().getServiceUrl());
+      this._serverConnector.setRenderingInfo(this._runningSession.getRenderingInfo());
     }
 
     const testInfo = `'${this._testName}' of '${this.getAppName()}' "${appEnvironment}`;
