@@ -1,6 +1,7 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('@applitools/eyes-common');
+
 const { Region } = require('../geometry/Region');
 const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 

@@ -2,7 +2,8 @@
 
 /* eslint-disable no-unused-vars */
 
-const { ArgumentGuard } = require('../ArgumentGuard');
+const { ArgumentGuard } = require('@applitools/eyes-common');
+
 const { Region } = require('../geometry/Region');
 
 /**

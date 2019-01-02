@@ -1,7 +1,8 @@
 'use strict';
 
 const url = require('url');
-const { ArgumentGuard } = require('../ArgumentGuard');
+
+const { ArgumentGuard } = require('@applitools/eyes-common');
 
 /**
  * Encapsulates settings for sending Eyes communication via proxy.

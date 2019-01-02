@@ -1,6 +1,7 @@
 'use strict';
 
-const { ArgumentGuard } = require('../ArgumentGuard');
+const { ArgumentGuard } = require('@applitools/eyes-common');
+
 const { Region } = require('../geometry/Region');
 const { RectangleSize } = require('../geometry/RectangleSize');
 const { Location } = require('../geometry/Location');

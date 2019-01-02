@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('@applitools/eyes-common');
 
 /**
  * The result of a window match by the agent.

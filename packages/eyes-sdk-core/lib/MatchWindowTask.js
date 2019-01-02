@@ -1,8 +1,8 @@
 'use strict';
 
+const { ArgumentGuard, GeneralUtils } = require('@applitools/eyes-common');
+
 const { Region } = require('./geometry/Region');
-const { ArgumentGuard } = require('./ArgumentGuard');
-const { GeneralUtils } = require('./utils/GeneralUtils');
 const { PerformanceUtils } = require('./utils/PerformanceUtils');
 const { MatchWindowData, Options } = require('./match/MatchWindowData');
 

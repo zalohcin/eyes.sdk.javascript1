@@ -2,7 +2,8 @@
 
 const PromisePool = require('es6-promise-pool');
 
-const { ArgumentGuard } = require('./ArgumentGuard');
+const { ArgumentGuard } = require('@applitools/eyes-common');
+
 const { RenderStatus } = require('./renderer/RenderStatus');
 
 const DEFAULT_CONCURRENCY_LIMIT = 100;

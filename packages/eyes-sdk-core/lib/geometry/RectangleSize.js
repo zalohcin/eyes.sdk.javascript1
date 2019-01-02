@@ -1,6 +1,6 @@
 'use strict';
 
-const { ArgumentGuard } = require('../ArgumentGuard');
+const { ArgumentGuard } = require('@applitools/eyes-common');
 
 /**
  * @typedef {{width: number, height: number}} RectangleSizeObject

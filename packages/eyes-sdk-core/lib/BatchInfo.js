@@ -1,8 +1,6 @@
 'use strict';
 
-const { ArgumentGuard } = require('./ArgumentGuard');
-const { GeneralUtils } = require('./utils/GeneralUtils');
-const { TypeUtils } = require('./utils/TypeUtils');
+const { ArgumentGuard, GeneralUtils, TypeUtils } = require('@applitools/eyes-common');
 
 /**
  * A batch of tests.

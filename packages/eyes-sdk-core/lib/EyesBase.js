@@ -1,6 +1,6 @@
 'use strict';
 
-const { Logger } = require('./logging/Logger');
+const { Logger, ArgumentGuard } = require('@applitools/eyes-common');
 
 const { Region } = require('./geometry/Region');
 const { Location } = require('./geometry/Location');
@@ -55,7 +55,6 @@ const { SimplePropertyHandler } = require('./utils/SimplePropertyHandler');
 const { ReadOnlyPropertyHandler } = require('./utils/ReadOnlyPropertyHandler');
 
 const { FailureReports } = require('./FailureReports');
-const { ArgumentGuard } = require('./ArgumentGuard');
 const { AppEnvironment } = require('./AppEnvironment');
 const { MatchWindowTask } = require('./MatchWindowTask');
 const { MatchSingleWindowTask } = require('./MatchSingleWindowTask');

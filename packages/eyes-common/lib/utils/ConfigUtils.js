@@ -1,7 +1,8 @@
 'use strict';
 
 const cosmiconfig = require('cosmiconfig');
-const { Logger } = require('@applitools/eyes-sdk-core');
+
+const { Logger } = require('../logging/Logger');
 
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS); // TODO when switching to DEBUG sometime remove this env var
 

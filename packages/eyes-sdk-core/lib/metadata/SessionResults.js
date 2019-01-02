@@ -1,6 +1,7 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('@applitools/eyes-common');
+
 const { ActualAppOutput } = require('./ActualAppOutput');
 const { ExpectedAppOutput } = require('./ExpectedAppOutput');
 const { Branch } = require('./Branch');

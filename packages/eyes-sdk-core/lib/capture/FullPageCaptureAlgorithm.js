@@ -1,5 +1,7 @@
 'use strict';
 
+const { GeneralUtils, ArgumentGuard } = require('@applitools/eyes-common');
+
 const { CoordinatesType } = require('../geometry/CoordinatesType');
 const { Location } = require('../geometry/Location');
 const { Region } = require('../geometry/Region');
@@ -7,8 +9,6 @@ const { RectangleSize } = require('../geometry/RectangleSize');
 const { MutableImage } = require('../images/MutableImage');
 const { NullCutProvider } = require('../cropping/NullCutProvider');
 const { NullRegionPositionCompensation } = require('../positioning/NullRegionPositionCompensation');
-const { GeneralUtils } = require('../utils/GeneralUtils');
-const { ArgumentGuard } = require('../ArgumentGuard');
 
 const MIN_SCREENSHOT_PART_HEIGHT = 10;
 

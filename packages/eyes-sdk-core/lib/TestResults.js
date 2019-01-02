@@ -1,7 +1,8 @@
 'use strict';
 
+const { GeneralUtils } = require('@applitools/eyes-common');
+
 const { RectangleSize } = require('./geometry/RectangleSize');
-const { GeneralUtils } = require('./utils/GeneralUtils');
 const { TestResultsStatus } = require('./TestResultsStatus');
 
 class SessionUrls {

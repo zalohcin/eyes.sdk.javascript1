@@ -3,14 +3,13 @@
 const axios = require('axios');
 const zlib = require('zlib');
 
+const { GeneralUtils, TypeUtils, ArgumentGuard } = require('@applitools/eyes-common');
+
 const { ProxySettings } = require('./ProxySettings');
 const { RenderingInfo } = require('./RenderingInfo');
 const { RunningSession } = require('./RunningSession');
 const { TestResults } = require('../TestResults');
 const { MatchResult } = require('../match/MatchResult');
-const { GeneralUtils } = require('../utils/GeneralUtils');
-const { TypeUtils } = require('../utils/TypeUtils');
-const { ArgumentGuard } = require('../ArgumentGuard');
 
 const { RunningRender } = require('../renderer/RunningRender');
 const { RenderStatusResults } = require('../renderer/RenderStatusResults');

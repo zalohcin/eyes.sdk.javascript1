@@ -1,8 +1,8 @@
 'use strict';
 
+const { ArgumentGuard, GeneralUtils } = require('@applitools/eyes-common');
+
 const { MatchLevel } = require('./MatchLevel');
-const { ArgumentGuard } = require('../ArgumentGuard');
-const { GeneralUtils } = require('../utils/GeneralUtils');
 
 /**
  * Encapsulates match settings for the a session.

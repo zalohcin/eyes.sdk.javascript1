@@ -1,7 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
-const { ArgumentGuard } = require('../ArgumentGuard');
+const { GeneralUtils, ArgumentGuard } = require('@applitools/eyes-common');
 
 /**
  * Encapsulates data required to start session using the Session API.

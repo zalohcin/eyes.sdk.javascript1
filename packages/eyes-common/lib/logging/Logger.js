@@ -2,8 +2,8 @@
 
 const stackTrace = require('stack-trace');
 
-const { ArgumentGuard } = require('../ArgumentGuard');
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { ArgumentGuard } = require('../ArgumentGuard');
 const { ConsoleLogHandler } = require('./ConsoleLogHandler');
 const { NullLogHandler } = require('./NullLogHandler');
 

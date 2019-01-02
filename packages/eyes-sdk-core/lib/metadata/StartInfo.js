@@ -1,6 +1,7 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('@applitools/eyes-common');
+
 const { ImageMatchSettings } = require('./ImageMatchSettings');
 const { BatchInfo } = require('./BatchInfo');
 const { AppEnvironment } = require('../AppEnvironment');

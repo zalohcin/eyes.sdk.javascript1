@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { DateTimeUtils } = require('../utils/DateTimeUtils');
 
 /**
  * Handles log messages produces by the Eyes API.
@@ -78,7 +78,7 @@ class LogHandler {
       eyes = `Eyes[${this._sessionId}]:`;
     }
 
-    return `${GeneralUtils.toISO8601DateTime()} ${eyes} ${logString}`;
+    return `${DateTimeUtils.toISO8601DateTime()} ${eyes} ${logString}`;
   }
 
   /**

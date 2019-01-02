@@ -1,7 +1,8 @@
 'use strict';
 
+const { GeneralUtils } = require('@applitools/eyes-common');
+
 const { RectangleSize } = require('./geometry/RectangleSize');
-const { GeneralUtils } = require('./utils/GeneralUtils');
 
 /**
  * The environment in which the application under test is executing.

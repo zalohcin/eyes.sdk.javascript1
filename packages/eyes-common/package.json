@@ -5,8 +5,6 @@
   "keywords": [
     "applitools",
     "eyes",
-    "eyes-sdk",
-    "eyes-sdk-core",
     "test automation",
     "visual regression",
     "automation",
@@ -30,9 +28,12 @@
     "test": "./test"
   },
   "main": "./index.js",
+  "browser": "./browser.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "^4.5.4",
-    "cosmiconfig": "^5.0.7"
+    "cosmiconfig": "^5.0.7",
+    "dateformat": "^3.0.3",
+    "stack-trace": "^0.0.10",
+    "deepmerge": "^3.0.0"
   },
   "devDependencies": {
     "mocha": "^5.2.0"

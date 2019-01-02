@@ -2,8 +2,8 @@
 
 const crypto = require('crypto');
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
-const { ArgumentGuard } = require('../ArgumentGuard');
+const { GeneralUtils, ArgumentGuard } = require('@applitools/eyes-common');
+
 const { RGridResource } = require('./RGridResource');
 
 class RGridDom {

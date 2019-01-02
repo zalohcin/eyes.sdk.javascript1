@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('@applitools/eyes-common');
 
 /**
  * Encapsulates data for the render currently running in the client.

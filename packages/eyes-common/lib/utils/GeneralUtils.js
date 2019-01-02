@@ -1,13 +1,9 @@
 'use strict';
 
 const merge = require('deepmerge');
-const dateFormat = require('dateformat');
 
 const { TypeUtils } = require('./TypeUtils');
-
-const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
-const DATE_FORMAT_RFC1123 = "ddd, dd mmm yyyy HH:MM:ss 'GMT'";
-const DATE_FORMAT_LOGFILE = 'yyyy_mm_dd_HH_MM_ss_l';
+const { DateTimeUtils } = require('./DateTimeUtils');
 
 /**
  * Collection of utility methods.
@@ -144,41 +140,45 @@ class GeneralUtils {
   /**
    * Convert a Date object to a ISO-8601 date string
    *
+   * @deprecated Use {@link DateTimeUtils.toISO8601DateTime} instead
    * @param {Date} [date] Date which will be converted
    * @return {string} string formatted as ISO-8601 (yyyy-MM-dd'T'HH:mm:ss'Z')
    */
-  static toISO8601DateTime(date = new Date()) {
-    return dateFormat(date, DATE_FORMAT_ISO8601, true);
+  static toISO8601DateTime(date) {
+    return DateTimeUtils.toISO8601DateTime(date);
   }
 
   /**
    * Convert a Date object to a RFC-1123 date string
    *
+   * @deprecated Use {@link DateTimeUtils.toRfc1123DateTime} instead
    * @param {Date} [date] Date which will be converted
    * @return {string} string formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
    */
-  static toRfc1123DateTime(date = new Date()) {
-    return dateFormat(date, DATE_FORMAT_RFC1123, true);
+  static toRfc1123DateTime(date) {
+    return DateTimeUtils.toRfc1123DateTime(date);
   }
 
   /**
    * Convert a Date object to a RFC-1123 date string
    *
+   * @deprecated Use {@link DateTimeUtils.toLogFileDateTime} instead
    * @param {Date} [date] Date which will be converted
    * @return {string} string formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
    */
-  static toLogFileDateTime(date = new Date()) {
-    return dateFormat(date, DATE_FORMAT_LOGFILE, false);
+  static toLogFileDateTime(date) {
+    return DateTimeUtils.toLogFileDateTime(date);
   }
 
   /**
    * Creates {@link Date} instance from an ISO 8601 formatted string.
    *
+   * @deprecated Use {@link DateTimeUtils.fromISO8601DateTime} instead
    * @param {string} dateTime An ISO 8601 formatted string.
    * @return {Date} A {@link Date} instance representing the given date and time.
    */
   static fromISO8601DateTime(dateTime) {
-    return new Date(dateTime);
+    return DateTimeUtils.fromISO8601DateTime(dateTime);
   }
 
   /**

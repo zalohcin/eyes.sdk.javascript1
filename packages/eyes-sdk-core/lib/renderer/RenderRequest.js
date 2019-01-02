@@ -1,6 +1,6 @@
 'use strict';
 
-const { ArgumentGuard } = require('../ArgumentGuard');
+const { ArgumentGuard } = require('@applitools/eyes-common');
 
 /**
  * Encapsulates data required to start render using the RenderingGrid API.

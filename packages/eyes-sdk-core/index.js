@@ -2,6 +2,8 @@
 
 /* eslint-disable max-len */
 
+const common = require('@applitools/eyes-common');
+
 exports.AppOutputProvider = require('./lib/capture/AppOutputProvider').AppOutputProvider;
 exports.AppOutputWithScreenshot = require('./lib/capture/AppOutputWithScreenshot').AppOutputWithScreenshot;
 exports.EyesScreenshot = require('./lib/capture/EyesScreenshot').EyesScreenshot;
@@ -47,12 +49,6 @@ exports.Region = require('./lib/geometry/Region').Region;
 exports.ImageDeltaCompressor = require('./lib/images/ImageDeltaCompressor').ImageDeltaCompressor;
 exports.ImageUtils = require('./lib/images/ImageUtils').ImageUtils;
 exports.MutableImage = require('./lib/images/MutableImage').MutableImage;
-
-exports.ConsoleLogHandler = require('./lib/logging/ConsoleLogHandler').ConsoleLogHandler;
-exports.FileLogHandler = require('./lib/logging/FileLogHandler').FileLogHandler;
-exports.Logger = require('./lib/logging/Logger').Logger;
-exports.LogHandler = require('./lib/logging/LogHandler').LogHandler;
-exports.NullLogHandler = require('./lib/logging/NullLogHandler').NullLogHandler;
 
 exports.AppOutput = require('./lib/match/AppOutput').AppOutput;
 exports.ExactMatchSettings = require('./lib/match/ExactMatchSettings').ExactMatchSettings;
@@ -107,7 +103,6 @@ exports.TextTrigger = require('./lib/triggers/TextTrigger').TextTrigger;
 exports.Trigger = require('./lib/triggers/Trigger').Trigger;
 
 exports.BrowserNames = require('./lib/utils/BrowserNames').BrowserNames;
-exports.GeneralUtils = require('./lib/utils/GeneralUtils').GeneralUtils;
 exports.OSNames = require('./lib/utils/OSNames').OSNames;
 exports.PerformanceUtils = require('./lib/utils/PerformanceUtils').PerformanceUtils;
 exports.PropertyHandler = require('./lib/utils/PropertyHandler').PropertyHandler;
@@ -115,10 +110,8 @@ exports.ReadOnlyPropertyHandler = require('./lib/utils/ReadOnlyPropertyHandler')
 exports.SimplePropertyHandler = require('./lib/utils/SimplePropertyHandler').SimplePropertyHandler;
 exports.StreamUtils = require('./lib/utils/StreamUtils').ReadableBufferStream;
 exports.TestResultsFormatter = require('./lib/utils/TestResultsFormatter').TestResultsFormatter;
-exports.TypeUtils = require('./lib/utils/TypeUtils').TypeUtils;
 exports.UserAgent = require('./lib/utils/UserAgent').UserAgent;
 
-exports.ArgumentGuard = require('./lib/ArgumentGuard').ArgumentGuard;
 exports.AppEnvironment = require('./lib/AppEnvironment').AppEnvironment;
 exports.BatchInfo = require('./lib/BatchInfo').BatchInfo;
 exports.EyesBase = require('./lib/EyesBase').EyesBase;
@@ -130,3 +123,14 @@ exports.MatchWindowTask = require('./lib/MatchWindowTask').MatchWindowTask;
 exports.RenderWindowTask = require('./lib/RenderWindowTask').RenderWindowTask;
 exports.TestResults = require('./lib/TestResults').TestResults;
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus;
+
+
+// Common classes
+exports.ConsoleLogHandler = common.ConsoleLogHandler;
+exports.FileLogHandler = common.FileLogHandler;
+exports.Logger = common.Logger;
+exports.LogHandler = common.LogHandler;
+exports.NullLogHandler = common.NullLogHandler;
+exports.GeneralUtils = common.GeneralUtils;
+exports.TypeUtils = common.TypeUtils;
+exports.ArgumentGuard = common.ArgumentGuard;
