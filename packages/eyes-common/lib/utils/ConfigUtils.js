@@ -16,11 +16,11 @@ class ConfigUtils {
       const result = configPath ? explorer.loadSync(configPath) : explorer.searchSync();
       if (result) {
         const { config, filepath } = result;
-        logger.log('loading configuration from', filepath);
+        logger.log('Loading configuration from', filepath);
         defaultConfig = config;
       }
     } catch (ex) {
-      logger.log(`an error occurred while loading configuration. configPath=${configPath}\n`, ex);
+      logger.log(`An error occurred while loading configuration. configPath=${configPath}\n`, ex);
     }
 
     const envConfig = {};

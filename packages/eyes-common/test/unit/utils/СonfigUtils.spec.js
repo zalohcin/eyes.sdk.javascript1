@@ -4,12 +4,12 @@ const { resolve } = require('path');
 const { equal, deepEqual } = require('assert');
 const { describe, it, beforeEach, afterEach } = require('mocha');
 
-const { ConfigUtils } = require('../index');
+const { ConfigUtils } = require('../../../index');
 
 describe('ConfigUtils', () => {
   describe('getConfig()', () => {
     let prevEnv;
-    const configPath = resolve(__dirname, 'fixtures');
+    const configPath = resolve(__dirname, '..', '..', 'fixtures');
 
     function getConfigAtConfigPath(args) {
       const cwd = process.cwd();
