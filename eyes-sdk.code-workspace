@@ -31,7 +31,7 @@
 			"path": "packages/dom-utils"
 		},
 		{
-			"path": "packages/eyes-sdk-utils"
+			"path": "packages/eyes-common"
 		}
 	],
 	"settings": {}
