@@ -124,7 +124,7 @@ class TypeUtils {
   }
 
   /**
-   * Checks if `keys` is a direct property of `object`.
+   * Checks if `keys` is a direct property(ies) of `object`.
    *
    * @param {object} object The object to query.
    * @param {string|string[]} keys The key(s) to check.
@@ -140,6 +140,30 @@ class TypeUtils {
 
     for (const key of keys) {
       if (!hasOwnProperty.call(object, key)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Checks if `methods` is a method(s) of `object`.
+   *
+   * @param {object} object The object to query.
+   * @param {string|string[]} methods The methods(s) to check.
+   */
+  static hasMethod(object, methods) {
+    if (object == null) {
+      return false;
+    }
+
+    if (!Array.isArray(methods)) {
+      methods = [methods];
+    }
+
+    for (const key of methods) {
+      if (typeof object[key] !== 'function') {
         return false;
       }
     }
