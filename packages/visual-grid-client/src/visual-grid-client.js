@@ -1,5 +1,5 @@
 'use strict';
-const makeVisualGridClient = require('./sdk/renderingGridClient');
+const makeRenderingGridClient = require('./sdk/renderingGridClient');
 const createLogger = require('./sdk/createLogger');
 const {makeGetConfig} = require('./sdk/config');
 const {
@@ -10,7 +10,8 @@ const {
 } = require('@applitools/eyes-sdk-core');
 
 module.exports = {
-  makeVisualGridClient,
+  makeVisualGridClient: makeRenderingGridClient,
+  makeRenderingGridClient,
   createLogger,
   makeGetConfig,
   DiffsFoundError,
