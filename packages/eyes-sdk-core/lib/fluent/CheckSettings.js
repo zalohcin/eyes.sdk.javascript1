@@ -37,26 +37,25 @@ class CheckSettings {
     this._floatingRegions = [];
   }
 
-  // TODO: finish implementation withName
-  // // noinspection JSUnusedGlobalSymbols
-  // /**
-  //  * A setter for the checkpoint name.
-  //  *
-  //  * @param {string} name A name by which to identify the checkpoint.
-  //  * @return {this} This instance of the settings object.
-  //  */
-  // withName(name) {
-  //   this._name = name;
-  //   return this;
-  // }
-  //
-  // // noinspection JSUnusedGlobalSymbols
-  // /**
-  //  * @return {string}
-  //  */
-  // getName() {
-  //   return this._name;
-  // }
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * A setter for the checkpoint name.
+   *
+   * @param {string} name A name by which to identify the checkpoint.
+   * @return {this} This instance of the settings object.
+   */
+  withName(name) {
+    this._name = name;
+    return this;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string}
+   */
+  getName() {
+    return this._name;
+  }
 
   // noinspection JSUnusedGlobalSymbols
   /**

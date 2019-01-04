@@ -22,6 +22,7 @@ const {
   RectangleSize,
   FailureReports,
   MatchResult,
+  TypeUtils,
 } = require('@applitools/eyes-sdk-core');
 
 const { DomCapture } = require('@applitools/dom-utils');
@@ -444,11 +445,17 @@ class Eyes extends EyesBase {
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
     ArgumentGuard.isValidState(this._isOpen, 'Eyes not open');
 
+    if (TypeUtils.isNotNull(name)) {
+      checkSettings.withName(name);
+    } else {
+      name = checkSettings.getName();
+    }
+
     if (!(await EyesSeleniumUtils.isMobileDevice(this._driver))) {
       this._logger.verbose(`URL: ${await this._driver.getCurrentUrl()}`);
     }
 
-    this._logger.verbose(`check("${name}", checkSettings) - begin`);
+    this._logger.verbose(`check(${checkSettings}) - begin`);
     this._stitchContent = checkSettings.getStitchContent();
     const targetRegion = checkSettings.getTargetRegion();
 

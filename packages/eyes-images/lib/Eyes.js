@@ -103,6 +103,12 @@ class Eyes extends EyesBase {
       return false;
     }
 
+    if (TypeUtils.isNotNull(name)) {
+      checkSettings.withName(name);
+    } else {
+      name = checkSettings.getName();
+    }
+
     try {
       let regionProvider = new NullRegionProvider();
 
