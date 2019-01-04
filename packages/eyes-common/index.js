@@ -2,6 +2,8 @@
 
 /* eslint-disable max-len */
 
+exports.Configuration = require('./lib/config/Configuration').Configuration;
+
 exports.ConsoleLogHandler = require('./lib/logging/ConsoleLogHandler').ConsoleLogHandler;
 exports.FileLogHandler = require('./lib/logging/FileLogHandler').FileLogHandler; // -browser
 exports.Logger = require('./lib/logging/Logger').Logger;
