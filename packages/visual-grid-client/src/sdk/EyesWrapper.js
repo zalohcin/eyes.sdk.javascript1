@@ -46,8 +46,7 @@ class EyesWrapper extends EyesBase {
   }
 
   setRenderingInfo(renderingInfo) {
-    this._serverConnector.setRenderingAuthToken(renderingInfo.getAccessToken());
-    this._serverConnector.setRenderingServerUrl(renderingInfo.getServiceUrl());
+    this._serverConnector.setRenderingInfo(renderingInfo);
   }
 
   /**
