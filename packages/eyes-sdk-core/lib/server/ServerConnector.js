@@ -777,6 +777,43 @@ class ServerConnector {
 
     throw new Error(`ServerConnector.postDomSnapshot - unexpected status (${response.statusText})`);
   }
+
+  /**
+   * @param {string} url
+   * @param {boolean} [isSecondRetry=true]
+   * @return {Promise<*>}
+   */
+  async downloadResource(url, isSecondRetry = true) {
+    ArgumentGuard.notNull(url, 'url');
+    this._logger.verbose(`ServerConnector.downloadResource called with url: ${url}`);
+
+    const options = {
+      url,
+      proxy: this._httpOptions.proxy,
+    };
+
+    try {
+      const response = await axios(options);
+
+      // eslint-disable-next-line max-len
+      this._logger.verbose(`ServerConnector.downloadResource - result ${response.statusText}, status code ${response.status}, url ${options.url}`);
+      return response.data;
+    } catch (err) {
+      let reasonMsg = err.message;
+      if (err.response && err.response.statusText) {
+        reasonMsg += ` (${err.response.statusText})`;
+      }
+
+      // eslint-disable-next-line max-len
+      this._logger.log(`ServerConnector.downloadResource - failed on ${options.url}: ${reasonMsg}`);
+
+      if (isSecondRetry) {
+        return this.downloadResource(url, false);
+      }
+
+      throw new Error(reasonMsg);
+    }
+  }
 }
 
 exports.ServerConnector = ServerConnector;
