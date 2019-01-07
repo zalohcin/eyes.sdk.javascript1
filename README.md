@@ -74,6 +74,7 @@ defined in the `browser` property of the configuraion.
   * `url`: yes, again.
   * `type`: the content type of the resource.
   * `value`: a `Buffer` of the resource content.
+* `matchLevel`: The method to use when comparing two screenshots, which expresses the extent to which the two images are expected to match.
 
 ### close()
 
