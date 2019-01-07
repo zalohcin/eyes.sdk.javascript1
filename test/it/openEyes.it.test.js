@@ -1035,6 +1035,68 @@ describe('openEyes', () => {
     expect(wrappers[2].deviceInfo).to.equal('Desktop');
   });
 
+  it('sets configuration on wrappers in makeRenderingGridClient', () => {
+    const wrappers = [
+      createFakeWrapper(baseUrl),
+      createFakeWrapper(baseUrl),
+      createFakeWrapper(baseUrl),
+    ];
+
+    openEyes = makeRenderingGridClient({
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      apiKey,
+      renderWrapper: wrapper,
+      serverUrl: 'serverUrl',
+      proxy: 'proxy',
+      appName,
+      baselineBranchName: 'baselineBranchName',
+      baselineEnvName: 'baselineEnvName',
+      baselineName: 'baselineName',
+      envName: 'envName',
+      ignoreCaret: 'ignoreCaret',
+      isDisabled: false,
+      matchLevel: 'matchLevel',
+      matchTimeout: 'matchTimeout',
+      parentBranchName: 'parentBranchName',
+      branchName: 'branchName',
+      saveFailedTests: 'saveFailedTests',
+      saveNewTests: 'saveNewTests',
+      compareWithParentBranch: 'compareWithParentBranch',
+      ignoreBaseline: 'ignoreBaseline',
+      browser: [{deviceName: 'device1'}, {deviceName: 'device2'}, {}],
+      agentId: 'agentId',
+    }).openEyes;
+
+    openEyes({
+      wrappers,
+      url: 'bla',
+    });
+
+    for (const wrapper of wrappers) {
+      expect(wrapper.baselineBranchName).to.equal('baselineBranchName');
+      expect(wrapper.baselineEnvName).to.equal('baselineEnvName');
+      expect(wrapper.baselineName).to.equal('baselineName');
+      expect(wrapper.envName).to.equal('envName');
+      expect(wrapper.ignoreCaret).to.equal('ignoreCaret');
+      expect(wrapper.isDisabled).to.equal(false);
+      expect(wrapper.matchLevel).to.equal('matchLevel');
+      expect(wrapper.matchTimeout).to.equal('matchTimeout');
+      expect(wrapper.parentBranchName).to.equal('parentBranchName');
+      expect(wrapper.branchName).to.equal('branchName');
+      expect(wrapper.proxy).to.equal('proxy');
+      expect(wrapper.saveFailedTests).to.equal('saveFailedTests');
+      expect(wrapper.saveNewTests).to.equal('saveNewTests');
+      expect(wrapper.compareWithParentBranch).to.equal('compareWithParentBranch');
+      expect(wrapper.ignoreBaseline).to.equal('ignoreBaseline');
+      expect(wrapper.serverUrl).to.equal('serverUrl');
+      expect(wrapper.agentId).to.equal('agentId');
+    }
+
+    expect(wrappers[0].deviceInfo).to.equal('device1 (Chrome emulation)');
+    expect(wrappers[1].deviceInfo).to.equal('device2 (Chrome emulation)');
+    expect(wrappers[2].deviceInfo).to.equal('Desktop');
+  });
+
   it('sets proxy with username/password wrappers', () => {
     openEyes = makeRenderingGridClient({
       showLogs: APPLITOOLS_SHOW_LOGS,
@@ -1354,5 +1416,65 @@ describe('openEyes', () => {
     expect(err).to.be.undefined;
     expect(result).not.to.be.an.instanceOf(Error);
     await promise;
+  });
+
+  it('sets matchLevel in checkWindow', async () => {
+    wrapper.checkWindow = async ({tag}) => {
+      await psetTimeout(20);
+      expect(wrapper.getMatchLevel()).to.equal(tag === 2 ? 'Layout' : 'Strict');
+    };
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      appName,
+    });
+    checkWindow({tag: 1, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({matchLevel: 'Layout', tag: 2, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({tag: 3, cdt: [], url: ''});
+    await close();
+  });
+
+  it('sets matchLevel in checkWindow and override argument to openEyes', async () => {
+    wrapper.checkWindow = async ({tag}) => {
+      await psetTimeout(20);
+      expect(wrapper.getMatchLevel()).to.equal(tag === 2 ? 'Layout' : 'Content');
+    };
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      appName,
+      matchLevel: 'Content',
+    });
+    checkWindow({tag: 1, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({matchLevel: 'Layout', tag: 2, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({tag: 3, cdt: [], url: ''});
+    await close();
+  });
+
+  it('sets matchLevel in checkWindow and override argument to makeRenderingGridClient', async () => {
+    openEyes = makeRenderingGridClient({
+      apiKey,
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      renderWrapper: wrapper,
+      matchLevel: 'Content',
+    }).openEyes;
+
+    wrapper.checkWindow = async ({tag}) => {
+      await psetTimeout(20);
+      expect(wrapper.getMatchLevel()).to.equal(tag === 2 ? 'Layout' : 'Content');
+    };
+    const {checkWindow, close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+    });
+    checkWindow({tag: 1, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({matchLevel: 'Layout', tag: 2, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({tag: 3, cdt: [], url: ''});
+    await close();
   });
 });

@@ -157,6 +157,7 @@ function makeOpenEyes({
       stepCounter,
       testName,
       openEyesPromises,
+      matchLevel,
     });
 
     const close = makeCloseEyes({
