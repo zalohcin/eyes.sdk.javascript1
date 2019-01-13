@@ -11,11 +11,13 @@ function makeFetchResource({logger, retries = 5, fetchCache = createResourceCach
       retry => {
         logger.log(`fetching ${url} ${retry ? `(retry ${retry}/${retries})` : ''}`);
         return fetch(url).then(resp =>
-          resp.buffer().then(buff => ({
-            url,
-            type: resp.headers.get('Content-Type'),
-            value: buff,
-          })),
+          (resp.buffer ? resp.buffer() : resp.arrayBuffer().then(buff => Buffer.from(buff))).then(
+            buff => ({
+              url,
+              type: resp.headers.get('Content-Type'),
+              value: buff,
+            }),
+          ),
         );
       },
       {retries},
