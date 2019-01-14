@@ -1,15 +1,7 @@
 'use strict';
 
-const {
-  ArgumentGuard,
-  EyesScreenshot,
-  CoordinatesType,
-  Region,
-  Location,
-  RectangleSize,
-  CoordinatesTypeConversionError,
-  OutOfBoundsError,
-} = require('@applitools/eyes-sdk-core');
+const { ArgumentGuard, CoordinatesType, Region, Location, RectangleSize } = require('@applitools/eyes-common');
+const { EyesScreenshot, CoordinatesTypeConversionError, OutOfBoundsError } = require('@applitools/eyes-sdk-core');
 
 const { SeleniumJavaScriptExecutor } = require('../SeleniumJavaScriptExecutor');
 const { ScrollPositionProvider } = require('../positioning/ScrollPositionProvider');

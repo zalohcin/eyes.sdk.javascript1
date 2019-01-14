@@ -2,7 +2,7 @@
 
 require('chromedriver');
 const { Builder } = require('selenium-webdriver');
-const { ConsoleLogHandler, PerformanceUtils } = require('@applitools/eyes-sdk-core');
+const { ConsoleLogHandler, PerformanceUtils } = require('@applitools/eyes-common');
 const { Eyes, Target } = require('@applitools/eyes-selenium');
 
 jest.setTimeout(5 * 60 * 1000);

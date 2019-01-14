@@ -35,6 +35,7 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/dom-utils": "^4.3.4",
+    "@applitools/eyes-common": "^1.0.0",
     "@applitools/eyes-sdk-core": "^4.5.4"
   },
   "devDependencies": {
@@ -47,10 +48,10 @@
     "selenium-webdriver": "^4.0.0-alpha.1"
   },
   "scripts": {
-    "test": "mocha ./test/**/*.spec.js --no-timeouts",
-    "test:unit": "mocha ./test/unit/**/*.spec.js --no-timeouts",
-    "test:perf": "mocha ./test/perf/**/*.spec.js --no-timeouts",
-    "test:integration": "mocha ./test/integration/**/*.spec.js --no-timeouts"
+    "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
+    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\"",
+    "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\""
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

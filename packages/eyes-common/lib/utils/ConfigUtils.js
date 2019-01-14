@@ -4,7 +4,8 @@ const cosmiconfig = require('cosmiconfig');
 
 const { Logger } = require('../logging/Logger');
 
-const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS); // TODO when switching to DEBUG sometime remove this env var
+const { APPLITOOLS_SHOW_LOGS } = process.env; // TODO when switching to DEBUG sometime remove this env var
+const logger = new Logger(APPLITOOLS_SHOW_LOGS);
 
 const explorer = cosmiconfig('applitools', {
   searchPlaces: ['package.json', 'applitools.config.js', 'eyes.config.js', 'eyes.json'],

@@ -29,7 +29,6 @@ exports.ValidationResult = require('./lib/events/ValidationResult').ValidationRe
 
 exports.CoordinatesTypeConversionError = require('./lib/errors/CoordinatesTypeConversionError').CoordinatesTypeConversionError;
 exports.DiffsFoundError = require('./lib/errors/DiffsFoundError').DiffsFoundError;
-exports.EyesError = require('./lib/errors/EyesError').EyesError;
 exports.NewTestError = require('./lib/errors/NewTestError').NewTestError;
 exports.OutOfBoundsError = require('./lib/errors/OutOfBoundsError').OutOfBoundsError;
 exports.TestFailedError = require('./lib/errors/TestFailedError').TestFailedError;
@@ -40,15 +39,6 @@ exports.FloatingRegionByRectangle = require('./lib/fluent/FloatingRegionByRectan
 exports.GetFloatingRegion = require('./lib/fluent/GetFloatingRegion').GetFloatingRegion;
 exports.GetRegion = require('./lib/fluent/GetRegion').GetRegion;
 exports.IgnoreRegionByRectangle = require('./lib/fluent/IgnoreRegionByRectangle').IgnoreRegionByRectangle;
-
-exports.CoordinatesType = require('./lib/geometry/CoordinatesType').CoordinatesType;
-exports.Location = require('./lib/geometry/Location').Location;
-exports.RectangleSize = require('./lib/geometry/RectangleSize').RectangleSize;
-exports.Region = require('./lib/geometry/Region').Region;
-
-exports.ImageDeltaCompressor = require('./lib/images/ImageDeltaCompressor').ImageDeltaCompressor;
-exports.ImageUtils = require('./lib/images/ImageUtils').ImageUtils;
-exports.MutableImage = require('./lib/images/MutableImage').MutableImage;
 
 exports.AppOutput = require('./lib/match/AppOutput').AppOutput;
 exports.ExactMatchSettings = require('./lib/match/ExactMatchSettings').ExactMatchSettings;
@@ -102,16 +92,6 @@ exports.MouseTrigger = require('./lib/triggers/MouseTrigger').MouseTrigger;
 exports.TextTrigger = require('./lib/triggers/TextTrigger').TextTrigger;
 exports.Trigger = require('./lib/triggers/Trigger').Trigger;
 
-exports.BrowserNames = require('./lib/utils/BrowserNames').BrowserNames;
-exports.OSNames = require('./lib/utils/OSNames').OSNames;
-exports.PerformanceUtils = require('./lib/utils/PerformanceUtils').PerformanceUtils;
-exports.PropertyHandler = require('./lib/utils/PropertyHandler').PropertyHandler;
-exports.ReadOnlyPropertyHandler = require('./lib/utils/ReadOnlyPropertyHandler').ReadOnlyPropertyHandler;
-exports.SimplePropertyHandler = require('./lib/utils/SimplePropertyHandler').SimplePropertyHandler;
-exports.StreamUtils = require('./lib/utils/StreamUtils').ReadableBufferStream;
-exports.TestResultsFormatter = require('./lib/utils/TestResultsFormatter').TestResultsFormatter;
-exports.UserAgent = require('./lib/utils/UserAgent').UserAgent;
-
 exports.AppEnvironment = require('./lib/AppEnvironment').AppEnvironment;
 exports.BatchInfo = require('./lib/BatchInfo').BatchInfo;
 exports.EyesBase = require('./lib/EyesBase').EyesBase;
@@ -122,15 +102,29 @@ exports.MatchSingleWindowTask = require('./lib/MatchSingleWindowTask').MatchSing
 exports.MatchWindowTask = require('./lib/MatchWindowTask').MatchWindowTask;
 exports.RenderWindowTask = require('./lib/RenderWindowTask').RenderWindowTask;
 exports.TestResults = require('./lib/TestResults').TestResults;
+exports.TestResultsFormatter = require('./lib/TestResultsFormatter').TestResultsFormatter;
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus;
 
 
-// Common classes
+// Classes from eyes-common which may be used as part of public API
+// Classes which only used internally, should not be exported
+exports.Configuration = common.Configuration;
+exports.CoordinatesType = common.CoordinatesType;
+exports.Location = common.Location;
+exports.RectangleSize = common.RectangleSize;
+exports.Region = common.Region;
 exports.ConsoleLogHandler = common.ConsoleLogHandler;
 exports.FileLogHandler = common.FileLogHandler;
-exports.Logger = common.Logger;
-exports.LogHandler = common.LogHandler;
 exports.NullLogHandler = common.NullLogHandler;
-exports.GeneralUtils = common.GeneralUtils;
-exports.TypeUtils = common.TypeUtils;
-exports.ArgumentGuard = common.ArgumentGuard;
+
+// for backward compatibility
+exports.EyesError = common.EyesError;
+exports.ImageDeltaCompressor = common.ImageDeltaCompressor;
+exports.ImageUtils = common.ImageUtils;
+exports.MutableImage = common.MutableImage;
+exports.BrowserNames = common.BrowserNames;
+exports.OSNames = common.OSNames;
+exports.PerformanceUtils = common.PerformanceUtils;
+exports.PropertyHandler = common.PropertyHandler;
+exports.StreamUtils = common.StreamUtils;
+exports.UserAgent = common.UserAgent;

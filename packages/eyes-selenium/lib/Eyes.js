@@ -1,6 +1,19 @@
 'use strict';
 
 const {
+  Logger,
+  SimplePropertyHandler,
+  ReadOnlyPropertyHandler,
+  CoordinatesType,
+  Region,
+  Location,
+  RectangleSize,
+  UserAgent,
+  ArgumentGuard,
+  TypeUtils,
+} = require('@applitools/eyes-common');
+
+const {
   EyesBase,
   FullPageCaptureAlgorithm,
   FixedScaleProviderFactory,
@@ -9,20 +22,10 @@ const {
   NullRegionProvider,
   ContextBasedScaleProviderFactory,
   ScaleProviderIdentityFactory,
-  ArgumentGuard,
-  SimplePropertyHandler,
-  Logger,
-  CoordinatesType,
   TestFailedError,
   NullCutProvider,
-  UserAgent,
-  ReadOnlyPropertyHandler,
-  Region,
-  Location,
-  RectangleSize,
   FailureReports,
   MatchResult,
-  TypeUtils,
 } = require('@applitools/eyes-sdk-core');
 
 const { DomCapture } = require('@applitools/dom-utils');

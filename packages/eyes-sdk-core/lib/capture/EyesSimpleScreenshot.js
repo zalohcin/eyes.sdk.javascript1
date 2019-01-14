@@ -1,11 +1,7 @@
 'use strict';
 
-const { ArgumentGuard } = require('@applitools/eyes-common');
+const { ArgumentGuard, CoordinatesType, Location, RectangleSize, Region } = require('@applitools/eyes-common');
 
-const { Region } = require('../geometry/Region');
-const { RectangleSize } = require('../geometry/RectangleSize');
-const { Location } = require('../geometry/Location');
-const { CoordinatesType } = require('../geometry/CoordinatesType');
 const { OutOfBoundsError } = require('../errors/OutOfBoundsError');
 const { CoordinatesTypeConversionError } = require('../errors/CoordinatesTypeConversionError');
 const { EyesScreenshot } = require('./EyesScreenshot');

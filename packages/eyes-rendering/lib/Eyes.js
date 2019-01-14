@@ -2,12 +2,13 @@
 
 const { makeRenderingGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-capture');
-const { Logger, ArgumentGuard, TypeUtils, BatchInfo } = require('@applitools/eyes-sdk-core');
+const { Logger, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
+const { BatchInfo, TestResultsFormatter } = require('@applitools/eyes-sdk-core');
 
 class Eyes {
   constructor() {
     /** @type {Logger} */ this._logger = new Logger(true);
-    /** @type {String} */ this._serverUrl = undefined;
+    /** @type {string} */ this._serverUrl = undefined;
 
     /** @type {EyesJsExecutor} */ this._jsExecutor = undefined;
     /** @type {ProxySettings} */ this._proxy = undefined;
@@ -114,14 +115,16 @@ class Eyes {
   }
 
   /**
-   * @param {boolean} [throwException]
-   * @return {TestResults}
+   * Warning! You will get an array of TestResults.
+   *
+   * @param {boolean} [throwEx]
+   * @return {Promise<TestResults[]>}
    */
-  async close(throwException) {
-    await this.closeAndReturnResults();
-    return null;
+  async close(throwEx) {
+    return this.closeAndReturnResults(throwEx);
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @return {TestResults}
    */
@@ -136,6 +139,7 @@ class Eyes {
     return this._isOpen;
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * @return {boolean}
    */
@@ -143,16 +147,24 @@ class Eyes {
     return false;
   }
 
+  // noinspection JSMethodCanBeStatic
+  /**
+   * @return {boolean}
+   */
+  getApiKey() {
+    return undefined; // TODO: should use configuration
+  }
+
   /**
    * @param {boolean} [throwEx]
    * @return {Promise<TestResults[]>}
    */
   async closeAndReturnResults(throwEx = true) {
-    const results = await this._closeCommand(throwEx);
-
-    this._isOpen = false;
-
-    return results;
+    try {
+      return await this._closeCommand(throwEx);
+    } finally {
+      this._isOpen = false;
+    }
   }
 
   /**
@@ -162,24 +174,9 @@ class Eyes {
   async closeAndPrintResults(throwEx = true) {
     const results = await this.closeAndReturnResults(throwEx);
 
-    if (results.length > 0) {
-      console.log('\n[EYES: TEST RESULTS]:');
-      results.forEach(result => {
-        const testTitle = `${result.getName()} [${result.getHostDisplaySize().toString()}] - `;
-
-        if (result.getIsNew()) {
-          console.log(testTitle, 'New');
-        } else if (result.isPassed()) {
-          console.log(testTitle, 'Passed');
-        } else {
-          const stepsFailed = result.getMismatches() + result.getMissing();
-          console.log(testTitle, `Failed ${stepsFailed} of ${result.getSteps()}`);
-        }
-      });
-      console.log('See details at', results[0].getAppUrls().getBatch());
-    } else {
-      console.log('Test is finished but no results returned.');
-    }
+    const testResultsFormatter = new TestResultsFormatter(results);
+    // eslint-disable-next-line no-console
+    console.log(testResultsFormatter.asFormatterString());
   }
 
   /**
@@ -190,22 +187,37 @@ class Eyes {
   }
 
   /**
-   * @param {String} serverUrl
+   * @param {string} serverUrl
    */
   setServerUrl(serverUrl) {
     this._serverUrl = serverUrl;
   }
 
   /**
+   * @return {boolean}
+   */
+  isEyesClosed() {
+    return this._isOpen;
+  }
+
+  /**
    * Sets the proxy settings to be used by the rest client.
-   * @param {ProxySettings} proxySettings The proxy settings to be used by the rest client. If {@code null} then no proxy is set.
+   * @param {ProxySettings} proxySettings The proxy settings to be used by the rest client. If {@code null} then no
+   *   proxy is set.
    */
   setProxy(proxySettings) {
     this._proxy = proxySettings;
   }
 
   /**
-   * @param {String} name
+   * @return {Logger}
+   */
+  getLogger() {
+    return this._logger;
+  }
+
+  /**
+   * @param {string} name
    * @param {CheckRGSettings} checkSettings
    */
   async check(name, checkSettings) {
@@ -215,7 +227,7 @@ class Eyes {
       checkSettings.withName(name);
     }
 
-    this._logger.verbose(` $$$$$$$$$$    Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`);
+    this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`);
 
     const domCaptureScript = `var callback = arguments[arguments.length - 1]; return (${this._processPageAndSerializeScript})().then(JSON.stringify).then(callback, function(err) {callback(err.stack || err.toString())})`;
     const results = await this._jsExecutor.executeAsyncScript(domCaptureScript);
@@ -227,18 +239,21 @@ class Eyes {
       value: Buffer.from(value, 'base64'),
     }));
 
-    this._logger.verbose(` $$$$$$$$$$    Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`);
+    this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`);
 
     await this._checkWindowCommand({
       resourceUrls,
       resourceContents,
-      cdt,
+      // frames
       url: pageUrl,
+      cdt,
       tag: checkSettings.getName(),
-      region: checkSettings.getRegion(),
-      selector: checkSettings.getSelector(),
-      scriptHooks: checkSettings.getScriptHooks(),
       sizeMode: checkSettings.getSizeMode(),
+      selector: checkSettings.getSelector(),
+      region: checkSettings.getRegion(),
+      scriptHooks: checkSettings.getScriptHooks(),
+      ignore: checkSettings.getIgnoreRegions(),
+      floating: checkSettings.getFloatingRegions(),
       sendDom: checkSettings.getSendDom(),
     });
   }

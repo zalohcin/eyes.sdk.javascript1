@@ -35,6 +35,7 @@
   },
   "main": "./index.js",
   "dependencies": {
+    "@applitools/eyes-common": "^1.0.0",
     "@applitools/eyes-sdk-core": "^4.5.4",
     "@applitools/eyes-selenium": "^4.3.4"
   },
@@ -42,7 +43,7 @@
     "protractor": "^5.4.1"
   },
   "scripts": {
-    "test:integration": "protractor test/protractor.conf.js"
+    "test": "protractor test/protractor.conf.js"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

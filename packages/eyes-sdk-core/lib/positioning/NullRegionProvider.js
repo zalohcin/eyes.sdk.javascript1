@@ -1,7 +1,8 @@
 'use strict';
 
+const { Region } = require('@applitools/eyes-common');
+
 const { RegionProvider } = require('./RegionProvider');
-const { Region } = require('../geometry/Region');
 
 class NullRegionProvider extends RegionProvider {
   constructor() {

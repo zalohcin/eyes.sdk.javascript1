@@ -9,7 +9,7 @@ describe('DateTimeUtils', () => {
     it('should return formatted string', () => {
       // noinspection MagicNumberJS
       const date = new Date(1520616682000);
-      assert.equal(DateTimeUtils.toISO8601DateTime(date), '2018-03-09T17:31:22Z');
+      assert.strictEqual(DateTimeUtils.toISO8601DateTime(date), '2018-03-09T17:31:22Z');
     });
   });
 
@@ -17,7 +17,7 @@ describe('DateTimeUtils', () => {
     it('should return formatted string', () => {
       // noinspection MagicNumberJS
       const date = new Date(1520616682000);
-      assert.equal(DateTimeUtils.toRfc1123DateTime(date), 'Fri, 09 Mar 2018 17:31:22 GMT');
+      assert.strictEqual(DateTimeUtils.toRfc1123DateTime(date), 'Fri, 09 Mar 2018 17:31:22 GMT');
     });
   });
 
@@ -25,7 +25,7 @@ describe('DateTimeUtils', () => {
     it('should return formatted string', () => {
       // noinspection MagicNumberJS
       const date = new Date(1520616682332);
-      assert.equal(DateTimeUtils.toLogFileDateTime(date), '2018_03_09_19_31_22_332');
+      assert.strictEqual(DateTimeUtils.toLogFileDateTime(date, true), '2018_03_09_17_31_22_332');
     });
   });
 
@@ -33,8 +33,7 @@ describe('DateTimeUtils', () => {
     it('should return formatted string', () => {
       const input = '2018-03-09T17:31:22Z';
       // noinspection MagicNumberJS
-      assert.equal(DateTimeUtils.fromISO8601DateTime(input)
-        .getTime(), 1520616682000);
+      assert.strictEqual(DateTimeUtils.fromISO8601DateTime(input).getTime(), 1520616682000);
     });
   });
 });

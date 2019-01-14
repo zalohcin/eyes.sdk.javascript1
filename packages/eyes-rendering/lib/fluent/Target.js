@@ -19,7 +19,7 @@ class Target {
   }
 
   /**
-   * @param {String} selector
+   * @param {string} selector
    * @return {CheckRGSettings}
    */
   static selector(selector) {

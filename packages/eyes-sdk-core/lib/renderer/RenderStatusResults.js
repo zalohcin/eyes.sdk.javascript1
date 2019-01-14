@@ -1,9 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('@applitools/eyes-common');
-
-const { RectangleSize } = require('../geometry/RectangleSize');
-const { Region } = require('../geometry/Region');
+const { GeneralUtils, RectangleSize, Region } = require('@applitools/eyes-common');
 
 /**
  * Encapsulates data for the render currently running in the client.

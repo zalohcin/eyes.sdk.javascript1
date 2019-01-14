@@ -1,16 +1,9 @@
 'use strict';
 
-const { Logger, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
-
-const { Region } = require('./geometry/Region');
-const { Location } = require('./geometry/Location');
-const { RectangleSize } = require('./geometry/RectangleSize');
-const { CoordinatesType } = require('./geometry/CoordinatesType');
+const { Logger, ArgumentGuard, TypeUtils, EyesError, Region, Location, RectangleSize, CoordinatesType, ImageDeltaCompressor, SimplePropertyHandler, ReadOnlyPropertyHandler } = require('@applitools/eyes-common');
 
 const { FileDebugScreenshotsProvider } = require('./debug/FileDebugScreenshotsProvider');
 const { NullDebugScreenshotProvider } = require('./debug/NullDebugScreenshotProvider');
-
-const { ImageDeltaCompressor } = require('./images/ImageDeltaCompressor');
 
 const { AppOutputProvider } = require('./capture/AppOutputProvider');
 const { AppOutputWithScreenshot } = require('./capture/AppOutputWithScreenshot');
@@ -31,7 +24,6 @@ const { ImageMatchSettings } = require('./match/ImageMatchSettings');
 const { MatchWindowData } = require('./match/MatchWindowData');
 
 const { DiffsFoundError } = require('./errors/DiffsFoundError');
-const { EyesError } = require('./errors/EyesError');
 const { NewTestError } = require('./errors/NewTestError');
 const { OutOfBoundsError } = require('./errors/OutOfBoundsError');
 const { TestFailedError } = require('./errors/TestFailedError');
@@ -50,9 +42,6 @@ const { PropertyData } = require('./server/PropertyData');
 const { TestResultsStatus } = require('./TestResultsStatus');
 const { TestResults } = require('./TestResults');
 const { ServerConnector } = require('./server/ServerConnector');
-
-const { SimplePropertyHandler } = require('./utils/SimplePropertyHandler');
-const { ReadOnlyPropertyHandler } = require('./utils/ReadOnlyPropertyHandler');
 
 const { FailureReports } = require('./FailureReports');
 const { AppEnvironment } = require('./AppEnvironment');

@@ -7,8 +7,8 @@ const path = require('path');
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 
-const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils, GeneralUtils } = require('@applitools/eyes-sdk-core');
-const { DomCapture } = require('../index');
+const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils, GeneralUtils } = require('@applitools/eyes-common');
+const { DomCapture } = require('../../index');
 
 /**
  * @param {Logger} logger_
@@ -56,7 +56,7 @@ async function captureDom(logger_, driver_, url, testName, initCode) {
  * @return {Promise<object>}
  */
 async function getExpectedDom(testName) {
-  const expectedDomBuffer = await fs.readFileSync(path.join(__dirname, `./resources/${testName}.json`));
+  const expectedDomBuffer = await fs.readFileSync(path.join(__dirname, `./fixtures/${testName}.json`));
   return JSON.parse(expectedDomBuffer);
 }
 
@@ -93,7 +93,7 @@ describe('DomCapture', function () {
     const actualDomJson = JSON.parse(actualDomJsonString);
 
     const expectedDomJson = await getExpectedDom(this.test.title);
-    assert.deepEqual(actualDomJson, expectedDomJson);
+    assert.deepStrictEqual(actualDomJson, expectedDomJson);
   });
 
   it('TestSendDOM_1', async function () {
@@ -101,7 +101,7 @@ describe('DomCapture', function () {
     const actualDomJson = JSON.parse(actualDomJsonString);
 
     const expectedDomJson = await getExpectedDom(this.test.title);
-    assert.deepEqual(actualDomJson, expectedDomJson);
+    assert.deepStrictEqual(actualDomJson, expectedDomJson);
   });
 
   it('TestSendDOM_2', async function () {
@@ -109,7 +109,7 @@ describe('DomCapture', function () {
     const actualDomJson = JSON.parse(actualDomJsonString);
 
     const expectedDomJson = await getExpectedDom(this.test.title);
-    assert.deepEqual(actualDomJson, expectedDomJson);
+    assert.deepStrictEqual(actualDomJson, expectedDomJson);
   });
 
   it('TestSendDOM_NSA', async function () {
@@ -117,7 +117,7 @@ describe('DomCapture', function () {
     const actualDomJson = JSON.parse(actualDomJsonString);
 
     const expectedDomJson = await getExpectedDom(this.test.title);
-    assert.deepEqual(actualDomJson, expectedDomJson);
+    assert.deepStrictEqual(actualDomJson, expectedDomJson);
   });
 
   it('TestSendDOM_Booking1', async function () {

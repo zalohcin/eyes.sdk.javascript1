@@ -132,7 +132,7 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {String} domString
+   * @param {string} domString
    * @return {this} This instance of the settings object.
    */
   withDom(domString) {
@@ -143,7 +143,7 @@ class ImagesCheckSettings extends CheckSettings {
 
   /**
    * @package
-   * @return {String}
+   * @return {string}
    */
   getDomString() {
     return this._domString;

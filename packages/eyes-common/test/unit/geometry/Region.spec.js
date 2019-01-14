@@ -13,10 +13,10 @@ describe('Region', () => {
   // noinspection FunctionTooLongJS
   it('simple constructor', () => {
     let region = new Region(left, top, width, height);
-    assert.equal(region.getLeft(), left, 'left');
-    assert.equal(region.getTop(), top, 'top');
-    assert.equal(region.getWidth(), width, 'width');
-    assert.equal(region.getHeight(), height, 'height');
+    assert.strictEqual(region.getLeft(), left, 'left');
+    assert.strictEqual(region.getTop(), top, 'top');
+    assert.strictEqual(region.getWidth(), width, 'width');
+    assert.strictEqual(region.getHeight(), height, 'height');
 
     // This should still be ok
     // noinspection JSUnusedAssignment
@@ -78,12 +78,12 @@ describe('Region', () => {
     const original = new Region(left, top, width, height);
     const other = new Region(original);
 
-    assert.equal(original.getLeft(), other.getLeft(), 'left');
-    assert.equal(original.getTop(), other.getTop(), 'top');
-    assert.equal(original.getWidth(), other.getWidth(), 'width');
-    assert.equal(original.getHeight(), other.getHeight(), 'height');
+    assert.strictEqual(original.getLeft(), other.getLeft(), 'left');
+    assert.strictEqual(original.getTop(), other.getTop(), 'top');
+    assert.strictEqual(original.getWidth(), other.getWidth(), 'width');
+    assert.strictEqual(original.getHeight(), other.getHeight(), 'height');
 
-    assert.deepEqual(original, other, 'Region objects should be equal!');
+    assert.deepStrictEqual(original, other, 'Region objects should be equal!');
     assert.notStrictEqual(original, other, 'original and other should not be the same object');
   });
 
@@ -93,56 +93,56 @@ describe('Region', () => {
     };
     const other = new Region(object);
 
-    assert.equal(object.left, other.getLeft(), 'left');
-    assert.equal(object.top, other.getTop(), 'top');
-    assert.equal(object.width, other.getWidth(), 'width');
-    assert.equal(object.height, other.getHeight(), 'height');
+    assert.strictEqual(object.left, other.getLeft(), 'left');
+    assert.strictEqual(object.top, other.getTop(), 'top');
+    assert.strictEqual(object.width, other.getWidth(), 'width');
+    assert.strictEqual(object.height, other.getHeight(), 'height');
   });
 
   it('location and size constructor', () => {
     const original = new Region(left, top, width, height);
     const other = new Region(new Location({ x: left, y: top }), new RectangleSize(width, height));
 
-    assert.equal(original.getLeft(), other.getLeft(), 'left');
-    assert.equal(original.getTop(), other.getTop(), 'top');
-    assert.equal(original.getWidth(), other.getWidth(), 'width');
-    assert.equal(original.getHeight(), other.getHeight(), 'height');
+    assert.strictEqual(original.getLeft(), other.getLeft(), 'left');
+    assert.strictEqual(original.getTop(), other.getTop(), 'top');
+    assert.strictEqual(original.getWidth(), other.getWidth(), 'width');
+    assert.strictEqual(original.getHeight(), other.getHeight(), 'height');
 
-    assert.deepEqual(original, other, 'Region objects should be equal!');
+    assert.deepStrictEqual(original, other, 'Region objects should be equal!');
     assert.notStrictEqual(original, other, 'original and other should not be the same object');
   });
 
   it('getLocation()', () => {
     const region = new Region(left, top, width, height);
-    assert.deepEqual(region.getLocation(), new Location({ x: left, y: top }), 'invalid location');
+    assert.deepStrictEqual(region.getLocation(), new Location({ x: left, y: top }), 'invalid location');
 
     region.setLocation(new Location({ x: 5, y: 6 }));
-    assert.deepEqual(region.getLocation(), new Location(5, 6), 'invalid location');
+    assert.deepStrictEqual(region.getLocation(), new Location(5, 6), 'invalid location');
   });
 
   it('getSize()', () => {
     const region = new Region(left, top, width, height);
-    assert.deepEqual(region.getSize(), new RectangleSize({ width, height }), 'invalid location');
+    assert.deepStrictEqual(region.getSize(), new RectangleSize({ width, height }), 'invalid location');
 
     region.setSize(new RectangleSize({ width: 5, height: 6 }));
-    assert.deepEqual(region.getSize(), new RectangleSize({ width: 5, height: 6 }), 'invalid location');
+    assert.deepStrictEqual(region.getSize(), new RectangleSize({ width: 5, height: 6 }), 'invalid location');
   });
 
   it('equals()', () => {
     const r1 = new Region(1, 2, 3, 4);
     const r2 = new Region(r1);
-    assert.equal(r1.equals(r2), true, 'Regions should be equal!');
+    assert.strictEqual(r1.equals(r2), true, 'Regions should be equal!');
 
     // noinspection JSAccessibilityCheck
     r2.makeEmpty();
-    assert.equal(r1.equals(r2), false, 'Regions should be differ!');
+    assert.strictEqual(r1.equals(r2), false, 'Regions should be differ!');
   });
 
   it('getMiddleOffset()', () => {
     const region = new Region(1, 1, 10, 20);
     const middleOffset = region.getMiddleOffset();
-    assert.equal(5, middleOffset.getX(), 'X middle is not correct!');
-    assert.equal(10, middleOffset.getY(), 'Y middle is not correct!');
+    assert.strictEqual(5, middleOffset.getX(), 'X middle is not correct!');
+    assert.strictEqual(10, middleOffset.getY(), 'Y middle is not correct!');
   });
 
   it('getSubRegions()', () => {
@@ -154,7 +154,7 @@ describe('Region', () => {
       new Region(8, 6, 3, 5),
     ];
 
-    assert.deepEqual(region.getSubRegions(new RectangleSize({ width: 7, height: 5 })), expectedSubRegions);
+    assert.deepStrictEqual(region.getSubRegions(new RectangleSize({ width: 7, height: 5 })), expectedSubRegions);
   });
 
   it('contains()', () => {
@@ -164,10 +164,10 @@ describe('Region', () => {
     const containedLocation = new Location({ x: 2, y: 5 });
     const outsideLocation = new Location({ x: 20, y: 5 });
 
-    assert.equal(region.contains(containedRegion), true, 'region contains containedRegion');
-    assert.equal(region.contains(outsideRegion), false, 'region doesn\'t contain region');
-    assert.equal(region.contains(containedLocation), true, 'region contains containedLocation');
-    assert.equal(region.contains(outsideLocation), false, 'region doesn\'t contain location');
+    assert.strictEqual(region.contains(containedRegion), true, 'region contains containedRegion');
+    assert.strictEqual(region.contains(outsideRegion), false, 'region doesn\'t contain region');
+    assert.strictEqual(region.contains(containedLocation), true, 'region contains containedLocation');
+    assert.strictEqual(region.contains(outsideLocation), false, 'region doesn\'t contain location');
   });
 
   it('intersect()', () => {
@@ -180,14 +180,14 @@ describe('Region', () => {
     const region2 = new Region({ left: l2.getX(), top: l2.getY(), width: s2.getWidth(), height: s2.getHeight() });
 
     region1.intersect(region2);
-    assert.equal(20, region1.getLeft(), 'intersected x');
-    assert.equal(30, region1.getTop(), 'intersected y');
-    assert.equal(40, region1.getWidth(), 'intersected width');
-    assert.equal(50, region1.getHeight(), 'intersected height');
+    assert.strictEqual(20, region1.getLeft(), 'intersected x');
+    assert.strictEqual(30, region1.getTop(), 'intersected y');
+    assert.strictEqual(40, region1.getWidth(), 'intersected width');
+    assert.strictEqual(50, region1.getHeight(), 'intersected height');
 
     // Regions which don't intersect should return an empty region.
     region2.intersect(new Region(5, 5, 10, 10));
-    assert.deepEqual(region2, Region.EMPTY, 'no overlap');
+    assert.deepStrictEqual(region2, Region.EMPTY, 'no overlap');
   });
 
   it('toJSON()', () => {

@@ -2,10 +2,9 @@
 
 const fs = require('fs');
 
-const { TypeUtils } = require('@applitools/eyes-common');
-
 const { Location } = require('../geometry/Location');
 const { RectangleSize } = require('../geometry/RectangleSize');
+const { TypeUtils } = require('../utils/TypeUtils');
 const { ImageUtils } = require('./ImageUtils');
 
 const disabled = !fs.open;

@@ -31,10 +31,11 @@ class DateTimeUtils {
    * Convert a Date object to a RFC-1123 date string
    *
    * @param {Date} [date] Date which will be converted
+   * @param {boolean} [utc=false] If set to true, then will be used uct time instead of local
    * @return {string} string formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
    */
-  static toLogFileDateTime(date = new Date()) {
-    return dateFormat(date, DATE_FORMAT_LOGFILE, false);
+  static toLogFileDateTime(date = new Date(), utc = false) {
+    return dateFormat(date, DATE_FORMAT_LOGFILE, utc);
   }
 
   /**

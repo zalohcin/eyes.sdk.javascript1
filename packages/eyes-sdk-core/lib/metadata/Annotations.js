@@ -1,8 +1,7 @@
 'use strict';
 
-const { GeneralUtils } = require('@applitools/eyes-common');
+const { GeneralUtils, Region } = require('@applitools/eyes-common');
 
-const { Region } = require('../geometry/Region');
 const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 
 class Annotations {

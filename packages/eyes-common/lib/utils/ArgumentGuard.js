@@ -1,6 +1,6 @@
 'use strict';
 
-const { TypeUtils } = require('./utils/TypeUtils');
+const { TypeUtils } = require('./TypeUtils');
 
 /**
  * Argument validation utilities.

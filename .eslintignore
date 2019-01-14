@@ -1,3 +1,7 @@
 **/node_modules/**
 **/eyes-sdk-core-browser/dist/**
 **/eyes-images-browser/dist/**
+
+**/applitools.config.js
+
+**/visual-grid-client

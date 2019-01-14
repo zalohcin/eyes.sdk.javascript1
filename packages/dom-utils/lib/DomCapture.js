@@ -8,7 +8,7 @@ const axios = require('axios');
 const shadyCss = require('shady-css-parser');
 const cssUrlParser = require('css-url-parser');
 
-const { Location, GeneralUtils, PerformanceUtils } = require('@applitools/eyes-sdk-core');
+const { Location, GeneralUtils, PerformanceUtils } = require('@applitools/eyes-common');
 
 class DomCapture {
   static get CAPTURE_FRAME_SCRIPT() {

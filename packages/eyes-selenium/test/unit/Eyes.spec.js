@@ -28,7 +28,7 @@ describe('Eyes', function () {
   describe('#open()', function () {
     it('should return EyesWebDriver', async function () {
       driver = await eyes.open(driver, this.test.parent.title, this.test.title, { width: 800, height: 560 });
-      assert.equal(driver instanceof EyesWebDriver, true);
+      assert.strictEqual(driver instanceof EyesWebDriver, true);
       await eyes.close();
     });
 

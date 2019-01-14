@@ -30,8 +30,8 @@ describe('ImageUtils', function () {
       );
 
       const rotatedImage = await ImageUtils.rotateImage(originalImage, 90);
-      assert.deepEqual(rotatedImage, originalImage); // because we also update original image
-      assert.deepEqual(rotatedImage, expectedImage);
+      assert.deepStrictEqual(rotatedImage, originalImage); // because we also update original image
+      assert.deepStrictEqual(rotatedImage, expectedImage);
     });
 
     it('should rotate image for -90 degrees', async () => {
@@ -42,7 +42,7 @@ describe('ImageUtils', function () {
       );
 
       const rotatedImage = await ImageUtils.rotateImage(originalImage, -90);
-      assert.deepEqual(rotatedImage, expectedImage);
+      assert.deepStrictEqual(rotatedImage, expectedImage);
     });
 
     it('should rotate image for 115 degrees (90 degrees)', async () => {
@@ -53,7 +53,7 @@ describe('ImageUtils', function () {
       );
 
       const rotatedImage = await ImageUtils.rotateImage(originalImage, 115);
-      assert.deepEqual(rotatedImage, expectedImage);
+      assert.deepStrictEqual(rotatedImage, expectedImage);
     });
 
     it('should rotate image for 180 degrees', async () => {
@@ -68,7 +68,7 @@ describe('ImageUtils', function () {
       );
 
       const rotatedImage = await ImageUtils.rotateImage(originalImage, 180);
-      assert.deepEqual(rotatedImage, expectedImage);
+      assert.deepStrictEqual(rotatedImage, expectedImage);
     });
   });
 });

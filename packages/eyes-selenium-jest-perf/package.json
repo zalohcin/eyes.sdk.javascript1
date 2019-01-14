@@ -12,6 +12,7 @@
     ]
   },
   "devDependencies": {
+    "@applitools/eyes-common": "^1.0.0",
     "@applitools/eyes-sdk-core": "^4.5.4",
     "@applitools/eyes-selenium": "^4.3.4",
     "chromedriver": "^2.43.1",

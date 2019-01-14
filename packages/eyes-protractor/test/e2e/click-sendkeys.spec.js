@@ -2,7 +2,7 @@
 
 const { ConsoleLogHandler, RectangleSize } = require('@applitools/eyes-sdk-core');
 const { Target } = require('@applitools/eyes-selenium');
-const { Eyes } = require('../index');
+const { Eyes } = require('../../index');
 
 let eyes = null;
 describe('Eyes.Protractor.JavaScript - click-sendkeys', () => {

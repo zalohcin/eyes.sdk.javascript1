@@ -3,8 +3,7 @@
 const fs = require('fs');
 const png = require('png-async');
 
-const { ArgumentGuard } = require('@applitools/eyes-common');
-
+const { ArgumentGuard } = require('../utils/ArgumentGuard');
 const { ReadableBufferStream, WritableBufferStream } = require('../utils/StreamUtils');
 
 const QUARTER_OF_CIRCLE_DEGREES = 90;

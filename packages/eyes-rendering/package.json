@@ -45,7 +45,8 @@
     "selenium-webdriver": "^4.0.0-alpha.1"
   },
   "scripts": {
-    "test": "mocha ./test/unit/**/*.spec.js -t 900000"
+    "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
+    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\""
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

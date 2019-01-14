@@ -31,6 +31,7 @@
   },
   "main": "./index.js",
   "dependencies": {
+    "@applitools/eyes-common": "^1.0.0",
     "@applitools/eyes-sdk-core": "^4.5.4"
   },
   "devDependencies": {
@@ -38,7 +39,8 @@
     "mocha": "^5.2.0"
   },
   "scripts": {
-    "test:integration": "mocha ./test/integration/**/*.spec.js -t 900000"
+    "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
+    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\""
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

@@ -16,8 +16,8 @@ describe('EyesImages.TestImageDiffs', function () {
 
   it('ShouldDetectDiffs', async function () {
     const testName = `${this.test.title}_${Math.random().toString(36).substring(2, 12)}`;
-    const image1 = `${__dirname}/../resources/image1.png`;
-    const image2 = `${__dirname}/../resources/image2.png`;
+    const image1 = `${__dirname}/../fixtures/image1.png`;
+    const image2 = `${__dirname}/../fixtures/image2.png`;
 
     await eyes.open(this.test.parent.title, testName);
     await eyes.checkImage(image1);
@@ -27,6 +27,6 @@ describe('EyesImages.TestImageDiffs', function () {
     await eyes.checkImage(image2);
     const results = await eyes.close(false);
 
-    assert.equal(results.getStatus(), TestResultsStatus.Unresolved);
+    assert.strictEqual(results.getStatus(), TestResultsStatus.Unresolved);
   });
 });

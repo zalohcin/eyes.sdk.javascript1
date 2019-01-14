@@ -56,10 +56,11 @@
     "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/test/**/*.js", "**/*.spec.js", "**/example/*.js"]}]
   },
   "overrides": [{
-    "files": ["**/test/**/*.js", "**/*.spec.js"],
+    "files": ["**/test/**/*.js", "**/__tests__/**/*.js", "**/*.spec.js"],
     "rules": {
       "prefer-arrow-callback": ["off"],
-      "func-names": ["off"]
+      "func-names": ["off"],
+      "no-console": ["off"]
     }
   }]
 }

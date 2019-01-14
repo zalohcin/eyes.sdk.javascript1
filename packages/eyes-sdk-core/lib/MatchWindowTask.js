@@ -1,9 +1,7 @@
 'use strict';
 
-const { ArgumentGuard, GeneralUtils, TypeUtils } = require('@applitools/eyes-common');
+const { ArgumentGuard, GeneralUtils, TypeUtils, Region, PerformanceUtils } = require('@applitools/eyes-common');
 
-const { Region } = require('./geometry/Region');
-const { PerformanceUtils } = require('./utils/PerformanceUtils');
 const { MatchWindowData, Options } = require('./match/MatchWindowData');
 const { ImageMatchSettings } = require('./match/ImageMatchSettings');
 
@@ -279,7 +277,7 @@ class MatchWindowTask {
   async _tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings) {
     const appOutput = await this._appOutputProvider.getAppOutput(region, this._lastScreenshot, checkSettings);
     const screenshot = appOutput.getScreenshot();
-    const matchSettings = this.createImageMatchSettings(checkSettings, screenshot);
+    const matchSettings = await this.createImageMatchSettings(checkSettings, screenshot);
     this._matchResult = await this.performMatch(userInputs, appOutput, tag, ignoreMismatch, matchSettings);
     return screenshot;
   }

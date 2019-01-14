@@ -1,17 +1,7 @@
 'use strict';
 
-const {
-  ArgumentGuard,
-  TypeUtils,
-  EyesBase,
-  EyesError,
-  ImageUtils,
-  RegionProvider,
-  MutableImage,
-  RectangleSize,
-  NullRegionProvider,
-  EyesSimpleScreenshot,
-} = require('@applitools/eyes-sdk-core');
+const { ArgumentGuard, TypeUtils, ImageUtils, EyesError, MutableImage, RectangleSize } = require('@applitools/eyes-common');
+const { EyesBase, RegionProvider, NullRegionProvider, EyesSimpleScreenshot } = require('@applitools/eyes-sdk-core');
 
 const { Target } = require('./fluent/Target');
 const VERSION = require('../package.json').version;

@@ -11,18 +11,18 @@ describe('Location', () => {
   // noinspection FunctionTooLongJS
   it('simple constructor', () => {
     const location = new Location(left, top);
-    assert.equal(location.getX(), left, 'x');
-    assert.equal(location.getY(), top, 'y');
+    assert.strictEqual(location.getX(), left, 'x');
+    assert.strictEqual(location.getY(), top, 'y');
   });
 
   it('copy constructor', () => {
     const original = new Location(left, top);
     const other = new Location(original);
 
-    assert.equal(other.getX(), left, 'x');
-    assert.equal(other.getY(), top, 'y');
+    assert.strictEqual(other.getX(), left, 'x');
+    assert.strictEqual(other.getY(), top, 'y');
 
-    assert.deepEqual(original, other, 'Location objects should be equal!');
+    assert.deepStrictEqual(original, other, 'Location objects should be equal!');
     assert.notStrictEqual(original, other, 'original and other should not be the same object');
   });
 
@@ -30,32 +30,32 @@ describe('Location', () => {
     const object = { x: left, y: top };
     const other = new Location(object);
 
-    assert.equal(other.getX(), left, 'x');
-    assert.equal(other.getY(), top, 'y');
+    assert.strictEqual(other.getX(), left, 'x');
+    assert.strictEqual(other.getY(), top, 'y');
   });
 
   it('equals()', () => {
     const l1 = new Location({ x: 1, y: 2 });
     let l2 = new Location(l1);
-    assert.equal(l1.equals(l2), true, 'Locations should be equal!');
+    assert.strictEqual(l1.equals(l2), true, 'Locations should be equal!');
 
     // noinspection JSAccessibilityCheck
     l2 = l2.scale(2);
-    assert.equal(l1.equals(l2), false, 'Locations should be differ!');
+    assert.strictEqual(l1.equals(l2), false, 'Locations should be differ!');
   });
 
   it('offset()', () => {
     let location = new Location({ x: left, y: top });
     location = location.offset(5, 5);
-    assert.equal(location.getX(), left + 5, 'x');
-    assert.equal(location.getY(), top + 5, 'y');
+    assert.strictEqual(location.getX(), left + 5, 'x');
+    assert.strictEqual(location.getY(), top + 5, 'y');
   });
 
   it('scale()', () => {
     let location = new Location({ x: left, y: top });
     location = location.scale(2);
-    assert.equal(location.getX(), left * 2, 'x');
-    assert.equal(location.getY(), top * 2, 'y');
+    assert.strictEqual(location.getX(), left * 2, 'x');
+    assert.strictEqual(location.getY(), top * 2, 'y');
   });
 
   it('toJSON()', () => {

@@ -1,7 +1,6 @@
 'use strict';
 
-const { ArgumentGuard } = require('@applitools/eyes-common');
-
+const { ArgumentGuard } = require('../utils/ArgumentGuard');
 const { BrowserNames } = require('./BrowserNames');
 const { OSNames } = require('./OSNames');
 

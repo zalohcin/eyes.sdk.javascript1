@@ -33,13 +33,15 @@
     "cosmiconfig": "^5.0.7",
     "dateformat": "^3.0.3",
     "stack-trace": "^0.0.10",
-    "deepmerge": "^3.0.0"
+    "deepmerge": "^3.0.0",
+    "png-async": "^0.9.3"
   },
   "devDependencies": {
     "mocha": "^5.2.0"
   },
   "scripts": {
-    "test": "mocha ./test/**/*.spec.js --no-timeouts"
+    "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\""
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

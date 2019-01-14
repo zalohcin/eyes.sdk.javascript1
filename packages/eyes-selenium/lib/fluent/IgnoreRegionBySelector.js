@@ -1,6 +1,7 @@
 'use strict';
 
-const { GetRegion, Region, Location, CoordinatesType } = require('@applitools/eyes-sdk-core');
+const { Region, Location, CoordinatesType } = require('@applitools/eyes-common');
+const { GetRegion } = require('@applitools/eyes-sdk-core');
 
 class IgnoreRegionBySelector extends GetRegion {
   /**

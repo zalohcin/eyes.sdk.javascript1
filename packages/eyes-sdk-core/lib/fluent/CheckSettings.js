@@ -1,11 +1,12 @@
 'use strict';
 
+const { Region, GeneralUtils } = require('@applitools/eyes-common');
+
 const { MatchLevel } = require('../match/MatchLevel');
-const { Region } = require('../geometry/Region');
+const { GetRegion } = require('./GetRegion');
 const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 const { IgnoreRegionByRectangle } = require('./IgnoreRegionByRectangle');
 const { FloatingRegionByRectangle } = require('./FloatingRegionByRectangle');
-const { GetRegion } = require('./GetRegion');
 const { GetFloatingRegion } = require('./GetFloatingRegion');
 
 /**
@@ -406,6 +407,13 @@ class CheckSettings {
    */
   getFloatingRegions() {
     return this._floatingRegions;
+  }
+
+  /**
+   * @override
+   */
+  toString() {
+    return `${this.constructor.name} ${GeneralUtils.toString(this)}`;
   }
 }
 

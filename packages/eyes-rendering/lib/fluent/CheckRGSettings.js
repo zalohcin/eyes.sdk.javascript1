@@ -7,21 +7,21 @@ const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot';
 class CheckRGSettings extends CheckSettings {
   /**
    * @param {Region} [region]
-   * @param {String} [selector]
+   * @param {string} [selector]
    */
   constructor(region, selector) {
     super();
 
     /** @type {Region} */
     this._region = region;
-    /** @type {String} */
+    /** @type {string} */
     this._selector = selector;
 
-    /** @type {Map<String, String>} */ this._scriptHooks = new Map();
+    /** @type {Map<string, string>} */ this._scriptHooks = new Map();
   }
 
   /**
-   * @param {String} script
+   * @param {string} script
    */
   addScriptHook(script) {
     let scripts = this._scriptHooks.get(BEFORE_CAPTURE_SCREENSHOT);
@@ -30,6 +30,30 @@ class CheckRGSettings extends CheckSettings {
       this._scriptHooks.set(BEFORE_CAPTURE_SCREENSHOT, scripts);
     }
     scripts.add(script);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {Region...} regions A region to ignore when validating the screenshot.
+   * @inheritDoc
+   */
+  ignoreRegions(...regions) {
+    super.ignoreRegions(...regions);
+    return this;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {Region|FloatingMatchSettings} regionOrContainer The content rectangle or region container
+   * @param {number} [maxUpOffset] How much the content can move up.
+   * @param {number} [maxDownOffset] How much the content can move down.
+   * @param {number} [maxLeftOffset] How much the content can move to the left.
+   * @param {number} [maxRightOffset] How much the content can move to the right.
+   * @inheritDoc
+   */
+  floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
+    super.floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset);
+    return this;
   }
 
   /**
@@ -54,7 +78,7 @@ class CheckRGSettings extends CheckSettings {
   }
 
   /**
-   * @return {String}
+   * @return {string}
    */
   getSelector() {
     return this._selector;
@@ -68,7 +92,7 @@ class CheckRGSettings extends CheckSettings {
   }
 
   /**
-   * @return {Map<String, String>}
+   * @return {Map<string, string>}
    */
   getScriptHooks() {
     return this._scriptHooks;

@@ -7,8 +7,11 @@ const NOT_OK = 'not ok';
  * A utility class for aggregating and formatting test results.
  */
 class TestResultsFormatter {
-  constructor() {
-    this._resultsList = [];
+  /**
+   * @param {TestResults[]} resultsList
+   */
+  constructor(resultsList = []) {
+    this._resultsList = resultsList;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -18,12 +21,80 @@ class TestResultsFormatter {
    * @param {TestResults} results A test results returned by a call to `eyes.close' or 'eyes.abortIfNotClosed'.
    * @return {TestResultsFormatter} The updated 'TestResultsFormatter' instance.
    */
-  addResults(results) {
+  addTestResults(results) {
     if (results) {
       this._resultsList.push(results);
     }
 
     return this;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {TestResults[]}
+   */
+  getResultsList() {
+    return this._resultsList;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {void}
+   */
+  clearResultsList() {
+    this._resultsList = [];
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Creates a TAP representation of the tests results list in hierarchic format.
+   *
+   * @param {boolean} [includeSubTests=true] If true, steps will be treated as "subtests". Default is true.
+   * @param {boolean} [markNewAsPassed=false] If true, new tests will be treated as "passed". Default is false.
+   * @return {string} A string which is the TAP representation of the results list.
+   */
+  asFormatterString(includeSubTests = true, markNewAsPassed = false) {
+    if (this._resultsList.length === 0) {
+      return 'No results found.';
+    }
+
+    let formattedString = '[EYES: TEST RESULTS]:\n';
+
+    for (let i = 0; i < this._resultsList.length; i += 1) {
+      /** @type {TestResults} */ const currentResult = this._resultsList[i];
+
+      const testTitle = `${currentResult.getName()} [${currentResult.getHostDisplaySize().toString()}]`;
+      let testResult = '';
+
+      if (currentResult.getIsNew()) {
+        testResult = markNewAsPassed ? 'Passed' : 'New';
+      } else if (currentResult.isPassed()) {
+        testResult = 'Passed';
+      } else {
+        const stepsFailed = currentResult.getMismatches() + currentResult.getMissing();
+        testResult = `Failed ${stepsFailed} of ${currentResult.getSteps()}`;
+      }
+
+      formattedString += `${testTitle} - ${testResult}\n`;
+
+      if (includeSubTests) {
+        if (currentResult.getStepsInfo().length > 0) {
+          for (let j = 0; j < currentResult.getStepsInfo().length; j += 1) {
+            const currentStep = currentResult.getStepsInfo()[j];
+
+            const subTestTitle = currentStep.getName();
+            const subTestResult = currentStep.getIsDifferent() ? 'Passed' : 'Failed';
+            formattedString += `\t> ${subTestTitle} - ${subTestResult}\n`;
+          }
+        } else {
+          formattedString += '\tNo steps exist for this test.\n';
+        }
+      }
+    }
+
+    formattedString += `See details at ${this._resultsList[0].getAppUrls().getBatch()}`;
+
+    return formattedString;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -39,12 +110,10 @@ class TestResultsFormatter {
       return '';
     }
 
-    /** @type {TestResults} */
-    let currentResult;
     let tapString = `1..${this._resultsList.length}\n`;
 
     for (let i = 0; i < this._resultsList.length; i += 1) {
-      currentResult = this._resultsList[i];
+      /** @type {TestResults} */ const currentResult = this._resultsList[i];
       const tapIndex = i + 1;
 
       if (i > 0) {
@@ -110,8 +179,6 @@ class TestResultsFormatter {
       return '';
     }
 
-    /** @type {TestResults} */
-    let currentResult;
     let tapString = '';
     let stepsCounter = 0;
 
@@ -119,7 +186,7 @@ class TestResultsFormatter {
     for (let i = 0; i < this._resultsList.length; i += 1) {
       tapString += '#\n';
 
-      currentResult = this._resultsList[i];
+      /** @type {TestResults} */ const currentResult = this._resultsList[i];
       const tapIndex = i + 1;
 
       const name = `Test: '${currentResult.getName()}', Application: '${currentResult.getAppName()}'`;
