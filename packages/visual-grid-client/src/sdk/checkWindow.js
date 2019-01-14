@@ -1,11 +1,11 @@
 'use strict';
 
+const {presult} = require('@applitools/functional-commons');
+const {RectangleSize, Location} = require('@applitools/eyes-common');
+
 const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
 const createCheckSettings = require('./createCheckSettings');
-
-const {presult} = require('@applitools/functional-commons');
-const {RectangleSize, Location} = require('@applitools/eyes-sdk-core');
 const calculateIgnoreAndFloatingRegions = require('./calculateIgnoreAndFloatingRegions');
 
 function makeCheckWindow({

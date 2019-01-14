@@ -11,11 +11,11 @@
     "browser.js"
   ],
   "scripts": {
-    "test:mocha": "mocha --no-timeouts 'test/**/*.test.js'",
-    "test:unit": "mocha --no-timeouts 'test/unit/**/*.test.js'",
-    "test:it": "mocha --no-timeouts 'test/it/**/*.test.js'",
-    "test:e2e": "mocha --no-timeouts 'test/e2e/**/*.test.js'",
-    "eslint": "eslint '**/*.js'",
+    "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.test.js\"",
+    "test:it": "mocha --no-timeouts \"test/it/**/*.test.js\"",
+    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.test.js\"",
+    "eslint": "eslint \"**/*.js\"",
     "test": "npm run test:mocha && npm run eslint",
     "prepublishOnly": "npm version patch",
     "changelog": "git changelog -f \"v$(jq -r '.version' < package.json)\""
@@ -36,6 +36,7 @@
     "type": "git"
   },
   "dependencies": {
+    "@applitools/eyes-common": "^1.0.0",
     "@applitools/eyes-sdk-core": "^4.5.4",
     "@applitools/functional-commons": "^1.0.27",
     "@applitools/http-commons": "^1.2.3",

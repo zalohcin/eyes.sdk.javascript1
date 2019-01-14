@@ -1,6 +1,8 @@
 'use strict';
+
+const { Logger } = require('@applitools/eyes-common');
+
 const throatPkg = require('throat');
-const createLogger = require('./createLogger');
 const makeGetAllResources = require('./getAllResources');
 const makeExtractCssResources = require('./extractCssResources');
 const makeFetchResource = require('./fetchResource');
@@ -63,7 +65,7 @@ function makeRenderingGridClient({
   let renderInfoPromise;
   const eyesTransactionThroat = transactionThroat(openEyesConcurrency);
   const renderThroat = throatPkg(openEyesConcurrency * renderConcurrencyFactor);
-  const logger = createLogger(showLogs);
+  const logger = new Logger(showLogs);
   renderWrapper =
     renderWrapper ||
     createRenderWrapper({

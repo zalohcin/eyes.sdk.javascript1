@@ -1,10 +1,8 @@
 'use strict';
-const {
-  MatchResult,
-  RenderStatusResults,
-  RenderStatus,
-  Location,
-} = require('@applitools/eyes-sdk-core');
+
+const { Location } = require('@applitools/eyes-common');
+const { MatchResult, RenderStatusResults, RenderStatus } = require('@applitools/eyes-sdk-core');
+
 const {URL} = require('url');
 const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture');
 const SOME_BATCH = 'SOME_BATCH';

@@ -1,39 +1,12 @@
 'use strict';
-const createLogger = require('./createLogger');
+
+const {ConfigUtils} = require('@applitools/eyes-common');
+
 const defaultConfigParams = require('./configParams');
-const cosmiconfig = require('cosmiconfig');
-const logger = createLogger(process.env.APPLITOOLS_SHOW_LOGS); // TODO when switching to DEBUG sometime remove this env var
-const explorer = cosmiconfig('applitools', {
-  searchPlaces: ['package.json', 'applitools.config.js', 'eyes.config.js', 'eyes.json'],
-});
 
 function makeGetConfig({configParams, configPath} = {}) {
-  let defaultConfig = {};
-  try {
-    const result = configPath ? explorer.loadSync(configPath) : explorer.searchSync();
-    if (result) {
-      const {config, filepath} = result;
-      logger.log('loading configuration from', filepath);
-      defaultConfig = config;
-    }
-  } catch (ex) {
-    logger.log(`an error occurred while loading configuration. configPath=${configPath}\n`, ex);
-  }
-
-  configParams = configParams
-    ? uniq(defaultConfigParams.concat(configParams))
-    : defaultConfigParams;
-
-  const envConfig = {};
-  for (const p of configParams) {
-    envConfig[p] = process.env[`APPLITOOLS_${toEnvVarName(p)}`];
-  }
-
-  for (const p in envConfig) {
-    if (envConfig[p] === undefined) delete envConfig[p];
-  }
-
-  const config = Object.assign({}, defaultConfig, envConfig);
+  configParams = configParams ? defaultConfigParams.concat(configParams) : defaultConfigParams;
+  const config = ConfigUtils.getConfig({configParams, configPath});
 
   return function getConfig() {
     return config;
@@ -41,11 +14,7 @@ function makeGetConfig({configParams, configPath} = {}) {
 }
 
 function toEnvVarName(camelCaseStr) {
-  return camelCaseStr.replace(/(.)([A-Z])/g, '$1_$2').toUpperCase();
-}
-
-function uniq(arr) {
-  return Array.from(new Set(arr));
+  return ConfigUtils.toEnvVarName(camelCaseStr);
 }
 
 module.exports = {
