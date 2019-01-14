@@ -2103,6 +2103,7 @@ class EyesBase {
    */
   setSendDom(sendDom) {
     this._sendDom = sendDom;
+    this._defaultMatchSettings.setSendDom(sendDom);
   }
 
   // noinspection JSUnusedGlobalSymbols

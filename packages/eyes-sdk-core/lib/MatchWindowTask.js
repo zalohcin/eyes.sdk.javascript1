@@ -133,13 +133,12 @@ class MatchWindowTask {
         ignoreCaret = this._eyes.getDefaultMatchSettings().getIgnoreCaret();
       }
 
-      let useDom = checkSettings.getSendDom();
-      if (TypeUtils.isNull(useDom)) {
-        useDom = this._eyes.getSendDom();
-        // useDom = this._eyes.getDefaultMatchSettings().getUseDom(); TODO: move sendDom to defaultMatchSettings
+      let sendDom = checkSettings.getSendDom();
+      if (TypeUtils.isNull(sendDom)) {
+        sendDom = this._eyes.getDefaultMatchSettings().getSendDom();
       }
 
-      imageMatchSettings = new ImageMatchSettings({ matchLevel, exact: null, ignoreCaret, useDom });
+      imageMatchSettings = new ImageMatchSettings({ matchLevel, exact: null, ignoreCaret, sendDom });
 
       await this._collectSimpleRegions(checkSettings, imageMatchSettings, screenshot);
       await this._collectFloatingRegions(checkSettings, imageMatchSettings, screenshot);
