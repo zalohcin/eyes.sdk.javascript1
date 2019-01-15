@@ -2,7 +2,7 @@
 
 const path = require('path');
 const axios = require('axios');
-const { deepEqual } = require('assert');
+const assert = require('assert');
 const { Capabilities, Builder } = require('selenium-webdriver');
 const { ConsoleLogHandler, FileLogHandler, GeneralUtils, BatchInfo, RectangleSize, metadata } = require('@applitools/eyes-sdk-core');
 
@@ -168,11 +168,11 @@ class TestSetup {
 
           if (this._compareExpectedRegions) {
             if (this._expectedFloatingRegions.size() > 0) {
-              deepEqual(floating, this._expectedFloatingRegions, 'Floating regions lists differ');
+              assert.deepStrictEqual(floating, this._expectedFloatingRegions, 'Floating regions lists differ');
             }
 
             if (this._expectedIgnoreRegions.size() > 0) {
-              deepEqual(ignoreRegions, this._expectedIgnoreRegions, 'Ignore regions lists differ');
+              assert.deepStrictEqual(ignoreRegions, this._expectedIgnoreRegions, 'Ignore regions lists differ');
             }
           }
         }

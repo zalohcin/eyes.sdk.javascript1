@@ -1,6 +1,6 @@
 'use strict';
 
-const axios = require('axios');
+const axios = require('axios'); // eslint-disable-line node/no-unpublished-require
 const { ConsoleLogHandler, RectangleSize } = require('@applitools/eyes-sdk-core');
 const { Eyes, Target } = require('../index'); // should be replaced to '@applitools/eyes-images'
 

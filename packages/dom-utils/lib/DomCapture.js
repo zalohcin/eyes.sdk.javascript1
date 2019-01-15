@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const url = require('url');
+const { URL } = require('url');
 const axios = require('axios');
 const shadyCss = require('shady-css-parser');
 const cssUrlParser = require('css-url-parser');
@@ -266,13 +266,14 @@ class DomCapture {
     try {
       this._logger.verbose(`Given URL to download: ${value}`);
       // let href = cssParser.parse(value);
-      let href = value;
-      if (!GeneralUtils.isAbsoluteUrl(href)) {
-        href = url.resolve(baseUri, href);
+      let downloadUrl = value;
+      if (!GeneralUtils.isAbsoluteUrl(downloadUrl)) {
+        const { href } = new URL(downloadUrl, baseUri);
+        downloadUrl = href;
       }
 
       const timeStart = PerformanceUtils.start();
-      const response = await axios(href);
+      const response = await axios(downloadUrl);
       const css = response.data;
       this._logger.verbose(`downloading CSS in length of ${css.length} chars took ${timeStart.end().summary}`);
       return css;

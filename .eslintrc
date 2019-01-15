@@ -1,7 +1,14 @@
 {
   "root": true,
-  "extends": ["airbnb-base"],
+  "extends": [
+    "airbnb-base",
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
   "env": {
+    "es6": true,
     "node": true,
     "mocha": true,
     "jest": true
@@ -10,6 +17,10 @@
     "ecmaVersion": 8,
     "sourceType": "script"
   },
+  "plugins": [
+    "node",
+    "mocha-no-only"
+  ],
   "rules": {
     "strict": ["error", "global"],
     "one-var": ["error", {"initialized": "never"}],
@@ -25,7 +36,7 @@
     "no-shadow": ["error", {"builtinGlobals": false, "hoist": "functions", "allow": ["driver"]}],
     "consistent-return": ["warn"],
     "max-len": ["off", 120],
-    "no-unused-vars": ["warn"],
+    "no-unused-vars": ["warn", {"varsIgnorePattern": "^_", "args": "all", "argsIgnorePattern": "^_"}],
     "no-param-reassign": ["off"],
     "global-require": ["warn"],
     "prefer-destructuring": ["warn"],
@@ -37,6 +48,15 @@
     "operator-linebreak": ["off"],
     "no-continue": ["off"],
     "no-await-in-loop": ["off"],
+    "no-process-exit": "off",
+    "no-const-assign": "warn",
+    "no-this-before-super": "warn",
+    "no-undef": "warn",
+    "no-unreachable": "warn",
+    "constructor-super": "warn",
+    "valid-typeof": "warn",
+    "mocha-no-only/mocha-no-only": "error",
+//    "node/exports-style": ["error", "module.exports"],
     "no-restricted-syntax": [
       "error",
       {
@@ -56,7 +76,7 @@
     "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/test/**/*.js", "**/*.spec.js", "**/example/*.js"]}]
   },
   "overrides": [{
-    "files": ["**/test/**/*.js", "**/__tests__/**/*.js", "**/*.spec.js"],
+    "files": ["**/test/**/*.js", "**/*.spec.js"],
     "rules": {
       "prefer-arrow-callback": ["off"],
       "func-names": ["off"],

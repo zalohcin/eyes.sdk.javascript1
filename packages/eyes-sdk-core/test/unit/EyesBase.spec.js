@@ -57,7 +57,7 @@ describe('EyesBase', () => {
       const batch = eyes.getBatch();
       assert.strictEqual(batch.getId(), 'fake batch id');
       assert.strictEqual(batch.getName(), 'batch name');
-      assert.notDeepEqual(batch, defaultBatch);
+      assert.notDeepStrictEqual(batch, defaultBatch);
       assert.deepStrictEqual(eyes.getBatch(), batch);
 
       eyes.setBatch(defaultBatch);
