@@ -1,6 +1,6 @@
 'use strict';
 
-const { makeRenderingGridClient } = require('@applitools/visual-grid-client');
+const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-capture');
 const { Logger, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 const { BatchInfo, TestResultsFormatter } = require('@applitools/eyes-sdk-core');
@@ -51,7 +51,7 @@ class Eyes {
       renderingConfiguration.setBatch(this._batchInfo);
     }
 
-    const { openEyes } = makeRenderingGridClient({
+    const { openEyes } = makeVisualGridClient({
       showLogs,
       apiKey,
       saveDebugData,
