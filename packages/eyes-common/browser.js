@@ -7,6 +7,11 @@
 // config
 exports.Configuration = require('./lib/config/Configuration').Configuration;
 
+// debug
+exports.DebugScreenshotsProvider = require('./lib/debug/DebugScreenshotsProvider').DebugScreenshotsProvider;
+// exports.FileDebugScreenshotsProvider = require('./lib/debug/FileDebugScreenshotsProvider').FileDebugScreenshotsProvider; uses `fs` library
+exports.NullDebugScreenshotProvider = require('./lib/debug/NullDebugScreenshotProvider').NullDebugScreenshotProvider;
+
 // errors
 exports.EyesError = require('./lib/errors/EyesError').EyesError;
 

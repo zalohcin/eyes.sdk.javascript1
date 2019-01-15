@@ -8,6 +8,11 @@ exports.Configuration = require('./lib/config/Configuration').Configuration;
 // errors
 exports.EyesError = require('./lib/errors/EyesError').EyesError;
 
+// debug
+exports.DebugScreenshotsProvider = require('./lib/debug/DebugScreenshotsProvider').DebugScreenshotsProvider;
+exports.FileDebugScreenshotsProvider = require('./lib/debug/FileDebugScreenshotsProvider').FileDebugScreenshotsProvider;
+exports.NullDebugScreenshotProvider = require('./lib/debug/NullDebugScreenshotProvider').NullDebugScreenshotProvider;
+
 // geometry
 exports.CoordinatesType = require('./lib/geometry/CoordinatesType').CoordinatesType;
 exports.Location = require('./lib/geometry/Location').Location;

@@ -1,9 +1,9 @@
 'use strict';
 
-const { Logger, ArgumentGuard, TypeUtils, EyesError, Region, Location, RectangleSize, CoordinatesType, ImageDeltaCompressor, SimplePropertyHandler, ReadOnlyPropertyHandler } = require('@applitools/eyes-common');
-
-const { FileDebugScreenshotsProvider } = require('./debug/FileDebugScreenshotsProvider');
-const { NullDebugScreenshotProvider } = require('./debug/NullDebugScreenshotProvider');
+const {
+  Logger, ArgumentGuard, TypeUtils, EyesError, Region, Location, RectangleSize, CoordinatesType, ImageDeltaCompressor,
+  SimplePropertyHandler, ReadOnlyPropertyHandler, FileDebugScreenshotsProvider, NullDebugScreenshotProvider
+} = require('@applitools/eyes-common');
 
 const { AppOutputProvider } = require('./capture/AppOutputProvider');
 const { AppOutputWithScreenshot } = require('./capture/AppOutputWithScreenshot');

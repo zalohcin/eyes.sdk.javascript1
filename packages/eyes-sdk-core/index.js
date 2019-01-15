@@ -18,10 +18,6 @@ exports.FixedCutProvider = require('./lib/cropping/FixedCutProvider').FixedCutPr
 exports.NullCutProvider = require('./lib/cropping/NullCutProvider').NullCutProvider;
 exports.UnscaledFixedCutProvider = require('./lib/cropping/UnscaledFixedCutProvider').UnscaledFixedCutProvider;
 
-exports.DebugScreenshotsProvider = require('./lib/debug/DebugScreenshotsProvider').DebugScreenshotsProvider;
-exports.FileDebugScreenshotsProvider = require('./lib/debug/FileDebugScreenshotsProvider').FileDebugScreenshotsProvider;
-exports.NullDebugScreenshotProvider = require('./lib/debug/NullDebugScreenshotProvider').NullDebugScreenshotProvider;
-
 exports.RemoteSessionEventHandler = require('./lib/events/RemoteSessionEventHandler').RemoteSessionEventHandler;
 exports.SessionEventHandler = require('./lib/events/SessionEventHandler').SessionEventHandler;
 exports.ValidationInfo = require('./lib/events/ValidationInfo').ValidationInfo;
@@ -117,6 +113,9 @@ exports.LogHandler = common.LogHandler;
 exports.ConsoleLogHandler = common.ConsoleLogHandler;
 exports.FileLogHandler = common.FileLogHandler;
 exports.NullLogHandler = common.NullLogHandler;
+exports.DebugScreenshotsProvider = common.DebugScreenshotsProvider;
+exports.FileDebugScreenshotsProvider = common.FileDebugScreenshotsProvider;
+exports.NullDebugScreenshotProvider = common.NullDebugScreenshotProvider;
 
 // for backward compatibility
 exports.EyesError = common.EyesError;
