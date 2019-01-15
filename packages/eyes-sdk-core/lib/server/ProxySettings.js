@@ -50,14 +50,11 @@ class ProxySettings {
     proxy.host = this._url.hostname;
     proxy.port = this._url.port;
 
-    if (!this._username && this._url.auth) {
-      const i = this._url.auth.indexOf(':');
-      if (i !== -1) {
-        proxy.auth = {
-          username: this._url.auth.slice(0, i),
-          password: this._url.auth.slice(i + 1),
-        };
-      }
+    if (!this._username && this._url.username) {
+      proxy.auth = {
+        username: this._url.username,
+        password: this._url.password,
+      };
     } else if (this._username) {
       proxy.auth = {
         username: this._username,
