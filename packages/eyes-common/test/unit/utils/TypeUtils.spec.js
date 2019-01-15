@@ -379,4 +379,18 @@ describe('TypeUtils', () => {
       assert.ok(!TypeUtils.has(testObject, ['hello', 'other']));
     });
   });
+
+  describe('isUrl()', () => {
+    it('check if string is url', () => {
+      assert.ok(!TypeUtils.isUrl('mypath/image123.png'));
+    });
+
+    it('check if string is url http', () => {
+      assert.ok(TypeUtils.isUrl('http://helloworld.com/anypage'));
+    });
+
+    it('check if string is url //', () => {
+      assert.ok(TypeUtils.isUrl('//example.com/dsasa'));
+    });
+  });
 });

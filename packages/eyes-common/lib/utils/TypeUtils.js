@@ -3,6 +3,7 @@
 const { hasOwnProperty, toString } = Object.prototype;
 
 const BASE64_CHARS_PATTERN = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$/;
+const DUMMY_URL_PATTERN = /^(?:\w+:)?\/\/(\S+)$/;
 
 /**
  * Collection of utility methods.
@@ -121,6 +122,16 @@ class TypeUtils {
    */
   static isBase64(value) {
     return TypeUtils.isString(value) && BASE64_CHARS_PATTERN.test(value);
+  }
+
+  /**
+   * Checks if `value` is a base64 string.
+   *
+   * @param {*} value
+   * @return {boolean}
+   */
+  static isUrl(value) {
+    return TypeUtils.isString(value) && DUMMY_URL_PATTERN.test(value);
   }
 
   /**
