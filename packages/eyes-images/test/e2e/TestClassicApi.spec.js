@@ -1,6 +1,6 @@
 'use strict';
 
-const { ConsoleLogHandler, Region, Location, ImageUtils, MutableImage } = require('@applitools/eyes-common');
+const { ConsoleLogHandler, Region, Location, FileUtils, MutableImage } = require('@applitools/eyes-common');
 const { MouseTrigger, ImageProvider } = require('@applitools/eyes-sdk-core');
 const { Eyes } = require('../../index');
 
@@ -42,7 +42,7 @@ describe('EyesImages.TestClassicApi', function () {
        * @override
        */
       async getImage() {
-        const data = await ImageUtils.readImage(`${__dirname}/../fixtures/minions-800x500.png`);
+        const data = await FileUtils.readToBuffer(`${__dirname}/../fixtures/minions-800x500.png`);
         return new MutableImage(data);
       }
     };

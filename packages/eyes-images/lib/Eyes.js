@@ -1,6 +1,6 @@
 'use strict';
 
-const { ArgumentGuard, TypeUtils, ImageUtils, EyesError, MutableImage, RectangleSize } = require('@applitools/eyes-common');
+const { ArgumentGuard, TypeUtils, FileUtils, EyesError, MutableImage, RectangleSize } = require('@applitools/eyes-common');
 const { EyesBase, RegionProvider, NullRegionProvider, EyesSimpleScreenshot } = require('@applitools/eyes-sdk-core');
 
 const { Target } = require('./fluent/Target');
@@ -159,7 +159,7 @@ class Eyes extends EyesBase {
 
     if (checkSettings.getImagePath()) {
       try {
-        const data = await ImageUtils.readImage(checkSettings.getImagePath());
+        const data = await FileUtils.readToBuffer(checkSettings.getImagePath());
         return new MutableImage(data);
       } catch (err) {
         throw new EyesError(`Can't read image [${err.message}]`);

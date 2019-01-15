@@ -1,6 +1,5 @@
 'use strict';
 
-const fs = require('fs');
 const png = require('png-async');
 
 const { ArgumentGuard } = require('../utils/ArgumentGuard');
@@ -429,39 +428,6 @@ class ImageUtils {
     }
 
     throw new TypeError('Buffer contains unsupported image type.');
-  }
-
-  /**
-   *
-   * @param {Buffer} imageBuffer
-   * @param {string} filename
-   * @return {Promise<void>}
-   */
-  static saveImage(imageBuffer, filename) {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(filename, imageBuffer, err => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve();
-      });
-    });
-  }
-
-  /**
-   *
-   * @param {string} path
-   * @return {Promise<Buffer>}
-   */
-  static readImage(path) {
-    return new Promise((resolve, reject) => {
-      fs.readFile(path, (err, data) => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(data);
-      });
-    });
   }
 }
 

@@ -1,13 +1,9 @@
 'use strict';
 
-const fs = require('fs');
-
 const { Location } = require('../geometry/Location');
 const { RectangleSize } = require('../geometry/RectangleSize');
 const { TypeUtils } = require('../utils/TypeUtils');
-const { ImageUtils } = require('./ImageUtils');
-
-const disabled = !fs.open;
+const { ImageUtils } = require('../utils/ImageUtils');
 
 /**
  * Parses the image if possible - meaning dimensions and BMP are extracted and available
@@ -16,7 +12,7 @@ const disabled = !fs.open;
  * @return {Promise<void>}
  */
 async function parseImage(mutableImage) {
-  if (mutableImage._isParsed || disabled) {
+  if (mutableImage._isParsed) {
     return;
   }
 
@@ -34,7 +30,7 @@ async function parseImage(mutableImage) {
  * @return {Promise<void>}
  */
 async function packImage(mutableImage) {
-  if (!mutableImage._isParsed || mutableImage._imageBuffer || disabled) {
+  if (!mutableImage._isParsed || mutableImage._imageBuffer) {
     return;
   }
 
@@ -269,17 +265,6 @@ class MutableImage {
     }
 
     ImageUtils.copyPixels(this._imageBmp, { x: dx, y: dy }, srcImageBmp, { x: 0, y: 0 }, { width, height });
-  }
-
-  /**
-   * Write image to local directory
-   *
-   * @param {string} filename
-   * @return {Promise<void>}
-   */
-  async save(filename) {
-    const imageBuffer = await this.getImageBuffer();
-    await ImageUtils.saveImage(imageBuffer, filename);
   }
 
   /**

@@ -23,12 +23,11 @@ exports.SimplePropertyHandler = require('./lib/handler/SimplePropertyHandler').S
 
 // images
 exports.ImageDeltaCompressor = require('./lib/images/ImageDeltaCompressor').ImageDeltaCompressor;
-exports.ImageUtils = require('./lib/images/ImageUtils').ImageUtils;
 exports.MutableImage = require('./lib/images/MutableImage').MutableImage;
 
 // logging
 exports.ConsoleLogHandler = require('./lib/logging/ConsoleLogHandler').ConsoleLogHandler;
-// exports.FileLogHandler = require('./lib/logging/FileLogHandler').FileLogHandler;
+// exports.FileLogHandler = require('./lib/logging/FileLogHandler').FileLogHandler;       uses `fs` library
 exports.Logger = require('./lib/logging/Logger').Logger;
 exports.LogHandler = require('./lib/logging/LogHandler').LogHandler;
 exports.NullLogHandler = require('./lib/logging/NullLogHandler').NullLogHandler;
@@ -40,9 +39,11 @@ exports.UserAgent = require('./lib/useragent/UserAgent').UserAgent;
 
 // utils
 exports.ArgumentGuard = require('./lib/utils/ArgumentGuard').ArgumentGuard;
-exports.ConfigUtils = require('./lib/utils/ConfigUtils').ConfigUtils;
+// exports.ConfigUtils = require('./lib/utils/ConfigUtils').ConfigUtils;                  uses `fs` library
 exports.DateTimeUtils = require('./lib/utils/DateTimeUtils').DateTimeUtils;
+// exports.FileUtils = require('./lib/utils/FileUtils').FileUtils;                        uses `fs` library
 exports.GeneralUtils = require('./lib/utils/GeneralUtils').GeneralUtils;
+exports.ImageUtils = require('./lib/utils/ImageUtils').ImageUtils;
 exports.PerformanceUtils = require('./lib/utils/PerformanceUtils').PerformanceUtils;
 exports.StreamUtils = require('./lib/utils/StreamUtils').ReadableBufferStream;
 exports.TypeUtils = require('./lib/utils/TypeUtils').TypeUtils;
