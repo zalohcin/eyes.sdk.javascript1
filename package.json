@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@applitools/eyes-sdk-core": "^4.5.4",
-    "@applitools/functional-commons": "^1.0.27",
+    "@applitools/functional-commons": "^1.0.33",
     "@applitools/http-commons": "^1.2.3",
     "@applitools/isomorphic-fetch": "^3.0.0",
     "cssom": "git+https://github.com/amitzur/CSSOM.git#925260ff2c8f8387cf76df4d5776a06044a644c8",
@@ -53,7 +53,7 @@
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.3",
-    "debug": "^4.1.0",
+    "debug": "^4.1.1",
     "eslint": "^4.19.1",
     "eslint-plugin-mocha-no-only": "^0.0.6",
     "eslint-plugin-node": "^6.0.1",
