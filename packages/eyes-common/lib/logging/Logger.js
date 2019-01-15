@@ -4,6 +4,7 @@ const stackTrace = require('stack-trace');
 
 const { ArgumentGuard } = require('../utils/ArgumentGuard');
 const { GeneralUtils } = require('../utils/GeneralUtils');
+const { TypeUtils } = require('../utils/TypeUtils');
 
 const { ConsoleLogHandler } = require('./ConsoleLogHandler');
 const { NullLogHandler } = require('./NullLogHandler');
@@ -13,10 +14,14 @@ const { NullLogHandler } = require('./NullLogHandler');
  */
 class Logger {
   /**
-   * @param {boolean} [showLogs] Determines which log handler will be used ConsoleLogHandler (if set to {@code true})
+   * @param {boolean|string} [showLogs] Determines which log handler will be used ConsoleLogHandler (if set to {@code true})
    *   or NullLogHandler (if not set or set to {@code false})
    */
   constructor(showLogs) {
+    if (TypeUtils.isString(showLogs)) {
+      showLogs = (showLogs === 'true');
+    }
+
     ArgumentGuard.isBoolean(showLogs, 'showLogs', false);
 
     this._logHandler = showLogs ? new ConsoleLogHandler(true) : new NullLogHandler();
