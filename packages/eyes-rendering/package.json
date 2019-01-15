@@ -1,5 +1,6 @@
 {
   "name": "@applitools/eyes-rendering",
+  "private": true,
   "version": "1.0.0",
   "description": "Applitools Eyes SDK for Visual Grid",
   "keywords": [
