@@ -23,12 +23,16 @@ class Target {
       return Target.buffer(varArg);
     }
 
-    if (TypeUtils.isString(varArg)) {
-      if (TypeUtils.isBase64(varArg)) {
-        return Target.base64(varArg);
-      }
+    if (TypeUtils.isBase64(varArg)) {
+      return Target.base64(varArg);
+    }
 
+    if (TypeUtils.isUrl(varArg)) {
       return Target.url(varArg);
+    }
+
+    if (TypeUtils.isString(varArg)) {
+      return Target.path(varArg);
     }
 
     throw new TypeError('IllegalType: unsupported type of image!');

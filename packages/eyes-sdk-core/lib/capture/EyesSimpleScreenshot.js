@@ -145,8 +145,8 @@ class EyesSimpleScreenshot extends EyesScreenshot {
     intersectedRegion.intersect(this._bounds);
 
     // If the intersection is empty we don't want to convert the coordinates.
-    if (region.isSizeEmpty()) {
-      return region;
+    if (intersectedRegion.isSizeEmpty()) {
+      return intersectedRegion;
     }
 
     // The returned result should be in the coordinatesType given as parameter.
