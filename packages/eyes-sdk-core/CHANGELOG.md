@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@4.6.0...@applitools/eyes-sdk-core@4.6.1) (2019-01-16)
+
+
+### Bug Fixes
+
+* **eyes-sdk-core:** restore methods that were removed in previous update ([fff611d](https://github.com/applitools/eyes.sdk.javascript1/commit/fff611d))
+
+
+
+
+
 # [4.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@4.5.4...@applitools/eyes-sdk-core@4.6.0) (2019-01-16)
 
 

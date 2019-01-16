@@ -1,7 +1,7 @@
 {
   "name": "@applitools/eyes-rendering",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Applitools Eyes SDK for Visual Grid",
   "keywords": [
     "eyes-rendering",
@@ -34,7 +34,7 @@
   "dependencies": {
     "@applitools/dom-capture": "^6.1.5",
     "@applitools/eyes-common": "^1.2.0",
-    "@applitools/eyes-sdk-core": "^4.6.0",
+    "@applitools/eyes-sdk-core": "^4.6.1",
     "@applitools/visual-grid-client": "^9.0.5"
   },
   "devDependencies": {
