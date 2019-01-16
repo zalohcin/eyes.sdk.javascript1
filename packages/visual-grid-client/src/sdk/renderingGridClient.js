@@ -1,6 +1,6 @@
 'use strict';
 
-const { Logger } = require('@applitools/eyes-common');
+const {Logger} = require('@applitools/eyes-common');
 
 const throatPkg = require('throat');
 const makeGetAllResources = require('./getAllResources');

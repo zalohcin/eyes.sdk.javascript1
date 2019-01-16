@@ -25,6 +25,7 @@ function makeCheckWindow({
   stepCounter,
   testName,
   openEyesPromises,
+  matchLevel: _matchLevel,
 }) {
   return function checkWindow({
     resourceUrls = [],
@@ -40,6 +41,7 @@ function makeCheckWindow({
     ignore,
     floating,
     sendDom = true,
+    matchLevel = _matchLevel,
   }) {
     const currStepCount = ++stepCounter;
     logger.log(`running checkWindow for test ${testName} step #${currStepCount}`);
@@ -168,6 +170,10 @@ function makeCheckWindow({
       }
 
       logger.log(`running wrapper.checkWindow for test ${testName} stepCount #${currStepCount}`);
+
+      const origMatchLevel = wrapper.getMatchLevel();
+      if (matchLevel !== undefined) wrapper.setMatchLevel(matchLevel);
+
       await wrapper.checkWindow({
         screenshotUrl,
         tag,
@@ -175,6 +181,8 @@ function makeCheckWindow({
         checkSettings,
         imageLocation,
       });
+
+      wrapper.setMatchLevel(origMatchLevel); // origMatchLevel cannot be undefined because eyes-sdk-core sets the default to MatchLevel.Strict
     }
 
     async function startRender() {

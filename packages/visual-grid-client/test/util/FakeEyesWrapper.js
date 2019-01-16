@@ -1,7 +1,7 @@
 'use strict';
 
-const { Location } = require('@applitools/eyes-common');
-const { MatchResult, RenderStatusResults, RenderStatus } = require('@applitools/eyes-sdk-core');
+const {Location} = require('@applitools/eyes-common');
+const {MatchResult, RenderStatusResults, RenderStatus} = require('@applitools/eyes-sdk-core');
 
 const {URL} = require('url');
 const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture');
@@ -38,6 +38,7 @@ class FakeEyesWrapper {
     this.batch;
     this.baseUrl = 'http://fake';
     this.resultsRoute = '/results_url';
+    this.matchLevel = 'Strict';
   }
 
   async open(_appName, _testName, _viewportSize) {
@@ -217,6 +218,10 @@ class FakeEyesWrapper {
 
   setMatchLevel(value) {
     this.matchLevel = value;
+  }
+
+  getMatchLevel() {
+    return this.matchLevel;
   }
 
   setMatchTimeout(value) {

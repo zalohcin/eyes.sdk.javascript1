@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "9.0.5",
+  "version": "10.0.2",
   "description": "",
   "main": "src/visual-grid-client.js",
   "engines": {
@@ -38,24 +38,23 @@
   "dependencies": {
     "@applitools/eyes-common": "^1.0.0",
     "@applitools/eyes-sdk-core": "^4.5.4",
-    "@applitools/functional-commons": "^1.0.27",
+    "@applitools/functional-commons": "^1.0.33",
     "@applitools/http-commons": "^1.2.3",
-    "cosmiconfig": "^5.0.7",
+    "@applitools/isomorphic-fetch": "^3.0.0",
     "cssom": "git+https://github.com/amitzur/CSSOM.git#925260ff2c8f8387cf76df4d5776a06044a644c8",
     "he": "^1.2.0",
     "lodash.mapkeys": "^4.6.0",
     "lodash.mapvalues": "^4.6.0",
     "mime-types": "^2.1.21",
     "mkdirp": "^0.5.1",
-    "node-fetch": "^2.3.0",
     "throat": "^4.1.0"
   },
   "devDependencies": {
-    "@applitools/dom-capture": "^6.1.1",
+    "@applitools/dom-capture": "^6.1.5",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.3",
-    "debug": "^4.1.0",
+    "debug": "^4.1.1",
     "eslint": "^4.19.1",
     "eslint-plugin-mocha-no-only": "^0.0.6",
     "eslint-plugin-node": "^6.0.1",
@@ -65,6 +64,7 @@
     "mocha": "^5.2.0",
     "morgan": "^1.9.1",
     "nock": "^9.6.1",
+    "node-fetch": "^2.3.0",
     "prettier": "^1.15.3",
     "puppeteer": "^1.11.0"
   }
