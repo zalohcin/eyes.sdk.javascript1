@@ -291,6 +291,46 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * Sets the authToken for rendering server.
+   *
+   * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
+   * @param authToken {string} The authToken to be used.
+   */
+  setRenderingAuthToken(authToken) {
+    this._serverConnector.setRenderingAuthToken(authToken);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @deprecated use {@link #getRenderingInfo()} instead
+   * @return {string} The currently authToken or {@code null} if no key is set.
+   */
+  getRenderingAuthToken() {
+    return this._serverConnector.getRenderingAuthToken();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Sets the current rendering server URL used by the rest client.
+   *
+   * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
+   * @param serverUrl {string} The URI of the rendering server, or {@code null} to use the default server.
+   */
+  setRenderingServerUrl(serverUrl) {
+    this._serverConnector.setRenderingServerUrl(serverUrl);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @deprecated use {@link #getRenderingInfo()} instead
+   * @return {string} The URI of the eyes server.
+   */
+  getRenderingServerUrl() {
+    return this._serverConnector.getRenderingServerUrl();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
    * Sets the proxy settings to be used for all requests to Eyes server.
    * Alternatively, proxy can be set via global variables `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`.
    *

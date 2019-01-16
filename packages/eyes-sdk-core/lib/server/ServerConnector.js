@@ -267,6 +267,57 @@ class ServerConnector {
   }
 
   /**
+   * Sets the current rendering server URL used by the client.
+   *
+   * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
+   * @param serverUrl {string} The URI of the rendering server.
+   */
+  setRenderingServerUrl(serverUrl) {
+    ArgumentGuard.notNull(serverUrl, 'serverUrl');
+
+    if (!this._renderingInfo) {
+      this._renderingInfo = new RenderingInfo();
+    }
+
+    this._renderingInfo.setServiceUrl(serverUrl);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @deprecated use {@link #getRenderingInfo()} instead
+   * @return {string} The URI of the rendering server.
+   */
+  getRenderingServerUrl() {
+    return this._renderingInfo ? this._renderingInfo.getServiceUrl() : undefined;
+  }
+
+  /**
+   * Sets the API key of your applitools Eyes account.
+   *
+   * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
+   * @param {string} authToken The api key to set.
+   * @return {RenderingInfo}
+   */
+  setRenderingAuthToken(authToken) {
+    ArgumentGuard.notNull(authToken, 'authToken');
+
+    if (!this._renderingInfo) {
+      this._renderingInfo = new RenderingInfo();
+    }
+
+    this._renderingInfo.setAccessToken(authToken);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @deprecated use {@link #getRenderingInfo()} instead
+   * @return {string} The currently set API key or {@code null} if no key is set.
+   */
+  getRenderingAuthToken() {
+    return this._renderingInfo ? this._renderingInfo.getAccessToken() : undefined;
+  }
+
+  /**
    * Sets the proxy settings to be used by the rest client.
    *
    * @param {ProxySettings|string|boolean} varArg The ProxySettings object or proxy url to be used.
