@@ -17,7 +17,7 @@ class Logger {
    * @param {boolean|string} [showLogs] Determines which log handler will be used ConsoleLogHandler (if set to {@code true})
    *   or NullLogHandler (if not set or set to {@code false})
    */
-  constructor(showLogs) {
+  constructor(showLogs = false) {
     if (TypeUtils.isString(showLogs)) {
       showLogs = (showLogs === 'true');
     }
