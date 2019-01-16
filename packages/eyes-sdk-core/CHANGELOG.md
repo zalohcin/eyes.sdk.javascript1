@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@4.5.4...@applitools/eyes-sdk-core@4.6.0) (2019-01-16)
+
+
+### Bug Fixes
+
+* **eyes-images:** fix issue when any string means url in Target ctor ([c9a02d6](https://github.com/applitools/eyes.sdk.javascript1/commit/c9a02d6))
+* **eyes-sdk-core:** use correct URL props for user/pass in ProxySettings ([a40a1c6](https://github.com/applitools/eyes.sdk.javascript1/commit/a40a1c6))
+* **eyes-selenium:** rename ImageMatchSettings's `useDom` property to `sendDom`, set it from EyesBase's setSendDom() and use it in MatchSettingsTask ([abd9e2e](https://github.com/applitools/eyes.sdk.javascript1/commit/abd9e2e))
+
+
+### Features
+
+* add `withName(String)` method to CheckSettings ([1774167](https://github.com/applitools/eyes.sdk.javascript1/commit/1774167))
+* finalize eyes-rendering pkg, continue introduction of eyes-common ([c3367b7](https://github.com/applitools/eyes.sdk.javascript1/commit/c3367b7))
+* **eyes-common:** move methods which uses `fs` into separate FileUtils class ([cdc499d](https://github.com/applitools/eyes.sdk.javascript1/commit/cdc499d))
+* **eyes-sdk-core:** Add `downloadResource` method to ServerConnector ([0ae5f39](https://github.com/applitools/eyes.sdk.javascript1/commit/0ae5f39))
+* **eyes-sdk-core:** allow to create Logger with ConsoleLogHandler from ctor ([3144b9a](https://github.com/applitools/eyes.sdk.javascript1/commit/3144b9a))
+
+
+### BREAKING CHANGES
+
+* **eyes-common:** `save` method was removed from MutableImage, `readImage`, `writeImage` methods were removed from ImageUtils.
+
+
+
+
+
 ## [4.5.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@4.5.3...@applitools/eyes-sdk-core@4.5.4) (2018-12-12)
 
 

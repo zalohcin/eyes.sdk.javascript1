@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-common",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Utilities for working with Eyes JavaScript SDK and the visual grid",
   "keywords": [
     "applitools",
@@ -32,9 +32,9 @@
   "dependencies": {
     "cosmiconfig": "^5.0.7",
     "dateformat": "^3.0.3",
-    "stack-trace": "^0.0.10",
     "deepmerge": "^3.0.0",
-    "png-async": "^0.9.3"
+    "png-async": "^0.9.3",
+    "stack-trace": "^0.0.10"
   },
   "devDependencies": {
     "mocha": "^5.2.0"
