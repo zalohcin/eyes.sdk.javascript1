@@ -12,8 +12,8 @@
     "test:perf": "lerna run test:perf"
   },
   "devDependencies": {
-    "lerna": "^3.8.0",
-    "eslint": "^5.11.0",
+    "lerna": "^3.10.5",
+    "eslint": "^5.12.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-mocha-no-only": "^1.1.0",
     "eslint-config-airbnb-base": "^13.1.0",
