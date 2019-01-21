@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.1.2](https://github.com/applitools/visual-grid-client/compare/@applitools/visual-grid-client@10.1.1...@applitools/visual-grid-client@10.1.2) (2019-01-21)
+
+**Note:** Version bump only for package @applitools/visual-grid-client
+
+
+
+
+
 ## [10.1.1](https://github.com/applitools/visual-grid-client/compare/@applitools/visual-grid-client@10.1.0...@applitools/visual-grid-client@10.1.1) (2019-01-16)
 
 **Note:** Version bump only for package @applitools/visual-grid-client
