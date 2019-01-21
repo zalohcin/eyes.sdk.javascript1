@@ -14,6 +14,7 @@ class Eyes {
     /** @type {ProxySettings} */ this._proxy = undefined;
     /** @type {BatchInfo} */ this._batchInfo = new BatchInfo();
     /** @type {Configuration} */ this._configuration = new Configuration();
+    /** @type {boolean} */ this._sendDom = true;
 
     this._isOpen = false;
     this._processPageAndSerializeScript = undefined;
@@ -269,7 +270,8 @@ class Eyes {
       scriptHooks: checkSettings.getScriptHooks(),
       ignore: checkSettings.getIgnoreRegions(),
       floating: checkSettings.getFloatingRegions(),
-      sendDom: checkSettings.getSendDom(),
+      sendDom: checkSettings.getSendDom() ? checkSettings.getSendDom() : this.getSendDom(),
+      matchLevel: this.getMatchLevel()
     });
   }
 
@@ -510,6 +512,34 @@ class Eyes {
     return this._configuration.getIsDisabled();
   }
 
+  /**
+   * @param {boolean} sendDom
+   */
+  setSendDom(sendDom) {
+    this._sendDom = sendDom;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {boolean}
+   */
+  getSendDom() {
+    return this._sendDom;
+  }
+
+  /**
+   * @return {RectangleSize}
+   */
+  getViewportSize() {
+    return this._configuration.getViewportSize();
+  }
+
+  /**
+   * @param {RectangleSize} viewportSize
+   */
+  setViewportSize(viewportSize) {
+    this._configuration.setViewportSize(viewportSize);
+  }
 
 }
 
