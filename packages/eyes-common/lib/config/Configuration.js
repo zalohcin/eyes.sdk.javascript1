@@ -1,5 +1,9 @@
 'use strict';
 
+
+const MIN_MATCH_TIMEOUT = 500;
+
+
 class Configuration {
   /**
    * @param {Configuration} [configuration]
@@ -65,6 +69,134 @@ class Configuration {
       this._viewportSize = configuration.getViewportSize();
       this._sessionType = configuration.getSessionType();
     }
+  }
+
+  /**
+   * @param {boolean} compareWithParentBranch New compareWithParentBranch value, default is false
+   */
+  setCompareWithParentBranch(compareWithParentBranch) {
+    this._compareWithParentBranch = compareWithParentBranch;
+  }
+
+  /**
+   * @return {boolean} The currently compareWithParentBranch value
+   */
+  isCompareWithParentBranch() {
+    return this._compareWithParentBranch;
+  }
+
+  /**
+   * @param {boolean} ignoreBaseline New ignoreBaseline value, default is false
+   */
+  setIgnoreBaseline(ignoreBaseline) {
+    this._ignoreBaseline = ignoreBaseline;
+  }
+
+  /**
+   * @return {boolean} The currently ignoreBaseline value
+   */
+  isIgnoreBaseline() {
+    return this._ignoreBaseline;
+  }
+
+  /**
+   * Set whether or not new tests are saved by default.
+   *
+   * @param {boolean} saveNewTests True if new tests should be saved by default. False otherwise.
+   */
+  setSaveNewTests(saveNewTests) {
+    this._saveNewTests = saveNewTests;
+  }
+
+  /**
+   * @return {boolean} True if new tests are saved by default.
+   */
+  getSaveNewTests() {
+    return this._saveNewTests;
+  }
+
+  /**
+   * Set whether or not failed tests are saved by default.
+   *
+   * @param {boolean} saveFailedTests True if failed tests should be saved by default, false otherwise.
+   */
+  setSaveFailedTests(saveFailedTests) {
+    this._saveFailedTests = saveFailedTests;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {boolean} True if failed tests are saved by default.
+   */
+  getSaveFailedTests() {
+    return this._saveFailedTests;
+  }
+
+  /**
+   * Sets the maximum time (in ms) a match operation tries to perform a match.
+   * @param {number} ms Total number of ms to wait for a match.
+   */
+  setMatchTimeout(ms) {
+    if (ms !== 0 && MIN_MATCH_TIMEOUT > ms) {
+      throw new TypeError(`Match timeout must be set in milliseconds, and must be > ${MIN_MATCH_TIMEOUT}`);
+    }
+
+    this._matchTimeout = ms;
+  }
+
+  /**
+   * @return {number} The maximum time in ms {@link #checkWindowBase(RegionProvider, string, boolean, number)} waits
+   *   for a match.
+   */
+  getMatchTimeout() {
+    return this._matchTimeout;
+  }
+
+  /**
+   * The test-wide match level to use when checking application screenshot with the expected output.
+   *
+   * @param {MatchLevel} matchLevel The test-wide match level to use when checking application screenshot with the
+   *   expected output.
+   */
+  setMatchLevel(matchLevel) {
+    this._matchLevel = matchLevel;
+  }
+
+  /**
+   * @return {MatchLevel} The test-wide match level.
+   */
+  getMatchLevel() {
+    return this._matchLevel;
+  }
+
+  /**
+   * Sets the ignore blinking caret value.
+   *
+   * @param {boolean} value The ignore value.
+   */
+  setIgnoreCaret(value) {
+    this._ignoreCaret = value;
+  }
+
+  /**
+   * @return {boolean} Whether to ignore or the blinking caret or not when comparing images.
+   */
+  getIgnoreCaret() {
+    return this._ignoreCaret;
+  }
+
+  /**
+   * @param isDisabled {boolean} If true, all interactions with this API will be silently ignored.
+   */
+  setIsDisabled(isDisabled) {
+    this._isDisabled = isDisabled;
+  }
+
+  /**
+   * @return {boolean} Whether eyes is disabled.
+   */
+  isDisabled() {
+    return this._isDisabled;
   }
 
   /**

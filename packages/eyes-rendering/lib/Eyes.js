@@ -2,7 +2,7 @@
 
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-capture');
-const { Logger, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
+const { Logger, ArgumentGuard, Configuration, TypeUtils } = require('@applitools/eyes-common');
 const { BatchInfo, TestResultsFormatter } = require('@applitools/eyes-sdk-core');
 
 class Eyes {
@@ -13,6 +13,7 @@ class Eyes {
     /** @type {EyesJsExecutor} */ this._jsExecutor = undefined;
     /** @type {ProxySettings} */ this._proxy = undefined;
     /** @type {BatchInfo} */ this._batchInfo = new BatchInfo();
+    /** @type {Configuration} */ this._configuration = new Configuration();
 
     this._isOpen = false;
     this._processPageAndSerializeScript = undefined;
@@ -76,16 +77,16 @@ class Eyes {
       baselineEnvName: renderingConfiguration.getBaselineEnvName(),
       // baselineName,
       envName: renderingConfiguration.getEnvironmentName(),
-      // ignoreCaret,
-      // isDisabled,
-      // matchLevel,
-      // matchTimeout,
+      ignoreCaret: this._configuration.getIgnoreCaret(),
+      isDisabled: this._configuration.isDisabled(),
+      matchLevel: this._configuration.getMatchLevel(),
+      matchTimeout: this._configuration.getMatchTimeout(),
       parentBranchName: renderingConfiguration.getParentBranchName(),
       branchName: renderingConfiguration.getBranchName(),
-      // saveFailedTests,
-      // saveNewTests,
-      // compareWithParentBranch,
-      // ignoreBaseline,
+      saveFailedTests: this._configuration.getSaveFailedTests(),
+      saveNewTests: this._configuration.getSaveFailedTests(),
+      compareWithParentBranch: this._configuration.isCompareWithParentBranch(),
+      ignoreBaseline: this._configuration.isIgnoreBaseline(),
       logger: this._logger,
       // renderBatch,
       // waitForRenderedStatus,
@@ -257,6 +258,132 @@ class Eyes {
       sendDom: checkSettings.getSendDom(),
     });
   }
+
+  /**
+   * @param {boolean} compareWithParentBranch New compareWithParentBranch value, default is false
+   */
+  setCompareWithParentBranch(compareWithParentBranch) {
+    this._configuration.setCompareWithParentBranch(compareWithParentBranch);
+  }
+
+  /**
+   * @return {boolean} The currently compareWithParentBranch value
+   */
+  isCompareWithParentBranch() {
+    return this._configuration.isCompareWithParentBranch();
+  }
+
+  /**
+   * @param {boolean} ignoreBaseline New ignoreBaseline value, default is false
+   */
+  setIgnoreBaseline(ignoreBaseline) {
+    this._configuration.setIgnoreBaseline(ignoreBaseline);
+  }
+
+  /**
+   * @return {boolean} The currently ignoreBaseline value
+   */
+  isIgnoreBaseline() {
+    return this._configuration.isIgnoreBaseline();
+  }
+
+  /**
+   * Set whether or not new tests are saved by default.
+   *
+   * @param {boolean} saveNewTests True if new tests should be saved by default. False otherwise.
+   */
+  setSaveNewTests(saveNewTests) {
+    this._configuration.setSaveNewTests(saveNewTests);
+  }
+
+  /**
+   * @return {boolean} True if new tests are saved by default.
+   */
+  getSaveNewTests() {
+    return this._configuration.getSaveNewTests();
+  }
+
+  /**
+   * Set whether or not failed tests are saved by default.
+   *
+   * @param {boolean} saveFailedTests True if failed tests should be saved by default, false otherwise.
+   */
+  setSaveFailedTests(saveFailedTests) {
+    this._configuration.setSaveFailedTests(saveFailedTests);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {boolean} True if failed tests are saved by default.
+   */
+  getSaveFailedTests() {
+    return this._configuration.getSaveFailedTests();
+  }
+
+  /**
+   * Sets the maximum time (in ms) a match operation tries to perform a match.
+   * @param {number} ms Total number of ms to wait for a match.
+   */
+  setMatchTimeout(ms) {
+    this._configuration.setMatchTimeout(ms);
+  }
+
+  /**
+   * @return {number} The maximum time in ms {@link #checkWindowBase(RegionProvider, string, boolean, number)} waits
+   *   for a match.
+   */
+  getMatchTimeout() {
+    return this._configuration.getMatchTimeout();
+  }
+
+  /**
+   * The test-wide match level to use when checking application screenshot with the expected output.
+   *
+   * @param {MatchLevel} matchLevel The test-wide match level to use when checking application screenshot with the
+   *   expected output.
+   */
+  setMatchLevel(matchLevel) {
+    this._configuration.setMatchLevel(matchLevel);
+  }
+
+  /**
+   * @return {MatchLevel} The test-wide match level.
+   */
+  getMatchLevel() {
+    return this._configuration.getMatchLevel();
+  }
+
+  /**
+   * Sets the ignore blinking caret value.
+   *
+   * @param {boolean} value The ignore value.
+   */
+  setIgnoreCaret(value) {
+    this._configuration.setIgnoreCaret(value);
+  }
+
+  /**
+   * @return {boolean} Whether to ignore or the blinking caret or not when comparing images.
+   */
+  getIgnoreCaret() {
+    return this._configuration.getIgnoreCaret();
+  }
+
+  /**
+   * @param isDisabled {boolean} If true, all interactions with this API will be silently ignored.
+   */
+  setIsDisabled(isDisabled) {
+    this._configuration.setIsDisabled(isDisabled);
+  }
+
+  /**
+   * @return {boolean} Whether eyes is disabled.
+   */
+  isDisabled() {
+    return this._configuration.getIsDisabled();
+  }
+
+
 }
 
 exports.Eyes = Eyes;
