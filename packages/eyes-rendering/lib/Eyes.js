@@ -271,7 +271,7 @@ class Eyes {
       ignore: checkSettings.getIgnoreRegions(),
       floating: checkSettings.getFloatingRegions(),
       sendDom: checkSettings.getSendDom() ? checkSettings.getSendDom() : this.getSendDom(),
-      matchLevel: this.getMatchLevel()
+      matchLevel: checkSettings.getMatchLevel() ? checkSettings.getMatchLevel() : this.getMatchLevel()
     });
   }
 
