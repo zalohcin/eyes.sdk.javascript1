@@ -42,15 +42,11 @@ class Eyes {
     ArgumentGuard.notNull(webDriver, 'webDriver');
     ArgumentGuard.notNull(renderingConfiguration, 'renderingConfiguration');
 
-    const apiKey = process.env.APPLITOOLS_API_KEY;
+    const apiKey = this.getApiKey();
     const showLogs = process.env.APPLITOOLS_SHOW_LOGS;
     const saveDebugData = process.env.APPLITOOLS_SAVE_DEBUG_DATA;
 
     await this._initDriver(webDriver);
-
-    if (renderingConfiguration.getBatch() == null) {
-      renderingConfiguration.setBatch(this._batchInfo);
-    }
 
     const { openEyes } = makeVisualGridClient({
       showLogs,
@@ -66,27 +62,27 @@ class Eyes {
     this._logger.verbose('opening openEyes...');
 
     const { checkWindow, close } = await openEyes({
-      appName: renderingConfiguration.getAppName(),
-      testName: renderingConfiguration.getTestName(),
+      appName: renderingConfiguration.getAppName() ? renderingConfiguration.getAppName() : this.getAppName(),
+      testName: renderingConfiguration.getTestName() ? renderingConfiguration.getTestName() : this.getTestName(),
       browser: renderingConfiguration.getBrowsersInfo(),
 
       // properties,
-      batchName: renderingConfiguration.getBatch().getName(),
-      batchId: renderingConfiguration.getBatch().getId(),
-      baselineBranchName: renderingConfiguration.getBaselineBranchName(),
-      baselineEnvName: renderingConfiguration.getBaselineEnvName(),
-      // baselineName,
-      envName: renderingConfiguration.getEnvironmentName(),
-      ignoreCaret: this._configuration.getIgnoreCaret(),
-      isDisabled: this._configuration.isDisabled(),
-      matchLevel: this._configuration.getMatchLevel(),
-      matchTimeout: this._configuration.getMatchTimeout(),
-      parentBranchName: renderingConfiguration.getParentBranchName(),
-      branchName: renderingConfiguration.getBranchName(),
-      saveFailedTests: this._configuration.getSaveFailedTests(),
-      saveNewTests: this._configuration.getSaveFailedTests(),
-      compareWithParentBranch: this._configuration.isCompareWithParentBranch(),
-      ignoreBaseline: this._configuration.isIgnoreBaseline(),
+      batchName: renderingConfiguration.getBatch().getName() ? renderingConfiguration.getBatch().getName() : this.getBatch().getName(),
+      batchId: renderingConfiguration.getBatch().getId() ? renderingConfiguration.getBatch().getId() : this.getBatch().getId(),
+      baselineBranchName: renderingConfiguration.getBaselineBranchName() ? renderingConfiguration.getBaselineBranchName() : this.getBaselineBranchName(),
+      baselineEnvName: renderingConfiguration.getBaselineEnvName() ? renderingConfiguration.getBaselineEnvName() : this.getBaselineEnvName(),
+      baselineName: renderingConfiguration.getBaselineEnvName() ? renderingConfiguration.getBaselineEnvName() : this.getBaselineEnvName(),
+      envName: renderingConfiguration.getEnvironmentName() ? renderingConfiguration.getEnvironmentName() : this.getEnvironmentName(),
+      ignoreCaret: this.getIgnoreCaret(),
+      isDisabled: this.isDisabled(),
+      matchLevel: this.getMatchLevel(),
+      matchTimeout: this.getMatchTimeout(),
+      parentBranchName: renderingConfiguration.getParentBranchName() ? renderingConfiguration.getParentBranchName() : this.getParentBranchName(),
+      branchName: renderingConfiguration.getBranchName() ? renderingConfiguration.getBranchName() : this.getBranchName(),
+      saveFailedTests: this.getSaveFailedTests(),
+      saveNewTests: this.getSaveFailedTests(),
+      compareWithParentBranch: this.isCompareWithParentBranch(),
+      ignoreBaseline: this.isIgnoreBaseline(),
       logger: this._logger,
       // renderBatch,
       // waitForRenderedStatus,
@@ -96,7 +92,7 @@ class Eyes {
       // getRenderInfo,
       // createRGridDOMAndGetResourceMapping,
       // eyesTransactionThroat,
-      agentId: renderingConfiguration.getAgentId(),
+      agentId: renderingConfiguration.getAgentId() ? renderingConfiguration.getAgentId() : this.getAgentId()
     });
 
     this._checkWindowCommand = checkWindow;
@@ -148,12 +144,23 @@ class Eyes {
     return false;
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
-   * @return {boolean}
+   * Sets the API key of your applitools Eyes account.
+   *
+   * @param apiKey {string} The api key to be used.
+   */
+  setApiKey(apiKey) {
+    ArgumentGuard.notNull(apiKey, 'apiKey');
+    ArgumentGuard.alphanumeric(apiKey, 'apiKey');
+    this._configuration.setApiKey(apiKey);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string} The currently set API key or {@code null} if no key is set.
    */
   getApiKey() {
-    return undefined; // TODO: should use configuration
+    return this._configuration.getApiKey();
   }
 
   /**
@@ -185,6 +192,13 @@ class Eyes {
    */
   setBatch(batchInfo) {
     this._batchInfo = batchInfo;
+  }
+
+  /**
+   * @return {BatchInfo} The currently set batch info.
+   */
+  getBatch() {
+    return this._batchInfo;
   }
 
   /**
@@ -257,6 +271,119 @@ class Eyes {
       floating: checkSettings.getFloatingRegions(),
       sendDom: checkSettings.getSendDom(),
     });
+  }
+
+  /**
+   * @return {string}
+   */
+  getTestName() {
+    return this._configuration.getTestName();
+  }
+
+  /**
+   * @param {string} testName
+   */
+  setTestName(testName) {
+    this._configuration.setTestName(testName);
+  }
+
+  /**
+   * @param appName {string} The name of the application under test.
+   */
+  setAppName(appName) {
+    this._configuration.setAppName(appName);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string} The name of the application under test.
+   */
+  getAppName() {
+    return this._configuration.getAppName();
+  }
+
+  /**
+   * @return {string}
+   */
+  getBaselineBranchName() {
+    return this._configuration.getBaselineBranchName();
+  }
+
+  /**
+   * @param {string} baselineBranchName
+   */
+  setBaselineBranchName(baselineBranchName) {
+    this._configuration.setBaselineBranchName(baselineBranchName);
+  }
+
+  /**
+   * @return {string}
+   */
+  getBaselineEnvName() {
+    return this._configuration.getBaselineEnvName();
+  }
+
+  /**
+   * @param {string} baselineEnvName
+   */
+  setBaselineEnvName(baselineEnvName) {
+    this._configuration.setBaselineEnvName(baselineEnvName);
+  }
+
+  /**
+   * @return {string}
+   */
+  getEnvironmentName() {
+    return this._configuration.getEnvironmentName();
+  }
+
+  /**
+   * @param {string} environmentName
+   */
+  setEnvironmentName(environmentName) {
+    this._configuration.setEnvironmentName(environmentName);
+  }
+
+  /**
+   * @param agentId
+   */
+  setAgentId(agentId) {
+    this._configuration.setAgentId(agentId);
+  }
+
+  /**
+   * @return {string}
+   */
+  getAgentId() {
+    return this._configuration.getAgentId();
+  }
+
+  /**
+   * @param parentBranchName
+   */
+  setParentBranchName(parentBranchName) {
+    this._configuration.setParentBranchName(parentBranchName);
+  }
+
+  /**
+   * @return {string}
+   */
+  getParentBranchName() {
+    return this._configuration.getParentBranchName();
+  }
+
+  /**
+   * @param branchName
+   */
+  setBranchName(branchName) {
+    this._configuration.setBranchName(branchName);
+  }
+
+  /**
+   * @return {string}
+   */
+  getBranchName() {
+    return this._configuration.getBranchName();
   }
 
   /**

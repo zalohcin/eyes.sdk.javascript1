@@ -72,6 +72,23 @@ class Configuration {
   }
 
   /**
+   * Sets the API key of your applitools Eyes account.
+   *
+   * @param apiKey {string} The api key to be used.
+   */
+  setApiKey(apiKey) {
+    this._apiKey = apiKey;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string} The currently set API key or {@code null} if no key is set.
+   */
+  getApiKey() {
+    return this._apiKey;
+  }
+
+  /**
    * @param {boolean} compareWithParentBranch New compareWithParentBranch value, default is false
    */
   setCompareWithParentBranch(compareWithParentBranch) {
