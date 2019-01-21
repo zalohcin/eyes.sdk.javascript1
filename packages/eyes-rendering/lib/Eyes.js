@@ -62,14 +62,21 @@ class Eyes {
 
     this._logger.verbose('opening openEyes...');
 
+    if (this.getViewportSize() && renderingConfiguration.getBrowsersInfo()) {
+      for (let browser of renderingConfiguration.getBrowsersInfo()) {
+        browser.width = this.getViewportSize().getWidth();
+        browser.height = this.getViewportSize().getHeight();
+      }
+    }
+
     const { checkWindow, close } = await openEyes({
       appName: renderingConfiguration.getAppName() ? renderingConfiguration.getAppName() : this.getAppName(),
       testName: renderingConfiguration.getTestName() ? renderingConfiguration.getTestName() : this.getTestName(),
       browser: renderingConfiguration.getBrowsersInfo(),
 
       // properties,
-      batchName: renderingConfiguration.getBatch().getName() ? renderingConfiguration.getBatch().getName() : this.getBatch().getName(),
-      batchId: renderingConfiguration.getBatch().getId() ? renderingConfiguration.getBatch().getId() : this.getBatch().getId(),
+      batchName: renderingConfiguration.getBatch() && renderingConfiguration.getBatch().getName() ? renderingConfiguration.getBatch().getName() : this.getBatch().getName(),
+      batchId: renderingConfiguration.getBatch() && renderingConfiguration.getBatch().getId() ? renderingConfiguration.getBatch().getId() : this.getBatch().getId(),
       baselineBranchName: renderingConfiguration.getBaselineBranchName() ? renderingConfiguration.getBaselineBranchName() : this.getBaselineBranchName(),
       baselineEnvName: renderingConfiguration.getBaselineEnvName() ? renderingConfiguration.getBaselineEnvName() : this.getBaselineEnvName(),
       baselineName: renderingConfiguration.getBaselineEnvName() ? renderingConfiguration.getBaselineEnvName() : this.getBaselineEnvName(),
@@ -81,7 +88,7 @@ class Eyes {
       parentBranchName: renderingConfiguration.getParentBranchName() ? renderingConfiguration.getParentBranchName() : this.getParentBranchName(),
       branchName: renderingConfiguration.getBranchName() ? renderingConfiguration.getBranchName() : this.getBranchName(),
       saveFailedTests: this.getSaveFailedTests(),
-      saveNewTests: this.getSaveFailedTests(),
+      saveNewTests: this.getSaveNewTests(),
       compareWithParentBranch: this.isCompareWithParentBranch(),
       ignoreBaseline: this.isIgnoreBaseline(),
       logger: this._logger,
