@@ -94,15 +94,14 @@ class DomCapture {
         continue;
       }
       const iframeEl = await this.driver.findElementByXPath(iframeXpath);
-      const iframeSrc = await iframeEl.getAttribute('src');
-      await this.driver.url(iframeSrc);
+      await this._driver.switchTo().frame(iframeEl);
       let domIFrame;
       try {
         domIFrame = await this.getFrameDom(script);
       } catch (e) {
         domIFrame = {};
       }
-      await this.driver.url(url);
+      await this._driver.switchTo().parentFrame();
       domSnapshot = domSnapshot.replace(`"@@@@@${iframeXpath}@@@@@"`, domIFrame);
     }
 
