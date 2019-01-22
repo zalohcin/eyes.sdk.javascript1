@@ -4,6 +4,7 @@ const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-capture');
 const { Logger, ArgumentGuard, Configuration, TypeUtils } = require('@applitools/eyes-common');
 const { BatchInfo, TestResultsFormatter } = require('@applitools/eyes-sdk-core');
+const { EyesSeleniumUtils } = require('@applitools/eyes-selenium');
 
 class Eyes {
   constructor() {
@@ -62,11 +63,8 @@ class Eyes {
 
     this._logger.verbose('opening openEyes...');
 
-    if (this.getViewportSize() && renderingConfiguration.getBrowsersInfo()) {
-      for (let browser of renderingConfiguration.getBrowsersInfo()) {
-        browser.width = this.getViewportSize().getWidth();
-        browser.height = this.getViewportSize().getHeight();
-      }
+    if (this.getViewportSize()) {
+      await EyesSeleniumUtils.setViewportSize(this._logger, webDriver, this.getViewportSize());
     }
 
     const { checkWindow, close } = await openEyes({

@@ -34,6 +34,7 @@
     "@applitools/dom-capture": "^6.1.5",
     "@applitools/eyes-common": "^1.2.0",
     "@applitools/eyes-sdk-core": "^4.6.2",
+    "@applitools/eyes-selenium": "^4.4.3",
     "@applitools/visual-grid-client": "^9.0.5"
   },
   "devDependencies": {
