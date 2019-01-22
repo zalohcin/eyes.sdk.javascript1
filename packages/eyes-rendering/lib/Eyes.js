@@ -4,6 +4,7 @@ const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-capture');
 const { Logger, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 const { BatchInfo, TestResultsFormatter } = require('@applitools/eyes-sdk-core');
+const { RenderingConfiguration } = require('./RenderingConfiguration');
 
 class Eyes {
   constructor() {
@@ -35,12 +36,14 @@ class Eyes {
    * @param {WebDriver} webDriver
    * @param {RenderingConfiguration} renderingConfiguration
    */
-  async open(webDriver, renderingConfiguration) {
+  async open(webDriver, _renderingConfiguration) {
     this._logger.verbose('enter');
 
     ArgumentGuard.notNull(webDriver, 'webDriver');
-    ArgumentGuard.notNull(renderingConfiguration, 'renderingConfiguration');
+    ArgumentGuard.notNull(_renderingConfiguration, 'renderingConfiguration');
 
+    const renderingConfiguration = (_renderingConfiguration instanceof RenderingConfiguration) ? _renderingConfiguration :
+      RenderingConfiguration.fromObject(_renderingConfiguration);
     const apiKey = process.env.APPLITOOLS_API_KEY;
     const showLogs = process.env.APPLITOOLS_SHOW_LOGS;
     const saveDebugData = process.env.APPLITOOLS_SAVE_DEBUG_DATA;

@@ -1,7 +1,7 @@
 'use strict';
 
 
-const { Configuration } = require('@applitools/eyes-common');
+const { Configuration, ArgumentGuard } = require('@applitools/eyes-common');
 
 class RenderingConfiguration extends Configuration {
   /**
@@ -81,6 +81,21 @@ class RenderingConfiguration extends Configuration {
    */
   cloneConfig() {
     return new RenderingConfiguration(this);
+  }
+
+  static fromObject(config) {
+    ArgumentGuard.isValidType(config, Object);
+
+    const cfg = new RenderingConfiguration();
+
+    if (config.browser) {
+      const browsers = Array.isArray(config.browser) ? config.browser : [config.browser];
+      browsers.forEach(browser => {
+        cfg.addBrowser(browser.width, browser.height, browser.name);
+      });
+    }
+
+    return cfg;
   }
 }
 
