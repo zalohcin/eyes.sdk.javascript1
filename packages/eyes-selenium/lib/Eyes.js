@@ -1354,7 +1354,9 @@ class Eyes extends EyesBase {
       await this._driver.switchTo().parentFrame();
 
       const frame = fc.pop();
-      await frame.getReference().setOverflow(frame.getOriginalOverflow());
+      let frameReference = frame.getReference();
+      frameReference = frameReference instanceof EyesWebElement ? frameReference : new EyesWebElement(this._logger, this._driver, frameReference);
+      await frameReference.setOverflow(frame.getOriginalOverflow());
 
       await this._tryRestoreScrollbarsLoop(fc);
     }

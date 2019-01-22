@@ -31,6 +31,18 @@ class TestResultsFormatter {
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * Adds an additional results object to the currently stored results list.
+   *
+   * @deprecated use {@link #addTestResults(results)} instead
+   * @param {TestResults} results A test results returned by a call to `eyes.close' or 'eyes.abortIfNotClosed'.
+   * @return {TestResultsFormatter} The updated 'TestResultsFormatter' instance.
+   */
+  addResults(results) {
+    return this.addTestResults(results);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
    * @return {TestResults[]}
    */
   getResultsList() {

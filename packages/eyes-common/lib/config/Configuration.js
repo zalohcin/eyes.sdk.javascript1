@@ -39,6 +39,18 @@ class Configuration {
     this._ignoreBaseline = undefined;
     this._saveDiffs = undefined;
 
+    this._matchLevel = undefined;
+    this._ignore = undefined;
+    this._strict = undefined;
+    this._content = undefined;
+    this._layout = undefined;
+    this._floating = undefined;
+    this._splitTopHeight = undefined;
+    this._splitBottomHeight = undefined;
+    this._ignoreCaret = undefined;
+    this._scale = undefined;
+    this._remainder = undefined;
+
     if (configuration) {
       this._batch = configuration.getBatch();
       this._branchName = configuration.getBranchName();
