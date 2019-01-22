@@ -11,7 +11,7 @@
     "browser.js"
   ],
   "scripts": {
-    "build:browser": "cd test/fixtures/test-app && npm run build",
+    "build:browser": "cd test/fixtures/test-app && npm i && npm run build",
     "test:mocha": "mocha --no-timeouts 'test/**/*.test.js'",
     "test:unit": "mocha --no-timeouts 'test/unit/**/*.test.js'",
     "test:it": "mocha --no-timeouts 'test/it/**/*.test.js'",
