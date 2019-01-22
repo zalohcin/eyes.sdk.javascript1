@@ -22,6 +22,8 @@ class Eyes {
 
     this._checkWindowCommand = undefined;
     this._closeCommand = undefined;
+
+    /** @type {boolean} */ this._isVisualGrid = true;
   }
 
   /**
@@ -582,6 +584,13 @@ class Eyes {
 
       await this._driver.switchTo().frames(originalFrame);
     }
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isVisualGrid() {
+    return this._isVisualGrid;
   }
 
 }
