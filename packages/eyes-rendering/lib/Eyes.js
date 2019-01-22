@@ -274,6 +274,11 @@ class Eyes {
 
     this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`);
 
+    let targetSelector = await checkSettings.getTargetProvider();
+    if (targetSelector) {
+      targetSelector = await targetSelector.getSelector(this);
+    }
+
     const domCaptureScript = `var callback = arguments[arguments.length - 1]; return (${this._processPageAndSerializeScript})().then(JSON.stringify).then(callback, function(err) {callback(err.stack || err.toString())})`;
     const results = await this._jsExecutor.executeAsyncScript(domCaptureScript);
     const { cdt, url: pageUrl, blobs, resourceUrls } = JSON.parse(results);
@@ -294,8 +299,8 @@ class Eyes {
       cdt,
       tag: checkSettings.getName(),
       sizeMode: checkSettings.getSizeMode(),
-      selector: checkSettings.getSelector(),
-      region: checkSettings.getRegion(),
+      selector: targetSelector,
+      region: checkSettings.getTargetRegion(),
       scriptHooks: checkSettings.getScriptHooks(),
       ignore: checkSettings.getIgnoreRegions(),
       floating: checkSettings.getFloatingRegions(),

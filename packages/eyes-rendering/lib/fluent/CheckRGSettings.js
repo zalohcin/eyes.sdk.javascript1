@@ -1,21 +1,33 @@
 'use strict';
 
-const { CheckSettings } = require('@applitools/eyes-sdk-core');
+const { WebElement } = require('selenium-webdriver');
+const { TypeUtils, CheckSettings, Region } = require('@applitools/eyes-sdk-core');
+const { EyesWebElement } = require('@applitools/eyes-selenium');
 
 const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot';
 
+const { GetSelector } = require('./GetSelector');
+const { SelectorByElement } = require('./SelectorByElement');
+const { SelectorByLocator } = require('./SelectorByLocator');
+
 class CheckRGSettings extends CheckSettings {
   /**
-   * @param {Region} [region]
-   * @param {string} [selector]
+   * @param {Region|RegionObject|By|WebElement|EyesWebElement|string} [region]
+   * @param {number|string|By|WebElement|EyesWebElement} [frame]
    */
-  constructor(region, selector) {
+  constructor(region, frame) {
     super();
 
-    /** @type {Region} */
-    this._region = region;
-    /** @type {string} */
-    this._selector = selector;
+    this._targetProvider = undefined;
+    this._frameChain = [];
+
+    if (region) {
+      this.region(region);
+    }
+
+    if (frame) {
+      this.frame(frame);
+    }
 
     /** @type {Map<string, string>} */ this._scriptHooks = new Map();
   }
@@ -32,9 +44,52 @@ class CheckRGSettings extends CheckSettings {
     scripts.add(script);
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {Region...} regions A region to ignore when validating the screenshot.
+   * @package
+   * @return {GetSelector}
+   */
+  getTargetProvider() {
+    return this._targetProvider;
+  }
+
+  /**
+   * @param {Region|RegionObject|By|WebElement|EyesWebElement|string} region The region to validate.
+   * @return {this}
+   */
+  region(region) {
+    // noinspection IfStatementWithTooManyBranchesJS
+    if (TypeUtils.isString(region)) {
+      this._targetProvider = new GetSelector(region);
+    } else if (Region.isRegionCompatible(region)) {
+      super.updateTargetRegion(region);
+    } else if (EyesWebElement.isLocator(region)) {
+      this._targetProvider = new SelectorByLocator(region);
+    } else if (region instanceof WebElement) {
+      this._targetProvider = new SelectorByElement(region);
+    } else {
+      throw new TypeError('region method called with argument of unknown type!');
+    }
+    return this;
+  }
+
+  /**
+   * @param {number|string|By|WebElement|EyesWebElement} frame The frame to switch to.
+   * @return {this}
+   */
+  frame(frame) { // eslint-disable-line
+    // do nothing
+    return this;
+  }
+
+  /**
+   * @package
+   * @return {FrameLocator[]}
+   */
+  getFrameChain() {
+    return this._frameChain;
+  }
+
+  /**
    * @inheritDoc
    */
   ignoreRegions(...regions) {
@@ -60,12 +115,12 @@ class CheckRGSettings extends CheckSettings {
    * @return {string}
    */
   getSizeMode() {
-    if (this._region == null && this._selector == null) {
+    if (!this._targetRegion && !this._targetProvider) {
       if (this.getStitchContent()) {
         return 'full-page';
       }
       return 'viewport';
-    } if (this._region != null) {
+    } if (this._targetRegion) {
       if (this.getStitchContent()) {
         return 'region';
       }
@@ -75,20 +130,6 @@ class CheckRGSettings extends CheckSettings {
       return 'selector';
     }
     return 'selector';
-  }
-
-  /**
-   * @return {string}
-   */
-  getSelector() {
-    return this._selector;
-  }
-
-  /**
-   * @return {Region}
-   */
-  getRegion() {
-    return this._region;
   }
 
   /**

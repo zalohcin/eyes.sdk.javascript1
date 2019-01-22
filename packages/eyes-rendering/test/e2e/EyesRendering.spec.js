@@ -17,8 +17,6 @@ describe('EyesRendering', function () {
   it('VisualGridTestPage', async function () {
     await webDriver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage');
 
-    // TODO: check API compatibility
-    // TODO: check ignore regions
     const eyes = new Eyes();
     eyes.setBatch(new BatchInfo('EyesRenderingBatch'));
 
@@ -40,7 +38,7 @@ describe('EyesRendering', function () {
 
       await eyes.check('region', Target.region(new Region(200, 200, 50, 100)));
 
-      await eyes.check('selector', Target.selector('#scroll1'));
+      await eyes.check('selector', Target.region('#scroll1'));
 
       await eyes.closeAndPrintResults(false);
     } catch (err) {
