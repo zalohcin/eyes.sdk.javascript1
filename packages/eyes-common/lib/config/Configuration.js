@@ -212,6 +212,13 @@ class Configuration {
   /**
    * @return {boolean} Whether eyes is disabled.
    */
+  getIsDisabled() {
+    return this._isDisabled;
+  }
+
+  /**
+   * @return {boolean} Whether eyes is disabled.
+   */
   isDisabled() {
     return this._isDisabled;
   }
