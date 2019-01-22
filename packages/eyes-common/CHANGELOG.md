@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@1.2.0...@applitools/eyes-common@1.2.1) (2019-01-22)
+
+
+### Bug Fixes
+
+* **eyes-common:** add missing method to Configuration ([6972fc6](https://github.com/applitools/eyes.sdk.javascript1/commit/6972fc6))
+
+
+
+
+
 # 1.2.0 (2019-01-16)
 
 
