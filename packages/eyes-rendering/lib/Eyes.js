@@ -3,8 +3,8 @@
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-capture');
 const { Logger, ArgumentGuard, Configuration, TypeUtils } = require('@applitools/eyes-common');
-const { BatchInfo, TestResultsFormatter } = require('@applitools/eyes-sdk-core');
-const { EyesSeleniumUtils } = require('@applitools/eyes-selenium');
+const { BatchInfo, RectangleSize, TestFailedError, TestResultsFormatter } = require('@applitools/eyes-sdk-core');
+const { EyesSeleniumUtils, EyesWebDriver } = require('@applitools/eyes-selenium');
 
 class Eyes {
   constructor() {
@@ -36,9 +36,12 @@ class Eyes {
 
   /**
    * @param {WebDriver} webDriver
+   * @param appName
+   * @param testName
+   * @param viewportSize
    * @param {RenderingConfiguration} renderingConfiguration
    */
-  async open(webDriver, renderingConfiguration) {
+  async open(webDriver, appName, testName, viewportSize, renderingConfiguration) {
     this._logger.verbose('enter');
 
     ArgumentGuard.notNull(webDriver, 'webDriver');
@@ -49,6 +52,17 @@ class Eyes {
     const saveDebugData = process.env.APPLITOOLS_SAVE_DEBUG_DATA;
 
     await this._initDriver(webDriver);
+
+    if (!appName) {
+      appName = renderingConfiguration.getAppName() ? renderingConfiguration.getAppName() : this.getAppName();
+    } else {
+      this.setAppName(appName);
+    }
+    if (!testName) {
+      testName = renderingConfiguration.getTestName() ? renderingConfiguration.getTestName() : this.getTestName();
+    } else {
+      this.setTestName(testName);
+    }
 
     const { openEyes } = makeVisualGridClient({
       showLogs,
@@ -63,13 +77,14 @@ class Eyes {
 
     this._logger.verbose('opening openEyes...');
 
-    if (this.getViewportSize()) {
-      await EyesSeleniumUtils.setViewportSize(this._logger, webDriver, this.getViewportSize());
+    viewportSize = viewportSize ? viewportSize : this.getViewportSize();
+    if (viewportSize) {
+      await this.setViewportSize(viewportSize);
     }
 
     const { checkWindow, close } = await openEyes({
-      appName: renderingConfiguration.getAppName() ? renderingConfiguration.getAppName() : this.getAppName(),
-      testName: renderingConfiguration.getTestName() ? renderingConfiguration.getTestName() : this.getTestName(),
+      appName: appName,
+      testName: testName,
       browser: renderingConfiguration.getBrowsersInfo(),
 
       // properties,
@@ -115,6 +130,12 @@ class Eyes {
     if (TypeUtils.hasMethod(webDriver, ['executeScript', 'executeAsyncScript'])) {
       this._jsExecutor = webDriver;
     }
+
+    if (webDriver instanceof EyesWebDriver) {
+      this._driver = webDriver;
+    } else {
+      this._driver = new EyesWebDriver(this._logger, this, webDriver);
+    }
   }
 
   /**
@@ -124,7 +145,8 @@ class Eyes {
    * @return {Promise<TestResults[]>}
    */
   async close(throwEx) {
-    return this.closeAndReturnResults(throwEx);
+     const results = await this.closeAndReturnResults(throwEx);
+     return results && results.length > 0 ? results[0] : null;
   }
 
   // noinspection JSMethodCanBeStatic
@@ -542,8 +564,24 @@ class Eyes {
   /**
    * @param {RectangleSize} viewportSize
    */
-  setViewportSize(viewportSize) {
+  async setViewportSize(viewportSize) {
+    ArgumentGuard.notNull(viewportSize, 'viewportSize');
+    viewportSize = new RectangleSize(viewportSize);
     this._configuration.setViewportSize(viewportSize);
+
+    if (this._driver) {
+      const originalFrame = this._driver.getFrameChain();
+      await this._driver.switchTo().defaultContent();
+
+      try {
+        await EyesSeleniumUtils.setViewportSize(this._logger, this._driver, viewportSize);
+      } catch (err) {
+        await this._driver.switchTo().frames(originalFrame); // Just in case the user catches that error
+        throw new TestFailedError('Failed to set the viewport size', err);
+      }
+
+      await this._driver.switchTo().frames(originalFrame);
+    }
   }
 
 }
