@@ -3,6 +3,7 @@
 require('chromedriver');
 const { Builder } = require('selenium-webdriver');
 const { BatchInfo, Region } = require('@applitools/eyes-sdk-core');
+const { RectangleSize } = require('@applitools/eyes-common');
 const { Eyes, Target, RenderingConfiguration } = require('../../index'); // Should be replaced to `@applitools/eyes-rendering` if used outside of the package
 
 let /** @type {WebDriver} */ webDriver;
@@ -16,8 +17,6 @@ describe('EyesRendering', function () {
   it('VisualGridTestPage', async function () {
     await webDriver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage');
 
-    // TODO: check API compatibility
-    // TODO: check ignore regions
     const eyes = new Eyes();
     eyes.setBatch(new BatchInfo('EyesRenderingBatch'));
 
@@ -31,13 +30,15 @@ describe('EyesRendering', function () {
       renderingConfiguration.addBrowser(700, 500, RenderingConfiguration.BrowserType.CHROME);
       renderingConfiguration.addBrowser(400, 300, RenderingConfiguration.BrowserType.CHROME);
 
-      await eyes.open(webDriver, renderingConfiguration);
+      await eyes.open(webDriver, 'RenderingGridIntegration_', 'Open Concurrency with Batch 2_', null, renderingConfiguration);
+
+      await eyes.setViewportSize(new RectangleSize({ width: 800, height: 600 }));
 
       await eyes.check('window', Target.window().ignoreRegions(new Region(200, 200, 50, 100)));
 
       await eyes.check('region', Target.region(new Region(200, 200, 50, 100)));
 
-      await eyes.check('selector', Target.selector('#scroll1'));
+      await eyes.check('selector', Target.region('#scroll1'));
 
       await eyes.closeAndPrintResults(false);
     } catch (err) {

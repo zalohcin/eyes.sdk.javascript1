@@ -167,6 +167,8 @@ class EyesBase {
     this._autSessionId = undefined;
 
     /** @type {boolean} */ this._sendDom = true;
+
+    /** @type {boolean} */ this._isVisualGrid = false;
   }
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
@@ -2160,6 +2162,14 @@ class EyesBase {
   log(...args) {
     this._logger.log(...args);
   }
+
+  /**
+   * @return {boolean}
+   */
+  isVisualGrid() {
+    return this._isVisualGrid;
+  }
+
 }
 
 exports.EyesBase = EyesBase;
