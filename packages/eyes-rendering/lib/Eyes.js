@@ -125,6 +125,8 @@ class Eyes {
     this._closeCommand = close;
     this._isOpen = true;
     this._logger.verbose('done');
+
+    return this._driver;
   }
 
   /**
