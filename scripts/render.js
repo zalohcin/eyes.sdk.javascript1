@@ -2,7 +2,7 @@
 
 const puppeteer = require('puppeteer');
 const {makeVisualGridClient} = require('../src/visual-grid-client');
-const {getProcessPageAndSerializeScript} = require('@applitools/dom-capture');
+const {getProcessPageAndSerializeScript} = require('@applitools/dom-snapshot');
 const testServer = require('../test/util/testServer');
 const debug = require('debug')('render');
 

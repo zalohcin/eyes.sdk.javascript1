@@ -134,13 +134,13 @@ Example [Mocha](https://www.npmjs.com/package/mocha) test that uses the visual g
 const path = require('path')
 const fs = require('fs')
 const {makeVisualGridClient} = require('@applitools/visual-grid-client')
-const {getProcessPageScript} = require('@applitools/dom-capture')
+const {getProcessPageAndSerializeScript} = require('@applitools/dom-snapshot')
 const puppeteer = require('puppeteer')
 
 describe('visual-grid-client test', function() {
   let visualGridClient
   let closePromises = []
-  let processPage
+  let processPageAndSerialize
   let browser
   let page
 
@@ -150,11 +150,9 @@ describe('visual-grid-client test', function() {
 
     visualGridClient = makeVisualGridClient({
       showLogs: true,
-      renderStatusTimeout: 60000,
-      renderStatusInterval: 1000,
     })
 
-    processPage = `(${await getProcessPageScript()})()`
+    processPageAndSerialize = `(${await getProcessPageAndSerializeScript()})()`
   })
 
   after(() => {
@@ -173,19 +171,20 @@ describe('visual-grid-client test', function() {
 
   it('should work', async () => {
     await page.goto('index.html')
+    const {cdt, url, resourceUrls, blobs, frames} = await page.evaluate(processPageAndSerialize)
+    const resourceContents = blobs.map(({url, type, value}) => ({
+      url,
+      type,
+      value: Buffer.from(value, 'base64'),
+    }));
     checkWindow({
       tag: 'first test',
-      url: 'http://localhost/index.html',
-      cdt: await page.evaluate(processPage),
       sizeMode: 'viewport',
-      resourceUrls: ['http://imgur.com/dog.jpeg'],
-      resourceContents: {
-        'cat.jpeg': {
-          url: 'cat.jpeg',
-          type: 'image/jpeg',
-          value: fs.readFileSync(path.join(__dirname, 'resources/cat.jpeg')),
-        },
-      },
+      url,
+      cdt,
+      resourceUrls,
+      resourceContents,
+      frames
     })
   })
 })
