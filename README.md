@@ -36,7 +36,7 @@ The visualGridClient, returned by `makeVisualGridClient`, is an object with the 
 
 ### openEyes
 
-Async function `openEyes` will create a test. Actually, it will create a series of test, one for each browser configuration
+Async function `openEyes` will create a test. Actually, it will create a series of tests, one for each browser configuration
 defined in the `browser` property of the configuraion.
 
 * `openEyes` accepts a configuration object that will override the default configuration found by
