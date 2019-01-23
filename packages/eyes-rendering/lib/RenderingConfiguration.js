@@ -49,6 +49,19 @@ class RenderingConfiguration extends Configuration {
   }
 
   /**
+   * @param {string} deviceName
+   * @param {RenderingConfiguration.Orientation} screenOrientation
+   * @return {RenderingConfiguration}
+   */
+  addDevice(deviceName, screenOrientation) {
+    const deviceInfo = {
+      deviceName, screenOrientation,
+    };
+    this._browsersInfo.push(deviceInfo);
+    return this;
+  }
+
+  /**
    * @param {number} concurrentSessions
    */
   setConcurrentSessions(concurrentSessions) {
@@ -91,7 +104,11 @@ class RenderingConfiguration extends Configuration {
     if (config.browser) {
       const browsers = Array.isArray(config.browser) ? config.browser : [config.browser];
       browsers.forEach(browser => {
-        cfg.addBrowser(browser.width, browser.height, browser.name);
+        if (browser.name) {
+          cfg.addBrowser(browser.width, browser.height, browser.name);
+        } else if (browser.deviceName) {
+          cfg.addDevice(browser.deviceName, browser.screenOrientation);
+        }
       });
     }
 
@@ -108,5 +125,15 @@ RenderingConfiguration.BrowserType = {
   FIREFOX: 'firefox',
 };
 
+/**
+ * @readonly
+ * @enum {string}
+ */
+RenderingConfiguration.Orientation = {
+  PORTRAIT: 'portrait',
+  LANDSCAPE: 'landscape',
+};
+
 Object.freeze(RenderingConfiguration.BrowserType);
+Object.freeze(RenderingConfiguration.Orientation);
 exports.RenderingConfiguration = RenderingConfiguration;

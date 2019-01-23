@@ -36,12 +36,17 @@ describe('RenderingConfiguration', () => {
           height: 600,
           name: 'firefox',
         },
+        {
+          deviceName: 'iPhone 4',
+          screenOrientation: 'portrait',
+        },
       ],
     };
     const cfg = RenderingConfiguration.fromObject(config);
-    expect(cfg._browsersInfo.length).to.equal(2);
+    expect(cfg._browsersInfo.length).to.equal(config.browser.length);
     expect(cfg._browsersInfo[0].name).to.equal(config.browser[0].name);
     expect(cfg._browsersInfo[1].name).to.equal(config.browser[1].name);
+    expect(cfg._browsersInfo[2].deviceName).to.equal(config.browser[2].deviceName);
   });
   it('should fail to parse invalid config', () => {
     const config = undefined;
