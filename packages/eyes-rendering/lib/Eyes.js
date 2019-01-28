@@ -9,7 +9,7 @@ const { RenderingConfiguration } = require('./RenderingConfiguration');
 
 class Eyes {
   constructor() {
-    /** @type {Logger} */ this._logger = new Logger(true);
+    /** @type {Logger} */ this._logger = new Logger();
     /** @type {string} */ this._serverUrl = undefined;
 
     /** @type {EyesJsExecutor} */ this._jsExecutor = undefined;
@@ -42,7 +42,7 @@ class Eyes {
    * @param appName
    * @param testName
    * @param viewportSize
-   * @param {RenderingConfiguration} renderingConfiguration
+   * @param {RenderingConfiguration} _renderingConfiguration
    */
   async open(webDriver, appName, testName, viewportSize, _renderingConfiguration) {
     this._logger.verbose('enter');
@@ -596,6 +596,7 @@ class Eyes {
     }
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -603,6 +604,14 @@ class Eyes {
     return this._isVisualGrid;
   }
 
+
+  getEyesRunner() {
+    const runner = {};
+    runner.getAllResults = () => {
+      return this.closeAndReturnResults();
+    };
+    return runner;
+  }
 }
 
 exports.Eyes = Eyes;

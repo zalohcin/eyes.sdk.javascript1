@@ -48,6 +48,7 @@ const { AppEnvironment } = require('./AppEnvironment');
 const { MatchWindowTask } = require('./MatchWindowTask');
 const { MatchSingleWindowTask } = require('./MatchSingleWindowTask');
 const { BatchInfo } = require('./BatchInfo');
+const { CorsIframeHandle, CorsIframeHandler } = require('./capture/CorsIframeHandler');
 
 const DEFAULT_MATCH_TIMEOUT = 2000;
 const MIN_MATCH_TIMEOUT = 500;
@@ -169,6 +170,8 @@ class EyesBase {
     /** @type {boolean} */ this._sendDom = true;
 
     /** @type {boolean} */ this._isVisualGrid = false;
+
+    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandle.KEEP;
   }
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
@@ -1388,6 +1391,14 @@ class EyesBase {
   }
 
   /**
+   * @protected
+   * @return {Promise<?string>}
+   */
+  getOrigin() {
+    return Promise.resolve(undefined);
+  }
+
+  /**
    * Replaces an actual image in the current running session.
    *
    * @param {number} stepIndex The zero based index of the step in which to replace the actual image.
@@ -1950,6 +1961,12 @@ class EyesBase {
 
     if (!domUrl && (checkSettings.getSendDom() || this._sendDom)) {
       const domJson = await this.tryCaptureDom();
+
+      if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
+        const origin = await this.getOrigin();
+        CorsIframeHandler.blankCorsIframeSrc(domJson, origin);
+      }
+
       domUrl = await this._tryPostDomSnapshot(domJson);
       this._logger.verbose(`domUrl: ${domUrl}`);
     }
@@ -2170,6 +2187,19 @@ class EyesBase {
     return this._isVisualGrid;
   }
 
+  /**
+   * @param corsIframeHandle
+   */
+  setCorsIframeHandle(corsIframeHandle) {
+    this._corsIframeHandle = corsIframeHandle;
+  }
+
+  /**
+   * @return {CorsIframeHandle}
+   */
+  getCorsIframeHandle() {
+    return this._corsIframeHandle;
+  }
 }
 
 exports.EyesBase = EyesBase;

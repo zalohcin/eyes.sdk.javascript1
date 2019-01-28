@@ -1,5 +1,7 @@
 'use strict';
 
+const {URL} = require('url');
+
 const {
   Logger,
   SimplePropertyHandler,
@@ -1268,6 +1270,14 @@ class Eyes extends EyesBase {
       this._logger.log(`Error capturing DOM of the page: ${err}`);
       return '';
     }
+  }
+
+  /**
+   * @override
+   */
+  async getOrigin() {
+    const currentUrl = await this.getDriver().getCurrentUrl();
+    return new URL(currentUrl).origin;
   }
 
   /**
