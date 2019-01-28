@@ -32,7 +32,7 @@
   "dependencies": {
     "cosmiconfig": "^5.0.7",
     "dateformat": "^3.0.3",
-    "deepmerge": "^3.0.0",
+    "deepmerge": "^3.1.0",
     "png-async": "^0.9.3",
     "stack-trace": "^0.0.10"
   },

@@ -99,7 +99,7 @@ class TestSetup {
       this._desiredCaps.set('seleniumVersion', '3.11.0');
 
       if (this._caps.getBrowserName().equals('chrome')) {
-        this._desiredCaps.set('chromedriverVersion', '2.37');
+        this._desiredCaps.set('chromedriverVersion', '2.45');
       }
 
       this._desiredCaps.set('platform', this._platform);
