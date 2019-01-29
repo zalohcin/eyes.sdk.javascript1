@@ -25,7 +25,7 @@ class Eyes {
     this._closeCommand = undefined;
 
     /** @type {boolean} */ this._isVisualGrid = true;
-    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandle.KEEP;
+    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandle.BLANK;
   }
 
   /**
