@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-rendering@2.2.0...@applitools/eyes-rendering@2.2.1) (2019-01-29)
+
+
+### Bug Fixes
+
+* **eyes-rendering:** change default CorsIframeHandle to `BLANK` ([391f811](https://github.com/applitools/eyes.sdk.javascript1/commit/391f811))
+
+
+
+
+
 # [2.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-rendering@2.1.0...@applitools/eyes-rendering@2.2.0) (2019-01-29)
 
 
