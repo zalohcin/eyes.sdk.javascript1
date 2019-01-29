@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-rendering@2.1.0...@applitools/eyes-rendering@2.2.0) (2019-01-29)
+
+
+### Features
+
+* **eyes-rendering:** add getCorsIframeHandle/setCorsIframeHandle methods ([dcbcf40](https://github.com/applitools/eyes.sdk.javascript1/commit/dcbcf40))
+
+
+
+
+
 # [2.1.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-rendering@2.0.0...@applitools/eyes-rendering@2.1.0) (2019-01-28)
 
 **Note:** Version bump only for package @applitools/eyes-rendering

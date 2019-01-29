@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@4.6.4...@applitools/eyes-sdk-core@4.7.0) (2019-01-29)
+
+
+### Features
+
+* **eyes-sdk-core:** add blankCorsIframeSrcOfCdt method to CorsIframeHandler ([2801841](https://github.com/applitools/eyes.sdk.javascript1/commit/2801841))
+* **eyes-sdk-core:** add export of CorsIframeHandle, CorsIframeHandler ([4bd139e](https://github.com/applitools/eyes.sdk.javascript1/commit/4bd139e))
+
+
+
+
+
 ## [4.6.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@4.6.3...@applitools/eyes-sdk-core@4.6.4) (2019-01-28)
 
 **Note:** Version bump only for package @applitools/eyes-sdk-core
