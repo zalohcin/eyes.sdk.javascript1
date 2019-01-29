@@ -1,6 +1,6 @@
 'use strict';
 
-const {URL} = require('url');
+const { URL } = require('url');
 
 /**
  * @readonly
@@ -42,6 +42,25 @@ class CorsIframeHandler {
         CorsIframeHandler.blankCorsIframeSrc(child, origin);
       }
     }
+  }
+
+  static blankCorsIframeSrcOfCdt(cdt, frames) {
+    const frameUrls = new Set(frames.map(frame => frame.srcAttr));
+    cdt.map(node => {
+      if (node.nodeName === 'IFRAME') {
+        const srcAttr = node.attributes.find(attr => attr.name === 'src');
+        if (srcAttr && !frameUrls.has(srcAttr.value)) {
+          srcAttr.value = '';
+        }
+      }
+      return node
+    });
+
+    frames.forEach(frame => {
+      CorsIframeHandler.blankCorsIframeSrcOfCdt(frame.cdt, frame.frames)
+    });
+
+    return cdt
   }
 }
 
