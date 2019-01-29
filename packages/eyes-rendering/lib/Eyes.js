@@ -3,7 +3,7 @@
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-snapshot');
 const { Logger, ArgumentGuard, Configuration, TypeUtils } = require('@applitools/eyes-common');
-const { BatchInfo, RectangleSize, TestFailedError, TestResultsFormatter } = require('@applitools/eyes-sdk-core');
+const { BatchInfo, RectangleSize, TestFailedError, TestResultsFormatter, CorsIframeHandle, CorsIframeHandler } = require('@applitools/eyes-sdk-core');
 const { EyesSeleniumUtils, EyesWebDriver } = require('@applitools/eyes-selenium');
 const { RenderingConfiguration } = require('./RenderingConfiguration');
 
@@ -25,6 +25,7 @@ class Eyes {
     this._closeCommand = undefined;
 
     /** @type {boolean} */ this._isVisualGrid = true;
+    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandle.KEEP;
   }
 
   /**
@@ -118,7 +119,7 @@ class Eyes {
       // getRenderInfo,
       // createRGridDOMAndGetResourceMapping,
       // eyesTransactionThroat,
-      agentId: renderingConfiguration.getAgentId() ? renderingConfiguration.getAgentId() : this.getAgentId()
+      agentId: renderingConfiguration.getAgentId() ? renderingConfiguration.getAgentId() : this.getAgentId(),
     });
 
     this._checkWindowCommand = checkWindow;
@@ -286,7 +287,11 @@ class Eyes {
 
     const domCaptureScript = `var callback = arguments[arguments.length - 1]; return (${this._processPageAndSerializeScript})().then(JSON.stringify).then(callback, function(err) {callback(err.stack || err.toString())})`;
     const results = await this._jsExecutor.executeAsyncScript(domCaptureScript);
-    const { cdt, url: pageUrl, blobs, resourceUrls } = JSON.parse(results);
+    const { cdt, url: pageUrl, blobs, resourceUrls, frames } = JSON.parse(results);
+
+    if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
+      CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames);
+    }
 
     const resourceContents = blobs.map(({ url, type, value }) => ({
       url,
@@ -310,7 +315,7 @@ class Eyes {
       ignore: checkSettings.getIgnoreRegions(),
       floating: checkSettings.getFloatingRegions(),
       sendDom: checkSettings.getSendDom() ? checkSettings.getSendDom() : this.getSendDom(),
-      matchLevel: checkSettings.getMatchLevel() ? checkSettings.getMatchLevel() : this.getMatchLevel()
+      matchLevel: checkSettings.getMatchLevel() ? checkSettings.getMatchLevel() : this.getMatchLevel(),
     });
   }
 
@@ -604,6 +609,19 @@ class Eyes {
     return this._isVisualGrid;
   }
 
+  /**
+   * @param corsIframeHandle
+   */
+  setCorsIframeHandle(corsIframeHandle) {
+    this._corsIframeHandle = corsIframeHandle;
+  }
+
+  /**
+   * @return {CorsIframeHandle}
+   */
+  getCorsIframeHandle() {
+    return this._corsIframeHandle;
+  }
 
   getEyesRunner() {
     const runner = {};
