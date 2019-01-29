@@ -12,6 +12,8 @@ exports.EyesSimpleScreenshot = require('./lib/capture/EyesSimpleScreenshot').Eye
 exports.EyesSimpleScreenshotFactory = require('./lib/capture/EyesSimpleScreenshotFactory').EyesSimpleScreenshotFactory;
 exports.FullPageCaptureAlgorithm = require('./lib/capture/FullPageCaptureAlgorithm').FullPageCaptureAlgorithm;
 exports.ImageProvider = require('./lib/capture/ImageProvider').ImageProvider;
+exports.CorsIframeHandle = require('./lib/capture/CorsIframeHandler').CorsIframeHandle;
+exports.CorsIframeHandler = require('./lib/capture/CorsIframeHandler').CorsIframeHandler;
 
 exports.CutProvider = require('./lib/cropping/CutProvider').CutProvider;
 exports.FixedCutProvider = require('./lib/cropping/FixedCutProvider').FixedCutProvider;
