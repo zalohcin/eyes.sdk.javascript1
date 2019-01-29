@@ -31,7 +31,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/dom-capture": "^6.1.5",
+    "@applitools/dom-snapshot": "^1.0.2",
     "@applitools/eyes-common": "^1.2.2",
     "@applitools/eyes-sdk-core": "^4.6.4",
     "@applitools/eyes-selenium": "^4.4.5",

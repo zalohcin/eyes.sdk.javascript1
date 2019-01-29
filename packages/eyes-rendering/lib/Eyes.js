@@ -1,7 +1,7 @@
 'use strict';
 
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
-const { getProcessPageAndSerializeScript } = require('@applitools/dom-capture');
+const { getProcessPageAndSerializeScript } = require('@applitools/dom-snapshot');
 const { Logger, ArgumentGuard, Configuration, TypeUtils } = require('@applitools/eyes-common');
 const { BatchInfo, RectangleSize, TestFailedError, TestResultsFormatter } = require('@applitools/eyes-sdk-core');
 const { EyesSeleniumUtils, EyesWebDriver } = require('@applitools/eyes-selenium');
