@@ -55,6 +55,14 @@ describe('ConfigUtils', () => {
       const expectedConfig = { saveDebugData: true, apiKey: 'default api key' };
       assert.deepStrictEqual(config, expectedConfig);
     });
+
+    it('handles boolean config params', () => {
+      process.env.APPLITOOLS_BLA1 = 'false';
+      process.env.APPLITOOLS_BLA2 = 'true';
+      const configWithBla = ConfigUtils.getConfig({ configParams: ['bla1', 'bla2'] });
+      assert.strictEqual(configWithBla.bla1, false);
+      assert.strictEqual(configWithBla.bla2, true);
+    });
   });
 
   describe('toEnvVarName()', () => {
