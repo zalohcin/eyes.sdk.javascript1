@@ -1,8 +1,10 @@
 'use strict';
 
-const { Location, GeneralUtils, PerformanceUtils } = require('@applitools/eyes-sdk-core');
-const { getCaptureDomScript } = require('@applitools/dom-capture');
 const axios = require('axios');
+const url = require('url');
+
+const { ArgumentGuard, Location, GeneralUtils, PerformanceUtils } = require('@applitools/eyes-sdk-core');
+const { getCaptureDomScript } = require('@applitools/dom-capture');
 
 class DomCapture {
 
@@ -19,9 +21,13 @@ class DomCapture {
    * @param {Logger} logger A Logger instance.
    * @param {EyesWebDriver|WebDriver} driver
    * @param {PositionProvider} [positionProvider]
-   * @return {Promise<string>}
+   * @param {string} [returnType]
+   * @return {Promise<string|object>}
    */
-  static async getFullWindowDom(logger, driver, positionProvider) {
+  static async getFullWindowDom(logger, driver, positionProvider, returnType = 'string') {
+    ArgumentGuard.notNull(logger, 'logger');
+    ArgumentGuard.notNull(driver, 'driver');
+
     let originalPosition;
     if (positionProvider) {
       originalPosition = await positionProvider.getState();
@@ -35,7 +41,7 @@ class DomCapture {
       await positionProvider.restoreState(originalPosition);
     }
 
-    return JSON.stringify(dom);
+    return returnType === 'object' ? dom : JSON.stringify(dom);
   }
 
   /**
@@ -71,12 +77,18 @@ class DomCapture {
       cssArr = cssText.split('\n');
     }
 
+    const cssPromises = [];
     for (const cssHref of cssArr) {
       if (!cssHref) {
         continue;
       }
-      const css = await this._downloadCss(url, cssHref);
-      domSnapshot = domSnapshot.replace(`#####${cssHref}#####`, css);
+      cssPromises.push(this._downloadCss(url, cssHref));
+    }
+
+    const cssResArr = await Promise.all(cssPromises);
+    
+    for (const cssRes of cssResArr) {
+      domSnapshot = domSnapshot.replace(`#####${cssRes.href}#####`, cssRes.css);
     }
 
     let iframeArr = [];
@@ -97,7 +109,7 @@ class DomCapture {
       await this._driver.switchTo().frame(iframeEl);
       let domIFrame;
       try {
-        domIFrame = await this.getFrameDom(script);
+        domIFrame = await this.getFrameDom(script, url);
       } catch (e) {
         domIFrame = {};
       }
@@ -112,7 +124,7 @@ class DomCapture {
    * @param {string} baseUri
    * @param {string} href
    * @param {number} [retriesCount=1]
-   * @return {Promise<string>}
+   * @return {Promise<{href: string, css: string}>}
    * @private
    */
   async _downloadCss(baseUri, href, retriesCount = 1) {
@@ -123,17 +135,17 @@ class DomCapture {
       }
 
       const timeStart = PerformanceUtils.start();
-      const response = await axios(downloadUrl);
+      const response = await axios(href);
       const css = response.data;
       this._logger.verbose(`downloading CSS in length of ${css.length} chars took ${timeStart.end().summary}`);
-      return css;
+      return {'href': href, 'css': css};
     } catch (ex) {
       this._logger.verbose(ex.toString());
       retriesCount -= 1;
       if (retriesCount > 0) {
         return this._downloadCss(baseUri, href, retriesCount);
       }
-      return '';
+      return {'href': href, 'css': ''};
     }
   }
 

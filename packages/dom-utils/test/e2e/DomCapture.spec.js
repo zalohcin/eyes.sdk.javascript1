@@ -57,7 +57,7 @@ async function captureDom(logger_, driver_, url, testName, initCode) {
  * @return {Promise<object>}
  */
 async function getExpectedDom(testName) {
-  const expectedDomBuffer = await fs.readFileSync(path.join(__dirname, `./fixtures/${testName}.json`));
+  const expectedDomBuffer = await fs.readFileSync(path.join(__dirname, `../fixtures/${testName}.json`));
   return JSON.parse(expectedDomBuffer);
 }
 
@@ -147,6 +147,13 @@ describe('DomCapture', function () {
     const actualDomJsonString = await captureDom(logger, driver, 'https://www.bestbuy.com/site/apple-macbook-pro-13-display-intel-core-i5-8-gb-memory-256gb-flash-storage-silver/6936477.p?skuId=6936477', this.test.title, async driver => {
       await driver.findElement(By.css('.us-link')).click();
     });
+    const actualDomJson = JSON.parse(actualDomJsonString);
+    assert.ok(actualDomJson);
+  });
+
+  it('TestSendDOM_yuriieasternpeak', async function () {
+    let url = 'https://yuriieasternpeak.github.io/webdriver.io-test-html-pages/';
+    const actualDomJsonString = await captureDom(logger, driver, url, this.test.title);
     const actualDomJson = JSON.parse(actualDomJsonString);
     assert.ok(actualDomJson);
   });
