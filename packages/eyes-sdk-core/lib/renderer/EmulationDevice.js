@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('@applitools/eyes-common');
 
 class EmulationDevice {
   /**
@@ -16,52 +16,72 @@ class EmulationDevice {
     this._mobile = mobile;
   }
 
-  /** @return {number} */
+  /**
+   * @return {number}
+   */
   getWidth() {
     return this._width;
   }
 
-  /** @param {number} value */
+  /**
+   * @param {number} value
+   */
   setWidth(value) {
     this._width = value;
   }
 
-  /** @return {number} */
+  /**
+   * @return {number}
+   */
   getHeight() {
     return this._height;
   }
 
-  /** @param {number} value */
+  /**
+   * @param {number} value
+   */
   setHeight(value) {
     this._height = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getDeviceScaleFactor() {
     return this._deviceScaleFactor;
   }
 
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setDeviceScaleFactor(value) {
     this._deviceScaleFactor = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getMobile() {
     return this._mobile;
   }
 
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setMobile(value) {
     this._mobile = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `EmulationDevice { ${JSON.stringify(this)} }`;
   }

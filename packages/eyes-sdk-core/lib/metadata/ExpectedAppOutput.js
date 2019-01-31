@@ -1,6 +1,7 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('@applitools/eyes-common');
+
 const { Annotations } = require('./Annotations');
 const { Image } = require('./Image');
 
@@ -38,71 +39,95 @@ class ExpectedAppOutput {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getTag() {
     return this._tag;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setTag(value) {
     this._tag = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Image} */
+  /**
+   * @return {Image}
+   */
   getImage() {
     return this._image;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Image} value */
+  /**
+   * @param {Image} value
+   */
   setImage(value) {
     this._image = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Image} */
+  /**
+   * @return {Image}
+   */
   getThumbprint() {
     return this._thumbprint;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Image} value */
+  /**
+   * @param {Image} value
+   */
   setThumbprint(value) {
     this._thumbprint = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Date} */
+  /**
+   * @return {Date}
+   */
   getOccurredAt() {
     return this._occurredAt;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Date} value */
+  /**
+   * @param {Date} value
+   */
   setOccurredAt(value) {
     this._occurredAt = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Annotations} */
+  /**
+   * @return {Annotations}
+   */
   getAnnotations() {
     return this._annotations;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Annotations} value */
+  /**
+   * @param {Annotations} value
+   */
   setAnnotations(value) {
     this._annotations = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `ExpectedAppOutput { ${JSON.stringify(this)} }`;
   }

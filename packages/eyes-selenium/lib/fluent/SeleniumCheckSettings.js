@@ -32,6 +32,7 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
    * @return {By}
    */
   getTargetSelector() {
@@ -39,6 +40,7 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
    * @return {WebElement}
    */
   getTargetElement() {
@@ -46,64 +48,11 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
+   * @package
    * @return {FrameLocator[]}
    */
   getFrameChain() {
     return this._frameChain;
-  }
-
-  /** @inheritDoc */
-  layout() {
-    super.layout();
-    return this;
-  }
-
-  /** @inheritDoc */
-  exact() {
-    super.exact();
-    return this;
-  }
-
-  /** @inheritDoc */
-  strict() {
-    super.strict();
-    return this;
-  }
-
-  /** @inheritDoc */
-  content() {
-    super.content();
-    return this;
-  }
-
-  /** @inheritDoc */
-  matchLevel(matchLevel) {
-    super.matchLevel(matchLevel);
-    return this;
-  }
-
-  /** @inheritDoc */
-  ignoreCaret(ignoreCaret) {
-    super.ignoreCaret(ignoreCaret);
-    return this;
-  }
-
-  /** @inheritDoc */
-  fully(fully) {
-    super.fully(fully);
-    return this;
-  }
-
-  /** @inheritDoc */
-  stitchContent(stitchContent) {
-    super.stitchContent(stitchContent);
-    return this;
-  }
-
-  /** @inheritDoc */
-  timeout(timeoutMilliseconds) {
-    super.timeout(timeoutMilliseconds);
-    return this;
   }
 
   /**

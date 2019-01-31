@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('@applitools/eyes-common');
 
 /**
  * Encapsulates match settings for the a session.
@@ -97,12 +97,16 @@ class ExactMatchSettings {
     this._matchThreshold = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `ExactMatchSettings { ${JSON.stringify(this)} }`;
   }

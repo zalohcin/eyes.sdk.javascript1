@@ -1,7 +1,8 @@
 'use strict';
 
-const url = require('url');
-const { ArgumentGuard } = require('../ArgumentGuard');
+const { URL } = require('url');
+
+const { ArgumentGuard } = require('@applitools/eyes-common');
 
 /**
  * Encapsulates settings for sending Eyes communication via proxy.
@@ -20,7 +21,7 @@ class ProxySettings {
     this._username = username;
     this._password = password;
 
-    this._url = url.parse(uri.includes('://') ? uri : `http://${uri}`);
+    this._url = new URL(uri.includes('://') ? uri : `http://${uri}`);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -49,14 +50,11 @@ class ProxySettings {
     proxy.host = this._url.hostname;
     proxy.port = this._url.port;
 
-    if (!this._username && this._url.auth) {
-      const i = this._url.auth.indexOf(':');
-      if (i !== -1) {
-        proxy.auth = {
-          username: this._url.auth.slice(0, i),
-          password: this._url.auth.slice(i + 1),
-        };
-      }
+    if (!this._username && this._url.username) {
+      proxy.auth = {
+        username: this._url.username,
+        password: this._url.password,
+      };
     } else if (this._username) {
       proxy.auth = {
         username: this._username,

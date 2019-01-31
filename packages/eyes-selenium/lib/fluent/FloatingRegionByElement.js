@@ -1,6 +1,7 @@
 'use strict';
 
-const { GetFloatingRegion, FloatingMatchSettings, Location, CoordinatesType } = require('@applitools/eyes-sdk-core');
+const { Location, CoordinatesType } = require('@applitools/eyes-common');
+const { GetFloatingRegion, FloatingMatchSettings } = require('@applitools/eyes-sdk-core');
 
 class FloatingRegionByElement extends GetFloatingRegion {
   /**
@@ -26,7 +27,7 @@ class FloatingRegionByElement extends GetFloatingRegion {
    * @param {EyesScreenshot} screenshot
    * @return {Promise<FloatingMatchSettings>}
    */
-  async getRegion(eyes, screenshot) {
+  async getRegion(eyes, screenshot) { // eslint-disable-line no-unused-vars
     const rect = await this._element.getRect();
     const lTag = screenshot.convertLocation(
       new Location(rect),

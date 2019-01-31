@@ -1,6 +1,6 @@
 'use strict';
 
-require('chromedriver');
+require('chromedriver'); // eslint-disable-line node/no-unpublished-require
 const { Builder, Capabilities, By } = require('selenium-webdriver');
 const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
 const { Eyes, Target } = require('../index'); // should be replaced to '@applitools/eyes-selenium'

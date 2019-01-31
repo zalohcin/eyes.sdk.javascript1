@@ -123,7 +123,7 @@ class DomCapture {
       }
 
       const timeStart = PerformanceUtils.start();
-      const response = await axios(href);
+      const response = await axios(downloadUrl);
       const css = response.data;
       this._logger.verbose(`downloading CSS in length of ${css.length} chars took ${timeStart.end().summary}`);
       return css;

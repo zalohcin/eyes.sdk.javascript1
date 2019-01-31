@@ -11,12 +11,16 @@ const VERSION = require('../package.json').version;
  */
 class Eyes extends EyesSelenium {
   // noinspection JSMethodCanBeStatic
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getBaseAgentId() {
     return `eyes-protractor/${VERSION}`;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   open(driver, appName, testName, viewportSize, sessionType) {
     if (typeof protractor === 'undefined') {
       throw new Error('Protractor component not found.');

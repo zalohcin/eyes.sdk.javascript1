@@ -1,6 +1,7 @@
 'use strict';
 
-const { ArgumentGuard } = require('../ArgumentGuard');
+const { ArgumentGuard } = require('@applitools/eyes-common');
+
 const { Trigger } = require('./Trigger');
 
 /**
@@ -55,7 +56,9 @@ class MouseTrigger extends Trigger {
     return Trigger.TriggerType.Mouse;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `${this._mouseAction} [${this._control}] ${this._location}`;
   }

@@ -2,7 +2,8 @@
 
 const { Command, Name } = require('selenium-webdriver/lib/command');
 const { TargetLocator } = require('selenium-webdriver/lib/webdriver');
-const { Location, RectangleSize, ArgumentGuard, TypeUtils } = require('@applitools/eyes-sdk-core');
+
+const { Location, RectangleSize, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 
 const { Frame } = require('../frames/Frame');
 const { FrameChain } = require('../frames/FrameChain');
@@ -129,7 +130,9 @@ class EyesTargetLocator extends TargetLocator {
     this._logger.verbose('Done!');
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async parentFrame() {
     this._logger.verbose('EyesTargetLocator.parentFrame()');
     if (this._driver.getFrameChain().size() !== 0) {
@@ -218,7 +221,9 @@ class EyesTargetLocator extends TargetLocator {
   }
 
   // noinspection JSCheckFunctionSignatures
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async window(nameOrHandle) {
     this._logger.verbose('EyesTargetLocator.window()');
     this._driver.getFrameChain().clear();
@@ -227,7 +232,9 @@ class EyesTargetLocator extends TargetLocator {
     this._logger.verbose('Done!');
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async defaultContent() {
     this._logger.verbose('EyesTargetLocator.defaultContent()');
     if (this._driver.getFrameChain().size() !== 0) {

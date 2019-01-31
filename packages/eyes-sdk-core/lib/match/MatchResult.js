@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('@applitools/eyes-common');
 
 /**
  * The result of a window match by the agent.
@@ -15,34 +15,46 @@ class MatchResult {
     this._windowId = windowId;
   }
 
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getAsExpected() {
     return this._asExpected;
   }
 
-  /** @param {boolean} value */
+  /**
+   * @param {boolean} value
+   */
   setAsExpected(value) {
     this._asExpected = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {number} */
+  /**
+   * @return {number}
+   */
   getWindowId() {
     return this._windowId;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {number} value */
+  /**
+   * @param {number} value
+   */
   setWindowId(value) {
     this._windowId = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `MatchResult { ${JSON.stringify(this)} }`;
   }

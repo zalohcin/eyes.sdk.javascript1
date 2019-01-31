@@ -1,6 +1,6 @@
 'use strict';
 
-const { Location } = require('@applitools/eyes-sdk-core');
+const { Location } = require('@applitools/eyes-common');
 
 const { RegionVisibilityStrategy } = require('./RegionVisibilityStrategy');
 
@@ -18,7 +18,9 @@ class MoveToRegionVisibilityStrategy extends RegionVisibilityStrategy {
     this._originalPosition = undefined;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async moveToRegion(positionProvider, location) {
     this._logger.verbose('Getting current position state..');
 
@@ -36,7 +38,9 @@ class MoveToRegionVisibilityStrategy extends RegionVisibilityStrategy {
     this._logger.verbose('Done!');
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async returnToOriginalPosition(positionProvider) {
     this._logger.verbose('Returning to original position...');
 

@@ -7,7 +7,7 @@ const { TestResults } = require('../../index');
 describe('TestResults', () => {
   it('empty constructor', () => {
     const testResults = new TestResults();
-    assert.equal(testResults.toString(), 'TestResults of existing test {}');
+    assert.strictEqual(testResults.toString(), 'TestResults of existing test {}');
   });
 
   it('constructor with object', () => {
@@ -102,7 +102,7 @@ describe('TestResults', () => {
       noneMatches: 0,
       url: null,
     });
-    assert.equal(testResults.toString(), 'TestResults of existing test {"id":"an id","name":"a name","status":"Passed",' +
+    assert.strictEqual(testResults.toString(), 'TestResults of existing test {"id":"an id","name":"a name","status":"Passed",' +
       '"appName":"an app name","batchName":"a batch name","batchId":"a batch id","branchName":"default","hostOS":' +
       '"Windows 10.0","hostApp":"Chrome","hostDisplaySize":{"width":800,"height":560},"startedAt":"2018-06-18T15:53:' +
       '49.470Z","duration":7,"isNew":false,"isDifferent":false,"isAborted":false,"appUrls":{"batch":' +

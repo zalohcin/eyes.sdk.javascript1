@@ -1,7 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
-const { RectangleSize } = require('../geometry/RectangleSize');
+const { GeneralUtils, RectangleSize } = require('@applitools/eyes-common');
 
 class Image {
   /**
@@ -18,35 +17,47 @@ class Image {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getId() {
     return this._id;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setId(value) {
     this._id = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {RectangleSize} */
+  /**
+   * @return {RectangleSize}
+   */
   getSize() {
     return this._size;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {RectangleSize} value */
+  /**
+   * @param {RectangleSize} value
+   */
   setSize(value) {
     this._size = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `Image { ${JSON.stringify(this)} }`;
   }

@@ -1,16 +1,9 @@
 'use strict';
 
-const { Logger } = require('./logging/Logger');
-
-const { Region } = require('./geometry/Region');
-const { Location } = require('./geometry/Location');
-const { RectangleSize } = require('./geometry/RectangleSize');
-const { CoordinatesType } = require('./geometry/CoordinatesType');
-
-const { FileDebugScreenshotsProvider } = require('./debug/FileDebugScreenshotsProvider');
-const { NullDebugScreenshotProvider } = require('./debug/NullDebugScreenshotProvider');
-
-const { ImageDeltaCompressor } = require('./images/ImageDeltaCompressor');
+const {
+  Logger, ArgumentGuard, TypeUtils, EyesError, Region, Location, RectangleSize, CoordinatesType, ImageDeltaCompressor,
+  SimplePropertyHandler, ReadOnlyPropertyHandler, FileDebugScreenshotsProvider, NullDebugScreenshotProvider
+} = require('@applitools/eyes-common');
 
 const { AppOutputProvider } = require('./capture/AppOutputProvider');
 const { AppOutputWithScreenshot } = require('./capture/AppOutputWithScreenshot');
@@ -31,7 +24,6 @@ const { ImageMatchSettings } = require('./match/ImageMatchSettings');
 const { MatchWindowData } = require('./match/MatchWindowData');
 
 const { DiffsFoundError } = require('./errors/DiffsFoundError');
-const { EyesError } = require('./errors/EyesError');
 const { NewTestError } = require('./errors/NewTestError');
 const { OutOfBoundsError } = require('./errors/OutOfBoundsError');
 const { TestFailedError } = require('./errors/TestFailedError');
@@ -51,15 +43,12 @@ const { TestResultsStatus } = require('./TestResultsStatus');
 const { TestResults } = require('./TestResults');
 const { ServerConnector } = require('./server/ServerConnector');
 
-const { SimplePropertyHandler } = require('./utils/SimplePropertyHandler');
-const { ReadOnlyPropertyHandler } = require('./utils/ReadOnlyPropertyHandler');
-
 const { FailureReports } = require('./FailureReports');
-const { ArgumentGuard } = require('./ArgumentGuard');
 const { AppEnvironment } = require('./AppEnvironment');
 const { MatchWindowTask } = require('./MatchWindowTask');
 const { MatchSingleWindowTask } = require('./MatchSingleWindowTask');
 const { BatchInfo } = require('./BatchInfo');
+const { CorsIframeHandle, CorsIframeHandler } = require('./capture/CorsIframeHandler');
 
 const DEFAULT_MATCH_TIMEOUT = 2000;
 const MIN_MATCH_TIMEOUT = 500;
@@ -179,6 +168,10 @@ class EyesBase {
     this._autSessionId = undefined;
 
     /** @type {boolean} */ this._sendDom = true;
+
+    /** @type {boolean} */ this._isVisualGrid = false;
+
+    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandle.KEEP;
   }
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
@@ -283,10 +276,29 @@ class EyesBase {
     return this._serverConnector.getServerUrl();
   }
 
+  /**
+   * @return {?RenderInfo}
+   */
+  async getRenderingInfo() {
+    if (TypeUtils.isNull(this._serverConnector.getRenderingInfo())) {
+      return this._serverConnector.renderInfo();
+    }
+
+    return this._serverConnector.getRenderingInfo();
+  }
+
+  /**
+   * @param {RenderingInfo} renderingInfo
+   */
+  setRenderingInfo(renderingInfo) {
+    this._serverConnector.setRenderingInfo(renderingInfo);
+  }
+
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the authToken for rendering server.
    *
+   * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
    * @param authToken {string} The authToken to be used.
    */
   setRenderingAuthToken(authToken) {
@@ -295,6 +307,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * @deprecated use {@link #getRenderingInfo()} instead
    * @return {string} The currently authToken or {@code null} if no key is set.
    */
   getRenderingAuthToken() {
@@ -305,6 +318,7 @@ class EyesBase {
   /**
    * Sets the current rendering server URL used by the rest client.
    *
+   * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
    * @param serverUrl {string} The URI of the rendering server, or {@code null} to use the default server.
    */
   setRenderingServerUrl(serverUrl) {
@@ -313,6 +327,7 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * @deprecated use {@link #getRenderingInfo()} instead
    * @return {string} The URI of the eyes server.
    */
   getRenderingServerUrl() {
@@ -1376,6 +1391,14 @@ class EyesBase {
   }
 
   /**
+   * @protected
+   * @return {Promise<?string>}
+   */
+  getOrigin() {
+    return Promise.resolve(undefined);
+  }
+
+  /**
    * Replaces an actual image in the current running session.
    *
    * @param {number} stepIndex The zero based index of the step in which to replace the actual image.
@@ -1418,20 +1441,9 @@ class EyesBase {
    */
   static async matchWindow(regionProvider, tag, ignoreMismatch, checkSettings, self, skipStartingSession = false) {
     let retryTimeout = -1;
-    const defaultMatchSettings = self.getDefaultMatchSettings();
 
-    let imageMatchSettings;
     if (checkSettings) {
       retryTimeout = checkSettings.getTimeout();
-
-      const matchLevel = checkSettings.getMatchLevel() || defaultMatchSettings.getMatchLevel();
-      imageMatchSettings = new ImageMatchSettings({ matchLevel });
-
-      const ignoreCaret = checkSettings.getIgnoreCaret() || defaultMatchSettings.getIgnoreCaret();
-      imageMatchSettings.setIgnoreCaret(ignoreCaret);
-
-      const useDom = checkSettings.getSendDom() || self._sendDom;
-      imageMatchSettings.setUseDom(useDom);
     }
 
     // noinspection JSUnresolvedVariable
@@ -1446,7 +1458,7 @@ class EyesBase {
 
     return self._matchWindowTask.matchWindow(
       self.getUserInputs(), region, tag, self._shouldMatchWindowRunOnceOnTimeout,
-      ignoreMismatch, checkSettings, imageMatchSettings, retryTimeout
+      ignoreMismatch, checkSettings, retryTimeout
     );
   }
 
@@ -1853,8 +1865,7 @@ class EyesBase {
     this._logger.getLogHandler().setSessionId(this._runningSession.getSessionId());
 
     if (this._runningSession.getRenderingInfo()) {
-      this._serverConnector.setRenderingAuthToken(this._runningSession.getRenderingInfo().getAccessToken());
-      this._serverConnector.setRenderingServerUrl(this._runningSession.getRenderingInfo().getServiceUrl());
+      this._serverConnector.setRenderingInfo(this._runningSession.getRenderingInfo());
     }
 
     const testInfo = `'${this._testName}' of '${this.getAppName()}' "${appEnvironment}`;
@@ -1950,6 +1961,12 @@ class EyesBase {
 
     if (!domUrl && (checkSettings.getSendDom() || this._sendDom)) {
       const domJson = await this.tryCaptureDom();
+
+      if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
+        const origin = await this.getOrigin();
+        CorsIframeHandler.blankCorsIframeSrc(domJson, origin);
+      }
+
       domUrl = await this._tryPostDomSnapshot(domJson);
       this._logger.verbose(`domUrl: ${domUrl}`);
     }
@@ -2134,6 +2151,7 @@ class EyesBase {
    */
   setSendDom(sendDom) {
     this._sendDom = sendDom;
+    this._defaultMatchSettings.setSendDom(sendDom);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -2160,6 +2178,27 @@ class EyesBase {
    */
   log(...args) {
     this._logger.log(...args);
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isVisualGrid() {
+    return this._isVisualGrid;
+  }
+
+  /**
+   * @param corsIframeHandle
+   */
+  setCorsIframeHandle(corsIframeHandle) {
+    this._corsIframeHandle = corsIframeHandle;
+  }
+
+  /**
+   * @return {CorsIframeHandle}
+   */
+  getCorsIframeHandle() {
+    return this._corsIframeHandle;
   }
 }
 

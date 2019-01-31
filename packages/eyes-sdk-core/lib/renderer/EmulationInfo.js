@@ -1,6 +1,7 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('@applitools/eyes-common');
+
 const { EmulationDevice } = require('./EmulationDevice');
 
 class EmulationInfo {
@@ -19,37 +20,51 @@ class EmulationInfo {
     this._screenOrientation = screenOrientation;
   }
 
-  /** @return {EmulationDevice} */
+  /**
+   * @return {EmulationDevice}
+   */
   getDevice() {
     return this._device;
   }
 
-  /** @param {EmulationDevice} value */
+  /**
+   * @param {EmulationDevice} value
+   */
   setDevice(value) {
     this._device = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getDeviceName() {
     return this._deviceName;
   }
 
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setDeviceName(value) {
     this._deviceName = value;
   }
 
-  /** @return {ScreenOrientation} */
+  /**
+   * @return {ScreenOrientation}
+   */
   getScreenOrientation() {
     return this._screenOrientation;
   }
 
-  /** @param {ScreenOrientation} value */
+  /**
+   * @param {ScreenOrientation} value
+   */
   setScreenOrientation(value) {
     this._screenOrientation = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     if (this._device) {
       return Object.assign({
@@ -60,7 +75,9 @@ class EmulationInfo {
     return GeneralUtils.toPlain(this, ['_device']);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `EmulationInfo { ${JSON.stringify(this)} }`;
   }

@@ -7,14 +7,19 @@ const { RenderStatusResults } = require('../../../index');
 describe('RenderStatusResults', () => {
   it('constructor', () => {
     const results = new RenderStatusResults();
-    assert.equal(Object.prototype.hasOwnProperty.call(results, '_status'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(results, '_imageLocation'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(results, '_domLocation'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(results, '_error'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(results, '_os'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(results, '_userAgent'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(results, '_deviceSize'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(results, '_selectorRegions'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(results, '_status'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(results, '_imageLocation'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(results, '_domLocation'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(results, '_error'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(results, '_os'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(results, '_userAgent'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(results, '_deviceSize'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(results, '_selectorRegions'), true);
+  });
+
+  it('constructor empty', () => {
+    const results = new RenderStatusResults({});
+    assert.strictEqual(results.getStatus(), undefined);
   });
 
   it('constructor with object', () => {
@@ -37,14 +42,14 @@ describe('RenderStatusResults', () => {
       selectorRegions,
     });
 
-    assert.equal(results.getStatus(), status);
-    assert.equal(results.getError(), error);
-    assert.equal(results.getImageLocation(), imageLocation);
-    assert.equal(results.getDomLocation(), domLocation);
-    assert.equal(results.getOS(), os);
-    assert.equal(results.getUserAgent(), userAgent);
-    assert.deepEqual(results.getDeviceSize().toJSON(), deviceSize);
-    assert.deepEqual(results.getSelectorRegions().map(region => region.toJSON()), [{ left: 1, top: 2, width: 3, height: 4, coordinatesType: 'SCREENSHOT_AS_IS' }]);
+    assert.strictEqual(results.getStatus(), status);
+    assert.strictEqual(results.getError(), error);
+    assert.strictEqual(results.getImageLocation(), imageLocation);
+    assert.strictEqual(results.getDomLocation(), domLocation);
+    assert.strictEqual(results.getOS(), os);
+    assert.strictEqual(results.getUserAgent(), userAgent);
+    assert.deepStrictEqual(results.getDeviceSize().toJSON(), deviceSize);
+    assert.deepStrictEqual(results.getSelectorRegions().map(region => region.toJSON()), [{ left: 1, top: 2, width: 3, height: 4, coordinatesType: 'SCREENSHOT_AS_IS' }]);
   });
 
   it('toJSON', () => {
@@ -67,7 +72,7 @@ describe('RenderStatusResults', () => {
       selectorRegions,
     });
 
-    assert.equal(JSON.stringify(results), '{"status":"some status","imageLocation":"some image location","domLocation":"some dom location","error":"some error","os":"some os","userAgent":"some user agent","deviceSize":{"width":1,"height":2},"selectorRegions":[{"left":1,"top":2,"width":3,"height":4,"coordinatesType":"SCREENSHOT_AS_IS"}]}');
+    assert.strictEqual(JSON.stringify(results), '{"status":"some status","imageLocation":"some image location","domLocation":"some dom location","error":"some error","os":"some os","userAgent":"some user agent","deviceSize":{"width":1,"height":2},"selectorRegions":[{"left":1,"top":2,"width":3,"height":4,"coordinatesType":"SCREENSHOT_AS_IS"}]}');
   });
 
   it('toString', () => {
@@ -90,6 +95,6 @@ describe('RenderStatusResults', () => {
       selectorRegions,
     });
 
-    assert.equal(results.toString(), 'RenderStatusResults { {"status":"some status","imageLocation":"some image location","domLocation":"some dom location","error":"some error","os":"some os","userAgent":"some user agent","deviceSize":{"width":1,"height":2},"selectorRegions":[{"left":1,"top":2,"width":3,"height":4,"coordinatesType":"SCREENSHOT_AS_IS"}]} }');
+    assert.strictEqual(results.toString(), 'RenderStatusResults { {"status":"some status","imageLocation":"some image location","domLocation":"some dom location","error":"some error","os":"some os","userAgent":"some user agent","deviceSize":{"width":1,"height":2},"selectorRegions":[{"left":1,"top":2,"width":3,"height":4,"coordinatesType":"SCREENSHOT_AS_IS"}]} }');
   });
 });

@@ -36,16 +36,16 @@ describe('RenderRequest', () => {
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
         sendDom: 'sendDom',
       });
-      assert.equal(renderRequest.getWebhook(), 'webhook');
-      assert.equal(renderRequest.getUrl(), 'url');
-      assert.equal(renderRequest.getDom(), 'dom');
-      assert.equal(renderRequest.getResources(), 'resources');
-      assert.equal(renderRequest.getRenderInfo(), 'renderInfo');
-      assert.equal(renderRequest.getPlatform(), 'platform');
-      assert.equal(renderRequest.getBrowserName(), 'browserName');
-      assert.equal(renderRequest.getScriptHooks(), 'scriptHooks');
-      assert.equal(renderRequest.getSelectorsToFindRegionsFor(), 'selectorsToFindRegionsFor');
-      assert.equal(renderRequest.getSendDom(), 'sendDom');
+      assert.strictEqual(renderRequest.getWebhook(), 'webhook');
+      assert.strictEqual(renderRequest.getUrl(), 'url');
+      assert.strictEqual(renderRequest.getDom(), 'dom');
+      assert.strictEqual(renderRequest.getResources(), 'resources');
+      assert.strictEqual(renderRequest.getRenderInfo(), 'renderInfo');
+      assert.strictEqual(renderRequest.getPlatform(), 'platform');
+      assert.strictEqual(renderRequest.getBrowserName(), 'browserName');
+      assert.strictEqual(renderRequest.getScriptHooks(), 'scriptHooks');
+      assert.strictEqual(renderRequest.getSelectorsToFindRegionsFor(), 'selectorsToFindRegionsFor');
+      assert.strictEqual(renderRequest.getSendDom(), 'sendDom');
     });
   });
 
@@ -96,7 +96,7 @@ describe('RenderRequest', () => {
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
         sendDom: 'sendDom',
       };
-      assert.deepEqual(renderRequest.toJSON(), expected);
+      assert.deepStrictEqual(renderRequest.toJSON(), expected);
     });
 
     it('doesn\'t include platform if there is no browserName', () => {
@@ -117,7 +117,7 @@ describe('RenderRequest', () => {
         dom: 'dom_hashAsObject',
         resources: {},
       };
-      assert.deepEqual(renderRequest.toJSON(), expected);
+      assert.deepStrictEqual(renderRequest.toJSON(), expected);
     });
   });
 
@@ -151,7 +151,7 @@ describe('RenderRequest', () => {
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
         sendDom: 'sendDom',
       });
-      assert.equal(renderRequest.toString(), 'RenderRequest { {"webhook":"webhook","url":"url","dom":"dom_hashAsObject","resources":{"url1":"hashAsObject1","url2":"hashAsObject2"},"browser":{"name":"browserName","platform":"platform"},"renderInfo":"renderInfoToJSON","scriptHooks":"scriptHooks","selectorsToFindRegionsFor":"selectorsToFindRegionsFor","sendDom":"sendDom"} }');
+      assert.strictEqual(renderRequest.toString(), 'RenderRequest { {"webhook":"webhook","url":"url","dom":"dom_hashAsObject","resources":{"url1":"hashAsObject1","url2":"hashAsObject2"},"browser":{"name":"browserName","platform":"platform"},"renderInfo":"renderInfoToJSON","scriptHooks":"scriptHooks","selectorsToFindRegionsFor":"selectorsToFindRegionsFor","sendDom":"sendDom"} }');
     });
   });
 });

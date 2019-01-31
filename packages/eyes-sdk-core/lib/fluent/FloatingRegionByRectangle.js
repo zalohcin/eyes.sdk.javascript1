@@ -20,7 +20,9 @@ class FloatingRegionByRectangle extends GetFloatingRegion {
     this._maxRightOffset = maxRightOffset;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getRegion(eyesBase, screenshot) { // eslint-disable-line no-unused-vars
     return new FloatingMatchSettings({
       left: this._rect.getLeft(),

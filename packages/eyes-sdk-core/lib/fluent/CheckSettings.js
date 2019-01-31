@@ -1,11 +1,12 @@
 'use strict';
 
+const { Region, GeneralUtils } = require('@applitools/eyes-common');
+
 const { MatchLevel } = require('../match/MatchLevel');
-const { Region } = require('../geometry/Region');
+const { GetRegion } = require('./GetRegion');
 const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 const { IgnoreRegionByRectangle } = require('./IgnoreRegionByRectangle');
 const { FloatingRegionByRectangle } = require('./FloatingRegionByRectangle');
-const { GetRegion } = require('./GetRegion');
 const { GetFloatingRegion } = require('./GetFloatingRegion');
 
 /**
@@ -37,26 +38,25 @@ class CheckSettings {
     this._floatingRegions = [];
   }
 
-  // TODO: finish implementation withName
-  // // noinspection JSUnusedGlobalSymbols
-  // /**
-  //  * A setter for the checkpoint name.
-  //  *
-  //  * @param {string} name A name by which to identify the checkpoint.
-  //  * @return {this} This instance of the settings object.
-  //  */
-  // withName(name) {
-  //   this._name = name;
-  //   return this;
-  // }
-  //
-  // // noinspection JSUnusedGlobalSymbols
-  // /**
-  //  * @return {string}
-  //  */
-  // getName() {
-  //   return this._name;
-  // }
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * A setter for the checkpoint name.
+   *
+   * @param {string} name A name by which to identify the checkpoint.
+   * @return {this} This instance of the settings object.
+   */
+  withName(name) {
+    this._name = name;
+    return this;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string}
+   */
+  getName() {
+    return this._name;
+  }
 
   // noinspection JSUnusedGlobalSymbols
   /**
@@ -407,6 +407,13 @@ class CheckSettings {
    */
   getFloatingRegions() {
     return this._floatingRegions;
+  }
+
+  /**
+   * @override
+   */
+  toString() {
+    return `${this.constructor.name} ${GeneralUtils.toString(this)}`;
   }
 }
 

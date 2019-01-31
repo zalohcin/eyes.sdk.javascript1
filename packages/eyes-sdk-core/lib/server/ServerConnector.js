@@ -3,14 +3,13 @@
 const axios = require('axios');
 const zlib = require('zlib');
 
+const { GeneralUtils, TypeUtils, ArgumentGuard } = require('@applitools/eyes-common');
+
 const { ProxySettings } = require('./ProxySettings');
 const { RenderingInfo } = require('./RenderingInfo');
 const { RunningSession } = require('./RunningSession');
 const { TestResults } = require('../TestResults');
 const { MatchResult } = require('../match/MatchResult');
-const { GeneralUtils } = require('../utils/GeneralUtils');
-const { TypeUtils } = require('../utils/TypeUtils');
-const { ArgumentGuard } = require('../ArgumentGuard');
 
 const { RunningRender } = require('../renderer/RunningRender');
 const { RenderStatusResults } = require('../renderer/RenderStatusResults');
@@ -201,10 +200,9 @@ class ServerConnector {
 
     /** @type {string} */
     this._apiKey = undefined;
-    /** @type {string} */
-    this._renderingServerUrl = undefined;
-    /** @type {string} */
-    this._renderingAuthToken = undefined;
+    /** @type {RenderingInfo} */
+    this._renderingInfo = undefined;
+
     /** @type {ProxySettings} */
     this._proxySettings = undefined;
 
@@ -254,40 +252,69 @@ class ServerConnector {
   }
 
   /**
+   * @return {RenderingInfo}
+   */
+  getRenderingInfo() {
+    return this._renderingInfo;
+  }
+
+  /**
+   * @param {RenderingInfo} renderingInfo
+   */
+  setRenderingInfo(renderingInfo) {
+    ArgumentGuard.notNull(renderingInfo, 'renderingInfo');
+    this._renderingInfo = renderingInfo;
+  }
+
+  /**
    * Sets the current rendering server URL used by the client.
    *
+   * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
    * @param serverUrl {string} The URI of the rendering server.
    */
   setRenderingServerUrl(serverUrl) {
     ArgumentGuard.notNull(serverUrl, 'serverUrl');
-    this._renderingServerUrl = serverUrl;
+
+    if (!this._renderingInfo) {
+      this._renderingInfo = new RenderingInfo();
+    }
+
+    this._renderingInfo.setServiceUrl(serverUrl);
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * @deprecated use {@link #getRenderingInfo()} instead
    * @return {string} The URI of the rendering server.
    */
   getRenderingServerUrl() {
-    return this._renderingServerUrl;
+    return this._renderingInfo ? this._renderingInfo.getServiceUrl() : undefined;
   }
 
   /**
    * Sets the API key of your applitools Eyes account.
    *
+   * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
    * @param {string} authToken The api key to set.
+   * @return {RenderingInfo}
    */
   setRenderingAuthToken(authToken) {
     ArgumentGuard.notNull(authToken, 'authToken');
-    this._renderingAuthToken = authToken;
+
+    if (!this._renderingInfo) {
+      this._renderingInfo = new RenderingInfo();
+    }
+
+    this._renderingInfo.setAccessToken(authToken);
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   *
+   * @deprecated use {@link #getRenderingInfo()} instead
    * @return {string} The currently set API key or {@code null} if no key is set.
    */
   getRenderingAuthToken() {
-    return this._renderingAuthToken;
+    return this._renderingInfo ? this._renderingInfo.getAccessToken() : undefined;
   }
 
   /**
@@ -603,9 +630,9 @@ class ServerConnector {
     const response = await sendRequest(this, 'renderInfo', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      const renderingInfo = new RenderingInfo(response.data);
-      this._logger.verbose('ServerConnector.renderInfo - post succeeded', renderingInfo);
-      return renderingInfo;
+      this._renderingInfo = new RenderingInfo(response.data);
+      this._logger.verbose('ServerConnector.renderInfo - post succeeded', this._renderingInfo);
+      return this._renderingInfo;
     }
 
     throw new Error(`ServerConnector.renderInfo - unexpected status (${response.statusText})`);
@@ -624,9 +651,9 @@ class ServerConnector {
     const isBatch = Array.isArray(renderRequest);
     const options = GeneralUtils.mergeDeep(this._httpOptions, {
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/render'),
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render'),
       headers: {
-        'X-Auth-Token': this._renderingAuthToken,
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
       data: isBatch ? renderRequest : [renderRequest],
     });
@@ -662,9 +689,9 @@ class ServerConnector {
 
     const options = GeneralUtils.mergeDeep(this._httpOptions, {
       method: 'HEAD',
-      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/resources/sha256/', resource.getSha256Hash()),
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/resources/sha256/', resource.getSha256Hash()),
       headers: {
-        'X-Auth-Token': this._renderingAuthToken,
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
       params: {
         'render-id': runningRender.getRenderId(),
@@ -697,9 +724,9 @@ class ServerConnector {
 
     const options = GeneralUtils.mergeDeep(this._httpOptions, {
       method: 'PUT',
-      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/resources/sha256/', resource.getSha256Hash()),
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/resources/sha256/', resource.getSha256Hash()),
       headers: {
-        'X-Auth-Token': this._renderingAuthToken,
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
         'Content-Type': resource.getContentType(),
       },
       params: {
@@ -743,9 +770,9 @@ class ServerConnector {
     const isBatch = Array.isArray(renderId);
     const options = GeneralUtils.mergeDeep(this._httpOptions, {
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._renderingServerUrl, '/render-status'),
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render-status'),
       headers: {
-        'X-Auth-Token': this._renderingAuthToken,
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
       data: isBatch ? renderId : [renderId],
     });
@@ -758,7 +785,7 @@ class ServerConnector {
     const response = await sendRequest(this, 'renderStatus', options, 3, true);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      let renderStatus = Array.from(response.data).map(resultsData => new RenderStatusResults(resultsData));
+      let renderStatus = Array.from(response.data).map(resultsData => new RenderStatusResults(resultsData || {}));
       if (!isBatch) {
         renderStatus = renderStatus[0]; // eslint-disable-line prefer-destructuring
       }
@@ -800,6 +827,43 @@ class ServerConnector {
     }
 
     throw new Error(`ServerConnector.postDomSnapshot - unexpected status (${response.statusText})`);
+  }
+
+  /**
+   * @param {string} url
+   * @param {boolean} [isSecondRetry=true]
+   * @return {Promise<*>}
+   */
+  async downloadResource(url, isSecondRetry = true) {
+    ArgumentGuard.notNull(url, 'url');
+    this._logger.verbose(`ServerConnector.downloadResource called with url: ${url}`);
+
+    const options = {
+      url,
+      proxy: this._httpOptions.proxy,
+    };
+
+    try {
+      const response = await axios(options);
+
+      // eslint-disable-next-line max-len
+      this._logger.verbose(`ServerConnector.downloadResource - result ${response.statusText}, status code ${response.status}, url ${options.url}`);
+      return response.data;
+    } catch (err) {
+      let reasonMsg = err.message;
+      if (err.response && err.response.statusText) {
+        reasonMsg += ` (${err.response.statusText})`;
+      }
+
+      // eslint-disable-next-line max-len
+      this._logger.log(`ServerConnector.downloadResource - failed on ${options.url}: ${reasonMsg}`);
+
+      if (isSecondRetry) {
+        return this.downloadResource(url, false);
+      }
+
+      throw new Error(reasonMsg);
+    }
   }
 }
 

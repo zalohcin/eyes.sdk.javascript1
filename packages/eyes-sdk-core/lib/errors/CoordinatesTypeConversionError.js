@@ -1,6 +1,6 @@
 'use strict';
 
-const { EyesError } = require('./EyesError');
+const { EyesError } = require('@applitools/eyes-common');
 
 /**
  * Encapsulates an error converting between two coordinate types.

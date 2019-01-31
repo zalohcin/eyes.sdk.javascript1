@@ -15,7 +15,9 @@ class AppiumJavascriptHandler extends JavascriptHandler {
     this._driver = driver;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async handle(script, ...args) {
     // Appium commands are sometimes sent as Javascript
     if (AppiumJsCommandExtractor.isAppiumJsCommand(script)) {

@@ -4,7 +4,9 @@ const { ScrollPositionProvider } = require('./ScrollPositionProvider');
 const { EyesSeleniumUtils } = require('../EyesSeleniumUtils');
 
 class OverflowAwareScrollPositionProvider extends ScrollPositionProvider {
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getEntireSize() {
     const result = await EyesSeleniumUtils.getOverflowAwareContentEntireSize(this._executor);
     this._logger.verbose(`OverflowAwareScrollPositionProvider - Entire size: ${result}`);

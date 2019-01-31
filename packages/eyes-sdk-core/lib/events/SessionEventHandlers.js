@@ -37,49 +37,65 @@ class SessionEventHandlers extends SessionEventHandler {
     this._eventHandlers.length = 0;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   initStarted() {
     return Promise.all(this._eventHandlers.map(eventHandler =>
       eventHandler.initStarted()));
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   initEnded() {
     return Promise.all(this._eventHandlers.map(eventHandler =>
       eventHandler.initEnded()));
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   setSizeWillStart(sizeToSet) {
     return Promise.all(this._eventHandlers.map(eventHandler =>
       eventHandler.setSizeWillStart(sizeToSet)));
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   setSizeEnded() {
     return Promise.all(this._eventHandlers.map(eventHandler =>
       eventHandler.setSizeEnded()));
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   testStarted(autSessionId) {
     return Promise.all(this._eventHandlers.map(eventHandler =>
       eventHandler.testStarted(autSessionId)));
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   testEnded(autSessionId, testResults) {
     return Promise.all(this._eventHandlers.map(eventHandler =>
       eventHandler.testEnded(autSessionId, testResults)));
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   validationWillStart(autSessionId, validationInfo) {
     return Promise.all(this._eventHandlers.map(eventHandler =>
       eventHandler.validationWillStart(autSessionId, validationInfo)));
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   validationEnded(autSessionId, validationId, validationResult) {
     return Promise.all(this._eventHandlers.map(eventHandler =>
       eventHandler.validationEnded(autSessionId, validationId, validationResult)));

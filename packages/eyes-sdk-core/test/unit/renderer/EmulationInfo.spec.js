@@ -7,22 +7,22 @@ const { EmulationDevice, EmulationInfo, ScreenOrientation } = require('../../../
 describe('EmulationInfo', () => {
   it('constructor without arguments', () => {
     const emulationInfo = new EmulationInfo();
-    assert.equal(Object.prototype.hasOwnProperty.call(emulationInfo, '_device'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(emulationInfo, '_deviceName'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(emulationInfo, '_screenOrientation'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(emulationInfo, '_device'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(emulationInfo, '_deviceName'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(emulationInfo, '_screenOrientation'), true);
   });
 
   it('constructor with arguments', () => {
     const device = new EmulationDevice({ width: 1, height: 2 });
     const emulationInfo = new EmulationInfo({ device, screenOrientation: ScreenOrientation.PORTRAIT });
-    assert.equal(emulationInfo.getDevice(), device);
-    assert.equal(emulationInfo.getDeviceName(), undefined);
-    assert.equal(emulationInfo.getScreenOrientation(), ScreenOrientation.PORTRAIT);
+    assert.strictEqual(emulationInfo.getDevice(), device);
+    assert.strictEqual(emulationInfo.getDeviceName(), undefined);
+    assert.strictEqual(emulationInfo.getScreenOrientation(), ScreenOrientation.PORTRAIT);
 
     const emulationInfo2 = new EmulationInfo({ deviceName: 'name' });
-    assert.equal(emulationInfo2.getDevice(), undefined);
-    assert.equal(emulationInfo2.getDeviceName(), 'name');
-    assert.equal(emulationInfo2.getScreenOrientation(), undefined);
+    assert.strictEqual(emulationInfo2.getDevice(), undefined);
+    assert.strictEqual(emulationInfo2.getDeviceName(), 'name');
+    assert.strictEqual(emulationInfo2.getScreenOrientation(), undefined);
   });
 
   it('constructor with object', () => {
@@ -34,25 +34,25 @@ describe('EmulationInfo', () => {
       device: deviceObj,
     });
 
-    assert.deepEqual(emulationInfo.getDevice(), device);
-    assert.equal(emulationInfo.getScreenOrientation(), ScreenOrientation.LANDSCAPE);
+    assert.deepStrictEqual(emulationInfo.getDevice(), device);
+    assert.strictEqual(emulationInfo.getScreenOrientation(), ScreenOrientation.LANDSCAPE);
   });
 
   it('toJSON', () => {
     const device = new EmulationDevice({ width: 1, height: 2 });
     const emulationInfo = new EmulationInfo({ device, screenOrientation: ScreenOrientation.LANDSCAPE });
-    assert.deepEqual(emulationInfo.toJSON(), { width: 1, height: 2, mobile: undefined, deviceScaleFactor: undefined, screenOrientation: ScreenOrientation.LANDSCAPE });
+    assert.deepStrictEqual(emulationInfo.toJSON(), { width: 1, height: 2, mobile: undefined, deviceScaleFactor: undefined, screenOrientation: ScreenOrientation.LANDSCAPE });
 
     const emulationInfo2 = new EmulationInfo({ deviceName: 'name' });
-    assert.deepEqual(emulationInfo2.toJSON(), { deviceName: 'name', screenOrientation: undefined });
+    assert.deepStrictEqual(emulationInfo2.toJSON(), { deviceName: 'name', screenOrientation: undefined });
   });
 
   it('toString', () => {
     const device = new EmulationDevice({ width: 1, height: 2 });
     const emulationInfo = new EmulationInfo({ device, screenOrientation: ScreenOrientation.LANDSCAPE });
-    assert.deepEqual(emulationInfo.toString(), 'EmulationInfo { {"screenOrientation":"landscape","width":1,"height":2} }');
+    assert.deepStrictEqual(emulationInfo.toString(), 'EmulationInfo { {"screenOrientation":"landscape","width":1,"height":2} }');
 
     const emulationInfo2 = new EmulationInfo({ deviceName: 'name' });
-    assert.deepEqual(emulationInfo2.toString(), 'EmulationInfo { {"deviceName":"name"} }');
+    assert.deepStrictEqual(emulationInfo2.toString(), 'EmulationInfo { {"deviceName":"name"} }');
   });
 });

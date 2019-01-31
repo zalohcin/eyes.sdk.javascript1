@@ -6,13 +6,17 @@
     "bootstrap": "lerna bootstrap --hoist",
     "lint": "eslint . --cache --ext js",
     "test": "lerna run test",
-    "test:integration": "lerna run test:integration",
+    "test:unit": "lerna run test:unit",
+    "test:e2e": "lerna run test:e2e",
+    "test:it": "lerna run test:it",
     "test:perf": "lerna run test:perf"
   },
   "devDependencies": {
-    "lerna": "^3.4.3",
-    "eslint": "^5.8.0",
+    "lerna": "^3.10.7",
+    "eslint": "^5.12.1",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-mocha-no-only": "^1.1.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0"
+    "eslint-plugin-import": "^2.15.0"
   }
 }

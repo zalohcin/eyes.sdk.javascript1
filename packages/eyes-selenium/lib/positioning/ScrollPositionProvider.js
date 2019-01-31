@@ -1,6 +1,7 @@
 'use strict';
 
-const { ArgumentGuard, PositionProvider, Location } = require('@applitools/eyes-sdk-core');
+const { ArgumentGuard, Location } = require('@applitools/eyes-common');
+const { PositionProvider } = require('@applitools/eyes-sdk-core');
 
 const { EyesSeleniumUtils } = require('../EyesSeleniumUtils');
 const { ScrollPositionMemento } = require('./ScrollPositionMemento');
@@ -23,7 +24,9 @@ class ScrollPositionProvider extends PositionProvider {
     this._logger.verbose('creating ScrollPositionProvider');
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getCurrentPosition() {
     this._logger.verbose('ScrollPositionProvider - getCurrentPosition()');
 
@@ -36,14 +39,18 @@ class ScrollPositionProvider extends PositionProvider {
     }
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async setPosition(location) {
     this._logger.verbose(`ScrollPositionProvider - Scrolling to ${location}`);
     await EyesSeleniumUtils.setCurrentScrollPosition(this._executor, location);
     this._logger.verbose('ScrollPositionProvider - Done scrolling!');
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getEntireSize() {
     const result = await EyesSeleniumUtils.getCurrentFrameContentEntireSize(this._executor);
     this._logger.verbose(`ScrollPositionProvider - Entire size: ${result}`);

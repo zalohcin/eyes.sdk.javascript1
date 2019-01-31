@@ -1,12 +1,14 @@
 'use strict';
 
-const { ArgumentGuard } = require('@applitools/eyes-sdk-core');
+const { ArgumentGuard } = require('@applitools/eyes-common');
 const { ImageOrientationHandler, EyesDriverOperationError } = require('@applitools/eyes-selenium');
 
 const { EyesAppiumUtils } = require('./EyesAppiumUtils');
 
 class AppiumImageOrientationHandler extends ImageOrientationHandler {
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async isLandscapeOrientation(driver) {
     try {
       const capabilities = await driver.getCapabilities();
@@ -17,7 +19,9 @@ class AppiumImageOrientationHandler extends ImageOrientationHandler {
     }
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async tryAutomaticRotation(logger, driver, image) {
     ArgumentGuard.notNull(logger, 'logger');
     ArgumentGuard.notNull(driver, 'driver');

@@ -1,8 +1,6 @@
 'use strict';
 
-const { ArgumentGuard } = require('./ArgumentGuard');
-const { GeneralUtils } = require('./utils/GeneralUtils');
-const { TypeUtils } = require('./utils/TypeUtils');
+const { ArgumentGuard, GeneralUtils, TypeUtils } = require('@applitools/eyes-common');
 
 /**
  * A batch of tests.
@@ -76,12 +74,16 @@ class BatchInfo {
     return this._startedAt;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `BatchInfo { ${JSON.stringify(this)} }`;
   }

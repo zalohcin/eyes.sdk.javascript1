@@ -48,6 +48,6 @@ describe('SessionStartInfo', () => {
       '"branchName":"some branch name","parentBranchName":"parent branch name","baselineBranchName":"base branch",' +
       '"compareWithParentBranch":false,"ignoreBaseline":false,"saveDiffs":false,"render":false,' +
       '"properties":[{"name":"property name","value":"property value"},{"name":null,"value":null}]}';
-    assert.equal(actualSerialization, expectedSerialization, 'SessionStartInfo serialization does not match!');
+    assert.strictEqual(actualSerialization, expectedSerialization, 'SessionStartInfo serialization does not match!');
   });
 });

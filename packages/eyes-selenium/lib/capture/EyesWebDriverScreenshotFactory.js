@@ -19,7 +19,9 @@ class EyesWebDriverScreenshotFactory extends EyesScreenshotFactory {
     this._driver = driver;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async makeScreenshot(image) {
     return EyesWebDriverScreenshot.fromScreenshotType(this._logger, this._driver, image);
   }

@@ -3,7 +3,9 @@
 const { Region, RegionPositionCompensation } = require('@applitools/eyes-sdk-core');
 
 class SafariRegionPositionCompensation extends RegionPositionCompensation {
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   compensateRegionPosition(region, pixelRatio) {
     if (pixelRatio === 1) {
       return region;

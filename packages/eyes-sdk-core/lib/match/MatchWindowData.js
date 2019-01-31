@@ -1,7 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
-const { ArgumentGuard } = require('../ArgumentGuard');
+const { GeneralUtils, ArgumentGuard } = require('@applitools/eyes-common');
 
 /**
  * Encapsulates the "Options" section of the MatchExpectedOutput body data.
@@ -38,53 +37,71 @@ class Options {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getName() {
     return this._name;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Trigger[]} */
+  /**
+   * @return {Trigger[]}
+   */
   getUserInputs() {
     return this._userInputs;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getIgnoreMismatch() {
     return this._ignoreMismatch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getIgnoreMatch() {
     return this._ignoreMatch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getForceMismatch() {
     return this._forceMismatch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {boolean} */
+  /**
+   * @return {boolean}
+   */
   getForceMatch() {
     return this._forceMatch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {ImageMatchSettings} */
+  /**
+   * @return {ImageMatchSettings}
+   */
   getImageMatchSettings() {
     return this._imageMatchSettings;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `Options { ${JSON.stringify(this)} }`;
   }
@@ -117,41 +134,55 @@ class MatchWindowData {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Trigger[]} */
+  /**
+   * @return {Trigger[]}
+   */
   getUserInputs() {
     return this._userInputs;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {AppOutput} */
+  /**
+   * @return {AppOutput}
+   */
   getAppOutput() {
     return this._appOutput;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getTag() {
     return this._tag;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {?boolean} */
+  /**
+   * @return {?boolean}
+   */
   getIgnoreMismatch() {
     return this._ignoreMismatch;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {?Options} */
+  /**
+   * @return {?Options}
+   */
   getOptions() {
     return this._options;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     const object = this.toJSON();
 

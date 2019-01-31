@@ -1,5 +1,20 @@
 'use strict';
 
+const {URL} = require('url');
+
+const {
+  Logger,
+  SimplePropertyHandler,
+  ReadOnlyPropertyHandler,
+  CoordinatesType,
+  Region,
+  Location,
+  RectangleSize,
+  UserAgent,
+  ArgumentGuard,
+  TypeUtils,
+} = require('@applitools/eyes-common');
+
 const {
   EyesBase,
   FullPageCaptureAlgorithm,
@@ -9,17 +24,8 @@ const {
   NullRegionProvider,
   ContextBasedScaleProviderFactory,
   ScaleProviderIdentityFactory,
-  ArgumentGuard,
-  SimplePropertyHandler,
-  Logger,
-  CoordinatesType,
   TestFailedError,
   NullCutProvider,
-  UserAgent,
-  ReadOnlyPropertyHandler,
-  Region,
-  Location,
-  RectangleSize,
   FailureReports,
   MatchResult,
 } = require('@applitools/eyes-sdk-core');
@@ -270,7 +276,7 @@ class Eyes extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {StitchMode}  The current stitch mode settings.
+   * @return {StitchMode} The current stitch mode settings.
    */
   getStitchMode() {
     return this._stitchMode;
@@ -403,7 +409,9 @@ class Eyes extends EyesBase {
     return this._driver;
   }
 
-  /** @private */
+  /**
+   * @private
+   */
   _initDriver(driver) {
     if (driver instanceof EyesWebDriver) {
       // noinspection JSValidateTypes
@@ -413,7 +421,9 @@ class Eyes extends EyesBase {
     }
   }
 
-  /** @private */
+  /**
+   * @private
+   */
   _initPositionProvider() {
     // Setting the correct position provider.
     const stitchMode = this.getStitchMode();
@@ -429,7 +439,7 @@ class Eyes extends EyesBase {
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * Preform visual validation
+   * Perform visual validation
    *
    * @param {string} name A name to be associated with the match
    * @param {SeleniumCheckSettings|CheckSettings} checkSettings Target instance which describes whether we want a
@@ -440,11 +450,17 @@ class Eyes extends EyesBase {
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
     ArgumentGuard.isValidState(this._isOpen, 'Eyes not open');
 
+    if (TypeUtils.isNotNull(name)) {
+      checkSettings.withName(name);
+    } else {
+      name = checkSettings.getName();
+    }
+
     if (!(await EyesSeleniumUtils.isMobileDevice(this._driver))) {
       this._logger.verbose(`URL: ${await this._driver.getCurrentUrl()}`);
     }
 
-    this._logger.verbose(`check("${name}", checkSettings) - begin`);
+    this._logger.verbose(`check(${checkSettings}) - begin`);
     this._stitchContent = checkSettings.getStitchContent();
     const targetRegion = checkSettings.getTargetRegion();
 
@@ -524,11 +540,11 @@ class Eyes extends EyesBase {
   }
 
   /**
+   * @private
    * @param driver
    * @param switchTo
    * @param frames
    * @return {Promise<void>}
-   * @private
    */
   async _trySwitchToFrames(driver, switchTo, frames) {
     if (await EyesSeleniumUtils.isMobileDevice(driver)) {
@@ -636,7 +652,9 @@ class Eyes extends EyesBase {
     const self = this;
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       // noinspection JSUnusedGlobalSymbols
-      /** @override */
+      /**
+       * @override
+       */
       async getRegion() {
         return self._getFullFrameOrElementRegion();
       }
@@ -777,7 +795,9 @@ class Eyes extends EyesBase {
     const self = this;
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       // noinspection JSUnusedGlobalSymbols
-      /** @override */
+      /**
+       * @override
+       */
       async getRegion() {
         const rect = await self._targetElement.getRect();
         return new Region(
@@ -1231,13 +1251,17 @@ class Eyes extends EyesBase {
     await EyesSeleniumUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize));
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   async beforeOpen() {
     this._scrollRootElement = null;
     await this._tryHideScrollbars();
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...');
@@ -1246,6 +1270,14 @@ class Eyes extends EyesBase {
       this._logger.log(`Error capturing DOM of the page: ${err}`);
       return '';
     }
+  }
+
+  /**
+   * @override
+   */
+  async getOrigin() {
+    const currentUrl = await this.getDriver().getCurrentUrl();
+    return new URL(currentUrl).origin;
   }
 
   /**
@@ -1332,7 +1364,9 @@ class Eyes extends EyesBase {
       await this._driver.switchTo().parentFrame();
 
       const frame = fc.pop();
-      await frame.getReference().setOverflow(frame.getOriginalOverflow());
+      let frameReference = frame.getReference();
+      frameReference = frameReference instanceof EyesWebElement ? frameReference : new EyesWebElement(this._logger, this._driver, frameReference);
+      await frameReference.setOverflow(frame.getOriginalOverflow());
 
       await this._tryRestoreScrollbarsLoop(fc);
     }
@@ -1458,7 +1492,9 @@ class Eyes extends EyesBase {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @override */
+  /**
+   * @override
+   */
   async getTitle() {
     if (!this._dontGetTitle) {
       try {
@@ -1473,7 +1509,9 @@ class Eyes extends EyesBase {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @override */
+  /**
+   * @override
+   */
   async getInferredEnvironment() {
     try {
       const userAgent = await this._driver.getUserAgent();
@@ -1500,7 +1538,7 @@ class Eyes extends EyesBase {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Set the image rotation degrees.
-   * @param degrees The amount of degrees to set the rotation to.
+   * @param {number} degrees The amount of degrees to set the rotation to.
    * @deprecated use {@link setRotation} instead
    */
   setForcedImageRotation(degrees) {

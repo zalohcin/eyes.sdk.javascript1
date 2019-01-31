@@ -1,6 +1,7 @@
 'use strict';
 
-const { ArgumentGuard } = require('../ArgumentGuard');
+const { ArgumentGuard } = require('@applitools/eyes-common');
+
 const { Trigger } = require('./Trigger');
 
 /**
@@ -46,7 +47,9 @@ class TextTrigger extends Trigger {
     return Trigger.TriggerType.Text;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `Text [${this._control}] ${this._text}`;
   }

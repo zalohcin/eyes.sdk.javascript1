@@ -26,62 +26,84 @@ class AppOutput {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getTitle() {
     return this._title;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setTitle(value) {
     this._title = value;
   }
 
-  /** @return {Buffer} */
+  /**
+   * @return {Buffer}
+   */
   getScreenshot64() {
     return this._screenshot64;
   }
 
-  /** @param {Buffer} value */
+  /**
+   * @param {Buffer} value
+   */
   setScreenshot64(value) {
     this._screenshot64 = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getScreenshotUrl() {
     return this._screenshotUrl;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setScreenshotUrl(value) {
     this._screenshotUrl = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getDomUrl() {
     return this._domUrl;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setDomUrl(value) {
     this._domUrl = value;
   }
 
-  /** @return {Location} */
+  /**
+   * @return {Location}
+   */
   getImageLocation() {
     return this._imageLocation;
   }
 
-  /** @param {Location} value */
+  /**
+   * @param {Location} value
+   */
   setImageLocation(value) {
     this._imageLocation = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     const object = {
       title: this._title,
@@ -106,7 +128,9 @@ class AppOutput {
     return object;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     const object = this.toJSON();
 

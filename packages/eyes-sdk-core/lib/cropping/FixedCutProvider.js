@@ -1,6 +1,7 @@
 'use strict';
 
-const { Region } = require('../geometry/Region');
+const { Region } = require('@applitools/eyes-common');
+
 const { CutProvider } = require('./CutProvider');
 
 class FixedCutProvider extends CutProvider {
@@ -19,7 +20,9 @@ class FixedCutProvider extends CutProvider {
     this._right = right;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async cut(image) {
     if (this._header > 0) {
       const region = new Region(0, this._header, image.getWidth(), image.getHeight() - this._header);
@@ -44,7 +47,9 @@ class FixedCutProvider extends CutProvider {
     return image;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   scale(scaleRatio) {
     const scaledHeader = Math.ceil(this._header * scaleRatio);
     const scaledFooter = Math.ceil(this._footer * scaleRatio);

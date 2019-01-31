@@ -1,6 +1,7 @@
 'use strict';
 
-const { ArgumentGuard } = require('../ArgumentGuard');
+const { ArgumentGuard } = require('@applitools/eyes-common');
+
 const { ScaleProvider } = require('./ScaleProvider');
 
 class FixedScaleProvider extends ScaleProvider {

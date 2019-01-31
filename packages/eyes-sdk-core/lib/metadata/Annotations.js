@@ -1,7 +1,7 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
-const { Region } = require('../geometry/Region');
+const { GeneralUtils, Region } = require('@applitools/eyes-common');
+
 const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 
 class Annotations {
@@ -42,71 +42,95 @@ class Annotations {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {FloatingMatchSettings[]} */
+  /**
+   * @return {FloatingMatchSettings[]}
+   */
   getFloating() {
     return this._floating;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {FloatingMatchSettings[]} value */
+  /**
+   * @param {FloatingMatchSettings[]} value
+   */
   setFloating(value) {
     this._floating = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Region[]} */
+  /**
+   * @return {Region[]}
+   */
   getIgnore() {
     return this._ignore;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Region[]} value */
+  /**
+   * @param {Region[]} value
+   */
   setIgnore(value) {
     this._ignore = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Region[]} */
+  /**
+   * @return {Region[]}
+   */
   getStrict() {
     return this._strict;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Region[]} value */
+  /**
+   * @param {Region[]} value
+   */
   setStrict(value) {
     this._strict = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Region[]} */
+  /**
+   * @return {Region[]}
+   */
   getContent() {
     return this._content;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Region[]} value */
+  /**
+   * @param {Region[]} value
+   */
   setContent(value) {
     this._content = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {Region[]} */
+  /**
+   * @return {Region[]}
+   */
   getLayout() {
     return this._layout;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {Region[]} value */
+  /**
+   * @param {Region[]} value
+   */
   setLayout(value) {
     this._layout = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `Annotations { ${JSON.stringify(this)} }`;
   }

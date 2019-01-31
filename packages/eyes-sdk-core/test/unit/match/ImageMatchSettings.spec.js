@@ -10,7 +10,7 @@ describe('ImageMatchSettings', () => {
       const ims = new ImageMatchSettings();
       const expectedSerialization = '{"matchLevel":"Strict","ignore":[],"layout":[],"strict":[],' +
         '"content":[],"floating":[]}';
-      assert.equal(JSON.stringify(ims), expectedSerialization, 'ImageMatchSettings serialization does not match!');
+      assert.strictEqual(JSON.stringify(ims), expectedSerialization, 'ImageMatchSettings serialization does not match!');
     });
 
     it('with modified exact and ignore caret', () => {
@@ -18,7 +18,7 @@ describe('ImageMatchSettings', () => {
       const expectedSerialization = '{"matchLevel":"Content","exact":{"minDiffIntensity":0,"minDiffWidth":0,' +
         '"minDiffHeight":0,"matchThreshold":0},"ignoreCaret":true,"ignore":[],"layout":[],"strict":[],' +
         '"content":[],"floating":[]}';
-      assert.equal(JSON.stringify(ims), expectedSerialization, 'ImageMatchSettings serialization does not match!');
+      assert.strictEqual(JSON.stringify(ims), expectedSerialization, 'ImageMatchSettings serialization does not match!');
     });
 
     it('with ignore regions', () => {
@@ -26,7 +26,7 @@ describe('ImageMatchSettings', () => {
       ims.setIgnoreRegions([new Region(10, 20, 30, 40)]);
       const expectedSerialization = '{"matchLevel":"Strict","ignore":[{"left":10,"top":20,"width":30,"height":40,' +
         '"coordinatesType":"SCREENSHOT_AS_IS"}],"layout":[],"strict":[],"content":[],"floating":[]}';
-      assert.equal(JSON.stringify(ims), expectedSerialization, 'ImageMatchSettings serialization does not match!');
+      assert.strictEqual(JSON.stringify(ims), expectedSerialization, 'ImageMatchSettings serialization does not match!');
     });
   });
 });

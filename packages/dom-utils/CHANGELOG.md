@@ -3,6 +3,65 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.4.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.4.1...@applitools/dom-utils@4.4.2) (2019-01-28)
+
+**Note:** Version bump only for package @applitools/dom-utils
+
+
+
+
+
+## [4.4.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.4.0...@applitools/dom-utils@4.4.1) (2019-01-22)
+
+**Note:** Version bump only for package @applitools/dom-utils
+
+
+
+
+
+# [4.4.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.3.4...@applitools/dom-utils@4.4.0) (2019-01-16)
+
+
+### Features
+
+* finalize eyes-rendering pkg, continue introduction of eyes-common ([c3367b7](https://github.com/applitools/eyes.sdk.javascript1/commit/c3367b7))
+
+
+
+
+
+## [4.3.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.3.3...@applitools/dom-utils@4.3.4) (2018-12-12)
+
+**Note:** Version bump only for package @applitools/dom-utils
+
+
+
+
+
+## [4.3.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.3.2...@applitools/dom-utils@4.3.3) (2018-12-11)
+
+**Note:** Version bump only for package @applitools/dom-utils
+
+
+
+
+
+## [4.3.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.3.1...@applitools/dom-utils@4.3.2) (2018-12-07)
+
+**Note:** Version bump only for package @applitools/dom-utils
+
+
+
+
+
+## [4.3.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.3.0...@applitools/dom-utils@4.3.1) (2018-12-06)
+
+**Note:** Version bump only for package @applitools/dom-utils
+
+
+
+
+
 # [4.3.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.2.1...@applitools/dom-utils@4.3.0) (2018-12-04)
 
 **Note:** Version bump only for package @applitools/dom-utils

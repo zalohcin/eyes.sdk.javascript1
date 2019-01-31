@@ -1,6 +1,7 @@
 'use strict';
 
-const { ImageProvider, MutableImage, Region } = require('@applitools/eyes-sdk-core');
+const { MutableImage, Region } = require('@applitools/eyes-common');
+const { ImageProvider } = require('@applitools/eyes-sdk-core');
 
 const { EyesWebDriverScreenshot } = require('./EyesWebDriverScreenshot');
 

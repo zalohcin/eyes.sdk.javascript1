@@ -1,17 +1,7 @@
 'use strict';
 
-const {
-  ArgumentGuard,
-  TypeUtils,
-  EyesBase,
-  EyesError,
-  ImageUtils,
-  RegionProvider,
-  MutableImage,
-  RectangleSize,
-  NullRegionProvider,
-  EyesSimpleScreenshot,
-} = require('@applitools/eyes-sdk-core');
+const { ArgumentGuard, TypeUtils, FileUtils, EyesError, MutableImage, RectangleSize } = require('@applitools/eyes-common');
+const { EyesBase, RegionProvider, NullRegionProvider, EyesSimpleScreenshot } = require('@applitools/eyes-sdk-core');
 
 const { Target } = require('./fluent/Target');
 const VERSION = require('../package.json').version;
@@ -39,7 +29,9 @@ class Eyes extends EyesBase {
     this._screenshotProvider = null;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   getBaseAgentId() {
     return `eyes-images/${VERSION}`;
   }
@@ -99,6 +91,12 @@ class Eyes extends EyesBase {
     if (this.getIsDisabled()) {
       this._logger.verbose(`check('${name}', checkSettings): Ignored`);
       return false;
+    }
+
+    if (TypeUtils.isNotNull(name)) {
+      checkSettings.withName(name);
+    } else {
+      name = checkSettings.getName();
     }
 
     try {
@@ -161,7 +159,7 @@ class Eyes extends EyesBase {
 
     if (checkSettings.getImagePath()) {
       try {
-        const data = await ImageUtils.readImage(checkSettings.getImagePath());
+        const data = await FileUtils.readToBuffer(checkSettings.getImagePath());
         return new MutableImage(data);
       } catch (err) {
         throw new EyesError(`Can't read image [${err.message}]`);
@@ -224,7 +222,9 @@ class Eyes extends EyesBase {
     super.addTextTriggerBase(control, text);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getViewportSize() {
     return Promise.resolve(this._viewportSizeHandler.get());
   }
@@ -243,7 +243,9 @@ class Eyes extends EyesBase {
     return Promise.resolve();
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getInferredEnvironment() {
     return Promise.resolve(this._inferred);
   }
@@ -258,7 +260,9 @@ class Eyes extends EyesBase {
     this._inferred = inferred;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async getScreenshot() {
     if (this._screenshotProvider) {
       this._screenshot = await this._screenshotProvider.getImage();
@@ -267,17 +271,23 @@ class Eyes extends EyesBase {
     return new EyesSimpleScreenshot(this._screenshot);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getScreenshotUrl() {
     return Promise.resolve(this._screenshotUrl);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   async tryCaptureDom() {
     return Promise.resolve(this._domString);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   getTitle() {
     return Promise.resolve(this._title);
   }

@@ -2,7 +2,8 @@
 
 const PromisePool = require('es6-promise-pool');
 
-const { ArgumentGuard } = require('./ArgumentGuard');
+const { ArgumentGuard } = require('@applitools/eyes-common');
+
 const { RenderStatus } = require('./renderer/RenderStatus');
 
 const DEFAULT_CONCURRENCY_LIMIT = 100;
@@ -77,7 +78,7 @@ class RenderWindowTask {
    */
   async getRenderStatus(runningRender, delayBeforeRequest = false) {
     const renderStatusResults = await this._serverConnector.renderStatus(runningRender, delayBeforeRequest);
-    if (renderStatusResults.getStatus() === RenderStatus.RENDERING) {
+    if (renderStatusResults.getStatus() === undefined || renderStatusResults.getStatus() === RenderStatus.RENDERING) {
       return this.getRenderStatus(runningRender, true);
     }
 

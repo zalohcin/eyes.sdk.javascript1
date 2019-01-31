@@ -46,7 +46,7 @@ describe('EyesBase', () => {
       const batch = eyes.getBatch();
       assert.strictEqual(batch.getId(), 'fake batch id2');
       assert.strictEqual(batch.getName(), 'batch name2');
-      assert.equal(batch.getStartedAt().getTime(), time.getTime());
+      assert.strictEqual(batch.getStartedAt().getTime(), time.getTime());
     });
 
     it('should create batch from BatchInfo', () => {
@@ -57,11 +57,11 @@ describe('EyesBase', () => {
       const batch = eyes.getBatch();
       assert.strictEqual(batch.getId(), 'fake batch id');
       assert.strictEqual(batch.getName(), 'batch name');
-      assert.notDeepEqual(batch, defaultBatch);
-      assert.deepEqual(eyes.getBatch(), batch);
+      assert.notDeepStrictEqual(batch, defaultBatch);
+      assert.deepStrictEqual(eyes.getBatch(), batch);
 
       eyes.setBatch(defaultBatch);
-      assert.deepEqual(eyes.getBatch(), defaultBatch);
+      assert.deepStrictEqual(eyes.getBatch(), defaultBatch);
     });
 
     it('should create batch by default using values from env', () => {

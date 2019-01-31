@@ -1,6 +1,6 @@
 {
   "name": "@applitools/dom-utils",
-  "version": "4.3.0",
+  "version": "4.4.2",
   "description": "Applitools DOM Utils is a shared utility package",
   "keywords": [
     "dom-utils",
@@ -24,17 +24,19 @@
   },
   "main": "./index.js",
   "dependencies": {
+    "@applitools/eyes-common": "^1.2.2",
     "@applitools/dom-capture": "4.0.1",
     "@applitools/eyes-sdk-core": "^4.5.0",
     "axios": "0.18.0"
   },
   "devDependencies": {
-    "chromedriver": "^2.43.1",
+    "chromedriver": "^2.45.0",
     "mocha": "^5.2.0",
     "selenium-webdriver": "^4.0.0-alpha.1"
   },
   "scripts": {
-    "test:integration": "mocha ./test/**/*.spec.js -t 900000"
+    "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
+    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\""
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

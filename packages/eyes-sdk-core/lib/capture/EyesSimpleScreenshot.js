@@ -1,10 +1,7 @@
 'use strict';
 
-const { ArgumentGuard } = require('../ArgumentGuard');
-const { Region } = require('../geometry/Region');
-const { RectangleSize } = require('../geometry/RectangleSize');
-const { Location } = require('../geometry/Location');
-const { CoordinatesType } = require('../geometry/CoordinatesType');
+const { ArgumentGuard, CoordinatesType, Location, RectangleSize, Region } = require('@applitools/eyes-common');
+
 const { OutOfBoundsError } = require('../errors/OutOfBoundsError');
 const { CoordinatesTypeConversionError } = require('../errors/CoordinatesTypeConversionError');
 const { EyesScreenshot } = require('./EyesScreenshot');
@@ -148,8 +145,8 @@ class EyesSimpleScreenshot extends EyesScreenshot {
     intersectedRegion.intersect(this._bounds);
 
     // If the intersection is empty we don't want to convert the coordinates.
-    if (region.isSizeEmpty()) {
-      return region;
+    if (intersectedRegion.isSizeEmpty()) {
+      return intersectedRegion;
     }
 
     // The returned result should be in the coordinatesType given as parameter.

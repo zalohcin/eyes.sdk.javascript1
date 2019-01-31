@@ -7,12 +7,12 @@ const { RenderInfo, Region, RectangleSize, EmulationInfo, ScreenOrientation } = 
 describe('RenderInfo', () => {
   it('constructor', () => {
     const renderInfo = new RenderInfo();
-    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_width'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_height'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_sizeMode'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_selector'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_region'), true);
-    assert.equal(Object.prototype.hasOwnProperty.call(renderInfo, '_emulationInfo'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_width'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_height'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_sizeMode'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_selector'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_region'), true);
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_emulationInfo'), true);
   });
 
   it('constructor with object', () => {
@@ -31,39 +31,39 @@ describe('RenderInfo', () => {
     const region = new Region(regionObj);
     const emulationInfo = new EmulationInfo(emulationInfoObj);
 
-    assert.equal(renderInfo.getWidth(), 1);
-    assert.equal(renderInfo.getHeight(), 2);
-    assert.equal(renderInfo.getSizeMode(), 'some size mode');
-    assert.equal(renderInfo.getSelector(), 'some selector');
-    assert.deepEqual(renderInfo.getRegion(), region);
-    assert.deepEqual(renderInfo.getEmulationInfo(), emulationInfo);
+    assert.strictEqual(renderInfo.getWidth(), 1);
+    assert.strictEqual(renderInfo.getHeight(), 2);
+    assert.strictEqual(renderInfo.getSizeMode(), 'some size mode');
+    assert.strictEqual(renderInfo.getSelector(), 'some selector');
+    assert.deepStrictEqual(renderInfo.getRegion(), region);
+    assert.deepStrictEqual(renderInfo.getEmulationInfo(), emulationInfo);
   });
 
   it('constructor handles undefined region', () => {
     const renderInfo = new RenderInfo();
-    assert.equal(renderInfo.getRegion(), undefined);
+    assert.strictEqual(renderInfo.getRegion(), undefined);
   });
 
   it('fromRectangleSize', () => {
     const rectangleSize = new RectangleSize({ width: 1, height: 2 });
     const renderInfo = RenderInfo.fromRectangleSize(rectangleSize, 'some size mode');
 
-    assert.equal(renderInfo.getWidth(), 1);
-    assert.equal(renderInfo.getHeight(), 2);
-    assert.equal(renderInfo.getSizeMode(), 'some size mode');
-    assert.equal(renderInfo.getSelector(), undefined);
-    assert.equal(renderInfo.getRegion(), undefined);
+    assert.strictEqual(renderInfo.getWidth(), 1);
+    assert.strictEqual(renderInfo.getHeight(), 2);
+    assert.strictEqual(renderInfo.getSizeMode(), 'some size mode');
+    assert.strictEqual(renderInfo.getSelector(), undefined);
+    assert.strictEqual(renderInfo.getRegion(), undefined);
   });
 
   it('fromRectangleSize has a default sizeMode', () => {
     const rectangleSize = new RectangleSize({ width: 1, height: 2 });
     const renderInfo = RenderInfo.fromRectangleSize(rectangleSize);
 
-    assert.equal(renderInfo.getWidth(), 1);
-    assert.equal(renderInfo.getHeight(), 2);
-    assert.equal(renderInfo.getSizeMode(), 'full-page');
-    assert.equal(renderInfo.getSelector(), undefined);
-    assert.equal(renderInfo.getRegion(), undefined);
+    assert.strictEqual(renderInfo.getWidth(), 1);
+    assert.strictEqual(renderInfo.getHeight(), 2);
+    assert.strictEqual(renderInfo.getSizeMode(), 'full-page');
+    assert.strictEqual(renderInfo.getSelector(), undefined);
+    assert.strictEqual(renderInfo.getRegion(), undefined);
   });
 
   it('toJSON', () => {
@@ -83,7 +83,7 @@ describe('RenderInfo', () => {
       region: { x: 3, y: 4, width: 5, height: 6, coordinatesType: 'SCREENSHOT_AS_IS' },
     });
 
-    assert.deepEqual(renderInfo.toJSON(), renderInfoWithAdjustedLeftTop);
+    assert.deepStrictEqual(renderInfo.toJSON(), renderInfoWithAdjustedLeftTop);
   });
 
   it('toString', () => {
@@ -99,6 +99,6 @@ describe('RenderInfo', () => {
     };
 
     const renderInfo = new RenderInfo(renderInfoObj);
-    assert.deepEqual(renderInfo.toString(), 'RenderInfo { {"width":1,"height":2,"sizeMode":"some size mode","selector":"some selector","region":{"width":5,"height":6,"coordinatesType":"SCREENSHOT_AS_IS","x":3,"y":4},"emulationInfo":{"deviceName":"deviceName","screenOrientation":"portrait"}} }');
+    assert.deepStrictEqual(renderInfo.toString(), 'RenderInfo { {"width":1,"height":2,"sizeMode":"some size mode","selector":"some selector","region":{"width":5,"height":6,"coordinatesType":"SCREENSHOT_AS_IS","x":3,"y":4},"emulationInfo":{"deviceName":"deviceName","screenOrientation":"portrait"}} }');
   });
 });

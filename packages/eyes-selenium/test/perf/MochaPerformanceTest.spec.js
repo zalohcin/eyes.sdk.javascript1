@@ -3,7 +3,7 @@
 require('chromedriver');
 const assert = require('assert');
 const { Builder } = require('selenium-webdriver');
-const { ConsoleLogHandler, PerformanceUtils } = require('@applitools/eyes-sdk-core');
+const { ConsoleLogHandler, PerformanceUtils } = require('@applitools/eyes-common');
 const { Eyes, Target } = require('../../index');
 
 describe('MochaPerformanceTest', function () {

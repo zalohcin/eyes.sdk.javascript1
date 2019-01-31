@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-images",
-  "version": "4.5.0",
+  "version": "4.6.5",
   "description": "The simplest implemnetation of Applitools Eyes SDK, uploads images for validation",
   "keywords": [
     "eyes-images",
@@ -31,14 +31,16 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "^4.5.0"
+    "@applitools/eyes-common": "^1.2.2",
+    "@applitools/eyes-sdk-core": "^4.7.0"
   },
   "devDependencies": {
     "axios": "^0.18.0",
     "mocha": "^5.2.0"
   },
   "scripts": {
-    "test:integration": "mocha ./test/integration/**/*.spec.js -t 900000"
+    "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
+    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\""
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

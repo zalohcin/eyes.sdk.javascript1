@@ -1,7 +1,7 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
-const { Region } = require('../geometry/Region');
+const { GeneralUtils, Region } = require('@applitools/eyes-common');
+
 const { EmulationInfo } = require('./EmulationInfo');
 
 class RenderInfo {
@@ -43,69 +43,95 @@ class RenderInfo {
     return renderInfo;
   }
 
-  /** @return {number} */
+  /**
+   * @return {number}
+   */
   getWidth() {
     return this._width;
   }
 
-  /** @param {number} value */
+  /**
+   * @param {number} value
+   */
   setWidth(value) {
     this._width = value;
   }
 
-  /** @return {number} */
+  /**
+   * @return {number}
+   */
   getHeight() {
     return this._height;
   }
 
-  /** @param {number} value */
+  /**
+   * @param {number} value
+   */
   setHeight(value) {
     this._height = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getSizeMode() {
     return this._sizeMode;
   }
 
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setSizeMode(value) {
     this._sizeMode = value;
   }
 
-  /** @return {string} */
+  /**
+   * @return {string}
+   */
   getSelector() {
     return this._selector;
   }
 
-  /** @param {string} value */
+  /**
+   * @param {string} value
+   */
   setSelector(value) {
     this._selector = value;
   }
 
-  /** @return {Region} */
+  /**
+   * @return {Region}
+   */
   getRegion() {
     return this._region;
   }
 
-  /** @param {Region} value */
+  /**
+   * @param {Region} value
+   */
   setRegion(value) {
     this._region = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {EmulationInfo} */
+  /**
+   * @return {EmulationInfo}
+   */
   getEmulationInfo() {
     return this._emulationInfo;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @param {EmulationInfo} value */
+  /**
+   * @param {EmulationInfo} value
+   */
   setEmulationInfo(value) {
     this._emulationInfo = value;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     const obj = GeneralUtils.toPlain(this, ['_emulationInfo']);
 
@@ -123,7 +149,9 @@ class RenderInfo {
     return obj;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `RenderInfo { ${JSON.stringify(this)} }`;
   }

@@ -1,6 +1,7 @@
 'use strict';
 
-const { GetRegion, Region, Location, CoordinatesType } = require('@applitools/eyes-sdk-core');
+const { Location, Region, CoordinatesType } = require('@applitools/eyes-common');
+const { GetRegion } = require('@applitools/eyes-sdk-core');
 
 class IgnoreRegionByElement extends GetRegion {
   /**
@@ -18,7 +19,7 @@ class IgnoreRegionByElement extends GetRegion {
    * @param {EyesScreenshot} screenshot
    * @return {Promise<Region>}
    */
-  async getRegion(eyes, screenshot) {
+  async getRegion(eyes, screenshot) { // eslint-disable-line no-unused-vars
     const rect = await this._element.getRect();
     const lTag = screenshot.convertLocation(
       new Location(rect),

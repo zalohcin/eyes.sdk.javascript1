@@ -12,12 +12,16 @@ class SeleniumJavaScriptExecutor extends EyesJsExecutor {
     this._driver = driver;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   executeScript(script, ...args) {
     return this._driver.executeScript(script, args);
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   sleep(millis) {
     return this._driver.sleep(millis);
   }

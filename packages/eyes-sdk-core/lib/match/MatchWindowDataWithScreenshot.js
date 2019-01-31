@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('../utils/GeneralUtils');
+const { GeneralUtils } = require('@applitools/eyes-common');
 
 /**
  * A container for a MatchWindowData along with the screenshot used for creating it. (We specifically avoid inheritance
@@ -21,23 +21,31 @@ class MatchWindowDataWithScreenshot {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {MatchWindowData} */
+  /**
+   * @return {MatchWindowData}
+   */
   getMatchWindowData() {
     return this._matchWindowData;
   }
 
   // noinspection JSUnusedGlobalSymbols
-  /** @return {EyesScreenshot} */
+  /**
+   * @return {EyesScreenshot}
+   */
   getScreenshot() {
     return this._screenshot;
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toJSON() {
     return GeneralUtils.toPlain(this);
   }
 
-  /** @override */
+  /**
+   * @override
+   */
   toString() {
     return `MatchWindowDataWithScreenshot { ${JSON.stringify(this)} }`;
   }
