@@ -28,6 +28,11 @@ class ConfigUtils {
     const envConfig = {};
     for (const p of configParams) {
       envConfig[p] = process.env[`APPLITOOLS_${ConfigUtils.toEnvVarName(p)}`];
+      if (envConfig[p] === 'true') {
+        envConfig[p] = true;
+      } else if(envConfig[p] === 'false') {
+        envConfig[p] = false;
+      }
     }
 
     Object.keys(envConfig).forEach(value => {
