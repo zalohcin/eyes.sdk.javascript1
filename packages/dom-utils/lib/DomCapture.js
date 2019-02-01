@@ -3,7 +3,7 @@
 const axios = require('axios');
 const url = require('url');
 
-const { ArgumentGuard, Location, GeneralUtils, PerformanceUtils } = require('@applitools/eyes-sdk-core');
+const { ArgumentGuard, Location, GeneralUtils, PerformanceUtils } = require('@applitools/eyes-common');
 const { getCaptureDomScript } = require('@applitools/dom-capture');
 
 class DomCapture {

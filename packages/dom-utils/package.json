@@ -26,7 +26,6 @@
   "dependencies": {
     "@applitools/eyes-common": "^1.2.2",
     "@applitools/dom-capture": "4.0.1",
-    "@applitools/eyes-sdk-core": "^4.5.0",
     "axios": "0.18.0"
   },
   "devDependencies": {
