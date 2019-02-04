@@ -14,12 +14,14 @@ const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetR
 const getBatch = require('./getBatch');
 const transactionThroat = require('./transactionThroat');
 const getRenderMethods = require('./getRenderMethods');
+const {ptimeoutWithError} = require('@applitools/functional-commons');
 const {
   createRenderWrapper,
   authorizationErrMsg,
   blockedAccountErrMsg,
   badRequestErrMsg,
 } = require('./wrapperUtils');
+require('@applitools/isomorphic-fetch');
 
 // TODO when supporting only Node version >= 8.6.0 then we can use ...config for all the params that are just passed on to makeOpenEyes
 function makeRenderingGridClient({
@@ -53,6 +55,7 @@ function makeRenderingGridClient({
   ignoreBaseline,
   serverUrl,
   agentId,
+  fetchResourceTimeout = 120000,
 }) {
   const openEyesConcurrency = Number(concurrency);
 
@@ -82,7 +85,8 @@ function makeRenderingGridClient({
   const resourceCache = createResourceCache();
   const fetchCache = createResourceCache();
   const extractCssResources = makeExtractCssResources(logger);
-  const fetchResource = makeFetchResource({logger, fetchCache});
+  const fetchWithTimeout = makeFetchWithTimeout(fetchResourceTimeout);
+  const fetchResource = makeFetchResource({logger, fetchCache, fetch: fetchWithTimeout});
   const putResources = makePutResources({doPutResource});
   const renderBatch = makeRenderBatch({
     putResources,
@@ -188,6 +192,10 @@ function makeRenderingGridClient({
       });
 
     return renderInfoPromise;
+  }
+
+  function makeFetchWithTimeout(timeout) {
+    return url => ptimeoutWithError(fetch(url), timeout, 'fetch timout exceeded');
   }
 }
 
