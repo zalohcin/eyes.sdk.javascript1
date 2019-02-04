@@ -1333,6 +1333,69 @@ describe('openEyes', () => {
     expect(wrapper2.aborted).to.equal(true);
   });
 
+  it('handles abort by waiting for checkWindow to end', async () => {
+    const wrapper1 = createFakeWrapper(baseUrl);
+    const {checkWindow, abort} = await openEyes({
+      wrappers: [wrapper1],
+      browser: [{width: 1, height: 2}],
+      appName,
+    });
+
+    let done;
+    const donePromise = new Promise(res => {
+      done = res;
+      setTimeout(done, 1000);
+    });
+
+    let checkEndedAfterAbort = false;
+    wrapper1.on('checkWindowEnd', () => {
+      checkEndedAfterAbort = aborted;
+      done();
+    });
+    let aborted = false;
+    wrapper1.on('aborted', () => {
+      aborted = true;
+    });
+
+    await checkWindow({url: '', cdt: []});
+    await abort();
+    await donePromise;
+    expect(checkEndedAfterAbort).to.be.false;
+  });
+
+  it('handles abort by waiting for open to end', async () => {
+    const wrapper1 = createFakeWrapper(baseUrl);
+    wrapper1.checkWindow = () => {
+      throw new Error('CHECK_WINDOW NOT WAITING FOR OPEN SINCE THREW ERROR');
+    };
+    const {checkWindow, abort} = await openEyes({
+      wrappers: [wrapper1],
+      browser: [{width: 1, height: 2}],
+      appName,
+    });
+
+    let done;
+    const donePromise = new Promise(res => {
+      done = res;
+      setTimeout(done, 1000);
+    });
+
+    let openEndedAfterAbort = false;
+    wrapper1.on('openEnd', () => {
+      openEndedAfterAbort = aborted;
+      done();
+    });
+    let aborted = false;
+    wrapper1.on('aborted', () => {
+      aborted = true;
+    });
+
+    await checkWindow({url: '', cdt: []});
+    await abort();
+    await donePromise;
+    expect(openEndedAfterAbort).to.be.false;
+  });
+
   it('renders deviceEmulation', async () => {
     const deviceName = 'iPhone 4';
     const {checkWindow, close} = await openEyes({

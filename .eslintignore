@@ -1,7 +1,3 @@
-/commands.js
-test/fixtures/testApp/cypress/support
-test/fixtures/testApp/cypress/integration-run
-test/fixtures/testApp/cypress/integration-pack
-test/fixtures/testApp/cypress/integration-timeout
+test/fixtures/test-app/dist
 test/it/setup/fixtures/cypress/
 node_modules

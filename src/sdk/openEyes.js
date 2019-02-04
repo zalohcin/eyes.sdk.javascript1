@@ -1,6 +1,8 @@
 'use strict';
 const makeCheckWindow = require('./checkWindow');
-const makeCloseEyes = require('./closeEyes');
+const makeAbort = require('./makeAbort');
+const makeClose = require('./makeClose');
+
 const {
   initWrappers,
   configureWrappers,
@@ -160,13 +162,20 @@ function makeOpenEyes({
       matchLevel,
     });
 
-    const close = makeCloseEyes({
-      getError,
-      logger,
+    const close = makeClose({
       getCheckWindowPromises,
+      openEyesPromises,
       wrappers,
       resolveTests,
+      getError,
+      logger,
+    });
+    const abort = makeAbort({
+      getCheckWindowPromises,
       openEyesPromises,
+      wrappers,
+      resolveTests,
+      setError,
     });
 
     return {
@@ -196,10 +205,6 @@ function makeOpenEyes({
       return async () => {
         logger.log(`${name}: isDisabled=true, skipping checks`);
       };
-    }
-
-    function abort() {
-      return Promise.all(wrappers.map(wrapper => wrapper.abortIfNotClosed()));
     }
   };
 }

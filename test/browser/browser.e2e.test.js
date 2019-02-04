@@ -6,7 +6,7 @@ const puppeteer = require('puppeteer');
 const testServer = require('../util/testServer');
 const fs = require('fs');
 const path = require('path');
-const {getProcessPageAndSerializeScript} = require('@applitools/dom-capture');
+const {getProcessPageAndSerializeScript} = require('@applitools/dom-snapshot');
 
 describe('browser visual grid', () => {
   let baseUrl, closeServer;

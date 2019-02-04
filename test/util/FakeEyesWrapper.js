@@ -10,6 +10,7 @@ const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture');
 const SOME_BATCH = 'SOME_BATCH';
 const getSha256Hash = require('./getSha256Hash');
 const FakeRunningRender = require('./FakeRunningRender');
+const EventEmitter = require('events');
 
 let salt = 0;
 
@@ -27,8 +28,9 @@ const selectorsToLocations = {
   sel3: {x: 100, y: 101, width: 102, height: 103},
 };
 
-class FakeEyesWrapper {
+class FakeEyesWrapper extends EventEmitter {
   constructor({goodFilename, goodResourceUrls = [], goodTags, goodResources = []}) {
+    super();
     this._logger = {
       verbose: console.log,
       log: console.log,
@@ -45,6 +47,12 @@ class FakeEyesWrapper {
 
   async open(_appName, _testName, _viewportSize) {
     this.results = [];
+    return new Promise(res =>
+      setTimeout(() => {
+        this.emit('openEnd');
+        res();
+      }, 100),
+    );
   }
 
   async renderBatch(renderRequests) {
@@ -153,18 +161,25 @@ class FakeEyesWrapper {
     result.__checkSettings = checkSettings;
     result.__tag = tag;
     this.results.push(result);
-    return result;
+    return new Promise(res =>
+      setTimeout(() => {
+        this.emit('checkWindowEnd');
+        res(result);
+      }, 100),
+    );
   }
 
   createRGridDom({cdt: _cdt, resources: _resources}) {}
 
   async close() {
+    this.emit('closed');
     this.closed = !this.aborted;
     if (this.results.find(r => !r.getAsExpected())) throw new Error('mismatch');
     return this.results;
   }
 
   async abortIfNotClosed() {
+    this.emit('aborted');
     this.aborted = !this.closed;
   }
 
