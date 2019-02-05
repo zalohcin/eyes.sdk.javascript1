@@ -1,3 +1,4 @@
+/* global fetch */
 'use strict';
 const throatPkg = require('throat');
 const createLogger = require('./createLogger');
@@ -14,7 +15,7 @@ const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetR
 const getBatch = require('./getBatch');
 const transactionThroat = require('./transactionThroat');
 const getRenderMethods = require('./getRenderMethods');
-const {ptimeoutWithError} = require('@applitools/functional-commons');
+const ptimeout = require('./ptimeout');
 const {
   createRenderWrapper,
   authorizationErrMsg,
@@ -195,7 +196,7 @@ function makeRenderingGridClient({
   }
 
   function makeFetchWithTimeout(timeout) {
-    return url => ptimeoutWithError(fetch(url), timeout, 'fetch timout exceeded');
+    return ptimeout(fetch, timeout, 'fetch timeout exceeded');
   }
 }
 

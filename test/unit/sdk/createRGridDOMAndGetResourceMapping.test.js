@@ -1,3 +1,4 @@
+/* global fetch */
 'use strict';
 const {describe, it, before, after, beforeEach} = require('mocha');
 const {expect} = require('chai');
@@ -12,6 +13,7 @@ const {loadJsonFixture, loadFixtureBuffer} = require('../../util/loadFixture');
 const toRGridResource = require('../../util/toRGridResource');
 const createRGridDom = require('../../../src/sdk/createRGridDom');
 const getTestCssResources = require('../../util/getTestCssResources');
+require('@applitools/isomorphic-fetch');
 
 describe('createRGridDOMAndGetResourceMapping', () => {
   let server;
@@ -29,8 +31,9 @@ describe('createRGridDOMAndGetResourceMapping', () => {
     const getAllResources = makeGetAllResources({
       resourceCache: createResourceCache(),
       extractCssResources: makeExtractCssResources(testLogger),
-      fetchResource: makeFetchResource({logger: testLogger}),
+      fetchResource: makeFetchResource({logger: testLogger, fetch}),
       fetchCache: createResourceCache(),
+      logger: console,
     });
     fut = makeCreateRGridDOMAndGetResourceMapping({getAllResources});
   });

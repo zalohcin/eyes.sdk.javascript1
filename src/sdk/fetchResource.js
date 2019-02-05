@@ -1,4 +1,3 @@
-/* global fetch */
 'use strict';
 const retryFetch = require('@applitools/http-commons/src/retryFetch');
 const createResourceCache = require('./createResourceCache');
