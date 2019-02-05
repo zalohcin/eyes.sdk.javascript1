@@ -1,4 +1,670 @@
 
+v10.0.5 / 2019-02-05
+====================
+
+  * 10.0.5
+  * fixed tests & added local ptimeout function (that stoppes the timeout on resolve).
+  * changelog
+
+v10.0.4 / 2019-02-04
+====================
+
+  * 10.0.4
+  * Added timeout to fetch resource 2 minutes.
+  * changelog
+
+v10.0.3 / 2019-02-04
+====================
+
+  * 10.0.3
+  * Now abort is stopping tests and then waiting for open and checkWindow end, (Also added tests and fixed eslintignore).
+  * Merge branch 'isomorphic'
+  * Added npm i to build:browser script
+  * added browser e2e test
+  * change dom-capture to dom-snapshot and update readme
+  * Merge pull request #4 from amirhalatzi/patch-1
+  * Update README.md
+
+v10.0.2 / 2019-01-15
+====================
+
+  * 10.0.2
+  * update packages
+
+v10.0.1 / 2019-01-15
+====================
+
+  * 10.0.1
+
+v10.0.0 / 2019-01-15
+====================
+
+  * 10.0.0
+  * Merge branch 'isomorphic'
+  * Merge remote-tracking branch 'origin/master' into isomorphic
+  * added idea dir to gitignore
+  * Merge pull request #2 from applitools/browser-array-buffer
+  * use array buffer as an intermediary convertion to buffer
+
+v9.1.5 / 2019-01-13
+===================
+
+  * 9.1.5
+
+v9.1.4 / 2019-01-13
+===================
+
+  * 9.1.4
+
+v9.1.3 / 2019-01-13
+===================
+
+  * 9.1.3
+  * added idea dir to gitignore
+  * use array buffer as an intermediary convertion to buffer
+
+v9.1.2 / 2019-01-07
+===================
+
+  * 9.1.2
+  * Merge branch 'master' into isomorphic
+  * 9.0.6
+  * 9.0.5
+  * bring back createLogger to publish tag
+  * isomorphic vgc!
+
+v9.1.1 / 2019-01-07
+===================
+
+  * 9.1.1
+
+v9.1.0 / 2019-01-07
+===================
+
+  * 9.1.0
+  * add matchLevel to checkWindow args in readme
+  * support matchLevel in checkWindow
+  * log saveData path
+
+v9.0.5 / 2018-12-20
+===================
+
+  * 9.0.5
+  * update packages
+
+v9.0.6 / 2018-12-23
+===================
+
+  * 9.0.6
+  * 9.0.5
+  * bring back createLogger to publish tag
+  * isomorphic vgc!
+  * update dom-capture to 6.0.4
+
+v9.0.4 / 2018-12-16
+===================
+
+  * 9.0.4
+  * add Desktop deviceInfo for non-emulation
+  * improvement to render script
+  * add info about chrome emulation in deviceInfo
+
+v9.0.3 / 2018-12-16
+===================
+
+  * 9.0.3
+  * fix #14 - validate apiKey presence in openEyes
+  * changelog
+
+v9.0.2 / 2018-12-16
+===================
+
+  * 9.0.2
+  * update eyes-sdk-core to 4.5.4
+
+v9.0.1 / 2018-12-16
+===================
+
+  * 9.0.1
+
+v9.0.0 / 2018-12-16
+===================
+
+  * 9.0.0
+  * use dom-capture v6 to get css references from the browser
+
+v8.0.7 / 2018-12-11
+===================
+
+  * 8.0.7
+  * Merge branch 'master' into isomorphic
+  * 8.0.5
+  * Merge branch 'master' into isomorphic
+  * 8.0.3
+  * use isomorphic-fetch instead of node-fetch
+
+v8.0.6 / 2018-12-11
+===================
+
+  * 8.0.6
+  * 8.0.5
+  * update eyes-sdk-core to 4.5.3 to handle null render statuses
+
+v8.0.5 / 2018-12-11
+===================
+
+  * 8.0.5
+  * Merge branch 'master' into isomorphic
+  * 8.0.3
+  * use isomorphic-fetch instead of node-fetch
+
+v8.0.4 / 2018-12-11
+===================
+
+  * 8.0.4
+  * 8.0.3
+  * fix statuser to continue after errors
+  * fix statuser to run after errors
+
+v8.0.3 / 2018-12-11
+===================
+
+  * 8.0.3
+  * use isomorphic-fetch instead of node-fetch
+
+v8.0.2 / 2018-12-11
+===================
+
+  * 8.0.2
+  * update packages
+
+v8.0.1 / 2018-12-11
+===================
+
+  * 8.0.1
+  * tests for statuser
+  * statuser is done!
+  * WIP - stabilize statuser (integration tests)
+  * statuser (WIP - e2e passing but other tests not)
+
+v8.0.0 / 2018-12-03
+===================
+
+  * 8.0.0
+  * use a dedicated render wrapper (prep for statuser)
+  * script to render a page using puppeteer
+
+v7.2.8 / 2018-12-02
+===================
+
+  * 7.2.8
+  * support configuring agentId
+
+v7.2.7 / 2018-12-02
+===================
+
+  * 7.2.7
+  * update packages
+
+v7.2.6 / 2018-12-02
+===================
+
+  * 7.2.6
+  * fix unopened transaction
+  * changelog
+
+v7.2.5 / 2018-11-28
+===================
+
+  * 7.2.5
+  * update eyes-sdk-core to 4.3.0
+
+v7.2.4 / 2018-11-28
+===================
+
+  * 7.2.4
+  * add error message for 400 bad request
+
+v7.2.3 / 2018-11-27
+===================
+
+  * 7.2.3
+  * handle max concurrency for renders with failures
+
+v7.2.2 / 2018-11-26
+===================
+
+  * 7.2.2
+  * resolve test also when failures happen in checkWindow
+
+v7.2.1 / 2018-11-26
+===================
+
+  * 7.2.1
+
+v7.2.0 / 2018-11-26
+===================
+
+  * 7.2.0
+  * concurrency optimization - don't stop on open
+  * support username/password in proxy
+  * changelog
+
+v7.1.2 / 2018-11-25
+===================
+
+  * 7.1.2
+  * dc: remove browser utilities
+
+v7.1.1 / 2018-11-25
+===================
+
+  * 7.1.1
+
+v7.1.0 / 2018-11-25
+===================
+
+  * 7.1.0
+  * export functions from dom-capture
+
+v7.0.1 / 2018-11-24
+===================
+
+  * 7.0.1
+
+v7.0.0 / 2018-11-24
+===================
+
+  * 7.0.0
+  * remove browser-util and use dom-capture package
+  * optimize close by running granularly
+  * update packages and freeze puppeteer on 1.9.0
+  * changelog
+
+v6.0.1 / 2018-11-20
+===================
+
+  * 6.0.1
+  * update eyes-sdk-core to 4.2.0 to fix deviceInfo
+  * add device emulation to e2e tests
+  * 6.0.0
+  * remove waitForTestResults
+  * changelog
+
+v5.5.3 / 2018-11-14
+===================
+
+  * 5.5.3
+  * 5.5.2
+  * update eyes-sdk-core major version to 4.1.0
+  * add a changelog
+
+v5.5.1 / 2018-11-13
+===================
+
+  * 5.5.1
+
+v5.5.0 / 2018-11-13
+===================
+
+  * 5.5.0
+  * support srcset attribute
+
+v5.4.2 / 2018-11-07
+===================
+
+  * 5.4.2
+  * proper error message for blocked account
+  * validate input for appName
+
+v5.4.1 / 2018-11-06
+===================
+
+  * 5.4.1
+
+v5.4.0 / 2018-11-06
+===================
+
+  * 5.4.0
+  * add TestResultsStatus to public API
+
+v5.3.11 / 2018-11-05
+====================
+
+  * 5.3.11
+  * throw real error and fail faster when waiting for render status
+
+v5.3.10 / 2018-11-03
+====================
+
+  * 5.3.10
+  * avoid infinite recursion in resource cache
+
+v5.3.9 / 2018-10-24
+===================
+
+  * 5.3.9
+  * support for recursive dependencies
+
+v5.3.8 / 2018-10-23
+===================
+
+  * 5.3.8
+  * expose TestResults and TestFailedError from eyes.sdk.core
+
+v5.3.7 / 2018-10-23
+===================
+
+  * 5.3.7
+  * fix (another) issue with missing resource content
+
+v5.3.6 / 2018-10-22
+===================
+
+  * 5.3.6
+  * adding logs
+  * remove domCapture from readme
+
+v5.3.5 / 2018-10-16
+===================
+
+  * 5.3.5
+  * pass deviceName as deviceInfo to eyes
+
+v5.3.4 / 2018-10-16
+===================
+
+  * 5.3.4
+  * fix eyes.sdk.core version on 2.0.1
+
+v5.3.3 / 2018-10-15
+===================
+
+  * 5.3.3
+  * update packages and fix eyes.sdk.core on v2.0
+
+v5.3.2 / 2018-10-14
+===================
+
+  * 5.3.2
+  * fix issue with missing resource content
+
+v5.3.1 / 2018-10-10
+===================
+
+  * 5.3.1
+
+v5.3.0 / 2018-10-10
+===================
+
+  * 5.3.0
+  * refine tests for iframes
+  * remove unnecessary concat from putResources
+  * small refactorings for createRGridDDOMAndGetResourceMapping
+  * fix test after rebase
+  * fix tests
+  * fix after rebase
+  * make putResoruces backwards compatible
+  * Complete iframe support: - aggregrate all resources, across frames - separate DOM from resource map in renderRequest - absolutize URLs, and fix tests accordingly
+  * Add more complex test data for iframe
+  * remove useless test
+  * rewrite extractReources to parse iframes too
+  * convert frames to resources
+  * add e2e test for iframes
+  * have default value for frames
+  * fix checkWindow test, and dispose objects
+  * Complete iframe support: - aggregrate all resources, across frames - separate DOM from resource map in renderRequest - absolutize URLs, and fix tests accordingly
+  * Add more complex test data for iframe
+  * remove useless test
+  * send the fetch function - not the window
+  * rename processResource to processDocument
+  * change frames from object to array
+  * reformat iframe
+  * rewrite extractReources to parse iframes too
+  * convert frames to resources
+  * add e2e test for iframes
+
+v5.2.1 / 2018-10-03
+===================
+
+  * 5.2.1
+
+v5.2.0 / 2018-10-03
+===================
+
+  * 5.2.0
+  * add sendDom to readme
+  * add sendDom flag to checkWindow
+
+v5.1.1 / 2018-10-02
+===================
+
+  * 5.1.1
+
+v5.1.0 / 2018-10-02
+===================
+
+  * 5.1.0
+  * support floating regions
+
+v5.0.8 / 2018-10-02
+===================
+
+  * 5.0.8
+  * don't fails tests for failed fetch resources
+
+v5.0.7 / 2018-09-30
+===================
+
+  * 5.0.7
+  * add tests to (and fix) ignore regions with selector and imageLocation
+
+v5.0.6 / 2018-09-25
+===================
+
+  * 5.0.6
+  * update npm packages
+
+v5.0.5 / 2018-09-25
+===================
+
+  * 5.0.5
+  * simplify config
+
+v5.0.4 / 2018-09-25
+===================
+
+  * 5.0.4
+  * support CSSOM in empty style tags
+
+v5.0.3 / 2018-09-23
+===================
+
+  * 5.0.3
+  * fix eslint
+  * sensible default - create default batch for when not specified
+
+v5.0.2 / 2018-09-23
+===================
+
+  * 5.0.2
+  * add configPath to config and fix tests
+
+v5.0.1 / 2018-09-23
+===================
+
+  * 5.0.1
+
+v5.0.0 / 2018-09-23
+===================
+
+  * 5.0.0
+  * most imporatnt work: take config out of client
+  * add support for selectorRegions and ignore regions with selector
+
+v4.3.9 / 2018-09-20
+===================
+
+  * 4.3.9
+  * properly get renderInfo lazily
+  * properly cache fetches
+
+v4.3.8 / 2018-09-18
+===================
+
+  * 4.3.8
+  * add logs to checkWindow
+
+v4.3.7 / 2018-09-17
+===================
+
+  * 4.3.7
+  * update eyes.sdk.core to 1.10.0 to contain domLocation
+  * Revert "Revert "upload dom snapshot moved to rendering grid""
+
+v4.3.6 / 2018-09-16
+===================
+
+  * 4.3.6
+  * Revert "upload dom snapshot moved to rendering grid"
+
+v4.3.5 / 2018-09-16
+===================
+
+  * 4.3.5
+  * upload dom snapshot moved to rendering grid
+
+v4.3.4 / 2018-09-16
+===================
+
+  * 4.3.4
+  * fix exception with isDisabled
+  * fix tests
+  * package lock change
+
+v4.3.3 / 2018-09-08
+===================
+
+  * 4.3.3
+  * set renderingInfo also when openEyes has it lazily
+  * fix test after update to eyes.sdk.core
+
+v4.3.2 / 2018-09-08
+===================
+
+  * 4.3.2
+  * update eyes.sdk.core to 1.9.0
+
+v4.3.1 / 2018-09-08
+===================
+
+  * 4.3.1
+
+v4.3.0 / 2018-09-08
+===================
+
+  * 4.3.0
+  * better error handling
+  * support device size in render status result
+  * don't run initConfig in tests unless needed
+  * Merge branch 'master' into emulation-info
+  * fix tests and eslint
+  * add emulation info
+
+v4.2.6 / 2018-09-04
+===================
+
+  * 4.2.6
+  * add log to uploadResource
+
+v4.2.5 / 2018-09-02
+===================
+
+  * 4.2.5
+  * move renderInfo request out of openEyes
+  * cache for processResource instead of fetchResource
+  * refactor getAllResources as preparation to cache
+  * add fetch cache
+  * refactor getBundlesCssFromCdt to not receive resourceCache
+  * organize logging in tests
+  * add resources to cache even if not needed by server
+
+v4.2.4 / 2018-08-27
+===================
+
+  * 4.2.4
+  * write log when setting error
+
+v4.2.3 / 2018-08-27
+===================
+
+  * 4.2.3
+
+v4.2.2 / 2018-08-27
+===================
+
+  * 4.2.2
+  * update http-commons to support cypress
+
+v4.2.1 / 2018-08-22
+===================
+
+  * 4.2.1
+
+v4.2.0 / 2018-08-22
+===================
+
+  * 4.2.0
+  * add retry to fetchResrouces
+  * make domNodesToCdt serializable
+  * add ability not to throw on diffrerences
+
+v4.1.3 / 2018-08-22
+===================
+
+  * 4.1.3
+  * handle badly served css file
+
+v4.1.2 / 2018-08-22
+===================
+
+  * 4.1.2
+  * update package version
+
+v4.0.13 / 2018-08-22
+====================
+
+  * 4.0.13
+
+v4.0.12 / 2018-08-22
+====================
+
+  * 4.0.12
+
+v4.0.11 / 2018-08-22
+====================
+
+  * 4.0.11
+  * fix missing abort function when isDisabled
+  * Update readme to require domNodesToCdt properly
+  * test render concurrency and change checkWindow to be synchronous
+  * concurrency for render jobs + test for concurrency of open/close
+  * update package name
+  * rgc: concurrency of tests
+  * rgc: remove some async
+  * rgc: async disabledFunc. did I not commit this?
+  * small tweaks to readme
+  * 4.0.10
+  * readme: updated readme with sample code
+  * 4.0.9
+  * updated readme
+  * 4.0.8
+  * readme: small fix.
+  * updated readme. Draft complete.
+  * started updating readme
+  * 4.0.7
+  * first commit
+
 v10.0.4 / 2019-02-04
 ====================
 
