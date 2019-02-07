@@ -24,8 +24,6 @@ class EyesError extends Error {
     if (error instanceof Error) {
       this.message = `${message}: ${error.message}`;
       this.stack = error.stack;
-    } else {
-      Error.captureStackTrace(this, this.constructor);
     }
   }
 }
