@@ -1,7 +1,7 @@
 'use strict';
 
 const axios = require('axios');
-const url = require('url');
+const { URL } = require('url');
 
 const { ArgumentGuard, Location, GeneralUtils, PerformanceUtils } = require('@applitools/eyes-common');
 const { getCaptureDomScript } = require('@applitools/dom-capture');
@@ -110,7 +110,7 @@ class DomCapture {
       let domIFrame;
       try {
         domIFrame = await this.getFrameDom(script, url);
-      } catch (e) {
+      } catch (ignored) {
         domIFrame = {};
       }
       await this._driver.switchTo().parentFrame();
@@ -131,7 +131,7 @@ class DomCapture {
     try {
       this._logger.verbose(`Given URL to download: ${href}`);
       if (!GeneralUtils.isAbsoluteUrl(href)) {
-        href = url.resolve(baseUri, href.toString());
+        href = new URL(href.toString(), baseUri).href;
       }
 
       const timeStart = PerformanceUtils.start();

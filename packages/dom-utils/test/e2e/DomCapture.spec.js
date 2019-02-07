@@ -6,7 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const by = require('selenium-webdriver/lib/by');
 
 const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils, GeneralUtils } = require('@applitools/eyes-common');
 const { DomCapture } = require('../../index');
@@ -87,12 +86,12 @@ describe('DomCapture', function () {
     // the command is not exists in selenium js sdk, we should define it manually
     driver.getExecutor().defineCommand('switchToFrameParent', 'POST', '/session/:sessionId/frame/parent');
     if (!driver.findElementByXPath) {
-      driver.findElementByXPath = (xPath) => {
-        return driver.findElement(by.By.xpath(xPath));
+      driver.findElementByXPath = xPath => {
+        return driver.findElement(By.xpath(xPath));
       };
     }
     if (!driver.url) {
-      driver.url = (url) => {
+      driver.url = url => {
         return driver.get(url);
       };
     }
