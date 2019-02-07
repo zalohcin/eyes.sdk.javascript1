@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
+const by = require('selenium-webdriver/lib/by');
 
 const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils, GeneralUtils } = require('@applitools/eyes-common');
 const { DomCapture } = require('../../index');
@@ -56,7 +57,7 @@ async function captureDom(logger_, driver_, url, testName, initCode) {
  * @return {Promise<object>}
  */
 async function getExpectedDom(testName) {
-  const expectedDomBuffer = await fs.readFileSync(path.join(__dirname, `./fixtures/${testName}.json`));
+  const expectedDomBuffer = await fs.readFileSync(path.join(__dirname, `../fixtures/${testName}.json`));
   return JSON.parse(expectedDomBuffer);
 }
 
@@ -85,6 +86,16 @@ describe('DomCapture', function () {
     // TODO: remove once selenium SDK 4 is fixed
     // the command is not exists in selenium js sdk, we should define it manually
     driver.getExecutor().defineCommand('switchToFrameParent', 'POST', '/session/:sessionId/frame/parent');
+    if (!driver.findElementByXPath) {
+      driver.findElementByXPath = (xPath) => {
+        return driver.findElement(by.By.xpath(xPath));
+      };
+    }
+    if (!driver.url) {
+      driver.url = (url) => {
+        return driver.get(url);
+      };
+    }
     await driver.manage().window().setRect({ x: 0, y: 0, width: 800, height: 600 });
   });
 
@@ -136,6 +147,13 @@ describe('DomCapture', function () {
     const actualDomJsonString = await captureDom(logger, driver, 'https://www.bestbuy.com/site/apple-macbook-pro-13-display-intel-core-i5-8-gb-memory-256gb-flash-storage-silver/6936477.p?skuId=6936477', this.test.title, async driver => {
       await driver.findElement(By.css('.us-link')).click();
     });
+    const actualDomJson = JSON.parse(actualDomJsonString);
+    assert.ok(actualDomJson);
+  });
+
+  it('TestSendDOM_yuriieasternpeak', async function () {
+    let url = 'https://yuriieasternpeak.github.io/webdriver.io-test-html-pages/';
+    const actualDomJsonString = await captureDom(logger, driver, url, this.test.title);
     const actualDomJson = JSON.parse(actualDomJsonString);
     assert.ok(actualDomJson);
   });
