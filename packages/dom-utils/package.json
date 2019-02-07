@@ -1,6 +1,6 @@
 {
   "name": "@applitools/dom-utils",
-  "version": "4.5.0",
+  "version": "4.5.1",
   "description": "Applitools DOM Utils is a shared utility package",
   "keywords": [
     "dom-utils",
@@ -24,8 +24,8 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-common": "^1.2.2",
     "@applitools/dom-capture": "4.0.1",
+    "@applitools/eyes-common": "^1.2.3",
     "axios": "0.18.0"
   },
   "devDependencies": {

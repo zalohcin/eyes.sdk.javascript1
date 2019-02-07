@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-common",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Utilities for working with Eyes JavaScript SDK and the visual grid",
   "keywords": [
     "applitools",
