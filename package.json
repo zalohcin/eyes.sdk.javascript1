@@ -20,6 +20,7 @@
     "eslint": "eslint '**/*.js'",
     "test": "npm run build:browser && npm run test:mocha && npm run eslint",
     "prepublishOnly": "npm version patch",
+    "postpublish2": "npm run changelog",
     "changelog": "git changelog -f \"v$(jq -r '.version' < package.json)\""
   },
   "keywords": [
@@ -38,9 +39,9 @@
     "type": "git"
   },
   "dependencies": {
-    "@applitools/eyes-sdk-core": "^4.5.4",
-    "@applitools/functional-commons": "^1.0.33",
-    "@applitools/http-commons": "^1.2.3",
+    "@applitools/eyes-sdk-core": "^4.7.1",
+    "@applitools/functional-commons": "^1.0.39",
+    "@applitools/http-commons": "^1.2.5",
     "@applitools/isomorphic-fetch": "^3.0.0",
     "cssom": "git+https://github.com/amitzur/CSSOM.git#925260ff2c8f8387cf76df4d5776a06044a644c8",
     "he": "^1.2.0",
@@ -51,7 +52,7 @@
     "throat": "^4.1.0"
   },
   "devDependencies": {
-    "@applitools/dom-snapshot": "^1.0.2",
+    "@applitools/dom-snapshot": "^1.0.5",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.3",
@@ -66,7 +67,7 @@
     "morgan": "^1.9.1",
     "nock": "^9.6.1",
     "node-fetch": "^2.3.0",
-    "prettier": "^1.15.3",
-    "puppeteer": "^1.11.0"
+    "prettier": "^1.16.4",
+    "puppeteer": "^1.12.2"
   }
 }

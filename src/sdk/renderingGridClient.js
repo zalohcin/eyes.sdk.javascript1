@@ -15,7 +15,8 @@ const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetR
 const getBatch = require('./getBatch');
 const transactionThroat = require('./transactionThroat');
 const getRenderMethods = require('./getRenderMethods');
-const ptimeout = require('./ptimeout');
+const {ptimeoutWithError} = require('@applitools/functional-commons');
+
 const {
   createRenderWrapper,
   authorizationErrMsg,
@@ -86,7 +87,8 @@ function makeRenderingGridClient({
   const resourceCache = createResourceCache();
   const fetchCache = createResourceCache();
   const extractCssResources = makeExtractCssResources(logger);
-  const fetchWithTimeout = makeFetchWithTimeout(fetchResourceTimeout);
+  const fetchWithTimeout = url =>
+    ptimeoutWithError(fetch(url), fetchResourceTimeout, 'fetche timed out');
   const fetchResource = makeFetchResource({logger, fetchCache, fetch: fetchWithTimeout});
   const putResources = makePutResources({doPutResource});
   const renderBatch = makeRenderBatch({
@@ -193,10 +195,6 @@ function makeRenderingGridClient({
       });
 
     return renderInfoPromise;
-  }
-
-  function makeFetchWithTimeout(timeout) {
-    return ptimeout(fetch, timeout, 'fetch timeout exceeded');
   }
 }
 
