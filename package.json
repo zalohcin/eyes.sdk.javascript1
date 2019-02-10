@@ -20,7 +20,8 @@
     "eslint": "eslint '**/*.js'",
     "test": "npm run build:browser && npm run test:mocha && npm run eslint",
     "prepublishOnly": "npm version patch",
-    "changelog": "git changelog -f \"v$(jq -r '.version' < package.json)\""
+    "changelog": "git changelog -p -f v$npm_package_version",
+    "changelog:init": "sudo apt-get install git-extras && git config --global changelog.format \"* %s [[%h](https://github.com/applitools/eyes.storybook/commit/%H)]\""
   },
   "keywords": [
     "applitools",
