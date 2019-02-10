@@ -236,6 +236,22 @@ class GeneralUtils {
     const prod = (a, ...rest) => (rest.length > 0 ? prod(prod2(a, rest.pop()), ...rest) : a);
     return prod([[]], ...arrays);
   }
+
+  /**
+   * Get property of obj with a a path string
+   *
+   * @param {object} object The input object.
+   * @param {string} properties The path of a the property (format: "KEY_1/KEY_2/.../KEY_N" ).
+   */
+  static getPropertyByPath(obj, path) {
+    if (!obj || !/^([a-zA-Z0-9-_.]+\/)*[a-zA-Z0-9-_.]+$/.test(path)) return;
+    let val = obj;
+    for (let key of path.split('/')) {
+      val = typeof val === 'object' ? val[key] : undefined;
+      if (val === undefined) return;
+    }
+    return val;
+  }
 }
 
 exports.GeneralUtils = GeneralUtils;
