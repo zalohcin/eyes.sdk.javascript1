@@ -20,7 +20,6 @@
     "eslint": "eslint '**/*.js'",
     "test": "npm run build:browser && npm run test:mocha && npm run eslint",
     "prepublishOnly": "npm version patch",
-    "postpublish2": "npm run changelog",
     "changelog": "git changelog -f \"v$(jq -r '.version' < package.json)\""
   },
   "keywords": [
