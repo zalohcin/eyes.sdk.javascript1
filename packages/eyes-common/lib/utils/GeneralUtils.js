@@ -244,9 +244,9 @@ class GeneralUtils {
    * @param {string} properties The path of a the property (format: "KEY_1/KEY_2/.../KEY_N" ).
    */
   static getPropertyByPath(obj, path) {
-    if (!obj || !/^([a-zA-Z0-9-_.]+\/)*[a-zA-Z0-9-_.]+$/.test(path)) return;
+    if (!obj || !/^([a-zA-Z0-9-_.]+\.)*[a-zA-Z0-9-_.]+$/.test(path)) return;
     let val = obj;
-    for (let key of path.split('/')) {
+    for (let key of path.split('.')) {
       val = typeof val === 'object' ? val[key] : undefined;
       if (val === undefined) return;
     }

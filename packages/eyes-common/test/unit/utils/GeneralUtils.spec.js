@@ -114,7 +114,7 @@ describe('GeneralUtils', () => {
   describe('getPropertyByPath', () => {
     it('works', async () => {
       const obj = {one: {two: {three: 'ok'}}, another: false};
-      const result = GeneralUtils.getPropertyByPath(obj, 'one/two/three');
+      const result = GeneralUtils.getPropertyByPath(obj, 'one.two.three');
       assert.strictEqual(result, 'ok');
     });
 
@@ -126,52 +126,52 @@ describe('GeneralUtils', () => {
 
     it('works with booleans', async () => {
       let obj = {one: {two: {three: false}}, another: false};
-      let result = GeneralUtils.getPropertyByPath(obj, 'one/two/three');
+      let result = GeneralUtils.getPropertyByPath(obj, 'one.two.three');
       assert.strictEqual(result, false);
 
       obj = {one: {two: {three: true}}, another: false};
-      result = GeneralUtils.getPropertyByPath(obj, 'one/two/three');
+      result = GeneralUtils.getPropertyByPath(obj, 'one.two.three');
       assert.strictEqual(result, true);
     });
 
     it('works with numbers', async () => {
       let obj = {one: {two: {three: 1}}, another: false};
-      let result = GeneralUtils.getPropertyByPath(obj, 'one/two/three');
+      let result = GeneralUtils.getPropertyByPath(obj, 'one.two.three');
       assert.strictEqual(result, 1);
 
       obj = {one: {two: {three: 0}}, another: false};
-      result = GeneralUtils.getPropertyByPath(obj, 'one/two/three');
+      result = GeneralUtils.getPropertyByPath(obj, 'one.two.three');
       assert.strictEqual(result, 0);
     });
 
     it('returns undefined for wrong path', async () => {
       let obj = {one: {two: {three: false}}, another: false};
-      let result = GeneralUtils.getPropertyByPath(obj, 'one/two/four');
+      let result = GeneralUtils.getPropertyByPath(obj, 'one.two.four');
       assert.strictEqual(result, undefined);
 
       obj = {one: {two: {three: true}}, another: false};
-      result = GeneralUtils.getPropertyByPath(obj, 'one/three');
+      result = GeneralUtils.getPropertyByPath(obj, 'one.three');
       assert.strictEqual(result, undefined);
     });
 
     it('returns undefined for bad path', async () => {
       let obj = {one: {two: {three: false}}, another: false};
-      let result = GeneralUtils.getPropertyByPath(obj, 'one/two//three');
+      let result = GeneralUtils.getPropertyByPath(obj, 'one.two..three');
       assert.strictEqual(result, undefined);
 
       obj = {one: {two: {three: true}}, another: false};
-      result = GeneralUtils.getPropertyByPath(obj, 'one/three/');
+      result = GeneralUtils.getPropertyByPath(obj, 'one.three.');
       assert.strictEqual(result, undefined);
     });
 
     it('returns undefined for bad obj', async () => {
-      let result = GeneralUtils.getPropertyByPath(null, 'one/two//three');
+      let result = GeneralUtils.getPropertyByPath(null, 'one.two..three');
       assert.strictEqual(result, undefined);
 
-      result = GeneralUtils.getPropertyByPath(undefined, 'one/three/');
+      result = GeneralUtils.getPropertyByPath(undefined, 'one.three.');
       assert.strictEqual(result, undefined);
 
-      result = GeneralUtils.getPropertyByPath(3, 'one/three/');
+      result = GeneralUtils.getPropertyByPath(3, 'one.three.');
       assert.strictEqual(result, undefined);
     });
   });
