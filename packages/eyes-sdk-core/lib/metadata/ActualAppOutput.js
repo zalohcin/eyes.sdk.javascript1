@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('@applitools/eyes-common');
+const { GeneralUtils, DateTimeUtils } = require('@applitools/eyes-common');
 
 const { ImageMatchSettings } = require('./ImageMatchSettings');
 const { Image } = require('./Image');
@@ -35,7 +35,7 @@ class ActualAppOutput {
     }
 
     if (occurredAt && !(occurredAt instanceof Date)) {
-      occurredAt = GeneralUtils.fromISO8601DateTime(occurredAt);
+      occurredAt = DateTimeUtils.fromISO8601DateTime(occurredAt);
     }
 
     this._image = image;

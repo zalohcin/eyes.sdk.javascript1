@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('@applitools/eyes-common');
+const { GeneralUtils, DateTimeUtils } = require('@applitools/eyes-common');
 
 class BatchInfo {
   /**
@@ -10,7 +10,7 @@ class BatchInfo {
    */
   constructor({ id, name, startedAt } = {}) {
     if (startedAt && !(startedAt instanceof Date)) {
-      startedAt = GeneralUtils.fromISO8601DateTime(startedAt);
+      startedAt = DateTimeUtils.fromISO8601DateTime(startedAt);
     }
 
     this._id = id;

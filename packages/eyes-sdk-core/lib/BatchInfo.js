@@ -1,6 +1,6 @@
 'use strict';
 
-const { ArgumentGuard, GeneralUtils, TypeUtils } = require('@applitools/eyes-common');
+const { ArgumentGuard, GeneralUtils, TypeUtils, DateTimeUtils } = require('@applitools/eyes-common');
 
 /**
  * A batch of tests.
@@ -31,7 +31,7 @@ class BatchInfo {
     let { startedAt } = varArg;
 
     if (startedAt && !(startedAt instanceof Date)) {
-      startedAt = GeneralUtils.fromISO8601DateTime(startedAt);
+      startedAt = DateTimeUtils.fromISO8601DateTime(startedAt);
     }
 
     this._id = id || process.env.APPLITOOLS_BATCH_ID || GeneralUtils.guid();

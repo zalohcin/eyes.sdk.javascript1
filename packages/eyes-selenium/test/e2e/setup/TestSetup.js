@@ -4,7 +4,8 @@ const path = require('path');
 const axios = require('axios');
 const assert = require('assert');
 const { Capabilities, Builder } = require('selenium-webdriver');
-const { ConsoleLogHandler, FileLogHandler, GeneralUtils, BatchInfo, RectangleSize, metadata } = require('@applitools/eyes-sdk-core');
+const { ConsoleLogHandler, FileLogHandler, DateTimeUtils } = require('@applitools/eyes-common');
+const { BatchInfo, RectangleSize, metadata } = require('@applitools/eyes-sdk-core');
 
 const { StitchMode, Eyes } = require('../../../index');
 
@@ -116,7 +117,7 @@ class TestSetup {
     // In case if need to test with scaling factor
     // this._caps.addArguments('--force-device-scale-factor=1.25')
 
-    const extendedTestName = `${testName}_${this._caps.getBrowserName()}_${this._platform}_${GeneralUtils.toLogFileDateTime()}`;
+    const extendedTestName = `${testName}_${this._caps.getBrowserName()}_${this._platform}_${DateTimeUtils.toLogFileDateTime()}`;
 
     // noinspection EmptyCatchBlockJS
     this._webDriver = await new Builder().withCapabilities(this._caps).usingServer(seleniumServerUrl).build();

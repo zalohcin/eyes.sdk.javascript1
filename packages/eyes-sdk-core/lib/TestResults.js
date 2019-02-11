@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils, RectangleSize } = require('@applitools/eyes-common');
+const { GeneralUtils, RectangleSize, DateTimeUtils } = require('@applitools/eyes-common');
 
 const { TestResultsStatus } = require('./TestResultsStatus');
 
@@ -391,7 +391,7 @@ class TestResults {
     }
 
     if (startedAt && !(startedAt instanceof Date)) {
-      startedAt = GeneralUtils.fromISO8601DateTime(startedAt);
+      startedAt = DateTimeUtils.fromISO8601DateTime(startedAt);
     }
 
     if (stepsInfo && stepsInfo.length > 0 && !(stepsInfo[0] instanceof StepInfo)) {

@@ -3,7 +3,7 @@
 const axios = require('axios');
 const zlib = require('zlib');
 
-const { GeneralUtils, TypeUtils, ArgumentGuard } = require('@applitools/eyes-common');
+const { GeneralUtils, TypeUtils, ArgumentGuard, DateTimeUtils } = require('@applitools/eyes-common');
 
 const { ProxySettings } = require('./ProxySettings');
 const { RenderingInfo } = require('./RenderingInfo');
@@ -104,7 +104,7 @@ async function longRequestLoop(self, name, options, delay) {
   self._logger.verbose(`${name}: Still running... Retrying in ${delay} ms`);
 
   await GeneralUtils.sleep(delay);
-  options.headers['Eyes-Date'] = GeneralUtils.toRfc1123DateTime(); // eslint-disable-line no-param-reassign
+  options.headers['Eyes-Date'] = DateTimeUtils.toRfc1123DateTime(); // eslint-disable-line no-param-reassign
 
   const response = await sendRequest(self, name, options);
   if (response.status !== HTTP_STATUS_CODES.OK) {
@@ -139,7 +139,7 @@ async function longRequestCheckStatus(self, name, response) {
         method: 'DELETE',
         url: response.headers.location,
         params: { apiKey: self.getApiKey() },
-        headers: { 'Eyes-Date': GeneralUtils.toRfc1123DateTime() },
+        headers: { 'Eyes-Date': DateTimeUtils.toRfc1123DateTime() },
       });
       return sendRequest(self, name, options);
     }
@@ -162,7 +162,7 @@ async function longRequestCheckStatus(self, name, response) {
 async function sendLongRequest(self, name, options = {}) {
   // extend headers of the request
   options.headers['Eyes-Expect'] = '202+location'; // eslint-disable-line no-param-reassign
-  options.headers['Eyes-Date'] = GeneralUtils.toRfc1123DateTime(); // eslint-disable-line no-param-reassign
+  options.headers['Eyes-Date'] = DateTimeUtils.toRfc1123DateTime(); // eslint-disable-line no-param-reassign
 
   const response = await sendRequest(self, name, options);
   return longRequestCheckStatus(self, name, response);

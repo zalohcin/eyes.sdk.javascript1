@@ -7,7 +7,7 @@ const path = require('path');
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 
-const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils, GeneralUtils } = require('@applitools/eyes-common');
+const { Logger, ConsoleLogHandler, FileLogHandler, PerformanceUtils, DateTimeUtils } = require('@applitools/eyes-common');
 const { DomCapture } = require('../../index');
 
 /**
@@ -69,7 +69,7 @@ describe('DomCapture', function () {
 
     logger = new Logger();
     if (process.env.CI == null && process.env.APPLITOOLS_LOGS_PATH != null) {
-      const dateString = GeneralUtils.toLogFileDateTime();
+      const dateString = DateTimeUtils.toLogFileDateTime();
       const extendedTestName = `${this.test.parent.title}_${dateString}`;
       const logsPath = process.env.APPLITOOLS_LOGS_PATH || '.';
       const pathName = path.join(logsPath, 'JavaScript', extendedTestName);

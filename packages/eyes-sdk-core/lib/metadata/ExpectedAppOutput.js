@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('@applitools/eyes-common');
+const { GeneralUtils, DateTimeUtils } = require('@applitools/eyes-common');
 
 const { Annotations } = require('./Annotations');
 const { Image } = require('./Image');
@@ -28,7 +28,7 @@ class ExpectedAppOutput {
     }
 
     if (occurredAt && !(occurredAt instanceof Date)) {
-      occurredAt = GeneralUtils.fromISO8601DateTime(occurredAt);
+      occurredAt = DateTimeUtils.fromISO8601DateTime(occurredAt);
     }
 
     this._tag = tag;
