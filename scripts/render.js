@@ -51,8 +51,14 @@ const debug = require('debug')('render');
   debug('decoding done');
 
   checkWindow({url, cdt, resourceUrls, resourceContents, frames});
-  const results = await close(false);
-  console.log(`Test result:\n\t${results.map(r => `${r.getStatus()} ${r.getUrl()}`).join('\n\t')}`);
+  const results = await close().catch(err => err);
+  if (results instanceof Error) {
+    console.log('error!', results);
+  } else {
+    console.log(
+      `Test result:\n\t${results.map(r => `${r.getStatus()} ${r.getUrl()}`).join('\n\t')}`,
+    );
+  }
   await browser.close();
   await server.close();
   debug('browser closed');
