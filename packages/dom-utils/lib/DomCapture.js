@@ -105,7 +105,7 @@ class DomCapture {
       if (!iframeXpath) {
         continue;
       }
-      const iframeEl = await this.driver.findElementByXPath(iframeXpath);
+      const iframeEl = await this.driver.findElementByXPath(`/${iframeXpath}`);
       await this._driver.switchTo().frame(iframeEl);
       let domIFrame;
       try {
