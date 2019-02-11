@@ -43,7 +43,7 @@
     "@applitools/functional-commons": "^1.0.39",
     "@applitools/http-commons": "^1.2.5",
     "@applitools/isomorphic-fetch": "^3.0.0",
-    "cssom": "git+https://github.com/amitzur/CSSOM.git#925260ff2c8f8387cf76df4d5776a06044a644c8",
+    "cssom": "^0.3.6",
     "he": "^1.2.0",
     "lodash.mapkeys": "^4.6.0",
     "lodash.mapvalues": "^4.6.0",
