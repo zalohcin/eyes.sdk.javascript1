@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-rendering",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Applitools Eyes SDK for Visual Grid",
   "keywords": [
     "eyes-rendering",
@@ -32,10 +32,10 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/dom-snapshot": "^1.0.2",
-    "@applitools/eyes-common": "^1.2.3",
-    "@applitools/eyes-sdk-core": "^4.7.1",
-    "@applitools/eyes-selenium": "^4.4.7",
-    "@applitools/visual-grid-client": "^11.0.4"
+    "@applitools/eyes-common": "^1.2.4",
+    "@applitools/eyes-sdk-core": "^4.7.2",
+    "@applitools/eyes-selenium": "^4.4.8",
+    "@applitools/visual-grid-client": "^11.0.5"
   },
   "devDependencies": {
     "chai": "^4.2.0",

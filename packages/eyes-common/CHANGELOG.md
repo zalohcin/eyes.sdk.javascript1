@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@1.2.3...@applitools/eyes-common@1.2.4) (2019-02-11)
+
+**Note:** Version bump only for package @applitools/eyes-common
+
+
+
+
+
+
 ## [1.2.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@1.2.2...@applitools/eyes-common@1.2.3) (2019-02-07)
 
 
