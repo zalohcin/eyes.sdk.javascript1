@@ -137,6 +137,7 @@ class GeneralUtils {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * Convert a Date object to a ISO-8601 date string
    *
@@ -148,6 +149,7 @@ class GeneralUtils {
     return DateTimeUtils.toISO8601DateTime(date);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * Convert a Date object to a RFC-1123 date string
    *
@@ -159,6 +161,7 @@ class GeneralUtils {
     return DateTimeUtils.toRfc1123DateTime(date);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * Convert a Date object to a RFC-1123 date string
    *
@@ -170,6 +173,7 @@ class GeneralUtils {
     return DateTimeUtils.toLogFileDateTime(date);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * Creates {@link Date} instance from an ISO 8601 formatted string.
    *
@@ -238,18 +242,25 @@ class GeneralUtils {
   }
 
   /**
-   * Get property of obj with a a path string
+   * Get a property of the object by a path string
    *
-   * @param {object} object The input object.
-   * @param {string} properties The path of a the property (format: "KEY_1/KEY_2/.../KEY_N" ).
+   * @param {object} object The object to query.
+   * @param {string} path The path of a property (example: "foo.bar.baz" ).
+   * @return {*|undefined} The value of the given property or `undefined` if the property is not exists.
    */
-  static getPropertyByPath(obj, path) {
-    if (!obj || !/^([a-zA-Z0-9-_.]+\.)*[a-zA-Z0-9-_.]+$/.test(path)) return;
-    let val = obj;
+  static getPropertyByPath(object, path) {
+    if (!object || !/^([a-zA-Z0-9-_.]+\.)*[a-zA-Z0-9-_.]+$/.test(path)) {
+      return undefined; // TODO: may be we can throw an error if path is given in wrong format
+    }
+
+    let val = object;
     for (let key of path.split('.')) {
       val = typeof val === 'object' ? val[key] : undefined;
-      if (val === undefined) return;
+      if (val === undefined) {
+        return undefined;
+      }
     }
+
     return val;
   }
 }
