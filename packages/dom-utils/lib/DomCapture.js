@@ -52,7 +52,7 @@ class DomCapture {
 
     let asyncCaptureDomScript =
       `var callback = arguments[arguments.length - 1];
-        ${captureDomScript}.then(res => {
+      (${captureDomScript})().then(res => {
         return callback(res)
       })`;
     const url = await this.driver.getCurrentUrl();
@@ -63,7 +63,6 @@ class DomCapture {
   }
 
   async getFrameDom(script, url) {
-
     let domSnapshot = await this.driver.executeAsyncScript(script);
 
     const cssIndex = domSnapshot.indexOf('#####');
@@ -105,8 +104,7 @@ class DomCapture {
       if (!iframeXpath) {
         continue;
       }
-      const iframeEl = await this.driver.findElementByXPath(`/${iframeXpath}`);
-      await this._driver.switchTo().frame(iframeEl);
+      await this._switchToFrame(iframeXpath);
       let domIFrame;
       try {
         domIFrame = await this.getFrameDom(script, url);
@@ -118,6 +116,24 @@ class DomCapture {
     }
 
     return domSnapshot;
+  }
+
+  /**
+   * @param {string|string[]} xpaths
+   * @return {Promise<void>}
+   * @private
+   */
+  async _switchToFrame(xpaths) {
+    if (!Array.isArray(xpaths)) {
+      xpaths = xpaths.split(',');
+    }
+
+    const iframeEl = await this.driver.findElementByXPath(`/${xpaths[0]}`);
+    await this._driver.switchTo().frame(iframeEl);
+
+    if (xpaths.length > 1) {
+      await this._switchToFrame(xpaths.shift());
+    }
   }
 
   /**

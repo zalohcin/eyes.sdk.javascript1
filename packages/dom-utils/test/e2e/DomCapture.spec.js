@@ -130,6 +130,14 @@ describe('DomCapture', function () {
     assert.deepStrictEqual(actualDomJson, expectedDomJson);
   });
 
+  it('TestSendDOM_yuriieasternpeak', async function () {
+    const actualDomJsonString = await captureDom(logger, driver, 'https://yuriieasternpeak.github.io/webdriver.io-test-html-pages/', this.test.title);
+    const actualDomJson = JSON.parse(actualDomJsonString);
+
+    const expectedDomJson = await getExpectedDom(this.test.title);
+    assert.deepStrictEqual(actualDomJson, expectedDomJson);
+  });
+
   it('TestSendDOM_Booking1', async function () {
     const actualDomJsonString = await captureDom(logger, driver, 'https://www.booking.com/searchresults.en-gb.html?label=gen173nr-1FCAEoggJCAlhYSDNYBGhqiAEBmAEuwgEKd2luZG93cyAxMMgBDNgBAegBAfgBC5ICAXmoAgM;sid=ce4701a88873eed9fbb22893b9c6eae4;city=-2600941;from_idr=1&;ilp=1;d_dcp=1', this.test.title);
     const actualDomJson = JSON.parse(actualDomJsonString);
@@ -150,9 +158,8 @@ describe('DomCapture', function () {
     assert.ok(actualDomJson);
   });
 
-  it('TestSendDOM_yuriieasternpeak', async function () {
-    let url = 'https://yuriieasternpeak.github.io/webdriver.io-test-html-pages/';
-    const actualDomJsonString = await captureDom(logger, driver, url, this.test.title);
+  it('TestSendDOM_cbtnuggets', async function () {
+    const actualDomJsonString = await captureDom(logger, driver, 'https://www.cbtnuggets.com/', this.test.title);
     const actualDomJson = JSON.parse(actualDomJsonString);
     assert.ok(actualDomJson);
   });
