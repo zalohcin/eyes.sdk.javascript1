@@ -1,6 +1,6 @@
 'use strict';
 
-const { CheckSettings } = require('@applitools/eyes-sdk-core');
+const { CheckSettings, Location } = require('@applitools/eyes-sdk-core');
 
 class ImagesCheckSettings extends CheckSettings {
   /**
@@ -20,9 +20,10 @@ class ImagesCheckSettings extends CheckSettings {
     this._imageUrl = url;
     this._imageProvider = null;
 
-    this._imageSize = null;
-    this._domString = null;
-    this._ignoreMismatch = false;
+    /** @type {RectangleSize} */ this._imageSize = undefined;
+    /** @type {string} */ this._domString = undefined;
+    /** @type {Location} */ this._imageLocation = undefined;
+    /** @type {boolean} */ this._ignoreMismatch = false;
   }
 
   /**
@@ -147,6 +148,23 @@ class ImagesCheckSettings extends CheckSettings {
    */
   getDomString() {
     return this._domString;
+  }
+
+  /**
+   * @param {Location|{x: number, y: number}} location
+   * @return {this} This instance of the settings object.
+   */
+  withLocation(location) {
+    this._imageLocation = new Location(location);
+    return this;
+  }
+
+  /**
+   * @package
+   * @return {Location}
+   */
+  getImageLocation() {
+    return this._imageLocation;
   }
 
   // noinspection JSUnusedGlobalSymbols
