@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.6.7...@applitools/eyes-images@4.7.0) (2019-02-14)
+
+
+### Features
+
+* **eyes-images:** add `.withLocation()` method to CheckSettings ([0fd38fb](https://github.com/applitools/eyes.sdk.javascript1/commit/0fd38fb))
+
+
+
+
+
 ## [4.6.7](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.6.6...@applitools/eyes-images@4.6.7) (2019-02-11)
 
 **Note:** Version bump only for package @applitools/eyes-images

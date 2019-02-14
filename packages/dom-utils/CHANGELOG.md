@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.5.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.5.2...@applitools/dom-utils@4.5.3) (2019-02-14)
+
+
+### Bug Fixes
+
+* **dom-utils:** update `[@applitools](https://github.com/applitools)/dom-capture` to version 6.1.5 ([a866cfd](https://github.com/applitools/eyes.sdk.javascript1/commit/a866cfd))
+
+
+
+
+
 ## [4.5.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.5.1...@applitools/dom-utils@4.5.2) (2019-02-11)
 
 **Note:** Version bump only for package @applitools/dom-utils
