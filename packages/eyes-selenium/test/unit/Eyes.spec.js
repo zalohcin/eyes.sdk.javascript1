@@ -2,12 +2,12 @@
 
 require('chromedriver');
 const assert = require('assert');
+const assertRejects = require('assert-rejects');
 
 const { Builder, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 
 const { Eyes, EyesWebDriver, Target } = require('../../index');
-const { throwsAsync } = require('../utils');
 
 let driver, eyes;
 describe('Eyes', function () {
@@ -33,7 +33,7 @@ describe('Eyes', function () {
     });
 
     it('should throw IllegalState: Eyes not open', async function () {
-      await throwsAsync(async () => eyes.check('test', Target.window()), 'IllegalState: Eyes not open');
+      await assertRejects(eyes.check('test', Target.window()), /IllegalState: Eyes not open/);
     });
   });
 

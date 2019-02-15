@@ -1,12 +1,12 @@
 'use strict';
 
 require('chromedriver');
+const assertRejects = require('assert-rejects');
 const { Builder, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { RectangleSize, DiffsFoundError, GeneralUtils, NewTestError } = require('@applitools/eyes-sdk-core');
+const { RectangleSize, GeneralUtils, NewTestError, DiffsFoundError } = require('@applitools/eyes-sdk-core');
 
 const { Eyes, Target } = require('../../index');
-const { throwsAsync } = require('../utils');
 
 let driver, eyes;
 describe('TestServerStatus', function () {
@@ -32,7 +32,7 @@ describe('TestServerStatus', function () {
 
     await eyes.check('TestSessionSummary_Status_Failed', Target.window());
 
-    await throwsAsync(async () => eyes.close(), DiffsFoundError, 'Expected DiffsFoundError');
+    await assertRejects(eyes.close(), DiffsFoundError, 'Expected DiffsFoundError');
   });
 
   it('TestSessionSummary_Status_New', async function () {
@@ -43,7 +43,7 @@ describe('TestServerStatus', function () {
 
     await eyes.check('TestSessionSummary_Status_New', Target.window());
 
-    await throwsAsync(async () => eyes.close(), NewTestError, 'Expected NewTestError');
+    await assertRejects(eyes.close(), NewTestError, 'Expected NewTestError');
   });
 
   afterEach(async function () {
