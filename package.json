@@ -4,6 +4,7 @@
   "scripts": {
     "install": "lerna bootstrap --hoist",
     "bootstrap": "lerna bootstrap --hoist",
+    "clean": "lerna clean --yes",
     "lint": "eslint . --cache --ext js",
     "test": "lerna run test",
     "test:unit": "lerna run test:unit",
@@ -12,7 +13,7 @@
     "test:perf": "lerna run test:perf"
   },
   "devDependencies": {
-    "lerna": "^3.11.1",
+    "lerna": "^3.13.0",
     "eslint": "^5.13.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-mocha-no-only": "^1.1.0",
