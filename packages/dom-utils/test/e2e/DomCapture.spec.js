@@ -164,6 +164,13 @@ describe('DomCapture', function () {
     assert.ok(actualDomJson);
   });
 
+  it('TestSendDOM_nytimes', async function () {
+    let url = 'https://cooking.nytimes.com/';
+    const actualDomJsonString = await captureDom(logger, driver, url, this.test.title);
+    const actualDomJson = JSON.parse(actualDomJsonString);
+    assert.ok(actualDomJson);
+  });
+
   afterEach(async function () {
     await driver.quit();
   });
