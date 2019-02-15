@@ -20,13 +20,14 @@ class Eyes extends EyesBase {
   constructor(serverUrl, isDisabled) {
     super(serverUrl, isDisabled);
 
-    this._title = null;
-    this._domString = null;
+    /** @type {String} */ this._title = undefined;
+    /** @type {String} */ this._domString = undefined;
+    /** @type {Location} */ this._imageLocation = undefined;
     this._inferred = '';
 
-    this._screenshot = null;
-    this._screenshotUrl = null;
-    this._screenshotProvider = null;
+    /** @type {MutableImage} */ this._screenshot = undefined;
+    /** @type {String} */ this._screenshotUrl = undefined;
+    /** @type {ImageProvider} */ this._screenshotProvider = undefined;
   }
 
   /**
@@ -105,6 +106,7 @@ class Eyes extends EyesBase {
       // Set the title to be linked to the screenshot.
       this._title = name;
       this._domString = checkSettings.getDomString();
+      this._imageLocation = checkSettings.getImageLocation();
 
       if (checkSettings.getTargetRegion()) {
         regionProvider = new RegionProvider(checkSettings.getTargetRegion());
@@ -129,12 +131,13 @@ class Eyes extends EyesBase {
       const matchResult = await super.checkWindowBase(regionProvider, name, checkSettings.getIgnoreMismatch(), checkSettings);
       return matchResult.getAsExpected();
     } finally {
-      this._title = null;
-      this._domString = null;
+      this._title = undefined;
+      this._domString = undefined;
+      this._imageLocation = undefined;
 
-      this._screenshot = null;
-      this._screenshotUrl = null;
-      this._screenshotProvider = null;
+      this._screenshot = undefined;
+      this._screenshotUrl = undefined;
+      this._screenshotProvider = undefined;
     }
   }
 
@@ -283,6 +286,13 @@ class Eyes extends EyesBase {
    */
   async tryCaptureDom() {
     return Promise.resolve(this._domString);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  async getImageLocation() {
+    return Promise.resolve(this._imageLocation);
   }
 
   /**
