@@ -2,24 +2,6 @@
   "name": "@applitools/visual-grid-client",
   "version": "11.0.5",
   "description": "",
-  "main": "src/visual-grid-client.js",
-  "engines": {
-    "node": ">=8.0.0"
-  },
-  "files": [
-    "src",
-    "browser.js"
-  ],
-  "scripts": {
-    "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",
-    "test:unit": "mocha --no-timeouts \"test/unit/**/*.test.js\"",
-    "test:it": "mocha --no-timeouts \"test/it/**/*.test.js\"",
-    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.test.js\"",
-    "eslint": "eslint \"**/*.js\"",
-    "test": "npm run test:mocha && npm run eslint",
-    "prepublishOnly": "npm version patch",
-    "changelog": "git changelog -f \"v$(jq -r '.version' < package.json)\""
-  },
   "keywords": [
     "applitools",
     "testing",
@@ -29,12 +11,24 @@
     "nodejs",
     "javascript"
   ],
+  "homepage": "https://applitools.com",
   "author": "Amit Zur <amit.zur@applitools.com>",
-  "license": "MIT",
   "repository": {
-    "url": "https://github.com/applitools/visual-grid-client",
-    "type": "git"
+    "type": "git",
+    "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
+  },
+  "directories": {
+    "lib": "./src",
+    "test": "./test"
+  },
+  "main": "src/visual-grid-client.js",
+  "files": [
+    "src",
+    "browser.js"
+  ],
   "dependencies": {
     "@applitools/eyes-common": "^1.2.4",
     "@applitools/eyes-sdk-core": "^4.7.2",
@@ -55,10 +49,10 @@
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.3",
     "debug": "^4.1.1",
-    "eslint": "^4.19.1",
-    "eslint-plugin-mocha-no-only": "^0.0.6",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-prettier": "^2.7.0",
+    "eslint": "^5.13.0",
+    "eslint-plugin-mocha-no-only": "^1.1.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-prettier": "^3.0.1",
     "express": "^4.16.4",
     "jsdom": "^11.12.0",
     "mocha": "^5.2.0",
@@ -67,5 +61,17 @@
     "node-fetch": "^2.3.0",
     "prettier": "^1.15.3",
     "puppeteer": "^1.11.0"
+  },
+  "scripts": {
+    "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.test.js\"",
+    "test:it": "mocha --no-timeouts \"test/it/**/*.test.js\"",
+    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.test.js\"",
+    "test": "npm run test:mocha && npm run eslint",
+    "lint": "eslint \"**/*.js\""
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.9.0"
   }
 }

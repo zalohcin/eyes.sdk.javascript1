@@ -1,6 +1,11 @@
 'use strict';
 
-const {CheckSettings, Region, IgnoreRegionByRectangle, FloatingRegionByRectangle} = require('@applitools/eyes-sdk-core');
+const {
+  CheckSettings,
+  Region,
+  IgnoreRegionByRectangle,
+  FloatingRegionByRectangle,
+} = require('@applitools/eyes-sdk-core');
 
 function createCheckSettings({ignore, floating}) {
   const checkSettings = new CheckSettings(0);
