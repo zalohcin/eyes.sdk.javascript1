@@ -3,6 +3,10 @@
 const { ArgumentGuard } = require('../utils/ArgumentGuard');
 
 /**
+ * @typedef {{x: number, y: number}} LocationObject
+ */
+
+/**
  * A location in a two-dimensional plane.
  */
 class Location {
