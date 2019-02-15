@@ -181,6 +181,21 @@ class TypeUtils {
 
     return true;
   }
+
+  /**
+   * Returns a `value` if it is !== undefined, or `defaultValue` otherwise
+   *
+   * @param {*} value
+   * @param {*} defaultValue
+   * @return {*}
+   */
+  static getOrDefault(value, defaultValue) {
+    if (value !== undefined) {
+      return value;
+    }
+
+    return defaultValue;
+  }
 }
 
 exports.TypeUtils = TypeUtils;
