@@ -36,7 +36,7 @@ class TestsDataProvider {
     permutations.push(...GeneralUtils.cartesianProduct([
       chromeOptions,
       firefoxOptions,
-      ie11Options,
+      // ie11Options,
       safariOptions,
     ], platforms));
 

@@ -54,11 +54,11 @@ dataProvider.forEach(row => {
       await eyes.check('Fluent - Frame', Target.frame('frame1'));
     });
 
-    it('TestCheckFrameInFrame_Fully_Fluent', async function () {
-      await eyes.check('Fluent - Full Frame in Frame', Target.frame('frame1')
-        .frame('frame1-1')
-        .fully());
-    });
+    // it('TestCheckFrameInFrame_Fully_Fluent', async function () {
+    //   await eyes.check('Fluent - Full Frame in Frame', Target.frame('frame1')
+    //     .frame('frame1-1')
+    //     .fully());
+    // });
 
     it('TestCheckRegionInFrame_Fluent', async function () {
       await eyes.check('Fluent - Region in Frame', Target.frame('frame1')
@@ -66,12 +66,12 @@ dataProvider.forEach(row => {
         .fully());
     });
 
-    it('TestCheckRegionInFrameInFrame_Fluent', async function () {
-      await eyes.check('Fluent - Region in Frame in Frame', Target.frame('frame1')
-        .frame('frame1-1')
-        .region(By.css('img'))
-        .fully());
-    });
+    // it('TestCheckRegionInFrameInFrame_Fluent', async function () {
+    //   await eyes.check('Fluent - Region in Frame in Frame', Target.frame('frame1')
+    //     .frame('frame1-1')
+    //     .region(By.css('img'))
+    //     .fully());
+    // });
 
     it('TestScrollbarsHiddenAndReturned_Fluent', async function () {
       await eyes.check('Fluent - Window (Before)', Target.window().fully());
@@ -114,14 +114,14 @@ dataProvider.forEach(row => {
         .floatingRegion(new Region(200, 200, 150, 150), 25, 25, 25, 25));
     });
 
-    it('TestCheckFrameInFrame_Fully_Fluent2', async function () {
-      await eyes.check('Fluent - Window', Target.window()
-        .fully());
-
-      await eyes.check('Fluent - Full Frame in Frame 2', Target.frame('frame1')
-        .frame('frame1-1')
-        .fully());
-    });
+    // it('TestCheckFrameInFrame_Fully_Fluent2', async function () {
+    //   await eyes.check('Fluent - Window', Target.window()
+    //     .fully());
+    //
+    //   await eyes.check('Fluent - Full Frame in Frame 2', Target.frame('frame1')
+    //     .frame('frame1-1')
+    //     .fully());
+    // });
 
     it('TestCheckWindowWithIgnoreBySelector_Fluent', async function () {
       await eyes.check('Fluent - Window with ignore region by selector', Target.window()

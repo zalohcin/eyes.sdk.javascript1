@@ -15,7 +15,6 @@ describe('DynamicPagesTest', function () {
     eyes = new Eyes();
     eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
     eyes.setLogHandler(new ConsoleLogHandler(true));
-    eyes.setSendDom(true);
     // eyes.setProxy('http://localhost:8888');
   });
 
@@ -26,7 +25,7 @@ describe('DynamicPagesTest', function () {
   it('TestNbcNews', async function () {
     await driver.get('https://www.nbcnews.com/');
     await eyes.check('NBC News Test', Target.window().fully().sendDom());
-    await eyes.close();
+    await eyes.close(false);
   });
 
   it('TestEbay', async function () {
@@ -36,23 +35,27 @@ describe('DynamicPagesTest', function () {
     await eyes.check('ebay Test - Electroincs', Target.window().fully().sendDom());
     await await driver.findElement(By.linkText('Smart Home')).click();
     await eyes.check('ebay Test - Electroincs > Smart Home', Target.window().fully().sendDom());
-    await eyes.close();
+    await eyes.close(false);
   });
 
   it('TestAliExpress', async function () {
     await driver.get('https://www.aliexpress.com/');
     await eyes.check('AliExpress Test', Target.window().fully().sendDom());
-    await eyes.close();
+    await eyes.close(false);
   });
 
   it('TestBestBuy', async function () {
     await driver.get('https://www.bestbuy.com/site/apple-macbook-pro-13-display-intel-core-i5-8-gb-memory-256gb-flash-storage-silver/6936477.p?skuId=6936477');
     await await driver.findElement(By.css('.us-link')).click();
     await eyes.check('BestBuy Test', Target.window().fully().sendDom());
-    await eyes.close();
+    await eyes.close(false);
+  });
+
+  afterEach(async function () {
+    return eyes.abortIfNotClosed();
   });
 
   after(function () {
-    return driver.quit().then(() => eyes.abortIfNotClosed());
+    return driver.quit();
   });
 });
