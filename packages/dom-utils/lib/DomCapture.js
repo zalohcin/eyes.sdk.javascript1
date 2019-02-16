@@ -6,6 +6,11 @@ const { URL } = require('url');
 const { ArgumentGuard, Location, GeneralUtils, PerformanceUtils } = require('@applitools/eyes-common');
 const { getCaptureDomScript } = require('@applitools/dom-capture');
 
+const DomCaptureReturnType = {
+  OBJECT: 'OBJECT',
+  STRING: 'STRING'
+};
+
 class DomCapture {
 
   /**
@@ -21,10 +26,10 @@ class DomCapture {
    * @param {Logger} logger A Logger instance.
    * @param {EyesWebDriver|WebDriver} driver
    * @param {PositionProvider} [positionProvider]
-   * @param {string} [returnType]
+   * @param {DomCaptureReturnType} [returnType]
    * @return {Promise<string|object>}
    */
-  static async getFullWindowDom(logger, driver, positionProvider, returnType = 'string') {
+  static async getFullWindowDom(logger, driver, positionProvider, returnType = DomCaptureReturnType.STRING) {
     ArgumentGuard.notNull(logger, 'logger');
     ArgumentGuard.notNull(driver, 'driver');
 
@@ -41,11 +46,11 @@ class DomCapture {
       await positionProvider.restoreState(originalPosition);
     }
 
-    return returnType === 'object' ? dom : JSON.stringify(dom);
+    return returnType === DomCaptureReturnType.OBJECT ? JSON.parse(dom) : dom;
   }
 
   /**
-   * @return {Promise<object>}
+   * @return {Promise<{string}>}
    */
   async getWindowDom() {
     const captureDomScript = await getCaptureDomScript();
@@ -57,23 +62,31 @@ class DomCapture {
       })`;
     const url = await this.driver.getCurrentUrl();
 
-    let domSnapshot = await this.getFrameDom(asyncCaptureDomScript, url);
-
-    return JSON.parse(domSnapshot);
+    return this.getFrameDom(asyncCaptureDomScript, url);
   }
 
+  /**
+   * @param script
+   * @param url
+   * @return {Promise<{string}>}
+   */
   async getFrameDom(script, url) {
-    let domSnapshot = await this.driver.executeAsyncScript(script);
+    let domSnapshotRaw = await this.driver.executeAsyncScript(script);
 
-    const cssIndex = domSnapshot.indexOf('#####');
-    const iframeIndex = domSnapshot.indexOf('@@@@@');
-    const separatorIndex = domSnapshot.indexOf('-----');
+    const domSnapshotRawArr = domSnapshotRaw ? domSnapshotRaw.split('\n') : [];
+
+    if (domSnapshotRawArr.length === 0 ) {
+      return {};
+    }
+
+    const separatorJson = JSON.parse(domSnapshotRawArr[0]);
+    const cssEndIndex = domSnapshotRawArr.indexOf(separatorJson.separator);
+    const iframeEndIndex = domSnapshotRawArr.indexOf(separatorJson.separator, cssEndIndex + 1);
+    let domSnapshot = domSnapshotRawArr[iframeEndIndex + 1];
 
     let cssArr = [];
-    if (cssIndex !== -1 && cssIndex < separatorIndex) {
-      const cssSeparatorIndex = iframeIndex !== -1 && separatorIndex !== -1 ? Math.min(iframeIndex, separatorIndex) : Math.max(iframeIndex, separatorIndex);
-      const cssText = domSnapshot.substring(cssIndex + 6, cssSeparatorIndex);
-      cssArr = cssText.split('\n');
+    for (let i = 1; i < cssEndIndex; i++) {
+      cssArr.push(domSnapshotRawArr[i]);
     }
 
     const cssPromises = [];
@@ -91,27 +104,22 @@ class DomCapture {
     }
 
     let iframeArr = [];
-    if (iframeIndex !== -1 && iframeIndex < separatorIndex) {
-      const iframesText = domSnapshot.substring(iframeIndex + 6, separatorIndex);
-      iframeArr = iframesText.split('\n');
-    }
-
-    if (cssIndex < separatorIndex && iframeIndex < separatorIndex && (cssIndex !== -1 || iframeIndex !== -1) && separatorIndex !== -1) {
-      domSnapshot = domSnapshot.substring(separatorIndex + 6);
+    for (let i = cssEndIndex + 1; i < iframeEndIndex; i++) {
+      iframeArr.push(domSnapshotRawArr[i]);
     }
 
     for (const iframeXpath of iframeArr) {
       if (!iframeXpath) {
         continue;
       }
-      await this._switchToFrame(iframeXpath);
+      const framesCount = await this._switchToFrame(iframeXpath);
       let domIFrame;
       try {
         domIFrame = await this.getFrameDom(script, url);
       } catch (ignored) {
         domIFrame = {};
       }
-      await this._driver.switchTo().parentFrame();
+      await this._switchToParentFrame(framesCount);
       domSnapshot = domSnapshot.replace(`"@@@@@${iframeXpath}@@@@@"`, domIFrame);
     }
 
@@ -120,7 +128,7 @@ class DomCapture {
 
   /**
    * @param {string|string[]} xpaths
-   * @return {Promise<void>}
+   * @return {Promise<number>}
    * @private
    */
   async _switchToFrame(xpaths) {
@@ -128,12 +136,27 @@ class DomCapture {
       xpaths = xpaths.split(',');
     }
 
-    const iframeEl = await this.driver.findElementByXPath(`/${xpaths[0]}`);
-    await this._driver.switchTo().frame(iframeEl);
-
-    if (xpaths.length > 1) {
-      await this._switchToFrame(xpaths.shift());
+    let framesCount = 0;
+    for (const xpath of xpaths) {
+      const iframeEl = await this.driver.findElementByXPath(`/${xpath}`);
+      await this._driver.switchTo().frame(iframeEl);
+      framesCount = framesCount + 1;
     }
+
+    return framesCount;
+  }
+
+  /**
+   * @private
+   * @return {Promise<number>}
+   */
+  async _switchToParentFrame(switchedToFrameCount) {
+    if (switchedToFrameCount > 0) {
+      await this._driver.switchTo().parentFrame();
+      return this._switchToParentFrame(switchedToFrameCount - 1);
+    }
+
+    return switchedToFrameCount;
   }
 
   /**
@@ -170,4 +193,6 @@ class DomCapture {
   }
 }
 
+Object.freeze(DomCaptureReturnType);
+exports.DomCaptureReturnType = DomCaptureReturnType;
 exports.DomCapture = DomCapture;
