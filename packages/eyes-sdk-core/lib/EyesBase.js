@@ -1,9 +1,8 @@
 'use strict';
 
 const {
-  Logger, ArgumentGuard, TypeUtils, EyesError, Region, Location, RectangleSize, CoordinatesType, ImageDeltaCompressor,
+  ArgumentGuard, TypeUtils, EyesError, Region, Location, RectangleSize, CoordinatesType, ImageDeltaCompressor,
   SimplePropertyHandler, ReadOnlyPropertyHandler, FileDebugScreenshotsProvider, NullDebugScreenshotProvider,
-  PropertyData, BatchInfo,
 } = require('@applitools/eyes-common');
 
 const { AppOutputProvider } = require('./capture/AppOutputProvider');
@@ -21,7 +20,6 @@ const { TextTrigger } = require('./triggers/TextTrigger');
 const { MouseTrigger } = require('./triggers/MouseTrigger');
 
 const { MatchResult } = require('./match/MatchResult');
-const { ImageMatchSettings } = require('./match/ImageMatchSettings');
 const { MatchWindowData } = require('./match/MatchWindowData');
 
 const { DiffsFoundError } = require('./errors/DiffsFoundError');
@@ -43,21 +41,18 @@ const { TestResultsStatus } = require('./TestResultsStatus');
 const { TestResults } = require('./TestResults');
 const { ServerConnector } = require('./server/ServerConnector');
 
+const { EyesAbstract } = require('./EyesAbstract');
 const { FailureReports } = require('./FailureReports');
 const { AppEnvironment } = require('./AppEnvironment');
 const { MatchWindowTask } = require('./MatchWindowTask');
 const { MatchSingleWindowTask } = require('./MatchSingleWindowTask');
-const { CorsIframeHandle, CorsIframeHandler } = require('./capture/CorsIframeHandler');
 
-const DEFAULT_MATCH_TIMEOUT = 2000;
-const MIN_MATCH_TIMEOUT = 500;
 const USE_DEFAULT_TIMEOUT = -1;
 
 /**
  * Core/Base class for Eyes - to allow code reuse for different SDKs (images, selenium, etc).
  */
-class EyesBase {
-  // noinspection FunctionTooLongJS
+class EyesBase extends EyesAbstract {
   /**
    * Creates a new {@code EyesBase}instance that interacts with the Eyes Server at the specified url.
    *
@@ -65,88 +60,47 @@ class EyesBase {
    * @param {?boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method
    *   will immediately return without performing any action.
    */
-  constructor(serverUrl = EyesBase.getDefaultServerUrl(), isDisabled = false) {
-    /** @type {boolean} */
-    this._isDisabled = isDisabled;
+  constructor(serverUrl, isDisabled) {
+    super();
 
-    if (this._isDisabled) {
-      this._userInputs = null;
+    this._configuration.setServerUrl(serverUrl);
+    this._configuration.setIsDisabled(isDisabled);
+
+    if (this._configuration.getIsDisabled()) {
+      this._userInputs = [];
       return;
     }
 
-    ArgumentGuard.notNull(serverUrl, 'serverUrl');
-
-    /** @type {Logger} */
-    this._logger = new Logger();
-
     this._initProviders();
 
-    /** @type {ServerConnector} */
-    this._serverConnector = new ServerConnector(this._logger, serverUrl);
-    /** @type {number} */
-    this._matchTimeout = DEFAULT_MATCH_TIMEOUT;
-    /** @type {boolean} */
-    this._compareWithParentBranch = false;
-    /** @type {boolean} */
-    this._ignoreBaseline = false;
-    /** @type {FailureReports} */
-    this._failureReports = FailureReports.ON_CLOSE;
-    /** @type {ImageMatchSettings} */
-    this._defaultMatchSettings = new ImageMatchSettings();
-    this._defaultMatchSettings.setIgnoreCaret(true);
-
-    /** @type {Trigger[]} */
-    this._userInputs = [];
-    /** @type {PropertyData[]} */
-    this._properties = [];
-
-    /** @type {boolean} */
-    this._useImageDeltaCompression = true;
+    /** @type {ServerConnector} */ this._serverConnector = new ServerConnector(this._logger, this._configuration);
+    /** @type {FailureReports} */ this._failureReports = FailureReports.ON_CLOSE;
 
     /** @type {number} */
     this._validationId = -1;
     /** @type {SessionEventHandlers} */
     this._sessionEventHandlers = new SessionEventHandlers();
 
-    /**
-     * Used for automatic save of a test run. New tests are automatically saved by default.
-     * @type {boolean}
-     */
-    this._saveNewTests = true;
-    /**
-     * @type {boolean}
-     */
-    this._saveFailedTests = false;
-
     // noinspection JSUnusedGlobalSymbols
-    /** @type {RenderWindowTask} */
-    this._renderWindowTask = new RenderWindowTask(this._logger, this._serverConnector);
-
-    /** @type {boolean} */ this._shouldMatchWindowRunOnceOnTimeout = undefined;
+    /** @type {RenderWindowTask} */ this._renderWindowTask = new RenderWindowTask(this._logger, this._serverConnector);
     /** @type {MatchWindowTask} */ this._matchWindowTask = undefined;
-
     /** @type {RunningSession} */ this._runningSession = undefined;
     /** @type {SessionStartInfo} */ this._sessionStartInfo = undefined;
+
+    /** @type {boolean} */ this._shouldMatchWindowRunOnceOnTimeout = undefined;
     /** @type {boolean} */ this._isViewportSizeSet = undefined;
 
-    /** @type {boolean} */ this._isOpen = undefined;
-    /** @type {string} */ this._agentId = undefined;
-    /** @type {boolean} */ this._render = false;
-    /** @type {boolean} */ this._saveDiffs = undefined;
+    /** @type {boolean} */ this._isOpen = false;
+    /** @type {boolean} */ this._isVisualGrid = false;
 
-    /** @type {SessionType} */ this._sessionType = undefined;
-    /** @type {string} */ this._testName = undefined;
-    /** @type {BatchInfo} */ this._batch = undefined;
+    /** @type {boolean} */ this._useImageDeltaCompression = true;
+    /** @type {boolean} */ this._render = false;
+
     /** @type {string} */ this._hostApp = undefined;
     /** @type {string} */ this._hostOS = undefined;
     /** @type {string} */ this._hostAppInfo = undefined;
     /** @type {string} */ this._hostOSInfo = undefined;
     /** @type {string} */ this._deviceInfo = undefined;
-    /** @type {string} */ this._baselineEnvName = undefined;
-    /** @type {string} */ this._environmentName = undefined;
-    /** @type {string} */ this._branchName = undefined;
-    /** @type {string} */ this._parentBranchName = undefined;
-    /** @type {string} */ this._baselineBranchName = undefined;
 
     /**
      * Will be set for separately for each test.
@@ -155,22 +109,15 @@ class EyesBase {
     this._currentAppName = undefined;
 
     /**
-     * The default app name if no current name was provided. If this is {@code null} then there is no default appName.
-     * @type {string}
-     */
-    this._appName = undefined;
-
-    /**
      * The session ID of webdriver instance
      * @type {string}
      */
     this._autSessionId = undefined;
 
-    /** @type {boolean} */ this._sendDom = true;
-
-    /** @type {boolean} */ this._isVisualGrid = false;
-
-    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandle.KEEP;
+    /**
+     * @type {Trigger[]}
+     */
+    this._userInputs = [];
   }
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
@@ -215,64 +162,6 @@ class EyesBase {
       /** @type {DebugScreenshotsProvider} */
       this._debugScreenshotsProvider = new NullDebugScreenshotProvider();
     }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the user given agent id of the SDK.
-   *
-   * @param agentId {string} The agent ID to set.
-   */
-  setAgentId(agentId) {
-    this._agentId = agentId;
-  }
-
-  /**
-   * @return {string} The user given agent id of the SDK.
-   */
-  getAgentId() {
-    return this._agentId;
-  }
-
-  /**
-   * Sets the API key of your applitools Eyes account.
-   *
-   * @param apiKey {string} The api key to be used.
-   */
-  setApiKey(apiKey) {
-    ArgumentGuard.notNull(apiKey, 'apiKey');
-    ArgumentGuard.alphanumeric(apiKey, 'apiKey');
-    this._serverConnector.setApiKey(apiKey);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} The currently set API key or {@code null} if no key is set.
-   */
-  getApiKey() {
-    return this._serverConnector.getApiKey();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the current server URL used by the rest client.
-   *
-   * @param serverUrl {string} The URI of the rest server, or {@code null} to use the default server.
-   */
-  setServerUrl(serverUrl) {
-    if (serverUrl) {
-      this._serverConnector.setServerUrl(serverUrl);
-    } else {
-      this._serverConnector.setServerUrl(EyesBase.getDefaultServerUrl());
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} The URI of the eyes server.
-   */
-  getServerUrl() {
-    return this._serverConnector.getServerUrl();
   }
 
   /**
@@ -335,117 +224,10 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Sets the proxy settings to be used for all requests to Eyes server.
-   * Alternatively, proxy can be set via global variables `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`.
-   *
-   * @signature `setProxy(boolean)`
-   * @signature `setProxy(string)`
-   * @signature `setProxy(string, string, string)`
-   * @signature `setProxy(ProxySettings)`
-   *
-   * @param {ProxySettings|string|boolean} varArg The ProxySettings object or proxy url to be used.
-   *  Use {@code false} to disable proxy (even if it set via env variables). Use {@code null} to reset proxy settings.
-   * @param {string} [username]
-   * @param {string} [password]
-   */
-  setProxy(varArg, username, password) {
-    return this._serverConnector.setProxy(varArg, username, password);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {ProxySettings} current proxy settings used by the server connector, or {@code null} if no proxy is set.
-   */
-  getProxy() {
-    return this._serverConnector.getProxy();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param isDisabled {boolean} If true, all interactions with this API will be silently ignored.
-   */
-  setIsDisabled(isDisabled) {
-    this._isDisabled = isDisabled;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} Whether eyes is disabled.
-   */
-  getIsDisabled() {
-    return this._isDisabled;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param appName {string} The name of the application under test.
-   */
-  setAppName(appName) {
-    this._appName = appName;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
    * @return {string} The name of the application under test.
    */
   getAppName() {
-    return this._currentAppName || this._appName;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the branch in which the baseline for subsequent test runs resides. If the branch does not already exist it
-   * will be created under the specified parent branch (see {@link #setParentBranchName}). Changes to the baseline
-   * or model of a branch do not propagate to other branches.
-   *
-   * @param branchName {string} Branch name or {@code null} to specify the default branch.
-   */
-  setBranchName(branchName) {
-    this._branchName = branchName;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} The current branch name.
-   */
-  getBranchName() {
-    return this._branchName;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the branch under which new branches are created.
-   *
-   * @param parentBranchName {string} Branch name or {@code null} to specify the default branch.
-   */
-  setParentBranchName(parentBranchName) {
-    this._parentBranchName = parentBranchName;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} The name of the current parent branch under which new branches will be created.
-   */
-  getParentBranchName() {
-    return this._parentBranchName;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the baseline branch under which new branches are created.
-   *
-   * @param baselineBranchName {string} Branch name or {@code null} to specify the default branch.
-   */
-  setBaselineBranchName(baselineBranchName) {
-    this._baselineBranchName = baselineBranchName;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} The name of the baseline branch
-   */
-  getBaselineBranchName() {
-    return this._baselineBranchName;
+    return this._currentAppName || this._configuration.getAppName();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -455,7 +237,7 @@ class EyesBase {
    * @protected
    */
   clearUserInputs() {
-    if (this._isDisabled) {
+    if (this._configuration.getIsDisabled()) {
       return;
     }
     this._userInputs.length = 0;
@@ -467,106 +249,11 @@ class EyesBase {
    * @return {Trigger[]} User inputs collected between {@code checkWindowBase} invocations.
    */
   getUserInputs() {
-    if (this._isDisabled) {
+    if (this._configuration.getIsDisabled()) {
       return null;
     }
 
     return this._userInputs.map(input => Object.assign(Object.create(input), input));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the maximum time (in ms) a match operation tries to perform a match.
-   * @param {number} ms Total number of ms to wait for a match.
-   */
-  setMatchTimeout(ms) {
-    if (this._isDisabled) {
-      this._logger.verbose('Ignored');
-      return;
-    }
-
-    this._logger.verbose(`Setting match timeout to: ${ms}`);
-    if (ms !== 0 && MIN_MATCH_TIMEOUT > ms) {
-      throw new TypeError(`Match timeout must be set in milliseconds, and must be > ${MIN_MATCH_TIMEOUT}`);
-    }
-
-    this._matchTimeout = ms;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {number} The maximum time in ms {@link #checkWindowBase(RegionProvider, string, boolean, number)} waits
-   *   for a match.
-   */
-  getMatchTimeout() {
-    return this._matchTimeout;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Set whether or not new tests are saved by default.
-   *
-   * @param {boolean} saveNewTests True if new tests should be saved by default. False otherwise.
-   */
-  setSaveNewTests(saveNewTests) {
-    this._saveNewTests = saveNewTests;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} True if new tests are saved by default.
-   */
-  getSaveNewTests() {
-    return this._saveNewTests;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Set whether or not failed tests are saved by default.
-   *
-   * @param {boolean} saveFailedTests True if failed tests should be saved by default, false otherwise.
-   */
-  setSaveFailedTests(saveFailedTests) {
-    this._saveFailedTests = saveFailedTests;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} True if failed tests are saved by default.
-   */
-  getSaveFailedTests() {
-    return this._saveFailedTests;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the batch in which context future tests will run or {@code null} if tests are to run standalone.
-   *
-   * @param {BatchInfo|string} batchOrName - the batch name or batch object
-   * @param {string} [batchId] - ID of the batch, should be generated using GeneralUtils.guid()
-   * @param {string} [batchDate] - start date of the batch, can be created as new Date().toUTCString()
-   */
-  setBatch(batchOrName, batchId, batchDate) {
-    if (this._isDisabled) {
-      this._logger.verbose('Ignored');
-      return;
-    }
-
-    this._batch = new BatchInfo(batchOrName, batchDate, batchId);
-    this._logger.verbose(`setBatch(${this._batch})`);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {BatchInfo} The currently set batch info.
-   */
-  getBatch() {
-    if (!this._batch) {
-      this._logger.verbose('No batch set');
-      this._batch = new BatchInfo();
-    }
-
-    return this._batch;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -584,44 +271,6 @@ class EyesBase {
    */
   getFailureReports() {
     return this._failureReports;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Updates the match settings to be used for the session.
-   *
-   * @param {ImageMatchSettings} defaultMatchSettings The match settings to be used for the session.
-   */
-  setDefaultMatchSettings(defaultMatchSettings) {
-    ArgumentGuard.notNull(defaultMatchSettings, 'defaultMatchSettings');
-    this._defaultMatchSettings = defaultMatchSettings;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {ImageMatchSettings} The match settings used for the session.
-   */
-  getDefaultMatchSettings() {
-    return this._defaultMatchSettings;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * The test-wide match level to use when checking application screenshot with the expected output.
-   *
-   * @param {MatchLevel} matchLevel The test-wide match level to use when checking application screenshot with the
-   *   expected output.
-   */
-  setMatchLevel(matchLevel) {
-    this._defaultMatchSettings.setMatchLevel(matchLevel);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {MatchLevel} The test-wide match level.
-   */
-  getMatchLevel() {
-    return this._defaultMatchSettings.getMatchLevel();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -646,27 +295,11 @@ class EyesBase {
   }
 
   /**
+   * @deprecated
    * @return {string}
    */
   static getDefaultServerUrl() {
     return process.env.APPLITOOLS_SERVER_URL || 'https://eyesapi.applitools.com';
-  }
-
-  /**
-   * Sets a handler of log messages generated by this API.
-   *
-   * @param {LogHandler} logHandler Handles log messages generated by this API.
-   */
-  setLogHandler(logHandler) {
-    this._logger.setLogHandler(logHandler);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {LogHandler} The currently set log handler.
-   */
-  getLogHandler() {
-    return this._logger.getLogHandler();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -714,26 +347,6 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Adds a property to be sent to the server.
-   *
-   * @param {string} name The property name.
-   * @param {string} value The property value.
-   */
-  addProperty(name, value) {
-    const pd = new PropertyData(name, value);
-    return this._properties.push(pd);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Clears the list of custom properties.
-   */
-  clearProperties() {
-    this._properties.length = 0;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
    * @param {boolean} value If true, createSession request will return renderingInfo properties
    */
   setRender(value) {
@@ -746,24 +359,6 @@ class EyesBase {
    */
   getRender() {
     return this._render;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Automatically save differences as a baseline.
-   *
-   * @param {boolean} saveDiffs Sets whether to automatically save differences as baseline.
-   */
-  setSaveDiffs(saveDiffs) {
-    this._saveDiffs = saveDiffs;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} whether to automatically save differences as baseline.
-   */
-  getSaveDiffs() {
-    return this._saveDiffs;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -837,57 +432,6 @@ class EyesBase {
     return this._debugScreenshotsProvider;
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the ignore blinking caret value.
-   *
-   * @param {boolean} value The ignore value.
-   */
-  setIgnoreCaret(value) {
-    this._defaultMatchSettings.setIgnoreCaret(value);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} Whether to ignore or the blinking caret or not when comparing images.
-   */
-  getIgnoreCaret() {
-    const ignoreCaret = this._defaultMatchSettings.getIgnoreCaret();
-    return ignoreCaret || true;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {boolean} compareWithParentBranch New compareWithParentBranch value, default is false
-   */
-  setCompareWithParentBranch(compareWithParentBranch) {
-    this._compareWithParentBranch = compareWithParentBranch;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} The currently compareWithParentBranch value
-   */
-  isCompareWithParentBranch() {
-    return this._compareWithParentBranch;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {boolean} ignoreBaseline New ignoreBaseline value, default is false
-   */
-  setIgnoreBaseline(ignoreBaseline) {
-    this._ignoreBaseline = ignoreBaseline;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} The currently ignoreBaseline value
-   */
-  isIgnoreBaseline() {
-    return this._ignoreBaseline;
-  }
-
   /**
    * Ends the currently running test.
    *
@@ -897,7 +441,7 @@ class EyesBase {
    */
   async close(throwEx = true) {
     try {
-      if (this._isDisabled) {
+      if (this._configuration.getIsDisabled()) {
         this._logger.verbose('Eyes close ignored. (disabled)');
         return null;
       }
@@ -924,7 +468,7 @@ class EyesBase {
 
       this._logger.verbose('Ending server session...');
       // noinspection OverlyComplexBooleanExpressionJS
-      const save = (isNewSession && this._saveNewTests) || (!isNewSession && this._saveFailedTests);
+      const save = (isNewSession && this._configuration.getSaveNewTests()) || (!isNewSession && this._configuration.getSaveFailedTests());
       this._logger.verbose(`Automatically save test? ${save}`);
 
       // Session was started, call the server to end the session.
@@ -993,7 +537,7 @@ class EyesBase {
    */
   async abortIfNotClosed() {
     try {
-      if (this._isDisabled) {
+      if (this._configuration.getIsDisabled()) {
         this._logger.verbose('Eyes abortIfNotClosed ignored. (disabled)');
         return null;
       }
@@ -1141,77 +685,6 @@ class EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @deprecated Only available for backward compatibility. See {@link #setBaselineEnvName(string)}.
-   * @param baselineName {string} If specified, determines the baseline to compare with and disables automatic baseline
-   *   inference.
-   */
-  setBaselineName(baselineName) {
-    this.setBaselineEnvName(baselineName);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @deprecated Only available for backward compatibility. See {@link #getBaselineEnvName()}.
-   * @return {string} The baseline name, if it was specified.
-   */
-  getBaselineName() {
-    return this.getBaselineEnvName();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * If not {@code null}, determines the name of the environment of the baseline.
-   *
-   * @param baselineEnvName {string} The name of the baseline's environment.
-   */
-  setBaselineEnvName(baselineEnvName) {
-    this._logger.log(`Baseline environment name: ${baselineEnvName}`);
-
-    if (baselineEnvName) {
-      this._baselineEnvName = baselineEnvName.trim();
-    } else {
-      this._baselineEnvName = undefined;
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * If not {@code null}, determines the name of the environment of the baseline.
-   *
-   * @return {string} The name of the baseline's environment, or {@code null} if no such name was set.
-   */
-  getBaselineEnvName() {
-    return this._baselineEnvName;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * If not {@code null} specifies a name for the environment in which the application under test is running.
-   *
-   * @param envName {string} The name of the environment of the baseline.
-   */
-  setEnvName(envName) {
-    this._logger.log(`Environment name: ${envName}`);
-
-    if (envName) {
-      this._environmentName = envName.trim();
-    } else {
-      this._environmentName = undefined;
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * If not {@code null} specifies a name for the environment in which the application under test is running.
-   *
-   * @return {string} The name of the environment of the baseline, or {@code null} if no such name was set.
-   */
-  getEnvName() {
-    return this._environmentName;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
    * @return {PositionProvider} The currently set position provider.
    */
   getPositionProvider() {
@@ -1242,7 +715,7 @@ class EyesBase {
    * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async checkWindowBase(regionProvider, tag = '', ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
-    if (this._isDisabled) {
+    if (this._configuration.getIsDisabled()) {
       this._logger.verbose('Ignored');
       const result = new MatchResult();
       result.setAsExpected(true);
@@ -1292,7 +765,7 @@ class EyesBase {
    * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async checkSingleWindowBase(regionProvider, tag = '', ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
-    if (this._isDisabled) {
+    if (this._configuration.getIsDisabled()) {
       this._logger.verbose('checkSingleWindowBase Ignored');
       const result = new TestResults();
       result.setStatus(TestResultsStatus.Passed);
@@ -1307,23 +780,23 @@ class EyesBase {
     const appEnvironment = await this.getAppEnvironment();
     this._sessionStartInfo = new SessionStartInfo({
       agentId: this.getBaseAgentId(),
-      sessionType: this._sessionType,
+      sessionType: this._configuration.getSessionType(),
       appIdOrName: this.getAppName(),
       verId: undefined,
-      scenarioIdOrName: this._testName,
-      batchInfo: this.getBatch(),
-      baselineEnvName: this._baselineEnvName,
-      environmentName: this._environmentName,
+      scenarioIdOrName: this._configuration.getTestName(),
+      batchInfo: this._configuration.getBatch(),
+      baselineEnvName: this._configuration.getBaselineEnvName(),
+      environmentName: this._configuration.getEnvironmentName(),
       environment: appEnvironment,
       defaultMatchSettings: this._defaultMatchSettings,
-      branchName: this._branchName || process.env.APPLITOOLS_BRANCH,
-      parentBranchName: this._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH,
-      baselineBranchName: this._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH,
-      compareWithParentBranch: this._compareWithParentBranch,
-      ignoreBaseline: this._ignoreBaseline,
+      branchName: this._configuration.getBranchName(),
+      parentBranchName: this._configuration.getParentBranchName(),
+      baselineBranchName: this._configuration.getBaselineBranchName(),
+      compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
+      ignoreBaseline: this._configuration.getIgnoreBaseline(),
       render: this._render,
-      saveDiffs: this._saveDiffs,
-      properties: this._properties,
+      saveDiffs: this._configuration.getSaveDiffs(),
+      properties: this._configuration.getProperties(),
     });
 
     // noinspection JSClosureCompilerSyntax
@@ -1336,11 +809,11 @@ class EyesBase {
     this._matchWindowTask = new MatchSingleWindowTask(
       this._logger,
       this._serverConnector,
-      this._matchTimeout,
+      this._configuration.getMatchTimeout(),
       this,
       outputProvider,
       this._sessionStartInfo,
-      this._saveNewTests
+      this._configuration.getSaveNewTests()
     );
 
     await this.beforeMatchWindow();
@@ -1389,6 +862,7 @@ class EyesBase {
     return Promise.resolve(undefined);
   }
 
+  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
    * @protected
    * @return {Promise<?string>}
@@ -1410,7 +884,7 @@ class EyesBase {
   async replaceWindow(stepIndex, screenshot, tag = '', title = '', userInputs = []) {
     this._logger.verbose('EyesBase.replaceWindow - running');
 
-    if (this._isDisabled) {
+    if (this._configuration.getIsDisabled()) {
       this._logger.verbose('Ignored');
       const result = new MatchResult();
       result.setAsExpected(true);
@@ -1501,7 +975,7 @@ class EyesBase {
    * @protected
    * @param {string} appName The name of the application under test.
    * @param {string} testName The test name.
-   * @param {RectangleSize|{width: number, height: number}} [viewportSize] The client's viewport size (i.e., the
+   * @param {RectangleSize|RectangleSizeObject} [viewportSize] The client's viewport size (i.e., the
    *   visible part of the document's body) or {@code null} to allow any viewport size.
    * @param {SessionType} [sessionType=SessionType.SEQUENTIAL]  The type of test (e.g., Progression for timing tests),
    *   or {@code null} to use the default.
@@ -1512,16 +986,19 @@ class EyesBase {
 
     if (viewportSize) {
       viewportSize = new RectangleSize(viewportSize);
+      this._configuration.setViewportSize(viewportSize);
+    } else {
+      viewportSize = this._configuration.getViewportSize();
     }
 
     try {
-      if (this._isDisabled) {
+      if (this._configuration.getIsDisabled()) {
         this._logger.verbose('Eyes Open ignored - disabled');
         return;
       }
 
       // If there's no default application name, one must be provided for the current test.
-      if (!this._appName) {
+      if (!this._configuration.getAppName()) {
         ArgumentGuard.notNull(appName, 'appName');
       }
       ArgumentGuard.notNull(testName, 'testName');
@@ -1539,10 +1016,10 @@ class EyesBase {
       this._isViewportSizeSet = false;
       await this.beforeOpen();
 
-      this._currentAppName = appName || this._appName;
-      this._testName = testName;
+      this._currentAppName = appName || this._configuration.getAppName();
+      this._configuration.setTestName(testName);
       this._viewportSizeHandler.set(viewportSize);
-      this._sessionType = sessionType;
+      this._configuration.setSessionType(sessionType);
       this._validationId = -1;
 
       if (viewportSize) {
@@ -1601,7 +1078,7 @@ class EyesBase {
       this._logger,
       this._serverConnector,
       this._runningSession,
-      this._matchTimeout,
+      this._configuration.getMatchTimeout(),
       this,
       outputProvider
     );
@@ -1622,9 +1099,9 @@ class EyesBase {
    * @private
    */
   _logOpenBase() {
-    this._logger.verbose(`Eyes server URL is '${this._serverConnector.getServerUrl()}'`);
-    this._logger.verbose(`Timeout = '${this._serverConnector.getTimeout()}'`);
-    this._logger.verbose(`matchTimeout = '${this._matchTimeout}'`);
+    this._logger.verbose(`Eyes server URL is '${this._configuration.getServerUrl()}'`);
+    this._logger.verbose(`Timeout = '${this._configuration.getConnectionTimeout()}'`);
+    this._logger.verbose(`matchTimeout = '${this._configuration.getMatchTimeout()}'`);
     this._logger.verbose(`Default match settings = '${this._defaultMatchSettings}'`);
     this._logger.verbose(`FailureReports = '${this._failureReports}'`);
   }
@@ -1652,12 +1129,14 @@ class EyesBase {
     if (!explicitViewportSize) {
       this._viewportSizeHandler = new SimplePropertyHandler();
       this._viewportSizeHandler.set(null);
+      this._configuration.setViewportSize(null);
       this._isViewportSizeSet = false;
       return;
     }
 
     this._logger.verbose(`Viewport size explicitly set to ${explicitViewportSize}`);
     this._viewportSizeHandler = new ReadOnlyPropertyHandler(this._logger, new RectangleSize(explicitViewportSize));
+    this._configuration.setViewportSize(explicitViewportSize);
     this._isViewportSizeSet = true;
   }
 
@@ -1669,7 +1148,7 @@ class EyesBase {
    * @param {Trigger} trigger The trigger to add to the user inputs list.
    */
   addUserInput(trigger) {
-    if (this._isDisabled) {
+    if (this._configuration.getIsDisabled()) {
       return;
     }
 
@@ -1685,7 +1164,7 @@ class EyesBase {
    * @param {string} text The trigger's text.
    */
   addTextTriggerBase(control, text) {
-    if (this._isDisabled) {
+    if (this._configuration.getIsDisabled()) {
       this._logger.verbose(`Ignoring '${text}' (disabled)`);
       return;
     }
@@ -1725,7 +1204,7 @@ class EyesBase {
    * @param {Location} cursor The cursor's position relative to the control.
    */
   addMouseTriggerBase(action, control, cursor) {
-    if (this._isDisabled) {
+    if (this._configuration.getIsDisabled()) {
       this._logger.verbose(`Ignoring ${action} (disabled)`);
       return;
     }
@@ -1822,7 +1301,7 @@ class EyesBase {
       return;
     }
 
-    this._logger.verbose(`Batch is ${this._batch}`);
+    this._logger.verbose(`Batch is ${this._configuration.getBatch()}`);
     this._autSessionId = await this.getAUTSessionId();
 
     try {
@@ -1839,23 +1318,23 @@ class EyesBase {
 
     this._sessionStartInfo = new SessionStartInfo({
       agentId: this.getBaseAgentId(),
-      sessionType: this._sessionType,
+      sessionType: this._configuration.getSessionType(),
       appIdOrName: this.getAppName(),
       verId: undefined,
-      scenarioIdOrName: this._testName,
-      batchInfo: this.getBatch(),
-      baselineEnvName: this._baselineEnvName,
-      environmentName: this._environmentName,
+      scenarioIdOrName: this._configuration.getTestName(),
+      batchInfo: this._configuration.getBatch(),
+      baselineEnvName: this._configuration.getBaselineEnvName(),
+      environmentName: this._configuration.getEnvironmentName(),
       environment: appEnvironment,
       defaultMatchSettings: this._defaultMatchSettings,
-      branchName: this._branchName || process.env.APPLITOOLS_BRANCH,
-      parentBranchName: this._parentBranchName || process.env.APPLITOOLS_PARENT_BRANCH,
-      baselineBranchName: this._baselineBranchName || process.env.APPLITOOLS_BASELINE_BRANCH,
-      compareWithParentBranch: this._compareWithParentBranch,
-      ignoreBaseline: this._ignoreBaseline,
+      branchName: this._configuration.getBranchName(),
+      parentBranchName: this._configuration.getParentBranchName(),
+      baselineBranchName: this._configuration.getBaselineBranchName(),
+      compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
+      ignoreBaseline: this._configuration.getIgnoreBaseline(),
       render: this._render,
-      saveDiffs: this._saveDiffs,
-      properties: this._properties,
+      saveDiffs: this._configuration.getSaveDiffs(),
+      properties: this._configuration.getProperties(),
     });
 
     this._logger.verbose('Starting server session...');
@@ -1867,7 +1346,7 @@ class EyesBase {
       this._serverConnector.setRenderingInfo(this._runningSession.getRenderingInfo());
     }
 
-    const testInfo = `'${this._testName}' of '${this.getAppName()}' "${appEnvironment}`;
+    const testInfo = `'${this._configuration.getTestName()}' of '${this.getAppName()}' "${appEnvironment}`;
     if (this._runningSession.getIsNewSession()) {
       this._logger.log(`--- New test started - ${testInfo}`);
       this._shouldMatchWindowRunOnceOnTimeout = true;
@@ -1894,6 +1373,7 @@ class EyesBase {
           const targetSize = await this.getViewportSize();
           await this._sessionEventHandlers.setSizeWillStart(targetSize);
           this._viewportSizeHandler.set(targetSize);
+          this._configuration.setViewportSize(targetSize);
         }
 
         this._isViewportSizeSet = true;
@@ -1958,13 +1438,8 @@ class EyesBase {
     const imageLocation = await this.getImageLocation();
     this._logger.verbose('Done getting title, domUrl, imageLocation!');
 
-    if (!domUrl && (checkSettings.getSendDom() || this._sendDom)) {
+    if (!domUrl && (checkSettings.getSendDom() || this._defaultMatchSettings.getSendDom())) {
       const domJson = await this.tryCaptureDom();
-
-      if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
-        const origin = await this.getOrigin();
-        CorsIframeHandler.blankCorsIframeSrc(domJson, origin);
-      }
 
       domUrl = await this._tryPostDomSnapshot(domJson);
       this._logger.verbose(`domUrl: ${domUrl}`);
@@ -2003,32 +1478,6 @@ class EyesBase {
   // noinspection JSUnusedGlobalSymbols
   clearSessionEventHandlers() {
     this._sessionEventHandlers.clearEventHandlers();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Whether sessions are removed immediately after they are finished.
-   *
-   * @param shouldRemove {boolean}
-   */
-  setRemoveSession(shouldRemove) {
-    this._serverConnector.setRemoveSession(shouldRemove);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} Whether sessions are removed immediately after they are finished.
-   */
-  getRemoveSession() {
-    return this._serverConnector.getRemoveSession();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {?string} The name of the currently running test.
-   */
-  getTestName() {
-    return this._testName;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -2145,22 +1594,6 @@ class EyesBase {
     return Promise.resolve(undefined);
   }
 
-  /**
-   * @param {boolean} sendDom
-   */
-  setSendDom(sendDom) {
-    this._sendDom = sendDom;
-    this._defaultMatchSettings.setSendDom(sendDom);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean}
-   */
-  getSendDom() {
-    return this._sendDom;
-  }
-
   // noinspection JSMethodCanBeStatic
   /**
    * The location of the image relative to the logical full page image, when cropping an image e.g. with checkRegion
@@ -2172,32 +1605,12 @@ class EyesBase {
     return Promise.resolve(undefined);
   }
 
-  /**
-   * @param {string...} args
-   */
-  log(...args) {
-    this._logger.log(...args);
-  }
-
+  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
   isVisualGrid() {
     return this._isVisualGrid;
-  }
-
-  /**
-   * @param corsIframeHandle
-   */
-  setCorsIframeHandle(corsIframeHandle) {
-    this._corsIframeHandle = corsIframeHandle;
-  }
-
-  /**
-   * @return {CorsIframeHandle}
-   */
-  getCorsIframeHandle() {
-    return this._corsIframeHandle;
   }
 }
 

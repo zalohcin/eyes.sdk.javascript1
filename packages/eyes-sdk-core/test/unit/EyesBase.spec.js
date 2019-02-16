@@ -74,7 +74,7 @@ describe('EyesBase', () => {
     });
 
     afterEach(() => {
-      eyes._batch = undefined;
+      eyes.setBatch(undefined);
     });
   });
 });

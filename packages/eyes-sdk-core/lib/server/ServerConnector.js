@@ -3,7 +3,7 @@
 const axios = require('axios');
 const zlib = require('zlib');
 
-const { GeneralUtils, TypeUtils, ArgumentGuard, DateTimeUtils, ProxySettings } = require('@applitools/eyes-common');
+const { GeneralUtils, TypeUtils, ArgumentGuard, DateTimeUtils } = require('@applitools/eyes-common');
 
 const { RenderingInfo } = require('./RenderingInfo');
 const { RunningSession } = require('./RunningSession');
@@ -41,6 +41,10 @@ const HTTP_FAILED_CODES = [
   HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
   HTTP_STATUS_CODES.GATEWAY_TIMEOUT,
 ];
+
+/**
+ * @typedef {{data: *, status: number, statusText: string, headers: *, request: *}} AxiosResponse
+ */
 
 /**
  * @private
@@ -125,19 +129,17 @@ async function longRequestCheckStatus(self, name, response) {
       return response;
     }
     case HTTP_STATUS_CODES.ACCEPTED: {
-      const options = GeneralUtils.mergeDeep(self._httpOptions, {
+      const options = self._createHttpOptions({
         method: 'GET',
         url: response.headers.location,
-        params: { apiKey: self.getApiKey() },
       });
       const requestResponse = await longRequestLoop(self, name, options, LONG_REQUEST_DELAY_MS);
       return longRequestCheckStatus(self, name, requestResponse);
     }
     case HTTP_STATUS_CODES.CREATED: {
-      const options = GeneralUtils.mergeDeep(self._httpOptions, {
+      const options = self._createHttpOptions({
         method: 'DELETE',
         url: response.headers.location,
-        params: { apiKey: self.getApiKey() },
         headers: { 'Eyes-Date': DateTimeUtils.toRfc1123DateTime() },
       });
       return sendRequest(self, name, options);
@@ -191,19 +193,14 @@ const createDataBytes = jsonData => {
 class ServerConnector {
   /**
    * @param {Logger} logger
-   * @param {string} serverUrl
+   * @param {Configuration} configuration
    */
-  constructor(logger, serverUrl) {
+  constructor(logger, configuration) {
     this._logger = logger;
-    this._serverUrl = serverUrl;
+    this._configuration = configuration;
 
-    /** @type {string} */
-    this._apiKey = undefined;
     /** @type {RenderingInfo} */
     this._renderingInfo = undefined;
-
-    /** @type {ProxySettings} */
-    this._proxySettings = undefined;
 
     this._httpOptions = {
       proxy: undefined,
@@ -215,39 +212,44 @@ class ServerConnector {
   }
 
   /**
-   * Sets the current server URL used by the rest client.
-   *
-   * @param serverUrl {string} The URI of the rest server.
+   * @param {object} requestOptions
+   * @param {boolean} isIncludeApiKey
+   * @param {boolean} isMergeDefaultOptions
+   * @return {object}
+   * @protected
    */
-  setServerUrl(serverUrl) {
-    ArgumentGuard.notNull(serverUrl, 'serverUrl');
-    this._serverUrl = serverUrl;
-  }
+  _createHttpOptions(requestOptions, isIncludeApiKey = true, isMergeDefaultOptions = true) {
+    let options = requestOptions;
+    if (isMergeDefaultOptions) {
+      options = GeneralUtils.mergeDeep(this._httpOptions, options)
+    } else {
+      if (options.params === undefined) {
+        options.params = {};
+      }
+    }
 
-  /**
-   * @return {string} The URI of the eyes server.
-   */
-  getServerUrl() {
-    return this._serverUrl;
-  }
+    if (isIncludeApiKey) {
+      options.params.apiKey = this._configuration.getApiKey();
+    }
 
-  /**
-   * Sets the API key of your applitools Eyes account.
-   *
-   * @param {string} apiKey The api key to set.
-   */
-  setApiKey(apiKey) {
-    ArgumentGuard.notNull(apiKey, 'apiKey');
-    this._apiKey = apiKey;
-  }
+    if (TypeUtils.isNotNull(this._configuration.getRemoveSession())) {
+      options.params.removeSession = this._configuration.getRemoveSession();
+    }
 
-  /**
-   *
-   * @return {string} The currently set API key or {@code null} if no key is set.
-   */
-  getApiKey() {
-    // noinspection JSUnresolvedVariable
-    return this._apiKey || process.env.APPLITOOLS_API_KEY;
+    if (TypeUtils.isNotNull(this._configuration.getConnectionTimeout())) {
+      options.timeout = this._configuration.getConnectionTimeout();
+    }
+
+    if (TypeUtils.isNotNull(this._configuration.getProxy())) {
+      options.proxy = this._configuration.getProxy().toProxyObject();
+
+      // TODO: remove hot-fix when axios release official fix
+      if (options.proxy.protocol === 'http:') {
+        options.transport = require('http'); // eslint-disable-line
+      }
+    }
+
+    return options;
   }
 
   /**
@@ -265,6 +267,7 @@ class ServerConnector {
     this._renderingInfo = renderingInfo;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the current rendering server URL used by the client.
    *
@@ -290,6 +293,7 @@ class ServerConnector {
     return this._renderingInfo ? this._renderingInfo.getServiceUrl() : undefined;
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the API key of your applitools Eyes account.
    *
@@ -316,81 +320,107 @@ class ServerConnector {
     return this._renderingInfo ? this._renderingInfo.getAccessToken() : undefined;
   }
 
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Sets the current server URL used by the rest client.
+   *
+   * @deprecated
+   * @param serverUrl {string} The URI of the rest server.
+   */
+  setServerUrl(serverUrl) {
+    this._configuration.setServerUrl(serverUrl);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @deprecated
+   * @return {string} The URI of the eyes server.
+   */
+  getServerUrl() {
+    return this._configuration.getServerUrl();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Sets the API key of your applitools Eyes account.
+   *
+   * @deprecated
+   * @param {string} apiKey The api key to set.
+   */
+  setApiKey(apiKey) {
+    this._configuration.setApiKey(apiKey);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @deprecated
+   * @return {string} The currently set API key or {@code null} if no key is set.
+   */
+  getApiKey() {
+    return this._configuration.getApiKey();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the proxy settings to be used by the rest client.
    *
+   * @deprecated
    * @param {ProxySettings|string|boolean} varArg The ProxySettings object or proxy url to be used.
    *  Use {@code false} to disable proxy (even if it set via env variables). Use {@code null} to reset proxy settings.
    * @param {string} [username]
    * @param {string} [password]
    */
   setProxy(varArg, username, password) {
-    if (TypeUtils.isNull(varArg)) {
-      this._proxySettings = undefined;
-      delete this._httpOptions.proxy;
-      return;
-    }
-
-    if (varArg === false) {
-      this._proxySettings = undefined;
-      this._httpOptions.proxy = false;
-      return;
-    }
-
-    if (varArg instanceof ProxySettings) {
-      this._proxySettings = varArg;
-    } else {
-      this._proxySettings = new ProxySettings(varArg, username, password);
-    }
-
-    this._httpOptions.proxy = this._proxySettings.toProxyObject();
-
-    // TODO: remove hot-fix when axios release official fix
-    if (this._httpOptions.proxy.protocol === 'http:') {
-      this._httpOptions.transport = require('http'); // eslint-disable-line
-    }
+    this._configuration.setProxy(varArg, username, password);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
+   * @deprecated
    * @return {ProxySettings} The current proxy settings, or {@code null} if no proxy is set.
    */
   getProxy() {
-    return this._proxySettings;
+    return this._configuration.getProxy();
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * Whether sessions are removed immediately after they are finished.
    *
-   * @param shouldRemove {boolean}
+   * @deprecated
+   * @param {boolean} removeSession
    */
-  setRemoveSession(shouldRemove) {
-    this._httpOptions.params.removeSession = shouldRemove;
+  setRemoveSession(removeSession) {
+    this._configuration.setRemoveSession(removeSession);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
+   * @deprecated
    * @return {boolean} Whether sessions are removed immediately after they are finished.
    */
   getRemoveSession() {
-    return !!this._httpOptions.params.removeSession;
+    return this._configuration.getRemoveSession();
   }
 
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the connect and read timeouts for web requests.
    *
+   * @deprecated
    * @param {number} timeout Connect/Read timeout in milliseconds. 0 equals infinity.
    */
   setTimeout(timeout) {
-    ArgumentGuard.greaterThanOrEqualToZero(timeout, 'timeout');
-    this._httpOptions.timeout = timeout;
+    this._configuration.setConnectionTimeout(timeout);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
-   *
-   * @return {number} The timeout for web requests (in seconds).
+   * @deprecated
+   * @return {number} The timeout for web requests (in milliseconds).
    */
   getTimeout() {
-    return this._httpOptions.timeout;
+    return this._configuration.getConnectionTimeout();
   }
 
   /**
@@ -404,12 +434,9 @@ class ServerConnector {
     ArgumentGuard.notNull(sessionStartInfo, 'sessionStartInfo');
     this._logger.verbose(`ServerConnector.startSession called with: ${sessionStartInfo}`);
 
-    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running'),
-      params: {
-        apiKey: this.getApiKey(),
-      },
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running'),
       data: {
         startInfo: sessionStartInfo,
       },
@@ -440,11 +467,10 @@ class ServerConnector {
     // eslint-disable-next-line max-len
     this._logger.verbose(`ServerConnector.stopSession called with ${JSON.stringify({ isAborted, updateBaseline: save })} for session: ${runningSession}`);
 
-    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'DELETE',
-      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId()),
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running', runningSession.getId()),
       params: {
-        apiKey: this.getApiKey(),
         aborted: isAborted,
         updateBaseline: save,
       },
@@ -471,11 +497,10 @@ class ServerConnector {
     ArgumentGuard.notNull(testResults, 'testResults');
     this._logger.verbose(`ServerConnector.deleteSession called with ${JSON.stringify(testResults)}`);
 
-    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'DELETE',
-      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/batches/', testResults.getBatchId(), '/', testResults.getId()),
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/batches/', testResults.getBatchId(), '/', testResults.getId()),
       params: {
-        apiKey: this.getApiKey(),
         accessToken: testResults.getSecretToken(),
       },
     });
@@ -502,12 +527,9 @@ class ServerConnector {
     ArgumentGuard.notNull(matchWindowData, 'matchWindowData');
     this._logger.verbose(`ServerConnector.matchWindow called with ${matchWindowData} for session: ${runningSession}`);
 
-    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId()),
-      params: {
-        apiKey: this.getApiKey(),
-      },
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running', runningSession.getId()),
       data: matchWindowData,
     });
 
@@ -542,12 +564,9 @@ class ServerConnector {
     ArgumentGuard.notNull(matchSingleWindowData, 'matchSingleWindowData');
     this._logger.verbose(`ServerConnector.matchSingleWindow called with ${matchSingleWindowData}`);
 
-    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH),
-      params: {
-        apiKey: this.getApiKey(),
-      },
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH),
       data: matchSingleWindowData,
     });
 
@@ -586,12 +605,9 @@ class ServerConnector {
     ArgumentGuard.notNull(matchWindowData, 'matchWindowData');
     this._logger.verbose(`ServerConnector.replaceWindow called with ${matchWindowData} for session: ${runningSession}`);
 
-    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'PUT',
-      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running', runningSession.getId(), stepIndex),
-      params: {
-        apiKey: this.getApiKey(),
-      },
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running', runningSession.getId(), stepIndex),
       headers: {
         'Content-Type': 'application/octet-stream',
       },
@@ -618,12 +634,9 @@ class ServerConnector {
   async renderInfo() {
     this._logger.verbose('ServerConnector.renderInfo called.');
 
-    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'GET',
-      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/renderinfo'),
-      params: {
-        apiKey: this.getApiKey(),
-      },
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/renderinfo'),
     });
 
     const response = await sendRequest(this, 'renderInfo', options);
@@ -648,14 +661,14 @@ class ServerConnector {
     this._logger.verbose(`ServerConnector.render called with ${renderRequest}`);
 
     const isBatch = Array.isArray(renderRequest);
-    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'POST',
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render'),
       headers: {
         'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
       data: isBatch ? renderRequest : [renderRequest],
-    });
+    }, false);
 
     const response = await sendRequest(this, 'render', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
@@ -686,7 +699,7 @@ class ServerConnector {
     // eslint-disable-next-line max-len
     this._logger.verbose(`ServerConnector.checkResourceExists called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
-    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'HEAD',
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/resources/sha256/', resource.getSha256Hash()),
       headers: {
@@ -695,7 +708,7 @@ class ServerConnector {
       params: {
         'render-id': runningRender.getRenderId(),
       },
-    });
+    }, false);
 
     const response = await sendRequest(this, 'renderCheckResource', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.NOT_FOUND];
@@ -721,7 +734,7 @@ class ServerConnector {
     // eslint-disable-next-line max-len
     this._logger.verbose(`ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`);
 
-    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'PUT',
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/resources/sha256/', resource.getSha256Hash()),
       headers: {
@@ -732,7 +745,7 @@ class ServerConnector {
         'render-id': runningRender.getRenderId(),
       },
       data: resource.getContent(),
-    });
+    }, false);
 
     const response = await sendRequest(this, 'renderPutResource', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
@@ -767,14 +780,14 @@ class ServerConnector {
     this._logger.verbose(`ServerConnector.renderStatus called for render: ${renderId}`);
 
     const isBatch = Array.isArray(renderId);
-    const options = GeneralUtils.mergeDeep(this._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'POST',
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render-status'),
       headers: {
         'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
       data: isBatch ? renderId : [renderId],
-    });
+    }, false);
 
     if (delayBeforeRequest) {
       this._logger.verbose(`ServerConnector.renderStatus request delayed for ${RETRY_REQUEST_INTERVAL} ms.`);
@@ -804,13 +817,9 @@ class ServerConnector {
     ArgumentGuard.notNull(domJson, 'domJson');
     this._logger.verbose('ServerConnector.postDomSnapshot called');
 
-    const that = this;
-    const options = GeneralUtils.mergeDeep(that._httpOptions, {
+    const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._serverUrl, EYES_API_PATH, '/running/data'),
-      params: {
-        apiKey: that.getApiKey(),
-      },
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running/data'),
       headers: {
         'Content-Type': 'application/octet-stream',
       },
@@ -821,7 +830,7 @@ class ServerConnector {
     const response = await sendRequest(this, 'postDomSnapshot', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED];
     if (validStatusCodes.includes(response.status)) {
-      that._logger.verbose('ServerConnector.postDomSnapshot - post succeeded');
+      this._logger.verbose('ServerConnector.postDomSnapshot - post succeeded');
       return response.headers.location;
     }
 
@@ -837,10 +846,7 @@ class ServerConnector {
     ArgumentGuard.notNull(url, 'url');
     this._logger.verbose(`ServerConnector.downloadResource called with url: ${url}`);
 
-    const options = {
-      url,
-      proxy: this._httpOptions.proxy,
-    };
+    const options = this._createHttpOptions({ url }, false, false);
 
     try {
       const response = await axios(options);

@@ -89,6 +89,7 @@ exports.TextTrigger = require('./lib/triggers/TextTrigger').TextTrigger;
 exports.Trigger = require('./lib/triggers/Trigger').Trigger;
 
 exports.AppEnvironment = require('./lib/AppEnvironment').AppEnvironment;
+exports.EyesAbstract = require('./lib/EyesAbstract').EyesAbstract;
 exports.EyesBase = require('./lib/EyesBase').EyesBase;
 exports.EyesJsBrowserUtils = require('./lib/EyesJsBrowserUtils').EyesJsBrowserUtils;
 exports.EyesJsExecutor = require('./lib/EyesJsExecutor').EyesJsExecutor;
