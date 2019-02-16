@@ -10,18 +10,23 @@ const { ArgumentGuard } = require('../utils/ArgumentGuard');
 class ProxySettings {
   /**
    *
-   * @param {string} uri The proxy's URI.
+   * @param {string|boolean} uri The proxy's URI or {@code false} to completely disable proxy.
    * @param {string} [username] The username to be sent to the proxy.
    * @param {string} [password] The password to be sent to the proxy.
    */
   constructor(uri, username, password) {
     ArgumentGuard.notNull(uri, 'uri');
 
-    this._uri = uri;
-    this._username = username;
-    this._password = password;
+    if (uri === false) {
+      this._isDisabled = true;
+    } else {
+      this._uri = uri;
+      this._username = username;
+      this._password = password;
+      this._isDisabled = false;
 
-    this._url = new URL(uri.includes('://') ? uri : `http://${uri}`);
+      this._url = new URL(uri.includes('://') ? uri : `http://${uri}`);
+    }
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -39,11 +44,20 @@ class ProxySettings {
     return this._password;
   }
 
+  // noinspection JSUnusedGlobalSymbols
+  getIsDisabled() {
+    return this._isDisabled;
+  }
+
   // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * @return {{protocol: string, host: string, port: number, auth: {username: string, password: string}}}
+   * @return {{protocol: string, host: string, port: number, auth: {username: string, password: string}}|boolean}
    */
   toProxyObject() {
+    if (this._isDisabled) {
+      return false;
+    }
+
     const proxy = {};
 
     proxy.protocol = this._url.protocol;
