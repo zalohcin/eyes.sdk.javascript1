@@ -183,6 +183,20 @@ class ArgumentGuard {
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * Fails if param is not an array.
+   *
+   * @param {object} param The input parameter.
+   * @param {string} paramName The input parameter name.
+   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
+   */
+  static isArray(param, paramName, strict = true) {
+    if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isArray(param)) {
+      throw new Error(`IllegalType: ${paramName} is not an array`);
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
    * Fails if param is not a buffer.
    *
    * @param {object} param The input parameter.
