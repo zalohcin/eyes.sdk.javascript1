@@ -2,7 +2,8 @@
 
 const {
   Logger, ArgumentGuard, TypeUtils, EyesError, Region, Location, RectangleSize, CoordinatesType, ImageDeltaCompressor,
-  SimplePropertyHandler, ReadOnlyPropertyHandler, FileDebugScreenshotsProvider, NullDebugScreenshotProvider
+  SimplePropertyHandler, ReadOnlyPropertyHandler, FileDebugScreenshotsProvider, NullDebugScreenshotProvider,
+  PropertyData, BatchInfo,
 } = require('@applitools/eyes-common');
 
 const { AppOutputProvider } = require('./capture/AppOutputProvider');
@@ -38,7 +39,6 @@ const { RenderWindowTask } = require('./RenderWindowTask');
 
 const { SessionStartInfo } = require('./server/SessionStartInfo');
 const { SessionType } = require('./server/SessionType');
-const { PropertyData } = require('./server/PropertyData');
 const { TestResultsStatus } = require('./TestResultsStatus');
 const { TestResults } = require('./TestResults');
 const { ServerConnector } = require('./server/ServerConnector');
@@ -47,7 +47,6 @@ const { FailureReports } = require('./FailureReports');
 const { AppEnvironment } = require('./AppEnvironment');
 const { MatchWindowTask } = require('./MatchWindowTask');
 const { MatchSingleWindowTask } = require('./MatchSingleWindowTask');
-const { BatchInfo } = require('./BatchInfo');
 const { CorsIframeHandle, CorsIframeHandler } = require('./capture/CorsIframeHandler');
 
 const DEFAULT_MATCH_TIMEOUT = 2000;

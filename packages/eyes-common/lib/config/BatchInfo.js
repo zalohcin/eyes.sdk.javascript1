@@ -1,6 +1,9 @@
 'use strict';
 
-const { ArgumentGuard, GeneralUtils, TypeUtils, DateTimeUtils } = require('@applitools/eyes-common');
+const { ArgumentGuard } = require('../utils/ArgumentGuard');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { TypeUtils } = require('../utils/TypeUtils');
+const { DateTimeUtils } = require('../utils/DateTimeUtils');
 
 /**
  * A batch of tests.

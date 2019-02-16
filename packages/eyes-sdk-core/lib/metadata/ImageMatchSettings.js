@@ -8,14 +8,15 @@ class ImageMatchSettings {
   // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * @param {MatchLevel|string} matchLevel
+   * @param {number} ignoreCaret
    * @param {Region[]|object[]} ignore
    * @param {Region[]|object[]} strict
    * @param {Region[]|object[]} content
    * @param {Region[]|object[]} layout
    * @param {FloatingMatchSettings[]|object[]} floating
+   *
    * @param {number} splitTopHeight
    * @param {number} splitBottomHeight
-   * @param {number} ignoreCaret
    * @param {number} scale
    * @param {number} remainder
    */

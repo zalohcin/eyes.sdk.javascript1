@@ -78,8 +78,6 @@ exports.ScaleProvider = require('./lib/scaling/ScaleProvider').ScaleProvider;
 exports.ScaleProviderFactory = require('./lib/scaling/ScaleProviderFactory').ScaleProviderFactory;
 exports.ScaleProviderIdentityFactory = require('./lib/scaling/ScaleProviderIdentityFactory').ScaleProviderIdentityFactory;
 
-exports.PropertyData = require('./lib/server/PropertyData').PropertyData;
-exports.ProxySettings = require('./lib/server/ProxySettings').ProxySettings;
 exports.RenderingInfo = require('./lib/server/RenderingInfo').RenderingInfo;
 exports.RunningSession = require('./lib/server/RunningSession').RunningSession;
 exports.ServerConnector = require('./lib/server/ServerConnector').ServerConnector;
@@ -91,7 +89,6 @@ exports.TextTrigger = require('./lib/triggers/TextTrigger').TextTrigger;
 exports.Trigger = require('./lib/triggers/Trigger').Trigger;
 
 exports.AppEnvironment = require('./lib/AppEnvironment').AppEnvironment;
-exports.BatchInfo = require('./lib/BatchInfo').BatchInfo;
 exports.EyesBase = require('./lib/EyesBase').EyesBase;
 exports.EyesJsBrowserUtils = require('./lib/EyesJsBrowserUtils').EyesJsBrowserUtils;
 exports.EyesJsExecutor = require('./lib/EyesJsExecutor').EyesJsExecutor;
@@ -107,6 +104,9 @@ exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus
 // Classes from eyes-common which may be used as part of public API
 // Classes which only used internally, should not be exported
 exports.Configuration = common.Configuration;
+exports.PropertyData = common.PropertyData;
+exports.ProxySettings = common.ProxySettings;
+exports.BatchInfo = common.BatchInfo;
 exports.CoordinatesType = common.CoordinatesType;
 exports.Location = common.Location;
 exports.RectangleSize = common.RectangleSize;

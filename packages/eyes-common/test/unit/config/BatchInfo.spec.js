@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { BatchInfo } = require('../../index');
+const { BatchInfo } = require('../../../index');
 
 describe('BatchInfo', () => {
   it('create empty batch', () => {
