@@ -1,7 +1,7 @@
 'use strict';
 
 const { By, Builder } = require('selenium-webdriver');
-const { Region, FloatingMatchSettings, BatchInfo } = require('@applitools/eyes-sdk-core');
+const { Region, BatchInfo } = require('@applitools/eyes-sdk-core');
 
 const { Eyes, Target, RenderingConfiguration } = require('../../index');
 

@@ -1,37 +1,46 @@
 'use strict';
 
+const { Configuration, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 
-const { Configuration, ArgumentGuard } = require('@applitools/eyes-common');
+/**
+ * @typedef {{width: number, height: number, name: RenderingConfiguration.BrowserType}} BrowserInfo
+ * @typedef {{deviceName: string, screenOrientation: RenderingConfiguration.Orientation}} DeviceInfo
+ */
+
+const DEFAULT_VALUES = {
+  browsersInfo: [],
+  concurrentSessions: 3,
+  isThrowExceptionOn: false,
+};
 
 class RenderingConfiguration extends Configuration {
   /**
-   * @param {RenderingConfiguration} configuration
+   * @param {RenderingConfiguration} [configuration]
    */
   constructor(configuration) {
-    super(configuration);
-    this._browsersInfo = [];
-    this._concurrentSessions = 3;
-    this._isThrowExceptionOn = false;
+    super();
+
+    /** @type {(BrowserInfo|DeviceInfo)[]} */ this._browsersInfo = undefined;
+    /** @type {number} */ this._concurrentSessions = undefined;
+    /** @type {boolean} */ this._isThrowExceptionOn = undefined;
 
     if (configuration) {
-      this._browsersInfo = configuration.getBrowsersInfo();
-      this._concurrentSessions = configuration.getConcurrentSessions();
-      this._isThrowExceptionOn = configuration.getIsThrowExceptionOn();
+      this.mergeConfig(configuration);
     }
   }
 
   /**
-   * @param {{width: number, height: number, name: string}[]} browsersInfo
+   * @param {(BrowserInfo|DeviceInfo)[]} browsersInfo
    */
   setBrowsersInfo(browsersInfo) {
     this._browsersInfo = browsersInfo;
   }
 
   /**
-   * @return {{width: number, height: number, name: string}[]}
+   * @return {(BrowserInfo|DeviceInfo)[]}
    */
   getBrowsersInfo() {
-    return this._browsersInfo;
+    return TypeUtils.getOrDefault(this._browsersInfo, DEFAULT_VALUES.browsersInfo);
   }
 
   /**
@@ -44,6 +53,11 @@ class RenderingConfiguration extends Configuration {
     const browserInfo = {
       width, height, name: browserType,
     };
+
+    if (this._browsersInfo === undefined) {
+      this._browsersInfo = [];
+    }
+
     this._browsersInfo.push(browserInfo);
     return this;
   }
@@ -57,6 +71,11 @@ class RenderingConfiguration extends Configuration {
     const deviceInfo = {
       deviceName, screenOrientation,
     };
+
+    if (this._browsersInfo === undefined) {
+      this._browsersInfo = [];
+    }
+
     this._browsersInfo.push(deviceInfo);
     return this;
   }
@@ -72,7 +91,7 @@ class RenderingConfiguration extends Configuration {
    * @return {number}
    */
   getConcurrentSessions() {
-    return this._concurrentSessions;
+    return TypeUtils.getOrDefault(this._concurrentSessions, DEFAULT_VALUES.concurrentSessions);
   }
 
   /**
@@ -86,21 +105,20 @@ class RenderingConfiguration extends Configuration {
    * @return {boolean}
    */
   getIsThrowExceptionOn() {
-    return this._isThrowExceptionOn;
+    return TypeUtils.getOrDefault(this._isThrowExceptionOn, DEFAULT_VALUES.isThrowExceptionOn);
   }
 
   /**
+   * TODO: rename this method, the name of method should clearly declare that it only works for browsers and devices
+   *
+   * @deprecated This method is not doing what it should do, don't use it
+   * @param config
    * @return {RenderingConfiguration}
    */
-  cloneConfig() {
-    return new RenderingConfiguration(this);
-  }
-
   static fromObject(config) {
     ArgumentGuard.isValidType(config, Object);
 
     const cfg = new RenderingConfiguration();
-
     if (config.browser) {
       const browsers = Array.isArray(config.browser) ? config.browser : [config.browser];
       browsers.forEach(browser => {
@@ -113,6 +131,13 @@ class RenderingConfiguration extends Configuration {
     }
 
     return cfg;
+  }
+
+  /**
+   * @return {RenderingConfiguration}
+   */
+  cloneConfig() {
+    return new RenderingConfiguration(this);
   }
 }
 
