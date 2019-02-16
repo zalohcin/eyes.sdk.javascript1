@@ -104,12 +104,14 @@ class GeneralUtils {
    * Merging creates a new object, so that neither x or y are be modified.
    * @see package 'deepmerge'
    *
-   * @param {object} x
-   * @param {object} y
-   * @return {object}
+   * @template TFirst
+   * @template TSecond
+   * @param {TFirst} target
+   * @param {TSecond} source
+   * @return {TFirst|TSecond}
    */
-  static mergeDeep(x, y) {
-    return merge(x, y, { isMergeableObject: TypeUtils.isPlainObject });
+  static mergeDeep(target, source) {
+    return merge(target, source, { isMergeableObject: TypeUtils.isPlainObject });
   }
 
   /**
