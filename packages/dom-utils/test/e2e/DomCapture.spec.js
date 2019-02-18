@@ -171,6 +171,13 @@ describe('DomCapture', function () {
     assert.ok(actualDomJson);
   });
 
+  it('TestSendDOM_nbcnews', async function () {
+    let url = 'https://www.nbcnews.com/';
+    const actualDomJsonString = await captureDom(logger, driver, url, this.test.title);
+    const actualDomJson = JSON.parse(actualDomJsonString);
+    assert.ok(actualDomJson);
+  });
+
   afterEach(async function () {
     await driver.quit();
   });

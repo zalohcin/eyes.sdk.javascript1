@@ -100,7 +100,7 @@ class DomCapture {
     const cssResArr = await Promise.all(cssPromises);
     
     for (const cssRes of cssResArr) {
-      domSnapshot = domSnapshot.replace(`#####${cssRes.href}#####`, cssRes.css);
+      domSnapshot = domSnapshot.replace(`"${separatorJson.cssStartToken}${cssRes.href}${separatorJson.cssEndToken}"`, cssRes.css);
     }
 
     let iframeArr = [];
@@ -120,7 +120,7 @@ class DomCapture {
         domIFrame = {};
       }
       await this._switchToParentFrame(framesCount);
-      domSnapshot = domSnapshot.replace(`"@@@@@${iframeXpath}@@@@@"`, domIFrame);
+      domSnapshot = domSnapshot.replace(`"${separatorJson.iframeStartToken}${iframeXpath}${separatorJson.iframeEndToken}"`, domIFrame);
     }
 
     return domSnapshot;
