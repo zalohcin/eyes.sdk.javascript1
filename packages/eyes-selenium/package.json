@@ -51,6 +51,7 @@
   "scripts": {
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
+    "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\"",
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\"",
     "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\""
   },

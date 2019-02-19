@@ -1,22 +1,18 @@
 'use strict';
 
 const { By } = require('selenium-webdriver');
-
 const { TestsDataProvider } = require('./setup/TestsDataProvider');
 const { TestSetup } = require('./setup/TestSetup');
 
-let eyes, driver;
-const testSuitName = 'Eyes Selenium SDK - Classic API';
+let /** @type {Eyes} */ eyes, /** @type {EyesWebDriver} */ driver;
 const testedPageUrl = 'http://applitools.github.io/demo/TestPages/FramesTestPage/';
 
 const dataProvider = TestsDataProvider.dp();
 dataProvider.forEach(row => {
-  const testSetup = new TestSetup('TestClassicApi', testSuitName, testedPageUrl);
+  const testSetup = new TestSetup('TestClassicApi', 'Eyes Selenium SDK - Classic API', testedPageUrl);
   testSetup.setData(...row, false);
 
   describe(testSetup.toString(), function () {
-    this.timeout(5 * 60 * 1000);
-
     beforeEach(async function () {
       await testSetup.beforeMethod(this.currentTest.title);
       eyes = testSetup.getEyes();

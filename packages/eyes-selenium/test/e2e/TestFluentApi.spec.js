@@ -2,23 +2,19 @@
 
 const { By } = require('selenium-webdriver');
 const { Region, FloatingMatchSettings } = require('@applitools/eyes-sdk-core');
-
 const { TestsDataProvider } = require('./setup/TestsDataProvider');
 const { TestSetup } = require('./setup/TestSetup');
 const { Target } = require('../../index');
 
-let eyes, driver;
-const testSuitName = 'Eyes Selenium SDK - Fluent API';
+let /** @type {Eyes} */ eyes, /** @type {EyesWebDriver} */ driver;
 const testedPageUrl = 'http://applitools.github.io/demo/TestPages/FramesTestPage/';
 
 const dataProvider = TestsDataProvider.dp();
 dataProvider.forEach(row => {
-  const testSetup = new TestSetup('TestFluentApi', testSuitName, testedPageUrl);
+  const testSetup = new TestSetup('TestFluentApi', 'Eyes Selenium SDK - Fluent API', testedPageUrl);
   testSetup.setData(...row, false);
 
   describe(testSetup.toString(), function () {
-    this.timeout(5 * 60 * 1000);
-
     beforeEach(async function () {
       await testSetup.beforeMethod(this.currentTest.title);
       eyes = testSetup.getEyes();

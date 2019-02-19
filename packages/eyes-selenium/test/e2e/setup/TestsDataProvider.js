@@ -5,7 +5,6 @@ const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 const { Options: FirefoxOptions } = require('selenium-webdriver/firefox');
 const { Options: SafariOptions } = require('selenium-webdriver/safari');
 const { Options: IeOptions } = require('selenium-webdriver/ie');
-
 const { GeneralUtils } = require('@applitools/eyes-sdk-core');
 
 /**

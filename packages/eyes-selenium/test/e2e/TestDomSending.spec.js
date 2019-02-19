@@ -1,25 +1,21 @@
 'use strict';
 
 const { By } = require('selenium-webdriver');
-
 const { TestsDataProvider } = require('./setup/TestsDataProvider');
 const { TestSetup } = require('./setup/TestSetup');
 const { Target } = require('../../index');
 
 let /** @type {Eyes} */ eyes, /** @type {EyesWebDriver} */ driver;
-const testSuitName = 'Eyes Selenium SDK - Dom Sending';
 const testedPageUrl = 'http://applitools.github.io/demo/TestPages/DomTest/dom_capture.html';
 
 const dataProvider = TestsDataProvider.dp();
 dataProvider.forEach(row => {
-  const testSetup = new TestSetup('TestDomSending', testSuitName, testedPageUrl);
+  const testSetup = new TestSetup('TestDomSending', 'Eyes Selenium SDK - Dom Sending', testedPageUrl);
   testSetup.setData(...row, false);
 
   testSetup.getEyes().setSendDom(true);
 
   describe(testSetup.toString(), function () {
-    this.timeout(5 * 60 * 1000);
-
     beforeEach(async function () {
       await testSetup.beforeMethod(this.currentTest.title);
       eyes = testSetup.getEyes();
@@ -30,14 +26,14 @@ dataProvider.forEach(row => {
       await testSetup.afterMethod();
     });
 
-    // it('TestDomOfTestPage', async function () {
-    //   await eyes.check('A Window', Target.window());
-    // });
+    it('TestDomOfTestPage', async function () {
+      await eyes.check('A Window', Target.window());
+    });
 
-    // it('TestDomOfApplitoolsPage', async function () {
-    //   await driver.get('https://applitools.com');
-    //   await eyes.check('A Window', Target.window());
-    // });
+    it('TestDomOfApplitoolsPage', async function () {
+      await driver.get('https://applitools.com');
+      await eyes.check('A Window', Target.window());
+    });
 
     it('TestDomOfBookingPage', async function () {
       await driver.get('https://booking.com');

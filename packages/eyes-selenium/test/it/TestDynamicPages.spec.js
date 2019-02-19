@@ -2,11 +2,11 @@
 
 require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
-const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
-const { Eyes, Target } = require('../../index');
+const { ConsoleLogHandler } = require('../../../eyes-sdk-core');
+const { Eyes, Target } = require('../../../eyes-rendering');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
-describe('DynamicPagesTest', function () {
+describe('TestDynamicPages', function () {
   this.timeout(5 * 60 * 1000);
 
   before(function () {

@@ -3,10 +3,10 @@
 require('chromedriver');
 const { Builder, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { RectangleSize } = require('@applitools/eyes-sdk-core');
-const { Eyes, Target } = require('../../index');
+const { RectangleSize } = require('../../../eyes-sdk-core');
+const { Eyes, Target } = require('../../../eyes-rendering');
 
-let driver, eyes;
+let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
 describe('TestServerConnector', function () {
   this.timeout(5 * 60 * 1000);
 

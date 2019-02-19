@@ -6,7 +6,6 @@ const assert = require('assert');
 const { Capabilities, Builder } = require('selenium-webdriver');
 const { ConsoleLogHandler, FileLogHandler, DateTimeUtils } = require('@applitools/eyes-common');
 const { BatchInfo, RectangleSize, metadata } = require('@applitools/eyes-sdk-core');
-
 const { StitchMode, Eyes } = require('../../../index');
 
 class TestSetup {
