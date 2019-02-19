@@ -6,6 +6,12 @@
 
 // config
 exports.Configuration = require('./lib/config/Configuration').Configuration;
+exports.BatchInfo = require('./lib/config/BatchInfo').BatchInfo;
+exports.PropertyData = require('./lib/config/PropertyData').PropertyData;
+exports.ProxySettings = require('./lib/config/ProxySettings').ProxySettings;
+
+// errors
+exports.EyesError = require('./lib/errors/EyesError').EyesError;
 
 // debug
 exports.DebugScreenshotsProvider = require('./lib/debug/DebugScreenshotsProvider').DebugScreenshotsProvider;
