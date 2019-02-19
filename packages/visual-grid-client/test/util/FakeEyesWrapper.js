@@ -1,13 +1,16 @@
 'use strict';
-
-const {Location} = require('@applitools/eyes-common');
-const {MatchResult, RenderStatusResults, RenderStatus} = require('@applitools/eyes-sdk-core');
-
+const {
+  MatchResult,
+  RenderStatusResults,
+  RenderStatus,
+  Location,
+} = require('@applitools/eyes-sdk-core');
 const {URL} = require('url');
 const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture');
 const SOME_BATCH = 'SOME_BATCH';
 const getSha256Hash = require('./getSha256Hash');
 const FakeRunningRender = require('./FakeRunningRender');
+const EventEmitter = require('events');
 
 let salt = 0;
 
@@ -23,10 +26,14 @@ const selectorsToLocations = {
   sel1: {x: 1, y: 2, width: 3, height: 4},
   sel2: {x: 5, y: 6, width: 7, height: 8},
   sel3: {x: 100, y: 101, width: 102, height: 103},
+  sel4: {x: 200, y: 201, width: 202, height: 203},
+  sel5: {x: 300, y: 301, width: 302, height: 303},
+  sel6: {x: 400, y: 401, width: 402, height: 403},
 };
 
-class FakeEyesWrapper {
+class FakeEyesWrapper extends EventEmitter {
   constructor({goodFilename, goodResourceUrls = [], goodTags, goodResources = []}) {
+    super();
     this._logger = {
       verbose: console.log,
       log: console.log,
@@ -43,6 +50,12 @@ class FakeEyesWrapper {
 
   async open(_appName, _testName, _viewportSize) {
     this.results = [];
+    return new Promise(res =>
+      setTimeout(() => {
+        this.emit('openEnd');
+        res();
+      }, 100),
+    );
   }
 
   async renderBatch(renderRequests) {
@@ -151,18 +164,25 @@ class FakeEyesWrapper {
     result.__checkSettings = checkSettings;
     result.__tag = tag;
     this.results.push(result);
-    return result;
+    return new Promise(res =>
+      setTimeout(() => {
+        this.emit('checkWindowEnd');
+        res(result);
+      }, 100),
+    );
   }
 
   createRGridDom({cdt: _cdt, resources: _resources}) {}
 
   async close() {
+    this.emit('closed');
     this.closed = !this.aborted;
     if (this.results.find(r => !r.getAsExpected())) throw new Error('mismatch');
     return this.results;
   }
 
   async abortIfNotClosed() {
+    this.emit('aborted');
     this.aborted = !this.closed;
   }
 

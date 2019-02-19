@@ -1,11 +1,8 @@
 'use strict';
-/* global fetch */
-
-require('@applitools/isomorphic-fetch');
 const retryFetch = require('@applitools/http-commons/src/retryFetch');
 const createResourceCache = require('./createResourceCache');
 
-function makeFetchResource({logger, retries = 5, fetchCache = createResourceCache()}) {
+function makeFetchResource({logger, retries = 5, fetchCache = createResourceCache(), fetch}) {
   return url => fetchCache.getValue(url) || fetchCache.setValue(url, doFetchResource(url));
 
   function doFetchResource(url) {

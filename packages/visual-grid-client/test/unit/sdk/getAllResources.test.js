@@ -1,3 +1,4 @@
+/* global fetch */
 'use strict';
 const {describe, it, beforeEach} = require('mocha');
 const {expect} = require('chai');
@@ -12,6 +13,7 @@ const {loadFixtureBuffer} = require('../../util/loadFixture');
 const isCss = require('../../../src/sdk/isCss');
 const toRGridResource = require('../../util/toRGridResource');
 const getTestCssResources = require('../../util/getTestCssResources');
+require('@applitools/isomorphic-fetch');
 
 describe('getAllResources', () => {
   let closeServer;
@@ -22,6 +24,7 @@ describe('getAllResources', () => {
     const fetchResource = makeFetchResource({
       logger: testLogger,
       fetchCache: createResourceCache(),
+      fetch,
     });
     resourceCache = createResourceCache();
     getAllResources = makeGetAllResources({
@@ -350,6 +353,7 @@ describe('getAllResources', () => {
     const fetchResource = makeFetchResource({
       logger: testLogger,
       fetchCache: createResourceCache(),
+      fetch,
     });
     resourceCache = createResourceCache();
     getAllResources = makeGetAllResources({

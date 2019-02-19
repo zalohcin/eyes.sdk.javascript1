@@ -36,7 +36,7 @@ The visualGridClient, returned by `makeVisualGridClient`, is an object with the 
 
 ### openEyes
 
-Async function `openEyes` will create a test. Actually, it will create a series of test, one for each browser configuration
+Async function `openEyes` will create a test. Actually, it will create a series of tests, one for each browser configuration
 defined in the `browser` property of the configuraion.
 
 * `openEyes` accepts a configuration object that will override the default configuration found by
@@ -64,6 +64,8 @@ defined in the `browser` property of the configuraion.
   This is an object with `x`, `y`, `width`, `height` properties.
 * `ignore`: TBD
 * `floating`: TBD
+* `strict`: TBD
+* `layout`: TBD
 * `sendDom`: TBD
 * `scriptHooks`: a set of scripts to be run by the browser during the rendering.
    An object with the following properties:
@@ -134,13 +136,13 @@ Example [Mocha](https://www.npmjs.com/package/mocha) test that uses the visual g
 const path = require('path')
 const fs = require('fs')
 const {makeVisualGridClient} = require('@applitools/visual-grid-client')
-const {getProcessPageScript} = require('@applitools/dom-snapshot')
+const {getProcessPageAndSerializeScript} = require('@applitools/dom-snapshot')
 const puppeteer = require('puppeteer')
 
 describe('visual-grid-client test', function() {
   let visualGridClient
   let closePromises = []
-  let processPage
+  let processPageAndSerialize
   let browser
   let page
 
@@ -150,11 +152,9 @@ describe('visual-grid-client test', function() {
 
     visualGridClient = makeVisualGridClient({
       showLogs: true,
-      renderStatusTimeout: 60000,
-      renderStatusInterval: 1000,
     })
 
-    processPage = `(${await getProcessPageScript()})()`
+    processPageAndSerialize = `(${await getProcessPageAndSerializeScript()})()`
   })
 
   after(() => {
@@ -173,19 +173,20 @@ describe('visual-grid-client test', function() {
 
   it('should work', async () => {
     await page.goto('index.html')
+    const {cdt, url, resourceUrls, blobs, frames} = await page.evaluate(processPageAndSerialize)
+    const resourceContents = blobs.map(({url, type, value}) => ({
+      url,
+      type,
+      value: Buffer.from(value, 'base64'),
+    }));
     checkWindow({
       tag: 'first test',
-      url: 'http://localhost/index.html',
-      cdt: await page.evaluate(processPage),
       sizeMode: 'viewport',
-      resourceUrls: ['http://imgur.com/dog.jpeg'],
-      resourceContents: {
-        'cat.jpeg': {
-          url: 'cat.jpeg',
-          type: 'image/jpeg',
-          value: fs.readFileSync(path.join(__dirname, 'resources/cat.jpeg')),
-        },
-      },
+      url,
+      cdt,
+      resourceUrls,
+      resourceContents,
+      frames
     })
   })
 })

@@ -1,3 +1,4 @@
+/* global fetch */
 'use strict';
 const {describe, it} = require('mocha');
 const {expect} = require('chai');
@@ -7,10 +8,12 @@ const testLogger = require('../../util/testLogger');
 const psetTimeout = require('util').promisify(setTimeout);
 const {FetchError} = require('node-fetch');
 const createResourceCache = require('../../../src/sdk/createResourceCache');
+const {presult} = require('@applitools/functional-commons');
+require('@applitools/isomorphic-fetch');
 
 describe('fetchResource', () => {
   it('fetches with content and content-type', async () => {
-    const fetchResource = makeFetchResource({logger: testLogger, retries: 0});
+    const fetchResource = makeFetchResource({logger: testLogger, retries: 0, fetch});
     const url = 'http://something';
     nock(url)
       .get('/')
@@ -21,8 +24,8 @@ describe('fetchResource', () => {
   });
 
   it('fetches with retries', async () => {
-    const fetchResourceWithRetry = makeFetchResource({logger: testLogger, retries: 3});
-    const fetchResourceWithoutRetry = makeFetchResource({logger: testLogger, retries: 0});
+    const fetchResourceWithRetry = makeFetchResource({logger: testLogger, retries: 3, fetch});
+    const fetchResourceWithoutRetry = makeFetchResource({logger: testLogger, retries: 0, fetch});
     const url = 'http://something';
     const type = 'some/content-type';
     const p1 = fetchResourceWithRetry(url).then(resource => {
@@ -41,7 +44,7 @@ describe('fetchResource', () => {
 
   it('caches requests', async () => {
     const fetchCache = createResourceCache();
-    const fetchResource = makeFetchResource({logger: testLogger, retries: 0, fetchCache});
+    const fetchResource = makeFetchResource({logger: testLogger, retries: 0, fetchCache, fetch});
     const url = 'http://something';
     let counter = 0;
     nock(url)
@@ -52,5 +55,18 @@ describe('fetchResource', () => {
     const r1 = await fetchResource(url);
     const r2 = await fetchResource(url);
     expect(r1).to.eql(r2);
+  });
+
+  it('fetches with retries event though fails', async () => {
+    let called = 0;
+    const dontFetch = () => ((called += 1), Promise.reject(new Error('DONT FETCH')));
+    const fetchResourceWithRetry = makeFetchResource({
+      logger: testLogger,
+      retries: 3,
+      fetch: dontFetch,
+    });
+    const url = 'http://something';
+    expect((await presult(fetchResourceWithRetry(url)))[0].message).to.equal('DONT FETCH');
+    expect(called).to.equal(4);
   });
 });
