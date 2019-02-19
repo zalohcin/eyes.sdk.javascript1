@@ -82,6 +82,8 @@ class Eyes extends EyesBase {
 
     /** @type {Region} */
     this._regionToCheck = null;
+    /** @type {Location} */
+    this._imageLocation = undefined;
 
     /** @type {boolean} */
     this._hideScrollbars = false;
@@ -442,7 +444,7 @@ class Eyes extends EyesBase {
    * Perform visual validation
    *
    * @param {string} name A name to be associated with the match
-   * @param {SeleniumCheckSettings|CheckSettings} checkSettings Target instance which describes whether we want a
+   * @param {SeleniumCheckSettings} checkSettings Target instance which describes whether we want a
    *   window/region/frame
    * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
    */
@@ -470,6 +472,7 @@ class Eyes extends EyesBase {
 
     this._scrollRootElement = null;
     this._regionToCheck = null;
+    this._imageLocation = null;
 
     let result = null;
 
@@ -478,6 +481,7 @@ class Eyes extends EyesBase {
 
     if (targetRegion) {
       originalFC = await this._tryHideScrollbars();
+      this._imageLocation = targetRegion.getLocation();
       result = await super.checkWindowBase(new RegionProvider(targetRegion), name, false, checkSettings);
     } else if (checkSettings) {
       let targetElement = checkSettings.getTargetElement();
@@ -494,7 +498,7 @@ class Eyes extends EyesBase {
         if (this._stitchContent) {
           result = await this._checkElement(undefined, name, checkSettings);
         } else {
-          result = await this._checkRegion(name, checkSettings);
+          result = await this._checkRegionByElement(name, checkSettings);
         }
         this._targetElement = null;
       } else if (checkSettings.getFrameChain().length > 0) {
@@ -534,6 +538,7 @@ class Eyes extends EyesBase {
     await this._trySwitchToFrames(this._driver, switchTo, this._originalFC);
 
     this._stitchContent = false;
+    this._imageLocation = null;
 
     this._logger.verbose('check - done!');
     return result;
@@ -568,7 +573,7 @@ class Eyes extends EyesBase {
     this._targetElement = targetFrame.getReference();
 
     await this._driver.switchTo().framesDoScroll(frameChain);
-    const result = await this._checkRegion(name, checkSettings);
+    const result = await this._checkRegionByElement(name, checkSettings);
     this._targetElement = null;
     return result;
   }
@@ -588,6 +593,7 @@ class Eyes extends EyesBase {
 
   /**
    * @private
+   * @param {SeleniumCheckSettings} checkSettings
    * @return {Promise<number>}
    */
   async _switchToFrame(checkSettings) {
@@ -656,7 +662,9 @@ class Eyes extends EyesBase {
        * @override
        */
       async getRegion() {
-        return self._getFullFrameOrElementRegion();
+        const region = await self._getFullFrameOrElementRegion();
+        self._imageLocation = region.getLocation();
+        return region;
       }
     };
 
@@ -667,7 +675,7 @@ class Eyes extends EyesBase {
 
   /**
    * @private
-   * @return {Region}
+   * @return {Promise<Region>}
    */
   async _getFullFrameOrElementRegion() {
     if (this._checkFrameOrElement) {
@@ -735,8 +743,8 @@ class Eyes extends EyesBase {
     const originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
     const switchTo = this._driver.switchTo();
 
-    const eyesRemoteWebElement = new EyesWebElement(this._logger, this._driver, element);
-    let elementBounds = await eyesRemoteWebElement.getBounds();
+    const eyesWebElement = new EyesWebElement(this._logger, this._driver, element);
+    let elementBounds = await eyesWebElement.getBounds();
 
     const currentFrameOffset = originalFC.getCurrentFrameOffset();
     elementBounds = elementBounds.offset(currentFrameOffset.getX(), currentFrameOffset.getY());
@@ -746,7 +754,7 @@ class Eyes extends EyesBase {
     if (!viewportBounds.contains(elementBounds)) {
       await this._ensureFrameVisible();
 
-      const rect = await element.getRect();
+      const rect = await eyesWebElement.getRect();
       const elementLocation = new Location(rect);
 
       // const isEquals = await EyesWebElement.equals(element, originalFC.peek());
@@ -791,22 +799,17 @@ class Eyes extends EyesBase {
    * @private
    * @return {Promise<MatchResult>}
    */
-  async _checkRegion(name, checkSettings) {
+  async _checkRegionByElement(name, checkSettings) {
     const self = this;
+
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       // noinspection JSUnusedGlobalSymbols
-      /**
-       * @override
-       */
+      /** @override */
       async getRegion() {
         const rect = await self._targetElement.getRect();
-        return new Region(
-          Math.ceil(rect.x),
-          Math.ceil(rect.y),
-          rect.width,
-          rect.height,
-          CoordinatesType.CONTEXT_RELATIVE
-        );
+        const region = new Region(Math.ceil(rect.x), Math.ceil(rect.y), rect.width, rect.height, CoordinatesType.CONTEXT_RELATIVE);
+        self._imageLocation = region.getLocation();
+        return region;
       }
     };
 
@@ -871,6 +874,7 @@ class Eyes extends EyesBase {
         this._regionToCheck.intersect(this._effectiveViewport);
       }
 
+      this._imageLocation = this._regionToCheck.getLocation();
       result = await super.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
     } finally {
       if (originalOverflow) {
@@ -883,6 +887,7 @@ class Eyes extends EyesBase {
       await scrollPositionProvider.setPosition(originalScrollPosition);
       this._positionProviderHandler.set(originalPositionProvider);
       this._regionToCheck = null;
+      this._imageLocation = null;
       this._elementPositionProvider = null;
     }
 
@@ -1326,12 +1331,11 @@ class Eyes extends EyesBase {
    * @inheritDoc
    */
   async getImageLocation() {
-    let location = Location.ZERO;
-    if (this._regionToCheck) {
-      location = this._regionToCheck.getLocation();
+    if (this._imageLocation) {
+      return this._imageLocation;
     }
 
-    return location;
+    return Location.ZERO;
   }
 
   /**
