@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.5.3...@applitools/dom-utils@4.6.0) (2019-02-19)
+
+
+### Bug Fixes
+
+* **dom-utils:** fix regexp for replacing unfetched CSSs ([8d81b47](https://github.com/applitools/eyes.sdk.javascript1/commit/8d81b47))
+* **dom-utils:** update `@applitools/dom-capture` to version 7.0.5 ([96f1b2c](https://github.com/applitools/eyes.sdk.javascript1/commit/96f1b2c))
+
+
+
+
+
 ## [4.5.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.5.2...@applitools/dom-utils@4.5.3) (2019-02-14)
 
 
