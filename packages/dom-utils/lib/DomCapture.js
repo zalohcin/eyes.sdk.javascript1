@@ -8,7 +8,7 @@ const { getCaptureDomScript } = require('@applitools/dom-capture');
 
 const DomCaptureReturnType = {
   OBJECT: 'OBJECT',
-  STRING: 'STRING'
+  STRING: 'STRING',
 };
 
 class DomCapture {
@@ -169,15 +169,16 @@ class DomCapture {
   async _downloadCss(baseUri, href, retriesCount = 1) {
     try {
       this._logger.verbose(`Given URL to download: ${href}`);
+      let absHref = href;
       if (!GeneralUtils.isAbsoluteUrl(href)) {
-        href = new URL(href.toString(), baseUri).href;
+        absHref = new URL(href.toString(), baseUri).href;
       }
 
       const timeStart = PerformanceUtils.start();
-      const response = await axios(href);
+      const response = await axios(absHref);
       const css = response.data;
       this._logger.verbose(`downloading CSS in length of ${css.length} chars took ${timeStart.end().summary}`);
-      return {'href': href, 'css': css};
+      return {'href': absHref, 'css': css};
     } catch (ex) {
       this._logger.verbose(ex.toString());
       retriesCount -= 1;
