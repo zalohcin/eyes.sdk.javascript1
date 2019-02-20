@@ -61,7 +61,7 @@ class Eyes extends EyesAbstract {
       apiKey: this._configuration.getApiKey(),
       showLogs: this._configuration.getShowLogs(),
       saveDebugData: this._configuration.getSaveDebugData(),
-      proxy: this._configuration.getProxy().toProxyObject(),
+      proxy: this._configuration.getProxy(),
       serverUrl: this._configuration.getServerUrl(),
       renderConcurrencyFactor: this._configuration.getConcurrentSessions(),
     });
@@ -95,11 +95,11 @@ class Eyes extends EyesAbstract {
       ignoreBaseline: this._configuration.getIgnoreBaseline(),
       parentBranchName: this._configuration.getParentBranchName(),
       agentId: this._configuration.getAgentId(),
+      isDisabled: this._configuration.getIsDisabled(),
+      matchTimeout: this._configuration.getMatchTimeout(),
 
       ignoreCaret: this._defaultMatchSettings.getIgnoreCaret(),
-      isDisabled: this._defaultMatchSettings.getIsDisabled(),
       matchLevel: this._defaultMatchSettings.getMatchLevel(),
-      matchTimeout: this._defaultMatchSettings.getMatchTimeout(),
 
       // renderBatch,
       // waitForRenderedStatus,
