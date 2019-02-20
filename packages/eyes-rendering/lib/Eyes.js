@@ -253,6 +253,13 @@ class Eyes extends EyesAbstract {
   }
 
   /**
+   * @return {RectangleSize}
+   */
+  getViewportSize() {
+    return this._configuration.getViewportSize();
+  }
+
+  /**
    * @param {RectangleSize} viewportSize
    */
   async setViewportSize(viewportSize) {
