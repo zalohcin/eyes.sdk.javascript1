@@ -8,7 +8,7 @@ language: node_js
 
 node_js:
 - "node"
-- "10"
+- "lts/*"
 - "8"
 
 # Use faster Docker architecture on Travis.
@@ -16,13 +16,12 @@ sudo: false
 
 cache: npm
 
-before_install:
-- if [[ "$(npm -v)" != "$(npm v npm dist-tags.latest)" ]]; then npm i -g npm@latest; fi
+#before_install:
+#- if [[ "$(npm -v)" != "$(npm v npm dist-tags.latest)" ]]; then npm i -g npm@latest; fi
 
 install:
-- npm ci
-- npm run install
+- npm install
 
 script:
 - npm run lint
-- npm run test
+- npm run test:unit
