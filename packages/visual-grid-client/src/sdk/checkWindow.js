@@ -160,9 +160,13 @@ function makeCheckWindow({
       }
 
       const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0] : undefined;
-      const imageLocation = imageLocationRegion
-        ? new Location({x: imageLocationRegion.getLeft(), y: imageLocationRegion.getTop()})
-        : undefined;
+
+      let imageLocation = undefined;
+      if (imageLocationRegion) {
+        imageLocation = imageLocationRegion.getLocation();
+      } else if (region) {
+        imageLocation = region.getLocation();
+      }
 
       const {noOffsetRegions, offsetRegions} = calculateMatchRegions({
         noOffsetSelectors: noOffsetSelectors.all,
