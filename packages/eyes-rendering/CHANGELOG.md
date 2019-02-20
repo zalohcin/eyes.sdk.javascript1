@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-rendering@2.3.0...@applitools/eyes-rendering@2.3.1) (2019-02-20)
+
+
+### Bug Fixes
+
+* **eyes-rendering:** proxy and configuration errors ([0f88068](https://github.com/applitools/eyes.sdk.javascript1/commit/0f88068))
+
+
+
+
+
 # [2.3.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-rendering@2.2.4...@applitools/eyes-rendering@2.3.0) (2019-02-19)
 
 **Note:** Version bump only for package @applitools/eyes-rendering

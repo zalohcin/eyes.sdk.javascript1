@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.5.0...@applitools/eyes-selenium@4.6.0) (2019-02-20)
+
+
+### Features
+
+* **eyes-selenium:** send location in match request for region, frame ([4bb4f6f](https://github.com/applitools/eyes.sdk.javascript1/commit/4bb4f6f))
+
+
+
+
+
 # [4.5.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.4.9...@applitools/eyes-selenium@4.5.0) (2019-02-19)
 
 **Note:** Version bump only for package @applitools/eyes-selenium

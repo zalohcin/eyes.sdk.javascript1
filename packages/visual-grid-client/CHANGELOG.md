@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [11.1.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@11.1.0...@applitools/visual-grid-client@11.1.1) (2019-02-20)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** do not wrap proxy if given ProxySettings object ([e910869](https://github.com/applitools/eyes.sdk.javascript1/commit/e910869))
+
+
+
+
+
 # [11.1.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@11.0.5...@applitools/visual-grid-client@11.1.0) (2019-02-19)
 
 **Note:** Version bump only for package @applitools/visual-grid-client
