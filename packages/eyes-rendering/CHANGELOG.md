@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-rendering@2.3.1...@applitools/eyes-rendering@2.3.2) (2019-02-20)
+
+
+### Bug Fixes
+
+* **eyes-rendering:** add `getViewportSize` method ([6136387](https://github.com/applitools/eyes.sdk.javascript1/commit/6136387))
+
+
+
+
+
 ## [2.3.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-rendering@2.3.0...@applitools/eyes-rendering@2.3.1) (2019-02-20)
 
 
