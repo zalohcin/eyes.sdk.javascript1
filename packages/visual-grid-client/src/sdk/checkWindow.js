@@ -1,7 +1,7 @@
 'use strict';
 
 const {presult} = require('@applitools/functional-commons');
-const {RectangleSize, Location} = require('@applitools/eyes-common');
+const {RectangleSize, Region} = require('@applitools/eyes-common');
 
 const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
@@ -162,10 +162,10 @@ function makeCheckWindow({
       const imageLocationRegion = sizeMode === 'selector' ? selectorRegions[0] : undefined;
 
       let imageLocation = undefined;
-      if (imageLocationRegion) {
-        imageLocation = imageLocationRegion.getLocation();
-      } else if (region) {
-        imageLocation = region.getLocation();
+      if (sizeMode === 'selector' && imageLocationRegion) {
+        imageLocation = new Region(imageLocationRegion).getLocation();
+      } else if (sizeMode === 'region' && region) {
+        imageLocation = new Region(region).getLocation();
       }
 
       const {noOffsetRegions, offsetRegions} = calculateMatchRegions({

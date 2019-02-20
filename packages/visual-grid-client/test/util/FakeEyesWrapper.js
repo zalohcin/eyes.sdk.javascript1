@@ -4,6 +4,7 @@ const {
   RenderStatusResults,
   RenderStatus,
   Location,
+  Region,
 } = require('@applitools/eyes-sdk-core');
 const {URL} = require('url');
 const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture');
@@ -144,10 +145,12 @@ class FakeEyesWrapper extends EventEmitter {
       selectorsToFindRegionsFor,
     } = JSON.parse(screenshotUrl);
 
-    const expectedImageLocation =
-      sizeMode === 'selector'
-        ? new Location(selectorsToLocations[selectorsToFindRegionsFor[0]])
-        : undefined;
+    let expectedImageLocation = undefined;
+    if (sizeMode === 'selector') {
+      expectedImageLocation = new Location(selectorsToLocations[selectorsToFindRegionsFor[0]]);
+    } else if (sizeMode === 'region') {
+      expectedImageLocation = new Region(this.region).getLocation();
+    }
 
     const asExpected =
       isGood &&
