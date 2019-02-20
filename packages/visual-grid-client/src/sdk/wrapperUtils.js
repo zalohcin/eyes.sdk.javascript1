@@ -47,10 +47,11 @@ function configureWrappers({
   agentId,
 }) {
   const batchInfo = new BatchInfo({id: batchId, name: batchName});
-  proxy =
-    proxy && typeof proxy === 'object'
-      ? new ProxySettings(proxy.uri, proxy.username, proxy.password)
-      : proxy;
+
+  if (proxy && typeof proxy === 'object' && !(proxy instanceof ProxySettings)) {
+    proxy = new ProxySettings(proxy.uri, proxy.username, proxy.password);
+  }
+
   for (let i = 0, ii = wrappers.length; i < ii; i++) {
     const wrapper = wrappers[i];
     const browser = browsers[i];
