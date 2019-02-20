@@ -4,6 +4,10 @@ if: tag IS blank
 git:
   depth: 3
 
+addons:
+  chrome: stable
+  firefox: latest
+
 language: node_js
 
 node_js:
