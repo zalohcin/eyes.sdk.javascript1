@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [11.1.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@11.1.2...@applitools/visual-grid-client@11.1.3) (2019-02-20)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** fix error when region given as plain object ([163eca2](https://github.com/applitools/eyes.sdk.javascript1/commit/163eca2))
+
+
+
+
+
 ## [11.1.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@11.1.1...@applitools/visual-grid-client@11.1.2) (2019-02-20)
 
 
