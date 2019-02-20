@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [11.1.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@11.1.1...@applitools/visual-grid-client@11.1.2) (2019-02-20)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** add location to match request for checkRegion ([cb383d5](https://github.com/applitools/eyes.sdk.javascript1/commit/cb383d5))
+
+
+
+
+
 ## [11.1.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@11.1.0...@applitools/visual-grid-client@11.1.1) (2019-02-20)
 
 
