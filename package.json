@@ -11,7 +11,8 @@
     "test:unit": "lerna run test:unit",
     "test:e2e": "lerna run test:e2e",
     "test:it": "lerna run test:it",
-    "test:perf": "lerna run test:perf"
+    "test:perf": "lerna run test:perf",
+    "commit": "npx git-cz"
   },
   "devDependencies": {
     "cz-conventional-changelog": "^2.1.0",
