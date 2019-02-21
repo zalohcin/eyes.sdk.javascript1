@@ -3,7 +3,6 @@
   "private": true,
   "scripts": {
     "install": "lerna bootstrap --hoist",
-    "publish:diff": "lerna publish from-package",
     "bootstrap": "lerna bootstrap --hoist",
     "clean": "lerna clean --yes",
     "lint": "eslint . --cache --ext js",
@@ -15,11 +14,17 @@
     "test:perf": "lerna run test:perf"
   },
   "devDependencies": {
-    "lerna": "^3.13.0",
+    "cz-conventional-changelog": "^2.1.0",
     "eslint": "^5.13.0",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-mocha-no-only": "^1.1.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.16.0"
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-mocha-no-only": "^1.1.0",
+    "eslint-plugin-node": "^8.0.1",
+    "lerna": "^3.13.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
