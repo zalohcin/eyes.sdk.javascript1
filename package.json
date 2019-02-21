@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "install": "lerna bootstrap --hoist",
+    "publish:diff": "lerna publish from-package",
     "bootstrap": "lerna bootstrap --hoist",
     "clean": "lerna clean --yes",
     "lint": "eslint . --cache --ext js",
