@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-rendering@2.3.4...@applitools/eyes-rendering@3.0.1) (2019-02-21)
+
+
+### Bug Fixes
+
+* **eyes-rendering:** bumped up major ([2a00fe1](https://github.com/applitools/eyes.sdk.javascript1/commit/2a00fe1))
+
+
+
+
+
 ## [2.3.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-rendering@2.3.3...@applitools/eyes-rendering@2.3.4) (2019-02-20)
 
 **Note:** Version bump only for package @applitools/eyes-rendering
