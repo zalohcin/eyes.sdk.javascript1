@@ -10,6 +10,8 @@ const calculateMatchRegions = require('./calculateMatchRegions');
 
 function makeCheckWindow({
   getError,
+  setError,
+  isAborted,
   saveDebugData,
   createRGridDOMAndGetResourceMapping,
   renderBatch,
@@ -19,7 +21,6 @@ function makeCheckWindow({
   getCheckWindowPromises,
   setCheckWindowPromises,
   browsers,
-  setError,
   wrappers,
   renderThroat,
   stepCounter,
@@ -47,7 +48,7 @@ function makeCheckWindow({
   }) {
     const currStepCount = ++stepCounter;
     logger.log(`running checkWindow for test ${testName} step #${currStepCount}`);
-    if (getError()) {
+    if (shouldStopAllTests()) {
       logger.log('aborting checkWindow synchronously');
       return;
     }
@@ -74,11 +75,13 @@ function makeCheckWindow({
     let renderJobs; // This will be an array of `resolve` functions to rendering jobs. See `createRenderJob` below.
 
     setCheckWindowPromises(
-      browsers.map((_browser, i) => checkWindowJob(getCheckWindowPromises()[i], i).catch(setError)),
+      browsers.map((_browser, i) =>
+        checkWindowJob(getCheckWindowPromises()[i], i).catch(setError.bind(null, i)),
+      ),
     );
 
     async function checkWindowJob(prevJobPromise = presult(Promise.resolve()), index) {
-      if (getError()) {
+      if (shouldStopTest(index)) {
         logger.log(
           `aborting checkWindow - not waiting for render to complete (so no renderId yet)`,
         );
@@ -87,7 +90,7 @@ function makeCheckWindow({
 
       const [renderErr, renderIds] = await renderPromise;
 
-      if (getError()) {
+      if (shouldStopTest(index)) {
         logger.log(
           `aborting checkWindow after render request complete but before waiting for rendered status`,
         );
@@ -95,8 +98,9 @@ function makeCheckWindow({
         return;
       }
 
+      // render error fails all tests
       if (renderErr) {
-        setError(renderErr);
+        setError(index, renderErr);
         renderJobs && renderJobs[index]();
         return;
       }
@@ -110,10 +114,10 @@ function makeCheckWindow({
       );
 
       const [renderStatusErr, renderStatusResult] = await presult(
-        waitForRenderedStatus(renderId, getError),
+        waitForRenderedStatus(renderId, shouldStopTest.bind(null, index)),
       );
 
-      if (getError()) {
+      if (shouldStopTest(index)) {
         logger.log('aborting checkWindow after render status finished');
         renderJobs && renderJobs[index]();
         return;
@@ -121,7 +125,7 @@ function makeCheckWindow({
 
       if (renderStatusErr) {
         logger.log('aborting checkWindow becuase render status failed');
-        setError(renderStatusErr);
+        setError(index, renderStatusErr);
         renderJobs && renderJobs[index]();
         return;
       }
@@ -152,7 +156,7 @@ function makeCheckWindow({
 
       await prevJobPromise;
 
-      if (getError()) {
+      if (shouldStopTest(index)) {
         logger.log(
           `aborting checkWindow for ${renderId} because there was an error in some previous job`,
         );
@@ -186,7 +190,7 @@ function makeCheckWindow({
 
       await openEyesPromises[index];
 
-      if (getError()) {
+      if (shouldStopTest(index)) {
         logger.log(`aborting checkWindow after waiting for openEyes promise`);
         return;
       }
@@ -208,14 +212,14 @@ function makeCheckWindow({
     }
 
     async function startRender() {
-      if (getError()) {
+      if (shouldStopAllTests()) {
         logger.log(`aborting startRender because there was an error in getRenderInfo`);
         return;
       }
 
       const {rGridDom: dom, allResources: resources} = await getResourcesPromise;
 
-      if (getError()) {
+      if (shouldStopAllTests()) {
         logger.log(`aborting startRender because there was an error in getAllResources`);
         return;
       }
@@ -245,6 +249,14 @@ function makeCheckWindow({
       }
 
       return renderIds;
+    }
+
+    function shouldStopAllTests() {
+      return browsers.every((_b, i) => getError(i)) || isAborted();
+    }
+
+    function shouldStopTest(index) {
+      return getError(index) || isAborted();
     }
   };
 

@@ -80,12 +80,15 @@ defined in the `browser` property of the configuraion.
 
 ### close()
 
-`close` receives no parameters, and returns a promise.
+`close` receives `throwEx` parameters, and returns a promise.
 
-* The promise will be resolved (with `undefined` as value) if all tests defined in the `openEyes` passed.
-* The promise will be rejected (with `DiffsFoundError`
-   as defined in [Applitools Eyes SDK Core](https://www.npmjs.com/package/@applitools/eyes-sdk-core))
-   if there were differences found in some tests defined in the `openEyes`.
+* If throwEx = true (default) :
+    * If all tests defined in the `openEyes` pass then the promise is **resolved** with Array\<TestResults\>.
+    * If there are differences found in some tests defined in `openEyes` then the promise is **rejected** with Array\<DiffsFoundError|TestResults\>. (see 
+        [Applitools Eyes SDK Core](https://www.npmjs.com/package/@applitools/eyes-sdk-core) for `DiffsFoundError`).
+    * If there are any unexpected errors like a network error then the promise is **rejected** with Array\<AnyError|DiffsFoundError|TestResults\>. 
+* If throwEx = false :
+    * The promise is **resolved** with Array\<TestResults|DiffsFoundError|AnyOtherError\>.
 
 ### The CDT format
 

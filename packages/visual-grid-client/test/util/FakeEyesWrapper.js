@@ -33,7 +33,13 @@ const selectorsToLocations = {
 };
 
 class FakeEyesWrapper extends EventEmitter {
-  constructor({goodFilename, goodResourceUrls = [], goodTags, goodResources = []}) {
+  constructor({
+    goodFilename,
+    goodResourceUrls = [],
+    goodTags,
+    goodResources = [],
+    closeErr = false,
+  }) {
     super();
     this._logger = {
       verbose: console.log,
@@ -47,6 +53,7 @@ class FakeEyesWrapper extends EventEmitter {
     this.baseUrl = 'http://fake';
     this.resultsRoute = '/results_url';
     this.matchLevel = 'Strict';
+    this.closeErr = closeErr;
   }
 
   async open(_appName, _testName, _viewportSize) {
@@ -180,7 +187,7 @@ class FakeEyesWrapper extends EventEmitter {
   async close() {
     this.emit('closed');
     this.closed = !this.aborted;
-    if (this.results.find(r => !r.getAsExpected())) throw new Error('mismatch');
+    if (this.closeErr || this.results.find(r => !r.getAsExpected())) throw new Error('mismatch');
     return this.results;
   }
 

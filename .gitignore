@@ -7,10 +7,12 @@ logs
 
 # VS Code
 .vscode
+*.code-workspace
 
 # Dependency directory
 node_modules
 /packages/*/package-lock.json
+/packages/visual-grid-client/test/fixtures/test-app/dist/*
 
 # Other
 .DS_STORE

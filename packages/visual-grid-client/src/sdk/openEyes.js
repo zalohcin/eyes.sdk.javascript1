@@ -76,8 +76,6 @@ function makeOpenEyes({
       throw new Error(apiKeyFailMsg);
     }
 
-    let error;
-
     if (isDisabled) {
       logger.log('openEyes: isDisabled=true, skipping checks');
       return {
@@ -95,6 +93,9 @@ function makeOpenEyes({
     wrappers =
       wrappers ||
       initWrappers({count: browsers.length, apiKey, logHandler: logger.getLogHandler()});
+
+    let errors = browsers.map(() => undefined);
+    let aborted = false;
 
     configureWrappers({
       wrappers,
@@ -144,6 +145,8 @@ function makeOpenEyes({
 
     const checkWindow = makeCheckWindow({
       getError,
+      setError,
+      isAborted,
       saveDebugData,
       createRGridDOMAndGetResourceMapping,
       renderBatch,
@@ -153,7 +156,6 @@ function makeOpenEyes({
       getCheckWindowPromises,
       setCheckWindowPromises,
       browsers,
-      setError,
       wrappers,
       renderThroat,
       stepCounter,
@@ -168,6 +170,7 @@ function makeOpenEyes({
       wrappers,
       resolveTests,
       getError,
+      isAborted,
       logger,
     });
     const abort = makeAbort({
@@ -175,7 +178,7 @@ function makeOpenEyes({
       openEyesPromises,
       wrappers,
       resolveTests,
-      setError,
+      setIsAborted,
     });
 
     return {
@@ -184,13 +187,22 @@ function makeOpenEyes({
       abort,
     };
 
-    function setError(err) {
+    function setError(index, err) {
       logger.log('error set in test', testName, err);
-      error = err;
+      errors[index] = err;
     }
 
-    function getError() {
-      return error;
+    function getError(index) {
+      return errors[index];
+    }
+
+    function setIsAborted() {
+      logger.log('user aborted test', testName);
+      aborted = true;
+    }
+
+    function isAborted() {
+      return aborted;
     }
 
     function getCheckWindowPromises() {

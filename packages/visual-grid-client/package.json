@@ -68,7 +68,9 @@
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.test.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.test.js\"",
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.test.js\"",
-    "test": "npm run test:mocha && npm run eslint",
+    "build:browser": "cd test/fixtures/test-app && npm i && npm run build",
+    "test:browser": "mocha --no-timeouts 'test/browser/**/*.test.js'",
+    "test": "npm run build:browser && npm run test:mocha && npm run lint",
     "lint": "eslint \"**/*.js\""
   },
   "license": "MIT",

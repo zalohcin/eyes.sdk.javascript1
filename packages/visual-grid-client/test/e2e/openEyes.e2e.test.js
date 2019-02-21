@@ -5,6 +5,7 @@ const {expect} = require('chai');
 const puppeteer = require('puppeteer');
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient');
 const testServer = require('../util/testServer');
+const {presult} = require('@applitools/functional-commons');
 const {DiffsFoundError} = require('@applitools/eyes-sdk-core');
 const {getProcessPageAndSerializeScript} = require('@applitools/dom-snapshot');
 const fs = require('fs');
@@ -18,7 +19,11 @@ describe('openEyes', () => {
 
   beforeEach(() => {
     openEyes = makeRenderingGridClient(
-      Object.assign({showLogs: process.env.APPLITOOLS_SHOW_LOGS, apiKey}),
+      Object.assign({
+        showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+        apiKey,
+        fetchResourceTimeout: 2000,
+      }),
     ).openEyes;
   });
 
@@ -105,7 +110,9 @@ describe('openEyes', () => {
       scriptHooks,
     });
 
-    await close();
+    const results = await close();
+    expect(results.length).to.eq(3);
+    expect(results.map(r => r.getStatus())).to.eql(['Passed', 'Passed', 'Passed']);
   });
 
   it('fails with incorrect screenshot', async () => {
@@ -146,6 +153,8 @@ describe('openEyes', () => {
       scriptHooks,
     });
 
-    expect(await close().then(() => 'ok', err => err)).to.be.instanceOf(DiffsFoundError);
+    const [results] = await presult(close());
+    expect(results.length).to.eq(3);
+    results.map(r => expect(r).to.be.instanceOf(DiffsFoundError));
   });
 });

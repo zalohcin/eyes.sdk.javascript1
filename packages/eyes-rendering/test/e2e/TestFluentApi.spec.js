@@ -15,7 +15,7 @@ describe('Eyes Rendering SDK - Fluent API', function () {
 
     eyes = new Eyes();
     eyes.setBatch(new BatchInfo('EyesRenderingFluent'));
-    eyes.setProxy('http://127.0.0.1:8888');
+    // eyes.setProxy('http://127.0.0.1:8888');
 
     const renderingConfiguration = new RenderingConfiguration();
     renderingConfiguration.setTestName('Open Concurrency with Batch 2');
