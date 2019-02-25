@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { Eyes, EyesSelenium, EyesRendering, RenderingConfiguration } = require('../../index');
+const { Eyes, EyesSelenium, EyesVisualGrid, RenderingConfiguration } = require('../../index');
 
 describe('Eyes', function () {
 
@@ -16,13 +16,13 @@ describe('Eyes', function () {
     assert.ok(eyes instanceof EyesSelenium);
   });
 
-  it('should create EyesRendering with `true`', async function () {
+  it('should create EyesVisualGrid with `true`', async function () {
     const eyes = new Eyes(undefined, undefined, true);
-    assert.ok(eyes instanceof EyesRendering);
+    assert.ok(eyes instanceof EyesVisualGrid);
   });
 
-  it('should create EyesRendering with RenderingConfiguration', async function () {
+  it('should create EyesVisualGrid with RenderingConfiguration', async function () {
     const eyes = new Eyes(undefined, undefined, new RenderingConfiguration());
-    assert.ok(eyes instanceof EyesRendering);
+    assert.ok(eyes instanceof EyesVisualGrid);
   });
 });

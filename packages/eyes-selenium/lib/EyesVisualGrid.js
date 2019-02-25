@@ -9,7 +9,7 @@ const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
 
 const { RenderingConfiguration } = require('./config/RenderingConfiguration');
 
-class EyesRendering extends EyesAbstract {
+class EyesVisualGrid extends EyesAbstract {
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
@@ -306,4 +306,4 @@ class EyesRendering extends EyesAbstract {
   }
 }
 
-exports.EyesRendering = EyesRendering;
+exports.EyesVisualGrid = EyesVisualGrid;

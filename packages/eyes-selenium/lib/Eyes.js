@@ -4,7 +4,7 @@ const { EyesBase } = require('@applitools/eyes-sdk-core');
 
 const { RenderingConfiguration } = require('./config/RenderingConfiguration');
 const { EyesSelenium } = require('./EyesSelenium');
-const { EyesRendering } = require('./EyesRendering');
+const { EyesVisualGrid } = require('./EyesVisualGrid');
 
 class Eyes extends EyesBase {
   // noinspection JSAnnotator
@@ -17,7 +17,7 @@ class Eyes extends EyesBase {
    */
   constructor(serverUrl, isDisabled, visualGridConfig) {
     if (visualGridConfig === true || visualGridConfig instanceof RenderingConfiguration) {
-      return new EyesRendering(serverUrl, isDisabled);
+      return new EyesVisualGrid(serverUrl, isDisabled);
     }
 
     return new EyesSelenium(serverUrl, isDisabled);

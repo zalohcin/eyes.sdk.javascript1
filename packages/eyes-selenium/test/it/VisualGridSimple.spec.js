@@ -7,7 +7,7 @@ const { RectangleSize } = require('@applitools/eyes-common');
 const { Eyes, Target, RenderingConfiguration } = require('../../index'); // Should be replaced to `@applitools/eyes-rendering` if used outside of the package
 
 let /** @type {WebDriver} */ webDriver;
-describe('EyesRendering', function () {
+describe('VisualGridSimple', function () {
   this.timeout(5 * 60 * 1000);
 
   before(async function () {
