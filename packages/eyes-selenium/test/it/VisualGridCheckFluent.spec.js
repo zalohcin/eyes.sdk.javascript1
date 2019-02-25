@@ -12,7 +12,7 @@ describe('VisualGridCheckFluent', function () {
   before(async function () {
     driver = new Builder().forBrowser('chrome').build();
 
-    eyes = new Eyes();
+    eyes = new Eyes(undefined, undefined, true);
     eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
     eyes.setLogHandler(new ConsoleLogHandler(true));
     // eyes.setProxy('http://localhost:8888');
@@ -52,20 +52,20 @@ describe('VisualGridCheckFluent', function () {
     return eyes.close();
   });
 
-  it('TestCheckFrame', async function () {
-    await eyes.check('Frame', Target.frame('frame1'));
-    return eyes.close();
-  });
+  // it('TestCheckFrame', async function () {
+  //   await eyes.check('Frame', Target.frame('frame1'));
+  //   return eyes.close();
+  // });
 
-  it('TestCheckFrameFully', async function () {
-    await eyes.check('Full Frame', Target.frame('frame1').fully());
-    return eyes.close();
-  });
+  // it('TestCheckFrameFully', async function () {
+  //   await eyes.check('Full Frame', Target.frame('frame1').fully());
+  //   return eyes.close();
+  // });
 
-  it('TestCheckRegionInFrame', async function () {
-    await eyes.check('Region in Frame', Target.frame('frame1').region(By.id('inner-frame-div')).fully());
-    return eyes.close();
-  });
+  // it('TestCheckRegionInFrame', async function () {
+  //   await eyes.check('Region in Frame', Target.frame('frame1').region(By.id('inner-frame-div')).fully());
+  //   return eyes.close();
+  // });
 
   afterEach(async function () {
     return eyes.abortIfNotClosed();

@@ -17,6 +17,7 @@ const {
 
 const {
   EyesBase,
+  Configuration,
   FullPageCaptureAlgorithm,
   FixedScaleProviderFactory,
   NullScaleProvider,
@@ -59,6 +60,8 @@ const DEFAULT_WAIT_BEFORE_SCREENSHOTS = 100; // Milliseconds
 
 /**
  * The main API gateway for the SDK.
+ *
+ * @extends {Eyes}
  */
 class EyesSelenium extends EyesBase {
   /**
@@ -66,9 +69,10 @@ class EyesSelenium extends EyesBase {
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
    * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
+   * @param {Configuration} [configuration]
    */
-  constructor(serverUrl, isDisabled) {
-    super(serverUrl, isDisabled);
+  constructor(serverUrl, isDisabled, configuration = new Configuration()) {
+    super(serverUrl, isDisabled, configuration);
 
     /** @type {EyesWebDriver} */
     this._driver = undefined;

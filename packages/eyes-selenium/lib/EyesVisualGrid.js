@@ -3,24 +3,25 @@
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-snapshot');
 const { ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
-const { RectangleSize, TestFailedError, TestResultsFormatter, CorsIframeHandle, CorsIframeHandler, EyesAbstract } = require('@applitools/eyes-sdk-core');
+const { EyesBase, RectangleSize, TestFailedError, TestResultsFormatter, CorsIframeHandle, CorsIframeHandler } = require('@applitools/eyes-sdk-core');
+
 const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
 const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
-
 const { RenderingConfiguration } = require('./config/RenderingConfiguration');
 
-class EyesVisualGrid extends EyesAbstract {
+/**
+ * @extends {Eyes}
+ */
+class EyesVisualGrid extends EyesBase {
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
    * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
+   * @param {RenderingConfiguration} [configuration]
    */
-  constructor(serverUrl, isDisabled) {
-    super(new RenderingConfiguration());
-
-    this._configuration.setServerUrl(serverUrl);
-    this._configuration.setIsDisabled(isDisabled);
+  constructor(serverUrl, isDisabled, configuration = new RenderingConfiguration()) {
+    super(serverUrl, isDisabled, configuration);
 
     /** @type {boolean} */ this._isOpen = false;
     /** @type {boolean} */ this._isVisualGrid = true;
@@ -40,13 +41,12 @@ class EyesVisualGrid extends EyesAbstract {
    * @param {RenderingConfiguration|Object} configuration
    */
   async open(webDriver, appName, testName, viewportSize, configuration) {
-    this._logger.verbose('enter');
-
     ArgumentGuard.notNull(webDriver, 'webDriver');
-    ArgumentGuard.notNull(configuration, 'configuration');
 
-    const newConfiguration = (configuration instanceof RenderingConfiguration) ? configuration : RenderingConfiguration.fromObject(configuration);
-    this._configuration.mergeConfig(newConfiguration);
+    if (configuration) {
+      const newConfiguration = (configuration instanceof RenderingConfiguration) ? configuration : RenderingConfiguration.fromObject(configuration);
+      this._configuration.mergeConfig(newConfiguration);
+    }
 
     await this._initDriver(webDriver);
 
@@ -68,8 +68,6 @@ class EyesVisualGrid extends EyesAbstract {
     });
 
     this._processPageAndSerializeScript = await getProcessPageAndSerializeScript();
-
-    this._logger.verbose('opening openEyes...');
 
     viewportSize = viewportSize ? viewportSize : this.getViewportSize();
     if (viewportSize) {
@@ -115,7 +113,6 @@ class EyesVisualGrid extends EyesAbstract {
     this._checkWindowCommand = checkWindow;
     this._closeCommand = close;
     this._isOpen = true;
-    this._logger.verbose('done');
 
     return this._driver;
   }
@@ -137,12 +134,10 @@ class EyesVisualGrid extends EyesAbstract {
   }
 
   /**
-   * Warning! You will get an array of TestResults.
-   *
    * @param {boolean} [throwEx]
-   * @return {Promise<TestResults[]>}
+   * @return {Promise<TestResults>}
    */
-  async close(throwEx) {
+  async close(throwEx = true) {
      const results = await this.closeAndReturnResults(throwEx);
      return results && results.length > 0 ? results[0] : null;
   }
@@ -188,8 +183,8 @@ class EyesVisualGrid extends EyesAbstract {
 
   getEyesRunner() {
     const runner = {};
-    runner.getAllResults = () => {
-      return this.closeAndReturnResults();
+    runner.getAllResults = async () => {
+      return await this.closeAndReturnResults();
     };
     return runner;
   }

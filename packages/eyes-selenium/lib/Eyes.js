@@ -13,11 +13,13 @@ class Eyes extends EyesBase {
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
    * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
-   * @param {RenderingConfiguration|boolean} [visualGridConfig]
+   * @param {boolean|RenderingConfiguration} [visualGridConfig]
    */
   constructor(serverUrl, isDisabled, visualGridConfig) {
-    if (visualGridConfig === true || visualGridConfig instanceof RenderingConfiguration) {
+    if (visualGridConfig === true) {
       return new EyesVisualGrid(serverUrl, isDisabled);
+    } else if (visualGridConfig instanceof RenderingConfiguration) {
+      return new EyesVisualGrid(serverUrl, isDisabled, visualGridConfig);
     }
 
     return new EyesSelenium(serverUrl, isDisabled);
