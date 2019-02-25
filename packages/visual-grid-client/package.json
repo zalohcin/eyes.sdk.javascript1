@@ -32,7 +32,7 @@
   "dependencies": {
     "@applitools/eyes-common": "^1.3.0",
     "@applitools/eyes-sdk-core": "^4.8.0",
-    "@applitools/functional-commons": "^1.0.33",
+    "@applitools/functional-commons": "^1.1.3",
     "@applitools/http-commons": "^1.2.3",
     "@applitools/isomorphic-fetch": "^3.0.0",
     "cssom": "git+https://github.com/amitzur/CSSOM.git#925260ff2c8f8387cf76df4d5776a06044a644c8",
