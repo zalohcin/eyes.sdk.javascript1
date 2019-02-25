@@ -1,7 +1,7 @@
 'use strict';
 
 const { expect } = require('chai');
-const { RenderingConfiguration } = require('../../lib/RenderingConfiguration');
+const { RenderingConfiguration } = require('../../index');
 
 describe('RenderingConfiguration', () => {
   it('should parse empty config', () => {
