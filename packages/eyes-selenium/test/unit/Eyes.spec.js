@@ -1,47 +1,28 @@
 'use strict';
 
-require('chromedriver');
 const assert = require('assert');
-const assertRejects = require('assert-rejects');
 
-const { Builder, Capabilities } = require('selenium-webdriver');
-const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
+const { Eyes, EyesSelenium, EyesRendering, RenderingConfiguration } = require('../../index');
 
-const { Eyes, EyesWebDriver, Target } = require('../../index');
-
-let driver, eyes;
 describe('Eyes', function () {
-  this.timeout(60 * 1000);
 
-  before(async function () {
-    const chromeOptions = new ChromeOptions();
-    chromeOptions.addArguments('disable-infobars');
-    chromeOptions.headless();
-    driver = await new Builder()
-      .withCapabilities(Capabilities.chrome())
-      .setChromeOptions(chromeOptions)
-      .build();
-
-    eyes = new Eyes();
+  it('should create EyesSelenium by default', async function () {
+    const eyes = new Eyes();
+    assert.ok(eyes instanceof EyesSelenium);
   });
 
-  describe('#open()', function () {
-    it('should return EyesWebDriver', async function () {
-      driver = await eyes.open(driver, this.test.parent.title, this.test.title, { width: 800, height: 560 });
-      assert.strictEqual(driver instanceof EyesWebDriver, true);
-      await eyes.close();
-    });
-
-    it('should throw IllegalState: Eyes not open', async function () {
-      await assertRejects(eyes.check('test', Target.window()), /IllegalState: Eyes not open/);
-    });
+  it('should create EyesSelenium with `false`', async function () {
+    const eyes = new Eyes(undefined, undefined, false);
+    assert.ok(eyes instanceof EyesSelenium);
   });
 
-  afterEach(async function () {
-    await eyes.abortIfNotClosed();
+  it('should create EyesRendering with `true`', async function () {
+    const eyes = new Eyes(undefined, undefined, true);
+    assert.ok(eyes instanceof EyesRendering);
   });
 
-  after(async function () {
-    await driver.quit();
+  it('should create EyesRendering with RenderingConfiguration', async function () {
+    const eyes = new Eyes(undefined, undefined, new RenderingConfiguration());
+    assert.ok(eyes instanceof EyesRendering);
   });
 });
