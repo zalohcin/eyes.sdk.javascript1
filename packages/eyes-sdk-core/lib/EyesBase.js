@@ -59,9 +59,10 @@ class EyesBase extends EyesAbstract {
    * @param {?string} [serverUrl] The Eyes server URL.
    * @param {?boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method
    *   will immediately return without performing any action.
+   * @param {Configuration} [configuration]
    */
-  constructor(serverUrl, isDisabled) {
-    super();
+  constructor(serverUrl, isDisabled, configuration) {
+    super(configuration);
 
     this._configuration.setServerUrl(serverUrl);
     this._configuration.setIsDisabled(isDisabled);
@@ -1387,7 +1388,8 @@ class EyesBase extends EyesAbstract {
   /**
    * @private
    * @param {Region} region The region of the screenshot which will be set in the application output.
-   * @param {EyesScreenshot} lastScreenshot Previous application screenshot (for compression) or `null` if not available.
+   * @param {EyesScreenshot} lastScreenshot Previous application screenshot (for compression) or `null` if not
+   *   available.
    * @param {CheckSettings} checkSettings The check settings object of the current test.
    * @return {Promise<AppOutputWithScreenshot>} The updated app output and screenshot.
    */
