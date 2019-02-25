@@ -60,7 +60,7 @@ const DEFAULT_WAIT_BEFORE_SCREENSHOTS = 100; // Milliseconds
 /**
  * The main API gateway for the SDK.
  */
-class Eyes extends EyesBase {
+class EyesSelenium extends EyesBase {
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
@@ -94,7 +94,7 @@ class Eyes extends EyesBase {
     /** @type {ImageRotation} */
     this._rotation = undefined;
     /** @type {number} */
-    this._devicePixelRatio = Eyes.UNKNOWN_DEVICE_PIXEL_RATIO;
+    this._devicePixelRatio = EyesSelenium.UNKNOWN_DEVICE_PIXEL_RATIO;
     /** @type {StitchMode} */
     this._stitchMode = StitchMode.SCROLL;
     /** @type {number} */
@@ -402,7 +402,7 @@ class Eyes extends EyesBase {
 
     await super.openBase(appName, testName, viewportSize, sessionType);
 
-    this._devicePixelRatio = Eyes.UNKNOWN_DEVICE_PIXEL_RATIO;
+    this._devicePixelRatio = EyesSelenium.UNKNOWN_DEVICE_PIXEL_RATIO;
     this._jsExecutor = new SeleniumJavaScriptExecutor(this._driver);
 
     this._initPositionProvider();
@@ -903,7 +903,7 @@ class Eyes extends EyesBase {
   async _updateScalingParams() {
     // Update the scaling params only if we haven't done so yet, and the user hasn't set anything else manually.
     if (
-      this._devicePixelRatio === Eyes.UNKNOWN_DEVICE_PIXEL_RATIO &&
+      this._devicePixelRatio === EyesSelenium.UNKNOWN_DEVICE_PIXEL_RATIO &&
       this._scaleProviderHandler.get() instanceof NullScaleProvider
     ) {
       let factory;
@@ -913,7 +913,7 @@ class Eyes extends EyesBase {
         this._devicePixelRatio = await EyesSeleniumUtils.getDevicePixelRatio(this._jsExecutor);
       } catch (err) {
         this._logger.verbose('Failed to extract device pixel ratio! Using default.', err);
-        this._devicePixelRatio = Eyes.DEFAULT_DEVICE_PIXEL_RATIO;
+        this._devicePixelRatio = EyesSelenium.DEFAULT_DEVICE_PIXEL_RATIO;
       }
       this._logger.verbose(`Device pixel ratio: ${this._devicePixelRatio}`);
 
@@ -1581,6 +1581,6 @@ class Eyes extends EyesBase {
   }
 }
 
-Eyes.UNKNOWN_DEVICE_PIXEL_RATIO = 0;
-Eyes.DEFAULT_DEVICE_PIXEL_RATIO = 1;
-exports.Eyes = Eyes;
+EyesSelenium.UNKNOWN_DEVICE_PIXEL_RATIO = 0;
+EyesSelenium.DEFAULT_DEVICE_PIXEL_RATIO = 1;
+exports.EyesSelenium = EyesSelenium;

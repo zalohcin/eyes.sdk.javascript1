@@ -45,10 +45,9 @@ exports.EyesWebElement = require('./lib/wrappers/EyesWebElement').EyesWebElement
 exports.EyesWebElementPromise = require('./lib/wrappers/EyesWebElementPromise').EyesWebElementPromise;
 
 exports.BordersAwareElementContentLocationProvider = require('./lib/BordersAwareElementContentLocationProvider').BordersAwareElementContentLocationProvider;
-exports.Eyes = require('./lib/Eyes').Eyes;
-// TODO:
-// exports.EyesSelenium = require('./lib/Eyes').Eyes;
-// exports.EyesRendering = require('./lib/Eyes').Eyes;
+exports.Eyes = require('./lib/EyesSelenium').EyesSelenium;
+exports.EyesSelenium = require('./lib/EyesSelenium').EyesSelenium;
+// exports.EyesRendering = require('./lib/EyesRendering').EyesRendering;
 exports.EyesSeleniumUtils = require('./lib/EyesSeleniumUtils').EyesSeleniumUtils;
 exports.ImageOrientationHandler = require('./lib/ImageOrientationHandler').ImageOrientationHandler;
 exports.JavascriptHandler = require('./lib/JavascriptHandler').JavascriptHandler;
