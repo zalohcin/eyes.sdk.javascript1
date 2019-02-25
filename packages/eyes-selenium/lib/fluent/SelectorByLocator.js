@@ -1,6 +1,6 @@
 'use strict';
 
-const { GetSelector } = require('./GetSelector');
+const { GetSelector } = require('@applitools/eyes-sdk-core');
 const { SelectorByElement } = require('./SelectorByElement');
 
 class SelectorByLocator extends GetSelector {

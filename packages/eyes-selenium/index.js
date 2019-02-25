@@ -12,6 +12,8 @@ exports.NoFramesError = require('./lib/errors/NoFramesError').NoFramesError;
 
 exports.FloatingRegionByElement = require('./lib/fluent/FloatingRegionByElement').FloatingRegionByElement;
 exports.FloatingRegionBySelector = require('./lib/fluent/FloatingRegionBySelector').FloatingRegionBySelector;
+exports.SelectorByElement = require('./lib/fluent/SelectorByElement').SelectorByElement;
+exports.SelectorByLocator = require('./lib/fluent/SelectorByLocator').SelectorByLocator;
 exports.FrameLocator = require('./lib/fluent/FrameLocator').FrameLocator;
 exports.IgnoreRegionByElement = require('./lib/fluent/IgnoreRegionByElement').IgnoreRegionByElement;
 exports.IgnoreRegionBySelector = require('./lib/fluent/IgnoreRegionBySelector').IgnoreRegionBySelector;
