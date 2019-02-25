@@ -7,7 +7,7 @@
     "clean": "lerna clean --yes",
     "lint": "eslint . --cache --ext js",
     "test": "lerna run test",
-    "test:diff": "lerna run test --since master",
+    "test:diff": "lerna run test --since origin/master",
     "test:unit": "lerna run test:unit",
     "test:e2e": "lerna run test:e2e",
     "test:it": "lerna run test:it",
