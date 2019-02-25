@@ -1,18 +1,22 @@
 'use strict';
 
-const { WebElement } = require('selenium-webdriver');
+const { WebElement, By } = require('selenium-webdriver');
 const { TypeUtils, CheckSettings, Region } = require('@applitools/eyes-sdk-core');
 
 const { IgnoreRegionBySelector } = require('./IgnoreRegionBySelector');
 const { IgnoreRegionByElement } = require('./IgnoreRegionByElement');
 const { FloatingRegionBySelector } = require('./FloatingRegionBySelector');
 const { FloatingRegionByElement } = require('./FloatingRegionByElement');
+const { SelectorByElement } = require('./SelectorByElement');
+const { SelectorByLocator } = require('./SelectorByLocator');
 const { FrameLocator } = require('./FrameLocator');
 const { EyesWebElement } = require('../wrappers/EyesWebElement');
 
+const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot';
+
 class SeleniumCheckSettings extends CheckSettings {
   /**
-   * @param {Region|RegionObject|By|WebElement|EyesWebElement} [region]
+   * @param {Region|RegionObject|By|WebElement|EyesWebElement|string} [region]
    * @param {number|string|By|WebElement|EyesWebElement} [frame]
    */
   constructor(region, frame) {
@@ -29,6 +33,22 @@ class SeleniumCheckSettings extends CheckSettings {
     if (frame) {
       this.frame(frame);
     }
+
+    /** @type {Map<string, string>} */ this._scriptHooks = new Map();
+  }
+
+  /**
+   * @package
+   * @return {?GetSelector}
+   */
+  getTargetProvider() {
+    if (this._targetSelector) {
+      return new SelectorByLocator(this._targetSelector);
+    } else if (this._targetElement) {
+      return new SelectorByElement(this._targetElement);
+    }
+
+    return undefined;
   }
 
   /**
@@ -78,13 +98,15 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {Region|RegionObject|By|WebElement|EyesWebElement} region The region to validate.
+   * @param {Region|RegionObject|By|WebElement|EyesWebElement|string} region The region to validate.
    * @return {this}
    */
   region(region) {
     // noinspection IfStatementWithTooManyBranchesJS
     if (Region.isRegionCompatible(region)) {
       super.updateTargetRegion(region);
+    } else if (TypeUtils.isString(region)) {
+      this._targetSelector = By.css(region); // TODO: avoid converting to element for VisualGrid
     } else if (EyesWebElement.isLocator(region)) {
       this._targetSelector = region;
     } else if (region instanceof WebElement) {
@@ -193,6 +215,46 @@ class SeleniumCheckSettings extends CheckSettings {
    */
   floatingRegions(maxOffset, ...regionsOrContainers) {
     return super.floatingRegions(maxOffset, ...regionsOrContainers);
+  }
+
+  /**
+   * @return {string}
+   */
+  getSizeMode() {
+    if (!this._targetRegion && !this._targetElement && !this._targetSelector) {
+      if (this.getStitchContent()) {
+        return 'full-page';
+      }
+      return 'viewport';
+    } if (this._targetRegion) {
+      if (this.getStitchContent()) {
+        return 'region';
+      }
+      return 'region';
+    }
+    if (this.getStitchContent()) {
+      return 'selector';
+    }
+    return 'selector';
+  }
+
+  /**
+   * @param {string} script
+   */
+  addScriptHook(script) {
+    let scripts = this._scriptHooks.get(BEFORE_CAPTURE_SCREENSHOT);
+    if (scripts == null) {
+      scripts = [];
+      this._scriptHooks.set(BEFORE_CAPTURE_SCREENSHOT, scripts);
+    }
+    scripts.add(script);
+  }
+
+  /**
+   * @return {Map<string, string>}
+   */
+  getScriptHooks() {
+    return this._scriptHooks;
   }
 }
 

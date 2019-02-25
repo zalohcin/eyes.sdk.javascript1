@@ -203,7 +203,7 @@ class EyesRendering extends EyesAbstract {
 
   /**
    * @param {string} name
-   * @param {CheckRGSettings} checkSettings
+   * @param {SeleniumCheckSettings} checkSettings
    */
   async check(name, checkSettings) {
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
