@@ -4,11 +4,12 @@ const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-snapshot');
 const { ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 const { RectangleSize, TestFailedError, TestResultsFormatter, CorsIframeHandle, CorsIframeHandler, EyesAbstract } = require('@applitools/eyes-sdk-core');
-const { EyesSeleniumUtils, EyesWebDriver } = require('@applitools/eyes-selenium');
+const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
+const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
 
-const { RenderingConfiguration } = require('./RenderingConfiguration');
+const { RenderingConfiguration } = require('./config/RenderingConfiguration');
 
-class Eyes extends EyesAbstract {
+class EyesRendering extends EyesAbstract {
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
@@ -305,4 +306,4 @@ class Eyes extends EyesAbstract {
   }
 }
 
-exports.Eyes = Eyes;
+exports.EyesRendering = EyesRendering;
