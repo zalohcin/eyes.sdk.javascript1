@@ -21,25 +21,17 @@ node_js:
 - "8"
 
 env:
-  - NPM_TASK=lint
-  - NPM_TASK=test:unit
-  - NPM_TASK=test:it
+  - NPM_TASK=ci:base
+  - NPM_TASK=ci:extended
 
 matrix:
   exclude:
     - node_js: "node"
-      env: NPM_TASK=lint
-    - node_js: "node"
-      env: NPM_TASK=test:it
+      env: NPM_TASK=ci:extended
     - node_js: "8"
-      env: NPM_TASK=lint
-    - node_js: "8"
-      env: NPM_TASK=test:it
+      env: NPM_TASK=ci:extended
 
 cache: npm
-
-before_install:
-  - if [[ "$(npm -v)" != "$(npm v npm dist-tags.latest)" ]]; then npm i -g npm@latest; fi
 
 install:
   - npm install
