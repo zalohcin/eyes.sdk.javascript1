@@ -43,7 +43,7 @@
     "protractor": "^5.4.1"
   },
   "scripts": {
-    "test": "protractor test/protractor.conf.js"
+    "protractor": "protractor test/protractor.conf.js"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
