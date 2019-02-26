@@ -1,6 +1,8 @@
 # don't build tags, it's redundant
 if: tag IS blank
 
+sudo: false
+
 git:
   depth: 3
 
@@ -10,23 +12,37 @@ addons:
 
 language: node_js
 
+os:
+  - linux
+
 node_js:
 - "node"
 - "lts/*"
 - "8"
 
-# Use faster Docker architecture on Travis.
-sudo: false
+env:
+  - NPM_TASK=lint
+  - NPM_TASK=test:unit
+  - NPM_TASK=test:it
+
+matrix:
+  exclude:
+    - node_js: "node"
+      env: NPM_TASK=lint
+    - node_js: "node"
+      env: NPM_TASK=test:it
+    - node_js: "8"
+      env: NPM_TASK=lint
+    - node_js: "8"
+      env: NPM_TASK=test:it
 
 cache: npm
 
-#before_install:
-#- if [[ "$(npm -v)" != "$(npm v npm dist-tags.latest)" ]]; then npm i -g npm@latest; fi
+before_install:
+  - if [[ "$(npm -v)" != "$(npm v npm dist-tags.latest)" ]]; then npm i -g npm@latest; fi
 
 install:
-- npm install
+  - npm install
 
 script:
-- npm run lint
-- npm run test:unit
-- npm run test:it
+  - npm run $NPM_TASK
