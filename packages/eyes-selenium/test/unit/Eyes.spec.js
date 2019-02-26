@@ -24,4 +24,16 @@ describe('Eyes', function () {
     assert.ok(eyes instanceof EyesVisualGrid);
   });
 
+  it('should create EyesSelenium with `false` first argument', async function () {
+    const eyes = new Eyes(false);
+    assert.ok(!eyes.isVisualGrid());
+    assert.ok(eyes instanceof EyesSelenium);
+  });
+
+  it('should create EyesVisualGrid with `true` first argument', async function () {
+    const eyes = new Eyes(true);
+    assert.ok(eyes.isVisualGrid());
+    assert.ok(eyes instanceof EyesVisualGrid);
+  });
+
 });

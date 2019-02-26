@@ -12,7 +12,7 @@ const { Eyes, Target, SeleniumConfiguration, BrowserType } = require('../index')
     .build();
 
   // Initialize the eyes SDK and set your private API key.
-  const eyes = new Eyes(undefined, undefined, true);
+  const eyes = new Eyes(true);
   // eyes.setApiKey('Your API Key');
   eyes.setLogHandler(new ConsoleLogHandler(false));
 
