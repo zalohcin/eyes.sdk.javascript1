@@ -1,7 +1,7 @@
 {
   "name": "@applitools/eyes-images",
   "version": "4.8.0",
-  "description": "The simplest implemnetation of Applitools Eyes SDK, uploads images for validation",
+  "description": "The simplest implementation of Applitools Eyes SDK, uploads images for validation",
   "keywords": [
     "eyes-images",
     "applitools",
@@ -40,7 +40,7 @@
   },
   "scripts": {
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
-    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\""
+    "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\""
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
