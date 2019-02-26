@@ -479,7 +479,7 @@ class Configuration {
    * @param {string} appName
    */
   setAppName(appName) {
-    ArgumentGuard.isString(appName, 'appName');
+    ArgumentGuard.isString(appName, 'appName', false);
     this._appName = appName;
   }
 
@@ -494,7 +494,7 @@ class Configuration {
    * @param {string} testName
    */
   setTestName(testName) {
-    ArgumentGuard.isString(testName, 'testName');
+    ArgumentGuard.isString(testName, 'testName', false);
     this._testName = testName;
   }
 
@@ -509,8 +509,11 @@ class Configuration {
    * @param {RectangleSize|RectangleSizeObject} viewportSize
    */
   setViewportSize(viewportSize) {
-    ArgumentGuard.notNull(viewportSize, 'viewportSize');
-    this._viewportSize = new RectangleSize(viewportSize);
+    if (TypeUtils.isNull(viewportSize)) {
+      this._viewportSize = undefined;
+    } else {
+      this._viewportSize = new RectangleSize(viewportSize);
+    }
   }
 
   /**

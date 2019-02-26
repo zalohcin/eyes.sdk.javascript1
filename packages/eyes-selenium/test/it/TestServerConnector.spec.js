@@ -3,20 +3,17 @@
 require('chromedriver');
 const { Builder, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { RectangleSize } = require('../../../eyes-sdk-core');
-const { Eyes, Target } = require('../../../eyes-rendering');
+const { RectangleSize } = require('@applitools/eyes-sdk-core');
+const { Eyes, Target } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
 describe('TestServerConnector', function () {
   this.timeout(5 * 60 * 1000);
 
   before(async function () {
-    const chromeOptions = new ChromeOptions();
-    chromeOptions.addArguments('disable-infobars');
-    chromeOptions.headless();
     driver = await new Builder()
       .withCapabilities(Capabilities.chrome())
-      .setChromeOptions(chromeOptions)
+      .setChromeOptions(new ChromeOptions().headless().addArguments('disable-infobars'))
       .build();
 
     eyes = new Eyes();

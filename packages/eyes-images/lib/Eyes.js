@@ -268,10 +268,13 @@ class Eyes extends EyesBase {
    */
   async getScreenshot() {
     if (this._screenshotProvider) {
-      this._screenshot = await this._screenshotProvider.getImage();
+      const screenshot = await this._screenshotProvider.getImage();
+      return new EyesSimpleScreenshot(screenshot);
+    } else if (this._screenshot) {
+      return new EyesSimpleScreenshot(this._screenshot);
     }
 
-    return new EyesSimpleScreenshot(this._screenshot);
+    return undefined;
   }
 
   /**

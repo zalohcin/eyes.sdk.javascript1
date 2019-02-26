@@ -3,13 +3,29 @@
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-snapshot');
 const { ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
-const { RectangleSize, TestFailedError, TestResultsFormatter, CorsIframeHandle, CorsIframeHandler, EyesAbstract } = require('@applitools/eyes-sdk-core');
+
+const {
+  EyesBase,
+  RectangleSize,
+  TestFailedError,
+  TestResultsFormatter,
+  CorsIframeHandle,
+  CorsIframeHandler,
+  Configuration,
+} = require('@applitools/eyes-sdk-core');
+
 const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
 const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
+const { BrowserType } = require('./config/BrowserType');
+const { SeleniumConfiguration } = require('./config/SeleniumConfiguration');
 
-const { RenderingConfiguration } = require('./config/RenderingConfiguration');
+const VERSION = require('../package.json').version;
 
-class EyesVisualGrid extends EyesAbstract {
+class EyesVisualGrid extends EyesBase {
+  /** @var {Logger} EyesVisualGrid#_logger */
+  /** @var {SeleniumConfiguration} EyesVisualGrid#_configuration */
+  /** @var {ImageMatchSettings} EyesVisualGrid#_defaultMatchSettings */
+
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
@@ -17,10 +33,7 @@ class EyesVisualGrid extends EyesAbstract {
    * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
    */
   constructor(serverUrl, isDisabled) {
-    super(new RenderingConfiguration());
-
-    this._configuration.setServerUrl(serverUrl);
-    this._configuration.setIsDisabled(isDisabled);
+    super(serverUrl, isDisabled, new SeleniumConfiguration());
 
     /** @type {boolean} */ this._isOpen = false;
     /** @type {boolean} */ this._isVisualGrid = true;
@@ -33,30 +46,41 @@ class EyesVisualGrid extends EyesAbstract {
   }
 
   /**
-   * @param {WebDriver} webDriver
-   * @param appName
-   * @param testName
-   * @param viewportSize
-   * @param {RenderingConfiguration|Object} configuration
+   * @signature `open(driver, configuration)`
+   * @signature `open(driver, appName, testName, ?viewportSize, ?configuration)`
+   *
+   * @param {WebDriver|ThenableWebDriver} driver The web driver that controls the browser hosting the application under test.
+   * @param {SeleniumConfiguration|string} optArg1 The Configuration for the test or the name of the application under the test.
+   * @param {string} [optArg2] The test name.
+   * @param {RectangleSize|RectangleSizeObject} [optArg3] The required browser's viewport size
+   *   (i.e., the visible part of the document's body) or to use the current window's viewport.
+   * @param {SeleniumConfiguration} [optArg4] The Configuration for the test
+   * @return {Promise<EyesWebDriver>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
-  async open(webDriver, appName, testName, viewportSize, configuration) {
-    this._logger.verbose('enter');
+  async open(driver, optArg1, optArg2, optArg3, optArg4) {
+    ArgumentGuard.notNull(driver, 'driver');
 
-    ArgumentGuard.notNull(webDriver, 'webDriver');
-    ArgumentGuard.notNull(configuration, 'configuration');
-
-    const newConfiguration = (configuration instanceof RenderingConfiguration) ? configuration : RenderingConfiguration.fromObject(configuration);
-    this._configuration.mergeConfig(newConfiguration);
-
-    await this._initDriver(webDriver);
-
-    if (appName) {
-      this._configuration.setAppName(appName);
+    let configuration;
+    if (optArg1 instanceof Configuration) {
+      configuration = optArg1;
+    } else {
+      this._configuration.setAppName(optArg1);
+      this._configuration.setTestName(optArg2);
+      this._configuration.setViewportSize(optArg3);
+      configuration = optArg4;
     }
 
-    if (testName) {
-      this._configuration.setTestName(testName);
+    if (configuration) {
+      const newConfiguration = (configuration instanceof SeleniumConfiguration) ? configuration : SeleniumConfiguration.fromObject(configuration);
+      this._configuration.mergeConfig(newConfiguration);
     }
+
+    if (this._configuration.getBrowsersInfo().length === 0 && this._configuration.getViewportSize()) {
+      const viewportSize = this._configuration.getViewportSize();
+      this._configuration.addBrowser(viewportSize.getWidth(), viewportSize.getHeight(), BrowserType.CHROME);
+    }
+
+    await this._initDriver(driver);
 
     const { openEyes } = makeVisualGridClient({
       apiKey: this._configuration.getApiKey(),
@@ -69,11 +93,8 @@ class EyesVisualGrid extends EyesAbstract {
 
     this._processPageAndSerializeScript = await getProcessPageAndSerializeScript();
 
-    this._logger.verbose('opening openEyes...');
-
-    viewportSize = viewportSize ? viewportSize : this.getViewportSize();
-    if (viewportSize) {
-      await this.setViewportSize(viewportSize);
+    if (this._configuration.getViewportSize()) {
+      await this.setViewportSize(this._configuration.getViewportSize());
     }
 
     const { checkWindow, close } = await openEyes({
@@ -115,7 +136,6 @@ class EyesVisualGrid extends EyesAbstract {
     this._checkWindowCommand = checkWindow;
     this._closeCommand = close;
     this._isOpen = true;
-    this._logger.verbose('done');
 
     return this._driver;
   }
@@ -137,21 +157,35 @@ class EyesVisualGrid extends EyesAbstract {
   }
 
   /**
-   * Warning! You will get an array of TestResults.
-   *
    * @param {boolean} [throwEx]
-   * @return {Promise<TestResults[]>}
+   * @return {Promise<TestResults>}
    */
-  async close(throwEx) {
-     const results = await this.closeAndReturnResults(throwEx);
-     return results && results.length > 0 ? results[0] : null;
+  async close(throwEx = true) {
+    try {
+      const results = await this._closeCommand(throwEx);
+      const first = results[0];
+
+      if (first instanceof TestFailedError) {
+        return first.getTestResults();
+      }
+
+      return first;
+    } catch (err) {
+      if (Array.isArray(err)) {
+        throw err[0];
+      }
+
+      throw err;
+    } finally {
+      this._isOpen = false;
+    }
   }
 
   // noinspection JSMethodCanBeStatic
   /**
-   * @return {TestResults}
+   * @return {Promise<TestResults>}
    */
-  abortIfNotClosed() {
+  async abortIfNotClosed() {
     return null; // TODO - implement?
   }
 
@@ -164,7 +198,7 @@ class EyesVisualGrid extends EyesAbstract {
 
   /**
    * @param {boolean} [throwEx]
-   * @return {Promise<TestResults[]>}
+   * @return {Promise<(TestResults|Error)[]>}
    */
   async closeAndReturnResults(throwEx = true) {
     try {
@@ -176,7 +210,7 @@ class EyesVisualGrid extends EyesAbstract {
 
   /**
    * @param {boolean} [throwEx]
-   * @return {Promise<*>}
+   * @return {Promise<void>}
    */
   async closeAndPrintResults(throwEx = true) {
     const results = await this.closeAndReturnResults(throwEx);
@@ -188,8 +222,8 @@ class EyesVisualGrid extends EyesAbstract {
 
   getEyesRunner() {
     const runner = {};
-    runner.getAllResults = () => {
-      return this.closeAndReturnResults();
+    runner.getAllResults = async () => {
+      return await this.closeAndReturnResults();
     };
     return runner;
   }
@@ -254,9 +288,9 @@ class EyesVisualGrid extends EyesAbstract {
   }
 
   /**
-   * @return {RectangleSize}
+   * @return {Promise<RectangleSize>}
    */
-  getViewportSize() {
+  async getViewportSize() {
     return this._configuration.getViewportSize();
   }
 
@@ -292,7 +326,7 @@ class EyesVisualGrid extends EyesAbstract {
   }
 
   /**
-   * @param corsIframeHandle
+   * @param {CorsIframeHandle} corsIframeHandle
    */
   setCorsIframeHandle(corsIframeHandle) {
     this._corsIframeHandle = corsIframeHandle;
@@ -303,6 +337,34 @@ class EyesVisualGrid extends EyesAbstract {
    */
   getCorsIframeHandle() {
     return this._corsIframeHandle;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  getBaseAgentId() {
+    return `eyes-selenium/${VERSION}`;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  async getInferredEnvironment() {
+    return undefined;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  async getScreenshot() {
+    return undefined;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  async getTitle() {
+    return undefined;
   }
 }
 

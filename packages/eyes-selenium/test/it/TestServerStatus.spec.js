@@ -4,21 +4,18 @@ require('chromedriver');
 const assertRejects = require('assert-rejects');
 const { Builder, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { RectangleSize, GeneralUtils, NewTestError, DiffsFoundError } = require('../../../eyes-sdk-core');
+const { RectangleSize, GeneralUtils, NewTestError, DiffsFoundError } = require('@applitools/eyes-sdk-core');
 
-const { Eyes, Target } = require('../../../eyes-rendering');
+const { Eyes, Target } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
 describe('TestServerStatus', function () {
   this.timeout(5 * 60 * 1000);
 
   before(async function () {
-    const chromeOptions = new ChromeOptions();
-    chromeOptions.addArguments('disable-infobars');
-    chromeOptions.headless();
     driver = await new Builder()
       .withCapabilities(Capabilities.chrome())
-      .setChromeOptions(chromeOptions)
+      .setChromeOptions(new ChromeOptions().headless().addArguments('disable-infobars'))
       .build();
 
     eyes = new Eyes();

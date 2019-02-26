@@ -1,6 +1,6 @@
 'use strict';
 
-const { CheckSettings, Location } = require('@applitools/eyes-sdk-core');
+const { CheckSettings, Location, RectangleSize } = require('@applitools/eyes-sdk-core');
 
 class ImagesCheckSettings extends CheckSettings {
   /**
@@ -93,9 +93,14 @@ class ImagesCheckSettings extends CheckSettings {
   /**
    * @package
    * @param {string} imageUrl
+   * @param {RectangleSize|RectangleSizeObject} [imageSize]
    */
-  setImageUrl(imageUrl) {
+  setImageUrl(imageUrl, imageSize) {
     this._imageUrl = imageUrl;
+
+    if (imageSize) {
+      this.imageSize(imageSize);
+    }
   }
 
   /**
@@ -115,12 +120,11 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
-   * @package
    * @param {RectangleSize} imageSize
    * @return {this} This instance of the settings object.
    */
-  setImageSize(imageSize) {
-    this._imageSize = imageSize;
+  imageSize(imageSize) {
+    this._imageSize = new RectangleSize(imageSize);
     return this;
   }
 

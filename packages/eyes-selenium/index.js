@@ -1,6 +1,9 @@
 'use strict';
 
-exports.RenderingConfiguration = require('./lib/config/RenderingConfiguration').RenderingConfiguration;
+exports.SeleniumConfiguration = require('./lib/config/SeleniumConfiguration').SeleniumConfiguration;
+exports.BrowserType = require('./lib/config/BrowserType').BrowserType;
+exports.ScreenOrientation = require('./lib/config/ScreenOrientation').ScreenOrientation;
+exports.StitchMode = require('./lib/config/StitchMode').StitchMode;
 
 exports.EyesWebDriverScreenshot = require('./lib/capture/EyesWebDriverScreenshot').EyesWebDriverScreenshot;
 exports.EyesWebDriverScreenshotFactory = require('./lib/capture/EyesWebDriverScreenshotFactory').EyesWebDriverScreenshotFactory;
@@ -37,7 +40,6 @@ exports.RegionPositionCompensationFactory = require('./lib/positioning/RegionPos
 exports.SafariRegionPositionCompensation = require('./lib/positioning/SafariRegionPositionCompensation').SafariRegionPositionCompensation;
 exports.ScrollPositionMemento = require('./lib/positioning/ScrollPositionMemento').ScrollPositionMemento;
 exports.ScrollPositionProvider = require('./lib/positioning/ScrollPositionProvider').ScrollPositionProvider;
-exports.StitchMode = require('./lib/positioning/StitchMode').StitchMode;
 
 exports.MoveToRegionVisibilityStrategy = require('./lib/regionVisibility/MoveToRegionVisibilityStrategy').MoveToRegionVisibilityStrategy;
 exports.NopRegionVisibilityStrategy = require('./lib/regionVisibility/NopRegionVisibilityStrategy').NopRegionVisibilityStrategy;
@@ -49,10 +51,11 @@ exports.EyesWebElement = require('./lib/wrappers/EyesWebElement').EyesWebElement
 exports.EyesWebElementPromise = require('./lib/wrappers/EyesWebElementPromise').EyesWebElementPromise;
 
 exports.BordersAwareElementContentLocationProvider = require('./lib/BordersAwareElementContentLocationProvider').BordersAwareElementContentLocationProvider;
-exports.Eyes = require('./lib/Eyes').Eyes;
-exports.EyesSelenium = require('./lib/EyesSelenium').EyesSelenium;
-exports.EyesVisualGrid = require('./lib/EyesVisualGrid').EyesVisualGrid;
 exports.EyesSeleniumUtils = require('./lib/EyesSeleniumUtils').EyesSeleniumUtils;
 exports.ImageOrientationHandler = require('./lib/ImageOrientationHandler').ImageOrientationHandler;
 exports.JavascriptHandler = require('./lib/JavascriptHandler').JavascriptHandler;
 exports.SeleniumJavaScriptExecutor = require('./lib/SeleniumJavaScriptExecutor').SeleniumJavaScriptExecutor;
+
+exports.Eyes = require('./lib/Eyes').Eyes;
+exports.EyesSelenium = require('./lib/EyesSelenium').EyesSelenium;
+exports.EyesVisualGrid = require('./lib/EyesVisualGrid').EyesVisualGrid;

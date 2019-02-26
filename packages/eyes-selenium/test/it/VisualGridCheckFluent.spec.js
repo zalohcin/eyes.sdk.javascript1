@@ -2,34 +2,33 @@
 
 require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
+const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 const { ConsoleLogHandler, Region } = require('@applitools/eyes-sdk-core');
-const { Eyes, Target, RenderingConfiguration } = require('../../index');
+const { Eyes, Target, SeleniumConfiguration, BrowserType } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
 describe('VisualGridCheckFluent', function () {
   this.timeout(5 * 60 * 1000);
 
   before(async function () {
-    driver = new Builder().forBrowser('chrome').build();
+    driver = new Builder().forBrowser('chrome').setChromeOptions(new ChromeOptions().headless()).build();
 
-    eyes = new Eyes();
+    eyes = new Eyes(undefined, undefined, true);
     eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
     eyes.setLogHandler(new ConsoleLogHandler(true));
     // eyes.setProxy('http://localhost:8888');
 
     await driver.get('http://applitools.github.io/demo/TestPages/FramesTestPage/');
-
-    const renderingConfiguration = new RenderingConfiguration();
-    renderingConfiguration.setTestName('Open Concurrency with Batch 2');
-    renderingConfiguration.setAppName('RenderingGridIntegration');
-    renderingConfiguration.addBrowser(800, 600, RenderingConfiguration.BrowserType.CHROME);
-    renderingConfiguration.addBrowser(700, 500, RenderingConfiguration.BrowserType.CHROME);
-    renderingConfiguration.addBrowser(400, 300, RenderingConfiguration.BrowserType.CHROME);
-    await eyes.open(driver, 'EyesRenderingFluent', 'TestName', {width: 1000, height: 800}, renderingConfiguration);
   });
 
   beforeEach(async function () {
-    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title, { width: 1200, height: 800 });
+    const configuration = new SeleniumConfiguration();
+    configuration.setAppName(this.test.parent.title);
+    configuration.setTestName(this.currentTest.title);
+    configuration.addBrowser(1200, 800, BrowserType.CHROME);
+    configuration.addBrowser(1200, 800, BrowserType.FIREFOX);
+
+    driver = await eyes.open(driver, configuration);
   });
 
   it('TestCheckWindow', async function () {
@@ -52,20 +51,20 @@ describe('VisualGridCheckFluent', function () {
     return eyes.close();
   });
 
-  it('TestCheckFrame', async function () {
-    await eyes.check('Frame', Target.frame('frame1'));
-    return eyes.close();
-  });
+  // it('TestCheckFrame', async function () {
+  //   await eyes.check('Frame', Target.frame('frame1'));
+  //   return eyes.close();
+  // });
 
-  it('TestCheckFrameFully', async function () {
-    await eyes.check('Full Frame', Target.frame('frame1').fully());
-    return eyes.close();
-  });
+  // it('TestCheckFrameFully', async function () {
+  //   await eyes.check('Full Frame', Target.frame('frame1').fully());
+  //   return eyes.close();
+  // });
 
-  it('TestCheckRegionInFrame', async function () {
-    await eyes.check('Region in Frame', Target.frame('frame1').region(By.id('inner-frame-div')).fully());
-    return eyes.close();
-  });
+  // it('TestCheckRegionInFrame', async function () {
+  //   await eyes.check('Region in Frame', Target.frame('frame1').region(By.id('inner-frame-div')).fully());
+  //   return eyes.close();
+  // });
 
   afterEach(async function () {
     return eyes.abortIfNotClosed();
