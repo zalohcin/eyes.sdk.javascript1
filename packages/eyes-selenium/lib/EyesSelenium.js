@@ -27,12 +27,13 @@ const {
   ScaleProviderIdentityFactory,
   TestFailedError,
   NullCutProvider,
-  FailureReports,
   MatchResult,
 } = require('@applitools/eyes-sdk-core');
 
 const { DomCapture } = require('@applitools/dom-utils');
 
+const { StitchMode } = require('./config/StitchMode');
+const { SeleniumConfiguration } = require('./config/SeleniumConfiguration');
 const { ImageProviderFactory } = require('./capture/ImageProviderFactory');
 const { EyesWebDriverScreenshotFactory } = require('./capture/EyesWebDriverScreenshotFactory');
 const { FrameChain } = require('./frames/FrameChain');
@@ -46,7 +47,6 @@ const { ImageRotation } = require('./positioning/ImageRotation');
 const { ScrollPositionProvider } = require('./positioning/ScrollPositionProvider');
 const { CssTranslatePositionProvider } = require('./positioning/CssTranslatePositionProvider');
 const { ElementPositionProvider } = require('./positioning/ElementPositionProvider');
-const { StitchMode } = require('./positioning/StitchMode');
 const { MoveToRegionVisibilityStrategy } = require('./regionVisibility/MoveToRegionVisibilityStrategy');
 const { NopRegionVisibilityStrategy } = require('./regionVisibility/NopRegionVisibilityStrategy');
 const { SeleniumJavaScriptExecutor } = require('./SeleniumJavaScriptExecutor');
@@ -55,32 +55,31 @@ const { Target } = require('./fluent/Target');
 
 const VERSION = require('../package.json').version;
 
-const DEFAULT_STITCHING_OVERLAP = 50; // px
-const DEFAULT_WAIT_BEFORE_SCREENSHOTS = 100; // Milliseconds
-
 /**
  * The main API gateway for the SDK.
  *
- * @extends {Eyes}
+ * @extends Eyes
+ * @extends EyesBase
  */
 class EyesSelenium extends EyesBase {
+  /** @var {Logger} EyesSelenium#_logger */
+  /** @var {SeleniumConfiguration} EyesSelenium#_configuration */
+  /** @var {ImageMatchSettings} EyesSelenium#_defaultMatchSettings */
+
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
    * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
-   * @param {Configuration} [configuration]
    */
-  constructor(serverUrl, isDisabled, configuration = new Configuration()) {
-    super(serverUrl, isDisabled, configuration);
+  constructor(serverUrl, isDisabled) {
+    super(serverUrl, isDisabled, new SeleniumConfiguration());
 
     /** @type {EyesWebDriver} */
     this._driver = undefined;
     /** @type {boolean} */
     this._dontGetTitle = false;
 
-    /** @type {boolean} */
-    this._forceFullPageScreenshot = false;
     /** @type {boolean} */
     this._checkFrameOrElement = false;
 
@@ -89,9 +88,6 @@ class EyesSelenium extends EyesBase {
     /** @type {Location} */
     this._imageLocation = undefined;
 
-    /** @type {boolean} */
-    this._hideScrollbars = false;
-
     /** @type {WebElement} */
     this._scrollRootElement = undefined;
 
@@ -99,10 +95,6 @@ class EyesSelenium extends EyesBase {
     this._rotation = undefined;
     /** @type {number} */
     this._devicePixelRatio = EyesSelenium.UNKNOWN_DEVICE_PIXEL_RATIO;
-    /** @type {StitchMode} */
-    this._stitchMode = StitchMode.SCROLL;
-    /** @type {number} */
-    this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS;
     /** @type {RegionVisibilityStrategy} */
     this._regionVisibilityStrategy = new MoveToRegionVisibilityStrategy(this._logger);
     /** @type {ElementPositionProvider} */
@@ -125,14 +117,8 @@ class EyesSelenium extends EyesBase {
     this._positionMemento = null;
     /** @type {Region} */
     this._effectiveViewport = Region.EMPTY;
-
     /** @type {boolean} */
     this._stitchContent = false;
-    /** @type {boolean} */
-    this._hideCaret = true;
-    /** @type {number} */
-    this._stitchingOverlap = DEFAULT_STITCHING_OVERLAP;
-
     /** @type {EyesWebDriverScreenshotFactory} */
     this._screenshotFactory = undefined;
 
@@ -149,7 +135,7 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
-   * @override
+   * @inheritDoc
    */
   getBaseAgentId() {
     return `eyes-selenium/${VERSION}`;
@@ -180,24 +166,28 @@ class EyesSelenium extends EyesBase {
   }
 
   /**
-   * @return {boolean}
-   */
-  getHideCaret() {
-    return this._hideCaret;
-  }
-
-  /**
-   * @param {boolean} hideCaret
-   */
-  setHideCaret(hideCaret) {
-    this._hideCaret = hideCaret;
-  }
-
-  /**
    * @return {?EyesWebDriver}
    */
   getDriver() {
     return this._driver;
+  }
+
+  /*------------------------- Getters/Setters -------------------------*/
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {boolean}
+   */
+  getHideCaret() {
+    return this._configuration.getHideCaret();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {boolean} hideCaret
+   */
+  setHideCaret(hideCaret) {
+    this._configuration.setHideCaret(hideCaret);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -207,7 +197,7 @@ class EyesSelenium extends EyesBase {
    * @param {boolean} shouldForce Whether to force a full page screenshot or not.
    */
   setForceFullPageScreenshot(shouldForce) {
-    this._forceFullPageScreenshot = shouldForce;
+    this._configuration.setForceFullPageScreenshot(shouldForce);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -215,7 +205,7 @@ class EyesSelenium extends EyesBase {
    * @return {boolean} Whether Eyes should force a full page screenshot.
    */
   getForceFullPageScreenshot() {
-    return this._forceFullPageScreenshot;
+    return this._configuration.getForceFullPageScreenshot();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -227,11 +217,7 @@ class EyesSelenium extends EyesBase {
    *   default value to be used.
    */
   setWaitBeforeScreenshots(waitBeforeScreenshots) {
-    if (waitBeforeScreenshots <= 0) {
-      this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS;
-    } else {
-      this._waitBeforeScreenshots = waitBeforeScreenshots;
-    }
+    this._configuration.setWaitBeforeScreenshots(waitBeforeScreenshots);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -239,7 +225,67 @@ class EyesSelenium extends EyesBase {
    * @return {number} The time to wait just before taking a screenshot.
    */
   getWaitBeforeScreenshots() {
-    return this._waitBeforeScreenshots;
+    return this._configuration.getWaitBeforeScreenshots();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Hide the scrollbars when taking screenshots.
+   *
+   * @param {boolean} shouldHide Whether to hide the scrollbars or not.
+   */
+  setHideScrollbars(shouldHide) {
+    this._configuration.setHideScrollbars(shouldHide)
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {boolean} Whether or not scrollbars are hidden when taking screenshots.
+   */
+  getHideScrollbars() {
+    return this._configuration.getHideScrollbars();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Set the type of stitching used for full page screenshots. When the page includes fixed position header/sidebar,
+   * use {@link StitchMode#CSS}. Default is {@link StitchMode#SCROLL}.
+   *
+   * @param {StitchMode} mode The stitch mode to set.
+   */
+  setStitchMode(mode) {
+    this._logger.verbose(`setting stitch mode to ${mode}`);
+
+    this._configuration.setStitchMode(mode);
+    if (this._driver) {
+      this._initPositionProvider();
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {StitchMode} The current stitch mode settings.
+   */
+  getStitchMode() {
+    return this._configuration.getStitchMode();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Sets the stitching overlap in pixels.
+   *
+   * @param {number} stitchOverlap The width (in pixels) of the overlap.
+   */
+  setStitchOverlap(stitchOverlap) {
+    this._configuration.setStitchOverlap(stitchOverlap);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {number} Returns the stitching overlap in pixels.
+   */
+  getStitchOverlap() {
+    return this._configuration.getStitchOverlap();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -266,72 +312,13 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Set the type of stitching used for full page screenshots. When the page includes fixed position header/sidebar,
-   * use {@link StitchMode#CSS}. Default is {@link StitchMode#SCROLL}.
-   *
-   * @param {StitchMode} mode The stitch mode to set.
-   */
-  setStitchMode(mode) {
-    this._logger.verbose(`setting stitch mode to ${mode}`);
-
-    this._stitchMode = mode;
-    if (this._driver) {
-      this._initPositionProvider();
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {StitchMode} The current stitch mode settings.
-   */
-  getStitchMode() {
-    return this._stitchMode;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the stitching overlap in pixels.
-   *
-   * @param {number} pixels The width (in pixels) of the overlap.
-   */
-  setStitchOverlap(pixels) {
-    this._stitchingOverlap = pixels;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {number} Returns the stitching overlap in pixels.
-   */
-  getStitchOverlap() {
-    return this._stitchingOverlap;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Hide the scrollbars when taking screenshots.
-   *
-   * @param {boolean} shouldHide Whether to hide the scrollbars or not.
-   */
-  setHideScrollbars(shouldHide) {
-    this._hideScrollbars = shouldHide;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} Whether or not scrollbars are hidden when taking screenshots.
-   */
-  getHideScrollbars() {
-    return this._hideScrollbars;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
    * @param {WebElement|By} element
    */
   setScrollRootElement(element) {
     this._scrollRootElement = this._driver.findElement(element);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {WebElement}
    */
@@ -371,24 +358,42 @@ class EyesSelenium extends EyesBase {
   /**
    * Starts a test.
    *
-   * @param {WebDriver|ThenableWebDriver} driver The web driver that controls the browser hosting the application under
-   *   test.
-   * @param {string} appName The name of the application under test.
-   * @param {string} testName The test name.
-   * @param {RectangleSize|{width: number, height: number}} [viewportSize=null] The required browser's viewport size
+   * @signature `open(driver, configuration)`
+   * @signature `open(driver, appName, testName, ?viewportSize, ?sessionType, ?configuration)`
+   *
+   * @param {WebDriver|ThenableWebDriver} driver The web driver that controls the browser hosting the application under test.
+   * @param {SeleniumConfiguration|string} optArg1 The Configuration for the test or the name of the application under the test.
+   * @param {string} [optArg2] The test name.
+   * @param {RectangleSize|RectangleSizeObject} [optArg3] The required browser's viewport size
    *   (i.e., the visible part of the document's body) or to use the current window's viewport.
-   * @param {SessionType} [sessionType=null] The type of test (e.g.,  standard test / visual performance test).
+   * @param {SessionType} [optArg4] The type of test (e.g.,  standard test / visual performance test).
+   * @param {SeleniumConfiguration} [optArg5] The Configuration for the test
    * @return {Promise<EyesWebDriver>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
-  async open(driver, appName, testName, viewportSize = null, sessionType = null) {
+  async open(driver, optArg1, optArg2, optArg3, optArg4, optArg5) {
     ArgumentGuard.notNull(driver, 'driver');
+
+    let configuration;
+    if (optArg1 instanceof Configuration) {
+      configuration = optArg1;
+    } else {
+      this._configuration.setAppName(optArg1);
+      this._configuration.setTestName(optArg2);
+      this._configuration.setViewportSize(optArg3);
+      this._configuration.setSessionType(optArg4);
+      configuration = optArg5;
+    }
+
+    if (configuration) {
+      this._configuration.mergeConfig(configuration);
+    }
 
     if (this.getIsDisabled()) {
       this._logger.verbose('Ignored');
       return driver;
     }
 
-    if (this._stitchMode === StitchMode.CSS) {
+    if (this._configuration.getStitchMode() === StitchMode.CSS) {
       this.setSendDom(true);
     }
 
@@ -404,7 +409,7 @@ class EyesSelenium extends EyesBase {
     this._imageProvider = ImageProviderFactory.getImageProvider(this._userAgent, this, this._logger, this._driver);
     this._regionPositionCompensation = RegionPositionCompensationFactory.getRegionPositionCompensation(this._userAgent, this, this._logger);
 
-    await super.openBase(appName, testName, viewportSize, sessionType);
+    await super.openBase(this._configuration.getAppName(), this._configuration.getTestName(), this._configuration.getViewportSize(), this._configuration.getSessionType());
 
     this._devicePixelRatio = EyesSelenium.UNKNOWN_DEVICE_PIXEL_RATIO;
     this._jsExecutor = new SeleniumJavaScriptExecutor(this._driver);
@@ -663,7 +668,7 @@ class EyesSelenium extends EyesBase {
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       // noinspection JSUnusedGlobalSymbols
       /**
-       * @override
+       * @inheritDoc
        */
       async getRegion() {
         const region = await self._getFullFrameOrElementRegion();
@@ -808,7 +813,7 @@ class EyesSelenium extends EyesBase {
 
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       // noinspection JSUnusedGlobalSymbols
-      /** @override */
+      /** @inheritDoc */
       async getRegion() {
         const rect = await self._targetElement.getRect();
         const region = new Region(Math.ceil(rect.x), Math.ceil(rect.y), rect.width, rect.height, CoordinatesType.CONTEXT_RELATIVE);
@@ -850,7 +855,7 @@ class EyesSelenium extends EyesBase {
         this._elementPositionProvider = null;
       }
 
-      if (this._hideScrollbars) {
+      if (this._configuration.getHideScrollbars()) {
         originalOverflow = await eyesElement.getOverflow();
         await eyesElement.setOverflow('hidden');
       }
@@ -1066,6 +1071,7 @@ class EyesSelenium extends EyesBase {
     return this.check(tag, Target.region(locator, frameNameOrId).timeout(matchTimeout).stitchContent(stitchContent));
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a mouse trigger.
    *
@@ -1098,7 +1104,7 @@ class EyesSelenium extends EyesBase {
    * Adds a mouse trigger.
    *
    * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {WebElement} element The WebElement on which the click was called.
+   * @param {EyesWebElement} element The WebElement on which the click was called.
    * @return {Promise<void>}
    */
   async addMouseTriggerForElement(action, element) {
@@ -1205,7 +1211,7 @@ class EyesSelenium extends EyesBase {
    * variants.
    *
    * @protected
-   * @override
+   * @inheritDoc
    */
   async setViewportSize(viewportSize) {
     if (this._viewportSizeHandler instanceof ReadOnlyPropertyHandler) {
@@ -1261,7 +1267,7 @@ class EyesSelenium extends EyesBase {
   }
 
   /**
-   * @override
+   * @inheritDoc
    */
   async beforeOpen() {
     this._scrollRootElement = null;
@@ -1269,7 +1275,7 @@ class EyesSelenium extends EyesBase {
   }
 
   /**
-   * @override
+   * @inheritDoc
    */
   async tryCaptureDom() {
     try {
@@ -1282,7 +1288,7 @@ class EyesSelenium extends EyesBase {
   }
 
   /**
-   * @override
+   * @inheritDoc
    */
   async getOrigin() {
     const currentUrl = await this.getDriver().getCurrentUrl();
@@ -1290,14 +1296,14 @@ class EyesSelenium extends EyesBase {
   }
 
   /**
-   * @override
+   * @inheritDoc
    */
   getDomUrl() {
     return Promise.resolve(this._domUrl);
   }
 
   /**
-   * @override
+   * @inheritDoc
    */
   setDomUrl(domUrl) {
     this._domUrl = domUrl;
@@ -1312,7 +1318,7 @@ class EyesSelenium extends EyesBase {
       return new FrameChain(this._logger);
     }
 
-    if (this._hideScrollbars || (this._stitchMode === StitchMode.CSS && this._stitchContent)) {
+    if (this._configuration.getHideScrollbars() || (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent)) {
       const originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
       const fc = new FrameChain(this._logger, this._driver.getFrameChain());
       while (fc.size() > 0) {
@@ -1323,7 +1329,7 @@ class EyesSelenium extends EyesBase {
         await EyesTargetLocator.tryParentFrame(this._driver.getRemoteWebDriver().switchTo(), fc);
       }
 
-      this._originalOverflow = await EyesSeleniumUtils.hideScrollbars(this._driver, 200, this._scrollRootElement);
+      // this._originalOverflow = await EyesSeleniumUtils.hideScrollbars(this._driver, 200, this._scrollRootElement);
       await this._driver.switchTo().frames(originalFC);
       return originalFC;
     }
@@ -1352,7 +1358,7 @@ class EyesSelenium extends EyesBase {
       return;
     }
 
-    if (this._hideScrollbars || (this._stitchMode === StitchMode.CSS && this._stitchContent)) {
+    if (this._configuration.getHideScrollbars() || (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent)) {
       await this._driver.switchTo().frames(frameChain);
       const originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
       const fc = new FrameChain(this._logger, this._driver.getFrameChain());
@@ -1397,17 +1403,10 @@ class EyesSelenium extends EyesBase {
   }
   */
 
-  /**
-   * @override
-   */
-  getScreenshotUrl() {
-    return Promise.resolve(undefined);
-  }
-
   // noinspection JSUnusedGlobalSymbols
   /**
    * @protected
-   * @override
+   * @inheritDoc
    */
   async getScreenshot() {
     this._logger.verbose('getScreenshot()');
@@ -1425,12 +1424,12 @@ class EyesSelenium extends EyesBase {
       new ScrollPositionProvider(this._logger, this._jsExecutor),
       scaleProviderFactory,
       this._cutProviderHandler.get(),
-      this.getStitchOverlap(),
+      this._configuration.getStitchOverlap(),
       this._imageProvider
     );
 
     let activeElement = null;
-    if (this.getHideCaret()) {
+    if (this._configuration.getHideCaret()) {
       try {
         activeElement = await this._driver.executeScript('var activeElement = document.activeElement; activeElement && activeElement.blur(); return activeElement;');
       } catch (err) {
@@ -1449,7 +1448,7 @@ class EyesSelenium extends EyesBase {
       this._logger.verbose('Building screenshot object...');
       const size = new RectangleSize(entireFrameOrElement.getWidth(), entireFrameOrElement.getHeight());
       result = await EyesWebDriverScreenshot.fromFrameSize(this._logger, this._driver, entireFrameOrElement, size);
-    } else if (this._forceFullPageScreenshot || this._stitchContent) {
+    } else if (this._configuration.getForceFullPageScreenshot() || this._stitchContent) {
       this._logger.verbose('Full page screenshot requested.');
 
       // Save the current frame path.
@@ -1487,7 +1486,7 @@ class EyesSelenium extends EyesBase {
       result = await EyesWebDriverScreenshot.fromScreenshotType(this._logger, this._driver, screenshotImage);
     }
 
-    if (this.getHideCaret() && activeElement != null) {
+    if (this._configuration.getHideCaret() && activeElement != null) {
       try {
         await this._driver.executeScript('arguments[0].focus();', activeElement);
       } catch (err) {
@@ -1501,7 +1500,7 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @override
+   * @inheritDoc
    */
   async getTitle() {
     if (!this._dontGetTitle) {
@@ -1518,7 +1517,7 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @override
+   * @inheritDoc
    */
   async getInferredEnvironment() {
     try {
@@ -1527,20 +1526,6 @@ class EyesSelenium extends EyesBase {
     } catch (ignored) {
       return undefined;
     }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Set the failure report.
-   * @param {FailureReports} mode Use one of the values in FailureReports.
-   */
-  setFailureReport(mode) {
-    if (mode === FailureReports.IMMEDIATE) {
-      this._failureReportOverridden = true;
-      mode = FailureReports.ON_CLOSE;
-    }
-
-    super.setFailureReport(mode);
   }
 
   // noinspection JSUnusedGlobalSymbols

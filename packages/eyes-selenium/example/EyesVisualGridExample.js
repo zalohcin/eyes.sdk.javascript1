@@ -3,7 +3,7 @@
 require('chromedriver'); // eslint-disable-line node/no-unpublished-require
 const { Builder, Capabilities, By } = require('selenium-webdriver');
 const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
-const { Eyes, Target, RenderingConfiguration } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
+const { Eyes, Target, SeleniumConfiguration, BrowserType } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
 
 (async () => {
   // Open a Chrome browser.
@@ -11,19 +11,17 @@ const { Eyes, Target, RenderingConfiguration } = require('../index'); // should 
     .withCapabilities(Capabilities.chrome())
     .build();
 
-  const configuration = new RenderingConfiguration();
-  configuration.addBrowser(800, 600, RenderingConfiguration.BrowserType.CHROME);
-  configuration.addBrowser(700, 500, RenderingConfiguration.BrowserType.CHROME);
-  configuration.addBrowser(400, 300, RenderingConfiguration.BrowserType.CHROME);
-
   // Initialize the eyes SDK and set your private API key.
-  const eyes = new Eyes(undefined, undefined, configuration);
+  const eyes = new Eyes(undefined, undefined, true);
   // eyes.setApiKey('Your API Key');
   eyes.setLogHandler(new ConsoleLogHandler(false));
 
   try {
+    const configuration = new SeleniumConfiguration();
+    configuration.addBrowser(800, 600, BrowserType.CHROME);
+
     // Start the test and set the browser's viewport size to 800x600.
-    await eyes.open(driver, 'Eyes VisualGrid Examples', 'My first Javascript test!');
+    await eyes.open(driver, 'Eyes VisualGrid Examples', 'My first Javascript test!', undefined, configuration);
 
     // Navigate the browser to the "hello world!" web-site.
     await driver.get('https://applitools.com/helloworld');

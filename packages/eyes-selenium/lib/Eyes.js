@@ -2,7 +2,6 @@
 
 const { EyesBase } = require('@applitools/eyes-sdk-core');
 
-const { RenderingConfiguration } = require('./config/RenderingConfiguration');
 const { EyesSelenium } = require('./EyesSelenium');
 const { EyesVisualGrid } = require('./EyesVisualGrid');
 
@@ -13,13 +12,11 @@ class Eyes extends EyesBase {
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
    * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
-   * @param {boolean|RenderingConfiguration} [visualGridConfig]
+   * @param {boolean} [isVisualGrid]
    */
-  constructor(serverUrl, isDisabled, visualGridConfig) {
-    if (visualGridConfig === true) {
+  constructor(serverUrl, isDisabled, isVisualGrid) {
+    if (isVisualGrid === true) {
       return new EyesVisualGrid(serverUrl, isDisabled);
-    } else if (visualGridConfig instanceof RenderingConfiguration) {
-      return new EyesVisualGrid(serverUrl, isDisabled, visualGridConfig);
     }
 
     return new EyesSelenium(serverUrl, isDisabled);

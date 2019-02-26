@@ -3,7 +3,7 @@
 require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
 const { ConsoleLogHandler, Region } = require('@applitools/eyes-sdk-core');
-const { Eyes, Target, RenderingConfiguration } = require('../../index');
+const { Eyes, Target, SeleniumConfiguration, BrowserType } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
 describe('VisualGridCheckFluent', function () {
@@ -18,18 +18,16 @@ describe('VisualGridCheckFluent', function () {
     // eyes.setProxy('http://localhost:8888');
 
     await driver.get('http://applitools.github.io/demo/TestPages/FramesTestPage/');
-
-    const renderingConfiguration = new RenderingConfiguration();
-    renderingConfiguration.setTestName('Open Concurrency with Batch 2');
-    renderingConfiguration.setAppName('RenderingGridIntegration');
-    renderingConfiguration.addBrowser(800, 600, RenderingConfiguration.BrowserType.CHROME);
-    renderingConfiguration.addBrowser(700, 500, RenderingConfiguration.BrowserType.CHROME);
-    renderingConfiguration.addBrowser(400, 300, RenderingConfiguration.BrowserType.CHROME);
-    await eyes.open(driver, 'EyesRenderingFluent', 'TestName', {width: 1000, height: 800}, renderingConfiguration);
   });
 
   beforeEach(async function () {
-    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title, { width: 1200, height: 800 });
+    const configuration = new SeleniumConfiguration();
+    configuration.setAppName(this.test.parent.title);
+    configuration.setTestName(this.currentTest.title);
+    configuration.addBrowser(1200, 800, BrowserType.CHROME);
+    configuration.addBrowser(1200, 800, BrowserType.FIREFOX);
+
+    driver = await eyes.open(driver, configuration);
   });
 
   it('TestCheckWindow', async function () {

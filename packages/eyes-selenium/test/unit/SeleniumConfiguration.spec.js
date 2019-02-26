@@ -1,13 +1,13 @@
 'use strict';
 
 const { expect } = require('chai');
-const { RenderingConfiguration } = require('../../index');
+const { SeleniumConfiguration } = require('../../index');
 
-describe('RenderingConfiguration', () => {
+describe('SeleniumConfiguration', () => {
   it('should parse empty config', () => {
     const config = {};
-    const cfg = RenderingConfiguration.fromObject(config);
-    expect(cfg).to.be.instanceOf(RenderingConfiguration);
+    const cfg = SeleniumConfiguration.fromObject(config);
+    expect(cfg).to.be.instanceOf(SeleniumConfiguration);
   });
   it('should parse a single browser', () => {
     const config = {
@@ -17,7 +17,7 @@ describe('RenderingConfiguration', () => {
         name: 'chrome',
       },
     };
-    const cfg = RenderingConfiguration.fromObject(config);
+    const cfg = SeleniumConfiguration.fromObject(config);
     expect(cfg._browsersInfo.length).to.equal(1);
     expect(cfg._browsersInfo[0].name).to.equal(config.browser.name);
     expect(cfg._browsersInfo[0].width).to.equal(config.browser.width);
@@ -42,7 +42,7 @@ describe('RenderingConfiguration', () => {
         },
       ],
     };
-    const cfg = RenderingConfiguration.fromObject(config);
+    const cfg = SeleniumConfiguration.fromObject(config);
     expect(cfg._browsersInfo.length).to.equal(config.browser.length);
     expect(cfg._browsersInfo[0].name).to.equal(config.browser[0].name);
     expect(cfg._browsersInfo[1].name).to.equal(config.browser[1].name);
@@ -50,6 +50,6 @@ describe('RenderingConfiguration', () => {
   });
   it('should fail to parse invalid config', () => {
     const config = undefined;
-    expect(() => RenderingConfiguration.fromObject(config)).to.throw();
+    expect(() => SeleniumConfiguration.fromObject(config)).to.throw();
   });
 });
