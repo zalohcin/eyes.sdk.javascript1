@@ -10,7 +10,7 @@ describe('EyesImages.TestImageDiffs', function () {
 
   before(function () {
     eyes = new Eyes();
-    eyes.setLogHandler(new ConsoleLogHandler(true));
+    eyes.setLogHandler(new ConsoleLogHandler(false));
     // eyes.setProxy('http://localhost:8888');
   });
 

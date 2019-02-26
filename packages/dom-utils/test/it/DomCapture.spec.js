@@ -74,7 +74,7 @@ describe('DomCapture', function () {
       logger.setLogHandler(new FileLogHandler(true, path.join(pathName, 'log.log')));
       logger.getLogHandler().open();
     } else {
-      logger.setLogHandler(new ConsoleLogHandler(true));
+      logger.setLogHandler(new ConsoleLogHandler(false));
     }
   });
 

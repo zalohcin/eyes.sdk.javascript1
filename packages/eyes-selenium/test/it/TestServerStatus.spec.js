@@ -27,6 +27,7 @@ describe('TestServerStatus', function () {
 
     await driver.get('https://applitools.com/helloworld');
 
+    // await driver.findElement(By.css('button')).click();
     await eyes.check('TestSessionSummary_Status_Failed', Target.window());
 
     await assertRejects(eyes.close(), DiffsFoundError, 'Expected DiffsFoundError');

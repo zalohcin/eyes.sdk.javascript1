@@ -15,7 +15,7 @@ describe('VisualGridCheckFluent', function () {
 
     eyes = new Eyes(undefined, undefined, true);
     eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
-    eyes.setLogHandler(new ConsoleLogHandler(true));
+    eyes.setLogHandler(new ConsoleLogHandler(false));
     // eyes.setProxy('http://localhost:8888');
 
     await driver.get('http://applitools.github.io/demo/TestPages/FramesTestPage/');
