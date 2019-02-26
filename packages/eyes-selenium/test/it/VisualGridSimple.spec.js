@@ -4,7 +4,7 @@ require('chromedriver');
 const { Builder } = require('selenium-webdriver');
 const { BatchInfo, Region, CorsIframeHandle } = require('@applitools/eyes-sdk-core');
 const { RectangleSize } = require('@applitools/eyes-common');
-const { Eyes, Target, SeleniumConfiguration, BrowserType } = require('../../index'); // Should be replaced to `@applitools/eyes-rendering` if used outside of the package
+const { Eyes, Target, SeleniumConfiguration, BrowserType } = require('../../index');
 
 let /** @type {WebDriver} */ driver;
 describe('VisualGridSimple', function () {

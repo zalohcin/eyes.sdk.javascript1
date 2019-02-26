@@ -2,8 +2,8 @@
 
 require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
-const { ConsoleLogHandler } = require('../../../eyes-sdk-core');
-const { Eyes, Target } = require('../../../eyes-rendering');
+const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
+const { Eyes, Target } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
 describe('TestDynamicPages', function () {
