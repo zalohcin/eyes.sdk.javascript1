@@ -3,7 +3,7 @@
 require('chromedriver'); // eslint-disable-line node/no-unpublished-require
 const { Builder, Capabilities, By } = require('selenium-webdriver');
 const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
-const { Eyes, Target, SeleniumConfiguration, BrowserType } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
+const { Eyes, Target } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
 
 (async () => {
   // Open a Chrome browser.
@@ -17,11 +17,8 @@ const { Eyes, Target, SeleniumConfiguration, BrowserType } = require('../index')
   eyes.setLogHandler(new ConsoleLogHandler(false));
 
   try {
-    const configuration = new SeleniumConfiguration();
-    configuration.addBrowser(800, 600, BrowserType.CHROME);
-
     // Start the test and set the browser's viewport size to 800x600.
-    await eyes.open(driver, 'Eyes VisualGrid Examples', 'My first Javascript test!', undefined, configuration);
+    await eyes.open(driver, 'Eyes Examples', 'My first Javascript test!', { width: 800, height: 600 });
 
     // Navigate the browser to the "hello world!" web-site.
     await driver.get('https://applitools.com/helloworld');
@@ -37,8 +34,6 @@ const { Eyes, Target, SeleniumConfiguration, BrowserType } = require('../index')
 
     // End the test.
     await eyes.close();
-  } catch (err) {
-    console.error(err);  // eslint-disable-line no-console
   } finally {
     // Close the browser.
     await driver.quit();

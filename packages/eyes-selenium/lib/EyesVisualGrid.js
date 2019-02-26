@@ -3,19 +3,24 @@
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-snapshot');
 const { ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
-const { EyesBase, RectangleSize, TestFailedError, TestResultsFormatter, CorsIframeHandle, CorsIframeHandler,
-  TestResults, Configuration } = require('@applitools/eyes-sdk-core');
+
+const {
+  EyesBase,
+  RectangleSize,
+  TestFailedError,
+  TestResultsFormatter,
+  CorsIframeHandle,
+  CorsIframeHandler,
+  Configuration,
+} = require('@applitools/eyes-sdk-core');
 
 const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
 const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
+const { BrowserType } = require('./config/BrowserType');
 const { SeleniumConfiguration } = require('./config/SeleniumConfiguration');
 
 const VERSION = require('../package.json').version;
 
-/**
- * @extends Eyes
- * @extends EyesBase
- */
 class EyesVisualGrid extends EyesBase {
   /** @var {Logger} EyesVisualGrid#_logger */
   /** @var {SeleniumConfiguration} EyesVisualGrid#_configuration */
@@ -68,6 +73,11 @@ class EyesVisualGrid extends EyesBase {
     if (configuration) {
       const newConfiguration = (configuration instanceof SeleniumConfiguration) ? configuration : SeleniumConfiguration.fromObject(configuration);
       this._configuration.mergeConfig(newConfiguration);
+    }
+
+    if (this._configuration.getBrowsersInfo().length === 0 && this._configuration.getViewportSize()) {
+      const viewportSize = this._configuration.getViewportSize();
+      this._configuration.addBrowser(viewportSize.getWidth(), viewportSize.getHeight(), BrowserType.CHROME);
     }
 
     await this._initDriver(driver);
@@ -153,29 +163,13 @@ class EyesVisualGrid extends EyesBase {
   async close(throwEx = true) {
     try {
       const results = await this._closeCommand(throwEx);
+      const first = results[0];
 
-      if (Array.isArray(results)) {
-        let error;
-        const hasErrors = results.some(result => {
-          if (!(result instanceof TestResults)) {
-            error = result;
-            return true;
-          }
-          return false;
-        });
-
-        if (error && hasErrors) {
-          if (error instanceof TestFailedError) {
-            return error.getTestResults();
-          }
-
-          throw error;
-        }
-
-        return results[0];
-      } else {
-        return results;
+      if (first instanceof TestFailedError) {
+        return first.getTestResults();
       }
+
+      return first;
     } catch (err) {
       if (Array.isArray(err)) {
         throw err[0];

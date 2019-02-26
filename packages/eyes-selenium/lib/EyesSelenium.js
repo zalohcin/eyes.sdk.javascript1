@@ -1,6 +1,7 @@
 'use strict';
 
 const {URL} = require('url');
+const { DomCapture } = require('@applitools/dom-utils');
 
 const {
   Logger,
@@ -30,8 +31,6 @@ const {
   MatchResult,
 } = require('@applitools/eyes-sdk-core');
 
-const { DomCapture } = require('@applitools/dom-utils');
-
 const { StitchMode } = require('./config/StitchMode');
 const { SeleniumConfiguration } = require('./config/SeleniumConfiguration');
 const { ImageProviderFactory } = require('./capture/ImageProviderFactory');
@@ -57,9 +56,6 @@ const VERSION = require('../package.json').version;
 
 /**
  * The main API gateway for the SDK.
- *
- * @extends Eyes
- * @extends EyesBase
  */
 class EyesSelenium extends EyesBase {
   /** @var {Logger} EyesSelenium#_logger */
