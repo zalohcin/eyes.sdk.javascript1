@@ -53,6 +53,10 @@ const USE_DEFAULT_TIMEOUT = -1;
  * Core/Base class for Eyes - to allow code reuse for different SDKs (images, selenium, etc).
  */
 class EyesBase extends EyesAbstract {
+  /** @var {Logger} EyesBase#_logger */
+  /** @var {Configuration} EyesBase#_configuration */
+  /** @var {ImageMatchSettings} EyesBase#_defaultMatchSettings */
+
   /**
    * Creates a new {@code EyesBase}instance that interacts with the Eyes Server at the specified url.
    *
@@ -859,8 +863,8 @@ class EyesBase extends EyesAbstract {
    * @protected
    * @return {Promise<?string>}
    */
-  tryCaptureDom() {
-    return Promise.resolve(undefined);
+  async tryCaptureDom() {
+    return undefined;
   }
 
   // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
@@ -868,8 +872,8 @@ class EyesBase extends EyesAbstract {
    * @protected
    * @return {Promise<?string>}
    */
-  getOrigin() {
-    return Promise.resolve(undefined);
+  async getOrigin() {
+    return undefined;
   }
 
   /**
@@ -1496,7 +1500,7 @@ class EyesBase extends EyesAbstract {
    * @abstract
    * @return {string} The base agent id of the SDK.
    */
-  async getBaseAgentId() {
+  getBaseAgentId() {
     throw new TypeError('The method is not implemented!');
   }
 
@@ -1505,10 +1509,10 @@ class EyesBase extends EyesAbstract {
    * Get the session id.
    *
    * @protected
-   * @return {Promise<string>} A promise which resolves to the webdriver's session ID.
+   * @return {Promise<?string>} A promise which resolves to the webdriver's session ID.
    */
   async getAUTSessionId() {
-    return Promise.resolve(undefined);
+    return undefined;
   }
 
   // noinspection JSMethodCanBeStatic
@@ -1566,11 +1570,10 @@ class EyesBase extends EyesAbstract {
    * An updated screenshot.
    *
    * @protected
-   * @abstract
-   * @return {Promise<string>}
+   * @return {Promise<?string>}
    */
   async getScreenshotUrl() {
-    throw new TypeError('The method is not implemented!');
+    return undefined;
   }
 
   // noinspection JSMethodCanBeStatic
@@ -1590,10 +1593,10 @@ class EyesBase extends EyesAbstract {
    * A url pointing to a DOM capture of the AUT at the time of screenshot
    *
    * @protected
-   * @return {Promise<string>}
+   * @return {Promise<?string>}
    */
-  getDomUrl() {
-    return Promise.resolve(undefined);
+  async getDomUrl() {
+    return undefined;
   }
 
   // noinspection JSMethodCanBeStatic
@@ -1601,10 +1604,10 @@ class EyesBase extends EyesAbstract {
    * The location of the image relative to the logical full page image, when cropping an image e.g. with checkRegion
    *
    * @protected
-   * @return {Promise<Location>}
+   * @return {Promise<?Location>}
    */
-  getImageLocation() {
-    return Promise.resolve(undefined);
+  async getImageLocation() {
+    return undefined;
   }
 
   // noinspection JSUnusedGlobalSymbols
