@@ -60,13 +60,11 @@ async function getExpectedDom(testName) {
   return JSON.parse(expectedDomBuffer);
 }
 
-let /** @type {Logger} */ logger, /** @type {ChromeOptions} */ chromeOptions, /** @type {WebDriver} */ driver;
+let /** @type {Logger} */ logger, /** @type {WebDriver} */ driver;
 describe('DomCapture', function () {
   this.timeout(5 * 60 * 1000);
 
   before(function () {
-    chromeOptions = new ChromeOptions().headless();
-
     logger = new Logger();
     if (process.env.CI == null && process.env.APPLITOOLS_LOGS_PATH != null) {
       const dateString = DateTimeUtils.toLogFileDateTime();
@@ -81,7 +79,7 @@ describe('DomCapture', function () {
   });
 
   beforeEach(async function () {
-    driver = await new Builder().forBrowser('chrome').setChromeOptions(chromeOptions).build();
+    driver = await new Builder().forBrowser('chrome').setChromeOptions(new ChromeOptions().headless()).build();
     // TODO: remove once selenium SDK 4 is fixed
     // the command is not exists in selenium js sdk, we should define it manually
     driver.getExecutor().defineCommand('switchToFrameParent', 'POST', '/session/:sessionId/frame/parent');

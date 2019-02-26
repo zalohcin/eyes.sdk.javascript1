@@ -2,6 +2,7 @@
 
 require('chromedriver');
 const { Builder } = require('selenium-webdriver');
+const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 const { BatchInfo, Region, CorsIframeHandle } = require('@applitools/eyes-sdk-core');
 const { RectangleSize } = require('@applitools/eyes-common');
 const { Eyes, Target, SeleniumConfiguration, BrowserType } = require('../../index');
@@ -11,7 +12,7 @@ describe('VisualGridSimple', function () {
   this.timeout(5 * 60 * 1000);
 
   before(async function () {
-    driver = await new Builder().forBrowser('chrome').build();
+    driver = await new Builder().forBrowser('chrome').setChromeOptions(new ChromeOptions().headless()).build();
   });
 
   it('VisualGridTestPage', async function () {

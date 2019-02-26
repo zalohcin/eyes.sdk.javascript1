@@ -13,12 +13,9 @@ describe('TestServerStatus', function () {
   this.timeout(5 * 60 * 1000);
 
   before(async function () {
-    const chromeOptions = new ChromeOptions();
-    chromeOptions.addArguments('disable-infobars');
-    chromeOptions.headless();
     driver = await new Builder()
       .withCapabilities(Capabilities.chrome())
-      .setChromeOptions(chromeOptions)
+      .setChromeOptions(new ChromeOptions().headless().addArguments('disable-infobars'))
       .build();
 
     eyes = new Eyes();

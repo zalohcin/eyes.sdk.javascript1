@@ -2,6 +2,7 @@
 
 require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
+const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 const { ConsoleLogHandler, Region } = require('@applitools/eyes-sdk-core');
 const { Eyes, Target } = require('../../index');
 
@@ -10,7 +11,7 @@ describe('TestCheckFluent', function () {
   this.timeout(5 * 60 * 1000);
 
   before(async function () {
-    driver = new Builder().forBrowser('chrome').build();
+    driver = new Builder().forBrowser('chrome').setChromeOptions(new ChromeOptions().headless()).build();
 
     eyes = new Eyes();
     eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
