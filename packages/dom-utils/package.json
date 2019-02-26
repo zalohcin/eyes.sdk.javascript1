@@ -24,7 +24,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/dom-capture": "^7.0.5",
+    "@applitools/dom-capture": "^7.0.8",
     "@applitools/eyes-common": "^1.3.0",
     "axios": "^0.18.0"
   },
