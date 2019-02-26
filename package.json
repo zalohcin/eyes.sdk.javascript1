@@ -9,7 +9,7 @@
     "test": "lerna run test",
     "test:diff": "lerna run test --since origin/master",
     "test:unit": "lerna run test:unit --parallel --no-private",
-    "test:it": "lerna run test:it --parallel --no-private --ignore dom-utils",
+    "test:it": "lerna run test:it --parallel --no-private --ignore @applitools/dom-utils",
     "test:e2e": "lerna run test:e2e --no-private",
     "test:perf": "lerna run test:perf",
     "commit": "git-cz"
