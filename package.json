@@ -8,9 +8,9 @@
     "lint": "eslint . --cache --ext js",
     "test": "lerna run test",
     "test:diff": "lerna run test --since master",
-    "test:unit": "lerna run test:unit",
+    "test:unit": "lerna run test:unit --parallel",
+    "test:it": "lerna run test:it --parallel",
     "test:e2e": "lerna run test:e2e",
-    "test:it": "lerna run test:it",
     "test:perf": "lerna run test:perf",
     "commit": "git-cz"
   },
