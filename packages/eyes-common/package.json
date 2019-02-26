@@ -37,7 +37,7 @@
     "stack-trace": "^0.0.10"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^6.0.2"
   },
   "scripts": {
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
