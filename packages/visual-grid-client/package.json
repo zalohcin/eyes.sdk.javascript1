@@ -31,8 +31,8 @@
   ],
   "dependencies": {
     "@applitools/eyes-common": "^1.3.0",
-    "@applitools/eyes-sdk-core": "^4.8.0",
-    "@applitools/functional-commons": "^1.1.3",
+    "@applitools/eyes-sdk-core": "^4.8.1",
+    "@applitools/functional-commons": "^1.1.4",
     "@applitools/http-commons": "^1.2.3",
     "@applitools/isomorphic-fetch": "^3.0.0",
     "cssom": "git+https://github.com/amitzur/CSSOM.git#925260ff2c8f8387cf76df4d5776a06044a644c8",
@@ -44,7 +44,7 @@
     "throat": "^4.1.0"
   },
   "devDependencies": {
-    "@applitools/dom-snapshot": "^1.0.6",
+    "@applitools/dom-snapshot": "^1.0.7",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.3",

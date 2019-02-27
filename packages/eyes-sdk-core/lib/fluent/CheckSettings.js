@@ -25,13 +25,13 @@ class CheckSettings {
     /** @type {MatchLevel} */
     this._matchLevel = undefined;
     /** @type {boolean} */
-    this._ignoreCaret = false;
-    /** @type {boolean} */
-    this._stitchContent = false;
-    /** @type {boolean} */
     this._useDom = undefined;
     /** @type {boolean} */
     this._enablePatterns = undefined;
+    /** @type {boolean} */
+    this._ignoreCaret = false;
+    /** @type {boolean} */
+    this._stitchContent = false;
 
     this._timeout = timeout;
     this._targetRegion = region ? new Region(region) : undefined;
