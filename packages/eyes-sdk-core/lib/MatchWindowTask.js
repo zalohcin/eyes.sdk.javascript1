@@ -136,7 +136,24 @@ class MatchWindowTask {
         sendDom = this._eyes.getDefaultMatchSettings().getSendDom();
       }
 
-      imageMatchSettings = new ImageMatchSettings({ matchLevel, exact: null, ignoreCaret, sendDom });
+      let useDom = checkSettings.getUseDom();
+      if (TypeUtils.isNull(useDom)) {
+        useDom = this._eyes.getDefaultMatchSettings().getUseDom();
+      }
+
+      let enablePatterns = checkSettings.getEnablePatterns();
+      if (TypeUtils.isNull(enablePatterns)) {
+        enablePatterns = this._eyes.getDefaultMatchSettings().getEnablePatterns();
+      }
+
+      imageMatchSettings = new ImageMatchSettings({
+        matchLevel,
+        exact: null,
+        ignoreCaret,
+        sendDom,
+        useDom,
+        enablePatterns,
+      });
 
       await this._collectSimpleRegions(checkSettings, imageMatchSettings, screenshot);
       await this._collectFloatingRegions(checkSettings, imageMatchSettings, screenshot);

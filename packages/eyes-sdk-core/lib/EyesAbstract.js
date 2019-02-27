@@ -20,6 +20,8 @@ class EyesAbstract {
     this._defaultMatchSettings = new ImageMatchSettings();
     this._defaultMatchSettings.setIgnoreCaret(true);
     this._defaultMatchSettings.setSendDom(true);
+    this._defaultMatchSettings.setUseDom(false);
+    this._defaultMatchSettings.setEnablePatterns(false);
   }
 
   /**

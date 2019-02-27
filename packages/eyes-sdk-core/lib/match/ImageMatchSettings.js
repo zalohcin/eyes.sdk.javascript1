@@ -13,8 +13,10 @@ class ImageMatchSettings {
    * @param {ExactMatchSettings} [exact] Additional threshold parameters when the {@code Exact} match level is used.
    * @param {boolean} [ignoreCaret]
    * @param {boolean} [sendDom]
+   * @param {boolean} [useDom]
+   * @param {boolean} [enablePatterns]
    */
-  constructor({ matchLevel, exact, ignoreCaret, sendDom } = {}) {
+  constructor({ matchLevel, exact, ignoreCaret, sendDom, useDom, enablePatterns } = {}) {
     if (arguments.length > 1) {
       throw new TypeError('Please, use object as a parameter to the constructor!');
     }
@@ -23,6 +25,8 @@ class ImageMatchSettings {
     this._exact = exact;
     this._ignoreCaret = ignoreCaret;
     this._sendDom = sendDom;
+    this._useDom = useDom;
+    this._enablePatterns = enablePatterns;
 
     /** @type {Region[]} */
     this._ignoreRegions = [];
@@ -99,6 +103,38 @@ class ImageMatchSettings {
    */
   setSendDom(value) {
     this._sendDom = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {boolean}
+   */
+  getUseDom() {
+    return this._useDom;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {boolean} value
+   */
+  setUseDom(value) {
+    this._useDom = value;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {boolean}
+   */
+  getEnablePatterns() {
+    return this._enablePatterns;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {boolean} value
+   */
+  setEnablePatterns(value) {
+    this._enablePatterns = value;
   }
 
   // noinspection JSUnusedGlobalSymbols

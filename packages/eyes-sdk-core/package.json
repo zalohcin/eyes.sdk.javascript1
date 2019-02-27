@@ -40,7 +40,8 @@
   },
   "scripts": {
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
-    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\""
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
+    "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\""
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
