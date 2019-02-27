@@ -1521,6 +1521,28 @@ describe('openEyes', () => {
     ]);
   });
 
+  it('handles useDom and enablePatterns', async () => {
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      appName,
+    });
+    checkWindow({
+      url: '',
+      cdt: [],
+      useDom: true,
+      enablePatterns: false,
+    });
+    checkWindow({
+      url: '',
+      cdt: [],
+    });
+    const [results] = await close();
+    expect(results[0].__checkSettings.getUseDom()).to.be.true;
+    expect(results[0].__checkSettings.getEnablePatterns()).to.be.false;
+    expect(results[1].__checkSettings.getUseDom()).to.be.undefined;
+    expect(results[1].__checkSettings.getEnablePatterns()).to.be.undefined;
+  });
+
   it('handles abort', async () => {
     const wrapper1 = createFakeWrapper(baseUrl);
     const wrapper2 = createFakeWrapper(baseUrl);

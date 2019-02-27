@@ -25,9 +25,14 @@ class CheckSettings {
     /** @type {MatchLevel} */
     this._matchLevel = undefined;
     /** @type {boolean} */
+    this._useDom = undefined;
+    /** @type {boolean} */
+    this._enablePatterns = undefined;
+    /** @type {boolean} */
     this._ignoreCaret = false;
     /** @type {boolean} */
     this._stitchContent = false;
+
     this._timeout = timeout;
     this._targetRegion = region ? new Region(region) : undefined;
 
@@ -186,6 +191,44 @@ class CheckSettings {
    */
   getStitchContent() {
     return this._stitchContent;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Defines useDom for enabling the match algorithm to use dom.
+   *
+   * @param {boolean} [useDom=true]
+   * @return {this} This instance of the settings object.
+   */
+  useDom(useDom = true) {
+    this._useDom = useDom;
+    return this;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  getUseDom() {
+    return this._useDom;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Enabling the match algorithms for pattern detection
+   *
+   * @param {boolean} [enablePatterns=true]
+   * @return {this} This instance of the settings object.
+   */
+  enablePatterns(enablePatterns = true) {
+    this._enablePatterns = enablePatterns;
+    return this;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  getEnablePatterns() {
+    return this._enablePatterns;
   }
 
   // noinspection JSUnusedGlobalSymbols
