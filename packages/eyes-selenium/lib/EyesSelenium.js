@@ -608,12 +608,13 @@ class EyesSelenium extends EyesBase {
 
     const frameChain = checkSettings.getFrameChain();
 
-    return frameChain.reduce(async (switchedToFrameCount, frameLocator) => {
+    return await frameChain.reduce(async (prevPromise, frameLocator) => {
+      let switchedToFrameCount = await prevPromise;
       if (await this._switchToFrameLocator(frameLocator)) {
         switchedToFrameCount += 1;
       }
       return switchedToFrameCount;
-    }, 0);
+    }, Promise.resolve(0));
   }
 
   /**

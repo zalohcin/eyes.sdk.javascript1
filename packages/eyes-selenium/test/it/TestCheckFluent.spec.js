@@ -60,6 +60,13 @@ describe('TestCheckFluent', function () {
     return eyes.close();
   });
 
+  it('TestCheckFrameInFrame_Fully_Fluent', async function () {
+    await eyes.check('Fluent - Full Frame in Frame', Target.frame('frame1')
+      .frame('frame1-1')
+      .fully());
+    return eyes.close();
+  });
+
   afterEach(async function () {
     return eyes.abortIfNotClosed();
   });
