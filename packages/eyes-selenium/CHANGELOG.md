@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.6.0...@applitools/eyes-selenium@4.7.0) (2019-02-27)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** fix capturing regions in frames ([6ea8bcb](https://github.com/applitools/eyes.sdk.javascript1/commit/6ea8bcb))
+
+
+### Features
+
+* **eyes-selenium:** `eyes-rendering` is now part of `eyes-selenium` ([6324a92](https://github.com/applitools/eyes.sdk.javascript1/commit/6324a92))
+* **eyes-selenium:** allow to set `isVisualGrid` as first param in constructor of Eyes ([2f229d5](https://github.com/applitools/eyes.sdk.javascript1/commit/2f229d5))
+* **eyes-selenium:** use viewportSize in EyesVisualGrid if no Browser provided and create a Chrome with given dimensions ([83e7b1e](https://github.com/applitools/eyes.sdk.javascript1/commit/83e7b1e))
+
+
+
+
+
 # [4.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.5.0...@applitools/eyes-selenium@4.6.0) (2019-02-20)
 
 

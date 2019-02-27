@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@1.3.0...@applitools/eyes-common@1.3.1) (2019-02-27)
+
+
+### Bug Fixes
+
+* **eyes-common:** Make appName, testName, viewportSize accept undefined ([ba11581](https://github.com/applitools/eyes.sdk.javascript1/commit/ba11581))
+
+
+
+
+
 # [1.3.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@1.2.4...@applitools/eyes-common@1.3.0) (2019-02-19)
 
 
