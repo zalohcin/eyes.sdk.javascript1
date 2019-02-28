@@ -220,7 +220,18 @@ class EyesVisualGrid extends EyesBase {
     console.log(testResultsFormatter.asFormatterString());
   }
 
+  /**
+   * @deprecated
+   */
   getEyesRunner() {
+    const runner = {};
+    runner.getAllResults = async () => {
+      return await this.closeAndReturnResults();
+    };
+    return runner;
+  }
+
+  getRunner() {
     const runner = {};
     runner.getAllResults = async () => {
       return await this.closeAndReturnResults();
