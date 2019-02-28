@@ -512,6 +512,38 @@ class EyesAbstract {
   }
 
   /**
+   * The test-wide useDom to use.
+   *
+   * @param {boolean} useDom The test-wide useDom to use in match requests.
+   */
+  setUseDom(useDom) {
+    this._defaultMatchSettings.setUseDom(useDom);
+  }
+
+  /**
+   * @return {boolean} The test-wide useDom to use in match requests.
+   */
+  getUseDom() {
+    return this._defaultMatchSettings.getUseDom();
+  }
+
+  /**
+   * The test-wide enablePatterns to use.
+   *
+   * @param {boolean} enablePatterns The test-wide enablePatterns to use in match requests.
+   */
+  setEnablePatterns(enablePatterns) {
+    this._defaultMatchSettings.setEnablePatterns(enablePatterns);
+  }
+
+  /**
+   * @return {boolean} The test-wide enablePatterns to use in match requests.
+   */
+  getEnablePatterns() {
+    return this._defaultMatchSettings.getEnablePatterns();
+  }
+
+  /**
    * Sets the ignore blinking caret value.
    *
    * @param {boolean} value The ignore value.
