@@ -1773,7 +1773,7 @@ describe('openEyes', () => {
       useDom: true,
       enablePatterns: true,
     }).openEyes;
-    const {checkWindow, close} = await openEyes({
+    const {close} = await openEyes({
       apiKey,
       wrappers: [wrapper],
       appName,
@@ -1790,7 +1790,7 @@ describe('openEyes', () => {
       showLogs: APPLITOOLS_SHOW_LOGS,
       renderWrapper: wrapper,
     }).openEyes;
-    const {checkWindow, close} = await openEyes({
+    const {close} = await openEyes({
       apiKey,
       wrappers: [wrapper],
       appName,
@@ -1809,7 +1809,7 @@ describe('openEyes', () => {
       useDom: false,
       enablePatterns: false,
     }).openEyes;
-    const {checkWindow, close} = await openEyes({
+    const {close} = await openEyes({
       apiKey,
       wrappers: [wrapper],
       appName,
@@ -1828,7 +1828,7 @@ describe('openEyes', () => {
       useDom: false,
       enablePatterns: false,
     }).openEyes;
-    const {checkWindow, close} = await openEyes({
+    const {close} = await openEyes({
       apiKey,
       wrappers: [wrapper],
       appName,
