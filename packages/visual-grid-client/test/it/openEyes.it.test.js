@@ -1764,4 +1764,140 @@ describe('openEyes', () => {
     checkWindow({tag: 3, cdt: [], url: ''});
     await close();
   });
+
+  it('sets useDom & enablePatterns in makeRenderingGridClient', async () => {
+    openEyes = makeRenderingGridClient({
+      apiKey,
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      renderWrapper: wrapper,
+      useDom: true,
+      enablePatterns: true,
+    }).openEyes;
+    const {checkWindow, close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+    });
+
+    expect(wrapper.getUseDom()).to.be.true;
+    expect(wrapper.getEnablePatterns()).to.be.true;
+    await close();
+  });
+
+  it('has correct default value for useDom & enablePatterns', async () => {
+    openEyes = makeRenderingGridClient({
+      apiKey,
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      renderWrapper: wrapper,
+    }).openEyes;
+    const {checkWindow, close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+    });
+
+    expect(wrapper.getUseDom()).to.be.undefined;
+    expect(wrapper.getEnablePatterns()).to.be.undefined;
+    await close();
+  });
+
+  it('has correct values for useDom & enablePatterns', async () => {
+    openEyes = makeRenderingGridClient({
+      apiKey,
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      renderWrapper: wrapper,
+      useDom: false,
+      enablePatterns: false,
+    }).openEyes;
+    const {checkWindow, close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+    });
+
+    expect(wrapper.getUseDom()).to.be.false;
+    expect(wrapper.getEnablePatterns()).to.be.false;
+    await close();
+  });
+
+  it('openEyes overrides useDom & enablePatterns', async () => {
+    openEyes = makeRenderingGridClient({
+      apiKey,
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      renderWrapper: wrapper,
+      useDom: false,
+      enablePatterns: false,
+    }).openEyes;
+    const {checkWindow, close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+      useDom: true,
+      enablePatterns: true,
+    });
+
+    expect(wrapper.getUseDom()).to.be.true;
+    expect(wrapper.getEnablePatterns()).to.be.true;
+    await close();
+  });
+
+  it('checkWindow overrides openEyes useDom & enablePatterns', async () => {
+    openEyes = makeRenderingGridClient({
+      apiKey,
+      showLogs: true,
+      renderWrapper: wrapper,
+      useDom: false,
+      enablePatterns: false,
+    }).openEyes;
+    const {checkWindow, close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+      useDom: false,
+      enablePatterns: false,
+    });
+
+    let done;
+    const donePromise = new Promise(res => {
+      done = res;
+      setTimeout(done, 1000);
+    });
+    wrapper.on('checkWindowEnd', done);
+
+    await checkWindow({tag: 'good1', cdt: [], url: '', useDom: true, enablePatterns: true});
+    await donePromise;
+    const results = await close();
+    expect(results[0][0].__checkSettings.getUseDom()).to.be.true;
+    expect(results[0][0].__checkSettings.getEnablePatterns()).to.be.true;
+  });
+
+  it('checkWindow overrides openEyes useDom & enablePatterns with false', async () => {
+    openEyes = makeRenderingGridClient({
+      apiKey,
+      showLogs: true,
+      renderWrapper: wrapper,
+      useDom: true,
+      enablePatterns: true,
+    }).openEyes;
+    const {checkWindow, close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+      useDom: true,
+      enablePatterns: true,
+    });
+
+    let done;
+    const donePromise = new Promise(res => {
+      done = res;
+      setTimeout(done, 1000);
+    });
+    wrapper.on('checkWindowEnd', done);
+
+    await checkWindow({tag: 'good1', cdt: [], url: '', useDom: false, enablePatterns: false});
+    await donePromise;
+    const results = await close();
+    expect(results[0][0].__checkSettings.getUseDom()).to.be.false;
+    expect(results[0][0].__checkSettings.getEnablePatterns()).to.be.false;
+  });
 });
