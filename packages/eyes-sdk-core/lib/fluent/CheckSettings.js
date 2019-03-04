@@ -287,7 +287,7 @@ class CheckSettings {
   /**
    * Adds one or more ignore regions.
    *
-   * @param {(GetRegion|Region)...} regions - A region to ignore when validating the screenshot.
+   * @param {...(GetRegion|Region)} regions - A region to ignore when validating the screenshot.
    * @return {this} - This instance of the settings object.
    */
   ignoreRegions(...regions) {
@@ -305,7 +305,7 @@ class CheckSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Adds one or more layout regions.
-   * @param {(GetRegion|Region)...} regions - A region to match using the Layout method.
+   * @param {...(GetRegion|Region)} regions - A region to match using the Layout method.
    * @return {this} - This instance of the settings object.
    */
   layoutRegions(...regions) {
@@ -323,7 +323,7 @@ class CheckSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Adds one or more strict regions.
-   * @param {(GetRegion|Region)...} regions - A region to match using the Strict method.
+   * @param {...(GetRegion|Region)} regions - A region to match using the Strict method.
    * @return {this} - This instance of the settings object.
    */
   strictRegions(...regions) {
@@ -341,7 +341,7 @@ class CheckSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Adds one or more content regions.
-   * @param {(GetRegion|Region)...} regions - A region to match using the Content method.
+   * @param {...(GetRegion|Region)} regions - A region to match using the Content method.
    * @return {this} - This instance of the settings object.
    */
   contentRegions(...regions) {

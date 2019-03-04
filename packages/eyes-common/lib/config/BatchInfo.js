@@ -13,7 +13,7 @@ class BatchInfo {
    * Creates a new BatchInfo instance.
    *
    * @signature `new BatchInfo(batchInfo)`
-   * @signature `new BatchInfo(name, startedAt?, id?)`
+   * @signature `new BatchInfo(name, ?startedAt, ?id)`
    * @signature `new BatchInfo({id: string, name: string, startedAt: Date|string})`
    *
    * @param {BatchInfo|{id: ?string, name: ?string, startedAt: ?(Date|string)}|string} [varArg] - BatchInfo or the name of
