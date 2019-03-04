@@ -551,9 +551,9 @@ class EyesSelenium extends EyesBase {
 
   /**
    * @private
-   * @param driver
-   * @param switchTo
-   * @param frames
+   * @param {EyesWebDriver} driver
+   * @param {EyesTargetLocator} switchTo
+   * @param {FrameChain} frames
    * @return {Promise<void>}
    */
   async _trySwitchToFrames(driver, switchTo, frames) {

@@ -61,19 +61,19 @@ async function setBrowserSizeLoop(logger, driver, requiredSize, sleep, retriesLe
 
 // noinspection OverlyComplexFunctionJS
 /**
- * @param logger
- * @param driver
- * @param requiredSize
- * @param actualVSize
- * @param browserSize
- * @param widthDiff
- * @param widthStep
- * @param heightDiff
- * @param heightStep
- * @param currWidthChange
- * @param currHeightChange
- * @param retriesLeft
- * @param lastRequiredBrowserSize
+ * @param {Logger} logger
+ * @param {WebDriver} driver
+ * @param {RectangleSize} requiredSize
+ * @param {RectangleSize} actualVSize
+ * @param {RectangleSize} browserSize
+ * @param {number} widthDiff
+ * @param {number} widthStep
+ * @param {number} heightDiff
+ * @param {number} heightStep
+ * @param {number} currWidthChange
+ * @param {number} currHeightChange
+ * @param {number} retriesLeft
+ * @param {RectangleSize} lastRequiredBrowserSize
  * @return {Promise<boolean>}
  */
 async function setViewportSizeLoop(
