@@ -117,11 +117,11 @@ class EyesWebDriver extends IWebDriver {
   /**
    * @inheritDoc
    */
-  executeScript(script, ...varArgs) {
+  async executeScript(script, ...varArgs) {
     this._logger.verbose('Execute script...');
     EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs);
     // noinspection JSValidateTypes
-    const result = this._driver.executeScript(script, ...varArgs);
+    const result = await this._driver.executeScript(script, ...varArgs);
     this._logger.verbose('Done!');
     return result;
   }

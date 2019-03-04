@@ -28,7 +28,7 @@ async function getPropertyValue(logger, element, propName) {
       }
     } else {
       // OK, this is weird, we got an element which is not EyesWebElement?? Log it and try to move on.
-      logger.verbose(`Element is not an EyesWebElement! (when trying to get ${propName}) Element's class: ${element.constructor.name}`);
+      logger.log(`Element is not an EyesWebElement! (when trying to get ${propName}) Element's class: ${element.constructor.name}`);
       logger.verbose('Using getCssValue...');
       styleResult = await element.getCssValue(propName);
       logger.verbose('Done!');

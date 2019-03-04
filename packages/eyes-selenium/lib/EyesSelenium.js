@@ -857,17 +857,14 @@ class EyesSelenium extends EyesBase {
         await eyesElement.setOverflow('hidden');
       }
 
-      const borderLeftWidth = await eyesElement.getComputedStyleInteger('border-left-width');
-      const borderTopWidth = await eyesElement.getComputedStyleInteger('border-top-width');
-
-      const elementWidth = await eyesElement.getClientWidth();
-      const elementHeight = await eyesElement.getClientHeight();
+      const borderOffsetLocation = await eyesElement.getBorderOffsetLocation();
+      const elementSize = await eyesElement.getClientSize();
 
       const elementRegion = new Region(
-        rect.x + borderLeftWidth,
-        rect.y + borderTopWidth,
-        elementWidth,
-        elementHeight,
+        rect.x + borderOffsetLocation.getX(),
+        rect.y + borderOffsetLocation.getY(),
+        elementSize.getWidth(),
+        elementSize.getHeight(),
         CoordinatesType.SCREENSHOT_AS_IS
       );
 

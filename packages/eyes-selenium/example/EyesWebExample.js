@@ -8,6 +8,7 @@ const { Eyes, Target } = require('../index'); // should be replaced to '@applito
 (async () => {
   // Open a Chrome browser.
   const driver = new Builder()
+    // .usingServer('http://localhost:4444/wd/hub')
     .withCapabilities(Capabilities.chrome())
     .build();
 

@@ -307,14 +307,10 @@ class EyesTargetLocator extends TargetLocator {
     const rect = await eyesFrame.getRect();
     const location = new Location(rect);
     const elementSize = new RectangleSize(rect);
+    const clientSize = await eyesFrame.getClientSize();
 
-    const clientWidth = await eyesFrame.getClientWidth();
-    const clientHeight = await eyesFrame.getClientHeight();
-    const clientSize = new RectangleSize(clientWidth, clientHeight);
-
-    const borderLeftWidth = await eyesFrame.getComputedStyleInteger('border-left-width');
-    const borderTopWidth = await eyesFrame.getComputedStyleInteger('border-top-width');
-    const contentLocation = new Location(location.getX() + borderLeftWidth, location.getY() + borderTopWidth);
+    const borderOffsetLocation = await eyesFrame.getBorderOffsetLocation();
+    const contentLocation = location.offsetByLocation(borderOffsetLocation);
 
     const originalLocation = await this._scrollPosition.getCurrentPosition();
     const originalOverflow = await eyesFrame.getOverflow();

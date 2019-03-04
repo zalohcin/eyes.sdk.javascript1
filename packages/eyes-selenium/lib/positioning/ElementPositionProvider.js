@@ -28,9 +28,7 @@ class ElementPositionProvider extends PositionProvider {
    */
   async getCurrentPosition() {
     this._logger.verbose('getCurrentScrollPosition()');
-    const scrollLeftValue = await this._element.getScrollLeft();
-    const scrollTopValue = await this._element.getScrollTop();
-    const location = new Location(scrollLeftValue, scrollTopValue);
+    const location = await this._element.getScrollLocation();
     this._logger.verbose(`Current position: ${location}`);
     return location;
   }
@@ -49,11 +47,9 @@ class ElementPositionProvider extends PositionProvider {
    */
   async getEntireSize() {
     this._logger.verbose('ElementPositionProvider - getEntireSize()');
-    const scrollWidthValue = await this._element.getScrollWidth();
-    const scrollHeightValue = await this._element.getScrollHeight();
-    const size = new RectangleSize(scrollWidthValue, scrollHeightValue);
-    this._logger.verbose(`ElementPositionProvider - Entire size: ${size}`);
-    return size;
+    const scrollSize = await this._element.getScrollSize();
+    this._logger.verbose(`ElementPositionProvider - Entire size: ${scrollSize}`);
+    return scrollSize;
   }
 
   /**
