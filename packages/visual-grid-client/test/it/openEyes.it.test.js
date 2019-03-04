@@ -7,6 +7,7 @@ const FakeRunningRender = require('../util/FakeRunningRender');
 const createFakeWrapper = require('../util/createFakeWrapper');
 const testServer = require('../util/testServer');
 const {loadJsonFixture, loadFixtureBuffer} = require('../util/loadFixture');
+const {failMsg} = require('../../src/sdk/waitForRenderedStatus');
 const {promisify: p} = require('util');
 const nock = require('nock');
 const psetTimeout = p(setTimeout);
@@ -979,7 +980,7 @@ describe('openEyes', () => {
 
       const [err] = await presult(close());
       expect(err[0]).to.be.an.instanceOf(Error);
-      expect(err[0].message).to.equal('failed to render screenshot');
+      expect(err[0].message).to.have.string(failMsg());
     });
 
     it.skip('resolves render job when error in happens while in getRenderStatus (but not because of that specific render)', async () => {
@@ -1011,7 +1012,7 @@ describe('openEyes', () => {
     checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'});
 
     const [err3] = await presult(close());
-    expect(err3[0].message).to.equal('failed to render screenshot');
+    expect(err3[0].message).to.have.string(failMsg());
   });
 
   it('handles render status timeout when second checkWindow starts BEFORE timeout of previous checkWindow', async () => {
@@ -1038,7 +1039,7 @@ describe('openEyes', () => {
     checkWindow({resourceUrls: [], cdt: [], url: 'bla', tag: 'good1'});
     await psetTimeout(200);
     const [err3] = await presult(close());
-    expect(err3[0].message).to.equal('failed to render screenshot');
+    expect(err3[0].message).have.string(failMsg());
   });
 
   it('sets configuration on wrappers', () => {
