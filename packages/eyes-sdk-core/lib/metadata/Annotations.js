@@ -7,11 +7,11 @@ const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 class Annotations {
   // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * @param {(FloatingMatchSettings|object)[]} floating
-   * @param {(Region|object)[]} ignore
-   * @param {(Region|object)[]} strict
-   * @param {(Region|object)[]} content
-   * @param {(Region|object)[]} layout
+   * @param {FloatingMatchSettings[]|object[]} floating
+   * @param {Region[]|object[]} ignore
+   * @param {Region[]|object[]} strict
+   * @param {Region[]|object[]} content
+   * @param {Region[]|object[]} layout
    */
   constructor({ floating, ignore, strict, content, layout } = {}) {
     if (ignore && ignore.length > 0 && !(ignore[0] instanceof Region)) {

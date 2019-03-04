@@ -39,7 +39,7 @@ class SeleniumConfiguration extends Configuration {
     // visual grid
     /** @type {number} */ this._concurrentSessions = undefined;
     /** @type {boolean} */ this._isThrowExceptionOn = undefined;
-    /** @type {(RenderBrowserInfo|DeviceInfo)[]} */ this._browsersInfo = undefined;
+    /** @type {RenderBrowserInfo[]|DeviceInfo[]} */ this._browsersInfo = undefined;
 
     if (configuration) {
       this.mergeConfig(configuration);

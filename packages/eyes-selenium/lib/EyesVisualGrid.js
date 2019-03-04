@@ -198,7 +198,7 @@ class EyesVisualGrid extends EyesBase {
 
   /**
    * @param {boolean} [throwEx]
-   * @return {Promise<(TestResults|Error)[]>}
+   * @return {Promise<TestResults[]|Error[]>}
    */
   async closeAndReturnResults(throwEx = true) {
     try {
