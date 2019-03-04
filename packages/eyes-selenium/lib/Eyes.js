@@ -14,8 +14,8 @@ class Eyes {
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
-   * @param {string|boolean} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
-   * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
+   * @param {string|boolean} [serverUrl=EyesBase.getDefaultServerUrl()] - The Eyes server URL.
+   * @param {boolean} [isDisabled=false] - Set to true to disable Applitools Eyes and use the webdriver directly.
    * @param {boolean} [isVisualGrid]
    * @return {EyesSelenium|EyesVisualGrid}
    */

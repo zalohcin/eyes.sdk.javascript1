@@ -17,9 +17,9 @@ class RectangleSize {
    * @signature `new RectangleSize(width, height)`
    * @signature `new RectangleSize({width: number, height: number})`
    *
-   * @param {RectangleSize|{width: number, height: number}|number} varArg RectangleSize object or the width of this
+   * @param {RectangleSize|{width: number, height: number}|number} varArg - RectangleSize object or the width of this
    *   rectangle.
-   * @param {number} [optHeight] The height of the rectangle.
+   * @param {number} [optHeight] - The height of the rectangle.
    */
   constructor(varArg, optHeight) {
     if (arguments.length === 2) {
@@ -41,8 +41,8 @@ class RectangleSize {
   /**
    * Parses a string into a {@link RectangleSize} instance.
    *
-   * @param {string} size A string representing width and height separated by "x".
-   * @return {RectangleSize} An instance representing the input size.
+   * @param {string} size - A string representing width and height separated by "x".
+   * @return {RectangleSize} - An instance representing the input size.
    */
   static parse(size) {
     ArgumentGuard.notNull(size, 'size');
@@ -78,8 +78,8 @@ class RectangleSize {
   /**
    * Indicates whether some other RectangleSize is "equal to" this one.
    *
-   * @param {object|RectangleSize} obj The reference object with which to compare.
-   * @return {boolean} {@code true} if this object is the same as the obj argument; {@code false} otherwise.
+   * @param {object|RectangleSize} obj - The reference object with which to compare.
+   * @return {boolean} -  A value of {@code true} if this object is the same as the obj argument; {@code false} otherwise.
    */
   equals(obj) {
     if (typeof obj !== typeof this || !(obj instanceof RectangleSize)) {
@@ -92,8 +92,8 @@ class RectangleSize {
   /**
    * Get a scaled version of the current size.
    *
-   * @param {number} scaleRatio The ratio by which to scale the results.
-   * @return {RectangleSize} A scaled copy of the current size.
+   * @param {number} scaleRatio - The ratio by which to scale the results.
+   * @return {RectangleSize} - A scaled copy of the current size.
    */
   scale(scaleRatio) {
     return new RectangleSize({

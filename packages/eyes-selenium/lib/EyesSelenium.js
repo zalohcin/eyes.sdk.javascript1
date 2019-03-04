@@ -65,8 +65,8 @@ class EyesSelenium extends EyesBase {
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
-   * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
-   * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
+   * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] - The Eyes server URL.
+   * @param {boolean} [isDisabled=false] - Set to true to disable Applitools Eyes and use the webdriver directly.
    */
   constructor(serverUrl, isDisabled) {
     super(serverUrl, isDisabled, new SeleniumConfiguration());
@@ -209,7 +209,7 @@ class EyesSelenium extends EyesBase {
    * Sets the time to wait just before taking a screenshot (e.g., to allow positioning to stabilize when performing a
    * full page stitching).
    *
-   * @param {number} waitBeforeScreenshots The time to wait (Milliseconds). Values smaller or equal to 0, will cause the
+   * @param {number} waitBeforeScreenshots - The time to wait (Milliseconds). Values smaller or equal to 0, will cause the
    *   default value to be used.
    */
   setWaitBeforeScreenshots(waitBeforeScreenshots) {
@@ -218,7 +218,7 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {number} The time to wait just before taking a screenshot.
+   * @return {number} - The time to wait just before taking a screenshot.
    */
   getWaitBeforeScreenshots() {
     return this._configuration.getWaitBeforeScreenshots();
@@ -228,7 +228,7 @@ class EyesSelenium extends EyesBase {
   /**
    * Hide the scrollbars when taking screenshots.
    *
-   * @param {boolean} shouldHide Whether to hide the scrollbars or not.
+   * @param {boolean} shouldHide - Whether to hide the scrollbars or not.
    */
   setHideScrollbars(shouldHide) {
     this._configuration.setHideScrollbars(shouldHide)
@@ -236,7 +236,7 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {boolean} Whether or not scrollbars are hidden when taking screenshots.
+   * @return {boolean} - Whether or not scrollbars are hidden when taking screenshots.
    */
   getHideScrollbars() {
     return this._configuration.getHideScrollbars();
@@ -247,7 +247,7 @@ class EyesSelenium extends EyesBase {
    * Set the type of stitching used for full page screenshots. When the page includes fixed position header/sidebar,
    * use {@link StitchMode#CSS}. Default is {@link StitchMode#SCROLL}.
    *
-   * @param {StitchMode} mode The stitch mode to set.
+   * @param {StitchMode} mode - The stitch mode to set.
    */
   setStitchMode(mode) {
     this._logger.verbose(`setting stitch mode to ${mode}`);
@@ -260,7 +260,7 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {StitchMode} The current stitch mode settings.
+   * @return {StitchMode} - The current stitch mode settings.
    */
   getStitchMode() {
     return this._configuration.getStitchMode();
@@ -270,7 +270,7 @@ class EyesSelenium extends EyesBase {
   /**
    * Sets the stitching overlap in pixels.
    *
-   * @param {number} stitchOverlap The width (in pixels) of the overlap.
+   * @param {number} stitchOverlap - The width (in pixels) of the overlap.
    */
   setStitchOverlap(stitchOverlap) {
     this._configuration.setStitchOverlap(stitchOverlap);
@@ -288,7 +288,7 @@ class EyesSelenium extends EyesBase {
   /**
    * Turns on/off the automatic scrolling to a region being checked by {@code checkRegion}.
    *
-   * @param {boolean} shouldScroll Whether to automatically scroll to a region being validated.
+   * @param {boolean} shouldScroll - Whether to automatically scroll to a region being validated.
    */
   setScrollToRegion(shouldScroll) {
     if (shouldScroll) {
@@ -300,7 +300,7 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {boolean} Whether to automatically scroll to a region being validated.
+   * @return {boolean} - Whether to automatically scroll to a region being validated.
    */
   getScrollToRegion() {
     return !(this._regionVisibilityStrategy instanceof NopRegionVisibilityStrategy);
@@ -324,7 +324,7 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {ImageRotation} rotation The image rotation data.
+   * @param {ImageRotation} rotation - The image rotation data.
    */
   setRotation(rotation) {
     this._rotation = rotation;
@@ -335,7 +335,7 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {ImageRotation} The image rotation data.
+   * @return {ImageRotation} - The image rotation data.
    */
   getRotation() {
     return this._rotation;
@@ -343,7 +343,7 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {number} The device pixel ratio, or {@link #UNKNOWN_DEVICE_PIXEL_RATIO} if the DPR is not known yet or if
+   * @return {number} - The device pixel ratio, or {@link #UNKNOWN_DEVICE_PIXEL_RATIO} if the DPR is not known yet or if
    *   it wasn't possible to extract it.
    */
   getDevicePixelRatio() {
@@ -357,14 +357,14 @@ class EyesSelenium extends EyesBase {
    * @signature `open(driver, configuration)`
    * @signature `open(driver, appName, testName, ?viewportSize, ?sessionType, ?configuration)`
    *
-   * @param {WebDriver|ThenableWebDriver} driver The web driver that controls the browser hosting the application under test.
-   * @param {SeleniumConfiguration|string} optArg1 The Configuration for the test or the name of the application under the test.
-   * @param {string} [optArg2] The test name.
-   * @param {RectangleSize|RectangleSizeObject} [optArg3] The required browser's viewport size
+   * @param {WebDriver|ThenableWebDriver} driver - The web driver that controls the browser hosting the application under test.
+   * @param {SeleniumConfiguration|string} optArg1 - The Configuration for the test or the name of the application under the test.
+   * @param {string} [optArg2] - The test name.
+   * @param {RectangleSize|RectangleSizeObject} [optArg3] - The required browser's viewport size
    *   (i.e., the visible part of the document's body) or to use the current window's viewport.
-   * @param {SessionType} [optArg4] The type of test (e.g.,  standard test / visual performance test).
-   * @param {SeleniumConfiguration} [optArg5] The Configuration for the test
-   * @return {Promise<EyesWebDriver>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
+   * @param {SessionType} [optArg4] - The type of test (e.g.,  standard test / visual performance test).
+   * @param {SeleniumConfiguration} [optArg5] - The Configuration for the test
+   * @return {Promise<EyesWebDriver>} - A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
   async open(driver, optArg1, optArg2, optArg3, optArg4, optArg5) {
     ArgumentGuard.notNull(driver, 'driver');
@@ -448,10 +448,10 @@ class EyesSelenium extends EyesBase {
   /**
    * Perform visual validation
    *
-   * @param {string} name A name to be associated with the match
-   * @param {SeleniumCheckSettings} checkSettings Target instance which describes whether we want a
+   * @param {string} name - A name to be associated with the match
+   * @param {SeleniumCheckSettings} checkSettings - Target instance which describes whether we want a
    *   window/region/frame
-   * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
+   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async check(name, checkSettings) {
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
@@ -551,9 +551,9 @@ class EyesSelenium extends EyesBase {
 
   /**
    * @private
-   * @param driver
-   * @param switchTo
-   * @param frames
+   * @param driver {tbd}
+   * @param switchTo {tbd}
+   * @param frames {tbd}
    * @return {Promise<void>}
    */
   async _trySwitchToFrames(driver, switchTo, frames) {
@@ -962,9 +962,9 @@ class EyesSelenium extends EyesBase {
   /**
    * Takes a snapshot of the application under test and matches it with the expected output.
    *
-   * @param {string} [tag] An optional tag to be associated with the snapshot.
-   * @param {number} [matchTimeout] The amount of time to retry matching (Milliseconds).
-   * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
+   * @param {string} [tag] - An optional tag to be associated with the snapshot.
+   * @param {number} [matchTimeout] - The amount of time to retry matching (Milliseconds).
+   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkWindow(tag, matchTimeout) {
     return this.check(tag, Target.window().timeout(matchTimeout));
@@ -974,10 +974,10 @@ class EyesSelenium extends EyesBase {
   /**
    * Matches the frame given as parameter, by switching into the frame and using stitching to get an image of the frame.
    *
-   * @param {number|string|By|WebElement|EyesWebElement} element The element which is the frame to switch to.
-   * @param {number} [matchTimeout] The amount of time to retry matching (milliseconds).
-   * @param {string} [tag] An optional tag to be associated with the match.
-   * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
+   * @param {number|string|By|WebElement|EyesWebElement} element - The element which is the frame to switch to.
+   * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
+   * @param {string} [tag] - An optional tag to be associated with the match.
+   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkFrame(element, matchTimeout, tag) {
     return this.check(tag, Target.frame(element).timeout(matchTimeout).fully());
@@ -987,10 +987,10 @@ class EyesSelenium extends EyesBase {
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
    *
-   * @param {WebElement|EyesWebElement} element The element to check.
-   * @param {?number} [matchTimeout] The amount of time to retry matching (milliseconds).
-   * @param {string} [tag] An optional tag to be associated with the match.
-   * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
+   * @param {WebElement|EyesWebElement} element - The element to check.
+   * @param {?number} [matchTimeout] - The amount of time to retry matching (milliseconds).
+   * @param {string} [tag] - An optional tag to be associated with the match.
+   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkElement(element, matchTimeout, tag) {
     return this.check(tag, Target.region(element).timeout(matchTimeout).fully());
@@ -1000,10 +1000,10 @@ class EyesSelenium extends EyesBase {
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
    *
-   * @param {By} locator The element to check.
-   * @param {?number} [matchTimeout] The amount of time to retry matching (milliseconds).
-   * @param {string} [tag] An optional tag to be associated with the match.
-   * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
+   * @param {By} locator - The element to check.
+   * @param {?number} [matchTimeout] - The amount of time to retry matching (milliseconds).
+   * @param {string} [tag] - An optional tag to be associated with the match.
+   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkElementBy(locator, matchTimeout, tag) {
     return this.check(tag, Target.region(locator).timeout(matchTimeout).fully());
@@ -1013,10 +1013,10 @@ class EyesSelenium extends EyesBase {
   /**
    * Visually validates a region in the screenshot.
    *
-   * @param {Region} region The region to validate (in screenshot coordinates).
-   * @param {string} [tag] An optional tag to be associated with the screenshot.
-   * @param {number} [matchTimeout] The amount of time to retry matching.
-   * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
+   * @param {Region} region - The region to validate (in screenshot coordinates).
+   * @param {string} [tag] - An optional tag to be associated with the screenshot.
+   * @param {number} [matchTimeout] - The amount of time to retry matching.
+   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkRegion(region, tag, matchTimeout) {
     return this.check(tag, Target.region(region).timeout(matchTimeout));
@@ -1026,10 +1026,10 @@ class EyesSelenium extends EyesBase {
   /**
    * Visually validates a region in the screenshot.
    *
-   * @param {WebElement|EyesWebElement} element The element defining the region to validate.
-   * @param {string} [tag] An optional tag to be associated with the screenshot.
-   * @param {number} [matchTimeout] The amount of time to retry matching.
-   * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
+   * @param {WebElement|EyesWebElement} element - The element defining the region to validate.
+   * @param {string} [tag] - An optional tag to be associated with the screenshot.
+   * @param {number} [matchTimeout] - The amount of time to retry matching.
+   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkRegionByElement(element, tag, matchTimeout) {
     return this.check(tag, Target.region(element).timeout(matchTimeout));
@@ -1039,12 +1039,12 @@ class EyesSelenium extends EyesBase {
   /**
    * Visually validates a region in the screenshot.
    *
-   * @param {By} by The WebDriver selector used for finding the region to validate.
-   * @param {string} [tag] An optional tag to be associated with the screenshot.
-   * @param {number} [matchTimeout] The amount of time to retry matching.
-   * @param {boolean} [stitchContent] If {@code true}, stitch the internal content of the region (i.e., perform
+   * @param {By} by - The WebDriver selector used for finding the region to validate.
+   * @param {string} [tag] - An optional tag to be associated with the screenshot.
+   * @param {number} [matchTimeout] - The amount of time to retry matching.
+   * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
    *   {@link #checkElement(By, number, string)} on the region.
-   * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
+   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkRegionBy(by, tag, matchTimeout, stitchContent) {
     return this.check(tag, Target.region(by).timeout(matchTimeout).stitchContent(stitchContent));
@@ -1055,14 +1055,14 @@ class EyesSelenium extends EyesBase {
    * Switches into the given frame, takes a snapshot of the application under test and matches a region specified by
    * the given selector.
    *
-   * @param {string} frameNameOrId The name or id of the frame to switch to. (as would be used in a call to
+   * @param {string} frameNameOrId - The name or id of the frame to switch to. (as would be used in a call to
    *   driver.switchTo().frame()).
-   * @param {By} locator A Selector specifying the region to check.
-   * @param {?number} [matchTimeout] The amount of time to retry matching. (Milliseconds)
-   * @param {string} [tag] An optional tag to be associated with the snapshot.
-   * @param {boolean} [stitchContent] If {@code true}, stitch the internal content of the region (i.e., perform
+   * @param {By} locator - A Selector specifying the region to check.
+   * @param {?number} [matchTimeout] - The amount of time to retry matching. (Milliseconds)
+   * @param {string} [tag] - An optional tag to be associated with the snapshot.
+   * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
    *   {@link #checkElement(By, number, string)} on the region.
-   * @return {Promise<MatchResult>} A promise which is resolved when the validation is finished.
+   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkRegionInFrame(frameNameOrId, locator, matchTimeout, tag, stitchContent) {
     return this.check(tag, Target.region(locator, frameNameOrId).timeout(matchTimeout).stitchContent(stitchContent));
@@ -1072,9 +1072,9 @@ class EyesSelenium extends EyesBase {
   /**
    * Adds a mouse trigger.
    *
-   * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {Region} control The control on which the trigger is activated (context relative coordinates).
-   * @param {Location} cursor  The cursor's position relative to the control.
+   * @param {MouseTrigger.MouseAction} action  - Mouse action.
+   * @param {Region} control - The control on which the trigger is activated (context relative coordinates).
+   * @param {Location} cursor  - The cursor's position relative to the control.
    */
   addMouseTrigger(action, control, cursor) {
     if (this.getIsDisabled()) {
@@ -1100,8 +1100,8 @@ class EyesSelenium extends EyesBase {
   /**
    * Adds a mouse trigger.
    *
-   * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {EyesWebElement} element The WebElement on which the click was called.
+   * @param {MouseTrigger.MouseAction} action  - Mouse action.
+   * @param {EyesWebElement} element - The WebElement on which the click was called.
    * @return {Promise<void>}
    */
   async addMouseTriggerForElement(action, element) {
@@ -1132,8 +1132,8 @@ class EyesSelenium extends EyesBase {
   /**
    * Adds a keyboard trigger.
    *
-   * @param {Region} control The control on which the trigger is activated (context relative coordinates).
-   * @param {string} text  The trigger's text.
+   * @param {Region} control - The control on which the trigger is activated (context relative coordinates).
+   * @param {string} text  - The trigger's text.
    */
   addTextTrigger(control, text) {
     if (this.getIsDisabled()) {
@@ -1158,8 +1158,8 @@ class EyesSelenium extends EyesBase {
   /**
    * Adds a keyboard trigger.
    *
-   * @param {EyesWebElement} element The element for which we sent keys.
-   * @param {string} text  The trigger's text.
+   * @param {EyesWebElement} element - The element for which we sent keys.
+   * @param {string} text  - The trigger's text.
    * @return {Promise<void>}
    */
   async addTextTriggerForElement(element, text) {
@@ -1239,8 +1239,8 @@ class EyesSelenium extends EyesBase {
    * Call this method if for some reason you don't want to call {@link #open(WebDriver, string, string)} (or one of its
    * variants) yet.
    *
-   * @param {EyesWebDriver} driver The driver to use for getting the viewport.
-   * @return {Promise<RectangleSize>} The viewport size of the current context.
+   * @param {EyesWebDriver} driver - The driver to use for getting the viewport.
+   * @return {Promise<RectangleSize>} - The viewport size of the current context.
    */
   static async getViewportSize(driver) {
     ArgumentGuard.notNull(driver, 'driver');
@@ -1252,8 +1252,8 @@ class EyesSelenium extends EyesBase {
    * Set the viewport size using the driver. Call this method if for some reason you don't want to call
    * {@link #open(WebDriver, string, string)} (or one of its variants) yet.
    *
-   * @param {EyesWebDriver} driver The driver to use for setting the viewport.
-   * @param {RectangleSize} viewportSize The required viewport size.
+   * @param {EyesWebDriver} driver - The driver to use for setting the viewport.
+   * @param {RectangleSize} viewportSize - The required viewport size.
    * @return {Promise<void>}
    */
   static async setViewportSize(driver, viewportSize) {
@@ -1528,7 +1528,7 @@ class EyesSelenium extends EyesBase {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Set the image rotation degrees.
-   * @param {number} degrees The amount of degrees to set the rotation to.
+   * @param {number} degrees - The amount of degrees to set the rotation to.
    * @deprecated use {@link setRotation} instead
    */
   setForcedImageRotation(degrees) {
@@ -1538,7 +1538,7 @@ class EyesSelenium extends EyesBase {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Get the rotation degrees.
-   * @return {number} The rotation degrees.
+   * @return {number} - The rotation degrees.
    * @deprecated use {@link getRotation} instead
    */
   getForcedImageRotation() {
@@ -1548,7 +1548,7 @@ class EyesSelenium extends EyesBase {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Get the session id.
-   * @return {Promise<string>} A promise which resolves to the webdriver's session ID.
+   * @return {Promise<string>} - A promise which resolves to the webdriver's session ID.
    */
   async getAUTSessionId() {
     if (!this._driver) {
@@ -1560,7 +1560,7 @@ class EyesSelenium extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {PositionProvider} The currently set position provider.
+   * @return {PositionProvider} - The currently set position provider.
    */
   getElementPositionProvider() {
     return this._elementPositionProvider ? this._elementPositionProvider : this._positionProviderHandler.get();

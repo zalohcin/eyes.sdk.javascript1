@@ -10,9 +10,9 @@ const { ArgumentGuard } = require('../utils/ArgumentGuard');
 class ProxySettings {
   /**
    *
-   * @param {string|boolean} uri The proxy's URI or {@code false} to completely disable proxy.
-   * @param {string} [username] The username to be sent to the proxy.
-   * @param {string} [password] The password to be sent to the proxy.
+   * @param {string|boolean} uri - The proxy's URI or {@code false} to completely disable proxy.
+   * @param {string} [username] - The username to be sent to the proxy.
+   * @param {string} [password] - The password to be sent to the proxy.
    */
   constructor(uri, username, password) {
     ArgumentGuard.notNull(uri, 'uri');

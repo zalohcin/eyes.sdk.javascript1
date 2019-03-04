@@ -16,10 +16,10 @@ class BatchInfo {
    * @signature `new BatchInfo(name, startedAt?, id?)`
    * @signature `new BatchInfo({id: string, name: string, startedAt: Date|string})`
    *
-   * @param {BatchInfo|{id?: string, name?: string, startedAt?: Date|string}|string} [varArg] BatchInfo or the name of
+   * @param {BatchInfo|{id: ?string, name: ?string, startedAt: ?(Date|string)}|string} [varArg] - BatchInfo or the name of
    *   this batch.
-   * @param {string} [optStartedAt] Batch start time, defaults to the current time.
-   * @param {string} [optId] ID of the batch, should be generated using GeneralUtils.guid().
+   * @param {string} [optStartedAt] - Batch start time, defaults to the current time.
+   * @param {string} [optId] - ID of the batch, should be generated using GeneralUtils.guid().
    */
   constructor(varArg = {}, optStartedAt, optId) {
     if (varArg instanceof BatchInfo) {
@@ -54,7 +54,7 @@ class BatchInfo {
    * Sets a unique identifier for the batch. Sessions with batch info which includes the same ID will be grouped
    * together.
    *
-   * @param {string} value The batch's ID
+   * @param {string} value - The batch's ID
    */
   setId(value) {
     ArgumentGuard.notNullOrEmpty(value, 'id');
@@ -63,7 +63,7 @@ class BatchInfo {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return The name of the batch or {@code null} if anonymous.
+   * @return {string} - The name of the batch or {@code null} if anonymous.
    */
   getName() {
     return this._name;
@@ -71,7 +71,7 @@ class BatchInfo {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Date} The batch start date
+   * @return {Date} - The batch start date
    */
   getStartedAt() {
     return this._startedAt;

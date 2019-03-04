@@ -76,8 +76,8 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {number|string|By|WebElement|EyesWebElement} frame The frame to switch to.
-   * @return {this}
+   * @param {number|string|By|WebElement|EyesWebElement} frame - The frame to switch to.
+   * @return {SeleniumCheckSettings}
    */
   frame(frame) {
     const fl = new FrameLocator();
@@ -98,8 +98,8 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {Region|RegionObject|By|WebElement|EyesWebElement|string} region The region to validate.
-   * @return {this}
+   * @param {Region|RegionObject|By|WebElement|EyesWebElement|string} region - The region to validate.
+   * @return {SeleniumCheckSettings}
    */
   region(region) {
     // noinspection IfStatementWithTooManyBranchesJS
@@ -137,7 +137,7 @@ class SeleniumCheckSettings extends CheckSettings {
 
   /**
    * @inheritDoc
-   * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to ignore when validating.
+   * @param {...(By|WebElement|EyesWebElement|GetRegion|Region)} regions - A region to ignore when validating.
    */
   ignoreRegions(...regions) {
     // noinspection JSValidateTypes
@@ -146,7 +146,8 @@ class SeleniumCheckSettings extends CheckSettings {
 
   /**
    * @inheritDoc
-   * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to match using the Layout method.
+   * @param {...(By|WebElement|EyesWebElement|GetRegion|Region)} regions - A region to match using the Layout method.
+   * @return {SeleniumCheckSettings}
    */
   layoutRegions(...regions) {
     // noinspection JSValidateTypes
@@ -155,7 +156,8 @@ class SeleniumCheckSettings extends CheckSettings {
 
   /**
    * @inheritDoc
-   * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to match using the Strict method.
+   * @param {...(By|WebElement|EyesWebElement|GetRegion|Region)} regions - A region to match using the Strict method.
+   * @return {SeleniumCheckSettings}
    */
   strictRegions(...regions) {
     // noinspection JSValidateTypes
@@ -164,7 +166,8 @@ class SeleniumCheckSettings extends CheckSettings {
 
   /**
    * @inheritDoc
-   * @param {(By|WebElement|EyesWebElement|GetRegion|Region)...} regions A region to match using the Content method.
+   * @param {...(By|WebElement|EyesWebElement|GetRegion|Region)} regions - A region to match using the Content method.
+   * @return {SeleniumCheckSettings}
    */
   contentRegions(...regions) {
     // noinspection JSValidateTypes
@@ -174,12 +177,13 @@ class SeleniumCheckSettings extends CheckSettings {
   // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
-   * @param {GetFloatingRegion|Region|FloatingMatchSettings|By|WebElement|EyesWebElement} regionOrContainer The content
+   * @param {GetFloatingRegion|Region|FloatingMatchSettings|By|WebElement|EyesWebElement} regionOrContainer - The content
    *   rectangle or region container
    * @param {number} [maxUpOffset] How much the content can move up.
    * @param {number} [maxDownOffset] How much the content can move down.
    * @param {number} [maxLeftOffset] How much the content can move to the left.
    * @param {number} [maxRightOffset] How much the content can move to the right.
+   * @return {SeleniumCheckSettings}
    */
   floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
     if (EyesWebElement.isLocator(regionOrContainer)) {
@@ -209,9 +213,10 @@ class SeleniumCheckSettings extends CheckSettings {
   // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
-   * @param {number} maxOffset How much each of the content rectangles can move in any direction.
-   * @param {(GetFloatingRegion|Region|By|WebElement|EyesWebElement)...} regionsOrContainers One or more content
+   * @param {number} maxOffset - How much each of the content rectangles can move in any direction.
+   * @param {...(GetFloatingRegion|Region|By|WebElement|EyesWebElement)} regionsOrContainers - One or more content
    *   rectangles or region containers
+   * @return {SeleniumCheckSettings}
    */
   floatingRegions(maxOffset, ...regionsOrContainers) {
     return super.floatingRegions(maxOffset, ...regionsOrContainers);

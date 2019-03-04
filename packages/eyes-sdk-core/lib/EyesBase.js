@@ -49,7 +49,7 @@ const { MatchSingleWindowTask } = require('./MatchSingleWindowTask');
 
 const USE_DEFAULT_TIMEOUT = -1;
 
-/**
+/*
  * Core/Base class for Eyes - to allow code reuse for different SDKs (images, selenium, etc).
  */
 class EyesBase extends EyesAbstract {
@@ -60,8 +60,8 @@ class EyesBase extends EyesAbstract {
   /**
    * Creates a new {@code EyesBase}instance that interacts with the Eyes Server at the specified url.
    *
-   * @param {?string} [serverUrl] The Eyes server URL.
-   * @param {?boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method
+   * @param {?string} [serverUrl] - The Eyes server URL.
+   * @param {?boolean} [isDisabled=false] - Will be checked <b>before</b> any argument validation. If true, all method
    *   will immediately return without performing any action.
    * @param {Configuration} [configuration]
    */
@@ -127,7 +127,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * @param {boolean} [hardReset=false] If false, init providers only if they're not initialized.
+   * @param {boolean} [hardReset=false] - If false, init providers only if they're not initialized.
    * @private
    */
   _initProviders(hardReset = false) {
@@ -192,7 +192,7 @@ class EyesBase extends EyesAbstract {
    * Sets the authToken for rendering server.
    *
    * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
-   * @param authToken {string} The authToken to be used.
+   * @param authToken {string} - The authToken to be used.
    */
   setRenderingAuthToken(authToken) {
     this._serverConnector.setRenderingAuthToken(authToken);
@@ -201,7 +201,7 @@ class EyesBase extends EyesAbstract {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @deprecated use {@link #getRenderingInfo()} instead
-   * @return {string} The currently authToken or {@code null} if no key is set.
+   * @return {string} - The currently authToken or {@code null} if no key is set.
    */
   getRenderingAuthToken() {
     return this._serverConnector.getRenderingAuthToken();
@@ -212,7 +212,7 @@ class EyesBase extends EyesAbstract {
    * Sets the current rendering server URL used by the rest client.
    *
    * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
-   * @param serverUrl {string} The URI of the rendering server, or {@code null} to use the default server.
+   * @param serverUrl {string} - The URI of the rendering server, or {@code null} to use the default server.
    */
   setRenderingServerUrl(serverUrl) {
     this._serverConnector.setRenderingServerUrl(serverUrl);
@@ -221,7 +221,7 @@ class EyesBase extends EyesAbstract {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @deprecated use {@link #getRenderingInfo()} instead
-   * @return {string} The URI of the eyes server.
+   * @return {string} - The URI of the eyes server.
    */
   getRenderingServerUrl() {
     return this._serverConnector.getRenderingServerUrl();
@@ -229,7 +229,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The name of the application under test.
+   * @return {string} - The name of the application under test.
    */
   getAppName() {
     return this._currentAppName || this._configuration.getAppName();
@@ -251,7 +251,7 @@ class EyesBase extends EyesAbstract {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @protected
-   * @return {Trigger[]} User inputs collected between {@code checkWindowBase} invocations.
+   * @return {Trigger[]} - User inputs collected between {@code checkWindowBase} invocations.
    */
   getUserInputs() {
     if (this._configuration.getIsDisabled()) {
@@ -263,7 +263,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {FailureReports} failureReports Use one of the values in FailureReports.
+   * @param {FailureReports} failureReports - Use one of the values in FailureReports.
    */
   setFailureReports(failureReports) {
     ArgumentGuard.isValidEnumValue(failureReports, FailureReports);
@@ -272,7 +272,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {FailureReports} The failure reports setting.
+   * @return {FailureReports} - The failure reports setting.
    */
   getFailureReports() {
     return this._failureReports;
@@ -280,7 +280,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The full agent id composed of both the base agent id and the user given agent id.
+   * @return {string} - The full agent id composed of both the base agent id and the user given agent id.
    */
   getFullAgentId() {
     const agentId = this.getAgentId();
@@ -293,7 +293,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {boolean} Whether a session is open.
+   * @return {boolean} - Whether a session is open.
    */
   getIsOpen() {
     return this._isOpen;
@@ -311,7 +311,7 @@ class EyesBase extends EyesAbstract {
   /**
    * Manually set the the sizes to cut from an image before it's validated.
    *
-   * @param {CutProvider} [cutProvider] the provider doing the cut.
+   * @param {CutProvider} [cutProvider] - the provider doing the cut.
    */
   setImageCut(cutProvider) {
     if (cutProvider) {
@@ -332,7 +332,7 @@ class EyesBase extends EyesAbstract {
   /**
    * Manually set the scale ratio for the images being validated.
    *
-   * @param {number} [scaleRatio=1] The scale ratio to use, or {@code null} to reset back to automatic scaling.
+   * @param {number} [scaleRatio=1] - The scale ratio to use, or {@code null} to reset back to automatic scaling.
    */
   setScaleRatio(scaleRatio) {
     if (scaleRatio) {
@@ -344,7 +344,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {number} The ratio used to scale the images being validated.
+   * @return {number} - The ratio used to scale the images being validated.
    */
   getScaleRatio() {
     return this._scaleProviderHandler.get().getScaleRatio();
@@ -352,7 +352,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {boolean} value If true, createSession request will return renderingInfo properties
+   * @param {boolean} value - If true, createSession request will return renderingInfo properties
    */
   setRender(value) {
     this._render = value;
@@ -368,7 +368,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {boolean} saveDebugScreenshots If true, will save all screenshots to local directory.
+   * @param {boolean} saveDebugScreenshots - If true, will save all screenshots to local directory.
    */
   setSaveDebugScreenshots(saveDebugScreenshots) {
     const prev = this._debugScreenshotsProvider;
@@ -391,7 +391,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {string} pathToSave Path where you want to save the debug screenshots.
+   * @param {string} pathToSave - Path where you want to save the debug screenshots.
    */
   setDebugScreenshotsPath(pathToSave) {
     this._debugScreenshotsProvider.setPath(pathToSave);
@@ -399,7 +399,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The path where you want to save the debug screenshots.
+   * @return {string} - The path where you want to save the debug screenshots.
    */
   getDebugScreenshotsPath() {
     return this._debugScreenshotsProvider.getPath();
@@ -407,7 +407,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {string} prefix The prefix for the screenshots' names.
+   * @param {string} prefix - The prefix for the screenshots' names.
    */
   setDebugScreenshotsPrefix(prefix) {
     this._debugScreenshotsProvider.setPrefix(prefix);
@@ -415,7 +415,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The prefix for the screenshots' names.
+   * @return {string} - The prefix for the screenshots' names.
    */
   getDebugScreenshotsPrefix() {
     return this._debugScreenshotsProvider.getPrefix();
@@ -440,8 +440,8 @@ class EyesBase extends EyesAbstract {
   /**
    * Ends the currently running test.
    *
-   * @param {boolean} [throwEx=true] If true, then the returned promise will 'reject' for failed/aborted tests.
-   * @return {Promise<TestResults>} A promise which resolves/rejects (depending on the value of 'throwEx') to the test
+   * @param {boolean} [throwEx=true] - If true, then the returned promise will 'reject' for failed/aborted tests.
+   * @return {Promise<TestResults>} - A promise which resolves/rejects (depending on the value of 'throwEx') to the test
    *   results.
    */
   async close(throwEx = true) {
@@ -538,7 +538,7 @@ class EyesBase extends EyesAbstract {
   /**
    * If a test is running, aborts it. Otherwise, does nothing.
    *
-   * @return {Promise<?TestResults>} A promise which resolves to the test results.
+   * @return {Promise<?TestResults>} - A promise which resolves to the test results.
    */
   async abortIfNotClosed() {
     try {
@@ -575,7 +575,7 @@ class EyesBase extends EyesAbstract {
   /**
    * Sets the host OS name - overrides the one in the agent string.
    *
-   * @param {string} hostOS The host OS running the AUT.
+   * @param {string} hostOS - The host OS running the AUT.
    */
   setHostOS(hostOS) {
     this._logger.log(`Host OS: ${hostOS}`);
@@ -589,7 +589,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The host OS as set by the user.
+   * @return {string} - The host OS as set by the user.
    */
   getHostOS() {
     return this._hostOS;
@@ -599,7 +599,7 @@ class EyesBase extends EyesAbstract {
   /**
    * Sets the host application - overrides the one in the agent string.
    *
-   * @param {string} hostApp The application running the AUT (e.g., Chrome).
+   * @param {string} hostApp - The application running the AUT (e.g., Chrome).
    */
   setHostApp(hostApp) {
     this._logger.log(`Host App: ${hostApp}`);
@@ -613,7 +613,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The application name running the AUT.
+   * @return {string} - The application name running the AUT.
    */
   getHostApp() {
     return this._hostApp;
@@ -623,7 +623,7 @@ class EyesBase extends EyesAbstract {
   /**
    * Sets the host OS name - overrides the one in the agent string.
    *
-   * @param {string} hostOSInfo The host OS running the AUT.
+   * @param {string} hostOSInfo - The host OS running the AUT.
    */
   setHostOSInfo(hostOSInfo) {
     this._logger.log(`Host OS Info: ${hostOSInfo}`);
@@ -636,7 +636,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The host OS as set by the user.
+   * @return {string} - The host OS as set by the user.
    */
   getHostOSInfo() {
     return this._hostOSInfo;
@@ -646,7 +646,7 @@ class EyesBase extends EyesAbstract {
   /**
    * Sets the host application - overrides the one in the agent string.
    *
-   * @param {string} hostAppInfo The application running the AUT (e.g., Chrome).
+   * @param {string} hostAppInfo - The application running the AUT (e.g., Chrome).
    */
   setHostAppInfo(hostAppInfo) {
     this._logger.log(`Host App Info: ${hostAppInfo}`);
@@ -659,7 +659,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The application name running the AUT.
+   * @return {string} - The application name running the AUT.
    */
   getHostAppInfo() {
     return this._hostAppInfo;
@@ -669,7 +669,7 @@ class EyesBase extends EyesAbstract {
   /**
    * Sets the host application - overrides the one in the agent string.
    *
-   * @param {string} deviceInfo The application running the AUT (e.g., Chrome).
+   * @param {string} deviceInfo - The application running the AUT (e.g., Chrome).
    */
   setDeviceInfo(deviceInfo) {
     this._logger.log(`Device Info: ${deviceInfo}`);
@@ -682,7 +682,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The application name running the AUT.
+   * @return {string} - The application name running the AUT.
    */
   getDeviceInfo() {
     return this._deviceInfo;
@@ -690,7 +690,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {PositionProvider} The currently set position provider.
+   * @return {PositionProvider} - The currently set position provider.
    */
   getPositionProvider() {
     return this._positionProviderHandler.get();
@@ -698,7 +698,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {PositionProvider} positionProvider The position provider to be used.
+   * @param {PositionProvider} positionProvider - The position provider to be used.
    */
   setPositionProvider(positionProvider) {
     if (positionProvider) {
@@ -712,12 +712,12 @@ class EyesBase extends EyesAbstract {
    * Takes a snapshot of the application under test and matches it with the expected output.
    *
    * @protected
-   * @param {RegionProvider} regionProvider Returns the region to check or empty region to check the entire window.
-   * @param {string} [tag=''] An optional tag to be associated with the snapshot.
-   * @param {boolean} [ignoreMismatch=false] Whether to ignore this check if a mismatch is found.
-   * @param {CheckSettings} [checkSettings]  The settings to use.
-   * @return {Promise<MatchResult>} The result of matching the output with the expected output.
-   * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
+   * @param {RegionProvider} regionProvider - Returns the region to check or empty region to check the entire window.
+   * @param {string} [tag=''] - An optional tag to be associated with the snapshot.
+   * @param {boolean} [ignoreMismatch=false] - Whether to ignore this check if a mismatch is found.
+   * @param {CheckSettings} [checkSettings]  - The settings to use.
+   * @return {Promise<MatchResult>} - The result of matching the output with the expected output.
+   * @throws DiffsFoundError - Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async checkWindowBase(regionProvider, tag = '', ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
     if (this._configuration.getIsDisabled()) {
@@ -762,12 +762,12 @@ class EyesBase extends EyesAbstract {
    * Takes a snapshot of the application under test and matches it with the expected output.
    *
    * @protected
-   * @param {RegionProvider} regionProvider Returns the region to check or empty rectangle to check the entire window.
-   * @param {string} [tag=''] An optional tag to be associated with the snapshot.
-   * @param {boolean} [ignoreMismatch=false] Whether to ignore this check if a mismatch is found.
-   * @param {CheckSettings} [checkSettings]  The settings to use.
-   * @return {Promise<TestResults>} The result of matching the output with the expected output.
-   * @throws DiffsFoundError Thrown if a mismatch is detected and immediate failure reports are enabled.
+   * @param {RegionProvider} regionProvider - Returns the region to check or empty rectangle to check the entire window.
+   * @param {string} [tag=''] - An optional tag to be associated with the snapshot.
+   * @param {boolean} [ignoreMismatch=false] - Whether to ignore this check if a mismatch is found.
+   * @param {CheckSettings} [checkSettings]  - The settings to use.
+   * @return {Promise<TestResults>} - The result of matching the output with the expected output.
+   * @throws DiffsFoundError - Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async checkSingleWindowBase(regionProvider, tag = '', ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
     if (this._configuration.getIsDisabled()) {
@@ -879,12 +879,12 @@ class EyesBase extends EyesAbstract {
   /**
    * Replaces an actual image in the current running session.
    *
-   * @param {number} stepIndex The zero based index of the step in which to replace the actual image.
-   * @param {Buffer} screenshot The PNG bytes of the updated screenshot.
-   * @param {string} [tag] The updated tag for the step.
-   * @param {string} [title] The updated title for the step.
-   * @param {Trigger[]} [userInputs] The updated userInputs for the step.
-   * @return {Promise<MatchResult>} A promise which resolves when replacing is done, or rejects on error.
+   * @param {number} stepIndex - The zero based index of the step in which to replace the actual image.
+   * @param {Buffer} screenshot - The PNG bytes of the updated screenshot.
+   * @param {string} [tag] - The updated tag for the step.
+   * @param {string} [title] - The updated title for the step.
+   * @param {Trigger[]} [userInputs] - The updated userInputs for the step.
+   * @return {Promise<MatchResult>} - A promise which resolves when replacing is done, or rejects on error.
    */
   async replaceWindow(stepIndex, screenshot, tag = '', title = '', userInputs = []) {
     this._logger.verbose('EyesBase.replaceWindow - running');
@@ -978,11 +978,11 @@ class EyesBase extends EyesAbstract {
    * Starts a test.
    *
    * @protected
-   * @param {string} appName The name of the application under test.
-   * @param {string} testName The test name.
-   * @param {RectangleSize|RectangleSizeObject} [viewportSize] The client's viewport size (i.e., the
+   * @param {string} appName - The name of the application under test.
+   * @param {string} testName - The test name.
+   * @param {RectangleSize|RectangleSizeObject} [viewportSize] - The client's viewport size (i.e., the
    *   visible part of the document's body) or {@code null} to allow any viewport size.
-   * @param {SessionType} [sessionType=SessionType.SEQUENTIAL]  The type of test (e.g., Progression for timing tests),
+   * @param {SessionType} [sessionType=SessionType.SEQUENTIAL]  - The type of test (e.g., Progression for timing tests),
    *   or {@code null} to use the default.
    * @return {Promise<void>}
    */
@@ -1150,7 +1150,7 @@ class EyesBase extends EyesAbstract {
    * Adds a trigger to the current list of user inputs.
    *
    * @protected
-   * @param {Trigger} trigger The trigger to add to the user inputs list.
+   * @param {Trigger} trigger - The trigger to add to the user inputs list.
    */
   addUserInput(trigger) {
     if (this._configuration.getIsDisabled()) {
@@ -1165,8 +1165,8 @@ class EyesBase extends EyesAbstract {
    * Adds a text trigger.
    *
    * @protected
-   * @param {Region} control The control's position relative to the window.
-   * @param {string} text The trigger's text.
+   * @param {Region} control - The control's position relative to the window.
+   * @param {string} text - The trigger's text.
    */
   addTextTriggerBase(control, text) {
     if (this._configuration.getIsDisabled()) {
@@ -1204,9 +1204,9 @@ class EyesBase extends EyesAbstract {
    * Adds a mouse trigger.
    *
    * @protected
-   * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {Region} control The control on which the trigger is activated (location is relative to the window).
-   * @param {Location} cursor The cursor's position relative to the control.
+   * @param {MouseTrigger.MouseAction} action  - Mouse action.
+   * @param {Region} control - The control on which the trigger is activated (location is relative to the window).
+   * @param {Location} cursor - The cursor's position relative to the control.
    */
   addMouseTriggerBase(action, control, cursor) {
     if (this._configuration.getIsDisabled()) {
@@ -1261,7 +1261,7 @@ class EyesBase extends EyesAbstract {
    * Application environment is the environment (e.g., the host OS) which runs the application under test.
    *
    * @protected
-   * @return {Promise<AppEnvironment>} The current application environment.
+   * @return {Promise<AppEnvironment>} - The current application environment.
    */
   async getAppEnvironment() {
     const appEnv = new AppEnvironment();
@@ -1391,11 +1391,11 @@ class EyesBase extends EyesAbstract {
 
   /**
    * @private
-   * @param {Region} region The region of the screenshot which will be set in the application output.
-   * @param {EyesScreenshot} lastScreenshot Previous application screenshot (for compression) or `null` if not
+   * @param {Region} region - The region of the screenshot which will be set in the application output.
+   * @param {EyesScreenshot} lastScreenshot - Previous application screenshot (for compression) or `null` if not
    *   available.
-   * @param {CheckSettings} checkSettings The check settings object of the current test.
-   * @return {Promise<AppOutputWithScreenshot>} The updated app output and screenshot.
+   * @param {CheckSettings} checkSettings - The check settings object of the current test.
+   * @return {Promise<AppOutputWithScreenshot>} - The updated app output and screenshot.
    */
   async _getAppOutputWithScreenshot(region, lastScreenshot, checkSettings) {
     this._logger.verbose('getting screenshot...');
@@ -1488,7 +1488,7 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {RunningSession} An object containing data about the currently running session.
+   * @return {RunningSession} - An object containing data about the currently running session.
    */
   getRunningSession() {
     return this._runningSession;
@@ -1498,7 +1498,7 @@ class EyesBase extends EyesAbstract {
   /**
    * @protected
    * @abstract
-   * @return {string} The base agent id of the SDK.
+   * @return {string} - The base agent id of the SDK.
    */
   getBaseAgentId() {
     throw new TypeError('The method is not implemented!');
@@ -1509,7 +1509,7 @@ class EyesBase extends EyesAbstract {
    * Get the session id.
    *
    * @protected
-   * @return {Promise<?string>} A promise which resolves to the webdriver's session ID.
+   * @return {Promise<?string>} - A promise which resolves to the webdriver's session ID.
    */
   async getAUTSessionId() {
     return undefined;
@@ -1531,7 +1531,7 @@ class EyesBase extends EyesAbstract {
   /**
    * @protected
    * @abstract
-   * @param {RectangleSize} size The required viewport size.
+   * @param {RectangleSize} size - The required viewport size.
    * @return {Promise<void>}
    */
   async setViewportSize(size) { // eslint-disable-line no-unused-vars
@@ -1547,7 +1547,7 @@ class EyesBase extends EyesAbstract {
    *
    * @protected
    * @abstract
-   * @return {Promise<string>} The inferred environment string or {@code null} if none is available.
+   * @return {Promise<string>} - The inferred environment string or {@code null} if none is available.
    */
   async getInferredEnvironment() {
     throw new TypeError('The method is not implemented!');
