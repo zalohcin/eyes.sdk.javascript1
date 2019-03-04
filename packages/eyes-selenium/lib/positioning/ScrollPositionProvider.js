@@ -9,7 +9,7 @@ const { EyesDriverOperationError } = require('../errors/EyesDriverOperationError
 
 class ScrollPositionProvider extends PositionProvider {
   /**
-   * @param {Logger} logger A Logger instance.
+   * @param {Logger} logger - A Logger instance.
    * @param {EyesJsExecutor} executor
    */
   constructor(logger, executor) {
@@ -69,7 +69,7 @@ class ScrollPositionProvider extends PositionProvider {
   // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
-   * @param {ScrollPositionMemento} state The initial state of position
+   * @param {ScrollPositionMemento} state - The initial state of position
    * @return {Promise<void>}
    */
   async restoreState(state) {

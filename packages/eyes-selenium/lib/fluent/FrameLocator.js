@@ -42,28 +42,28 @@ class FrameLocator {
   }
 
   /**
-   * @param frameSelector
+   * @param {By} frameSelector
    */
   setFrameSelector(frameSelector) {
     this._frameSelector = frameSelector;
   }
 
   /**
-   * @param frameNameOrId
+   * @param {string} frameNameOrId
    */
   setFrameNameOrId(frameNameOrId) {
     this._frameNameOrId = frameNameOrId;
   }
 
   /**
-   * @param frameIndex
+   * @param {number} frameIndex
    */
   setFrameIndex(frameIndex) {
     this._frameIndex = frameIndex;
   }
 
   /**
-   * @param frameElement
+   * @param {WebElement} frameElement
    */
   setFrameElement(frameElement) {
     this._frameElement = frameElement;

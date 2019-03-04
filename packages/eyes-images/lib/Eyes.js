@@ -14,7 +14,7 @@ class Eyes extends EyesBase {
    * Initializes an Eyes instance.
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
-   * @param {?boolean} [isDisabled=false] Will be checked <b>before</b> any argument validation. If true, all method
+   * @param {?boolean} [isDisabled=false] - Will be checked <b>before</b> any argument validation. If true, all method
    *   will immediately return without performing any action.
    */
   constructor(serverUrl, isDisabled) {
@@ -40,9 +40,9 @@ class Eyes extends EyesBase {
   /**
    * Starts a test.
    *
-   * @param {string} appName The application being tested.
-   * @param {string} testName The test's name.
-   * @param {RectangleSize} [imageSize] Determines the resolution used for the baseline. {@code null} will
+   * @param {string} appName - The application being tested.
+   * @param {string} testName - The test's name.
+   * @param {RectangleSize} [imageSize] - Determines the resolution used for the baseline. {@code null} will
    *   automatically grab the resolution from the image.
    * @return {Promise<void>}
    */
@@ -53,11 +53,11 @@ class Eyes extends EyesBase {
   /**
    * Perform visual validation for the current image.
    *
-   * @param {string|Buffer|ImageProvider|MutableImage} image The image path, base64 string, image buffer or MutableImage.
-   * @param {string} [name] Tag to be associated with the validation checkpoint.
-   * @param {boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
-   * @param {number} [retryTimeout] timeout for performing the match (ms).
-   * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
+   * @param {string|Buffer|ImageProvider|MutableImage} image - The image path, base64 string, image buffer or MutableImage.
+   * @param {string} [name] - Tag to be associated with the validation checkpoint.
+   * @param {boolean} [ignoreMismatch] - True if the server should ignore a negative result for the visual validation.
+   * @param {number} [retryTimeout] - timeout for performing the match (ms).
+   * @return {Promise<boolean>} - True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async checkImage(image, name, ignoreMismatch = false, retryTimeout = -1) {
@@ -67,13 +67,13 @@ class Eyes extends EyesBase {
   /**
    * Perform visual validation for the current image.
    *
-   * @param {string|Buffer|ImageProvider|MutableImage} image The image path, base64 string, image buffer or MutableImage.
-   * @param {Region|RegionObject} region The region of the image which should be verified, or {undefined}/{null} if the
+   * @param {string|Buffer|ImageProvider|MutableImage} image - The image path, base64 string, image buffer or MutableImage.
+   * @param {Region|RegionObject} region - The region of the image which should be verified, or {undefined}/{null} if the
    *   entire image should be verified.
-   * @param {string} [name] An optional tag to be associated with the validation checkpoint.
-   * @param {boolean} [ignoreMismatch] True if the server should ignore a negative result for the visual validation.
-   * @param {number} [retryTimeout] timeout for performing the match (ms).
-   * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
+   * @param {string} [name] - An optional tag to be associated with the validation checkpoint.
+   * @param {boolean} [ignoreMismatch] - True if the server should ignore a negative result for the visual validation.
+   * @param {number} [retryTimeout] - timeout for performing the match (ms).
+   * @return {Promise<boolean>} - True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async checkRegion(image, region, name, ignoreMismatch = false, retryTimeout = -1) {
@@ -81,9 +81,9 @@ class Eyes extends EyesBase {
   }
 
   /**
-   * @param {string} name An optional tag to be associated with the validation checkpoint.
-   * @param {ImagesCheckSettings|CheckSettings} checkSettings The settings to use when checking the image.
-   * @return {Promise<boolean>} A promise which is resolved when the validation is finished. Indicates whether
+   * @param {string} name - An optional tag to be associated with the validation checkpoint.
+   * @param {ImagesCheckSettings|CheckSettings} checkSettings - The settings to use when checking the image.
+   * @return {Promise<boolean>} - A promise which is resolved when the validation is finished. Indicates whether
    *  matchResults was as expected or not.
    */
   async check(name, checkSettings) {
@@ -144,7 +144,7 @@ class Eyes extends EyesBase {
   // noinspection JSMethodCanBeStatic
   /**
    * @private
-   * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
+   * @param {ImagesCheckSettings} checkSettings - The settings to use when checking the image.
    * @return {Promise<MutableImage>}
    */
   async _normalizeImage(checkSettings) {
@@ -176,12 +176,12 @@ class Eyes extends EyesBase {
   /**
    * Replaces the actual image in a running session.
    *
-   * @param {number} stepIndex The zero based index of the step in which to replace the image.
-   * @param {string|Buffer|MutableImage} image The image base64 string, image buffer or MutableImage.
-   * @param {string} [tag] A tag to be associated with the validation checkpoint.
-   * @param {string} [title] A title to be associated with the validation checkpoint.
-   * @param {Trigger[]} [userInputs] An array of user inputs to which lead to the validation checkpoint.
-   * @return {Promise<boolean>} True if the image matched the expected output, false otherwise.
+   * @param {number} stepIndex - The zero based index of the step in which to replace the image.
+   * @param {string|Buffer|MutableImage} image - The image base64 string, image buffer or MutableImage.
+   * @param {string} [tag] - A tag to be associated with the validation checkpoint.
+   * @param {string} [title] - A title to be associated with the validation checkpoint.
+   * @param {Trigger[]} [userInputs] - An array of user inputs to which lead to the validation checkpoint.
+   * @return {Promise<boolean>} - True if the image matched the expected output, false otherwise.
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async replaceImage(stepIndex, image, tag, title, userInputs) {
@@ -207,7 +207,7 @@ class Eyes extends EyesBase {
    * Adds a mouse trigger.
    *
    * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {Region} control The control on which the trigger is activated (context relative coordinates).
+   * @param {Region} control - The control on which the trigger is activated (context relative coordinates).
    * @param {Location} cursor  The cursor's position relative to the control.
    */
   addMouseTrigger(action, control, cursor) {
@@ -218,8 +218,8 @@ class Eyes extends EyesBase {
   /**
    * Adds a keyboard trigger.
    *
-   * @param {Region} control The control's context-relative region.
-   * @param {string} text The trigger's text.
+   * @param {Region} control - The control's context-relative region.
+   * @param {string} text - The trigger's text.
    */
   addTextTrigger(control, text) {
     super.addTextTriggerBase(control, text);
@@ -236,7 +236,7 @@ class Eyes extends EyesBase {
   /**
    * Set the viewport size.
    *
-   * @param {RectangleSize|RectangleSizeObject} viewportSize The required viewport size.
+   * @param {RectangleSize|RectangleSizeObject} viewportSize - The required viewport size.
    * @return {Promise<void>}
    */
   setViewportSize(viewportSize) {
@@ -257,7 +257,7 @@ class Eyes extends EyesBase {
   /**
    * Sets the inferred environment for the test.
    *
-   * @param {string} inferred The inferred environment string.
+   * @param {string} inferred - The inferred environment string.
    */
   setInferredEnvironment(inferred) {
     this._inferred = inferred;

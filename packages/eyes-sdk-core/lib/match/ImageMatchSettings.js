@@ -10,7 +10,7 @@ const { MatchLevel } = require('./MatchLevel');
 class ImageMatchSettings {
   /**
    * @param {MatchLevel} [matchLevel=MatchLevel.Strict] The "strictness" level to use.
-   * @param {ExactMatchSettings} [exact] Additional threshold parameters when the {@code Exact} match level is used.
+   * @param {ExactMatchSettings} [exact] - Additional threshold parameters when the {@code Exact} match level is used.
    * @param {boolean} [ignoreCaret]
    * @param {boolean} [sendDom]
    * @param {boolean} [useDom]
@@ -42,7 +42,7 @@ class ImageMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {MatchLevel} The match level to use.
+   * @return {MatchLevel} - The match level to use.
    */
   getMatchLevel() {
     return this._matchLevel;
@@ -50,7 +50,7 @@ class ImageMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {MatchLevel} value The match level to use.
+   * @param {MatchLevel} value - The match level to use.
    */
   setMatchLevel(value) {
     ArgumentGuard.isValidEnumValue(value, MatchLevel);
@@ -59,7 +59,7 @@ class ImageMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {ExactMatchSettings} The additional threshold params when the {@code Exact} match level is used, if any.
+   * @return {ExactMatchSettings} - The additional threshold params when the {@code Exact} match level is used, if any.
    */
   getExact() {
     return this._exact;
@@ -67,7 +67,7 @@ class ImageMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {ExactMatchSettings} value The additional threshold parameters when the {@code Exact} match level is used.
+   * @param {ExactMatchSettings} value - The additional threshold parameters when the {@code Exact} match level is used.
    */
   setExact(value) {
     this._exact = value;
@@ -75,7 +75,7 @@ class ImageMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {boolean} The parameters for the "IgnoreCaret" match settings.
+   * @return {boolean} - The parameters for the "IgnoreCaret" match settings.
    */
   getIgnoreCaret() {
     return this._ignoreCaret;
@@ -83,7 +83,7 @@ class ImageMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {boolean} value The parameters for the "ignoreCaret" match settings.
+   * @param {boolean} value - The parameters for the "ignoreCaret" match settings.
    */
   setIgnoreCaret(value) {
     this._ignoreCaret = value;
@@ -140,7 +140,7 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Returns the array of regions to ignore.
-   * @return {Region[]} the array of regions to ignore.
+   * @return {Region[]} - the array of regions to ignore.
    */
   getIgnoreRegions() {
     return this._ignoreRegions;
@@ -149,7 +149,7 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of regions to ignore.
-   * @param {Region[]} ignoreRegions The array of regions to ignore.
+   * @param {Region[]} ignoreRegions - The array of regions to ignore.
    */
   setIgnoreRegions(ignoreRegions) {
     this._ignoreRegions = ignoreRegions;
@@ -158,7 +158,7 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of regions to check using the Layout method.
-   * @param {Region[]} layoutRegions The array of regions to ignore.
+   * @param {Region[]} layoutRegions - The array of regions to ignore.
    */
   setLayoutRegions(layoutRegions) {
     this._layoutRegions = layoutRegions;
@@ -167,7 +167,7 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Returns the array of regions to check using the Layout method.
-   * @return {Region[]} the array of regions to ignore.
+   * @return {Region[]} - the array of regions to ignore.
    */
   getLayoutRegions() {
     return this._layoutRegions;
@@ -176,7 +176,7 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Returns the array of regions to check using the Strict method.
-   * @return {Region[]} the array of regions to ignore.
+   * @return {Region[]} - the array of regions to ignore.
    */
   getStrictRegions() {
     return this._strictRegions;
@@ -185,7 +185,7 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of regions to check using the Strict method.
-   * @param {Region[]} strictRegions The array of regions to ignore.
+   * @param {Region[]} strictRegions - The array of regions to ignore.
    */
   setStrictRegions(strictRegions) {
     this._strictRegions = strictRegions;
@@ -194,7 +194,7 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Returns the array of regions to check using the Content method.
-   * @return {Region[]} the array of regions to ignore.
+   * @return {Region[]} - the array of regions to ignore.
    */
   getContentRegions() {
     return this._contentRegions;
@@ -203,7 +203,7 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of regions to check using the Content method.
-   * @param {Region[]} contentRegions The array of regions to ignore.
+   * @param {Region[]} contentRegions - The array of regions to ignore.
    */
   setContentRegions(contentRegions) {
     this._contentRegions = contentRegions;
@@ -212,7 +212,7 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Returns an array of floating regions.
-   * @return {FloatingMatchSettings[]} an array of floating regions.
+   * @return {FloatingMatchSettings[]} - an array of floating regions.
    */
   getFloatingRegions() {
     return this._floatingMatchSettings;
@@ -221,7 +221,7 @@ class ImageMatchSettings {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of floating regions.
-   * @param {FloatingMatchSettings[]} floatingMatchSettings The array of floating regions.
+   * @param {FloatingMatchSettings[]} floatingMatchSettings - The array of floating regions.
    */
   setFloatingRegions(floatingMatchSettings) {
     this._floatingMatchSettings = floatingMatchSettings;

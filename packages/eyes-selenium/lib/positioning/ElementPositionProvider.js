@@ -8,7 +8,7 @@ const { EyesWebElement } = require('../wrappers/EyesWebElement');
 
 class ElementPositionProvider extends PositionProvider {
   /**
-   * @param {Logger} logger A Logger instance.
+   * @param {Logger} logger - A Logger instance.
    * @param {EyesWebDriver} driver
    * @param {EyesWebElement} element
    */
@@ -68,7 +68,7 @@ class ElementPositionProvider extends PositionProvider {
   // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
-   * @param {ElementPositionMemento} state The initial state of position
+   * @param {ElementPositionMemento} state - The initial state of position
    * @return {Promise<void>}
    */
   async restoreState(state) {

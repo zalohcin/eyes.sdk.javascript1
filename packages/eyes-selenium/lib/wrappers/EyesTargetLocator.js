@@ -19,9 +19,9 @@ class EyesTargetLocator extends TargetLocator {
   /**
    * Initialized a new EyesTargetLocator object.
    *
-   * @param {Logger} logger A Logger instance.
-   * @param {EyesWebDriver} driver The WebDriver from which the targetLocator was received.
-   * @param {TargetLocator} targetLocator The actual TargetLocator object.
+   * @param {Logger} logger - A Logger instance.
+   * @param {EyesWebDriver} driver - The WebDriver from which the targetLocator was received.
+   * @param {TargetLocator} targetLocator - The actual TargetLocator object.
    */
   constructor(logger, driver, targetLocator) {
     ArgumentGuard.notNull(logger, 'logger');
@@ -55,8 +55,8 @@ class EyesTargetLocator extends TargetLocator {
    *   is the same as calling {@link #defaultContent defaultContent()}.
    *
    * @override
-   * @param {number|string|WebElement|null} varArg The frame locator.
-   * @return {Promise<void>} A promise that will be resolved when the driver has changed focus to the specified frame.
+   * @param {number|string|WebElement|null} varArg - The frame locator.
+   * @return {Promise<void>} - A promise that will be resolved when the driver has changed focus to the specified frame.
    */
   async frame(varArg) {
     if (varArg == null) {
@@ -164,8 +164,8 @@ class EyesTargetLocator extends TargetLocator {
    * Switches into every frame in the frame chain. This is used as way to switch into nested frames (while considering
    * scroll) in a single call.
    *
-   * @param {FrameChain} frameChain The path to the frame to switch to.
-   * @return {Promise<void>} A promise that will be resolved when the command has completed.
+   * @param {FrameChain} frameChain - The path to the frame to switch to.
+   * @return {Promise<void>} - A promise that will be resolved when the command has completed.
    */
   async framesDoScroll(frameChain) {
     this._logger.verbose('EyesTargetLocator.framesDoScroll(frameChain)');
@@ -188,9 +188,9 @@ class EyesTargetLocator extends TargetLocator {
    * Switches into every frame in the frame chain. This is used as way to switch into nested frames (while considering
    * scroll) in a single call.
    *
-   * @param {FrameChain|string[]} varArg The path to the frame to switch to. Or the path to the frame to check. This is a
-   *   list of frame names/IDs (where each frame is nested in the previous frame).
-   * @return {Promise<void>} The WebDriver with the switched context.
+   * @param {FrameChain|string[]} varArg - The path to the frame to switch to. Or the path to the frame to check.
+   *   This is a list of frame names/IDs (where each frame is nested in the previous frame).
+   * @return {Promise<void>} - The WebDriver with the switched context.
    */
   async frames(varArg) {
     if (varArg instanceof FrameChain) {
@@ -270,7 +270,7 @@ class EyesTargetLocator extends TargetLocator {
    * `window.confirm()`, and `window.prompt()`. The returned promise will be rejected with a
    * {@linkplain error.NoSuchAlertError} if there are no open alerts.
    *
-   * @return {!AlertPromise} The open alert.
+   * @return {!AlertPromise} - The open alert.
    */
   alert() {
     this._logger.verbose('EyesTargetLocator.alert()');
@@ -292,7 +292,7 @@ class EyesTargetLocator extends TargetLocator {
   /**
    * Will be called before switching into a frame.
    *
-   * @param {WebElement} targetFrame The element about to be switched to.
+   * @param {WebElement} targetFrame - The element about to be switched to.
    * @return {Promise<void>}
    */
   async willSwitchToFrame(targetFrame) {

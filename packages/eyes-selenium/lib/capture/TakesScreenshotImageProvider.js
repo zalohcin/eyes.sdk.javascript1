@@ -8,7 +8,7 @@ const { ImageProvider } = require('@applitools/eyes-sdk-core');
  */
 class TakesScreenshotImageProvider extends ImageProvider {
   /**
-   * @param {Logger} logger A Logger instance.
+   * @param {Logger} logger - A Logger instance.
    * @param {EyesWebDriver} tsInstance
    */
   constructor(logger, tsInstance) {

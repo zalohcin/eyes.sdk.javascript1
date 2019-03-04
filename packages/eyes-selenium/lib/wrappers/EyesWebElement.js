@@ -82,7 +82,7 @@ class EyesWebElement extends WebElement {
    *
    * @param {!EyesWebElement|WebElement} a A WebElement.
    * @param {!EyesWebElement|WebElement} b A WebElement.
-   * @return {!Promise<boolean>} A promise that will be
+   * @return {!Promise<boolean>} - A promise that will be
    *     resolved to whether the two WebElements are equal.
    */
   static async equals(a, b) {
@@ -124,16 +124,16 @@ class EyesWebElement extends WebElement {
   /**
    * Returns the computed value of the style property for the current element.
    *
-   * @param {string} propStyle The style property which value we would like to extract.
-   * @return {Promise<string>} The value of the style property of the element, or {@code null}.
+   * @param {string} propStyle - The style property which value we would like to extract.
+   * @return {Promise<string>} - The value of the style property of the element, or {@code null}.
    */
   getComputedStyle(propStyle) {
     return this.executeScript(JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle));
   }
 
   /**
-   * @param {string} propStyle The style property which value we would like to extract.
-   * @return {Promise<number>} The integer value of a computed style.
+   * @param {string} propStyle - The style property which value we would like to extract.
+   * @return {Promise<number>} - The integer value of a computed style.
    */
   async getComputedStyleInteger(propStyle) {
     const result = await this.getComputedStyle(propStyle);
@@ -141,7 +141,7 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @return {Promise<number>} The value of the scrollLeft property of the element.
+   * @return {Promise<number>} - The value of the scrollLeft property of the element.
    */
   async getScrollLeft() {
     const result = await this.executeScript(JS_GET_SCROLL_LEFT);
@@ -149,7 +149,7 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @return {Promise<number>} The value of the scrollTop property of the element.
+   * @return {Promise<number>} - The value of the scrollTop property of the element.
    */
   async getScrollTop() {
     const result = await this.executeScript(JS_GET_SCROLL_TOP);
@@ -157,7 +157,7 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @return {Promise<number>} The value of the scrollWidth property of the element.
+   * @return {Promise<number>} - The value of the scrollWidth property of the element.
    */
   async getScrollWidth() {
     const result = await this.executeScript(JS_GET_SCROLL_WIDTH);
@@ -165,7 +165,7 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @return {Promise<number>} The value of the scrollHeight property of the element.
+   * @return {Promise<number>} - The value of the scrollHeight property of the element.
    */
   async getScrollHeight() {
     const result = await this.executeScript(JS_GET_SCROLL_HEIGHT);
@@ -190,7 +190,7 @@ class EyesWebElement extends WebElement {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Promise<number>} The width of the left border.
+   * @return {Promise<number>} - The width of the left border.
    */
   getBorderLeftWidth() {
     return this.getComputedStyleInteger('border-left-width');
@@ -198,7 +198,7 @@ class EyesWebElement extends WebElement {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Promise<number>} The width of the right border.
+   * @return {Promise<number>} - The width of the right border.
    */
   getBorderRightWidth() {
     return this.getComputedStyleInteger('border-right-width');
@@ -206,7 +206,7 @@ class EyesWebElement extends WebElement {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Promise<number>} The width of the top border.
+   * @return {Promise<number>} - The width of the top border.
    */
   getBorderTopWidth() {
     return this.getComputedStyleInteger('border-top-width');
@@ -214,7 +214,7 @@ class EyesWebElement extends WebElement {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Promise<number>} The width of the bottom border.
+   * @return {Promise<number>} - The width of the bottom border.
    */
   getBorderBottomWidth() {
     return this.getComputedStyleInteger('border-bottom-width');
@@ -223,7 +223,7 @@ class EyesWebElement extends WebElement {
   /**
    * Scrolls to the specified location inside the element.
    *
-   * @param {Location} location The location to scroll to.
+   * @param {Location} location - The location to scroll to.
    * @return {Promise<void>}
    */
   scrollTo(location) {
@@ -231,23 +231,23 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @return {Promise<string>} The overflow of the element.
+   * @return {Promise<string>} - The overflow of the element.
    */
   getOverflow() {
     return this.executeScript(JS_GET_OVERFLOW);
   }
 
   /**
-   * @param {string} overflow The overflow to set
-   * @return {Promise<void>} The overflow of the element.
+   * @param {string} overflow - The overflow to set
+   * @return {Promise<void>} - The overflow of the element.
    */
   setOverflow(overflow) {
     return this.executeScript(JS_SET_OVERFLOW_FORMATTED_STR(overflow));
   }
 
   /**
-   * @param {string} script The script to execute with the element as last parameter
-   * @return {Promise<*>} The result returned from the script
+   * @param {string} script - The script to execute with the element as last parameter
+   * @return {Promise<*>} - The result returned from the script
    */
   executeScript(script) {
     // noinspection JSValidateTypes
@@ -396,7 +396,7 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @return {WebElement} The original element object
+   * @return {WebElement} - The original element object
    */
   getWebElement() {
     // noinspection JSUnresolvedVariable

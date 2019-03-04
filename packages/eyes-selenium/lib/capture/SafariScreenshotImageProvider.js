@@ -9,7 +9,7 @@ const { SeleniumJavaScriptExecutor } = require('../SeleniumJavaScriptExecutor');
 class SafariScreenshotImageProvider extends ImageProvider {
   /**
    * @param {Eyes} eyes
-   * @param {Logger} logger A Logger instance.
+   * @param {Logger} logger - A Logger instance.
    * @param {EyesWebDriver} tsInstance
    * @param {UserAgent} userAgent
    */

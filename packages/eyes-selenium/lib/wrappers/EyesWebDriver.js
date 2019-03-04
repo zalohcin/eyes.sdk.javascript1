@@ -209,7 +209,7 @@ class EyesWebDriver extends IWebDriver {
   /**
    * @inheritDoc
    * @param {!(by.By|By|Function)} locator The locator strategy to use when searching for the element.
-   * @return {EyesWebElementPromise} A promise that will resolve to a EyesWebElement.
+   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElement(locator) {
     return new EyesWebElementPromise(this._logger, this, this._driver.findElement(locator));
@@ -219,7 +219,7 @@ class EyesWebDriver extends IWebDriver {
   /**
    * @inheritDoc
    * @param {!(by.By|By|Function)} locator The locator strategy to use when searching for the element.
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will be resolved to an array of the located
+   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will be resolved to an array of the located
    *   {@link EyesWebElement}s.
    */
   async findElements(locator) {
@@ -258,7 +258,7 @@ class EyesWebDriver extends IWebDriver {
 
   /**
    * @inheritDoc
-   * @return {EyesTargetLocator} The target locator interface for this instance.
+   * @return {EyesTargetLocator} - The target locator interface for this instance.
    */
   switchTo() {
     this._logger.verbose('switchTo()');
@@ -268,7 +268,7 @@ class EyesWebDriver extends IWebDriver {
   /**
    * Found elements are sometimes accessed by their IDs (e.g. tapping an element in Appium).
    *
-   * @return {Map<string, WebElement>} Maps of IDs for found elements.
+   * @return {Map<string, WebElement>} - Maps of IDs for found elements.
    */
   getElementIds() {
     return this._elementsIds;
@@ -276,14 +276,14 @@ class EyesWebDriver extends IWebDriver {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {ImageRotation} The image rotation data.
+   * @return {ImageRotation} - The image rotation data.
    */
   getRotation() {
     return this._rotation;
   }
 
   /**
-   * @param {ImageRotation} rotation The image rotation data.
+   * @param {ImageRotation} rotation - The image rotation data.
    */
   setRotation(rotation) {
     this._rotation = rotation;
@@ -292,7 +292,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} className
-   * @return {EyesWebElementPromise} A promise that will resolve to a EyesWebElement.
+   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByClassName(className) {
     // noinspection JSCheckFunctionSignatures
@@ -302,7 +302,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} className
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
+   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByClassName(className) {
     // noinspection JSCheckFunctionSignatures
@@ -312,7 +312,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} cssSelector
-   * @return {EyesWebElementPromise} A promise that will resolve to a EyesWebElement.
+   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByCssSelector(cssSelector) {
     // noinspection JSCheckFunctionSignatures
@@ -322,7 +322,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} cssSelector
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
+   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByCssSelector(cssSelector) {
     // noinspection JSCheckFunctionSignatures
@@ -332,7 +332,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} id
-   * @return {EyesWebElementPromise} A promise that will resolve to a EyesWebElement.
+   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementById(id) {
     // noinspection JSCheckFunctionSignatures
@@ -342,7 +342,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} id
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
+   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsById(id) {
     // noinspection JSCheckFunctionSignatures
@@ -352,7 +352,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} linkText
-   * @return {EyesWebElementPromise} A promise that will resolve to a EyesWebElement.
+   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByLinkText(linkText) {
     // noinspection JSCheckFunctionSignatures
@@ -362,7 +362,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} linkText
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
+   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByLinkText(linkText) {
     // noinspection JSCheckFunctionSignatures
@@ -372,7 +372,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} partialLinkText
-   * @return {EyesWebElementPromise} A promise that will resolve to a EyesWebElement.
+   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByPartialLinkText(partialLinkText) {
     // noinspection JSCheckFunctionSignatures
@@ -382,7 +382,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} partialLinkText
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
+   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByPartialLinkText(partialLinkText) {
     // noinspection JSCheckFunctionSignatures
@@ -392,7 +392,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} name
-   * @return {EyesWebElementPromise} A promise that will resolve to a EyesWebElement.
+   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByName(name) {
     // noinspection JSCheckFunctionSignatures
@@ -402,7 +402,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} name
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
+   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByName(name) {
     // noinspection JSCheckFunctionSignatures
@@ -412,7 +412,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} tagName
-   * @return {EyesWebElementPromise} A promise that will resolve to a EyesWebElement.
+   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByTagName(tagName) {
     // noinspection JSCheckFunctionSignatures
@@ -422,7 +422,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} tagName
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
+   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByTagName(tagName) {
     // noinspection JSCheckFunctionSignatures
@@ -432,7 +432,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} xpath
-   * @return {EyesWebElementPromise} A promise that will resolve to a EyesWebElement.
+   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByXPath(xpath) {
     // noinspection JSCheckFunctionSignatures
@@ -442,7 +442,7 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} xpath
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
+   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByXPath(xpath) {
     // noinspection JSCheckFunctionSignatures
@@ -450,8 +450,8 @@ class EyesWebDriver extends IWebDriver {
   }
 
   /**
-   * @param {boolean} [forceQuery=true] If true, we will perform the query even if we have a cached viewport size.
-   * @return {Promise<RectangleSize>} The viewport size of the default content (outer most frame).
+   * @param {boolean} [forceQuery=true] - If true, we will perform the query even if we have a cached viewport size.
+   * @return {Promise<RectangleSize>} - The viewport size of the default content (outer most frame).
    */
   async getDefaultContentViewportSize(forceQuery = true) {
     this._logger.verbose('getDefaultContentViewportSize()');
@@ -480,7 +480,7 @@ class EyesWebDriver extends IWebDriver {
   }
 
   /**
-   * @return {FrameChain} The current frame chain.
+   * @return {FrameChain} - The current frame chain.
    */
   getFrameChain() {
     return this._frameChain;
@@ -502,7 +502,7 @@ class EyesWebDriver extends IWebDriver {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Promise<string>} A copy of the current frame chain.
+   * @return {Promise<string>} - A copy of the current frame chain.
    */
   async getSessionId() {
     const session = await this._driver.getSession();
@@ -513,12 +513,12 @@ class EyesWebDriver extends IWebDriver {
    * Rotates the image as necessary. The rotation is either manually forced by passing a non-null ImageRotation, or
    * automatically inferred.
    *
-   * @param {Logger} logger The underlying driver which produced the screenshot.
-   * @param {IWebDriver} driver The underlying driver which produced the screenshot.
-   * @param {MutableImage} image The image to normalize.
-   * @param {ImageRotation} rotation The degrees by which to rotate the image: positive values = clockwise rotation,
+   * @param {Logger} logger - The underlying driver which produced the screenshot.
+   * @param {IWebDriver} driver - The underlying driver which produced the screenshot.
+   * @param {MutableImage} image - The image to normalize.
+   * @param {ImageRotation} rotation - The degrees by which to rotate the image: positive values = clockwise rotation,
    *   negative values = counter-clockwise, 0 = force no rotation, null = rotate automatically as needed.
-   * @return {Promise<MutableImage>} A normalized image.
+   * @return {Promise<MutableImage>} - A normalized image.
    */
   static async normalizeRotation(logger, driver, image, rotation) {
     ArgumentGuard.notNull(logger, 'logger');

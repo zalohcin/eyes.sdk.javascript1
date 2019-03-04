@@ -4,8 +4,8 @@ const Stream = require('stream');
 
 class ReadableBufferStream extends Stream.Readable {
   /**
-   * @param {Buffer} buffer The buffer to be used as the stream's source.
-   * @param {object} [options] An "options" object to be passed to the stream constructor.
+   * @param {Buffer} buffer - The buffer to be used as the stream's source.
+   * @param {object} [options] - An "options" object to be passed to the stream constructor.
    */
   constructor(buffer, options) {
     super(options);
@@ -25,7 +25,7 @@ class ReadableBufferStream extends Stream.Readable {
 
 class WritableBufferStream extends Stream.Writable {
   /**
-   * @param {object} [options] An "options" object to be passed to the stream constructor.
+   * @param {object} [options] - An "options" object to be passed to the stream constructor.
    * @return {WritableBufferStream}
    */
   constructor(options) {
@@ -36,9 +36,9 @@ class WritableBufferStream extends Stream.Writable {
   // noinspection JSUnusedGlobalSymbols,JSCheckFunctionSignatures
   /**
    * Override of the _write function, as require when implementing a Writable stream.
-   * @param {Buffer|string} chunk The chunk to write to the stream.
-   * @param {string} enc If {@code chunk} is a string, this is the encoding of {@code chunk}.
-   * @param {function} next The callback to call when finished handling {@code chunk}.
+   * @param {Buffer|string} chunk - The chunk to write to the stream.
+   * @param {string} enc - If {@code chunk} is a string, this is the encoding of {@code chunk}.
+   * @param {function} next - The callback to call when finished handling {@code chunk}.
    * @private
    */
   _write(chunk, enc, next) {
@@ -83,7 +83,7 @@ class WritableBufferStream extends Stream.Writable {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Buffer} The buffer which contains the chunks written up to this point.
+   * @return {Buffer} - The buffer which contains the chunks written up to this point.
    */
   getBuffer() {
     return this._buffer;
@@ -92,7 +92,7 @@ class WritableBufferStream extends Stream.Writable {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Resets the buffer which contains the chunks written so far.
-   * @return {Buffer} The buffer which contains the chunks written up to the reset.
+   * @return {Buffer} - The buffer which contains the chunks written up to the reset.
    */
   resetBuffer() {
     const buffer = this._buffer;

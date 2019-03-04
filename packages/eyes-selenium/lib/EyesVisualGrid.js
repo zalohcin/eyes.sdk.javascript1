@@ -30,7 +30,7 @@ class EyesVisualGrid extends EyesBase {
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
-   * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
+   * @param {boolean} [isDisabled=false] - Set to true to disable Applitools Eyes and use the webdriver directly.
    */
   constructor(serverUrl, isDisabled) {
     super(serverUrl, isDisabled, new SeleniumConfiguration());
@@ -49,13 +49,13 @@ class EyesVisualGrid extends EyesBase {
    * @signature `open(driver, configuration)`
    * @signature `open(driver, appName, testName, ?viewportSize, ?configuration)`
    *
-   * @param {WebDriver|ThenableWebDriver} driver The web driver that controls the browser hosting the application under test.
-   * @param {SeleniumConfiguration|string} optArg1 The Configuration for the test or the name of the application under the test.
-   * @param {string} [optArg2] The test name.
-   * @param {RectangleSize|RectangleSizeObject} [optArg3] The required browser's viewport size
+   * @param {WebDriver|ThenableWebDriver} driver - The web driver that controls the browser hosting the application under test.
+   * @param {SeleniumConfiguration|string} optArg1 - The Configuration for the test or the name of the application under the test.
+   * @param {string} [optArg2] - The test name.
+   * @param {RectangleSize|RectangleSizeObject} [optArg3] - The required browser's viewport size
    *   (i.e., the visible part of the document's body) or to use the current window's viewport.
-   * @param {SeleniumConfiguration} [optArg4] The Configuration for the test
-   * @return {Promise<EyesWebDriver>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
+   * @param {SeleniumConfiguration} [optArg4] - The Configuration for the test
+   * @return {Promise<EyesWebDriver>} - A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
   async open(driver, optArg1, optArg2, optArg3, optArg4) {
     ArgumentGuard.notNull(driver, 'driver');

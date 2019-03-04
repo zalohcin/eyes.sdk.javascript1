@@ -52,10 +52,10 @@ class FullPageCaptureAlgorithm {
   /**
    * Returns a stitching of a region.
    *
-   * @param {Region} region The region to stitch. If {@code Region.EMPTY}, the entire image will be stitched.
-   * @param {Region} fullArea The wanted area of the resulting image. If unknown, pass in {@code null} or {@code RectangleSize.EMPTY}.
-   * @param {PositionProvider} positionProvider A provider of the scrolling implementation.
-   * @return {Promise<MutableImage>} An image which represents the stitched region.
+   * @param {Region} region - The region to stitch. If {@code Region.EMPTY}, the entire image will be stitched.
+   * @param {Region} fullArea - The wanted area of the resulting image. If unknown, pass in {@code null} or {@code RectangleSize.EMPTY}.
+   * @param {PositionProvider} positionProvider - A provider of the scrolling implementation.
+   * @return {Promise<MutableImage>} - An image which represents the stitched region.
    */
   async getStitchedRegion(region, fullArea, positionProvider) {
     this._logger.verbose('getStitchedRegion()');

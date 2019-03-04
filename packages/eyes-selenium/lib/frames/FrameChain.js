@@ -13,8 +13,8 @@ class FrameChain {
   /**
    * Creates a new frame chain.
    *
-   * @param {Logger} logger A Logger instance.
-   * @param {FrameChain} [other] A frame chain from which the current frame chain will be created.
+   * @param {Logger} logger - A Logger instance.
+   * @param {FrameChain} [other] - A frame chain from which the current frame chain will be created.
    */
   constructor(logger, other) {
     ArgumentGuard.notNull(logger, 'logger');
@@ -40,9 +40,9 @@ class FrameChain {
   /**
    * Compares two frame chains.
    *
-   * @param {FrameChain} c1 Frame chain to be compared against c2.
-   * @param {FrameChain} c2 Frame chain to be compared against c1.
-   * @return {boolean} True if both frame chains represent the same frame, false otherwise.
+   * @param {FrameChain} c1 - Frame chain to be compared against c2.
+   * @param {FrameChain} c2 - Frame chain to be compared against c1.
+   * @return {boolean} - True if both frame chains represent the same frame, false otherwise.
    */
   static isSameFrameChain(c1, c2) {
     const lc1 = c1.size();
@@ -63,7 +63,7 @@ class FrameChain {
   }
 
   /**
-   * @return {number} The number of frames in the chain.
+   * @return {number} - The number of frames in the chain.
    */
   size() {
     return this._frames.length;
@@ -86,7 +86,7 @@ class FrameChain {
   }
 
   /**
-   * @return {Frame} Returns the top frame in the chain.
+   * @return {Frame} - Returns the top frame in the chain.
    */
   peek() {
     return this._frames[this._frames.length - 1];
@@ -95,14 +95,14 @@ class FrameChain {
   /**
    * Appends a frame to the frame chain.
    *
-   * @param {Frame} frame The frame to be added.
+   * @param {Frame} frame - The frame to be added.
    */
   push(frame) {
     return this._frames.push(frame);
   }
 
   /**
-   * @return {Location} The location of the current frame in the page.
+   * @return {Location} - The location of the current frame in the page.
    */
   getCurrentFrameOffset() {
     let result = new Location(Location.ZERO);
@@ -115,7 +115,7 @@ class FrameChain {
   }
 
   /**
-   * @return {Location} The outermost frame's location, or NoFramesException.
+   * @return {Location} - The outermost frame's location, or NoFramesException.
    */
   getDefaultContentScrollPosition() {
     if (this._frames.length === 0) {
@@ -126,7 +126,7 @@ class FrameChain {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {RectangleSize} The size of the current frame.
+   * @return {RectangleSize} - The size of the current frame.
    */
   getCurrentFrameSize() {
     this._logger.verbose('getCurrentFrameSize()');
@@ -136,7 +136,7 @@ class FrameChain {
   }
 
   /**
-   * @return {RectangleSize} The inner size of the current frame.
+   * @return {RectangleSize} - The inner size of the current frame.
    */
   getCurrentFrameInnerSize() {
     this._logger.verbose('getCurrentFrameInnerSize()');
@@ -153,15 +153,15 @@ class FrameChain {
   }
 
   /**
-   * @return {Frame[]} All frames stored in chain
+   * @return {Frame[]} - All frames stored in chain
    */
   getFrames() {
     return this._frames;
   }
 
   /**
-   * @param {number} index Index of needed frame
-   * @return {Frame} Frame by index in array
+   * @param {number} index - Index of needed frame
+   * @return {Frame} - Frame by index in array
    */
   getFrame(index) {
     if (this._frames.length > index) {

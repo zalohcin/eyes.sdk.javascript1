@@ -12,7 +12,7 @@ const { CssTranslatePositionMemento } = require('./CssTranslatePositionMemento')
  */
 class CssTranslatePositionProvider extends PositionProvider {
   /**
-   * @param {Logger} logger A Logger instance.
+   * @param {Logger} logger - A Logger instance.
    * @param {SeleniumJavaScriptExecutor} executor
    */
   constructor(logger, executor) {
@@ -70,7 +70,7 @@ class CssTranslatePositionProvider extends PositionProvider {
   // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
-   * @param {CssTranslatePositionMemento} state The initial state of position
+   * @param {CssTranslatePositionMemento} state - The initial state of position
    * @return {Promise<void>}
    */
   async restoreState(state) {

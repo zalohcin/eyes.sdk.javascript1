@@ -10,8 +10,8 @@ const DEFAULT_CONCURRENCY_LIMIT = 100;
 
 class RenderWindowTask {
   /**
-   * @param {Logger} logger A logger instance.
-   * @param {ServerConnector} serverConnector Our gateway to the agent
+   * @param {Logger} logger - A logger instance.
+   * @param {ServerConnector} serverConnector - Our gateway to the agent
    */
   constructor(logger, serverConnector) {
     ArgumentGuard.notNull(logger, 'logger');
@@ -24,7 +24,7 @@ class RenderWindowTask {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {RenderRequest} renderRequest
-   * @return {Promise<string>} Rendered image URL
+   * @return {Promise<string>} - Rendered image URL
    */
   async renderWindow(renderRequest) {
     const runningRender = await this.postRender(renderRequest);
@@ -92,7 +92,7 @@ class RenderWindowTask {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string[]} renderIds
-   * @param {boolean} [delayBeforeRequest=false] If {@code true}, then the request will be delayed
+   * @param {boolean} [delayBeforeRequest=false] - If {@code true}, then the request will be delayed
    * @return {Promise<RenderStatusResults[]>}
    */
   getRenderStatusBatch(renderIds, delayBeforeRequest) {

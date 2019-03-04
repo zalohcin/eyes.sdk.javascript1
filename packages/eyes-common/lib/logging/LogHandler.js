@@ -29,7 +29,7 @@ class LogHandler {
   /**
    * Whether to handle or ignore verbose log messages.
    *
-   * @return {boolean} isVerbose
+   * @return {boolean} - isVerbose
    */
   getIsVerbose() {
     return this._isVerbose;

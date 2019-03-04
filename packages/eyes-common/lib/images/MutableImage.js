@@ -8,7 +8,7 @@ const { ImageUtils } = require('../utils/ImageUtils');
 /**
  * Parses the image if possible - meaning dimensions and BMP are extracted and available
  *
- * @param {MutableImage} mutableImage The context of the current instance of MutableImage
+ * @param {MutableImage} mutableImage - The context of the current instance of MutableImage
  * @return {Promise<void>}
  */
 async function parseImage(mutableImage) {
@@ -26,7 +26,7 @@ async function parseImage(mutableImage) {
 /**
  * Packs the image if possible - meaning the buffer is updated according to the edited BMP
  *
- * @param {MutableImage} mutableImage The context of the current instance of MutableImage
+ * @param {MutableImage} mutableImage - The context of the current instance of MutableImage
  * @return {Promise<void>}
  */
 async function packImage(mutableImage) {
@@ -41,7 +41,7 @@ async function packImage(mutableImage) {
  * Retrieve image size - if image is not parsed, get image size from buffer
  *
  * @private
- * @param {MutableImage} that The context of the current instance of MutableImage
+ * @param {MutableImage} that - The context of the current instance of MutableImage
  */
 const retrieveImageSize = that => {
   if (that._isParsed || (that._width && that._height)) {
@@ -58,7 +58,7 @@ const retrieveImageSize = that => {
  */
 class MutableImage {
   /**
-   * @param {Buffer|string} image Encoded bytes of image (buffer or base64 string)
+   * @param {Buffer|string} image - Encoded bytes of image (buffer or base64 string)
    */
   constructor(image) {
     if (TypeUtils.isString(image)) {
@@ -100,7 +100,7 @@ class MutableImage {
    * Coordinates represent the image's position in a larger context (if any).
    * E.g., A screenshot of the browser's viewport of a web page.
    *
-   * @return {Location} The coordinates of the image in the larger context (if any)
+   * @return {Location} - The coordinates of the image in the larger context (if any)
    */
   getCoordinates() {
     return new Location({ x: this._left, y: this._top });
@@ -219,7 +219,7 @@ class MutableImage {
   /**
    * Rotates an image clockwise by a number of degrees rounded to the nearest 90 degrees.
    *
-   * @param {number} degrees The number of degrees to rotate the image by
+   * @param {number} degrees - The number of degrees to rotate the image by
    * @return {Promise<MutableImage>}
    */
   async rotate(degrees) {

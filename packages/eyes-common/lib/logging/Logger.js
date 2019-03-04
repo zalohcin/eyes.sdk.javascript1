@@ -14,7 +14,7 @@ const { NullLogHandler } = require('./NullLogHandler');
  */
 class Logger {
   /**
-   * @param {boolean|string} [showLogs] Determines which log handler will be used ConsoleLogHandler (if set to {@code true})
+   * @param {boolean|string} [showLogs] - Determines which log handler will be used ConsoleLogHandler (if set to {@code true})
    *   or NullLogHandler (if not set or set to {@code false})
    */
   constructor(showLogs = false) {
@@ -36,14 +36,14 @@ class Logger {
   }
 
   /**
-   * @return {LogHandler} The currently set log handler.
+   * @return {LogHandler} - The currently set log handler.
    */
   getLogHandler() {
     return this._logHandler;
   }
 
   /**
-   * @param {LogHandler} [handler] The log handler to set. If you want a log handler which does nothing, use
+   * @param {LogHandler} [handler] - The log handler to set. If you want a log handler which does nothing, use
    *   {@link NullLogHandler}.
    */
   setLogHandler(handler) {
@@ -71,7 +71,7 @@ class Logger {
   // noinspection JSMethodCanBeStatic
   /**
    * @private
-   * @return {string} The name of the method which called the logger, if possible, or an empty string.
+   * @return {string} - The name of the method which called the logger, if possible, or an empty string.
    */
   _getPrefix() {
     let prefix = `{${this._sessionId}} `;

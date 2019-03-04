@@ -12,12 +12,12 @@ const MATCH_INTERVAL = 500; // Milliseconds
  */
 class MatchWindowTask {
   /**
-   * @param {Logger} logger A logger instance.
-   * @param {ServerConnector} serverConnector Our gateway to the agent
-   * @param {RunningSession} runningSession The running session in which we should match the window
-   * @param {number} retryTimeout The default total time to retry matching (ms).
-   * @param {EyesBase} eyes The eyes object.
-   * @param {AppOutputProvider} [appOutputProvider] A callback for getting the application output when performing match.
+   * @param {Logger} logger - A logger instance.
+   * @param {ServerConnector} serverConnector - Our gateway to the agent
+   * @param {RunningSession} runningSession - The running session in which we should match the window
+   * @param {number} retryTimeout - The default total time to retry matching (ms).
+   * @param {EyesBase} eyes - The eyes object.
+   * @param {AppOutputProvider} [appOutputProvider] - A callback for getting the application output when performing match.
    */
   constructor(logger, serverConnector, runningSession, retryTimeout, eyes, appOutputProvider) {
     ArgumentGuard.notNull(eyes, 'eyes');
@@ -44,12 +44,12 @@ class MatchWindowTask {
   /**
    * Creates the match model and calls the server connector matchWindow method.
    *
-   * @param {Trigger[]} userInputs The user inputs related to the current appOutput.
-   * @param {AppOutputWithScreenshot} appOutput The application output to be matched.
-   * @param {string} name Optional tag to be associated with the match (can be {@code null}).
-   * @param {boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
-   * @param {ImageMatchSettings} imageMatchSettings The settings to use.
-   * @return {Promise<MatchResult>} The match result.
+   * @param {Trigger[]} userInputs - The user inputs related to the current appOutput.
+   * @param {AppOutputWithScreenshot} appOutput - The application output to be matched.
+   * @param {string} name - Optional tag to be associated with the match (can be {@code null}).
+   * @param {boolean} ignoreMismatch - Whether to instruct the server to ignore the match attempt in case of a mismatch.
+   * @param {ImageMatchSettings} imageMatchSettings - The settings to use.
+   * @return {Promise<MatchResult>} - The match result.
    */
   async performMatch(userInputs, appOutput, name, ignoreMismatch, imageMatchSettings) {
     // Prepare match model.
@@ -114,9 +114,9 @@ class MatchWindowTask {
 
   /**
    * Build match settings by merging the check settings and the default match settings.
-   * @param {CheckSettings} checkSettings the settings to match the image by.
-   * @param {EyesScreenshot} screenshot the Screenshot wrapper object.
-   * @return {ImageMatchSettings} Merged match settings.
+   * @param {CheckSettings} checkSettings - the settings to match the image by.
+   * @param {EyesScreenshot} screenshot - the Screenshot wrapper object.
+   * @return {ImageMatchSettings} - Merged match settings.
    */
   async createImageMatchSettings(checkSettings, screenshot) {
     let imageMatchSettings = null;
@@ -165,15 +165,15 @@ class MatchWindowTask {
    * Repeatedly obtains an application snapshot and matches it with the next expected output, until a match is found or
    *   the timeout expires.
    *
-   * @param {Trigger[]} userInputs User input preceding this match.
-   * @param {Region} region Window region to capture.
-   * @param {string} tag Optional tag to be associated with the match (can be {@code null}).
-   * @param {boolean} shouldRunOnceOnTimeout Force a single match attempt at the end of the match timeout.
-   * @param {boolean} ignoreMismatch Whether to instruct the server to ignore the match attempt in case of a mismatch.
-   * @param {CheckSettings} checkSettings The internal settings to use.
-   * @param {number} [retryTimeout] The amount of time to retry matching in milliseconds or a negative value to use the
+   * @param {Trigger[]} userInputs - User input preceding this match.
+   * @param {Region} region - Window region to capture.
+   * @param {string} tag - Optional tag to be associated with the match (can be {@code null}).
+   * @param {boolean} shouldRunOnceOnTimeout - Force a single match attempt at the end of the match timeout.
+   * @param {boolean} ignoreMismatch - Whether to instruct the server to ignore the match attempt in case of a mismatch.
+   * @param {CheckSettings} checkSettings - The internal settings to use.
+   * @param {number} [retryTimeout] - The amount of time to retry matching in milliseconds or a negative value to use the
    *   default retry timeout.
-   * @return {Promise<MatchResult>} Returns the results of the match
+   * @return {Promise<MatchResult>} - Returns the results of the match
    */
   async matchWindow(userInputs, region, tag, shouldRunOnceOnTimeout, ignoreMismatch, checkSettings, retryTimeout) {
     ArgumentGuard.notNull(userInputs, 'userInputs');

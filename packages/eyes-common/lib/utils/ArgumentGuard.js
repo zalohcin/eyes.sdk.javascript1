@@ -10,9 +10,9 @@ class ArgumentGuard {
   /**
    * Fails if the input parameter equals the input value.
    *
-   * @param {object} param The input parameter.
-   * @param {object} value The input value.
-   * @param {string} paramName The input parameter name.
+   * @param {object} param - The input parameter.
+   * @param {object} value - The input value.
+   * @param {string} paramName - The input parameter name.
    */
   static notEqual(param, value, paramName) {
     if (param === value) {
@@ -24,8 +24,8 @@ class ArgumentGuard {
   /**
    * Fails if the input parameter contains some special characters or punctuation
    *
-   * @param {object} param The input parameter.
-   * @param {string} paramName The input parameter name.
+   * @param {object} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
    */
   static alphanumeric(param, paramName) {
     if (!param.match(/^[a-z0-9]+$/i)) {
@@ -37,8 +37,8 @@ class ArgumentGuard {
   /**
    * Fails if the input parameter is null.
    *
-   * @param {object} param The input parameter.
-   * @param {string} paramName The input parameter name.
+   * @param {object} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
    */
   static notNull(param, paramName) {
     if (param === null || param === undefined) {
@@ -50,8 +50,8 @@ class ArgumentGuard {
   /**
    * Fails if the input parameter is not null.
    *
-   * @param {object} param The input parameter.
-   * @param {string} paramName The input parameter name.
+   * @param {object} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
    */
   static isNull(param, paramName) {
     if (param !== null && param !== undefined) {
@@ -63,8 +63,8 @@ class ArgumentGuard {
   /**
    * Fails if the input parameter string is null or empty.
    *
-   * @param {object} param The input parameter.
-   * @param {string} paramName The input parameter name.
+   * @param {object} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
    */
   static notNullOrEmpty(param, paramName) {
     if (!param) {
@@ -76,9 +76,9 @@ class ArgumentGuard {
   /**
    * Fails if the input integer parameter is negative.
    *
-   * @param {number} param The input parameter.
-   * @param {string} paramName The input parameter name.
-   * @param {boolean} isInteger Whether or not, the number should be en integer
+   * @param {number} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
+   * @param {boolean} isInteger - Whether or not, the number should be en integer
    */
   static greaterThanOrEqualToZero(param, paramName, isInteger = false) {
     if (isInteger) {
@@ -94,9 +94,9 @@ class ArgumentGuard {
   /**
    * Fails if the input integer parameter is smaller than 1.
    *
-   * @param {number} param The input parameter.
-   * @param {string} paramName The input parameter name.
-   * @param {boolean} isInteger Whether or not, the number should be en integer
+   * @param {number} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
+   * @param {boolean} isInteger - Whether or not, the number should be en integer
    */
   static greaterThanZero(param, paramName, isInteger = false) {
     if (isInteger) {
@@ -111,9 +111,10 @@ class ArgumentGuard {
   // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if the input integer parameter is equal to 0.
-   * @param param The input parameter.
-   * @param paramName The input parameter name.
-   * @param {boolean} isInteger Whether or not, the number should be en integer
+   *
+   * @param {number} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
+   * @param {boolean} isInteger - Whether or not, the number should be en integer
    */
   static notZero(param, paramName, isInteger = false) {
     if (isInteger) {
@@ -129,9 +130,9 @@ class ArgumentGuard {
   /**
    * Fails if the input number is not integer
    *
-   * @param {number} param The input parameter.
-   * @param {string} paramName The input parameter name.
-   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
+   * @param {number} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
+   * @param {boolean} [strict=true] - If {@code false} then the value can be null|undefined
    */
   static isInteger(param, paramName, strict = true) {
     if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isInteger(param)) {
@@ -143,9 +144,9 @@ class ArgumentGuard {
   /**
    * Fails if param is not a string.
    *
-   * @param {object} param The input parameter.
-   * @param {string} paramName The input parameter name.
-   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
+   * @param {object} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
+   * @param {boolean} [strict=true] - If {@code false} then the value can be null|undefined
    */
   static isString(param, paramName, strict = true) {
     if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isString(param)) {
@@ -157,9 +158,9 @@ class ArgumentGuard {
   /**
    * Fails if param is not a number.
    *
-   * @param {object} param The input parameter.
-   * @param {string} paramName The input parameter name.
-   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
+   * @param {object} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
+   * @param {boolean} [strict=true] - If {@code false} then the value can be null|undefined
    */
   static isNumber(param, paramName, strict = true) {
     if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isNumber(param)) {
@@ -171,9 +172,9 @@ class ArgumentGuard {
   /**
    * Fails if param is not a boolean.
    *
-   * @param {object} param The input parameter.
-   * @param {string} paramName The input parameter name.
-   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
+   * @param {object} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
+   * @param {boolean} [strict=true] - If {@code false} then the value can be null|undefined
    */
   static isBoolean(param, paramName, strict = true) {
     if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isBoolean(param)) {
@@ -185,9 +186,9 @@ class ArgumentGuard {
   /**
    * Fails if param is not an array.
    *
-   * @param {object} param The input parameter.
-   * @param {string} paramName The input parameter name.
-   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
+   * @param {object} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
+   * @param {boolean} [strict=true] - If {@code false} then the value can be null|undefined
    */
   static isArray(param, paramName, strict = true) {
     if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isArray(param)) {
@@ -199,9 +200,9 @@ class ArgumentGuard {
   /**
    * Fails if param is not a buffer.
    *
-   * @param {object} param The input parameter.
-   * @param {string} paramName The input parameter name.
-   * @param {boolean} [strict=true] If {@code false} then the value can be null|undefined
+   * @param {object} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
+   * @param {boolean} [strict=true] - If {@code false} then the value can be null|undefined
    */
   static isBuffer(param, paramName, strict = true) {
     if ((strict || TypeUtils.isNotNull(param)) && !TypeUtils.isBuffer(param)) {
@@ -213,7 +214,7 @@ class ArgumentGuard {
   /**
    * Fails if param is not a base64 string.
    *
-   * @param {object} param The input parameter.
+   * @param {object} param - The input parameter.
    */
   static isBase64(param) {
     if (!TypeUtils.isBase64(param)) {
@@ -225,8 +226,8 @@ class ArgumentGuard {
   /**
    * Fails if isValid is false.
    *
-   * @param {boolean} isValid Whether the current state is valid.
-   * @param {string} errMsg A description of the error.
+   * @param {boolean} isValid - Whether the current state is valid.
+   * @param {string} errMsg - A description of the error.
    */
   static isValidState(isValid, errMsg) {
     if (!isValid) {
@@ -238,8 +239,8 @@ class ArgumentGuard {
   /**
    * Fails if isValid is false.
    *
-   * @param {object} param The input parameter.
-   * @param {object} type The expected param type
+   * @param {object} param - The input parameter.
+   * @param {object} type - The expected param type
    */
   static isValidType(param, type) {
     if (!(param instanceof type)) {
@@ -251,8 +252,8 @@ class ArgumentGuard {
   /**
    * Fails if isValid is false.
    *
-   * @param {*} value The input value.
-   * @param {object} enumObject The required enum object
+   * @param {*} value - The input value.
+   * @param {object} enumObject - The required enum object
    */
   static isValidEnumValue(value, enumObject) {
     if (!Object.prototype.hasOwnProperty.call(enumObject, value)) {
@@ -264,9 +265,9 @@ class ArgumentGuard {
   /**
    * Check if object contains all required properties
    *
-   * @param {object} object The input object.
-   * @param {string|string[]} properties The array of properties to test
-   * @param {string} paramName The input parameter name.
+   * @param {object} object - The input object.
+   * @param {string|string[]} properties - The array of properties to test
+   * @param {string} paramName - The input parameter name.
    */
   static hasProperties(object, properties, paramName) {
     if (!TypeUtils.has(object, properties)) {

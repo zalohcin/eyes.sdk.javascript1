@@ -72,7 +72,7 @@ class Configuration {
   }
 
   /**
-   * @param showLogs {boolean}
+   * @param {boolean} showLogs
    */
   setShowLogs(showLogs) {
     ArgumentGuard.isBoolean(showLogs, 'showLogs');
@@ -87,7 +87,7 @@ class Configuration {
   }
 
   /**
-   * @param saveDebugData {boolean}
+   * @param {boolean} saveDebugData
    */
   setSaveDebugData(saveDebugData) {
     ArgumentGuard.isBoolean(saveDebugData, 'saveDebugData');
@@ -96,7 +96,7 @@ class Configuration {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The currently set API key or {@code null} if no key is set.
+   * @return {string} - The currently set API key or {@code null} if no key is set.
    */
   getApiKey() {
     return TypeUtils.getOrDefault(this._apiKey, process.env.APPLITOOLS_API_KEY);
@@ -105,7 +105,7 @@ class Configuration {
   /**
    * Sets the API key of your applitools Eyes account.
    *
-   * @param apiKey {string} The api key to be used.
+   * @param {string} apiKey - The api key to be used.
    */
   setApiKey(apiKey) {
     ArgumentGuard.isString(apiKey, 'apiKey');
@@ -115,7 +115,7 @@ class Configuration {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {string} The URI of the eyes server.
+   * @return {string} - The URI of the eyes server.
    */
   getServerUrl() {
     return TypeUtils.getOrDefault(this._serverUrl, process.env.APPLITOOLS_SERVER_URL || DEFAULT_VALUES.serverUrl);
@@ -124,7 +124,7 @@ class Configuration {
   /**
    * Sets the current server URL used by the rest client.
    *
-   * @param serverUrl {string} The URI of the rest server, or {@code null} to use the default server.
+   * @param {string} serverUrl - The URI of the rest server, or {@code null} to use the default server.
    */
   setServerUrl(serverUrl) {
     ArgumentGuard.isString(serverUrl, 'serverUrl', false);
@@ -132,7 +132,7 @@ class Configuration {
   }
 
   /**
-   * @return {ProxySettings} The current proxy settings, or {@code undefined} if no proxy is set.
+   * @return {ProxySettings} - The current proxy settings, or {@code undefined} if no proxy is set.
    */
   getProxy() {
     return this._proxySettings;
@@ -141,7 +141,7 @@ class Configuration {
   /**
    * Sets the proxy settings to be used by the rest client.
    *
-   * @param {ProxySettings|string|boolean} varArg The ProxySettings object or proxy url to be used.
+   * @param {ProxySettings|string|boolean} varArg - The ProxySettings object or proxy url to be used.
    *  Use {@code false} to disable proxy (even if it set via env variables). Use {@code null} to reset proxy settings.
    * @param {string} [username]
    * @param {string} [password]
@@ -165,7 +165,7 @@ class Configuration {
   }
 
   /**
-   * @return {number} The timeout for web requests (in milliseconds).
+   * @return {number} - The timeout for web requests (in milliseconds).
    */
   getConnectionTimeout() {
     return this._connectionTimeout;
@@ -174,7 +174,7 @@ class Configuration {
   /**
    * Sets the connect and read timeouts for web requests.
    *
-   * @param {number} connectionTimeout Connect/Read timeout in milliseconds. 0 equals infinity.
+   * @param {number} connectionTimeout - Connect/Read timeout in milliseconds. 0 equals infinity.
    */
   setConnectionTimeout(connectionTimeout) {
     ArgumentGuard.greaterThanOrEqualToZero(connectionTimeout, 'connectionTimeout', true);
@@ -182,7 +182,7 @@ class Configuration {
   }
 
   /**
-   * @return {boolean} Whether sessions are removed immediately after they are finished.
+   * @return {boolean} - Whether sessions are removed immediately after they are finished.
    */
   getRemoveSession() {
     return this._removeSession;
@@ -199,14 +199,14 @@ class Configuration {
   }
 
   /**
-   * @return {boolean} The currently compareWithParentBranch value
+   * @return {boolean} - The currently compareWithParentBranch value
    */
   getCompareWithParentBranch() {
     return TypeUtils.getOrDefault(this._compareWithParentBranch, DEFAULT_VALUES.compareWithParentBranch);
   }
 
   /**
-   * @param {boolean} compareWithParentBranch New compareWithParentBranch value, default is false
+   * @param {boolean} compareWithParentBranch - New compareWithParentBranch value, default is false
    */
   setCompareWithParentBranch(compareWithParentBranch) {
     ArgumentGuard.isBoolean(compareWithParentBranch, 'compareWithParentBranch');
@@ -214,14 +214,14 @@ class Configuration {
   }
 
   /**
-   * @return {boolean} The currently ignoreBaseline value
+   * @return {boolean} - The currently ignoreBaseline value
    */
   getIgnoreBaseline() {
     return TypeUtils.getOrDefault(this._ignoreBaseline, DEFAULT_VALUES.ignoreBaseline);
   }
 
   /**
-   * @param {boolean} ignoreBaseline New ignoreBaseline value, default is false
+   * @param {boolean} ignoreBaseline - New ignoreBaseline value, default is false
    */
   setIgnoreBaseline(ignoreBaseline) {
     ArgumentGuard.isBoolean(ignoreBaseline, 'ignoreBaseline');
@@ -229,7 +229,7 @@ class Configuration {
   }
 
   /**
-   * @return {boolean} True if new tests are saved by default.
+   * @return {boolean} - True if new tests are saved by default.
    */
   getSaveNewTests() {
     return TypeUtils.getOrDefault(this._saveNewTests, DEFAULT_VALUES.saveNewTests);
@@ -238,7 +238,7 @@ class Configuration {
   /**
    * Used for automatic save of a test run. New tests are automatically saved by default.
    *
-   * @param {boolean} saveNewTests True if new tests should be saved by default. False otherwise.
+   * @param {boolean} saveNewTests - True if new tests should be saved by default. False otherwise.
    */
   setSaveNewTests(saveNewTests) {
     ArgumentGuard.isBoolean(saveNewTests, 'saveNewTests');
@@ -247,7 +247,7 @@ class Configuration {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {boolean} True if failed tests are saved by default.
+   * @return {boolean} - True if failed tests are saved by default.
    */
   getSaveFailedTests() {
     return TypeUtils.getOrDefault(this._saveFailedTests, DEFAULT_VALUES.saveFailedTests);
@@ -256,7 +256,7 @@ class Configuration {
   /**
    * Set whether or not failed tests are saved by default.
    *
-   * @param {boolean} saveFailedTests True if failed tests should be saved by default, false otherwise.
+   * @param {boolean} saveFailedTests - True if failed tests should be saved by default, false otherwise.
    */
   setSaveFailedTests(saveFailedTests) {
     ArgumentGuard.isBoolean(saveFailedTests, 'saveFailedTests');
@@ -264,7 +264,7 @@ class Configuration {
   }
 
   /**
-   * @return {number} The maximum time in ms {@link #checkWindowBase(RegionProvider, string, boolean, number)} waits
+   * @return {number} - The maximum time in ms {@link #checkWindowBase(RegionProvider, string, boolean, number)} waits
    *   for a match.
    */
   getMatchTimeout() {
@@ -273,7 +273,7 @@ class Configuration {
 
   /**
    * Sets the maximum time (in ms) a match operation tries to perform a match.
-   * @param {number} matchTimeout Total number of ms to wait for a match.
+   * @param {number} matchTimeout - Total number of ms to wait for a match.
    */
   setMatchTimeout(matchTimeout) {
     ArgumentGuard.greaterThanOrEqualToZero(matchTimeout, 'matchTimeout', true);
@@ -286,14 +286,14 @@ class Configuration {
   }
 
   /**
-   * @return {boolean} Whether eyes is disabled.
+   * @return {boolean} - Whether eyes is disabled.
    */
   getIsDisabled() {
     return TypeUtils.getOrDefault(this._isDisabled, DEFAULT_VALUES.isDisabled);
   }
 
   /**
-   * @param isDisabled {boolean} If true, all interactions with this API will be silently ignored.
+   * @param {boolean} isDisabled - If true, all interactions with this API will be silently ignored.
    */
   setIsDisabled(isDisabled) {
     ArgumentGuard.isBoolean(isDisabled, 'isDisabled', false);
@@ -344,8 +344,8 @@ class Configuration {
   /**
    * Adds a property to be sent to the server.
    *
-   * @param {PropertyData|string} propertyOrName The property name or PropertyData object.
-   * @param {string} [propertyValue] The property value.
+   * @param {PropertyData|string} propertyOrName - The property name or PropertyData object.
+   * @param {string} [propertyValue] - The property value.
    */
   addProperty(propertyOrName, propertyValue) {
     if (!(propertyOrName instanceof PropertyData)) {
@@ -531,7 +531,7 @@ class Configuration {
   }
 
   /**
-   * @return {Configuration} other
+   * @return {Configuration} - other
    */
   mergeConfig(other) {
     ArgumentGuard.isValidType(other, Configuration);

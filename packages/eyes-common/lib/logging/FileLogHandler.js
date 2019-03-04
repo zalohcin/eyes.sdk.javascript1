@@ -21,9 +21,9 @@ function ensureDirectoryExistence(filename) {
  */
 class FileLogHandler extends LogHandler {
   /**
-   * @param {boolean} isVerbose Whether to handle or ignore verbose log messages.
-   * @param {string} [filename] The file in which to save the logs.
-   * @param {boolean} [append=true] Whether to append the logs to existing file, or to overwrite the existing file.
+   * @param {boolean} isVerbose - Whether to handle or ignore verbose log messages.
+   * @param {string} [filename] - The file in which to save the logs.
+   * @param {boolean} [append=true] - Whether to append the logs to existing file, or to overwrite the existing file.
    */
   constructor(isVerbose, filename = 'eyes.log', append = true) {
     super();
@@ -63,8 +63,8 @@ class FileLogHandler extends LogHandler {
   /**
    * Handle a message to be logged.
    *
-   * @param {boolean} verbose Whether this message is flagged as verbose or not.
-   * @param {string} logString The string to log.
+   * @param {boolean} verbose - Whether this message is flagged as verbose or not.
+   * @param {string} logString - The string to log.
    */
   onMessage(verbose, logString) {
     if (this._writer && (!verbose || this._isVerbose)) {

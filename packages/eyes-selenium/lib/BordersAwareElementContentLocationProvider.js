@@ -51,10 +51,10 @@ class BordersAwareElementContentLocationProvider {
   /**
    * Returns a location based on the given location.
    *
-   * @param {Logger} logger The logger to use.
-   * @param {EyesWebElement} element The element for which we want to find the content's location.
-   * @param {Location} location The location of the element.
-   * @return {Promise<Location>} The location of the content of the element.
+   * @param {Logger} logger - The logger to use.
+   * @param {EyesWebElement} element - The element for which we want to find the content's location.
+   * @param {Location} location - The location of the element.
+   * @return {Promise<Location>} - The location of the content of the element.
    */
   static async getLocation(logger, element, location) {
     ArgumentGuard.notNull(logger, 'logger');

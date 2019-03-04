@@ -8,15 +8,15 @@ const { ArgumentGuard } = require('@applitools/eyes-common');
  */
 class Frame {
   /**
-   * @param {Logger} logger A Logger instance.
-   * @param {WebElement} reference The web element for the frame, used as a reference to switch into the frame.
-   * @param {Location} location The location of the frame within the current frame.
-   * @param {RectangleSize} size The frame element size (i.e., the size of the frame on the screen, not the internal
+   * @param {Logger} logger - A Logger instance.
+   * @param {WebElement} reference - The web element for the frame, used as a reference to switch into the frame.
+   * @param {Location} location - The location of the frame within the current frame.
+   * @param {RectangleSize} size - The frame element size (i.e., the size of the frame on the screen, not the internal
    *   document size).
-   * @param {RectangleSize} innerSize The frame element inner size (i.e., the size of the frame actual size, without
+   * @param {RectangleSize} innerSize - The frame element inner size (i.e., the size of the frame actual size, without
    *   borders).
-   * @param {Location} originalLocation The scroll location of the frame.
-   * @param {string} originalOverflow The original overflow value of the frame.
+   * @param {Location} originalLocation - The scroll location of the frame.
+   * @param {string} originalOverflow - The original overflow value of the frame.
    */
   constructor(logger, reference, location, size, innerSize, originalLocation, originalOverflow) {
     ArgumentGuard.notNull(logger, 'logger');

@@ -8,7 +8,7 @@ const { PositionMemento } = require('@applitools/eyes-sdk-core');
  */
 class ScrollPositionMemento extends PositionMemento {
   /**
-   * @param {Location} position The current location to be saved.
+   * @param {Location} position - The current location to be saved.
    */
   constructor(position) {
     super();

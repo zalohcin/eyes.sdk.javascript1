@@ -49,14 +49,14 @@ class SeleniumConfiguration extends Configuration {
   /**
    * Forces a full page screenshot (by scrolling and stitching) if the browser only supports viewport screenshots).
    *
-   * @param {boolean} forceFullPageScreenshot Whether to force a full page screenshot or not.
+   * @param {boolean} forceFullPageScreenshot - Whether to force a full page screenshot or not.
    */
   setForceFullPageScreenshot(forceFullPageScreenshot) {
     this._forceFullPageScreenshot = forceFullPageScreenshot;
   }
 
   /**
-   * @return {boolean} Whether Eyes should force a full page screenshot.
+   * @return {boolean} - Whether Eyes should force a full page screenshot.
    */
   getForceFullPageScreenshot() {
     return this._forceFullPageScreenshot;
@@ -66,7 +66,7 @@ class SeleniumConfiguration extends Configuration {
    * Sets the time to wait just before taking a screenshot (e.g., to allow positioning to stabilize when performing a
    * full page stitching).
    *
-   * @param {number} waitBeforeScreenshots The time to wait (Milliseconds). Values smaller or equal to 0, will cause the
+   * @param {number} waitBeforeScreenshots - The time to wait (Milliseconds). Values smaller or equal to 0, will cause the
    *   default value to be used.
    */
   setWaitBeforeScreenshots(waitBeforeScreenshots) {
@@ -78,7 +78,7 @@ class SeleniumConfiguration extends Configuration {
   }
 
   /**
-   * @return {number} The time to wait just before taking a screenshot.
+   * @return {number} - The time to wait just before taking a screenshot.
    */
   getWaitBeforeScreenshots() {
     return TypeUtils.getOrDefault(this._waitBeforeScreenshots, DEFAULT_VALUES.waitBeforeScreenshots);
@@ -88,14 +88,14 @@ class SeleniumConfiguration extends Configuration {
    * Set the type of stitching used for full page screenshots. When the page includes fixed position header/sidebar,
    * use {@link StitchMode#CSS}. Default is {@link StitchMode#SCROLL}.
    *
-   * @param {StitchMode} stitchMode The stitch mode to set.
+   * @param {StitchMode} stitchMode - The stitch mode to set.
    */
   setStitchMode(stitchMode) {
     this._stitchMode = stitchMode;
   }
 
   /**
-   * @return {StitchMode} The current stitch mode settings.
+   * @return {StitchMode} - The current stitch mode settings.
    */
   getStitchMode() {
     return TypeUtils.getOrDefault(this._stitchMode, DEFAULT_VALUES.stitchMode);
@@ -104,14 +104,14 @@ class SeleniumConfiguration extends Configuration {
   /**
    * Hide the scrollbars when taking screenshots.
    *
-   * @param {boolean} hideScrollbars Whether to hide the scrollbars or not.
+   * @param {boolean} hideScrollbars - Whether to hide the scrollbars or not.
    */
   setHideScrollbars(hideScrollbars) {
     this._hideScrollbars = hideScrollbars;
   }
 
   /**
-   * @return {boolean} Whether or not scrollbars are hidden when taking screenshots.
+   * @return {boolean} - Whether or not scrollbars are hidden when taking screenshots.
    */
   getHideScrollbars() {
     return TypeUtils.getOrDefault(this._hideScrollbars, DEFAULT_VALUES.hideScrollbars);
@@ -134,14 +134,14 @@ class SeleniumConfiguration extends Configuration {
   /**
    * Sets the stitch overlap in pixels.
    *
-   * @param {number} stitchOverlap The width (in pixels) of the overlap.
+   * @param {number} stitchOverlap - The width (in pixels) of the overlap.
    */
   setStitchOverlap(stitchOverlap) {
     this._stitchOverlap = stitchOverlap;
   }
 
   /**
-   * @return {number} Returns the stitching overlap in pixels.
+   * @return {number} - Returns the stitching overlap in pixels.
    */
   getStitchOverlap() {
     return TypeUtils.getOrDefault(this._stitchOverlap, DEFAULT_VALUES.stitchOverlap);
@@ -192,7 +192,7 @@ class SeleniumConfiguration extends Configuration {
   }
 
   /**
-   * @param {RenderBrowserInfo...} browsersInfo
+   * @param {...RenderBrowserInfo} browsersInfo
    * @return {SeleniumConfiguration}
    */
   addBrowsers(...browsersInfo) {
@@ -243,7 +243,7 @@ class SeleniumConfiguration extends Configuration {
    * TODO: rename this method, the name of method should clearly declare that it only works for browsers and devices
    *
    * @deprecated This method is not doing what it should do, don't use it
-   * @param config
+   * @param {object} config
    * @return {SeleniumConfiguration}
    */
   static fromObject(config) {

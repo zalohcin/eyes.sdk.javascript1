@@ -7,7 +7,7 @@ const { LogHandler } = require('./LogHandler');
  */
 class ConsoleLogHandler extends LogHandler {
   /**
-   * @param {boolean} isVerbose Whether to handle or ignore verbose log messages.
+   * @param {boolean} isVerbose - Whether to handle or ignore verbose log messages.
    */
   constructor(isVerbose) {
     super();
