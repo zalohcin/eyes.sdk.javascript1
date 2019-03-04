@@ -39,6 +39,7 @@ class SeleniumCheckSettings extends CheckSettings {
 
   /**
    * @package
+   * @ignore
    * @return {?GetSelector}
    */
   getTargetProvider() {
@@ -53,6 +54,7 @@ class SeleniumCheckSettings extends CheckSettings {
 
   /**
    * @package
+   * @ignore
    * @return {By}
    */
   getTargetSelector() {
@@ -61,6 +63,7 @@ class SeleniumCheckSettings extends CheckSettings {
 
   /**
    * @package
+   * @ignore
    * @return {WebElement}
    */
   getTargetElement() {
@@ -69,6 +72,7 @@ class SeleniumCheckSettings extends CheckSettings {
 
   /**
    * @package
+   * @ignore
    * @return {FrameLocator[]}
    */
   getFrameChain() {
@@ -224,6 +228,7 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {string}
    */
   getSizeMode() {
@@ -257,6 +262,7 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {Map<string, string>}
    */
   getScriptHooks() {

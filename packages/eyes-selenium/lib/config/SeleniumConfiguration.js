@@ -178,14 +178,14 @@ class SeleniumConfiguration extends Configuration {
   }
 
   /**
-   * @param {(RenderBrowserInfo|DeviceInfo)[]} browsersInfo
+   * @param {RenderBrowserInfo[]|DeviceInfo[]} browsersInfo
    */
   setBrowsersInfo(browsersInfo) {
     this._browsersInfo = browsersInfo;
   }
 
   /**
-   * @return {(RenderBrowserInfo|DeviceInfo)[]}
+   * @return {RenderBrowserInfo[]|DeviceInfo[]}
    */
   getBrowsersInfo() {
     return TypeUtils.getOrDefault(this._browsersInfo, DEFAULT_VALUES.browsersInfo);

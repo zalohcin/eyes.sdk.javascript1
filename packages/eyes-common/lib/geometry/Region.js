@@ -124,7 +124,7 @@ class Region {
    * @signature `new Region(left, top, width, height, ?coordinatesType)`
    * @signature `new Region({left: number, top: number, width: number, height: number, coordinatesType?: string})`
    *
-   * @param {Region|Location|RegionObject|number} varArg - Region - object ir the left offset of this region.
+   * @param {Region|Location|RegionObject|number} varArg - Region object ir the left offset of this region.
    * @param {RectangleSize|number} [optTop] - The top offset of this region.
    * @param {CoordinatesType|number} [optWidth] - The width of the region.
    * @param {number} [optHeight] - The height of the region.
