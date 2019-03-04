@@ -178,21 +178,21 @@ class SeleniumConfiguration extends Configuration {
   }
 
   /**
-   * @param {(RenderBrowserInfo|DeviceInfo)[]} browsersInfo
+   * @param {(RenderBrowserInfo[]|DeviceInfo[])} browsersInfo
    */
   setBrowsersInfo(browsersInfo) {
     this._browsersInfo = browsersInfo;
   }
 
   /**
-   * @return {(RenderBrowserInfo|DeviceInfo)[]}
+   * @return {(RenderBrowserInfo[]|DeviceInfo[])}
    */
   getBrowsersInfo() {
     return TypeUtils.getOrDefault(this._browsersInfo, DEFAULT_VALUES.browsersInfo);
   }
 
   /**
-   * @param {RenderBrowserInfo...} browsersInfo
+   * @param {...RenderBrowserInfo} browsersInfo
    * @return {SeleniumConfiguration}
    */
   addBrowsers(...browsersInfo) {
@@ -243,7 +243,7 @@ class SeleniumConfiguration extends Configuration {
    * TODO: rename this method, the name of method should clearly declare that it only works for browsers and devices
    *
    * @deprecated This method is not doing what it should do, don't use it
-   * @param config
+   * @param config {tbdtype}
    * @return {SeleniumConfiguration}
    */
   static fromObject(config) {
