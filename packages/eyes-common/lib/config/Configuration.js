@@ -531,7 +531,7 @@ class Configuration {
   }
 
   /**
-   * @return {Configuration} - other
+   * @param {Configuration} other
    */
   mergeConfig(other) {
     ArgumentGuard.isValidType(other, Configuration);
