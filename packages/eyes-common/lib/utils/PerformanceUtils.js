@@ -6,6 +6,9 @@ const NS_IN_MS = 1000000;
 
 const timeStorage = {};
 
+/**
+ * @private
+ */
 class Time {
   constructor(name) {
     if (name) {
@@ -55,6 +58,8 @@ class Time {
 
 /**
  * Collection of utility methods for measure performance.
+ *
+ * @ignore
  */
 class PerformanceUtils {
   /**

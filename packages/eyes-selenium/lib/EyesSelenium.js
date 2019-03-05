@@ -1290,14 +1290,15 @@ class EyesSelenium extends EyesBase {
   }
 
   /**
-   * @inheritDoc
+   * @override
+   * @return {Promise<string>}
    */
   getDomUrl() {
     return Promise.resolve(this._domUrl);
   }
 
   /**
-   * @inheritDoc
+   * @param {string} domUrl
    */
   setDomUrl(domUrl) {
     this._domUrl = domUrl;

@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * @ignore
+ */
 class FrameLocator {
   constructor() {
     /** @type {WebElement} */

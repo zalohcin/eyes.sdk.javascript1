@@ -6,6 +6,8 @@ const { EyesWebDriverScreenshot } = require('./EyesWebDriverScreenshot');
 
 /**
  * Encapsulates the instantiation of an {@link EyesWebDriverScreenshot} .
+ *
+ * @ignore
  */
 class EyesWebDriverScreenshotFactory extends EyesScreenshotFactory {
   /**

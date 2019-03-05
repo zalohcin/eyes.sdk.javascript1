@@ -9,6 +9,8 @@ const MATCH_INTERVAL = 500; // Milliseconds
 
 /**
  * Handles matching of output with the expected output (including retry and 'ignore mismatch' when needed).
+ *
+ * @ignore
  */
 class MatchWindowTask {
   /**

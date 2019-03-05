@@ -7,6 +7,8 @@ const { MatchSingleWindowData, Options } = require('./match/MatchSingleWindowDat
 
 /**
  * Handles matching of output with the expected output (including retry and 'ignore mismatch' when needed).
+ *
+ * @ignore
  */
 class MatchSingleWindowTask extends MatchWindowTask {
   /**

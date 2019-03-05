@@ -2,6 +2,8 @@
 
 /**
  * An application output (title, image, etc).
+ *
+ * @ignore
  */
 class AppOutput {
   /**

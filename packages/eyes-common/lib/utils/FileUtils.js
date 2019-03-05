@@ -2,6 +2,9 @@
 
 const fs = require('fs');
 
+/**
+ * @ignore
+ */
 class FileUtils {
   /**
    * @param {Buffer} imageBuffer

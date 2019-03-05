@@ -16,6 +16,9 @@ const ScreenshotType = {
   ENTIRE_FRAME: 2,
 };
 
+/**
+ * @ignore
+ */
 class EyesWebDriverScreenshot extends EyesScreenshot {
   /**
    * @private

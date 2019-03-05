@@ -8,6 +8,9 @@ const { RenderStatus } = require('./renderer/RenderStatus');
 
 const DEFAULT_CONCURRENCY_LIMIT = 100;
 
+/**
+ * @ignore
+ */
 class RenderWindowTask {
   /**
    * @param {Logger} logger - A logger instance.

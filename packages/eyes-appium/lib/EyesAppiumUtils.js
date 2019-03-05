@@ -2,6 +2,9 @@
 
 const { EyesSeleniumUtils } = require('@applitools/eyes-selenium');
 
+/**
+ * @ignore
+ */
 class EyesAppiumUtils extends EyesSeleniumUtils {
   // noinspection JSUnusedGlobalSymbols
   /**

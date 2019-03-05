@@ -5,6 +5,8 @@ const { PositionMemento } = require('@applitools/eyes-sdk-core');
 
 /**
  * Encapsulates state for {@link ElementPositionProvider} instances.
+ *
+ * @ignore
  */
 class ElementPositionMemento extends PositionMemento {
   /**

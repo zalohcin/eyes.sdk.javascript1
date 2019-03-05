@@ -7,6 +7,9 @@ const { NullRegionPositionCompensation } = require('../positioning/NullRegionPos
 
 const MIN_SCREENSHOT_PART_HEIGHT = 10;
 
+/**
+ * @ignore
+ */
 class FullPageCaptureAlgorithm {
   /**
    * @param {Logger} logger

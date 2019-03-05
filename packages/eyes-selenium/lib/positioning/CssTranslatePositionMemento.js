@@ -4,6 +4,8 @@ const { PositionMemento } = require('@applitools/eyes-sdk-core');
 
 /**
  * Encapsulates state for {@link CssTranslatePositionProvider} instances.
+ *
+ * @ignore
  */
 class CssTranslatePositionMemento extends PositionMemento {
   /**

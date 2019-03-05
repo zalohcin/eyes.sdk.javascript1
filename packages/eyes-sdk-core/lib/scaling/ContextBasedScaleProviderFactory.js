@@ -5,6 +5,8 @@ const { ContextBasedScaleProvider } = require('./ContextBasedScaleProvider');
 
 /**
  * Factory implementation for creating {@link ContextBasedScaleProvider} instances.
+ *
+ * @ignore
  */
 class ContextBasedScaleProviderFactory extends ScaleProviderFactory {
   /**

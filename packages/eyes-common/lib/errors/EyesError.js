@@ -11,14 +11,10 @@ class EyesError extends Error {
   constructor(message, error) {
     super();
 
-    /**
-   * @inheritDoc
-   */
+    /** @inheritDoc */
     this.name = this.constructor.name;
 
-    /**
-   * @inheritDoc
-   */
+    /** @inheritDoc */
     this.message = message;
 
     if (error instanceof Error) {

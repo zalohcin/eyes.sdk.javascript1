@@ -46,6 +46,8 @@ async function getPropertyValue(logger, element, propName) {
 
 /**
  * Encapsulates an algorithm to find an element's content location, based on the element's location.
+ *
+ * @ignore
  */
 class BordersAwareElementContentLocationProvider {
   /**

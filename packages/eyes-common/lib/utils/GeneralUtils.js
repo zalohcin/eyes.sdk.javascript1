@@ -7,6 +7,8 @@ const { DateTimeUtils } = require('./DateTimeUtils');
 
 /**
  * Collection of utility methods.
+ *
+ * @ignore
  */
 class GeneralUtils {
   /**

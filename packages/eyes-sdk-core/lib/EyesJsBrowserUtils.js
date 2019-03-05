@@ -87,6 +87,8 @@ const JS_GET_SET_OVERFLOW_STR = (elementName, overflowValue) =>
 
 /**
  * Handles browser related functionality.
+ *
+ * @ignore
  */
 class EyesJsBrowserUtils {
   /**

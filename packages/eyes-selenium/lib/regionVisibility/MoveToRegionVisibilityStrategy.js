@@ -6,6 +6,9 @@ const { RegionVisibilityStrategy } = require('./RegionVisibilityStrategy');
 
 const VISIBILITY_OFFSET = 100; // Pixels
 
+/**
+ * @ignore
+ */
 class MoveToRegionVisibilityStrategy extends RegionVisibilityStrategy {
   /**
    * @param {Logger} logger

@@ -9,6 +9,8 @@ const QUARTER_OF_CIRCLE_DEGREES = 90;
 
 /**
  * Provide means of image manipulations.
+ *
+ * @ignore
  */
 class ImageUtils {
   /**

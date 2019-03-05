@@ -4,6 +4,8 @@ const { ScaleProviderFactory } = require('./ScaleProviderFactory');
 
 /**
  * Factory implementation which simply returns the scale provider it is given as an argument.
+ *
+ * @ignore
  */
 class ScaleProviderIdentityFactory extends ScaleProviderFactory {
   /**

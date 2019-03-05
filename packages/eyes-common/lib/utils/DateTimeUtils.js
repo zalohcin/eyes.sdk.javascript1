@@ -6,6 +6,9 @@ const DATE_FORMAT_ISO8601 = "yyyy-mm-dd'T'HH:MM:ss'Z'";
 const DATE_FORMAT_RFC1123 = "ddd, dd mmm yyyy HH:MM:ss 'GMT'";
 const DATE_FORMAT_LOGFILE = 'yyyy_mm_dd_HH_MM_ss_l';
 
+/**
+ * @ignore
+ */
 class DateTimeUtils {
   /**
    * Convert a Date object to a ISO-8601 date string

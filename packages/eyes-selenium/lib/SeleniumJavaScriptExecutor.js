@@ -2,6 +2,9 @@
 
 const { EyesJsExecutor } = require('@applitools/eyes-sdk-core');
 
+/**
+ * @ignore
+ */
 class SeleniumJavaScriptExecutor extends EyesJsExecutor {
   /**
    * @param {EyesWebDriver|WebDriver} driver

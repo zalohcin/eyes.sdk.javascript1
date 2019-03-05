@@ -11,6 +11,9 @@ const explorer = cosmiconfig('applitools', {
   searchPlaces: ['package.json', 'applitools.config.js', 'eyes.config.js', 'eyes.json'],
 });
 
+/**
+ * @ignore
+ */
 class ConfigUtils {
   static getConfig({ configParams = [], configPath } = {}) {
     let defaultConfig = {};

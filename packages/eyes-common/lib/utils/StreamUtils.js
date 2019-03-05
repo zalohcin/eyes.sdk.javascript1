@@ -2,6 +2,9 @@
 
 const Stream = require('stream');
 
+/**
+ * @ignore
+ */
 class ReadableBufferStream extends Stream.Readable {
   /**
    * @param {Buffer} buffer - The buffer to be used as the stream's source.
@@ -23,6 +26,9 @@ class ReadableBufferStream extends Stream.Readable {
   }
 }
 
+/**
+ * @ignore
+ */
 class WritableBufferStream extends Stream.Writable {
   /**
    * @param {object} [options] - An "options" object to be passed to the stream constructor.

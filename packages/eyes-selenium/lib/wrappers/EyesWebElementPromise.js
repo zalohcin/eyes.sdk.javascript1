@@ -15,6 +15,7 @@ const { EyesWebElement } = require('./EyesWebElement');
  *     });
  *
  * @final
+ * @ignore
  */
 class EyesWebElementPromise extends EyesWebElement {
   /**

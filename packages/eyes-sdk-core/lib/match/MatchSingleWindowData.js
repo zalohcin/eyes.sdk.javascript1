@@ -6,6 +6,8 @@ const { MatchWindowData, Options } = require('./MatchWindowData');
 
 /**
  * Encapsulates the data to be sent to the agent on a "matchWindow" command.
+ *
+ * @ignore
  */
 class MatchSingleWindowData extends MatchWindowData {
   /**

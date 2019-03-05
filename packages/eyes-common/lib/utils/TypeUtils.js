@@ -7,6 +7,8 @@ const DUMMY_URL_PATTERN = /^(?:\w+:)?\/\/(\S+)$/;
 
 /**
  * Collection of utility methods.
+ *
+ * @ignore
  */
 class TypeUtils {
   /**

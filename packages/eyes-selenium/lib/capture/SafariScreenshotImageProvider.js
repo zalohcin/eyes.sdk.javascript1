@@ -6,6 +6,9 @@ const { ImageProvider } = require('@applitools/eyes-sdk-core');
 const { ScrollPositionProvider } = require('../positioning/ScrollPositionProvider');
 const { SeleniumJavaScriptExecutor } = require('../SeleniumJavaScriptExecutor');
 
+/**
+ * @ignore
+ */
 class SafariScreenshotImageProvider extends ImageProvider {
   /**
    * @param {Eyes} eyes

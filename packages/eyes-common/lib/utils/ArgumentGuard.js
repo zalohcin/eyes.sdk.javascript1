@@ -4,6 +4,8 @@ const { TypeUtils } = require('./TypeUtils');
 
 /**
  * Argument validation utilities.
+ *
+ * @ignore
  */
 class ArgumentGuard {
   // noinspection JSUnusedGlobalSymbols

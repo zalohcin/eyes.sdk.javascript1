@@ -3,6 +3,9 @@
 const { GetSelector } = require('@applitools/eyes-sdk-core');
 const { SelectorByElement } = require('./SelectorByElement');
 
+/**
+ * @ignore
+ */
 class SelectorByLocator extends GetSelector {
   /**
    * @param {By} regionLocator

@@ -3,6 +3,9 @@
 const { FixedScaleProvider } = require('./FixedScaleProvider');
 const { ScaleProviderFactory } = require('./ScaleProviderFactory');
 
+/**
+ * @ignore
+ */
 class FixedScaleProviderFactory extends ScaleProviderFactory {
   /**
    * @param {number} scaleRatio - The scale ratio to use.

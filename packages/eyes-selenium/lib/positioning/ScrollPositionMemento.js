@@ -5,6 +5,8 @@ const { PositionMemento } = require('@applitools/eyes-sdk-core');
 
 /**
  * Encapsulates state for {@link ScrollPositionProvider} instances.
+ *
+ * @ignore
  */
 class ScrollPositionMemento extends PositionMemento {
   /**

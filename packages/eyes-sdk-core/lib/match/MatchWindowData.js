@@ -4,6 +4,8 @@ const { GeneralUtils, ArgumentGuard } = require('@applitools/eyes-common');
 
 /**
  * Encapsulates the "Options" section of the MatchExpectedOutput body data.
+ *
+ * @ignore
  */
 class Options {
   /**

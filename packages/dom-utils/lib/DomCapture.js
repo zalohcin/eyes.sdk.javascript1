@@ -11,6 +11,9 @@ const DomCaptureReturnType = {
   STRING: 'STRING',
 };
 
+/**
+ * @ignore
+ */
 class DomCapture {
 
   /**

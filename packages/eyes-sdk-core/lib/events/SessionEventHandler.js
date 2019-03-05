@@ -10,12 +10,14 @@
 class SessionEventHandler {
   /**
    * Called when the data gathering for creating a session phase had started.
+   *
    * @return {Promise}
    */
   initStarted() {}
 
   /**
    * Called when the data gathering phase had ended.
+   *
    * @return {Promise}
    */
   initEnded() {}
@@ -30,6 +32,7 @@ class SessionEventHandler {
 
   /**
    * Called 'set size' operation has ended (either failed/success).
+   *
    * @return {Promise}
    */
   setSizeEnded() {}

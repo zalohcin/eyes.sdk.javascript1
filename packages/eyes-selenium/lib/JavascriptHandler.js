@@ -2,6 +2,9 @@
 
 /* eslint-disable no-unused-vars */
 
+/**
+ * @ignore
+ */
 class JavascriptHandler {
   // noinspection JSMethodCanBeStatic
   /**

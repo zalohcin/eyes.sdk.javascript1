@@ -2,6 +2,9 @@
 
 const { Region, RegionPositionCompensation } = require('@applitools/eyes-sdk-core');
 
+/**
+ * @ignore
+ */
 class FirefoxRegionPositionCompensation extends RegionPositionCompensation {
   /**
    * @param {Eyes} eyes

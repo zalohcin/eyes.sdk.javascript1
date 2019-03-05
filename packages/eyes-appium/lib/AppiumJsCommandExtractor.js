@@ -8,6 +8,9 @@ const TAP_COMMAND = `${COMMAND_PREFIX}tap`;
 const APPIUM_COORDINATES_DEFAULT = 0.5;
 const APPIUM_TAP_COUNT_DEFAULT = 1;
 
+/**
+ * @ignore
+ */
 class AppiumJsCommandExtractor {
   /**
    * Used for identifying if a javascript script is a command to Appium.

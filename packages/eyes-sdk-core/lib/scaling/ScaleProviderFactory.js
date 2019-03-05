@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * @ignore
+ */
 class ScaleProviderFactory {
   /**
    * Abstraction for instantiating scale providers.
