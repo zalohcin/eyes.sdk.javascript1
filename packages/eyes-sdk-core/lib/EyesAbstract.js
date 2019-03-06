@@ -316,7 +316,7 @@ class EyesAbstract {
       return;
     }
 
-    this._configuration.setBatch(batchOrName, batchDate, batchId);
+    this._configuration.setBatch(batchOrName, batchId, batchDate);
     this._logger.verbose(`setBatch(${this._configuration._batch})`);
   }
 
