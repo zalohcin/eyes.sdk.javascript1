@@ -451,7 +451,7 @@ class EyesBase extends EyesAbstract {
         return null;
       }
 
-      this._logger.verbose(`"EyesBase.close(${throwEx})`);
+      this._logger.verbose(`EyesBase.close(${throwEx})`);
       ArgumentGuard.isValidState(this._isOpen, 'Eyes not open');
 
       this._isOpen = false;
@@ -1516,11 +1516,9 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSMethodCanBeStatic
   /**
-   * The viewport size of the AUT.
-   *
    * @protected
    * @abstract
-   * @return {Promise<RectangleSize>}
+   * @return {Promise<RectangleSize>} - The viewport size of the AUT.
    */
   async getViewportSize() {
     throw new TypeError('The method is not implemented!');
@@ -1609,7 +1607,6 @@ class EyesBase extends EyesAbstract {
     return undefined;
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
