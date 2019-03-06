@@ -322,7 +322,7 @@ class Configuration {
     if (TypeUtils.isNull(batchOrName)) {
       this._batch = undefined;
     } else {
-      this._batch = new BatchInfo(batchOrName, batchId, batchDate);
+      this._batch = new BatchInfo(batchOrName, batchDate, batchId);
     }
   }
 
