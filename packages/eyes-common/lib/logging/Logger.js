@@ -5,6 +5,7 @@ const stackTrace = require('stack-trace');
 const { ArgumentGuard } = require('../utils/ArgumentGuard');
 const { GeneralUtils } = require('../utils/GeneralUtils');
 const { TypeUtils } = require('../utils/TypeUtils');
+const { DateTimeUtils } = require('../utils/DateTimeUtils');
 
 const { ConsoleLogHandler } = require('./ConsoleLogHandler');
 const { NullLogHandler } = require('./NullLogHandler');
@@ -56,7 +57,7 @@ class Logger {
    * @param {*} args
    */
   verbose(...args) {
-    this._logHandler.onMessage(true, `[VERBOSE] ${this._getPrefix()}${GeneralUtils.stringify(...args)}`);
+    this._logHandler.onMessage(true, this._getFormattedString('VERBOSE', GeneralUtils.stringify(...args)));
   }
 
   /**
@@ -65,7 +66,7 @@ class Logger {
    * @param {*} args
    */
   log(...args) {
-    this._logHandler.onMessage(false, `[LOG    ] ${this._getPrefix()}${GeneralUtils.stringify(...args)}`);
+    this._logHandler.onMessage(false, this._getFormattedString('LOG    ', GeneralUtils.stringify(...args)));
   }
 
   // noinspection JSMethodCanBeStatic
@@ -73,9 +74,16 @@ class Logger {
    * @private
    * @return {string} - The name of the method which called the logger, if possible, or an empty string.
    */
-  _getPrefix() {
-    let prefix = `{${this._sessionId}} `;
+  _getFormattedString(logLevel, message) {
+    return `${DateTimeUtils.toISO8601DateTime()} Eyes: [${logLevel}] {${this._sessionId}} ${this._getMethodName()}${message}`;
+  }
 
+  // noinspection JSMethodCanBeStatic
+  /**
+   * @private
+   * @return {string} - The name of the method which called the logger, if possible, or an empty string.
+   */
+  _getMethodName() {
     if (typeof Error.captureStackTrace == 'function') {
       /**
        * @typedef {object} CallSite
@@ -90,20 +98,20 @@ class Logger {
        *//** @type {CallSite[]} */
       const trace = stackTrace.get();
 
-      // _getPrefix() <- log()/verbose() <- "actual caller"
-      if (trace && trace.length >= 2) {
-        const className = trace[2].getTypeName();
-        const methodName = trace[2].getMethodName();
+      // _getMethodName() <- _getFormattedString <- log()/verbose() <- "actual caller"
+      if (trace && trace.length >= 3) {
+        const className = trace[3].getTypeName();
+        const methodName = trace[3].getMethodName();
 
         if (className && methodName) {
-          prefix += `${className}.${methodName}(): `;
+          return `${className}.${methodName}(): `;
         } else {
-          prefix += '(): ';
+          return '(): ';
         }
       }
     }
 
-    return prefix;
+    return '';
   }
 }
 
