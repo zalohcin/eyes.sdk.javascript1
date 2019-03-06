@@ -1616,6 +1616,14 @@ class EyesBase extends EyesAbstract {
   isVisualGrid() {
     return this._isVisualGrid;
   }
+
+  /**
+   * @ignore
+   * @param {boolean} isVisualGrid
+   */
+  setIsVisualGrid(isVisualGrid) {
+    this._isVisualGrid = isVisualGrid;
+  }
 }
 
 exports.EyesBase = EyesBase;
