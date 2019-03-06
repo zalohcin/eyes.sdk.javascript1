@@ -1345,7 +1345,6 @@ class EyesBase extends EyesAbstract {
     this._logger.verbose('Starting server session...');
     this._runningSession = await this._serverConnector.startSession(this._sessionStartInfo);
     this._logger.verbose(`Server session ID is ${this._runningSession.getId()}`);
-    this._logger.getLogHandler().setSessionId(this._runningSession.getSessionId());
 
     if (this._runningSession.getRenderingInfo()) {
       this._serverConnector.setRenderingInfo(this._runningSession.getRenderingInfo());
