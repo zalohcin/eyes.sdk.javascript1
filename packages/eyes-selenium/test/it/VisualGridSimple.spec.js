@@ -3,9 +3,7 @@
 require('chromedriver');
 const { Builder } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { BatchInfo, Region, CorsIframeHandle } = require('@applitools/eyes-sdk-core');
-const { RectangleSize } = require('@applitools/eyes-common');
-const { Eyes, Target, SeleniumConfiguration, BrowserType } = require('../../index');
+const { Eyes, Target, SeleniumConfiguration, BrowserType, RectangleSize, BatchInfo, Region, CorsIframeHandle } = require('../../index');
 
 let /** @type {WebDriver} */ driver;
 describe('VisualGridSimple', function () {

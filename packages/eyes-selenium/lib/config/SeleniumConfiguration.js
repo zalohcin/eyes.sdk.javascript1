@@ -1,6 +1,6 @@
 'use strict';
 
-const { Configuration, ArgumentGuard, TypeUtils } = require('@applitools/eyes-sdk-core');
+const { Configuration, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 
 const { StitchMode } = require('./StitchMode');
 

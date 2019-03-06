@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { Configuration } = require('../../..');
+const { Configuration } = require('../../../index');
 
 describe('Configuration', () => {
   it('clone constructor', () => {

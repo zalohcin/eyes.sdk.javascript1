@@ -1,6 +1,7 @@
 'use strict';
 
-const { Region, RegionPositionCompensation } = require('@applitools/eyes-sdk-core');
+const { Region } = require('@applitools/eyes-common');
+const { RegionPositionCompensation } = require('@applitools/eyes-sdk-core');
 
 /**
  * @ignore

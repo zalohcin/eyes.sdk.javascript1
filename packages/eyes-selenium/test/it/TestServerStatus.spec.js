@@ -5,9 +5,9 @@ const assert = require('assert');
 const assertRejects = require('assert-rejects');
 const { Builder, By, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { RectangleSize, GeneralUtils, NewTestError, DiffsFoundError, TestResults } = require('@applitools/eyes-sdk-core');
+const { GeneralUtils } = require('@applitools/eyes-common');
 
-const { Eyes, Target } = require('../../index');
+const { Eyes, Target, RectangleSize, NewTestError, DiffsFoundError, TestResults } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
 let /** @type {string} */ appName, /** @type {string} */ testName, /** @type {RectangleSize} */ viewportSize;

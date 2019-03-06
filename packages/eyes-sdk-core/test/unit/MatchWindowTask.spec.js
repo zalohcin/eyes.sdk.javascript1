@@ -1,8 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const { MatchWindowTask, CheckSettings } = require('../../index');
-const { ImageMatchSettings } = require('../../lib/match/ImageMatchSettings');
+const { MatchWindowTask, CheckSettings, ImageMatchSettings } = require('../../index');
 
 describe('MatchWindowTask', () => {
   const eyes = {getDefaultMatchSettings: () => new ImageMatchSettings({ useDom: true, enablePatterns: false })};
