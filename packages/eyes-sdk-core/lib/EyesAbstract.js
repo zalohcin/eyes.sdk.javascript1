@@ -113,15 +113,21 @@ class EyesAbstract {
    * Sets the proxy settings to be used for all requests to Eyes server.
    * Alternatively, proxy can be set via global variables `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`.
    *
-   * @signature `setProxy(boolean)`
-   * @signature `setProxy(string)`
-   * @signature `setProxy(string, string, string)`
-   * @signature `setProxy(ProxySettings)`
+   * @signature `setProxy(proxySettings)`
+   * @sigparam {ProxySettings} proxySettings - The ProxySettings instance to use.
    *
-   * @param {ProxySettings|string|boolean} varArg - The ProxySettings object or proxy url to be used.
+   * @signature `setProxy(isEnabled)`
+   * @sigparam {boolean} isEnabled - You can pass {@code false} to completely disable proxy.
+   *
+   * @signature `setProxy(url, username, password)`
+   * @sigparam {string} url - The proxy url to be used.
+   * @sigparam {string} [username] - The proxy username to be used.
+   * @sigparam {string} [password] - The proxy password to be used.
+   *
+   * @param {?(ProxySettings|boolean|string)} varArg - The ProxySettings object or proxy url to be used.
    *  Use {@code false} to disable proxy (even if it set via env variables). Use {@code null} to reset proxy settings.
-   * @param {string} [username]
-   * @param {string} [password]
+   * @param {string} [username] - The proxy username to be used.
+   * @param {string} [password] - The proxy password to be used.
    */
   setProxy(varArg, username, password) {
     return this._configuration.setProxy(varArg, username, password);

@@ -46,33 +46,36 @@ class EyesVisualGrid extends EyesBase {
   }
 
   /**
-   * @signature `open(driver, configuration)`
-   * @signature `open(driver, appName, testName, ?viewportSize, ?configuration)`
+   * Starts a test.
    *
-   * @param {WebDriver|ThenableWebDriver} driver - The web driver that controls the browser hosting the application under test.
-   * @param {SeleniumConfiguration|string} optArg1 - The Configuration for the test or the name of the application under the test.
-   * @param {string} [optArg2] - The test name.
-   * @param {RectangleSize|RectangleSizeObject} [optArg3] - The required browser's viewport size
-   *   (i.e., the visible part of the document's body) or to use the current window's viewport.
-   * @param {SeleniumConfiguration} [optArg4] - The Configuration for the test
+   * @signature `open(driver, appName, testName, viewportSize, sessionType)`
+   * @sigparam {WebDriver} driver - The web driver that controls the browser hosting the application under test.
+   * @sigparam {string} appName - The of the application under the test.
+   * @sigparam {string} testName - The test name.
+   * @sigparam {RectangleSize|RectangleSizeObject} [viewportSize] - The required browser's viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
+   * @sigparam {SessionType} [sessionType] - The type of test (e.g.,  standard test / visual performance test).
+   *
+   * @signature `open(driver, configuration)`
+   * @sigparam {WebDriver} driver - The web driver that controls the browser hosting the application under test.
+   * @sigparam {SeleniumConfiguration} configuration - The Configuration to use in the test.
+   *
+   * @param {WebDriver} driver - The web driver that controls the browser hosting the application under test.
+   * @param {SeleniumConfiguration|string} varArg1 - The Configuration for the test or the name of the application under the test.
+   * @param {string} [varArg2] - The test name.
+   * @param {RectangleSize|RectangleSizeObject} [varArg3] - The required browser's viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
+   * @param {SessionType} [varArg4] - The type of test (e.g.,  standard test / visual performance test).
    * @return {Promise<EyesWebDriver>} - A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
-  async open(driver, optArg1, optArg2, optArg3, optArg4) {
+  async open(driver, varArg1, varArg2, varArg3, varArg4) {
     ArgumentGuard.notNull(driver, 'driver');
 
-    let configuration;
-    if (optArg1 instanceof Configuration) {
-      configuration = optArg1;
+    if (varArg1 instanceof Configuration) {
+      this._configuration.mergeConfig(varArg1);
     } else {
-      this._configuration.setAppName(optArg1);
-      this._configuration.setTestName(optArg2);
-      this._configuration.setViewportSize(optArg3);
-      configuration = optArg4;
-    }
-
-    if (configuration) {
-      const newConfiguration = (configuration instanceof SeleniumConfiguration) ? configuration : SeleniumConfiguration.fromObject(configuration);
-      this._configuration.mergeConfig(newConfiguration);
+      this._configuration.setAppName(varArg1);
+      this._configuration.setTestName(varArg2);
+      this._configuration.setViewportSize(varArg3);
+      this._configuration.setSessionType(varArg4);
     }
 
     if (this._configuration.getBrowsersInfo().length === 0 && this._configuration.getViewportSize()) {

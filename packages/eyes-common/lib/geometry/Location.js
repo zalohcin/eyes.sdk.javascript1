@@ -14,22 +14,28 @@ class Location {
    * Creates a Location instance.
    *
    * @signature `new Location(location)`
-   * @signature `new Location(x, y)`
-   * @signature `new Location({x: number, y: number})`
+   * @sigparam {Location} location - The Location instance to clone from.
    *
-   * @param {Location|{x: number, y: number}|number} varArg - Location object or the X coordinate of this location.
-   * @param {number} [optY] - The Y coordinate of this location.
+   * @signature `new Location(object)`
+   * @sigparam {{x: number, x: number}} object - The location object to clone from.
+   *
+   * @signature `new Location(x, y)`
+   * @sigparam {number} x - The X coordinate of this location.
+   * @sigparam {number} y - The Y coordinate of this location.
+   *
+   * @param {Location|LocationObject|number} varArg1 - The Location (or object) to clone from or the X coordinate of new Location.
+   * @param {number} [varArg2] - The Y coordinate of new Location.
    */
-  constructor(varArg, optY) {
+  constructor(varArg1, varArg2) {
     if (arguments.length === 2) {
-      return new Location({ x: varArg, y: optY });
+      return new Location({ x: varArg1, y: varArg2 });
     }
 
-    if (varArg instanceof Location) {
-      return new Location({ x: varArg.getX(), y: varArg.getY() });
+    if (varArg1 instanceof Location) {
+      return new Location({ x: varArg1.getX(), y: varArg1.getY() });
     }
 
-    const { x, y } = varArg;
+    const { x, y } = varArg1;
     ArgumentGuard.isNumber(x, 'x');
     ArgumentGuard.isNumber(y, 'y');
 

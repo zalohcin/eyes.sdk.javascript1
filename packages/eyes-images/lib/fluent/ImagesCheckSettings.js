@@ -155,7 +155,7 @@ class ImagesCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {Location|{x: number, y: number}} location
+   * @param {Location|LocationObject} location
    * @return {this} - This instance of the settings object.
    */
   withLocation(location) {

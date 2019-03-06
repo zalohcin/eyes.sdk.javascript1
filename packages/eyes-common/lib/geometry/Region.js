@@ -120,33 +120,44 @@ class Region {
    * Creates a Region instance.
    *
    * @signature `new Region(region)`
-   * @signature `new Region(location, size, ?coordinatesType)`
-   * @signature `new Region(left, top, width, height, ?coordinatesType)`
-   * @signature `new Region({left: number, top: number, width: number, height: number, coordinatesType?: string})`
+   * @sigparam {Region} region - The region instance to clone from.
    *
-   * @param {Region|Location|RegionObject|number} varArg - Region object ir the left offset of this region.
-   * @param {RectangleSize|number} [optTop] - The top offset of this region.
-   * @param {CoordinatesType|number} [optWidth] - The width of the region.
-   * @param {number} [optHeight] - The height of the region.
-   * @param {CoordinatesType} [optCoordinatesType=SCREENSHOT_AS_IS] - The coordinatesType of the region.
+   * @signature `new Region(object)`
+   * @sigparam {{left: number, top: number, width: number, height: number}} object - The region object to clone from.
+   *
+   * @signature `new Region(location, size)`
+   * @sigparam {Location} location - The region location to use.
+   * @sigparam {RectangleSize} size - The region size to use.
+   *
+   * @signature `new Region(left, top, width, height)`
+   * @sigparam {number} left - The region left offset.
+   * @sigparam {number} top - The region top offset.
+   * @sigparam {number} width - The region width.
+   * @sigparam {number} height - The region height.
+   *
+   * @param {Region|RegionObject|Location|number} varArg1 - The Region (or object) to clone from, the Location of new region or the left offset of new region.
+   * @param {RectangleSize|number} [varArg2] - The Region size or the top offset of new region.
+   * @param {CoordinatesType|number} [varArg3] - The width of new region.
+   * @param {number} [varArg4] - The height of new region.
+   * @param {CoordinatesType} [varArg5] - The coordinatesType of new region (protected argument).
    */
-  constructor(varArg, optTop, optWidth, optHeight, optCoordinatesType) {
+  constructor(varArg1, varArg2, varArg3, varArg4, varArg5) {
     if (arguments.length === 2 || arguments.length === 3) {
       // eslint-disable-next-line max-len
-      return new Region({ left: varArg.getX(), top: varArg.getY(), width: optTop.getWidth(), height: optTop.getHeight(), coordinatesType: optWidth });
+      return new Region({ left: varArg1.getX(), top: varArg1.getY(), width: varArg2.getWidth(), height: varArg2.getHeight(), coordinatesType: varArg3 });
     }
 
     if (arguments.length === 4 || arguments.length === 5) {
       // eslint-disable-next-line max-len
-      return new Region({ left: varArg, top: optTop, width: optWidth, height: optHeight, coordinatesType: optCoordinatesType });
+      return new Region({ left: varArg1, top: varArg2, width: varArg3, height: varArg4, coordinatesType: varArg5 });
     }
 
-    if (varArg instanceof Region) {
+    if (varArg1 instanceof Region) {
       // eslint-disable-next-line max-len
-      return new Region({ left: varArg.getLeft(), top: varArg.getTop(), width: varArg.getWidth(), height: varArg.getHeight(), coordinatesType: varArg.getCoordinatesType() });
+      return new Region({ left: varArg1.getLeft(), top: varArg1.getTop(), width: varArg1.getWidth(), height: varArg1.getHeight(), coordinatesType: varArg1.getCoordinatesType() });
     }
 
-    const { left, top, width, height, coordinatesType } = varArg;
+    const { left, top, width, height, coordinatesType } = varArg1;
     ArgumentGuard.isNumber(left, 'left');
     ArgumentGuard.isNumber(top, 'top');
     ArgumentGuard.greaterThanOrEqualToZero(width, 'width', true);

@@ -7,30 +7,35 @@ const { ArgumentGuard } = require('../utils/ArgumentGuard');
  */
 
 /**
- * Represents a region.
+ * Represents a 2D size.
  */
 class RectangleSize {
   /**
    * Creates a RectangleSize instance.
    *
    * @signature `new RectangleSize(rectangleSize)`
-   * @signature `new RectangleSize(width, height)`
-   * @signature `new RectangleSize({width: number, height: number})`
+   * @sigparam {RectangleSize} rectangleSize - The RectangleSize instance to clone from.
    *
-   * @param {RectangleSize|{width: number, height: number}|number} varArg - RectangleSize object or the width of this
-   *   rectangle.
-   * @param {number} [optHeight] - The height of the rectangle.
+   * @signature `new RectangleSize(object)`
+   * @sigparam {{width: number, height: number}} object - The size object to clone from.
+   *
+   * @signature `new RectangleSize(width, height)`
+   * @sigparam {number} width - The width of the rectangle.
+   * @sigparam {number} height - The height of the rectangle.
+   *
+   * @param {RectangleSize|RectangleSizeObject|number} varArg1 - The RectangleSize (or object) to clone from or the width of new RectangleSize.
+   * @param {number} [varArg2] - The height of new RectangleSize.
    */
-  constructor(varArg, optHeight) {
+  constructor(varArg1, varArg2) {
     if (arguments.length === 2) {
-      return new RectangleSize({ width: varArg, height: optHeight });
+      return new RectangleSize({ width: varArg1, height: varArg2 });
     }
 
-    if (varArg instanceof RectangleSize) {
-      return new RectangleSize({ width: varArg.getWidth(), height: varArg.getHeight() });
+    if (varArg1 instanceof RectangleSize) {
+      return new RectangleSize({ width: varArg1.getWidth(), height: varArg1.getHeight() });
     }
 
-    const { width, height } = varArg;
+    const { width, height } = varArg1;
     ArgumentGuard.greaterThanOrEqualToZero(width, 'width', true);
     ArgumentGuard.greaterThanOrEqualToZero(height, 'height', true);
 
