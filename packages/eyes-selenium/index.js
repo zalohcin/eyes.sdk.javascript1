@@ -59,7 +59,7 @@ exports.ImageOrientationHandler = require('./lib/ImageOrientationHandler').Image
 exports.JavascriptHandler = require('./lib/JavascriptHandler').JavascriptHandler;
 exports.SeleniumJavaScriptExecutor = require('./lib/SeleniumJavaScriptExecutor').SeleniumJavaScriptExecutor;
 
-exports.Eyes = require('./lib/Eyes').Eyes;
+exports.Eyes = require('./lib/EyesFactory').EyesFactory;
 exports.EyesSelenium = require('./lib/EyesSelenium').EyesSelenium;
 exports.EyesVisualGrid = require('./lib/EyesVisualGrid').EyesVisualGrid;
 

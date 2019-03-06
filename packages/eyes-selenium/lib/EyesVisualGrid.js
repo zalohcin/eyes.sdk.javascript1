@@ -2,26 +2,22 @@
 
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-snapshot');
-const { ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
+const { Configuration, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 
 const {
-  EyesBase,
-  RectangleSize,
   TestFailedError,
   TestResultsFormatter,
   CorsIframeHandle,
   CorsIframeHandler,
-  Configuration,
 } = require('@applitools/eyes-sdk-core');
 
-const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
-const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
 const { BrowserType } = require('./config/BrowserType');
-const { SeleniumConfiguration } = require('./config/SeleniumConfiguration');
+const { Eyes } = require('./Eyes');
 
-const VERSION = require('../package.json').version;
-
-class EyesVisualGrid extends EyesBase {
+/**
+ * @ignore
+ */
+class EyesVisualGrid extends Eyes {
   /** @var {Logger} EyesVisualGrid#_logger */
   /** @var {SeleniumConfiguration} EyesVisualGrid#_configuration */
   /** @var {ImageMatchSettings} EyesVisualGrid#_defaultMatchSettings */
@@ -29,42 +25,19 @@ class EyesVisualGrid extends EyesBase {
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
-   * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
-   * @param {boolean} [isDisabled=false] - Set to true to disable Applitools Eyes and use the webdriver directly.
+   * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] - The Eyes server URL.
+   * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    */
   constructor(serverUrl, isDisabled) {
-    super(serverUrl, isDisabled, new SeleniumConfiguration());
+    super(serverUrl, isDisabled, true);
 
-    /** @type {boolean} */ this._isOpen = false;
-    /** @type {boolean} */ this._isVisualGrid = true;
-    /** @type {EyesJsExecutor} */ this._jsExecutor = undefined;
-    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandle.BLANK;
     /** @type {string} */ this._processPageAndSerializeScript = undefined;
-
-    this._checkWindowCommand = undefined;
-    this._closeCommand = undefined;
+    /** @function */ this._checkWindowCommand = undefined;
+    /** @function */ this._closeCommand = undefined;
   }
 
   /**
-   * Starts a test.
-   *
-   * @signature `open(driver, appName, testName, viewportSize, sessionType)`
-   * @sigparam {WebDriver} driver - The web driver that controls the browser hosting the application under test.
-   * @sigparam {string} appName - The of the application under the test.
-   * @sigparam {string} testName - The test name.
-   * @sigparam {RectangleSize|RectangleSizeObject} [viewportSize] - The required browser's viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
-   * @sigparam {SessionType} [sessionType] - The type of test (e.g.,  standard test / visual performance test).
-   *
-   * @signature `open(driver, configuration)`
-   * @sigparam {WebDriver} driver - The web driver that controls the browser hosting the application under test.
-   * @sigparam {SeleniumConfiguration} configuration - The Configuration to use in the test.
-   *
-   * @param {WebDriver} driver - The web driver that controls the browser hosting the application under test.
-   * @param {SeleniumConfiguration|string} varArg1 - The Configuration for the test or the name of the application under the test.
-   * @param {string} [varArg2] - The test name.
-   * @param {RectangleSize|RectangleSizeObject} [varArg3] - The required browser's viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
-   * @param {SessionType} [varArg4] - The type of test (e.g.,  standard test / visual performance test).
-   * @return {Promise<EyesWebDriver>} - A wrapped WebDriver which enables Eyes trigger recording and frame handling.
+   * @inheritDoc
    */
   async open(driver, varArg1, varArg2, varArg3, varArg4) {
     ArgumentGuard.notNull(driver, 'driver');
@@ -144,22 +117,6 @@ class EyesVisualGrid extends EyesBase {
   }
 
   /**
-   * @private
-   * @param {WebDriver} webDriver
-   */
-  async _initDriver(webDriver) {
-    if (TypeUtils.hasMethod(webDriver, ['executeScript', 'executeAsyncScript'])) {
-      this._jsExecutor = webDriver;
-    }
-
-    if (webDriver instanceof EyesWebDriver) {
-      this._driver = webDriver;
-    } else {
-      this._driver = new EyesWebDriver(this._logger, this, webDriver);
-    }
-  }
-
-  /**
    * @param {boolean} [throwEx]
    * @return {Promise<TestResults>}
    */
@@ -186,17 +143,10 @@ class EyesVisualGrid extends EyesBase {
 
   // noinspection JSMethodCanBeStatic
   /**
-   * @return {Promise<TestResults>}
+   * @return {Promise<?TestResults>}
    */
   async abortIfNotClosed() {
     return null; // TODO - implement?
-  }
-
-  /**
-   * @return {boolean}
-   */
-  getIsOpen() {
-    return this._isOpen;
   }
 
   /**
@@ -224,18 +174,11 @@ class EyesVisualGrid extends EyesBase {
   }
 
   /**
-   * @deprecated
+   * @return {object}
    */
-  getEyesRunner() {
-    const runner = {};
-    runner.getAllResults = async () => {
-      return await this.closeAndReturnResults();
-    };
-    return runner;
-  }
-
   getRunner() {
     const runner = {};
+    /** @return {Promise<TestResults[]|Error[]>} */
     runner.getAllResults = async () => {
       return await this.closeAndReturnResults();
     };
@@ -243,15 +186,7 @@ class EyesVisualGrid extends EyesBase {
   }
 
   /**
-   * @return {boolean}
-   */
-  isEyesClosed() {
-    return this._isOpen;
-  }
-
-  /**
-   * @param {string} name
-   * @param {SeleniumCheckSettings} checkSettings
+   * @inheritDoc
    */
   async check(name, checkSettings) {
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
@@ -268,7 +203,7 @@ class EyesVisualGrid extends EyesBase {
     }
 
     const domCaptureScript = `var callback = arguments[arguments.length - 1]; return (${this._processPageAndSerializeScript})().then(JSON.stringify).then(callback, function(err) {callback(err.stack || err.toString())})`;
-    const results = await this._jsExecutor.executeAsyncScript(domCaptureScript);
+    const results = await this._driver.executeAsyncScript(domCaptureScript);
     const { cdt, url: pageUrl, blobs, resourceUrls, frames } = JSON.parse(results);
 
     if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
@@ -299,86 +234,6 @@ class EyesVisualGrid extends EyesBase {
       sendDom: checkSettings.getSendDom() ? checkSettings.getSendDom() : this.getSendDom(),
       matchLevel: checkSettings.getMatchLevel() ? checkSettings.getMatchLevel() : this.getMatchLevel(),
     });
-  }
-
-  /**
-   * @return {Promise<RectangleSize>}
-   */
-  async getViewportSize() {
-    return this._configuration.getViewportSize();
-  }
-
-  /**
-   * @param {RectangleSize} viewportSize
-   */
-  async setViewportSize(viewportSize) {
-    ArgumentGuard.notNull(viewportSize, 'viewportSize');
-    viewportSize = new RectangleSize(viewportSize);
-    this._configuration.setViewportSize(viewportSize);
-
-    if (this._driver) {
-      const originalFrame = this._driver.getFrameChain();
-      await this._driver.switchTo().defaultContent();
-
-      try {
-        await EyesSeleniumUtils.setViewportSize(this._logger, this._driver, viewportSize);
-      } catch (err) {
-        await this._driver.switchTo().frames(originalFrame); // Just in case the user catches that error
-        throw new TestFailedError('Failed to set the viewport size', err);
-      }
-
-      await this._driver.switchTo().frames(originalFrame);
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean}
-   */
-  isVisualGrid() {
-    return this._isVisualGrid;
-  }
-
-  /**
-   * @param {CorsIframeHandle} corsIframeHandle
-   */
-  setCorsIframeHandle(corsIframeHandle) {
-    this._corsIframeHandle = corsIframeHandle;
-  }
-
-  /**
-   * @return {CorsIframeHandle}
-   */
-  getCorsIframeHandle() {
-    return this._corsIframeHandle;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getBaseAgentId() {
-    return `eyes-selenium/${VERSION}`;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  async getInferredEnvironment() {
-    return undefined;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  async getScreenshot() {
-    return undefined;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  async getTitle() {
-    return undefined;
   }
 }
 

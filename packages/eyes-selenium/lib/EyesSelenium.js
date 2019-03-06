@@ -1,12 +1,10 @@
 'use strict';
 
-const {URL} = require('url');
 const { DomCapture } = require('@applitools/dom-utils');
 
 const {
-  Logger,
+  Configuration,
   SimplePropertyHandler,
-  ReadOnlyPropertyHandler,
   CoordinatesType,
   Region,
   Location,
@@ -17,8 +15,6 @@ const {
 } = require('@applitools/eyes-common');
 
 const {
-  EyesBase,
-  Configuration,
   FullPageCaptureAlgorithm,
   FixedScaleProviderFactory,
   NullScaleProvider,
@@ -26,38 +22,29 @@ const {
   NullRegionProvider,
   ContextBasedScaleProviderFactory,
   ScaleProviderIdentityFactory,
-  TestFailedError,
   NullCutProvider,
   MatchResult,
 } = require('@applitools/eyes-sdk-core');
 
 const { StitchMode } = require('./config/StitchMode');
-const { SeleniumConfiguration } = require('./config/SeleniumConfiguration');
 const { ImageProviderFactory } = require('./capture/ImageProviderFactory');
 const { EyesWebDriverScreenshotFactory } = require('./capture/EyesWebDriverScreenshotFactory');
 const { FrameChain } = require('./frames/FrameChain');
-const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
 const { EyesTargetLocator } = require('./wrappers/EyesTargetLocator');
 const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
 const { EyesWebElement } = require('./wrappers/EyesWebElement');
 const { EyesWebDriverScreenshot } = require('./capture/EyesWebDriverScreenshot');
 const { RegionPositionCompensationFactory } = require('./positioning/RegionPositionCompensationFactory');
-const { ImageRotation } = require('./positioning/ImageRotation');
 const { ScrollPositionProvider } = require('./positioning/ScrollPositionProvider');
-const { CssTranslatePositionProvider } = require('./positioning/CssTranslatePositionProvider');
 const { ElementPositionProvider } = require('./positioning/ElementPositionProvider');
-const { MoveToRegionVisibilityStrategy } = require('./regionVisibility/MoveToRegionVisibilityStrategy');
-const { NopRegionVisibilityStrategy } = require('./regionVisibility/NopRegionVisibilityStrategy');
-const { SeleniumJavaScriptExecutor } = require('./SeleniumJavaScriptExecutor');
-const { JavascriptHandler } = require('./JavascriptHandler');
-const { Target } = require('./fluent/Target');
-
-const VERSION = require('../package.json').version;
+const { Eyes } = require('./Eyes');
 
 /**
  * The main API gateway for the SDK.
+ *
+ * @ignore
  */
-class EyesSelenium extends EyesBase {
+class EyesSelenium extends Eyes {
   /** @var {Logger} EyesSelenium#_logger */
   /** @var {SeleniumConfiguration} EyesSelenium#_configuration */
   /** @var {ImageMatchSettings} EyesSelenium#_defaultMatchSettings */
@@ -66,39 +53,16 @@ class EyesSelenium extends EyesBase {
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] - The Eyes server URL.
-   * @param {boolean} [isDisabled=false] - Set to true to disable Applitools Eyes and use the webdriver directly.
+   * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    */
   constructor(serverUrl, isDisabled) {
-    super(serverUrl, isDisabled, new SeleniumConfiguration());
-
-    /** @type {EyesWebDriver} */
-    this._driver = undefined;
-    /** @type {boolean} */
-    this._dontGetTitle = false;
+    super(serverUrl, isDisabled);
 
     /** @type {boolean} */
     this._checkFrameOrElement = false;
 
-    /** @type {Region} */
-    this._regionToCheck = null;
     /** @type {Location} */
     this._imageLocation = undefined;
-
-    /** @type {WebElement} */
-    this._scrollRootElement = undefined;
-
-    /** @type {ImageRotation} */
-    this._rotation = undefined;
-    /** @type {number} */
-    this._devicePixelRatio = EyesSelenium.UNKNOWN_DEVICE_PIXEL_RATIO;
-    /** @type {RegionVisibilityStrategy} */
-    this._regionVisibilityStrategy = new MoveToRegionVisibilityStrategy(this._logger);
-    /** @type {ElementPositionProvider} */
-    this._elementPositionProvider = undefined;
-    /** @type {SeleniumJavaScriptExecutor} */
-    this._jsExecutor = undefined;
-    /** @type {string} */
-    this._domUrl = undefined;
 
     /** @type {UserAgent} */
     this._userAgent = undefined;
@@ -108,269 +72,17 @@ class EyesSelenium extends EyesBase {
     this._regionPositionCompensation = undefined;
 
     /** @type {EyesWebElement|WebElement} */
-    this._targetElement = null;
+    this._targetElement = undefined;
     /** @type {PositionMemento} */
-    this._positionMemento = null;
+    this._positionMemento = undefined;
     /** @type {Region} */
     this._effectiveViewport = Region.EMPTY;
-    /** @type {boolean} */
-    this._stitchContent = false;
     /** @type {EyesWebDriverScreenshotFactory} */
     this._screenshotFactory = undefined;
-
-    this._init();
   }
 
-  // noinspection JSMethodCanBeStatic
-  /**
-   * @private
-   */
-  _init() {
-    EyesSeleniumUtils.setJavascriptHandler(new JavascriptHandler());
-  }
-
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
    * @inheritDoc
-   */
-  getBaseAgentId() {
-    return `eyes-selenium/${VERSION}`;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {Region}
-   */
-  getRegionToCheck() {
-    return this._regionToCheck;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {Region} regionToCheck
-   */
-  setRegionToCheck(regionToCheck) {
-    this._regionToCheck = regionToCheck;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean}
-   */
-  shouldStitchContent() {
-    return this._stitchContent;
-  }
-
-  /**
-   * @return {?EyesWebDriver}
-   */
-  getDriver() {
-    return this._driver;
-  }
-
-  /*------------------------- Getters/Setters -------------------------*/
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean}
-   */
-  getHideCaret() {
-    return this._configuration.getHideCaret();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {boolean} hideCaret
-   */
-  setHideCaret(hideCaret) {
-    this._configuration.setHideCaret(hideCaret);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Forces a full page screenshot (by scrolling and stitching) if the browser only supports viewport screenshots).
-   *
-   * @param {boolean} shouldForce - Whether to force a full page screenshot or not.
-   */
-  setForceFullPageScreenshot(shouldForce) {
-    this._configuration.setForceFullPageScreenshot(shouldForce);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} - Whether Eyes should force a full page screenshot.
-   */
-  getForceFullPageScreenshot() {
-    return this._configuration.getForceFullPageScreenshot();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the time to wait just before taking a screenshot (e.g., to allow positioning to stabilize when performing a
-   * full page stitching).
-   *
-   * @param {number} waitBeforeScreenshots - The time to wait (Milliseconds). Values smaller or equal to 0, will cause the
-   *   default value to be used.
-   */
-  setWaitBeforeScreenshots(waitBeforeScreenshots) {
-    this._configuration.setWaitBeforeScreenshots(waitBeforeScreenshots);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {number} - The time to wait just before taking a screenshot.
-   */
-  getWaitBeforeScreenshots() {
-    return this._configuration.getWaitBeforeScreenshots();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Hide the scrollbars when taking screenshots.
-   *
-   * @param {boolean} shouldHide - Whether to hide the scrollbars or not.
-   */
-  setHideScrollbars(shouldHide) {
-    this._configuration.setHideScrollbars(shouldHide)
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} - Whether or not scrollbars are hidden when taking screenshots.
-   */
-  getHideScrollbars() {
-    return this._configuration.getHideScrollbars();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Set the type of stitching used for full page screenshots. When the page includes fixed position header/sidebar,
-   * use {@link StitchMode#CSS}. Default is {@link StitchMode#SCROLL}.
-   *
-   * @param {StitchMode} mode - The stitch mode to set.
-   */
-  setStitchMode(mode) {
-    this._logger.verbose(`setting stitch mode to ${mode}`);
-
-    this._configuration.setStitchMode(mode);
-    if (this._driver) {
-      this._initPositionProvider();
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {StitchMode} - The current stitch mode settings.
-   */
-  getStitchMode() {
-    return this._configuration.getStitchMode();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the stitching overlap in pixels.
-   *
-   * @param {number} stitchOverlap - The width (in pixels) of the overlap.
-   */
-  setStitchOverlap(stitchOverlap) {
-    this._configuration.setStitchOverlap(stitchOverlap);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {number} - Returns the stitching overlap in pixels.
-   */
-  getStitchOverlap() {
-    return this._configuration.getStitchOverlap();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Turns on/off the automatic scrolling to a region being checked by {@code checkRegion}.
-   *
-   * @param {boolean} shouldScroll - Whether to automatically scroll to a region being validated.
-   */
-  setScrollToRegion(shouldScroll) {
-    if (shouldScroll) {
-      this._regionVisibilityStrategy = new MoveToRegionVisibilityStrategy(this._logger);
-    } else {
-      this._regionVisibilityStrategy = new NopRegionVisibilityStrategy(this._logger);
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {boolean} - Whether to automatically scroll to a region being validated.
-   */
-  getScrollToRegion() {
-    return !(this._regionVisibilityStrategy instanceof NopRegionVisibilityStrategy);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {WebElement|By} element
-   */
-  setScrollRootElement(element) {
-    this._scrollRootElement = this._driver.findElement(element);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {WebElement}
-   */
-  getScrollRootElement() {
-    return this._scrollRootElement;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {ImageRotation} rotation - The image rotation data.
-   */
-  setRotation(rotation) {
-    this._rotation = rotation;
-    if (this._driver) {
-      this._driver.setRotation(rotation);
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {ImageRotation} - The image rotation data.
-   */
-  getRotation() {
-    return this._rotation;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {number} - The device pixel ratio, or {@link #UNKNOWN_DEVICE_PIXEL_RATIO} if the DPR is not known yet or if
-   *   it wasn't possible to extract it.
-   */
-  getDevicePixelRatio() {
-    return this._devicePixelRatio;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Starts a test.
-   *
-   * @signature `open(driver, appName, testName, viewportSize, sessionType)`
-   * @sigparam {WebDriver} driver - The web driver that controls the browser hosting the application under test.
-   * @sigparam {string} appName - The of the application under the test.
-   * @sigparam {string} testName - The test name.
-   * @sigparam {RectangleSize|RectangleSizeObject} [viewportSize] - The required browser's viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
-   * @sigparam {SessionType} [sessionType] - The type of test (e.g.,  standard test / visual performance test).
-   *
-   * @signature `open(driver, configuration)`
-   * @sigparam {WebDriver} driver - The web driver that controls the browser hosting the application under test.
-   * @sigparam {SeleniumConfiguration} configuration - The Configuration to use in the test.
-   *
-   * @param {WebDriver} driver - The web driver that controls the browser hosting the application under test.
-   * @param {SeleniumConfiguration|string} varArg1 - The Configuration for the test or the name of the application under the test.
-   * @param {string} [varArg2] - The test name.
-   * @param {RectangleSize|RectangleSizeObject} [varArg3] - The required browser's viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
-   * @param {SessionType} [varArg4] - The type of test (e.g.,  standard test / visual performance test).
-   * @return {Promise<EyesWebDriver>} - A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
   async open(driver, varArg1, varArg2, varArg3, varArg4) {
     ArgumentGuard.notNull(driver, 'driver');
@@ -407,8 +119,7 @@ class EyesSelenium extends EyesBase {
 
     await super.openBase(this._configuration.getAppName(), this._configuration.getTestName(), this._configuration.getViewportSize(), this._configuration.getSessionType());
 
-    this._devicePixelRatio = EyesSelenium.UNKNOWN_DEVICE_PIXEL_RATIO;
-    this._jsExecutor = new SeleniumJavaScriptExecutor(this._driver);
+    this._devicePixelRatio = Eyes.UNKNOWN_DEVICE_PIXEL_RATIO;
 
     this._initPositionProvider();
 
@@ -416,42 +127,9 @@ class EyesSelenium extends EyesBase {
     return this._driver;
   }
 
-  /**
-   * @private
-   */
-  _initDriver(driver) {
-    if (driver instanceof EyesWebDriver) {
-      // noinspection JSValidateTypes
-      this._driver = driver;
-    } else {
-      this._driver = new EyesWebDriver(this._logger, this, driver);
-    }
-  }
-
-  /**
-   * @private
-   */
-  _initPositionProvider() {
-    // Setting the correct position provider.
-    const stitchMode = this.getStitchMode();
-    this._logger.verbose(`initializing position provider. stitchMode: ${stitchMode}`);
-    switch (stitchMode) {
-      case StitchMode.CSS:
-        this._positionProviderHandler.set(new CssTranslatePositionProvider(this._logger, this._jsExecutor));
-        break;
-      default:
-        this._positionProviderHandler.set(new ScrollPositionProvider(this._logger, this._jsExecutor));
-    }
-  }
-
   // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
-   * Perform visual validation
-   *
-   * @param {string} name - A name to be associated with the match
-   * @param {SeleniumCheckSettings} checkSettings - Target instance which describes whether we want a
-   *   window/region/frame
-   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
+   * @inheritDoc
    */
   async check(name, checkSettings) {
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
@@ -658,15 +336,17 @@ class EyesSelenium extends EyesBase {
    * @return {Promise<MatchResult>}
    */
   async _checkFullFrameOrElement(name, checkSettings) {
+    const self = this;
     this._checkFrameOrElement = true;
     this._logger.verbose('checkFullFrameOrElement()');
 
-    const self = this;
+    /**
+     * @private
+     * @type {RegionProvider}
+     */
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       // noinspection JSUnusedGlobalSymbols
-      /**
-       * @inheritDoc
-       */
+      /** @inheritDoc */
       async getRegion() {
         const region = await self._getFullFrameOrElementRegion();
         self._imageLocation = region.getLocation();
@@ -808,11 +488,16 @@ class EyesSelenium extends EyesBase {
   async _checkRegionByElement(name, checkSettings) {
     const self = this;
 
+    /**
+     * @private
+     * @type {RegionProvider}
+     */
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       // noinspection JSUnusedGlobalSymbols
       /** @inheritDoc */
       async getRegion() {
         const rect = await self._targetElement.getRect();
+        // noinspection JSSuspiciousNameCombination
         const region = new Region(Math.ceil(rect.x), Math.ceil(rect.y), rect.width, rect.height, CoordinatesType.CONTEXT_RELATIVE);
         self._imageLocation = region.getLocation();
         return region;
@@ -846,10 +531,10 @@ class EyesSelenium extends EyesBase {
       this._checkFrameOrElement = true;
 
       const displayStyle = await eyesElement.getComputedStyle('display');
-      if (displayStyle !== 'inline') {
-        this._elementPositionProvider = new ElementPositionProvider(this._logger, this._driver, eyesElement);
-      } else {
+      if (displayStyle === 'inline') {
         this._elementPositionProvider = null;
+      } else {
+        this._elementPositionProvider = new ElementPositionProvider(this._logger, this._driver, eyesElement);
       }
 
       if (this._configuration.getHideScrollbars()) {
@@ -906,7 +591,7 @@ class EyesSelenium extends EyesBase {
   async _updateScalingParams() {
     // Update the scaling params only if we haven't done so yet, and the user hasn't set anything else manually.
     if (
-      this._devicePixelRatio === EyesSelenium.UNKNOWN_DEVICE_PIXEL_RATIO &&
+      this._devicePixelRatio === Eyes.UNKNOWN_DEVICE_PIXEL_RATIO &&
       this._scaleProviderHandler.get() instanceof NullScaleProvider
     ) {
       let factory;
@@ -916,7 +601,7 @@ class EyesSelenium extends EyesBase {
         this._devicePixelRatio = await EyesSeleniumUtils.getDevicePixelRatio(this._jsExecutor);
       } catch (err) {
         this._logger.verbose('Failed to extract device pixel ratio! Using default.', err);
-        this._devicePixelRatio = EyesSelenium.DEFAULT_DEVICE_PIXEL_RATIO;
+        this._devicePixelRatio = Eyes.DEFAULT_DEVICE_PIXEL_RATIO;
       }
       this._logger.verbose(`Device pixel ratio: ${this._devicePixelRatio}`);
 
@@ -955,239 +640,7 @@ class EyesSelenium extends EyesBase {
     );
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
-   * Takes a snapshot of the application under test and matches it with the expected output.
-   *
-   * @param {string} [tag] - An optional tag to be associated with the snapshot.
-   * @param {number} [matchTimeout] - The amount of time to retry matching (Milliseconds).
-   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
-   */
-  async checkWindow(tag, matchTimeout) {
-    return this.check(tag, Target.window().timeout(matchTimeout));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Matches the frame given as parameter, by switching into the frame and using stitching to get an image of the frame.
-   *
-   * @param {number|string|By|WebElement|EyesWebElement} element - The element which is the frame to switch to.
-   * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
-   * @param {string} [tag] - An optional tag to be associated with the match.
-   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
-   */
-  async checkFrame(element, matchTimeout, tag) {
-    return this.check(tag, Target.frame(element).timeout(matchTimeout).fully());
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Takes a snapshot of the application under test and matches a specific element with the expected region output.
-   *
-   * @param {WebElement|EyesWebElement} element - The element to check.
-   * @param {?number} [matchTimeout] - The amount of time to retry matching (milliseconds).
-   * @param {string} [tag] - An optional tag to be associated with the match.
-   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
-   */
-  async checkElement(element, matchTimeout, tag) {
-    return this.check(tag, Target.region(element).timeout(matchTimeout).fully());
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Takes a snapshot of the application under test and matches a specific element with the expected region output.
-   *
-   * @param {By} locator - The element to check.
-   * @param {?number} [matchTimeout] - The amount of time to retry matching (milliseconds).
-   * @param {string} [tag] - An optional tag to be associated with the match.
-   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
-   */
-  async checkElementBy(locator, matchTimeout, tag) {
-    return this.check(tag, Target.region(locator).timeout(matchTimeout).fully());
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Visually validates a region in the screenshot.
-   *
-   * @param {Region} region - The region to validate (in screenshot coordinates).
-   * @param {string} [tag] - An optional tag to be associated with the screenshot.
-   * @param {number} [matchTimeout] - The amount of time to retry matching.
-   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
-   */
-  async checkRegion(region, tag, matchTimeout) {
-    return this.check(tag, Target.region(region).timeout(matchTimeout));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Visually validates a region in the screenshot.
-   *
-   * @param {WebElement|EyesWebElement} element - The element defining the region to validate.
-   * @param {string} [tag] - An optional tag to be associated with the screenshot.
-   * @param {number} [matchTimeout] - The amount of time to retry matching.
-   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
-   */
-  async checkRegionByElement(element, tag, matchTimeout) {
-    return this.check(tag, Target.region(element).timeout(matchTimeout));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Visually validates a region in the screenshot.
-   *
-   * @param {By} by - The WebDriver selector used for finding the region to validate.
-   * @param {string} [tag] - An optional tag to be associated with the screenshot.
-   * @param {number} [matchTimeout] - The amount of time to retry matching.
-   * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
-   *   {@link #checkElement(By, number, string)} on the region.
-   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
-   */
-  async checkRegionBy(by, tag, matchTimeout, stitchContent) {
-    return this.check(tag, Target.region(by).timeout(matchTimeout).stitchContent(stitchContent));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Switches into the given frame, takes a snapshot of the application under test and matches a region specified by
-   * the given selector.
-   *
-   * @param {string} frameNameOrId - The name or id of the frame to switch to. (as would be used in a call to
-   *   driver.switchTo().frame()).
-   * @param {By} locator - A Selector specifying the region to check.
-   * @param {?number} [matchTimeout] - The amount of time to retry matching. (Milliseconds)
-   * @param {string} [tag] - An optional tag to be associated with the snapshot.
-   * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
-   *   {@link #checkElement(By, number, string)} on the region.
-   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
-   */
-  async checkRegionInFrame(frameNameOrId, locator, matchTimeout, tag, stitchContent) {
-    return this.check(tag, Target.region(locator, frameNameOrId).timeout(matchTimeout).stitchContent(stitchContent));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Adds a mouse trigger.
-   *
-   * @param {MouseTrigger.MouseAction} action - Mouse action.
-   * @param {Region} control - The control on which the trigger is activated (context relative coordinates).
-   * @param {Location} cursor - The cursor's position relative to the control.
-   */
-  addMouseTrigger(action, control, cursor) {
-    if (this.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${action} (disabled)`);
-      return;
-    }
-
-    // Triggers are actually performed on the previous window.
-    if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${action} (no screenshot)`);
-      return;
-    }
-
-    if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${action} (different frame)`);
-      return;
-    }
-
-    super.addMouseTriggerBase(action, control, cursor);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Adds a mouse trigger.
-   *
-   * @param {MouseTrigger.MouseAction} action - Mouse action.
-   * @param {EyesWebElement} element - The WebElement on which the click was called.
-   * @return {Promise<void>}
-   */
-  async addMouseTriggerForElement(action, element) {
-    if (this.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${action} (disabled)`);
-      return;
-    }
-
-    // Triggers are actually performed on the previous window.
-    if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${action} (no screenshot)`);
-      return;
-    }
-
-    if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${action} (different frame)`);
-      return;
-    }
-
-    ArgumentGuard.notNull(element, 'element');
-
-    const rect = await element.getRect();
-    const elementRegion = new Region(rect.x, rect.y, rect.width, rect.height);
-
-    super.addMouseTriggerBase(action, elementRegion, elementRegion.getMiddleOffset());
-  }
-
-  /**
-   * Adds a keyboard trigger.
-   *
-   * @param {Region} control - The control on which the trigger is activated (context relative coordinates).
-   * @param {string} text - The trigger's text.
-   */
-  addTextTrigger(control, text) {
-    if (this.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${text} (disabled)`);
-      return;
-    }
-
-    // Triggers are actually performed on the previous window.
-    if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${text} (no screenshot)`);
-      return;
-    }
-
-    if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${text} (different frame)`);
-      return;
-    }
-
-    super.addTextTriggerBase(control, text);
-  }
-
-  /**
-   * Adds a keyboard trigger.
-   *
-   * @param {EyesWebElement} element - The element for which we sent keys.
-   * @param {string} text - The trigger's text.
-   * @return {Promise<void>}
-   */
-  async addTextTriggerForElement(element, text) {
-    if (this.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${text} (disabled)`);
-      return;
-    }
-
-    // Triggers are actually performed on the previous window.
-    if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${text} (no screenshot)`);
-      return;
-    }
-
-    if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${text} (different frame)`);
-      return;
-    }
-
-    ArgumentGuard.notNull(element, 'element');
-
-    const rect = element.getRect();
-    const elementRegion = new Region(Math.ceil(rect.x), Math.ceil(rect.y), rect.width, rect.height);
-
-    super.addTextTrigger(elementRegion, text);
-  }
-
-  /**
-   * Use this method only if you made a previous call to {@link #open(WebDriver, string, string)} or one of its
-   * variants.
-   *
    * @inheritDoc
    */
   async getViewportSize() {
@@ -1197,67 +650,6 @@ class EyesSelenium extends EyesBase {
     }
 
     return viewportSize;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Use this method only if you made a previous call to {@link #open(WebDriver, string, string)} or one of its
-   * variants.
-   *
-   * @protected
-   * @inheritDoc
-   */
-  async setViewportSize(viewportSize) {
-    if (this._viewportSizeHandler instanceof ReadOnlyPropertyHandler) {
-      this._logger.verbose('Ignored (viewport size given explicitly)');
-      return;
-    }
-
-    ArgumentGuard.notNull(viewportSize, 'viewportSize');
-    viewportSize = new RectangleSize(viewportSize);
-
-    const originalFrame = this._driver.getFrameChain();
-    await this._driver.switchTo().defaultContent();
-
-    try {
-      await EyesSeleniumUtils.setViewportSize(this._logger, this._driver, viewportSize);
-      this._effectiveViewport = new Region(Location.ZERO, viewportSize);
-    } catch (err) {
-      await this._driver.switchTo().frames(originalFrame); // Just in case the user catches that error
-      throw new TestFailedError('Failed to set the viewport size', err);
-    }
-
-    await this._driver.switchTo().frames(originalFrame);
-    this._viewportSizeHandler.set(new RectangleSize(viewportSize));
-  }
-
-  // noinspection JSUnusedGlobalSymbols, JSCheckFunctionSignatures
-  /**
-   * Call this method if for some reason you don't want to call {@link #open(WebDriver, string, string)} (or one of its
-   * variants) yet.
-   *
-   * @param {EyesWebDriver} driver - The driver to use for getting the viewport.
-   * @return {Promise<RectangleSize>} - The viewport size of the current context.
-   */
-  static async getViewportSize(driver) {
-    ArgumentGuard.notNull(driver, 'driver');
-    return EyesSeleniumUtils.getViewportSizeOrDisplaySize(new Logger(), driver);
-  }
-
-  // noinspection JSUnusedGlobalSymbols, JSCheckFunctionSignatures
-  /**
-   * Set the viewport size using the driver. Call this method if for some reason you don't want to call
-   * {@link #open(WebDriver, string, string)} (or one of its variants) yet.
-   *
-   * @param {EyesWebDriver} driver - The driver to use for setting the viewport.
-   * @param {RectangleSize} viewportSize - The required viewport size.
-   * @return {Promise<void>}
-   */
-  static async setViewportSize(driver, viewportSize) {
-    ArgumentGuard.notNull(driver, 'driver');
-    ArgumentGuard.notNull(viewportSize, 'viewportSize');
-
-    await EyesSeleniumUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize));
   }
 
   /**
@@ -1274,34 +666,11 @@ class EyesSelenium extends EyesBase {
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...');
-      return await DomCapture.getFullWindowDom(this._logger, this.getDriver());
+      return await DomCapture.getFullWindowDom(this._logger, this._driver);
     } catch (err) {
       this._logger.log(`Error capturing DOM of the page: ${err}`);
       return '';
     }
-  }
-
-  /**
-   * @inheritDoc
-   */
-  async getOrigin() {
-    const currentUrl = await this.getDriver().getCurrentUrl();
-    return new URL(currentUrl).origin;
-  }
-
-  /**
-   * @override
-   * @return {Promise<string>}
-   */
-  getDomUrl() {
-    return Promise.resolve(this._domUrl);
-  }
-
-  /**
-   * @param {string} domUrl
-   */
-  setDomUrl(domUrl) {
-    this._domUrl = domUrl;
   }
 
   /**
@@ -1492,79 +861,6 @@ class EyesSelenium extends EyesBase {
     this._logger.verbose('Done!');
     return result;
   }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @inheritDoc
-   */
-  async getTitle() {
-    if (!this._dontGetTitle) {
-      try {
-        return await this._driver.getTitle();
-      } catch (err) {
-        this._logger.verbose(`failed (${err})`);
-        this._dontGetTitle = true;
-      }
-    }
-
-    return '';
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @inheritDoc
-   */
-  async getInferredEnvironment() {
-    try {
-      const userAgent = await this._driver.getUserAgent();
-      return `useragent:${userAgent}`;
-    } catch (ignored) {
-      return undefined;
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Set the image rotation degrees.
-   * @param {number} degrees - The amount of degrees to set the rotation to.
-   * @deprecated use {@link setRotation} instead
-   */
-  setForcedImageRotation(degrees) {
-    this.setRotation(new ImageRotation(degrees));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Get the rotation degrees.
-   * @return {number} - The rotation degrees.
-   * @deprecated use {@link getRotation} instead
-   */
-  getForcedImageRotation() {
-    return this.getRotation().getRotation();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Get the session id.
-   * @return {Promise<string>} - A promise which resolves to the webdriver's session ID.
-   */
-  async getAUTSessionId() {
-    if (!this._driver) {
-      return undefined;
-    }
-
-    return this._driver.getSessionId();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {PositionProvider} - The currently set position provider.
-   */
-  getElementPositionProvider() {
-    return this._elementPositionProvider ? this._elementPositionProvider : this._positionProviderHandler.get();
-  }
 }
 
-EyesSelenium.UNKNOWN_DEVICE_PIXEL_RATIO = 0;
-EyesSelenium.DEFAULT_DEVICE_PIXEL_RATIO = 1;
 exports.EyesSelenium = EyesSelenium;
