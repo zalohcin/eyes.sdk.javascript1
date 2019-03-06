@@ -190,7 +190,7 @@ class Eyes extends EyesBase {
 
     if (this.getIsDisabled()) {
       this._logger.verbose(`replaceImage('${stepIndex}', Image, '${tag}', '${title}', '${userInputs}'): Ignored`);
-      return Promise.resolve(false);
+      return false;
     }
 
     if (TypeUtils.isBuffer(image) || TypeUtils.isString(image)) {
@@ -228,8 +228,8 @@ class Eyes extends EyesBase {
   /**
    * @inheritDoc
    */
-  getViewportSize() {
-    return Promise.resolve(this._viewportSizeHandler.get());
+  async getViewportSize() {
+    return this._viewportSizeHandler.get();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -239,18 +239,17 @@ class Eyes extends EyesBase {
    * @param {RectangleSize|RectangleSizeObject} viewportSize - The required viewport size.
    * @return {Promise<void>}
    */
-  setViewportSize(viewportSize) {
+  async setViewportSize(viewportSize) {
     ArgumentGuard.notNull(viewportSize, 'size');
 
     this._viewportSizeHandler.set(new RectangleSize(viewportSize));
-    return Promise.resolve();
   }
 
   /**
    * @inheritDoc
    */
-  getInferredEnvironment() {
-    return Promise.resolve(this._inferred);
+  async getInferredEnvironment() {
+    return this._inferred;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -280,29 +279,29 @@ class Eyes extends EyesBase {
   /**
    * @inheritDoc
    */
-  getScreenshotUrl() {
-    return Promise.resolve(this._screenshotUrl);
+  async getScreenshotUrl() {
+    return this._screenshotUrl;
   }
 
   /**
    * @inheritDoc
    */
   async tryCaptureDom() {
-    return Promise.resolve(this._domString);
+    return this._domString;
   }
 
   /**
    * @inheritDoc
    */
   async getImageLocation() {
-    return Promise.resolve(this._imageLocation);
+    return this._imageLocation;
   }
 
   /**
    * @inheritDoc
    */
-  getTitle() {
-    return Promise.resolve(this._title);
+  async getTitle() {
+    return this._title;
   }
 }
 
