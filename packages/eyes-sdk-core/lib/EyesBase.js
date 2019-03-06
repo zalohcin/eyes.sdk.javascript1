@@ -845,8 +845,8 @@ class EyesBase extends EyesAbstract {
    * @protected
    * @return {Promise<void>}
    */
-  beforeMatchWindow() {
-    return Promise.resolve();
+  async beforeMatchWindow() {
+    return undefined;
   }
 
   // noinspection JSMethodCanBeStatic
@@ -854,8 +854,8 @@ class EyesBase extends EyesAbstract {
    * @protected
    * @return {Promise<void>}
    */
-  afterMatchWindow() {
-    return Promise.resolve();
+  async afterMatchWindow() {
+    return undefined;
   }
 
   // noinspection JSMethodCanBeStatic
@@ -1046,8 +1046,8 @@ class EyesBase extends EyesAbstract {
    * @protected
    * @return {Promise<void>}
    */
-  beforeOpen() {
-    return Promise.resolve();
+  async beforeOpen() {
+    return undefined;
   }
 
   // noinspection JSMethodCanBeStatic
@@ -1055,8 +1055,8 @@ class EyesBase extends EyesAbstract {
    * @protected
    * @return {Promise<void>}
    */
-  afterOpen() {
-    return Promise.resolve();
+  async afterOpen() {
+    return undefined;
   }
 
   /**

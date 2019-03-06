@@ -331,8 +331,6 @@ class MatchWindowTask {
     } else {
       this._lastScreenshotBounds = region;
     }
-
-    return Promise.resolve();
   }
 
   // noinspection JSUnusedGlobalSymbols
