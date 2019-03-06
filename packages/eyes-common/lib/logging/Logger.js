@@ -87,15 +87,15 @@ class Logger {
     if (typeof Error.captureStackTrace == 'function') {
       /**
        * @typedef {object} CallSite
-       * @property {function} getTypeName returns the type of this as a string.
-       * @property {function} getFunctionName returns the name of the current function, typically its name property.
-       * @property {function} getMethodName returns the name of the property of this or one of its prototypes that holds
-       *   the current function
-       * @property {function} getFileName if this function was defined in a script returns the name of the script
-       * @property {function} getLineNumber if this function was defined in a script returns the current line number
-       * @property {function} getColumnNumber if this function was defined in a script returns the current column number
-       * @property {function} isNative is this call in native V8 code?
-       *//** @type {CallSite[]} */
+       * @property {function(): string} getTypeName returns the type of this as a string.
+       * @property {function(): string} getFunctionName returns the name of the current function, typically its name property.
+       * @property {function(): string} getMethodName returns the name of the property of this or one of its prototypes that holds the current function
+       * @property {function(): string} getFileName if this function was defined in a script returns the name of the script
+       * @property {function(): number} getLineNumber if this function was defined in a script returns the current line number
+       * @property {function(): number} getColumnNumber if this function was defined in a script returns the current column number
+       * @property {function(): boolean} isNative is this call in native V8 code?
+       */
+      /** @type {CallSite[]} */
       const trace = stackTrace.get();
 
       // _getMethodName() <- _getFormattedString <- log()/verbose() <- "actual caller"
@@ -103,8 +103,8 @@ class Logger {
         const className = trace[3].getTypeName();
         const methodName = trace[3].getMethodName();
 
-        if (className && methodName) {
-          return `${className}.${methodName}(): `;
+        if (className) {
+          return `${className}.${(methodName || '<init>')}(): `;
         } else {
           return '(): ';
         }
