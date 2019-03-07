@@ -40,7 +40,7 @@
     "@applitools/eyes-selenium": "^4.7.0"
   },
   "devDependencies": {
-    "protractor": "^5.4.1"
+    "protractor": "^6.0.0-beta"
   },
   "scripts": {
     "protractor": "protractor test/protractor.conf.js"
