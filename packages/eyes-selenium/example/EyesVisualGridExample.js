@@ -2,7 +2,7 @@
 
 require('chromedriver'); // eslint-disable-line node/no-unpublished-require
 const { Builder, Capabilities, By } = require('selenium-webdriver');
-const { Eyes, Target, ConsoleLogHandler } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
+const { Eyes, Target, ConsoleLogHandler, SeleniumConfiguration, BrowserType } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
 
 (async () => {
   // Open a Chrome browser.
@@ -16,8 +16,15 @@ const { Eyes, Target, ConsoleLogHandler } = require('../index'); // should be re
   eyes.setLogHandler(new ConsoleLogHandler(false));
 
   try {
+    const configuration = new SeleniumConfiguration();
+    configuration.setAppName('Eyes Examples');
+    configuration.setTestName('My first Javascript test!');
+    configuration.addBrowser(1200, 800, BrowserType.CHROME);
+    configuration.addBrowser(1200, 800, BrowserType.FIREFOX);
+
     // Start the test and set the browser's viewport size to 800x600.
-    await eyes.open(driver, 'Eyes Examples', 'My first Javascript test!', { width: 800, height: 600 });
+    // await eyes.open(driver, 'Eyes Examples', 'My first Javascript test!', { width: 800, height: 600 }); // also will work without configuration with single browser
+    await eyes.open(driver, configuration);
 
     // Navigate the browser to the "hello world!" web-site.
     await driver.get('https://applitools.com/helloworld');
@@ -32,7 +39,9 @@ const { Eyes, Target, ConsoleLogHandler } = require('../index'); // should be re
     await eyes.check('Click!', Target.window());
 
     // End the test.
-    await eyes.close();
+    // const results = await eyes.close(); // will return only first TestResults, but as we have two browsers, we need more results
+    const results = await eyes.getRunner().getAllResults();
+    console.log(results); // eslint-disable-line
   } finally {
     // Close the browser.
     await driver.quit();
