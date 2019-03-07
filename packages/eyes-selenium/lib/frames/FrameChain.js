@@ -170,6 +170,13 @@ class FrameChain {
 
     throw new Error('No frames for given index');
   }
+
+  /**
+   * @return {FrameChain}
+   */
+  clone() {
+    return new FrameChain(this._logger, this);
+  }
 }
 
 exports.FrameChain = FrameChain;

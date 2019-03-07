@@ -149,7 +149,7 @@ class EyesSelenium extends Eyes {
     this._stitchContent = checkSettings.getStitchContent();
     const targetRegion = checkSettings.getTargetRegion();
 
-    this._originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
+    this._originalFC = this._driver.getFrameChain().clone();
 
     const switchedToFrameCount = await this._switchToFrame(checkSettings);
 
@@ -251,7 +251,7 @@ class EyesSelenium extends Eyes {
    * @return {Promise<MatchResult>}
    */
   async _checkFrameFluent(name, checkSettings) {
-    const frameChain = new FrameChain(this._logger, this._driver.getFrameChain());
+    const frameChain = this._driver.getFrameChain().clone();
     const targetFrame = frameChain.pop();
     this._targetElement = targetFrame.getReference();
 
@@ -392,8 +392,8 @@ class EyesSelenium extends Eyes {
    * @return {Promise<FrameChain>}
    */
   async _ensureFrameVisible() {
-    const originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
-    const fc = new FrameChain(this._logger, this._driver.getFrameChain());
+    const originalFC = this._driver.getFrameChain().clone();
+    const fc = this._driver.getFrameChain().clone();
     while (fc.size() > 0) {
       // driver.getRemoteWebDriver().switchTo().parentFrame();
       const frame = fc.pop();
@@ -426,7 +426,7 @@ class EyesSelenium extends Eyes {
       return;
     }
 
-    const originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
+    const originalFC = this._driver.getFrameChain().clone();
     const switchTo = this._driver.switchTo();
 
     const eyesWebElement = new EyesWebElement(this._logger, this._driver, element);
@@ -461,7 +461,7 @@ class EyesSelenium extends Eyes {
       return Region.EMPTY;
     }
 
-    const originalFrameChain = new FrameChain(this._logger, this._driver.getFrameChain());
+    const originalFrameChain = this._driver.getFrameChain().clone();
     const switchTo = this._driver.switchTo();
 
     await switchTo.defaultContent();
@@ -683,14 +683,17 @@ class EyesSelenium extends Eyes {
     }
 
     if (this._configuration.getHideScrollbars() || (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent)) {
-      const originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
-      const fc = new FrameChain(this._logger, this._driver.getFrameChain());
-      while (fc.size() > 0) {
-        if (this._stitchContent || fc.size() !== originalFC.size()) {
-          await EyesSeleniumUtils.hideScrollbars(this._driver, 200, this._scrollRootElement);
+      const originalFC = this._driver.getFrameChain().clone();
+      const fc = this._driver.getFrameChain().clone();
+      if (fc.size() > 0) {
+        while (fc.size() > 0) {
+          this._logger.verbose(`fc.Count = ${fc.size()}`);
+          if (this._stitchContent || fc.size() !== originalFC.size()) {
+            await EyesSeleniumUtils.hideScrollbars(this._driver, 200, this._scrollRootElement);
+          }
+          fc.pop();
+          await EyesTargetLocator.tryParentFrame(this._driver.getRemoteWebDriver().switchTo(), fc);
         }
-        fc.pop();
-        await EyesTargetLocator.tryParentFrame(this._driver.getRemoteWebDriver().switchTo(), fc);
       }
 
       // this._originalOverflow = await EyesSeleniumUtils.hideScrollbars(this._driver, 200, this._scrollRootElement);
@@ -724,8 +727,8 @@ class EyesSelenium extends Eyes {
 
     if (this._configuration.getHideScrollbars() || (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent)) {
       await this._driver.switchTo().frames(frameChain);
-      const originalFC = new FrameChain(this._logger, this._driver.getFrameChain());
-      const fc = new FrameChain(this._logger, this._driver.getFrameChain());
+      const originalFC = this._driver.getFrameChain().clone();
+      const fc = this._driver.getFrameChain().clone();
       await this._tryRestoreScrollbarsLoop(fc);
       await this._driver.switchTo().frames(originalFC);
     }
@@ -775,7 +778,7 @@ class EyesSelenium extends Eyes {
   async getScreenshot() {
     this._logger.verbose('getScreenshot()');
 
-    const originalFrameChain = new FrameChain(this._logger, this._driver.getFrameChain());
+    const originalFrameChain = this._driver.getFrameChain().clone();
     const switchTo = this._driver.switchTo();
 
     const scaleProviderFactory = await this._updateScalingParams();

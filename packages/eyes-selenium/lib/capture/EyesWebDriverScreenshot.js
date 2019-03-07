@@ -121,7 +121,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
       return positionProvider.getCurrentPosition();
     }
 
-    const originalFC = new FrameChain(this._logger, this._frameChain);
+    const originalFC = this._frameChain.clone();
     const switchTo = this._driver.switchTo();
     await switchTo.defaultContent();
 

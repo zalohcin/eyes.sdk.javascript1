@@ -461,7 +461,7 @@ class EyesWebDriver extends IWebDriver {
     }
 
     const switchTo = this.switchTo();
-    const currentFrames = new FrameChain(this._logger, this.getFrameChain());
+    const currentFrames = this._frameChain.clone();
 
     // Optimization
     if (currentFrames.size() > 0) {
