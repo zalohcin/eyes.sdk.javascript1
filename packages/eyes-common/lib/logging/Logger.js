@@ -6,9 +6,12 @@ const { ArgumentGuard } = require('../utils/ArgumentGuard');
 const { GeneralUtils } = require('../utils/GeneralUtils');
 const { TypeUtils } = require('../utils/TypeUtils');
 const { DateTimeUtils } = require('../utils/DateTimeUtils');
+const { PerformanceUtils } = require('../utils/PerformanceUtils');
 
 const { ConsoleLogHandler } = require('./ConsoleLogHandler');
 const { NullLogHandler } = require('./NullLogHandler');
+
+const timeStorage = PerformanceUtils.start();
 
 /**
  * Write log massages using the provided Log Handler
@@ -27,6 +30,7 @@ class Logger {
 
     this._logHandler = showLogs ? new ConsoleLogHandler(true) : new NullLogHandler();
     this._sessionId = '';
+    this._isIncludeTime = false;
   }
 
   /**
@@ -34,6 +38,14 @@ class Logger {
    */
   setSessionId(sessionId) {
     this._sessionId = sessionId;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {boolean} isIncludeTime
+   */
+  setIncludeTime(isIncludeTime) {
+    this._isIncludeTime = isIncludeTime;
   }
 
   /**
@@ -75,7 +87,15 @@ class Logger {
    * @return {string} - The name of the method which called the logger, if possible, or an empty string.
    */
   _getFormattedString(logLevel, message) {
-    return `${DateTimeUtils.toISO8601DateTime()} Eyes: [${logLevel}] {${this._sessionId}} ${this._getMethodName()}${message}`;
+    const dateTime = DateTimeUtils.toISO8601DateTime();
+
+    let elapsedTime = '';
+    if (this._isIncludeTime) {
+      elapsedTime = `${timeStorage.end().time} ms. `;
+      timeStorage.start();
+    }
+
+    return `${dateTime} Eyes: [${logLevel}] {${this._sessionId}} ${this._getMethodName()}${elapsedTime}${message}`;
   }
 
   // noinspection JSMethodCanBeStatic
