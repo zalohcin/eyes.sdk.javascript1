@@ -76,7 +76,7 @@ const JS_GET_SET_OVERFLOW_STR = (elementName, overflowValue) =>
   `var element = ${elementName}; var overflowValue = "${overflowValue}"; ` +
   'var origOverflow = element.style.overflow; ' +
   'element.style.overflow = overflowValue; ' +
-  "element.setAttribute('data-applitools-original-overflow', origOverflow) " +
+  "if (overflowValue.toUpperCase() === 'HIDDEN' && origOverflow.toUpperCase() !== 'HIDDEN') element.setAttribute('data-applitools-original-overflow', origOverflow) " +
   'return origOverflow;';
 
 /**
