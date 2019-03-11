@@ -17,6 +17,7 @@ const DEFAULT_VALUES = {
   saveFailedTests: false,
   saveNewTests: true,
   ignoreBaseline: false,
+  sendDom: false,
   properties: [],
 };
 
@@ -58,6 +59,7 @@ class Configuration {
     /** @type {boolean} */ this._saveNewTests = undefined;
     /** @type {boolean} */ this._ignoreBaseline = undefined;
     /** @type {boolean} */ this._saveDiffs = undefined;
+    /** @type {boolean} */ this._sendDom = undefined;
 
     if (configuration) {
       this.mergeConfig(configuration);
@@ -464,6 +466,21 @@ class Configuration {
   setSaveDiffs(saveDiffs) {
     ArgumentGuard.isBoolean(saveDiffs, 'saveDiffs');
     this._saveDiffs = saveDiffs;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  getSendDom() {
+    return TypeUtils.getOrDefault(this._sendDom, DEFAULT_VALUES.sendDom);
+  }
+
+  /**
+   * @param {boolean} sendDom
+   */
+  setSendDom(sendDom) {
+    ArgumentGuard.isBoolean(sendDom, 'sendDom');
+    this._sendDom = sendDom;
   }
 
   /**
