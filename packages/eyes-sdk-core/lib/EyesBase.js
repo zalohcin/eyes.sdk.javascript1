@@ -1443,7 +1443,7 @@ class EyesBase extends EyesAbstract {
     const imageLocation = await this.getImageLocation();
     this._logger.verbose('Done getting title, domUrl, imageLocation!');
 
-    if (!domUrl && (checkSettings.getSendDom() || this._defaultMatchSettings.getSendDom())) {
+    if (!domUrl && (checkSettings.getSendDom() || this.getSendDom())) {
       const domJson = await this.tryCaptureDom();
 
       domUrl = await this._tryPostDomSnapshot(domJson);

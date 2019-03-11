@@ -57,6 +57,7 @@ class CheckSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * @ignore
    * @return {string}
    */
   getName() {
@@ -76,6 +77,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {boolean}
    */
   getSendDom() {
@@ -139,6 +141,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {MatchLevel}
    */
   getMatchLevel() {
@@ -158,6 +161,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {boolean}
    */
   getIgnoreCaret() {
@@ -187,6 +191,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {boolean}
    */
   getStitchContent() {
@@ -206,6 +211,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {boolean}
    */
   getUseDom() {
@@ -225,6 +231,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {boolean}
    */
   getEnablePatterns() {
@@ -244,6 +251,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {number}
    */
   getTimeout() {
@@ -259,6 +267,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {Region}
    */
   getTargetRegion() {
@@ -418,6 +427,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {GetRegion[]}
    */
   getIgnoreRegions() {
@@ -425,6 +435,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {GetRegion[]}
    */
   getStrictRegions() {
@@ -432,6 +443,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {GetRegion[]}
    */
   getLayoutRegions() {
@@ -439,6 +451,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {GetRegion[]}
    */
   getContentRegions() {
@@ -446,6 +459,7 @@ class CheckSettings {
   }
 
   /**
+   * @ignore
    * @return {GetFloatingRegion[]}
    */
   getFloatingRegions() {

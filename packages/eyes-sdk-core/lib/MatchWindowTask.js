@@ -133,11 +133,6 @@ class MatchWindowTask {
         ignoreCaret = this._eyes.getDefaultMatchSettings().getIgnoreCaret();
       }
 
-      let sendDom = checkSettings.getSendDom();
-      if (TypeUtils.isNull(sendDom)) {
-        sendDom = this._eyes.getDefaultMatchSettings().getSendDom();
-      }
-
       let useDom = checkSettings.getUseDom();
       if (TypeUtils.isNull(useDom)) {
         useDom = this._eyes.getDefaultMatchSettings().getUseDom();
@@ -152,7 +147,6 @@ class MatchWindowTask {
         matchLevel,
         exact: null,
         ignoreCaret,
-        sendDom,
         useDom,
         enablePatterns,
       });

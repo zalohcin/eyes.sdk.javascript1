@@ -19,7 +19,6 @@ class EyesAbstract {
     /** @type {ImageMatchSettings} */
     this._defaultMatchSettings = new ImageMatchSettings();
     this._defaultMatchSettings.setIgnoreCaret(true);
-    this._defaultMatchSettings.setSendDom(true);
     this._defaultMatchSettings.setUseDom(false);
     this._defaultMatchSettings.setEnablePatterns(false);
   }
@@ -361,6 +360,20 @@ class EyesAbstract {
   }
 
   /**
+   * @param {boolean} sendDom
+   */
+  setSendDom(sendDom) {
+    this._configuration.setSendDom(sendDom);
+  }
+
+  /**
+   * @return {boolean}
+   */
+  getSendDom() {
+    return this._configuration.getSendDom();
+  }
+
+  /**
    * @param {boolean} compareWithParentBranch - New compareWithParentBranch value, default is false
    */
   setCompareWithParentBranch(compareWithParentBranch) {
@@ -564,20 +577,6 @@ class EyesAbstract {
   getIgnoreCaret() {
     const ignoreCaret = this._defaultMatchSettings.getIgnoreCaret();
     return ignoreCaret || true;
-  }
-
-  /**
-   * @param {boolean} sendDom
-   */
-  setSendDom(sendDom) {
-    this._defaultMatchSettings.setSendDom(sendDom);
-  }
-
-  /**
-   * @return {boolean}
-   */
-  getSendDom() {
-    return this._defaultMatchSettings.getSendDom();
   }
 }
 

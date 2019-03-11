@@ -12,7 +12,7 @@ describe('MatchWindowTask', () => {
 
     it('should return correct default values', async () => {
       const ms = await task.createImageMatchSettings(checkSettings, null)
-      const expectedSerialization = '{"matchLevel":"Strict","exact":null,"ignoreCaret":false,"sendDom":true,' +
+      const expectedSerialization = '{"matchLevel":"Strict","exact":null,"ignoreCaret":false,' +
         '"useDom":false,"enablePatterns":false,"ignore":[],"layout":[],"strict":[],"content":[],"floating":[]}';
       assert.strictEqual(JSON.stringify(ms), expectedSerialization, 'ImageMatchSettings serialization does not match!');
     });
