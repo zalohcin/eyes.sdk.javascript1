@@ -72,13 +72,6 @@ const JS_GET_OVERFLOW_AWARE_CONTENT_ENTIRE_SIZE =
 
 const JS_TRANSFORM_KEYS = ['transform', '-webkit-transform'];
 
-const JS_GET_IS_BODY_OVERFLOW_HIDDEN =
-  'var styles = window.getComputedStyle(document.body, null);' +
-  'var overflow = styles.getPropertyValue("overflow");' +
-  'var overflowX = styles.getPropertyValue("overflow-x");' +
-  'var overflowY = styles.getPropertyValue("overflow-y");' +
-  'return overflow == "hidden" || overflowX == "hidden" || overflowY == "hidden"';
-
 const JS_GET_SET_OVERFLOW_STR = (elementName, overflowValue) =>
   `var element = ${elementName}; var overflowValue = "${overflowValue}"; ` +
   'var origOverflow = element.style.overflow; ' +
@@ -107,32 +100,6 @@ class EyesJsBrowserUtils {
 
     return executor.executeScript(script, scrollbarsRoot).catch(err => {
       throw new EyesError('Failed to set overflow', err);
-    });
-  }
-
-  /**
-   * @param {EyesJsExecutor} executor - The executor to use.
-   * @return {Promise<boolean>} - A promise which resolves to the {@code true} if body overflow is hidden, {@code false}
-   *   otherwise.
-   */
-  static isBodyOverflowHidden(executor) {
-    return executor.executeScript(JS_GET_IS_BODY_OVERFLOW_HIDDEN).catch(err => {
-      throw new EyesError('Failed to get state of body overflow', err);
-    });
-  }
-
-  /**
-   * Updates the document's body "overflow" value
-   *
-   * @param {EyesJsExecutor} executor - The executor to use.
-   * @param {?string} overflowValue - The values of the overflow to set.
-   * @return {Promise<string>} - A promise which resolves to the original overflow of the document.
-   */
-  static setBodyOverflow(executor, overflowValue) {
-    const script = JS_GET_SET_OVERFLOW_STR('document.body', overflowValue || 'undefined');
-
-    return executor.executeScript(script).catch(err => {
-      throw new EyesError('Failed to set body overflow', err);
     });
   }
 
