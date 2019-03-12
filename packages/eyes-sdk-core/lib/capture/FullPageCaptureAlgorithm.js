@@ -69,11 +69,11 @@ class FullPageCaptureAlgorithm {
     this._logger.verbose(`positionProvider: ${positionProvider.constructor.name}; Region: ${region}`);
 
     // Saving the original position (in case we were already in the outermost frame).
-    const originalStitchedState = await positionProvider.getState();
-
-    // Saving the original position (in case we were already in the outermost frame).
     const originalPosition = await this._originProvider.getState();
     await this._originProvider.setPosition(Location.ZERO); // first scroll to 0,0 so CSS stitching works.
+
+    // Saving the original position (in case we were already in the outermost frame).
+    const originalStitchedState = await positionProvider.getState();
 
     this._logger.verbose('Getting top/left image...');
     let image = await this._imageProvider.getImage();
@@ -175,13 +175,13 @@ class FullPageCaptureAlgorithm {
       // Actually taking the screenshot.
       this._logger.verbose('Getting image...');
       partImage = await this._imageProvider.getImage();
-      await this._debugScreenshotsProvider.save(partImage, `original-scrolled-${await originPosition.toStringForFilename()}`);
+      await this._debugScreenshotsProvider.save(partImage, `original-scrolled-${(await positionProvider.getCurrentPosition()).toStringForFilename()}`);
 
       // FIXME - cropping should be overlaid (see previous comment re cropping)
       if (!(scaledCutProvider instanceof NullCutProvider)) {
         this._logger.verbose('cutting...');
         partImage = await scaledCutProvider.cut(partImage);
-        await this._debugScreenshotsProvider.save(partImage, `original-scrolled-cut-${await originPosition.toStringForFilename()}`);
+        await this._debugScreenshotsProvider.save(partImage, `original-scrolled-cut-${(await positionProvider.getCurrentPosition()).toStringForFilename()}`);
       }
 
       if (!regionInScreenshot.isSizeEmpty()) {
@@ -236,6 +236,10 @@ class FullPageCaptureAlgorithm {
    * @return {Promise<Region>}
    */
   async _getRegionInScreenshot(region, image, pixelRatio) {
+    if (region.isSizeEmpty()) {
+      return region;
+    }
+
     this._logger.verbose('Creating screenshot object...');
     // We need the screenshot to be able to convert the region to screenshot coordinates.
     const screenshot = await this._screenshotFactory.makeScreenshot(image);
