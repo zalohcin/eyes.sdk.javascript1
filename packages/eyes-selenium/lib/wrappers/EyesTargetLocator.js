@@ -37,6 +37,7 @@ class EyesTargetLocator extends TargetLocator {
     this._jsExecutor = new SeleniumJavaScriptExecutor(driver);
     this._scrollPosition = new ScrollPositionProvider(this._logger, this._jsExecutor, this._driver.getEyes().getCurrentFrameScrollRootElement());
 
+    /** @type {ScrollPositionMemento} */
     this._defaultContentPositionMemento = undefined;
 
     // TODO: remove once selenium SDK 4 is fixed
@@ -68,6 +69,7 @@ class EyesTargetLocator extends TargetLocator {
     }
 
     if (TypeUtils.isInteger(varArg)) {
+      /** @type {number} */
       const frameIndex = varArg;
       this._logger.verbose(`found integer ${frameIndex}`);
       // Finding the target element so and reporting it using onWillSwitch.
@@ -88,6 +90,7 @@ class EyesTargetLocator extends TargetLocator {
     }
 
     if (TypeUtils.isString(varArg)) {
+      /** @type {string} */
       const frameNameOrId = varArg;
       this._logger.verbose(`found string ${frameNameOrId}`);
       // Finding the target element so we can report it.
@@ -114,6 +117,7 @@ class EyesTargetLocator extends TargetLocator {
       return;
     }
 
+    /** @type {WebElement} */
     let frameElement = varArg;
     this._logger.verbose('probably WebElement');
     this._logger.verbose('Making preparations...');
@@ -174,7 +178,7 @@ class EyesTargetLocator extends TargetLocator {
       const frameLocation = frame.getLocation();
       await scrollProvider.setPosition(frameLocation);
       this._logger.verbose('Done! Switching to frame...');
-      const newFrame = driver.getFrameChain().peek();
+      const newFrame = this._driver.getFrameChain().peek();
       newFrame.setScrollRootElement(frame.getScrollRootElement());
       this._logger.verbose('Done!');
     }
@@ -261,7 +265,7 @@ class EyesTargetLocator extends TargetLocator {
     const id = this._driver.execute(new Command(Name.GET_ACTIVE_ELEMENT));
 
     this._logger.verbose('Done!');
-    return new EyesWebElementPromise(this._logger, this._driver, id);
+    return new EyesWebElementPromise(this._logger, this._driver, id, 'activeElement');
   }
 
   /**

@@ -2,7 +2,6 @@
 
 const { ArgumentGuard, Location } = require('@applitools/eyes-common');
 
-const { Frame } = require('./Frame');
 const { NoFramesError } = require('../errors/NoFramesError');
 
 /**

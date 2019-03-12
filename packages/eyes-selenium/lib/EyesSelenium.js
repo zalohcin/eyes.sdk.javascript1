@@ -243,7 +243,7 @@ class EyesSelenium extends Eyes {
       await this._tryRestoreScrollbars(originalFC);
     }
 
-    await this._trySwitchToFrames(this._driver, switchTo, this._originalFC);
+    await this._trySwitchToFrames(switchTo, this._originalFC);
 
     this._stitchContent = false;
     this._imageLocation = null;
@@ -254,13 +254,12 @@ class EyesSelenium extends Eyes {
 
   /**
    * @private
-   * @param {EyesWebDriver} driver
    * @param {EyesTargetLocator} switchTo
    * @param {FrameChain} frames
    * @return {Promise<void>}
    */
-  async _trySwitchToFrames(driver, switchTo, frames) {
-    // if (await EyesSeleniumUtils.isMobileDevice(driver)) {
+  async _trySwitchToFrames(switchTo, frames) {
+    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
     //   return;
     // }
 
