@@ -134,7 +134,7 @@ class EyesSelenium extends Eyes {
   _createPositionProvider(scrollRootElement = this._scrollRootElement) {
     // Setting the correct position provider.
     const stitchMode = this._configuration.getStitchMode();
-    this._logger.verbose("initializing position provider. stitchMode: ", stitchMode);
+    this._logger.verbose("initializing position provider. stitchMode:", stitchMode);
 
     switch (stitchMode) {
       case StitchMode.CSS:
@@ -499,12 +499,16 @@ class EyesSelenium extends Eyes {
       const rect = await eyesWebElement.getRect();
       const elementLocation = new Location(rect);
 
-      // const isEquals = await EyesWebElement.equals(element, originalFC.peek());
-      if (originalFC.size() > 0) {
+      let scrollRootElement;
+      if (originalFC.size() > 0 && !(await EyesWebElement.equals(element, originalFC.peek().getReference()))) {
         await switchTo.frames(originalFC);
+        scrollRootElement = this._driver.findElement(By.css("html"));
+      } else {
+        scrollRootElement = this._scrollRootElement;
       }
 
-      await this._positionProviderHandler.get().setPosition(elementLocation);
+      const positionProvider = this._getElementPositionProvider(scrollRootElement);
+      await positionProvider.setPosition(elementLocation);
     }
   }
 
