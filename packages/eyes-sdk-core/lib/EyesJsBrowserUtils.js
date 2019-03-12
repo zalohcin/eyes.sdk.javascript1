@@ -1,6 +1,6 @@
 'use strict';
 
-const { EyesError, RectangleSize, Location } = require('@applitools/eyes-common');
+const { EyesError, RectangleSize, Location, ArgumentGuard, GeneralUtils } = require('@applitools/eyes-common');
 
 const JS_GET_VIEWPORT_SIZE =
   'var height, width; ' +
@@ -72,13 +72,6 @@ const JS_GET_OVERFLOW_AWARE_CONTENT_ENTIRE_SIZE =
 
 const JS_TRANSFORM_KEYS = ['transform', '-webkit-transform'];
 
-const JS_GET_SET_OVERFLOW_STR = (elementName, overflowValue) =>
-  `var element = ${elementName}; var overflowValue = "${overflowValue}"; ` +
-  'var origOverflow = element.style.overflow; ' +
-  'element.style.overflow = overflowValue; ' +
-  "if (overflowValue.toUpperCase() === 'HIDDEN' && origOverflow.toUpperCase() !== 'HIDDEN') element.setAttribute('data-applitools-original-overflow', origOverflow) " +
-  'return origOverflow;';
-
 /**
  * Handles browser related functionality.
  *
@@ -90,18 +83,25 @@ class EyesJsBrowserUtils {
    *
    * @param {EyesJsExecutor} executor - The executor to use.
    * @param {?string} value - The overflow value to set.
-   * @param {WebElement} [scrollbarsRoot]
+   * @param {WebElement} [rootElement]
    * @return {Promise<string>} - The previous value of overflow (could be {@code null} if undefined).
    */
-  static setOverflow(executor, value, scrollbarsRoot) {
-    const script = JS_GET_SET_OVERFLOW_STR(
-      scrollbarsRoot ? 'arguments[0]' : 'document.documentElement',
-      value || 'undefined'
-    );
+  static async setOverflow(executor, value, rootElement) {
+    ArgumentGuard.notNull(executor, "executor");
+    ArgumentGuard.notNull(rootElement, "rootElement");
 
-    return executor.executeScript(script, scrollbarsRoot).catch(err => {
+    const script = `var el = arguments[0]; var origOverflow = el.style.overflow; var newOverflow = '${value}'; ` +
+      `el.style.overflow = newOverflow; ` +
+      `if (newOverflow.toUpperCase() === 'HIDDEN' && origOverflow.toUpperCase() !== 'HIDDEN') { el.setAttribute('data-applitools-original-overflow', origOverflow); } ` +
+      `return origOverflow;`;
+
+    try {
+      const result = await executor.executeScript(script, rootElement);
+      await GeneralUtils.sleep(200);
+      return result;
+    } catch (err) {
       throw new EyesError('Failed to set overflow', err);
-    });
+    }
   }
 
   /**
