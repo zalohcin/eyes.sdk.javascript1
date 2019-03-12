@@ -81,7 +81,7 @@ class ContextBasedScaleProvider extends ScaleProvider {
       this._logger.verbose('Image is already scaled correctly.');
       this._scaleRatio = 1;
     } else {
-      this._logger.verbose('Calculating the scale ratio..');
+      this._logger.verbose('Calculating the scale ratio...');
       this._scaleRatio = 1 / this._devicePixelRatio;
       if (this._isMobileDevice) {
         this._logger.verbose('Mobile device, so using 2 step calculation for scale ration...');

@@ -119,13 +119,10 @@ class EyesWebDriver extends IWebDriver {
   /**
    * @inheritDoc
    */
+
   async executeScript(script, ...varArgs) {
-    this._logger.verbose('Execute script...');
     EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs);
-    // noinspection JSValidateTypes
-    const result = await this._driver.executeScript(script, ...varArgs);
-    this._logger.verbose('Done!');
-    return result;
+    return this._driver.executeScript(script, ...varArgs);
   }
 
   /**
@@ -263,7 +260,6 @@ class EyesWebDriver extends IWebDriver {
    * @return {EyesTargetLocator} - The target locator interface for this instance.
    */
   switchTo() {
-    this._logger.verbose('switchTo()');
     return new EyesTargetLocator(this._logger, this, this._driver.switchTo());
   }
 
@@ -531,6 +527,7 @@ class EyesWebDriver extends IWebDriver {
     if (rotation) {
       degrees = rotation.getRotation();
     } else {
+      logger.verbose("Trying to automatically normalize rotation...");
       degrees = await EyesSeleniumUtils.tryAutomaticRotation(logger, driver, image);
     }
 

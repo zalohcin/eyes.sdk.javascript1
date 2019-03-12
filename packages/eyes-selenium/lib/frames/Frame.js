@@ -97,7 +97,7 @@ class Frame {
    */
   async hideScrollbars(driver) {
     const scrollRootElement = await this._getScrollRootElement(driver);
-    this._logger.verbose("hiding scrollbars of element: " + scrollRootElement);
+    this._logger.verbose("hiding scrollbars of element:", scrollRootElement);
     this._originalOverflow = await this._jsExecutor.executeScript("var origOF = arguments[0].style.overflow; arguments[0].style.overflow='hidden'; return origOF;", scrollRootElement);
   }
 

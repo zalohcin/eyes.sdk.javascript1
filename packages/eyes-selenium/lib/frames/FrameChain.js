@@ -5,8 +5,7 @@ const { ArgumentGuard, Location } = require('@applitools/eyes-common');
 const { NoFramesError } = require('../errors/NoFramesError');
 
 /**
- * @class FrameChain
- * @extends {Iterable<Frame>}
+ * @implements {Iterable<Frame>}
  */
 class FrameChain {
   /**
@@ -22,10 +21,7 @@ class FrameChain {
     this._frames = [];
 
     if (other) {
-      this._logger.verbose(`Frame chain copy constructor (size ${other.size()})`);
-
-      other.getFrames().forEach(otherFrame => this._frames.push(otherFrame));
-      this._logger.verbose('Done!');
+      this._frames = other.getFrames().slice(0);
     }
   }
 

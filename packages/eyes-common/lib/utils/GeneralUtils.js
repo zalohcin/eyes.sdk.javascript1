@@ -217,7 +217,7 @@ class GeneralUtils {
             }
           }
 
-          return JSON.stringify(arg);
+          return GeneralUtils.toString(arg);
         }
 
         return arg;

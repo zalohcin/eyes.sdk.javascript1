@@ -427,12 +427,13 @@ class EyesSelenium extends Eyes {
    * @return {Promise<FrameChain>}
    */
   async _ensureFrameVisible() {
+    this._logger.verbose("scrollRootElement_:", this._scrollRootElement);
     const originalFC = this._driver.getFrameChain().clone();
     const fc = this._driver.getFrameChain().clone();
     await this._driver.executeScript("window.scrollTo(0,0);");
 
     while (fc.size() > 0) {
-      this._logger.verbose("fc.Count: ", fc.size());
+      this._logger.verbose(`fc.Count: ${fc.size()}`);
       // driver.getRemoteWebDriver().switchTo().parentFrame();
       await EyesTargetLocator.tryParentFrame(this._driver.getRemoteWebDriver().switchTo(), fc);
       await this._driver.executeScript("window.scrollTo(0,0);");
@@ -440,6 +441,7 @@ class EyesSelenium extends Eyes {
       const frame = fc.peek();
       let scrollRootElement = null;
       if (fc.size() === this._originalFC.size()) {
+        this._logger.verbose("PositionProvider:", this._positionProviderHandler.get());
         this._positionMemento = await this._positionProviderHandler.get().getState();
         scrollRootElement = this._scrollRootElement;
       } else {
@@ -450,6 +452,7 @@ class EyesSelenium extends Eyes {
           scrollRootElement = this._driver.findElement(By.css("html"));
         }
       }
+      this._logger.verbose("scrollRootElement:", scrollRootElement);
 
       const positionProvider = this._getElementPositionProvider(scrollRootElement);
       await positionProvider.setPosition(prevFrame.getLocation());
@@ -488,6 +491,8 @@ class EyesSelenium extends Eyes {
 
     const viewportBounds = await this._getViewportScrollBounds();
 
+    this._logger.verbose(`viewportBounds: ${viewportBounds} ; elementBounds: ${elementBounds}`);
+
     if (!viewportBounds.contains(elementBounds)) {
       await this._ensureFrameVisible();
 
@@ -509,6 +514,7 @@ class EyesSelenium extends Eyes {
    */
   async _getViewportScrollBounds() {
     if (!this.getScrollToRegion()) {
+      this._logger.log("WARNING: no region visibility strategy! returning an empty region!");
       return Region.EMPTY;
     }
 
@@ -555,7 +561,7 @@ class EyesSelenium extends Eyes {
     };
 
     const result = await super.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings);
-    this._logger.verbose('Done! trying to scroll back to original position..');
+    this._logger.verbose('Done! trying to scroll back to original position...');
     return result;
   }
 
@@ -870,6 +876,7 @@ class EyesSelenium extends Eyes {
       scrollRootElement.setPositionProvider(positionProvider);
     }
 
+    this._logger.verbose("position provider:", positionProvider);
     this._currentFramePositionProvider = positionProvider;
     return positionProvider;
   }

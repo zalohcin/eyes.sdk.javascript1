@@ -189,7 +189,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
       locationInScreenshot = locationInScreenshot.offset(-windowScroll.getX(), -windowScroll.getY());
     }
 
-    this._logger.verbose('Iterating over frames..');
+    this._logger.verbose('Iterating over frames...');
     let frame;
     for (let i = 1, l = this._frameChain.size(); i < l; i += 1) {
       this._logger.verbose('Getting next frame...');

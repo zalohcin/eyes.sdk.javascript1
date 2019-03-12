@@ -39,7 +39,7 @@ class ElementPositionProvider extends PositionProvider {
    * @inheritDoc
    */
   async setPosition(location) {
-    this._logger.verbose('Scrolling element to:', location);
+    this._logger.verbose('Scrolling element to', location);
     const result = await this._element.scrollTo(location);
     this._logger.verbose('Done scrolling element! result:', result);
     return result;

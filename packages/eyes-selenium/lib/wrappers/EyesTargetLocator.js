@@ -71,7 +71,7 @@ class EyesTargetLocator extends TargetLocator {
     if (TypeUtils.isInteger(varArg)) {
       /** @type {number} */
       const frameIndex = varArg;
-      this._logger.verbose(`found integer ${frameIndex}`);
+      this._logger.verbose(`Found integer (${frameIndex})`);
       // Finding the target element so and reporting it using onWillSwitch.
       this._logger.verbose('Getting frames list...');
       const frames = await this._driver.findElementsByCssSelector('frame, iframe');
@@ -91,26 +91,26 @@ class EyesTargetLocator extends TargetLocator {
 
     if (TypeUtils.isString(varArg)) {
       /** @type {string} */
-      const frameNameOrId = varArg;
-      this._logger.verbose(`found string ${frameNameOrId}`);
+      const nameOrId = varArg;
+      this._logger.verbose(`Found string ('${nameOrId}')`);
       // Finding the target element so we can report it.
       // We use find elements(plural) to avoid exception when the element is not found.
       this._logger.verbose('Getting frames by name...');
-      let frames = await this._driver.findElementsByName(frameNameOrId);
+      let frames = await this._driver.findElementsByName(nameOrId);
       if (frames.length === 0) {
         this._logger.verbose('No frames Found! Trying by id...');
         // If there are no frames by this name, we'll try the id
-        frames = await this._driver.findElementsById(frameNameOrId);
+        frames = await this._driver.findElementsById(nameOrId);
         if (frames.length === 0) {
           // No such frame, bummer
-          throw new TypeError(`No frame with name or id '${frameNameOrId}' exists!`);
+          throw new TypeError(`No frame with name or id '${nameOrId}' exists!`);
         }
       }
 
       this._logger.verbose('Done! Making preparations...');
       await this.willSwitchToFrame(frames[0]);
 
-      this._logger.verbose('Done! Switching to frame...');
+      this._logger.verbose(`Done! Switching to frame ${nameOrId} ...`);
       await this._targetLocator.frame(frames[0]);
 
       this._logger.verbose('Done!');
@@ -119,7 +119,7 @@ class EyesTargetLocator extends TargetLocator {
 
     /** @type {WebElement} */
     let frameElement = varArg;
-    this._logger.verbose('probably WebElement');
+    this._logger.verbose('Probably, WebElement');
     this._logger.verbose('Making preparations...');
     await this.willSwitchToFrame(frameElement);
 
@@ -138,7 +138,7 @@ class EyesTargetLocator extends TargetLocator {
       this._logger.verbose('Making preparations...');
       const frame = this._driver.getFrameChain().pop();
       await frame.returnToOriginalPosition(this._driver);
-      this._logger.verbose('Done! Switching to parent frame..');
+      this._logger.verbose('Done! Switching to parent frame...');
       await EyesTargetLocator.tryParentFrame(this._targetLocator, this._driver.getFrameChain());
       this._logger.verbose('Done!');
     }

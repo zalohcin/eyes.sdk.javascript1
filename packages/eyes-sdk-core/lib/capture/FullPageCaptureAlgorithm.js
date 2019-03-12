@@ -143,7 +143,7 @@ class FullPageCaptureAlgorithm {
     // Notice stitchedImage uses the same type of image as the screenshots.
     let stitchedImage = MutableImage.newImage(fullArea.getWidth(), fullArea.getHeight());
 
-    this._logger.verbose('Done! Adding initial screenshot..');
+    this._logger.verbose('Done! Adding initial screenshot...');
     // Starting with the screenshot we already captured at (0,0).
     const initialPart = image;
     this._logger.verbose(`Initial part:(0,0)[${initialPart.getWidth()} x ${initialPart.getHeight()}]`);
@@ -170,6 +170,7 @@ class FullPageCaptureAlgorithm {
       const originPosition = await positionProvider.getCurrentPosition();
       const targetPosition = originPosition.offset(-fullArea.getLeft(), -fullArea.getTop());
       this._logger.verbose(`Origin Position is set to ${originPosition}`);
+      this._logger.verbose(`Target Position is ${targetPosition}`);
 
       // Actually taking the screenshot.
       this._logger.verbose('Getting image...');
@@ -219,7 +220,7 @@ class FullPageCaptureAlgorithm {
     this._logger.verbose(`Actual stitched size: ${actualImageWidth}x${actualImageHeight}`);
 
     if (actualImageWidth < stitchedImage.getWidth() || actualImageHeight < stitchedImage.getHeight()) {
-      this._logger.verbose('Trimming unnecessary margins..');
+      this._logger.verbose('Trimming unnecessary margins...');
       stitchedImage = await stitchedImage.crop(new Region(0, 0, Math.min(actualImageWidth, stitchedImage.getWidth()), Math.min(actualImageHeight, stitchedImage.getHeight())));
       this._logger.verbose('Done!');
     }

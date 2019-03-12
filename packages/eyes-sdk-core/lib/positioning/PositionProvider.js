@@ -67,6 +67,13 @@ class PositionProvider {
   async getScrolledElement() {
     throw new TypeError('The method is not implemented!');
   }
+
+  /**
+   * @override
+   */
+  toString() {
+    return this.constructor.name;
+  }
 }
 
 exports.PositionProvider = PositionProvider;
