@@ -21,7 +21,7 @@ class PositionProvider {
    * Go to the specified location.
    *
    * @param {Location} location - The position to set.
-   * @return {Promise<void>}
+   * @return {Promise<Location>}
    */
   async setPosition(location) {
     throw new TypeError('The method is not implemented!');
@@ -37,7 +37,13 @@ class PositionProvider {
 
   // noinspection JSMethodCanBeStatic
   /**
-   * @return {Promise<PositionMemento>}
+   * Get the current state of the position provider. This is different from {@link #getCurrentPosition()} in
+   * that the state of the position provider might include other model than just the coordinates.
+   * For example a CSS translation based position provider (in WebDriver based SDKs), might save the
+   * entire "transform" style value as its state.
+   *
+   * @return {Promise<PositionMemento>} The current state of the position provider, which can later be restored by
+   *   passing it as a parameter to {@link #restoreState}.
    */
   async getState() {
     throw new TypeError('The method is not implemented!');
@@ -45,10 +51,20 @@ class PositionProvider {
 
   // noinspection JSMethodCanBeStatic
   /**
-   * @param {PositionMemento} state - The initial state of position
+   * Restores the state of the position provider to the state provided as a parameter.
+   *
+   * @param {PositionMemento} state - The state to restore to.
    * @return {Promise<void>}
    */
   async restoreState(state) {
+    throw new TypeError('The method is not implemented!');
+  }
+
+  // noinspection JSMethodCanBeStatic
+  /**
+   * @return {*}
+   */
+  async getScrolledElement() {
     throw new TypeError('The method is not implemented!');
   }
 }
