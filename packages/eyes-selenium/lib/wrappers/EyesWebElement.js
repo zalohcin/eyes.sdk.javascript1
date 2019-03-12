@@ -90,7 +90,7 @@ class EyesWebElement extends WebElement {
   static async equals(a, b) {
     if (a instanceof WebElement && b instanceof WebElement) {
       // noinspection JSValidateTypes
-      return super.equals(a, b);
+      return await a.getId() === await b.getId();
     }
 
     return false;
