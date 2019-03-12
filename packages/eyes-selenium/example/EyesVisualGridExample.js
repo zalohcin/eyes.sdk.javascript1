@@ -17,6 +17,7 @@ const { Eyes, Target, ConsoleLogHandler, SeleniumConfiguration, BrowserType } = 
 
   try {
     const configuration = new SeleniumConfiguration();
+    configuration.setConcurrentSessions(3);
     configuration.setAppName('Eyes Examples');
     configuration.setTestName('My first Javascript test!');
     configuration.addBrowser(1200, 800, BrowserType.CHROME);

@@ -1,6 +1,7 @@
 'use strict';
 
 const {URL} = require('url');
+const { By } = require('selenium-webdriver');
 
 const {
   Logger,
@@ -17,13 +18,11 @@ const {
   CorsIframeHandle,
 } = require('@applitools/eyes-sdk-core');
 
-const { StitchMode } = require('./config/StitchMode');
 const { SeleniumConfiguration } = require('./config/SeleniumConfiguration');
 const { FrameChain } = require('./frames/FrameChain');
 const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
 const { ImageRotation } = require('./positioning/ImageRotation');
-const { CssTranslatePositionProvider } = require('./positioning/CssTranslatePositionProvider');
-const { ScrollPositionProvider } = require('./positioning/ScrollPositionProvider');
+
 const { MoveToRegionVisibilityStrategy } = require('./regionVisibility/MoveToRegionVisibilityStrategy');
 const { NopRegionVisibilityStrategy } = require('./regionVisibility/NopRegionVisibilityStrategy');
 const { JavascriptHandler } = require('./JavascriptHandler');
@@ -148,22 +147,6 @@ class Eyes extends EyesBase {
     }
 
     this._jsExecutor = new SeleniumJavaScriptExecutor(this._driver);
-  }
-
-  /**
-   * @protected
-   */
-  _initPositionProvider() {
-    // Setting the correct position provider.
-    const stitchMode = this.getStitchMode();
-    this._logger.verbose(`initializing position provider. stitchMode: ${stitchMode}`);
-    switch (stitchMode) {
-      case StitchMode.CSS:
-        this._positionProviderHandler.set(new CssTranslatePositionProvider(this._logger, this._jsExecutor));
-        break;
-      default:
-        this._positionProviderHandler.set(new ScrollPositionProvider(this._logger, this._jsExecutor));
-    }
   }
 
   // noinspection JSMethodCanBeStatic
@@ -563,14 +546,6 @@ class Eyes extends EyesBase {
     return this._driver.getSessionId();
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {PositionProvider} - The currently set position provider.
-   */
-  getElementPositionProvider() {
-    return this._elementPositionProvider ? this._elementPositionProvider : this._positionProviderHandler.get();
-  }
-
   /*------------------------- Getters/Setters -------------------------*/
 
   /**
@@ -628,10 +603,50 @@ class Eyes extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {WebElement|By} element
+   * @param {By} element
    */
   setScrollRootElement(element) {
     this._scrollRootElement = this._driver.findElement(element);
+  }
+
+  /**
+   * Gets original fc.
+   *
+   * @return {FrameChain} the original fc
+   */
+  getOriginalFC() {
+    return this._originalFC;
+  }
+
+  /**
+   * Gets current frame position provider.
+   *
+   * @return {PositionProvider} - the current frame position provider
+   */
+  getCurrentFramePositionProvider() {
+    return this._currentFramePositionProvider;
+  }
+
+  /**
+   * Gets current frame scroll root element.
+   *
+   * @ignore
+   * @return {WebElement} - the current frame scroll root element
+   */
+  getCurrentFrameScrollRootElement() {
+    const fc = this._driver.getFrameChain().clone();
+    const currentFrame = fc.peek();
+
+    let scrollRootElement = null;
+    if (currentFrame) {
+      scrollRootElement = currentFrame.getScrollRootElement();
+    }
+
+    if (!scrollRootElement) { // TODO: add check if mobile device
+      scrollRootElement = this._driver.findElement(By.css("html"));
+    }
+
+    return scrollRootElement;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -799,10 +814,6 @@ class Eyes extends EyesBase {
   setStitchMode(mode) {
     this._logger.verbose(`setting stitch mode to ${mode}`);
     this._configuration.setStitchMode(mode);
-
-    if (this._driver) {
-      this._initPositionProvider();
-    }
   }
 
   // noinspection JSUnusedGlobalSymbols

@@ -1,5 +1,6 @@
 'use strict';
 
+const { By } = require('selenium-webdriver');
 const { DomCapture } = require('@applitools/dom-utils');
 
 const {
@@ -37,6 +38,7 @@ const { EyesWebDriverScreenshot } = require('./capture/EyesWebDriverScreenshot')
 const { RegionPositionCompensationFactory } = require('./positioning/RegionPositionCompensationFactory');
 const { ScrollPositionProvider } = require('./positioning/ScrollPositionProvider');
 const { ElementPositionProvider } = require('./positioning/ElementPositionProvider');
+const { CssTranslatePositionProvider } = require('./positioning/CssTranslatePositionProvider');
 const { Eyes } = require('./Eyes');
 
 /**
@@ -121,10 +123,25 @@ class EyesSelenium extends Eyes {
 
     this._devicePixelRatio = Eyes.UNKNOWN_DEVICE_PIXEL_RATIO;
 
-    this._initPositionProvider();
-
     this._driver.setRotation(this._rotation);
     return this._driver;
+  }
+
+  /**
+   * @private
+   * @return {PositionProvider}
+   */
+  _createPositionProvider(scrollRootElement = this._scrollRootElement) {
+    // Setting the correct position provider.
+    const stitchMode = this._configuration.getStitchMode();
+    this._logger.verbose("initializing position provider. stitchMode: ", stitchMode);
+
+    switch (stitchMode) {
+      case StitchMode.CSS:
+          return new CssTranslatePositionProvider(this._logger, this._jsExecutor, scrollRootElement);
+      default:
+        return new ScrollPositionProvider(this._logger, this._jsExecutor, scrollRootElement);
+    }
   }
 
   // noinspection FunctionWithMoreThanThreeNegationsJS
@@ -141,21 +158,24 @@ class EyesSelenium extends Eyes {
       name = checkSettings.getName();
     }
 
-    if (!(await EyesSeleniumUtils.isMobileDevice(this._driver))) {
-      this._logger.verbose(`URL: ${await this._driver.getCurrentUrl()}`);
-    }
-
     this._logger.verbose(`check(${checkSettings}) - begin`);
     this._stitchContent = checkSettings.getStitchContent();
     const targetRegion = checkSettings.getTargetRegion();
+    this._scrollRootElement = this._getScrollRootElementFromCheckSettings(checkSettings);
 
+    this._currentFramePositionProvider = null;
+    this.setPositionProvider(this._createPositionProvider());
     this._originalFC = this._driver.getFrameChain().clone();
+
+    // const validationInfo = this.fireValidationWillStartEvent(name);
+
+    // if (!(await EyesSeleniumUtils.isMobileDevice(this._driver))) {
+    this._logger.verbose(`URL: ${await this._driver.getCurrentUrl()}`);
+    // }
 
     const switchedToFrameCount = await this._switchToFrame(checkSettings);
 
-    this._scrollRootElement = null;
     this._regionToCheck = null;
-    this._imageLocation = null;
 
     let result = null;
 
@@ -163,6 +183,7 @@ class EyesSelenium extends Eyes {
     let originalFC = null;
 
     if (targetRegion) {
+      this._logger.verbose("have target region");
       originalFC = await this._tryHideScrollbars();
       this._imageLocation = targetRegion.getLocation();
       result = await super.checkWindowBase(new RegionProvider(targetRegion), name, false, checkSettings);
@@ -171,13 +192,13 @@ class EyesSelenium extends Eyes {
 
       const targetSelector = checkSettings.getTargetSelector();
       if (!targetElement && targetSelector) {
-        targetElement = await this._driver.findElement(targetSelector);
+        targetElement = this._driver.findElement(targetSelector);
       }
 
       if (targetElement) {
+        this._logger.verbose("have target element");
         originalFC = await this._tryHideScrollbars();
-        this._targetElement = targetElement instanceof EyesWebElement ? targetElement :
-          new EyesWebElement(this._logger, this._driver, targetElement);
+        this._targetElement = new EyesWebElement(this._logger, this._driver, targetElement);
         if (this._stitchContent) {
           result = await this._checkElement(undefined, name, checkSettings);
         } else {
@@ -185,6 +206,7 @@ class EyesSelenium extends Eyes {
         }
         this._targetElement = null;
       } else if (checkSettings.getFrameChain().length > 0) {
+        this._logger.verbose("have frame chain");
         originalFC = await this._tryHideScrollbars();
         if (this._stitchContent) {
           result = await this._checkFullFrameOrElement(name, checkSettings);
@@ -192,12 +214,15 @@ class EyesSelenium extends Eyes {
           result = await this._checkFrameFluent(name, checkSettings);
         }
       } else {
-        if (!(await EyesSeleniumUtils.isMobileDevice(this._driver))) {
-          // required to prevent cut line on the last stitched part of the page on some browsers (like firefox).
-          await switchTo.defaultContent();
-          originalFC = await this._tryHideScrollbars();
-        }
+        this._logger.verbose("default case");
+        // if (!(await EyesSeleniumUtils.isMobileDevice(this._driver))) {
+        // required to prevent cut line on the last stitched part of the page on some browsers (like firefox).
+        await switchTo.defaultContent();
+        originalFC = await this._tryHideScrollbars();
+        this._currentFramePositionProvider = this._createPositionProvider(this._driver.findElement(By.css("html")));
+        // }
         result = await super.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
+        await switchTo.frames(this._originalFC);
       }
     }
 
@@ -207,7 +232,7 @@ class EyesSelenium extends Eyes {
 
     await this._switchToParentFrame(switchedToFrameCount);
 
-    if (this._positionMemento != null) {
+    if (this._positionMemento) {
       await this._positionProviderHandler.get().restoreState(this._positionMemento);
       this._positionMemento = null;
     }
@@ -235,9 +260,9 @@ class EyesSelenium extends Eyes {
    * @return {Promise<void>}
    */
   async _trySwitchToFrames(driver, switchTo, frames) {
-    if (await EyesSeleniumUtils.isMobileDevice(driver)) {
-      return;
-    }
+    // if (await EyesSeleniumUtils.isMobileDevice(driver)) {
+    //   return;
+    // }
 
     try {
       await switchTo.frames(frames);
@@ -285,50 +310,61 @@ class EyesSelenium extends Eyes {
     }
 
     const frameChain = checkSettings.getFrameChain();
-
-    return await frameChain.reduce(async (prevPromise, frameLocator) => {
-      let switchedToFrameCount = await prevPromise;
+    let switchedToFrameCount = 0;
+    for (let frameLocator of frameChain) {
       if (await this._switchToFrameLocator(frameLocator)) {
-        switchedToFrameCount += 1;
+        switchedToFrameCount++;
       }
-      return switchedToFrameCount;
-    }, Promise.resolve(0));
+    }
+    return switchedToFrameCount;
   }
 
   /**
    * @private
+   * @param {FrameLocator} frameTarget
    * @return {Promise<boolean>}
    */
-  async _switchToFrameLocator(frameLocator) {
+  async _switchToFrameLocator(frameTarget) {
     const switchTo = this._driver.switchTo();
 
-    if (frameLocator.getFrameIndex()) {
-      await switchTo.frame(frameLocator.getFrameIndex());
+    if (frameTarget.getFrameIndex()) {
+      await switchTo.frame(frameTarget.getFrameIndex());
+      this._updateFrameScrollRoot(frameTarget);
       return true;
     }
 
-    if (frameLocator.getFrameNameOrId()) {
-      await switchTo.frame(frameLocator.getFrameNameOrId());
+    if (frameTarget.getFrameNameOrId()) {
+      await switchTo.frame(frameTarget.getFrameNameOrId());
+      this._updateFrameScrollRoot(frameTarget);
       return true;
     }
 
-    if (frameLocator.getFrameElement()) {
-      const frameElement = frameLocator.getFrameElement();
-      if (frameElement) {
-        await switchTo.frame(frameElement);
-        return true;
-      }
+    if (frameTarget.getFrameElement()) {
+      await switchTo.frame(frameTarget.getFrameElement());
+      this._updateFrameScrollRoot(frameTarget);
+      return true;
     }
 
-    if (frameLocator.getFrameSelector()) {
-      const frameElement = this._driver.findElement(frameLocator.getFrameSelector());
+    if (frameTarget.getFrameSelector()) {
+      const frameElement = this._driver.findElement(frameTarget.getFrameSelector());
       if (frameElement) {
         await switchTo.frame(frameElement);
+        this._updateFrameScrollRoot(frameTarget);
         return true;
       }
     }
 
     return false;
+  }
+
+  /**
+   * @private
+   * @param {FrameLocator} frameTarget
+   */
+  _updateFrameScrollRoot(frameTarget) {
+    const rootElement = this._getScrollRootElementFromCheckSettings(frameTarget);
+    const frame = this._driver.getFrameChain().peek();
+    frame.setScrollRootElement(rootElement);
   }
 
   /**
@@ -394,16 +430,32 @@ class EyesSelenium extends Eyes {
   async _ensureFrameVisible() {
     const originalFC = this._driver.getFrameChain().clone();
     const fc = this._driver.getFrameChain().clone();
-    while (fc.size() > 0) {
-      // driver.getRemoteWebDriver().switchTo().parentFrame();
-      const frame = fc.pop();
-      await EyesTargetLocator.tryParentFrame(this._driver.getRemoteWebDriver().switchTo(), fc);
-      if (fc.size() === 0) {
-        this._positionMemento = await this._positionProviderHandler.get().getState();
-      }
-      await this._positionProviderHandler.get().setPosition(frame.getLocation());
+    await this._driver.executeScript("window.scrollTo(0,0);");
 
-      const reg = new Region(Location.ZERO, frame.getInnerSize());
+    while (fc.size() > 0) {
+      this._logger.verbose("fc.Count: ", fc.size());
+      // driver.getRemoteWebDriver().switchTo().parentFrame();
+      await EyesTargetLocator.tryParentFrame(this._driver.getRemoteWebDriver().switchTo(), fc);
+      await this._driver.executeScript("window.scrollTo(0,0);");
+      const prevFrame = fc.pop();
+      const frame = fc.peek();
+      let scrollRootElement = null;
+      if (fc.size() === this._originalFC.size()) {
+        this._positionMemento = await this._positionProviderHandler.get().getState();
+        scrollRootElement = this._scrollRootElement;
+      } else {
+        if (frame != null) {
+          scrollRootElement = frame.getScrollRootElement();
+        }
+        if (scrollRootElement == null) {
+          scrollRootElement = this._driver.findElement(By.css("html"));
+        }
+      }
+
+      const positionProvider = this._getElementPositionProvider(scrollRootElement);
+      await positionProvider.setPosition(prevFrame.getLocation());
+
+      const reg = new Region(Location.ZERO, prevFrame.getInnerSize());
       this._effectiveViewport.intersect(reg);
     }
     await this._driver.switchTo().frames(originalFC);
@@ -421,10 +473,10 @@ class EyesSelenium extends Eyes {
       return;
     }
 
-    if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
-      this._logger.log("NATIVE context identified, skipping 'ensure element visible'");
-      return;
-    }
+    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
+    //   this._logger.log("NATIVE context identified, skipping 'ensure element visible'");
+    //   return;
+    // }
 
     const originalFC = this._driver.getFrameChain().clone();
     const switchTo = this._driver.switchTo();
@@ -463,9 +515,8 @@ class EyesSelenium extends Eyes {
 
     const originalFrameChain = this._driver.getFrameChain().clone();
     const switchTo = this._driver.switchTo();
-
-    await switchTo.defaultContent();
-    const spp = new ScrollPositionProvider(this._logger, this._jsExecutor);
+    await switchTo.frames(this._originalFC);
+    const spp = new ScrollPositionProvider(this._logger, this._jsExecutor, this._scrollRootElement);
     let location = null;
     try {
       location = await spp.getCurrentPosition();
@@ -515,13 +566,11 @@ class EyesSelenium extends Eyes {
    */
   async _checkElement(eyesElement = this._targetElement, name, checkSettings) {
     this._regionToCheck = null;
-    const originalPositionMemento = await this._positionProviderHandler.get().getState();
+    const scrollRootElement = this.getCurrentFrameScrollRootElement();
+    const positionProvider = this._createPositionProvider(scrollRootElement);
+    const originalPositionMemento = await positionProvider.getState();
 
     await this._ensureElementVisible(this._targetElement);
-
-    const originalPositionProvider = this._positionProviderHandler.get();
-    const scrollPositionProvider = new ScrollPositionProvider(this._logger, this._jsExecutor);
-    const originalScrollPosition = await scrollPositionProvider.getCurrentPosition();
 
     let result;
     let originalOverflow;
@@ -531,31 +580,32 @@ class EyesSelenium extends Eyes {
       this._checkFrameOrElement = true;
 
       const displayStyle = await eyesElement.getComputedStyle('display');
-      if (displayStyle === 'inline') {
-        this._elementPositionProvider = null;
-      } else {
-        this._elementPositionProvider = new ElementPositionProvider(this._logger, this._driver, eyesElement);
-      }
 
       if (this._configuration.getHideScrollbars()) {
         originalOverflow = await eyesElement.getOverflow();
         await eyesElement.setOverflow('hidden');
       }
 
-      const borderOffsetLocation = await eyesElement.getBorderOffsetLocation();
-      const elementSize = await eyesElement.getClientSize();
+      const sizeAndBorders = await eyesElement.getSizeAndBorders();
+
+      if (displayStyle !== 'inline' &&
+        sizeAndBorders.height <= this._effectiveViewport.getHeight() &&
+        sizeAndBorders.width <= this._effectiveViewport.getWidth()) {
+        this._elementPositionProvider = new ElementPositionProvider(this._logger, this._driver, eyesElement);
+      } else {
+        this._elementPositionProvider = null;
+      }
 
       const elementRegion = new Region(
-        rect.x + borderOffsetLocation.getX(),
-        rect.y + borderOffsetLocation.getY(),
-        elementSize.getWidth(),
-        elementSize.getHeight(),
+        rect.x + sizeAndBorders.left,
+        rect.y + sizeAndBorders.top,
+        sizeAndBorders.width,
+        sizeAndBorders.height,
         CoordinatesType.SCREENSHOT_AS_IS
       );
 
-      this._logger.verbose(`Element region: ${elementRegion}`);
+      this._logger.verbose(`Element region:`, elementRegion);
 
-      this._logger.verbose('replacing regionToCheck');
       this._regionToCheck = elementRegion;
 
       if (!this._effectiveViewport.isSizeEmpty()) {
@@ -571,12 +621,10 @@ class EyesSelenium extends Eyes {
 
       this._checkFrameOrElement = false;
 
-      await originalPositionProvider.restoreState(originalPositionMemento);
-      await scrollPositionProvider.setPosition(originalScrollPosition);
-      this._positionProviderHandler.set(originalPositionProvider);
+      await positionProvider.restoreState(originalPositionMemento);
       this._regionToCheck = null;
-      this._imageLocation = null;
       this._elementPositionProvider = null;
+      this._imageLocation = null;
     }
 
     return result;
@@ -628,7 +676,8 @@ class EyesSelenium extends Eyes {
    * @return {Promise<ScaleProviderFactory>}
    */
   async _getScaleProviderFactory() {
-    const entireSize = await this._positionProviderHandler.get().getEntireSize();
+    const element = await this._driver.findElement(By.css("html"));
+    const entireSize = await EyesSeleniumUtils.getEntireElementSize(this._jsExecutor, element);
 
     return new ContextBasedScaleProviderFactory(
       this._logger,
@@ -655,14 +704,6 @@ class EyesSelenium extends Eyes {
   /**
    * @inheritDoc
    */
-  async beforeOpen() {
-    this._scrollRootElement = null;
-    await this._tryHideScrollbars();
-  }
-
-  /**
-   * @inheritDoc
-   */
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...');
@@ -678,26 +719,41 @@ class EyesSelenium extends Eyes {
    * @return {Promise<FrameChain>}
    */
   async _tryHideScrollbars() {
-    if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
-      return new FrameChain(this._logger);
-    }
+    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
+    //   return new FrameChain(this._logger);
+    // }
 
     if (this._configuration.getHideScrollbars() || (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent)) {
       const originalFC = this._driver.getFrameChain().clone();
       const fc = this._driver.getFrameChain().clone();
+      let frame = fc.peek();
+
       if (fc.size() > 0) {
         while (fc.size() > 0) {
           this._logger.verbose(`fc.Count = ${fc.size()}`);
+
           if (this._stitchContent || fc.size() !== originalFC.size()) {
-            await EyesSeleniumUtils.hideScrollbars(this._driver, 200, this._scrollRootElement);
+            if (frame === null) {
+              this._logger.verbose("hiding scrollbars of element (1)" );
+              await EyesSeleniumUtils.setOverflow(this._driver, "hidden", this._scrollRootElement);
+              // await EyesSeleniumUtils.hideScrollbars(this._driver, 200, this._scrollRootElement);
+            } else {
+              await frame.hideScrollbars(this._driver);
+            }
           }
+
+          await this._driver.switchTo().parentFrame();
           fc.pop();
-          await EyesTargetLocator.tryParentFrame(this._driver.getRemoteWebDriver().switchTo(), fc);
+          frame = fc.peek();
         }
+      } else {
+        this._logger.verbose("hiding scrollbars of element (2)");
+        this._originalOverflow = EyesSeleniumUtils.setOverflow(this._driver, "hidden", this._scrollRootElement);
       }
 
-      // this._originalOverflow = await EyesSeleniumUtils.hideScrollbars(this._driver, 200, this._scrollRootElement);
+      this._logger.verbose("switching back to original frame");
       await this._driver.switchTo().frames(originalFC);
+      this._logger.verbose("done hiding scrollbars.");
       return originalFC;
     }
 
@@ -721,36 +777,30 @@ class EyesSelenium extends Eyes {
    * @return {Promise<void>}
    */
   async _tryRestoreScrollbars(frameChain) {
-    if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
-      return;
-    }
+    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
+    //   return;
+    // }
 
     if (this._configuration.getHideScrollbars() || (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent)) {
       await this._driver.switchTo().frames(frameChain);
-      const originalFC = this._driver.getFrameChain().clone();
-      const fc = this._driver.getFrameChain().clone();
-      await this._tryRestoreScrollbarsLoop(fc);
+      const originalFC = frameChain.clone();
+      const fc = frameChain.clone();
+      if (fc.size() > 0) {
+        while (fc.size() > 0) {
+          const frame = fc.pop();
+          await frame.returnToOriginalOverflow(this._driver);
+          await EyesTargetLocator.tryParentFrame(this._driver.getRemoteWebDriver().switchTo(), fc);
+        }
+      } else {
+        this._logger.verbose("returning overflow of element to its original value");
+        await EyesSeleniumUtils.setOverflow(this._driver, this._originalOverflow, this._scrollRootElement);
+      }
       await this._driver.switchTo().frames(originalFC);
+      this._logger.verbose("done restoring scrollbars.");
+    } else {
+      this._logger.verbose("no need to restore scrollbars.");
     }
     this._driver.getFrameChain().clear();
-  }
-
-  /**
-   * @private
-   * @param {FrameChain} fc
-   * @return {Promise<void>}
-   */
-  async _tryRestoreScrollbarsLoop(fc) {
-    if (fc.size() > 0) {
-      await this._driver.switchTo().parentFrame();
-
-      const frame = fc.pop();
-      let frameReference = frame.getReference();
-      frameReference = frameReference instanceof EyesWebElement ? frameReference : new EyesWebElement(this._logger, this._driver, frameReference);
-      await frameReference.setOverflow(frame.getOriginalOverflow());
-
-      await this._tryRestoreScrollbarsLoop(fc);
-    }
   }
 
   /*
@@ -770,25 +820,92 @@ class EyesSelenium extends Eyes {
   }
   */
 
+  /**
+   * Gets scroll root element.
+   *
+   * @override
+   * @return {WebElement} the scroll root element
+   */
+  getScrollRootElement() {
+    if (this._scrollRootElement == null) {
+      this._scrollRootElement = this._driver.findElement(By.css("html"));
+    }
+    return this._scrollRootElement;
+  }
+
+  /**
+   * @private
+   * @param {SeleniumCheckSettings} scrollRootElementContainer
+   * @return {WebElement}
+   */
+  _getScrollRootElementFromCheckSettings(scrollRootElementContainer) {
+    // if (!EyesSeleniumUtils.isMobileDevice(driver)) {
+    if (scrollRootElementContainer) {
+      let scrollRootElement = scrollRootElementContainer.getScrollRootElement();
+
+      if (!scrollRootElement) {
+        const scrollRootSelector = scrollRootElementContainer.getScrollRootSelector();
+        if (scrollRootSelector) {
+          scrollRootElement = this._driver.findElement(scrollRootSelector);
+        }
+      }
+
+      if (scrollRootElement) {
+        return scrollRootElement;
+      }
+    }
+    // }
+
+    return this._driver.findElement(By.css("html"));
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {EyesWebElement} scrollRootElement
+   * @return {PositionProvider}
+   */
+  _getElementPositionProvider(scrollRootElement) {
+    let positionProvider = scrollRootElement.getPositionProvider();
+    if (positionProvider == null) {
+      positionProvider = this._createPositionProvider(scrollRootElement);
+      scrollRootElement.setPositionProvider(positionProvider);
+    }
+
+    this._currentFramePositionProvider = positionProvider;
+    return positionProvider;
+  }
+
   // noinspection JSUnusedGlobalSymbols
   /**
    * @protected
    * @inheritDoc
    */
   async getScreenshot() {
-    this._logger.verbose('getScreenshot()');
+    this._logger.verbose('enter()');
+
+    const scaleProviderFactory = await this._updateScalingParams();
 
     const originalFrameChain = this._driver.getFrameChain().clone();
     const switchTo = this._driver.switchTo();
+    await switchTo.frames(this._originalFC);
 
-    const scaleProviderFactory = await this._updateScalingParams();
-    const fullPageCapture = new FullPageCaptureAlgorithm(
+    const positionProvider = this.getPositionProvider();
+    let originalPosition = null;
+    if (positionProvider) { // !EyesSeleniumUtils.isMobileDevice(this.driver)
+      originalPosition = await positionProvider.getState();
+    }
+    await switchTo.frames(originalFrameChain);
+
+    const scrollRootElement = this.getCurrentFrameScrollRootElement();
+    const originProvider = new ScrollPositionProvider(this._logger, this._jsExecutor, scrollRootElement);
+
+    let algo = new FullPageCaptureAlgorithm(
       this._logger,
       this._regionPositionCompensation,
-      this.getWaitBeforeScreenshots(),
+      this._configuration.getWaitBeforeScreenshots(),
       this._debugScreenshotsProvider,
       this._screenshotFactory,
-      new ScrollPositionProvider(this._logger, this._jsExecutor),
+      originProvider,
       scaleProviderFactory,
       this._cutProviderHandler.get(),
       this._configuration.getStitchOverlap(),
@@ -808,9 +925,20 @@ class EyesSelenium extends Eyes {
     if (this._checkFrameOrElement) {
       this._logger.verbose('Check frame/element requested');
 
+      // if (!EyesSeleniumUtils.isMobileDevice(this.driver)) {
       await switchTo.frames(originalFrameChain);
+      // }
 
-      const entireFrameOrElement = await fullPageCapture.getStitchedRegion(this._regionToCheck, null, this.getElementPositionProvider());
+      let entireFrameOrElement;
+      if (!this._elementPositionProvider) {
+        const scrollRootElement2 = this._driver.findElement(By.css("html"));
+        const elemPositionProvider = this._getElementPositionProvider(scrollRootElement2);
+        await this._markElementForLayoutRCA(elemPositionProvider);
+        entireFrameOrElement = await algo.getStitchedRegion(this._regionToCheck, null, elemPositionProvider);
+      } else {
+        await this._markElementForLayoutRCA(this._elementPositionProvider);
+        entireFrameOrElement = await algo.getStitchedRegion(this._regionToCheck, null, this._elementPositionProvider);
+      }
 
       this._logger.verbose('Building screenshot object...');
       const size = new RectangleSize(entireFrameOrElement.getWidth(), entireFrameOrElement.getHeight());
@@ -822,11 +950,19 @@ class EyesSelenium extends Eyes {
       const originalFramePosition = originalFrameChain.size() > 0 ?
         originalFrameChain.getDefaultContentScrollPosition() : new Location(Location.ZERO);
 
-      await switchTo.defaultContent();
+      await switchTo.frames(this._originalFC);
+      let eyesScrollRootElement = new EyesWebElement(this._logger, this._driver, this._scrollRootElement);
 
-      const fullPageImage = await fullPageCapture.getStitchedRegion(Region.EMPTY, null, this._positionProviderHandler.get());
+      let rect = await eyesScrollRootElement.getRect();
+      let sizeAndBorders = await eyesScrollRootElement.getSizeAndBorders();
+      let region = new Region(rect.x + sizeAndBorders.left, rect.y + sizeAndBorders.top, sizeAndBorders.width, sizeAndBorders.height);
+
+      await this._markElementForLayoutRCA(null);
+
+      let fullPageImage = await algo.getStitchedRegion(region, null, this._positionProviderHandler.get());
 
       await switchTo.frames(originalFrameChain);
+
       result = await EyesWebDriverScreenshot.fromScreenshotType(this._logger, this._driver, fullPageImage, null, originalFramePosition);
     } else {
       await this._ensureElementVisible(this._targetElement);
@@ -861,8 +997,31 @@ class EyesSelenium extends Eyes {
       }
     }
 
+    await switchTo.frames(this._originalFC);
+    if (positionProvider) {
+      await positionProvider.restoreState(originalPosition);
+    }
+    await switchTo.frames(originalFrameChain);
+
     this._logger.verbose('Done!');
     return result;
+  }
+
+  /**
+   * @private
+   * @param {PositionProvider} elemPositionProvider
+   */
+  async _markElementForLayoutRCA(elemPositionProvider) {
+    const positionProvider = elemPositionProvider ? elemPositionProvider : this.getPositionProvider();
+    const scrolledElement = await positionProvider.getScrolledElement();
+
+    if (scrolledElement) {
+      try {
+        await this._jsExecutor.executeScript("arguments[0].setAttribute('data-applitools-scroll','true');", scrolledElement);
+      } catch (err) {
+        this._logger.verbose("Can't set data attribute for element", err);
+      }
+    }
   }
 }
 

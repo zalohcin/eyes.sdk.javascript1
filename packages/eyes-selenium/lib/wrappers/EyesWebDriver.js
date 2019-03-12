@@ -1,6 +1,6 @@
 'use strict';
 
-const by = require('selenium-webdriver/lib/by');
+const { By } = require('selenium-webdriver');
 const { IWebDriver } = require('selenium-webdriver/lib/webdriver');
 const { ArgumentGuard, MutableImage } = require('@applitools/eyes-common');
 
@@ -13,6 +13,8 @@ const { EyesTargetLocator } = require('./EyesTargetLocator');
 /**
  * An Eyes implementation of the interfaces implemented by {@link IWebDriver}.
  * Used so we'll be able to return the users an object with the same functionality as {@link WebDriver}.
+ *
+ * @extends {WebDriver}
  * @implements {EyesJsExecutor}
  */
 class EyesWebDriver extends IWebDriver {
@@ -208,17 +210,17 @@ class EyesWebDriver extends IWebDriver {
   // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
-   * @param {!(by.By|By|Function)} locator The locator strategy to use when searching for the element.
+   * @param {!(By|Function)} locator The locator strategy to use when searching for the element.
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElement(locator) {
-    return new EyesWebElementPromise(this._logger, this, this._driver.findElement(locator));
+    return new EyesWebElementPromise(this._logger, this, this._driver.findElement(locator), locator);
   }
 
   // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
-   * @param {!(by.By|By|Function)} locator The locator strategy to use when searching for the element.
+   * @param {!(By|Function)} locator The locator strategy to use when searching for the element.
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will be resolved to an array of the located
    *   {@link EyesWebElement}s.
    */
@@ -296,7 +298,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByClassName(className) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(by.By.className(className));
+    return this.findElement(By.className(className));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -306,7 +308,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByClassName(className) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(by.By.className(className));
+    return this.findElements(By.className(className));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -316,7 +318,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByCssSelector(cssSelector) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(by.By.css(cssSelector));
+    return this.findElement(By.css(cssSelector));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -326,7 +328,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByCssSelector(cssSelector) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(by.By.css(cssSelector));
+    return this.findElements(By.css(cssSelector));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -336,7 +338,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementById(id) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(by.By.id(id));
+    return this.findElement(By.id(id));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -346,7 +348,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsById(id) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(by.By.id(id));
+    return this.findElements(By.id(id));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -356,7 +358,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByLinkText(linkText) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(by.By.linkText(linkText));
+    return this.findElement(By.linkText(linkText));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -366,7 +368,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByLinkText(linkText) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(by.By.linkText(linkText));
+    return this.findElements(By.linkText(linkText));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -376,7 +378,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByPartialLinkText(partialLinkText) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(by.By.partialLinkText(partialLinkText));
+    return this.findElement(By.partialLinkText(partialLinkText));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -386,7 +388,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByPartialLinkText(partialLinkText) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(by.By.partialLinkText(partialLinkText));
+    return this.findElements(By.partialLinkText(partialLinkText));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -396,7 +398,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByName(name) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(by.By.name(name));
+    return this.findElement(By.name(name));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -406,7 +408,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByName(name) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(by.By.name(name));
+    return this.findElements(By.name(name));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -416,7 +418,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByTagName(tagName) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(by.By.css(tagName));
+    return this.findElement(By.css(tagName));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -426,7 +428,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByTagName(tagName) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(by.By.css(tagName));
+    return this.findElements(By.css(tagName));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -436,7 +438,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByXPath(xpath) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(by.By.xpath(xpath));
+    return this.findElement(By.xpath(xpath));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -446,7 +448,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByXPath(xpath) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(by.By.xpath(xpath));
+    return this.findElements(By.xpath(xpath));
   }
 
   /**

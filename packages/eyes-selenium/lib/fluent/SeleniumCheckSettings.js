@@ -27,6 +27,11 @@ class SeleniumCheckSettings extends CheckSettings {
     this._targetElement = null;
     this._frameChain = [];
 
+    /** @type {By} */
+    this._scrollRootSelector = undefined;
+    /** @type {WebElement} */
+    this._scrollRootElement = undefined;
+
     if (region) {
       this.region(region);
     }
@@ -251,15 +256,50 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {string} script
+   * @param {By|WebElement|EyesWebElement} element
+   * @return {this}
    */
-  addScriptHook(script) {
-    let scripts = this._scriptHooks.get(BEFORE_CAPTURE_SCREENSHOT);
-    if (scripts == null) {
-      scripts = [];
-      this._scriptHooks.set(BEFORE_CAPTURE_SCREENSHOT, scripts);
+  scrollRootElement(element) {
+    if (EyesWebElement.isLocator(element)) {
+      if (this._frameChain.size() === 0) {
+        this._scrollRootSelector = element;
+      } else {
+        this._frameChain.get(this._frameChain.size() - 1).setScrollRootSelector(element);
+      }
+    } else {
+      if (this._frameChain.size() === 0) {
+        this._scrollRootElement = element;
+      } else {
+        this._frameChain.get(this._frameChain.size() - 1).setScrollRootElement(element);
+      }
     }
-    scripts.add(script);
+
+    return this;
+  }
+
+  /**
+   * @ignore
+   * @return {WebElement}
+   */
+  getScrollRootElement() {
+    return this._scrollRootElement;
+  }
+
+  /**
+   * @ignore
+   * @return {By}
+   */
+  getScrollRootSelector() {
+    return this._scrollRootSelector;
+  }
+
+  /**
+   * @param {String} hook
+   * @return {this}
+   */
+  webHook(hook) {
+    this._scriptHooks.set(BEFORE_CAPTURE_SCREENSHOT, hook);
+    return this;
   }
 
   /**

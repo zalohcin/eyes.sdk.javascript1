@@ -24,15 +24,8 @@ class FrameChain {
 
     if (other) {
       this._logger.verbose(`Frame chain copy constructor (size ${other.size()})`);
-      other.getFrames().forEach(otherFrame => {
-        this._frames.push(new Frame(
-          logger, otherFrame.getReference(),
-          otherFrame.getLocation(),
-          otherFrame.getSize(), otherFrame.getInnerSize(),
-          otherFrame.getOriginalLocation(),
-          otherFrame.getOriginalOverflow()
-        ));
-      });
+
+      other.getFrames().forEach(otherFrame => this._frames.push(otherFrame));
       this._logger.verbose('Done!');
     }
   }
@@ -86,9 +79,13 @@ class FrameChain {
   }
 
   /**
-   * @return {Frame} - Returns the top frame in the chain.
+   * @return {?Frame} - Returns the top frame in the chain.
    */
   peek() {
+    if (this._frames.length === 0) {
+      return null;
+    }
+
     return this._frames[this._frames.length - 1];
   }
 
@@ -130,7 +127,7 @@ class FrameChain {
    */
   getCurrentFrameSize() {
     this._logger.verbose('getCurrentFrameSize()');
-    const result = this._frames[this._frames.length - 1].getSize();
+    const result = this._frames[this._frames.length - 1].getOuterSize();
     this._logger.verbose('Done!');
     return result;
   }
@@ -149,6 +146,7 @@ class FrameChain {
    * @return Iterator<Frame> iterator to go over the frames in the chain.
    */
   [Symbol.iterator]() {
+    // noinspection JSValidateTypes
     return this._frames.values();
   }
 

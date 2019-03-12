@@ -19,7 +19,7 @@ class SeleniumJavaScriptExecutor extends EyesJsExecutor {
    * @inheritDoc
    */
   executeScript(script, ...args) {
-    return this._driver.executeScript(script, args);
+    return this._driver.executeScript(script, ...args);
   }
 
   /**

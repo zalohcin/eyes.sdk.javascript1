@@ -54,6 +54,11 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
      *
      * @type {Region} */
     this._frameWindow = null;
+
+    /**
+     * @type {Region}
+     */
+    this._regionWindow = null;
   }
 
   /**
@@ -73,6 +78,28 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     screenshot._currentFrameScrollPosition = Location.ZERO;
     screenshot._frameLocationInScreenshot = Location.ZERO;
     screenshot._frameWindow = new Region(Location.ZERO, entireFrameSize);
+    screenshot._regionWindow = new Region(0, 0, 0, 0);
+    return screenshot;
+  }
+
+  /**
+   * Creates a frame(!) window screenshot.
+   *
+   * @param {Logger} logger - A Logger instance.
+   * @param {EyesWebDriver} driver - The web driver used to get the screenshot.
+   * @param {MutableImage} image - The actual screenshot image.
+   * @param {Region} screenshotRegion - The region of the screenshot.
+   * @return {Promise<EyesWebDriverScreenshot>}
+   */
+  static async fromFrameRegion(logger, driver, image, screenshotRegion) {
+    const screenshot = new EyesWebDriverScreenshot(logger, driver, image);
+    // The frame comprises the entire screenshot.
+    screenshot._screenshotType = ScreenshotType.ENTIRE_FRAME;
+
+    screenshot._currentFrameScrollPosition = Location.ZERO;
+    screenshot._frameLocationInScreenshot = Location.ZERO;
+    screenshot._frameWindow = new Region(Location.ZERO, screenshotRegion.getSize());
+    screenshot._regionWindow = new Region(screenshotRegion);
     return screenshot;
   }
 
@@ -86,11 +113,15 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    * @param {Location} [frameLocationInScreenshot[ The current frame's location in the screenshot.
    * @return {Promise<EyesWebDriverScreenshot>}
    */
-  static async fromScreenshotType(logger, driver, image, screenshotType, frameLocationInScreenshot) {
+  static async fromScreenshotType(logger, driver, image, screenshotType = ScreenshotType.VIEWPORT, frameLocationInScreenshot = Location.ZERO) {
     const screenshot = new EyesWebDriverScreenshot(logger, driver, image);
 
     screenshot._screenshotType = await screenshot._updateScreenshotType(screenshotType, image);
-    const positionProvider = driver.getEyes().getPositionProvider();
+
+    let positionProvider = driver.getEyes().getCurrentFramePositionProvider();
+    if (!positionProvider) {
+      positionProvider = driver.getEyes().getPositionProvider();
+    }
 
     screenshot._frameChain = driver.getFrameChain();
     const frameSize = await screenshot._getFrameSize(positionProvider);
@@ -106,6 +137,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
       throw new Error('Got empty frame window for screenshot!');
     }
 
+    screenshot._regionWindow = new Region(0, 0, 0, 0);
     logger.verbose('Done!');
     return screenshot;
   }
@@ -116,19 +148,29 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    */
   async _getDefaultContentScrollPosition() {
     const jsExecutor = new SeleniumJavaScriptExecutor(this._driver);
-    const positionProvider = new ScrollPositionProvider(this._logger, jsExecutor);
+    let defaultContentScrollPosition;
     if (this._frameChain.size() === 0) {
-      return positionProvider.getCurrentPosition();
+      defaultContentScrollPosition = await this._getCurrentFrameScrollRootElement(jsExecutor);
+    } else {
+      let originalFC = new FrameChain(this._logger, this._frameChain);
+
+      let switchTo = this._driver.switchTo();
+      let currentFC = this._driver.getEyes().getOriginalFC();
+      await switchTo.frames(currentFC);
+      defaultContentScrollPosition = await this._getCurrentFrameScrollRootElement(jsExecutor);
+      await switchTo.frames(originalFC);
     }
-
-    const originalFC = this._frameChain.clone();
-    const switchTo = this._driver.switchTo();
-    await switchTo.defaultContent();
-
-    const defaultContentScrollPosition = await positionProvider.getCurrentPosition();
-    await switchTo.frames(originalFC);
-
     return defaultContentScrollPosition;
+  }
+
+  /**
+   * @private
+   * @return {Promise<Location>}
+   */
+  async _getCurrentFrameScrollRootElement(executor) {
+    const scrollRootElement = this._driver.getEyes().getCurrentFrameScrollRootElement();
+    const positionProvider = new ScrollPositionProvider(this._logger, executor, scrollRootElement);
+    return positionProvider.getCurrentPosition();
   }
 
   /**
@@ -280,21 +322,56 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     const asIsSubScreenshotRegion = this.getIntersectedRegion(region, CoordinatesType.SCREENSHOT_AS_IS);
 
     if (
+      asIsSubScreenshotRegion.isSizeEmpty() ||
+      (throwIfClipped && !asIsSubScreenshotRegion.getSize().equals(region.getSize()))
+    ) {
+      throw new OutOfBoundsError(`Region [${region}] is out of screenshot bounds [${this._frameWindow}]`);
+    }
+
+    const subScreenshotImage = await this._image.getImagePart(asIsSubScreenshotRegion);
+    const result = await EyesWebDriverScreenshot.fromFrameRegion(
+      this._logger,
+      this._driver,
+      subScreenshotImage,
+      new Region(region.getLeft(), region.getRight(), subScreenshotImage.getWidth(), subScreenshotImage.getHeight())
+    );
+
+    this._logger.verbose('Done!');
+    return result;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Returns a part of the screenshot based on the given region.
+   *
+   * @override
+   * @param {Region} region - The region for which we should get the sub screenshot.
+   * @param {boolean} throwIfClipped - Throw an EyesException if the region is not fully contained in the screenshot.
+   * @return {Promise<EyesWebDriverScreenshot>} - A screenshot instance containing the given region.
+   */
+  async getSubScreenshotForRegion(region, throwIfClipped) {
+    this._logger.verbose(`getSubScreenshotForRegion([${region}], ${throwIfClipped})`);
+
+    ArgumentGuard.notNull(region, 'region');
+
+    // We calculate intersection based on as-is coordinates.
+    const asIsSubScreenshotRegion = this.getIntersectedRegion(region, CoordinatesType.SCREENSHOT_AS_IS);
+
+    if (
       asIsSubScreenshotRegion.isEmpty() ||
       (throwIfClipped && !asIsSubScreenshotRegion.getSize().equals(region.getSize()))
     ) {
       throw new OutOfBoundsError(`Region [${region}] is out of screenshot bounds [${this._frameWindow}]`);
     }
 
-    const imagePart = await this._image.getImagePart(asIsSubScreenshotRegion);
-    const result = await EyesWebDriverScreenshot.fromFrameSize(
+    const subScreenshotImage = await this._image.getImagePart(asIsSubScreenshotRegion);
+    const result = await EyesWebDriverScreenshot.fromFrameRegion(
       this._logger,
       this._driver,
-      imagePart,
-      new RectangleSize(imagePart.getWidth(), imagePart.getHeight())
+      subScreenshotImage,
+      new Region(region.getLocation(), new RectangleSize(subScreenshotImage.getWidth(), subScreenshotImage.getHeight()))
     );
 
-    result._frameLocationInScreenshot = new Location(-region.getLeft(), -region.getTop());
     this._logger.verbose('Done!');
     return result;
   }
@@ -330,6 +407,9 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
       ) {
         // If this is not a sub-screenshot, this will have no effect.
         result = result.offset(this._frameLocationInScreenshot.getX(), this._frameLocationInScreenshot.getY());
+
+        // If this is not a region subscreenshot, this will have no effect.
+        result = result.offset(-this._regionWindow.getLeft(), -this._regionWindow.getTop());
       } else if (
         from === CoordinatesType.SCREENSHOT_AS_IS &&
         (to === CoordinatesType.CONTEXT_RELATIVE || to === CoordinatesType.CONTEXT_AS_IS)

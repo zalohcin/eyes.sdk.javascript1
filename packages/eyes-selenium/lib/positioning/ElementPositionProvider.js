@@ -8,13 +8,15 @@ const { EyesWebElement } = require('../wrappers/EyesWebElement');
 
 class ElementPositionProvider extends PositionProvider {
   /**
-   * @param {Logger} logger - A Logger instance.
+   * @param {Logger} logger
    * @param {EyesWebDriver} driver
    * @param {EyesWebElement} element
    */
   constructor(logger, driver, element) {
     super();
+
     ArgumentGuard.notNull(logger, 'logger');
+    ArgumentGuard.notNull(driver, 'driver');
     ArgumentGuard.notNull(element, 'element');
 
     this._logger = logger;
@@ -29,7 +31,7 @@ class ElementPositionProvider extends PositionProvider {
   async getCurrentPosition() {
     this._logger.verbose('getCurrentScrollPosition()');
     const location = await this._element.getScrollLocation();
-    this._logger.verbose(`Current position: ${location}`);
+    this._logger.verbose('Current position:', location);
     return location;
   }
 
@@ -37,18 +39,19 @@ class ElementPositionProvider extends PositionProvider {
    * @inheritDoc
    */
   async setPosition(location) {
-    this._logger.verbose(`Scrolling element to: ${location}`);
-    await this._element.scrollTo(location);
-    this._logger.verbose('Done scrolling element!');
+    this._logger.verbose('Scrolling element to:', location);
+    const result = await this._element.scrollTo(location);
+    this._logger.verbose('Done scrolling element! result:', result);
+    return result;
   }
 
   /**
    * @inheritDoc
    */
   async getEntireSize() {
-    this._logger.verbose('ElementPositionProvider - getEntireSize()');
+    this._logger.verbose('enter');
     const scrollSize = await this._element.getScrollSize();
-    this._logger.verbose(`ElementPositionProvider - Entire size: ${scrollSize}`);
+    this._logger.verbose('Entire size:', scrollSize);
     return scrollSize;
   }
 
@@ -68,8 +71,16 @@ class ElementPositionProvider extends PositionProvider {
    * @return {Promise<void>}
    */
   async restoreState(state) {
-    await this.setPosition(new Location(state.getX(), state.getY()));
+    const newLocation = new Location(state.getX(), state.getY());
+    await this.setPosition(newLocation);
     this._logger.verbose('Position restored.');
+  }
+
+  /**
+   * @return {WebElement}
+   */
+  getScrolledElement() {
+    return this._element;
   }
 }
 

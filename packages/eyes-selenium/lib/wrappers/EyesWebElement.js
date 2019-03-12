@@ -1,7 +1,7 @@
 'use strict';
 
 const { By, WebElement } = require('selenium-webdriver');
-const { Region, ArgumentGuard, CoordinatesType, TypeUtils, RectangleSize, Location } = require('@applitools/eyes-common');
+const { Region, ArgumentGuard, CoordinatesType, TypeUtils, RectangleSize, Location, EyesError } = require('@applitools/eyes-common');
 const { MouseTrigger } = require('@applitools/eyes-sdk-core');
 
 const JS_GET_SCROLL_SIZE = 'return [arguments[0].scrollWidth, arguments[0].scrollHeight];';
@@ -17,25 +17,32 @@ const JS_GET_COMPUTED_STYLE_FN = 'function getCmpStyle(el, p) { return window.ge
 const JS_GET_COMPUTED_STYLE_FORMATTED_STR = styleProp => JS_GET_COMPUTED_STYLE_FN +
   `return getCmpStyle(arguments[0], '${styleProp}');`;
 
-const JS_GET_BORDER_OFFSET_LOCATION = JS_GET_COMPUTED_STYLE_FN +
-  `return [getCmpStyle(arguments[0], 'border-left-width'), getCmpStyle(arguments[0], 'border-top-width')];`;
-
 const JS_GET_SCROLL_LOCATION = 'return [arguments[0].scrollLeft, arguments[0].scrollTop];';
-
-/**
- * @param {number} scrollLeft
- * @param {number} scrollTop
- * @return {string}
- */
-const JS_SCROLL_TO_FORMATTED_STR = (scrollLeft, scrollTop) => `arguments[0].scrollLeft = ${scrollLeft}; arguments[0].scrollTop = ${scrollTop};`;
 
 const JS_GET_OVERFLOW = 'return arguments[0].style.overflow;';
 
-/**
- * @param {string} overflow
- * @return {string}
- */
-const JS_SET_OVERFLOW_FORMATTED_STR = overflow => `arguments[0].style.overflow = '${overflow}'`;
+const JS_GET_BORDER_WIDTHS_ARR =
+  "var retVal = retVal || [];" +
+  "if (window.getComputedStyle) { " +
+  "var computedStyle = window.getComputedStyle(elem, null);" +
+  "retVal.push(computedStyle.getPropertyValue('border-left-width'));" +
+  "retVal.push(computedStyle.getPropertyValue('border-top-width'));" +
+  "retVal.push(computedStyle.getPropertyValue('border-right-width')); " +
+  "retVal.push(computedStyle.getPropertyValue('border-bottom-width'));" +
+  "} else if (elem.currentStyle) { " +
+  "retVal.push(elem.currentStyle['border-left-width']);" +
+  "retVal.push(elem.currentStyle['border-top-width']);" +
+  "retVal.push(elem.currentStyle['border-right-width']);" +
+  "retVal.push(elem.currentStyle['border-bottom-width']);" +
+  "} else { " +
+  "retVal.push(0,0,0,0);" +
+  "}";
+
+const JS_GET_SIZE_AND_BORDER_WIDTHS =
+  "var elem = arguments[0]; " +
+  "var retVal = [elem.clientWidth, elem.clientHeight]; " +
+  JS_GET_BORDER_WIDTHS_ARR +
+  "return retVal;";
 
 /**
  * Wraps a Selenium Web Element.
@@ -48,16 +55,21 @@ class EyesWebElement extends WebElement {
    *
    */
   constructor(logger, eyesDriver, webElement) {
-    // noinspection JSCheckFunctionSignatures
-    super(eyesDriver.getRemoteWebDriver(), 'unused');
-
     ArgumentGuard.notNull(logger, 'logger');
     ArgumentGuard.notNull(eyesDriver, 'eyesDriver');
     ArgumentGuard.notNull(webElement, 'webElement');
 
+    if (webElement instanceof EyesWebElement) {
+      return webElement;
+    }
+
+    super(eyesDriver.getRemoteWebDriver(), webElement.getId());
+
     this._logger = logger;
     this._eyesDriver = eyesDriver;
-    this._webElement = webElement;
+
+    /** @type {PositionProvider} */
+    this._positionProvider = undefined;
   }
 
   /**
@@ -73,19 +85,11 @@ class EyesWebElement extends WebElement {
    *
    * @param {!EyesWebElement|WebElement} a A WebElement.
    * @param {!EyesWebElement|WebElement} b A WebElement.
-   * @return {!Promise<boolean>} - A promise that will be
-   *     resolved to whether the two WebElements are equal.
+   * @return {!Promise<boolean>} - A promise that will be resolved to whether the two WebElements are equal.
    */
   static async equals(a, b) {
     if (a instanceof WebElement && b instanceof WebElement) {
-      if (a instanceof EyesWebElement) {
-        a = a.getWebElement();
-      }
-
-      if (b instanceof EyesWebElement) {
-        b = b.getWebElement();
-      }
-
+      // noinspection JSValidateTypes
       return super.equals(a, b);
     }
 
@@ -248,23 +252,36 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @return {Promise<Location>} - Get the `border-left-width` and `border-top-width` as `Location`.
+   * @return {Promise<{top: number, left: number, bottom: number, width: number, right: number, height: number}>}
    */
-  async getBorderOffsetLocation() {
-    const result = await this.executeScript(JS_GET_BORDER_OFFSET_LOCATION);
-    const borderLeftWidth = Math.round(parseFloat(result[0].replace('px', '')));
-    const borderTopWidth = Math.round(parseFloat(result[1].replace('px', '')));
-    return new Location(borderLeftWidth, borderTopWidth);
+  async getSizeAndBorders() {
+    const result = await this.executeScript(JS_GET_SIZE_AND_BORDER_WIDTHS);
+    return {
+      width: Math.ceil(result[0]),
+      height: Math.ceil(result[1]),
+      left: Math.ceil(result[2].replace("px", "")),
+      top: Math.ceil(result[2].replace("px", "")),
+      right: Math.ceil(result[3].replace("px", "")),
+      bottom: Math.ceil(result[5].replace("px", "")),
+    };
   }
 
   /**
    * Scrolls to the specified location inside the element.
    *
    * @param {Location} location - The location to scroll to.
-   * @return {Promise<void>}
+   * @return {Promise<Location>} - the current location after scroll.
    */
   scrollTo(location) {
-    return this.executeScript(JS_SCROLL_TO_FORMATTED_STR(location.getX(), location.getY()));
+    try {
+      const script = `arguments[0].scrollLeft = ${location.getX()}; arguments[0].scrollTop = ${location.getY()};` +
+        "return [arguments[0].scrollLeft, arguments[0].scrollTop];";
+
+      const position = this.executeScript(script);
+      return new Location(Math.ceil(position[0]) || 0, Math.ceil(position[1]) || 0);
+    } catch (err) {
+      throw EyesError('Could not get scroll position!', err);
+    }
   }
 
   /**
@@ -279,7 +296,7 @@ class EyesWebElement extends WebElement {
    * @return {Promise<void>} - The overflow of the element.
    */
   setOverflow(overflow) {
-    return this.executeScript(JS_SET_OVERFLOW_FORMATTED_STR(overflow));
+    return this.executeScript(`arguments[0].style.overflow = '${overflow}'`);
   }
 
   /**
@@ -288,37 +305,26 @@ class EyesWebElement extends WebElement {
    */
   executeScript(script) {
     // noinspection JSValidateTypes
-    return this._eyesDriver.executeScript(script, this.getWebElement());
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getDriver() {
-    return this.getWebElement().getDriver();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getId() {
-    return this.getWebElement().getId();
+    return this._eyesDriver.executeScript(script, this);
   }
 
   // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
+   * @return {!EyesWebElement} A WebElement that can be used to issue commands against the located element.
+   *   If the element is not found, the element will be invalidated and all scheduled commands aborted.
    */
   async findElement(locator) {
-    const element = await this.getWebElement().findElement(locator);
+    const element = await super.findElement(locator);
     return new EyesWebElement(this._logger, this._eyesDriver, element);
   }
 
   /**
    * @inheritDoc
+   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of WebElements.
    */
   async findElements(locator) {
-    const elements = await this.getWebElement().findElements(locator);
+    const elements = await super.findElements(locator);
     return elements.map(element => new EyesWebElement(this._logger, this._eyesDriver, element));
   }
 
@@ -332,7 +338,7 @@ class EyesWebElement extends WebElement {
     const currentControl = await this.getBounds();
     this._eyesDriver.getEyes().addMouseTrigger(MouseTrigger.MouseAction.Click, this);
     this._logger.verbose(`click(${currentControl})`);
-    return this.getWebElement().click();
+    return super.click();
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -344,43 +350,16 @@ class EyesWebElement extends WebElement {
       await this._eyesDriver.getEyes().addTextTriggerForElement(this, String(keys));
     }
 
-    await this.getWebElement().sendKeys(...keysToSend);
+    await super.sendKeys(...keysToSend);
   }
 
   /**
    * @inheritDoc
-   */
-  getTagName() {
-    return this.getWebElement().getTagName();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getCssValue(cssStyleProperty) {
-    return this.getWebElement().getCssValue(cssStyleProperty);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getAttribute(attributeName) {
-    return this.getWebElement().getAttribute(attributeName);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getText() {
-    return this.getWebElement().getText();
-  }
-
-  /**
-   * @inheritDoc
+   * @return {Promise<{width: number, x: number, y: number, height: number}>}
    */
   async getRect() {
     // The workaround is similar to Java one, but in js we always get raw data with decimal value which we should round up.
-    const rect = await this.getWebElement().getRect();
+    const rect = await super.getRect();
     const width = Math.ceil(rect.width) || 0;
     // noinspection JSSuspiciousNameCombination
     const height = Math.ceil(rect.height) || 0;
@@ -391,58 +370,17 @@ class EyesWebElement extends WebElement {
   }
 
   /**
-   * @inheritDoc
+   * @return {PositionProvider}
    */
-  isEnabled() {
-    return this.getWebElement().isEnabled();
+  getPositionProvider() {
+    return this._positionProvider;
   }
 
   /**
-   * @inheritDoc
+   * @param {PositionProvider} positionProvider
    */
-  isSelected() {
-    return this.getWebElement().isSelected();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  submit() {
-    return this.getWebElement().submit();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  clear() {
-    return this.getWebElement().clear();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  isDisplayed() {
-    return this.getWebElement().isDisplayed();
-  }
-
-  /**
-   * @inheritDoc
-   */
-  takeScreenshot(optScroll) {
-    return this.getWebElement().takeScreenshot(optScroll);
-  }
-
-  /**
-   * @return {WebElement} - The original element object
-   */
-  getWebElement() {
-    // noinspection JSUnresolvedVariable
-    if (this._webElement.getWebElement) {
-      // noinspection JSUnresolvedFunction
-      return this._webElement.getWebElement();
-    }
-
-    return this._webElement;
+  setPositionProvider(positionProvider) {
+    this._positionProvider = positionProvider;
   }
 }
 
