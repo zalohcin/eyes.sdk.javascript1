@@ -56,6 +56,7 @@ describe('TestCheckFluent', function () {
 
   it('TestCheckElementFully', async function () {
     await eyes.check('Region by element - fully', Target.region(driver.findElement(By.id('overflowing-div-image'))).fully());
+    return eyes.close();
   });
 
   it('TestCheckFrame', async function () {
@@ -98,6 +99,8 @@ describe('TestCheckFluent', function () {
     );
 
     await eyes.check('Window (After)', Target.window().fully());
+
+    return eyes.close();
   });
 
   it('TestCheckRegionInFrame2', async function () {
@@ -126,6 +129,8 @@ describe('TestCheckFluent', function () {
       .fully()
       .layout()
       .floatingRegion(new Region(200, 200, 150, 150), 25, 25, 25, 25));
+
+    return eyes.close();
   });
 
   afterEach(async function () {
