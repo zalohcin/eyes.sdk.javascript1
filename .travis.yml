@@ -28,8 +28,8 @@ install:
 stages:
   - lint
   - test
-  - "Integration Tests"
-  - name: "End-To-End Tests"
+  - "Integration tests"
+  - name: "End-to-end tests"
     if: branch = master
 
 jobs:
@@ -39,9 +39,9 @@ jobs:
       script: npm run lint
     - stage: test
       script: npm run test:unit
-    - stage: "Integration Tests"
+    - stage: "Integration tests"
       node_js: "8"
       script: npm run test:it
-    - stage: "End-To-End Tests"
+    - stage: "End-to-end tests"
       node_js: "8"
-    - script: npm run test:e2e
+      script: npm run test:e2e
