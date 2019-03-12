@@ -1065,7 +1065,7 @@ class EyesBase extends EyesAbstract {
    */
   async _ensureRunningSession() {
     if (this._runningSession) {
-      this._logger.log("session already running.");
+      this._logger.verbose("session already running.");
       return;
     }
 
