@@ -27,16 +27,24 @@ install:
 
 stages:
   - lint
-  - unit
-  - it
+  - test
+  - it test
+  - name: e2e test
+    if: branch = master
 
 jobs:
   include:
     - stage: lint
       node_js: "lts/*"
       script: npm run lint
-    - stage: unit
+    - stage: test
+      name: "Unit Tests"
       script: npm run test:unit
-    - stage: it
+    - stage: it test
       node_js: "8"
+      name: "Integration  Tests"
       script: npm run test:it
+    - stage: e2e test
+      node_js: "8"
+      name: "End-To-End  Tests"
+    - script: npm run test:e2e
