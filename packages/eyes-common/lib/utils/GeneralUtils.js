@@ -1,6 +1,7 @@
 'use strict';
 
 const merge = require('deepmerge');
+// const util = require('util');
 
 const { TypeUtils } = require('./TypeUtils');
 const { DateTimeUtils } = require('./DateTimeUtils');
@@ -65,7 +66,13 @@ class GeneralUtils {
       object = GeneralUtils.toPlain(object, exclude);
     }
 
-    return JSON.stringify(object);
+    try {
+      return JSON.stringify(object);
+    } catch (err) {
+      console.warn("Error during writing log:", err); // eslint-disable-line
+      // console.warn(util.inspect(object, {depth: null, colors: true})); // eslint-disable-line
+      return undefined;
+    }
   }
 
   /**
