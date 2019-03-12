@@ -178,9 +178,12 @@ class EyesVisualGrid extends Eyes {
    */
   getRunner() {
     const runner = {};
-    /** @return {Promise<TestResults[]|Error[]>} */
-    runner.getAllResults = async () => {
-      return await this.closeAndReturnResults();
+    /**
+     * @param {boolean} [throwEx=true]
+     * @return {Promise<TestResults[]|Error[]>}
+     */
+    runner.getAllResults = async (throwEx = true) => {
+      return await this.closeAndReturnResults(throwEx);
     };
     return runner;
   }
