@@ -92,10 +92,14 @@ class EyesSelenium extends Eyes {
     if (varArg1 instanceof Configuration) {
       this._configuration.mergeConfig(varArg1);
     } else {
-      this._configuration.setAppName(varArg1);
-      this._configuration.setTestName(varArg2);
-      this._configuration.setViewportSize(varArg3);
-      this._configuration.setSessionType(varArg4);
+      // noinspection NonBlockStatementBodyJS
+      if (varArg1) this._configuration.setAppName(varArg1);
+      // noinspection NonBlockStatementBodyJS
+      if (varArg2) this._configuration.setTestName(varArg2);
+      // noinspection NonBlockStatementBodyJS
+      if (varArg3) this._configuration.setViewportSize(varArg3);
+      // noinspection NonBlockStatementBodyJS
+      if (varArg4) this._configuration.setSessionType(varArg4);
     }
 
     if (this.getIsDisabled()) {
