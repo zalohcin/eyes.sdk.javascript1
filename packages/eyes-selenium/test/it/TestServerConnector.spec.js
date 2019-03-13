@@ -27,7 +27,7 @@ describe('TestServerConnector', function () {
 
     const results = await eyes.close();
 
-    await results.delete();
+    await results.deleteSession();
   });
 
   afterEach(async function () {
