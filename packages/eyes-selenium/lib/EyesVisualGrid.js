@@ -39,26 +39,17 @@ class EyesVisualGrid extends Eyes {
   /**
    * @inheritDoc
    */
-  async open(driver, varArg1, varArg2, varArg3, varArg4) {
+  async open(driver, appName, testName, viewportSize, sessionType) {
     ArgumentGuard.notNull(driver, 'driver');
 
-    if (varArg1 instanceof Configuration) {
-      this._configuration.mergeConfig(varArg1);
-    } else {
-      // noinspection NonBlockStatementBodyJS
-      if (varArg1) this._configuration.setAppName(varArg1);
-      // noinspection NonBlockStatementBodyJS
-      if (varArg2) this._configuration.setTestName(varArg2);
-      // noinspection NonBlockStatementBodyJS
-      if (varArg3) this._configuration.setViewportSize(varArg3);
-      // noinspection NonBlockStatementBodyJS
-      if (varArg4) this._configuration.setSessionType(varArg4);
-    }
-
-    if (this._configuration.getBrowsersInfo().length === 0 && this._configuration.getViewportSize()) {
-      const viewportSize = this._configuration.getViewportSize();
-      this._configuration.addBrowser(viewportSize.getWidth(), viewportSize.getHeight(), BrowserType.CHROME);
-    }
+    // noinspection NonBlockStatementBodyJS
+    if (appName) this._configuration.setAppName(appName);
+    // noinspection NonBlockStatementBodyJS
+    if (testName) this._configuration.setTestName(testName);
+    // noinspection NonBlockStatementBodyJS
+    if (viewportSize) this._configuration.setViewportSize(viewportSize);
+    // noinspection NonBlockStatementBodyJS
+    if (sessionType) this._configuration.setSessionType(sessionType);
 
     await this._initDriver(driver);
 
@@ -75,6 +66,10 @@ class EyesVisualGrid extends Eyes {
 
     if (this._configuration.getViewportSize()) {
       await this.setViewportSize(this._configuration.getViewportSize());
+
+      if (this._configuration.getBrowsersInfo().length === 0) {
+        this._configuration.addBrowser(this._configuration.getViewportSize().getWidth(), this._configuration.getViewportSize().getHeight(), BrowserType.CHROME);
+      }
     }
 
     const { checkWindow, close } = await openEyes({

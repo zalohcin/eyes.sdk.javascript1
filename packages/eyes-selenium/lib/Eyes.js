@@ -112,26 +112,15 @@ class Eyes extends EyesBase {
   /**
    * Starts a test.
    *
-   * @signature `open(driver, appName, testName, viewportSize, sessionType)`
-   * @sigparam {WebDriver} driver - The web driver that controls the browser hosting the application under test.
-   * @sigparam {string} appName - The of the application under the test.
-   * @sigparam {string} testName - The test name.
-   * @sigparam {RectangleSize|RectangleSizeObject} [viewportSize] - The required browser's viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
-   * @sigparam {SessionType} [sessionType] - The type of test (e.g.,  standard test / visual performance test).
-   *
-   * @signature `open(driver, configuration)`
-   * @sigparam {WebDriver} driver - The web driver that controls the browser hosting the application under test.
-   * @sigparam {SeleniumConfiguration} configuration - The Configuration to use in the test.
-   *
    * @abstract
    * @param {WebDriver} driver - The web driver that controls the browser hosting the application under test.
-   * @param {SeleniumConfiguration|string} varArg1 - The Configuration for the test or the name of the application under the test.
-   * @param {string} [varArg2] - The test name.
-   * @param {RectangleSize|RectangleSizeObject} [varArg3] - The required browser's viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
-   * @param {SessionType} [varArg4] - The type of test (e.g.,  standard test / visual performance test).
+   * @param {string} [appName] - The of the application under the test.
+   * @param {string} [testName] - The test name.
+   * @param {RectangleSize|RectangleSizeObject} [viewportSize] - The required browser's viewport size (i.e., the visible part of the document's body) or to use the current window's viewport.
+   * @param {SessionType} [sessionType] - The type of test (e.g.,  standard test / visual performance test).
    * @return {Promise<EyesWebDriver>} - A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
-  async open(driver, varArg1, varArg2, varArg3, varArg4) { // eslint-disable-line no-unused-vars
+  async open(driver, appName, testName, viewportSize, sessionType) { // eslint-disable-line no-unused-vars
     throw new TypeError('The method is not implemented!');
   }
 

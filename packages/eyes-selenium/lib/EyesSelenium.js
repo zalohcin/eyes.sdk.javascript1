@@ -86,21 +86,17 @@ class EyesSelenium extends Eyes {
   /**
    * @inheritDoc
    */
-  async open(driver, varArg1, varArg2, varArg3, varArg4) {
+  async open(driver, appName, testName, viewportSize, sessionType) {
     ArgumentGuard.notNull(driver, 'driver');
 
-    if (varArg1 instanceof Configuration) {
-      this._configuration.mergeConfig(varArg1);
-    } else {
-      // noinspection NonBlockStatementBodyJS
-      if (varArg1) this._configuration.setAppName(varArg1);
-      // noinspection NonBlockStatementBodyJS
-      if (varArg2) this._configuration.setTestName(varArg2);
-      // noinspection NonBlockStatementBodyJS
-      if (varArg3) this._configuration.setViewportSize(varArg3);
-      // noinspection NonBlockStatementBodyJS
-      if (varArg4) this._configuration.setSessionType(varArg4);
-    }
+    // noinspection NonBlockStatementBodyJS
+    if (appName) this._configuration.setAppName(appName);
+    // noinspection NonBlockStatementBodyJS
+    if (testName) this._configuration.setTestName(testName);
+    // noinspection NonBlockStatementBodyJS
+    if (viewportSize) this._configuration.setViewportSize(viewportSize);
+    // noinspection NonBlockStatementBodyJS
+    if (sessionType) this._configuration.setSessionType(sessionType);
 
     if (this.getIsDisabled()) {
       this._logger.verbose('Ignored');
