@@ -924,15 +924,6 @@ class TestResults {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @deprecated use {@link deleteSession} instead
-   * @return {Promise<void>}
-   */
-  async delete() {
-    return this._serverConnector.deleteSession(this);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
    * @return {Promise<void>}
    */
   async deleteSession() {
