@@ -18,7 +18,6 @@ const DEFAULT_VALUES = {
 
   concurrentSessions: 3,
   isThrowExceptionOn: false,
-  browsersInfo: [],
 };
 
 class SeleniumConfiguration extends Configuration {
@@ -48,7 +47,7 @@ class SeleniumConfiguration extends Configuration {
     /** @type {boolean} */
     this._isThrowExceptionOn = undefined;
     /** @type {RenderBrowserInfo[]|DeviceInfo[]} */
-    this._browsersInfo = undefined;
+    this._browsersInfo = [];
 
     if (configuration) {
       this.mergeConfig(configuration);
@@ -190,7 +189,7 @@ class SeleniumConfiguration extends Configuration {
    * @return {RenderBrowserInfo[]|DeviceInfo[]}
    */
   get browsersInfo() {
-    return TypeUtils.getOrDefault(this._browsersInfo, DEFAULT_VALUES.browsersInfo);
+    return this._browsersInfo;
   }
 
   /**
@@ -205,10 +204,6 @@ class SeleniumConfiguration extends Configuration {
    * @return {SeleniumConfiguration}
    */
   addBrowsers(...browsersInfo) {
-    if (this._browsersInfo === undefined) {
-      this._browsersInfo = [];
-    }
-
     this._browsersInfo.push(...browsersInfo);
     return this;
   }
