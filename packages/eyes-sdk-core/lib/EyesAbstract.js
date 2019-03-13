@@ -330,7 +330,7 @@ class EyesAbstract {
       return;
     }
 
-    if (batchOrName instanceof BatchInfo) {
+    if (batchOrName instanceof BatchInfo || !batchOrName) {
       this._configuration.batch = batchOrName;
     } else {
       this._configuration.batch = {
