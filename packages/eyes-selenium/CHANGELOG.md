@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.8.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.7.0...@applitools/eyes-selenium@4.8.0) (2019-03-13)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** add `throwEx` to getRunner().getAllResults() ([f70aef5](https://github.com/applitools/eyes.sdk.javascript1/commit/f70aef5))
+* **eyes-selenium:** change size if `setViewportSize` called before open ([bc4af70](https://github.com/applitools/eyes.sdk.javascript1/commit/bc4af70))
+* **eyes-selenium:** check if eyes is not disabled before `eyes.check` ([a37ebbf](https://github.com/applitools/eyes.sdk.javascript1/commit/a37ebbf))
+* **eyes-selenium:** fix `ensureElementVisible` method ([9e44bde](https://github.com/applitools/eyes.sdk.javascript1/commit/9e44bde))
+* **eyes-selenium:** fix error when comparing WebElements ([6c0834b](https://github.com/applitools/eyes.sdk.javascript1/commit/6c0834b))
+* **eyes-selenium:** remove unused class from exports ([63f78df](https://github.com/applitools/eyes.sdk.javascript1/commit/63f78df))
+
+
+### Features
+
+* **eyes-selenium:** add `clone` method to `FrameChain` ([1c517d5](https://github.com/applitools/eyes.sdk.javascript1/commit/1c517d5))
+* **eyes-selenium:** add common public classes from sdk-core to selenium ([5e7174c](https://github.com/applitools/eyes.sdk.javascript1/commit/5e7174c))
+* **eyes-selenium:** move Java's implementation of `scrollRootElement` to Javascript ([f12dde4](https://github.com/applitools/eyes.sdk.javascript1/commit/f12dde4))
+* **eyes-selenium:** refactor EyesSelenium and EyesVisualGrid, use same abstract ([c421a99](https://github.com/applitools/eyes.sdk.javascript1/commit/c421a99))
+* **eyes-selenium:** remove `configuration` from `eyes.open()` params ([2424c8a](https://github.com/applitools/eyes.sdk.javascript1/commit/2424c8a))
+* **eyes-selenium:** rename `getEyesRunner` to `getRunner` in `Eyes` ([d713030](https://github.com/applitools/eyes.sdk.javascript1/commit/d713030))
+* use JS getters/setters for Configuration classes ([c68771e](https://github.com/applitools/eyes.sdk.javascript1/commit/c68771e))
+* **eyes-selenium:** use empty array be default in Configuration ([024ebad](https://github.com/applitools/eyes.sdk.javascript1/commit/024ebad))
+
+
+
+
+
 # [4.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.6.0...@applitools/eyes-selenium@4.7.0) (2019-02-27)
 
 

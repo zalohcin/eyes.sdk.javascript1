@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.0.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@4.9.0...@applitools/eyes-sdk-core@5.0.0) (2019-03-13)
+
+
+### Bug Fixes
+
+* **eyes-sdk-core:** add new method `deleteSession` to TestResults, it should be used instead of `delete`. ([34744cb](https://github.com/applitools/eyes.sdk.javascript1/commit/34744cb))
+* **eyes-sdk-core:** allow set batch to `undefined` ([3abaf46](https://github.com/applitools/eyes.sdk.javascript1/commit/3abaf46))
+* **eyes-sdk-core:** fix order of arguments when creating `BatchInfo` ([713a0f0](https://github.com/applitools/eyes.sdk.javascript1/commit/713a0f0))
+* **eyes-sdk-core:** fix use of wrong setting of AgentId ([e917170](https://github.com/applitools/eyes.sdk.javascript1/commit/e917170))
+* **eyes-selenium:** move `sendDom` from ImageMatchSettings to Configuration ([5c2c527](https://github.com/applitools/eyes.sdk.javascript1/commit/5c2c527))
+
+
+### Code Refactoring
+
+* **eyes-sdk-core:** remove `delete()` from `TestResults` ([4e24585](https://github.com/applitools/eyes.sdk.javascript1/commit/4e24585))
+
+
+### Features
+
+* **eyes-sdk-core:** add `getScrolledElement` to PositionProvider ([2afebbb](https://github.com/applitools/eyes.sdk.javascript1/commit/2afebbb))
+* **eyes-sdk-core:** add `setConfiguration` method to Eyes ([64813e4](https://github.com/applitools/eyes.sdk.javascript1/commit/64813e4))
+* **eyes-sdk-core:** add `setIsVisualGrid` method ([94662fb](https://github.com/applitools/eyes.sdk.javascript1/commit/94662fb))
+* **eyes-sdk-core:** added setters in eyes-abstarct for useDom & enablePattrens ([15439d8](https://github.com/applitools/eyes.sdk.javascript1/commit/15439d8))
+* **eyes-sdk-core:** remove deprecated methods ([7decce1](https://github.com/applitools/eyes.sdk.javascript1/commit/7decce1))
+* **eyes-selenium:** add `data-applitools-original-overflow` only if we hide element ([5247feb](https://github.com/applitools/eyes.sdk.javascript1/commit/5247feb))
+* **eyes-selenium:** add `data-applitools-original-overflow` tag to elements where we change overflow ([26016a9](https://github.com/applitools/eyes.sdk.javascript1/commit/26016a9))
+* **eyes-selenium:** update `setOverflow` of EyesJsBrowserUtils ([032d475](https://github.com/applitools/eyes.sdk.javascript1/commit/032d475))
+* remove setProxy, setBatch from Configuration, use objects instead ([c91d4ae](https://github.com/applitools/eyes.sdk.javascript1/commit/c91d4ae))
+* use JS getters/setters for Configuration classes ([c68771e](https://github.com/applitools/eyes.sdk.javascript1/commit/c68771e))
+
+
+### BREAKING CHANGES
+
+* **eyes-sdk-core:** `delete` is no more available from `TestResults`, use `deleteSession` instead.
+
+
+
+
+
 # [4.9.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@4.8.0...@applitools/eyes-sdk-core@4.9.0) (2019-02-27)
 
 
