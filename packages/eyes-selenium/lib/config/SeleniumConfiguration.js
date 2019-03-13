@@ -29,17 +29,26 @@ class SeleniumConfiguration extends Configuration {
     super();
 
     // selenium
-    /** @type {boolean} */ this._forceFullPageScreenshot = undefined;
-    /** @type {number} */ this._waitBeforeScreenshots = undefined;
-    /** @type {StitchMode} */ this._stitchMode = undefined;
-    /** @type {boolean} */ this._hideScrollbars = undefined;
-    /** @type {boolean} */ this._hideCaret = undefined;
-    /** @type {number} */ this._stitchOverlap = undefined;
+    /** @type {boolean} */
+    this._forceFullPageScreenshot = undefined;
+    /** @type {number} */
+    this._waitBeforeScreenshots = undefined;
+    /** @type {StitchMode} */
+    this._stitchMode = undefined;
+    /** @type {boolean} */
+    this._hideScrollbars = undefined;
+    /** @type {boolean} */
+    this._hideCaret = undefined;
+    /** @type {number} */
+    this._stitchOverlap = undefined;
 
     // visual grid
-    /** @type {number} */ this._concurrentSessions = undefined;
-    /** @type {boolean} */ this._isThrowExceptionOn = undefined;
-    /** @type {RenderBrowserInfo[]|DeviceInfo[]} */ this._browsersInfo = undefined;
+    /** @type {number} */
+    this._concurrentSessions = undefined;
+    /** @type {boolean} */
+    this._isThrowExceptionOn = undefined;
+    /** @type {RenderBrowserInfo[]|DeviceInfo[]} */
+    this._browsersInfo = undefined;
 
     if (configuration) {
       this.mergeConfig(configuration);
@@ -47,148 +56,148 @@ class SeleniumConfiguration extends Configuration {
   }
 
   /**
-   * Forces a full page screenshot (by scrolling and stitching) if the browser only supports viewport screenshots).
-   *
-   * @param {boolean} forceFullPageScreenshot - Whether to force a full page screenshot or not.
+   * @return {boolean} - Whether Eyes should force a full page screenshot.
    */
-  setForceFullPageScreenshot(forceFullPageScreenshot) {
-    this._forceFullPageScreenshot = forceFullPageScreenshot;
+  get forceFullPageScreenshot() {
+    return this._forceFullPageScreenshot;
   }
 
   /**
-   * @return {boolean} - Whether Eyes should force a full page screenshot.
+   * Forces a full page screenshot (by scrolling and stitching) if the browser only supports viewport screenshots).
+   *
+   * @param {boolean} value - Whether to force a full page screenshot or not.
    */
-  getForceFullPageScreenshot() {
-    return this._forceFullPageScreenshot;
+  set forceFullPageScreenshot(value) {
+    this._forceFullPageScreenshot = value;
+  }
+
+  /**
+   * @return {number} - The time to wait just before taking a screenshot.
+   */
+  get waitBeforeScreenshots() {
+    return TypeUtils.getOrDefault(this._waitBeforeScreenshots, DEFAULT_VALUES.waitBeforeScreenshots);
   }
 
   /**
    * Sets the time to wait just before taking a screenshot (e.g., to allow positioning to stabilize when performing a
    * full page stitching).
    *
-   * @param {number} waitBeforeScreenshots - The time to wait (Milliseconds). Values smaller or equal to 0, will cause the
+   * @param {number} value - The time to wait (Milliseconds). Values smaller or equal to 0, will cause the
    *   default value to be used.
    */
-  setWaitBeforeScreenshots(waitBeforeScreenshots) {
-    if (waitBeforeScreenshots <= 0) {
+  set waitBeforeScreenshots(value) {
+    if (value <= 0) {
       this._waitBeforeScreenshots = undefined;
     } else {
-      this._waitBeforeScreenshots = waitBeforeScreenshots;
+      this._waitBeforeScreenshots = value;
     }
   }
 
   /**
-   * @return {number} - The time to wait just before taking a screenshot.
+   * @return {StitchMode} - The current stitch mode settings.
    */
-  getWaitBeforeScreenshots() {
-    return TypeUtils.getOrDefault(this._waitBeforeScreenshots, DEFAULT_VALUES.waitBeforeScreenshots);
+  get stitchMode() {
+    return TypeUtils.getOrDefault(this._stitchMode, DEFAULT_VALUES.stitchMode);
   }
 
   /**
    * Set the type of stitching used for full page screenshots. When the page includes fixed position header/sidebar,
    * use {@link StitchMode#CSS}. Default is {@link StitchMode#SCROLL}.
    *
-   * @param {StitchMode} stitchMode - The stitch mode to set.
+   * @param {StitchMode} value - The stitch mode to set.
    */
-  setStitchMode(stitchMode) {
-    this._stitchMode = stitchMode;
-  }
-
-  /**
-   * @return {StitchMode} - The current stitch mode settings.
-   */
-  getStitchMode() {
-    return TypeUtils.getOrDefault(this._stitchMode, DEFAULT_VALUES.stitchMode);
-  }
-
-  /**
-   * Hide the scrollbars when taking screenshots.
-   *
-   * @param {boolean} hideScrollbars - Whether to hide the scrollbars or not.
-   */
-  setHideScrollbars(hideScrollbars) {
-    this._hideScrollbars = hideScrollbars;
+  set stitchMode(value) {
+    this._stitchMode = value;
   }
 
   /**
    * @return {boolean} - Whether or not scrollbars are hidden when taking screenshots.
    */
-  getHideScrollbars() {
+  get hideScrollbars() {
     return TypeUtils.getOrDefault(this._hideScrollbars, DEFAULT_VALUES.hideScrollbars);
   }
 
   /**
-   * @param {boolean} hideCaret
+   * Hide the scrollbars when taking screenshots.
+   *
+   * @param {boolean} value - Whether to hide the scrollbars or not.
    */
-  setHideCaret(hideCaret) {
-    this._hideCaret = hideCaret;
+  set hideScrollbars(value) {
+    this._hideScrollbars = value;
   }
 
   /**
    * @return {boolean}
    */
-  getHideCaret() {
+  get hideCaret() {
     return TypeUtils.getOrDefault(this._hideCaret, DEFAULT_VALUES.hideCaret);
   }
 
   /**
-   * Sets the stitch overlap in pixels.
-   *
-   * @param {number} stitchOverlap - The width (in pixels) of the overlap.
+   * @param {boolean} value
    */
-  setStitchOverlap(stitchOverlap) {
-    this._stitchOverlap = stitchOverlap;
+  set hideCaret(value) {
+    this._hideCaret = value;
   }
 
   /**
    * @return {number} - Returns the stitching overlap in pixels.
    */
-  getStitchOverlap() {
+  get stitchOverlap() {
     return TypeUtils.getOrDefault(this._stitchOverlap, DEFAULT_VALUES.stitchOverlap);
+  }
+
+  /**
+   * Sets the stitch overlap in pixels.
+   *
+   * @param {number} value - The width (in pixels) of the overlap.
+   */
+  set stitchOverlap(value) {
+    this._stitchOverlap = value;
   }
 
   /*----------- Visual Grid properties -----------*/
 
   /**
-   * @param {number} concurrentSessions
-   */
-  setConcurrentSessions(concurrentSessions) {
-    this._concurrentSessions = concurrentSessions;
-  }
-
-  /**
    * @return {number}
    */
-  getConcurrentSessions() {
+  get concurrentSessions() {
     return TypeUtils.getOrDefault(this._concurrentSessions, DEFAULT_VALUES.concurrentSessions);
   }
 
   /**
-   * @param {boolean} isThrowExceptionOn
+   * @param {number} value
    */
-  setIsThrowExceptionOn(isThrowExceptionOn) {
-    this._isThrowExceptionOn = isThrowExceptionOn;
+  set concurrentSessions(value) {
+    this._concurrentSessions = value;
   }
 
   /**
    * @return {boolean}
    */
-  getIsThrowExceptionOn() {
+  get isThrowExceptionOn() {
     return TypeUtils.getOrDefault(this._isThrowExceptionOn, DEFAULT_VALUES.isThrowExceptionOn);
   }
 
   /**
-   * @param {RenderBrowserInfo[]|DeviceInfo[]} browsersInfo
+   * @param {boolean} value
    */
-  setBrowsersInfo(browsersInfo) {
-    this._browsersInfo = browsersInfo;
+  set isThrowExceptionOn(value) {
+    this._isThrowExceptionOn = value;
   }
 
   /**
    * @return {RenderBrowserInfo[]|DeviceInfo[]}
    */
-  getBrowsersInfo() {
+  get browsersInfo() {
     return TypeUtils.getOrDefault(this._browsersInfo, DEFAULT_VALUES.browsersInfo);
+  }
+
+  /**
+   * @param {RenderBrowserInfo[]|DeviceInfo[]} value
+   */
+  set browsersInfo(value) {
+    this._browsersInfo = value;
   }
 
   /**

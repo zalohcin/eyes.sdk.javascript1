@@ -43,57 +43,57 @@ class EyesVisualGrid extends Eyes {
     ArgumentGuard.notNull(driver, 'driver');
 
     // noinspection NonBlockStatementBodyJS
-    if (appName) this._configuration.setAppName(appName);
+    if (appName) this._configuration.appName = appName;
     // noinspection NonBlockStatementBodyJS
-    if (testName) this._configuration.setTestName(testName);
+    if (testName) this._configuration.testName = testName;
     // noinspection NonBlockStatementBodyJS
-    if (viewportSize) this._configuration.setViewportSize(viewportSize);
+    if (viewportSize) this._configuration.viewportSize = viewportSize;
     // noinspection NonBlockStatementBodyJS
-    if (sessionType) this._configuration.setSessionType(sessionType);
+    if (sessionType) this._configuration.sessionType = sessionType;
 
     await this._initDriver(driver);
 
     const { openEyes } = makeVisualGridClient({
-      apiKey: this._configuration.getApiKey(),
-      showLogs: this._configuration.getShowLogs(),
-      saveDebugData: this._configuration.getSaveDebugData(),
-      proxy: this._configuration.getProxy(),
-      serverUrl: this._configuration.getServerUrl(),
-      renderConcurrencyFactor: this._configuration.getConcurrentSessions(),
+      apiKey: this._configuration.apiKey,
+      showLogs: this._configuration.showLogs,
+      saveDebugData: this._configuration.saveDebugData,
+      proxy: this._configuration.proxy,
+      serverUrl: this._configuration.serverUrl,
+      renderConcurrencyFactor: this._configuration.concurrentSessions,
     });
 
     this._processPageAndSerializeScript = await getProcessPageAndSerializeScript();
 
-    if (this._configuration.getViewportSize()) {
-      await this.setViewportSize(this._configuration.getViewportSize());
+    if (this._configuration.viewportSize) {
+      await this.setViewportSize(this._configuration.viewportSize);
 
-      if (this._configuration.getBrowsersInfo().length === 0) {
-        this._configuration.addBrowser(this._configuration.getViewportSize().getWidth(), this._configuration.getViewportSize().getHeight(), BrowserType.CHROME);
+      if (this._configuration.browsersInfo.length === 0) {
+        this._configuration.addBrowser(this._configuration.viewportSize.getWidth(), this._configuration.viewportSize.getHeight(), BrowserType.CHROME);
       }
     }
 
     const { checkWindow, close } = await openEyes({
       logger: this._logger,
 
-      appName: this._configuration.getAppName(),
-      testName: this._configuration.getTestName(),
-      browser: this._configuration.getBrowsersInfo(),
-      properties: this._configuration.getProperties(),
-      batchName: this._configuration.getBatch() && this._configuration.getBatch().getName(),
-      batchId: this._configuration.getBatch() && this._configuration.getBatch().getId(),
-      baselineBranchName: this._configuration.getBaselineBranchName(),
-      baselineEnvName: this._configuration.getBaselineEnvName(),
-      baselineName: this._configuration.getBaselineEnvName(),
-      envName: this._configuration.getEnvironmentName(),
-      branchName: this._configuration.getBranchName(),
-      saveFailedTests: this._configuration.getSaveFailedTests(),
-      saveNewTests: this._configuration.getSaveNewTests(),
-      compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
-      ignoreBaseline: this._configuration.getIgnoreBaseline(),
-      parentBranchName: this._configuration.getParentBranchName(),
-      agentId: this._configuration.getAgentId(),
-      isDisabled: this._configuration.getIsDisabled(),
-      matchTimeout: this._configuration.getMatchTimeout(),
+      appName: this._configuration.appName,
+      testName: this._configuration.testName,
+      browser: this._configuration.browsersInfo,
+      properties: this._configuration.properties,
+      batchName: this._configuration.batch && this._configuration.batch.getName(),
+      batchId: this._configuration.batch && this._configuration.batch.getId(),
+      baselineBranchName: this._configuration.baselineBranchName,
+      baselineEnvName: this._configuration.baselineEnvName,
+      baselineName: this._configuration.baselineEnvName,
+      envName: this._configuration.environmentName,
+      branchName: this._configuration.branchName,
+      saveFailedTests: this._configuration.saveFailedTests,
+      saveNewTests: this._configuration.saveNewTests,
+      compareWithParentBranch: this._configuration.compareWithParentBranch,
+      ignoreBaseline: this._configuration.ignoreBaseline,
+      parentBranchName: this._configuration.parentBranchName,
+      agentId: this._configuration.agentId,
+      isDisabled: this._configuration.isDisabled,
+      matchTimeout: this._configuration.matchTimeout,
 
       ignoreCaret: this._defaultMatchSettings.getIgnoreCaret(),
       matchLevel: this._defaultMatchSettings.getMatchLevel(),

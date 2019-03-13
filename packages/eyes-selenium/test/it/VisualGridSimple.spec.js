@@ -22,8 +22,8 @@ describe('VisualGridSimple', function () {
     // eyes.setProxy('http://127.0.0.1:8888');
 
     const configuration = new SeleniumConfiguration();
-    configuration.setTestName('Open Concurrency with Batch 2');
-    configuration.setAppName('RenderingGridIntegration');
+    configuration.testName = 'Open Concurrency with Batch 2';
+    configuration.appName = 'RenderingGridIntegration';
     configuration.addBrowser(800, 600, BrowserType.CHROME);
     configuration.addBrowser(700, 500, BrowserType.CHROME);
     configuration.addBrowser(400, 300, BrowserType.CHROME);

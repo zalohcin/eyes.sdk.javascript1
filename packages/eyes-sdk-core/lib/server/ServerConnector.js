@@ -229,19 +229,19 @@ class ServerConnector {
     }
 
     if (isIncludeApiKey) {
-      options.params.apiKey = this._configuration.getApiKey();
+      options.params.apiKey = this._configuration.apiKey;
     }
 
-    if (TypeUtils.isNotNull(this._configuration.getRemoveSession())) {
-      options.params.removeSession = this._configuration.getRemoveSession();
+    if (TypeUtils.isNotNull(this._configuration.removeSession)) {
+      options.params.removeSession = this._configuration.removeSession;
     }
 
-    if (TypeUtils.isNotNull(this._configuration.getConnectionTimeout())) {
-      options.timeout = this._configuration.getConnectionTimeout();
+    if (TypeUtils.isNotNull(this._configuration.connectionTimeout)) {
+      options.timeout = this._configuration.connectionTimeout;
     }
 
-    if (TypeUtils.isNotNull(this._configuration.getProxy())) {
-      options.proxy = this._configuration.getProxy().toProxyObject();
+    if (TypeUtils.isNotNull(this._configuration.proxy)) {
+      options.proxy = this._configuration.proxy.toProxyObject();
 
       // TODO: remove hot-fix when axios release official fix
       if (options.proxy.protocol === 'http:') {
@@ -328,7 +328,7 @@ class ServerConnector {
    * @param {string} serverUrl - The URI of the rest server.
    */
   setServerUrl(serverUrl) {
-    this._configuration.setServerUrl(serverUrl);
+    this._configuration.serverUrl = serverUrl;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -337,7 +337,7 @@ class ServerConnector {
    * @return {string} - The URI of the eyes server.
    */
   getServerUrl() {
-    return this._configuration.getServerUrl();
+    return this._configuration.serverUrl;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -348,7 +348,7 @@ class ServerConnector {
    * @param {string} apiKey - The api key to set.
    */
   setApiKey(apiKey) {
-    this._configuration.setApiKey(apiKey);
+    this._configuration.apiKey = apiKey;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -357,7 +357,7 @@ class ServerConnector {
    * @return {string} - The currently set API key or {@code null} if no key is set.
    */
   getApiKey() {
-    return this._configuration.getApiKey();
+    return this._configuration.apiKey;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -380,7 +380,7 @@ class ServerConnector {
    * @return {ProxySettings} - The current proxy settings, or {@code null} if no proxy is set.
    */
   getProxy() {
-    return this._configuration.getProxy();
+    return this._configuration.proxy;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -391,7 +391,7 @@ class ServerConnector {
    * @param {boolean} removeSession
    */
   setRemoveSession(removeSession) {
-    this._configuration.setRemoveSession(removeSession);
+    this._configuration.removeSession = removeSession;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -400,7 +400,7 @@ class ServerConnector {
    * @return {boolean} - Whether sessions are removed immediately after they are finished.
    */
   getRemoveSession() {
-    return this._configuration.getRemoveSession();
+    return this._configuration.removeSession;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -411,7 +411,7 @@ class ServerConnector {
    * @param {number} timeout - Connect/Read timeout in milliseconds. 0 equals infinity.
    */
   setTimeout(timeout) {
-    this._configuration.setConnectionTimeout(timeout);
+    this._configuration.connectionTimeout = timeout;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -420,7 +420,7 @@ class ServerConnector {
    * @return {number} - The timeout for web requests (in milliseconds).
    */
   getTimeout() {
-    return this._configuration.getConnectionTimeout();
+    return this._configuration.connectionTimeout;
   }
 
   /**
@@ -436,7 +436,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running'),
+      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/running'),
       data: {
         startInfo: sessionStartInfo,
       },
@@ -469,7 +469,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'DELETE',
-      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running', runningSession.getId()),
+      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/running', runningSession.getId()),
       params: {
         aborted: isAborted,
         updateBaseline: save,
@@ -499,7 +499,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'DELETE',
-      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/batches/', testResults.getBatchId(), '/', testResults.getId()),
+      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/batches/', testResults.getBatchId(), '/', testResults.getId()),
       params: {
         accessToken: testResults.getSecretToken(),
       },
@@ -529,7 +529,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running', runningSession.getId()),
+      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/running', runningSession.getId()),
       data: matchWindowData,
     });
 
@@ -566,7 +566,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH),
+      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH),
       data: matchSingleWindowData,
     });
 
@@ -607,7 +607,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'PUT',
-      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running', runningSession.getId(), stepIndex),
+      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/running', runningSession.getId(), stepIndex),
       headers: {
         'Content-Type': 'application/octet-stream',
       },
@@ -636,7 +636,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'GET',
-      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/renderinfo'),
+      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/renderinfo'),
     });
 
     const response = await sendRequest(this, 'renderInfo', options);
@@ -819,7 +819,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running/data'),
+      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/running/data'),
       headers: {
         'Content-Type': 'application/octet-stream',
       },

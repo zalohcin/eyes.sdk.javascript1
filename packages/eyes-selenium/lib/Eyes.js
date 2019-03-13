@@ -385,7 +385,7 @@ class Eyes extends EyesBase {
    * @return {Promise<RectangleSize>} - The viewport size of the AUT.
    */
   async getViewportSize() {
-    return this._configuration.getViewportSize();
+    return this._configuration.viewportSize;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -405,7 +405,7 @@ class Eyes extends EyesBase {
 
     ArgumentGuard.notNull(size, 'size');
     size = new RectangleSize(size);
-    this._configuration.setViewportSize(size);
+    this._configuration.viewportSize = size;
 
     if (this._driver) {
       const originalFrame = this._driver.getFrameChain();
@@ -726,7 +726,7 @@ class Eyes extends EyesBase {
    * @return {boolean}
    */
   getHideCaret() {
-    return this._configuration.getHideCaret();
+    return this._configuration.hideCaret;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -734,7 +734,7 @@ class Eyes extends EyesBase {
    * @param {boolean} hideCaret
    */
   setHideCaret(hideCaret) {
-    this._configuration.setHideCaret(hideCaret);
+    this._configuration.hideCaret = hideCaret;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -744,7 +744,7 @@ class Eyes extends EyesBase {
    * @param {boolean} shouldForce - Whether to force a full page screenshot or not.
    */
   setForceFullPageScreenshot(shouldForce) {
-    this._configuration.setForceFullPageScreenshot(shouldForce);
+    this._configuration.forceFullPageScreenshot = shouldForce;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -752,7 +752,7 @@ class Eyes extends EyesBase {
    * @return {boolean} - Whether Eyes should force a full page screenshot.
    */
   getForceFullPageScreenshot() {
-    return this._configuration.getForceFullPageScreenshot();
+    return this._configuration.forceFullPageScreenshot;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -764,7 +764,7 @@ class Eyes extends EyesBase {
    *   default value to be used.
    */
   setWaitBeforeScreenshots(waitBeforeScreenshots) {
-    this._configuration.setWaitBeforeScreenshots(waitBeforeScreenshots);
+    this._configuration.waitBeforeScreenshots = waitBeforeScreenshots;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -772,7 +772,7 @@ class Eyes extends EyesBase {
    * @return {number} - The time to wait just before taking a screenshot.
    */
   getWaitBeforeScreenshots() {
-    return this._configuration.getWaitBeforeScreenshots();
+    return this._configuration.waitBeforeScreenshots;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -782,7 +782,7 @@ class Eyes extends EyesBase {
    * @param {boolean} shouldHide - Whether to hide the scrollbars or not.
    */
   setHideScrollbars(shouldHide) {
-    this._configuration.setHideScrollbars(shouldHide)
+    this._configuration.hideScrollbars = shouldHide;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -790,7 +790,7 @@ class Eyes extends EyesBase {
    * @return {boolean} - Whether or not scrollbars are hidden when taking screenshots.
    */
   getHideScrollbars() {
-    return this._configuration.getHideScrollbars();
+    return this._configuration.hideScrollbars;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -802,7 +802,7 @@ class Eyes extends EyesBase {
    */
   setStitchMode(mode) {
     this._logger.verbose(`setting stitch mode to ${mode}`);
-    this._configuration.setStitchMode(mode);
+    this._configuration.stitchMode = mode;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -810,7 +810,7 @@ class Eyes extends EyesBase {
    * @return {StitchMode} - The current stitch mode settings.
    */
   getStitchMode() {
-    return this._configuration.getStitchMode();
+    return this._configuration.stitchMode;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -820,7 +820,7 @@ class Eyes extends EyesBase {
    * @param {number} stitchOverlap - The width (in pixels) of the overlap.
    */
   setStitchOverlap(stitchOverlap) {
-    this._configuration.setStitchOverlap(stitchOverlap);
+    this._configuration.stitchOverlap = stitchOverlap;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -828,7 +828,7 @@ class Eyes extends EyesBase {
    * @return {number} - Returns the stitching overlap in pixels.
    */
   getStitchOverlap() {
-    return this._configuration.getStitchOverlap();
+    return this._configuration.stitchOverlap;
   }
 }
 

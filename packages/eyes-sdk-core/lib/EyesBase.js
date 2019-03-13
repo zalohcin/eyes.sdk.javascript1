@@ -68,10 +68,10 @@ class EyesBase extends EyesAbstract {
   constructor(serverUrl, isDisabled, configuration) {
     super(configuration);
 
-    this._configuration.setServerUrl(serverUrl);
-    this._configuration.setIsDisabled(isDisabled);
+    this._configuration.serverUrl = serverUrl;
+    this._configuration.isDisabled = isDisabled;
 
-    if (this._configuration.getIsDisabled()) {
+    if (this._configuration.isDisabled) {
       this._userInputs = [];
       return;
     }
@@ -232,7 +232,7 @@ class EyesBase extends EyesAbstract {
    * @return {string} - The name of the application under test.
    */
   getAppName() {
-    return this._currentAppName || this._configuration.getAppName();
+    return this._currentAppName || this._configuration.appName;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -242,7 +242,7 @@ class EyesBase extends EyesAbstract {
    * @protected
    */
   clearUserInputs() {
-    if (this._configuration.getIsDisabled()) {
+    if (this._configuration.isDisabled) {
       return;
     }
     this._userInputs.length = 0;
@@ -254,7 +254,7 @@ class EyesBase extends EyesAbstract {
    * @return {Trigger[]} - User inputs collected between {@code checkWindowBase} invocations.
    */
   getUserInputs() {
-    if (this._configuration.getIsDisabled()) {
+    if (this._configuration.isDisabled) {
       return null;
     }
 
@@ -446,7 +446,7 @@ class EyesBase extends EyesAbstract {
    */
   async close(throwEx = true) {
     try {
-      if (this._configuration.getIsDisabled()) {
+      if (this._configuration.isDisabled) {
         this._logger.verbose('Eyes close ignored. (disabled)');
         return null;
       }
@@ -473,7 +473,7 @@ class EyesBase extends EyesAbstract {
 
       this._logger.verbose('Ending server session...');
       // noinspection OverlyComplexBooleanExpressionJS
-      const save = (isNewSession && this._configuration.getSaveNewTests()) || (!isNewSession && this._configuration.getSaveFailedTests());
+      const save = (isNewSession && this._configuration.saveNewTests) || (!isNewSession && this._configuration.saveFailedTests);
       this._logger.verbose(`Automatically save test? ${save}`);
 
       // Session was started, call the server to end the session.
@@ -542,7 +542,7 @@ class EyesBase extends EyesAbstract {
    */
   async abortIfNotClosed() {
     try {
-      if (this._configuration.getIsDisabled()) {
+      if (this._configuration.isDisabled) {
         this._logger.verbose('Eyes abortIfNotClosed ignored. (disabled)');
         return null;
       }
@@ -720,7 +720,7 @@ class EyesBase extends EyesAbstract {
    * @throws DiffsFoundError - Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async checkWindowBase(regionProvider, tag = '', ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
-    if (this._configuration.getIsDisabled()) {
+    if (this._configuration.isDisabled) {
       this._logger.verbose('Ignored');
       const result = new MatchResult();
       result.setAsExpected(true);
@@ -770,7 +770,7 @@ class EyesBase extends EyesAbstract {
    * @throws DiffsFoundError - Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async checkSingleWindowBase(regionProvider, tag = '', ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
-    if (this._configuration.getIsDisabled()) {
+    if (this._configuration.isDisabled) {
       this._logger.verbose('checkSingleWindowBase Ignored');
       const result = new TestResults();
       result.setStatus(TestResultsStatus.Passed);
@@ -785,23 +785,23 @@ class EyesBase extends EyesAbstract {
     const appEnvironment = await this.getAppEnvironment();
     this._sessionStartInfo = new SessionStartInfo({
       agentId: this.getFullAgentId(),
-      sessionType: this._configuration.getSessionType(),
+      sessionType: this._configuration.sessionType,
       appIdOrName: this.getAppName(),
       verId: undefined,
-      scenarioIdOrName: this._configuration.getTestName(),
-      batchInfo: this._configuration.getBatch(),
-      baselineEnvName: this._configuration.getBaselineEnvName(),
-      environmentName: this._configuration.getEnvironmentName(),
+      scenarioIdOrName: this._configuration.testName,
+      batchInfo: this._configuration.batch,
+      baselineEnvName: this._configuration.baselineEnvName,
+      environmentName: this._configuration.environmentName,
       environment: appEnvironment,
       defaultMatchSettings: this._defaultMatchSettings,
-      branchName: this._configuration.getBranchName(),
-      parentBranchName: this._configuration.getParentBranchName(),
-      baselineBranchName: this._configuration.getBaselineBranchName(),
-      compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
-      ignoreBaseline: this._configuration.getIgnoreBaseline(),
+      branchName: this._configuration.branchName,
+      parentBranchName: this._configuration.parentBranchName,
+      baselineBranchName: this._configuration.baselineBranchName,
+      compareWithParentBranch: this._configuration.compareWithParentBranch,
+      ignoreBaseline: this._configuration.ignoreBaseline,
       render: this._render,
-      saveDiffs: this._configuration.getSaveDiffs(),
-      properties: this._configuration.getProperties(),
+      saveDiffs: this._configuration.saveDiffs,
+      properties: this._configuration.properties,
     });
 
     // noinspection JSClosureCompilerSyntax
@@ -814,11 +814,11 @@ class EyesBase extends EyesAbstract {
     this._matchWindowTask = new MatchSingleWindowTask(
       this._logger,
       this._serverConnector,
-      this._configuration.getMatchTimeout(),
+      this._configuration.matchTimeout,
       this,
       outputProvider,
       this._sessionStartInfo,
-      this._configuration.getSaveNewTests()
+      this._configuration.saveNewTests
     );
 
     await this.beforeMatchWindow();
@@ -889,7 +889,7 @@ class EyesBase extends EyesAbstract {
   async replaceWindow(stepIndex, screenshot, tag = '', title = '', userInputs = []) {
     this._logger.verbose('EyesBase.replaceWindow - running');
 
-    if (this._configuration.getIsDisabled()) {
+    if (this._configuration.isDisabled) {
       this._logger.verbose('Ignored');
       const result = new MatchResult();
       result.setAsExpected(true);
@@ -991,19 +991,19 @@ class EyesBase extends EyesAbstract {
 
     if (viewportSize) {
       viewportSize = new RectangleSize(viewportSize);
-      this._configuration.setViewportSize(viewportSize);
+      this._configuration.viewportSize = viewportSize;
     } else {
-      viewportSize = this._configuration.getViewportSize();
+      viewportSize = this._configuration.viewportSize;
     }
 
     try {
-      if (this._configuration.getIsDisabled()) {
+      if (this._configuration.isDisabled) {
         this._logger.verbose('Eyes Open ignored - disabled');
         return;
       }
 
       // If there's no default application name, one must be provided for the current test.
-      if (!this._configuration.getAppName()) {
+      if (!this._configuration.appName) {
         ArgumentGuard.notNull(appName, 'appName');
       }
       ArgumentGuard.notNull(testName, 'testName');
@@ -1021,10 +1021,10 @@ class EyesBase extends EyesAbstract {
       this._isViewportSizeSet = false;
       await this.beforeOpen();
 
-      this._currentAppName = appName || this._configuration.getAppName();
-      this._configuration.setTestName(testName);
+      this._currentAppName = appName || this._configuration.appName;
+      this._configuration.testName = testName;
       this._viewportSizeHandler.set(viewportSize);
-      this._configuration.setSessionType(sessionType);
+      this._configuration.sessionType = sessionType;
       this._validationId = -1;
 
       if (viewportSize) {
@@ -1084,7 +1084,7 @@ class EyesBase extends EyesAbstract {
       this._logger,
       this._serverConnector,
       this._runningSession,
-      this._configuration.getMatchTimeout(),
+      this._configuration.matchTimeout,
       this,
       outputProvider
     );
@@ -1105,9 +1105,9 @@ class EyesBase extends EyesAbstract {
    * @private
    */
   _logOpenBase() {
-    this._logger.verbose(`Eyes server URL is '${this._configuration.getServerUrl()}'`);
-    this._logger.verbose(`Timeout = '${this._configuration.getConnectionTimeout()}'`);
-    this._logger.verbose(`matchTimeout = '${this._configuration.getMatchTimeout()}'`);
+    this._logger.verbose(`Eyes server URL is '${this._configuration.serverUrl}'`);
+    this._logger.verbose(`Timeout = '${this._configuration.connectionTimeout}'`);
+    this._logger.verbose(`matchTimeout = '${this._configuration.matchTimeout}'`);
     this._logger.verbose(`Default match settings = '${this._defaultMatchSettings}'`);
     this._logger.verbose(`FailureReports = '${this._failureReports}'`);
   }
@@ -1135,14 +1135,14 @@ class EyesBase extends EyesAbstract {
     if (!explicitViewportSize) {
       this._viewportSizeHandler = new SimplePropertyHandler();
       this._viewportSizeHandler.set(null);
-      this._configuration.setViewportSize(null);
+      this._configuration.viewportSize = undefined;
       this._isViewportSizeSet = false;
       return;
     }
 
     this._logger.verbose(`Viewport size explicitly set to ${explicitViewportSize}`);
     this._viewportSizeHandler = new ReadOnlyPropertyHandler(this._logger, new RectangleSize(explicitViewportSize));
-    this._configuration.setViewportSize(explicitViewportSize);
+    this._configuration.viewportSize = explicitViewportSize;
     this._isViewportSizeSet = true;
   }
 
@@ -1154,7 +1154,7 @@ class EyesBase extends EyesAbstract {
    * @param {Trigger} trigger - The trigger to add to the user inputs list.
    */
   addUserInput(trigger) {
-    if (this._configuration.getIsDisabled()) {
+    if (this._configuration.isDisabled) {
       return;
     }
 
@@ -1170,7 +1170,7 @@ class EyesBase extends EyesAbstract {
    * @param {string} text - The trigger's text.
    */
   addTextTriggerBase(control, text) {
-    if (this._configuration.getIsDisabled()) {
+    if (this._configuration.isDisabled) {
       this._logger.verbose(`Ignoring '${text}' (disabled)`);
       return;
     }
@@ -1210,7 +1210,7 @@ class EyesBase extends EyesAbstract {
    * @param {Location} cursor - The cursor's position relative to the control.
    */
   addMouseTriggerBase(action, control, cursor) {
-    if (this._configuration.getIsDisabled()) {
+    if (this._configuration.isDisabled) {
       this._logger.verbose(`Ignoring ${action} (disabled)`);
       return;
     }
@@ -1307,7 +1307,7 @@ class EyesBase extends EyesAbstract {
       return;
     }
 
-    this._logger.verbose(`Batch is ${this._configuration.getBatch()}`);
+    this._logger.verbose(`Batch is ${this._configuration.batch}`);
     this._autSessionId = await this.getAUTSessionId();
 
     try {
@@ -1324,23 +1324,23 @@ class EyesBase extends EyesAbstract {
 
     this._sessionStartInfo = new SessionStartInfo({
       agentId: this.getFullAgentId(),
-      sessionType: this._configuration.getSessionType(),
+      sessionType: this._configuration.sessionType,
       appIdOrName: this.getAppName(),
       verId: undefined,
-      scenarioIdOrName: this._configuration.getTestName(),
-      batchInfo: this._configuration.getBatch(),
-      baselineEnvName: this._configuration.getBaselineEnvName(),
-      environmentName: this._configuration.getEnvironmentName(),
+      scenarioIdOrName: this._configuration.testName,
+      batchInfo: this._configuration.batch,
+      baselineEnvName: this._configuration.baselineEnvName,
+      environmentName: this._configuration.environmentName,
       environment: appEnvironment,
       defaultMatchSettings: this._defaultMatchSettings,
-      branchName: this._configuration.getBranchName(),
-      parentBranchName: this._configuration.getParentBranchName(),
-      baselineBranchName: this._configuration.getBaselineBranchName(),
-      compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
-      ignoreBaseline: this._configuration.getIgnoreBaseline(),
+      branchName: this._configuration.branchName,
+      parentBranchName: this._configuration.parentBranchName,
+      baselineBranchName: this._configuration.baselineBranchName,
+      compareWithParentBranch: this._configuration.compareWithParentBranch,
+      ignoreBaseline: this._configuration.ignoreBaseline,
       render: this._render,
-      saveDiffs: this._configuration.getSaveDiffs(),
-      properties: this._configuration.getProperties(),
+      saveDiffs: this._configuration.saveDiffs,
+      properties: this._configuration.properties,
     });
 
     this._logger.verbose('Starting server session...');
@@ -1351,7 +1351,7 @@ class EyesBase extends EyesAbstract {
       this._serverConnector.setRenderingInfo(this._runningSession.getRenderingInfo());
     }
 
-    const testInfo = `'${this._configuration.getTestName()}' of '${this.getAppName()}' "${appEnvironment}`;
+    const testInfo = `'${this._configuration.testName}' of '${this.getAppName()}' "${appEnvironment}`;
     if (this._runningSession.getIsNewSession()) {
       this._logger.log(`--- New test started - ${testInfo}`);
       this._shouldMatchWindowRunOnceOnTimeout = true;
@@ -1378,7 +1378,7 @@ class EyesBase extends EyesAbstract {
           const targetSize = await this.getViewportSize();
           await this._sessionEventHandlers.setSizeWillStart(targetSize);
           this._viewportSizeHandler.set(targetSize);
-          this._configuration.setViewportSize(targetSize);
+          this._configuration.viewportSize = targetSize;
         }
 
         this._isViewportSizeSet = true;
