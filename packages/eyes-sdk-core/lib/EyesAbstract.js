@@ -61,6 +61,13 @@ class EyesAbstract {
   }
 
   /**
+   * @param {Configuration} configuration
+   */
+  setConfiguration(configuration) {
+    this._configuration = configuration;
+  }
+
+  /**
    * Sets the user given agent id of the SDK.
    *
    * @param {string} agentId - The agent ID to set.
