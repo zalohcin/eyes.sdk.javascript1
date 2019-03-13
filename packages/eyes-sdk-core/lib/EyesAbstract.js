@@ -1,6 +1,6 @@
 'use strict';
 
-const { Configuration, Logger, ArgumentGuard } = require('@applitools/eyes-common');
+const { Configuration, Logger, ArgumentGuard, BatchInfo } = require('@applitools/eyes-common');
 
 const { ImageMatchSettings } = require('./match/ImageMatchSettings');
 
@@ -136,7 +136,15 @@ class EyesAbstract {
    * @param {string} [password] - The proxy password to be used.
    */
   setProxy(varArg, username, password) {
-    return this._configuration.setProxy(varArg, username, password);
+    if (!username && !password) {
+      this._configuration.proxy = varArg;
+    } else {
+      this._configuration.proxy = {
+        url: varArg,
+        username: username,
+        password: password,
+      };
+    }
   }
 
   /**
@@ -312,17 +320,26 @@ class EyesAbstract {
   /**
    * Sets the batch in which context future tests will run or {@code null} if tests are to run standalone.
    *
-   * @param {BatchInfo|string} batchOrName - the batch name or batch object
+   * @param {BatchInfo|string} batchOrName - The batch name or batch object
    * @param {string} [batchId] - ID of the batch, should be generated using GeneralUtils.guid()
-   * @param {string} [batchDate] - start date of the batch, can be created as new Date().toUTCString()
+   * @param {string} [startedAt] - Start date of the batch, can be created as new Date().toUTCString()
    */
-  setBatch(batchOrName, batchId, batchDate) {
+  setBatch(batchOrName, batchId, startedAt) {
     if (this._configuration.isDisabled) {
       this._logger.verbose('Ignored');
       return;
     }
 
-    this._configuration.setBatch(batchOrName, batchId, batchDate);
+    if (batchOrName instanceof BatchInfo) {
+      this._configuration.batch = batchOrName;
+    } else {
+      this._configuration.batch = {
+        id: batchId,
+        name: batchOrName,
+        startedAt: startedAt,
+      };
+    }
+
     this._logger.verbose(`setBatch(${this._configuration._batch})`);
   }
 

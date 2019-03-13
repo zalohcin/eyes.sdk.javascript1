@@ -18,7 +18,6 @@ const DEFAULT_VALUES = {
   saveNewTests: true,
   ignoreBaseline: false,
   sendDom: false,
-  properties: [],
 };
 
 class Configuration {
@@ -61,7 +60,7 @@ class Configuration {
     this._batch = undefined;
 
     /** @type {PropertyData[]} */
-    this._properties = undefined;
+    this._properties = [];
 
     /** @type {string} */
     this._baselineEnvName = undefined;
@@ -168,35 +167,19 @@ class Configuration {
   /**
    * Sets the proxy settings to be used by the rest client.
    *
-   * @param {ProxySettings} value - The ProxySettings object or proxy url to be used.
+   * @param {ProxySettings|string|boolean|{url: string, username: string, password: string}} value - The ProxySettings object or proxy url to be used.
+   *   Use {@code false} to disable proxy (even if it set via env variables). Use {@code null} to reset proxy settings.
    */
   set proxy(value) {
-    this._proxySettings = value;
-  }
-
-  /**
-   * Sets the proxy settings to be used by the rest client.
-   *
-   * @param {ProxySettings|string|boolean} varArg - The ProxySettings object or proxy url to be used.
-   *  Use {@code false} to disable proxy (even if it set via env variables). Use {@code null} to reset proxy settings.
-   * @param {string} [username]
-   * @param {string} [password]
-   */
-  setProxy(varArg, username, password) {
-    if (TypeUtils.isNull(varArg)) {
+    // noinspection IfStatementWithTooManyBranchesJS
+    if (TypeUtils.isNull(value)) {
       this._proxySettings = undefined;
-      return;
-    }
-
-    if (varArg === false) {
-      this._proxySettings = new ProxySettings(varArg);
-      return;
-    }
-
-    if (varArg instanceof ProxySettings) {
-      this._proxySettings = varArg;
+    } else if (value === false) {
+      this._proxySettings = new ProxySettings(value);
+    } else if (value instanceof ProxySettings) {
+      this._proxySettings = value;
     } else {
-      this._proxySettings = new ProxySettings(varArg, username, password);
+      this._proxySettings = new ProxySettings(value.url, value.username, value.password);
     }
   }
 
@@ -350,32 +333,17 @@ class Configuration {
   /**
    * Sets the batch in which context future tests will run or {@code null} if tests are to run standalone.
    *
-   * @param {BatchInfo} value
+   * @param {BatchInfo|BatchInfoObject} value
    */
   set batch(value) {
-    this._batch = value;
-  }
-
-  /**
-   * Sets the batch in which context future tests will run or {@code null} if tests are to run standalone.
-   *
-   * @param {BatchInfo|string} batchOrName - the batch name or batch object
-   * @param {string} [batchId] - ID of the batch, should be generated using GeneralUtils.guid()
-   * @param {string} [batchDate] - start date of the batch, can be created as new Date().toUTCString()
-   */
-  setBatch(batchOrName, batchId, batchDate) {
-    if (TypeUtils.isNull(batchOrName)) {
-      this._batch = undefined;
-    } else {
-      this._batch = new BatchInfo(batchOrName, batchDate, batchId);
-    }
+    this._batch = value ? new BatchInfo(value) : undefined;
   }
 
   /**
    * @return {PropertyData[]}
    */
   get properties() {
-    return TypeUtils.getOrDefault(this._properties, DEFAULT_VALUES.properties);
+    return this._properties;
   }
 
   /**
@@ -397,10 +365,6 @@ class Configuration {
       ArgumentGuard.isString(propertyOrName, 'propertyName');
       ArgumentGuard.notNull(propertyValue, 'propertyValue');
       propertyOrName = new PropertyData(propertyOrName, propertyValue);
-    }
-
-    if (this._properties === undefined) {
-      this._properties = [];
     }
 
     this._properties.push(propertyOrName);
