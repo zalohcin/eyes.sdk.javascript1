@@ -149,6 +149,11 @@ class EyesSelenium extends Eyes {
    * @inheritDoc
    */
   async check(name, checkSettings) {
+    if (this._configuration.getIsDisabled()) {
+      this._logger.log(`check('${name}', ${checkSettings}): Ignored`);
+      return;
+    }
+
     ArgumentGuard.notNull(checkSettings, 'checkSettings');
     ArgumentGuard.isValidState(this._isOpen, 'Eyes not open');
 
