@@ -989,12 +989,8 @@ class EyesBase extends EyesAbstract {
   async openBase(appName, testName, viewportSize, sessionType = SessionType.SEQUENTIAL) {
     this._logger.getLogHandler().open();
 
-    if (viewportSize) {
-      viewportSize = new RectangleSize(viewportSize);
-      this._configuration.viewportSize = viewportSize;
-    } else {
-      viewportSize = this._configuration.viewportSize;
-    }
+    // noinspection NonBlockStatementBodyJS
+    if (viewportSize) this._configuration.viewportSize = viewportSize;
 
     try {
       if (this._configuration.isDisabled) {
@@ -1009,7 +1005,7 @@ class EyesBase extends EyesAbstract {
       ArgumentGuard.notNull(testName, 'testName');
 
       this._logger.verbose(`Agent = ${this.getFullAgentId()}`);
-      this._logger.verbose(`openBase('${appName}', '${testName}', '${viewportSize}')`);
+      this._logger.verbose(`openBase('${appName}', '${testName}', '${this._configuration.viewportSize}')`);
 
       await this._sessionEventHandlers.testStarted(await this.getAUTSessionId());
 
@@ -1023,11 +1019,11 @@ class EyesBase extends EyesAbstract {
 
       this._currentAppName = appName || this._configuration.appName;
       this._configuration.testName = testName;
-      this._viewportSizeHandler.set(viewportSize);
+      this._viewportSizeHandler.set(this._configuration.viewportSize);
       this._configuration.sessionType = sessionType;
       this._validationId = -1;
 
-      if (viewportSize) {
+      if (this._configuration.viewportSize) {
         await this._ensureRunningSession();
       }
 

@@ -4,7 +4,6 @@ const { By } = require('selenium-webdriver');
 const { DomCapture } = require('@applitools/dom-utils');
 
 const {
-  Configuration,
   SimplePropertyHandler,
   CoordinatesType,
   Region,
@@ -133,10 +132,9 @@ class EyesSelenium extends Eyes {
    */
   _createPositionProvider(scrollRootElement = this._scrollRootElement) {
     // Setting the correct position provider.
-    const stitchMode = this._configuration.stitchMode;
-    this._logger.verbose("initializing position provider. stitchMode:", stitchMode);
+    this._logger.verbose("initializing position provider. stitchMode:", this._configuration.stitchMode);
 
-    switch (stitchMode) {
+    switch (this._configuration.stitchMode) {
       case StitchMode.CSS:
           return new CssTranslatePositionProvider(this._logger, this._jsExecutor, scrollRootElement);
       default:
@@ -151,7 +149,7 @@ class EyesSelenium extends Eyes {
   async check(name, checkSettings) {
     if (this._configuration.isDisabled) {
       this._logger.log(`check('${name}', ${checkSettings}): Ignored`);
-      return;
+      return new MatchResult();
     }
 
     ArgumentGuard.notNull(checkSettings, 'checkSettings');

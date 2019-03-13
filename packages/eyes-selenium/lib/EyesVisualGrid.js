@@ -2,7 +2,7 @@
 
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-snapshot');
-const { Configuration, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
+const { ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 
 const {
   TestFailedError,
