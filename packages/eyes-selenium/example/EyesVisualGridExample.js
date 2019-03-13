@@ -22,10 +22,11 @@ const { Eyes, Target, ConsoleLogHandler, SeleniumConfiguration, BrowserType } = 
     configuration.setTestName('My first Javascript test!');
     configuration.addBrowser(1200, 800, BrowserType.CHROME);
     configuration.addBrowser(1200, 800, BrowserType.FIREFOX);
+    eyes.setConfiguration(configuration);
 
     // Start the test and set the browser's viewport size to 800x600.
-    // await eyes.open(driver, 'Eyes Examples', 'My first Javascript test!', { width: 800, height: 600 }); // also will work without configuration with single browser
-    await eyes.open(driver, configuration);
+    // await eyes.open(driver, 'Eyes Examples', 'My first Javascript test!', { width: 800, height: 600 }); // also will work without configuration with a single browser
+    await eyes.open(driver);
 
     // Navigate the browser to the "hello world!" web-site.
     await driver.get('https://applitools.com/helloworld');

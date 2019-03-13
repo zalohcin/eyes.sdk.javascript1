@@ -26,8 +26,9 @@ describe('VisualGridCheckFluent', function () {
     configuration.setTestName(this.currentTest.title);
     configuration.addBrowser(1200, 800, BrowserType.CHROME);
     configuration.addBrowser(1200, 800, BrowserType.FIREFOX);
+    eyes.setConfiguration(configuration);
 
-    driver = await eyes.open(driver, configuration);
+    driver = await eyes.open(driver);
   });
 
   it('TestCheckWindow', async function () {

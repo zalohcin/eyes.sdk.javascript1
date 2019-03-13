@@ -27,8 +27,9 @@ describe('VisualGridSimple', function () {
     configuration.addBrowser(800, 600, BrowserType.CHROME);
     configuration.addBrowser(700, 500, BrowserType.CHROME);
     configuration.addBrowser(400, 300, BrowserType.CHROME);
+    eyes.setConfiguration(configuration);
 
-    await eyes.open(driver, configuration);
+    await eyes.open(driver);
 
     await eyes.setViewportSize(new RectangleSize({ width: 800, height: 600 }));
 
