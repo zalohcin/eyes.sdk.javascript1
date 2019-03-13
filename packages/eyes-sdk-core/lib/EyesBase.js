@@ -784,7 +784,7 @@ class EyesBase extends EyesAbstract {
 
     const appEnvironment = await this.getAppEnvironment();
     this._sessionStartInfo = new SessionStartInfo({
-      agentId: this.getBaseAgentId(),
+      agentId: this.getFullAgentId(),
       sessionType: this._configuration.getSessionType(),
       appIdOrName: this.getAppName(),
       verId: undefined,
@@ -1323,7 +1323,7 @@ class EyesBase extends EyesAbstract {
     await this._sessionEventHandlers.initEnded();
 
     this._sessionStartInfo = new SessionStartInfo({
-      agentId: this.getBaseAgentId(),
+      agentId: this.getFullAgentId(),
       sessionType: this._configuration.getSessionType(),
       appIdOrName: this.getAppName(),
       verId: undefined,
