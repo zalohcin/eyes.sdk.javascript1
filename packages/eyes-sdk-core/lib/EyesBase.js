@@ -189,46 +189,6 @@ class EyesBase extends EyesAbstract {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Sets the authToken for rendering server.
-   *
-   * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
-   * @param {string} authToken - The authToken to be used.
-   */
-  setRenderingAuthToken(authToken) {
-    this._serverConnector.setRenderingAuthToken(authToken);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @deprecated use {@link #getRenderingInfo()} instead
-   * @return {string} - The currently authToken or {@code null} if no key is set.
-   */
-  getRenderingAuthToken() {
-    return this._serverConnector.getRenderingAuthToken();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the current rendering server URL used by the rest client.
-   *
-   * @deprecated use {@link #setRenderingInfo(renderingInfo)} instead
-   * @param {string} serverUrl - The URI of the rendering server, or {@code null} to use the default server.
-   */
-  setRenderingServerUrl(serverUrl) {
-    this._serverConnector.setRenderingServerUrl(serverUrl);
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @deprecated use {@link #getRenderingInfo()} instead
-   * @return {string} - The URI of the eyes server.
-   */
-  getRenderingServerUrl() {
-    return this._serverConnector.getRenderingServerUrl();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
    * @return {string} - The name of the application under test.
    */
   getAppName() {
@@ -297,14 +257,6 @@ class EyesBase extends EyesAbstract {
    */
   getIsOpen() {
     return this._isOpen;
-  }
-
-  /**
-   * @deprecated
-   * @return {string}
-   */
-  static getDefaultServerUrl() {
-    return process.env.APPLITOOLS_SERVER_URL || 'https://eyesapi.applitools.com';
   }
 
   // noinspection JSUnusedGlobalSymbols
