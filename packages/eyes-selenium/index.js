@@ -106,7 +106,6 @@ exports.MatchLevel = core.MatchLevel;
 exports.MatchResult = core.MatchResult;
 exports.NullRegionProvider = core.NullRegionProvider;
 exports.RegionProvider = core.RegionProvider;
-exports.RenderingInfo = core.RenderingInfo;
 exports.RunningSession = core.RunningSession;
 exports.SessionType = core.SessionType;
 exports.FailureReports = core.FailureReports;
