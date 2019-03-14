@@ -152,7 +152,7 @@ class EyesVisualGrid extends Eyes {
    * @param {boolean} [throwEx]
    * @return {Promise<TestResults[]|Error[]>}
    */
-  async closeAndReturnResults(throwEx = true) {
+  async closeAndReturnResults(throwEx = false) {
     try {
       return await this._closeCommand(throwEx);
     } finally {
@@ -181,7 +181,7 @@ class EyesVisualGrid extends Eyes {
      * @param {boolean} [throwEx=true]
      * @return {Promise<TestResults[]|Error[]>}
      */
-    runner.getAllResults = async (throwEx = true) => {
+    runner.getAllResults = async (throwEx = false) => {
       return await this.closeAndReturnResults(throwEx);
     };
     return runner;
