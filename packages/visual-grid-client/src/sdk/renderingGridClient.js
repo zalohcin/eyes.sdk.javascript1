@@ -73,7 +73,7 @@ function makeRenderingGridClient({
   let renderInfoPromise;
   const eyesTransactionThroat = transactionThroat(openEyesConcurrency);
   const renderThroat = throatPkg(openEyesConcurrency * renderConcurrencyFactor);
-  logger = logger || new Logger(showLogs);
+  logger = logger || new Logger(showLogs, 'visual-grid-client');
   renderWrapper =
     renderWrapper ||
     createRenderWrapper({
