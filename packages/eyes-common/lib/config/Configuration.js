@@ -174,7 +174,7 @@ class Configuration {
     // noinspection IfStatementWithTooManyBranchesJS
     if (TypeUtils.isNull(value)) {
       this._proxySettings = undefined;
-    } else if (value === false) {
+    } else if (value === false || TypeUtils.isString(value)) {
       this._proxySettings = new ProxySettings(value);
     } else if (value instanceof ProxySettings) {
       this._proxySettings = value;
