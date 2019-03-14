@@ -42,6 +42,16 @@ class LogHandler {
    * @param {string} logString
    */
   onMessage(verbose, logString) {} // eslint-disable-line no-unused-vars
+
+  /**
+   * @param {string} appName
+   */
+  setAppName(appName) { this._appName = appName }
+
+  /**
+   * @return {string} - appName
+   */
+  getAppName() { return this._appName }
 }
 
 exports.LogHandler = LogHandler;

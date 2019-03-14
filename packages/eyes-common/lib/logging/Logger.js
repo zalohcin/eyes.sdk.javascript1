@@ -9,7 +9,7 @@ const { DateTimeUtils } = require('../utils/DateTimeUtils');
 const { PerformanceUtils } = require('../utils/PerformanceUtils');
 
 const { ConsoleLogHandler } = require('./ConsoleLogHandler');
-const { NullLogHandler } = require('./NullLogHandler');
+const { DebugLogHandler } = require('./DebugLogHandler');
 
 const timeStorage = PerformanceUtils.start();
 
@@ -18,17 +18,19 @@ const timeStorage = PerformanceUtils.start();
  */
 class Logger {
   /**
-   * @param {boolean|string} [showLogs] - Determines which log handler will be used ConsoleLogHandler (if set to {@code true})
-   *   or NullLogHandler (if not set or set to {@code false})
+   * @param {boolean|string} [showLogs] - Determines which log handler will be used ConsoleLogHandler (if set to {@code true}),
+   * DebugLogHandler (if not set or set to {@code false}).
+   * @param {string} [debugAppName] - If using DebugLogHandler then this is the debug app name.
    */
-  constructor(showLogs = false) {
+  constructor(showLogs = false, debugAppName = '') {
     if (TypeUtils.isString(showLogs)) {
       showLogs = (showLogs === 'true');
     }
 
+    ArgumentGuard.isString(debugAppName, 'debugAppName');
     ArgumentGuard.isBoolean(showLogs, 'showLogs', false);
 
-    this._logHandler = showLogs ? new ConsoleLogHandler(true) : new NullLogHandler();
+    this._logHandler = showLogs ? new ConsoleLogHandler(true) : new DebugLogHandler(false, debugAppName);
     this._sessionId = '';
     this._isIncludeTime = false;
   }
