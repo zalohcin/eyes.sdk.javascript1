@@ -226,7 +226,7 @@ class SeleniumConfiguration extends Configuration {
   }
 
   /**
-   * @param {string} deviceName
+   * @param {DeviceName|string} deviceName
    * @param {ScreenOrientation} screenOrientation
    * @return {SeleniumConfiguration}
    */

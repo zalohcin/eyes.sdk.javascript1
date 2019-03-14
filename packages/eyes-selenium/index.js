@@ -5,6 +5,7 @@ const core = require('@applitools/eyes-sdk-core');
 
 exports.SeleniumConfiguration = require('./lib/config/SeleniumConfiguration').SeleniumConfiguration;
 exports.BrowserType = require('./lib/config/BrowserType').BrowserType;
+exports.DeviceName = require('./lib/config/DeviceName').DeviceName;
 exports.ScreenOrientation = require('./lib/config/ScreenOrientation').ScreenOrientation;
 exports.StitchMode = require('./lib/config/StitchMode').StitchMode;
 
