@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.9.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.8.0...@applitools/eyes-selenium@4.9.0) (2019-03-14)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** don't throw error ob getAllResults by default ([1701f98](https://github.com/applitools/eyes.sdk.javascript1/commit/1701f98))
+
+
+### Features
+
+* **eyes-selenium:** add DeviceName enum with list of supported devices ([54e379f](https://github.com/applitools/eyes.sdk.javascript1/commit/54e379f))
+
+
+
+
+
 # [4.8.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.7.0...@applitools/eyes-selenium@4.8.0) (2019-03-13)
 
 

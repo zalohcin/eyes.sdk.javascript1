@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@2.0.0...@applitools/eyes-common@2.0.1) (2019-03-14)
+
+
+### Bug Fixes
+
+* **eyes-common:** fix `set proxy` by string ([adaf19b](https://github.com/applitools/eyes.sdk.javascript1/commit/adaf19b))
+
+
+
+
+
 # [2.0.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@1.3.1...@applitools/eyes-common@2.0.0) (2019-03-13)
 
 

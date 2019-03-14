@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.3.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.2.0...@applitools/visual-grid-client@12.3.0) (2019-03-14)
+
+
+### Features
+
+* **visual-grid-client:** add `logger` to makeRenderingGridClient ([a71484b](https://github.com/applitools/eyes.sdk.javascript1/commit/a71484b))
+
+
+
+
+
 # [12.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.1.0...@applitools/visual-grid-client@12.2.0) (2019-03-13)
 
 
