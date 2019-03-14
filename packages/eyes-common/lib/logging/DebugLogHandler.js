@@ -1,17 +1,20 @@
 'use strict';
 
 const debug = require('debug');
+
 const { LogHandler } = require('./LogHandler');
 
 /**
- * Write log massages to the browser/node console
+ * Write log messages to the browser/node console
  */
 class DebugLogHandler extends LogHandler {
   /**
    * @param {boolean} [isVerbose=false] - Whether to handle or ignore verbose log messages.
+   * @param {string} [appName] - The app name to use
    */
   constructor(isVerbose = false, appName) {
     super(isVerbose);
+
     this._debug = debug(appName && `eyes:${appName}`);
   }
 

@@ -19,7 +19,7 @@ function ensureDirectoryExistence(filename) {
 }
 
 /**
- * Write log massages to the browser/node console
+ * Write log messages to the browser/node console
  */
 class FileLogHandler extends LogHandler {
   /**

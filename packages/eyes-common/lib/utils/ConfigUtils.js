@@ -4,7 +4,9 @@ const cosmiconfig = require('cosmiconfig');
 
 const { Logger } = require('../logging/Logger');
 
-const { APPLITOOLS_SHOW_LOGS } = process.env; // TODO when switching to DEBUG sometime remove this env var
+// TODO when switching to DEBUG sometime remove this env var
+const { APPLITOOLS_SHOW_LOGS } = process.env;
+// TODO: this is executed when exporting class, we should avoid that
 const logger = new Logger(APPLITOOLS_SHOW_LOGS);
 
 const explorer = cosmiconfig('applitools', {

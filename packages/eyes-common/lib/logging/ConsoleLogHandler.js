@@ -3,7 +3,7 @@
 const { LogHandler } = require('./LogHandler');
 
 /**
- * Write log massages to the browser/node console
+ * Write log messages to the browser/node console
  */
 class ConsoleLogHandler extends LogHandler {
   /**

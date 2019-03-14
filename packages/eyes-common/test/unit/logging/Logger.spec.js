@@ -11,7 +11,7 @@ describe('Logger', () => {
     });
 
     it('if `false` passed should be used DebugLogHandler', () => {
-      const logger = new Logger(false);
+      const logger = new Logger(false, 'hello');
       assert.ok(logger.getLogHandler() instanceof DebugLogHandler);
     });
 
@@ -20,12 +20,12 @@ describe('Logger', () => {
       assert.ok(logger.getLogHandler() instanceof DebugLogHandler);
     });
 
-    it('if `true` passed should be used DebugLogHandler', () => {
+    it('if `true` passed should be used ConsoleLogHandler', () => {
       const logger = new Logger(true);
       assert.ok(logger.getLogHandler() instanceof ConsoleLogHandler);
     });
 
-    it('if `true` (as string) passed should be used DebugLogHandler', () => {
+    it('if `true` (as string) passed should be used ConsoleLogHandler', () => {
       const logger = new Logger('true');
       assert.ok(logger.getLogHandler() instanceof ConsoleLogHandler);
     });

@@ -8,27 +8,28 @@ const { TypeUtils } = require('../utils/TypeUtils');
 const { DateTimeUtils } = require('../utils/DateTimeUtils');
 const { PerformanceUtils } = require('../utils/PerformanceUtils');
 
+const { NullLogHandler } = require('./NullLogHandler');
 const { ConsoleLogHandler } = require('./ConsoleLogHandler');
 const { DebugLogHandler } = require('./DebugLogHandler');
 
 const timeStorage = PerformanceUtils.start();
 
 /**
- * Write log massages using the provided Log Handler
+ * Write log messages using the provided Log Handler
  */
 class Logger {
   /**
-   * @param {boolean|string} [showLogs] - Determines which log handler will be used ConsoleLogHandler (if set to {@code true}),
-   * DebugLogHandler (if not set or set to {@code false}).
-   * @param {string} [debugAppName] - If using DebugLogHandler then this is the debug app name.
+   * @param {boolean|string} [showLogs] - Determines which log handler will be used. If set to {@code true}, then
+   *   `ConsoleLogHandler` will be used, if not set or set to {@code false} then `DebugLogHandler` used.
+   * @param {string} [debugAppName] - If using `DebugLogHandler` then this is the debug app name.
    */
-  constructor(showLogs = false, debugAppName = '') {
+  constructor(showLogs = false, debugAppName) {
     if (TypeUtils.isString(showLogs)) {
       showLogs = (showLogs === 'true');
     }
 
-    ArgumentGuard.isString(debugAppName, 'debugAppName');
-    ArgumentGuard.isBoolean(showLogs, 'showLogs', false);
+    ArgumentGuard.isBoolean(showLogs, 'showLogs');
+    ArgumentGuard.isString(debugAppName, 'debugAppName', false);
 
     this._logHandler = showLogs ? new ConsoleLogHandler(true) : new DebugLogHandler(false, debugAppName);
     this._sessionId = '';
@@ -117,6 +118,7 @@ class Logger {
        * @property {function(): number} getColumnNumber if this function was defined in a script returns the current column number
        * @property {function(): boolean} isNative is this call in native V8 code?
        */
+      // noinspection JSUnresolvedFunction
       /** @type {CallSite[]} */
       const trace = stackTrace.get();
 
