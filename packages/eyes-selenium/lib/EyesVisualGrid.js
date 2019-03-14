@@ -54,6 +54,7 @@ class EyesVisualGrid extends Eyes {
     await this._initDriver(driver);
 
     const { openEyes } = makeVisualGridClient({
+      logger: this._logger,
       apiKey: this._configuration.apiKey,
       showLogs: this._configuration.showLogs,
       saveDebugData: this._configuration.saveDebugData,
@@ -73,8 +74,6 @@ class EyesVisualGrid extends Eyes {
     }
 
     const { checkWindow, close } = await openEyes({
-      logger: this._logger,
-
       appName: this._configuration.appName,
       testName: this._configuration.testName,
       browser: this._configuration.browsersInfo,
