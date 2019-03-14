@@ -15,7 +15,7 @@ class DebugLogHandler extends LogHandler {
   constructor(isVerbose = false, appName) {
     super(isVerbose);
 
-    this._debug = debug(appName && `eyes:${appName}`);
+    this._debug = debug(appName ? `eyes:${appName}` : 'eyes');
   }
 
   /**
