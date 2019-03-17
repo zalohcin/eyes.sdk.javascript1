@@ -5,15 +5,29 @@ const assert = require('assert');
 const { Configuration } = require('../../../index');
 
 describe('Configuration', () => {
-  it('clone constructor', () => {
-    const configuration = new Configuration();
-    configuration.appName = 'test';
-    configuration.apiKey = 'apiKey';
+  describe('constructor', () => {
+    it('clone', () => {
+      const configuration = new Configuration();
+      configuration.appName = 'test';
+      configuration.apiKey = 'apiKey';
 
-    const configurationCopy = new Configuration(configuration);
+      const configurationCopy = new Configuration(configuration);
 
-    assert.strictEqual(configuration.appName, configurationCopy.appName);
-    assert.strictEqual(configuration.apiKey, configurationCopy.apiKey);
+      assert.strictEqual(configuration.appName, configurationCopy.appName);
+      assert.strictEqual(configuration.apiKey, configurationCopy.apiKey);
+    });
+
+    it('from object', () => {
+      const object = {
+        appName: 'test',
+        apiKey: 'apiKey',
+      };
+
+      const configuration = new Configuration(object);
+
+      assert.strictEqual(configuration.appName, 'test');
+      assert.strictEqual(configuration.apiKey, 'apiKey');
+    });
   });
 
   it('saveNewTests', () => {

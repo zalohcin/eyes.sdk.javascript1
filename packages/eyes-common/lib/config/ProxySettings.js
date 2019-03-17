@@ -5,6 +5,10 @@ const { URL } = require('url');
 const { ArgumentGuard } = require('../utils/ArgumentGuard');
 
 /**
+ * @typedef {{url: string, username: (string|undefined), password: (string|undefined)}} ProxySettingsObject
+ */
+
+/**
  * Encapsulates settings for sending Eyes communication via proxy.
  */
 class ProxySettings {

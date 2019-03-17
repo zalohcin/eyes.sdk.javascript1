@@ -22,7 +22,7 @@ const DEFAULT_VALUES = {
 
 class Configuration {
   /**
-   * @param {Configuration} [configuration]
+   * @param {Configuration|object} [configuration]
    */
   constructor(configuration) {
     /** @type {boolean} */
@@ -167,7 +167,7 @@ class Configuration {
   /**
    * Sets the proxy settings to be used by the rest client.
    *
-   * @param {ProxySettings|string|boolean|{url: string, username: string, password: string}} value - The ProxySettings object or proxy url to be used.
+   * @param {ProxySettings|ProxySettingsObject|string|boolean} value - The ProxySettings object or proxy url to be used.
    *   Use {@code false} to disable proxy (even if it set via env variables). Use {@code null} to reset proxy settings.
    */
   set proxy(value) {
@@ -347,11 +347,14 @@ class Configuration {
   }
 
   /**
-   * @param {PropertyData[]} value
+   * @param {PropertyData[]|PropertyDataObject[]} value
    */
   set properties(value) {
     ArgumentGuard.isArray(value, 'properties');
-    this._properties = value;
+
+    for (const data of value) {
+      this._properties.push(new PropertyData(data));
+    }
   }
 
   /**
@@ -361,13 +364,7 @@ class Configuration {
    * @param {string} [propertyValue] - The property value.
    */
   addProperty(propertyOrName, propertyValue) {
-    if (!(propertyOrName instanceof PropertyData)) {
-      ArgumentGuard.isString(propertyOrName, 'propertyName');
-      ArgumentGuard.notNull(propertyValue, 'propertyValue');
-      propertyOrName = new PropertyData(propertyOrName, propertyValue);
-    }
-
-    this._properties.push(propertyOrName);
+    this._properties.push(new PropertyData(propertyOrName, propertyValue));
   }
 
   /**
@@ -555,13 +552,18 @@ class Configuration {
   }
 
   /**
-   * @param {Configuration} other
+   * @param {Configuration|object} other
    */
   mergeConfig(other) {
-    ArgumentGuard.isValidType(other, Configuration);
-
     Object.keys(other).forEach(prop => {
-      if (this.hasOwnProperty(prop) && other[prop] !== undefined) {
+      let privateProp = prop;
+      if (prop === 'proxy') {
+        privateProp = '_proxySettings';
+      } else if (!prop.startsWith('_')) {
+        privateProp = `_${prop}`;
+      }
+
+      if (this.hasOwnProperty(privateProp) && other[prop] !== undefined) {
         this[prop] = other[prop];
       }
     });
