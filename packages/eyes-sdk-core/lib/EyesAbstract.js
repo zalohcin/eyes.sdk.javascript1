@@ -61,9 +61,13 @@ class EyesAbstract {
   }
 
   /**
-   * @param {Configuration} configuration
+   * @param {Configuration|object} configuration
    */
   setConfiguration(configuration) {
+    if (!(configuration instanceof Configuration)) {
+      configuration = new Configuration(configuration);
+    }
+
     this._configuration = configuration;
   }
 
