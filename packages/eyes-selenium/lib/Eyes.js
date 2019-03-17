@@ -98,6 +98,25 @@ class Eyes extends EyesBase {
     EyesSeleniumUtils.setJavascriptHandler(new JavascriptHandler());
   }
 
+  /**
+   * @return {SeleniumConfiguration}
+   */
+  getConfiguration() {
+    return this._configuration;
+  }
+
+  /**
+   * @override
+   * @param {SeleniumConfiguration|object} configuration
+   */
+  setConfiguration(configuration) {
+    if (!(configuration instanceof SeleniumConfiguration)) {
+      configuration = new SeleniumConfiguration(configuration);
+    }
+
+    this._configuration = configuration;
+  }
+
   // noinspection JSMethodCanBeStatic
   /**
    * @override

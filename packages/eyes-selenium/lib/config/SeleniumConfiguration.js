@@ -22,7 +22,7 @@ const DEFAULT_VALUES = {
 
 class SeleniumConfiguration extends Configuration {
   /**
-   * @param {SeleniumConfiguration} [configuration]
+   * @param {SeleniumConfiguration|object} [configuration]
    */
   constructor(configuration) {
     super();
@@ -193,10 +193,14 @@ class SeleniumConfiguration extends Configuration {
   }
 
   /**
-   * @param {RenderBrowserInfo[]|DeviceInfo[]} value
+   * @param {RenderBrowserInfo[]|DeviceInfo[]|object[]} value
    */
   set browsersInfo(value) {
-    this._browsersInfo = value;
+    ArgumentGuard.isArray(value, 'properties');
+
+    for (const data of value) {
+      this._browsersInfo.push(data);
+    }
   }
 
   /**
@@ -241,31 +245,6 @@ class SeleniumConfiguration extends Configuration {
 
     this._browsersInfo.push(deviceInfo);
     return this;
-  }
-
-  /**
-   * TODO: rename this method, the name of method should clearly declare that it only works for browsers and devices
-   *
-   * @deprecated This method is not doing what it should do, don't use it
-   * @param {object} config
-   * @return {SeleniumConfiguration}
-   */
-  static fromObject(config) {
-    ArgumentGuard.isValidType(config, Object);
-
-    const cfg = new SeleniumConfiguration();
-    if (config.browser) {
-      const browsers = Array.isArray(config.browser) ? config.browser : [config.browser];
-      browsers.forEach(browser => {
-        if (browser.name) {
-          cfg.addBrowser(browser.width, browser.height, browser.name);
-        } else if (browser.deviceName) {
-          cfg.addDevice(browser.deviceName, browser.screenOrientation);
-        }
-      });
-    }
-
-    return cfg;
   }
 
   /**
