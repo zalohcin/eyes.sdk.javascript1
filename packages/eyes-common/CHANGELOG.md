@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@2.0.1...@applitools/eyes-common@2.2.0) (2019-03-17)
+
+
+### Features
+
+* **eyes-common:** add constructor from object to Configuration ([9085be5](https://github.com/applitools/eyes.sdk.javascript1/commit/9085be5))
+* **eyes-common:** added debug ability to Logger ([128f30f](https://github.com/applitools/eyes.sdk.javascript1/commit/128f30f))
+
+
+
+
+
 ## [2.0.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@2.0.0...@applitools/eyes-common@2.0.1) (2019-03-14)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.10.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.9.0...@applitools/eyes-selenium@4.10.0) (2019-03-17)
+
+
+### Features
+
+* **eyes-selenium:** add object to constructor of SeleniumConfiguration ([f8ca3bc](https://github.com/applitools/eyes.sdk.javascript1/commit/f8ca3bc))
+
+
+
+
+
 # [4.9.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.8.0...@applitools/eyes-selenium@4.9.0) (2019-03-14)
 
 
