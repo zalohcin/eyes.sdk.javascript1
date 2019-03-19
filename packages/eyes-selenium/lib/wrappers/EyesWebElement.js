@@ -293,7 +293,7 @@ class EyesWebElement extends WebElement {
 
   /**
    * @param {string} overflow - The overflow to set
-   * @return {Promise<void>} - The overflow of the element.
+   * @return {Promise} - The overflow of the element.
    */
   setOverflow(overflow) {
     return this.executeScript(`arguments[0].style.overflow = '${overflow}'`);
@@ -331,7 +331,7 @@ class EyesWebElement extends WebElement {
   // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async click() {
     // Letting the driver know about the current action.

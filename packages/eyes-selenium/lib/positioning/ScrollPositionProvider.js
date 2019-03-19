@@ -94,7 +94,7 @@ class ScrollPositionProvider extends PositionProvider {
   /**
    * @inheritDoc
    * @param {ScrollPositionMemento} state - The initial state of position
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async restoreState(state) {
     const newPosition = new Location(state.getX(), state.getY());

@@ -9,7 +9,7 @@ const { ImageUtils } = require('../utils/ImageUtils');
  * Parses the image if possible - meaning dimensions and BMP are extracted and available
  *
  * @param {MutableImage} mutableImage - The context of the current instance of MutableImage
- * @return {Promise<void>}
+ * @return {Promise}
  */
 async function parseImage(mutableImage) {
   if (mutableImage._isParsed) {
@@ -27,7 +27,7 @@ async function parseImage(mutableImage) {
  * Packs the image if possible - meaning the buffer is updated according to the edited BMP
  *
  * @param {MutableImage} mutableImage - The context of the current instance of MutableImage
- * @return {Promise<void>}
+ * @return {Promise}
  */
 async function packImage(mutableImage) {
   if (!mutableImage._isParsed || mutableImage._imageBuffer) {
@@ -245,7 +245,7 @@ class MutableImage {
    * @param {number} dx
    * @param {number} dy
    * @param {MutableImage} srcImage
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async copyRasterData(dx, dy, srcImage) {
     await parseImage(this);

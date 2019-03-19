@@ -80,7 +80,7 @@ class CssTranslatePositionProvider extends PositionProvider {
   /**
    * @inheritDoc
    * @param {CssTranslatePositionMemento} state - The initial state of position
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async restoreState(state) {
     const script = `var originalTransform = arguments[0].style.transform;` +

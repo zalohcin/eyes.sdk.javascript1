@@ -161,7 +161,7 @@ class EyesVisualGrid extends Eyes {
 
   /**
    * @param {boolean} [throwEx]
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async closeAndPrintResults(throwEx = true) {
     const results = await this.closeAndReturnResults(throwEx);

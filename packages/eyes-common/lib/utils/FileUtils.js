@@ -9,7 +9,7 @@ class FileUtils {
   /**
    * @param {Buffer} imageBuffer
    * @param {string} filename
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   static writeFromBuffer(imageBuffer, filename) {
     return new Promise((resolve, reject) => {

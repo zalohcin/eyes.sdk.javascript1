@@ -65,7 +65,7 @@ class MatchWindowTask {
    * @param {CheckSettings} checkSettings
    * @param {ImageMatchSettings} imageMatchSettings
    * @param {EyesScreenshot} screenshot
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async _collectSimpleRegions(checkSettings, imageMatchSettings, screenshot) {
     const ignoreRegions = await this._collectRegions(checkSettings.getIgnoreRegions(), screenshot);
@@ -103,7 +103,7 @@ class MatchWindowTask {
    * @param {CheckSettings} checkSettings
    * @param {ImageMatchSettings} imageMatchSettings
    * @param {EyesScreenshot} screenshot
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async _collectFloatingRegions(checkSettings, imageMatchSettings, screenshot) {
     const eyes = this._eyes;

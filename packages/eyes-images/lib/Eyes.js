@@ -44,7 +44,7 @@ class Eyes extends EyesBase {
    * @param {string} testName - The test's name.
    * @param {RectangleSize} [imageSize] - Determines the resolution used for the baseline. {@code null} will
    *   automatically grab the resolution from the image.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   open(appName, testName, imageSize) {
     return super.openBase(appName, testName, imageSize);
@@ -237,7 +237,7 @@ class Eyes extends EyesBase {
    * Set the viewport size.
    *
    * @param {RectangleSize|RectangleSizeObject} viewportSize - The required viewport size.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async setViewportSize(viewportSize) {
     ArgumentGuard.notNull(viewportSize, 'size');

@@ -795,7 +795,7 @@ class EyesBase extends EyesAbstract {
   // noinspection JSMethodCanBeStatic
   /**
    * @protected
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async beforeMatchWindow() {
     return undefined;
@@ -804,7 +804,7 @@ class EyesBase extends EyesAbstract {
   // noinspection JSMethodCanBeStatic
   /**
    * @protected
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async afterMatchWindow() {
     return undefined;
@@ -936,7 +936,7 @@ class EyesBase extends EyesAbstract {
    *   visible part of the document's body) or {@code null} to allow any viewport size.
    * @param {SessionType} [sessionType=SessionType.SEQUENTIAL] - The type of test (e.g., Progression for timing tests),
    *   or {@code null} to use the default.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async openBase(appName, testName, viewportSize, sessionType = SessionType.SEQUENTIAL) {
     this._logger.getLogHandler().open();
@@ -992,7 +992,7 @@ class EyesBase extends EyesAbstract {
   // noinspection JSMethodCanBeStatic
   /**
    * @protected
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async beforeOpen() {
     return undefined;
@@ -1001,7 +1001,7 @@ class EyesBase extends EyesAbstract {
   // noinspection JSMethodCanBeStatic
   /**
    * @protected
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async afterOpen() {
     return undefined;
@@ -1009,7 +1009,7 @@ class EyesBase extends EyesAbstract {
 
   /**
    * @private
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async _ensureRunningSession() {
     if (this._runningSession) {
@@ -1062,7 +1062,7 @@ class EyesBase extends EyesAbstract {
 
   /**
    * @private
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async _validateSessionOpen() {
     if (this._isOpen) {
@@ -1246,7 +1246,7 @@ class EyesBase extends EyesAbstract {
    * Start eyes session on the eyes server.
    *
    * @protected
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async startSession() {
     this._logger.verbose('startSession()');
@@ -1311,7 +1311,7 @@ class EyesBase extends EyesAbstract {
 
   /**
    * @private
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async _ensureViewportSize() {
     if (!this._isViewportSizeSet) {
@@ -1478,7 +1478,7 @@ class EyesBase extends EyesAbstract {
    * @protected
    * @abstract
    * @param {RectangleSize} size - The required viewport size.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async setViewportSize(size) { // eslint-disable-line no-unused-vars
     throw new TypeError('The method is not implemented!');

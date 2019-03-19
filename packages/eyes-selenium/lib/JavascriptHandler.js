@@ -10,7 +10,7 @@ class JavascriptHandler {
   /**
    * @param {!string} script
    * @param {...object} args
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async handle(script, ...args) {
     return null; // do nothing

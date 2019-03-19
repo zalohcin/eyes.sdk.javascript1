@@ -137,7 +137,7 @@ class EyesJsBrowserUtils {
    *
    * @param {EyesJsExecutor} executor - The executor to use.
    * @param {Location} location - Location to scroll to
-   * @return {Promise<void>} - A promise which resolves after the action is performed and timeout passed.
+   * @return {Promise} - A promise which resolves after the action is performed and timeout passed.
    */
   static setCurrentScrollPosition(executor, location) {
     return executor.executeScript(`window.scrollTo(${location.getX()}, ${location.getY()})`);
@@ -147,7 +147,7 @@ class EyesJsBrowserUtils {
    * Scrolls current frame to its bottom right.
    *
    * @param {EyesJsExecutor} executor - The executor to use.
-   * @return {Promise<void>} - A promise which resolves after the action is performed and timeout passed.
+   * @return {Promise} - A promise which resolves after the action is performed and timeout passed.
    */
   static scrollToBottomRight(executor) {
     return executor.executeScript(JS_SCROLL_TO_BOTTOM_RIGHT);
@@ -229,7 +229,7 @@ class EyesJsBrowserUtils {
    * @param {EyesJsExecutor} executor - The executor to use.
    * @param {Map<string, string>} transforms - The transforms to set. Keys are used as style keys and values are the
    *   values for those styles.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   static setTransforms(executor, transforms) {
     let script = '';
@@ -246,7 +246,7 @@ class EyesJsBrowserUtils {
    *
    * @param {EyesJsExecutor} executor - The executor to use.
    * @param {string} transform - The transform to set.
-   * @return {Promise<void>} - A promise which resolves to the previous transform once the updated transform is set.
+   * @return {Promise} - A promise which resolves to the previous transform once the updated transform is set.
    */
   static setTransform(executor, transform) {
     if (!transform) {
@@ -266,7 +266,7 @@ class EyesJsBrowserUtils {
    *
    * @param {EyesJsExecutor} executor - The executor to use.
    * @param {Location} position - The position to translate to.
-   * @return {Promise<void>} - A promise which resolves to the previous transform when the scroll is executed.
+   * @return {Promise} - A promise which resolves to the previous transform when the scroll is executed.
    */
   static translateTo(executor, position) {
     return EyesJsBrowserUtils.setTransform(executor, `translate(-${position.getX()}px, -${position.getY()}px)`);

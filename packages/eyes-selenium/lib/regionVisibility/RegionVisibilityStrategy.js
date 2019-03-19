@@ -11,7 +11,7 @@ class RegionVisibilityStrategy {
   /**
    * @param {PositionProvider} positionProvider
    * @param {Location} location
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async moveToRegion(positionProvider, location) {
     throw new TypeError('The method is not implemented!');
@@ -20,7 +20,7 @@ class RegionVisibilityStrategy {
   // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
    * @param {PositionProvider} positionProvider
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async returnToOriginalPosition(positionProvider) {
     throw new TypeError('The method is not implemented!');

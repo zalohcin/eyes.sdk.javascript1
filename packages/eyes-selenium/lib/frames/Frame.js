@@ -93,7 +93,7 @@ class Frame {
 
   /**
    * @param {WebDriver} driver
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async hideScrollbars(driver) {
     const scrollRootElement = await this._getScrollRootElement(driver);
@@ -103,7 +103,7 @@ class Frame {
 
   /**
    * @param {WebDriver} driver
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async returnToOriginalOverflow(driver) {
     const scrollRootElement = await this._getScrollRootElement(driver);
@@ -113,7 +113,7 @@ class Frame {
 
   /**
    * @param {WebDriver} driver
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async returnToOriginalPosition(driver) {
     const scrollRootElement = await this._getScrollRootElement(driver);

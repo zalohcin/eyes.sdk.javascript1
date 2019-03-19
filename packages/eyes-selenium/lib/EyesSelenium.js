@@ -259,7 +259,7 @@ class EyesSelenium extends Eyes {
    * @private
    * @param {EyesTargetLocator} switchTo
    * @param {FrameChain} frames
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async _trySwitchToFrames(switchTo, frames) {
     // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
@@ -470,7 +470,7 @@ class EyesSelenium extends Eyes {
   /**
    * @private
    * @param {WebElement} element
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async _ensureElementVisible(element) {
     if (this._targetElement == null || !this.getScrollToRegion()) {
@@ -786,7 +786,7 @@ class EyesSelenium extends Eyes {
   /**
    * @private
    * @param {FrameChain} frameChain
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async _tryRestoreScrollbars(frameChain) {
     // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
@@ -818,7 +818,7 @@ class EyesSelenium extends Eyes {
   /*
   /**
    * @protected
-   * @return {Promise<void>}
+   * @return {Promise}
    * /
   _afterMatchWindow() {
     if (this.hideScrollbars) {

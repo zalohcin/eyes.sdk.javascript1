@@ -54,7 +54,7 @@ class PositionProvider {
    * Restores the state of the position provider to the state provided as a parameter.
    *
    * @param {PositionMemento} state - The state to restore to.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async restoreState(state) {
     throw new TypeError('The method is not implemented!');

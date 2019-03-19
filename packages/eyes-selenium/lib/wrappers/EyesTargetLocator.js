@@ -59,7 +59,7 @@ class EyesTargetLocator extends TargetLocator {
    *
    * @override
    * @param {number|string|WebElement|null} varArg - The frame locator.
-   * @return {Promise<void>} - A promise that will be resolved when the driver has changed focus to the specified frame.
+   * @return {Promise} - A promise that will be resolved when the driver has changed focus to the specified frame.
    */
   async frame(varArg) {
     if (varArg == null) {
@@ -147,7 +147,7 @@ class EyesTargetLocator extends TargetLocator {
   /**
    * @param {TargetLocator} targetLocator
    * @param {FrameChain} frameChainToParent
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   static async tryParentFrame(targetLocator, frameChainToParent) {
     try {
@@ -165,7 +165,7 @@ class EyesTargetLocator extends TargetLocator {
    * scroll) in a single call.
    *
    * @param {FrameChain} frameChain - The path to the frame to switch to.
-   * @return {Promise<void>} - A promise that will be resolved when the command has completed.
+   * @return {Promise} - A promise that will be resolved when the command has completed.
    */
   async framesDoScroll(frameChain) {
     this._logger.verbose('enter');
@@ -192,7 +192,7 @@ class EyesTargetLocator extends TargetLocator {
    *
    * @param {FrameChain|string[]} varArg - The path to the frame to switch to. Or the path to the frame to check.
    *   This is a list of frame names/IDs (where each frame is nested in the previous frame).
-   * @return {Promise<void>} - The WebDriver with the switched context.
+   * @return {Promise} - The WebDriver with the switched context.
    */
   async frames(varArg) {
     this._logger.verbose('enter');
@@ -283,7 +283,7 @@ class EyesTargetLocator extends TargetLocator {
   }
 
   /**
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async resetScroll() {
     this._logger.verbose("enter");
@@ -296,7 +296,7 @@ class EyesTargetLocator extends TargetLocator {
    * Will be called before switching into a frame.
    *
    * @param {WebElement} targetFrame - The element about to be switched to.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async willSwitchToFrame(targetFrame) {
     ArgumentGuard.notNull(targetFrame, 'targetFrame');

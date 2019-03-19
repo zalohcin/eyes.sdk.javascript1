@@ -314,7 +314,7 @@ class Eyes extends EyesBase {
    *
    * @param {MouseTrigger.MouseAction} action - Mouse action.
    * @param {EyesWebElement} element - The WebElement on which the click was called.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async addMouseTriggerForElement(action, element) {
     if (this.getIsDisabled()) {
@@ -372,7 +372,7 @@ class Eyes extends EyesBase {
    *
    * @param {EyesWebElement} element - The element for which we sent keys.
    * @param {string} text - The trigger's text.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async addTextTriggerForElement(element, text) {
     if (this.getIsDisabled()) {
@@ -414,7 +414,7 @@ class Eyes extends EyesBase {
    * @override
    * @protected
    * @param {RectangleSize} size - The required viewport size.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async setViewportSize(size) {
     if (this._viewportSizeHandler instanceof ReadOnlyPropertyHandler) {
@@ -463,7 +463,7 @@ class Eyes extends EyesBase {
    *
    * @param {EyesWebDriver} driver - The driver to use for setting the viewport.
    * @param {RectangleSize} viewportSize - The required viewport size.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   static async setViewportSize(driver, viewportSize) {
     ArgumentGuard.notNull(driver, 'driver');

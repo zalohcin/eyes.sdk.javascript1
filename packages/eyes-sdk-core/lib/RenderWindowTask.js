@@ -63,7 +63,7 @@ class RenderWindowTask {
   // noinspection JSUnusedGlobalSymbols
   /**
    * @param {RenderRequest} renderRequest
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async checkAndPutResources(renderRequest) {
     const newRender = await this._serverConnector.render(renderRequest);
@@ -106,7 +106,7 @@ class RenderWindowTask {
    * @param {RGridDom} rGridDom
    * @param {RunningRender} runningRender
    * @param {number} [concurrency]
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async putResources(rGridDom, runningRender, concurrency = DEFAULT_CONCURRENCY_LIMIT) {
     if (runningRender.getNeedMoreDom()) {

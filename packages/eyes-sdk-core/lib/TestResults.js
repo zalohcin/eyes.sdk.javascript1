@@ -924,7 +924,7 @@ class TestResults {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async deleteSession() {
     return this._serverConnector.deleteSession(this);

@@ -43,7 +43,7 @@ class FullPageCaptureAlgorithm {
    * @param {MutableImage} image
    * @param {Region} region
    * @param {string} name
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async _saveDebugScreenshotPart(image, region, name) {
     const suffix = `part-${name}-${region.getLeft()}_${region.getTop()}_${region.getWidth()}x${region.getHeight()}`;

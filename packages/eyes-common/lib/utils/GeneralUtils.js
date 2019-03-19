@@ -142,7 +142,7 @@ class GeneralUtils {
    * Waits a specified amount of time before resolving the returned promise.
    *
    * @param {number} ms - The amount of time to sleep in milliseconds.
-   * @return {Promise<void>} - A promise which is resolved when sleep is done.
+   * @return {Promise} - A promise which is resolved when sleep is done.
    */
   static sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

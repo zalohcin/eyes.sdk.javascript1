@@ -335,7 +335,7 @@ class ServerConnector {
    * Deletes the given test result
    *
    * @param {TestResults} testResults - The session to delete by test results.
-   * @return {Promise<void>}
+   * @return {Promise}
    */
   async deleteSession(testResults) {
     ArgumentGuard.notNull(testResults, 'testResults');
