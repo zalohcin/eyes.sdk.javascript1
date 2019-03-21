@@ -45,7 +45,11 @@ class BatchInfo {
     }
 
     let { id, name, startedAt } = varArg1 || {};
+    ArgumentGuard.isString(id, 'batchId', false);
+    ArgumentGuard.isString(name, 'batchName', false);
+
     if (startedAt && !(startedAt instanceof Date)) {
+      ArgumentGuard.isString(startedAt, 'startedAt', false);
       startedAt = DateTimeUtils.fromISO8601DateTime(startedAt);
     }
 
