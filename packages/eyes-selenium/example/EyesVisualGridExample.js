@@ -2,7 +2,7 @@
 
 require('chromedriver'); // eslint-disable-line node/no-unpublished-require
 const { Builder, Capabilities, By } = require('selenium-webdriver');
-const { Eyes, Target, ConsoleLogHandler, SeleniumConfiguration, BrowserType, DeviceName, ScreenOrientation } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
+const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, SeleniumConfiguration, BrowserType, DeviceName, ScreenOrientation } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
 
 (async () => {
   // Open a Chrome browser.
@@ -11,7 +11,7 @@ const { Eyes, Target, ConsoleLogHandler, SeleniumConfiguration, BrowserType, Dev
     .build();
 
   // Initialize the eyes SDK and set your private API key.
-  const eyes = new Eyes(true);
+  const eyes = new Eyes(new VisualGridRunner());
   // eyes.setApiKey('Your API Key');
   eyes.setLogHandler(new ConsoleLogHandler(false));
 

@@ -11,6 +11,7 @@ const {
   CorsIframeHandler,
 } = require('@applitools/eyes-sdk-core');
 
+const { VisualGridRunner } = require('./visualgrid/VisualGridRunner');
 const { BrowserType } = require('./config/BrowserType');
 const { Eyes } = require('./Eyes');
 
@@ -27,9 +28,12 @@ class EyesVisualGrid extends Eyes {
    *
    * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] - The Eyes server URL.
    * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
+   * @param {VisualGridRunner} [visualGridRunner] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    */
-  constructor(serverUrl, isDisabled) {
+  constructor(serverUrl, isDisabled, visualGridRunner = new VisualGridRunner()) {
     super(serverUrl, isDisabled, true);
+
+    /** @type {VisualGridRunner} */ this._visualGridRunner = visualGridRunner;
 
     /** @type {string} */ this._processPageAndSerializeScript = undefined;
     /** @function */ this._checkWindowCommand = undefined;
@@ -50,6 +54,9 @@ class EyesVisualGrid extends Eyes {
     if (viewportSize) this._configuration.viewportSize = viewportSize;
     // noinspection NonBlockStatementBodyJS
     if (sessionType) this._configuration.sessionType = sessionType;
+
+    // noinspection NonBlockStatementBodyJS
+    if (this._visualGridRunner.concurrentSessions) this._configuration.concurrentSessions = this._visualGridRunner.concurrentSessions;
 
     await this._initDriver(driver);
 

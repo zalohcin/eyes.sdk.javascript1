@@ -50,12 +50,15 @@ class Eyes extends EyesBase {
    * @signature `new Eyes(isVisualGrid)`
    * @sigparam {boolean} [isVisualGrid=false] - Set {@code true} if you want to use VisualGrid service.
    *
+   * @signature `new Eyes(eyesRunner)`
+   * @sigparam {VisualGridRunner} [eyesRunner] - Set VisualGridRunner if you want to use VisualGrid service.
+   *
    * @signature `new Eyes(serverUrl, isDisabled, isVisualGrid)`
    * @sigparam {string} [serverUrl] - The Eyes server URL.
    * @sigparam {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    * @sigparam {boolean} [isVisualGrid=false] - Set {@code true} if you want to use VisualGrid service.
    *
-   * @param {string|boolean} [serverUrl=EyesBase.getDefaultServerUrl()] - The Eyes server URL or set {@code true} if you want to use VisualGrid service.
+   * @param {string|boolean|VisualGridRunner} [serverUrl=EyesBase.getDefaultServerUrl()] - The Eyes server URL or set {@code true} if you want to use VisualGrid service.
    * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the webdriver directly.
    * @param {boolean} [isVisualGrid=false] - Set {@code true} if you want to use VisualGrid service.
    */

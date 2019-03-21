@@ -49,6 +49,8 @@ exports.MoveToRegionVisibilityStrategy = require('./lib/regionVisibility/MoveToR
 exports.NopRegionVisibilityStrategy = require('./lib/regionVisibility/NopRegionVisibilityStrategy').NopRegionVisibilityStrategy;
 exports.RegionVisibilityStrategy = require('./lib/regionVisibility/RegionVisibilityStrategy').RegionVisibilityStrategy;
 
+exports.VisualGridRunner = require('./lib/visualgrid/VisualGridRunner').VisualGridRunner;
+
 exports.EyesTargetLocator = require('./lib/wrappers/EyesTargetLocator').EyesTargetLocator;
 exports.EyesWebDriver = require('./lib/wrappers/EyesWebDriver').EyesWebDriver;
 exports.EyesWebElement = require('./lib/wrappers/EyesWebElement').EyesWebElement;
