@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@2.2.0...@applitools/eyes-common@2.2.1) (2019-03-24)
+
+
+### Bug Fixes
+
+* **eyes-common:** check types of arguments in BatchInfo on create ([e412f47](https://github.com/applitools/eyes.sdk.javascript1/commit/e412f47))
+
+
+
+
+
 # [2.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@2.0.1...@applitools/eyes-common@2.2.0) (2019-03-17)
 
 

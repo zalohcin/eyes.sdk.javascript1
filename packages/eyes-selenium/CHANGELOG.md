@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.11.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.10.0...@applitools/eyes-selenium@4.11.0) (2019-03-24)
+
+
+### Features
+
+* **eyes-selenium:** add `VisualGridRunner` to emulate Java SDK API ([d78c1c7](https://github.com/applitools/eyes.sdk.javascript1/commit/d78c1c7))
+* **eyes-selenium:** add IE, Edge browsers to `BrowserType` enum ([1136789](https://github.com/applitools/eyes.sdk.javascript1/commit/1136789))
+
+
+
+
+
 # [4.10.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.9.0...@applitools/eyes-selenium@4.10.0) (2019-03-17)
 
 
