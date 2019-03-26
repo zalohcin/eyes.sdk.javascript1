@@ -178,6 +178,7 @@ class EyesTargetLocator extends TargetLocator {
       const frameLocation = frame.getLocation();
       await scrollProvider.setPosition(frameLocation);
       this._logger.verbose('Done! Switching to frame...');
+      await this.frame(frame.getReference());
       const newFrame = this._driver.getFrameChain().peek();
       newFrame.setScrollRootElement(frame.getScrollRootElement());
       this._logger.verbose('Done!');
