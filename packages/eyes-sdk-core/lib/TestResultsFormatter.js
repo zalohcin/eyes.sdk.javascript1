@@ -159,8 +159,9 @@ class TestResultsFormatter {
 
       const url = currentResult.getAppUrls() && currentResult.getAppUrls().getSession() ?
         currentResult.getAppUrls().getSession() : "No URL (session didn't start).";
-
       tapString += `#\tTest url: ${url}\n`;
+      tapString += `#\tBrowser: ${currentResult.getHostApp()}, Viewport: ${currentResult.getHostDisplaySize()}\n`;
+
       if (includeSubTests) {
         if (currentResult.getStepsInfo().length > 0) {
           tapString += `\t1..${currentResult.getStepsInfo().length}\n`;
