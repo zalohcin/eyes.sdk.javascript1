@@ -80,6 +80,7 @@ exports.Location = common.Location;
 exports.RectangleSize = common.RectangleSize;
 exports.Region = common.Region;
 exports.MutableImage = common.MutableImage;
+exports.Logger = common.Logger;
 exports.ConsoleLogHandler = common.ConsoleLogHandler;
 exports.FileLogHandler = common.FileLogHandler;
 exports.LogHandler = common.LogHandler;
