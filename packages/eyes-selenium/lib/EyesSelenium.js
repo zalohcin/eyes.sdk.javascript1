@@ -142,6 +142,24 @@ class EyesSelenium extends Eyes {
     }
   }
 
+  /**
+   * Perform visual validation
+   *
+   * @param {string} name - A name to be associated with the match
+   * @param {SeleniumCheckSettings} checkSettings - Target instance which describes whether we want a window/region/frame
+   * @return {Promise<TestResults>} - A promise which is resolved when the validation is finished.
+   */
+  async testWindow(name, checkSettings) {
+    const originalCheckWindowBase = this.checkWindowBase;
+    try {
+      this.checkWindowBase = this.checkSingleWindowBase;
+
+      return await this.check(name, checkSettings);
+    } finally {
+      this.checkWindowBase = originalCheckWindowBase;
+    }
+  }
+
   // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * @inheritDoc
@@ -189,7 +207,7 @@ class EyesSelenium extends Eyes {
       this._logger.verbose("have target region");
       originalFC = await this._tryHideScrollbars();
       this._imageLocation = targetRegion.getLocation();
-      result = await super.checkWindowBase(new RegionProvider(targetRegion), name, false, checkSettings);
+      result = await this.checkWindowBase(new RegionProvider(targetRegion), name, false, checkSettings);
     } else if (checkSettings) {
       let targetElement = checkSettings.getTargetElement();
 
@@ -224,7 +242,7 @@ class EyesSelenium extends Eyes {
         originalFC = await this._tryHideScrollbars();
         this._currentFramePositionProvider = this._createPositionProvider(this._driver.findElement(By.css("html")));
         // }
-        result = await super.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
+        result = await this.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
         await switchTo.frames(this._originalFC);
       }
     }
@@ -392,7 +410,7 @@ class EyesSelenium extends Eyes {
       }
     };
 
-    const result = await super.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings);
+    const result = await this.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings);
     this._checkFrameOrElement = false;
     return result;
   }
@@ -567,7 +585,7 @@ class EyesSelenium extends Eyes {
       }
     };
 
-    const result = await super.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings);
+    const result = await this.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings);
     this._logger.verbose('Done! trying to scroll back to original position...');
     return result;
   }
@@ -625,7 +643,7 @@ class EyesSelenium extends Eyes {
       }
 
       this._imageLocation = this._regionToCheck.getLocation();
-      result = await super.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
+      result = await this.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
     } finally {
       if (originalOverflow) {
         await eyesElement.setOverflow(originalOverflow);
