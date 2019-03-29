@@ -24,7 +24,7 @@ class MatchSingleWindowData extends MatchWindowData {
       throw new TypeError('Please, use object as a parameter to the constructor!');
     }
 
-    super(userInputs, appOutput, tag, ignoreMismatch, options);
+    super({ userInputs, appOutput, tag, ignoreMismatch, options });
 
     this._startInfo = startInfo;
     this._updateBaseline = false;

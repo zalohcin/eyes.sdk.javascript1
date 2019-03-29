@@ -719,7 +719,6 @@ class EyesBase extends EyesAbstract {
    * @param {boolean} [ignoreMismatch=false] - Whether to ignore this check if a mismatch is found.
    * @param {CheckSettings} [checkSettings] - The settings to use.
    * @return {Promise<TestResults>} - The result of matching the output with the expected output.
-   * @throws DiffsFoundError - Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async checkSingleWindowBase(regionProvider, tag = '', ignoreMismatch = false, checkSettings = new CheckSettings(USE_DEFAULT_TIMEOUT)) {
     if (this._configuration.isDisabled) {
@@ -763,6 +762,7 @@ class EyesBase extends EyesAbstract {
     outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
       this._getAppOutputWithScreenshot(region, lastScreenshot, checkSettingsLocal);
 
+    this._shouldMatchWindowRunOnceOnTimeout = true;
     this._matchWindowTask = new MatchSingleWindowTask(
       this._logger,
       this._serverConnector,
