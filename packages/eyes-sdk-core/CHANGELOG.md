@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.1.1...@applitools/eyes-sdk-core@5.2.0) (2019-03-29)
+
+
+### Bug Fixes
+
+* **eyes-sdk-core:** fix work of `checkSingleWindowBase` ([bd96d73](https://github.com/applitools/eyes.sdk.javascript1/commit/bd96d73))
+
+
+### Features
+
+* **eyes-sdk-core:** added browser and viewport to TAP string in formatter ([3f4495b](https://github.com/applitools/eyes.sdk.javascript1/commit/3f4495b))
+
+
+
+
+
 ## [5.1.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.1.0...@applitools/eyes-sdk-core@5.1.1) (2019-03-24)
 
 **Note:** Version bump only for package @applitools/eyes-sdk-core

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.12.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.11.0...@applitools/eyes-selenium@4.12.0) (2019-03-29)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** switch to frame in `framesDoScroll` ([7b5502c](https://github.com/applitools/eyes.sdk.javascript1/commit/7b5502c))
+
+
+### Features
+
+* **eyes-selenium:** add `Logger` to exports ([ca3cba4](https://github.com/applitools/eyes.sdk.javascript1/commit/ca3cba4))
+* **eyes-selenium:** add `testWindow` which uses `checkSingleWindowBase` ([5a80d1a](https://github.com/applitools/eyes.sdk.javascript1/commit/5a80d1a))
+
+
+
+
+
 # [4.11.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.10.0...@applitools/eyes-selenium@4.11.0) (2019-03-24)
 
 
