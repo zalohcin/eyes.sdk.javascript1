@@ -49,6 +49,19 @@ describe('EyesBase', () => {
       assert.strictEqual(batch.getStartedAt().getTime(), time.getTime());
     });
 
+    it('should create batch from object', () => {
+      const date = new Date(2019);
+      eyes.setBatch({
+        id: 'fake batch id',
+        name: 'batch name',
+        startedAt: date,
+      });
+
+      assert.strictEqual(eyes.getBatch().getId(), 'fake batch id');
+      assert.strictEqual(eyes.getBatch().getName(), 'batch name');
+      assert.strictEqual(eyes.getBatch().getStartedAt(), date);
+    });
+
     it('should create batch from BatchInfo', () => {
       const defaultBatch = eyes.getBatch();
 

@@ -324,7 +324,7 @@ class EyesAbstract {
   /**
    * Sets the batch in which context future tests will run or {@code null} if tests are to run standalone.
    *
-   * @param {BatchInfo|string} batchOrName - The batch name or batch object
+   * @param {BatchInfo|BatchInfoObject|string} batchOrName - The batch name or batch object
    * @param {string} [batchId] - ID of the batch, should be generated using GeneralUtils.guid()
    * @param {string} [startedAt] - Start date of the batch, can be created as new Date().toUTCString()
    */
@@ -334,14 +334,14 @@ class EyesAbstract {
       return;
     }
 
-    if (batchOrName instanceof BatchInfo || !batchOrName) {
-      this._configuration.batch = batchOrName;
-    } else {
+    if (arguments.length > 1) {
       this._configuration.batch = {
         id: batchId,
         name: batchOrName,
         startedAt: startedAt,
       };
+    } else {
+      this._configuration.batch = batchOrName;
     }
 
     this._logger.verbose(`setBatch(${this._configuration._batch})`);
