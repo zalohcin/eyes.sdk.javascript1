@@ -93,7 +93,7 @@ class TestSetup {
       this._desiredCaps.set('accesskey', process.env.SAUCE_ACCESS_KEY);
       this._desiredCaps.set('seleniumVersion', '3.11.0');
 
-      if (this._caps.getBrowserName().equals('chrome')) {
+      if (this._caps.getBrowserName() === 'chrome') {
         this._desiredCaps.set('chromedriverVersion', '2.45');
       }
 
