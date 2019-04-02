@@ -29,6 +29,10 @@ class PropertyData {
       return new PropertyData({ name: varArg1, value: varArg2 });
     }
 
+    if (varArg1 instanceof PropertyData) {
+      return new PropertyData({ name: varArg1.getName(), value: varArg1.getValue() });
+    }
+
     const { name, value } = varArg1;
     ArgumentGuard.isString(name, 'name');
     ArgumentGuard.notNull(value, 'value');
@@ -39,37 +43,8 @@ class PropertyData {
     this._value = value;
   }
 
-  /**
-   * @return {string}
-   */
-  get name() {
-    return this._name;
-  }
-
-  /**
-   * @param {string} value
-   */
-  set name(value) {
-    this._name = value;
-  }
-
-  /**
-   * @return {string}
-   */
-  get value() {
-    return this._value;
-  }
-
-  /**
-   * @param {string} value
-   */
-  set value(value) {
-    this._value = value;
-  }
-
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @deprecated
    * @return {string}
    */
   getName() {
@@ -78,7 +53,6 @@ class PropertyData {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @deprecated
    * @param {string} value
    */
   setName(value) {
@@ -87,7 +61,6 @@ class PropertyData {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @deprecated
    * @return {string}
    */
   getValue() {
@@ -96,7 +69,6 @@ class PropertyData {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @deprecated
    * @param {string} value
    */
   setValue(value) {

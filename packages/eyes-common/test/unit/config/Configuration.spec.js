@@ -8,13 +8,13 @@ describe('Configuration', () => {
   describe('constructor', () => {
     it('clone', () => {
       const configuration = new Configuration();
-      configuration.appName = 'test';
-      configuration.apiKey = 'apiKey';
+      configuration.setAppName('test');
+      configuration.setApiKey('apiKey');
 
       const configurationCopy = new Configuration(configuration);
 
-      assert.strictEqual(configuration.appName, configurationCopy.appName);
-      assert.strictEqual(configuration.apiKey, configurationCopy.apiKey);
+      assert.strictEqual(configuration.getAppName(), configurationCopy.getAppName());
+      assert.strictEqual(configuration.getApiKey(), configurationCopy.getApiKey());
     });
 
     it('from object', () => {
@@ -25,44 +25,44 @@ describe('Configuration', () => {
 
       const configuration = new Configuration(object);
 
-      assert.strictEqual(configuration.appName, 'test');
-      assert.strictEqual(configuration.apiKey, 'apiKey');
+      assert.strictEqual(configuration.getAppName(), 'test');
+      assert.strictEqual(configuration.getApiKey(), 'apiKey');
     });
   });
 
   it('saveNewTests', () => {
     const configuration = new Configuration();
-    assert.strictEqual(configuration.saveNewTests, true);
+    assert.strictEqual(configuration.getSaveNewTests(), true);
 
-    configuration.saveNewTests = false;
-    assert.strictEqual(configuration.saveNewTests, false);
+    configuration.setSaveNewTests(false);
+    assert.strictEqual(configuration.getSaveNewTests(), false);
 
-    configuration.saveNewTests = true;
-    assert.strictEqual(configuration.saveNewTests, true);
+    configuration.setSaveNewTests(true);
+    assert.strictEqual(configuration.getSaveNewTests(), true);
   });
 
   it('mergeConfig', () => {
     const configuration = new Configuration();
-    configuration.appName = 'test';
-    configuration.apiKey = 'apiKey';
+    configuration.setAppName('test');
+    configuration.setApiKey('apiKey');
 
     const configuration2 = new Configuration();
-    configuration2.appName = 'new test name';
-    configuration.apiKey = 'apiKey2';
+    configuration2.setAppName('new test name');
+    configuration.setApiKey('apiKey2');
     configuration.mergeConfig(configuration2);
 
-    assert.strictEqual(configuration.appName, configuration2.appName);
-    assert.notStrictEqual(configuration.apiKey, configuration2.apiKey);
+    assert.strictEqual(configuration.getAppName(), configuration2.getAppName());
+    assert.notStrictEqual(configuration.getApiKey(), configuration2.getApiKey());
   });
 
   it('cloneConfig', () => {
     const configuration = new Configuration();
-    configuration.appName = 'test';
-    configuration.apiKey = 'apiKey';
+    configuration.setAppName('test');
+    configuration.setApiKey('apiKey');
 
     const configuration2 = configuration.cloneConfig();
-    configuration.appName = 'new test name';
+    configuration.setAppName('new test name');
 
-    assert.notStrictEqual(configuration.appName, configuration2.appName);
+    assert.notStrictEqual(configuration.getAppName(), configuration2.getAppName());
   });
 });
