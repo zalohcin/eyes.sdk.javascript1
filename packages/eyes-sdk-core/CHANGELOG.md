@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.3.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.2.0...@applitools/eyes-sdk-core@5.3.0) (2019-04-02)
+
+
+### Bug Fixes
+
+* **eyes-sdk-core:** allow to set `Batch` by object ([72ac062](https://github.com/applitools/eyes.sdk.javascript1/commit/72ac062))
+
+
+### Features
+
+* **eyes-sdk-core:** use methods instead of getters/setters ([f8d5b3b](https://github.com/applitools/eyes.sdk.javascript1/commit/f8d5b3b))
+
+
+
+
+
 # [5.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.1.1...@applitools/eyes-sdk-core@5.2.0) (2019-03-29)
 
 

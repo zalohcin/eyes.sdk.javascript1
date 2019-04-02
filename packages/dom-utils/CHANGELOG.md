@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.6](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.6.5...@applitools/dom-utils@4.6.6) (2019-04-02)
+
+
+### Bug Fixes
+
+* **dom-utils:** replace `get driver` to `getDriver` method ([f5313c0](https://github.com/applitools/eyes.sdk.javascript1/commit/f5313c0))
+
+
+
+
+
 ## [4.6.5](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.6.4...@applitools/dom-utils@4.6.5) (2019-03-24)
 
 **Note:** Version bump only for package @applitools/dom-utils

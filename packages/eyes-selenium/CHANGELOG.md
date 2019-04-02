@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.13.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.12.0...@applitools/eyes-selenium@4.13.0) (2019-04-02)
+
+
+### Features
+
+* **eyes-selenium:** rename Configuration, use methods instead of getters/setters ([f761943](https://github.com/applitools/eyes.sdk.javascript1/commit/f761943))
+
+
+
+
+
 # [4.12.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.11.0...@applitools/eyes-selenium@4.12.0) (2019-03-29)
 
 

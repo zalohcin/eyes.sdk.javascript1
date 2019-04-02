@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@2.2.1...@applitools/eyes-common@3.0.0) (2019-04-02)
+
+
+### Features
+
+* **eyes-common:** revert get/set methods instead of getters/setters ([3749dd2](https://github.com/applitools/eyes.sdk.javascript1/commit/3749dd2))
+
+
+### BREAKING CHANGES
+
+* **eyes-common:** instead of using getters/setters, you should use methods, like in Java. You also can use builder pattern to set few properties in row, like config.setApiKey('key').setServerUrl('serverUrl').
+
+
+
+
+
 ## [2.2.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@2.2.0...@applitools/eyes-common@2.2.1) (2019-03-24)
 
 
