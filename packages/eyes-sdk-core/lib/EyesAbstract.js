@@ -1,6 +1,6 @@
 'use strict';
 
-const { Configuration, Logger, ArgumentGuard, BatchInfo } = require('@applitools/eyes-common');
+const { Configuration, Logger, ArgumentGuard } = require('@applitools/eyes-common');
 
 const { ImageMatchSettings } = require('./match/ImageMatchSettings');
 
@@ -13,7 +13,7 @@ class EyesAbstract {
    */
   constructor(configuration = new Configuration()) {
     /** @type {Logger} */
-    this._logger = new Logger(configuration.showLogs);
+    this._logger = new Logger(configuration.getShowLogs());
     /** @type {Configuration} */
     this._configuration = configuration;
     /** @type {ImageMatchSettings} */
@@ -57,7 +57,7 @@ class EyesAbstract {
    * @return {Configuration}
    */
   getConfiguration() {
-    return this._configuration;
+    return this._configuration.cloneConfig();
   }
 
   /**
@@ -77,14 +77,14 @@ class EyesAbstract {
    * @param {string} agentId - The agent ID to set.
    */
   setAgentId(agentId) {
-    this._configuration.agentId = agentId;
+    this._configuration.setAgentId(agentId);
   }
 
   /**
    * @return {string} - The user given agent id of the SDK.
    */
   getAgentId() {
-    return this._configuration.agentId;
+    return this._configuration.getAgentId();
   }
 
   /**
@@ -93,14 +93,14 @@ class EyesAbstract {
    * @param {string} apiKey - The api key to be used.
    */
   setApiKey(apiKey) {
-    this._configuration.apiKey = apiKey;
+    this._configuration.setApiKey(apiKey);
   }
 
   /**
    * @return {string} - The currently set API key or {@code null} if no key is set.
    */
   getApiKey() {
-    return this._configuration.apiKey;
+    return this._configuration.getApiKey();
   }
 
   /**
@@ -109,14 +109,14 @@ class EyesAbstract {
    * @param {string} serverUrl - The URI of the rest server, or {@code null} to use the default server.
    */
   setServerUrl(serverUrl) {
-    this._configuration.serverUrl = serverUrl;
+    this._configuration.setServerUrl(serverUrl);
   }
 
   /**
    * @return {string} - The URI of the eyes server.
    */
   getServerUrl() {
-    return this._configuration.serverUrl;
+    return this._configuration.getServerUrl();
   }
 
   /**
@@ -141,13 +141,13 @@ class EyesAbstract {
    */
   setProxy(varArg, username, password) {
     if (!username && !password) {
-      this._configuration.proxy = varArg;
+      this._configuration.setProxy(varArg);
     } else {
-      this._configuration.proxy = {
+      this._configuration.setProxy({
         url: varArg,
         username: username,
         password: password,
-      };
+      });
     }
   }
 
@@ -155,14 +155,14 @@ class EyesAbstract {
    * @return {ProxySettings} - current proxy settings used by the server connector, or {@code null} if no proxy is set.
    */
   getProxy() {
-    return this._configuration.proxy;
+    return this._configuration.getProxy();
   }
 
   /**
    * @return {number} - The timeout for web requests (in milliseconds).
    */
   getConnectionTimeout() {
-    return this._configuration.connectionTimeout;
+    return this._configuration.getConnectionTimeout();
   }
 
   /**
@@ -171,7 +171,7 @@ class EyesAbstract {
    * @param {number} connectionTimeout - Connect/Read timeout in milliseconds. 0 equals infinity.
    */
   setConnectionTimeout(connectionTimeout) {
-    this._configuration.connectionTimeout = connectionTimeout;
+    this._configuration.setConnectionTimeout(connectionTimeout);
   }
 
   /**
@@ -180,42 +180,42 @@ class EyesAbstract {
    * @param {boolean} removeSession
    */
   setRemoveSession(removeSession) {
-    this._configuration.removeSession = removeSession;
+    this._configuration.setRemoveSession(removeSession);
   }
 
   /**
    * @return {boolean} - Whether sessions are removed immediately after they are finished.
    */
   getRemoveSession() {
-    return this._configuration.removeSession;
+    return this._configuration.getRemoveSession();
   }
 
   /**
    * @param {boolean} isDisabled - If true, all interactions with this API will be silently ignored.
    */
   setIsDisabled(isDisabled) {
-    this._configuration.isDisabled = isDisabled;
+    this._configuration.setIsDisabled(isDisabled);
   }
 
   /**
    * @return {boolean} - Whether eyes is disabled.
    */
   getIsDisabled() {
-    return this._configuration.isDisabled;
+    return this._configuration.getIsDisabled();
   }
 
   /**
    * @param {string} appName - The name of the application under test.
    */
   setAppName(appName) {
-    this._configuration.appName = appName;
+    this._configuration.setAppName(appName);
   }
 
   /**
    * @return {string} - The name of the application under test.
    */
   getAppName() {
-    return this._configuration.appName;
+    return this._configuration.getAppName();
   }
 
   /**
@@ -226,14 +226,14 @@ class EyesAbstract {
    * @param {string} branchName - Branch name or {@code null} to specify the default branch.
    */
   setBranchName(branchName) {
-    this._configuration.branchName = branchName;
+    this._configuration.setBranchName(branchName);
   }
 
   /**
    * @return {string} - The current branch name.
    */
   getBranchName() {
-    return this._configuration.branchName;
+    return this._configuration.getBranchName();
   }
 
   /**
@@ -242,14 +242,14 @@ class EyesAbstract {
    * @param {string} parentBranchName - Branch name or {@code null} to specify the default branch.
    */
   setParentBranchName(parentBranchName) {
-    this._configuration.parentBranchName = parentBranchName;
+    this._configuration.setParentBranchName(parentBranchName);
   }
 
   /**
    * @return {string} - The name of the current parent branch under which new branches will be created.
    */
   getParentBranchName() {
-    return this._configuration.parentBranchName;
+    return this._configuration.getParentBranchName();
   }
 
   /**
@@ -258,14 +258,14 @@ class EyesAbstract {
    * @param {string} baselineBranchName - Branch name or {@code null} to specify the default branch.
    */
   setBaselineBranchName(baselineBranchName) {
-    this._configuration.baselineBranchName = baselineBranchName;
+    this._configuration.setBaselineBranchName(baselineBranchName);
   }
 
   /**
    * @return {string} - The name of the baseline branch
    */
   getBaselineBranchName() {
-    return this._configuration.baselineBranchName;
+    return this._configuration.getBaselineBranchName();
   }
 
   /**
@@ -273,12 +273,12 @@ class EyesAbstract {
    * @param {number} ms - Total number of ms to wait for a match.
    */
   setMatchTimeout(ms) {
-    if (this._configuration.isDisabled) {
+    if (this._configuration.getIsDisabled()) {
       this._logger.verbose('Ignored');
       return;
     }
 
-    this._configuration.matchTimeout = ms;
+    this._configuration.setMatchTimeout(ms);
   }
 
   /**
@@ -286,7 +286,7 @@ class EyesAbstract {
    *   for a match.
    */
   getMatchTimeout() {
-    return this._configuration.matchTimeout;
+    return this._configuration.getMatchTimeout();
   }
 
   /**
@@ -295,14 +295,14 @@ class EyesAbstract {
    * @param {boolean} saveNewTests - True if new tests should be saved by default. False otherwise.
    */
   setSaveNewTests(saveNewTests) {
-    this._configuration.saveNewTests = saveNewTests;
+    this._configuration.setSaveNewTests(saveNewTests);
   }
 
   /**
    * @return {boolean} - True if new tests are saved by default.
    */
   getSaveNewTests() {
-    return this._configuration.saveNewTests;
+    return this._configuration.getSaveNewTests();
   }
 
   /**
@@ -311,14 +311,14 @@ class EyesAbstract {
    * @param {boolean} saveFailedTests - True if failed tests should be saved by default, false otherwise.
    */
   setSaveFailedTests(saveFailedTests) {
-    this._configuration.saveFailedTests = saveFailedTests;
+    this._configuration.setSaveFailedTests(saveFailedTests);
   }
 
   /**
    * @return {boolean} - True if failed tests are saved by default.
    */
   getSaveFailedTests() {
-    return this._configuration.saveFailedTests;
+    return this._configuration.getSaveFailedTests();
   }
 
   /**
@@ -329,19 +329,19 @@ class EyesAbstract {
    * @param {string} [startedAt] - Start date of the batch, can be created as new Date().toUTCString()
    */
   setBatch(batchOrName, batchId, startedAt) {
-    if (this._configuration.isDisabled) {
+    if (this._configuration.getIsDisabled()) {
       this._logger.verbose('Ignored');
       return;
     }
 
     if (arguments.length > 1) {
-      this._configuration.batch = {
+      this._configuration.setBatch({
         id: batchId,
         name: batchOrName,
         startedAt: startedAt,
-      };
+      });
     } else {
-      this._configuration.batch = batchOrName;
+      this._configuration.setBatch(batchOrName);
     }
 
     this._logger.verbose(`setBatch(${this._configuration._batch})`);
@@ -351,7 +351,7 @@ class EyesAbstract {
    * @return {BatchInfo} - The currently set batch info.
    */
   getBatch() {
-    return this._configuration.batch;
+    return this._configuration.getBatch();
   }
 
   /**
@@ -368,7 +368,7 @@ class EyesAbstract {
    * Clears the list of custom properties.
    */
   clearProperties() {
-    this._configuration.properties = [];
+    this._configuration._properties = [];
   }
 
   /**
@@ -377,35 +377,35 @@ class EyesAbstract {
    * @param {boolean} saveDiffs - Sets whether to automatically save differences as baseline.
    */
   setSaveDiffs(saveDiffs) {
-    this._configuration.saveDiffs = saveDiffs;
+    this._configuration.setSaveDiffs(saveDiffs);
   }
 
   /**
    * @return {boolean} - whether to automatically save differences as baseline.
    */
   getSaveDiffs() {
-    return this._configuration.saveDiffs;
+    return this._configuration.getSaveDiffs();
   }
 
   /**
    * @param {boolean} sendDom
    */
   setSendDom(sendDom) {
-    this._configuration.sendDom = sendDom;
+    this._configuration.setSendDom(sendDom);
   }
 
   /**
    * @return {boolean}
    */
   getSendDom() {
-    return this._configuration.sendDom;
+    return this._configuration.getSendDom();
   }
 
   /**
    * @param {boolean} compareWithParentBranch - New compareWithParentBranch value, default is false
    */
   setCompareWithParentBranch(compareWithParentBranch) {
-    this._configuration.compareWithParentBranch = compareWithParentBranch;
+    this._configuration.setCompareWithParentBranch(compareWithParentBranch);
   }
 
   /**
@@ -413,21 +413,21 @@ class EyesAbstract {
    * @return {boolean} - The currently compareWithParentBranch value
    */
   isCompareWithParentBranch() {
-    return this._configuration.compareWithParentBranch;
+    return this._configuration.getCompareWithParentBranch();
   }
 
   /**
    * @return {boolean} - The currently compareWithParentBranch value
    */
   getCompareWithParentBranch() {
-    return this._configuration.compareWithParentBranch;
+    return this._configuration.getCompareWithParentBranch();
   }
 
   /**
    * @param {boolean} ignoreBaseline - New ignoreBaseline value, default is false
    */
   setIgnoreBaseline(ignoreBaseline) {
-    this._configuration.ignoreBaseline = ignoreBaseline;
+    this._configuration.setIgnoreBaseline(ignoreBaseline);
   }
 
   /**
@@ -435,14 +435,14 @@ class EyesAbstract {
    * @return {boolean} - The currently ignoreBaseline value
    */
   isIgnoreBaseline() {
-    return this._configuration.ignoreBaseline;
+    return this._configuration.getIgnoreBaseline();
   }
 
   /**
    * @return {boolean} - The currently ignoreBaseline value
    */
   getIgnoreBaseline() {
-    return this._configuration.ignoreBaseline;
+    return this._configuration.getIgnoreBaseline();
   }
 
   /**
@@ -469,7 +469,7 @@ class EyesAbstract {
    */
   setBaselineEnvName(baselineEnvName) {
     this._logger.log(`Baseline environment name: ${baselineEnvName}`);
-    this._configuration.baselineEnvName = baselineEnvName;
+    this._configuration.setBaselineEnvName(baselineEnvName);
   }
 
   /**
@@ -478,7 +478,7 @@ class EyesAbstract {
    * @return {string} - The name of the baseline's environment, or {@code null} if no such name was set.
    */
   getBaselineEnvName() {
-    return this._configuration.baselineEnvName;
+    return this._configuration.getBaselineEnvName();
   }
 
   /**
@@ -488,7 +488,7 @@ class EyesAbstract {
    */
   setEnvName(envName) {
     this._logger.log(`Environment name: ${envName}`);
-    this._configuration.environmentName = envName;
+    this._configuration.setEnvironmentName(envName);
   }
 
   /**
@@ -497,21 +497,21 @@ class EyesAbstract {
    * @return {string} - The name of the environment of the baseline, or {@code null} if no such name was set.
    */
   getEnvName() {
-    return this._configuration.environmentName;
+    return this._configuration.getEnvironmentName();
   }
 
   /**
    * @param {string} testName - The name of the currently running test.
    */
   setTestName(testName) {
-    this._configuration.testName = testName;
+    this._configuration.setTestName(testName);
   }
 
   /**
    * @return {?string} - The name of the currently running test.
    */
   getTestName() {
-    return this._configuration.testName;
+    return this._configuration.getTestName();
   }
 
   /**

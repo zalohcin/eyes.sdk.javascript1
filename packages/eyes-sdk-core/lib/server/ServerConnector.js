@@ -229,18 +229,18 @@ class ServerConnector {
     }
 
     if (isIncludeApiKey) {
-      options.params.apiKey = this._configuration.apiKey;
+      options.params.apiKey = this._configuration.getApiKey();
     }
 
-    if (TypeUtils.isNotNull(this._configuration.removeSession)) {
-      options.params.removeSession = this._configuration.removeSession;
+    if (TypeUtils.isNotNull(this._configuration.getRemoveSession())) {
+      options.params.removeSession = this._configuration.getRemoveSession();
     }
 
-    if (TypeUtils.isNotNull(this._configuration.connectionTimeout)) {
-      options.timeout = this._configuration.connectionTimeout;
+    if (TypeUtils.isNotNull(this._configuration.getConnectionTimeout())) {
+      options.timeout = this._configuration.getConnectionTimeout();
     }
 
-    if (TypeUtils.isNotNull(this._configuration.proxy)) {
+    if (TypeUtils.isNotNull(this._configuration.getProxy())) {
       options.proxy = this._configuration.proxy.toProxyObject();
 
       // TODO: remove hot-fix when axios release official fix
@@ -280,7 +280,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/running'),
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running'),
       data: {
         startInfo: sessionStartInfo,
       },
@@ -313,7 +313,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'DELETE',
-      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/running', runningSession.getId()),
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running', runningSession.getId()),
       params: {
         aborted: isAborted,
         updateBaseline: save,
@@ -343,7 +343,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'DELETE',
-      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/batches/', testResults.getBatchId(), '/', testResults.getId()),
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/batches/', testResults.getBatchId(), '/', testResults.getId()),
       params: {
         accessToken: testResults.getSecretToken(),
       },
@@ -373,7 +373,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/running', runningSession.getId()),
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running', runningSession.getId()),
       data: matchWindowData,
     });
 
@@ -410,7 +410,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH),
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH),
       data: matchSingleWindowData,
     });
 
@@ -451,7 +451,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'PUT',
-      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/running', runningSession.getId(), stepIndex),
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running', runningSession.getId(), stepIndex),
       headers: {
         'Content-Type': 'application/octet-stream',
       },
@@ -480,7 +480,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'GET',
-      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/renderinfo'),
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/renderinfo'),
     });
 
     const response = await sendRequest(this, 'renderInfo', options);
@@ -663,7 +663,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'POST',
-      url: GeneralUtils.urlConcat(this._configuration.serverUrl, EYES_API_PATH, '/running/data'),
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running/data'),
       headers: {
         'Content-Type': 'application/octet-stream',
       },
