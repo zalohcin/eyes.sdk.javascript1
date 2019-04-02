@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { Eyes, EyesSelenium, EyesVisualGrid, SeleniumConfiguration, StitchMode, RectangleSize, ProxySettings, BatchInfo, PropertyData } = require('../../index');
+const { Eyes, EyesSelenium, EyesVisualGrid, Configuration, StitchMode, RectangleSize, ProxySettings, BatchInfo, PropertyData } = require('../../index');
 
 describe('Eyes', function () {
 
@@ -74,18 +74,18 @@ describe('Eyes', function () {
       sendDom: false,
     });
 
-    assert.ok(eyes.getConfiguration() instanceof SeleniumConfiguration);
+    assert.ok(eyes.getConfiguration() instanceof Configuration);
     assert.strictEqual(eyes.getApiKey(), 'sameApiKey');
     assert.strictEqual(eyes.getForceFullPageScreenshot(), true);
     assert.strictEqual(eyes.getStitchMode(), StitchMode.SCROLL);
-    assert.strictEqual(eyes.getConfiguration().browsersInfo.length, 2);
-    assert.deepStrictEqual(eyes.getConfiguration().browsersInfo[0], { width: 800, height: 600, name: 'firefox' });
-    assert.deepStrictEqual(eyes.getConfiguration().browsersInfo[1], { deviceName: 'iPhone 4', screenOrientation: 'portrait' });
-    assert.deepStrictEqual(eyes.getConfiguration().viewportSize, new RectangleSize(450, 500));
+    assert.strictEqual(eyes.getConfiguration().getBrowsersInfo().length, 2);
+    assert.deepStrictEqual(eyes.getConfiguration().getBrowsersInfo()[0], { width: 800, height: 600, name: 'firefox' });
+    assert.deepStrictEqual(eyes.getConfiguration().getBrowsersInfo()[1], { deviceName: 'iPhone 4', screenOrientation: 'portrait' });
+    assert.deepStrictEqual(eyes.getConfiguration().getViewportSize(), new RectangleSize(450, 500));
     assert.deepStrictEqual(eyes.getProxy(), new ProxySettings('http://localhost:8888'));
     assert.deepStrictEqual(eyes.getBatch(), new BatchInfo('Batch name', date, 'randomId'));
-    assert.strictEqual(eyes.getConfiguration().properties.length, 1);
-    assert.deepStrictEqual(eyes.getConfiguration().properties[0], new PropertyData('prop', 'value'));
+    assert.strictEqual(eyes.getConfiguration().getProperties().length, 1);
+    assert.deepStrictEqual(eyes.getConfiguration().getProperties()[0], new PropertyData('prop', 'value'));
     assert.strictEqual(eyes.getBaselineEnvName(), 'baselineEnvName');
     assert.strictEqual(eyes.getSendDom(), false);
   });

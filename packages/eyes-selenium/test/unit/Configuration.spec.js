@@ -1,13 +1,13 @@
 'use strict';
 
 const { expect } = require('chai');
-const { SeleniumConfiguration } = require('../../index');
+const { Configuration } = require('../../index');
 
-describe('SeleniumConfiguration', () => {
+describe('Configuration', () => {
   it('should parse empty config', () => {
     const config = {};
-    const cfg = new SeleniumConfiguration(config);
-    expect(cfg).to.be.instanceOf(SeleniumConfiguration);
+    const cfg = new Configuration(config);
+    expect(cfg).to.be.instanceOf(Configuration);
   });
 
   it('should parse a single browser', () => {
@@ -20,7 +20,7 @@ describe('SeleniumConfiguration', () => {
         },
       ],
     };
-    const cfg = new SeleniumConfiguration(config);
+    const cfg = new Configuration(config);
     expect(cfg._browsersInfo.length).to.equal(1);
     expect(cfg._browsersInfo[0].name).to.equal(config.browsersInfo[0].name);
     expect(cfg._browsersInfo[0].width).to.equal(config.browsersInfo[0].width);
@@ -46,7 +46,7 @@ describe('SeleniumConfiguration', () => {
         },
       ],
     };
-    const cfg = new SeleniumConfiguration(config);
+    const cfg = new Configuration(config);
     expect(cfg._browsersInfo.length).to.equal(config.browsersInfo.length);
     expect(cfg._browsersInfo[0].name).to.equal(config.browsersInfo[0].name);
     expect(cfg._browsersInfo[1].name).to.equal(config.browsersInfo[1].name);

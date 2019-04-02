@@ -1,6 +1,6 @@
 'use strict';
 
-const { Configuration, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
+const { Configuration: CommonConfiguration, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 
 const { StitchMode } = require('./StitchMode');
 
@@ -20,9 +20,9 @@ const DEFAULT_VALUES = {
   isThrowExceptionOn: false,
 };
 
-class SeleniumConfiguration extends Configuration {
+class Configuration extends CommonConfiguration {
   /**
-   * @param {SeleniumConfiguration|object} [configuration]
+   * @param {Configuration|object} [configuration]
    */
   constructor(configuration) {
     super();
@@ -57,7 +57,7 @@ class SeleniumConfiguration extends Configuration {
   /**
    * @return {boolean} - Whether Eyes should force a full page screenshot.
    */
-  get forceFullPageScreenshot() {
+  getForceFullPageScreenshot() {
     return this._forceFullPageScreenshot;
   }
 
@@ -65,15 +65,17 @@ class SeleniumConfiguration extends Configuration {
    * Forces a full page screenshot (by scrolling and stitching) if the browser only supports viewport screenshots).
    *
    * @param {boolean} value - Whether to force a full page screenshot or not.
+   * @return {this}
    */
-  set forceFullPageScreenshot(value) {
+  setForceFullPageScreenshot(value) {
     this._forceFullPageScreenshot = value;
+    return this;
   }
 
   /**
    * @return {number} - The time to wait just before taking a screenshot.
    */
-  get waitBeforeScreenshots() {
+  getWaitBeforeScreenshots() {
     return TypeUtils.getOrDefault(this._waitBeforeScreenshots, DEFAULT_VALUES.waitBeforeScreenshots);
   }
 
@@ -83,19 +85,21 @@ class SeleniumConfiguration extends Configuration {
    *
    * @param {number} value - The time to wait (Milliseconds). Values smaller or equal to 0, will cause the
    *   default value to be used.
+   * @return {this}
    */
-  set waitBeforeScreenshots(value) {
+  setWaitBeforeScreenshots(value) {
     if (value <= 0) {
       this._waitBeforeScreenshots = undefined;
     } else {
       this._waitBeforeScreenshots = value;
     }
+    return this;
   }
 
   /**
    * @return {StitchMode} - The current stitch mode settings.
    */
-  get stitchMode() {
+  getStitchMode() {
     return TypeUtils.getOrDefault(this._stitchMode, DEFAULT_VALUES.stitchMode);
   }
 
@@ -104,15 +108,17 @@ class SeleniumConfiguration extends Configuration {
    * use {@link StitchMode#CSS}. Default is {@link StitchMode#SCROLL}.
    *
    * @param {StitchMode} value - The stitch mode to set.
+   * @return {this}
    */
-  set stitchMode(value) {
+  setStitchMode(value) {
     this._stitchMode = value;
+    return this;
   }
 
   /**
    * @return {boolean} - Whether or not scrollbars are hidden when taking screenshots.
    */
-  get hideScrollbars() {
+  getHideScrollbars() {
     return TypeUtils.getOrDefault(this._hideScrollbars, DEFAULT_VALUES.hideScrollbars);
   }
 
@@ -120,29 +126,33 @@ class SeleniumConfiguration extends Configuration {
    * Hide the scrollbars when taking screenshots.
    *
    * @param {boolean} value - Whether to hide the scrollbars or not.
+   * @return {this}
    */
-  set hideScrollbars(value) {
+  setHideScrollbars(value) {
     this._hideScrollbars = value;
+    return this;
   }
 
   /**
    * @return {boolean}
    */
-  get hideCaret() {
+  getHideCaret() {
     return TypeUtils.getOrDefault(this._hideCaret, DEFAULT_VALUES.hideCaret);
   }
 
   /**
    * @param {boolean} value
+   * @return {this}
    */
-  set hideCaret(value) {
+  setHideCaret(value) {
     this._hideCaret = value;
+    return this;
   }
 
   /**
    * @return {number} - Returns the stitching overlap in pixels.
    */
-  get stitchOverlap() {
+  getStitchOverlap() {
     return TypeUtils.getOrDefault(this._stitchOverlap, DEFAULT_VALUES.stitchOverlap);
   }
 
@@ -150,9 +160,11 @@ class SeleniumConfiguration extends Configuration {
    * Sets the stitch overlap in pixels.
    *
    * @param {number} value - The width (in pixels) of the overlap.
+   * @return {this}
    */
-  set stitchOverlap(value) {
+  setStitchOverlap(value) {
     this._stitchOverlap = value;
+    return this;
   }
 
   /*----------- Visual Grid properties -----------*/
@@ -160,52 +172,58 @@ class SeleniumConfiguration extends Configuration {
   /**
    * @return {number}
    */
-  get concurrentSessions() {
+  getConcurrentSessions() {
     return TypeUtils.getOrDefault(this._concurrentSessions, DEFAULT_VALUES.concurrentSessions);
   }
 
   /**
    * @param {number} value
+   * @return {this}
    */
-  set concurrentSessions(value) {
+  setConcurrentSessions(value) {
     this._concurrentSessions = value;
+    return this;
   }
 
   /**
    * @return {boolean}
    */
-  get isThrowExceptionOn() {
+  getIsThrowExceptionOn() {
     return TypeUtils.getOrDefault(this._isThrowExceptionOn, DEFAULT_VALUES.isThrowExceptionOn);
   }
 
   /**
    * @param {boolean} value
+   * @return {this}
    */
-  set isThrowExceptionOn(value) {
+  setIsThrowExceptionOn(value) {
     this._isThrowExceptionOn = value;
+    return this;
   }
 
   /**
    * @return {RenderBrowserInfo[]|DeviceInfo[]}
    */
-  get browsersInfo() {
+  getBrowsersInfo() {
     return this._browsersInfo;
   }
 
   /**
    * @param {RenderBrowserInfo[]|DeviceInfo[]|object[]} value
+   * @return {this}
    */
-  set browsersInfo(value) {
+  setBrowsersInfo(value) {
     ArgumentGuard.isArray(value, 'properties');
 
     for (const data of value) {
       this._browsersInfo.push(data);
     }
+    return this;
   }
 
   /**
    * @param {...RenderBrowserInfo} browsersInfo
-   * @return {SeleniumConfiguration}
+   * @return {this}
    */
   addBrowsers(...browsersInfo) {
     this._browsersInfo.push(...browsersInfo);
@@ -216,7 +234,7 @@ class SeleniumConfiguration extends Configuration {
    * @param {number} width
    * @param {number} height
    * @param {BrowserType} browserType
-   * @return {SeleniumConfiguration}
+   * @return {this}
    */
   addBrowser(width, height, browserType) {
     const browserInfo = {
@@ -230,11 +248,11 @@ class SeleniumConfiguration extends Configuration {
   }
 
   /**
-   * @param {DeviceName|string} deviceName
+   * @param {DeviceName} deviceName
    * @param {ScreenOrientation} screenOrientation
-   * @return {SeleniumConfiguration}
+   * @return {this}
    */
-  addDevice(deviceName, screenOrientation) {
+  addDeviceEmulation(deviceName, screenOrientation) {
     const deviceInfo = {
       deviceName, screenOrientation,
     };
@@ -248,11 +266,11 @@ class SeleniumConfiguration extends Configuration {
   }
 
   /**
-   * @return {SeleniumConfiguration}
+   * @return {Configuration}
    */
   cloneConfig() {
-    return new SeleniumConfiguration(this);
+    return new Configuration(this);
   }
 }
 
-exports.SeleniumConfiguration = SeleniumConfiguration;
+exports.Configuration = Configuration;

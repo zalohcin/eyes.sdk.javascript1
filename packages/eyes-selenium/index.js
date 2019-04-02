@@ -3,7 +3,7 @@
 const common = require('@applitools/eyes-common');
 const core = require('@applitools/eyes-sdk-core');
 
-exports.SeleniumConfiguration = require('./lib/config/SeleniumConfiguration').SeleniumConfiguration;
+exports.Configuration = require('./lib/config/Configuration').Configuration;
 exports.BrowserType = require('./lib/config/BrowserType').BrowserType;
 exports.DeviceName = require('./lib/config/DeviceName').DeviceName;
 exports.ScreenOrientation = require('./lib/config/ScreenOrientation').ScreenOrientation;
@@ -68,7 +68,6 @@ exports.EyesVisualGrid = require('./lib/EyesVisualGrid').EyesVisualGrid;
 
 
 // eyes-common
-exports.Configuration = common.Configuration;
 exports.BatchInfo = common.BatchInfo;
 exports.PropertyData = common.PropertyData;
 exports.ProxySettings = common.ProxySettings;

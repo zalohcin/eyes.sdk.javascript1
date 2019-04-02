@@ -9,7 +9,7 @@ class VisualGridRunner {
     this._concurrentSessions = concurrentSessions;
   }
 
-  get concurrentSessions() {
+  getConcurrentSessions() {
     return this._concurrentSessions;
   }
 }

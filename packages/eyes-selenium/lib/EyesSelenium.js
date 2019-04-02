@@ -47,7 +47,7 @@ const { Eyes } = require('./Eyes');
  */
 class EyesSelenium extends Eyes {
   /** @var {Logger} EyesSelenium#_logger */
-  /** @var {SeleniumConfiguration} EyesSelenium#_configuration */
+  /** @var {Configuration} EyesSelenium#_configuration */
   /** @var {ImageMatchSettings} EyesSelenium#_defaultMatchSettings */
 
   /**
@@ -89,20 +89,20 @@ class EyesSelenium extends Eyes {
     ArgumentGuard.notNull(driver, 'driver');
 
     // noinspection NonBlockStatementBodyJS
-    if (appName) this._configuration.appName = appName;
+    if (appName) this._configuration.setAppName(appName);
     // noinspection NonBlockStatementBodyJS
-    if (testName) this._configuration.testName = testName;
+    if (testName) this._configuration.setTestName(testName);
     // noinspection NonBlockStatementBodyJS
-    if (viewportSize) this._configuration.viewportSize = viewportSize;
+    if (viewportSize) this._configuration.setViewportSize(viewportSize);
     // noinspection NonBlockStatementBodyJS
-    if (sessionType) this._configuration.sessionType = sessionType;
+    if (sessionType) this._configuration.setSessionType(sessionType);
 
     if (this.getIsDisabled()) {
       this._logger.verbose('Ignored');
       return driver;
     }
 
-    if (this._configuration.stitchMode === StitchMode.CSS) {
+    if (this._configuration.getStitchMode() === StitchMode.CSS) {
       this.setSendDom(true);
     }
 
@@ -118,7 +118,7 @@ class EyesSelenium extends Eyes {
     this._imageProvider = ImageProviderFactory.getImageProvider(this._userAgent, this, this._logger, this._driver);
     this._regionPositionCompensation = RegionPositionCompensationFactory.getRegionPositionCompensation(this._userAgent, this, this._logger);
 
-    await super.openBase(this._configuration.appName, this._configuration.testName, this._configuration.viewportSize, this._configuration.sessionType);
+    await super.openBase(this._configuration.getAppName(), this._configuration.getTestName(), this._configuration.getViewportSize(), this._configuration.getSessionType());
 
     this._devicePixelRatio = Eyes.UNKNOWN_DEVICE_PIXEL_RATIO;
 
@@ -132,9 +132,9 @@ class EyesSelenium extends Eyes {
    */
   _createPositionProvider(scrollRootElement = this._scrollRootElement) {
     // Setting the correct position provider.
-    this._logger.verbose("initializing position provider. stitchMode:", this._configuration.stitchMode);
+    this._logger.verbose("initializing position provider. stitchMode:", this._configuration.getStitchMode());
 
-    switch (this._configuration.stitchMode) {
+    switch (this._configuration.getStitchMode()) {
       case StitchMode.CSS:
           return new CssTranslatePositionProvider(this._logger, this._jsExecutor, scrollRootElement);
       default:
@@ -165,7 +165,7 @@ class EyesSelenium extends Eyes {
    * @inheritDoc
    */
   async check(name, checkSettings) {
-    if (this._configuration.isDisabled) {
+    if (this._configuration.getIsDisabled()) {
       this._logger.log(`check('${name}', ${checkSettings}): Ignored`);
       return new MatchResult();
     }
@@ -611,7 +611,7 @@ class EyesSelenium extends Eyes {
 
       const displayStyle = await eyesElement.getComputedStyle('display');
 
-      if (this._configuration.hideScrollbars) {
+      if (this._configuration.getHideScrollbars()) {
         originalOverflow = await eyesElement.getOverflow();
         await eyesElement.setOverflow('hidden');
       }
@@ -753,7 +753,7 @@ class EyesSelenium extends Eyes {
     //   return new FrameChain(this._logger);
     // }
 
-    if (this._configuration.hideScrollbars || (this._configuration.stitchMode === StitchMode.CSS && this._stitchContent)) {
+    if (this._configuration.getHideScrollbars() || (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent)) {
       const originalFC = this._driver.getFrameChain().clone();
       const fc = this._driver.getFrameChain().clone();
       let frame = fc.peek();
@@ -811,7 +811,7 @@ class EyesSelenium extends Eyes {
     //   return;
     // }
 
-    if (this._configuration.hideScrollbars || (this._configuration.stitchMode === StitchMode.CSS && this._stitchContent)) {
+    if (this._configuration.getHideScrollbars() || (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent)) {
       await this._driver.switchTo().frames(frameChain);
       const originalFC = frameChain.clone();
       const fc = frameChain.clone();
@@ -933,18 +933,18 @@ class EyesSelenium extends Eyes {
     let algo = new FullPageCaptureAlgorithm(
       this._logger,
       this._regionPositionCompensation,
-      this._configuration.waitBeforeScreenshots,
+      this._configuration.getWaitBeforeScreenshots(),
       this._debugScreenshotsProvider,
       this._screenshotFactory,
       originProvider,
       scaleProviderFactory,
       this._cutProviderHandler.get(),
-      this._configuration.stitchOverlap,
+      this._configuration.getStitchOverlap(),
       this._imageProvider
     );
 
     let activeElement = null;
-    if (this._configuration.hideCaret) {
+    if (this._configuration.getHideCaret()) {
       try {
         activeElement = await this._driver.executeScript('var activeElement = document.activeElement; activeElement && activeElement.blur(); return activeElement;');
       } catch (err) {
@@ -974,7 +974,7 @@ class EyesSelenium extends Eyes {
       this._logger.verbose('Building screenshot object...');
       const size = new RectangleSize(entireFrameOrElement.getWidth(), entireFrameOrElement.getHeight());
       result = await EyesWebDriverScreenshot.fromFrameSize(this._logger, this._driver, entireFrameOrElement, size);
-    } else if (this._configuration.forceFullPageScreenshot || this._stitchContent) {
+    } else if (this._configuration.getForceFullPageScreenshot() || this._stitchContent) {
       this._logger.verbose('Full page screenshot requested.');
 
       // Save the current frame path.
@@ -1020,7 +1020,7 @@ class EyesSelenium extends Eyes {
       result = await EyesWebDriverScreenshot.fromScreenshotType(this._logger, this._driver, screenshotImage);
     }
 
-    if (this._configuration.hideCaret && activeElement != null) {
+    if (this._configuration.getHideCaret() && activeElement != null) {
       try {
         await this._driver.executeScript('arguments[0].focus();', activeElement);
       } catch (err) {

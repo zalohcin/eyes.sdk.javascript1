@@ -18,7 +18,7 @@ const {
   CorsIframeHandle,
 } = require('@applitools/eyes-sdk-core');
 
-const { SeleniumConfiguration } = require('./config/SeleniumConfiguration');
+const { Configuration } = require('./config/Configuration');
 const { FrameChain } = require('./frames/FrameChain');
 const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
 const { ImageRotation } = require('./positioning/ImageRotation');
@@ -39,7 +39,7 @@ const VERSION = require('../package.json').version;
  */
 class Eyes extends EyesBase {
   /** @var {Logger} Eyes#_logger */
-  /** @var {SeleniumConfiguration} Eyes#_configuration */
+  /** @var {Configuration} Eyes#_configuration */
   /** @var {ImageMatchSettings} Eyes#_defaultMatchSettings */
 
   /**
@@ -68,7 +68,7 @@ class Eyes extends EyesBase {
         "Please use `EyesSelenium`, `EyesVisualGrid` or `EyesFactory` instead.");
     }
 
-    super(serverUrl, isDisabled, new SeleniumConfiguration());
+    super(serverUrl, isDisabled, new Configuration());
 
     this.setIsVisualGrid(isVisualGrid);
 
@@ -102,19 +102,19 @@ class Eyes extends EyesBase {
   }
 
   /**
-   * @return {SeleniumConfiguration}
+   * @return {Configuration}
    */
   getConfiguration() {
-    return this._configuration;
+    return this._configuration.cloneConfig();
   }
 
   /**
    * @override
-   * @param {SeleniumConfiguration|object} configuration
+   * @param {Configuration|object} configuration
    */
   setConfiguration(configuration) {
-    if (!(configuration instanceof SeleniumConfiguration)) {
-      configuration = new SeleniumConfiguration(configuration);
+    if (!(configuration instanceof Configuration)) {
+      configuration = new Configuration(configuration);
     }
 
     this._configuration = configuration;
@@ -407,7 +407,7 @@ class Eyes extends EyesBase {
    * @return {Promise<RectangleSize>} - The viewport size of the AUT.
    */
   async getViewportSize() {
-    return this._configuration.viewportSize;
+    return this._configuration.getViewportSize();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -427,7 +427,7 @@ class Eyes extends EyesBase {
 
     ArgumentGuard.notNull(size, 'size');
     size = new RectangleSize(size);
-    this._configuration.viewportSize = size;
+    this._configuration.setViewportSize(size);
 
     if (this._driver) {
       const originalFrame = this._driver.getFrameChain();
@@ -748,7 +748,7 @@ class Eyes extends EyesBase {
    * @return {boolean}
    */
   getHideCaret() {
-    return this._configuration.hideCaret;
+    return this._configuration.getHideCaret();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -756,7 +756,7 @@ class Eyes extends EyesBase {
    * @param {boolean} hideCaret
    */
   setHideCaret(hideCaret) {
-    this._configuration.hideCaret = hideCaret;
+    this._configuration.setHideCaret(hideCaret);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -766,7 +766,7 @@ class Eyes extends EyesBase {
    * @param {boolean} shouldForce - Whether to force a full page screenshot or not.
    */
   setForceFullPageScreenshot(shouldForce) {
-    this._configuration.forceFullPageScreenshot = shouldForce;
+    this._configuration.setForceFullPageScreenshot(shouldForce);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -774,7 +774,7 @@ class Eyes extends EyesBase {
    * @return {boolean} - Whether Eyes should force a full page screenshot.
    */
   getForceFullPageScreenshot() {
-    return this._configuration.forceFullPageScreenshot;
+    return this._configuration.getForceFullPageScreenshot();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -786,7 +786,7 @@ class Eyes extends EyesBase {
    *   default value to be used.
    */
   setWaitBeforeScreenshots(waitBeforeScreenshots) {
-    this._configuration.waitBeforeScreenshots = waitBeforeScreenshots;
+    this._configuration.setWaitBeforeScreenshots(waitBeforeScreenshots);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -794,7 +794,7 @@ class Eyes extends EyesBase {
    * @return {number} - The time to wait just before taking a screenshot.
    */
   getWaitBeforeScreenshots() {
-    return this._configuration.waitBeforeScreenshots;
+    return this._configuration.getWaitBeforeScreenshots();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -804,7 +804,7 @@ class Eyes extends EyesBase {
    * @param {boolean} shouldHide - Whether to hide the scrollbars or not.
    */
   setHideScrollbars(shouldHide) {
-    this._configuration.hideScrollbars = shouldHide;
+    this._configuration.setHideScrollbars(shouldHide);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -812,7 +812,7 @@ class Eyes extends EyesBase {
    * @return {boolean} - Whether or not scrollbars are hidden when taking screenshots.
    */
   getHideScrollbars() {
-    return this._configuration.hideScrollbars;
+    return this._configuration.getHideScrollbars();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -824,7 +824,7 @@ class Eyes extends EyesBase {
    */
   setStitchMode(mode) {
     this._logger.verbose(`setting stitch mode to ${mode}`);
-    this._configuration.stitchMode = mode;
+    this._configuration.setStitchMode(mode);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -832,7 +832,7 @@ class Eyes extends EyesBase {
    * @return {StitchMode} - The current stitch mode settings.
    */
   getStitchMode() {
-    return this._configuration.stitchMode;
+    return this._configuration.getStitchMode();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -842,7 +842,7 @@ class Eyes extends EyesBase {
    * @param {number} stitchOverlap - The width (in pixels) of the overlap.
    */
   setStitchOverlap(stitchOverlap) {
-    this._configuration.stitchOverlap = stitchOverlap;
+    this._configuration.setStitchOverlap(stitchOverlap);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -850,7 +850,7 @@ class Eyes extends EyesBase {
    * @return {number} - Returns the stitching overlap in pixels.
    */
   getStitchOverlap() {
-    return this._configuration.stitchOverlap;
+    return this._configuration.getStitchOverlap();
   }
 }
 

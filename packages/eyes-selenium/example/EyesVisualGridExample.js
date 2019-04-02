@@ -2,7 +2,7 @@
 
 require('chromedriver'); // eslint-disable-line node/no-unpublished-require
 const { Builder, Capabilities, By } = require('selenium-webdriver');
-const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, SeleniumConfiguration, BrowserType, DeviceName, ScreenOrientation } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
+const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, Configuration, BrowserType, DeviceName, ScreenOrientation } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
 
 (async () => {
   // Open a Chrome browser.
@@ -16,13 +16,13 @@ const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, SeleniumConfiguration
   eyes.setLogHandler(new ConsoleLogHandler(false));
 
   try {
-    const configuration = new SeleniumConfiguration();
-    configuration.concurrentSessions = 3;
-    configuration.appName = 'Eyes Examples';
-    configuration.testName = 'My first Javascript test!';
+    const configuration = new Configuration();
+    configuration.setConcurrentSessions(3);
+    configuration.setAppName('Eyes Examples');
+    configuration.setTestName('My first Javascript test!');
     configuration.addBrowser(1200, 800, BrowserType.CHROME);
     configuration.addBrowser(1200, 800, BrowserType.FIREFOX);
-    configuration.addDevice(DeviceName.iPhone_4, ScreenOrientation.PORTRAIT);
+    configuration.addDeviceEmulation(DeviceName.iPhone_4, ScreenOrientation.PORTRAIT);
     eyes.setConfiguration(configuration);
 
     // Start the test and set the browser's viewport size to 800x600.

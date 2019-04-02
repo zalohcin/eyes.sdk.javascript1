@@ -3,7 +3,7 @@
 require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { Eyes, Target, SeleniumConfiguration, BrowserType, ConsoleLogHandler, Region } = require('../../index');
+const { Eyes, Target, Configuration, BrowserType, ConsoleLogHandler, Region } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
 describe('VisualGridCheckFluent', function () {
@@ -21,9 +21,9 @@ describe('VisualGridCheckFluent', function () {
   });
 
   beforeEach(async function () {
-    const configuration = new SeleniumConfiguration();
-    configuration.appName = this.test.parent.title;
-    configuration.testName = this.currentTest.title;
+    const configuration = new Configuration();
+    configuration.setAppName(this.test.parent.title);
+    configuration.setTestName(this.currentTest.title);
     configuration.addBrowser(1200, 800, BrowserType.CHROME);
     configuration.addBrowser(1200, 800, BrowserType.FIREFOX);
     eyes.setConfiguration(configuration);
