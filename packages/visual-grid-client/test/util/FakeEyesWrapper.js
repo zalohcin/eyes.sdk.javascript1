@@ -85,10 +85,10 @@ class FakeEyesWrapper extends EventEmitter {
     }));
     const isGoodResources =
       !actualResources.length ||
-      this.expectedResources.every(er => !!actualResources.find(ar => compare(er, ar)));
+      this.getExpectedResources().every(er => !!actualResources.find(ar => compare(er, ar)));
 
     const cdt = renderRequest.getDom().getDomNodes();
-    const isGoodCdt = cdt.length === 0 || compare(cdt, this.expectedCdt); // allowing [] for easier testing (only need to pass `cdt:[]` in the test)
+    const isGoodCdt = cdt.length === 0 || compare(cdt, this.getExpectedCdt()); // allowing [] for easier testing (only need to pass `cdt:[]` in the test)
     const renderInfo = renderRequest.getRenderInfo();
     const sizeMode = renderInfo.getSizeMode();
     const browserName = renderRequest.getBrowserName();
@@ -196,11 +196,11 @@ class FakeEyesWrapper extends EventEmitter {
     this.aborted = !this.closed;
   }
 
-  get expectedCdt() {
+  getExpectedCdt() {
     return loadJsonFixture(this.goodFilename);
   }
 
-  get expectedResources() {
+  getExpectedResources() {
     const urlResources = this.goodResourceUrls.map(resourceUrl => ({
       url: resourceUrl,
       hash: getSha256Hash(loadFixtureBuffer(new URL(resourceUrl).pathname.slice(1))),
