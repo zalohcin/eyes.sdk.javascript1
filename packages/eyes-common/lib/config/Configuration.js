@@ -87,6 +87,17 @@ class Configuration {
     /** @type {boolean} */
     this._sendDom = undefined;
 
+    /** @type {string} */
+    this._hostApp = undefined;
+    /** @type {string} */
+    this._hostOS = undefined;
+    /** @type {string} */
+    this._hostAppInfo = undefined;
+    /** @type {string} */
+    this._hostOSInfo = undefined;
+    /** @type {string} */
+    this._deviceInfo = undefined;
+
     if (configuration) {
       this.mergeConfig(configuration);
     }
@@ -532,6 +543,111 @@ class Configuration {
   setSendDom(value) {
     ArgumentGuard.isBoolean(value, 'sendDom');
     this._sendDom = value;
+    return this;
+  }
+
+  /**
+   * @return {string} - The host OS as set by the user.
+   */
+  getHostApp() {
+    return this._hostApp;
+  }
+
+  /**
+   * Sets the host application - overrides the one in the agent string.
+   *
+   * @param {string} value - The application running the AUT (e.g., Chrome).
+   */
+  setHostApp(value) {
+    if (TypeUtils.isNull(value)) {
+      this._hostApp = undefined;
+    } else {
+      this._hostApp = value.trim();
+    }
+    return this;
+  }
+
+  /**
+   * @return {string} - The host OS as set by the user.
+   */
+  getHostOS() {
+    return this._hostOS;
+  }
+
+  /**
+   * Sets the host OS name - overrides the one in the agent string.
+   *
+   * @param {string} value - The host OS running the AUT.
+   */
+  setHostOS(value) {
+    if (TypeUtils.isNull(value)) {
+      this._hostOS = undefined;
+    } else {
+      this._hostOS = value.trim();
+    }
+    return this;
+  }
+
+  /**
+   * @return {string} - The host OS as set by the user.
+   */
+  getHostAppInfo() {
+    return this._hostAppInfo;
+  }
+
+  /**
+   * Sets the host application - overrides the one in the agent string.
+   *
+   * @param {string} value - The application running the AUT (e.g., Chrome).
+   */
+  setHostAppInfo(value) {
+    if (TypeUtils.isNull(value)) {
+      this._hostAppInfo = undefined;
+    } else {
+      this._hostAppInfo = value.trim();
+    }
+    return this;
+  }
+
+  /**
+   * @return {string} - The host OS as set by the user.
+   */
+  getHostOSInfo() {
+    return this._hostOSInfo;
+  }
+
+  /**
+   * Sets the host OS name - overrides the one in the agent string.
+   *
+   * @param {string} value - The host OS running the AUT.
+   */
+  setHostOSInfo(value) {
+    if (TypeUtils.isNull(value)) {
+      this._hostOSInfo = undefined;
+    } else {
+      this._hostOSInfo = value.trim();
+    }
+    return this;
+  }
+
+  /**
+   * @return {string} - The application name running the AUT.
+   */
+  getDeviceInfo() {
+    return this._deviceInfo;
+  }
+
+  /**
+   * Sets the host application - overrides the one in the agent string.
+   *
+   * @param {string} value - The application running the AUT (e.g., Chrome).
+   */
+  setDeviceInfo(value) {
+    if (TypeUtils.isNull(value)) {
+      this._deviceInfo = undefined;
+    } else {
+      this._deviceInfo = value.trim();
+    }
     return this;
   }
 
