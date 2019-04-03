@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.14.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.13.0...@applitools/eyes-selenium@4.14.0) (2019-04-03)
+
+
+### Features
+
+* change agentIds ([aa57fb5](https://github.com/applitools/eyes.sdk.javascript1/commit/aa57fb5))
+* **eyes-selenium:** update flow when VisualGrid found diff ([6b2876c](https://github.com/applitools/eyes.sdk.javascript1/commit/6b2876c))
+
+
+
+
+
 # [4.13.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.12.0...@applitools/eyes-selenium@4.13.0) (2019-04-02)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.9.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.8.7...@applitools/eyes-images@4.9.0) (2019-04-03)
+
+
+### Features
+
+* change agentIds ([aa57fb5](https://github.com/applitools/eyes.sdk.javascript1/commit/aa57fb5))
+
+
+
+
+
 ## [4.8.7](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.8.6...@applitools/eyes-images@4.8.7) (2019-04-02)
 
 **Note:** Version bump only for package @applitools/eyes-images
