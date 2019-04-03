@@ -142,15 +142,22 @@ class EyesVisualGrid extends Eyes {
   async close(throwEx = true) {
     try {
       const results = await this._closeCommand(throwEx);
-      const first = results[0];
 
-      if (first instanceof TestFailedError) {
-        return first.getTestResults();
+      for (const result of results) {
+        if (result instanceof TestFailedError) {
+          return result.getTestResults();
+        }
       }
 
-      return first;
+      return results[0];
     } catch (err) {
       if (Array.isArray(err)) {
+        for (const result of err) {
+          if (result instanceof Error) {
+            throw result;
+          }
+        }
+
         throw err[0];
       }
 
@@ -172,7 +179,7 @@ class EyesVisualGrid extends Eyes {
    * @param {boolean} [throwEx]
    * @return {Promise<TestResults[]|Error[]>}
    */
-  async closeAndReturnResults(throwEx = false) {
+  async closeAndReturnResults(throwEx = true) {
     try {
       return await this._closeCommand(throwEx);
     } finally {
@@ -201,7 +208,7 @@ class EyesVisualGrid extends Eyes {
      * @param {boolean} [throwEx=true]
      * @return {Promise<TestResults[]|Error[]>}
      */
-    runner.getAllResults = async (throwEx = false) => {
+    runner.getAllResults = async (throwEx = true) => {
       return await this.closeAndReturnResults(throwEx);
     };
     return runner;
