@@ -18,7 +18,7 @@ class Eyes extends EyesSelenium {
    * @inheritDoc
    */
   getBaseAgentId() {
-    return `eyes-appium/${VERSION}`;
+    return `eyes.selenium.appium.javascript/${VERSION}`;
   }
 
   /**

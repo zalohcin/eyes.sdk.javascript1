@@ -15,7 +15,7 @@ class Eyes extends EyesSelenium {
    * @inheritDoc
    */
   getBaseAgentId() {
-    return `eyes-protractor/${VERSION}`;
+    return `eyes.selenium.protractor.javascript/${VERSION}`;
   }
 
   /**

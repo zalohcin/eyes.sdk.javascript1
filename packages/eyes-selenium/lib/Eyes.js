@@ -127,7 +127,7 @@ class Eyes extends EyesBase {
    * @return {string} - The base agent id of the SDK.
    */
   getBaseAgentId() {
-    return `eyes-selenium/${VERSION}`;
+    return `eyes.selenium.javascript/${VERSION}`;
   }
 
   // noinspection JSMethodCanBeStatic

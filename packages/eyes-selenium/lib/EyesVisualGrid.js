@@ -15,6 +15,8 @@ const { VisualGridRunner } = require('./visualgrid/VisualGridRunner');
 const { BrowserType } = require('./config/BrowserType');
 const { Eyes } = require('./Eyes');
 
+const VERSION = require('../package.json').version;
+
 /**
  * @ignore
  */
@@ -38,6 +40,16 @@ class EyesVisualGrid extends Eyes {
     /** @type {string} */ this._processPageAndSerializeScript = undefined;
     /** @function */ this._checkWindowCommand = undefined;
     /** @function */ this._closeCommand = undefined;
+  }
+
+  // noinspection JSMethodCanBeStatic
+  /**
+   * @override
+   * @protected
+   * @return {string} - The base agent id of the SDK.
+   */
+  getBaseAgentId() {
+    return `eyes.selenium.visualgrid.javascript/${VERSION}`;
   }
 
   /**
@@ -99,7 +111,7 @@ class EyesVisualGrid extends Eyes {
       compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
       ignoreBaseline: this._configuration.getIgnoreBaseline(),
       parentBranchName: this._configuration.getParentBranchName(),
-      agentId: this._configuration.getAgentId(),
+      agentId: this.getFullAgentId(),
       isDisabled: this._configuration.getIsDisabled(),
       matchTimeout: this._configuration.getMatchTimeout(),
 
