@@ -101,12 +101,6 @@ class EyesBase extends EyesAbstract {
     /** @type {boolean} */ this._useImageDeltaCompression = true;
     /** @type {boolean} */ this._render = false;
 
-    /** @type {string} */ this._hostApp = undefined;
-    /** @type {string} */ this._hostOS = undefined;
-    /** @type {string} */ this._hostAppInfo = undefined;
-    /** @type {string} */ this._hostOSInfo = undefined;
-    /** @type {string} */ this._deviceInfo = undefined;
-
     /**
      * Will be set for separately for each test.
      * @type {string}
@@ -243,7 +237,7 @@ class EyesBase extends EyesAbstract {
    * @return {string} - The full agent id composed of both the base agent id and the user given agent id.
    */
   getFullAgentId() {
-    const agentId = this.getAgentId();
+    const agentId = this._configuration.getAgentId();
     if (!agentId) {
       return this.getBaseAgentId();
     }
@@ -521,123 +515,6 @@ class EyesBase extends EyesAbstract {
       this._runningSession = null;
       this._logger.getLogHandler().close();
     }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the host OS name - overrides the one in the agent string.
-   *
-   * @param {string} hostOS - The host OS running the AUT.
-   */
-  setHostOS(hostOS) {
-    this._logger.log(`Host OS: ${hostOS}`);
-
-    if (hostOS) {
-      this._hostOS = hostOS.trim();
-    } else {
-      this._hostOS = undefined;
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} - The host OS as set by the user.
-   */
-  getHostOS() {
-    return this._hostOS;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the host application - overrides the one in the agent string.
-   *
-   * @param {string} hostApp - The application running the AUT (e.g., Chrome).
-   */
-  setHostApp(hostApp) {
-    this._logger.log(`Host App: ${hostApp}`);
-
-    if (hostApp) {
-      this._hostApp = hostApp.trim();
-    } else {
-      this._hostApp = undefined;
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} - The application name running the AUT.
-   */
-  getHostApp() {
-    return this._hostApp;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the host OS name - overrides the one in the agent string.
-   *
-   * @param {string} hostOSInfo - The host OS running the AUT.
-   */
-  setHostOSInfo(hostOSInfo) {
-    this._logger.log(`Host OS Info: ${hostOSInfo}`);
-    if (hostOSInfo) {
-      this._hostOSInfo = hostOSInfo.trim();
-    } else {
-      this._hostOSInfo = undefined;
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} - The host OS as set by the user.
-   */
-  getHostOSInfo() {
-    return this._hostOSInfo;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the host application - overrides the one in the agent string.
-   *
-   * @param {string} hostAppInfo - The application running the AUT (e.g., Chrome).
-   */
-  setHostAppInfo(hostAppInfo) {
-    this._logger.log(`Host App Info: ${hostAppInfo}`);
-    if (hostAppInfo) {
-      this._hostAppInfo = hostAppInfo.trim();
-    } else {
-      this._hostAppInfo = undefined;
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} - The application name running the AUT.
-   */
-  getHostAppInfo() {
-    return this._hostAppInfo;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * Sets the host application - overrides the one in the agent string.
-   *
-   * @param {string} deviceInfo - The application running the AUT (e.g., Chrome).
-   */
-  setDeviceInfo(deviceInfo) {
-    this._logger.log(`Device Info: ${deviceInfo}`);
-    if (deviceInfo) {
-      this._deviceInfo = deviceInfo.trim();
-    } else {
-      this._deviceInfo = undefined;
-    }
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @return {string} - The application name running the AUT.
-   */
-  getDeviceInfo() {
-    return this._deviceInfo;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -1216,24 +1093,24 @@ class EyesBase extends EyesAbstract {
     const appEnv = new AppEnvironment();
 
     // If hostOS isn't set, we'll try and extract and OS ourselves.
-    if (this._hostOS) {
-      appEnv.setOs(this._hostOS);
+    if (this._configuration.getHostOS()) {
+      appEnv.setOs(this._configuration.getHostOS());
     }
 
-    if (this._hostApp) {
-      appEnv.setHostingApp(this._hostApp);
+    if (this._configuration.getHostApp()) {
+      appEnv.setHostingApp(this._configuration.getHostApp());
     }
 
-    if (this._deviceInfo) {
-      appEnv.setDeviceInfo(this._deviceInfo);
+    if (this._configuration.getDeviceInfo()) {
+      appEnv.setDeviceInfo(this._configuration.getDeviceInfo());
     }
 
-    if (this._hostAppInfo) {
-      appEnv.setHostingAppInfo(this._hostAppInfo);
+    if (this._configuration.getHostAppInfo()) {
+      appEnv.setHostingAppInfo(this._configuration.getHostAppInfo());
     }
 
-    if (this._hostOSInfo) {
-      appEnv.setOsInfo(this._hostOSInfo);
+    if (this._configuration.getHostOSInfo()) {
+      appEnv.setOsInfo(this._configuration.getHostOSInfo());
     }
 
     const inferred = await this.getInferredEnvironment();

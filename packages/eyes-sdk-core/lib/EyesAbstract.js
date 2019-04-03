@@ -205,6 +205,91 @@ class EyesAbstract {
   }
 
   /**
+   * @return {string} - The host OS as set by the user.
+   */
+  getHostApp() {
+    return this._configuration.getHostApp();
+  }
+
+  /**
+   * Sets the host application - overrides the one in the agent string.
+   *
+   * @param {string} value - The application running the AUT (e.g., Chrome).
+   */
+  setHostApp(value) {
+    this._logger.log(`Host App: ${value}`);
+    this._configuration.setHostApp(value);
+  }
+
+  /**
+   * @return {string} - The host OS as set by the user.
+   */
+  getHostOS() {
+    return this._configuration.getHostOS();
+  }
+
+  /**
+   * Sets the host OS name - overrides the one in the agent string.
+   *
+   * @param {string} value - The host OS running the AUT.
+   */
+  setHostOS(value) {
+    this._logger.log(`Host OS: ${value}`);
+    this._configuration.setHostOS(value);
+  }
+
+  /**
+   * @return {string} - The host OS as set by the user.
+   */
+  getHostAppInfo() {
+    return this._configuration.getHostAppInfo();
+  }
+
+  /**
+   * Sets the host application - overrides the one in the agent string.
+   *
+   * @param {string} value - The application running the AUT (e.g., Chrome).
+   */
+  setHostAppInfo(value) {
+    this._logger.log(`Host App Info: ${value}`);
+    this._configuration.setHostAppInfo(value);
+  }
+
+  /**
+   * @return {string} - The host OS as set by the user.
+   */
+  getHostOSInfo() {
+    return this._configuration.getHostOSInfo();
+  }
+
+  /**
+   * Sets the host OS name - overrides the one in the agent string.
+   *
+   * @param {string} value - The host OS running the AUT.
+   */
+  setHostOSInfo(value) {
+    this._logger.log(`Host OS Info: ${value}`);
+    this._configuration.setHostOSInfo(value);
+  }
+
+  /**
+   * @return {string} - The application name running the AUT.
+   */
+  getDeviceInfo() {
+    return this._configuration.getDeviceInfo();
+  }
+
+  /**
+   * Sets the host application - overrides the one in the agent string.
+   *
+   * @param {string} value - The application running the AUT (e.g., Chrome).
+   */
+  setDeviceInfo(value) {
+    this._logger.log(`Device Info: ${value}`);
+    this._configuration.setDeviceInfo(value);
+  }
+
+  /**
    * @param {string} appName - The name of the application under test.
    */
   setAppName(appName) {
