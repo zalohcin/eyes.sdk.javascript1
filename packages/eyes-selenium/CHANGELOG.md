@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.14.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.14.0...@applitools/eyes-selenium@4.14.1) (2019-04-04)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** check if appName, testName is set in open ([e457ab6](https://github.com/applitools/eyes.sdk.javascript1/commit/e457ab6))
+* **eyes-selenium:** use value of forceFullPageScreenshot in VisualGrid ([863d361](https://github.com/applitools/eyes.sdk.javascript1/commit/863d361))
+
+
+
+
+
 # [4.14.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.13.0...@applitools/eyes-selenium@4.14.0) (2019-04-03)
 
 
