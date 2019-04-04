@@ -97,6 +97,9 @@ class EyesSelenium extends Eyes {
     // noinspection NonBlockStatementBodyJS
     if (sessionType) this._configuration.setSessionType(sessionType);
 
+    ArgumentGuard.notNull(this._configuration.getAppName(), 'appName');
+    ArgumentGuard.notNull(this._configuration.getTestName(), 'testName');
+
     if (this.getIsDisabled()) {
       this._logger.verbose('Ignored');
       return driver;
