@@ -1,3 +1,4 @@
+/* global fetch */
 'use script';
 
 const makeGetAllResources = require('./getAllResources');
@@ -142,6 +143,5 @@ function blobDataToResourceContents(blobs) {
     return acc;
   }, {});
 }
-
 
 module.exports = takeScreenshot;

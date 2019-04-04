@@ -1,6 +1,6 @@
 'use strict';
 
-const {describe, it, before, after, beforeEach} = require('mocha');
+const {describe, it, before, after} = require('mocha');
 const {expect} = require('chai');
 const puppeteer = require('puppeteer');
 const takeScreenshot = require('../../src/sdk/takeScreenshot');
