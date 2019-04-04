@@ -254,7 +254,7 @@ class EyesVisualGrid extends Eyes {
       url: pageUrl,
       cdt,
       tag: checkSettings.getName(),
-      sizeMode: checkSettings.getSizeMode(),
+      sizeMode: checkSettings.getSizeMode() === 'viewport' && this.getForceFullPageScreenshot() ? 'full-page' : checkSettings.getSizeMode(),
       selector: targetSelector,
       region: checkSettings.getTargetRegion(),
       scriptHooks: checkSettings.getScriptHooks(),
