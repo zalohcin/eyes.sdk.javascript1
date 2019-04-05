@@ -3,6 +3,7 @@
 const { Configuration: CommonConfiguration, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 
 const { StitchMode } = require('./StitchMode');
+const { ScreenOrientation } = require('./ScreenOrientation');
 
 /**
  * @typedef {{width: number, height: number, name: BrowserType}} RenderBrowserInfo
@@ -249,10 +250,10 @@ class Configuration extends CommonConfiguration {
 
   /**
    * @param {DeviceName} deviceName
-   * @param {ScreenOrientation} screenOrientation
+   * @param {ScreenOrientation} [screenOrientation=ScreenOrientation.PORTRAIT]
    * @return {this}
    */
-  addDeviceEmulation(deviceName, screenOrientation) {
+  addDeviceEmulation(deviceName, screenOrientation = ScreenOrientation.PORTRAIT) {
     const deviceInfo = {
       deviceName, screenOrientation,
     };
