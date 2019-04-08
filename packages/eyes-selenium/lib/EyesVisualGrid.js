@@ -36,6 +36,7 @@ class EyesVisualGrid extends Eyes {
     super(serverUrl, isDisabled, true);
 
     /** @type {VisualGridRunner} */ this._visualGridRunner = visualGridRunner;
+    this._visualGridRunner._eyes = this;
 
     /** @type {string} */ this._processPageAndSerializeScript = undefined;
     /** @function */ this._checkWindowCommand = undefined;
@@ -176,45 +177,6 @@ class EyesVisualGrid extends Eyes {
   }
 
   /**
-   * @param {boolean} [throwEx]
-   * @return {Promise<TestResults[]|Error[]>}
-   */
-  async closeAndReturnResults(throwEx = true) {
-    try {
-      return await this._closeCommand(throwEx);
-    } finally {
-      this._isOpen = false;
-    }
-  }
-
-  /**
-   * @param {boolean} [throwEx]
-   * @return {Promise}
-   */
-  async closeAndPrintResults(throwEx = true) {
-    const results = await this.closeAndReturnResults(throwEx);
-
-    const testResultsFormatter = new TestResultsFormatter(results);
-    // eslint-disable-next-line no-console
-    console.log(testResultsFormatter.asFormatterString());
-  }
-
-  /**
-   * @return {object}
-   */
-  getRunner() {
-    const runner = {};
-    /**
-     * @param {boolean} [throwEx=true]
-     * @return {Promise<TestResults[]|Error[]>}
-     */
-    runner.getAllResults = async (throwEx = true) => {
-      return await this.closeAndReturnResults(throwEx);
-    };
-    return runner;
-  }
-
-  /**
    * @inheritDoc
    */
   async check(name, checkSettings) {
@@ -263,6 +225,13 @@ class EyesVisualGrid extends Eyes {
       sendDom: checkSettings.getSendDom() ? checkSettings.getSendDom() : this.getSendDom(),
       matchLevel: checkSettings.getMatchLevel() ? checkSettings.getMatchLevel() : this.getMatchLevel(),
     });
+  }
+
+  /**
+   * @return {VisualGridRunner}
+   */
+  getRunner() {
+    return this._visualGridRunner;
   }
 }
 
