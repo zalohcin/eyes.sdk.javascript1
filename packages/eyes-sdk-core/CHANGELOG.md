@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.4.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.4.0...@applitools/eyes-sdk-core@5.4.2) (2019-04-08)
+
+
+### Bug Fixes
+
+* **eyes-sdk-core:** increased upload byte size in PUT resource to 15.5MB (VG is 16MB). ([d7e0f13](https://github.com/applitools/eyes.sdk.javascript1/commit/d7e0f13))
+
+
+
+
+
 # [5.4.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.3.0...@applitools/eyes-sdk-core@5.4.0) (2019-04-03)
 
 

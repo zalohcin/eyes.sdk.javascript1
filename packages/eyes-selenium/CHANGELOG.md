@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.14.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.14.1...@applitools/eyes-selenium@4.14.2) (2019-04-08)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** add default device orientation ([b7dad54](https://github.com/applitools/eyes.sdk.javascript1/commit/b7dad54))
+* **eyes-selenium:** return actual VGRunner instance from `getRunner` ([75dcdc2](https://github.com/applitools/eyes.sdk.javascript1/commit/75dcdc2))
+
+
+
+
+
 ## [4.14.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.14.0...@applitools/eyes-selenium@4.14.1) (2019-04-04)
 
 
