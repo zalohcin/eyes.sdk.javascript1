@@ -585,6 +585,7 @@ class ServerConnector {
         'X-Auth-Token': this._renderingInfo.getAccessToken(),
         'Content-Type': resource.getContentType(),
       },
+      maxContentLength: 15.5 * 1024 * 1024, // 15.5 MB  (VG limit is 16MB)
       params: {
         'render-id': runningRender.getRenderId(),
       },
