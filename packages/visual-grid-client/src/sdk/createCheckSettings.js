@@ -1,11 +1,6 @@
 'use strict';
 
-const {
-  CheckSettings,
-  Region,
-  IgnoreRegionByRectangle,
-  FloatingRegionByRectangle,
-} = require('@applitools/eyes-sdk-core');
+const {CheckSettings, Region, GetRegion, GetFloatingRegion} = require('@applitools/eyes-sdk-core');
 
 function createCheckSettings({ignore, floating, layout, strict, useDom, enablePatterns}) {
   const checkSettings = new CheckSettings(0);
@@ -16,7 +11,7 @@ function createCheckSettings({ignore, floating, layout, strict, useDom, enablePa
   if (floating) {
     floating = [].concat(floating);
     for (const region of floating) {
-      if (region instanceof FloatingRegionByRectangle) {
+      if (region instanceof GetFloatingRegion) {
         checkSettings.floatingRegion(region);
       } else {
         checkSettings.floatingRegion(
@@ -42,7 +37,7 @@ function createCheckSettings({ignore, floating, layout, strict, useDom, enablePa
     if (regions) {
       regions = [].concat(regions);
       for (const region of regions) {
-        if (region instanceof IgnoreRegionByRectangle) {
+        if (region instanceof GetRegion) {
           addToSettings(region);
         } else {
           addToSettings(new Region(region));
