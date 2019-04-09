@@ -19,6 +19,7 @@ const RETRY_REQUEST_INTERVAL = 500; // ms
 const LONG_REQUEST_DELAY_MS = 2000; // ms
 const MAX_LONG_REQUEST_DELAY_MS = 10000; // ms
 const DEFAULT_TIMEOUT_MS = 300000; // ms (5 min)
+const REDUCED_TIMEOUT_MS = 15000; // ms (15 sec)
 const LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR = 1.5;
 
 const DEFAULT_HEADERS = {
@@ -631,6 +632,7 @@ class ServerConnector {
       headers: {
         'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
+      timeout: REDUCED_TIMEOUT_MS,
       data: isBatch ? renderId : [renderId],
     }, false);
 
