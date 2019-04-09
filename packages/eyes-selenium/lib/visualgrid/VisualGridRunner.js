@@ -3,7 +3,7 @@
 class VisualGridRunner {
   // this class is just a mock for compatibility with Java
 
-  /***
+  /**
    * @param {number} [concurrentSessions]
    */
   constructor(concurrentSessions) {
