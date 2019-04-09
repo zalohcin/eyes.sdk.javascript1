@@ -34,13 +34,21 @@ const HTTP_STATUS_CODES = {
   GONE: 410,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
+  BAD_GATEWAY: 502,
   GATEWAY_TIMEOUT: 504,
 };
 
 const HTTP_FAILED_CODES = [
   HTTP_STATUS_CODES.NOT_FOUND,
   HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_CODES.BAD_GATEWAY,
   HTTP_STATUS_CODES.GATEWAY_TIMEOUT,
+];
+
+const REQUEST_FAILED_CODES = [
+  'ECONNRESET',
+  'ECONNABORTED',
+  'ETIMEDOUT',
 ];
 
 /**
@@ -81,7 +89,7 @@ async function sendRequest(self, name, options, retry = 1, delayBeforeRetry = fa
     // eslint-disable-next-line max-len
     self._logger.log(`ServerConnector.${name} - post failed on ${options.url}: ${reasonMsg} with params ${JSON.stringify(options.params).slice(0, 100)}`);
 
-    if (retry > 0 && ((err.response && HTTP_FAILED_CODES.includes(err.response.status)) || err.code === 'ECONNRESET')) {
+    if (retry > 0 && ((err.response && HTTP_FAILED_CODES.includes(err.response.status)) || REQUEST_FAILED_CODES.includes(err.code))) {
       if (delayBeforeRetry) {
         await GeneralUtils.sleep(RETRY_REQUEST_INTERVAL);
         return sendRequest(self, name, options, retry - 1, delayBeforeRetry);
