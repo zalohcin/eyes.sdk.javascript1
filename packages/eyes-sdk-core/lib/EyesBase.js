@@ -55,7 +55,6 @@ const USE_DEFAULT_TIMEOUT = -1;
 class EyesBase extends EyesAbstract {
   /** @var {Logger} EyesBase#_logger */
   /** @var {Configuration} EyesBase#_configuration */
-  /** @var {ImageMatchSettings} EyesBase#_defaultMatchSettings */
 
   /**
    * Creates a new {@code EyesBase}instance that interacts with the Eyes Server at the specified url.
@@ -621,7 +620,7 @@ class EyesBase extends EyesAbstract {
       baselineEnvName: this._configuration.getBaselineEnvName(),
       environmentName: this._configuration.getEnvironmentName(),
       environment: appEnvironment,
-      defaultMatchSettings: this._defaultMatchSettings,
+      defaultMatchSettings: this._configuration.getDefaultMatchSettings(),
       branchName: this._configuration.getBranchName(),
       parentBranchName: this._configuration.getParentBranchName(),
       baselineBranchName: this._configuration.getBaselineBranchName(),
@@ -933,7 +932,7 @@ class EyesBase extends EyesAbstract {
     this._logger.verbose(`Eyes server URL is '${this._configuration.getServerUrl()}'`);
     this._logger.verbose(`Timeout = '${this._configuration.getConnectionTimeout()}'`);
     this._logger.verbose(`matchTimeout = '${this._configuration.getMatchTimeout()}'`);
-    this._logger.verbose(`Default match settings = '${this._defaultMatchSettings}'`);
+    this._logger.verbose(`Default match settings = '${this._configuration.getDefaultMatchSettings()}'`);
     this._logger.verbose(`FailureReports = '${this._failureReports}'`);
   }
 
@@ -1157,7 +1156,7 @@ class EyesBase extends EyesAbstract {
       baselineEnvName: this._configuration.getBaselineEnvName(),
       environmentName: this._configuration.getEnvironmentName(),
       environment: appEnvironment,
-      defaultMatchSettings: this._defaultMatchSettings,
+      defaultMatchSettings: this._configuration.getDefaultMatchSettings(),
       branchName: this._configuration.getBranchName(),
       parentBranchName: this._configuration.getParentBranchName(),
       baselineBranchName: this._configuration.getBaselineBranchName(),

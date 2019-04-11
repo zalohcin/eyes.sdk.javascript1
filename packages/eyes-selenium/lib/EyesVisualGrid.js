@@ -17,7 +17,6 @@ const VERSION = require('../package.json').version;
 class EyesVisualGrid extends Eyes {
   /** @var {Logger} EyesVisualGrid#_logger */
   /** @var {Configuration} EyesVisualGrid#_configuration */
-  /** @var {ImageMatchSettings} EyesVisualGrid#_defaultMatchSettings */
 
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
@@ -110,8 +109,8 @@ class EyesVisualGrid extends Eyes {
       isDisabled: this._configuration.getIsDisabled(),
       matchTimeout: this._configuration.getMatchTimeout(),
 
-      ignoreCaret: this._defaultMatchSettings.getIgnoreCaret(),
-      matchLevel: this._defaultMatchSettings.getMatchLevel(),
+      ignoreCaret: this._configuration.getIgnoreCaret(),
+      matchLevel: this._configuration.getMatchLevel(),
 
       // renderBatch,
       // waitForRenderedStatus,

@@ -48,7 +48,6 @@ const { Eyes } = require('./Eyes');
 class EyesSelenium extends Eyes {
   /** @var {Logger} EyesSelenium#_logger */
   /** @var {Configuration} EyesSelenium#_configuration */
-  /** @var {ImageMatchSettings} EyesSelenium#_defaultMatchSettings */
 
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.

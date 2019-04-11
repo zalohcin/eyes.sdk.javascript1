@@ -40,7 +40,6 @@ const VERSION = require('../package.json').version;
 class Eyes extends EyesBase {
   /** @var {Logger} Eyes#_logger */
   /** @var {Configuration} Eyes#_configuration */
-  /** @var {ImageMatchSettings} Eyes#_defaultMatchSettings */
 
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
