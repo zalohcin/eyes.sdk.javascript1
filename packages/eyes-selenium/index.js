@@ -68,6 +68,10 @@ exports.EyesVisualGrid = require('./lib/EyesVisualGrid').EyesVisualGrid;
 
 
 // eyes-common
+exports.MatchLevel = common.MatchLevel;
+exports.ImageMatchSettings = common.ImageMatchSettings;
+exports.ExactMatchSettings = common.ExactMatchSettings;
+exports.FloatingMatchSettings = common.FloatingMatchSettings;
 exports.BatchInfo = common.BatchInfo;
 exports.PropertyData = common.PropertyData;
 exports.ProxySettings = common.ProxySettings;
@@ -102,10 +106,6 @@ exports.DiffsFoundError = core.DiffsFoundError;
 exports.NewTestError = core.NewTestError;
 exports.OutOfBoundsError = core.OutOfBoundsError;
 exports.TestFailedError = core.TestFailedError;
-exports.ExactMatchSettings = core.ExactMatchSettings;
-exports.FloatingMatchSettings = core.FloatingMatchSettings;
-exports.ImageMatchSettings = core.ImageMatchSettings;
-exports.MatchLevel = core.MatchLevel;
 exports.MatchResult = core.MatchResult;
 exports.NullRegionProvider = core.NullRegionProvider;
 exports.RegionProvider = core.RegionProvider;

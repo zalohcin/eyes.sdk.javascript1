@@ -3,9 +3,11 @@
 const { BatchInfo } = require('./BatchInfo');
 const { PropertyData } = require('./PropertyData');
 const { ProxySettings } = require('./ProxySettings');
+const { ImageMatchSettings } = require('./ImageMatchSettings');
 const { RectangleSize } = require('../geometry/RectangleSize');
 const { ArgumentGuard } = require('../utils/ArgumentGuard');
 const { TypeUtils } = require('../utils/TypeUtils');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 const MIN_MATCH_TIMEOUT = 500;
 
@@ -97,6 +99,9 @@ class Configuration {
     this._hostOSInfo = undefined;
     /** @type {string} */
     this._deviceInfo = undefined;
+
+    /** @type {ImageMatchSettings} */
+    this._defaultMatchSettings = new ImageMatchSettings();
 
     if (configuration) {
       this.mergeConfig(configuration);
@@ -731,6 +736,98 @@ class Configuration {
   }
 
   /**
+   * @return {ImageMatchSettings} - The match settings used for the session.
+   */
+  getDefaultMatchSettings() {
+    return this._defaultMatchSettings;
+  }
+
+  /**
+   * Updates the match settings to be used for the session.
+   *
+   * @param {ImageMatchSettings|object} value - The match settings to be used for the session.
+   * @return {this}
+   */
+  setDefaultMatchSettings(value) {
+    ArgumentGuard.notNull(value, 'defaultMatchSettings');
+    this._defaultMatchSettings = new ImageMatchSettings(value);
+    return this;
+  }
+
+  /**
+   * @return {MatchLevel} - The test-wide match level.
+   */
+  getMatchLevel() {
+    return this._defaultMatchSettings.getMatchLevel();
+  }
+
+  /**
+   * The test-wide match level to use when checking application screenshot with the expected output.
+   *
+   * @param {MatchLevel} value - The test-wide match level to use when checking application screenshot with the
+   *   expected output.
+   * @return {this}
+   */
+  setMatchLevel(value) {
+    this._defaultMatchSettings.setMatchLevel(value);
+    return this;
+  }
+
+  /**
+   * @return {boolean} - The test-wide useDom to use in match requests.
+   */
+  getUseDom() {
+    return this._defaultMatchSettings.getUseDom();
+  }
+
+  /**
+   * The test-wide useDom to use.
+   *
+   * @param {boolean} value - The test-wide useDom to use in match requests.
+   * @return {this}
+   */
+  setUseDom(value) {
+    this._defaultMatchSettings.setUseDom(value);
+    return this;
+  }
+
+  /**
+   * @return {boolean} - The test-wide enablePatterns to use in match requests.
+   */
+  getEnablePatterns() {
+    return this._defaultMatchSettings.getEnablePatterns();
+  }
+
+  /**
+   * The test-wide enablePatterns to use.
+   *
+   * @param {boolean} value - The test-wide enablePatterns to use in match requests.
+   * @return {this}
+   */
+  setEnablePatterns(value) {
+    this._defaultMatchSettings.setEnablePatterns(value);
+    return this;
+  }
+
+  /**
+   * @return {boolean} - Whether to ignore or the blinking caret or not when comparing images.
+   */
+  getIgnoreCaret() {
+    return this._defaultMatchSettings.getIgnoreCaret();
+  }
+
+  /**
+   * Sets the ignore blinking caret value.
+   *
+   * @param {boolean} value - The ignore value.
+   * @return {this}
+   */
+  setIgnoreCaret(value) {
+    this._defaultMatchSettings.setIgnoreCaret(value);
+    return this;
+  }
+
+  /**
    * @param {Configuration|object} other
    */
   mergeConfig(other) {
@@ -752,6 +849,13 @@ class Configuration {
         }
       }
     });
+  }
+
+  /**
+   * @override
+   */
+  toJSON() {
+    return GeneralUtils.toPlain(this);
   }
 
   /**

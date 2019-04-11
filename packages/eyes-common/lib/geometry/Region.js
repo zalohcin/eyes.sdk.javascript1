@@ -7,7 +7,7 @@ const { Location } = require('./Location');
 const { CoordinatesType } = require('./CoordinatesType');
 
 /**
- * @typedef {{left: number, top: number, width: number, height: number, coordinatesType: ?CoordinatesType}} RegionObject
+ * @typedef {{left: number, top: number, width: number, height: number, coordinatesType: CoordinatesType|undefined}} RegionObject
  */
 
 // noinspection FunctionWithMultipleLoopsJS

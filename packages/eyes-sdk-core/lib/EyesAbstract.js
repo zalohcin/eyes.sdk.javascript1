@@ -1,8 +1,6 @@
 'use strict';
 
-const { Configuration, Logger, ArgumentGuard } = require('@applitools/eyes-common');
-
-const { ImageMatchSettings } = require('./match/ImageMatchSettings');
+const { Configuration, Logger } = require('@applitools/eyes-common');
 
 /**
  * Abstract class with common configuration for all Eyes SDKs
@@ -16,11 +14,6 @@ class EyesAbstract {
     this._logger = new Logger(configuration.getShowLogs());
     /** @type {Configuration} */
     this._configuration = configuration;
-    /** @type {ImageMatchSettings} */
-    this._defaultMatchSettings = new ImageMatchSettings();
-    this._defaultMatchSettings.setIgnoreCaret(true);
-    this._defaultMatchSettings.setUseDom(false);
-    this._defaultMatchSettings.setEnablePatterns(false);
   }
 
   /**
@@ -603,7 +596,7 @@ class EyesAbstract {
    * @return {ImageMatchSettings} - The match settings used for the session.
    */
   getDefaultMatchSettings() {
-    return this._defaultMatchSettings;
+    return this._configuration.getDefaultMatchSettings();
   }
 
   /**
@@ -612,8 +605,7 @@ class EyesAbstract {
    * @param {ImageMatchSettings} defaultMatchSettings - The match settings to be used for the session.
    */
   setDefaultMatchSettings(defaultMatchSettings) {
-    ArgumentGuard.notNull(defaultMatchSettings, 'defaultMatchSettings');
-    this._defaultMatchSettings = defaultMatchSettings;
+    this._configuration.setDefaultMatchSettings(defaultMatchSettings);
   }
 
   /**
@@ -623,14 +615,14 @@ class EyesAbstract {
    *   expected output.
    */
   setMatchLevel(matchLevel) {
-    this._defaultMatchSettings.setMatchLevel(matchLevel);
+    this._configuration.getDefaultMatchSettings().setMatchLevel(matchLevel);
   }
 
   /**
    * @return {MatchLevel} - The test-wide match level.
    */
   getMatchLevel() {
-    return this._defaultMatchSettings.getMatchLevel();
+    return this._configuration.getDefaultMatchSettings().getMatchLevel();
   }
 
   /**
@@ -639,14 +631,14 @@ class EyesAbstract {
    * @param {boolean} useDom - The test-wide useDom to use in match requests.
    */
   setUseDom(useDom) {
-    this._defaultMatchSettings.setUseDom(useDom);
+    this._configuration.getDefaultMatchSettings().setUseDom(useDom);
   }
 
   /**
    * @return {boolean} - The test-wide useDom to use in match requests.
    */
   getUseDom() {
-    return this._defaultMatchSettings.getUseDom();
+    return this._configuration.getDefaultMatchSettings().getUseDom();
   }
 
   /**
@@ -655,14 +647,14 @@ class EyesAbstract {
    * @param {boolean} enablePatterns - The test-wide enablePatterns to use in match requests.
    */
   setEnablePatterns(enablePatterns) {
-    this._defaultMatchSettings.setEnablePatterns(enablePatterns);
+    this._configuration.getDefaultMatchSettings().setEnablePatterns(enablePatterns);
   }
 
   /**
    * @return {boolean} - The test-wide enablePatterns to use in match requests.
    */
   getEnablePatterns() {
-    return this._defaultMatchSettings.getEnablePatterns();
+    return this._configuration.getDefaultMatchSettings().getEnablePatterns();
   }
 
   /**
@@ -671,15 +663,14 @@ class EyesAbstract {
    * @param {boolean} value - The ignore value.
    */
   setIgnoreCaret(value) {
-    this._defaultMatchSettings.setIgnoreCaret(value);
+    this._configuration.getDefaultMatchSettings().setIgnoreCaret(value);
   }
 
   /**
    * @return {boolean} - Whether to ignore or the blinking caret or not when comparing images.
    */
   getIgnoreCaret() {
-    const ignoreCaret = this._defaultMatchSettings.getIgnoreCaret();
-    return ignoreCaret || true;
+    return this._configuration.getDefaultMatchSettings().getIgnoreCaret();
   }
 }
 

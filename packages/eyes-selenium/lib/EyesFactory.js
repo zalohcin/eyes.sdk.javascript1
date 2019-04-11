@@ -14,7 +14,7 @@ class EyesFactory {
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
-   * @param {string|boolean|VisualGridRunner} [serverUrl=EyesBase.getDefaultServerUrl()] - The Eyes server URL or set {@code true} if you want to use VisualGrid service (instead of 3rd argument).
+   * @param {string|boolean|VisualGridRunner} [serverUrl] - The Eyes server URL or set {@code true} if you want to use VisualGrid service (instead of 3rd argument).
    * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the webdriver directly.
    * @param {boolean} [isVisualGrid=false] - Set {@code true} if you want to use VisualGrid service.
    * @return {Eyes}

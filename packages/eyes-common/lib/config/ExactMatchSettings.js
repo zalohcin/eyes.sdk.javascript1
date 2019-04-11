@@ -1,6 +1,6 @@
 'use strict';
 
-const { GeneralUtils } = require('@applitools/eyes-common');
+const { GeneralUtils } = require('../utils/GeneralUtils');
 
 /**
  * Encapsulates match settings for the a session.

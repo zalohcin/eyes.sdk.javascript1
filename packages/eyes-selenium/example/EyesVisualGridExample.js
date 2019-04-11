@@ -45,6 +45,9 @@ const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, Configuration, Browse
     // const results = await eyes.close(); // will return only first TestResults, but as we have two browsers, we need more results
     const results = await eyes.getRunner().getAllResults();
     console.log(results); // eslint-disable-line
+  } catch (e) {
+    // if results failed, it goes here
+    console.log(e); // eslint-disable-line
   } finally {
     // Close the browser.
     await driver.quit();

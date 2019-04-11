@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { Configuration } = require('../../../index');
+const { Configuration, MatchLevel } = require('../../../index');
 
 describe('Configuration', () => {
   describe('constructor', () => {
@@ -64,5 +64,71 @@ describe('Configuration', () => {
     configuration.setAppName('new test name');
 
     assert.notStrictEqual(configuration.getAppName(), configuration2.getAppName());
+  });
+
+  describe('defaultMatchSettings', () => {
+    it('default values', () => {
+      const configuration = new Configuration();
+
+      assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Strict);
+      assert.strictEqual(configuration.getIgnoreCaret(), true);
+      assert.strictEqual(configuration.getUseDom(), false);
+      assert.strictEqual(configuration.getEnablePatterns(), false);
+    });
+
+    it('set values', () => {
+      const configuration = new Configuration();
+      configuration.setMatchLevel(MatchLevel.Content);
+      configuration.setIgnoreCaret(false);
+      configuration.setUseDom(true);
+      configuration.setEnablePatterns(true);
+
+      assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content);
+      assert.strictEqual(configuration.getIgnoreCaret(), false);
+      assert.strictEqual(configuration.getUseDom(), true);
+      assert.strictEqual(configuration.getEnablePatterns(), true);
+    });
+
+    it('to object', () => {
+      const configuration = new Configuration();
+      configuration.setMatchLevel(MatchLevel.Content);
+      configuration.setIgnoreCaret(false);
+      configuration.setUseDom(true);
+      configuration.setEnablePatterns(true);
+
+      assert.deepStrictEqual(configuration.toJSON().defaultMatchSettings, {
+        "matchLevel": "Content",
+        "enablePatterns": true,
+        "ignoreCaret": false,
+        "useDom": true,
+        "ignore": [],
+        "content": [],
+        "layout": [],
+        "strict": [],
+        "floating": [],
+        "exact": undefined,
+      });
+    });
+
+    it('from object', () => {
+      const configuration = new Configuration();
+      configuration.setDefaultMatchSettings({
+        "matchLevel": "Content",
+        "enablePatterns": true,
+        "ignoreCaret": false,
+        "useDom": true,
+        "ignore": [],
+        "content": [],
+        "layout": [],
+        "strict": [],
+        "floating": [],
+        "exact": undefined,
+      });
+
+      assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content);
+      assert.strictEqual(configuration.getIgnoreCaret(), false);
+      assert.strictEqual(configuration.getUseDom(), true);
+      assert.strictEqual(configuration.getEnablePatterns(), true);
+    });
   });
 });

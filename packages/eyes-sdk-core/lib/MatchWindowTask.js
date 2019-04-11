@@ -1,9 +1,8 @@
 'use strict';
 
-const { ArgumentGuard, GeneralUtils, TypeUtils, Region, PerformanceUtils } = require('@applitools/eyes-common');
+const { ArgumentGuard, GeneralUtils, TypeUtils, Region, PerformanceUtils, ImageMatchSettings } = require('@applitools/eyes-common');
 
 const { MatchWindowData, Options } = require('./match/MatchWindowData');
-const { ImageMatchSettings } = require('./match/ImageMatchSettings');
 
 const MATCH_INTERVAL = 500; // Milliseconds
 

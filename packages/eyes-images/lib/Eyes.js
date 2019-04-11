@@ -13,7 +13,7 @@ class Eyes extends EyesBase {
   /**
    * Initializes an Eyes instance.
    *
-   * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
+   * @param {string} [serverUrl] The Eyes server URL.
    * @param {?boolean} [isDisabled=false] - Will be checked <b>before</b> any argument validation. If true, all method
    *   will immediately return without performing any action.
    */

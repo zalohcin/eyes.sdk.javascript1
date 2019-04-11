@@ -1,6 +1,7 @@
 'use strict';
 
-const { GeneralUtils, Region } = require('@applitools/eyes-common');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { Region } = require('../geometry/Region');
 
 /**
  * Encapsulates floating match settings for the a session.

@@ -1,8 +1,17 @@
 'use strict';
 
-const { ArgumentGuard, GeneralUtils } = require('@applitools/eyes-common');
-
+const { ArgumentGuard } = require('../utils/ArgumentGuard');
+const { GeneralUtils } = require('../utils/GeneralUtils');
+const { TypeUtils } = require('../utils/TypeUtils');
 const { MatchLevel } = require('./MatchLevel');
+const { ExactMatchSettings } = require('./ExactMatchSettings');
+
+const DEFAULT_VALUES = {
+  matchLevel: MatchLevel.Strict,
+  ignoreCaret: true,
+  useDom: false,
+  enablePatterns: false,
+};
 
 /**
  * Encapsulates match settings for the a session.
@@ -14,28 +23,44 @@ class ImageMatchSettings {
    * @param {boolean} [ignoreCaret]
    * @param {boolean} [useDom]
    * @param {boolean} [enablePatterns]
+   * @param {Region[]} [ignore]
+   * @param {Region[]} [layout]
+   * @param {Region[]} [strict]
+   * @param {Region[]} [content]
+   * @param {FloatingMatchSettings[]} [floating]
    */
-  constructor({ matchLevel, exact, ignoreCaret, useDom, enablePatterns } = {}) {
+  constructor({ matchLevel, exact, ignoreCaret, useDom, enablePatterns, ignore, layout, strict, content, floating } = {}) {
     if (arguments.length > 1) {
       throw new TypeError('Please, use object as a parameter to the constructor!');
     }
 
-    this._matchLevel = matchLevel || MatchLevel.Strict;
+    ArgumentGuard.isValidEnumValue(matchLevel, MatchLevel, false);
+    ArgumentGuard.isBoolean(ignoreCaret, 'ignoreCaret', false);
+    ArgumentGuard.isBoolean(useDom, 'useDom', false);
+    ArgumentGuard.isBoolean(enablePatterns, 'enablePatterns', false);
+    ArgumentGuard.isArray(ignore, 'ignore', false);
+    ArgumentGuard.isArray(layout, 'layout', false);
+    ArgumentGuard.isArray(strict, 'strict', false);
+    ArgumentGuard.isArray(content, 'content', false);
+    ArgumentGuard.isArray(floating, 'floating', false);
+    ArgumentGuard.isValidType(exact, ExactMatchSettings, false);
+
+    this._matchLevel = TypeUtils.getOrDefault(matchLevel, DEFAULT_VALUES.matchLevel);
+    this._ignoreCaret = TypeUtils.getOrDefault(ignoreCaret, DEFAULT_VALUES.ignoreCaret);
+    this._useDom = TypeUtils.getOrDefault(useDom, DEFAULT_VALUES.useDom);
+    this._enablePatterns = TypeUtils.getOrDefault(enablePatterns, DEFAULT_VALUES.enablePatterns);
     this._exact = exact;
-    this._ignoreCaret = ignoreCaret;
-    this._useDom = useDom;
-    this._enablePatterns = enablePatterns;
 
     /** @type {Region[]} */
-    this._ignoreRegions = [];
+    this._ignoreRegions = ignore || [];
     /** @type {Region[]} */
-    this._layoutRegions = [];
+    this._layoutRegions = layout || [];
     /** @type {Region[]} */
-    this._strictRegions = [];
+    this._strictRegions = strict || [];
     /** @type {Region[]} */
-    this._contentRegions = [];
+    this._contentRegions = content || [];
     /** @type {FloatingMatchSettings[]} */
-    this._floatingMatchSettings = [];
+    this._floatingMatchSettings = floating || [];
   }
 
   // noinspection JSUnusedGlobalSymbols

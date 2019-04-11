@@ -3,13 +3,7 @@
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndSerializeScript } = require('@applitools/dom-snapshot');
 const { ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
-
-const {
-  TestFailedError,
-  TestResultsFormatter,
-  CorsIframeHandle,
-  CorsIframeHandler,
-} = require('@applitools/eyes-sdk-core');
+const { TestFailedError, CorsIframeHandle, CorsIframeHandler } = require('@applitools/eyes-sdk-core');
 
 const { VisualGridRunner } = require('./visualgrid/VisualGridRunner');
 const { BrowserType } = require('./config/BrowserType');
@@ -28,7 +22,7 @@ class EyesVisualGrid extends Eyes {
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
-   * @param {string} [serverUrl=EyesBase.getDefaultServerUrl()] - The Eyes server URL.
+   * @param {string} [serverUrl] - The Eyes server URL.
    * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    * @param {VisualGridRunner} [visualGridRunner] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    */

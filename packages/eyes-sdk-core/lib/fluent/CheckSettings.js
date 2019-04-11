@@ -1,10 +1,8 @@
 'use strict';
 
-const { Region, GeneralUtils } = require('@applitools/eyes-common');
+const { Region, GeneralUtils, MatchLevel, FloatingMatchSettings } = require('@applitools/eyes-common');
 
-const { MatchLevel } = require('../match/MatchLevel');
 const { GetRegion } = require('./GetRegion');
-const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 const { IgnoreRegionByRectangle } = require('./IgnoreRegionByRectangle');
 const { FloatingRegionByRectangle } = require('./FloatingRegionByRectangle');
 const { GetFloatingRegion } = require('./GetFloatingRegion');

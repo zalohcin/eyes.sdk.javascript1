@@ -243,9 +243,10 @@ class ArgumentGuard {
    *
    * @param {object} param - The input parameter.
    * @param {object} type - The expected param type
+   * @param {boolean} [strict=true] - If {@code false} then the value can be null|undefined
    */
-  static isValidType(param, type) {
-    if (!(param instanceof type)) {
+  static isValidType(param, type, strict = true) {
+    if ((strict || TypeUtils.isNotNull(param)) && !(param instanceof type)) {
       throw new Error(`IllegalType: ${param} is not instance of ${type.constructor.name}`);
     }
   }
@@ -256,9 +257,10 @@ class ArgumentGuard {
    *
    * @param {*} value - The input value.
    * @param {object} enumObject - The required enum object
+   * @param {boolean} [strict=true] - If {@code false} then the value can be null|undefined
    */
-  static isValidEnumValue(value, enumObject) {
-    if (!Object.prototype.hasOwnProperty.call(enumObject, value)) {
+  static isValidEnumValue(value, enumObject, strict = true) {
+    if ((strict || TypeUtils.isNotNull(value)) && !Object.prototype.hasOwnProperty.call(enumObject, value)) {
       throw new Error(`IllegalType: ${value} is not member of ${enumObject}`);
     }
   }

@@ -4,9 +4,13 @@
 
 // config
 exports.Configuration = require('./lib/config/Configuration').Configuration;
+exports.MatchLevel = require('./lib/config/MatchLevel').MatchLevel;
 exports.BatchInfo = require('./lib/config/BatchInfo').BatchInfo;
 exports.PropertyData = require('./lib/config/PropertyData').PropertyData;
 exports.ProxySettings = require('./lib/config/ProxySettings').ProxySettings;
+exports.ImageMatchSettings = require('./lib/config/ImageMatchSettings').ImageMatchSettings;
+exports.ExactMatchSettings = require('./lib/config/ExactMatchSettings').ExactMatchSettings;
+exports.FloatingMatchSettings = require('./lib/config/FloatingMatchSettings').FloatingMatchSettings;
 
 // errors
 exports.EyesError = require('./lib/errors/EyesError').EyesError;
