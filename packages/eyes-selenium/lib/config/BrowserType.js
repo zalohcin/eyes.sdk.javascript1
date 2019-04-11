@@ -7,7 +7,8 @@
 const BrowserType = {
   CHROME: 'chrome',
   FIREFOX: 'firefox',
-  IE: 'ie',
+  IE_11: 'ie',
+  IE_10: 'ie10',
   EDGE: 'edge',
 };
 
