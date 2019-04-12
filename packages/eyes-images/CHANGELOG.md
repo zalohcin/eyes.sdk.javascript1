@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.10.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.9.1...@applitools/eyes-images@4.10.0) (2019-04-12)
+
+
+### Features
+
+* move defaultMatchSettings from EyesAbstract to Configuration ([43d305c](https://github.com/applitools/eyes.sdk.javascript1/commit/43d305c))
+
+
+
+
+
 ## [4.9.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.9.0...@applitools/eyes-images@4.9.1) (2019-04-08)
 
 **Note:** Version bump only for package @applitools/eyes-images

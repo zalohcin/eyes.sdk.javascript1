@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-protractor@4.6.2...@applitools/eyes-protractor@4.7.0) (2019-04-12)
+
+
+### Features
+
+* move defaultMatchSettings from EyesAbstract to Configuration ([43d305c](https://github.com/applitools/eyes.sdk.javascript1/commit/43d305c))
+
+
+
+
+
 ## [4.6.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-protractor@4.6.1...@applitools/eyes-protractor@4.6.2) (2019-04-08)
 
 **Note:** Version bump only for package @applitools/eyes-protractor

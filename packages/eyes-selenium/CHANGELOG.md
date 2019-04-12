@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.15.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.14.2...@applitools/eyes-selenium@4.15.0) (2019-04-12)
+
+
+### Features
+
+* **eyes-selenium:** add IE_10, IE renamed to IE_11 in BrowserType ([bd9fc2d](https://github.com/applitools/eyes.sdk.javascript1/commit/bd9fc2d))
+* move defaultMatchSettings from EyesAbstract to Configuration ([43d305c](https://github.com/applitools/eyes.sdk.javascript1/commit/43d305c))
+
+
+
+
+
 ## [4.14.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.14.1...@applitools/eyes-selenium@4.14.2) (2019-04-08)
 
 

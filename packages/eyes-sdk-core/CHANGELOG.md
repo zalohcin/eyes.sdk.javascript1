@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.5.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.4.2...@applitools/eyes-sdk-core@5.5.0) (2019-04-12)
+
+
+### Bug Fixes
+
+* **eyes-sdk-core:** make retry requests when timeout error of requests ([aa14cb8](https://github.com/applitools/eyes.sdk.javascript1/commit/aa14cb8))
+* **eyes-sdk-core:** not existing `proxy` getter was used ([db941a5](https://github.com/applitools/eyes.sdk.javascript1/commit/db941a5))
+* **eyes-sdk-core:** use smaller timeout for /render-status requests ([091522d](https://github.com/applitools/eyes.sdk.javascript1/commit/091522d))
+
+
+### Features
+
+* move defaultMatchSettings from EyesAbstract to Configuration ([43d305c](https://github.com/applitools/eyes.sdk.javascript1/commit/43d305c))
+
+
+
+
+
 ## [5.4.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.4.0...@applitools/eyes-sdk-core@5.4.2) (2019-04-08)
 
 

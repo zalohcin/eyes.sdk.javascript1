@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.1.0...@applitools/eyes-common@3.2.0) (2019-04-12)
+
+
+### Features
+
+* move defaultMatchSettings from EyesAbstract to Configuration ([43d305c](https://github.com/applitools/eyes.sdk.javascript1/commit/43d305c))
+
+
+
+
+
 # [3.1.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.0.0...@applitools/eyes-common@3.1.0) (2019-04-03)
 
 
