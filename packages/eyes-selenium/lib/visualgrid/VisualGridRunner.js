@@ -1,5 +1,7 @@
 'use strict';
 
+const { TestResultSummary } = require('./TestResultSummary');
+
 class VisualGridRunner {
   // this class is just a mock for compatibility with Java
 
@@ -22,11 +24,12 @@ class VisualGridRunner {
 
   /**
    * @param {boolean} [throwEx=true]
-   * @return {Promise<TestResults[]|Error[]>}
+   * @return {Promise<TestResultSummary>}
    */
-  async getAllResults(throwEx = true) {
+  async getAllTestResults(throwEx = true) {
     try {
-      return await this._eyes._closeCommand(throwEx);
+      const results = await this._eyes._closeCommand(throwEx);
+      return new TestResultSummary(results);
     } finally {
       this._eyes._isOpen = false;
     }
