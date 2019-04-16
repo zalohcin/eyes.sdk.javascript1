@@ -8,6 +8,7 @@ logs
 # VS Code
 .vscode
 *.code-workspace
+.history
 
 # Dependency directory
 node_modules

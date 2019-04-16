@@ -120,7 +120,7 @@ function createRenderWrapper({serverUrl, apiKey, logHandler, proxy}) {
 }
 
 const apiKeyFailMsg =
-  'APPLITOOLS_API_KEY env variable is missing. It is required to define this variable when running Cypress for Applitools visual tests to run successfully.';
+  'APPLITOOLS_API_KEY env variable is missing. It is required to define this variable for Applitools visual tests to run successfully.';
 
 const propertiesFailMsg =
   'Argument "properties" should be an array of objects, each one with a "name" and "value" properties';
