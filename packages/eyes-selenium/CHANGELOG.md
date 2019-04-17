@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.16.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.15.0...@applitools/eyes-selenium@4.16.0) (2019-04-17)
+
+
+### Features
+
+* **eyes-selenium:** change default CorsIframeHandle to do nothing ([aca244a](https://github.com/applitools/eyes.sdk.javascript1/commit/aca244a))
+* **eyes-selenium:** getAllResults renamed to getAllTestResults and returns TestResultContainer ([ad96d66](https://github.com/applitools/eyes.sdk.javascript1/commit/ad96d66))
+
+
+
+
+
 # [4.15.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.14.2...@applitools/eyes-selenium@4.15.0) (2019-04-12)
 
 

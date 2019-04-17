@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [12.6.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.6.2...@applitools/visual-grid-client@12.6.4) (2019-04-17)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** fixed error message conatining Cypress info. ([84b0ccc](https://github.com/applitools/eyes.sdk.javascript1/commit/84b0ccc))
+
+
+
+
+
 ## [12.6.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.6.1...@applitools/visual-grid-client@12.6.2) (2019-04-12)
 
 
