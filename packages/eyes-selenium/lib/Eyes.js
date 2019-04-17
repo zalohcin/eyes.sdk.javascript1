@@ -95,7 +95,7 @@ class Eyes extends EyesBase {
     /** @type {boolean} */
     this._dontGetTitle = false;
     /** @type {CorsIframeHandle} */
-    this._corsIframeHandle = CorsIframeHandle.BLANK;
+    this._corsIframeHandle = CorsIframeHandle.KEEP;
 
     EyesSeleniumUtils.setJavascriptHandler(new JavascriptHandler());
   }
