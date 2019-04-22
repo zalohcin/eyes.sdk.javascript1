@@ -19,7 +19,7 @@ const DEFAULT_VALUES = {
   saveFailedTests: false,
   saveNewTests: true,
   ignoreBaseline: false,
-  sendDom: false,
+  sendDom: true,
 };
 
 class Configuration {
