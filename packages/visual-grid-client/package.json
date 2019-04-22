@@ -32,30 +32,30 @@
   "dependencies": {
     "@applitools/eyes-common": "^3.2.0",
     "@applitools/eyes-sdk-core": "^5.5.0",
-    "@applitools/functional-commons": "^1.1.4",
-    "@applitools/http-commons": "^1.2.3",
+    "@applitools/functional-commons": "^1.4.1",
+    "@applitools/http-commons": "^1.2.9",
     "@applitools/isomorphic-fetch": "^3.0.0",
     "cssom": "^0.3.6",
     "he": "^1.2.0",
     "lodash.mapkeys": "^4.6.0",
     "lodash.mapvalues": "^4.6.0",
-    "mime-types": "^2.1.21",
+    "mime-types": "^2.1.24",
     "mkdirp": "^0.5.1",
     "throat": "^4.1.0"
   },
   "devDependencies": {
-    "@applitools/dom-snapshot": "^1.0.7",
+    "@applitools/dom-snapshot": "^1.1.5",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
-    "cookie-parser": "^1.4.3",
+    "cookie-parser": "^1.4.4",
     "debug": "^4.1.1",
     "express": "^4.16.4",
     "jsdom": "^11.12.0",
-    "mocha": "^6.0.2",
+    "mocha": "^6.1.4",
     "morgan": "^1.9.1",
     "nock": "^9.6.1",
     "node-fetch": "^2.3.0",
-    "puppeteer": "^1.11.0"
+    "puppeteer": "^1.14.0"
   },
   "scripts": {
     "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",

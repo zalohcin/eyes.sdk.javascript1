@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "axios": "^0.18.0",
-    "mocha": "^6.0.2"
+    "mocha": "^6.1.4"
   },
   "scripts": {
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",

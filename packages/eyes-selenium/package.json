@@ -36,7 +36,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/dom-snapshot": "^1.0.6",
+    "@applitools/dom-snapshot": "^1.1.5",
     "@applitools/dom-utils": "^4.6.8",
     "@applitools/eyes-common": "^3.2.0",
     "@applitools/eyes-sdk-core": "^5.5.0",
@@ -46,8 +46,8 @@
     "assert-rejects": "^1.0.0",
     "axios": "^0.18.0",
     "chai": "^4.2.0",
-    "chromedriver": "^2.46.0",
-    "mocha": "^6.0.2",
+    "chromedriver": "^73.0.0",
+    "mocha": "^6.1.4",
     "selenium-webdriver": "^4.0.0-alpha.1"
   },
   "peerDependencies": {
