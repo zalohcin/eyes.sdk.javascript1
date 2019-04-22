@@ -23,6 +23,7 @@ const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, Configuration, Browse
     configuration.addBrowser(1200, 800, BrowserType.CHROME);
     configuration.addBrowser(1200, 800, BrowserType.FIREFOX);
     configuration.addDeviceEmulation(DeviceName.iPhone_4, ScreenOrientation.PORTRAIT);
+    // configuration.setProxy('http://localhost:8888');
     eyes.setConfiguration(configuration);
 
     // Start the test and set the browser's viewport size to 800x600.

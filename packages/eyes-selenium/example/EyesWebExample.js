@@ -15,6 +15,7 @@ const { Eyes, Target, ConsoleLogHandler } = require('../index'); // should be re
   const eyes = new Eyes();
   // eyes.setApiKey('Your API Key');
   eyes.setLogHandler(new ConsoleLogHandler(false));
+  // eyes.setProxy('http://localhost:8888');
 
   try {
     // Start the test and set the browser's viewport size to 800x600.

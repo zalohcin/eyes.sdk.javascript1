@@ -186,8 +186,14 @@ class EyesVisualGrid extends Eyes {
       targetSelector = await targetSelector.getSelector(this);
     }
 
-    const domCaptureScript = `var callback = arguments[arguments.length - 1]; return (${this._processPageAndSerializeScript})().then(JSON.stringify).then(callback, function(err) {callback(err.stack || err.toString())})`;
-    const results = await this._driver.executeAsyncScript(domCaptureScript);
+    let results;
+    try {
+      const domCaptureScript = `var callback = arguments[arguments.length - 1]; return (${this._processPageAndSerializeScript})().then(JSON.stringify).then(callback, function(err) {callback(err.stack || err.toString())})`;
+      results = await this._driver.executeAsyncScript(domCaptureScript);
+    } catch (e) {
+      throw new Error('Failed to extract DOM from the page: ' + e.toString());
+    }
+
     const { cdt, url: pageUrl, blobs, resourceUrls, frames } = JSON.parse(results);
 
     if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
