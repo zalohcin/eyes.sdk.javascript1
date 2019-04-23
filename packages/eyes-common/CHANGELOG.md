@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.2.0...@applitools/eyes-common@3.3.0) (2019-04-23)
+
+
+### Features
+
+* **eyes-common:** change default value of `sendDom` to `true` ([0b4f17c](https://github.com/applitools/eyes.sdk.javascript1/commit/0b4f17c))
+
+
+
+
+
+
 # [3.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.1.0...@applitools/eyes-common@3.2.0) (2019-04-12)
 
 

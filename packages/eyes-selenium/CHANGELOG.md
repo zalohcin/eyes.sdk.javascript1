@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.16.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.16.0...@applitools/eyes-selenium@4.16.1) (2019-04-23)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** better error message when failed to extract DOM ([cf32c45](https://github.com/applitools/eyes.sdk.javascript1/commit/cf32c45))
+* **eyes-selenium:** set correct agentId for visual-grid-client used from eyes-selenium ([5ceb850](https://github.com/applitools/eyes.sdk.javascript1/commit/5ceb850))
+
+
+
+
+
+
 # [4.16.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.15.0...@applitools/eyes-selenium@4.16.0) (2019-04-17)
 
 
