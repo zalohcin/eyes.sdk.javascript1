@@ -70,11 +70,13 @@ class EyesVisualGrid extends Eyes {
 
     const { openEyes } = makeVisualGridClient({
       logger: this._logger,
+      agentId: this.getFullAgentId(),
       apiKey: this._configuration.getApiKey(),
       showLogs: this._configuration.getShowLogs(),
       saveDebugData: this._configuration.getSaveDebugData(),
       proxy: this._configuration.getProxy(),
       serverUrl: this._configuration.getServerUrl(),
+      // concurrency: this._configuration.getConcurrentSessions(),
       renderConcurrencyFactor: this._configuration.getConcurrentSessions(),
     });
 
@@ -105,21 +107,14 @@ class EyesVisualGrid extends Eyes {
       compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
       ignoreBaseline: this._configuration.getIgnoreBaseline(),
       parentBranchName: this._configuration.getParentBranchName(),
-      agentId: this.getFullAgentId(),
       isDisabled: this._configuration.getIsDisabled(),
       matchTimeout: this._configuration.getMatchTimeout(),
 
       ignoreCaret: this._configuration.getIgnoreCaret(),
       matchLevel: this._configuration.getMatchLevel(),
-
-      // renderBatch,
-      // waitForRenderedStatus,
-      // renderThroat,
-      // getRenderInfoPromise,
-      // getHandledRenderInfoPromise,
-      // getRenderInfo,
-      // createRGridDOMAndGetResourceMapping,
-      // eyesTransactionThroat,
+      useDom: this._configuration.getUseDom(),
+      enablePatterns: this._configuration.getEnablePatterns(),
+      saveDebugData: this._configuration.getSaveDebugData(),
     });
 
     this._checkWindowCommand = checkWindow;
