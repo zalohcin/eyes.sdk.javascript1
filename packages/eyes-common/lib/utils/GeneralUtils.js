@@ -6,6 +6,8 @@ const merge = require('deepmerge');
 const { TypeUtils } = require('./TypeUtils');
 const { DateTimeUtils } = require('./DateTimeUtils');
 
+const ENV_PREFIXES = ['APPLITOOLS_', 'BAMBOO_APPLITOOLS_'];
+
 /**
  * Collection of utility methods.
  *
@@ -273,6 +275,24 @@ class GeneralUtils {
     }
 
     return val;
+  }
+
+  /**
+   * Get an environment property by property name
+   *
+   * @return {*|undefined} - The value of the given property or `undefined` if the property is not exists.
+   */
+  static getEnvValue(propName) {
+    if (process !== undefined) {
+      for (const prefix of ENV_PREFIXES) {
+        const value = process.env[prefix + propName];
+        if (value !== undefined) {
+          return value;
+        }
+      }
+    }
+
+    return undefined;
   }
 }
 

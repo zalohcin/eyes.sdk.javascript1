@@ -146,7 +146,7 @@ class Configuration {
    * @return {string} - The currently set API key or {@code null} if no key is set.
    */
   getApiKey() {
-    return TypeUtils.getOrDefault(this._apiKey, process.env.APPLITOOLS_API_KEY);
+    return TypeUtils.getOrDefault(this._apiKey, GeneralUtils.getEnvValue('API_KEY'));
   }
 
   /**
@@ -166,7 +166,7 @@ class Configuration {
    * @return {string} - The URI of the eyes server.
    */
   getServerUrl() {
-    return TypeUtils.getOrDefault(this._serverUrl, process.env.APPLITOOLS_SERVER_URL || DEFAULT_VALUES.serverUrl);
+    return TypeUtils.getOrDefault(this._serverUrl, GeneralUtils.getEnvValue('SERVER_URL') || DEFAULT_VALUES.serverUrl);
   }
 
   /**
@@ -426,7 +426,7 @@ class Configuration {
    * @return {string}
    */
   getBranchName() {
-    return TypeUtils.getOrDefault(this._branchName, process.env.APPLITOOLS_BRANCH);
+    return TypeUtils.getOrDefault(this._branchName, GeneralUtils.getEnvValue('BRANCH'));
   }
 
   /**
@@ -460,7 +460,7 @@ class Configuration {
    * @return {string}
    */
   getParentBranchName() {
-    return TypeUtils.getOrDefault(this._parentBranchName, process.env.APPLITOOLS_PARENT_BRANCH);
+    return TypeUtils.getOrDefault(this._parentBranchName, GeneralUtils.getEnvValue('PARENT_BRANCH'));
   }
 
   /**
@@ -477,7 +477,7 @@ class Configuration {
    * @return {string}
    */
   getBaselineBranchName() {
-    return TypeUtils.getOrDefault(this._baselineBranchName, process.env.APPLITOOLS_BASELINE_BRANCH);
+    return TypeUtils.getOrDefault(this._baselineBranchName, GeneralUtils.getEnvValue('BASELINE_BRANCH'));
   }
 
   /**

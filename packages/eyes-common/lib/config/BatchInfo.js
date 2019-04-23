@@ -53,8 +53,8 @@ class BatchInfo {
       startedAt = DateTimeUtils.fromISO8601DateTime(startedAt);
     }
 
-    this._id = id || process.env.APPLITOOLS_BATCH_ID || GeneralUtils.guid();
-    this._name = name || process.env.APPLITOOLS_BATCH_NAME;
+    this._id = id || GeneralUtils.getEnvValue('BATCH_ID') || GeneralUtils.guid();
+    this._name = name || GeneralUtils.getEnvValue('BATCH_NAME');
     this._startedAt = startedAt || new Date();
   }
 
