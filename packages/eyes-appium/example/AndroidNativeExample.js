@@ -5,20 +5,23 @@ const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
 const { Eyes, Target } = require('../index'); // should be replaced to '@applitools/eyes-appium'
 
 (async () => {
-  const capabilities = new Capabilities();
-  capabilities.set('platformName', 'Android');
-  capabilities.set('deviceName', 'Android Emulator');
-  capabilities.set('platformVersion', '7.0');
-  capabilities.set('app', 'https://store.applitools.com/download/Android.apiDemo.apk');
-  capabilities.set('clearSystemFiles', true);
-  capabilities.set('noReset', true);
+  const caps = new Capabilities();
+  caps.set('platformName', 'Android');
+  caps.set('deviceName', 'Android Emulator');
+  caps.set('platformVersion', '7.0');
+  caps.set('app', 'https://store.applitools.com/download/Android.apiDemo.apk');
+  caps.set('clearSystemFiles', true);
+  caps.set('noReset', true);
 
+  // caps.set('username', process.env.SAUCE_USERNAME);
+  // caps.set('accesskey', process.env.SAUCE_ACCESS_KEY);
+
+  // const seleniumServer = 'https://ondemand.saucelabs.com:443/wd/hub';
   const seleniumServer = 'http://127.0.0.1:4723/wd/hub';
-  // const seleniumServer = `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@ondemand.saucelabs.com:443/wd/hub`;
 
   // Open the app.
   const driver = await new Builder()
-    .withCapabilities(capabilities)
+    .withCapabilities(caps)
     .usingServer(seleniumServer)
     .build();
 

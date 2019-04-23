@@ -3,7 +3,7 @@
 require('chromedriver');
 const { Builder } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { Eyes, Target, Configuration, BrowserType, RectangleSize, BatchInfo, Region, CorsIframeHandle } = require('../../index');
+const { Eyes, VisualGridRunner, Target, Configuration, BrowserType, RectangleSize, BatchInfo, Region, CorsIframeHandle } = require('../../index');
 
 let /** @type {WebDriver} */ driver;
 describe('VisualGridSimple', function () {
@@ -16,7 +16,7 @@ describe('VisualGridSimple', function () {
   it('VisualGridTestPage', async function () {
     await driver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage');
 
-    const eyes = new Eyes(undefined, undefined, true);
+    const eyes = new Eyes(new VisualGridRunner());
     eyes.setBatch(new BatchInfo('EyesRenderingBatch'));
     eyes.setCorsIframeHandle(CorsIframeHandle.BLANK);
     // eyes.setProxy('http://127.0.0.1:8888');

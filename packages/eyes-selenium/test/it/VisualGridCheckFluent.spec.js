@@ -3,7 +3,7 @@
 require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { Eyes, Target, Configuration, BrowserType, ConsoleLogHandler, Region } = require('../../index');
+const { Eyes, VisualGridRunner, Target, Configuration, BrowserType, ConsoleLogHandler, Region } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
 describe('VisualGridCheckFluent', function () {
@@ -12,8 +12,7 @@ describe('VisualGridCheckFluent', function () {
   before(async function () {
     driver = new Builder().forBrowser('chrome').setChromeOptions(new ChromeOptions().headless()).build();
 
-    eyes = new Eyes(undefined, undefined, true);
-    eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
+    eyes = new Eyes(new VisualGridRunner());
     eyes.setLogHandler(new ConsoleLogHandler(false));
     // eyes.setProxy('http://localhost:8888');
 

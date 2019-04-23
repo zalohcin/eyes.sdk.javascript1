@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { Eyes, EyesSelenium, EyesVisualGrid, Configuration, StitchMode, RectangleSize, ProxySettings, BatchInfo, PropertyData } = require('../../index');
+const { Eyes, VisualGridRunner, EyesSelenium, EyesVisualGrid, Configuration, StitchMode, RectangleSize, ProxySettings, BatchInfo, PropertyData } = require('../../index');
 
 describe('Eyes', function () {
 
@@ -12,32 +12,14 @@ describe('Eyes', function () {
     assert.ok(eyes instanceof EyesSelenium);
   });
 
-  it('should create EyesSelenium with `false`', async function () {
-    const eyes = new Eyes(undefined, undefined, false);
-    assert.ok(!eyes.isVisualGrid());
-    assert.ok(eyes instanceof EyesSelenium);
-  });
-
-  it('should create EyesVisualGrid with `true`', async function () {
-    const eyes = new Eyes(undefined, undefined, true);
-    assert.ok(eyes.isVisualGrid());
-    assert.ok(eyes instanceof EyesVisualGrid);
-  });
-
-  it('should create EyesSelenium with `false` first argument', async function () {
-    const eyes = new Eyes(false);
-    assert.ok(!eyes.isVisualGrid());
-    assert.ok(eyes instanceof EyesSelenium);
-  });
-
-  it('should create EyesVisualGrid with `true` first argument', async function () {
-    const eyes = new Eyes(true);
+  it('should create EyesVisualGrid with VisualGridRunner', async function () {
+    const eyes = new Eyes(new VisualGridRunner());
     assert.ok(eyes.isVisualGrid());
     assert.ok(eyes instanceof EyesVisualGrid);
   });
 
   it('set configuration from object', async function () {
-    const eyes = new Eyes(true);
+    const eyes = new Eyes(new VisualGridRunner());
     const date = new Date();
     eyes.setConfiguration({
       apiKey: 'sameApiKey',

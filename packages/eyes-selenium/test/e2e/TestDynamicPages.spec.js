@@ -13,7 +13,6 @@ describe('TestDynamicPages', function () {
     driver = new Builder().forBrowser('chrome').setChromeOptions(new ChromeOptions().headless()).build();
 
     eyes = new Eyes();
-    eyes.setApiKey(process.env.APPLITOOLS_API_KEY);
     eyes.setLogHandler(new ConsoleLogHandler(false));
     // eyes.setProxy('http://localhost:8888');
   });

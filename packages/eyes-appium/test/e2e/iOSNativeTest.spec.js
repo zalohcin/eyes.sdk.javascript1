@@ -9,20 +9,23 @@ describe('iOSNativeApp', function () {
   this.timeout(5 * 60 * 1000);
 
   before(async function () {
-    const cp = new Capabilities();
-    cp.set('platformName', 'iOS');
-    cp.set('deviceName', 'iPhone 7 Simulator');
-    cp.set('platformVersion', '10.0');
-    cp.set('app', 'https://store.applitools.com/download/iOS.TestApp.app.zip');
-    cp.set('clearSystemFiles', true);
-    cp.set('noReset', true);
+    const caps = new Capabilities();
+    caps.set('platformName', 'iOS');
+    caps.set('deviceName', 'iPhone 7 Simulator');
+    caps.set('platformVersion', '10.0');
+    caps.set('app', 'https://store.applitools.com/download/iOS.TestApp.app.zip');
+    caps.set('clearSystemFiles', true);
+    caps.set('noReset', true);
+
+    caps.set('username', process.env.SAUCE_USERNAME);
+    caps.set('accesskey', process.env.SAUCE_ACCESS_KEY);
 
     // const seleniumServer = 'http://127.0.0.1:4723/wd/hub';
-    const seleniumServer = `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@ondemand.saucelabs.com:443/wd/hub`;
+    const seleniumServer = 'https://ondemand.saucelabs.com:443/wd/hub';
 
     // Open the app.
     driver = await new Builder()
-      .withCapabilities(cp)
+      .withCapabilities(caps)
       .usingServer(seleniumServer)
       .build();
 

@@ -9,22 +9,25 @@ describe('AndroidNativeApp', function () {
   this.timeout(5 * 60 * 1000);
 
   before(async function () {
-    const cp = new Capabilities();
-    cp.set('platformName', 'Android');
-    cp.set('platformVersion', '7.0');
-    cp.set('deviceName', 'Android Emulator');
-    cp.set('automationName', 'uiautomator2');
-    cp.set('app', 'https://applitools.bintray.com/Examples/app-debug.apk');
-    cp.set('appPackage', 'com.applitoolstest');
-    cp.set('appActivity', 'com.applitoolstest.ScrollActivity');
-    cp.set('newCommandTimeout', 600);
+    const caps = new Capabilities();
+    caps.set('platformName', 'Android');
+    caps.set('platformVersion', '7.0');
+    caps.set('deviceName', 'Android Emulator');
+    caps.set('automationName', 'uiautomator2');
+    caps.set('app', 'https://applitools.bintray.com/Examples/app-debug.apk');
+    caps.set('appPackage', 'com.applitoolstest');
+    caps.set('appActivity', 'com.applitoolstest.ScrollActivity');
+    caps.set('newCommandTimeout', 600);
 
+    // caps.set('username', process.env.SAUCE_USERNAME);
+    // caps.set('accesskey', process.env.SAUCE_ACCESS_KEY);
+
+    // const seleniumServer = 'https://ondemand.saucelabs.com:443/wd/hub';
     const seleniumServer = 'http://127.0.0.1:4723/wd/hub';
-    // const seleniumServer = `https://${process.env.SAUCE_USERNAME}:${process.env.SAUCE_ACCESS_KEY}@ondemand.saucelabs.com:443/wd/hub`;
 
     // Open the app.
     driver = await new Builder()
-      .withCapabilities(cp)
+      .withCapabilities(caps)
       .usingServer(seleniumServer)
       .build();
 

@@ -40,8 +40,12 @@ describe('AndroidTest', function () {
       caps.set('username', process.env.SAUCE_USERNAME);
       caps.set('accesskey', process.env.SAUCE_ACCESS_KEY);
 
-      const sauceUrl = 'http://ondemand.saucelabs.com/wd/hub';
-      const driver = new Builder().withCapabilities(caps).usingServer(sauceUrl).build();
+      const seleniumServer = 'https://ondemand.saucelabs.com:443/wd/hub';
+
+      const driver = new Builder()
+        .withCapabilities(caps)
+        .usingServer(seleniumServer)
+        .build();
 
       eyes.setLogHandler(new ConsoleLogHandler(true));
       eyes.setStitchMode(StitchMode.SCROLL);
