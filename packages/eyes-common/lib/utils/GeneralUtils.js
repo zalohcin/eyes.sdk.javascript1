@@ -6,7 +6,7 @@ const merge = require('deepmerge');
 const { TypeUtils } = require('./TypeUtils');
 const { DateTimeUtils } = require('./DateTimeUtils');
 
-const ENV_PREFIXES = ['APPLITOOLS_', 'BAMBOO_APPLITOOLS_'];
+const ENV_PREFIXES = ['APPLITOOLS_', 'bamboo_APPLITOOLS_'];
 
 /**
  * Collection of utility methods.
