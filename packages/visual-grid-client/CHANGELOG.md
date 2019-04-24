@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [12.6.7](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.6.5...@applitools/visual-grid-client@12.6.7) (2019-04-24)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** changed default waitForRender  status timeout to 1 hour (was 2 minutes) ([51d4b7b](https://github.com/applitools/eyes.sdk.javascript1/commit/51d4b7b))
+
+
+
+
+
 ## [12.6.5](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.6.4...@applitools/visual-grid-client@12.6.5) (2019-04-23)
 
 **Note:** Version bump only for package @applitools/visual-grid-client
