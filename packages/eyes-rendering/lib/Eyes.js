@@ -58,6 +58,7 @@ class Eyes extends EyesAbstract {
     }
 
     const { openEyes } = makeVisualGridClient({
+      agentId: this._configuration.getAgentId(),
       apiKey: this._configuration.getApiKey(),
       showLogs: this._configuration.getShowLogs(),
       saveDebugData: this._configuration.getSaveDebugData(),
@@ -94,7 +95,6 @@ class Eyes extends EyesAbstract {
       compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
       ignoreBaseline: this._configuration.getIgnoreBaseline(),
       parentBranchName: this._configuration.getParentBranchName(),
-      agentId: this._configuration.getAgentId(),
       isDisabled: this._configuration.getIsDisabled(),
       matchTimeout: this._configuration.getMatchTimeout(),
 
