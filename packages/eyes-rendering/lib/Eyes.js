@@ -219,6 +219,7 @@ class Eyes extends EyesAbstract {
     }
 
     const domCaptureScript = `var callback = arguments[arguments.length - 1]; return (${this._processPageAndSerializeScript})().then(JSON.stringify).then(callback, function(err) {callback(err.stack || err.toString())})`;
+    await this._driver.manage().setTimeouts({script: 5 * 60 * 1000});
     const results = await this._jsExecutor.executeAsyncScript(domCaptureScript);
     const { cdt, url: pageUrl, blobs, resourceUrls, frames } = JSON.parse(results);
 
