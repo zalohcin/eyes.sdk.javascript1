@@ -184,6 +184,7 @@ class EyesVisualGrid extends Eyes {
     let results;
     try {
       const domCaptureScript = `var callback = arguments[arguments.length - 1]; return (${this._processPageAndSerializeScript})().then(JSON.stringify).then(callback, function(err) {callback(err.stack || err.toString())})`;
+      await this._driver.manage().setTimeouts({script: 5 * 60 * 1000});
       results = await this._driver.executeAsyncScript(domCaptureScript);
     } catch (e) {
       throw new Error('Failed to extract DOM from the page: ' + e.toString());
