@@ -1,7 +1,7 @@
 'use strict';
 
 const {presult} = require('@applitools/functional-commons');
-const {RectangleSize, Region} = require('@applitools/eyes-common');
+const {Region} = require('@applitools/eyes-common');
 
 const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
@@ -151,7 +151,7 @@ function makeCheckWindow({
       const wrapper = wrappers[index];
       wrapper.setInferredEnvironment(`useragent:${userAgent}`);
       if (deviceSize) {
-        wrapper.setViewportSize(new RectangleSize(deviceSize));
+        wrapper.setViewportSize(deviceSize);
       }
 
       logger.log(`checkWindow waiting for prev job. test=${testName}, stepCount #${currStepCount}`);

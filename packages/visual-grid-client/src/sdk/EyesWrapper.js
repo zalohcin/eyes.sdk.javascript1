@@ -92,7 +92,8 @@ class EyesWrapper extends EyesBase {
   }
 
   async setViewportSize(viewportSize) {
-    this._viewportSizeHandler.set(viewportSize);
+    this._configuration.setViewportSize(viewportSize);
+    this._viewportSizeHandler.set(this._configuration.getViewportSize());
   }
 
   async getTitle() {

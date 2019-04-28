@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "12.6.7",
+  "version": "12.6.8",
   "description": "",
   "keywords": [
     "applitools",
@@ -44,7 +44,7 @@
     "throat": "^4.1.0"
   },
   "devDependencies": {
-    "@applitools/dom-snapshot": "^1.1.5",
+    "@applitools/dom-snapshot": "^1.1.6",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.4",
@@ -54,8 +54,8 @@
     "mocha": "^6.1.4",
     "morgan": "^1.9.1",
     "nock": "^9.6.1",
-    "node-fetch": "^2.3.0",
-    "puppeteer": "^1.14.0"
+    "node-fetch": "^2.4.1",
+    "puppeteer": "^1.15.0"
   },
   "scripts": {
     "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",
