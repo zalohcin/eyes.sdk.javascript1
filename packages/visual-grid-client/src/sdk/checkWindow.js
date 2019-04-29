@@ -1,8 +1,9 @@
 'use strict';
 
+// Region must come from sdk-core o.w when initailizing Region with
+// Region we fail on not being an instance of Region.
+const {Region} = require('@applitools/eyes-sdk-core');
 const {presult} = require('@applitools/functional-commons');
-const {Region} = require('@applitools/eyes-common');
-
 const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
 const createCheckSettings = require('./createCheckSettings');
