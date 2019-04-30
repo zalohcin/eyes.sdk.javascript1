@@ -31,7 +31,7 @@
   ],
   "dependencies": {
     "@applitools/eyes-common": "^3.4.0",
-    "@applitools/eyes-sdk-core": "^5.5.2",
+    "@applitools/eyes-sdk-core": "^5.6.2",
     "@applitools/functional-commons": "^1.4.1",
     "@applitools/http-commons": "^1.2.9",
     "@applitools/isomorphic-fetch": "^3.0.0",
