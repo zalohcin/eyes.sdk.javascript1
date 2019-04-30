@@ -35,7 +35,6 @@ function configureWrappers({
   envName,
   ignoreCaret,
   matchLevel,
-  matchTimeout,
   parentBranchName,
   branchName,
   proxy,
@@ -73,7 +72,6 @@ function configureWrappers({
     matchLevel !== undefined && wrapper.setMatchLevel(matchLevel);
     useDom !== undefined && wrapper.setUseDom(useDom);
     enablePatterns !== undefined && wrapper.setEnablePatterns(enablePatterns);
-    matchTimeout !== undefined && wrapper.setMatchTimeout(matchTimeout);
     parentBranchName !== undefined && wrapper.setParentBranchName(parentBranchName);
     branchName !== undefined && wrapper.setBranchName(branchName);
     proxy !== undefined && wrapper.setProxy(proxy);

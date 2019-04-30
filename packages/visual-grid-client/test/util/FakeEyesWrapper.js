@@ -254,10 +254,6 @@ class FakeEyesWrapper extends EventEmitter {
     return this.matchLevel;
   }
 
-  setMatchTimeout(value) {
-    this.matchTimeout = value;
-  }
-
   setParentBranchName(value) {
     this.parentBranchName = value;
   }

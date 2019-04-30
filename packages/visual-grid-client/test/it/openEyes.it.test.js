@@ -1069,7 +1069,6 @@ describe('openEyes', () => {
       ignoreCaret: 'ignoreCaret',
       isDisabled: false,
       matchLevel: 'matchLevel',
-      matchTimeout: 'matchTimeout',
       parentBranchName: 'parentBranchName',
       branchName: 'branchName',
       saveFailedTests: 'saveFailedTests',
@@ -1088,7 +1087,6 @@ describe('openEyes', () => {
       expect(wrapper.ignoreCaret).to.equal('ignoreCaret');
       expect(wrapper.isDisabled).to.equal(false);
       expect(wrapper.matchLevel).to.equal('matchLevel');
-      expect(wrapper.matchTimeout).to.equal('matchTimeout');
       expect(wrapper.parentBranchName).to.equal('parentBranchName');
       expect(wrapper.branchName).to.equal('branchName');
       expect(wrapper.proxy).to.equal('proxy');
@@ -1126,7 +1124,6 @@ describe('openEyes', () => {
       ignoreCaret: 'ignoreCaret',
       isDisabled: false,
       matchLevel: 'matchLevel',
-      matchTimeout: 'matchTimeout',
       parentBranchName: 'parentBranchName',
       branchName: 'branchName',
       saveFailedTests: 'saveFailedTests',
@@ -1150,7 +1147,6 @@ describe('openEyes', () => {
       expect(wrapper.ignoreCaret).to.equal('ignoreCaret');
       expect(wrapper.isDisabled).to.equal(false);
       expect(wrapper.matchLevel).to.equal('matchLevel');
-      expect(wrapper.matchTimeout).to.equal('matchTimeout');
       expect(wrapper.parentBranchName).to.equal('parentBranchName');
       expect(wrapper.branchName).to.equal('branchName');
       expect(wrapper.proxy).to.equal('proxy');
