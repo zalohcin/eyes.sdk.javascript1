@@ -8,6 +8,7 @@ const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
 const createCheckSettings = require('./createCheckSettings');
 const calculateMatchRegions = require('./calculateMatchRegions');
+const handleDebugData = require('./handleDebugData');
 
 function makeCheckWindow({
   getError,
@@ -55,6 +56,7 @@ function makeCheckWindow({
       logger.log('aborting checkWindow synchronously');
       return;
     }
+    handleDebugData({resourceUrls, resourceContents, frames, cdt});
     const getResourcesPromise = createRGridDOMAndGetResourceMapping({
       resourceUrls,
       resourceContents,
