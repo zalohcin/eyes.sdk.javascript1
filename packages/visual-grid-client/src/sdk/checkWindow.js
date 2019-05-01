@@ -8,7 +8,7 @@ const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
 const createCheckSettings = require('./createCheckSettings');
 const calculateMatchRegions = require('./calculateMatchRegions');
-const handleDebugData = require('./handleDebugData');
+const handleResourceData = require('../troubleshoot/handleResourceData');
 
 function makeCheckWindow({
   getError,
@@ -56,10 +56,11 @@ function makeCheckWindow({
       logger.log('aborting checkWindow synchronously');
       return;
     }
-    handleDebugData(
-      {resourceUrls, resourceContents, frames, cdt},
-      {agentId: wrappers[0].getBaseAgentId()},
-    );
+    handleResourceData({
+      frame: {resourceUrls, resourceContents, frames, cdt},
+      metaData: {agentId: wrappers[0].getBaseAgentId()},
+      logger,
+    });
     const getResourcesPromise = createRGridDOMAndGetResourceMapping({
       resourceUrls,
       resourceContents,
