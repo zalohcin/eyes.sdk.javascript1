@@ -56,7 +56,10 @@ function makeCheckWindow({
       logger.log('aborting checkWindow synchronously');
       return;
     }
-    handleDebugData({resourceUrls, resourceContents, frames, cdt});
+    handleDebugData(
+      {resourceUrls, resourceContents, frames, cdt},
+      {agentId: wrappers[0].getBaseAgentId()},
+    );
     const getResourcesPromise = createRGridDOMAndGetResourceMapping({
       resourceUrls,
       resourceContents,
