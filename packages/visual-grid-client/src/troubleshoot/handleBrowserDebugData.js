@@ -42,7 +42,7 @@ async function handleBrowserDebugData({frame, metaData = {}, dirPath = DIR_NAME,
   async function createMetaDataFile(dirPath) {
     await writeFile(
       resolve(dirPath, `INFO-${new Date().toISOString()}.json`),
-      JSON.stringify({...metaData, createdAt: new Date().toISOString()}, null, 2),
+      JSON.stringify(Object.assign(metaData, {createdAt: new Date().toISOString()}), null, 2),
     );
   }
 
