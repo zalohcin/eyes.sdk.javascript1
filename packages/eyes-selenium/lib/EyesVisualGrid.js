@@ -1,8 +1,8 @@
 'use strict';
 
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
-const { getProcessPageAndSerializeScript } = require('@applitools/dom-snapshot');
-const { ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
+const { getProcessPageAndPollScript } = require('@applitools/dom-snapshot');
+const { ArgumentGuard, TypeUtils, GeneralUtils } = require('@applitools/eyes-common');
 const { TestFailedError, CorsIframeHandle, CorsIframeHandler } = require('@applitools/eyes-sdk-core');
 
 const { VisualGridRunner } = require('./visualgrid/VisualGridRunner');
@@ -10,6 +10,8 @@ const { BrowserType } = require('./config/BrowserType');
 const { Eyes } = require('./Eyes');
 
 const VERSION = require('../package.json').version;
+
+const CAPTURE_DOM_TIMEOUT_MS = 5 * 60 * 1000; // 5 min
 
 /**
  * @ignore
@@ -23,7 +25,8 @@ class EyesVisualGrid extends Eyes {
    *
    * @param {string} [serverUrl] - The Eyes server URL.
    * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
-   * @param {VisualGridRunner} [visualGridRunner] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
+   * @param {VisualGridRunner} [visualGridRunner] - Set {@code true} to disable Applitools Eyes and use the WebDriver
+   *   directly.
    */
   constructor(serverUrl, isDisabled, visualGridRunner = new VisualGridRunner()) {
     super(serverUrl, isDisabled, true);
@@ -31,7 +34,7 @@ class EyesVisualGrid extends Eyes {
     /** @type {VisualGridRunner} */ this._visualGridRunner = visualGridRunner;
     this._visualGridRunner._eyes = this;
 
-    /** @type {string} */ this._processPageAndSerializeScript = undefined;
+    /** @type {string} */ this._processResourcesScript = undefined;
     /** @function */ this._checkWindowCommand = undefined;
     /** @function */ this._closeCommand = undefined;
   }
@@ -80,7 +83,7 @@ class EyesVisualGrid extends Eyes {
       renderConcurrencyFactor: this._configuration.getConcurrentSessions(),
     });
 
-    this._processPageAndSerializeScript = await getProcessPageAndSerializeScript();
+    this._processResourcesScript = await getProcessPageAndPollScript();
 
     if (this._configuration.getViewportSize()) {
       await this.setViewportSize(this._configuration.getViewportSize());
@@ -165,6 +168,36 @@ class EyesVisualGrid extends Eyes {
   }
 
   /**
+   * @private
+   * @param {EyesWebDriver} driver
+   * @param {Logger} logger
+   * @param {string} processResourcesScript
+   * @param {number} startTime
+   * @return {Promise<object>}
+   */
+  static async _capturePageDom(driver, logger, processResourcesScript, startTime = Date.now()) {
+    let /** @type {{value: object, status: string, error: string}} */ scriptResponse;
+
+    try {
+      const resultAsString = await driver.executeScript(`${processResourcesScript} return __processPageAndPoll();`);
+      scriptResponse = JSON.parse(resultAsString);
+    } catch (err) {
+      logger.log("Failed to execute script to capture DOM:", err);
+    }
+
+    if ((Date.now() - startTime) >= CAPTURE_DOM_TIMEOUT_MS) {
+      throw new Error('Timeout is reached for capture DOM.');
+    } else if (scriptResponse.status === 'SUCCESS') {
+      return scriptResponse.value;
+    } else if (scriptResponse.status === 'ERROR') {
+      throw new Error('Failed to capture DOM: ' + scriptResponse.error);
+    }
+
+    await GeneralUtils.sleep(200);
+    return EyesVisualGrid._capturePageDom(driver, logger, processResourcesScript, startTime);
+  }
+
+  /**
    * @inheritDoc
    */
   async check(name, checkSettings) {
@@ -176,21 +209,14 @@ class EyesVisualGrid extends Eyes {
 
     this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`);
 
-    let targetSelector = await checkSettings.getTargetProvider();
-    if (targetSelector) {
-      targetSelector = await targetSelector.getSelector(this);
-    }
-
-    let results;
+    let pageDomResults;
     try {
-      const domCaptureScript = `var callback = arguments[arguments.length - 1]; return (${this._processPageAndSerializeScript})().then(JSON.stringify).then(callback, function(err) {callback(err.stack || err.toString())})`;
-      await this._driver.manage().setTimeouts({script: 5 * 60 * 1000});
-      results = await this._driver.executeAsyncScript(domCaptureScript);
+      pageDomResults = await EyesVisualGrid._capturePageDom(this._driver, this._logger, this._processResourcesScript);
     } catch (e) {
       throw new Error('Failed to extract DOM from the page: ' + e.toString());
     }
 
-    const { cdt, url: pageUrl, blobs, resourceUrls, frames } = JSON.parse(results);
+    const { cdt, url: pageUrl, blobs, resourceUrls, frames } = pageDomResults;
 
     if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
       CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames);
@@ -203,6 +229,11 @@ class EyesVisualGrid extends Eyes {
     }));
 
     this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`);
+
+    let targetSelector = await checkSettings.getTargetProvider();
+    if (targetSelector) {
+      targetSelector = await targetSelector.getSelector(this);
+    }
 
     await this._checkWindowCommand({
       resourceUrls,
