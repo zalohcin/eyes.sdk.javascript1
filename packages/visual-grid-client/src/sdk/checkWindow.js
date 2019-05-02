@@ -8,7 +8,7 @@ const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
 const createCheckSettings = require('./createCheckSettings');
 const calculateMatchRegions = require('./calculateMatchRegions');
-const handleResourceData = require('../troubleshoot/handleResourceData');
+const handleBrowserDebugData = require('../troubleshoot/handleBrowserDebugData');
 
 function makeCheckWindow({
   getError,
@@ -56,7 +56,7 @@ function makeCheckWindow({
       logger.log('aborting checkWindow synchronously');
       return;
     }
-    handleResourceData({
+    handleBrowserDebugData({
       frame: {resourceUrls, resourceContents, frames, cdt},
       metaData: {agentId: wrappers[0].getBaseAgentId()},
       logger,
