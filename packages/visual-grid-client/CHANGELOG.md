@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.8.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.6.7...@applitools/visual-grid-client@12.8.0) (2019-05-03)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** 12.6.9 ([f166ac1](https://github.com/applitools/eyes.sdk.javascript1/commit/f166ac1))
+* **visual-grid-client:** fixed debug data missing file ([41a8919](https://github.com/applitools/eyes.sdk.javascript1/commit/41a8919))
+* **visual-grid-client:** fixed multiple emlated devices viewport error ([aa238a7](https://github.com/applitools/eyes.sdk.javascript1/commit/aa238a7))
+* **visual-grid-client:** fixed spread operator in handleDebugData ([8c3249d](https://github.com/applitools/eyes.sdk.javascript1/commit/8c3249d))
+* **visual-grid-client:** getting region from eyes-sdk-core and not common so we dont fail on instanceof. ([e40c9b3](https://github.com/applitools/eyes.sdk.javascript1/commit/e40c9b3))
+* **visual-grid-client:** package update ([e404e64](https://github.com/applitools/eyes.sdk.javascript1/commit/e404e64))
+* **visual-grid-client:** removed matchTimeout since it is only the retry snapshot that the vg doesnt use ([c27b399](https://github.com/applitools/eyes.sdk.javascript1/commit/c27b399))
+
+
+### Features
+
+* **visual-grid-client:** added basic handleDebugData ([f4d9c1e](https://github.com/applitools/eyes.sdk.javascript1/commit/f4d9c1e))
+* **visual-grid-client, eyes-sdk-core:** added agentId to render request ([fb65891](https://github.com/applitools/eyes.sdk.javascript1/commit/fb65891))
+
+
+
+
+
 ## [12.6.7](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.6.5...@applitools/visual-grid-client@12.6.7) (2019-04-24)
 
 

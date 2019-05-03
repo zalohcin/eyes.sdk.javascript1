@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.16.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.16.2...@applitools/eyes-selenium@4.16.3) (2019-05-03)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** increase timeout for capturing dom ([3f100d0](https://github.com/applitools/eyes.sdk.javascript1/commit/3f100d0))
+* **eyes-selenium:** use new pulling script to capture DOM ([45edad6](https://github.com/applitools/eyes.sdk.javascript1/commit/45edad6))
+* **eyes-selenium:** when `Symbol.serialize` is not working, use `toJSON` ([24507fc](https://github.com/applitools/eyes.sdk.javascript1/commit/24507fc))
+
+
+
+
+
 ## [4.16.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.16.1...@applitools/eyes-selenium@4.16.2) (2019-04-24)
 
 **Note:** Version bump only for package @applitools/eyes-selenium

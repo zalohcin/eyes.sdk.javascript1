@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.4.0...@applitools/eyes-common@3.4.1) (2019-05-03)
+
+
+### Bug Fixes
+
+* **eyes-common:** use lowercase `bamboo_` prefix for env vars ([976721c](https://github.com/applitools/eyes.sdk.javascript1/commit/976721c))
+
+
+
+
+
 # [3.4.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.3.0...@applitools/eyes-common@3.4.0) (2019-04-24)
 
 

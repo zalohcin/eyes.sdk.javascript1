@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.7.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.5.2...@applitools/eyes-sdk-core@5.7.0) (2019-05-03)
+
+
+### Features
+
+* **visual-grid-client, eyes-sdk-core:** added agentId to render request ([fb65891](https://github.com/applitools/eyes.sdk.javascript1/commit/fb65891))
+
+
+
+
+
 ## [5.5.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.5.1...@applitools/eyes-sdk-core@5.5.2) (2019-04-24)
 
 **Note:** Version bump only for package @applitools/eyes-sdk-core
