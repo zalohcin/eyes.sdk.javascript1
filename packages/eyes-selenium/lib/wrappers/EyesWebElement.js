@@ -97,6 +97,15 @@ class EyesWebElement extends WebElement {
   }
 
   /**
+   * Sometimes, Symbol('serialize') is not working (e.g. in Jest), therefore we need this to correctly unwrap it
+   *
+   * @return {!Object} Returns the serialized representation of this WebElement.
+   */
+  toJSON() {
+    return this.getId().then(WebElement.buildId);
+  }
+
+  /**
    * @return {Promise<Region>}
    */
   async getBounds() {
