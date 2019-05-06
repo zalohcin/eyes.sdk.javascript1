@@ -1,10 +1,12 @@
 'use strict';
 
 const { TypeUtils } = require('@applitools/eyes-common');
+const { CorsIframeHandle } = require('@applitools/eyes-sdk-core');
 
 const { VisualGridRunner } = require('./visualgrid/VisualGridRunner');
 const { EyesSelenium } = require('./EyesSelenium');
 const { EyesVisualGrid } = require('./EyesVisualGrid');
+const { Configuration } = require('./config/Configuration');
 
 /**
  * @ignore
@@ -35,6 +37,31 @@ class EyesFactory {
     }
 
     return new EyesSelenium(serverUrl, isDisabled);
+  }
+
+  /**
+   * For Selenium IDE initialization
+   * @private
+   */
+  static fromBrowserInfo(serverUrl, isDisabled, config = {}) {
+    const eyes = new EyesFactory(serverUrl, isDisabled, !!config.browser)
+    if (config.browser) {
+      const cfg = new Configuration();
+      const browsers = Array.isArray(config.browser) ? config.browser : [config.browser];
+      browsers.forEach(browser => {
+        // If it quacks like a duck
+        if (browser.name) {
+          cfg.addBrowser(browser.width, browser.height, browser.name);
+        } else if (browser.deviceName) {
+          cfg.addDeviceEmulation(browser.deviceName, browser.screenOrientation);
+        }
+      });
+      eyes.setConfiguration(cfg)
+    }
+
+    eyes._corsIframeHandle = CorsIframeHandle.BLANK;
+
+    return eyes
   }
 }
 
