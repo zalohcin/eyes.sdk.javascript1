@@ -207,6 +207,11 @@ class EyesVisualGrid extends Eyes {
       checkSettings.withName(name);
     }
 
+    let targetSelector = await checkSettings.getTargetProvider();
+    if (targetSelector) {
+      targetSelector = await targetSelector.getSelector(this);
+    }
+
     this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`);
 
     let pageDomResults;
@@ -229,11 +234,6 @@ class EyesVisualGrid extends Eyes {
     }));
 
     this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`);
-
-    let targetSelector = await checkSettings.getTargetProvider();
-    if (targetSelector) {
-      targetSelector = await targetSelector.getSelector(this);
-    }
 
     await this._checkWindowCommand({
       resourceUrls,
