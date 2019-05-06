@@ -30,7 +30,7 @@ const {
 
 describe('openEyes', () => {
   let baseUrl, closeServer, openEyes, prevEnv, APPLITOOLS_SHOW_LOGS;
-  let wrapper, wrapper2, alwaysDiffWrapper;
+  let wrapper;
   const apiKey = 'some api key';
   const appName = 'some app name';
 
@@ -50,9 +50,6 @@ describe('openEyes', () => {
     process.env = {};
 
     wrapper = createFakeWrapper(baseUrl);
-    wrapper2 = createFakeWrapper(baseUrl);
-    alwaysDiffWrapper = createFakeWrapper(baseUrl, {closeErr: true});
-
     openEyes = makeRenderingGridClient({
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
@@ -70,93 +67,6 @@ describe('openEyes', () => {
 
   afterEach(() => {
     process.env = prevEnv;
-  });
-
-  it("doesn't reject", async () => {
-    const {checkWindow, close} = await openEyes({
-      wrappers: [wrapper],
-      appName,
-    });
-
-    checkWindow({cdt: [], tag: 'good1', url: `${baseUrl}/test.html`});
-    const result = (await presult(close()))[1];
-    expect(result[0].map(r => r.getAsExpected())).to.eql([true]);
-  });
-
-  it('rejects with an error with bad tag', async () => {
-    const {checkWindow, close} = await openEyes({
-      wrappers: [wrapper],
-      appName,
-    });
-    checkWindow({cdt: [], resourceUrls: [], tag: 'bad!', url: `${baseUrl}/test.html`});
-    await psetTimeout(0); // because FakeEyesWrapper throws, and then the error is set async and will be read in the next call to close()
-    const result = (await presult(close()))[0];
-    expect(result[0].message).to.equal('Tag bad! should be one of the good tags good1,good2');
-  });
-
-  it('rejects with a general error and test result', async () => {
-    wrapper2.goodTags = ['ok-in-1-test'];
-    const {checkWindow, close} = await openEyes({
-      wrappers: [wrapper, wrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
-      appName,
-    });
-    checkWindow({cdt: [], resourceUrls: [], tag: 'ok-in-1-test', url: `${baseUrl}/test.html`});
-    await psetTimeout(0); // because FakeEyesWrapper throws, and then the error is set async and will be read in the next call to close()
-    const result = (await presult(close()))[0];
-    expect(result[0].message).to.equal(
-      'Tag ok-in-1-test should be one of the good tags good1,good2',
-    );
-    expect(result[1].map(r => r.getAsExpected())).to.eql([true]);
-  });
-
-  it('rejects with a diff and test result', async () => {
-    const {checkWindow, close} = await openEyes({
-      wrappers: [wrapper, alwaysDiffWrapper],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
-      appName,
-    });
-    checkWindow({cdt: [], resourceUrls: [], tag: 'good1', url: `${baseUrl}/test.html`});
-    await psetTimeout(0); // because FakeEyesWrapper throws, and then the error is set async and will be read in the next call to close()
-    const result = (await presult(close()))[0];
-    expect(result[0].map(r => r.getAsExpected())).to.eql([true]);
-    expect(result[1].message).to.equal('mismatch');
-  });
-
-  it('rejects with a diff, error and a test result', async () => {
-    wrapper2.goodTags = ['ok-in-1-test'];
-    alwaysDiffWrapper.goodTags = ['ok-in-1-test'];
-    const {checkWindow, close} = await openEyes({
-      wrappers: [alwaysDiffWrapper, wrapper, wrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}, {width: 3, height: 3}],
-      appName,
-    });
-    checkWindow({cdt: [], resourceUrls: [], tag: 'ok-in-1-test', url: `${baseUrl}/test.html`});
-    await psetTimeout(0); // because FakeEyesWrapper throws, and then the error is set async and will be read in the next call to close()
-    const result = (await presult(close()))[0];
-    expect(result[0].message).to.equal('mismatch');
-    expect(result[1].message).to.equal(
-      'Tag ok-in-1-test should be one of the good tags good1,good2',
-    );
-    expect(result[2].map(r => r.getAsExpected())).to.eql([true]);
-  });
-
-  it('resolves with a diff, error and a test result if thorwEx=false', async () => {
-    wrapper2.goodTags = ['ok-in-1-test'];
-    alwaysDiffWrapper.goodTags = ['ok-in-1-test'];
-    const {checkWindow, close} = await openEyes({
-      wrappers: [alwaysDiffWrapper, wrapper, wrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}, {width: 3, height: 3}],
-      appName,
-    });
-    checkWindow({cdt: [], resourceUrls: [], tag: 'ok-in-1-test', url: `${baseUrl}/test.html`});
-    await psetTimeout(0); // because FakeEyesWrapper throws, and then the error is set async and will be read in the next call to close()
-    const result = (await presult(close(false)))[1];
-    expect(result[0].message).to.equal('mismatch');
-    expect(result[1].message).to.equal(
-      'Tag ok-in-1-test should be one of the good tags good1,good2',
-    );
-    expect(result[2].map(r => r.getAsExpected())).to.eql([true]);
   });
 
   it('passes with correct dom', async () => {

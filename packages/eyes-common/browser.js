@@ -58,3 +58,6 @@ exports.ImageUtils = require('./lib/utils/ImageUtils').ImageUtils;
 exports.PerformanceUtils = require('./lib/utils/PerformanceUtils').PerformanceUtils;
 exports.StreamUtils = require('./lib/utils/StreamUtils').ReadableBufferStream;
 exports.TypeUtils = require('./lib/utils/TypeUtils').TypeUtils;
+
+// config
+exports.ImageMatchSettings = require('./lib/config/ImageMatchSettings').ImageMatchSettings;

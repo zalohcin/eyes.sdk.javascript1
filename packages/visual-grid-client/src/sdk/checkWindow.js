@@ -11,9 +11,7 @@ const calculateMatchRegions = require('./calculateMatchRegions');
 const handleBrowserDebugData = require('../troubleshoot/handleBrowserDebugData');
 
 function makeCheckWindow({
-  getError,
-  setError,
-  isAborted,
+  testController,
   saveDebugData,
   createRGridDOMAndGetResourceMapping,
   renderBatch,
@@ -52,7 +50,7 @@ function makeCheckWindow({
   }) {
     const currStepCount = ++stepCounter;
     logger.log(`running checkWindow for test ${testName} step #${currStepCount}`);
-    if (shouldStopAllTests()) {
+    if (testController.shouldStopAllTests()) {
       logger.log('aborting checkWindow synchronously');
       return;
     }
@@ -85,12 +83,11 @@ function makeCheckWindow({
 
     setCheckWindowPromises(
       browsers.map((_browser, i) =>
-        checkWindowJob(getCheckWindowPromises()[i], i).catch(setError.bind(null, i)),
+        checkWindowJob(getCheckWindowPromises()[i], i).catch(testController.setError.bind(null, i)),
       ),
     );
-
     async function checkWindowJob(prevJobPromise = presult(Promise.resolve()), index) {
-      if (shouldStopTest(index)) {
+      if (testController.shouldStopTest(index)) {
         logger.log(
           `aborting checkWindow - not waiting for render to complete (so no renderId yet)`,
         );
@@ -99,7 +96,7 @@ function makeCheckWindow({
 
       const [renderErr, renderIds] = await renderPromise;
 
-      if (shouldStopTest(index)) {
+      if (testController.shouldStopTest(index)) {
         logger.log(
           `aborting checkWindow after render request complete but before waiting for rendered status`,
         );
@@ -109,7 +106,8 @@ function makeCheckWindow({
 
       // render error fails all tests
       if (renderErr) {
-        setError(index, renderErr);
+        logger.log('got render error aborting tests');
+        testController.setFatalError(renderErr);
         renderJobs && renderJobs[index]();
         return;
       }
@@ -123,19 +121,20 @@ function makeCheckWindow({
       );
 
       const [renderStatusErr, renderStatusResult] = await presult(
-        waitForRenderedStatus(renderId, shouldStopTest.bind(null, index)),
+        waitForRenderedStatus(renderId, testController.shouldStopTest.bind(null, index)),
       );
 
-      if (shouldStopTest(index)) {
+      if (testController.shouldStopTest(index)) {
         logger.log('aborting checkWindow after render status finished');
         renderJobs && renderJobs[index]();
         return;
       }
 
       if (renderStatusErr) {
-        logger.log('aborting checkWindow becuase render status failed');
-        setError(index, renderStatusErr);
+        logger.log('got render status error aborting tests');
+        testController.setFatalError(renderStatusErr);
         renderJobs && renderJobs[index]();
+        await openEyesPromises[index];
         return;
       }
 
@@ -165,7 +164,7 @@ function makeCheckWindow({
 
       await prevJobPromise;
 
-      if (shouldStopTest(index)) {
+      if (testController.shouldStopTest(index)) {
         logger.log(
           `aborting checkWindow for ${renderId} because there was an error in some previous job`,
         );
@@ -201,7 +200,7 @@ function makeCheckWindow({
 
       await openEyesPromises[index];
 
-      if (shouldStopTest(index)) {
+      if (testController.shouldStopTest(index)) {
         logger.log(`aborting checkWindow after waiting for openEyes promise`);
         return;
       }
@@ -223,14 +222,14 @@ function makeCheckWindow({
     }
 
     async function startRender() {
-      if (shouldStopAllTests()) {
+      if (testController.shouldStopAllTests()) {
         logger.log(`aborting startRender because there was an error in getRenderInfo`);
         return;
       }
 
       const {rGridDom: dom, allResources: resources} = await getResourcesPromise;
 
-      if (shouldStopAllTests()) {
+      if (testController.shouldStopAllTests()) {
         logger.log(`aborting startRender because there was an error in getAllResources`);
         return;
       }
@@ -260,14 +259,6 @@ function makeCheckWindow({
       }
 
       return renderIds;
-    }
-
-    function shouldStopAllTests() {
-      return browsers.every((_b, i) => getError(i)) || isAborted();
-    }
-
-    function shouldStopTest(index) {
-      return getError(index) || isAborted();
     }
   };
 

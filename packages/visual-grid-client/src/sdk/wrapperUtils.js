@@ -105,7 +105,7 @@ function openWrappers({wrappers, browsers, appName, testName, eyesTransactionThr
       }),
       {
         openEyesPromises: [],
-        resolveTests: [],
+        resolveTests: [], // resolve hooks for jobs in eyesTransactionThroat
       },
     );
 }

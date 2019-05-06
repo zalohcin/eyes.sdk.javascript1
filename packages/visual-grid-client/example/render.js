@@ -26,7 +26,7 @@ const debug = require('debug')('render');
   const {checkWindow, close} = await openEyes({
     appName: 'render script',
     testName: 'render script',
-    browser: [{deviceName: 'iPhone X'}, {width: 320, height: 480}],
+    browser: [{width: 320, height: 480, name: 'chrome'}],
   });
 
   debug('open done');
@@ -43,23 +43,30 @@ const debug = require('debug')('render');
   const {cdt, url, resourceUrls, blobs, frames} = await page.evaluate(processPageAndSerialize);
 
   debug('processPage done');
+
   const resourceContents = blobs.map(({url, type, value}) => ({
     url,
     type,
     value: Buffer.from(value, 'base64'),
   }));
+
   debug('decoding done');
 
   checkWindow({url, cdt, resourceUrls, resourceContents, frames});
-  const results = await close().catch(err => err);
-  if (results instanceof Error) {
-    console.log('error!', results);
+  const results = await close(false);
+  if (results.some(r => r instanceof Error)) {
+    console.log(
+      '\nTest error:\n\t',
+      results.map(r => r.message || r).reduce((acc, m) => ((acc = `${acc}\n\t${m}`), acc), ''),
+    );
   } else {
     console.log(
-      `Test result:\n\t${results.map(r => `${r.getStatus()} ${r.getUrl()}`).join('\n\t')}`,
+      '\nTest result:\n\t',
+      results.map(r => `${r.getStatus()} ${r.getUrl()}`).join('\n\t'),
     );
   }
   await browser.close();
   await server.close();
+
   debug('browser closed');
 })();

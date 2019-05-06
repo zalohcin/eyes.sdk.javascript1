@@ -2,6 +2,7 @@
 const makeCheckWindow = require('./checkWindow');
 const makeAbort = require('./makeAbort');
 const makeClose = require('./makeClose');
+const makeTestContorler = require('./makeTestContorler');
 
 const {
   initWrappers,
@@ -96,9 +97,6 @@ function makeOpenEyes({
       wrappers ||
       initWrappers({count: browsers.length, apiKey, logHandler: logger.getLogHandler()});
 
-    let errors = browsers.map(() => undefined);
-    let aborted = false;
-
     configureWrappers({
       wrappers,
       browsers,
@@ -145,11 +143,9 @@ function makeOpenEyes({
     let stepCounter = 0;
 
     let checkWindowPromises = wrappers.map(() => Promise.resolve());
-
+    const testController = makeTestContorler({testName, numOfTests: wrappers.length, logger});
     const checkWindow = makeCheckWindow({
-      getError,
-      setError,
-      isAborted,
+      testController,
       saveDebugData,
       createRGridDOMAndGetResourceMapping,
       renderBatch,
@@ -172,8 +168,7 @@ function makeOpenEyes({
       openEyesPromises,
       wrappers,
       resolveTests,
-      getError,
-      isAborted,
+      testController,
       logger,
     });
     const abort = makeAbort({
@@ -181,7 +176,7 @@ function makeOpenEyes({
       openEyesPromises,
       wrappers,
       resolveTests,
-      setIsAborted,
+      testController,
     });
 
     return {
@@ -189,24 +184,6 @@ function makeOpenEyes({
       close,
       abort,
     };
-
-    function setError(index, err) {
-      logger.log('error set in test', testName, err);
-      errors[index] = err;
-    }
-
-    function getError(index) {
-      return errors[index];
-    }
-
-    function setIsAborted() {
-      logger.log('user aborted test', testName);
-      aborted = true;
-    }
-
-    function isAborted() {
-      return aborted;
-    }
 
     function getCheckWindowPromises() {
       return checkWindowPromises;

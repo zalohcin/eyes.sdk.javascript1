@@ -39,6 +39,7 @@ class FakeEyesWrapper extends EventEmitter {
     goodTags,
     goodResources = [],
     closeErr = false,
+    failRender,
   }) {
     super();
     this._logger = {
@@ -54,6 +55,7 @@ class FakeEyesWrapper extends EventEmitter {
     this.resultsRoute = '/results_url';
     this.matchLevel = 'Strict';
     this.closeErr = closeErr;
+    this.failRender = failRender;
   }
 
   async open(_appName, _testName, _viewportSize) {
@@ -67,6 +69,9 @@ class FakeEyesWrapper extends EventEmitter {
   }
 
   async renderBatch(renderRequests) {
+    if (this.failRender) {
+      throw new Error('render error');
+    }
     const renderInfo = renderRequests[0].getRenderInfo();
     this.sizeMode = renderInfo.getSizeMode();
     this.selector = renderInfo.getSelector();
