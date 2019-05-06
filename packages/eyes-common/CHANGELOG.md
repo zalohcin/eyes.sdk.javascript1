@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.4.1...@applitools/eyes-common@3.4.3) (2019-05-06)
+
+
+### Bug Fixes
+
+* **eyes-common:** update `browser` exports ([b106a36](https://github.com/applitools/eyes.sdk.javascript1/commit/b106a36))
+* **visual-grid-client, eyes-common:** aborting all tests on a render error ([e2b2365](https://github.com/applitools/eyes.sdk.javascript1/commit/e2b2365))
+
+
+
+
+
 ## [3.4.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.4.0...@applitools/eyes-common@3.4.1) (2019-05-03)
 
 

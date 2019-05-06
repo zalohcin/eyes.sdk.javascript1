@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.16.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.16.3...@applitools/eyes-selenium@4.16.4) (2019-05-06)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** assign id to element before capturing DOM ([f95386c](https://github.com/applitools/eyes.sdk.javascript1/commit/f95386c))
+* **eyes-selenium:** remove `toJSON` method, the error was fixed in Jest env ([ff87d9b](https://github.com/applitools/eyes.sdk.javascript1/commit/ff87d9b))
+
+
+
+
+
 ## [4.16.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.16.2...@applitools/eyes-selenium@4.16.3) (2019-05-03)
 
 

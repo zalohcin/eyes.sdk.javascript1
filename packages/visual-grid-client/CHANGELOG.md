@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [12.8.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.8.0...@applitools/visual-grid-client@12.8.2) (2019-05-06)
+
+
+### Bug Fixes
+
+* **visual-grid-client, eyes-common:** aborting all tests on a render error ([e2b2365](https://github.com/applitools/eyes.sdk.javascript1/commit/e2b2365))
+
+
+
+
+
 # [12.8.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.6.7...@applitools/visual-grid-client@12.8.0) (2019-05-03)
 
 
