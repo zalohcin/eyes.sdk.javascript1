@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [12.8.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.8.2...@applitools/visual-grid-client@12.8.4) (2019-05-07)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** add `test`, `docs` folders to .npmignore ([32ac278](https://github.com/applitools/eyes.sdk.javascript1/commit/32ac278))
+
+
+
+
+
 ## [12.8.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.8.0...@applitools/visual-grid-client@12.8.2) (2019-05-06)
 
 

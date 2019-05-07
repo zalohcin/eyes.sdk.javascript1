@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.4.3...@applitools/eyes-common@3.4.4) (2019-05-07)
+
+
+### Bug Fixes
+
+* **eyes-common:** add `test` folder to .npmignore ([74e0804](https://github.com/applitools/eyes.sdk.javascript1/commit/74e0804))
+
+
+
+
+
 ## [3.4.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.4.1...@applitools/eyes-common@3.4.3) (2019-05-06)
 
 
