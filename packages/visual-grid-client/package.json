@@ -45,7 +45,7 @@
     "throat": "^4.1.0"
   },
   "devDependencies": {
-    "@applitools/dom-snapshot": "^1.1.9",
+    "@applitools/dom-snapshot": "^1.1.10",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.4",
