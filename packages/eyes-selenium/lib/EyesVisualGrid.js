@@ -238,7 +238,7 @@ class EyesVisualGrid extends Eyes {
     await this._checkWindowCommand({
       resourceUrls,
       resourceContents,
-      // frames
+      frames,
       url: pageUrl,
       cdt,
       tag: checkSettings.getName(),
