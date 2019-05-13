@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.16.7](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.16.6...@applitools/eyes-selenium@4.16.7) (2019-05-13)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** convert frames' blobs to resourceContents ([82580bc](https://github.com/applitools/eyes.sdk.javascript1/commit/82580bc))
+
+
+
+
+
 ## [4.16.6](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.16.5...@applitools/eyes-selenium@4.16.6) (2019-05-08)
 
 
