@@ -3,6 +3,7 @@
 const puppeteer = require('puppeteer');
 const {makeVisualGridClient} = require('../src/visual-grid-client');
 const {getProcessPageAndSerializeScript} = require('@applitools/dom-snapshot');
+const {delay: _delay} = require('@applitools/functional-commons');
 const testServer = require('../test/util/testServer');
 const debug = require('debug')('render');
 
@@ -26,7 +27,7 @@ const debug = require('debug')('render');
   const {checkWindow, close} = await openEyes({
     appName: 'render script',
     testName: 'render script',
-    browser: [{width: 320, height: 480, name: 'chrome'}],
+    browser: [{width: 1024, height: 768, name: 'chrome'}],
   });
 
   debug('open done');
@@ -40,6 +41,7 @@ const debug = require('debug')('render');
 
   debug('navigation done');
 
+  // await _delay(10000);
   const frame = await page.evaluate(processPageAndSerialize);
 
   debug('processPage done');
