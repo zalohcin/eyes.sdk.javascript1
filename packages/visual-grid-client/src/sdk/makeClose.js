@@ -16,11 +16,11 @@ function makeClose({
   });
 
   return async (throwEx = true) => {
-    const fulfillError = (throwEx ? Promise.reject : Promise.resolve).bind(Promise);
+    const settleError = (throwEx ? Promise.reject : Promise.resolve).bind(Promise);
 
     if (testController.getIsAbortedByUser()) {
       logger.log('closeEyes() aborted by user');
-      return fulfillError([]);
+      return settleError([]);
     }
 
     let error, didError;
@@ -29,7 +29,7 @@ function makeClose({
 
       if ((error = testController.getFatalError())) {
         logger.log('closeEyes() fatal error found');
-        await wrappers[testIndex].abortIfNotClosed();
+        await wrappers[testIndex].ensureAborted();
         return (didError = true), error;
       }
       if ((error = testController.getError(testIndex))) {
@@ -39,7 +39,7 @@ function makeClose({
 
       const [closeError, closeResult] = await presult(wrappers[testIndex].close(throwEx));
       return closeError ? ((didError = true), closeError) : closeResult;
-    }).then(results => (didError ? fulfillError(results) : results));
+    }).then(results => (didError ? settleError(results) : results));
   };
 }
 

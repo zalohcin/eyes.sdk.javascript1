@@ -18,6 +18,22 @@ class EyesWrapper extends EyesBase {
     }
   }
 
+  async ensureAborted() {
+    if (!this.getRunningSession()) {
+      this._configuration.mergeConfig(this.getAssumedConfiguration());
+      await this._ensureRunningSession();
+    }
+    await this.abortIfNotClosed();
+  }
+
+  setAssumedConfiguration(configuration) {
+    this._assumedConfiguration = configuration;
+  }
+
+  getAssumedConfiguration() {
+    return this._assumedConfiguration;
+  }
+
   /** @override */
   getBaseAgentId() {
     return this.agentId || `visual-grid-client/${VERSION}`;

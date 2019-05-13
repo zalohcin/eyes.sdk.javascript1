@@ -201,6 +201,10 @@ class FakeEyesWrapper extends EventEmitter {
     this.aborted = !this.closed;
   }
 
+  async ensureAborted() {}
+
+  setAssumedConfiguration() {}
+
   getExpectedCdt() {
     return loadJsonFixture(this.goodFilename);
   }

@@ -40,19 +40,23 @@ const debug = require('debug')('render');
 
   debug('navigation done');
 
-  const {cdt, url, resourceUrls, blobs, frames} = await page.evaluate(processPageAndSerialize);
+  const frame = await page.evaluate(processPageAndSerialize);
 
   debug('processPage done');
 
-  const resourceContents = blobs.map(({url, type, value}) => ({
-    url,
-    type,
-    value: Buffer.from(value, 'base64'),
-  }));
+  const mapBlobs = f => {
+    f.resourceContents = f.blobs.map(({url, type, value}) => ({
+      url,
+      type,
+      value: Buffer.from(value, 'base64'),
+    }));
+    f.frames.forEach(mapBlobs);
+  };
+  mapBlobs(frame);
 
   debug('decoding done');
 
-  checkWindow({url, cdt, resourceUrls, resourceContents, frames});
+  checkWindow(frame);
   const results = await close(false);
   if (results.some(r => r instanceof Error)) {
     console.log(

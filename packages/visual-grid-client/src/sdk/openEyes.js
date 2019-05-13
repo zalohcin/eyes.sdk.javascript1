@@ -3,6 +3,7 @@ const makeCheckWindow = require('./checkWindow');
 const makeAbort = require('./makeAbort');
 const makeClose = require('./makeClose');
 const makeTestContorler = require('./makeTestContorler');
+const assumeEnvironment = require('./assumeEnvironment');
 
 const {
   initWrappers,
@@ -121,6 +122,7 @@ function makeOpenEyes({
       ignoreBaseline,
       serverUrl,
       agentId,
+      assumeEnvironment,
     });
 
     const renderInfoPromise =
