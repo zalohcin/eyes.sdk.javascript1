@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.17.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.16.8...@applitools/eyes-selenium@4.17.0) (2019-05-13)
+
+
+### Features
+
+* **eyes-selenium:** add `closeAsync` method to allow awaiting for tests to finish in the background ([9235e6e](https://github.com/applitools/eyes.sdk.javascript1/commit/9235e6e))
+
+
+
+
+
 ## [4.16.8](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.16.7...@applitools/eyes-selenium@4.16.8) (2019-05-13)
 
 **Note:** Version bump only for package @applitools/eyes-selenium

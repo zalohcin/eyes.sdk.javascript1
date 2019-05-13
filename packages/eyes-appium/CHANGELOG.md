@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.13](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-appium@4.6.12...@applitools/eyes-appium@4.6.13) (2019-05-13)
+
+**Note:** Version bump only for package @applitools/eyes-appium
+
+
+
+
+
 ## [4.6.12](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-appium@4.6.11...@applitools/eyes-appium@4.6.12) (2019-05-13)
 
 **Note:** Version bump only for package @applitools/eyes-appium

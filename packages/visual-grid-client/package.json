@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "12.9.1",
+  "version": "12.9.2",
   "description": "",
   "keywords": [
     "applitools",
@@ -67,7 +67,7 @@
     "build:browser": "cd test/fixtures/test-app && npm i && npm run build",
     "test:browser": "mocha --no-timeouts 'test/browser/**/*.test.js'",
     "test": "npm run build:browser && npm run test:mocha",
-    "render":"node example/render.js"
+    "render": "node example/render.js"
   },
   "license": "MIT",
   "engines": {
