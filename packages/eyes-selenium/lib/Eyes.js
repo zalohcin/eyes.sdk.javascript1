@@ -402,6 +402,14 @@ class Eyes extends EyesBase {
     super.addTextTrigger(elementRegion, text);
   }
 
+  // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
+  /**
+   * @return {Promise}
+   */
+  async closeAsync() {
+    return undefined;
+  }
+
   /**
    * @return {Promise<RectangleSize>} - The viewport size of the AUT.
    */

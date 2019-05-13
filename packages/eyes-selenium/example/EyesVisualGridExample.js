@@ -37,18 +37,21 @@ const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, Configuration, Browse
     await eyes.check('Main Page', Target.window());
 
     // Click the "Click me!" button.
-    await driver.findElement(By.css('button')).click();
+    //await driver.findElement(By.css('button')).click();
 
     // Visual checkpoint #2.
     await eyes.check('Click!', Target.window());
 
+    // If you want to make few tests in row, you can finish each test with `closeAsync` and then `getAllTestResults` after all tests
+    // await eyes.closeAsync();
+
     // End the test.
-    // const results = await eyes.close(); // will return only first TestResults, but as we have two browsers, we need more results
+    // const results = await eyes.close(); // will return only first TestResults, but as we have two browsers, we need more result
     const results = await eyes.getRunner().getAllTestResults();
     console.log(results); // eslint-disable-line
   } catch (e) {
     // if results failed, it goes here
-    console.log(e); // eslint-disable-line
+    console.log('Error', e); // eslint-disable-line
   } finally {
     // Close the browser.
     await driver.quit();

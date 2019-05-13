@@ -3,8 +3,9 @@
 const { makeVisualGridClient } = require('@applitools/visual-grid-client');
 const { getProcessPageAndPollScript } = require('@applitools/dom-snapshot');
 const { ArgumentGuard, TypeUtils, GeneralUtils } = require('@applitools/eyes-common');
-const { TestFailedError, CorsIframeHandle, CorsIframeHandler } = require('@applitools/eyes-sdk-core');
+const { CorsIframeHandle, CorsIframeHandler } = require('@applitools/eyes-sdk-core');
 
+const { TestResultSummary } = require('./visualgrid/TestResultSummary');
 const { VisualGridRunner } = require('./visualgrid/VisualGridRunner');
 const { BrowserType } = require('./config/BrowserType');
 const { Eyes } = require('./Eyes');
@@ -37,6 +38,7 @@ class EyesVisualGrid extends Eyes {
     /** @type {string} */ this._processResourcesScript = undefined;
     /** @function */ this._checkWindowCommand = undefined;
     /** @function */ this._closeCommand = undefined;
+    /** @type {Promise} */ this._closePromise = undefined;
   }
 
   // noinspection JSMethodCanBeStatic
@@ -120,11 +122,54 @@ class EyesVisualGrid extends Eyes {
       saveDebugData: this._configuration.getSaveDebugData(),
     });
 
-    this._checkWindowCommand = checkWindow;
-    this._closeCommand = close;
     this._isOpen = true;
+    this._checkWindowCommand = checkWindow;
+    this._closeCommand = async () => {
+      return close(true).catch(err => {
+        if (Array.isArray(err)) {
+          return err;
+        }
+
+        throw err;
+      });
+    };
 
     return this._driver;
+  }
+
+  /**
+   * @package
+   * @param {boolean} [throwEx=true]
+   * @return {Promise<TestResultSummary>}
+   */
+  async closeAndReturnResults(throwEx = true) {
+    try {
+      let resultsPromise = this._closePromise || this._closeCommand();
+      const res = await resultsPromise;
+      const testResultSummary = new TestResultSummary(res);
+
+      if (throwEx === true) {
+        for (const result of testResultSummary.getAllResults()) {
+          if (result.getException()) {
+            throw result.getException();
+          }
+        }
+      }
+
+      return testResultSummary;
+    } finally {
+      this._isOpen = false;
+      this._closePromise = undefined;
+    }
+  }
+
+  /**
+   * @return {Promise}
+   */
+  async closeAsync() {
+    if (!this._closePromise) {
+      this._closePromise = this._closeCommand();
+    }
   }
 
   /**
@@ -132,31 +177,15 @@ class EyesVisualGrid extends Eyes {
    * @return {Promise<TestResults>}
    */
   async close(throwEx = true) {
-    try {
-      const results = await this._closeCommand(throwEx);
+    const results = await this.closeAndReturnResults(throwEx);
 
-      for (const result of results) {
-        if (result instanceof TestFailedError) {
-          return result.getTestResults();
-        }
+    for (const result of results.getAllResults()) {
+      if (result.getException()) {
+        return result.getTestResults();
       }
-
-      return results[0];
-    } catch (err) {
-      if (Array.isArray(err)) {
-        for (const result of err) {
-          if (result instanceof Error) {
-            throw result;
-          }
-        }
-
-        throw err[0];
-      }
-
-      throw err;
-    } finally {
-      this._isOpen = false;
     }
+
+    return results.getAllResults()[0].getTestResults();
   }
 
   // noinspection JSMethodCanBeStatic
