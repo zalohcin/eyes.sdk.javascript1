@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.17.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.17.0...@applitools/eyes-selenium@4.17.1) (2019-05-14)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** share VisualGridRunner between multiple Eyes instances ([20c3741](https://github.com/applitools/eyes.sdk.javascript1/commit/20c3741))
+
+
+
+
+
 # [4.17.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.16.8...@applitools/eyes-selenium@4.17.0) (2019-05-13)
 
 
