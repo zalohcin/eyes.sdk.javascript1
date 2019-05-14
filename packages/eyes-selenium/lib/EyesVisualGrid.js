@@ -33,7 +33,7 @@ class EyesVisualGrid extends Eyes {
     super(serverUrl, isDisabled, true);
 
     /** @type {VisualGridRunner} */ this._visualGridRunner = visualGridRunner;
-    this._visualGridRunner._eyes = this;
+    this._visualGridRunner._eyesInstances.push(this);
 
     /** @type {string} */ this._processResourcesScript = undefined;
     /** @function */ this._checkWindowCommand = undefined;
