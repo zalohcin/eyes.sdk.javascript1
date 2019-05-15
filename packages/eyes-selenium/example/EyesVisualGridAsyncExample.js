@@ -54,16 +54,16 @@ async function runTest(url, runner) {
   const eyes = initializeEyes(runner);
 
   // Create a new Webdriver
-  const driver = new Builder()
+  const webDriver = new Builder()
     .withCapabilities(Capabilities.chrome())
     .build();
 
   try {
     // Navigate to the URL we want to test
-    await driver.get(url);
+    await webDriver.get(url);
 
     // Call Open on eyes to initialize a test session
-    await eyes.open(driver);
+    await eyes.open(webDriver);
 
     // Check the page
     await eyes.check('Main Page ' + url, Target.window());
@@ -74,13 +74,13 @@ async function runTest(url, runner) {
     console.log('Error', e); // eslint-disable-line
   } finally {
     // Close the browser
-    await driver.quit();
+    await webDriver.quit();
   }
 }
 
 (async () => {
   // Create a runner with concurrency of 10
-  const visualGridRunner = new VisualGridRunner(10);
+  const runner = new VisualGridRunner(10);
 
   try {
     // Define links to process
@@ -92,11 +92,11 @@ async function runTest(url, runner) {
 
     // Run test for each link
     for (const url of urlsToTest) {
-      await runTest(url, visualGridRunner);
+      await runTest(url, runner);
     }
 
     // Get all results at once
-    const results = await visualGridRunner.getAllTestResults(false);
+    const results = await runner.getAllTestResults(false);
     // Print results
     console.log(results); // eslint-disable-line
   } catch (e) {
