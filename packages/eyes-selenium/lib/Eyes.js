@@ -407,7 +407,7 @@ class Eyes extends EyesBase {
    * @return {Promise}
    */
   async closeAsync() {
-    return undefined;
+    await this.close(false);
   }
 
   /**
