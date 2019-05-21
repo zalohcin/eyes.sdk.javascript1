@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.7.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.7.3...@applitools/eyes-sdk-core@5.7.4) (2019-05-21)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** fix conflict between sendDom check and global values ([a4da78c](https://github.com/applitools/eyes.sdk.javascript1/commit/a4da78c))
+
+
+
+
+
 ## [5.7.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.7.2...@applitools/eyes-sdk-core@5.7.3) (2019-05-21)
 
 **Note:** Version bump only for package @applitools/eyes-sdk-core
