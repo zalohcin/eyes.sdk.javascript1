@@ -393,4 +393,18 @@ describe('TypeUtils', () => {
       assert.ok(TypeUtils.isUrl('//example.com/dsasa'));
     });
   });
+
+  describe('getOrDefault()', () => {
+    it('should return default value', () => {
+      assert.ok(TypeUtils.getOrDefault(undefined, true));
+    });
+
+    it('should return value (true)', () => {
+      assert.ok(TypeUtils.getOrDefault(true, false));
+    });
+
+    it('should return value (false)', () => {
+      assert.ok(!TypeUtils.getOrDefault(false, true));
+    });
+  });
 });
