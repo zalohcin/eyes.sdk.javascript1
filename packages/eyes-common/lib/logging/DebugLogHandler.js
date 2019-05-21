@@ -12,10 +12,10 @@ class DebugLogHandler extends LogHandler {
    * @param {boolean} [isVerbose=false] - Whether to handle or ignore verbose log messages.
    * @param {string} [appName] - The app name to use
    */
-  constructor(isVerbose = false, appName) {
+  constructor(isVerbose = false, appName, debugInstance) {
     super(isVerbose);
 
-    this._debug = debug(appName ? `eyes:${appName}` : 'eyes');
+    this._debug = debugInstance || debug(appName || 'eyes');
   }
 
   /**
@@ -29,6 +29,10 @@ class DebugLogHandler extends LogHandler {
     if (!verbose || this.getIsVerbose()) {
       this._debug(logString);
     }
+  }
+
+  extend(name) {
+    return new DebugLogHandler(this.getIsVerbose(), null, this._debug.extend(name))
   }
 }
 

@@ -66,6 +66,13 @@ class Logger {
     this._logHandler = handler || new NullLogHandler();
   }
 
+  extend(name) {
+    const newLog = new Logger()
+    const handler = this._logHandler.extend && this._logHandler.extend(name) || this._logHandler
+    newLog.setLogHandler(handler)
+    return newLog
+  }
+
   /**
    * Writes a verbose write message.
    *
