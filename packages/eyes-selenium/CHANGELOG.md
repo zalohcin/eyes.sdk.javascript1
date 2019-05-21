@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.17.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.17.1...@applitools/eyes-selenium@4.17.2) (2019-05-21)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** cache scrollRootElement and reuse when possible ([6246b8a](https://github.com/applitools/eyes.sdk.javascript1/commit/6246b8a))
+* **eyes-selenium:** call `close(false)` when `closeAsync()` called from Selenium ([1e089b9](https://github.com/applitools/eyes.sdk.javascript1/commit/1e089b9))
+
+
+
+
+
 ## [4.17.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.17.0...@applitools/eyes-selenium@4.17.1) (2019-05-14)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.4.4...@applitools/eyes-common@3.5.0) (2019-05-21)
+
+
+### Features
+
+* **eyes-common:** added extend to Logger ([3f4a4c0](https://github.com/applitools/eyes.sdk.javascript1/commit/3f4a4c0))
+
+
+
+
+
 ## [3.4.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.4.3...@applitools/eyes-common@3.4.4) (2019-05-07)
 
 
