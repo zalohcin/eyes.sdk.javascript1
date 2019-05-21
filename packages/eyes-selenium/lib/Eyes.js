@@ -652,16 +652,20 @@ class Eyes extends EyesBase {
    * @return {WebElement} - the current frame scroll root element
    */
   getCurrentFrameScrollRootElement() {
-    const fc = this._driver.getFrameChain().clone();
-    const currentFrame = fc.peek();
+    const currentFrame = this._driver.getFrameChain().peek();
 
     let scrollRootElement = null;
     if (currentFrame) {
       scrollRootElement = currentFrame.getScrollRootElement();
+
+      if (!scrollRootElement) { // TODO: add check if mobile device
+        scrollRootElement = this._driver.findElement(By.css("html"));
+        currentFrame.setScrollRootElement(scrollRootElement);
+      }
     }
 
-    if (!scrollRootElement) { // TODO: add check if mobile device
-      scrollRootElement = this._driver.findElement(By.css("html"));
+    if (!scrollRootElement) {
+      return this.getScrollRootElement();
     }
 
     return scrollRootElement;

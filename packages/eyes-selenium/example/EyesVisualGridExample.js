@@ -37,7 +37,7 @@ const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, Configuration, Browse
     await eyes.check('Main Page', Target.window());
 
     // Click the "Click me!" button.
-    //await driver.findElement(By.css('button')).click();
+    await driver.findElement(By.css('button')).click();
 
     // Visual checkpoint #2.
     await eyes.check('Click!', Target.window());
