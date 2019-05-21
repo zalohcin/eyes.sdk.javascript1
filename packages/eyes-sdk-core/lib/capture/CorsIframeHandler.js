@@ -68,7 +68,7 @@ class CorsIframeHandler {
     });
 
     frames.forEach(frame => {
-      CorsIframeHandler.blankCorsIframeSrcOfCdt(frame.cdt, frame.frames)
+      CorsIframeHandler.blankCorsIframeSrcOfCdt(frame.cdt, frame.frames);
     });
 
     return cdt;

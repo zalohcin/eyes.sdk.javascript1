@@ -230,7 +230,7 @@ class ServerConnector {
   _createHttpOptions(requestOptions, isIncludeApiKey = true, isMergeDefaultOptions = true) {
     let options = requestOptions;
     if (isMergeDefaultOptions) {
-      options = GeneralUtils.mergeDeep(this._httpOptions, options)
+      options = GeneralUtils.mergeDeep(this._httpOptions, options);
     } else {
       if (options.params === undefined) {
         options.params = {};

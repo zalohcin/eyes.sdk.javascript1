@@ -44,7 +44,7 @@ class EyesFactory {
    * @private
    */
   static fromBrowserInfo(serverUrl, isDisabled, config = {}) {
-    const eyes = new EyesFactory(serverUrl, isDisabled, !!config.browser)
+    const eyes = new EyesFactory(serverUrl, isDisabled, !!config.browser);
     if (config.browser) {
       const cfg = new Configuration();
       const browsers = Array.isArray(config.browser) ? config.browser : [config.browser];
@@ -56,12 +56,12 @@ class EyesFactory {
           cfg.addDeviceEmulation(browser.deviceName, browser.screenOrientation);
         }
       });
-      eyes.setConfiguration(cfg)
+      eyes.setConfiguration(cfg);
     }
 
     eyes._corsIframeHandle = CorsIframeHandle.BLANK;
 
-    return eyes
+    return eyes;
   }
 }
 

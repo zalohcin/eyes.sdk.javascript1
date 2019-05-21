@@ -11,7 +11,7 @@ describe('MatchSingleWindowTask', () => {
     const checkSettings = new CheckSettings();
 
     it('should return correct default values', async () => {
-      const ms = await task.createImageMatchSettings(checkSettings, null)
+      const ms = await task.createImageMatchSettings(checkSettings, null);
       const expectedSerialization = '{"matchLevel":"Strict","ignoreCaret":false,"useDom":true,"enablePatterns":false,' +
         '"exact":null,"ignore":[],"layout":[],"strict":[],"content":[],"floating":[]}';
       assert.strictEqual(JSON.stringify(ms), expectedSerialization, 'ImageMatchSettings serialization does not match!');

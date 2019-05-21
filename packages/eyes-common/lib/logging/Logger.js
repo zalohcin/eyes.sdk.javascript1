@@ -66,11 +66,15 @@ class Logger {
     this._logHandler = handler || new NullLogHandler();
   }
 
+  /**
+   * @param {string} name
+   * @return {Logger}
+   */
   extend(name) {
-    const newLog = new Logger()
-    const handler = this._logHandler.extend && this._logHandler.extend(name) || this._logHandler
-    newLog.setLogHandler(handler)
-    return newLog
+    const newLogger = new Logger();
+    const handler = this._logHandler.extend ? this._logHandler.extend(name) : this._logHandler;
+    newLogger.setLogHandler(handler);
+    return newLogger;
   }
 
   /**

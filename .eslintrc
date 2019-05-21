@@ -22,6 +22,7 @@
     "mocha-no-only"
   ],
   "rules": {
+    "semi": ["error", "always"],
     "strict": ["error", "global"],
     "one-var": ["error", {"initialized": "never"}],
     "comma-dangle": ["error", {
