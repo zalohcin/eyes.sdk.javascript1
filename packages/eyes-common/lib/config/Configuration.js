@@ -653,6 +653,7 @@ class Configuration {
    * Sets the host application - overrides the one in the agent string.
    *
    * @param {string} value - The application running the AUT (e.g., Chrome).
+   * @return {this}
    */
   setDeviceInfo(value) {
     if (TypeUtils.isNull(value)) {
