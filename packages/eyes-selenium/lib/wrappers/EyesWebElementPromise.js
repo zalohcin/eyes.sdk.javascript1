@@ -1,7 +1,5 @@
 'use strict';
 
-const { WebElementPromise } = require('selenium-webdriver');
-
 const { EyesWebElement } = require('./EyesWebElement');
 
 /**
@@ -20,12 +18,12 @@ const { EyesWebElement } = require('./EyesWebElement');
 class EyesWebElementPromise extends EyesWebElement {
   /**
    * @param {Logger} logger
-   * @param {!EyesWebDriver} driver The parent WebDriver instance for this element.
-   * @param {!Promise<!WebElement>} el A promise that will resolve to the promised element.
+   * @param {EyesWebDriver} driver The parent WebDriver instance for this element.
+   * @param {WebElement} webElement A promise that will resolve to the promised element.
    * @param {*} locator
    */
-  constructor(logger, driver, el, locator) {
-    const webElement = new WebElementPromise(driver.getRemoteWebDriver(), el);
+  constructor(logger, driver, webElement, locator) {
+    const el = Promise.resolve(new EyesWebElement(logger, driver, webElement));
     super(logger, driver, webElement);
 
     this._foundBy = String(locator);
@@ -46,7 +44,7 @@ class EyesWebElementPromise extends EyesWebElement {
      * Defers returning the element ID until the wrapped WebElement has been resolved.
      * @override
      */
-    this.getId = () => el.then(el2 => el2.getId());
+    this.getId = () => webElement.getId();
   }
 
   /**
