@@ -1,6 +1,6 @@
 {
-  "name": "wdio-eyes-service",
-  "version": "0.0.1",
+  "name": "@applitools/eyes-webdriverio4-service",
+  "version": "1.0.0",
   "description": "",
   "keywords": [
     "wdio-service"
