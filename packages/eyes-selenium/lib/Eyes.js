@@ -649,23 +649,18 @@ class Eyes extends EyesBase {
    * Gets current frame scroll root element.
    *
    * @ignore
-   * @return {WebElement} - the current frame scroll root element
+   * @return {Promise<WebElement>} - the current frame scroll root element
    */
-  getCurrentFrameScrollRootElement() {
+  async getCurrentFrameScrollRootElement() {
     const currentFrame = this._driver.getFrameChain().peek();
 
     let scrollRootElement = null;
     if (currentFrame) {
-      scrollRootElement = currentFrame.getScrollRootElement();
-
-      if (!scrollRootElement) { // TODO: add check if mobile device
-        scrollRootElement = this._driver.findElement(By.css("html"));
-        currentFrame.setScrollRootElement(scrollRootElement);
-      }
+      scrollRootElement = await currentFrame.getForceScrollRootElement(this._driver);
     }
 
     if (!scrollRootElement) {
-      return this.getScrollRootElement();
+      scrollRootElement = await this.getScrollRootElement();
     }
 
     return scrollRootElement;
@@ -673,9 +668,9 @@ class Eyes extends EyesBase {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @return {WebElement}
+   * @return {Promise<WebElement>}
    */
-  getScrollRootElement() {
+  async getScrollRootElement() {
     return this._scrollRootElement;
   }
 

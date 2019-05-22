@@ -168,7 +168,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    * @return {Promise<Location>}
    */
   async _getCurrentFrameScrollRootElement(executor) {
-    const scrollRootElement = this._driver.getEyes().getCurrentFrameScrollRootElement();
+    const scrollRootElement = await this._driver.getEyes().getCurrentFrameScrollRootElement();
     const positionProvider = new ScrollPositionProvider(this._logger, executor, scrollRootElement);
     return positionProvider.getCurrentPosition();
   }

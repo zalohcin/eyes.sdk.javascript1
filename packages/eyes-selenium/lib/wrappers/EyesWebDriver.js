@@ -2,7 +2,7 @@
 
 const { By } = require('selenium-webdriver');
 const { IWebDriver } = require('selenium-webdriver/lib/webdriver');
-const { ArgumentGuard, MutableImage } = require('@applitools/eyes-common');
+const { ArgumentGuard, MutableImage, GeneralUtils } = require('@applitools/eyes-common');
 
 const { FrameChain } = require('../frames/FrameChain');
 const { EyesSeleniumUtils } = require('../EyesSeleniumUtils');
@@ -505,6 +505,13 @@ class EyesWebDriver extends IWebDriver {
   async getSessionId() {
     const session = await this._driver.getSession();
     return session.getId();
+  }
+
+  /**
+   * @override
+   */
+  toString() {
+    return GeneralUtils.toString(this, ['_logger', '_eyes']);
   }
 
   /**

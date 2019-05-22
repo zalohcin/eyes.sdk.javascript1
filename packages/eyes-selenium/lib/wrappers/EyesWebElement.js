@@ -1,7 +1,7 @@
 'use strict';
 
 const { By, WebElement } = require('selenium-webdriver');
-const { Region, ArgumentGuard, CoordinatesType, TypeUtils, RectangleSize, Location, EyesError } = require('@applitools/eyes-common');
+const { Region, ArgumentGuard, CoordinatesType, TypeUtils, RectangleSize, Location, EyesError, GeneralUtils } = require('@applitools/eyes-common');
 const { MouseTrigger } = require('@applitools/eyes-sdk-core');
 
 const JS_GET_SCROLL_SIZE = 'return [arguments[0].scrollWidth, arguments[0].scrollHeight];';
@@ -94,6 +94,13 @@ class EyesWebElement extends WebElement {
     }
 
     return false;
+  }
+
+  /**
+   * @override
+   */
+  toString() {
+    return GeneralUtils.toString(this, ['_logger', '_eyesDriver', '_positionProvider']);
   }
 
   /**

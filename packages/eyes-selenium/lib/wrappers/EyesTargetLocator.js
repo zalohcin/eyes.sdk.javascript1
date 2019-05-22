@@ -35,7 +35,6 @@ class EyesTargetLocator extends TargetLocator {
     this._driver = driver;
     this._targetLocator = targetLocator;
     this._jsExecutor = new SeleniumJavaScriptExecutor(driver);
-    this._scrollPosition = new ScrollPositionProvider(this._logger, this._jsExecutor, this._driver.getEyes().getCurrentFrameScrollRootElement());
 
     /** @type {ScrollPositionMemento} */
     this._defaultContentPositionMemento = undefined;
@@ -170,7 +169,8 @@ class EyesTargetLocator extends TargetLocator {
   async framesDoScroll(frameChain) {
     this._logger.verbose('enter');
     await this.defaultContent();
-    const scrollProvider = new ScrollPositionProvider(this._logger, this._jsExecutor, this._driver.getEyes().getCurrentFrameScrollRootElement());
+    const scrollRootElement = await this._driver.getEyes().getCurrentFrameScrollRootElement();
+    const scrollProvider = new ScrollPositionProvider(this._logger, this._jsExecutor, scrollRootElement);
     this._defaultContentPositionMemento = await scrollProvider.getState();
 
     for (const frame of frameChain.getFrames()) {
@@ -289,7 +289,9 @@ class EyesTargetLocator extends TargetLocator {
   async resetScroll() {
     this._logger.verbose("enter");
     if (this._defaultContentPositionMemento != null) {
-      await this._scrollPosition.restoreState(this._defaultContentPositionMemento);
+      const scrollRootElement = await this._driver.getEyes().getCurrentFrameScrollRootElement();
+      const scrollProvider = new ScrollPositionProvider(this._logger, this._jsExecutor, scrollRootElement);
+      await scrollProvider.restoreState(this._defaultContentPositionMemento);
     }
   }
 

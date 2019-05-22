@@ -85,6 +85,19 @@ class Frame {
   }
 
   /**
+   * @param {EyesWebDriver} driver
+   * @return {Promise<WebElement>}
+   */
+  async getForceScrollRootElement(driver) {
+    if (!this._scrollRootElement) {
+      this._logger.verbose("no scroll root element. selecting default.");
+      this._scrollRootElement = await driver.findElement(By.css("html"));
+    }
+
+    return this._scrollRootElement;
+  }
+
+  /**
    * @param {WebElement} scrollRootElement
    */
   setScrollRootElement(scrollRootElement) {
@@ -92,48 +105,33 @@ class Frame {
   }
 
   /**
-   * @param {WebDriver} driver
+   * @param {EyesWebDriver} driver
    * @return {Promise}
    */
   async hideScrollbars(driver) {
-    const scrollRootElement = await this._getScrollRootElement(driver);
+    const scrollRootElement = await this.getForceScrollRootElement(driver);
     this._logger.verbose("hiding scrollbars of element:", scrollRootElement);
     this._originalOverflow = await this._jsExecutor.executeScript("var origOF = arguments[0].style.overflow; arguments[0].style.overflow='hidden'; return origOF;", scrollRootElement);
   }
 
   /**
-   * @param {WebDriver} driver
+   * @param {EyesWebDriver} driver
    * @return {Promise}
    */
   async returnToOriginalOverflow(driver) {
-    const scrollRootElement = await this._getScrollRootElement(driver);
+    const scrollRootElement = await this.getForceScrollRootElement(driver);
     this._logger.verbose("returning overflow of element to its original value: " + scrollRootElement);
     await this._jsExecutor.executeScript(`arguments[0].style.overflow='${this._originalOverflow}';`, scrollRootElement);
   }
 
   /**
-   * @param {WebDriver} driver
+   * @param {EyesWebDriver} driver
    * @return {Promise}
    */
   async returnToOriginalPosition(driver) {
-    const scrollRootElement = await this._getScrollRootElement(driver);
+    const scrollRootElement = await this.getForceScrollRootElement(driver);
     const positionProvider = new ScrollPositionProvider(this._logger, this._jsExecutor, scrollRootElement);
     await positionProvider.restoreState(this._positionMemento);
-  }
-
-  /**
-   * @private
-   * @param {WebDriver} driver
-   * @return {Promise<WebElement>}
-   */
-  async _getScrollRootElement(driver) {
-    let scrollRootElement = this.getScrollRootElement();
-    if (!scrollRootElement) {
-      this._logger.verbose("no scroll root element. selecting default.");
-      scrollRootElement = await driver.findElement(By.css("html"));
-    }
-
-    return scrollRootElement;
   }
 }
 

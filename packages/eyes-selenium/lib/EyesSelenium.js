@@ -184,7 +184,7 @@ class EyesSelenium extends Eyes {
     this._logger.verbose(`check(${checkSettings}) - begin`);
     this._stitchContent = checkSettings.getStitchContent();
     const targetRegion = checkSettings.getTargetRegion();
-    this._scrollRootElement = this._getScrollRootElementFromCheckSettings(checkSettings);
+    this._scrollRootElement = await this._getScrollRootElementFromCheckSettings(checkSettings);
 
     this._currentFramePositionProvider = null;
     this.setPositionProvider(this._createPositionProvider());
@@ -242,7 +242,8 @@ class EyesSelenium extends Eyes {
         // required to prevent cut line on the last stitched part of the page on some browsers (like firefox).
         await switchTo.defaultContent();
         originalFC = await this._tryHideScrollbars();
-        this._currentFramePositionProvider = this._createPositionProvider(this._driver.findElement(By.css("html")));
+        const scrollRootElement = await this.getScrollRootElement();
+        this._currentFramePositionProvider = this._createPositionProvider(scrollRootElement);
         // }
         result = await this.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
         await switchTo.frames(this._originalFC);
@@ -351,19 +352,19 @@ class EyesSelenium extends Eyes {
 
     if (frameTarget.getFrameIndex()) {
       await switchTo.frame(frameTarget.getFrameIndex());
-      this._updateFrameScrollRoot(frameTarget);
+      await this._updateFrameScrollRoot(frameTarget);
       return true;
     }
 
     if (frameTarget.getFrameNameOrId()) {
       await switchTo.frame(frameTarget.getFrameNameOrId());
-      this._updateFrameScrollRoot(frameTarget);
+      await this._updateFrameScrollRoot(frameTarget);
       return true;
     }
 
     if (frameTarget.getFrameElement()) {
       await switchTo.frame(frameTarget.getFrameElement());
-      this._updateFrameScrollRoot(frameTarget);
+      await this._updateFrameScrollRoot(frameTarget);
       return true;
     }
 
@@ -371,7 +372,7 @@ class EyesSelenium extends Eyes {
       const frameElement = this._driver.findElement(frameTarget.getFrameSelector());
       if (frameElement) {
         await switchTo.frame(frameElement);
-        this._updateFrameScrollRoot(frameTarget);
+        await this._updateFrameScrollRoot(frameTarget);
         return true;
       }
     }
@@ -383,8 +384,8 @@ class EyesSelenium extends Eyes {
    * @private
    * @param {FrameLocator} frameTarget
    */
-  _updateFrameScrollRoot(frameTarget) {
-    const rootElement = this._getScrollRootElementFromCheckSettings(frameTarget);
+  async _updateFrameScrollRoot(frameTarget) {
+    const rootElement = await this._getScrollRootElementFromCheckSettings(frameTarget);
     const frame = this._driver.getFrameChain().peek();
     frame.setScrollRootElement(rootElement);
   }
@@ -469,10 +470,7 @@ class EyesSelenium extends Eyes {
         scrollRootElement = this._scrollRootElement;
       } else {
         if (frame != null) {
-          scrollRootElement = frame.getScrollRootElement();
-        }
-        if (scrollRootElement == null) {
-          scrollRootElement = this._driver.findElement(By.css("html"));
+          scrollRootElement = await frame.getForceScrollRootElement(this._driver);
         }
       }
       this._logger.verbose("scrollRootElement:", scrollRootElement);
@@ -525,7 +523,7 @@ class EyesSelenium extends Eyes {
       let scrollRootElement;
       if (originalFC.size() > 0 && !(await EyesWebElement.equals(element, originalFC.peek().getReference()))) {
         await switchTo.frames(originalFC);
-        scrollRootElement = this._driver.findElement(By.css("html"));
+        scrollRootElement = await this._driver.findElement(By.css("html"));
       } else {
         scrollRootElement = this._scrollRootElement;
       }
@@ -598,7 +596,7 @@ class EyesSelenium extends Eyes {
    */
   async _checkElement(eyesElement = this._targetElement, name, checkSettings) {
     this._regionToCheck = null;
-    const scrollRootElement = this.getCurrentFrameScrollRootElement();
+    const scrollRootElement = await this.getCurrentFrameScrollRootElement();
     const positionProvider = this._createPositionProvider(scrollRootElement);
     const originalPositionMemento = await positionProvider.getState();
 
@@ -856,11 +854,11 @@ class EyesSelenium extends Eyes {
    * Gets scroll root element.
    *
    * @override
-   * @return {WebElement} the scroll root element
+   * @return {Promise<WebElement>} the scroll root element
    */
-  getScrollRootElement() {
+  async getScrollRootElement() {
     if (this._scrollRootElement == null) {
-      this._scrollRootElement = this._driver.findElement(By.css("html"));
+      this._scrollRootElement = await this._driver.findElement(By.css("html"));
     }
     return this._scrollRootElement;
   }
@@ -870,15 +868,15 @@ class EyesSelenium extends Eyes {
    * @param {SeleniumCheckSettings} scrollRootElementContainer
    * @return {WebElement}
    */
-  _getScrollRootElementFromCheckSettings(scrollRootElementContainer) {
+  async _getScrollRootElementFromCheckSettings(scrollRootElementContainer) {
     // if (!EyesSeleniumUtils.isMobileDevice(driver)) {
     if (scrollRootElementContainer) {
-      let scrollRootElement = scrollRootElementContainer.getScrollRootElement();
+      let scrollRootElement = await scrollRootElementContainer.getScrollRootElement();
 
       if (!scrollRootElement) {
         const scrollRootSelector = scrollRootElementContainer.getScrollRootSelector();
         if (scrollRootSelector) {
-          scrollRootElement = this._driver.findElement(scrollRootSelector);
+          scrollRootElement = await this._driver.findElement(scrollRootSelector);
         }
       }
 
@@ -888,7 +886,7 @@ class EyesSelenium extends Eyes {
     }
     // }
 
-    return this._driver.findElement(By.css("html"));
+    return await this._driver.findElement(By.css("html"));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -929,7 +927,7 @@ class EyesSelenium extends Eyes {
     }
     await switchTo.frames(originalFrameChain);
 
-    const scrollRootElement = this.getCurrentFrameScrollRootElement();
+    const scrollRootElement = await this.getCurrentFrameScrollRootElement();
     const originProvider = new ScrollPositionProvider(this._logger, this._jsExecutor, scrollRootElement);
 
     let algo = new FullPageCaptureAlgorithm(
@@ -964,7 +962,7 @@ class EyesSelenium extends Eyes {
 
       let entireFrameOrElement;
       if (!this._elementPositionProvider) {
-        const scrollRootElement2 = this._driver.findElement(By.css("html"));
+        const scrollRootElement2 = await this._driver.findElement(By.css("html"));
         const elemPositionProvider = this._getElementPositionProvider(scrollRootElement2);
         await this._markElementForLayoutRCA(elemPositionProvider);
         entireFrameOrElement = await algo.getStitchedRegion(this._regionToCheck, null, elemPositionProvider);
