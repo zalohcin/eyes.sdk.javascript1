@@ -1,0 +1,29 @@
+{
+  "name": "wdio-eyes-service",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [
+    "wdio-service"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "cd test && ../node_modules/.bin/wdio"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@applitools/eyes.webdriverio": "^2.4.1"
+  },
+  "devDependencies": {
+    "chromedriver": "^2.37.0",
+    "mocha": "^6.1.4",
+    "wdio-dot-reporter": "0.0.10",
+    "wdio-mocha-framework": "^0.6.4",
+    "wdio-selenium-standalone-service": "0.0.12",
+    "wdio-sync": "^0.7.3",
+    "webdriverio": "^4.14.4"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  }
+}
