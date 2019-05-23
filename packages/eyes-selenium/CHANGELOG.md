@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.17.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.17.3...@applitools/eyes-selenium@4.17.4) (2019-05-23)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** EyesWebElementPromise should resolve to EyesWebElement ([cf9b88c](https://github.com/applitools/eyes.sdk.javascript1/commit/cf9b88c))
+* **eyes-selenium:** getting scrollElement should be done synchronously ([72d927c](https://github.com/applitools/eyes.sdk.javascript1/commit/72d927c))
+* **eyes-selenium:** setOverflow was called without `await` ([35f1767](https://github.com/applitools/eyes.sdk.javascript1/commit/35f1767))
+* **eyes-selenium:** when resolve EyesWebElement wait for parent class ([711818c](https://github.com/applitools/eyes.sdk.javascript1/commit/711818c))
+
+
+
+
+
 ## [4.17.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.17.2...@applitools/eyes-selenium@4.17.3) (2019-05-21)
 
 **Note:** Version bump only for package @applitools/eyes-selenium
