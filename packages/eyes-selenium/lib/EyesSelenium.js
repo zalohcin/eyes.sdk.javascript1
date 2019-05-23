@@ -778,7 +778,7 @@ class EyesSelenium extends Eyes {
         }
       } else {
         this._logger.verbose("hiding scrollbars of element (2)");
-        this._originalOverflow = EyesSeleniumUtils.setOverflow(this._driver, "hidden", this._scrollRootElement);
+        this._originalOverflow = await EyesSeleniumUtils.setOverflow(this._driver, "hidden", this._scrollRootElement);
       }
 
       this._logger.verbose("switching back to original frame");
