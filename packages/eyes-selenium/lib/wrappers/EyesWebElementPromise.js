@@ -23,7 +23,10 @@ class EyesWebElementPromise extends EyesWebElement {
    * @param {*} locator
    */
   constructor(logger, driver, webElement, locator) {
-    const el = Promise.resolve(new EyesWebElement(logger, driver, webElement));
+    const wrapper = webElement.then(element => {
+      return new EyesWebElement(logger, driver, element);
+    });
+
     super(logger, driver, webElement);
 
     this._foundBy = String(locator);
@@ -32,13 +35,13 @@ class EyesWebElementPromise extends EyesWebElement {
     /**
    * @inheritDoc
    */
-    this.then = el.then.bind(el);
+    this.then = wrapper.then.bind(wrapper);
 
     // noinspection JSUnresolvedVariable
     /**
    * @inheritDoc
    */
-    this.catch = el.catch.bind(el);
+    this.catch = wrapper.catch.bind(wrapper);
 
     /**
      * Defers returning the element ID until the wrapped WebElement has been resolved.
