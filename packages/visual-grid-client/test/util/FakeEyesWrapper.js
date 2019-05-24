@@ -342,6 +342,14 @@ class FakeEyesWrapper extends EventEmitter {
   getEnablePatterns() {
     return this.enablePatterns;
   }
+
+  setIgnoreDisplacement(ignoreDisplacement) {
+    this.ignoreDisplacement = ignoreDisplacement;
+  }
+
+  getIgnoreDisplacement() {
+    return this.ignoreDisplacement;
+  }
 }
 
 module.exports = FakeEyesWrapper;

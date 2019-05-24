@@ -2,7 +2,15 @@
 
 const {CheckSettings, Region, GetRegion, GetFloatingRegion} = require('@applitools/eyes-sdk-core');
 
-function createCheckSettings({ignore, floating, layout, strict, useDom, enablePatterns}) {
+function createCheckSettings({
+  ignore,
+  floating,
+  layout,
+  strict,
+  useDom,
+  enablePatterns,
+  ignoreDisplacement,
+}) {
   const checkSettings = new CheckSettings(0);
   setEachRegion(ignore, checkSettings.ignoreRegions.bind(checkSettings));
   setEachRegion(layout, checkSettings.layoutRegions.bind(checkSettings));
@@ -29,6 +37,9 @@ function createCheckSettings({ignore, floating, layout, strict, useDom, enablePa
   }
   if (enablePatterns !== undefined) {
     checkSettings.enablePatterns(enablePatterns);
+  }
+  if (ignoreDisplacement !== undefined) {
+    checkSettings.ignoreDisplacement(ignoreDisplacement);
   }
 
   return checkSettings;

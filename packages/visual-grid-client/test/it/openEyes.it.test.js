@@ -1438,6 +1438,7 @@ describe('openEyes', () => {
       cdt: [],
       useDom: true,
       enablePatterns: false,
+      ignoreDisplacement: false,
     });
     checkWindow({
       url: '',
@@ -1446,8 +1447,10 @@ describe('openEyes', () => {
     const [results] = await close();
     expect(results[0].__checkSettings.getUseDom()).to.be.true;
     expect(results[0].__checkSettings.getEnablePatterns()).to.be.false;
+    expect(results[0].__checkSettings.getIgnoreDisplacement()).to.be.false;
     expect(results[1].__checkSettings.getUseDom()).to.be.undefined;
     expect(results[1].__checkSettings.getEnablePatterns()).to.be.undefined;
+    expect(results[1].__checkSettings.getIgnoreDisplacement()).to.be.undefined;
   });
 
   it('handles abort', async () => {

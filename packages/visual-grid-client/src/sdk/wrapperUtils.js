@@ -46,6 +46,7 @@ function configureWrappers({
   agentId,
   useDom,
   enablePatterns,
+  ignoreDisplacement,
   assumeEnvironment,
 }) {
   const batchInfo = new BatchInfo({id: batchId, name: batchName});
@@ -73,6 +74,7 @@ function configureWrappers({
     matchLevel !== undefined && wrapper.setMatchLevel(matchLevel);
     useDom !== undefined && wrapper.setUseDom(useDom);
     enablePatterns !== undefined && wrapper.setEnablePatterns(enablePatterns);
+    ignoreDisplacement !== undefined && wrapper.setIgnoreDisplacement(ignoreDisplacement);
     parentBranchName !== undefined && wrapper.setParentBranchName(parentBranchName);
     branchName !== undefined && wrapper.setBranchName(branchName);
     proxy !== undefined && wrapper.setProxy(proxy);

@@ -658,6 +658,22 @@ class EyesAbstract {
   }
 
   /**
+   * The test-wide ignoreDisplacement to use.
+   *
+   * @param {boolean} ignoreDisplacement - The test-wide ignoreDisplacement to use in match requests.
+   */
+  setIgnoreDisplacement(ignoreDisplacement) {
+    this._configuration.getDefaultMatchSettings().setIgnoreDisplacement(ignoreDisplacement);
+  }
+
+  /**
+   * @return {boolean} - The test-wide ignoreDisplacement to use in match requests.
+   */
+  getIgnoreDisplacement() {
+    return this._configuration.getDefaultMatchSettings().getIgnoreDisplacement();
+  }
+
+  /**
    * Sets the ignore blinking caret value.
    *
    * @param {boolean} value - The ignore value.

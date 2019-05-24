@@ -43,7 +43,7 @@ describe('SessionStartInfo', () => {
     const expectedSerialization = '{"agentId":"some agent","sessionType":"SEQUENTIAL","appIdOrName":"my app",' +
       `"verId":"1.0.0","scenarioIdOrName":"some scenario","batchInfo":${JSON.stringify(batchInfo)},` +
       '"baselineEnvName":"some baseline name","environmentName":"env name","environment":{},' +
-      '"defaultMatchSettings":{"matchLevel":"Strict","ignoreCaret":true,"useDom":false,"enablePatterns":false,' +
+      '"defaultMatchSettings":{"matchLevel":"Strict","ignoreCaret":true,"useDom":false,"enablePatterns":false,"ignoreDisplacement":false,' +
       '"ignore":[],"layout":[],"strict":[],"content":[],"floating":[]},"branchName":"some branch name",' +
       '"parentBranchName":"parent branch name","baselineBranchName":"base branch","compareWithParentBranch":false,' +
       '"ignoreBaseline":false,"saveDiffs":false,"render":false,"properties":[{"name":"property name",' +

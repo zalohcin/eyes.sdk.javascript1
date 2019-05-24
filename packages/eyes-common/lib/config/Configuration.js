@@ -811,6 +811,24 @@ class Configuration {
   }
 
   /**
+   * @return {boolean} - The test-wide ignoreDisplacement to use in match requests.
+   */
+  getIgnoreDisplacement() {
+    return this._defaultMatchSettings.getIgnoreDisplacement();
+  }
+
+  /**
+   * The test-wide ignoreDisplacement to use.
+   *
+   * @param {boolean} value - The test-wide ignoreDisplacement to use in match requests.
+   * @return {this}
+   */
+  setIgnoreDisplacement(value) {
+    this._defaultMatchSettings.setIgnoreDisplacement(value);
+    return this;
+  }
+
+  /**
    * @return {boolean} - Whether to ignore or the blinking caret or not when comparing images.
    */
   getIgnoreCaret() {

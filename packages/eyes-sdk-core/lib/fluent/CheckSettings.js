@@ -27,6 +27,8 @@ class CheckSettings {
     /** @type {boolean} */
     this._enablePatterns = undefined;
     /** @type {boolean} */
+    this._ignoreDisplacement = undefined;
+    /** @type {boolean} */
     this._ignoreCaret = false;
     /** @type {boolean} */
     this._stitchContent = false;
@@ -234,6 +236,24 @@ class CheckSettings {
    */
   getEnablePatterns() {
     return this._enablePatterns;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {boolean} [ignoreDisplacement=true]
+   * @return {this} - This instance of the settings object.
+   */
+  ignoreDisplacement(ignoreDisplacement = true) {
+    this._ignoreDisplacement = ignoreDisplacement;
+    return this;
+  }
+
+  /**
+   * @ignore
+   * @return {boolean}
+   */
+  getIgnoreDisplacement() {
+    return this._ignoreDisplacement;
   }
 
   // noinspection JSUnusedGlobalSymbols
