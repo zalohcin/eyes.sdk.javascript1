@@ -29,7 +29,7 @@ function getTestCssResources(baseUrl) {
   const fontZillaContent = loadFixtureBuffer(fontZillaName);
   const fontShadowContent = loadFixtureBuffer(fontShadowName);
   const cssType = 'text/css; charset=UTF-8';
-  const fontType = 'application/font-woff2';
+  const fontType = 'font/woff2';
   const jpgType = 'image/jpeg';
 
   return mapValues(

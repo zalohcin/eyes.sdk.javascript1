@@ -146,7 +146,7 @@ describe('getAllResources', () => {
     const fontShadowContent = loadFixtureBuffer(fontShadowName);
     const jpgType = 'image/jpeg';
     const cssType = 'text/css; charset=UTF-8';
-    const fontType = 'application/font-woff2';
+    const fontType = 'font/woff2';
 
     resourceCache.setValue(jpgUrl1, {url: jpgUrl1, type: jpgType, hash: undefined});
     resourceCache.setValue(jpgUrl2, {url: jpgUrl2, type: jpgType, hash: undefined});
@@ -253,7 +253,7 @@ describe('getAllResources', () => {
     const fontZillaName = 'zilla_slab.woff2';
     const fontZillaUrl = `${baseUrl}/${fontZillaName}`;
     const fontZillaValue = loadFixtureBuffer(fontZillaName);
-    const fontZillaType = 'application/font-woff2';
+    const fontZillaType = 'font/woff2';
 
     const preResources = {
       [cssUrl]: {url: cssUrl, type: cssType, value: cssValue},
