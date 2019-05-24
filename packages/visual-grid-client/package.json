@@ -45,18 +45,18 @@
     "throat": "^4.1.0"
   },
   "devDependencies": {
-    "@applitools/dom-snapshot": "^1.1.10",
+    "@applitools/dom-snapshot": "^1.2.4",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.4",
     "debug": "^4.1.1",
-    "express": "^4.16.4",
+    "express": "^4.17.0",
     "jsdom": "^11.12.0",
     "mocha": "^6.1.4",
     "morgan": "^1.9.1",
-    "nock": "^9.6.1",
-    "node-fetch": "^2.5.0",
-    "puppeteer": "^1.15.0"
+    "nock": "^10.0.6",
+    "node-fetch": "^2.6.0",
+    "puppeteer": "^1.17.0"
   },
   "scripts": {
     "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",
