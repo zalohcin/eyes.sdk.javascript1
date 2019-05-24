@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.8.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.7.5...@applitools/eyes-sdk-core@5.8.0) (2019-05-24)
+
+
+### Features
+
+* add `ignoreDisplacement` to fluent and match settings ([e329709](https://github.com/applitools/eyes.sdk.javascript1/commit/e329709))
+
+
+
+
+
 ## [5.7.5](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.7.4...@applitools/eyes-sdk-core@5.7.5) (2019-05-23)
 
 **Note:** Version bump only for package @applitools/eyes-sdk-core

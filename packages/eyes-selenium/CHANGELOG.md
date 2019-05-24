@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.18.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.17.4...@applitools/eyes-selenium@4.18.0) (2019-05-24)
+
+
+### Features
+
+* add `ignoreDisplacement` to fluent and match settings ([e329709](https://github.com/applitools/eyes.sdk.javascript1/commit/e329709))
+
+
+
+
+
 ## [4.17.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.17.3...@applitools/eyes-selenium@4.17.4) (2019-05-23)
 
 

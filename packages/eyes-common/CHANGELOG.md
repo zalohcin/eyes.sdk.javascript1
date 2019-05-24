@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.5.1...@applitools/eyes-common@3.6.0) (2019-05-24)
+
+
+### Bug Fixes
+
+* **eyes-common:** use alternative way to get first value of map (close [#77](https://github.com/applitools/eyes.sdk.javascript1/issues/77)) ([48aa7fd](https://github.com/applitools/eyes.sdk.javascript1/commit/48aa7fd))
+
+
+### Features
+
+* add `ignoreDisplacement` to fluent and match settings ([e329709](https://github.com/applitools/eyes.sdk.javascript1/commit/e329709))
+
+
+
+
+
 ## [3.5.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.5.0...@applitools/eyes-common@3.5.1) (2019-05-23)
 
 **Note:** Version bump only for package @applitools/eyes-common
