@@ -142,9 +142,9 @@ class MatchWindowTask {
         enablePatterns = this._eyes.getDefaultMatchSettings().getEnablePatterns();
       }
 
-      let ignoreDisplacement = checkSettings.getIgnoreDisplacement();
-      if (TypeUtils.isNull(ignoreDisplacement)) {
-        ignoreDisplacement = this._eyes.getDefaultMatchSettings().getIgnoreDisplacement();
+      let ignoreDisplacements = checkSettings.getIgnoreDisplacements();
+      if (TypeUtils.isNull(ignoreDisplacements)) {
+        ignoreDisplacements = this._eyes.getDefaultMatchSettings().getIgnoreDisplacements();
       }
 
       imageMatchSettings = new ImageMatchSettings({
@@ -153,7 +153,7 @@ class MatchWindowTask {
         ignoreCaret,
         useDom,
         enablePatterns,
-        ignoreDisplacement,
+        ignoreDisplacements,
       });
 
       await this._collectSimpleRegions(checkSettings, imageMatchSettings, screenshot);

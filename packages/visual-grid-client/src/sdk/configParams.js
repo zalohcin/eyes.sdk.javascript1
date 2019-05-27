@@ -30,5 +30,5 @@ module.exports = [
   'concurrency',
   'useDom',
   'enablePatterns',
-  'ignoreDisplacement',
+  'ignoreDisplacements',
 ];

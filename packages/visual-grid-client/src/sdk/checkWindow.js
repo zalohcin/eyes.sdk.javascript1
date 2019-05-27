@@ -47,7 +47,7 @@ function makeCheckWindow({
     strict,
     useDom,
     enablePatterns,
-    ignoreDisplacement,
+    ignoreDisplacements,
   }) {
     const currStepCount = ++stepCounter;
     logger.log(`running checkWindow for test ${testName} step #${currStepCount}`);
@@ -195,7 +195,7 @@ function makeCheckWindow({
         strict: noOffsetRegions[noOffsetSelectors.strict],
         useDom,
         enablePatterns,
-        ignoreDisplacement,
+        ignoreDisplacements,
       });
 
       logger.log(`checkWindow waiting for openEyes. test=${testName}, stepCount #${currStepCount}`);

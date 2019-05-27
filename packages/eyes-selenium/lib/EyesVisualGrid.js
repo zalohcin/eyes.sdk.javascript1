@@ -119,7 +119,7 @@ class EyesVisualGrid extends Eyes {
       matchLevel: this._configuration.getMatchLevel(),
       useDom: this._configuration.getUseDom(),
       enablePatterns: this._configuration.getEnablePatterns(),
-      ignoreDisplacement: this._configuration.getIgnoreDisplacement(),
+      ignoreDisplacements: this._configuration.getIgnoreDisplacements(),
       saveDebugData: this._configuration.getSaveDebugData(),
     });
 

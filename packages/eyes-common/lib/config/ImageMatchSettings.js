@@ -11,7 +11,7 @@ const DEFAULT_VALUES = {
   ignoreCaret: true,
   useDom: false,
   enablePatterns: false,
-  ignoreDisplacement: false,
+  ignoreDisplacements: false,
 };
 
 /**
@@ -24,14 +24,14 @@ class ImageMatchSettings {
    * @param {boolean} [ignoreCaret]
    * @param {boolean} [useDom]
    * @param {boolean} [enablePatterns]
-   * @param {boolean} [ignoreDisplacement]
+   * @param {boolean} [ignoreDisplacements]
    * @param {Region[]} [ignore]
    * @param {Region[]} [layout]
    * @param {Region[]} [strict]
    * @param {Region[]} [content]
    * @param {FloatingMatchSettings[]} [floating]
    */
-  constructor({ matchLevel, exact, ignoreCaret, useDom, enablePatterns, ignoreDisplacement, ignore, layout, strict, content, floating } = {}) {
+  constructor({ matchLevel, exact, ignoreCaret, useDom, enablePatterns, ignoreDisplacements, ignore, layout, strict, content, floating } = {}) {
     if (arguments.length > 1) {
       throw new TypeError('Please, use object as a parameter to the constructor!');
     }
@@ -40,7 +40,7 @@ class ImageMatchSettings {
     ArgumentGuard.isBoolean(ignoreCaret, 'ignoreCaret', false);
     ArgumentGuard.isBoolean(useDom, 'useDom', false);
     ArgumentGuard.isBoolean(enablePatterns, 'enablePatterns', false);
-    ArgumentGuard.isBoolean(ignoreDisplacement, 'ignoreDisplacement', false);
+    ArgumentGuard.isBoolean(ignoreDisplacements, 'ignoreDisplacements', false);
     ArgumentGuard.isArray(ignore, 'ignore', false);
     ArgumentGuard.isArray(layout, 'layout', false);
     ArgumentGuard.isArray(strict, 'strict', false);
@@ -52,7 +52,7 @@ class ImageMatchSettings {
     this._ignoreCaret = TypeUtils.getOrDefault(ignoreCaret, DEFAULT_VALUES.ignoreCaret);
     this._useDom = TypeUtils.getOrDefault(useDom, DEFAULT_VALUES.useDom);
     this._enablePatterns = TypeUtils.getOrDefault(enablePatterns, DEFAULT_VALUES.enablePatterns);
-    this._ignoreDisplacement = TypeUtils.getOrDefault(ignoreDisplacement, DEFAULT_VALUES.ignoreDisplacement);
+    this._ignoreDisplacement = TypeUtils.getOrDefault(ignoreDisplacements, DEFAULT_VALUES.ignoreDisplacements);
     this._exact = exact;
 
     /** @type {Region[]} */
@@ -152,7 +152,7 @@ class ImageMatchSettings {
   /**
    * @return {boolean}
    */
-  getIgnoreDisplacement() {
+  getIgnoreDisplacements() {
     return this._ignoreDisplacement;
   }
 
@@ -160,7 +160,7 @@ class ImageMatchSettings {
   /**
    * @param {boolean} value
    */
-  setIgnoreDisplacement(value) {
+  setIgnoreDisplacements(value) {
     this._ignoreDisplacement = value;
   }
 

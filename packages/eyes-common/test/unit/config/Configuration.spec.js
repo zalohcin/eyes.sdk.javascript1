@@ -74,7 +74,7 @@ describe('Configuration', () => {
       assert.strictEqual(configuration.getIgnoreCaret(), true);
       assert.strictEqual(configuration.getUseDom(), false);
       assert.strictEqual(configuration.getEnablePatterns(), false);
-      assert.strictEqual(configuration.getIgnoreDisplacement(), false);
+      assert.strictEqual(configuration.getIgnoreDisplacements(), false);
     });
 
     it('set values', () => {
@@ -83,13 +83,13 @@ describe('Configuration', () => {
       configuration.setIgnoreCaret(false);
       configuration.setUseDom(true);
       configuration.setEnablePatterns(true);
-      configuration.setIgnoreDisplacement(true);
+      configuration.setIgnoreDisplacements(true);
 
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content);
       assert.strictEqual(configuration.getIgnoreCaret(), false);
       assert.strictEqual(configuration.getUseDom(), true);
       assert.strictEqual(configuration.getEnablePatterns(), true);
-      assert.strictEqual(configuration.getIgnoreDisplacement(), true);
+      assert.strictEqual(configuration.getIgnoreDisplacements(), true);
     });
 
     it('to object', () => {
@@ -98,12 +98,12 @@ describe('Configuration', () => {
       configuration.setIgnoreCaret(false);
       configuration.setUseDom(true);
       configuration.setEnablePatterns(true);
-      configuration.setIgnoreDisplacement(true);
+      configuration.setIgnoreDisplacements(true);
 
       assert.deepStrictEqual(configuration.toJSON().defaultMatchSettings, {
         "matchLevel": "Content",
         "enablePatterns": true,
-        "ignoreDisplacement": true,
+        "ignoreDisplacements": true,
         "ignoreCaret": false,
         "useDom": true,
         "ignore": [],
@@ -120,7 +120,7 @@ describe('Configuration', () => {
       configuration.setDefaultMatchSettings({
         "matchLevel": "Content",
         "enablePatterns": true,
-        "ignoreDisplacement": true,
+        "ignoreDisplacements": true,
         "ignoreCaret": false,
         "useDom": true,
         "ignore": [],
@@ -135,7 +135,7 @@ describe('Configuration', () => {
       assert.strictEqual(configuration.getIgnoreCaret(), false);
       assert.strictEqual(configuration.getUseDom(), true);
       assert.strictEqual(configuration.getEnablePatterns(), true);
-      assert.strictEqual(configuration.getIgnoreDisplacement(), true);
+      assert.strictEqual(configuration.getIgnoreDisplacements(), true);
     });
   });
 });

@@ -9,7 +9,7 @@ function createCheckSettings({
   strict,
   useDom,
   enablePatterns,
-  ignoreDisplacement,
+  ignoreDisplacements,
 }) {
   const checkSettings = new CheckSettings(0);
   setEachRegion(ignore, checkSettings.ignoreRegions.bind(checkSettings));
@@ -38,8 +38,8 @@ function createCheckSettings({
   if (enablePatterns !== undefined) {
     checkSettings.enablePatterns(enablePatterns);
   }
-  if (ignoreDisplacement !== undefined) {
-    checkSettings.ignoreDisplacement(ignoreDisplacement);
+  if (ignoreDisplacements !== undefined) {
+    checkSettings.ignoreDisplacements(ignoreDisplacements);
   }
 
   return checkSettings;

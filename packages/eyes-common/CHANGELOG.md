@@ -13,7 +13,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-* add `ignoreDisplacement` to fluent and match settings ([e329709](https://github.com/applitools/eyes.sdk.javascript1/commit/e329709))
+* add `ignoreDisplacements` to fluent and match settings ([e329709](https://github.com/applitools/eyes.sdk.javascript1/commit/e329709))
 
 
 

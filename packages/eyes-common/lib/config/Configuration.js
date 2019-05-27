@@ -811,20 +811,20 @@ class Configuration {
   }
 
   /**
-   * @return {boolean} - The test-wide ignoreDisplacement to use in match requests.
+   * @return {boolean} - The test-wide ignoreDisplacements to use in match requests.
    */
-  getIgnoreDisplacement() {
-    return this._defaultMatchSettings.getIgnoreDisplacement();
+  getIgnoreDisplacements() {
+    return this._defaultMatchSettings.getIgnoreDisplacements();
   }
 
   /**
-   * The test-wide ignoreDisplacement to use.
+   * The test-wide ignoreDisplacements to use.
    *
-   * @param {boolean} value - The test-wide ignoreDisplacement to use in match requests.
+   * @param {boolean} value - The test-wide ignoreDisplacements to use in match requests.
    * @return {this}
    */
-  setIgnoreDisplacement(value) {
-    this._defaultMatchSettings.setIgnoreDisplacement(value);
+  setIgnoreDisplacements(value) {
+    this._defaultMatchSettings.setIgnoreDisplacements(value);
     return this;
   }
 

@@ -13,7 +13,7 @@ describe('MatchWindowTask', () => {
     it('should return correct default values', async () => {
       const ms = await task.createImageMatchSettings(checkSettings, null);
       const expectedSerialization = '{"matchLevel":"Strict","ignoreCaret":false,"useDom":false,"enablePatterns":false,' +
-        '"ignoreDisplacement":false,"exact":null,"ignore":[],"layout":[],"strict":[],"content":[],"floating":[]}';
+        '"ignoreDisplacements":false,"exact":null,"ignore":[],"layout":[],"strict":[],"content":[],"floating":[]}';
       assert.strictEqual(JSON.stringify(ms), expectedSerialization, 'ImageMatchSettings serialization does not match!');
     });
   });

@@ -240,11 +240,11 @@ class CheckSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * @param {boolean} [ignoreDisplacement=true]
+   * @param {boolean} [ignoreDisplacements=true]
    * @return {this} - This instance of the settings object.
    */
-  ignoreDisplacement(ignoreDisplacement = true) {
-    this._ignoreDisplacement = ignoreDisplacement;
+  ignoreDisplacements(ignoreDisplacements = true) {
+    this._ignoreDisplacement = ignoreDisplacements;
     return this;
   }
 
@@ -252,7 +252,7 @@ class CheckSettings {
    * @ignore
    * @return {boolean}
    */
-  getIgnoreDisplacement() {
+  getIgnoreDisplacements() {
     return this._ignoreDisplacement;
   }
 

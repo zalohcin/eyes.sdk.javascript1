@@ -658,19 +658,19 @@ class EyesAbstract {
   }
 
   /**
-   * The test-wide ignoreDisplacement to use.
+   * The test-wide ignoreDisplacements to use.
    *
-   * @param {boolean} ignoreDisplacement - The test-wide ignoreDisplacement to use in match requests.
+   * @param {boolean} ignoreDisplacements - The test-wide ignoreDisplacements to use in match requests.
    */
-  setIgnoreDisplacement(ignoreDisplacement) {
-    this._configuration.getDefaultMatchSettings().setIgnoreDisplacement(ignoreDisplacement);
+  setIgnoreDisplacements(ignoreDisplacements) {
+    this._configuration.getDefaultMatchSettings().setIgnoreDisplacements(ignoreDisplacements);
   }
 
   /**
-   * @return {boolean} - The test-wide ignoreDisplacement to use in match requests.
+   * @return {boolean} - The test-wide ignoreDisplacements to use in match requests.
    */
-  getIgnoreDisplacement() {
-    return this._configuration.getDefaultMatchSettings().getIgnoreDisplacement();
+  getIgnoreDisplacements() {
+    return this._configuration.getDefaultMatchSettings().getIgnoreDisplacements();
   }
 
   /**
