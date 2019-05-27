@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.6.0...@applitools/eyes-common@3.6.1) (2019-05-27)
+
+
+### Bug Fixes
+
+* rename ignoreDisplacement to ignoreDisplacements ([1dfb277](https://github.com/applitools/eyes.sdk.javascript1/commit/1dfb277))
+* rename ignoreDisplacement to ignoreDisplacements (2) ([8b18a77](https://github.com/applitools/eyes.sdk.javascript1/commit/8b18a77))
+
+
+
+
+
 # [3.6.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.5.1...@applitools/eyes-common@3.6.0) (2019-05-24)
 
 

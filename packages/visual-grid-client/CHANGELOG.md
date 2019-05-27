@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [12.10.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.10.0...@applitools/visual-grid-client@12.10.1) (2019-05-27)
+
+
+### Bug Fixes
+
+* rename ignoreDisplacement to ignoreDisplacements ([1dfb277](https://github.com/applitools/eyes.sdk.javascript1/commit/1dfb277))
+* rename ignoreDisplacement to ignoreDisplacements (2) ([8b18a77](https://github.com/applitools/eyes.sdk.javascript1/commit/8b18a77))
+
+
+
+
+
 # [12.10.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.9.5...@applitools/visual-grid-client@12.10.0) (2019-05-24)
 
 

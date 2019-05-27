@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.18.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.18.0...@applitools/eyes-selenium@4.18.1) (2019-05-27)
+
+
+### Bug Fixes
+
+* rename ignoreDisplacement to ignoreDisplacements ([1dfb277](https://github.com/applitools/eyes.sdk.javascript1/commit/1dfb277))
+
+
+
+
+
 # [4.18.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.17.4...@applitools/eyes-selenium@4.18.0) (2019-05-24)
 
 
