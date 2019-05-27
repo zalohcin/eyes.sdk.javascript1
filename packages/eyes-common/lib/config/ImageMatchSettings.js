@@ -52,7 +52,7 @@ class ImageMatchSettings {
     this._ignoreCaret = TypeUtils.getOrDefault(ignoreCaret, DEFAULT_VALUES.ignoreCaret);
     this._useDom = TypeUtils.getOrDefault(useDom, DEFAULT_VALUES.useDom);
     this._enablePatterns = TypeUtils.getOrDefault(enablePatterns, DEFAULT_VALUES.enablePatterns);
-    this._ignoreDisplacement = TypeUtils.getOrDefault(ignoreDisplacements, DEFAULT_VALUES.ignoreDisplacements);
+    this._ignoreDisplacements = TypeUtils.getOrDefault(ignoreDisplacements, DEFAULT_VALUES.ignoreDisplacements);
     this._exact = exact;
 
     /** @type {Region[]} */
@@ -153,7 +153,7 @@ class ImageMatchSettings {
    * @return {boolean}
    */
   getIgnoreDisplacements() {
-    return this._ignoreDisplacement;
+    return this._ignoreDisplacements;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -161,7 +161,7 @@ class ImageMatchSettings {
    * @param {boolean} value
    */
   setIgnoreDisplacements(value) {
-    this._ignoreDisplacement = value;
+    this._ignoreDisplacements = value;
   }
 
   // noinspection JSUnusedGlobalSymbols
