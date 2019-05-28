@@ -4,8 +4,7 @@ const puppeteer = require('puppeteer');
 const {makeVisualGridClient} = require('../src/visual-grid-client');
 const {getProcessPageAndSerializeScript} = require('@applitools/dom-snapshot');
 const {delay: _delay} = require('@applitools/functional-commons');
-const testServer = require('../test/util/testServer');
-const debug = require('debug')('render');
+const debug = require('debug')('eyes:render');
 
 (async function() {
   const website = process.argv[2];
@@ -17,31 +16,31 @@ const debug = require('debug')('render');
 
   console.log('checking website:', website);
 
-  const server = await testServer({port: 7373});
   const {openEyes} = makeVisualGridClient({
     apiKey: process.env.APPLITOOLS_API_KEY,
     showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-    proxy: process.env.APPLITOOLS_PROXY, // 'http://localhost:8888',
+    proxy: process.env.APPLITOOLS_PROXY,
   });
 
   const {checkWindow, close} = await openEyes({
     appName: 'render script',
-    testName: 'render script',
+    testName: `render script ${website}`,
+    batchName: 'Render VGC',
     browser: [{width: 1024, height: 768, name: 'chrome'}],
   });
 
   debug('open done');
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({headless: true});
   const page = await browser.newPage();
   const processPageAndSerialize = `(${await getProcessPageAndSerializeScript()})()`;
 
-  await page.setCookie({name: 'auth', value: 'secret', url: 'http://localhost:7373/test.html'});
+  await page.setViewport({width: 1024, height: 768});
   await page.goto(website);
 
   debug('navigation done');
 
-  // await _delay(10000);
+  // await _delay(1000);
   const frame = await page.evaluate(processPageAndSerialize);
 
   debug('processPage done');
@@ -72,7 +71,6 @@ const debug = require('debug')('render');
     );
   }
   await browser.close();
-  await server.close();
 
   debug('browser closed');
 })();
