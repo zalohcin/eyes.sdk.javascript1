@@ -104,10 +104,6 @@ class EyesSelenium extends Eyes {
       return driver;
     }
 
-    if (this._configuration.getStitchMode() === StitchMode.CSS) {
-      this.setSendDom(true);
-    }
-
     this._initDriver(driver);
 
     this._screenshotFactory = new EyesWebDriverScreenshotFactory(this._logger, this._driver);
