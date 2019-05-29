@@ -1,46 +1,21 @@
 'use strict';
-const {
-  parse,
-  CSSImportRule,
-  CSSStyleRule,
-  CSSFontFaceRule,
-  CSSSupportsRule,
-  CSSMediaRule,
-} = require('cssom');
-const getUrlFromCssText = require('./getUrlFromCssText');
+const {mapCssUrls} = require('@applitools/rendering-resource-rewrite');
 const absolutizeUrl = require('./absolutizeUrl');
 
-function extractResourcesFromStyleSheet(styleSheet) {
-  const resourceUrls = [...styleSheet.cssRules].reduce((acc, rule) => {
-    if (rule instanceof CSSImportRule) {
-      return acc.concat(rule.href);
-    } else if (rule instanceof CSSFontFaceRule) {
-      return acc.concat(getUrlFromCssText(rule.style.getPropertyValue('src')));
-    } else if (rule instanceof CSSSupportsRule || rule instanceof CSSMediaRule) {
-      return acc.concat(extractResourcesFromStyleSheet(rule));
-    } else if (rule instanceof CSSStyleRule) {
-      for (let i = 0, ii = rule.style.length; i < ii; i++) {
-        const urls = getUrlFromCssText(rule.style.getPropertyValue(rule.style[i]));
-        urls.length && (acc = acc.concat(urls));
-      }
-    }
-    return acc;
-  }, []);
-  return [...new Set(resourceUrls)];
-}
-
 function makeExtractCssResources(logger) {
-  return function extractCssResources(cssText, absoluteUrl) {
-    let styleSheet;
-
+  return function extractCssResources(cssContent, absoluteUrl) {
+    const urls = [];
     try {
-      styleSheet = parse(cssText);
-    } catch (ex) {
-      logger.log(ex);
-      return [];
+      mapCssUrls({cssContent, onFoundUrl, resourceMap: []});
+    } catch (e) {
+      logger.log('could not parse css for urls', e);
     }
 
-    return extractResourcesFromStyleSheet(styleSheet).map(url => absolutizeUrl(url, absoluteUrl));
+    function onFoundUrl(url) {
+      urls.push(url);
+      return url;
+    }
+    return [...new Set(urls)].map(url => absolutizeUrl(url, absoluteUrl));
   };
 }
 

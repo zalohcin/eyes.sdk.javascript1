@@ -22,6 +22,13 @@ describe('extractCssResources', () => {
     ]);
   });
 
+  it('supports nested brackets', () => {
+    const cssText = `@svg-load url(./some.svg){ .path{} }`;
+    const baseUrl = 'http://some.url';
+    const resourceUrls = extractCssResources(cssText, baseUrl);
+    expect(resourceUrls).to.eql(['http://some.url/some.svg']);
+  });
+
   it('supports @font-face rule', () => {
     const cssText = `@font-face {
       font-family: 'Zilla Slab';
@@ -86,12 +93,10 @@ describe('extractCssResources', () => {
      font-style: normal;
    }`;
 
-    // NOTE: the first src property will be overriden by the second one. That's fine. We don't want to support that use case since this type of definition is meant
-    // to provide support for older browsers. The first `src` will be read by older browsers, and the second one for modern ones. We're working on modern ones.
-
     const baseUrl = 'http://some/path';
     const resourceUrls = extractCssResources(cssText, baseUrl);
     expect(resourceUrls).to.eql([
+      'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot?#iefix',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.woff2',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.woff',
