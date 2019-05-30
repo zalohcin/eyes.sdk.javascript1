@@ -26,7 +26,6 @@ describe('browser visual grid', () => {
 
     browser = await puppeteer.launch({
       args: ['--disable-web-security'],
-      headless: true,
     });
     page = await browser.newPage();
 
