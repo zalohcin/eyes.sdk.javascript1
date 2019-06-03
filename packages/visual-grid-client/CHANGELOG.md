@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.11.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.10.1...@applitools/visual-grid-client@12.11.0) (2019-06-03)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** better render script ([1392953](https://github.com/applitools/eyes.sdk.javascript1/commit/1392953))
+* **visual-grid-client:** Revert using css tokenizer for getting urls instead of cssom" ([e85760b](https://github.com/applitools/eyes.sdk.javascript1/commit/e85760b))
+* **visual-grid-client:** supporting userAgent on makeVisualGridClient and openEyes for fetch options. ([07c821b](https://github.com/applitools/eyes.sdk.javascript1/commit/07c821b))
+* **visual-grid-client:** userAgent is now really used by fetch ([f13f1d8](https://github.com/applitools/eyes.sdk.javascript1/commit/f13f1d8))
+* **visual-grid-client:** using css tokenizer for getting urls instead of cssom ([530f27b](https://github.com/applitools/eyes.sdk.javascript1/commit/530f27b))
+
+
+### Features
+
+* add `sequenceName` property to `BatchInfo` object ([aca2b90](https://github.com/applitools/eyes.sdk.javascript1/commit/aca2b90))
+
+
+
+
+
 ## [12.10.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.10.0...@applitools/visual-grid-client@12.10.1) (2019-05-27)
 
 

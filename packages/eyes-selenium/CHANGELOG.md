@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.19.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.18.1...@applitools/eyes-selenium@4.19.0) (2019-06-03)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** do not change sendDom when stitchMode is updated ([7f0b007](https://github.com/applitools/eyes.sdk.javascript1/commit/7f0b007))
+* update axios to new version. ([d8d0ae9](https://github.com/applitools/eyes.sdk.javascript1/commit/d8d0ae9))
+
+
+### Features
+
+* add `sequenceName` property to `BatchInfo` object ([aca2b90](https://github.com/applitools/eyes.sdk.javascript1/commit/aca2b90))
+
+
+
+
+
 ## [4.18.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.18.0...@applitools/eyes-selenium@4.18.1) (2019-05-27)
 
 

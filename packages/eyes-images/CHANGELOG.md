@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.10.11](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.10.10...@applitools/eyes-images@4.10.11) (2019-06-03)
+
+
+### Bug Fixes
+
+* update axios to new version. ([d8d0ae9](https://github.com/applitools/eyes.sdk.javascript1/commit/d8d0ae9))
+
+
+
+
+
 ## [4.10.10](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.10.9...@applitools/eyes-images@4.10.10) (2019-05-27)
 
 **Note:** Version bump only for package @applitools/eyes-images

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.18](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.6.17...@applitools/dom-utils@4.6.18) (2019-06-03)
+
+
+### Bug Fixes
+
+* update axios to new version. ([d8d0ae9](https://github.com/applitools/eyes.sdk.javascript1/commit/d8d0ae9))
+
+
+
+
+
 ## [4.6.17](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.6.16...@applitools/dom-utils@4.6.17) (2019-05-27)
 
 **Note:** Version bump only for package @applitools/dom-utils
