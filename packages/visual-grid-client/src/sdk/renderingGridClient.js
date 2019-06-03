@@ -63,6 +63,7 @@ function makeRenderingGridClient({
   serverUrl,
   agentId,
   fetchResourceTimeout = 120000,
+  userAgent,
 }) {
   const openEyesConcurrency = Number(concurrency);
 
@@ -92,8 +93,9 @@ function makeRenderingGridClient({
   const resourceCache = createResourceCache();
   const fetchCache = createResourceCache();
   const extractCssResources = makeExtractCssResources(logger);
-  const fetchWithTimeout = url =>
-    ptimeoutWithError(fetch(url), fetchResourceTimeout, 'fetche timed out');
+
+  const fetchWithTimeout = (url, opt) =>
+    ptimeoutWithError(fetch(url, opt), fetchResourceTimeout, 'fetche timed out');
   const fetchResource = makeFetchResource({logger, fetchCache, fetch: fetchWithTimeout});
   const putResources = makePutResources({doPutResource});
   const renderBatch = makeRenderBatch({
@@ -161,6 +163,7 @@ function makeRenderingGridClient({
     createRGridDOMAndGetResourceMapping,
     eyesTransactionThroat,
     agentId,
+    userAgent,
   });
 
   return {

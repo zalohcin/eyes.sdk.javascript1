@@ -31,7 +31,7 @@ function fromFetchedToRGridResource({url, type, value}) {
 }
 
 function makeGetAllResources({resourceCache, fetchResource, extractCssResources, logger}) {
-  return function getAllResources(resourceUrls, preResources) {
+  return function getAllResources({resourceUrls, preResources, fetchOptions}) {
     const handledResources = new Set();
     return getOrFetchResources(resourceUrls, preResources);
 
@@ -60,7 +60,7 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources,
 
       await Promise.all(
         missingResourceUrls.map(url =>
-          fetchResource(url)
+          fetchResource(url, fetchOptions)
             .then(async resource =>
               assignContentfulResources(resources, await processResource(resource)),
             )

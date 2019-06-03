@@ -36,13 +36,14 @@ function makeOpenEyes({
   saveNewTests: _saveNewTests,
   compareWithParentBranch: _compareWithParentBranch,
   ignoreBaseline: _ignoreBaseline,
+  userAgent: _userAgent,
+  createRGridDOMAndGetResourceMapping: _createRGridDOMAndGetResourceMapping,
   apiKey,
   proxy,
   serverUrl,
   logger,
   renderBatch,
   waitForRenderedStatus,
-  createRGridDOMAndGetResourceMapping,
   renderThroat,
   eyesTransactionThroat,
   getRenderInfoPromise,
@@ -53,6 +54,7 @@ function makeOpenEyes({
   return async function openEyes({
     testName,
     wrappers,
+    userAgent = _userAgent,
     appName = _appName,
     browser = _browser,
     saveDebugData = _saveDebugData,
@@ -149,6 +151,15 @@ function makeOpenEyes({
 
     let checkWindowPromises = wrappers.map(() => Promise.resolve());
     const testController = makeTestContorler({testName, numOfTests: wrappers.length, logger});
+
+    const createRGridDOMAndGetResourceMapping = userAgent
+      ? async (...args) =>
+          _createRGridDOMAndGetResourceMapping({
+            fetchOptions: {headers: {'User-Agent': userAgent}},
+            ...args,
+          })
+      : _createRGridDOMAndGetResourceMapping;
+
     const checkWindow = makeCheckWindow({
       testController,
       saveDebugData,

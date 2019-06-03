@@ -67,7 +67,7 @@ describe('getAllResources', () => {
     });
 
     try {
-      const resources = await getAllResources([jpgUrl, cssUrl, jsonUrl, jsUrl]);
+      const resources = await getAllResources({resourceUrls: [jpgUrl, cssUrl, jsonUrl, jsUrl]});
       expect(resources).to.eql(expected);
     } catch (ex) {
       throw ex;
@@ -89,8 +89,27 @@ describe('getAllResources', () => {
       [url]: rGridResource,
     };
 
-    const resourcesFromCache = await getAllResources([url]);
+    const resourcesFromCache = await getAllResources({resourceUrls: [url]});
     expect(resourcesFromCache).to.eql(expected);
+  });
+
+  it('fetches with fetchOptions', async () => {
+    let actualOptions;
+    const fetchResource = async (_url, options) => (actualOptions = options);
+    const extractCssResources = makeExtractCssResources(testLogger);
+    resourceCache = createResourceCache();
+    getAllResources = makeGetAllResources({
+      resourceCache,
+      extractCssResources,
+      fetchResource,
+      logger: testLogger,
+    });
+
+    await getAllResources({
+      resourceUrls: ['http://localhost/some/url.html'],
+      fetchOptions: {someOp: {hello: true}},
+    });
+    expect(actualOptions).to.eql({someOp: {hello: true}});
   });
 
   it('works for urls with long paths', async () => {
@@ -108,7 +127,7 @@ describe('getAllResources', () => {
     };
 
     try {
-      const resources = await getAllResources([absoluteUrl]);
+      const resources = await getAllResources({resourceUrls: [absoluteUrl]});
       expect(resources).to.eql(expected);
     } catch (ex) {
       throw ex;
@@ -202,15 +221,14 @@ describe('getAllResources', () => {
       },
     );
 
-    const resourcesFromCache = await getAllResources([cssUrl]);
+    const resourcesFromCache = await getAllResources({resourceUrls: [cssUrl]});
     expect(resourcesFromCache).to.eql(expected);
   });
 
   it("doesn't crash with unsupported protocols", async () => {
-    const resources = await getAllResources([
-      'data:text/html,<div>',
-      'blob:http://localhost/something.css',
-    ]).then(x => x, err => err);
+    const resources = await getAllResources({
+      resourceUrls: ['data:text/html,<div>', 'blob:http://localhost/something.css'],
+    }).then(x => x, err => err);
     expect(resources).to.eql({});
   });
 
@@ -219,7 +237,7 @@ describe('getAllResources', () => {
     closeServer = server.close;
     try {
       const url = `HTTP://LOCALHOST:${server.port}/imported2.css`;
-      const resources = await getAllResources([url]).then(x => x, err => err);
+      const resources = await getAllResources({resourceUrls: [url]}).then(x => x, err => err);
       expect(resources).to.eql({
         [url]: toRGridResource({
           url,
@@ -260,7 +278,10 @@ describe('getAllResources', () => {
     };
 
     try {
-      const resources = await getAllResources([fontZillaUrl], preResources);
+      const resources = await getAllResources({
+        resourceUrls: [fontZillaUrl],
+        preResources,
+      });
 
       const expected = mapValues(
         {
@@ -293,7 +314,7 @@ describe('getAllResources', () => {
     };
 
     try {
-      const resources = await getAllResources([absoluteUrl]);
+      const resources = await getAllResources({resourceUrls: [absoluteUrl]});
       expect(resources).to.deep.equal(expected);
     } catch (ex) {
       throw ex;
@@ -306,7 +327,7 @@ describe('getAllResources', () => {
       return rGridResource;
     });
 
-    const resourcesFromCache = await getAllResources([absoluteUrl]);
+    const resourcesFromCache = await getAllResources({resourceUrls: [absoluteUrl]});
     expect(resourcesFromCache).to.deep.equal(expectedFromCache);
   });
 
@@ -319,16 +340,19 @@ describe('getAllResources', () => {
     const cssBuffer = loadFixtureBuffer(cssName);
     const imgBuffer = loadFixtureBuffer(imgName);
 
-    const resources = await getAllResources([], {
-      [cssUrl]: {
-        url: cssUrl,
-        type: 'text/css',
-        value: cssBuffer,
-      },
-      [imgUrl]: {
-        url: imgUrl,
-        type: 'bla jpeg',
-        value: imgBuffer,
+    const resources = await getAllResources({
+      resourceUrls: [],
+      preResources: {
+        [cssUrl]: {
+          url: cssUrl,
+          type: 'text/css',
+          value: cssBuffer,
+        },
+        [imgUrl]: {
+          url: imgUrl,
+          type: 'bla jpeg',
+          value: imgBuffer,
+        },
       },
     });
 
@@ -366,7 +390,7 @@ describe('getAllResources', () => {
         },
       },
     });
-    const resources = await getAllResources(['http://localhost:1234/err/bla.css']);
+    const resources = await getAllResources({resourceUrls: ['http://localhost:1234/err/bla.css']});
     expect(resources).to.eql({});
     expect(output).to.contain('error fetching resource at http://localhost:1234/err/bla.css');
   });
@@ -380,7 +404,7 @@ describe('getAllResources', () => {
     };
 
     try {
-      const resources = await getAllResources([url], preResources);
+      const resources = await getAllResources({resourceUrls: [url], preResources});
       expect(resources).to.eql(mapValues(preResources, toRGridResource));
     } finally {
       await server.close();
@@ -399,7 +423,7 @@ describe('getAllResources', () => {
     const cssValue = loadFixtureBuffer(cssName);
 
     try {
-      const resources = await getAllResources([cssUrl], preResources);
+      const resources = await getAllResources({resourceUrls: [cssUrl], preResources});
       expect(resources).to.eql(
         mapValues(
           Object.assign(preResources, {
@@ -426,7 +450,7 @@ describe('getAllResources', () => {
     };
 
     try {
-      const resources = await getAllResources([], preResources);
+      const resources = await getAllResources({resourceUrls: [], preResources});
       expect(resources).to.eql(mapValues(preResources, toRGridResource));
     } finally {
       await server.close();
@@ -439,7 +463,7 @@ describe('getAllResources', () => {
     const name = 'recursive.css';
     const url = `${baseUrl}/${name}`;
     try {
-      const resources = await getAllResources([url]);
+      const resources = await getAllResources({resourceUrls: [url]});
       expect(resources).to.eql(
         mapValues(
           {
@@ -463,7 +487,7 @@ describe('getAllResources', () => {
       [url]: {url, type: 'text/css; charset=UTF-8', value},
     };
     try {
-      const resources = await getAllResources([], preResources);
+      const resources = await getAllResources({resourceUrls: [], preResources});
       expect(resources).to.eql(mapValues(preResources, toRGridResource));
     } finally {
       await server.close();
@@ -478,7 +502,7 @@ describe('getAllResources', () => {
     const name2 = 'recursive-2.css';
     const url2 = `${baseUrl}/${name2}`;
     try {
-      const resources = await getAllResources([url1]);
+      const resources = await getAllResources({resourceUrls: [url1]});
       expect(resources).to.eql(
         mapValues(
           {
