@@ -251,11 +251,6 @@ class ServerConnector {
 
     if (TypeUtils.isNotNull(this._configuration.getProxy())) {
       options.proxy = this._configuration.getProxy().toProxyObject();
-
-      // TODO: remove hot-fix when axios release official fix
-      if (options.proxy.protocol === 'http:') {
-        options.transport = require('http'); // eslint-disable-line
-      }
     }
 
     return options;
