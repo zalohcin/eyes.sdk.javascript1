@@ -107,7 +107,7 @@ function makeCheckWindow({
 
       // render error fails all tests
       if (renderErr) {
-        logger.log('got render error aborting tests');
+        logger.log('got render error aborting tests', renderErr);
         testController.setFatalError(renderErr);
         renderJobs && renderJobs[index]();
         return;

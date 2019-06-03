@@ -153,7 +153,7 @@ function makeOpenEyes({
     const testController = makeTestContorler({testName, numOfTests: wrappers.length, logger});
 
     const createRGridDOMAndGetResourceMapping = userAgent
-      ? async (...args) =>
+      ? async args =>
           _createRGridDOMAndGetResourceMapping({
             fetchOptions: {headers: {'User-Agent': userAgent}},
             ...args,
