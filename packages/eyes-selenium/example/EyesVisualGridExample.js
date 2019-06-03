@@ -2,7 +2,7 @@
 
 require('chromedriver'); // eslint-disable-line node/no-unpublished-require
 const { Builder, Capabilities, By } = require('selenium-webdriver');
-const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, Configuration, BrowserType, DeviceName, ScreenOrientation } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
+const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, Configuration, BrowserType, DeviceName, ScreenOrientation, BatchInfo } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
 
 (async () => {
   // Open a Chrome browser.
@@ -16,7 +16,11 @@ const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, Configuration, Browse
   eyes.setLogHandler(new ConsoleLogHandler(false));
 
   try {
+    const batchInfo = new BatchInfo();
+    batchInfo.setSequenceName('alpha sequence');
+
     const configuration = new Configuration();
+    configuration.setBatch(batchInfo);
     configuration.setConcurrentSessions(3);
     configuration.setAppName('Eyes Examples');
     configuration.setTestName('My first Javascript test!');

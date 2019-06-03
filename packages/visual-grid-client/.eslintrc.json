@@ -25,7 +25,8 @@
               "singleQuote": true,
               "trailingComma": "all",
               "bracketSpacing": false,
-              "jsxBracketSameLine": true
+              "jsxBracketSameLine": true,
+              "endOfLine": "auto"
           }
       ],
       "no-process-exit": "off",

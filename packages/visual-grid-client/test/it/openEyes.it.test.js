@@ -116,15 +116,18 @@ describe('openEyes', () => {
   });
 
   it('handles `batchName` and `batchId` param', async () => {
+    const batchSequenceName = `some batch sequence ${Date.now()}`;
     const batchName = `some batch name ${Date.now()}`;
     const batchId = `some batch ID ${Date.now()}`;
     await openEyes({
       wrappers: [wrapper],
+      batchSequenceName,
       batchName,
       batchId,
       appName,
     });
 
+    expect(wrapper.getBatch().getSequenceName()).to.equal(batchSequenceName);
     expect(wrapper.getBatch().getName()).to.equal(batchName);
     expect(wrapper.getBatch().getId()).to.equal(batchId);
   });

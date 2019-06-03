@@ -26,6 +26,7 @@ function configureWrappers({
   wrappers,
   browsers,
   isDisabled,
+  batchSequenceName,
   batchName,
   batchId,
   properties,
@@ -49,7 +50,7 @@ function configureWrappers({
   ignoreDisplacements,
   assumeEnvironment,
 }) {
-  const batchInfo = new BatchInfo({id: batchId, name: batchName});
+  const batchInfo = new BatchInfo({id: batchId, name: batchName, sequenceName: batchSequenceName});
 
   if (proxy && typeof proxy === 'object' && !(proxy instanceof ProxySettings)) {
     proxy = new ProxySettings(proxy.uri, proxy.username, proxy.password);

@@ -2,7 +2,7 @@
 
 require('chromedriver'); // eslint-disable-line node/no-unpublished-require
 const { Builder, Capabilities, By } = require('selenium-webdriver');
-const { Eyes, Target, ConsoleLogHandler } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
+const { Eyes, Target, ConsoleLogHandler, BatchInfo } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
 
 (async () => {
   // Open a Chrome browser.
@@ -16,6 +16,10 @@ const { Eyes, Target, ConsoleLogHandler } = require('../index'); // should be re
   // eyes.setApiKey('Your API Key');
   eyes.setLogHandler(new ConsoleLogHandler(false));
   // eyes.setProxy('http://localhost:8888');
+
+  const batchInfo = new BatchInfo();
+  batchInfo.setSequenceName('alpha sequence');
+  eyes.setBatch(batchInfo);
 
   try {
     // Start the test and set the browser's viewport size to 800x600.

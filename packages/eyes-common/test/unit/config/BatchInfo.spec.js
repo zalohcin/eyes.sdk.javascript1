@@ -10,6 +10,7 @@ describe('BatchInfo', () => {
     assert.strictEqual(typeof batch.getId(), 'string');
     assert.strictEqual(typeof batch.getName(), 'undefined');
     assert.strictEqual(typeof batch.getStartedAt(), 'object');
+    assert.strictEqual(typeof batch.getSequenceName(), 'undefined');
   });
 
   it('create batch by name', () => {
@@ -17,15 +18,17 @@ describe('BatchInfo', () => {
     assert.strictEqual(typeof batch.getId(), 'string');
     assert.strictEqual(typeof batch.getName(), 'string');
     assert.strictEqual(typeof batch.getStartedAt(), 'object');
+    assert.strictEqual(typeof batch.getSequenceName(), 'undefined');
     assert.strictEqual(batch.getName(), 'hello');
   });
 
-  it('create batch by name, startedAt, id', () => {
+  it('create batch by name, startedAt, id, sequenceName', () => {
     const started = new Date();
     const batch = new BatchInfo('hello', started, 'id');
     assert.strictEqual(typeof batch.getId(), 'string');
     assert.strictEqual(typeof batch.getName(), 'string');
     assert.strictEqual(typeof batch.getStartedAt(), 'object');
+    assert.strictEqual(typeof batch.getSequenceName(), 'undefined');
     assert.strictEqual(batch.getId(), 'id');
     assert.strictEqual(batch.getName(), 'hello');
     assert.strictEqual(batch.getStartedAt(), started);
@@ -33,13 +36,15 @@ describe('BatchInfo', () => {
 
   it('create batch from object', () => {
     const started = new Date();
-    const batch = new BatchInfo({ id: 'id', name: 'hello', startedAt: started });
+    const batch = new BatchInfo({ id: 'id', name: 'hello', startedAt: started, sequenceName: 'bla' });
     assert.strictEqual(typeof batch.getId(), 'string');
     assert.strictEqual(typeof batch.getName(), 'string');
     assert.strictEqual(typeof batch.getStartedAt(), 'object');
+    assert.strictEqual(typeof batch.getSequenceName(), 'string');
     assert.strictEqual(batch.getId(), 'id');
     assert.strictEqual(batch.getName(), 'hello');
     assert.strictEqual(batch.getStartedAt(), started);
+    assert.strictEqual(batch.getSequenceName(), 'bla');
   });
 
   it('create batch from another batch', () => {

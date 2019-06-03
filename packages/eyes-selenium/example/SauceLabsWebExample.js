@@ -1,6 +1,6 @@
 'use strict';
 
-const { Builder, By } = require('selenium-webdriver');
+const { Builder } = require('selenium-webdriver');
 const { Eyes, Target, ConsoleLogHandler, StitchMode } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
 
 (async () => {

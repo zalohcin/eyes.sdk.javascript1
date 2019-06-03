@@ -40,6 +40,7 @@ function makeRenderingGridClient({
   browser = {width: 1024, height: 768},
   apiKey,
   saveDebugData,
+  batchSequenceName,
   batchName,
   batchId,
   properties,
@@ -125,13 +126,18 @@ function makeRenderingGridClient({
     getAllResources,
   });
 
-  const {batchId: defaultBatchId, batchName: defaultBatchName} = getBatch({batchName, batchId});
+  const {
+    batchId: defaultBatchId,
+    batchName: defaultBatchName,
+    batchSequenceName: defaultBatchSequenceName,
+  } = getBatch({batchSequenceName, batchName, batchId});
 
   const openEyes = makeOpenEyes({
     appName,
     browser,
     apiKey,
     saveDebugData,
+    batchSequenceName: defaultBatchSequenceName,
     batchName: defaultBatchName,
     batchId: defaultBatchId,
     properties,
