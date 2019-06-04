@@ -115,7 +115,7 @@ describe('openEyes', () => {
     ).to.eql([[true], [true], [true]]);
   });
 
-  it('handles `batchName` and `batchId` param', async () => {
+  it('handles `batchName`, `batchId` and `batchSequence` param', async () => {
     const batchSequenceName = `some batch sequence ${Date.now()}`;
     const batchName = `some batch name ${Date.now()}`;
     const batchId = `some batch ID ${Date.now()}`;

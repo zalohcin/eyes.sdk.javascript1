@@ -18,7 +18,6 @@ module.exports = [
   'ignoreCaret',
   'isDisabled',
   'matchLevel',
-
   'parentBranchName',
   'branchName',
   'proxy',
