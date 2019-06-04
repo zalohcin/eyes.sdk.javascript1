@@ -10,6 +10,7 @@ module.exports = [
   'saveDebugData',
   'batchName',
   'batchId',
+  'batchSequenceName',
   'properties',
   'baselineBranchName',
   'baselineEnvName',
