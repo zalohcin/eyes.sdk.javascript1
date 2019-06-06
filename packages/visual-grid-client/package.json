@@ -30,6 +30,7 @@
     "browser.js"
   ],
   "dependencies": {
+    "@applitools/dom-snapshot": "^1.2.9",
     "@applitools/eyes-common": "^3.7.0",
     "@applitools/eyes-sdk-core": "^5.9.0",
     "@applitools/functional-commons": "^1.4.1",
@@ -42,10 +43,10 @@
     "mime-types": "^2.1.24",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.6.3",
-    "throat": "^4.1.0"
+    "throat": "^4.1.0",
+    "xmldom": "^0.1.27"
   },
   "devDependencies": {
-    "@applitools/dom-snapshot": "^1.2.4",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.4",
