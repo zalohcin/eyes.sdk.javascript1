@@ -42,6 +42,22 @@ describe('extractCssResources', () => {
     expect(resourceUrls).to.eql(['http://some/some.css']);
   });
 
+  it('supports inline url', () => {
+    const cssText = `url(data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%222%3E %3Ccircle cx=%2210%22 cy=%225.5%22 r=%224.5%22/%3E %3C/g%3E %3C/svg%3E);`;
+    const baseUrl = 'http://some/path';
+    const resourceUrls = extractCssResources(cssText, baseUrl);
+    expect(resourceUrls).to.eql([
+      'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%222%3E %3Ccircle cx=%2210%22 cy=%225.5%22 r=%224.5%22/%3E %3C/g%3E %3C/svg%3E',
+    ]);
+  });
+
+  it('supports @import with url() rule', () => {
+    const cssText = `@import url('some.css');`;
+    const baseUrl = 'http://some/path';
+    const resourceUrls = extractCssResources(cssText, baseUrl);
+    expect(resourceUrls).to.eql(['http://some/some.css']);
+  });
+
   it('supports @support rule', () => {
     const cssText = `@supports (display: grid) {
       div {
@@ -61,6 +77,20 @@ describe('extractCssResources', () => {
     expect(resourceUrls).to.eql([]);
   });
 
+  it('supports nested brackets', () => {
+    const cssText = `@svg-load url(./some.svg){ .path{} }`;
+    const baseUrl = 'http://some.url';
+    const resourceUrls = extractCssResources(cssText, baseUrl);
+    expect(resourceUrls).to.eql(['http://some.url/some.svg']);
+  });
+
+  it('does not return urls for a wrong function', () => {
+    const cssText = `.btn{filter:Foo(startColorstr='#4567', endColorstr='#1234', GradientType=0)`;
+    const baseUrl = 'http://some.url';
+    const resourceUrls = extractCssResources(cssText, baseUrl);
+    expect(resourceUrls).to.eql([]);
+  });
+
   it('supports resources inside @media queries', () => {
     const cssText = `@media (max-width:991px) {
       .bla {
@@ -70,6 +100,56 @@ describe('extractCssResources', () => {
     const baseUrl = 'http://some/path';
     const resourceUrls = extractCssResources(cssText, baseUrl);
     expect(resourceUrls).to.eql(['http://some/hello.jpg']);
+  });
+
+  it('supports image sets with url()', () => {
+    const cssText = `.img {
+      background-image: url(examples/images/image-0.jpg);
+      background-image: 
+        -webkit-image-set(
+          url(examples/images/image-1.jpg) 1x,
+          url(examples/images/image-2.jpg) 2x,
+        );
+      background-image: 
+        image-set(
+          url(examples/images/image-3.jpg) 1x,
+          url(examples/images/image-4.jpg) 2x,
+        );
+    }`;
+    const baseUrl = 'http://some/path/';
+    const resourceUrls = extractCssResources(cssText, baseUrl);
+    expect(resourceUrls).to.eql([
+      'http://some/path/examples/images/image-0.jpg',
+      'http://some/path/examples/images/image-1.jpg',
+      'http://some/path/examples/images/image-2.jpg',
+      'http://some/path/examples/images/image-3.jpg',
+      'http://some/path/examples/images/image-4.jpg',
+    ]);
+  });
+
+  it('supports image sets without url()', () => {
+    const cssText = `.img {
+      background-image: url(original.jpg);
+      background-image: 
+        -webkit-image-set(
+            "one.jpg" 1x,
+          "two.jpg" 2x,
+        );
+      background-image: 
+        image-set(
+          "three.jpg" 1x,
+          "four.jpg" 2x,
+        );
+    }`;
+    const baseUrl = 'http://some/path/';
+    const resourceUrls = extractCssResources(cssText, baseUrl);
+    expect(resourceUrls).to.eql([
+      'http://some/path/original.jpg',
+      'http://some/path/one.jpg',
+      'http://some/path/two.jpg',
+      'http://some/path/three.jpg',
+      'http://some/path/four.jpg',
+    ]);
   });
 
   it('supports multiple src properties in @font-face rules', () => {
@@ -86,12 +166,10 @@ describe('extractCssResources', () => {
      font-style: normal;
    }`;
 
-    // NOTE: the first src property will be overriden by the second one. That's fine. We don't want to support that use case since this type of definition is meant
-    // to provide support for older browsers. The first `src` will be read by older browsers, and the second one for modern ones. We're working on modern ones.
-
     const baseUrl = 'http://some/path';
     const resourceUrls = extractCssResources(cssText, baseUrl);
     expect(resourceUrls).to.eql([
+      'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot?#iefix',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.woff2',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.woff',
