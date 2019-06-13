@@ -42,6 +42,15 @@ describe('extractCssResources', () => {
     expect(resourceUrls).to.eql(['http://some/some.css']);
   });
 
+  it('supports inline url', () => {
+    const cssText = `url(data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%222%3E %3Ccircle cx=%2210%22 cy=%225.5%22 r=%224.5%22/%3E %3C/g%3E %3C/svg%3E);`;
+    const baseUrl = 'http://some/path';
+    const resourceUrls = extractCssResources(cssText, baseUrl);
+    expect(resourceUrls).to.eql([
+      'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%222%3E %3Ccircle cx=%2210%22 cy=%225.5%22 r=%224.5%22/%3E %3C/g%3E %3C/svg%3E',
+    ]);
+  });
+
   it('supports @import with url() rule', () => {
     const cssText = `@import url('some.css');`;
     const baseUrl = 'http://some/path';
