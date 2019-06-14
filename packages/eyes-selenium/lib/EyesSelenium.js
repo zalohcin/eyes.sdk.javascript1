@@ -26,6 +26,7 @@ const {
   MatchResult,
 } = require('@applitools/eyes-sdk-core');
 
+const { ClassicRunner } = require('./runner/ClassicRunner');
 const { StitchMode } = require('./config/StitchMode');
 const { ImageProviderFactory } = require('./capture/ImageProviderFactory');
 const { EyesWebDriverScreenshotFactory } = require('./capture/EyesWebDriverScreenshotFactory');
@@ -54,9 +55,10 @@ class EyesSelenium extends Eyes {
    *
    * @param {string} [serverUrl] - The Eyes server URL.
    * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
+   * @param {ClassicRunner} [runner] - Set shared ClassicRunner if you want to group results.
    */
-  constructor(serverUrl, isDisabled) {
-    super(serverUrl, isDisabled);
+  constructor(serverUrl, isDisabled, runner = new ClassicRunner()) {
+    super(serverUrl, isDisabled, runner);
 
     /** @type {boolean} */
     this._checkFrameOrElement = false;
@@ -713,6 +715,20 @@ class EyesSelenium extends Eyes {
       false,
       this._scaleProviderHandler
     );
+  }
+
+  /**
+   * @param {boolean} [throwEx]
+   * @return {Promise<TestResults>}
+   */
+  async close(throwEx = true) {
+    const results = await super.close(throwEx);
+
+    if (this._runner) {
+      this._runner._allTestResult.push(results);
+    }
+
+    return results;
   }
 
   /**

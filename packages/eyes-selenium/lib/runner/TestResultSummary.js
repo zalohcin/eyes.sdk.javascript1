@@ -1,8 +1,7 @@
 'use strict';
 
 const { ArgumentGuard, TypeUtils, GeneralUtils } = require('@applitools/eyes-common');
-const { TestFailedError } = require('@applitools/eyes-sdk-core');
-const { TestResultsStatus } = require('@applitools/eyes-sdk-core');
+const { TestFailedError, TestResultsStatus } = require('@applitools/eyes-sdk-core');
 
 const { TestResultContainer } = require('./TestResultContainer');
 

@@ -5,8 +5,8 @@ const { getProcessPageAndPollScript } = require('@applitools/dom-snapshot');
 const { ArgumentGuard, TypeUtils, GeneralUtils } = require('@applitools/eyes-common');
 const { CorsIframeHandle, CorsIframeHandler } = require('@applitools/eyes-sdk-core');
 
-const { TestResultSummary } = require('./visualgrid/TestResultSummary');
-const { VisualGridRunner } = require('./visualgrid/VisualGridRunner');
+const { TestResultSummary } = require('./runner/TestResultSummary');
+const { VisualGridRunner } = require('./runner/VisualGridRunner');
 const { BrowserType } = require('./config/BrowserType');
 const { Eyes } = require('./Eyes');
 
@@ -26,14 +26,12 @@ class EyesVisualGrid extends Eyes {
    *
    * @param {string} [serverUrl] - The Eyes server URL.
    * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
-   * @param {VisualGridRunner} [visualGridRunner] - Set {@code true} to disable Applitools Eyes and use the WebDriver
-   *   directly.
+   * @param {VisualGridRunner} [runner] - Set shared VisualGridRunner if you want to group results.
    */
-  constructor(serverUrl, isDisabled, visualGridRunner = new VisualGridRunner()) {
-    super(serverUrl, isDisabled, true);
+  constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
+    super(serverUrl, isDisabled, runner);
 
-    /** @type {VisualGridRunner} */ this._visualGridRunner = visualGridRunner;
-    this._visualGridRunner._eyesInstances.push(this);
+    this._isVisualGrid = true;
 
     /** @type {string} */ this._processResourcesScript = undefined;
     /** @function */ this._checkWindowCommand = undefined;
@@ -67,8 +65,8 @@ class EyesVisualGrid extends Eyes {
     if (sessionType) this._configuration.setSessionType(sessionType);
 
     // noinspection NonBlockStatementBodyJS
-    if (this._visualGridRunner.getConcurrentSessions()) {
-      this._configuration.setConcurrentSessions(this._visualGridRunner.getConcurrentSessions());
+    if (this._runner.getConcurrentSessions()) {
+      this._configuration.setConcurrentSessions(this._runner.getConcurrentSessions());
     }
 
     await this._initDriver(driver);
@@ -297,13 +295,6 @@ class EyesVisualGrid extends Eyes {
       type,
       value: Buffer.from(value, 'base64'),
     }));
-  }
-
-  /**
-   * @return {VisualGridRunner}
-   */
-  getRunner() {
-    return this._visualGridRunner;
   }
 }
 
