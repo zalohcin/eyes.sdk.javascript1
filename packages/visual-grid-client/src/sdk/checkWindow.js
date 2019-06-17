@@ -35,6 +35,8 @@ function makeCheckWindow({
     url,
     cdt,
     tag,
+    target = 'window',
+    fully = true,
     sizeMode = 'full-page',
     selector,
     region,
@@ -49,6 +51,14 @@ function makeCheckWindow({
     enablePatterns,
     ignoreDisplacements,
   }) {
+    if (target === 'window') {
+      sizeMode = fully ? 'full-page' : 'viewport';
+    } else if (target === 'region' && selector) {
+      sizeMode = 'selector';
+    } else if (target === 'region' && region) {
+      sizeMode = 'region';
+    }
+
     const currStepCount = ++stepCounter;
     logger.log(`running checkWindow for test ${testName} step #${currStepCount}`);
     if (testController.shouldStopAllTests()) {
@@ -116,9 +126,9 @@ function makeCheckWindow({
       const renderId = renderIds[index];
 
       logger.log(
-        `render request complete for ${renderId}. test=${testName} stepCount #${currStepCount} tag=${tag} sizeMode=${sizeMode} browser: ${JSON.stringify(
-          browsers[index],
-        )}`,
+        `render request complete for ${renderId}. test=${testName} stepCount #${currStepCount} tag=${tag} target=${target} fully=${fully} region=${JSON.stringify(
+          region,
+        )} selector=${JSON.stringify(selector)} browser: ${JSON.stringify(browsers[index])}`,
       );
 
       const [renderStatusErr, renderStatusResult] = await presult(
