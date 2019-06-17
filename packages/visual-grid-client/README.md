@@ -184,7 +184,8 @@ describe('visual-grid-client test', function() {
     }));
     checkWindow({
       tag: 'first test',
-      sizeMode: 'viewport',
+      target: 'region',
+      fully: false,
       url,
       cdt,
       resourceUrls,
