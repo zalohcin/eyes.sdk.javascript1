@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [12.11.8](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.11.0...@applitools/visual-grid-client@12.11.8) (2019-06-17)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** added batchSequeneceName to config params ([33c0e8c](https://github.com/applitools/eyes.sdk.javascript1/commit/33c0e8c))
+* **visual-grid-client:** setting userAgent to renderWrapper ([6c576f2](https://github.com/applitools/eyes.sdk.javascript1/commit/6c576f2))
+* **visual-grid-client:** small fixes ([a2820a7](https://github.com/applitools/eyes.sdk.javascript1/commit/a2820a7))
+* **visual-grid-client:** using postcss-value-parser tokenizer for extractCssRources ([4b68720](https://github.com/applitools/eyes.sdk.javascript1/commit/4b68720))
+
+
+
+
+
 # [12.11.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.10.1...@applitools/visual-grid-client@12.11.0) (2019-06-03)
 
 

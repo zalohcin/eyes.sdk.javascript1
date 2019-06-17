@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.20.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.19.0...@applitools/eyes-selenium@4.20.0) (2019-06-17)
+
+
+### Features
+
+* **eyes-selenium:** add ClassicRunner to allow to collect results from multiple selenium tests ([5a217dd](https://github.com/applitools/eyes.sdk.javascript1/commit/5a217dd))
+
+
+
+
+
 # [4.19.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.18.1...@applitools/eyes-selenium@4.19.0) (2019-06-03)
 
 
