@@ -85,7 +85,7 @@ describe('extractCssResources', () => {
   });
 
   it('supports nested brackets', () => {
-    const cssText = `@svg-load url(./some.svg){ .path{} }`;
+    const cssText = `@svg-load url(./some.svg#hihi){ .path{} }`;
     const baseUrl = 'http://some.url';
     const resourceUrls = extractCssResources(cssText, baseUrl);
     expect(resourceUrls).to.eql(['http://some.url/some.svg']);
@@ -177,11 +177,11 @@ describe('extractCssResources', () => {
     const resourceUrls = extractCssResources(cssText, baseUrl);
     expect(resourceUrls).to.eql([
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot',
-      'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot?#iefix',
+      'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot?',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.woff2',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.woff',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.ttf',
-      'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.svg#fontawesomeregular',
+      'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.svg',
     ]);
   });
 });
