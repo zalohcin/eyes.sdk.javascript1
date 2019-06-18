@@ -1,6 +1,7 @@
 'use strict';
 
 const absolutizeUrl = require('./absolutizeUrl');
+const {toUriEncoding} = require('@applitools/dom-snapshot');
 const valueParser = require('postcss-value-parser');
 
 function makeExtractCssResources(logger) {
@@ -15,7 +16,7 @@ function makeExtractCssResources(logger) {
     } catch (e) {
       logger.log(`could not parse css ${absoluteUrl}`, e);
     }
-    return [...new Set(urls)].map(url => absolutizeUrl(url, absoluteUrl));
+    return [...new Set(urls)].map(toUriEncoding).map(url => absolutizeUrl(url, absoluteUrl));
   };
 }
 

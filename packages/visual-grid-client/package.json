@@ -30,7 +30,7 @@
     "browser.js"
   ],
   "dependencies": {
-    "@applitools/dom-snapshot": "^1.2.9",
+    "@applitools/dom-snapshot": "^1.2.11",
     "@applitools/eyes-common": "^3.7.0",
     "@applitools/eyes-sdk-core": "^5.9.1",
     "@applitools/functional-commons": "^1.4.1",

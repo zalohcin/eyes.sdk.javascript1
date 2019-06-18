@@ -42,6 +42,13 @@ describe('extractCssResources', () => {
     expect(resourceUrls).to.eql(['http://some/some.css']);
   });
 
+  it('supports css encoding', () => {
+    const cssText = `div { background-image: url(\\2fsomePath\\2f some.jpg) }`;
+    const baseUrl = 'http://some/somePath';
+    const resourceUrls = extractCssResources(cssText, baseUrl);
+    expect(resourceUrls).to.eql(['http://some/somePath/some.jpg']);
+  });
+
   it('supports inline url', () => {
     const cssText = `url(data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%222%3E %3Ccircle cx=%2210%22 cy=%225.5%22 r=%224.5%22/%3E %3C/g%3E %3C/svg%3E);`;
     const baseUrl = 'http://some/path';
