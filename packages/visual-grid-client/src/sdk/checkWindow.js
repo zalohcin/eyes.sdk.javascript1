@@ -51,8 +51,8 @@ function makeCheckWindow({
     enablePatterns,
     ignoreDisplacements,
   }) {
-    if (target === 'window') {
-      sizeMode = fully ? 'full-page' : 'viewport';
+    if (target === 'window' && !fully) {
+      sizeMode = 'viewport';
     } else if (target === 'region' && selector) {
       sizeMode = 'selector';
     } else if (target === 'region' && region) {
