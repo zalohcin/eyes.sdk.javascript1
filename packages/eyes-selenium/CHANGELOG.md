@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.20.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.20.1...@applitools/eyes-selenium@4.20.2) (2019-06-19)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** use `html` as default scrollRootElement ([3295cd4](https://github.com/applitools/eyes.sdk.javascript1/commit/3295cd4))
+
+
+
+
+
 ## [4.20.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.20.0...@applitools/eyes-selenium@4.20.1) (2019-06-19)
 
 **Note:** Version bump only for package @applitools/eyes-selenium
