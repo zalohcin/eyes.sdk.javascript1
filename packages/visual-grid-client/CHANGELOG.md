@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.13.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.11.8...@applitools/visual-grid-client@12.13.0) (2019-06-19)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** 12.11.9 ([69c238a](https://github.com/applitools/eyes.sdk.javascript1/commit/69c238a))
+* **visual-grid-client:** fix spread operator on object ([0b1da8a](https://github.com/applitools/eyes.sdk.javascript1/commit/0b1da8a))
+* **visual-grid-client:** removing anchors from resourc urls ([c43d471](https://github.com/applitools/eyes.sdk.javascript1/commit/c43d471))
+* **visual-grid-client:** supporting css uri encoding ([c11a1cd](https://github.com/applitools/eyes.sdk.javascript1/commit/c11a1cd))
+
+
+### Features
+
+* **visual-grid-client:** supporting target instead of sizeMode ([ab9bdc4](https://github.com/applitools/eyes.sdk.javascript1/commit/ab9bdc4))
+
+
+
+
+
 ## [12.11.8](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.11.0...@applitools/visual-grid-client@12.11.8) (2019-06-17)
 
 
