@@ -30,11 +30,11 @@
   "main": "./index.js",
   "browser": "./browser.js",
   "dependencies": {
-    "cosmiconfig": "^5.0.7",
+    "cosmiconfig": "^5.2.1",
     "dateformat": "^3.0.3",
     "debug": "^4.1.1",
-    "deepmerge": "^3.1.0",
-    "png-async": "^0.9.3",
+    "deepmerge": "^3.2.1",
+    "png-async": "^0.9.4",
     "stack-trace": "^0.0.10"
   },
   "devDependencies": {
