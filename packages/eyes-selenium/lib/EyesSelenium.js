@@ -470,6 +470,9 @@ class EyesSelenium extends Eyes {
         if (frame != null) {
           scrollRootElement = await frame.getForceScrollRootElement(this._driver);
         }
+        if (scrollRootElement == null) {
+          scrollRootElement = driver.findElement(By.tagName("html"));
+        }
       }
       this._logger.verbose("scrollRootElement:", scrollRootElement);
 
