@@ -934,7 +934,7 @@ class TestResults {
    * @override
    */
   toJSON() {
-    return GeneralUtils.toPlain(this);
+    return GeneralUtils.toPlain(this, ['_serverConnector']);
   }
 
   /**
@@ -942,7 +942,7 @@ class TestResults {
    */
   toString() {
     const isNewTestStr = this._isNew ? 'new test' : 'existing test';
-    return `TestResults of ${isNewTestStr} ${GeneralUtils.toString(this, ['_secretToken'])}`;
+    return `TestResults of ${isNewTestStr} ${GeneralUtils.toString(this, ['_secretToken', '_serverConnector'])}`;
   }
 }
 
