@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.7.21](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-protractor@4.7.20...@applitools/eyes-protractor@4.7.21) (2019-06-19)
+
+**Note:** Version bump only for package @applitools/eyes-protractor
+
+
+
+
+
 ## [4.7.20](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-protractor@4.7.19...@applitools/eyes-protractor@4.7.20) (2019-06-19)
 
 **Note:** Version bump only for package @applitools/eyes-protractor
