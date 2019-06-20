@@ -159,6 +159,13 @@ describe('extractCssResources', () => {
     ]);
   });
 
+  it('supports bad url() functions (that the browser supports)', () => {
+    const cssText = `background-image: url( /path/default/file.jpg`;
+    const baseUrl = 'http://some/path/';
+    const resourceUrls = extractCssResources(cssText, baseUrl);
+    expect(resourceUrls).to.eql(['http://some/path/default/file.jpg']);
+  });
+
   it('supports multiple src properties in @font-face rules', () => {
     const cssText = `
    @font-face {
