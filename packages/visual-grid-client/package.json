@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "12.13.2",
+  "version": "12.13.3",
   "description": "",
   "keywords": [
     "applitools",
@@ -30,7 +30,7 @@
     "browser.js"
   ],
   "dependencies": {
-    "@applitools/dom-snapshot": "^1.2.20",
+    "@applitools/dom-snapshot": "^1.2.21",
     "@applitools/eyes-common": "^3.7.1",
     "@applitools/eyes-sdk-core": "^5.9.3",
     "@applitools/functional-commons": "^1.4.1",
@@ -57,7 +57,7 @@
     "morgan": "^1.9.1",
     "nock": "^10.0.6",
     "node-fetch": "^2.6.0",
-    "puppeteer": "^1.17.0"
+    "puppeteer": "^1.18.0"
   },
   "scripts": {
     "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",
