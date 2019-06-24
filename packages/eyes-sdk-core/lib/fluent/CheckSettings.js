@@ -90,15 +90,17 @@ class CheckSettings {
   /**
    * Set the render ID of the screenshot.
    *
-   * @param {renderId} renderId - The render ID to use.
+   * @package
+   * @param {string} renderId - The render ID to use.
    * @return {this} - This instance of the settings object.
    */
-  setRenderId(renderId) {
+  renderId(renderId) {
     this._renderId = renderId;
     return this;
   }
 
   /**
+   * @ignore
    * @return {string}
    */
   getRenderId() {

@@ -295,9 +295,9 @@ class MatchWindowTask {
    */
   async _tryTakeScreenshot(userInputs, region, tag, ignoreMismatch, checkSettings) {
     const appOutput = await this._appOutputProvider.getAppOutput(region, this._lastScreenshot, checkSettings);
+    const renderId = checkSettings.getRenderId();
     const screenshot = appOutput.getScreenshot();
     const matchSettings = await this.createImageMatchSettings(checkSettings, screenshot);
-    const renderId = checkSettings.getRenderId() || '';
     this._matchResult = await this.performMatch(userInputs, appOutput, tag, renderId, ignoreMismatch, matchSettings);
     return screenshot;
   }
