@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.14.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.13.1...@applitools/visual-grid-client@12.14.0) (2019-06-24)
+
+
+### Features
+
+* **visual-grid-client:** set `renderId` for checkWindow requests ([05f2e45](https://github.com/applitools/eyes.sdk.javascript1/commit/05f2e45))
+
+
+
+
+
 ## [12.13.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.13.0...@applitools/visual-grid-client@12.13.1) (2019-06-19)
 
 **Note:** Version bump only for package @applitools/visual-grid-client

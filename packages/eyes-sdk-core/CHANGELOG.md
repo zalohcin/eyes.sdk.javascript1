@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.10.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.9.3...@applitools/eyes-sdk-core@5.10.0) (2019-06-24)
+
+
+### Features
+
+* **eyes-sdk-core:** added renderId to MatchWindowData ([db05cbf](https://github.com/applitools/eyes.sdk.javascript1/commit/db05cbf))
+* **eyes-sdk-core:** remove `isSaved` property of TestResults ([fd9cf90](https://github.com/applitools/eyes.sdk.javascript1/commit/fd9cf90))
+
+
+
+
+
 ## [5.9.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.9.2...@applitools/eyes-sdk-core@5.9.3) (2019-06-19)
 
 
