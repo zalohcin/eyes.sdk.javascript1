@@ -152,9 +152,6 @@ class TestResultsFormatter {
           }
           tapString += `#\tMismatches: ${currentResult.getMismatches()}\n`;
         }
-        if (currentResult.getIsSaved()) {
-          tapString += '#\tTest was automatically saved as a baseline.\n';
-        }
       }
 
       const url = currentResult.getAppUrls() && currentResult.getAppUrls().getSession() ?
@@ -221,9 +218,6 @@ class TestResultsFormatter {
             tapString += `[FAILED TEST] ${name}\n`;
           }
           tapString += `#\tMismatches: ${currentResult.getMismatches()}\n`;
-        }
-        if (currentResult.getIsSaved()) {
-          tapString += '#\tTest was automatically saved as a baseline.\n';
         }
       }
 

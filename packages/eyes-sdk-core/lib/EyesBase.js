@@ -424,7 +424,6 @@ class EyesBase extends EyesAbstract {
       // Session was started, call the server to end the session.
       const results = await this._serverConnector.stopSession(this._runningSession, false, save);
       results.setIsNew(isNewSession);
-      results.setIsSaved(save);
       results.setUrl(sessionResultsUrl);
 
       // for backwards compatibility with outdated servers
