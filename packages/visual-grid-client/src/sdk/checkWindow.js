@@ -206,6 +206,7 @@ function makeCheckWindow({
         useDom,
         enablePatterns,
         ignoreDisplacements,
+        renderId,
       });
 
       logger.log(`checkWindow waiting for openEyes. test=${testName}, stepCount #${currStepCount}`);
