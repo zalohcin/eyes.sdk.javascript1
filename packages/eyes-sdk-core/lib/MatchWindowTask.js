@@ -48,13 +48,14 @@ class MatchWindowTask {
    * @param {Trigger[]} userInputs - The user inputs related to the current appOutput.
    * @param {AppOutputWithScreenshot} appOutput - The application output to be matched.
    * @param {string} name - Optional tag to be associated with the match (can be {@code null}).
+   * @param {string} renderId - Optional render ID to be associated with the match (can be {@code null}).
    * @param {boolean} ignoreMismatch - Whether to instruct the server to ignore the match attempt in case of a mismatch.
    * @param {ImageMatchSettings} imageMatchSettings - The settings to use.
    * @return {Promise<MatchResult>} - The match result.
    */
-  async performMatch(userInputs, appOutput, name, ignoreMismatch, imageMatchSettings) {
+  async performMatch(userInputs, appOutput, name, renderId, ignoreMismatch, imageMatchSettings) {
     // Prepare match model.
-    const options = new Options({ name, userInputs, ignoreMismatch, ignoreMatch: false, forceMismatch: false, forceMatch: false, imageMatchSettings });
+    const options = new Options({ name, renderId, userInputs, ignoreMismatch, ignoreMatch: false, forceMismatch: false, forceMatch: false, imageMatchSettings });
     const data = new MatchWindowData({ userInputs, appOutput: appOutput.getAppOutput(), tag: name, ignoreMismatch, options });
     // Perform match.
     return this._serverConnector.matchWindow(this._runningSession, data);
@@ -296,7 +297,8 @@ class MatchWindowTask {
     const appOutput = await this._appOutputProvider.getAppOutput(region, this._lastScreenshot, checkSettings);
     const screenshot = appOutput.getScreenshot();
     const matchSettings = await this.createImageMatchSettings(checkSettings, screenshot);
-    this._matchResult = await this.performMatch(userInputs, appOutput, tag, ignoreMismatch, matchSettings);
+    const renderId = checkSettings.getRenderId() || '';
+    this._matchResult = await this.performMatch(userInputs, appOutput, tag, renderId, ignoreMismatch, matchSettings);
     return screenshot;
   }
 

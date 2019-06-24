@@ -10,6 +10,7 @@ const { GeneralUtils, ArgumentGuard } = require('@applitools/eyes-common');
 class Options {
   /**
    * @param {string} name - The tag of the window to be matched.
+   * @param {string} renderId - The render ID of the screenshot to match.
    * @param {Trigger[]} userInputs - A list of triggers between the previous matchWindow call and the current matchWindow
    *   call. Can be array of size 0, but MUST NOT be null.
    * @param {boolean} ignoreMismatch - Tells the server whether or not to store a mismatch for the current window as
@@ -22,7 +23,7 @@ class Options {
    *   match.
    * @param {ImageMatchSettings} imageMatchSettings
    */
-  constructor({ name, userInputs, ignoreMismatch, ignoreMatch, forceMismatch, forceMatch, imageMatchSettings } = {}) {
+  constructor({ name, renderId, userInputs, ignoreMismatch, ignoreMatch, forceMismatch, forceMatch, imageMatchSettings } = {}) {
     if (arguments.length > 1) {
       throw new TypeError('Please, use object as a parameter to the constructor!');
     }
@@ -30,6 +31,7 @@ class Options {
     ArgumentGuard.notNull(userInputs, 'userInputs');
 
     this._name = name;
+    this._renderId = renderId;
     this._userInputs = userInputs;
     this._ignoreMismatch = ignoreMismatch;
     this._ignoreMatch = ignoreMatch;
@@ -44,6 +46,14 @@ class Options {
    */
   getName() {
     return this._name;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string}
+   */
+  getRenderId() {
+    return this._renderId;
   }
 
   // noinspection JSUnusedGlobalSymbols
