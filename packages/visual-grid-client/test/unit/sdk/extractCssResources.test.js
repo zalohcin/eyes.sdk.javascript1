@@ -184,7 +184,7 @@ describe('extractCssResources', () => {
     const resourceUrls = extractCssResources(cssText, baseUrl);
     expect(resourceUrls).to.eql([
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot',
-      'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot?',
+      'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.eot',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.woff2',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.woff',
       'http://use.fontawesome.com/releases/v4.7.0/fonts/fontawesome-webfont.ttf',
