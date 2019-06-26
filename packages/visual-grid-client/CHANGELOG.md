@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.15.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.14.0...@applitools/visual-grid-client@12.15.0) (2019-06-26)
+
+
+### Features
+
+* **visual-grid-client:** updated ds to remove ? at end of resource URIs ([e2548bc](https://github.com/applitools/eyes.sdk.javascript1/commit/e2548bc))
+* **visual-grid-client:** updated ds to support shadow dom resource fetching ([4f87ca3](https://github.com/applitools/eyes.sdk.javascript1/commit/4f87ca3))
+
+
+
+
+
 # [12.14.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.13.1...@applitools/visual-grid-client@12.14.0) (2019-06-24)
 
 

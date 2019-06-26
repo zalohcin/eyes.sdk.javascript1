@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.21.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.20.4...@applitools/eyes-selenium@4.21.0) (2019-06-26)
+
+
+### Features
+
+* **eyes-selenium:** updated ds to support shadow dom resource fetching ([ffb4afc](https://github.com/applitools/eyes.sdk.javascript1/commit/ffb4afc))
+
+
+
+
+
 ## [4.20.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.20.3...@applitools/eyes-selenium@4.20.4) (2019-06-24)
 
 **Note:** Version bump only for package @applitools/eyes-selenium
