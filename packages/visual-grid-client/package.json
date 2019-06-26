@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "12.15.0",
+  "version": "12.15.1",
   "description": "",
   "keywords": [
     "applitools",
@@ -30,7 +30,7 @@
     "browser.js"
   ],
   "dependencies": {
-    "@applitools/dom-snapshot": "^1.2.23",
+    "@applitools/dom-snapshot": "^1.2.24",
     "@applitools/eyes-common": "^3.7.1",
     "@applitools/eyes-sdk-core": "^5.10.0",
     "@applitools/functional-commons": "^1.4.1",
