@@ -40,7 +40,7 @@ class SeleniumCheckSettings extends CheckSettings {
       this.frame(frame);
     }
 
-    /** @type {Map<string, string>} */ this._scriptHooks = new Map();
+    /** @type {Object.<string, string>} */ this._scriptHooks = {};
   }
 
   /**
@@ -298,13 +298,13 @@ class SeleniumCheckSettings extends CheckSettings {
    * @return {this}
    */
   webHook(hook) {
-    this._scriptHooks.set(BEFORE_CAPTURE_SCREENSHOT, hook);
+    this._scriptHooks[BEFORE_CAPTURE_SCREENSHOT] = hook;
     return this;
   }
 
   /**
    * @ignore
-   * @return {Map<string, string>}
+   * @return {Object.<string, string>}
    */
   getScriptHooks() {
     return this._scriptHooks;
