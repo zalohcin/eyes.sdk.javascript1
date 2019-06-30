@@ -266,6 +266,7 @@ class EyesVisualGrid extends Eyes {
 
     this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`);
 
+    const source = await this._driver.getCurrentUrl();
     await this._checkWindowCommand({
       resourceUrls,
       resourceContents,
@@ -281,6 +282,7 @@ class EyesVisualGrid extends Eyes {
       floating: checkSettings.getFloatingRegions(),
       sendDom: checkSettings.getSendDom() ? checkSettings.getSendDom() : this.getSendDom(),
       matchLevel: checkSettings.getMatchLevel() ? checkSettings.getMatchLevel() : this.getMatchLevel(),
+      source,
     });
   }
 

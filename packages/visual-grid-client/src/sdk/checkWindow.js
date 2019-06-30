@@ -50,6 +50,7 @@ function makeCheckWindow({
     useDom,
     enablePatterns,
     ignoreDisplacements,
+    source,
   }) {
     if (target === 'window' && !fully) {
       sizeMode = 'viewport';
@@ -229,6 +230,7 @@ function makeCheckWindow({
         domUrl: domLocation,
         checkSettings,
         imageLocation,
+        source,
       });
 
       wrapper.setMatchLevel(origMatchLevel); // origMatchLevel cannot be undefined because eyes-sdk-core sets the default to MatchLevel.Strict

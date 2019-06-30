@@ -21,9 +21,10 @@ class Options {
    *   mismatch.
    * @param {boolean} forceMatch - Forces the server to skip the comparison process and mark the current window as a
    *   match.
-   * @param {ImageMatchSettings} imageMatchSettings
+   * @param {ImageMatchSettings} imageMatchSettings - Settings specifying how the server should compare the image.
+   * @param {string} source
    */
-  constructor({ name, renderId, userInputs, ignoreMismatch, ignoreMatch, forceMismatch, forceMatch, imageMatchSettings } = {}) {
+  constructor({ name, renderId, userInputs, ignoreMismatch, ignoreMatch, forceMismatch, forceMatch, imageMatchSettings, source } = {}) {
     if (arguments.length > 1) {
       throw new TypeError('Please, use object as a parameter to the constructor!');
     }
@@ -38,6 +39,7 @@ class Options {
     this._forceMismatch = forceMismatch;
     this._forceMatch = forceMatch;
     this._imageMatchSettings = imageMatchSettings;
+    this._source = source;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -102,6 +104,14 @@ class Options {
    */
   getImageMatchSettings() {
     return this._imageMatchSettings;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string}
+   */
+  getSource() {
+    return this._source;
   }
 
   /**

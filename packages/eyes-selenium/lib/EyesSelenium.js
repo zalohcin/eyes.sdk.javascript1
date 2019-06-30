@@ -207,7 +207,8 @@ class EyesSelenium extends Eyes {
       this._logger.verbose("have target region");
       originalFC = await this._tryHideScrollbars();
       this._imageLocation = targetRegion.getLocation();
-      result = await this.checkWindowBase(new RegionProvider(targetRegion), name, false, checkSettings);
+      const source = await this._driver.getCurrentUrl();
+      result = await this.checkWindowBase(new RegionProvider(targetRegion), name, false, checkSettings, source);
     } else if (checkSettings) {
       let targetElement = checkSettings.getTargetElement();
 
@@ -243,7 +244,8 @@ class EyesSelenium extends Eyes {
         const scrollRootElement = await this.getScrollRootElement();
         this._currentFramePositionProvider = this._createPositionProvider(scrollRootElement);
         // }
-        result = await this.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
+        const source = await this._driver.getCurrentUrl();
+        result = await this.checkWindowBase(new NullRegionProvider(), name, false, checkSettings, source);
         await switchTo.frames(this._originalFC);
       }
     }
@@ -411,7 +413,8 @@ class EyesSelenium extends Eyes {
       }
     };
 
-    const result = await this.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings);
+    const source = await this._driver.getCurrentUrl();
+    const result = await this.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings, source);
     this._checkFrameOrElement = false;
     return result;
   }
@@ -586,7 +589,8 @@ class EyesSelenium extends Eyes {
       }
     };
 
-    const result = await this.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings);
+    const source = await this._driver.getCurrentUrl();
+    const result = await this.checkWindowBase(new RegionProviderImpl(), name, false, checkSettings, source);
     this._logger.verbose('Done! trying to scroll back to original position...');
     return result;
   }
@@ -644,7 +648,8 @@ class EyesSelenium extends Eyes {
       }
 
       this._imageLocation = this._regionToCheck.getLocation();
-      result = await this.checkWindowBase(new NullRegionProvider(), name, false, checkSettings);
+      const source = await this._driver.getCurrentUrl();
+      result = await this.checkWindowBase(new NullRegionProvider(), name, false, checkSettings, source);
     } finally {
       if (originalOverflow) {
         await eyesElement.setOverflow(originalOverflow);
