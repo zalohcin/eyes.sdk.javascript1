@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.16.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.15.0...@applitools/visual-grid-client@12.16.0) (2019-06-30)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** updated ds - fixed no stylesheet ([03f9509](https://github.com/applitools/eyes.sdk.javascript1/commit/03f9509))
+
+
+### Features
+
+* add source (current url) to MatchWindowData.Options ([1989824](https://github.com/applitools/eyes.sdk.javascript1/commit/1989824))
+
+
+
+
+
 # [12.15.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.14.0...@applitools/visual-grid-client@12.15.0) (2019-06-26)
 
 

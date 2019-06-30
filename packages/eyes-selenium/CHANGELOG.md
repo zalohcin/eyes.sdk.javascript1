@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.22.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.21.0...@applitools/eyes-selenium@4.22.0) (2019-06-30)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** scriptHooks were not sent correctly ([494a0e6](https://github.com/applitools/eyes.sdk.javascript1/commit/494a0e6))
+
+
+### Features
+
+* add source (current url) to MatchWindowData.Options ([1989824](https://github.com/applitools/eyes.sdk.javascript1/commit/1989824))
+
+
+
+
+
 # [4.21.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.20.4...@applitools/eyes-selenium@4.21.0) (2019-06-26)
 
 
