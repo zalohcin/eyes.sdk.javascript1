@@ -391,6 +391,12 @@ class Configuration {
   }
 
   /**
+   * @signature `setProperties(properties)`
+   * @sigparam {PropertyData[]} properties - A list of PropertyData instances
+   *
+   * @signature `setProperties(properties)`
+   * @sigparam {PropertyDataObject[]} properties - A list of property data objects
+   *
    * @param {PropertyData[]|PropertyDataObject[]} value
    * @return {this}
    */
