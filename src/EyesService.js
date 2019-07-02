@@ -28,9 +28,8 @@ class EyesService {
       if (!process.env.APPLITOOLS_API_KEY) {
         process.env.APPLITOOLS_API_KEY = eyesConfig.apiKey;
       }
-
-      this.eyes.setHideScrollbars(true);
     }
+    this.eyes.setHideScrollbars(true);
   }
 
 
@@ -41,20 +40,20 @@ class EyesService {
   }
 
 
-  beforeTest(test) {
+  async beforeTest(test) {
     const appName = this.eyes.getConfiguration().getAppName() || test.parent;
     const testName = test.title;
     const viewport = DEFAULT_VIEWPORT;
 
-    global.browser.call(() => this.eyes.open(global.browser, appName, testName, viewport));
+    await global.browser.call(() => this.eyes.open(global.browser, appName, testName, viewport));
   }
 
 
-  afterTest(exitCode, config, capabilities) {
+  async afterTest(exitCode, config, capabilities) {
     try {
-      const result = browser.call(() => this.eyes.close(false));
+      const result = await browser.call(() => this.eyes.close(false));
     } catch (e) {
-      browser.call(() => this.eyes.abortIfNotClosed());
+      await browser.call(() => this.eyes.abortIfNotClosed());
     }
   }
 
