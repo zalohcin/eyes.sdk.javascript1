@@ -294,10 +294,19 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
+   * @deprecated
    * @param {String} hook
    * @return {this}
    */
   webHook(hook) {
+    return this.beforeRenderScreenshotHook(hook);
+  }
+
+  /**
+   * @param {String} hook
+   * @return {this}
+   */
+  beforeRenderScreenshotHook(hook) {
     this._scriptHooks[BEFORE_CAPTURE_SCREENSHOT] = hook;
     return this;
   }
