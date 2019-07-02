@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.22.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.22.0...@applitools/eyes-selenium@4.22.1) (2019-07-02)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** fix fromBrowserInfo without arguments ([227c5a3](https://github.com/applitools/eyes.sdk.javascript1/commit/227c5a3)), closes [#81](https://github.com/applitools/eyes.sdk.javascript1/issues/81)
+
+
+
+
+
 # [4.22.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.21.0...@applitools/eyes-selenium@4.22.0) (2019-06-30)
 
 
