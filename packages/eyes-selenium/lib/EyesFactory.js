@@ -37,11 +37,18 @@ class EyesFactory {
 
   /**
    * For Selenium IDE initialization
+   *
    * @private
+   * @param {string} [serverUrl] - The Eyes server URL.
+   * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the webdriver directly.
+   * @param {object} [config] - Additional configuration object.
    */
   static fromBrowserInfo(serverUrl, isDisabled, config = {}) {
-    const eyes = new EyesFactory(serverUrl, isDisabled, !!config.browser);
+    let eyes;
+
     if (config.browser) {
+      eyes = new EyesVisualGrid(serverUrl, isDisabled);
+
       const cfg = new Configuration();
       const browsers = Array.isArray(config.browser) ? config.browser : [config.browser];
       browsers.forEach(browser => {
@@ -53,6 +60,8 @@ class EyesFactory {
         }
       });
       eyes.setConfiguration(cfg);
+    } else {
+      eyes = new EyesSelenium(serverUrl, isDisabled);
     }
 
     eyes._corsIframeHandle = CorsIframeHandle.BLANK;
