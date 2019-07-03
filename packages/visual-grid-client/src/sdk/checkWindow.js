@@ -8,7 +8,6 @@ const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
 const createCheckSettings = require('./createCheckSettings');
 const calculateMatchRegions = require('./calculateMatchRegions');
-const handleBrowserDebugData = require('../troubleshoot/handleBrowserDebugData');
 
 function makeCheckWindow({
   testController,
@@ -66,11 +65,16 @@ function makeCheckWindow({
       logger.log('aborting checkWindow synchronously');
       return;
     }
-    handleBrowserDebugData({
-      frame: {resourceUrls, resourceContents, frames, cdt},
-      metaData: {agentId: wrappers[0].getBaseAgentId()},
-      logger,
-    });
+
+    if (typeof window === 'undefined') {
+      const handleBrowserDebugData = require('../troubleshoot/handleBrowserDebugData');
+      handleBrowserDebugData({
+        frame: {resourceUrls, resourceContents, frames, cdt},
+        metaData: {agentId: wrappers[0].getBaseAgentId()},
+        logger,
+      });
+    }
+
     const getResourcesPromise = createRGridDOMAndGetResourceMapping({
       resourceUrls,
       resourceContents,
