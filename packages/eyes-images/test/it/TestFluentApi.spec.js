@@ -1,7 +1,6 @@
 'use strict';
 
-const { ConsoleLogHandler, Region, RectangleSize } = require('@applitools/eyes-sdk-core');
-const { Eyes, Target } = require('../../index');
+const { Eyes, Target, ConsoleLogHandler, Region, RectangleSize } = require('../../index');
 
 let /** @type {Eyes} */ eyes;
 describe('EyesImages.TestFluentApi', function () {
