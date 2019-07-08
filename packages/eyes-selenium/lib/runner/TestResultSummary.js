@@ -5,6 +5,9 @@ const { TestFailedError, TestResultsStatus } = require('@applitools/eyes-sdk-cor
 
 const { TestResultContainer } = require('./TestResultContainer');
 
+/**
+ * @implements {Iterable<TestResultContainer>}
+ */
 class TestResultSummary {
   /**
    * @param {(TestResults|Error|TestResultContainer)[]} allResults
@@ -60,6 +63,13 @@ class TestResultSummary {
         this._mismatches += testResults.getMismatches();
       }
     }
+  }
+
+  /**
+   * @return {IterableIterator<TestResultContainer>} Iterator to go over the TestResultContainers in the chain.
+   */
+  [Symbol.iterator]() {
+    return this._allResults.values();
   }
 
   /**
