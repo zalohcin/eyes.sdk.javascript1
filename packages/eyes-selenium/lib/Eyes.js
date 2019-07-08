@@ -258,7 +258,7 @@ class Eyes extends EyesBase {
    *   {@link #checkElement(By, number, string)} on the region.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkRegionBy(by, tag, matchTimeout, stitchContent) {
+  async checkRegionBy(by, tag, matchTimeout, stitchContent = false) {
     return this.check(tag, Target.region(by).timeout(matchTimeout).stitchContent(stitchContent));
   }
 
@@ -276,7 +276,7 @@ class Eyes extends EyesBase {
    *   {@link #checkElement(By, number, string)} on the region.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkRegionInFrame(frameNameOrId, locator, matchTimeout, tag, stitchContent) {
+  async checkRegionInFrame(frameNameOrId, locator, matchTimeout, tag, stitchContent = false) {
     return this.check(tag, Target.region(locator, frameNameOrId).timeout(matchTimeout).stitchContent(stitchContent));
   }
 
