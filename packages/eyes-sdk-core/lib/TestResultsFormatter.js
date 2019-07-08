@@ -18,7 +18,7 @@ class TestResultsFormatter {
   /**
    * Adds an additional results object to the currently stored results list.
    *
-   * @param {TestResults} results - A test results returned by a call to `eyes.close' or 'eyes.abortIfNotClosed'.
+   * @param {TestResults} results - A test results returned by a call to `eyes.close' or 'eyes.abort'.
    * @return {TestResultsFormatter} - The updated 'TestResultsFormatter' instance.
    */
   addTestResults(results) {
@@ -34,7 +34,7 @@ class TestResultsFormatter {
    * Adds an additional results object to the currently stored results list.
    *
    * @deprecated use {@link #addTestResults(results)} instead
-   * @param {TestResults} results - A test results returned by a call to `eyes.close' or 'eyes.abortIfNotClosed'.
+   * @param {TestResults} results - A test results returned by a call to `eyes.close' or 'eyes.abort'.
    * @return {TestResultsFormatter} - The updated 'TestResultsFormatter' instance.
    */
   addResults(results) {

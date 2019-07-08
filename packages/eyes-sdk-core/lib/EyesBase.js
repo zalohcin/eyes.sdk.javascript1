@@ -482,12 +482,22 @@ class EyesBase extends EyesAbstract {
   /**
    * If a test is running, aborts it. Otherwise, does nothing.
    *
+   * @alias abort
    * @return {Promise<?TestResults>} - A promise which resolves to the test results.
    */
   async abortIfNotClosed() {
+    return this.abort();
+  }
+
+  /**
+   * If a test is running, aborts it. Otherwise, does nothing.
+   *
+   * @return {Promise<?TestResults>} - A promise which resolves to the test results.
+   */
+  async abort() {
     try {
       if (this._configuration.getIsDisabled()) {
-        this._logger.verbose('Eyes abortIfNotClosed ignored. (disabled)');
+        this._logger.verbose('Eyes abort ignored. (disabled)');
         return null;
       }
 
@@ -943,7 +953,7 @@ class EyesBase extends EyesAbstract {
    */
   async _validateSessionOpen() {
     if (this._isOpen) {
-      await this.abortIfNotClosed();
+      await this.abort();
       const errMsg = 'A test is already running';
       this._logger.log(errMsg);
       throw new Error(errMsg);

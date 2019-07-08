@@ -192,7 +192,7 @@ class EyesVisualGrid extends Eyes {
   /**
    * @return {Promise<?TestResults>}
    */
-  async abortIfNotClosed() {
+  async abort() {
     return null; // TODO - implement?
   }
 

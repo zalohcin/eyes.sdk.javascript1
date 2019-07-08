@@ -26,6 +26,6 @@ const { Eyes, Target, ConsoleLogHandler, RectangleSize } = require('../index'); 
     await eyes.close();
   } finally {
     // If the test was aborted before eyes.close was called ends the test as aborted.
-    await eyes.abortIfNotClosed();
+    await eyes.abort();
   }
 })();

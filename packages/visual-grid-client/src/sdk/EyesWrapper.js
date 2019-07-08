@@ -23,7 +23,7 @@ class EyesWrapper extends EyesBase {
       this._configuration.mergeConfig(this.getAssumedConfiguration());
       await this._ensureRunningSession();
     }
-    await this.abortIfNotClosed();
+    await this.abort();
   }
 
   setAssumedConfiguration(configuration) {

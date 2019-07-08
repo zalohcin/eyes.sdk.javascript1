@@ -46,6 +46,6 @@ describe('EyesImages.TestFluentApi', function () {
   });
 
   afterEach(async function () {
-    await eyes.abortIfNotClosed();
+    await eyes.abort();
   });
 });
