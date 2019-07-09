@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio4-service",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "keywords": [
     "wdio-service"
@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@applitools/eyes.webdriverio": "^2.6.0"
+    "@applitools/eyes.webdriverio": "^2.7.0"
   },
   "devDependencies": {
     "chromedriver": "^2.37.0",
