@@ -33,7 +33,7 @@
     "cosmiconfig": "^5.2.1",
     "dateformat": "^3.0.3",
     "debug": "^4.1.1",
-    "deepmerge": "^3.2.1",
+    "deepmerge": "^4.0.0",
     "png-async": "^0.9.4",
     "stack-trace": "^0.0.10"
   },
