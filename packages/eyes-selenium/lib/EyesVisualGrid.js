@@ -5,7 +5,7 @@ const { getProcessPageAndPollScript } = require('@applitools/dom-snapshot');
 const { ArgumentGuard, TypeUtils, GeneralUtils } = require('@applitools/eyes-common');
 const { CorsIframeHandle, CorsIframeHandler } = require('@applitools/eyes-sdk-core');
 
-const { TestResultSummary } = require('./runner/TestResultSummary');
+const { TestResultsSummary } = require('./runner/TestResultsSummary');
 const { VisualGridRunner } = require('./runner/VisualGridRunner');
 const { BrowserType } = require('./config/BrowserType');
 const { Eyes } = require('./Eyes');
@@ -140,23 +140,23 @@ class EyesVisualGrid extends Eyes {
   /**
    * @package
    * @param {boolean} [throwEx=true]
-   * @return {Promise<TestResultSummary>}
+   * @return {Promise<TestResultsSummary>}
    */
   async closeAndReturnResults(throwEx = true) {
     try {
       let resultsPromise = this._closePromise || this._closeCommand();
       const res = await resultsPromise;
-      const testResultSummary = new TestResultSummary(res);
+      const testResultsSummary = new TestResultsSummary(res);
 
       if (throwEx === true) {
-        for (const result of testResultSummary.getAllResults()) {
+        for (const result of testResultsSummary.getAllResults()) {
           if (result.getException()) {
             throw result.getException();
           }
         }
       }
 
-      return testResultSummary;
+      return testResultsSummary;
     } finally {
       this._isOpen = false;
       this._closePromise = undefined;

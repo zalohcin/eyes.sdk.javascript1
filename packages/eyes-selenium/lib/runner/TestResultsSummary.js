@@ -8,7 +8,7 @@ const { TestResultContainer } = require('./TestResultContainer');
 /**
  * @implements {Iterable<TestResultContainer>}
  */
-class TestResultSummary {
+class TestResultsSummary {
   /**
    * @param {(TestResults|Error|TestResultContainer)[]} allResults
    */
@@ -96,4 +96,4 @@ class TestResultSummary {
   }
 }
 
-exports.TestResultSummary = TestResultSummary;
+exports.TestResultsSummary = TestResultsSummary;

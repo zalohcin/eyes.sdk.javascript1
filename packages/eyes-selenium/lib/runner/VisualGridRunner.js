@@ -1,7 +1,7 @@
 'use strict';
 
 const { EyesRunner } = require('./EyesRunner');
-const { TestResultSummary } = require('./TestResultSummary');
+const { TestResultsSummary } = require('./TestResultsSummary');
 
 class VisualGridRunner extends EyesRunner {
   /**
@@ -22,7 +22,7 @@ class VisualGridRunner extends EyesRunner {
 
   /**
    * @param {boolean} [shouldThrowException=true]
-   * @return {Promise<TestResultSummary>}
+   * @return {Promise<TestResultsSummary>}
    */
   async getAllTestResults(shouldThrowException = true) {
     if (this._eyesInstances.length === 1) {
@@ -48,7 +48,7 @@ class VisualGridRunner extends EyesRunner {
         }
       }
 
-      return new TestResultSummary(allResults);
+      return new TestResultsSummary(allResults);
     }
 
     return null;
