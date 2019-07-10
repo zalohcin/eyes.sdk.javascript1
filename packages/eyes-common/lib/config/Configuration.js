@@ -856,7 +856,7 @@ class Configuration {
    * @param {Configuration|object} other
    */
   mergeConfig(other) {
-    Object.keys(other).forEach(prop => {
+    Object.keys(other).forEach((prop) => {
       let privateProp = prop;
       if (prop === 'proxy') {
         privateProp = '_proxySettings';

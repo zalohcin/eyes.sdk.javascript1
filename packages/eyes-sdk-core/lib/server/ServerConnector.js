@@ -185,7 +185,7 @@ async function sendLongRequest(self, name, options = {}) {
  * @param {object} jsonData - The data from for which to create the bytes representation.
  * @return {Buffer} - a buffer of bytes which represents the stringified JSON, prefixed with size.
  */
-const createDataBytes = jsonData => {
+const createDataBytes = (jsonData) => {
   const dataStr = JSON.stringify(jsonData);
   const dataLen = Buffer.byteLength(dataStr, 'utf8');
 

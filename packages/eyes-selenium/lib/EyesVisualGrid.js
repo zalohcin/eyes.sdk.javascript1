@@ -124,7 +124,7 @@ class EyesVisualGrid extends Eyes {
 
     this._isOpen = true;
     this._checkWindowCommand = checkWindow;
-    this._closeCommand = async () => close(true).catch(err => {
+    this._closeCommand = async () => close(true).catch((err) => {
       if (Array.isArray(err)) {
         return err;
       }

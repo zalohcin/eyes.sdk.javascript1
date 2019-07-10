@@ -50,7 +50,7 @@ class EyesFactory {
 
       const cfg = new Configuration();
       const browsers = Array.isArray(config.browser) ? config.browser : [config.browser];
-      browsers.forEach(browser => {
+      browsers.forEach((browser) => {
         // If it quacks like a duck
         if (browser.name) {
           cfg.addBrowser(browser.width, browser.height, browser.name);

@@ -35,7 +35,7 @@ class ConfigUtils {
       }
     }
 
-    Object.keys(envConfig).forEach(value => {
+    Object.keys(envConfig).forEach((value) => {
       if (envConfig[value] === undefined) {
         delete envConfig[value];
       }

@@ -233,7 +233,7 @@ class EyesJsBrowserUtils {
    */
   static setTransforms(executor, transforms) {
     let script = '';
-    Object.keys(transforms).forEach(key => {
+    Object.keys(transforms).forEach((key) => {
       if (Object.prototype.hasOwnProperty.call(transforms, key)) {
         script += `document.documentElement.style['${key}'] = '${transforms[key]}';`;
       }

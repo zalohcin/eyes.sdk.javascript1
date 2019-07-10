@@ -146,7 +146,7 @@ describe('DomCapture', function () {
   });
 
   it('TestSendDOM_BestBuy1', async function () {
-    const actualDomJsonString = await captureDom(logger, driver, 'https://www.bestbuy.com/site/apple-macbook-pro-13-display-intel-core-i5-8-gb-memory-256gb-flash-storage-silver/6936477.p?skuId=6936477', this.test.title, async driver => {
+    const actualDomJsonString = await captureDom(logger, driver, 'https://www.bestbuy.com/site/apple-macbook-pro-13-display-intel-core-i5-8-gb-memory-256gb-flash-storage-silver/6936477.p?skuId=6936477', this.test.title, async (driver) => {
       await driver.findElement(By.css('.us-link')).click();
     });
     const actualDomJson = JSON.parse(actualDomJsonString);
