@@ -60,7 +60,8 @@ async function getExpectedDom(testName) {
   return JSON.parse(expectedDomBuffer);
 }
 
-let /** @type {Logger} */ logger, /** @type {WebDriver} */ driver;
+let /** @type {Logger} */ logger;
+let /** @type {WebDriver} */ driver;
 describe('DomCapture', function () {
   this.timeout(5 * 60 * 1000);
 
@@ -82,15 +83,11 @@ describe('DomCapture', function () {
     driver = await new Builder().forBrowser('chrome').setChromeOptions(new ChromeOptions().headless()).build();
 
     if (!driver.findElementByXPath) {
-      driver.findElementByXPath = xPath => {
-        return driver.findElement(By.xpath(xPath));
-      };
+      driver.findElementByXPath = xPath => driver.findElement(By.xpath(xPath));
     }
 
     if (!driver.url) {
-      driver.url = url => {
-        return driver.get(url);
-      };
+      driver.url = url => driver.get(url);
     }
 
     await driver.manage().window().setRect({ x: 0, y: 0, width: 800, height: 600 });
@@ -163,14 +160,14 @@ describe('DomCapture', function () {
   });
 
   it('TestSendDOM_nytimes', async function () {
-    let url = 'https://cooking.nytimes.com/';
+    const url = 'https://cooking.nytimes.com/';
     const actualDomJsonString = await captureDom(logger, driver, url, this.test.title);
     const actualDomJson = JSON.parse(actualDomJsonString);
     assert.ok(actualDomJson);
   });
 
   it('TestSendDOM_nbcnews', async function () {
-    let url = 'https://www.nbcnews.com/';
+    const url = 'https://www.nbcnews.com/';
     const actualDomJsonString = await captureDom(logger, driver, url, this.test.title);
     const actualDomJson = JSON.parse(actualDomJsonString);
     assert.ok(actualDomJson);

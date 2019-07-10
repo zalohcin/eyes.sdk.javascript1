@@ -534,7 +534,7 @@ class EyesWebDriver extends IWebDriver {
     if (rotation) {
       degrees = rotation.getRotation();
     } else {
-      logger.verbose("Trying to automatically normalize rotation...");
+      logger.verbose('Trying to automatically normalize rotation...');
       degrees = await EyesSeleniumUtils.tryAutomaticRotation(logger, driver, image);
     }
 

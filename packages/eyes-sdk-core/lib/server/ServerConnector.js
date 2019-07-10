@@ -231,10 +231,8 @@ class ServerConnector {
     let options = requestOptions;
     if (isMergeDefaultOptions) {
       options = GeneralUtils.mergeDeep(this._httpOptions, options);
-    } else {
-      if (options.params === undefined) {
-        options.params = {};
-      }
+    } else if (options.params === undefined) {
+      options.params = {};
     }
 
     if (isIncludeApiKey) {
@@ -253,7 +251,7 @@ class ServerConnector {
       options.proxy = this._configuration.getProxy().toProxyObject();
     }
 
-    options.maxContentLength =  20 * 1024 * 1024;
+    options.maxContentLength = 20 * 1024 * 1024;
 
     return options;
   }

@@ -148,7 +148,7 @@ class GeneralUtils {
    */
   static randomAlphanumeric(length = 8) {
     let res = '';
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < length; i += 1) {
       res += ALPHANUMERIC_MASK.charAt(Math.floor(Math.random() * ALPHANUMERIC_MASK.length));
     }
     return res;
@@ -281,7 +281,7 @@ class GeneralUtils {
     }
 
     let val = object;
-    for (let key of path.split('.')) {
+    for (const key of path.split('.')) {
       val = typeof val === 'object' ? val[key] : undefined;
       if (val === undefined) {
         return undefined;

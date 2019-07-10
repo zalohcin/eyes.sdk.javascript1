@@ -28,7 +28,6 @@ const CorsIframeHandle = {
  * @ignore
  */
 class CorsIframeHandler {
-
   /**
    * @param {object} json
    * @param {string} origin
@@ -44,7 +43,7 @@ class CorsIframeHandler {
     }
 
     if (json.childNodes) {
-      for(const child of json.childNodes) {
+      for (const child of json.childNodes) {
         CorsIframeHandler.blankCorsIframeSrc(child, origin);
       }
     }

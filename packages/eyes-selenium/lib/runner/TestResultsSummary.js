@@ -38,8 +38,8 @@ class TestResultsSummary {
 
       this._allResults.push(result);
 
-      if (result.getException() !== undefined){
-        this._exceptions++;
+      if (result.getException() !== undefined) {
+        this._exceptions += 1;
       }
 
       const testResults = result.getTestResults();
@@ -47,13 +47,15 @@ class TestResultsSummary {
         if (TypeUtils.isNotNull(testResults.getStatus())) {
           switch (testResults.getStatus()) {
             case TestResultsStatus.Failed:
-              this._failed++;
+              this._failed += 1;
               break;
             case TestResultsStatus.Passed:
-              this._passed++;
+              this._passed += 1;
               break;
             case TestResultsStatus.Unresolved:
-              this._unresolved++;
+              this._unresolved += 1;
+              break;
+            default:
               break;
           }
         }
@@ -83,16 +85,17 @@ class TestResultsSummary {
    * @return {string}
    */
   toString() {
-    return "result summary {" +
-      "\n\tall results=\n\t\t" + GeneralUtils.toString(this._allResults) +
-      "\n\tpassed=" + this._passed +
-      "\n\tunresolved=" + this._unresolved +
-      "\n\tfailed=" + this._failed +
-      "\n\texceptions=" + this._exceptions +
-      "\n\tmismatches=" + this._mismatches +
-      "\n\tmissing=" + this._missing +
-      "\n\tmatches=" + this._matches +
-      "\n}";
+    // eslint-disable-next-line prefer-template
+    return 'result summary {' +
+      '\n\tall results=\n\t\t' + GeneralUtils.toString(this._allResults) +
+      '\n\tpassed=' + this._passed +
+      '\n\tunresolved=' + this._unresolved +
+      '\n\tfailed=' + this._failed +
+      '\n\texceptions=' + this._exceptions +
+      '\n\tmismatches=' + this._mismatches +
+      '\n\tmissing=' + this._missing +
+      '\n\tmatches=' + this._matches +
+      '\n}';
   }
 }
 

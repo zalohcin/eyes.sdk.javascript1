@@ -27,7 +27,9 @@ class VisualGridRunner extends EyesRunner {
   async getAllTestResults(shouldThrowException = true) {
     if (this._eyesInstances.length === 1) {
       return this._eyesInstances[0].closeAndReturnResults(shouldThrowException);
-    } else if (this._eyesInstances.length > 1) {
+    }
+
+    if (this._eyesInstances.length > 1) {
       const resultsPromise = [];
       const allResults = [];
 
