@@ -51,16 +51,11 @@ function makeGetRenderStatus({logger, doGetRenderStatus, getStatusInterval = 500
 
         const selectorRegions = rs.getSelectorRegions();
         if (selectorRegions && selectorRegions.length > 0) {
-          const regions = [];
           selectorRegions.forEach(selectorRegion => {
             if (selectorRegion.getError()) {
               log(`Warning: region error: ${selectorRegion.getError()}`);
-            } else {
-              regions.push(selectorRegion);
             }
           });
-
-          rs.setSelectorRegions(regions);
         }
 
         pendingRendersForJob[renderId].resolve(rs);

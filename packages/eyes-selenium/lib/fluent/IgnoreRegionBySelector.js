@@ -3,6 +3,8 @@
 const { Region, Location, CoordinatesType } = require('@applitools/eyes-common');
 const { GetRegion } = require('@applitools/eyes-sdk-core');
 
+const { IgnoreRegionByElement } = require('./IgnoreRegionByElement');
+
 /**
  * @ignore
  */
@@ -24,14 +26,18 @@ class IgnoreRegionBySelector extends GetRegion {
    */
   async getRegion(eyes, screenshot) {
     const element = await eyes.getDriver().findElement(this._element);
-    const rect = await element.getRect();
-    const lTag = screenshot.convertLocation(
-      new Location(rect),
-      CoordinatesType.CONTEXT_RELATIVE,
-      CoordinatesType.SCREENSHOT_AS_IS
-    );
+    return new IgnoreRegionByElement(element).getRegion(eyes, screenshot);
+  }
 
-    return new Region(lTag.getX(), lTag.getY(), rect.width, rect.height);
+  // noinspection JSCheckFunctionSignatures
+  /**
+   * @inheritDoc
+   * @param {Eyes} eyes
+   * @return {Promise<string>}
+   */
+  async getSelector(eyes) { // eslint-disable-line no-unused-vars
+    const element = await eyes.getDriver().findElement(this._element);
+    return new IgnoreRegionByElement(element).getSelector(eyes);
   }
 }
 

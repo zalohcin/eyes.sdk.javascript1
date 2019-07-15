@@ -158,18 +158,22 @@ class Region {
     }
 
     const { left, top, width, height, coordinatesType, error } = varArg1;
-    ArgumentGuard.isNumber(left, 'left');
-    ArgumentGuard.isNumber(top, 'top');
-    ArgumentGuard.greaterThanOrEqualToZero(width, 'width', true);
-    ArgumentGuard.greaterThanOrEqualToZero(height, 'height', true);
 
-    // TODO: remove call to Math.ceil
-    this._left = Math.ceil(left);
-    this._top = Math.ceil(top);
-    this._width = width;
-    this._height = height;
-    this._coordinatesType = coordinatesType || CoordinatesType.SCREENSHOT_AS_IS;
-    this._error = error || undefined;
+    if (error) {
+      this._error = error;
+    } else {
+      ArgumentGuard.isNumber(left, 'left');
+      ArgumentGuard.isNumber(top, 'top');
+      ArgumentGuard.greaterThanOrEqualToZero(width, 'width', true);
+      ArgumentGuard.greaterThanOrEqualToZero(height, 'height', true);
+
+      // TODO: remove call to Math.ceil
+      this._left = Math.ceil(left);
+      this._top = Math.ceil(top);
+      this._width = width;
+      this._height = height;
+      this._coordinatesType = coordinatesType || CoordinatesType.SCREENSHOT_AS_IS;
+    }
   }
 
   /**
