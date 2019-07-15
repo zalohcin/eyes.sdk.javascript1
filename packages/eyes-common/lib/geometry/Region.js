@@ -157,7 +157,7 @@ class Region {
       return new Region({ left: varArg1.getLeft(), top: varArg1.getTop(), width: varArg1.getWidth(), height: varArg1.getHeight(), coordinatesType: varArg1.getCoordinatesType() });
     }
 
-    const { left, top, width, height, coordinatesType } = varArg1;
+    const { left, top, width, height, coordinatesType, error } = varArg1;
     ArgumentGuard.isNumber(left, 'left');
     ArgumentGuard.isNumber(top, 'top');
     ArgumentGuard.greaterThanOrEqualToZero(width, 'width', true);
@@ -169,6 +169,7 @@ class Region {
     this._width = width;
     this._height = height;
     this._coordinatesType = coordinatesType || CoordinatesType.SCREENSHOT_AS_IS;
+    this._error = error || undefined;
   }
 
   /**
@@ -267,6 +268,21 @@ class Region {
    */
   setCoordinatesType(value) {
     this._coordinatesType = value;
+  }
+
+  /**
+   * @return {string}
+   */
+  getError() {
+    return this._error;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @param {string} value
+   */
+  setError(value) {
+    this._error = value;
   }
 
   /**
@@ -502,6 +518,12 @@ class Region {
    * @override
    */
   toJSON() {
+    if (this._error) {
+      return {
+        error: this._error,
+      };
+    }
+
     return {
       left: this._left,
       top: this._top,
@@ -515,6 +537,10 @@ class Region {
    * @override
    */
   toString() {
+    if (this._error) {
+      return `Error: ${this._error}`;
+    }
+
     return `(${this._left}, ${this._top}) ${this._width}x${this._height}, ${this._coordinatesType}`;
   }
 }
