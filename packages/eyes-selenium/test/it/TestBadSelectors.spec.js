@@ -29,8 +29,8 @@ describe('TestBadSelectors', function () {
     await driver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage/');
 
     const eyes = new Eyes(new VisualGridRunner());
-    eyes.setLogHandler(new ConsoleLogHandler(false));
-    eyes.setProxy('http://localhost:8888');
+    // eyes.setLogHandler(new ConsoleLogHandler(false));
+    // eyes.setProxy('http://localhost:8888');
     await eyes.open(driver, 'Applitools Eyes JavaScript SDK', this.test.title, new RectangleSize(1200, 800));
 
     await eyes.check('window', Target.window().ignoreRegions(By.css('body>p:nth-of-type(14)'))
