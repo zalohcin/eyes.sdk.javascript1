@@ -2,9 +2,9 @@
 
 require('chromedriver');
 const assertRejects = require('assert-rejects');
-const { Builder, By, WebDriver, NoSuchElementError } = require('selenium-webdriver');
+const { Builder, By, NoSuchElementError } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { Eyes, VisualGridRunner, Target, RectangleSize, ConsoleLogHandler } = require('../../index');
+const { Eyes, VisualGridRunner, Target, RectangleSize } = require('../../index');
 
 let /** @type {WebDriver} */ driver;
 describe('TestBadSelectors', function () {
