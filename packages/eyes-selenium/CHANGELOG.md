@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.23.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.23.0...@applitools/eyes-selenium@4.23.1) (2019-07-16)
+
+
+### Bug Fixes
+
+* ignore regions using visual grid by selector (possibly invalid) ([f5adaa1](https://github.com/applitools/eyes.sdk.javascript1/commit/f5adaa1))
+* **eyes-selenium:** fix TestResultsSummary iterator for node 8 ([d41e330](https://github.com/applitools/eyes.sdk.javascript1/commit/d41e330))
+
+
+
+
+
 # [4.23.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.22.2...@applitools/eyes-selenium@4.23.0) (2019-07-10)
 
 
