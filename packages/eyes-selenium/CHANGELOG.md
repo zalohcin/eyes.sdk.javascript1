@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.23.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.23.1...@applitools/eyes-selenium@4.23.2) (2019-07-16)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** toJSON was called before promise resolved ([820dd0c](https://github.com/applitools/eyes.sdk.javascript1/commit/820dd0c))
+
+
+
+
+
 ## [4.23.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.23.0...@applitools/eyes-selenium@4.23.1) (2019-07-16)
 
 
