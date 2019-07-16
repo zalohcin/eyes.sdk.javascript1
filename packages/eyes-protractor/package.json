@@ -1,7 +1,7 @@
 {
   "name": "@applitools/eyes-protractor",
   "private": true,
-  "version": "4.8.2",
+  "version": "4.8.3",
   "description": "Applitools Eyes SDK for Protractor",
   "keywords": [
     "eyes-protractor",
@@ -37,7 +37,7 @@
   "dependencies": {
     "@applitools/eyes-common": "^3.8.1",
     "@applitools/eyes-sdk-core": "^5.12.1",
-    "@applitools/eyes-selenium": "^4.23.2"
+    "@applitools/eyes-selenium": "^4.23.3"
   },
   "devDependencies": {
     "protractor": "^6.0.0-beta"
