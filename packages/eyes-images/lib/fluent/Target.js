@@ -7,6 +7,25 @@ const { ImagesCheckSettings } = require('./ImagesCheckSettings');
 
 class Target {
   /**
+   * @signature `image(base64String)`
+   * @sigparam {string} base64String - A base64 encoded image to use as the checkpoint image
+   *
+   * @signature `image(url)`
+   * @sigparam {string} url - A URL of the PNG image to download and use as the checkpoint image
+   *
+   * @signature `image(filePath)`
+   * @sigparam {string} filePath - Path to a local PNG file to use as the checkpoint image
+   *
+   * @signature `image(imageBuffer)`
+   * @sigparam {Buffer} imageBuffer - A Buffer object that contains an image to use as checkpoint image
+   *
+   * @signature `image(image)`
+   * @sigparam {MutableImage} mutableImage - An in memory image to use as the checkpoint image
+   *
+   * @signature `image(imageProvider)`
+   * @sigparam {ImageProvider} imageProvider - An instance of class (object) which implements {@link ImageProvider}
+   *  (has a method called {@code getImage} which returns {@code Promise<MutableImage>})
+   *
    * @param {string|Buffer|ImageProvider|MutableImage} varArg
    * @return {ImagesCheckSettings}
    */
@@ -100,6 +119,31 @@ class Target {
   }
 
   /**
+   * @signature `image(base64String, rect)`
+   * @sigparam {string} base64String - A base64 encoded image to use as the checkpoint image
+   * @sigparam {Region|RegionObject} rect - A region within the image to be checked
+   *
+   * @signature `image(url, rect)`
+   * @sigparam {string} url - A URL of the PNG image to download and use as the checkpoint image
+   * @sigparam {Region|RegionObject} rect - A region within the image to be checked
+   *
+   * @signature `image(filePath, rect)`
+   * @sigparam {string} filePath - Path to a local PNG file to use as the checkpoint image
+   * @sigparam {Region|RegionObject} rect - A region within the image to be checked
+   *
+   * @signature `image(imageBuffer, rect)`
+   * @sigparam {Buffer} imageBuffer - A Buffer object that contains an image to use as checkpoint image
+   * @sigparam {Region|RegionObject} rect - A region within the image to be checked
+   *
+   * @signature `image(image, rect)`
+   * @sigparam {MutableImage} mutableImage - An in memory image to use as the checkpoint image
+   * @sigparam {Region|RegionObject} rect - A region within the image to be checked
+   *
+   * @signature `image(imageProvider, rect)`
+   * @sigparam {ImageProvider} imageProvider - An instance of class (object) which implements {@link ImageProvider}
+   *  (has a method called {@code getImage} which returns {@code Promise<MutableImage>})
+   * @sigparam {Region|RegionObject} rect - A region within the image to be checked
+   *
    * @param {string|Buffer|MutableImage} image
    * @param {Region|RegionObject} rect
    * @return {ImagesCheckSettings}
