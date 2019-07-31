@@ -2,7 +2,7 @@
 'use script';
 
 const makeGetAllResources = require('./getAllResources');
-const extractCssResources = require('./extractCssResources');
+const makeExtractCssResources = require('./extractCssResources');
 const makeFetchResource = require('./fetchResource');
 const createResourceCache = require('./createResourceCache');
 const makeWaitForRenderedStatus = require('./waitForRenderedStatus');
@@ -98,6 +98,7 @@ function makeRenderer({apiKey, showLogs, serverUrl, proxy, renderingInfo}) {
 
   const resourceCache = createResourceCache();
   const fetchCache = createResourceCache();
+  const extractCssResources = makeExtractCssResources(logger);
   const fetchWithTimeout = url =>
     ptimeoutWithError(fetch(url), fetchResourceTimeout, 'fetche timed out');
   const fetchResource = makeFetchResource({logger, fetchCache, fetch: fetchWithTimeout});

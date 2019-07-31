@@ -1,8 +1,7 @@
 'use strict';
 const mapValues = require('lodash.mapvalues');
-const {URL} = require('url');
 const {RGridResource} = require('@applitools/eyes-sdk-core');
-const absolutizeUrl = require('./absolutizeUrl');
+const {URL} = require('url');
 const resourceType = require('./resourceType');
 const toCacheEntry = require('./toCacheEntry');
 const extractSvgResources = require('./extractSvgResources');
@@ -85,19 +84,11 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources,
     async function getDependantResources({url, type, value}) {
       let dependentResources, fetchedResources;
       const rType = resourceType(type);
-
-      try {
-        if (rType === 'CSS') {
-          dependentResources = extractCssResources(value.toString());
-        } else if (rType === 'SVG') {
-          dependentResources = extractSvgResources(value.toString());
-        }
-      } catch (e) {
-        logger.log(`could not parse ${rType} ${url}`, e);
-      }
-
-      if (dependentResources) {
-        dependentResources = dependentResources.map(u => absolutizeUrl(u, url));
+      if (rType === 'CSS') {
+        dependentResources = extractCssResources(value.toString(), url);
+        fetchedResources = await getOrFetchResources(dependentResources);
+      } else if (rType === 'SVG') {
+        dependentResources = extractSvgResources(value.toString(), url);
         fetchedResources = await getOrFetchResources(dependentResources);
       }
       return {dependentResources, fetchedResources};

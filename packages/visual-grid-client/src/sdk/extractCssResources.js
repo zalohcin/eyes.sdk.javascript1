@@ -1,16 +1,26 @@
 'use strict';
 
+const absolutizeUrl = require('./absolutizeUrl');
 const {toUriEncoding, toUnAnchoredUri} = require('@applitools/dom-snapshot');
 const valueParser = require('postcss-value-parser');
 
-function extractCssResources(cssText) {
-  const urls = [];
-  const parsedValue = valueParser(cssText);
-  parsedValue.walk((node, i, nodes) => {
-    const nUrls = nodeUrls(node, i, nodes);
-    nUrls && urls.push(...nUrls);
-  });
-  return [...new Set(urls)].map(toUriEncoding).map(toUnAnchoredUri);
+function makeExtractCssResources(logger) {
+  return function extractCssResources(cssText, absoluteUrl) {
+    const urls = [];
+    const parsedValue = valueParser(cssText);
+    try {
+      parsedValue.walk((node, i, nodes) => {
+        const nUrls = nodeUrls(node, i, nodes);
+        nUrls && urls.push(...nUrls);
+      });
+    } catch (e) {
+      logger.log(`could not parse css ${absoluteUrl}`, e);
+    }
+    return [...new Set(urls)]
+      .map(toUriEncoding)
+      .map(toUnAnchoredUri)
+      .map(url => absolutizeUrl(url, absoluteUrl));
+  };
 }
 
 function nodeUrls(node, i, nodes) {
@@ -28,4 +38,4 @@ function nodeUrls(node, i, nodes) {
   }
 }
 
-module.exports = extractCssResources;
+module.exports = makeExtractCssResources;
