@@ -1,5 +1,6 @@
 'use strict';
 const {EyesBase, NullRegionProvider} = require('@applitools/eyes-sdk-core');
+const {presult} = require('@applitools/functional-commons');
 
 const VERSION = require('../../package.json').version;
 
@@ -21,7 +22,13 @@ class EyesWrapper extends EyesBase {
   async ensureAborted() {
     if (!this.getRunningSession()) {
       this._configuration.mergeConfig(this.getAssumedConfiguration());
-      await this._ensureRunningSession();
+      const [err] = await presult(this._ensureRunningSession());
+      if (err) {
+        this._logger.log(
+          'failed to ensure a running session (probably due to a previous fatal error)',
+          err,
+        );
+      }
     }
     await this.abort();
   }
