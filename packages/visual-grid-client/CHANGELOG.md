@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.21.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.19.0...@applitools/visual-grid-client@12.21.0) (2019-08-08)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** handeling Argument null exception on abortTest exception ([c43f403](https://github.com/applitools/eyes.sdk.javascript1/commit/c43f403))
+
+
+### Features
+
+* **visual-grid-client:** extracting urls from css in svg ([27e7586](https://github.com/applitools/eyes.sdk.javascript1/commit/27e7586))
+* **visual-griid-client:** returned css from svg and with links ([e5edbf9](https://github.com/applitools/eyes.sdk.javascript1/commit/e5edbf9))
+
+
+
+
+
 # [12.19.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.18.1...@applitools/visual-grid-client@12.19.0) (2019-07-29)
 
 
