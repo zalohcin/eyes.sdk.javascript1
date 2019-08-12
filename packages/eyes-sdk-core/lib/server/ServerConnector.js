@@ -599,7 +599,7 @@ class ServerConnector {
     const response = await sendRequest(this, 'renderPutResource', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      this._logger.verbose('ServerConnector.putResource - request succeeded');
+      this._logger.verbose(`ServerConnector.putResource - request succeeded. response:\n${response.data}`);
       return true;
     }
 
