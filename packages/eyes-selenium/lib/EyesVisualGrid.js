@@ -36,6 +36,7 @@ class EyesVisualGrid extends Eyes {
     /** @type {string} */ this._processResourcesScript = undefined;
     /** @function */ this._checkWindowCommand = undefined;
     /** @function */ this._closeCommand = undefined;
+    /** @function */ this._abortCommand = undefined;
     /** @type {Promise} */ this._closePromise = undefined;
   }
 
@@ -93,7 +94,7 @@ class EyesVisualGrid extends Eyes {
       }
     }
 
-    const { checkWindow, close } = await openEyes({
+    const { checkWindow, close, abort } = await openEyes({
       appName: this._configuration.getAppName(),
       testName: this._configuration.getTestName(),
       browser: this._configuration.getBrowsersInfo(),
@@ -131,6 +132,7 @@ class EyesVisualGrid extends Eyes {
 
       throw err;
     });
+    this._abortCommand = async () => abort(true);
 
     return this._driver;
   }
@@ -191,7 +193,10 @@ class EyesVisualGrid extends Eyes {
    * @return {Promise<?TestResults>}
    */
   async abort() {
-    return null; // TODO - implement?
+    if (typeof this._abortCommand === 'function') {
+      await this._abortCommand();
+    }
+    return null;
   }
 
   /**
