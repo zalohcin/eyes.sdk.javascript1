@@ -49,6 +49,7 @@ const REQUEST_FAILED_CODES = [
   'ECONNRESET',
   'ECONNABORTED',
   'ETIMEDOUT',
+  'ENOTFOUND',
 ];
 
 /**
