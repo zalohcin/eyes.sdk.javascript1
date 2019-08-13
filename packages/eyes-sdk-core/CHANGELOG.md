@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.13.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.12.3...@applitools/eyes-sdk-core@5.13.0) (2019-08-13)
+
+
+### Bug Fixes
+
+* **eyes-sdk-core:** add `ENOTFOUND` to list of failed codes (will retry) ([8deb302](https://github.com/applitools/eyes.sdk.javascript1/commit/8deb302))
+
+
+### Features
+
+* **eyes-sdk-core:** added response body to PUT logging ([9f7a868](https://github.com/applitools/eyes.sdk.javascript1/commit/9f7a868))
+
+
+
+
+
 ## [5.12.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.12.2...@applitools/eyes-sdk-core@5.12.3) (2019-08-08)
 
 **Note:** Version bump only for package @applitools/eyes-sdk-core

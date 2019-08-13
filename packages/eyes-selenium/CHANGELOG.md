@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.23.7](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.23.6...@applitools/eyes-selenium@4.23.7) (2019-08-13)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** call `abort` command of EyesVisualGrid ([e4c8340](https://github.com/applitools/eyes.sdk.javascript1/commit/e4c8340))
+
+
+
+
+
 ## [4.23.6](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.23.5...@applitools/eyes-selenium@4.23.6) (2019-08-08)
 
 **Note:** Version bump only for package @applitools/eyes-selenium

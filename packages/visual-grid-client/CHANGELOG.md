@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [12.21.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.21.0...@applitools/visual-grid-client@12.21.2) (2019-08-13)
+
+
+### Bug Fixes
+
+* **virtual-grid-client:** updated ds to 2.0.2 removing anchors from CSS ([987093e](https://github.com/applitools/eyes.sdk.javascript1/commit/987093e))
+
+
+
+
+
 # [12.21.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.19.0...@applitools/visual-grid-client@12.21.0) (2019-08-08)
 
 
