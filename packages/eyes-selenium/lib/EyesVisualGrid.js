@@ -97,6 +97,7 @@ class EyesVisualGrid extends Eyes {
     const { checkWindow, close, abort } = await openEyes({
       appName: this._configuration.getAppName(),
       testName: this._configuration.getTestName(),
+      displayName: this._configuration.getDisplayName(),
       browser: this._configuration.getBrowsersInfo(),
       properties: this._configuration.getProperties(),
       batchSequenceName: this._configuration.getBatch() && this._configuration.getBatch().getSequenceName(),

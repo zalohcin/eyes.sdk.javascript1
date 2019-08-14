@@ -335,6 +335,14 @@ class FakeEyesWrapper extends EventEmitter {
     return this.useDom;
   }
 
+  setDisplayName(displayName) {
+    this.displayName = displayName;
+  }
+
+  getDisplayName() {
+    return this.displayName;
+  }
+
   getDeviceInfo() {
     return this.deviceInfo;
   }
