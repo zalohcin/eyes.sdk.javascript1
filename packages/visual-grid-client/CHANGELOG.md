@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.22.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.21.2...@applitools/visual-grid-client@12.22.0) (2019-08-14)
+
+
+### Features
+
+* add `displayName` property to SessionStartInfo ([68ebb4e](https://github.com/applitools/eyes.sdk.javascript1/commit/68ebb4e))
+
+
+
+
+
 ## [12.21.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.21.0...@applitools/visual-grid-client@12.21.2) (2019-08-13)
 
 

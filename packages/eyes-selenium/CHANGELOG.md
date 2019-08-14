@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.24.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.23.7...@applitools/eyes-selenium@4.24.0) (2019-08-14)
+
+
+### Features
+
+* add `displayName` property to SessionStartInfo ([68ebb4e](https://github.com/applitools/eyes.sdk.javascript1/commit/68ebb4e))
+
+
+
+
+
 ## [4.23.7](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.23.6...@applitools/eyes-selenium@4.23.7) (2019-08-13)
 
 
