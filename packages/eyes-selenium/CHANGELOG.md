@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.25.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.24.0...@applitools/eyes-selenium@4.25.0) (2019-08-15)
+
+
+### Features
+
+* **eyes-selenium:** use capturePageDom script of visual-grid-client instead of direct use of dom-snapshot ([e9aecdf](https://github.com/applitools/eyes.sdk.javascript1/commit/e9aecdf))
+
+
+
+
+
 # [4.24.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.23.7...@applitools/eyes-selenium@4.24.0) (2019-08-14)
 
 

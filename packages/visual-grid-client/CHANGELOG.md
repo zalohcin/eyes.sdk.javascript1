@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.23.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.22.0...@applitools/visual-grid-client@12.23.0) (2019-08-15)
+
+
+### Features
+
+* **visual-grid-client:** add `capturePageDom` script, which uses getProcessPageAndPollScript to retrieve a dom ([ba52f3b](https://github.com/applitools/eyes.sdk.javascript1/commit/ba52f3b))
+
+
+
+
+
 # [12.22.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.21.2...@applitools/visual-grid-client@12.22.0) (2019-08-14)
 
 
