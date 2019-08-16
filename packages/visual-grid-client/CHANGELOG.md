@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [12.23.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.23.0...@applitools/visual-grid-client@12.23.1) (2019-08-16)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** save dom capture script in memory, do not reload every time from file ([640802a](https://github.com/applitools/eyes.sdk.javascript1/commit/640802a))
+
+
+
+
+
 # [12.23.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.22.0...@applitools/visual-grid-client@12.23.0) (2019-08-15)
 
 
