@@ -189,7 +189,12 @@ class EyesVisualGrid extends Eyes {
    */
   async abort() {
     if (typeof this._abortCommand === 'function') {
-      await this._abortCommand();
+      if (this._closePromise) {
+        this._logger.verbose('Can not abort while closing async, abort added to close promise.');
+        return this._closePromise.then(() => this._abortCommand(true));
+      }
+
+      return this._abortCommand();
     }
     return null;
   }
