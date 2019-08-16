@@ -6,11 +6,19 @@ const {GeneralUtils} = require('@applitools/eyes-common');
 const PULL_TIMEOUT = 200; // ms
 const CAPTURE_DOM_TIMEOUT_MS = 5 * 60 * 1000; // 5 min
 
+let captureScript;
+async function getCaptureScript() {
+  if (!captureScript) {
+    const processPageAndPollScript = await getProcessPageAndPollScript();
+    captureScript = `${processPageAndPollScript} return __processPageAndPoll();`;
+  }
+
+  return captureScript;
+}
+
 async function capturePageDom({executeScript, startTime = Date.now()}) {
-  const processPageAndPollScript = await getProcessPageAndPollScript();
-  const resultAsString = await executeScript(
-    `${processPageAndPollScript} return __processPageAndPoll();`,
-  );
+  const processPageAndPollScript = await getCaptureScript();
+  const resultAsString = await executeScript(processPageAndPollScript);
 
   const scriptResponse = JSON.parse(resultAsString);
 
