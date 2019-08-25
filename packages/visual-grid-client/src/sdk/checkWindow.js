@@ -69,7 +69,7 @@ function makeCheckWindow({
     if (typeof window === 'undefined') {
       const handleBrowserDebugData = require('../troubleshoot/handleBrowserDebugData');
       handleBrowserDebugData({
-        frame: {resourceUrls, resourceContents, frames, cdt},
+        frame: {resourceUrls, resourceContents, frames, cdt, url},
         metaData: {agentId: wrappers[0].getBaseAgentId()},
         logger,
       });
@@ -79,7 +79,6 @@ function makeCheckWindow({
       resourceUrls,
       resourceContents,
       cdt,
-      url,
       frames,
     });
 

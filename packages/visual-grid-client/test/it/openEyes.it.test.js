@@ -88,7 +88,7 @@ describe('openEyes', () => {
       wrappers: [wrapper],
       appName,
     });
-    const resourceUrls = ['smurfs.jpg', 'test.css'];
+    const resourceUrls = [`${baseUrl}/smurfs.jpg`, `${baseUrl}/test.css`];
     const cdt = loadJsonFixture('test.cdt.json');
     cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = "hi, I'm green";
 
@@ -198,7 +198,7 @@ describe('openEyes', () => {
       appName,
     });
 
-    const blobUrl = `blob.css`;
+    const blobUrl = `${baseUrl}/blob.css`;
     const resourceContents = {
       [blobUrl]: {
         url: blobUrl,

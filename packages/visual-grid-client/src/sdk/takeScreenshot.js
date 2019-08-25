@@ -57,7 +57,6 @@ async function takeScreenshot({
     resourceUrls,
     resourceContents,
     cdt,
-    url,
     frames: framesWithResources,
   });
 
