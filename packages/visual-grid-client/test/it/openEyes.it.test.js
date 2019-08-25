@@ -1863,4 +1863,16 @@ describe('openEyes', () => {
     expect(results[0][0].__checkSettings.getUseDom()).to.be.false;
     expect(results[0][0].__checkSettings.getEnablePatterns()).to.be.false;
   });
+
+  it('doesnt throw error on a canary browser name', async () => {
+    const [err] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: {width: 320, height: 480, name: 'firefox-canary'},
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    );
+    expect(err).to.be.undefined;
+  });
 });

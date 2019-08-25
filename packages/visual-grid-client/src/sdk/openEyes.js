@@ -228,7 +228,7 @@ function makeOpenEyes({
     function getBrowserError(browser) {
       if (
         browser.name &&
-        !['firefox', 'ie10', 'ie11', 'edge', 'chrome', 'ie'].includes(browser.name)
+        !['firefox', 'ie10', 'ie11', 'edge', 'chrome', 'ie'].includes(browser.name.replace(/-canary$/, ''))
       ) {
         return `browser name should be one of the following 'chrome', 'firefox', 'ie10', 'ie11' or 'edge' but recieved '${browser.name}'.`;
       }
