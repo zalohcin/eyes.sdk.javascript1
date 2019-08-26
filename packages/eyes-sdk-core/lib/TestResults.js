@@ -373,10 +373,11 @@ class TestResults {
    * @param {number} [layoutMatches]
    * @param {number} [noneMatches]
    * @param {string} [url]
+   * @param {string[]} [renderIds]
    */
   constructor({ id, name, secretToken, status, appName, batchName, batchId, branchName, hostOS, hostApp,
     hostDisplaySize, startedAt, duration, isNew, isDifferent, isAborted, appUrls, apiUrls, stepsInfo, steps,
-    matches, mismatches, missing, exactMatches, strictMatches, contentMatches, layoutMatches, noneMatches, url } = {}) {
+    matches, mismatches, missing, exactMatches, strictMatches, contentMatches, layoutMatches, noneMatches, url, renderIds } = {}) {
     if (hostDisplaySize && !(hostDisplaySize instanceof RectangleSize)) {
       hostDisplaySize = new RectangleSize(hostDisplaySize);
     }
@@ -428,6 +429,7 @@ class TestResults {
     this._layoutMatches = layoutMatches;
     this._noneMatches = noneMatches;
     this._url = url;
+    this._renderIds = renderIds;
 
     /** @type {ServerConnector} */
     this._serverConnector = undefined;
@@ -889,6 +891,20 @@ class TestResults {
    */
   setUrl(value) {
     this._url = value;
+  }
+
+  /**
+   * @return {string[]} - The test render IDs.
+   */
+  getRenderIds() {
+    return this._renderIds;
+  }
+
+  /**
+   * @param {string[]} value - The test render IDs.
+   */
+  setRenderIds(renderIds) {
+    this._renderIds = renderIds;
   }
 
   // noinspection JSUnusedGlobalSymbols
