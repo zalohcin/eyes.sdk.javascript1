@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.24.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.23.2...@applitools/visual-grid-client@12.24.0) (2019-08-27)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** ds update iframe base tag & not absulotizing frame urls. ([d700709](https://github.com/applitools/eyes.sdk.javascript1/commit/d700709))
+
+
+### Features
+
+* **visual-grid-client:** not throwing on canary browser name ([a799bbe](https://github.com/applitools/eyes.sdk.javascript1/commit/a799bbe))
+
+
+
+
+
 ## [12.23.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.23.1...@applitools/visual-grid-client@12.23.2) (2019-08-20)
 
 **Note:** Version bump only for package @applitools/visual-grid-client

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.15.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.14.0...@applitools/eyes-sdk-core@5.15.0) (2019-08-27)
+
+
+### Features
+
+* **eyes-sdk-core:** added renderIds to TestResults ([f440baf](https://github.com/applitools/eyes.sdk.javascript1/commit/f440baf))
+* **eyes-sdk-core:** moved renderIds to StepInfo ([bfe09df](https://github.com/applitools/eyes.sdk.javascript1/commit/bfe09df))
+
+
+
+
+
 # [5.14.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.13.0...@applitools/eyes-sdk-core@5.14.0) (2019-08-14)
 
 
