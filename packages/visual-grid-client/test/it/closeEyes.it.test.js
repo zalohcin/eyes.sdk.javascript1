@@ -51,7 +51,7 @@ describe('closeEyes', () => {
     });
     checkWindow({cdt: [], tag: 'good1', url: `${baseUrl}/basic.html`});
     const result = (await presult(close()))[1];
-    expect(result[0].map(r => r.getAsExpected())).to.eql([true]);
+    expect(result[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
   });
 
   it('rejects with an error with bad tag', async () => {
@@ -78,7 +78,7 @@ describe('closeEyes', () => {
     expect(result[0].message).to.equal(
       'Tag ok-in-1-test should be one of the good tags good1,good2',
     );
-    expect(result[1].map(r => r.getAsExpected())).to.eql([true]);
+    expect(result[1].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
   });
 
   it('rejects with a diff and test result', async () => {
@@ -91,7 +91,7 @@ describe('closeEyes', () => {
     checkWindow({cdt: [], resourceUrls: [], tag: 'good1', url: `${baseUrl}/basic.html`});
     await psetTimeout(0); // because FakeEyesWrapper throws, and then the error is set async and will be read in the next call to close()
     const result = (await presult(close()))[0];
-    expect(result[0].map(r => r.getAsExpected())).to.eql([true]);
+    expect(result[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
     expect(result[1].message).to.equal('mismatch');
   });
 
@@ -209,7 +209,7 @@ describe('closeEyes', () => {
     expect(result[1].message).to.equal(
       'Tag ok-in-1-test should be one of the good tags good1,good2',
     );
-    expect(result[2].map(r => r.getAsExpected())).to.eql([true]);
+    expect(result[2].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
   });
 
   it('rejects with 2 diffs', async () => {
@@ -262,6 +262,6 @@ describe('closeEyes', () => {
     expect(result[1].message).to.equal(
       'Tag ok-in-1-test should be one of the good tags good1,good2',
     );
-    expect(result[2].map(r => r.getAsExpected())).to.eql([true]);
+    expect(result[2].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
   });
 });

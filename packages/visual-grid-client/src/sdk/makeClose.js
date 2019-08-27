@@ -38,7 +38,17 @@ function makeClose({
       }
 
       const [closeError, closeResult] = await presult(wrappers[testIndex].close(throwEx));
-      return closeError ? ((didError = true), closeError) : closeResult;
+      if (!closeError) {
+        const renderIds = testController.getRenderIds(testIndex);
+        const steps = closeResult.getStepsInfo();
+        for (const [i, renderId] of renderIds.entries()) {
+          steps[i].setRenderId(renderId);
+        }
+        return closeResult;
+      } else {
+        didError = true;
+        return closeError;
+      }
     }).then(results => (didError ? settleError(results) : results));
   };
 }

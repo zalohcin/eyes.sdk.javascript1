@@ -1,6 +1,7 @@
 'use strict';
 const {
   MatchResult,
+  TestResults,
   RenderStatusResults,
   RenderStatus,
   Location,
@@ -193,7 +194,7 @@ class FakeEyesWrapper extends EventEmitter {
     this.emit('closed');
     this.closed = !this.aborted;
     if (this.closeErr || this.results.find(r => !r.getAsExpected())) throw new Error('mismatch');
-    return this.results;
+    return this.resultsToTestResults(this.results);
   }
 
   async abort() {
@@ -204,6 +205,20 @@ class FakeEyesWrapper extends EventEmitter {
   async ensureAborted() {}
 
   setAssumedConfiguration() {}
+
+  resultsToTestResults(results) {
+    const steps = Array.from(new Array(results.length).map(() => ({})));
+    const tr = new TestResults({stepsInfo: steps});
+    const trSteps = tr.getStepsInfo();
+    for (const [i, result] of results.entries()) {
+      trSteps[i].result = result;
+    }
+    return tr;
+  }
+
+  setDummyTestResults() {
+    this.results.push({getAsExpected: () => true});
+  }
 
   getExpectedCdt() {
     return loadJsonFixture(this.goodFilename);

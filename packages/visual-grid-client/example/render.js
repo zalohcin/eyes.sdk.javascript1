@@ -67,7 +67,9 @@ const debug = require('debug')('eyes:render');
   } else {
     console.log(
       '\nTest result:\n\t',
-      results.map(r => `${r.getStatus()} ${r.getUrl()}`).join('\n\t'),
+      results
+        .map(r => `${r.getStatus()} ${r.getUrl()} renderId: ${r.getStepsInfo()[0].getRenderId()}`)
+        .join('\n\t'),
     );
   }
   await browser.close();
