@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.26.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.24.0...@applitools/visual-grid-client@12.26.0) (2019-08-27)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** update `@applitools/dom-snapshot` version ([6b555f6](https://github.com/applitools/eyes.sdk.javascript1/commit/6b555f6))
+* **visual-grid-client:** use verbose log level for general logs ([9444c7d](https://github.com/applitools/eyes.sdk.javascript1/commit/9444c7d))
+
+
+### Features
+
+* **visual-grid-client:** added renderId to StepInfo in TestsResults ([bd18fc1](https://github.com/applitools/eyes.sdk.javascript1/commit/bd18fc1))
+
+
+
+
+
 # [12.24.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.23.2...@applitools/visual-grid-client@12.24.0) (2019-08-27)
 
 
