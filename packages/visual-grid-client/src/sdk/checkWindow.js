@@ -128,6 +128,7 @@ function makeCheckWindow({
       }
 
       const renderId = renderIds[index];
+      testController.addRenderId(index, renderId);
 
       logger.verbose(
         `render request complete for ${renderId}. test=${testName} stepCount #${currStepCount} tag=${tag} target=${target} fully=${fully} region=${JSON.stringify(

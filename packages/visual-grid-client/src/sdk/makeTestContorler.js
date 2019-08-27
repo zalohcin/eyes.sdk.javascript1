@@ -1,7 +1,8 @@
 'use strict';
 
 function makeTestController({testName, numOfTests, logger}) {
-  const errors = Array.from(new Array(numOfTests));
+  const errors = [...new Array(numOfTests)];
+  const renderIds = [...new Array(numOfTests)].map(() => []);
   let abortedByUser = false;
   let fatalError = false;
 
@@ -38,6 +39,14 @@ function makeTestController({testName, numOfTests, logger}) {
 
     shouldStopTest: index => {
       return errors[index] || fatalError || abortedByUser;
+    },
+
+    addRenderId(index, ids) {
+      renderIds[index].push(ids);
+    },
+
+    getRenderIds(index) {
+      return renderIds[index];
     },
   };
 }
