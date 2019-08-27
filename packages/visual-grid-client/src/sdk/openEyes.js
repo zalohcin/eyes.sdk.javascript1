@@ -83,14 +83,14 @@ function makeOpenEyes({
     compareWithParentBranch = _compareWithParentBranch,
     ignoreBaseline = _ignoreBaseline,
   }) {
-    logger.log(`openEyes: testName=${testName}, browser=`, browser);
+    logger.verbose(`openEyes: testName=${testName}, browser=`, browser);
 
     if (!apiKey) {
       throw new Error(apiKeyFailMsg);
     }
 
     if (isDisabled) {
-      logger.log('openEyes: isDisabled=true, skipping checks');
+      logger.verbose('openEyes: isDisabled=true, skipping checks');
       return {
         checkWindow: disabledFunc('checkWindow'),
         close: disabledFunc('close'),
@@ -223,7 +223,7 @@ function makeOpenEyes({
 
     function disabledFunc(name) {
       return async () => {
-        logger.log(`${name}: isDisabled=true, skipping checks`);
+        logger.verbose(`${name}: isDisabled=true, skipping checks`);
       };
     }
 

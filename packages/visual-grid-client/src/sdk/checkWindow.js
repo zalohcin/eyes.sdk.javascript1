@@ -129,7 +129,7 @@ function makeCheckWindow({
 
       const renderId = renderIds[index];
 
-      logger.log(
+      logger.verbose(
         `render request complete for ${renderId}. test=${testName} stepCount #${currStepCount} tag=${tag} target=${target} fully=${fully} region=${JSON.stringify(
           region,
         )} selector=${JSON.stringify(selector)} browser: ${JSON.stringify(browsers[index])}`,
@@ -162,7 +162,7 @@ function makeCheckWindow({
       } = renderStatusResult;
 
       if (screenshotUrl) {
-        logger.log(`screenshot available for ${renderId} at ${screenshotUrl}`);
+        logger.verbose(`screenshot available for ${renderId} at ${screenshotUrl}`);
       } else {
         logger.log(`screenshot NOT available for ${renderId}`);
       }
@@ -175,7 +175,9 @@ function makeCheckWindow({
         wrapper.setViewportSize(deviceSize);
       }
 
-      logger.log(`checkWindow waiting for prev job. test=${testName}, stepCount #${currStepCount}`);
+      logger.verbose(
+        `checkWindow waiting for prev job. test=${testName}, stepCount #${currStepCount}`,
+      );
 
       await prevJobPromise;
 
@@ -213,7 +215,9 @@ function makeCheckWindow({
         renderId,
       });
 
-      logger.log(`checkWindow waiting for openEyes. test=${testName}, stepCount #${currStepCount}`);
+      logger.verbose(
+        `checkWindow waiting for openEyes. test=${testName}, stepCount #${currStepCount}`,
+      );
 
       await openEyesPromises[index];
 
@@ -222,7 +226,9 @@ function makeCheckWindow({
         return;
       }
 
-      logger.log(`running wrapper.checkWindow for test ${testName} stepCount #${currStepCount}`);
+      logger.verbose(
+        `running wrapper.checkWindow for test ${testName} stepCount #${currStepCount}`,
+      );
 
       const origMatchLevel = wrapper.getMatchLevel();
       if (matchLevel !== undefined) wrapper.setMatchLevel(matchLevel);
