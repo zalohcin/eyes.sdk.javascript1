@@ -7,7 +7,7 @@ const PULL_TIMEOUT = 200; // ms
 const CAPTURE_DOM_TIMEOUT_MS = 5 * 60 * 1000; // 5 min
 
 let captureScript;
-async function getCaptureScript() {
+async function getScript() {
   if (!captureScript) {
     const processPageAndPollScript = await getProcessPageAndPollScript();
     captureScript = `${processPageAndPollScript} return __processPageAndPoll();`;
@@ -16,8 +16,8 @@ async function getCaptureScript() {
   return captureScript;
 }
 
-async function capturePageDom({executeScript, startTime = Date.now()}) {
-  const processPageAndPollScript = await getCaptureScript();
+async function takeDomSnapshot({executeScript, startTime = Date.now()}) {
+  const processPageAndPollScript = await getScript();
   const resultAsString = await executeScript(processPageAndPollScript);
 
   const scriptResponse = JSON.parse(resultAsString);
@@ -31,7 +31,7 @@ async function capturePageDom({executeScript, startTime = Date.now()}) {
   }
 
   await GeneralUtils.sleep(PULL_TIMEOUT);
-  return capturePageDom({executeScript, startTime});
+  return takeDomSnapshot({executeScript, startTime});
 }
 
-module.exports = capturePageDom;
+module.exports = takeDomSnapshot;
