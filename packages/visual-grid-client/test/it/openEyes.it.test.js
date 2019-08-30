@@ -80,7 +80,7 @@ describe('openEyes', () => {
     const cdt = loadJsonFixture('test.cdt.json');
     checkWindow({resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`});
 
-    expect((await close())[0].map(r => r.getAsExpected())).to.eql([true]);
+    expect((await close())[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
   });
 
   it('fails with incorrect dom', async () => {
@@ -88,7 +88,7 @@ describe('openEyes', () => {
       wrappers: [wrapper],
       appName,
     });
-    const resourceUrls = ['smurfs.jpg', 'test.css'];
+    const resourceUrls = [`${baseUrl}/smurfs.jpg`, `${baseUrl}/test.css`];
     const cdt = loadJsonFixture('test.cdt.json');
     cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = "hi, I'm green";
 
@@ -112,7 +112,9 @@ describe('openEyes', () => {
     const cdt = loadJsonFixture('test.cdt.json');
     checkWindow({resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`});
     expect(
-      (await close()).map(wrapperResult => wrapperResult.map(r2 => r2.getAsExpected())),
+      (await close()).map(wrapperResult =>
+        wrapperResult.getStepsInfo().map(r2 => r2.result.getAsExpected()),
+      ),
     ).to.eql([[true], [true], [true]]);
   });
 
@@ -149,7 +151,7 @@ describe('openEyes', () => {
       target: 'some target',
       url: `${baseUrl}/test.html`,
     });
-    expect((await close())[0].map(r => r.getAsExpected())).to.eql([true]);
+    expect((await close())[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
   });
 
   it('runs matchWindow in the correct order', async () => {
@@ -175,7 +177,7 @@ describe('openEyes', () => {
     };
 
     wrapper1.close = wrapper2.close = async function() {
-      return this.results;
+      return wrapper2.resultsToTestResults(this.results);
     };
 
     const {checkWindow, close} = await openEyes({
@@ -189,7 +191,10 @@ describe('openEyes', () => {
     checkWindow({resourceUrls, cdt, tag: 'one', url: `${baseUrl}/test.html`});
     checkWindow({resourceUrls, cdt, tag: 'two', url: `${baseUrl}/test.html`});
     checkWindow({resourceUrls, cdt, tag: 'three', url: `${baseUrl}/test.html`});
-    expect(await close()).to.eql([['one1', 'two1', 'three1'], ['one2', 'two2', 'three2']]);
+    expect((await close()).map(r => r.getStepsInfo().map(s => s.result))).to.eql([
+      ['one1', 'two1', 'three1'],
+      ['one2', 'two2', 'three2'],
+    ]);
   });
 
   it('handles resourceContents in checkWindow', async () => {
@@ -198,7 +203,7 @@ describe('openEyes', () => {
       appName,
     });
 
-    const blobUrl = `blob.css`;
+    const blobUrl = `${baseUrl}/blob.css`;
     const resourceContents = {
       [blobUrl]: {
         url: blobUrl,
@@ -210,7 +215,7 @@ describe('openEyes', () => {
     wrapper.goodResourceUrls = [`${baseUrl}/blob.css`, `${baseUrl}/smurfs4.jpg`];
 
     checkWindow({cdt: [], resourceContents, tag: 'good1', url: `${baseUrl}/test.html`});
-    expect((await close())[0].map(r => r.getAsExpected())).to.eql([true]);
+    expect((await close())[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
   });
 
   it('handles "selector" region', async () => {
@@ -220,7 +225,7 @@ describe('openEyes', () => {
     });
 
     checkWindow({cdt: [], url: 'some url', selector: '.some selector'});
-    expect((await close())[0].map(r => r.getAsExpected())).to.eql([true]);
+    expect((await close())[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
   });
 
   it('handles "region" target', async () => {
@@ -235,7 +240,7 @@ describe('openEyes', () => {
       region: {width: 1, height: 2, left: 3, top: 4},
       target: 'region',
     });
-    expect((await close())[0].map(r => r.getAsExpected())).to.eql([true]);
+    expect((await close())[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
   });
 
   it('renders the correct browser', async () => {
@@ -269,7 +274,7 @@ describe('openEyes', () => {
       }),
     );
     expect(err.message).to.equal(
-      `browser name should be one of the following 'chrome', 'firefox', 'ie10', 'ie11' or 'edge' but recieved 'firefox222'.`,
+      `browser name should be one of the following 'chrome', 'firefox', 'ie10', 'ie11' or 'edge' but received 'firefox222'.`,
     );
   });
 
@@ -1193,8 +1198,9 @@ describe('openEyes', () => {
       ignore: [region],
     });
     const [results] = await close();
-    expect(results[0].getAsExpected()).to.equal(true);
-    expect(results[0].__checkSettings.getIgnoreRegions()).to.eql([
+    const r = results.getStepsInfo()[0].result;
+    expect(r.getAsExpected()).to.equal(true);
+    expect(r.__checkSettings.getIgnoreRegions()).to.eql([
       new IgnoreRegionByRectangle(new Region(region)),
     ]);
   });
@@ -1215,11 +1221,12 @@ describe('openEyes', () => {
       strict: [regionStrict],
     });
     const [results] = await close();
-    expect(results[0].getAsExpected()).to.equal(true);
-    expect(results[0].__checkSettings.getLayoutRegions()).to.eql([
+    const r = results.getStepsInfo()[0].result;
+    expect(r.getAsExpected()).to.equal(true);
+    expect(r.__checkSettings.getLayoutRegions()).to.eql([
       new IgnoreRegionByRectangle(new Region(regionLayout)),
     ]);
-    expect(results[0].__checkSettings.getStrictRegions()).to.eql([
+    expect(r.__checkSettings.getStrictRegions()).to.eql([
       new IgnoreRegionByRectangle(new Region(regionStrict)),
     ]);
   });
@@ -1293,16 +1300,17 @@ describe('openEyes', () => {
       strict: [strictSelector1, strictSelector2],
     });
     const [results] = await close();
-    expect(results[0].getAsExpected()).to.equal(true);
-    expect(results[0].__checkSettings.getIgnoreRegions()).to.eql([
+    const r = results.getStepsInfo()[0].result;
+    expect(r.getAsExpected()).to.equal(true);
+    expect(r.__checkSettings.getIgnoreRegions()).to.eql([
       new IgnoreRegionByRectangle(region1),
       new IgnoreRegionByRectangle(region2),
     ]);
-    expect(results[0].__checkSettings.getLayoutRegions()).to.eql([
+    expect(r.__checkSettings.getLayoutRegions()).to.eql([
       new IgnoreRegionByRectangle(regionLayout1),
       new IgnoreRegionByRectangle(regionLayout2),
     ]);
-    expect(results[0].__checkSettings.getStrictRegions()).to.eql([
+    expect(r.__checkSettings.getStrictRegions()).to.eql([
       new IgnoreRegionByRectangle(regionStrict1),
       new IgnoreRegionByRectangle(regionStrict2),
     ]);
@@ -1336,8 +1344,9 @@ describe('openEyes', () => {
     });
 
     const [results] = await close();
-    expect(results[0].getAsExpected()).to.equal(true);
-    expect(results[0].__checkSettings.getIgnoreRegions()).to.eql([
+    const r = results.getStepsInfo()[0].result;
+    expect(r.getAsExpected()).to.equal(true);
+    expect(r.__checkSettings.getIgnoreRegions()).to.eql([
       new IgnoreRegionByRectangle(new Region(ignoreRegion)),
       new IgnoreRegionByRectangle(
         new Region({
@@ -1348,7 +1357,7 @@ describe('openEyes', () => {
         }),
       ),
     ]);
-    expect(results[0].__checkSettings.getLayoutRegions()).to.eql([
+    expect(r.__checkSettings.getLayoutRegions()).to.eql([
       new IgnoreRegionByRectangle(new Region(layoutRegion)),
       new IgnoreRegionByRectangle(
         new Region({
@@ -1359,7 +1368,7 @@ describe('openEyes', () => {
         }),
       ),
     ]);
-    expect(results[0].__checkSettings.getStrictRegions()).to.eql([
+    expect(r.__checkSettings.getStrictRegions()).to.eql([
       new IgnoreRegionByRectangle(new Region(strictRegion)),
       new IgnoreRegionByRectangle(
         new Region({
@@ -1422,9 +1431,9 @@ describe('openEyes', () => {
     });
 
     const [results] = await close();
-
-    expect(results[0].getAsExpected()).to.equal(true);
-    expect(results[0].__checkSettings.getIgnoreRegions()).to.eql([
+    const r = results.getStepsInfo()[0].result;
+    expect(r.getAsExpected()).to.equal(true);
+    expect(r.__checkSettings.getIgnoreRegions()).to.eql([
       new IgnoreRegionByRectangle(new Region(ignoreRegion)),
       new IgnoreRegionByRectangle(
         new Region({
@@ -1435,7 +1444,7 @@ describe('openEyes', () => {
         }),
       ),
     ]);
-    expect(results[0].__checkSettings.getLayoutRegions()).to.eql([
+    expect(r.__checkSettings.getLayoutRegions()).to.eql([
       new IgnoreRegionByRectangle(new Region(layoutRegion)),
       new IgnoreRegionByRectangle(
         new Region({
@@ -1446,7 +1455,7 @@ describe('openEyes', () => {
         }),
       ),
     ]);
-    expect(results[0].__checkSettings.getStrictRegions()).to.eql([
+    expect(r.__checkSettings.getStrictRegions()).to.eql([
       new IgnoreRegionByRectangle(new Region(strictRegion)),
       new IgnoreRegionByRectangle(
         new Region({
@@ -1458,7 +1467,7 @@ describe('openEyes', () => {
       ),
     ]);
 
-    expect(results[0].__checkSettings.getFloatingRegions()).to.eql([
+    expect(r.__checkSettings.getFloatingRegions()).to.eql([
       new FloatingRegionByRectangle(
         new Region(floatingRegion),
         floatingRegion.maxUpOffset,
@@ -1498,12 +1507,14 @@ describe('openEyes', () => {
       cdt: [],
     });
     const [results] = await close();
-    expect(results[0].__checkSettings.getUseDom()).to.be.true;
-    expect(results[0].__checkSettings.getEnablePatterns()).to.be.false;
-    expect(results[0].__checkSettings.getIgnoreDisplacements()).to.be.false;
-    expect(results[1].__checkSettings.getUseDom()).to.be.undefined;
-    expect(results[1].__checkSettings.getEnablePatterns()).to.be.undefined;
-    expect(results[1].__checkSettings.getIgnoreDisplacements()).to.be.undefined;
+    const r = results.getStepsInfo()[0].result;
+    const r2 = results.getStepsInfo()[1].result;
+    expect(r.__checkSettings.getUseDom()).to.be.true;
+    expect(r.__checkSettings.getEnablePatterns()).to.be.false;
+    expect(r.__checkSettings.getIgnoreDisplacements()).to.be.false;
+    expect(r2.__checkSettings.getUseDom()).to.be.undefined;
+    expect(r2.__checkSettings.getEnablePatterns()).to.be.undefined;
+    expect(r2.__checkSettings.getIgnoreDisplacements()).to.be.undefined;
   });
 
   it('handles abort', async () => {
@@ -1592,10 +1603,10 @@ describe('openEyes', () => {
     });
 
     checkWindow({url: '', cdt: []});
-    const [[results]] = await close();
+    const [results] = await close();
     expect(wrapper.getViewportSize()).to.eql(FakeEyesWrapper.devices['iPhone 4']);
     expect(wrapper.getDeviceInfo()).to.equal(`${deviceName} (Chrome emulation)`);
-    expect(results.getAsExpected()).to.equal(true);
+    expect(results.getStepsInfo()[0].result.getAsExpected()).to.equal(true);
   });
 
   it("does't call getRenderInfo on wrapper passed to openEyes", async () => {
@@ -1635,7 +1646,7 @@ describe('openEyes', () => {
     });
     checkWindow({cdt: [], frames, url});
     const ttt = await close();
-    expect(ttt[0].map(r => r.getAsExpected())).to.eql([true]);
+    expect(ttt[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
   });
 
   it('handles empty tests', async () => {
@@ -1672,6 +1683,7 @@ describe('openEyes', () => {
     wrapper.checkWindow = async ({tag}) => {
       await psetTimeout(20);
       expect(wrapper.getMatchLevel()).to.equal(tag === 2 ? 'Layout' : 'Strict');
+      wrapper.setDummyTestResults();
     };
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
@@ -1689,6 +1701,7 @@ describe('openEyes', () => {
     wrapper.checkWindow = async ({tag}) => {
       await psetTimeout(20);
       expect(wrapper.getMatchLevel()).to.equal(tag === 2 ? 'Layout' : 'Content');
+      wrapper.setDummyTestResults();
     };
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
@@ -1714,6 +1727,7 @@ describe('openEyes', () => {
     wrapper.checkWindow = async ({tag}) => {
       await psetTimeout(20);
       expect(wrapper.getMatchLevel()).to.equal(tag === 2 ? 'Layout' : 'Content');
+      wrapper.setDummyTestResults();
     };
     const {checkWindow, close} = await openEyes({
       apiKey,
@@ -1829,9 +1843,10 @@ describe('openEyes', () => {
 
     await checkWindow({tag: 'good1', cdt: [], url: '', useDom: true, enablePatterns: true});
     await donePromise;
-    const results = await close();
-    expect(results[0][0].__checkSettings.getUseDom()).to.be.true;
-    expect(results[0][0].__checkSettings.getEnablePatterns()).to.be.true;
+    const [results] = await close();
+    const r = results.getStepsInfo()[0].result;
+    expect(r.__checkSettings.getUseDom()).to.be.true;
+    expect(r.__checkSettings.getEnablePatterns()).to.be.true;
   });
 
   it('checkWindow overrides openEyes useDom & enablePatterns with false', async () => {
@@ -1859,8 +1874,21 @@ describe('openEyes', () => {
 
     await checkWindow({tag: 'good1', cdt: [], url: '', useDom: false, enablePatterns: false});
     await donePromise;
-    const results = await close();
-    expect(results[0][0].__checkSettings.getUseDom()).to.be.false;
-    expect(results[0][0].__checkSettings.getEnablePatterns()).to.be.false;
+    const [results] = await close();
+    const r = results.getStepsInfo()[0].result;
+    expect(r.__checkSettings.getUseDom()).to.be.false;
+    expect(r.__checkSettings.getEnablePatterns()).to.be.false;
+  });
+
+  it('doesnt throw error on a canary browser name', async () => {
+    const [err] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: {width: 320, height: 480, name: 'firefox-canary'},
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    );
+    expect(err).to.be.undefined;
   });
 });

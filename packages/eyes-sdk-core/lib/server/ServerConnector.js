@@ -74,7 +74,7 @@ async function sendRequest(self, name, options, retry = 1, delayBeforeRetry = fa
   }
 
   // eslint-disable-next-line max-len
-  self._logger.verbose(`ServerConnector.${name} will now post call to ${options.url} with params ${JSON.stringify(options.params)}`);
+  self._logger.verbose(`ServerConnector.${name} will now call to ${options.url} with params ${JSON.stringify(options.params)}`);
   try {
     const response = await axios(options);
 
@@ -88,7 +88,8 @@ async function sendRequest(self, name, options, retry = 1, delayBeforeRetry = fa
     }
 
     // eslint-disable-next-line max-len
-    self._logger.log(`ServerConnector.${name} - post failed on ${options.url}: ${reasonMsg} with params ${JSON.stringify(options.params).slice(0, 100)}`);
+    self._logger.log(`ServerConnector.${name} - ${options.method} failed on ${options.url}: ${reasonMsg} with params ${JSON.stringify(options.params).slice(0, 100)} body:\n${err.response && err.response.data}`);
+    self._logger.verbose(`ServerConnector.${name} - failure body:\n${err.response && err.response.data}`);
 
     if (retry > 0 && ((err.response && HTTP_FAILED_CODES.includes(err.response.status)) || REQUEST_FAILED_CODES.includes(err.code))) {
       if (delayBeforeRetry) {
@@ -600,7 +601,7 @@ class ServerConnector {
     const response = await sendRequest(this, 'renderPutResource', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      this._logger.verbose(`ServerConnector.putResource - request succeeded. response:\n${response.data}`);
+      this._logger.verbose('ServerConnector.putResource - request succeeded. Response:', response.data);
       return true;
     }
 

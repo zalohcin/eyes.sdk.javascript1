@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.9.0...@applitools/eyes-common@3.9.1) (2019-08-27)
+
+
+### Bug Fixes
+
+* serialize arrays in log output ([a255f95](https://github.com/applitools/eyes.sdk.javascript1/commit/a255f95))
+
+
+
+
+
 # [3.9.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.8.3...@applitools/eyes-common@3.9.0) (2019-08-14)
 
 
