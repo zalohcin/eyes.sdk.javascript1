@@ -99,6 +99,13 @@ class EyesWrapper extends EyesBase {
     return this.checkWindowBase(regionProvider, tag, false, checkSettings, source);
   }
 
+  setProxy(proxy) {
+    if (proxy.uri !== undefined) {
+      proxy.url = proxy.uri; // backward compatible
+    }
+    super.setProxy(proxy);
+  }
+
   async getScreenshot() {
     return;
   }

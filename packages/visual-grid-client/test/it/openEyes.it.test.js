@@ -18,7 +18,6 @@ const {
   Region,
   IgnoreRegionByRectangle,
   FloatingRegionByRectangle,
-  ProxySettings,
 } = require('@applitools/eyes-sdk-core');
 const {
   apiKeyFailMsg,
@@ -1144,7 +1143,7 @@ describe('openEyes', () => {
       appName,
     });
 
-    expect(wrapper.proxy).to.eql(new ProxySettings('uri', 'user', 'pass'));
+    expect(wrapper.proxy).to.eql({uri: 'uri', username: 'user', password: 'pass'});
 
     openEyes = makeRenderingGridClient({
       showLogs: APPLITOOLS_SHOW_LOGS,

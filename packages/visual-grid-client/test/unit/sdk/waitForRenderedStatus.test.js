@@ -80,8 +80,9 @@ describe('waitForRenderedStatus', () => {
 
   it('keeps trying if wrapper throws exception (e.g. 500 Internal server error)', async () => {
     let output = '';
+    const log = (...args) => (output += args.join(', '));
     const waitForRenderedStatus = makeWaitForRenderedStatus({
-      logger: {log: (...args) => (output += args.join(', '))},
+      logger: {log, verbose: log},
       timeout: 100,
       getRenderStatus: async () => {
         await psetTimeout(50);
