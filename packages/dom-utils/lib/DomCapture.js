@@ -3,7 +3,7 @@
 const axios = require('axios');
 const { URL } = require('url');
 
-const { ArgumentGuard, Location, GeneralUtils, PerformanceUtils } = require('@applitools/eyes-common');
+const { ArgumentGuard, Location, GeneralUtils, PerformanceUtils, EyesError } = require('@applitools/eyes-common');
 const { getCaptureDomAndPollScript } = require('@applitools/dom-capture');
 
 const DomCaptureReturnType = {
@@ -18,6 +18,7 @@ const SCRIPT_RESPONSE_STATUS = {
 };
 
 const DOM_EXTRACTION_TIMEOUT = 5 * 60 * 1000;
+const DOM_CAPTURE_PULL_TIMEOUT = 200; // ms
 const DOCUMENT_LOCATION_HREF_SCRIPT = 'return document.location.href';
 
 /**
@@ -88,15 +89,15 @@ class DomCapture {
     do {
       const resultAsString = await this._driver.executeScript(script);
       result = JSON.parse(resultAsString);
-      await this._driver.sleep(200);
+      await GeneralUtils.sleep(DOM_CAPTURE_PULL_TIMEOUT);
     } while (result.status === SCRIPT_RESPONSE_STATUS.WIP && !isCheckTimerTimedOut);
 
     if (result.status === SCRIPT_RESPONSE_STATUS.ERROR) {
-      throw new Error(`DomCapture Error: ${result.error}`);
+      throw new EyesError('Error during capturing DOM', result.error);
     }
 
     if (isCheckTimerTimedOut) {
-      throw new Error('DomCapture Timed out');
+      throw new EyesError('DomCapture Timed out');
     }
 
     const domSnapshotRawArr = result && result.value ? result.value.split('\n') : [];
@@ -143,7 +144,7 @@ class DomCapture {
 
           const locationAfterSwitch = await this.getLocation();
           if (locationAfterSwitch === originLocation) {
-            this._logger.verbose('Switching to frame failed');
+            this._logger.log('Switching to frame failed');
             domIFrame = {};
           } else {
             domIFrame = await this.getFrameDom(script, url);
