@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.16.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.15.1...@applitools/eyes-sdk-core@5.16.0) (2019-09-02)
+
+
+### Features
+
+* **eyes-sdk-core:** added response body for error requests ([8fd246f](https://github.com/applitools/eyes.sdk.javascript1/commit/8fd246f))
+
+
+
+
+
 ## [5.15.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.15.0...@applitools/eyes-sdk-core@5.15.1) (2019-08-27)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.9.1...@applitools/eyes-common@3.9.2) (2019-09-02)
+
+
+### Bug Fixes
+
+* **eyes-common:** debug logger is now verbose and is cloned ([2d47c3a](https://github.com/applitools/eyes.sdk.javascript1/commit/2d47c3a))
+
+
+
+
+
 ## [3.9.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.9.0...@applitools/eyes-common@3.9.1) (2019-08-27)
 
 
