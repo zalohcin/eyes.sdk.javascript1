@@ -92,7 +92,7 @@ class DomCapture {
     } while (result.status === SCRIPT_RESPONSE_STATUS.WIP && !isCheckTimerTimedOut);
 
     if (result.status === SCRIPT_RESPONSE_STATUS.ERROR) {
-      throw new Error('DomCapture Error: ' + result.error);
+      throw new Error(`DomCapture Error: ${result.error}`);
     }
 
     if (isCheckTimerTimedOut) {
