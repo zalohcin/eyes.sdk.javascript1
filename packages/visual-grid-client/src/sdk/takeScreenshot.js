@@ -77,8 +77,11 @@ async function takeScreenshot({
 
   const renderStatusResults = await Promise.all(
     renderIds.map(renderId =>
-      waitForRenderedStatus(renderId, () => false).then(({ imageLocation }) => ({ imageLocation, renderId }))
-    )
+      waitForRenderedStatus(renderId, () => false).then(({imageLocation}) => ({
+        imageLocation,
+        renderId,
+      })),
+    ),
   );
 
   return renderStatusResults;
