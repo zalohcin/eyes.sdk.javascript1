@@ -160,7 +160,7 @@ class DomCapture {
   }
 
   async getLocation() {
-    return await this._driver.executeScript(DOCUMENT_LOCATION_HREF_SCRIPT);
+    return this._driver.executeScript(DOCUMENT_LOCATION_HREF_SCRIPT);
   }
 
   /**
