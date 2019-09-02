@@ -34,7 +34,7 @@ describe('takeScreenshot e2e', () => {
     const processPageAndSerialize = `(${await getProcessPageAndSerializeScript()})()`;
     await page.goto(website);
     const {cdt, url, resourceUrls, blobs, frames} = await page.evaluate(processPageAndSerialize);
-    const [err, imageLocation] = await presult(
+    const [err, [{imageLocation, renderId}]] = await presult(
       takeScreenshot({
         apiKey,
         showLogs: process.env.APPLITOOLS_SHOW_LOGS,
@@ -50,6 +50,7 @@ describe('takeScreenshot e2e', () => {
 
     err && console.log(err);
     expect(err).to.be.undefined;
+    expect(renderId).to.not.be.undefined;
 
     console.log(imageLocation);
     expect(imageLocation).to.match(/https:\/\/.+/);
