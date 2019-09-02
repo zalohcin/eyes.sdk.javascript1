@@ -89,8 +89,6 @@ class Eyes extends EyesBase {
   /**
    * Perform visual validation for the current image.
    *
-   * Perform visual validation for the current image.
-   *
    * @signature `checkRegion(base64String, region, name, ignoreMismatch, retryTimeout)`
    * @sigparam {string} base64String - A base64 encoded image to use as the checkpoint image
    * @sigparam {Region|RegionObject} region - The region of the image which should be verified, or {undefined}/{null} if the
