@@ -200,6 +200,13 @@ class EyesVisualGrid extends Eyes {
   }
 
   /**
+   * @return {Promise}
+   */
+  async abortAsync() {
+    this._closePromise = this.abort();
+  }
+
+  /**
    * @inheritDoc
    */
   async check(name, checkSettings) {

@@ -408,6 +408,14 @@ class Eyes extends EyesBase {
     await this.close(false);
   }
 
+  // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
+  /**
+   * @return {Promise}
+   */
+  async abortAsync() {
+    await this.abort();
+  }
+
   /**
    * @return {Promise<RectangleSize>} - The viewport size of the AUT.
    */
