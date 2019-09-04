@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.27.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.26.4...@applitools/eyes-selenium@4.27.0) (2019-09-04)
+
+
+### Features
+
+* **eyes-selenium:** add `abortAsync` method ([5b78899](https://github.com/applitools/eyes.sdk.javascript1/commit/5b78899))
+
+
+
+
+
 ## [4.26.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.26.3...@applitools/eyes-selenium@4.26.4) (2019-09-02)
 
 
