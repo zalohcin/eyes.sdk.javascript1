@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.12.10](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.12.9...@applitools/eyes-images@4.12.10) (2019-09-04)
+
+
+### Bug Fixes
+
+* change list of exports, add more classes from eyes-sdk-core ([8da543c](https://github.com/applitools/eyes.sdk.javascript1/commit/8da543c))
+
+
+
+
+
 ## [4.12.9](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.12.8...@applitools/eyes-images@4.12.9) (2019-09-02)
 
 

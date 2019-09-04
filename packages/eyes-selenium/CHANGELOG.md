@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.28.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.27.1...@applitools/eyes-selenium@4.28.0) (2019-09-04)
+
+
+### Bug Fixes
+
+* change list of exports, add more classes from eyes-sdk-core ([8da543c](https://github.com/applitools/eyes.sdk.javascript1/commit/8da543c))
+
+
+### Features
+
+* **eyes-selenium:** send browser to `takeDomSnapshot` method ([ce63342](https://github.com/applitools/eyes.sdk.javascript1/commit/ce63342))
+
+
+
+
+
 ## [4.27.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.27.0...@applitools/eyes-selenium@4.27.1) (2019-09-04)
 
 **Note:** Version bump only for package @applitools/eyes-selenium
