@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.28.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.28.0...@applitools/eyes-selenium@4.28.1) (2019-09-05)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** fix double export of Configuration ([f6f5ac2](https://github.com/applitools/eyes.sdk.javascript1/commit/f6f5ac2))
+
+
+
+
+
 # [4.28.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.27.1...@applitools/eyes-selenium@4.28.0) (2019-09-04)
 
 
