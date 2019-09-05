@@ -72,7 +72,6 @@ exports.EyesVisualGrid = require('./lib/EyesVisualGrid').EyesVisualGrid;
 
 // eyes-common
 exports.EyesError = common.EyesError;
-exports.Configuration = common.Configuration;
 exports.PropertyData = common.PropertyData;
 exports.ProxySettings = common.ProxySettings;
 exports.BatchInfo = common.BatchInfo;
