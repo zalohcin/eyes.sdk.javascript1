@@ -65,7 +65,6 @@ function makeRenderingGridClient({
   agentId,
   fetchResourceTimeout = 120000,
   userAgent,
-  referrer,
 }) {
   const openEyesConcurrency = Number(concurrency);
 
@@ -171,7 +170,6 @@ function makeRenderingGridClient({
     eyesTransactionThroat,
     agentId,
     userAgent,
-    referrer,
   });
 
   return {

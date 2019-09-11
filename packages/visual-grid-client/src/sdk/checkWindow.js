@@ -25,6 +25,7 @@ function makeCheckWindow({
   stepCounter,
   testName,
   openEyesPromises,
+  fetchHeaders,
   matchLevel: _matchLevel,
 }) {
   return function checkWindow({
@@ -50,6 +51,7 @@ function makeCheckWindow({
     enablePatterns,
     ignoreDisplacements,
     source,
+    referrer,
   }) {
     if (target === 'window' && !fully) {
       sizeMode = 'viewport';
@@ -58,6 +60,7 @@ function makeCheckWindow({
     } else if (target === 'region' && region) {
       sizeMode = 'region';
     }
+    fetchHeaders['Referer'] = referrer;
 
     const currStepCount = ++stepCounter;
     logger.log(`running checkWindow for test ${testName} step #${currStepCount}`);
