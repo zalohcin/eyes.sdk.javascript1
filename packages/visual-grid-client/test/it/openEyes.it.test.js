@@ -1036,6 +1036,7 @@ describe('openEyes', () => {
       ignoreCaret: 'ignoreCaret',
       isDisabled: false,
       matchLevel: 'matchLevel',
+      accessibilityLevel: 'accessibilityLevel',
       parentBranchName: 'parentBranchName',
       branchName: 'branchName',
       saveFailedTests: 'saveFailedTests',
@@ -1054,6 +1055,7 @@ describe('openEyes', () => {
       expect(wrapper.ignoreCaret).to.equal('ignoreCaret');
       expect(wrapper.isDisabled).to.equal(false);
       expect(wrapper.matchLevel).to.equal('matchLevel');
+      expect(wrapper.accessibilityLevel).to.equal('accessibilityLevel');
       expect(wrapper.parentBranchName).to.equal('parentBranchName');
       expect(wrapper.branchName).to.equal('branchName');
       expect(wrapper.proxy).to.equal('proxy');
@@ -1091,6 +1093,7 @@ describe('openEyes', () => {
       ignoreCaret: 'ignoreCaret',
       isDisabled: false,
       matchLevel: 'matchLevel',
+      accessibilityLevel: 'accessibilityLevel',
       parentBranchName: 'parentBranchName',
       branchName: 'branchName',
       saveFailedTests: 'saveFailedTests',
@@ -1114,6 +1117,7 @@ describe('openEyes', () => {
       expect(wrapper.ignoreCaret).to.equal('ignoreCaret');
       expect(wrapper.isDisabled).to.equal(false);
       expect(wrapper.matchLevel).to.equal('matchLevel');
+      expect(wrapper.accessibilityLevel).to.equal('accessibilityLevel');
       expect(wrapper.parentBranchName).to.equal('parentBranchName');
       expect(wrapper.branchName).to.equal('branchName');
       expect(wrapper.proxy).to.equal('proxy');
@@ -1679,9 +1683,13 @@ describe('openEyes', () => {
   });
 
   it('sets matchLevel in checkWindow', async () => {
-    wrapper.checkWindow = async ({tag}) => {
+    wrapper.checkWindow = async ({tag, checkSettings}) => {
       await psetTimeout(20);
-      expect(wrapper.getMatchLevel()).to.equal(tag === 2 ? 'Layout' : 'Strict');
+      if (tag === 2) {
+        expect(checkSettings.getMatchLevel()).to.equal('Layout');
+      } else {
+        expect(wrapper.getMatchLevel()).to.equal('Strict');
+      }
       wrapper.setDummyTestResults();
     };
     const {checkWindow, close} = await openEyes({
@@ -1696,10 +1704,36 @@ describe('openEyes', () => {
     await close();
   });
 
-  it('sets matchLevel in checkWindow and override argument to openEyes', async () => {
-    wrapper.checkWindow = async ({tag}) => {
+  it('sets accessibilityLevel in checkWindow', async () => {
+    wrapper.checkWindow = async ({tag, checkSettings}) => {
       await psetTimeout(20);
-      expect(wrapper.getMatchLevel()).to.equal(tag === 2 ? 'Layout' : 'Content');
+      if (tag === 2) {
+        expect(checkSettings.getAccessibilityLevel()).to.equal('AA');
+      } else {
+        expect(wrapper.getAccessibilityLevel()).to.equal('None');
+      }
+      wrapper.setDummyTestResults();
+    };
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      appName,
+    });
+    checkWindow({tag: 1, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({accessibilityLevel: 'AA', tag: 2, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({tag: 3, cdt: [], url: ''});
+    await close();
+  });
+
+  it('sets matchLevel in checkWindow and override argument to openEyes', async () => {
+    wrapper.checkWindow = async ({tag, checkSettings}) => {
+      await psetTimeout(20);
+      if (tag === 2) {
+        expect(checkSettings.getMatchLevel()).to.equal('Layout');
+      } else {
+        expect(wrapper.getMatchLevel()).to.equal('Content');
+      }
       wrapper.setDummyTestResults();
     };
     const {checkWindow, close} = await openEyes({
@@ -1710,6 +1744,29 @@ describe('openEyes', () => {
     checkWindow({tag: 1, cdt: [], url: ''});
     await psetTimeout(0);
     checkWindow({matchLevel: 'Layout', tag: 2, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({tag: 3, cdt: [], url: ''});
+    await close();
+  });
+
+  it('sets accessibilityLevel in checkWindow and override argument to openEyes', async () => {
+    wrapper.checkWindow = async ({tag, checkSettings}) => {
+      await psetTimeout(20);
+      if (tag === 2) {
+        expect(checkSettings.getAccessibilityLevel()).to.equal('AAA');
+      } else {
+        expect(wrapper.getAccessibilityLevel()).to.equal('AA');
+      }
+      wrapper.setDummyTestResults();
+    };
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      appName,
+      accessibilityLevel: 'AA',
+    });
+    checkWindow({tag: 1, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({accessibilityLevel: 'AAA', tag: 2, cdt: [], url: ''});
     await psetTimeout(0);
     checkWindow({tag: 3, cdt: [], url: ''});
     await close();
@@ -1723,9 +1780,13 @@ describe('openEyes', () => {
       matchLevel: 'Content',
     }).openEyes;
 
-    wrapper.checkWindow = async ({tag}) => {
+    wrapper.checkWindow = async ({tag, checkSettings}) => {
       await psetTimeout(20);
-      expect(wrapper.getMatchLevel()).to.equal(tag === 2 ? 'Layout' : 'Content');
+      if (tag === 2) {
+        expect(checkSettings.getMatchLevel()).to.equal('Layout');
+      } else {
+        expect(wrapper.getMatchLevel()).to.equal('Content');
+      }
       wrapper.setDummyTestResults();
     };
     const {checkWindow, close} = await openEyes({
@@ -1736,6 +1797,36 @@ describe('openEyes', () => {
     checkWindow({tag: 1, cdt: [], url: ''});
     await psetTimeout(0);
     checkWindow({matchLevel: 'Layout', tag: 2, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({tag: 3, cdt: [], url: ''});
+    await close();
+  });
+
+  it('sets accessibilityLevel in checkWindow and override argument to makeRenderingGridClient', async () => {
+    openEyes = makeRenderingGridClient({
+      apiKey,
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      renderWrapper: wrapper,
+      accessibilityLevel: 'AA',
+    }).openEyes;
+
+    wrapper.checkWindow = async ({tag, checkSettings}) => {
+      await psetTimeout(20);
+      if (tag === 2) {
+        expect(checkSettings.getAccessibilityLevel()).to.equal('AAA');
+      } else {
+        expect(wrapper.getAccessibilityLevel()).to.equal('AA');
+      }
+      wrapper.setDummyTestResults();
+    };
+    const {checkWindow, close} = await openEyes({
+      apiKey,
+      wrappers: [wrapper],
+      appName,
+    });
+    checkWindow({tag: 1, cdt: [], url: ''});
+    await psetTimeout(0);
+    checkWindow({accessibilityLevel: 'AAA', tag: 2, cdt: [], url: ''});
     await psetTimeout(0);
     checkWindow({tag: 3, cdt: [], url: ''});
     await close();

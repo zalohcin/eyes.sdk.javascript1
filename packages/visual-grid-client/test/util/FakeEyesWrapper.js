@@ -55,6 +55,7 @@ class FakeEyesWrapper extends EventEmitter {
     this.baseUrl = 'http://fake';
     this.resultsRoute = '/results_url';
     this.matchLevel = 'Strict';
+    this.accessibilityLevel = 'None';
     this.closeErr = closeErr;
     this.failRender = failRender;
   }
@@ -276,6 +277,14 @@ class FakeEyesWrapper extends EventEmitter {
 
   getMatchLevel() {
     return this.matchLevel;
+  }
+
+  setAccessibilityLevel(value) {
+    this.accessibilityLevel = value;
+  }
+
+  getAccessibilityLevel() {
+    return this.accessibilityLevel;
   }
 
   setParentBranchName(value) {

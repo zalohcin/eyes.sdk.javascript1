@@ -30,6 +30,7 @@ function makeOpenEyes({
   ignoreCaret: _ignoreCaret,
   isDisabled: _isDisabled,
   matchLevel: _matchLevel,
+  accessibilityLevel: _accessibilityLevel,
   useDom: _useDom,
   enablePatterns: _enablePatterns,
   ignoreDisplacements: _ignoreDisplacements,
@@ -73,6 +74,7 @@ function makeOpenEyes({
     ignoreCaret = _ignoreCaret,
     isDisabled = _isDisabled,
     matchLevel = _matchLevel,
+    accessibilityLevel = _accessibilityLevel,
     useDom = _useDom,
     enablePatterns = _enablePatterns,
     ignoreDisplacements = _ignoreDisplacements,
@@ -128,6 +130,7 @@ function makeOpenEyes({
       envName,
       ignoreCaret,
       matchLevel,
+      accessibilityLevel,
       useDom,
       enablePatterns,
       ignoreDisplacements,
@@ -186,6 +189,7 @@ function makeOpenEyes({
       testName,
       openEyesPromises,
       matchLevel,
+      accessibilityLevel,
       fetchHeaders: headers,
     });
 

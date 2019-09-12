@@ -102,6 +102,7 @@ describe('Configuration', () => {
 
       assert.deepStrictEqual(configuration.toJSON().defaultMatchSettings, {
         matchLevel: 'Content',
+        accessibilityLevel: 'None',
         enablePatterns: true,
         ignoreDisplacements: true,
         ignoreCaret: false,

@@ -11,6 +11,8 @@ function createCheckSettings({
   enablePatterns,
   ignoreDisplacements,
   renderId,
+  matchLevel,
+  accessibilityLevel,
 }) {
   const checkSettings = new CheckSettings(0);
   setEachRegion(ignore, checkSettings.ignoreRegions.bind(checkSettings));
@@ -44,6 +46,12 @@ function createCheckSettings({
   }
   if (renderId !== undefined) {
     checkSettings.renderId(renderId);
+  }
+  if (matchLevel !== undefined) {
+    checkSettings.matchLevel(matchLevel);
+  }
+  if (accessibilityLevel !== undefined) {
+    checkSettings.accessibilityLevel(accessibilityLevel);
   }
 
   return checkSettings;

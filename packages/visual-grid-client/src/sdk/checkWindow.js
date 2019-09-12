@@ -27,6 +27,7 @@ function makeCheckWindow({
   openEyesPromises,
   fetchHeaders,
   matchLevel: _matchLevel,
+  accessibilityLevel: _accessibilityLevel,
 }) {
   return function checkWindow({
     resourceUrls = [],
@@ -45,6 +46,7 @@ function makeCheckWindow({
     floating,
     sendDom = true,
     matchLevel = _matchLevel,
+    accessibilityLevel = _accessibilityLevel,
     layout,
     strict,
     useDom,
@@ -217,6 +219,8 @@ function makeCheckWindow({
         enablePatterns,
         ignoreDisplacements,
         renderId,
+        matchLevel,
+        accessibilityLevel,
       });
 
       logger.verbose(
@@ -234,9 +238,6 @@ function makeCheckWindow({
         `running wrapper.checkWindow for test ${testName} stepCount #${currStepCount}`,
       );
 
-      const origMatchLevel = wrapper.getMatchLevel();
-      if (matchLevel !== undefined) wrapper.setMatchLevel(matchLevel);
-
       await wrapper.checkWindow({
         screenshotUrl,
         tag,
@@ -245,8 +246,6 @@ function makeCheckWindow({
         imageLocation,
         source,
       });
-
-      wrapper.setMatchLevel(origMatchLevel); // origMatchLevel cannot be undefined because eyes-sdk-core sets the default to MatchLevel.Strict
     }
 
     async function startRender() {

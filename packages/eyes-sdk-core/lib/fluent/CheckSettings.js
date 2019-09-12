@@ -22,6 +22,8 @@ class CheckSettings {
     this._sendDom = undefined;
     /** @type {MatchLevel} */
     this._matchLevel = undefined;
+    /** @type {AccessibilityLevel} */
+    this._accessibilityLevel = undefined;
     /** @type {boolean} */
     this._useDom = undefined;
     /** @type {boolean} */
@@ -169,6 +171,26 @@ class CheckSettings {
    */
   getMatchLevel() {
     return this._matchLevel;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Set the accessibilityLevel level for the screenshot.
+   *
+   * @param {AccessibilityLevel} accessibilityLevel - The accessibilityLevel level to use.
+   * @return {this} - This instance of the settings object.
+   */
+  accessibilityLevel(accessibilityLevel) {
+    this._accessibilityLevel = accessibilityLevel;
+    return this;
+  }
+
+  /**
+   * @ignore
+   * @return {AccessibilityLevel}
+   */
+  getAccessibilityLevel() {
+    return this._accessibilityLevel;
   }
 
   // noinspection JSUnusedGlobalSymbols
