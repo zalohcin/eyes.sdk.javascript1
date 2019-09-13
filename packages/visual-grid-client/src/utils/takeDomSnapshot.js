@@ -10,7 +10,7 @@ let captureScript;
 async function getScript() {
   if (!captureScript) {
     const processPageAndPollScript = await getProcessPageAndSerializePoll();
-    captureScript = `${processPageAndPollScript} return __processPageAndPoll();`;
+    captureScript = `${processPageAndPollScript} return __processPageAndSerializePoll();`;
   }
 
   return captureScript;
