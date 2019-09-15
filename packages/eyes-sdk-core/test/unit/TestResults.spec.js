@@ -34,9 +34,11 @@ describe('TestResults', () => {
       isAborted: false,
       defaultMatchSettings: {
         matchLevel: 'Strict',
+        accessibilityLevel: 'None',
         ignore: [],
         strict: [],
         content: [],
+        accessibility: [],
         layout: [],
         floating: [],
         splitTopHeight: 0,

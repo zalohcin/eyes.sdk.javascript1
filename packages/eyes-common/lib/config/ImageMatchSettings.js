@@ -31,10 +31,11 @@ class ImageMatchSettings {
    * @param {Region[]} [layout]
    * @param {Region[]} [strict]
    * @param {Region[]} [content]
+   * @param {AccessibilityMatchSettings[]} [accessibility]
    * @param {FloatingMatchSettings[]} [floating]
    * @param {AccessibilityLevel} [accessibilityLevel]
    */
-  constructor({ matchLevel, exact, ignoreCaret, useDom, enablePatterns, ignoreDisplacements, ignore, layout, strict, content, floating, accessibilityLevel } = {}) {
+  constructor({ matchLevel, exact, ignoreCaret, useDom, enablePatterns, ignoreDisplacements, ignore, layout, strict, content, accessibility, floating, accessibilityLevel } = {}) {
     if (arguments.length > 1) {
       throw new TypeError('Please, use object as a parameter to the constructor!');
     }
@@ -49,6 +50,7 @@ class ImageMatchSettings {
     ArgumentGuard.isArray(layout, 'layout', false);
     ArgumentGuard.isArray(strict, 'strict', false);
     ArgumentGuard.isArray(content, 'content', false);
+    ArgumentGuard.isArray(accessibility, 'accessibility', false);
     ArgumentGuard.isArray(floating, 'floating', false);
     ArgumentGuard.isValidType(exact, ExactMatchSettings, false);
 
@@ -68,6 +70,8 @@ class ImageMatchSettings {
     this._strictRegions = strict || [];
     /** @type {Region[]} */
     this._contentRegions = content || [];
+    /** @type {AccessibilityMatchSettings[]} */
+    this._accessibilityMatchSettings = accessibility || [];
     /** @type {FloatingMatchSettings[]} */
     this._floatingMatchSettings = floating || [];
   }
@@ -269,6 +273,24 @@ class ImageMatchSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * Sets an array of accessibility regions.
+   * @param {AccessibilityMatchSettings[]} accessibilityMatchSettings - The array of accessibility regions.
+   */
+  setAccessibilityRegions(accessibilityMatchSettings) {
+    this._accessibilityMatchSettings = accessibilityMatchSettings;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Returns an array of accessibility regions.
+   * @return {AccessibilityMatchSettings[]} - an array of accessibility regions.
+   */
+  getAccessibilityRegions() {
+    return this._accessibilityMatchSettings;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
    * Sets an array of floating regions.
    * @param {FloatingMatchSettings[]} floatingMatchSettings - The array of floating regions.
    */
@@ -285,6 +307,7 @@ class ImageMatchSettings {
       layoutRegions: 'layout',
       strictRegions: 'strict',
       contentRegions: 'content',
+      accessibilityMatchSettings: 'accessibility',
       floatingMatchSettings: 'floating',
     });
   }

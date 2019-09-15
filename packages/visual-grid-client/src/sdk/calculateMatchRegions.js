@@ -59,6 +59,9 @@ function calculateMatchRegions({
           maxRightOffset: selectorObj.maxRightOffset,
         });
       }
+      if (selectorObj.type) {
+        ret.type = selectorObj.type;
+      }
 
       return ret;
     } else {

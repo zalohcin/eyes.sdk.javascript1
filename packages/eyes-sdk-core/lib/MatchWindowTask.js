@@ -106,13 +106,17 @@ class MatchWindowTask {
    * @param {EyesScreenshot} screenshot
    * @return {Promise}
    */
-  async _collectFloatingRegions(checkSettings, imageMatchSettings, screenshot) {
+  async _collectCustomRegions(checkSettings, imageMatchSettings, screenshot) {
     const eyes = this._eyes;
-    const regionPromises = checkSettings.getFloatingRegions()
+    const floatingPromises = checkSettings.getFloatingRegions()
+      .map(container => container.getRegion(eyes, screenshot));
+    const accessibilityPromises = checkSettings.getAccessibilityRegions()
       .map(container => container.getRegion(eyes, screenshot));
 
-    const floatingRegions = await Promise.all(regionPromises);
-    imageMatchSettings.setFloatingRegions(floatingRegions);
+    const floatingPromise = Promise.all(floatingPromises).then(fr => imageMatchSettings.setFloatingRegions(fr));
+    const accessibilityPromise = Promise.all(accessibilityPromises).then(ar => imageMatchSettings.setAccessibilityRegions(ar));
+
+    await Promise.all([floatingPromise, accessibilityPromise]);
   }
 
   /**
@@ -165,7 +169,7 @@ class MatchWindowTask {
       });
 
       await this._collectSimpleRegions(checkSettings, imageMatchSettings, screenshot);
-      await this._collectFloatingRegions(checkSettings, imageMatchSettings, screenshot);
+      await this._collectCustomRegions(checkSettings, imageMatchSettings, screenshot);
     }
     return imageMatchSettings;
   }

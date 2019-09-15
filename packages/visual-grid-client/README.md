@@ -65,6 +65,7 @@ defined in the `browser` property of the configuraion.
   This is an object with `x`, `y`, `width`, `height` properties.
 * `ignore`: TBD
 * `floating`: TBD
+* `accessibility`: TBD
 * `strict`: TBD
 * `layout`: TBD
 * `sendDom`: TBD
@@ -78,6 +79,7 @@ defined in the `browser` property of the configuraion.
   * `type`: the content type of the resource.
   * `value`: a `Buffer` of the resource content.
 * `matchLevel`: The method to use when comparing two screenshots, which expresses the extent to which the two images are expected to match.
+* `accessibilityLevel`: The accessibility to use for the screenshots. Possible values are 'None', 'AA' and 'AAA'.
 
 ### close()
 

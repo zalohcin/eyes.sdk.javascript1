@@ -1,11 +1,13 @@
 'use strict';
 
-const { Region, GeneralUtils, MatchLevel, FloatingMatchSettings } = require('@applitools/eyes-common');
+const { Region, GeneralUtils, MatchLevel, FloatingMatchSettings, AccessibilityMatchSettings } = require('@applitools/eyes-common');
 
 const { GetRegion } = require('./GetRegion');
 const { IgnoreRegionByRectangle } = require('./IgnoreRegionByRectangle');
 const { FloatingRegionByRectangle } = require('./FloatingRegionByRectangle');
+const { AccessibilityRegionByRectangle } = require('./AccessibilityRegionByRectangle');
 const { GetFloatingRegion } = require('./GetFloatingRegion');
+const { GetAccessibilityRegion } = require('./GetAccessibilityRegion');
 
 /**
  * The Match settings object to use in the various Eyes.Check methods.
@@ -44,6 +46,7 @@ class CheckSettings {
     this._layoutRegions = [];
     this._strictRegions = [];
     this._contentRegions = [];
+    this._accessibilityRegions = [];
     this._floatingRegions = [];
   }
 
@@ -430,6 +433,36 @@ class CheckSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
+   * Adds an accessibility region. An accessibility region is a region that has an accessibility type.
+   *
+   * @param {GetAccessibilityRegion|Region|AccessibilityMatchSettings} regionOrContainer - The content rectangle or region
+   *   container
+   * @param {AccessibilityRegionType} [type] - Type of accessibility.
+   * @return {this} - This instance of the settings object.
+   */
+  accessibilityRegion(regionOrContainer, type) {
+    // noinspection IfStatementWithTooManyBranchesJS
+    if (regionOrContainer instanceof GetAccessibilityRegion) {
+      this._accessibilityRegions.push(regionOrContainer);
+    } else if (regionOrContainer instanceof AccessibilityMatchSettings) {
+      this._accessibilityRegions.push(new AccessibilityRegionByRectangle(
+        regionOrContainer.getRegion(),
+        regionOrContainer.getType()
+      ));
+    } else if (Region.isRegionCompatible(regionOrContainer)) {
+      this._accessibilityRegions.push(new AccessibilityRegionByRectangle(
+        new Region(regionOrContainer),
+        type
+      ));
+    } else {
+      throw new TypeError('Method called with argument of unknown type!');
+    }
+
+    return this;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger
    * region.
    *
@@ -519,6 +552,14 @@ class CheckSettings {
    */
   getContentRegions() {
     return this._contentRegions;
+  }
+
+  /**
+   * @ignore
+   * @return {GetAccessibilityRegion[]}
+   */
+  getAccessibilityRegions() {
+    return this._accessibilityRegions;
   }
 
   /**

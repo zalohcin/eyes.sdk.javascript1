@@ -1,12 +1,19 @@
 'use strict';
 
-const {CheckSettings, Region, GetRegion, GetFloatingRegion} = require('@applitools/eyes-sdk-core');
+const {
+  CheckSettings,
+  Region,
+  GetRegion,
+  GetFloatingRegion,
+  GetAccessibilityRegion,
+} = require('@applitools/eyes-sdk-core');
 
 function createCheckSettings({
   ignore,
   floating,
   layout,
   strict,
+  accessibility,
   useDom,
   enablePatterns,
   ignoreDisplacements,
@@ -35,6 +42,17 @@ function createCheckSettings({
       }
     }
   }
+  if (accessibility) {
+    accessibility = [].concat(accessibility);
+    for (const region of accessibility) {
+      if (region instanceof GetAccessibilityRegion) {
+        checkSettings.accessibilityRegion(region);
+      } else {
+        checkSettings.accessibilityRegion(new Region(region), region.type);
+      }
+    }
+  }
+
   if (useDom !== undefined) {
     checkSettings.useDom(useDom);
   }

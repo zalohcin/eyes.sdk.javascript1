@@ -31,6 +31,8 @@ const selectorsToLocations = {
   sel4: {x: 200, y: 201, width: 202, height: 203},
   sel5: {x: 300, y: 301, width: 302, height: 303},
   sel6: {x: 400, y: 401, width: 402, height: 403},
+  sel7: {x: 500, y: 501, width: 502, height: 503},
+  sel8: {x: 600, y: 601, width: 602, height: 603},
 };
 
 class FakeEyesWrapper extends EventEmitter {

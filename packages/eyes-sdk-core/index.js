@@ -36,7 +36,9 @@ exports.CheckTarget = require('./lib/fluent/CheckTarget').CheckTarget;
 exports.GetRegion = require('./lib/fluent/GetRegion').GetRegion;
 exports.IgnoreRegionByRectangle = require('./lib/fluent/IgnoreRegionByRectangle').IgnoreRegionByRectangle;
 exports.GetFloatingRegion = require('./lib/fluent/GetFloatingRegion').GetFloatingRegion;
+exports.GetAccessibilityRegion = require('./lib/fluent/GetAccessibilityRegion').GetAccessibilityRegion;
 exports.FloatingRegionByRectangle = require('./lib/fluent/FloatingRegionByRectangle').FloatingRegionByRectangle;
+exports.AccessibilityRegionByRectangle = require('./lib/fluent/AccessibilityRegionByRectangle').AccessibilityRegionByRectangle;
 exports.GetSelector = require('./lib/fluent/GetSelector').GetSelector;
 
 exports.AppOutput = require('./lib/match/AppOutput').AppOutput;

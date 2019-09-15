@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-const { Configuration, MatchLevel } = require('../../../index');
+const { Configuration, MatchLevel, AccessibilityLevel } = require('../../../index');
 
 describe('Configuration', () => {
   describe('constructor', () => {
@@ -71,6 +71,7 @@ describe('Configuration', () => {
       const configuration = new Configuration();
 
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Strict);
+      assert.strictEqual(configuration.getAccessibilityLevel(), AccessibilityLevel.None);
       assert.strictEqual(configuration.getIgnoreCaret(), true);
       assert.strictEqual(configuration.getUseDom(), false);
       assert.strictEqual(configuration.getEnablePatterns(), false);
@@ -80,12 +81,14 @@ describe('Configuration', () => {
     it('set values', () => {
       const configuration = new Configuration();
       configuration.setMatchLevel(MatchLevel.Content);
+      configuration.setAccessibilityLevel(AccessibilityLevel.AA);
       configuration.setIgnoreCaret(false);
       configuration.setUseDom(true);
       configuration.setEnablePatterns(true);
       configuration.setIgnoreDisplacements(true);
 
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content);
+      assert.strictEqual(configuration.getAccessibilityLevel(), AccessibilityLevel.AA);
       assert.strictEqual(configuration.getIgnoreCaret(), false);
       assert.strictEqual(configuration.getUseDom(), true);
       assert.strictEqual(configuration.getEnablePatterns(), true);
@@ -95,6 +98,7 @@ describe('Configuration', () => {
     it('to object', () => {
       const configuration = new Configuration();
       configuration.setMatchLevel(MatchLevel.Content);
+      configuration.setAccessibilityLevel(AccessibilityLevel.AA);
       configuration.setIgnoreCaret(false);
       configuration.setUseDom(true);
       configuration.setEnablePatterns(true);
@@ -102,13 +106,14 @@ describe('Configuration', () => {
 
       assert.deepStrictEqual(configuration.toJSON().defaultMatchSettings, {
         matchLevel: 'Content',
-        accessibilityLevel: 'None',
+        accessibilityLevel: 'AA',
         enablePatterns: true,
         ignoreDisplacements: true,
         ignoreCaret: false,
         useDom: true,
         ignore: [],
         content: [],
+        accessibility: [],
         layout: [],
         strict: [],
         floating: [],
@@ -120,6 +125,7 @@ describe('Configuration', () => {
       const configuration = new Configuration();
       configuration.setDefaultMatchSettings({
         matchLevel: 'Content',
+        accessibilityLevel: 'AA',
         enablePatterns: true,
         ignoreDisplacements: true,
         ignoreCaret: false,
@@ -133,6 +139,7 @@ describe('Configuration', () => {
       });
 
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content);
+      assert.strictEqual(configuration.getAccessibilityLevel(), AccessibilityLevel.AA);
       assert.strictEqual(configuration.getIgnoreCaret(), false);
       assert.strictEqual(configuration.getUseDom(), true);
       assert.strictEqual(configuration.getEnablePatterns(), true);
