@@ -115,6 +115,7 @@ class Eyes extends EyesBase {
     }
 
     this._configuration = configuration;
+    this._serverConnector._configuration = this._configuration;
   }
 
   // noinspection JSMethodCanBeStatic
