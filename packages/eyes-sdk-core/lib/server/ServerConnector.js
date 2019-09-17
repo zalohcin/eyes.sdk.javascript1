@@ -338,10 +338,10 @@ class ServerConnector {
   }
 
   /**
-   * Stops the running session.
+   * Stops the running batch sessions.
    *
-   * @param {string} batchId - The running session to be stopped.
-   * @return {Promise<TestResults>} - TestResults object for the stopped running session
+   * @param {string} batchId - The batchId to be stopped.
+   * @return {Promise<void>}
    */
   async deleteBatchSessions(batchId) {
     ArgumentGuard.notNull(batchId, 'batchId');
@@ -356,6 +356,7 @@ class ServerConnector {
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
       this._logger.verbose('ServerConnector.deleteBatchSessions - delete succeeded');
+      return;
     }
 
     throw new Error(`ServerConnector.deleteBatchSessions - unexpected status (${response.statusText})`);
