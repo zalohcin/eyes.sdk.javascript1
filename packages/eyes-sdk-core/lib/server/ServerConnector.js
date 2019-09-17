@@ -338,6 +338,30 @@ class ServerConnector {
   }
 
   /**
+   * Stops the running session.
+   *
+   * @param {string} batchId - The running session to be stopped.
+   * @return {Promise<TestResults>} - TestResults object for the stopped running session
+   */
+  async deleteBatchSessions(batchId) {
+    ArgumentGuard.notNull(batchId, 'batchId');
+    this._logger.verbose(`ServerConnector.deleteBatchSessions called for batchId: ${batchId}`);
+
+    const options = this._createHttpOptions({
+      method: 'DELETE',
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/batches', batchId, '/close'),
+    });
+
+    const response = await sendRequest(this, 'deleteBatchSessions', options);
+    const validStatusCodes = [HTTP_STATUS_CODES.OK];
+    if (validStatusCodes.includes(response.status)) {
+      this._logger.verbose('ServerConnector.deleteBatchSessions - delete succeeded');
+    }
+
+    throw new Error(`ServerConnector.deleteBatchSessions - unexpected status (${response.statusText})`);
+  }
+
+  /**
    * Deletes the given test result
    *
    * @param {TestResults} testResults - The session to delete by test results.
@@ -358,7 +382,7 @@ class ServerConnector {
     const response = await sendRequest(this, 'deleteSession', options);
     const validStatusCodes = [HTTP_STATUS_CODES.OK];
     if (validStatusCodes.includes(response.status)) {
-      this._logger.verbose('ServerConnector.deleteSession - post succeeded');
+      this._logger.verbose('ServerConnector.deleteSession - delete succeeded');
       return;
     }
 
