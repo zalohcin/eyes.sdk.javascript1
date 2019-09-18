@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.17.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.16.1...@applitools/eyes-sdk-core@5.17.0) (2019-09-18)
+
+
+### Features
+
+* **eyes-common, eyes-sdk-core, visual-grid-client:** Added accessibilityLevel to match request. ([df2a383](https://github.com/applitools/eyes.sdk.javascript1/commit/df2a383))
+* **eyes-common, eyes-sdk-core, visual-grid-client:** supporting accessibility regions to match request ([cc9ec8c](https://github.com/applitools/eyes.sdk.javascript1/commit/cc9ec8c))
+* **eyes-sdk-core:** add `deleteBatchSessions` request to ServerConnector ([0728e08](https://github.com/applitools/eyes.sdk.javascript1/commit/0728e08))
+
+
+
+
+
 ## [5.16.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.16.0...@applitools/eyes-sdk-core@5.16.1) (2019-09-04)
 
 

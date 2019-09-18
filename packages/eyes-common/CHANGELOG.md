@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.10.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.9.3...@applitools/eyes-common@3.10.0) (2019-09-18)
+
+
+### Bug Fixes
+
+* **eyes-common:** add `BATCH_NOTIFY` env var to set notifyOnCompletion value ([40f0bae](https://github.com/applitools/eyes.sdk.javascript1/commit/40f0bae))
+
+
+### Features
+
+* **eyes-common:** add `notifyOnCompletion` to `BatchInfo` ([bcffb40](https://github.com/applitools/eyes.sdk.javascript1/commit/bcffb40))
+* **eyes-common, eyes-sdk-core, visual-grid-client:** Added accessibilityLevel to match request. ([df2a383](https://github.com/applitools/eyes.sdk.javascript1/commit/df2a383))
+* **eyes-common, eyes-sdk-core, visual-grid-client:** supporting accessibility regions to match request ([cc9ec8c](https://github.com/applitools/eyes.sdk.javascript1/commit/cc9ec8c))
+
+
+
+
+
 ## [3.9.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.9.2...@applitools/eyes-common@3.9.3) (2019-09-04)
 
 **Note:** Version bump only for package @applitools/eyes-common

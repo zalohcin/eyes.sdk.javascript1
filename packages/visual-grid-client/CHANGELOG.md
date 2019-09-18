@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.30.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.28.3...@applitools/visual-grid-client@12.30.0) (2019-09-18)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** fixed cloesBatches error handleing ([2ccdb7e](https://github.com/applitools/eyes.sdk.javascript1/commit/2ccdb7e))
+* **visual-grid-client:** fixed dom snapshot process page function name in takeDomSnapshot ([be9c713](https://github.com/applitools/eyes.sdk.javascript1/commit/be9c713))
+* **visual-grid-client:** now referrer is per checkWindow ([4998285](https://github.com/applitools/eyes.sdk.javascript1/commit/4998285))
+* **visual-grid-client:** render script fix ([aaa6828](https://github.com/applitools/eyes.sdk.javascript1/commit/aaa6828))
+* **visual-grid-client:** updated ds to new script names ([dadd163](https://github.com/applitools/eyes.sdk.javascript1/commit/dadd163))
+
+
+### Features
+
+* **eyes-common, eyes-sdk-core, visual-grid-client:** Added accessibilityLevel to match request. ([df2a383](https://github.com/applitools/eyes.sdk.javascript1/commit/df2a383))
+* **eyes-common, eyes-sdk-core, visual-grid-client:** supporting accessibility regions to match request ([cc9ec8c](https://github.com/applitools/eyes.sdk.javascript1/commit/cc9ec8c))
+* **visual-grid-client:** added closeBatch request and notifyOnCompletion flag ([a1ee92d](https://github.com/applitools/eyes.sdk.javascript1/commit/a1ee92d))
+* **visual-grid-client:** added referrer to openEyes and ctr ([5906063](https://github.com/applitools/eyes.sdk.javascript1/commit/5906063))
+* **visual-grid-client:** use correct script to make DOM snapshot in IE ([543d38e](https://github.com/applitools/eyes.sdk.javascript1/commit/543d38e))
+
+
+
+
+
 ## [12.28.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.28.2...@applitools/visual-grid-client@12.28.3) (2019-09-04)
 
 **Note:** Version bump only for package @applitools/visual-grid-client

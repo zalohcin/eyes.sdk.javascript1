@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.29.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.28.1...@applitools/eyes-selenium@4.29.0) (2019-09-18)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** update ServerConnector's configuration when using `setConfiguration` method ([58f895f](https://github.com/applitools/eyes.sdk.javascript1/commit/58f895f))
+
+
+### Features
+
+* **eyes-selenium:** close batches on `getAllTestResults` ([94c3ffb](https://github.com/applitools/eyes.sdk.javascript1/commit/94c3ffb))
+
+
+
+
+
 ## [4.28.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.28.0...@applitools/eyes-selenium@4.28.1) (2019-09-05)
 
 
