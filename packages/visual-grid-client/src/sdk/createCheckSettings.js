@@ -48,7 +48,7 @@ function createCheckSettings({
       if (region instanceof GetAccessibilityRegion) {
         checkSettings.accessibilityRegion(region);
       } else {
-        checkSettings.accessibilityRegion(new Region(region), region.type);
+        checkSettings.accessibilityRegion(new Region(region), region.accessibilityType);
       }
     }
   }

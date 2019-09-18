@@ -1197,7 +1197,7 @@ describe('openEyes', () => {
       appName,
     });
     const region = {left: 1, top: 2, width: 3, height: 4};
-    const region2 = {left: 11, top: 22, width: 33, height: 44, type: 'LargeText'};
+    const region2 = {left: 11, top: 22, width: 33, height: 44, accessibilityType: 'LargeText'};
     checkWindow({
       url: '',
       // resourceUrls: [],
@@ -1212,7 +1212,7 @@ describe('openEyes', () => {
       new IgnoreRegionByRectangle(new Region(region)),
     ]);
     expect(r.__checkSettings.getAccessibilityRegions()).to.eql([
-      new AccessibilityRegionByRectangle(new Region(region2), region2.type),
+      new AccessibilityRegionByRectangle(new Region(region2), region2.accessibilityType),
     ]);
   });
 
@@ -1275,7 +1275,7 @@ describe('openEyes', () => {
       height: regionStrict1FromStatusResults.height,
     });
 
-    const accessibilitySelector1 = {selector: 'sel4', type: 'LargeText'};
+    const accessibilitySelector1 = {selector: 'sel4', accessibilityType: 'LargeText'};
     const regionAaccessibility1FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel4'];
     const regionAccessibility1 = new Region({
       left: regionAaccessibility1FromStatusResults.x,
@@ -1311,7 +1311,7 @@ describe('openEyes', () => {
       height: regionStrict2FromStatusResults.height,
     });
 
-    const accessibilitySelector2 = {selector: 'sel8', type: 'RegularText'};
+    const accessibilitySelector2 = {selector: 'sel8', accessibilityType: 'RegularText'};
     const regionAaccessibility2FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel8'];
     const regionAccessibility2 = new Region({
       left: regionAaccessibility2FromStatusResults.x,
@@ -1364,12 +1364,12 @@ describe('openEyes', () => {
       top: 2000,
       width: 3000,
       height: 4000,
-      type: 'LargeText',
+      accessibilityType: 'LargeText',
     };
     const ignoreSelector = {selector: 'sel2'};
     const layoutSelector = {selector: 'sel1'};
     const strictSelector = {selector: 'sel3'};
-    const accessibilitySelector = {selector: 'sel4', type: 'RegularText'};
+    const accessibilitySelector = {selector: 'sel4', accessibilityType: 'RegularText'};
     const imageOffset = FakeEyesWrapper.selectorsToLocations[selector];
     const expectedIgnoreSelectorRegion = FakeEyesWrapper.selectorsToLocations['sel2'];
     const expectedLayoutSelectorRegion = FakeEyesWrapper.selectorsToLocations['sel1'];
@@ -1452,12 +1452,12 @@ describe('openEyes', () => {
       top: 2000,
       width: 3000,
       height: 4000,
-      type: 'LargeText',
+      accessibilityType: 'LargeText',
     };
     const ignoreSelector = {selector: 'sel2'};
     const layoutSelector = {selector: 'sel1'};
     const strictSelector = {selector: 'sel3'};
-    const accessibilitySelector = {selector: 'sel4', type: 'RegularText'};
+    const accessibilitySelector = {selector: 'sel4', accessibilityType: 'RegularText'};
     const imageOffset = FakeEyesWrapper.selectorsToLocations[selector];
     const expectedIgnoreSelectorRegion = FakeEyesWrapper.selectorsToLocations['sel2'];
     const expectedLayoutSelectorRegion = FakeEyesWrapper.selectorsToLocations['sel1'];

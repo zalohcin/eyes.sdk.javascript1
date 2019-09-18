@@ -46,7 +46,7 @@ describe('calculateMatchRegions', () => {
   });
 
   it('handles single no-offset region with type', () => {
-    const accessibility = {bla: 'kuku', type: 'RegularText'};
+    const accessibility = {bla: 'kuku', accessibilityType: 'RegularText'};
     expect(
       calculateMatchRegions({
         noOffsetSelectors: [undefined, undefined, undefined, accessibility],
@@ -73,8 +73,8 @@ describe('calculateMatchRegions', () => {
   });
 
   it('handles single no-offset with order region and types', () => {
-    const a1 = {bla: 'kuku', type: 'LargeText'};
-    const a2 = {bla: 'kuku', type: 'RegularText'};
+    const a1 = {bla: 'kuku', accessibilityType: 'LargeText'};
+    const a2 = {bla: 'kuku', accessibilityType: 'RegularText'};
     expect(
       calculateMatchRegions({
         noOffsetSelectors: [undefined, undefined, a2, a1],
@@ -87,8 +87,8 @@ describe('calculateMatchRegions', () => {
   });
 
   it('handles no-offset exact region with order region and types', () => {
-    const a1 = {top: 100, left: 0, width: 1000, height: 100, type: 'LargeText'};
-    const a2 = {top: 2, left: 2, width: 2, height: 2, type: 'RegularText'};
+    const a1 = {top: 100, left: 0, width: 1000, height: 100, accessibilityType: 'LargeText'};
+    const a2 = {top: 2, left: 2, width: 2, height: 2, accessibilityType: 'RegularText'};
     expect(
       calculateMatchRegions({
         noOffsetSelectors: [undefined, undefined, a1, a2],

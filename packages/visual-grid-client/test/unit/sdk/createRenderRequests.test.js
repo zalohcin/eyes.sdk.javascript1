@@ -173,8 +173,8 @@ describe('createRenderRequests', () => {
     const strict = ['kuku3', {selector: 'bla3'}, {selector: 'bla4'}];
     const accessibility = [
       'kuku4',
-      {selector: 'bla5', type: 'RegularText'},
-      {selector: 'bla6', type: 'LargeText'},
+      {selector: 'bla5', accessibilityType: 'RegularText'},
+      {selector: 'bla6', accessibilityType: 'LargeText'},
     ];
     const floating = [{some: 'thing'}, {selector: 'sel'}];
     const renderRequests = createRenderRequests({
