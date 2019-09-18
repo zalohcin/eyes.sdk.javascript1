@@ -1,7 +1,7 @@
 /* global fetch */
 'use strict';
 
-const {Logger} = require('@applitools/eyes-common');
+const {Logger, BatchInfo} = require('@applitools/eyes-common');
 
 const throatPkg = require('throat');
 const makeGetAllResources = require('./getAllResources');
@@ -14,7 +14,6 @@ const makePutResources = require('./putResources');
 const makeRenderBatch = require('./renderBatch');
 const makeOpenEyes = require('./openEyes');
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping');
-const getBatch = require('./getBatch');
 const transactionThroat = require('./transactionThroat');
 const getRenderMethods = require('./getRenderMethods');
 const {ptimeoutWithError} = require('@applitools/functional-commons');
@@ -40,9 +39,7 @@ function makeRenderingGridClient({
   browser = {width: 1024, height: 768},
   apiKey,
   saveDebugData,
-  batchSequenceName,
-  batchName,
-  batchId,
+  batch,
   properties,
   baselineBranchName,
   baselineEnvName,
@@ -127,20 +124,14 @@ function makeRenderingGridClient({
     getAllResources,
   });
 
-  const {
-    batchId: defaultBatchId,
-    batchName: defaultBatchName,
-    batchSequenceName: defaultBatchSequenceName,
-  } = getBatch({batchSequenceName, batchName, batchId});
+  const defaultBatch = new BatchInfo(batch);
 
   const openEyes = makeOpenEyes({
     appName,
     browser,
     apiKey,
     saveDebugData,
-    batchSequenceName: defaultBatchSequenceName,
-    batchName: defaultBatchName,
-    batchId: defaultBatchId,
+    batch: defaultBatch,
     properties,
     baselineBranchName,
     baselineEnvName,

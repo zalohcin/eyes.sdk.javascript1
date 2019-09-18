@@ -26,7 +26,7 @@ const debug = require('debug')('eyes:render');
   const {checkWindow, close} = await openEyes({
     appName: 'render script',
     testName: `render script ${website}`,
-    batchName: 'Render VGC',
+    batch: {name: 'Render VGC'},
     browser: [{width: 1024, height: 768, name: 'chrome'}],
   });
 

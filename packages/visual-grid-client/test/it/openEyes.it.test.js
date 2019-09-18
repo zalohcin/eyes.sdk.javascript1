@@ -124,9 +124,7 @@ describe('openEyes', () => {
     const batchId = `some batch ID ${Date.now()}`;
     await openEyes({
       wrappers: [wrapper],
-      batchSequenceName,
-      batchName,
-      batchId,
+      batch: {id: batchId, name: batchName, sequenceName: batchSequenceName},
       appName,
     });
 
