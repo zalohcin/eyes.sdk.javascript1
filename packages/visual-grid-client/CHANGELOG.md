@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.31.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.30.0...@applitools/visual-grid-client@12.31.0) (2019-09-18)
+
+
+### Features
+
+* **visual-grid-client:** added new params to configParams export ([d2f11e1](https://github.com/applitools/eyes.sdk.javascript1/commit/d2f11e1))
+
+
+
+
+
 # [12.30.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.28.3...@applitools/visual-grid-client@12.30.0) (2019-09-18)
 
 
