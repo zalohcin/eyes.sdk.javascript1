@@ -106,6 +106,10 @@ class EyesWrapper extends EyesBase {
     super.setProxy(proxy);
   }
 
+  setInferredEnvironment(value) {
+    this.inferredEnvironment = value;
+  }
+
   async getScreenshot() {
     return;
   }
@@ -116,10 +120,6 @@ class EyesWrapper extends EyesBase {
 
   async getInferredEnvironment() {
     return this.inferredEnvironment;
-  }
-
-  setInferredEnvironment(value) {
-    this.inferredEnvironment = value;
   }
 
   async setViewportSize(viewportSize) {
@@ -137,6 +137,15 @@ class EyesWrapper extends EyesBase {
 
   async getImageLocation() {
     return this.imageLocation;
+  }
+
+  async closeBatch() {
+    const batchId = this.getBatch() && this.getBatch().getId();
+    if (!batchId) {
+      this._logger.log('cannot closeBatch since no batch ID found.');
+      return;
+    }
+    this._serverConnector.deleteBatchSessions(batchId);
   }
 }
 

@@ -54,6 +54,7 @@ function makeOpenEyes({
   getHandledRenderInfoPromise,
   getRenderInfo,
   agentId,
+  notifyOnCompletion: _notifyOnCompletion,
 }) {
   return async function openEyes({
     testName,
@@ -84,6 +85,7 @@ function makeOpenEyes({
     saveNewTests = _saveNewTests,
     compareWithParentBranch = _compareWithParentBranch,
     ignoreBaseline = _ignoreBaseline,
+    notifyOnCompletion = _notifyOnCompletion,
   }) {
     logger.verbose(`openEyes: testName=${testName}, browser=`, browser);
 
@@ -144,6 +146,7 @@ function makeOpenEyes({
       serverUrl,
       agentId,
       assumeEnvironment,
+      notifyOnCompletion,
     });
 
     const renderInfoPromise =

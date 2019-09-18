@@ -49,7 +49,12 @@ function makeClose({
         didError = true;
         return closeError;
       }
-    }).then(results => (didError ? settleError(results) : results));
+    }).then(async results => {
+      const cloesBatches = Promise.all(wrappers.map(w => w.closeBatch()));
+      const err = await presult(cloesBatches)[0];
+      err && logger.log('failed to close batches', err);
+      return didError ? settleError(results) : results;
+    });
   };
 }
 

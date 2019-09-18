@@ -1046,6 +1046,7 @@ describe('openEyes', () => {
       ignoreBaseline: 'ignoreBaseline',
       browser: [{deviceName: 'device1'}, {deviceName: 'device2'}, {}],
       agentId: 'agentId',
+      notifyOnCompletion: true,
     });
 
     for (const wrapper of wrappers) {
@@ -1066,6 +1067,7 @@ describe('openEyes', () => {
       expect(wrapper.ignoreBaseline).to.equal('ignoreBaseline');
       expect(wrapper.serverUrl).to.equal('serverUrl');
       expect(wrapper.agentId).to.equal('agentId');
+      expect(wrapper.batch.getNotifyOnCompletion()).to.be.true;
     }
 
     expect(wrappers[0].deviceInfo).to.equal('device1 (Chrome emulation)');

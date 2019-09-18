@@ -66,6 +66,7 @@ function makeRenderingGridClient({
   agentId,
   fetchResourceTimeout = 120000,
   userAgent,
+  notifyOnCompletion,
 }) {
   const openEyesConcurrency = Number(concurrency);
 
@@ -172,6 +173,7 @@ function makeRenderingGridClient({
     eyesTransactionThroat,
     agentId,
     userAgent,
+    notifyOnCompletion,
   });
 
   return {

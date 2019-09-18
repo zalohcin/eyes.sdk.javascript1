@@ -18,9 +18,10 @@ const debug = require('debug')('eyes:render');
   console.log('checking website:', website);
 
   const {openEyes} = makeVisualGridClient({
-    apiKey: process.env.APPLITOOLS_API_KEY,
+    apiKey: 'RjKIGSkTH106C4fFUfD5NeJFV105jsEeESyapMZYUTLrYGE110',
     logger: new Logger(!!process.env.APPLITOOLS_SHOW_LOGS, 'eyes:vgc'),
     proxy: process.env.APPLITOOLS_PROXY,
+    serverUrl: 'https://eyesfabric4eyes.applitools.com',
   });
 
   const {checkWindow, close} = await openEyes({
@@ -28,6 +29,7 @@ const debug = require('debug')('eyes:render');
     testName: `render script ${website}`,
     batchName: 'Render VGC',
     browser: [{width: 1024, height: 768, name: 'chrome'}],
+    notifyOnCompletion: true,
   });
 
   debug('open done');

@@ -51,8 +51,14 @@ function configureWrappers({
   enablePatterns,
   ignoreDisplacements,
   assumeEnvironment,
+  notifyOnCompletion,
 }) {
-  const batchInfo = new BatchInfo({id: batchId, name: batchName, sequenceName: batchSequenceName});
+  const batchInfo = new BatchInfo({
+    id: batchId,
+    name: batchName,
+    sequenceName: batchSequenceName,
+    notifyOnCompletion,
+  });
 
   for (let i = 0, ii = wrappers.length; i < ii; i++) {
     const wrapper = wrappers[i];
