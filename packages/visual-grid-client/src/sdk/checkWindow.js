@@ -8,6 +8,7 @@ const saveData = require('../troubleshoot/saveData');
 const createRenderRequests = require('./createRenderRequests');
 const createCheckSettings = require('./createCheckSettings');
 const calculateMatchRegions = require('./calculateMatchRegions');
+const isInvalidAccessibility = require('./isInvalidAccessibility');
 
 function makeCheckWindow({
   testController,
@@ -64,6 +65,12 @@ function makeCheckWindow({
       sizeMode = 'region';
     }
     fetchHeaders['Referer'] = referrer;
+
+    const accErr = isInvalidAccessibility(accessibility);
+    if (accErr) {
+      testController.setFatalError(`Invalid accessibility:\n${accErr}`);
+      return;
+    }
 
     const currStepCount = ++stepCounter;
     logger.log(`running checkWindow for test ${testName} step #${currStepCount}`);
