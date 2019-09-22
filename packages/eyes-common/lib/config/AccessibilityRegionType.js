@@ -8,15 +8,11 @@
  */
 const AccessibilityRegionType = {
   None: 'None',
+  IgnoreContrast: 'IgnoreContrast',
   RegularText: 'RegularText',
   LargeText: 'LargeText',
   BoldText: 'BoldText',
-  EssentialImage: 'EssentialImage',
-  DisabledOrInactive: 'DisabledOrInactive',
-  NonEssentialImage: 'NonEssentialImage',
-  Logo: 'Logo',
-  Background: 'Background',
-  Ignore: 'Ignore',
+  GraphicalObject: 'GraphicalObject',
 };
 
 Object.freeze(AccessibilityRegionType);
