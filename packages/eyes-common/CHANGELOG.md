@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.10.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.10.1...@applitools/eyes-common@3.10.2) (2019-09-22)
+
+
+### Bug Fixes
+
+* **eyes-common:** changed accessibilityRegionType API - removed None. ([b510014](https://github.com/applitools/eyes.sdk.javascript1/commit/b510014))
+
+
+
+
+
 ## [3.10.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.10.0...@applitools/eyes-common@3.10.1) (2019-09-22)
 
 
