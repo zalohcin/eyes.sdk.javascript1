@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.5.39](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core-browser@4.5.38...@applitools/eyes-sdk-core-browser@4.5.39) (2019-09-22)
+
+**Note:** Version bump only for package @applitools/eyes-sdk-core-browser
+
+
+
+
+
 ## [4.5.38](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core-browser@4.5.37...@applitools/eyes-sdk-core-browser@4.5.38) (2019-09-18)
 
 **Note:** Version bump only for package @applitools/eyes-sdk-core-browser

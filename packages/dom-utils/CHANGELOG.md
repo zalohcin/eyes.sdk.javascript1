@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.6.31](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.6.30...@applitools/dom-utils@4.6.31) (2019-09-22)
+
+**Note:** Version bump only for package @applitools/dom-utils
+
+
+
+
+
 ## [4.6.30](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.6.29...@applitools/dom-utils@4.6.30) (2019-09-18)
 
 **Note:** Version bump only for package @applitools/dom-utils

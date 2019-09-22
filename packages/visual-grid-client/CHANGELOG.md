@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [12.32.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.32.0...@applitools/visual-grid-client@12.32.1) (2019-09-22)
+
+**Note:** Version bump only for package @applitools/visual-grid-client
+
+
+
+
+
 # [12.32.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.31.1...@applitools/visual-grid-client@12.32.0) (2019-09-19)
 
 
