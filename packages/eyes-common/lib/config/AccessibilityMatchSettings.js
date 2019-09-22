@@ -14,13 +14,13 @@ class AccessibilityMatchSettings {
    * @param {number} top
    * @param {number} width
    * @param {number} height
-   * @param {AccessibilityRegionType} type
+   * @param {AccessibilityRegionType} [type]
    */
   constructor({ left, top, width, height, type } = {}) {
     if (arguments.length > 1) {
       throw new TypeError('Please, use object as a parameter to the constructor!');
     }
-    ArgumentGuard.isValidEnumValue(type, AccessibilityRegionType);
+    ArgumentGuard.isValidEnumValue(type, AccessibilityRegionType, false);
 
     this._left = left;
     this._top = top;

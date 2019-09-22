@@ -159,7 +159,13 @@ describe('createCheckSettings', () => {
     const err = await Promise.resolve()
       .then(() =>
         createCheckSettings({
-          accessibility: {left: 1000, top: 2000, width: 3000, height: 4000, type: 'bla'},
+          accessibility: {
+            left: 1000,
+            top: 2000,
+            width: 3000,
+            height: 4000,
+            accessibilityType: 'bla',
+          },
         }),
       )
       .then(x => x, err => err);

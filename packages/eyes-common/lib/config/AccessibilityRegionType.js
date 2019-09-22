@@ -7,7 +7,6 @@
  * @enum {string}
  */
 const AccessibilityRegionType = {
-  None: 'None',
   IgnoreContrast: 'IgnoreContrast',
   RegularText: 'RegularText',
   LargeText: 'LargeText',

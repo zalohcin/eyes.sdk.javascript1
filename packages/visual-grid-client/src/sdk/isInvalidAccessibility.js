@@ -7,15 +7,13 @@ function isInvalidAccessibility(accessibility = []) {
   const err = [];
   const typeMsg = `Valid accessibilityType values are: ${Object.values(AccessibilityRegionType)}`;
   for (const acc of accObjects) {
-    if (!acc.accessibilityType) {
-      err.push(`The region ${JSON.stringify(acc)} is missing accessibilityType.`);
-    } else if (!TypeUtils.has(AccessibilityRegionType, acc.accessibilityType)) {
+    if (acc.accessibilityType && !TypeUtils.has(AccessibilityRegionType, acc.accessibilityType)) {
       err.push(
         `The region ${JSON.stringify(acc)} has an invalid accessibilityType of: ${
           acc.accessibilityType
         } `,
       );
-      !err.includes(typeMsg) && err.push(typeMsg);
+      !err.length && err.unshift(typeMsg);
     }
   }
   return err.join('\n');

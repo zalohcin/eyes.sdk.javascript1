@@ -9,11 +9,11 @@ const { GetAccessibilityRegion } = require('./GetAccessibilityRegion');
 class AccessibilityRegionByRectangle extends GetAccessibilityRegion {
   /**
    * @param {Region} rect
-   * @param {AccessibilityRegionType} type
+   * @param {AccessibilityRegionType} [type]
    */
   constructor(rect, type) {
     super();
-    ArgumentGuard.isValidEnumValue(type, AccessibilityRegionType);
+    ArgumentGuard.isValidEnumValue(type, AccessibilityRegionType, false);
     this._rect = rect;
     this._type = type;
   }
