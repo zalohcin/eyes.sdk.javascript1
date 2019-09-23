@@ -22,15 +22,16 @@ class EyesRunner {
    */
   async _closeAllBatches() {
     if (this._eyesInstances.length > 0) {
+      const promises = [];
       const batchIds = new Set();
       for (const eyesInstance of this._eyesInstances) {
         const batchId = eyesInstance.getBatch().getId();
         if (!batchIds.has(batchId)) {
           batchIds.add(batchId);
+          promises.push(eyesInstance.closeBatch());
         }
       }
 
-      const promises = Array.from(batchIds).map(batchId => this._eyesInstances[0]._serverConnector.deleteBatchSessions(batchId));
       await Promise.all(promises);
     }
   }
