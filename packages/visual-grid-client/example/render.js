@@ -18,10 +18,9 @@ const debug = require('debug')('eyes:render');
   console.log('checking website:', website);
 
   const {openEyes} = makeVisualGridClient({
-    apiKey: 'RjKIGSkTH106C4fFUfD5NeJFV105jsEeESyapMZYUTLrYGE110',
+    apiKey: process.env.APPLITOOLS_API_KEY,
     logger: new Logger(!!process.env.APPLITOOLS_SHOW_LOGS, 'eyes:vgc'),
     proxy: process.env.APPLITOOLS_PROXY,
-    serverUrl: 'https://eyesfabric4eyes.applitools.com',
   });
 
   const {checkWindow, close} = await openEyes({
