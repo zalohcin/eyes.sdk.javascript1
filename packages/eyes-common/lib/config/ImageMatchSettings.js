@@ -307,8 +307,8 @@ class ImageMatchSettings {
       layoutRegions: 'layout',
       strictRegions: 'strict',
       contentRegions: 'content',
-      accessibilityMatchSettings: 'accessibility',
       floatingMatchSettings: 'floating',
+      accessibilityMatchSettings: 'accessibility',
     });
   }
 

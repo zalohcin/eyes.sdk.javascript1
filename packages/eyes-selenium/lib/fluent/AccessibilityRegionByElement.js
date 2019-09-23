@@ -1,7 +1,7 @@
 'use strict';
 
-const { Location, CoordinatesType, RectangleSize, Region } = require('@applitools/eyes-common');
-const { GetAccessibilityRegion, AccessibilityRegionByRectangle } = require('@applitools/eyes-sdk-core');
+const { Location, CoordinatesType } = require('@applitools/eyes-common');
+const { GetAccessibilityRegion, AccessibilityMatchSettings } = require('@applitools/eyes-sdk-core');
 
 /**
  * @ignore
@@ -22,13 +22,23 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
    * @inheritDoc
    * @param {Eyes} eyes
    * @param {EyesScreenshot} screenshot
-   * @return {Promise<AccessibilityRegionByRectangle[]>}
+   * @return {Promise<AccessibilityMatchSettings>}
    */
   async getRegion(eyes, screenshot) {
     const rect = await this._element.getRect();
-    const pTag = screenshot.convertLocation(new Location(rect), CoordinatesType.CONTEXT_RELATIVE, CoordinatesType.SCREENSHOT_AS_IS);
-    const accessibilityRegion = new Region(pTag, new RectangleSize(rect.width, rect.height));
-    return new AccessibilityRegionByRectangle(accessibilityRegion, this._regionType);
+    const pTag = screenshot.convertLocation(
+      new Location(rect),
+      CoordinatesType.CONTEXT_RELATIVE,
+      CoordinatesType.SCREENSHOT_AS_IS
+    );
+
+    return new AccessibilityMatchSettings({
+      left: pTag.getX(),
+      top: pTag.getY(),
+      width: rect.width,
+      height: rect.height,
+      type: this._regionType,
+    });
   }
 }
 

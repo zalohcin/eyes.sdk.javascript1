@@ -2,7 +2,7 @@
 
 require('chromedriver'); // eslint-disable-line node/no-unpublished-require
 const { Builder, Capabilities, By } = require('selenium-webdriver');
-const { Eyes, Target, ConsoleLogHandler, BatchInfo } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
+const { Eyes, Target, ConsoleLogHandler, BatchInfo, AccessibilityRegionType, AccessibilityLevel } = require('../index'); // should be replaced to '@applitools/eyes-selenium'
 
 (async () => {
   // Open a Chrome browser.
@@ -16,6 +16,8 @@ const { Eyes, Target, ConsoleLogHandler, BatchInfo } = require('../index'); // s
   // eyes.setApiKey('Your API Key');
   eyes.setLogHandler(new ConsoleLogHandler(false));
   // eyes.setProxy('http://localhost:8888');
+  // eyes.setApiKey('RjKIGSkTH106C4fFUfD5NeJFV105jsEeESyapMZYUTLrYGE110');
+  // eyes.setServerUrl('https://eyesfabric4eyes.applitools.com');
 
   const batchInfo = new BatchInfo();
   batchInfo.setSequenceName('alpha sequence');
@@ -29,7 +31,9 @@ const { Eyes, Target, ConsoleLogHandler, BatchInfo } = require('../index'); // s
     await driver.get('https://applitools.com/helloworld');
 
     // Visual checkpoint #1.
-    await eyes.check('Main Page', Target.window());
+    await eyes.check('Main Page', Target.window()
+      .accessibilityLevel(AccessibilityLevel.AAA)
+      .accessibilityRegion(By.css('button'), AccessibilityRegionType.RegularText));
 
     // Click the "Click me!" button.
     await driver.findElement(By.css('button')).click();

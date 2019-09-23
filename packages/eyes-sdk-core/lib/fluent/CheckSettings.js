@@ -46,8 +46,8 @@ class CheckSettings {
     this._layoutRegions = [];
     this._strictRegions = [];
     this._contentRegions = [];
-    this._accessibilityRegions = [];
     this._floatingRegions = [];
+    this._accessibilityRegions = [];
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -433,36 +433,6 @@ class CheckSettings {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Adds an accessibility region. An accessibility region is a region that has an accessibility type.
-   *
-   * @param {GetAccessibilityRegion|Region|AccessibilityMatchSettings} regionOrContainer - The content rectangle or region
-   *   container
-   * @param {AccessibilityRegionType} [regionType] - Type of accessibility.
-   * @return {this} - This instance of the settings object.
-   */
-  accessibilityRegion(regionOrContainer, regionType) {
-    // noinspection IfStatementWithTooManyBranchesJS
-    if (regionOrContainer instanceof GetAccessibilityRegion) {
-      this._accessibilityRegions.push(regionOrContainer);
-    } else if (regionOrContainer instanceof AccessibilityMatchSettings) {
-      this._accessibilityRegions.push(new AccessibilityRegionByRectangle(
-        regionOrContainer.getRegion(),
-        regionOrContainer.getType()
-      ));
-    } else if (Region.isRegionCompatible(regionOrContainer)) {
-      this._accessibilityRegions.push(new AccessibilityRegionByRectangle(
-        new Region(regionOrContainer),
-        regionType
-      ));
-    } else {
-      throw new TypeError('Method called with argument of unknown type!');
-    }
-
-    return this;
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger
    * region.
    *
@@ -512,12 +482,42 @@ class CheckSettings {
    */
   floatingRegions(maxOffset, ...regionsOrContainers) {
     if (!regionsOrContainers) {
-      throw new TypeError('floatings method called without arguments!');
+      throw new TypeError('floatingRegions method called without arguments!');
     }
 
     regionsOrContainers.forEach((region) => {
       this.floatingRegion(region, maxOffset, maxOffset, maxOffset, maxOffset);
     });
+
+    return this;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Adds an accessibility region. An accessibility region is a region that has an accessibility type.
+   *
+   * @param {GetAccessibilityRegion|Region|AccessibilityMatchSettings} regionOrContainer - The content rectangle or
+   *   region container
+   * @param {AccessibilityRegionType} [regionType] - Type of accessibility.
+   * @return {this} - This instance of the settings object.
+   */
+  accessibilityRegion(regionOrContainer, regionType) {
+    // noinspection IfStatementWithTooManyBranchesJS
+    if (regionOrContainer instanceof GetAccessibilityRegion) {
+      this._accessibilityRegions.push(regionOrContainer);
+    } else if (regionOrContainer instanceof AccessibilityMatchSettings) {
+      this._accessibilityRegions.push(new AccessibilityRegionByRectangle(
+        regionOrContainer.getRegion(),
+        regionOrContainer.getType()
+      ));
+    } else if (Region.isRegionCompatible(regionOrContainer)) {
+      this._accessibilityRegions.push(new AccessibilityRegionByRectangle(
+        new Region(regionOrContainer),
+        regionType
+      ));
+    } else {
+      throw new TypeError('Method called with argument of unknown type!');
+    }
 
     return this;
   }
@@ -556,18 +556,18 @@ class CheckSettings {
 
   /**
    * @ignore
-   * @return {GetAccessibilityRegion[]}
-   */
-  getAccessibilityRegions() {
-    return this._accessibilityRegions;
-  }
-
-  /**
-   * @ignore
    * @return {GetFloatingRegion[]}
    */
   getFloatingRegions() {
     return this._floatingRegions;
+  }
+
+  /**
+   * @ignore
+   * @return {GetAccessibilityRegion[]}
+   */
+  getAccessibilityRegions() {
+    return this._accessibilityRegions;
   }
 
   /**

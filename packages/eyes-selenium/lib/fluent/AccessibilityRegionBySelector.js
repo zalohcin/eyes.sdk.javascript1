@@ -23,7 +23,7 @@ class AccessibilityRegionBySelector extends GetAccessibilityRegion {
    * @inheritDoc
    * @param {Eyes} eyes
    * @param {EyesScreenshot} screenshot
-   * @return {Promise<AccessibilityRegionByRectangle[]>}
+   * @return {Promise<AccessibilityMatchSettings>}
    */
   async getRegion(eyes, screenshot) {
     const element = await eyes.getDriver().findElement(this._selector);
