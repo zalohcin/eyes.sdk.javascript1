@@ -1,7 +1,7 @@
 {
   "name": "@applitools/eyes-appium",
   "private": true,
-  "version": "4.7.26",
+  "version": "4.7.27",
   "description": "Applitools Eyes SDK for Appium WebDriver",
   "keywords": [
     "eyes-appium",
@@ -35,9 +35,9 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-common": "^3.10.2",
-    "@applitools/eyes-sdk-core": "^5.17.3",
-    "@applitools/eyes-selenium": "^4.29.7"
+    "@applitools/eyes-common": "^3.10.3",
+    "@applitools/eyes-sdk-core": "^5.18.0",
+    "@applitools/eyes-selenium": "^4.30.0"
   },
   "devDependencies": {
     "mocha": "^6.2.0",

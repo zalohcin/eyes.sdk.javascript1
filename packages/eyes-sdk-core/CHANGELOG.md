@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.18.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.17.3...@applitools/eyes-sdk-core@5.18.0) (2019-09-23)
+
+
+### Bug Fixes
+
+* add exports of accessibility constants ([a4c0bed](https://github.com/applitools/eyes.sdk.javascript1/commit/a4c0bed))
+* refactoring and fixing AccessibilityRegionByElement/Selector ([73dc022](https://github.com/applitools/eyes.sdk.javascript1/commit/73dc022))
+
+
+### Features
+
+* **eyes-sdk-core:** add `closeBatch` method to `EyesBase` and update close batch endpoint ([ae2d72d](https://github.com/applitools/eyes.sdk.javascript1/commit/ae2d72d))
+
+
+
+
+
 ## [5.17.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.17.2...@applitools/eyes-sdk-core@5.17.3) (2019-09-23)
 
 

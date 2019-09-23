@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.10.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.10.2...@applitools/eyes-common@3.10.3) (2019-09-23)
+
+
+### Bug Fixes
+
+* refactoring and fixing AccessibilityRegionByElement/Selector ([73dc022](https://github.com/applitools/eyes.sdk.javascript1/commit/73dc022))
+
+
+
+
+
 ## [3.10.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.10.1...@applitools/eyes-common@3.10.2) (2019-09-22)
 
 
