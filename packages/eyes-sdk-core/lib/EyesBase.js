@@ -1201,6 +1201,19 @@ class EyesBase extends EyesAbstract {
   }
 
   /**
+   * @package
+   * @return {Promise}
+   */
+  async closeBatch() {
+    if (this._configuration._batch) { // if use .getBatch(), it will create an empty batch. If session is open, batch should exists
+      const batchId = this._configuration._batch.getId();
+      await this._serverConnector.deleteBatchSessions(batchId);
+    } else {
+      this._logger.log('Cannot close batch: no batch found.');
+    }
+  }
+
+  /**
    * @private
    * @return {Promise}
    */

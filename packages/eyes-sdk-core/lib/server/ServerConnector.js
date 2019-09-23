@@ -349,7 +349,7 @@ class ServerConnector {
 
     const options = this._createHttpOptions({
       method: 'DELETE',
-      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/batches', batchId, '/close'),
+      url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/batches', batchId, '/close/bypointerid'),
     });
 
     const response = await sendRequest(this, 'deleteBatchSessions', options);

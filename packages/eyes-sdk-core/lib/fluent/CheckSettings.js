@@ -437,10 +437,10 @@ class CheckSettings {
    *
    * @param {GetAccessibilityRegion|Region|AccessibilityMatchSettings} regionOrContainer - The content rectangle or region
    *   container
-   * @param {AccessibilityRegionType} [type] - Type of accessibility.
+   * @param {AccessibilityRegionType} [regionType] - Type of accessibility.
    * @return {this} - This instance of the settings object.
    */
-  accessibilityRegion(regionOrContainer, type) {
+  accessibilityRegion(regionOrContainer, regionType) {
     // noinspection IfStatementWithTooManyBranchesJS
     if (regionOrContainer instanceof GetAccessibilityRegion) {
       this._accessibilityRegions.push(regionOrContainer);
@@ -452,7 +452,7 @@ class CheckSettings {
     } else if (Region.isRegionCompatible(regionOrContainer)) {
       this._accessibilityRegions.push(new AccessibilityRegionByRectangle(
         new Region(regionOrContainer),
-        type
+        regionType
       ));
     } else {
       throw new TypeError('Method called with argument of unknown type!');
