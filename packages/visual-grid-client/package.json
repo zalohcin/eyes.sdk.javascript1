@@ -52,9 +52,9 @@
     "express": "^4.17.1",
     "mocha": "^6.2.0",
     "morgan": "^1.9.1",
-    "nock": "^10.0.6",
+    "nock": "^11.3.5",
     "node-fetch": "^2.6.0",
-    "puppeteer": "^1.19.0"
+    "puppeteer": "^1.20.0"
   },
   "scripts": {
     "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",
