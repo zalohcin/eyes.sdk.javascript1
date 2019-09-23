@@ -19,6 +19,8 @@ exports.TakesScreenshotImageProvider = require('./lib/capture/TakesScreenshotIma
 exports.EyesDriverOperationError = require('./lib/errors/EyesDriverOperationError').EyesDriverOperationError;
 exports.NoFramesError = require('./lib/errors/NoFramesError').NoFramesError;
 
+exports.AccessibilityRegionByElement = require('./lib/fluent/AccessibilityRegionByElement').AccessibilityRegionByElement;
+exports.AccessibilityRegionBySelector = require('./lib/fluent/AccessibilityRegionBySelector').AccessibilityRegionBySelector;
 exports.FloatingRegionByElement = require('./lib/fluent/FloatingRegionByElement').FloatingRegionByElement;
 exports.FloatingRegionBySelector = require('./lib/fluent/FloatingRegionBySelector').FloatingRegionBySelector;
 exports.SelectorByElement = require('./lib/fluent/SelectorByElement').SelectorByElement;
