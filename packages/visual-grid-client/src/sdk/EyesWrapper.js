@@ -50,6 +50,10 @@ class EyesWrapper extends EyesBase {
     this.agentId = agentId;
   }
 
+  setAccessibilityLevel(accessibilityLevel) {
+    this._configuration.getDefaultMatchSettings().setAccessibilityLevel(accessibilityLevel);
+  }
+
   /**
    * Get the AUT session id.
    *
