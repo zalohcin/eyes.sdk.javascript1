@@ -142,15 +142,6 @@ class EyesWrapper extends EyesBase {
   async getImageLocation() {
     return this.imageLocation;
   }
-
-  async closeBatch() {
-    const batchId = this.getBatch() && this.getBatch().getId();
-    if (!batchId) {
-      this._logger.log('cannot closeBatch since no batch ID found.');
-      return;
-    }
-    this._serverConnector.deleteBatchSessions(batchId);
-  }
 }
 
 module.exports = EyesWrapper;
