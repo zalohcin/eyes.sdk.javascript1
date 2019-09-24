@@ -180,7 +180,7 @@ function makeRenderingGridClient({
     batches,
   });
 
-  const closeBatch = !dontCloseBatches && !isDisabled ? makeCloseBatch(batches) : () => {};
+  const closeBatch = !dontCloseBatches && !isDisabled ? makeCloseBatch(batches) : async () => {};
 
   return {
     openEyes,
