@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [12.33.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.33.0...@applitools/visual-grid-client@12.33.1) (2019-09-24)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** better memory for closeBatches & dontCloseBatches ([6961241](https://github.com/applitools/eyes.sdk.javascript1/commit/6961241))
+
+
+
+
+
 # [12.33.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.32.5...@applitools/visual-grid-client@12.33.0) (2019-09-24)
 
 
