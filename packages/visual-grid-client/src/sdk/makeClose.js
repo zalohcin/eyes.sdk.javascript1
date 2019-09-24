@@ -9,6 +9,7 @@ function makeClose({
   resolveTests,
   testController,
   logger,
+  batch,
 }) {
   const waitAndResolveTests = makeWaitForTestEnd({
     getCheckWindowPromises,
@@ -49,7 +50,10 @@ function makeClose({
         didError = true;
         return closeError;
       }
-    }).then(results => (didError ? settleError(results) : results));
+    }).then(results => {
+      batch.id = wrappers[0].getExistingBatchId();
+      return didError ? settleError(results) : results;
+    });
   };
 }
 

@@ -43,6 +43,7 @@ class FakeEyesWrapper extends EventEmitter {
     goodResources = [],
     closeErr = false,
     failRender,
+    batchId = '1',
   }) {
     super();
     this._logger = {
@@ -54,12 +55,14 @@ class FakeEyesWrapper extends EventEmitter {
     this.goodResources = goodResources;
     this.goodTags = goodTags;
     this.batch;
+    this.batchId = batchId;
     this.baseUrl = 'http://fake';
     this.resultsRoute = '/results_url';
     this.matchLevel = 'Strict';
     this.accessibilityLevel = 'None';
     this.closeErr = closeErr;
     this.failRender = failRender;
+    this._serverConnector = {deleteBatchSessions: () => {}};
   }
 
   async open(_appName, _testName, _viewportSize) {
@@ -391,6 +394,10 @@ class FakeEyesWrapper extends EventEmitter {
 
   getIgnoreDisplacements() {
     return this.ignoreDisplacements;
+  }
+
+  getExistingBatchId() {
+    return this.batchId;
   }
 }
 

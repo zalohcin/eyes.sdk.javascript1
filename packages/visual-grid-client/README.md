@@ -163,9 +163,11 @@ describe('visual-grid-client test', function() {
     processPageAndSerialize = `(${await getProcessPageAndSerializeScript()})()`
   })
 
-  after(() => {
+  after(async () => {
     await browser.close()
-    return Promise.all(closePromises)
+    const results = await Promise.all(closePromises)
+    await visualGridClient.closeBatch() // after all sessions ended (session = open checkWindow close)
+    return results;
   })
 
   let checkWindow, close

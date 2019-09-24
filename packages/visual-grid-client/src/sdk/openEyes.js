@@ -55,6 +55,7 @@ function makeOpenEyes({
   getRenderInfo,
   agentId,
   notifyOnCompletion: _notifyOnCompletion,
+  batches,
 }) {
   return async function openEyes({
     testName,
@@ -116,6 +117,13 @@ function makeOpenEyes({
     wrappers =
       wrappers ||
       initWrappers({count: browsers.length, apiKey, logHandler: logger.getLogHandler()});
+
+    const batch = {
+      deleteBatchSessions: wrappers[0]._serverConnector.deleteBatchSessions.bind(
+        wrappers[0]._serverConnector,
+      ),
+    };
+    batches.push(batch);
 
     configureWrappers({
       wrappers,
@@ -203,6 +211,7 @@ function makeOpenEyes({
       resolveTests,
       testController,
       logger,
+      batch,
     });
     const abort = makeAbort({
       getCheckWindowPromises,
@@ -210,6 +219,7 @@ function makeOpenEyes({
       wrappers,
       resolveTests,
       testController,
+      batch,
     });
 
     return {

@@ -8,6 +8,7 @@ function makeAbort({
   openEyesPromises,
   resolveTests,
   testController,
+  batch,
 }) {
   const waitAndResolveTests = makeWaitForTestEnd({
     getCheckWindowPromises,
@@ -23,6 +24,9 @@ function makeAbort({
         throw closeErr;
       }
       return closeResult;
+    }).then(res => {
+      batch.id = wrappers[0].getExistingBatchId();
+      return res;
     });
   };
 }

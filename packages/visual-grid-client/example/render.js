@@ -17,7 +17,7 @@ const debug = require('debug')('eyes:render');
 
   console.log('checking website:', website);
 
-  const {openEyes} = makeVisualGridClient({
+  const {openEyes, closeBatch} = makeVisualGridClient({
     apiKey: process.env.APPLITOOLS_API_KEY,
     logger: new Logger(!!process.env.APPLITOOLS_SHOW_LOGS, 'eyes:vgc'),
     proxy: process.env.APPLITOOLS_PROXY,
@@ -61,6 +61,8 @@ const debug = require('debug')('eyes:render');
 
   checkWindow(frame);
   const results = await close(false);
+  await closeBatch();
+
   if (results.some(r => r instanceof Error)) {
     console.log(
       '\nTest error:\n\t',
