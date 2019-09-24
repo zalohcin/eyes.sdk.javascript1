@@ -8,14 +8,14 @@ describe('closeBatch', () => {
   let closeBatch;
 
   beforeEach(() => {
-    batches = [];
+    batches = new Map();
     closeBatch = makeCloseBatch(batches);
   });
 
   it('works', async () => {
     let _deleteCalledWith;
     const deleteBatchSessions = async id => (_deleteCalledWith = id);
-    batches.push({id: 'someId', deleteBatchSessions});
+    batches.set('someId', deleteBatchSessions);
     await closeBatch();
     expect(_deleteCalledWith).to.equal('someId');
   });
@@ -23,18 +23,9 @@ describe('closeBatch', () => {
   it('works for many batch IDs', async () => {
     let _deleteCalledWith = [];
     const deleteBatchSessions = async id => _deleteCalledWith.push(id);
-    batches.push({id: 'someId', deleteBatchSessions});
-    batches.push({id: 'someId2', deleteBatchSessions});
+    batches.set('someId', deleteBatchSessions);
+    batches.set('someId2', deleteBatchSessions);
     await closeBatch();
     expect(_deleteCalledWith).to.eql(['someId', 'someId2']);
-  });
-
-  it('ignores missing IDs', async () => {
-    let _deleteCalledWith = [];
-    const deleteBatchSessions = async id => _deleteCalledWith.push(id);
-    batches.push({deleteBatchSessions});
-    batches.push({id: 'someId2', deleteBatchSessions});
-    await closeBatch();
-    expect(_deleteCalledWith).to.eql(['someId2']);
   });
 });

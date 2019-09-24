@@ -34,4 +34,5 @@ module.exports = [
   'ignoreDisplacements',
   'accessibilityLevel',
   'notifyOnCompletion',
+  'dontCloseBatches',
 ];
