@@ -13,7 +13,7 @@ const {
   apiKeyFailMsg,
 } = require('./wrapperUtils');
 
-const SUPPORTED_BROWSERS = ['firefox', 'ie10', 'ie11', 'edge', 'chrome', 'ie'];
+const SUPPORTED_BROWSERS = ['firefox', 'ie10', 'ie11', 'edge', 'chrome', 'ie', 'safari'];
 
 function makeOpenEyes({
   appName: _appName,
@@ -237,7 +237,7 @@ function makeOpenEyes({
 
     function getBrowserError(browser) {
       if (browser.name && !SUPPORTED_BROWSERS.includes(browser.name.replace(/-canary$/, ''))) {
-        return `browser name should be one of the following 'chrome', 'firefox', 'ie10', 'ie11' or 'edge' but received '${browser.name}'.`;
+        return `browser name should be one of the following 'chrome', 'firefox', 'safari', 'ie10', 'ie11' or 'edge' but received '${browser.name}'.`;
       }
       if (browser.name && !browser.deviceName && (!browser.height || !browser.width)) {
         return `browser '${browser.name}' should include 'height' and 'width' parameters.`;

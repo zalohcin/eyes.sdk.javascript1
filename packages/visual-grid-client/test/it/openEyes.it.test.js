@@ -274,7 +274,7 @@ describe('openEyes', () => {
       }),
     );
     expect(err.message).to.equal(
-      `browser name should be one of the following 'chrome', 'firefox', 'ie10', 'ie11' or 'edge' but received 'firefox222'.`,
+      `browser name should be one of the following 'chrome', 'firefox', 'safari', 'ie10', 'ie11' or 'edge' but received 'firefox222'.`,
     );
   });
 
