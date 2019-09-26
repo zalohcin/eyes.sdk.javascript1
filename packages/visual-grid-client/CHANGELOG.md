@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [12.34.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.33.2...@applitools/visual-grid-client@12.34.0) (2019-09-26)
+
+
+### Features
+
+* **visual-grid-client:** added 'safari' to supported browsers arguments ([59cd915](https://github.com/applitools/eyes.sdk.javascript1/commit/59cd915))
+
+
+
+
+
 ## [12.33.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.33.1...@applitools/visual-grid-client@12.33.2) (2019-09-24)
 
 
