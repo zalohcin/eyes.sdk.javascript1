@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.30.6](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.30.5...@applitools/eyes-selenium@4.30.6) (2019-09-27)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** add new iphones to DeviceName list ([55cee88](https://github.com/applitools/eyes.sdk.javascript1/commit/55cee88))
+
+
+
+
+
 ## [4.30.5](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.30.4...@applitools/eyes-selenium@4.30.5) (2019-09-27)
 
 **Note:** Version bump only for package @applitools/eyes-selenium
