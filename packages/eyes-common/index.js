@@ -63,5 +63,5 @@ exports.FileUtils = require('./lib/utils/FileUtils').FileUtils;
 exports.GeneralUtils = require('./lib/utils/GeneralUtils').GeneralUtils;
 exports.ImageUtils = require('./lib/utils/ImageUtils').ImageUtils;
 exports.PerformanceUtils = require('./lib/utils/PerformanceUtils').PerformanceUtils;
-exports.StreamUtils = require('./lib/utils/StreamUtils').ReadableBufferStream;
+exports.StreamUtils = require('./lib/utils/StreamUtils');
 exports.TypeUtils = require('./lib/utils/TypeUtils').TypeUtils;

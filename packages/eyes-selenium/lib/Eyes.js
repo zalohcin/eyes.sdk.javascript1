@@ -9,6 +9,7 @@ const {
   Location,
   RectangleSize,
   ArgumentGuard,
+  Configuration,
 } = require('@applitools/eyes-common');
 
 const {
@@ -17,7 +18,6 @@ const {
   CorsIframeHandle,
 } = require('@applitools/eyes-sdk-core');
 
-const { Configuration } = require('./config/Configuration');
 const { ClassicRunner } = require('./runner/ClassicRunner');
 const { FrameChain } = require('./frames/FrameChain');
 const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');

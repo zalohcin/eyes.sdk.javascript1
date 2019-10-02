@@ -101,44 +101,52 @@ exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus
 
 
 // Classes from eyes-common which may be used as part of public API
-exports.EyesError = common.EyesError;
-exports.Configuration = common.Configuration;
-exports.PropertyData = common.PropertyData;
-exports.ProxySettings = common.ProxySettings;
 exports.AccessibilityLevel = common.AccessibilityLevel;
-exports.AccessibilityRegionType = common.AccessibilityRegionType;
 exports.AccessibilityMatchSettings = common.AccessibilityMatchSettings;
+exports.AccessibilityRegionType = common.AccessibilityRegionType;
 exports.BatchInfo = common.BatchInfo;
 exports.BrowserType = common.BrowserType;
+exports.Configuration = common.Configuration;
 exports.DeviceName = common.DeviceName;
-exports.ScreenOrientation = common.ScreenOrientation;
-exports.StitchMode = common.StitchMode;
-exports.MatchLevel = common.MatchLevel;
-exports.ImageMatchSettings = common.ImageMatchSettings;
 exports.ExactMatchSettings = common.ExactMatchSettings;
 exports.FloatingMatchSettings = common.FloatingMatchSettings;
+exports.ImageMatchSettings = common.ImageMatchSettings;
+exports.MatchLevel = common.MatchLevel;
+exports.PropertyData = common.PropertyData;
+exports.ProxySettings = common.ProxySettings;
+exports.ScreenOrientation = common.ScreenOrientation;
+exports.StitchMode = common.StitchMode;
+
+exports.DebugScreenshotsProvider = common.DebugScreenshotsProvider;
+exports.FileDebugScreenshotsProvider = common.FileDebugScreenshotsProvider;
+exports.NullDebugScreenshotProvider = common.NullDebugScreenshotProvider;
+
+exports.EyesError = common.EyesError;
+
 exports.CoordinatesType = common.CoordinatesType;
 exports.Location = common.Location;
 exports.RectangleSize = common.RectangleSize;
 exports.Region = common.Region;
-exports.MutableImage = common.MutableImage;
-exports.Logger = common.Logger;
-exports.LogHandler = common.LogHandler;
-exports.ConsoleLogHandler = common.ConsoleLogHandler;
-exports.FileLogHandler = common.FileLogHandler;
-exports.NullLogHandler = common.NullLogHandler;
-exports.DebugScreenshotsProvider = common.DebugScreenshotsProvider;
-exports.FileDebugScreenshotsProvider = common.FileDebugScreenshotsProvider;
-exports.NullDebugScreenshotProvider = common.NullDebugScreenshotProvider;
+
 exports.PropertyHandler = common.PropertyHandler;
 exports.ReadOnlyPropertyHandler = common.ReadOnlyPropertyHandler;
 exports.SimplePropertyHandler = common.SimplePropertyHandler;
 
-// Classes which can be used internally, but should not be exported from final SDKs
 exports.ImageDeltaCompressor = common.ImageDeltaCompressor;
+exports.MutableImage = common.MutableImage;
+
+exports.ConsoleLogHandler = common.ConsoleLogHandler;
+exports.DebugLogHandler = common.DebugLogHandler;
+exports.FileLogHandler = common.FileLogHandler;
+exports.Logger = common.Logger;
+exports.LogHandler = common.LogHandler;
+exports.NullLogHandler = common.NullLogHandler;
+
+// Classes which can be used internally, but should not be exported from final SDKs
 exports.BrowserNames = common.BrowserNames;
 exports.OSNames = common.OSNames;
 exports.UserAgent = common.UserAgent;
+
 exports.ArgumentGuard = common.ArgumentGuard;
 exports.ConfigUtils = common.ConfigUtils;
 exports.DateTimeUtils = common.DateTimeUtils;
