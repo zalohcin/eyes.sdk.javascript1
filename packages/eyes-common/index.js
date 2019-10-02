@@ -19,13 +19,13 @@ exports.ProxySettings = require('./lib/config/ProxySettings').ProxySettings;
 exports.ScreenOrientation = require('./lib/config/ScreenOrientation').ScreenOrientation;
 exports.StitchMode = require('./lib/config/StitchMode').StitchMode;
 
-// errors
-exports.EyesError = require('./lib/errors/EyesError').EyesError;
-
 // debug
 exports.DebugScreenshotsProvider = require('./lib/debug/DebugScreenshotsProvider').DebugScreenshotsProvider;
 exports.FileDebugScreenshotsProvider = require('./lib/debug/FileDebugScreenshotsProvider').FileDebugScreenshotsProvider;
 exports.NullDebugScreenshotProvider = require('./lib/debug/NullDebugScreenshotProvider').NullDebugScreenshotProvider;
+
+// errors
+exports.EyesError = require('./lib/errors/EyesError').EyesError;
 
 // geometry
 exports.CoordinatesType = require('./lib/geometry/CoordinatesType').CoordinatesType;
@@ -44,11 +44,11 @@ exports.MutableImage = require('./lib/images/MutableImage').MutableImage;
 
 // logging
 exports.ConsoleLogHandler = require('./lib/logging/ConsoleLogHandler').ConsoleLogHandler;
+exports.DebugLogHandler = require('./lib/logging/DebugLogHandler').DebugLogHandler;
 exports.FileLogHandler = require('./lib/logging/FileLogHandler').FileLogHandler; // -browser
 exports.Logger = require('./lib/logging/Logger').Logger;
 exports.LogHandler = require('./lib/logging/LogHandler').LogHandler;
 exports.NullLogHandler = require('./lib/logging/NullLogHandler').NullLogHandler;
-exports.DebugLogHandler = require('./lib/logging/DebugLogHandler').DebugLogHandler;
 
 // useragent
 exports.BrowserNames = require('./lib/useragent/BrowserNames').BrowserNames;

@@ -146,4 +146,70 @@ describe('Configuration', () => {
       assert.strictEqual(configuration.getIgnoreDisplacements(), true);
     });
   });
+
+  it('should parse empty config', () => {
+    const config = {};
+    const cfg = new Configuration(config);
+    assert.ok(cfg instanceof Configuration);
+  });
+
+  it('should parse a single browser', () => {
+    const config = {
+      browsersInfo: [
+        {
+          width: 1920,
+          height: 1080,
+          name: 'chrome',
+        },
+      ],
+    };
+    const cfg = new Configuration(config);
+    assert.strictEqual(cfg._browsersInfo.length, 1);
+    assert.strictEqual(cfg._browsersInfo[0].name, config.browsersInfo[0].name);
+    assert.strictEqual(cfg._browsersInfo[0].width, config.browsersInfo[0].width);
+    assert.strictEqual(cfg._browsersInfo[0].height, config.browsersInfo[0].height);
+  });
+
+  it('should parse config from array', () => {
+    const config = {
+      browsersInfo: [
+        {
+          width: 1920,
+          height: 1080,
+          name: 'chrome',
+        },
+        {
+          width: 800,
+          height: 600,
+          name: 'firefox',
+        },
+        {
+          deviceName: 'iPhone 4',
+          screenOrientation: 'portrait',
+        },
+      ],
+    };
+    const cfg = new Configuration(config);
+    assert.strictEqual(cfg._browsersInfo.length, config.browsersInfo.length);
+    assert.strictEqual(cfg._browsersInfo[0].name, config.browsersInfo[0].name);
+    assert.strictEqual(cfg._browsersInfo[1].name, config.browsersInfo[1].name);
+    assert.strictEqual(cfg._browsersInfo[2].deviceName, config.browsersInfo[2].deviceName);
+  });
+
+  it('test return type', () => {
+    let config = new Configuration();
+    assert.ok(config instanceof Configuration);
+
+    // use method from eyes-selenium/lib/config/Configuration
+    config = config.setWaitBeforeScreenshots(24062019);
+    assert.ok(config instanceof Configuration); // check that type is not changed
+
+    // use method from eyes-common/lib/config/Configuration
+    config = config.setHostApp('demo');
+    assert.ok(config instanceof Configuration); // check that type is not changed
+
+    // check that we still have access to methods
+    assert.strictEqual(config.getHostApp(), 'demo');
+    assert.strictEqual(config.getWaitBeforeScreenshots(), 24062019);
+  });
 });
