@@ -11,7 +11,7 @@ class GetAccessibilityRegion {
   /**
    * @param {EyesBase} eyesBase
    * @param {EyesScreenshot} screenshot
-   * @return {Promise<AccessibilityMatchSettings>}
+   * @return {Promise<AccessibilityMatchSettings[]>}
    */
   async getRegion(eyesBase, screenshot) {
     throw new TypeError('The method is not implemented!');

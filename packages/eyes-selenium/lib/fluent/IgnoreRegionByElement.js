@@ -22,7 +22,7 @@ class IgnoreRegionByElement extends GetRegion {
    * @override
    * @param {Eyes} eyes
    * @param {EyesScreenshot} screenshot
-   * @return {Promise<Region>}
+   * @return {Promise<Region[]>}
    */
   async getRegion(eyes, screenshot) { // eslint-disable-line no-unused-vars
     const rect = await this._element.getRect();
@@ -32,7 +32,7 @@ class IgnoreRegionByElement extends GetRegion {
       CoordinatesType.SCREENSHOT_AS_IS
     );
 
-    return new Region(lTag.getX(), lTag.getY(), rect.width, rect.height);
+    return [new Region(lTag.getX(), lTag.getY(), rect.width, rect.height)];
   }
 
   // noinspection JSCheckFunctionSignatures

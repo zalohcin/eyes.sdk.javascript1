@@ -22,13 +22,14 @@ class AccessibilityRegionByRectangle extends GetAccessibilityRegion {
    * @inheritDoc
    */
   async getRegion(eyesBase, screenshot) { // eslint-disable-line no-unused-vars
-    return new AccessibilityMatchSettings({
+    const accessibilityRegion = new AccessibilityMatchSettings({
       left: this._rect.getLeft(),
       top: this._rect.getTop(),
       width: this._rect.getWidth(),
       height: this._rect.getHeight(),
       type: this._type,
     });
+    return [accessibilityRegion];
   }
 }
 

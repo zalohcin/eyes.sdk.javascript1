@@ -21,7 +21,7 @@ const { Eyes, Target, ConsoleLogHandler, BatchInfo, AccessibilityRegionType, Acc
   const configuration = new Configuration();
   configuration.setBatch(batchInfo);
   // configuration.setProxy('http://localhost:8888');
-  // configuration.setApiKey('RjKIGSkTH106C4fFUfD5NeJFV105jsEeESyapMZYUTLrYGE110');
+  // configuration.setApiKey(process.env.APPLITOOLS_FABRIC_API_KEY);
   // configuration.setServerUrl('https://eyesfabric4eyes.applitools.com');
   configuration.setAccessibilityLevel(AccessibilityLevel.AAA);
   eyes.setConfiguration(configuration);

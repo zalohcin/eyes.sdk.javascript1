@@ -300,8 +300,10 @@ class EyesVisualGrid extends Eyes {
 
       for (const region of regions) {
         if (region instanceof IgnoreRegionByRectangle) {
-          const plainRegion = (await region.getRegion(this, undefined)).toJSON();
-          newRegions.push(plainRegion);
+          const plainRegions = await region.getRegion(this, undefined);
+          plainRegions.forEach((plainRegion) => {
+            newRegions.push(plainRegion.toJSON());
+          });
         } else {
           const selector = await region.getSelector(this);
           newRegions.push({ selector });

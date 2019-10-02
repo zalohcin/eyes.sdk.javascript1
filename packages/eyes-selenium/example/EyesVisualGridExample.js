@@ -23,12 +23,12 @@ const { Eyes, VisualGridRunner, Target, ConsoleLogHandler, Configuration, Browse
     configuration.setConcurrentSessions(3);
     configuration.setAppName('Eyes Examples');
     configuration.setTestName('My first Javascript test!');
-    configuration.setDisplayName('The display title');
+    // configuration.setDisplayName('The display title');
     configuration.addBrowser(1200, 800, BrowserType.CHROME);
     configuration.addBrowser(1200, 800, BrowserType.FIREFOX);
     configuration.addDeviceEmulation(DeviceName.iPhone_4, ScreenOrientation.PORTRAIT);
     // configuration.setProxy('http://localhost:8888');
-    // configuration.setApiKey('RjKIGSkTH106C4fFUfD5NeJFV105jsEeESyapMZYUTLrYGE110');
+    // configuration.setApiKey(process.env.APPLITOOLS_FABRIC_API_KEY);
     // configuration.setServerUrl('https://eyesfabric4eyes.applitools.com');
     eyes.setConfiguration(configuration);
 
