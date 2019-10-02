@@ -3,17 +3,21 @@
 /* eslint-disable max-len */
 
 // config
-exports.Configuration = require('./lib/config/Configuration').Configuration;
-exports.MatchLevel = require('./lib/config/MatchLevel').MatchLevel;
 exports.AccessibilityLevel = require('./lib/config/AccessibilityLevel').AccessibilityLevel;
-exports.AccessibilityRegionType = require('./lib/config/AccessibilityRegionType').AccessibilityRegionType;
 exports.AccessibilityMatchSettings = require('./lib/config/AccessibilityMatchSettings').AccessibilityMatchSettings;
+exports.AccessibilityRegionType = require('./lib/config/AccessibilityRegionType').AccessibilityRegionType;
 exports.BatchInfo = require('./lib/config/BatchInfo').BatchInfo;
-exports.PropertyData = require('./lib/config/PropertyData').PropertyData;
-exports.ProxySettings = require('./lib/config/ProxySettings').ProxySettings;
-exports.ImageMatchSettings = require('./lib/config/ImageMatchSettings').ImageMatchSettings;
+exports.BrowserType = require('./lib/config/BrowserType').BrowserType;
+exports.Configuration = require('./lib/config/Configuration').Configuration;
+exports.DeviceName = require('./lib/config/DeviceName').DeviceName;
 exports.ExactMatchSettings = require('./lib/config/ExactMatchSettings').ExactMatchSettings;
 exports.FloatingMatchSettings = require('./lib/config/FloatingMatchSettings').FloatingMatchSettings;
+exports.ImageMatchSettings = require('./lib/config/ImageMatchSettings').ImageMatchSettings;
+exports.MatchLevel = require('./lib/config/MatchLevel').MatchLevel;
+exports.PropertyData = require('./lib/config/PropertyData').PropertyData;
+exports.ProxySettings = require('./lib/config/ProxySettings').ProxySettings;
+exports.ScreenOrientation = require('./lib/config/ScreenOrientation').ScreenOrientation;
+exports.StitchMode = require('./lib/config/StitchMode').StitchMode;
 
 // errors
 exports.EyesError = require('./lib/errors/EyesError').EyesError;

@@ -4,10 +4,6 @@ const common = require('@applitools/eyes-common');
 const core = require('@applitools/eyes-sdk-core');
 
 exports.Configuration = require('./lib/config/Configuration').Configuration;
-exports.BrowserType = require('./lib/config/BrowserType').BrowserType;
-exports.DeviceName = require('./lib/config/DeviceName').DeviceName;
-exports.ScreenOrientation = require('./lib/config/ScreenOrientation').ScreenOrientation;
-exports.StitchMode = require('./lib/config/StitchMode').StitchMode;
 
 exports.EyesWebDriverScreenshot = require('./lib/capture/EyesWebDriverScreenshot').EyesWebDriverScreenshot;
 exports.EyesWebDriverScreenshotFactory = require('./lib/capture/EyesWebDriverScreenshotFactory').EyesWebDriverScreenshotFactory;
@@ -80,6 +76,10 @@ exports.AccessibilityLevel = common.AccessibilityLevel;
 exports.AccessibilityRegionType = common.AccessibilityRegionType;
 exports.AccessibilityMatchSettings = common.AccessibilityMatchSettings;
 exports.BatchInfo = common.BatchInfo;
+exports.BrowserType = common.BrowserType;
+exports.DeviceName = common.DeviceName;
+exports.ScreenOrientation = common.ScreenOrientation;
+exports.StitchMode = common.StitchMode;
 exports.MatchLevel = common.MatchLevel;
 exports.ImageMatchSettings = common.ImageMatchSettings;
 exports.ExactMatchSettings = common.ExactMatchSettings;

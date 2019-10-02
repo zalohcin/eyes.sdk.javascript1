@@ -2,7 +2,7 @@
 
 /**
  * @readonly
- * @enum {number}
+ * @enum {string}
  */
 const DeviceName = {
   iPhone_4: 'iPhone 4',

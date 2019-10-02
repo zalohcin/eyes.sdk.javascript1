@@ -1,12 +1,11 @@
 'use strict';
 
 const { makeVisualGridClient, takeDomSnapshot } = require('@applitools/visual-grid-client');
-const { ArgumentGuard, TypeUtils, EyesError, UserAgent } = require('@applitools/eyes-common');
+const { ArgumentGuard, TypeUtils, EyesError, UserAgent, BrowserType } = require('@applitools/eyes-common');
 const { CorsIframeHandle, CorsIframeHandler, IgnoreRegionByRectangle } = require('@applitools/eyes-sdk-core');
 
 const { TestResultsSummary } = require('./runner/TestResultsSummary');
 const { VisualGridRunner } = require('./runner/VisualGridRunner');
-const { BrowserType } = require('./config/BrowserType');
 const { Eyes } = require('./Eyes');
 
 const VERSION = require('../package.json').version;

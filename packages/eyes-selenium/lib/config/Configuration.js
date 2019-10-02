@@ -1,9 +1,6 @@
 'use strict';
 
-const { Configuration: CommonConfiguration, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
-
-const { StitchMode } = require('./StitchMode');
-const { ScreenOrientation } = require('./ScreenOrientation');
+const { Configuration: CommonConfiguration, ArgumentGuard, TypeUtils, StitchMode, ScreenOrientation } = require('@applitools/eyes-common');
 
 /**
  * @typedef {{width: number, height: number, name: BrowserType}} RenderBrowserInfo
