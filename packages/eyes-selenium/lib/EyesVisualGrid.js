@@ -222,10 +222,14 @@ class EyesVisualGrid extends Eyes {
       checkSettings.withName(name);
     }
 
+    // check if we need a region of screenshot, add custom tag if by selector (SHOULD BE BEFORE CAPTURING DOM)
     let targetSelector = await checkSettings.getTargetProvider();
     if (targetSelector) {
       targetSelector = await targetSelector.getSelector(this);
     }
+
+    // prepare regions, add custom tag if by selector (SHOULD BE BEFORE CAPTURING DOM)
+    const ignoreRegions = await this._prepareRegions(checkSettings.getIgnoreRegions());
 
     try {
       this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`);
@@ -252,7 +256,6 @@ class EyesVisualGrid extends Eyes {
       this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`);
 
       const source = await this._driver.getCurrentUrl();
-      const ignoreRegions = await this._prepareRegions(checkSettings.getIgnoreRegions());
 
       await this._checkWindowCommand({
         resourceUrls,

@@ -2,7 +2,7 @@
 
 const { GetRegion, CoordinatesType, Location, Region } = require('@applitools/eyes-sdk-core');
 
-const { IgnoreRegionByElement } = require('./IgnoreRegionByElement');
+const { SelectorByLocator } = require('./SelectorByLocator');
 
 /**
  * @ignore
@@ -49,8 +49,7 @@ class IgnoreRegionBySelector extends GetRegion {
    * @return {Promise<string>}
    */
   async getSelector(eyes) { // eslint-disable-line no-unused-vars
-    const element = await eyes.getDriver().findElement(this._selector);
-    return new IgnoreRegionByElement(element).getSelector(eyes);
+    return new SelectorByLocator(this._selector).getSelector(eyes);
   }
 }
 
