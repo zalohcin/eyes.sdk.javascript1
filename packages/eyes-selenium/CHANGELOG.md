@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.31.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.0...@applitools/eyes-selenium@4.31.1) (2019-10-06)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** gaurding error in Runners for close batch exceptions ([17705be](https://github.com/applitools/eyes.sdk.javascript1/commit/17705be))
+
+
+
+
+
 # [4.31.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.30.7...@applitools/eyes-selenium@4.31.0) (2019-10-06)
 
 
