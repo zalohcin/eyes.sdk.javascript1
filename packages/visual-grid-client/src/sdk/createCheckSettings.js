@@ -69,7 +69,7 @@ function createCheckSettings({
     checkSettings.matchLevel(matchLevel);
   }
   if (accessibilityLevel !== undefined) {
-    checkSettings.accessibilityLevel(accessibilityLevel);
+    checkSettings.accessibilityValidation(accessibilityLevel);
   }
 
   return checkSettings;

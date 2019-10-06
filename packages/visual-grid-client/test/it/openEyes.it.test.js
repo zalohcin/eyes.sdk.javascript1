@@ -1784,9 +1784,9 @@ describe('openEyes', () => {
     wrapper.checkWindow = async ({tag, checkSettings}) => {
       await psetTimeout(20);
       if (tag === 2) {
-        expect(checkSettings.getAccessibilityLevel()).to.equal('AA');
+        expect(checkSettings.getAccessibilityValidation()).to.equal('AA');
       } else {
-        expect(wrapper.getAccessibilityLevel()).to.equal('None');
+        expect(wrapper.getAccessibilityValidation()).to.equal('None');
       }
       wrapper.setDummyTestResults();
     };
@@ -1829,9 +1829,9 @@ describe('openEyes', () => {
     wrapper.checkWindow = async ({tag, checkSettings}) => {
       await psetTimeout(20);
       if (tag === 2) {
-        expect(checkSettings.getAccessibilityLevel()).to.equal('AAA');
+        expect(checkSettings.getAccessibilityValidation()).to.equal('AAA');
       } else {
-        expect(wrapper.getAccessibilityLevel()).to.equal('AA');
+        expect(wrapper.getAccessibilityValidation()).to.equal('AA');
       }
       wrapper.setDummyTestResults();
     };
@@ -1889,9 +1889,9 @@ describe('openEyes', () => {
     wrapper.checkWindow = async ({tag, checkSettings}) => {
       await psetTimeout(20);
       if (tag === 2) {
-        expect(checkSettings.getAccessibilityLevel()).to.equal('AAA');
+        expect(checkSettings.getAccessibilityValidation()).to.equal('AAA');
       } else {
-        expect(wrapper.getAccessibilityLevel()).to.equal('AA');
+        expect(wrapper.getAccessibilityValidation()).to.equal('AA');
       }
       wrapper.setDummyTestResults();
     };

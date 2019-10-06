@@ -23,7 +23,7 @@ const { Eyes, Target, ConsoleLogHandler, BatchInfo, AccessibilityRegionType, Acc
   // configuration.setProxy('http://localhost:8888');
   // configuration.setApiKey(process.env.APPLITOOLS_FABRIC_API_KEY);
   // configuration.setServerUrl('https://eyesfabric4eyes.applitools.com');
-  configuration.setAccessibilityLevel(AccessibilityLevel.AAA);
+  configuration.setAccessibilityValidation(AccessibilityLevel.AAA);
   eyes.setConfiguration(configuration);
 
   try {
@@ -35,7 +35,7 @@ const { Eyes, Target, ConsoleLogHandler, BatchInfo, AccessibilityRegionType, Acc
 
     // Visual checkpoint #1.
     await eyes.check('Main Page', Target.window()
-      // .accessibilityLevel(AccessibilityLevel.AAA) // will not work as for now
+      // .accessibilityValidation(AccessibilityLevel.AAA) // will not work as for now
       .accessibilityRegion(By.css('button'), AccessibilityRegionType.RegularText));
 
     // Click the "Click me!" button.

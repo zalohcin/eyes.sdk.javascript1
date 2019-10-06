@@ -284,11 +284,11 @@ class FakeEyesWrapper extends EventEmitter {
     return this.matchLevel;
   }
 
-  setAccessibilityLevel(value) {
+  setAccessibilityValidation(value) {
     this.accessibilityLevel = value;
   }
 
-  getAccessibilityLevel() {
+  getAccessibilityValidation() {
     return this.accessibilityLevel;
   }
 
