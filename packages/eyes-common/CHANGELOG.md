@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.11.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.10.3...@applitools/eyes-common@3.11.0) (2019-10-06)
+
+
+### Bug Fixes
+
+* **visual-grid-client, eyes-common, eyes-sdk-core, eyes-selenium:** renamed setAccessibilityLevel to setAccessibilityValidation ([77d60e8](https://github.com/applitools/eyes.sdk.javascript1/commit/77d60e8))
+
+
+### Features
+
+* **eyes-common:** extent Configuration with properties from Selenium ([408d70b](https://github.com/applitools/eyes.sdk.javascript1/commit/408d70b))
+* **eyes-common:** move BrowserType, DeviceName, ScreenOrientation, StitchMode to common module ([7dbdb41](https://github.com/applitools/eyes.sdk.javascript1/commit/7dbdb41))
+
+
+
+
+
 ## [3.10.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.10.2...@applitools/eyes-common@3.10.3) (2019-09-23)
 
 

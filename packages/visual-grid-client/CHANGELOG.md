@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [12.34.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.34.2...@applitools/visual-grid-client@12.34.3) (2019-10-06)
+
+
+### Bug Fixes
+
+* **visual-grid-client, eyes-common, eyes-sdk-core, eyes-selenium:** renamed setAccessibilityLevel to setAccessibilityValidation ([77d60e8](https://github.com/applitools/eyes.sdk.javascript1/commit/77d60e8))
+
+
+
+
+
 ## [12.34.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.34.1...@applitools/visual-grid-client@12.34.2) (2019-10-02)
 
 **Note:** Version bump only for package @applitools/visual-grid-client

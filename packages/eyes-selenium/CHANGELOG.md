@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.31.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.30.7...@applitools/eyes-selenium@4.31.0) (2019-10-06)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** if we need to get region by selector, VG captured dom without data attributes ([2b3d660](https://github.com/applitools/eyes.sdk.javascript1/commit/2b3d660))
+* **visual-grid-client, eyes-common, eyes-sdk-core, eyes-selenium:** renamed setAccessibilityLevel to setAccessibilityValidation ([77d60e8](https://github.com/applitools/eyes.sdk.javascript1/commit/77d60e8))
+
+
+### Features
+
+* **eyes-common:** move BrowserType, DeviceName, ScreenOrientation, StitchMode to common module ([7dbdb41](https://github.com/applitools/eyes.sdk.javascript1/commit/7dbdb41))
+
+
+
+
+
 ## [4.30.7](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.30.6...@applitools/eyes-selenium@4.30.7) (2019-10-02)
 
 **Note:** Version bump only for package @applitools/eyes-selenium
