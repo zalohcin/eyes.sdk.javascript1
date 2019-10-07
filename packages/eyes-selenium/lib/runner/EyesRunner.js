@@ -32,11 +32,7 @@ class EyesRunner {
         }
       }
 
-      try {
-        await Promise.all(promises);
-      } catch (e) {
-        this._eyesInstances[0]._logger.log('failed to close batches', e);
-      }
+      await Promise.all(promises);
     }
   }
 }

@@ -1210,11 +1210,15 @@ class EyesBase extends EyesAbstract {
       return;
     }
 
-    if (this._configuration._batch) { // if use .getBatch(), it will create an empty batch. If session is open, batch should exists
-      const batchId = this._configuration._batch.getId();
-      await this._serverConnector.deleteBatchSessions(batchId);
-    } else {
-      this._logger.log('Cannot close batch: no batch found.');
+    try {
+      if (this._configuration._batch) { // if use .getBatch(), it will create an empty batch. If session is open, batch should exists
+        const batchId = this._configuration._batch.getId();
+        await this._serverConnector.deleteBatchSessions(batchId);
+      } else {
+        this._logger.log('Failed to close batch: no batch found.');
+      }
+    } catch (e) {
+      this._logger.log('Failed to close batch: error occurred', e);
     }
   }
 
