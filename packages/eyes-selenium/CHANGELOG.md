@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.31.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.1...@applitools/eyes-selenium@4.31.2) (2019-10-07)
+
+
+### Bug Fixes
+
+* skip error inside `EyesBase.closeBatch()` (to work for all SDKs) ([b25d298](https://github.com/applitools/eyes.sdk.javascript1/commit/b25d298))
+
+
+
+
+
 ## [4.31.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.0...@applitools/eyes-selenium@4.31.1) (2019-10-06)
 
 
