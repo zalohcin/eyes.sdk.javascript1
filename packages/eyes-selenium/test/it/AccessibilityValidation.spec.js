@@ -19,7 +19,7 @@ describe('AccessibilityValidation', function () {
     configuration = new Configuration();
     configuration.setBatch(batch);
     // configuration.setProxy('http://localhost:8888');
-    configuration.setApiKey('JmUcMMYOHDx0KXIvd4rgPIL2ycRN4jba31DqmLYTHOE110');
+    configuration.setApiKey(process.env.APPLITOOLS_FABRIC_API_KEY);
     configuration.setServerUrl('https://eyesfabric4eyes.applitools.com');
   });
 
