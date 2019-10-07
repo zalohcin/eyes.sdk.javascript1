@@ -3,7 +3,8 @@
 require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { Eyes, VisualGridRunner, ClassicRunner, Target, Configuration, BrowserType, AccessibilityLevel, AccessibilityRegionType } = require('../../index');
+const { Eyes, VisualGridRunner, ClassicRunner, Target, Configuration, BrowserType, AccessibilityLevel,
+  AccessibilityRegionType, BatchInfo } = require('../../index');
 
 let /** @type {WebDriver} */ driver, configuration;
 describe('AccessibilityValidation', function () {
@@ -12,9 +13,13 @@ describe('AccessibilityValidation', function () {
   beforeEach(async function () {
     driver = await new Builder().forBrowser('chrome').setChromeOptions(new ChromeOptions().headless()).build();
 
+    const batch = new BatchInfo();
+    batch.setNotifyOnCompletion(true);
+
     configuration = new Configuration();
+    configuration.setBatch(batch);
     // configuration.setProxy('http://localhost:8888');
-    configuration.setApiKey(process.env.APPLITOOLS_FABRIC_API_KEY);
+    configuration.setApiKey('JmUcMMYOHDx0KXIvd4rgPIL2ycRN4jba31DqmLYTHOE110');
     configuration.setServerUrl('https://eyesfabric4eyes.applitools.com');
   });
 
