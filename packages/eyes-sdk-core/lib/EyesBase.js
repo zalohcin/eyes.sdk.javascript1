@@ -2,7 +2,7 @@
 
 const {
   ArgumentGuard, TypeUtils, EyesError, Region, Location, RectangleSize, CoordinatesType, ImageDeltaCompressor,
-  SimplePropertyHandler, ReadOnlyPropertyHandler, FileDebugScreenshotsProvider, NullDebugScreenshotProvider,
+  SimplePropertyHandler, ReadOnlyPropertyHandler, FileDebugScreenshotsProvider, NullDebugScreenshotProvider, GeneralUtils
 } = require('@applitools/eyes-common');
 
 const { AppOutputProvider } = require('./capture/AppOutputProvider');
@@ -1201,11 +1201,19 @@ class EyesBase extends EyesAbstract {
   }
 
   /**
+   * @return {boolean}
+   * @private
+   */
+  _getDontCloseBatches() {
+    return GeneralUtils.getEnvValue('DONT_CLOSE_BATCHES', true) || false;
+  }
+
+  /**
    * @package
    * @return {Promise}
    */
   async closeBatch() {
-    if (this._configuration.getIsDisabled()) {
+    if (this._configuration.getIsDisabled() || this._getDontCloseBatches()) {
       this._logger.verbose('closeBatch Ignored');
       return;
     }
