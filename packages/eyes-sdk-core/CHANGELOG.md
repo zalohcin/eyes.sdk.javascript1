@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.20.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.20.1...@applitools/eyes-sdk-core@5.20.2) (2019-10-07)
+
+
+### Bug Fixes
+
+* **eyes-sdk-core:** don't close batch if APPLITOOLS_DONT_CLOSE_BATCHES=true ([e07344f](https://github.com/applitools/eyes.sdk.javascript1/commit/e07344f))
+
+
+
+
+
 ## [5.20.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.20.0...@applitools/eyes-sdk-core@5.20.1) (2019-10-07)
 
 
