@@ -27,7 +27,8 @@
   "main": "src/visual-grid-client.js",
   "files": [
     "src",
-    "browser.js"
+    "browser.js",
+    "index.d.ts"
   ],
   "dependencies": {
     "@applitools/dom-snapshot": "^3.0.2",
