@@ -124,6 +124,12 @@ declare namespace Eyes {
        * Default value: false
        */
       notifyOnCompletion?:boolean
+
+      /**
+       * Disable all eyes functionality.
+       * Default value: false
+       */
+      isDisabled?:boolean
     }
     
     interface BrowserViewport {
