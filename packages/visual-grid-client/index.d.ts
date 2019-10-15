@@ -1,6 +1,6 @@
 
 declare namespace Eyes {
-  namespace Open {
+  export namespace Open {
     interface Options {
       /**
        * Your app name.
@@ -151,7 +151,7 @@ declare namespace Eyes {
     AAA = "AAA",
   }
 
-  namespace Check {
+  export namespace Check {
     interface Options {
       /**
        * A logical name for this check.
