@@ -145,11 +145,7 @@ declare namespace Eyes {
     }
   }
 
-  enum AccessibilityLevel {
-    None = "None",
-    AA = "AA",
-    AAA = "AAA",
-  }
+  type AccessibilityLevel = "None"|"AA"|"AAA"
 
   export namespace Check {
     interface Options {
@@ -267,13 +263,7 @@ declare namespace Eyes {
       maxRightOffset: number
     }
 
-    enum AccessibilityType {
-      IgnoreContrast = 'IgnoreContrast',
-      RegularText = 'RegularText',
-      LargeText = 'LargeText',
-      BoldText = 'BoldText',
-      GraphicalObject =  'GraphicalObject',
-    }
+    type AccessibilityType = "IgnoreContrast"|"RegularText"|"LargeText"|"BoldText"|"GraphicalObject"
 
     interface AccessibilityRegion extends Region {
       accessibilityType: AccessibilityType
