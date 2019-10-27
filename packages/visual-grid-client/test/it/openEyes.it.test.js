@@ -204,15 +204,21 @@ describe('openEyes', () => {
     });
 
     const blobUrl = `${baseUrl}/blob.css`;
+    const imageUrl = `${baseUrl}/smurfs4.jpg`;
     const resourceContents = {
       [blobUrl]: {
         url: blobUrl,
         type: 'text/css',
         value: loadFixtureBuffer('blob.css'),
       },
+      [imageUrl]: {
+        url: imageUrl,
+        type: 'image/jpeg',
+        value: loadFixtureBuffer('smurfs.jpg'),
+      },
     };
 
-    wrapper.goodResourceUrls = [`${baseUrl}/blob.css`, `${baseUrl}/smurfs4.jpg`];
+    wrapper.goodResourceUrls = [blobUrl, imageUrl];
 
     checkWindow({cdt: [], resourceContents, tag: 'good1', url: `${baseUrl}/test.html`});
     expect((await close())[0].getStepsInfo().map(r => r.result.getAsExpected())).to.eql([true]);
