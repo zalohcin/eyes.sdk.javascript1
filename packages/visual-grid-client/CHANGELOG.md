@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [13.0.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.36.4...@applitools/visual-grid-client@13.0.0) (2019-10-27)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** changed enums to strings in ts defenition file ([b2fe5a9](https://github.com/applitools/eyes.sdk.javascript1/commit/b2fe5a9))
+* **visual-grid-client:** fix package json ([579c8c2](https://github.com/applitools/eyes.sdk.javascript1/commit/579c8c2))
+* **visual-grid-client:** removed unnessecery parsing of blobs ([8075058](https://github.com/applitools/eyes.sdk.javascript1/commit/8075058))
+
+
+### BREAKING CHANGES
+
+* **visual-grid-client:** MUST UPDATE dom snapshot to 3.0.4 - since dom snapshot had a bug that this bug fix in vgc covers for git status
+
+
+
+
+
 ## [12.36.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@12.36.2...@applitools/visual-grid-client@12.36.4) (2019-10-16)
 
 
