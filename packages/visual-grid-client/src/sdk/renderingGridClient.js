@@ -18,6 +18,7 @@ const getBatch = require('./getBatch');
 const makeCloseBatch = require('./makeCloseBatch');
 const transactionThroat = require('./transactionThroat');
 const getRenderMethods = require('./getRenderMethods');
+const makeGlobalState = require('./globalState');
 
 const {
   createRenderWrapper,
@@ -136,6 +137,8 @@ function makeRenderingGridClient({
     batchSequenceName: defaultBatchSequenceName,
   } = getBatch({batchSequenceName, batchName, batchId});
 
+  const globalState = makeGlobalState({logger});
+
   const batches = _batches || new Map();
   const openEyes = makeOpenEyes({
     appName,
@@ -178,6 +181,7 @@ function makeRenderingGridClient({
     userAgent,
     notifyOnCompletion,
     batches,
+    globalState,
   });
 
   const closeBatch = !dontCloseBatches && !isDisabled ? makeCloseBatch(batches) : async () => {};
@@ -185,6 +189,7 @@ function makeRenderingGridClient({
   return {
     openEyes,
     closeBatch,
+    globalState,
   };
 
   function getRenderInfo() {

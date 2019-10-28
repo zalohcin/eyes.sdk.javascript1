@@ -2,7 +2,6 @@
 const makeCheckWindow = require('./checkWindow');
 const makeAbort = require('./makeAbort');
 const makeClose = require('./makeClose');
-const makeTestContorler = require('./makeTestContorler');
 const assumeEnvironment = require('./assumeEnvironment');
 
 const {
@@ -56,6 +55,7 @@ function makeOpenEyes({
   agentId,
   notifyOnCompletion: _notifyOnCompletion,
   batches,
+  globalState,
 }) {
   return async function openEyes({
     testName,
@@ -170,13 +170,18 @@ function makeOpenEyes({
     let stepCounter = 0;
 
     let checkWindowPromises = wrappers.map(() => Promise.resolve());
-    const testController = makeTestContorler({testName, numOfTests: wrappers.length, logger});
+    const testController = globalState.makeTestController({
+      testName,
+      numOfTests: wrappers.length,
+      logger,
+    });
 
     const headers = {'User-Agent': userAgent};
     const createRGridDOMAndGetResourceMapping = args =>
       _createRGridDOMAndGetResourceMapping(Object.assign({fetchOptions: {headers}}, args));
 
     const checkWindow = makeCheckWindow({
+      globalState,
       testController,
       saveDebugData,
       createRGridDOMAndGetResourceMapping,
@@ -202,6 +207,7 @@ function makeOpenEyes({
       openEyesPromises,
       wrappers,
       resolveTests,
+      // globalState, // not currently in use
       testController,
       logger,
       batches,
@@ -211,6 +217,7 @@ function makeOpenEyes({
       openEyesPromises,
       wrappers,
       resolveTests,
+      // globalState, // not currently in use
       testController,
       batches,
     });
