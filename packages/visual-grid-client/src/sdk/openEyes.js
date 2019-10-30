@@ -57,7 +57,7 @@ function makeOpenEyes({
   notifyOnCompletion: _notifyOnCompletion,
   batches,
   wrappers: _wrappers,
-  isIsngleWindow = false,
+  isSingleWindow = false,
 }) {
   return async function openEyes({
     testName,
@@ -167,7 +167,7 @@ function makeOpenEyes({
       appName,
       testName,
       eyesTransactionThroat,
-      startSession: !isIsngleWindow,
+      startSession: !isSingleWindow,
     });
 
     let stepCounter = 0;
@@ -198,7 +198,7 @@ function makeOpenEyes({
       matchLevel,
       accessibilityLevel,
       fetchHeaders: headers,
-      isIsngleWindow,
+      isSingleWindow,
     });
 
     const close = makeClose({
@@ -209,7 +209,7 @@ function makeOpenEyes({
       testController,
       logger,
       batches,
-      isIsngleWindow,
+      isSingleWindow,
     });
     const abort = makeAbort({
       getCheckWindowPromises,

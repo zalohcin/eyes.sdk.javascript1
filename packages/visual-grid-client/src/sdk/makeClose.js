@@ -11,7 +11,7 @@ function makeClose({
   testController,
   logger,
   batches,
-  isIsngleWindow,
+  isSingleWindow,
 }) {
   const waitAndResolveTests = makeWaitForTestEnd({
     getCheckWindowPromises,
@@ -32,7 +32,7 @@ function makeClose({
 
       if ((error = testController.getFatalError())) {
         logger.log('closeEyes() fatal error found');
-        !isIsngleWindow && (await wrappers[testIndex].ensureAborted());
+        !isSingleWindow && (await wrappers[testIndex].ensureAborted());
         return (didError = true), error;
       }
       if ((error = testController.getError(testIndex))) {
@@ -40,7 +40,7 @@ function makeClose({
         return (didError = true), error;
       }
 
-      const closePromise = !isIsngleWindow
+      const closePromise = !isSingleWindow
         ? wrappers[testIndex].close(throwEx)
         : wrappers[testIndex].closeTestWindow(checkWindowResult, throwEx);
       const [closeError, closeResult] = await presult(closePromise);

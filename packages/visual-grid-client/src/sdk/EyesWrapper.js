@@ -131,7 +131,7 @@ class EyesWrapper extends EyesBase {
     return this._serverConnector.renderStatusById(renderId);
   }
 
-  async checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation, source}) {
+  checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation, source}) {
     const regionProvider = new NullRegionProvider();
     this.screenshotUrl = screenshotUrl;
     this.domUrl = domUrl;
@@ -139,7 +139,7 @@ class EyesWrapper extends EyesBase {
     return this.checkWindowBase(regionProvider, tag, false, checkSettings, source);
   }
 
-  async testWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation}) {
+  testWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation}) {
     this._logger.verbose(`EyesBase.testWindow`);
     this.screenshotUrl = screenshotUrl;
     this.domUrl = domUrl;
@@ -148,21 +148,21 @@ class EyesWrapper extends EyesBase {
     return this.checkSingleWindowBase(regionProvider, tag, false, checkSettings);
   }
 
-  async closeTestWindow(results, throwEx) {
+  closeTestWindow(results, throwEx) {
     const status = results.getStatus();
     if (status === TestResultsStatus.Unresolved) {
       if (results.getIsNew()) {
         if (throwEx) {
-          throw new NewTestError(results, this._sessionStartInfo);
+          return Promise.reject(new NewTestError(results, this._sessionStartInfo));
         }
       } else {
         if (throwEx) {
-          throw new DiffsFoundError(results, this._sessionStartInfo);
+          return Promise.reject(new DiffsFoundError(results, this._sessionStartInfo));
         }
       }
     } else if (status === TestResultsStatus.Failed) {
       if (throwEx) {
-        throw new TestFailedError(results, this._sessionStartInfo);
+        return Promise.reject(new TestFailedError(results, this._sessionStartInfo));
       }
     }
 
@@ -177,7 +177,7 @@ class EyesWrapper extends EyesBase {
     this._matchWindowTask = null;
     this._autSessionId = undefined;
     this._currentAppName = undefined;
-    return results;
+    return Promise.resolve(results);
   }
 
   setProxy(proxy) {

@@ -29,7 +29,7 @@ function makeCheckWindow({
   fetchHeaders,
   matchLevel: _matchLevel,
   accessibilityLevel: _accessibilityLevel,
-  isIsngleWindow,
+  isSingleWindow,
 }) {
   return function checkWindow({
     resourceUrls = [],
@@ -261,7 +261,7 @@ function makeCheckWindow({
         source,
       };
 
-      return !isIsngleWindow ? wrapper.checkWindow(checkArgs) : wrapper.testWindow(checkArgs);
+      return !isSingleWindow ? wrapper.checkWindow(checkArgs) : wrapper.testWindow(checkArgs);
     }
 
     async function startRender() {
