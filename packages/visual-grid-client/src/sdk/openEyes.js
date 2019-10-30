@@ -56,11 +56,13 @@ function makeOpenEyes({
   agentId,
   notifyOnCompletion: _notifyOnCompletion,
   batches,
+  wrappers: _wrappers,
+  isIsngleWindow = false,
 }) {
   return async function openEyes({
     testName,
     displayName,
-    wrappers,
+    wrappers = _wrappers,
     userAgent = _userAgent,
     appName = _appName,
     browser = _browser,
@@ -98,7 +100,7 @@ function makeOpenEyes({
       logger.verbose('openEyes: isDisabled=true, skipping checks');
       return {
         checkWindow: disabledFunc('checkWindow'),
-        close: disabledFunc('close'),
+        close: disabledFunc('close', []),
         abort: disabledFunc('abort'),
       };
     }
@@ -165,6 +167,7 @@ function makeOpenEyes({
       appName,
       testName,
       eyesTransactionThroat,
+      startSession: !isIsngleWindow,
     });
 
     let stepCounter = 0;
@@ -195,6 +198,7 @@ function makeOpenEyes({
       matchLevel,
       accessibilityLevel,
       fetchHeaders: headers,
+      isIsngleWindow,
     });
 
     const close = makeClose({
@@ -205,6 +209,7 @@ function makeOpenEyes({
       testController,
       logger,
       batches,
+      isIsngleWindow,
     });
     const abort = makeAbort({
       getCheckWindowPromises,
@@ -229,9 +234,10 @@ function makeOpenEyes({
       checkWindowPromises = promises;
     }
 
-    function disabledFunc(name) {
+    function disabledFunc(name, rv) {
       return async () => {
         logger.verbose(`${name}: isDisabled=true, skipping checks`);
+        return rv;
       };
     }
 
