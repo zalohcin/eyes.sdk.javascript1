@@ -11,17 +11,27 @@ const debug = require('debug')('eyes:render');
   const website = process.argv[2];
 
   if (!website) {
-    console.log('No website passed');
+    console.log('no website passed');
     return;
   }
 
-  console.log('Checking website:', website);
+  console.log('checking website:', website);
 
-  const {testWindow} = makeVisualGridClient({
+  const {openEyes, closeBatch} = makeVisualGridClient({
     apiKey: process.env.APPLITOOLS_API_KEY,
     logger: new Logger(!!process.env.APPLITOOLS_SHOW_LOGS, 'eyes:vgc'),
     proxy: process.env.APPLITOOLS_PROXY,
   });
+
+  const {checkWindow, close} = await openEyes({
+    appName: 'render script',
+    testName: `render script ${website}`,
+    batchName: 'Render VGC',
+    browser: [{width: 1024, height: 768, name: 'chrome'}],
+    notifyOnCompletion: true,
+  });
+
+  debug('open done');
 
   const browser = await puppeteer.launch({headless: true});
   const page = await browser.newPage();
@@ -32,7 +42,7 @@ const debug = require('debug')('eyes:render');
 
   debug('navigation done');
 
-  await _delay(1000);
+  await _delay(2000);
   const frame = await page.evaluate(processPageAndSerialize);
 
   debug('processPage done');
@@ -52,32 +62,20 @@ const debug = require('debug')('eyes:render');
 
   debug('decoding done');
 
-  const openParams = {
-    appName: 'render script',
-    testName: `render script ${website}`,
-    batchName: 'Render VGC',
-    browser: [{width: 1024, height: 768, name: 'chrome'}],
-  };
-
-  const results = await testWindow({openParams, checkParams: frame, throwEx: false});
-
-  debug('testWindow done');
+  checkWindow(frame);
+  const results = await close(false);
+  await closeBatch();
 
   if (results.some(r => r instanceof Error)) {
     console.log(
-      'Test error:\n\t',
+      '\nTest error:\n\t',
       results.map(r => r.message || r).reduce((acc, m) => ((acc = `${acc}\n\t${m}`), acc), ''),
     );
   } else {
     console.log(
       '\nTest result:\n\t',
       results
-        .map(
-          r =>
-            `Status: ${r.getStatus()}\n\t RenderId: ${r
-              .getStepsInfo()[0]
-              .getRenderId()}\n\t Url: ${r.getUrl()}\n`,
-        )
+        .map(r => `${r.getStatus()} ${r.getUrl()} renderId: ${r.getStepsInfo()[0].getRenderId()}`)
         .join('\n\t'),
     );
   }

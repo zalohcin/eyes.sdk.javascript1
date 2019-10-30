@@ -16,7 +16,6 @@ const makeOpenEyes = require('./openEyes');
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping');
 const getBatch = require('./getBatch');
 const makeCloseBatch = require('./makeCloseBatch');
-const makeTestWindow = require('./makeTestWindow');
 const transactionThroat = require('./transactionThroat');
 const getRenderMethods = require('./getRenderMethods');
 
@@ -138,7 +137,7 @@ function makeRenderingGridClient({
   } = getBatch({batchSequenceName, batchName, batchId});
 
   const batches = _batches || new Map();
-  const openConfig = {
+  const openEyes = makeOpenEyes({
     appName,
     browser,
     apiKey,
@@ -179,16 +178,13 @@ function makeRenderingGridClient({
     userAgent,
     notifyOnCompletion,
     batches,
-  };
+  });
 
-  const openEyes = makeOpenEyes(openConfig);
   const closeBatch = !dontCloseBatches && !isDisabled ? makeCloseBatch(batches) : async () => {};
-  const testWindow = makeTestWindow(openConfig);
 
   return {
     openEyes,
     closeBatch,
-    testWindow,
   };
 
   function getRenderInfo() {

@@ -29,7 +29,6 @@ function makeCheckWindow({
   fetchHeaders,
   matchLevel: _matchLevel,
   accessibilityLevel: _accessibilityLevel,
-  isSingleWindow,
 }) {
   return function checkWindow({
     resourceUrls = [],
@@ -252,16 +251,14 @@ function makeCheckWindow({
         `running wrapper.checkWindow for test ${testName} stepCount #${currStepCount}`,
       );
 
-      const checkArgs = {
+      await wrapper.checkWindow({
         screenshotUrl,
         tag,
         domUrl: domLocation,
         checkSettings,
         imageLocation,
         source,
-      };
-
-      return !isSingleWindow ? wrapper.checkWindow(checkArgs) : wrapper.testWindow(checkArgs);
+      });
     }
 
     async function startRender() {
