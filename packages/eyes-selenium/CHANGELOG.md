@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.31.11](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.10...@applitools/eyes-selenium@4.31.11) (2019-10-30)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** fixed package json versions ([f7164e7](https://github.com/applitools/eyes.sdk.javascript1/commit/f7164e7))
+* **visual-grid-client:** reverted testWindow ([db336c7](https://github.com/applitools/eyes.sdk.javascript1/commit/db336c7))
+
+
+
+
+
 ## [4.31.9](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.8...@applitools/eyes-selenium@4.31.9) (2019-10-27)
 
 **Note:** Version bump only for package @applitools/eyes-selenium
