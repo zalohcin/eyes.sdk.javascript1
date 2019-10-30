@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.7.46](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-appium@4.7.45...@applitools/eyes-appium@4.7.46) (2019-10-30)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** reverted testWindow ([db336c7](https://github.com/applitools/eyes.sdk.javascript1/commit/db336c7))
+
+
+
+
+
 ## [4.7.45](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-appium@4.7.45...@applitools/eyes-appium@4.7.45) (2019-10-30)
 
 
