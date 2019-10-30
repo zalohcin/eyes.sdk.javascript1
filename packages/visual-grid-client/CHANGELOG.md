@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [13.1.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.0.1...@applitools/visual-grid-client@13.1.0) (2019-10-30)
+
+
+### Features
+
+* **visual-grid-client:** added testWindow api - one function test. ([614495a](https://github.com/applitools/eyes.sdk.javascript1/commit/614495a))
+
+
+
+
+
 ## [13.0.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.0.0...@applitools/visual-grid-client@13.0.1) (2019-10-27)
 
 
