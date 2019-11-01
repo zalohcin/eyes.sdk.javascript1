@@ -11,6 +11,7 @@ const calculateMatchRegions = require('./calculateMatchRegions');
 const isInvalidAccessibility = require('./isInvalidAccessibility');
 
 function makeCheckWindow({
+  globalState,
   testController,
   saveDebugData,
   createRGridDOMAndGetResourceMapping,
@@ -289,8 +290,14 @@ function makeCheckWindow({
         sendDom,
       });
 
-      let renderIds = await renderThroat(() => renderBatch(renderRequests));
-      renderJobs = renderIds.map(createRenderJob);
+      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() + 1);
+      const renderBatchPromise = renderThroat(() => {
+        logger.log(`starting to render test ${testName}`);
+        return renderBatch(renderRequests);
+      });
+      renderJobs = renderRequests.map(createRenderJob);
+      const renderIds = await renderBatchPromise;
+      globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() - 1);
 
       if (saveDebugData) {
         for (const renderId of renderIds) {
