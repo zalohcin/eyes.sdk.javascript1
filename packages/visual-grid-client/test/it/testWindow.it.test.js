@@ -78,7 +78,17 @@ describe('testWindow', () => {
     );
 
     expect(results.constructor.name).to.eql('TestResults');
-    expect(openArgs).to.eql(['some app name', 'some test name', false]);
+    expect(openArgs).to.eql([
+      {
+        appName: 'some app name',
+        skipStartingSession: true,
+        testName: 'some test name',
+        viewportSize: {
+          _height: 768,
+          _width: 1024,
+        },
+      },
+    ]);
 
     const removeSalt = str => {
       const obj = JSON.parse(str);

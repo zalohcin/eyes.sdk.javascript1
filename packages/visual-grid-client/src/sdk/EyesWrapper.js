@@ -18,8 +18,8 @@ class EyesWrapper extends EyesBase {
     logHandler && this.setLogHandler(logHandler);
   }
 
-  async open(appName, testName, viewportSize) {
-    await super.openBase(appName, testName);
+  async open({appName, testName, viewportSize, skipStartingSession}) {
+    await super.openBase(appName, testName, undefined, undefined, skipStartingSession);
 
     if (viewportSize) {
       this.setViewportSize(viewportSize);
