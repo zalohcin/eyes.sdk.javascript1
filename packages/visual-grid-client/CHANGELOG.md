@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [13.2.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.2.0...@applitools/visual-grid-client@13.2.1) (2019-11-04)
+
+
+### Bug Fixes
+
+* **eyes-sdk-core, visual-grid-client:** added skipStartingSession to openBase - fixed testWindow startSession calls. ([cd424cb](https://github.com/applitools/eyes.sdk.javascript1/commit/cd424cb))
+
+
+
+
+
 # [13.2.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.1.5...@applitools/visual-grid-client@13.2.0) (2019-11-03)
 
 
