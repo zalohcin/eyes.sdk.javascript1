@@ -2,7 +2,7 @@
 
 const {
   ArgumentGuard, TypeUtils, EyesError, Region, Location, RectangleSize, CoordinatesType, ImageDeltaCompressor,
-  SimplePropertyHandler, ReadOnlyPropertyHandler, FileDebugScreenshotsProvider, NullDebugScreenshotProvider, GeneralUtils
+  SimplePropertyHandler, ReadOnlyPropertyHandler, FileDebugScreenshotsProvider, NullDebugScreenshotProvider, GeneralUtils,
 } = require('@applitools/eyes-common');
 
 const { AppOutputProvider } = require('./capture/AppOutputProvider');
@@ -825,9 +825,10 @@ class EyesBase extends EyesAbstract {
    *   visible part of the document's body) or {@code null} to allow any viewport size.
    * @param {SessionType} [sessionType=SessionType.SEQUENTIAL] - The type of test (e.g., Progression for timing tests),
    *   or {@code null} to use the default.
+   * @param {skipStartingSession} [skipStartingSession=false] - If {@code true} skip starting the session.
    * @return {Promise}
    */
-  async openBase(appName, testName, viewportSize, sessionType = SessionType.SEQUENTIAL) {
+  async openBase(appName, testName, viewportSize, sessionType = SessionType.SEQUENTIAL, skipStartingSession = false) {
     this._logger.getLogHandler().open();
 
     // noinspection NonBlockStatementBodyJS
@@ -864,7 +865,7 @@ class EyesBase extends EyesAbstract {
       this._configuration.setSessionType(sessionType);
       this._validationId = -1;
 
-      if (this._configuration.getViewportSize()) {
+      if (this._configuration.getViewportSize() && !skipStartingSession) {
         await this._ensureRunningSession();
       }
 

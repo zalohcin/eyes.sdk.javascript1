@@ -167,7 +167,7 @@ function makeOpenEyes({
       appName,
       testName,
       eyesTransactionThroat,
-      startSession: !isSingleWindow,
+      skipStartingSession: isSingleWindow,
     });
 
     let stepCounter = 0;
