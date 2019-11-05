@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.31.16](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.15...@applitools/eyes-selenium@4.31.16) (2019-11-05)
+
+
+### Bug Fixes
+
+* **eyes-selenium:** fix css stitching for new chrome 78 (bug in chrome) ([e79bb49](https://github.com/applitools/eyes.sdk.javascript1/commit/e79bb49354cf3f763beef5fdd0e397531c029a9f))
+
+
+
+
+
 ## [4.31.15](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.14...@applitools/eyes-selenium@4.31.15) (2019-11-04)
 
 **Note:** Version bump only for package @applitools/eyes-selenium
