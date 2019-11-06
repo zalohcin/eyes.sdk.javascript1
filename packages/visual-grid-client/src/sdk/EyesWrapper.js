@@ -140,7 +140,7 @@ class EyesWrapper extends EyesBase {
   }
 
   testWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation}) {
-    this._logger.verbose(`EyesBase.testWindow`);
+    this._logger.verbose(`EyesWrapper.testWindow() called`);
     this.screenshotUrl = screenshotUrl;
     this.domUrl = domUrl;
     this.imageLocation = imageLocation;
@@ -149,6 +149,7 @@ class EyesWrapper extends EyesBase {
   }
 
   closeTestWindow(results, throwEx) {
+    this._logger.verbose(`EyesWrapper.closeTestWindow() called`);
     const status = results.getStatus();
     if (status === TestResultsStatus.Unresolved) {
       if (results.getIsNew()) {

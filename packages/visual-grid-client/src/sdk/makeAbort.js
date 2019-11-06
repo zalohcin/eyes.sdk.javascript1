@@ -10,10 +10,12 @@ function makeAbort({
   resolveTests,
   testController,
   batches,
+  logger,
 }) {
   const waitAndResolveTests = makeWaitForTestEnd({
     getCheckWindowPromises,
     openEyesPromises,
+    logger,
   });
 
   return async () => {

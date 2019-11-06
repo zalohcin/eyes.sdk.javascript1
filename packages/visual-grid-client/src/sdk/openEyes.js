@@ -161,6 +161,7 @@ function makeOpenEyes({
       throw renderInfo;
     }
 
+    logger.verbose('openEyes: opening wrappers');
     const {openEyesPromises, resolveTests} = openWrappers({
       wrappers,
       browsers,
@@ -225,6 +226,7 @@ function makeOpenEyes({
       // globalState, // not currently in use
       testController,
       batches,
+      logger,
     });
 
     return {

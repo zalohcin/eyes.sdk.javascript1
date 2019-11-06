@@ -16,11 +16,13 @@ function makeClose({
   const waitAndResolveTests = makeWaitForTestEnd({
     getCheckWindowPromises,
     openEyesPromises,
+    logger,
   });
 
   return async (throwEx = true) => {
     let error, didError;
     const settleError = (throwEx ? Promise.reject : Promise.resolve).bind(Promise);
+    logger.log('closeEyes() called');
 
     if (testController.getIsAbortedByUser()) {
       logger.log('closeEyes() aborted by user');
@@ -52,6 +54,7 @@ function makeClose({
         return closeError;
       }
     }).then(results => {
+      logger.log(`closeEyes() done`);
       storeBatchHandle(wrappers, batches);
       return didError ? settleError(results) : results;
     });
