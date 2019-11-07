@@ -76,6 +76,7 @@ function makeGetAllResources({resourceCache, fetchResource, extractCssResources,
     async function processResource(resource) {
       let {dependentResources, fetchedResources} = await getDependantResources(resource);
       const rGridResource = fromFetchedToRGridResource(resource);
+      resourceCache.setValue(resource.url, toCacheEntry(rGridResource));
       resourceCache.setDependencies(resource.url, dependentResources);
       return Object.assign({[resource.url]: rGridResource}, fetchedResources);
     }
