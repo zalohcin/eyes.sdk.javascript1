@@ -27,20 +27,12 @@ describe('getAllResources', () => {
       fetch,
     });
     resourceCache = createResourceCache();
-    const getAllResourcesOrig = makeGetAllResources({
+    getAllResources = makeGetAllResources({
       resourceCache,
       extractCssResources,
       fetchResource,
       logger: testLogger,
     });
-
-    getAllResources = async args => {
-      const r = await getAllResourcesOrig(args);
-      for (const resource of Object.values(r)) {
-        resource._sha256hash = undefined; // make sure all resources dont calculate the hash for simplicity.
-      }
-      return r;
-    };
   });
 
   it('works for absolute urls', async () => {
@@ -139,36 +131,6 @@ describe('getAllResources', () => {
 
     const resourcesFromCache = await getAllResources({resourceUrls: [url]});
     expect(resourcesFromCache).to.eql(expected);
-  });
-
-  it('sets and gets resources from cache', async () => {
-    const url = 'https://google.com';
-    const type = 'text/css';
-    const value = 'value';
-    const rGridResource = toRGridResource({url, type, value});
-
-    let called = 0;
-    const fetchResource = async _url => (++called, {url, type, value});
-    resourceCache = createResourceCache();
-    getAllResources = makeGetAllResources({
-      resourceCache,
-      extractCssResources,
-      fetchResource,
-      logger: testLogger,
-    });
-
-    const expected = {
-      [url]: rGridResource,
-    };
-
-    const resourcesFromCache = await getAllResources({resourceUrls: [url]});
-    const resourcesFromCache2 = await getAllResources({resourceUrls: [url]});
-    expect(called).to.eql(1);
-
-    resourcesFromCache[url]._sha256hash = undefined;
-    resourcesFromCache2[url]._sha256hash = undefined;
-    expect(resourcesFromCache).to.eql(expected);
-    expect(resourcesFromCache2).to.eql(expected);
   });
 
   it('fetches with fetchOptions', async () => {
