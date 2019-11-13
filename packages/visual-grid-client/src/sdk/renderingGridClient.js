@@ -2,7 +2,10 @@
 'use strict';
 
 const throatPkg = require('throat');
-const {Logger} = require('@applitools/eyes-common');
+const {
+  Logger,
+  GeneralUtils: {backwardCompatible},
+} = require('@applitools/eyes-common');
 const {ptimeoutWithError} = require('@applitools/functional-commons');
 const makeGetAllResources = require('./getAllResources');
 const extractCssResources = require('./extractCssResources');
@@ -43,10 +46,12 @@ function makeRenderingGridClient({
   apiKey,
   saveDebugData,
   batchSequenceName,
+  batchSequence,
   batchName,
   batchId,
   properties,
   baselineBranchName,
+  baselineBranch,
   baselineEnvName,
   baselineName,
   envName,
@@ -58,7 +63,9 @@ function makeRenderingGridClient({
   enablePatterns,
   ignoreDisplacements,
   parentBranchName,
+  parentBranch,
   branchName,
+  branch,
   proxy,
   saveFailedTests,
   saveNewTests,
@@ -69,6 +76,7 @@ function makeRenderingGridClient({
   fetchResourceTimeout = 120000,
   userAgent,
   notifyOnCompletion,
+  batchNotify,
   batches: _batches,
   dontCloseBatches,
 }) {
@@ -77,6 +85,15 @@ function makeRenderingGridClient({
   if (isNaN(openEyesConcurrency)) {
     throw new Error('concurrency is not a number');
   }
+
+  ({batchSequence, baselineBranch, parentBranch, branch, batchNotify} = backwardCompatible(
+    [{batchSequenceName}, {batchSequence}],
+    [{baselineBranchName}, {baselineBranch}],
+    [{parentBranchName}, {parentBranch}],
+    [{branchName}, {branch}],
+    [{notifyOnCompletion}, {batchNotify}],
+    logger,
+  ));
 
   let renderInfoPromise;
   const eyesTransactionThroat = transactionThroat(openEyesConcurrency);
@@ -135,8 +152,8 @@ function makeRenderingGridClient({
   const {
     batchId: defaultBatchId,
     batchName: defaultBatchName,
-    batchSequenceName: defaultBatchSequenceName,
-  } = getBatch({batchSequenceName, batchName, batchId});
+    batchSequence: defaultBatchSequence,
+  } = getBatch({batchSequence, batchName, batchId});
 
   const globalState = makeGlobalState({logger});
 
@@ -146,11 +163,11 @@ function makeRenderingGridClient({
     browser,
     apiKey,
     saveDebugData,
-    batchSequenceName: defaultBatchSequenceName,
+    batchSequence: defaultBatchSequence,
     batchName: defaultBatchName,
     batchId: defaultBatchId,
     properties,
-    baselineBranchName,
+    baselineBranch,
     baselineEnvName,
     baselineName,
     envName,
@@ -161,8 +178,8 @@ function makeRenderingGridClient({
     useDom,
     enablePatterns,
     ignoreDisplacements,
-    parentBranchName,
-    branchName,
+    parentBranch,
+    branch,
     proxy,
     saveFailedTests,
     saveNewTests,
@@ -180,7 +197,7 @@ function makeRenderingGridClient({
     eyesTransactionThroat,
     agentId,
     userAgent,
-    notifyOnCompletion,
+    batchNotify,
     batches,
     globalState,
   };

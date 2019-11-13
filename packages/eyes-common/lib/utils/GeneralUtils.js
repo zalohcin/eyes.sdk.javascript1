@@ -317,6 +317,38 @@ class GeneralUtils {
 
     return undefined;
   }
+
+  /**
+   * Make sure new param value is set with either backward compatible param or the new param.
+   *
+   * @param {...object[]} params The parameter map.
+   * @param {logger} logger to log errors
+   * @example
+   *
+   * foo({newParam, oldPram}) {
+   *    ({newParam} = backwardCompatible([{oldParam}, {newParam}], logger))
+   *    // now if oldParam is used we set it to oldParam and log a deprecation message.
+   * }
+   *
+   */
+  static backwardCompatible(...args) {
+    const results = {};
+    const logger = args.pop();
+    for (const [oldParam, newParam] of args) {
+      const oldParamName = Object.keys(oldParam)[0];
+      const newParamName = Object.keys(newParam)[0];
+      if (oldParam[oldParamName] === undefined) {
+        results[newParamName] = newParam[newParamName];
+      } else {
+        logger.log(
+          `warning - "${oldParamName}" is deprectated and will be removed, please use "${newParamName}" instead.`
+        );
+        results[newParamName] = oldParam[oldParamName];
+      }
+    }
+
+    return results;
+  }
 }
 
 exports.GeneralUtils = GeneralUtils;

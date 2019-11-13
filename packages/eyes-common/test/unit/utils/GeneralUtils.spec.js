@@ -202,4 +202,22 @@ describe('GeneralUtils', () => {
       assert.strictEqual(result, undefined);
     });
   });
+
+  describe('backwardCompatible', () => {
+    it('works', async () => {
+      let newParam = 'using new dont change';
+      let oldParam;
+      let newParam2;
+      const oldParam2 = 'using old';
+
+      const log = [];
+      const logger = { log: msg => log.push(msg) };
+
+      ({ newParam, newParam2 } = GeneralUtils.backwardCompatible([{ oldParam }, { newParam }], [{ oldParam2 }, { newParam2 }], logger));
+
+      assert.strictEqual(newParam, 'using new dont change');
+      assert.strictEqual(newParam2, 'using old');
+      assert.strictEqual(log[0], 'warning - "oldParam2" is deprectated and will be removed, please use "newParam2" instead.');
+    });
+  });
 });

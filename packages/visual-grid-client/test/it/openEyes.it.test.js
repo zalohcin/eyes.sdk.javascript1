@@ -118,18 +118,18 @@ describe('openEyes', () => {
   });
 
   it('handles `batchName`, `batchId` and `batchSequence` param', async () => {
-    const batchSequenceName = `some batch sequence ${Date.now()}`;
+    const batchSequence = `some batch sequence ${Date.now()}`;
     const batchName = `some batch name ${Date.now()}`;
     const batchId = `some batch ID ${Date.now()}`;
     await openEyes({
       wrappers: [wrapper],
-      batchSequenceName,
+      batchSequence,
       batchName,
       batchId,
       appName,
     });
 
-    expect(wrapper.getBatch().getSequenceName()).to.equal(batchSequenceName);
+    expect(wrapper.getBatch().getSequenceName()).to.equal(batchSequence);
     expect(wrapper.getBatch().getName()).to.equal(batchName);
     expect(wrapper.getBatch().getId()).to.equal(batchId);
   });
@@ -1036,7 +1036,7 @@ describe('openEyes', () => {
       wrappers,
       url: 'bla',
       appName,
-      baselineBranchName: 'baselineBranchName',
+      baselineBranch: 'baselineBranch',
       baselineEnvName: 'baselineEnvName',
       baselineName: 'baselineName',
       envName: 'envName',
@@ -1044,19 +1044,19 @@ describe('openEyes', () => {
       isDisabled: false,
       matchLevel: 'matchLevel',
       accessibilityLevel: 'accessibilityLevel',
-      parentBranchName: 'parentBranchName',
-      branchName: 'branchName',
+      parentBranch: 'parentBranch',
+      branch: 'branch',
       saveFailedTests: 'saveFailedTests',
       saveNewTests: 'saveNewTests',
       compareWithParentBranch: 'compareWithParentBranch',
       ignoreBaseline: 'ignoreBaseline',
       browser: [{deviceName: 'device1'}, {deviceName: 'device2'}, {}],
       agentId: 'agentId',
-      notifyOnCompletion: true,
+      batchNotify: true,
     });
 
     for (const wrapper of wrappers) {
-      expect(wrapper.baselineBranchName).to.equal('baselineBranchName');
+      expect(wrapper.baselineBranchName).to.equal('baselineBranch');
       expect(wrapper.baselineEnvName).to.equal('baselineEnvName');
       expect(wrapper.baselineName).to.equal('baselineName');
       expect(wrapper.envName).to.equal('envName');
@@ -1064,8 +1064,8 @@ describe('openEyes', () => {
       expect(wrapper.isDisabled).to.equal(false);
       expect(wrapper.matchLevel).to.equal('matchLevel');
       expect(wrapper.accessibilityLevel).to.equal('accessibilityLevel');
-      expect(wrapper.parentBranchName).to.equal('parentBranchName');
-      expect(wrapper.branchName).to.equal('branchName');
+      expect(wrapper.parentBranchName).to.equal('parentBranch');
+      expect(wrapper.branchName).to.equal('branch');
       expect(wrapper.proxy).to.equal('proxy');
       expect(wrapper.saveFailedTests).to.equal('saveFailedTests');
       expect(wrapper.saveNewTests).to.equal('saveNewTests');
@@ -1095,7 +1095,7 @@ describe('openEyes', () => {
       serverUrl: 'serverUrl',
       proxy: 'proxy',
       appName,
-      baselineBranchName: 'baselineBranchName',
+      baselineBranch: 'baselineBranch',
       baselineEnvName: 'baselineEnvName',
       baselineName: 'baselineName',
       envName: 'envName',
@@ -1103,8 +1103,8 @@ describe('openEyes', () => {
       isDisabled: false,
       matchLevel: 'matchLevel',
       accessibilityLevel: 'accessibilityLevel',
-      parentBranchName: 'parentBranchName',
-      branchName: 'branchName',
+      parentBranch: 'parentBranch',
+      branch: 'branch',
       saveFailedTests: 'saveFailedTests',
       saveNewTests: 'saveNewTests',
       compareWithParentBranch: 'compareWithParentBranch',
@@ -1119,7 +1119,7 @@ describe('openEyes', () => {
     });
 
     for (const wrapper of wrappers) {
-      expect(wrapper.baselineBranchName).to.equal('baselineBranchName');
+      expect(wrapper.baselineBranchName).to.equal('baselineBranch');
       expect(wrapper.baselineEnvName).to.equal('baselineEnvName');
       expect(wrapper.baselineName).to.equal('baselineName');
       expect(wrapper.envName).to.equal('envName');
@@ -1127,8 +1127,8 @@ describe('openEyes', () => {
       expect(wrapper.isDisabled).to.equal(false);
       expect(wrapper.matchLevel).to.equal('matchLevel');
       expect(wrapper.accessibilityLevel).to.equal('accessibilityLevel');
-      expect(wrapper.parentBranchName).to.equal('parentBranchName');
-      expect(wrapper.branchName).to.equal('branchName');
+      expect(wrapper.parentBranchName).to.equal('parentBranch');
+      expect(wrapper.branchName).to.equal('branch');
       expect(wrapper.proxy).to.equal('proxy');
       expect(wrapper.saveFailedTests).to.equal('saveFailedTests');
       expect(wrapper.saveNewTests).to.equal('saveNewTests');

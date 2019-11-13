@@ -1,4 +1,7 @@
 'use strict';
+const {
+  GeneralUtils: {backwardCompatible},
+} = require('@applitools/eyes-common');
 const makeCheckWindow = require('./checkWindow');
 const makeAbort = require('./makeAbort');
 const makeClose = require('./makeClose');
@@ -19,10 +22,12 @@ function makeOpenEyes({
   browser: _browser,
   saveDebugData: _saveDebugData,
   batchSequenceName: _batchSequenceName,
+  batchSequence: _batchSequence,
   batchName: _batchName,
   batchId: _batchId,
   properties: _properties,
   baselineBranchName: _baselineBranchName,
+  baselineBranch: _baselineBranch,
   baselineEnvName: _baselineEnvName,
   baselineName: _baselineName,
   envName: _envName,
@@ -34,7 +39,9 @@ function makeOpenEyes({
   enablePatterns: _enablePatterns,
   ignoreDisplacements: _ignoreDisplacements,
   parentBranchName: _parentBranchName,
+  parentBranch: _parentBranch,
   branchName: _branchName,
+  branch: _branch,
   saveFailedTests: _saveFailedTests,
   saveNewTests: _saveNewTests,
   compareWithParentBranch: _compareWithParentBranch,
@@ -54,6 +61,7 @@ function makeOpenEyes({
   getRenderInfo,
   agentId,
   notifyOnCompletion: _notifyOnCompletion,
+  batchNotify: _batchNotify,
   batches,
   globalState,
   wrappers: _wrappers,
@@ -68,10 +76,12 @@ function makeOpenEyes({
     browser = _browser,
     saveDebugData = _saveDebugData,
     batchSequenceName = _batchSequenceName,
+    batchSequence = _batchSequence,
     batchName = _batchName,
     batchId = _batchId,
     properties = _properties,
     baselineBranchName = _baselineBranchName,
+    baselineBranch = _baselineBranch,
     baselineEnvName = _baselineEnvName,
     baselineName = _baselineName,
     envName = _envName,
@@ -83,12 +93,15 @@ function makeOpenEyes({
     enablePatterns = _enablePatterns,
     ignoreDisplacements = _ignoreDisplacements,
     parentBranchName = _parentBranchName,
+    parentBranch = _parentBranch,
     branchName = _branchName,
+    branch = _branch,
     saveFailedTests = _saveFailedTests,
     saveNewTests = _saveNewTests,
     compareWithParentBranch = _compareWithParentBranch,
     ignoreBaseline = _ignoreBaseline,
     notifyOnCompletion = _notifyOnCompletion,
+    batchNotify = _batchNotify,
   }) {
     logger.verbose(`openEyes: testName=${testName}, browser=`, browser);
 
@@ -116,6 +129,15 @@ function makeOpenEyes({
       throw new Error(browserErr);
     }
 
+    ({batchSequence, baselineBranch, parentBranch, branch, batchNotify} = backwardCompatible(
+      [{batchSequenceName}, {batchSequence}],
+      [{baselineBranchName}, {baselineBranch}],
+      [{parentBranchName}, {parentBranch}],
+      [{branchName}, {branch}],
+      [{notifyOnCompletion}, {batchNotify}],
+      logger,
+    ));
+
     wrappers =
       wrappers ||
       initWrappers({count: browsers.length, apiKey, logHandler: logger.getLogHandler()});
@@ -125,11 +147,11 @@ function makeOpenEyes({
       browsers,
       isDisabled,
       displayName,
-      batchSequenceName,
+      batchSequence,
       batchName,
       batchId,
       properties,
-      baselineBranchName,
+      baselineBranch,
       baselineEnvName,
       baselineName,
       envName,
@@ -139,8 +161,8 @@ function makeOpenEyes({
       useDom,
       enablePatterns,
       ignoreDisplacements,
-      parentBranchName,
-      branchName,
+      parentBranch,
+      branch,
       proxy,
       saveFailedTests,
       saveNewTests,
@@ -149,7 +171,7 @@ function makeOpenEyes({
       serverUrl,
       agentId,
       assumeEnvironment,
-      notifyOnCompletion,
+      batchNotify,
     });
 
     const renderInfoPromise =
