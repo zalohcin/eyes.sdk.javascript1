@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [13.3.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.2.4...@applitools/visual-grid-client@13.3.0) (2019-11-13)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** added logs for testWindow ([4bf4a40](https://github.com/applitools/eyes.sdk.javascript1/commit/4bf4a40))
+* **visual-grid-client:** fixed getAllresources test ([5cc55a3](https://github.com/applitools/eyes.sdk.javascript1/commit/5cc55a3))
+* **visual-grid-client:** now we process resources and set them to cache ([bfe5b1a](https://github.com/applitools/eyes.sdk.javascript1/commit/bfe5b1a))
+* **visual-grid-client:** reverted caching all resources for process ([0376cde](https://github.com/applitools/eyes.sdk.javascript1/commit/0376cde))
+* **visual-grid-client:** setting process resource cache with css/svg contents ([5100790](https://github.com/applitools/eyes.sdk.javascript1/commit/5100790))
+
+
+### Features
+
+* **eyes-sdk-core, visual-grid-client:** supporting new params names for batch stuff ([586cd0e](https://github.com/applitools/eyes.sdk.javascript1/commit/586cd0e))
+
+
+
+
+
 ## [13.2.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.2.1...@applitools/visual-grid-client@13.2.4) (2019-11-05)
 
 

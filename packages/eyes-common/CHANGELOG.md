@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.12.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.11.2...@applitools/eyes-common@3.12.0) (2019-11-13)
+
+
+### Features
+
+* **eyes-sdk-core, visual-grid-client:** supporting new params names for batch stuff ([586cd0e](https://github.com/applitools/eyes.sdk.javascript1/commit/586cd0e))
+
+
+
+
+
 ## [3.11.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-common@3.11.1...@applitools/eyes-common@3.11.2) (2019-10-07)
 
 
