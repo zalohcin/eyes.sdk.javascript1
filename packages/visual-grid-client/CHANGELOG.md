@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [13.3.1](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.3.0...@applitools/visual-grid-client@13.3.1) (2019-11-14)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** closing batch in one server connector for all batches ([7d0ffc3](https://github.com/applitools/eyes.sdk.javascript1/commit/7d0ffc3))
+
+
+
+
+
 # [13.3.0](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.2.4...@applitools/visual-grid-client@13.3.0) (2019-11-13)
 
 
