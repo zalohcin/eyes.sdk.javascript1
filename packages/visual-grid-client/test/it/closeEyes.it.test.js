@@ -2,6 +2,7 @@
 const {describe, it, before, after, beforeEach, afterEach} = require('mocha');
 const {expect} = require('chai');
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient');
+const makeGlobalState = require('../../src/sdk/globalState');
 const createFakeWrapper = require('../util/createFakeWrapper');
 const testServer = require('../util/testServer');
 const {promisify: p} = require('util');
@@ -183,13 +184,13 @@ describe('closeEyes', () => {
   });
 
   it('sets the correct batchId on batches when closing', async () => {
-    const batches = new Map();
+    const globalState = makeGlobalState({logger: {log: () => {}}});
     const openEyes = makeRenderingGridClient({
       showLogs: APPLITOOLS_SHOW_LOGS,
       apiKey,
       renderWrapper: wrapper,
       fetchResourceTimeout: 2000,
-      batches,
+      globalState,
     }).openEyes;
 
     let {checkWindow, close} = await openEyes({
@@ -209,12 +210,9 @@ describe('closeEyes', () => {
       browser: [{width: 1, height: 1}, {width: 2, height: 2}],
       appName,
     }));
-    checkWindow({cdt: [], resourceUrls: [], tag: 'good1', url: `${baseUrl}/basic.html`});
     await close();
 
-    expect([...batches.keys()]).to.eql(['1', 'secondBatchId']);
-    expect(batches.get('1').name).to.equal('bound deleteBatchSessions');
-    expect(batches.get('secondBatchId').name).to.equal('bound deleteBatchSessions');
+    expect([...globalState.batchStore.ids.values()]).to.eql(['1', 'secondBatchId']);
   });
 
   it('resolves with empty array if aborted by user with throwEx=false', async () => {

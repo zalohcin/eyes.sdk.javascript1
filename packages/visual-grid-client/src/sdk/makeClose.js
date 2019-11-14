@@ -1,7 +1,6 @@
 'use strict';
 const {presult} = require('@applitools/functional-commons');
 const makeWaitForTestEnd = require('./makeWaitForTestEnd');
-const storeBatchHandle = require('./storeBatchHandle');
 
 function makeClose({
   getCheckWindowPromises,
@@ -10,7 +9,7 @@ function makeClose({
   resolveTests,
   testController,
   logger,
-  batches,
+  globalState,
   isSingleWindow,
 }) {
   const waitAndResolveTests = makeWaitForTestEnd({
@@ -28,6 +27,9 @@ function makeClose({
       logger.log('closeEyes() aborted by user');
       return settleError([]);
     }
+
+    const batchId = wrappers[0].getExistingBatchId();
+    globalState.batchStore.addId(batchId);
 
     return waitAndResolveTests(async (testIndex, checkWindowResult) => {
       resolveTests[testIndex]();
@@ -55,7 +57,6 @@ function makeClose({
       }
     }).then(results => {
       logger.log(`closeEyes() done`);
-      storeBatchHandle(wrappers, batches);
       return didError ? settleError(results) : results;
     });
   };

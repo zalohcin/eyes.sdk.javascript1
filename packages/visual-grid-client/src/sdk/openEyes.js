@@ -62,7 +62,6 @@ function makeOpenEyes({
   agentId,
   notifyOnCompletion: _notifyOnCompletion,
   batchNotify: _batchNotify,
-  batches,
   globalState,
   wrappers: _wrappers,
   isSingleWindow = false,
@@ -174,6 +173,12 @@ function makeOpenEyes({
       batchNotify,
     });
 
+    if (!globalState.batchStore.hasCloseBatch()) {
+      globalState.batchStore.setCloseBatch(
+        wrappers[0]._serverConnector.deleteBatchSessions.bind(wrappers[0]._serverConnector),
+      );
+    }
+
     const renderInfoPromise =
       getRenderInfoPromise() || getHandledRenderInfoPromise(getRenderInfo());
 
@@ -234,10 +239,9 @@ function makeOpenEyes({
       openEyesPromises,
       wrappers,
       resolveTests,
-      // globalState, // not currently in use
+      globalState,
       testController,
       logger,
-      batches,
       isSingleWindow,
     });
     const abort = makeAbort({
@@ -245,9 +249,8 @@ function makeOpenEyes({
       openEyesPromises,
       wrappers,
       resolveTests,
-      // globalState, // not currently in use
+      globalState,
       testController,
-      batches,
       logger,
     });
 

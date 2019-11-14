@@ -77,7 +77,7 @@ function makeRenderingGridClient({
   userAgent,
   notifyOnCompletion,
   batchNotify,
-  batches: _batches,
+  globalState: _globalState,
   dontCloseBatches,
 }) {
   const openEyesConcurrency = Number(concurrency);
@@ -155,9 +155,8 @@ function makeRenderingGridClient({
     batchSequence: defaultBatchSequence,
   } = getBatch({batchSequence, batchName, batchId});
 
-  const globalState = makeGlobalState({logger});
+  const globalState = _globalState || makeGlobalState({logger});
 
-  const batches = _batches || new Map();
   const openConfig = {
     appName,
     browser,
@@ -198,12 +197,11 @@ function makeRenderingGridClient({
     agentId,
     userAgent,
     batchNotify,
-    batches,
     globalState,
   };
 
   const openEyes = makeOpenEyes(openConfig);
-  const closeBatch = !dontCloseBatches && !isDisabled ? makeCloseBatch(batches) : async () => {};
+  const closeBatch = makeCloseBatch({globalState, dontCloseBatches, isDisabled});
   const testWindow = makeTestWindow(openConfig);
 
   return {

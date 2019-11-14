@@ -1,5 +1,6 @@
 'use strict';
 const makeTestController = require('./makeTestController');
+const makeBatchStore = require('./makeBatchStore');
 
 function makeGlobalState({logger}) {
   let queuedRendersCount = 0;
@@ -10,6 +11,7 @@ function makeGlobalState({logger}) {
     getQueuedRendersCount,
     setQueuedRendersCount,
     waitForQueuedRenders,
+    batchStore: makeBatchStore(),
   };
 
   function getQueuedRendersCount() {
