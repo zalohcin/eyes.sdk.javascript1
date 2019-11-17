@@ -2,6 +2,7 @@
 
 const cosmiconfig = require('cosmiconfig');
 
+const { GeneralUtils } = require('./GeneralUtils');
 const { Logger } = require('../logging/Logger');
 
 /**
@@ -27,7 +28,7 @@ class ConfigUtils {
 
     const envConfig = {};
     for (const p of configParams) {
-      envConfig[p] = process.env[`APPLITOOLS_${ConfigUtils.toEnvVarName(p)}`];
+      envConfig[p] = GeneralUtils.getEnvValue(ConfigUtils.toEnvVarName(p));
       if (envConfig[p] === 'true') {
         envConfig[p] = true;
       } else if (envConfig[p] === 'false') {
