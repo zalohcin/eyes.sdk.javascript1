@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.5.93](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium-jest-perf@4.5.92...@applitools/eyes-selenium-jest-perf@4.5.93) (2019-11-17)
+
+**Note:** Version bump only for package @applitools/eyes-selenium-jest-perf
+
+
+
+
+
 ## [4.5.92](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium-jest-perf@4.5.91...@applitools/eyes-selenium-jest-perf@4.5.92) (2019-11-14)
 
 **Note:** Version bump only for package @applitools/eyes-selenium-jest-perf
