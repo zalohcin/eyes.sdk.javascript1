@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [13.3.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.3.2...@applitools/visual-grid-client@13.3.3) (2019-11-18)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** updated ds to latest ([6029e3d](https://github.com/applitools/eyes.sdk.javascript1/commit/6029e3d))
+
+
+
+
+
 ## [13.3.2](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.3.1...@applitools/visual-grid-client@13.3.2) (2019-11-17)
 
 **Note:** Version bump only for package @applitools/visual-grid-client
