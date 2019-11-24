@@ -5,13 +5,12 @@ const assert = require('assert');
 const { EyesBase } = require('../../index');
 
 describe('EyesBase', () => {
-  /** @type {EyesBase} */ let eyes;
-
-  before(() => {
-    eyes = new EyesBase();
-  });
-
   describe('setBatch()', () => {
+    /** @type {EyesBase} */ let eyes;
+    before(() => {
+      eyes = new EyesBase();
+    });
+
     it('should create an default batch', () => {
       const batch = eyes.getBatch();
       assert.strictEqual(typeof batch.getId(), 'string');
@@ -117,6 +116,10 @@ describe('EyesBase', () => {
 
     afterEach(() => {
       eyes.setBatch(undefined);
+
+      delete process.env.APPLITOOLS_BATCH_ID;
+      delete process.env.APPLITOOLS_BATCH_NAME;
+      delete process.env.APPLITOOLS_BATCH_SEQUENCE;
     });
   });
 });

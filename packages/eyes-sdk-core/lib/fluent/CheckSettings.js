@@ -33,7 +33,7 @@ class CheckSettings {
     /** @type {boolean} */
     this._ignoreDisplacements = undefined;
     /** @type {boolean} */
-    this._ignoreCaret = false;
+    this._ignoreCaret = true;
     /** @type {boolean} */
     this._stitchContent = false;
     /** @type {string} */
