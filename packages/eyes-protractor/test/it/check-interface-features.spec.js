@@ -1,13 +1,6 @@
 'use strict';
 
-const {
-  ConsoleLogHandler,
-  MatchLevel,
-  Region,
-  RectangleSize,
-  FloatingMatchSettings,
-} = require('@applitools/eyes-common');
-const { Target } = require('@applitools/eyes-selenium');
+const { Target, ConsoleLogHandler, MatchLevel, Region, RectangleSize, FloatingMatchSettings } = require('@applitools/eyes-selenium');
 const { Eyes } = require('../../index');
 
 let eyes = null;

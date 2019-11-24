@@ -3,7 +3,6 @@
 const { EyesSelenium } = require('@applitools/eyes-selenium');
 
 const { ElementFinderWrapper, ElementArrayFinderWrapper } = require('./ElementFinderWrappers');
-
 const VERSION = require('../package.json').version;
 
 /**
@@ -28,10 +27,14 @@ class Eyes extends EyesSelenium {
 
     // extend protractor element to return ours
     if (!global.isEyesOverrodeProtractor) {
-      const originalElementFn = global.element;
+      const originalBy = global.by;
+      const originalElement = global.element;
 
-      global.element = locator => new ElementFinderWrapper(this._logger, this._driver, originalElementFn(locator));
-      global.element.all = locator => new ElementArrayFinderWrapper(this._logger, this._driver, originalElementFn.all(locator));
+      global.element = locator => new ElementFinderWrapper(this._logger, this._driver, originalElement(locator), locator);
+      global.$ = locator => new ElementFinderWrapper(this._logger, this._driver, originalElement(originalBy.css(locator)), originalBy.css(locator));
+
+      global.element.all = locator => new ElementArrayFinderWrapper(this._logger, this._driver, originalElement.all(locator), locator);
+      global.$$ = locator => new ElementArrayFinderWrapper(this._logger, this._driver, originalElement.all(originalBy.css(locator)), originalBy.css(locator));
 
       global.isEyesOverrodeProtractor = true;
     }

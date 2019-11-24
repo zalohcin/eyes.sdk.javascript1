@@ -6,7 +6,7 @@
 exports.config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
   suites: {
-    selenium: 'e2e/*.spec.js',
+    selenium: 'it/*.spec.js',
     default: '*.spec.js',
   },
   capabilities: {

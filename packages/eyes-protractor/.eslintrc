@@ -2,5 +2,8 @@
   "env": {
     "protractor": true,
     "jasmine": true
+  },
+  "globals": {
+    "isEyesOverrodeProtractor": "writable"
   }
 }
