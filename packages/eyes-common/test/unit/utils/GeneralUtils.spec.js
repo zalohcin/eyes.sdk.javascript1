@@ -93,12 +93,16 @@ describe('GeneralUtils', () => {
 
   describe('stringify()', () => {
     it('should return the same args for non-objects', () => {
-      assert.strictEqual(GeneralUtils.stringify(4), '4');
-      assert.strictEqual(GeneralUtils.stringify('str'), 'str');
+      assert.strictEqual(GeneralUtils.stringify('hello world'), 'hello world');
+      assert.strictEqual(GeneralUtils.stringify(123), '123');
+      assert.strictEqual(GeneralUtils.stringify(true), 'true');
+      assert.strictEqual(GeneralUtils.stringify(null), 'null');
+      assert.strictEqual(GeneralUtils.stringify(undefined), 'undefined');
     });
 
     it('should call JSON.stringify for plain objects', () => {
       assert.strictEqual(GeneralUtils.stringify({ prop: 'value' }), JSON.stringify({ prop: 'value' }));
+      assert.strictEqual(GeneralUtils.stringify({ prop: 'value' }), '{"prop":"value"}');
     });
 
     it('should return the stack for errors', () => {
@@ -111,12 +115,56 @@ describe('GeneralUtils', () => {
       assert.strictEqual(GeneralUtils.stringify(() => { return 'bla'; }), '() => { return \'bla\'; }');
     });
 
+    it('should return ISO string for dates', () => {
+      assert.strictEqual(GeneralUtils.stringify(new Date(1575117044000)), '2019-11-30T12:30:44.000Z');
+    });
+
     it('should concat multiple arguments', () => {
       assert.strictEqual(GeneralUtils.stringify(4, 'str', { prop: 'bla' }), '4 str {"prop":"bla"}');
     });
 
     it('should stringify array of objects', () => {
       assert.strictEqual(GeneralUtils.stringify([{ prop: 'bla' }, { prop: 'blo' }]), '[{"prop":"bla"},{"prop":"blo"}]');
+    });
+
+    it('should convert class to object', () => {
+      class Foo {
+        constructor() {
+          this._bar = 'test';
+          this._par = 'world';
+        }
+      }
+
+      assert.strictEqual(GeneralUtils.stringify(new Foo()), '{"bar":"test","par":"world"}');
+    });
+
+    it('should convert class to object using toJSON', () => {
+      class Foo {
+        constructor() {
+          this._bar = 'test';
+          this._par = 'world';
+        }
+
+        toJSON() {
+          return { par: this._par };
+        }
+      }
+
+      assert.strictEqual(GeneralUtils.stringify({ foo: new Foo() }), '{"foo":{"par":"world"}}');
+    });
+
+    it('should use toString method if available', () => {
+      class Foo {
+        constructor() {
+          this._bar = 'test';
+        }
+
+        toString() {
+          return `Foo {bar: ${this._bar}}`;
+        }
+      }
+
+      assert.strictEqual(GeneralUtils.stringify(new Foo()), 'Foo {bar: test}');
     });
   });
 
@@ -234,7 +282,7 @@ describe('GeneralUtils', () => {
 
     it('should convert to hex some characters', () => {
       const str = 'hello world �';
-      assert.strictEqual(GeneralUtils.cleanStringForJSON(str), 'hello world &#13;');
+      assert.strictEqual(GeneralUtils.cleanStringForJSON(str), 'hello world �');
     });
   });
 });

@@ -58,7 +58,49 @@ class GeneralUtils {
   }
 
   /**
-   * Convert object into json string
+   * Converts all arguments to a single string, used for logging
+   *
+   * @param {...*} args
+   * @return {string}
+   */
+  static stringify(...args) {
+    return args.map(arg => GeneralUtils.stringifySingle(arg)).join(' ');
+  }
+
+  /**
+   * Converts argument to string
+   *
+   * @param {*} arg
+   * @return {string}
+   */
+  static stringifySingle(arg) {
+    if (TypeUtils.isObject(arg)) {
+      if (!TypeUtils.isPlainObject(arg)) {
+        if (arg instanceof Error && arg.stack) {
+          return arg.stack;
+        }
+
+        if (arg instanceof Date) {
+          return arg.toISOString();
+        }
+
+        if (arg instanceof Array && arg.length) {
+          return `[${arg.map(i => GeneralUtils.stringifySingle(i)).join(',')}]`;
+        }
+
+        if (typeof arg.toString === 'function' && arg.toString !== Object.prototype.toString) {
+          return arg.toString();
+        }
+      }
+
+      return GeneralUtils.toString(arg);
+    }
+
+    return String(arg);
+  }
+
+  /**
+   * Converts object or class to string, used within `toString` method of classes
    *
    * @param {object} object
    * @param {string[]} [exclude]
@@ -72,7 +114,7 @@ class GeneralUtils {
     try {
       return JSON.stringify(object);
     } catch (err) {
-      console.warn("Error during writing log:", err); // eslint-disable-line
+      console.warn("Error on converting to string:", err); // eslint-disable-line
       // console.warn(util.inspect(object, {depth: null, colors: true})); // eslint-disable-line
       return undefined;
     }
@@ -190,11 +232,9 @@ class GeneralUtils {
 
   // noinspection JSUnusedGlobalSymbols
   /**
-   * Convert a Date object to a RFC-1123 date string
-   *
    * @deprecated Use {@link DateTimeUtils.toLogFileDateTime} instead
    * @param {Date} [date] - Date which will be converted
-   * @return {string} - string formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
+   * @return {string} - string formatted as RFC-1123 (yyyy_mm_dd__HH_MM_ss_l)
    */
   static toLogFileDateTime(date) {
     return DateTimeUtils.toLogFileDateTime(date);
@@ -210,37 +250,6 @@ class GeneralUtils {
    */
   static fromISO8601DateTime(dateTime) {
     return DateTimeUtils.fromISO8601DateTime(dateTime);
-  }
-
-  /**
-   * Convert object(s) to a string
-   *
-   * @param {*} args
-   * @return {string}
-   */
-  static stringify(...args) {
-    return args.map((arg) => {
-      if (arg != null && typeof arg === 'object') {
-        if (arg.constructor !== Object) {
-          // Not plain object
-          if (arg instanceof Error && arg.stack) {
-            return arg.stack;
-          }
-
-          if (arg instanceof Array && arg.length) {
-            return `[${arg.map(i => GeneralUtils.stringify(i)).join(',')}]`;
-          }
-
-          if (typeof arg.toString === 'function' && arg.toString !== Object.prototype.toString) {
-            return arg.toString();
-          }
-        }
-
-        return GeneralUtils.toString(arg);
-      }
-
-      return arg;
-    }).join(' ');
   }
 
   /**
@@ -304,7 +313,7 @@ class GeneralUtils {
     if (process !== undefined) {
       for (const prefix of ENV_PREFIXES) {
         const value = process.env[prefix + propName];
-        if (value !== undefined) {
+        if (value !== undefined && value !== 'null') {
           // for boolean values, cast string value
           if (isBoolean && !TypeUtils.isBoolean(value)) {
             return value === 'true';

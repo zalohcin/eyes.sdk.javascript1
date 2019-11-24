@@ -25,7 +25,7 @@ describe('DateTimeUtils', () => {
     it('should return formatted string', () => {
       // noinspection MagicNumberJS
       const date = new Date(1520616682332);
-      assert.strictEqual(DateTimeUtils.toLogFileDateTime(date, true), '2018_03_09_17_31_22_332');
+      assert.strictEqual(DateTimeUtils.toLogFileDateTime(date, true), '2018_03_09__17_31_22_332');
     });
   });
 

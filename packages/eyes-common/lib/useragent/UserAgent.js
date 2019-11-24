@@ -6,7 +6,7 @@ const { OSNames } = require('./OSNames');
 
 /* eslint-disable prefer-destructuring */
 
-const MAJOR_MINOR = '([^ .;_)]+)[_.]([^ .;_)]+)';
+const MAJOR_MINOR = '(\\d+)(?:[_.](\\d+))?';
 const PRODUCT = `(?:(%s)/${MAJOR_MINOR})`;
 
 // Browser Regexes
@@ -29,7 +29,7 @@ const getBrowserRegExes = () => {
 const VERSION_REGEX = new RegExp(PRODUCT.replace('%s', 'Version'));
 
 const OS_REGEXES = [
-  new RegExp(`(?:(Windows) NT ${MAJOR_MINOR})`),
+  new RegExp(`(?:(Windows NT) ${MAJOR_MINOR})`),
   new RegExp('(?:(Windows XP))'),
   new RegExp('(?:(Windows 2000))'),
   new RegExp('(?:(Windows NT))'),
@@ -116,6 +116,10 @@ class UserAgent {
         result._OSMajorVersion = osmatch[2];
         result._OSMinorVersion = osmatch[3];
       }
+
+      if (result._OSMajorVersion && !result._OSMinorVersion) {
+        result._OSMinorVersion = '0';
+      }
     }
 
     // OS Normalization
@@ -132,9 +136,20 @@ class UserAgent {
       result._OSMinorVersion = '0';
     } else if (result._OS === 'Windows NT') {
       result._OS = OSNames.Windows;
-      result._OSMajorVersion = '4';
-      result._OSMinorVersion = '0';
-    } else if (result._OS === 'Mac_PowerPC' || result._OS === 'Mac OS X') {
+      if (result._OSMajorVersion === '6' && result._OSMinorVersion === '1') {
+        result._OSMajorVersion = '7';
+        result._OSMinorVersion = '0';
+      } else if (result._OSMajorVersion === '6' && result._OSMinorVersion === '2') {
+        result._OSMajorVersion = '8';
+        result._OSMinorVersion = '0';
+      } else if (result._OSMajorVersion === '6' && result._OSMinorVersion === '3') {
+        result._OSMajorVersion = '8';
+        result._OSMinorVersion = '1';
+      } else if (!result._OSMajorVersion) {
+        result._OSMajorVersion = '4';
+        result._OSMinorVersion = '0';
+      }
+    } else if (result._OS === 'Mac_PowerPC') {
       result._OS = OSNames.Macintosh;
     } else if (result._OS === 'CrOS') {
       result._OS = OSNames.ChromeOS;
