@@ -1,12 +1,12 @@
 'use strict';
 
+const {JSDOM} = require('jsdom');
 const {makeExtractResourcesFromSvg, toUnAnchoredUri} = require('@applitools/dom-snapshot');
 const extractCssResources = require('./extractCssResources');
 const flat = require('./flat');
 
 let parser;
 if (typeof DOMParser !== 'function') {
-  const {JSDOM} = eval('require')('jsdom');
   parser = {parseFromString: str => new JSDOM(str).window.document};
 } else {
   // in browser

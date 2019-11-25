@@ -46,6 +46,9 @@
     "postcss-value-parser": "^4.0.2",
     "throat": "^5.0.0"
   },
+  "browser": {
+    "jsdom": false
+  },
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
