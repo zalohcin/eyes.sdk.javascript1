@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [13.3.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.3.3...@applitools/visual-grid-client@13.3.4) (2019-11-25)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** better canvas require, using browser: false ([b24f9e0](https://github.com/applitools/eyes.sdk.javascript1/commit/b24f9e0))
+* **visual-grid-client:** removed ndb dependecy ([2acd472](https://github.com/applitools/eyes.sdk.javascript1/commit/2acd472))
+
+
+
+
+
 ## [13.3.3](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.3.2...@applitools/visual-grid-client@13.3.3) (2019-11-18)
 
 
