@@ -42,7 +42,6 @@
     "lodash.mapvalues": "^4.6.0",
     "mime-types": "^2.1.24",
     "mkdirp": "^0.5.1",
-    "ndb": "^1.1.5",
     "postcss-value-parser": "^4.0.2",
     "throat": "^5.0.0"
   },
