@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-selenium",
-  "version": "4.31.21",
+  "version": "4.31.22",
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
     "eyes-selenium",
@@ -39,7 +39,7 @@
     "@applitools/dom-utils": "^4.6.40",
     "@applitools/eyes-common": "^3.12.1",
     "@applitools/eyes-sdk-core": "^5.20.6",
-    "@applitools/visual-grid-client": "^13.3.4"
+    "@applitools/visual-grid-client": "^13.3.5"
   },
   "devDependencies": {
     "assert-rejects": "^1.0.0",

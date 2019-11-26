@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [13.3.5](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.3.4...@applitools/visual-grid-client@13.3.5) (2019-11-26)
+
+
+### Bug Fixes
+
+* **visual-grid-client:** now using @appplitools/jsdom instead of jsdom (removed canvas requirement) ([3429cd6](https://github.com/applitools/eyes.sdk.javascript1/commit/3429cd6))
+
+
+
+
+
 ## [13.3.4](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.3.3...@applitools/visual-grid-client@13.3.4) (2019-11-25)
 
 
