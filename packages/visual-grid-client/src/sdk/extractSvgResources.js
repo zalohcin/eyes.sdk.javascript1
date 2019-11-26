@@ -1,6 +1,6 @@
 'use strict';
 
-const {JSDOM} = require('jsdom');
+const {JSDOM} = require('@applitools/jsdom');
 const {makeExtractResourcesFromSvg, toUnAnchoredUri} = require('@applitools/dom-snapshot');
 const extractCssResources = require('./extractCssResources');
 const flat = require('./flat');
