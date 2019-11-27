@@ -1,6 +1,7 @@
 'use strict';
 
 const axios = require('axios');
+const tunnel = require('tunnel');
 const zlib = require('zlib');
 
 const { GeneralUtils, TypeUtils, ArgumentGuard, DateTimeUtils } = require('@applitools/eyes-common');
@@ -258,12 +259,37 @@ class ServerConnector {
     }
 
     if (TypeUtils.isNotNull(this._configuration.getProxy())) {
-      options.proxy = this._configuration.getProxy().toProxyObject();
+      this._setProxyOptions(options, this._configuration.getProxy());
     }
 
     options.maxContentLength = 20 * 1024 * 1024;
 
     return options;
+  }
+
+  static _setProxyOptions(options, proxy) {
+    if (!proxy.getIsHttpOnly()) {
+      options.proxy = proxy.toProxyObject();
+      return;
+    }
+
+    if (tunnel.httpsOverHttp === undefined) {
+      throw new Error('http only proxy is not supported in the browser');
+    }
+
+    const proxyObject = proxy.toProxyObject();
+    const proxyAuth = proxyObject.auth && proxyObject.auth.username
+      ? `${proxyObject.auth.username}:${proxyObject.auth.password}`
+      : undefined;
+    const agent = tunnel.httpsOverHttp({
+      proxy: {
+        host: proxyObject.host,
+        port: proxyObject.port || 8080,
+        proxyAuth,
+      },
+    });
+    options.httpsAgent = agent;
+    options.proxy = false; // don't use the proxy, we use tunnel.
   }
 
   /**

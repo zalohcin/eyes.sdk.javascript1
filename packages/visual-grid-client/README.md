@@ -47,13 +47,22 @@ defined in the `browser` property of the configuration.
 * `openEyes` accepts a configuration object that will override the default configuration found by
   `makeVisualGridClient`, per this test.
 
+* Accepts:
+  * proxy - string or object, examples: 
+
+    ```https://username:password@myproxy```
+
+    ```{url: 'https://myproxy', username: 'my_user', password: 'my_password', isHttpOnly: false```
+  * more params TBD..
+
 * Returns a promise to an object with the following functions:
 
-* `checkWindow(...)`: creates a "step" that checks the window according to the baseline. Note that this
-  function will not fail, and you need to `await` the promises returned from `close()` to wait for the failure or success
-  of a batch of steps in the test.
-* `close()`: async closes the test (or series of tests) created by `openEyes`.
-* `abort()`: if you want to abort this test (or series of tests). Async.
+
+  * `checkWindow(...)`: creates a "step" that checks the window according to the  baseline. Note that this
+    function will not fail, and you need to `await` the promises returned from `close()`  to wait for the failure or success
+    of a batch of steps in the test.
+  * `close()`: async closes the test (or series of tests) created by `openEyes`.
+  * `abort()`: if you want to abort this test (or series of tests). Async.
 
 ### `checkWindow(...)`
 
