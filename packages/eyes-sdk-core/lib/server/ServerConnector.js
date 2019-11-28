@@ -1,12 +1,12 @@
 'use strict';
 
 const axios = require('axios');
-const tunnel = require('tunnel');
 const zlib = require('zlib');
 
 const { GeneralUtils, TypeUtils, ArgumentGuard, DateTimeUtils } = require('@applitools/eyes-common');
 
 const { RenderingInfo } = require('./RenderingInfo');
+const { setProxyOptions } = require('./setProxyOptions');
 const { RunningSession } = require('./RunningSession');
 const { TestResults } = require('../TestResults');
 const { MatchResult } = require('../match/MatchResult');
@@ -258,38 +258,14 @@ class ServerConnector {
       options.timeout = this._configuration.getConnectionTimeout();
     }
 
-    if (TypeUtils.isNotNull(this._configuration.getProxy())) {
-      this._setProxyOptions(options, this._configuration.getProxy());
+    const proxy = this._configuration.getProxy();
+    if (TypeUtils.isNotNull(proxy)) {
+      setProxyOptions({ options, proxy, logger: this._logger });
     }
 
     options.maxContentLength = 20 * 1024 * 1024;
 
     return options;
-  }
-
-  static _setProxyOptions(options, proxy) {
-    if (!proxy.getIsHttpOnly()) {
-      options.proxy = proxy.toProxyObject();
-      return;
-    }
-
-    if (tunnel.httpsOverHttp === undefined) {
-      throw new Error('http only proxy is not supported in the browser');
-    }
-
-    const proxyObject = proxy.toProxyObject();
-    const proxyAuth = proxyObject.auth && proxyObject.auth.username
-      ? `${proxyObject.auth.username}:${proxyObject.auth.password}`
-      : undefined;
-    const agent = tunnel.httpsOverHttp({
-      proxy: {
-        host: proxyObject.host,
-        port: proxyObject.port || 8080,
-        proxyAuth,
-      },
-    });
-    options.httpsAgent = agent;
-    options.proxy = false; // don't use the proxy, we use tunnel.
   }
 
   /**

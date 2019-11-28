@@ -12,7 +12,7 @@ describe('ProxySettings', () => {
     assert.strictEqual(proxyObject.port, '1234');
   });
 
-  it('should parse url with host, port, isHttpsOnly and use auth from constructor', () => {
+  it('should parse url with host, port, isHttpOnly and use auth from constructor', () => {
     const proxy = new ProxySettings('http://localhost:1234/', 'admin', '1111', true);
     const proxyObject = proxy.toProxyObject();
     assert.strictEqual(proxyObject.host, 'localhost');
