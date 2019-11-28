@@ -43,7 +43,7 @@ describe('AccessibilityValidation', function () {
       .accessibilityRegion(By.css('button'), AccessibilityRegionType.RegularText));
 
     // close all test and close batch request
-    const results = await eyes.getRunner().getAllTestResults();
+    const results = await eyes.getRunner().getAllTestResults(); // eslint-disable-line
   });
 
   it('ClassicTest', async function () {
@@ -64,7 +64,7 @@ describe('AccessibilityValidation', function () {
     await eyes.closeAsync();
 
     // close all test and close batch request
-    const results = await eyes.getRunner().getAllTestResults();
+    const results = await eyes.getRunner().getAllTestResults(); // eslint-disable-line
   });
 
   afterEach(async function () {

@@ -1,7 +1,7 @@
 'use strict';
 
 require('chromedriver');
-const { Builder, By } = require('selenium-webdriver');
+const { Builder } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 const { Eyes, Target, ConsoleLogHandler, StitchMode } = require('../../index');
 
