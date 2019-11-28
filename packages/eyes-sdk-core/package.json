@@ -33,10 +33,14 @@
   "dependencies": {
     "@applitools/eyes-common": "^3.12.1",
     "axios": "^0.19.0",
-    "es6-promise-pool": "^2.5.0"
+    "es6-promise-pool": "^2.5.0",
+    "tunnel": "0.0.6"
   },
   "devDependencies": {
     "mocha": "^6.2.0"
+  },
+  "browser": {
+    "tunnel": false
   },
   "scripts": {
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",

@@ -246,7 +246,7 @@ class Configuration {
     } else if (value instanceof ProxySettings) {
       this._proxySettings = value;
     } else {
-      this._proxySettings = new ProxySettings(value.url, value.username, value.password);
+      this._proxySettings = new ProxySettings(value.url, value.username, value.password, value.isHttpOnly);
     }
     return this;
   }

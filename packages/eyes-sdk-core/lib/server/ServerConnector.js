@@ -6,6 +6,7 @@ const zlib = require('zlib');
 const { GeneralUtils, TypeUtils, ArgumentGuard, DateTimeUtils } = require('@applitools/eyes-common');
 
 const { RenderingInfo } = require('./RenderingInfo');
+const { setProxyOptions } = require('./setProxyOptions');
 const { RunningSession } = require('./RunningSession');
 const { TestResults } = require('../TestResults');
 const { MatchResult } = require('../match/MatchResult');
@@ -257,8 +258,9 @@ class ServerConnector {
       options.timeout = this._configuration.getConnectionTimeout();
     }
 
-    if (TypeUtils.isNotNull(this._configuration.getProxy())) {
-      options.proxy = this._configuration.getProxy().toProxyObject();
+    const proxy = this._configuration.getProxy();
+    if (TypeUtils.isNotNull(proxy)) {
+      setProxyOptions({ options, proxy, logger: this._logger });
     }
 
     options.maxContentLength = 20 * 1024 * 1024;

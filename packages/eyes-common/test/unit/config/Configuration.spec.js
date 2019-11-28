@@ -86,6 +86,7 @@ describe('Configuration', () => {
       configuration.setUseDom(true);
       configuration.setEnablePatterns(true);
       configuration.setIgnoreDisplacements(true);
+      configuration.setProxy({ url: 'http://some.url', username: 'daniel', password: '123456', isHttpOnly: true });
 
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content);
       assert.strictEqual(configuration.getAccessibilityValidation(), AccessibilityLevel.AA);
@@ -93,6 +94,16 @@ describe('Configuration', () => {
       assert.strictEqual(configuration.getUseDom(), true);
       assert.strictEqual(configuration.getEnablePatterns(), true);
       assert.strictEqual(configuration.getIgnoreDisplacements(), true);
+      assert.deepStrictEqual(configuration.getProxy().toProxyObject(), {
+        auth: {
+          password: '123456',
+          username: 'daniel',
+        },
+        host: 'some.url',
+        isHttpOnly: true,
+        port: '',
+        protocol: 'http:',
+      });
     });
 
     it('to object', () => {
