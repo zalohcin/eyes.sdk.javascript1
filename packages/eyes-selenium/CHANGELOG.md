@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.31.23](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.22...@applitools/eyes-selenium@4.31.23) (2019-11-28)
+
+**Note:** Version bump only for package @applitools/eyes-selenium
+
+
+
+
+
 ## [4.31.22](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.21...@applitools/eyes-selenium@4.31.22) (2019-11-26)
 
 **Note:** Version bump only for package @applitools/eyes-selenium

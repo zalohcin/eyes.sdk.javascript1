@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [13.3.6](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.3.5...@applitools/visual-grid-client@13.3.6) (2019-11-28)
+
+
+### Bug Fixes
+
+* **eyes-common, eyes-sdk-core, visual-grid-client:** supporting http only proxy ([9221512](https://github.com/applitools/eyes.sdk.javascript1/commit/9221512))
+
+
+
+
+
 ## [13.3.5](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.3.4...@applitools/visual-grid-client@13.3.5) (2019-11-26)
 
 

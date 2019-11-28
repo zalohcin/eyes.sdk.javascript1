@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [5.20.7](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.20.6...@applitools/eyes-sdk-core@5.20.7) (2019-11-28)
+
+
+### Bug Fixes
+
+* **eyes-common, eyes-sdk-core:** setProxyOptions is now out of server connector ([e1d15c4](https://github.com/applitools/eyes.sdk.javascript1/commit/e1d15c4))
+* **eyes-common, eyes-sdk-core, visual-grid-client:** supporting http only proxy ([9221512](https://github.com/applitools/eyes.sdk.javascript1/commit/9221512))
+
+
+
+
+
 ## [5.20.6](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.20.5...@applitools/eyes-sdk-core@5.20.6) (2019-11-17)
 
 **Note:** Version bump only for package @applitools/eyes-sdk-core
