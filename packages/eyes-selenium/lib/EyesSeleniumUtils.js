@@ -1,5 +1,6 @@
 'use strict';
 
+const { Command, Name } = require('selenium-webdriver/lib/command');
 const { RectangleSize, ArgumentGuard } = require('@applitools/eyes-common');
 const { EyesJsBrowserUtils } = require('@applitools/eyes-sdk-core');
 
@@ -165,8 +166,8 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    * @return {boolean} {@code true} if the platform running the test is a mobile platform. {@code false} otherwise.
    */
   static isMobileDeviceFromCaps(capabilities) {
-    const platformName = (capabilities.get('platformName') || capabilities.get('platform')).toUpperCase();
-    return platformName === 'ANDROID' || ['MAC', 'IOS'].includes(platformName);
+    const platformName = capabilities.get('platformName');
+    return platformName && ['ANDROID', 'IOS'].includes(platformName.toUpperCase());
   }
 
   /**
@@ -235,31 +236,49 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    *   size cannot be retrieved.
    */
   static async getViewportSizeOrDisplaySize(logger, driver) {
-    try {
-      logger.verbose('getViewportSizeOrDisplaySize()');
-      return await EyesSeleniumUtils.getViewportSize(driver);
-    } catch (err) {
-      logger.verbose('Failed to extract viewport size using Javascript:', err);
-
-      // If we failed to extract the viewport size using JS, will use the window size instead.
-      logger.verbose('Using window size as viewport size.');
-      let { width, height } = await driver.manage().window().getRect();
-
-      // noinspection EmptyCatchBlockJS
+    if (!(await EyesSeleniumUtils.isMobileDevice(driver))) {
       try {
-        const isLandscape = await EyesSeleniumUtils.isLandscapeOrientation(driver);
-        if (isLandscape && height > width) {
-          const temp = width;
-          // noinspection JSSuspiciousNameCombination
-          width = height;
-          height = temp;
-        }
-      } catch (ignored) {
-        // Not every IWebDriver supports querying for orientation.
+        logger.verbose('getViewportSizeOrDisplaySize()');
+        return await EyesSeleniumUtils.getViewportSize(driver);
+      } catch (err) {
+        logger.verbose('Failed to extract viewport size using Javascript:', err);
       }
+    }
 
-      logger.verbose(`Done! Size ${width} x ${height}`);
-      return new RectangleSize({ width, height });
+    // If we failed to extract the viewport size using JS, will use the window size instead.
+    logger.verbose('Using window size as viewport size.');
+    let { width, height } = await EyesSeleniumUtils.getWindowSize(driver);
+
+    // noinspection EmptyCatchBlockJS
+    try {
+      const isLandscape = await EyesSeleniumUtils.isLandscapeOrientation(driver);
+      if (isLandscape && height > width) {
+        const temp = width;
+        // noinspection JSSuspiciousNameCombination
+        width = height;
+        height = temp;
+      }
+    } catch (ignored) {
+      // Not every IWebDriver supports querying for orientation.
+    }
+
+    logger.verbose(`Done! Size ${width} x ${height}`);
+    return new RectangleSize({ width, height });
+  }
+
+  /**
+   * Since Selenium 4 SDK don't gave `getSize` method anymore and only has `getRect`, we need this workaround
+   * When using Appium native the driver don't have `getRect` method, also it don't have `getPosition` and only
+   * `getSize` is available.
+   *
+   * @return {{width: number, height: number}}
+   */
+  static async getWindowSize(driver) {
+    try {
+      const { width, height } = await driver.manage().window().getRect();
+      return { width, height };
+    } catch (ignore) {
+      return driver.execute(new Command(Name.GET_WINDOW_SIZE).setParameter('windowHandle', 'current'));
     }
   }
 

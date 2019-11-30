@@ -1,7 +1,7 @@
 {
   "name": "@applitools/eyes-appium",
   "private": true,
-  "version": "4.7.57",
+  "version": "4.0.0-beta",
   "description": "Applitools Eyes SDK for Appium WebDriver",
   "keywords": [
     "eyes-appium",
@@ -45,6 +45,10 @@
   },
   "peerDependencies": {
     "selenium-webdriver": "^4.0.0-alpha.5"
+  },
+  "scripts": {
+    "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
+    "test:it": "mocha --no-timeouts \"test/it/simple/**/*.spec.js\""
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

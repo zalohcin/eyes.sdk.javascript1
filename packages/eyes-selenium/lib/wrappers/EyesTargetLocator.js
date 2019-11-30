@@ -198,13 +198,14 @@ class EyesTargetLocator extends TargetLocator {
       this._logger.verbose('found frameChain');
       await this.defaultContent();
 
-      for (const frame of varArg.getFrames()) {
-        await this.frame(frame.getReference());
-        const newFrame = this._driver.getFrameChain().peek();
-        newFrame.setScrollRootElement(frame.getScrollRootElement());
+      if (varArg.getFrames().length > 0) {
+        for (const frame of varArg.getFrames()) {
+          await this.frame(frame.getReference());
+          const newFrame = this._driver.getFrameChain().peek();
+          newFrame.setScrollRootElement(frame.getScrollRootElement());
+        }
+        this._logger.verbose('Done switching into nested frames!');
       }
-
-      this._logger.verbose('Done switching into nested frames!');
       return;
     }
 

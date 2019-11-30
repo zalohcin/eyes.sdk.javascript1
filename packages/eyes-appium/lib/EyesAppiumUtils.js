@@ -39,7 +39,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {boolean} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static isIOSFromCaps(capabilities) {
-    return ['MAC', 'IOS'].includes(capabilities.get('platformName').toUpperCase());
+    return capabilities.get('platformName').toUpperCase() === 'IOS';
   }
 
   // noinspection JSUnusedGlobalSymbols

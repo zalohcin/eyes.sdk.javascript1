@@ -91,8 +91,36 @@ class EyesWebDriver extends IWebDriver {
   /**
    * @inheritDoc
    */
-  getCapabilities() {
-    return this._driver.getCapabilities();
+  async getCapabilities() {
+    if (this._capabilities === undefined) {
+      this._capabilities = await this._driver.getCapabilities();
+    }
+
+    return this._capabilities;
+  }
+
+  /**
+   * Returns {@code true} if current WebDriver is mobile web driver (Android or IOS)
+   *
+   * @package
+   * @return {boolean}
+   */
+  async isMobile() {
+    if (this._isMobileDevice === undefined) {
+      this._isMobileDevice = await EyesSeleniumUtils.isMobileDevice(this);
+    }
+
+    return this._isMobileDevice;
+  }
+
+  /**
+   * Returns {@code true} if current WebDriver is not mobile web driver (not Android and not IOS)
+   *
+   * @package
+   * @return {boolean}
+   */
+  async isNotMobile() {
+    return !(await this.isMobile());
   }
 
   /**
@@ -489,13 +517,18 @@ class EyesWebDriver extends IWebDriver {
    */
   async getUserAgent() {
     try {
-      const userAgent = await this._driver.executeScript('return navigator.userAgent;');
-      this._logger.verbose(`user agent: ${userAgent}`);
-      return userAgent;
+      if (await this.isNotMobile()) {
+        const userAgent = await this._driver.executeScript('return navigator.userAgent;');
+        this._logger.verbose(`user agent: ${userAgent}`);
+        return userAgent;
+      }
+
+      this._logger.verbose('no user agent for native apps');
     } catch (err) {
       this._logger.verbose(`Failed to obtain user-agent string ${err}`);
-      return null;
     }
+
+    return null;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -505,6 +538,13 @@ class EyesWebDriver extends IWebDriver {
   async getSessionId() {
     const session = await this._driver.getSession();
     return session.getId();
+  }
+
+  /**
+   * @override
+   */
+  toJSON() {
+    return GeneralUtils.toPlain(this, ['_logger', '_eyes']);
   }
 
   /**

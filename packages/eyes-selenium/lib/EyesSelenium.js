@@ -190,24 +190,25 @@ class EyesSelenium extends Eyes {
 
     // const validationInfo = this.fireValidationWillStartEvent(name);
 
-    // if (!(await EyesSeleniumUtils.isMobileDevice(this._driver))) {
-    this._logger.verbose(`URL: ${await this._driver.getCurrentUrl()}`);
-    // }
-
     const switchedToFrameCount = await this._switchToFrame(checkSettings);
 
     this._regionToCheck = null;
 
     let result = null;
 
-    const switchTo = this._driver.switchTo();
-    let originalFC = null;
+    let source = null;
+    let /** @type {EyesTargetLocator} */ switchTo;
+    if (await this._driver.isNotMobile()) {
+      switchTo = this._driver.switchTo();
+      source = await this._driver.getCurrentUrl();
+    }
 
+    this._logger.verbose(`URL: ${source}`);
+
+    const originalFC = await this._tryHideScrollbars();
     if (targetRegion) {
       this._logger.verbose('have target region');
-      originalFC = await this._tryHideScrollbars();
       this._imageLocation = targetRegion.getLocation();
-      const source = await this._driver.getCurrentUrl();
       result = await this.checkWindowBase(new RegionProvider(targetRegion), name, false, checkSettings, source);
     } else if (checkSettings) {
       let targetElement = checkSettings.getTargetElement();
@@ -219,7 +220,6 @@ class EyesSelenium extends Eyes {
 
       if (targetElement) {
         this._logger.verbose('have target element');
-        originalFC = await this._tryHideScrollbars();
         this._targetElement = new EyesWebElement(this._logger, this._driver, targetElement);
         if (this._stitchContent) {
           result = await this._checkElement(undefined, name, checkSettings);
@@ -229,7 +229,6 @@ class EyesSelenium extends Eyes {
         this._targetElement = null;
       } else if (checkSettings.getFrameChain().length > 0) {
         this._logger.verbose('have frame chain');
-        originalFC = await this._tryHideScrollbars();
         if (this._stitchContent) {
           result = await this._checkFullFrameOrElement(name, checkSettings);
         } else {
@@ -237,16 +236,17 @@ class EyesSelenium extends Eyes {
         }
       } else {
         this._logger.verbose('default case');
-        // if (!(await EyesSeleniumUtils.isMobileDevice(this._driver))) {
-        // required to prevent cut line on the last stitched part of the page on some browsers (like firefox).
-        await switchTo.defaultContent();
-        originalFC = await this._tryHideScrollbars();
-        const scrollRootElement = await this.getScrollRootElement();
-        this._currentFramePositionProvider = this._createPositionProvider(scrollRootElement);
-        // }
-        const source = await this._driver.getCurrentUrl();
+        if (await this._driver.isNotMobile()) {
+          // required to prevent cut line on the last stitched part of the page on some browsers (like firefox).
+          await switchTo.defaultContent();
+          const scrollRootElement = await this.getScrollRootElement();
+          this._currentFramePositionProvider = this._createPositionProvider(scrollRootElement);
+        }
+
         result = await this.checkWindowBase(new NullRegionProvider(), name, false, checkSettings, source);
-        await switchTo.frames(this._originalFC);
+        if (await this._driver.isNotMobile()) {
+          await switchTo.frames(this._originalFC);
+        }
       }
     }
 
@@ -261,13 +261,15 @@ class EyesSelenium extends Eyes {
       this._positionMemento = null;
     }
 
-    await switchTo.resetScroll();
+    if (await this._driver.isNotMobile()) {
+      await switchTo.resetScroll();
 
-    if (originalFC) {
-      await this._tryRestoreScrollbars(originalFC);
+      if (originalFC) {
+        await this._tryRestoreScrollbars(originalFC);
+      }
+
+      await this._trySwitchToFrames(switchTo, this._originalFC);
     }
-
-    await this._trySwitchToFrames(switchTo, this._originalFC);
 
     this._stitchContent = false;
     this._imageLocation = null;
@@ -283,9 +285,9 @@ class EyesSelenium extends Eyes {
    * @return {Promise}
    */
   async _trySwitchToFrames(switchTo, frames) {
-    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
-    //   return;
-    // }
+    if (await this._driver.isMobile()) {
+      return;
+    }
 
     try {
       await switchTo.frames(frames);
@@ -500,10 +502,10 @@ class EyesSelenium extends Eyes {
       return;
     }
 
-    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
-    //   this._logger.log("NATIVE context identified, skipping 'ensure element visible'");
-    //   return;
-    // }
+    if (await this._driver.isMobile()) {
+      this._logger.log("NATIVE context identified, skipping 'ensure element visible'");
+      return;
+    }
 
     const originalFC = this._driver.getFrameChain().clone();
     const switchTo = this._driver.switchTo();
@@ -551,7 +553,7 @@ class EyesSelenium extends Eyes {
     const switchTo = this._driver.switchTo();
     await switchTo.frames(this._originalFC);
     const spp = new ScrollPositionProvider(this._logger, this._jsExecutor, this._scrollRootElement);
-    let location = null;
+    let location;
     try {
       location = await spp.getCurrentPosition();
     } catch (err) {
@@ -683,8 +685,8 @@ class EyesSelenium extends Eyes {
 
       try {
         this._devicePixelRatio = await EyesSeleniumUtils.getDevicePixelRatio(this._jsExecutor);
-      } catch (err) {
-        this._logger.verbose('Failed to extract device pixel ratio! Using default.', err);
+      } catch (ignored) {
+        this._logger.verbose('Failed to extract device pixel ratio! Using default.');
         this._devicePixelRatio = Eyes.DEFAULT_DEVICE_PIXEL_RATIO;
       }
       this._logger.verbose(`Device pixel ratio: ${this._devicePixelRatio}`);
@@ -692,8 +694,8 @@ class EyesSelenium extends Eyes {
       this._logger.verbose('Setting scale provider...');
       try {
         factory = await this._getScaleProviderFactory();
-      } catch (err) {
-        this._logger.verbose('Failed to set ContextBasedScaleProvider.', err);
+      } catch (ignored) {
+        this._logger.verbose('Failed to set ContextBasedScaleProvider.');
         this._logger.verbose('Using FixedScaleProvider instead...');
         factory = new FixedScaleProviderFactory(1 / this._devicePixelRatio, this._scaleProviderHandler);
       }
@@ -769,9 +771,9 @@ class EyesSelenium extends Eyes {
    * @return {Promise<FrameChain>}
    */
   async _tryHideScrollbars() {
-    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
-    //   return new FrameChain(this._logger);
-    // }
+    if (await this._driver.isMobile()) {
+      return new FrameChain(this._logger);
+    }
 
     if (this._configuration.getHideScrollbars() || (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent)) {
       const originalFC = this._driver.getFrameChain().clone();
@@ -827,9 +829,9 @@ class EyesSelenium extends Eyes {
    * @return {Promise}
    */
   async _tryRestoreScrollbars(frameChain) {
-    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
-    //   return;
-    // }
+    if (await this._driver.isMobile()) {
+      return;
+    }
 
     if (this._configuration.getHideScrollbars() || (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent)) {
       await this._driver.switchTo().frames(frameChain);
@@ -889,24 +891,26 @@ class EyesSelenium extends Eyes {
    * @return {WebElement}
    */
   async _getScrollRootElementFromCheckSettings(scrollRootElementContainer) {
-    // if (!EyesSeleniumUtils.isMobileDevice(driver)) {
-    if (scrollRootElementContainer) {
-      let scrollRootElement = await scrollRootElementContainer.getScrollRootElement();
+    if (await this._driver.isNotMobile()) {
+      if (scrollRootElementContainer) {
+        let scrollRootElement = await scrollRootElementContainer.getScrollRootElement();
 
-      if (!scrollRootElement) {
-        const scrollRootSelector = scrollRootElementContainer.getScrollRootSelector();
-        if (scrollRootSelector) {
-          scrollRootElement = await this._driver.findElement(scrollRootSelector);
+        if (!scrollRootElement) {
+          const scrollRootSelector = scrollRootElementContainer.getScrollRootSelector();
+          if (scrollRootSelector) {
+            scrollRootElement = await this._driver.findElement(scrollRootSelector);
+          }
+        }
+
+        if (scrollRootElement) {
+          return scrollRootElement;
         }
       }
 
-      if (scrollRootElement) {
-        return scrollRootElement;
-      }
+      return this._driver.findElement(By.css('html'));
     }
-    // }
 
-    return this._driver.findElement(By.css('html'));
+    return null;
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -932,25 +936,81 @@ class EyesSelenium extends Eyes {
    * @inheritDoc
    */
   async getScreenshot() {
-    this._logger.verbose('enter()');
-
     const scaleProviderFactory = await this._updateScalingParams();
 
     const originalFrameChain = this._driver.getFrameChain().clone();
-    const switchTo = this._driver.switchTo();
-    await switchTo.frames(this._originalFC);
-
     const positionProvider = this.getPositionProvider();
-    let originalPosition = null;
-    if (positionProvider) { // !EyesSeleniumUtils.isMobileDevice(this.driver)
-      originalPosition = await positionProvider.getState();
-    }
-    await switchTo.frames(originalFrameChain);
 
+    let /** @type {EyesTargetLocator} */ switchTo;
+    let originalPosition = null;
+    const isMobileDevice = await this._driver.isMobile();
+    if (!isMobileDevice) {
+      switchTo = this._driver.switchTo();
+      await switchTo.frames(this._originalFC);
+
+      if (positionProvider) {
+        originalPosition = await positionProvider.getState();
+      }
+      await switchTo.frames(originalFrameChain);
+    }
+
+    let result;
+
+    let activeElement;
+    if (this._configuration.getHideCaret() && !isMobileDevice) {
+      try {
+        activeElement = await this._driver.executeScript('var activeElement = document.activeElement; activeElement && activeElement.blur(); return activeElement;');
+      } catch (err) {
+        this._logger.verbose(`WARNING: Cannot hide caret! ${err}`);
+      }
+    }
+
+    let forceFullPageScreenshot = this._configuration.getForceFullPageScreenshot();
+    if (forceFullPageScreenshot === undefined) {
+      forceFullPageScreenshot = false;
+    }
+
+    if (this._checkFrameOrElement && !isMobileDevice) {
+      result = await this._getFrameOrElementScreenshot(scaleProviderFactory, originalFrameChain, switchTo);
+    } else if ((forceFullPageScreenshot || this._stitchContent) && !isMobileDevice) {
+      result = await this._getFullPageScreenshot(scaleProviderFactory, originalFrameChain, switchTo);
+    } else {
+      result = await this._getElementScreenshot(scaleProviderFactory);
+    }
+
+    if (this._configuration.getHideCaret() && activeElement) {
+      try {
+        await this._driver.executeScript('arguments[0].focus();', activeElement);
+      } catch (err) {
+        this._logger.verbose(`WARNING: Could not return focus to active element! ${err}`);
+      }
+    }
+
+    // tryRestoreScrollbars(originalFC);
+
+    if (!isMobileDevice) {
+      // result.setDomUrl(tryCaptureAndPostDom(checkSettingsInternal));
+      await switchTo.frames(this._originalFC);
+      if (positionProvider) {
+        await positionProvider.restoreState(originalPosition);
+      }
+      await switchTo.frames(originalFrameChain);
+    }
+
+    this._logger.verbose('Done!');
+    return result;
+  }
+
+  /**
+   * @param {ScaleProviderFactory} scaleProviderFactory
+   * @return {Promise<FullPageCaptureAlgorithm>}
+   * @private
+   */
+  async _createFullPageCaptureAlgorithm(scaleProviderFactory) {
     const scrollRootElement = await this.getCurrentFrameScrollRootElement();
     const originProvider = new ScrollPositionProvider(this._logger, this._jsExecutor, scrollRootElement);
 
-    const algo = new FullPageCaptureAlgorithm(
+    return new FullPageCaptureAlgorithm(
       this._logger,
       this._regionPositionCompensation,
       this._configuration.getWaitBeforeScreenshots(),
@@ -962,100 +1022,98 @@ class EyesSelenium extends Eyes {
       this._configuration.getStitchOverlap(),
       this._imageProvider
     );
+  }
 
-    let activeElement = null;
-    if (this._configuration.getHideCaret()) {
-      try {
-        activeElement = await this._driver.executeScript('var activeElement = document.activeElement; activeElement && activeElement.blur(); return activeElement;');
-      } catch (err) {
-        this._logger.verbose(`WARNING: Cannot hide caret! ${err}`);
-      }
-    }
+  /**
+   * @param {ScaleProviderFactory} scaleProviderFactory
+   * @param {FrameChain} originalFrameChain
+   * @param {EyesTargetLocator} switchTo
+   * @return {Promise<EyesWebDriverScreenshot>}
+   * @private
+   */
+  async _getFrameOrElementScreenshot(scaleProviderFactory, originalFrameChain, switchTo) {
+    const algo = await this._createFullPageCaptureAlgorithm(scaleProviderFactory);
 
-    let result;
-    if (this._checkFrameOrElement) {
-      this._logger.verbose('Check frame/element requested');
+    this._logger.verbose('Check frame/element requested');
 
-      // if (!EyesSeleniumUtils.isMobileDevice(this.driver)) {
-      await switchTo.frames(originalFrameChain);
-      // }
-
-      let entireFrameOrElement;
-      if (!this._elementPositionProvider) {
-        const scrollRootElement2 = await this._driver.findElement(By.css('html'));
-        const elemPositionProvider = this._getElementPositionProvider(scrollRootElement2);
-        await this._markElementForLayoutRCA(elemPositionProvider);
-        entireFrameOrElement = await algo.getStitchedRegion(this._regionToCheck, null, elemPositionProvider);
-      } else {
-        await this._markElementForLayoutRCA(this._elementPositionProvider);
-        entireFrameOrElement = await algo.getStitchedRegion(this._regionToCheck, null, this._elementPositionProvider);
-      }
-
-      this._logger.verbose('Building screenshot object...');
-      const size = new RectangleSize(entireFrameOrElement.getWidth(), entireFrameOrElement.getHeight());
-      result = await EyesWebDriverScreenshot.fromFrameSize(this._logger, this._driver, entireFrameOrElement, size);
-    } else if (this._configuration.getForceFullPageScreenshot() || this._stitchContent) {
-      this._logger.verbose('Full page screenshot requested.');
-
-      // Save the current frame path.
-      const originalFramePosition = originalFrameChain.size() > 0 ?
-        originalFrameChain.getDefaultContentScrollPosition() : new Location(Location.ZERO);
-
-      await switchTo.frames(this._originalFC);
-      const eyesScrollRootElement = new EyesWebElement(this._logger, this._driver, this._scrollRootElement);
-
-      const rect = await eyesScrollRootElement.getRect();
-      const sizeAndBorders = await eyesScrollRootElement.getSizeAndBorders();
-      const region = new Region(rect.x + sizeAndBorders.left, rect.y + sizeAndBorders.top, sizeAndBorders.width, sizeAndBorders.height);
-
-      await this._markElementForLayoutRCA(null);
-
-      const fullPageImage = await algo.getStitchedRegion(region, null, this._positionProviderHandler.get());
-
-      await switchTo.frames(originalFrameChain);
-
-      result = await EyesWebDriverScreenshot.fromScreenshotType(this._logger, this._driver, fullPageImage, null, originalFramePosition);
-    } else {
-      await this._ensureElementVisible(this._targetElement);
-
-      this._logger.verbose('Screenshot requested...');
-      let screenshotImage = await this._imageProvider.getImage();
-      await this._debugScreenshotsProvider.save(screenshotImage, 'original');
-
-      const scaleProvider = scaleProviderFactory.getScaleProvider(screenshotImage.getWidth());
-      if (scaleProvider.getScaleRatio() !== 1) {
-        this._logger.verbose('scaling...');
-        screenshotImage = await screenshotImage.scale(scaleProvider.getScaleRatio());
-        await this._debugScreenshotsProvider.save(screenshotImage, 'scaled');
-      }
-
-      const cutProvider = this._cutProviderHandler.get();
-      if (!(cutProvider instanceof NullCutProvider)) {
-        this._logger.verbose('cutting...');
-        screenshotImage = await cutProvider.cut(screenshotImage);
-        await this._debugScreenshotsProvider.save(screenshotImage, 'cut');
-      }
-
-      this._logger.verbose('Creating screenshot object...');
-      result = await EyesWebDriverScreenshot.fromScreenshotType(this._logger, this._driver, screenshotImage);
-    }
-
-    if (this._configuration.getHideCaret() && activeElement != null) {
-      try {
-        await this._driver.executeScript('arguments[0].focus();', activeElement);
-      } catch (err) {
-        this._logger.verbose(`WARNING: Could not return focus to active element! ${err}`);
-      }
-    }
-
-    await switchTo.frames(this._originalFC);
-    if (positionProvider) {
-      await positionProvider.restoreState(originalPosition);
-    }
     await switchTo.frames(originalFrameChain);
 
-    this._logger.verbose('Done!');
-    return result;
+    let entireFrameOrElement;
+    if (!this._elementPositionProvider) {
+      const scrollRootElement2 = await this._driver.findElement(By.css('html'));
+      const elemPositionProvider = this._getElementPositionProvider(scrollRootElement2);
+      await this._markElementForLayoutRCA(elemPositionProvider);
+      entireFrameOrElement = await algo.getStitchedRegion(this._regionToCheck, null, elemPositionProvider);
+    } else {
+      await this._markElementForLayoutRCA(this._elementPositionProvider);
+      entireFrameOrElement = await algo.getStitchedRegion(this._regionToCheck, null, this._elementPositionProvider);
+    }
+
+    this._logger.verbose('Building screenshot object...');
+    const size = new RectangleSize(entireFrameOrElement.getWidth(), entireFrameOrElement.getHeight());
+    return EyesWebDriverScreenshot.fromFrameSize(this._logger, this._driver, entireFrameOrElement, size);
+  }
+
+  /**
+   * @param {ScaleProviderFactory} scaleProviderFactory
+   * @param {FrameChain} originalFrameChain
+   * @param {EyesTargetLocator} switchTo
+   * @return {Promise<EyesWebDriverScreenshot>}
+   * @private
+   */
+  async _getFullPageScreenshot(scaleProviderFactory, originalFrameChain, switchTo) {
+    const algo = await this._createFullPageCaptureAlgorithm(scaleProviderFactory);
+
+    this._logger.verbose('Full page screenshot requested.');
+
+    // Save the current frame path.
+    const originalFramePosition = originalFrameChain.size() > 0 ?
+      originalFrameChain.getDefaultContentScrollPosition() : new Location(Location.ZERO);
+
+    await switchTo.frames(this._originalFC);
+    const eyesScrollRootElement = new EyesWebElement(this._logger, this._driver, this._scrollRootElement);
+
+    const rect = await eyesScrollRootElement.getRect();
+    const sizeAndBorders = await eyesScrollRootElement.getSizeAndBorders();
+    const region = new Region(rect.x + sizeAndBorders.left, rect.y + sizeAndBorders.top, sizeAndBorders.width, sizeAndBorders.height);
+
+    await this._markElementForLayoutRCA(null);
+
+    const fullPageImage = await algo.getStitchedRegion(region, null, this._positionProviderHandler.get());
+
+    await switchTo.frames(originalFrameChain);
+
+    return EyesWebDriverScreenshot.fromScreenshotType(this._logger, this._driver, fullPageImage, null, originalFramePosition);
+  }
+
+  /**
+   * @param {ScaleProviderFactory} scaleProviderFactory
+   * @return {Promise<EyesWebDriverScreenshot>}
+   * @private
+   */
+  async _getElementScreenshot(scaleProviderFactory) {
+    await this._ensureElementVisible(this._targetElement);
+
+    this._logger.verbose('Screenshot requested...');
+    let screenshotImage = await this._imageProvider.getImage();
+    await this._debugScreenshotsProvider.save(screenshotImage, 'original');
+
+    const scaleProvider = scaleProviderFactory.getScaleProvider(screenshotImage.getWidth());
+    if (scaleProvider.getScaleRatio() !== 1) {
+      this._logger.verbose('scaling...');
+      screenshotImage = await screenshotImage.scale(scaleProvider.getScaleRatio());
+      await this._debugScreenshotsProvider.save(screenshotImage, 'scaled');
+    }
+
+    const cutProvider = this._cutProviderHandler.get();
+    if (!(cutProvider instanceof NullCutProvider)) {
+      this._logger.verbose('cutting...');
+      screenshotImage = await cutProvider.cut(screenshotImage);
+      await this._debugScreenshotsProvider.save(screenshotImage, 'cut');
+    }
+
+    this._logger.verbose('Creating screenshot object...');
+    return EyesWebDriverScreenshot.fromScreenshotType(this._logger, this._driver, screenshotImage);
   }
 
   /**

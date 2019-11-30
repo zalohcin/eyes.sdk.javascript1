@@ -1266,7 +1266,8 @@ class EyesBase extends EyesAbstract {
 
         this._isViewportSizeSet = true;
         await this._sessionEventHandlers.setSizeEnded();
-      } catch (ignored) {
+      } catch (err) {
+        this._logger.verbose('Can not ensure ViewportSize', err);
         this._isViewportSizeSet = false;
       }
     }

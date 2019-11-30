@@ -99,8 +99,15 @@ class EyesWebElement extends WebElement {
   /**
    * @override
    */
+  toJSON() {
+    return GeneralUtils.toPlain(this, ['driver_', '_finder', '_logger', '_eyesDriver', '_positionProvider']);
+  }
+
+  /**
+   * @override
+   */
   toString() {
-    return GeneralUtils.toString(this, ['_logger', '_eyesDriver', '_positionProvider']);
+    return GeneralUtils.toString(this, ['driver_', '_finder', '_logger', '_eyesDriver', '_positionProvider']);
   }
 
   /**

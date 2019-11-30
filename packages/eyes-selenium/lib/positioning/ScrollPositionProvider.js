@@ -16,7 +16,7 @@ class ScrollPositionProvider extends PositionProvider {
 
     ArgumentGuard.notNull(logger, 'logger');
     ArgumentGuard.notNull(executor, 'executor');
-    ArgumentGuard.notNull(scrollRootElement, 'scrollRootElement');
+    // ArgumentGuard.notNull(scrollRootElement, 'scrollRootElement');
 
     this._logger = logger;
     this._executor = executor;

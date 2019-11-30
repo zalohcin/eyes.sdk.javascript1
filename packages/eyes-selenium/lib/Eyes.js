@@ -444,18 +444,21 @@ class Eyes extends EyesBase {
     this._configuration.setViewportSize(size);
 
     if (this._driver) {
-      const originalFrame = this._driver.getFrameChain();
-      await this._driver.switchTo().defaultContent();
+      if (await this._driver.isNotMobile()) {
+        const originalFrame = this._driver.getFrameChain();
+        await this._driver.switchTo().defaultContent();
 
-      try {
-        await EyesSeleniumUtils.setViewportSize(this._logger, this._driver, size);
-        this._effectiveViewport = new Region(Location.ZERO, size);
-      } catch (err) {
-        await this._driver.switchTo().frames(originalFrame); // Just in case the user catches that error
-        throw new TestFailedError('Failed to set the viewport size', err);
+        try {
+          await EyesSeleniumUtils.setViewportSize(this._logger, this._driver, size);
+          this._effectiveViewport = new Region(Location.ZERO, size);
+        } catch (err) {
+          await this._driver.switchTo().frames(originalFrame); // Just in case the user catches that error
+          throw new TestFailedError('Failed to set the viewport size', err);
+        }
+
+        await this._driver.switchTo().frames(originalFrame);
       }
 
-      await this._driver.switchTo().frames(originalFrame);
       this._viewportSizeHandler.set(new RectangleSize(size));
     }
   }

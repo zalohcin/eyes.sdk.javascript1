@@ -1,23 +1,25 @@
 'use strict';
 
 const { Builder, Capabilities } = require('selenium-webdriver');
-const { ConsoleLogHandler } = require('@applitools/eyes-sdk-core');
-const { Eyes, Target } = require('../index'); // should be replaced to '@applitools/eyes-appium'
+const { Eyes, Target, ConsoleLogHandler } = require('../index'); // should be replaced to '@applitools/eyes-appium'
 
 (async () => {
   const caps = new Capabilities();
-  caps.set('platformName', 'Android');
-  caps.set('deviceName', 'Android Emulator');
-  caps.set('platformVersion', '7.0');
-  caps.set('app', 'https://store.applitools.com/download/Android.apiDemo.apk');
+  caps.set('browserName', 'Android');
+  caps.set('app', 'bs://e83ca2bbdce49b592ded84adeeef33be4dee6be6');
   caps.set('clearSystemFiles', true);
   caps.set('noReset', true);
+  caps.set('bstack:options', {
+    osVersion: '9.0',
+    deviceName: 'Google Pixel 3',
+    realMobile: 'true',
+    appiumVersion: '1.15.1',
+    userName: process.env.BROWSERSTACK_USERNAME,
+    accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+  });
 
-  // caps.set('username', process.env.SAUCE_USERNAME);
-  // caps.set('accesskey', process.env.SAUCE_ACCESS_KEY);
-
-  // const seleniumServer = 'https://ondemand.saucelabs.com:443/wd/hub';
-  const seleniumServer = 'http://127.0.0.1:4723/wd/hub';
+  // const seleniumServer = 'http://127.0.0.1:4723/wd/hub';
+  const seleniumServer = 'https://hub-cloud.browserstack.com/wd/hub';
 
   // Open the app.
   const driver = await new Builder()
@@ -28,7 +30,7 @@ const { Eyes, Target } = require('../index'); // should be replaced to '@applito
   // Initialize the eyes SDK and set your private API key.
   const eyes = new Eyes();
   // eyes.setApiKey('Your API Key');
-  eyes.setLogHandler(new ConsoleLogHandler(false));
+  eyes.setLogHandler(new ConsoleLogHandler(true));
 
   try {
     // Start the test and set the browser's viewport size to 800x600.

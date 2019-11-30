@@ -34,7 +34,7 @@ class Eyes extends EyesSelenium {
    */
   async _getScaleProviderFactory() {
     const entireSize = await this._positionProviderHandler.get().getEntireSize();
-    const isMobileDevice = await EyesAppiumUtils.isMobileDevice(this._driver);
+    const isMobileDevice = await this._driver.isMobile();
     return new ContextBasedScaleProviderFactory(
       this._logger,
       entireSize,

@@ -2,7 +2,7 @@
 
 const { Builder, Capabilities, By } = require('selenium-webdriver');
 const { ConsoleLogHandler, BatchInfo, GeneralUtils } = require('@applitools/eyes-sdk-core');
-const { Eyes, Target, StitchMode } = require('../../index');
+const { Eyes, Target, StitchMode } = require('../../../index');
 
 describe('AndroidTest', function () {
   this.timeout(50 * 60 * 1000);
@@ -37,10 +37,10 @@ describe('AndroidTest', function () {
       caps.set('platformName', 'Android');
       caps.set('browserName', 'Chrome');
 
-      caps.set('username', process.env.SAUCE_USERNAME);
-      caps.set('accesskey', process.env.SAUCE_ACCESS_KEY);
+      caps.set('browserstack.user', process.env.BROWSERSTACK_USERNAME);
+      caps.set('browserstack.key', process.env.BROWSERSTACK_ACCESS_KEY);
 
-      const seleniumServer = 'https://ondemand.saucelabs.com:443/wd/hub';
+      const seleniumServer = 'https://hub-cloud.browserstack.com/wd/hub';
 
       const driver = new Builder()
         .withCapabilities(caps)

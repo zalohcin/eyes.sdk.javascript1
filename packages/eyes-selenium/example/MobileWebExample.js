@@ -6,20 +6,18 @@ const { Eyes, Target, ConsoleLogHandler, StitchMode } = require('../index'); // 
 (async () => {
   // Open a Chrome browser.
   const driver = new Builder()
-    .usingServer('https://ondemand.saucelabs.com/wd/hub')
+    .usingServer('https://hub-cloud.browserstack.com/wd/hub')
     .withCapabilities({
-      browserName: 'internet explorer',
-      browserVersion: '11.285',
-      platformName: 'windows 10',
-      'sauce:options': {
-        public: 'private',
-        videoUploadOnPass: true,
-        recordScreenshots: true,
-        seleniumVersion: '3.11.0',
-        iedriverVersion: '3.12.0',
-        screenResolution: '2560x1600',
-        username: process.env.SAUCE_USERNAME,
-        accessKey: process.env.SAUCE_ACCESS_KEY,
+      browserName: 'Safari',
+      browserVersion: '12',
+
+      'bstack:options': {
+        deviceName: 'iPhone XS',
+        osVersion: '12',
+        realMobile: 'true',
+
+        userName: process.env.BROWSERSTACK_USERNAME,
+        accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
       },
     })
     .build();
