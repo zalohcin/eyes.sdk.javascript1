@@ -3,6 +3,7 @@
 const { BatchInfo } = require('./BatchInfo');
 const { PropertyData } = require('./PropertyData');
 const { ProxySettings } = require('./ProxySettings');
+const { BrowserType } = require('./BrowserType');
 const { StitchMode } = require('./StitchMode');
 const { ScreenOrientation } = require('./ScreenOrientation');
 const { ImageMatchSettings } = require('./ImageMatchSettings');
@@ -1135,7 +1136,7 @@ class Configuration {
    * @param {BrowserType} browserType
    * @return {this}
    */
-  addBrowser(width, height, browserType) {
+  addBrowser(width, height, browserType = BrowserType.CHROME) {
     const browserInfo = {
       width,
       height,

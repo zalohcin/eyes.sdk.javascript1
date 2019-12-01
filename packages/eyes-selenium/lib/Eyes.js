@@ -177,10 +177,11 @@ class Eyes extends EyesBase {
    *
    * @param {string} [tag] - An optional tag to be associated with the snapshot.
    * @param {number} [matchTimeout] - The amount of time to retry matching (Milliseconds).
+   * @param {boolean} [stitchContent=false] - If {@code true}, stitch the internal content of the window.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkWindow(tag, matchTimeout) {
-    return this.check(tag, Target.window().timeout(matchTimeout));
+  async checkWindow(tag, matchTimeout, stitchContent = false) {
+    return this.check(tag, Target.window().timeout(matchTimeout).stitchContent(stitchContent));
   }
 
   // noinspection JSUnusedGlobalSymbols

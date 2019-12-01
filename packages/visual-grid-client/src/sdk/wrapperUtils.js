@@ -1,6 +1,6 @@
 'use strict';
 const EyesWrapper = require('./EyesWrapper');
-const {BatchInfo, RectangleSize} = require('@applitools/eyes-sdk-core');
+const {BatchInfo, RectangleSize, TypeUtils} = require('@applitools/eyes-sdk-core');
 
 function initWrappers({count, apiKey, logHandler}) {
   return Array.from(new Array(count), () => new EyesWrapper({apiKey, logHandler}));
@@ -11,7 +11,11 @@ function validateAndAddProperties(wrapper, properties) {
     if (Array.isArray(properties)) {
       properties.forEach(prop => {
         if (typeof prop === 'object') {
-          wrapper.addProperty(prop.name, prop.value);
+          if (TypeUtils.hasMethod(prop, ['getName', 'getValue'])) {
+            wrapper.addProperty(prop.getName(), prop.getValue());
+          } else {
+            wrapper.addProperty(prop.name, prop.value);
+          }
         } else {
           throw new Error(`${propertiesFailMsg}. Type of property inside array was ${typeof prop}`);
         }
