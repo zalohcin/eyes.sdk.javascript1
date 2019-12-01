@@ -103,6 +103,7 @@ class EyesVisualGrid extends Eyes {
       batchSequenceName: this._configuration.getBatch() && this._configuration.getBatch().getSequenceName(),
       batchName: this._configuration.getBatch() && this._configuration.getBatch().getName(),
       batchId: this._configuration.getBatch() && this._configuration.getBatch().getId(),
+      batchNotify: this._configuration.getBatch() && this._configuration.getBatch().getNotifyOnCompletion(),
       baselineBranchName: this._configuration.getBaselineBranchName(),
       baselineEnvName: this._configuration.getBaselineEnvName(),
       baselineName: this._configuration.getBaselineEnvName(),
