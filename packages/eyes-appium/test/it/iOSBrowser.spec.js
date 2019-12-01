@@ -1,21 +1,21 @@
 'use strict';
 
 const { Builder, By } = require('selenium-webdriver');
-const { Eyes, ConsoleLogHandler } = require('../../../index');
+const { Eyes, ConsoleLogHandler } = require('../../index');
 
 let /** @type WebDriver */ driver, /** @type Eyes */ eyes;
-describe('AndroidBrowser', function () {
+describe('iOSBrowser', function () {
   this.timeout(5 * 60 * 1000);
 
   before(async function () {
     // Open the app.
     driver = new Builder()
       .withCapabilities({
-        os_version: '6.0',
-        device: 'Google Nexus 6',
+        os_version: '11',
+        device: 'iPhone 8',
         real_mobile: 'true',
-        browserName: 'Chrome',
-        deviceOrientation: 'portrait',
+        browserName: 'Safari',
+        deviceOrientation: 'landscape',
 
         'browserstack.user': process.env.BROWSERSTACK_USERNAME,
         'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY,

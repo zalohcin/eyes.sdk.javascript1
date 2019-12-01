@@ -1,7 +1,7 @@
 'use strict';
 
 const { Builder } = require('selenium-webdriver');
-const { Eyes, Target, ConsoleLogHandler } = require('../../../index');
+const { Eyes, Target, ConsoleLogHandler } = require('../../index');
 
 let /** @type WebDriver */ driver, /** @type Eyes */ eyes;
 describe('IOSNative', function () {

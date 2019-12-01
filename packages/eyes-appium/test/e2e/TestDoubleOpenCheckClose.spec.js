@@ -1,7 +1,7 @@
 'use strict';
 
 const { Builder, Capabilities } = require('selenium-webdriver');
-const { Eyes, Target } = require('../../../index');
+const { Eyes, Target } = require('../../index');
 const { TestDataProvider } = require('./TestDataProvider');
 const { TestUtils } = require('./TestUtils');
 

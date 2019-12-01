@@ -2,7 +2,7 @@
 
 const { Builder, Capabilities, By } = require('selenium-webdriver');
 const { ConsoleLogHandler, BatchInfo, GeneralUtils } = require('@applitools/eyes-sdk-core');
-const { Eyes, Target, StitchMode } = require('../../../index');
+const { Eyes, Target, StitchMode } = require('../../index');
 
 describe('AndroidTest', function () {
   this.timeout(50 * 60 * 1000);

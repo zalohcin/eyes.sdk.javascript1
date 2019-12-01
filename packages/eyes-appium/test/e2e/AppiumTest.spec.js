@@ -2,7 +2,7 @@
 
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { Eyes } = require('../../../index');
+const { Eyes } = require('../../index');
 
 describe('AppiumTest', function () {
   this.timeout(5 * 60 * 1000);

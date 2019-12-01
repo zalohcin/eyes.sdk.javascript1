@@ -1,7 +1,7 @@
 'use strict';
 
 const { Builder, By, Capabilities, Capability } = require('selenium-webdriver');
-const { Eyes } = require('../../../index');
+const { Eyes } = require('../../index');
 
 describe('AppiumHelloWorldTest', function () {
   this.timeout(5 * 60 * 1000);
