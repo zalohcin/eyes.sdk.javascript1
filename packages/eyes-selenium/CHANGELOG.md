@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.31.24](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.23...@applitools/eyes-selenium@4.31.24) (2019-12-02)
+
+
+### Bug Fixes
+
+* (eyes-selenium) Pass batchNotify to the ctor of EyesVisualGrid ([f1da0fc](https://github.com/applitools/eyes.sdk.javascript1/commit/f1da0fc530ad6c37af5deb2fb91666bb77b1dade))
+
+
+
+
+
 ## [4.31.23](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.22...@applitools/eyes-selenium@4.31.23) (2019-11-28)
 
 **Note:** Version bump only for package @applitools/eyes-selenium
