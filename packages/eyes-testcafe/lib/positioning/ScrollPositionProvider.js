@@ -31,14 +31,10 @@ class ScrollPositionProvider extends PositionProvider {
    * @return {Promise<Location>}
    */
   static async getCurrentPositionStatic(executor, scrollRootElement) {
-    try {
-      const script = 'return [arguments[0].scrollLeft, arguments[0].scrollTop];';
+    const script = 'const el = arguments[0](); return [el.scrollLeft, el.scrollTop];';
 
-      const result = await executor.executeScript(script, scrollRootElement);
-      return new Location(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0);
-    } catch (err) {
-      throw new EyesError('Could not get scroll position!', err);
-    }
+    const result = await executor.executeScript(script, scrollRootElement);
+    return new Location(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0);
   }
 
   /**
@@ -71,8 +67,8 @@ class ScrollPositionProvider extends PositionProvider {
   async getEntireSize() {
     this._logger.verbose('enter');
 
-    const script = 'var width = Math.max(arguments[0].clientWidth, arguments[0].scrollWidth);' +
-      'var height = Math.max(arguments[0].clientHeight, arguments[0].scrollHeight);' +
+    const script = 'var el = arguments[0](); var width = Math.max(el.clientWidth, el.scrollWidth);' +
+      'var height = Math.max(el.clientHeight, el.scrollHeight);' +
       'return [width, height];';
 
     const entireSizeStr = await this._executor.executeScript(script, this._scrollRootElement);

@@ -3,7 +3,7 @@
 const { ArgumentGuard, CoordinatesType, Region, Location, RectangleSize } = require('@applitools/eyes-common');
 const { EyesScreenshot, CoordinatesTypeConversionError, OutOfBoundsError } = require('@applitools/eyes-sdk-core');
 
-const { SeleniumJavaScriptExecutor } = require('../SeleniumJavaScriptExecutor');
+const { TestCafeJavaScriptExecutor } = require('../TestCafeJavaScriptExecutor');
 const { ScrollPositionProvider } = require('../positioning/ScrollPositionProvider');
 const { FrameChain } = require('../frames/FrameChain');
 
@@ -147,7 +147,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    * @return {Promise<Location>}
    */
   async _getDefaultContentScrollPosition() {
-    const jsExecutor = new SeleniumJavaScriptExecutor(this._driver);
+    const jsExecutor = new TestCafeJavaScriptExecutor(this._driver);
     let defaultContentScrollPosition;
     if (this._frameChain.size() === 0) {
       defaultContentScrollPosition = await this._getCurrentFrameScrollRootElement(jsExecutor);

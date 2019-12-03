@@ -5,7 +5,7 @@ const { MutableImage, Region, OSNames } = require('@applitools/eyes-common');
 const { ImageProvider } = require('@applitools/eyes-sdk-core');
 
 const { ScrollPositionProvider } = require('../positioning/ScrollPositionProvider');
-const { SeleniumJavaScriptExecutor } = require('../SeleniumJavaScriptExecutor');
+const { TestCafeJavaScriptExecutor } = require('../TestCafeJavaScriptExecutor');
 
 /**
  * @private
@@ -63,7 +63,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
 
     /** @type {Map<int, RegionAndVersion>} */
     this._devicesRegions = undefined;
-    this._jsExecutor = new SeleniumJavaScriptExecutor(eyes.getDriver());
+    this._jsExecutor = new TestCafeJavaScriptExecutor(eyes.getDriver());
   }
 
   /**

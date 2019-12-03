@@ -310,7 +310,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * @ignore
    * @return {Promise<WebElement>}
    */
-  async getScrollRootElement() {
+  getScrollRootElement() {
     return this._scrollRootElement;
   }
 

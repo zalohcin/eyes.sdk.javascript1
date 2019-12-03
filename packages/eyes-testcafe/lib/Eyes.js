@@ -28,7 +28,7 @@ const { NopRegionVisibilityStrategy } = require('./regionVisibility/NopRegionVis
 const { JavascriptHandler } = require('./JavascriptHandler');
 const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
 const { Target } = require('./fluent/Target');
-const { SeleniumJavaScriptExecutor } = require('./SeleniumJavaScriptExecutor');
+const { TestCafeJavaScriptExecutor } = require('./TestCafeJavaScriptExecutor');
 
 const VERSION = require('../package.json').version;
 
@@ -71,7 +71,7 @@ class Eyes extends EyesBase {
 
     /** @type {EyesWebDriver} */
     this._driver = undefined;
-    /** @type {SeleniumJavaScriptExecutor} */
+    /** @type {TestCafeJavaScriptExecutor} */
     this._jsExecutor = undefined;
 
     /** @type {string} */
@@ -155,7 +155,7 @@ class Eyes extends EyesBase {
       this._driver = new EyesWebDriver(this._logger, this, driver);
     }
 
-    this._jsExecutor = new SeleniumJavaScriptExecutor(this._driver);
+    this._jsExecutor = new TestCafeJavaScriptExecutor(this._driver._driver);
   }
 
   // noinspection JSMethodCanBeStatic
@@ -306,7 +306,7 @@ class Eyes extends EyesBase {
       return;
     }
 
-    super.addMouseTriggerBase(action, control, cursor);
+    this.addMouseTriggerBase(action, control, cursor);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -339,7 +339,7 @@ class Eyes extends EyesBase {
     const rect = await element.getRect();
     const elementRegion = new Region(rect.x, rect.y, rect.width, rect.height);
 
-    super.addMouseTriggerBase(action, elementRegion, elementRegion.getMiddleOffset());
+    this.addMouseTriggerBase(action, elementRegion, elementRegion.getMiddleOffset());
   }
 
   /**
@@ -365,7 +365,7 @@ class Eyes extends EyesBase {
       return;
     }
 
-    super.addTextTriggerBase(control, text);
+    this.addTextTriggerBase(control, text);
   }
 
   /**
@@ -398,7 +398,7 @@ class Eyes extends EyesBase {
     // noinspection JSSuspiciousNameCombination
     const elementRegion = new Region(Math.ceil(rect.x), Math.ceil(rect.y), rect.width, rect.height);
 
-    super.addTextTrigger(elementRegion, text);
+    this.addTextTrigger(elementRegion, text);
   }
 
   // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols

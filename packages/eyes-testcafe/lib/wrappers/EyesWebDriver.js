@@ -1,14 +1,21 @@
 'use strict';
 
-const { By } = require('selenium-webdriver');
-const { IWebDriver } = require('selenium-webdriver/lib/webdriver');
+const { Selector } = require('testcafe');
 const { ArgumentGuard, MutableImage, GeneralUtils } = require('@applitools/eyes-common');
+
+const fs = require('fs');
+const path = require('path');
+const rmrf = require('rimraf');
 
 const { FrameChain } = require('../frames/FrameChain');
 const { EyesSeleniumUtils } = require('../EyesSeleniumUtils');
 const { EyesWebElement } = require('./EyesWebElement');
 const { EyesWebElementPromise } = require('./EyesWebElementPromise');
 const { EyesTargetLocator } = require('./EyesTargetLocator');
+const { TestCafeJavaScriptExecutor } = require('../TestCafeJavaScriptExecutor');
+
+
+const SCREENSHOTS_PATH = '/.applitools__screenshots';
 
 /**
  * An Eyes implementation of the interfaces implemented by {@link IWebDriver}.
@@ -17,14 +24,13 @@ const { EyesTargetLocator } = require('./EyesTargetLocator');
  * @extends {WebDriver}
  * @implements {EyesJsExecutor}
  */
-class EyesWebDriver extends IWebDriver {
+class EyesWebDriver {
   /**
    * @param {Logger} logger
    * @param {Eyes} eyes
    * @param {WebDriver} driver
    */
   constructor(logger, eyes, driver) {
-    super();
     ArgumentGuard.notNull(logger, 'logger');
     ArgumentGuard.notNull(eyes, 'eyes');
     ArgumentGuard.notNull(driver, 'driver');
@@ -40,6 +46,8 @@ class EyesWebDriver extends IWebDriver {
     this._rotation = null;
     /** @type {RectangleSize} */
     this._defaultContentViewportSize = null;
+
+    this._executor = new TestCafeJavaScriptExecutor(driver);
 
     // this._logger.verbose("Driver session is " + this.getSessionId());
   }
@@ -122,7 +130,7 @@ class EyesWebDriver extends IWebDriver {
 
   async executeScript(script, ...varArgs) {
     EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs);
-    return this._driver.executeScript(script, ...varArgs);
+    return this._executor.executeScript(script, ...varArgs);
   }
 
   /**
@@ -194,7 +202,7 @@ class EyesWebDriver extends IWebDriver {
    * @inheritDoc
    */
   getCurrentUrl() {
-    return this._driver.getCurrentUrl();
+    return this._driver.eval(() => window.location.href); /* global window */
   }
 
   /**
@@ -211,7 +219,7 @@ class EyesWebDriver extends IWebDriver {
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElement(locator) {
-    return new EyesWebElementPromise(this._logger, this, this._driver.findElement(locator), locator);
+    return Selector(locator).with({ boundTestRun: this._driver });
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -222,7 +230,7 @@ class EyesWebDriver extends IWebDriver {
    *   {@link EyesWebElement}s.
    */
   async findElements(locator) {
-    const elements = await this._driver.findElements(locator);
+    const elements = await Selector(locator).with({ boundTestRun: this._driver });
     return elements.map((element) => {
       element = new EyesWebElement(this._logger, this, element);
       // For Remote web elements, we can keep the IDs
@@ -235,10 +243,18 @@ class EyesWebDriver extends IWebDriver {
    * @inheritDoc
    */
   async takeScreenshot() {
-    const screenshot64 = await this._driver.takeScreenshot(); // Get the image as base64.
-    const screenshot = new MutableImage(screenshot64);
-    await EyesWebDriver.normalizeRotation(this._logger, this._driver, screenshot, this._rotation);
-    return screenshot.getImageBase64();
+    this._logger.log('Getting screenshot from TestCafe');
+    const filename = Math.random().toString().slice(2);
+    const filepath = path.resolve(SCREENSHOTS_PATH, filename);
+    const screenshotPath = await this._driver.takeScreenshot(filepath);
+    this._logger.log('screenshot created at', screenshotPath);
+    try {
+      return fs.readFileSync(screenshotPath);
+    } finally {
+      const screenshotFolder = path.dirname(screenshotPath);
+      rmrf.sync(screenshotFolder);
+      this._logger.log('screenshot folder deleted at', screenshotFolder);
+    }
   }
 
   /**
@@ -260,7 +276,7 @@ class EyesWebDriver extends IWebDriver {
    * @return {EyesTargetLocator} - The target locator interface for this instance.
    */
   switchTo() {
-    return new EyesTargetLocator(this._logger, this, this._driver.switchTo());
+    return new EyesTargetLocator(this._logger, this);
   }
 
   /**
@@ -294,7 +310,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByClassName(className) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.className(className));
+    return this.findElement(toClassName(className));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -304,7 +320,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByClassName(className) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.className(className));
+    return this.findElements(toClassName(className));
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -314,7 +330,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByCssSelector(cssSelector) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.css(cssSelector));
+    return this.findElement(cssSelector);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -324,7 +340,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByCssSelector(cssSelector) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.css(cssSelector));
+    return this.findElements(cssSelector);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -334,7 +350,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementById(id) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.id(id));
+    return this.findElement(`#${escapeCss(id)}`);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -344,57 +360,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsById(id) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.id(id));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {string} linkText
-   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
-   */
-  findElementByLinkText(linkText) {
-    // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.linkText(linkText));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {string} linkText
-   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsByLinkText(linkText) {
-    // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.linkText(linkText));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {string} partialLinkText
-   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
-   */
-  findElementByPartialLinkText(partialLinkText) {
-    // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.partialLinkText(partialLinkText));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {string} partialLinkText
-   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsByPartialLinkText(partialLinkText) {
-    // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.partialLinkText(partialLinkText));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {string} name
-   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
-   */
-  findElementByName(name) {
-    // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.name(name));
+    return this.findElements(`#${escapeCss(id)}`);
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -404,47 +370,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByName(name) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.name(name));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {string} tagName
-   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
-   */
-  findElementByTagName(tagName) {
-    // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.css(tagName));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {string} tagName
-   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsByTagName(tagName) {
-    // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.css(tagName));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {string} xpath
-   * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
-   */
-  findElementByXPath(xpath) {
-    // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.xpath(xpath));
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  /**
-   * @param {string} xpath
-   * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsByXPath(xpath) {
-    // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.xpath(xpath));
+    return this.findElements(`*[name="${escapeCss(name)}"]`);
   }
 
   /**
@@ -489,7 +415,7 @@ class EyesWebDriver extends IWebDriver {
    */
   async getUserAgent() {
     try {
-      const userAgent = await this._driver.executeScript('return navigator.userAgent;');
+      const userAgent = await this._driver.eval(() => navigator.userAgent); /* globals navigator */
       this._logger.verbose(`user agent: ${userAgent}`);
       return userAgent;
     } catch (err) {
@@ -503,8 +429,7 @@ class EyesWebDriver extends IWebDriver {
    * @return {Promise<string>} - A copy of the current frame chain.
    */
   async getSessionId() {
-    const session = await this._driver.getSession();
-    return session.getId();
+    return String(Math.random()).slice(2);
   }
 
   /**
@@ -541,5 +466,62 @@ class EyesWebDriver extends IWebDriver {
     return image.rotate(degrees);
   }
 }
+
+// taken from https://github.com/SeleniumHQ/selenium/blob/117b05b375ba8c42829bf1584272f41ea9bf48bb/javascript/node/selenium-webdriver/lib/by.js#L137
+function toClassName(name) {
+  const names = name.split(/\s+/g)
+    .filter(s => s.length > 0)
+    .map(s => escapeCss(s));
+  return By.css(`.${names.join('.')}`);
+}
+
+/**
+ * Escapes a CSS string.
+ * @param {string} css the string to escape.
+ * @return {string} the escaped string.
+ * @throws {TypeError} if the input value is not a string.
+ * @see https://drafts.csswg.org/cssom/#serialize-an-identifier
+ */
+function escapeCss(css) {
+  if (typeof css !== 'string') {
+    throw new TypeError('input must be a string');
+  }
+  let ret = '';
+  const n = css.length;
+  for (let i = 0; i < n; i++) {
+    const c = css.charCodeAt(i);
+    if (c === 0x0) {
+      throw new Error('Invalid character when escaping css');
+    }
+
+    if ((c >= 0x0001 && c <= 0x001F)
+        || c === 0x007F
+        || (i === 0 && c >= 0x0030 && c <= 0x0039)
+        || (i === 1 && c >= 0x0030 && c <= 0x0039
+            && css.charCodeAt(0) === 0x002D)) {
+      ret += `\\${c.toString(16)} `;
+      continue;
+    }
+
+    if (i === 0 && c === 0x002D && n === 1) {
+      ret += `\\${css.charAt(i)}`;
+      continue;
+    }
+
+    if (c >= 0x0080
+        || c === 0x002D // -
+        || c === 0x005F // _
+        || (c >= 0x0030 && c <= 0x0039) // [0-9]
+        || (c >= 0x0041 && c <= 0x005A) // [A-Z]
+        || (c >= 0x0061 && c <= 0x007A)) { // [a-z]
+      ret += css.charAt(i);
+      continue;
+    }
+
+    ret += `\\${css.charAt(i)}`;
+  }
+  return ret;
+}
+
 
 exports.EyesWebDriver = EyesWebDriver;
