@@ -26,7 +26,7 @@ describe('SessionStartInfo', () => {
     const properties = [];
     properties.push(new PropertyData('property 1', 'value 1'));
 
-    const batchInfo = new BatchInfo('some batch', new Date(2017, 6, 29, 11, 1, 0), 'someBatchId');
+    const batchInfo = new BatchInfo('some batch', new Date('2017-07-29T09:01:00.000Z'), 'someBatchId');
 
     const sessionStartInfo = new SessionStartInfo({
       agentId: 'agent',
