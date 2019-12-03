@@ -1,22 +1,18 @@
 'use strict';
 
-const { Command, Name } = require('selenium-webdriver/lib/command');
-const { TargetLocator } = require('selenium-webdriver/lib/webdriver');
-const { By } = require('selenium-webdriver');
-
 const { Location, RectangleSize, ArgumentGuard, TypeUtils } = require('@applitools/eyes-common');
 
 const { Frame } = require('../frames/Frame');
 const { FrameChain } = require('../frames/FrameChain');
 const { ScrollPositionProvider } = require('../positioning/ScrollPositionProvider');
-const { SeleniumJavaScriptExecutor } = require('../SeleniumJavaScriptExecutor');
+const { TestCafeJavaScriptExecutor } = require('../TestCafeJavaScriptExecutor');
 const { EyesWebElement } = require('./EyesWebElement');
 const { EyesWebElementPromise } = require('./EyesWebElementPromise');
 
 /**
  * Wraps a target locator so we can keep track of which frames have been switched to.
  */
-class EyesTargetLocator extends TargetLocator {
+class EyesTargetLocator {
   /**
    * Initialized a new EyesTargetLocator object.
    *
@@ -24,17 +20,13 @@ class EyesTargetLocator extends TargetLocator {
    * @param {EyesWebDriver} driver - The WebDriver from which the targetLocator was received.
    * @param {TargetLocator} targetLocator - The actual TargetLocator object.
    */
-  constructor(logger, driver, targetLocator) {
+  constructor(logger, driver) {
     ArgumentGuard.notNull(logger, 'logger');
     ArgumentGuard.notNull(driver, 'driver');
-    ArgumentGuard.notNull(targetLocator, 'targetLocator');
-
-    super(driver.getRemoteWebDriver());
 
     this._logger = logger;
     this._driver = driver;
-    this._targetLocator = targetLocator;
-    this._jsExecutor = new SeleniumJavaScriptExecutor(driver);
+    this._jsExecutor = new TestCafeJavaScriptExecutor(driver._driver);
 
     /** @type {ScrollPositionMemento} */
     this._defaultContentPositionMemento = undefined;
@@ -244,7 +236,7 @@ class EyesTargetLocator extends TargetLocator {
       this._logger.verbose('Done! Switching to default content...');
     }
 
-    await this._targetLocator.defaultContent();
+    await this._driver._driver.switchToMainWindow();
     this._logger.verbose('Done!');
   }
 
@@ -307,7 +299,7 @@ class EyesTargetLocator extends TargetLocator {
     const sizeAndBorders = await eyesFrame.getSizeAndBorders();
 
     const contentLocation = new Location(rect.x + sizeAndBorders.left, rect.y + sizeAndBorders.top);
-    const originalLocation = await ScrollPositionProvider.getCurrentPositionStatic(this._jsExecutor, this._driver.findElement(By.css('html')));
+    const originalLocation = await ScrollPositionProvider.getCurrentPositionStatic(this._jsExecutor, this._driver.findElement('html'));
 
     const frame = new Frame(this._logger, targetFrame, contentLocation, new RectangleSize(rect), new RectangleSize(sizeAndBorders), originalLocation, this._driver);
     this._driver.getFrameChain().push(frame);

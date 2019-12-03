@@ -97,8 +97,8 @@ class EyesJsBrowserUtils {
     ArgumentGuard.notNull(rootElement, 'rootElement')
 
     const script =
-      `var el = arguments[0]; var origOverflow = el.style.overflow; var newOverflow = '${value}'; ` +
-      'el.style.overflow = newOverflow; ' +
+      `var el = arguments[0](); var origOverflow = el.style['overflow-y']; var newOverflow = '${value}'; ` +
+      'el.style["overflow-y"] = newOverflow; ' +
       "if (newOverflow.toUpperCase() === 'HIDDEN' && origOverflow.toUpperCase() !== 'HIDDEN') { el.setAttribute('data-applitools-original-overflow', origOverflow); } " +
       'return origOverflow;'
 

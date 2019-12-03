@@ -59,48 +59,35 @@ exports.BordersAwareElementContentLocationProvider = require('./lib/BordersAware
 exports.EyesSeleniumUtils = require('./lib/EyesSeleniumUtils').EyesSeleniumUtils;
 exports.ImageOrientationHandler = require('./lib/ImageOrientationHandler').ImageOrientationHandler;
 exports.JavascriptHandler = require('./lib/JavascriptHandler').JavascriptHandler;
-exports.SeleniumJavaScriptExecutor = require('./lib/SeleniumJavaScriptExecutor').SeleniumJavaScriptExecutor;
+exports.TestCafeJavaScriptExecutor = require('./lib/TestCafeJavaScriptExecutor').TestCafeJavaScriptExecutor;
 
-exports.Eyes = require('./lib/EyesFactory').EyesFactory;
-exports.EyesSelenium = require('./lib/EyesSelenium').EyesSelenium;
-exports.EyesVisualGrid = require('./lib/EyesVisualGrid').EyesVisualGrid;
-
+exports.Eyes = require('./lib/EyesTestCafe').EyesTestCafe;
 
 // eyes-common
-exports.AccessibilityLevel = common.AccessibilityLevel;
-exports.AccessibilityMatchSettings = common.AccessibilityMatchSettings;
-exports.AccessibilityRegionType = common.AccessibilityRegionType;
-exports.BatchInfo = common.BatchInfo;
-exports.BrowserType = common.BrowserType;
-exports.Configuration = common.Configuration;
-exports.DeviceName = common.DeviceName;
-exports.ExactMatchSettings = common.ExactMatchSettings;
-exports.FloatingMatchSettings = common.FloatingMatchSettings;
-exports.ImageMatchSettings = common.ImageMatchSettings;
-exports.MatchLevel = common.MatchLevel;
+exports.EyesError = common.EyesError;
 exports.PropertyData = common.PropertyData;
 exports.ProxySettings = common.ProxySettings;
-exports.ScreenOrientation = common.ScreenOrientation;
-exports.StitchMode = common.StitchMode;
-exports.DebugScreenshotsProvider = common.DebugScreenshotsProvider;
-exports.FileDebugScreenshotsProvider = common.FileDebugScreenshotsProvider;
-exports.NullDebugScreenshotProvider = common.NullDebugScreenshotProvider;
-exports.EyesError = common.EyesError;
+exports.BatchInfo = common.BatchInfo;
+exports.MatchLevel = common.MatchLevel;
+exports.ImageMatchSettings = common.ImageMatchSettings;
+exports.ExactMatchSettings = common.ExactMatchSettings;
+exports.FloatingMatchSettings = common.FloatingMatchSettings;
 exports.CoordinatesType = common.CoordinatesType;
 exports.Location = common.Location;
 exports.RectangleSize = common.RectangleSize;
 exports.Region = common.Region;
+exports.MutableImage = common.MutableImage;
+exports.Logger = common.Logger;
+exports.LogHandler = common.LogHandler;
+exports.ConsoleLogHandler = common.ConsoleLogHandler;
+exports.FileLogHandler = common.FileLogHandler;
+exports.NullLogHandler = common.NullLogHandler;
+exports.DebugScreenshotsProvider = common.DebugScreenshotsProvider;
+exports.FileDebugScreenshotsProvider = common.FileDebugScreenshotsProvider;
+exports.NullDebugScreenshotProvider = common.NullDebugScreenshotProvider;
 exports.PropertyHandler = common.PropertyHandler;
 exports.ReadOnlyPropertyHandler = common.ReadOnlyPropertyHandler;
 exports.SimplePropertyHandler = common.SimplePropertyHandler;
-exports.ImageDeltaCompressor = common.ImageDeltaCompressor;
-exports.MutableImage = common.MutableImage;
-exports.ConsoleLogHandler = common.ConsoleLogHandler;
-exports.DebugLogHandler = common.DebugLogHandler;
-exports.FileLogHandler = common.FileLogHandler;
-exports.Logger = common.Logger;
-exports.LogHandler = common.LogHandler;
-exports.NullLogHandler = common.NullLogHandler;
 
 
 // eyes-sdk-core

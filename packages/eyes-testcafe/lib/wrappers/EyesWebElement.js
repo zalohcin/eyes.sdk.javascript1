@@ -1,6 +1,6 @@
 'use strict';
 
-const { By, WebElement } = require('selenium-webdriver');
+const { Selector } = require('testcafe');
 const { Region, ArgumentGuard, CoordinatesType, TypeUtils, RectangleSize, Location, EyesError, GeneralUtils } = require('@applitools/eyes-common');
 const { MouseTrigger } = require('@applitools/eyes-sdk-core');
 
@@ -47,7 +47,7 @@ const JS_GET_SIZE_AND_BORDER_WIDTHS =
 /**
  * Wraps a Selenium Web Element.
  */
-class EyesWebElement extends WebElement {
+class EyesWebElement {
   /**
    * @param {Logger} logger
    * @param {EyesWebDriver} eyesDriver
@@ -63,21 +63,20 @@ class EyesWebElement extends WebElement {
       return webElement;
     }
 
-    super(eyesDriver.getRemoteWebDriver(), webElement.getId());
-
     this._logger = logger;
     this._eyesDriver = eyesDriver;
 
     /** @type {PositionProvider} */
     this._positionProvider = undefined;
+    this._webElement = webElement;
   }
 
   /**
-   * @param {object} object
+   * @param {object} obj
    * @return {boolean}
    */
-  static isLocator(object) {
-    return (object instanceof By) || TypeUtils.has(object, ['using', 'value']);
+  static isLocator(obj) {
+    return !!obj && obj.addCustomMethods && obj.find && obj.parent;
   }
 
   /**
@@ -88,10 +87,7 @@ class EyesWebElement extends WebElement {
    * @return {!Promise<boolean>} - A promise that will be resolved to whether the two WebElements are equal.
    */
   static async equals(a, b) {
-    if (a instanceof WebElement && b instanceof WebElement) {
-      // noinspection JSValidateTypes
-      return await a.getId() === await b.getId();
-    }
+    // TODO (amit)
 
     return false;
   }
@@ -321,43 +317,18 @@ class EyesWebElement extends WebElement {
    * @return {!EyesWebElement} A WebElement that can be used to issue commands against the located element.
    *   If the element is not found, the element will be invalidated and all scheduled commands aborted.
    */
-  async findElement(locator) {
-    const element = await super.findElement(locator);
-    return new EyesWebElement(this._logger, this._eyesDriver, element);
+  findElement(locator) {
+    // TODO (amit): i don't know if this works or when it's needed
+    return Selector(locator).then(element => new EyesWebElement(this._logger, this._eyesDriver, element));
   }
 
   /**
    * @inheritDoc
    * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of WebElements.
    */
-  async findElements(locator) {
-    const elements = await super.findElements(locator);
-    return elements.map(element => new EyesWebElement(this._logger, this._eyesDriver, element));
-  }
-
-  // noinspection JSCheckFunctionSignatures
-  /**
-   * @inheritDoc
-   * @return {Promise}
-   */
-  async click() {
-    // Letting the driver know about the current action.
-    const currentControl = await this.getBounds();
-    this._eyesDriver.getEyes().addMouseTrigger(MouseTrigger.MouseAction.Click, this);
-    this._logger.verbose(`click(${currentControl})`);
-    return super.click();
-  }
-
-  // noinspection JSCheckFunctionSignatures
-  /**
-   * @inheritDoc
-   */
-  async sendKeys(...keysToSend) {
-    for (const keys of keysToSend) {
-      await this._eyesDriver.getEyes().addTextTriggerForElement(this, String(keys));
-    }
-
-    await super.sendKeys(...keysToSend);
+  findElements(locator) {
+    // TODO (amit): i don't know when this is needed
+    return super.findElements(locator).then(elements => elements.map(element => new EyesWebElement(this._logger, this._eyesDriver, element)));
   }
 
   /**
@@ -366,7 +337,7 @@ class EyesWebElement extends WebElement {
    */
   async getRect() {
     // The workaround is similar to Java one, but in js we always get raw data with decimal value which we should round up.
-    const rect = await super.getRect();
+    const rect = await this._webElement.boundingClientRect;
     const width = Math.ceil(rect.width) || 0;
     // noinspection JSSuspiciousNameCombination
     const height = Math.ceil(rect.height) || 0;

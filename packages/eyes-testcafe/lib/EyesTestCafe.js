@@ -1,6 +1,5 @@
 'use strict';
 
-const { By } = require('selenium-webdriver');
 const { DomCapture } = require('@applitools/dom-utils');
 
 const {
@@ -46,9 +45,9 @@ const { Eyes } = require('./Eyes');
  *
  * @ignore
  */
-class EyesSelenium extends Eyes {
-  /** @var {Logger} EyesSelenium#_logger */
-  /** @var {Configuration} EyesSelenium#_configuration */
+class EyesTestCafe extends Eyes {
+  /** @var {Logger} EyesTestCafe#_logger */
+  /** @var {Configuration} EyesTestCafe#_configuration */
 
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
@@ -118,7 +117,7 @@ class EyesSelenium extends Eyes {
     this._imageProvider = ImageProviderFactory.getImageProvider(this._userAgent, this, this._logger, this._driver);
     this._regionPositionCompensation = RegionPositionCompensationFactory.getRegionPositionCompensation(this._userAgent, this, this._logger);
 
-    await super.openBase(this._configuration.getAppName(), this._configuration.getTestName(), this._configuration.getViewportSize(), this._configuration.getSessionType());
+    await this.openBase(this._configuration.getAppName(), this._configuration.getTestName(), this._configuration.getViewportSize(), this._configuration.getSessionType());
 
     this._devicePixelRatio = Eyes.UNKNOWN_DEVICE_PIXEL_RATIO;
 
@@ -182,7 +181,7 @@ class EyesSelenium extends Eyes {
     this._logger.verbose(`check(${checkSettings}) - begin`);
     this._stitchContent = checkSettings.getStitchContent();
     const targetRegion = checkSettings.getTargetRegion();
-    this._scrollRootElement = await this._getScrollRootElementFromCheckSettings(checkSettings);
+    this._scrollRootElement = this._getScrollRootElementFromCheckSettings(checkSettings);
 
     this._currentFramePositionProvider = null;
     this.setPositionProvider(this._createPositionProvider());
@@ -241,7 +240,7 @@ class EyesSelenium extends Eyes {
         // required to prevent cut line on the last stitched part of the page on some browsers (like firefox).
         await switchTo.defaultContent();
         originalFC = await this._tryHideScrollbars();
-        const scrollRootElement = await this.getScrollRootElement();
+        const scrollRootElement = this.getScrollRootElement();
         this._currentFramePositionProvider = this._createPositionProvider(scrollRootElement);
         // }
         const source = await this._driver.getCurrentUrl();
@@ -474,7 +473,7 @@ class EyesSelenium extends Eyes {
           scrollRootElement = await frame.getForceScrollRootElement(this._driver);
         }
         if (scrollRootElement == null) {
-          scrollRootElement = this._driver.findElement(By.tagName('html'));
+          scrollRootElement = this._driver.findElement('html');
         }
       }
       this._logger.verbose('scrollRootElement:', scrollRootElement);
@@ -527,7 +526,7 @@ class EyesSelenium extends Eyes {
       let scrollRootElement;
       if (originalFC.size() > 0 && !(await EyesWebElement.equals(element, originalFC.peek().getReference()))) {
         await switchTo.frames(originalFC);
-        scrollRootElement = await this._driver.findElement(By.css('html'));
+        scrollRootElement = await this._driver.findElement('html');
       } else {
         scrollRootElement = this._scrollRootElement;
       }
@@ -712,7 +711,7 @@ class EyesSelenium extends Eyes {
    * @return {Promise<ScaleProviderFactory>}
    */
   async _getScaleProviderFactory() {
-    const element = await this._driver.findElement(By.css('html'));
+    const element = await this._driver.findElement('html');
     const entireSize = await EyesSeleniumUtils.getEntireElementSize(this._jsExecutor, element);
 
     return new ContextBasedScaleProviderFactory(
@@ -730,7 +729,7 @@ class EyesSelenium extends Eyes {
    * @return {Promise<TestResults>}
    */
   async close(throwEx = true) {
-    const results = await super.close(throwEx);
+    const results = await Eyes.prototype.close.call(this, throwEx);
 
     if (this._runner) {
       this._runner._allTestResult.push(results);
@@ -876,9 +875,9 @@ class EyesSelenium extends Eyes {
    * @override
    * @return {Promise<WebElement>} the scroll root element
    */
-  async getScrollRootElement() {
+  getScrollRootElement() {
     if (this._scrollRootElement == null) {
-      this._scrollRootElement = await this._driver.findElement(By.css('html'));
+      this._scrollRootElement = this._driver.findElement('html');
     }
     return this._scrollRootElement;
   }
@@ -888,15 +887,15 @@ class EyesSelenium extends Eyes {
    * @param {SeleniumCheckSettings} scrollRootElementContainer
    * @return {WebElement}
    */
-  async _getScrollRootElementFromCheckSettings(scrollRootElementContainer) {
+  _getScrollRootElementFromCheckSettings(scrollRootElementContainer) {
     // if (!EyesSeleniumUtils.isMobileDevice(driver)) {
     if (scrollRootElementContainer) {
-      let scrollRootElement = await scrollRootElementContainer.getScrollRootElement();
+      let scrollRootElement = scrollRootElementContainer.getScrollRootElement();
 
       if (!scrollRootElement) {
         const scrollRootSelector = scrollRootElementContainer.getScrollRootSelector();
         if (scrollRootSelector) {
-          scrollRootElement = await this._driver.findElement(scrollRootSelector);
+          scrollRootElement = this._driver.findElement(scrollRootSelector);
         }
       }
 
@@ -906,7 +905,7 @@ class EyesSelenium extends Eyes {
     }
     // }
 
-    return this._driver.findElement(By.css('html'));
+    return this._driver.findElement('html');
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -982,7 +981,7 @@ class EyesSelenium extends Eyes {
 
       let entireFrameOrElement;
       if (!this._elementPositionProvider) {
-        const scrollRootElement2 = await this._driver.findElement(By.css('html'));
+        const scrollRootElement2 = await this._driver.findElement('html');
         const elemPositionProvider = this._getElementPositionProvider(scrollRootElement2);
         await this._markElementForLayoutRCA(elemPositionProvider);
         entireFrameOrElement = await algo.getStitchedRegion(this._regionToCheck, null, elemPositionProvider);
@@ -1076,4 +1075,4 @@ class EyesSelenium extends Eyes {
   }
 }
 
-exports.EyesSelenium = EyesSelenium;
+exports.EyesTestCafe = EyesTestCafe;
