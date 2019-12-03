@@ -52,7 +52,7 @@ class EyesVisualGrid extends Eyes {
    * @private
    * @return {object}
    */
-  _generateOpenEyesConfiguration() {
+  _makeOpenEyesConfiguration() {
     return {
       appName: this._configuration.getAppName(),
       testName: this._configuration.getTestName(),
@@ -132,7 +132,7 @@ class EyesVisualGrid extends Eyes {
       }
     }
 
-    const { checkWindow, close, abort } = await openEyes(this._generateOpenEyesConfiguration());
+    const { checkWindow, close, abort } = await openEyes(this._makeOpenEyesConfiguration());
 
     this._isOpen = true;
     this._checkWindowCommand = checkWindow;

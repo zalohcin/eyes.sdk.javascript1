@@ -55,7 +55,7 @@ describe('VisualGridRunner', function () {
   eyes.setConfiguration(conf);
 
   it('should have a valid open configuration', () => {
-    const actual = parseData(eyes._generateOpenEyesConfiguration());
+    const actual = parseData(eyes._makeOpenEyesConfiguration());
 
     const fixtureName = 'VisualGridRunner.openEyesConfiguration.json';
     updateFixture(fixtureName, actual);
