@@ -37,7 +37,7 @@
   "dependencies": {
     "@applitools/eyes-common": "^3.12.2",
     "@applitools/eyes-sdk-core": "^5.20.7",
-    "@applitools/eyes-selenium": "^4.31.23"
+    "@applitools/eyes-selenium": "^4.31.24"
   },
   "devDependencies": {
     "mocha": "^6.2.2",
