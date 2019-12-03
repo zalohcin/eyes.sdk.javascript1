@@ -400,4 +400,27 @@ describe('Configuration', () => {
     assert.strictEqual(configuration.getBaselineBranchName(), 'test_APPLITOOLS_BASELINE_BRANCH');
     assert.strictEqual(configuration.getDontCloseBatches(), true);
   });
+
+  describe('browsersInfo', () => {
+    it('returns undefined when unset', () => {
+      const config = new Configuration();
+      assert.strictEqual(config.getBrowsersInfo(), undefined);
+    });
+    it('returns a populated collection when set', () => {
+      const config = new Configuration();
+      const browserInfo = [{ width: 1, height: 1, name: 'blah' }];
+      config.setBrowsersInfo(browserInfo);
+      assert.deepStrictEqual(config.getBrowsersInfo(), browserInfo);
+    });
+    it('returns a populated collection when browser added', () => {
+      const config = new Configuration();
+      config.addBrowser(1, 1, 'blah');
+      assert.deepStrictEqual(config.getBrowsersInfo(), [{ width: 1, height: 1, name: 'blah' }]);
+    });
+    it('returns a populated collection when device added', () => {
+      const config = new Configuration();
+      config.addDeviceEmulation('blah', 'blahblah');
+      assert.deepStrictEqual(config.getBrowsersInfo(), [{ deviceName: 'blah', screenOrientation: 'blahblah' }]);
+    });
+  });
 });

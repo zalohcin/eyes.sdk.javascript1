@@ -145,7 +145,7 @@ class Configuration {
     /** @type {boolean} */
     this._isThrowExceptionOn = undefined;
     /** @type {RenderBrowserInfo[]|DeviceInfo[]} */
-    this._browsersInfo = [];
+    this._browsersInfo = undefined;
 
     /** @type {boolean} */
     this._dontCloseBatches = undefined;
@@ -1113,6 +1113,9 @@ class Configuration {
    * @return {this}
    */
   setBrowsersInfo(value) {
+    if (!this._browsersInfo) {
+      this._browsersInfo = [];
+    }
     ArgumentGuard.isArray(value, 'properties');
 
     for (const data of value) {
@@ -1126,6 +1129,9 @@ class Configuration {
    * @return {this}
    */
   addBrowsers(...browsersInfo) {
+    if (!this._browsersInfo) {
+      this._browsersInfo = [];
+    }
     this._browsersInfo.push(...browsersInfo);
     return this;
   }
@@ -1157,7 +1163,7 @@ class Configuration {
       deviceName, screenOrientation,
     };
 
-    if (this._browsersInfo === undefined) {
+    if (!this._browsersInfo) {
       this._browsersInfo = [];
     }
 
