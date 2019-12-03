@@ -1102,7 +1102,7 @@ class Configuration {
   }
 
   /**
-   * @return {RenderBrowserInfo[]|DeviceInfo[]}
+   * @return {RenderBrowserInfo[]|DeviceInfo[]|undefined}
    */
   getBrowsersInfo() {
     return this._browsersInfo;
