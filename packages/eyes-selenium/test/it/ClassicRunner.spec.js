@@ -50,7 +50,7 @@ describe('ClassicRunner', function () {
 
     const runner = new ClassicRunner();
     for (const url of urlsToTest) {
-      await runTest(url, runner);
+      await runTest(url, runner).catch(console.error);
     }
 
     const results = await runner.getAllTestResults(false);
