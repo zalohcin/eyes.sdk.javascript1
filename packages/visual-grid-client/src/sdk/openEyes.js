@@ -122,7 +122,9 @@ function makeOpenEyes({
     }
 
     const browsers = Array.isArray(browser) ? browser : [browser];
-    const browserErr = browsers.map(getBrowserError).find(Boolean);
+    const browserErr = browsers.length
+      ? browsers.map(getBrowserError).find(Boolean)
+      : getBrowserError();
     if (browserErr) {
       console.log('\x1b[31m', `\nInvalid browser: ${browserErr}\n`);
       throw new Error(browserErr);
@@ -276,6 +278,9 @@ function makeOpenEyes({
     }
 
     function getBrowserError(browser) {
+      if (!browser) {
+        return 'invalid browser configuration provided.';
+      }
       if (browser.name && !SUPPORTED_BROWSERS.includes(browser.name.replace(/-canary$/, ''))) {
         return `browser name should be one of the following 'chrome', 'firefox', 'safari', 'ie10', 'ie11' or 'edge' but received '${browser.name}'.`;
       }

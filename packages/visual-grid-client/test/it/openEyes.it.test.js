@@ -269,6 +269,18 @@ describe('openEyes', () => {
     expect(await wrapper.getInferredEnvironment()).to.equal('useragent:firefox');
   });
 
+  it('throws error on empty browser', async () => {
+    const [err] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        url: `${baseUrl}/test.html`,
+        appName,
+        browser: [],
+      }),
+    );
+    expect(err.message).to.equal('invalid browser configuration provided.');
+  });
+
   it('throws error on invalid browser name', async () => {
     const [err] = await presult(
       openEyes({
