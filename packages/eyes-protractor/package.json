@@ -1,11 +1,7 @@
 {
   "name": "@applitools/eyes-protractor",
   "private": true,
-<<<<<<< HEAD
   "version": "6.0.0-beta",
-=======
-  "version": "4.8.59",
->>>>>>> eyes-selenium@latest
   "description": "Applitools Eyes SDK for Protractor",
   "keywords": [
     "eyes-protractor",
