@@ -27,9 +27,9 @@ describe('takeScreenshot e2e', () => {
     const website = `http://localhost:${server.port}/test-iframe.html`;
     const apiKey = process.env.APPLITOOLS_API_KEY;
     const serverUrl = 'https://eyesapi.applitools.com';
-    const renderInfo = await fetch(`${serverUrl}/api/sessions/renderInfo?apiKey=${apiKey}`).then(
-      r => r.json(),
-    );
+    const renderInfo = await fetch(
+      `${serverUrl}/api/sessions/renderInfo?apiKey=${apiKey}`,
+    ).then(r => r.json());
 
     const processPageAndSerialize = `(${await getProcessPageAndSerialize()})()`;
     await page.goto(website);

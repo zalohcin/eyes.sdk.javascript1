@@ -356,9 +356,12 @@ describe('calculateMatchRegions', () => {
     const layout = [{selector: 'bla2'}, 'bubu2'];
     const strict = ['kuku2', {selector: 'bla'}, 'bubu3', 'dudu3', {selector: 'bla'}];
     const content = [{selector: 'blaaa'}, 'aaa3'];
-    const floating = [{kuku: 'kuku'}, {selector: 'bla'}, {bubu: 'bubu'}, {selector: 'clams'}].map(
-      (x, i) => Object.assign(x, offset(i)),
-    );
+    const floating = [
+      {kuku: 'kuku'},
+      {selector: 'bla'},
+      {bubu: 'bubu'},
+      {selector: 'clams'},
+    ].map((x, i) => Object.assign(x, offset(i)));
     const selectorRegions = [
       {toJSON: () => 'aaa'},
       {toJSON: () => 'bbb'},

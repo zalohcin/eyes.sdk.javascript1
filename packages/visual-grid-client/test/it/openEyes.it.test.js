@@ -103,7 +103,11 @@ describe('openEyes', () => {
         createFakeWrapper(baseUrl),
         createFakeWrapper(baseUrl),
       ],
-      browser: [{width: 320, height: 480}, {width: 640, height: 768}, {width: 1600, height: 900}],
+      browser: [
+        {width: 320, height: 480},
+        {width: 640, height: 768},
+        {width: 1600, height: 900},
+      ],
       appName,
     });
 
@@ -181,7 +185,10 @@ describe('openEyes', () => {
 
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper1, wrapper2],
-      browser: [{width: 320, height: 480}, {width: 640, height: 768}],
+      browser: [
+        {width: 320, height: 480},
+        {width: 640, height: 768},
+      ],
       appName,
     });
 
@@ -447,7 +454,10 @@ describe('openEyes', () => {
     checkWindow({resourceUrls: [], cdt: [], url: `bla`});
     await psetTimeout(0);
     checkWindow({resourceUrls: [], cdt: [], url: `bla`});
-    error = await close().then(x => x, err => err);
+    error = await close().then(
+      x => x,
+      err => err,
+    );
     expect(error[0].message).to.equal('renderBatch');
   });
 
@@ -464,7 +474,10 @@ describe('openEyes', () => {
     checkWindow({resourceUrls: [], cdt: [], url: `bla`});
     await psetTimeout(0);
     checkWindow({resourceUrls: [], cdt: [], url: `bla`});
-    error = await close().then(x => x, err => err);
+    error = await close().then(
+      x => x,
+      err => err,
+    );
     expect(error[0].message).to.equal('checkWindow');
   });
 
@@ -479,7 +492,10 @@ describe('openEyes', () => {
       appName,
     });
 
-    error = await close().then(x => x, err => err);
+    error = await close().then(
+      x => x,
+      err => err,
+    );
     expect(error[0].message).to.equal('close');
   });
 
@@ -535,7 +551,10 @@ describe('openEyes', () => {
         wrappers: [wrapper],
         appName,
       });
-      const err1 = await close().then(x => x, err => err);
+      const err1 = await close().then(
+        x => x,
+        err => err,
+      );
       expect(err1[0].message).to.equal('close');
       const {close: close2} = await Promise.race([
         openEyes({
@@ -545,7 +564,10 @@ describe('openEyes', () => {
         psetTimeout(100).then(() => ({close: 'not resolved'})),
       ]);
       expect(close2).not.to.equal('not resolved');
-      const err2 = await close2().then(x => x, err => err);
+      const err2 = await close2().then(
+        x => x,
+        err => err,
+      );
       expect(err2[0].message).to.equal('close');
     });
 
@@ -573,7 +595,10 @@ describe('openEyes', () => {
         appName,
       });
       checkWindow({cdt: [], url: 'url'});
-      const err1 = await close().then(x => x, err => err);
+      const err1 = await close().then(
+        x => x,
+        err => err,
+      );
       expect(err1[0].message).to.equal('renderBatch');
       const {checkWindow: checkWindow2, close: close2} = await Promise.race([
         openEyes({
@@ -584,7 +609,10 @@ describe('openEyes', () => {
       ]);
       expect(close2).not.to.equal('not resolved');
       checkWindow2({cdt: [], url: 'url'});
-      const result2 = await close2().then(x => x, err => err);
+      const result2 = await close2().then(
+        x => x,
+        err => err,
+      );
       expect(result2).not.to.be.an.instanceOf(Error);
     });
 
@@ -869,7 +897,10 @@ describe('openEyes', () => {
     it('runs renders with max concurrency for multiple browsers', async () => {
       const {checkWindow, close} = await openEyes({
         wrappers: [wrapper, wrapper],
-        browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+        browser: [
+          {width: 1, height: 1},
+          {width: 2, height: 2},
+        ],
         appName,
       });
 
@@ -1205,7 +1236,10 @@ describe('openEyes', () => {
   });
 
   it("doesn't init wrapper when isDisabled", async () => {
-    const result = await openEyes({isDisabled: true}).then(x => x, err => err);
+    const result = await openEyes({isDisabled: true}).then(
+      x => x,
+      err => err,
+    );
     expect(result).not.to.be.instanceof(Error);
   });
 
@@ -1677,7 +1711,10 @@ describe('openEyes', () => {
     const wrapper2 = createFakeWrapper(baseUrl);
     const {abort} = await openEyes({
       wrappers: [wrapper1, wrapper2],
-      browser: [{width: 1, height: 2}, {width: 3, height: 4}],
+      browser: [
+        {width: 1, height: 2},
+        {width: 3, height: 4},
+      ],
       appName,
     });
 

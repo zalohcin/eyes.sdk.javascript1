@@ -12,7 +12,10 @@ describe('createRenderRequests', () => {
     const url = 'url';
     const cdt = 'cdt';
     const resources = [r1, r2];
-    const browsers = [{width: 1, height: 2, name: 'b1'}, {width: 3, height: 4, name: 'b2'}];
+    const browsers = [
+      {width: 1, height: 2, name: 'b1'},
+      {width: 3, height: 4, name: 'b2'},
+    ];
     const sizeMode = 'sizeMode';
     const selector = 'selector';
     const region = {left: 1, top: 2, width: 3, height: 4};

@@ -116,7 +116,10 @@ describe('renderBatch', () => {
         new FakeRunningRender('some id', RenderStatus.NEED_MORE_RESOURCES),
       ], // always returns need-more-resources
     });
-    const error = await renderBatch([new FakeRenderRequest('some dom')]).then(x => x, err => err);
+    const error = await renderBatch([new FakeRenderRequest('some dom')]).then(
+      x => x,
+      err => err,
+    );
 
     expect(error).to.be.an.instanceof(Error);
   });

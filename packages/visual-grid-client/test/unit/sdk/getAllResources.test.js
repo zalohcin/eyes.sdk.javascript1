@@ -312,7 +312,10 @@ describe('getAllResources', () => {
   it("doesn't crash with unsupported protocols", async () => {
     const resources = await getAllResources({
       resourceUrls: ['data:text/html,<div>', 'blob:http://localhost/something.css'],
-    }).then(x => x, err => err);
+    }).then(
+      x => x,
+      err => err,
+    );
     expect(resources).to.eql({});
   });
 
@@ -321,7 +324,10 @@ describe('getAllResources', () => {
     closeServer = server.close;
     try {
       const url = `HTTP://LOCALHOST:${server.port}/imported2.css`;
-      const resources = await getAllResources({resourceUrls: [url]}).then(x => x, err => err);
+      const resources = await getAllResources({resourceUrls: [url]}).then(
+        x => x,
+        err => err,
+      );
       expect(resources).to.eql({
         [url]: toRGridResource({
           url,

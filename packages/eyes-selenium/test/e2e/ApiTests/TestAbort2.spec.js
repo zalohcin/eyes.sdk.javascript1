@@ -152,7 +152,7 @@ describe('TestAbort2', function () {
 
         beforeEachTest();
         if (!useVisualGrid) {
-          assert.throws(testThrowDuringCheck, Error,`During Check - (VG: ${useVisualGrid})`);
+          assert.throws(testThrowDuringCheck, Error, `During Check - (VG: ${useVisualGrid})`);
         } else {
           testThrowDuringCheck();
         }

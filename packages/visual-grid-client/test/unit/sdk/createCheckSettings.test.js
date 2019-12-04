@@ -79,21 +79,30 @@ describe('createCheckSettings', () => {
   });
 
   it('handles multiple ignore regions', () => {
-    const ignore = [{left: 1, top: 2, width: 3, height: 4}, {left: 5, top: 6, width: 7, height: 8}];
+    const ignore = [
+      {left: 1, top: 2, width: 3, height: 4},
+      {left: 5, top: 6, width: 7, height: 8},
+    ];
     const expected = ignore.map(region => new IgnoreRegionByRectangle(new Region(region)));
     const checkSettings = createCheckSettings({ignore});
     expect(checkSettings.getIgnoreRegions()).to.eql(expected);
   });
 
   it('handles multiple layout regions', () => {
-    const layout = [{left: 1, top: 2, width: 3, height: 4}, {left: 5, top: 6, width: 7, height: 8}];
+    const layout = [
+      {left: 1, top: 2, width: 3, height: 4},
+      {left: 5, top: 6, width: 7, height: 8},
+    ];
     const expected = layout.map(region => new IgnoreRegionByRectangle(new Region(region)));
     const checkSettings = createCheckSettings({layout});
     expect(checkSettings.getLayoutRegions()).to.eql(expected);
   });
 
   it('handles multiple strict regions', () => {
-    const strict = [{left: 1, top: 2, width: 3, height: 4}, {left: 5, top: 6, width: 7, height: 8}];
+    const strict = [
+      {left: 1, top: 2, width: 3, height: 4},
+      {left: 5, top: 6, width: 7, height: 8},
+    ];
     const expected = strict.map(region => new IgnoreRegionByRectangle(new Region(region)));
     const checkSettings = createCheckSettings({strict});
     expect(checkSettings.getStrictRegions()).to.eql(expected);
@@ -112,7 +121,10 @@ describe('createCheckSettings', () => {
   });
 
   it('handles multiple strict, layout, acontent, accessibility and ignore regions', () => {
-    const strict = [{left: 1, top: 2, width: 3, height: 4}, {left: 5, top: 6, width: 7, height: 8}];
+    const strict = [
+      {left: 1, top: 2, width: 3, height: 4},
+      {left: 5, top: 6, width: 7, height: 8},
+    ];
     const layout = [
       {left: 10, top: 20, width: 30, height: 40},
       {left: 50, top: 60, width: 70, height: 80},
@@ -147,35 +159,50 @@ describe('createCheckSettings', () => {
   it('throws on non-region ignore input', async () => {
     const err = await Promise.resolve()
       .then(() => createCheckSettings({ignore: 'bla'}))
-      .then(x => x, err => err);
+      .then(
+        x => x,
+        err => err,
+      );
     expect(err).to.be.an.instanceof(Error);
   });
 
   it('throws on non-region layout input', async () => {
     const err = await Promise.resolve()
       .then(() => createCheckSettings({layout: 'bla'}))
-      .then(x => x, err => err);
+      .then(
+        x => x,
+        err => err,
+      );
     expect(err).to.be.an.instanceof(Error);
   });
 
   it('throws on non-region content input', async () => {
     const err = await Promise.resolve()
       .then(() => createCheckSettings({content: 'bla'}))
-      .then(x => x, err => err);
+      .then(
+        x => x,
+        err => err,
+      );
     expect(err).to.be.an.instanceof(Error);
   });
 
   it('throws on non-region strict input', async () => {
     const err = await Promise.resolve()
       .then(() => createCheckSettings({strict: 'bla'}))
-      .then(x => x, err => err);
+      .then(
+        x => x,
+        err => err,
+      );
     expect(err).to.be.an.instanceof(Error);
   });
 
   it('throws on non-region accessibility input', async () => {
     const err = await Promise.resolve()
       .then(() => createCheckSettings({accessibility: 'bla'}))
-      .then(x => x, err => err);
+      .then(
+        x => x,
+        err => err,
+      );
     expect(err).to.be.an.instanceof(Error);
   });
 
@@ -192,7 +219,10 @@ describe('createCheckSettings', () => {
           },
         }),
       )
-      .then(x => x, err => err);
+      .then(
+        x => x,
+        err => err,
+      );
     expect(err).to.be.an.instanceof(Error);
   });
 
@@ -285,7 +315,10 @@ describe('createCheckSettings', () => {
         ),
     );
 
-    const strict = [{left: 1, top: 2, width: 3, height: 4}, {left: 5, top: 6, width: 7, height: 8}];
+    const strict = [
+      {left: 1, top: 2, width: 3, height: 4},
+      {left: 5, top: 6, width: 7, height: 8},
+    ];
     const layout = [
       {left: 10, top: 20, width: 30, height: 40},
       {left: 50, top: 60, width: 70, height: 80},
@@ -313,7 +346,10 @@ describe('createCheckSettings', () => {
   it('throws on non-region floating input', async () => {
     const err = await Promise.resolve()
       .then(() => createCheckSettings({floating: 'bla'}))
-      .then(x => x, err => err);
+      .then(
+        x => x,
+        err => err,
+      );
     expect(err).to.be.an.instanceof(Error);
   });
 

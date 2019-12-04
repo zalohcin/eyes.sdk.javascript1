@@ -9,7 +9,7 @@ describe('TestClassicRunnerExceptions', function () {
 
   it('TestExceptionInGetAllTestResults', async function () {
     const runner = new ClassicRunner();
-    runner.getAllTestResults()
+    runner.getAllTestResults();
     const eyes = new Eyes(runner);
     eyes.setSaveNewTests(false);
     const driver = SeleniumUtils.createChromeDriver();

@@ -72,7 +72,10 @@ describe('closeEyes', () => {
     wrapper2.goodTags = ['ok-in-1-test'];
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper, wrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'ok-in-1-test', url: `${baseUrl}/basic.html`});
@@ -88,7 +91,10 @@ describe('closeEyes', () => {
     const alwaysDiffWrapper = createFakeWrapper(baseUrl, {closeErr: true});
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper, alwaysDiffWrapper],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'good1', url: `${baseUrl}/basic.html`});
@@ -103,7 +109,10 @@ describe('closeEyes', () => {
     const alwaysDiffWrapper2 = createFakeWrapper(baseUrl, {closeErr: true});
     const {checkWindow, close} = await openEyes({
       wrappers: [alwaysDiffWrapper2, alwaysDiffWrapper],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'good1', url: `${baseUrl}/basic.html`});
@@ -118,7 +127,10 @@ describe('closeEyes', () => {
     const alwaysDiffWrapper2 = createFakeWrapper(baseUrl, {closeErr: true});
     const {checkWindow, close} = await openEyes({
       wrappers: [alwaysDiffWrapper2, alwaysDiffWrapper],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'good1', url: `${baseUrl}/basic.html`});
@@ -139,7 +151,10 @@ describe('closeEyes', () => {
 
     const {checkWindow, close} = await openEyesRenderFail({
       wrappers: [wrapper, wrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'good1', url: `${baseUrl}/basic.html`});
@@ -160,7 +175,10 @@ describe('closeEyes', () => {
 
     const {checkWindow, close} = await openEyesRenderFail({
       wrappers: [wrapper, wrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'good1', url: `${baseUrl}/basic.html`});
@@ -173,7 +191,10 @@ describe('closeEyes', () => {
   it('rejects with empty array if aborted by user', async () => {
     const {checkWindow, abort, close} = await openEyes({
       wrappers: [wrapper, wrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'good1', url: `${baseUrl}/basic.html`});
@@ -195,7 +216,10 @@ describe('closeEyes', () => {
 
     let {checkWindow, close} = await openEyes({
       wrappers: [wrapper, wrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'good1', url: `${baseUrl}/basic.html`});
@@ -207,7 +231,10 @@ describe('closeEyes', () => {
 
     ({checkWindow, close} = await openEyes({
       wrappers: [wrapper3, wrapper4],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     }));
     await close();
@@ -218,7 +245,10 @@ describe('closeEyes', () => {
   it('resolves with empty array if aborted by user with throwEx=false', async () => {
     const {checkWindow, abort, close} = await openEyes({
       wrappers: [wrapper, wrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'good1', url: `${baseUrl}/basic.html`});
@@ -234,7 +264,11 @@ describe('closeEyes', () => {
     alwaysDiffWrapper.goodTags = ['ok-in-1-test'];
     const {checkWindow, close} = await openEyes({
       wrappers: [alwaysDiffWrapper, wrapper, wrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}, {width: 3, height: 3}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+        {width: 3, height: 3},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'ok-in-1-test', url: `${baseUrl}/basic.html`});
@@ -254,7 +288,10 @@ describe('closeEyes', () => {
     alwaysDiffWrapper2.goodTags = ['ok'];
     const {checkWindow, close} = await openEyes({
       wrappers: [alwaysDiffWrapper, alwaysDiffWrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'ok', url: `${baseUrl}/basic.html`});
@@ -271,7 +308,10 @@ describe('closeEyes', () => {
     alwaysDiffWrapper2.goodTags = ['ok'];
     const {checkWindow, close} = await openEyes({
       wrappers: [alwaysDiffWrapper, alwaysDiffWrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'ok', url: `${baseUrl}/basic.html`});
@@ -287,7 +327,11 @@ describe('closeEyes', () => {
     alwaysDiffWrapper.goodTags = ['ok-in-1-test'];
     const {checkWindow, close} = await openEyes({
       wrappers: [alwaysDiffWrapper, wrapper, wrapper2],
-      browser: [{width: 1, height: 1}, {width: 2, height: 2}, {width: 3, height: 3}],
+      browser: [
+        {width: 1, height: 1},
+        {width: 2, height: 2},
+        {width: 3, height: 3},
+      ],
       appName,
     });
     checkWindow({cdt: [], resourceUrls: [], tag: 'ok-in-1-test', url: `${baseUrl}/basic.html`});
