@@ -1196,6 +1196,42 @@ class Configuration {
   }
 
   /**
+   * @return {object}
+   */
+  toOpenEyesConfiguration() {
+    return {
+      appName: this.getAppName(),
+      testName: this.getTestName(),
+      displayName: this.getDisplayName(),
+      browser: this.getBrowsersInfo(),
+      properties: this.getProperties(),
+      batchSequenceName: this.getBatch() && this.getBatch().getSequenceName(),
+      batchName: this.getBatch() && this.getBatch().getName(),
+      batchId: this.getBatch() && this.getBatch().getId(),
+      batchNotify: this.getBatch() && this.getBatch().getNotifyOnCompletion(),
+      baselineBranchName: this.getBaselineBranchName(),
+      baselineEnvName: this.getBaselineEnvName(),
+      baselineName: this.getBaselineEnvName(),
+      envName: this.getEnvironmentName(),
+      branchName: this.getBranchName(),
+      saveFailedTests: this.getSaveFailedTests(),
+      saveNewTests: this.getSaveNewTests(),
+      compareWithParentBranch: this.getCompareWithParentBranch(),
+      ignoreBaseline: this.getIgnoreBaseline(),
+      parentBranchName: this.getParentBranchName(),
+      isDisabled: this.getIsDisabled(),
+      matchTimeout: this.getMatchTimeout(),
+
+      ignoreCaret: this.getIgnoreCaret(),
+      matchLevel: this.getMatchLevel(),
+      useDom: this.getUseDom(),
+      enablePatterns: this.getEnablePatterns(),
+      ignoreDisplacements: this.getIgnoreDisplacements(),
+      saveDebugData: this.getSaveDebugData(),
+    };
+  }
+
+  /**
    * @override
    */
   toJSON() {

@@ -2,7 +2,18 @@
 
 const assert = require('assert');
 
-const { Configuration, MatchLevel, AccessibilityLevel, RectangleSize, StitchMode, BatchInfo, ImageMatchSettings, SessionType, ProxySettings, PropertyData } = require('../../../index');
+const {
+  Configuration,
+  MatchLevel,
+  AccessibilityLevel,
+  RectangleSize,
+  StitchMode,
+  BatchInfo,
+  ImageMatchSettings,
+  SessionType,
+  ProxySettings,
+  PropertyData,
+} = require('../../../index');
 
 const STRING_CONFIGS = [
   '_appName',
@@ -77,8 +88,16 @@ describe('Configuration', () => {
     for (const pi of properties) {
       const methodName = _getMethodName(pi);
 
-      assert.strictEqual(typeof config[`set${methodName}`], 'function', `property '${pi}' doesn't have matching setter`);
-      assert.strictEqual(typeof config[`get${methodName}`], 'function', `property '${pi}' doesn't have matching getter`);
+      assert.strictEqual(
+        typeof config[`set${methodName}`],
+        'function',
+        `property '${pi}' doesn't have matching setter`
+      );
+      assert.strictEqual(
+        typeof config[`get${methodName}`],
+        'function',
+        `property '${pi}' doesn't have matching getter`
+      );
     }
   });
 
@@ -422,5 +441,37 @@ describe('Configuration', () => {
       config.addDeviceEmulation('blah', 'blahblah');
       assert.deepStrictEqual(config.getBrowsersInfo(), [{ deviceName: 'blah', screenOrientation: 'blahblah' }]);
     });
+  });
+
+  it('toOpenEyesConfiguration', () => {
+    const browsersInfo = [
+      {
+        width: 800,
+        height: 600,
+        name: 'firefox',
+      },
+      {
+        deviceName: 'iPhone 4',
+        screenOrientation: 'portrait',
+      },
+    ];
+    const conf = {
+      appName: 'myAppName',
+      testName: 'myTestName',
+      browsersInfo,
+      batch: {
+        id: 'myBatchId',
+        name: 'myBatchName',
+        notifyOnCompletion: true,
+      },
+    };
+    const config = new Configuration(conf);
+    const result = config.toOpenEyesConfiguration();
+    assert.strictEqual(result.appName, conf.appName);
+    assert.strictEqual(result.testName, conf.testName);
+    assert.deepStrictEqual(result.browser, conf.browsersInfo);
+    assert.strictEqual(result.batchId, conf.batch.id);
+    assert.strictEqual(result.batchName, conf.batch.name);
+    assert.strictEqual(result.batchNotify, conf.batch.notifyOnCompletion);
   });
 });
