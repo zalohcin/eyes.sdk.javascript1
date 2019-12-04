@@ -159,15 +159,10 @@ describe('TestEyesImages', function () {
 
   it('TestLayout2', async function () {
     const eyes = setup(this.test.title);
-    eyes.setMatchLevel(MatchLevel.Layout);
-    await eyes.open('CheckLayout2', 'Check Layout2', new RectangleSize(1024, 768));
+    eyes.setMatchLevel(MatchLevel.Layout2);
 
-    const path = '../fixtures/yahoo1a.png';
-    // var path = '../fixtures/yahoo1b.png';
-    // var path = '../fixtures/aol1.png';
-    // var path = '../fixtures/aol2.png';
-
-    eyes.check(path, Target.path(path));
+    await eyes.open('TestEyesImages', this.test.title, new RectangleSize(1024, 768));
+    await eyes.check(this.test.title, Target.image(`${__dirname}/../fixtures/yahoo1a.png`));
     await teardown(eyes);
   });
 });
