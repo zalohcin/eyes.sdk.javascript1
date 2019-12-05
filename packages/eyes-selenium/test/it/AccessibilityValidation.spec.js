@@ -3,24 +3,29 @@
 require('chromedriver');
 const { Builder, By } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { Eyes, VisualGridRunner, ClassicRunner, Target, Configuration, BrowserType, AccessibilityLevel,
-  AccessibilityRegionType, BatchInfo } = require('../../index');
+const {
+  Eyes,
+  VisualGridRunner,
+  ClassicRunner,
+  Target,
+  Configuration,
+  BrowserType,
+  AccessibilityLevel,
+  AccessibilityRegionType,
+  BatchInfo,
+} = require('../../index');
 
 let /** @type {WebDriver} */ driver, configuration;
-describe('AccessibilityValidation', function () {
-  this.timeout(5 * 60 * 1000);
+describe('AccessibilityValidation', () => {
+  const batch = new BatchInfo();
 
-  beforeEach(async function () {
-    driver = await new Builder().forBrowser('chrome').setChromeOptions(new ChromeOptions().headless()).build();
-
-    const batch = new BatchInfo();
-    batch.setNotifyOnCompletion(true);
-
+  beforeEach(async () => {
+    driver = await new Builder()
+      .forBrowser('chrome')
+      .setChromeOptions(new ChromeOptions().headless())
+      .build();
     configuration = new Configuration();
     configuration.setBatch(batch);
-    // configuration.setProxy('http://localhost:8888');
-    // configuration.setApiKey(process.env.APPLITOOLS_FABRIC_API_KEY);
-    // configuration.setServerUrl('https://eyesfabric4eyes.applitools.com');
   });
 
   it('VisualGridTest', async function () {
@@ -38,9 +43,10 @@ describe('AccessibilityValidation', function () {
 
     await eyes.open(driver, this.test.parent.title, this.test.title);
 
-    await eyes.check('Main Page', Target.window()
-      // .accessibilityValidation(AccessibilityLevel.AAA) // will not work as for now
-      .accessibilityRegion(By.css('button'), AccessibilityRegionType.RegularText));
+    await eyes.check(
+      'Main Page',
+      Target.window().accessibilityRegion(By.css('button'), AccessibilityRegionType.RegularText)
+    );
 
     // close all test and close batch request
     const results = await eyes.getRunner().getAllTestResults(); // eslint-disable-line
@@ -57,9 +63,10 @@ describe('AccessibilityValidation', function () {
 
     await eyes.open(driver, this.test.parent.title, this.test.title);
 
-    await eyes.check('Main Page', Target.window()
-      // .accessibilityValidation(AccessibilityLevel.AAA) // will not work as for now
-      .accessibilityRegion(By.css('button'), AccessibilityRegionType.BoldText));
+    await eyes.check(
+      'Main Page',
+      Target.window().accessibilityRegion(By.css('button'), AccessibilityRegionType.BoldText)
+    );
 
     await eyes.closeAsync();
 
@@ -67,7 +74,7 @@ describe('AccessibilityValidation', function () {
     const results = await eyes.getRunner().getAllTestResults(); // eslint-disable-line
   });
 
-  afterEach(async function () {
+  afterEach(async () => {
     if (driver != null) {
       await driver.quit();
     }

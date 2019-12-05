@@ -6,10 +6,8 @@ const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 const { Eyes, Target, RectangleSize } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
-describe('TestServerConnector', function () {
-  this.timeout(5 * 60 * 1000);
-
-  before(async function () {
+describe('ServerConnector', () => {
+  before(async () => {
     driver = await new Builder()
       .withCapabilities(Capabilities.chrome())
       .setChromeOptions(new ChromeOptions().headless().addArguments('disable-infobars'))
@@ -18,7 +16,7 @@ describe('TestServerConnector', function () {
     eyes = new Eyes();
   });
 
-  it('TestServerConnector', async function () {
+  it('deleteSession', async function () {
     await eyes.open(driver, this.test.parent.title, this.test.title, new RectangleSize({ width: 800, height: 599 }));
 
     await driver.get('https://applitools.com/helloworld');
@@ -30,7 +28,7 @@ describe('TestServerConnector', function () {
     await results.deleteSession();
   });
 
-  afterEach(async function () {
+  afterEach(async () => {
     await driver.quit();
     await eyes.abort();
   });

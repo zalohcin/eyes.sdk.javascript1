@@ -6,14 +6,12 @@ const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 const { Eyes, VisualGridRunner, Target, Configuration, BrowserType, RectangleSize, BatchInfo, Region, CorsIframeHandle } = require('../../index');
 
 let /** @type {WebDriver} */ driver;
-describe('VisualGridSimple', function () {
-  this.timeout(5 * 60 * 1000);
-
+describe('VisualGrid Resources', () => {
   before(async function () {
     driver = await new Builder().forBrowser('chrome').setChromeOptions(new ChromeOptions().headless()).build();
   });
 
-  it('VisualGridTestPage', async function () {
+  it('should ignore CORS frames', async () => {
     await driver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage');
 
     const batchInfo = new BatchInfo('EyesRenderingBatch');
@@ -22,7 +20,6 @@ describe('VisualGridSimple', function () {
     const eyes = new Eyes(new VisualGridRunner());
     eyes.setBatch(batchInfo);
     eyes.setCorsIframeHandle(CorsIframeHandle.BLANK);
-    // eyes.setProxy('http://127.0.0.1:8888');
 
     const configuration = new Configuration();
     configuration.setTestName('Open Concurrency with Batch 2');
@@ -46,7 +43,7 @@ describe('VisualGridSimple', function () {
     await eyes.close();
   });
 
-  it('TestWithInvalidResources', async function () {
+  it('should handle a page with invalid resources', async function () {
     await driver.get('https://astappiev.github.io/test-html-pages/index-invalid-resource.html');
 
     const eyes = new Eyes(new VisualGridRunner());
@@ -58,8 +55,8 @@ describe('VisualGridSimple', function () {
     await eyes.close();
   });
 
-  after(async function () {
-    if (driver != null) {
+  after(async () => {
+    if (driver) {
       await driver.quit();
     }
   });

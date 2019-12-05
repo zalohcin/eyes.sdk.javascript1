@@ -68,9 +68,7 @@ async function runTests({ initializeEyes, displayName }) {
   }
 }
 
-describe('Runners', function () {
-  this.timeout(5 * 60 * 1000);
-
+describe('Runners', () => {
   it('ClassicRunner', async function () {
     const displayName = this.test.title;
     const runner = new ClassicRunner();

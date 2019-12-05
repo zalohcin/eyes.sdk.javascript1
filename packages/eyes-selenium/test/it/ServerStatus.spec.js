@@ -11,9 +11,7 @@ const { Eyes, Target, RectangleSize, NewTestError, DiffsFoundError, TestResults 
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
 let /** @type {string} */ appName, /** @type {string} */ testName, /** @type {RectangleSize} */ viewportSize;
-describe('TestServerStatus', function () {
-  this.timeout(5 * 60 * 1000);
-
+describe('Server Status', () => {
   before(async function () {
     driver = await new Builder()
       .withCapabilities(Capabilities.chrome())
@@ -28,7 +26,7 @@ describe('TestServerStatus', function () {
     await driver.get('https://applitools.com/helloworld');
   });
 
-  it('TestSessionSummary_Status_New', async function () {
+  it('TestSessionSummary_Status_New', async () => {
     eyes.setSaveNewTests(false);
     driver = await eyes.open(driver, appName, testName, viewportSize);
 
@@ -37,7 +35,7 @@ describe('TestServerStatus', function () {
     await assertRejects(eyes.close(), NewTestError, 'Expected NewTestError');
   });
 
-  it('TestSessionSummary_Status_Passed', async function () {
+  it('TestSessionSummary_Status_Passed', async () => {
     eyes.setSaveNewTests(true);
     driver = await eyes.open(driver, appName, testName, viewportSize);
 
@@ -48,7 +46,7 @@ describe('TestServerStatus', function () {
     assert.ok(results.getIsNew());
   });
 
-  it('TestSessionSummary_Status_Failed', async function () {
+  it('TestSessionSummary_Status_Failed', async () => {
     driver = await eyes.open(driver, appName, testName, viewportSize);
 
     await driver.findElement(By.css('button')).click();
@@ -57,11 +55,11 @@ describe('TestServerStatus', function () {
     await assertRejects(eyes.close(), DiffsFoundError, 'Expected DiffsFoundError');
   });
 
-  afterEach(async function () {
+  afterEach(async () => {
     await eyes.abort();
   });
 
-  after(async function () {
+  after(async () => {
     await driver.quit();
   });
 });

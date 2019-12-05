@@ -6,57 +6,62 @@ const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 const { Eyes, Target, ConsoleLogHandler, StitchMode, VisualGridRunner, BatchInfo } = require('../../index');
 
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes, batch;
-describe('TestCheckFluent', function () {
-  this.timeout(5 * 60 * 1000);
-
+describe('CheckFluent', () => {
   before(async function () {
-    driver = new Builder().forBrowser('chrome').setChromeOptions(new ChromeOptions().headless()).build();
+    driver = await new Builder()
+      .forBrowser('chrome')
+      .setChromeOptions(new ChromeOptions().headless())
+      .build();
 
     batch = new BatchInfo();
-    eyes = new Eyes();
-    eyes.setLogHandler(new ConsoleLogHandler(false));
-    // eyes.setProxy('http://localhost:8888');
-
     await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/');
   });
 
   beforeEach(async function () {
-    if (this.currentTest.title.includes('_VG_')) {
+    if (this.currentTest.title.includes('on VG')) {
       eyes = new Eyes(new VisualGridRunner());
+    } else {
+      eyes = new Eyes();
     }
-
     eyes.setBatch(batch);
     eyes.setLogHandler(new ConsoleLogHandler(false));
     driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title, { width: 700, height: 460 });
   });
 
-  it('TestCheckRegionFully', async function () {
+  it('check region fully', async () => {
     eyes.setStitchMode(StitchMode.CSS);
-    await eyes.check('Region Fully', Target
-      .region(By.id('overflowing-div-image'))
-      .ignoreRegions(driver.findElement(By.id('overflowing-div')))
-      .fully());
+    await eyes.check(
+      'Region Fully',
+      Target.region(By.id('overflowing-div-image'))
+        .ignoreRegions(driver.findElement(By.id('overflowing-div')))
+        .fully()
+    );
     return eyes.close();
   });
 
-  it('TestCheckRegionFully_Scroll', async function () {
+  it('check region fully with scroll', async () => {
     eyes.setStitchMode(StitchMode.SCROLL);
-    await eyes.check('Region Fully', Target
-      .region(By.id('overflowing-div-image'))
-      .ignoreRegions(driver.findElement(By.id('overflowing-div')))
-      .fully());
+    await eyes.check(
+      'Region Fully',
+      Target.region(By.id('overflowing-div-image'))
+        .ignoreRegions(driver.findElement(By.id('overflowing-div')))
+        .fully()
+    );
     return eyes.close();
   });
 
-  it('TestCheckRegionFully_VG_Scroll', async function () {
+  it('check region fully with scroll on VG', async () => {
     eyes.setStitchMode(StitchMode.SCROLL);
-    await eyes.check('Region Fully', Target
-      .region(By.id('overflowing-div-image'))
-      .ignoreRegions(driver.findElement(By.id('overflowing-div')))
-      .fully());
+    await eyes.check(
+      'Region Fully',
+      Target.region(By.id('overflowing-div-image'))
+        .ignoreRegions(driver.findElement(By.id('overflowing-div')))
+        .fully()
+    );
     return eyes.close();
   });
 
+  // TODO: review commented out tests
   /* it('TestCheckWindow', async function () {
     await eyes.check('Window', Target.window()
       .timeout(5000)

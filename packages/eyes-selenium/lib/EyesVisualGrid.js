@@ -89,7 +89,8 @@ class EyesVisualGrid extends Eyes {
     if (this._configuration.getViewportSize()) {
       await this.setViewportSize(this._configuration.getViewportSize());
 
-      if (this._configuration.getBrowsersInfo().length === 0) {
+      const browserInfo = this._configuration.getBrowsersInfo();
+      if (!browserInfo || (Array.isArray(browserInfo) && browserInfo.length === 0)) {
         this._configuration.addBrowser(this._configuration.getViewportSize().getWidth(), this._configuration.getViewportSize().getHeight(), BrowserType.CHROME);
       }
     }
