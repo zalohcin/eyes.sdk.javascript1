@@ -57,7 +57,7 @@ describe('checkNetwork', () => {
     await checkNetwork();
     sanitizeApiKey();
     assert.deepStrictEqual(output, { reg:
-      [['Eyes Check Netwrok running with',
+      [['Eyes check netwrok running with',
         '{"apiKey":"someKey"}',
         '\n\n'],
       ['[1] Checking eyes servers api', undefined, '\n'],
@@ -65,7 +65,7 @@ describe('checkNetwork', () => {
       ['[eyes] axios', '- [ ? ]'],
       ['[eyes] node-fetch', '- [ ? ]'],
       ['[eyes] cURL', '- [ ? ]'],
-      ['[2]  Checking Visual Grid servers api', undefined, '\n'],
+      ['[2]  Checking visual grid servers api', undefined, '\n'],
       ['[VG] server connector', '- [ ? ]'],
       ['[VG] axios', '- [ ? ]'],
       ['[VG] node-fetch', '- [ ? ]'],
@@ -96,7 +96,7 @@ describe('checkNetwork', () => {
     await checkNetwork();
     sanitizeApiKey();
     assert.deepStrictEqual(output, { reg:
-      [['Eyes Check Netwrok running with',
+      [['Eyes check netwrok running with',
         '{"apiKey":"someKey"}',
         '\n\n'],
       ['[1] Checking eyes servers api', undefined, '\n'],
@@ -104,7 +104,7 @@ describe('checkNetwork', () => {
       ['[eyes] axios', '- [ ? ]'],
       ['[eyes] node-fetch', '- [ ? ]'],
       ['[eyes] cURL', '- [ ? ]'],
-      ['[2]  Checking Visual Grid servers api', undefined, '\n'],
+      ['[2]  Checking visual grid servers api', undefined, '\n'],
       ['[VG] server connector', '- [ ? ]'],
       ['[VG] axios', '- [ ? ]'],
       ['[VG] node-fetch', '- [ ? ]'],

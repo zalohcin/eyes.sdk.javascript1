@@ -43,7 +43,7 @@ function makeCheckNetwork({
       printErr('missing "apiKey" add APPLITOOLS_API_KEY as an env variable or add "apiKey" in applitools.config.js\n');
       return;
     }
-    print('Eyes Check Netwrok running with', JSON.stringify(userConfig), '\n\n');
+    print('Eyes check netwrok running with', JSON.stringify(userConfig), '\n\n');
 
     let hasErr = false;
     let restrictedAccess = true;
@@ -57,7 +57,7 @@ function makeCheckNetwork({
     curlRenderErr = await doTest(eyes.testCurl, '[eyes] cURL');
     hasErr = hasErr || curlRenderErr;
 
-    print('[2]  Checking Visual Grid servers api', vg.url, '\n');
+    print('[2]  Checking visual grid servers api', vg.url, '\n');
     hasErr = await doTest(vg.testServer, '[VG] server connector') || hasErr;
     hasErr = await doTest(vg.testAxios, '[VG] axios') || hasErr;
     hasErr = await doTest(vg.testFetch, '[VG] node-fetch') || hasErr;
