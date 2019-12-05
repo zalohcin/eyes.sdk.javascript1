@@ -6,35 +6,38 @@ const { Builder, Capabilities } = require('selenium-webdriver');
 const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
 const { Eyes, ClassicRunner, Target, Configuration, BatchInfo, ConsoleLogHandler } = require('../../index');
 
-function initializeEyes(runner) {
+const batchInfo = new BatchInfo('ClassicRunner batch');
+
+function initializeEyes({ runner, testName }) {
   const eyes = new Eyes(runner);
   eyes.setLogHandler(new ConsoleLogHandler(false));
 
   const configuration = new Configuration();
-  // configuration.setProxy('http://localhost:8888');
   configuration.setAppName('ClassicRunner');
-  configuration.setTestName('Test ClassicRunner');
-  configuration.setBatch(new BatchInfo('ClassicRunner batch'));
+  configuration.setTestName(testName);
+  configuration.setBatch(batchInfo);
 
   eyes.setConfiguration(configuration);
   return eyes;
 }
 
-async function runTest(url, runner) {
-  const eyes = initializeEyes(runner);
+async function runTest({ url, runner, testName }) {
+  const eyes = initializeEyes({ runner, testName });
 
-  const webDriver = new Builder()
+  const driver = new Builder()
     .withCapabilities(Capabilities.chrome())
     .setChromeOptions(new ChromeOptions().headless())
     .build();
 
   try {
-    await webDriver.get(url);
-    await eyes.open(webDriver);
+    await driver.get(url);
+    await eyes.open(driver);
     await eyes.check(`Main Page ${url}`, Target.window());
-    await eyes.closeAsync();
+    await eyes.close(false);
+  } catch (error) {
+    console.error(error);
   } finally {
-    await webDriver.quit();
+    await driver.quit();
   }
 }
 
@@ -50,7 +53,8 @@ describe('ClassicRunner', function () {
 
     const runner = new ClassicRunner();
     for (const url of urlsToTest) {
-      await runTest(url, runner).catch(console.error);
+      const testName = (urlsToTest.indexOf(url)).toString();
+      await runTest({ url, runner, testName }).catch(console.error);
     }
 
     const results = await runner.getAllTestResults(false);
