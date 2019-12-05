@@ -13,17 +13,13 @@ const {
 const config = ConfigUtils.getConfig({ configParams: ['apiKey', 'serverUrl'] });
 const configuration = new Configuration(config);
 const apiKey = configuration.getApiKey();
-
-
 const pexec = p(exec);
 const curlGet = async (url) => {
-  const { stdout } = await pexec(`curl -X GET ${url}`, { maxBuffer: 10000000 });
+  const { stdout } = await this.pexec(`curl -X GET ${url}`, { maxBuffer: 10000000 });
   return stdout;
 };
-
 const getServer = (() => {
   let server;
-  console.verbose = console.log;
   return () => {
     if (!server) {
       server = new ServerConnector({ verbose: () => {}, log: () => {} }, configuration);
@@ -31,7 +27,6 @@ const getServer = (() => {
     return server;
   };
 })();
-
 const presult = promise => promise.then(v => [undefined, v], err => [err]);
 
 exports.presult = presult;

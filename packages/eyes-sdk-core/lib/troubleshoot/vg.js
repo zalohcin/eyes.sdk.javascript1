@@ -113,7 +113,7 @@ const testAxios = async () => {
 const testServer = async () => {
   const resource = await getResource();
   const rr = new RunningRender({ renderId: 'fake' });
-  const server = getServer();
+  const server = getServer(); // Note: the vg url here comes from the server
   const [err, res] = await presult(server.renderPutResource(rr, resource));
   if (err || !res) {
     throw new Error('bad VG result', err);

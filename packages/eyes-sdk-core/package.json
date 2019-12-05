@@ -49,7 +49,7 @@
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\""
   },
   "bin": {
-    "eyes-rub": "./bin/eyes-rub.js"
+    "eyes-check-network": "./bin/runCheckNetwork.js"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
