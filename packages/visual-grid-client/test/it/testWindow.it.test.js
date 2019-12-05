@@ -159,7 +159,7 @@ describe('testWindow', () => {
           _contentRegions: [],
           _enablePatterns: undefined,
           _floatingRegions: [],
-          _ignoreCaret: false,
+          _ignoreCaret: true,
           _ignoreDisplacements: undefined,
           _ignoreRegions: [],
           _layoutRegions: [],
