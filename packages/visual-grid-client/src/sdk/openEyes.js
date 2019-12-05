@@ -6,6 +6,7 @@ const makeCheckWindow = require('./checkWindow');
 const makeAbort = require('./makeAbort');
 const makeClose = require('./makeClose');
 const assumeEnvironment = require('./assumeEnvironment');
+const translateBrowserNameVersion = require('./translateBrowserNameVersion');
 
 const {
   initWrappers,
@@ -15,7 +16,22 @@ const {
   apiKeyFailMsg,
 } = require('./wrapperUtils');
 
-const SUPPORTED_BROWSERS = ['firefox', 'ie10', 'ie11', 'edge', 'chrome', 'ie', 'safari'];
+const SUPPORTED_BROWSERS = [
+  'firefox',
+  'ie10',
+  'ie11',
+  'edge',
+  'chrome',
+  'ie',
+  'safari',
+  'chrome-canary',
+  'chrome-1',
+  'chrome-2',
+  'firefox-1',
+  'firefox-2',
+  'safari-1',
+  'safari-2',
+];
 
 function makeOpenEyes({
   appName: _appName,
@@ -121,13 +137,17 @@ function makeOpenEyes({
       throw new Error(appNameFailMsg);
     }
 
-    const browsers = Array.isArray(browser) ? browser : [browser];
-    const browserErr = browsers.length
+    const browsersArray = Array.isArray(browser) ? browser : [browser];
+    const browsers = browsersArray.map(browser => ({
+      ...browser,
+      name: translateBrowserNameVersion(browser.name),
+    }));
+    const browserError = browsers.length
       ? browsers.map(getBrowserError).find(Boolean)
       : getBrowserError();
-    if (browserErr) {
-      console.log('\x1b[31m', `\nInvalid browser: ${browserErr}\n`);
-      throw new Error(browserErr);
+    if (browserError) {
+      console.log('\x1b[31m', `\nInvalid browser: ${browserError}\n`);
+      throw new Error(browserError);
     }
 
     ({batchSequence, baselineBranch, parentBranch, branch, batchNotify} = backwardCompatible(
@@ -281,7 +301,7 @@ function makeOpenEyes({
       if (!browser) {
         return 'invalid browser configuration provided.';
       }
-      if (browser.name && !SUPPORTED_BROWSERS.includes(browser.name.replace(/-canary$/, ''))) {
+      if (browser.name && !SUPPORTED_BROWSERS.includes(browser.name)) {
         return `browser name should be one of the following 'chrome', 'firefox', 'safari', 'ie10', 'ie11' or 'edge' but received '${browser.name}'.`;
       }
       if (browser.name && !browser.deviceName && (!browser.height || !browser.width)) {

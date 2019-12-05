@@ -164,7 +164,7 @@ class FakeEyesWrapper extends EventEmitter {
     const {
       isGood,
       sizeMode,
-      browserName: _browserName,
+      browserName,
       selector,
       region,
       emulationInfo,
@@ -192,6 +192,7 @@ class FakeEyesWrapper extends EventEmitter {
     result.__domUrl = domUrl;
     result.__checkSettings = checkSettings;
     result.__tag = tag;
+    result.__browserName = browserName;
     this.results.push(result);
     return new Promise(res =>
       setTimeout(() => {

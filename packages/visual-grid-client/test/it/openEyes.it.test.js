@@ -2159,15 +2159,32 @@ describe('openEyes', () => {
     expect(r.__checkSettings.getEnablePatterns()).to.be.false;
   });
 
-  it('doesnt throw error on a canary browser name', async () => {
+  it('doesnt throw error on chrome canary browser name', async () => {
     const [err] = await presult(
       openEyes({
         wrappers: [wrapper],
-        browser: {width: 320, height: 480, name: 'firefox-canary'},
+        browser: {width: 320, height: 480, name: 'chrome-canary'},
         url: `${baseUrl}/test.html`,
         appName,
       }),
     );
     expect(err).to.be.undefined;
+  });
+
+  it('translates previous browser versions', async () => {
+    const wrapper1 = new FakeEyesWrapper({goodFilename: 'test.cdt.json', goodResourceUrls: []});
+    const wrapper2 = new FakeEyesWrapper({goodFilename: 'test.cdt.json', goodResourceUrls: []});
+    const {checkWindow, close} = await openEyes({
+      appName,
+      wrappers: [wrapper1, wrapper2],
+      browser: [
+        {width: 1, height: 2, name: 'chrome-one-version-back'},
+        {width: 3, height: 4, name: 'chrome-two-versions-back'},
+      ],
+    });
+    checkWindow({cdt: [], url: ''});
+    await close();
+    expect(wrapper1.results[0].__browserName).to.equal('chrome-1');
+    expect(wrapper2.results[0].__browserName).to.equal('chrome-2');
   });
 });
