@@ -26,9 +26,13 @@ describe('browser visual grid', () => {
 
     browser = await puppeteer.launch({
       args: ['--disable-web-security'],
-      headless: true,
+      // headless: false,
+      // devtools: true,
     });
     page = await browser.newPage();
+    page.on('console', msg => {
+      console.log(msg.text());
+    });
 
     await page.setCookie({name: 'auth', value: 'secret', url: baseUrl});
   });
@@ -43,7 +47,8 @@ describe('browser visual grid', () => {
     await page.goto(`${baseUrl}/test.html`);
     const processPageAndSerializeScript = await getProcessPageAndSerialize();
     await page.evaluate(browserVisualGrid);
-    const results = await page.evaluate(`const { openEyes } = makeRenderingGridClient({ apiKey: '${apiKey}' });
+    const showLogs = !!process.env.APPLITOOLS_SHOW_LOGS;
+    const results = await page.evaluate(`const { openEyes } = makeRenderingGridClient({ apiKey: '${apiKey}', showLogs: ${showLogs} });
     openEyes({
       appName: 'some app',
       testName: 'browser version - passes with correct screenshot',
