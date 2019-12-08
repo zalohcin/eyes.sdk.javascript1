@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = [
   'appName',
@@ -40,4 +40,4 @@ module.exports = [
   'notifyOnCompletion',
   'batchNotify',
   'dontCloseBatches',
-];
+]

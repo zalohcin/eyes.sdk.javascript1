@@ -1,5 +1,5 @@
-'use strict';
-const FakeEyesWrapper = require('./FakeEyesWrapper');
+'use strict'
+const FakeEyesWrapper = require('./FakeEyesWrapper')
 
 function createFakeWrapper(baseUrl, options) {
   return new FakeEyesWrapper(
@@ -11,7 +11,7 @@ function createFakeWrapper(baseUrl, options) {
       },
       options,
     ),
-  );
+  )
 }
 
-module.exports = createFakeWrapper;
+module.exports = createFakeWrapper

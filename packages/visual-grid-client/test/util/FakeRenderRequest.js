@@ -1,26 +1,26 @@
-'use strict';
+'use strict'
 
 class FakeRenderRequest {
   constructor(dom, resources) {
-    this.dom = dom;
-    this.resources = resources;
+    this.dom = dom
+    this.resources = resources
   }
 
   getRenderId() {
-    return this.renderId;
+    return this.renderId
   }
 
   setRenderId(renderId) {
-    this.renderId = renderId;
+    this.renderId = renderId
   }
 
   getDom() {
-    return this.dom;
+    return this.dom
   }
 
   getResources() {
-    return this.resources;
+    return this.resources
   }
 }
 
-module.exports = FakeRenderRequest;
+module.exports = FakeRenderRequest

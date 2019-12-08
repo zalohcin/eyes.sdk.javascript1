@@ -1,10 +1,10 @@
-'use strict';
-const makeTestController = require('./makeTestController');
-const makeBatchStore = require('./makeBatchStore');
+'use strict'
+const makeTestController = require('./makeTestController')
+const makeBatchStore = require('./makeBatchStore')
 
 function makeGlobalState({logger}) {
-  let queuedRendersCount = 0;
-  const queuedRendersConditions = [];
+  let queuedRendersCount = 0
+  const queuedRendersConditions = []
 
   return {
     makeTestController,
@@ -12,33 +12,33 @@ function makeGlobalState({logger}) {
     setQueuedRendersCount,
     waitForQueuedRenders,
     batchStore: makeBatchStore(),
-  };
+  }
 
   function getQueuedRendersCount() {
-    return queuedRendersCount;
+    return queuedRendersCount
   }
 
   function setQueuedRendersCount(value) {
-    logger.log('setting queued renders count to', value);
-    queuedRendersCount = value;
-    checkCondition();
+    logger.log('setting queued renders count to', value)
+    queuedRendersCount = value
+    checkCondition()
   }
 
   async function waitForQueuedRenders(desiredCount) {
     if (desiredCount < queuedRendersCount) {
       return new Promise(resolve => {
-        queuedRendersConditions.push({resolve, desiredCount});
-      });
+        queuedRendersConditions.push({resolve, desiredCount})
+      })
     }
   }
 
   function checkCondition() {
-    const condition = queuedRendersConditions[0];
+    const condition = queuedRendersConditions[0]
     if (condition && condition.desiredCount >= queuedRendersCount) {
-      queuedRendersConditions.splice(0, 1);
-      condition.resolve();
+      queuedRendersConditions.splice(0, 1)
+      condition.resolve()
     }
   }
 }
 
-module.exports = makeGlobalState;
+module.exports = makeGlobalState

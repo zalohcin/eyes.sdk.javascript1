@@ -1,18 +1,18 @@
-'use strict';
+'use strict'
 
 class FakeRunningRender {
   constructor(renderId, renderStatus) {
-    this.renderId = renderId;
-    this.renderStatus = renderStatus;
+    this.renderId = renderId
+    this.renderStatus = renderStatus
   }
 
   getRenderStatus() {
-    return this.renderStatus;
+    return this.renderStatus
   }
 
   getRenderId() {
-    return this.renderId;
+    return this.renderId
   }
 }
 
-module.exports = FakeRunningRender;
+module.exports = FakeRunningRender

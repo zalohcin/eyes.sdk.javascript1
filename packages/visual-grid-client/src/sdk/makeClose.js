@@ -1,6 +1,6 @@
-'use strict';
-const {presult} = require('@applitools/functional-commons');
-const makeWaitForTestEnd = require('./makeWaitForTestEnd');
+'use strict'
+const {presult} = require('@applitools/functional-commons')
+const makeWaitForTestEnd = require('./makeWaitForTestEnd')
 
 function makeClose({
   getCheckWindowPromises,
@@ -16,58 +16,58 @@ function makeClose({
     getCheckWindowPromises,
     openEyesPromises,
     logger,
-  });
+  })
 
   return async (throwEx = true) => {
-    let error, didError;
-    const settleError = (throwEx ? Promise.reject : Promise.resolve).bind(Promise);
-    logger.log('closeEyes() called');
+    let error, didError
+    const settleError = (throwEx ? Promise.reject : Promise.resolve).bind(Promise)
+    logger.log('closeEyes() called')
 
     if (testController.getIsAbortedByUser()) {
-      logger.log('closeEyes() aborted by user');
-      return settleError([]);
+      logger.log('closeEyes() aborted by user')
+      return settleError([])
     }
 
-    const batchId = wrappers[0].getExistingBatchId();
-    globalState.batchStore.addId(batchId);
+    const batchId = wrappers[0].getExistingBatchId()
+    globalState.batchStore.addId(batchId)
 
     return waitAndResolveTests(async (testIndex, checkWindowResult) => {
-      resolveTests[testIndex]();
+      resolveTests[testIndex]()
 
       if ((error = testController.getFatalError())) {
-        logger.log('closeEyes() fatal error found');
-        !isSingleWindow && (await wrappers[testIndex].ensureAborted());
-        return (didError = true), error;
+        logger.log('closeEyes() fatal error found')
+        !isSingleWindow && (await wrappers[testIndex].ensureAborted())
+        return (didError = true), error
       }
       if ((error = testController.getError(testIndex))) {
-        logger.log('closeEyes() found test error');
-        return (didError = true), error;
+        logger.log('closeEyes() found test error')
+        return (didError = true), error
       }
 
       const closePromise = !isSingleWindow
         ? wrappers[testIndex].close(throwEx)
-        : wrappers[testIndex].closeTestWindow(checkWindowResult, throwEx);
-      const [closeError, closeResult] = await presult(closePromise);
+        : wrappers[testIndex].closeTestWindow(checkWindowResult, throwEx)
+      const [closeError, closeResult] = await presult(closePromise)
       if (!closeError) {
-        setRenderIds(closeResult, testIndex);
-        return closeResult;
+        setRenderIds(closeResult, testIndex)
+        return closeResult
       } else {
-        didError = true;
-        return closeError;
+        didError = true
+        return closeError
       }
     }).then(results => {
-      logger.log(`closeEyes() done`);
-      return didError ? settleError(results) : results;
-    });
-  };
+      logger.log(`closeEyes() done`)
+      return didError ? settleError(results) : results
+    })
+  }
 
   function setRenderIds(result, testIndex) {
-    const renderIds = testController.getRenderIds(testIndex);
-    const steps = result.getStepsInfo();
+    const renderIds = testController.getRenderIds(testIndex)
+    const steps = result.getStepsInfo()
     for (const [i, renderId] of renderIds.entries()) {
-      steps[i].setRenderId(renderId);
+      steps[i].setRenderId(renderId)
     }
   }
 }
 
-module.exports = makeClose;
+module.exports = makeClose

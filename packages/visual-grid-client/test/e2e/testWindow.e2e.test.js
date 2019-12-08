@@ -1,19 +1,19 @@
-'use strict';
+'use strict'
 
-const {describe, it, before, after, beforeEach} = require('mocha');
-const {expect} = require('chai');
-const puppeteer = require('puppeteer');
-const makeRenderingGridClient = require('../../src/sdk/renderingGridClient');
-const testServer = require('../util/testServer');
-const {presult} = require('@applitools/functional-commons');
-const {DiffsFoundError} = require('@applitools/eyes-sdk-core');
-const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot');
+const {describe, it, before, after, beforeEach} = require('mocha')
+const {expect} = require('chai')
+const puppeteer = require('puppeteer')
+const makeRenderingGridClient = require('../../src/sdk/renderingGridClient')
+const testServer = require('../util/testServer')
+const {presult} = require('@applitools/functional-commons')
+const {DiffsFoundError} = require('@applitools/eyes-sdk-core')
+const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot')
 
 describe('openEyes', () => {
-  let baseUrl, closeServer, testWindow;
-  const apiKey = process.env.APPLITOOLS_API_KEY; // TODO bad for tests. what to do
-  let browser, page;
-  let processPageAndSerialize;
+  let baseUrl, closeServer, testWindow
+  const apiKey = process.env.APPLITOOLS_API_KEY // TODO bad for tests. what to do
+  let browser, page
+  let processPageAndSerialize
 
   beforeEach(() => {
     testWindow = makeRenderingGridClient(
@@ -22,41 +22,41 @@ describe('openEyes', () => {
         apiKey,
         fetchResourceTimeout: 2000,
       }),
-    ).testWindow;
-  });
+    ).testWindow
+  })
 
   before(async () => {
     if (!apiKey) {
-      throw new Error('APPLITOOLS_API_KEY env variable is not defined');
+      throw new Error('APPLITOOLS_API_KEY env variable is not defined')
     }
-    const server = await testServer({port: 3456}); // TODO fixed port avoids 'need-more-resources' for dom. Is this desired? should both paths be tested?
-    baseUrl = `http://localhost:${server.port}`;
-    closeServer = server.close;
+    const server = await testServer({port: 3456}) // TODO fixed port avoids 'need-more-resources' for dom. Is this desired? should both paths be tested?
+    baseUrl = `http://localhost:${server.port}`
+    closeServer = server.close
 
-    browser = await puppeteer.launch();
-    page = await browser.newPage();
+    browser = await puppeteer.launch()
+    page = await browser.newPage()
 
-    await page.setCookie({name: 'auth', value: 'secret', url: baseUrl});
+    await page.setCookie({name: 'auth', value: 'secret', url: baseUrl})
 
-    const processPageAndSerializeScript = await getProcessPageAndSerialize();
-    processPageAndSerialize = () => page.evaluate(`(${processPageAndSerializeScript})()`);
-  });
+    const processPageAndSerializeScript = await getProcessPageAndSerialize()
+    processPageAndSerialize = () => page.evaluate(`(${processPageAndSerializeScript})()`)
+  })
 
   after(async () => {
-    await closeServer();
-    await browser.close();
-  });
+    await closeServer()
+    await browser.close()
+  })
 
   it('passes with correct screenshot', async () => {
-    await page.goto(`${baseUrl}/test.html`);
+    await page.goto(`${baseUrl}/test.html`)
 
-    const {cdt, url, blobs, resourceUrls} = await processPageAndSerialize();
+    const {cdt, url, blobs, resourceUrls} = await processPageAndSerialize()
 
     const resourceContents = blobs.map(({url, type, value}) => ({
       url,
       type,
       value: Buffer.from(value, 'base64'),
-    }));
+    }))
 
     const openParams = {
       appName: 'some app',
@@ -68,7 +68,7 @@ describe('openEyes', () => {
       ],
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,
-    };
+    }
 
     const checkParams = {
       resourceUrls,
@@ -79,23 +79,23 @@ describe('openEyes', () => {
       scriptHooks: {
         beforeCaptureScreenshot: "document.body.style.backgroundColor = 'gold'",
       },
-    };
+    }
 
-    const results = await testWindow({openParams, checkParams});
-    expect(results.length).to.eq(3);
-    expect(results.map(r => r.getStatus())).to.eql(['Passed', 'Passed', 'Passed']);
-  });
+    const results = await testWindow({openParams, checkParams})
+    expect(results.length).to.eq(3)
+    expect(results.map(r => r.getStatus())).to.eql(['Passed', 'Passed', 'Passed'])
+  })
 
   it('fails with incorrect screenshot', async () => {
-    await page.goto(`${baseUrl}/test.html`);
+    await page.goto(`${baseUrl}/test.html`)
 
-    const {cdt, url, blobs, resourceUrls} = await processPageAndSerialize();
+    const {cdt, url, blobs, resourceUrls} = await processPageAndSerialize()
 
     const resourceContents = blobs.map(({url, type, value}) => ({
       url,
       type,
       value: Buffer.from(value, 'base64'),
-    }));
+    }))
 
     const openParams = {
       appName: 'some app',
@@ -107,9 +107,9 @@ describe('openEyes', () => {
       ],
       showLogs: process.env.APPLITOOLS_SHOW_LOGS,
       saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,
-    };
+    }
 
-    cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = "hi, I'm green";
+    cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = "hi, I'm green"
     const checkParams = {
       resourceUrls,
       resourceContents,
@@ -119,11 +119,11 @@ describe('openEyes', () => {
       scriptHooks: {
         beforeCaptureScreenshot: "document.body.style.backgroundColor = 'gold'",
       },
-    };
+    }
 
-    const [err] = await presult(testWindow({openParams, checkParams}));
+    const [err] = await presult(testWindow({openParams, checkParams}))
 
-    expect(err.length).to.eq(3);
-    err.map(r => expect(r).to.be.instanceOf(DiffsFoundError));
-  });
-});
+    expect(err.length).to.eq(3)
+    err.map(r => expect(r).to.be.instanceOf(DiffsFoundError))
+  })
+})

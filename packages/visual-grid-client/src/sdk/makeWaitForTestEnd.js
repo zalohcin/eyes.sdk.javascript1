@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 function makeWaitForTestEnd({getCheckWindowPromises, openEyesPromises, logger}) {
   return async function waitForTestEnd(onTestEnd) {
@@ -9,16 +9,16 @@ function makeWaitForTestEnd({getCheckWindowPromises, openEyesPromises, logger}) 
         // waiting on openEyesPromise.
         checkWindowPromise
           .then(r => {
-            logger.verbose(`waitForTestEnd() checkWindow ${i} done`);
-            return Promise.all([openEyesPromises[i], r]);
+            logger.verbose(`waitForTestEnd() checkWindow ${i} done`)
+            return Promise.all([openEyesPromises[i], r])
           })
           .then(([, r]) => {
-            logger.verbose(`waitForTestEnd() open ${i} done`);
-            return onTestEnd(i, r);
+            logger.verbose(`waitForTestEnd() open ${i} done`)
+            return onTestEnd(i, r)
           }),
       ),
-    );
-  };
+    )
+  }
 }
 
-module.exports = makeWaitForTestEnd;
+module.exports = makeWaitForTestEnd

@@ -1,14 +1,14 @@
-'use strict';
+'use strict'
 
-const makeOpenEyes = require('./openEyes');
+const makeOpenEyes = require('./openEyes')
 
 function makeTestWindow(openConfig) {
-  const openEyes = makeOpenEyes({...openConfig, isSingleWindow: true});
+  const openEyes = makeOpenEyes({...openConfig, isSingleWindow: true})
   return async ({openParams, checkParams, throwEx = true}) => {
-    const {checkWindow, close} = await openEyes(openParams);
-    checkWindow(checkParams);
-    return close(throwEx);
-  };
+    const {checkWindow, close} = await openEyes(openParams)
+    checkWindow(checkParams)
+    return close(throwEx)
+  }
 }
 
-module.exports = makeTestWindow;
+module.exports = makeTestWindow

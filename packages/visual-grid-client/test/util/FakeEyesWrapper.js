@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 const {
   MatchResult,
   TestResults,
@@ -6,23 +6,23 @@ const {
   RenderStatus,
   Location,
   Region,
-} = require('@applitools/eyes-sdk-core');
-const {URL} = require('url');
-const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture');
-const SOME_BATCH = 'SOME_BATCH';
-const getSha256Hash = require('./getSha256Hash');
-const FakeRunningRender = require('./FakeRunningRender');
-const EventEmitter = require('events');
+} = require('@applitools/eyes-sdk-core')
+const {URL} = require('url')
+const {loadJsonFixture, loadFixtureBuffer} = require('./loadFixture')
+const SOME_BATCH = 'SOME_BATCH'
+const getSha256Hash = require('./getSha256Hash')
+const FakeRunningRender = require('./FakeRunningRender')
+const EventEmitter = require('events')
 
-let salt = 0;
+let salt = 0
 
 function compare(o1, o2) {
-  return JSON.stringify(o1) === JSON.stringify(o2);
+  return JSON.stringify(o1) === JSON.stringify(o2)
 }
 
 const devices = {
   'iPhone 4': {width: 320, height: 480},
-};
+}
 
 const selectorsToLocations = {
   sel1: {x: 1, y: 2, width: 3, height: 4},
@@ -35,7 +35,7 @@ const selectorsToLocations = {
   sel8: {x: 600, y: 601, width: 602, height: 603},
   sel9: {x: 604, y: 604, width: 604, height: 604},
   sel10: {x: 605, y: 605, width: 605, height: 605},
-};
+}
 
 class FakeEyesWrapper extends EventEmitter {
   constructor({
@@ -47,76 +47,76 @@ class FakeEyesWrapper extends EventEmitter {
     failRender,
     batchId = '1',
   }) {
-    super();
+    super()
     this._logger = {
       verbose: console.log,
       log: console.log,
-    };
-    this.goodFilename = goodFilename;
-    this.goodResourceUrls = goodResourceUrls;
-    this.goodResources = goodResources;
-    this.goodTags = goodTags;
-    this.batch;
-    this.batchId = batchId;
-    this.baseUrl = 'http://fake';
-    this.resultsRoute = '/results_url';
-    this.matchLevel = 'Strict';
-    this.accessibilityLevel = 'None';
-    this.closeErr = closeErr;
-    this.failRender = failRender;
-    this._serverConnector = {deleteBatchSessions: () => {}};
+    }
+    this.goodFilename = goodFilename
+    this.goodResourceUrls = goodResourceUrls
+    this.goodResources = goodResources
+    this.goodTags = goodTags
+    this.batch
+    this.batchId = batchId
+    this.baseUrl = 'http://fake'
+    this.resultsRoute = '/results_url'
+    this.matchLevel = 'Strict'
+    this.accessibilityLevel = 'None'
+    this.closeErr = closeErr
+    this.failRender = failRender
+    this._serverConnector = {deleteBatchSessions: () => {}}
   }
 
   async open(...args) {
-    this.results = [];
+    this.results = []
     return new Promise(res =>
       setTimeout(() => {
-        this.emit('openEnd', args);
-        res();
+        this.emit('openEnd', args)
+        res()
       }, 100),
-    );
+    )
   }
 
   async renderBatch(renderRequests) {
     if (this.failRender) {
-      throw new Error('render error');
+      throw new Error('render error')
     }
-    const renderInfo = renderRequests[0].getRenderInfo();
-    this.sizeMode = renderInfo.getSizeMode();
-    this.selector = renderInfo.getSelector();
-    this.region = renderInfo.getRegion();
-    this.emulationInfo = renderInfo.getEmulationInfo();
-    this.selectorsToFindRegionsFor = renderRequests[0].getSelectorsToFindRegionsFor();
+    const renderInfo = renderRequests[0].getRenderInfo()
+    this.sizeMode = renderInfo.getSizeMode()
+    this.selector = renderInfo.getSelector()
+    this.region = renderInfo.getRegion()
+    this.emulationInfo = renderInfo.getEmulationInfo()
+    this.selectorsToFindRegionsFor = renderRequests[0].getSelectorsToFindRegionsFor()
 
-    return renderRequests.map(renderRequest => this.getRunningRenderForRequest(renderRequest));
+    return renderRequests.map(renderRequest => this.getRunningRenderForRequest(renderRequest))
   }
 
   getRunningRenderForRequest(renderRequest) {
-    const resources = renderRequest.getResources();
+    const resources = renderRequest.getResources()
     const actualResources = resources.map(resource => ({
       url: resource.getUrl(),
       hash: resource.getSha256Hash(),
-    }));
+    }))
     const isGoodResources =
       !actualResources.length ||
-      this.getExpectedResources().every(er => !!actualResources.find(ar => compare(er, ar)));
+      this.getExpectedResources().every(er => !!actualResources.find(ar => compare(er, ar)))
 
     const cdt = JSON.parse(
       renderRequest
         .getDom()
         .getContent()
         .toString(),
-    ).domNodes;
-    const isGoodCdt = cdt.length === 0 || compare(cdt, this.getExpectedCdt()); // allowing [] for easier testing (only need to pass `cdt:[]` in the test)
-    const renderInfo = renderRequest.getRenderInfo();
-    const sizeMode = renderInfo.getSizeMode();
-    const browserName = renderRequest.getBrowserName();
-    const selector = renderInfo.getSelector();
-    const region = renderInfo.getRegion();
-    const emulationInfo = renderInfo.getEmulationInfo();
-    const selectorsToFindRegionsFor = renderRequest.getSelectorsToFindRegionsFor();
+    ).domNodes
+    const isGoodCdt = cdt.length === 0 || compare(cdt, this.getExpectedCdt()) // allowing [] for easier testing (only need to pass `cdt:[]` in the test)
+    const renderInfo = renderRequest.getRenderInfo()
+    const sizeMode = renderInfo.getSizeMode()
+    const browserName = renderRequest.getBrowserName()
+    const selector = renderInfo.getSelector()
+    const region = renderInfo.getRegion()
+    const emulationInfo = renderInfo.getEmulationInfo()
+    const selectorsToFindRegionsFor = renderRequest.getSelectorsToFindRegionsFor()
 
-    const isGood = isGoodCdt && isGoodResources;
+    const isGood = isGoodCdt && isGoodResources
     const renderId = JSON.stringify({
       isGood,
       region,
@@ -126,14 +126,14 @@ class FakeEyesWrapper extends EventEmitter {
       emulationInfo,
       selectorsToFindRegionsFor,
       salt: salt++,
-    });
+    })
 
-    return new FakeRunningRender(renderId, RenderStatus.RENDERED);
+    return new FakeRunningRender(renderId, RenderStatus.RENDERED)
   }
 
   async getRenderStatus(renderIds) {
     return renderIds.map(renderId => {
-      const {browserName, emulationInfo, selectorsToFindRegionsFor} = JSON.parse(renderId);
+      const {browserName, emulationInfo, selectorsToFindRegionsFor} = JSON.parse(renderId)
       return new RenderStatusResults({
         status: RenderStatus.RENDERED,
         imageLocation: renderId,
@@ -142,25 +142,25 @@ class FakeEyesWrapper extends EventEmitter {
         selectorRegions: selectorsToFindRegionsFor
           ? selectorsToFindRegionsFor.map(selector => selectorsToLocations[selector])
           : undefined,
-      });
-    });
+      })
+    })
   }
 
   async getRenderInfo() {
-    return {getResultsUrl: () => `${this.baseUrl}${this.resultsRoute}`};
+    return {getResultsUrl: () => `${this.baseUrl}${this.resultsRoute}`}
   }
 
   setRenderingInfo(val) {
-    this.renderingInfo = val;
+    this.renderingInfo = val
   }
 
   async putResource() {}
 
   async checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation}) {
     if (tag && this.goodTags && !this.goodTags.includes(tag))
-      throw new Error(`Tag ${tag} should be one of the good tags ${this.goodTags}`);
+      throw new Error(`Tag ${tag} should be one of the good tags ${this.goodTags}`)
 
-    const result = new MatchResult();
+    const result = new MatchResult()
     const {
       isGood,
       sizeMode,
@@ -169,13 +169,13 @@ class FakeEyesWrapper extends EventEmitter {
       region,
       emulationInfo,
       selectorsToFindRegionsFor,
-    } = JSON.parse(screenshotUrl);
+    } = JSON.parse(screenshotUrl)
 
-    let expectedImageLocation = undefined;
+    let expectedImageLocation = undefined
     if (sizeMode === 'selector') {
-      expectedImageLocation = new Location(selectorsToLocations[selectorsToFindRegionsFor[0]]);
+      expectedImageLocation = new Location(selectorsToLocations[selectorsToFindRegionsFor[0]])
     } else if (sizeMode === 'region') {
-      expectedImageLocation = new Region(this.region).getLocation();
+      expectedImageLocation = new Region(this.region).getLocation()
     }
 
     const asExpected =
@@ -185,54 +185,54 @@ class FakeEyesWrapper extends EventEmitter {
       compare(region, this.region) &&
       compare(emulationInfo, this.emulationInfo) &&
       compare(selectorsToFindRegionsFor, this.selectorsToFindRegionsFor) &&
-      compare(imageLocation, expectedImageLocation);
+      compare(imageLocation, expectedImageLocation)
 
-    result.setAsExpected(asExpected);
+    result.setAsExpected(asExpected)
 
-    result.__domUrl = domUrl;
-    result.__checkSettings = checkSettings;
-    result.__tag = tag;
-    result.__browserName = browserName;
-    this.results.push(result);
+    result.__domUrl = domUrl
+    result.__checkSettings = checkSettings
+    result.__tag = tag
+    result.__browserName = browserName
+    this.results.push(result)
     return new Promise(res =>
       setTimeout(() => {
-        this.emit('checkWindowEnd');
-        res(result);
+        this.emit('checkWindowEnd')
+        res(result)
       }, 100),
-    );
+    )
   }
 
   async testWindow(...args) {
     return new Promise(res =>
       setTimeout(() => {
-        this.emit('testWindowEnd', args);
-        const results = new TestResults({stepsInfo: [{}]});
-        res(results);
+        this.emit('testWindowEnd', args)
+        const results = new TestResults({stepsInfo: [{}]})
+        res(results)
       }, 100),
-    );
+    )
   }
 
   async closeTestWindow(results, throwEx) {
     return new Promise(res =>
       setTimeout(() => {
-        this.emit('closeTestWindowEnd', [results, throwEx]);
-        res(results);
+        this.emit('closeTestWindowEnd', [results, throwEx])
+        res(results)
       }, 100),
-    );
+    )
   }
 
   createRGridDom({cdt: _cdt, resources: _resources}) {}
 
   async close() {
-    this.emit('closed');
-    this.closed = !this.aborted;
-    if (this.closeErr || this.results.find(r => !r.getAsExpected())) throw new Error('mismatch');
-    return this.resultsToTestResults(this.results);
+    this.emit('closed')
+    this.closed = !this.aborted
+    if (this.closeErr || this.results.find(r => !r.getAsExpected())) throw new Error('mismatch')
+    return this.resultsToTestResults(this.results)
   }
 
   async abort() {
-    this.emit('aborted');
-    this.aborted = !this.closed;
+    this.emit('aborted')
+    this.aborted = !this.closed
   }
 
   async ensureAborted() {}
@@ -240,194 +240,194 @@ class FakeEyesWrapper extends EventEmitter {
   setAssumedConfiguration() {}
 
   resultsToTestResults(results) {
-    const steps = Array.from(new Array(results.length).map(() => ({})));
-    const tr = new TestResults({stepsInfo: steps});
-    const trSteps = tr.getStepsInfo();
+    const steps = Array.from(new Array(results.length).map(() => ({})))
+    const tr = new TestResults({stepsInfo: steps})
+    const trSteps = tr.getStepsInfo()
     for (const [i, result] of results.entries()) {
-      trSteps[i].result = result;
+      trSteps[i].result = result
     }
-    return tr;
+    return tr
   }
 
   setDummyTestResults() {
-    this.results.push({getAsExpected: () => true});
+    this.results.push({getAsExpected: () => true})
   }
 
   getExpectedCdt() {
-    return loadJsonFixture(this.goodFilename);
+    return loadJsonFixture(this.goodFilename)
   }
 
   getExpectedResources() {
     const urlResources = this.goodResourceUrls.map(resourceUrl => ({
       url: resourceUrl,
       hash: getSha256Hash(loadFixtureBuffer(new URL(resourceUrl).pathname.slice(1))),
-    }));
+    }))
 
     const recs = this.goodResources.map(resource => ({
       url: resource.url,
       //content: resource.content,
       hash: getSha256Hash(resource.content),
-    }));
-    return [...urlResources, ...recs];
+    }))
+    return [...urlResources, ...recs]
   }
 
   getBatch() {
-    return this.batch || SOME_BATCH;
+    return this.batch || SOME_BATCH
   }
 
   setBatch(batch) {
-    this.batch = batch;
+    this.batch = batch
   }
 
   setBaselineBranchName(value) {
-    this.baselineBranchName = value;
+    this.baselineBranchName = value
   }
 
   setBaselineEnvName(value) {
-    this.baselineEnvName = value;
+    this.baselineEnvName = value
   }
 
   setBaselineName(value) {
-    this.baselineName = value;
+    this.baselineName = value
   }
 
   setEnvName(value) {
-    this.envName = value;
+    this.envName = value
   }
 
   setIgnoreCaret(value) {
-    this.ignoreCaret = value;
+    this.ignoreCaret = value
   }
 
   setIsDisabled(value) {
-    this.isDisabled = value;
+    this.isDisabled = value
   }
 
   setMatchLevel(value) {
-    this.matchLevel = value;
+    this.matchLevel = value
   }
 
   getMatchLevel() {
-    return this.matchLevel;
+    return this.matchLevel
   }
 
   setAccessibilityValidation(value) {
-    this.accessibilityLevel = value;
+    this.accessibilityLevel = value
   }
 
   getAccessibilityValidation() {
-    return this.accessibilityLevel;
+    return this.accessibilityLevel
   }
 
   setParentBranchName(value) {
-    this.parentBranchName = value;
+    this.parentBranchName = value
   }
 
   setBranchName(value) {
-    this.branchName = value;
+    this.branchName = value
   }
 
   setProxy(value) {
-    this.proxy = value;
+    this.proxy = value
   }
 
   setSaveFailedTests(value) {
-    this.saveFailedTests = value;
+    this.saveFailedTests = value
   }
 
   setSaveNewTests(value) {
-    this.saveNewTests = value;
+    this.saveNewTests = value
   }
 
   setCompareWithParentBranch(value) {
-    this.compareWithParentBranch = value;
+    this.compareWithParentBranch = value
   }
 
   setIgnoreBaseline(value) {
-    this.ignoreBaseline = value;
+    this.ignoreBaseline = value
   }
 
   setServerUrl(value) {
-    this.serverUrl = value;
+    this.serverUrl = value
   }
 
   async getInferredEnvironment() {
-    return this.inferredEnvironment;
+    return this.inferredEnvironment
   }
 
   setInferredEnvironment(value) {
-    this.inferredEnvironment = value;
+    this.inferredEnvironment = value
   }
 
   setViewportSize(value) {
-    this.viewportSize = value;
+    this.viewportSize = value
   }
 
   setDeviceInfo(value) {
-    this.deviceInfo = value;
+    this.deviceInfo = value
   }
 
   setBaseAgentId(value) {
-    this.agentId = value;
+    this.agentId = value
   }
 
   getBaseAgentId() {
-    return this.agentId || 'fake wrapper';
+    return this.agentId || 'fake wrapper'
   }
 
   getApiKey() {
-    return this.apiKey;
+    return this.apiKey
   }
 
   setApiKey(value) {
-    this.apiKey = value;
+    this.apiKey = value
   }
 
   setUseDom(useDom) {
-    this.useDom = useDom;
+    this.useDom = useDom
   }
 
   getUseDom() {
-    return this.useDom;
+    return this.useDom
   }
 
   setDisplayName(displayName) {
-    this.displayName = displayName;
+    this.displayName = displayName
   }
 
   getDisplayName() {
-    return this.displayName;
+    return this.displayName
   }
 
   getDeviceInfo() {
-    return this.deviceInfo;
+    return this.deviceInfo
   }
 
   getViewportSize() {
-    return this.viewportSize;
+    return this.viewportSize
   }
 
   setEnablePatterns(enablePatterns) {
-    this.enablePatterns = enablePatterns;
+    this.enablePatterns = enablePatterns
   }
 
   getEnablePatterns() {
-    return this.enablePatterns;
+    return this.enablePatterns
   }
 
   setIgnoreDisplacements(ignoreDisplacements) {
-    this.ignoreDisplacements = ignoreDisplacements;
+    this.ignoreDisplacements = ignoreDisplacements
   }
 
   getIgnoreDisplacements() {
-    return this.ignoreDisplacements;
+    return this.ignoreDisplacements
   }
 
   getExistingBatchId() {
-    return this.batchId;
+    return this.batchId
   }
 }
 
-module.exports = FakeEyesWrapper;
-module.exports.selectorsToLocations = selectorsToLocations;
-module.exports.devices = devices;
+module.exports = FakeEyesWrapper
+module.exports.selectorsToLocations = selectorsToLocations
+module.exports.devices = devices

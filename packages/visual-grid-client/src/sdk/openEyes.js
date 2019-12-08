@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 const {
   GeneralUtils: {backwardCompatible},
-} = require('@applitools/eyes-common');
-const makeCheckWindow = require('./checkWindow');
-const makeAbort = require('./makeAbort');
-const makeClose = require('./makeClose');
-const assumeEnvironment = require('./assumeEnvironment');
-const translateBrowserNameVersion = require('./translateBrowserNameVersion');
+} = require('@applitools/eyes-common')
+const makeCheckWindow = require('./checkWindow')
+const makeAbort = require('./makeAbort')
+const makeClose = require('./makeClose')
+const assumeEnvironment = require('./assumeEnvironment')
+const translateBrowserNameVersion = require('./translateBrowserNameVersion')
 
 const {
   initWrappers,
@@ -14,7 +14,7 @@ const {
   openWrappers,
   appNameFailMsg,
   apiKeyFailMsg,
-} = require('./wrapperUtils');
+} = require('./wrapperUtils')
 
 const SUPPORTED_BROWSERS = [
   'firefox',
@@ -31,7 +31,7 @@ const SUPPORTED_BROWSERS = [
   'firefox-2',
   'safari-1',
   'safari-2',
-];
+]
 
 function makeOpenEyes({
   appName: _appName,
@@ -118,50 +118,49 @@ function makeOpenEyes({
     notifyOnCompletion = _notifyOnCompletion,
     batchNotify = _batchNotify,
   }) {
-    logger.verbose(`openEyes: testName=${testName}, browser=`, browser);
+    logger.verbose(`openEyes: testName=${testName}, browser=`, browser)
 
     if (!apiKey) {
-      throw new Error(apiKeyFailMsg);
+      throw new Error(apiKeyFailMsg)
     }
 
     if (isDisabled) {
-      logger.verbose('openEyes: isDisabled=true, skipping checks');
+      logger.verbose('openEyes: isDisabled=true, skipping checks')
       return {
         checkWindow: disabledFunc('checkWindow'),
         close: disabledFunc('close', []),
         abort: disabledFunc('abort'),
-      };
+      }
     }
 
     if (!appName) {
-      throw new Error(appNameFailMsg);
+      throw new Error(appNameFailMsg)
     }
 
-    const browsersArray = Array.isArray(browser) ? browser : [browser];
+    const browsersArray = Array.isArray(browser) ? browser : [browser]
     const browsers = browsersArray.map(browser => ({
       ...browser,
       name: translateBrowserNameVersion(browser.name),
-    }));
+    }))
     const browserError = browsers.length
       ? browsers.map(getBrowserError).find(Boolean)
-      : getBrowserError();
+      : getBrowserError()
     if (browserError) {
-      console.log('\x1b[31m', `\nInvalid browser: ${browserError}\n`);
-      throw new Error(browserError);
+      console.log('\x1b[31m', `\nInvalid browser: ${browserError}\n`)
+      throw new Error(browserError)
     }
 
-    ({batchSequence, baselineBranch, parentBranch, branch, batchNotify} = backwardCompatible(
+    ;({batchSequence, baselineBranch, parentBranch, branch, batchNotify} = backwardCompatible(
       [{batchSequenceName}, {batchSequence}],
       [{baselineBranchName}, {baselineBranch}],
       [{parentBranchName}, {parentBranch}],
       [{branchName}, {branch}],
       [{notifyOnCompletion}, {batchNotify}],
       logger,
-    ));
+    ))
 
     wrappers =
-      wrappers ||
-      initWrappers({count: browsers.length, apiKey, logHandler: logger.getLogHandler()});
+      wrappers || initWrappers({count: browsers.length, apiKey, logHandler: logger.getLogHandler()})
 
     configureWrappers({
       wrappers,
@@ -193,24 +192,23 @@ function makeOpenEyes({
       agentId,
       assumeEnvironment,
       batchNotify,
-    });
+    })
 
     if (!globalState.batchStore.hasCloseBatch()) {
       globalState.batchStore.setCloseBatch(
         wrappers[0]._serverConnector.deleteBatchSessions.bind(wrappers[0]._serverConnector),
-      );
+      )
     }
 
-    const renderInfoPromise =
-      getRenderInfoPromise() || getHandledRenderInfoPromise(getRenderInfo());
+    const renderInfoPromise = getRenderInfoPromise() || getHandledRenderInfoPromise(getRenderInfo())
 
-    const renderInfo = await renderInfoPromise;
+    const renderInfo = await renderInfoPromise
 
     if (renderInfo instanceof Error) {
-      throw renderInfo;
+      throw renderInfo
     }
 
-    logger.verbose('openEyes: opening wrappers');
+    logger.verbose('openEyes: opening wrappers')
     const {openEyesPromises, resolveTests} = openWrappers({
       wrappers,
       browsers,
@@ -218,20 +216,20 @@ function makeOpenEyes({
       testName,
       eyesTransactionThroat,
       skipStartingSession: isSingleWindow,
-    });
+    })
 
-    let stepCounter = 0;
+    let stepCounter = 0
 
-    let checkWindowPromises = wrappers.map(() => Promise.resolve());
+    let checkWindowPromises = wrappers.map(() => Promise.resolve())
     const testController = globalState.makeTestController({
       testName,
       numOfTests: wrappers.length,
       logger,
-    });
+    })
 
-    const headers = {'User-Agent': userAgent};
+    const headers = {'User-Agent': userAgent}
     const createRGridDOMAndGetResourceMapping = args =>
-      _createRGridDOMAndGetResourceMapping(Object.assign({fetchOptions: {headers}}, args));
+      _createRGridDOMAndGetResourceMapping(Object.assign({fetchOptions: {headers}}, args))
 
     const checkWindow = makeCheckWindow({
       globalState,
@@ -254,7 +252,7 @@ function makeOpenEyes({
       accessibilityLevel,
       fetchHeaders: headers,
       isSingleWindow,
-    });
+    })
 
     const close = makeClose({
       getCheckWindowPromises,
@@ -265,7 +263,7 @@ function makeOpenEyes({
       testController,
       logger,
       isSingleWindow,
-    });
+    })
     const abort = makeAbort({
       getCheckWindowPromises,
       openEyesPromises,
@@ -274,41 +272,41 @@ function makeOpenEyes({
       globalState,
       testController,
       logger,
-    });
+    })
 
     return {
       checkWindow,
       close,
       abort,
-    };
+    }
 
     function getCheckWindowPromises() {
-      return checkWindowPromises;
+      return checkWindowPromises
     }
 
     function setCheckWindowPromises(promises) {
-      checkWindowPromises = promises;
+      checkWindowPromises = promises
     }
 
     function disabledFunc(name, rv) {
       return async () => {
-        logger.verbose(`${name}: isDisabled=true, skipping checks`);
-        return rv;
-      };
+        logger.verbose(`${name}: isDisabled=true, skipping checks`)
+        return rv
+      }
     }
 
     function getBrowserError(browser) {
       if (!browser) {
-        return 'invalid browser configuration provided.';
+        return 'invalid browser configuration provided.'
       }
       if (browser.name && !SUPPORTED_BROWSERS.includes(browser.name)) {
-        return `browser name should be one of the following 'chrome', 'firefox', 'safari', 'ie10', 'ie11' or 'edge' but received '${browser.name}'.`;
+        return `browser name should be one of the following 'chrome', 'firefox', 'safari', 'ie10', 'ie11' or 'edge' but received '${browser.name}'.`
       }
       if (browser.name && !browser.deviceName && (!browser.height || !browser.width)) {
-        return `browser '${browser.name}' should include 'height' and 'width' parameters.`;
+        return `browser '${browser.name}' should include 'height' and 'width' parameters.`
       }
     }
-  };
+  }
 }
 
-module.exports = makeOpenEyes;
+module.exports = makeOpenEyes

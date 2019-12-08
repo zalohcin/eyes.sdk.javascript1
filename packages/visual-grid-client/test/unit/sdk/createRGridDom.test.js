@@ -1,39 +1,39 @@
-'use strict';
-const {describe, it} = require('mocha');
-const {expect} = require('chai');
-const {RGridResource} = require('@applitools/eyes-sdk-core');
-const createRGridDom = require('../../../src/sdk/createRGridDom');
+'use strict'
+const {describe, it} = require('mocha')
+const {expect} = require('chai')
+const {RGridResource} = require('@applitools/eyes-sdk-core')
+const createRGridDom = require('../../../src/sdk/createRGridDom')
 
 describe('createRGridDom', () => {
   it('sets content', () => {
-    const resources = {r1: {getUrl: () => 'url', getHashAsObject: () => 'hash'}};
-    const domResource = createRGridDom({cdt: 'cdt', resources});
+    const resources = {r1: {getUrl: () => 'url', getHashAsObject: () => 'hash'}}
+    const domResource = createRGridDom({cdt: 'cdt', resources})
     expect(domResource.getContent().toString()).to.equal(
       JSON.stringify({resources: {url: 'hash'}, domNodes: 'cdt'}),
-    );
-  });
+    )
+  })
 
   it('sorts resources by key', () => {
-    const aaa = new RGridResource();
-    aaa.setUrl('a');
-    aaa.setContent('aaa');
-    aaa.setContentType('aaa/type');
+    const aaa = new RGridResource()
+    aaa.setUrl('a')
+    aaa.setContent('aaa')
+    aaa.setContentType('aaa/type')
 
-    const bbb = new RGridResource();
-    bbb.setUrl('b');
-    bbb.setContent('bbb');
+    const bbb = new RGridResource()
+    bbb.setUrl('b')
+    bbb.setContent('bbb')
 
-    const ccc = new RGridResource();
-    ccc.setUrl('c');
-    ccc.setContent('ccc');
+    const ccc = new RGridResource()
+    ccc.setUrl('c')
+    ccc.setContent('ccc')
 
-    const ddd = new RGridResource();
-    ddd.setUrl('d');
-    ddd.setContent('ddd');
+    const ddd = new RGridResource()
+    ddd.setUrl('d')
+    ddd.setContent('ddd')
 
-    const eee = new RGridResource();
-    eee.setUrl('e');
-    eee.setContent('eee');
+    const eee = new RGridResource()
+    eee.setUrl('e')
+    eee.setContent('eee')
 
     const resources = {
       bbb,
@@ -41,9 +41,9 @@ describe('createRGridDom', () => {
       eee,
       ddd,
       ccc,
-    };
+    }
 
-    const domResource = createRGridDom({cdt: 'cdt', resources});
+    const domResource = createRGridDom({cdt: 'cdt', resources})
 
     const expected = {
       resources: {
@@ -70,9 +70,9 @@ describe('createRGridDom', () => {
         },
       },
       domNodes: 'cdt',
-    };
+    }
 
-    expect(domResource.getContent().toString()).to.equal(JSON.stringify(expected));
+    expect(domResource.getContent().toString()).to.equal(JSON.stringify(expected))
 
     // different order, should produce the same sha
     const resources2 = {
@@ -81,9 +81,9 @@ describe('createRGridDom', () => {
       aaa,
       ccc,
       bbb,
-    };
+    }
 
-    const domResource2 = createRGridDom({cdt: 'cdt', resources: resources2});
-    expect(domResource2.getSha256Hash()).to.equal(domResource.getSha256Hash());
-  });
-});
+    const domResource2 = createRGridDom({cdt: 'cdt', resources: resources2})
+    expect(domResource2.getSha256Hash()).to.equal(domResource.getSha256Hash())
+  })
+})

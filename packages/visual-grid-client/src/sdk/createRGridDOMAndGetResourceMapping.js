@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const createRGridDom = require('./createRGridDom');
+const createRGridDom = require('./createRGridDom')
 
 function makeCreateRGridDOMAndGetResourceMapping({getAllResources}) {
   return async function createRGridDOMAndGetResourceMapping({
@@ -14,24 +14,24 @@ function makeCreateRGridDOMAndGetResourceMapping({getAllResources}) {
       resourceUrls,
       preResources: resourceContents,
       fetchOptions,
-    });
-    const allResources = Object.assign({}, resources);
+    })
+    const allResources = Object.assign({}, resources)
 
-    const frameDoms = await Promise.all(frames.map(createRGridDOMAndGetResourceMapping));
+    const frameDoms = await Promise.all(frames.map(createRGridDOMAndGetResourceMapping))
 
     frameDoms.forEach(({rGridDom: frameDom, allResources: frameAllResources}, i) => {
-      const frameUrl = frames[i].url;
-      frameDom.setUrl(frameUrl);
-      allResources[frameUrl] = resources[frameUrl] = frameDom;
-      Object.assign(allResources, frameAllResources);
-    });
+      const frameUrl = frames[i].url
+      frameDom.setUrl(frameUrl)
+      allResources[frameUrl] = resources[frameUrl] = frameDom
+      Object.assign(allResources, frameAllResources)
+    })
 
-    Object.assign(allResources, resources);
+    Object.assign(allResources, resources)
 
-    const rGridDom = createRGridDom({cdt, resources});
+    const rGridDom = createRGridDom({cdt, resources})
 
-    return {rGridDom, allResources};
-  };
+    return {rGridDom, allResources}
+  }
 }
 
-module.exports = makeCreateRGridDOMAndGetResourceMapping;
+module.exports = makeCreateRGridDOMAndGetResourceMapping

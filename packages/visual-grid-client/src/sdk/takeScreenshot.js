@@ -1,24 +1,24 @@
 /* global fetch */
-'use script';
+'use script'
 
-const makeGetAllResources = require('./getAllResources');
-const extractCssResources = require('./extractCssResources');
-const makeFetchResource = require('./fetchResource');
-const createResourceCache = require('./createResourceCache');
-const makeWaitForRenderedStatus = require('./waitForRenderedStatus');
-const makeGetRenderStatus = require('./getRenderStatus');
-const makePutResources = require('./putResources');
-const makeRenderBatch = require('./renderBatch');
-const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping');
-const getRenderMethods = require('./getRenderMethods');
-const {createRenderWrapper} = require('./wrapperUtils');
-const {ptimeoutWithError} = require('@applitools/functional-commons');
-const createRenderRequests = require('./createRenderRequests');
-const {RenderingInfo, Logger} = require('@applitools/eyes-sdk-core');
+const makeGetAllResources = require('./getAllResources')
+const extractCssResources = require('./extractCssResources')
+const makeFetchResource = require('./fetchResource')
+const createResourceCache = require('./createResourceCache')
+const makeWaitForRenderedStatus = require('./waitForRenderedStatus')
+const makeGetRenderStatus = require('./getRenderStatus')
+const makePutResources = require('./putResources')
+const makeRenderBatch = require('./renderBatch')
+const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping')
+const getRenderMethods = require('./getRenderMethods')
+const {createRenderWrapper} = require('./wrapperUtils')
+const {ptimeoutWithError} = require('@applitools/functional-commons')
+const createRenderRequests = require('./createRenderRequests')
+const {RenderingInfo, Logger} = require('@applitools/eyes-sdk-core')
 
-require('@applitools/isomorphic-fetch'); // TODO can just use node-fetch
+require('@applitools/isomorphic-fetch') // TODO can just use node-fetch
 
-const fetchResourceTimeout = 120000;
+const fetchResourceTimeout = 120000
 
 async function takeScreenshot({
   showLogs,
@@ -37,13 +37,13 @@ async function takeScreenshot({
   // region,
   // scriptHooks,
 }) {
-  const resourceContents = blobDataToResourceContents(blobs);
-  const framesWithResources = createResourceContents(frames);
+  const resourceContents = blobDataToResourceContents(blobs)
+  const framesWithResources = createResourceContents(frames)
   const renderingInfo = new RenderingInfo({
     serviceUrl: renderInfo.serviceUrl,
     accessToken: renderInfo.accessToken,
     resultsUrl: renderInfo.resultsUrl,
-  });
+  })
 
   const {createRGridDOMAndGetResourceMapping, renderBatch, waitForRenderedStatus} = makeRenderer({
     apiKey,
@@ -51,14 +51,14 @@ async function takeScreenshot({
     serverUrl,
     proxy,
     renderingInfo,
-  });
+  })
 
   const {rGridDom: dom, allResources: resources} = await createRGridDOMAndGetResourceMapping({
     resourceUrls,
     resourceContents,
     cdt,
     frames: framesWithResources,
-  });
+  })
 
   const renderRequests = createRenderRequests({
     url,
@@ -71,9 +71,9 @@ async function takeScreenshot({
     // region,
     // scriptHooks,
     sendDom: true,
-  });
+  })
 
-  const renderIds = await renderBatch(renderRequests);
+  const renderIds = await renderBatch(renderRequests)
 
   const renderStatusResults = await Promise.all(
     renderIds.map(renderId =>
@@ -82,50 +82,50 @@ async function takeScreenshot({
         renderId,
       })),
     ),
-  );
+  )
 
-  return renderStatusResults;
+  return renderStatusResults
 }
 
 function makeRenderer({apiKey, showLogs, serverUrl, proxy, renderingInfo}) {
-  const logger = new Logger(showLogs);
+  const logger = new Logger(showLogs)
 
   const renderWrapper = createRenderWrapper({
     apiKey,
     logHandler: logger.getLogHandler(),
     serverUrl,
     proxy,
-  });
+  })
 
-  const {doRenderBatch, doPutResource, doGetRenderStatus} = getRenderMethods(renderWrapper);
-  renderWrapper.setRenderingInfo(renderingInfo);
+  const {doRenderBatch, doPutResource, doGetRenderStatus} = getRenderMethods(renderWrapper)
+  renderWrapper.setRenderingInfo(renderingInfo)
 
-  const resourceCache = createResourceCache();
-  const fetchCache = createResourceCache();
+  const resourceCache = createResourceCache()
+  const fetchCache = createResourceCache()
   const fetchWithTimeout = url =>
-    ptimeoutWithError(fetch(url), fetchResourceTimeout, 'fetche timed out');
-  const fetchResource = makeFetchResource({logger, fetchCache, fetch: fetchWithTimeout});
-  const putResources = makePutResources({doPutResource});
+    ptimeoutWithError(fetch(url), fetchResourceTimeout, 'fetche timed out')
+  const fetchResource = makeFetchResource({logger, fetchCache, fetch: fetchWithTimeout})
+  const putResources = makePutResources({doPutResource})
   const renderBatch = makeRenderBatch({
     putResources,
     resourceCache,
     fetchCache,
     logger,
     doRenderBatch,
-  });
-  const getRenderStatus = makeGetRenderStatus({logger, doGetRenderStatus});
-  const waitForRenderedStatus = makeWaitForRenderedStatus({logger, getRenderStatus});
+  })
+  const getRenderStatus = makeGetRenderStatus({logger, doGetRenderStatus})
+  const waitForRenderedStatus = makeWaitForRenderedStatus({logger, getRenderStatus})
   const getAllResources = makeGetAllResources({
     resourceCache,
     extractCssResources,
     fetchResource,
     logger,
-  });
+  })
   const createRGridDOMAndGetResourceMapping = makeCreateRGridDOMAndGetResourceMapping({
     getAllResources,
-  });
+  })
 
-  return {createRGridDOMAndGetResourceMapping, renderBatch, waitForRenderedStatus};
+  return {createRGridDOMAndGetResourceMapping, renderBatch, waitForRenderedStatus}
 }
 
 function createResourceContents(frames) {
@@ -136,15 +136,15 @@ function createResourceContents(frames) {
       resourceUrls: frame.resourceUrls,
       resourceContents: blobDataToResourceContents(frame.blobs),
       frames: frame.frames ? createResourceContents(frame.frames) : undefined,
-    };
-  });
+    }
+  })
 }
 
 function blobDataToResourceContents(blobs) {
   return blobs.reduce((acc, {url, type, value}) => {
-    acc[url] = {url, type, value: Buffer.from(value, 'base64')};
-    return acc;
-  }, {});
+    acc[url] = {url, type, value: Buffer.from(value, 'base64')}
+    return acc
+  }, {})
 }
 
-module.exports = takeScreenshot;
+module.exports = takeScreenshot

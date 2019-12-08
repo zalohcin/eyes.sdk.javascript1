@@ -1,21 +1,21 @@
-'use strict';
+'use strict'
 
-const {describe, it} = require('mocha');
-const {expect} = require('chai');
-const calculateSelectorsToFindRegionsFor = require('../../../src/sdk/calculateSelectorsToFindRegionsFor');
+const {describe, it} = require('mocha')
+const {expect} = require('chai')
+const calculateSelectorsToFindRegionsFor = require('../../../src/sdk/calculateSelectorsToFindRegionsFor')
 
 describe('calculateSelectorsToFindRegionsFor', () => {
   it('handles no sizeMode selector and no selectors', () => {
     expect(calculateSelectorsToFindRegionsFor({noOffsetSelectors: [], offsetSelectors: []})).to.be
-      .undefined;
+      .undefined
     expect(
       calculateSelectorsToFindRegionsFor({
         noOffsetSelectors: [],
         offsetSelectors: [],
         sizeMode: 'bla',
       }),
-    ).to.be.undefined;
-  });
+    ).to.be.undefined
+  })
 
   it('handles sizeMode selector, but no selectors', () => {
     expect(
@@ -25,8 +25,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         sizeMode: 'selector',
         selector: 'bla',
       }),
-    ).to.eql(['bla']);
-  });
+    ).to.eql(['bla'])
+  })
 
   it('handles no sizeMode selector, with no-offset selector', () => {
     expect(
@@ -34,8 +34,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         noOffsetSelectors: [{selector: 'bla'}],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla']);
-  });
+    ).to.eql(['bla'])
+  })
 
   it('handles no sizeMode selector, with no-offset second index selector', () => {
     expect(
@@ -43,8 +43,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         noOffsetSelectors: [undefined, {selector: 'bla'}],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla']);
-  });
+    ).to.eql(['bla'])
+  })
 
   it('handles no sizeMode selector, with no-offset multiple selectors', () => {
     expect(
@@ -52,8 +52,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         noOffsetSelectors: [undefined, {selector: 'bla'}, {selector: 'bla2'}],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla', 'bla2']);
-  });
+    ).to.eql(['bla', 'bla2'])
+  })
 
   it('handles no sizeMode selector, with no-offset array', () => {
     expect(
@@ -61,8 +61,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         noOffsetSelectors: [[{selector: 'bla'}], undefined, undefined],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla']);
-  });
+    ).to.eql(['bla'])
+  })
 
   it('handles no sizeMode selector, with no-offset second index array', () => {
     expect(
@@ -70,8 +70,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         noOffsetSelectors: [undefined, [{selector: 'bla'}], undefined],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla']);
-  });
+    ).to.eql(['bla'])
+  })
 
   it('handles no sizeMode selector, with no-offset multiple arrays', () => {
     expect(
@@ -79,8 +79,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         noOffsetSelectors: [[{selector: 'bla'}], undefined, [{selector: 'bla2'}]],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla', 'bla2']);
-  });
+    ).to.eql(['bla', 'bla2'])
+  })
 
   it('handles no sizeMode selector, with combined no-offset arrays and selectors', () => {
     expect(
@@ -88,8 +88,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         noOffsetSelectors: [undefined, [{selector: 'bla'}], {selector: 'bla2'}],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla', 'bla2']);
-  });
+    ).to.eql(['bla', 'bla2'])
+  })
 
   it('handles no sizeMode selector, with no-offset combined selector and absolute regions', () => {
     expect(
@@ -101,8 +101,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         ],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla', 'kuku']);
-  });
+    ).to.eql(['bla', 'kuku'])
+  })
 
   it('handles no sizeMode selector, with no-offset combined selector and absolute regions', () => {
     expect(
@@ -114,8 +114,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         ],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla', 'kuku', 'aaa', 'bbb']);
-  });
+    ).to.eql(['bla', 'kuku', 'aaa', 'bbb'])
+  })
 
   it('handles no sizeMode selector, with offset-selector', () => {
     expect(
@@ -123,8 +123,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         noOffsetSelectors: [undefined, undefined, undefined],
         offsetSelectors: [{selector: 'bla'}],
       }),
-    ).to.eql(['bla']);
-  });
+    ).to.eql(['bla'])
+  })
 
   it('handles no sizeMode selector, with offset-selector array', () => {
     expect(
@@ -132,8 +132,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         noOffsetSelectors: [undefined, undefined, undefined],
         offsetSelectors: [[{selector: 'bla'}]],
       }),
-    ).to.eql(['bla']);
-  });
+    ).to.eql(['bla'])
+  })
 
   it('handles no sizeMode selector, with offset combined selector and absolute regions', () => {
     expect(
@@ -141,8 +141,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         noOffsetSelectors: [undefined, undefined, undefined],
         offsetSelectors: [[{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}]],
       }),
-    ).to.eql(['bla', 'kuku']);
-  });
+    ).to.eql(['bla', 'kuku'])
+  })
 
   it('handles no sizeMode selector, no-offset AND offset selectors', () => {
     expect(
@@ -155,8 +155,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         ],
         offsetSelectors: [{selector: 'float'}],
       }),
-    ).to.eql(['ignore', 'layout', 'strict', 'content', 'float']);
-  });
+    ).to.eql(['ignore', 'layout', 'strict', 'content', 'float'])
+  })
 
   it('handles sizeMode selector, with no-offset AND offset selectors', () => {
     expect(
@@ -171,8 +171,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         ],
         offsetSelectors: [{selector: 'float'}],
       }),
-    ).to.eql(['selector', 'ignore', 'layout', 'strict', 'content', 'float']);
-  });
+    ).to.eql(['selector', 'ignore', 'layout', 'strict', 'content', 'float'])
+  })
 
   it('handles no sizeMode selector, with no-offset selector AND offset selector *arrays* (including duplicates)', () => {
     expect(
@@ -200,8 +200,8 @@ describe('calculateSelectorsToFindRegionsFor', () => {
       'bla',
       'kuku',
       'float',
-    ]);
-  });
+    ])
+  })
 
   it('handles sizeMode selector, with no-offset selector AND offset selector *arrays* (including duplicates)', () => {
     expect(
@@ -230,6 +230,6 @@ describe('calculateSelectorsToFindRegionsFor', () => {
       'bla',
       'kuku',
       'float',
-    ]);
-  });
-});
+    ])
+  })
+})

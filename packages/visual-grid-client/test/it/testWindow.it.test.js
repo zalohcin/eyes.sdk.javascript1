@@ -1,83 +1,83 @@
-'use strict';
-const {describe, it, before, after, beforeEach} = require('mocha');
-const {expect} = require('chai');
-const makeRenderingGridClient = require('../../src/sdk/renderingGridClient');
-const createFakeWrapper = require('../util/createFakeWrapper');
-const testServer = require('../util/testServer');
-const {loadJsonFixture} = require('../util/loadFixture');
-const nock = require('nock');
-const {ptimeoutWithError} = require('@applitools/functional-commons');
+'use strict'
+const {describe, it, before, after, beforeEach} = require('mocha')
+const {expect} = require('chai')
+const makeRenderingGridClient = require('../../src/sdk/renderingGridClient')
+const createFakeWrapper = require('../util/createFakeWrapper')
+const testServer = require('../util/testServer')
+const {loadJsonFixture} = require('../util/loadFixture')
+const nock = require('nock')
+const {ptimeoutWithError} = require('@applitools/functional-commons')
 
 describe('testWindow', () => {
-  let baseUrl, closeServer, testWindow;
-  let wrapper;
-  const apiKey = 'some api key';
-  const appName = 'some app name';
-  const testName = 'some test name';
+  let baseUrl, closeServer, testWindow
+  let wrapper
+  const apiKey = 'some api key'
+  const appName = 'some app name'
+  const testName = 'some test name'
 
   before(async () => {
-    const server = await testServer({port: 3456}); // TODO fixed port avoids 'need-more-resources' for dom. Is this desired? should both paths be tested?
-    baseUrl = `http://localhost:${server.port}`;
-    closeServer = server.close;
-  });
+    const server = await testServer({port: 3456}) // TODO fixed port avoids 'need-more-resources' for dom. Is this desired? should both paths be tested?
+    baseUrl = `http://localhost:${server.port}`
+    closeServer = server.close
+  })
 
   after(async () => {
-    await closeServer();
-  });
+    await closeServer()
+  })
 
   beforeEach(() => {
-    wrapper = createFakeWrapper(baseUrl);
+    wrapper = createFakeWrapper(baseUrl)
     testWindow = makeRenderingGridClient({
       showLogs: true,
       apiKey,
       renderWrapper: wrapper,
       fetchResourceTimeout: 2000,
-    }).testWindow;
+    }).testWindow
 
     nock(wrapper.baseUrl)
       .persist()
       .post(wrapper.resultsRoute)
       .reply(201, (_url, body) => body, {
         location: (_req, _res, body) => body,
-      });
-  });
+      })
+  })
 
   it('calls open without starting a session', async () => {
     const openParams = {
       wrappers: [wrapper],
       appName,
       testName,
-    };
-    const resourceUrls = wrapper.goodResourceUrls;
-    const cdt = loadJsonFixture('test.cdt.json');
-    const checkParams = {resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`};
+    }
+    const resourceUrls = wrapper.goodResourceUrls
+    const cdt = loadJsonFixture('test.cdt.json')
+    const checkParams = {resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`}
 
-    let done;
-    const p = new Promise(r => (done = r));
-    let done2;
-    const p2 = new Promise(r => (done2 = r));
-    let done3;
-    const p3 = new Promise(r => (done3 = r));
+    let done
+    const p = new Promise(r => (done = r))
+    let done2
+    const p2 = new Promise(r => (done2 = r))
+    let done3
+    const p3 = new Promise(r => (done3 = r))
 
     wrapper.on('openEnd', args => {
-      done(args);
-    });
+      done(args)
+    })
     wrapper.on('testWindowEnd', args => {
-      done2(args);
-    });
+      done2(args)
+    })
     wrapper.on('closeTestWindowEnd', args => {
-      done3(args);
-    });
+      done3(args)
+    })
 
-    const [results] = await testWindow({openParams, checkParams});
+    const [results] = await testWindow({openParams, checkParams})
 
     const [openArgs, testWindowArgs, closeTestWindowArgs] = await ptimeoutWithError(
       Promise.all([p, p2, p3]),
       1000,
       'timeout',
-    );
+    )
 
-    expect(results.constructor.name).to.eql('TestResults');
+    expect(results.constructor.name).to.eql('TestResults')
     expect(openArgs).to.eql([
       {
         appName: 'some app name',
@@ -88,17 +88,17 @@ describe('testWindow', () => {
           _width: 1024,
         },
       },
-    ]);
+    ])
 
     const removeSalt = str => {
-      const obj = JSON.parse(str);
-      delete obj.salt;
-      return JSON.stringify(obj);
-    };
+      const obj = JSON.parse(str)
+      delete obj.salt
+      return JSON.stringify(obj)
+    }
 
     closeTestWindowArgs[0]._stepsInfo[0]._renderId = removeSalt(
       closeTestWindowArgs[0]._stepsInfo[0]._renderId,
-    );
+    )
 
     expect(closeTestWindowArgs).to.eql([
       {
@@ -144,12 +144,12 @@ describe('testWindow', () => {
         _url: undefined,
       },
       true,
-    ]);
+    ])
 
     testWindowArgs[0].checkSettings._renderId = removeSalt(
       testWindowArgs[0].checkSettings._renderId,
-    );
-    testWindowArgs[0].screenshotUrl = removeSalt(testWindowArgs[0].screenshotUrl);
+    )
+    testWindowArgs[0].screenshotUrl = removeSalt(testWindowArgs[0].screenshotUrl)
 
     expect(testWindowArgs).to.eql([
       {
@@ -178,24 +178,24 @@ describe('testWindow', () => {
         source: undefined,
         tag: 'good1',
       },
-    ]);
-  });
+    ])
+  })
 
   it('dont throw error with throwEx=false', async () => {
     const openParams = {
       wrappers: [wrapper],
       appName,
       testName,
-    };
-    const resourceUrls = wrapper.goodResourceUrls;
-    const cdt = loadJsonFixture('test.cdt.json');
-    const checkParams = {resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`};
+    }
+    const resourceUrls = wrapper.goodResourceUrls
+    const cdt = loadJsonFixture('test.cdt.json')
+    const checkParams = {resourceUrls, cdt, tag: 'good1', url: `${baseUrl}/test.html`}
 
     wrapper.closeTestWindow = () => {
-      return Promise.reject(new Error('test diff'));
-    };
+      return Promise.reject(new Error('test diff'))
+    }
 
-    const [error] = await testWindow({openParams, checkParams, throwEx: false});
-    expect(error.message).to.eql('test diff');
-  });
-});
+    const [error] = await testWindow({openParams, checkParams, throwEx: false})
+    expect(error.message).to.eql('test diff')
+  })
+})
