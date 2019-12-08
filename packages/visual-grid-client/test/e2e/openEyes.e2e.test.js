@@ -18,13 +18,11 @@ describe('openEyes', () => {
   let processPageAndSerialize
 
   beforeEach(() => {
-    openEyes = makeRenderingGridClient(
-      Object.assign({
-        showLogs: process.env.APPLITOOLS_SHOW_LOGS,
-        apiKey,
-        fetchResourceTimeout: 2000,
-      }),
-    ).openEyes
+    openEyes = makeRenderingGridClient({
+      showLogs: process.env.APPLITOOLS_SHOW_LOGS,
+      apiKey,
+      fetchResourceTimeout: 2000,
+    }).openEyes
   })
 
   before(async () => {
