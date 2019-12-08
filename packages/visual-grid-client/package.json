@@ -58,7 +58,8 @@
     "morgan": "^1.9.1",
     "nock": "^11.3.5",
     "node-fetch": "^2.6.0",
-    "puppeteer": "^1.20.0"
+    "puppeteer": "^1.20.0",
+    "ua-parser-js": "^0.7.20"
   },
   "scripts": {
     "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",
