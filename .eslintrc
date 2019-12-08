@@ -1,85 +1,38 @@
 {
-  "root": true,
-  "extends": [
-    "airbnb-base",
-    "plugin:node/recommended-script"
-  ],
   "env": {
+    "commonjs": true,
     "es6": true,
     "node": true,
     "mocha": true
   },
   "parserOptions": {
-    "ecmaVersion": 8,
-    "sourceType": "script"
+    "ecmaVersion": 2018,
+    "sourceType": "module"
   },
-  "plugins": [
-    "mocha-no-only"
-  ],
+  "extends": ["plugin:node/recommended"],
+  "plugins": ["prettier", "mocha-no-only", "node"],
   "rules": {
-    "strict": ["error", "safe"],
-    "arrow-parens": ["error", "as-needed", {"requireForBlockBody": true}],
-    "max-classes-per-file": ["off"],
-    "prefer-object-spread": ["off"],
-    "prefer-const": ["error", {"destructuring": "all"}],
-    "one-var": ["error", {"initialized": "never"}],
-    "comma-dangle": ["error", {
-      "arrays": "always-multiline",
-      "objects": "always-multiline",
-      "imports": "never",
-      "exports": "always-multiline",
-      "functions": "never"
+    "prettier/prettier": ["error", {
+      "semi": false,
+      "printWidth": 100,
+      "singleQuote": true,
+      "trailingComma": "all",
+      "bracketSpacing": false,
+      "jsxBracketSameLine": true
     }],
-    "no-unused-vars": ["warn", {"vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_"}],
-    "no-param-reassign": ["off"],
-    "no-underscore-dangle": ["off"],
-    "object-curly-newline": ["off"],
-    "class-methods-use-this": ["off"],
-    "operator-linebreak": ["off"],
-    "no-await-in-loop": ["off"],
-    "one-var-declaration-per-line": ["error", "initializations"],
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/test/**/*.js", "**/*.spec.js", "**/example/*.js"]}],
-
-    // can be fixed later
-    "max-len": ["off", 120],
-    "no-use-before-define": ["error", { "functions": true, "classes": false, "variables": true }],
-    "no-shadow": ["error", {"builtinGlobals": false, "hoist": "functions", "allow": ["driver"]}],
-    "no-restricted-syntax": [
-      "error",
-      {
-        "selector": "ForInStatement",
-        "message": "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array."
-      },
-      {
-        "selector": "LabeledStatement",
-        "message": "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand."
-      },
-      {
-        "selector": "WithStatement",
-        "message": "`with` is disallowed in strict mode because it makes code impossible to predict and optimize."
-      }
+    "no-process-exit": "off",
+    "no-const-assign": "error",
+    "no-this-before-super": "error",
+    "no-undef": "warn",
+    "no-unreachable": "warn",
+    "no-unused-vars": [
+      1,
+      {"varsIgnorePattern": "^_", "args": "all", "argsIgnorePattern": "^_"}
     ],
-
-    // mocha-no-only
+    "constructor-super": "warn",
+    "valid-typeof": "warn",
     "mocha-no-only/mocha-no-only": "error",
-
-    // node
     "node/exports-style": ["error", "exports"],
-    "node/prefer-global/buffer": ["error", "always"],
-    "node/prefer-global/console": ["error", "always"],
-    "node/prefer-global/process": ["error", "always"],
-    "node/prefer-global/text-decoder": ["error", "never"],
-    "node/prefer-global/text-encoder": ["error", "never"],
-    "node/prefer-global/url-search-params": ["error", "never"],
-    "node/prefer-global/url": ["error", "never"]
-  },
-  "overrides": [{
-    "files": ["**/example/**/*.js", "**/test/**/*.js", "**/*.spec.js"],
-    "rules": {
-      "no-unused-vars": ["off"],
-      "prefer-arrow-callback": ["off"],
-      "func-names": ["off"],
-      "no-console": ["off"]
-    }
-  }]
+    "node/no-unpublished-require": ["off"]
+  }
 }
