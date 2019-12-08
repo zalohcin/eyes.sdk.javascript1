@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
-const { MutableImage, TypeUtils, ArgumentGuard } = require('@applitools/eyes-common');
-const { ImageProvider } = require('@applitools/eyes-sdk-core');
+const {MutableImage, TypeUtils, ArgumentGuard} = require('@applitools/eyes-common')
+const {ImageProvider} = require('@applitools/eyes-sdk-core')
 
-const { ImagesCheckSettings } = require('./ImagesCheckSettings');
+const {ImagesCheckSettings} = require('./ImagesCheckSettings')
 
 class Target {
   /**
@@ -31,30 +31,30 @@ class Target {
    */
   static image(varArg) {
     if (varArg instanceof MutableImage) {
-      return new ImagesCheckSettings(varArg);
+      return new ImagesCheckSettings(varArg)
     }
 
     if (varArg instanceof ImageProvider) {
-      return Target.imageProvider(varArg);
+      return Target.imageProvider(varArg)
     }
 
     if (TypeUtils.isBuffer(varArg)) {
-      return Target.buffer(varArg);
+      return Target.buffer(varArg)
     }
 
     if (TypeUtils.isBase64(varArg)) {
-      return Target.base64(varArg);
+      return Target.base64(varArg)
     }
 
     if (TypeUtils.isUrl(varArg)) {
-      return Target.url(varArg);
+      return Target.url(varArg)
     }
 
     if (TypeUtils.isString(varArg)) {
-      return Target.path(varArg);
+      return Target.path(varArg)
     }
 
-    throw new TypeError('IllegalType: unsupported type of image!');
+    throw new TypeError('IllegalType: unsupported type of image!')
   }
 
   /**
@@ -62,11 +62,11 @@ class Target {
    * @return {ImagesCheckSettings}
    */
   static buffer(imageBuffer) {
-    ArgumentGuard.isBuffer(imageBuffer, 'buffer');
+    ArgumentGuard.isBuffer(imageBuffer, 'buffer')
 
-    const checkSettings = new ImagesCheckSettings();
-    checkSettings.setImageBuffer(imageBuffer);
-    return checkSettings;
+    const checkSettings = new ImagesCheckSettings()
+    checkSettings.setImageBuffer(imageBuffer)
+    return checkSettings
   }
 
   /**
@@ -74,11 +74,11 @@ class Target {
    * @return {ImagesCheckSettings}
    */
   static base64(imageBase64) {
-    ArgumentGuard.isBase64(imageBase64);
+    ArgumentGuard.isBase64(imageBase64)
 
-    const checkSettings = new ImagesCheckSettings();
-    checkSettings.setImageString(imageBase64);
-    return checkSettings;
+    const checkSettings = new ImagesCheckSettings()
+    checkSettings.setImageString(imageBase64)
+    return checkSettings
   }
 
   /**
@@ -86,11 +86,11 @@ class Target {
    * @return {ImagesCheckSettings}
    */
   static path(imagePath) {
-    ArgumentGuard.isString(imagePath, 'path');
+    ArgumentGuard.isString(imagePath, 'path')
 
-    const checkSettings = new ImagesCheckSettings();
-    checkSettings.setImagePath(imagePath);
-    return checkSettings;
+    const checkSettings = new ImagesCheckSettings()
+    checkSettings.setImagePath(imagePath)
+    return checkSettings
   }
 
   /**
@@ -99,11 +99,11 @@ class Target {
    * @return {ImagesCheckSettings}
    */
   static url(imageUrl, imageSize) {
-    ArgumentGuard.isString(imageUrl, 'url');
+    ArgumentGuard.isString(imageUrl, 'url')
 
-    const checkSettings = new ImagesCheckSettings();
-    checkSettings.setImageUrl(imageUrl, imageSize);
-    return checkSettings;
+    const checkSettings = new ImagesCheckSettings()
+    checkSettings.setImageUrl(imageUrl, imageSize)
+    return checkSettings
   }
 
   /**
@@ -111,11 +111,11 @@ class Target {
    * @return {ImagesCheckSettings}
    */
   static imageProvider(imageProvider) {
-    ArgumentGuard.isValidType(imageProvider, ImageProvider);
+    ArgumentGuard.isValidType(imageProvider, ImageProvider)
 
-    const checkSettings = new ImagesCheckSettings();
-    checkSettings.setImageProvider(imageProvider);
-    return checkSettings;
+    const checkSettings = new ImagesCheckSettings()
+    checkSettings.setImageProvider(imageProvider)
+    return checkSettings
   }
 
   /**
@@ -149,11 +149,11 @@ class Target {
    * @return {ImagesCheckSettings}
    */
   static region(image, rect) {
-    const checkSettings = Target.image(image);
+    const checkSettings = Target.image(image)
     // noinspection JSAccessibilityCheck
-    checkSettings.region(rect);
-    return checkSettings;
+    checkSettings.region(rect)
+    return checkSettings
   }
 }
 
-exports.Target = Target;
+exports.Target = Target

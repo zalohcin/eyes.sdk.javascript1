@@ -1,13 +1,19 @@
-'use strict';
+'use strict'
 
-const { EyesWebElementPromise, EyesWebElement } = require('@applitools/eyes-selenium');
+const {EyesWebElementPromise, EyesWebElement} = require('@applitools/eyes-selenium')
 
 // functions in ElementFinder that return a new ElementFinder and therefore we must wrap and return our own
-const ELEMENT_FINDER_TO_ELEMENT_FINDER_FUNCTIONS = ['clone', 'element', '$', 'evaluate', 'allowAnimations'];
+const ELEMENT_FINDER_TO_ELEMENT_FINDER_FUNCTIONS = [
+  'clone',
+  'element',
+  '$',
+  'evaluate',
+  'allowAnimations',
+]
 // functions in ElementFinder that return a new ElementArrayFinder and therefore we must wrap and return our own
-const ELEMENT_FINDER_TO_ELEMENT_ARRAY_FINDER_FUNCTIONS = ['all', '$$'];
+const ELEMENT_FINDER_TO_ELEMENT_ARRAY_FINDER_FUNCTIONS = ['all', '$$']
 // function in ElementArrayFinder that return a new ElementFinder and therefore we must wrap and return our own
-const ELEMENT_ARRAY_FINDER_TO_ELEMENT_FINDER_FUNCTIONS = ['get', 'first', 'last'];
+const ELEMENT_ARRAY_FINDER_TO_ELEMENT_FINDER_FUNCTIONS = ['get', 'first', 'last']
 
 /**
  * Mixin methods from one object into another.
@@ -17,20 +23,20 @@ const ELEMENT_ARRAY_FINDER_TO_ELEMENT_FINDER_FUNCTIONS = ['get', 'first', 'last'
  * @param {object} from - The object from which methods will be copied
  */
 function mixin(to, from) {
-  let index;
-  let proto = from;
-  const protos = [];
+  let index
+  let proto = from
+  const protos = []
   while (proto) {
-    protos.push(Object.getOwnPropertyNames(proto));
-    proto = Object.getPrototypeOf(proto);
+    protos.push(Object.getOwnPropertyNames(proto))
+    proto = Object.getPrototypeOf(proto)
   }
 
   for (index = protos.length - 2; index >= 0; index -= 1) {
-    protos[index].forEach((method) => {
+    protos[index].forEach(method => {
       if (!to[method] && typeof from[method] === 'function' && method !== 'constructor') {
-        to[method] = (...args) => from[method](...args);
+        to[method] = (...args) => from[method](...args)
       }
-    });
+    })
   }
 }
 
@@ -49,21 +55,33 @@ class ElementFinderWrapper extends EyesWebElement {
    * @param {object} [foundBy]
    */
   constructor(logger, eyesDriver, finder, foundBy) {
-    super(logger, eyesDriver, finder.getWebElement());
-    mixin(this, finder);
+    super(logger, eyesDriver, finder.getWebElement())
+    mixin(this, finder)
 
-    this._logger = logger;
-    this._eyesDriver = eyesDriver;
-    this._finder = finder;
-    this._foundBy = foundBy;
+    this._logger = logger
+    this._eyesDriver = eyesDriver
+    this._finder = finder
+    this._foundBy = foundBy
 
-    ELEMENT_FINDER_TO_ELEMENT_FINDER_FUNCTIONS.forEach((fnName) => {
-      this[fnName] = (...args) => new ElementFinderWrapper(this._logger, this._eyesDriver, this._finder[fnName](...args), args);
-    });
+    ELEMENT_FINDER_TO_ELEMENT_FINDER_FUNCTIONS.forEach(fnName => {
+      this[fnName] = (...args) =>
+        new ElementFinderWrapper(
+          this._logger,
+          this._eyesDriver,
+          this._finder[fnName](...args),
+          args,
+        )
+    })
 
-    ELEMENT_FINDER_TO_ELEMENT_ARRAY_FINDER_FUNCTIONS.forEach((fnName) => {
-      this[fnName] = (...args) => new ElementArrayFinderWrapper(this._logger, this._eyesDriver, this._finder[fnName](...args), args);
-    });
+    ELEMENT_FINDER_TO_ELEMENT_ARRAY_FINDER_FUNCTIONS.forEach(fnName => {
+      this[fnName] = (...args) =>
+        new ElementArrayFinderWrapper(
+          this._logger,
+          this._eyesDriver,
+          this._finder[fnName](...args),
+          args,
+        )
+    })
   }
 
   /**
@@ -72,7 +90,7 @@ class ElementFinderWrapper extends EyesWebElement {
    * @return {EyesWebElementPromise}
    */
   getWebElement() {
-    return new EyesWebElementPromise(this._logger, this._eyesDriver, this._finder.getWebElement());
+    return new EyesWebElementPromise(this._logger, this._eyesDriver, this._finder.getWebElement())
   }
 
   /**
@@ -81,7 +99,7 @@ class ElementFinderWrapper extends EyesWebElement {
   toJSON() {
     return {
       foundBy: this._foundBy,
-    };
+    }
   }
 }
 
@@ -98,27 +116,34 @@ class ElementArrayFinderWrapper {
    * @param {object} [foundBy]
    */
   constructor(logger, eyesDriver, arrayFinder, foundBy) {
-    mixin(this, arrayFinder);
+    mixin(this, arrayFinder)
 
-    this._logger = logger;
-    this._eyesDriver = eyesDriver;
-    this._arrayFinder = arrayFinder;
-    this._foundBy = foundBy;
+    this._logger = logger
+    this._eyesDriver = eyesDriver
+    this._arrayFinder = arrayFinder
+    this._foundBy = foundBy
 
     // Wrap the functions that return objects that require pre-wrapping
-    ELEMENT_ARRAY_FINDER_TO_ELEMENT_FINDER_FUNCTIONS.forEach((fnName) => {
-      this[fnName] = (...args) => new ElementFinderWrapper(this._logger, this._eyesDriver, this._arrayFinder[fnName](...args), args);
-    });
+    ELEMENT_ARRAY_FINDER_TO_ELEMENT_FINDER_FUNCTIONS.forEach(fnName => {
+      this[fnName] = (...args) =>
+        new ElementFinderWrapper(
+          this._logger,
+          this._eyesDriver,
+          this._arrayFinder[fnName](...args),
+          args,
+        )
+    })
 
     // Patch this internal function.
-    const originalFn = this._arrayFinder.asElementFinders_;
-    this._arrayFinder.asElementFinders_ = () => originalFn.apply(this._arrayFinder).then((arr) => {
-      const list = [];
-      arr.forEach((finder) => {
-        list.push(new ElementFinderWrapper(this._logger, this._eyesDriver, finder));
-      });
-      return list;
-    });
+    const originalFn = this._arrayFinder.asElementFinders_
+    this._arrayFinder.asElementFinders_ = () =>
+      originalFn.apply(this._arrayFinder).then(arr => {
+        const list = []
+        arr.forEach(finder => {
+          list.push(new ElementFinderWrapper(this._logger, this._eyesDriver, finder))
+        })
+        return list
+      })
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -128,10 +153,12 @@ class ElementArrayFinderWrapper {
    * @return {Promise<EyesWebElementPromise[]>}
    */
   async getWebElements() {
-    this._logger.verbose('ElementArrayFinderWrapper:getWebElements - called');
+    this._logger.verbose('ElementArrayFinderWrapper:getWebElements - called')
 
-    const elements = await this._arrayFinder.getWebElements();
-    return elements.map(element => new EyesWebElementPromise(this._logger, this._eyesDriver, element));
+    const elements = await this._arrayFinder.getWebElements()
+    return elements.map(
+      element => new EyesWebElementPromise(this._logger, this._eyesDriver, element),
+    )
   }
 
   /**
@@ -140,9 +167,9 @@ class ElementArrayFinderWrapper {
   toJSON() {
     return {
       foundBy: this._foundBy,
-    };
+    }
   }
 }
 
-exports.ElementFinderWrapper = ElementFinderWrapper;
-exports.ElementArrayFinderWrapper = ElementArrayFinderWrapper;
+exports.ElementFinderWrapper = ElementFinderWrapper
+exports.ElementArrayFinderWrapper = ElementArrayFinderWrapper

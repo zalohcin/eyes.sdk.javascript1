@@ -1,65 +1,75 @@
-'use strict';
+'use strict'
 
-require('chromedriver');
-const { Builder, By } = require('selenium-webdriver');
-const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { Eyes, Target, ConsoleLogHandler, StitchMode, VisualGridRunner, BatchInfo } = require('../../index');
+require('chromedriver')
+const {Builder, By} = require('selenium-webdriver')
+const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
+const {
+  Eyes,
+  Target,
+  ConsoleLogHandler,
+  StitchMode,
+  VisualGridRunner,
+  BatchInfo,
+} = require('../../index')
 
-let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes, batch;
+let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes, batch
 describe('CheckFluent', () => {
-  before(async function () {
+  before(async function() {
     driver = await new Builder()
       .forBrowser('chrome')
       .setChromeOptions(new ChromeOptions().headless())
-      .build();
+      .build()
 
-    batch = new BatchInfo();
-    await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/');
-  });
+    batch = new BatchInfo()
+    await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  })
 
-  beforeEach(async function () {
+  beforeEach(async function() {
     if (this.currentTest.title.includes('on VG')) {
-      eyes = new Eyes(new VisualGridRunner());
+      eyes = new Eyes(new VisualGridRunner())
     } else {
-      eyes = new Eyes();
+      eyes = new Eyes()
     }
-    eyes.setBatch(batch);
-    eyes.setLogHandler(new ConsoleLogHandler(false));
-    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title, { width: 700, height: 460 });
-  });
+    eyes.setBatch(batch)
+    eyes.setLogHandler(new ConsoleLogHandler(false))
+    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title, {
+      width: 700,
+      height: 460,
+    })
+  })
 
   it('check region fully', async () => {
-    eyes.setStitchMode(StitchMode.CSS);
+    eyes.setStitchMode(StitchMode.CSS)
     await eyes.check(
       'Region Fully',
       Target.region(By.id('overflowing-div-image'))
         .ignoreRegions(driver.findElement(By.id('overflowing-div')))
-        .fully()
-    );
-    return eyes.close();
-  });
+        .fully(),
+    )
+    return eyes.close()
+  })
 
   it('check region fully with scroll', async () => {
-    eyes.setStitchMode(StitchMode.SCROLL);
+    eyes.setStitchMode(StitchMode.SCROLL)
     await eyes.check(
       'Region Fully',
       Target.region(By.id('overflowing-div-image'))
         .ignoreRegions(driver.findElement(By.id('overflowing-div')))
-        .fully()
-    );
-    return eyes.close();
-  });
+        .fully(),
+    )
+    return eyes.close()
+  })
 
   it('check region fully with scroll on VG', async () => {
-    eyes.setStitchMode(StitchMode.SCROLL);
+    eyes.setStitchMode(StitchMode.SCROLL)
     await eyes.check(
       'Region Fully',
       Target.region(By.id('overflowing-div-image'))
         .ignoreRegions(driver.findElement(By.id('overflowing-div')))
-        .fully()
-    );
-    return eyes.close();
-  });
+        .fully(),
+    )
+    return eyes.close()
+  })
 
   // TODO: review commented out tests
   /* it('TestCheckWindow', async function () {
@@ -163,11 +173,11 @@ describe('CheckFluent', () => {
     return eyes.close();
   }); */
 
-  afterEach(async function () {
-    return eyes.abort();
-  });
+  afterEach(async function() {
+    return eyes.abort()
+  })
 
-  after(function () {
-    return driver.quit();
-  });
-});
+  after(function() {
+    return driver.quit()
+  })
+})

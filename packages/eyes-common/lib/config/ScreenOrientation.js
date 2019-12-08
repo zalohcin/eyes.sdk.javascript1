@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * @readonly
@@ -7,7 +7,7 @@
 const ScreenOrientation = {
   PORTRAIT: 'portrait',
   LANDSCAPE: 'landscape',
-};
+}
 
-Object.freeze(ScreenOrientation);
-exports.ScreenOrientation = ScreenOrientation;
+Object.freeze(ScreenOrientation)
+exports.ScreenOrientation = ScreenOrientation

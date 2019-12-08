@@ -1,39 +1,46 @@
-'use strict';
+'use strict'
 
-const assert = require('assert');
-const assertRejects = require('assert-rejects');
+const assert = require('assert')
+const assertRejects = require('assert-rejects')
 
-const { Eyes, VisualGridRunner, ClassicRunner, Configuration, ScreenOrientation, BatchInfo, Target, BrowserType, DeviceName, RectangleSize } = require('../../../index');
-const { SeleniumUtils } = require('../Utils/SeleniumUtils');
+const {
+  Eyes,
+  VisualGridRunner,
+  ClassicRunner,
+  Configuration,
+  ScreenOrientation,
+  BatchInfo,
+  Target,
+  BrowserType,
+  DeviceName,
+  RectangleSize,
+} = require('../../../index')
+const {SeleniumUtils} = require('../Utils/SeleniumUtils')
 
-describe('TestAbort2', function () {
-  this.timeout(5 * 60 * 1000);
+describe('TestAbort2', function() {
+  this.timeout(5 * 60 * 1000)
+  ;[{useVisualGrid: true}, {useVisualGrid: false}].forEach(({useVisualGrid}) => {
+    describe(`useVisualGrid: ${useVisualGrid}`, function() {
+      const concurrentSessions = 5
+      const viewPortWidth = 800
+      const viewPortHeight = 600
+      const appName = 'My application'
+      const batchName = 'My batch'
+      const testedUrl = 'https://applitools.com/docs/topics/overview.html'
 
-  [
-    { useVisualGrid: true },
-    { useVisualGrid: false },
-  ].forEach(({ useVisualGrid }) => {
-    describe(`useVisualGrid: ${useVisualGrid}`, function () {
-      const concurrentSessions = 5;
-      const viewPortWidth = 800;
-      const viewPortHeight = 600;
-      const appName = 'My application';
-      const batchName = 'My batch';
-      const testedUrl = 'https://applitools.com/docs/topics/overview.html';
-
-      let runner, suiteConfig, eyes, webDriver;
+      let runner, suiteConfig, eyes, webDriver
 
       before(() => {
         // 1. Create the runner that manages multiple tests
         if (useVisualGrid) {
-          runner = new VisualGridRunner(concurrentSessions);
+          runner = new VisualGridRunner(concurrentSessions)
         } else {
-          runner = new ClassicRunner();
+          runner = new ClassicRunner()
         }
 
         // continued below....
         // 2. Create a configuration object, we will use this when setting up each test
-        suiteConfig = new Configuration();
+        suiteConfig = new Configuration()
 
         // 3. Set the various configuration values
         suiteConfig
@@ -50,75 +57,75 @@ describe('TestAbort2', function () {
           // 5. set up default Eyes configuration values
           .setBatch(new BatchInfo(batchName))
           .setAppName(appName)
-          .setViewportSize(new RectangleSize(viewPortWidth, viewPortHeight));
-      });
+          .setViewportSize(new RectangleSize(viewPortWidth, viewPortHeight))
+      })
 
       function beforeEachTest() {
         // 1. Create the Eyes instance for the test and associate it with the runner
-        eyes = new Eyes(runner);
+        eyes = new Eyes(runner)
 
         // 2. Set the configuration values we set up in beforeTestSuite
-        eyes.setConfiguration(suiteConfig);
+        eyes.setConfiguration(suiteConfig)
 
         // 3. Create a WebDriver for the test
-        webDriver = SeleniumUtils.createChromeDriver();
+        webDriver = SeleniumUtils.createChromeDriver()
       }
 
       function testThrowBeforeOpen() {
         // 1. Update the Eyes configuration with test specific values
-        const testConfig = eyes.getConfiguration();
-        testConfig.setTestName(`test URL : ${testedUrl}`);
-        eyes.setConfiguration(testConfig);
-        throw new Error('Before Open');
+        const testConfig = eyes.getConfiguration()
+        testConfig.setTestName(`test URL : ${testedUrl}`)
+        eyes.setConfiguration(testConfig)
+        throw new Error('Before Open')
       }
 
       function testThrowAfterOpen() {
         // 1. Update the Eyes configuration with test specific values
-        const testConfig = eyes.getConfiguration();
-        testConfig.setTestName(`test URL : ${testedUrl}`);
-        eyes.setConfiguration(testConfig);
+        const testConfig = eyes.getConfiguration()
+        testConfig.setTestName(`test URL : ${testedUrl}`)
+        eyes.setConfiguration(testConfig)
 
         // 2. Open Eyes, the application,test name and viewport size are already configured
-        const driver = eyes.open(webDriver);
-        throw new Error('After Open');
+        const driver = eyes.open(webDriver)
+        throw new Error('After Open')
       }
 
       function testThrowDuringCheck() {
         // 1. Update the Eyes configuration with test specific values
-        const testConfig = eyes.getConfiguration();
-        testConfig.setTestName(`test URL : ${testedUrl}`);
-        eyes.setConfiguration(testConfig);
+        const testConfig = eyes.getConfiguration()
+        testConfig.setTestName(`test URL : ${testedUrl}`)
+        eyes.setConfiguration(testConfig)
 
         // 2. open Eyes, the application,test name and viewport size are already configured
-        const driver = eyes.open(webDriver);
+        const driver = eyes.open(webDriver)
 
         // 3. Now run the test
-        driver.get(testedUrl);
-        eyes.check(`Step 1 Content - ${testedUrl}`, Target.frame('non-existing-frame'));
+        driver.get(testedUrl)
+        eyes.check(`Step 1 Content - ${testedUrl}`, Target.frame('non-existing-frame'))
       }
 
       function testThrowAfterCheck() {
         // 1. Update the Eyes configuration with test specific values
-        const testConfig = eyes.getConfiguration();
-        testConfig.setTestName(`test URL : ${testedUrl}`);
-        eyes.setConfiguration(testConfig);
+        const testConfig = eyes.getConfiguration()
+        testConfig.setTestName(`test URL : ${testedUrl}`)
+        eyes.setConfiguration(testConfig)
 
         // 2. Open Eyes, the application,test name and viewport size are already configured
-        const driver = eyes.open(webDriver);
+        const driver = eyes.open(webDriver)
 
         // 3. Now run the test
-        driver.get(testedUrl);
-        eyes.check(`Step 1 Content - ${testedUrl}`, Target.window());
-        throw new Error('After Check');
+        driver.get(testedUrl)
+        eyes.check(`Step 1 Content - ${testedUrl}`, Target.window())
+        throw new Error('After Check')
       }
 
       function AfterEachTest() {
         if (eyes.getIsOpen()) {
-          eyes.close(false);
+          eyes.close(false)
         } else {
-          eyes.abort();
+          eyes.abort()
         }
-        webDriver.quit();
+        webDriver.quit()
       }
 
       /**
@@ -126,52 +133,58 @@ describe('TestAbort2', function () {
        * @constructor
        */
       function handleTestResults(summary) {
-        const ex = summary.getException();
+        const ex = summary.getException()
         if (ex != null) {
-          console.log('System error occurred while checking target.');
+          console.log('System error occurred while checking target.')
         }
 
-        const result = summary.getTestResults();
+        const result = summary.getTestResults()
         if (result == null) {
-          console.log('No test results information available');
+          console.log('No test results information available')
         } else {
           console.log(`AppName = ${result.getAppName()}, testname = ${result.getName()}, Browser = ${result.getHostApp()},
            OS = ${result.getHostOS()} viewport = ${result.getHostDisplaySize()}, matched = ${result.getMatches()},
-           mismatched = ${result.getMismatches()}, missing = ${result.getMissing()}, aborted = ${result.getIsAborted() ? 'aborted' : 'no'}\n`);
+           mismatched = ${result.getMismatches()}, missing = ${result.getMissing()}, aborted = ${
+            result.getIsAborted() ? 'aborted' : 'no'
+          }\n`)
         }
       }
 
-      it('Test_GetAllResults', async function () {
-        beforeEachTest();
-        assert.throws(testThrowBeforeOpen, Error, `Before Open - (VG: ${useVisualGrid})`);
-        AfterEachTest();
+      it('Test_GetAllResults', async function() {
+        beforeEachTest()
+        assert.throws(testThrowBeforeOpen, Error, `Before Open - (VG: ${useVisualGrid})`)
+        AfterEachTest()
 
-        beforeEachTest();
-        assert.throws(testThrowAfterOpen, Error, `After Open - (VG: ${useVisualGrid})`);
-        AfterEachTest();
+        beforeEachTest()
+        assert.throws(testThrowAfterOpen, Error, `After Open - (VG: ${useVisualGrid})`)
+        AfterEachTest()
 
-        beforeEachTest();
+        beforeEachTest()
         if (!useVisualGrid) {
-          assert.throws(testThrowDuringCheck, Error, `During Check - (VG: ${useVisualGrid})`);
+          assert.throws(testThrowDuringCheck, Error, `During Check - (VG: ${useVisualGrid})`)
         } else {
-          testThrowDuringCheck();
+          testThrowDuringCheck()
         }
-        AfterEachTest();
+        AfterEachTest()
 
-        beforeEachTest();
-        assert.throws(testThrowAfterCheck, Error, `After Check - (VG: ${useVisualGrid})`);
-        AfterEachTest();
+        beforeEachTest()
+        assert.throws(testThrowAfterCheck, Error, `After Check - (VG: ${useVisualGrid})`)
+        AfterEachTest()
 
-        await assertRejects(runner.getAllTestResults(), Error, `GetAllTestResults - (VG: ${useVisualGrid})`);
-      });
+        await assertRejects(
+          runner.getAllTestResults(),
+          Error,
+          `GetAllTestResults - (VG: ${useVisualGrid})`,
+        )
+      })
 
       after(async () => {
         // Wait until the test results are available and retrieve them
-        const allTestResults = await runner.getAllTestResults(false);
+        const allTestResults = await runner.getAllTestResults(false)
         for (const result of allTestResults.getAllResults()) {
-          handleTestResults(result);
+          handleTestResults(result)
         }
-      });
-    });
-  });
-});
+      })
+    })
+  })
+})

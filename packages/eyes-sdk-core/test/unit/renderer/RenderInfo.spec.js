@@ -1,23 +1,29 @@
-'use strict';
+'use strict'
 
-const assert = require('assert');
+const assert = require('assert')
 
-const { RenderInfo, Region, RectangleSize, EmulationInfo, ScreenOrientation } = require('../../../index');
+const {
+  RenderInfo,
+  Region,
+  RectangleSize,
+  EmulationInfo,
+  ScreenOrientation,
+} = require('../../../index')
 
 describe('RenderInfo', () => {
   it('constructor', () => {
-    const renderInfo = new RenderInfo();
-    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_width'), true);
-    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_height'), true);
-    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_sizeMode'), true);
-    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_selector'), true);
-    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_region'), true);
-    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_emulationInfo'), true);
-  });
+    const renderInfo = new RenderInfo()
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_width'), true)
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_height'), true)
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_sizeMode'), true)
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_selector'), true)
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_region'), true)
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(renderInfo, '_emulationInfo'), true)
+  })
 
   it('constructor with object', () => {
-    const regionObj = { left: 3, top: 4, width: 5, height: 6 };
-    const emulationInfoObj = { deviceName: 'deviceName' };
+    const regionObj = {left: 3, top: 4, width: 5, height: 6}
+    const emulationInfoObj = {deviceName: 'deviceName'}
 
     const renderInfo = new RenderInfo({
       width: 1,
@@ -26,49 +32,49 @@ describe('RenderInfo', () => {
       selector: 'some selector',
       region: regionObj,
       emulationInfo: emulationInfoObj,
-    });
+    })
 
-    const region = new Region(regionObj);
-    const emulationInfo = new EmulationInfo(emulationInfoObj);
+    const region = new Region(regionObj)
+    const emulationInfo = new EmulationInfo(emulationInfoObj)
 
-    assert.strictEqual(renderInfo.getWidth(), 1);
-    assert.strictEqual(renderInfo.getHeight(), 2);
-    assert.strictEqual(renderInfo.getSizeMode(), 'some size mode');
-    assert.strictEqual(renderInfo.getSelector(), 'some selector');
-    assert.deepStrictEqual(renderInfo.getRegion(), region);
-    assert.deepStrictEqual(renderInfo.getEmulationInfo(), emulationInfo);
-  });
+    assert.strictEqual(renderInfo.getWidth(), 1)
+    assert.strictEqual(renderInfo.getHeight(), 2)
+    assert.strictEqual(renderInfo.getSizeMode(), 'some size mode')
+    assert.strictEqual(renderInfo.getSelector(), 'some selector')
+    assert.deepStrictEqual(renderInfo.getRegion(), region)
+    assert.deepStrictEqual(renderInfo.getEmulationInfo(), emulationInfo)
+  })
 
   it('constructor handles undefined region', () => {
-    const renderInfo = new RenderInfo();
-    assert.strictEqual(renderInfo.getRegion(), undefined);
-  });
+    const renderInfo = new RenderInfo()
+    assert.strictEqual(renderInfo.getRegion(), undefined)
+  })
 
   it('fromRectangleSize', () => {
-    const rectangleSize = new RectangleSize({ width: 1, height: 2 });
-    const renderInfo = RenderInfo.fromRectangleSize(rectangleSize, 'some size mode');
+    const rectangleSize = new RectangleSize({width: 1, height: 2})
+    const renderInfo = RenderInfo.fromRectangleSize(rectangleSize, 'some size mode')
 
-    assert.strictEqual(renderInfo.getWidth(), 1);
-    assert.strictEqual(renderInfo.getHeight(), 2);
-    assert.strictEqual(renderInfo.getSizeMode(), 'some size mode');
-    assert.strictEqual(renderInfo.getSelector(), undefined);
-    assert.strictEqual(renderInfo.getRegion(), undefined);
-  });
+    assert.strictEqual(renderInfo.getWidth(), 1)
+    assert.strictEqual(renderInfo.getHeight(), 2)
+    assert.strictEqual(renderInfo.getSizeMode(), 'some size mode')
+    assert.strictEqual(renderInfo.getSelector(), undefined)
+    assert.strictEqual(renderInfo.getRegion(), undefined)
+  })
 
   it('fromRectangleSize has a default sizeMode', () => {
-    const rectangleSize = new RectangleSize({ width: 1, height: 2 });
-    const renderInfo = RenderInfo.fromRectangleSize(rectangleSize);
+    const rectangleSize = new RectangleSize({width: 1, height: 2})
+    const renderInfo = RenderInfo.fromRectangleSize(rectangleSize)
 
-    assert.strictEqual(renderInfo.getWidth(), 1);
-    assert.strictEqual(renderInfo.getHeight(), 2);
-    assert.strictEqual(renderInfo.getSizeMode(), 'full-page');
-    assert.strictEqual(renderInfo.getSelector(), undefined);
-    assert.strictEqual(renderInfo.getRegion(), undefined);
-  });
+    assert.strictEqual(renderInfo.getWidth(), 1)
+    assert.strictEqual(renderInfo.getHeight(), 2)
+    assert.strictEqual(renderInfo.getSizeMode(), 'full-page')
+    assert.strictEqual(renderInfo.getSelector(), undefined)
+    assert.strictEqual(renderInfo.getRegion(), undefined)
+  })
 
   it('toJSON', () => {
-    const regionObj = { left: 3, top: 4, width: 5, height: 6 };
-    const emulationInfo = { deviceName: 'deviceName', screenOrientation: ScreenOrientation.PORTRAIT };
+    const regionObj = {left: 3, top: 4, width: 5, height: 6}
+    const emulationInfo = {deviceName: 'deviceName', screenOrientation: ScreenOrientation.PORTRAIT}
     const renderInfoObj = {
       width: 1,
       height: 2,
@@ -76,19 +82,19 @@ describe('RenderInfo', () => {
       selector: 'some selector',
       region: regionObj,
       emulationInfo,
-    };
+    }
 
-    const renderInfo = new RenderInfo(renderInfoObj);
+    const renderInfo = new RenderInfo(renderInfoObj)
     const renderInfoWithAdjustedLeftTop = Object.assign(renderInfoObj, {
-      region: { x: 3, y: 4, width: 5, height: 6, coordinatesType: 'SCREENSHOT_AS_IS' },
-    });
+      region: {x: 3, y: 4, width: 5, height: 6, coordinatesType: 'SCREENSHOT_AS_IS'},
+    })
 
-    assert.deepStrictEqual(renderInfo.toJSON(), renderInfoWithAdjustedLeftTop);
-  });
+    assert.deepStrictEqual(renderInfo.toJSON(), renderInfoWithAdjustedLeftTop)
+  })
 
   it('toString', () => {
-    const regionObj = { left: 3, top: 4, width: 5, height: 6 };
-    const emulationInfo = { deviceName: 'deviceName', screenOrientation: ScreenOrientation.PORTRAIT };
+    const regionObj = {left: 3, top: 4, width: 5, height: 6}
+    const emulationInfo = {deviceName: 'deviceName', screenOrientation: ScreenOrientation.PORTRAIT}
     const renderInfoObj = {
       width: 1,
       height: 2,
@@ -96,9 +102,12 @@ describe('RenderInfo', () => {
       selector: 'some selector',
       region: regionObj,
       emulationInfo,
-    };
+    }
 
-    const renderInfo = new RenderInfo(renderInfoObj);
-    assert.deepStrictEqual(renderInfo.toString(), 'RenderInfo { {"width":1,"height":2,"sizeMode":"some size mode","selector":"some selector","region":{"width":5,"height":6,"coordinatesType":"SCREENSHOT_AS_IS","x":3,"y":4},"emulationInfo":{"deviceName":"deviceName","screenOrientation":"portrait"}} }');
-  });
-});
+    const renderInfo = new RenderInfo(renderInfoObj)
+    assert.deepStrictEqual(
+      renderInfo.toString(),
+      'RenderInfo { {"width":1,"height":2,"sizeMode":"some size mode","selector":"some selector","region":{"width":5,"height":6,"coordinatesType":"SCREENSHOT_AS_IS","x":3,"y":4},"emulationInfo":{"deviceName":"deviceName","screenOrientation":"portrait"}} }',
+    )
+  })
+})

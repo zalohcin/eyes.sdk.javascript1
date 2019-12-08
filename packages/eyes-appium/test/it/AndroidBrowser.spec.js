@@ -1,13 +1,13 @@
-'use strict';
+'use strict'
 
-const { Builder, By } = require('selenium-webdriver');
-const { Eyes, ConsoleLogHandler } = require('../../index');
+const {Builder, By} = require('selenium-webdriver')
+const {Eyes, ConsoleLogHandler} = require('../../index')
 
-let /** @type WebDriver */ driver, /** @type Eyes */ eyes;
-describe('AndroidBrowser', function () {
-  this.timeout(5 * 60 * 1000);
+let /** @type WebDriver */ driver, /** @type Eyes */ eyes
+describe('AndroidBrowser', function() {
+  this.timeout(5 * 60 * 1000)
 
-  before(async function () {
+  before(async function() {
     // Open the app.
     driver = new Builder()
       .withCapabilities({
@@ -21,42 +21,42 @@ describe('AndroidBrowser', function () {
         'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY,
       })
       .usingServer('https://hub-cloud.browserstack.com/wd/hub')
-      .build();
+      .build()
 
     // Initialize the eyes SDK and set your private API key.
-    eyes = new Eyes();
-    eyes.setLogHandler(new ConsoleLogHandler(true));
-  });
+    eyes = new Eyes()
+    eyes.setLogHandler(new ConsoleLogHandler(true))
+  })
 
-  beforeEach(async function () {
+  beforeEach(async function() {
     // Start visual testing.
-    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title);
-  });
+    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title)
+  })
 
-  it('HelloWorld', async function () {
+  it('HelloWorld', async function() {
     // Navigate the browser to the "hello world!" web-site.
-    await driver.get('https://applitools.com/helloworld');
+    await driver.get('https://applitools.com/helloworld')
 
     // Visual checkpoint #1.
-    await eyes.checkWindow('Hello!');
+    await eyes.checkWindow('Hello!')
 
     // Click the "Click me!" button.
-    await driver.findElement(By.tagName('button')).click();
+    await driver.findElement(By.tagName('button')).click()
 
     // Visual checkpoint #2.
-    await eyes.checkWindow('Click!');
+    await eyes.checkWindow('Click!')
 
     // End the test.
-    return eyes.close();
-  });
+    return eyes.close()
+  })
 
-  afterEach(async function () {
+  afterEach(async function() {
     // Abort if not closed
-    await eyes.abort();
-  });
+    await eyes.abort()
+  })
 
-  after(async function () {
+  after(async function() {
     // Close app
-    await driver.quit();
-  });
-});
+    await driver.quit()
+  })
+})

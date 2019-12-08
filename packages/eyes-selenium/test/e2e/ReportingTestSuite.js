@@ -1,14 +1,14 @@
-'use strict';
+'use strict'
 
-const { TestResultReportSummary } = require('./Utils/TestResultReportSummary');
-const { TestResult } = require('./Utils/TestResult');
-const { TestUtils } = require('./Utils/TestUtils');
+const {TestResultReportSummary} = require('./Utils/TestResultReportSummary')
+const {TestResult} = require('./Utils/TestResult')
+const {TestUtils} = require('./Utils/TestUtils')
 
 class ReportingTestSuite {
   constructor() {
-    this._reportSummary = new TestResultReportSummary();
-    this._suiteArgs = new Map();
-    this._testArgs = {};
+    this._reportSummary = new TestResultReportSummary()
+    this._suiteArgs = new Map()
+    this._testArgs = {}
   }
 
   /**
@@ -50,9 +50,9 @@ class ReportingTestSuite {
    * @return {Promise}
    */
   async tearDown(context) {
-    const testResult = this._getTestResult(context);
-    this._reportSummary.getResults().push(testResult);
-    this._testArgs = {};
+    const testResult = this._getTestResult(context)
+    this._reportSummary.getResults().push(testResult)
+    this._testArgs = {}
   }
 
   /**
@@ -61,21 +61,21 @@ class ReportingTestSuite {
    * @return {Promise}
    */
   async oneTimeTearDown() {
-    await TestUtils.sendReport(this._reportSummary);
+    await TestUtils.sendReport(this._reportSummary)
   }
 
   /**
    * @return {object}
    */
   getTestArguments() {
-    return this._testArgs;
+    return this._testArgs
   }
 
   /**
    * @param {object} value
    */
   setTestArguments(value) {
-    this._testArgs = value;
+    this._testArgs = value
   }
 
   /**
@@ -84,8 +84,8 @@ class ReportingTestSuite {
    * @private
    */
   _getTestResult(context) {
-    const passed = context.currentTest.state === 'passed';
-    return new TestResult(context.currentTest.title, passed, this._getTestParameters(context));
+    const passed = context.currentTest.state === 'passed'
+    return new TestResult(context.currentTest.title, passed, this._getTestParameters(context))
   }
 
   /**
@@ -94,18 +94,18 @@ class ReportingTestSuite {
    * @private
    */
   _getTestParameters(context) {
-    const result = new Map();
+    const result = new Map()
     for (const [key, value] of this._suiteArgs) {
-      result.set(key, value);
+      result.set(key, value)
     }
 
-    const testArgs = this.getTestArguments();
+    const testArgs = this.getTestArguments()
     if (testArgs && Object.keys(testArgs).length > 0) {
       for (const [key, value] of Object.entries(testArgs)) {
-        result.set(key, value);
+        result.set(key, value)
       }
     }
-    return result;
+    return result
   }
 
   /**
@@ -118,12 +118,12 @@ class ReportingTestSuite {
    */
   static _appendArguments(sb, args, prefix, postfix) {
     for (const arg of args) {
-      sb += prefix;
-      sb += arg;
-      sb += postfix;
+      sb += prefix
+      sb += arg
+      sb += postfix
     }
-    return sb;
+    return sb
   }
 }
 
-exports.ReportingTestSuite = ReportingTestSuite;
+exports.ReportingTestSuite = ReportingTestSuite

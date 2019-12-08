@@ -1,13 +1,13 @@
-'use strict';
+'use strict'
 
-const merge = require('deepmerge');
+const merge = require('deepmerge')
 // const util = require('util');
 
-const { TypeUtils } = require('./TypeUtils');
-const { DateTimeUtils } = require('./DateTimeUtils');
+const {TypeUtils} = require('./TypeUtils')
+const {DateTimeUtils} = require('./DateTimeUtils')
 
-const ENV_PREFIXES = ['APPLITOOLS_', 'bamboo_APPLITOOLS_'];
-const ALPHANUMERIC_MASK = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const ENV_PREFIXES = ['APPLITOOLS_', 'bamboo_APPLITOOLS_']
+const ALPHANUMERIC_MASK = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
 /**
  * Collection of utility methods.
@@ -23,18 +23,18 @@ class GeneralUtils {
    * @return {string} - the URL
    */
   static urlConcat(url, ...suffixes) {
-    let concatUrl = GeneralUtils.stripTrailingSlash(url);
+    let concatUrl = GeneralUtils.stripTrailingSlash(url)
 
     for (let i = 0, l = suffixes.length; i < l; i += 1) {
       /** @type {string} */
-      const suffix = String(suffixes[i]);
+      const suffix = String(suffixes[i])
       if (!suffix.startsWith('/') && !(i === l - 1 && suffix.startsWith('?'))) {
-        concatUrl += '/';
+        concatUrl += '/'
       }
-      concatUrl += GeneralUtils.stripTrailingSlash(suffix);
+      concatUrl += GeneralUtils.stripTrailingSlash(suffix)
     }
 
-    return concatUrl;
+    return concatUrl
   }
 
   /**
@@ -44,7 +44,7 @@ class GeneralUtils {
    * @return {string}
    */
   static stripTrailingSlash(url) {
-    return url.endsWith('/') ? url.slice(0, -1) : url;
+    return url.endsWith('/') ? url.slice(0, -1) : url
   }
 
   /**
@@ -54,7 +54,7 @@ class GeneralUtils {
    * @return {boolean} - the URL
    */
   static isAbsoluteUrl(url) {
-    return /^[a-z][a-z0-9+.-]*:/.test(url);
+    return /^[a-z][a-z0-9+.-]*:/.test(url)
   }
 
   /**
@@ -64,7 +64,7 @@ class GeneralUtils {
    * @return {string}
    */
   static stringify(...args) {
-    return args.map(arg => GeneralUtils.stringifySingle(arg)).join(' ');
+    return args.map(arg => GeneralUtils.stringifySingle(arg)).join(' ')
   }
 
   /**
@@ -77,26 +77,26 @@ class GeneralUtils {
     if (TypeUtils.isObject(arg)) {
       if (!TypeUtils.isPlainObject(arg)) {
         if (arg instanceof Error && arg.stack) {
-          return arg.stack;
+          return arg.stack
         }
 
         if (arg instanceof Date) {
-          return arg.toISOString();
+          return arg.toISOString()
         }
 
         if (arg instanceof Array && arg.length) {
-          return `[${arg.map(i => GeneralUtils.stringifySingle(i)).join(',')}]`;
+          return `[${arg.map(i => GeneralUtils.stringifySingle(i)).join(',')}]`
         }
 
         if (typeof arg.toString === 'function' && arg.toString !== Object.prototype.toString) {
-          return arg.toString();
+          return arg.toString()
         }
       }
 
-      return GeneralUtils.toString(arg);
+      return GeneralUtils.toString(arg)
     }
 
-    return String(arg);
+    return String(arg)
   }
 
   /**
@@ -108,15 +108,15 @@ class GeneralUtils {
    */
   static toString(object, exclude = []) {
     if (!TypeUtils.isPlainObject(object)) {
-      object = GeneralUtils.toPlain(object, exclude);
+      object = GeneralUtils.toPlain(object, exclude)
     }
 
     try {
-      return JSON.stringify(object);
+      return JSON.stringify(object)
     } catch (err) {
       console.warn("Error on converting to string:", err); // eslint-disable-line
       // console.warn(util.inspect(object, {depth: null, colors: true})); // eslint-disable-line
-      return undefined;
+      return undefined
     }
   }
 
@@ -131,25 +131,25 @@ class GeneralUtils {
    */
   static toPlain(object, exclude = [], rename = {}) {
     if (object == null) {
-      throw new TypeError('Cannot make null plain.');
+      throw new TypeError('Cannot make null plain.')
     }
 
-    const plainObject = {};
-    Object.keys(object).forEach((objectKey) => {
-      let publicKey = objectKey.replace('_', '');
+    const plainObject = {}
+    Object.keys(object).forEach(objectKey => {
+      let publicKey = objectKey.replace('_', '')
       if (rename[publicKey]) {
-        publicKey = rename[publicKey];
+        publicKey = rename[publicKey]
       }
 
       if (Object.prototype.hasOwnProperty.call(object, objectKey) && !exclude.includes(objectKey)) {
         if (object[objectKey] instanceof Object && typeof object[objectKey].toJSON === 'function') {
-          plainObject[publicKey] = object[objectKey].toJSON();
+          plainObject[publicKey] = object[objectKey].toJSON()
         } else {
-          plainObject[publicKey] = object[objectKey];
+          plainObject[publicKey] = object[objectKey]
         }
       }
-    });
-    return plainObject;
+    })
+    return plainObject
   }
 
   /**
@@ -165,7 +165,7 @@ class GeneralUtils {
    * @return {TFirst|TSecond}
    */
   static mergeDeep(target, source) {
-    return merge(target, source, { isMergeableObject: TypeUtils.isPlainObject });
+    return merge(target, source, {isMergeableObject: TypeUtils.isPlainObject})
   }
 
   /**
@@ -174,13 +174,13 @@ class GeneralUtils {
    * @return {string}
    */
   static guid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
       // noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
-      const r = (Math.random() * 16) | 0; // eslint-disable-line no-bitwise
+      const r = (Math.random() * 16) | 0 // eslint-disable-line no-bitwise
       // noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
-      const v = c === 'x' ? r : (r & 0x3) | 0x8; // eslint-disable-line no-bitwise
-      return v.toString(16);
-    });
+      const v = c === 'x' ? r : (r & 0x3) | 0x8 // eslint-disable-line no-bitwise
+      return v.toString(16)
+    })
   }
 
   /**
@@ -189,11 +189,11 @@ class GeneralUtils {
    * @return {string}
    */
   static randomAlphanumeric(length = 8) {
-    let res = '';
+    let res = ''
     for (let i = 0; i < length; i += 1) {
-      res += ALPHANUMERIC_MASK.charAt(Math.floor(Math.random() * ALPHANUMERIC_MASK.length));
+      res += ALPHANUMERIC_MASK.charAt(Math.floor(Math.random() * ALPHANUMERIC_MASK.length))
     }
-    return res;
+    return res
   }
 
   /**
@@ -203,7 +203,7 @@ class GeneralUtils {
    * @return {Promise} - A promise which is resolved when sleep is done.
    */
   static sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -215,7 +215,7 @@ class GeneralUtils {
    * @return {string} - string formatted as ISO-8601 (yyyy-MM-dd'T'HH:mm:ss'Z')
    */
   static toISO8601DateTime(date) {
-    return DateTimeUtils.toISO8601DateTime(date);
+    return DateTimeUtils.toISO8601DateTime(date)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -227,7 +227,7 @@ class GeneralUtils {
    * @return {string} - string formatted as RFC-1123 (E, dd MMM yyyy HH:mm:ss 'GMT')
    */
   static toRfc1123DateTime(date) {
-    return DateTimeUtils.toRfc1123DateTime(date);
+    return DateTimeUtils.toRfc1123DateTime(date)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -237,7 +237,7 @@ class GeneralUtils {
    * @return {string} - string formatted as RFC-1123 (yyyy_mm_dd__HH_MM_ss_l)
    */
   static toLogFileDateTime(date) {
-    return DateTimeUtils.toLogFileDateTime(date);
+    return DateTimeUtils.toLogFileDateTime(date)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -249,7 +249,7 @@ class GeneralUtils {
    * @return {Date} - A {@link Date} instance representing the given date and time.
    */
   static fromISO8601DateTime(dateTime) {
-    return DateTimeUtils.fromISO8601DateTime(dateTime);
+    return DateTimeUtils.fromISO8601DateTime(dateTime)
   }
 
   /**
@@ -259,10 +259,10 @@ class GeneralUtils {
    * @return {object}
    */
   static jwtDecode(token) {
-    let payloadSeg = token.split('.')[1];
-    payloadSeg += new Array(5 - (payloadSeg.length % 4)).join('=');
-    payloadSeg = payloadSeg.replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(Buffer.from(payloadSeg, 'base64').toString());
+    let payloadSeg = token.split('.')[1]
+    payloadSeg += new Array(5 - (payloadSeg.length % 4)).join('=')
+    payloadSeg = payloadSeg.replace(/-/g, '+').replace(/_/g, '/')
+    return JSON.parse(Buffer.from(payloadSeg, 'base64').toString())
   }
 
   /**
@@ -273,10 +273,13 @@ class GeneralUtils {
    *   where X is the product of the input arrays' lengths
    */
   static cartesianProduct(...arrays) {
-    const getArrayOf = a => (Array.isArray(a) ? a : [a]);
-    const prod2 = (a, b) => getArrayOf(b).map(e1 => a.map(e2 => [e1, ...e2])).reduce((arr, e) => arr.concat(e), []);
-    const prod = (a, ...rest) => (rest.length > 0 ? prod(prod2(a, rest.pop()), ...rest) : a);
-    return prod([[]], ...arrays);
+    const getArrayOf = a => (Array.isArray(a) ? a : [a])
+    const prod2 = (a, b) =>
+      getArrayOf(b)
+        .map(e1 => a.map(e2 => [e1, ...e2]))
+        .reduce((arr, e) => arr.concat(e), [])
+    const prod = (a, ...rest) => (rest.length > 0 ? prod(prod2(a, rest.pop()), ...rest) : a)
+    return prod([[]], ...arrays)
   }
 
   /**
@@ -288,18 +291,18 @@ class GeneralUtils {
    */
   static getPropertyByPath(object, path) {
     if (!object || !/^([a-zA-Z0-9-_.]+\.)*[a-zA-Z0-9-_.]+$/.test(path)) {
-      return undefined; // TODO: may be we can throw an error if path is given in wrong format
+      return undefined // TODO: may be we can throw an error if path is given in wrong format
     }
 
-    let val = object;
+    let val = object
     for (const key of path.split('.')) {
-      val = typeof val === 'object' ? val[key] : undefined;
+      val = typeof val === 'object' ? val[key] : undefined
       if (val === undefined) {
-        return undefined;
+        return undefined
       }
     }
 
-    return val;
+    return val
   }
 
   /**
@@ -312,19 +315,19 @@ class GeneralUtils {
   static getEnvValue(propName, isBoolean = false) {
     if (process !== undefined) {
       for (const prefix of ENV_PREFIXES) {
-        const value = process.env[prefix + propName];
+        const value = process.env[prefix + propName]
         if (value !== undefined && value !== 'null') {
           // for boolean values, cast string value
           if (isBoolean && !TypeUtils.isBoolean(value)) {
-            return value === 'true';
+            return value === 'true'
           }
 
-          return value;
+          return value
         }
       }
     }
 
-    return undefined;
+    return undefined
   }
 
   /**
@@ -341,22 +344,22 @@ class GeneralUtils {
    *
    */
   static backwardCompatible(...args) {
-    const results = {};
-    const logger = args.pop();
+    const results = {}
+    const logger = args.pop()
     for (const [oldParam, newParam] of args) {
-      const oldParamName = Object.keys(oldParam)[0];
-      const newParamName = Object.keys(newParam)[0];
+      const oldParamName = Object.keys(oldParam)[0]
+      const newParamName = Object.keys(newParam)[0]
       if (oldParam[oldParamName] === undefined) {
-        results[newParamName] = newParam[newParamName];
+        results[newParamName] = newParam[newParamName]
       } else {
         logger.log(
-          `warning - "${oldParamName}" is deprectated and will be removed, please use "${newParamName}" instead.`
-        );
-        results[newParamName] = oldParam[oldParamName];
+          `warning - "${oldParamName}" is deprectated and will be removed, please use "${newParamName}" instead.`,
+        )
+        results[newParamName] = oldParam[oldParamName]
       }
     }
 
-    return results;
+    return results
   }
 
   /**
@@ -365,49 +368,49 @@ class GeneralUtils {
    */
   static cleanStringForJSON(str) {
     if (str == null || str.length === 0) {
-      return '';
+      return ''
     }
 
-    let sb = '';
-    let char = '\0';
-    let tmp;
+    let sb = ''
+    let char = '\0'
+    let tmp
 
     for (let i = 0, l = str.length; i < l; i += 1) {
-      char = str[i];
+      char = str[i]
       switch (char) {
         case '\\':
         case '"':
         case '/':
           sb += '\\' + char; // eslint-disable-line
-          break;
+          break
         case '\b':
-          sb += '\\b';
-          break;
+          sb += '\\b'
+          break
         case '\t':
-          sb += '\\t';
-          break;
+          sb += '\\t'
+          break
         case '\n':
-          sb += '\\n';
-          break;
+          sb += '\\n'
+          break
         case '\f':
-          sb += '\\f';
-          break;
+          sb += '\\f'
+          break
         case '\r':
-          sb += '\\r';
-          break;
+          sb += '\\r'
+          break
         default:
           if (char < ' ') {
             tmp = '000' + char.toString(16); // eslint-disable-line
             sb += '\\u' + tmp.substring(tmp.length - 4); // eslint-disable-line
           } else {
-            sb += char;
+            sb += char
           }
-          break;
+          break
       }
     }
 
-    return sb;
+    return sb
   }
 }
 
-exports.GeneralUtils = GeneralUtils;
+exports.GeneralUtils = GeneralUtils

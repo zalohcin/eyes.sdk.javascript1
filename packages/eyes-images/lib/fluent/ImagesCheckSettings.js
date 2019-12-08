@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const { CheckSettings, Location, RectangleSize } = require('@applitools/eyes-sdk-core');
+const {CheckSettings, Location, RectangleSize} = require('@applitools/eyes-sdk-core')
 
 class ImagesCheckSettings extends CheckSettings {
   /**
@@ -11,19 +11,19 @@ class ImagesCheckSettings extends CheckSettings {
    * @param {string} [url]
    */
   constructor(image, buffer, base64, path, url) {
-    super();
+    super()
 
-    this._image = image;
-    this._imageBuffer = buffer;
-    this._imageBase64 = base64;
-    this._imagePath = path;
-    this._imageUrl = url;
-    this._imageProvider = null;
+    this._image = image
+    this._imageBuffer = buffer
+    this._imageBase64 = base64
+    this._imagePath = path
+    this._imageUrl = url
+    this._imageProvider = null
 
-    /** @type {RectangleSize} */ this._imageSize = undefined;
-    /** @type {string} */ this._domString = undefined;
-    /** @type {Location} */ this._imageLocation = undefined;
-    /** @type {boolean} */ this._ignoreMismatch = false;
+    /** @type {RectangleSize} */ this._imageSize = undefined
+    /** @type {string} */ this._domString = undefined
+    /** @type {Location} */ this._imageLocation = undefined
+    /** @type {boolean} */ this._ignoreMismatch = false
   }
 
   /**
@@ -31,7 +31,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {MutableImage}
    */
   getMutableImage() {
-    return this._image;
+    return this._image
   }
 
   /**
@@ -39,7 +39,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {Buffer}
    */
   getImageBuffer() {
-    return this._imageBuffer;
+    return this._imageBuffer
   }
 
   /**
@@ -47,7 +47,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @param {Buffer} imageBuffer
    */
   setImageBuffer(imageBuffer) {
-    this._imageBuffer = imageBuffer;
+    this._imageBuffer = imageBuffer
   }
 
   /**
@@ -55,7 +55,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {string}
    */
   getImageString() {
-    return this._imageBase64;
+    return this._imageBase64
   }
 
   /**
@@ -63,7 +63,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @param {string} base64String
    */
   setImageString(base64String) {
-    this._imageBase64 = base64String;
+    this._imageBase64 = base64String
   }
 
   /**
@@ -71,7 +71,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {string}
    */
   getImagePath() {
-    return this._imagePath;
+    return this._imagePath
   }
 
   /**
@@ -79,7 +79,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @param {string} imagePath
    */
   setImagePath(imagePath) {
-    this._imagePath = imagePath;
+    this._imagePath = imagePath
   }
 
   /**
@@ -87,7 +87,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {string}
    */
   getImageUrl() {
-    return this._imageUrl;
+    return this._imageUrl
   }
 
   /**
@@ -96,10 +96,10 @@ class ImagesCheckSettings extends CheckSettings {
    * @param {RectangleSize|RectangleSizeObject} [imageSize]
    */
   setImageUrl(imageUrl, imageSize) {
-    this._imageUrl = imageUrl;
+    this._imageUrl = imageUrl
 
     if (imageSize) {
-      this.imageSize(imageSize);
+      this.imageSize(imageSize)
     }
   }
 
@@ -108,7 +108,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {ImageProvider}
    */
   getImageProvider() {
-    return this._imageProvider;
+    return this._imageProvider
   }
 
   /**
@@ -116,7 +116,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @param {ImageProvider} imageProvider
    */
   setImageProvider(imageProvider) {
-    this._imageProvider = imageProvider;
+    this._imageProvider = imageProvider
   }
 
   /**
@@ -124,8 +124,8 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {this} - This instance of the settings object.
    */
   imageSize(imageSize) {
-    this._imageSize = new RectangleSize(imageSize);
-    return this;
+    this._imageSize = new RectangleSize(imageSize)
+    return this
   }
 
   /**
@@ -133,7 +133,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {RectangleSize}
    */
   getImageSize() {
-    return this._imageSize;
+    return this._imageSize
   }
 
   /**
@@ -141,9 +141,9 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {this} - This instance of the settings object.
    */
   withDom(domString) {
-    this._sendDom = true;
-    this._domString = domString;
-    return this;
+    this._sendDom = true
+    this._domString = domString
+    return this
   }
 
   /**
@@ -151,7 +151,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {string}
    */
   getDomString() {
-    return this._domString;
+    return this._domString
   }
 
   /**
@@ -159,8 +159,8 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {this} - This instance of the settings object.
    */
   withLocation(location) {
-    this._imageLocation = new Location(location);
-    return this;
+    this._imageLocation = new Location(location)
+    return this
   }
 
   /**
@@ -168,7 +168,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {Location}
    */
   getImageLocation() {
-    return this._imageLocation;
+    return this._imageLocation
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -178,8 +178,8 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {this}
    */
   ignoreMismatch(ignoreMismatch = true) {
-    this._ignoreMismatch = ignoreMismatch;
-    return this;
+    this._ignoreMismatch = ignoreMismatch
+    return this
   }
 
   /**
@@ -187,7 +187,7 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {boolean}
    */
   getIgnoreMismatch() {
-    return this._ignoreMismatch;
+    return this._ignoreMismatch
   }
 
   /**
@@ -195,9 +195,9 @@ class ImagesCheckSettings extends CheckSettings {
    * @return {this}
    */
   region(region) {
-    super.updateTargetRegion(region);
-    return this;
+    super.updateTargetRegion(region)
+    return this
   }
 }
 
-exports.ImagesCheckSettings = ImagesCheckSettings;
+exports.ImagesCheckSettings = ImagesCheckSettings

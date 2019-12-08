@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * @readonly
@@ -41,7 +41,7 @@ const DeviceName = {
   Laptop_with_touch: 'Laptop with touch',
   Laptop_with_HiDPI_screen: 'Laptop with HiDPI screen',
   Laptop_with_MDPI_screen: 'Laptop with MDPI screen',
-};
+}
 
-Object.freeze(DeviceName);
-exports.DeviceName = DeviceName;
+Object.freeze(DeviceName)
+exports.DeviceName = DeviceName

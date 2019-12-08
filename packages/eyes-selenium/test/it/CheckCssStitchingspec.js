@@ -1,34 +1,37 @@
-'use strict';
+'use strict'
 
-require('chromedriver');
-const { Builder } = require('selenium-webdriver');
-const { Options: ChromeOptions } = require('selenium-webdriver/chrome');
-const { Eyes, Target, ConsoleLogHandler, StitchMode } = require('../../index');
+require('chromedriver')
+const {Builder} = require('selenium-webdriver')
+const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
+const {Eyes, Target, ConsoleLogHandler, StitchMode} = require('../../index')
 
-let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes;
+let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes
 describe('Check CSS Stitching', () => {
   before(async () => {
     driver = await new Builder()
       .forBrowser('chrome')
       .setChromeOptions(new ChromeOptions().headless())
-      .build();
+      .build()
 
-    eyes = new Eyes();
-    eyes.setLogHandler(new ConsoleLogHandler(false));
-    eyes.setStitchMode(StitchMode.CSS);
-    await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/');
-  });
+    eyes = new Eyes()
+    eyes.setLogHandler(new ConsoleLogHandler(false))
+    eyes.setStitchMode(StitchMode.CSS)
+    await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  })
 
-  beforeEach(async function () {
-    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title, { width: 600, height: 500 });
-  });
+  beforeEach(async function() {
+    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title, {
+      width: 600,
+      height: 500,
+    })
+  })
 
   it('with check window', async () => {
-    await eyes.check('Window', Target.window().fully());
-    return eyes.close();
-  });
+    await eyes.check('Window', Target.window().fully())
+    return eyes.close()
+  })
 
-  afterEach(async () => eyes.abort());
+  afterEach(async () => eyes.abort())
 
-  after(() => driver.quit());
-});
+  after(() => driver.quit())
+})

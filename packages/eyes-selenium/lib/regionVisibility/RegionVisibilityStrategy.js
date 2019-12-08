@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /* eslint-disable no-unused-vars */
 
@@ -14,7 +14,7 @@ class RegionVisibilityStrategy {
    * @return {Promise}
    */
   async moveToRegion(positionProvider, location) {
-    throw new TypeError('The method is not implemented!');
+    throw new TypeError('The method is not implemented!')
   }
 
   // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
@@ -23,8 +23,8 @@ class RegionVisibilityStrategy {
    * @return {Promise}
    */
   async returnToOriginalPosition(positionProvider) {
-    throw new TypeError('The method is not implemented!');
+    throw new TypeError('The method is not implemented!')
   }
 }
 
-exports.RegionVisibilityStrategy = RegionVisibilityStrategy;
+exports.RegionVisibilityStrategy = RegionVisibilityStrategy

@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * @readonly
@@ -7,7 +7,7 @@
 const AccessibilityStatus = {
   Passed: 'Passed',
   Failed: 'Failed',
-};
+}
 
-Object.freeze(AccessibilityStatus);
-exports.AccessibilityStatus = AccessibilityStatus;
+Object.freeze(AccessibilityStatus)
+exports.AccessibilityStatus = AccessibilityStatus

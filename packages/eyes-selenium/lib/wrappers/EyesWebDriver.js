@@ -1,14 +1,14 @@
-'use strict';
+'use strict'
 
-const { By } = require('selenium-webdriver');
-const { IWebDriver } = require('selenium-webdriver/lib/webdriver');
-const { ArgumentGuard, MutableImage, GeneralUtils } = require('@applitools/eyes-common');
+const {By} = require('selenium-webdriver')
+const {IWebDriver} = require('selenium-webdriver/lib/webdriver')
+const {ArgumentGuard, MutableImage, GeneralUtils} = require('@applitools/eyes-common')
 
-const { FrameChain } = require('../frames/FrameChain');
-const { EyesSeleniumUtils } = require('../EyesSeleniumUtils');
-const { EyesWebElement } = require('./EyesWebElement');
-const { EyesWebElementPromise } = require('./EyesWebElementPromise');
-const { EyesTargetLocator } = require('./EyesTargetLocator');
+const {FrameChain} = require('../frames/FrameChain')
+const {EyesSeleniumUtils} = require('../EyesSeleniumUtils')
+const {EyesWebElement} = require('./EyesWebElement')
+const {EyesWebElementPromise} = require('./EyesWebElementPromise')
+const {EyesTargetLocator} = require('./EyesTargetLocator')
 
 /**
  * An Eyes implementation of the interfaces implemented by {@link IWebDriver}.
@@ -24,22 +24,22 @@ class EyesWebDriver extends IWebDriver {
    * @param {WebDriver} driver
    */
   constructor(logger, eyes, driver) {
-    super();
-    ArgumentGuard.notNull(logger, 'logger');
-    ArgumentGuard.notNull(eyes, 'eyes');
-    ArgumentGuard.notNull(driver, 'driver');
+    super()
+    ArgumentGuard.notNull(logger, 'logger')
+    ArgumentGuard.notNull(eyes, 'eyes')
+    ArgumentGuard.notNull(driver, 'driver')
 
-    this._logger = logger;
-    this._eyes = eyes;
-    this._driver = driver;
+    this._logger = logger
+    this._eyes = eyes
+    this._driver = driver
 
-    this._elementsIds = new Map();
-    this._frameChain = new FrameChain(logger);
+    this._elementsIds = new Map()
+    this._frameChain = new FrameChain(logger)
 
     /** @type {ImageRotation} */
-    this._rotation = null;
+    this._rotation = null
     /** @type {RectangleSize} */
-    this._defaultContentViewportSize = null;
+    this._defaultContentViewportSize = null
 
     // this._logger.verbose("Driver session is " + this.getSessionId());
   }
@@ -49,7 +49,7 @@ class EyesWebDriver extends IWebDriver {
    * @return {Eyes}
    */
   getEyes() {
-    return this._eyes;
+    return this._eyes
   }
 
   /**
@@ -57,35 +57,35 @@ class EyesWebDriver extends IWebDriver {
    */
   getRemoteWebDriver() {
     // noinspection JSUnresolvedVariable
-    return this._driver.driver || this._driver;
+    return this._driver.driver || this._driver
   }
 
   /**
    * @inheritDoc
    */
   execute(command) {
-    return this._driver.execute(command);
+    return this._driver.execute(command)
   }
 
   /**
    * @inheritDoc
    */
   setFileDetector(detector) {
-    return this._driver.setFileDetector(detector);
+    return this._driver.setFileDetector(detector)
   }
 
   /**
    * @inheritDoc
    */
   getExecutor() {
-    return this._driver.getExecutor();
+    return this._driver.getExecutor()
   }
 
   /**
    * @inheritDoc
    */
   getSession() {
-    return this._driver.getSession();
+    return this._driver.getSession()
   }
 
   /**
@@ -93,10 +93,10 @@ class EyesWebDriver extends IWebDriver {
    */
   async getCapabilities() {
     if (this._capabilities === undefined) {
-      this._capabilities = await this._driver.getCapabilities();
+      this._capabilities = await this._driver.getCapabilities()
     }
 
-    return this._capabilities;
+    return this._capabilities
   }
 
   /**
@@ -107,10 +107,10 @@ class EyesWebDriver extends IWebDriver {
    */
   async isMobile() {
     if (this._isMobileDevice === undefined) {
-      this._isMobileDevice = await EyesSeleniumUtils.isMobileDevice(this);
+      this._isMobileDevice = await EyesSeleniumUtils.isMobileDevice(this)
     }
 
-    return this._isMobileDevice;
+    return this._isMobileDevice
   }
 
   /**
@@ -120,28 +120,28 @@ class EyesWebDriver extends IWebDriver {
    * @return {boolean}
    */
   async isNotMobile() {
-    return !(await this.isMobile());
+    return !(await this.isMobile())
   }
 
   /**
    * @inheritDoc
    */
   quit() {
-    return this._driver.quit();
+    return this._driver.quit()
   }
 
   /**
    * @inheritDoc
    */
   actions(options) {
-    return this._driver.actions(options);
+    return this._driver.actions(options)
   }
 
   /**
    * @inheritDoc
    */
   touchActions() {
-    return this._driver.touchActions();
+    return this._driver.touchActions()
   }
 
   /**
@@ -149,87 +149,87 @@ class EyesWebDriver extends IWebDriver {
    */
 
   async executeScript(script, ...varArgs) {
-    EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs);
-    return this._driver.executeScript(script, ...varArgs);
+    EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs)
+    return this._driver.executeScript(script, ...varArgs)
   }
 
   /**
    * @inheritDoc
    */
   executeAsyncScript(script, ...varArgs) {
-    EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs);
-    return this._driver.executeAsyncScript(script, ...varArgs);
+    EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs)
+    return this._driver.executeAsyncScript(script, ...varArgs)
   }
 
   /**
    * @inheritDoc
    */
   call(fn, optScope, ...varArgs) {
-    return this._driver.call(fn, optScope, ...varArgs);
+    return this._driver.call(fn, optScope, ...varArgs)
   }
 
   /**
    * @inheritDoc
    */
   wait(condition, optTimeout, optMessage) {
-    return this._driver.wait(condition, optTimeout, optMessage);
+    return this._driver.wait(condition, optTimeout, optMessage)
   }
 
   /**
    * @inheritDoc
    */
   sleep(ms) {
-    return this._driver.sleep(ms);
+    return this._driver.sleep(ms)
   }
 
   /**
    * @inheritDoc
    */
   getWindowHandle() {
-    return this._driver.getWindowHandle();
+    return this._driver.getWindowHandle()
   }
 
   /**
    * @inheritDoc
    */
   getAllWindowHandles() {
-    return this._driver.getAllWindowHandles();
+    return this._driver.getAllWindowHandles()
   }
 
   /**
    * @inheritDoc
    */
   getPageSource() {
-    return this._driver.getPageSource();
+    return this._driver.getPageSource()
   }
 
   /**
    * @inheritDoc
    */
   close() {
-    return this._driver.close();
+    return this._driver.close()
   }
 
   /**
    * @inheritDoc
    */
   get(url) {
-    this._frameChain.clear();
-    return this._driver.get(url);
+    this._frameChain.clear()
+    return this._driver.get(url)
   }
 
   /**
    * @inheritDoc
    */
   getCurrentUrl() {
-    return this._driver.getCurrentUrl();
+    return this._driver.getCurrentUrl()
   }
 
   /**
    * @inheritDoc
    */
   getTitle() {
-    return this._driver.getTitle();
+    return this._driver.getTitle()
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -239,7 +239,7 @@ class EyesWebDriver extends IWebDriver {
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElement(locator) {
-    return new EyesWebElementPromise(this._logger, this, this._driver.findElement(locator), locator);
+    return new EyesWebElementPromise(this._logger, this, this._driver.findElement(locator), locator)
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -250,37 +250,37 @@ class EyesWebDriver extends IWebDriver {
    *   {@link EyesWebElement}s.
    */
   async findElements(locator) {
-    const elements = await this._driver.findElements(locator);
-    return elements.map((element) => {
-      element = new EyesWebElement(this._logger, this, element);
+    const elements = await this._driver.findElements(locator)
+    return elements.map(element => {
+      element = new EyesWebElement(this._logger, this, element)
       // For Remote web elements, we can keep the IDs
-      this._elementsIds.set(element.getId(), element);
-      return element;
-    });
+      this._elementsIds.set(element.getId(), element)
+      return element
+    })
   }
 
   /**
    * @inheritDoc
    */
   async takeScreenshot() {
-    const screenshot64 = await this._driver.takeScreenshot(); // Get the image as base64.
-    const screenshot = new MutableImage(screenshot64);
-    await EyesWebDriver.normalizeRotation(this._logger, this._driver, screenshot, this._rotation);
-    return screenshot.getImageBase64();
+    const screenshot64 = await this._driver.takeScreenshot() // Get the image as base64.
+    const screenshot = new MutableImage(screenshot64)
+    await EyesWebDriver.normalizeRotation(this._logger, this._driver, screenshot, this._rotation)
+    return screenshot.getImageBase64()
   }
 
   /**
    * @inheritDoc
    */
   manage() {
-    return this._driver.manage();
+    return this._driver.manage()
   }
 
   /**
    * @inheritDoc
    */
   navigate() {
-    return this._driver.navigate();
+    return this._driver.navigate()
   }
 
   /**
@@ -288,7 +288,7 @@ class EyesWebDriver extends IWebDriver {
    * @return {EyesTargetLocator} - The target locator interface for this instance.
    */
   switchTo() {
-    return new EyesTargetLocator(this._logger, this, this._driver.switchTo());
+    return new EyesTargetLocator(this._logger, this, this._driver.switchTo())
   }
 
   /**
@@ -297,7 +297,7 @@ class EyesWebDriver extends IWebDriver {
    * @return {Map<string, WebElement>} - Maps of IDs for found elements.
    */
   getElementIds() {
-    return this._elementsIds;
+    return this._elementsIds
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -305,14 +305,14 @@ class EyesWebDriver extends IWebDriver {
    * @return {ImageRotation} - The image rotation data.
    */
   getRotation() {
-    return this._rotation;
+    return this._rotation
   }
 
   /**
    * @param {ImageRotation} rotation - The image rotation data.
    */
   setRotation(rotation) {
-    this._rotation = rotation;
+    this._rotation = rotation
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -322,7 +322,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByClassName(className) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.className(className));
+    return this.findElement(By.className(className))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -332,7 +332,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByClassName(className) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.className(className));
+    return this.findElements(By.className(className))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -342,7 +342,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByCssSelector(cssSelector) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.css(cssSelector));
+    return this.findElement(By.css(cssSelector))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -352,7 +352,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByCssSelector(cssSelector) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.css(cssSelector));
+    return this.findElements(By.css(cssSelector))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -362,7 +362,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementById(id) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.id(id));
+    return this.findElement(By.id(id))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -372,7 +372,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsById(id) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.id(id));
+    return this.findElements(By.id(id))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -382,7 +382,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByLinkText(linkText) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.linkText(linkText));
+    return this.findElement(By.linkText(linkText))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -392,7 +392,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByLinkText(linkText) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.linkText(linkText));
+    return this.findElements(By.linkText(linkText))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -402,7 +402,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByPartialLinkText(partialLinkText) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.partialLinkText(partialLinkText));
+    return this.findElement(By.partialLinkText(partialLinkText))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -412,7 +412,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByPartialLinkText(partialLinkText) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.partialLinkText(partialLinkText));
+    return this.findElements(By.partialLinkText(partialLinkText))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -422,7 +422,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByName(name) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.name(name));
+    return this.findElement(By.name(name))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -432,7 +432,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByName(name) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.name(name));
+    return this.findElements(By.name(name))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -442,7 +442,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByTagName(tagName) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.css(tagName));
+    return this.findElement(By.css(tagName))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -452,7 +452,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByTagName(tagName) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.css(tagName));
+    return this.findElements(By.css(tagName))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -462,7 +462,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementByXPath(xpath) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElement(By.xpath(xpath));
+    return this.findElement(By.xpath(xpath))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -472,7 +472,7 @@ class EyesWebDriver extends IWebDriver {
    */
   findElementsByXPath(xpath) {
     // noinspection JSCheckFunctionSignatures
-    return this.findElements(By.xpath(xpath));
+    return this.findElements(By.xpath(xpath))
   }
 
   /**
@@ -480,36 +480,39 @@ class EyesWebDriver extends IWebDriver {
    * @return {Promise<RectangleSize>} - The viewport size of the default content (outer most frame).
    */
   async getDefaultContentViewportSize(forceQuery = true) {
-    this._logger.verbose('getDefaultContentViewportSize()');
+    this._logger.verbose('getDefaultContentViewportSize()')
     if (this._defaultContentViewportSize && !forceQuery) {
-      this._logger.verbose('Using cached viewport size: ', this._defaultContentViewportSize);
-      return this._defaultContentViewportSize;
+      this._logger.verbose('Using cached viewport size: ', this._defaultContentViewportSize)
+      return this._defaultContentViewportSize
     }
 
-    const switchTo = this.switchTo();
-    const currentFrames = this._frameChain.clone();
+    const switchTo = this.switchTo()
+    const currentFrames = this._frameChain.clone()
 
     // Optimization
     if (currentFrames.size() > 0) {
-      await switchTo.defaultContent();
+      await switchTo.defaultContent()
     }
 
-    this._logger.verbose('Extracting viewport size...');
-    this._defaultContentViewportSize = await EyesSeleniumUtils.getViewportSizeOrDisplaySize(this._logger, this._driver);
-    this._logger.verbose('Done! Viewport size: ', this._defaultContentViewportSize);
+    this._logger.verbose('Extracting viewport size...')
+    this._defaultContentViewportSize = await EyesSeleniumUtils.getViewportSizeOrDisplaySize(
+      this._logger,
+      this._driver,
+    )
+    this._logger.verbose('Done! Viewport size: ', this._defaultContentViewportSize)
 
     if (currentFrames.size() > 0) {
-      await switchTo.frames(currentFrames);
+      await switchTo.frames(currentFrames)
     }
 
-    return this._defaultContentViewportSize;
+    return this._defaultContentViewportSize
   }
 
   /**
    * @return {FrameChain} - The current frame chain.
    */
   getFrameChain() {
-    return this._frameChain;
+    return this._frameChain
   }
 
   /**
@@ -518,17 +521,17 @@ class EyesWebDriver extends IWebDriver {
   async getUserAgent() {
     try {
       if (await this.isNotMobile()) {
-        const userAgent = await this._driver.executeScript('return navigator.userAgent;');
-        this._logger.verbose(`user agent: ${userAgent}`);
-        return userAgent;
+        const userAgent = await this._driver.executeScript('return navigator.userAgent;')
+        this._logger.verbose(`user agent: ${userAgent}`)
+        return userAgent
       }
 
-      this._logger.verbose('no user agent for native apps');
+      this._logger.verbose('no user agent for native apps')
     } catch (err) {
-      this._logger.verbose(`Failed to obtain user-agent string ${err}`);
+      this._logger.verbose(`Failed to obtain user-agent string ${err}`)
     }
 
-    return null;
+    return null
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -536,22 +539,22 @@ class EyesWebDriver extends IWebDriver {
    * @return {Promise<string>} - A copy of the current frame chain.
    */
   async getSessionId() {
-    const session = await this._driver.getSession();
-    return session.getId();
+    const session = await this._driver.getSession()
+    return session.getId()
   }
 
   /**
    * @override
    */
   toJSON() {
-    return GeneralUtils.toPlain(this, ['_logger', '_eyes']);
+    return GeneralUtils.toPlain(this, ['_logger', '_eyes'])
   }
 
   /**
    * @override
    */
   toString() {
-    return GeneralUtils.toString(this, ['_logger', '_eyes']);
+    return GeneralUtils.toString(this, ['_logger', '_eyes'])
   }
 
   /**
@@ -566,20 +569,20 @@ class EyesWebDriver extends IWebDriver {
    * @return {Promise<MutableImage>} - A normalized image.
    */
   static async normalizeRotation(logger, driver, image, rotation) {
-    ArgumentGuard.notNull(logger, 'logger');
-    ArgumentGuard.notNull(driver, 'driver');
-    ArgumentGuard.notNull(image, 'image');
+    ArgumentGuard.notNull(logger, 'logger')
+    ArgumentGuard.notNull(driver, 'driver')
+    ArgumentGuard.notNull(image, 'image')
 
-    let degrees;
+    let degrees
     if (rotation) {
-      degrees = rotation.getRotation();
+      degrees = rotation.getRotation()
     } else {
-      logger.verbose('Trying to automatically normalize rotation...');
-      degrees = await EyesSeleniumUtils.tryAutomaticRotation(logger, driver, image);
+      logger.verbose('Trying to automatically normalize rotation...')
+      degrees = await EyesSeleniumUtils.tryAutomaticRotation(logger, driver, image)
     }
 
-    return image.rotate(degrees);
+    return image.rotate(degrees)
   }
 }
 
-exports.EyesWebDriver = EyesWebDriver;
+exports.EyesWebDriver = EyesWebDriver

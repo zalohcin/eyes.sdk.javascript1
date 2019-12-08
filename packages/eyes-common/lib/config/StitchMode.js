@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * Represents the types of available stitch modes.
@@ -16,7 +16,7 @@ const StitchMode = {
    * CSS translation based stitching.
    */
   CSS: 'CSS',
-};
+}
 
-Object.freeze(StitchMode);
-exports.StitchMode = StitchMode;
+Object.freeze(StitchMode)
+exports.StitchMode = StitchMode

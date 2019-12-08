@@ -1,111 +1,164 @@
-'use strict';
+'use strict'
 
-const { By } = require('selenium-webdriver');
-const { TestSetup } = require('../TestSetup');
-const { TestDataProvider } = require('../TestDataProvider');
-const { Target, Region, FloatingMatchSettings } = require('../../../index');
+const {By} = require('selenium-webdriver')
+const {TestSetup} = require('../TestSetup')
+const {TestDataProvider} = require('../TestDataProvider')
+const {Target, Region, FloatingMatchSettings} = require('../../../index')
 
-describe('TestFluentApi_Frames', function () {
-  this.timeout(5 * 60 * 1000);
+describe('TestFluentApi_Frames', function() {
+  this.timeout(5 * 60 * 1000)
 
-  let /** @type {TestSetup} */ testSetup;
-  before(async function () { await testSetup.oneTimeSetup(); });
-  beforeEach(async function () { await testSetup.setup(this); });
-  afterEach(async function () { await testSetup.tearDown(this); });
-  after(async function () { await testSetup.oneTimeTearDown(); });
+  let /** @type {TestSetup} */ testSetup
+  before(async function() {
+    await testSetup.oneTimeSetup()
+  })
+  beforeEach(async function() {
+    await testSetup.setup(this)
+  })
+  afterEach(async function() {
+    await testSetup.tearDown(this)
+  })
+  after(async function() {
+    await testSetup.oneTimeTearDown()
+  })
 
-  const dataProvider = TestDataProvider.fixtureArgs();
-  dataProvider.forEach((row) => {
-    testSetup = new TestSetup('Eyes Selenium SDK - Fluent API', row.options, row.useVisualGrid, row.stitchMode);
+  const dataProvider = TestDataProvider.fixtureArgs()
+  dataProvider.forEach(row => {
+    testSetup = new TestSetup(
+      'Eyes Selenium SDK - Fluent API',
+      row.options,
+      row.useVisualGrid,
+      row.stitchMode,
+    )
 
-    describe(testSetup.toString(), function () {
-      it('TestCheckFrame_Fully_Fluent', async function () {
-        await testSetup.getEyes().check('Fluent - Full Frame', Target.frame('frame1').fully());
-      });
+    describe(testSetup.toString(), function() {
+      it('TestCheckFrame_Fully_Fluent', async function() {
+        await testSetup.getEyes().check('Fluent - Full Frame', Target.frame('frame1').fully())
+      })
 
-      it('TestCheckFrame_Fluent', async function () {
-        await testSetup.getEyes().check('Fluent - Frame', Target.frame('frame1'));
-      });
+      it('TestCheckFrame_Fluent', async function() {
+        await testSetup.getEyes().check('Fluent - Frame', Target.frame('frame1'))
+      })
 
-      it('TestCheckFrameInFrame_Fully_Fluent', async function () {
-        await testSetup.getEyes().check('Fluent - Full Frame in Frame', Target.frame('frame1')
-          .frame('frame1-1')
-          .fully());
-      });
+      it('TestCheckFrameInFrame_Fully_Fluent', async function() {
+        await testSetup.getEyes().check(
+          'Fluent - Full Frame in Frame',
+          Target.frame('frame1')
+            .frame('frame1-1')
+            .fully(),
+        )
+      })
 
       // it('TestCheckFrameInFrame_Fluent', async function () {
       //   await testSetup.getEyes().check('Fluent - Frame in Frame', Target.frame('frame1').frame('frame1-1'));
       // });
 
-      it('TestCheckRegionInFrame_Fluent', async function () {
-        await testSetup.getEyes().check('Fluent - Region in Frame', Target.frame('frame1')
-          .region(By.id('inner-frame-div'))
-          .fully());
-      });
+      it('TestCheckRegionInFrame_Fluent', async function() {
+        await testSetup.getEyes().check(
+          'Fluent - Region in Frame',
+          Target.frame('frame1')
+            .region(By.id('inner-frame-div'))
+            .fully(),
+        )
+      })
 
-      it('TestCheckRegionInFrameInFrame_Fluent', async function () {
-        await testSetup.getEyes().check('Fluent - Region in Frame in Frame', Target.frame('frame1')
-          .frame('frame1-1')
-          .region(By.css('img'))
-          .fully());
-      });
+      it('TestCheckRegionInFrameInFrame_Fluent', async function() {
+        await testSetup.getEyes().check(
+          'Fluent - Region in Frame in Frame',
+          Target.frame('frame1')
+            .frame('frame1-1')
+            .region(By.css('img'))
+            .fully(),
+        )
+      })
 
-      it('TestCheckRegionInFrame2_Fluent', async function () {
-        await testSetup.getEyes().check('Fluent - Inner frame div 1', Target.frame('frame1')
-          .region(By.id('inner-frame-div'))
-          .fully()
-          .timeout(5000)
-          .ignoreRegions(new Region(50, 50, 100, 100)));
+      it('TestCheckRegionInFrame2_Fluent', async function() {
+        await testSetup.getEyes().check(
+          'Fluent - Inner frame div 1',
+          Target.frame('frame1')
+            .region(By.id('inner-frame-div'))
+            .fully()
+            .timeout(5000)
+            .ignoreRegions(new Region(50, 50, 100, 100)),
+        )
 
-        await testSetup.getEyes().check('Fluent - Inner frame div 2', Target.frame('frame1')
-          .region(By.id('inner-frame-div'))
-          .fully()
-          .ignoreRegions(new Region(50, 50, 100, 100))
-          .ignoreRegions(new Region(70, 170, 90, 90)));
+        await testSetup.getEyes().check(
+          'Fluent - Inner frame div 2',
+          Target.frame('frame1')
+            .region(By.id('inner-frame-div'))
+            .fully()
+            .ignoreRegions(new Region(50, 50, 100, 100))
+            .ignoreRegions(new Region(70, 170, 90, 90)),
+        )
 
-        await testSetup.getEyes().check('Fluent - Inner frame div 3', Target.frame('frame1')
-          .region(By.id('inner-frame-div'))
-          .fully()
-          .timeout(5000));
+        await testSetup.getEyes().check(
+          'Fluent - Inner frame div 3',
+          Target.frame('frame1')
+            .region(By.id('inner-frame-div'))
+            .fully()
+            .timeout(5000),
+        )
 
-        await testSetup.getEyes().check('Fluent - Inner frame div 4', Target.frame('frame1')
-          .region(By.id('inner-frame-div'))
-          .fully());
+        await testSetup.getEyes().check(
+          'Fluent - Inner frame div 4',
+          Target.frame('frame1')
+            .region(By.id('inner-frame-div'))
+            .fully(),
+        )
 
-        await testSetup.getEyes().check('Fluent - Full frame with floating region', Target.frame('frame1')
-          .fully()
-          .layout()
-          .floatingRegions(25, new Region(200, 200, 150, 150)));
-      });
+        await testSetup.getEyes().check(
+          'Fluent - Full frame with floating region',
+          Target.frame('frame1')
+            .fully()
+            .layout()
+            .floatingRegions(25, new Region(200, 200, 150, 150)),
+        )
+      })
 
-      it('TestCheckRegionInFrame3_Fluent', async function () {
-        await testSetup.getEyes().check('Fluent - Full frame with floating region', Target.frame('frame1')
-          .fully()
-          .layout()
-          .floatingRegions(25, new Region(200, 200, 150, 150)));
+      it('TestCheckRegionInFrame3_Fluent', async function() {
+        await testSetup.getEyes().check(
+          'Fluent - Full frame with floating region',
+          Target.frame('frame1')
+            .fully()
+            .layout()
+            .floatingRegions(25, new Region(200, 200, 150, 150)),
+        )
 
-        testSetup.setExpectedFloatingsRegions(new FloatingMatchSettings(200, 200, 150, 150, 25, 25, 25, 25));
-      });
+        testSetup.setExpectedFloatingsRegions(
+          new FloatingMatchSettings(200, 200, 150, 150, 25, 25, 25, 25),
+        )
+      })
 
-      it('TestCheckRegionByCoordinateInFrameFully_Fluent', async function () {
-        await testSetup.getEyes().check('Fluent - Inner frame coordinates', Target.frame('frame1')
-          .region(new Region(30, 40, 400, 1200))
-          .fully());
-      });
+      it('TestCheckRegionByCoordinateInFrameFully_Fluent', async function() {
+        await testSetup.getEyes().check(
+          'Fluent - Inner frame coordinates',
+          Target.frame('frame1')
+            .region(new Region(30, 40, 400, 1200))
+            .fully(),
+        )
+      })
 
-      it('TestCheckRegionByCoordinateInFrame_Fluent', async function () {
-        await testSetup.getEyes().check('Fluent - Inner frame coordinates', Target.frame('frame1')
-          .region(new Region(30, 40, 400, 1200)));
-      });
+      it('TestCheckRegionByCoordinateInFrame_Fluent', async function() {
+        await testSetup
+          .getEyes()
+          .check(
+            'Fluent - Inner frame coordinates',
+            Target.frame('frame1').region(new Region(30, 40, 400, 1200)),
+          )
+      })
 
-      it('TestCheckFrameInFrame_Fully_Fluent2', async function () {
-        await testSetup.getEyes().check('Fluent - Window with Ignore region 2', Target.window()
-          .fully());
+      it('TestCheckFrameInFrame_Fully_Fluent2', async function() {
+        await testSetup
+          .getEyes()
+          .check('Fluent - Window with Ignore region 2', Target.window().fully())
 
-        await testSetup.getEyes().check('Fluent - Full Frame in Frame 2', Target.frame('frame1')
-          .frame('frame1-1')
-          .fully());
-      });
+        await testSetup.getEyes().check(
+          'Fluent - Full Frame in Frame 2',
+          Target.frame('frame1')
+            .frame('frame1-1')
+            .fully(),
+        )
+      })
 
       // it('TestCheckLongIFrameModal', async function () {
       //   await testSetup.getDriver().findElement(By.id('stretched')).click();
@@ -148,6 +201,6 @@ describe('TestFluentApi_Frames', function () {
       //   }
       //   await testSetup.getEyes().check(targets);
       // });
-    });
-  });
-});
+    })
+  })
+})

@@ -1,13 +1,13 @@
-'use strict';
+'use strict'
 
-const { Builder } = require('selenium-webdriver');
-const { Eyes, Target, ConsoleLogHandler } = require('../../index');
+const {Builder} = require('selenium-webdriver')
+const {Eyes, Target, ConsoleLogHandler} = require('../../index')
 
-let /** @type WebDriver */ driver, /** @type Eyes */ eyes;
-describe('AndroidNative', function () {
-  this.timeout(5 * 60 * 1000);
+let /** @type WebDriver */ driver, /** @type Eyes */ eyes
+describe('AndroidNative', function() {
+  this.timeout(5 * 60 * 1000)
 
-  before(async function () {
+  before(async function() {
     // Open the app.
     driver = new Builder()
       .withCapabilities({
@@ -23,33 +23,33 @@ describe('AndroidNative', function () {
         'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY,
       })
       .usingServer('https://hub-cloud.browserstack.com/wd/hub')
-      .build();
+      .build()
 
     // Initialize the eyes SDK and set your private API key.
-    eyes = new Eyes();
-    eyes.setLogHandler(new ConsoleLogHandler(true));
-  });
+    eyes = new Eyes()
+    eyes.setLogHandler(new ConsoleLogHandler(true))
+  })
 
-  beforeEach(async function () {
+  beforeEach(async function() {
     // Start visual testing.
-    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title);
-  });
+    driver = await eyes.open(driver, this.test.parent.title, this.currentTest.title)
+  })
 
-  it('Basic window', async function () {
+  it('Basic window', async function() {
     // Take a screenshot of viewport
-    await eyes.check(this.test.title, Target.window());
+    await eyes.check(this.test.title, Target.window())
 
     // End the test.
-    return eyes.close();
-  });
+    return eyes.close()
+  })
 
-  afterEach(async function () {
+  afterEach(async function() {
     // Abort if not closed
-    await eyes.abort();
-  });
+    await eyes.abort()
+  })
 
-  after(async function () {
+  after(async function() {
     // Close app
-    await driver.quit();
-  });
-});
+    await driver.quit()
+  })
+})

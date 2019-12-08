@@ -1,21 +1,21 @@
-'use strict';
+'use strict'
 
-const { WebElement, By } = require('selenium-webdriver');
-const { TypeUtils, Region } = require('@applitools/eyes-common');
-const { CheckSettings } = require('@applitools/eyes-sdk-core');
+const {WebElement, By} = require('selenium-webdriver')
+const {TypeUtils, Region} = require('@applitools/eyes-common')
+const {CheckSettings} = require('@applitools/eyes-sdk-core')
 
-const { IgnoreRegionBySelector } = require('./IgnoreRegionBySelector');
-const { IgnoreRegionByElement } = require('./IgnoreRegionByElement');
-const { FloatingRegionBySelector } = require('./FloatingRegionBySelector');
-const { FloatingRegionByElement } = require('./FloatingRegionByElement');
-const { AccessibilityRegionBySelector } = require('./AccessibilityRegionBySelector');
-const { AccessibilityRegionByElement } = require('./AccessibilityRegionByElement');
-const { SelectorByElement } = require('./SelectorByElement');
-const { SelectorByLocator } = require('./SelectorByLocator');
-const { FrameLocator } = require('./FrameLocator');
-const { EyesWebElement } = require('../wrappers/EyesWebElement');
+const {IgnoreRegionBySelector} = require('./IgnoreRegionBySelector')
+const {IgnoreRegionByElement} = require('./IgnoreRegionByElement')
+const {FloatingRegionBySelector} = require('./FloatingRegionBySelector')
+const {FloatingRegionByElement} = require('./FloatingRegionByElement')
+const {AccessibilityRegionBySelector} = require('./AccessibilityRegionBySelector')
+const {AccessibilityRegionByElement} = require('./AccessibilityRegionByElement')
+const {SelectorByElement} = require('./SelectorByElement')
+const {SelectorByLocator} = require('./SelectorByLocator')
+const {FrameLocator} = require('./FrameLocator')
+const {EyesWebElement} = require('../wrappers/EyesWebElement')
 
-const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot';
+const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
 
 class SeleniumCheckSettings extends CheckSettings {
   /**
@@ -23,26 +23,26 @@ class SeleniumCheckSettings extends CheckSettings {
    * @param {number|string|By|WebElement|EyesWebElement} [frame]
    */
   constructor(region, frame) {
-    super();
+    super()
 
-    this._targetSelector = null;
-    this._targetElement = null;
-    this._frameChain = [];
+    this._targetSelector = null
+    this._targetElement = null
+    this._frameChain = []
 
     /** @type {By} */
-    this._scrollRootSelector = undefined;
+    this._scrollRootSelector = undefined
     /** @type {WebElement} */
-    this._scrollRootElement = undefined;
+    this._scrollRootElement = undefined
 
     if (region) {
-      this.region(region);
+      this.region(region)
     }
 
     if (frame) {
-      this.frame(frame);
+      this.frame(frame)
     }
 
-    /** @type {Object<string, string>} */ this._scriptHooks = {};
+    /** @type {Object<string, string>} */ this._scriptHooks = {}
   }
 
   /**
@@ -52,14 +52,14 @@ class SeleniumCheckSettings extends CheckSettings {
    */
   getTargetProvider() {
     if (this._targetSelector) {
-      return new SelectorByLocator(this._targetSelector);
+      return new SelectorByLocator(this._targetSelector)
     }
 
     if (this._targetElement) {
-      return new SelectorByElement(this._targetElement);
+      return new SelectorByElement(this._targetElement)
     }
 
-    return undefined;
+    return undefined
   }
 
   /**
@@ -68,7 +68,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * @return {By}
    */
   getTargetSelector() {
-    return this._targetSelector;
+    return this._targetSelector
   }
 
   /**
@@ -77,7 +77,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * @return {WebElement}
    */
   getTargetElement() {
-    return this._targetElement;
+    return this._targetElement
   }
 
   /**
@@ -86,7 +86,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * @return {FrameLocator[]}
    */
   getFrameChain() {
-    return this._frameChain;
+    return this._frameChain
   }
 
   /**
@@ -94,21 +94,21 @@ class SeleniumCheckSettings extends CheckSettings {
    * @return {this}
    */
   frame(frame) {
-    const fl = new FrameLocator();
+    const fl = new FrameLocator()
     // noinspection IfStatementWithTooManyBranchesJS
     if (TypeUtils.isInteger(frame)) {
-      fl.setFrameIndex(frame);
+      fl.setFrameIndex(frame)
     } else if (TypeUtils.isString(frame)) {
-      fl.setFrameNameOrId(frame);
+      fl.setFrameNameOrId(frame)
     } else if (EyesWebElement.isLocator(frame)) {
-      fl.setFrameSelector(frame);
+      fl.setFrameSelector(frame)
     } else if (frame instanceof WebElement) {
-      fl.setFrameElement(frame);
+      fl.setFrameElement(frame)
     } else {
-      throw new TypeError('frame method called with argument of unknown type!');
+      throw new TypeError('frame method called with argument of unknown type!')
     }
-    this._frameChain.push(fl);
-    return this;
+    this._frameChain.push(fl)
+    return this
   }
 
   /**
@@ -118,17 +118,17 @@ class SeleniumCheckSettings extends CheckSettings {
   region(region) {
     // noinspection IfStatementWithTooManyBranchesJS
     if (Region.isRegionCompatible(region)) {
-      super.updateTargetRegion(region);
+      super.updateTargetRegion(region)
     } else if (TypeUtils.isString(region)) {
-      this._targetSelector = By.css(region); // TODO: avoid converting to element for VisualGrid
+      this._targetSelector = By.css(region) // TODO: avoid converting to element for VisualGrid
     } else if (EyesWebElement.isLocator(region)) {
-      this._targetSelector = region;
+      this._targetSelector = region
     } else if (region instanceof WebElement) {
-      this._targetElement = region;
+      this._targetElement = region
     } else {
-      throw new TypeError('region method called with argument of unknown type!');
+      throw new TypeError('region method called with argument of unknown type!')
     }
-    return this;
+    return this
   }
 
   // noinspection JSMethodCanBeStatic
@@ -139,14 +139,14 @@ class SeleniumCheckSettings extends CheckSettings {
    */
   _regionToRegionProvider(region) {
     if (EyesWebElement.isLocator(region)) {
-      return new IgnoreRegionBySelector(region);
+      return new IgnoreRegionBySelector(region)
     }
 
     if (region instanceof WebElement) {
-      return new IgnoreRegionByElement(region);
+      return new IgnoreRegionByElement(region)
     }
 
-    return super._regionToRegionProvider(region);
+    return super._regionToRegionProvider(region)
   }
 
   /**
@@ -156,7 +156,7 @@ class SeleniumCheckSettings extends CheckSettings {
    */
   ignoreRegions(...regions) {
     // noinspection JSValidateTypes
-    return super.ignoreRegions(...regions);
+    return super.ignoreRegions(...regions)
   }
 
   /**
@@ -166,7 +166,7 @@ class SeleniumCheckSettings extends CheckSettings {
    */
   layoutRegions(...regions) {
     // noinspection JSValidateTypes
-    return super.layoutRegions(...regions);
+    return super.layoutRegions(...regions)
   }
 
   /**
@@ -176,7 +176,7 @@ class SeleniumCheckSettings extends CheckSettings {
    */
   strictRegions(...regions) {
     // noinspection JSValidateTypes
-    return super.strictRegions(...regions);
+    return super.strictRegions(...regions)
   }
 
   /**
@@ -186,7 +186,7 @@ class SeleniumCheckSettings extends CheckSettings {
    */
   contentRegions(...regions) {
     // noinspection JSValidateTypes
-    return super.contentRegions(...regions);
+    return super.contentRegions(...regions)
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -207,22 +207,28 @@ class SeleniumCheckSettings extends CheckSettings {
         maxUpOffset,
         maxDownOffset,
         maxLeftOffset,
-        maxRightOffset
-      );
-      this._floatingRegions.push(floatingRegion);
+        maxRightOffset,
+      )
+      this._floatingRegions.push(floatingRegion)
     } else if (regionOrContainer instanceof WebElement) {
       const floatingRegion = new FloatingRegionByElement(
         regionOrContainer,
         maxUpOffset,
         maxDownOffset,
         maxLeftOffset,
-        maxRightOffset
-      );
-      this._floatingRegions.push(floatingRegion);
+        maxRightOffset,
+      )
+      this._floatingRegions.push(floatingRegion)
     } else {
-      super.floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset);
+      super.floatingRegion(
+        regionOrContainer,
+        maxUpOffset,
+        maxDownOffset,
+        maxLeftOffset,
+        maxRightOffset,
+      )
     }
-    return this;
+    return this
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -234,7 +240,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * @return {this}
    */
   floatingRegions(maxOffset, ...regionsOrContainers) {
-    return super.floatingRegions(maxOffset, ...regionsOrContainers);
+    return super.floatingRegions(maxOffset, ...regionsOrContainers)
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -247,21 +253,15 @@ class SeleniumCheckSettings extends CheckSettings {
    */
   accessibilityRegion(regionOrContainer, regionType) {
     if (EyesWebElement.isLocator(regionOrContainer)) {
-      const accessibilityRegion = new AccessibilityRegionBySelector(
-        regionOrContainer,
-        regionType
-      );
-      this._accessibilityRegions.push(accessibilityRegion);
+      const accessibilityRegion = new AccessibilityRegionBySelector(regionOrContainer, regionType)
+      this._accessibilityRegions.push(accessibilityRegion)
     } else if (regionOrContainer instanceof WebElement) {
-      const floatingRegion = new AccessibilityRegionByElement(
-        regionOrContainer,
-        regionType
-      );
-      this._accessibilityRegions.push(floatingRegion);
+      const floatingRegion = new AccessibilityRegionByElement(regionOrContainer, regionType)
+      this._accessibilityRegions.push(floatingRegion)
     } else {
-      super.accessibilityRegion(regionOrContainer, regionType);
+      super.accessibilityRegion(regionOrContainer, regionType)
     }
-    return this;
+    return this
   }
 
   /**
@@ -271,19 +271,20 @@ class SeleniumCheckSettings extends CheckSettings {
   getSizeMode() {
     if (!this._targetRegion && !this._targetElement && !this._targetSelector) {
       if (this.getStitchContent()) {
-        return 'full-page';
+        return 'full-page'
       }
-      return 'viewport';
-    } if (this._targetRegion) {
+      return 'viewport'
+    }
+    if (this._targetRegion) {
       if (this.getStitchContent()) {
-        return 'region';
+        return 'region'
       }
-      return 'region';
+      return 'region'
     }
     if (this.getStitchContent()) {
-      return 'selector';
+      return 'selector'
     }
-    return 'selector';
+    return 'selector'
   }
 
   /**
@@ -293,17 +294,17 @@ class SeleniumCheckSettings extends CheckSettings {
   scrollRootElement(element) {
     if (EyesWebElement.isLocator(element)) {
       if (this._frameChain.length === 0) {
-        this._scrollRootSelector = element;
+        this._scrollRootSelector = element
       } else {
-        this._frameChain[this._frameChain.length - 1].setScrollRootSelector(element);
+        this._frameChain[this._frameChain.length - 1].setScrollRootSelector(element)
       }
     } else if (this._frameChain.length === 0) {
-      this._scrollRootElement = element;
+      this._scrollRootElement = element
     } else {
-      this._frameChain[this._frameChain.length - 1].setScrollRootElement(element);
+      this._frameChain[this._frameChain.length - 1].setScrollRootElement(element)
     }
 
-    return this;
+    return this
   }
 
   /**
@@ -311,7 +312,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * @return {Promise<WebElement>}
    */
   async getScrollRootElement() {
-    return this._scrollRootElement;
+    return this._scrollRootElement
   }
 
   /**
@@ -319,7 +320,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * @return {By}
    */
   getScrollRootSelector() {
-    return this._scrollRootSelector;
+    return this._scrollRootSelector
   }
 
   /**
@@ -328,7 +329,7 @@ class SeleniumCheckSettings extends CheckSettings {
    * @return {this}
    */
   webHook(hook) {
-    return this.beforeRenderScreenshotHook(hook);
+    return this.beforeRenderScreenshotHook(hook)
   }
 
   /**
@@ -336,8 +337,8 @@ class SeleniumCheckSettings extends CheckSettings {
    * @return {this}
    */
   beforeRenderScreenshotHook(hook) {
-    this._scriptHooks[BEFORE_CAPTURE_SCREENSHOT] = hook;
-    return this;
+    this._scriptHooks[BEFORE_CAPTURE_SCREENSHOT] = hook
+    return this
   }
 
   /**
@@ -345,8 +346,8 @@ class SeleniumCheckSettings extends CheckSettings {
    * @return {Object<string, string>}
    */
   getScriptHooks() {
-    return this._scriptHooks;
+    return this._scriptHooks
   }
 }
 
-exports.SeleniumCheckSettings = SeleniumCheckSettings;
+exports.SeleniumCheckSettings = SeleniumCheckSettings

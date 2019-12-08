@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * @readonly
@@ -10,7 +10,7 @@ const BrowserType = {
   IE_11: 'ie',
   IE_10: 'ie10',
   EDGE: 'edge',
-};
+}
 
-Object.freeze(BrowserType);
-exports.BrowserType = BrowserType;
+Object.freeze(BrowserType)
+exports.BrowserType = BrowserType

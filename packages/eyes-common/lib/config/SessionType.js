@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * The type of the session.
@@ -16,7 +16,7 @@ const SessionType = {
    * A timing test session
    */
   PROGRESSION: 'PROGRESSION',
-};
+}
 
-Object.freeze(SessionType);
-exports.SessionType = SessionType;
+Object.freeze(SessionType)
+exports.SessionType = SessionType

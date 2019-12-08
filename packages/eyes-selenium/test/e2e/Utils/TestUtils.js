@@ -1,10 +1,18 @@
-'use strict';
+'use strict'
 
-const path = require('path');
-const axios = require('axios');
+const path = require('path')
+const axios = require('axios')
 
-const { GeneralUtils, FileLogHandler, BatchInfo, TypeUtils, ConsoleLogHandler, FileDebugScreenshotsProvider, DateTimeUtils } = require('@applitools/eyes-common');
-const { SessionResults } = require('@applitools/eyes-sdk-core').metadata;
+const {
+  GeneralUtils,
+  FileLogHandler,
+  BatchInfo,
+  TypeUtils,
+  ConsoleLogHandler,
+  FileDebugScreenshotsProvider,
+  DateTimeUtils,
+} = require('@applitools/eyes-common')
+const {SessionResults} = require('@applitools/eyes-sdk-core').metadata
 
 class TestUtils {
   /**
@@ -12,10 +20,10 @@ class TestUtils {
    * @return {string}
    */
   static initLogPath(testName) {
-    const dateString = DateTimeUtils.toLogFileDateTime();
-    const extendedTestName = `${testName}_${dateString}`;
-    const logsPath = process.env.APPLITOOLS_LOGS_PATH || '.';
-    return path.join(logsPath, 'JS4', extendedTestName);
+    const dateString = DateTimeUtils.toLogFileDateTime()
+    const extendedTestName = `${testName}_${dateString}`
+    const logsPath = process.env.APPLITOOLS_LOGS_PATH || '.'
+    return path.join(logsPath, 'JS4', extendedTestName)
   }
 
   /**
@@ -25,11 +33,11 @@ class TestUtils {
    */
   static initLogHandler(testName, logPath) {
     if (!TestUtils.RUNS_ON_CI) {
-      logPath = logPath || TestUtils.initLogPath(testName);
-      return new FileLogHandler(true, path.join(logPath, 'log.log'), true);
+      logPath = logPath || TestUtils.initLogPath(testName)
+      return new FileLogHandler(true, path.join(logPath, 'log.log'), true)
     }
     // return new NunitLogHandler(false);
-    return new ConsoleLogHandler();
+    return new ConsoleLogHandler()
   }
 
   /**
@@ -37,21 +45,21 @@ class TestUtils {
    * @param {string} [testName]
    */
   static setupLogging(eyes, testName) {
-    let logHandler = null;
+    let logHandler = null
 
     if (!TestUtils.RUNS_ON_CI) {
-      const logPath = TestUtils.initLogPath(testName);
-      eyes.setDebugScreenshotsProvider(new FileDebugScreenshotsProvider());
-      eyes.setDebugScreenshotsPath(logPath);
-      eyes.setDebugScreenshotsPrefix(`${testName}_`);
-      logHandler = new FileLogHandler(true, path.join(logPath, `${testName}.log`), true);
+      const logPath = TestUtils.initLogPath(testName)
+      eyes.setDebugScreenshotsProvider(new FileDebugScreenshotsProvider())
+      eyes.setDebugScreenshotsPath(logPath)
+      eyes.setDebugScreenshotsPrefix(`${testName}_`)
+      logHandler = new FileLogHandler(true, path.join(logPath, `${testName}.log`), true)
     } else {
       // logHandler = new NunitLogHandler(false);
-      logHandler = new ConsoleLogHandler();
+      logHandler = new ConsoleLogHandler()
     }
 
     if (logHandler) {
-      eyes.setLogHandler(logHandler);
+      eyes.setLogHandler(logHandler)
     }
 
     // Eyes.moveWindow_ = typeof v8debug !== 'object';
@@ -63,12 +71,13 @@ class TestUtils {
    * @return {SessionResults}
    */
   static async getSessionResults(apiKey, testResults) {
-    const apiSessionUrl = testResults && testResults.getApiUrls() && testResults.getApiUrls().getSession() ?
-      testResults.getApiUrls().getSession() :
-      null;
+    const apiSessionUrl =
+      testResults && testResults.getApiUrls() && testResults.getApiUrls().getSession()
+        ? testResults.getApiUrls().getSession()
+        : null
 
     if (TypeUtils.isNull(apiSessionUrl)) {
-      return null;
+      return null
     }
 
     const response = await axios({
@@ -79,9 +88,9 @@ class TestUtils {
         AccessToken: testResults.getSecretToken(),
         apiKey,
       },
-    });
+    })
 
-    return new SessionResults(response.data);
+    return new SessionResults(response.data)
   }
 
   /**
@@ -96,9 +105,9 @@ class TestUtils {
       params: {
         apiKey: eyes.getApiKey(),
       },
-    });
+    })
 
-    return new BatchInfo(response.data);
+    return new BatchInfo(response.data)
   }
 
   /**
@@ -111,7 +120,7 @@ class TestUtils {
       url: '/result',
       baseURL: 'http://sdk-test-results.herokuapp.com',
       data: reportSummary.toJSON(),
-    };
+    }
 
     // TODO: this throws an error and says that JS4 SDK is not registered
     // await axios(options).catch((err) => {
@@ -120,8 +129,8 @@ class TestUtils {
   }
 }
 
-TestUtils.RUNS_ON_CI = GeneralUtils.getEnvValue('CI') !== undefined;
-TestUtils.RUNS_ON_TRAVIS = GeneralUtils.getEnvValue('TRAVIS', true) === true;
-TestUtils.RUN_HEADLESS = typeof v8debug !== 'object' || TestUtils.RUNS_ON_CI;
+TestUtils.RUNS_ON_CI = GeneralUtils.getEnvValue('CI') !== undefined
+TestUtils.RUNS_ON_TRAVIS = GeneralUtils.getEnvValue('TRAVIS', true) === true
+TestUtils.RUN_HEADLESS = typeof v8debug !== 'object' || TestUtils.RUNS_ON_CI
 
-exports.TestUtils = TestUtils;
+exports.TestUtils = TestUtils

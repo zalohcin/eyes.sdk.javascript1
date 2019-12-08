@@ -1,9 +1,13 @@
-'use strict';
+'use strict'
 
-const path = require('path');
+const path = require('path')
 
-const { DateTimeUtils } = require('@applitools/eyes-common');
-const { FileLogHandler, NullLogHandler, FileDebugScreenshotsProvider } = require('@applitools/eyes-selenium');
+const {DateTimeUtils} = require('@applitools/eyes-common')
+const {
+  FileLogHandler,
+  NullLogHandler,
+  FileDebugScreenshotsProvider,
+} = require('@applitools/eyes-selenium')
 
 class TestUtils {
   /**
@@ -11,10 +15,10 @@ class TestUtils {
    * @return {string}
    */
   static initLogPath(testName) {
-    const dateString = DateTimeUtils.toLogFileDateTime();
-    const extendedTestName = `${testName}_${dateString}`;
-    const logsPath = process.env.APPLITOOLS_LOGS_PATH || '.';
-    return path.join(logsPath, 'JS4', extendedTestName);
+    const dateString = DateTimeUtils.toLogFileDateTime()
+    const extendedTestName = `${testName}_${dateString}`
+    const logsPath = process.env.APPLITOOLS_LOGS_PATH || '.'
+    return path.join(logsPath, 'JS4', extendedTestName)
   }
 
   /**
@@ -24,11 +28,11 @@ class TestUtils {
    */
   static initLogHandler(testName, logPath) {
     if (!TestUtils.RUNS_ON_CI) {
-      logPath = logPath || TestUtils.initLogPath(testName);
-      return new FileLogHandler(true, path.join(logPath, 'log.log'), true);
+      logPath = logPath || TestUtils.initLogPath(testName)
+      return new FileLogHandler(true, path.join(logPath, 'log.log'), true)
     }
     // return new NunitLogHandler(false);
-    return new NullLogHandler();
+    return new NullLogHandler()
   }
 
   /**
@@ -36,27 +40,27 @@ class TestUtils {
    * @param {string} [testName]
    */
   static setupLogging(eyes, testName) {
-    let logHandler = null;
+    let logHandler = null
 
     if (!TestUtils.RUNS_ON_CI) {
-      const logPath = TestUtils.initLogPath(testName);
-      eyes.setDebugScreenshotsProvider(new FileDebugScreenshotsProvider());
-      eyes.setDebugScreenshotsPath(logPath);
-      eyes.setDebugScreenshotsPrefix(`${testName}_`);
-      logHandler = new FileLogHandler(true, path.join(logPath, `${testName}.log`), true);
+      const logPath = TestUtils.initLogPath(testName)
+      eyes.setDebugScreenshotsProvider(new FileDebugScreenshotsProvider())
+      eyes.setDebugScreenshotsPath(logPath)
+      eyes.setDebugScreenshotsPrefix(`${testName}_`)
+      logHandler = new FileLogHandler(true, path.join(logPath, `${testName}.log`), true)
     } else {
       // logHandler = new NunitLogHandler(false);
-      logHandler = new NullLogHandler();
+      logHandler = new NullLogHandler()
     }
 
     if (logHandler) {
-      eyes.setLogHandler(logHandler);
+      eyes.setLogHandler(logHandler)
     }
 
     // Eyes.moveWindow_ = typeof v8debug !== 'object';
   }
 }
 
-TestUtils.RUNS_ON_CI = process.env.CI != null;
+TestUtils.RUNS_ON_CI = process.env.CI != null
 
-exports.TestUtils = TestUtils;
+exports.TestUtils = TestUtils

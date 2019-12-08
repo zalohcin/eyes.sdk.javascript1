@@ -1,10 +1,22 @@
-'use strict';
+'use strict'
 
-const { ArgumentGuard, TypeUtils, FileUtils, EyesError, MutableImage, RectangleSize } = require('@applitools/eyes-common');
-const { EyesBase, RegionProvider, NullRegionProvider, EyesSimpleScreenshot } = require('@applitools/eyes-sdk-core');
+const {
+  ArgumentGuard,
+  TypeUtils,
+  FileUtils,
+  EyesError,
+  MutableImage,
+  RectangleSize,
+} = require('@applitools/eyes-common')
+const {
+  EyesBase,
+  RegionProvider,
+  NullRegionProvider,
+  EyesSimpleScreenshot,
+} = require('@applitools/eyes-sdk-core')
 
-const { Target } = require('./fluent/Target');
-const VERSION = require('../package.json').version;
+const {Target} = require('./fluent/Target')
+const VERSION = require('../package.json').version
 
 /**
  * The main type - to be used by the users of the library to access all functionality.
@@ -18,23 +30,23 @@ class Eyes extends EyesBase {
    *   will immediately return without performing any action.
    */
   constructor(serverUrl, isDisabled) {
-    super(serverUrl, isDisabled);
+    super(serverUrl, isDisabled)
 
-    /** @type {String} */ this._title = undefined;
-    /** @type {String} */ this._domString = undefined;
-    /** @type {Location} */ this._imageLocation = undefined;
-    this._inferred = '';
+    /** @type {String} */ this._title = undefined
+    /** @type {String} */ this._domString = undefined
+    /** @type {Location} */ this._imageLocation = undefined
+    this._inferred = ''
 
-    /** @type {MutableImage} */ this._screenshot = undefined;
-    /** @type {String} */ this._screenshotUrl = undefined;
-    /** @type {ImageProvider} */ this._screenshotProvider = undefined;
+    /** @type {MutableImage} */ this._screenshot = undefined
+    /** @type {String} */ this._screenshotUrl = undefined
+    /** @type {ImageProvider} */ this._screenshotProvider = undefined
   }
 
   /**
    * @override
    */
   getBaseAgentId() {
-    return `eyes.images.javascript/${VERSION}`;
+    return `eyes.images.javascript/${VERSION}`
   }
 
   /**
@@ -47,7 +59,7 @@ class Eyes extends EyesBase {
    * @return {Promise}
    */
   open(appName, testName, imageSize) {
-    return super.openBase(appName, testName, imageSize);
+    return super.openBase(appName, testName, imageSize)
   }
 
   /**
@@ -83,7 +95,12 @@ class Eyes extends EyesBase {
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async checkImage(image, name, ignoreMismatch = false, retryTimeout = -1) {
-    return this.check(name, Target.image(image).ignoreMismatch(ignoreMismatch).timeout(retryTimeout));
+    return this.check(
+      name,
+      Target.image(image)
+        .ignoreMismatch(ignoreMismatch)
+        .timeout(retryTimeout),
+    )
   }
 
   /**
@@ -123,7 +140,12 @@ class Eyes extends EyesBase {
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async checkRegion(image, region, name, ignoreMismatch = false, retryTimeout = -1) {
-    return this.check(name, Target.region(image, region).ignoreMismatch(ignoreMismatch).timeout(retryTimeout));
+    return this.check(
+      name,
+      Target.region(image, region)
+        .ignoreMismatch(ignoreMismatch)
+        .timeout(retryTimeout),
+    )
   }
 
   /**
@@ -133,57 +155,62 @@ class Eyes extends EyesBase {
    *  matchResults was as expected or not.
    */
   async check(name, checkSettings) {
-    ArgumentGuard.notNull(checkSettings, 'checkSettings');
+    ArgumentGuard.notNull(checkSettings, 'checkSettings')
 
     if (this.getIsDisabled()) {
-      this._logger.verbose(`check('${name}', checkSettings): Ignored`);
-      return false;
+      this._logger.verbose(`check('${name}', checkSettings): Ignored`)
+      return false
     }
 
     if (TypeUtils.isNotNull(name)) {
-      checkSettings.withName(name);
+      checkSettings.withName(name)
     } else {
-      name = checkSettings.getName();
+      name = checkSettings.getName()
     }
 
     try {
-      let regionProvider = new NullRegionProvider();
+      let regionProvider = new NullRegionProvider()
 
       // Set the title to be linked to the screenshot.
-      this._title = name;
-      this._domString = checkSettings.getDomString();
-      this._imageLocation = checkSettings.getImageLocation();
+      this._title = name
+      this._domString = checkSettings.getDomString()
+      this._imageLocation = checkSettings.getImageLocation()
 
       if (checkSettings.getTargetRegion()) {
-        regionProvider = new RegionProvider(checkSettings.getTargetRegion());
+        regionProvider = new RegionProvider(checkSettings.getTargetRegion())
       }
 
       if (checkSettings.getImageUrl()) {
-        this._screenshotUrl = checkSettings.getImageUrl();
+        this._screenshotUrl = checkSettings.getImageUrl()
 
         if (!this._viewportSizeHandler.get() && checkSettings.getImageSize()) {
-          await this.setViewportSize(checkSettings.getImageSize());
+          await this.setViewportSize(checkSettings.getImageSize())
         }
       } else if (checkSettings.getImageProvider()) {
-        this._screenshotProvider = checkSettings.getImageProvider();
+        this._screenshotProvider = checkSettings.getImageProvider()
       } else {
-        this._screenshot = await this._normalizeImage(checkSettings);
+        this._screenshot = await this._normalizeImage(checkSettings)
 
         if (!this._viewportSizeHandler.get()) {
-          await this.setViewportSize(this._screenshot.getSize());
+          await this.setViewportSize(this._screenshot.getSize())
         }
       }
 
-      const matchResult = await super.checkWindowBase(regionProvider, name, checkSettings.getIgnoreMismatch(), checkSettings);
-      return matchResult.getAsExpected();
+      const matchResult = await super.checkWindowBase(
+        regionProvider,
+        name,
+        checkSettings.getIgnoreMismatch(),
+        checkSettings,
+      )
+      return matchResult.getAsExpected()
     } finally {
-      this._title = undefined;
-      this._domString = undefined;
-      this._imageLocation = undefined;
+      this._title = undefined
+      this._domString = undefined
+      this._imageLocation = undefined
 
-      this._screenshot = undefined;
-      this._screenshotUrl = undefined;
-      this._screenshotProvider = undefined;
+      this._screenshot = undefined
+      this._screenshotUrl = undefined
+      this._screenshotProvider = undefined
     }
   }
 
@@ -195,27 +222,27 @@ class Eyes extends EyesBase {
    */
   async _normalizeImage(checkSettings) {
     if (checkSettings.getMutableImage()) {
-      return checkSettings.getMutableImage();
+      return checkSettings.getMutableImage()
     }
 
     if (checkSettings.getImageBuffer()) {
-      return new MutableImage(checkSettings.getImageBuffer());
+      return new MutableImage(checkSettings.getImageBuffer())
     }
 
     if (checkSettings.getImageString()) {
-      return new MutableImage(checkSettings.getImageString());
+      return new MutableImage(checkSettings.getImageString())
     }
 
     if (checkSettings.getImagePath()) {
       try {
-        const data = await FileUtils.readToBuffer(checkSettings.getImagePath());
-        return new MutableImage(data);
+        const data = await FileUtils.readToBuffer(checkSettings.getImagePath())
+        return new MutableImage(data)
       } catch (err) {
-        throw new EyesError(`Can't read image [${err.message}]`);
+        throw new EyesError(`Can't read image [${err.message}]`)
       }
     }
 
-    throw new EyesError("Can't recognize supported image from checkSettings.");
+    throw new EyesError("Can't recognize supported image from checkSettings.")
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -231,21 +258,25 @@ class Eyes extends EyesBase {
    * @throws {DiffsFoundError} Thrown if a mismatch is detected and immediate failure reports are enabled.
    */
   async replaceImage(stepIndex, image, tag, title, userInputs) {
-    ArgumentGuard.notNull(stepIndex, 'stepIndex');
-    ArgumentGuard.notNull(image, 'image');
+    ArgumentGuard.notNull(stepIndex, 'stepIndex')
+    ArgumentGuard.notNull(image, 'image')
 
     if (this.getIsDisabled()) {
-      this._logger.verbose(`replaceImage('${stepIndex}', Image, '${tag}', '${title}', '${userInputs}'): Ignored`);
-      return false;
+      this._logger.verbose(
+        `replaceImage('${stepIndex}', Image, '${tag}', '${title}', '${userInputs}'): Ignored`,
+      )
+      return false
     }
 
     if (TypeUtils.isBuffer(image) || TypeUtils.isString(image)) {
-      image = new MutableImage(image);
+      image = new MutableImage(image)
     }
 
-    this._logger.verbose(`replaceImage('${stepIndex}', Image, '${tag}', '${title}', '${userInputs}')`);
-    const results = await super.replaceWindow(stepIndex, image, tag, title, userInputs);
-    return results.getAsExpected();
+    this._logger.verbose(
+      `replaceImage('${stepIndex}', Image, '${tag}', '${title}', '${userInputs}')`,
+    )
+    const results = await super.replaceWindow(stepIndex, image, tag, title, userInputs)
+    return results.getAsExpected()
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -257,7 +288,7 @@ class Eyes extends EyesBase {
    * @param {Location} cursor  The cursor's position relative to the control.
    */
   addMouseTrigger(action, control, cursor) {
-    super.addMouseTriggerBase(action, control, cursor);
+    super.addMouseTriggerBase(action, control, cursor)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -268,14 +299,14 @@ class Eyes extends EyesBase {
    * @param {string} text - The trigger's text.
    */
   addTextTrigger(control, text) {
-    super.addTextTriggerBase(control, text);
+    super.addTextTriggerBase(control, text)
   }
 
   /**
    * @inheritDoc
    */
   async getViewportSize() {
-    return this._viewportSizeHandler.get();
+    return this._viewportSizeHandler.get()
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -286,16 +317,16 @@ class Eyes extends EyesBase {
    * @return {Promise}
    */
   async setViewportSize(viewportSize) {
-    ArgumentGuard.notNull(viewportSize, 'size');
+    ArgumentGuard.notNull(viewportSize, 'size')
 
-    this._viewportSizeHandler.set(new RectangleSize(viewportSize));
+    this._viewportSizeHandler.set(new RectangleSize(viewportSize))
   }
 
   /**
    * @inheritDoc
    */
   async getInferredEnvironment() {
-    return this._inferred;
+    return this._inferred
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -305,7 +336,7 @@ class Eyes extends EyesBase {
    * @param {string} inferred - The inferred environment string.
    */
   setInferredEnvironment(inferred) {
-    this._inferred = inferred;
+    this._inferred = inferred
   }
 
   /**
@@ -313,44 +344,44 @@ class Eyes extends EyesBase {
    */
   async getScreenshot() {
     if (this._screenshotProvider) {
-      const screenshot = await this._screenshotProvider.getImage();
-      return new EyesSimpleScreenshot(screenshot);
+      const screenshot = await this._screenshotProvider.getImage()
+      return new EyesSimpleScreenshot(screenshot)
     }
 
     if (this._screenshot) {
-      return new EyesSimpleScreenshot(this._screenshot);
+      return new EyesSimpleScreenshot(this._screenshot)
     }
 
-    return undefined;
+    return undefined
   }
 
   /**
    * @inheritDoc
    */
   async getScreenshotUrl() {
-    return this._screenshotUrl;
+    return this._screenshotUrl
   }
 
   /**
    * @inheritDoc
    */
   async tryCaptureDom() {
-    return this._domString;
+    return this._domString
   }
 
   /**
    * @inheritDoc
    */
   async getImageLocation() {
-    return this._imageLocation;
+    return this._imageLocation
   }
 
   /**
    * @inheritDoc
    */
   async getTitle() {
-    return this._title;
+    return this._title
   }
 }
 
-exports.Eyes = Eyes;
+exports.Eyes = Eyes

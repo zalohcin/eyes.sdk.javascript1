@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const { EyesSeleniumUtils } = require('@applitools/eyes-selenium');
+const {EyesSeleniumUtils} = require('@applitools/eyes-selenium')
 
 /**
  * @ignore
@@ -12,8 +12,8 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {Promise<boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static async isAndroid(driver) {
-    const capabilities = await driver.getCapabilities();
-    return EyesAppiumUtils.isAndroidFromCaps(capabilities);
+    const capabilities = await driver.getCapabilities()
+    return EyesAppiumUtils.isAndroidFromCaps(capabilities)
   }
 
   /**
@@ -21,7 +21,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {boolean} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static isAndroidFromCaps(capabilities) {
-    return capabilities.get('platformName').toUpperCase() === 'ANDROID';
+    return capabilities.get('platformName').toUpperCase() === 'ANDROID'
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -30,8 +30,8 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {Promise<boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static async isIOS(driver) {
-    const capabilities = await driver.getCapabilities();
-    return EyesAppiumUtils.isIOSFromCaps(capabilities);
+    const capabilities = await driver.getCapabilities()
+    return EyesAppiumUtils.isIOSFromCaps(capabilities)
   }
 
   /**
@@ -39,7 +39,7 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {boolean} {@code true} if the driver is an Android driver. {@code false} otherwise.
    */
   static isIOSFromCaps(capabilities) {
-    return capabilities.get('platformName').toUpperCase() === 'IOS';
+    return capabilities.get('platformName').toUpperCase() === 'IOS'
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -48,8 +48,8 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {Promise<string>} - The platform version or {@code null} if it is undefined.
    */
   static async getPlatformVersion(driver) {
-    const capabilities = await driver.getCapabilities();
-    return EyesAppiumUtils.getPlatformVersionFromCaps(capabilities);
+    const capabilities = await driver.getCapabilities()
+    return EyesAppiumUtils.getPlatformVersionFromCaps(capabilities)
   }
 
   /**
@@ -57,8 +57,8 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
    * @return {string} - The platform version or {@code null} if it is undefined.
    */
   static getPlatformVersionFromCaps(capabilities) {
-    return capabilities.get('platformVersion');
+    return capabilities.get('platformVersion')
   }
 }
 
-exports.EyesAppiumUtils = EyesAppiumUtils;
+exports.EyesAppiumUtils = EyesAppiumUtils

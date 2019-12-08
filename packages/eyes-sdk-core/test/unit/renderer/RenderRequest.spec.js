@@ -1,27 +1,39 @@
-'use strict';
+'use strict'
 
-const assert = require('assert');
+const assert = require('assert')
 
-const { RenderRequest } = require('../../../index');
+const {RenderRequest} = require('../../../index')
 
 describe('RenderRequest', () => {
   describe('constructor', () => {
     it("doesn't allow empty webhook", () => {
-      assert.throws(() => new RenderRequest(), /IllegalArgument: webhook is null or empty/);
-      assert.throws(() => new RenderRequest({ webhook: '' }), /IllegalArgument: webhook is null or empty/);
-    });
+      assert.throws(() => new RenderRequest(), /IllegalArgument: webhook is null or empty/)
+      assert.throws(
+        () => new RenderRequest({webhook: ''}),
+        /IllegalArgument: webhook is null or empty/,
+      )
+    })
 
     it("doesn't allow empty url", () => {
-      assert.throws(() => new RenderRequest({ webhook: 'webhook' }), /IllegalArgument: url is null or undefined/);
-    });
+      assert.throws(
+        () => new RenderRequest({webhook: 'webhook'}),
+        /IllegalArgument: url is null or undefined/,
+      )
+    })
 
     it("doesn't allow empty dom", () => {
-      assert.throws(() => new RenderRequest({ webhook: 'webhook', url: 'url' }), /IllegalArgument: dom is null or undefined/);
-    });
+      assert.throws(
+        () => new RenderRequest({webhook: 'webhook', url: 'url'}),
+        /IllegalArgument: dom is null or undefined/,
+      )
+    })
 
     it("doesn't allow empty resources", () => {
-      assert.throws(() => new RenderRequest({ webhook: 'webhook', url: 'url', dom: 'dom' }), /IllegalArgument: resources is null or undefined/);
-    });
+      assert.throws(
+        () => new RenderRequest({webhook: 'webhook', url: 'url', dom: 'dom'}),
+        /IllegalArgument: resources is null or undefined/,
+      )
+    })
 
     it('fills values', () => {
       const renderRequest = new RenderRequest({
@@ -35,37 +47,49 @@ describe('RenderRequest', () => {
         scriptHooks: 'scriptHooks',
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
         sendDom: 'sendDom',
-      });
-      assert.strictEqual(renderRequest.getWebhook(), 'webhook');
-      assert.strictEqual(renderRequest.getUrl(), 'url');
-      assert.strictEqual(renderRequest.getDom(), 'dom');
-      assert.strictEqual(renderRequest.getResources(), 'resources');
-      assert.strictEqual(renderRequest.getRenderInfo(), 'renderInfo');
-      assert.strictEqual(renderRequest.getPlatform(), 'platform');
-      assert.strictEqual(renderRequest.getBrowserName(), 'browserName');
-      assert.strictEqual(renderRequest.getScriptHooks(), 'scriptHooks');
-      assert.strictEqual(renderRequest.getSelectorsToFindRegionsFor(), 'selectorsToFindRegionsFor');
-      assert.strictEqual(renderRequest.getSendDom(), 'sendDom');
-    });
-  });
+      })
+      assert.strictEqual(renderRequest.getWebhook(), 'webhook')
+      assert.strictEqual(renderRequest.getUrl(), 'url')
+      assert.strictEqual(renderRequest.getDom(), 'dom')
+      assert.strictEqual(renderRequest.getResources(), 'resources')
+      assert.strictEqual(renderRequest.getRenderInfo(), 'renderInfo')
+      assert.strictEqual(renderRequest.getPlatform(), 'platform')
+      assert.strictEqual(renderRequest.getBrowserName(), 'browserName')
+      assert.strictEqual(renderRequest.getScriptHooks(), 'scriptHooks')
+      assert.strictEqual(renderRequest.getSelectorsToFindRegionsFor(), 'selectorsToFindRegionsFor')
+      assert.strictEqual(renderRequest.getSendDom(), 'sendDom')
+    })
+  })
 
   describe('toJSON', () => {
     it('returns the correct object', () => {
       const resource1 = {
-        getUrl() { return 'url1'; },
-        getHashAsObject() { return 'hashAsObject1'; },
-      };
+        getUrl() {
+          return 'url1'
+        },
+        getHashAsObject() {
+          return 'hashAsObject1'
+        },
+      }
       const resource2 = {
-        getUrl() { return 'url2'; },
-        getHashAsObject() { return 'hashAsObject2'; },
-      };
+        getUrl() {
+          return 'url2'
+        },
+        getHashAsObject() {
+          return 'hashAsObject2'
+        },
+      }
       const dom = {
-        getHashAsObject() { return 'dom_hashAsObject'; },
-      };
+        getHashAsObject() {
+          return 'dom_hashAsObject'
+        },
+      }
 
       const renderInfo = {
-        toJSON() { return 'renderInfoToJSON'; },
-      };
+        toJSON() {
+          return 'renderInfoToJSON'
+        },
+      }
 
       const renderRequest = new RenderRequest({
         webhook: 'webhook',
@@ -78,7 +102,7 @@ describe('RenderRequest', () => {
         scriptHooks: 'scriptHooks',
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
         sendDom: 'sendDom',
-      });
+      })
       const expected = {
         webhook: 'webhook',
         url: 'url',
@@ -95,14 +119,16 @@ describe('RenderRequest', () => {
         scriptHooks: 'scriptHooks',
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
         sendDom: 'sendDom',
-      };
-      assert.deepStrictEqual(renderRequest.toJSON(), expected);
-    });
+      }
+      assert.deepStrictEqual(renderRequest.toJSON(), expected)
+    })
 
-    it('doesn\'t include platform if there is no browserName', () => {
+    it("doesn't include platform if there is no browserName", () => {
       const dom = {
-        getHashAsObject() { return 'dom_hashAsObject'; },
-      };
+        getHashAsObject() {
+          return 'dom_hashAsObject'
+        },
+      }
       const renderRequest = new RenderRequest({
         webhook: 'webhook',
         url: 'url',
@@ -110,34 +136,46 @@ describe('RenderRequest', () => {
         resources: [],
         renderInfo: null,
         platform: 'platform',
-      });
+      })
       const expected = {
         webhook: 'webhook',
         url: 'url',
         dom: 'dom_hashAsObject',
         resources: {},
-      };
-      assert.deepStrictEqual(renderRequest.toJSON(), expected);
-    });
-  });
+      }
+      assert.deepStrictEqual(renderRequest.toJSON(), expected)
+    })
+  })
 
   describe('toString', () => {
     it('returns the correct string', () => {
       const resource1 = {
-        getUrl() { return 'url1'; },
-        getHashAsObject() { return 'hashAsObject1'; },
-      };
+        getUrl() {
+          return 'url1'
+        },
+        getHashAsObject() {
+          return 'hashAsObject1'
+        },
+      }
       const resource2 = {
-        getUrl() { return 'url2'; },
-        getHashAsObject() { return 'hashAsObject2'; },
-      };
+        getUrl() {
+          return 'url2'
+        },
+        getHashAsObject() {
+          return 'hashAsObject2'
+        },
+      }
       const dom = {
-        getHashAsObject() { return 'dom_hashAsObject'; },
-      };
+        getHashAsObject() {
+          return 'dom_hashAsObject'
+        },
+      }
 
       const renderInfo = {
-        toJSON() { return 'renderInfoToJSON'; },
-      };
+        toJSON() {
+          return 'renderInfoToJSON'
+        },
+      }
 
       const renderRequest = new RenderRequest({
         webhook: 'webhook',
@@ -150,8 +188,11 @@ describe('RenderRequest', () => {
         scriptHooks: 'scriptHooks',
         selectorsToFindRegionsFor: 'selectorsToFindRegionsFor',
         sendDom: 'sendDom',
-      });
-      assert.strictEqual(renderRequest.toString(), 'RenderRequest { {"webhook":"webhook","url":"url","dom":"dom_hashAsObject","resources":{"url1":"hashAsObject1","url2":"hashAsObject2"},"browser":{"name":"browserName","platform":"platform"},"renderInfo":"renderInfoToJSON","scriptHooks":"scriptHooks","selectorsToFindRegionsFor":"selectorsToFindRegionsFor","sendDom":"sendDom"} }');
-    });
-  });
-});
+      })
+      assert.strictEqual(
+        renderRequest.toString(),
+        'RenderRequest { {"webhook":"webhook","url":"url","dom":"dom_hashAsObject","resources":{"url1":"hashAsObject1","url2":"hashAsObject2"},"browser":{"name":"browserName","platform":"platform"},"renderInfo":"renderInfoToJSON","scriptHooks":"scriptHooks","selectorsToFindRegionsFor":"selectorsToFindRegionsFor","sendDom":"sendDom"} }',
+      )
+    })
+  })
+})

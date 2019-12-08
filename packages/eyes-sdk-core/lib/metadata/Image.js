@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const { GeneralUtils, RectangleSize } = require('@applitools/eyes-common');
+const {GeneralUtils, RectangleSize} = require('@applitools/eyes-common')
 
 class Image {
   /**
@@ -8,16 +8,16 @@ class Image {
    * @param {RectangleSize|object} size
    * @param {boolean} hasDom
    */
-  constructor({ id, size, hasDom } = {}) {
+  constructor({id, size, hasDom} = {}) {
     if (size && !(size instanceof RectangleSize)) {
-      size = new RectangleSize(size);
+      size = new RectangleSize(size)
     }
 
-    this._id = id;
-    this._size = size;
+    this._id = id
+    this._size = size
     // this._rectangle = size;
     // this._location = size;
-    this._hasDom = hasDom;
+    this._hasDom = hasDom
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -25,7 +25,7 @@ class Image {
    * @return {string}
    */
   getId() {
-    return this._id;
+    return this._id
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -33,7 +33,7 @@ class Image {
    * @param {string} value
    */
   setId(value) {
-    this._id = value;
+    this._id = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -41,7 +41,7 @@ class Image {
    * @return {RectangleSize}
    */
   getSize() {
-    return this._size;
+    return this._size
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -49,7 +49,7 @@ class Image {
    * @param {RectangleSize} value
    */
   setSize(value) {
-    this._size = value;
+    this._size = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -57,7 +57,7 @@ class Image {
    * @return {boolean}
    */
   getHasDom() {
-    return this._hasDom;
+    return this._hasDom
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -65,22 +65,22 @@ class Image {
    * @param {boolean} value
    */
   setHasDom(value) {
-    this._hasDom = value;
+    this._hasDom = value
   }
 
   /**
    * @override
    */
   toJSON() {
-    return GeneralUtils.toPlain(this);
+    return GeneralUtils.toPlain(this)
   }
 
   /**
    * @override
    */
   toString() {
-    return `Image { ${JSON.stringify(this)} }`;
+    return `Image { ${JSON.stringify(this)} }`
   }
 }
 
-exports.Image = Image;
+exports.Image = Image

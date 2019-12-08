@@ -1,82 +1,98 @@
-'use strict';
+'use strict'
 
-const assert = require('assert');
-const assertRejects = require('assert-rejects');
-const { ReportingTestSuite } = require('../ReportingTestSuite');
-const { TestUtils } = require('../Utils/TestUtils');
-const { SeleniumUtils } = require('../Utils/SeleniumUtils');
-const { TestDataProvider } = require('../TestDataProvider');
-const { Eyes, Configuration, VisualGridRunner, BrowserType, MatchLevel, AccessibilityLevel, DeviceName } = require('../../../index');
+const assert = require('assert')
+const assertRejects = require('assert-rejects')
+const {ReportingTestSuite} = require('../ReportingTestSuite')
+const {TestUtils} = require('../Utils/TestUtils')
+const {SeleniumUtils} = require('../Utils/SeleniumUtils')
+const {TestDataProvider} = require('../TestDataProvider')
+const {
+  Eyes,
+  Configuration,
+  VisualGridRunner,
+  BrowserType,
+  MatchLevel,
+  AccessibilityLevel,
+  DeviceName,
+} = require('../../../index')
 
-describe('TestVGServerConfigs', function () {
-  this.timeout(5 * 60 * 1000);
+describe('TestVGServerConfigs', function() {
+  this.timeout(5 * 60 * 1000)
 
-  const /** @type {ReportingTestSuite} */ testSetup = new ReportingTestSuite();
-  before(async function () { await testSetup.oneTimeSetup(); });
-  beforeEach(async function () { await testSetup.setup(this); });
-  afterEach(async function () { await testSetup.tearDown(this); });
-  after(async function () { await testSetup.oneTimeTearDown(); });
+  const /** @type {ReportingTestSuite} */ testSetup = new ReportingTestSuite()
+  before(async function() {
+    await testSetup.oneTimeSetup()
+  })
+  beforeEach(async function() {
+    await testSetup.setup(this)
+  })
+  afterEach(async function() {
+    await testSetup.tearDown(this)
+  })
+  after(async function() {
+    await testSetup.oneTimeTearDown()
+  })
 
-  it('TestVGDoubleCloseNoCheck', async function () {
-    const driver = SeleniumUtils.createChromeDriver();
+  it('TestVGDoubleCloseNoCheck', async function() {
+    const driver = SeleniumUtils.createChromeDriver()
     try {
-      const runner = new VisualGridRunner(10);
-      const eyes = new Eyes(runner);
-      const conf = new Configuration();
-      conf.setAppName('app').setTestName('test');
-      conf.setBatch(TestDataProvider.BatchInfo);
-      eyes.setConfiguration(conf);
+      const runner = new VisualGridRunner(10)
+      const eyes = new Eyes(runner)
+      const conf = new Configuration()
+      conf.setAppName('app').setTestName('test')
+      conf.setBatch(TestDataProvider.BatchInfo)
+      eyes.setConfiguration(conf)
 
-      await eyes.open(driver);
-      await assertRejects(eyes.close(), /IllegalState: Eyes not open/);
+      await eyes.open(driver)
+      await assertRejects(eyes.close(), /IllegalState: Eyes not open/)
     } finally {
-      await driver.quit();
+      await driver.quit()
     }
-  });
+  })
 
-  it('TestVGChangeConfigAfterOpen', async function () {
-    const driver = SeleniumUtils.createChromeDriver();
+  it('TestVGChangeConfigAfterOpen', async function() {
+    const driver = SeleniumUtils.createChromeDriver()
     try {
-      const runner = new VisualGridRunner(10);
-      const eyes = new Eyes(runner);
+      const runner = new VisualGridRunner(10)
+      const eyes = new Eyes(runner)
 
-      const conf = new Configuration();
+      const conf = new Configuration()
 
-      conf.setAppName('app').setTestName('test');
-      conf.setBatch(TestDataProvider.BatchInfo);
+      conf.setAppName('app').setTestName('test')
+      conf.setBatch(TestDataProvider.BatchInfo)
 
-      conf.addBrowser(800, 600, BrowserType.CHROME);
-      conf.addBrowser(1200, 800, BrowserType.CHROME);
-      conf.addDeviceEmulation(DeviceName.Galaxy_S5);
-      conf.addDeviceEmulation(DeviceName.Galaxy_S3);
-      conf.addDeviceEmulation(DeviceName.iPhone_4);
-      conf.addDeviceEmulation(DeviceName.iPhone_5SE);
-      conf.addDeviceEmulation(DeviceName.iPad);
+      conf.addBrowser(800, 600, BrowserType.CHROME)
+      conf.addBrowser(1200, 800, BrowserType.CHROME)
+      conf.addDeviceEmulation(DeviceName.Galaxy_S5)
+      conf.addDeviceEmulation(DeviceName.Galaxy_S3)
+      conf.addDeviceEmulation(DeviceName.iPhone_4)
+      conf.addDeviceEmulation(DeviceName.iPhone_5SE)
+      conf.addDeviceEmulation(DeviceName.iPad)
 
-      conf.setAccessibilityValidation(AccessibilityLevel.None).setIgnoreDisplacements(false);
-      eyes.setConfiguration(conf);
+      conf.setAccessibilityValidation(AccessibilityLevel.None).setIgnoreDisplacements(false)
+      eyes.setConfiguration(conf)
 
-      await eyes.open(driver);
+      await eyes.open(driver)
 
-      conf.setAccessibilityValidation(AccessibilityLevel.AAA).setIgnoreDisplacements(true);
-      eyes.setConfiguration(conf);
+      conf.setAccessibilityValidation(AccessibilityLevel.AAA).setIgnoreDisplacements(true)
+      eyes.setConfiguration(conf)
 
-      await eyes.checkWindow();
+      await eyes.checkWindow()
 
-      conf.setAccessibilityValidation(AccessibilityLevel.AA).setMatchLevel(MatchLevel.Layout);
-      eyes.setConfiguration(conf);
+      conf.setAccessibilityValidation(AccessibilityLevel.AA).setMatchLevel(MatchLevel.Layout)
+      eyes.setConfiguration(conf)
 
-      await eyes.checkWindow();
+      await eyes.checkWindow()
 
-      await eyes.close(false);
-      const resultsSummary = await runner.getAllTestResults(false);
+      await eyes.close(false)
+      const resultsSummary = await runner.getAllTestResults(false)
 
-      assert.strictEqual(7, resultsSummary.getAllResults().length);
+      assert.strictEqual(7, resultsSummary.getAllResults().length)
 
       for (const resultsContainer of resultsSummary.getAllResults()) {
-        const results = resultsContainer.getTestResults();
+        const results = resultsContainer.getTestResults()
 
-        const sessionResults = TestUtils.getSessionResults(eyes.getApiKey(), results);
+        const sessionResults = TestUtils.getSessionResults(eyes.getApiKey(), results)
 
         // TODO: getBrowserInfo is not implemented in JS
         // const browserInfo = resultsContainer.getBrowserInfo().toString();
@@ -96,7 +112,7 @@ describe('TestVGServerConfigs', function () {
         // assert.strictEqual(MatchLevel.Layout2, sessionResults.getActualAppOutput()[1].getImageMatchSettings().MatchLevel, browserInfo);
       }
     } finally {
-      driver.quit();
+      driver.quit()
     }
-  });
-});
+  })
+})

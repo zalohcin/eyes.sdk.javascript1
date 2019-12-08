@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 // Protractor configuration file, see link for more information
 // https://github.com/angular/protractor/blob/master/lib/config.ts
@@ -19,12 +19,11 @@ exports.config = {
   },
   onPrepare: () => {
     // we need this to get appName and testName and pass them to eyes.open in beforeEach
-    jasmine.getEnv()
-      .addReporter({
-        specStarted: (result) => {
-          global.testName = result.description;
-          global.appName = result.fullName.replace(` ${result.description}`, '');
-        },
-      });
+    jasmine.getEnv().addReporter({
+      specStarted: result => {
+        global.testName = result.description
+        global.appName = result.fullName.replace(` ${result.description}`, '')
+      },
+    })
   },
-};
+}

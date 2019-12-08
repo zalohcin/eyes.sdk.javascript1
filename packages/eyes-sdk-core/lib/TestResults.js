@@ -1,17 +1,17 @@
-'use strict';
+'use strict'
 
-const { GeneralUtils, RectangleSize, DateTimeUtils } = require('@applitools/eyes-common');
+const {GeneralUtils, RectangleSize, DateTimeUtils} = require('@applitools/eyes-common')
 
-const { TestResultsStatus } = require('./TestResultsStatus');
+const {TestResultsStatus} = require('./TestResultsStatus')
 
 class SessionUrls {
   /**
    * @param {string} batch
    * @param {string} session
    */
-  constructor({ batch, session } = {}) {
-    this._batch = batch;
-    this._session = session;
+  constructor({batch, session} = {}) {
+    this._batch = batch
+    this._session = session
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -19,7 +19,7 @@ class SessionUrls {
    * @return {string}
    */
   getBatch() {
-    return this._batch;
+    return this._batch
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -27,7 +27,7 @@ class SessionUrls {
    * @param {string} value
    */
   setBatch(value) {
-    this._batch = value;
+    this._batch = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -35,7 +35,7 @@ class SessionUrls {
    * @return {string}
    */
   getSession() {
-    return this._session;
+    return this._session
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -43,14 +43,14 @@ class SessionUrls {
    * @param {string} value
    */
   setSession(value) {
-    this._session = value;
+    this._session = value
   }
 
   /**
    * @override
    */
   toJSON() {
-    return GeneralUtils.toPlain(this);
+    return GeneralUtils.toPlain(this)
   }
 }
 
@@ -62,12 +62,18 @@ class ApiUrls {
    * @param {string} checkpointImageThumbnail
    * @param {string} diffImage
    */
-  constructor({ baselineImage, currentImage, checkpointImage, checkpointImageThumbnail, diffImage } = {}) {
-    this._baselineImage = baselineImage;
-    this._currentImage = currentImage;
-    this._checkpointImage = checkpointImage;
-    this._checkpointImageThumbnail = checkpointImageThumbnail;
-    this._diffImage = diffImage;
+  constructor({
+    baselineImage,
+    currentImage,
+    checkpointImage,
+    checkpointImageThumbnail,
+    diffImage,
+  } = {}) {
+    this._baselineImage = baselineImage
+    this._currentImage = currentImage
+    this._checkpointImage = checkpointImage
+    this._checkpointImageThumbnail = checkpointImageThumbnail
+    this._diffImage = diffImage
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -75,7 +81,7 @@ class ApiUrls {
    * @return {string}
    */
   getBaselineImage() {
-    return this._baselineImage;
+    return this._baselineImage
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -83,7 +89,7 @@ class ApiUrls {
    * @param {string} value
    */
   setBaselineImage(value) {
-    this._baselineImage = value;
+    this._baselineImage = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -91,7 +97,7 @@ class ApiUrls {
    * @return {string}
    */
   getCurrentImage() {
-    return this._currentImage;
+    return this._currentImage
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -99,7 +105,7 @@ class ApiUrls {
    * @param {string} value
    */
   setCurrentImage(value) {
-    this._currentImage = value;
+    this._currentImage = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -107,7 +113,7 @@ class ApiUrls {
    * @return {string}
    */
   getCheckpointImage() {
-    return this._checkpointImage;
+    return this._checkpointImage
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -115,7 +121,7 @@ class ApiUrls {
    * @param {string} value
    */
   setCheckpointImage(value) {
-    this._checkpointImage = value;
+    this._checkpointImage = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -123,7 +129,7 @@ class ApiUrls {
    * @return {string}
    */
   getCheckpointImageThumbnail() {
-    return this._checkpointImageThumbnail;
+    return this._checkpointImageThumbnail
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -131,7 +137,7 @@ class ApiUrls {
    * @param {string} value
    */
   setCheckpointImageThumbnail(value) {
-    this._checkpointImageThumbnail = value;
+    this._checkpointImageThumbnail = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -139,7 +145,7 @@ class ApiUrls {
    * @return {string}
    */
   getDiffImage() {
-    return this._diffImage;
+    return this._diffImage
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -147,14 +153,14 @@ class ApiUrls {
    * @param {string} value
    */
   setDiffImage(value) {
-    this._diffImage = value;
+    this._diffImage = value
   }
 
   /**
    * @override
    */
   toJSON() {
-    return GeneralUtils.toPlain(this);
+    return GeneralUtils.toPlain(this)
   }
 }
 
@@ -163,9 +169,9 @@ class AppUrls {
    * @param {string} step
    * @param {string} stepEditor
    */
-  constructor({ step, stepEditor } = {}) {
-    this._step = step;
-    this._stepEditor = stepEditor;
+  constructor({step, stepEditor} = {}) {
+    this._step = step
+    this._stepEditor = stepEditor
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -173,7 +179,7 @@ class AppUrls {
    * @return {string}
    */
   getStep() {
-    return this._step;
+    return this._step
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -181,7 +187,7 @@ class AppUrls {
    * @param {string} value
    */
   setStep(value) {
-    this._step = value;
+    this._step = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -189,7 +195,7 @@ class AppUrls {
    * @return {string}
    */
   getStepEditor() {
-    return this._stepEditor;
+    return this._stepEditor
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -197,14 +203,14 @@ class AppUrls {
    * @param {string} value
    */
   setStepEditor(value) {
-    this._stepEditor = value;
+    this._stepEditor = value
   }
 
   /**
    * @override
    */
   toJSON() {
-    return GeneralUtils.toPlain(this);
+    return GeneralUtils.toPlain(this)
   }
 }
 
@@ -218,21 +224,29 @@ class StepInfo {
    * @param {ApiUrls|object} apiUrls
    * @param {string[]} [renderId]
    */
-  constructor({ name, isDifferent, hasBaselineImage, hasCurrentImage, appUrls, apiUrls, renderId } = {}) {
+  constructor({
+    name,
+    isDifferent,
+    hasBaselineImage,
+    hasCurrentImage,
+    appUrls,
+    apiUrls,
+    renderId,
+  } = {}) {
     if (appUrls && !(appUrls instanceof AppUrls)) {
-      appUrls = new AppUrls(appUrls);
+      appUrls = new AppUrls(appUrls)
     }
 
     if (apiUrls && !(apiUrls instanceof ApiUrls)) {
-      apiUrls = new ApiUrls(apiUrls);
+      apiUrls = new ApiUrls(apiUrls)
     }
 
-    this._name = name;
-    this._isDifferent = isDifferent;
-    this._hasBaselineImage = hasBaselineImage;
-    this._hasCurrentImage = hasCurrentImage;
-    this._appUrls = appUrls;
-    this._renderId = renderId;
+    this._name = name
+    this._isDifferent = isDifferent
+    this._hasBaselineImage = hasBaselineImage
+    this._hasCurrentImage = hasCurrentImage
+    this._appUrls = appUrls
+    this._renderId = renderId
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -240,7 +254,7 @@ class StepInfo {
    * @return {string}
    */
   getName() {
-    return this._name;
+    return this._name
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -248,7 +262,7 @@ class StepInfo {
    * @param {string} value
    */
   setName(value) {
-    this._name = value;
+    this._name = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -256,7 +270,7 @@ class StepInfo {
    * @return {boolean}
    */
   getIsDifferent() {
-    return this._isDifferent;
+    return this._isDifferent
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -264,7 +278,7 @@ class StepInfo {
    * @param {boolean} value
    */
   setIsDifferent(value) {
-    this._isDifferent = value;
+    this._isDifferent = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -272,7 +286,7 @@ class StepInfo {
    * @return {boolean}
    */
   getHasBaselineImage() {
-    return this._hasBaselineImage;
+    return this._hasBaselineImage
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -280,7 +294,7 @@ class StepInfo {
    * @param {boolean} value
    */
   setHasBaselineImage(value) {
-    this._hasBaselineImage = value;
+    this._hasBaselineImage = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -288,7 +302,7 @@ class StepInfo {
    * @return {boolean}
    */
   getHasCurrentImage() {
-    return this._hasCurrentImage;
+    return this._hasCurrentImage
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -296,7 +310,7 @@ class StepInfo {
    * @param {boolean} value
    */
   setHasCurrentImage(value) {
-    this._hasCurrentImage = value;
+    this._hasCurrentImage = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -304,7 +318,7 @@ class StepInfo {
    * @return {AppUrls}
    */
   getAppUrls() {
-    return this._appUrls;
+    return this._appUrls
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -312,7 +326,7 @@ class StepInfo {
    * @param {AppUrls} value
    */
   setAppUrls(value) {
-    this._appUrls = value;
+    this._appUrls = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -320,7 +334,7 @@ class StepInfo {
    * @return {ApiUrls}
    */
   getApiUrls() {
-    return this._apiUrls;
+    return this._apiUrls
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -328,7 +342,7 @@ class StepInfo {
    * @param {ApiUrls} value
    */
   setApiUrls(value) {
-    this._apiUrls = value;
+    this._apiUrls = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -336,7 +350,7 @@ class StepInfo {
    * @return {string} value
    */
   getRenderId() {
-    return this._renderId;
+    return this._renderId
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -344,14 +358,14 @@ class StepInfo {
    * @param {string} value
    */
   setRenderId(value) {
-    this._renderId = value;
+    this._renderId = value
   }
 
   /**
    * @override
    */
   toJSON() {
-    return GeneralUtils.toPlain(this);
+    return GeneralUtils.toPlain(this)
   }
 }
 
@@ -360,9 +374,9 @@ class TestAccessibilityStatus {
    * @param {AccessibilityStatus} status
    * @param {AccessibilityLevel} level
    */
-  constructor({ status, level } = {}) {
-    this._status = status;
-    this._level = level;
+  constructor({status, level} = {}) {
+    this._status = status
+    this._level = level
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -370,7 +384,7 @@ class TestAccessibilityStatus {
    * @return {string}
    */
   getStatus() {
-    return this._status;
+    return this._status
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -378,7 +392,7 @@ class TestAccessibilityStatus {
    * @param {string} value
    */
   setStatus(value) {
-    this._status = value;
+    this._status = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -386,7 +400,7 @@ class TestAccessibilityStatus {
    * @return {string}
    */
   getLevel() {
-    return this._level;
+    return this._level
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -394,14 +408,14 @@ class TestAccessibilityStatus {
    * @param {string} value
    */
   setLevel(value) {
-    this._level = value;
+    this._level = value
   }
 
   /**
    * @override
    */
   toJSON() {
-    return GeneralUtils.toPlain(this);
+    return GeneralUtils.toPlain(this)
   }
 }
 
@@ -442,68 +456,97 @@ class TestResults {
    * @param {number} [noneMatches]
    * @param {string} [url]
    */
-  constructor({ id, name, secretToken, status, appName, batchName, batchId, branchName, hostOS, hostApp,
-    hostDisplaySize, startedAt, duration, isNew, isDifferent, isAborted, appUrls, apiUrls, stepsInfo, steps,
-    matches, mismatches, missing, exactMatches, strictMatches, contentMatches, layoutMatches, noneMatches, url, accessibilityStatus } = {}) {
+  constructor({
+    id,
+    name,
+    secretToken,
+    status,
+    appName,
+    batchName,
+    batchId,
+    branchName,
+    hostOS,
+    hostApp,
+    hostDisplaySize,
+    startedAt,
+    duration,
+    isNew,
+    isDifferent,
+    isAborted,
+    appUrls,
+    apiUrls,
+    stepsInfo,
+    steps,
+    matches,
+    mismatches,
+    missing,
+    exactMatches,
+    strictMatches,
+    contentMatches,
+    layoutMatches,
+    noneMatches,
+    url,
+    accessibilityStatus,
+  } = {}) {
     if (hostDisplaySize && !(hostDisplaySize instanceof RectangleSize)) {
-      hostDisplaySize = new RectangleSize(hostDisplaySize);
+      hostDisplaySize = new RectangleSize(hostDisplaySize)
     }
 
     if (appUrls && !(appUrls instanceof SessionUrls)) {
-      appUrls = new SessionUrls(appUrls);
+      appUrls = new SessionUrls(appUrls)
     }
 
     if (apiUrls && !(apiUrls instanceof SessionUrls)) {
-      apiUrls = new SessionUrls(apiUrls);
+      apiUrls = new SessionUrls(apiUrls)
     }
 
     if (startedAt && !(startedAt instanceof Date)) {
-      startedAt = DateTimeUtils.fromISO8601DateTime(startedAt);
+      startedAt = DateTimeUtils.fromISO8601DateTime(startedAt)
     }
 
     if (stepsInfo && stepsInfo.length > 0 && !(stepsInfo[0] instanceof StepInfo)) {
-      stepsInfo = stepsInfo.map(step => new StepInfo(step));
+      stepsInfo = stepsInfo.map(step => new StepInfo(step))
     }
 
     if (accessibilityStatus && !(accessibilityStatus instanceof TestAccessibilityStatus)) {
-      accessibilityStatus = new TestAccessibilityStatus(accessibilityStatus);
+      accessibilityStatus = new TestAccessibilityStatus(accessibilityStatus)
     }
 
-    this._id = id;
-    this._name = name;
-    this._secretToken = secretToken;
+    this._id = id
+    this._name = name
+    this._secretToken = secretToken
     // this._id = undefined;
-    this._status = status;
-    this._appName = appName;
-    this._batchName = batchName;
-    this._batchId = batchId;
-    this._branchName = branchName;
-    this._hostOS = hostOS;
-    this._hostApp = hostApp;
-    this._hostDisplaySize = hostDisplaySize;
-    this._startedAt = startedAt;
-    this._duration = duration;
-    this._isNew = isNew;
-    this._isDifferent = isDifferent;
-    this._isAborted = isAborted;
+    this._status = status
+    this._appName = appName
+    this._batchName = batchName
+    this._batchId = batchId
+    this._branchName = branchName
+    this._hostOS = hostOS
+    this._hostApp = hostApp
+    this._hostDisplaySize = hostDisplaySize
+    this._startedAt = startedAt
+    this._duration = duration
+    this._isNew = isNew
+    this._isDifferent = isDifferent
+    this._isAborted = isAborted
     // this._defaultMatchSettings = undefined;
-    this._appUrls = appUrls;
-    this._apiUrls = apiUrls;
-    this._stepsInfo = stepsInfo;
-    this._steps = steps;
-    this._matches = matches;
-    this._mismatches = mismatches;
-    this._missing = missing;
-    this._exactMatches = exactMatches;
-    this._strictMatches = strictMatches;
-    this._contentMatches = contentMatches;
-    this._layoutMatches = layoutMatches;
-    this._noneMatches = noneMatches;
-    this._url = url;
-    this._accessibilityStatus = accessibilityStatus;
+    this._appUrls = appUrls
+    this._apiUrls = apiUrls
+    this._stepsInfo = stepsInfo
+    this._steps = steps
+    this._matches = matches
+    this._mismatches = mismatches
+    this._missing = missing
+    this._exactMatches = exactMatches
+    this._strictMatches = strictMatches
+    this._contentMatches = contentMatches
+    this._layoutMatches = layoutMatches
+    this._noneMatches = noneMatches
+    this._url = url
+    this._accessibilityStatus = accessibilityStatus
 
     /** @type {ServerConnector} */
-    this._serverConnector = undefined;
+    this._serverConnector = undefined
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -511,7 +554,7 @@ class TestResults {
    * @return {string}
    */
   getId() {
-    return this._id;
+    return this._id
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -519,7 +562,7 @@ class TestResults {
    * @param {string} value
    */
   setId(value) {
-    this._id = value;
+    this._id = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -527,7 +570,7 @@ class TestResults {
    * @return {string}
    */
   getName() {
-    return this._name;
+    return this._name
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -535,7 +578,7 @@ class TestResults {
    * @param {string} value
    */
   setName(value) {
-    this._name = value;
+    this._name = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -543,7 +586,7 @@ class TestResults {
    * @return {string}
    */
   getSecretToken() {
-    return this._secretToken;
+    return this._secretToken
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -551,7 +594,7 @@ class TestResults {
    * @param {string} value
    */
   setSecretToken(value) {
-    this._secretToken = value;
+    this._secretToken = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -559,7 +602,7 @@ class TestResults {
    * @return {TestResultsStatus}
    */
   getStatus() {
-    return this._status;
+    return this._status
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -567,7 +610,7 @@ class TestResults {
    * @param {TestResultsStatus} value
    */
   setStatus(value) {
-    this._status = value;
+    this._status = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -575,7 +618,7 @@ class TestResults {
    * @return {string}
    */
   getAppName() {
-    return this._appName;
+    return this._appName
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -583,7 +626,7 @@ class TestResults {
    * @param {string} value
    */
   setAppName(value) {
-    this._appName = value;
+    this._appName = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -591,7 +634,7 @@ class TestResults {
    * @return {string}
    */
   getBatchName() {
-    return this._batchName;
+    return this._batchName
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -599,7 +642,7 @@ class TestResults {
    * @param {string} value
    */
   setBatchName(value) {
-    this._batchName = value;
+    this._batchName = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -607,7 +650,7 @@ class TestResults {
    * @return {string}
    */
   getBatchId() {
-    return this._batchId;
+    return this._batchId
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -615,7 +658,7 @@ class TestResults {
    * @param {string} value
    */
   setBatchId(value) {
-    this._batchId = value;
+    this._batchId = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -623,7 +666,7 @@ class TestResults {
    * @return {string}
    */
   getBranchName() {
-    return this._branchName;
+    return this._branchName
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -631,7 +674,7 @@ class TestResults {
    * @param {string} value
    */
   setBranchName(value) {
-    this._branchName = value;
+    this._branchName = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -639,7 +682,7 @@ class TestResults {
    * @return {string}
    */
   getHostOS() {
-    return this._hostOS;
+    return this._hostOS
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -647,7 +690,7 @@ class TestResults {
    * @param {string} value
    */
   setHostOS(value) {
-    this._hostOS = value;
+    this._hostOS = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -655,7 +698,7 @@ class TestResults {
    * @return {string}
    */
   getHostApp() {
-    return this._hostApp;
+    return this._hostApp
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -663,7 +706,7 @@ class TestResults {
    * @param {string} value
    */
   setHostApp(value) {
-    this._hostApp = value;
+    this._hostApp = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -671,7 +714,7 @@ class TestResults {
    * @return {RectangleSize}
    */
   getHostDisplaySize() {
-    return this._hostDisplaySize;
+    return this._hostDisplaySize
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -679,7 +722,7 @@ class TestResults {
    * @param {RectangleSize} value
    */
   setHostDisplaySize(value) {
-    this._hostDisplaySize = value;
+    this._hostDisplaySize = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -687,7 +730,7 @@ class TestResults {
    * @return {TestAccessibilityStatus}
    */
   getAccessibilityStatus() {
-    return this._accessibilityStatus;
+    return this._accessibilityStatus
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -695,7 +738,7 @@ class TestResults {
    * @param {TestAccessibilityStatus} value
    */
   setAccessibilityStatus(value) {
-    this._accessibilityStatus = value;
+    this._accessibilityStatus = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -703,7 +746,7 @@ class TestResults {
    * @return {Date}
    */
   getStartedAt() {
-    return this._startedAt;
+    return this._startedAt
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -711,7 +754,7 @@ class TestResults {
    * @param {Date} value
    */
   setStartedAt(value) {
-    this._startedAt = value;
+    this._startedAt = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -719,7 +762,7 @@ class TestResults {
    * @return {number}
    */
   getDuration() {
-    return this._duration;
+    return this._duration
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -727,28 +770,28 @@ class TestResults {
    * @param {number} value
    */
   setDuration(value) {
-    this._duration = value;
+    this._duration = value
   }
 
   /**
    * @return {boolean} - Whether or not this is a new test.
    */
   getIsNew() {
-    return this._isNew;
+    return this._isNew
   }
 
   /**
    * @param {boolean} value - Whether or not this test has an existing baseline.
    */
   setIsNew(value) {
-    this._isNew = value;
+    this._isNew = value
   }
 
   /**
    * @return {boolean}
    */
   getIsDifferent() {
-    return this._isDifferent;
+    return this._isDifferent
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -756,7 +799,7 @@ class TestResults {
    * @param {boolean} value
    */
   setIsDifferent(value) {
-    this._isDifferent = value;
+    this._isDifferent = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -764,7 +807,7 @@ class TestResults {
    * @return {boolean}
    */
   getIsAborted() {
-    return this._isAborted;
+    return this._isAborted
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -772,7 +815,7 @@ class TestResults {
    * @param {boolean} value
    */
   setIsAborted(value) {
-    this._isAborted = value;
+    this._isAborted = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -780,7 +823,7 @@ class TestResults {
    * @return {SessionUrls}
    */
   getAppUrls() {
-    return this._appUrls;
+    return this._appUrls
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -788,7 +831,7 @@ class TestResults {
    * @param {SessionUrls} value
    */
   setAppUrls(value) {
-    this._appUrls = value;
+    this._appUrls = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -796,7 +839,7 @@ class TestResults {
    * @return {SessionUrls}
    */
   getApiUrls() {
-    return this._apiUrls;
+    return this._apiUrls
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -804,7 +847,7 @@ class TestResults {
    * @param {SessionUrls} value
    */
   setApiUrls(value) {
-    this._apiUrls = value;
+    this._apiUrls = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -812,7 +855,7 @@ class TestResults {
    * @return {StepInfo[]}
    */
   getStepsInfo() {
-    return this._stepsInfo;
+    return this._stepsInfo
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -820,7 +863,7 @@ class TestResults {
    * @param {StepInfo[]} value
    */
   setStepsInfo(value) {
-    this._stepsInfo = value;
+    this._stepsInfo = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -828,7 +871,7 @@ class TestResults {
    * @return {number} - The total number of test steps.
    */
   getSteps() {
-    return this._steps;
+    return this._steps
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -836,7 +879,7 @@ class TestResults {
    * @param {number} value - The number of visual checkpoints in the test.
    */
   setSteps(value) {
-    this._steps = value;
+    this._steps = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -844,7 +887,7 @@ class TestResults {
    * @return {number} - The total number of test steps that matched the baseline.
    */
   getMatches() {
-    return this._matches;
+    return this._matches
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -852,14 +895,14 @@ class TestResults {
    * @param {number} value - The number of visual matches in the test.
    */
   setMatches(value) {
-    this._matches = value;
+    this._matches = value
   }
 
   /**
    * @return {number} - The total number of test steps that did not match the baseline.
    */
   getMismatches() {
-    return this._mismatches;
+    return this._mismatches
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -867,14 +910,14 @@ class TestResults {
    * @param {number} value - The number of mismatches in the test.
    */
   setMismatches(value) {
-    this._mismatches = value;
+    this._mismatches = value
   }
 
   /**
    * @return {number} - The total number of baseline test steps that were missing in the test.
    */
   getMissing() {
-    return this._missing;
+    return this._missing
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -883,7 +926,7 @@ class TestResults {
    *   in the current test.
    */
   setMissing(value) {
-    this._missing = value;
+    this._missing = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -891,7 +934,7 @@ class TestResults {
    * @return {number} - The total number of test steps that exactly matched the baseline.
    */
   getExactMatches() {
-    return this._exactMatches;
+    return this._exactMatches
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -899,7 +942,7 @@ class TestResults {
    * @param {number} value - The number of matches performed with match level set to {@link MatchLevel#Exact}
    */
   setExactMatches(value) {
-    this._exactMatches = value;
+    this._exactMatches = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -907,7 +950,7 @@ class TestResults {
    * @return {number} - The total number of test steps that strictly matched the baseline.
    */
   getStrictMatches() {
-    return this._strictMatches;
+    return this._strictMatches
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -915,7 +958,7 @@ class TestResults {
    * @param {number} value - The number of matches performed with match level set to {@link MatchLevel#Strict}
    */
   setStrictMatches(value) {
-    this._strictMatches = value;
+    this._strictMatches = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -923,7 +966,7 @@ class TestResults {
    * @return {number} - The total number of test steps that matched the baseline by content.
    */
   getContentMatches() {
-    return this._contentMatches;
+    return this._contentMatches
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -931,7 +974,7 @@ class TestResults {
    * @param {number} value - The number of matches performed with match level set to {@link MatchLevel#Content}
    */
   setContentMatches(value) {
-    this._contentMatches = value;
+    this._contentMatches = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -939,7 +982,7 @@ class TestResults {
    * @return {number} - The total number of test steps that matched the baseline by layout.
    */
   getLayoutMatches() {
-    return this._layoutMatches;
+    return this._layoutMatches
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -947,7 +990,7 @@ class TestResults {
    * @param {number} value - The number of matches performed with match level set to {@link MatchLevel#Layout}
    */
   setLayoutMatches(value) {
-    this._layoutMatches = value;
+    this._layoutMatches = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -955,7 +998,7 @@ class TestResults {
    * @return {number} - The total number of test steps that matched the baseline without performing any comparison.
    */
   getNoneMatches() {
-    return this._noneMatches;
+    return this._noneMatches
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -963,21 +1006,21 @@ class TestResults {
    * @param {number} value - The number of matches performed with match level set to {@link MatchLevel#None}
    */
   setNoneMatches(value) {
-    this._noneMatches = value;
+    this._noneMatches = value
   }
 
   /**
    * @return {string} - The URL where test results can be viewed.
    */
   getUrl() {
-    return this._url;
+    return this._url
   }
 
   /**
    * @param {string} value - The URL of the test results.
    */
   setUrl(value) {
-    this._url = value;
+    this._url = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -985,14 +1028,14 @@ class TestResults {
    * @return {boolean} - Whether or not this test passed.
    */
   isPassed() {
-    return this._status === TestResultsStatus.Passed;
+    return this._status === TestResultsStatus.Passed
   }
 
   /**
    * @param {ServerConnector} serverConnector
    */
   setServerConnector(serverConnector) {
-    this._serverConnector = serverConnector;
+    this._serverConnector = serverConnector
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -1000,24 +1043,27 @@ class TestResults {
    * @return {Promise}
    */
   async deleteSession() {
-    return this._serverConnector.deleteSession(this);
+    return this._serverConnector.deleteSession(this)
   }
 
   /**
    * @override
    */
   toJSON() {
-    return GeneralUtils.toPlain(this, ['_serverConnector']);
+    return GeneralUtils.toPlain(this, ['_serverConnector'])
   }
 
   /**
    * @override
    */
   toString() {
-    const isNewTestStr = this._isNew ? 'new test' : 'existing test';
-    return `TestResults of ${isNewTestStr} ${GeneralUtils.toString(this, ['_secretToken', '_serverConnector'])}`;
+    const isNewTestStr = this._isNew ? 'new test' : 'existing test'
+    return `TestResults of ${isNewTestStr} ${GeneralUtils.toString(this, [
+      '_secretToken',
+      '_serverConnector',
+    ])}`
   }
 }
 
-exports.TestResults = TestResults;
-exports.TestAccessibilityStatus = TestAccessibilityStatus;
+exports.TestResults = TestResults
+exports.TestAccessibilityStatus = TestAccessibilityStatus

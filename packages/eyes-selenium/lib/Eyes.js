@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const { URL } = require('url');
+const {URL} = require('url')
 
 const {
   Logger,
@@ -10,27 +10,25 @@ const {
   RectangleSize,
   ArgumentGuard,
   Configuration,
-} = require('@applitools/eyes-common');
+} = require('@applitools/eyes-common')
+
+const {EyesBase, TestFailedError, CorsIframeHandle} = require('@applitools/eyes-sdk-core')
+
+const {ClassicRunner} = require('./runner/ClassicRunner')
+const {FrameChain} = require('./frames/FrameChain')
+const {EyesSeleniumUtils} = require('./EyesSeleniumUtils')
+const {ImageRotation} = require('./positioning/ImageRotation')
 
 const {
-  EyesBase,
-  TestFailedError,
-  CorsIframeHandle,
-} = require('@applitools/eyes-sdk-core');
+  MoveToRegionVisibilityStrategy,
+} = require('./regionVisibility/MoveToRegionVisibilityStrategy')
+const {NopRegionVisibilityStrategy} = require('./regionVisibility/NopRegionVisibilityStrategy')
+const {JavascriptHandler} = require('./JavascriptHandler')
+const {EyesWebDriver} = require('./wrappers/EyesWebDriver')
+const {Target} = require('./fluent/Target')
+const {SeleniumJavaScriptExecutor} = require('./SeleniumJavaScriptExecutor')
 
-const { ClassicRunner } = require('./runner/ClassicRunner');
-const { FrameChain } = require('./frames/FrameChain');
-const { EyesSeleniumUtils } = require('./EyesSeleniumUtils');
-const { ImageRotation } = require('./positioning/ImageRotation');
-
-const { MoveToRegionVisibilityStrategy } = require('./regionVisibility/MoveToRegionVisibilityStrategy');
-const { NopRegionVisibilityStrategy } = require('./regionVisibility/NopRegionVisibilityStrategy');
-const { JavascriptHandler } = require('./JavascriptHandler');
-const { EyesWebDriver } = require('./wrappers/EyesWebDriver');
-const { Target } = require('./fluent/Target');
-const { SeleniumJavaScriptExecutor } = require('./SeleniumJavaScriptExecutor');
-
-const VERSION = require('../package.json').version;
+const VERSION = require('../package.json').version
 
 /**
  * The main API gateway for the SDK.
@@ -60,49 +58,51 @@ class Eyes extends EyesBase {
    */
   constructor(serverUrl, isDisabled, runner = new ClassicRunner()) {
     if (new.target === Eyes) {
-      throw new TypeError('Cannot construct `Eyes` instances directly. ' +
-        'Please use `EyesSelenium`, `EyesVisualGrid` or `EyesFactory` instead.');
+      throw new TypeError(
+        'Cannot construct `Eyes` instances directly. ' +
+          'Please use `EyesSelenium`, `EyesVisualGrid` or `EyesFactory` instead.',
+      )
     }
 
-    super(serverUrl, isDisabled, new Configuration());
+    super(serverUrl, isDisabled, new Configuration())
 
-    /** @type {EyesRunner} */ this._runner = runner;
-    this._runner._eyesInstances.push(this);
+    /** @type {EyesRunner} */ this._runner = runner
+    this._runner._eyesInstances.push(this)
 
     /** @type {EyesWebDriver} */
-    this._driver = undefined;
+    this._driver = undefined
     /** @type {SeleniumJavaScriptExecutor} */
-    this._jsExecutor = undefined;
+    this._jsExecutor = undefined
 
     /** @type {string} */
-    this._domUrl = undefined;
+    this._domUrl = undefined
     /** @type {Region} */
-    this._regionToCheck = undefined;
+    this._regionToCheck = undefined
     /** @type {WebElement} */
-    this._scrollRootElement = undefined;
+    this._scrollRootElement = undefined
     /** @type {ImageRotation} */
-    this._rotation = undefined;
+    this._rotation = undefined
     /** @type {number} */
-    this._devicePixelRatio = Eyes.UNKNOWN_DEVICE_PIXEL_RATIO;
+    this._devicePixelRatio = Eyes.UNKNOWN_DEVICE_PIXEL_RATIO
     /** @type {RegionVisibilityStrategy} */
-    this._regionVisibilityStrategy = new MoveToRegionVisibilityStrategy(this._logger);
+    this._regionVisibilityStrategy = new MoveToRegionVisibilityStrategy(this._logger)
     /** @type {ElementPositionProvider} */
-    this._elementPositionProvider = undefined;
+    this._elementPositionProvider = undefined
     /** @type {boolean} */
-    this._stitchContent = false;
+    this._stitchContent = false
     /** @type {boolean} */
-    this._dontGetTitle = false;
+    this._dontGetTitle = false
     /** @type {CorsIframeHandle} */
-    this._corsIframeHandle = CorsIframeHandle.KEEP;
+    this._corsIframeHandle = CorsIframeHandle.KEEP
 
-    EyesSeleniumUtils.setJavascriptHandler(new JavascriptHandler());
+    EyesSeleniumUtils.setJavascriptHandler(new JavascriptHandler())
   }
 
   /**
    * @return {Configuration}
    */
   getConfiguration() {
-    return this._configuration.cloneConfig();
+    return this._configuration.cloneConfig()
   }
 
   /**
@@ -111,11 +111,11 @@ class Eyes extends EyesBase {
    */
   setConfiguration(configuration) {
     if (!(configuration instanceof Configuration)) {
-      configuration = new Configuration(configuration);
+      configuration = new Configuration(configuration)
     }
 
-    this._configuration = configuration;
-    this._serverConnector._configuration = this._configuration;
+    this._configuration = configuration
+    this._serverConnector._configuration = this._configuration
   }
 
   // noinspection JSMethodCanBeStatic
@@ -125,7 +125,7 @@ class Eyes extends EyesBase {
    * @return {string} - The base agent id of the SDK.
    */
   getBaseAgentId() {
-    return `eyes.selenium.javascript/${VERSION}`;
+    return `eyes.selenium.javascript/${VERSION}`
   }
 
   // noinspection JSMethodCanBeStatic
@@ -140,8 +140,9 @@ class Eyes extends EyesBase {
    * @param {SessionType} [sessionType] - The type of test (e.g.,  standard test / visual performance test).
    * @return {Promise<EyesWebDriver>} - A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
-  async open(driver, appName, testName, viewportSize, sessionType) { // eslint-disable-line no-unused-vars
-    throw new TypeError('The method is not implemented!');
+  async open(driver, appName, testName, viewportSize, sessionType) {
+    // eslint-disable-line no-unused-vars
+    throw new TypeError('The method is not implemented!')
   }
 
   /**
@@ -150,12 +151,12 @@ class Eyes extends EyesBase {
   _initDriver(driver) {
     if (driver instanceof EyesWebDriver) {
       // noinspection JSValidateTypes
-      this._driver = driver;
+      this._driver = driver
     } else {
-      this._driver = new EyesWebDriver(this._logger, this, driver);
+      this._driver = new EyesWebDriver(this._logger, this, driver)
     }
 
-    this._jsExecutor = new SeleniumJavaScriptExecutor(this._driver);
+    this._jsExecutor = new SeleniumJavaScriptExecutor(this._driver)
   }
 
   // noinspection JSMethodCanBeStatic
@@ -167,8 +168,9 @@ class Eyes extends EyesBase {
    * @param {SeleniumCheckSettings} checkSettings - Target instance which describes whether we want a window/region/frame
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async check(name, checkSettings) { // eslint-disable-line no-unused-vars
-    throw new TypeError('The method is not implemented!');
+  async check(name, checkSettings) {
+    // eslint-disable-line no-unused-vars
+    throw new TypeError('The method is not implemented!')
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -181,7 +183,12 @@ class Eyes extends EyesBase {
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkWindow(tag, matchTimeout, stitchContent = false) {
-    return this.check(tag, Target.window().timeout(matchTimeout).stitchContent(stitchContent));
+    return this.check(
+      tag,
+      Target.window()
+        .timeout(matchTimeout)
+        .stitchContent(stitchContent),
+    )
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -194,7 +201,12 @@ class Eyes extends EyesBase {
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkFrame(element, matchTimeout, tag) {
-    return this.check(tag, Target.frame(element).timeout(matchTimeout).fully());
+    return this.check(
+      tag,
+      Target.frame(element)
+        .timeout(matchTimeout)
+        .fully(),
+    )
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -207,7 +219,12 @@ class Eyes extends EyesBase {
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkElement(element, matchTimeout, tag) {
-    return this.check(tag, Target.region(element).timeout(matchTimeout).fully());
+    return this.check(
+      tag,
+      Target.region(element)
+        .timeout(matchTimeout)
+        .fully(),
+    )
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -220,7 +237,12 @@ class Eyes extends EyesBase {
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkElementBy(locator, matchTimeout, tag) {
-    return this.check(tag, Target.region(locator).timeout(matchTimeout).fully());
+    return this.check(
+      tag,
+      Target.region(locator)
+        .timeout(matchTimeout)
+        .fully(),
+    )
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -233,7 +255,7 @@ class Eyes extends EyesBase {
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkRegion(region, tag, matchTimeout) {
-    return this.check(tag, Target.region(region).timeout(matchTimeout));
+    return this.check(tag, Target.region(region).timeout(matchTimeout))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -246,7 +268,7 @@ class Eyes extends EyesBase {
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkRegionByElement(element, tag, matchTimeout) {
-    return this.check(tag, Target.region(element).timeout(matchTimeout));
+    return this.check(tag, Target.region(element).timeout(matchTimeout))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -261,7 +283,12 @@ class Eyes extends EyesBase {
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkRegionBy(by, tag, matchTimeout, stitchContent = false) {
-    return this.check(tag, Target.region(by).timeout(matchTimeout).stitchContent(stitchContent));
+    return this.check(
+      tag,
+      Target.region(by)
+        .timeout(matchTimeout)
+        .stitchContent(stitchContent),
+    )
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -279,7 +306,12 @@ class Eyes extends EyesBase {
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkRegionInFrame(frameNameOrId, locator, matchTimeout, tag, stitchContent = false) {
-    return this.check(tag, Target.region(locator, frameNameOrId).timeout(matchTimeout).stitchContent(stitchContent));
+    return this.check(
+      tag,
+      Target.region(locator, frameNameOrId)
+        .timeout(matchTimeout)
+        .stitchContent(stitchContent),
+    )
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -292,22 +324,27 @@ class Eyes extends EyesBase {
    */
   addMouseTrigger(action, control, cursor) {
     if (this.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${action} (disabled)`);
-      return;
+      this._logger.verbose(`Ignoring ${action} (disabled)`)
+      return
     }
 
     // Triggers are actually performed on the previous window.
     if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${action} (no screenshot)`);
-      return;
+      this._logger.verbose(`Ignoring ${action} (no screenshot)`)
+      return
     }
 
-    if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${action} (different frame)`);
-      return;
+    if (
+      !FrameChain.isSameFrameChain(
+        this._driver.getFrameChain(),
+        this._lastScreenshot.getFrameChain(),
+      )
+    ) {
+      this._logger.verbose(`Ignoring ${action} (different frame)`)
+      return
     }
 
-    super.addMouseTriggerBase(action, control, cursor);
+    super.addMouseTriggerBase(action, control, cursor)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -320,27 +357,32 @@ class Eyes extends EyesBase {
    */
   async addMouseTriggerForElement(action, element) {
     if (this.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${action} (disabled)`);
-      return;
+      this._logger.verbose(`Ignoring ${action} (disabled)`)
+      return
     }
 
     // Triggers are actually performed on the previous window.
     if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${action} (no screenshot)`);
-      return;
+      this._logger.verbose(`Ignoring ${action} (no screenshot)`)
+      return
     }
 
-    if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${action} (different frame)`);
-      return;
+    if (
+      !FrameChain.isSameFrameChain(
+        this._driver.getFrameChain(),
+        this._lastScreenshot.getFrameChain(),
+      )
+    ) {
+      this._logger.verbose(`Ignoring ${action} (different frame)`)
+      return
     }
 
-    ArgumentGuard.notNull(element, 'element');
+    ArgumentGuard.notNull(element, 'element')
 
-    const rect = await element.getRect();
-    const elementRegion = new Region(rect.x, rect.y, rect.width, rect.height);
+    const rect = await element.getRect()
+    const elementRegion = new Region(rect.x, rect.y, rect.width, rect.height)
 
-    super.addMouseTriggerBase(action, elementRegion, elementRegion.getMiddleOffset());
+    super.addMouseTriggerBase(action, elementRegion, elementRegion.getMiddleOffset())
   }
 
   /**
@@ -351,22 +393,27 @@ class Eyes extends EyesBase {
    */
   addTextTrigger(control, text) {
     if (this.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${text} (disabled)`);
-      return;
+      this._logger.verbose(`Ignoring ${text} (disabled)`)
+      return
     }
 
     // Triggers are actually performed on the previous window.
     if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${text} (no screenshot)`);
-      return;
+      this._logger.verbose(`Ignoring ${text} (no screenshot)`)
+      return
     }
 
-    if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${text} (different frame)`);
-      return;
+    if (
+      !FrameChain.isSameFrameChain(
+        this._driver.getFrameChain(),
+        this._lastScreenshot.getFrameChain(),
+      )
+    ) {
+      this._logger.verbose(`Ignoring ${text} (different frame)`)
+      return
     }
 
-    super.addTextTriggerBase(control, text);
+    super.addTextTriggerBase(control, text)
   }
 
   /**
@@ -378,28 +425,33 @@ class Eyes extends EyesBase {
    */
   async addTextTriggerForElement(element, text) {
     if (this.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${text} (disabled)`);
-      return;
+      this._logger.verbose(`Ignoring ${text} (disabled)`)
+      return
     }
 
     // Triggers are actually performed on the previous window.
     if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${text} (no screenshot)`);
-      return;
+      this._logger.verbose(`Ignoring ${text} (no screenshot)`)
+      return
     }
 
-    if (!FrameChain.isSameFrameChain(this._driver.getFrameChain(), this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${text} (different frame)`);
-      return;
+    if (
+      !FrameChain.isSameFrameChain(
+        this._driver.getFrameChain(),
+        this._lastScreenshot.getFrameChain(),
+      )
+    ) {
+      this._logger.verbose(`Ignoring ${text} (different frame)`)
+      return
     }
 
-    ArgumentGuard.notNull(element, 'element');
+    ArgumentGuard.notNull(element, 'element')
 
-    const rect = element.getRect();
+    const rect = element.getRect()
     // noinspection JSSuspiciousNameCombination
-    const elementRegion = new Region(Math.ceil(rect.x), Math.ceil(rect.y), rect.width, rect.height);
+    const elementRegion = new Region(Math.ceil(rect.x), Math.ceil(rect.y), rect.width, rect.height)
 
-    super.addTextTrigger(elementRegion, text);
+    super.addTextTrigger(elementRegion, text)
   }
 
   // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
@@ -407,7 +459,7 @@ class Eyes extends EyesBase {
    * @return {Promise}
    */
   async closeAsync() {
-    await this.close(false);
+    await this.close(false)
   }
 
   // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
@@ -415,14 +467,14 @@ class Eyes extends EyesBase {
    * @return {Promise}
    */
   async abortAsync() {
-    await this.abort();
+    await this.abort()
   }
 
   /**
    * @return {Promise<RectangleSize>} - The viewport size of the AUT.
    */
   async getViewportSize() {
-    return this._configuration.getViewportSize();
+    return this._configuration.getViewportSize()
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -436,31 +488,31 @@ class Eyes extends EyesBase {
    */
   async setViewportSize(size) {
     if (this._viewportSizeHandler instanceof ReadOnlyPropertyHandler) {
-      this._logger.verbose('Ignored (viewport size given explicitly)');
-      return;
+      this._logger.verbose('Ignored (viewport size given explicitly)')
+      return
     }
 
-    ArgumentGuard.notNull(size, 'size');
-    size = new RectangleSize(size);
-    this._configuration.setViewportSize(size);
+    ArgumentGuard.notNull(size, 'size')
+    size = new RectangleSize(size)
+    this._configuration.setViewportSize(size)
 
     if (this._driver) {
       if (await this._driver.isNotMobile()) {
-        const originalFrame = this._driver.getFrameChain();
-        await this._driver.switchTo().defaultContent();
+        const originalFrame = this._driver.getFrameChain()
+        await this._driver.switchTo().defaultContent()
 
         try {
-          await EyesSeleniumUtils.setViewportSize(this._logger, this._driver, size);
-          this._effectiveViewport = new Region(Location.ZERO, size);
+          await EyesSeleniumUtils.setViewportSize(this._logger, this._driver, size)
+          this._effectiveViewport = new Region(Location.ZERO, size)
         } catch (err) {
-          await this._driver.switchTo().frames(originalFrame); // Just in case the user catches that error
-          throw new TestFailedError('Failed to set the viewport size', err);
+          await this._driver.switchTo().frames(originalFrame) // Just in case the user catches that error
+          throw new TestFailedError('Failed to set the viewport size', err)
         }
 
-        await this._driver.switchTo().frames(originalFrame);
+        await this._driver.switchTo().frames(originalFrame)
       }
 
-      this._viewportSizeHandler.set(new RectangleSize(size));
+      this._viewportSizeHandler.set(new RectangleSize(size))
     }
   }
 
@@ -473,8 +525,8 @@ class Eyes extends EyesBase {
    * @return {Promise<RectangleSize>} - The viewport size of the current context.
    */
   static async getViewportSize(driver) {
-    ArgumentGuard.notNull(driver, 'driver');
-    return EyesSeleniumUtils.getViewportSizeOrDisplaySize(new Logger(), driver);
+    ArgumentGuard.notNull(driver, 'driver')
+    return EyesSeleniumUtils.getViewportSizeOrDisplaySize(new Logger(), driver)
   }
 
   // noinspection JSUnusedGlobalSymbols, JSCheckFunctionSignatures
@@ -487,10 +539,10 @@ class Eyes extends EyesBase {
    * @return {Promise}
    */
   static async setViewportSize(driver, viewportSize) {
-    ArgumentGuard.notNull(driver, 'driver');
-    ArgumentGuard.notNull(viewportSize, 'viewportSize');
+    ArgumentGuard.notNull(driver, 'driver')
+    ArgumentGuard.notNull(viewportSize, 'viewportSize')
 
-    await EyesSeleniumUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize));
+    await EyesSeleniumUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -499,7 +551,7 @@ class Eyes extends EyesBase {
    *   it wasn't possible to extract it.
    */
   getDevicePixelRatio() {
-    return this._devicePixelRatio;
+    return this._devicePixelRatio
   }
 
   /**
@@ -514,10 +566,10 @@ class Eyes extends EyesBase {
    */
   async getInferredEnvironment() {
     try {
-      const userAgent = await this._driver.getUserAgent();
-      return `useragent:${userAgent}`;
+      const userAgent = await this._driver.getUserAgent()
+      return `useragent:${userAgent}`
     } catch (ignored) {
-      return undefined;
+      return undefined
     }
   }
 
@@ -529,7 +581,7 @@ class Eyes extends EyesBase {
    * @return {Promise<EyesScreenshot>}
    */
   async getScreenshot() {
-    return undefined;
+    return undefined
   }
 
   /**
@@ -542,14 +594,14 @@ class Eyes extends EyesBase {
   async getTitle() {
     if (!this._dontGetTitle) {
       try {
-        return await this._driver.getTitle();
+        return await this._driver.getTitle()
       } catch (err) {
-        this._logger.verbose(`failed (${err})`);
-        this._dontGetTitle = true;
+        this._logger.verbose(`failed (${err})`)
+        this._dontGetTitle = true
       }
     }
 
-    return '';
+    return ''
   }
 
   /**
@@ -558,8 +610,8 @@ class Eyes extends EyesBase {
    * @return {Promise<?string>}
    */
   async getOrigin() {
-    const currentUrl = await this.getDriver().getCurrentUrl();
-    return new URL(currentUrl).origin;
+    const currentUrl = await this.getDriver().getCurrentUrl()
+    return new URL(currentUrl).origin
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -569,10 +621,10 @@ class Eyes extends EyesBase {
    */
   async getAUTSessionId() {
     if (!this._driver) {
-      return undefined;
+      return undefined
     }
 
-    return this._driver.getSessionId();
+    return this._driver.getSessionId()
   }
 
   /* ------------ Getters/Setters ------------ */
@@ -581,14 +633,14 @@ class Eyes extends EyesBase {
    * @return {?EyesWebDriver}
    */
   getDriver() {
-    return this._driver;
+    return this._driver
   }
 
   /**
    * @return {EyesRunner}
    */
   getRunner() {
-    return this._runner;
+    return this._runner
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -596,7 +648,7 @@ class Eyes extends EyesBase {
    * @return {Region}
    */
   getRegionToCheck() {
-    return this._regionToCheck;
+    return this._regionToCheck
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -604,7 +656,7 @@ class Eyes extends EyesBase {
    * @param {Region} regionToCheck
    */
   setRegionToCheck(regionToCheck) {
-    this._regionToCheck = regionToCheck;
+    this._regionToCheck = regionToCheck
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -612,7 +664,7 @@ class Eyes extends EyesBase {
    * @return {boolean}
    */
   shouldStitchContent() {
-    return this._stitchContent;
+    return this._stitchContent
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -623,9 +675,9 @@ class Eyes extends EyesBase {
    */
   setScrollToRegion(shouldScroll) {
     if (shouldScroll) {
-      this._regionVisibilityStrategy = new MoveToRegionVisibilityStrategy(this._logger);
+      this._regionVisibilityStrategy = new MoveToRegionVisibilityStrategy(this._logger)
     } else {
-      this._regionVisibilityStrategy = new NopRegionVisibilityStrategy(this._logger);
+      this._regionVisibilityStrategy = new NopRegionVisibilityStrategy(this._logger)
     }
   }
 
@@ -634,7 +686,7 @@ class Eyes extends EyesBase {
    * @return {boolean} - Whether to automatically scroll to a region being validated.
    */
   getScrollToRegion() {
-    return !(this._regionVisibilityStrategy instanceof NopRegionVisibilityStrategy);
+    return !(this._regionVisibilityStrategy instanceof NopRegionVisibilityStrategy)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -642,7 +694,7 @@ class Eyes extends EyesBase {
    * @param {By} element
    */
   setScrollRootElement(element) {
-    this._scrollRootElement = this._driver.findElement(element);
+    this._scrollRootElement = this._driver.findElement(element)
   }
 
   /**
@@ -651,7 +703,7 @@ class Eyes extends EyesBase {
    * @return {FrameChain} the original fc
    */
   getOriginalFC() {
-    return this._originalFC;
+    return this._originalFC
   }
 
   /**
@@ -660,7 +712,7 @@ class Eyes extends EyesBase {
    * @return {PositionProvider} - the current frame position provider
    */
   getCurrentFramePositionProvider() {
-    return this._currentFramePositionProvider;
+    return this._currentFramePositionProvider
   }
 
   /**
@@ -670,18 +722,18 @@ class Eyes extends EyesBase {
    * @return {Promise<WebElement>} - the current frame scroll root element
    */
   async getCurrentFrameScrollRootElement() {
-    const currentFrame = this._driver.getFrameChain().peek();
+    const currentFrame = this._driver.getFrameChain().peek()
 
-    let scrollRootElement = null;
+    let scrollRootElement = null
     if (currentFrame) {
-      scrollRootElement = await currentFrame.getForceScrollRootElement(this._driver);
+      scrollRootElement = await currentFrame.getForceScrollRootElement(this._driver)
     }
 
     if (!scrollRootElement) {
-      scrollRootElement = await this.getScrollRootElement();
+      scrollRootElement = await this.getScrollRootElement()
     }
 
-    return scrollRootElement;
+    return scrollRootElement
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -689,7 +741,7 @@ class Eyes extends EyesBase {
    * @return {Promise<WebElement>}
    */
   async getScrollRootElement() {
-    return this._scrollRootElement;
+    return this._scrollRootElement
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -697,10 +749,10 @@ class Eyes extends EyesBase {
    * @param {ImageRotation} rotation - The image rotation data.
    */
   setRotation(rotation) {
-    this._rotation = rotation;
+    this._rotation = rotation
 
     if (this._driver) {
-      this._driver.setRotation(rotation);
+      this._driver.setRotation(rotation)
     }
   }
 
@@ -709,7 +761,7 @@ class Eyes extends EyesBase {
    * @return {ImageRotation} - The image rotation data.
    */
   getRotation() {
-    return this._rotation;
+    return this._rotation
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -719,7 +771,7 @@ class Eyes extends EyesBase {
    * @deprecated use {@link setRotation} instead
    */
   setForcedImageRotation(degrees) {
-    this.setRotation(new ImageRotation(degrees));
+    this.setRotation(new ImageRotation(degrees))
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -729,7 +781,7 @@ class Eyes extends EyesBase {
    * @deprecated use {@link getRotation} instead
    */
   getForcedImageRotation() {
-    return this.getRotation().getRotation();
+    return this.getRotation().getRotation()
   }
 
   /**
@@ -740,7 +792,7 @@ class Eyes extends EyesBase {
    * @return {Promise<?string>}
    */
   async getDomUrl() {
-    return this._domUrl;
+    return this._domUrl
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -748,21 +800,21 @@ class Eyes extends EyesBase {
    * @param {string} domUrl
    */
   setDomUrl(domUrl) {
-    this._domUrl = domUrl;
+    this._domUrl = domUrl
   }
 
   /**
    * @param {CorsIframeHandle} corsIframeHandle
    */
   setCorsIframeHandle(corsIframeHandle) {
-    this._corsIframeHandle = corsIframeHandle;
+    this._corsIframeHandle = corsIframeHandle
   }
 
   /**
    * @return {CorsIframeHandle}
    */
   getCorsIframeHandle() {
-    return this._corsIframeHandle;
+    return this._corsIframeHandle
   }
 
   /* ------------ Getters/Setters from Configuration ------------ */
@@ -772,7 +824,7 @@ class Eyes extends EyesBase {
    * @return {boolean}
    */
   getHideCaret() {
-    return this._configuration.getHideCaret();
+    return this._configuration.getHideCaret()
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -780,7 +832,7 @@ class Eyes extends EyesBase {
    * @param {boolean} hideCaret
    */
   setHideCaret(hideCaret) {
-    this._configuration.setHideCaret(hideCaret);
+    this._configuration.setHideCaret(hideCaret)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -790,7 +842,7 @@ class Eyes extends EyesBase {
    * @param {boolean} shouldForce - Whether to force a full page screenshot or not.
    */
   setForceFullPageScreenshot(shouldForce) {
-    this._configuration.setForceFullPageScreenshot(shouldForce);
+    this._configuration.setForceFullPageScreenshot(shouldForce)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -798,7 +850,7 @@ class Eyes extends EyesBase {
    * @return {boolean} - Whether Eyes should force a full page screenshot.
    */
   getForceFullPageScreenshot() {
-    return this._configuration.getForceFullPageScreenshot();
+    return this._configuration.getForceFullPageScreenshot()
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -810,7 +862,7 @@ class Eyes extends EyesBase {
    *   default value to be used.
    */
   setWaitBeforeScreenshots(waitBeforeScreenshots) {
-    this._configuration.setWaitBeforeScreenshots(waitBeforeScreenshots);
+    this._configuration.setWaitBeforeScreenshots(waitBeforeScreenshots)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -818,7 +870,7 @@ class Eyes extends EyesBase {
    * @return {number} - The time to wait just before taking a screenshot.
    */
   getWaitBeforeScreenshots() {
-    return this._configuration.getWaitBeforeScreenshots();
+    return this._configuration.getWaitBeforeScreenshots()
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -828,7 +880,7 @@ class Eyes extends EyesBase {
    * @param {boolean} shouldHide - Whether to hide the scrollbars or not.
    */
   setHideScrollbars(shouldHide) {
-    this._configuration.setHideScrollbars(shouldHide);
+    this._configuration.setHideScrollbars(shouldHide)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -836,7 +888,7 @@ class Eyes extends EyesBase {
    * @return {boolean} - Whether or not scrollbars are hidden when taking screenshots.
    */
   getHideScrollbars() {
-    return this._configuration.getHideScrollbars();
+    return this._configuration.getHideScrollbars()
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -847,8 +899,8 @@ class Eyes extends EyesBase {
    * @param {StitchMode} mode - The stitch mode to set.
    */
   setStitchMode(mode) {
-    this._logger.verbose(`setting stitch mode to ${mode}`);
-    this._configuration.setStitchMode(mode);
+    this._logger.verbose(`setting stitch mode to ${mode}`)
+    this._configuration.setStitchMode(mode)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -856,7 +908,7 @@ class Eyes extends EyesBase {
    * @return {StitchMode} - The current stitch mode settings.
    */
   getStitchMode() {
-    return this._configuration.getStitchMode();
+    return this._configuration.getStitchMode()
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -866,7 +918,7 @@ class Eyes extends EyesBase {
    * @param {number} stitchOverlap - The width (in pixels) of the overlap.
    */
   setStitchOverlap(stitchOverlap) {
-    this._configuration.setStitchOverlap(stitchOverlap);
+    this._configuration.setStitchOverlap(stitchOverlap)
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -874,10 +926,10 @@ class Eyes extends EyesBase {
    * @return {number} - Returns the stitching overlap in pixels.
    */
   getStitchOverlap() {
-    return this._configuration.getStitchOverlap();
+    return this._configuration.getStitchOverlap()
   }
 }
 
-Eyes.UNKNOWN_DEVICE_PIXEL_RATIO = 0;
-Eyes.DEFAULT_DEVICE_PIXEL_RATIO = 1;
-exports.Eyes = Eyes;
+Eyes.UNKNOWN_DEVICE_PIXEL_RATIO = 0
+Eyes.DEFAULT_DEVICE_PIXEL_RATIO = 1
+exports.Eyes = Eyes

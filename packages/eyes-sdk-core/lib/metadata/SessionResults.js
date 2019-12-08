@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
-const { GeneralUtils } = require('@applitools/eyes-common');
+const {GeneralUtils} = require('@applitools/eyes-common')
 
-const { ActualAppOutput } = require('./ActualAppOutput');
-const { ExpectedAppOutput } = require('./ExpectedAppOutput');
-const { Branch } = require('./Branch');
-const { StartInfo } = require('./StartInfo');
-const { AppEnvironment } = require('../AppEnvironment');
+const {ActualAppOutput} = require('./ActualAppOutput')
+const {ExpectedAppOutput} = require('./ExpectedAppOutput')
+const {Branch} = require('./Branch')
+const {StartInfo} = require('./StartInfo')
+const {AppEnvironment} = require('../AppEnvironment')
 
 class SessionResults {
   // noinspection FunctionWithMoreThanThreeNegationsJS
@@ -41,63 +41,98 @@ class SessionResults {
    * @param {string} baselineBranchName
    * @param {boolean} isNew
    */
-  constructor({ id, revision, runningSessionId, isAborted, isStarred, startInfo, batchId, secretToken, state, status,
-    isDefaultStatus, startedAt, duration, isDifferent, env, branch, expectedAppOutput, actualAppOutput, baselineId,
-    baselineRevId, scenarioId, scenarioName, appId, baselineModelId, baselineEnvId, baselineEnv, appName,
-    baselineBranchName, isNew } = {}) {
+  constructor({
+    id,
+    revision,
+    runningSessionId,
+    isAborted,
+    isStarred,
+    startInfo,
+    batchId,
+    secretToken,
+    state,
+    status,
+    isDefaultStatus,
+    startedAt,
+    duration,
+    isDifferent,
+    env,
+    branch,
+    expectedAppOutput,
+    actualAppOutput,
+    baselineId,
+    baselineRevId,
+    scenarioId,
+    scenarioName,
+    appId,
+    baselineModelId,
+    baselineEnvId,
+    baselineEnv,
+    appName,
+    baselineBranchName,
+    isNew,
+  } = {}) {
     if (env && !(env instanceof AppEnvironment)) {
-      env = new AppEnvironment(env);
+      env = new AppEnvironment(env)
     }
 
     if (baselineEnv && !(baselineEnv instanceof AppEnvironment)) {
-      baselineEnv = new AppEnvironment(baselineEnv);
+      baselineEnv = new AppEnvironment(baselineEnv)
     }
 
     if (branch && !(branch instanceof Branch)) {
-      branch = new Branch(branch);
+      branch = new Branch(branch)
     }
 
     if (startInfo && !(startInfo instanceof StartInfo)) {
-      startInfo = new StartInfo(startInfo);
+      startInfo = new StartInfo(startInfo)
     }
 
-    if (actualAppOutput && actualAppOutput.length > 0 && !(actualAppOutput[0] instanceof ActualAppOutput)) {
-      actualAppOutput = actualAppOutput.map(output => new ActualAppOutput(output));
+    if (
+      actualAppOutput &&
+      actualAppOutput.length > 0 &&
+      !(actualAppOutput[0] instanceof ActualAppOutput)
+    ) {
+      actualAppOutput = actualAppOutput.map(output => new ActualAppOutput(output))
     }
 
-    if (expectedAppOutput && expectedAppOutput.length > 0 && !(expectedAppOutput[0] instanceof ExpectedAppOutput)) {
-      expectedAppOutput = expectedAppOutput.map(output => new ExpectedAppOutput(output));
+    if (
+      expectedAppOutput &&
+      expectedAppOutput.length > 0 &&
+      !(expectedAppOutput[0] instanceof ExpectedAppOutput)
+    ) {
+      expectedAppOutput = expectedAppOutput.map(output => new ExpectedAppOutput(output))
     }
 
-    this._id = id;
-    this._revision = revision;
-    this._runningSessionId = runningSessionId;
-    this._isAborted = isAborted;
-    this._isStarred = isStarred;
-    this._startInfo = startInfo;
-    this._batchId = batchId;
-    this._secretToken = secretToken;
-    this._state = state;
-    this._status = status;
-    this._isDefaultStatus = isDefaultStatus;
-    this._startedAt = startedAt;
-    this._duration = duration;
-    this._isDifferent = isDifferent;
-    this._env = env;
-    this._branch = branch;
-    this._expectedAppOutput = expectedAppOutput;
-    this._actualAppOutput = actualAppOutput;
-    this._baselineId = baselineId;
-    this._baselineRevId = baselineRevId;
-    this._scenarioId = scenarioId;
-    this._scenarioName = scenarioName;
-    this._appId = appId;
-    this._baselineModelId = baselineModelId;
-    this._baselineEnvId = baselineEnvId;
-    this._baselineEnv = baselineEnv;
-    this._appName = appName;
-    this._baselineBranchName = baselineBranchName;
-    this._isNew = isNew;
+    this._id = id
+    this._revision = revision
+    this._runningSessionId = runningSessionId
+    this._isAborted = isAborted
+    this._isStarred = isStarred
+    this._startInfo = startInfo
+    this._batchId = batchId
+    this._secretToken = secretToken
+    this._state = state
+    this._status = status
+    this._isDefaultStatus = isDefaultStatus
+    this._startedAt = startedAt
+    this._duration = duration
+    this._isDifferent = isDifferent
+    this._env = env
+    this._branch = branch
+    this._expectedAppOutput = expectedAppOutput
+    this._actualAppOutput = actualAppOutput
+    this._baselineId = baselineId
+    this._baselineRevId = baselineRevId
+    this._scenarioId = scenarioId
+    this._scenarioName = scenarioName
+    this._appId = appId
+    this._baselineModelId = baselineModelId
+    this._baselineEnvId = baselineEnvId
+    this._baselineEnv = baselineEnv
+    this._appName = appName
+    this._baselineBranchName = baselineBranchName
+    this._isNew = isNew
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -105,7 +140,7 @@ class SessionResults {
    * @return {string}
    */
   getId() {
-    return this._id;
+    return this._id
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -113,7 +148,7 @@ class SessionResults {
    * @param {string} value
    */
   setId(value) {
-    this._id = value;
+    this._id = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -121,7 +156,7 @@ class SessionResults {
    * @return {number}
    */
   getRevision() {
-    return this._revision;
+    return this._revision
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -129,7 +164,7 @@ class SessionResults {
    * @param {number} value
    */
   setRevision(value) {
-    this._revision = value;
+    this._revision = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -137,7 +172,7 @@ class SessionResults {
    * @return {string}
    */
   getRunningSessionId() {
-    return this._runningSessionId;
+    return this._runningSessionId
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -145,7 +180,7 @@ class SessionResults {
    * @param {string} value
    */
   setRunningSessionId(value) {
-    this._runningSessionId = value;
+    this._runningSessionId = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -153,7 +188,7 @@ class SessionResults {
    * @return {boolean}
    */
   getIsAborted() {
-    return this._isAborted;
+    return this._isAborted
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -161,7 +196,7 @@ class SessionResults {
    * @param {boolean} value
    */
   setIsAborted(value) {
-    this._isAborted = value;
+    this._isAborted = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -169,7 +204,7 @@ class SessionResults {
    * @return {boolean}
    */
   getIsStarred() {
-    return this._isStarred;
+    return this._isStarred
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -177,7 +212,7 @@ class SessionResults {
    * @param {boolean} value
    */
   setIsStarred(value) {
-    this._isStarred = value;
+    this._isStarred = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -185,7 +220,7 @@ class SessionResults {
    * @return {StartInfo}
    */
   getStartInfo() {
-    return this._startInfo;
+    return this._startInfo
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -193,7 +228,7 @@ class SessionResults {
    * @param {StartInfo} value
    */
   setStartInfo(value) {
-    this._startInfo = value;
+    this._startInfo = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -201,7 +236,7 @@ class SessionResults {
    * @return {string}
    */
   getBatchId() {
-    return this._batchId;
+    return this._batchId
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -209,7 +244,7 @@ class SessionResults {
    * @param {string} value
    */
   setBatchId(value) {
-    this._batchId = value;
+    this._batchId = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -217,7 +252,7 @@ class SessionResults {
    * @return {string}
    */
   getSecretToken() {
-    return this._secretToken;
+    return this._secretToken
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -225,7 +260,7 @@ class SessionResults {
    * @param {string} value
    */
   setSecretToken(value) {
-    this._secretToken = value;
+    this._secretToken = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -233,7 +268,7 @@ class SessionResults {
    * @return {string}
    */
   getState() {
-    return this._state;
+    return this._state
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -241,7 +276,7 @@ class SessionResults {
    * @param {string} value
    */
   setState(value) {
-    this._state = value;
+    this._state = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -249,7 +284,7 @@ class SessionResults {
    * @return {string}
    */
   getStatus() {
-    return this._status;
+    return this._status
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -257,7 +292,7 @@ class SessionResults {
    * @param {string} value
    */
   setStatus(value) {
-    this._status = value;
+    this._status = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -265,7 +300,7 @@ class SessionResults {
    * @return {boolean}
    */
   getIsDefaultStatus() {
-    return this._isDefaultStatus;
+    return this._isDefaultStatus
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -273,7 +308,7 @@ class SessionResults {
    * @param {boolean} value
    */
   setIsDefaultStatus(value) {
-    this._isDefaultStatus = value;
+    this._isDefaultStatus = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -281,7 +316,7 @@ class SessionResults {
    * @return {string}
    */
   getStartedAt() {
-    return this._startedAt;
+    return this._startedAt
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -289,7 +324,7 @@ class SessionResults {
    * @param {string} value
    */
   setStartedAt(value) {
-    this._startedAt = value;
+    this._startedAt = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -297,7 +332,7 @@ class SessionResults {
    * @return {number}
    */
   getDuration() {
-    return this._duration;
+    return this._duration
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -305,7 +340,7 @@ class SessionResults {
    * @param {number} value
    */
   setDuration(value) {
-    this._duration = value;
+    this._duration = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -313,7 +348,7 @@ class SessionResults {
    * @return {boolean}
    */
   getIsDifferent() {
-    return this._isDifferent;
+    return this._isDifferent
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -321,7 +356,7 @@ class SessionResults {
    * @param {boolean} value
    */
   setIsDifferent(value) {
-    this._isDifferent = value;
+    this._isDifferent = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -329,7 +364,7 @@ class SessionResults {
    * @return {AppEnvironment}
    */
   getEnv() {
-    return this._env;
+    return this._env
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -337,7 +372,7 @@ class SessionResults {
    * @param {AppEnvironment} value
    */
   setEnv(value) {
-    this._env = value;
+    this._env = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -345,7 +380,7 @@ class SessionResults {
    * @return {Branch}
    */
   getBranch() {
-    return this._branch;
+    return this._branch
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -353,7 +388,7 @@ class SessionResults {
    * @param {Branch} value
    */
   setBranch(value) {
-    this._branch = value;
+    this._branch = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -361,7 +396,7 @@ class SessionResults {
    * @return {ExpectedAppOutput[]}
    */
   getExpectedAppOutput() {
-    return this._expectedAppOutput;
+    return this._expectedAppOutput
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -369,7 +404,7 @@ class SessionResults {
    * @param {ExpectedAppOutput[]} value
    */
   setExpectedAppOutput(value) {
-    this._expectedAppOutput = value;
+    this._expectedAppOutput = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -377,7 +412,7 @@ class SessionResults {
    * @return {ActualAppOutput[]}
    */
   getActualAppOutput() {
-    return this._actualAppOutput;
+    return this._actualAppOutput
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -385,7 +420,7 @@ class SessionResults {
    * @param {ActualAppOutput[]} value
    */
   setActualAppOutput(value) {
-    this._actualAppOutput = value;
+    this._actualAppOutput = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -393,7 +428,7 @@ class SessionResults {
    * @return {string}
    */
   getBaselineId() {
-    return this._baselineId;
+    return this._baselineId
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -401,7 +436,7 @@ class SessionResults {
    * @param {string} value
    */
   setBaselineId(value) {
-    this._baselineId = value;
+    this._baselineId = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -409,7 +444,7 @@ class SessionResults {
    * @return {string}
    */
   getBaselineRevId() {
-    return this._baselineRevId;
+    return this._baselineRevId
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -417,7 +452,7 @@ class SessionResults {
    * @param {string} value
    */
   setBaselineRevId(value) {
-    this._baselineRevId = value;
+    this._baselineRevId = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -425,7 +460,7 @@ class SessionResults {
    * @return {string}
    */
   getScenarioId() {
-    return this._scenarioId;
+    return this._scenarioId
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -433,7 +468,7 @@ class SessionResults {
    * @param {string} value
    */
   setScenarioId(value) {
-    this._scenarioId = value;
+    this._scenarioId = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -441,7 +476,7 @@ class SessionResults {
    * @return {string}
    */
   getScenarioName() {
-    return this._scenarioName;
+    return this._scenarioName
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -449,7 +484,7 @@ class SessionResults {
    * @param {string} value
    */
   setScenarioName(value) {
-    this._scenarioName = value;
+    this._scenarioName = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -457,7 +492,7 @@ class SessionResults {
    * @return {string}
    */
   getAppId() {
-    return this._appId;
+    return this._appId
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -465,7 +500,7 @@ class SessionResults {
    * @param {string} value
    */
   setAppId(value) {
-    this._appId = value;
+    this._appId = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -473,7 +508,7 @@ class SessionResults {
    * @return {string}
    */
   getBaselineModelId() {
-    return this._baselineModelId;
+    return this._baselineModelId
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -481,7 +516,7 @@ class SessionResults {
    * @param {string} value
    */
   setBaselineModelId(value) {
-    this._baselineModelId = value;
+    this._baselineModelId = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -489,7 +524,7 @@ class SessionResults {
    * @return {string}
    */
   getBaselineEnvId() {
-    return this._baselineEnvId;
+    return this._baselineEnvId
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -497,7 +532,7 @@ class SessionResults {
    * @param {string} value
    */
   setBaselineEnvId(value) {
-    this._baselineEnvId = value;
+    this._baselineEnvId = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -505,7 +540,7 @@ class SessionResults {
    * @return {AppEnvironment}
    */
   getBaselineEnv() {
-    return this._baselineEnv;
+    return this._baselineEnv
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -513,7 +548,7 @@ class SessionResults {
    * @param {AppEnvironment} value
    */
   setBaselineEnv(value) {
-    this._baselineEnv = value;
+    this._baselineEnv = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -521,7 +556,7 @@ class SessionResults {
    * @return {string}
    */
   getAppName() {
-    return this._appName;
+    return this._appName
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -529,7 +564,7 @@ class SessionResults {
    * @param {string} value
    */
   setAppName(value) {
-    this._appName = value;
+    this._appName = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -537,7 +572,7 @@ class SessionResults {
    * @return {string}
    */
   getBaselineBranchName() {
-    return this._baselineBranchName;
+    return this._baselineBranchName
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -545,7 +580,7 @@ class SessionResults {
    * @param {string} value
    */
   setBaselineBranchName(value) {
-    this._baselineBranchName = value;
+    this._baselineBranchName = value
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -553,7 +588,7 @@ class SessionResults {
    * @return {boolean}
    */
   getIsNew() {
-    return this._isNew;
+    return this._isNew
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -561,22 +596,22 @@ class SessionResults {
    * @param {boolean} value
    */
   setIsNew(value) {
-    this._isNew = value;
+    this._isNew = value
   }
 
   /**
    * @override
    */
   toJSON() {
-    return GeneralUtils.toPlain(this);
+    return GeneralUtils.toPlain(this)
   }
 
   /**
    * @override
    */
   toString() {
-    return `SessionResults { ${JSON.stringify(this)} }`;
+    return `SessionResults { ${JSON.stringify(this)} }`
   }
 }
 
-exports.SessionResults = SessionResults;
+exports.SessionResults = SessionResults

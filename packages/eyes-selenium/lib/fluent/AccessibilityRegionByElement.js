@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const { Location, CoordinatesType } = require('@applitools/eyes-common');
-const { GetAccessibilityRegion, AccessibilityMatchSettings } = require('@applitools/eyes-sdk-core');
+const {Location, CoordinatesType} = require('@applitools/eyes-common')
+const {GetAccessibilityRegion, AccessibilityMatchSettings} = require('@applitools/eyes-sdk-core')
 
 /**
  * @ignore
@@ -12,9 +12,9 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
    * @param {AccessibilityRegionType} regionType
    */
   constructor(regionSelector, regionType) {
-    super();
-    this._element = regionSelector;
-    this._regionType = regionType;
+    super()
+    this._element = regionSelector
+    this._regionType = regionType
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -25,12 +25,12 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
    * @return {Promise<AccessibilityMatchSettings[]>}
    */
   async getRegion(eyes, screenshot) {
-    const rect = await this._element.getRect();
+    const rect = await this._element.getRect()
     const pTag = screenshot.convertLocation(
       new Location(rect),
       CoordinatesType.CONTEXT_RELATIVE,
-      CoordinatesType.SCREENSHOT_AS_IS
-    );
+      CoordinatesType.SCREENSHOT_AS_IS,
+    )
 
     const accessibilityRegion = new AccessibilityMatchSettings({
       left: pTag.getX(),
@@ -38,9 +38,9 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
       width: rect.width,
       height: rect.height,
       type: this._regionType,
-    });
-    return [accessibilityRegion];
+    })
+    return [accessibilityRegion]
   }
 }
 
-exports.AccessibilityRegionByElement = AccessibilityRegionByElement;
+exports.AccessibilityRegionByElement = AccessibilityRegionByElement
