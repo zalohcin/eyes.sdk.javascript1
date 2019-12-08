@@ -16,7 +16,8 @@ os:
   - linux
 
 node_js:
-- "lts/*"
+- "node" # latest
+- "12"
 - "10"
 - "8"
 
