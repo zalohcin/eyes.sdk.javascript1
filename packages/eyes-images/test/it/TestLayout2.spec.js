@@ -5,36 +5,35 @@ const {Eyes, BatchInfo, ConsoleLogHandler, MatchLevel, RectangleSize} = require(
 describe('TestLayout2', function() {
   this.timeout(5 * 60 * 1000)
 
-  const appName = 'Layout2'
   let batch
 
   before(() => {
     batch = new BatchInfo('Layout2')
   })
 
-  function setup(testName, {isSaveNew} = {isSaveNew: false}) {
+  function setup(testName) {
     const eyes = new Eyes()
-    eyes.setBaselineEnvName('Layout2')
+    eyes.setBaselineEnvName(batch.name)
     eyes.setBatch(batch)
     eyes.setLogHandler(new ConsoleLogHandler())
     eyes.setMatchLevel(MatchLevel.Layout2)
-    eyes.setSaveNewTests(isSaveNew)
-    eyes.setSaveDiffs(isSaveNew)
+    eyes.setSaveNewTests(true)
 
     eyes.getLogger().log(`running test: ${testName}`)
     return eyes
   }
 
   it('TestYahoo2ac', async function() {
-    let eyes = setup(this.test.title, {isSaveNew: true})
-    eyes.setAppEnvironment('Windows 6.1', 'Chrome')
-    await eyes.open(appName, 'Yahoo Chrome vs. IE', new RectangleSize(1024, 768))
+    const open = async eyes => {
+      await eyes.open('TestLayout2', 'Yahoo Chrome vs. IE', new RectangleSize(1024, 768))
+    }
+    let eyes = setup(this.test.title)
+    await open(eyes)
     await eyes.checkImage(`${__dirname}/../fixtures/yahoo2c-chrome.png`)
     await eyes.close()
 
     eyes = setup(this.test.title)
-    eyes.setAppEnvironment('Windows 6.1', 'IE')
-    await eyes.open(appName, 'Yahoo Chrome vs. IE', new RectangleSize(1024, 768))
+    await open(eyes)
     await eyes.checkImage(`${__dirname}/../fixtures/yahoo2a-ie.png`)
     await eyes.close()
   })
