@@ -9,7 +9,7 @@ const {presult} = require('@applitools/functional-commons')
 const {DiffsFoundError} = require('@applitools/eyes-sdk-core')
 const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot')
 
-describe('openEyes', () => {
+describe('testWindow', () => {
   let baseUrl, closeServer, testWindow
   const apiKey = process.env.APPLITOOLS_API_KEY // TODO bad for tests. what to do
   let browser, page
