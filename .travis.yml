@@ -20,7 +20,7 @@ node_js:
 - "10"
 - "8"
 
-cache: npm
+cache: false
 
 install:
   - npm install
@@ -30,6 +30,7 @@ stages:
   - test
 
 script:
+  - npm ls
   - npm run test:unit
 
 jobs:
@@ -38,5 +39,4 @@ jobs:
       node_js: "lts/*"
       script: npm run lint
     - stage: test
-      node_js: "lts/*"
       script: npm run test:it
