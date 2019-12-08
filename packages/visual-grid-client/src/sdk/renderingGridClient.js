@@ -119,7 +119,7 @@ function makeRenderingGridClient({
   const fetchCache = createResourceCache()
 
   const fetchWithTimeout = (url, opt) =>
-    ptimeoutWithError(fetch(url, opt), fetchResourceTimeout, 'fetche timed out')
+    ptimeoutWithError(fetch(url, opt), fetchResourceTimeout, 'fetch timed out')
   const fetchResource = makeFetchResource({logger, fetchCache, fetch: fetchWithTimeout})
   const putResources = makePutResources({doPutResource})
   const renderBatch = makeRenderBatch({
