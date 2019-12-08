@@ -5,7 +5,7 @@
     "install": "lerna bootstrap --hoist",
     "bootstrap": "lerna bootstrap --hoist",
     "clean": "lerna clean --yes",
-    "lint": "eslint . --ext js",
+    "lint": "eslint . --ext js --quiet",
     "test": "lerna run test --no-private",
     "test:diff": "lerna run test --since origin/master",
     "test:unit": "lerna run test:unit --parallel --no-private",
