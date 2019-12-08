@@ -6,7 +6,7 @@ const {Eyes, BatchInfo, DiffsFoundError} = require('../../index')
 describe('TestCloseMethod', function() {
   this.timeout(5 * 60 * 1000)
 
-  it('TestClose', async function() {
+  it('close', async function() {
     const batch = new BatchInfo()
     const eyes = new Eyes()
     eyes.setBatch(batch)
