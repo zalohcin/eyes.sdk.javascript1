@@ -18,7 +18,7 @@ os:
 node_js:
 - "node"
 - "lts/*"
-- "8"
+- "10"
 
 cache: npm
 
@@ -28,9 +28,6 @@ install:
 stages:
   - lint
   - test
-  - "Integration tests"
-  - name: "End-to-end tests"
-    if: branch = master
 
 script:
   - npm run test:unit
@@ -40,9 +37,6 @@ jobs:
     - stage: lint
       node_js: "lts/*"
       script: npm run lint
-    - stage: "Integration tests"
-      node_js: "8"
+    - stage: test
+      node_js: "lts/*"
       script: npm run test:it
-#    - stage: "End-to-end tests"
-#      node_js: "8"
-#      script: npm run test:e2e
