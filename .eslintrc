@@ -19,7 +19,7 @@
       "trailingComma": "all",
       "bracketSpacing": false,
       "jsxBracketSameLine": true,
-      "endOfLine": "auto"
+      "endOfLine": "lf"
     }],
     "no-process-exit": "off",
     "no-const-assign": "error",
