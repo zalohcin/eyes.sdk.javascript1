@@ -23,6 +23,11 @@ cache: npm
 install:
   - npm install
 
+stages:
+  - lint
+  - unit tests
+  - test
+
 jobs:
   include:
     - stage: 'lint'
