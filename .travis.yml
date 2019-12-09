@@ -1,10 +1,10 @@
 # don't build tags, it's redundant
 if: tag IS blank
 
-sudo: false
+os:
+  - linux
 
-git:
-  depth: 3
+sudo: false
 
 addons:
   chrome: stable
@@ -12,21 +12,27 @@ addons:
 
 language: node_js
 
-os:
-  - linux
-
 node_js:
 - "node" # latest
 - "12"
 - "10"
 - "8"
 
-cache: false
+cache: npm
 
 install:
   - npm install
 
-script:
-  - npm run lint
-  - npm run test:unit
-  - npm run test:it
+stages:
+  - lint
+  - unit tests
+  - test
+
+jobs:
+  include:
+    - stage: 'lint'
+      script: npm run lint
+    - stage: 'unit tests'
+      script: npm run test:unit
+    - stage: 'test'
+      script: npm run test:it
