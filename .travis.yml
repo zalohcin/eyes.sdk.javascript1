@@ -33,6 +33,9 @@ jobs:
     - stage: 'lint'
       script: npm run lint
     - stage: 'unit tests'
+      node: '12' # gets latest implicitly
+      node: '10'
+      node: '8'
       script: npm run test:unit
-    - stage: 'test'
-      script: npm run test:it
+
+script: npm run test:it # runs implicitly in 'test' build stage
