@@ -23,16 +23,25 @@ cache: npm
 install:
   - npm install
 
-stages:
-  - lint
-  - unit tests
-  - test
-
 jobs:
   include:
     - stage: 'lint'
       script: npm run lint
     - stage: 'unit tests'
+      node_js: node
+      script: npm run test:unit
+    -
+      node_js: 12
+      script: npm run test:unit
+    -
+      node_js: 10
+      script: npm run test:unit
+    -
+      node_js: 8
       script: npm run test:unit
 
-script: npm run test:it # runs implicitly in 'test' build stage
+# The script below runs using the default 'test' build stage (a.k.a. 'Test')
+# in the job dashboard. The 'test' build stage uses the node_js languages 
+# specified above, but the other stages & jobs need to specify the node_js 
+# versions explicitly...  ¯\_(ツ)_/¯.
+script: npm run test:it
