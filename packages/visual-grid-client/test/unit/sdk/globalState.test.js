@@ -3,6 +3,7 @@ const {describe, it} = require('mocha')
 const {expect} = require('chai')
 const makeGlobalState = require('../../../src/sdk/globalState')
 const testLogger = require('../../util/testLogger')
+const {delay} = require('@applitools/functional-commons')
 
 describe('globalState', () => {
   it('waits for queued renders', async () => {
@@ -23,10 +24,11 @@ describe('globalState', () => {
     expect(resolved1).to.be.undefined
     expect(resolved2).to.be.undefined
     setQueuedRendersCount(0)
-    await Promise.resolve()
+    await delay(0)
     expect(resolved1).to.equal(true)
+    expect(resolved2).to.be.undefined
     setQueuedRendersCount(0)
-    await Promise.resolve()
+    await delay(0)
     expect(resolved1).to.equal(true)
     expect(resolved2).to.equal(true)
   })
