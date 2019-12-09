@@ -12,7 +12,11 @@ const configuration = new Configuration(this.userConfig)
 const Utils = {
   userConfig: ConfigUtils.getConfig({configParams: ['apiKey', 'serverUrl', 'proxy']}),
   pexec: p(exec),
-  presult: promise => promise.then(v => [undefined, v], err => [err]),
+  presult: promise =>
+    promise.then(
+      v => [undefined, v],
+      err => [err],
+    ),
   configuration,
   apiKey: configuration.getApiKey(),
   curlGet: async url => {
