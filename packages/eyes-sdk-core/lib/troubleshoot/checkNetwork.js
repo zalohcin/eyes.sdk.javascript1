@@ -1,41 +1,52 @@
 'use strict'
 
+const chalk = require('chalk')
 const _eyes = require('./eyes')
-const _pub = require('./public')
 const _vg = require('./vg')
-const {userConfig, presult} = require('./utils')
+const {userConfig, presult, ptimeoutWithError} = require('./utils')
+const TIMEOUT = 15000
 
-function makeCheckNetwork({
-  print,
-  printErr,
-  printSuccess,
-  clearLine,
-  eyes = _eyes,
-  pub = _pub,
-  vg = _vg,
-}) {
+function makeCheckNetwork({stream = process.stdout, eyes = _eyes, vg = _vg}) {
   async function doTest(func, name) {
-    print(name, '- [ ? ]')
-    const [err] = await presult(func())
+    const delimiterLength = 30 - name.length
+    const delimiter = new Array(delimiterLength).join(' ')
+    printSuccess(name, delimiter, '[ ?  ]')
+
+    const start = new Date()
+    const funcWithTimeout = ptimeoutWithError(func(), TIMEOUT, new Error('request timeout out!'))
+    const [err] = await presult(funcWithTimeout)
+    const end = parseInt((Date.now() - start) / 1000)
+
     clearLine()
     if (err) {
-      printErr(name, '- [ X ]', err.message, '\n')
+      printErr(
+        name,
+        delimiter,
+        `[ X  ]  +${end}`,
+        err.message,
+        err.message[err.message.length - 1] !== '\n' ? '\n' : '',
+      )
     } else {
-      printSuccess(name, '- [ OK ]', '\n')
+      printSuccess(name, delimiter, `[ OK ]  +${end}`, '\n')
     }
     return !!err
   }
 
-  async function doOptionalTest(func, name) {
-    print(name, '- [ ? ]')
-    const [err] = await presult(func())
-    clearLine()
-    if (err) {
-      printSuccess(name, '- [ X ]', err.message, '\n')
-    } else {
-      printSuccess(name, '- [ OK ]', '\n')
-    }
-    return !!err
+  function print(...msg) {
+    stream.write(chalk.cyan(...msg))
+  }
+
+  function printErr(...msg) {
+    stream.write(chalk.red(...msg))
+  }
+
+  function printSuccess(...msg) {
+    stream.write(chalk.green(...msg))
+  }
+
+  function clearLine() {
+    stream.clearLine()
+    stream.cursorTo(0)
   }
 
   return async function checkNetwork() {
@@ -45,38 +56,29 @@ function makeCheckNetwork({
       )
       return
     }
-    print('Eyes check netwrok running with', JSON.stringify(userConfig), '\n\n')
+    const proxyEnvMsg = `HTTP_PROXY="${process.env.HTTP_PROXY || ''}" HTTPS_PROXY="${process.env
+      .HTTPS_PROXY || ''}".`
+    print('Eyes check netwrok running with', JSON.stringify(userConfig), proxyEnvMsg, '\n\n')
 
     let hasErr = false
-    let restrictedAccess = true
     let curlRenderErr = true
     let curlVgErr = true
 
     print('[1] Checking eyes servers api', eyes.url, '\n')
-    hasErr = await doTest(eyes.testServer, '[eyes] server connector')
+    curlRenderErr = await doTest(eyes.testCurl, '[eyes] cURL')
+    hasErr = curlRenderErr
+    hasErr = (await doTest(eyes.testHttps, '[eyes] https')) || hasErr
     hasErr = (await doTest(eyes.testAxios, '[eyes] axios')) || hasErr
     hasErr = (await doTest(eyes.testFetch, '[eyes] node-fetch')) || hasErr
-    curlRenderErr = await doTest(eyes.testCurl, '[eyes] cURL')
-    hasErr = hasErr || curlRenderErr
+    hasErr = await doTest(eyes.testServer, '[eyes] server connector')
 
-    print('[2]  Checking visual grid servers api', vg.url, '\n')
-    hasErr = (await doTest(vg.testServer, '[VG] server connector')) || hasErr
-    hasErr = (await doTest(vg.testAxios, '[VG] axios')) || hasErr
-    hasErr = (await doTest(vg.testFetch, '[VG] node-fetch')) || hasErr
+    print('[2] Checking visual grid servers api', vg.url, '\n')
     curlVgErr = await doTest(vg.testCurl, '[VG] cURL')
     hasErr = curlVgErr || hasErr
-
-    print('[3] Checking simple public api', pub.url, '\n')
-    restrictedAccess = await doOptionalTest(pub.testAxios, '[public] axios')
-    restrictedAccess =
-      (await doOptionalTest(pub.testFetch, '[public] node-fetch')) || restrictedAccess
-    restrictedAccess = (await doOptionalTest(pub.testCurl, '[public] cURL')) || restrictedAccess
-
-    if (restrictedAccess) {
-      printSuccess(`[public] PUBLIC ACCESS TO ${pub.url} IS RESTRICTED\n`)
-    } else {
-      printSuccess('[public] PUBLIC ACCESS IS ENABLED\n')
-    }
+    hasErr = (await doTest(vg.testHttps, '[VG] https')) || hasErr
+    hasErr = (await doTest(vg.testAxios, '[VG] axios')) || hasErr
+    hasErr = (await doTest(vg.testFetch, '[VG] node-fetch')) || hasErr
+    hasErr = (await doTest(vg.testServer, '[VG] server connector')) || hasErr
 
     if (hasErr) {
       printErr('\nFAILED!\n')
@@ -85,9 +87,9 @@ function makeCheckNetwork({
     }
 
     const proxyMsg =
-      'YOUR PROXY SEEMS TO BE BLOCKING APPLITOOLS REQUESTS, PLEASE MAKE SURE THE FOLLOWING COMMAND SUCCEED'
+      '\nYOUR PROXY SEEMS TO BE BLOCKING APPLITOOLS REQUESTS, PLEASE MAKE SURE THE FOLLOWING COMMAND SUCCEED'
     if (curlRenderErr) {
-      printErr(`${proxyMsg}:\ncurl -X GET ${eyes.url}\n`)
+      printErr(`${proxyMsg}:\ncurl ${eyes.url}\n`)
     }
     if (curlVgErr) {
       printErr(`${proxyMsg}:\n${await vg.getCurlCmd()}\n`)

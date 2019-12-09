@@ -5,18 +5,6 @@ const {makeCheckNetwork} = require('../../lib/troubleshoot/checkNetwork')
 
 describe('checkNetwork', () => {
   let output
-
-  const print = (...args) => {
-    output.reg.push(args)
-  }
-  const printErr = (...args) => {
-    output.err.push(args)
-  }
-  const printSuccess = (...args) => {
-    output.success.push(args)
-  }
-  const clearLine = () => {}
-
   let throwFor
   const eyes = {
     testServer: async () => {
@@ -37,6 +25,11 @@ describe('checkNetwork', () => {
     testCurl: async () => {
       if (throwFor.includes('eyes:Curl')) {
         throw new Error('eyes:Curl')
+      }
+    },
+    testHttps: async () => {
+      if (throwFor.includes('eyes:Https')) {
+        throw new Error('eyes:Https')
       }
     },
   }
@@ -61,130 +54,108 @@ describe('checkNetwork', () => {
         throw new Error('vg:Curl')
       }
     },
-  }
-  const pub = {
-    testAxios: async () => {
-      if (throwFor.includes('pub:Axios')) {
-        throw new Error('pub:Axios')
-      }
-    },
-    testFetch: async () => {
-      if (throwFor.includes('pub:Fetch')) {
-        throw new Error('pub:Fetch')
-      }
-    },
-    testCurl: async () => {
-      if (throwFor.includes('pub:Curl')) {
-        throw new Error('pub:Curl')
+    testHttps: async () => {
+      if (throwFor.includes('vg:Https')) {
+        throw new Error('vg:Https')
       }
     },
   }
 
+  const stream = {
+    write: (...args) => output.push(args),
+    cursorTo: () => {},
+    clearLine: () => {},
+  }
   const checkNetwork = makeCheckNetwork({
-    print,
-    printErr,
-    printSuccess,
-    clearLine,
+    stream,
     eyes,
     vg,
-    pub,
   })
 
   const sanitizeApiKey = () => {
-    output.reg[0][1] = output.reg[0][1].replace(/{"apiKey":".+"}/, '{"apiKey":"someKey"}')
+    output[0][0] = output[0][0].replace(/{"apiKey":".+"}/, '{"apiKey":"someKey"}')
   }
 
   beforeEach(() => {
-    output = {
-      reg: [],
-      err: [],
-      success: [],
-    }
+    output = []
     throwFor = []
   })
 
   it('work', async () => {
     await checkNetwork()
     sanitizeApiKey()
-    assert.deepStrictEqual(output, {
-      reg: [
-        ['Eyes check netwrok running with', '{"apiKey":"someKey"}', '\n\n'],
-        ['[1] Checking eyes servers api', undefined, '\n'],
-        ['[eyes] server connector', '- [ ? ]'],
-        ['[eyes] axios', '- [ ? ]'],
-        ['[eyes] node-fetch', '- [ ? ]'],
-        ['[eyes] cURL', '- [ ? ]'],
-        ['[2]  Checking visual grid servers api', undefined, '\n'],
-        ['[VG] server connector', '- [ ? ]'],
-        ['[VG] axios', '- [ ? ]'],
-        ['[VG] node-fetch', '- [ ? ]'],
-        ['[VG] cURL', '- [ ? ]'],
-        ['[3] Checking simple public api', undefined, '\n'],
-        ['[public] axios', '- [ ? ]'],
-        ['[public] node-fetch', '- [ ? ]'],
-        ['[public] cURL', '- [ ? ]'],
+    assert.deepStrictEqual(output, [
+      [
+        '\u001b[36mEyes check netwrok running with {"apiKey":"someKey"} HTTP_PROXY="" HTTPS_PROXY="". \u001b[39m\n\u001b[36m\u001b[39m\n\u001b[36m\u001b[39m',
       ],
-      err: [],
-      success: [
-        ['[eyes] server connector', '- [ OK ]', '\n'],
-        ['[eyes] axios', '- [ OK ]', '\n'],
-        ['[eyes] node-fetch', '- [ OK ]', '\n'],
-        ['[eyes] cURL', '- [ OK ]', '\n'],
-        ['[VG] server connector', '- [ OK ]', '\n'],
-        ['[VG] axios', '- [ OK ]', '\n'],
-        ['[VG] node-fetch', '- [ OK ]', '\n'],
-        ['[VG] cURL', '- [ OK ]', '\n'],
-        ['[public] axios', '- [ OK ]', '\n'],
-        ['[public] node-fetch', '- [ OK ]', '\n'],
-        ['[public] cURL', '- [ OK ]', '\n'],
-        ['[public] PUBLIC ACCESS IS ENABLED\n'],
-        ['\nSUCCESS!\n'],
-      ],
-    })
+      ['\u001b[36m[1] Checking eyes servers api  \u001b[39m\n\u001b[36m\u001b[39m'],
+      ['\u001b[32m[eyes] cURL                    [ ?  ]\u001b[39m'],
+      ['\u001b[32m[eyes] cURL                    [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[eyes] https                   [ ?  ]\u001b[39m'],
+      ['\u001b[32m[eyes] https                   [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[eyes] axios                   [ ?  ]\u001b[39m'],
+      ['\u001b[32m[eyes] axios                   [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[eyes] node-fetch              [ ?  ]\u001b[39m'],
+      ['\u001b[32m[eyes] node-fetch              [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[eyes] server connector        [ ?  ]\u001b[39m'],
+      ['\u001b[32m[eyes] server connector        [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[36m[2] Checking visual grid servers api  \u001b[39m\n\u001b[36m\u001b[39m'],
+      ['\u001b[32m[VG] cURL                      [ ?  ]\u001b[39m'],
+      ['\u001b[32m[VG] cURL                      [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[VG] https                     [ ?  ]\u001b[39m'],
+      ['\u001b[32m[VG] https                     [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[VG] axios                     [ ?  ]\u001b[39m'],
+      ['\u001b[32m[VG] axios                     [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[VG] node-fetch                [ ?  ]\u001b[39m'],
+      ['\u001b[32m[VG] node-fetch                [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[VG] server connector          [ ?  ]\u001b[39m'],
+      ['\u001b[32m[VG] server connector          [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m\u001b[39m\n\u001b[32mSUCCESS!\u001b[39m\n\u001b[32m\u001b[39m'],
+    ])
   })
 
   it('displays errors', async () => {
     throwFor = ['eyes:Curl', 'eyes:Server', 'vg:Axios', 'vg:Fetch', 'pub:Curl']
     await checkNetwork()
     sanitizeApiKey()
-    assert.deepStrictEqual(output, {
-      reg: [
-        ['Eyes check netwrok running with', '{"apiKey":"someKey"}', '\n\n'],
-        ['[1] Checking eyes servers api', undefined, '\n'],
-        ['[eyes] server connector', '- [ ? ]'],
-        ['[eyes] axios', '- [ ? ]'],
-        ['[eyes] node-fetch', '- [ ? ]'],
-        ['[eyes] cURL', '- [ ? ]'],
-        ['[2]  Checking visual grid servers api', undefined, '\n'],
-        ['[VG] server connector', '- [ ? ]'],
-        ['[VG] axios', '- [ ? ]'],
-        ['[VG] node-fetch', '- [ ? ]'],
-        ['[VG] cURL', '- [ ? ]'],
-        ['[3] Checking simple public api', undefined, '\n'],
-        ['[public] axios', '- [ ? ]'],
-        ['[public] node-fetch', '- [ ? ]'],
-        ['[public] cURL', '- [ ? ]'],
+    assert.deepStrictEqual(output, [
+      [
+        '\u001b[36mEyes check netwrok running with {"apiKey":"someKey"} HTTP_PROXY="" HTTPS_PROXY="". \u001b[39m\n\u001b[36m\u001b[39m\n\u001b[36m\u001b[39m',
       ],
-      err: [
-        ['[eyes] server connector', '- [ X ]', 'eyes:Server', '\n'],
-        ['[eyes] cURL', '- [ X ]', 'eyes:Curl', '\n'],
-        ['[VG] axios', '- [ X ]', 'vg:Axios', '\n'],
-        ['[VG] node-fetch', '- [ X ]', 'vg:Fetch', '\n'],
-        ['\nFAILED!\n'],
-        [
-          'YOUR PROXY SEEMS TO BE BLOCKING APPLITOOLS REQUESTS, PLEASE MAKE SURE THE FOLLOWING COMMAND SUCCEED:\ncurl -X GET undefined\n',
-        ],
+      ['\u001b[36m[1] Checking eyes servers api  \u001b[39m\n\u001b[36m\u001b[39m'],
+      ['\u001b[32m[eyes] cURL                    [ ?  ]\u001b[39m'],
+      [
+        '\u001b[31m[eyes] cURL                    [ X  ]  +0 eyes:Curl \u001b[39m\n\u001b[31m\u001b[39m',
       ],
-      success: [
-        ['[eyes] axios', '- [ OK ]', '\n'],
-        ['[eyes] node-fetch', '- [ OK ]', '\n'],
-        ['[VG] server connector', '- [ OK ]', '\n'],
-        ['[VG] cURL', '- [ OK ]', '\n'],
-        ['[public] axios', '- [ OK ]', '\n'],
-        ['[public] node-fetch', '- [ OK ]', '\n'],
-        ['[public] cURL', '- [ X ]', 'pub:Curl', '\n'],
-        ['[public] PUBLIC ACCESS TO undefined IS RESTRICTED\n'],
+      ['\u001b[32m[eyes] https                   [ ?  ]\u001b[39m'],
+      ['\u001b[32m[eyes] https                   [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[eyes] axios                   [ ?  ]\u001b[39m'],
+      ['\u001b[32m[eyes] axios                   [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[eyes] node-fetch              [ ?  ]\u001b[39m'],
+      ['\u001b[32m[eyes] node-fetch              [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[eyes] server connector        [ ?  ]\u001b[39m'],
+      [
+        '\u001b[31m[eyes] server connector        [ X  ]  +0 eyes:Server \u001b[39m\n\u001b[31m\u001b[39m',
       ],
-    })
+      ['\u001b[36m[2] Checking visual grid servers api  \u001b[39m\n\u001b[36m\u001b[39m'],
+      ['\u001b[32m[VG] cURL                      [ ?  ]\u001b[39m'],
+      ['\u001b[32m[VG] cURL                      [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[VG] https                     [ ?  ]\u001b[39m'],
+      ['\u001b[32m[VG] https                     [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[32m[VG] axios                     [ ?  ]\u001b[39m'],
+      [
+        '\u001b[31m[VG] axios                     [ X  ]  +0 vg:Axios \u001b[39m\n\u001b[31m\u001b[39m',
+      ],
+      ['\u001b[32m[VG] node-fetch                [ ?  ]\u001b[39m'],
+      [
+        '\u001b[31m[VG] node-fetch                [ X  ]  +0 vg:Fetch \u001b[39m\n\u001b[31m\u001b[39m',
+      ],
+      ['\u001b[32m[VG] server connector          [ ?  ]\u001b[39m'],
+      ['\u001b[32m[VG] server connector          [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
+      ['\u001b[31m\u001b[39m\n\u001b[31mFAILED!\u001b[39m\n\u001b[31m\u001b[39m'],
+      [
+        '\u001b[31m\u001b[39m\n\u001b[31mYOUR PROXY SEEMS TO BE BLOCKING APPLITOOLS REQUESTS, PLEASE MAKE SURE THE FOLLOWING COMMAND SUCCEED:\u001b[39m\n\u001b[31mcurl undefined\u001b[39m\n\u001b[31m\u001b[39m',
+      ],
+    ])
   })
 })
