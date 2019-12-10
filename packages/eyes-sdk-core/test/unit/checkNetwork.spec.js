@@ -62,7 +62,7 @@ describe('checkNetwork', () => {
   }
 
   const stream = {
-    write: (...args) => output.push(args),
+    write: (...args) => output.push(args[0]),
     cursorTo: () => {},
     clearLine: () => {},
   }
@@ -72,8 +72,9 @@ describe('checkNetwork', () => {
     vg,
   })
 
-  const sanitizeApiKey = () => {
-    output[0][0] = output[0][0].replace(/{"apiKey":".+"}/, '{"apiKey":"someKey"}')
+  const sanitize = () => {
+    output[0] = output[0].replace(/{"apiKey":".+"}/, '{"apiKey":"someKey"}')
+    output = output.map(line => line.replace(/\u001b\[\d+m/g, ''))
   }
 
   beforeEach(() => {
@@ -83,79 +84,65 @@ describe('checkNetwork', () => {
 
   it('work', async () => {
     await checkNetwork()
-    sanitizeApiKey()
+    sanitize()
     assert.deepStrictEqual(output, [
-      [
-        '\u001b[36mEyes check netwrok running with {"apiKey":"someKey"} HTTP_PROXY="" HTTPS_PROXY="". \u001b[39m\n\u001b[36m\u001b[39m\n\u001b[36m\u001b[39m',
-      ],
-      ['\u001b[36m[1] Checking eyes servers api  \u001b[39m\n\u001b[36m\u001b[39m'],
-      ['\u001b[32m[eyes] cURL                    [ ?  ]\u001b[39m'],
-      ['\u001b[32m[eyes] cURL                    [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[eyes] https                   [ ?  ]\u001b[39m'],
-      ['\u001b[32m[eyes] https                   [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[eyes] axios                   [ ?  ]\u001b[39m'],
-      ['\u001b[32m[eyes] axios                   [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[eyes] node-fetch              [ ?  ]\u001b[39m'],
-      ['\u001b[32m[eyes] node-fetch              [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[eyes] server connector        [ ?  ]\u001b[39m'],
-      ['\u001b[32m[eyes] server connector        [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[36m[2] Checking visual grid servers api  \u001b[39m\n\u001b[36m\u001b[39m'],
-      ['\u001b[32m[VG] cURL                      [ ?  ]\u001b[39m'],
-      ['\u001b[32m[VG] cURL                      [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[VG] https                     [ ?  ]\u001b[39m'],
-      ['\u001b[32m[VG] https                     [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[VG] axios                     [ ?  ]\u001b[39m'],
-      ['\u001b[32m[VG] axios                     [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[VG] node-fetch                [ ?  ]\u001b[39m'],
-      ['\u001b[32m[VG] node-fetch                [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[VG] server connector          [ ?  ]\u001b[39m'],
-      ['\u001b[32m[VG] server connector          [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m\u001b[39m\n\u001b[32mSUCCESS!\u001b[39m\n\u001b[32m\u001b[39m'],
+      'Eyes check netwrok running with {"apiKey":"someKey"} HTTP_PROXY="" HTTPS_PROXY="". \n\n',
+      '[1] Checking eyes servers api  \n',
+      '[eyes] cURL                    [ ?  ]',
+      '[eyes] cURL                    [ OK ]  +0 \n',
+      '[eyes] https                   [ ?  ]',
+      '[eyes] https                   [ OK ]  +0 \n',
+      '[eyes] axios                   [ ?  ]',
+      '[eyes] axios                   [ OK ]  +0 \n',
+      '[eyes] node-fetch              [ ?  ]',
+      '[eyes] node-fetch              [ OK ]  +0 \n',
+      '[eyes] server connector        [ ?  ]',
+      '[eyes] server connector        [ OK ]  +0 \n',
+      '[2] Checking visual grid servers api  \n',
+      '[VG] cURL                      [ ?  ]',
+      '[VG] cURL                      [ OK ]  +0 \n',
+      '[VG] https                     [ ?  ]',
+      '[VG] https                     [ OK ]  +0 \n',
+      '[VG] axios                     [ ?  ]',
+      '[VG] axios                     [ OK ]  +0 \n',
+      '[VG] node-fetch                [ ?  ]',
+      '[VG] node-fetch                [ OK ]  +0 \n',
+      '[VG] server connector          [ ?  ]',
+      '[VG] server connector          [ OK ]  +0 \n',
+      '\nSUCCESS!\n',
     ])
   })
 
   it('displays errors', async () => {
     throwFor = ['eyes:Curl', 'eyes:Server', 'vg:Axios', 'vg:Fetch', 'pub:Curl']
     await checkNetwork()
-    sanitizeApiKey()
+    sanitize()
     assert.deepStrictEqual(output, [
-      [
-        '\u001b[36mEyes check netwrok running with {"apiKey":"someKey"} HTTP_PROXY="" HTTPS_PROXY="". \u001b[39m\n\u001b[36m\u001b[39m\n\u001b[36m\u001b[39m',
-      ],
-      ['\u001b[36m[1] Checking eyes servers api  \u001b[39m\n\u001b[36m\u001b[39m'],
-      ['\u001b[32m[eyes] cURL                    [ ?  ]\u001b[39m'],
-      [
-        '\u001b[31m[eyes] cURL                    [ X  ]  +0 eyes:Curl \u001b[39m\n\u001b[31m\u001b[39m',
-      ],
-      ['\u001b[32m[eyes] https                   [ ?  ]\u001b[39m'],
-      ['\u001b[32m[eyes] https                   [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[eyes] axios                   [ ?  ]\u001b[39m'],
-      ['\u001b[32m[eyes] axios                   [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[eyes] node-fetch              [ ?  ]\u001b[39m'],
-      ['\u001b[32m[eyes] node-fetch              [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[eyes] server connector        [ ?  ]\u001b[39m'],
-      [
-        '\u001b[31m[eyes] server connector        [ X  ]  +0 eyes:Server \u001b[39m\n\u001b[31m\u001b[39m',
-      ],
-      ['\u001b[36m[2] Checking visual grid servers api  \u001b[39m\n\u001b[36m\u001b[39m'],
-      ['\u001b[32m[VG] cURL                      [ ?  ]\u001b[39m'],
-      ['\u001b[32m[VG] cURL                      [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[VG] https                     [ ?  ]\u001b[39m'],
-      ['\u001b[32m[VG] https                     [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[32m[VG] axios                     [ ?  ]\u001b[39m'],
-      [
-        '\u001b[31m[VG] axios                     [ X  ]  +0 vg:Axios \u001b[39m\n\u001b[31m\u001b[39m',
-      ],
-      ['\u001b[32m[VG] node-fetch                [ ?  ]\u001b[39m'],
-      [
-        '\u001b[31m[VG] node-fetch                [ X  ]  +0 vg:Fetch \u001b[39m\n\u001b[31m\u001b[39m',
-      ],
-      ['\u001b[32m[VG] server connector          [ ?  ]\u001b[39m'],
-      ['\u001b[32m[VG] server connector          [ OK ]  +0 \u001b[39m\n\u001b[32m\u001b[39m'],
-      ['\u001b[31m\u001b[39m\n\u001b[31mFAILED!\u001b[39m\n\u001b[31m\u001b[39m'],
-      [
-        '\u001b[31m\u001b[39m\n\u001b[31mYOUR PROXY SEEMS TO BE BLOCKING APPLITOOLS REQUESTS, PLEASE MAKE SURE THE FOLLOWING COMMAND SUCCEED:\u001b[39m\n\u001b[31mcurl undefined\u001b[39m\n\u001b[31m\u001b[39m',
-      ],
+      'Eyes check netwrok running with {"apiKey":"someKey"} HTTP_PROXY="" HTTPS_PROXY="". \n\n',
+      '[1] Checking eyes servers api  \n',
+      '[eyes] cURL                    [ ?  ]',
+      '[eyes] cURL                    [ X  ]  +0 eyes:Curl \n',
+      '[eyes] https                   [ ?  ]',
+      '[eyes] https                   [ OK ]  +0 \n',
+      '[eyes] axios                   [ ?  ]',
+      '[eyes] axios                   [ OK ]  +0 \n',
+      '[eyes] node-fetch              [ ?  ]',
+      '[eyes] node-fetch              [ OK ]  +0 \n',
+      '[eyes] server connector        [ ?  ]',
+      '[eyes] server connector        [ X  ]  +0 eyes:Server \n',
+      '[2] Checking visual grid servers api  \n',
+      '[VG] cURL                      [ ?  ]',
+      '[VG] cURL                      [ OK ]  +0 \n',
+      '[VG] https                     [ ?  ]',
+      '[VG] https                     [ OK ]  +0 \n',
+      '[VG] axios                     [ ?  ]',
+      '[VG] axios                     [ X  ]  +0 vg:Axios \n',
+      '[VG] node-fetch                [ ?  ]',
+      '[VG] node-fetch                [ X  ]  +0 vg:Fetch \n',
+      '[VG] server connector          [ ?  ]',
+      '[VG] server connector          [ OK ]  +0 \n',
+      '\nFAILED!\n',
+      '\nYOUR PROXY SEEMS TO BE BLOCKING APPLITOOLS REQUESTS, PLEASE MAKE SURE THE FOLLOWING COMMAND SUCCEED:\ncurl undefined\n',
     ])
   })
 })
