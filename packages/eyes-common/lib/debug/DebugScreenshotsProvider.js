@@ -4,7 +4,7 @@ const DEFAULT_PREFIX = 'screenshot_'
 const DEFAULT_PATH = ''
 
 /**
- * Interface for saving debug screenshots.
+ * Interface for saving debug screenshots!
  *
  * @abstract
  */
