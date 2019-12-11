@@ -3,9 +3,8 @@
   "command": {
     "publish": {
       "allowBranch": "master",
-      "conventionalCommits": true,
       "changelog": false,
-      "message": "chore: version release",
+      "message": "version release",
       "ignoreChanges": [
         "**/*.md",
         "**/example/**",
