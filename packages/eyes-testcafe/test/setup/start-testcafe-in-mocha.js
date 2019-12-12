@@ -9,7 +9,7 @@ function startTestCafe({beforeEach, afterEach}) {
     testCafe = await createTestCafe('localhost', 1337)
     if (!process.env.APPLITOOLS_DEBUG_TEST) {
       runner = testCafe.createRunner()
-      browser = 'ie:headless'
+      browser = 'chrome:headless'
     } else {
       runner = testCafe.createLiveModeRunner()
       browser = 'chrome'
