@@ -1,16 +1,19 @@
 /* global fixture */
 
-'use strict';
+'use strict'
 
-const { Configuration } = require('@applitools/eyes-common');
-const { Eyes, Target } = require('../../../');
+const {Configuration, ConsoleLogHandler} = require('@applitools/eyes-common')
+const {Eyes, Target} = require('../../../')
 
-fixture`Hello world`.page`https://applitools.com/helloworld`; // eslint-disable-line no-unused-expressions
+fixture`Hello world`.page`https://applitools.com/helloworld` // eslint-disable-line no-unused-expressions
 
-test('helloworld viewport', async (t) => {
-  const eyes = new Eyes();
-  eyes.setConfiguration(new Configuration({ showLogs: !!process.env.APPLITOOLS_SHOW_LOGS, viewportSize: { width: 800, height: 600 } }));
-  await eyes.open(t, 'Applitools helloworld', 'eyes-testcafe e2e - viewport');
-  await eyes.check('some tag', Target.window());
-  await eyes.close();
-});
+test('helloworld viewport', async t => {
+  const eyes = new Eyes()
+  if (process.env.APPLITOOLS_SHOW_LOGS || process.env.APPLITOOLS_DEBUG_TEST) {
+    eyes.setLogHandler(new ConsoleLogHandler(true))
+  }
+  eyes.setConfiguration(new Configuration({viewportSize: {width: 800, height: 600}}))
+  await eyes.open(t, 'Applitools helloworld', 'eyes-testcafe e2e - viewport')
+  await eyes.check('some tag', Target.window())
+  await eyes.close()
+})

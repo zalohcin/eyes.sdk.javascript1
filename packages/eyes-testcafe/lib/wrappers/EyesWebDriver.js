@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const rmrf = require('rimraf');
 
+const { ClientFunction } = require('testcafe');
 const { FrameChain } = require('../frames/FrameChain');
 const { EyesSeleniumUtils } = require('../EyesSeleniumUtils');
 const { EyesWebElement } = require('./EyesWebElement');
@@ -16,6 +17,12 @@ const { TestCafeJavaScriptExecutor } = require('../TestCafeJavaScriptExecutor');
 
 
 const SCREENSHOTS_PATH = '/.applitools__screenshots';
+const getViewport = () => Promise.resolve({
+  // eslint-disable-next-line no-undef
+  width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+  // eslint-disable-next-line no-undef
+  height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
+});
 
 /**
  * An Eyes implementation of the interfaces implemented by {@link IWebDriver}.
@@ -48,6 +55,7 @@ class EyesWebDriver {
     this._defaultContentViewportSize = null;
 
     this._executor = new TestCafeJavaScriptExecutor(driver);
+    this._clientFunctions = {};
 
     // this._logger.verbose("Driver session is " + this.getSessionId());
   }
@@ -202,14 +210,15 @@ class EyesWebDriver {
    * @inheritDoc
    */
   getCurrentUrl() {
-    return this._driver.eval(() => window.location.href); /* global window */
+    // eslint-disable-next-line no-undef
+    return this._evalWithDriver(() => window.location.href);
   }
 
   /**
    * @inheritDoc
    */
-  getTitle() {
-    return this._driver.getTitle();
+  async getTitle() {
+    return Selector('title').with({ boundTestRun: this._driver }).innerText;
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -257,11 +266,12 @@ class EyesWebDriver {
     }
   }
 
-  /**
-   * @inheritDoc
-   */
-  manage() {
-    return this._driver.manage();
+  async getViewport() {
+    return this._executor.executeScript(getViewport);
+  }
+
+  async resizeWindow(width, height) {
+    return this._driver.resizeWindow(width, height);
   }
 
   /**
@@ -415,13 +425,21 @@ class EyesWebDriver {
    */
   async getUserAgent() {
     try {
-      const userAgent = await this._driver.eval(() => navigator.userAgent); /* globals navigator */
+      // eslint-disable-next-line no-undef
+      const userAgent = await this._evalWithDriver(() => navigator.userAgent, 'getUserAgent')();
       this._logger.verbose(`user agent: ${userAgent}`);
       return userAgent;
     } catch (err) {
       this._logger.verbose(`Failed to obtain user-agent string ${err}`);
       return null;
     }
+  }
+
+  _evalWithDriver(func, functionName) {
+    if (!this._clientFunctions[functionName]) {
+      this._clientFunctions[functionName] = ClientFunction(func);
+    }
+    return this._clientFunctions[functionName].with({ boundTestRun: this._driver });
   }
 
   // noinspection JSUnusedGlobalSymbols

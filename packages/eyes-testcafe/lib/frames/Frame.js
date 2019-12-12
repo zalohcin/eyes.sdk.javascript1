@@ -111,7 +111,7 @@ class Frame {
   async hideScrollbars(driver) {
     const scrollRootElement = await this.getForceScrollRootElement(driver);
     this._logger.verbose('hiding scrollbars of element:', scrollRootElement);
-    this._originalOverflow = await this._jsExecutor.executeScript("var origOF = arguments[0].style.overflow; arguments[0].style.overflow='hidden'; return origOF;", scrollRootElement);
+    this._originalOverflow = await this._jsExecutor.executeScript("var origOF = arguments[0]().style.overflow; arguments[0].style.overflow='hidden'; return origOF;", scrollRootElement);
   }
 
   /**
@@ -121,7 +121,7 @@ class Frame {
   async returnToOriginalOverflow(driver) {
     const scrollRootElement = await this.getForceScrollRootElement(driver);
     this._logger.verbose('returning overflow of element to its original value:', scrollRootElement);
-    await this._jsExecutor.executeScript(`arguments[0].style.overflow='${this._originalOverflow}';`, scrollRootElement);
+    await this._jsExecutor.executeScript(`arguments[0]().style.overflow='${this._originalOverflow}';`, scrollRootElement);
   }
 
   /**

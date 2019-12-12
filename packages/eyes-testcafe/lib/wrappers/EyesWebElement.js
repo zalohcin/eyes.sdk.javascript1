@@ -4,9 +4,9 @@ const { Selector } = require('testcafe');
 const { Region, ArgumentGuard, CoordinatesType, TypeUtils, RectangleSize, Location, EyesError, GeneralUtils } = require('@applitools/eyes-common');
 const { MouseTrigger } = require('@applitools/eyes-sdk-core');
 
-const JS_GET_SCROLL_SIZE = 'return [arguments[0].scrollWidth, arguments[0].scrollHeight];';
+const JS_GET_SCROLL_SIZE = 'return [arguments[0]().scrollWidth, arguments[0]().scrollHeight];';
 
-const JS_GET_CLIENT_SIZE = 'return [arguments[0].clientWidth, arguments[0].clientHeight];';
+const JS_GET_CLIENT_SIZE = 'return [arguments[0]().clientWidth, arguments[0]().clientHeight];';
 
 const JS_GET_COMPUTED_STYLE_FN = 'function getCmpStyle(el, p) { return window.getComputedStyle ? window.getComputedStyle(el, null).getPropertyValue(p) : (el.currentStyle ? el.currentStyle[p] : null); };';
 
@@ -15,11 +15,11 @@ const JS_GET_COMPUTED_STYLE_FN = 'function getCmpStyle(el, p) { return window.ge
  * @return {string}
  */
 const JS_GET_COMPUTED_STYLE_FORMATTED_STR = styleProp => `${JS_GET_COMPUTED_STYLE_FN
-}return getCmpStyle(arguments[0], '${styleProp}');`;
+}return getCmpStyle(arguments[0](), '${styleProp}');`;
 
-const JS_GET_SCROLL_LOCATION = 'return [arguments[0].scrollLeft, arguments[0].scrollTop];';
+const JS_GET_SCROLL_LOCATION = 'return [arguments[0]().scrollLeft, arguments[0]().scrollTop];';
 
-const JS_GET_OVERFLOW = 'return arguments[0].style.overflow;';
+const JS_GET_OVERFLOW = 'return arguments[0]().style.overflow;';
 
 const JS_GET_BORDER_WIDTHS_ARR =
   'var retVal = retVal || [];' +
@@ -39,7 +39,7 @@ const JS_GET_BORDER_WIDTHS_ARR =
   '}';
 
 const JS_GET_SIZE_AND_BORDER_WIDTHS =
-  `${'var elem = arguments[0]; ' +
+  `${'var elem = arguments[0](); ' +
   'var retVal = [elem.clientWidth, elem.clientHeight]; '}${
     JS_GET_BORDER_WIDTHS_ARR
   }return retVal;`;
@@ -277,8 +277,8 @@ class EyesWebElement {
    */
   scrollTo(location) {
     try {
-      const script = `arguments[0].scrollLeft = ${location.getX()}; arguments[0].scrollTop = ${location.getY()};` +
-        'return [arguments[0].scrollLeft, arguments[0].scrollTop];';
+      const script = `arguments[0]().scrollLeft = ${location.getX()}; arguments[0]().scrollTop = ${location.getY()};` +
+        'return [arguments[0]().scrollLeft, arguments[0]().scrollTop];';
 
       const position = this.executeScript(script);
       return new Location(Math.ceil(position[0]) || 0, Math.ceil(position[1]) || 0);
@@ -299,7 +299,7 @@ class EyesWebElement {
    * @return {Promise} - The overflow of the element.
    */
   setOverflow(overflow) {
-    return this.executeScript(`arguments[0].style.overflow = '${overflow}'`);
+    return this.executeScript(`arguments[0]().style.overflow = '${overflow}'`);
   }
 
   /**
@@ -308,7 +308,7 @@ class EyesWebElement {
    */
   executeScript(script) {
     // noinspection JSValidateTypes
-    return this._eyesDriver.executeScript(script, this);
+    return this._eyesDriver.executeScript(script, this._webElement);
   }
 
   // noinspection JSCheckFunctionSignatures

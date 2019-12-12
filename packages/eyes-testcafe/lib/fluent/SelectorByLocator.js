@@ -32,7 +32,7 @@ class SelectorByLocator extends GetSelector {
     const elements = await eyes._driver.findElements(this._selector);
     if (elements && elements.length > 0) {
       for (let i = 0; i < elements.length; i += 1) {
-        await eyes._driver.executeScript(`arguments[0].setAttribute('${EYES_SELECTOR_TAG}', '${randId}');`, elements[i]);
+        await eyes._driver.executeScript(`arguments[0]().setAttribute('${EYES_SELECTOR_TAG}', '${randId}');`, elements[i]);
       }
     }
 

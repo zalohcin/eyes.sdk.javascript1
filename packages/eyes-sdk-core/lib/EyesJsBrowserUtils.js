@@ -96,6 +96,7 @@ class EyesJsBrowserUtils {
     ArgumentGuard.notNull(executor, 'executor')
     ArgumentGuard.notNull(rootElement, 'rootElement')
 
+    // TODO - THIS IS ONLY FOR TESTCAFE: arguments[0]() !!!
     const script =
       `var el = arguments[0](); var origOverflow = el.style['overflow-y']; var newOverflow = '${value}'; ` +
       'el.style["overflow-y"] = newOverflow; ' +
