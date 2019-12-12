@@ -51,8 +51,8 @@ class ScrollPositionProvider extends PositionProvider {
     try {
       this._logger.verbose(`setting position of ${this._scrollRootElement} to ${location}`);
 
-      const script = `arguments[0].scrollLeft=${location.getX()}; arguments[0].scrollTop=${location.getY()};` +
-        'return [arguments[0].scrollLeft, arguments[0].scrollTop];';
+      const script = `arguments[0]().scrollLeft=${location.getX()}; arguments[0]().scrollTop=${location.getY()};` +
+        'return [arguments[0]().scrollLeft, arguments[0]().scrollTop];';
 
       const result = await this._executor.executeScript(script, this._scrollRootElement);
       return new Location(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0);

@@ -25,6 +25,7 @@ const {
   NullCutProvider,
   MatchResult,
 } = require('@applitools/eyes-sdk-core');
+const captureFrameAndPoll = require('../dist/captureFrameAndPoll');
 
 const { ClassicRunner } = require('./runner/ClassicRunner');
 const { ImageProviderFactory } = require('./capture/ImageProviderFactory');
@@ -756,9 +757,9 @@ class EyesTestCafe extends Eyes {
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...');
-      return await DomCapture.getFullWindowDom(this._logger, this._driver);
+      return await DomCapture.getFullWindowDom(this._logger, this._driver, undefined, undefined, captureFrameAndPoll);
     } catch (err) {
-      this._logger.log(`Error capturing DOM of the page: ${err}`);
+      this._logger.log(`Error capturing DOM of the page: ${JSON.stringify(err)}`);
       return '';
     }
   }
@@ -1041,7 +1042,7 @@ class EyesTestCafe extends Eyes {
 
     if (this._configuration.getHideCaret() && activeElement != null) {
       try {
-        await this._driver.executeScript('arguments[0].focus();', activeElement);
+        await this._driver.executeScript('arguments[0]().focus();', activeElement);
       } catch (err) {
         this._logger.verbose(`WARNING: Could not return focus to active element! ${err}`);
       }
@@ -1067,7 +1068,7 @@ class EyesTestCafe extends Eyes {
 
     if (scrolledElement) {
       try {
-        await this._jsExecutor.executeScript("arguments[0].setAttribute('data-applitools-scroll','true');", scrolledElement);
+        await this._jsExecutor.executeScript("arguments[0]().setAttribute('data-applitools-scroll','true');", scrolledElement);
       } catch (err) {
         this._logger.verbose("Can't set data attribute for element", err);
       }

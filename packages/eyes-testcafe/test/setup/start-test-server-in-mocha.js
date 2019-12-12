@@ -1,25 +1,25 @@
-'use strict';
+'use strict'
 
-const testServer = require('./test-server');
+const testServer = require('./test-server')
 
-function startTestServer({ before, after, port = 0 }) {
-  let actualPort, close;
+function startTestServer({before, after, port = 0}) {
+  let actualPort, close
 
   before(async () => {
-    const server = await testServer({ port });
-    actualPort = server.port;
-    close = server.close;
-  });
+    const server = await testServer({port})
+    actualPort = server.port
+    close = server.close
+  })
 
   after(async () => {
-    await close();
-  });
+    await close()
+  })
 
-  return { getPort };
+  return {getPort}
 
   function getPort() {
-    return actualPort;
+    return actualPort
   }
 }
 
-module.exports = startTestServer; // eslint-disable-line node/exports-style
+module.exports = startTestServer // eslint-disable-line node/exports-style

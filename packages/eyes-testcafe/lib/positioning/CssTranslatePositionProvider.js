@@ -48,8 +48,8 @@ class CssTranslatePositionProvider extends PositionProvider {
     ArgumentGuard.notNull(location, 'location');
     this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`);
 
-    await this._executor.executeScript(`arguments[0].style.transform = 'translate(10px, -${location.getY()}px)';`, this._scrollRootElement);
-    await this._executor.executeScript(`arguments[0].style.transform = 'translate(-${location.getX()}px, -${location.getY()}px)';`, this._scrollRootElement);
+    await this._executor.executeScript(`arguments[0]().style.transform = 'translate(10px, -${location.getY()}px)';`, this._scrollRootElement);
+    await this._executor.executeScript(`arguments[0]().style.transform = 'translate(-${location.getX()}px, -${location.getY()}px)';`, this._scrollRootElement);
 
     this._logger.verbose('Done!');
     this._lastSetPosition = location;
@@ -70,7 +70,7 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @return {Promise<CssTranslatePositionMemento>}
    */
   async getState() {
-    const transforms = await this._executor.executeScript('return arguments[0].style.transform;', this._scrollRootElement);
+    const transforms = await this._executor.executeScript('return arguments[0]().style.transform;', this._scrollRootElement);
     this._logger.verbose('Current transform', transforms);
     return new CssTranslatePositionMemento(transforms, this._lastSetPosition);
   }
@@ -82,8 +82,8 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @return {Promise}
    */
   async restoreState(state) {
-    const script = 'var originalTransform = arguments[0].style.transform;' +
-      `arguments[0].style.transform = '${state.getTransform()}';` +
+    const script = 'var originalTransform = arguments[0]().style.transform;' +
+      `arguments[0]().style.transform = '${state.getTransform()}';` +
       'return originalTransform;';
 
     await this._executor.executeScript(script, this._scrollRootElement);

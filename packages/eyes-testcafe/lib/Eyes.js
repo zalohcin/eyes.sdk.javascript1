@@ -451,6 +451,7 @@ class Eyes extends EyesBase {
         await EyesSeleniumUtils.setViewportSize(this._logger, this._driver, size);
         this._effectiveViewport = new Region(Location.ZERO, size);
       } catch (err) {
+        this._logger.verbose('Failed to set viewport size', err);
         await this._driver.switchTo().frames(originalFrame); // Just in case the user catches that error
         throw new TestFailedError('Failed to set the viewport size', err);
       }

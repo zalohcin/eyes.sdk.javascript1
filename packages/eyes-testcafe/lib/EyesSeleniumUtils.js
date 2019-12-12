@@ -8,8 +8,8 @@ const { ImageOrientationHandler } = require('./ImageOrientationHandler');
 const { JavascriptHandler } = require('./JavascriptHandler');
 
 const JS_GET_ENTIRE_PAGE_SIZE =
-  'var width = Math.max(arguments[0].clientWidth, arguments[0].scrollWidth);' +
-  'var height = Math.max(arguments[0].clientHeight, arguments[0].scrollHeight);' +
+  'var width = Math.max(arguments[0]().clientWidth, arguments[0]().scrollWidth);' +
+  'var height = Math.max(arguments[0]().clientHeight, arguments[0]().scrollHeight);' +
   'return [width, height];';
 
 let imageOrientationHandler = new class ImageOrientationHandlerImpl extends ImageOrientationHandler {
@@ -35,34 +35,6 @@ let imageOrientationHandler = new class ImageOrientationHandlerImpl extends Imag
 }();
 
 let javascriptHandler = new class JavascriptHandlerImpl extends JavascriptHandler {}();
-
-/**
- * @param {Logger} logger
- * @param {IWebDriver} driver
- * @param {RectangleSize} requiredSize
- * @param {number} sleep
- * @param {number} retriesLeft
- * @return {Promise<boolean>}
- */
-async function setBrowserSizeLoop(logger, driver, requiredSize, sleep, retriesLeft) {
-  logger.verbose(`Trying to set browser size to: ${requiredSize}`);
-  await driver.manage().window().setRect(requiredSize.toJSON());
-  await driver.sleep(sleep);
-
-  const rect = await driver.manage().window().getRect();
-  const currentSize = new RectangleSize(rect);
-  logger.verbose(`Current browser size: ${currentSize}`);
-  if (currentSize.equals(requiredSize)) {
-    return true;
-  }
-
-  if (retriesLeft <= 1) {
-    logger.verbose('Failed to set browser size: retries is out.');
-    return false;
-  }
-
-  return setBrowserSizeLoop(logger, driver, requiredSize, sleep, retriesLeft - 1);
-}
 
 // noinspection OverlyComplexFunctionJS
 /**
@@ -243,7 +215,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
 
       // If we failed to extract the viewport size using JS, will use the window size instead.
       logger.verbose('Using window size as viewport size.');
-      let { width, height } = await driver.manage().window().getRect();
+      let { width, height } = await driver.getViewport();
 
       // noinspection EmptyCatchBlockJS
       try {
@@ -267,14 +239,12 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    * @param {Logger} logger - The logger to use.
    * @param {IWebDriver} driver - The web driver to use.
    * @param {RectangleSize} requiredSize - The size to set
-   * @return {Promise<boolean>}
    */
-  static setBrowserSize(logger, driver, requiredSize) {
-    // noinspection MagicNumberJS
-    const SLEEP = 1000;
-    const RETRIES = 3;
-
-    return setBrowserSizeLoop(logger, driver, requiredSize, SLEEP, RETRIES);
+  static async setBrowserSize(logger, driver, requiredSize) {
+    logger.verbose(`Trying to set browser size to: ${requiredSize}`);
+    const { width, height } = requiredSize.toJSON();
+    await driver.resizeWindow(width, height);
+    // removed retry and sleep mechansims (were in Seleneium)..
   }
 
   /**
@@ -282,10 +252,10 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    * @param {IWebDriver} driver - The web driver to use.
    * @param {RectangleSize} actualViewportSize
    * @param {RectangleSize} requiredViewportSize
-   * @return {Promise<boolean>}
+   * @return {Promise<undefined>}
    */
   static async setBrowserSizeByViewportSize(logger, driver, actualViewportSize, requiredViewportSize) {
-    const browserSize = await driver.manage().window().getRect();
+    const browserSize = await driver.getViewport();
     const currentSize = new RectangleSize(browserSize);
     logger.verbose(`Current browser size: ${currentSize}`);
     const requiredBrowserSize = new RectangleSize({
@@ -318,13 +288,6 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
       return true;
     }
 
-    try {
-      // We move the window to (0,0) to have the best chance to be able to set the viewport size as requested.
-      await driver.manage().window().setRect({ x: 0, y: 0 });
-    } catch (ignored) {
-      logger.verbose('Warning: Failed to move the browser window to (0,0)');
-    }
-
     await EyesSeleniumUtils.setBrowserSizeByViewportSize(logger, driver, initViewportSize, requiredSize);
     const actualViewportSize = await EyesSeleniumUtils.getViewportSize(driver);
 
@@ -350,7 +313,7 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
     const heightDiff = finalViewportSize.getHeight() - requiredSize.getHeight();
     const heightStep = heightDiff > 0 ? -1 : 1;
 
-    const rect = await driver.manage().window().getRect();
+    const rect = await driver.getViewport();
     const browserSize = new RectangleSize(rect);
 
     const currWidthChange = 0;

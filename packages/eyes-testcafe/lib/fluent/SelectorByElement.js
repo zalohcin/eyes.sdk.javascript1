@@ -25,7 +25,7 @@ class SelectorByElement extends GetSelector {
    */
   async getSelector(eyes) { // eslint-disable-line no-unused-vars
     const randId = GeneralUtils.randomAlphanumeric();
-    await eyes._driver.executeScript(`arguments[0].setAttribute('${EYES_SELECTOR_TAG}', '${randId}');`, this._element);
+    await eyes._driver.executeScript(`arguments[0]().setAttribute('${EYES_SELECTOR_TAG}', '${randId}');`, this._element);
     return `[${EYES_SELECTOR_TAG}="${randId}"]`;
   }
 }
