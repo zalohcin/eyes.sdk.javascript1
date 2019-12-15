@@ -1,6 +1,7 @@
 'use strict'
 
 require('chromedriver')
+const {expect} = require('chai')
 const {Builder, By} = require('selenium-webdriver')
 const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
 const {
@@ -13,13 +14,17 @@ const {
   Region,
 } = require('../../index')
 
+function buildDriver() {
+  return new Builder()
+    .forBrowser('chrome')
+    .setChromeOptions(new ChromeOptions().headless())
+    .build()
+}
+
 let /** @type {WebDriver} */ driver, /** @type {Eyes} */ eyes
 describe('VisualGridCheckFluent', () => {
   before(async () => {
-    driver = await new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(new ChromeOptions().headless())
-      .build()
+    driver = await buildDriver()
     eyes = new Eyes(new VisualGridRunner())
     eyes.setLogHandler(new ConsoleLogHandler(false))
     await driver.get('http://applitools.github.io/demo/TestPages/FramesTestPage/')
@@ -79,4 +84,36 @@ describe('VisualGridCheckFluent', () => {
   afterEach(async () => eyes.abort())
 
   after(() => driver.quit())
+})
+
+describe('Multi version browsers in Visual Grid', () => {
+  before(async () => {
+    driver = await buildDriver()
+  })
+
+  beforeEach(async function() {
+    eyes = new Eyes(new VisualGridRunner())
+    eyes.setLogHandler(new ConsoleLogHandler(false))
+    const configuration = eyes.getConfiguration()
+    configuration.setAppName(this.test.parent.title)
+    configuration.setTestName(this.currentTest.title)
+    configuration.setProxy(process.env.APPLITOOLS_PROXY)
+    eyes.setConfiguration(configuration)
+  })
+
+  it('chrome, firefox, safari', async () => {
+    const configuration = eyes.getConfiguration()
+    const browsers = [
+      {width: 640, height: 480, name: BrowserType.CHROME_TWO_VERSIONS_BACK},
+      {width: 640, height: 480, name: BrowserType.FIREFOX_TWO_VERSIONS_BACK},
+      {width: 640, height: 480, name: BrowserType.SAFARI_TWO_VERSIONS_BACK},
+    ]
+    configuration.addBrowsers.apply(configuration, browsers)
+    eyes.setConfiguration(configuration)
+    await driver.get('http://applitools.github.io/demo/TestPages/FramesTestPage/')
+    driver = await eyes.open(driver)
+    await eyes.check('Window', Target.window())
+    const results = await eyes.getRunner().getAllTestResults()
+    expect(results._passed).to.equal(browsers.length)
+  })
 })
