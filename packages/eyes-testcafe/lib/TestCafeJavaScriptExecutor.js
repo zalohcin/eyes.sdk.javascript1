@@ -1,8 +1,9 @@
-'use strict';
+'use strict'
 
-const { EyesJsExecutor } = require('@applitools/eyes-sdk-core');
-const { TypeUtils } = require('@applitools/eyes-common');
-const { makeClientFunctionWrapper } = require('./makeClientFunctionWrapper');
+const {EyesJsExecutor} = require('@applitools/eyes-sdk-core')
+const {TypeUtils} = require('@applitools/eyes-common')
+const {makeClientFunctionWrapper} = require('./makeClientFunctionWrapper')
+const isTestcafeSelector = require('./isTestcafeSelector')
 
 /**
  * @ignore
@@ -12,10 +13,10 @@ class TestCafeJavaScriptExecutor extends EyesJsExecutor {
    * @param {EyesWebDriver|WebDriver} driver
    */
   constructor(driver) {
-    super();
+    super()
 
-    this._driver = driver;
-    this._clientFunctionWrapper = makeClientFunctionWrapper({ logger: { log: () => {} } });
+    this._driver = driver
+    this._clientFunctionWrapper = makeClientFunctionWrapper({logger: {log: () => {}}})
   }
 
   /**
@@ -23,31 +24,39 @@ class TestCafeJavaScriptExecutor extends EyesJsExecutor {
    */
   executeScript(script, ...args) {
     if (!TypeUtils.isString(script)) {
-      return this.executeFunction(script);
+      return this.executeFunction(script)
     }
 
-    const dependencies = {};
-    for (let i = 0; i < args.length; i++) { // eslint-disable-line no-plusplus
-      dependencies[`arg${i}`] = args[i];
+    const dependencies = {}
+    for (let i = 0; i < args.length; i++) {
+      // eslint-disable-line no-plusplus
+      dependencies[`arg${i}`] = args[i]
     }
-    const func = new Function(`return (function() {${script}})(${Object.keys(dependencies).join(',')})`); // eslint-disable-line no-new-func
-    return this._driver.eval(func, { dependencies });
+
+    const mapSelector =
+      args.length === 1 && isTestcafeSelector(args[0])
+        ? 'arguments[0] = arguments[0] && arguments[0]()'
+        : 'void(0)'
+    const func = new Function(
+      `return (function() {${mapSelector}; ${script}})(${Object.keys(dependencies).join(',')})`,
+    ) // eslint-disable-line no-new-func
+    return this._driver.eval(func, {dependencies})
   }
 
   /*
    * Note: func must return a Promise (also can't async).
    */
   async executeFunction(func) {
-    const wrappedFunc = await this._clientFunctionWrapper(func);
-    return wrappedFunc(this._driver);
+    const wrappedFunc = await this._clientFunctionWrapper(func)
+    return wrappedFunc(this._driver)
   }
 
   /**
    * @inheritDoc
    */
   sleep(millis) {
-    throw new Error('sleep not implemented in test cafe');
+    throw new Error('sleep not implemented in test cafe')
   }
 }
 
-exports.TestCafeJavaScriptExecutor = TestCafeJavaScriptExecutor;
+exports.TestCafeJavaScriptExecutor = TestCafeJavaScriptExecutor

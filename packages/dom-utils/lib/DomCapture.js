@@ -115,7 +115,10 @@ class DomCapture {
     }
 
     if (result.status === SCRIPT_RESPONSE_STATUS.ERROR) {
-      throw new EyesError('Error during capturing DOM', result.error)
+      throw new EyesError(
+        `Error during capture dom and pull script: '${result.error}'`,
+        result.error,
+      )
     }
 
     if (isCheckTimerTimedOut) {

@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const { SeleniumCheckSettings } = require('./SeleniumCheckSettings');
+const {SeleniumCheckSettings} = require('./SeleniumCheckSettings')
 
 class Target {
   /**
@@ -10,7 +10,7 @@ class Target {
    * @constructor
    */
   static window() {
-    return new SeleniumCheckSettings();
+    return new SeleniumCheckSettings()
   }
 
   /**
@@ -22,7 +22,7 @@ class Target {
    * @constructor
    */
   static region(region, frame) {
-    return new SeleniumCheckSettings(region, frame);
+    return new SeleniumCheckSettings(region, frame)
   }
 
   /**
@@ -33,8 +33,8 @@ class Target {
    * @constructor
    */
   static frame(frame) {
-    return new SeleniumCheckSettings(null, frame);
+    return new SeleniumCheckSettings(null, frame)
   }
 }
 
-exports.Target = Target;
+exports.Target = Target

@@ -7,8 +7,7 @@ const {Eyes, Target, ConsoleLogHandler} = require('../../..')
 
 fixture`Hello world full page`.page`https://applitools.github.io/demo/TestPages/FramesTestPage/` // eslint-disable-line no-unused-expressions
 
-test('css stiching', async t => {
-  // fiale since original looks bad..
+test.only('css stiching', async t => {
   const eyes = new Eyes()
   const configuration = new Configuration({viewportSize: {width: 600, height: 500}})
   eyes.setStitchMode(StitchMode.SCROLL)
