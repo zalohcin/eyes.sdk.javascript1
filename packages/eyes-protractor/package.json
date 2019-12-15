@@ -35,7 +35,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-selenium": "^4.32.3"
+    "@applitools/eyes-selenium": "^4.33.0"
   },
   "devDependencies": {
     "protractor": "^6.0.0-beta"
