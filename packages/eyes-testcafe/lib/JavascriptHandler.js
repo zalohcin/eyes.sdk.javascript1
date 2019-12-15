@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /* eslint-disable no-unused-vars */
 
@@ -13,8 +13,8 @@ class JavascriptHandler {
    * @return {Promise}
    */
   async handle(script, ...args) {
-    return null; // do nothing
+    return null // do nothing
   }
 }
 
-exports.JavascriptHandler = JavascriptHandler;
+exports.JavascriptHandler = JavascriptHandler

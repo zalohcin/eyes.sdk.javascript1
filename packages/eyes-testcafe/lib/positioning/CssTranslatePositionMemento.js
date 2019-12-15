@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const { PositionMemento } = require('@applitools/eyes-sdk-core');
+const {PositionMemento} = require('@applitools/eyes-sdk-core')
 
 /**
  * Encapsulates state for {@link CssTranslatePositionProvider} instances.
@@ -14,10 +14,10 @@ class CssTranslatePositionMemento extends PositionMemento {
    * @param {Location} position
    */
   constructor(transforms, position) {
-    super();
+    super()
 
-    this._transforms = transforms;
-    this._position = position;
+    this._transforms = transforms
+    this._position = position
   }
 
   /**
@@ -25,15 +25,15 @@ class CssTranslatePositionMemento extends PositionMemento {
    *  were taken.
    */
   getTransform() {
-    return this._transforms;
+    return this._transforms
   }
 
   /**
    * @return {Location}
    */
   getPosition() {
-    return this._position;
+    return this._position
   }
 }
 
-exports.CssTranslatePositionMemento = CssTranslatePositionMemento;
+exports.CssTranslatePositionMemento = CssTranslatePositionMemento

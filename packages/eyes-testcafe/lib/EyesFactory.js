@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
-const { Configuration } = require('@applitools/eyes-common');
-const { CorsIframeHandle } = require('@applitools/eyes-sdk-core');
+const {Configuration} = require('@applitools/eyes-common')
+const {CorsIframeHandle} = require('@applitools/eyes-sdk-core')
 
-const { VisualGridRunner } = require('./runner/VisualGridRunner');
-const { EyesRunner } = require('./runner/EyesRunner');
-const { EyesSelenium } = require('./EyesSelenium');
-const { EyesVisualGrid } = require('./EyesVisualGrid');
+const {VisualGridRunner} = require('./runner/VisualGridRunner')
+const {EyesRunner} = require('./runner/EyesRunner')
+const {EyesSelenium} = require('./EyesSelenium')
+const {EyesVisualGrid} = require('./EyesVisualGrid')
 
 /**
  * @ignore
@@ -23,15 +23,15 @@ class EyesFactory {
    */
   constructor(serverUrl, isDisabled, runner) {
     if (serverUrl instanceof EyesRunner) {
-      runner = serverUrl;
-      serverUrl = undefined;
+      runner = serverUrl
+      serverUrl = undefined
     }
 
     if (runner && runner instanceof VisualGridRunner) {
-      return new EyesVisualGrid(serverUrl, isDisabled, runner);
+      return new EyesVisualGrid(serverUrl, isDisabled, runner)
     }
 
-    return new EyesSelenium(serverUrl, isDisabled, runner);
+    return new EyesSelenium(serverUrl, isDisabled, runner)
   }
 
   /**
@@ -43,30 +43,30 @@ class EyesFactory {
    * @param {object} [config] - Additional configuration object.
    */
   static fromBrowserInfo(serverUrl, isDisabled, config = {}) {
-    let eyes;
+    let eyes
 
     if (config.browser) {
-      eyes = new EyesVisualGrid(serverUrl, isDisabled);
+      eyes = new EyesVisualGrid(serverUrl, isDisabled)
 
-      const cfg = new Configuration();
-      const browsers = Array.isArray(config.browser) ? config.browser : [config.browser];
-      browsers.forEach((browser) => {
+      const cfg = new Configuration()
+      const browsers = Array.isArray(config.browser) ? config.browser : [config.browser]
+      browsers.forEach(browser => {
         // If it quacks like a duck
         if (browser.name) {
-          cfg.addBrowser(browser.width, browser.height, browser.name);
+          cfg.addBrowser(browser.width, browser.height, browser.name)
         } else if (browser.deviceName) {
-          cfg.addDeviceEmulation(browser.deviceName, browser.screenOrientation);
+          cfg.addDeviceEmulation(browser.deviceName, browser.screenOrientation)
         }
-      });
-      eyes.setConfiguration(cfg);
+      })
+      eyes.setConfiguration(cfg)
     } else {
-      eyes = new EyesSelenium(serverUrl, isDisabled);
+      eyes = new EyesSelenium(serverUrl, isDisabled)
     }
 
-    eyes._corsIframeHandle = CorsIframeHandle.BLANK;
+    eyes._corsIframeHandle = CorsIframeHandle.BLANK
 
-    return eyes;
+    return eyes
   }
 }
 
-exports.EyesFactory = EyesFactory;
+exports.EyesFactory = EyesFactory

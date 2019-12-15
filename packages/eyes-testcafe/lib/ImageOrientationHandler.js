@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /* eslint-disable no-unused-vars */
 
@@ -13,7 +13,7 @@ class ImageOrientationHandler {
    * @return {Promise<boolean>}
    */
   async isLandscapeOrientation(driver) {
-    throw Error('Method is not implemented!');
+    throw Error('Method is not implemented!')
   }
 
   // noinspection JSMethodCanBeStatic
@@ -24,8 +24,8 @@ class ImageOrientationHandler {
    * @return {Promise<number>}
    */
   async tryAutomaticRotation(logger, driver, image) {
-    throw Error('Method is not implemented!');
+    throw Error('Method is not implemented!')
   }
 }
 
-exports.ImageOrientationHandler = ImageOrientationHandler;
+exports.ImageOrientationHandler = ImageOrientationHandler
