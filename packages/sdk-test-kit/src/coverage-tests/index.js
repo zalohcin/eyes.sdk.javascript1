@@ -57,9 +57,9 @@ function makeCoverageTests({visit, open, check, close}) {
   }
 }
 
-async function runCoverageTests(makeRun, supportedTests) {
+async function runCoverageTests(sdkName, makeRun, supportedTests) {
   // init
-  console.log(`Coverage Tests are running...`)
+  console.log(`Coverage Tests are running for ${sdkName}...`)
   const p = []
   const e = {}
 

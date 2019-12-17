@@ -77,4 +77,4 @@ const supportedTests = [
   'checkWindowFluent',
 ]
 
-runCoverageTests(makeRun, supportedTests)
+runCoverageTests('eyes-selenium', makeRun, supportedTests)
