@@ -57,7 +57,8 @@
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "test:it": "mocha-parallel-tests --timeout 120000 \"test/it/**/*.spec.js\"",
-    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\""
+    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\"",
+    "test:coverage": "node test/coverage/index.js"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
