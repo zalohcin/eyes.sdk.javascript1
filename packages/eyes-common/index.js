@@ -66,3 +66,4 @@ exports.ImageUtils = require('./lib/utils/ImageUtils').ImageUtils
 exports.PerformanceUtils = require('./lib/utils/PerformanceUtils').PerformanceUtils
 exports.StreamUtils = require('./lib/utils/StreamUtils')
 exports.TypeUtils = require('./lib/utils/TypeUtils').TypeUtils
+exports.unserializeDomSnapshotResult = require('./lib/utils/unserializeDomSnapshotResult')
