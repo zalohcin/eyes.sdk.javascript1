@@ -1,78 +1,74 @@
+const defaultExecutionModes = [
+  {isVisualGrid: true},
+  {isCssStitching: true},
+  {isScrollStitching: true},
+]
+
+const executionModes = {
+  checkRegionClassic: defaultExecutionModes,
+  checkRegionFluent: defaultExecutionModes,
+  checkWindowClassic: defaultExecutionModes,
+  checkWindowFluent: defaultExecutionModes,
+}
+
 /*
  * check command assumptions:
  * - The fluent API is used by default
  * - A full check window is performed unless otherwise specified
  */
-
 function makeCoverageTests({visit, open, check, close}) {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
   const appName = 'coverageTests'
   const viewportSize = '1024x768'
   const throwException = true
-  const executionModes = [{isVisualGrid: true}, {isCssStitching: true}, {isScrollStitching: true}]
 
   return {
-    checkRegionClassic: {
-      executionModes,
-      run: async context => {
-        await visit(context, url)
-        await open(context, {appName, testName: 'checkRegionClassic', viewportSize})
-        await check(context, {
-          isClassicApi: true,
-          locator: '#overflowing-div',
-        })
-        await close(context, throwException)
-      },
+    checkRegionClassic: async () => {
+      await visit(url)
+      await open({appName, testName: 'checkRegionClassic', viewportSize})
+      await check({
+        isClassicApi: true,
+        locator: '#overflowing-div',
+      })
+      await close(throwException)
     },
-    checkRegionFluent: {
-      executionModes,
-      run: async context => {
-        await visit(context, url)
-        await open(context, {appName, testName: 'checkRegionFluent', viewportSize})
-        await check(context, {
-          locator: '#overflowing-div',
-        })
-        close(context, throwException)
-      },
+    checkRegionFluent: async () => {
+      await visit(url)
+      await open({appName, testName: 'checkRegionFluent', viewportSize})
+      await check({
+        locator: '#overflowing-div',
+      })
+      close(throwException)
     },
-    checkWindowClassic: {
-      executionModes,
-      run: async context => {
-        await visit(context, url)
-        await open(context, {appName, testName: 'checkWindowClassic', viewportSize})
-        await check(context, {
-          isClassicApi: true,
-        })
-        await close(context, throwException)
-      },
+    checkWindowClassic: async () => {
+      await visit(url)
+      await open({appName, testName: 'checkWindowClassic', viewportSize})
+      await check({
+        isClassicApi: true,
+      })
+      await close(throwException)
     },
-    checkWindowFluent: {
-      executionModes,
-      run: async context => {
-        await visit(context, url)
-        await open(context, {appName, testName: 'checkWindowFluent', viewportSize})
-        await check(context)
-        await close(context, throwException)
-      },
+    checkWindowFluent: async () => {
+      await visit(url)
+      await open({appName, testName: 'checkWindowFluent', viewportSize})
+      await check()
+      await close(throwException)
     },
   }
 }
 
-async function runCoverageTests({initialize, visit, open, check, close}, supportedTests) {
+async function runCoverageTests(makeRun, supportedTests) {
   // init
   console.log(`Coverage Tests are running...`)
-  const tests = makeCoverageTests({visit, open, check, close})
   const p = []
   const e = {}
 
   // execution loop
-  for (const index in supportedTests) {
-    const test = tests[supportedTests[index]]
-    test.name = supportedTests[index]
-    for (const index in test.executionModes) {
-      const executionMode = test.executionModes[index]
+  supportedTests.forEach(supportedTest => {
+    executionModes[supportedTest].forEach(executionMode => {
       p.push(async () => {
-        await test.run(await initialize(executionMode)).catch(error => {
+        const test = makeCoverageTests(await makeRun(executionMode))[supportedTest]
+        await test().catch(error => {
           const testName = `${test.name} with ${Object.keys(executionMode)[0]}`
           if (!e[testName]) {
             e[testName] = []
@@ -80,8 +76,8 @@ async function runCoverageTests({initialize, visit, open, check, close}, support
           e[testName].push(error)
         })
       })
-    }
-  }
+    })
+  })
   const start = new Date()
   await Promise.all(p.map(testRun => testRun()))
   const end = new Date()
