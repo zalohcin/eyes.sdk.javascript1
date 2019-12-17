@@ -1,0 +1,32 @@
+{
+  "name": "@applitools/sdk-test-kit",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=8.3.0"
+  },
+  "main": "src/index.js",
+  "description": "Test Kit for Applitools SDKs",
+  "author": "David Haeffner <dhaeffner@gmail.com>",
+  "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
+  "license": "SEE LICENSE IN LICENSE",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
+  },
+  "scripts": {
+    "test": "mocha test/**/*.spec.js"
+  },
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.2"
+  }
+}
