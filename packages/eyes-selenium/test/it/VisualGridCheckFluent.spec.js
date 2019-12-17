@@ -46,8 +46,7 @@ describe('VisualGridCheckFluent', () => {
     return eyes.close()
   })
 
-  // TODO - https://trello.com/c/8YY7GIyz/81-fix-nested-iframes-in-all-js-sdks-when-running-on-the-vg
-  it.only('TestCheckWindowFully', async () => {
+  it('TestCheckWindowFully', async () => {
     await eyes.check('Full Window', Target.window().fully())
     return eyes.close()
   })
