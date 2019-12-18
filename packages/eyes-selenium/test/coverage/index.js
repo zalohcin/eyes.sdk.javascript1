@@ -9,16 +9,20 @@ const {
   StitchMode,
   VisualGridRunner,
 } = require('../../index')
-const {runCoverageTests} = require('@applitools/sdk-test-kit')
+const {makeRun} = require('@applitools/sdk-test-kit')
 
 const sdkName = 'eyes-selenium'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
 
-async function makeRun(testName, executionMode) {
+//executionMode:
+//  {isVisualGrid: true},
+//  {isCssStitching: true},
+//  {isScrollStitching: true},
+async function initialize(displayName, executionMode) {
   let driver
   let eyes
 
-  async function initialize() {
+  async function setup() {
     driver = await new Builder()
       .forBrowser('chrome')
       .setChromeOptions(new ChromeOptions().headless())
@@ -35,14 +39,19 @@ async function makeRun(testName, executionMode) {
     eyes.setBatch(batch)
   }
 
-  await initialize()
+  await setup()
 
   async function visit(url) {
     await driver.get(url)
   }
 
   async function open(options) {
-    driver = await eyes.open(driver, sdkName, testName, RectangleSize.parse(options.viewportSize))
+    driver = await eyes.open(
+      driver,
+      sdkName,
+      displayName,
+      RectangleSize.parse(options.viewportSize),
+    )
     return driver
   }
 
@@ -67,10 +76,18 @@ async function makeRun(testName, executionMode) {
 }
 
 const supportedTests = [
-  'checkRegionClassic',
-  'checkRegionFluent',
-  'checkWindowClassic',
-  'checkWindowFluent',
+  {name: 'checkRegionClassic', executionMode: {isVisualGrid: true}},
+  {name: 'checkRegionClassic', executionMode: {isCssStitching: true}},
+  {name: 'checkRegionClassic', executionMode: {isScrollStitching: true}},
+  {name: 'checkRegionFluent', executionMode: {isVisualGrid: true}},
+  {name: 'checkRegionFluent', executionMode: {isCssStitching: true}},
+  {name: 'checkRegionFluent', executionMode: {isScrollStitching: true}},
+  {name: 'checkWindowClassic', executionMode: {isVisualGrid: true}},
+  {name: 'checkWindowClassic', executionMode: {isCssStitching: true}},
+  {name: 'checkWindowClassic', executionMode: {isScrollStitching: true}},
+  {name: 'checkWindowFluent', executionMode: {isVisualGrid: true}},
+  {name: 'checkWindowFluent', executionMode: {isCssStitching: true}},
+  {name: 'checkWindowFluent', executionMode: {isScrollStitching: true}},
 ]
 
-runCoverageTests(sdkName, makeRun, supportedTests)
+makeRun(sdkName, initialize).run(supportedTests)
