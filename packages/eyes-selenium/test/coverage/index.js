@@ -11,9 +11,10 @@ const {
 } = require('../../index')
 const {runCoverageTests} = require('@applitools/sdk-test-kit')
 
-const batch = new BatchInfo('JS Coverage Tests - eyes-selenium')
+const sdkName = 'eyes-selenium'
+const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
 
-async function makeRun(executionMode) {
+async function makeRun(testName, executionMode) {
   let driver
   let eyes
 
@@ -41,12 +42,7 @@ async function makeRun(executionMode) {
   }
 
   async function open(options) {
-    driver = await eyes.open(
-      driver,
-      options.appName,
-      options.testName,
-      RectangleSize.parse(options.viewportSize),
-    )
+    driver = await eyes.open(driver, sdkName, testName, RectangleSize.parse(options.viewportSize))
     return driver
   }
 
@@ -77,4 +73,4 @@ const supportedTests = [
   'checkWindowFluent',
 ]
 
-runCoverageTests('eyes-selenium', makeRun, supportedTests)
+runCoverageTests(sdkName, makeRun, supportedTests)

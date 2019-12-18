@@ -25,7 +25,7 @@ function makeCoverageTests({visit, open, check, close}) {
   return {
     checkRegionClassic: async () => {
       await visit(url)
-      await open({appName, testName: 'checkRegionClassic', viewportSize})
+      await open({appName, viewportSize})
       await check({
         isClassicApi: true,
         locator: '#overflowing-div',
@@ -34,7 +34,7 @@ function makeCoverageTests({visit, open, check, close}) {
     },
     checkRegionFluent: async () => {
       await visit(url)
-      await open({appName, testName: 'checkRegionFluent', viewportSize})
+      await open({appName, viewportSize})
       await check({
         locator: '#overflowing-div',
       })
@@ -42,7 +42,7 @@ function makeCoverageTests({visit, open, check, close}) {
     },
     checkWindowClassic: async () => {
       await visit(url)
-      await open({appName, testName: 'checkWindowClassic', viewportSize})
+      await open({appName, viewportSize})
       await check({
         isClassicApi: true,
       })
@@ -50,7 +50,7 @@ function makeCoverageTests({visit, open, check, close}) {
     },
     checkWindowFluent: async () => {
       await visit(url)
-      await open({appName, testName: 'checkWindowFluent', viewportSize})
+      await open({appName, viewportSize})
       await check()
       await close(throwException)
     },
@@ -67,9 +67,9 @@ async function runCoverageTests(sdkName, makeRun, supportedTests) {
   supportedTests.forEach(supportedTest => {
     executionModes[supportedTest].forEach(executionMode => {
       p.push(async () => {
-        const test = makeCoverageTests(await makeRun(executionMode))[supportedTest]
+        const testName = `${supportedTest} with ${Object.keys(executionMode)[0]}`
+        const test = makeCoverageTests(await makeRun(testName, executionMode))[supportedTest]
         await test().catch(error => {
-          const testName = `${test.name} with ${Object.keys(executionMode)[0]}`
           if (!e[testName]) {
             e[testName] = []
           }
