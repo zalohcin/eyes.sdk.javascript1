@@ -24,7 +24,7 @@ function makeCoverageTests({visit, open, check, close}) {
       await check({
         locator: '#overflowing-div',
       })
-      close(throwException)
+      await close(throwException)
     },
     checkWindowClassic: async () => {
       await visit(url)
@@ -46,7 +46,7 @@ function makeCoverageTests({visit, open, check, close}) {
 /**
  * Creates a coverage-test runner for a given SDK implementation.
  * sdkName: a string of the SDK name to display in the console output during a run
- * intialize: a function that initializes state and implements all DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (see above)
+ * intialize: a function that initializes state and implements all DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (see above) plus functions the runner expects for lifecycle management (e.g., beforeAll, afterAll, beforeEach, afterEach
  * returns: a run function
  */
 function makeRun(sdkName, initialize) {
@@ -57,20 +57,24 @@ function makeRun(sdkName, initialize) {
    * - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement whatever it needs, just so long as it is what the initialize function is using internally
    */
   async function run(supportedTests) {
-    // init
     console.log(`Coverage Tests are running for ${sdkName}...`)
     const p = []
     const e = {}
 
-    // execution loop
+    const {beforeAll, afterAll} = initialize()
+    const sharedContext = await beforeAll()
     supportedTests.forEach(supportedTest => {
       supportedTest.displayName = `${supportedTest.name} with ${
         Object.keys(supportedTest.executionMode)[0]
       }`
+      supportedTest.executionMode = {...supportedTest.executionMode, ...sharedContext}
       p.push(async () => {
         try {
-          const test = makeCoverageTests(await initialize(supportedTest))[supportedTest.name]
+          const implementation = await initialize(supportedTest)
+          const test = makeCoverageTests(implementation)[supportedTest.name]
+          await implementation.beforeEach()
           await test()
+          await implementation.afterEach()
         } catch (error) {
           if (!e[supportedTest.displayName]) {
             e[supportedTest.displayName] = []
@@ -81,21 +85,26 @@ function makeRun(sdkName, initialize) {
     })
     const start = new Date()
     await Promise.all(p.map(testRun => testRun()))
+    await afterAll(sharedContext)
     const end = new Date()
 
-    // logging
-    if (Object.keys(e).length) {
-      console.log(`-------------------- ERRORS --------------------`)
-      console.log(e)
-    }
-    console.log(`-------------------- SUMMARY --------------------`)
-    console.log(`Ran ${p.length} tests in ${end - start}ms`)
-    if (Object.keys(e).length) {
-      console.log(`Encountered n errors in ${Object.keys(e).length} tests`)
-    }
+    reportResults({p, e, start, end})
   }
 
   return {run}
+}
+
+function reportResults({p, e, start, end}) {
+  // logging
+  if (Object.keys(e).length) {
+    console.log(`-------------------- ERRORS --------------------`)
+    console.log(e)
+  }
+  console.log(`-------------------- SUMMARY --------------------`)
+  console.log(`Ran ${p.length} tests in ${end - start}ms`)
+  if (Object.keys(e).length) {
+    console.log(`Encountered n errors in ${Object.keys(e).length} tests`)
+  }
 }
 
 module.exports = {makeCoverageTests, makeRun}
