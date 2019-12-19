@@ -42,11 +42,10 @@ describe('coverage-tests', () => {
         {name: 'checkRegionClassic', executionMode: {blahblah: true}},
       ]
       const {run} = makeRun(name, initialize)
-      await run(supportedTests, false)
+      await run(supportedTests, () => {})
       assert.deepStrictEqual(count, 4)
     })
-    // TODO: add mocking for console.log, or test error/reporting functions directly
-    it.skip('should record and display errors from a run', async () => {
+    it('should record and display errors from a run', async () => {
       const name = 'blah'
       const initialize = () => {
         return {
@@ -62,7 +61,20 @@ describe('coverage-tests', () => {
       }
       const supportedTests = [{name: 'checkRegionClassic', executionMode: {blah: true}}]
       const {run} = makeRun(name, initialize)
-      await run(supportedTests)
+      const messages = []
+      const log = msg => {
+        messages.push(msg)
+      }
+      await run(supportedTests, log)
+      const expectedOutput = [
+        'Coverage Tests are running for blah...',
+        '-------------------- ERRORS --------------------',
+        {'checkRegionClassic with blah': ['blah error']},
+        '-------------------- SUMMARY --------------------',
+        'Ran 1 tests in 0ms',
+        'Encountered n errors in 1 tests',
+      ]
+      assert.deepStrictEqual(messages, expectedOutput)
     })
   })
 })

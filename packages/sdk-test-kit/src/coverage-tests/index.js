@@ -59,8 +59,13 @@ function makeRun(sdkName, initialize) {
    * - name: name of a test (found in makeCoverageTests)
    * - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement whatever it needs, just so long as it is what the initialize function is using internally
    */
-  async function run(supportedTests) {
-    console.log(`Coverage Tests are running for ${sdkName}...`)
+  async function run(
+    supportedTests,
+    log = msg => {
+      console.log(msg)
+    },
+  ) {
+    log(`Coverage Tests are running for ${sdkName}...`)
 
     supportedTests.forEach(supportedTest => {
       // store the displayName for consistent naming in both the console error output and in the Eyes dashboard
@@ -84,7 +89,7 @@ function makeRun(sdkName, initialize) {
     await Promise.all(p.map(testRun => testRun()))
     const end = new Date()
 
-    reportResults({p, e, start, end})
+    reportResults({log, p, e, start, end})
   }
 
   return {run}
@@ -97,16 +102,16 @@ function recordError(e, displayName, error) {
   e[displayName].push(error)
 }
 
-function reportResults({p, e, start, end}) {
+function reportResults({log, p, e, start, end}) {
   // logging
   if (Object.keys(e).length) {
-    console.log(`-------------------- ERRORS --------------------`)
-    console.log(e)
+    log(`-------------------- ERRORS --------------------`)
+    log(e)
   }
-  console.log(`-------------------- SUMMARY --------------------`)
-  console.log(`Ran ${p.length} tests in ${end - start}ms`)
+  log(`-------------------- SUMMARY --------------------`)
+  log(`Ran ${p.length} tests in ${end - start}ms`)
   if (Object.keys(e).length) {
-    console.log(`Encountered n errors in ${Object.keys(e).length} tests`)
+    log(`Encountered n errors in ${Object.keys(e).length} tests`)
   }
 }
 
