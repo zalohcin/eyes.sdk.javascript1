@@ -9,53 +9,34 @@ const {
   StitchMode,
   VisualGridRunner,
 } = require('../../index')
-const {makeRun, makeResourcePool, findResourceInPool} = require('@applitools/sdk-test-kit')
+const {makeRun} = require('@applitools/sdk-test-kit')
 
 const sdkName = 'eyes-selenium'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
 
-function initialize(context) {
+function initialize({displayName, executionMode}) {
   let driver
   let eyes
-  let resource
 
-  async function beforeAll() {
-    const resourcePool = await makeResourcePool(10, async () => {
-      const driver = await new Builder()
-        .forBrowser('chrome')
-        .setChromeOptions(new ChromeOptions().headless())
-        .build()
-      return {driver, isAvailable: true}
-    })
-    return {resourcePool}
-  }
-
-  async function afterAll(sharedContext) {
-    for (const index in sharedContext.resourcePool) {
-      await sharedContext.resourcePool[index].driver.close()
-    }
-  }
-
-  async function beforeEach() {
-    resource = await findResourceInPool(context.executionMode.resourcePool, resource => {
-      return resource.isAvailable
-    })
-    driver = resource.driver
-    resource.isAvailable = false
-    if (context.executionMode.isVisualGrid) {
+  async function setup() {
+    driver = await new Builder()
+      .forBrowser('chrome')
+      .setChromeOptions(new ChromeOptions().headless())
+      .build()
+    if (executionMode.isVisualGrid) {
       eyes = new Eyes(new VisualGridRunner())
-    } else if (context.executionMode.isCssStitching) {
+    } else if (executionMode.isCssStitching) {
       eyes = new Eyes()
       eyes.setStitchMode(StitchMode.CSS)
-    } else if (context.executionMode.isScrollStitching) {
+    } else if (executionMode.isScrollStitching) {
       eyes = new Eyes()
       eyes.setStitchMode(StitchMode.SCROLL)
     }
     eyes.setBatch(batch)
   }
 
-  function afterEach() {
-    resource.isAvailable = true
+  async function teardown() {
+    await driver.close()
   }
 
   async function visit(url) {
@@ -66,7 +47,7 @@ function initialize(context) {
     driver = await eyes.open(
       driver,
       sdkName,
-      context.displayName,
+      displayName,
       RectangleSize.parse(options.viewportSize),
     )
     return driver
@@ -88,7 +69,7 @@ function initialize(context) {
     await eyes.close(options)
   }
 
-  return {beforeAll, afterAll, beforeEach, afterEach, visit, open, check, close}
+  return {setup, teardown, visit, open, check, close}
 }
 
 const supportedTests = [

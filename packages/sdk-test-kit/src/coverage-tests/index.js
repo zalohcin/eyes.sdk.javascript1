@@ -46,13 +46,12 @@ function makeCoverageTests({visit, open, check, close}) {
 /**
  * Creates a coverage-test runner for a given SDK implementation.
  * sdkName: a string of the SDK name to display in the console output during a run
- * intialize: a function that initializes state and implements all DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (see above) plus functions the runner expects for lifecycle management (e.g., beforeAll, afterAll, beforeEach, afterEach
+ * intialize: a function that initializes state and implements all DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (e.g., visit, open, check, and close) plus functions the runner expects for lifecycle management (e.g., setup and teardown)
  * returns: a run function
  */
 function makeRun(sdkName, initialize) {
   const p = []
   const e = {}
-  const {beforeAll, afterAll} = initialize()
 
   /**
    * Runs coverage-tests for a given SDK implementation with various execution modes.
@@ -61,40 +60,41 @@ function makeRun(sdkName, initialize) {
    * - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement whatever it needs, just so long as it is what the initialize function is using internally
    */
   async function run(supportedTests) {
-    const sharedContext = await beforeAll()
-
     console.log(`Coverage Tests are running for ${sdkName}...`)
 
     supportedTests.forEach(supportedTest => {
+      // store the displayName for consistent naming in both the console error output and in the Eyes dashboard
       supportedTest.displayName = `${supportedTest.name} with ${
         Object.keys(supportedTest.executionMode)[0]
       }`
-      supportedTest.executionMode = {...supportedTest.executionMode, ...sharedContext}
       p.push(async () => {
         try {
-          const implementation = await initialize(supportedTest)
-          const test = makeCoverageTests(implementation)[supportedTest.name]
-          await implementation.beforeEach()
+          const sdkImplementation = await initialize(supportedTest)
+          const test = makeCoverageTests(sdkImplementation)[supportedTest.name]
+          await sdkImplementation.setup()
           await test()
-          await implementation.afterEach()
+          await sdkImplementation.teardown()
         } catch (error) {
-          if (!e[supportedTest.displayName]) {
-            e[supportedTest.displayName] = []
-          }
-          e[supportedTest.displayName].push(error)
+          recordError(e, supportedTest.displayName, error)
         }
       })
     })
 
     const start = new Date()
     await Promise.all(p.map(testRun => testRun()))
-    await afterAll(sharedContext)
     const end = new Date()
 
     reportResults({p, e, start, end})
   }
 
   return {run}
+}
+
+function recordError(e, displayName, error) {
+  if (!e[displayName]) {
+    e[displayName] = []
+  }
+  e[displayName].push(error)
 }
 
 function reportResults({p, e, start, end}) {
