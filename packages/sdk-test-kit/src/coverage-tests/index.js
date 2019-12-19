@@ -50,6 +50,10 @@ function makeCoverageTests({visit, open, check, close}) {
  * returns: a run function
  */
 function makeRun(sdkName, initialize) {
+  const p = []
+  const e = {}
+  const {beforeAll, afterAll} = initialize()
+
   /**
    * Runs coverage-tests for a given SDK implementation with various execution modes.
    * supportedTests: an array of objects, each with keys of "name" and "executionMode"
@@ -57,12 +61,10 @@ function makeRun(sdkName, initialize) {
    * - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement whatever it needs, just so long as it is what the initialize function is using internally
    */
   async function run(supportedTests) {
-    console.log(`Coverage Tests are running for ${sdkName}...`)
-    const p = []
-    const e = {}
-
-    const {beforeAll, afterAll} = initialize()
     const sharedContext = await beforeAll()
+
+    console.log(`Coverage Tests are running for ${sdkName}...`)
+
     supportedTests.forEach(supportedTest => {
       supportedTest.displayName = `${supportedTest.name} with ${
         Object.keys(supportedTest.executionMode)[0]
@@ -83,6 +85,7 @@ function makeRun(sdkName, initialize) {
         }
       })
     })
+
     const start = new Date()
     await Promise.all(p.map(testRun => testRun()))
     await afterAll(sharedContext)
