@@ -64,19 +64,19 @@ function makeRun(sdkName, initialize) {
 
     // execution loop
     supportedTests.forEach(supportedTest => {
-      const displayName = `${supportedTest.name} with ${
+      supportedTest.displayName = `${supportedTest.name} with ${
         Object.keys(supportedTest.executionMode)[0]
       }`
       p.push(async () => {
-        const test = makeCoverageTests(await initialize(displayName, supportedTest.executionMode))[
-          supportedTest.name
-        ]
-        await test().catch(error => {
-          if (!e[displayName]) {
-            e[displayName] = []
+        try {
+          const test = makeCoverageTests(await initialize(supportedTest))[supportedTest.name]
+          await test()
+        } catch (error) {
+          if (!e[supportedTest.displayName]) {
+            e[supportedTest.displayName] = []
           }
-          e[displayName].push(error)
-        })
+          e[supportedTest.displayName].push(error)
+        }
       })
     })
     const start = new Date()
