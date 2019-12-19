@@ -14,11 +14,7 @@ const {makeRun} = require('@applitools/sdk-test-kit')
 const sdkName = 'eyes-selenium'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
 
-//executionMode:
-//  {isVisualGrid: true},
-//  {isCssStitching: true},
-//  {isScrollStitching: true},
-async function initialize(displayName, executionMode) {
+async function initialize(context) {
   let driver
   let eyes
 
@@ -27,12 +23,12 @@ async function initialize(displayName, executionMode) {
       .forBrowser('chrome')
       .setChromeOptions(new ChromeOptions().headless())
       .build()
-    if (executionMode.isVisualGrid) {
+    if (context.executionMode.isVisualGrid) {
       eyes = new Eyes(new VisualGridRunner())
-    } else if (executionMode.isCssStitching) {
+    } else if (context.executionMode.isCssStitching) {
       eyes = new Eyes()
       eyes.setStitchMode(StitchMode.CSS)
-    } else if (executionMode.isScrollStitching) {
+    } else if (context.executionMode.isScrollStitching) {
       eyes = new Eyes()
       eyes.setStitchMode(StitchMode.SCROLL)
     }
@@ -49,7 +45,7 @@ async function initialize(displayName, executionMode) {
     driver = await eyes.open(
       driver,
       sdkName,
-      displayName,
+      context.displayName,
       RectangleSize.parse(options.viewportSize),
     )
     return driver
