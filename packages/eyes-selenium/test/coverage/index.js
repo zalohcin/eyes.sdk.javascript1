@@ -22,15 +22,9 @@ async function initialize({displayName, executionMode}) {
     .forBrowser('chrome')
     .setChromeOptions(new ChromeOptions().headless())
     .build()
-  if (executionMode.isVisualGrid) {
-    eyes = new Eyes(new VisualGridRunner())
-  } else if (executionMode.isCssStitching) {
-    eyes = new Eyes()
-    eyes.setStitchMode(StitchMode.CSS)
-  } else if (executionMode.isScrollStitching) {
-    eyes = new Eyes()
-    eyes.setStitchMode(StitchMode.SCROLL)
-  }
+  eyes = executionMode.isVisualGrid ? new Eyes(new VisualGridRunner()) : new Eyes()
+  executionMode.isCssStitching ? eyes.setStitchMode(StitchMode.CSS) : undefined
+  executionMode.isScrollStitching ? eyes.setStitchMode(StitchMode.SCROLL) : undefined
   eyes.setBatch(batch)
 
   async function visit(url) {
