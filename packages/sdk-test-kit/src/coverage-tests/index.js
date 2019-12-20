@@ -48,10 +48,10 @@ function makeCoverageTests({visit, open, check, close}) {
 /**
  * Creates a coverage-test runner for a given SDK implementation.
  * sdkName: a string of the SDK name to display in the console output during a run
- * intialize: a function that initializes state and implements all coverage-test DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (e.g., visit, open, check, and close) plus functions the runner expects for lifecycle management (e.g., cleanup)
+ * intialize: a function that initializeSdkImplementations state and implements all coverage-test DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (e.g., visit, open, check, and close) plus functions the runner expects for lifecycle management (e.g., cleanup)
  * returns: a run function
  */
-function makeRunTests(sdkName, initialize) {
+function makeRunTests(sdkName, initializeSdkImplementation) {
   const p = []
   const e = {}
 
@@ -59,7 +59,7 @@ function makeRunTests(sdkName, initialize) {
    * Runs coverage-tests for a given SDK implementation with various execution modes.
    * supportedTests: an array of objects, each with keys of "name" and "executionMode"
    * - name: name of a test (found in makeCoverageTests)
-   * - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement whatever it needs, just so long as it is what the initialize function is using internally
+   * - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement whatever it needs, just so long as it is what the initializeSdkImplementation function is using internally
    */
   async function runTests(
     supportedTests,
@@ -76,7 +76,7 @@ function makeRunTests(sdkName, initialize) {
       }`
       p.push(async () => {
         try {
-          const sdkImplementation = await initialize(supportedTest)
+          const sdkImplementation = await initializeSdkImplementation(supportedTest)
           const test = makeCoverageTests(sdkImplementation)[supportedTest.name]
           await test()
           await sdkImplementation.cleanup()
