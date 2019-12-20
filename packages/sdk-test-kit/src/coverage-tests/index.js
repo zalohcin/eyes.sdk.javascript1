@@ -1,3 +1,5 @@
+const throat = require('throat')
+
 /*
  * check command assumptions:
  * - The fluent API is used by default
@@ -85,7 +87,7 @@ function makeRunTests(sdkName, initialize) {
     })
 
     const start = new Date()
-    await Promise.all(p.map(testRun => testRun()))
+    await Promise.all(p.map(throat(10, testRun => testRun())))
     const end = new Date()
 
     reportResults({log, p, e, start, end})
