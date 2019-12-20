@@ -1,5 +1,5 @@
 const assert = require('assert')
-const {makeCoverageTests, makeRun} = require('../../src/coverage-tests/index')
+const {makeCoverageTests, makeRunTests} = require('../../src/coverage-tests/index')
 
 const fakeSDK = {
   open: () => {},
@@ -15,10 +15,10 @@ describe('coverage-tests', () => {
     })
   })
 
-  describe('makeRun', () => {
+  describe('makeRunTests', () => {
     it('should return a run function', () => {
-      const {run} = makeRun()
-      assert.deepStrictEqual(typeof run, 'function')
+      const {runTests} = makeRunTests()
+      assert.deepStrictEqual(typeof runTests, 'function')
     })
     it('should run tests with the provided implementation', async () => {
       let count = 0
@@ -38,8 +38,8 @@ describe('coverage-tests', () => {
         {name: 'checkRegionClassic', executionMode: {blah: true}},
         {name: 'checkRegionClassic', executionMode: {blahblah: true}},
       ]
-      const {run} = makeRun(name, initialize)
-      await run(supportedTests, () => {})
+      const {runTests} = makeRunTests(name, initialize)
+      await runTests(supportedTests, () => {})
       assert.deepStrictEqual(count, 2)
     })
     it('should record and display errors from a run', async () => {
@@ -56,12 +56,12 @@ describe('coverage-tests', () => {
         }
       }
       const supportedTests = [{name: 'checkRegionClassic', executionMode: {blah: true}}]
-      const {run} = makeRun(name, initialize)
+      const {runTests} = makeRunTests(name, initialize)
       const output = []
       const log = msg => {
         output.push(msg)
       }
-      await run(supportedTests, log)
+      await runTests(supportedTests, log)
       const expectedOutput = [
         'Coverage Tests are running for blah...',
         '-------------------- ERRORS --------------------',
