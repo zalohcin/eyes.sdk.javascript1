@@ -25,14 +25,11 @@ describe('coverage-tests', () => {
       const name = 'blah'
       const initialize = () => {
         return {
-          setup: () => {
-            count++
-          },
           visit: () => {},
           open: () => {},
           check: () => {},
           close: () => {},
-          teardown: () => {
+          cleanup: () => {
             count++
           },
         }
@@ -43,27 +40,26 @@ describe('coverage-tests', () => {
       ]
       const {run} = makeRun(name, initialize)
       await run(supportedTests, () => {})
-      assert.deepStrictEqual(count, 4)
+      assert.deepStrictEqual(count, 2)
     })
     it('should record and display errors from a run', async () => {
       const name = 'blah'
       const initialize = () => {
         return {
-          setup: () => {},
           visit: () => {},
           open: () => {
             throw 'blah error'
           },
           check: () => {},
           close: () => {},
-          teardown: () => {},
+          cleanup: () => {},
         }
       }
       const supportedTests = [{name: 'checkRegionClassic', executionMode: {blah: true}}]
       const {run} = makeRun(name, initialize)
-      const messages = []
+      const output = []
       const log = msg => {
-        messages.push(msg)
+        output.push(msg)
       }
       await run(supportedTests, log)
       const expectedOutput = [
@@ -74,7 +70,9 @@ describe('coverage-tests', () => {
         'Ran 1 tests in 0ms',
         'Encountered n errors in 1 tests',
       ]
-      assert.deepStrictEqual(messages, expectedOutput)
+      assert.deepStrictEqual(output[1], expectedOutput[1])
+      assert.deepStrictEqual(output[2], expectedOutput[2])
+      assert.deepStrictEqual(output[5], expectedOutput[5])
     })
   })
 })

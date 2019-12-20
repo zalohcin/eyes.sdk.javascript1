@@ -46,10 +46,10 @@ function makeCoverageTests({visit, open, check, close}) {
 /**
  * Creates a coverage-test runner for a given SDK implementation.
  * sdkName: a string of the SDK name to display in the console output during a run
- * intialize: a function that initializes state and implements all DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (e.g., visit, open, check, and close) plus functions the runner expects for lifecycle management (e.g., setup and teardown)
+ * intialize: a function that initializes state and implements all coverage-test DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (e.g., visit, open, check, and close) plus functions the runner expects for lifecycle management (e.g., cleanup)
  * returns: a run function
  */
-function makeRun(sdkName, initialize) {
+function makeRunTests(sdkName, initialize) {
   const p = []
   const e = {}
 
@@ -59,7 +59,7 @@ function makeRun(sdkName, initialize) {
    * - name: name of a test (found in makeCoverageTests)
    * - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement whatever it needs, just so long as it is what the initialize function is using internally
    */
-  async function run(
+  async function runTests(
     supportedTests,
     log = msg => {
       console.log(msg)
@@ -76,9 +76,8 @@ function makeRun(sdkName, initialize) {
         try {
           const sdkImplementation = await initialize(supportedTest)
           const test = makeCoverageTests(sdkImplementation)[supportedTest.name]
-          await sdkImplementation.setup()
           await test()
-          await sdkImplementation.teardown()
+          await sdkImplementation.cleanup()
         } catch (error) {
           recordError(e, supportedTest.displayName, error)
         }
@@ -92,7 +91,7 @@ function makeRun(sdkName, initialize) {
     reportResults({log, p, e, start, end})
   }
 
-  return {run}
+  return {runTests}
 }
 
 function recordError(e, displayName, error) {
@@ -115,4 +114,4 @@ function reportResults({log, p, e, start, end}) {
   }
 }
 
-module.exports = {makeCoverageTests, makeRun}
+module.exports = {makeCoverageTests, makeRunTests}
