@@ -9,35 +9,29 @@ const {
   StitchMode,
   VisualGridRunner,
 } = require('../../index')
-const {makeRun} = require('@applitools/sdk-test-kit')
+const {makeRunTests} = require('@applitools/sdk-test-kit')
 
 const sdkName = 'eyes-selenium'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
 
-function initialize({displayName, executionMode}) {
-  let driver
+async function initialize({displayName, executionMode}) {
   let eyes
+  let driver
 
-  async function setup() {
-    driver = await new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(new ChromeOptions().headless())
-      .build()
-    if (executionMode.isVisualGrid) {
-      eyes = new Eyes(new VisualGridRunner())
-    } else if (executionMode.isCssStitching) {
-      eyes = new Eyes()
-      eyes.setStitchMode(StitchMode.CSS)
-    } else if (executionMode.isScrollStitching) {
-      eyes = new Eyes()
-      eyes.setStitchMode(StitchMode.SCROLL)
-    }
-    eyes.setBatch(batch)
+  driver = await new Builder()
+    .forBrowser('chrome')
+    .setChromeOptions(new ChromeOptions().headless())
+    .build()
+  if (executionMode.isVisualGrid) {
+    eyes = new Eyes(new VisualGridRunner())
+  } else if (executionMode.isCssStitching) {
+    eyes = new Eyes()
+    eyes.setStitchMode(StitchMode.CSS)
+  } else if (executionMode.isScrollStitching) {
+    eyes = new Eyes()
+    eyes.setStitchMode(StitchMode.SCROLL)
   }
-
-  async function teardown() {
-    await driver.close()
-  }
+  eyes.setBatch(batch)
 
   async function visit(url) {
     await driver.get(url)
@@ -50,7 +44,6 @@ function initialize({displayName, executionMode}) {
       displayName,
       RectangleSize.parse(options.viewportSize),
     )
-    return driver
   }
 
   async function check(options = {}) {
@@ -69,7 +62,12 @@ function initialize({displayName, executionMode}) {
     await eyes.close(options)
   }
 
-  return {setup, teardown, visit, open, check, close}
+  async function cleanup() {
+    await driver.close()
+    await eyes.abortIfNotClosed()
+  }
+
+  return {visit, open, check, close, cleanup}
 }
 
 const supportedTests = [
@@ -87,4 +85,4 @@ const supportedTests = [
   {name: 'checkWindowFluent', executionMode: {isScrollStitching: true}},
 ]
 
-makeRun(sdkName, initialize).run(supportedTests)
+makeRunTests(sdkName, initialize).runTests(supportedTests)
