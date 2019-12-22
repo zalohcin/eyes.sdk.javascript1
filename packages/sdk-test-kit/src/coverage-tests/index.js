@@ -3,7 +3,8 @@ const throat = require('throat')
 /*
  * check command assumptions:
  * - The fluent API is used by default
- * - A full check window is performed unless otherwise specified
+ * - A viewport check window is performed unless otherwise specified
+ * - locators are specified with CSS selectors
  */
 function makeCoverageTests({visit, open, checkRegion, checkWindow, close}) {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
@@ -17,22 +18,46 @@ function makeCoverageTests({visit, open, checkRegion, checkWindow, close}) {
       await checkRegion({locator: '#overflowing-div', isClassicApi: true})
       await close(throwException)
     },
+    checkRegionClassicWithOverFlow: async () => {
+      await visit(url)
+      await open({viewportSize})
+      await checkRegion({locator: '#overflowing-div-img', isClassicApi: true})
+      await close(throwException)
+    },
+    checkWindowClassicViewport: async () => {
+      await visit(url)
+      await open({viewportSize})
+      await checkWindow({isClassicApi: true})
+      await close(throwException)
+    },
+    checkWindowClassicFully: async () => {
+      await visit(url)
+      await open({viewportSize})
+      await checkWindow({isClassicApi: true, isFully: true})
+      await close(throwException)
+    },
     checkRegionFluent: async () => {
       await visit(url)
       await open({viewportSize})
       await checkRegion({locator: '#overflowing-div'})
       await close(throwException)
     },
-    checkWindowClassic: async () => {
+    checkRegionFluentWithOverFlow: async () => {
       await visit(url)
       await open({viewportSize})
-      await checkWindow({isClassicApi: true})
+      await checkRegion({locator: '#overflowing-div-img'})
       await close(throwException)
     },
-    checkWindowFluent: async () => {
+    checkWindowFluentViewport: async () => {
       await visit(url)
       await open({viewportSize})
       await checkWindow()
+      await close(throwException)
+    },
+    checkWindowFluentFully: async () => {
+      await visit(url)
+      await open({viewportSize})
+      await checkWindow({isFully: true})
       await close(throwException)
     },
   }
@@ -82,7 +107,10 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
         }
       })
     })
-
+    process.on('unhandledRejection', (reason, _promise) => {
+      delete reason.remoteStacktrace
+      recordError(e, `Unhandled Rejections`, reason)
+    })
     const start = new Date()
     await Promise.all(p.map(throat(concurrency, testRun => testRun())))
     const end = new Date()
