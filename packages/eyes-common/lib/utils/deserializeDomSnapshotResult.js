@@ -1,10 +1,10 @@
 'use strict'
 
-function unserializeDomSnapshotResult(domSnapshotResult) {
+function deserializeDomSnapshotResult(domSnapshotResult) {
   const ret = {
     ...domSnapshotResult,
     resourceContents: blobDataToResourceContents(domSnapshotResult.blobs),
-    frames: domSnapshotResult.frames.map(unserializeDomSnapshotResult),
+    frames: domSnapshotResult.frames.map(deserializeDomSnapshotResult),
   }
   delete ret.blobs
   return ret
@@ -17,4 +17,4 @@ function blobDataToResourceContents(blobs) {
   }, {})
 }
 
-module.exports = unserializeDomSnapshotResult
+module.exports = deserializeDomSnapshotResult

@@ -4,7 +4,7 @@ const {
   getProcessPageAndSerializePoll,
   getProcessPageAndSerializePollForIE,
 } = require('@applitools/dom-snapshot')
-const {GeneralUtils, unserializeDomSnapshotResult} = require('@applitools/eyes-common')
+const {GeneralUtils, deserializeDomSnapshotResult} = require('@applitools/eyes-common')
 
 const PULL_TIMEOUT = 200 // ms
 const CAPTURE_DOM_TIMEOUT_MS = 5 * 60 * 1000 // 5 min
@@ -36,7 +36,7 @@ async function takeDomSnapshot({executeScript, startTime = Date.now(), browser})
   const scriptResponse = JSON.parse(resultAsString)
 
   if (scriptResponse.status === 'SUCCESS') {
-    return unserializeDomSnapshotResult(scriptResponse.value)
+    return deserializeDomSnapshotResult(scriptResponse.value)
   } else if (scriptResponse.status === 'ERROR') {
     throw new Error(`Unable to process: ${scriptResponse.error}`)
   } else if (Date.now() - startTime >= CAPTURE_DOM_TIMEOUT_MS) {

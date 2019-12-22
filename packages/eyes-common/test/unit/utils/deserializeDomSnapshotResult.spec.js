@@ -2,9 +2,9 @@
 
 const {describe, it} = require('mocha')
 const {expect} = require('chai')
-const unserializeDomSnapshotResult = require('../../../lib/utils/unserializeDomSnapshotResult')
+const deserializeDomSnapshotResult = require('../../../lib/utils/deserializeDomSnapshotResult')
 
-describe('unserializeDomSnapshotResult', () => {
+describe('deserializeDomSnapshotResult', () => {
   it('converts base64 strings in "blobs" property to buffers in "resourceContents"', () => {
     const domSnapshotResult = {
       blobs: [
@@ -14,8 +14,8 @@ describe('unserializeDomSnapshotResult', () => {
       frames: [],
     }
 
-    const unserializedResult = unserializeDomSnapshotResult(domSnapshotResult)
-    expect(unserializedResult).to.eql({
+    const deserializedResult = deserializeDomSnapshotResult(domSnapshotResult)
+    expect(deserializedResult).to.eql({
       frames: [],
       resourceContents: {
         u1: {url: 'u1', type: 't1', value: Buffer.from('v1')},
@@ -45,8 +45,8 @@ describe('unserializeDomSnapshotResult', () => {
       ],
     }
 
-    const unserializedResult = unserializeDomSnapshotResult(domSnapshotResult)
-    expect(unserializedResult).to.eql({
+    const deserializedResult = deserializeDomSnapshotResult(domSnapshotResult)
+    expect(deserializedResult).to.eql({
       frames: [
         {
           resourceContents: {
@@ -89,8 +89,8 @@ describe('unserializeDomSnapshotResult', () => {
       ],
     }
 
-    const unserializedResult = unserializeDomSnapshotResult(domSnapshotResult)
-    expect(unserializedResult).to.eql({
+    const deserializedResult = deserializeDomSnapshotResult(domSnapshotResult)
+    expect(deserializedResult).to.eql({
       frames: [
         {
           resourceContents: {
@@ -120,8 +120,8 @@ describe('unserializeDomSnapshotResult', () => {
       frames: [],
     }
 
-    const unserializedResult = unserializeDomSnapshotResult(result)
-    expect(unserializedResult).to.eql({
+    const deserializedResult = deserializeDomSnapshotResult(result)
+    expect(deserializedResult).to.eql({
       x: 'x',
       y: 'y',
       frames: [],
