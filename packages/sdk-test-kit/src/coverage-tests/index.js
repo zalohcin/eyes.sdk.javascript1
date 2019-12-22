@@ -67,6 +67,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
       log = msg => {
         console.log(msg)
       },
+      concurrency = 10,
     } = {},
   ) {
     log(`Coverage Tests are running for ${sdkName}...`)
@@ -89,7 +90,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
     })
 
     const start = new Date()
-    await Promise.all(p.map(throat(10, testRun => testRun())))
+    await Promise.all(p.map(throat(concurrency, testRun => testRun())))
     const end = new Date()
 
     reportResults({log, p, e, start, end})
