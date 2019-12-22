@@ -40,6 +40,14 @@ async function initialize({displayName, executionMode}) {
     )
   }
 
+  async function checkFrame({isClassicApi = false, locator, tag, matchTimeout} = {}) {
+    if (isClassicApi) {
+      await eyes.checkFrame(By.css(locator), matchTimeout, tag)
+    } else {
+      await eyes.check(tag, Target.frame(By.css(locator)).fully())
+    }
+  }
+
   async function checkRegion({isClassicApi = false, locator, tag, matchTimeout} = {}) {
     if (isClassicApi) {
       await eyes.checkElementBy(By.css(locator), matchTimeout, tag)
@@ -67,10 +75,13 @@ async function initialize({displayName, executionMode}) {
     await eyes.abortIfNotClosed()
   }
 
-  return {visit, open, checkRegion, checkWindow, close, cleanup}
+  return {visit, open, checkFrame, checkRegion, checkWindow, close, cleanup}
 }
 
 const supportedTests = [
+  {name: 'checkFrameClassic', executionMode: {isVisualGrid: true}},
+  {name: 'checkFrameClassic', executionMode: {isCssStitching: true}},
+  {name: 'checkFrameClassic', executionMode: {isScrollStitching: true}},
   {name: 'checkRegionClassic', executionMode: {isVisualGrid: true}},
   {name: 'checkRegionClassic', executionMode: {isCssStitching: true}},
   {name: 'checkRegionClassic', executionMode: {isScrollStitching: true}},
@@ -83,6 +94,9 @@ const supportedTests = [
   {name: 'checkWindowClassicFully', executionMode: {isVisualGrid: true}},
   {name: 'checkWindowClassicFully', executionMode: {isCssStitching: true}},
   {name: 'checkWindowClassicFully', executionMode: {isScrollStitching: true}},
+  {name: 'checkFrameFluent', executionMode: {isVisualGrid: true}},
+  {name: 'checkFrameFluent', executionMode: {isCssStitching: true}},
+  {name: 'checkFrameFluent', executionMode: {isScrollStitching: true}},
   {name: 'checkRegionFluent', executionMode: {isVisualGrid: true}},
   {name: 'checkRegionFluent', executionMode: {isCssStitching: true}},
   {name: 'checkRegionFluent', executionMode: {isScrollStitching: true}},
