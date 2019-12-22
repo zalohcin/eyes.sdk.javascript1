@@ -6,12 +6,18 @@ const throat = require('throat')
  * - A viewport check window is performed unless otherwise specified
  * - locators are specified with CSS selectors
  */
-function makeCoverageTests({visit, open, checkRegion, checkWindow, close}) {
+function makeCoverageTests({visit, open, checkFrame, checkRegion, checkWindow, close}) {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
   const viewportSize = '1024x768'
   const throwException = true
 
   return {
+    checkFrameClassic: async () => {
+      await visit(url)
+      await open({viewportSize})
+      await checkFrame({locator: 'iframe[name="frame1"]', isClassicApi: true})
+      await close(throwException)
+    },
     checkRegionClassic: async () => {
       await visit(url)
       await open({viewportSize})
@@ -34,6 +40,12 @@ function makeCoverageTests({visit, open, checkRegion, checkWindow, close}) {
       await visit(url)
       await open({viewportSize})
       await checkWindow({isClassicApi: true, isFully: true})
+      await close(throwException)
+    },
+    checkFrameFluent: async () => {
+      await visit(url)
+      await open({viewportSize})
+      await checkFrame({locator: 'iframe[name="frame1"]'})
       await close(throwException)
     },
     checkRegionFluent: async () => {
