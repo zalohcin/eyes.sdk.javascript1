@@ -21,7 +21,7 @@ function makeCoverageTests({visit, open, checkRegion, checkWindow, close}) {
     checkRegionClassicWithOverFlow: async () => {
       await visit(url)
       await open({viewportSize})
-      await checkRegion({locator: '#overflowing-div-img', isClassicApi: true})
+      await checkRegion({locator: '#overflowing-div-image', isClassicApi: true})
       await close(throwException)
     },
     checkWindowClassicViewport: async () => {
@@ -45,7 +45,7 @@ function makeCoverageTests({visit, open, checkRegion, checkWindow, close}) {
     checkRegionFluentWithOverFlow: async () => {
       await visit(url)
       await open({viewportSize})
-      await checkRegion({locator: '#overflowing-div-img'})
+      await checkRegion({locator: '#overflowing-div-image'})
       await close(throwException)
     },
     checkWindowFluentViewport: async () => {
