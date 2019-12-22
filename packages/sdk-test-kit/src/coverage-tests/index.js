@@ -63,9 +63,11 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
    */
   async function runTests(
     supportedTests,
-    log = msg => {
-      console.log(msg)
-    },
+    {
+      log = msg => {
+        console.log(msg)
+      },
+    } = {},
   ) {
     log(`Coverage Tests are running for ${sdkName}...`)
 

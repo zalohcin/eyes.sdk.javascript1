@@ -39,7 +39,7 @@ describe('coverage-tests', () => {
         {name: 'checkRegionClassic', executionMode: {blahblah: true}},
       ]
       const {runTests} = makeRunTests(name, initialize)
-      await runTests(supportedTests, () => {})
+      await runTests(supportedTests, {log: () => {}})
       assert.deepStrictEqual(count, 2)
     })
     it('should record and display errors from a run', async () => {
@@ -61,7 +61,7 @@ describe('coverage-tests', () => {
       const log = msg => {
         output.push(msg)
       }
-      await runTests(supportedTests, log)
+      await runTests(supportedTests, {log})
       const expectedOutput = [
         'Coverage Tests are running for blah...',
         '-------------------- ERRORS --------------------',
