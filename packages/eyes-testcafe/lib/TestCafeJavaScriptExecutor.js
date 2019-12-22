@@ -49,7 +49,7 @@ class TestCafeJavaScriptExecutor extends EyesJsExecutor {
   /**
    * @inheritDoc
    */
-  sleep(millis) {
+  sleep(_millis) {
     throw new Error('sleep not implemented in test cafe')
   }
 }

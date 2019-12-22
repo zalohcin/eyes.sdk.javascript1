@@ -5,7 +5,7 @@ const {expect} = require('chai')
 const path = require('path')
 const startTestCafe = require('../setup/start-testcafe-in-mocha')
 
-describe.only('Eyes TestCafe e2e Safari', () => {
+describe('Eyes TestCafe e2e Safari', () => {
   const browser = [
     ['browserstack:safari@13.0:OS X Catalina'],
     ['browserstack:safari@12.1:OS X Mojave'],
@@ -17,7 +17,7 @@ describe.only('Eyes TestCafe e2e Safari', () => {
     ['browserstack:iPhone XR'],
     ['browserstack:iPad Pro 12.9 2018'],
     ['browserstack:iPad Pro 11 2018'],
-  ][2]
+  ][0]
   const {runFileInTestCafe} = startTestCafe({beforeEach, afterEach, browser})
 
   it('runs all e2e Safari tests', async () => {

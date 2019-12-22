@@ -6,9 +6,10 @@ function startTestCafe({beforeEach, afterEach, browser = ['chrome:headless']}) {
   let testCafe, runner
 
   const isBrowserStack = browser.some(b => b.startsWith('browserstack'))
+  const isApple = browser.some(b => ['safari', 'iPhone', 'iPad'].some(device => b.includes(device)))
   if (
-    (isBrowserStack && !process.env.BROWSERSTACK_USERNAME) ||
-    !process.env.BROWSERSTACK_ACCESS_KEY
+    isBrowserStack &&
+    (!process.env.BROWSERSTACK_USERNAME || !process.env.BROWSERSTACK_ACCESS_KEY)
   ) {
     throw new Error(
       'Missing BrowserStack env variables BROWSERSTACK_USERNAME and/or BROWSERSTACK_ACCESS_KEY',
@@ -19,7 +20,13 @@ function startTestCafe({beforeEach, afterEach, browser = ['chrome:headless']}) {
   }
 
   beforeEach(async () => {
-    testCafe = await createTestCafe('localhost', 1337)
+    // For ports see: https://www.browserstack.com/question/664
+    let ports = [1337]
+    if (isBrowserStack && isApple) {
+      ports = [8000, 8001]
+    }
+
+    testCafe = await createTestCafe(null, ...ports)
     if (!process.env.APPLITOOLS_DEBUG_TEST) {
       runner = testCafe.createRunner()
       runner.screenshots('logs/').browsers(browser)

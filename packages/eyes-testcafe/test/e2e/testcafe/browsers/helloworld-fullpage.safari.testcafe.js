@@ -19,7 +19,7 @@ test('helloworld full page Safari', async t => {
 })
 
 /*
- * BROWSER SATCK or testcafe-browser-provider-browserstack BUG - Tetscafe failing to take snapshot:
+ * BUG - Tetscafe failing to take snapshot:
  * RangeError [ERR_OUT_OF_RANGE]: The value of "sourceStart" is out of range. It must be >= 0. Received -456000
  */
 test.skip('full page css stiching Safari', async t => {
