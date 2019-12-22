@@ -6,7 +6,7 @@ const puppeteer = require('puppeteer')
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient')
 const testServer = require('../util/testServer')
 const {presult} = require('@applitools/functional-commons')
-const {DiffsFoundError} = require('@applitools/eyes-sdk-core')
+const {DiffsFoundError, deserializeDomSnapshotResult} = require('@applitools/eyes-sdk-core')
 const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot')
 const fs = require('fs')
 const {resolve} = require('path')
@@ -15,7 +15,7 @@ describe('openEyes', () => {
   let baseUrl, closeServer, openEyes
   const apiKey = process.env.APPLITOOLS_API_KEY // TODO bad for tests. what to do
   let browser, page
-  let processPageAndSerialize
+  let processPage
 
   beforeEach(() => {
     openEyes = makeRenderingGridClient({
@@ -39,7 +39,8 @@ describe('openEyes', () => {
     await page.setCookie({name: 'auth', value: 'secret', url: baseUrl})
 
     const processPageAndSerializeScript = await getProcessPageAndSerialize()
-    processPageAndSerialize = () => page.evaluate(`(${processPageAndSerializeScript})()`)
+    processPage = () =>
+      page.evaluate(`(${processPageAndSerializeScript})()`).then(deserializeDomSnapshotResult)
   })
 
   after(async () => {
@@ -50,7 +51,7 @@ describe('openEyes', () => {
   before(async () => {
     if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
       await page.goto(`${baseUrl}/test.html`)
-      const {cdt} = await processPageAndSerialize()
+      const {cdt} = await processPage()
 
       for (const el of cdt) {
         const attr = el.attributes && el.attributes.find(x => x.name === 'data-blob')
@@ -75,13 +76,7 @@ describe('openEyes', () => {
   it('passes with correct screenshot', async () => {
     await page.goto(`${baseUrl}/test.html`)
 
-    const {cdt, url, blobs, resourceUrls} = await processPageAndSerialize()
-
-    const resourceContents = blobs.map(({url, type, value}) => ({
-      url,
-      type,
-      value: Buffer.from(value, 'base64'),
-    }))
+    const {cdt, url, resourceContents, resourceUrls} = await processPage()
 
     const {checkWindow, close} = await openEyes({
       appName: 'some app',
@@ -116,13 +111,7 @@ describe('openEyes', () => {
   it('fails with incorrect screenshot', async () => {
     await page.goto(`${baseUrl}/test.html`)
 
-    const {cdt, url, blobs, resourceUrls} = await processPageAndSerialize()
-
-    const resourceContents = blobs.map(({url, type, value}) => ({
-      url,
-      type,
-      value: Buffer.from(value, 'base64'),
-    }))
+    const {cdt, url, resourceContents, resourceUrls} = await processPage()
 
     const {checkWindow, close} = await openEyes({
       appName: 'some app',

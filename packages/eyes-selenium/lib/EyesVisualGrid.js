@@ -229,18 +229,10 @@ class EyesVisualGrid extends Eyes {
         browser: this._userAgent.getBrowser(),
       })
 
-      const {cdt, url: pageUrl, blobs, resourceUrls, frames} = pageDomResults
+      const {cdt, url: pageUrl, resourceContents, resourceUrls, frames} = pageDomResults
 
       if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
         CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames)
-      }
-
-      const resourceContents = this._blobsToResourceContents(blobs)
-      if (frames && frames.length > 0) {
-        for (let i = 0; i < frames.length; i += 1) {
-          frames[i].resourceContents = this._blobsToResourceContents(frames[i].blobs)
-          delete frames[i].blobs
-        }
       }
 
       this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
@@ -270,7 +262,7 @@ class EyesVisualGrid extends Eyes {
         source,
       })
     } catch (e) {
-      throw new EyesError(`Failed to extract DOM from the page: ${e.toString()}`)
+      throw new EyesError(`Failed to extract DOM from the page: ${e.toString()}`, e)
     }
   }
 

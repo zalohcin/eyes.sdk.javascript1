@@ -6,14 +6,14 @@ const puppeteer = require('puppeteer')
 const makeRenderingGridClient = require('../../src/sdk/renderingGridClient')
 const testServer = require('../util/testServer')
 const {presult} = require('@applitools/functional-commons')
-const {DiffsFoundError} = require('@applitools/eyes-sdk-core')
+const {DiffsFoundError, deserializeDomSnapshotResult} = require('@applitools/eyes-sdk-core')
 const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot')
 
 describe('testWindow', () => {
   let baseUrl, closeServer, testWindow
   const apiKey = process.env.APPLITOOLS_API_KEY // TODO bad for tests. what to do
   let browser, page
-  let processPageAndSerialize
+  let processPage
 
   beforeEach(() => {
     testWindow = makeRenderingGridClient(
@@ -39,7 +39,8 @@ describe('testWindow', () => {
     await page.setCookie({name: 'auth', value: 'secret', url: baseUrl})
 
     const processPageAndSerializeScript = await getProcessPageAndSerialize()
-    processPageAndSerialize = () => page.evaluate(`(${processPageAndSerializeScript})()`)
+    processPage = () =>
+      page.evaluate(`(${processPageAndSerializeScript})()`).then(deserializeDomSnapshotResult)
   })
 
   after(async () => {
@@ -50,13 +51,7 @@ describe('testWindow', () => {
   it('passes with correct screenshot', async () => {
     await page.goto(`${baseUrl}/test.html`)
 
-    const {cdt, url, blobs, resourceUrls} = await processPageAndSerialize()
-
-    const resourceContents = blobs.map(({url, type, value}) => ({
-      url,
-      type,
-      value: Buffer.from(value, 'base64'),
-    }))
+    const {cdt, url, resourceContents, resourceUrls} = await processPage()
 
     const openParams = {
       appName: 'some app',
@@ -89,13 +84,7 @@ describe('testWindow', () => {
   it('fails with incorrect screenshot', async () => {
     await page.goto(`${baseUrl}/test.html`)
 
-    const {cdt, url, blobs, resourceUrls} = await processPageAndSerialize()
-
-    const resourceContents = blobs.map(({url, type, value}) => ({
-      url,
-      type,
-      value: Buffer.from(value, 'base64'),
-    }))
+    const {cdt, url, resourceContents, resourceUrls} = await processPage()
 
     const openParams = {
       appName: 'some app',
