@@ -5,9 +5,9 @@
 const {Configuration, StitchMode} = require('@applitools/eyes-common')
 const {Eyes, Target, ConsoleLogHandler} = require('../../../..')
 
-fixture.only`Hello world full page ie`.page`https://www.applitools.com/helloworld` // eslint-disable-line no-unused-expressions
+fixture`Hello world full page Safari`.page`https://www.applitools.com/helloworld`
 
-test('helloworld full page ie', async t => {
+test('helloworld full page Safari', async t => {
   const eyes = new Eyes()
   eyes.setConfiguration(new Configuration({viewportSize: {width: 600, height: 500}}))
   if (process.env.APPLITOOLS_SHOW_LOGS || process.env.APPLITOOLS_DEBUG_TEST) {
@@ -18,10 +18,15 @@ test('helloworld full page ie', async t => {
   await eyes.close()
 })
 
-test('full page css stiching ie', async t => {
+/*
+ * BROWSER SATCK or testcafe-browser-provider-browserstack BUG - Tetscafe failing to take snapshot:
+ * RangeError [ERR_OUT_OF_RANGE]: The value of "sourceStart" is out of range. It must be >= 0. Received -456000
+ */
+test.skip('full page css stiching Safari', async t => {
   const eyes = new Eyes()
-  eyes.setStitchMode(StitchMode.CSS)
-  eyes.setConfiguration(new Configuration({viewportSize: {width: 600, height: 500}}))
+  eyes.setConfiguration(
+    new Configuration({stitchMode: StitchMode.CSS, viewportSize: {width: 600, height: 500}}),
+  )
   if (process.env.APPLITOOLS_SHOW_LOGS || process.env.APPLITOOLS_DEBUG_TEST) {
     eyes.setLogHandler(new ConsoleLogHandler(true))
   }

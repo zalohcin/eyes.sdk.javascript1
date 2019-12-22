@@ -1,6 +1,7 @@
 'use strict'
 
 const {By} = require('selenium-webdriver')
+const {TypeUtils} = require('@applitools/eyes-common')
 const {MutableImage, Region, OSNames} = require('@applitools/eyes-common')
 const {ImageProvider} = require('@applitools/eyes-sdk-core')
 
@@ -48,7 +49,7 @@ class RegionAndVersion {
  */
 class SafariScreenshotImageProvider extends ImageProvider {
   /**
-   * @param {Eyes} eyes
+   * @param {EyesTestCafe} eyes
    * @param {Logger} logger - A Logger instance.
    * @param {EyesWebDriver} tsInstance
    * @param {UserAgent} userAgent
@@ -63,7 +64,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
 
     /** @type {Map<int, RegionAndVersion>} */
     this._devicesRegions = undefined
-    this._jsExecutor = new TestCafeJavaScriptExecutor(eyes.getDriver())
+    this._jsExecutor = new TestCafeJavaScriptExecutor(tsInstance.getDriver())
   }
 
   /**
@@ -73,6 +74,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
   async getImage() {
     this._logger.verbose('Getting screenshot as base64...')
     let screenshot64 = await this._tsInstance.takeScreenshot()
+    screenshot64 = screenshot64.toString('base64')
     screenshot64 = screenshot64.replace(/\r\n/g, '') // Because of SauceLabs returns image with line breaks
 
     this._logger.verbose('Done getting base64! Creating MutableImage...')
@@ -126,7 +128,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
         const positionProvider = new ScrollPositionProvider(
           this._logger,
           this._jsExecutor,
-          await this._eyes.getDriver().findElement(By.tagName('html')),
+          await this._eyes.getDriver().findElement('html'),
         )
         loc = await positionProvider.getCurrentPosition()
       } else {

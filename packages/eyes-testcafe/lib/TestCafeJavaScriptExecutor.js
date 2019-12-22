@@ -2,8 +2,8 @@
 
 const {EyesJsExecutor} = require('@applitools/eyes-sdk-core')
 const {TypeUtils} = require('@applitools/eyes-common')
-const {makeClientFunctionWrapper} = require('./makeClientFunctionWrapper')
 const isTestcafeSelector = require('./isTestcafeSelector')
+const makeSafeExecuteFunction = require('./safeExecuteFunction')
 
 /**
  * @ignore
@@ -14,9 +14,8 @@ class TestCafeJavaScriptExecutor extends EyesJsExecutor {
    */
   constructor(driver) {
     super()
-
     this._driver = driver
-    this._clientFunctionWrapper = makeClientFunctionWrapper({logger: {log: () => {}}})
+    this._safeExecuteFunction = makeSafeExecuteFunction(driver)
   }
 
   /**
@@ -43,12 +42,8 @@ class TestCafeJavaScriptExecutor extends EyesJsExecutor {
     return this._driver.eval(func, {dependencies})
   }
 
-  /*
-   * Note: func must return a Promise (also can't async).
-   */
   async executeFunction(func) {
-    const wrappedFunc = await this._clientFunctionWrapper(func)
-    return wrappedFunc(this._driver)
+    return this._safeExecuteFunction(func)
   }
 
   /**

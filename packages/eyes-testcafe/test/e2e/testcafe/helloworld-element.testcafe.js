@@ -6,7 +6,7 @@ const {Configuration} = require('@applitools/eyes-common')
 const {Selector} = require('testcafe')
 const {Eyes, Target} = require('../../../')
 
-fixture`Hello world`.page`https://applitools.com/helloworld` // eslint-disable-line no-unused-expressions
+fixture`Hello world`.page`https://applitools.com/helloworld`
 
 test.skip('helloworld element', async t => {
   const configuration = new Configuration({

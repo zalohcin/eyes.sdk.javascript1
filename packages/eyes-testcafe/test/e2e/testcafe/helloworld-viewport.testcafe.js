@@ -5,7 +5,7 @@
 const {Configuration, ConsoleLogHandler} = require('@applitools/eyes-common')
 const {Eyes, Target} = require('../../../')
 
-fixture`Hello world`.page`https://applitools.com/helloworld` // eslint-disable-line no-unused-expressions
+fixture`Hello world`.page`https://applitools.com/helloworld`
 
 test('helloworld viewport', async t => {
   const eyes = new Eyes()
