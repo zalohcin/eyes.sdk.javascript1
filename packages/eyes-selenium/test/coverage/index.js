@@ -40,15 +40,19 @@ async function initialize({displayName, executionMode}) {
     )
   }
 
-  async function check(options = {}) {
-    if (options.isClassicApi) {
-      options.locator
-        ? await eyes.checkElementBy(By.css(options.locator))
-        : await eyes.checkWindow()
+  async function checkRegion({isClassicApi = false, locator} = {}) {
+    if (isClassicApi) {
+      await eyes.checkElementBy(By.css(locator))
     } else {
-      options.locator
-        ? await eyes.check(undefined, Target.region(By.css(options.locator)).fully())
-        : await eyes.check(undefined, Target.window().fully())
+      await eyes.check(undefined, Target.region(By.css(locator)).fully())
+    }
+  }
+
+  async function checkWindow({isClassicApi = false} = {}) {
+    if (isClassicApi) {
+      await eyes.checkWindow()
+    } else {
+      await eyes.check(undefined, Target.window().fully())
     }
   }
 
@@ -61,7 +65,7 @@ async function initialize({displayName, executionMode}) {
     await eyes.abortIfNotClosed()
   }
 
-  return {visit, open, check, close, cleanup}
+  return {visit, open, checkRegion, checkWindow, close, cleanup}
 }
 
 const supportedTests = [

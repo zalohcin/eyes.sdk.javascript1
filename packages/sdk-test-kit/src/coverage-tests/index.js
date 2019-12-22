@@ -5,7 +5,7 @@ const throat = require('throat')
  * - The fluent API is used by default
  * - A full check window is performed unless otherwise specified
  */
-function makeCoverageTests({visit, open, check, close}) {
+function makeCoverageTests({visit, open, checkRegion, checkWindow, close}) {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
   const viewportSize = '1024x768'
   const throwException = true
@@ -14,32 +14,25 @@ function makeCoverageTests({visit, open, check, close}) {
     checkRegionClassic: async () => {
       await visit(url)
       await open({viewportSize})
-      await check({
-        isClassicApi: true,
-        locator: '#overflowing-div',
-      })
+      await checkRegion({locator: '#overflowing-div', isClassicApi: true})
       await close(throwException)
     },
     checkRegionFluent: async () => {
       await visit(url)
       await open({viewportSize})
-      await check({
-        locator: '#overflowing-div',
-      })
+      await checkRegion({locator: '#overflowing-div'})
       await close(throwException)
     },
     checkWindowClassic: async () => {
       await visit(url)
       await open({viewportSize})
-      await check({
-        isClassicApi: true,
-      })
+      await checkWindow({isClassicApi: true})
       await close(throwException)
     },
     checkWindowFluent: async () => {
       await visit(url)
       await open({viewportSize})
-      await check()
+      await checkWindow()
       await close(throwException)
     },
   }
@@ -49,7 +42,7 @@ function makeCoverageTests({visit, open, check, close}) {
  * Creates a coverage-test runner for a given SDK implementation.
  * sdkName: a string of the SDK name to display in the console output during a run
  * intialize: a function that initializeSdkImplementations state and implements all coverage-test DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (e.g., visit, open, check, and close) plus optional functions the runner can use for lifecycle management (e.g., cleanup)
- * returns: a run function
+ * returns: a runTests function
  */
 function makeRunTests(sdkName, initializeSdkImplementation) {
   const p = []
@@ -83,7 +76,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
           const sdkImplementation = await initializeSdkImplementation(supportedTest)
           const test = makeCoverageTests(sdkImplementation)[supportedTest.name]
           await test()
-          if (sdkImplementation.cleanup()) await sdkImplementation.cleanup()
+          if (sdkImplementation.cleanup) await sdkImplementation.cleanup()
         } catch (error) {
           recordError(e, supportedTest.displayName, error)
         }
