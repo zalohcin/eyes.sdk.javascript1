@@ -1,101 +1,123 @@
+const throat = require('throat')
+
 /*
  * check command assumptions:
  * - The fluent API is used by default
  * - A full check window is performed unless otherwise specified
  */
-
 function makeCoverageTests({visit, open, check, close}) {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
-  const appName = 'coverageTests'
   const viewportSize = '1024x768'
   const throwException = true
-  const executionModes = [{isVisualGrid: true}, {isCssStitching: true}, {isScrollStitching: true}]
 
   return {
-    checkRegionClassic: {
-      executionModes,
-      run: async context => {
-        await visit(context, url)
-        await open(context, {appName, testName: 'checkRegionClassic', viewportSize})
-        await check(context, {
-          isClassicApi: true,
-          locator: '#overflowing-div',
-        })
-        await close(context, throwException)
-      },
+    checkRegionClassic: async () => {
+      await visit(url)
+      await open({viewportSize})
+      await check({
+        isClassicApi: true,
+        locator: '#overflowing-div',
+      })
+      await close(throwException)
     },
-    checkRegionFluent: {
-      executionModes,
-      run: async context => {
-        await visit(context, url)
-        await open(context, {appName, testName: 'checkRegionFluent', viewportSize})
-        await check(context, {
-          locator: '#overflowing-div',
-        })
-        close(context, throwException)
-      },
+    checkRegionFluent: async () => {
+      await visit(url)
+      await open({viewportSize})
+      await check({
+        locator: '#overflowing-div',
+      })
+      await close(throwException)
     },
-    checkWindowClassic: {
-      executionModes,
-      run: async context => {
-        await visit(context, url)
-        await open(context, {appName, testName: 'checkWindowClassic', viewportSize})
-        await check(context, {
-          isClassicApi: true,
-        })
-        await close(context, throwException)
-      },
+    checkWindowClassic: async () => {
+      await visit(url)
+      await open({viewportSize})
+      await check({
+        isClassicApi: true,
+      })
+      await close(throwException)
     },
-    checkWindowFluent: {
-      executionModes,
-      run: async context => {
-        await visit(context, url)
-        await open(context, {appName, testName: 'checkWindowFluent', viewportSize})
-        await check(context)
-        await close(context, throwException)
-      },
+    checkWindowFluent: async () => {
+      await visit(url)
+      await open({viewportSize})
+      await check()
+      await close(throwException)
     },
   }
 }
 
-async function runCoverageTests({initialize, visit, open, check, close}, supportedTests) {
-  // init
-  console.log(`Coverage Tests are running...`)
-  const tests = makeCoverageTests({visit, open, check, close})
+/**
+ * Creates a coverage-test runner for a given SDK implementation.
+ * sdkName: a string of the SDK name to display in the console output during a run
+ * intialize: a function that initializeSdkImplementations state and implements all coverage-test DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (e.g., visit, open, check, and close) plus optional functions the runner can use for lifecycle management (e.g., cleanup)
+ * returns: a run function
+ */
+function makeRunTests(sdkName, initializeSdkImplementation) {
   const p = []
   const e = {}
 
-  // execution loop
-  for (const index in supportedTests) {
-    const test = tests[supportedTests[index]]
-    test.name = supportedTests[index]
-    for (const index in test.executionModes) {
-      const executionMode = test.executionModes[index]
-      p.push(async () => {
-        await test.run(await initialize(executionMode)).catch(error => {
-          const testName = `${test.name} with ${Object.keys(executionMode)[0]}`
-          if (!e[testName]) {
-            e[testName] = []
-          }
-          e[testName].push(error)
-        })
-      })
-    }
-  }
-  const start = new Date()
-  await Promise.all(p.map(testRun => testRun()))
-  const end = new Date()
+  /**
+   * Runs coverage-tests for a given SDK implementation with various execution modes.
+   * supportedTests: an array of objects, each with keys of "name" and "executionMode"
+   * - name: name of a test (found in makeCoverageTests)
+   * - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement whatever it needs, just so long as it is what the initializeSdkImplementation function is using internally
+   * options: an object which can be used to alter the behavior of runTests (e.g., set the concurrency limit, provide a different logger, etc.)
+   */
+  async function runTests(
+    supportedTests,
+    {
+      log = msg => {
+        console.log(msg)
+      },
+      concurrency = 10,
+    } = {},
+  ) {
+    log(`Coverage Tests are running for ${sdkName}...`)
 
+    supportedTests.forEach(supportedTest => {
+      // store the displayName for consistent naming in both the console error output and in the Eyes dashboard
+      supportedTest.displayName = `${supportedTest.name} with ${
+        Object.keys(supportedTest.executionMode)[0]
+      }`
+      p.push(async () => {
+        try {
+          const sdkImplementation = await initializeSdkImplementation(supportedTest)
+          const test = makeCoverageTests(sdkImplementation)[supportedTest.name]
+          await test()
+          if (sdkImplementation.cleanup()) await sdkImplementation.cleanup()
+        } catch (error) {
+          recordError(e, supportedTest.displayName, error)
+        }
+      })
+    })
+
+    const start = new Date()
+    await Promise.all(p.map(throat(concurrency, testRun => testRun())))
+    const end = new Date()
+
+    reportResults({log, p, e, start, end})
+  }
+
+  return {runTests}
+}
+
+function recordError(e, displayName, error) {
+  if (!e[displayName]) {
+    e[displayName] = []
+  }
+  e[displayName].push(error)
+}
+
+function reportResults({log, p, e, start, end}) {
   // logging
   if (Object.keys(e).length) {
-    console.log(`-------------------- ERRORS --------------------`)
-    console.log(e)
+    log(`-------------------- ERRORS --------------------`)
+    log(e)
   }
-  console.log(`-------------------- SUMMARY --------------------`)
-  console.log(`Ran ${p.length} tests in ${end - start}ms`)
+  log(`-------------------- SUMMARY --------------------`)
+  log(`Ran ${p.length} tests in ${end - start}ms`)
   if (Object.keys(e).length) {
-    console.log(`Encountered n errors in ${Object.keys(e).length} tests`)
+    log(`Encountered n errors in ${Object.keys(e).length} tests`)
   }
 }
 
-module.exports = {makeCoverageTests, runCoverageTests}
+module.exports = {makeCoverageTests, makeRunTests}
