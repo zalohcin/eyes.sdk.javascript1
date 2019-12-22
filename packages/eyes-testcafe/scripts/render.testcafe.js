@@ -3,7 +3,10 @@ const {StitchMode, Configuration} = require('@applitools/eyes-common')
 const {Eyes, Target, ConsoleLogHandler} = require('../')
 
 const eyes = new Eyes()
-const configuration = new Configuration({viewportSize: {width: 600, height: 500}})
+const configuration = new Configuration({
+  stitchMode: StitchMode.SCROLL,
+  viewportSize: {width: 600, height: 500},
+})
 eyes.setConfiguration(configuration)
 if (process.env.APPLITOOLS_SHOW_LOGS || process.env.LIVE) {
   eyes.setLogHandler(new ConsoleLogHandler(true))
