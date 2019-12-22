@@ -392,15 +392,22 @@ class EyesWebElement extends WebElement {
    * @return {Promise<{width: number, x: number, y: number, height: number}>}
    */
   async getRect() {
-    // The workaround is similar to Java one, but in js we always get raw data with decimal value which we should round up.
-    const rect = await super.getRect()
-    const width = Math.ceil(rect.width) || 0
-    // noinspection JSSuspiciousNameCombination
-    const height = Math.ceil(rect.height) || 0
-    const x = Math.ceil(rect.x) || 0
-    // noinspection JSSuspiciousNameCombination
-    const y = Math.ceil(rect.y) || 0
-    return {width, height, x, y}
+    let rect
+    try {
+      rect = await super.getRect()
+    } catch (error) {
+      console.error(error)
+    }
+    if (rect) {
+      return {
+        width: Math.ceil(rect.width) || 0,
+        height: Math.ceil(rect.height) || 0,
+        x: Math.ceil(rect.x) || 0,
+        y: Math.ceil(rect.y) || 0,
+      }
+    } else {
+      return {width: 0, height: 0, x: 0, y: 0}
+    }
   }
 
   /**
