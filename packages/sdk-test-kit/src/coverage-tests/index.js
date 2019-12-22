@@ -98,7 +98,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
       log = msg => {
         console.log(msg)
       },
-      concurrency = 10,
+      concurrency = 15,
     } = {},
   ) {
     log(`Coverage Tests are running for ${sdkName}...`)
