@@ -48,7 +48,7 @@ function makeCoverageTests({visit, open, check, close}) {
 /**
  * Creates a coverage-test runner for a given SDK implementation.
  * sdkName: a string of the SDK name to display in the console output during a run
- * intialize: a function that initializeSdkImplementations state and implements all coverage-test DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (e.g., visit, open, check, and close) plus functions the runner expects for lifecycle management (e.g., cleanup)
+ * intialize: a function that initializeSdkImplementations state and implements all coverage-test DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (e.g., visit, open, check, and close) plus optional functions the runner can use for lifecycle management (e.g., cleanup)
  * returns: a run function
  */
 function makeRunTests(sdkName, initializeSdkImplementation) {
@@ -83,7 +83,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
           const sdkImplementation = await initializeSdkImplementation(supportedTest)
           const test = makeCoverageTests(sdkImplementation)[supportedTest.name]
           await test()
-          await sdkImplementation.cleanup()
+          if (sdkImplementation.cleanup()) await sdkImplementation.cleanup()
         } catch (error) {
           recordError(e, supportedTest.displayName, error)
         }

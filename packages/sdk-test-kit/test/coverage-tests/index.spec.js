@@ -42,6 +42,22 @@ describe('coverage-tests', () => {
       await runTests(supportedTests, {log: () => {}})
       assert.deepStrictEqual(count, 2)
     })
+    it('cleanup should be optional', () => {
+      const name = 'blah'
+      const initialize = () => {
+        return {
+          visit: () => {},
+          open: () => {},
+          check: () => {},
+          close: () => {},
+        }
+      }
+      const supportedTests = [{name: 'checkRegionClassic', executionMode: {blah: true}}]
+      const {runTests} = makeRunTests(name, initialize)
+      assert.doesNotThrow(async () => {
+        await runTests(supportedTests, {log: () => {}})
+      })
+    })
     it('should record and display errors from a run', async () => {
       const name = 'blah'
       const initialize = () => {
