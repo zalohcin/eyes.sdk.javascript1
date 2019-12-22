@@ -60,6 +60,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
    * supportedTests: an array of objects, each with keys of "name" and "executionMode"
    * - name: name of a test (found in makeCoverageTests)
    * - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement whatever it needs, just so long as it is what the initializeSdkImplementation function is using internally
+   * options: an object which can be used to alter the behavior of runTests (e.g., set the concurrency limit, provide a different logger, etc.)
    */
   async function runTests(
     supportedTests,
