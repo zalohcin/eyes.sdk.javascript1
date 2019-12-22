@@ -158,3 +158,4 @@ exports.ImageUtils = common.ImageUtils
 exports.PerformanceUtils = common.PerformanceUtils
 exports.StreamUtils = common.StreamUtils
 exports.TypeUtils = common.TypeUtils
+exports.deserializeDomSnapshotResult = common.deserializeDomSnapshotResult

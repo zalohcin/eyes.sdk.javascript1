@@ -2,7 +2,7 @@
 
 const makeRenderer = require('./renderer')
 const createRenderRequests = require('./createRenderRequests')
-const {RenderingInfo} = require('@applitools/eyes-sdk-core')
+const {RenderingInfo, deserializeDomSnapshotResult} = require('@applitools/eyes-sdk-core')
 
 require('@applitools/isomorphic-fetch') // TODO can just use node-fetch
 
@@ -23,8 +23,11 @@ async function takeScreenshot({
   // region,
   // scriptHooks,
 }) {
-  const resourceContents = blobDataToResourceContents(blobs)
-  const framesWithResources = createResourceContents(frames)
+  const {resourceContents, frames: framesWithResources} = deserializeDomSnapshotResult({
+    blobs,
+    frames,
+  })
+
   const renderingInfo = new RenderingInfo({
     serviceUrl: renderInfo.serviceUrl,
     accessToken: renderInfo.accessToken,
@@ -71,25 +74,6 @@ async function takeScreenshot({
   )
 
   return renderStatusResults
-}
-
-function createResourceContents(frames) {
-  return frames.map(frame => {
-    return {
-      url: frame.url,
-      cdt: frame.cdt,
-      resourceUrls: frame.resourceUrls,
-      resourceContents: blobDataToResourceContents(frame.blobs),
-      frames: frame.frames ? createResourceContents(frame.frames) : undefined,
-    }
-  })
-}
-
-function blobDataToResourceContents(blobs) {
-  return blobs.reduce((acc, {url, type, value}) => {
-    acc[url] = {url, type, value: Buffer.from(value, 'base64')}
-    return acc
-  }, {})
 }
 
 module.exports = takeScreenshot
