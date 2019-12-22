@@ -2,10 +2,10 @@
 
 const createTestCafe = require('testcafe')
 
-function startTestCafe({beforeEach, afterEach, browser = 'chrome:headless'}) {
+function startTestCafe({beforeEach, afterEach, browser = ['chrome:headless']}) {
   let testCafe, runner
 
-  const isBrowserStack = browser.startsWith('browserstack')
+  const isBrowserStack = browser.some(b => b.startsWith('browserstack'))
   if (
     (isBrowserStack && !process.env.BROWSERSTACK_USERNAME) ||
     !process.env.BROWSERSTACK_ACCESS_KEY

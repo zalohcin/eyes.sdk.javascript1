@@ -72,6 +72,7 @@
   "scripts": {
     "build:dc": "rollup -c ./build/rollup.config.js",
     "prepublishOnly": "npm run build:dc",
+    "render": "node scripts/render.js",
     "test": "mocha --no-timeouts \"test/**/*.spec2.js\"",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec2.js\"",

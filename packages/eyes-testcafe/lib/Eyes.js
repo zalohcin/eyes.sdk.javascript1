@@ -588,7 +588,7 @@ class Eyes extends EyesBase {
       try {
         return await this._driver.getTitle()
       } catch (err) {
-        this._logger.verbose(`failed (${err})`)
+        this._logger.verbose(`failed (${JSON.stringify(err)})`)
         this._dontGetTitle = true
       }
     }

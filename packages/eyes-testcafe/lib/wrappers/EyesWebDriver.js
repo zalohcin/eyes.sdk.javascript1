@@ -16,13 +16,12 @@ const {EyesTargetLocator} = require('./EyesTargetLocator')
 const {TestCafeJavaScriptExecutor} = require('../TestCafeJavaScriptExecutor')
 
 const SCREENSHOTS_PATH = '/.applitools__screenshots'
-const getViewport = () =>
-  Promise.resolve({
-    // eslint-disable-next-line no-undef
-    width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-    // eslint-disable-next-line no-undef
-    height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
-  })
+const getViewport = () => ({
+  // eslint-disable-next-line no-undef
+  width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+  // eslint-disable-next-line no-undef
+  height: Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
+})
 
 /**
  * An Eyes implementation of the interfaces implemented by {@link IWebDriver}.
@@ -95,6 +94,10 @@ class EyesWebDriver {
    */
   getExecutor() {
     return this._driver.getExecutor()
+  }
+
+  getDriver() {
+    return this._driver
   }
 
   /**
@@ -258,6 +261,10 @@ class EyesWebDriver {
       .slice(2)
     const filepath = path.resolve(SCREENSHOTS_PATH, filename)
     const screenshotPath = await this._driver.takeScreenshot(filepath)
+    if (!screenshotPath) {
+      throw new Error('Failed to get Testcafe screenshot')
+    }
+
     this._logger.log('screenshot created at', screenshotPath)
     try {
       return fs.readFileSync(screenshotPath)
