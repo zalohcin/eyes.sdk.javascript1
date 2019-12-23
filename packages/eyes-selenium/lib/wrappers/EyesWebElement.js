@@ -396,7 +396,7 @@ class EyesWebElement extends WebElement {
     try {
       rect = await super.getRect()
     } catch (error) {
-      console.error(error)
+      this._logger.verbose(`Error in getRect(): ${error}`)
     }
     if (rect) {
       return {
