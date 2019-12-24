@@ -72,7 +72,7 @@
     "test": "npm run build:browser && npm run test:mocha",
     "render": "node example/render.js"
   },
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "engines": {
     "node": ">=8.9.0"
   }
