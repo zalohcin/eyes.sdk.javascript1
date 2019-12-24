@@ -70,7 +70,11 @@ function convertExecutionModeToSuffix(executionModeName) {
 
 /**
  * Creates a coverage-test runner for a given SDK implementation.
- * intializeSdkImplementation: a function that initializes state and implements all coverage-test DSL functions for a given SDK. Returns all of the functions expected by makeCoverageTests (e.g., visit, open, check, and close) plus optional functions the runner can use for lifecycle management (e.g., cleanup)
+ * params:
+ * - intializeSdkImplementation: a function that initializes state and implements
+ *     all coverage-test DSL functions for a given SDK. Returns all of the functions
+ *     expected by makeCoverageTests (e.g., visit, open, check, and close) plus
+ *     optional functions the runner can use for lifecycle management (e.g., cleanup)
  * returns: a runTests function
  */
 function makeRunTests(initializeSdkImplementation) {
@@ -78,11 +82,17 @@ function makeRunTests(initializeSdkImplementation) {
   const e = {}
 
   /**
-   * Runs coverage-tests for a given SDK implementation with various execution modes.
-   * supportedTests: an array of objects, each with keys of "name" and "executionMode"
-   * - name: name of a test (found in makeCoverageTests)
-   * - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement whatever it needs, just so long as it is what the initializeSdkImplementation function is using internally
-   * options: an object which can be used to alter the behavior of runTests (e.g., set the concurrency limit, provide a different logger, etc.)
+   * Runs coverage-tests for a given SDK implementation.
+   * params:
+   * - supportedTests: an array of objects, each with keys of "name" and "executionMode"
+   *    - name: name of a test (found in makeCoverageTests)
+   *    - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement
+   *        whatever it needs, just so long as it is what the initializeSdkImplementation
+   *        function is using internally
+   * - options: an object which can be used to alter the behavior of runTests
+   *    - host: url to run tests on (e.g., a Selenium Grid)
+   *    - concurrency: number of parallel executions at one time
+   * returns: a report object
    */
   async function runTests(supportedTests, {host, concurrency = 15} = {}) {
     supportedTests.forEach(supportedTest => {
