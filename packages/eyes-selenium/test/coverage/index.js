@@ -13,13 +13,14 @@ const {
 const sdkName = 'eyes-selenium'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
 
-async function initialize({displayName, executionMode}) {
+async function initialize({baselineTestName, executionMode, host}) {
   let eyes
   let driver
 
   driver = await new Builder()
     .forBrowser('chrome')
     .setChromeOptions(new ChromeOptions().headless())
+    .usingServer(host ? 'http://localhost:4444/wd/hub' : undefined)
     .build()
   eyes = executionMode.isVisualGrid ? new Eyes(new VisualGridRunner()) : new Eyes()
   executionMode.isCssStitching ? eyes.setStitchMode(StitchMode.CSS) : undefined
@@ -34,25 +35,43 @@ async function initialize({displayName, executionMode}) {
   async function open(options) {
     driver = await eyes.open(
       driver,
-      sdkName,
-      displayName,
+      options.appName,
+      baselineTestName,
       RectangleSize.parse(options.viewportSize),
     )
   }
 
-  async function checkFrame({isClassicApi = false, locator, tag, matchTimeout} = {}) {
+  async function checkFrame({
+    isClassicApi = false,
+    isFully = false,
+    locator,
+    tag,
+    matchTimeout,
+  } = {}) {
     if (isClassicApi) {
-      await eyes.checkFrame(By.css(locator), matchTimeout, tag)
+      const element = await driver.findElement(By.css(locator))
+      await eyes.checkFrame(element, matchTimeout, tag)
     } else {
-      await eyes.check(tag, Target.frame(By.css(locator)).fully())
+      isFully
+        ? await eyes.check(tag, Target.frame(By.css(locator)).fully())
+        : await eyes.check(tag, Target.frame(By.css(locator)))
     }
   }
 
-  async function checkRegion({isClassicApi = false, locator, tag, matchTimeout} = {}) {
+  async function checkRegion({
+    isClassicApi = false,
+    isFully = false,
+    locator,
+    tag,
+    matchTimeout,
+  } = {}) {
     if (isClassicApi) {
-      await eyes.checkElementBy(By.css(locator), matchTimeout, tag)
+      const element = await driver.findElement(By.css(locator))
+      await eyes.checkElement(element, matchTimeout, tag)
     } else {
-      await eyes.check(tag, Target.region(By.css(locator)).fully())
+      isFully
+        ? await eyes.check(tag, Target.region(By.css(locator)).fully())
+        : await eyes.check(tag, Target.region(By.css(locator)))
     }
   }
 
@@ -97,12 +116,6 @@ const supportedTests = [
   {name: 'TestCheckFrame_Fluent', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckFrame_Fluent', executionMode: {isCssStitching: true}},
   {name: 'TestCheckFrame_Fluent', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckRegion_Fluent', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckRegion_Fluent', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckRegion_Fluent', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckRegion2_Fluent', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckRegion2_Fluent', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckRegion2_Fluent', executionMode: {isScrollStitching: true}},
   {name: 'TestCheckWindow_Fluent', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckWindow_Fluent', executionMode: {isCssStitching: true}},
   {name: 'TestCheckWindow_Fluent', executionMode: {isScrollStitching: true}},
