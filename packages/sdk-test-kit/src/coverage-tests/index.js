@@ -94,17 +94,18 @@ function makeRunTests(initializeSdkImplementation) {
    *    - concurrency: number of parallel executions at one time
    * returns: a report object
    */
-  async function runTests(supportedTests, {host, concurrency = 15} = {}) {
+  async function runTests(supportedTests, {branchName = 'master', concurrency = 15, host} = {}) {
     supportedTests.forEach(supportedTest => {
       const testName = supportedTest.name
       const executionModeName = Object.keys(supportedTest.executionMode)[0]
       p.push(async () => {
         try {
           const sdkImplementation = await initializeSdkImplementation({
-            ...supportedTest,
             // for consistent naming in the Eyes dashboard to pick up the correct baselines
             baselineTestName: `${testName}${convertExecutionModeToSuffix(executionModeName)}`,
+            branchName,
             host,
+            ...supportedTest,
           })
           const test = makeCoverageTests(sdkImplementation)[testName]
           await test()

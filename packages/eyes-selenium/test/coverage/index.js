@@ -13,7 +13,7 @@ const {
 const sdkName = 'eyes-selenium'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
 
-async function initialize({baselineTestName, executionMode, host}) {
+async function initialize({baselineTestName, branchName, executionMode, host}) {
   let eyes
   let driver
 
@@ -25,7 +25,7 @@ async function initialize({baselineTestName, executionMode, host}) {
   eyes = executionMode.isVisualGrid ? new Eyes(new VisualGridRunner()) : new Eyes()
   executionMode.isCssStitching ? eyes.setStitchMode(StitchMode.CSS) : undefined
   executionMode.isScrollStitching ? eyes.setStitchMode(StitchMode.SCROLL) : undefined
-  eyes.setBranchName('master')
+  eyes.setBranchName(branchName)
   eyes.setBatch(batch)
 
   async function visit(url) {
