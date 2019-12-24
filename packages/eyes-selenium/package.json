@@ -58,7 +58,8 @@
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "test:it": "mocha-parallel-tests --timeout 120000 \"test/it/**/*.spec.js\"",
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\"",
-    "test:coverage": "coverage-tests --run --path test/coverage/index.js"
+    "test:coverage": "coverage-tests --run --path test/coverage/index.js",
+    "test:coverage:nuke": "coverage-tests --nuke"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
