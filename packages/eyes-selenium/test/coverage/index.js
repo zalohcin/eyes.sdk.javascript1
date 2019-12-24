@@ -9,7 +9,6 @@ const {
   StitchMode,
   VisualGridRunner,
 } = require('../../index')
-const {makeRunTests} = require('@applitools/sdk-test-kit')
 
 const sdkName = 'eyes-selenium'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
@@ -25,6 +24,7 @@ async function initialize({displayName, executionMode}) {
   eyes = executionMode.isVisualGrid ? new Eyes(new VisualGridRunner()) : new Eyes()
   executionMode.isCssStitching ? eyes.setStitchMode(StitchMode.CSS) : undefined
   executionMode.isScrollStitching ? eyes.setStitchMode(StitchMode.SCROLL) : undefined
+  eyes.setBranchName('master')
   eyes.setBatch(batch)
 
   async function visit(url) {
@@ -79,36 +79,37 @@ async function initialize({displayName, executionMode}) {
 }
 
 const supportedTests = [
-  {name: 'checkFrameClassic', executionMode: {isVisualGrid: true}},
-  {name: 'checkFrameClassic', executionMode: {isCssStitching: true}},
-  {name: 'checkFrameClassic', executionMode: {isScrollStitching: true}},
-  {name: 'checkRegionClassic', executionMode: {isVisualGrid: true}},
-  {name: 'checkRegionClassic', executionMode: {isCssStitching: true}},
-  {name: 'checkRegionClassic', executionMode: {isScrollStitching: true}},
-  {name: 'checkRegionClassicWithOverFlow', executionMode: {isVisualGrid: true}},
-  {name: 'checkRegionClassicWithOverFlow', executionMode: {isCssStitching: true}},
-  {name: 'checkRegionClassicWithOverFlow', executionMode: {isScrollStitching: true}},
-  {name: 'checkWindowClassicViewport', executionMode: {isVisualGrid: true}},
-  {name: 'checkWindowClassicViewport', executionMode: {isCssStitching: true}},
-  {name: 'checkWindowClassicViewport', executionMode: {isScrollStitching: true}},
-  {name: 'checkWindowClassicFully', executionMode: {isVisualGrid: true}},
-  {name: 'checkWindowClassicFully', executionMode: {isCssStitching: true}},
-  {name: 'checkWindowClassicFully', executionMode: {isScrollStitching: true}},
-  {name: 'checkFrameFluent', executionMode: {isVisualGrid: true}},
-  {name: 'checkFrameFluent', executionMode: {isCssStitching: true}},
-  {name: 'checkFrameFluent', executionMode: {isScrollStitching: true}},
-  {name: 'checkRegionFluent', executionMode: {isVisualGrid: true}},
-  {name: 'checkRegionFluent', executionMode: {isCssStitching: true}},
-  {name: 'checkRegionFluent', executionMode: {isScrollStitching: true}},
-  {name: 'checkRegionFluentWithOverFlow', executionMode: {isVisualGrid: true}},
-  {name: 'checkRegionFluentWithOverFlow', executionMode: {isCssStitching: true}},
-  {name: 'checkRegionFluentWithOverFlow', executionMode: {isScrollStitching: true}},
-  {name: 'checkWindowFluentViewport', executionMode: {isVisualGrid: true}},
-  {name: 'checkWindowFluentViewport', executionMode: {isCssStitching: true}},
-  {name: 'checkWindowFluentViewport', executionMode: {isScrollStitching: true}},
-  {name: 'checkWindowFluentFully', executionMode: {isVisualGrid: true}},
-  {name: 'checkWindowFluentFully', executionMode: {isCssStitching: true}},
-  {name: 'checkWindowFluentFully', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckFrame', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckFrame', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckFrame', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckRegion', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckRegion', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckRegion', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckRegion2', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckRegion2', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckRegion2', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckWindow', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckWindow', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckWindow', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckWindowFully', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckWindowFully', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckWindowFully', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckFrame_Fluent', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckFrame_Fluent', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckFrame_Fluent', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckRegion_Fluent', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckRegion_Fluent', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckRegion_Fluent', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckRegion2_Fluent', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckRegion2_Fluent', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckRegion2_Fluent', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckWindow_Fluent', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckWindow_Fluent', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckWindow_Fluent', executionMode: {isScrollStitching: true}},
 ]
 
-makeRunTests(sdkName, initialize).runTests(supportedTests)
+module.exports = {
+  name: 'eyes-selenium',
+  initialize,
+  supportedTests,
+}
