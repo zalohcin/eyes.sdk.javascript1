@@ -24,9 +24,13 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "dependencies": {
-    "throat": "^5.0.0"
+    "throat": "^5.0.0",
+    "yargs": "^15.0.2"
   },
   "devDependencies": {
     "mocha": "^6.2.2"
+  },
+  "bin": {
+    "coverage-tests": "./src/coverage-tests/cli.js"
   }
 }
