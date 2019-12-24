@@ -14,55 +14,43 @@ function makeCoverageTests({visit, open, checkFrame, checkRegion, checkWindow, c
   return {
     TestCheckFrame: async () => {
       await visit(url)
-      await open({viewportSize})
+      await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
       await checkFrame({locator: 'iframe[name="frame1"]', isClassicApi: true})
       await close(throwException)
     },
     TestCheckRegion: async () => {
       await visit(url)
-      await open({viewportSize})
+      await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
       await checkRegion({locator: '#overflowing-div', isClassicApi: true})
       await close(throwException)
     },
     TestCheckRegion2: async () => {
       await visit(url)
-      await open({viewportSize})
+      await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
       await checkRegion({locator: '#overflowing-div-image', isClassicApi: true})
       await close(throwException)
     },
     TestCheckWindow: async () => {
       await visit(url)
-      await open({viewportSize})
+      await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
       await checkWindow({isClassicApi: true})
       await close(throwException)
     },
     TestCheckWindowFully: async () => {
       await visit(url)
-      await open({viewportSize})
+      await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
       await checkWindow({isClassicApi: true, isFully: true})
       await close(throwException)
     },
     TestCheckFrame_Fluent: async () => {
       await visit(url)
-      await open({viewportSize})
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkFrame({locator: 'iframe[name="frame1"]'})
-      await close(throwException)
-    },
-    TestCheckRegion_Fluent: async () => {
-      await visit(url)
-      await open({viewportSize})
-      await checkRegion({locator: '#overflowing-div'})
-      await close(throwException)
-    },
-    TestCheckRegion2_Fluent: async () => {
-      await visit(url)
-      await open({viewportSize})
-      await checkRegion({locator: '#overflowing-div-image'})
       await close(throwException)
     },
     TestCheckWindow_Fluent: async () => {
       await visit(url)
-      await open({viewportSize})
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkWindow()
       await close(throwException)
     },
@@ -96,15 +84,18 @@ function makeRunTests(initializeSdkImplementation) {
    * - executionMode: e.g., {isVisualGrid: true} -- although an SDK can implement whatever it needs, just so long as it is what the initializeSdkImplementation function is using internally
    * options: an object which can be used to alter the behavior of runTests (e.g., set the concurrency limit, provide a different logger, etc.)
    */
-  async function runTests(supportedTests, {concurrency = 15} = {}) {
+  async function runTests(supportedTests, {host, concurrency = 15} = {}) {
     supportedTests.forEach(supportedTest => {
       const testName = supportedTest.name
       const executionModeName = Object.keys(supportedTest.executionMode)[0]
-      // store the displayName for consistent naming in the Eyes dashboard to pick up the correct baselines
-      supportedTest.displayName = `${testName}${convertExecutionModeToSuffix(executionModeName)}`
       p.push(async () => {
         try {
-          const sdkImplementation = await initializeSdkImplementation(supportedTest)
+          const sdkImplementation = await initializeSdkImplementation({
+            ...supportedTest,
+            // for consistent naming in the Eyes dashboard to pick up the correct baselines
+            baselineTestName: `${testName}${convertExecutionModeToSuffix(executionModeName)}`,
+            host,
+          })
           const test = makeCoverageTests(sdkImplementation)[testName]
           await test()
           if (sdkImplementation.cleanup) await sdkImplementation.cleanup()
@@ -140,7 +131,6 @@ function makeReport({p, e, start, end}) {
     summary: [],
     errors: e,
   }
-  report.summary.push(`-------------------- SUMMARY --------------------`)
   report.summary.push(`Ran ${p.length} tests in ${end - start}ms`)
   if (hasErrors) {
     report.summary.push(`Encountered n errors in ${Object.keys(e).length} tests`)
