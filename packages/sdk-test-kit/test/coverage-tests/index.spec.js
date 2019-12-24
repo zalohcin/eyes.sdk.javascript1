@@ -3,7 +3,9 @@ const {makeCoverageTests, makeRunTests} = require('../../src/coverage-tests/inde
 
 const fakeSDK = {
   open: () => {},
-  check: () => {},
+  checkFrame: () => {},
+  checkRegion: () => {},
+  checkWindow: () => {},
   close: () => {},
 }
 
@@ -27,7 +29,7 @@ describe('coverage-tests', () => {
         return {
           visit: () => {},
           open: () => {},
-          check: () => {},
+          checkRegion: () => {},
           close: () => {},
           cleanup: () => {
             count++
@@ -39,7 +41,7 @@ describe('coverage-tests', () => {
         {name: 'checkRegionClassic', executionMode: {blahblah: true}},
       ]
       const {runTests} = makeRunTests(name, initialize)
-      await runTests(supportedTests, {log: () => {}})
+      await runTests(supportedTests)
       assert.deepStrictEqual(count, 2)
     })
     it('cleanup should be optional', () => {
@@ -55,10 +57,10 @@ describe('coverage-tests', () => {
       const supportedTests = [{name: 'checkRegionClassic', executionMode: {blah: true}}]
       const {runTests} = makeRunTests(name, initialize)
       assert.doesNotThrow(async () => {
-        await runTests(supportedTests, {log: () => {}})
+        await runTests(supportedTests)
       })
     })
-    it('should record and display errors from a run', async () => {
+    it('should report errors from a run', async () => {
       const name = 'blah'
       const initialize = () => {
         return {
@@ -73,22 +75,8 @@ describe('coverage-tests', () => {
       }
       const supportedTests = [{name: 'checkRegionClassic', executionMode: {blah: true}}]
       const {runTests} = makeRunTests(name, initialize)
-      const output = []
-      const log = msg => {
-        output.push(msg)
-      }
-      await runTests(supportedTests, {log})
-      const expectedOutput = [
-        'Coverage Tests are running for blah...',
-        '-------------------- ERRORS --------------------',
-        {'checkRegionClassic with blah': ['blah error']},
-        '-------------------- SUMMARY --------------------',
-        'Ran 1 tests in 0ms',
-        'Encountered n errors in 1 tests',
-      ]
-      assert.deepStrictEqual(output[1], expectedOutput[1])
-      assert.deepStrictEqual(output[2], expectedOutput[2])
-      assert.deepStrictEqual(output[5], expectedOutput[5])
+      const {report} = await runTests(supportedTests)
+      assert.deepStrictEqual(report.errors, {checkRegionClassic: {blah: 'blah error'}})
     })
   })
 })
