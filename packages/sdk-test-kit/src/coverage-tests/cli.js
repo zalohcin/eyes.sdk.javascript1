@@ -45,7 +45,9 @@ async function run(args) {
 
     console.log(`Running coverage tests for ${sdkImplementation.name}...\n`)
 
-    if (!args.remote && sdkImplementation.name.includes('webdriverio')) await startChromeDriver()
+    if (needsChromeDriver(args, sdkImplementation))
+      await startChromeDriver(sdkImplementation.options.chromeDriverOptions)
+
     const {report} = await makeRunTests(
       sdkImplementation.name,
       sdkImplementation.initialize,
@@ -53,21 +55,23 @@ async function run(args) {
       host: args.remote,
       concurrency: args.concurrency,
     })
-    if (!args.remote && sdkImplementation.name.includes('webdriverio')) await stopChromeDriver()
 
-    console.log(`-------------------- SUMMARY --------------------`)
-    report.summary.forEach(entry => console.log(entry))
-    exitCode = Object.keys(report.errors).length ? 1 : 0
-
-    if (Object.keys(report.errors).length) {
-      console.log(`-------------------- ERRORS --------------------`)
-      console.log(report.errors)
-    }
+    if (needsChromeDriver(args, sdkImplementation)) stopChromeDriver()
 
     if (args.sendReport) {
       console.log('Sending report to QA dashboard...')
-      await sendReport(report.toSendReportSchema())
-      console.log('Report sent!')
+      const result = await sendReport(report.toSendReportSchema())
+      if (result.isSuccessful) console.log('Report sent!')
+      else console.log(`Report not sent because of: ${result.message}`)
+    }
+
+    console.log(`-------------------- SUMMARY --------------------`)
+    report.summary.forEach(entry => console.log(entry))
+
+    if (Object.keys(report.errors).length) {
+      exitCode = 1
+      console.log(`-------------------- ERRORS --------------------`)
+      console.log(report.errors)
     }
   } else if (args.nuke) {
     exec(`ps ax | grep Chrome | grep headless | awk '{print $1}' | xargs kill -9`)
@@ -78,11 +82,13 @@ async function run(args) {
 
 run(yargs.argv)
 
-async function startChromeDriver() {
+function needsChromeDriver(args, sdkImplementation) {
+  return !args.remote && sdkImplementation.options && sdkImplementation.options.needsChromeDriver
+}
+
+async function startChromeDriver(options = ['--port=4444', '--url-base=wd/hub', '--silent']) {
   const returnPromise = true
-  return await chromedriver
-    .start(['--port=4444', '--url-base=wd/hub', '--silent'], returnPromise)
-    .catch(console.error)
+  return await chromedriver.start(options, returnPromise).catch(console.error)
 }
 
 async function stopChromeDriver() {
