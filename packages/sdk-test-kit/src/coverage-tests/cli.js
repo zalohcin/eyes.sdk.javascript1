@@ -99,7 +99,7 @@ function doDisplayResults(report) {
   report.summary.forEach(entry => console.log(entry))
 }
 
-async function startChromeDriver(options = ['--port=4444', '--url-base=wd/hub', '--silent']) {
+async function startChromeDriver(options = []) {
   const returnPromise = true
   return await chromedriver.start(options, returnPromise).catch(console.error)
 }
