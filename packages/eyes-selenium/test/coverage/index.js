@@ -20,7 +20,7 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
   driver = await new Builder()
     .forBrowser('chrome')
     .setChromeOptions(new ChromeOptions().headless())
-    .usingServer(host ? 'http://localhost:4444/wd/hub' : undefined)
+    .usingServer(host)
     .build()
   eyes = executionMode.isVisualGrid ? new Eyes(new VisualGridRunner()) : new Eyes()
   executionMode.isCssStitching ? eyes.setStitchMode(StitchMode.CSS) : undefined
