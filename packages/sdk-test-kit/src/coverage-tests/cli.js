@@ -45,7 +45,7 @@ async function run(args) {
 
     console.log(`Running coverage tests for ${sdkImplementation.name}...\n`)
 
-    if (sdkImplementation.name.includes('webdriverio')) await startChromeDriver()
+    if (!args.remote && sdkImplementation.name.includes('webdriverio')) await startChromeDriver()
     const {report} = await makeRunTests(
       sdkImplementation.name,
       sdkImplementation.initialize,
@@ -53,7 +53,7 @@ async function run(args) {
       host: args.remote,
       concurrency: args.concurrency,
     })
-    if (sdkImplementation.name.includes('webdriverio')) await stopChromeDriver()
+    if (!args.remote && sdkImplementation.name.includes('webdriverio')) await stopChromeDriver()
 
     console.log(`-------------------- SUMMARY --------------------`)
     report.summary.forEach(entry => console.log(entry))
