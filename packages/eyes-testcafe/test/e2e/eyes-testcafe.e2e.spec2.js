@@ -8,7 +8,7 @@ const startTestCafe = require('../setup/start-testcafe-in-mocha')
 describe('Eyes TestCafe e2e', () => {
   const {runFileInTestCafe} = startTestCafe({beforeEach, afterEach})
 
-  it('runs all chrome e2e tests in folder "testcafe"', async () => {
+  it('runs all e2e tests in folder "testcafe"', async () => {
     const failedCount = await runFileInTestCafe(path.resolve(__dirname, 'testcafe/*.testcafe.js'))
     expect(failedCount).to.equal(0)
   })

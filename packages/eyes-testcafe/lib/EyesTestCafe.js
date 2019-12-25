@@ -42,6 +42,34 @@ const {ScrollPositionProvider} = require('./positioning/ScrollPositionProvider')
 const {ElementPositionProvider} = require('./positioning/ElementPositionProvider')
 const {CssTranslatePositionProvider} = require('./positioning/CssTranslatePositionProvider')
 const {Eyes} = require('./Eyes')
+const GEN_XPATH_SCRIPT = `function genXpath(el) {
+  if (!el.ownerDocument) return ''; // this is the document node
+  let xpath = '',
+      currEl = el,
+      doc = el.ownerDocument,
+      frameElement = doc.defaultView.frameElement,
+      index;
+  while (currEl !== doc) {
+    index = window.Array.prototype.filter.call(currEl.parentNode.childNodes, node => node.tagName === currEl.tagName).indexOf(currEl) + 1
+    xpath = currEl.tagName + '[' + index + ']/' + xpath;
+    currEl = currEl.parentNode;
+  }
+  if (frameElement) {
+    xpath = genXpath(frameElement) + ',' + xpath;
+  }
+  return xpath.replace(/\\/$/, '');
+}`
+
+const ELEMENTS_BY_XPATH_SCRIPT = `xpath => {
+  const iterator = document.evaluate(xpath, document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+  const items = [];
+  let item = iterator.iterateNext();
+  while (item) {
+      items.push(item);
+      item = iterator.iterateNext();
+  }
+  return items;
+}`
 
 /**
  * The main API gateway for the SDK.
@@ -1059,14 +1087,19 @@ class EyesTestCafe extends Eyes {
       this._imageProvider,
     )
 
-    let activeElement = null
+    // TODO
+    // maybe we can just do later active elemnt.focus() ? check
+    // I think maybe frame stuff changes the active element
+    // so that is why I saved the xpath etc..
+    let activeElementXpath = null
     if (this._configuration.getHideCaret()) {
       try {
-        activeElement = await this._driver.executeScript(
-          'var activeElement = document.activeElement; activeElement && activeElement.blur(); return activeElement;',
+        activeElementXpath = await this._driver.executeScript(
+          `document.activeElement && document.activeElement.blur();
+           return (${GEN_XPATH_SCRIPT})(document.activeElement);`,
         )
       } catch (err) {
-        this._logger.verbose(`WARNING: Cannot hide caret! ${JSON.stringify(err)}`)
+        this._logger.verbose(`WARNING: Cannot hide caret! ${err}`)
       }
     }
 
@@ -1179,11 +1212,16 @@ class EyesTestCafe extends Eyes {
       )
     }
 
-    if (this._configuration.getHideCaret() && activeElement != null) {
+    if (this._configuration.getHideCaret() && activeElementXpath != null) {
       try {
-        await this._driver.executeScript('arguments[0].focus();', activeElement)
+        await this._driver.executeScript(
+          `const activeElement = (${ELEMENTS_BY_XPATH_SCRIPT})(arguments[0]); activeElement[0].focus();`,
+          activeElementXpath,
+        )
       } catch (err) {
-        this._logger.verbose(`WARNING: Could not return focus to active element! ${err}`)
+        this._logger.verbose(
+          `WARNING: Could not return focus to active element! ${JSON.stringify(err)}`,
+        )
       }
     }
 

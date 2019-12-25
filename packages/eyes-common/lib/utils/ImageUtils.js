@@ -314,7 +314,7 @@ class ImageUtils {
         region.getLeft() < 0 ||
         region.getLeft() >= image.width
       ) {
-        return reject(new Error('region is outside the image bounds!'))
+        return reject(new Error(`region is outside the image bounds! ${region}`))
       }
 
       // process the pixels - crop

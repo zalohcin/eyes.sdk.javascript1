@@ -48,12 +48,20 @@ class CssTranslatePositionProvider extends PositionProvider {
     ArgumentGuard.notNull(location, 'location')
     this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`)
 
+    // TODO
+    // Remove this.. came form selenium ?
+    // await this._executor.executeScript(
+    //   `arguments[0].style.transform = 'translate(10px, -${location.getY()}px)';`,
+    //   this._scrollRootElement,
+    // )
+
+    let translate = `translate(-${location.getX()}px, -${location.getY()}px)`
+    if (location.getX() === 0 && location.getY() === 0) {
+      translate = ''
+    }
+
     await this._executor.executeScript(
-      `arguments[0].style.transform = 'translate(10px, -${location.getY()}px)';`,
-      this._scrollRootElement,
-    )
-    await this._executor.executeScript(
-      `arguments[0].style.transform = 'translate(-${location.getX()}px, -${location.getY()}px)';`,
+      `arguments[0].style.transform = '${translate}';`,
       this._scrollRootElement,
     )
 
@@ -79,10 +87,16 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @return {Promise<CssTranslatePositionMemento>}
    */
   async getState() {
-    const transforms = await this._executor.executeScript(
+    let transforms = await this._executor.executeScript(
       'return arguments[0].style.transform;',
       this._scrollRootElement,
     )
+    // TODO
+    // maybe we can do something else here ? check, since if later we
+    // try to update to this translate we set it to "" as well..
+    if (!transforms) {
+      transforms = 'translate(0px, 0px)'
+    }
     this._logger.verbose('Current transform', transforms)
     return new CssTranslatePositionMemento(transforms, this._lastSetPosition)
   }
@@ -94,9 +108,14 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @return {Promise}
    */
   async restoreState(state) {
+    let transform = state.getTransform()
+    if (transform === 'translate(0px, 0px)') {
+      transform = ''
+    }
+
     const script =
       'var originalTransform = arguments[0].style.transform;' +
-      `arguments[0].style.transform = '${state.getTransform()}';` +
+      `arguments[0].style.transform = '${transform}';` +
       'return originalTransform;'
 
     await this._executor.executeScript(script, this._scrollRootElement)

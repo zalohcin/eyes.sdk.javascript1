@@ -27,7 +27,7 @@ function startTestCafe({beforeEach, afterEach, browser = ['chrome:headless']}) {
     }
 
     testCafe = await createTestCafe(null, ...ports)
-    if (!process.env.APPLITOOLS_DEBUG_TEST) {
+    if (!process.env.LIVE) {
       runner = testCafe.createRunner()
       runner.screenshots('logs/').browsers(browser)
     } else {
