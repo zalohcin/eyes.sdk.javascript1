@@ -18,13 +18,24 @@ const path = resolve(__dirname, files)
 const isLive = !!process.env.LIVE
 
 let testcafe = null
-createTestCafe('localhost', 1339)
+
+createTestCafe(null, 1339)
   .then(tc => {
     testcafe = tc
     let runner, browser
     if (!isLive) {
       runner = testcafe.createRunner()
-      browser = 'chrome:headless'
+      process.env.BROWSERSTACK_USE_AUTOMATE = true
+      browser = [
+        'chrome:headless',
+        'browserstack:safari@13.0:OS X Catalina',
+        'browserstack:iPhone XS',
+        'browserstack:iPhone X',
+        'browserstack:iPhone 8',
+        'browserstack:iPad Pro 12.9 2018',
+        'browserstack:edge',
+        'browserstack:chrome',
+      ][0]
     } else {
       runner = testcafe.createLiveModeRunner()
       browser = 'chrome'

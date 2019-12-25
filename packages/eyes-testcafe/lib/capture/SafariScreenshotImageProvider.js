@@ -121,21 +121,23 @@ class SafariScreenshotImageProvider extends ImageProvider {
         this._logger.verbose('device not found in list. returning original image.')
       }
     } else if (!this._eyes.getForceFullPageScreenshot()) {
-      const currentFrameChain = this._eyes.getDriver().getFrameChain()
-
-      let loc
-      if (currentFrameChain.size() === 0) {
-        const positionProvider = new ScrollPositionProvider(
-          this._logger,
-          this._jsExecutor,
-          await this._eyes.getDriver().findElement('html'),
-        )
-        loc = await positionProvider.getCurrentPosition()
-      } else {
-        loc = currentFrameChain.getDefaultContentScrollPosition()
-      }
-
-      await image.crop(new Region(loc.scale(scaleRatio), viewportSize))
+      // TODO
+      // No need for this in Safari tetscafe afask
+      // keeping so if we find some browser that takes a full page screenshot
+      // remove if not needed !!
+      // const currentFrameChain = this._eyes.getDriver().getFrameChain()
+      // let loc
+      // if (currentFrameChain.size() === 0) {
+      //   const positionProvider = new ScrollPositionProvider(
+      //     this._logger,
+      //     this._jsExecutor,
+      //     await this._eyes.getDriver().findElement('html'),
+      //   )
+      //   loc = await positionProvider.getCurrentPosition()
+      // } else {
+      //   loc = currentFrameChain.getDefaultContentScrollPosition()
+      // }
+      // await image.crop(new Region(loc.scale(scaleRatio), viewportSize))
     }
 
     return image

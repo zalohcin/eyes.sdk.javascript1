@@ -20,7 +20,7 @@ test('helloworld full page Edg', async t => {
 
 /*
  * BUG - Tetscafe failing to take snapshot:
- * RangeError [ERR_OUT_OF_RANGE]: The value of "sourceStart" is out of range. It must be >= 0. Received -456000
+ * https://github.com/DevExpress/testcafe/issues/4600
  */
 test.skip('full page css stiching Edge', async t => {
   const eyes = new Eyes()
