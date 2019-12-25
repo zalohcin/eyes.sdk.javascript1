@@ -5,6 +5,7 @@ const {makeRunTests} = require('./index')
 const {sendReport} = require('./send-report')
 const {exec} = require('child_process')
 const {version} = require('../../package.json')
+const chromedriver = require('chromedriver')
 
 yargs
   .usage(`Coverage Tests DSL (v${version})`)
@@ -44,6 +45,7 @@ async function run(args) {
 
     console.log(`Running coverage tests for ${sdkImplementation.name}...\n`)
 
+    if (sdkImplementation.name.includes('webdriverio')) await startChromeDriver()
     const {report} = await makeRunTests(
       sdkImplementation.name,
       sdkImplementation.initialize,
@@ -51,6 +53,7 @@ async function run(args) {
       host: args.remote,
       concurrency: args.concurrency,
     })
+    if (sdkImplementation.name.includes('webdriverio')) await stopChromeDriver()
 
     console.log(`-------------------- SUMMARY --------------------`)
     report.summary.forEach(entry => console.log(entry))
@@ -74,3 +77,14 @@ async function run(args) {
 }
 
 run(yargs.argv)
+
+async function startChromeDriver() {
+  const returnPromise = true
+  return await chromedriver
+    .start(['--port=4444', '--url-base=wd/hub', '--silent'], returnPromise)
+    .catch(console.error)
+}
+
+async function stopChromeDriver() {
+  chromedriver.stop()
+}
