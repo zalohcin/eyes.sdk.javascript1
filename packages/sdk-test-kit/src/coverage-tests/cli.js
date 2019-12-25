@@ -7,6 +7,8 @@ const {exec} = require('child_process')
 const {version} = require('../../package.json')
 
 yargs
+  .usage(`Coverage Tests DSL (v${version})`)
+  .usage('a.k.a. Da Schwartz Lang - except no substitutes')
   .option('run', {
     alias: 'r',
     describe: 'run coverage tests for a given SDK',
@@ -41,8 +43,6 @@ async function run(args) {
   if (args.run && args.path) {
     const sdkImplementation = require(path.join(path.resolve('.'), args.path))
 
-    console.log(`Coverage Tests DSL (v${version})`)
-    console.log('a.k.a. Da Schwartz Lang - except no substitutes\n')
     console.log(`Running coverage tests for ${sdkImplementation.name}...\n`)
 
     const {report} = await makeRunTests(
