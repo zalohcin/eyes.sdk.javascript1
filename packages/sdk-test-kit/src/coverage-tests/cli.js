@@ -37,7 +37,6 @@ yargs
   })
 
 async function run(args) {
-  console.log(args)
   if (!args) return
   let exitCode = 0
   if (args.run && args.path) {
