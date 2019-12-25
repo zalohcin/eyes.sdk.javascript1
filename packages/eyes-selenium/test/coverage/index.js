@@ -122,7 +122,7 @@ const supportedTests = [
 ]
 
 module.exports = {
-  name: 'eyes-selenium',
+  name: sdkName,
   initialize,
   supportedTests,
 }
