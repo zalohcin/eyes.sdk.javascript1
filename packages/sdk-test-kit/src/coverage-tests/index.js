@@ -57,27 +57,17 @@ function makeCoverageTests({visit, open, checkFrame, checkRegion, checkWindow, c
   }
 }
 
-function convertExecutionModeToSuffix(executionModeName) {
-  switch (executionModeName) {
-    case 'isVisualGrid':
-      return '_VG'
-    case 'isScrollStitching':
-      return '_Scroll'
-    default:
-      return ''
-  }
-}
-
 /**
  * Creates a coverage-test runner for a given SDK implementation.
  * params:
+ * - sdkName: string of the SDK name
  * - intializeSdkImplementation: a function that initializes state and implements
  *     all coverage-test DSL functions for a given SDK. Returns all of the functions
  *     expected by makeCoverageTests (e.g., visit, open, check, and close) plus
  *     optional functions the runner can use for lifecycle management (e.g., cleanup)
  * returns: a runTests function
  */
-function makeRunTests(initializeSdkImplementation) {
+function makeRunTests(sdkName, initializeSdkImplementation) {
   const p = []
   const e = {}
 
@@ -97,21 +87,23 @@ function makeRunTests(initializeSdkImplementation) {
   async function runTests(supportedTests, {branchName = 'master', concurrency = 15, host} = {}) {
     supportedTests.forEach(supportedTest => {
       const testName = supportedTest.name
-      const executionModeName = Object.keys(supportedTest.executionMode)[0]
+      const executionMode = supportedTest.executionMode
       p.push(async () => {
+        let sdkImplementation
         try {
-          const sdkImplementation = await initializeSdkImplementation({
+          sdkImplementation = await initializeSdkImplementation({
             // for consistent naming in the Eyes dashboard to pick up the correct baselines
-            baselineTestName: `${testName}${convertExecutionModeToSuffix(executionModeName)}`,
+            baselineTestName: `${testName}${convertExecutionModeToSuffix(executionMode)}`,
             branchName,
             host,
             ...supportedTest,
           })
           const test = makeCoverageTests(sdkImplementation)[testName]
           await test()
-          if (sdkImplementation.cleanup) await sdkImplementation.cleanup()
         } catch (error) {
-          recordError(e, error, testName, executionModeName)
+          recordError(e, error, testName, executionMode)
+        } finally {
+          if (sdkImplementation.cleanup) await sdkImplementation.cleanup()
         }
       })
     })
@@ -123,30 +115,92 @@ function makeRunTests(initializeSdkImplementation) {
     await Promise.all(p.map(throat(concurrency, testRun => testRun())))
     const end = new Date()
 
-    return makeReport({p, e, start, end})
+    return makeReport({sdkName, testsRan: supportedTests, p, e, start, end})
   }
 
   return {runTests}
 }
 
-function recordError(errors, error, testName, executionModeName) {
-  if (!errors[testName]) {
-    errors[testName] = {}
+function convertExecutionModeToSuffix(executionMode) {
+  switch (getNameFromObject(executionMode)) {
+    case 'isVisualGrid':
+      return '_VG'
+    case 'isScrollStitching':
+      return '_Scroll'
+    default:
+      return ''
   }
-  errors[testName][executionModeName] = error
 }
 
-function makeReport({p, e, start, end}) {
+function convertExecutionModeToBareName(executionMode) {
+  return getNameFromObject(executionMode)
+    .replace(/^is/, '')
+    .replace(/stitching$/i, '')
+    .toLowerCase()
+}
+
+function convertSdkNameToReportName(sdkName) {
+  switch (sdkName) {
+    case 'eyes-selenium':
+      return 'js_selenium_4'
+    case 'eyes.selenium':
+      return 'js_selenium_3'
+    case 'eyes.webdriverio.javascript5':
+      return 'js_wdio_5'
+    case 'eyes.webdriverio.javascript4':
+      return 'js_wdio_4'
+    case 'eyes-images':
+      return 'js_images'
+    default:
+      throw 'Unsupported SDK'
+  }
+}
+
+function getNameFromObject(object) {
+  return Object.keys(object)[0]
+}
+
+function hasPassed(errors, testName, executionMode) {
+  return !(errors[testName] && !!errors[testName][getNameFromObject(executionMode)])
+}
+
+function makeReport({sdkName, testsRan, p, e, start, end}) {
   const hasErrors = Object.keys(e).length
   let report = {
     summary: [],
     errors: e,
+    toSendReportSchema: () => {
+      return {
+        sdk: convertSdkNameToReportName(sdkName),
+        group: 'selenium', // TODO: make dynamic
+        sandbox: true,
+        results: testsRan.map(test => {
+          return {
+            test_name: test.name,
+            parameters: {
+              browser: 'chrome',
+              mode: convertExecutionModeToBareName(test.executionMode),
+            },
+            passed: hasPassed(e, test.name, test.executionMode),
+          }
+        }),
+      }
+    },
   }
   report.summary.push(`Ran ${p.length} tests in ${end - start}ms`)
   if (hasErrors) {
     report.summary.push(`Encountered n errors in ${Object.keys(e).length} tests`)
   }
   return {report}
+}
+
+function recordError(errors, error, testName, executionMode) {
+  if (!errors[testName]) {
+    errors[testName] = {}
+  }
+  executionMode
+    ? (errors[testName][getNameFromObject(executionMode)] = error)
+    : (errors[testName] = error)
 }
 
 module.exports = {makeCoverageTests, makeRunTests}
