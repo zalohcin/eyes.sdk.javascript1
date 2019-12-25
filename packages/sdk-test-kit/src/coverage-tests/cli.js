@@ -35,14 +35,9 @@ yargs
 
 async function run(args) {
   if (args.nuke) {
-    exec(`ps ax | grep Chrome | grep headless | awk '{print $1}' | xargs kill -9`)
-    console.log('KABOOM!')
+    doKaboom()
   } else if (args.path) {
-    const sdkImplementation = require(path.join(path.resolve('.'), args.path))
-
-    console.log(`Running coverage tests for ${sdkImplementation.name}...\n`)
-
-    const report = await doRunTests(args, sdkImplementation)
+    const report = await doRunTests(args)
     await doSendReport(args, report)
     await doDisplayResults(report)
     doExitCode(report.errors)
@@ -61,7 +56,15 @@ function doExitCode(errors) {
   process.exit(exitCode)
 }
 
-async function doRunTests(args, sdkImplementation) {
+function doKaboom() {
+  exec(`ps ax | grep Chrome | grep headless | awk '{print $1}' | xargs kill -9`)
+  console.log('KABOOM!')
+}
+
+async function doRunTests(args) {
+  const sdkImplementation = require(path.join(path.resolve('.'), args.path))
+  console.log(`Running coverage tests for ${sdkImplementation.name}...\n`)
+
   if (needsChromeDriver(args, sdkImplementation))
     await startChromeDriver(sdkImplementation.options.chromeDriverOptions)
 
