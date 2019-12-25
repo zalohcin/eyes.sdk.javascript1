@@ -10,27 +10,23 @@ const chromedriver = require('chromedriver')
 yargs
   .usage(`Coverage Tests DSL (v${version})`)
   .usage('a.k.a. Da Schwartz Lang - except no substitutes')
-  .option('run', {
-    alias: 'r',
-    describe: 'run coverage tests for a given SDK',
-    demandOption: true,
+  .command('run', 'run coverage tests for a given SDK')
+  .option('nuke', {
+    alias: 'n',
+    describe: 'kill all ghost browser processes (POSIX only)',
+  })
+  .option('path', {
+    alias: 'p',
+    describe: 'path to implementation file',
+    default: 'test/coverage/index.js',
   })
   .option('remote', {
     alias: 'r',
     describe: 'url of where to run the tests',
   })
-  .option('path', {
-    alias: 'p',
-    describe: 'path to implementation file',
-    demandOption: true,
-  })
   .option('concurrency', {
     alias: 'c',
     describe: 'number of parallel sessions to run at one time',
-  })
-  .option('nuke', {
-    alias: 'n',
-    describe: 'kill all ghost browser processes (POSIX only)',
   })
   .option('sendReport', {
     alias: 's',
@@ -38,9 +34,8 @@ yargs
   })
 
 async function run(args) {
-  if (!args) return
   let exitCode = 0
-  if (args.run && args.path) {
+  if (args.path) {
     const sdkImplementation = require(path.join(path.resolve('.'), args.path))
 
     console.log(`Running coverage tests for ${sdkImplementation.name}...\n`)
