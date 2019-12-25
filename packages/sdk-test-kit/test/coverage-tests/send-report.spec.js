@@ -1,8 +1,8 @@
 const assert = require('assert')
 const {sendReport} = require('../../src/coverage-tests/send-report')
 
-describe('send-report', async () => {
-  it.skip('should send a payload and get a 200 response from the report server', async () => {
+describe.skip('send-report', async () => {
+  it('should send a payload and get a successful response from the report server', async () => {
     const result = await sendReport({
       sdk: 'js_selenium_4',
       group: 'selenium',
@@ -34,6 +34,11 @@ describe('send-report', async () => {
         },
       ],
     })
-    assert.ok(result.status === 200)
+    assert.ok(result.isSuccessful)
+  })
+  it('should expose the error message if not successful', async () => {
+    const result = await sendReport({})
+    assert.ok(!result.isSuccessful)
+    assert.ok(result.message === 'Bad Request')
   })
 })
