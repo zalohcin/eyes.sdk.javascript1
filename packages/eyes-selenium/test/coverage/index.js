@@ -49,8 +49,7 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     matchTimeout,
   } = {}) {
     if (isClassicApi) {
-      const element = await driver.findElement(By.css(locator))
-      await eyes.checkFrame(element, matchTimeout, tag)
+      await eyes.checkFrame(By.css(locator), matchTimeout, tag)
     } else {
       isFully
         ? await eyes.check(tag, Target.frame(By.css(locator)).fully())
@@ -62,12 +61,20 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     isClassicApi = false,
     isFully = false,
     locator,
+    inFrameLocator,
     tag,
     matchTimeout,
   } = {}) {
     if (isClassicApi) {
-      const element = await driver.findElement(By.css(locator))
-      await eyes.checkElement(element, matchTimeout, tag)
+      inFrameLocator
+        ? await eyes.checkRegionInFrame(
+            By.css(inFrameLocator),
+            By.css(locator),
+            matchTimeout,
+            tag,
+            isFully,
+          )
+        : await eyes.checkRegionBy(By.css(locator), tag, matchTimeout, isFully)
     } else {
       isFully
         ? await eyes.check(tag, Target.region(By.css(locator)).fully())
@@ -89,12 +96,16 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     await eyes.close(options)
   }
 
+  async function scrollTo({pixels}) {
+    await driver.executeScript(`document.documentElement.scrollTop=${pixels}`)
+  }
+
   async function cleanup() {
     await driver.close()
     await eyes.abortIfNotClosed()
   }
 
-  return {visit, open, checkFrame, checkRegion, checkWindow, close, cleanup}
+  return {visit, open, checkFrame, checkRegion, checkWindow, close, scrollTo, cleanup}
 }
 
 const supportedTests = [
@@ -107,15 +118,33 @@ const supportedTests = [
   {name: 'TestCheckRegion2', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckRegion2', executionMode: {isCssStitching: true}},
   {name: 'TestCheckRegion2', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckRegionInFrame', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckRegionInFrame', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckRegionInFrame', executionMode: {isScrollStitching: true}},
   {name: 'TestCheckWindow', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckWindow', executionMode: {isCssStitching: true}},
   {name: 'TestCheckWindow', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckWindowAfterScroll', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckWindowAfterScroll', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckWindowAfterScroll', executionMode: {isScrollStitching: true}},
   {name: 'TestCheckWindowFully', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckWindowFully', executionMode: {isCssStitching: true}},
   {name: 'TestCheckWindowFully', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckWindowViewport', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckWindowViewport', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckWindowViewport', executionMode: {isScrollStitching: true}},
+  {name: 'TestDoubleCheckWindow', executionMode: {isVisualGrid: true}},
+  {name: 'TestDoubleCheckWindow', executionMode: {isCssStitching: true}},
+  {name: 'TestDoubleCheckWindow', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckElementFully_Fluent', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckElementFully_Fluent', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckElementFully_Fluent', executionMode: {isScrollStitching: true}},
   {name: 'TestCheckFrame_Fluent', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckFrame_Fluent', executionMode: {isCssStitching: true}},
   {name: 'TestCheckFrame_Fluent', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckFrameFully_Fluent', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckFrameFully_Fluent', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckFrameFully_Fluent', executionMode: {isScrollStitching: true}},
   {name: 'TestCheckWindow_Fluent', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckWindow_Fluent', executionMode: {isCssStitching: true}},
   {name: 'TestCheckWindow_Fluent', executionMode: {isScrollStitching: true}},
