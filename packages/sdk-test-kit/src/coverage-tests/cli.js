@@ -9,7 +9,7 @@ const chromedriver = require('chromedriver')
 
 yargs
   .usage(`Coverage Tests DSL (v${version})`)
-  .usage('a.k.a. Da Schwartz Lang - except no substitutes')
+  .usage('a.k.a. Da Schwartz Lang - accept no substitutes')
   .usage('\nUsage: coverage-tests run <options>')
   .command('run', 'run coverage tests for a given SDK')
   .option('nuke', {
@@ -38,6 +38,8 @@ async function run(args) {
   if (args.nuke) {
     doKaboom()
   } else if (args.path) {
+    console.log(`Coverage Tests DSL (v${version})`)
+    console.log('a.k.a. Da Schwartz Lang - accept no substitutes')
     const report = await doRunTests(args)
     const sendReportResponse = await doSendReport(args, report)
     doDisplayResults(report, sendReportResponse)
