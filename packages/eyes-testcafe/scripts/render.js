@@ -34,6 +34,7 @@ createTestCafe(null, 1339)
         'browserstack:iPhone 8',
         'browserstack:iPad Pro 12.9 2018',
         'browserstack:edge',
+        'browserstack:ie',
         'browserstack:chrome',
       ][0]
     } else {
