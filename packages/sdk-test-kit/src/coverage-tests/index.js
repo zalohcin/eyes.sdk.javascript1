@@ -169,29 +169,31 @@ function makeReport({sdkName, testsRan, p, e, start, end}) {
   let report = {
     summary: [],
     errors: e,
-    toSendReportSchema: () => {
-      return {
-        sdk: convertSdkNameToReportName(sdkName),
-        group: 'selenium', // TODO: make dynamic
-        sandbox: true,
-        results: testsRan.map(test => {
-          return {
-            test_name: test.name,
-            parameters: {
-              browser: 'chrome',
-              mode: convertExecutionModeToBareName(test.executionMode),
-            },
-            passed: hasPassed(e, test.name, test.executionMode),
-          }
-        }),
-      }
-    },
+    toSendReportSchema: makeSendReport.bind(undefined, {sdkName, testsRan, e}),
   }
   report.summary.push(`Ran ${p.length} tests in ${end - start}ms`)
   if (hasErrors) {
     report.summary.push(`Encountered n errors in ${Object.keys(e).length} tests`)
   }
   return {report}
+}
+
+function makeSendReport({sdkName, testsRan, e}) {
+  return {
+    sdk: convertSdkNameToReportName(sdkName),
+    group: 'selenium', // TODO: make dynamic
+    sandbox: true,
+    results: testsRan.map(test => {
+      return {
+        test_name: test.name,
+        parameters: {
+          browser: 'chrome',
+          mode: convertExecutionModeToBareName(test.executionMode),
+        },
+        passed: hasPassed(e, test.name, test.executionMode),
+      }
+    }),
+  }
 }
 
 function recordError(errors, error, testName, executionMode) {
