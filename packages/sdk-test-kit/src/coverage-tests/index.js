@@ -6,7 +6,7 @@ const throat = require('throat')
  * - A viewport check window is performed unless otherwise specified
  * - locators are specified with CSS selectors
  */
-function makeCoverageTests({visit, open, checkFrame, checkRegion, checkWindow, close}) {
+function makeCoverageTests({visit, open, checkFrame, checkRegion, checkWindow, close, scrollTo}) {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
   const viewportSize = '700x460'
   const throwException = true
@@ -21,18 +21,36 @@ function makeCoverageTests({visit, open, checkFrame, checkRegion, checkWindow, c
     TestCheckRegion: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
-      await checkRegion({locator: '#overflowing-div', isClassicApi: true})
+      await checkRegion({locator: '#overflowing-div', isClassicApi: true, isFully: true})
       await close(throwException)
     },
     TestCheckRegion2: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
-      await checkRegion({locator: '#overflowing-div-image', isClassicApi: true})
+      await checkRegion({locator: '#overflowing-div-image', isClassicApi: true, isFully: true})
+      await close(throwException)
+    },
+    TestCheckRegionInFrame: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
+      await checkRegion({
+        locator: '#inner-frame-div',
+        inFrameLocator: 'iframe[name="frame1"]',
+        isClassicApi: true,
+        isFully: true,
+      })
       await close(throwException)
     },
     TestCheckWindow: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
+      await checkWindow({isClassicApi: true})
+      await close(throwException)
+    },
+    TestCheckWindowAfterScroll: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
+      await scrollTo({pixels: 250})
       await checkWindow({isClassicApi: true})
       await close(throwException)
     },
@@ -42,10 +60,35 @@ function makeCoverageTests({visit, open, checkFrame, checkRegion, checkWindow, c
       await checkWindow({isClassicApi: true, isFully: true})
       await close(throwException)
     },
+    TestCheckWindowViewport: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
+      await checkWindow({isClassicApi: true, isFully: false})
+      await close(throwException)
+    },
+    TestDoubleCheckWindow: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
+      await checkWindow({isClassicApi: true, tag: 'first'})
+      await checkWindow({isClassicApi: true, tag: 'second'})
+      await close(throwException)
+    },
+    TestCheckElementFully_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkRegion({locator: 'iframe[name="frame1"]', isFully: true})
+      await close(throwException)
+    },
     TestCheckFrame_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkFrame({locator: 'iframe[name="frame1"]'})
+      await close(throwException)
+    },
+    TestCheckFrameFully_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkFrame({locator: 'iframe[name="frame1"]', isFully: true})
       await close(throwException)
     },
     TestCheckWindow_Fluent: async () => {
