@@ -38,8 +38,8 @@ async function run(args) {
     doKaboom()
   } else if (args.path) {
     const report = await doRunTests(args)
-    await doSendReport(args, report)
-    await doDisplayResults(report)
+    const sendReportResponse = await doSendReport(args, report)
+    doDisplayResults(report, sendReportResponse)
     doExitCode(report.errors)
   }
 }
@@ -85,18 +85,22 @@ async function doSendReport(args, report) {
   if (args.sendReport) {
     console.log('Sending report to QA dashboard...')
     const result = await sendReport(report.toSendReportSchema())
-    if (result.isSuccessful) console.log('Report sent!')
-    else console.log(`Report not sent because of: ${result.message}`)
+    return result
   }
 }
 
-function doDisplayResults(report) {
+function doDisplayResults(report, sendReportResponse) {
   if (Object.keys(report.errors).length) {
     console.log(`-------------------- ERRORS --------------------`)
     console.log(report.errors)
   }
   console.log(`-------------------- SUMMARY --------------------`)
   report.summary.forEach(entry => console.log(entry))
+  if (sendReportResponse.isSuccessful) {
+    console.log('Report successfully sent to the sandbox QA dashboard')
+    console.log('See the results at http://bit.ly/sdk-test-results')
+  } else
+    console.log(`Report not sent to the QA dashboard because of: ${sendReportResponse.message}`)
 }
 
 async function startChromeDriver(options = []) {
