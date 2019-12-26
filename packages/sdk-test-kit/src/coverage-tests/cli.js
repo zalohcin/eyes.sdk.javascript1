@@ -10,6 +10,7 @@ const chromedriver = require('chromedriver')
 yargs
   .usage(`Coverage Tests DSL (v${version})`)
   .usage('a.k.a. Da Schwartz Lang - except no substitutes')
+  .usage('\nUsage: coverage-tests run <options>')
   .command('run', 'run coverage tests for a given SDK')
   .option('nuke', {
     alias: 'n',
