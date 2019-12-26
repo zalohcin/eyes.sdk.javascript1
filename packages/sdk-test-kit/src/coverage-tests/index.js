@@ -6,7 +6,16 @@ const throat = require('throat')
  * - A viewport check window is performed unless otherwise specified
  * - locators are specified with CSS selectors
  */
-function makeCoverageTests({visit, open, checkFrame, checkRegion, checkWindow, close, scrollTo}) {
+function makeCoverageTests({
+  checkFrame,
+  checkRegion,
+  checkWindow,
+  close,
+  open,
+  scrollDown,
+  type,
+  visit,
+}) {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
   const viewportSize = '700x460'
   const throwException = true
@@ -50,7 +59,7 @@ function makeCoverageTests({visit, open, checkFrame, checkRegion, checkWindow, c
     TestCheckWindowAfterScroll: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
-      await scrollTo({pixels: 250})
+      await scrollDown({pixels: 250})
       await checkWindow({isClassicApi: true})
       await close(throwException)
     },
@@ -91,10 +100,34 @@ function makeCoverageTests({visit, open, checkFrame, checkRegion, checkWindow, c
       await checkFrame({locator: 'iframe[name="frame1"]', isFully: true})
       await close(throwException)
     },
+    TestCheckRegionBySelectorAfterManualScroll_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await scrollDown({pixels: 250})
+      await checkRegion({locator: '#centered'})
+      await close(throwException)
+    },
+    TestCheckRegionWithIgnoreRegion_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await type({locator: 'input', text: 'My Input'})
+      await checkRegion({
+        locator: '#overflowing-div',
+        ignoreRegion: {left: 50, top: 50, width: 100, height: 100},
+      })
+      await close(throwException)
+    },
     TestCheckWindow_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkWindow()
+      await close(throwException)
+    },
+    TestCheckWindowWithIgnoreRegion_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await type({locator: 'input', text: 'My Input'})
+      await checkWindow({isFully: true, ignoreRegion: {left: 50, top: 50, width: 100, height: 100}})
       await close(throwException)
     },
   }
