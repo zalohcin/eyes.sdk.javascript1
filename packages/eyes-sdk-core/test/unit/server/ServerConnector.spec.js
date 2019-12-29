@@ -4,7 +4,7 @@ const assert = require('assert')
 const {ServerConnector, Logger, Configuration} = require('../../../')
 const {presult} = require('../../../lib/troubleshoot/utils')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
-const fakeEyesServer = require('@applitools/fake-eyes-server')
+const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
 
 describe('ServerConnector', () => {
   it('_createHttpOptions works', () => {

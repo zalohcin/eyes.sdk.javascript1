@@ -1,11 +1,11 @@
-# `@applitools/fake-eyes-server`
+# `@applitools/sdk-fake-eyes-server`
 
 Fake Eyes server for testing purposes
 
 ## Usage
 
-```
-const fakeEyesServer = require('@applitools/fake-eyes-server');
+```js
+const fakeEyesServer = require('@applitools/sdk-fake-eyes-server');
 
 const {port, close} = await fakeEyesServer();
 ```

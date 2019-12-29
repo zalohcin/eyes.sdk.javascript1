@@ -2,6 +2,6 @@
 
 const fakeEyesServer = require('..')
 
-describe('@applitools/fake-eyes-server', () => {
+describe('@applitools/sdk-fake-eyes-server', () => {
   it('needs tests')
 })

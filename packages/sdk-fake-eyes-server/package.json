@@ -1,5 +1,5 @@
 {
-  "name": "@applitools/fake-eyes-server",
+  "name": "@applitools/sdk-fake-eyes-server",
   "version": "1.0.1",
   "description": "Fake eyes server",
   "author": {
@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/applitools/eyes.sdk.javascript1",
   "license": "SEE LICENSE IN LICENSE",
-  "main": "lib/fake-eyes-server.js",
+  "main": "lib/sdk-fake-eyes-server.js",
   "directories": {
     "lib": "lib",
     "test": "test"

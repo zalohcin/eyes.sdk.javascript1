@@ -159,7 +159,7 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
     )
 
     if (updateFixtures) {
-      logger.log('[fake-eyes-server] updating fixture at', expectedPath)
+      logger.log('[sdk-fake-eyes-server] updating fixture at', expectedPath)
       fs.writeFileSync(expectedPath, imgBuff)
     }
 
