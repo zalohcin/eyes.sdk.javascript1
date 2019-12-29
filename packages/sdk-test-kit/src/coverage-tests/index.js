@@ -24,27 +24,50 @@ function makeCoverageTests({
     TestCheckFrame: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
-      await checkFrame({locator: 'iframe[name="frame1"]', isClassicApi: true})
+      await checkFrame('iframe[name="frame1"]', {isClassicApi: true})
+      await close(throwException)
+    },
+    TestCheckPageWithHeader_Window: async () => {
+      await visit('https://applitools.github.io/demo/TestPages/PageWithHeader/index.html')
+      await open({appName: 'Eyes Selenium SDK - Page With Header', viewportSize})
+      await checkWindow({isClassicApi: false, isFully: false})
+      await close(throwException)
+    },
+    TestCheckPageWithHeaderFully_Window: async () => {
+      await visit('https://applitools.github.io/demo/TestPages/PageWithHeader/index.html')
+      await open({appName: 'Eyes Selenium SDK - Page With Header', viewportSize})
+      await checkWindow({isClassicApi: false, isFully: true})
+      await close(throwException)
+    },
+    TestCheckPageWithHeader_Region: async () => {
+      await visit('https://applitools.github.io/demo/TestPages/PageWithHeader/index.html')
+      await open({appName: 'Eyes Selenium SDK - Page With Header', viewportSize})
+      await checkRegion('div.page', {isClassicApi: false, isFully: false})
+      await close(throwException)
+    },
+    TestCheckPageWithHeaderFully_Region: async () => {
+      await visit('https://applitools.github.io/demo/TestPages/PageWithHeader/index.html')
+      await open({appName: 'Eyes Selenium SDK - Page With Header', viewportSize})
+      await checkRegion('div.page', {isClassicApi: false, isFully: true})
       await close(throwException)
     },
     TestCheckRegion: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
-      await checkRegion({locator: '#overflowing-div', isClassicApi: true, isFully: true})
+      await checkRegion('#overflowing-div', {isClassicApi: true, isFully: true})
       await close(throwException)
     },
     TestCheckRegion2: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
-      await checkRegion({locator: '#overflowing-div-image', isClassicApi: true, isFully: true})
+      await checkRegion('#overflowing-div-image', {isClassicApi: true, isFully: true})
       await close(throwException)
     },
     TestCheckRegionInFrame: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
-      await checkRegion({
-        locator: '#inner-frame-div',
-        inFrameLocator: 'iframe[name="frame1"]',
+      await checkRegion('#inner-frame-div', {
+        inFrame: 'iframe[name="frame1"]',
         isClassicApi: true,
         isFully: true,
       })
@@ -59,7 +82,7 @@ function makeCoverageTests({
     TestCheckWindowAfterScroll: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
-      await scrollDown({pixels: 250})
+      await scrollDown(250)
       await checkWindow({isClassicApi: true})
       await close(throwException)
     },
@@ -85,34 +108,86 @@ function makeCoverageTests({
     TestCheckElementFully_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await checkRegion({locator: 'iframe[name="frame1"]', isFully: true})
+      await checkRegion('iframe[name="frame1"]', {isFully: true})
+      await close(throwException)
+    },
+    TestCheckElementWithIgnoreRegionByElementOutsideTheViewport_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkRegion('#overflowing-div-image', {ignoreRegion: '#overflowing-div'})
+      await close(throwException)
+    },
+    TestCheckElementWithIgnoreRegionBySameElement_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkRegion('#overflowing-div-image', {ignoreRegion: '#overflowing-div-image'})
       await close(throwException)
     },
     TestCheckFrame_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await checkFrame({locator: 'iframe[name="frame1"]'})
+      await checkFrame('iframe[name="frame1"]')
       await close(throwException)
     },
     TestCheckFrameFully_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await checkFrame({locator: 'iframe[name="frame1"]', isFully: true})
+      await checkFrame('iframe[name="frame1"]', {isFully: true})
+      await close(throwException)
+    },
+    TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkWindow({isFully: true, ignoreRegion: '.ignore'})
+      await close(throwException)
+    },
+    TestIgnoreDisplacements: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkWindow({isFully: true, ignoreRegion: '.ignore'})
+      await close(throwException)
+    },
+    TestCheckRegionByCoordinates_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkRegion({left: 50, top: 50, width: 100, height: 100})
+      await close(throwException)
+    },
+    TestCheckRegionByCoordinatesInFrame_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkRegion(
+        {left: 30, top: 40, width: 400, height: 1200},
+        {inFrame: 'iframe[name="frame1"]'},
+      )
+      await close(throwException)
+    },
+    TestCheckRegionByCoordinatesInFrameFully_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkRegion(
+        {left: 30, top: 40, width: 400, height: 1200},
+        {inFrame: 'iframe[name="frame1"]', isFully: true},
+      )
+      await close(throwException)
+    },
+    TestCheckOverflowingRegionByCoordinates_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkRegion({left: 50, top: 110, width: 90, height: 550})
       await close(throwException)
     },
     TestCheckRegionBySelectorAfterManualScroll_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await scrollDown({pixels: 250})
-      await checkRegion({locator: '#centered'})
+      await scrollDown(250)
+      await checkRegion('#centered')
       await close(throwException)
     },
     TestCheckRegionWithIgnoreRegion_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await type({locator: 'input', text: 'My Input'})
-      await checkRegion({
-        locator: '#overflowing-div',
+      await checkRegion('#overflowing-div', {
         ignoreRegion: {left: 50, top: 50, width: 100, height: 100},
       })
       await close(throwException)
@@ -126,9 +201,68 @@ function makeCoverageTests({
     TestCheckWindowWithIgnoreRegion_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await type({locator: 'input', text: 'My Input'})
+      await type('input', 'My Input')
       await checkWindow({isFully: true, ignoreRegion: {left: 50, top: 50, width: 100, height: 100}})
       await close(throwException)
+    },
+    TestCheckWindowWithIgnoreBySelector_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkWindow({ignoreRegion: '#overflowing-div'})
+      await close(throwException)
+    },
+    TestCheckWindowWithIgnoreBySelector_Centered_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkWindow({ignoreRegion: '#centered'})
+      await close(throwException)
+    },
+    TestCheckWindowWithIgnoreBySelector_Stretched_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkWindow({ignoreRegion: '#stretched'})
+      await close(throwException)
+    },
+    TestCheckWindowWithFloatingByRegion_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkWindow({
+        floatingRegion: {
+          target: {left: 10, top: 10, width: 20, height: 10},
+          maxUp: 3,
+          maxDown: 3,
+          maxLeft: 20,
+          maxRight: 30,
+        },
+      })
+      await close(throwException)
+    },
+    TestCheckWindowWithFloatingBySelector_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkWindow({
+        floatingRegion: {
+          target: '#overflowing-div',
+          maxUp: 3,
+          maxDown: 3,
+          maxLeft: 20,
+          maxRight: 30,
+        },
+      })
+      await close(throwException)
+    },
+    TestScrollbarsHiddenAndReturned_Fluent: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkWindow({isFully: true})
+      await checkRegion('#inner-frame-div', {isFully: true})
+      await checkWindow({isFully: true})
+      await close(throwException)
+    },
+    TestSimpleRegion: async () => {
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkRegion({left: 50, top: 50, width: 100, height: 100})
     },
   }
 }
