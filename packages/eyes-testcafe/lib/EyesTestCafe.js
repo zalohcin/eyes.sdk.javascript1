@@ -25,7 +25,7 @@ const {
   NullCutProvider,
   MatchResult,
 } = require('@applitools/eyes-sdk-core')
-const captureFrameAndPoll = require('../dist/captureFrameAndPoll')
+const getCaptureDomScript = require('./getCaptureDomScript')
 
 const {ClassicRunner} = require('./runner/ClassicRunner')
 const {ImageProviderFactory} = require('./capture/ImageProviderFactory')
@@ -856,12 +856,16 @@ class EyesTestCafe extends Eyes {
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...')
+      const captureDomScript = await getCaptureDomScript({
+        webDriver: this._driver,
+        logger: this._logger,
+      })
       return await DomCapture.getFullWindowDom(
         this._logger,
         this._driver,
         undefined,
         undefined,
-        captureFrameAndPoll,
+        captureDomScript,
       )
     } catch (err) {
       this._logger.log(`Error capturing DOM of the page: ${JSON.stringify(err)}`)
