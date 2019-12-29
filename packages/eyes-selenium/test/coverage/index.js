@@ -13,6 +13,7 @@ const {
 
 const sdkName = 'eyes-selenium'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
+const supportedTests = require('./supported-tests')
 
 async function initialize({baselineTestName, branchName, executionMode, host}) {
   let eyes
@@ -42,13 +43,10 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     )
   }
 
-  async function checkFrame({
-    isClassicApi = false,
-    isFully = false,
+  async function checkFrame(
     locator,
-    tag,
-    matchTimeout,
-  } = {}) {
+    {isClassicApi = false, isFully = false, tag, matchTimeout} = {},
+  ) {
     if (isClassicApi) {
       await eyes.checkFrame(By.css(locator), matchTimeout, tag)
     } else {
@@ -56,35 +54,28 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     }
   }
 
-  async function checkRegion({
-    isClassicApi = false,
-    isFully = false,
-    locator,
-    inFrameLocator,
-    tag,
-    matchTimeout,
-    ignoreRegion,
-  } = {}) {
+  async function checkRegion(
+    target,
+    {isClassicApi = false, isFully = false, inFrame, tag, matchTimeout, ignoreRegion} = {},
+  ) {
     if (isClassicApi) {
-      inFrameLocator
-        ? await eyes.checkRegionInFrame(
-            By.css(inFrameLocator),
-            By.css(locator),
-            matchTimeout,
-            tag,
-            isFully,
-          )
-        : await eyes.checkRegionBy(By.css(locator), tag, matchTimeout, isFully)
+      inFrame
+        ? await eyes.checkRegionInFrame(By.css(inFrame), By.css(target), matchTimeout, tag, isFully)
+        : await eyes.checkRegionBy(By.css(target), tag, matchTimeout, isFully)
     } else {
       ignoreRegion
-        ? await eyes.check(tag, Target.region(By.css(locator)).fully(isFully))
-        : await eyes.check(
+        ? await eyes.check(
             tag,
-            Target.region(By.css(locator))
+            Target.region(By.css(target))
               .fully(isFully)
-              .ignoreRegions(new Region(ignoreRegion)),
+              .ignoreRegions(makeRegion(ignoreRegion)),
           )
+        : await eyes.check(tag, Target.region(makeRegion(target)).fully(isFully))
     }
+  }
+
+  const makeRegion = target => {
+    return typeof target === 'string' ? By.css(target) : new Region(target)
   }
 
   async function checkWindow({
@@ -93,18 +84,26 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     tag,
     matchTimeout,
     ignoreRegion,
+    floatingRegion,
   } = {}) {
     if (isClassicApi) {
       await eyes.checkWindow(tag, matchTimeout, isFully)
     } else {
-      ignoreRegion
-        ? await eyes.check(
-            undefined,
-            Target.window()
-              .fully(isFully)
-              .ignoreRegions(new Region(ignoreRegion)),
-          )
-        : await eyes.check(undefined, Target.window().fully(isFully))
+      let target = Target.window()
+        .fully(isFully)
+        .ignoreCaret()
+      if (ignoreRegion) {
+        target.ignoreRegions(makeRegion(ignoreRegion))
+      } else if (floatingRegion) {
+        target.floatingRegion(
+          makeRegion(floatingRegion.target),
+          floatingRegion.maxUp,
+          floatingRegion.maxDown,
+          floatingRegion.maxLeft,
+          floatingRegion.maxRight,
+        )
+      }
+      await eyes.check(undefined, target)
     }
   }
 
@@ -112,8 +111,12 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     await eyes.close(options)
   }
 
-  async function scrollDown({pixels}) {
+  async function scrollDown(pixels) {
     await driver.executeScript(`window.scrollBy(0,${pixels})`)
+  }
+
+  async function type(locator, inputText) {
+    await driver.findElement(By.css(locator)).sendKeys(inputText)
   }
 
   async function cleanup() {
@@ -121,65 +124,8 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     await eyes.abortIfNotClosed()
   }
 
-  return {visit, open, checkFrame, checkRegion, checkWindow, close, scrollDown, cleanup}
+  return {visit, open, checkFrame, checkRegion, checkWindow, close, scrollDown, type, cleanup}
 }
-
-const supportedTests = [
-  {name: 'TestCheckFrame', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckFrame', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckFrame', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckRegion', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckRegion', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckRegion', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckRegion2', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckRegion2', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckRegion2', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckRegionInFrame', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckRegionInFrame', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckRegionInFrame', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckWindow', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckWindow', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckWindow', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckWindowAfterScroll', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckWindowAfterScroll', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckWindowAfterScroll', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckWindowFully', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckWindowFully', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckWindowFully', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckWindowViewport', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckWindowViewport', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckWindowViewport', executionMode: {isScrollStitching: true}},
-  {name: 'TestDoubleCheckWindow', executionMode: {isVisualGrid: true}},
-  {name: 'TestDoubleCheckWindow', executionMode: {isCssStitching: true}},
-  {name: 'TestDoubleCheckWindow', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckElementFully_Fluent', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckElementFully_Fluent', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckElementFully_Fluent', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckFrame_Fluent', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckFrame_Fluent', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckFrame_Fluent', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckFrameFully_Fluent', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckFrameFully_Fluent', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckFrameFully_Fluent', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckRegionBySelectorAfterManualScroll_Fluent', executionMode: {isVisualGrid: true}},
-  {
-    name: 'TestCheckRegionBySelectorAfterManualScroll_Fluent',
-    executionMode: {isCssStitching: true},
-  },
-  {
-    name: 'TestCheckRegionBySelectorAfterManualScroll_Fluent',
-    executionMode: {isScrollStitching: true},
-  },
-  {name: 'TestCheckRegionWithIgnoreRegion_Fluent', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckRegionWithIgnoreRegion_Fluent', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckRegionWithIgnoreRegion_Fluent', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckWindow_Fluent', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckWindow_Fluent', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckWindow_Fluent', executionMode: {isScrollStitching: true}},
-  {name: 'TestCheckWindowWithIgnoreRegion_Fluent', executionMode: {isVisualGrid: true}},
-  {name: 'TestCheckWindowWithIgnoreRegion_Fluent', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckWindowWithIgnoreRegion_Fluent', executionMode: {isScrollStitching: true}},
-]
 
 module.exports = {
   name: sdkName,
