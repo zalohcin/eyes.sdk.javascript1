@@ -32,6 +32,7 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/eyes-common": "^3.17.1",
+    "@applitools/fake-eyes-server": "^1.0.0",
     "@applitools/isomorphic-fetch": "^3.0.0",
     "axios": "^0.19.0",
     "chalk": "^3.0.0",

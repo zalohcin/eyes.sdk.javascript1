@@ -92,29 +92,26 @@ async function sendRequest(self, name, options, retry = 1, delayBeforeRetry = fa
     )
     return response
   } catch (err) {
-    let reasonMsg = err.message
-    if (err.response && err.response.statusText) {
-      reasonMsg += ` (${err.response.statusText})`
-    }
+    const reasonMsg = `${err.message}${err.response ? `(${err.response.statusText})` : ''}`
 
-    // eslint-disable-next-line max-len
     self._logger.log(
-      `ServerConnector.${name} [${requestId}] - ${options.method} failed on ${
-        options.url
-      }: ${reasonMsg} with params ${JSON.stringify(options.params).slice(0, 100)}`,
+      `ServerConnector.${name} [${requestId}] - ${
+        options.method
+      } request failed. reason=${reasonMsg} | url=${options.url} ${
+        err.response ? `| status=${err.response.status} ` : ''
+      }| params=${JSON.stringify(options.params).slice(0, 100)}`,
     )
-    self._logger.verbose(
-      `ServerConnector.${name} - failure body:\n${err.response && err.response.data}`,
-    )
+
+    if (err.response && err.response.data) {
+      self._logger.verbose(`ServerConnector.${name} - failure body:\n${err.response.data}`)
+    }
 
     if (
       retry > 0 &&
       ((err.response && HTTP_FAILED_CODES.includes(err.response.status)) ||
         REQUEST_FAILED_CODES.includes(err.code))
     ) {
-      self._logger.verbose(
-        `Request failed with status '${err.response.status}' and error code '${err.code}'. Retrying...`,
-      )
+      self._logger.verbose(`ServerConnector retrying request with delay ${delayBeforeRetry}...`)
 
       if (delayBeforeRetry) {
         await GeneralUtils.sleep(RETRY_REQUEST_INTERVAL)
