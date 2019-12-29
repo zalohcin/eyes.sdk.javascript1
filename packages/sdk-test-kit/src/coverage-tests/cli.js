@@ -37,6 +37,7 @@ yargs
     alias: 's',
     describe: 'send a result report to the sandbox QA dashboard',
   })
+  .demandCommand(1, 'You need at least one command before moving on')
 
 async function run(args) {
   if (args.nuke) {
