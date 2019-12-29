@@ -50,7 +50,8 @@
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec2.js\"",
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec2.js\"",
-    "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\""
+    "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\"",
+    "li": "cd ../../ && npm i && cd -"
   },
   "devDependencies": {
     "@applitools/dom-capture": "^7.1.2",
@@ -59,6 +60,9 @@
     "@babel/plugin-transform-runtime": "^7.7.6",
     "@babel/plugin-transform-spread": "^7.7.4",
     "@babel/preset-env": "^7.7.6",
+    "core-js":"^3.6.1",
+    "url-polyfill":"^1.1.7",
+    "whatwg-fetch":"^3.0.0",
     "@joseph184/rollup-plugin-node-builtins": "^2.1.4",
     "assert-rejects": "^1.0.0",
     "axios": "^0.19.0",

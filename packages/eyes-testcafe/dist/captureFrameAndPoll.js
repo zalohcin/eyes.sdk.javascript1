@@ -16,7 +16,7 @@ module.exports = () => {
 	   */
 	  var runtime = function (exports) {
 
-	    var Op = window.Object.prototype;
+	    var Op = Object.prototype;
 	    var hasOwn = Op.hasOwnProperty;
 	    var undefined$1; // More compressible than void 0.
 
@@ -28,7 +28,7 @@ module.exports = () => {
 	    function wrap(innerFn, outerFn, self, tryLocsList) {
 	      // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
 	      var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-	      var generator = window.Object.create(protoGenerator.prototype);
+	      var generator = Object.create(protoGenerator.prototype);
 	      var context = new Context(tryLocsList || []); // The ._invoke method unifies the implementations of the .next,
 	      // .throw, and .return methods.
 
@@ -86,7 +86,7 @@ module.exports = () => {
 	      return this;
 	    };
 
-	    var getProto = window.Object.getPrototypeOf;
+	    var getProto = Object.getPrototypeOf;
 	    var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
 
 	    if (NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
@@ -95,7 +95,7 @@ module.exports = () => {
 	      IteratorPrototype = NativeIteratorPrototype;
 	    }
 
-	    var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = window.Object.create(IteratorPrototype);
+	    var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
 	    GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
 	    GeneratorFunctionPrototype.constructor = GeneratorFunction;
 	    GeneratorFunctionPrototype[toStringTagSymbol] = GeneratorFunction.displayName = "GeneratorFunction"; // Helper for defining the .next, .throw, and .return methods of the
@@ -117,8 +117,8 @@ module.exports = () => {
 	    };
 
 	    exports.mark = function (genFun) {
-	      if (window.Object.setPrototypeOf) {
-	        window.Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+	      if (Object.setPrototypeOf) {
+	        Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
 	      } else {
 	        genFun.__proto__ = GeneratorFunctionPrototype;
 
@@ -127,7 +127,7 @@ module.exports = () => {
 	        }
 	      }
 
-	      genFun.prototype = window.Object.create(Gp);
+	      genFun.prototype = Object.create(Gp);
 	      return genFun;
 	    }; // Within the body of any async function, `await x` is transformed to
 	    // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
@@ -255,7 +255,7 @@ module.exports = () => {
 	          }
 
 	          if (context.method === "next") {
-	            // window.Setting context._sent for legacy support of Babel's
+	            // Setting context._sent for legacy support of Babel's
 	            // function.sent implementation.
 	            context.sent = context._sent = context.arg;
 	          } else if (context.method === "throw") {
@@ -747,7 +747,7 @@ module.exports = () => {
 	    while (1) switch (_context.prev = _context.next) {
 	      case 0:
 	        _context.next = 2;
-	        return regenerator.awrap(Promise.all(window.Array.from(bgImages).map(url => Promise.race([new Promise(resolve => {
+	        return regenerator.awrap(Promise.all(Array.from(bgImages).map(url => Promise.race([new Promise(resolve => {
 	          const img = new Image();
 
 	          img.onload = () => resolve({
@@ -806,7 +806,7 @@ module.exports = () => {
 	}
 
 	function getIndex(el) {
-	  return window.Array.prototype.filter.call(el.parentNode.childNodes, node => node.tagName === el.tagName).indexOf(el) + 1;
+	  return Array.prototype.filter.call(el.parentNode.childNodes, node => node.tagName === el.tagName).indexOf(el) + 1;
 	}
 
 	var genXpath_1 = genXpath;
@@ -831,7 +831,7 @@ module.exports = () => {
 	    try {
 	      const styleSheet = parseCss(cssText);
 
-	      for (const rule of window.Array.from(styleSheet.cssRules)) {
+	      for (const rule of Array.from(styleSheet.cssRules)) {
 	        if (rule instanceof CSSImportRule) {
 	          const nestedUrl = absolutizeUrl(rule.href, styleBaseUrl);
 	          const nestedResource = getCssFromCache(nestedUrl);
@@ -841,10 +841,10 @@ module.exports = () => {
 	              bundledCss: nestedCssText,
 	              unfetchedResources: nestedUnfetchedResources
 	            } = getBundledCssFromCssText(nestedResource, nestedUrl);
-	            nestedUnfetchedResources && (unfetchedResources = new window.Set(nestedUnfetchedResources));
+	            nestedUnfetchedResources && (unfetchedResources = new Set(nestedUnfetchedResources));
 	            bundledCss = `${nestedCssText}${bundledCss}`;
 	          } else {
-	            unfetchedResources = new window.Set([nestedUrl]);
+	            unfetchedResources = new Set([nestedUrl]);
 	            bundledCss = `\n${unfetchedToken}${nestedUrl}${unfetchedToken}`;
 	          }
 	        }
@@ -925,12 +925,12 @@ module.exports = () => {
 	var fetchCss = makeFetchCss;
 
 	var getHrefAttr = function getHrefAttr(node) {
-	  const attr = window.Array.from(node.attributes).find(attr => attr.name.toLowerCase() === 'href');
+	  const attr = Array.from(node.attributes).find(attr => attr.name.toLowerCase() === 'href');
 	  return attr && attr.value;
 	};
 
 	var isLinkToStyleSheet = function isLinkToStyleSheet(node) {
-	  return node.nodeName && node.nodeName.toUpperCase() === 'LINK' && node.attributes && window.Array.from(node.attributes).find(attr => attr.name.toLowerCase() === 'rel' && attr.value.toLowerCase() === 'stylesheet');
+	  return node.nodeName && node.nodeName.toUpperCase() === 'LINK' && node.attributes && Array.from(node.attributes).find(attr => attr.name.toLowerCase() === 'rel' && attr.value.toLowerCase() === 'stylesheet');
 	};
 
 	function isDataUrl(url) {
@@ -947,7 +947,7 @@ module.exports = () => {
 	    let cssText, styleBaseUrl, isUnfetched;
 
 	    if (isStyleElement(node)) {
-	      cssText = window.Array.from(node.childNodes).map(node => node.nodeValue).join('');
+	      cssText = Array.from(node.childNodes).map(node => node.nodeValue).join('');
 	      styleBaseUrl = baseUrl;
 	    } else if (isLinkToStyleSheet(node)) {
 	      const href = getHrefAttr(node);
@@ -997,10 +997,10 @@ module.exports = () => {
 	        unfetchedResources: nestedUnfetched
 	      } = getBundledCssFromCssText(cssText, styleBaseUrl);
 	      bundledCss += nestedCss;
-	      unfetchedResources = new window.Set(nestedUnfetched);
+	      unfetchedResources = new Set(nestedUnfetched);
 	    } else if (isUnfetched) {
 	      bundledCss += `${unfetchedToken}${styleBaseUrl}${unfetchedToken}`;
-	      unfetchedResources = new window.Set([styleBaseUrl]);
+	      unfetchedResources = new Set([styleBaseUrl]);
 	    }
 
 	    return {
@@ -1054,7 +1054,7 @@ module.exports = () => {
 	              return regenerator.async(function fetchAllCssFromElement$(_context4) {
 	                while (1) switch (_context4.prev = _context4.next) {
 	                  case 0:
-	                    window.Array.prototype.map.call(el.childNodes, fetchAllCssFromNode);
+	                    Array.prototype.map.call(el.childNodes, fetchAllCssFromNode);
 
 	                  case 1:
 	                  case "end":
@@ -1092,7 +1092,7 @@ module.exports = () => {
 	                  styleSheet = parseCss_1(cssText);
 	                  promises = [];
 
-	                  for (rule of window.Array.from(styleSheet.cssRules)) {
+	                  for (rule of Array.from(styleSheet.cssRules)) {
 	                    if (rule instanceof CSSImportRule) {
 	                      promises.push((() => {
 	                        var nestedUrl, cssText;
@@ -1218,7 +1218,7 @@ module.exports = () => {
 	    while (1) switch (_context.prev = _context.next) {
 	      case 0:
 	        doCaptureFrame = function _ref7(frameDoc) {
-	          const bgImages = new window.Set();
+	          const bgImages = new Set();
 	          let bundledCss = '';
 	          const ret = captureNode(frameDoc.documentElement);
 	          ret.css = bundledCss;
@@ -1260,7 +1260,7 @@ module.exports = () => {
 	          }
 
 	          function elementToJSON(el) {
-	            const childNodes = window.Array.prototype.map.call(el.childNodes, captureNode).filter(filter);
+	            const childNodes = Array.prototype.map.call(el.childNodes, captureNode).filter(filter);
 	            const tagName = el.tagName.toUpperCase();
 	            if (ignoredTagNames.indexOf(tagName) > -1) return null;
 	            const computedStyle = window.getComputedStyle(el);
@@ -1277,7 +1277,7 @@ module.exports = () => {
 
 	            for (const p of rectProps) rect[p] = boundingClientRect[p];
 
-	            const attributes = window.Array.from(el.attributes).map(a => ({
+	            const attributes = Array.from(el.attributes).map(a => ({
 	              key: a.name,
 	              value: a.value
 	            })).reduce((obj, attr) => {
@@ -1338,7 +1338,7 @@ module.exports = () => {
 	        };
 
 	        notEmptyObj = function _ref5(obj) {
-	          return window.Object.keys(obj).length ? obj : undefined;
+	          return Object.keys(obj).length ? obj : undefined;
 	        };
 
 	        filter = function _ref4(x) {
@@ -1370,7 +1370,7 @@ module.exports = () => {
 	        };
 	        promises = [];
 	        startTime(performance.total);
-	        unfetchedResources = new window.Set();
+	        unfetchedResources = new Set();
 	        iframeCors = [];
 	        iframeToken = '@@@@@';
 	        unfetchedToken = '#####';
