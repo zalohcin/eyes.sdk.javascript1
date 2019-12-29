@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const fakeEyesServer = require('..');
+const fakeEyesServer = require('..')
 
 describe('@applitools/fake-eyes-server', () => {
-    it('needs tests');
-});
+  it('needs tests')
+})
