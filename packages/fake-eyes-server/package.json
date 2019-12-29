@@ -1,0 +1,35 @@
+{
+  "name": "@applitools/fake-eyes-server",
+  "version": "1.0.0",
+  "description": "Fake eyes server",
+  "author": {
+    "name": "Applitools Team",
+    "email": "team@applitools.com"
+  },
+  "homepage": "https://github.com/applitools/eyes.sdk.javascript1",
+  "license": "SEE LICENSE IN LICENSE",
+  "main": "lib/fake-eyes-server.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
+  },
+  "scripts": {},
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "filenamify": "^4.1.0",
+    "ua-parser-js": "^0.7.21"
+  }
+}
