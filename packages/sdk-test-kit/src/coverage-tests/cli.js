@@ -21,6 +21,10 @@ yargs
     describe: 'path to implementation file',
     default: 'test/coverage/index.js',
   })
+  .option('filterName', {
+    alias: 'f',
+    describe: 'filter which tests are run by name',
+  })
   .option('remote', {
     alias: 'r',
     describe: 'url of where to run the tests',
@@ -71,10 +75,13 @@ async function doRunTests(args) {
   if (needsChromeDriver(args, sdkImplementation))
     await startChromeDriver(sdkImplementation.options.chromeDriverOptions)
 
+  const supportedTests = args.filterName
+    ? sdkImplementation.supportedTests.filter(test => test.name.includes(args.filterName))
+    : sdkImplementation.supportedTests
   const {report} = await makeRunTests(
     sdkImplementation.name,
     sdkImplementation.initialize,
-  ).runTests(sdkImplementation.supportedTests, {
+  ).runTests(supportedTests, {
     host: args.remote,
     concurrency: args.concurrency,
   })
