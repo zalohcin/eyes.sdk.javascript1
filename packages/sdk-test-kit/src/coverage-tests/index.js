@@ -393,7 +393,9 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
           })
           const test = makeCoverageTests(sdkImplementation)[testName]
           await test()
+          process.stdout.write('.')
         } catch (error) {
+          process.stdout.write('F')
           recordError(e, error, testName, executionMode)
         } finally {
           if (sdkImplementation.cleanup) await sdkImplementation.cleanup()
