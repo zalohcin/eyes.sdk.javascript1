@@ -39,19 +39,21 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
   }
 
   async function checkFrame(
-    locator,
+    target,
     {isClassicApi = false, isFully = false, tag, matchTimeout} = {},
   ) {
     if (isClassicApi) {
-      await eyes.checkFrame(locator, matchTimeout, tag)
+      await eyes.checkFrame(By.css(target), matchTimeout, tag)
     } else {
       let _checkSettings
-      if (Array.isArray(locator)) {
-        locator.forEach((entry, index) => {
-          index === 0 ? (_checkSettings = Target.frame(entry)) : _checkSettings.frame(entry)
+      if (Array.isArray(target)) {
+        target.forEach((entry, index) => {
+          index === 0
+            ? (_checkSettings = Target.frame(By.css(entry)))
+            : _checkSettings.frame(By.css(entry))
         })
       } else {
-        _checkSettings = Target.frame(locator)
+        _checkSettings = Target.frame(By.css(target))
       }
       _checkSettings.fully(isFully)
       await eyes.check(tag, _checkSettings)
@@ -68,21 +70,22 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
         : await eyes.checkRegionBy(By.css(target), tag, matchTimeout, isFully)
     } else {
       let _checkSettings
+      if (inFrame) _checkSettings = Target.frame(By.css(inFrame))
       if (Array.isArray(target)) {
         target.forEach((entry, index) => {
-          index === 0
+          index === 0 && _checkSettings === undefined
             ? (_checkSettings = Target.region(_makeRegionLocator(entry)))
             : _checkSettings.region(_makeRegionLocator(entry))
         })
       } else {
-        _checkSettings = Target.region(
-          _makeRegionLocator(target),
-          inFrame ? By.css(inFrame) : undefined,
-        ).fully(isFully)
+        _checkSettings
+          ? _checkSettings.region(_makeRegionLocator(target))
+          : (_checkSettings = Target.region(_makeRegionLocator(target)))
       }
       if (ignoreRegion) {
         _checkSettings.ignoreRegions(_makeRegionLocator(ignoreRegion))
       }
+      _checkSettings.fully(isFully)
       await eyes.check(tag, _checkSettings)
     }
   }
@@ -90,7 +93,7 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
   const _makeRegionLocator = target => {
     if (typeof target === 'string') return By.css(target)
     else if (typeof target === 'number') return target
-    else new Region(target)
+    else return new Region(target)
   }
 
   async function checkWindow({
@@ -109,7 +112,7 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
         .fully(isFully)
         .ignoreCaret()
       if (scrollRootElement) {
-        _checkSettings.scrollRootElement(scrollRootElement)
+        _checkSettings.scrollRootElement(By.css(scrollRootElement))
       }
       if (ignoreRegion) {
         _checkSettings.ignoreRegions(_makeRegionLocator(ignoreRegion))
