@@ -55,32 +55,32 @@ function makeCoverageTests({
     TestCheckFrame: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
-      await checkFrame('frame1', {isClassicApi: true})
+      await checkFrame('[name="frame1"]', {isClassicApi: true})
       await close(throwException)
     },
     TestCheckFrame_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await checkFrame('frame1')
+      await checkFrame('[name="frame1"]')
       await close(throwException)
     },
     TestCheckFrameFully_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await checkFrame('frame1', {isFully: true})
+      await checkFrame('[name="frame1"]', {isFully: true})
       await close(throwException)
     },
     TestCheckFrameInFrame_Fully_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await checkFrame(['frame1', 'frame1-1'], {isFully: true})
+      await checkFrame(['[name="frame1"]', '[name="frame1-1"]'], {isFully: true})
       await close(throwException)
     },
     TestCheckFrameInFrame_Fully_Fluent2: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkWindow({isFully: true})
-      await checkFrame(['frame1', 'frame1-1'], {isFully: true})
+      await checkFrame(['[name="frame1"]', '[name="frame1-1"]'], {isFully: true})
       await close(throwException)
     },
     TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent: async () => {
@@ -140,7 +140,7 @@ function makeCoverageTests({
     TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame: async () => {
       await visit('https://applitools.github.io/demo/TestPages/WixLikeTestPage/index.html')
       await open({appName: 'Eyes Selenium SDK - Special Cases', viewportSize})
-      await switchToFrame('frame1')
+      await switchToFrame('[name="frame1"]')
       await checkRegion('img')
       await close(throwException)
     },
@@ -153,10 +153,7 @@ function makeCoverageTests({
     TestCheckRegionByCoordinatesInFrame_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await checkRegion(
-        {left: 30, top: 40, width: 400, height: 1200},
-        {inFrame: 'iframe[name="frame1"]'},
-      )
+      await checkRegion({left: 30, top: 40, width: 400, height: 1200}, {inFrame: '[name="frame1"]'})
       await close(throwException)
     },
     TestCheckRegionByCoordinatesInFrameFully_Fluent: async () => {
@@ -416,6 +413,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
   return {runTests}
 }
 
+// TODO: move util functions into respective places -- e.g., send-report-util
 function convertExecutionModeToSuffix(executionMode) {
   switch (getNameFromObject(executionMode)) {
     case 'isVisualGrid':
@@ -466,6 +464,7 @@ function makeReport({sdkName, testsRan, p, e, start, end}) {
     errors: e,
     toSendReportSchema: makeSendReport.bind(undefined, {sdkName, testsRan, e}),
   }
+  // TODO: expose data and render output elsewhere -- e.g., cli-util
   report.summary.push(`Ran ${p.length} tests in ${end - start}ms`)
   if (hasErrors) {
     report.summary.push(`Encountered n errors in ${Object.keys(e).length} tests`)
@@ -477,7 +476,7 @@ function makeSendReport({sdkName, testsRan, e}) {
   return {
     sdk: convertSdkNameToReportName(sdkName),
     group: 'selenium', // TODO: make dynamic
-    sandbox: true,
+    sandbox: true, // TODO: make dynamic
     results: testsRan.map(test => {
       return {
         test_name: test.name,
