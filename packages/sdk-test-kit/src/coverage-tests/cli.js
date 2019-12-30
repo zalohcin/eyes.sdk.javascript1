@@ -21,7 +21,7 @@ yargs
     describe: 'path to implementation file',
     default: 'test/coverage/index.js',
   })
-  .option('filterName', {
+  .option('filter', {
     alias: 'f',
     describe: 'filter which tests are run by name',
   })
@@ -76,8 +76,8 @@ async function doRunTests(args) {
   if (needsChromeDriver(args, sdkImplementation))
     await startChromeDriver(sdkImplementation.options.chromeDriverOptions)
 
-  const supportedTests = args.filterName
-    ? sdkImplementation.supportedTests.filter(test => test.name.includes(args.filterName))
+  const supportedTests = args.filter
+    ? sdkImplementation.supportedTests.filter(test => test.name.includes(args.filter))
     : sdkImplementation.supportedTests
   const {report} = await makeRunTests(
     sdkImplementation.name,
