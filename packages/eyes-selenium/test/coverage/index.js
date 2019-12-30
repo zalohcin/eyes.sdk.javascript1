@@ -34,13 +34,8 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     await driver.get(url)
   }
 
-  async function open(options) {
-    driver = await eyes.open(
-      driver,
-      options.appName,
-      baselineTestName,
-      RectangleSize.parse(options.viewportSize),
-    )
+  async function open({appName, viewportSize}) {
+    driver = await eyes.open(driver, appName, baselineTestName, RectangleSize.parse(viewportSize))
   }
 
   async function checkFrame(
@@ -48,62 +43,87 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     {isClassicApi = false, isFully = false, tag, matchTimeout} = {},
   ) {
     if (isClassicApi) {
-      await eyes.checkFrame(By.css(locator), matchTimeout, tag)
+      await eyes.checkFrame(locator, matchTimeout, tag)
     } else {
-      await eyes.check(tag, Target.frame(By.css(locator)).fully(isFully))
+      let _checkSettings
+      if (Array.isArray(locator)) {
+        locator.forEach((entry, index) => {
+          index === 0 ? (_checkSettings = Target.frame(entry)) : _checkSettings.frame(entry)
+        })
+      } else {
+        _checkSettings = Target.frame(locator)
+      }
+      _checkSettings.fully(isFully)
+      await eyes.check(tag, _checkSettings)
     }
   }
 
   async function checkRegion(
     target,
-    {isClassicApi = false, isFully = false, inFrame, tag, matchTimeout, ignoreRegion} = {},
+    {isClassicApi = false, isFully = false, inFrame, ignoreRegion, tag, matchTimeout} = {},
   ) {
     if (isClassicApi) {
       inFrame
         ? await eyes.checkRegionInFrame(By.css(inFrame), By.css(target), matchTimeout, tag, isFully)
         : await eyes.checkRegionBy(By.css(target), tag, matchTimeout, isFully)
     } else {
-      ignoreRegion
-        ? await eyes.check(
-            tag,
-            Target.region(By.css(target))
-              .fully(isFully)
-              .ignoreRegions(makeRegion(ignoreRegion)),
-          )
-        : await eyes.check(tag, Target.region(makeRegion(target)).fully(isFully))
+      let _checkSettings
+      if (Array.isArray(target)) {
+        target.forEach((entry, index) => {
+          index === 0
+            ? (_checkSettings = Target.region(_makeRegionLocator(entry)))
+            : _checkSettings.region(_makeRegionLocator(entry))
+        })
+      } else {
+        _checkSettings = Target.region(
+          _makeRegionLocator(target),
+          inFrame ? By.css(inFrame) : undefined,
+        ).fully(isFully)
+      }
+      if (ignoreRegion) {
+        _checkSettings.ignoreRegions(_makeRegionLocator(ignoreRegion))
+      }
+      await eyes.check(tag, _checkSettings)
     }
   }
 
-  const makeRegion = target => {
-    return typeof target === 'string' ? By.css(target) : new Region(target)
+  const _makeRegionLocator = target => {
+    if (typeof target === 'string') return By.css(target)
+    else if (typeof target === 'number') return target
+    else new Region(target)
   }
 
   async function checkWindow({
     isClassicApi = false,
     isFully = false,
-    tag,
-    matchTimeout,
     ignoreRegion,
     floatingRegion,
+    scrollRootElement,
+    tag,
+    matchTimeout,
   } = {}) {
     if (isClassicApi) {
       await eyes.checkWindow(tag, matchTimeout, isFully)
     } else {
-      let target = Target.window()
+      let _checkSettings = Target.window()
         .fully(isFully)
         .ignoreCaret()
+      if (scrollRootElement) {
+        _checkSettings.scrollRootElement(scrollRootElement)
+      }
       if (ignoreRegion) {
-        target.ignoreRegions(makeRegion(ignoreRegion))
-      } else if (floatingRegion) {
-        target.floatingRegion(
-          makeRegion(floatingRegion.target),
+        _checkSettings.ignoreRegions(_makeRegionLocator(ignoreRegion))
+      }
+      if (floatingRegion) {
+        _checkSettings.floatingRegion(
+          _makeRegionLocator(floatingRegion.target),
           floatingRegion.maxUp,
           floatingRegion.maxDown,
           floatingRegion.maxLeft,
           floatingRegion.maxRight,
         )
       }
-      await eyes.check(undefined, target)
+      await eyes.check(undefined, _checkSettings)
     }
   }
 
@@ -115,16 +135,36 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     await driver.executeScript(`window.scrollBy(0,${pixels})`)
   }
 
+  async function switchToFrame(locator) {
+    await driver.switchTo().frame(locator)
+  }
+
   async function type(locator, inputText) {
     await driver.findElement(By.css(locator)).sendKeys(inputText)
   }
 
-  async function cleanup() {
-    await driver.close()
+  async function abort() {
     await eyes.abortIfNotClosed()
   }
 
-  return {visit, open, checkFrame, checkRegion, checkWindow, close, scrollDown, type, cleanup}
+  async function cleanup() {
+    await driver.close()
+    await abort()
+  }
+
+  return {
+    abort,
+    visit,
+    open,
+    checkFrame,
+    checkRegion,
+    checkWindow,
+    close,
+    scrollDown,
+    switchToFrame,
+    type,
+    cleanup,
+  }
 }
 
 module.exports = {
