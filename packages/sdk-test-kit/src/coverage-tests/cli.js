@@ -6,6 +6,7 @@ const {sendReport} = require('./send-report')
 const {exec} = require('child_process')
 const {version} = require('../../package.json')
 const chromedriver = require('chromedriver')
+const {filter} = require('./cli-util')
 
 yargs
   .usage(`Coverage Tests DSL (v${version})`)
@@ -21,9 +22,13 @@ yargs
     describe: 'path to implementation file',
     default: 'test/coverage/index.js',
   })
-  .option('filter', {
-    alias: 'f',
+  .option('filterName', {
+    alias: 'fn',
     describe: 'filter which tests are run by name',
+  })
+  .option('filterMode', {
+    alias: 'fm',
+    describe: 'filter which tests are run by execution mode',
   })
   .option('remote', {
     alias: 'r',
@@ -76,9 +81,17 @@ async function doRunTests(args) {
   if (needsChromeDriver(args, sdkImplementation))
     await startChromeDriver(sdkImplementation.options.chromeDriverOptions)
 
-  const supportedTests = args.filter
-    ? sdkImplementation.supportedTests.filter(test => test.name.includes(args.filter))
-    : sdkImplementation.supportedTests
+  let supportedTests = [...sdkImplementation.supportedTests]
+  if (args.filterName)
+    supportedTests = filter(args.filterName, {from: 'name', inside: supportedTests})
+  if (args.filterMode)
+    supportedTests = filter(args.filterMode, {from: 'executionMode', inside: supportedTests})
+
+  console.log(
+    `Running ${supportedTests.length} executions for ${
+      [...new Set(supportedTests.map(t => t.name))].length
+    } tests.`,
+  )
   const {report} = await makeRunTests(
     sdkImplementation.name,
     sdkImplementation.initialize,
