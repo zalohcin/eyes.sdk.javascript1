@@ -1,20 +1,21 @@
 /*
  * check command assumptions:
  * - The fluent API is used by default
- * - A viewport check window is performed unless otherwise specified
- * - locators are specified with CSS selectors except for frames
- * - frame locators can be specified by name, id, or index
+ * - locators are specified with CSS selectors
+ * - When performing a checkWindow, just the viewport is captured unless otherwise specified
  */
 
 /* eslint-disable no-unused-vars */
 function abort() {}
+
 // target:
-// - string (frame locator -- e.g., name, id, or index of a frame)
-// - Array of frame locators
+// - string (css selector)
+// - Array of css selectors
 // options:
-// - isClassicApi
-// - isFully
+// - isClassicApi (boolean)
+// - isFully (boolean)
 function checkFrame(target, options) {}
+
 // target:
 // - string (css selector)
 // - Array of css selectors
@@ -22,15 +23,16 @@ function checkFrame(target, options) {}
 // options:
 // - isClassicApi (boolean)
 // - isFully (boolean)
-// - inFrame (string -- name, id, or index of a frame)
+// - inFrame (string -- css selector)
 // - ignoreRegion (string or object)
 //    '#blah'
 //    --or--
 //    {left: 50, top: 50, width: 100, height: 100}
 function checkRegion(target, options) {}
+
 // options:
-// - isClassicApi
-// - isFully
+// - isClassicApi (boolean)
+// - isFully (boolean)
 // - ignoreRegion (string or object)
 //    '#blah'
 //    --or--
@@ -59,22 +61,27 @@ function checkRegion(target, options) {}
 //        maxLeft: 20,
 //        maxRight: 30,
 //      }
-// - scrollRootElement
+// - scrollRootElement (string - css selector)
 function checkWindow(options) {}
+
 // options:
 // - throwException
 function close(options) {}
+
 // options:
 // - appName
 // - viewportSize
 function open(options) {}
-// pixels
-// - number
+
+// pixels (number)
 function scrollDown(pixels) {}
-// locator (string -- name, id, or index of a frame)
+
+// locator (string -- css selector of a frame)
 function switchToFrame(locator) {}
+
 // locator (string - css selector of an element)
 function type(locator, inputText) {}
+
 // url - string
 function visit(url) {}
 /* eslint-enable no-unused-vars */
