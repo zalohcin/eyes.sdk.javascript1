@@ -18,7 +18,8 @@
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "scripts": {
-    "test": "mocha test/**/*.spec.js"
+    "test": "mocha test/**/*.spec.js",
+    "build": "tsc src/coverage-tests/api.ts"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
