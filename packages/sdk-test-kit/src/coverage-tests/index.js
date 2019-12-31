@@ -11,7 +11,7 @@ function makeCoverageTests({
   switchToFrame,
   type,
   visit,
-}) {
+} = {}) {
   const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
   const viewportSize = '700x460'
   const throwException = true
@@ -389,13 +389,14 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
             ...supportedTest,
           })
           const test = makeCoverageTests(sdkImplementation)[testName]
+          if (sdkImplementation._setup) await sdkImplementation._setup()
           await test()
           process.stdout.write('.')
         } catch (error) {
           process.stdout.write('F')
           recordError(e, error, testName, executionMode)
         } finally {
-          if (sdkImplementation.cleanup) await sdkImplementation.cleanup()
+          if (sdkImplementation._cleanup) await sdkImplementation._cleanup()
         }
       })
     })

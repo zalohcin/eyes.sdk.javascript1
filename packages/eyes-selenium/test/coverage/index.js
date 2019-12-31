@@ -19,16 +19,23 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
   let eyes
   let driver
 
-  driver = await new Builder()
-    .forBrowser('chrome')
-    .setChromeOptions(new ChromeOptions().headless())
-    .usingServer(host)
-    .build()
-  eyes = executionMode.isVisualGrid ? new Eyes(new VisualGridRunner()) : new Eyes()
-  executionMode.isCssStitching ? eyes.setStitchMode(StitchMode.CSS) : undefined
-  executionMode.isScrollStitching ? eyes.setStitchMode(StitchMode.SCROLL) : undefined
-  eyes.setBranchName(branchName)
-  eyes.setBatch(batch)
+  async function _setup() {
+    driver = await new Builder()
+      .forBrowser('chrome')
+      .setChromeOptions(new ChromeOptions().headless())
+      .usingServer(host)
+      .build()
+    eyes = executionMode.isVisualGrid ? new Eyes(new VisualGridRunner()) : new Eyes()
+    executionMode.isCssStitching ? eyes.setStitchMode(StitchMode.CSS) : undefined
+    executionMode.isScrollStitching ? eyes.setStitchMode(StitchMode.SCROLL) : undefined
+    eyes.setBranchName(branchName)
+    eyes.setBatch(batch)
+  }
+
+  async function _cleanup() {
+    await driver.close()
+    await abort()
+  }
 
   async function visit(url) {
     await driver.get(url)
@@ -150,11 +157,6 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     await eyes.abortIfNotClosed()
   }
 
-  async function cleanup() {
-    await driver.close()
-    await abort()
-  }
-
   return {
     abort,
     visit,
@@ -166,7 +168,7 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     scrollDown,
     switchToFrame,
     type,
-    cleanup,
+    _cleanup,
   }
 }
 
