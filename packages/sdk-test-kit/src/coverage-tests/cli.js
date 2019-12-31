@@ -6,7 +6,7 @@ const {sendReport} = require('./send-report')
 const {exec} = require('child_process')
 const {version} = require('../../package.json')
 const chromedriver = require('chromedriver')
-const {filter} = require('./cli-util')
+const {filter, unique, findDifferencesBetween} = require('./cli-util')
 
 yargs
   .usage(`Coverage Tests DSL (v${version})`)
@@ -78,12 +78,11 @@ function doHealthCheck(args) {
   console.log('Performing health check...\n')
   const sdkImplementation = require(path.join(path.resolve('.'), args.path))
 
-  const supportedTests = new Set(sdkImplementation.supportedTests.map(test => test.name))
-  const coverageTests = makeCoverageTests()
+  const supportedTests = unique(sdkImplementation.supportedTests.map(test => test.name))
+  const coverageTests = Object.keys(makeCoverageTests())
 
-  const unsupportedTests = [
-    ...new Set(Object.keys(coverageTests).filter(test => !supportedTests.has(test))),
-  ]
+  const unsupportedTests = findDifferencesBetween(coverageTests, supportedTests)
+
   if (unsupportedTests.length) {
     console.log('Unsupported tests found:')
     unsupportedTests.forEach(test => console.log(`- ${test}`))

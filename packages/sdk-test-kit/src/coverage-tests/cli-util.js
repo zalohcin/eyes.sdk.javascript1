@@ -10,6 +10,17 @@ function filter(filter, {from, inside}) {
     : inside
 }
 
+function unique(collection = []) {
+  return new Set(collection)
+}
+
+function findDifferencesBetween(hostCollection, guestCollection) {
+  const _guestCollection = new Set(guestCollection)
+  return hostCollection.filter(test => !_guestCollection.has(test))
+}
+
 module.exports = {
   filter,
+  unique,
+  findDifferencesBetween,
 }
