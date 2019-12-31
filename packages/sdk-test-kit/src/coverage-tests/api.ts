@@ -17,16 +17,16 @@ interface FloatingRegion {
     maxRight: number,
 }
 
-namespace Commands {
-  interface Abort {
+declare module Commands {
+  export interface Abort {
       (): Promise<any> 
   }
 
-  interface CheckFrame {
+  export interface CheckFrame {
       (target: Selector | Array<Selector>, options: { isClassicApi?: boolean, isFully?: boolean }): Promise<any>
   }
 
-  interface CheckRegion {
+  export interface CheckRegion {
       (
           target: Selector | Array<Selector> | RegionCoordinates,
           options: {
@@ -38,7 +38,7 @@ namespace Commands {
       ): Promise<any>
   }
 
-  interface CheckWindow {
+  export interface CheckWindow {
       (options: {
           isClassicApi?: boolean,
           isFully?: boolean,
@@ -48,27 +48,27 @@ namespace Commands {
       }): Promise<any>
   }
 
-  interface Close {
+  export interface Close {
       (options: { throwsException?: boolean }) : Promise<any>
   }
 
-  interface Open {
+  export interface Open {
       (options: {appName: string, viewportSize: string}): Promise<any>
   }
 
-  interface ScrollDown {
+  export interface ScrollDown {
       (pixes: number): Promise<any>
   }
 
-  interface SwitchToFrame {
+  export interface SwitchToFrame {
       (selector: Selector): Promise<any>
   }
 
-  interface Type {
+  export interface Type {
       (selector: Selector, inputText: string): Promise<any>
   }
 
-  interface Visit {
+  export interface Visit {
       (url: string): Promise<any>
   }
 }
