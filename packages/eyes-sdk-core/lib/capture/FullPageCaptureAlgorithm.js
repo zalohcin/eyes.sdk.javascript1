@@ -30,6 +30,7 @@ class FullPageCaptureAlgorithm {
    * @param {CutProvider} cutProvider
    * @param {number} stitchingOverlap
    * @param {ImageProvider} imageProvider
+   * @param {boolean} isDoubleOverlap
    */
   constructor(
     logger,
@@ -42,6 +43,7 @@ class FullPageCaptureAlgorithm {
     cutProvider,
     stitchingOverlap,
     imageProvider,
+    isDoubleOverlap,
   ) {
     ArgumentGuard.notNull(logger, 'logger')
 
@@ -54,6 +56,7 @@ class FullPageCaptureAlgorithm {
     this._cutProvider = cutProvider
     this._stitchingOverlap = stitchingOverlap
     this._imageProvider = imageProvider
+    this._isDoubleOverlap = !!isDoubleOverlap
     this._regionPositionCompensation =
       regionPositionCompensation || new NullRegionPositionCompensation()
   }
@@ -125,17 +128,17 @@ class FullPageCaptureAlgorithm {
       await this._debugScreenshotsProvider.save(image, 'scaled')
     }
 
-    if (!fullArea || fullArea.isEmpty()) {
-      let entireSize
-      try {
-        entireSize = await positionProvider.getEntireSize()
-        this._logger.verbose(`Entire size of region context: ${entireSize}`)
-      } catch (err) {
-        this._logger.log(`WARNING: Failed to extract entire size of region context ${err}`)
-        this._logger.log(`Using image size instead: ${image.getWidth()}x${image.getHeight()}`)
-        entireSize = new RectangleSize(image.getWidth(), image.getHeight())
-      }
+    let entireSize
+    try {
+      entireSize = await positionProvider.getEntireSize()
+      this._logger.verbose(`Entire size of region context: ${entireSize}`)
+    } catch (err) {
+      this._logger.log(`Error: Failed to extract entire size of region context ${err}`)
+      this._logger.log(`Using image size instead: ${image.getWidth()}x${image.getHeight()}`)
+      entireSize = new RectangleSize(image.getWidth(), image.getHeight())
+    }
 
+    if (!fullArea || fullArea.isEmpty()) {
       // Notice that this might still happen even if we used "getImagePart", since "entirePageSize" might be that of a frame.
       if (
         image.getWidth() >= entireSize.getWidth() &&
@@ -162,7 +165,7 @@ class FullPageCaptureAlgorithm {
     this._logger.verbose(`entire page region: ${fullArea}, image part size: ${partImageSize}`)
 
     // Getting the list of sub-regions composing the whole region (we'll take screenshot for each one).
-    const imageParts = fullArea.getSubRegions(partImageSize)
+    const imageParts = fullArea.getSubRegions(partImageSize, false, this._stitchingOverlap)
 
     this._logger.verbose('Creating stitchedImage container.')
     // Notice stitchedImage uses the same type of image as the screenshots.
@@ -207,6 +210,35 @@ class FullPageCaptureAlgorithm {
         `original-scrolled-${(await positionProvider.getCurrentPosition()).toStringForFilename()}`,
       )
 
+      if (this._isDoubleOverlap) {
+        const removeTopForLastImageAmmount = partRegion.getTop() - originPosition.getY()
+        const removeTopOverlapAmmount = partRegion.getTop() != 0 ? this._stitchingOverlap : 0
+        const removeBottomAmmount =
+          partRegion.getTop() + image.getHeight() < entireSize.getHeight()
+            ? this._stitchingOverlap
+            : 0
+
+        const imageHeight =
+          image.getHeight() -
+          removeBottomAmmount -
+          removeTopOverlapAmmount -
+          removeTopForLastImageAmmount
+
+        const croppingRegion = new Region(
+          0,
+          removeTopOverlapAmmount + removeTopForLastImageAmmount,
+          partImage.getWidth(),
+          imageHeight,
+        )
+        this._logger.verbose('cropping image for double overlap', croppingRegion)
+        partImage = await partImage.crop(croppingRegion)
+
+        await this._debugScreenshotsProvider.save(
+          partImage,
+          `double-cropped-${(await positionProvider.getCurrentPosition()).toStringForFilename()}`,
+        )
+      }
+
       // FIXME - cropping should be overlaid (see previous comment re cropping)
       if (!(scaledCutProvider instanceof NullCutProvider)) {
         this._logger.verbose('cutting...')
@@ -240,9 +272,10 @@ class FullPageCaptureAlgorithm {
         )
       }
 
-      // Stitching the current part.
-      this._logger.verbose('Stitching part into the image container...')
-      await stitchedImage.copyRasterData(targetPosition.getX(), targetPosition.getY(), partImage)
+      // TODO - are these lines ok for non-double overlap stitching ?
+      let stitchY = partRegion.getTop() !== 0 ? partRegion.getTop() + this._stitchingOverlap : 0
+      this._logger.verbose('Stitching part into the image container in', stitchY)
+      await stitchedImage.copyRasterData(targetPosition.getX(), stitchY, partImage)
       this._logger.verbose('Done!')
 
       lastSuccessfulLocation = originPosition
@@ -263,8 +296,9 @@ class FullPageCaptureAlgorithm {
     this._logger.verbose(`Actual stitched size: ${actualImageWidth}x${actualImageHeight}`)
 
     if (
-      actualImageWidth < stitchedImage.getWidth() ||
-      actualImageHeight < stitchedImage.getHeight()
+      (actualImageWidth < stitchedImage.getWidth() ||
+        actualImageHeight < stitchedImage.getHeight()) &&
+      !this._isDoubleOverlap
     ) {
       this._logger.verbose('Trimming unnecessary margins...')
       stitchedImage = await stitchedImage.crop(

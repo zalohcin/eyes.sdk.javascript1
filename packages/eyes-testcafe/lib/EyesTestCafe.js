@@ -1089,6 +1089,7 @@ class EyesTestCafe extends Eyes {
       this._cutProviderHandler.get(),
       this._configuration.getStitchOverlap(),
       this._imageProvider,
+      true,
     )
 
     // TODO
