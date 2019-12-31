@@ -169,6 +169,7 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     switchToFrame,
     type,
     _cleanup,
+    _setup,
   }
 }
 
