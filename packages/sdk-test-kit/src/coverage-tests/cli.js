@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const yargs = require('yargs')
 const path = require('path')
-const {makeRunTests} = require('./index')
+const {makeRunTests, makeCoverageTests} = require('./index')
 const {sendReport} = require('./send-report')
 const {exec} = require('child_process')
 const {version} = require('../../package.json')
@@ -13,10 +13,8 @@ yargs
   .usage('a.k.a. Da Schwartz Lang - accept no substitutes')
   .usage('\nUsage: coverage-tests run <options>')
   .command('run', 'run coverage tests for a given SDK')
-  .option('nuke', {
-    alias: 'n',
-    describe: 'kill all ghost browser processes (POSIX only)',
-  })
+  .command('doctor', 'health check an implementation')
+  .command('nuke', 'kill all ghost browser processes (POSIX only)')
   .option('path', {
     alias: 'p',
     describe: 'path to implementation file',
@@ -42,18 +40,25 @@ yargs
     alias: 's',
     describe: 'send a result report to the sandbox QA dashboard',
   })
-  .demandCommand(1, 'You need at least one command before moving on')
+  .demandCommand(1, 'You need to specify a command before moving on')
 
 async function run(args) {
-  if (args.nuke) {
+  console.log(`Coverage Tests DSL (v${version})`)
+  console.log('a.k.a. Da Schwartz Lang - accept no substitutes\n')
+  const command = args._[0]
+  if (command === 'nuke') {
     doKaboom()
-  } else if (args.path) {
-    console.log(`Coverage Tests DSL (v${version})`)
-    console.log('a.k.a. Da Schwartz Lang - accept no substitutes')
+    doExitCode(0)
+  } else if (command === 'doctor' && args.path) {
+    doHealthCheck(args)
+  } else if (command === 'run' && args.path) {
     const report = await doRunTests(args)
     const sendReportResponse = await doSendReport(args, report)
     doDisplayResults(report, sendReportResponse)
     doExitCode(report.errors)
+  } else {
+    console.log('Nothing to run.')
+    doExitCode(1)
   }
 }
 
@@ -69,7 +74,26 @@ function doExitCode(errors) {
   process.exit(exitCode)
 }
 
+function doHealthCheck(args) {
+  console.log('Performing health check...\n')
+  const sdkImplementation = require(path.join(path.resolve('.'), args.path))
+
+  const supportedTests = new Set(sdkImplementation.supportedTests.map(test => test.name))
+  const coverageTests = makeCoverageTests()
+
+  const unsupportedTests = [
+    ...new Set(Object.keys(coverageTests).filter(test => !supportedTests.has(test))),
+  ]
+  if (unsupportedTests.length) {
+    console.log('Unsupported tests found:')
+    unsupportedTests.forEach(test => console.log(`- ${test}`))
+  } else {
+    console.log('Looks good to me.')
+  }
+}
+
 function doKaboom() {
+  console.log('Cleaning up rogue processes...')
   exec(`ps ax | grep Chrome | grep headless | awk '{print $1}' | xargs kill -9`)
   console.log('KABOOM!')
 }
