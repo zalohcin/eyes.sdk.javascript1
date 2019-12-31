@@ -145,8 +145,9 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     await driver.executeScript(`window.scrollBy(0,${pixels})`)
   }
 
-  async function switchToFrame(locator) {
-    await driver.switchTo().frame(locator)
+  async function switchToFrame(selector) {
+    const element = await driver.findElement(By.css(selector))
+    await driver.switchTo().frame(element)
   }
 
   async function type(locator, inputText) {
