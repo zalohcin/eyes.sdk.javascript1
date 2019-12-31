@@ -1,6 +1,6 @@
 {
   "name": "@applitools/sdk-test-kit",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "engines": {
     "node": ">=10.0.0"
   },
