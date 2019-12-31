@@ -27,11 +27,12 @@
     "chromedriver": "^79.0.0",
     "node-fetch": "^2.6.0",
     "throat": "^5.0.0",
-    "yargs": "^15.0.2"
+    "yargs": "^15.0.2",
+    "typescript": "^3.7.4"
   },
   "devDependencies": {
-    "typescript-eslint-parser": "^22.0.0",
-    "mocha": "^6.2.2"
+    "mocha": "^6.2.2",
+    "typescript-eslint-parser": "^22.0.0"
   },
   "bin": {
     "coverage-tests": "./src/coverage-tests/cli.js"
