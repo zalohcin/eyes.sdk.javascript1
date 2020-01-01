@@ -53,8 +53,12 @@ declare module EyesApi {
 	}
 
 	export interface Close {
-			(options: { throwsException?: boolean }) : Promise<any>
+			(throwsException?: boolean) : Promise<any>
 	}
+
+  export interface getAllTestResults {
+      () : Promise<any>
+  }
 
 	export interface Open {
 			(options: {appName: string, viewportSize: string}): Promise<any>
