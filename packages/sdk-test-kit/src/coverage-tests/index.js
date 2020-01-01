@@ -1,4 +1,5 @@
 const throat = require('throat')
+const assert = require('assert')
 
 function makeCoverageTests({
   abort,
@@ -9,6 +10,7 @@ function makeCoverageTests({
   open,
   scrollDown,
   switchToFrame,
+  getAllTestResults,
   type,
   visit,
 } = {}) {
@@ -344,6 +346,12 @@ function makeCoverageTests({
       await checkWindow({isFully: true})
       await close(throwException)
     },
+    Test_VGTestsCount_1: async () => {
+      await visit('https://applitools.com/helloworld')
+      await open({appName: 'Test Count', viewportSize: '640x480'})
+      await checkWindow({isFully: true})
+      assert.deepStrictEqual((await getAllTestResults()).length, 1)
+    },
   }
 }
 
@@ -381,15 +389,16 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
       p.push(async () => {
         let sdkImplementation
         try {
-          sdkImplementation = await initializeSdkImplementation({
-            // for consistent naming in the Eyes dashboard to pick up the correct baselines
-            baselineTestName: `${testName}${convertExecutionModeToSuffix(executionMode)}`,
-            branchName,
-            host,
-            ...supportedTest,
-          })
+          sdkImplementation = initializeSdkImplementation()
           const test = makeCoverageTests(sdkImplementation)[testName]
-          if (sdkImplementation._setup) await sdkImplementation._setup()
+          if (sdkImplementation._setup)
+            await sdkImplementation._setup({
+              // for consistent naming in the Eyes dashboard to pick up the correct baselines
+              baselineTestName: `${testName}${convertExecutionModeToSuffix(executionMode)}`,
+              branchName,
+              host,
+              ...supportedTest,
+            })
           await test()
           process.stdout.write('.')
         } catch (error) {
@@ -416,6 +425,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
 
 // TODO: move util functions into respective places -- e.g., send-report-util
 function convertExecutionModeToSuffix(executionMode) {
+  if (executionMode.useStrictName) return ''
   switch (getNameFromObject(executionMode)) {
     case 'isVisualGrid':
       return '_VG'
