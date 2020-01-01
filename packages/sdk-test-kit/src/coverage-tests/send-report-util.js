@@ -1,4 +1,4 @@
-const {getNameFromObject} = require('../common/util')
+const {getNameFromObject} = require('./common-util')
 
 function convertExecutionModeToBareName(executionMode) {
   return getNameFromObject(executionMode)

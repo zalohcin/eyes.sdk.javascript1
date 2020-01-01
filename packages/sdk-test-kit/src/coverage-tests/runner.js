@@ -1,5 +1,5 @@
 const throat = require('throat')
-const {getNameFromObject} = require('../common/util')
+const {getNameFromObject} = require('./common-util')
 const {makeSendReport} = require('./send-report-util')
 const {makeCoverageTests} = require('./tests')
 

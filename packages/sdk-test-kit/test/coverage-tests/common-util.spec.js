@@ -1,16 +1,19 @@
-const {filter, unique, findDifferencesBetween} = require('../../src/coverage-tests/cli-util')
+const {filter, unique, findDifferencesBetweenCollections} = require('../../src/coverage-tests/common-util')
 const assert = require('assert')
 
-describe('cli-util', () => {
-  describe('findDifferencesBetween', () => {
-    it('should return an array of differences if present', () => {
-      assert.deepStrictEqual(findDifferencesBetween([0, 1, 2, 'a'], [0, 1, 2]), ['a'])
+describe('common-util', () => {
+  describe('findDifferencesBetweenCollections', () => {
+    it('should support arrays', () => {
+      assert.deepStrictEqual(findDifferencesBetweenCollections([0, 1, 2, 'a'], [0, 1, 2]), ['a'])
     })
-  })
-  describe('unique', () => {
-    it('should return an array of unique values', () => {
-      const result = unique([0, 1, 1, 1, 2])
-      assert.deepStrictEqual(result.size, 3)
+    it('should support objects (keys)', () => {
+      assert.deepStrictEqual(findDifferencesBetweenCollections({a: 0, b: 1, c: 2, d: 'a'}, {a: 0, b: 1, c: 2}), ['d'])
+    })
+    it('should support mixing arrays and objects', () => {
+      assert.deepStrictEqual(findDifferencesBetweenCollections(['a', 'b', 'c', 'd'], {a: 0, b: 0, c: 0}), ['d'])
+    })
+    it('should deduplicate guest collections', () => {
+      assert.deepStrictEqual(findDifferencesBetweenCollections([0, 1, 2, 'a'], [0, 1, 1, 1, 2]), ['a'])
     })
   })
   describe('filter', () => {

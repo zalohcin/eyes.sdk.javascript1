@@ -7,7 +7,7 @@ const {sendReport} = require('./send-report')
 const {exec} = require('child_process')
 const {version} = require('../../package.json')
 const chromedriver = require('chromedriver')
-const {filter, unique, findDifferencesBetween} = require('./cli-util')
+const {filter, findDifferencesBetweenCollections} = require('./common-util')
 
 yargs
   .usage(`Coverage Tests DSL (v${version})`)
@@ -51,9 +51,11 @@ async function run(args) {
     doKaboom()
     doExitCode(0)
   } else if (command === 'doctor' && args.path) {
-    doHealthCheck(args)
+    const sdkImplementation = require(path.join(path.resolve('.'), args.path))
+    doHealthCheck(args, sdkImplementation)
   } else if (command === 'run' && args.path) {
-    const report = await doRunTests(args)
+    const sdkImplementation = require(path.join(path.resolve('.'), args.path))
+    const report = await doRunTests(args, sdkImplementation)
     const sendReportResponse = await doSendReport(args, report)
     doDisplayResults(report, sendReportResponse)
     doExitCode(report.errors)
@@ -75,16 +77,15 @@ function doExitCode(errors) {
   process.exit(exitCode)
 }
 
-function doHealthCheck(args) {
+function doHealthCheck(args, sdkImplementation) {
   console.log('Performing health check...\n')
-  const sdkImplementation = require(path.join(path.resolve('.'), args.path))
-  const coverageTests = Object.keys(makeCoverageTests())
+  const coverageTests = makeCoverageTests()
 
-  const supportedTests = unique(sdkImplementation.supportedTests.map(test => test.name))
-  const unsupportedTests = findDifferencesBetween(coverageTests, supportedTests)
+  const supportedTests = sdkImplementation.supportedTests.map(test => test.name)
+  const unsupportedTests = findDifferencesBetweenCollections(coverageTests, supportedTests)
 
   const implementedCommands = sdkImplementation.initialize()
-  const unimplementedCommands = findDifferencesBetween(supportedCommands, Object.keys(implementedCommands))
+  const unimplementedCommands = findDifferencesBetweenCollections(supportedCommands, implementedCommands)
 
   if (unsupportedTests.length) {
     console.log('Unsupported tests found:')
@@ -108,8 +109,7 @@ function doKaboom() {
   console.log('KABOOM!')
 }
 
-async function doRunTests(args) {
-  const sdkImplementation = require(path.join(path.resolve('.'), args.path))
+async function doRunTests(args, sdkImplementation) {
   console.log(`Running coverage tests for ${sdkImplementation.name}...\n`)
 
   if (needsChromeDriver(args, sdkImplementation))
