@@ -142,7 +142,11 @@ function doDisplayResults(report, sendReportResponse) {
     console.log(report.errors)
   }
   console.log(`-------------------- SUMMARY --------------------`)
-  report.summary.forEach(entry => console.log(entry))
+  console.log(`Ran ${report.stats.numberOfTests} tests across ${report.stats.numberOfExecutions} executions in ${report.stats.duration}ms`)
+  console.log(`\nStats:`)
+  console.log(`- Passed (across all execution modes): ${report.stats.numberOfTestsPassed}`)
+  console.log(`- Failed (in one or more execution modes): ${report.stats.numberOfTestsFailed}`)
+  console.log(`- Total failures: ${report.stats.numberOfExecutionsFailed}\n`)
   if (sendReportResponse.isSuccessful) {
     console.log('Report successfully sent to the sandbox QA dashboard')
     console.log('See the results at http://bit.ly/sdk-test-results')

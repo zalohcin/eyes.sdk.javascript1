@@ -84,18 +84,29 @@ function convertExecutionModeToSuffix(executionMode) {
 }
 
 function makeReport({sdkName, testsRan, p, e, start, end}) {
-  const hasErrors = Object.keys(e).length
-  let report = {
-    summary: [],
+  const numberOfTests = new Set(testsRan.map(test => test.name)).size
+  const numberOfTestsFailed = Object.keys(e).length
+  const numberOfTestsPassed = numberOfTests - numberOfTestsFailed
+  const numberOfExecutions = testsRan.length
+  const numberOfExecutionsFailed = Object.values(e)
+    .map(entry => Object.keys(entry).length)
+    .reduce(function(a, b) {
+      return a + b
+    }, 0)
+  const report = {
+    stats: {
+      duration: end - start,
+      numberOfTests,
+      numberOfTestsPassed,
+      numberOfTestsFailed,
+      numberOfExecutions,
+      numberOfExecutionsPassed: numberOfExecutions - numberOfExecutionsFailed,
+      numberOfExecutionsFailed,
+    },
     errors: e,
     toSendReportSchema: makeSendReport.bind(undefined, {sdkName, testsRan, e}),
   }
-  // TODO: expose data and render output elsewhere -- e.g., cli-util
-  report.summary.push(`Ran ${p.length} tests in ${end - start}ms`)
-  if (hasErrors) {
-    report.summary.push(`Encountered n errors in ${Object.keys(e).length} tests`)
-  }
-  return {report}
+  return { report }
 }
 
 function recordError(errors, error, testName, executionMode) {
