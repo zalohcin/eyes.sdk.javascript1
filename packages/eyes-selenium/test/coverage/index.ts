@@ -1,4 +1,4 @@
-/// <reference path="../../../sdk-test-kit/src/coverage-tests/api.ts" />
+/// <reference types="@applitools/sdk-test-kit" />
 require('chromedriver')
 const {Builder, By} = require('selenium-webdriver')
 const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
