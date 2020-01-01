@@ -77,4 +77,32 @@ describe('ServerConnector', () => {
       await close()
     }
   })
+
+  it('getUserAgents works', async () => {
+    const {port, close} = await fakeEyesServer({logger})
+    try {
+      const serverUrl = `http://localhost:${port}`
+      const configuration = new Configuration()
+      configuration.setServerUrl(serverUrl)
+      const serverConnector = new ServerConnector(logger, configuration)
+      await serverConnector.renderInfo()
+      const userAgents = await serverConnector.getUserAgents()
+      assert.deepStrictEqual(userAgents, {
+        'chrome-0': 'chrome-0-ua',
+        'chrome-1': 'chrome-1-ua',
+        'chrome-2': 'chrome-2-ua',
+        'firefox-0': 'firefox-0-ua',
+        'firefox-1': 'firefox-1-ua',
+        'firefox-2': 'firefox-2-ua',
+        'safari-0': 'safari-0-ua',
+        'safari-2': 'safari-2-ua',
+        'safari-1': 'safari-1-ua',
+        edge: 'edge-ua',
+        ie: 'ie-ua',
+        ie10: 'ie10-ua',
+      })
+    } finally {
+      await close()
+    }
+  })
 })

@@ -861,6 +861,25 @@ class ServerConnector {
       throw new Error(reasonMsg)
     }
   }
+
+  async getUserAgents() {
+    const options = this._createHttpOptions(
+      {
+        url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/user-agents'),
+        headers: {
+          'X-Auth-Token': this._renderingInfo.getAccessToken(),
+        },
+      },
+      false,
+    )
+
+    const response = await sendRequest(this, 'getUserAgents', options)
+    if (response.status === HTTP_STATUS_CODES.OK) {
+      return response.data
+    } else {
+      throw new Error(`ServerConnector.getUserAgents - unexpected status (${response.statusText})`)
+    }
+  }
 }
 
 exports.ServerConnector = ServerConnector
