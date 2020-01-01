@@ -54,7 +54,6 @@ function configureWrappers({
   useDom,
   enablePatterns,
   ignoreDisplacements,
-  assumeEnvironment,
   batchNotify,
 }) {
   const batchInfo = new BatchInfo({
@@ -96,9 +95,6 @@ function configureWrappers({
     ignoreBaseline !== undefined && wrapper.setIgnoreBaseline(ignoreBaseline)
     serverUrl !== undefined && wrapper.setServerUrl(serverUrl)
     agentId !== undefined && wrapper.setBaseAgentId(agentId)
-
-    const env = assumeEnvironment(browser)
-    wrapper.setAssumedConfiguration(env)
   }
 }
 

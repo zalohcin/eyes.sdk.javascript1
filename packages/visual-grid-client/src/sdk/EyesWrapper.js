@@ -28,7 +28,6 @@ class EyesWrapper extends EyesBase {
 
   async ensureAborted() {
     if (!this.getRunningSession()) {
-      this._configuration.mergeConfig(this.getAssumedConfiguration())
       const [err] = await presult(this._ensureRunningSession())
       if (err) {
         this._logger.log(
@@ -78,14 +77,6 @@ class EyesWrapper extends EyesBase {
     return // TODO is this good?
   }
 
-  setAssumedConfiguration(configuration) {
-    this._assumedConfiguration = configuration
-  }
-
-  getAssumedConfiguration() {
-    return this._assumedConfiguration
-  }
-
   /** @override */
   getBaseAgentId() {
     return this.agentId || `visual-grid-client/${VERSION}`
@@ -129,6 +120,10 @@ class EyesWrapper extends EyesBase {
 
   getRenderStatus(renderId) {
     return this._serverConnector.renderStatusById(renderId)
+  }
+
+  getUserAgents() {
+    return this._serverConnector.getUserAgents()
   }
 
   checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation, source}) {

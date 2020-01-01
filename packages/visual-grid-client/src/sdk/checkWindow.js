@@ -31,6 +31,7 @@ function makeCheckWindow({
   matchLevel: _matchLevel,
   accessibilityLevel: _accessibilityLevel,
   isSingleWindow,
+  getUserAgents,
 }) {
   return function checkWindow({
     resourceUrls = [],
@@ -120,6 +121,12 @@ function makeCheckWindow({
       ),
     )
     async function checkWindowJob(prevJobPromise = presult(Promise.resolve()), index) {
+      logger.verbose(
+        `starting checkWindowJob. test=${testName} stepCount #${currStepCount} index=${index}`,
+      )
+
+      const wrapper = wrappers[index]
+
       if (testController.shouldStopTest(index)) {
         logger.log(`aborting checkWindow - not waiting for render to complete (so no renderId yet)`)
         return
@@ -138,6 +145,8 @@ function makeCheckWindow({
       // render error fails all tests
       if (renderErr) {
         logger.log('got render error aborting tests', renderErr)
+        const userAgents = await getUserAgents()
+        wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderErr)
         renderJobs && renderJobs[index]()
         return
@@ -164,6 +173,8 @@ function makeCheckWindow({
 
       if (renderStatusErr) {
         logger.log('got render status error aborting tests')
+        const userAgents = await getUserAgents()
+        wrapper.setInferredEnvironment(`useragent:${userAgents[browsers[index].name]}`)
         testController.setFatalError(renderStatusErr)
         renderJobs && renderJobs[index]()
         await openEyesPromises[index]
@@ -186,7 +197,6 @@ function makeCheckWindow({
 
       renderJobs && renderJobs[index]()
 
-      const wrapper = wrappers[index]
       wrapper.setInferredEnvironment(`useragent:${userAgent}`)
       if (deviceSize) {
         wrapper.setViewportSize(deviceSize)
