@@ -88,13 +88,13 @@ describe('ServerConnector', () => {
       await serverConnector.renderInfo()
       const userAgents = await serverConnector.getUserAgents()
       assert.deepStrictEqual(userAgents, {
-        'chrome-0': 'chrome-0-ua',
+        chrome: 'chrome-ua',
         'chrome-1': 'chrome-1-ua',
         'chrome-2': 'chrome-2-ua',
-        'firefox-0': 'firefox-0-ua',
+        firefox: 'firefox-ua',
         'firefox-1': 'firefox-1-ua',
         'firefox-2': 'firefox-2-ua',
-        'safari-0': 'safari-0-ua',
+        safari: 'safari-ua',
         'safari-2': 'safari-2-ua',
         'safari-1': 'safari-1-ua',
         edge: 'edge-ua',
