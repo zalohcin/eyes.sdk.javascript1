@@ -1,5 +1,19 @@
 const assert = require('assert')
 
+const supportedCommands = [
+  'abort',
+  'checkFrame',
+  'checkRegion',
+  'checkWindow',
+  'close',
+  'open',
+  'scrollDown',
+  'switchToFrame',
+  'getAllTestResults',
+  'type',
+  'visit',
+]
+
 function makeCoverageTests({
   abort,
   checkFrame,
@@ -322,7 +336,10 @@ function makeCoverageTests({
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await type('input', 'My Input')
-      await checkWindow({isFully: true, ignoreRegion: {left: 50, top: 50, width: 100, height: 100}})
+      await checkWindow({
+        isFully: true,
+        ignoreRegion: {left: 50, top: 50, width: 100, height: 100},
+      })
       await close(throwException)
     },
     TestDoubleCheckWindow: async () => {
@@ -355,5 +372,6 @@ function makeCoverageTests({
 }
 
 module.exports = {
+  supportedCommands,
   makeCoverageTests,
 }

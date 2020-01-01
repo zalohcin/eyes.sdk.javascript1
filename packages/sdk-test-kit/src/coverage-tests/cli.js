@@ -2,6 +2,7 @@
 const yargs = require('yargs')
 const path = require('path')
 const {makeRunTests, makeCoverageTests} = require('./index')
+const {supportedCommands} = require('./tests')
 const {sendReport} = require('./send-report')
 const {exec} = require('child_process')
 const {version} = require('../../package.json')
@@ -77,18 +78,28 @@ function doExitCode(errors) {
 function doHealthCheck(args) {
   console.log('Performing health check...\n')
   const sdkImplementation = require(path.join(path.resolve('.'), args.path))
-
-  const supportedTests = unique(sdkImplementation.supportedTests.map(test => test.name))
   const coverageTests = Object.keys(makeCoverageTests())
 
+  const supportedTests = unique(sdkImplementation.supportedTests.map(test => test.name))
   const unsupportedTests = findDifferencesBetween(coverageTests, supportedTests)
+
+  const implementedCommands = sdkImplementation.initialize()
+  const unimplementedCommands = findDifferencesBetween(supportedCommands, Object.keys(implementedCommands))
 
   if (unsupportedTests.length) {
     console.log('Unsupported tests found:')
     unsupportedTests.forEach(test => console.log(`- ${test}`))
-  } else {
-    console.log('Looks good to me.')
+    console.log('')
   }
+  
+  if (unimplementedCommands.length) {
+    console.log('Unimplemented commands found:')
+    unimplementedCommands.forEach(command => console.log(`- ${command}`))
+    console.log('')
+  }
+  
+  if (!unsupportedTests.length && !unimplementedCommands.length)
+    console.log('Looks good to me.')
 }
 
 function doKaboom() {
@@ -138,10 +149,10 @@ async function doSendReport(args, report) {
 
 function doDisplayResults(report, sendReportResponse) {
   if (Object.keys(report.errors).length) {
-    console.log(`-------------------- ERRORS --------------------`)
+    console.log(`\n-------------------- ERRORS --------------------`)
     console.log(report.errors)
   }
-  console.log(`-------------------- SUMMARY --------------------`)
+  console.log(`\n-------------------- SUMMARY --------------------`)
   console.log(`Ran ${report.stats.numberOfTests} tests across ${report.stats.numberOfExecutions} executions in ${report.stats.duration}ms`)
   console.log(`\nStats:`)
   console.log(`- Passed (across all execution modes): ${report.stats.numberOfTestsPassed}`)
