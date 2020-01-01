@@ -27,6 +27,7 @@ const tests = [
   'TestCheckRegionInAVeryBigFrame',
   'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame',
   'TestCheckRegionWithIgnoreRegion_Fluent',
+  'TestCheckScrollableModal',
   'TestCheckWindow',
   'TestCheckWindowAfterScroll',
   'TestCheckWindow_Body',
@@ -56,5 +57,6 @@ tests.forEach(name => {
 })
 addTest('Test Abort', {isVisualGrid: true})
 addTest('Test Abort', {isCssStitching: true})
+addTest('Test_VGTestsCount_1', {isVisualGrid: true, useStrictName: true})
 
 module.exports = supportedTests
