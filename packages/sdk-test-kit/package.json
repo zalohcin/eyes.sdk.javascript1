@@ -13,6 +13,7 @@
     "lib": "./src",
     "test": "./test"
   },
+  "types": "./src/coverage-tests/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
