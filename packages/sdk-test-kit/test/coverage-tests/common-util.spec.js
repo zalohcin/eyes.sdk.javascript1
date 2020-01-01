@@ -15,6 +15,11 @@ describe('common-util', () => {
     it('should deduplicate guest collections', () => {
       assert.deepStrictEqual(findDifferencesBetweenCollections([0, 1, 2, 'a'], [0, 1, 1, 1, 2]), ['a'])
     })
+    it('should handle undefined inputs', () => {
+      assert.deepStrictEqual(findDifferencesBetweenCollections([0, 1, 2, 'a'], undefined), [0, 1, 2, 'a'])
+      assert.deepStrictEqual(findDifferencesBetweenCollections(undefined, [0, 1, 2, 'a']), [])
+      assert.deepStrictEqual(findDifferencesBetweenCollections(undefined, undefined), [])
+    })
   })
   describe('filter', () => {
     const collection = [

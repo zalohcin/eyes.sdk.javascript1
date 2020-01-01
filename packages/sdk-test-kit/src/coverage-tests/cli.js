@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 const yargs = require('yargs')
 const path = require('path')
-const {makeRunTests, makeCoverageTests} = require('./index')
-const {supportedCommands} = require('./tests')
+const {makeRunTests} = require('./index')
 const {sendReport} = require('./send-report')
 const {exec} = require('child_process')
 const {version} = require('../../package.json')
 const chromedriver = require('chromedriver')
-const {filter, findDifferencesBetweenCollections} = require('./common-util')
+const {filter} = require('./common-util')
+const {findUnsupportedTests, findUnimplementedCommands} = require('./cli-util')
 
 yargs
   .usage(`Coverage Tests DSL (v${version})`)
@@ -52,7 +52,7 @@ async function run(args) {
     doExitCode(0)
   } else if (command === 'doctor' && args.path) {
     const sdkImplementation = require(path.join(path.resolve('.'), args.path))
-    doHealthCheck(args, sdkImplementation)
+    doHealthCheck(sdkImplementation)
   } else if (command === 'run' && args.path) {
     const sdkImplementation = require(path.join(path.resolve('.'), args.path))
     const report = await doRunTests(args, sdkImplementation)
@@ -77,16 +77,10 @@ function doExitCode(errors) {
   process.exit(exitCode)
 }
 
-function doHealthCheck(args, sdkImplementation) {
+function doHealthCheck(sdkImplementation) {
   console.log('Performing health check...\n')
-  const coverageTests = makeCoverageTests()
-
-  const supportedTests = sdkImplementation.supportedTests.map(test => test.name)
-  const unsupportedTests = findDifferencesBetweenCollections(coverageTests, supportedTests)
-
-  const implementedCommands = sdkImplementation.initialize()
-  const unimplementedCommands = findDifferencesBetweenCollections(supportedCommands, implementedCommands)
-
+  const unsupportedTests = findUnsupportedTests(sdkImplementation)
+  const unimplementedCommands = findUnimplementedCommands(sdkImplementation)
   if (unsupportedTests.length) {
     console.log('Unsupported tests found:')
     unsupportedTests.forEach(test => console.log(`- ${test}`))

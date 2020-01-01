@@ -14,7 +14,7 @@ function filter(filter, {from, inside}) {
     : inside
 }
 
-function findDifferencesBetweenCollections(hostCollection, guestCollection) {
+function findDifferencesBetweenCollections(hostCollection = [], guestCollection = []) {
   const _hostCollection = Array.isArray(hostCollection)
     ? hostCollection
     : Object.keys(hostCollection)
