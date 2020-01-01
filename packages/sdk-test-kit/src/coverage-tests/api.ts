@@ -17,6 +17,23 @@ interface FloatingRegion {
     maxRight: number,
 }
 
+interface ExecutionMode {
+    isVisualGrid?: boolean,
+    isCssStitching?: boolean,
+    isScrollStitching?: boolean,
+    useStrictName?: boolean,    
+}
+
+declare module Hooks {
+  export interface Setup {
+    (options: { branchName: string, baselineTestName: string, host: string, executionMode: ExecutionMode }): Promise<any>
+  }
+
+  export interface Cleanup {
+    (): Promise<any>
+  }
+}
+
 declare module EyesApi {
 	export interface Abort {
 			(): Promise<any> 

@@ -16,37 +16,41 @@ const sdkName = 'eyes-selenium'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
 const supportedTests = require('./supported-tests')
 
-  function initialize({baselineTestName, branchName, executionMode, host}) {
+  function initialize() {
     let eyes
     let driver
+    let runner
+    let baselineTestName
 
-    async function _setup() {
+    let _setup: Hooks.Setup = async function (options) {
+      baselineTestName = options.baselineTestName
       driver = await new Builder()
         .forBrowser('chrome')
         .setChromeOptions(new ChromeOptions().headless())
-        .usingServer(host)
+        .usingServer(options.host)
         .build()
-      eyes = executionMode.isVisualGrid ? new Eyes(new VisualGridRunner()) : new Eyes()
-      executionMode.isCssStitching ? eyes.setStitchMode(StitchMode.CSS) : undefined
-      executionMode.isScrollStitching ? eyes.setStitchMode(StitchMode.SCROLL) : undefined
-      eyes.setBranchName(branchName)
+      runner = options.executionMode.isVisualGrid ? (runner = new VisualGridRunner(10)) : undefined
+      eyes = options.executionMode.isVisualGrid ? new Eyes(runner) : new Eyes()
+      options.executionMode.isCssStitching ? eyes.setStitchMode(StitchMode.CSS) : undefined
+      options.executionMode.isScrollStitching ? eyes.setStitchMode(StitchMode.SCROLL) : undefined
+      eyes.setBranchName(options.branchName)
       eyes.setBatch(batch)
     }
 
-    async function _cleanup() {
+    let _cleanup: Hooks.Cleanup = async function () {
       await driver.close()
       await abort()
     }
 
-    let visit: EyesApi.Visit = async function visit(url: string) {
+    let visit: EyesApi.Visit = async function (url: string) {
       await driver.get(url)
     }
 
-    let open: EyesApi.Open = async function open({appName, viewportSize}) {
+    let open: EyesApi.Open = async function ({appName, viewportSize}) {
       driver = await eyes.open(driver, appName, baselineTestName, RectangleSize.parse(viewportSize))
     }
 
-    let checkFrame: EyesApi.CheckFrame = async function checkFrame(
+    let checkFrame: EyesApi.CheckFrame = async function (
       target,
       options,
     ) {
@@ -68,7 +72,7 @@ const supportedTests = require('./supported-tests')
       }
     }
 
-    let checkRegion: EyesApi.CheckRegion = async function checkRegion(
+    let checkRegion: EyesApi.CheckRegion = async function (
       target,
       options
     ) {
@@ -104,7 +108,7 @@ const supportedTests = require('./supported-tests')
       else return new Region(target)
     }
 
-    let checkWindow: EyesApi.CheckWindow = async function checkWindow(options) {
+    let checkWindow: EyesApi.CheckWindow = async function (options) {
       if (options.isClassicApi) {
         await eyes.checkWindow(options.tag, options.matchTimeout, options.isFully)
       } else {
@@ -130,28 +134,30 @@ const supportedTests = require('./supported-tests')
       }
     }
 
-    const close: EyesApi.Close = async function close(options) {
+    const close: EyesApi.Close = async function (options) {
       await eyes.close(options)
     }
 
-    const scrollDown: EyesApi.ScrollDown = async function scrollDown(pixels) {
+    const scrollDown: EyesApi.ScrollDown = async function (pixels) {
       await driver.executeScript(`window.scrollBy(0,${pixels})`)
     }
 
-    const switchToFrame: EyesApi.SwitchToFrame = async function switchToFrame(selector) {
+    const switchToFrame: EyesApi.SwitchToFrame = async function (selector) {
       const element = await driver.findElement(By.css(selector))
       await driver.switchTo().frame(element)
     }
 
-    const type: EyesApi.Type = async function type(selector, inputText) {
+    const type: EyesApi.Type = async function (selector, inputText) {
       await driver.findElement(By.css(selector)).sendKeys(inputText)
     }
 
-    const abort: EyesApi.Abort = async function abort() {
+    const abort: EyesApi.Abort = async function () {
       await eyes.abortIfNotClosed()
     }
 
     return {
+      _setup,
+      _cleanup,
       abort,
       visit,
       open,
@@ -162,8 +168,6 @@ const supportedTests = require('./supported-tests')
       scrollDown,
       switchToFrame,
       type,
-      _cleanup,
-      _setup,
     }
   }
 
