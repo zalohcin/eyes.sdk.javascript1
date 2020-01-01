@@ -15,20 +15,24 @@ const sdkName = 'eyes-selenium'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
 const supportedTests = require('./supported-tests')
 
-async function initialize({baselineTestName, branchName, executionMode, host}) {
+function initialize() {
   let eyes
   let driver
+  let runner
+  let baselineTestName
 
-  async function _setup() {
+  async function _setup(options) {
+    baselineTestName = options.baselineTestName
     driver = await new Builder()
       .forBrowser('chrome')
       .setChromeOptions(new ChromeOptions().headless())
-      .usingServer(host)
+      .usingServer(options.host)
       .build()
-    eyes = executionMode.isVisualGrid ? new Eyes(new VisualGridRunner()) : new Eyes()
-    executionMode.isCssStitching ? eyes.setStitchMode(StitchMode.CSS) : undefined
-    executionMode.isScrollStitching ? eyes.setStitchMode(StitchMode.SCROLL) : undefined
-    eyes.setBranchName(branchName)
+    runner = options.executionMode.isVisualGrid ? (runner = new VisualGridRunner(10)) : undefined
+    eyes = options.executionMode.isVisualGrid ? new Eyes(runner) : new Eyes()
+    options.executionMode.isCssStitching ? eyes.setStitchMode(StitchMode.CSS) : undefined
+    options.executionMode.isScrollStitching ? eyes.setStitchMode(StitchMode.SCROLL) : undefined
+    eyes.setBranchName(options.branchName)
     eyes.setBatch(batch)
   }
 
@@ -37,12 +41,8 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     await abort()
   }
 
-  async function visit(url) {
-    await driver.get(url)
-  }
-
-  async function open({appName, viewportSize}) {
-    driver = await eyes.open(driver, appName, baselineTestName, RectangleSize.parse(viewportSize))
+  async function abort() {
+    await eyes.abortIfNotClosed()
   }
 
   async function checkFrame(
@@ -97,12 +97,6 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     }
   }
 
-  const _makeRegionLocator = target => {
-    if (typeof target === 'string') return By.css(target)
-    else if (typeof target === 'number') return target
-    else return new Region(target)
-  }
-
   async function checkWindow({
     isClassicApi = false,
     isFully = false,
@@ -141,6 +135,26 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     await eyes.close(options)
   }
 
+  async function getAllTestResults() {
+    const resultsSummary = await runner.getAllTestResults()
+    return resultsSummary.getAllResults()
+  }
+
+  function _makeRegionLocator(target) {
+    if (typeof target === 'string') return By.css(target)
+    else if (typeof target === 'number') return target
+    else return new Region(target)
+  }
+
+  async function open(options) {
+    driver = await eyes.open(
+      driver,
+      options.appName,
+      baselineTestName,
+      RectangleSize.parse(options.viewportSize),
+    )
+  }
+
   async function scrollDown(pixels) {
     await driver.executeScript(`window.scrollBy(0,${pixels})`)
   }
@@ -154,11 +168,13 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     await driver.findElement(By.css(locator)).sendKeys(inputText)
   }
 
-  async function abort() {
-    await eyes.abortIfNotClosed()
+  async function visit(url) {
+    await driver.get(url)
   }
 
   return {
+    _setup,
+    _cleanup,
     abort,
     visit,
     open,
@@ -166,11 +182,10 @@ async function initialize({baselineTestName, branchName, executionMode, host}) {
     checkRegion,
     checkWindow,
     close,
+    getAllTestResults,
     scrollDown,
     switchToFrame,
     type,
-    _cleanup,
-    _setup,
   }
 }
 
