@@ -83,6 +83,7 @@ function convertExecutionModeToSuffix(executionMode) {
   }
 }
 
+// TODO: cleanup to use cli-util common/util?
 function makeReport({sdkName, testsRan, p, e, start, end}) {
   const numberOfTests = new Set(testsRan.map(test => test.name)).size
   const numberOfTestsFailed = Object.keys(e).length
