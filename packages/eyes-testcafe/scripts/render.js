@@ -6,7 +6,7 @@ const createTestCafe = require('testcafe')
  * Example usage:
  * (1) npm run render https://google.com
  * (2) npm run render play *.apple.testcafe.js
- * (2) npm run render play
+ * (2) npm run render play      // runs play.testcafe.js
  * (*) Add LIVE=1 for live run.
  */
 

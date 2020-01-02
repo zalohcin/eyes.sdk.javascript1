@@ -7,7 +7,7 @@ const eyes = new Eyes()
 const configuration = new Configuration({
   stitchMode: StitchMode.SCROLL,
   // stitchOverlap: 56,
-  viewportSize: {width: 1024, height: 768},
+  viewportSize: {width: 600, height: 500},
 })
 eyes.setConfiguration(configuration)
 
