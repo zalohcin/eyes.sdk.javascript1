@@ -1,5 +1,8 @@
 const assert = require('assert')
-const {findUnsupportedTests, findUnimplementedCommands} = require('../../src/coverage-tests/cli-util')
+const {
+  findUnsupportedTests,
+  findUnimplementedCommands,
+} = require('../../src/coverage-tests/cli-util')
 const {makeCoverageTests} = require('../../src/coverage-tests/index')
 const {supportedCommands} = require('../../src/coverage-tests/tests')
 
@@ -17,7 +20,10 @@ describe('cli-util', () => {
         initialize: () => {},
       }
       const totalNumberOfCommands = supportedCommands.length
-      assert.deepStrictEqual(findUnimplementedCommands(sdkImplementation).length, totalNumberOfCommands)
+      assert.deepStrictEqual(
+        findUnimplementedCommands(sdkImplementation).length,
+        totalNumberOfCommands,
+      )
     })
   })
 })

@@ -86,20 +86,20 @@ function doHealthCheck(sdkImplementation) {
     unsupportedTests.forEach(test => console.log(`- ${test}`))
     console.log('')
   }
-  
+
   if (unimplementedCommands.length) {
     console.log('Unimplemented commands found:')
     unimplementedCommands.forEach(command => console.log(`- ${command}`))
     console.log('')
   }
-  
-  if (!unsupportedTests.length && !unimplementedCommands.length)
-    console.log('Looks good to me.')
+
+  if (!unsupportedTests.length && !unimplementedCommands.length) console.log('Looks good to me.')
 }
 
 function doKaboom() {
   console.log('Cleaning up rogue processes...')
   exec(`ps ax | grep Chrome | grep headless | awk '{print $1}' | xargs kill -9`)
+  exec(`ps ax | grep chromedriver | awk '{print $1}' | xargs kill -9`)
   console.log('KABOOM!')
 }
 
@@ -147,7 +147,9 @@ function doDisplayResults(report, sendReportResponse) {
     console.log(report.errors)
   }
   console.log(`\n-------------------- SUMMARY --------------------`)
-  console.log(`Ran ${report.stats.numberOfTests} tests across ${report.stats.numberOfExecutions} executions in ${report.stats.duration}ms`)
+  console.log(
+    `Ran ${report.stats.numberOfTests} tests across ${report.stats.numberOfExecutions} executions in ${report.stats.duration}ms`,
+  )
   console.log(`\nStats:`)
   console.log(`- Passed (across all execution modes): ${report.stats.numberOfTestsPassed}`)
   console.log(`- Failed (in one or more execution modes): ${report.stats.numberOfTestsFailed}`)

@@ -107,7 +107,7 @@ function makeReport({sdkName, testsRan, p, e, start, end}) {
     errors: e,
     toSendReportSchema: makeSendReport.bind(undefined, {sdkName, testsRan, e}),
   }
-  return { report }
+  return {report}
 }
 
 function recordError(errors, error, testName, executionMode) {
