@@ -51,15 +51,14 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
           process.stdout.write('.')
         } catch (error) {
           process.stdout.write('F')
-          recordError(e, error, testName, executionMode)
+          recordError({errors: e, error, testName, executionMode})
         } finally {
           if (sdkImplementation._cleanup) await sdkImplementation._cleanup()
         }
       })
     })
-    process.on('unhandledRejection', (reason, _promise) => {
-      delete reason.remoteStacktrace
-      recordError(e, `Unhandled Rejections`, reason)
+    process.on('unhandledRejection', (error, _promise) => {
+      recordError({errors: e, error, testName: 'Unhandled Rejections', isUnhandledRejection: true})
     })
     const start = new Date()
     await Promise.all(p.map(throat(concurrency, testRun => testRun())))
@@ -110,17 +109,21 @@ function makeReport({sdkName, testsRan, e, start, end}) {
   return {report}
 }
 
-function recordError(errors, error, testName, executionMode) {
+function recordError({errors, error, testName, executionMode, isUnhandledRejection} = {}) {
   if (!errors[testName]) {
-    errors[testName] = {}
+    errors[testName] = isUnhandledRejection ? [] : {}
   }
   const formattedError = {
     name: error.name,
     message: error.message,
   }
-  executionMode
-    ? (errors[testName][getNameFromObject(executionMode)] = formattedError)
-    : (errors[testName] = formattedError)
+  if (isUnhandledRejection) {
+    errors[testName].push(formattedError)
+  } else {
+    executionMode
+      ? (errors[testName][getNameFromObject(executionMode)] = formattedError)
+      : (errors[testName] = formattedError)
+  }
 }
 
 module.exports = {
