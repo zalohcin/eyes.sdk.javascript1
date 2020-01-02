@@ -6,13 +6,13 @@ const {sendReport} = require('./send-report')
 const {exec} = require('child_process')
 const {version} = require('../../package.json')
 const chromedriver = require('chromedriver')
-const {filter} = require('./common-util')
 const {
   findUnsupportedTests,
   findUnimplementedCommands,
   filterTestsByName,
   filterTestsByMode,
 } = require('./cli-util')
+const os = require('os')
 
 yargs
   .usage(`Coverage Tests DSL (v${version})`)
@@ -102,10 +102,11 @@ function doHealthCheck(sdkImplementation) {
 }
 
 function doKaboom() {
-  console.log('Cleaning up rogue processes...')
+  if (/win[32|64]/.test(os.platform())) return
+  process.stdout.write('\nCleaning up rogue processes... ')
   exec(`ps ax | grep Chrome | grep headless | awk '{print $1}' | xargs kill -9`)
   exec(`ps ax | grep chromedriver | awk '{print $1}' | xargs kill -9`)
-  console.log('KABOOM!')
+  console.log('Done!')
 }
 
 async function doRunTests(args, sdkImplementation) {
@@ -119,9 +120,9 @@ async function doRunTests(args, sdkImplementation) {
   supportedTests = filterTestsByMode(args.filterMode, supportedTests)
 
   console.log(
-    `Running ${supportedTests.length} executions for ${
+    `${supportedTests.length} executions for ${
       [...new Set(supportedTests.map(t => t.name))].length
-    } tests.`,
+    } tests:`,
   )
   const {report} = await makeRunTests(
     sdkImplementation.name,
@@ -131,7 +132,10 @@ async function doRunTests(args, sdkImplementation) {
     concurrency: args.concurrency,
   })
 
+  console.log('\n\nRun complete.')
+
   if (needsChromeDriver(args, sdkImplementation)) stopChromeDriver()
+  doKaboom()
 
   return report
 }
