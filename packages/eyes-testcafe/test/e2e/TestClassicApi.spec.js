@@ -1,8 +1,8 @@
 'use strict'
 
 const {By} = require('selenium-webdriver')
-const {TestsDataProvider} = require('./setup/TestsDataProvider')
-const {TestSetup} = require('./setup/TestSetup')
+const {TestsDataProvider} = require('./util/TestsDataProvider')
+const {TestSetup} = require('./util/TestSetup')
 
 let /** @type {Eyes} */ eyes, /** @type {EyesWebDriver} */ driver
 const testedPageUrl = 'http://applitools.github.io/demo/TestPages/FramesTestPage/'

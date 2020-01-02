@@ -3,7 +3,7 @@
 const {describe, it} = require('mocha')
 const {expect} = require('chai')
 const path = require('path')
-const startTestCafe = require('../setup/start-testcafe-in-mocha')
+const startTestCafe = require('../util/start-testcafe-in-mocha')
 
 describe('Eyes TestCafe e2e Safari', () => {
   const browser = [

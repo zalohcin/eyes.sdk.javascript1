@@ -27,7 +27,7 @@ module.exports = () => {
             };
 
             var descriptors = !fails(function () {
-              return Object.defineProperty({}, 'a', {
+              return window.Object.defineProperty({}, 'a', {
                 get: function () {
                   return 7;
                 }
@@ -35,7 +35,7 @@ module.exports = () => {
             });
 
             var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
-            var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor; // Nashorn ~ JDK8 bug
+            var getOwnPropertyDescriptor = window.Object.getOwnPropertyDescriptor; // Nashorn ~ JDK8 bug
 
             var NASHORN_BUG = getOwnPropertyDescriptor && !nativePropertyIsEnumerable.call({
               1: 2
@@ -70,9 +70,9 @@ module.exports = () => {
             var indexedObject = fails(function () {
               // throws an error in rhino, see https://github.com/mozilla/rhino/issues/346
               // eslint-disable-next-line no-prototype-builtins
-              return !Object('z').propertyIsEnumerable(0);
+              return !window.Object('z').propertyIsEnumerable(0);
             }) ? function (it) {
-              return classofRaw(it) == 'String' ? split.call(it, '') : Object(it);
+              return classofRaw(it) == 'String' ? split.call(it, '') : window.Object(it);
             } : Object;
 
             // `RequireObjectCoercible` abstract operation
@@ -118,14 +118,14 @@ module.exports = () => {
             };
 
             var ie8DomDefine = !descriptors && !fails(function () {
-              return Object.defineProperty(documentCreateElement('div'), 'a', {
+              return window.Object.defineProperty(documentCreateElement('div'), 'a', {
                 get: function () {
                   return 7;
                 }
               }).a != 7;
             });
 
-            var nativeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor; // `Object.getOwnPropertyDescriptor` method
+            var nativeGetOwnPropertyDescriptor = window.Object.getOwnPropertyDescriptor; // `Object.getOwnPropertyDescriptor` method
             // https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptor
 
             var f$1 = descriptors ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
@@ -150,7 +150,7 @@ module.exports = () => {
               return it;
             };
 
-            var nativeDefineProperty = Object.defineProperty; // `Object.defineProperty` method
+            var nativeDefineProperty = window.Object.defineProperty; // `Object.defineProperty` method
             // https://tc39.github.io/ecma262/#sec-object.defineproperty
 
             var f$2 = descriptors ? nativeDefineProperty : function defineProperty(O, P, Attributes) {
@@ -410,7 +410,7 @@ module.exports = () => {
             var hiddenKeys$1 = enumBugKeys.concat('length', 'prototype'); // `Object.getOwnPropertyNames` method
             // https://tc39.github.io/ecma262/#sec-object.getownpropertynames
 
-            var f$3 = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
+            var f$3 = window.Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
               return objectKeysInternal(O, hiddenKeys$1);
             };
 
@@ -418,7 +418,7 @@ module.exports = () => {
               f: f$3
             };
 
-            var f$4 = Object.getOwnPropertySymbols;
+            var f$4 = window.Object.getOwnPropertySymbols;
             var objectGetOwnPropertySymbols = {
               f: f$4
             };
@@ -511,37 +511,37 @@ module.exports = () => {
               }
             };
 
-            var nativeSymbol = !!Object.getOwnPropertySymbols && !fails(function () {
+            var nativeSymbol = !!window.Object.getOwnPropertySymbols && !fails(function () {
               // Chrome 38 window.Symbol has incorrect toString conversion
               // eslint-disable-next-line no-undef
-              return !String(Symbol());
+              return !String(window.Symbol());
             });
 
             var useSymbolAsUid = nativeSymbol // eslint-disable-next-line no-undef
-            && !Symbol.sham // eslint-disable-next-line no-undef
-            && typeof Symbol.iterator == 'symbol';
+            && !window.Symbol.sham // eslint-disable-next-line no-undef
+            && typeof window.Symbol.iterator == 'symbol';
 
             // https://tc39.github.io/ecma262/#sec-isarray
 
-            var isArray = Array.isArray || function isArray(arg) {
+            var isArray = window.Array.isArray || function isArray(arg) {
               return classofRaw(arg) == 'Array';
             };
 
             // https://tc39.github.io/ecma262/#sec-toobject
 
             var toObject = function (argument) {
-              return Object(requireObjectCoercible(argument));
+              return window.Object(requireObjectCoercible(argument));
             };
 
             // https://tc39.github.io/ecma262/#sec-object.keys
 
-            var objectKeys = Object.keys || function keys(O) {
+            var objectKeys = window.Object.keys || function keys(O) {
               return objectKeysInternal(O, enumBugKeys);
             };
 
             // https://tc39.github.io/ecma262/#sec-object.defineproperties
 
-            var objectDefineProperties = descriptors ? Object.defineProperties : function defineProperties(O, Properties) {
+            var objectDefineProperties = descriptors ? window.Object.defineProperties : function defineProperties(O, Properties) {
               anObject(O);
               var keys = objectKeys(Properties);
               var length = keys.length;
@@ -622,13 +622,13 @@ module.exports = () => {
             hiddenKeys[IE_PROTO] = true; // `Object.create` method
             // https://tc39.github.io/ecma262/#sec-object.create
 
-            var objectCreate = Object.create || function create(O, Properties) {
+            var objectCreate = window.Object.create || function create(O, Properties) {
               var result;
 
               if (O !== null) {
                 EmptyConstructor[PROTOTYPE] = anObject(O);
                 result = new EmptyConstructor();
-                EmptyConstructor[PROTOTYPE] = null; // add "__proto__" for Object.getPrototypeOf polyfill
+                EmptyConstructor[PROTOTYPE] = null; // add "__proto__" for window.Object.getPrototypeOf polyfill
 
                 result[IE_PROTO] = O;
               } else result = NullProtoObject();
@@ -638,7 +638,7 @@ module.exports = () => {
 
             var nativeGetOwnPropertyNames = objectGetOwnPropertyNames.f;
             var toString$1 = {}.toString;
-            var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames ? Object.getOwnPropertyNames(window) : [];
+            var windowNames = typeof window == 'object' && window && window.Object.getOwnPropertyNames ? window.Object.getOwnPropertyNames(window) : [];
 
             var getWindowNames = function (it) {
               try {
@@ -646,7 +646,7 @@ module.exports = () => {
               } catch (error) {
                 return windowNames.slice();
               }
-            }; // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
+            }; // fallback for IE11 buggy window.Object.getOwnPropertyNames with iframe and window
 
 
             var f$5 = function getOwnPropertyNames(it) {
@@ -834,7 +834,7 @@ module.exports = () => {
             var TO_PRIMITIVE = wellKnownSymbol('toPrimitive');
             var setInternalState = internalState.set;
             var getInternalState = internalState.getterFor(SYMBOL);
-            var ObjectPrototype = Object[PROTOTYPE$1];
+            var ObjectPrototype = window.Object[PROTOTYPE$1];
             var $Symbol = global_1.Symbol;
             var $stringify = getBuiltIn('JSON', 'stringify');
             var nativeGetOwnPropertyDescriptor$1 = objectGetOwnPropertyDescriptor.f;
@@ -882,7 +882,7 @@ module.exports = () => {
             var isSymbol = useSymbolAsUid ? function (it) {
               return typeof it == 'symbol';
             } : function (it) {
-              return Object(it) instanceof $Symbol;
+              return window.Object(it) instanceof $Symbol;
             };
 
             var $defineProperty = function defineProperty(O, P, Attributes) {
@@ -1110,7 +1110,7 @@ module.exports = () => {
                 || $stringify({
                   a: symbol
                 }) != '{}' // V8 throws on boxed symbols
-                || $stringify(Object(symbol)) != '{}';
+                || $stringify(window.Object(symbol)) != '{}';
               });
               _export({
                 target: 'JSON',
@@ -1162,7 +1162,7 @@ module.exports = () => {
 
               var SymbolWrapper = function Symbol() {
                 var description = arguments.length < 1 || arguments[0] === undefined ? undefined : String(arguments[0]);
-                var result = this instanceof SymbolWrapper ? new NativeSymbol(description) // in Edge 13, String(Symbol(undefined)) === 'Symbol(undefined)'
+                var result = this instanceof SymbolWrapper ? new NativeSymbol(description) // in Edge 13, String(window.Symbol(undefined)) === 'Symbol(undefined)'
                 : description === undefined ? NativeSymbol() : NativeSymbol(description);
                 if (description === '') EmptyStringDescriptionStore[result] = true;
                 return result;
@@ -1238,8 +1238,8 @@ module.exports = () => {
 
             defineWellKnownSymbol('unscopables');
 
-            var nativeAssign = Object.assign;
-            var defineProperty$3 = Object.defineProperty; // `Object.assign` method
+            var nativeAssign = window.Object.assign;
+            var defineProperty$3 = window.Object.defineProperty; // `Object.assign` method
             // https://tc39.github.io/ecma262/#sec-object.assign
 
             var objectAssign = !nativeAssign || fails(function () {
@@ -1261,7 +1261,7 @@ module.exports = () => {
               var A = {};
               var B = {}; // eslint-disable-next-line no-undef
 
-              var symbol = Symbol();
+              var symbol = window.Symbol();
               var alphabet = 'abcdefghijklmnopqrst';
               A[symbol] = 7;
               alphabet.split('').forEach(function (chr) {
@@ -1297,7 +1297,7 @@ module.exports = () => {
             _export({
               target: 'Object',
               stat: true,
-              forced: Object.assign !== objectAssign
+              forced: window.Object.assign !== objectAssign
             }, {
               assign: objectAssign
             });
@@ -1379,7 +1379,7 @@ module.exports = () => {
             });
 
             var freezing = !fails(function () {
-              return Object.isExtensible(Object.preventExtensions({}));
+              return window.Object.isExtensible(window.Object.preventExtensions({}));
             });
 
             var internalMetadata = createCommonjsModule(function (module) {
@@ -1387,7 +1387,7 @@ module.exports = () => {
               var METADATA = uid('meta');
               var id = 0;
 
-              var isExtensible = Object.isExtensible || function () {
+              var isExtensible = window.Object.isExtensible || function () {
                 return true;
               };
 
@@ -1451,7 +1451,7 @@ module.exports = () => {
             var internalMetadata_4 = internalMetadata.onFreeze;
 
             var onFreeze = internalMetadata.onFreeze;
-            var nativeFreeze = Object.freeze;
+            var nativeFreeze = window.Object.freeze;
             var FAILS_ON_PRIMITIVES = fails(function () {
               nativeFreeze(1);
             }); // `Object.freeze` method
@@ -1471,7 +1471,7 @@ module.exports = () => {
             var iterators = {};
 
             var ITERATOR = wellKnownSymbol('iterator');
-            var ArrayPrototype = Array.prototype; // check on default window.Array iterator
+            var ArrayPrototype = window.Array.prototype; // check on default window.Array iterator
 
             var isArrayIteratorMethod = function (it) {
               return it !== undefined && (iterators.Array === it || ArrayPrototype[ITERATOR] === it);
@@ -1500,7 +1500,7 @@ module.exports = () => {
             var classof = toStringTagSupport ? classofRaw : function (it) {
               var O, tag, result;
               return it === undefined ? 'Undefined' : it === null ? 'Null' // @@toStringTag case
-              : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG$2)) == 'string' ? tag // builtinTag case
+              : typeof (tag = tryGet(O = window.Object(it), TO_STRING_TAG$2)) == 'string' ? tag // builtinTag case
               : CORRECT_ARGUMENTS ? classofRaw(O) // ES3 arguments fallback
               : (result = classofRaw(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : result;
             };
@@ -1628,7 +1628,7 @@ module.exports = () => {
 
             var nativeGetOwnPropertyNames$2 = objectGetOwnPropertyNamesExternal.f;
             var FAILS_ON_PRIMITIVES$2 = fails(function () {
-              return !Object.getOwnPropertyNames(1);
+              return !window.Object.getOwnPropertyNames(1);
             }); // `Object.getOwnPropertyNames` method
             // https://tc39.github.io/ecma262/#sec-object.getownpropertynames
 
@@ -1646,14 +1646,14 @@ module.exports = () => {
               }
 
               F.prototype.constructor = null;
-              return Object.getPrototypeOf(new F()) !== F.prototype;
+              return window.Object.getPrototypeOf(new F()) !== F.prototype;
             });
 
             var IE_PROTO$1 = sharedKey('IE_PROTO');
-            var ObjectPrototype$1 = Object.prototype; // `Object.getPrototypeOf` method
+            var ObjectPrototype$1 = window.Object.prototype; // `Object.getPrototypeOf` method
             // https://tc39.github.io/ecma262/#sec-object.getprototypeof
 
-            var objectGetPrototypeOf = correctPrototypeGetter ? Object.getPrototypeOf : function (O) {
+            var objectGetPrototypeOf = correctPrototypeGetter ? window.Object.getPrototypeOf : function (O) {
               O = toObject(O);
               if (has(O, IE_PROTO$1)) return O[IE_PROTO$1];
 
@@ -1682,7 +1682,7 @@ module.exports = () => {
 
             // `SameValue` abstract operation
             // https://tc39.github.io/ecma262/#sec-samevalue
-            var sameValue = Object.is || function is(x, y) {
+            var sameValue = window.Object.is || function is(x, y) {
               // eslint-disable-next-line no-self-compare
               return x === y ? x !== 0 || 1 / x === 1 / y : x != x && y != y;
             };
@@ -1696,7 +1696,7 @@ module.exports = () => {
               is: sameValue
             });
 
-            var nativeIsExtensible = Object.isExtensible;
+            var nativeIsExtensible = window.Object.isExtensible;
             var FAILS_ON_PRIMITIVES$4 = fails(function () {
               nativeIsExtensible(1);
             }); // `Object.isExtensible` method
@@ -1712,7 +1712,7 @@ module.exports = () => {
               }
             });
 
-            var nativeIsFrozen = Object.isFrozen;
+            var nativeIsFrozen = window.Object.isFrozen;
             var FAILS_ON_PRIMITIVES$5 = fails(function () {
               nativeIsFrozen(1);
             }); // `Object.isFrozen` method
@@ -1728,7 +1728,7 @@ module.exports = () => {
               }
             });
 
-            var nativeIsSealed = Object.isSealed;
+            var nativeIsSealed = window.Object.isSealed;
             var FAILS_ON_PRIMITIVES$6 = fails(function () {
               nativeIsSealed(1);
             }); // `Object.isSealed` method
@@ -1760,7 +1760,7 @@ module.exports = () => {
             });
 
             var onFreeze$1 = internalMetadata.onFreeze;
-            var nativePreventExtensions = Object.preventExtensions;
+            var nativePreventExtensions = window.Object.preventExtensions;
             var FAILS_ON_PRIMITIVES$8 = fails(function () {
               nativePreventExtensions(1);
             }); // `Object.preventExtensions` method
@@ -1778,7 +1778,7 @@ module.exports = () => {
             });
 
             var onFreeze$2 = internalMetadata.onFreeze;
-            var nativeSeal = Object.seal;
+            var nativeSeal = window.Object.seal;
             var FAILS_ON_PRIMITIVES$9 = fails(function () {
               nativeSeal(1);
             }); // `Object.seal` method
@@ -1808,13 +1808,13 @@ module.exports = () => {
 
             /* eslint-disable no-proto */
 
-            var objectSetPrototypeOf = Object.setPrototypeOf || ('__proto__' in {} ? function () {
+            var objectSetPrototypeOf = window.Object.setPrototypeOf || ('__proto__' in {} ? function () {
               var CORRECT_SETTER = false;
               var test = {};
               var setter;
 
               try {
-                setter = Object.getOwnPropertyDescriptor(Object.prototype, '__proto__').set;
+                setter = window.Object.getOwnPropertyDescriptor(window.Object.prototype, '__proto__').set;
                 setter.call(test, []);
                 CORRECT_SETTER = test instanceof Array;
               } catch (error) {
@@ -1860,7 +1860,7 @@ module.exports = () => {
             // https://tc39.github.io/ecma262/#sec-object.prototype.tostring
 
             if (!toStringTagSupport) {
-              redefine(Object.prototype, 'toString', objectToString, {
+              redefine(window.Object.prototype, 'toString', objectToString, {
                 unsafe: true
               });
             }
@@ -2101,7 +2101,7 @@ module.exports = () => {
               }; // eslint-disable-next-line no-throw-literal
 
 
-              Array.from(iteratorWithReturn, function () {
+              window.Array.from(iteratorWithReturn, function () {
                 throw 2;
               });
             } catch (error) {
@@ -2134,7 +2134,7 @@ module.exports = () => {
             };
 
             var INCORRECT_ITERATION = !checkCorrectnessOfIteration(function (iterable) {
-              Array.from(iterable);
+              window.Array.from(iterable);
             }); // `Array.from` method
             // https://tc39.github.io/ecma262/#sec-array.from
 
@@ -2160,10 +2160,10 @@ module.exports = () => {
                 /* empty */
               }
 
-              return !(Array.of.call(F) instanceof F);
+              return !(window.Array.of.call(F) instanceof F);
             }); // `Array.of` method
             // https://tc39.github.io/ecma262/#sec-array.of
-            // WebKit Array.of isn't generic
+            // WebKit window.Array.of isn't generic
 
             _export({
               target: 'Array',
@@ -2311,7 +2311,7 @@ module.exports = () => {
             };
 
             var UNSCOPABLES = wellKnownSymbol('unscopables');
-            var ArrayPrototype$1 = Array.prototype; // Array.prototype[@@unscopables]
+            var ArrayPrototype$1 = window.Array.prototype; // window.Array.prototype[@@unscopables]
             // https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
 
             if (ArrayPrototype$1[UNSCOPABLES] == undefined) {
@@ -2319,7 +2319,7 @@ module.exports = () => {
                 configurable: true,
                 value: objectCreate(null)
               });
-            } // add a key to Array.prototype[@@unscopables]
+            } // add a key to window.Array.prototype[@@unscopables]
 
 
             var addToUnscopables = function (key) {
@@ -2421,7 +2421,7 @@ module.exports = () => {
             var FIND = 'find';
             var SKIPS_HOLES = true; // Shouldn't skip holes
 
-            if (FIND in []) Array(1)[FIND](function () {
+            if (FIND in []) window.Array(1)[FIND](function () {
               SKIPS_HOLES = false;
             }); // `Array.prototype.find` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.find
@@ -2444,7 +2444,7 @@ module.exports = () => {
             var FIND_INDEX = 'findIndex';
             var SKIPS_HOLES$1 = true; // Shouldn't skip holes
 
-            if (FIND_INDEX in []) Array(1)[FIND_INDEX](function () {
+            if (FIND_INDEX in []) window.Array(1)[FIND_INDEX](function () {
               SKIPS_HOLES$1 = false;
             }); // `Array.prototype.findIndex` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.findindex
@@ -2944,7 +2944,7 @@ module.exports = () => {
 
               if (!('next' in arrayIterator)) BUGGY_SAFARI_ITERATORS = true;else {
                 PrototypeOfArrayIteratorPrototype = objectGetPrototypeOf(objectGetPrototypeOf(arrayIterator));
-                if (PrototypeOfArrayIteratorPrototype !== Object.prototype) IteratorPrototype = PrototypeOfArrayIteratorPrototype;
+                if (PrototypeOfArrayIteratorPrototype !== window.Object.prototype) IteratorPrototype = PrototypeOfArrayIteratorPrototype;
               }
             }
 
@@ -3026,7 +3026,7 @@ module.exports = () => {
               if (anyNativeIterator) {
                 CurrentIteratorPrototype = objectGetPrototypeOf(anyNativeIterator.call(new Iterable()));
 
-                if (IteratorPrototype$2 !== Object.prototype && CurrentIteratorPrototype.next) {
+                if (IteratorPrototype$2 !== window.Object.prototype && CurrentIteratorPrototype.next) {
                   if ( objectGetPrototypeOf(CurrentIteratorPrototype) !== IteratorPrototype$2) {
                     if (objectSetPrototypeOf) {
                       objectSetPrototypeOf(CurrentIteratorPrototype, IteratorPrototype$2);
@@ -6300,7 +6300,7 @@ module.exports = () => {
 
                 redefineAll(C.prototype, {
                   // 23.1.3.1 Map.prototype.clear()
-                  // 23.2.3.2 Set.prototype.clear()
+                  // 23.2.3.2 window.Set.prototype.clear()
                   clear: function clear() {
                     var that = this;
                     var state = getInternalState(that);
@@ -6318,7 +6318,7 @@ module.exports = () => {
                     if (descriptors) state.size = 0;else that.size = 0;
                   },
                   // 23.1.3.3 Map.prototype.delete(key)
-                  // 23.2.3.4 Set.prototype.delete(value)
+                  // 23.2.3.4 window.Set.prototype.delete(value)
                   'delete': function (key) {
                     var that = this;
                     var state = getInternalState(that);
@@ -6338,7 +6338,7 @@ module.exports = () => {
 
                     return !!entry;
                   },
-                  // 23.2.3.6 Set.prototype.forEach(callbackfn, thisArg = undefined)
+                  // 23.2.3.6 window.Set.prototype.forEach(callbackfn, thisArg = undefined)
                   // 23.1.3.5 Map.prototype.forEach(callbackfn, thisArg = undefined)
                   forEach: function forEach(callbackfn
                   /* , that = undefined */
@@ -6354,7 +6354,7 @@ module.exports = () => {
                     }
                   },
                   // 23.1.3.7 Map.prototype.has(key)
-                  // 23.2.3.7 Set.prototype.has(value)
+                  // 23.2.3.7 window.Set.prototype.has(value)
                   has: function has(key) {
                     return !!getEntry(this, key);
                   }
@@ -6370,7 +6370,7 @@ module.exports = () => {
                     return define(this, key === 0 ? 0 : key, value);
                   }
                 } : {
-                  // 23.2.3.1 Set.prototype.add(value)
+                  // 23.2.3.1 window.Set.prototype.add(value)
                   add: function add(value) {
                     return define(this, value = value === 0 ? 0 : value, value);
                   }
@@ -6560,7 +6560,7 @@ module.exports = () => {
 
               var enforceIternalState = internalState.enforce;
               var IS_IE11 = !global_1.ActiveXObject && 'ActiveXObject' in global_1;
-              var isExtensible = Object.isExtensible;
+              var isExtensible = window.Object.isExtensible;
               var InternalWeakMap;
 
               var wrapper = function (init) {
@@ -6642,7 +6642,7 @@ module.exports = () => {
             var Uint8ClampedArrayPrototype = Uint8ClampedArray && Uint8ClampedArray.prototype;
             var TypedArray = Int8Array$1 && objectGetPrototypeOf(Int8Array$1);
             var TypedArrayPrototype = Int8ArrayPrototype && objectGetPrototypeOf(Int8ArrayPrototype);
-            var ObjectPrototype$2 = Object.prototype;
+            var ObjectPrototype$2 = window.Object.prototype;
             var isPrototypeOf = ObjectPrototype$2.isPrototypeOf;
             var TO_STRING_TAG$3 = wellKnownSymbol('toStringTag');
             var TYPED_ARRAY_TAG = uid('TYPED_ARRAY_TAG');
@@ -6740,7 +6740,7 @@ module.exports = () => {
 
             for (NAME$1 in TypedArrayConstructorsList) {
               if (!global_1[NAME$1]) NATIVE_ARRAY_BUFFER_VIEWS = false;
-            } // WebKit bug - typed arrays constructors prototype is Object.prototype
+            } // WebKit bug - typed arrays constructors prototype is window.Object.prototype
 
 
             if (!NATIVE_ARRAY_BUFFER_VIEWS || typeof TypedArray != 'function' || TypedArray === Function.prototype) {
@@ -6818,7 +6818,7 @@ module.exports = () => {
             var LN2$2 = Math.LN2;
 
             var pack = function (number, mantissaLength, bytes) {
-              var buffer = new Array(bytes);
+              var buffer = new window.Array(bytes);
               var exponentLength = bytes * 8 - mantissaLength - 1;
               var eMax = (1 << exponentLength) - 1;
               var eBias = eMax >> 1;
@@ -6986,7 +6986,7 @@ module.exports = () => {
                 anInstance(this, $ArrayBuffer, ARRAY_BUFFER);
                 var byteLength = toIndex(length);
                 setInternalState$8(this, {
-                  bytes: arrayFill.call(new Array(byteLength), 0),
+                  bytes: arrayFill.call(new window.Array(byteLength), 0),
                   byteLength: byteLength
                 });
                 if (!descriptors) this.byteLength = byteLength;
@@ -7999,7 +7999,7 @@ module.exports = () => {
 
 
                 var proto = newTarget.prototype;
-                var instance = objectCreate(isObject(proto) ? proto : Object.prototype);
+                var instance = objectCreate(isObject(proto) ? proto : window.Object.prototype);
                 var result = Function.apply.call(Target, instance, args);
                 return isObject(result) ? result : instance;
               }
@@ -8102,7 +8102,7 @@ module.exports = () => {
               }
             });
 
-            var objectIsExtensible = Object.isExtensible; // `Reflect.isExtensible` method
+            var objectIsExtensible = window.Object.isExtensible; // `Reflect.isExtensible` method
             // https://tc39.github.io/ecma262/#sec-reflect.isextensible
 
             _export({
@@ -8580,7 +8580,7 @@ module.exports = () => {
             var getInternalParamsState = internalState.getterFor(URL_SEARCH_PARAMS);
             var getInternalIteratorState = internalState.getterFor(URL_SEARCH_PARAMS_ITERATOR);
             var plus = /\+/g;
-            var sequences = Array(4);
+            var sequences = window.Array(4);
 
             var percentSequence = function (bytes) {
               return sequences[bytes - 1] || (sequences[bytes - 1] = RegExp('((?:%[\\da-f]{2}){' + bytes + '})', 'gi'));
@@ -10051,7 +10051,7 @@ module.exports = () => {
                */
               !function (global) {
 
-                var Op = Object.prototype;
+                var Op = window.Object.prototype;
                 var hasOwn = Op.hasOwnProperty;
                 var undefined$1; // More compressible than void 0.
 
@@ -10080,7 +10080,7 @@ module.exports = () => {
                 function wrap(innerFn, outerFn, self, tryLocsList) {
                   // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
                   var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-                  var generator = Object.create(protoGenerator.prototype);
+                  var generator = window.Object.create(protoGenerator.prototype);
                   var context = new Context(tryLocsList || []); // The ._invoke method unifies the implementations of the .next,
                   // .throw, and .return methods.
 
@@ -10138,7 +10138,7 @@ module.exports = () => {
                   return this;
                 };
 
-                var getProto = Object.getPrototypeOf;
+                var getProto = window.Object.getPrototypeOf;
                 var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
 
                 if (NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
@@ -10147,7 +10147,7 @@ module.exports = () => {
                   IteratorPrototype = NativeIteratorPrototype;
                 }
 
-                var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
+                var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = window.Object.create(IteratorPrototype);
                 GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
                 GeneratorFunctionPrototype.constructor = GeneratorFunction;
                 GeneratorFunctionPrototype[toStringTagSymbol] = GeneratorFunction.displayName = "GeneratorFunction"; // Helper for defining the .next, .throw, and .return methods of the
@@ -10169,8 +10169,8 @@ module.exports = () => {
                 };
 
                 runtime.mark = function (genFun) {
-                  if (Object.setPrototypeOf) {
-                    Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+                  if (window.Object.setPrototypeOf) {
+                    window.Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
                   } else {
                     genFun.__proto__ = GeneratorFunctionPrototype;
 
@@ -10179,7 +10179,7 @@ module.exports = () => {
                     }
                   }
 
-                  genFun.prototype = Object.create(Gp);
+                  genFun.prototype = window.Object.create(Gp);
                   return genFun;
                 }; // Within the body of any async function, `await x` is transformed to
                 // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
@@ -10762,7 +10762,7 @@ module.exports = () => {
                */
               var checkIfIteratorIsSupported = function () {
                 try {
-                  return !!Symbol.iterator;
+                  return !!window.Symbol.iterator;
                 } catch (error) {
                   return false;
                 }
@@ -10805,7 +10805,7 @@ module.exports = () => {
 
               var polyfillURLSearchParams = function () {
                 var URLSearchParams = function (searchString) {
-                  Object.defineProperty(this, '_entries', {
+                  window.Object.defineProperty(this, '_entries', {
                     writable: true,
                     value: {}
                   });
@@ -10822,11 +10822,11 @@ module.exports = () => {
                       _this.append(name, value);
                     });
                   } else if (searchString !== null && typeofSearchString === 'object') {
-                    if (Object.prototype.toString.call(searchString) === '[object Array]') {
+                    if (window.Object.prototype.toString.call(searchString) === '[object Array]') {
                       for (var i = 0; i < searchString.length; i++) {
                         var entry = searchString[i];
 
-                        if (Object.prototype.toString.call(entry) === '[object Array]' || entry.length !== 2) {
+                        if (window.Object.prototype.toString.call(entry) === '[object Array]' || entry.length !== 2) {
                           this.append(entry[0], entry[1]);
                         } else {
                           throw new TypeError('Expected [string, any] as entry at index ' + i + ' of URLSearchParams\'s input');
@@ -10976,7 +10976,7 @@ module.exports = () => {
               }
 
               if (typeof proto._fromString !== 'function') {
-                Object.defineProperty(proto, '_fromString', {
+                window.Object.defineProperty(proto, '_fromString', {
                   enumerable: false,
                   configurable: false,
                   writable: false,
@@ -11058,7 +11058,7 @@ module.exports = () => {
                     throw new TypeError('Invalid URL');
                   }
 
-                  Object.defineProperty(this, '_anchorElement', {
+                  window.Object.defineProperty(this, '_anchorElement', {
                     value: anchorElement
                   }); // create a linked searchParams which reflect its changes on URL
 
@@ -11081,12 +11081,12 @@ module.exports = () => {
                       }
                     };
                   });
-                  Object.defineProperty(this, 'searchParams', {
+                  window.Object.defineProperty(this, 'searchParams', {
                     value: searchParams,
                     enumerable: true
                   });
                   var search = void 0;
-                  Object.defineProperty(this, '_updateSearchParams', {
+                  window.Object.defineProperty(this, '_updateSearchParams', {
                     enumerable: false,
                     configurable: false,
                     writable: false,
@@ -11109,7 +11109,7 @@ module.exports = () => {
                 var proto = URL.prototype;
 
                 var linkURLWithAnchorAttribute = function (attributeName) {
-                  Object.defineProperty(proto, attributeName, {
+                  window.Object.defineProperty(proto, attributeName, {
                     get: function () {
                       return this._anchorElement[attributeName];
                     },
@@ -11123,7 +11123,7 @@ module.exports = () => {
                 ['hash', 'host', 'hostname', 'port', 'protocol'].forEach(function (attributeName) {
                   linkURLWithAnchorAttribute(attributeName);
                 });
-                Object.defineProperty(proto, 'search', {
+                window.Object.defineProperty(proto, 'search', {
                   get: function () {
                     return this._anchorElement['search'];
                   },
@@ -11134,7 +11134,7 @@ module.exports = () => {
                   },
                   enumerable: true
                 });
-                Object.defineProperties(proto, {
+                window.Object.defineProperties(proto, {
                   'toString': {
                     get: function () {
                       var _this = this;
@@ -11219,7 +11219,7 @@ module.exports = () => {
                 };
 
                 try {
-                  Object.defineProperty(global.location, 'origin', {
+                  window.Object.defineProperty(global.location, 'origin', {
                     get: getOrigin,
                     enumerable: true
                   });
@@ -11254,7 +11254,7 @@ module.exports = () => {
               var viewClasses = ['[object Int8Array]', '[object Uint8Array]', '[object Uint8ClampedArray]', '[object Int16Array]', '[object Uint16Array]', '[object Int32Array]', '[object Uint32Array]', '[object Float32Array]', '[object Float64Array]'];
 
               var isArrayBufferView = ArrayBuffer.isView || function (obj) {
-                return obj && viewClasses.indexOf(Object.prototype.toString.call(obj)) > -1;
+                return obj && viewClasses.indexOf(window.Object.prototype.toString.call(obj)) > -1;
               };
             }
 
@@ -11306,12 +11306,12 @@ module.exports = () => {
                 headers.forEach(function (value, name) {
                   this.append(name, value);
                 }, this);
-              } else if (Array.isArray(headers)) {
+              } else if (window.Array.isArray(headers)) {
                 headers.forEach(function (header) {
                   this.append(header[0], header[1]);
                 }, this);
               } else if (headers) {
-                Object.getOwnPropertyNames(headers).forEach(function (name) {
+                window.Object.getOwnPropertyNames(headers).forEach(function (name) {
                   this.append(name, headers[name]);
                 }, this);
               }
@@ -11413,7 +11413,7 @@ module.exports = () => {
 
             function readArrayBufferAsText(buf) {
               var view = new Uint8Array(buf);
-              var chars = new Array(view.length);
+              var chars = new window.Array(view.length);
 
               for (var i = 0; i < view.length; i++) {
                 chars[i] = String.fromCharCode(view[i]);
@@ -11455,7 +11455,7 @@ module.exports = () => {
                 } else if (support.arrayBuffer && (ArrayBuffer.prototype.isPrototypeOf(body) || isArrayBufferView(body))) {
                   this._bodyArrayBuffer = bufferClone(body);
                 } else {
-                  this._bodyText = body = Object.prototype.toString.call(body);
+                  this._bodyText = body = window.Object.prototype.toString.call(body);
                 }
 
                 if (!this.headers.get('content-type')) {
@@ -11680,7 +11680,7 @@ module.exports = () => {
                 this.stack = error.stack;
               };
 
-              DOMException.prototype = Object.create(Error.prototype);
+              DOMException.prototype = window.Object.create(Error.prototype);
               DOMException.prototype.constructor = DOMException;
             }
 
@@ -11769,7 +11769,7 @@ module.exports = () => {
                */
               var runtime = function (exports) {
 
-                var Op = Object.prototype;
+                var Op = window.Object.prototype;
                 var hasOwn = Op.hasOwnProperty;
                 var undefined$1; // More compressible than void 0.
 
@@ -11781,7 +11781,7 @@ module.exports = () => {
                 function wrap(innerFn, outerFn, self, tryLocsList) {
                   // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
                   var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-                  var generator = Object.create(protoGenerator.prototype);
+                  var generator = window.Object.create(protoGenerator.prototype);
                   var context = new Context(tryLocsList || []); // The ._invoke method unifies the implementations of the .next,
                   // .throw, and .return methods.
 
@@ -11839,7 +11839,7 @@ module.exports = () => {
                   return this;
                 };
 
-                var getProto = Object.getPrototypeOf;
+                var getProto = window.Object.getPrototypeOf;
                 var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
 
                 if (NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
@@ -11848,7 +11848,7 @@ module.exports = () => {
                   IteratorPrototype = NativeIteratorPrototype;
                 }
 
-                var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
+                var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = window.Object.create(IteratorPrototype);
                 GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
                 GeneratorFunctionPrototype.constructor = GeneratorFunction;
                 GeneratorFunctionPrototype[toStringTagSymbol] = GeneratorFunction.displayName = "GeneratorFunction"; // Helper for defining the .next, .throw, and .return methods of the
@@ -11870,8 +11870,8 @@ module.exports = () => {
                 };
 
                 exports.mark = function (genFun) {
-                  if (Object.setPrototypeOf) {
-                    Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+                  if (window.Object.setPrototypeOf) {
+                    window.Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
                   } else {
                     genFun.__proto__ = GeneratorFunctionPrototype;
 
@@ -11880,7 +11880,7 @@ module.exports = () => {
                     }
                   }
 
-                  genFun.prototype = Object.create(Gp);
+                  genFun.prototype = window.Object.create(Gp);
                   return genFun;
                 }; // Within the body of any async function, `await x` is transformed to
                 // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
@@ -12500,7 +12500,7 @@ module.exports = () => {
                 while (1) switch (_context.prev = _context.next) {
                   case 0:
                     _context.next = 2;
-                    return regenerator.awrap(Promise.all(Array.from(bgImages).map(url => Promise.race([new Promise(resolve => {
+                    return regenerator.awrap(Promise.all(window.Array.from(bgImages).map(url => Promise.race([new Promise(resolve => {
                       const img = new Image();
 
                       img.onload = () => resolve({
@@ -12559,7 +12559,7 @@ module.exports = () => {
             }
 
             function getIndex(el) {
-              return Array.prototype.filter.call(el.parentNode.childNodes, node => node.tagName === el.tagName).indexOf(el) + 1;
+              return window.Array.prototype.filter.call(el.parentNode.childNodes, node => node.tagName === el.tagName).indexOf(el) + 1;
             }
 
             var genXpath_1 = genXpath;
@@ -12584,7 +12584,7 @@ module.exports = () => {
                 try {
                   const styleSheet = parseCss(cssText);
 
-                  for (const rule of Array.from(styleSheet.cssRules)) {
+                  for (const rule of window.Array.from(styleSheet.cssRules)) {
                     if (rule instanceof CSSImportRule) {
                       const nestedUrl = absolutizeUrl(rule.href, styleBaseUrl);
                       const nestedResource = getCssFromCache(nestedUrl);
@@ -12594,10 +12594,10 @@ module.exports = () => {
                           bundledCss: nestedCssText,
                           unfetchedResources: nestedUnfetchedResources
                         } = getBundledCssFromCssText(nestedResource, nestedUrl);
-                        nestedUnfetchedResources && (unfetchedResources = new Set(nestedUnfetchedResources));
+                        nestedUnfetchedResources && (unfetchedResources = new window.Set(nestedUnfetchedResources));
                         bundledCss = `${nestedCssText}${bundledCss}`;
                       } else {
-                        unfetchedResources = new Set([nestedUrl]);
+                        unfetchedResources = new window.Set([nestedUrl]);
                         bundledCss = `\n${unfetchedToken}${nestedUrl}${unfetchedToken}`;
                       }
                     }
@@ -12678,12 +12678,12 @@ module.exports = () => {
             var fetchCss = makeFetchCss;
 
             var getHrefAttr = function getHrefAttr(node) {
-              const attr = Array.from(node.attributes).find(attr => attr.name.toLowerCase() === 'href');
+              const attr = window.Array.from(node.attributes).find(attr => attr.name.toLowerCase() === 'href');
               return attr && attr.value;
             };
 
             var isLinkToStyleSheet = function isLinkToStyleSheet(node) {
-              return node.nodeName && node.nodeName.toUpperCase() === 'LINK' && node.attributes && Array.from(node.attributes).find(attr => attr.name.toLowerCase() === 'rel' && attr.value.toLowerCase() === 'stylesheet');
+              return node.nodeName && node.nodeName.toUpperCase() === 'LINK' && node.attributes && window.Array.from(node.attributes).find(attr => attr.name.toLowerCase() === 'rel' && attr.value.toLowerCase() === 'stylesheet');
             };
 
             function isDataUrl(url) {
@@ -12700,7 +12700,7 @@ module.exports = () => {
                 let cssText, styleBaseUrl, isUnfetched;
 
                 if (isStyleElement(node)) {
-                  cssText = Array.from(node.childNodes).map(node => node.nodeValue).join('');
+                  cssText = window.Array.from(node.childNodes).map(node => node.nodeValue).join('');
                   styleBaseUrl = baseUrl;
                 } else if (isLinkToStyleSheet(node)) {
                   const href = getHrefAttr(node);
@@ -12750,10 +12750,10 @@ module.exports = () => {
                     unfetchedResources: nestedUnfetched
                   } = getBundledCssFromCssText(cssText, styleBaseUrl);
                   bundledCss += nestedCss;
-                  unfetchedResources = new Set(nestedUnfetched);
+                  unfetchedResources = new window.Set(nestedUnfetched);
                 } else if (isUnfetched) {
                   bundledCss += `${unfetchedToken}${styleBaseUrl}${unfetchedToken}`;
-                  unfetchedResources = new Set([styleBaseUrl]);
+                  unfetchedResources = new window.Set([styleBaseUrl]);
                 }
 
                 return {
@@ -12807,7 +12807,7 @@ module.exports = () => {
                           return regenerator.async(function fetchAllCssFromElement$(_context4) {
                             while (1) switch (_context4.prev = _context4.next) {
                               case 0:
-                                Array.prototype.map.call(el.childNodes, fetchAllCssFromNode);
+                                window.Array.prototype.map.call(el.childNodes, fetchAllCssFromNode);
 
                               case 1:
                               case "end":
@@ -12845,7 +12845,7 @@ module.exports = () => {
                               styleSheet = parseCss_1(cssText);
                               promises = [];
 
-                              for (rule of Array.from(styleSheet.cssRules)) {
+                              for (rule of window.Array.from(styleSheet.cssRules)) {
                                 if (rule instanceof CSSImportRule) {
                                   promises.push((() => {
                                     var nestedUrl, cssText;
@@ -12971,7 +12971,7 @@ module.exports = () => {
                 while (1) switch (_context.prev = _context.next) {
                   case 0:
                     doCaptureFrame = function _ref7(frameDoc) {
-                      const bgImages = new Set();
+                      const bgImages = new window.Set();
                       let bundledCss = '';
                       const ret = captureNode(frameDoc.documentElement);
                       ret.css = bundledCss;
@@ -13013,7 +13013,7 @@ module.exports = () => {
                       }
 
                       function elementToJSON(el) {
-                        const childNodes = Array.prototype.map.call(el.childNodes, captureNode).filter(filter);
+                        const childNodes = window.Array.prototype.map.call(el.childNodes, captureNode).filter(filter);
                         const tagName = el.tagName.toUpperCase();
                         if (ignoredTagNames.indexOf(tagName) > -1) return null;
                         const computedStyle = window.getComputedStyle(el);
@@ -13030,7 +13030,7 @@ module.exports = () => {
 
                         for (const p of rectProps) rect[p] = boundingClientRect[p];
 
-                        const attributes = Array.from(el.attributes).map(a => ({
+                        const attributes = window.Array.from(el.attributes).map(a => ({
                           key: a.name,
                           value: a.value
                         })).reduce((obj, attr) => {
@@ -13091,7 +13091,7 @@ module.exports = () => {
                     };
 
                     notEmptyObj = function _ref5(obj) {
-                      return Object.keys(obj).length ? obj : undefined;
+                      return window.Object.keys(obj).length ? obj : undefined;
                     };
 
                     filter = function _ref4(x) {
@@ -13123,7 +13123,7 @@ module.exports = () => {
                     };
                     promises = [];
                     startTime(performance.total);
-                    unfetchedResources = new Set();
+                    unfetchedResources = new window.Set();
                     iframeCors = [];
                     iframeToken = '@@@@@';
                     unfetchedToken = '#####';
