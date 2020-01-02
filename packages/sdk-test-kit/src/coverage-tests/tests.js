@@ -168,7 +168,6 @@ function makeCoverageTests({
     TestCheckRegionByCoordinatesInFrame_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      debugger
       await checkRegion({left: 30, top: 40, width: 400, height: 1200}, {inFrame: '[name="frame1"]'})
       await close(throwException)
     },
