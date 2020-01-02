@@ -32,11 +32,17 @@ test('Play', async t => {
 // test('Play', async t => {
 //   // await t.resizeWindow(600, 500)
 //   // await new Promise(r => setTimeout(r, 1000))
-//   // await t.eval(() => {
-//   //   document.documentElement.scrollLeft = 0
-//   //   document.documentElement.scrollTop = 656
-//   // })
-//   const name = new Date().toISOString().replace(/:/g, '_')
-//   const image = await t.takeScreenshot(`./render-${name}.png`)
-//   console.log('XXXXXXXXX: image', image)
+
+//   const captureFrameAndPollForIE = require('../../dist/captureFrameAndPollForIE')
+//   const {TestCafeJavaScriptExecutor} = require('../../lib/TestCafeJavaScriptExecutor')
+//   const ex = new TestCafeJavaScriptExecutor(t)
+
+//   console.log('XXXXXXXXX: captureFrameAndPollForIE', captureFrameAndPollForIE.toString())
+//   const r = await ex.executeScript(captureFrameAndPollForIE)
+//   const r2 = await ex.executeScript(captureFrameAndPollForIE)
+//   console.log('XXXXXXXXX: r', r2)
+
+//   // await t.eval(() => (document.documentElement.style.transform = 'translate(-0px, -0px)'))
+//   // const name = new Date().toISOString().replace(/:/g, '_')
+//   // const image = await t.takeScreenshot(`./render-${name}.png`)
 // })

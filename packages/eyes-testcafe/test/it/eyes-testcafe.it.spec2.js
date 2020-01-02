@@ -3,8 +3,8 @@
 const {describe, it, after, before} = require('mocha')
 const {expect} = require('chai')
 const path = require('path')
-const startTestCafe = require('../setup/start-testcafe-in-mocha')
-const startTestServer = require('../setup/start-test-server-in-mocha')
+const startTestCafe = require('../util/start-testcafe-in-mocha')
+const startTestServer = require('../util/start-test-server-in-mocha')
 
 describe('Eyes TestCafe Integration', () => {
   const {runFileInTestCafe} = startTestCafe({beforeEach, afterEach})
