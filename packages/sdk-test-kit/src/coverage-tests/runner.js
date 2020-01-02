@@ -65,7 +65,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
     await Promise.all(p.map(throat(concurrency, testRun => testRun())))
     const end = new Date()
 
-    return makeReport({sdkName, testsRan: supportedTests, p, e, start, end})
+    return makeReport({sdkName, testsRan: supportedTests, e, start, end})
   }
 
   return {runTests}
@@ -83,8 +83,8 @@ function convertExecutionModeToSuffix(executionMode) {
   }
 }
 
-// TODO: cleanup to use cli-util common/util?
-function makeReport({sdkName, testsRan, p, e, start, end}) {
+// TODO: cleanup to use common-util
+function makeReport({sdkName, testsRan, e, start, end}) {
   const numberOfTests = new Set(testsRan.map(test => test.name)).size
   const numberOfTestsFailed = Object.keys(e).length
   const numberOfTestsPassed = numberOfTests - numberOfTestsFailed
