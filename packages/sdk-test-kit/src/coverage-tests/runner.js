@@ -114,9 +114,13 @@ function recordError(errors, error, testName, executionMode) {
   if (!errors[testName]) {
     errors[testName] = {}
   }
+  const formattedError = {
+    name: error.name,
+    message: error.message,
+  }
   executionMode
-    ? (errors[testName][getNameFromObject(executionMode)] = error)
-    : (errors[testName] = error)
+    ? (errors[testName][getNameFromObject(executionMode)] = formattedError)
+    : (errors[testName] = formattedError)
 }
 
 module.exports = {
