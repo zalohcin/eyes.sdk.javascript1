@@ -1,4 +1,3 @@
-require('chromedriver')
 const {Builder, By} = require('selenium-webdriver')
 const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
 const {
@@ -193,4 +192,5 @@ module.exports = {
   name: sdkName,
   initialize,
   supportedTests,
+  options: {needsChromeDriver: true, chromeDriverOptions: ['--silent']},
 }
