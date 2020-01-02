@@ -52,7 +52,7 @@ function makeCoverageTests({
     TestCheckElementFully_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await checkRegion('iframe[name="frame1"]', {isFully: true})
+      await checkRegion('[name="frame1"]', {isFully: true})
       await close(throwException)
     },
     TestCheckElementWithIgnoreRegionByElementOutsideTheViewport_Fluent: async () => {
@@ -149,7 +149,7 @@ function makeCoverageTests({
     TestCheckRegionInAVeryBigFrame: async () => {
       await visit('https://applitools.github.io/demo/TestPages/WixLikeTestPage/index.html')
       await open({appName: 'Eyes Selenium SDK - Special Cases', viewportSize})
-      await checkRegion('img', {inFrame: 'iframe[name="frame1"]'})
+      await checkRegion('img', {inFrame: '[name="frame1"]'})
       await close(throwException)
     },
     TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame: async () => {
@@ -168,6 +168,7 @@ function makeCoverageTests({
     TestCheckRegionByCoordinatesInFrame_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      debugger
       await checkRegion({left: 30, top: 40, width: 400, height: 1200}, {inFrame: '[name="frame1"]'})
       await close(throwException)
     },
@@ -176,7 +177,7 @@ function makeCoverageTests({
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkRegion(
         {left: 30, top: 40, width: 400, height: 1200},
-        {inFrame: 'iframe[name="frame1"]', isFully: true},
+        {inFrame: '[name="frame1"]', isFully: true},
       )
       await close(throwException)
     },
@@ -191,7 +192,7 @@ function makeCoverageTests({
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
       await checkRegion('#inner-frame-div', {
-        inFrame: 'iframe[name="frame1"]',
+        inFrame: '[name="frame1"]',
         isClassicApi: true,
         isFully: true,
       })
@@ -201,7 +202,7 @@ function makeCoverageTests({
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkRegion('#inner-frame-div', {
-        inFrame: 'iframe[name="frame1"]',
+        inFrame: '[name="frame1"]',
         isFully: true,
       })
       await close(throwException)
@@ -210,7 +211,7 @@ function makeCoverageTests({
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkRegion('#inner-frame-div', {
-        inFrame: 'iframe[name="frame1"]',
+        inFrame: '[name="frame1"]',
         isFully: true,
         isLayout: true,
         floatingRegion: {
