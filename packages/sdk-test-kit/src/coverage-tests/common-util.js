@@ -2,18 +2,6 @@ function getNameFromObject(object) {
   return Object.keys(object)[0]
 }
 
-function filter(filter, {from, inside}) {
-  return filter
-    ? inside.filter(entry => {
-        try {
-          return entry[from].includes(filter)
-        } catch (error) {
-          return entry[from].hasOwnProperty(filter)
-        }
-      })
-    : inside
-}
-
 function findDifferencesBetweenCollections(hostCollection = [], guestCollection = []) {
   const _hostCollection = Array.isArray(hostCollection)
     ? hostCollection
@@ -25,7 +13,6 @@ function findDifferencesBetweenCollections(hostCollection = [], guestCollection 
 }
 
 module.exports = {
-  filter,
   findDifferencesBetweenCollections,
   getNameFromObject,
 }

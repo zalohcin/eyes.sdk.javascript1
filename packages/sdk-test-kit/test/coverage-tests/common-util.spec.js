@@ -1,8 +1,4 @@
-const {
-  filter,
-  unique,
-  findDifferencesBetweenCollections,
-} = require('../../src/coverage-tests/common-util')
+const {findDifferencesBetweenCollections} = require('../../src/coverage-tests/common-util')
 const assert = require('assert')
 
 describe('common-util', () => {
@@ -36,31 +32,6 @@ describe('common-util', () => {
       ])
       assert.deepStrictEqual(findDifferencesBetweenCollections(undefined, [0, 1, 2, 'a']), [])
       assert.deepStrictEqual(findDifferencesBetweenCollections(undefined, undefined), [])
-    })
-  })
-  describe('filter', () => {
-    const collection = [
-      {name: 'a', executionMode: {isVisualGrid: true}},
-      {name: 'a', executionMode: {isCssStitching: true}},
-      {name: 'aa', executionMode: {isVisualGrid: true}},
-      {name: 'b', executionMode: {isVisualGrid: true}},
-    ]
-    it('by name', () => {
-      assert.deepStrictEqual(filter('a', {from: 'name', inside: collection}), [
-        {name: 'a', executionMode: {isVisualGrid: true}},
-        {name: 'a', executionMode: {isCssStitching: true}},
-        {name: 'aa', executionMode: {isVisualGrid: true}},
-      ])
-      assert.deepStrictEqual(filter('b', {from: 'name', inside: collection}), [
-        {name: 'b', executionMode: {isVisualGrid: true}},
-      ])
-    })
-    it('by execution mode', () => {
-      assert.deepStrictEqual(filter('isVisualGrid', {from: 'executionMode', inside: collection}), [
-        {name: 'a', executionMode: {isVisualGrid: true}},
-        {name: 'aa', executionMode: {isVisualGrid: true}},
-        {name: 'b', executionMode: {isVisualGrid: true}},
-      ])
     })
   })
 })

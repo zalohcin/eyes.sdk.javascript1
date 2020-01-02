@@ -7,7 +7,12 @@ const {exec} = require('child_process')
 const {version} = require('../../package.json')
 const chromedriver = require('chromedriver')
 const {filter} = require('./common-util')
-const {findUnsupportedTests, findUnimplementedCommands} = require('./cli-util')
+const {
+  findUnsupportedTests,
+  findUnimplementedCommands,
+  filterTestsByName,
+  filterTestsByMode,
+} = require('./cli-util')
 
 yargs
   .usage(`Coverage Tests DSL (v${version})`)
@@ -109,11 +114,9 @@ async function doRunTests(args, sdkImplementation) {
   if (needsChromeDriver(args, sdkImplementation))
     await startChromeDriver(sdkImplementation.options.chromeDriverOptions)
 
-  let supportedTests = [...sdkImplementation.supportedTests]
-  if (args.filterName)
-    supportedTests = filter(args.filterName, {from: 'name', inside: supportedTests})
-  if (args.filterMode)
-    supportedTests = filter(args.filterMode, {from: 'executionMode', inside: supportedTests})
+  let supportedTests = sdkImplementation.supportedTests
+  supportedTests = filterTestsByName(args.filterName, supportedTests)
+  supportedTests = filterTestsByMode(args.filterMode, supportedTests)
 
   console.log(
     `Running ${supportedTests.length} executions for ${
@@ -135,8 +138,9 @@ async function doRunTests(args, sdkImplementation) {
 
 async function doSendReport(args, report) {
   if (args.sendReport) {
-    console.log('Sending report to QA dashboard...')
+    process.stdout.write('\nSending report to QA dashboard... ')
     const result = await sendReport(report.toSendReportSchema())
+    process.stdout.write(result.isSuccessful ? 'Done!\n' : 'Failed!\n')
     return result
   }
 }

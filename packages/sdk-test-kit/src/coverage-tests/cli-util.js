@@ -14,7 +14,23 @@ function findUnimplementedCommands(sdkImplementation) {
   return findDifferencesBetweenCollections(allCommands, sdkImplementedCommands)
 }
 
+function filterTestsByName(filter, tests) {
+  if (!filter) return tests
+  return tests.filter(test => {
+    return test.name.includes(filter)
+  })
+}
+
+function filterTestsByMode(filter, tests) {
+  if (!filter) return tests
+  return tests.filter(test => {
+    return test.executionMode.hasOwnProperty(filter)
+  })
+}
+
 module.exports = {
   findUnsupportedTests,
   findUnimplementedCommands,
+  filterTestsByName,
+  filterTestsByMode,
 }

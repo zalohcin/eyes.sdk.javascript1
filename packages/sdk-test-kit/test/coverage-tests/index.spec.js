@@ -53,14 +53,16 @@ describe('coverage-tests', () => {
     it('should report errors from a run', async () => {
       let _fakeSDK = {...fakeSDK}
       _fakeSDK.open = () => {
-        throw 'blah error'
+        throw new Error('blah error')
       }
       const supportedTests = [{name: 'TestCheckRegion', executionMode: {blah: true}}]
       const {runTests} = makeRunTests('blah', () => {
         return {..._fakeSDK}
       })
       const {report} = await runTests(supportedTests)
-      assert.deepStrictEqual(report.errors, {TestCheckRegion: {blah: 'blah error'}})
+      assert.deepStrictEqual(report.errors, {
+        TestCheckRegion: {blah: {name: 'Error', message: 'blah error'}},
+      })
     })
     it('should be able to output the report to a different schema', async () => {
       let _fakeSDK = {...fakeSDK}
