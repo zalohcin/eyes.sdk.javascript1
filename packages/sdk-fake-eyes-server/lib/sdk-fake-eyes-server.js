@@ -71,6 +71,23 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
     res.send({success: true})
   })
 
+  app.get('/user-agents', (_req, res) => {
+    res.send({
+      chrome: 'chrome-ua',
+      'chrome-1': 'chrome-1-ua',
+      'chrome-2': 'chrome-2-ua',
+      firefox: 'firefox-ua',
+      'firefox-1': 'firefox-1-ua',
+      'firefox-2': 'firefox-2-ua',
+      safari: 'safari-ua',
+      'safari-2': 'safari-2-ua',
+      'safari-1': 'safari-1-ua',
+      edge: 'edge-ua',
+      ie: 'ie-ua',
+      ie10: 'ie10-ua',
+    })
+  })
+
   // matchSingleWindow
   app.post('/api/sessions', (req, res) => {
     const {startInfo, appOutput} = req.body

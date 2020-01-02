@@ -6,7 +6,15 @@ function getRenderMethods(renderWrapper) {
   const doPutResource = renderWrapper.putResource.bind(renderWrapper)
   const doGetRenderStatus = renderWrapper.getRenderStatus.bind(renderWrapper)
   const setRenderingInfo = renderWrapper.setRenderingInfo.bind(renderWrapper)
-  return {doGetRenderInfo, doRenderBatch, doPutResource, doGetRenderStatus, setRenderingInfo}
+  const doGetUserAgents = renderWrapper.getUserAgents.bind(renderWrapper)
+  return {
+    doGetRenderInfo,
+    doRenderBatch,
+    doPutResource,
+    doGetRenderStatus,
+    setRenderingInfo,
+    doGetUserAgents,
+  }
 }
 
 module.exports = getRenderMethods

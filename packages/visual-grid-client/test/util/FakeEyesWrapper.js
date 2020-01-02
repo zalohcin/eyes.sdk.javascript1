@@ -156,6 +156,23 @@ class FakeEyesWrapper extends EventEmitter {
 
   async putResource() {}
 
+  async getUserAgents() {
+    return {
+      chrome: 'chrome-ua',
+      'chrome-1': 'chrome-1-ua',
+      'chrome-2': 'chrome-2-ua',
+      firefox: 'firefox-ua',
+      'firefox-1': 'firefox-1-ua',
+      'firefox-2': 'firefox-2-ua',
+      safari: 'safari-ua',
+      'safari-2': 'safari-2-ua',
+      'safari-1': 'safari-1-ua',
+      edge: 'edge-ua',
+      ie: 'ie-ua',
+      ie10: 'ie10-ua',
+    }
+  }
+
   async checkWindow({screenshotUrl, tag, domUrl, checkSettings, imageLocation}) {
     if (tag && this.goodTags && !this.goodTags.includes(tag))
       throw new Error(`Tag ${tag} should be one of the good tags ${this.goodTags}`)
@@ -236,8 +253,6 @@ class FakeEyesWrapper extends EventEmitter {
   }
 
   async ensureAborted() {}
-
-  setAssumedConfiguration() {}
 
   resultsToTestResults(results) {
     const steps = Array.from(new Array(results.length).map(() => ({})))

@@ -5,7 +5,6 @@ const {
 const makeCheckWindow = require('./checkWindow')
 const makeAbort = require('./makeAbort')
 const makeClose = require('./makeClose')
-const assumeEnvironment = require('./assumeEnvironment')
 const translateBrowserNameVersion = require('./translateBrowserNameVersion')
 
 const {
@@ -78,6 +77,7 @@ function makeOpenEyes({
   agentId,
   notifyOnCompletion: _notifyOnCompletion,
   batchNotify: _batchNotify,
+  getUserAgents: _getUserAgents,
   globalState,
   wrappers: _wrappers,
   isSingleWindow = false,
@@ -117,6 +117,7 @@ function makeOpenEyes({
     ignoreBaseline = _ignoreBaseline,
     notifyOnCompletion = _notifyOnCompletion,
     batchNotify = _batchNotify,
+    getUserAgents = _getUserAgents,
   }) {
     logger.verbose(`openEyes: testName=${testName}, browser=`, browser)
 
@@ -190,7 +191,6 @@ function makeOpenEyes({
       ignoreBaseline,
       serverUrl,
       agentId,
-      assumeEnvironment,
       batchNotify,
     })
 
@@ -252,6 +252,7 @@ function makeOpenEyes({
       accessibilityLevel,
       fetchHeaders: headers,
       isSingleWindow,
+      getUserAgents,
     })
 
     const close = makeClose({

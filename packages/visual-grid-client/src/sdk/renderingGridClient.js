@@ -15,6 +15,7 @@ const makeWaitForRenderedStatus = require('./waitForRenderedStatus')
 const makeGetRenderStatus = require('./getRenderStatus')
 const makePutResources = require('./putResources')
 const makeRenderBatch = require('./renderBatch')
+const makeGetUserAgents = require('./getUserAgents')
 const makeOpenEyes = require('./openEyes')
 const makeCreateRGridDOMAndGetResourceMapping = require('./createRGridDOMAndGetResourceMapping')
 const getBatch = require('./getBatch')
@@ -114,6 +115,7 @@ function makeRenderingGridClient({
     doPutResource,
     doGetRenderStatus,
     setRenderingInfo,
+    doGetUserAgents,
   } = getRenderMethods(renderWrapper)
   const resourceCache = createResourceCache()
   const fetchCache = createResourceCache()
@@ -148,6 +150,7 @@ function makeRenderingGridClient({
   const createRGridDOMAndGetResourceMapping = makeCreateRGridDOMAndGetResourceMapping({
     getAllResources,
   })
+  const getUserAgents = makeGetUserAgents(doGetUserAgents)
 
   const {
     batchId: defaultBatchId,
@@ -198,6 +201,7 @@ function makeRenderingGridClient({
     userAgent,
     batchNotify,
     globalState,
+    getUserAgents,
   }
 
   const openEyes = makeOpenEyes(openConfig)

@@ -2187,4 +2187,112 @@ describe('openEyes', () => {
     expect(wrapper1.results[0].__browserName).to.equal('chrome-1')
     expect(wrapper2.results[0].__browserName).to.equal('chrome-2')
   })
+
+  it('sends the user agent even in case of render failure', async () => {
+    wrapper.renderBatch = async () => {
+      throw new Error('renderBatch')
+    }
+    openEyes = makeRenderingGridClient({
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      apiKey,
+      renderWrapper: wrapper,
+    }).openEyes
+    const {checkWindow, close} = await openEyes({
+      browser: {width: 1, height: 1, name: 'firefox'},
+      wrappers: [wrapper],
+      url: `bla`,
+      appName,
+    })
+
+    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    const [err] = await presult(close())
+    expect(err[0].message).to.equal('renderBatch')
+    expect(wrapper.inferredEnvironment).to.equal('useragent:firefox-ua')
+  })
+
+  it('sends the user agent even in case of render failure: when multiple browsers are sent', async () => {
+    const wrapper1 = new FakeEyesWrapper({goodFilename: 'test.cdt.json', goodResourceUrls: []})
+    const wrapper2 = new FakeEyesWrapper({goodFilename: 'test.cdt.json', goodResourceUrls: []})
+    wrapper.renderBatch = async () => {
+      throw new Error('renderBatch')
+    }
+    openEyes = makeRenderingGridClient({
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      apiKey,
+      renderWrapper: wrapper,
+    }).openEyes
+    const {checkWindow, close} = await openEyes({
+      browser: [
+        {width: 1, height: 1, name: 'firefox'},
+        {width: 1, height: 1, name: 'safari-1'},
+      ],
+      wrappers: [wrapper1, wrapper2],
+      url: `bla`,
+      appName,
+    })
+
+    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    const [err] = await presult(close())
+    expect(err[0].message).to.equal('renderBatch')
+    expect(wrapper1.inferredEnvironment).to.equal('useragent:firefox-ua')
+    expect(wrapper2.inferredEnvironment).to.equal('useragent:safari-1-ua')
+  })
+
+  // TODO (amit): unskip this test once we implement getting the user agent from the render status result.It requires a refactor of waitForRenderedStatus which doesn't seem like a good ROI at the moment.
+  it.skip('sends the user agent even in case of render-status failure', async () => {
+    wrapper.getRenderStatus = async () => {
+      return [
+        new RenderStatusResults({
+          status: RenderStatus.ERROR,
+          error: 'renderStatusError',
+          userAgent: 'some ua',
+        }),
+      ]
+    }
+    openEyes = makeRenderingGridClient({
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      apiKey,
+      renderWrapper: wrapper,
+    }).openEyes
+    const {checkWindow, close} = await openEyes({
+      browser: {width: 1, height: 1, name: 'firefox'},
+      wrappers: [wrapper],
+      url: `bla`,
+      appName,
+    })
+
+    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    const [err] = await presult(close())
+    expect(err[0].message).to.contain('renderStatusError')
+    expect(wrapper.inferredEnvironment).to.equal('some ua')
+  })
+
+  // TODO this test should be deleted once the test above it is unskipped
+  it('sends the user agent even in case of render-status failure', async () => {
+    wrapper.getRenderStatus = async () => {
+      return [
+        new RenderStatusResults({
+          status: RenderStatus.ERROR,
+          error: 'renderStatusError',
+          userAgent: 'some ua',
+        }),
+      ]
+    }
+    openEyes = makeRenderingGridClient({
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      apiKey,
+      renderWrapper: wrapper,
+    }).openEyes
+    const {checkWindow, close} = await openEyes({
+      browser: {width: 1, height: 1, name: 'firefox'},
+      wrappers: [wrapper],
+      url: `bla`,
+      appName,
+    })
+
+    checkWindow({resourceUrls: [], cdt: [], url: `bla`})
+    const [err] = await presult(close())
+    expect(err[0].message).to.contain('renderStatusError')
+    expect(wrapper.inferredEnvironment).to.equal('useragent:firefox-ua')
+  })
 })
