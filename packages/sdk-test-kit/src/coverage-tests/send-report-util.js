@@ -25,27 +25,41 @@ function convertSdkNameToReportName(sdkName) {
 }
 
 function hasPassed(errors, testName, executionMode) {
-  return !(errors[testName] && !!errors[testName][getNameFromObject(executionMode)])
+  return !errors.find(error => {
+    return (
+      error.testName === testName &&
+      getNameFromObject(error.executionMode) === getNameFromObject(executionMode)
+    )
+  })
 }
 
-function makeSendReport({sdkName, testsRan, e}) {
+function makeSendReport({
+  browser = 'chrome',
+  errors,
+  group = 'selenium',
+  sandbox = true,
+  sdkName,
+  testsRan,
+} = {}) {
   return {
     sdk: convertSdkNameToReportName(sdkName),
-    group: 'selenium', // TODO: make dynamic
-    sandbox: true, // TODO: make dynamic
+    group,
+    sandbox,
     results: testsRan.map(test => {
       return {
         test_name: test.name,
         parameters: {
-          browser: 'chrome',
+          browser,
           mode: convertExecutionModeToBareName(test.executionMode),
         },
-        passed: hasPassed(e, test.name, test.executionMode),
+        passed: hasPassed(errors, test.name, test.executionMode),
       }
     }),
   }
 }
 
 module.exports = {
+  makeSendReport,
+  hasPassed,
   makeSendReport,
 }

@@ -22,7 +22,7 @@ describe('cli-util', () => {
         [{name: 'a', executionMode: {isBlah: true}}],
       )
     })
-    it.skip('full collection returned on undefined', () => {
+    it('full collection returned on undefined', () => {
       assert.deepStrictEqual(filterTestsByName(undefined, [{name: 'a'}, {name: 'b'}]), [
         {name: 'a'},
         {name: 'b'},

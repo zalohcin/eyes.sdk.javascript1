@@ -15,7 +15,7 @@ const {makeCoverageTests} = require('./tests')
  */
 function makeRunTests(sdkName, initializeSdkImplementation) {
   const p = []
-  const e = {}
+  const errors = []
 
   /**
    * Runs coverage-tests for a given SDK implementation.
@@ -51,20 +51,28 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
           process.stdout.write('.')
         } catch (error) {
           process.stdout.write('F')
-          recordError({errors: e, error, testName, executionMode})
+          errors.push({
+            name: error.name,
+            message: error.message,
+            testName,
+            executionMode,
+          })
         } finally {
           if (sdkImplementation._cleanup) await sdkImplementation._cleanup()
         }
       })
     })
     process.on('unhandledRejection', (error, _promise) => {
-      recordError({errors: e, error, testName: 'Unhandled Rejections', isUnhandledRejection: true})
+      errors.push({
+        name: error.name,
+        message: error.message,
+      })
     })
     const start = new Date()
     await Promise.all(p.map(throat(concurrency, testRun => testRun())))
     const end = new Date()
 
-    return makeReport({sdkName, testsRan: supportedTests, e, start, end})
+    return makeReport({sdkName, testsRan: supportedTests, errors, start, end})
   }
 
   return {runTests}
@@ -82,17 +90,13 @@ function convertExecutionModeToSuffix(executionMode) {
   }
 }
 
-// TODO: cleanup to use common-util
-function makeReport({sdkName, testsRan, e, start, end}) {
+function makeReport({sdkName, testsRan, errors, start, end}) {
   const numberOfTests = new Set(testsRan.map(test => test.name)).size
-  const numberOfTestsFailed = Object.keys(e).length
+  const numberOfTestsFailed = new Set(errors.map(error => error.testName)).size
   const numberOfTestsPassed = numberOfTests - numberOfTestsFailed
   const numberOfExecutions = testsRan.length
-  const numberOfExecutionsFailed = Object.values(e)
-    .map(entry => Object.keys(entry).length)
-    .reduce(function(a, b) {
-      return a + b
-    }, 0)
+  const numberOfExecutionsFailed = errors.length
+  const numberOfExecutionsPassed = numberOfExecutions - numberOfExecutionsFailed
   const report = {
     stats: {
       duration: end - start,
@@ -100,30 +104,13 @@ function makeReport({sdkName, testsRan, e, start, end}) {
       numberOfTestsPassed,
       numberOfTestsFailed,
       numberOfExecutions,
-      numberOfExecutionsPassed: numberOfExecutions - numberOfExecutionsFailed,
+      numberOfExecutionsPassed,
       numberOfExecutionsFailed,
     },
-    errors: e,
-    toSendReportSchema: makeSendReport.bind(undefined, {sdkName, testsRan, e}),
+    errors,
+    toSendReportSchema: makeSendReport.bind(undefined, {sdkName, testsRan, errors}),
   }
   return {report}
-}
-
-function recordError({errors, error, testName, executionMode, isUnhandledRejection} = {}) {
-  if (!errors[testName]) {
-    errors[testName] = isUnhandledRejection ? [] : {}
-  }
-  const formattedError = {
-    name: error.name,
-    message: error.message,
-  }
-  if (isUnhandledRejection) {
-    errors[testName].push(formattedError)
-  } else {
-    executionMode
-      ? (errors[testName][getNameFromObject(executionMode)] = formattedError)
-      : (errors[testName] = formattedError)
-  }
 }
 
 module.exports = {

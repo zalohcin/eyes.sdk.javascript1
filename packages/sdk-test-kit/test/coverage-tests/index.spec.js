@@ -50,66 +50,54 @@ describe('coverage-tests', () => {
       const {report} = await runTests(supportedTests)
       assert.ok(!Object.keys(report.errors).length)
     })
-    it('should report errors from a run', async () => {
+  })
+  describe('report', () => {
+    let _report
+    before(async () => {
       let _fakeSDK = {...fakeSDK}
       _fakeSDK.open = () => {
         throw new Error('blah error')
       }
-      const supportedTests = [{name: 'TestCheckRegion', executionMode: {blah: true}}]
+      const supportedTests = [
+        {name: 'TestCheckRegion', executionMode: {blah1: true}},
+        {name: 'TestCheckRegion', executionMode: {blah2: true}},
+        {name: 'TestCheckRegion', executionMode: {blah3: true}},
+      ]
       const {runTests} = makeRunTests('blah', () => {
         return {..._fakeSDK}
       })
       const {report} = await runTests(supportedTests)
-      assert.deepStrictEqual(report.errors, {
-        TestCheckRegion: {blah: {name: 'Error', message: 'blah error'}},
-      })
+      _report = report
     })
-    it('should be able to output the report to a different schema', async () => {
-      let _fakeSDK = {...fakeSDK}
-      _fakeSDK.checkRegion = () => {
-        throw 'blah error'
-      }
-      const supportedTests = [
-        {name: 'TestCheckRegion', executionMode: {isCssStitching: true}},
-        {name: 'TestCheckRegion', executionMode: {isVisualGrid: true}},
-        {name: 'TestCheckWindow', executionMode: {isVisualGrid: true}},
-      ]
-      const {runTests} = makeRunTests('eyes-selenium', () => {
-        return {..._fakeSDK}
-      })
-      const {report} = await runTests(supportedTests)
-      const expectedReportSchema = {
-        sdk: 'js_selenium_4',
-        group: 'selenium',
-        sandbox: true,
-        results: [
-          {
-            test_name: 'TestCheckRegion',
-            parameters: {
-              browser: 'chrome',
-              mode: 'css',
-            },
-            passed: false,
-          },
-          {
-            test_name: 'TestCheckRegion',
-            parameters: {
-              browser: 'chrome',
-              mode: 'visualgrid',
-            },
-            passed: false,
-          },
-          {
-            test_name: 'TestCheckWindow',
-            parameters: {
-              browser: 'chrome',
-              mode: 'visualgrid',
-            },
-            passed: true,
-          },
-        ],
-      }
-      assert.deepStrictEqual(report.toSendReportSchema(), expectedReportSchema)
+    it('should report errors from a run', async () => {
+      assert.deepStrictEqual(_report.errors, [
+        {
+          name: 'Error',
+          message: 'blah error',
+          testName: 'TestCheckRegion',
+          executionMode: {blah1: true},
+        },
+        {
+          name: 'Error',
+          message: 'blah error',
+          testName: 'TestCheckRegion',
+          executionMode: {blah2: true},
+        },
+        {
+          name: 'Error',
+          message: 'blah error',
+          testName: 'TestCheckRegion',
+          executionMode: {blah3: true},
+        },
+      ])
+    })
+    it('should report stats from a run', () => {
+      assert.deepStrictEqual(_report.stats.numberOfTests, 1)
+      assert.deepStrictEqual(_report.stats.numberOfTestsPassed, 0)
+      assert.deepStrictEqual(_report.stats.numberOfTestsFailed, 1)
+      assert.deepStrictEqual(_report.stats.numberOfExecutions, 3)
+      assert.deepStrictEqual(_report.stats.numberOfExecutionsPassed, 0)
+      assert.deepStrictEqual(_report.stats.numberOfExecutionsFailed, 3)
     })
   })
 })
