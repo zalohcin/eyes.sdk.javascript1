@@ -69,7 +69,7 @@ describe('coverage-tests', () => {
       const {report} = await runTests(supportedTests)
       _report = report
     })
-    it('should report errors from a run', async () => {
+    it('should contain errors from a run', async () => {
       assert.deepStrictEqual(_report.errors, [
         {
           name: 'Error',
@@ -91,7 +91,7 @@ describe('coverage-tests', () => {
         },
       ])
     })
-    it('should report stats from a run', () => {
+    it('should contain stats from a run', () => {
       assert.deepStrictEqual(_report.stats.numberOfTests, 1)
       assert.deepStrictEqual(_report.stats.numberOfTestsPassed, 0)
       assert.deepStrictEqual(_report.stats.numberOfTestsFailed, 1)
