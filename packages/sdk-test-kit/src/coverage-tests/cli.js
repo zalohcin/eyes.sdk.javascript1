@@ -46,6 +46,10 @@ yargs
     alias: 's',
     describe: 'send a result report to the sandbox QA dashboard',
   })
+  .option('verbose', {
+    alias: 'v',
+    describe: 'enable verbose output (e.g., show stack traces from errors)',
+  })
   .demandCommand(1, 'You need to specify a command before moving on')
 
 async function run(args) {
@@ -62,7 +66,7 @@ async function run(args) {
     const sdkImplementation = require(path.join(path.resolve('.'), args.path))
     const report = await doRunTests(args, sdkImplementation)
     const sendReportResponse = await doSendReport(args, report)
-    doDisplayResults(report, sendReportResponse)
+    doDisplayResults(args, report, sendReportResponse)
     doExitCode(report.errors)
   } else {
     console.log('Nothing to run.')
@@ -149,10 +153,12 @@ async function doSendReport(args, report) {
   }
 }
 
-function doDisplayResults(report, sendReportResponse) {
-  if (Object.keys(report.errors).length) {
+function doDisplayResults(args, report, sendReportResponse) {
+  if (report.errors.length) {
     console.log(`\n-------------------- ERRORS --------------------`)
-    console.log(report.errors)
+    let errors = [...report.errors]
+    if (!args.verbose) errors.forEach(error => delete error.stackTrace)
+    console.log(errors)
   }
   console.log(`\n-------------------- SUMMARY --------------------`)
   console.log(
@@ -162,11 +168,15 @@ function doDisplayResults(report, sendReportResponse) {
   console.log(`- Passed (across all execution modes): ${report.stats.numberOfTestsPassed}`)
   console.log(`- Failed (in one or more execution modes): ${report.stats.numberOfTestsFailed}`)
   console.log(`- Total failures: ${report.stats.numberOfExecutionsFailed}\n`)
-  if (sendReportResponse.isSuccessful) {
-    console.log('Report successfully sent to the sandbox QA dashboard')
-    console.log('See the results at http://bit.ly/sdk-test-results')
-  } else
-    console.log(`Report not sent to the QA dashboard because of: ${sendReportResponse.message}`)
+  if (sendReportResponse) {
+    if (sendReportResponse.isSuccessful) {
+      console.log('Report successfully sent to the sandbox QA dashboard')
+      console.log('See the results at http://bit.ly/sdk-test-results')
+    } else {
+      console.log(`Report not sent to the QA dashboard because of: ${sendReportResponse.message}`)
+    }
+  }
+  if (!args.verbose) console.log('To see errors with stack trace output, run with --verbose')
 }
 
 async function startChromeDriver(options = []) {

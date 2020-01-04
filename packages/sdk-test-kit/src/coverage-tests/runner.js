@@ -54,6 +54,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
           errors.push({
             name: error.name,
             message: error.message,
+            stackTrace: error.stack,
             testName,
             executionMode,
           })

@@ -70,26 +70,21 @@ describe('coverage-tests', () => {
       _report = report
     })
     it('should contain errors from a run', async () => {
-      assert.deepStrictEqual(_report.errors, [
-        {
-          name: 'Error',
-          message: 'blah error',
-          testName: 'TestCheckRegion',
-          executionMode: {blah1: true},
-        },
-        {
-          name: 'Error',
-          message: 'blah error',
-          testName: 'TestCheckRegion',
-          executionMode: {blah2: true},
-        },
-        {
-          name: 'Error',
-          message: 'blah error',
-          testName: 'TestCheckRegion',
-          executionMode: {blah3: true},
-        },
-      ])
+      assert.deepStrictEqual(_report.errors[0].name, 'Error')
+      assert.deepStrictEqual(_report.errors[0].message, 'blah error')
+      assert.deepStrictEqual(_report.errors[0].testName, 'TestCheckRegion')
+      assert.deepStrictEqual(_report.errors[0].executionMode, {blah1: true})
+      assert(_report.errors[0].stackTrace)
+      assert.deepStrictEqual(_report.errors[1].name, 'Error')
+      assert.deepStrictEqual(_report.errors[1].message, 'blah error')
+      assert.deepStrictEqual(_report.errors[1].testName, 'TestCheckRegion')
+      assert.deepStrictEqual(_report.errors[1].executionMode, {blah2: true})
+      assert(_report.errors[1].stackTrace)
+      assert.deepStrictEqual(_report.errors[2].name, 'Error')
+      assert.deepStrictEqual(_report.errors[2].message, 'blah error')
+      assert.deepStrictEqual(_report.errors[2].testName, 'TestCheckRegion')
+      assert.deepStrictEqual(_report.errors[2].executionMode, {blah3: true})
+      assert(_report.errors[2].stackTrace)
     })
     it('should contain stats from a run', () => {
       assert.deepStrictEqual(_report.stats.numberOfTests, 1)
