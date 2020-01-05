@@ -167,9 +167,11 @@ function doDisplayResults(args, report, sendReportResponse) {
     `Ran ${report.stats.numberOfTests} tests across ${report.stats.numberOfExecutions} executions in ${report.stats.duration}ms`,
   )
   console.log(`\nStats:`)
-  console.log(`- Passed (across all execution modes): ${report.stats.numberOfTestsPassed}`)
-  console.log(`- Failed (in one or more execution modes): ${report.stats.numberOfTestsFailed}`)
-  console.log(`- Total failures: ${report.stats.numberOfExecutionsFailed}\n`)
+  console.log(`- Tests Passed (across all execution modes): ${report.stats.numberOfTestsPassed}`)
+  console.log(
+    `- Tests Failed (in one or more execution modes): ${report.stats.numberOfTestsFailed}`,
+  )
+  console.log(`- Executions Failed: ${report.stats.numberOfExecutionsFailed}\n`)
   if (sendReportResponse) {
     if (sendReportResponse.isSuccessful) {
       console.log('Report successfully sent to the sandbox QA dashboard')
