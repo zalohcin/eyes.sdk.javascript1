@@ -28,9 +28,20 @@ function filterTestsByMode(filter, tests) {
   })
 }
 
+function sortErrorsByType(errors) {
+  return errors.sort((a, b) => {
+    const nameA = a.name.toLowerCase()
+    const nameB = b.name.toLowerCase()
+    if (nameA < nameB) return -1
+    else if (nameA > nameB) return 1
+    else return 0
+  })
+}
+
 module.exports = {
   findUnsupportedTests,
   findUnimplementedCommands,
   filterTestsByName,
   filterTestsByMode,
+  sortErrorsByType,
 }

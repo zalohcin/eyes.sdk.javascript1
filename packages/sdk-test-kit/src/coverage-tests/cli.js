@@ -11,6 +11,7 @@ const {
   findUnimplementedCommands,
   filterTestsByName,
   filterTestsByMode,
+  sortErrorsByType,
 } = require('./cli-util')
 const os = require('os')
 
@@ -157,6 +158,7 @@ function doDisplayResults(args, report, sendReportResponse) {
   if (report.errors.length) {
     console.log(`\n-------------------- ERRORS --------------------`)
     let errors = [...report.errors]
+    sortErrorsByType(errors)
     if (!args.verbose) errors.forEach(error => delete error.stackTrace)
     console.log(errors)
   }

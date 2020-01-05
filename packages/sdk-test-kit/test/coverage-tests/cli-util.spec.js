@@ -4,6 +4,7 @@ const {
   findUnimplementedCommands,
   filterTestsByName,
   filterTestsByMode,
+  sortErrorsByType,
 } = require('../../src/coverage-tests/cli-util')
 const {makeCoverageTests} = require('../../src/coverage-tests/index')
 const {supportedCommands} = require('../../src/coverage-tests/tests')
@@ -56,6 +57,13 @@ describe('cli-util', () => {
         findUnimplementedCommands(sdkImplementation).length,
         totalNumberOfCommands,
       )
+    })
+  })
+  describe('doDisplayResults', () => {
+    it('sorts errors by type', () => {
+      const errors = [{name: 'halb'}, {name: 'zzz'}, {name: 'blah'}]
+      const expected = [{name: 'blah'}, {name: 'halb'}, {name: 'zzz'}]
+      assert.deepStrictEqual(sortErrorsByType(errors), expected)
     })
   })
 })
