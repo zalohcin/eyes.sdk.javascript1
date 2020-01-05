@@ -36,7 +36,7 @@ createTestCafe(null, 1339)
         'browserstack:edge',
         'browserstack:ie',
         'browserstack:chrome',
-      ][0]
+      ][1]
     } else {
       runner = testcafe.createLiveModeRunner()
       browser = 'chrome'

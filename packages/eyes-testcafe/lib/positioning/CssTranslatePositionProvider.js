@@ -60,14 +60,33 @@ class CssTranslatePositionProvider extends PositionProvider {
       translate = ''
     }
 
-    await this._executor.executeScript(
-      `arguments[0].style.transform = '${translate}';`,
+    const bannerIndex = await this._executor.executeScript(
+      `arguments[0].style.transform = '${translate}'; return document.body.children.length;`,
       this._scrollRootElement,
     )
+    await this._fixTestcafeBanner(bannerIndex, -location.getX(), -location.getY())
 
     this._logger.verbose('Done!')
     this._lastSetPosition = location
     return this._lastSetPosition
+  }
+
+  async _fixTestcafeBanner(bannerIndex, transformLeft, transformTop) {
+    this._logger.verbose(`CssTranslatePositionProvider - fixing banner at index: ${bannerIndex}`)
+
+    const fixTestcafeBanner = new Function(`
+      const testCafeBanner = document.body.children[${bannerIndex}].firstChild.firstChild
+      testCafeBanner.style.setProperty('top', 'calc(100vh - 52px - 15px - ${transformTop}px)')
+      testCafeBanner.style.setProperty('bottom', 'auto')
+      testCafeBanner.style.setProperty('left', '-${transformLeft}px')
+    `)
+
+    try {
+      await this._executor.executeScript(fixTestcafeBanner, this._scrollRootElement)
+      this._logger.verbose('CssTranslatePositionProvider - fixed testcafe banner')
+    } catch (e) {
+      this._logger.verbose('CssTranslatePositionProvider - failed to fix testcafe banner', e)
+    }
   }
 
   /**
@@ -116,9 +135,10 @@ class CssTranslatePositionProvider extends PositionProvider {
     const script =
       'var originalTransform = arguments[0].style.transform;' +
       `arguments[0].style.transform = '${transform}';` +
-      'return originalTransform;'
+      'return [originalTransform, document.body.children.length];'
 
-    await this._executor.executeScript(script, this._scrollRootElement)
+    const [, bannerIndex] = await this._executor.executeScript(script, this._scrollRootElement)
+    await this._fixTestcafeBanner(bannerIndex, 0, 0)
     this._logger.verbose('Transform (position) restored.')
     this._lastSetPosition = state.getPosition()
   }
