@@ -67,6 +67,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
       errors.push({
         name: error.name,
         message: error.message,
+        isUnhandledException: true,
       })
     })
     const start = new Date()
