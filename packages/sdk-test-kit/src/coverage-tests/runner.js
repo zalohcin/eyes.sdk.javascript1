@@ -55,7 +55,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
             name: error.name,
             message: error.message,
             stackTrace: error.stack,
-            testId: supportedTestIndex,
+            testIndex: supportedTestIndex,
             testName,
             executionMode,
           })

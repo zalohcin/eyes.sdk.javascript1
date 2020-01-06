@@ -28,6 +28,18 @@ function filterTestsByMode(filter, tests) {
   })
 }
 
+function filterTestsByIndexes(indexes, tests) {
+  debugger
+  if (!indexes) return tests
+  const _indexes =
+    typeof indexes === 'string' ? indexes.split(',').map(id => Math.floor(id)) : indexes
+  let _tests = []
+  _indexes.forEach(id => {
+    _tests.push(tests[id])
+  })
+  return _tests
+}
+
 function sortErrorsByType(errors) {
   return errors.sort((a, b) => {
     const nameA = a.name.toLowerCase()
@@ -38,10 +50,20 @@ function sortErrorsByType(errors) {
   })
 }
 
+function getTestIndexesFromErrors(errors) {
+  if (!errors) return undefined
+  const indexes = errors
+    .filter(error => error.hasOwnProperty('testIndex'))
+    .map(entry => entry.testIndex)
+  return indexes.length ? indexes : undefined
+}
+
 module.exports = {
   findUnsupportedTests,
   findUnimplementedCommands,
   filterTestsByName,
   filterTestsByMode,
+  filterTestsByIndexes,
+  getTestIndexesFromErrors,
   sortErrorsByType,
 }
