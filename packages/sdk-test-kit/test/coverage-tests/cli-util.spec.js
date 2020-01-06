@@ -25,7 +25,7 @@ describe('cli-util', () => {
         [{name: 'a', executionMode: {isBlah: true}}],
       )
     })
-    it('filter tests by ids', () => {
+    it('filter tests by indexes', () => {
       assert.deepStrictEqual(filterTestsByIndexes('2,1', ['a', 'b', 'c']), ['c', 'b'])
     })
     it('full collection returned on undefined', () => {
