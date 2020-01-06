@@ -46,7 +46,7 @@ function initialize() {
 
   async function checkFrame(
     target,
-    {isClassicApi = false, isFully = false, tag, matchTimeout} = {},
+    {isClassicApi = false, isFully = false, tag, matchTimeout, isLayout, floatingRegion} = {},
   ) {
     if (isClassicApi) {
       await eyes.checkFrame(By.css(target), matchTimeout, tag)
@@ -61,6 +61,18 @@ function initialize() {
       } else {
         _checkSettings = Target.frame(By.css(target))
       }
+      if (floatingRegion) {
+        _checkSettings.floatingRegion(
+          _makeRegionLocator(floatingRegion.target),
+          floatingRegion.maxUp,
+          floatingRegion.maxDown,
+          floatingRegion.maxLeft,
+          floatingRegion.maxRight,
+        )
+      }
+      if (isLayout) {
+        _checkSettings.layout()
+      }
       _checkSettings.fully(isFully)
       await eyes.check(tag, _checkSettings)
     }
@@ -68,7 +80,16 @@ function initialize() {
 
   async function checkRegion(
     target,
-    {isClassicApi = false, isFully = false, inFrame, ignoreRegion, tag, matchTimeout} = {},
+    {
+      floatingRegion,
+      isClassicApi = false,
+      isFully = false,
+      inFrame,
+      ignoreRegion,
+      isLayout,
+      matchTimeout,
+      tag,
+    } = {},
   ) {
     if (isClassicApi) {
       inFrame
@@ -76,20 +97,35 @@ function initialize() {
         : await eyes.checkRegionBy(By.css(target), tag, matchTimeout, isFully)
     } else {
       let _checkSettings
-      if (inFrame) _checkSettings = Target.frame(By.css(inFrame))
-      if (Array.isArray(target)) {
-        target.forEach((entry, index) => {
-          index === 0 && _checkSettings === undefined
-            ? (_checkSettings = Target.region(_makeRegionLocator(entry)))
-            : _checkSettings.region(_makeRegionLocator(entry))
-        })
+      if (inFrame) {
+        _checkSettings = Target.frame(By.css(inFrame))
       } else {
-        _checkSettings
-          ? _checkSettings.region(_makeRegionLocator(target))
-          : (_checkSettings = Target.region(_makeRegionLocator(target)))
+        if (Array.isArray(target)) {
+          target.forEach((entry, index) => {
+            index === 0 && _checkSettings === undefined
+              ? (_checkSettings = Target.region(_makeRegionLocator(entry)))
+              : _checkSettings.region(_makeRegionLocator(entry))
+          })
+        } else {
+          _checkSettings
+            ? _checkSettings.region(_makeRegionLocator(target))
+            : (_checkSettings = Target.region(_makeRegionLocator(target)))
+        }
       }
       if (ignoreRegion) {
         _checkSettings.ignoreRegions(_makeRegionLocator(ignoreRegion))
+      }
+      if (floatingRegion) {
+        _checkSettings.floatingRegion(
+          _makeRegionLocator(floatingRegion.target),
+          floatingRegion.maxUp,
+          floatingRegion.maxDown,
+          floatingRegion.maxLeft,
+          floatingRegion.maxRight,
+        )
+      }
+      if (isLayout) {
+        _checkSettings.layout()
       }
       _checkSettings.fully(isFully)
       await eyes.check(tag, _checkSettings)
@@ -140,9 +176,7 @@ function initialize() {
   }
 
   function _makeRegionLocator(target) {
-    if (typeof target === 'string') return By.css(target)
-    else if (typeof target === 'number') return target
-    else return new Region(target)
+    return typeof target === 'string' ? By.css(target) : new Region(target)
   }
 
   async function open(options) {
