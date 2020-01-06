@@ -31,7 +31,7 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
    * returns: a report object
    */
   async function runTests(supportedTests, {branchName = 'master', concurrency = 15, host} = {}) {
-    supportedTests.forEach(supportedTest => {
+    supportedTests.forEach((supportedTest, supportedTestIndex) => {
       const testName = supportedTest.name
       const executionMode = supportedTest.executionMode
       p.push(async () => {
@@ -48,13 +48,14 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
               ...supportedTest,
             })
           await test()
-          process.stdout.write('.')
+          process.stdout.write('.') // TODO; find a better way to do this
         } catch (error) {
-          process.stdout.write('F')
+          process.stdout.write('F') // TODO; find a better way to do this
           errors.push({
             name: error.name,
             message: error.message,
             stackTrace: error.stack,
+            testId: supportedTestIndex,
             testName,
             executionMode,
           })
