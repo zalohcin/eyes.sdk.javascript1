@@ -165,13 +165,13 @@ function makeCoverageTests({
       await checkRegion({left: 50, top: 50, width: 100, height: 100})
       await close(throwException)
     },
-    TestCheckRegionByCoordinatesInFrame_Fluent: async () => {
+    TestCheckRegionByCoordinateInFrame_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkRegion({left: 30, top: 40, width: 400, height: 1200}, {inFrame: '[name="frame1"]'})
       await close(throwException)
     },
-    TestCheckRegionByCoordinatesInFrameFully_Fluent: async () => {
+    TestCheckRegionByCoordinateInFrameFully_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkRegion(
@@ -209,12 +209,11 @@ function makeCoverageTests({
     TestCheckRegionInFrame3_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await checkRegion('#inner-frame-div', {
-        inFrame: '[name="frame1"]',
+      await checkFrame('[name="frame1"]', {
         isFully: true,
         isLayout: true,
         floatingRegion: {
-          target: 25,
+          target: {left: 25, top: 25, width: 25, height: 25},
           maxUp: 200,
           maxDown: 200,
           maxLeft: 150,
@@ -231,12 +230,13 @@ function makeCoverageTests({
       })
       await close(throwException)
     },
-    TestCheckScrollableModal: async () => {
-      await visit(url)
-      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await checkRegion('#modal-content', {scrollRootElement: '#modal1', isFully: true})
-      await close(throwException)
-    },
+    //TestCheckScrollableModal: async () => {
+    //  await visit(url)
+    //  await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+    //  await click('#centered')
+    //  await checkRegion('#modal-content', {scrollRootElement: '#modal1', isFully: true})
+    //  await close(throwException)
+    //},
     TestCheckWindow: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
@@ -270,7 +270,7 @@ function makeCoverageTests({
     TestCheckWindowAfterScroll: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Classic API', viewportSize})
-      await scrollDown(250)
+      await scrollDown(350)
       await checkWindow({isClassicApi: true})
       await close(throwException)
     },
