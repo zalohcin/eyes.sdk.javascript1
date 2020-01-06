@@ -54,7 +54,8 @@ class EyesVisualGrid extends Eyes {
    * @return {string} - The base agent id of the SDK.
    */
   getBaseAgentId() {
-    return `eyes.selenium.visualgrid.javascript/${VERSION}`
+    // TODO - change user agent ?
+    return `eyes-testcafe-visualgrid/${VERSION}`
   }
 
   /**

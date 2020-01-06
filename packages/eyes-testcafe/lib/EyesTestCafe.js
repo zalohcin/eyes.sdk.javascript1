@@ -1006,6 +1006,30 @@ class EyesTestCafe extends Eyes {
     return this._scrollRootElement
   }
 
+  async _scanPage(scrollAmmount = 500, timeInterval = 300) {
+    this._logger.verbose(
+      `scanPage started - scrollAmmount ${scrollAmmount} timeInterval ${timeInterval}`,
+    )
+    const scrollScript = `
+      let resolve
+      const p = new Promise(r => (resolve = r))
+      function doScan() {
+        const t = document.documentElement.scrollTop
+        document.documentElement.scrollTop = document.documentElement.scrollTop + ${scrollAmmount}
+        if (document.documentElement.scrollTop !== t) {
+          setTimeout(doScan, ${timeInterval})
+        } else {
+          document.documentElement.scrollTop = 0
+          resolve()
+        }
+      }
+      doScan()
+      return p;
+    `
+    await this._driver.executeScript(scrollScript)
+    this._logger.verbose('scanPage - done!')
+  }
+
   /**
    * @private
    * @param {SeleniumCheckSettings} scrollRootElementContainer

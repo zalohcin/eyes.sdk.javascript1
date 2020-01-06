@@ -18,11 +18,7 @@ test('helloworld full page Safari', async t => {
   await eyes.close()
 })
 
-/*
- * BUG - Tetscafe failing to take snapshot:
- * https://github.com/DevExpress/testcafe/issues/4600
- */
-test.skip('full page css stiching Safari', async t => {
+test('full page css stiching Safari', async t => {
   const eyes = new Eyes()
   eyes.setConfiguration(
     new Configuration({stitchMode: StitchMode.CSS, viewportSize: {width: 600, height: 500}}),
