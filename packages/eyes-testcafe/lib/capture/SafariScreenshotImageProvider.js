@@ -1,11 +1,8 @@
 'use strict'
 
-const {By} = require('selenium-webdriver')
-const {TypeUtils} = require('@applitools/eyes-common')
 const {MutableImage, Region, OSNames} = require('@applitools/eyes-common')
 const {ImageProvider} = require('@applitools/eyes-sdk-core')
 
-const {ScrollPositionProvider} = require('../positioning/ScrollPositionProvider')
 const {TestCafeJavaScriptExecutor} = require('../TestCafeJavaScriptExecutor')
 
 /**
@@ -85,10 +82,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
       return image
     }
 
-    const scaleRatio = this._eyes.getDevicePixelRatio()
     const originalViewportSize = await this._eyes.getViewportSize()
-    const viewportSize = originalViewportSize.scale(scaleRatio)
-
     this._logger.verbose(`logical viewport size: ${originalViewportSize}`)
 
     if (this._userAgent.getOS() === OSNames.IOS) {
@@ -120,24 +114,6 @@ class SafariScreenshotImageProvider extends ImageProvider {
       } else {
         this._logger.verbose('device not found in list. returning original image.')
       }
-    } else if (!this._eyes.getForceFullPageScreenshot()) {
-      // TODO
-      // No need for this in Safari tetscafe afask
-      // keeping so if we find some browser that takes a full page screenshot
-      // remove if not needed !!
-      // const currentFrameChain = this._eyes.getDriver().getFrameChain()
-      // let loc
-      // if (currentFrameChain.size() === 0) {
-      //   const positionProvider = new ScrollPositionProvider(
-      //     this._logger,
-      //     this._jsExecutor,
-      //     await this._eyes.getDriver().findElement('html'),
-      //   )
-      //   loc = await positionProvider.getCurrentPosition()
-      // } else {
-      //   loc = currentFrameChain.getDefaultContentScrollPosition()
-      // }
-      // await image.crop(new Region(loc.scale(scaleRatio), viewportSize))
     }
 
     return image
