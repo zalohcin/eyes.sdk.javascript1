@@ -212,35 +212,6 @@ class FullPageCaptureAlgorithm {
         `original-scrolled-${(await positionProvider.getCurrentPosition()).toStringForFilename()}`,
       )
 
-      if (this._isDoubleOverlap) {
-        const removeTopForLastImageAmmount = partRegion.getTop() - originPosition.getY()
-        const removeTopOverlapAmmount = partRegion.getTop() != 0 ? this._stitchingOverlap : 0
-        const removeBottomAmmount =
-          partRegion.getTop() + image.getHeight() < entireSize.getHeight()
-            ? this._stitchingOverlap
-            : 0
-
-        const imageHeight =
-          image.getHeight() -
-          removeBottomAmmount -
-          removeTopOverlapAmmount -
-          removeTopForLastImageAmmount
-
-        const croppingRegion = new Region(
-          0,
-          removeTopOverlapAmmount + removeTopForLastImageAmmount,
-          partImage.getWidth(),
-          imageHeight,
-        )
-        this._logger.verbose('cropping image for double overlap', croppingRegion)
-        partImage = await partImage.crop(croppingRegion)
-
-        await this._debugScreenshotsProvider.save(
-          partImage,
-          `double-cropped-${(await positionProvider.getCurrentPosition()).toStringForFilename()}`,
-        )
-      }
-
       // FIXME - cropping should be overlaid (see previous comment re cropping)
       if (!(scaledCutProvider instanceof NullCutProvider)) {
         this._logger.verbose('cutting...')
@@ -271,6 +242,35 @@ class FullPageCaptureAlgorithm {
           partImage,
           partRegion,
           `original-scrolled-${await originPosition.toStringForFilename()}-scaled-`,
+        )
+      }
+
+      if (this._isDoubleOverlap) {
+        const removeTopForLastImageAmmount = partRegion.getTop() - originPosition.getY()
+        const removeTopOverlapAmmount = partRegion.getTop() != 0 ? this._stitchingOverlap : 0
+        const removeBottomAmmount =
+          partRegion.getTop() + partImage.getHeight() < entireSize.getHeight()
+            ? this._stitchingOverlap
+            : 0
+
+        const imageHeight =
+          partImage.getHeight() -
+          removeBottomAmmount -
+          removeTopOverlapAmmount -
+          removeTopForLastImageAmmount
+
+        const croppingRegion = new Region(
+          0,
+          removeTopOverlapAmmount + removeTopForLastImageAmmount,
+          partImage.getWidth(),
+          imageHeight,
+        )
+        this._logger.verbose('cropping image for double overlap', croppingRegion)
+        partImage = await partImage.crop(croppingRegion)
+
+        await this._debugScreenshotsProvider.save(
+          partImage,
+          `double-cropped-${(await positionProvider.getCurrentPosition()).toStringForFilename()}`,
         )
       }
 

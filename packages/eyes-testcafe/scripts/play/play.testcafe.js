@@ -21,11 +21,11 @@ if (process.env.APPLITOOLS_SHOW_LOGS || process.env.LIVE) {
   eyes.setLogHandler(new ConsoleLogHandler(true))
 }
 
-fixture`Play`.page`https://www.apple.com/ipad-mini/`
+fixture`Play`.page`https://www.apple.com/shop/iphone/iphone-accessories`
 
 test('Play', async t => {
   await eyes.open(t, 'Play Testcafe', 'play testcafe')
-  await eyes._scanPage()
+  // await eyes._scanPage()
   await eyes.check('page play', Target.window().fully())
   const result = await eyes.close(false)
   console.log('Play result', result)
