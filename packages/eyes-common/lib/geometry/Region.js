@@ -84,7 +84,7 @@ const getSubRegionsWithVaryingSize = (containerRegion, maxSubRegionSize, scrollD
   ArgumentGuard.notNull(maxSubRegionSize, 'maxSubRegionSize')
   ArgumentGuard.greaterThanZero(maxSubRegionSize.getWidth(), 'maxSubRegionSize.getWidth()')
   ArgumentGuard.greaterThanZero(maxSubRegionSize.getHeight(), 'maxSubRegionSize.getHeight()')
-  ArgumentGuard.greaterThanZero(scrollDownAmmount, 'scrollDownAmmount')
+  ArgumentGuard.greaterThanOrEqualToZero(scrollDownAmmount, 'scrollDownAmmount')
 
   const subRegions = []
 

@@ -31,6 +31,7 @@ fixture`TestCafeRender`.page(process.argv[2])
 test('Testcafe Eyes Render', async t => {
   await new Promise(r => setTimeout(r, 1000))
   await eyes.open(t, 'TestCafe Render', `Testcafe Render ${url}`)
+  // await eyes._scanPage()
   await eyes.check('page loaded', Target.window().fully())
 
   // Check results

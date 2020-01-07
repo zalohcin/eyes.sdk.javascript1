@@ -165,7 +165,9 @@ class FullPageCaptureAlgorithm {
     this._logger.verbose(`entire page region: ${fullArea}, image part size: ${partImageSize}`)
 
     // Getting the list of sub-regions composing the whole region (we'll take screenshot for each one).
-    const imageParts = fullArea.getSubRegions(partImageSize, false, this._stitchingOverlap)
+    const scrollAmmount = this._isDoubleOverlap ? this._stitchingOverlap : undefined
+    const imageParts = fullArea.getSubRegions(partImageSize, false, scrollAmmount)
+    this._logger.verbose('Stitch regions', imageParts)
 
     this._logger.verbose('Creating stitchedImage container.')
     // Notice stitchedImage uses the same type of image as the screenshots.
