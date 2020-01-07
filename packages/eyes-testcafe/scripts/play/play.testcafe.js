@@ -21,7 +21,7 @@ if (process.env.APPLITOOLS_SHOW_LOGS || process.env.LIVE) {
   eyes.setLogHandler(new ConsoleLogHandler(true))
 }
 
-fixture`Play`.page`https://www.apple.com/macbook-air/`
+fixture`Play`.page`https://www.apple.com/ipad-mini/`
 
 test('Play', async t => {
   await eyes.open(t, 'Play Testcafe', 'play testcafe')
@@ -54,7 +54,7 @@ test('Play', async t => {
 
 //   const fixTestcafeMark = `
 //     const h = document.documentElement.getBoundingClientRect().height
-//     const styleContent = \`img.screenshot-mark-hammerhead-shadow-ui { 
+//     const styleContent = \`img.screenshot-mark-hammerhead-shadow-ui {
 //       bottom: calc(\${h\}px - 100vh + ${top}px) !important;
 //       top: auto !important;
 //       left: auto !important;
@@ -76,7 +76,7 @@ test('Play', async t => {
 //   const image = await t.takeScreenshot(`./render-${name}.png`)
 //   console.log('XXXXXXXXX: image', image)
 
-//   const index = await t.eval(() => document.body.children.length)
-//   const rect = await t.eval(new Function(`return document.body.children[${index}].children[1].getBoundingClientRect().toJSON()`))
-//   console.log('XXXXXXXXX: rect', rect)
+// const index = await t.eval(() => document.body.children.length)
+// const rect = await t.eval(new Function(`return document.body.children[${index}].children[1].getBoundingClientRect().toJSON()`))
+// console.log('XXXXXXXXX: rect', rect)
 // })

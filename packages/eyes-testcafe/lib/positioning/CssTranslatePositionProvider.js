@@ -55,11 +55,11 @@ class CssTranslatePositionProvider extends PositionProvider {
 
     let translate = `translate(-${location.getX()}px, -${location.getY()}px)`
 
+    await this._fixImageMarkPosition(-location.getX(), -location.getY())
     await this._executor.executeScript(
       `arguments[0].style.transform = '${translate}';`,
       this._scrollRootElement,
     )
-    await this._fixImageMarkPosition(-location.getX(), -location.getY())
 
     this._logger.verbose('Done!')
     this._lastSetPosition = location
@@ -111,8 +111,8 @@ class CssTranslatePositionProvider extends PositionProvider {
       `arguments[0].style.transform = '${transform}';` +
       'return originalTransform;'
 
-    await this._executor.executeScript(script, this._scrollRootElement)
     await this._fixImageMarkPosition(0, 0)
+    await this._executor.executeScript(script, this._scrollRootElement)
     this._logger.verbose('Transform (position) restored.')
     this._lastSetPosition = state.getPosition()
   }

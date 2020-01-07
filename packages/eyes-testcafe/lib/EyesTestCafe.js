@@ -1013,13 +1013,15 @@ class EyesTestCafe extends Eyes {
     const scrollScript = `
       let resolve
       const p = new Promise(r => (resolve = r))
-      function doScan() {
+      function doScan(isUp) {
+        const direction = isUp ? -1 : 1
         const t = document.documentElement.scrollTop
-        document.documentElement.scrollTop = document.documentElement.scrollTop + ${scrollAmmount}
+        document.documentElement.scrollTop = document.documentElement.scrollTop + (direction * ${scrollAmmount})
         if (document.documentElement.scrollTop !== t) {
-          setTimeout(doScan, ${timeInterval})
+          setTimeout(doScan, ${timeInterval}, isUp)
+        } else if (t > 0) {
+          setTimeout(doScan, ${timeInterval}, true)
         } else {
-          document.documentElement.scrollTop = 0
           resolve()
         }
       }
