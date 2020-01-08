@@ -284,9 +284,14 @@ class EyesWebElement {
    */
   scrollTo(location) {
     try {
-      const script =
-        `arguments[0].scrollLeft = ${location.getX()}; arguments[0].scrollTop = ${location.getY()};` +
-        'return [arguments[0].scrollLeft, arguments[0].scrollTop];'
+      const script = `
+        if (arguments[0] === document.documentElement && window.scrollTo) {
+          window.scrollTo(${location.getX()}, ${location.getY()});
+        } else {
+          arguments[0].scrollLeft=${location.getX()}; arguments[0].scrollTop=${location.getY()};
+        }
+        return [arguments[0].scrollLeft, arguments[0].scrollTop];
+      `
 
       const position = this.executeScript(script)
       return new Location(Math.ceil(position[0]) || 0, Math.ceil(position[1]) || 0)
