@@ -1,5 +1,6 @@
 {
   "name": "@applitools/eyes-testcafe",
+  "private": true,
   "version": "4.31.23",
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
