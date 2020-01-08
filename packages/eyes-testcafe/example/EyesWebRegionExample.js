@@ -1,6 +1,7 @@
 'use strict'
 
 require('chromedriver') // eslint-disable-line node/no-unpublished-require
+// eslint-disable-next-line node/no-extraneous-require
 const {Builder, Capabilities, By} = require('selenium-webdriver')
 const {Eyes, Target, ConsoleLogHandler, RectangleSize, Region} = require('../index') // should be replaced to '@applitools/eyes-selenium'
 

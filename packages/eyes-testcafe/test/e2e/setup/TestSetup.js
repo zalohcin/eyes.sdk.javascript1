@@ -3,6 +3,7 @@
 const path = require('path')
 const axios = require('axios')
 const assert = require('assert')
+// eslint-disable-next-line node/no-extraneous-require
 const {Capabilities, Builder} = require('selenium-webdriver')
 const {
   ConsoleLogHandler,

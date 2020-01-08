@@ -1,5 +1,6 @@
 'use strict'
 
+// eslint-disable-next-line node/no-extraneous-require
 const {By} = require('selenium-webdriver')
 const {ArgumentGuard} = require('@applitools/eyes-common')
 const {ScrollPositionMemento} = require('../positioning/ScrollPositionMemento')

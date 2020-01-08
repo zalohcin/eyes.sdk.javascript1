@@ -1,5 +1,6 @@
 'use strict'
 
+// eslint-disable-next-line node/no-extraneous-require
 const {Builder} = require('selenium-webdriver')
 const {Eyes, Target, ConsoleLogHandler, StitchMode} = require('../index') // should be replaced to '@applitools/eyes-selenium'
 

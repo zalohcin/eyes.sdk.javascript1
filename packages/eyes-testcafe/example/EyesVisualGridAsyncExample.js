@@ -1,6 +1,7 @@
 'use strict'
 
 require('chromedriver') // eslint-disable-line node/no-unpublished-require
+// eslint-disable-next-line node/no-extraneous-require
 const {Builder, Capabilities} = require('selenium-webdriver')
 const {
   Eyes,

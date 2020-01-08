@@ -1,5 +1,7 @@
+/* eslint-disable node/no-missing-require */
 'use strict'
 
+// eslint-disable-next-line node/no-extraneous-require
 const {By} = require('selenium-webdriver')
 const {TestsDataProvider} = require('./util/TestsDataProvider')
 const {TestSetup} = require('./util/TestSetup')

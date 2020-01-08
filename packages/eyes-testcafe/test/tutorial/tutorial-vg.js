@@ -4,6 +4,7 @@
 require('chromedriver')
 
 // Import Selenium Webdriver
+// eslint-disable-next-line node/no-extraneous-require
 const {Builder, Capabilities, By} = require('selenium-webdriver')
 
 // Import Applitools SDK and relevant methods

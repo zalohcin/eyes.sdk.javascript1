@@ -5,6 +5,7 @@ const {CorsIframeHandle} = require('@applitools/eyes-sdk-core')
 
 const {VisualGridRunner} = require('./runner/VisualGridRunner')
 const {EyesRunner} = require('./runner/EyesRunner')
+// eslint-disable-next-line node/no-missing-require
 const {EyesSelenium} = require('./EyesSelenium')
 const {EyesVisualGrid} = require('./EyesVisualGrid')
 

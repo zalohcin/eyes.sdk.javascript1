@@ -1,5 +1,6 @@
 'use strict'
 
+// eslint-disable-next-line node/no-extraneous-require
 const {WebElement, By} = require('selenium-webdriver')
 const {TypeUtils, Region} = require('@applitools/eyes-common')
 const {CheckSettings} = require('@applitools/eyes-sdk-core')

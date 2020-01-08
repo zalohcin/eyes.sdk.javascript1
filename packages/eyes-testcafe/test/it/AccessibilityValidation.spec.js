@@ -1,3 +1,4 @@
+/* eslint-disable node/no-extraneous-require */
 'use strict'
 
 require('chromedriver')
@@ -58,7 +59,7 @@ describe('AccessibilityValidation', function() {
     )
 
     // close all test and close batch request
-    const results = await eyes.getRunner().getAllTestResults()
+    await eyes.getRunner().getAllTestResults()
   })
 
   it('ClassicTest', async function() {
@@ -82,7 +83,7 @@ describe('AccessibilityValidation', function() {
     await eyes.closeAsync()
 
     // close all test and close batch request
-    const results = await eyes.getRunner().getAllTestResults()
+    await eyes.getRunner().getAllTestResults()
   })
 
   afterEach(async function() {

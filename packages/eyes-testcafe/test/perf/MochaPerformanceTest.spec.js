@@ -2,6 +2,7 @@
 
 require('chromedriver')
 const assert = require('assert')
+// eslint-disable-next-line node/no-extraneous-require
 const {Builder} = require('selenium-webdriver')
 const {PerformanceUtils} = require('@applitools/eyes-common')
 const {Eyes, Target, ConsoleLogHandler} = require('../../index')
