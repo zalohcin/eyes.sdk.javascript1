@@ -33,16 +33,14 @@ test('Play', async t => {
 
 // test('Play', async t => {
 //   await t.resizeWindow(1024, 768)
-//   // await new Promise(r => setTimeout(r, 1000))
 
-//   // const captureFrameAndPollForIE = require('../../dist/captureFrameAndPollForIE')
-//   // const {TestCafeJavaScriptExecutor} = require('../../lib/TestCafeJavaScriptExecutor')
-//   // const ex = new TestCafeJavaScriptExecutor(t)
-
-//   // console.log('XXXXXXXXX: captureFrameAndPollForIE', captureFrameAndPollForIE.toString())
-//   // const r = await ex.executeScript(captureFrameAndPollForIE)
-//   // const r2 = await ex.executeScript(captureFrameAndPollForIE)
-//   // console.log('XXXXXXXXX: r', r2)
+//   const captureFrameAndPollForIE = require('../../dist/captureFrameAndPollForIE')
+//   const {TestCafeJavaScriptExecutor} = require('../../lib/TestCafeJavaScriptExecutor')
+//   const ex = new TestCafeJavaScriptExecutor(t)
+//   console.log('XXXXXXXXX: captureFrameAndPollForIE', captureFrameAndPollForIE.toString())
+//   const r = await ex.executeScript(captureFrameAndPollForIE)
+//   const r2 = await ex.executeScript(captureFrameAndPollForIE)
+//   console.log('XXXXXXXXX: r', r2)
 
 //   const top = 0
 //   const left = -655
@@ -51,7 +49,6 @@ test('Play', async t => {
 //     () => (document.documentElement.style.transform = `translate(${left}px, ${top}px)`),
 //     opt,
 //   )
-
 //   const fixTestcafeMark = `
 //     const h = document.documentElement.getBoundingClientRect().height
 //     const styleContent = \`img.screenshot-mark-hammerhead-shadow-ui {
@@ -68,7 +65,6 @@ test('Play', async t => {
 //     }
 //     style.innerText = styleContent
 //   `
-
 //   const newTestcafeMarkStyle = new Function(fixTestcafeMark)
 //   await t.eval(newTestcafeMarkStyle)
 
@@ -76,7 +72,7 @@ test('Play', async t => {
 //   const image = await t.takeScreenshot(`./render-${name}.png`)
 //   console.log('XXXXXXXXX: image', image)
 
-// const index = await t.eval(() => document.body.children.length)
-// const rect = await t.eval(new Function(`return document.body.children[${index}].children[1].getBoundingClientRect().toJSON()`))
-// console.log('XXXXXXXXX: rect', rect)
+//   const index = await t.eval(() => document.body.children.length)
+//   const rect = await t.eval(new Function(`return document.body.children[${index}].children[1].getBoundingClientRect().toJSON()`))
+//   console.log('XXXXXXXXX: rect', rect)
 // })

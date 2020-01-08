@@ -26,6 +26,9 @@ createTestCafe(null, 1339)
     if (!isLive) {
       runner = testcafe.createRunner()
       process.env.BROWSERSTACK_USE_AUTOMATE = true
+      // process.env.BROWSERSTACK_CONSOLE = 'errors'
+      // process.env.BROWSERSTACK_NETWORK_LOGS = true
+
       browser = [
         'chrome:headless',
         'browserstack:safari@13.0:OS X Catalina',
@@ -45,6 +48,6 @@ createTestCafe(null, 1339)
     return runner
       .src([path])
       .browsers([browser])
-      .run({})
+      .run({skipJsErrors: true, debugMode: false})
   })
   .finally(() => testcafe.close())

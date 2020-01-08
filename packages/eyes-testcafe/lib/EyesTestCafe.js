@@ -1006,7 +1006,7 @@ class EyesTestCafe extends Eyes {
     return this._scrollRootElement
   }
 
-  async _scanPage(scrollAmmount = 500, timeInterval = 300) {
+  async scanPage(scrollAmmount = 500, timeInterval = 300) {
     this._logger.verbose(
       `scanPage started - scrollAmmount ${scrollAmmount} timeInterval ${timeInterval}`,
     )
@@ -1014,12 +1014,16 @@ class EyesTestCafe extends Eyes {
       let resolve
       const p = new Promise(r => (resolve = r))
       function doScan(isUp) {
-        const direction = isUp ? -1 : 1
-        const t = document.documentElement.scrollTop
-        document.documentElement.scrollTop = document.documentElement.scrollTop + (direction * ${scrollAmmount})
-        if (document.documentElement.scrollTop !== t) {
+        const originalOffset = window.pageYOffset
+        const yDiff = isUp ? (-1 * ${scrollAmmount}) : ${scrollAmmount}
+        if (window.scrollTo) {
+          window.scrollTo(0, originalOffset + yDiff)
+        } else {
+          document.documentElement.scrollTop = originalOffset + yDiff
+        }
+        if (window.pageYOffset !== originalOffset) {
           setTimeout(doScan, ${timeInterval}, isUp)
-        } else if (t > 0) {
+        } else if (originalOffset > 0) {
           setTimeout(doScan, ${timeInterval}, true)
         } else {
           resolve()
