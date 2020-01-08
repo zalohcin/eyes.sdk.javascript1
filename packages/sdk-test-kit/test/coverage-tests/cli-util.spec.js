@@ -4,6 +4,8 @@ const {
   findUnimplementedCommands,
   filterTestsByName,
   filterTestsByMode,
+  filterTestsByIndexes,
+  getTestIndexesFromErrors,
   sortErrorsByType,
 } = require('../../src/coverage-tests/cli-util')
 const {makeCoverageTests} = require('../../src/coverage-tests/index')
@@ -22,6 +24,9 @@ describe('cli-util', () => {
         ]),
         [{name: 'a', executionMode: {isBlah: true}}],
       )
+    })
+    it('filter tests by ids', () => {
+      assert.deepStrictEqual(filterTestsByIndexes('2,1', ['a', 'b', 'c']), ['c', 'b'])
     })
     it('full collection returned on undefined', () => {
       assert.deepStrictEqual(filterTestsByName(undefined, [{name: 'a'}, {name: 'b'}]), [
@@ -64,6 +69,13 @@ describe('cli-util', () => {
       const errors = [{name: 'halb'}, {name: 'zzz'}, {name: 'blah'}]
       const expected = [{name: 'blah'}, {name: 'halb'}, {name: 'zzz'}]
       assert.deepStrictEqual(sortErrorsByType(errors), expected)
+    })
+    it('should get test indexes from errors', () => {
+      const errors = [{testIndex: 0}, {testIndex: 1}]
+      assert.deepStrictEqual(getTestIndexesFromErrors(errors), [0, 1])
+    })
+    it('should not get test indexes from errors when none are present', () => {
+      assert.deepStrictEqual(getTestIndexesFromErrors([{}]), undefined)
     })
   })
 })

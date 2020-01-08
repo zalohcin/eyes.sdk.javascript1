@@ -11,6 +11,8 @@ const {
   findUnimplementedCommands,
   filterTestsByName,
   filterTestsByMode,
+  filterTestsByIndexes,
+  getTestIndexesFromErrors,
   sortErrorsByType,
 } = require('./cli-util')
 const os = require('os')
@@ -34,6 +36,10 @@ yargs
   .option('filterMode', {
     alias: 'fm',
     describe: 'filter which tests are run by execution mode',
+  })
+  .option('filterIndexes', {
+    alias: 'fi',
+    describe: 'filter which tests are run by providing a comma-separated list of indexes',
   })
   .option('remote', {
     alias: 'r',
@@ -123,6 +129,7 @@ async function doRunTests(args, sdkImplementation) {
   let supportedTests = sdkImplementation.supportedTests
   supportedTests = filterTestsByName(args.filterName, supportedTests)
   supportedTests = filterTestsByMode(args.filterMode, supportedTests)
+  supportedTests = filterTestsByIndexes(args.filterIndexes, supportedTests)
 
   console.log(
     `${supportedTests.length} executions for ${
@@ -181,6 +188,12 @@ function doDisplayResults(args, report, sendReportResponse) {
     }
   }
   if (!args.verbose) console.log('To see errors with stack trace output, run with --verbose')
+  if (getTestIndexesFromErrors(report.errors))
+    console.log(
+      `To re-run just the failed tests, run with --filterIndexes ${getTestIndexesFromErrors(
+        report.errors,
+      ).join(',')}`,
+    )
 }
 
 async function startChromeDriver(options = []) {
