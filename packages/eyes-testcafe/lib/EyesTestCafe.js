@@ -899,7 +899,6 @@ class EyesTestCafe extends Eyes {
             if (frame === null) {
               this._logger.verbose('hiding scrollbars of element (1)')
               await EyesSeleniumUtils.setOverflow(this._driver, 'hidden', this._scrollRootElement)
-              // await EyesSeleniumUtils.hideScrollbars(this._driver, 200, this._scrollRootElement);
             } else {
               await frame.hideScrollbars(this._driver)
             }

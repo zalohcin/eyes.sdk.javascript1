@@ -1,7 +1,7 @@
 'use strict'
 
 const {RectangleSize, ArgumentGuard} = require('@applitools/eyes-common')
-const {EyesJsBrowserUtils} = require('@applitools/eyes-sdk-core')
+const {EyesJsBrowserUtils, GeneralUtils, EyesError} = require('@applitools/eyes-sdk-core')
 
 const {EyesDriverOperationError} = require('./errors/EyesDriverOperationError')
 const {ImageOrientationHandler} = require('./ImageOrientationHandler')
@@ -29,7 +29,7 @@ let imageOrientationHandler = new (class ImageOrientationHandlerImpl extends Ima
   /**
    * @inheritDoc
    */
-  async tryAutomaticRotation(logger, driver, image) {
+  async tryAutomaticRotation() {
     // eslint-disable-line no-unused-vars
     return 0
   }
@@ -152,6 +152,28 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
   static async isMobileDevice(driver) {
     const capabilities = await driver.getCapabilities()
     return EyesSeleniumUtils.isMobileDeviceFromCaps(capabilities)
+  }
+
+  /**
+   * Overriding EyesJsBrowserUtils.setOverflow for testcafe
+   */
+  static async setOverflow(executor, value, rootElement) {
+    ArgumentGuard.notNull(executor, 'executor')
+    ArgumentGuard.notNull(rootElement, 'rootElement')
+
+    const script =
+      `var el = arguments[0]; var origOverflow = el.style['overflow-y']; var newOverflow = '${value}'; ` +
+      'el.style["overflow-y"] = newOverflow; ' +
+      "if (newOverflow.toUpperCase() === 'HIDDEN' && origOverflow.toUpperCase() !== 'HIDDEN') { el.setAttribute('data-applitools-original-overflow', origOverflow); } " +
+      'return origOverflow;'
+
+    try {
+      const result = await executor.executeScript(script, rootElement)
+      await GeneralUtils.sleep(200)
+      return result
+    } catch (err) {
+      throw new EyesError(`Failed to set overflow ${JSON.stringify(err)}`)
+    }
   }
 
   /**

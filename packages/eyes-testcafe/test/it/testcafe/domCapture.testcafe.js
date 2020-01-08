@@ -7,9 +7,9 @@ const captureFrameAndPollForIE = require('../../../dist/captureFrameAndPollForIE
 const {TestCafeJavaScriptExecutor} = require('../../../lib/TestCafeJavaScriptExecutor')
 const {loadFixture} = require('../../util/loadFixture')
 
-fixture.only`Dom capture`.page`http://localhost:5555`
+fixture`Dom capture`.page`http://localhost:5555`
 
-test.only('Dom capture', async t => {
+test('Dom capture', async t => {
   const ex = new TestCafeJavaScriptExecutor(t)
   let result = await ex.executeScript(captureFrameAndPoll)
   result = JSON.parse(result)

@@ -5,7 +5,7 @@
 const {Selector} = require('testcafe')
 const {TestCafeJavaScriptExecutor} = require('../../../')
 
-fixture`TestCafeJavaScriptExecutor fixture`.page`http://localhost:5555` // eslint-disable-line no-unused-expressions
+fixture`TestCafeJavaScriptExecutor fixture`.page`http://localhost:5555`
 
 test('run simple JavaScript in browser', async t => {
   const executor = new TestCafeJavaScriptExecutor(t)

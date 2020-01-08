@@ -5,7 +5,7 @@
 const {Selector} = require('testcafe')
 const {EyesSeleniumUtils, TestCafeJavaScriptExecutor, EyesWebDriver} = require('../../../')
 
-fixture`EyesJsBrowserUtils fixture`.page`http://localhost:5555` // eslint-disable-line no-unused-expressions
+fixture`EyesJsBrowserUtils fixture`.page`http://localhost:5555`
 
 test('setOverflow with Selector', async t => {
   const el = Selector('html')

@@ -144,7 +144,7 @@ module.exports = () => {
 
             var anObject = function (it) {
               if (!isObject(it)) {
-                throw TypeError(String(it) + ' is not an object');
+                throw TypeError(window.String(it) + ' is not an object');
               }
 
               return it;
@@ -220,7 +220,7 @@ module.exports = () => {
             var postfix = Math.random();
 
             var uid = function (key) {
-              return 'Symbol(' + String(key === undefined ? '' : key) + ')_' + (++id + postfix).toString(36);
+              return 'Symbol(' + window.String(key === undefined ? '' : key) + ')_' + (++id + postfix).toString(36);
             };
 
             var keys = shared('keys');
@@ -297,7 +297,7 @@ module.exports = () => {
             var redefine = createCommonjsModule(function (module) {
               var getInternalState = internalState.get;
               var enforceInternalState = internalState.enforce;
-              var TEMPLATE = String(String).split('String');
+              var TEMPLATE = window.String(String).split('String');
               (module.exports = function (O, key, value, options) {
                 var unsafe = options ? !!options.unsafe : false;
                 var simple = options ? !!options.enumerable : false;
@@ -448,7 +448,7 @@ module.exports = () => {
             };
 
             var normalize = isForced.normalize = function (string) {
-              return String(string).replace(replacement, '.').toLowerCase();
+              return window.String(string).replace(replacement, '.').toLowerCase();
             };
 
             var data = isForced.data = {};
@@ -514,7 +514,7 @@ module.exports = () => {
             var nativeSymbol = !!window.Object.getOwnPropertySymbols && !fails(function () {
               // Chrome 38 window.Symbol has incorrect toString conversion
               // eslint-disable-next-line no-undef
-              return !String(window.Symbol());
+              return !window.String(window.Symbol());
             });
 
             var useSymbolAsUid = nativeSymbol // eslint-disable-next-line no-undef
@@ -588,7 +588,7 @@ module.exports = () => {
               iframe.style.display = 'none';
               html.appendChild(iframe); // https://github.com/zloirock/core-js/issues/475
 
-              iframe.src = String(JS);
+              iframe.src = window.String(JS);
               iframeDocument = iframe.contentWindow.document;
               iframeDocument.open();
               iframeDocument.write(scriptTag('document.F=Object'));
@@ -697,7 +697,7 @@ module.exports = () => {
 
             var aFunction$1 = function (it) {
               if (typeof it != 'function') {
-                throw TypeError(String(it) + ' is not a function');
+                throw TypeError(window.String(it) + ' is not a function');
               }
 
               return it;
@@ -968,7 +968,7 @@ module.exports = () => {
             if (!nativeSymbol) {
               $Symbol = function Symbol() {
                 if (this instanceof $Symbol) throw TypeError('Symbol is not a constructor');
-                var description = !arguments.length || arguments[0] === undefined ? undefined : String(arguments[0]);
+                var description = !arguments.length || arguments[0] === undefined ? undefined : window.String(arguments[0]);
                 var tag = uid(description);
 
                 var setter = function (value) {
@@ -1036,7 +1036,7 @@ module.exports = () => {
               // `Symbol.for` method
               // https://tc39.github.io/ecma262/#sec-symbol.for
               'for': function (key) {
-                var string = String(key);
+                var string = window.String(key);
                 if (has(StringToSymbolRegistry, string)) return StringToSymbolRegistry[string];
                 var symbol = $Symbol(string);
                 StringToSymbolRegistry[string] = symbol;
@@ -1161,8 +1161,8 @@ module.exports = () => {
               var EmptyStringDescriptionStore = {}; // wrap window.Symbol constructor for correct work with undefined description
 
               var SymbolWrapper = function Symbol() {
-                var description = arguments.length < 1 || arguments[0] === undefined ? undefined : String(arguments[0]);
-                var result = this instanceof SymbolWrapper ? new NativeSymbol(description) // in Edge 13, String(window.Symbol(undefined)) === 'Symbol(undefined)'
+                var description = arguments.length < 1 || arguments[0] === undefined ? undefined : window.String(arguments[0]);
+                var result = this instanceof SymbolWrapper ? new NativeSymbol(description) // in Edge 13, window.String(window.Symbol(undefined)) === 'Symbol(undefined)'
                 : description === undefined ? NativeSymbol() : NativeSymbol(description);
                 if (description === '') EmptyStringDescriptionStore[result] = true;
                 return result;
@@ -1172,7 +1172,7 @@ module.exports = () => {
               var symbolPrototype = SymbolWrapper.prototype = NativeSymbol.prototype;
               symbolPrototype.constructor = SymbolWrapper;
               var symbolToString = symbolPrototype.toString;
-              var native = String(NativeSymbol('test')) == 'Symbol(test)';
+              var native = window.String(NativeSymbol('test')) == 'Symbol(test)';
               var regexp = /^Symbol\((.*)\)[^)]+$/;
               defineProperty$2(symbolPrototype, 'description', {
                 configurable: true,
@@ -1480,7 +1480,7 @@ module.exports = () => {
             var TO_STRING_TAG$1 = wellKnownSymbol('toStringTag');
             var test = {};
             test[TO_STRING_TAG$1] = 'z';
-            var toStringTagSupport = String(test) === '[object z]';
+            var toStringTagSupport = window.String(test) === '[object z]';
 
             var TO_STRING_TAG$2 = wellKnownSymbol('toStringTag'); // ES3 wrong here
 
@@ -1797,7 +1797,7 @@ module.exports = () => {
 
             var aPossiblePrototype = function (it) {
               if (!isObject(it) && it !== null) {
-                throw TypeError("Can't set " + String(it) + ' as a prototype');
+                throw TypeError("Can't set " + window.String(it) + ' as a prototype');
               }
 
               return it;
@@ -2739,7 +2739,7 @@ module.exports = () => {
             _export({
               target: 'Array',
               proto: true,
-              forced: String(test$1) === String(test$1.reverse())
+              forced: window.String(test$1) === window.String(test$1.reverse())
             }, {
               reverse: function reverse() {
                 // eslint-disable-next-line no-self-assign
@@ -3136,8 +3136,8 @@ module.exports = () => {
             addToUnscopables('values');
             addToUnscopables('entries');
 
-            var fromCharCode = String.fromCharCode;
-            var nativeFromCodePoint = String.fromCodePoint; // length should be 1, old FF problem
+            var fromCharCode = window.String.fromCharCode;
+            var nativeFromCodePoint = window.String.fromCodePoint; // length should be 1, old FF problem
 
             var INCORRECT_LENGTH = !!nativeFromCodePoint && nativeFromCodePoint.length != 1; // `String.fromCodePoint` method
             // https://tc39.github.io/ecma262/#sec-string.fromcodepoint
@@ -3178,8 +3178,8 @@ module.exports = () => {
                 var i = 0;
 
                 while (literalSegments > i) {
-                  elements.push(String(rawTemplate[i++]));
-                  if (i < argumentsLength) elements.push(String(arguments[i]));
+                  elements.push(window.String(rawTemplate[i++]));
+                  if (i < argumentsLength) elements.push(window.String(arguments[i]));
                 }
 
                 return elements.join('');
@@ -3188,7 +3188,7 @@ module.exports = () => {
 
             var createMethod$4 = function (CONVERT_TO_STRING) {
               return function ($this, pos) {
-                var S = String(requireObjectCoercible($this));
+                var S = window.String(requireObjectCoercible($this));
                 var position = toInteger(pos);
                 var size = S.length;
                 var first, second;
@@ -3260,7 +3260,7 @@ module.exports = () => {
             var CORRECT_IS_REGEXP_LOGIC = correctIsRegexpLogic('endsWith'); // https://github.com/zloirock/core-js/pull/702
 
             var MDN_POLYFILL_BUG =  !CORRECT_IS_REGEXP_LOGIC && !!function () {
-              var descriptor = getOwnPropertyDescriptor$4(String.prototype, 'endsWith');
+              var descriptor = getOwnPropertyDescriptor$4(window.String.prototype, 'endsWith');
               return descriptor && !descriptor.writable;
             }(); // `String.prototype.endsWith` method
             // https://tc39.github.io/ecma262/#sec-string.prototype.endswith
@@ -3273,12 +3273,12 @@ module.exports = () => {
               endsWith: function endsWith(searchString
               /* , endPosition = @length */
               ) {
-                var that = String(requireObjectCoercible(this));
+                var that = window.String(requireObjectCoercible(this));
                 notARegexp(searchString);
                 var endPosition = arguments.length > 1 ? arguments[1] : undefined;
                 var len = toLength(that.length);
                 var end = endPosition === undefined ? len : min$5(toLength(endPosition), len);
-                var search = String(searchString);
+                var search = window.String(searchString);
                 return nativeEndsWith ? nativeEndsWith.call(that, search, end) : that.slice(end - search.length, end) === search;
               }
             });
@@ -3341,7 +3341,7 @@ module.exports = () => {
             // String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
             // which loads this file before patching the method.
 
-            var nativeReplace = String.prototype.replace;
+            var nativeReplace = window.String.prototype.replace;
             var patchedExec = nativeExec;
 
             var UPDATES_LAST_INDEX_WRONG = function () {
@@ -3374,7 +3374,7 @@ module.exports = () => {
                     flags += 'g';
                   }
 
-                  strCopy = String(str).slice(re.lastIndex); // Support anchored sticky behavior.
+                  strCopy = window.String(str).slice(re.lastIndex); // Support anchored sticky behavior.
 
                   if (re.lastIndex > 0 && (!re.multiline || re.multiline && str[re.lastIndex - 1] !== '\n')) {
                     source = '(?: ' + source + ')';
@@ -3461,7 +3461,7 @@ module.exports = () => {
             var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
               var SYMBOL = wellKnownSymbol(KEY);
               var DELEGATES_TO_SYMBOL = !fails(function () {
-                // String methods call symbol-named RegEp methods
+                // window.String methods call symbol-named RegEp methods
                 var O = {};
 
                 O[SYMBOL] = function () {
@@ -3506,7 +3506,7 @@ module.exports = () => {
                 var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
                   if (regexp.exec === regexpExec) {
                     if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
-                      // The native String method already delegates to @@method (this
+                      // The native window.String method already delegates to @@method (this
                       // polyfilled function), leasing to infinite recursion.
                       // We avoid it by directly calling the native @@method method.
                       return {
@@ -3529,7 +3529,7 @@ module.exports = () => {
                 });
                 var stringMethod = methods[0];
                 var regexMethod = methods[1];
-                redefine(String.prototype, KEY, stringMethod);
+                redefine(window.String.prototype, KEY, stringMethod);
                 redefine(RegExp.prototype, SYMBOL, length == 2 // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
                 // 21.2.5.11 RegExp.prototype[@@split](string, limit)
                 ? function (string, arg) {
@@ -3579,14 +3579,14 @@ module.exports = () => {
               function match(regexp) {
                 var O = requireObjectCoercible(this);
                 var matcher = regexp == undefined ? undefined : regexp[MATCH];
-                return matcher !== undefined ? matcher.call(regexp, O) : new RegExp(regexp)[MATCH](String(O));
+                return matcher !== undefined ? matcher.call(regexp, O) : new RegExp(regexp)[MATCH](window.String(O));
               }, // `RegExp.prototype[@@match]` method
               // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@match
               function (regexp) {
                 var res = maybeCallNative(nativeMatch, regexp, this);
                 if (res.done) return res.value;
                 var rx = anObject(regexp);
-                var S = String(this);
+                var S = window.String(this);
                 if (!rx.global) return regexpExecAbstract(rx, S);
                 var fullUnicode = rx.unicode;
                 rx.lastIndex = 0;
@@ -3595,7 +3595,7 @@ module.exports = () => {
                 var result;
 
                 while ((result = regexpExecAbstract(rx, S)) !== null) {
-                  var matchStr = String(result[0]);
+                  var matchStr = window.String(result[0]);
                   A[n] = matchStr;
                   if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
                   n++;
@@ -3664,7 +3664,7 @@ module.exports = () => {
               };
 
               if (state.global) {
-                if (String(match[0]) == '') R.lastIndex = advanceStringIndex(S, toLength(R.lastIndex), state.unicode);
+                if (window.String(match[0]) == '') R.lastIndex = advanceStringIndex(S, toLength(R.lastIndex), state.unicode);
                 return {
                   value: match,
                   done: false
@@ -3680,7 +3680,7 @@ module.exports = () => {
 
             var $matchAll = function (string) {
               var R = anObject(this);
-              var S = String(string);
+              var S = window.String(string);
               var C, flagsValue, flags, matcher, global, fullUnicode;
               C = speciesConstructor(R, RegExp);
               flagsValue = R.flags;
@@ -3689,7 +3689,7 @@ module.exports = () => {
                 flagsValue = regexpFlags.call(R);
               }
 
-              flags = flagsValue === undefined ? '' : String(flagsValue);
+              flags = flagsValue === undefined ? '' : window.String(flagsValue);
               matcher = new C(C === RegExp ? R.source : R, flags);
               global = !!~flags.indexOf('g');
               fullUnicode = !!~flags.indexOf('u');
@@ -3710,7 +3710,7 @@ module.exports = () => {
 
                 if (regexp != null) {
                   if (isRegexp(regexp)) {
-                    flags = String(requireObjectCoercible('flags' in RegExpPrototype ? regexp.flags : regexpFlags.call(regexp)));
+                    flags = window.String(requireObjectCoercible('flags' in RegExpPrototype ? regexp.flags : regexpFlags.call(regexp)));
                     if (!~flags.indexOf('g')) throw TypeError('`.matchAll` does not allow non-global regexes');
                   }
 
@@ -3720,7 +3720,7 @@ module.exports = () => {
                   if (matcher != null) return aFunction$1(matcher).call(regexp, O);
                 } else if (WORKS_WITH_NON_GLOBAL_REGEX) return nativeMatchAll.apply(O, arguments);
 
-                S = String(O);
+                S = window.String(O);
                 rx = new RegExp(regexp, 'g');
                 return  rx[MATCH_ALL](S);
               }
@@ -3731,7 +3731,7 @@ module.exports = () => {
 
 
             var stringRepeat = ''.repeat || function repeat(count) {
-              var str = String(requireObjectCoercible(this));
+              var str = window.String(requireObjectCoercible(this));
               var result = '';
               var n = toInteger(count);
               if (n < 0 || n == Infinity) throw RangeError('Wrong number of repetitions');
@@ -3745,9 +3745,9 @@ module.exports = () => {
 
             var createMethod$5 = function (IS_END) {
               return function ($this, maxLength, fillString) {
-                var S = String(requireObjectCoercible($this));
+                var S = window.String(requireObjectCoercible($this));
                 var stringLength = S.length;
-                var fillStr = fillString === undefined ? ' ' : String(fillString);
+                var fillStr = fillString === undefined ? ' ' : window.String(fillString);
                 var intMaxLength = toLength(maxLength);
                 var fillLen, stringFiller;
                 if (intMaxLength <= stringLength || fillStr == '') return S;
@@ -3817,7 +3817,7 @@ module.exports = () => {
             var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
 
             var maybeToString = function (it) {
-              return it === undefined ? it : String(it);
+              return it === undefined ? it : window.String(it);
             }; // @@replace logic
 
 
@@ -3827,7 +3827,7 @@ module.exports = () => {
               function replace(searchValue, replaceValue) {
                 var O = requireObjectCoercible(this);
                 var replacer = searchValue == undefined ? undefined : searchValue[REPLACE];
-                return replacer !== undefined ? replacer.call(searchValue, O, replaceValue) : nativeReplace.call(String(O), searchValue, replaceValue);
+                return replacer !== undefined ? replacer.call(searchValue, O, replaceValue) : nativeReplace.call(window.String(O), searchValue, replaceValue);
               }, // `RegExp.prototype[@@replace]` method
               // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
               function (regexp, replaceValue) {
@@ -3837,9 +3837,9 @@ module.exports = () => {
                 }
 
                 var rx = anObject(regexp);
-                var S = String(this);
+                var S = window.String(this);
                 var functionalReplace = typeof replaceValue === 'function';
-                if (!functionalReplace) replaceValue = String(replaceValue);
+                if (!functionalReplace) replaceValue = window.String(replaceValue);
                 var global = rx.global;
 
                 if (global) {
@@ -3854,7 +3854,7 @@ module.exports = () => {
                   if (result === null) break;
                   results.push(result);
                   if (!global) break;
-                  var matchStr = String(result[0]);
+                  var matchStr = window.String(result[0]);
                   if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
                 }
 
@@ -3863,7 +3863,7 @@ module.exports = () => {
 
                 for (var i = 0; i < results.length; i++) {
                   result = results[i];
-                  var matched = String(result[0]);
+                  var matched = window.String(result[0]);
                   var position = max$3(min$6(toInteger(result.index), S.length), 0);
                   var captures = []; // NOTE: This is equivalent to
                   //   captures = result.slice(1).map(maybeToString)
@@ -3878,7 +3878,7 @@ module.exports = () => {
                   if (functionalReplace) {
                     var replacerArgs = [matched].concat(captures, position, S);
                     if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
-                    var replacement = String(replaceValue.apply(undefined, replacerArgs));
+                    var replacement = window.String(replaceValue.apply(undefined, replacerArgs));
                   } else {
                     replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
                   }
@@ -3948,14 +3948,14 @@ module.exports = () => {
               function search(regexp) {
                 var O = requireObjectCoercible(this);
                 var searcher = regexp == undefined ? undefined : regexp[SEARCH];
-                return searcher !== undefined ? searcher.call(regexp, O) : new RegExp(regexp)[SEARCH](String(O));
+                return searcher !== undefined ? searcher.call(regexp, O) : new RegExp(regexp)[SEARCH](window.String(O));
               }, // `RegExp.prototype[@@search]` method
               // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@search
               function (regexp) {
                 var res = maybeCallNative(nativeSearch, regexp, this);
                 if (res.done) return res.value;
                 var rx = anObject(regexp);
-                var S = String(this);
+                var S = window.String(this);
                 var previousLastIndex = rx.lastIndex;
                 if (!sameValue(previousLastIndex, 0)) rx.lastIndex = 0;
                 var result = regexpExecAbstract(rx, S);
@@ -3978,7 +3978,7 @@ module.exports = () => {
               if ('abbc'.split(/(b)*/)[1] == 'c' || 'test'.split(/(?:)/, -1).length != 4 || 'ab'.split(/(?:ab)*/).length != 2 || '.'.split(/(.?)(.?)/).length != 4 || '.'.split(/()()/).length > 1 || ''.split(/.?/).length) {
                 // based on es5-shim implementation, need to rework it
                 internalSplit = function (separator, limit) {
-                  var string = String(requireObjectCoercible(this));
+                  var string = window.String(requireObjectCoercible(this));
                   var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
                   if (lim === 0) return [];
                   if (separator === undefined) return [string]; // If `separator` is not a regex, use native split
@@ -4026,7 +4026,7 @@ module.exports = () => {
               function split(separator, limit) {
                 var O = requireObjectCoercible(this);
                 var splitter = separator == undefined ? undefined : separator[SPLIT];
-                return splitter !== undefined ? splitter.call(separator, O, limit) : internalSplit.call(String(O), separator, limit);
+                return splitter !== undefined ? splitter.call(separator, O, limit) : internalSplit.call(window.String(O), separator, limit);
               }, // `RegExp.prototype[@@split]` method
               // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@split
               //
@@ -4036,7 +4036,7 @@ module.exports = () => {
                 var res = maybeCallNative(internalSplit, regexp, this, limit, internalSplit !== nativeSplit);
                 if (res.done) return res.value;
                 var rx = anObject(regexp);
-                var S = String(this);
+                var S = window.String(this);
                 var C = speciesConstructor(rx, RegExp);
                 var unicodeMatching = rx.unicode;
                 var flags = (rx.ignoreCase ? 'i' : '') + (rx.multiline ? 'm' : '') + (rx.unicode ? 'u' : '') + (SUPPORTS_Y ? 'y' : 'g'); // ^(? + rx + ) is needed, in combination with some S slicing, to
@@ -4081,7 +4081,7 @@ module.exports = () => {
             var CORRECT_IS_REGEXP_LOGIC$1 = correctIsRegexpLogic('startsWith'); // https://github.com/zloirock/core-js/pull/702
 
             var MDN_POLYFILL_BUG$1 =  !CORRECT_IS_REGEXP_LOGIC$1 && !!function () {
-              var descriptor = getOwnPropertyDescriptor$5(String.prototype, 'startsWith');
+              var descriptor = getOwnPropertyDescriptor$5(window.String.prototype, 'startsWith');
               return descriptor && !descriptor.writable;
             }(); // `String.prototype.startsWith` method
             // https://tc39.github.io/ecma262/#sec-string.prototype.startswith
@@ -4094,10 +4094,10 @@ module.exports = () => {
               startsWith: function startsWith(searchString
               /* , position = 0 */
               ) {
-                var that = String(requireObjectCoercible(this));
+                var that = window.String(requireObjectCoercible(this));
                 notARegexp(searchString);
                 var index = toLength(min$8(arguments.length > 1 ? arguments[1] : undefined, that.length));
-                var search = String(searchString);
+                var search = window.String(searchString);
                 return nativeStartsWith ? nativeStartsWith.call(that, search, index) : that.slice(index, index + search.length) === search;
               }
             });
@@ -4112,7 +4112,7 @@ module.exports = () => {
 
             var createMethod$6 = function (TYPE) {
               return function ($this) {
-                var string = String(requireObjectCoercible($this));
+                var string = window.String(requireObjectCoercible($this));
                 if (TYPE & 1) string = string.replace(ltrim, '');
                 if (TYPE & 2) string = string.replace(rtrim, '');
                 return string;
@@ -4191,10 +4191,10 @@ module.exports = () => {
             var getInternalState$3 = internalState.getterFor(STRING_ITERATOR); // `String.prototype[@@iterator]` method
             // https://tc39.github.io/ecma262/#sec-string.prototype-@@iterator
 
-            defineIterator(String, 'String', function (iterated) {
+            defineIterator(window.String, 'String', function (iterated) {
               setInternalState$3(this, {
                 type: STRING_ITERATOR,
-                string: String(iterated),
+                string: window.String(iterated),
                 index: 0
               }); // `%StringIteratorPrototype%.next` method
               // https://tc39.github.io/ecma262/#sec-%stringiteratorprototype%.next
@@ -4219,9 +4219,9 @@ module.exports = () => {
             // https://tc39.github.io/ecma262/#sec-createhtml
 
             var createHtml = function (string, tag, attribute, value) {
-              var S = String(requireObjectCoercible(string));
+              var S = window.String(requireObjectCoercible(string));
               var p1 = '<' + tag;
-              if (attribute !== '') p1 += ' ' + attribute + '="' + String(value).replace(quot, '&quot;') + '"';
+              if (attribute !== '') p1 += ' ' + attribute + '="' + window.String(value).replace(quot, '&quot;') + '"';
               return p1 + '>' + S + '</' + tag + '>';
             };
 
@@ -4572,9 +4572,9 @@ module.exports = () => {
             if (NOT_GENERIC || INCORRECT_NAME) {
               redefine(RegExp.prototype, TO_STRING, function toString() {
                 var R = anObject(this);
-                var p = String(R.source);
+                var p = window.String(R.source);
                 var rf = R.flags;
-                var f = String(rf === undefined && R instanceof RegExp && !('flags' in RegExpPrototype$3) ? regexpFlags.call(R) : rf);
+                var f = window.String(rf === undefined && R instanceof RegExp && !('flags' in RegExpPrototype$3) ? regexpFlags.call(R) : rf);
                 return '/' + p + '/' + f;
               }, {
                 unsafe: true
@@ -4588,7 +4588,7 @@ module.exports = () => {
             // https://tc39.github.io/ecma262/#sec-parseint-string-radix
 
             var _parseInt = FORCED$6 ? function parseInt(string, radix) {
-              var S = trim(String(string));
+              var S = trim(window.String(string));
               return nativeParseInt(S, radix >>> 0 || (hex.test(S) ? 16 : 10));
             } : nativeParseInt;
 
@@ -4607,7 +4607,7 @@ module.exports = () => {
             // https://tc39.github.io/ecma262/#sec-parsefloat-string
 
             var _parseFloat = FORCED$7 ? function parseFloat(string) {
-              var trimmedString = trim$1(String(string));
+              var trimmedString = trim$1(window.String(string));
               var result = nativeParseFloat(trimmedString);
               return result === 0 && trimmedString.charAt(0) == '-' ? -0 : result;
             } : nativeParseFloat;
@@ -4890,7 +4890,7 @@ module.exports = () => {
 
                   while (--index >= 0) {
                     if (s !== '' || index === 0 || data[index] !== 0) {
-                      var t = String(data[index]);
+                      var t = window.String(data[index]);
                       s = s === '' ? t : s + stringRepeat.call('0', 7 - t.length) + t;
                     }
                   }
@@ -4901,7 +4901,7 @@ module.exports = () => {
                 if (fractDigits < 0 || fractDigits > 20) throw RangeError('Incorrect fraction digits'); // eslint-disable-next-line no-self-compare
 
                 if (number != number) return 'NaN';
-                if (number <= -1e21 || number >= 1e21) return String(number);
+                if (number <= -1e21 || number >= 1e21) return window.String(number);
 
                 if (number < 0) {
                   sign = '-';
@@ -5702,7 +5702,7 @@ module.exports = () => {
             var UNHANDLED = 2;
             var Internal, OwnPromiseCapability, PromiseWrapper, nativeThen;
             var FORCED$f = isForced_1(PROMISE, function () {
-              var GLOBAL_CORE_JS_PROMISE = inspectSource(PromiseConstructor) !== String(PromiseConstructor);
+              var GLOBAL_CORE_JS_PROMISE = inspectSource(PromiseConstructor) !== window.String(PromiseConstructor);
 
               if (!GLOBAL_CORE_JS_PROMISE) {
                 // V8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
@@ -7331,7 +7331,7 @@ module.exports = () => {
               };
 
               var isTypedArrayIndex = function (target, key) {
-                return isTypedArray(target) && typeof key != 'symbol' && key in target && String(+key) == String(key);
+                return isTypedArray(target) && typeof key != 'symbol' && key in target && window.String(+key) == window.String(key);
               };
 
               var wrappedGetOwnPropertyDescriptor = function getOwnPropertyDescriptor(target, key) {
@@ -8362,7 +8362,7 @@ module.exports = () => {
                 searchParams['delete']('b');
                 result += key + value;
               });
-              return isPure && !url.toJSON || !searchParams.sort || url.href !== 'http://a/c%20d?a=1&c=3' || searchParams.get('c') !== '3' || String(new URLSearchParams('?a=1')) !== 'a=1' || !searchParams[ITERATOR$7] // throws in Edge
+              return isPure && !url.toJSON || !searchParams.sort || url.href !== 'http://a/c%20d?a=1&c=3' || searchParams.get('c') !== '3' || window.String(new URLSearchParams('?a=1')) !== 'a=1' || !searchParams[ITERATOR$7] // throws in Edge
               || new URL('https://a@b').username !== 'a' || new URLSearchParams(new URLSearchParams('a=b')).get('a') !== 'b' // not punycoded in Edge
               || new URL('http://тест').host !== 'xn--e1aybc' // not escaped in Chrome 62-
               || new URL('http://a#б').hash !== '#%D0%B1' // fails in Chrome 66-
@@ -8389,7 +8389,7 @@ module.exports = () => {
             var OVERFLOW_ERROR = 'Overflow: input needs wider integers to process';
             var baseMinusTMin = base - tMin;
             var floor$8 = Math.floor;
-            var stringFromCharCode = String.fromCharCode;
+            var stringFromCharCode = window.String.fromCharCode;
             /**
              * Creates an array containing the numeric code points of each Unicode
              * character in the string. While JavaScript uses UCS-2 internally,
@@ -8565,7 +8565,7 @@ module.exports = () => {
               var iteratorMethod = getIteratorMethod(it);
 
               if (typeof iteratorMethod != 'function') {
-                throw TypeError(String(it) + ' is not iterable');
+                throw TypeError(window.String(it) + ' is not iterable');
               }
 
               return anObject(iteratorMethod.call(it));
@@ -8928,7 +8928,7 @@ module.exports = () => {
                         }
 
                         init = objectCreate(init, {
-                          body: createPropertyDescriptor(0, String(body)),
+                          body: createPropertyDescriptor(0, window.String(body)),
                           headers: createPropertyDescriptor(0, headers)
                         });
                       }
@@ -9736,7 +9736,7 @@ module.exports = () => {
             ) {
               var that = anInstance(this, URLConstructor, 'URL');
               var base = arguments.length > 1 ? arguments[1] : undefined;
-              var urlString = String(url);
+              var urlString = window.String(url);
               var state = setInternalState$a(that, {
                 type: 'URL'
               });
@@ -9744,7 +9744,7 @@ module.exports = () => {
 
               if (base !== undefined) {
                 if (base instanceof URLConstructor) baseState = getInternalURLState(base);else {
-                  failure = parseURL(baseState = {}, String(base));
+                  failure = parseURL(baseState = {}, window.String(base));
                   if (failure) throw TypeError(failure);
                 }
               }
@@ -9756,7 +9756,7 @@ module.exports = () => {
               searchParamsState.updateSearchParams(state.query);
 
               searchParamsState.updateURL = function () {
-                state.query = String(searchParams) || null;
+                state.query = window.String(searchParams) || null;
               };
 
               if (!descriptors) {
@@ -9845,7 +9845,7 @@ module.exports = () => {
 
             var getPort = function () {
               var port = getInternalURLState(this).port;
-              return port === null ? '' : String(port);
+              return port === null ? '' : window.String(port);
             };
 
             var getPathname = function () {
@@ -9883,7 +9883,7 @@ module.exports = () => {
                 // https://url.spec.whatwg.org/#dom-url-href
                 href: accessorDescriptor(serializeURL, function (href) {
                   var url = getInternalURLState(this);
-                  var urlString = String(href);
+                  var urlString = window.String(href);
                   var failure = parseURL(url, urlString);
                   if (failure) throw TypeError(failure);
                   getInternalSearchParamsState(url.searchParams).updateSearchParams(url.query);
@@ -9895,13 +9895,13 @@ module.exports = () => {
                 // https://url.spec.whatwg.org/#dom-url-protocol
                 protocol: accessorDescriptor(getProtocol, function (protocol) {
                   var url = getInternalURLState(this);
-                  parseURL(url, String(protocol) + ':', SCHEME_START);
+                  parseURL(url, window.String(protocol) + ':', SCHEME_START);
                 }),
                 // `URL.prototype.username` accessors pair
                 // https://url.spec.whatwg.org/#dom-url-username
                 username: accessorDescriptor(getUsername, function (username) {
                   var url = getInternalURLState(this);
-                  var codePoints = arrayFrom(String(username));
+                  var codePoints = arrayFrom(window.String(username));
                   if (cannotHaveUsernamePasswordPort(url)) return;
                   url.username = '';
 
@@ -9913,7 +9913,7 @@ module.exports = () => {
                 // https://url.spec.whatwg.org/#dom-url-password
                 password: accessorDescriptor(getPassword, function (password) {
                   var url = getInternalURLState(this);
-                  var codePoints = arrayFrom(String(password));
+                  var codePoints = arrayFrom(window.String(password));
                   if (cannotHaveUsernamePasswordPort(url)) return;
                   url.password = '';
 
@@ -9926,21 +9926,21 @@ module.exports = () => {
                 host: accessorDescriptor(getHost, function (host) {
                   var url = getInternalURLState(this);
                   if (url.cannotBeABaseURL) return;
-                  parseURL(url, String(host), HOST);
+                  parseURL(url, window.String(host), HOST);
                 }),
                 // `URL.prototype.hostname` accessors pair
                 // https://url.spec.whatwg.org/#dom-url-hostname
                 hostname: accessorDescriptor(getHostname, function (hostname) {
                   var url = getInternalURLState(this);
                   if (url.cannotBeABaseURL) return;
-                  parseURL(url, String(hostname), HOSTNAME);
+                  parseURL(url, window.String(hostname), HOSTNAME);
                 }),
                 // `URL.prototype.port` accessors pair
                 // https://url.spec.whatwg.org/#dom-url-port
                 port: accessorDescriptor(getPort, function (port) {
                   var url = getInternalURLState(this);
                   if (cannotHaveUsernamePasswordPort(url)) return;
-                  port = String(port);
+                  port = window.String(port);
                   if (port == '') url.port = null;else parseURL(url, port, PORT);
                 }),
                 // `URL.prototype.pathname` accessors pair
@@ -9955,7 +9955,7 @@ module.exports = () => {
                 // https://url.spec.whatwg.org/#dom-url-search
                 search: accessorDescriptor(getSearch, function (search) {
                   var url = getInternalURLState(this);
-                  search = String(search);
+                  search = window.String(search);
 
                   if (search == '') {
                     url.query = null;
@@ -9974,7 +9974,7 @@ module.exports = () => {
                 // https://url.spec.whatwg.org/#dom-url-hash
                 hash: accessorDescriptor(getHash, function (hash) {
                   var url = getInternalURLState(this);
-                  hash = String(hash);
+                  hash = window.String(hash);
 
                   if (hash == '') {
                     url.fragment = null;
@@ -10800,7 +10800,7 @@ module.exports = () => {
               };
 
               var deserializeParam = function (value) {
-                return decodeURIComponent(String(value).replace(/\+/g, ' '));
+                return decodeURIComponent(window.String(value).replace(/\+/g, ' '));
               };
 
               var polyfillURLSearchParams = function () {
@@ -10848,7 +10848,7 @@ module.exports = () => {
 
                 proto.append = function (name, value) {
                   if (name in this._entries) {
-                    this._entries[name].push(String(value));
+                    this._entries[name].push(window.String(value));
                   } else {
                     this._entries[name] = [String(value)];
                   }
@@ -11028,7 +11028,7 @@ module.exports = () => {
                 var _URL = global.URL;
 
                 var URL = function (url, base) {
-                  if (typeof url !== 'string') url = String(url); // Only create another document if the base is different from current location.
+                  if (typeof url !== 'string') url = window.String(url); // Only create another document if the base is different from current location.
 
                   var doc = document,
                       baseElement;
@@ -11260,7 +11260,7 @@ module.exports = () => {
 
             function normalizeName(name) {
               if (typeof name !== 'string') {
-                name = String(name);
+                name = window.String(name);
               }
 
               if (/[^a-z0-9\-#$%&'*+.^_`|~]/i.test(name)) {
@@ -11272,7 +11272,7 @@ module.exports = () => {
 
             function normalizeValue(value) {
               if (typeof value !== 'string') {
-                value = String(value);
+                value = window.String(value);
               }
 
               return value;
@@ -11416,7 +11416,7 @@ module.exports = () => {
               var chars = new window.Array(view.length);
 
               for (var i = 0; i < view.length; i++) {
-                chars[i] = String.fromCharCode(view[i]);
+                chars[i] = window.String.fromCharCode(view[i]);
               }
 
               return chars.join('');
@@ -11561,7 +11561,7 @@ module.exports = () => {
                   input.bodyUsed = true;
                 }
               } else {
-                this.url = String(input);
+                this.url = window.String(input);
               }
 
               this.credentials = options.credentials || this.credentials || 'same-origin';

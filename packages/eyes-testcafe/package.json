@@ -1,10 +1,10 @@
 {
   "name": "@applitools/eyes-testcafe",
   "private": true,
-  "version": "4.31.23",
-  "description": "Applitools Eyes SDK for Selenium WebDriver",
+  "version": "1.0.0",
+  "description": "Applitools Eyes SDK for Testcafe",
   "keywords": [
-    "eyes-selenium",
+    "eyes-testcafe",
     "eyes-rendering",
     "eyes-visual-grid",
     "applitools",
@@ -14,9 +14,7 @@
     "automation",
     "testing",
     "tests",
-    "selenium",
-    "webdriver",
-    "webdriverjs"
+    "testcafe"
   ],
   "homepage": "https://applitools.com",
   "author": {

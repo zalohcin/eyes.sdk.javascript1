@@ -7,7 +7,7 @@ const {Eyes, Target, ConsoleLogHandler} = require('../../../..')
 
 fixture`Hello world full page Edge`.page`https://www.applitools.com/helloworld`
 
-test('helloworld full page Edg', async t => {
+test('helloworld full page Edge', async t => {
   const eyes = new Eyes()
   eyes.setConfiguration(new Configuration({viewportSize: {width: 600, height: 500}}))
   if (process.env.APPLITOOLS_SHOW_LOGS || process.env.APPLITOOLS_DEBUG_TEST) {
@@ -18,11 +18,7 @@ test('helloworld full page Edg', async t => {
   await eyes.close()
 })
 
-/*
- * BUG - Tetscafe failing to take snapshot:
- * https://github.com/DevExpress/testcafe/issues/4600
- */
-test.skip('full page css stiching Edge', async t => {
+test('full page css stiching Edge', async t => {
   const eyes = new Eyes()
   eyes.setConfiguration(
     new Configuration({stitchMode: StitchMode.CSS, viewportSize: {width: 600, height: 500}}),
