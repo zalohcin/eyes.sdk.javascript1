@@ -1,6 +1,7 @@
 'use strict'
 const assert = require('assert')
 const {Builder} = require('selenium-webdriver')
+const {Options} = require('selenium-webdriver/chrome')
 const {Eyes, Target, VisualGridRunner, Configuration} = require('../../index')
 
 describe('TestCounts', () => {
@@ -9,7 +10,10 @@ describe('TestCounts', () => {
   let runner
 
   beforeEach(async function() {
-    driver = new Builder().forBrowser('chrome').build()
+    driver = new Builder()
+      .forBrowser('chrome')
+      .setChromeOptions(new Options().headless())
+      .build()
     await driver.get('https://applitools.com/helloworld')
     runner = new VisualGridRunner()
     eyes = new Eyes(runner)
