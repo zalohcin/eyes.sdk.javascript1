@@ -24,6 +24,7 @@ const {
   ScaleProviderIdentityFactory,
   NullCutProvider,
   MatchResult,
+  EyesJsBrowserUtils,
 } = require('@applitools/eyes-sdk-core')
 const getCaptureDomScript = require('./getCaptureDomScript')
 
@@ -1006,33 +1007,9 @@ class EyesTestCafe extends Eyes {
     return this._scrollRootElement
   }
 
-  async scanPage(scrollAmmount = 500, timeInterval = 300) {
-    this._logger.verbose(
-      `scanPage started - scrollAmmount ${scrollAmmount} timeInterval ${timeInterval}`,
-    )
-    const scrollScript = `
-      let resolve
-      const p = new Promise(r => (resolve = r))
-      function doScan(isUp) {
-        const originalOffset = window.pageYOffset
-        const yDiff = isUp ? (-1 * ${scrollAmmount}) : ${scrollAmmount}
-        if (window.scrollTo) {
-          window.scrollTo(0, originalOffset + yDiff)
-        } else {
-          document.documentElement.scrollTop = originalOffset + yDiff
-        }
-        if (window.pageYOffset !== originalOffset) {
-          setTimeout(doScan, ${timeInterval}, isUp)
-        } else if (originalOffset > 0) {
-          setTimeout(doScan, ${timeInterval}, true)
-        } else {
-          resolve()
-        }
-      }
-      doScan()
-      return p;
-    `
-    await this._driver.executeScript(scrollScript)
+  async _scanPage() {
+    this._logger.verbose('scanPage started')
+    await EyesJsBrowserUtils.scanPage(this._driver)
     this._logger.verbose('scanPage - done!')
   }
 

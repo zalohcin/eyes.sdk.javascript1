@@ -1,6 +1,5 @@
 'use strict'
 
-// TODO - account for scrollers ????
 function makeFixImageMarkPosition({executor, logger}) {
   return async function(transformLeft, transformTop) {
     const fixTestcafeMark = `

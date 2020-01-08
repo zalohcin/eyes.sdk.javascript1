@@ -274,8 +274,14 @@ class FullPageCaptureAlgorithm {
         )
       }
 
-      // TODO - are these lines ok for non-double overlap stitching ?
-      let stitchY = partRegion.getTop() !== 0 ? partRegion.getTop() + this._stitchingOverlap : 0
+      // TODO - targetPosition.getY() option can be removed after testing.
+      let stitchY
+      if (!this._isDoubleOverlap) {
+        stitchY = targetPosition.getY()
+      } else {
+        stitchY = partRegion.getTop() !== 0 ? partRegion.getTop() + this._stitchingOverlap : 0
+      }
+
       this._logger.verbose('Stitching part into the image container in', stitchY)
       await stitchedImage.copyRasterData(targetPosition.getX(), stitchY, partImage)
       this._logger.verbose('Done!')
