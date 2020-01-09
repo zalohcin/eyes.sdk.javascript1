@@ -11,7 +11,7 @@ describe('Test ', () => {
   let stitchMode = 'CSS'
 
   beforeEach(async function() {
-    driver = new Builder()
+    driver = await new Builder()
       .forBrowser('chrome')
       // .setChromeOptions(new Options().headless())
       .build()
