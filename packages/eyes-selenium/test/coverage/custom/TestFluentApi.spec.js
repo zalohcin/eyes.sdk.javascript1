@@ -1,25 +1,24 @@
 'use strict'
-const rest = require('rest-api-handler')
-const {Builder, By} = require('selenium-webdriver')
-const {Options} = require('selenium-webdriver/chrome')
-const {Eyes, Target, ClassicRunner, Region} = require('../../index')
+const {By} = require('selenium-webdriver')
+const {getDriver, getEyes} = require('./util/testSetup')
+const {
+  Target,
+  Region,
+  BatchInfo,
+  AccessibilityLevel,
+  AccessibilityRegionType,
+} = require('../../../index')
 const appName = 'Test Fluent Api'
 describe('Test ', () => {
-  let driver
-  let eyes
-  let runner
+  let driver, eyes
   let stitchMode = 'CSS'
 
   beforeEach(async function() {
-    driver = await new Builder()
-      .forBrowser('chrome')
-      // .setChromeOptions(new Options().headless())
-      .build()
+    driver = await getDriver('CHROME')
     await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-    runner = new ClassicRunner()
-    eyes = new Eyes(runner)
-    eyes.setStitchMode(stitchMode)
-    eyes.setBatch('JS test')
+    let defaults = await getEyes('classic', stitchMode)
+    eyes = defaults.eyes
+    eyes.setBatch(new BatchInfo('JS test'))
   })
 
   afterEach(async function() {
@@ -42,6 +41,7 @@ describe('Test ', () => {
         .ignoreRegions(new Region(50, 50, 100, 100)),
     )
     await eyes.close()
+    await checkSettedRegionsInTheSessionsDetails()
   })
 
   it('TestCheckRegionWithIgnoreRegion_Fluent', async function() {
@@ -54,6 +54,7 @@ describe('Test ', () => {
       Target.region(By.id('overflowing-div')).ignoreRegions(new Region(50, 50, 100, 100)),
     )
     await eyes.close()
+    await checkSettedRegionsInTheSessionsDetails()
   })
 
   it('TestCheckRegionBySelectorAfterManualScroll_Fluent', async function() {
@@ -88,6 +89,7 @@ describe('Test ', () => {
       Target.window().ignoreRegions(By.id('overflowing-div')),
     )
     await eyes.close()
+    await checkSettedRegionsInTheSessionsDetails()
   })
 
   it('TestCheckWindowWithIgnoreBySelector_Centered_Fluent', async function() {
@@ -100,6 +102,7 @@ describe('Test ', () => {
       Target.window().ignoreRegions(By.id('centered')),
     )
     await eyes.close()
+    await checkSettedRegionsInTheSessionsDetails()
   })
 
   it('TestCheckWindowWithIgnoreBySelector_Stretched_Fluent', async function() {
@@ -112,6 +115,7 @@ describe('Test ', () => {
       Target.window().ignoreRegions(By.id('stretched')),
     )
     await eyes.close()
+    await checkSettedRegionsInTheSessionsDetails()
   })
 
   it('TestCheckWindowWithFloatingBySelector_Fluent', async function() {
@@ -124,6 +128,7 @@ describe('Test ', () => {
       Target.window().floatingRegion(By.id('overflowing-div'), 3, 3, 20, 30),
     )
     await eyes.close()
+    await checkSettedRegionsInTheSessionsDetails()
   })
 
   it('TestCheckRegionByCoordinates_Fluent', async function() {
@@ -164,6 +169,7 @@ describe('Test ', () => {
       Target.region(element).ignoreRegions(ignoreElement),
     )
     await eyes.close()
+    await checkSettedRegionsInTheSessionsDetails()
   })
 
   it('TestCheckElementWithIgnoreRegionBySameElement_Fluent', async function() {
@@ -182,6 +188,7 @@ describe('Test ', () => {
       Target.region(element).ignoreRegions(element),
     )
     await eyes.close()
+    await checkSettedRegionsInTheSessionsDetails()
   })
 
   it('TestScrollbarsHiddenAndReturned_Fluent', async function() {
@@ -212,6 +219,7 @@ describe('Test ', () => {
         .ignoreRegions(By.css('.ignore')),
     )
     await eyes.close()
+    await checkSettedRegionsInTheSessionsDetails()
   })
 
   it('TestCheckMany', async function() {
@@ -237,46 +245,7 @@ describe('Test ', () => {
   })
 
   it('TestCheckScrollableModal', async function() {
-    await eyes.open(driver, appName, 'Fluent - Check many', {
-      width: 800,
-      height: 600,
-    })
-    await eyes.check(
-      'Fluent - Check many',
-      Target.region(By.id('overflowing-div-image')).withName('overflowing div image'),
-      Target.region(By.id('overflowing-div-image'))
-        .fully()
-        .withName('overflowing div image (fully)'),
-      Target.region(By.id('overflowing-div')).withName('overflowing div'),
-      Target.region(new Region(30, 50, 300, 620)).withName('rectangle'),
-      Target.frame('frame1')
-        .frame('frame1-1')
-        .fully()
-        .withName('Full Frame in Frame'),
-      Target.frame('frame1').withName('frame1'),
-    )
-    await eyes.close()
-  })
-
-  it('TestCheckScrollableModal', async function() {
-    await eyes.open(driver, appName, 'Fluent - Check many', {
-      width: 800,
-      height: 600,
-    })
-    driver.findElement(By.id('centered')).click()
-    let scrollRootLocator = stitchMode === 'CSS' ? 'modal-content' : 'modal1'
-    let scrollRootElement = driver.findElement(By.id(scrollRootLocator))
-    await eyes.check(
-      'Fluent - Scrollable Modal',
-      Target.region(By.id('modal-content'))
-        .fully()
-        .scrollRootElement(scrollRootElement),
-    )
-    await eyes.close()
-  })
-
-  it('TestCheckScrollableModal', async function() {
-    await eyes.open(driver, appName, 'Fluent - Check many', {
+    await eyes.open(driver, appName, 'Fluent - Scrollable Modal', {
       width: 800,
       height: 600,
     })
@@ -307,6 +276,7 @@ describe('Test ', () => {
           .ignoreDisplacements(ignoreDisplacement),
       )
       await eyes.close()
+      await checkSettedRegionsInTheSessionsDetails()
     })
   })
 
@@ -328,6 +298,7 @@ describe('Test ', () => {
     let settings = Target.window().floatingRegion(new Region(10, 10, 20, 20), 3, 3, 20, 30)
     await eyes.check('Fluent -  Window with floating region by region', settings)
     await eyes.close()
+    await checkSettedRegionsInTheSessionsDetails()
   })
 
   it('TestCheckElementFully_Fluent', async function() {
@@ -339,30 +310,37 @@ describe('Test ', () => {
     await eyes.check('Fluent -  Region by element - fully', Target.region(element).fully())
     await eyes.close()
   })
+
+  it('TestSimpleRegion', async function() {
+    await eyes.open(driver, appName, 'Fluent - Test Simple Region', {
+      width: 800,
+      height: 600,
+    })
+    await eyes.check(
+      'Fluent - Test Simple Region',
+      Target.window().region(new Region(50, 50, 100, 100)),
+    )
+    await eyes.close()
+  })
+
+  it('TestAccessibilityRegions', async function() {
+    let config = eyes.getConfiguration()
+    config.setAccessibilityValidation(AccessibilityLevel.AAA)
+    eyes.setConfiguration(config)
+    await eyes.open(driver, appName, 'Fluent - Test Accessibility Regions', {
+      width: 800,
+      height: 600,
+    })
+    await eyes.check(
+      'Fluent - Test Accessibility Regions',
+      Target.window().accessibilityRegion(
+        By.className('ignore'),
+        AccessibilityRegionType.LargeText,
+      ),
+    )
+    await eyes.close()
+    await checkSettedRegionsInTheSessionsDetails()
+  })
 })
 
-async function checkSettedRegionsInTheSessionsDetails() {
-  let results = await runner.getAllTestResults()
-  results = results.getAllResults()
-  let session = results[0]
-    .getTestResults()
-    .getApiUrls()
-    .getSession()
-  let apiKey = results[0].getTestResults()
-  console.log(session)
-  let response = await getSessionResults(
-    session,
-    eyes.getApiKey(),
-    results[0].getTestResults()._secretToken,
-  )
-  // need proper implementation
-  /*console.log(uri)
-  console.log(apiKey)
-  console.log(secretToken)
-  const api = new rest.Api(uri)
-  return await api.get('', [], {
-    format: 'json',
-    AccessToken: secretToken,
-    apiKey: apiKey,
-  })*/
-}
+async function checkSettedRegionsInTheSessionsDetails() {}
