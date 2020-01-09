@@ -62,7 +62,8 @@
     "test:example": "mocha --no-timeouts \"test/example/*.spec.js\"",
     "test:coverage": "coverage-tests run --path test/coverage/index.js",
     "test:coverage:nuke": "coverage-tests nuke",
-    "test:coverage:doctor": "coverage-tests doctor"
+    "test:coverage:doctor": "coverage-tests doctor",
+    "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\""
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

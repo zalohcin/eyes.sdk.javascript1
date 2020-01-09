@@ -20,12 +20,15 @@ class ImageUtils {
    * @return {Promise<png.Image|Image>} - Decoded png image with byte buffer
    */
   static parseImage(buffer) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       // pass the file to PNG using read stream
       const imageReadableStream = new ReadableBufferStream(buffer, undefined)
       const image = new png.Image({filterType: 4})
       // noinspection JSUnresolvedFunction
-      return imageReadableStream.pipe(image).on('parsed', () => resolve(image))
+      return imageReadableStream
+        .pipe(image)
+        .on('parsed', () => resolve(image))
+        .on('error', e => reject(`cannot parse image ${e}`))
     })
   }
 
@@ -311,7 +314,7 @@ class ImageUtils {
         region.getLeft() < 0 ||
         region.getLeft() >= image.width
       ) {
-        return reject(new Error('region is outside the image bounds!'))
+        return reject(new Error(`region is outside the image bounds! ${region}`))
       }
 
       // process the pixels - crop

@@ -281,6 +281,47 @@ class EyesJsBrowserUtils {
       `translate(-${position.getX()}px, -${position.getY()}px)`,
     )
   }
+
+  /**
+   * Scroll to the bottom of the page and then scroll to the top.
+   *
+   * @param {EyesJsExecutor} executor - The executor to use.
+   * @param {number} [scrollAmmount = 500] - How mutch scrolling to do in each step.
+   * @param {number} [timeInterval = 300] - Milliseconds netween each scroll.
+   * @return {Promise} - A promise which resolves once the scrolling is complete.
+   */
+  static async scanPage(executor, scrollAmmount = 500, timeInterval = 300) {
+    const timeout = (50000 / scrollAmmount) * timeInterval * 2 + 5000
+    const scrollScript = `
+      let resolve, reject, timeoutId
+      let isAborted = false
+      const p = new Promise((res, rej) => (resolve = res, reject = rej))
+    
+      function doScan(isUp) {
+        if (isAborted) { return; }
+        const originalOffset = window.pageYOffset
+        const yDiff = isUp ? (-1 * ${scrollAmmount}) : ${scrollAmmount}
+        if (window.scrollTo) {
+          window.scrollTo(0, originalOffset + yDiff)
+        } else {
+          document.documentElement.scrollTop = originalOffset + yDiff
+        }
+        if (window.pageYOffset !== originalOffset) {
+          setTimeout(doScan, ${timeInterval}, isUp)
+        } else if (originalOffset > 0) {
+          setTimeout(doScan, ${timeInterval}, true)
+        } else {
+          clearTimeout(timeoutId);
+          resolve()
+        }
+      }
+
+      timeoutId = setTimeout(() => (isAborted = true, reject()), ${timeout}, 'scanPage timed out after ${timeout}ms!')
+      doScan()
+      return p;
+    `
+    await executor.executeScript(scrollScript)
+  }
 }
 
 exports.EyesJsBrowserUtils = EyesJsBrowserUtils
