@@ -8,7 +8,7 @@ const makeSafeExecuteFunction = require('./safeExecuteFunction')
 /**
  * @ignore
  */
-class TestCafeJavaScriptExecutor extends EyesJsExecutor {
+class TestCafeExecutor extends EyesJsExecutor {
   /**
    * @param {EyesWebDriver|WebDriver} driver
    */
@@ -54,4 +54,4 @@ class TestCafeJavaScriptExecutor extends EyesJsExecutor {
   }
 }
 
-exports.TestCafeJavaScriptExecutor = TestCafeJavaScriptExecutor
+exports.TestCafeExecutor = TestCafeExecutor

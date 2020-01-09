@@ -6,7 +6,7 @@ const {CorsIframeHandle} = require('@applitools/eyes-sdk-core')
 const {VisualGridRunner} = require('./runner/VisualGridRunner')
 const {EyesRunner} = require('./runner/EyesRunner')
 // eslint-disable-next-line node/no-missing-require
-const {EyesSelenium} = require('./EyesSelenium')
+const {EyesTestcafe} = require('./EyesTestcafe')
 const {EyesVisualGrid} = require('./EyesVisualGrid')
 
 /**
@@ -32,11 +32,11 @@ class EyesFactory {
       return new EyesVisualGrid(serverUrl, isDisabled, runner)
     }
 
-    return new EyesSelenium(serverUrl, isDisabled, runner)
+    return new EyesTestcafe(serverUrl, isDisabled, runner)
   }
 
   /**
-   * For Selenium IDE initialization
+   * For Testcafe IDE initialization
    *
    * @private
    * @param {string} [serverUrl] - The Eyes server URL.
@@ -61,7 +61,7 @@ class EyesFactory {
       })
       eyes.setConfiguration(cfg)
     } else {
-      eyes = new EyesSelenium(serverUrl, isDisabled)
+      eyes = new EyesTestcafe(serverUrl, isDisabled)
     }
 
     eyes._corsIframeHandle = CorsIframeHandle.BLANK

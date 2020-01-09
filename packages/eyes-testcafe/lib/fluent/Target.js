@@ -1,16 +1,16 @@
 'use strict'
 
-const {SeleniumCheckSettings} = require('./SeleniumCheckSettings')
+const {TestcafeCheckSettings} = require('./TestcafeCheckSettings')
 
 class Target {
   /**
    * Validate current window
    *
-   * @return {SeleniumCheckSettings}
+   * @return {TestcafeCheckSettings}
    * @constructor
    */
   static window() {
-    return new SeleniumCheckSettings()
+    return new TestcafeCheckSettings()
   }
 
   /**
@@ -18,22 +18,22 @@ class Target {
    *
    * @param {Region|RegionObject|By|WebElement|EyesWebElement} region - The region to validate.
    * @param {number|string|By|WebElement|EyesWebElement} [frame] - The element which is the frame to switch to.
-   * @return {SeleniumCheckSettings}
+   * @return {TestcafeCheckSettings}
    * @constructor
    */
   static region(region, frame) {
-    return new SeleniumCheckSettings(region, frame)
+    return new TestcafeCheckSettings(region, frame)
   }
 
   /**
    * Validate frame
    *
    * @param {number|string|By|WebElement|EyesWebElement} frame - The element which is the frame to switch to.
-   * @return {SeleniumCheckSettings}
+   * @return {TestcafeCheckSettings}
    * @constructor
    */
   static frame(frame) {
-    return new SeleniumCheckSettings(null, frame)
+    return new TestcafeCheckSettings(null, frame)
   }
 }
 

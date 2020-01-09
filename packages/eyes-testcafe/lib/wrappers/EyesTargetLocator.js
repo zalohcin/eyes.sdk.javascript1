@@ -5,7 +5,7 @@ const {Location, RectangleSize, ArgumentGuard, TypeUtils} = require('@applitools
 const {Frame} = require('../frames/Frame')
 const {FrameChain} = require('../frames/FrameChain')
 const {ScrollPositionProvider} = require('../positioning/ScrollPositionProvider')
-const {TestCafeJavaScriptExecutor} = require('../TestCafeJavaScriptExecutor')
+const {TestCafeExecutor} = require('../TestCafeExecutor')
 const {EyesWebElement} = require('./EyesWebElement')
 const {EyesWebElementPromise} = require('./EyesWebElementPromise')
 
@@ -26,7 +26,7 @@ class EyesTargetLocator {
 
     this._logger = logger
     this._driver = driver
-    this._jsExecutor = new TestCafeJavaScriptExecutor(driver._driver)
+    this._jsExecutor = new TestCafeExecutor(driver._driver)
 
     /** @type {ScrollPositionMemento} */
     this._defaultContentPositionMemento = undefined
@@ -254,8 +254,7 @@ class EyesTargetLocator {
    */
   activeElement() {
     this._logger.verbose('Switching to element...')
-    // noinspection JSCheckFunctionSignatures
-    const id = this._driver.execute(new Command(Name.GET_ACTIVE_ELEMENT))
+    const id = this._driver.execute(/* new Command(Name.GET_ACTIVE_ELEMENT) */)
 
     this._logger.verbose('Done!')
     return new EyesWebElementPromise(this._logger, this._driver, id, 'activeElement')

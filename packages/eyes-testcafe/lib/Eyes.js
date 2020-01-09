@@ -16,7 +16,7 @@ const {EyesBase, TestFailedError, CorsIframeHandle} = require('@applitools/eyes-
 
 const {ClassicRunner} = require('./runner/ClassicRunner')
 const {FrameChain} = require('./frames/FrameChain')
-const {EyesSeleniumUtils} = require('./EyesSeleniumUtils')
+const {EyesTestcafeUtils} = require('./EyesTestcafeUtils')
 const {ImageRotation} = require('./positioning/ImageRotation')
 
 const {
@@ -26,7 +26,7 @@ const {NopRegionVisibilityStrategy} = require('./regionVisibility/NopRegionVisib
 const {JavascriptHandler} = require('./JavascriptHandler')
 const {EyesWebDriver} = require('./wrappers/EyesWebDriver')
 const {Target} = require('./fluent/Target')
-const {TestCafeJavaScriptExecutor} = require('./TestCafeJavaScriptExecutor')
+const {TestCafeExecutor} = require('./TestCafeExecutor')
 
 const VERSION = require('../package.json').version
 
@@ -60,7 +60,7 @@ class Eyes extends EyesBase {
     if (new.target === Eyes) {
       throw new TypeError(
         'Cannot construct `Eyes` instances directly. ' +
-          'Please use `EyesSelenium`, `EyesVisualGrid` or `EyesFactory` instead.',
+          'Please use `EyesTestcafe`, `EyesVisualGrid` or `EyesFactory` instead.',
       )
     }
 
@@ -71,7 +71,7 @@ class Eyes extends EyesBase {
 
     /** @type {EyesWebDriver} */
     this._driver = undefined
-    /** @type {TestCafeJavaScriptExecutor} */
+    /** @type {TestCafeExecutor} */
     this._jsExecutor = undefined
 
     /** @type {string} */
@@ -95,7 +95,7 @@ class Eyes extends EyesBase {
     /** @type {CorsIframeHandle} */
     this._corsIframeHandle = CorsIframeHandle.KEEP
 
-    EyesSeleniumUtils.setJavascriptHandler(new JavascriptHandler())
+    EyesTestcafeUtils.setJavascriptHandler(new JavascriptHandler())
   }
 
   /**
@@ -140,7 +140,7 @@ class Eyes extends EyesBase {
    * @param {SessionType} [sessionType] - The type of test (e.g.,  standard test / visual performance test).
    * @return {Promise<EyesWebDriver>} - A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
-  async open(driver, appName, testName, viewportSize, sessionType) {
+  async open(_driver, _appName, _testName, _viewportSize, _sessionType) {
     // eslint-disable-line no-unused-vars
     throw new TypeError('The method is not implemented!')
   }
@@ -156,7 +156,7 @@ class Eyes extends EyesBase {
       this._driver = new EyesWebDriver(this._logger, this, driver)
     }
 
-    this._jsExecutor = new TestCafeJavaScriptExecutor(this._driver._driver)
+    this._jsExecutor = new TestCafeExecutor(this._driver._driver)
   }
 
   // noinspection JSMethodCanBeStatic
@@ -165,10 +165,10 @@ class Eyes extends EyesBase {
    *
    * @abstract
    * @param {string} name - A name to be associated with the match
-   * @param {SeleniumCheckSettings} checkSettings - Target instance which describes whether we want a window/region/frame
+   * @param {TestcafeCheckSettings} checkSettings - Target instance which describes whether we want a window/region/frame
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async check(name, checkSettings) {
+  async check(_name, _checkSettings) {
     // eslint-disable-line no-unused-vars
     throw new TypeError('The method is not implemented!')
   }
@@ -495,7 +495,7 @@ class Eyes extends EyesBase {
       await this._driver.switchTo().defaultContent()
 
       try {
-        await EyesSeleniumUtils.setViewportSize(this._logger, this._driver, size)
+        await EyesTestcafeUtils.setViewportSize(this._logger, this._driver, size)
         this._effectiveViewport = new Region(Location.ZERO, size)
       } catch (err) {
         this._logger.verbose('Failed to set viewport size', err)
@@ -518,7 +518,7 @@ class Eyes extends EyesBase {
    */
   static async getViewportSize(driver) {
     ArgumentGuard.notNull(driver, 'driver')
-    return EyesSeleniumUtils.getViewportSizeOrDisplaySize(new Logger(), driver)
+    return EyesTestcafeUtils.getViewportSizeOrDisplaySize(new Logger(), driver)
   }
 
   // noinspection JSUnusedGlobalSymbols, JSCheckFunctionSignatures
@@ -534,7 +534,7 @@ class Eyes extends EyesBase {
     ArgumentGuard.notNull(driver, 'driver')
     ArgumentGuard.notNull(viewportSize, 'viewportSize')
 
-    await EyesSeleniumUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize))
+    await EyesTestcafeUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize))
   }
 
   // noinspection JSUnusedGlobalSymbols
