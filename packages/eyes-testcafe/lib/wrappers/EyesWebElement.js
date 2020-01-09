@@ -5,13 +5,13 @@ const {
   Region,
   ArgumentGuard,
   CoordinatesType,
-  TypeUtils,
+  // TypeUtils,
   RectangleSize,
   Location,
   EyesError,
   GeneralUtils,
 } = require('@applitools/eyes-common')
-const {MouseTrigger} = require('@applitools/eyes-sdk-core')
+// const {MouseTrigger} = require('@applitools/eyes-sdk-core')
 
 const JS_GET_SCROLL_SIZE = 'return [arguments[0].scrollWidth, arguments[0].scrollHeight];'
 
@@ -52,7 +52,7 @@ const JS_GET_SIZE_AND_BORDER_WIDTHS = `${'var elem = arguments[0]; ' +
   'var retVal = [elem.clientWidth, elem.clientHeight]; '}${JS_GET_BORDER_WIDTHS_ARR}return retVal;`
 
 /**
- * Wraps a Selenium Web Element.
+ * Wraps a Testcafe Web Element.
  */
 class EyesWebElement {
   /**
@@ -93,9 +93,8 @@ class EyesWebElement {
    * @param {!EyesWebElement|WebElement} b A WebElement.
    * @return {!Promise<boolean>} - A promise that will be resolved to whether the two WebElements are equal.
    */
-  static async equals(a, b) {
+  static async equals(_a, _b) {
     // TODO (amit)
-
     return false
   }
 

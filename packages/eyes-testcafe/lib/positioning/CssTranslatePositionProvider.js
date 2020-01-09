@@ -3,7 +3,7 @@
 const {ArgumentGuard} = require('@applitools/eyes-common')
 const {PositionProvider} = require('@applitools/eyes-sdk-core')
 
-const {EyesSeleniumUtils} = require('../EyesSeleniumUtils')
+const {EyesTestcafeUtils} = require('../EyesTestcafeUtils')
 const makeFixImageMarkPosition = require('./fixImageMarkPosition')
 const {CssTranslatePositionMemento} = require('./CssTranslatePositionMemento')
 
@@ -14,7 +14,7 @@ const {CssTranslatePositionMemento} = require('./CssTranslatePositionMemento')
 class CssTranslatePositionProvider extends PositionProvider {
   /**
    * @param {Logger} logger
-   * @param {SeleniumJavaScriptExecutor} executor
+   * @param {TestcafeExecutor} executor
    * @param {WebElement} scrollRootElement
    */
   constructor(logger, executor, scrollRootElement) {
@@ -70,7 +70,7 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @inheritDoc
    */
   async getEntireSize() {
-    const entireSize = await EyesSeleniumUtils.getEntireElementSize(
+    const entireSize = await EyesTestcafeUtils.getEntireElementSize(
       this._executor,
       this._scrollRootElement,
     )

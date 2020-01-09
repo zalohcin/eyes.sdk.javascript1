@@ -3,19 +3,6 @@
   "private": true,
   "version": "2.0.0-beta.4",
   "description": "Applitools Eyes SDK for Testcafe",
-  "keywords": [
-    "eyes-testcafe",
-    "eyes-rendering",
-    "eyes-visual-grid",
-    "applitools",
-    "eyes",
-    "test automation",
-    "visual regression",
-    "automation",
-    "testing",
-    "tests",
-    "testcafe"
-  ],
   "homepage": "https://applitools.com",
   "author": {
     "name": "Applitools Team",
@@ -46,6 +33,26 @@
     "@applitools/functional-commons": "^1.5.4",
     "rimraf": "^3.0.0"
   },
+  "peerDependencies": {
+    "testcafe": "^1.5.0"
+  },
+  "license": "SEE LICENSE FILE",
+  "engines": {
+    "node": ">=10.13.0"
+  },
+  "keywords": [
+    "eyes-testcafe",
+    "eyes-rendering",
+    "eyes-visual-grid",
+    "applitools",
+    "eyes",
+    "test automation",
+    "visual regression",
+    "automation",
+    "testing",
+    "tests",
+    "testcafe"
+  ],
   "scripts": {
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",
@@ -83,12 +90,5 @@
     "testcafe": "^1.5.0",
     "testcafe-browser-provider-browserstack": "^1.10.1",
     "ua-parser-js": "^0.7.20"
-  },
-  "peerDependencies": {
-    "testcafe": "^1.5.0"
-  },
-  "license": "SEE LICENSE FILE",
-  "engines": {
-    "node": ">=8.9.0"
   }
 }
