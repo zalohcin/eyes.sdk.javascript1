@@ -2,7 +2,7 @@
 const assert = require('assert')
 const {Builder} = require('selenium-webdriver')
 const {Options} = require('selenium-webdriver/chrome')
-const {Eyes, Target, VisualGridRunner, Configuration} = require('../../index')
+const {Eyes, Target, VisualGridRunner, Configuration} = require('../../../index')
 
 describe('TestCounts', () => {
   let driver
@@ -10,7 +10,7 @@ describe('TestCounts', () => {
   let runner
 
   beforeEach(async function() {
-    driver = new Builder()
+    driver = await new Builder()
       .forBrowser('chrome')
       .setChromeOptions(new Options().headless())
       .build()
