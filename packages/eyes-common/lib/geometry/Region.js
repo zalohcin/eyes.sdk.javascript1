@@ -79,11 +79,12 @@ const getSubRegionsWithFixedSize = (containerRegion, subRegionSize) => {
  * @return {Region[]} - The sub-regions composing the current region. If maxSubRegionSize is equal or greater than
  *   the current region, only a single region is returned.
  */
-const getSubRegionsWithVaryingSize = (containerRegion, maxSubRegionSize) => {
+const getSubRegionsWithVaryingSize = (containerRegion, maxSubRegionSize, scrollDownAmmount) => {
   ArgumentGuard.notNull(containerRegion, 'containerRegion')
   ArgumentGuard.notNull(maxSubRegionSize, 'maxSubRegionSize')
   ArgumentGuard.greaterThanZero(maxSubRegionSize.getWidth(), 'maxSubRegionSize.getWidth()')
   ArgumentGuard.greaterThanZero(maxSubRegionSize.getHeight(), 'maxSubRegionSize.getHeight()')
+  ArgumentGuard.greaterThanOrEqualToZero(scrollDownAmmount, 'scrollDownAmmount')
 
   const subRegions = []
 
@@ -110,7 +111,7 @@ const getSubRegionsWithVaryingSize = (containerRegion, maxSubRegionSize) => {
       subRegions.push(new Region(currentLeft, currentTop, currentWidth, currentHeight))
       currentLeft += maxSubRegionSize.getWidth()
     }
-    currentTop += maxSubRegionSize.getHeight()
+    currentTop = currentTop + maxSubRegionSize.getHeight() - scrollDownAmmount
   }
   return subRegions
 }
@@ -430,16 +431,17 @@ class Region {
    * @param {RectangleSize} subRegionSize - The default sub-region size to use.
    * @param {boolean} [isFixedSize=false] - If {@code false}, then sub-regions might have a size which is smaller then
    *   {@code subRegionSize} (thus there will be no overlap of regions). Otherwise, all sub-regions will have the same
-   *   size, but sub-regions might overlap.
+   * @param {number} [scrollDownAmmount=0] - If exists (double overlap) then each non-top region is scrolled up (page down)
+   *   by this ammount; this is under the assumption that this mmount should be removed from the top of images.
    * @return {Region[]} - The sub-regions composing the current region. If {@code subRegionSize} is equal or
    *   greater than the current region, only a single region is returned.
    */
-  getSubRegions(subRegionSize, isFixedSize = false) {
+  getSubRegions(subRegionSize, isFixedSize = false, scrollDownAmmount = 0) {
     if (isFixedSize) {
       return getSubRegionsWithFixedSize(this, subRegionSize)
     }
 
-    return getSubRegionsWithVaryingSize(this, subRegionSize)
+    return getSubRegionsWithVaryingSize(this, subRegionSize, scrollDownAmmount)
   }
 
   /**

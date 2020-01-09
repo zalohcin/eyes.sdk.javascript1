@@ -35,9 +35,10 @@ class DomCapture {
    * @param {Logger} logger
    * @param {EyesWebDriver|WebDriver} driver
    */
-  constructor(logger, driver) {
+  constructor(logger, driver, script) {
     this._logger = logger
     this._driver = driver
+    this._customScript = script
   }
 
   /**
@@ -52,6 +53,7 @@ class DomCapture {
     driver,
     positionProvider,
     returnType = DomCaptureReturnType.STRING,
+    script,
   ) {
     ArgumentGuard.notNull(logger, 'logger')
     ArgumentGuard.notNull(driver, 'driver')
@@ -62,7 +64,7 @@ class DomCapture {
       await positionProvider.setPosition(Location.ZERO)
     }
 
-    const domCapture = new DomCapture(logger, driver)
+    const domCapture = new DomCapture(logger, driver, script)
     const dom = await domCapture.getWindowDom()
 
     if (positionProvider) {
@@ -76,11 +78,15 @@ class DomCapture {
    * @return {Promise<{string}>}
    */
   async getWindowDom() {
-    const captureDomScript = await getCaptureDomAndPollScript()
+    let script
+    if (!this._customScript) {
+      const captureDomScript = await getCaptureDomAndPollScript()
+      script = `${captureDomScript} return __captureDomAndPoll();`
+    } else {
+      script = this._customScript
+    }
 
-    const script = `${captureDomScript} return __captureDomAndPoll();`
     const url = await this._driver.getCurrentUrl()
-
     return this.getFrameDom(script, url)
   }
 
@@ -109,7 +115,10 @@ class DomCapture {
     }
 
     if (result.status === SCRIPT_RESPONSE_STATUS.ERROR) {
-      throw new EyesError('Error during capturing DOM', result.error)
+      throw new EyesError(
+        `Error during capture dom and pull script: '${result.error}'`,
+        result.error,
+      )
     }
 
     if (isCheckTimerTimedOut) {
