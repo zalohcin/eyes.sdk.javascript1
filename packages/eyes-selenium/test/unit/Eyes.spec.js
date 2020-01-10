@@ -1,6 +1,9 @@
 'use strict'
 
 const assert = require('assert')
+const {Builder, Capabilities} = require('selenium-webdriver')
+
+const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
 
 const {
   Eyes,
@@ -13,9 +16,12 @@ const {
   ProxySettings,
   BatchInfo,
   PropertyData,
+  Target,
 } = require('../../index')
 
 describe('Eyes', function() {
+  this.timeout(60 * 1000)
+
   it('should create EyesSelenium by default', async function() {
     const eyes = new Eyes()
     assert.ok(!eyes.isVisualGrid())
@@ -102,5 +108,42 @@ describe('Eyes', function() {
     )
     assert.strictEqual(eyes.getBaselineEnvName(), 'baselineEnvName')
     assert.strictEqual(eyes.getSendDom(), false)
+  })
+
+  it('should wait before screenshots', async function() {
+    try {
+      const driver = await new Builder().withCapabilities(Capabilities.chrome()).build()
+      const eyes = new Eyes()
+      const server = await fakeEyesServer({logger: {log: () => {}}})
+      const config = new Configuration()
+      config.setServerUrl(`http://localhost:${server.port}`)
+      config.setApiKey('fakeApiKey')
+      eyes.setConfiguration(config)
+      eyes.setWaitBeforeScreenshots(1000)
+      let startTime
+      let duration
+      const thrownScreenshotDone = Symbol()
+      eyes.getScreenshot = function() {
+        duration = Date.now() - startTime
+        throw thrownScreenshotDone
+      }
+      await eyes.open(driver, this.test.parent.title, this.test.title)
+      startTime = Date.now()
+      try {
+        await eyes.check('wait', Target.window().fully())
+      } catch (caught) {
+        if (caught === thrownScreenshotDone) {
+          assert(duration >= 1000)
+        } else {
+          assert.fail()
+        }
+      }
+
+      await eyes.close()
+      await driver.quit()
+      await server.close()
+    } catch (err) {
+      console.log(err)
+    }
   })
 })
