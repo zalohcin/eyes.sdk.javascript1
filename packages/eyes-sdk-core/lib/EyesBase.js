@@ -179,17 +179,6 @@ class EyesBase extends EyesAbstract {
   }
 
   /**
-   * @return {?RenderInfo}
-   */
-  async getRenderingInfo() {
-    if (TypeUtils.isNull(this._serverConnector.getRenderingInfo())) {
-      return this._serverConnector.renderInfo()
-    }
-
-    return this._serverConnector.getRenderingInfo()
-  }
-
-  /**
    * @param {RenderingInfo} renderingInfo
    */
   setRenderingInfo(renderingInfo) {
