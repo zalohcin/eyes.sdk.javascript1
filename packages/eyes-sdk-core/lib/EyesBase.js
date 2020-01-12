@@ -178,6 +178,10 @@ class EyesBase extends EyesAbstract {
     }
   }
 
+  getAndSaveRenderingInfo() {
+    throw new TypeError('The method is not implemented!')
+  }
+
   /**
    * @param {RenderingInfo} renderingInfo
    */
@@ -934,6 +938,10 @@ class EyesBase extends EyesAbstract {
       this._logger.verbose(
         `openBase('${appName}', '${testName}', '${this._configuration.getViewportSize()}')`,
       )
+
+      if (!this._renderingInfoPromise) {
+        this._renderingInfoPromise = this.getAndSaveRenderingInfo()
+      }
 
       await this._sessionEventHandlers.testStarted(await this.getAUTSessionId())
 

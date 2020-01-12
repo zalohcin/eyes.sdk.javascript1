@@ -1,7 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const {ServerConnector, Logger, Configuration} = require('../../../')
+const {ServerConnector, Logger, Configuration, GeneralUtils} = require('../../../')
 const {presult} = require('../../../lib/troubleshoot/utils')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
@@ -104,5 +104,15 @@ describe('ServerConnector', () => {
     } finally {
       await close()
     }
+  })
+
+  it('uploadScreenshot works', async () => {
+    const configuration = new Configuration()
+    const serverConnector = new ServerConnector(logger, configuration)
+    const renderingInfo = await serverConnector.renderInfo()
+    const id = GeneralUtils.guid()
+    const buffer = Buffer.from('something')
+    const result = await serverConnector.uploadScreenshot(id, buffer)
+    assert.strictEqual(result, renderingInfo.getResultsUrl().replace('__random__', id))
   })
 })
