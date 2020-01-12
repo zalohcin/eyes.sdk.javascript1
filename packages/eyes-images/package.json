@@ -31,8 +31,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-common": "^3.17.2",
-    "@applitools/eyes-sdk-core": "^5.24.0"
+    "@applitools/eyes-sdk-core": "6.0.0"
   },
   "devDependencies": {
     "assert-rejects": "^1.0.0",
