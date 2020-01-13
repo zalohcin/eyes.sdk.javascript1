@@ -172,12 +172,11 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
   })
 
   app.get('/api/resources/:id', (req, res) => {
-    const {id} = req.params
-    const resource = resources[id]
+    const resource = resources[req.params.id]
     if (!resource) {
       res.status(404).send()
     } else {
-      res.send(resources[id])
+      res.send(resource)
     }
   })
 
@@ -193,7 +192,7 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
     },
     async (req, res) => {
       const runningSession = runningSessions[req.params.id]
-      const {steps: _steps, hostOS, hostApp} = runningSession
+      const {steps, hostOS, hostApp} = runningSession
       const {matchWindowData, screenshot} = await getMatchWindowDataFromRequest(req)
       logger.log('matchWindowData', matchWindowData)
       const {appOutput: _appOutput} = matchWindowData
@@ -210,7 +209,7 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
 
       const expectedBuff = fs.readFileSync(expectedPath)
       const asExpected = screenshot.compare(expectedBuff) === 0
-      runningSession.steps.push({matchWindowData, asExpected})
+      steps.push({matchWindowData, asExpected})
       res.send({asExpected})
     },
   )
@@ -230,9 +229,20 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
     }
   }
 
+  // for testing purposes
+  app.get('/api/sessions/running/:id', jsonMiddleware, (req, res) => {
+    const runningSession = runningSessions[req.params.id]
+
+    if (runningSession) {
+      res.send(runningSession)
+    } else {
+      res.status(404).send()
+    }
+  })
+
   // stopSession
   app.delete('/api/sessions/running/:id', (req, res) => {
-    const {aborted: _aborted, updateBaseline: _updateBaseline} = req.body
+    const {aborted: _aborted, updateBaseline: _updateBaseline} = req.query
     const runningSession = runningSessions[req.params.id]
 
     res.send(createTestResultFromRunningSession(runningSession))
@@ -244,11 +254,21 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
       : 'Failed' //TestResultsStatus.Failed
     // TODO TestResultsStatus.Unresolved
 
-    const stepsInfo = runningSession.steps
+    const stepsInfo = runningSession.steps.map(({matchWindowData, asExpected}) => {
+      return {
+        name: matchWindowData.tag,
+        isDifferent: asExpected,
+        hasBaselineImage: true,
+        hasCurrentImage: true,
+        apiUrls: {
+          currentImage: matchWindowData.appOutput.screenshotUrl,
+        },
+      }
+    })
     return {
       name: runningSession.startInfo.scenarioIdOrName,
       secretToken: 'bla',
-      id: runningSession.sessionId,
+      id: runningSession.id, // TODO runningSession.sessionId, but then how do we query the server for data based on test results? it only has running sessions. We'd need to copy those into sessions. Should we just have the same sessionId and id?
       status,
       appName: runningSession.startInfo.appIdOrName,
       baselineId: runningSession.baselineId,
