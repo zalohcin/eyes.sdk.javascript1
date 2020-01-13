@@ -1,7 +1,12 @@
 'use strict'
 
-const {FileUtils} = require('@applitools/eyes-common')
-const {MouseTrigger, ImageProvider, MutableImage, Location} = require('@applitools/eyes-sdk-core')
+const {
+  MouseTrigger,
+  ImageProvider,
+  MutableImage,
+  Location,
+  FileUtils,
+} = require('@applitools/eyes-sdk-core')
 const {
   Eyes,
   BatchInfo,

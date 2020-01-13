@@ -1,7 +1,5 @@
 'use strict'
 
-// eslint-disable-next-line node/no-extraneous-require
-const {By} = require('selenium-webdriver')
 const {ArgumentGuard} = require('@applitools/eyes-common')
 const {ScrollPositionMemento} = require('../positioning/ScrollPositionMemento')
 const {ScrollPositionProvider} = require('../positioning/ScrollPositionProvider')
@@ -94,7 +92,7 @@ class Frame {
   async getForceScrollRootElement(driver) {
     if (!this._scrollRootElement) {
       this._logger.verbose('no scroll root element. selecting default.')
-      this._scrollRootElement = await driver.findElement(By.css('html'))
+      this._scrollRootElement = await driver.findElement('html')
     }
 
     return this._scrollRootElement

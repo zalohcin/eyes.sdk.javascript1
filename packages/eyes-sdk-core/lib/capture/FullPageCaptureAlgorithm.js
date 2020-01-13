@@ -259,6 +259,14 @@ class FullPageCaptureAlgorithm {
           removeTopOverlapAmmount -
           removeTopForLastImageAmmount
 
+        this._logger.verbose(
+          `Double overlap cropping:` +
+            `removeTopForLastImageAmmount ${removeTopForLastImageAmmount} ` +
+            `removeTopOverlapAmmount ${removeTopOverlapAmmount} ` +
+            `removeBottomAmmount ${removeBottomAmmount} ` +
+            `partImage height ${partImage.getHeight()} ` +
+            `imageHeight ${imageHeight}`,
+        )
         const croppingRegion = new Region(
           0,
           removeTopOverlapAmmount + removeTopForLastImageAmmount,

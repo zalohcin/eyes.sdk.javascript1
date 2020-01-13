@@ -13,7 +13,7 @@ const {
   OutOfBoundsError,
 } = require('@applitools/eyes-sdk-core')
 
-const {TestCafeJavaScriptExecutor} = require('../TestCafeJavaScriptExecutor')
+const {TestCafeExecutor} = require('../TestCafeExecutor')
 const {ScrollPositionProvider} = require('../positioning/ScrollPositionProvider')
 const {FrameChain} = require('../frames/FrameChain')
 
@@ -167,7 +167,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
    * @return {Promise<Location>}
    */
   async _getDefaultContentScrollPosition() {
-    const jsExecutor = new TestCafeJavaScriptExecutor(this._driver)
+    const jsExecutor = new TestCafeExecutor(this._driver)
     let defaultContentScrollPosition
     if (this._frameChain.size() === 0) {
       defaultContentScrollPosition = await this._getCurrentFrameScrollRootElement(jsExecutor)

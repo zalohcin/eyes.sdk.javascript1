@@ -1,6 +1,5 @@
 'use strict'
 
-const common = require('@applitools/eyes-common')
 const core = require('@applitools/eyes-sdk-core')
 
 exports.ImagesCheckSettings = require('./lib/fluent/ImagesCheckSettings').ImagesCheckSettings
@@ -9,40 +8,41 @@ exports.Target = require('./lib/fluent/Target').Target
 exports.Eyes = require('./lib/Eyes').Eyes
 
 // eyes-common
-exports.AccessibilityLevel = common.AccessibilityLevel
-exports.AccessibilityMatchSettings = common.AccessibilityMatchSettings
-exports.AccessibilityRegionType = common.AccessibilityRegionType
-exports.BatchInfo = common.BatchInfo
-exports.BrowserType = common.BrowserType
-exports.Configuration = common.Configuration
-exports.DeviceName = common.DeviceName
-exports.ExactMatchSettings = common.ExactMatchSettings
-exports.FloatingMatchSettings = common.FloatingMatchSettings
-exports.ImageMatchSettings = common.ImageMatchSettings
-exports.MatchLevel = common.MatchLevel
-exports.PropertyData = common.PropertyData
-exports.ProxySettings = common.ProxySettings
-exports.ScreenOrientation = common.ScreenOrientation
-exports.StitchMode = common.StitchMode
-exports.DebugScreenshotsProvider = common.DebugScreenshotsProvider
-exports.FileDebugScreenshotsProvider = common.FileDebugScreenshotsProvider
-exports.NullDebugScreenshotProvider = common.NullDebugScreenshotProvider
-exports.EyesError = common.EyesError
-exports.CoordinatesType = common.CoordinatesType
-exports.Location = common.Location
-exports.RectangleSize = common.RectangleSize
-exports.Region = common.Region
-exports.PropertyHandler = common.PropertyHandler
-exports.ReadOnlyPropertyHandler = common.ReadOnlyPropertyHandler
-exports.SimplePropertyHandler = common.SimplePropertyHandler
-exports.ImageDeltaCompressor = common.ImageDeltaCompressor
-exports.MutableImage = common.MutableImage
-exports.ConsoleLogHandler = common.ConsoleLogHandler
-exports.DebugLogHandler = common.DebugLogHandler
-exports.FileLogHandler = common.FileLogHandler
-exports.Logger = common.Logger
-exports.LogHandler = common.LogHandler
-exports.NullLogHandler = common.NullLogHandler
+exports.AccessibilityLevel = core.AccessibilityLevel
+exports.AccessibilityMatchSettings = core.AccessibilityMatchSettings
+exports.AccessibilityRegionType = core.AccessibilityRegionType
+exports.BatchInfo = core.BatchInfo
+exports.BrowserType = core.BrowserType
+exports.Configuration = core.Configuration
+exports.DeviceName = core.DeviceName
+exports.ExactMatchSettings = core.ExactMatchSettings
+exports.FloatingMatchSettings = core.FloatingMatchSettings
+exports.ImageMatchSettings = core.ImageMatchSettings
+exports.MatchLevel = core.MatchLevel
+exports.PropertyData = core.PropertyData
+exports.ProxySettings = core.ProxySettings
+exports.ScreenOrientation = core.ScreenOrientation
+exports.StitchMode = core.StitchMode
+exports.DebugScreenshotsProvider = core.DebugScreenshotsProvider
+exports.FileDebugScreenshotsProvider = core.FileDebugScreenshotsProvider
+exports.NullDebugScreenshotProvider = core.NullDebugScreenshotProvider
+exports.EyesError = core.EyesError
+exports.CoordinatesType = core.CoordinatesType
+exports.Location = core.Location
+exports.RectangleSize = core.RectangleSize
+exports.Region = core.Region
+exports.PropertyHandler = core.PropertyHandler
+exports.ReadOnlyPropertyHandler = core.ReadOnlyPropertyHandler
+exports.SimplePropertyHandler = core.SimplePropertyHandler
+exports.ImageDeltaCompressor = core.ImageDeltaCompressor
+exports.MutableImage = core.MutableImage
+exports.ConsoleLogHandler = core.ConsoleLogHandler
+exports.DebugLogHandler = core.DebugLogHandler
+exports.FileLogHandler = core.FileLogHandler
+exports.Logger = core.Logger
+exports.LogHandler = core.LogHandler
+exports.NullLogHandler = core.NullLogHandler
+exports.GeneralUtils = core.GeneralUtils
 
 // eyes-sdk-core
 exports.ImageProvider = core.ImageProvider

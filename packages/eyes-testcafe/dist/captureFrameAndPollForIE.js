@@ -27,11 +27,11 @@ module.exports = () => {
             };
 
             var descriptors = !fails(function () {
-              return window.Object.defineProperty({}, 'a', {
+              return window.Object.defineProperty({}, 1, {
                 get: function () {
                   return 7;
                 }
-              }).a != 7;
+              })[1] != 7;
             });
 
             var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
@@ -210,9 +210,9 @@ module.exports = () => {
               (module.exports = function (key, value) {
                 return sharedStore[key] || (sharedStore[key] = value !== undefined ? value : {});
               })('versions', []).push({
-                version: '3.6.1',
+                version: '3.6.2',
                 mode:  'global',
-                copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
+                copyright: '© 2020 Denis Pushkarev (zloirock.ru)'
               });
             });
 
@@ -670,7 +670,7 @@ module.exports = () => {
             };
 
             var f$6 = wellKnownSymbol;
-            var wrappedWellKnownSymbol = {
+            var wellKnownSymbolWrapped = {
               f: f$6
             };
 
@@ -679,7 +679,7 @@ module.exports = () => {
             var defineWellKnownSymbol = function (NAME) {
               Symbol = path.Symbol || (path.Symbol = {});
               if (!has(window.Symbol, NAME)) defineProperty(window.Symbol, NAME, {
-                value: wrappedWellKnownSymbol.f(NAME)
+                value: wellKnownSymbolWrapped.f(NAME)
               });
             };
 
@@ -703,7 +703,7 @@ module.exports = () => {
               return it;
             };
 
-            var bindContext = function (fn, that, length) {
+            var functionBindContext = function (fn, that, length) {
               aFunction$1(fn);
               if (that === undefined) return fn;
 
@@ -766,7 +766,7 @@ module.exports = () => {
               return function ($this, callbackfn, that, specificCreate) {
                 var O = toObject($this);
                 var self = indexedObject(O);
-                var boundFunction = bindContext(callbackfn, that, 3);
+                var boundFunction = functionBindContext(callbackfn, that, 3);
                 var length = toLength(self.length);
                 var index = 0;
                 var create = specificCreate || arraySpeciesCreate;
@@ -996,7 +996,7 @@ module.exports = () => {
               objectGetOwnPropertyNames.f = objectGetOwnPropertyNamesExternal.f = $getOwnPropertyNames;
               objectGetOwnPropertySymbols.f = $getOwnPropertySymbols;
 
-              wrappedWellKnownSymbol.f = function (name) {
+              wellKnownSymbolWrapped.f = function (name) {
                 return wrap(wellKnownSymbol(name), name);
               };
 
@@ -1528,7 +1528,7 @@ module.exports = () => {
               };
 
               var iterate = module.exports = function (iterable, fn, that, AS_ENTRIES, IS_ITERATOR) {
-                var boundFunction = bindContext(fn, that, AS_ENTRIES ? 2 : 1);
+                var boundFunction = functionBindContext(fn, that, AS_ENTRIES ? 2 : 1);
                 var iterator, iterFn, index, length, result, next, step;
 
                 if (IS_ITERATOR) {
@@ -1865,7 +1865,7 @@ module.exports = () => {
               });
             }
 
-            var forcedObjectPrototypeAccessorsMethods =  !fails(function () {
+            var objectPrototypeAccessorsForced =  !fails(function () {
               var key = Math.random(); // In FF throws only define methods
               // eslint-disable-next-line no-undef, no-useless-call
 
@@ -1883,7 +1883,7 @@ module.exports = () => {
               _export({
                 target: 'Object',
                 proto: true,
-                forced: forcedObjectPrototypeAccessorsMethods
+                forced: objectPrototypeAccessorsForced
               }, {
                 __defineGetter__: function __defineGetter__(P, getter) {
                   objectDefineProperty.f(toObject(this), P, {
@@ -1902,7 +1902,7 @@ module.exports = () => {
               _export({
                 target: 'Object',
                 proto: true,
-                forced: forcedObjectPrototypeAccessorsMethods
+                forced: objectPrototypeAccessorsForced
               }, {
                 __defineSetter__: function __defineSetter__(P, setter) {
                   objectDefineProperty.f(toObject(this), P, {
@@ -1921,7 +1921,7 @@ module.exports = () => {
               _export({
                 target: 'Object',
                 proto: true,
-                forced: forcedObjectPrototypeAccessorsMethods
+                forced: objectPrototypeAccessorsForced
               }, {
                 __lookupGetter__: function __lookupGetter__(P) {
                   var O = toObject(this);
@@ -1942,7 +1942,7 @@ module.exports = () => {
               _export({
                 target: 'Object',
                 proto: true,
-                forced: forcedObjectPrototypeAccessorsMethods
+                forced: objectPrototypeAccessorsForced
               }, {
                 __lookupSetter__: function __lookupSetter__(P) {
                   var O = toObject(this);
@@ -2054,10 +2054,10 @@ module.exports = () => {
               var argumentsLength = arguments.length;
               var mapfn = argumentsLength > 1 ? arguments[1] : undefined;
               var mapping = mapfn !== undefined;
-              var index = 0;
               var iteratorMethod = getIteratorMethod(O);
-              var length, result, step, iterator, next;
-              if (mapping) mapfn = bindContext(mapfn, argumentsLength > 2 ? arguments[2] : undefined, 2); // if the target is not iterable or it's an array with the default iterator - use a simple case
+              var index = 0;
+              var length, result, step, iterator, next, value;
+              if (mapping) mapfn = functionBindContext(mapfn, argumentsLength > 2 ? arguments[2] : undefined, 2); // if the target is not iterable or it's an array with the default iterator - use a simple case
 
               if (iteratorMethod != undefined && !(C == window.Array && isArrayIteratorMethod(iteratorMethod))) {
                 iterator = iteratorMethod.call(O);
@@ -2065,14 +2065,16 @@ module.exports = () => {
                 result = new C();
 
                 for (; !(step = next.call(iterator)).done; index++) {
-                  createProperty(result, index, mapping ? callWithSafeIterationClosing(iterator, mapfn, [step.value, index], true) : step.value);
+                  value = mapping ? callWithSafeIterationClosing(iterator, mapfn, [step.value, index], true) : step.value;
+                  createProperty(result, index, value);
                 }
               } else {
                 length = toLength(O.length);
                 result = new C(length);
 
                 for (; length > index; index++) {
-                  createProperty(result, index, mapping ? mapfn(O[index], index) : O[index]);
+                  value = mapping ? mapfn(O[index], index) : O[index];
+                  createProperty(result, index, value);
                 }
               }
 
@@ -2184,7 +2186,7 @@ module.exports = () => {
               }
             });
 
-            var userAgent = getBuiltIn('navigator', 'userAgent') || '';
+            var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
 
             var process = global_1.process;
             var versions = process && process.versions;
@@ -2194,16 +2196,16 @@ module.exports = () => {
             if (v8) {
               match = v8.split('.');
               version = match[0] + match[1];
-            } else if (userAgent) {
-              match = userAgent.match(/Edge\/(\d+)/);
+            } else if (engineUserAgent) {
+              match = engineUserAgent.match(/Edge\/(\d+)/);
 
               if (!match || match[1] >= 74) {
-                match = userAgent.match(/Chrome\/(\d+)/);
+                match = engineUserAgent.match(/Chrome\/(\d+)/);
                 if (match) version = match[1];
               }
             }
 
-            var v8Version = version && +version;
+            var engineV8Version = version && +version;
 
             var SPECIES$1 = wellKnownSymbol('species');
 
@@ -2211,7 +2213,7 @@ module.exports = () => {
               // We can't use this feature detection in V8 since it causes
               // deoptimization and serious performance degradation
               // https://github.com/zloirock/core-js/issues/677
-              return v8Version >= 51 || !fails(function () {
+              return engineV8Version >= 51 || !fails(function () {
                 var array = [];
                 var constructor = array.constructor = {};
 
@@ -2231,7 +2233,7 @@ module.exports = () => {
             // deoptimization and serious performance degradation
             // https://github.com/zloirock/core-js/issues/679
 
-            var IS_CONCAT_SPREADABLE_SUPPORT = v8Version >= 51 || !fails(function () {
+            var IS_CONCAT_SPREADABLE_SUPPORT = engineV8Version >= 51 || !fails(function () {
               var array = [];
               array[IS_CONCAT_SPREADABLE] = false;
               return array.concat()[0] !== array;
@@ -2337,9 +2339,9 @@ module.exports = () => {
 
             addToUnscopables('copyWithin');
 
-            var sloppyArrayMethod = function (METHOD_NAME, argument) {
+            var arrayMethodIsStrict = function (METHOD_NAME, argument) {
               var method = [][METHOD_NAME];
-              return !method || !fails(function () {
+              return !!method && fails(function () {
                 // eslint-disable-next-line no-useless-call,no-throw-literal
                 method.call(null, argument || function () {
                   throw 1;
@@ -2347,13 +2349,47 @@ module.exports = () => {
               });
             };
 
-            var $every = arrayIteration.every; // `Array.prototype.every` method
+            var defineProperty$5 = window.Object.defineProperty;
+
+            var thrower = function (it) {
+              throw it;
+            };
+
+            var arrayMethodUsesToLength = function (METHOD_NAME, options) {
+              if (!options) options = {};
+              var method = [][METHOD_NAME];
+              var ACCESSORS = has(options, 'ACCESSORS') ? options.ACCESSORS : false;
+              var argument0 = has(options, 0) ? options[0] : thrower;
+              var argument1 = has(options, 1) ? options[1] : undefined;
+              return !!method && !fails(function () {
+                if (ACCESSORS && !descriptors) return true;
+                var O = {
+                  length: -1
+                };
+
+                var addTrap = function (key) {
+                  if (ACCESSORS) defineProperty$5(O, key, {
+                    enumerable: true,
+                    get: thrower
+                  });else O[key] = 1;
+                };
+
+                addTrap(1);
+                addTrap(2147483646);
+                addTrap(4294967294);
+                method.call(O, argument0, argument1);
+              });
+            };
+
+            var $every = arrayIteration.every;
+            var STRICT_METHOD = arrayMethodIsStrict('every');
+            var USES_TO_LENGTH = arrayMethodUsesToLength('every'); // `Array.prototype.every` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.every
 
             _export({
               target: 'Array',
               proto: true,
-              forced: sloppyArrayMethod('every')
+              forced: !STRICT_METHOD || !USES_TO_LENGTH
             }, {
               every: function every(callbackfn
               /* , thisArg */
@@ -2394,21 +2430,14 @@ module.exports = () => {
             var $filter = arrayIteration.filter;
             var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('filter'); // Edge 14- issue
 
-            var USES_TO_LENGTH = HAS_SPECIES_SUPPORT && !fails(function () {
-              [].filter.call({
-                length: -1,
-                0: 1
-              }, function (it) {
-                throw it;
-              });
-            }); // `Array.prototype.filter` method
+            var USES_TO_LENGTH$1 = arrayMethodUsesToLength('filter'); // `Array.prototype.filter` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.filter
             // with adding support of @@species
 
             _export({
               target: 'Array',
               proto: true,
-              forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH
+              forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH$1
             }, {
               filter: function filter(callbackfn
               /* , thisArg */
@@ -2419,7 +2448,8 @@ module.exports = () => {
 
             var $find = arrayIteration.find;
             var FIND = 'find';
-            var SKIPS_HOLES = true; // Shouldn't skip holes
+            var SKIPS_HOLES = true;
+            var USES_TO_LENGTH$2 = arrayMethodUsesToLength(FIND); // Shouldn't skip holes
 
             if (FIND in []) window.Array(1)[FIND](function () {
               SKIPS_HOLES = false;
@@ -2429,7 +2459,7 @@ module.exports = () => {
             _export({
               target: 'Array',
               proto: true,
-              forced: SKIPS_HOLES
+              forced: SKIPS_HOLES || !USES_TO_LENGTH$2
             }, {
               find: function find(callbackfn
               /* , that = undefined */
@@ -2442,7 +2472,8 @@ module.exports = () => {
 
             var $findIndex = arrayIteration.findIndex;
             var FIND_INDEX = 'findIndex';
-            var SKIPS_HOLES$1 = true; // Shouldn't skip holes
+            var SKIPS_HOLES$1 = true;
+            var USES_TO_LENGTH$3 = arrayMethodUsesToLength(FIND_INDEX); // Shouldn't skip holes
 
             if (FIND_INDEX in []) window.Array(1)[FIND_INDEX](function () {
               SKIPS_HOLES$1 = false;
@@ -2452,7 +2483,7 @@ module.exports = () => {
             _export({
               target: 'Array',
               proto: true,
-              forced: SKIPS_HOLES$1
+              forced: SKIPS_HOLES$1 || !USES_TO_LENGTH$3
             }, {
               findIndex: function findIndex(callbackfn
               /* , that = undefined */
@@ -2469,7 +2500,7 @@ module.exports = () => {
             var flattenIntoArray = function (target, original, source, sourceLen, start, depth, mapper, thisArg) {
               var targetIndex = start;
               var sourceIndex = 0;
-              var mapFn = mapper ? bindContext(mapper, thisArg, 3) : false;
+              var mapFn = mapper ? functionBindContext(mapper, thisArg, 3) : false;
               var element;
 
               while (sourceIndex < sourceLen) {
@@ -2533,10 +2564,12 @@ module.exports = () => {
               }
             });
 
-            var $forEach$1 = arrayIteration.forEach; // `Array.prototype.forEach` method implementation
+            var $forEach$1 = arrayIteration.forEach;
+            var STRICT_METHOD$1 = arrayMethodIsStrict('forEach');
+            var USES_TO_LENGTH$4 = arrayMethodUsesToLength('forEach'); // `Array.prototype.forEach` method implementation
             // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
 
-            var arrayForEach = sloppyArrayMethod('forEach') ? function forEach(callbackfn
+            var arrayForEach = !STRICT_METHOD$1 || !USES_TO_LENGTH$4 ? function forEach(callbackfn
             /* , thisArg */
             ) {
               return $forEach$1(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
@@ -2553,12 +2586,17 @@ module.exports = () => {
               forEach: arrayForEach
             });
 
-            var $includes = arrayIncludes.includes; // `Array.prototype.includes` method
+            var $includes = arrayIncludes.includes;
+            var USES_TO_LENGTH$5 = arrayMethodUsesToLength('indexOf', {
+              ACCESSORS: true,
+              1: 0
+            }); // `Array.prototype.includes` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.includes
 
             _export({
               target: 'Array',
-              proto: true
+              proto: true,
+              forced: !USES_TO_LENGTH$5
             }, {
               includes: function includes(el
               /* , fromIndex = 0 */
@@ -2572,13 +2610,17 @@ module.exports = () => {
             var $indexOf = arrayIncludes.indexOf;
             var nativeIndexOf = [].indexOf;
             var NEGATIVE_ZERO = !!nativeIndexOf && 1 / [1].indexOf(1, -0) < 0;
-            var SLOPPY_METHOD = sloppyArrayMethod('indexOf'); // `Array.prototype.indexOf` method
+            var STRICT_METHOD$2 = arrayMethodIsStrict('indexOf');
+            var USES_TO_LENGTH$6 = arrayMethodUsesToLength('indexOf', {
+              ACCESSORS: true,
+              1: 0
+            }); // `Array.prototype.indexOf` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.indexof
 
             _export({
               target: 'Array',
               proto: true,
-              forced: NEGATIVE_ZERO || SLOPPY_METHOD
+              forced: NEGATIVE_ZERO || !STRICT_METHOD$2 || !USES_TO_LENGTH$6
             }, {
               indexOf: function indexOf(searchElement
               /* , fromIndex = 0 */
@@ -2590,13 +2632,13 @@ module.exports = () => {
 
             var nativeJoin = [].join;
             var ES3_STRINGS = indexedObject != Object;
-            var SLOPPY_METHOD$1 = sloppyArrayMethod('join', ','); // `Array.prototype.join` method
+            var STRICT_METHOD$3 = arrayMethodIsStrict('join', ','); // `Array.prototype.join` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.join
 
             _export({
               target: 'Array',
               proto: true,
-              forced: ES3_STRINGS || SLOPPY_METHOD$1
+              forced: ES3_STRINGS || !STRICT_METHOD$3
             }, {
               join: function join(separator) {
                 return nativeJoin.call(toIndexedObject(this), separator === undefined ? ',' : separator);
@@ -2606,10 +2648,15 @@ module.exports = () => {
             var min$3 = Math.min;
             var nativeLastIndexOf = [].lastIndexOf;
             var NEGATIVE_ZERO$1 = !!nativeLastIndexOf && 1 / [1].lastIndexOf(1, -0) < 0;
-            var SLOPPY_METHOD$2 = sloppyArrayMethod('lastIndexOf'); // `Array.prototype.lastIndexOf` method implementation
+            var STRICT_METHOD$4 = arrayMethodIsStrict('lastIndexOf');
+            var USES_TO_LENGTH$7 = arrayMethodUsesToLength('lastIndexOf', {
+              ACCESSORS: true,
+              1: 2147483647
+            });
+            var FORCED$2 = NEGATIVE_ZERO$1 || !STRICT_METHOD$4 || !USES_TO_LENGTH$7; // `Array.prototype.lastIndexOf` method implementation
             // https://tc39.github.io/ecma262/#sec-array.prototype.lastindexof
 
-            var arrayLastIndexOf = NEGATIVE_ZERO$1 || SLOPPY_METHOD$2 ? function lastIndexOf(searchElement
+            var arrayLastIndexOf = FORCED$2 ? function lastIndexOf(searchElement
             /* , fromIndex = @[*-1] */
             ) {
               // convert -0 to +0
@@ -2638,21 +2685,14 @@ module.exports = () => {
             var $map = arrayIteration.map;
             var HAS_SPECIES_SUPPORT$1 = arrayMethodHasSpeciesSupport('map'); // FF49- issue
 
-            var USES_TO_LENGTH$1 = HAS_SPECIES_SUPPORT$1 && !fails(function () {
-              [].map.call({
-                length: -1,
-                0: 1
-              }, function (it) {
-                throw it;
-              });
-            }); // `Array.prototype.map` method
+            var USES_TO_LENGTH$8 = arrayMethodUsesToLength('map'); // `Array.prototype.map` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.map
             // with adding support of @@species
 
             _export({
               target: 'Array',
               proto: true,
-              forced: !HAS_SPECIES_SUPPORT$1 || !USES_TO_LENGTH$1
+              forced: !HAS_SPECIES_SUPPORT$1 || !USES_TO_LENGTH$8
             }, {
               map: function map(callbackfn
               /* , thisArg */
@@ -2700,13 +2740,17 @@ module.exports = () => {
               right: createMethod$3(true)
             };
 
-            var $reduce = arrayReduce.left; // `Array.prototype.reduce` method
+            var $reduce = arrayReduce.left;
+            var STRICT_METHOD$5 = arrayMethodIsStrict('reduce');
+            var USES_TO_LENGTH$9 = arrayMethodUsesToLength('reduce', {
+              1: 0
+            }); // `Array.prototype.reduce` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.reduce
 
             _export({
               target: 'Array',
               proto: true,
-              forced: sloppyArrayMethod('reduce')
+              forced: !STRICT_METHOD$5 || !USES_TO_LENGTH$9
             }, {
               reduce: function reduce(callbackfn
               /* , initialValue */
@@ -2715,13 +2759,17 @@ module.exports = () => {
               }
             });
 
-            var $reduceRight = arrayReduce.right; // `Array.prototype.reduceRight` method
+            var $reduceRight = arrayReduce.right;
+            var STRICT_METHOD$6 = arrayMethodIsStrict('reduceRight');
+            var USES_TO_LENGTH$a = arrayMethodUsesToLength('reduceRight', {
+              1: 0
+            }); // `Array.prototype.reduceRight` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.reduceright
 
             _export({
               target: 'Array',
               proto: true,
-              forced: sloppyArrayMethod('reduceRight')
+              forced: !STRICT_METHOD$6 || !USES_TO_LENGTH$a
             }, {
               reduceRight: function reduceRight(callbackfn
               /* , initialValue */
@@ -2748,6 +2796,12 @@ module.exports = () => {
               }
             });
 
+            var HAS_SPECIES_SUPPORT$2 = arrayMethodHasSpeciesSupport('slice');
+            var USES_TO_LENGTH$b = arrayMethodUsesToLength('slice', {
+              ACCESSORS: true,
+              0: 0,
+              1: 2
+            });
             var SPECIES$2 = wellKnownSymbol('species');
             var nativeSlice = [].slice;
             var max$1 = Math.max; // `Array.prototype.slice` method
@@ -2757,7 +2811,7 @@ module.exports = () => {
             _export({
               target: 'Array',
               proto: true,
-              forced: !arrayMethodHasSpeciesSupport('slice')
+              forced: !HAS_SPECIES_SUPPORT$2 || !USES_TO_LENGTH$b
             }, {
               slice: function slice(start, end) {
                 var O = toIndexedObject(this);
@@ -2791,13 +2845,15 @@ module.exports = () => {
               }
             });
 
-            var $some = arrayIteration.some; // `Array.prototype.some` method
+            var $some = arrayIteration.some;
+            var STRICT_METHOD$7 = arrayMethodIsStrict('some');
+            var USES_TO_LENGTH$c = arrayMethodUsesToLength('some'); // `Array.prototype.some` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.some
 
             _export({
               target: 'Array',
               proto: true,
-              forced: sloppyArrayMethod('some')
+              forced: !STRICT_METHOD$7 || !USES_TO_LENGTH$c
             }, {
               some: function some(callbackfn
               /* , thisArg */
@@ -2817,20 +2873,26 @@ module.exports = () => {
               test$2.sort(null);
             }); // Old WebKit
 
-            var SLOPPY_METHOD$3 = sloppyArrayMethod('sort');
-            var FORCED$2 = FAILS_ON_UNDEFINED || !FAILS_ON_NULL || SLOPPY_METHOD$3; // `Array.prototype.sort` method
+            var STRICT_METHOD$8 = arrayMethodIsStrict('sort');
+            var FORCED$3 = FAILS_ON_UNDEFINED || !FAILS_ON_NULL || !STRICT_METHOD$8; // `Array.prototype.sort` method
             // https://tc39.github.io/ecma262/#sec-array.prototype.sort
 
             _export({
               target: 'Array',
               proto: true,
-              forced: FORCED$2
+              forced: FORCED$3
             }, {
               sort: function sort(comparefn) {
                 return comparefn === undefined ? nativeSort.call(toObject(this)) : nativeSort.call(toObject(this), aFunction$1(comparefn));
               }
             });
 
+            var HAS_SPECIES_SUPPORT$3 = arrayMethodHasSpeciesSupport('splice');
+            var USES_TO_LENGTH$d = arrayMethodUsesToLength('splice', {
+              ACCESSORS: true,
+              0: 0,
+              1: 2
+            });
             var max$2 = Math.max;
             var min$4 = Math.min;
             var MAX_SAFE_INTEGER$1 = 0x1FFFFFFFFFFFFF;
@@ -2841,7 +2903,7 @@ module.exports = () => {
             _export({
               target: 'Array',
               proto: true,
-              forced: !arrayMethodHasSpeciesSupport('splice')
+              forced: !HAS_SPECIES_SUPPORT$3 || !USES_TO_LENGTH$d
             }, {
               splice: function splice(start, deleteCount
               /* , ...items */
@@ -3421,6 +3483,14 @@ module.exports = () => {
 
             var regexpExec = patchedExec;
 
+            _export({
+              target: 'RegExp',
+              proto: true,
+              forced: /./.exec !== regexpExec
+            }, {
+              exec: regexpExec
+            });
+
             var SPECIES$4 = wellKnownSymbol('species');
             var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
               // #replace needs built-in support for named groups.
@@ -3769,7 +3839,7 @@ module.exports = () => {
 
             // eslint-disable-next-line unicorn/no-unsafe-regex
 
-            var webkitStringPadBug = /Version\/10\.\d+(\.\d+)?( Mobile\/\w+)? Safari\//.test(userAgent);
+            var stringPadWebkitBug = /Version\/10\.\d+(\.\d+)?( Mobile\/\w+)? Safari\//.test(engineUserAgent);
 
             var $padEnd = stringPad.end; // `String.prototype.padEnd` method
             // https://tc39.github.io/ecma262/#sec-string.prototype.padend
@@ -3777,7 +3847,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: webkitStringPadBug
+              forced: stringPadWebkitBug
             }, {
               padEnd: function padEnd(maxLength
               /* , fillString = ' ' */
@@ -3792,7 +3862,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: webkitStringPadBug
+              forced: stringPadWebkitBug
             }, {
               padStart: function padStart(maxLength
               /* , fillString = ' ' */
@@ -4134,7 +4204,7 @@ module.exports = () => {
             var non = '\u200B\u0085\u180E'; // check that a method works with the correct list
             // of whitespaces and has a correct name
 
-            var forcedStringTrimMethod = function (METHOD_NAME) {
+            var stringTrimForced = function (METHOD_NAME) {
               return fails(function () {
                 return !!whitespaces[METHOD_NAME]() || non[METHOD_NAME]() != non || whitespaces[METHOD_NAME].name !== METHOD_NAME;
               });
@@ -4146,7 +4216,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringTrimMethod('trim')
+              forced: stringTrimForced('trim')
             }, {
               trim: function trim() {
                 return $trim(this);
@@ -4154,8 +4224,8 @@ module.exports = () => {
             });
 
             var $trimStart = stringTrim.start;
-            var FORCED$3 = forcedStringTrimMethod('trimStart');
-            var trimStart = FORCED$3 ? function trimStart() {
+            var FORCED$4 = stringTrimForced('trimStart');
+            var trimStart = FORCED$4 ? function trimStart() {
               return $trimStart(this);
             } : ''.trimStart; // `String.prototype.{ trimStart, trimLeft }` methods
             // https://github.com/tc39/ecmascript-string-left-right-trim
@@ -4163,15 +4233,15 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: FORCED$3
+              forced: FORCED$4
             }, {
               trimStart: trimStart,
               trimLeft: trimStart
             });
 
             var $trimEnd = stringTrim.end;
-            var FORCED$4 = forcedStringTrimMethod('trimEnd');
-            var trimEnd = FORCED$4 ? function trimEnd() {
+            var FORCED$5 = stringTrimForced('trimEnd');
+            var trimEnd = FORCED$5 ? function trimEnd() {
               return $trimEnd(this);
             } : ''.trimEnd; // `String.prototype.{ trimEnd, trimRight }` methods
             // https://github.com/tc39/ecmascript-string-left-right-trim
@@ -4179,7 +4249,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: FORCED$4
+              forced: FORCED$5
             }, {
               trimEnd: trimEnd,
               trimRight: trimEnd
@@ -4227,7 +4297,7 @@ module.exports = () => {
 
             // of a tag and escaping quotes in arguments
 
-            var forcedStringHtmlMethod = function (METHOD_NAME) {
+            var stringHtmlForced = function (METHOD_NAME) {
               return fails(function () {
                 var test = ''[METHOD_NAME]('"');
                 return test !== test.toLowerCase() || test.split('"').length > 3;
@@ -4240,7 +4310,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('anchor')
+              forced: stringHtmlForced('anchor')
             }, {
               anchor: function anchor(name) {
                 return createHtml(this, 'a', 'name', name);
@@ -4253,7 +4323,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('big')
+              forced: stringHtmlForced('big')
             }, {
               big: function big() {
                 return createHtml(this, 'big', '', '');
@@ -4266,7 +4336,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('blink')
+              forced: stringHtmlForced('blink')
             }, {
               blink: function blink() {
                 return createHtml(this, 'blink', '', '');
@@ -4279,7 +4349,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('bold')
+              forced: stringHtmlForced('bold')
             }, {
               bold: function bold() {
                 return createHtml(this, 'b', '', '');
@@ -4292,7 +4362,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('fixed')
+              forced: stringHtmlForced('fixed')
             }, {
               fixed: function fixed() {
                 return createHtml(this, 'tt', '', '');
@@ -4305,7 +4375,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('fontcolor')
+              forced: stringHtmlForced('fontcolor')
             }, {
               fontcolor: function fontcolor(color) {
                 return createHtml(this, 'font', 'color', color);
@@ -4318,7 +4388,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('fontsize')
+              forced: stringHtmlForced('fontsize')
             }, {
               fontsize: function fontsize(size) {
                 return createHtml(this, 'font', 'size', size);
@@ -4331,7 +4401,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('italics')
+              forced: stringHtmlForced('italics')
             }, {
               italics: function italics() {
                 return createHtml(this, 'i', '', '');
@@ -4344,7 +4414,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('link')
+              forced: stringHtmlForced('link')
             }, {
               link: function link(url) {
                 return createHtml(this, 'a', 'href', url);
@@ -4357,7 +4427,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('small')
+              forced: stringHtmlForced('small')
             }, {
               small: function small() {
                 return createHtml(this, 'small', '', '');
@@ -4370,7 +4440,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('strike')
+              forced: stringHtmlForced('strike')
             }, {
               strike: function strike() {
                 return createHtml(this, 'strike', '', '');
@@ -4383,7 +4453,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('sub')
+              forced: stringHtmlForced('sub')
             }, {
               sub: function sub() {
                 return createHtml(this, 'sub', '', '');
@@ -4396,7 +4466,7 @@ module.exports = () => {
             _export({
               target: 'String',
               proto: true,
-              forced: forcedStringHtmlMethod('sup')
+              forced: stringHtmlForced('sup')
             }, {
               sup: function sup() {
                 return createHtml(this, 'sup', '', '');
@@ -4411,7 +4481,7 @@ module.exports = () => {
               return $this;
             };
 
-            var defineProperty$5 = objectDefineProperty.f;
+            var defineProperty$6 = objectDefineProperty.f;
             var getOwnPropertyNames = objectGetOwnPropertyNames.f;
             var setInternalState$4 = internalState.set;
             var MATCH$2 = wellKnownSymbol('match');
@@ -4422,14 +4492,14 @@ module.exports = () => {
 
             var CORRECT_NEW = new NativeRegExp(re1) !== re1;
             var UNSUPPORTED_Y$2 = regexpStickyHelpers.UNSUPPORTED_Y;
-            var FORCED$5 = descriptors && isForced_1('RegExp', !CORRECT_NEW || UNSUPPORTED_Y$2 || fails(function () {
+            var FORCED$6 = descriptors && isForced_1('RegExp', !CORRECT_NEW || UNSUPPORTED_Y$2 || fails(function () {
               re2[MATCH$2] = false; // RegExp constructor can alter flags and IsRegExp works correct with @@match
 
               return NativeRegExp(re1) != re1 || NativeRegExp(re2) == re2 || NativeRegExp(re1, 'i') != '/a/i';
             })); // `RegExp` constructor
             // https://tc39.github.io/ecma262/#sec-regexp-constructor
 
-            if (FORCED$5) {
+            if (FORCED$6) {
               var RegExpWrapper = function RegExp(pattern, flags) {
                 var thisIsRegExp = this instanceof RegExpWrapper;
                 var patternIsRegExp = isRegexp(pattern);
@@ -4460,7 +4530,7 @@ module.exports = () => {
               };
 
               var proxy = function (key) {
-                key in RegExpWrapper || defineProperty$5(RegExpWrapper, key, {
+                key in RegExpWrapper || defineProperty$6(RegExpWrapper, key, {
                   configurable: true,
                   get: function () {
                     return NativeRegExp[key];
@@ -4484,14 +4554,6 @@ module.exports = () => {
 
             setSpecies('RegExp');
 
-            _export({
-              target: 'RegExp',
-              proto: true,
-              forced: /./.exec !== regexpExec
-            }, {
-              exec: regexpExec
-            });
-
             var UNSUPPORTED_Y$3 = regexpStickyHelpers.UNSUPPORTED_Y; // `RegExp.prototype.flags` getter
             // https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
 
@@ -4503,12 +4565,12 @@ module.exports = () => {
             }
 
             var UNSUPPORTED_Y$4 = regexpStickyHelpers.UNSUPPORTED_Y;
-            var defineProperty$6 = objectDefineProperty.f;
+            var defineProperty$7 = objectDefineProperty.f;
             var getInternalState$4 = internalState.get;
             var RegExpPrototype$2 = RegExp.prototype; // `RegExp.prototype.sticky` getter
 
             if (descriptors && UNSUPPORTED_Y$4) {
-              defineProperty$6(RegExp.prototype, 'sticky', {
+              defineProperty$7(RegExp.prototype, 'sticky', {
                 configurable: true,
                 get: function () {
                   if (this === RegExpPrototype$2) return undefined; // We can't use InternalStateModule.getterFor because
@@ -4582,48 +4644,48 @@ module.exports = () => {
             }
 
             var trim = stringTrim.trim;
-            var nativeParseInt = global_1.parseInt;
+            var $parseInt = global_1.parseInt;
             var hex = /^[+-]?0[Xx]/;
-            var FORCED$6 = nativeParseInt(whitespaces + '08') !== 8 || nativeParseInt(whitespaces + '0x16') !== 22; // `parseInt` method
+            var FORCED$7 = $parseInt(whitespaces + '08') !== 8 || $parseInt(whitespaces + '0x16') !== 22; // `parseInt` method
             // https://tc39.github.io/ecma262/#sec-parseint-string-radix
 
-            var _parseInt = FORCED$6 ? function parseInt(string, radix) {
+            var numberParseInt = FORCED$7 ? function parseInt(string, radix) {
               var S = trim(window.String(string));
-              return nativeParseInt(S, radix >>> 0 || (hex.test(S) ? 16 : 10));
-            } : nativeParseInt;
+              return $parseInt(S, radix >>> 0 || (hex.test(S) ? 16 : 10));
+            } : $parseInt;
 
             // https://tc39.github.io/ecma262/#sec-parseint-string-radix
 
             _export({
               global: true,
-              forced: parseInt != _parseInt
+              forced: parseInt != numberParseInt
             }, {
-              parseInt: _parseInt
+              parseInt: numberParseInt
             });
 
             var trim$1 = stringTrim.trim;
-            var nativeParseFloat = global_1.parseFloat;
-            var FORCED$7 = 1 / nativeParseFloat(whitespaces + '-0') !== -Infinity; // `parseFloat` method
+            var $parseFloat = global_1.parseFloat;
+            var FORCED$8 = 1 / $parseFloat(whitespaces + '-0') !== -Infinity; // `parseFloat` method
             // https://tc39.github.io/ecma262/#sec-parsefloat-string
 
-            var _parseFloat = FORCED$7 ? function parseFloat(string) {
+            var numberParseFloat = FORCED$8 ? function parseFloat(string) {
               var trimmedString = trim$1(window.String(string));
-              var result = nativeParseFloat(trimmedString);
+              var result = $parseFloat(trimmedString);
               return result === 0 && trimmedString.charAt(0) == '-' ? -0 : result;
-            } : nativeParseFloat;
+            } : $parseFloat;
 
             // https://tc39.github.io/ecma262/#sec-parsefloat-string
 
             _export({
               global: true,
-              forced: parseFloat != _parseFloat
+              forced: parseFloat != numberParseFloat
             }, {
-              parseFloat: _parseFloat
+              parseFloat: numberParseFloat
             });
 
             var getOwnPropertyNames$1 = objectGetOwnPropertyNames.f;
             var getOwnPropertyDescriptor$6 = objectGetOwnPropertyDescriptor.f;
-            var defineProperty$7 = objectDefineProperty.f;
+            var defineProperty$8 = objectDefineProperty.f;
             var trim$2 = stringTrim.trim;
             var NUMBER = 'Number';
             var NativeNumber = global_1[NUMBER];
@@ -4696,7 +4758,7 @@ module.exports = () => {
               'MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY,' + // ES2015 (in case, if modules with ES2015 Number statics required before):
               'EPSILON,isFinite,isInteger,isNaN,isSafeInteger,MAX_SAFE_INTEGER,' + 'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger').split(','), j = 0, key; keys$2.length > j; j++) {
                 if (has(NativeNumber, key = keys$2[j]) && !has(NumberWrapper, key)) {
-                  defineProperty$7(NumberWrapper, key, getOwnPropertyDescriptor$6(NativeNumber, key));
+                  defineProperty$8(NumberWrapper, key, getOwnPropertyDescriptor$6(NativeNumber, key));
                 }
               }
 
@@ -4793,9 +4855,9 @@ module.exports = () => {
             _export({
               target: 'Number',
               stat: true,
-              forced: Number.parseFloat != _parseFloat
+              forced: Number.parseFloat != numberParseFloat
             }, {
-              parseFloat: _parseFloat
+              parseFloat: numberParseFloat
             });
 
             // https://tc39.github.io/ecma262/#sec-number.parseint
@@ -4803,9 +4865,9 @@ module.exports = () => {
             _export({
               target: 'Number',
               stat: true,
-              forced: Number.parseInt != _parseInt
+              forced: Number.parseInt != numberParseInt
             }, {
-              parseInt: _parseInt
+              parseInt: numberParseInt
             });
 
             // https://tc39.github.io/ecma262/#sec-thisnumbervalue
@@ -4842,7 +4904,7 @@ module.exports = () => {
               return n;
             };
 
-            var FORCED$8 = nativeToFixed && (0.00008.toFixed(3) !== '0.000' || 0.9.toFixed(0) !== '1' || 1.255.toFixed(2) !== '1.25' || 1000000000000000128.0.toFixed(0) !== '1000000000000000128') || !fails(function () {
+            var FORCED$9 = nativeToFixed && (0.00008.toFixed(3) !== '0.000' || 0.9.toFixed(0) !== '1' || 1.255.toFixed(2) !== '1.25' || 1000000000000000128.0.toFixed(0) !== '1000000000000000128') || !fails(function () {
               // V8 ~ Android 4.3-
               nativeToFixed.call({});
             }); // `Number.prototype.toFixed` method
@@ -4851,7 +4913,7 @@ module.exports = () => {
             _export({
               target: 'Number',
               proto: true,
-              forced: FORCED$8
+              forced: FORCED$9
             }, {
               // eslint-disable-next-line max-statements
               toFixed: function toFixed(fractionDigits) {
@@ -4954,7 +5016,7 @@ module.exports = () => {
             });
 
             var nativeToPrecision = 1.0.toPrecision;
-            var FORCED$9 = fails(function () {
+            var FORCED$a = fails(function () {
               // IE7-
               return nativeToPrecision.call(1, undefined) !== '1';
             }) || !fails(function () {
@@ -4966,7 +5028,7 @@ module.exports = () => {
             _export({
               target: 'Number',
               proto: true,
-              forced: FORCED$9
+              forced: FORCED$a
             }, {
               toPrecision: function toPrecision(precision) {
                 return precision === undefined ? nativeToPrecision.call(thisNumberValue(this)) : nativeToPrecision.call(thisNumberValue(this), precision);
@@ -4984,7 +5046,7 @@ module.exports = () => {
             var log$2 = Math.log;
             var sqrt = Math.sqrt;
             var LN2 = Math.LN2;
-            var FORCED$a = !nativeAcosh // V8 bug: https://code.google.com/p/v8/issues/detail?id=3509
+            var FORCED$b = !nativeAcosh // V8 bug: https://code.google.com/p/v8/issues/detail?id=3509
             || Math.floor(nativeAcosh(Number.MAX_VALUE)) != 710 // Tor Browser bug: Math.acosh(Infinity) -> NaN
             || nativeAcosh(Infinity) != Infinity; // `Math.acosh` method
             // https://tc39.github.io/ecma262/#sec-math.acosh
@@ -4992,7 +5054,7 @@ module.exports = () => {
             _export({
               target: 'Math',
               stat: true,
-              forced: FORCED$a
+              forced: FORCED$b
             }, {
               acosh: function acosh(x) {
                 return (x = +x) < 1 ? NaN : x > 94906265.62425156 ? log$2(x) + LN2 : mathLog1p(x - 1 + sqrt(x - 1) * sqrt(x + 1));
@@ -5176,7 +5238,7 @@ module.exports = () => {
             });
 
             var nativeImul = Math.imul;
-            var FORCED$b = fails(function () {
+            var FORCED$c = fails(function () {
               return nativeImul(0xFFFFFFFF, 5) != -5 || nativeImul.length != 2;
             }); // `Math.imul` method
             // https://tc39.github.io/ecma262/#sec-math.imul
@@ -5185,7 +5247,7 @@ module.exports = () => {
             _export({
               target: 'Math',
               stat: true,
-              forced: FORCED$b
+              forced: FORCED$c
             }, {
               imul: function imul(x, y) {
                 var UINT16 = 0xFFFF;
@@ -5244,7 +5306,7 @@ module.exports = () => {
             var abs$5 = Math.abs;
             var exp$1 = Math.exp;
             var E$1 = Math.E;
-            var FORCED$c = fails(function () {
+            var FORCED$d = fails(function () {
               return Math.sinh(-2e-17) != -2e-17;
             }); // `Math.sinh` method
             // https://tc39.github.io/ecma262/#sec-math.sinh
@@ -5253,7 +5315,7 @@ module.exports = () => {
             _export({
               target: 'Math',
               stat: true,
-              forced: FORCED$c
+              forced: FORCED$d
             }, {
               sinh: function sinh(x) {
                 return abs$5(x = +x) < 1 ? (mathExpm1(x) - mathExpm1(-x)) / 2 : (exp$1(x - 1) - exp$1(-x - 1)) * (E$1 / 2);
@@ -5302,7 +5364,7 @@ module.exports = () => {
               }
             });
 
-            var FORCED$d = fails(function () {
+            var FORCED$e = fails(function () {
               return new Date(NaN).toJSON() !== null || Date.prototype.toJSON.call({
                 toISOString: function () {
                   return 1;
@@ -5314,7 +5376,7 @@ module.exports = () => {
             _export({
               target: 'Date',
               proto: true,
-              forced: FORCED$d
+              forced: FORCED$e
             }, {
               // eslint-disable-next-line no-unused-vars
               toJSON: function toJSON(key) {
@@ -5403,7 +5465,7 @@ module.exports = () => {
               return match;
             };
 
-            var FORCED$e = fails(function () {
+            var FORCED$f = fails(function () {
               return $stringify$1('\uDF06\uD834') !== '"\\udf06\\ud834"' || $stringify$1('\uDEAD') !== '"\\udead"';
             });
 
@@ -5412,7 +5474,7 @@ module.exports = () => {
               _export({
                 target: 'JSON',
                 stat: true,
-                forced: FORCED$e
+                forced: FORCED$f
               }, {
                 // eslint-disable-next-line no-unused-vars
                 stringify: function stringify(it, replacer, space) {
@@ -5442,7 +5504,7 @@ module.exports = () => {
               return it;
             };
 
-            var isIos = /(iphone|ipod|ipad).*applewebkit/i.test(userAgent);
+            var engineIsIos = /(iphone|ipod|ipad).*applewebkit/i.test(engineUserAgent);
 
             var location = global_1.location;
             var set$1 = global_1.setImmediate;
@@ -5512,11 +5574,11 @@ module.exports = () => {
                 }; // Browsers with MessageChannel, includes WebWorkers
                 // except iOS - https://github.com/zloirock/core-js/issues/624
 
-              } else if (MessageChannel && !isIos) {
+              } else if (MessageChannel && !engineIsIos) {
                 channel = new MessageChannel();
                 port = channel.port2;
                 channel.port1.onmessage = listener;
-                defer = bindContext(port.postMessage, port, 1); // Browsers with postMessage, skip WebWorkers
+                defer = functionBindContext(port.postMessage, port, 1); // Browsers with postMessage, skip WebWorkers
                 // IE8 has postMessage, but it's sync & typeof its postMessage is 'object'
               } else if (global_1.addEventListener && typeof postMessage == 'function' && !global_1.importScripts && !fails(post)) {
                 defer = post;
@@ -5579,7 +5641,7 @@ module.exports = () => {
                   process$2.nextTick(flush);
                 }; // browsers with MutationObserver, except iOS - https://github.com/zloirock/core-js/issues/339
 
-              } else if (MutationObserver && !isIos) {
+              } else if (MutationObserver && !engineIsIos) {
                 toggle = true;
                 node = document.createTextNode('');
                 new MutationObserver(flush).observe(node, {
@@ -5701,21 +5763,21 @@ module.exports = () => {
             var HANDLED = 1;
             var UNHANDLED = 2;
             var Internal, OwnPromiseCapability, PromiseWrapper, nativeThen;
-            var FORCED$f = isForced_1(PROMISE, function () {
+            var FORCED$g = isForced_1(PROMISE, function () {
               var GLOBAL_CORE_JS_PROMISE = inspectSource(PromiseConstructor) !== window.String(PromiseConstructor);
 
               if (!GLOBAL_CORE_JS_PROMISE) {
                 // V8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
                 // https://bugs.chromium.org/p/chromium/issues/detail?id=830565
                 // We can't detect it synchronously, so just check versions
-                if (v8Version === 66) return true; // Unhandled rejections tracking support, NodeJS Promise without it fails @@species test
+                if (engineV8Version === 66) return true; // Unhandled rejections tracking support, NodeJS Promise without it fails @@species test
 
                 if (!IS_NODE$1 && typeof PromiseRejectionEvent != 'function') return true;
               } // We need Promise#finally in the pure version for preventing prototype pollution
               // deoptimization and performance degradation
               // https://github.com/zloirock/core-js/issues/679
 
-              if (v8Version >= 51 && /native code/.test(PromiseConstructor)) return false; // Detect correctness of subclassing with @@species support
+              if (engineV8Version >= 51 && /native code/.test(PromiseConstructor)) return false; // Detect correctness of subclassing with @@species support
 
               var promise = PromiseConstructor.resolve(1);
 
@@ -5733,7 +5795,7 @@ module.exports = () => {
                 /* empty */
               }) instanceof FakePromise);
             });
-            var INCORRECT_ITERATION$1 = FORCED$f || !checkCorrectnessOfIteration(function (iterable) {
+            var INCORRECT_ITERATION$1 = FORCED$g || !checkCorrectnessOfIteration(function (iterable) {
               PromiseConstructor.all(iterable)['catch'](function () {
                 /* empty */
               });
@@ -5893,7 +5955,7 @@ module.exports = () => {
             }; // constructor polyfill
 
 
-            if (FORCED$f) {
+            if (FORCED$g) {
               // 25.4.3.1 Promise(executor)
               PromiseConstructor = function Promise(executor) {
                 anInstance(this, PromiseConstructor, PROMISE);
@@ -5985,7 +6047,7 @@ module.exports = () => {
             _export({
               global: true,
               wrap: true,
-              forced: FORCED$f
+              forced: FORCED$g
             }, {
               Promise: PromiseConstructor
             });
@@ -5996,7 +6058,7 @@ module.exports = () => {
             _export({
               target: PROMISE,
               stat: true,
-              forced: FORCED$f
+              forced: FORCED$g
             }, {
               // `Promise.reject` method
               // https://tc39.github.io/ecma262/#sec-promise.reject
@@ -6009,7 +6071,7 @@ module.exports = () => {
             _export({
               target: PROMISE,
               stat: true,
-              forced:  FORCED$f
+              forced:  FORCED$g
             }, {
               // `Promise.resolve` method
               // https://tc39.github.io/ecma262/#sec-promise.resolve
@@ -6240,7 +6302,7 @@ module.exports = () => {
               return Constructor;
             };
 
-            var defineProperty$8 = objectDefineProperty.f;
+            var defineProperty$9 = objectDefineProperty.f;
             var fastKey = internalMetadata.fastKey;
             var setInternalState$6 = internalState.set;
             var internalStateGetterFor = internalState.getterFor;
@@ -6344,7 +6406,7 @@ module.exports = () => {
                   /* , that = undefined */
                   ) {
                     var state = getInternalState(this);
-                    var boundFunction = bindContext(callbackfn, arguments.length > 1 ? arguments[1] : undefined, 3);
+                    var boundFunction = functionBindContext(callbackfn, arguments.length > 1 ? arguments[1] : undefined, 3);
                     var entry;
 
                     while (entry = entry ? entry.next : state.first) {
@@ -6375,7 +6437,7 @@ module.exports = () => {
                     return define(this, value = value === 0 ? 0 : value, value);
                   }
                 });
-                if (descriptors) defineProperty$8(C.prototype, 'size', {
+                if (descriptors) defineProperty$9(C.prototype, 'size', {
                   get: function () {
                     return getInternalState(this).size;
                   }
@@ -6633,170 +6695,7 @@ module.exports = () => {
               };
             }, collectionWeak);
 
-            var defineProperty$9 = objectDefineProperty.f;
-            var DataView$1 = global_1.DataView;
-            var DataViewPrototype = DataView$1 && DataView$1.prototype;
-            var Int8Array$1 = global_1.Int8Array;
-            var Int8ArrayPrototype = Int8Array$1 && Int8Array$1.prototype;
-            var Uint8ClampedArray = global_1.Uint8ClampedArray;
-            var Uint8ClampedArrayPrototype = Uint8ClampedArray && Uint8ClampedArray.prototype;
-            var TypedArray = Int8Array$1 && objectGetPrototypeOf(Int8Array$1);
-            var TypedArrayPrototype = Int8ArrayPrototype && objectGetPrototypeOf(Int8ArrayPrototype);
-            var ObjectPrototype$2 = window.Object.prototype;
-            var isPrototypeOf = ObjectPrototype$2.isPrototypeOf;
-            var TO_STRING_TAG$3 = wellKnownSymbol('toStringTag');
-            var TYPED_ARRAY_TAG = uid('TYPED_ARRAY_TAG');
-            var NATIVE_ARRAY_BUFFER = !!(global_1.ArrayBuffer && DataView$1); // Fixing native typed arrays in Opera Presto crashes the browser, see #595
-
-            var NATIVE_ARRAY_BUFFER_VIEWS = NATIVE_ARRAY_BUFFER && !!objectSetPrototypeOf && classof(global_1.opera) !== 'Opera';
-            var TYPED_ARRAY_TAG_REQIRED = false;
-            var NAME$1;
-            var TypedArrayConstructorsList = {
-              Int8Array: 1,
-              Uint8Array: 1,
-              Uint8ClampedArray: 1,
-              Int16Array: 2,
-              Uint16Array: 2,
-              Int32Array: 4,
-              Uint32Array: 4,
-              Float32Array: 4,
-              Float64Array: 8
-            };
-
-            var isView = function isView(it) {
-              var klass = classof(it);
-              return klass === 'DataView' || has(TypedArrayConstructorsList, klass);
-            };
-
-            var isTypedArray = function (it) {
-              return isObject(it) && has(TypedArrayConstructorsList, classof(it));
-            };
-
-            var aTypedArray = function (it) {
-              if (isTypedArray(it)) return it;
-              throw TypeError('Target is not a typed array');
-            };
-
-            var aTypedArrayConstructor = function (C) {
-              if (objectSetPrototypeOf) {
-                if (isPrototypeOf.call(TypedArray, C)) return C;
-              } else for (var ARRAY in TypedArrayConstructorsList) if (has(TypedArrayConstructorsList, NAME$1)) {
-                var TypedArrayConstructor = global_1[ARRAY];
-
-                if (TypedArrayConstructor && (C === TypedArrayConstructor || isPrototypeOf.call(TypedArrayConstructor, C))) {
-                  return C;
-                }
-              }
-
-              throw TypeError('Target is not a typed array constructor');
-            };
-
-            var exportTypedArrayMethod = function (KEY, property, forced) {
-              if (!descriptors) return;
-              if (forced) for (var ARRAY in TypedArrayConstructorsList) {
-                var TypedArrayConstructor = global_1[ARRAY];
-
-                if (TypedArrayConstructor && has(TypedArrayConstructor.prototype, KEY)) {
-                  delete TypedArrayConstructor.prototype[KEY];
-                }
-              }
-
-              if (!TypedArrayPrototype[KEY] || forced) {
-                redefine(TypedArrayPrototype, KEY, forced ? property : NATIVE_ARRAY_BUFFER_VIEWS && Int8ArrayPrototype[KEY] || property);
-              }
-            };
-
-            var exportTypedArrayStaticMethod = function (KEY, property, forced) {
-              var ARRAY, TypedArrayConstructor;
-              if (!descriptors) return;
-
-              if (objectSetPrototypeOf) {
-                if (forced) for (ARRAY in TypedArrayConstructorsList) {
-                  TypedArrayConstructor = global_1[ARRAY];
-
-                  if (TypedArrayConstructor && has(TypedArrayConstructor, KEY)) {
-                    delete TypedArrayConstructor[KEY];
-                  }
-                }
-
-                if (!TypedArray[KEY] || forced) {
-                  // V8 ~ Chrome 49-50 `%TypedArray%` methods are non-writable non-configurable
-                  try {
-                    return redefine(TypedArray, KEY, forced ? property : NATIVE_ARRAY_BUFFER_VIEWS && Int8Array$1[KEY] || property);
-                  } catch (error) {
-                    /* empty */
-                  }
-                } else return;
-              }
-
-              for (ARRAY in TypedArrayConstructorsList) {
-                TypedArrayConstructor = global_1[ARRAY];
-
-                if (TypedArrayConstructor && (!TypedArrayConstructor[KEY] || forced)) {
-                  redefine(TypedArrayConstructor, KEY, property);
-                }
-              }
-            };
-
-            for (NAME$1 in TypedArrayConstructorsList) {
-              if (!global_1[NAME$1]) NATIVE_ARRAY_BUFFER_VIEWS = false;
-            } // WebKit bug - typed arrays constructors prototype is window.Object.prototype
-
-
-            if (!NATIVE_ARRAY_BUFFER_VIEWS || typeof TypedArray != 'function' || TypedArray === Function.prototype) {
-              // eslint-disable-next-line no-shadow
-              TypedArray = function TypedArray() {
-                throw TypeError('Incorrect invocation');
-              };
-
-              if (NATIVE_ARRAY_BUFFER_VIEWS) for (NAME$1 in TypedArrayConstructorsList) {
-                if (global_1[NAME$1]) objectSetPrototypeOf(global_1[NAME$1], TypedArray);
-              }
-            }
-
-            if (!NATIVE_ARRAY_BUFFER_VIEWS || !TypedArrayPrototype || TypedArrayPrototype === ObjectPrototype$2) {
-              TypedArrayPrototype = TypedArray.prototype;
-              if (NATIVE_ARRAY_BUFFER_VIEWS) for (NAME$1 in TypedArrayConstructorsList) {
-                if (global_1[NAME$1]) objectSetPrototypeOf(global_1[NAME$1].prototype, TypedArrayPrototype);
-              }
-            } // WebKit bug - one more object in Uint8ClampedArray prototype chain
-
-
-            if (NATIVE_ARRAY_BUFFER_VIEWS && objectGetPrototypeOf(Uint8ClampedArrayPrototype) !== TypedArrayPrototype) {
-              objectSetPrototypeOf(Uint8ClampedArrayPrototype, TypedArrayPrototype);
-            }
-
-            if (descriptors && !has(TypedArrayPrototype, TO_STRING_TAG$3)) {
-              TYPED_ARRAY_TAG_REQIRED = true;
-              defineProperty$9(TypedArrayPrototype, TO_STRING_TAG$3, {
-                get: function () {
-                  return isObject(this) ? this[TYPED_ARRAY_TAG] : undefined;
-                }
-              });
-
-              for (NAME$1 in TypedArrayConstructorsList) if (global_1[NAME$1]) {
-                createNonEnumerableProperty(global_1[NAME$1], TYPED_ARRAY_TAG, NAME$1);
-              }
-            } // WebKit bug - the same parent prototype for typed arrays and data view
-
-
-            if (NATIVE_ARRAY_BUFFER && objectSetPrototypeOf && objectGetPrototypeOf(DataViewPrototype) !== ObjectPrototype$2) {
-              objectSetPrototypeOf(DataViewPrototype, ObjectPrototype$2);
-            }
-
-            var arrayBufferViewCore = {
-              NATIVE_ARRAY_BUFFER: NATIVE_ARRAY_BUFFER,
-              NATIVE_ARRAY_BUFFER_VIEWS: NATIVE_ARRAY_BUFFER_VIEWS,
-              TYPED_ARRAY_TAG: TYPED_ARRAY_TAG_REQIRED && TYPED_ARRAY_TAG,
-              aTypedArray: aTypedArray,
-              aTypedArrayConstructor: aTypedArrayConstructor,
-              exportTypedArrayMethod: exportTypedArrayMethod,
-              exportTypedArrayStaticMethod: exportTypedArrayStaticMethod,
-              isView: isView,
-              isTypedArray: isTypedArray,
-              TypedArray: TypedArray,
-              TypedArrayPrototype: TypedArrayPrototype
-            };
+            var arrayBufferNative = typeof ArrayBuffer !== 'undefined' && typeof DataView !== 'undefined';
 
             // https://tc39.github.io/ecma262/#sec-toindex
 
@@ -6911,7 +6810,6 @@ module.exports = () => {
               unpack: unpack
             };
 
-            var NATIVE_ARRAY_BUFFER$1 = arrayBufferViewCore.NATIVE_ARRAY_BUFFER;
             var getOwnPropertyNames$2 = objectGetOwnPropertyNames.f;
             var defineProperty$a = objectDefineProperty.f;
             var getInternalState$6 = internalState.get;
@@ -6924,6 +6822,8 @@ module.exports = () => {
             var NativeArrayBuffer = global_1[ARRAY_BUFFER];
             var $ArrayBuffer = NativeArrayBuffer;
             var $DataView = global_1[DATA_VIEW];
+            var $DataViewPrototype = $DataView && $DataView[PROTOTYPE$2];
+            var ObjectPrototype$2 = window.Object.prototype;
             var RangeError$1 = global_1.RangeError;
             var packIEEE754 = ieee754.pack;
             var unpackIEEE754 = ieee754.unpack;
@@ -6981,7 +6881,7 @@ module.exports = () => {
               for (var i = 0; i < count; i++) bytes[start + i] = pack[isLittleEndian ? i : count - i - 1];
             };
 
-            if (!NATIVE_ARRAY_BUFFER$1) {
+            if (!arrayBufferNative) {
               $ArrayBuffer = function ArrayBuffer(length) {
                 anInstance(this, $ArrayBuffer, ARRAY_BUFFER);
                 var byteLength = toIndex(length);
@@ -7124,14 +7024,19 @@ module.exports = () => {
                 }
 
                 ArrayBufferPrototype.constructor = $ArrayBuffer;
+              } // WebKit bug - the same parent prototype for typed arrays and data view
+
+
+              if (objectSetPrototypeOf && objectGetPrototypeOf($DataViewPrototype) !== ObjectPrototype$2) {
+                objectSetPrototypeOf($DataViewPrototype, ObjectPrototype$2);
               } // iOS Safari 7.x bug
 
 
               var testView = new $DataView(new $ArrayBuffer(2));
-              var nativeSetInt8 = $DataView[PROTOTYPE$2].setInt8;
+              var nativeSetInt8 = $DataViewPrototype.setInt8;
               testView.setInt8(0, 2147483648);
               testView.setInt8(1, 2147483649);
-              if (testView.getInt8(0) || !testView.getInt8(1)) redefineAll($DataView[PROTOTYPE$2], {
+              if (testView.getInt8(0) || !testView.getInt8(1)) redefineAll($DataViewPrototype, {
                 setInt8: function setInt8(byteOffset, value) {
                   nativeSetInt8.call(this, byteOffset, value << 24 >> 24);
                 },
@@ -7163,6 +7068,162 @@ module.exports = () => {
             });
             setSpecies(ARRAY_BUFFER$1);
 
+            var defineProperty$b = objectDefineProperty.f;
+            var Int8Array$1 = global_1.Int8Array;
+            var Int8ArrayPrototype = Int8Array$1 && Int8Array$1.prototype;
+            var Uint8ClampedArray = global_1.Uint8ClampedArray;
+            var Uint8ClampedArrayPrototype = Uint8ClampedArray && Uint8ClampedArray.prototype;
+            var TypedArray = Int8Array$1 && objectGetPrototypeOf(Int8Array$1);
+            var TypedArrayPrototype = Int8ArrayPrototype && objectGetPrototypeOf(Int8ArrayPrototype);
+            var ObjectPrototype$3 = window.Object.prototype;
+            var isPrototypeOf = ObjectPrototype$3.isPrototypeOf;
+            var TO_STRING_TAG$3 = wellKnownSymbol('toStringTag');
+            var TYPED_ARRAY_TAG = uid('TYPED_ARRAY_TAG'); // Fixing native typed arrays in Opera Presto crashes the browser, see #595
+
+            var NATIVE_ARRAY_BUFFER_VIEWS = arrayBufferNative && !!objectSetPrototypeOf && classof(global_1.opera) !== 'Opera';
+            var TYPED_ARRAY_TAG_REQIRED = false;
+            var NAME$1;
+            var TypedArrayConstructorsList = {
+              Int8Array: 1,
+              Uint8Array: 1,
+              Uint8ClampedArray: 1,
+              Int16Array: 2,
+              Uint16Array: 2,
+              Int32Array: 4,
+              Uint32Array: 4,
+              Float32Array: 4,
+              Float64Array: 8
+            };
+
+            var isView = function isView(it) {
+              var klass = classof(it);
+              return klass === 'DataView' || has(TypedArrayConstructorsList, klass);
+            };
+
+            var isTypedArray = function (it) {
+              return isObject(it) && has(TypedArrayConstructorsList, classof(it));
+            };
+
+            var aTypedArray = function (it) {
+              if (isTypedArray(it)) return it;
+              throw TypeError('Target is not a typed array');
+            };
+
+            var aTypedArrayConstructor = function (C) {
+              if (objectSetPrototypeOf) {
+                if (isPrototypeOf.call(TypedArray, C)) return C;
+              } else for (var ARRAY in TypedArrayConstructorsList) if (has(TypedArrayConstructorsList, NAME$1)) {
+                var TypedArrayConstructor = global_1[ARRAY];
+
+                if (TypedArrayConstructor && (C === TypedArrayConstructor || isPrototypeOf.call(TypedArrayConstructor, C))) {
+                  return C;
+                }
+              }
+
+              throw TypeError('Target is not a typed array constructor');
+            };
+
+            var exportTypedArrayMethod = function (KEY, property, forced) {
+              if (!descriptors) return;
+              if (forced) for (var ARRAY in TypedArrayConstructorsList) {
+                var TypedArrayConstructor = global_1[ARRAY];
+
+                if (TypedArrayConstructor && has(TypedArrayConstructor.prototype, KEY)) {
+                  delete TypedArrayConstructor.prototype[KEY];
+                }
+              }
+
+              if (!TypedArrayPrototype[KEY] || forced) {
+                redefine(TypedArrayPrototype, KEY, forced ? property : NATIVE_ARRAY_BUFFER_VIEWS && Int8ArrayPrototype[KEY] || property);
+              }
+            };
+
+            var exportTypedArrayStaticMethod = function (KEY, property, forced) {
+              var ARRAY, TypedArrayConstructor;
+              if (!descriptors) return;
+
+              if (objectSetPrototypeOf) {
+                if (forced) for (ARRAY in TypedArrayConstructorsList) {
+                  TypedArrayConstructor = global_1[ARRAY];
+
+                  if (TypedArrayConstructor && has(TypedArrayConstructor, KEY)) {
+                    delete TypedArrayConstructor[KEY];
+                  }
+                }
+
+                if (!TypedArray[KEY] || forced) {
+                  // V8 ~ Chrome 49-50 `%TypedArray%` methods are non-writable non-configurable
+                  try {
+                    return redefine(TypedArray, KEY, forced ? property : NATIVE_ARRAY_BUFFER_VIEWS && Int8Array$1[KEY] || property);
+                  } catch (error) {
+                    /* empty */
+                  }
+                } else return;
+              }
+
+              for (ARRAY in TypedArrayConstructorsList) {
+                TypedArrayConstructor = global_1[ARRAY];
+
+                if (TypedArrayConstructor && (!TypedArrayConstructor[KEY] || forced)) {
+                  redefine(TypedArrayConstructor, KEY, property);
+                }
+              }
+            };
+
+            for (NAME$1 in TypedArrayConstructorsList) {
+              if (!global_1[NAME$1]) NATIVE_ARRAY_BUFFER_VIEWS = false;
+            } // WebKit bug - typed arrays constructors prototype is window.Object.prototype
+
+
+            if (!NATIVE_ARRAY_BUFFER_VIEWS || typeof TypedArray != 'function' || TypedArray === Function.prototype) {
+              // eslint-disable-next-line no-shadow
+              TypedArray = function TypedArray() {
+                throw TypeError('Incorrect invocation');
+              };
+
+              if (NATIVE_ARRAY_BUFFER_VIEWS) for (NAME$1 in TypedArrayConstructorsList) {
+                if (global_1[NAME$1]) objectSetPrototypeOf(global_1[NAME$1], TypedArray);
+              }
+            }
+
+            if (!NATIVE_ARRAY_BUFFER_VIEWS || !TypedArrayPrototype || TypedArrayPrototype === ObjectPrototype$3) {
+              TypedArrayPrototype = TypedArray.prototype;
+              if (NATIVE_ARRAY_BUFFER_VIEWS) for (NAME$1 in TypedArrayConstructorsList) {
+                if (global_1[NAME$1]) objectSetPrototypeOf(global_1[NAME$1].prototype, TypedArrayPrototype);
+              }
+            } // WebKit bug - one more object in Uint8ClampedArray prototype chain
+
+
+            if (NATIVE_ARRAY_BUFFER_VIEWS && objectGetPrototypeOf(Uint8ClampedArrayPrototype) !== TypedArrayPrototype) {
+              objectSetPrototypeOf(Uint8ClampedArrayPrototype, TypedArrayPrototype);
+            }
+
+            if (descriptors && !has(TypedArrayPrototype, TO_STRING_TAG$3)) {
+              TYPED_ARRAY_TAG_REQIRED = true;
+              defineProperty$b(TypedArrayPrototype, TO_STRING_TAG$3, {
+                get: function () {
+                  return isObject(this) ? this[TYPED_ARRAY_TAG] : undefined;
+                }
+              });
+
+              for (NAME$1 in TypedArrayConstructorsList) if (global_1[NAME$1]) {
+                createNonEnumerableProperty(global_1[NAME$1], TYPED_ARRAY_TAG, NAME$1);
+              }
+            }
+
+            var arrayBufferViewCore = {
+              NATIVE_ARRAY_BUFFER_VIEWS: NATIVE_ARRAY_BUFFER_VIEWS,
+              TYPED_ARRAY_TAG: TYPED_ARRAY_TAG_REQIRED && TYPED_ARRAY_TAG,
+              aTypedArray: aTypedArray,
+              aTypedArrayConstructor: aTypedArrayConstructor,
+              exportTypedArrayMethod: exportTypedArrayMethod,
+              exportTypedArrayStaticMethod: exportTypedArrayStaticMethod,
+              isView: isView,
+              isTypedArray: isTypedArray,
+              TypedArray: TypedArray,
+              TypedArrayPrototype: TypedArrayPrototype
+            };
+
             var NATIVE_ARRAY_BUFFER_VIEWS$1 = arrayBufferViewCore.NATIVE_ARRAY_BUFFER_VIEWS; // `ArrayBuffer.isView` method
             // https://tc39.github.io/ecma262/#sec-arraybuffer.isview
 
@@ -7175,7 +7236,7 @@ module.exports = () => {
             });
 
             var ArrayBuffer$2 = arrayBuffer.ArrayBuffer;
-            var DataView$2 = arrayBuffer.DataView;
+            var DataView$1 = arrayBuffer.DataView;
             var nativeArrayBufferSlice = ArrayBuffer$2.prototype.slice;
             var INCORRECT_SLICE = fails(function () {
               return !new ArrayBuffer$2(2).slice(1, undefined).byteLength;
@@ -7197,8 +7258,8 @@ module.exports = () => {
                 var first = toAbsoluteIndex(start, length);
                 var fin = toAbsoluteIndex(end === undefined ? length : end, length);
                 var result = new (speciesConstructor(this, ArrayBuffer$2))(toLength(fin - first));
-                var viewSource = new DataView$2(this);
-                var viewTarget = new DataView$2(result);
+                var viewSource = new DataView$1(this);
+                var viewTarget = new DataView$1(result);
                 var index = 0;
 
                 while (first < fin) {
@@ -7209,12 +7270,11 @@ module.exports = () => {
               }
             });
 
-            var NATIVE_ARRAY_BUFFER$2 = arrayBufferViewCore.NATIVE_ARRAY_BUFFER; // `DataView` constructor
             // https://tc39.github.io/ecma262/#sec-dataview-constructor
 
             _export({
               global: true,
-              forced: !NATIVE_ARRAY_BUFFER$2
+              forced: !arrayBufferNative
             }, {
               DataView: arrayBuffer.DataView
             });
@@ -7224,7 +7284,7 @@ module.exports = () => {
             var NATIVE_ARRAY_BUFFER_VIEWS$2 = arrayBufferViewCore.NATIVE_ARRAY_BUFFER_VIEWS;
             var ArrayBuffer$3 = global_1.ArrayBuffer;
             var Int8Array$2 = global_1.Int8Array;
-            var typedArraysConstructorsRequiresWrappers = !NATIVE_ARRAY_BUFFER_VIEWS$2 || !fails(function () {
+            var typedArrayConstructorsRequireWrappers = !NATIVE_ARRAY_BUFFER_VIEWS$2 || !fails(function () {
               Int8Array$2(1);
             }) || !fails(function () {
               new Int8Array$2(-1);
@@ -7273,7 +7333,7 @@ module.exports = () => {
               }
 
               if (mapping && argumentsLength > 2) {
-                mapfn = bindContext(mapfn, arguments[2], 2);
+                mapfn = functionBindContext(mapfn, arguments[2], 2);
               }
 
               length = toLength(O.length);
@@ -7444,7 +7504,7 @@ module.exports = () => {
                     });
                     if (objectSetPrototypeOf) objectSetPrototypeOf(TypedArrayConstructor, TypedArray);
                     TypedArrayConstructorPrototype = TypedArrayConstructor.prototype = objectCreate(TypedArrayPrototype);
-                  } else if (typedArraysConstructorsRequiresWrappers) {
+                  } else if (typedArrayConstructorsRequireWrappers) {
                     TypedArrayConstructor = wrapper(function (dummy, data, typedArrayOffset, $length) {
                       anInstance(dummy, TypedArrayConstructor, CONSTRUCTOR_NAME);
                       return inheritIfRequired(function () {
@@ -7568,7 +7628,7 @@ module.exports = () => {
             var exportTypedArrayStaticMethod$1 = arrayBufferViewCore.exportTypedArrayStaticMethod; // `%TypedArray%.from` method
             // https://tc39.github.io/ecma262/#sec-%typedarray%.from
 
-            exportTypedArrayStaticMethod$1('from', typedArrayFrom, typedArraysConstructorsRequiresWrappers);
+            exportTypedArrayStaticMethod$1('from', typedArrayFrom, typedArrayConstructorsRequireWrappers);
 
             var aTypedArrayConstructor$2 = arrayBufferViewCore.aTypedArrayConstructor;
             var exportTypedArrayStaticMethod$2 = arrayBufferViewCore.exportTypedArrayStaticMethod; // `%TypedArray%.of` method
@@ -7584,7 +7644,7 @@ module.exports = () => {
               while (length > index) result[index] = arguments[index++];
 
               return result;
-            }, typedArraysConstructorsRequiresWrappers);
+            }, typedArrayConstructorsRequireWrappers);
 
             var aTypedArray$1 = arrayBufferViewCore.aTypedArray;
             var exportTypedArrayMethod$1 = arrayBufferViewCore.exportTypedArrayMethod; // `%TypedArray%.prototype.copyWithin` method
@@ -7804,7 +7864,7 @@ module.exports = () => {
 
             var aTypedArray$h = arrayBufferViewCore.aTypedArray;
             var exportTypedArrayMethod$h = arrayBufferViewCore.exportTypedArrayMethod;
-            var FORCED$g = fails(function () {
+            var FORCED$h = fails(function () {
               // eslint-disable-next-line no-undef
               new Int8Array(1).set({});
             }); // `%TypedArray%.prototype.set` method
@@ -7822,13 +7882,13 @@ module.exports = () => {
               if (len + offset > length) throw RangeError('Wrong length');
 
               while (index < len) this[offset + index] = src[index++];
-            }, FORCED$g);
+            }, FORCED$h);
 
             var aTypedArray$i = arrayBufferViewCore.aTypedArray;
             var aTypedArrayConstructor$5 = arrayBufferViewCore.aTypedArrayConstructor;
             var exportTypedArrayMethod$i = arrayBufferViewCore.exportTypedArrayMethod;
             var $slice = [].slice;
-            var FORCED$h = fails(function () {
+            var FORCED$i = fails(function () {
               // eslint-disable-next-line no-undef
               new Int8Array(1).slice();
             }); // `%TypedArray%.prototype.slice` method
@@ -7844,7 +7904,7 @@ module.exports = () => {
               while (length > index) result[index] = list[index++];
 
               return result;
-            }, FORCED$h);
+            }, FORCED$i);
 
             var $some$1 = arrayIteration.some;
             var aTypedArray$j = arrayBufferViewCore.aTypedArray;
@@ -7886,7 +7946,7 @@ module.exports = () => {
             var TO_LOCALE_STRING_BUG = !!Int8Array$3 && fails(function () {
               $toLocaleString.call(new Int8Array$3(1));
             });
-            var FORCED$i = fails(function () {
+            var FORCED$j = fails(function () {
               return [1, 2].toLocaleString() != new Int8Array$3([1, 2]).toLocaleString();
             }) || !fails(function () {
               Int8Array$3.prototype.toLocaleString.call([1, 2]);
@@ -7895,7 +7955,7 @@ module.exports = () => {
 
             exportTypedArrayMethod$m('toLocaleString', function toLocaleString() {
               return $toLocaleString.apply(TO_LOCALE_STRING_BUG ? $slice$1.call(aTypedArray$m(this)) : aTypedArray$m(this), arguments);
-            }, FORCED$i);
+            }, FORCED$j);
 
             var exportTypedArrayMethod$n = arrayBufferViewCore.exportTypedArrayMethod;
             var Uint8Array$2 = global_1.Uint8Array;
@@ -7957,12 +8017,12 @@ module.exports = () => {
                 /* empty */
               });
             });
-            var FORCED$j = NEW_TARGET_BUG || ARGS_BUG;
+            var FORCED$k = NEW_TARGET_BUG || ARGS_BUG;
             _export({
               target: 'Reflect',
               stat: true,
-              forced: FORCED$j,
-              sham: FORCED$j
+              forced: FORCED$k,
+              sham: FORCED$k
             }, {
               construct: function construct(Target, args
               /* , newTarget */
@@ -8290,13 +8350,13 @@ module.exports = () => {
               }
             }
 
-            var FORCED$k = !global_1.setImmediate || !global_1.clearImmediate; // http://w3c.github.io/setImmediate/
+            var FORCED$l = !global_1.setImmediate || !global_1.clearImmediate; // http://w3c.github.io/setImmediate/
 
             _export({
               global: true,
               bind: true,
               enumerable: true,
-              forced: FORCED$k
+              forced: FORCED$l
             }, {
               // `setImmediate` method
               // http://w3c.github.io/setImmediate/#si-setImmediate
@@ -8322,7 +8382,7 @@ module.exports = () => {
             });
 
             var slice$1 = [].slice;
-            var MSIE = /MSIE .\./.test(userAgent); // <- dirty ie9- check
+            var MSIE = /MSIE .\./.test(engineUserAgent); // <- dirty ie9- check
 
             var wrap$1 = function (scheduler) {
               return function (handler, timeout
@@ -8548,7 +8608,7 @@ module.exports = () => {
               return output.join('');
             };
 
-            var punycodeToAscii = function (input) {
+            var stringPunycodeToAscii = function (input) {
               var encoded = [];
               var labels = input.toLowerCase().replace(regexSeparators, '\u002E').split('.');
               var i, label;
@@ -8850,7 +8910,7 @@ module.exports = () => {
               /* , thisArg */
               ) {
                 var entries = getInternalParamsState(this).entries;
-                var boundFunction = bindContext(callback, arguments.length > 1 ? arguments[1] : undefined, 3);
+                var boundFunction = functionBindContext(callback, arguments.length > 1 ? arguments[1] : undefined, 3);
                 var index = 0;
                 var entry;
 
@@ -8995,7 +9055,7 @@ module.exports = () => {
 
                 url.host = result;
               } else {
-                input = punycodeToAscii(input);
+                input = stringPunycodeToAscii(input);
                 if (FORBIDDEN_HOST_CODE_POINT.test(input)) return INVALID_HOST;
                 result = parseIPv4(input);
                 if (result === null) return INVALID_HOST;
@@ -10042,14 +10102,14 @@ module.exports = () => {
               }
             });
 
-            var runtime = createCommonjsModule(function (module) {
+            var runtime_1 = createCommonjsModule(function (module) {
               /**
                * Copyright (c) 2014-present, Facebook, Inc.
                *
                * This source code is licensed under the MIT license found in the
                * LICENSE file in the root directory of this source tree.
                */
-              !function (global) {
+              var runtime = function (exports) {
 
                 var Op = window.Object.prototype;
                 var hasOwn = Op.hasOwnProperty;
@@ -10059,23 +10119,6 @@ module.exports = () => {
                 var iteratorSymbol = $Symbol.iterator || "@@iterator";
                 var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
                 var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-                var runtime = global.regeneratorRuntime;
-
-                if (runtime) {
-                  {
-                    // If regeneratorRuntime is defined globally and we're in a module,
-                    // make the exports object identical to regeneratorRuntime.
-                    module.exports = runtime;
-                  } // Don't bother evaluating the rest of this file if the runtime was
-                  // already defined globally.
-
-
-                  return;
-                } // Define the runtime globally (as expected by generated code) as either
-                // module.exports (if we're in a module) or a new, empty object.
-
-
-                runtime = global.regeneratorRuntime =  module.exports ;
 
                 function wrap(innerFn, outerFn, self, tryLocsList) {
                   // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
@@ -10088,7 +10131,7 @@ module.exports = () => {
                   return generator;
                 }
 
-                runtime.wrap = wrap; // Try/catch helper to minimize deoptimizations. Returns a completion
+                exports.wrap = wrap; // Try/catch helper to minimize deoptimizations. Returns a completion
                 // record like context.tryEntries[i].completion. This interface could
                 // have been (and was previously) designed to take a closure to be
                 // invoked without arguments, but in all the cases we care about we
@@ -10161,14 +10204,14 @@ module.exports = () => {
                   });
                 }
 
-                runtime.isGeneratorFunction = function (genFun) {
+                exports.isGeneratorFunction = function (genFun) {
                   var ctor = typeof genFun === "function" && genFun.constructor;
                   return ctor ? ctor === GeneratorFunction || // For the native GeneratorFunction constructor, the best we can
                   // do is to check its .name property.
                   (ctor.displayName || ctor.name) === "GeneratorFunction" : false;
                 };
 
-                runtime.mark = function (genFun) {
+                exports.mark = function (genFun) {
                   if (window.Object.setPrototypeOf) {
                     window.Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
                   } else {
@@ -10187,7 +10230,7 @@ module.exports = () => {
                 // meant to be awaited.
 
 
-                runtime.awrap = function (arg) {
+                exports.awrap = function (arg) {
                   return {
                     __await: arg
                   };
@@ -10214,22 +10257,14 @@ module.exports = () => {
                       return Promise.resolve(value).then(function (unwrapped) {
                         // When a yielded Promise is resolved, its final value becomes
                         // the .value of the Promise<{value,done}> result for the
-                        // current iteration. If the Promise is rejected, however, the
-                        // result for this iteration will be rejected with the same
-                        // reason. Note that rejections of yielded Promises are not
-                        // thrown back into the generator function, as is the case
-                        // when an awaited Promise is rejected. This difference in
-                        // behavior between yield and await is important, because it
-                        // allows the consumer to decide what to do with the yielded
-                        // rejection (swallow it and continue, manually .throw it back
-                        // into the generator, abandon iteration, whatever). With
-                        // await, by contrast, there is no opportunity to examine the
-                        // rejection reason outside the generator function, so the
-                        // only option is to throw it from the await expression, and
-                        // let the generator function handle the exception.
+                        // current iteration.
                         result.value = unwrapped;
                         resolve(result);
-                      }, reject);
+                      }, function (error) {
+                        // If a rejected Promise was yielded, throw the rejection back
+                        // into the async generator function so it can be handled there.
+                        return invoke("throw", error, resolve, reject);
+                      });
                     }
                   }
 
@@ -10270,13 +10305,13 @@ module.exports = () => {
                   return this;
                 };
 
-                runtime.AsyncIterator = AsyncIterator; // Note that simple async functions are implemented on top of
+                exports.AsyncIterator = AsyncIterator; // Note that simple async functions are implemented on top of
                 // AsyncIterator objects; they just return a Promise for the value of
                 // the final result produced by the iterator.
 
-                runtime.async = function (innerFn, outerFn, self, tryLocsList) {
+                exports.async = function (innerFn, outerFn, self, tryLocsList) {
                   var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList));
-                  return runtime.isGeneratorFunction(outerFn) ? iter // If outerFn is a generator, return the full iterator.
+                  return exports.isGeneratorFunction(outerFn) ? iter // If outerFn is a generator, return the full iterator.
                   : iter.next().then(function (result) {
                     return result.done ? result.value : iter.next();
                   });
@@ -10369,7 +10404,8 @@ module.exports = () => {
                     context.delegate = null;
 
                     if (context.method === "throw") {
-                      if (delegate.iterator.return) {
+                      // Note: ["return"] must be used for ES3 parsing compatibility.
+                      if (delegate.iterator["return"]) {
                         // If the delegate iterator has a return method, give it a
                         // chance to clean up.
                         context.method = "return";
@@ -10487,7 +10523,7 @@ module.exports = () => {
                   this.reset(true);
                 }
 
-                runtime.keys = function (object) {
+                exports.keys = function (object) {
                   var keys = [];
 
                   for (var key in object) {
@@ -10554,7 +10590,7 @@ module.exports = () => {
                   };
                 }
 
-                runtime.values = values;
+                exports.values = values;
 
                 function doneResult() {
                   return {
@@ -10745,13 +10781,32 @@ module.exports = () => {
 
                     return ContinueSentinel;
                   }
-                };
-              }( // In sloppy mode, unbound `this` refers to the global object, fallback to
-              // Function constructor if we're in global strict mode. That is sadly a form
-              // of indirect eval which violates Content Security Policy.
-              function () {
-                return this;
-              }() || Function("return this")());
+                }; // Regardless of whether this script is executing as a CommonJS module
+                // or not, return the runtime object so that we can declare the variable
+                // regeneratorRuntime in the outer scope, which allows this module to be
+                // injected easily by `bin/regenerator --include-runtime script.js`.
+
+                return exports;
+              }( // If this script is executing as a CommonJS module, use module.exports
+              // as the regeneratorRuntime namespace. Otherwise create a new empty
+              // object. Either way, the resulting object will be used to initialize
+              // the regeneratorRuntime variable at the top of this file.
+               module.exports );
+
+              try {
+                regeneratorRuntime = runtime;
+              } catch (accidentalStrictMode) {
+                // This module should not be running in strict mode, so the above
+                // assignment should always work unless something is misconfigured. Just
+                // in case runtime.js accidentally runs in strict mode, we can escape
+                // strict mode using a global Function call. This could conceivably fail
+                // if a Content Security Policy forbids using Function, but in that case
+                // the proper solution is to fix the accidental strict mode problem. If
+                // you've misconfigured your bundler to force strict mode and applied a
+                // CSP to forbid Function, and you're not willing to fix either of those
+                // problems, please detail your unique predicament in a GitHub issue.
+                Function("r", "regeneratorRuntime = r")(runtime);
+              }
             });
 
             (function (global) {
@@ -11759,713 +11814,6 @@ module.exports = () => {
               self.Request = Request;
               self.Response = Response;
             }
-
-            var runtime_1 = createCommonjsModule(function (module) {
-              /**
-               * Copyright (c) 2014-present, Facebook, Inc.
-               *
-               * This source code is licensed under the MIT license found in the
-               * LICENSE file in the root directory of this source tree.
-               */
-              var runtime = function (exports) {
-
-                var Op = window.Object.prototype;
-                var hasOwn = Op.hasOwnProperty;
-                var undefined$1; // More compressible than void 0.
-
-                var $Symbol = typeof window.Symbol === "function" ? window.Symbol : {};
-                var iteratorSymbol = $Symbol.iterator || "@@iterator";
-                var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-                var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-                function wrap(innerFn, outerFn, self, tryLocsList) {
-                  // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-                  var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-                  var generator = window.Object.create(protoGenerator.prototype);
-                  var context = new Context(tryLocsList || []); // The ._invoke method unifies the implementations of the .next,
-                  // .throw, and .return methods.
-
-                  generator._invoke = makeInvokeMethod(innerFn, self, context);
-                  return generator;
-                }
-
-                exports.wrap = wrap; // Try/catch helper to minimize deoptimizations. Returns a completion
-                // record like context.tryEntries[i].completion. This interface could
-                // have been (and was previously) designed to take a closure to be
-                // invoked without arguments, but in all the cases we care about we
-                // already have an existing method we want to call, so there's no need
-                // to create a new function object. We can even get away with assuming
-                // the method takes exactly one argument, since that happens to be true
-                // in every case, so we don't have to touch the arguments object. The
-                // only additional allocation required is the completion record, which
-                // has a stable shape and so hopefully should be cheap to allocate.
-
-                function tryCatch(fn, obj, arg) {
-                  try {
-                    return {
-                      type: "normal",
-                      arg: fn.call(obj, arg)
-                    };
-                  } catch (err) {
-                    return {
-                      type: "throw",
-                      arg: err
-                    };
-                  }
-                }
-
-                var GenStateSuspendedStart = "suspendedStart";
-                var GenStateSuspendedYield = "suspendedYield";
-                var GenStateExecuting = "executing";
-                var GenStateCompleted = "completed"; // Returning this object from the innerFn has the same effect as
-                // breaking out of the dispatch switch statement.
-
-                var ContinueSentinel = {}; // Dummy constructor functions that we use as the .constructor and
-                // .constructor.prototype properties for functions that return Generator
-                // objects. For full spec compliance, you may wish to configure your
-                // minifier not to mangle the names of these two functions.
-
-                function Generator() {}
-
-                function GeneratorFunction() {}
-
-                function GeneratorFunctionPrototype() {} // This is a polyfill for %IteratorPrototype% for environments that
-                // don't natively support it.
-
-
-                var IteratorPrototype = {};
-
-                IteratorPrototype[iteratorSymbol] = function () {
-                  return this;
-                };
-
-                var getProto = window.Object.getPrototypeOf;
-                var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-
-                if (NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-                  // This environment has a native %IteratorPrototype%; use it instead
-                  // of the polyfill.
-                  IteratorPrototype = NativeIteratorPrototype;
-                }
-
-                var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = window.Object.create(IteratorPrototype);
-                GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-                GeneratorFunctionPrototype.constructor = GeneratorFunction;
-                GeneratorFunctionPrototype[toStringTagSymbol] = GeneratorFunction.displayName = "GeneratorFunction"; // Helper for defining the .next, .throw, and .return methods of the
-                // Iterator interface in terms of a single ._invoke method.
-
-                function defineIteratorMethods(prototype) {
-                  ["next", "throw", "return"].forEach(function (method) {
-                    prototype[method] = function (arg) {
-                      return this._invoke(method, arg);
-                    };
-                  });
-                }
-
-                exports.isGeneratorFunction = function (genFun) {
-                  var ctor = typeof genFun === "function" && genFun.constructor;
-                  return ctor ? ctor === GeneratorFunction || // For the native GeneratorFunction constructor, the best we can
-                  // do is to check its .name property.
-                  (ctor.displayName || ctor.name) === "GeneratorFunction" : false;
-                };
-
-                exports.mark = function (genFun) {
-                  if (window.Object.setPrototypeOf) {
-                    window.Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-                  } else {
-                    genFun.__proto__ = GeneratorFunctionPrototype;
-
-                    if (!(toStringTagSymbol in genFun)) {
-                      genFun[toStringTagSymbol] = "GeneratorFunction";
-                    }
-                  }
-
-                  genFun.prototype = window.Object.create(Gp);
-                  return genFun;
-                }; // Within the body of any async function, `await x` is transformed to
-                // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-                // `hasOwn.call(value, "__await")` to determine if the yielded value is
-                // meant to be awaited.
-
-
-                exports.awrap = function (arg) {
-                  return {
-                    __await: arg
-                  };
-                };
-
-                function AsyncIterator(generator) {
-                  function invoke(method, arg, resolve, reject) {
-                    var record = tryCatch(generator[method], generator, arg);
-
-                    if (record.type === "throw") {
-                      reject(record.arg);
-                    } else {
-                      var result = record.arg;
-                      var value = result.value;
-
-                      if (value && typeof value === "object" && hasOwn.call(value, "__await")) {
-                        return Promise.resolve(value.__await).then(function (value) {
-                          invoke("next", value, resolve, reject);
-                        }, function (err) {
-                          invoke("throw", err, resolve, reject);
-                        });
-                      }
-
-                      return Promise.resolve(value).then(function (unwrapped) {
-                        // When a yielded Promise is resolved, its final value becomes
-                        // the .value of the Promise<{value,done}> result for the
-                        // current iteration.
-                        result.value = unwrapped;
-                        resolve(result);
-                      }, function (error) {
-                        // If a rejected Promise was yielded, throw the rejection back
-                        // into the async generator function so it can be handled there.
-                        return invoke("throw", error, resolve, reject);
-                      });
-                    }
-                  }
-
-                  var previousPromise;
-
-                  function enqueue(method, arg) {
-                    function callInvokeWithMethodAndArg() {
-                      return new Promise(function (resolve, reject) {
-                        invoke(method, arg, resolve, reject);
-                      });
-                    }
-
-                    return previousPromise = // If enqueue has been called before, then we want to wait until
-                    // all previous Promises have been resolved before calling invoke,
-                    // so that results are always delivered in the correct order. If
-                    // enqueue has not been called before, then it is important to
-                    // call invoke immediately, without waiting on a callback to fire,
-                    // so that the async generator function has the opportunity to do
-                    // any necessary setup in a predictable way. This predictability
-                    // is why the Promise constructor synchronously invokes its
-                    // executor callback, and why async functions synchronously
-                    // execute code before the first await. Since we implement simple
-                    // async functions in terms of async generators, it is especially
-                    // important to get this right, even though it requires care.
-                    previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, // Avoid propagating failures to Promises returned by later
-                    // invocations of the iterator.
-                    callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg();
-                  } // Define the unified helper method that is used to implement .next,
-                  // .throw, and .return (see defineIteratorMethods).
-
-
-                  this._invoke = enqueue;
-                }
-
-                defineIteratorMethods(AsyncIterator.prototype);
-
-                AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-                  return this;
-                };
-
-                exports.AsyncIterator = AsyncIterator; // Note that simple async functions are implemented on top of
-                // AsyncIterator objects; they just return a Promise for the value of
-                // the final result produced by the iterator.
-
-                exports.async = function (innerFn, outerFn, self, tryLocsList) {
-                  var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList));
-                  return exports.isGeneratorFunction(outerFn) ? iter // If outerFn is a generator, return the full iterator.
-                  : iter.next().then(function (result) {
-                    return result.done ? result.value : iter.next();
-                  });
-                };
-
-                function makeInvokeMethod(innerFn, self, context) {
-                  var state = GenStateSuspendedStart;
-                  return function invoke(method, arg) {
-                    if (state === GenStateExecuting) {
-                      throw new Error("Generator is already running");
-                    }
-
-                    if (state === GenStateCompleted) {
-                      if (method === "throw") {
-                        throw arg;
-                      } // Be forgiving, per 25.3.3.3.3 of the spec:
-                      // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-
-
-                      return doneResult();
-                    }
-
-                    context.method = method;
-                    context.arg = arg;
-
-                    while (true) {
-                      var delegate = context.delegate;
-
-                      if (delegate) {
-                        var delegateResult = maybeInvokeDelegate(delegate, context);
-
-                        if (delegateResult) {
-                          if (delegateResult === ContinueSentinel) continue;
-                          return delegateResult;
-                        }
-                      }
-
-                      if (context.method === "next") {
-                        // Setting context._sent for legacy support of Babel's
-                        // function.sent implementation.
-                        context.sent = context._sent = context.arg;
-                      } else if (context.method === "throw") {
-                        if (state === GenStateSuspendedStart) {
-                          state = GenStateCompleted;
-                          throw context.arg;
-                        }
-
-                        context.dispatchException(context.arg);
-                      } else if (context.method === "return") {
-                        context.abrupt("return", context.arg);
-                      }
-
-                      state = GenStateExecuting;
-                      var record = tryCatch(innerFn, self, context);
-
-                      if (record.type === "normal") {
-                        // If an exception is thrown from innerFn, we leave state ===
-                        // GenStateExecuting and loop back for another invocation.
-                        state = context.done ? GenStateCompleted : GenStateSuspendedYield;
-
-                        if (record.arg === ContinueSentinel) {
-                          continue;
-                        }
-
-                        return {
-                          value: record.arg,
-                          done: context.done
-                        };
-                      } else if (record.type === "throw") {
-                        state = GenStateCompleted; // Dispatch the exception by looping back around to the
-                        // context.dispatchException(context.arg) call above.
-
-                        context.method = "throw";
-                        context.arg = record.arg;
-                      }
-                    }
-                  };
-                } // Call delegate.iterator[context.method](context.arg) and handle the
-                // result, either by returning a { value, done } result from the
-                // delegate iterator, or by modifying context.method and context.arg,
-                // setting context.delegate to null, and returning the ContinueSentinel.
-
-
-                function maybeInvokeDelegate(delegate, context) {
-                  var method = delegate.iterator[context.method];
-
-                  if (method === undefined$1) {
-                    // A .throw or .return when the delegate iterator has no .throw
-                    // method always terminates the yield* loop.
-                    context.delegate = null;
-
-                    if (context.method === "throw") {
-                      // Note: ["return"] must be used for ES3 parsing compatibility.
-                      if (delegate.iterator["return"]) {
-                        // If the delegate iterator has a return method, give it a
-                        // chance to clean up.
-                        context.method = "return";
-                        context.arg = undefined$1;
-                        maybeInvokeDelegate(delegate, context);
-
-                        if (context.method === "throw") {
-                          // If maybeInvokeDelegate(context) changed context.method from
-                          // "return" to "throw", let that override the TypeError below.
-                          return ContinueSentinel;
-                        }
-                      }
-
-                      context.method = "throw";
-                      context.arg = new TypeError("The iterator does not provide a 'throw' method");
-                    }
-
-                    return ContinueSentinel;
-                  }
-
-                  var record = tryCatch(method, delegate.iterator, context.arg);
-
-                  if (record.type === "throw") {
-                    context.method = "throw";
-                    context.arg = record.arg;
-                    context.delegate = null;
-                    return ContinueSentinel;
-                  }
-
-                  var info = record.arg;
-
-                  if (!info) {
-                    context.method = "throw";
-                    context.arg = new TypeError("iterator result is not an object");
-                    context.delegate = null;
-                    return ContinueSentinel;
-                  }
-
-                  if (info.done) {
-                    // Assign the result of the finished delegate to the temporary
-                    // variable specified by delegate.resultName (see delegateYield).
-                    context[delegate.resultName] = info.value; // Resume execution at the desired location (see delegateYield).
-
-                    context.next = delegate.nextLoc; // If context.method was "throw" but the delegate handled the
-                    // exception, let the outer generator proceed normally. If
-                    // context.method was "next", forget context.arg since it has been
-                    // "consumed" by the delegate iterator. If context.method was
-                    // "return", allow the original .return call to continue in the
-                    // outer generator.
-
-                    if (context.method !== "return") {
-                      context.method = "next";
-                      context.arg = undefined$1;
-                    }
-                  } else {
-                    // Re-yield the result returned by the delegate method.
-                    return info;
-                  } // The delegate iterator is finished, so forget it and continue with
-                  // the outer generator.
-
-
-                  context.delegate = null;
-                  return ContinueSentinel;
-                } // Define Generator.prototype.{next,throw,return} in terms of the
-                // unified ._invoke helper method.
-
-
-                defineIteratorMethods(Gp);
-                Gp[toStringTagSymbol] = "Generator"; // A Generator should always return itself as the iterator object when the
-                // @@iterator function is called on it. Some browsers' implementations of the
-                // iterator prototype chain incorrectly implement this, causing the Generator
-                // object to not be returned from this call. This ensures that doesn't happen.
-                // See https://github.com/facebook/regenerator/issues/274 for more details.
-
-                Gp[iteratorSymbol] = function () {
-                  return this;
-                };
-
-                Gp.toString = function () {
-                  return "[object Generator]";
-                };
-
-                function pushTryEntry(locs) {
-                  var entry = {
-                    tryLoc: locs[0]
-                  };
-
-                  if (1 in locs) {
-                    entry.catchLoc = locs[1];
-                  }
-
-                  if (2 in locs) {
-                    entry.finallyLoc = locs[2];
-                    entry.afterLoc = locs[3];
-                  }
-
-                  this.tryEntries.push(entry);
-                }
-
-                function resetTryEntry(entry) {
-                  var record = entry.completion || {};
-                  record.type = "normal";
-                  delete record.arg;
-                  entry.completion = record;
-                }
-
-                function Context(tryLocsList) {
-                  // The root entry object (effectively a try statement without a catch
-                  // or a finally block) gives us a place to store values thrown from
-                  // locations where there is no enclosing try statement.
-                  this.tryEntries = [{
-                    tryLoc: "root"
-                  }];
-                  tryLocsList.forEach(pushTryEntry, this);
-                  this.reset(true);
-                }
-
-                exports.keys = function (object) {
-                  var keys = [];
-
-                  for (var key in object) {
-                    keys.push(key);
-                  }
-
-                  keys.reverse(); // Rather than returning an object with a next method, we keep
-                  // things simple and return the next function itself.
-
-                  return function next() {
-                    while (keys.length) {
-                      var key = keys.pop();
-
-                      if (key in object) {
-                        next.value = key;
-                        next.done = false;
-                        return next;
-                      }
-                    } // To avoid creating an additional object, we just hang the .value
-                    // and .done properties off the next function object itself. This
-                    // also ensures that the minifier will not anonymize the function.
-
-
-                    next.done = true;
-                    return next;
-                  };
-                };
-
-                function values(iterable) {
-                  if (iterable) {
-                    var iteratorMethod = iterable[iteratorSymbol];
-
-                    if (iteratorMethod) {
-                      return iteratorMethod.call(iterable);
-                    }
-
-                    if (typeof iterable.next === "function") {
-                      return iterable;
-                    }
-
-                    if (!isNaN(iterable.length)) {
-                      var i = -1,
-                          next = function next() {
-                        while (++i < iterable.length) {
-                          if (hasOwn.call(iterable, i)) {
-                            next.value = iterable[i];
-                            next.done = false;
-                            return next;
-                          }
-                        }
-
-                        next.value = undefined$1;
-                        next.done = true;
-                        return next;
-                      };
-
-                      return next.next = next;
-                    }
-                  } // Return an iterator with no values.
-
-
-                  return {
-                    next: doneResult
-                  };
-                }
-
-                exports.values = values;
-
-                function doneResult() {
-                  return {
-                    value: undefined$1,
-                    done: true
-                  };
-                }
-
-                Context.prototype = {
-                  constructor: Context,
-                  reset: function (skipTempReset) {
-                    this.prev = 0;
-                    this.next = 0; // Resetting context._sent for legacy support of Babel's
-                    // function.sent implementation.
-
-                    this.sent = this._sent = undefined$1;
-                    this.done = false;
-                    this.delegate = null;
-                    this.method = "next";
-                    this.arg = undefined$1;
-                    this.tryEntries.forEach(resetTryEntry);
-
-                    if (!skipTempReset) {
-                      for (var name in this) {
-                        // Not sure about the optimal order of these conditions:
-                        if (name.charAt(0) === "t" && hasOwn.call(this, name) && !isNaN(+name.slice(1))) {
-                          this[name] = undefined$1;
-                        }
-                      }
-                    }
-                  },
-                  stop: function () {
-                    this.done = true;
-                    var rootEntry = this.tryEntries[0];
-                    var rootRecord = rootEntry.completion;
-
-                    if (rootRecord.type === "throw") {
-                      throw rootRecord.arg;
-                    }
-
-                    return this.rval;
-                  },
-                  dispatchException: function (exception) {
-                    if (this.done) {
-                      throw exception;
-                    }
-
-                    var context = this;
-
-                    function handle(loc, caught) {
-                      record.type = "throw";
-                      record.arg = exception;
-                      context.next = loc;
-
-                      if (caught) {
-                        // If the dispatched exception was caught by a catch block,
-                        // then let that catch block handle the exception normally.
-                        context.method = "next";
-                        context.arg = undefined$1;
-                      }
-
-                      return !!caught;
-                    }
-
-                    for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-                      var entry = this.tryEntries[i];
-                      var record = entry.completion;
-
-                      if (entry.tryLoc === "root") {
-                        // Exception thrown outside of any try block that could handle
-                        // it, so set the completion value of the entire function to
-                        // throw the exception.
-                        return handle("end");
-                      }
-
-                      if (entry.tryLoc <= this.prev) {
-                        var hasCatch = hasOwn.call(entry, "catchLoc");
-                        var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-                        if (hasCatch && hasFinally) {
-                          if (this.prev < entry.catchLoc) {
-                            return handle(entry.catchLoc, true);
-                          } else if (this.prev < entry.finallyLoc) {
-                            return handle(entry.finallyLoc);
-                          }
-                        } else if (hasCatch) {
-                          if (this.prev < entry.catchLoc) {
-                            return handle(entry.catchLoc, true);
-                          }
-                        } else if (hasFinally) {
-                          if (this.prev < entry.finallyLoc) {
-                            return handle(entry.finallyLoc);
-                          }
-                        } else {
-                          throw new Error("try statement without catch or finally");
-                        }
-                      }
-                    }
-                  },
-                  abrupt: function (type, arg) {
-                    for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-                      var entry = this.tryEntries[i];
-
-                      if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) {
-                        var finallyEntry = entry;
-                        break;
-                      }
-                    }
-
-                    if (finallyEntry && (type === "break" || type === "continue") && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc) {
-                      // Ignore the finally entry if control is not jumping to a
-                      // location outside the try/catch block.
-                      finallyEntry = null;
-                    }
-
-                    var record = finallyEntry ? finallyEntry.completion : {};
-                    record.type = type;
-                    record.arg = arg;
-
-                    if (finallyEntry) {
-                      this.method = "next";
-                      this.next = finallyEntry.finallyLoc;
-                      return ContinueSentinel;
-                    }
-
-                    return this.complete(record);
-                  },
-                  complete: function (record, afterLoc) {
-                    if (record.type === "throw") {
-                      throw record.arg;
-                    }
-
-                    if (record.type === "break" || record.type === "continue") {
-                      this.next = record.arg;
-                    } else if (record.type === "return") {
-                      this.rval = this.arg = record.arg;
-                      this.method = "return";
-                      this.next = "end";
-                    } else if (record.type === "normal" && afterLoc) {
-                      this.next = afterLoc;
-                    }
-
-                    return ContinueSentinel;
-                  },
-                  finish: function (finallyLoc) {
-                    for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-                      var entry = this.tryEntries[i];
-
-                      if (entry.finallyLoc === finallyLoc) {
-                        this.complete(entry.completion, entry.afterLoc);
-                        resetTryEntry(entry);
-                        return ContinueSentinel;
-                      }
-                    }
-                  },
-                  "catch": function (tryLoc) {
-                    for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-                      var entry = this.tryEntries[i];
-
-                      if (entry.tryLoc === tryLoc) {
-                        var record = entry.completion;
-
-                        if (record.type === "throw") {
-                          var thrown = record.arg;
-                          resetTryEntry(entry);
-                        }
-
-                        return thrown;
-                      }
-                    } // The context.catch method must only be called with a location
-                    // argument that corresponds to a known catch block.
-
-
-                    throw new Error("illegal catch attempt");
-                  },
-                  delegateYield: function (iterable, resultName, nextLoc) {
-                    this.delegate = {
-                      iterator: values(iterable),
-                      resultName: resultName,
-                      nextLoc: nextLoc
-                    };
-
-                    if (this.method === "next") {
-                      // Deliberately forget the last sent value so that we don't
-                      // accidentally pass it on to the delegate.
-                      this.arg = undefined$1;
-                    }
-
-                    return ContinueSentinel;
-                  }
-                }; // Regardless of whether this script is executing as a CommonJS module
-                // or not, return the runtime object so that we can declare the variable
-                // regeneratorRuntime in the outer scope, which allows this module to be
-                // injected easily by `bin/regenerator --include-runtime script.js`.
-
-                return exports;
-              }( // If this script is executing as a CommonJS module, use module.exports
-              // as the regeneratorRuntime namespace. Otherwise create a new empty
-              // object. Either way, the resulting object will be used to initialize
-              // the regeneratorRuntime variable at the top of this file.
-               module.exports );
-
-              try {
-                regeneratorRuntime = runtime;
-              } catch (accidentalStrictMode) {
-                // This module should not be running in strict mode, so the above
-                // assignment should always work unless something is misconfigured. Just
-                // in case runtime.js accidentally runs in strict mode, we can escape
-                // strict mode using a global Function call. This could conceivably fail
-                // if a Content Security Policy forbids using Function, but in that case
-                // the proper solution is to fix the accidental strict mode problem. If
-                // you've misconfigured your bundler to force strict mode and applied a
-                // CSP to forbid Function, and you're not willing to fix either of those
-                // problems, please detail your unique predicament in a GitHub issue.
-                Function("r", "regeneratorRuntime = r")(runtime);
-              }
-            });
 
             var regenerator = runtime_1;
 
