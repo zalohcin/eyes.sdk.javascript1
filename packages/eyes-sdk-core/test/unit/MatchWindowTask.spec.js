@@ -73,7 +73,6 @@ describe('MatchWindowTask', () => {
       const source = 'source'
 
       /*** When ***/
-      debugger
 
       const matchPromise = matchWindowTask.performMatch(
         userInputs,

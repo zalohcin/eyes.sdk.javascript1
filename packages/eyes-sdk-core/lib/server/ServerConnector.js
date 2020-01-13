@@ -449,6 +449,7 @@ class ServerConnector {
       headers: {
         Date: new Date().toISOString(),
         'x-ms-blob-type': 'BlockBlob',
+        'content-type': 'application/octet-stream',
       },
     })
 
