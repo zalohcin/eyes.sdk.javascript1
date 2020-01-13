@@ -103,7 +103,7 @@ const configRequest = (config, {defaults, configuration, logger}) => {
   }
 
   if (!options.isExternalRequest) {
-    config = GeneralUtils.mergeDeep(defaults, config)
+    Object.assign(config, GeneralUtils.mergeDeep(defaults, config))
 
     if (!('apiKey' in config.params)) {
       if (options.withApiKey) {
@@ -220,6 +220,7 @@ const handleRequestResponse = async (response, {axios, logger}) => {
 }
 
 const handleRequestError = async (err, {axios, logger}) => {
+  console.log(err.config)
   const reason = `${err.message}${err.response ? `(${err.response.statusText})` : ''}`
   const config = err.config
   const options = config._options

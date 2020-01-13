@@ -304,7 +304,11 @@ class ServerConnector {
 
   async uploadScreenshot(id, screenshot) {
     const url = this._renderingInfo.getResultsUrl().replace('__random__', id)
-    const options = this._createHttpOptions({
+    const config = {
+      _options: {
+        name: 'uploadScreenshot',
+        retry: 3,
+      },
       method: 'PUT',
       url,
       data: screenshot,
@@ -313,9 +317,9 @@ class ServerConnector {
         'x-ms-blob-type': 'BlockBlob',
         'content-type': 'application/octet-stream',
       },
-    })
+    }
 
-    const response = await sendRequest(this, 'uploadScreenshot', options, 3)
+    const response = await this._axios.request(config)
     if (response.status !== HTTP_STATUS_CODES.CREATED) {
       throw new Error(
         `ServerConnector.uploadScreenshot - unexpected status (${response.statusText})`,
