@@ -2,7 +2,7 @@
   "name": "eyes-sdk-javascript1",
   "private": true,
   "scripts": {
-    "install": "lerna bootstrap --hoist",
+    "install": "npm run clean && npm run bootstrap",
     "bootstrap": "lerna bootstrap --hoist",
     "clean": "lerna clean --yes",
     "lint": "eslint . --ext js --quiet",

@@ -118,6 +118,11 @@ class EyesTestCafe extends Eyes {
    * @inheritDoc
    */
   async open(driver, appName, testName, viewportSize, sessionType) {
+    if (this.getIsDisabled()) {
+      this._logger.verbose('Ignored')
+      return driver
+    }
+
     ArgumentGuard.notNull(driver, 'driver')
 
     // noinspection NonBlockStatementBodyJS
@@ -131,11 +136,6 @@ class EyesTestCafe extends Eyes {
 
     ArgumentGuard.notNull(this._configuration.getAppName(), 'appName')
     ArgumentGuard.notNull(this._configuration.getTestName(), 'testName')
-
-    if (this.getIsDisabled()) {
-      this._logger.verbose('Ignored')
-      return driver
-    }
 
     this._initDriver(driver)
 

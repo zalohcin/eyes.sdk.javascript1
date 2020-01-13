@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-selenium",
-  "version": "4.33.4",
+  "version": "4.33.6",
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
     "eyes-selenium",
@@ -38,9 +38,8 @@
   "dependencies": {
     "@applitools/dom-utils": "^4.7.4",
     "@applitools/eyes-common": "^3.17.2",
-    "@applitools/eyes-sdk-core": "^5.24.0",
-    "@applitools/visual-grid-client": "^13.5.7",
-    "rest-api-handler": "^2.9.0"
+    "@applitools/eyes-sdk-core": "6.0.0",
+    "@applitools/visual-grid-client": "13.5.8"
   },
   "devDependencies": {
     "@applitools/sdk-test-kit": "^1.0.14",
@@ -49,6 +48,7 @@
     "chai": "^4.2.0",
     "chromedriver": "^78.0.0",
     "mocha": "^6.2.2",
+    "mocha-parallel-tests": "^2.2.2",
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "peerDependencies": {
@@ -61,8 +61,7 @@
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\"",
     "test:coverage": "coverage-tests run --path test/coverage/index.js",
     "test:coverage:nuke": "coverage-tests nuke",
-    "test:coverage:doctor": "coverage-tests doctor",
-    "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\""
+    "test:coverage:doctor": "coverage-tests doctor"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

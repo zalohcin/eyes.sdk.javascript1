@@ -7,8 +7,6 @@ const {
   EyesError,
   MutableImage,
   RectangleSize,
-} = require('@applitools/eyes-common')
-const {
   EyesBase,
   RegionProvider,
   NullRegionProvider,
@@ -381,6 +379,10 @@ class Eyes extends EyesBase {
    */
   async getTitle() {
     return this._title
+  }
+
+  getAndSaveRenderingInfo() {
+    return this._serverConnector.renderInfo()
   }
 }
 

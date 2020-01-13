@@ -89,6 +89,17 @@ class MatchWindowTask {
       ignoreMismatch,
       options,
     })
+
+    if (data.getAppOutput().getScreenshot64()) {
+      const screenshot = data.getAppOutput().getScreenshot64()
+      data.getAppOutput().setScreenshot64(null)
+
+      await this._eyes._renderingInfoPromise
+      const id = GeneralUtils.guid()
+      const screenshotUrl = await this._serverConnector.uploadScreenshot(id, screenshot)
+      data.getAppOutput().setScreenshotUrl(screenshotUrl)
+    }
+
     // Perform match.
     return this._serverConnector.matchWindow(this._runningSession, data)
   }
