@@ -103,7 +103,8 @@ const configRequest = (config, {defaults, configuration, logger}) => {
   }
 
   if (!options.isExternalRequest) {
-    Object.assign(config, defaults)
+    config = GeneralUtils.mergeDeep(defaults, config)
+
     if (!('apiKey' in config.params)) {
       if (options.withApiKey) {
         config.params.apiKey = configuration.getApiKey()

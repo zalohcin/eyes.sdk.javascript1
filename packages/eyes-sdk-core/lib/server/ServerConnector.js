@@ -351,6 +351,7 @@ class ServerConnector {
         '/running',
         runningSession.getId(),
       ),
+      headers: {},
       data: matchWindowData,
     }
 
@@ -392,6 +393,7 @@ class ServerConnector {
       },
       method: 'POST',
       url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH),
+      headers: {},
       data: matchSingleWindowData,
     }
 
