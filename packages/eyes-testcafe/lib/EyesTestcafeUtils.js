@@ -37,6 +37,51 @@ let imageOrientationHandler = new (class ImageOrientationHandlerImpl extends Ima
 
 let javascriptHandler = new (class JavascriptHandlerImpl extends JavascriptHandler {})()
 
+/**
+ * @param {Logger} logger
+ * @param {IWebDriver} driver
+ * @param {RectangleSize} browserSize - The size to set
+ * @param {RectangleSize} requiredViewportSize - The size to expect
+ * @param {number} sleep
+ * @param {number} retriesLeft
+ * @return {Promise<boolean>}
+ */
+async function setBrowserSizeLoop(
+  logger,
+  driver,
+  browserSize,
+  requiredViewportSize,
+  sleep,
+  retriesLeft,
+) {
+  logger.verbose(
+    `Trying to set browser size to: ${browserSize}  required viewport size: ${requiredViewportSize}`,
+  )
+  const {width, height} = browserSize.toJSON()
+  await driver.resizeWindow(width, height)
+
+  const rect = await driver.getViewport()
+  const currentSize = new RectangleSize(rect)
+  logger.verbose(`Current viewport size: ${currentSize}`)
+  if (currentSize.equals(requiredViewportSize)) {
+    return true
+  }
+
+  if (retriesLeft <= 1) {
+    logger.verbose('Failed to set browser size: retries is out.')
+    return false
+  }
+
+  return setBrowserSizeLoop(
+    logger,
+    driver,
+    browserSize,
+    requiredViewportSize,
+    sleep,
+    retriesLeft - 1,
+  )
+}
+
 // noinspection OverlyComplexFunctionJS
 /**
  * @param {Logger} logger
@@ -162,8 +207,8 @@ class EyesTestcafeUtils extends EyesJsBrowserUtils {
     ArgumentGuard.notNull(rootElement, 'rootElement')
 
     const script =
-      `var el = arguments[0]; var origOverflow = el.style['overflow-y']; var newOverflow = '${value}'; ` +
-      'el.style["overflow-y"] = newOverflow; ' +
+      `var el = arguments[0]; var origOverflow = el.style['overflow']; var newOverflow = '${value}'; ` +
+      'el.style["overflow"] = newOverflow; ' +
       "if (newOverflow.toUpperCase() === 'HIDDEN' && origOverflow.toUpperCase() !== 'HIDDEN') { el.setAttribute('data-applitools-original-overflow', origOverflow); } " +
       'return origOverflow;'
 
@@ -284,13 +329,13 @@ class EyesTestcafeUtils extends EyesJsBrowserUtils {
   /**
    * @param {Logger} logger - The logger to use.
    * @param {IWebDriver} driver - The web driver to use.
-   * @param {RectangleSize} requiredSize - The size to set
+   * @param {RectangleSize} browserSize - The size to set
+   * @param {RectangleSize} requiredViewportSize - The size to expect
    */
-  static async setBrowserSize(logger, driver, requiredSize) {
-    logger.verbose(`Trying to set browser size to: ${requiredSize}`)
-    const {width, height} = requiredSize.toJSON()
-    await driver.resizeWindow(width, height)
-    // removed retry and sleep mechansims (were in Seleneium)..
+  static async setBrowserSize(logger, driver, browserSize, requiredViewportSize) {
+    const SLEEP = 1000
+    const RETRIES = 3
+    return setBrowserSizeLoop(logger, driver, browserSize, requiredViewportSize, SLEEP, RETRIES)
   }
 
   /**
@@ -300,23 +345,30 @@ class EyesTestcafeUtils extends EyesJsBrowserUtils {
    * @param {RectangleSize} requiredViewportSize
    * @return {Promise<undefined>}
    */
-  static async setBrowserSizeByViewportSize(
-    logger,
-    driver,
-    actualViewportSize,
-    requiredViewportSize,
-  ) {
-    const browserSize = await driver.getViewport()
+  static async setBrowserSizeByViewportSize(logger, driver, requiredViewportSize) {
+    await driver.resizeWindow(requiredViewportSize.getWidth(), requiredViewportSize.getHeight())
+    const browserSize = requiredViewportSize
     const currentSize = new RectangleSize(browserSize)
-    logger.verbose(`Current browser size: ${currentSize}`)
-    const requiredBrowserSize = new RectangleSize({
-      width:
-        currentSize.getWidth() + (requiredViewportSize.getWidth() - actualViewportSize.getWidth()),
-      height:
-        currentSize.getHeight() +
-        (requiredViewportSize.getHeight() - actualViewportSize.getHeight()),
-    })
-    return EyesTestcafeUtils.setBrowserSize(logger, driver, requiredBrowserSize)
+
+    const {width: actualWidth, height: actualHeight} = await driver.getViewport(driver)
+    logger.verbose(
+      `Current viewport size: ${actualWidth}x${actualHeight} required: ${requiredViewportSize}`,
+    )
+    if (
+      actualHeight != requiredViewportSize.getHeight() ||
+      actualWidth != requiredViewportSize.getWidth()
+    ) {
+      const requiredBrowserSize = new RectangleSize({
+        width: currentSize.getWidth() + (requiredViewportSize.getWidth() - actualWidth),
+        height: currentSize.getHeight() + (requiredViewportSize.getHeight() - actualHeight),
+      })
+      return EyesTestcafeUtils.setBrowserSize(
+        logger,
+        driver,
+        requiredBrowserSize,
+        requiredViewportSize,
+      )
+    }
   }
 
   /**
@@ -342,12 +394,7 @@ class EyesTestcafeUtils extends EyesJsBrowserUtils {
       return true
     }
 
-    await EyesTestcafeUtils.setBrowserSizeByViewportSize(
-      logger,
-      driver,
-      initViewportSize,
-      requiredSize,
-    )
+    await EyesTestcafeUtils.setBrowserSizeByViewportSize(logger, driver, requiredSize)
     const actualViewportSize = await EyesTestcafeUtils.getViewportSize(driver)
 
     if (actualViewportSize.equals(requiredSize)) {
