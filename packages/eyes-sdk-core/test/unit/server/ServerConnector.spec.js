@@ -6,18 +6,38 @@ const {presult} = require('../../../lib/troubleshoot/utils')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
 
-describe('ServerConnector', () => {
-  it('_createHttpOptions works', () => {
-    const configuratiion = new Configuration()
-    const connector = new ServerConnector(logger, configuratiion)
-    const options = connector._createHttpOptions({
-      method: 'POST',
-      url: 'https://some.url/some/api',
-      data: {},
-    })
+const {configRequest} = require('../../../lib/server/helpers')
 
-    delete options.params.apiKey
-    assert.deepStrictEqual(options, {
+describe('ServerConnector', () => {
+  it('configRequest works', () => {
+    const configuration = new Configuration()
+    const connector = new ServerConnector(logger, configuration)
+    const config = configRequest(
+      {
+        _options: {
+          withApiKey: false,
+        },
+        method: 'POST',
+        url: 'https://some.url/some/api',
+        data: {},
+      },
+      {
+        defaults: connector._defaultRequestConfig,
+        configuration: connector._configuration,
+        logger: connector._logger,
+      },
+    )
+
+    delete config._options.requestId
+    delete config.headers['x-applitools-eyes-client-request-id']
+
+    assert.deepStrictEqual(config, {
+      _options: {
+        delayBeforeRetry: false,
+        isExternalRequest: false,
+        retry: 1,
+        withApiKey: false,
+      },
       proxy: undefined,
       headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
       timeout: 300000,
