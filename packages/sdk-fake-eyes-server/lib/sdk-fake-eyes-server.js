@@ -6,15 +6,19 @@ const UAParser = require('ua-parser-js')
 const fs = require('fs')
 const path = require('path')
 const filenamify = require('filenamify')
+const uuid = require('uuid/v4')
+const fetch = require('node-fetch')
 
 function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console, hangUp} = {}) {
   const runningSessions = {}
   let serverUrl
   let renderCounter = 0
   const renderings = {}
+  const resources = {}
 
   const app = express()
-  app.use(express.json())
+  const jsonMiddleware = express.json()
+  const rawMiddleware = express.raw({limit: '100MB'})
 
   app.use((req, _res, next) => {
     if (hangUp) {
@@ -29,12 +33,12 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
     res.send({
       serviceUrl: serverUrl,
       accessToken: 'access-token',
-      resultsUrl: `${serverUrl}/results`,
+      resultsUrl: `${serverUrl}/api/resources/__random__`,
     })
   })
 
   // render
-  app.post('/render', (req, res) => {
+  app.post('/render', jsonMiddleware, (req, res) => {
     res.send(
       req.body.map(renderRequest => {
         const renderId = renderRequest.renderId || `r${renderCounter++}`
@@ -49,7 +53,7 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
   })
 
   // render status
-  app.post('/render-status', (req, res) => {
+  app.post('/render-status', jsonMiddleware, (req, res) => {
     res.send(
       req.body.map(renderId => {
         const rendering = renderings[renderId]
@@ -67,7 +71,7 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
   })
 
   // put resource
-  app.put('/resources/sha256/:hash', (_req, res) => {
+  app.put('/resources/sha256/:hash', rawMiddleware, (_req, res) => {
     res.send({success: true})
   })
 
@@ -89,7 +93,7 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
   })
 
   // matchSingleWindow
-  app.post('/api/sessions', (req, res) => {
+  app.post('/api/sessions', jsonMiddleware, (req, res) => {
     const {startInfo, appOutput} = req.body
     const runningSession = createRunningSessionFromStartInfo(startInfo)
     runningSession.steps = [{asExpected: true, appOutput}] // TODO
@@ -117,7 +121,7 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
   })
 
   // startSession
-  app.post('/api/sessions/running', (req, res) => {
+  app.post('/api/sessions/running', jsonMiddleware, (req, res) => {
     try {
       const runningSession = createRunningSessionFromStartInfo(req.body.startInfo)
       runningSessions[runningSession.id] = runningSession
@@ -125,6 +129,7 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
       const {id, sessionId, batchId, baselineId, url} = runningSession
       res.send({id, sessionId, batchId, baselineId, url})
     } catch (ex) {
+      logger.log('bad request for startSession', ex.message)
       res.status(400).send(ex.message)
     }
   })
@@ -154,37 +159,76 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
   }
 
   // postDomSnapshot
-  app.post('/api/sessions/running/data', (_req, res) => {
-    res.set('location', 'bla')
+  app.post('/api/sessions/running/data', rawMiddleware, (req, res) => {
+    const id = uuid()
+    resources[id] = req.body
+    res.set('location', `${serverUrl}/api/resources/${id}`)
     res.send({success: true})
   })
 
-  // matchWindow
-  app.post('/api/sessions/running/:id', express.raw({limit: '100MB'}), (req, res) => {
-    const runningSession = runningSessions[req.params.id]
-    const {steps: _steps, hostOS, hostApp} = runningSession
-    const buff = req.body
-    const len = buff.slice(0, 4).readUInt32BE()
-    const matchWindowData = JSON.parse(buff.slice(4, len + 4))
-    logger.log(matchWindowData)
-    const imgBuff = buff.slice(len + 4)
-    const {appOutput: _appOutput} = matchWindowData
-
-    const expectedPath = path.resolve(
-      expectedFolder,
-      `${filenamify(`${req.params.id}__${hostOS}__${hostApp}`)}.png`,
-    )
-
-    if (updateFixtures) {
-      logger.log('[sdk-fake-eyes-server] updating fixture at', expectedPath)
-      fs.writeFileSync(expectedPath, imgBuff)
-    }
-
-    const expectedBuff = fs.readFileSync(expectedPath)
-    const asExpected = imgBuff.compare(expectedBuff) === 0
-    runningSession.steps.push({matchWindowData, asExpected})
-    res.send({asExpected})
+  app.put('/api/resources/:id', rawMiddleware, (req, res) => {
+    resources[req.params.id] = req.body
+    res.status(201).send()
   })
+
+  app.get('/api/resources/:id', (req, res) => {
+    const {id} = req.params
+    const resource = resources[id]
+    if (!resource) {
+      res.status(404).send()
+    } else {
+      res.send(resources[id])
+    }
+  })
+
+  // matchWindow
+  app.post(
+    '/api/sessions/running/:id',
+    (req, res, next) => {
+      if (req.headers['content-type'] === 'application/octet-stream') {
+        return rawMiddleware(req, res, next)
+      } else {
+        return jsonMiddleware(req, res, next)
+      }
+    },
+    async (req, res) => {
+      const runningSession = runningSessions[req.params.id]
+      const {steps: _steps, hostOS, hostApp} = runningSession
+      const {matchWindowData, screenshot} = await getMatchWindowDataFromRequest(req)
+      logger.log('matchWindowData', matchWindowData)
+      const {appOutput: _appOutput} = matchWindowData
+
+      const expectedPath = path.resolve(
+        expectedFolder,
+        `${filenamify(`${req.params.id}__${hostOS}__${hostApp}`)}.png`,
+      )
+
+      if (updateFixtures) {
+        logger.log('[sdk-fake-eyes-server] updating fixture at', expectedPath)
+        fs.writeFileSync(expectedPath, screenshot)
+      }
+
+      const expectedBuff = fs.readFileSync(expectedPath)
+      const asExpected = screenshot.compare(expectedBuff) === 0
+      runningSession.steps.push({matchWindowData, asExpected})
+      res.send({asExpected})
+    },
+  )
+
+  async function getMatchWindowDataFromRequest(req) {
+    if (Buffer.isBuffer(req.body)) {
+      const buff = req.body
+      const len = buff.slice(0, 4).readUInt32BE()
+      const matchWindowData = JSON.parse(buff.slice(4, len + 4))
+      const screenshot = buff.slice(len + 4)
+      return {matchWindowData, screenshot}
+    } else {
+      const {appOutput} = req.body
+      const {screenshotUrl} = appOutput
+      const screenshot = await fetch(screenshotUrl).then(r => r.buffer())
+      return {matchWindowData: req.body, screenshot}
+    }
+  }
 
   // stopSession
   app.delete('/api/sessions/running/:id', (req, res) => {
