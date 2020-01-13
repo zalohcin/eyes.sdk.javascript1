@@ -1,7 +1,7 @@
 'use strict'
 const assert = require('assert')
 const {Target, Configuration} = require('../../../index')
-const {getDriver, getEyes} = require('./util/testSetup')
+const {getDriver, getEyes} = require('./util/TestSetup')
 
 describe('TestCounts', () => {
   let driver, eyes, runner

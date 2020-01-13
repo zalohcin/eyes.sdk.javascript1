@@ -1,6 +1,9 @@
 'use strict'
+const axios = require('axios')
+const {expect} = require('chai')
+const Rectangle = require('./util/Rectangle')
 const {By} = require('selenium-webdriver')
-const {getDriver, getEyes} = require('./util/testSetup')
+const {getDriver, getEyes} = require('./util/TestSetup')
 const {
   Target,
   Region,
@@ -9,22 +12,22 @@ const {
   AccessibilityRegionType,
 } = require('../../../index')
 const appName = 'Test Fluent Api'
-describe.only('Test ', () => {
-  let stitchMode = 'CSS'
+describe(appName, () => {
   let setups = [
     // {stitchMode: 'CSS', runnerType: 'classic', title: ''},
-    // {stitchMode: 'SCROLL', runnerType: 'classic', title: ' (SCROLL)'},
-    {stitchMode: 'SCROLL', runnerType: 'visualGrid', title: ' (VG)'},
+    {stitchMode: 'SCROLL', runnerType: 'classic', title: ' (SCROLL)'},
+    // {stitchMode: 'SCROLL', runnerType: 'visualGrid', title: ' (VG)'},
   ]
   let batch = new BatchInfo('JS test')
   setups.forEach(function(setup) {
-    describe(`Run ${setup.runnerType} ${setup.stitchMode}`, () => {
-      let driver, eyes
+    describe(`Test run ${setup.title}`, () => {
+      let driver, eyes, runner
       beforeEach(async function() {
         driver = await getDriver('CHROME')
         await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
         let defaults = await getEyes(setup.runnerType, setup.stitchMode)
         eyes = defaults.eyes
+        runner = defaults.runner
         eyes.setBatch(batch)
       })
 
@@ -48,7 +51,10 @@ describe.only('Test ', () => {
             .ignoreRegions(new Region(50, 50, 100, 100)),
         )
         await eyes.close()
-        await checkSettedRegionsInTheSessionsDetails()
+        let summary = await runner.getAllTestResults()
+        await checkSettedRegionsInTheSessionsDetails(summary, {
+          ignore: [new Rectangle(50, 50, 100, 100)],
+        })
       })
 
       it('TestCheckRegionWithIgnoreRegion_Fluent', async function() {
@@ -228,7 +234,10 @@ describe.only('Test ', () => {
           Target.region(element).ignoreRegions(element),
         )
         await eyes.close()
-        await checkSettedRegionsInTheSessionsDetails()
+        let results = await runner.getAllTestResults()
+        await checkSettedRegionsInTheSessionsDetails(results, {
+          ignore: [new Rectangle(0, 0, 304, 184)],
+        })
       })
 
       it('TestScrollbarsHiddenAndReturned_Fluent', async function() {
@@ -295,7 +304,7 @@ describe.only('Test ', () => {
           height: 600,
         })
         driver.findElement(By.id('centered')).click()
-        let scrollRootLocator = stitchMode === 'CSS' ? 'modal-content' : 'modal1'
+        let scrollRootLocator = setup.stitchMode === 'CSS' ? 'modal-content' : 'modal1'
         let scrollRootSelector = By.id(scrollRootLocator)
         await eyes.check(
           'Fluent - Scrollable Modal',
@@ -405,4 +414,29 @@ describe.only('Test ', () => {
   })
 })
 
-async function checkSettedRegionsInTheSessionsDetails() {}
+async function checkSettedRegionsInTheSessionsDetails(summary, expected) {
+  let results = await getTestResults()
+  let data = await getApiData(results.getApiUrls().getSession(), results.getSecretToken())
+  let imageMatchSettings = data.actualAppOutput[0].imageMatchSettings // can be reconsidered but in the DotNet suite only first one is used for assertions
+  if (expected.ignore) assertIgnored()
+  if (expected.floating) assertFloating()
+
+  async function getTestResults() {
+    let testResultContainer = await summary.getAllResults()
+    return testResultContainer[0].getTestResults()
+  }
+
+  async function getApiData(url, token) {
+    let response = await axios.get(
+      `${url}?format=json&AccessToken=${token}&apiKey=${process.env.APPLITOOLS_API_KEY}`,
+    )
+    return response.data
+  }
+
+  function assertIgnored() {
+    expect(imageMatchSettings.ignore).include.deep.members(expected.ignore)
+  }
+  function assertFloating() {
+    expect(imageMatchSettings.floating).include.deep.members(expected.floating)
+  }
+}
