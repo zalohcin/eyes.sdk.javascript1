@@ -192,6 +192,10 @@ class EyesWrapper extends EyesBase {
     // it would generate a new id if called before open
     return this._configuration._batch && this._configuration._batch.getId()
   }
+
+  async getAndSaveRenderingInfo() {
+    // Do nothing because visual grid client handles rendering info
+  }
 }
 
 module.exports = EyesWrapper

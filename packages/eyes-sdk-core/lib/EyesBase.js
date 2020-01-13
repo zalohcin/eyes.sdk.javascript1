@@ -178,15 +178,8 @@ class EyesBase extends EyesAbstract {
     }
   }
 
-  /**
-   * @return {?RenderInfo}
-   */
-  async getRenderingInfo() {
-    if (TypeUtils.isNull(this._serverConnector.getRenderingInfo())) {
-      return this._serverConnector.renderInfo()
-    }
-
-    return this._serverConnector.getRenderingInfo()
+  getAndSaveRenderingInfo() {
+    throw new TypeError('The method is not implemented!')
   }
 
   /**
@@ -945,6 +938,10 @@ class EyesBase extends EyesAbstract {
       this._logger.verbose(
         `openBase('${appName}', '${testName}', '${this._configuration.getViewportSize()}')`,
       )
+
+      if (!this._renderingInfoPromise) {
+        this._renderingInfoPromise = this.getAndSaveRenderingInfo()
+      }
 
       await this._sessionEventHandlers.testStarted(await this.getAUTSessionId())
 

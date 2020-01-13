@@ -33,7 +33,7 @@ const {ImageProviderFactory} = require('./capture/ImageProviderFactory')
 const {EyesWebDriverScreenshotFactory} = require('./capture/EyesWebDriverScreenshotFactory')
 const {FrameChain} = require('./frames/FrameChain')
 const {EyesTargetLocator} = require('./wrappers/EyesTargetLocator')
-const {EyesSeleniumUtils} = require('./EyesSeleniumUtils')
+const {EyesTestcafeUtils} = require('./EyesTestcafeUtils')
 const {EyesWebElement} = require('./wrappers/EyesWebElement')
 const {EyesWebDriverScreenshot} = require('./capture/EyesWebDriverScreenshot')
 const {
@@ -118,6 +118,11 @@ class EyesTestCafe extends Eyes {
    * @inheritDoc
    */
   async open(driver, appName, testName, viewportSize, sessionType) {
+    if (this.getIsDisabled()) {
+      this._logger.verbose('Ignored')
+      return driver
+    }
+
     ArgumentGuard.notNull(driver, 'driver')
 
     // noinspection NonBlockStatementBodyJS
@@ -131,11 +136,6 @@ class EyesTestCafe extends Eyes {
 
     ArgumentGuard.notNull(this._configuration.getAppName(), 'appName')
     ArgumentGuard.notNull(this._configuration.getTestName(), 'testName')
-
-    if (this.getIsDisabled()) {
-      this._logger.verbose('Ignored')
-      return driver
-    }
 
     this._initDriver(driver)
 
@@ -194,7 +194,7 @@ class EyesTestCafe extends Eyes {
    * Perform visual validation
    *
    * @param {string} name - A name to be associated with the match
-   * @param {SeleniumCheckSettings} checkSettings - Target instance which describes whether we want a window/region/frame
+   * @param {TestcafeCheckSettings} checkSettings - Target instance which describes whether we want a window/region/frame
    * @return {Promise<TestResults>} - A promise which is resolved when the validation is finished.
    */
   async testWindow(name, checkSettings) {
@@ -238,7 +238,7 @@ class EyesTestCafe extends Eyes {
 
     // const validationInfo = this.fireValidationWillStartEvent(name);
 
-    // if (!(await EyesSeleniumUtils.isMobileDevice(this._driver))) {
+    // if (!(await EyesTestcafeUtils.isMobileDevice(this._driver))) {
     this._logger.verbose(`URL: ${await this._driver.getCurrentUrl()}`)
     // }
 
@@ -291,7 +291,7 @@ class EyesTestCafe extends Eyes {
         }
       } else {
         this._logger.verbose('default case')
-        // if (!(await EyesSeleniumUtils.isMobileDevice(this._driver))) {
+        // if (!(await EyesTestcafeUtils.isMobileDevice(this._driver))) {
         // required to prevent cut line on the last stitched part of the page on some browsers (like firefox).
         await switchTo.defaultContent()
         originalFC = await this._tryHideScrollbars()
@@ -343,7 +343,7 @@ class EyesTestCafe extends Eyes {
    * @return {Promise}
    */
   async _trySwitchToFrames(switchTo, frames) {
-    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
+    // if (await EyesTestcafeUtils.isMobileDevice(this._driver)) {
     //   return;
     // }
 
@@ -384,7 +384,7 @@ class EyesTestCafe extends Eyes {
 
   /**
    * @private
-   * @param {SeleniumCheckSettings} checkSettings
+   * @param {TestcafeCheckSettings} checkSettings
    * @return {Promise<number>}
    */
   async _switchToFrame(checkSettings) {
@@ -570,7 +570,7 @@ class EyesTestCafe extends Eyes {
       return
     }
 
-    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
+    // if (await EyesTestcafeUtils.isMobileDevice(this._driver)) {
     //   this._logger.log("NATIVE context identified, skipping 'ensure element visible'");
     //   return;
     // }
@@ -779,7 +779,7 @@ class EyesTestCafe extends Eyes {
       this._logger.verbose('Trying to extract device pixel ratio...')
 
       try {
-        this._devicePixelRatio = await EyesSeleniumUtils.getDevicePixelRatio(this._jsExecutor)
+        this._devicePixelRatio = await EyesTestcafeUtils.getDevicePixelRatio(this._jsExecutor)
       } catch (err) {
         this._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
         this._devicePixelRatio = Eyes.DEFAULT_DEVICE_PIXEL_RATIO
@@ -813,7 +813,7 @@ class EyesTestCafe extends Eyes {
    */
   async _getScaleProviderFactory() {
     const element = await this._driver.findElement('html')
-    const entireSize = await EyesSeleniumUtils.getEntireElementSize(this._jsExecutor, element)
+    const entireSize = await EyesTestcafeUtils.getEntireElementSize(this._jsExecutor, element)
 
     return new ContextBasedScaleProviderFactory(
       this._logger,
@@ -879,7 +879,7 @@ class EyesTestCafe extends Eyes {
    * @return {Promise<FrameChain>}
    */
   async _tryHideScrollbars() {
-    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
+    // if (await EyesTestcafeUtils.isMobileDevice(this._driver)) {
     //   return new FrameChain(this._logger);
     // }
 
@@ -898,7 +898,7 @@ class EyesTestCafe extends Eyes {
           if (this._stitchContent || fc.size() !== originalFC.size()) {
             if (frame === null) {
               this._logger.verbose('hiding scrollbars of element (1)')
-              await EyesSeleniumUtils.setOverflow(this._driver, 'hidden', this._scrollRootElement)
+              await EyesTestcafeUtils.setOverflow(this._driver, 'hidden', this._scrollRootElement)
             } else {
               await frame.hideScrollbars(this._driver)
             }
@@ -910,7 +910,7 @@ class EyesTestCafe extends Eyes {
         }
       } else {
         this._logger.verbose('hiding scrollbars of element (2)')
-        this._originalOverflow = await EyesSeleniumUtils.setOverflow(
+        this._originalOverflow = await EyesTestcafeUtils.setOverflow(
           this._driver,
           'hidden',
           this._scrollRootElement,
@@ -943,7 +943,7 @@ class EyesTestCafe extends Eyes {
    * @return {Promise}
    */
   async _tryRestoreScrollbars(frameChain) {
-    // if (await EyesSeleniumUtils.isMobileDevice(this._driver)) {
+    // if (await EyesTestcafeUtils.isMobileDevice(this._driver)) {
     //   return;
     // }
 
@@ -962,7 +962,7 @@ class EyesTestCafe extends Eyes {
         }
       } else {
         this._logger.verbose('returning overflow of element to its original value')
-        await EyesSeleniumUtils.setOverflow(
+        await EyesTestcafeUtils.setOverflow(
           this._driver,
           this._originalOverflow,
           this._scrollRootElement,
@@ -984,7 +984,7 @@ class EyesTestCafe extends Eyes {
   _afterMatchWindow() {
     if (this.hideScrollbars) {
       try {
-        EyesSeleniumUtils.setOverflow(this.driver, this.originalOverflow);
+        EyesTestcafeUtils.setOverflow(this.driver, this.originalOverflow);
       } catch (EyesDriverOperationException e) {
         // Bummer, but we'll continue with the screenshot anyway :)
         logger.log("WARNING: Failed to revert overflow! Error: " + e.getMessage());
@@ -1014,11 +1014,11 @@ class EyesTestCafe extends Eyes {
 
   /**
    * @private
-   * @param {SeleniumCheckSettings} scrollRootElementContainer
+   * @param {TestcafeCheckSettings} scrollRootElementContainer
    * @return {WebElement}
    */
   _getScrollRootElementFromCheckSettings(scrollRootElementContainer) {
-    // if (!EyesSeleniumUtils.isMobileDevice(driver)) {
+    // if (!EyesTestcafeUtils.isMobileDevice(driver)) {
     if (scrollRootElementContainer) {
       let scrollRootElement = scrollRootElementContainer.getScrollRootElement()
 
@@ -1072,7 +1072,7 @@ class EyesTestCafe extends Eyes {
     const positionProvider = this.getPositionProvider()
     let originalPosition = null
     if (positionProvider) {
-      // !EyesSeleniumUtils.isMobileDevice(this.driver)
+      // !EyesTestcafeUtils.isMobileDevice(this.driver)
       originalPosition = await positionProvider.getState()
     }
     await switchTo.frames(originalFrameChain)
@@ -1118,7 +1118,7 @@ class EyesTestCafe extends Eyes {
     if (this._checkFrameOrElement) {
       this._logger.verbose('Check frame/element requested')
 
-      // if (!EyesSeleniumUtils.isMobileDevice(this.driver)) {
+      // if (!EyesTestcafeUtils.isMobileDevice(this.driver)) {
       await switchTo.frames(originalFrameChain)
       // }
 

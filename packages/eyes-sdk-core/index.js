@@ -101,6 +101,8 @@ exports.AccessibilityStatus = require('./lib/AccessibilityStatus').Accessibility
 exports.TestResultsFormatter = require('./lib/TestResultsFormatter').TestResultsFormatter
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus
 
+exports.makeGetRenderingInfo = require('./lib/server/getRenderingInfo')
+
 // Classes from eyes-common which may be used as part of public API
 exports.AccessibilityLevel = common.AccessibilityLevel
 exports.AccessibilityMatchSettings = common.AccessibilityMatchSettings

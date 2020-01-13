@@ -35,8 +35,8 @@ test('Play', async t => {
 //   await t.resizeWindow(1024, 768)
 
 //   const captureFrameAndPollForIE = require('../../dist/captureFrameAndPollForIE')
-//   const {TestCafeJavaScriptExecutor} = require('../../lib/TestCafeJavaScriptExecutor')
-//   const ex = new TestCafeJavaScriptExecutor(t)
+//   const {TestCafeExecutor} = require('../../lib/TestCafeExecutor')
+//   const ex = new TestCafeExecutor(t)
 //   console.log('XXXXXXXXX: captureFrameAndPollForIE', captureFrameAndPollForIE.toString())
 //   const r = await ex.executeScript(captureFrameAndPollForIE)
 //   const r2 = await ex.executeScript(captureFrameAndPollForIE)

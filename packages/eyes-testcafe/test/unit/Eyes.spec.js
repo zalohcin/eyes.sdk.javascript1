@@ -5,7 +5,7 @@ const assert = require('assert')
 const {
   Eyes,
   VisualGridRunner,
-  EyesSelenium,
+  EyesTestcafe,
   EyesVisualGrid,
   Configuration,
   StitchMode,
@@ -16,10 +16,10 @@ const {
 } = require('../../index')
 
 describe('Eyes', function() {
-  it('should create EyesSelenium by default', async function() {
+  it('should create EyesTestcafe by default', async function() {
     const eyes = new Eyes()
     assert.ok(!eyes.isVisualGrid())
-    assert.ok(eyes instanceof EyesSelenium)
+    assert.ok(eyes instanceof EyesTestcafe)
   })
 
   it('should create EyesVisualGrid with VisualGridRunner', async function() {
@@ -28,9 +28,9 @@ describe('Eyes', function() {
     assert.ok(eyes instanceof EyesVisualGrid)
   })
 
-  it('should create an EyesSelenium instance through fromBrowserInfo', () => {
+  it('should create an EyesTestcafe instance through fromBrowserInfo', () => {
     const eyes = Eyes.fromBrowserInfo()
-    assert.ok(eyes instanceof EyesSelenium)
+    assert.ok(eyes instanceof EyesTestcafe)
   })
 
   it('should create an EyesVisualGrid instance through fromBrowserInfo', () => {

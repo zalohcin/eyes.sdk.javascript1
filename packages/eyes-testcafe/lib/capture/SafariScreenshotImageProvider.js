@@ -3,7 +3,7 @@
 const {MutableImage, Region, OSNames} = require('@applitools/eyes-common')
 const {ImageProvider} = require('@applitools/eyes-sdk-core')
 
-const {TestCafeJavaScriptExecutor} = require('../TestCafeJavaScriptExecutor')
+const {TestCafeExecutor} = require('../TestCafeExecutor')
 
 /**
  * @private
@@ -61,7 +61,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
 
     /** @type {Map<int, RegionAndVersion>} */
     this._devicesRegions = undefined
-    this._jsExecutor = new TestCafeJavaScriptExecutor(tsInstance.getDriver())
+    this._jsExecutor = new TestCafeExecutor(tsInstance.getDriver())
   }
 
   /**

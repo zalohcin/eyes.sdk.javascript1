@@ -2,6 +2,7 @@
 
 const {EyesRunner} = require('./EyesRunner')
 const {TestResultsSummary} = require('./TestResultsSummary')
+const {makeVisualGridClient} = require('@applitools/visual-grid-client')
 
 class VisualGridRunner extends EyesRunner {
   /**
@@ -11,6 +12,32 @@ class VisualGridRunner extends EyesRunner {
     super()
 
     this._concurrentSessions = concurrentSessions
+  }
+
+  initializeVgClient({
+    logger,
+    agentId,
+    apiKey,
+    showLogs,
+    saveDebugData,
+    proxy,
+    serverUrl,
+    concurrency,
+  }) {
+    if (this.vgClient) {
+      logger.verbose('skipping initialization of visual grid client')
+    } else {
+      this.vgClient = makeVisualGridClient({
+        logger,
+        agentId,
+        apiKey,
+        showLogs,
+        saveDebugData,
+        proxy,
+        serverUrl,
+        concurrency,
+      })
+    }
   }
 
   /**

@@ -4,13 +4,13 @@
 
 const captureFrameAndPoll = require('../../../dist/captureFrameAndPoll')
 const captureFrameAndPollForIE = require('../../../dist/captureFrameAndPollForIE')
-const {TestCafeJavaScriptExecutor} = require('../../../lib/TestCafeJavaScriptExecutor')
+const {TestCafeExecutor} = require('../../../lib/TestCafeExecutor')
 const {loadFixture} = require('../../util/loadFixture')
 
 fixture`Dom capture`.page`http://localhost:5555`
 
 test('Dom capture', async t => {
-  const ex = new TestCafeJavaScriptExecutor(t)
+  const ex = new TestCafeExecutor(t)
   let result = await ex.executeScript(captureFrameAndPoll)
   result = JSON.parse(result)
   await t.expect(result).eql({status: 'WIP', value: null, error: null})
@@ -25,7 +25,7 @@ test('Dom capture', async t => {
 
 // FIX IE
 test.skip('Dom capture IE', async t => {
-  const ex = new TestCafeJavaScriptExecutor(t)
+  const ex = new TestCafeExecutor(t)
   let result = await ex.executeScript(captureFrameAndPoll)
   result = JSON.parse(result)
   await t.expect(result).eql({status: 'WIP', value: null, error: null})
@@ -33,7 +33,7 @@ test.skip('Dom capture IE', async t => {
   result = await ex.executeScript(captureFrameAndPollForIE)
   result = replaceProxyGuid(result)
 
-  let expected = await loadFixture('dom-capture.text')
+  let expected = await loadFixture('dom-capture-ie.text')
   expected = replaceProxyGuid(expected)
   await t.expect(result).eql(expected)
 })

@@ -1,6 +1,6 @@
 'use strict'
 
-const {makeVisualGridClient, takeDomSnapshot} = require('@applitools/visual-grid-client')
+const {takeDomSnapshot} = require('@applitools/visual-grid-client')
 const {
   ArgumentGuard,
   TypeUtils,
@@ -63,16 +63,11 @@ class EyesVisualGrid extends Eyes {
   async open(driver, appName, testName, viewportSize, sessionType) {
     ArgumentGuard.notNull(driver, 'driver')
 
-    // noinspection NonBlockStatementBodyJS
     if (appName) this._configuration.setAppName(appName)
-    // noinspection NonBlockStatementBodyJS
     if (testName) this._configuration.setTestName(testName)
-    // noinspection NonBlockStatementBodyJS
     if (viewportSize) this._configuration.setViewportSize(viewportSize)
-    // noinspection NonBlockStatementBodyJS
     if (sessionType) this._configuration.setSessionType(sessionType)
 
-    // noinspection NonBlockStatementBodyJS
     if (this._runner.getConcurrentSessions()) {
       this._configuration.setConcurrentSessions(this._runner.getConcurrentSessions())
     }
@@ -84,17 +79,7 @@ class EyesVisualGrid extends Eyes {
       this._userAgent = UserAgent.parseUserAgentString(uaString, true)
     }
 
-    const {openEyes} = makeVisualGridClient({
-      logger: this._logger,
-      agentId: this.getFullAgentId(),
-      apiKey: this._configuration.getApiKey(),
-      showLogs: this._configuration.getShowLogs(),
-      saveDebugData: this._configuration.getSaveDebugData(),
-      proxy: this._configuration.getProxy(),
-      serverUrl: this._configuration.getServerUrl(),
-      // concurrency: this._configuration.getConcurrentSessions(),
-      renderConcurrencyFactor: this._configuration.getConcurrentSessions(),
-    })
+    this._runner.initializeVgClient(this._getVgClientParameters())
 
     if (this._configuration.getViewportSize()) {
       await this.setViewportSize(this._configuration.getViewportSize())
@@ -109,7 +94,7 @@ class EyesVisualGrid extends Eyes {
       }
     }
 
-    const {checkWindow, close, abort} = await openEyes(
+    const {checkWindow, close, abort} = await this._runner.vgClient.openEyes(
       this._configuration.toOpenEyesConfiguration(),
     )
 
@@ -268,19 +253,6 @@ class EyesVisualGrid extends Eyes {
 
   /**
    * @private
-   * @param {{type: string, url: string, value: string}[]} blobs
-   * @return {{type: string, url: string, value: Buffer}[]}
-   */
-  _blobsToResourceContents(blobs) {
-    return blobs.map(({url, type, value}) => ({
-      url,
-      type,
-      value: Buffer.from(value, 'base64'),
-    }))
-  }
-
-  /**
-   * @private
    * @param {GetRegion[]} regions
    * @return {{type: string, url: string, value: Buffer}[]}
    */
@@ -304,6 +276,19 @@ class EyesVisualGrid extends Eyes {
     }
 
     return regions
+  }
+
+  _getVgClientParameters() {
+    return {
+      logger: this._logger,
+      agentId: this.getFullAgentId(),
+      apiKey: this._configuration.getApiKey(),
+      showLogs: this._configuration.getShowLogs(),
+      saveDebugData: this._configuration.getSaveDebugData(),
+      proxy: this._configuration.getProxy(),
+      serverUrl: this._configuration.getServerUrl(),
+      concurrency: this._configuration.getConcurrentSessions(),
+    }
   }
 }
 
