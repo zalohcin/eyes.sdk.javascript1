@@ -34,13 +34,20 @@ function getEyes(runnerType, stitchMode, branchName) {
     case 'classic':
       runner = new ClassicRunner()
       eyes = new Eyes(runner)
+      setStitchMode()
       break
     default:
       eyes = new Eyes()
+      setStitchMode()
   }
-  stitchMode === 'CSS' ? eyes.setStitchMode(StitchMode.CSS) : eyes.setStitchMode(StitchMode.SCROLL)
   if (branchName) eyes.setBranchName(branchName)
   return {eyes: eyes, runner: runner}
+
+  function setStitchMode() {
+    stitchMode === 'CSS'
+      ? eyes.setStitchMode(StitchMode.CSS)
+      : eyes.setStitchMode(StitchMode.SCROLL)
+  }
 }
 
 module.exports = {
