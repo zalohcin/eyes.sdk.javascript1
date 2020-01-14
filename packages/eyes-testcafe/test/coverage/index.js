@@ -6,17 +6,9 @@ const {
   convertExecutionModeToSuffix,
 } = require('@applitools/sdk-test-kit').coverageTests
 
-const supportedTests = [
-  // viewport
-  {name: 'TestCheckWindow_Fluent', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckWindow_Fluent', executionMode: {isScrollStitching: true}},
-  // full page
-  {name: 'TestCheckPageWithHeaderFully_Window', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckPageWithHeaderFully_Window', executionMode: {isScrollStitching: true}},
-]
-
 const sdkName = 'eyes-testcafe'
-function initialize() {
+
+function makeCommands() {
   let baselineTestName
   let output = {
     setup: [],
@@ -95,7 +87,7 @@ test('${testName}', async driver => {
 
 function createTestFiles(testFileDir) {
   supportedTests.forEach(async supportedTest => {
-    const commands = initialize()
+    const commands = makeCommands()
     const tests = makeCoverageTests(commands)
     const baselineTestName = `${supportedTest.name}${convertExecutionModeToSuffix(
       supportedTest.executionMode,
@@ -122,6 +114,15 @@ class MyStream extends stream.Writable {
     next()
   }
 }
+
+const supportedTests = [
+  // viewport
+  {name: 'TestCheckWindow_Fluent', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckWindow_Fluent', executionMode: {isScrollStitching: true}},
+  // full page
+  {name: 'TestCheckPageWithHeaderFully_Window', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckPageWithHeaderFully_Window', executionMode: {isScrollStitching: true}},
+]
 
 async function run() {
   process.stdout.write('Preparing test files...')
