@@ -1,4 +1,4 @@
-const {makeRunTests} = require('./runner')
+const {makeRunTests, convertExecutionModeToSuffix} = require('./runner')
 const {makeCoverageTests} = require('./tests')
 
-module.exports = {makeCoverageTests, makeRunTests}
+module.exports = {makeCoverageTests, makeRunTests, convertExecutionModeToSuffix}
