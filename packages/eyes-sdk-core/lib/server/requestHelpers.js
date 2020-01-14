@@ -220,7 +220,6 @@ const handleRequestResponse = async (response, {axios, logger}) => {
 }
 
 const handleRequestError = async (err, {axios, logger}) => {
-  console.log(err.config)
   const reason = `${err.message}${err.response ? `(${err.response.statusText})` : ''}`
   const config = err.config
   const options = config._options
@@ -254,6 +253,7 @@ const handleRequestError = async (err, {axios, logger}) => {
 }
 
 exports.configCustomOptions = configCustomOptions
+exports.configRequestProxy = configRequestProxy
 exports.configRequest = configRequest
 exports.prepareRequest = prepareRequest
 

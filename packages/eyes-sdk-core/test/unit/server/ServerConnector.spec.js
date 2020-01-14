@@ -6,7 +6,7 @@ const {presult} = require('../../../lib/troubleshoot/utils')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
 
-const {configRequest} = require('../../../lib/server/helpers')
+const {configRequest} = require('../../../lib/server/requestHelpers')
 
 describe('ServerConnector', () => {
   it('configRequest works', () => {
@@ -134,5 +134,66 @@ describe('ServerConnector', () => {
     const buffer = Buffer.from('something')
     const result = await serverConnector.uploadScreenshot(id, buffer)
     assert.strictEqual(result, renderingInfo.getResultsUrl().replace('__random__', id))
+  })
+
+  it('long request waits right amount of time', async () => {
+    const configuration = new Configuration()
+    const serverConnector = new ServerConnector(logger, configuration)
+    const POLLING_DELAY_SEQUENCE = [100, 200, 400, 1000]
+    const POLLING_DELAY_REPEAT_COUNT = 3
+    const ANSWER_IN = 10 // requests
+    let counter = 0
+    let timestampBefore
+    const timeouts = []
+    const getPollingDelaySequence = () => {
+      let repeat = 0
+      return {
+        next() {
+          return {
+            value:
+              POLLING_DELAY_SEQUENCE[
+                Math.min(
+                  Math.floor(repeat++ / POLLING_DELAY_REPEAT_COUNT),
+                  POLLING_DELAY_SEQUENCE.length - 1,
+                )
+              ],
+            done: false,
+          }
+        },
+      }
+    }
+    serverConnector._axios.defaults.adapter = async config => {
+      let status = 200
+      if (config._options.isLongRequest) {
+        status = 202
+        timestampBefore = Date.now()
+      } else if (config._options.isPollingRequest) {
+        const timestampAfter = Date.now()
+        timeouts.push(timestampAfter - timestampBefore)
+        timestampBefore = timestampAfter
+        status = ++counter < ANSWER_IN ? 200 : 201
+      }
+      return {
+        data: {},
+        status,
+        statusText: 'ok',
+        headers: {},
+        config: config,
+        request: {},
+      }
+    }
+    await serverConnector._axios.request({
+      _options: {
+        isLongRequest: true,
+        pollingDelaySequence: getPollingDelaySequence(),
+      },
+      url: 'http://fakehost.com',
+    })
+    assert.strictEqual(timeouts.length, ANSWER_IN)
+    const expectedSequence = getPollingDelaySequence()
+    timeouts.forEach(timeout => {
+      const expectedTimeout = expectedSequence.next().value
+      assert(timeout >= expectedTimeout && timeout <= expectedTimeout + 15)
+    })
   })
 })

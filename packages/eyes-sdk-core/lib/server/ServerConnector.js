@@ -8,7 +8,7 @@ const {GeneralUtils, TypeUtils, ArgumentGuard} = require('@applitools/eyes-commo
 const {RenderingInfo} = require('./RenderingInfo')
 const {setProxyOptions} = require('./setProxyOptions')
 const {RunningSession} = require('./RunningSession')
-const {prepareRequest, handleRequestResponse, handleRequestError} = require('./helpers')
+const {prepareRequest, handleRequestResponse, handleRequestError} = require('./requestHelpers')
 const {TestResults} = require('../TestResults')
 const {MatchResult} = require('../match/MatchResult')
 
