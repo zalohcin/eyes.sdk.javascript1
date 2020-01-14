@@ -1,5 +1,6 @@
 'use strict'
 
+require('chromedriver')
 const assert = require('assert')
 const {Logger} = require('@applitools/eyes-common')
 const {Builder, Capabilities} = require('selenium-webdriver')
@@ -120,7 +121,7 @@ describe('Eyes', function() {
       server = await fakeEyesServer({logger})
       driver = await new Builder()
         .withCapabilities(Capabilities.chrome())
-        .setChromeOptions(new ChromeOptions().headless())
+        .setChromeOptions(new ChromeOptions().addArguments('disable-infobars').headless())
         .build()
       eyes = new Proxy(new Eyes(), {
         get(target, key, receiver) {
@@ -189,6 +190,7 @@ describe('Eyes', function() {
 
     after(async () => {
       await eyes.close()
+      await eyes.abort()
       await driver.quit()
       await server.close()
     })
