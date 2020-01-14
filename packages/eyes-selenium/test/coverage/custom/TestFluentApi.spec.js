@@ -1,7 +1,8 @@
 'use strict'
-const axios = require('axios')
-const {expect} = require('chai')
+const {ApiAssertion} = require('./util/ApiAssertions')
 const Rectangle = require('./util/Rectangle')
+const FloatingRectangle = require('./util/FloatingRectangle')
+const AccessibilityRectangle = require('./util/AccessibilityRectangle')
 const {By} = require('selenium-webdriver')
 const {getDriver, getEyes} = require('./util/TestSetup')
 const {
@@ -52,7 +53,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let summary = await runner.getAllTestResults()
-        await checkSettedRegionsInTheSessionsDetails(summary, {
+        await ApiAssertion(summary, {
           ignore: [new Rectangle(50, 50, 100, 100)],
         })
       })
@@ -67,7 +68,10 @@ describe(appName, () => {
           Target.region(By.id('overflowing-div')).ignoreRegions(new Region(50, 50, 100, 100)),
         )
         await eyes.close()
-        await checkSettedRegionsInTheSessionsDetails()
+        let summary = await runner.getAllTestResults()
+        await ApiAssertion(summary, {
+          ignore: [new Rectangle(50, 50, 100, 100)],
+        })
       })
 
       it('TestCheckRegionBySelectorAfterManualScroll_Fluent', async function() {
@@ -112,7 +116,10 @@ describe(appName, () => {
           Target.window().ignoreRegions(By.id('overflowing-div')),
         )
         await eyes.close()
-        await checkSettedRegionsInTheSessionsDetails()
+        let summary = await runner.getAllTestResults()
+        await ApiAssertion(summary, {
+          ignore: [new Rectangle(8, 80, 304, 184)],
+        })
       })
 
       it('TestCheckWindowWithIgnoreBySelector_Centered_Fluent', async function() {
@@ -130,7 +137,10 @@ describe(appName, () => {
           Target.window().ignoreRegions(By.id('centered')),
         )
         await eyes.close()
-        await checkSettedRegionsInTheSessionsDetails()
+        let summary = await runner.getAllTestResults()
+        await ApiAssertion(summary, {
+          ignore: [new Rectangle(122, 928, 456, 306)],
+        })
       })
 
       it('TestCheckWindowWithIgnoreBySelector_Stretched_Fluent', async function() {
@@ -148,7 +158,10 @@ describe(appName, () => {
           Target.window().ignoreRegions(By.id('stretched')),
         )
         await eyes.close()
-        await checkSettedRegionsInTheSessionsDetails()
+        let summary = await runner.getAllTestResults()
+        await ApiAssertion(summary, {
+          ignore: [new Rectangle(8, 1270, 690, 206)],
+        })
       })
 
       it('TestCheckWindowWithFloatingBySelector_Fluent', async function() {
@@ -166,7 +179,10 @@ describe(appName, () => {
           Target.window().floatingRegion(By.id('overflowing-div'), 3, 3, 20, 30),
         )
         await eyes.close()
-        await checkSettedRegionsInTheSessionsDetails()
+        let summary = await runner.getAllTestResults()
+        await ApiAssertion(summary, {
+          floating: [new FloatingRectangle(8, 80, 304, 184, 3, 3, 20, 30)],
+        })
       })
 
       it('TestCheckRegionByCoordinates_Fluent', async function() {
@@ -215,7 +231,10 @@ describe(appName, () => {
           Target.region(element).ignoreRegions(ignoreElement),
         )
         await eyes.close()
-        await checkSettedRegionsInTheSessionsDetails()
+        let summary = await runner.getAllTestResults()
+        await ApiAssertion(summary, {
+          ignore: [new Rectangle(0, -202, 304, 184)],
+        })
       })
 
       it('TestCheckElementWithIgnoreRegionBySameElement_Fluent', async function() {
@@ -235,7 +254,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let results = await runner.getAllTestResults()
-        await checkSettedRegionsInTheSessionsDetails(results, {
+        await ApiAssertion(results, {
           ignore: [new Rectangle(0, 0, 304, 184)],
         })
       })
@@ -273,7 +292,14 @@ describe(appName, () => {
             .ignoreRegions(By.css('.ignore')),
         )
         await eyes.close()
-        await checkSettedRegionsInTheSessionsDetails()
+        let summary = await runner.getAllTestResults()
+        await ApiAssertion(summary, {
+          ignore: [
+            new Rectangle(10, 284, 800, 500),
+            new Rectangle(122, 928, 456, 306),
+            new Rectangle(8, 1270, 690, 206),
+          ],
+        })
       })
 
       it('TestCheckMany', async function() {
@@ -335,7 +361,10 @@ describe(appName, () => {
               .ignoreDisplacements(ignoreDisplacement),
           )
           await eyes.close()
-          await checkSettedRegionsInTheSessionsDetails()
+          let results = await runner.getAllTestResults()
+          await ApiAssertion(results, {
+            ignoreDisplacements: ignoreDisplacement,
+          })
         })
       })
 
@@ -352,22 +381,10 @@ describe(appName, () => {
         let settings = Target.window().floatingRegion(new Region(10, 10, 20, 20), 3, 3, 20, 30)
         await eyes.check('Fluent -  Window with floating region by region', settings)
         await eyes.close()
-      })
-
-      it('TestCheckWindowWithFloatingByRegion_Fluent', async function() {
-        await eyes.open(
-          driver,
-          appName,
-          `Fluent -  Window with floating region by region${setup.title}`,
-          {
-            width: 800,
-            height: 600,
-          },
-        )
-        let settings = Target.window().floatingRegion(new Region(10, 10, 20, 20), 3, 3, 20, 30)
-        await eyes.check('Fluent -  Window with floating region by region', settings)
-        await eyes.close()
-        await checkSettedRegionsInTheSessionsDetails()
+        let summary = await runner.getAllTestResults()
+        await ApiAssertion(summary, {
+          floating: [new FloatingRectangle(10, 10, 20, 20, 3, 3, 20, 30)],
+        })
       })
 
       it('TestCheckElementFully_Fluent', async function() {
@@ -408,35 +425,16 @@ describe(appName, () => {
           ),
         )
         await eyes.close()
-        await checkSettedRegionsInTheSessionsDetails()
+        let summary = await runner.getAllTestResults()
+        await ApiAssertion(summary, {
+          accessibility: [
+            new AccessibilityRectangle(10, 284, 800, 500, false, 'LargeText'),
+            new AccessibilityRectangle(122, 928, 456, 306, false, 'LargeText'),
+            new AccessibilityRectangle(8, 1270, 690, 206, false, 'LargeText'),
+          ],
+          accessibilityLevel: 'AAA',
+        })
       })
     })
   })
 })
-
-async function checkSettedRegionsInTheSessionsDetails(summary, expected) {
-  let results = await getTestResults()
-  let data = await getApiData(results.getApiUrls().getSession(), results.getSecretToken())
-  let imageMatchSettings = data.actualAppOutput[0].imageMatchSettings // can be reconsidered but in the DotNet suite only first one is used for assertions
-  if (expected.ignore) assertIgnored()
-  if (expected.floating) assertFloating()
-
-  async function getTestResults() {
-    let testResultContainer = await summary.getAllResults()
-    return testResultContainer[0].getTestResults()
-  }
-
-  async function getApiData(url, token) {
-    let response = await axios.get(
-      `${url}?format=json&AccessToken=${token}&apiKey=${process.env.APPLITOOLS_API_KEY}`,
-    )
-    return response.data
-  }
-
-  function assertIgnored() {
-    expect(imageMatchSettings.ignore).include.deep.members(expected.ignore)
-  }
-  function assertFloating() {
-    expect(imageMatchSettings.floating).include.deep.members(expected.floating)
-  }
-}
