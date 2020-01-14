@@ -112,7 +112,7 @@ describe('Eyes', function() {
     assert.strictEqual(eyes.getSendDom(), false)
   })
 
-  describe.only('should work wait before viewport screenshot after setWaitBeforeScreenshots', function() {
+  describe('should work wait before viewport screenshot after setWaitBeforeScreenshots', function() {
     let server, driver, eyes
     let checkTimestamp, networkTimestamp, duration
     const thrownScreenshotDone = Symbol()
@@ -160,7 +160,7 @@ describe('Eyes', function() {
     })
 
     it('should wait specified amount of time', async () => {
-      const delay = 1000
+      const delay = 500
       try {
         eyes.setWaitBeforeScreenshots(delay)
         await eyes.check('wait', Target.window())
