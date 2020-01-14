@@ -1,27 +1,39 @@
 const createTestCafe = require('testcafe')
 const stream = require('stream')
 const fs = require('fs')
-
 const {
   makeCoverageTests,
   convertExecutionModeToSuffix,
 } = require('@applitools/sdk-test-kit').coverageTests
 
 const supportedTests = [
+  // viewport
   {name: 'TestCheckWindow_Fluent', executionMode: {isCssStitching: true}},
   {name: 'TestCheckWindow_Fluent', executionMode: {isScrollStitching: true}},
+  // full page
+  {name: 'TestCheckPageWithHeaderFully_Window', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckPageWithHeaderFully_Window', executionMode: {isScrollStitching: true}},
 ]
 
+const sdkName = 'eyes-testcafe'
 function initialize() {
   let baselineTestName
-  let branchName
-  let output = {}
+  let output = {
+    setup: [],
+  }
   function _out() {
     return output
   }
   function _setup(options) {
     baselineTestName = options.baselineTestName
-    branchName = options.branchName
+    output.setup.push(`eyes.setBranchName('${options.branchName}')`)
+    options.executionMode.isCssStitching
+      ? output.setup.push(`eyes.setStitchMode(StitchMode.CSS)`)
+      : undefined
+    options.executionMode.isScrollStitching
+      ? output.setup.push(`eyes.setStitchMode(StitchMode.SCROLL)`)
+      : undefined
+    output.setup.push(`eyes.setBatch('JS Coverage Tests - ${sdkName}', '12345')`)
   }
   function abort() {}
   function visit(url) {
@@ -33,11 +45,12 @@ function initialize() {
   }
   function checkFrame() {}
   function checkRegion() {}
-  function checkWindow() {
-    output.checkWindow = `await eyes.checkWindow()`
+  function checkWindow(options) {
+    const isFully = !!(options && options.isFully)
+    output.checkWindow = `await eyes.check(undefined, Target.window().fully(${isFully}))`
   }
   function close(_options) {
-    output.close = `eyes.close()`
+    output.close = `await eyes.close()`
   }
   function getAllTestResults() {}
   function scrollDown() {}
@@ -63,14 +76,16 @@ function initialize() {
 function makeTestBody(testName, output) {
   let testCommands = {...output}
   delete testCommands.visit
-  delete testCommands.close
   delete testCommands.getAllTestResults
-  return `const {Eyes} = require('../../../index')
+  delete testCommands.setup
+  return `const {Eyes, StitchMode, Target} = require('../../../index')
 const eyes = new Eyes()
 
 fixture\`${testName}\`
   .page('${output.visit}')
-  .afterEach(async () => ${output.close})
+  .beforeEach(async () => {
+    ${output.setup.join('\n    ')}
+  })
   ${output.getAllTestResults ? '.after(async () => ' + output.getAllTestResults + ')' : ''}
 
 test('${testName}', async driver => {
@@ -78,7 +93,7 @@ test('${testName}', async driver => {
 })`
 }
 
-function compile() {
+function createTestFiles(testFileDir) {
   supportedTests.forEach(async supportedTest => {
     const commands = initialize()
     const tests = makeCoverageTests(commands)
@@ -89,14 +104,15 @@ function compile() {
       commands._setup({
         baselineTestName,
         branchName: 'master',
+        executionMode: supportedTest.executionMode,
       })
     }
     await tests[supportedTest.name]()
     const body = makeTestBody(supportedTest.name, commands._out())
-    if (!fs.existsSync(`${__dirname}/tmp`)) {
-      fs.mkdirSync(`${__dirname}/tmp`)
+    if (!fs.existsSync(testFileDir)) {
+      fs.mkdirSync(testFileDir)
     }
-    fs.writeFileSync(`${__dirname}/tmp/${baselineTestName}.js`, body)
+    fs.writeFileSync(`${testFileDir}/${baselineTestName}.js`, body)
   })
 }
 
@@ -109,16 +125,17 @@ class MyStream extends stream.Writable {
 
 async function run() {
   process.stdout.write('Preparing test files...')
-  compile()
+  const testFileDir = `${__dirname}/tmp`
+  createTestFiles(testFileDir)
   process.stdout.write(' Done!\n\n')
   console.log('Running TestCafe tests...')
   const testCafe = await createTestCafe('localhost', 1337, 1338)
   const runner = testCafe.createRunner()
   const stream = new MyStream()
   await runner
-    .src(`${__dirname}/tmp`)
+    .src(testFileDir)
     .browsers('chrome:headless')
-    .concurrency(5)
+    //.concurrency(5)
     .reporter('json', stream)
     .run()
     .catch(console.error)
