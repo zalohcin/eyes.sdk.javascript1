@@ -1,5 +1,5 @@
 'use strict'
-const {ApiAssertion} = require('./util/ApiAssertions')
+const {assertImageMatchSettings} = require('./util/ApiAssertions')
 const Rectangle = require('./util/Rectangle')
 const FloatingRectangle = require('./util/FloatingRectangle')
 const AccessibilityRectangle = require('./util/AccessibilityRectangle')
@@ -53,7 +53,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let summary = await runner.getAllTestResults()
-        await ApiAssertion(summary, {
+        await assertImageMatchSettings(summary, {
           ignore: [new Rectangle(50, 50, 100, 100)],
         })
       })
@@ -69,7 +69,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let summary = await runner.getAllTestResults()
-        await ApiAssertion(summary, {
+        await assertImageMatchSettings(summary, {
           ignore: [new Rectangle(50, 50, 100, 100)],
         })
       })
@@ -117,7 +117,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let summary = await runner.getAllTestResults()
-        await ApiAssertion(summary, {
+        await assertImageMatchSettings(summary, {
           ignore: [new Rectangle(8, 80, 304, 184)],
         })
       })
@@ -138,7 +138,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let summary = await runner.getAllTestResults()
-        await ApiAssertion(summary, {
+        await assertImageMatchSettings(summary, {
           ignore: [new Rectangle(122, 928, 456, 306)],
         })
       })
@@ -159,7 +159,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let summary = await runner.getAllTestResults()
-        await ApiAssertion(summary, {
+        await assertImageMatchSettings(summary, {
           ignore: [new Rectangle(8, 1270, 690, 206)],
         })
       })
@@ -180,7 +180,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let summary = await runner.getAllTestResults()
-        await ApiAssertion(summary, {
+        await assertImageMatchSettings(summary, {
           floating: [new FloatingRectangle(8, 80, 304, 184, 3, 3, 20, 30)],
         })
       })
@@ -232,7 +232,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let summary = await runner.getAllTestResults()
-        await ApiAssertion(summary, {
+        await assertImageMatchSettings(summary, {
           ignore: [new Rectangle(0, -202, 304, 184)],
         })
       })
@@ -254,7 +254,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let results = await runner.getAllTestResults()
-        await ApiAssertion(results, {
+        await assertImageMatchSettings(results, {
           ignore: [new Rectangle(0, 0, 304, 184)],
         })
       })
@@ -293,7 +293,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let summary = await runner.getAllTestResults()
-        await ApiAssertion(summary, {
+        await assertImageMatchSettings(summary, {
           ignore: [
             new Rectangle(10, 284, 800, 500),
             new Rectangle(122, 928, 456, 306),
@@ -362,7 +362,7 @@ describe(appName, () => {
           )
           await eyes.close()
           let results = await runner.getAllTestResults()
-          await ApiAssertion(results, {
+          await assertImageMatchSettings(results, {
             ignoreDisplacements: ignoreDisplacement,
           })
         })
@@ -382,7 +382,7 @@ describe(appName, () => {
         await eyes.check('Fluent -  Window with floating region by region', settings)
         await eyes.close()
         let summary = await runner.getAllTestResults()
-        await ApiAssertion(summary, {
+        await assertImageMatchSettings(summary, {
           floating: [new FloatingRectangle(10, 10, 20, 20, 3, 3, 20, 30)],
         })
       })
@@ -426,7 +426,7 @@ describe(appName, () => {
         )
         await eyes.close()
         let summary = await runner.getAllTestResults()
-        await ApiAssertion(summary, {
+        await assertImageMatchSettings(summary, {
           accessibility: [
             new AccessibilityRectangle(10, 284, 800, 500, false, 'LargeText'),
             new AccessibilityRectangle(122, 928, 456, 306, false, 'LargeText'),
