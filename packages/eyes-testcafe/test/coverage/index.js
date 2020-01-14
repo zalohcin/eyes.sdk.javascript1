@@ -128,6 +128,7 @@ async function run() {
   const testFileDir = `${__dirname}/tmp`
   createTestFiles(testFileDir)
   process.stdout.write(' Done!\n\n')
+  console.log(`(you can see them in ${testFileDir})`)
   console.log('Running TestCafe tests...')
   const testCafe = await createTestCafe('localhost', 1337, 1338)
   const runner = testCafe.createRunner()
