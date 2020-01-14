@@ -1,9 +1,13 @@
 'use strict'
 
 const assert = require('assert')
+const {Logger} = require('@applitools/eyes-common')
 const {Builder, Capabilities} = require('selenium-webdriver')
+const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
 
 const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
+
+const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
 const {
   Eyes,
@@ -20,8 +24,6 @@ const {
 } = require('../../index')
 
 describe('Eyes', function() {
-  this.timeout(60 * 1000)
-
   it('should create EyesSelenium by default', async function() {
     const eyes = new Eyes()
     assert.ok(!eyes.isVisualGrid())
@@ -110,40 +112,85 @@ describe('Eyes', function() {
     assert.strictEqual(eyes.getSendDom(), false)
   })
 
-  it('should wait before screenshots', async function() {
-    try {
-      const driver = await new Builder().withCapabilities(Capabilities.chrome()).build()
-      const eyes = new Eyes()
-      const server = await fakeEyesServer({logger: {log: () => {}}})
-      const config = new Configuration()
-      config.setServerUrl(`http://localhost:${server.port}`)
-      config.setApiKey('fakeApiKey')
-      eyes.setConfiguration(config)
-      eyes.setWaitBeforeScreenshots(1000)
-      let startTime
-      let duration
-      const thrownScreenshotDone = Symbol()
-      eyes.getScreenshot = function() {
-        duration = Date.now() - startTime
-        throw thrownScreenshotDone
-      }
-      await eyes.open(driver, this.test.parent.title, this.test.title)
-      startTime = Date.now()
+  describe.only('should work wait before viewport screenshot after setWaitBeforeScreenshots', function() {
+    let server, driver, eyes
+    let checkTimestamp, networkTimestamp, duration
+    const thrownScreenshotDone = Symbol()
+    before(async () => {
+      server = await fakeEyesServer({logger})
+      driver = await new Builder()
+        .withCapabilities(Capabilities.chrome())
+        .setChromeOptions(new ChromeOptions().headless())
+        .build()
+      eyes = new Proxy(new Eyes(), {
+        get(target, key, receiver) {
+          if (key === 'checkWindowBase') {
+            checkTimestamp = Date.now()
+          } else if (key === '_ensureRunningSession') {
+            networkTimestamp = Date.now()
+          } else if (key === 'getScreenshot') {
+            const screenshotTimestamp = Date.now()
+            duration =
+              screenshotTimestamp - checkTimestamp - (screenshotTimestamp - networkTimestamp)
+            throw thrownScreenshotDone
+          }
+          return Reflect.get(target, key, receiver)
+        },
+      })
+      eyes.setServerUrl(`http://localhost:${server.port}`)
+      eyes.setApiKey('fakeApiKey')
+      await eyes.open(driver, this.parent.title, this.title)
+    })
+
+    afterEach(() => {
+      eyes.setWaitBeforeScreenshots(undefined)
+    })
+
+    it('should wait default amount of time', async () => {
+      const delay = eyes.getWaitBeforeScreenshots()
       try {
-        await eyes.check('wait', Target.window().fully())
+        await eyes.check('wait', Target.window())
       } catch (caught) {
         if (caught === thrownScreenshotDone) {
-          assert(duration >= 1000)
+          assert(duration >= delay && duration <= delay + 10)
         } else {
           assert.fail()
         }
       }
+    })
 
+    it('should wait specified amount of time', async () => {
+      const delay = 1000
+      try {
+        eyes.setWaitBeforeScreenshots(delay)
+        await eyes.check('wait', Target.window())
+      } catch (caught) {
+        if (caught === thrownScreenshotDone) {
+          assert(duration >= delay && duration <= delay + 10)
+        } else {
+          assert.fail()
+        }
+      }
+    })
+
+    it('should wait default amount of time set null', async () => {
+      const delay = eyes.getWaitBeforeScreenshots()
+      try {
+        eyes.setWaitBeforeScreenshots(null)
+        await eyes.check('wait', Target.window())
+      } catch (caught) {
+        if (caught === thrownScreenshotDone) {
+          assert(duration >= delay && duration <= delay + 10)
+        } else {
+          assert.fail()
+        }
+      }
+    })
+
+    after(async () => {
       await eyes.close()
       await driver.quit()
       await server.close()
-    } catch (err) {
-      console.log(err)
-    }
+    })
   })
 })
