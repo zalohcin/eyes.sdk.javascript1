@@ -260,7 +260,7 @@ class FullPageCaptureAlgorithm {
           removeTopForLastImageAmmount
 
         this._logger.verbose(
-          `Double overlap cropping:` +
+          `Double overlap cropping: ` +
             `removeTopForLastImageAmmount ${removeTopForLastImageAmmount} ` +
             `removeTopOverlapAmmount ${removeTopOverlapAmmount} ` +
             `removeBottomAmmount ${removeBottomAmmount} ` +
