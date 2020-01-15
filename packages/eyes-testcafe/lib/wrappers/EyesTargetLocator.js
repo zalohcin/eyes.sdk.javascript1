@@ -240,7 +240,13 @@ class EyesTargetLocator {
       this._logger.verbose('Done! Switching to default content...')
     }
 
-    await this._driver._driver.switchToMainWindow()
+    try {
+      await this._driver._driver.switchToMainWindow()
+    } catch (e) {
+      this._logger.log('testcafe failed to switchToMainWindow (retrying), error', JSON.stringify(e))
+      await this._driver._driver.switchToMainWindow()
+    }
+
     this._logger.verbose('Done!')
   }
 

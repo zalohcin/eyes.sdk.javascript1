@@ -463,6 +463,17 @@ class EyesWebDriver {
   }
 
   /**
+   * Returns {@code true} if current WebDriver is mobile web driver (Android or IOS)
+   *
+   * @package
+   * @return {boolean}
+   */
+  async isMobile() {
+    // TODO
+    return false
+  }
+
+  /**
    * @override
    */
   toString() {
