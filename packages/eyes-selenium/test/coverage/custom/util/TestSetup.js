@@ -23,7 +23,7 @@ async function getDriver(browser) {
   return new Builder().withCapabilities(capabilities).build()
 }
 
-function getEyes(runnerType, stitchMode, branchName) {
+function getEyes(runnerType, stitchMode, options) {
   let runner, eyes
   switch (runnerType) {
     case 'VG':
@@ -40,7 +40,10 @@ function getEyes(runnerType, stitchMode, branchName) {
       eyes = new Eyes()
       setStitchMode()
   }
-  if (branchName) eyes.setBranchName(branchName)
+  if (options) {
+    if (options.branchName) eyes.setBranchName(options.branchName)
+    if (options.config) eyes.setConfiguration(options.config)
+  }
   return {eyes: eyes, runner: runner}
 
   function setStitchMode() {

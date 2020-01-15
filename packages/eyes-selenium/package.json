@@ -39,7 +39,8 @@
     "@applitools/dom-utils": "^4.7.4",
     "@applitools/eyes-common": "^3.17.2",
     "@applitools/eyes-sdk-core": "6.0.0",
-    "@applitools/visual-grid-client": "13.5.8"
+    "@applitools/visual-grid-client": "13.5.8",
+    "chai-as-promised": "^7.1.1"
   },
   "devDependencies": {
     "@applitools/sdk-test-kit": "^1.0.14",
