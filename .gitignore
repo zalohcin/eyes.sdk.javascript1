@@ -24,3 +24,4 @@ packages/eyes-testcafe/screenshots/*
 *.log
 packages/eyes-testcafe/**/*.pvt.testcafe.js
 tmp
+.env

@@ -78,6 +78,7 @@
     "chai": "^4.2.0",
     "chromedriver": "^78.0.0",
     "core-js": "^3.6.1",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "filenamify": "^4.1.0",
     "mocha": "^6.2.2",
