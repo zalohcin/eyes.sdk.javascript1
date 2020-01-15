@@ -1,17 +1,17 @@
 'use strict'
 const {assertImage} = require('./util/ApiAssertions')
 const {getDriver, getEyes} = require('./util/TestSetup')
-const {expect} = require('chai')
+// const {expect} = require('chai')
 const {By} = require('selenium-webdriver')
-const {EyesSelenium, BatchInfo, Target} = require('../../../index')
+const {/*EyesSelenium,*/ BatchInfo, Target} = require('../../../index')
 const appName = 'Test Send Dom'
 
-class DomInterceptingEyes extends EyesSelenium {
+/*class DomInterceptingEyes extends EyesSelenium {
   async tryCaptureDom() {
     this.domJSON = await super.tryCaptureDom()
     return this.domJSON
   }
-}
+}*/
 
 describe(appName, () => {
   let setups = [
@@ -30,8 +30,8 @@ describe(appName, () => {
       afterEach(async function() {
         await driver.quit()
       })
-
-      it.skip('TestSendDOM_FullWindow', async () => {
+      // assertion require correct json file of the dom
+      /*it.skip('TestSendDOM_FullWindow', async () => {
         driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
         let eyes = new DomInterceptingEyes()
         eyes.setBatch(batch)
@@ -50,7 +50,7 @@ describe(appName, () => {
         } finally {
           await eyes.abortIfNotClosed()
         }
-      })
+      })*/
     })
 
     describe(`Test run ${setup.title}`, () => {
@@ -108,8 +108,8 @@ describe(appName, () => {
           await webDriver.get(domCase.url)
           await eyes.open(webDriver, 'Test Send Dom', `${domCase.title}${setup.title}`)
           await eyes.checkWindow()
-          let results = eyes.close(false)
-          assertImage(results, {hasDom: true})
+          let results = await eyes.close(false)
+          await assertImage(results, {hasDom: true})
         })
       })
     })
