@@ -131,7 +131,7 @@ test('${testName}', async driver => {
     await runner
       .src(testFileDir)
       .browsers('chrome:headless')
-      //.concurrency(5)
+      .concurrency(5)
       .reporter('json', stream)
       .run()
       .catch(console.error)
