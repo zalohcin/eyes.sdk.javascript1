@@ -3,10 +3,9 @@
 const axios = require('axios')
 const zlib = require('zlib')
 
-const {GeneralUtils, TypeUtils, ArgumentGuard} = require('@applitools/eyes-common')
+const {GeneralUtils, ArgumentGuard} = require('@applitools/eyes-common')
 
 const {RenderingInfo} = require('./RenderingInfo')
-const {setProxyOptions} = require('./setProxyOptions')
 const {RunningSession} = require('./RunningSession')
 const {prepareRequest, handleRequestResponse, handleRequestError} = require('./requestHelpers')
 const {TestResults} = require('../TestResults')
@@ -70,67 +69,32 @@ class ServerConnector {
     /** @type {RenderingInfo} */
     this._renderingInfo = undefined
 
-    this._defaultRequestConfig = {
+    this._axios = axios.create({
       proxy: undefined,
       headers: DEFAULT_HEADERS,
       timeout: DEFAULT_TIMEOUT_MS,
       responseType: 'json',
       maxContentLength: 20 * 1024 * 1024, // 20 MB
-    }
-
-    this._axios = axios.create()
-    this._axios.interceptors.request.use(async config => {
-      return prepareRequest(config, {
-        defaults: this._defaultRequestConfig,
+    })
+    this._axios.interceptors.request.use(axiosConfig => {
+      axiosConfig._options = Object.assign(
+        {withApiKey: true, retry: 1, repeat: 0, delayBeforeRetry: false},
+        axiosConfig._options,
+      )
+      return prepareRequest({
+        axiosConfig,
         configuration: this._configuration,
         logger: this._logger,
       })
     })
     this._axios.interceptors.response.use(
-      async response => {
-        return handleRequestResponse(response, {axios: this._axios, logger: this._logger})
+      response => {
+        return handleRequestResponse({response, axios: this._axios, logger: this._logger})
       },
-      async err => {
-        return handleRequestError(err, {axios: this._axios, logger: this._logger})
+      err => {
+        return handleRequestError({err, axios: this._axios, logger: this._logger})
       },
     )
-  }
-
-  /**
-   * @param {object} requestOptions
-   * @param {boolean} isIncludeApiKey
-   * @param {boolean} isMergeDefaultOptions
-   * @return {object}
-   * @protected
-   */
-  _createHttpOptions(requestOptions, isIncludeApiKey = true, isMergeDefaultOptions = true) {
-    let options = requestOptions
-    if (isMergeDefaultOptions) {
-      options = GeneralUtils.mergeDeep(this._httpOptions, options)
-    } else if (options.params === undefined) {
-      options.params = {}
-    }
-
-    if (isIncludeApiKey) {
-      options.params.apiKey = this._configuration.getApiKey()
-    }
-
-    if (TypeUtils.isNotNull(this._configuration.getRemoveSession())) {
-      options.params.removeSession = this._configuration.getRemoveSession()
-    }
-
-    if (TypeUtils.isNotNull(this._configuration.getConnectionTimeout())) {
-      options.timeout = this._configuration.getConnectionTimeout()
-    }
-
-    const proxy = this._configuration.getProxy()
-    if (TypeUtils.isNotNull(proxy)) {
-      setProxyOptions({options, proxy, logger: this._logger})
-    }
-
-    options.maxContentLength = 20 * 1024 * 1024
-
-    return options
   }
 
   /**
@@ -733,26 +697,6 @@ class ServerConnector {
     }
 
     throw new Error(`ServerConnector.postDomSnapshot - unexpected status (${response.statusText})`)
-  }
-
-  /**
-   * @param {string} url
-   * @return {Promise<*>}
-   */
-  async downloadResource(url) {
-    ArgumentGuard.notNull(url, 'url')
-    this._logger.verbose(`ServerConnector.downloadResource called with url: ${url}`)
-
-    const config = {
-      _options: {
-        name: 'downloadResource',
-        isExternalRequest: true,
-      },
-      url,
-    }
-
-    const response = await this._axios.request(config)
-    return response.data
   }
 
   async getUserAgents() {
