@@ -62,11 +62,12 @@ function getEyes(runnerType, stitchMode, options) {
 
 function getSetups(...args) {
   let setups = []
-  if (args !== undefined) {
+  if (args.length !== 0) {
     args.forEach(arg => setups.push(SETUPS[arg]))
   } else {
-    return setups.push(SETUPS.default, SETUPS.scroll, SETUPS.VG)
+    setups.push(SETUPS.default, SETUPS.scroll, SETUPS.VG)
   }
+  return setups
 }
 
 module.exports = {
