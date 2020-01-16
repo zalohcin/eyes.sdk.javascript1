@@ -92,6 +92,7 @@
     "testcafe-browser-provider-browserstack": "^1.10.1",
     "ua-parser-js": "^0.7.20",
     "url-polyfill": "^1.1.7",
-    "whatwg-fetch": "^3.0.0"
+    "whatwg-fetch": "^3.0.0",
+    "uuid": "^3.3.3"
   }
 }
