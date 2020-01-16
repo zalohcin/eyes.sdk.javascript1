@@ -12,7 +12,7 @@ const tests = [
   'TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent',
   'TestCheckOverflowingRegionByCoordinates_Fluent',
   'TestCheckPageWithHeader_Window',
-  'TestCheckPageWithHeaderFully_Window',
+  'TestCheckPageWithHeader_Window_Fully',
   'TestCheckPageWithHeader_Region',
   'TestCheckPageWithHeaderFully_Region',
   'TestCheckRegion',

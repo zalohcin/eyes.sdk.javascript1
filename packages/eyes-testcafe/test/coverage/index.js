@@ -149,8 +149,8 @@ const supportedTests = [
   {name: 'TestCheckWindow_Fluent', executionMode: {isCssStitching: true}},
   {name: 'TestCheckWindow_Fluent', executionMode: {isScrollStitching: true}},
   // full page
-  {name: 'TestCheckPageWithHeaderFully_Window', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckPageWithHeaderFully_Window', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckPageWithHeader_Window_Fully', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckPageWithHeader_Window_Fully', executionMode: {isScrollStitching: true}},
 ]
 
 makeRun().run(supportedTests)
