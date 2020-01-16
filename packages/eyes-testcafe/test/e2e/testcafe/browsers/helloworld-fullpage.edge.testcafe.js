@@ -2,8 +2,7 @@
 
 'use strict'
 
-const {Configuration, StitchMode} = require('@applitools/eyes-common')
-const {Eyes, Target, ConsoleLogHandler} = require('../../../..')
+const {Configuration, StitchMode, Eyes, Target, ConsoleLogHandler} = require('../../../..')
 
 fixture`Hello world full page Edge`.page`https://www.applitools.com/helloworld`
 

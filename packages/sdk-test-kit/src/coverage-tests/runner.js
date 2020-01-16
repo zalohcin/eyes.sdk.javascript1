@@ -118,4 +118,5 @@ function makeReport({sdkName, testsRan, errors, start, end}) {
 
 module.exports = {
   makeRunTests,
+  convertExecutionModeToSuffix,
 }

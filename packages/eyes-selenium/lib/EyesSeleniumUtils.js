@@ -195,7 +195,8 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
    */
   static isMobileDeviceFromCaps(capabilities) {
     const platformName = capabilities.get('platformName')
-    return platformName && ['ANDROID', 'IOS'].includes(platformName.toUpperCase())
+    const browserName = capabilities.get('browserName')
+    return platformName && ['ANDROID', 'IOS'].includes(platformName.toUpperCase()) && !browserName
   }
 
   /**

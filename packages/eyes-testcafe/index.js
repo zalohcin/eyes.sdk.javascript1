@@ -20,6 +20,7 @@ exports.StitchMode = core.StitchMode
 exports.EyesError = core.EyesError
 exports.ConsoleLogHandler = core.ConsoleLogHandler
 exports.DebugLogHandler = core.DebugLogHandler
+exports.FileDebugScreenshotsProvider = core.FileDebugScreenshotsProvider
 exports.FileLogHandler = core.FileLogHandler
 exports.EyesJsBrowserUtils = core.EyesJsBrowserUtils
 exports.DiffsFoundError = core.DiffsFoundError

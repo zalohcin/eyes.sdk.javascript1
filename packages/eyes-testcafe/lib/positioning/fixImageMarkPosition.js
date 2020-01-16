@@ -22,7 +22,7 @@ function makeFixImageMarkPosition({executor, logger}) {
       style.innerText = styleContent`
       : `
       const style = document.getElementById('applitools-mark-fix')
-      style && style.remove()`
+      style && style.parentNode.removeChild(style)`
 
     try {
       logger.verbose('fixImageMarkPosition - fixing testacfe mark, isZeroPosition', isZeroPosition)
