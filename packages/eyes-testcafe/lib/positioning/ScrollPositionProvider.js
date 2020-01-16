@@ -31,7 +31,14 @@ class ScrollPositionProvider extends PositionProvider {
    * @return {Promise<Location>}
    */
   static async getCurrentPositionStatic(executor, scrollRootElement) {
-    const script = 'const el = arguments[0]; return [el.scrollLeft, el.scrollTop];'
+    // Note: Safari Mojave scrollTop is always 0 with overflow hidden
+    const script = `
+      const el = arguments[0]; 
+      if (arguments[0] === document.documentElement) {
+        return [el.scrollLeft || pageXOffset, el.scrollTop || pageYOffset] 
+      }
+      return [el.scrollLeft, el.scrollTop];
+    `
 
     const result = await executor.executeScript(script, scrollRootElement)
     return new Location(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0)
