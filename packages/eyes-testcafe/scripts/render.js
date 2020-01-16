@@ -33,12 +33,12 @@ createTestCafe(null, 1339)
         'chrome:headless',
         'browserstack:safari@13.0:OS X Catalina',
         'browserstack:safari@12.1:OS X Mojave',
+        'browserstack:edge',
+        'browserstack:ie',
         'browserstack:iPhone XS',
         'browserstack:iPhone X',
         'browserstack:iPhone 8',
         'browserstack:iPad Pro 12.9 2018',
-        'browserstack:edge',
-        'browserstack:ie',
         'browserstack:chrome',
       ][0]
     } else {
