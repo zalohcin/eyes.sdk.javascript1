@@ -5,8 +5,10 @@ const {
   makeCoverageTests,
   convertExecutionModeToSuffix,
 } = require('@applitools/sdk-test-kit').coverageTests
+const uuidv4 = require('uuid/v4')
 
 const sdkName = 'eyes-testcafe'
+const branchId = uuidv4()
 
 function makeCommands() {
   let baselineTestName
@@ -25,7 +27,7 @@ function makeCommands() {
     options.executionMode.isScrollStitching
       ? cache.setup.push(`eyes.setStitchMode(StitchMode.SCROLL)`)
       : undefined
-    cache.setup.push(`eyes.setBatch('JS Coverage Tests - ${sdkName}', '12345')`)
+    cache.setup.push(`eyes.setBatch('JS Coverage Tests - ${sdkName}', '${branchId}')`)
   }
   function abort() {}
   function visit(url) {
