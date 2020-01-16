@@ -1,23 +1,23 @@
 'use strict'
 const {assertImage} = require('./util/ApiAssertions')
 const {getDriver, getEyes, getSetups} = require('./util/TestSetup')
-// const {expect} = require('chai')
+const {expect} = require('chai')
 const {By} = require('selenium-webdriver')
-const {/*EyesSelenium,*/ BatchInfo, Target} = require('../../../index')
+const {EyesSelenium, BatchInfo, Target} = require('../../../index')
 const appName = 'Test Send Dom'
 
-/*class DomInterceptingEyes extends EyesSelenium {
+class DomInterceptingEyes extends EyesSelenium {
   async tryCaptureDom() {
     this.domJSON = await super.tryCaptureDom()
     return this.domJSON
   }
-}*/
+}
 
 describe(appName, () => {
-  let setups = getSetups()
+  let setups = getSetups('VG')
   let batch = new BatchInfo('JS test')
-  setups.forEach(function(setup) {
-    describe(`Dom intercepted eyes ${setup.title}`, () => {
+  setups.forEach(setup => {
+    describe(`TestSendDom${setup.title}`, () => {
       let driver
       beforeEach(async () => {
         driver = await getDriver('CHROME')
@@ -26,8 +26,8 @@ describe(appName, () => {
       afterEach(async () => {
         await driver.quit()
       })
-      // assertion require correct json file of the dom
-      /*it.skip('TestSendDOM_FullWindow', async () => {
+      // There differences between fixture and domJson which cause enormous console output
+      it.skip('TestSendDOM_FullWindow', async () => {
         driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
         let eyes = new DomInterceptingEyes()
         eyes.setBatch(batch)
@@ -41,13 +41,13 @@ describe(appName, () => {
           let actual = eyes.domJSON
           let results = await eyes.close(false)
           await assertImage(results, {hasDom: true})
-          let expected = require('./util/expected_dom1.json')
+          let expected = require('../../fixtures/expected_dom1.json')
           let json = JSON.stringify(expected)
-          expect(actual).to.be.eql(json)
+          expect(actual).to.be.eql(json, 'There are differences in the dom json')
         } finally {
           await eyes.abortIfNotClosed()
         }
-      })*/
+      })
     })
 
     describe(`Test run ${setup.title}`, () => {
@@ -77,7 +77,7 @@ describe(appName, () => {
         })
       })
       it(`TestNotSendDOM`, async () => {
-        await webDriver.get('https://applitools.github.io/demo/TestPages/DomTest/dom_capture.html')
+        await webDriver.get('https://applitools.com/helloworld')
         await eyes.open(webDriver, 'Test NOT SendDom', `Test NOT SendDom${setup.title}`, {
           width: 1000,
           height: 700,
@@ -103,7 +103,7 @@ describe(appName, () => {
       domCases.forEach(domCase => {
         it(`${domCase.title}`, async () => {
           await webDriver.get(domCase.url)
-          await eyes.open(webDriver, 'Test Send Dom', `${domCase.title}${setup.title}`)
+          await eyes.open(webDriver, 'Test Send DOM', `${domCase.title}${setup.title}`)
           await eyes.checkWindow()
           let results = await eyes.close(false)
           await assertImage(results, {hasDom: true})

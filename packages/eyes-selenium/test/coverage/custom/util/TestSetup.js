@@ -50,7 +50,7 @@ function getEyes(runnerType, stitchMode, options) {
     if (options.branchName) eyes.setBranchName(options.branchName)
     else eyes.setBranchName('master')
     if (options.config) eyes.setConfiguration(options.config)
-  }
+  } else setDefault()
   return {eyes: eyes, runner: runner}
 
   function setStitchMode() {
@@ -58,16 +58,14 @@ function getEyes(runnerType, stitchMode, options) {
       ? eyes.setStitchMode(StitchMode.CSS)
       : eyes.setStitchMode(StitchMode.SCROLL)
   }
+
+  function setDefault() {
+    eyes.setBranchName('master')
+  }
 }
 
 function getSetups(...args) {
-  let setups = []
-  if (args.length !== 0) {
-    args.forEach(arg => setups.push(SETUPS[arg]))
-  } else {
-    setups.push(SETUPS.default, SETUPS.scroll, SETUPS.VG)
-  }
-  return setups
+  return args.length ? args.map(arg => SETUPS[arg]) : [SETUPS.default, SETUPS.scroll, SETUPS.VG]
 }
 
 module.exports = {

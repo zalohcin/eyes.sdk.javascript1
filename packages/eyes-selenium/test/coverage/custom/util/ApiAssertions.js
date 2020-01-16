@@ -5,6 +5,7 @@ const {expect} = require('chai')
 const RegionType = ['ignore', 'strict', 'content', 'layout', 'floating', 'accessibility']
 
 async function getTestResults(testSummary) {
+  expect(testSummary, 'Test summary should not be undefined').to.not.be.undefined
   if (testSummary.constructor.name === 'TestResults') return testSummary
   let testResultContainer = await testSummary.getAllResults()
   return testResultContainer[0].getTestResults()

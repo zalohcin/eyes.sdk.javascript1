@@ -18,7 +18,7 @@ describe(appName, () => {
   let setups = getSetups()
   let batch = new BatchInfo('JS test')
   setups.forEach(setup => {
-    describe(`Dom intercepted eyes ${setup.title}`, () => {
+    describe(`TestAbort${setup.title}`, () => {
       let webDriver, eyes, config
       before(async () => {
         config = new Configuration()

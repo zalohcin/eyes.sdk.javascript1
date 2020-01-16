@@ -2,7 +2,7 @@
 const {By} = require('selenium-webdriver')
 const {getDriver, getEyes, getSetups} = require('./util/TestSetup')
 const {Target, Region, BatchInfo} = require('../../../index')
-const appName = 'Test Fluent Api'
+const appName = 'Eyes Selenium SDK - Fluent API'
 describe(appName, () => {
   let setups = getSetups()
   let batch = new BatchInfo('JS test')
@@ -23,20 +23,15 @@ describe(appName, () => {
       })
 
       it('TestCheckScrollableModal', async () => {
-        let driver = await eyes.open(
-          webDriver,
-          appName,
-          `Fluent - Scrollable Modal${setup.title}`,
-          {
-            width: 800,
-            height: 600,
-          },
-        )
+        let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal${setup.title}`, {
+          width: 700,
+          height: 460,
+        })
         driver.findElement(By.id('centered')).click()
         let scrollRootLocator = setup.stitchMode === 'CSS' ? 'modal-content' : 'modal1'
         let scrollRootSelector = By.id(scrollRootLocator)
         await eyes.check(
-          'Fluent - Scrollable Modal',
+          'TestCheckScrollableModal',
           Target.region(By.id('modal-content'))
             .fully()
             .scrollRootElement(scrollRootSelector),
@@ -59,8 +54,8 @@ describe(appName, () => {
       longIframes.forEach(settings => {
         it(`${settings.title}`, async () => {
           let driver = await eyes.open(webDriver, appName, `${settings.title}${setup.title}`, {
-            width: 800,
-            height: 600,
+            width: 700,
+            height: 460,
           })
           await driver.findElement(By.id(settings.clickableId)).click()
           let frame = await driver.findElement(By.css(settings.IframeSelector))

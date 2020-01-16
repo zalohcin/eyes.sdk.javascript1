@@ -1,11 +1,11 @@
 'use strict'
 const assert = require('assert')
-const {Target, Configuration} = require('../../../index')
+const {Target, Configuration, BatchInfo} = require('../../../index')
 const {getDriver, getEyes} = require('./util/TestSetup')
 
 describe('TestCounts', () => {
   let driver, eyes, runner
-
+  let batch = new BatchInfo('JS test')
   beforeEach(async () => {
     driver = await getDriver('CHROME')
     await driver.get('https://applitools.com/helloworld')
@@ -16,7 +16,7 @@ describe('TestCounts', () => {
   })
 
   it('Test_VGTestsCount_1', async () => {
-    await eyes.setBatch('JS Tests')
+    await eyes.setBatch(batch)
     await eyes.setBranchName('master')
     await eyes.open(driver, 'Test Count', 'Test_VGTestsCount_1', {width: 640, height: 480})
     await eyes.check('Test', Target.window())
@@ -26,7 +26,7 @@ describe('TestCounts', () => {
 
   it('Test_VGTestsCount_2', async () => {
     let conf = new Configuration()
-    conf.setBatch('JS Tests')
+    conf.setBatch(batch)
     conf.addBrowser(900, 600)
     conf.addBrowser(1024, 768)
     conf.setBranchName('master')
@@ -39,7 +39,7 @@ describe('TestCounts', () => {
 
   it('Test_VGTestsCount_3', async () => {
     let conf = new Configuration()
-    conf.setBatch('JS Tests')
+    conf.setBatch(batch)
     conf.addBrowser(900, 600)
     conf.addBrowser(1024, 768)
     conf.setAppName('Test Count')
@@ -54,7 +54,7 @@ describe('TestCounts', () => {
 
   it('Test_VGTestsCount_4', async () => {
     let conf = new Configuration()
-    conf.setBatch('JS Tests')
+    conf.setBatch(batch)
     conf.setAppName('Test Count')
     conf.setTestName('Test_VGTestsCount_4')
     conf.setBranchName('master')
@@ -67,7 +67,7 @@ describe('TestCounts', () => {
 
   it('Test_VGTestsCount_5', async () => {
     let conf = new Configuration()
-    conf.setBatch('JS Tests')
+    conf.setBatch(batch)
     conf.addBrowser(900, 600)
     conf.addBrowser(1024, 768)
     conf.setBranchName('master')
