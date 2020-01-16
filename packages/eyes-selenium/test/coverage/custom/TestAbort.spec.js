@@ -17,7 +17,7 @@ const testedUrl = 'https://applitools.com/docs/topics/overview.html'
 describe(appName, () => {
   let setups = getSetups()
   let batch = new BatchInfo('JS test')
-  setups.forEach(function(setup) {
+  setups.forEach(setup => {
     describe(`Dom intercepted eyes ${setup.title}`, () => {
       let webDriver, eyes, config
       before(async () => {

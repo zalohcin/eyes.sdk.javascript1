@@ -19,11 +19,11 @@ describe(appName, () => {
   setups.forEach(function(setup) {
     describe(`Dom intercepted eyes ${setup.title}`, () => {
       let driver
-      beforeEach(async function() {
+      beforeEach(async () => {
         driver = await getDriver('CHROME')
       })
 
-      afterEach(async function() {
+      afterEach(async () => {
         await driver.quit()
       })
       // assertion require correct json file of the dom
@@ -52,14 +52,14 @@ describe(appName, () => {
 
     describe(`Test run ${setup.title}`, () => {
       let webDriver, eyes
-      beforeEach(async function() {
+      beforeEach(async () => {
         webDriver = await getDriver('CHROME')
         let defaults = await getEyes(setup.runnerType, setup.stitchMode)
         eyes = defaults.eyes
         eyes.setBatch(batch)
       })
 
-      afterEach(async function() {
+      afterEach(async () => {
         await eyes.abortIfNotClosed()
         await webDriver.quit()
       })

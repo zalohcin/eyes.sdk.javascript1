@@ -6,10 +6,10 @@ const appName = 'Test Fluent Api'
 describe(appName, () => {
   let setups = getSetups()
   let batch = new BatchInfo('JS test')
-  setups.forEach(function(setup) {
+  setups.forEach(setup => {
     describe(`Test run ${setup.title}`, () => {
       let webDriver, eyes
-      beforeEach(async function() {
+      beforeEach(async () => {
         webDriver = await getDriver('CHROME')
         await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
         let defaults = await getEyes(setup.runnerType, setup.stitchMode)
@@ -17,12 +17,12 @@ describe(appName, () => {
         eyes.setBatch(batch)
       })
 
-      afterEach(async function() {
+      afterEach(async () => {
         await eyes.abortIfNotClosed()
         await webDriver.quit()
       })
 
-      it('TestCheckScrollableModal', async function() {
+      it('TestCheckScrollableModal', async () => {
         let driver = await eyes.open(
           webDriver,
           appName,
@@ -57,7 +57,7 @@ describe(appName, () => {
         },
       ]
       longIframes.forEach(settings => {
-        it(`${settings.title}`, async function() {
+        it(`${settings.title}`, async () => {
           let driver = await eyes.open(webDriver, appName, `${settings.title}${setup.title}`, {
             width: 800,
             height: 600,
