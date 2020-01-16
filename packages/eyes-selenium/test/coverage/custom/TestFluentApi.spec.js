@@ -1,14 +1,10 @@
 'use strict'
 const {By} = require('selenium-webdriver')
-const {getDriver, getEyes} = require('./util/TestSetup')
+const {getDriver, getEyes, getSetups} = require('./util/TestSetup')
 const {Target, Region, BatchInfo} = require('../../../index')
 const appName = 'Test Fluent Api'
 describe(appName, () => {
-  let setups = [
-    // {stitchMode: 'CSS', runnerType: 'classic', title: ''},
-    {stitchMode: 'SCROLL', runnerType: 'classic', title: ' (SCROLL)'},
-    // {stitchMode: 'SCROLL', runnerType: 'visualGrid', title: ' (VG)'},
-  ]
+  let setups = getSetups()
   let batch = new BatchInfo('JS test')
   setups.forEach(function(setup) {
     describe(`Test run ${setup.title}`, () => {
@@ -71,22 +67,22 @@ describe(appName, () => {
           await driver.switchTo().frame(frame)
           let element = await driver.findElement(By.css('html'))
           let rect = await element.getRect()
-          for (
-            let currentY = rect.y, c = 1;
-            currentY < rect.y + rect.height;
-            currentY += 5000, c++
-          ) {
-            let region
-            if (rect.height > currentY + 5000) {
-              region = new Region(rect.x, currentY, rect.width, 5000)
-            } else {
-              region = new Region(rect.x, currentY, rect.width, rect.height - currentY)
-            }
-            await eyes.check('Check Long Out of bounds Iframe Modal', Target.region(region))
-          }
+          await performChecksOnLongRegion(rect)
           await eyes.close()
         })
       })
+
+      async function performChecksOnLongRegion(rect) {
+        for (let currentY = rect.y, c = 1; currentY < rect.y + rect.height; currentY += 5000, c++) {
+          let region
+          if (rect.height > currentY + 5000) {
+            region = new Region(rect.x, currentY, rect.width, 5000)
+          } else {
+            region = new Region(rect.x, currentY, rect.width, rect.height - currentY)
+          }
+          await eyes.check('Check Long Out of bounds Iframe Modal', Target.region(region))
+        }
+      }
     })
   })
 })

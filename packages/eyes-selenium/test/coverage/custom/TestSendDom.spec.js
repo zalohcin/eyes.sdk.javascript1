@@ -1,6 +1,6 @@
 'use strict'
 const {assertImage} = require('./util/ApiAssertions')
-const {getDriver, getEyes} = require('./util/TestSetup')
+const {getDriver, getEyes, getSetups} = require('./util/TestSetup')
 // const {expect} = require('chai')
 const {By} = require('selenium-webdriver')
 const {/*EyesSelenium,*/ BatchInfo, Target} = require('../../../index')
@@ -14,11 +14,7 @@ const appName = 'Test Send Dom'
 }*/
 
 describe(appName, () => {
-  let setups = [
-    // {stitchMode: 'CSS', runnerType: 'classic', title: ''},
-    {stitchMode: 'SCROLL', runnerType: 'classic', title: ' (SCROLL)'},
-    // {stitchMode: 'SCROLL', runnerType: 'visualGrid', title: ' (VG)'},
-  ]
+  let setups = getSetups()
   let batch = new BatchInfo('JS test')
   setups.forEach(function(setup) {
     describe(`Dom intercepted eyes ${setup.title}`, () => {
@@ -35,6 +31,7 @@ describe(appName, () => {
         driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
         let eyes = new DomInterceptingEyes()
         eyes.setBatch(batch)
+        eyes.setBranchName('master')
         await eyes.open(driver, 'Test Send DOM', 'Full Window', {
           width: 1024,
           height: 768,

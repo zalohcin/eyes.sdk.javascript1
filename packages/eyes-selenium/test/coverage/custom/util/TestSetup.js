@@ -18,6 +18,12 @@ const Browsers = {
   },
 }
 
+const SETUPS = {
+  default: {stitchMode: 'CSS', runnerType: 'classic', title: ''},
+  scroll: {stitchMode: 'SCROLL', runnerType: 'classic', title: '_SCROLL'},
+  VG: {stitchMode: 'none', runnerType: 'visualGrid', title: '_VG'},
+}
+
 async function getDriver(browser) {
   let capabilities = Browsers[browser]
   return new Builder().withCapabilities(capabilities).build()
@@ -42,6 +48,7 @@ function getEyes(runnerType, stitchMode, options) {
   }
   if (options) {
     if (options.branchName) eyes.setBranchName(options.branchName)
+    else eyes.setBranchName('master')
     if (options.config) eyes.setConfiguration(options.config)
   }
   return {eyes: eyes, runner: runner}
@@ -53,7 +60,17 @@ function getEyes(runnerType, stitchMode, options) {
   }
 }
 
+function getSetups(...args) {
+  let setups = []
+  if (args !== undefined) {
+    args.forEach(arg => setups.push(SETUPS[arg]))
+  } else {
+    return setups.push(SETUPS.default, SETUPS.scroll, SETUPS.VG)
+  }
+}
+
 module.exports = {
   getDriver: getDriver,
   getEyes: getEyes,
+  getSetups: getSetups,
 }
