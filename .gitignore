@@ -23,3 +23,5 @@ packages/visual-grid-client/test/fixtures/src/*
 packages/eyes-testcafe/screenshots/*
 *.log
 packages/eyes-testcafe/**/*.pvt.testcafe.js
+tmp
+.env

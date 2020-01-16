@@ -1,7 +1,6 @@
 'use strict'
 
-const {MutableImage, TypeUtils, ArgumentGuard} = require('@applitools/eyes-common')
-const {ImageProvider} = require('@applitools/eyes-sdk-core')
+const {ImageProvider, MutableImage, TypeUtils, ArgumentGuard} = require('@applitools/eyes-sdk-core')
 
 const {ImagesCheckSettings} = require('./ImagesCheckSettings')
 

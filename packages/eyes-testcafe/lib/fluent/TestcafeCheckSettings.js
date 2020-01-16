@@ -1,16 +1,14 @@
 'use strict'
 
-// eslint-disable-next-line node/no-extraneous-require
-const {WebElement, By} = require('selenium-webdriver')
 const {TypeUtils, Region} = require('@applitools/eyes-common')
 const {CheckSettings} = require('@applitools/eyes-sdk-core')
 
 const {IgnoreRegionBySelector} = require('./IgnoreRegionBySelector')
-const {IgnoreRegionByElement} = require('./IgnoreRegionByElement')
+// const {IgnoreRegionByElement} = require('./IgnoreRegionByElement')
 const {FloatingRegionBySelector} = require('./FloatingRegionBySelector')
-const {FloatingRegionByElement} = require('./FloatingRegionByElement')
+// const {FloatingRegionByElement} = require('./FloatingRegionByElement')
 const {AccessibilityRegionBySelector} = require('./AccessibilityRegionBySelector')
-const {AccessibilityRegionByElement} = require('./AccessibilityRegionByElement')
+// const {AccessibilityRegionByElement} = require('./AccessibilityRegionByElement')
 const {SelectorByElement} = require('./SelectorByElement')
 const {SelectorByLocator} = require('./SelectorByLocator')
 const {FrameLocator} = require('./FrameLocator')
@@ -18,7 +16,7 @@ const {EyesWebElement} = require('../wrappers/EyesWebElement')
 
 const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
 
-class SeleniumCheckSettings extends CheckSettings {
+class TestcafeCheckSettings extends CheckSettings {
   /**
    * @param {Region|RegionObject|By|WebElement|EyesWebElement|string} [region]
    * @param {number|string|By|WebElement|EyesWebElement} [frame]
@@ -103,9 +101,9 @@ class SeleniumCheckSettings extends CheckSettings {
       fl.setFrameNameOrId(frame)
     } else if (EyesWebElement.isLocator(frame)) {
       fl.setFrameSelector(frame)
-    } else if (frame instanceof WebElement) {
+    } /*  else if (frame instanceof WebElement) {
       fl.setFrameElement(frame)
-    } else {
+    } */ else {
       throw new TypeError('frame method called with argument of unknown type!')
     }
     this._frameChain.push(fl)
@@ -121,12 +119,12 @@ class SeleniumCheckSettings extends CheckSettings {
     if (Region.isRegionCompatible(region)) {
       super.updateTargetRegion(region)
     } else if (TypeUtils.isString(region)) {
-      this._targetSelector = By.css(region) // TODO: avoid converting to element for VisualGrid
+      // this._targetSelector = By.css(region) // TODO: avoid converting to element for VisualGrid
     } else if (EyesWebElement.isLocator(region)) {
       this._targetSelector = region
-    } else if (region instanceof WebElement) {
+    } /* else if (region instanceof WebElement) {
       this._targetElement = region
-    } else {
+    } */ else {
       throw new TypeError('region method called with argument of unknown type!')
     }
     return this
@@ -143,9 +141,9 @@ class SeleniumCheckSettings extends CheckSettings {
       return new IgnoreRegionBySelector(region)
     }
 
-    if (region instanceof WebElement) {
-      return new IgnoreRegionByElement(region)
-    }
+    // if (region instanceof WebElement) {
+    //   return new IgnoreRegionByElement(region)
+    // }
 
     return super._regionToRegionProvider(region)
   }
@@ -211,7 +209,7 @@ class SeleniumCheckSettings extends CheckSettings {
         maxRightOffset,
       )
       this._floatingRegions.push(floatingRegion)
-    } else if (regionOrContainer instanceof WebElement) {
+    } /*  else if (regionOrContainer instanceof WebElement) {
       const floatingRegion = new FloatingRegionByElement(
         regionOrContainer,
         maxUpOffset,
@@ -220,7 +218,7 @@ class SeleniumCheckSettings extends CheckSettings {
         maxRightOffset,
       )
       this._floatingRegions.push(floatingRegion)
-    } else {
+    }  */ else {
       super.floatingRegion(
         regionOrContainer,
         maxUpOffset,
@@ -256,10 +254,10 @@ class SeleniumCheckSettings extends CheckSettings {
     if (EyesWebElement.isLocator(regionOrContainer)) {
       const accessibilityRegion = new AccessibilityRegionBySelector(regionOrContainer, regionType)
       this._accessibilityRegions.push(accessibilityRegion)
-    } else if (regionOrContainer instanceof WebElement) {
+    } /* else if (regionOrContainer instanceof WebElement) {
       const floatingRegion = new AccessibilityRegionByElement(regionOrContainer, regionType)
       this._accessibilityRegions.push(floatingRegion)
-    } else {
+    }  */ else {
       super.accessibilityRegion(regionOrContainer, regionType)
     }
     return this
@@ -351,4 +349,4 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 }
 
-exports.SeleniumCheckSettings = SeleniumCheckSettings
+exports.TestcafeCheckSettings = TestcafeCheckSettings

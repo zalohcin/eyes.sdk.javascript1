@@ -3,7 +3,7 @@
 const {ArgumentGuard} = require('@applitools/eyes-common')
 const {PositionProvider} = require('@applitools/eyes-sdk-core')
 
-const {EyesSeleniumUtils} = require('../EyesSeleniumUtils')
+const {EyesTestcafeUtils} = require('../EyesTestcafeUtils')
 const makeFixImageMarkPosition = require('./fixImageMarkPosition')
 const {CssTranslatePositionMemento} = require('./CssTranslatePositionMemento')
 
@@ -14,7 +14,7 @@ const {CssTranslatePositionMemento} = require('./CssTranslatePositionMemento')
 class CssTranslatePositionProvider extends PositionProvider {
   /**
    * @param {Logger} logger
-   * @param {SeleniumJavaScriptExecutor} executor
+   * @param {TestcafeExecutor} executor
    * @param {WebElement} scrollRootElement
    */
   constructor(logger, executor, scrollRootElement) {
@@ -54,6 +54,9 @@ class CssTranslatePositionProvider extends PositionProvider {
     this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`)
 
     let translate = `translate(-${location.getX()}px, -${location.getY()}px)`
+    if (location.getX() === 0 && location.getY() === 0) {
+      translate = ''
+    }
 
     await this._fixImageMarkPosition(-location.getX(), -location.getY())
     await this._executor.executeScript(
@@ -70,7 +73,7 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @inheritDoc
    */
   async getEntireSize() {
-    const entireSize = await EyesSeleniumUtils.getEntireElementSize(
+    const entireSize = await EyesTestcafeUtils.getEntireElementSize(
       this._executor,
       this._scrollRootElement,
     )
@@ -105,11 +108,10 @@ class CssTranslatePositionProvider extends PositionProvider {
    */
   async restoreState(state) {
     let transform = state.getTransform()
-
-    const script =
-      'var originalTransform = arguments[0].style.transform;' +
-      `arguments[0].style.transform = '${transform}';` +
-      'return originalTransform;'
+    if (transform === 'translate(0px, 0px)') {
+      transform = ''
+    }
+    const script = `arguments[0].style.transform = '${transform}';`
 
     await this._fixImageMarkPosition(0, 0)
     await this._executor.executeScript(script, this._scrollRootElement)

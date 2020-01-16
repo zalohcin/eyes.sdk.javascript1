@@ -440,6 +440,29 @@ class ServerConnector {
     throw new Error(`ServerConnector.stopSession - unexpected status (${response.statusText})`)
   }
 
+  async uploadScreenshot(id, screenshot) {
+    const url = this._renderingInfo.getResultsUrl().replace('__random__', id)
+    const options = this._createHttpOptions({
+      method: 'PUT',
+      url,
+      data: screenshot,
+      headers: {
+        Date: new Date().toISOString(),
+        'x-ms-blob-type': 'BlockBlob',
+        'content-type': 'application/octet-stream',
+      },
+    })
+
+    const response = await sendRequest(this, 'uploadScreenshot', options, 3)
+    if (response.status !== HTTP_STATUS_CODES.CREATED) {
+      throw new Error(
+        `ServerConnector.uploadScreenshot - unexpected status (${response.statusText})`,
+      )
+    }
+
+    return url
+  }
+
   /**
    * Matches the current window (held by the WebDriver) to the expected window.
    *

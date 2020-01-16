@@ -1,7 +1,7 @@
 'use strict'
 
 const {Selector} = require('testcafe')
-const {ArgumentGuard, MutableImage, GeneralUtils} = require('@applitools/eyes-common')
+const {ArgumentGuard, /* MutableImage, */ GeneralUtils} = require('@applitools/eyes-common')
 
 const fs = require('fs')
 const path = require('path')
@@ -9,13 +9,15 @@ const rmrf = require('rimraf')
 
 const {ClientFunction} = require('testcafe')
 const {FrameChain} = require('../frames/FrameChain')
-const {EyesSeleniumUtils} = require('../EyesSeleniumUtils')
+const {EyesTestcafeUtils} = require('../EyesTestcafeUtils')
 const {EyesWebElement} = require('./EyesWebElement')
-const {EyesWebElementPromise} = require('./EyesWebElementPromise')
+// const {EyesWebElementPromise} = require('./EyesWebElementPromise')
 const {EyesTargetLocator} = require('./EyesTargetLocator')
-const {TestCafeJavaScriptExecutor} = require('../TestCafeJavaScriptExecutor')
+const {TestCafeExecutor} = require('../TestCafeExecutor')
 
-const SCREENSHOTS_PATH = '/.applitools__screenshots'
+const SCREENSHOTS_PREFIX = '/.applitools'
+const SCREENSHOTS_FILENAME = 'screenshot'
+
 const getViewport = () => ({
   // eslint-disable-next-line no-undef
   width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
@@ -53,7 +55,7 @@ class EyesWebDriver {
     /** @type {RectangleSize} */
     this._defaultContentViewportSize = null
 
-    this._executor = new TestCafeJavaScriptExecutor(driver)
+    this._executor = new TestCafeExecutor(driver)
     this._clientFunctions = {}
 
     // this._logger.verbose("Driver session is " + this.getSessionId());
@@ -140,7 +142,7 @@ class EyesWebDriver {
    */
 
   async executeScript(script, ...varArgs) {
-    EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs)
+    EyesTestcafeUtils.handleSpecialCommands(script, ...varArgs)
     return this._executor.executeScript(script, ...varArgs)
   }
 
@@ -148,7 +150,7 @@ class EyesWebDriver {
    * @inheritDoc
    */
   executeAsyncScript(script, ...varArgs) {
-    EyesSeleniumUtils.handleSpecialCommands(script, ...varArgs)
+    EyesTestcafeUtils.handleSpecialCommands(script, ...varArgs)
     return this._driver.executeAsyncScript(script, ...varArgs)
   }
 
@@ -256,10 +258,8 @@ class EyesWebDriver {
    */
   async takeScreenshot() {
     this._logger.log('Getting screenshot from TestCafe')
-    const filename = Math.random()
-      .toString()
-      .slice(2)
-    const filepath = path.resolve(SCREENSHOTS_PATH, filename)
+    const guid = GeneralUtils.guid()
+    const filepath = path.resolve(`${SCREENSHOTS_PREFIX}-${guid}`, SCREENSHOTS_FILENAME)
     const screenshotPath = await this._driver.takeScreenshot(filepath)
     if (!screenshotPath) {
       throw new Error('Failed to get Testcafe screenshot')
@@ -412,7 +412,7 @@ class EyesWebDriver {
     }
 
     this._logger.verbose('Extracting viewport size...')
-    this._defaultContentViewportSize = await EyesSeleniumUtils.getViewportSizeOrDisplaySize(
+    this._defaultContentViewportSize = await EyesTestcafeUtils.getViewportSizeOrDisplaySize(
       this._logger,
       this._driver,
     )
@@ -463,6 +463,17 @@ class EyesWebDriver {
   }
 
   /**
+   * Returns {@code true} if current WebDriver is mobile web driver (Android or IOS)
+   *
+   * @package
+   * @return {boolean}
+   */
+  async isMobile() {
+    // TODO
+    return false
+  }
+
+  /**
    * @override
    */
   toString() {
@@ -490,20 +501,19 @@ class EyesWebDriver {
       degrees = rotation.getRotation()
     } else {
       logger.verbose('Trying to automatically normalize rotation...')
-      degrees = await EyesSeleniumUtils.tryAutomaticRotation(logger, driver, image)
+      degrees = await EyesTestcafeUtils.tryAutomaticRotation(logger, driver, image)
     }
 
     return image.rotate(degrees)
   }
 }
 
-// taken from https://github.com/SeleniumHQ/selenium/blob/117b05b375ba8c42829bf1584272f41ea9bf48bb/javascript/node/selenium-webdriver/lib/by.js#L137
 function toClassName(name) {
   const names = name
     .split(/\s+/g)
     .filter(s => s.length > 0)
     .map(s => escapeCss(s))
-  return By.css(`.${names.join('.')}`)
+  return Selector(`.${names.join('.')}`)
 }
 
 /**

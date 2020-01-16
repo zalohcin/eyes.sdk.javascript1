@@ -1,9 +1,16 @@
+/* eslint-disable no-unused-vars */
 /* global fixture */
 
 'use strict'
 
-const {Configuration, StitchMode} = require('@applitools/eyes-common')
-const {Eyes, Target, ConsoleLogHandler} = require('../..')
+const {
+  Eyes,
+  Target,
+  ConsoleLogHandler,
+  FileDebugScreenshotsProvider,
+  Configuration,
+  StitchMode,
+} = require('../..')
 
 /*
  * Play with configuration and test :
@@ -12,17 +19,20 @@ const {Eyes, Target, ConsoleLogHandler} = require('../..')
 const eyes = new Eyes()
 const configuration = new Configuration({
   stitchMode: StitchMode.CSS,
-  stitchOverlap: 56,
-  viewportSize: {width: 1024, height: 768},
+  // stitchOverlap: 56,
+  viewportSize: {width: 600, height: 500},
 })
+
+// const debugHandler = new FileDebugScreenshotsProvider()
+// debugHandler.setPath('./screenshots')
+// eyes.setDebugScreenshotsProvider(debugHandler)
 eyes.setConfiguration(configuration)
 
 if (process.env.APPLITOOLS_SHOW_LOGS || process.env.LIVE) {
   eyes.setLogHandler(new ConsoleLogHandler(true))
 }
 
-fixture`Play`.page`https://www.apple.com/shop/iphone/iphone-accessories`
-
+fixture`Play`.page`https://applitools.github.io/demo/TestPages/PageWithHeader/index.html`
 test('Play', async t => {
   await eyes.open(t, 'Play Testcafe', 'play testcafe')
   // await eyes._scanPage()
@@ -32,47 +42,16 @@ test('Play', async t => {
 })
 
 // test('Play', async t => {
-//   await t.resizeWindow(1024, 768)
-
 //   const captureFrameAndPollForIE = require('../../dist/captureFrameAndPollForIE')
-//   const {TestCafeJavaScriptExecutor} = require('../../lib/TestCafeJavaScriptExecutor')
-//   const ex = new TestCafeJavaScriptExecutor(t)
+//   const {TestCafeExecutor} = require('../../lib/TestCafeExecutor')
+//   const ex = new TestCafeExecutor(t)
 //   console.log('XXXXXXXXX: captureFrameAndPollForIE', captureFrameAndPollForIE.toString())
 //   const r = await ex.executeScript(captureFrameAndPollForIE)
 //   const r2 = await ex.executeScript(captureFrameAndPollForIE)
 //   console.log('XXXXXXXXX: r', r2)
 
-//   const top = 0
-//   const left = -655
-//   const opt = {dependencies: {top, left}}
-//   await t.eval(
-//     () => (document.documentElement.style.transform = `translate(${left}px, ${top}px)`),
-//     opt,
-//   )
-//   const fixTestcafeMark = `
-//     const h = document.documentElement.getBoundingClientRect().height
-//     const styleContent = \`img.screenshot-mark-hammerhead-shadow-ui {
-//       bottom: calc(\${h\}px - 100vh + ${top}px) !important;
-//       top: auto !important;
-//       left: auto !important;
-//       right: calc(5px + ${left}px) !important;
-//     }\`
-//     let style = document.getElementById('applitools-mark-fix')
-//     if(!style) {
-//       style = document.createElement('style')
-//       style.id = 'applitools-mark-fix'
-//       document.body.appendChild(style);
-//     }
-//     style.innerText = styleContent
-//   `
-//   const newTestcafeMarkStyle = new Function(fixTestcafeMark)
-//   await t.eval(newTestcafeMarkStyle)
-
+//   await t.resizeWindow(1024, 768)
 //   const name = new Date().toISOString().replace(/:/g, '_')
 //   const image = await t.takeScreenshot(`./render-${name}.png`)
 //   console.log('XXXXXXXXX: image', image)
-
-//   const index = await t.eval(() => document.body.children.length)
-//   const rect = await t.eval(new Function(`return document.body.children[${index}].children[1].getBoundingClientRect().toJSON()`))
-//   console.log('XXXXXXXXX: rect', rect)
 // })

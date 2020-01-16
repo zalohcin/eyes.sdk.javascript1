@@ -1,8 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const {GeneralUtils} = require('@applitools/eyes-common')
-const {Eyes, ConsoleLogHandler, TestResultsStatus} = require('../../index')
+const {Eyes, ConsoleLogHandler, TestResultsStatus, GeneralUtils} = require('../../index')
 
 let /** @type {Eyes} */ eyes
 describe('EyesImages.TestImageDiffs', function() {

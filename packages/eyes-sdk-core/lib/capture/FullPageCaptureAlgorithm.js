@@ -165,7 +165,7 @@ class FullPageCaptureAlgorithm {
     this._logger.verbose(`entire page region: ${fullArea}, image part size: ${partImageSize}`)
 
     // Getting the list of sub-regions composing the whole region (we'll take screenshot for each one).
-    const scrollAmmount = this._isDoubleOverlap ? this._stitchingOverlap : undefined
+    const scrollAmmount = this._isDoubleOverlap ? this._stitchingOverlap * 2 : undefined
     const imageParts = fullArea.getSubRegions(partImageSize, false, scrollAmmount)
     this._logger.verbose('Stitch regions', imageParts)
 
@@ -259,6 +259,14 @@ class FullPageCaptureAlgorithm {
           removeTopOverlapAmmount -
           removeTopForLastImageAmmount
 
+        this._logger.verbose(
+          `Double overlap cropping: ` +
+            `removeTopForLastImageAmmount ${removeTopForLastImageAmmount} ` +
+            `removeTopOverlapAmmount ${removeTopOverlapAmmount} ` +
+            `removeBottomAmmount ${removeBottomAmmount} ` +
+            `partImage height ${partImage.getHeight()} ` +
+            `imageHeight ${imageHeight}`,
+        )
         const croppingRegion = new Region(
           0,
           removeTopOverlapAmmount + removeTopForLastImageAmmount,
@@ -272,6 +280,14 @@ class FullPageCaptureAlgorithm {
           partImage,
           `double-cropped-${(await positionProvider.getCurrentPosition()).toStringForFilename()}`,
         )
+        lastSuccessfulLocation = new Location(
+          partRegion.getLeft(),
+          partRegion.getTop() + this._stitchingOverlap,
+        )
+      }
+
+      if (!this._isDoubleOverlap) {
+        lastSuccessfulLocation = originPosition
       }
 
       // TODO - targetPosition.getY() option can be removed after testing.
@@ -285,8 +301,6 @@ class FullPageCaptureAlgorithm {
       this._logger.verbose('Stitching part into the image container in', stitchY)
       await stitchedImage.copyRasterData(targetPosition.getX(), stitchY, partImage)
       this._logger.verbose('Done!')
-
-      lastSuccessfulLocation = originPosition
     }
 
     if (partImage) {
@@ -304,9 +318,8 @@ class FullPageCaptureAlgorithm {
     this._logger.verbose(`Actual stitched size: ${actualImageWidth}x${actualImageHeight}`)
 
     if (
-      (actualImageWidth < stitchedImage.getWidth() ||
-        actualImageHeight < stitchedImage.getHeight()) &&
-      !this._isDoubleOverlap
+      actualImageWidth < stitchedImage.getWidth() ||
+      actualImageHeight < stitchedImage.getHeight()
     ) {
       this._logger.verbose('Trimming unnecessary margins...')
       stitchedImage = await stitchedImage.crop(

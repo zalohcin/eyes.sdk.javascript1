@@ -1,5 +1,5 @@
 'use strict'
-
+require('dotenv').config()
 const createTestCafe = require('testcafe')
 
 function startTestCafe({beforeEach, afterEach, browser = ['chrome:headless']}) {

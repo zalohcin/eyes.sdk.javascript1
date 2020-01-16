@@ -111,7 +111,7 @@ const getSubRegionsWithVaryingSize = (containerRegion, maxSubRegionSize, scrollD
       subRegions.push(new Region(currentLeft, currentTop, currentWidth, currentHeight))
       currentLeft += maxSubRegionSize.getWidth()
     }
-    currentTop = currentTop + maxSubRegionSize.getHeight() - scrollDownAmmount
+    currentTop = currentBottom !== bottom ? currentBottom - scrollDownAmmount : bottom
   }
   return subRegions
 }

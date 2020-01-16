@@ -2,7 +2,9 @@
 
 function makeFixImageMarkPosition({executor, logger}) {
   return async function(transformLeft, transformTop) {
-    const fixTestcafeMark = `
+    const isZeroPosition = transformLeft === 0 && transformTop === 0
+    const fixTestcafeMark = !isZeroPosition
+      ? `
       const pageHeight = document.documentElement.getBoundingClientRect().height
       const styleContent = \`img.screenshot-mark-hammerhead-shadow-ui { 
         bottom: calc(\${pageHeight\}px - 100vh + ${transformTop}px) !important;
@@ -17,10 +19,13 @@ function makeFixImageMarkPosition({executor, logger}) {
         style.id = 'applitools-mark-fix'
         document.body.appendChild(style);
       }
-      style.innerText = styleContent
-    `
+      style.innerText = styleContent`
+      : `
+      const style = document.getElementById('applitools-mark-fix')
+      style && style.parentNode.removeChild(style)`
+
     try {
-      logger.verbose('fixImageMarkPosition - fixing testacfe mark')
+      logger.verbose('fixImageMarkPosition - fixing testacfe mark, isZeroPosition', isZeroPosition)
       await executor.executeScript(fixTestcafeMark)
     } catch (e) {
       logger.verbose('fixImageMarkPosition - failed to fix testcafe mark', e)

@@ -179,15 +179,8 @@ class EyesBase extends EyesAbstract {
     }
   }
 
-  /**
-   * @return {?RenderInfo}
-   */
-  async getRenderingInfo() {
-    if (TypeUtils.isNull(this._serverConnector.getRenderingInfo())) {
-      return this._serverConnector.renderInfo()
-    }
-
-    return this._serverConnector.getRenderingInfo()
+  getAndSaveRenderingInfo() {
+    throw new TypeError('The method is not implemented!')
   }
 
   /**
@@ -949,6 +942,10 @@ class EyesBase extends EyesAbstract {
         `openBase('${appName}', '${testName}', '${this._configuration.getViewportSize()}')`,
       )
 
+      if (!this._renderingInfoPromise) {
+        this._renderingInfoPromise = this.getAndSaveRenderingInfo()
+      }
+
       await this._sessionEventHandlers.testStarted(await this.getAUTSessionId())
 
       this._validateApiKey()
@@ -1381,6 +1378,15 @@ class EyesBase extends EyesAbstract {
     this._logger.verbose('getting screenshot...')
     let screenshot, screenshotUrl, screenshotBuffer
 
+    // START NOTE (amit): the following is something I'm not proud nor confident of. I copied it from EyesSelenium::getScreenshot, and it is to solve https://trello.com/c/O5sTPAU1. This should be rewritten asap.
+    const isMobileDevice = await this._driver.isMobile()
+    const positionProvider = this.getPositionProvider()
+    let originalPosition
+    if (!isMobileDevice && positionProvider) {
+      originalPosition = await positionProvider.getState()
+    }
+    // END NOTE
+
     // Getting the screenshot (abstract function implemented by each SDK).
     screenshot = await this.getScreenshot()
     this._logger.verbose('Done getting screenshot!')
@@ -1429,11 +1435,24 @@ class EyesBase extends EyesAbstract {
     this._logger.verbose('Done getting title, domUrl, imageLocation!')
 
     if (!domUrl && TypeUtils.getOrDefault(checkSettings.getSendDom(), this.getSendDom())) {
+      // START NOTE (amit): the following is something I'm not proud nor confident of. I copied it from EyesSelenium::getScreenshot, and it is to solve https://trello.com/c/O5sTPAU1. This should be rewritten asap.
+      const forceFullPageScreenshot = this._configuration.getForceFullPageScreenshot()
+      if ((forceFullPageScreenshot || this._stitchContent) && !isMobileDevice) {
+        positionProvider.setPosition(Location.ZERO)
+      }
+      // END NOTE
+
       const domJson = await this.tryCaptureDom()
 
       domUrl = await this._tryPostDomSnapshot(domJson)
       this._logger.verbose(`domUrl: ${domUrl}`)
     }
+
+    // START NOTE (amit): the following is something I'm not proud nor confident of. I copied it from EyesSelenium::getScreenshot, and it is to solve https://trello.com/c/O5sTPAU1. This should be rewritten asap.
+    if (originalPosition) {
+      positionProvider.restoreState(originalPosition)
+    }
+    // END NOTE
 
     const appOutput = new AppOutput({
       title,
