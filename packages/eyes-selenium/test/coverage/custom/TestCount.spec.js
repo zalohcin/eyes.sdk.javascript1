@@ -9,9 +9,7 @@ describe('TestCounts', () => {
   beforeEach(async () => {
     driver = await getDriver('CHROME')
     await driver.get('https://applitools.com/helloworld')
-    let defaults = await getEyes('VG')
-    eyes = defaults.eyes
-    runner = defaults.runner
+    ;({eyes, runner} = await getEyes('VG'))
     await eyes.setSendDom(false)
   })
 

@@ -26,17 +26,17 @@ function assertProperties(actual, expected) {
   }
 }
 
-async function assertImage(testSummary, expected) {
+async function assertImage(testSummary, expected, index = 0) {
   let results = await getTestResults(testSummary)
   let data = await getApiData(results.getApiUrls().getSession(), results.getSecretToken())
-  let image = data.actualAppOutput[0].image
+  let image = data.actualAppOutput[index].image
   assertProperties(image, expected)
 }
 
-async function assertImageMatchSettings(testSummary, expected) {
+async function assertImageMatchSettings(testSummary, expected, index = 0) {
   let results = await getTestResults(testSummary)
   let data = await getApiData(results.getApiUrls().getSession(), results.getSecretToken())
-  let imageMatchSettings = data.actualAppOutput[0].imageMatchSettings // can be reconsidered but in the DotNet suite only first one is used for assertions
+  let imageMatchSettings = data.actualAppOutput[index].imageMatchSettings // can be reconsidered but in the DotNet suite only first one is used for assertions
   assertProperties(imageMatchSettings, expected)
   assertRegions()
 
@@ -47,5 +47,13 @@ async function assertImageMatchSettings(testSummary, expected) {
   }
 }
 
+async function assertDefaultMatchSettings(testSummary, expected) {
+  let results = await getTestResults(testSummary)
+  let data = await getApiData(results.getApiUrls().getSession(), results.getSecretToken())
+  let defaultMatchSettings = data.startInfo.defaultMatchSettings // can be reconsidered but in the DotNet suite only first one is used for assertions
+  assertProperties(defaultMatchSettings, expected)
+}
+
 module.exports.assertImageMatchSettings = assertImageMatchSettings
 module.exports.assertImage = assertImage
+module.exports.assertDefaultMatchSettings = assertDefaultMatchSettings

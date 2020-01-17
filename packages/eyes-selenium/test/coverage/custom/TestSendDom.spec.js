@@ -54,8 +54,7 @@ describe(appName, () => {
       let webDriver, eyes
       beforeEach(async () => {
         webDriver = await getDriver('CHROME')
-        let defaults = await getEyes(setup.runnerType, setup.stitchMode)
-        eyes = defaults.eyes
+        ;({eyes} = await getEyes(setup.runnerType, setup.stitchMode))
         eyes.setBatch(batch)
       })
 
