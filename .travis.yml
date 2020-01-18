@@ -51,8 +51,8 @@ jobs:
     name: 'eyes-selenium'
     script: cd packages/eyes-selenium; npm install; npm run lint
   - stage: lint
-    name: 'eyes-test-cafe'
-    script: cd packages/eyes-test-cafe; npm install; npm run lint
+    name: 'eyes-testcafe'
+    script: cd packages/eyes-testcafe; npm install; npm run lint
   - stage: lint
     name: 'sdk-fake-eyes-server'
     script: cd packages/sdk-fake-eyes-server; npm install; npm run lint
