@@ -12,8 +12,9 @@ const packages = fs.readdirSync(dir).filter(f => fs.statSync(path.join(dir, f)).
   const start = new Date()
   await Promise.all(
     packages.map(async pkg => {
-      await pexec(`cd ${pkg}; npm install`).catch(async () => {
-        await pexec(`cd ${pkg}; npm install`).catch(error => {
+      const pkgDir = path.join(dir, pkg)
+      await pexec(`cd ${pkgDir}; npm install`).catch(async () => {
+        await pexec(`cd ${pkgDir}; npm install`).catch(error => {
           console.log(error)
         })
       })
