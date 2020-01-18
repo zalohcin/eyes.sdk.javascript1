@@ -5,7 +5,7 @@ const packages = makePackagesList()
 
 ;(async function main() {
   const pkg = packages.find(p => p.name.includes(process.argv[2]))
-  console.log(`Linking local dependencies for package ${pkg.name}\n`)
+  console.log(`Linking local dependencies for package ${pkg.name}`)
   const start = new Date()
   await linkPackage(pkg)
   const end = new Date()

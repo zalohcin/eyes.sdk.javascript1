@@ -5,7 +5,7 @@ const packages = makePackagesList()
 
 ;(async function main() {
   const pkg = packages.find(p => p.name.includes(process.argv[2]))
-  console.log(`Unlinking local dependencies for package ${pkg.name}\n`)
+  console.log(`Unlinking local dependencies for package ${pkg.name}`)
   const start = new Date()
   await unlinkPackage(pkg)
   const end = new Date()
