@@ -2,34 +2,14 @@
   "name": "eyes-sdk-javascript1",
   "private": true,
   "scripts": {
-    "install": "npm run clean && npm run bootstrap",
-    "bootstrap": "lerna bootstrap --hoist",
-    "clean": "lerna clean --yes",
-    "lint": "eslint . --ext js --quiet",
-    "lint:fix": "eslint . --ext js --quiet --fix",
-    "test": "lerna run test --no-private",
-    "test:diff": "lerna run test --since origin/master",
-    "test:unit": "lerna run test:unit --parallel --no-private",
-    "test:it": "lerna run test:it --parallel --no-private --ignore @applitools/dom-utils",
-    "test:e2e": "lerna run test:e2e --no-private",
-    "test:perf": "lerna run test:perf",
-    "commit": "npx git-cz"
+    "setup": "npm i && node scripts/install.js"
   },
   "devDependencies": {
-    "commitizen": "^3.1.2",
-    "cz-conventional-changelog": "^2.1.0",
     "eslint": "^6.6.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-mocha-no-only": "^1.1.0",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-prettier": "^3.1.1",
-    "lerna": "^3.18.3",
-    "prettier": "^1.18.2",
-    "mocha-parallel-tests": "2.2.2"
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
+    "prettier": "^1.18.2"
   }
 }
