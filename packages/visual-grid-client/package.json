@@ -62,6 +62,7 @@
     "ua-parser-js": "^0.7.20"
   },
   "scripts": {
+    "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",
     "test:sanity": "mocha --no-timeouts 'test/!(browser||e2e)/**/*.test.js'",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.test.js\"",

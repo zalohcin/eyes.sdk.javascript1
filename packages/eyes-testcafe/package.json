@@ -54,6 +54,7 @@
     "testcafe"
   ],
   "scripts": {
+    "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",
     "test": "mocha --no-timeouts \"test/**/*.spec2.js\"",
