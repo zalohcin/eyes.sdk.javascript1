@@ -1,24 +1,32 @@
-const fs = require('fs')
-const path = require('path')
 const {exec} = require('child_process')
 const {promisify} = require('util')
 const pexec = promisify(exec)
+const {makePackagesList} = require('./packages')
+const {linkPackage} = require('./link-util')
 
-const dir = path.join(__dirname, '..', 'packages')
-const packages = fs.readdirSync(dir).filter(f => fs.statSync(path.join(dir, f)).isDirectory())
+const packages = makePackagesList()
+
+async function installPackage(pkg) {
+  await pexec(`cd ${pkg.path}; npm install`).catch(async () => {
+    await pexec(`cd ${pkg.path}; npm install`).catch(error => {
+      console.log(error)
+    })
+  })
+}
 
 ;(async function main() {
   console.log('Setting up packages in the mono\n')
   const start = new Date()
   await Promise.all(
     packages.map(async pkg => {
-      const pkgDir = path.join(dir, pkg)
-      await pexec(`cd ${pkgDir}; npm install`).catch(async () => {
-        await pexec(`cd ${pkgDir}; npm install`).catch(error => {
-          console.log(error)
-        })
-      })
-      console.log(`[✓] ${pkg}`)
+      await installPackage(pkg)
+      console.log(`[✓] ${pkg.name} (installed)`)
+    }),
+  )
+  await Promise.all(
+    packages.map(async pkg => {
+      await linkPackage(pkg)
+      console.log(`[✓] ${pkg.name} (linked)`)
     }),
   )
   const end = new Date()
