@@ -19,6 +19,8 @@
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "scripts": {
+    "link": "node ../../scripts/link.js sdk-test-kit",
+    "unlink": "node ../../scripts/unlink.js sdk-test-kit",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha test/**/*.spec.js",
     "build": "tsc src/coverage-tests/api.ts"

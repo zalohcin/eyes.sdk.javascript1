@@ -34,6 +34,8 @@
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "scripts": {
+    "link": "node ../../scripts/link.js dom-utils",
+    "unlink": "node ../../scripts/unlink.js dom-utils",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\""

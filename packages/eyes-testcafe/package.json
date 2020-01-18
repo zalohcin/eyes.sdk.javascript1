@@ -54,6 +54,8 @@
     "testcafe"
   ],
   "scripts": {
+    "link": "node ../../scripts/link.js eyes-testcafe",
+    "unlink": "node ../../scripts/unlink.js eyes-testcafe",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",

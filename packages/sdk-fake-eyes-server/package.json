@@ -24,6 +24,8 @@
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "scripts": {
+    "link": "node ../../scripts/link.js sdk-fake-eyes-server",
+    "unlink": "node ../../scripts/unlink.js sdk-fake-eyes-server",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.test.js\""
   },

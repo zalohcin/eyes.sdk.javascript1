@@ -62,6 +62,8 @@
     "ua-parser-js": "^0.7.20"
   },
   "scripts": {
+    "link": "node ../../scripts/link.js visual-grid-client",
+    "unlink": "node ../../scripts/unlink.js visual-grid-client",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",
     "test:sanity": "mocha --no-timeouts 'test/!(browser||e2e)/**/*.test.js'",
