@@ -13,7 +13,7 @@ node_js:
 - '8'
 cache: npm
 install:
-- npm run build
+- npm run setup
 stages:
 - lint
   #- unit tests
