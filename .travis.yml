@@ -47,7 +47,7 @@ jobs:
     name: visual-grid-client
     script: cd visual-grid-client; npm run test:unit
 
-  - stage: Tests
+  - stage: E2E Tests
     name: eyes-selenium
     script: cd packages/eyes-selenium; npm run test:it
   -
