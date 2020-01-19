@@ -10,7 +10,7 @@ async function execOnLocalDepsForPackage(pkg, cb) {
 
 async function link(pkgPath, depPath) {
   return await pexec(`cd ${pkgPath}; npm link ${depPath}`).catch(
-    async () => await pexec(`cd ${pkgPath}; npm link ${depPath}`),
+    async () => await pexec(`cd ${pkgPath}; npm link ${depPath}`).catch(() => {}),
   )
 }
 
@@ -21,9 +21,9 @@ async function linkPackage(pkg) {
 }
 
 async function unlink(pkgPath, depPath) {
-  return await pexec(`cd ${pkgPath}; npm unlink ${depPath}`).catch(
-    async () => await pexec(`cd ${pkgPath}; npm unlink ${depPath}`).catch(() => {}),
-  )
+  return await pexec(`cd ${pkgPath}; npm unlink ${depPath}`).catch(async () => {
+    await pexec(`cd ${pkgPath}; npm unlink ${depPath}`)
+  })
 }
 
 async function unlinkPackage(pkg) {
