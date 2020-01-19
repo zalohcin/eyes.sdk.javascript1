@@ -27,7 +27,7 @@ You can link and unlink all packages from the project root, or from an individua
 
 ### Linting
 
-Linting can be run for an individual package.
+Linting can be run for all packages from the project root, or from an individual package.
 
 ```sh
 > npm run lint

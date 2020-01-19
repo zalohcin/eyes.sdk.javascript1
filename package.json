@@ -5,6 +5,7 @@
   },
   "private": true,
   "scripts": {
+    "lint": "eslint --ext .js .",
     "clean": "rm -rf ./node_modules && node scripts/setup.js --clean",
     "setup": "npm i && node scripts/setup.js --install --link",
     "link": "node scripts/setup.js --link",
