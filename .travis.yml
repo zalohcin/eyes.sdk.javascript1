@@ -43,10 +43,10 @@ jobs:
 
   - stage: Tests
     name: eyes-selenium
-    script: npm run test:it
+    script: cd packages/eyes-selenium; npm run test:it
   -
     name: visual-grid-client 
-    script: npm run test:it
+    script: cd packages/visual-grid-client; npm run test:it
     #  - stage: unit tests
     #    node_js: node
     #    script: npm run test:unit
