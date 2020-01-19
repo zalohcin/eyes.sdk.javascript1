@@ -5,7 +5,9 @@
   },
   "private": true,
   "scripts": {
-    "setup": "npm i && node scripts/setup.js"
+    "setup": "npm i && node scripts/setup.js --install --link",
+    "link": "node scripts/setup.js --link",
+    "unlink": "node scripts/setup.js --unlink"
   },
   "devDependencies": {
     "eslint": "^6.6.0",
