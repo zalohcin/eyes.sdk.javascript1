@@ -22,7 +22,7 @@ async function linkPackage(pkg) {
 
 async function unlink(pkgPath, depPath) {
   return await pexec(`cd ${pkgPath}; npm unlink ${depPath}`).catch(
-    async () => await pexec(`cd ${pkgPath}; npm unlink ${depPath}`),
+    async () => await pexec(`cd ${pkgPath}; npm unlink ${depPath}`).catch(() => {}),
   )
 }
 
