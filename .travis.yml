@@ -15,22 +15,23 @@ node_js:
   - "lts/*"
 
 cache:
-  directories:
-    - node_modules
-    - packages/dom-utils/node_modules
-    - packages/eyes-appium/node_modules
-    - packages/eyes-common/node_modules
-    - packages/eyes-images-browser/node_modules
-    - packages/eyes-images/node_modules
-    - packages/eyes-protractor/node_modules
-    - packages/eyes-sdk-core-browser/node_modules
-    - packages/eyes-sdk-core/node_modules
-    - packages/eyes-selenium-jest-perf/node_modules
-    - packages/eyes-selenium/node_modules
-    - packages/eyes-testcafe/node_modules
-    - packages/sdk-fake-eyes-server/node_modules
-    - packages/sdk-test-kit/node_modules
-    - packages/visual-grid-client/node_modules
+  npm: false
+  #  directories:
+  #    - node_modules
+  #    - packages/dom-utils/node_modules
+  #    - packages/eyes-appium/node_modules
+  #    - packages/eyes-common/node_modules
+  #    - packages/eyes-images-browser/node_modules
+  #    - packages/eyes-images/node_modules
+  #    - packages/eyes-protractor/node_modules
+  #    - packages/eyes-sdk-core-browser/node_modules
+  #    - packages/eyes-sdk-core/node_modules
+  #    - packages/eyes-selenium-jest-perf/node_modules
+  #    - packages/eyes-selenium/node_modules
+  #    - packages/eyes-testcafe/node_modules
+  #    - packages/sdk-fake-eyes-server/node_modules
+  #    - packages/sdk-test-kit/node_modules
+  #    - packages/visual-grid-client/node_modules
 
 install:
   - npm run setup
