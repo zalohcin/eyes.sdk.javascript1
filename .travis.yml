@@ -40,21 +40,19 @@ jobs:
   - stage: Lint
     script: npm run lint
 
+  - stage: Unit Tests
+    name: eyes-selenium
+    script: cd eyes-selenium; npm run test:unit
+  -
+    name: visual-grid-client
+    script: cd visual-grid-client; npm run test:unit
+
   - stage: Tests
     name: eyes-selenium
     script: cd packages/eyes-selenium; npm run test:it
   -
     name: visual-grid-client 
     script: cd packages/visual-grid-client; npm run test:it
-    #  - stage: unit tests
-    #    node_js: node
-    #    script: npm run test:unit
-    #  - node_js: 12
-    #    script: npm run test:unit
-    #  - node_js: 10
-    #    script: npm run test:unit
-    #  - node_js: 8
-    #    script: npm run test:unit
 
 notifications:
   slack:
