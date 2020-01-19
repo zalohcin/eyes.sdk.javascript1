@@ -36,11 +36,7 @@ const CUSTOM_HEADER_NAMES = {
   EYES_DATE: 'Eyes-Date',
 }
 
-let counter = 0
-const REQUEST_GUID = GeneralUtils.guid()
-const getRequestId = () => `${++counter}--${REQUEST_GUID}`
-
-function configRequestProxy({axiosConfig, proxy, logger}) {
+function configAxiosProxy({axiosConfig, proxy, logger}) {
   if (!proxy.getIsHttpOnly()) {
     axiosConfig.proxy = proxy.toProxyObject()
     logger.log('using proxy', axiosConfig.proxy.host, axiosConfig.proxy.port)
@@ -67,18 +63,13 @@ function configRequestProxy({axiosConfig, proxy, logger}) {
   axiosConfig.proxy = false // don't use the proxy, we use tunnel.
 
   logger.log('proxy is set as http only, using tunnel', proxyObject.host, proxyObject.port)
-  return axiosConfig
 }
-function configRequest({axiosConfig, configuration, logger}) {
-  const options = axiosConfig._options
-
+function configAxiosFromConfiguration({axiosConfig, configuration, withApiKey, logger}) {
   if (axiosConfig.params === undefined) {
     axiosConfig.params = {}
   }
-  if (!('apiKey' in axiosConfig.params)) {
-    if (options.withApiKey) {
-      axiosConfig.params.apiKey = configuration.getApiKey()
-    }
+  if (!('apiKey' in axiosConfig.params) && withApiKey) {
+    axiosConfig.params.apiKey = configuration.getApiKey()
   }
   if (!('removeSession' in axiosConfig.params)) {
     const removeSession = configuration.getRemoveSession()
@@ -86,21 +77,6 @@ function configRequest({axiosConfig, configuration, logger}) {
       axiosConfig.params.removeSession = removeSession
     }
   }
-
-  if (axiosConfig.headers === undefined) {
-    axiosConfig.headers = {}
-  }
-  if (!(CUSTOM_HEADER_NAMES.REQUEST_ID in axiosConfig.headers)) {
-    options.requestId = options.requestId || getRequestId()
-    axiosConfig.headers[CUSTOM_HEADER_NAMES.REQUEST_ID] = options.requestId
-  }
-  if (options.isLongRequest) {
-    axiosConfig.headers[CUSTOM_HEADER_NAMES.EYES_EXPECT] = '202+location'
-  }
-  if (options.isLongRequest || options.isPollingRequest) {
-    axiosConfig.headers[CUSTOM_HEADER_NAMES.EYES_DATE] = DateTimeUtils.toRfc1123DateTime()
-  }
-
   if (!('timeout' in axiosConfig)) {
     const timeout = configuration.getConnectionTimeout()
     if (TypeUtils.isNotNull(timeout)) {
@@ -110,22 +86,32 @@ function configRequest({axiosConfig, configuration, logger}) {
   if (!('proxy' in axiosConfig)) {
     const proxy = configuration.getProxy()
     if (TypeUtils.isNotNull(proxy)) {
-      configRequestProxy({axiosConfig, proxy, logger})
+      configAxiosProxy({axiosConfig, proxy, logger})
     }
   }
-
-  return axiosConfig
+}
+function configAxiosHeaders({axiosConfig, requestId, timestamp, isLongRequest, isPollingRequest}) {
+  if (axiosConfig.headers === undefined) {
+    axiosConfig.headers = {}
+  }
+  if (!(CUSTOM_HEADER_NAMES.REQUEST_ID in axiosConfig.headers)) {
+    axiosConfig.headers[CUSTOM_HEADER_NAMES.REQUEST_ID] = requestId
+  }
+  if (isLongRequest) {
+    axiosConfig.headers[CUSTOM_HEADER_NAMES.EYES_EXPECT] = '202+location'
+  }
+  if (isLongRequest || isPollingRequest) {
+    axiosConfig.headers[CUSTOM_HEADER_NAMES.EYES_DATE] = DateTimeUtils.toRfc1123DateTime(timestamp)
+  }
 }
 
-async function prepareRequest({axiosConfig, configuration, logger}) {
-  const config = configRequest({axiosConfig, configuration, logger})
-
-  const options = config._options
+async function prepareRequest({axiosConfig, logger}) {
+  const options = axiosConfig._options
 
   logger.verbose(
     `ServerConnector.${options.name} [${options.requestId}] will now call to ${
-      config.url
-    } with params ${JSON.stringify(config.params)}`,
+      axiosConfig.url
+    } with params ${JSON.stringify(axiosConfig.params)}`,
   )
 
   if (options.delay) {
@@ -136,7 +122,7 @@ async function prepareRequest({axiosConfig, configuration, logger}) {
     await GeneralUtils.sleep(delay)
   }
 
-  return config
+  return axiosConfig
 }
 
 async function handleLongRequestResponse({response, axios}) {
@@ -228,14 +214,16 @@ async function handleRequestError({err, axios, logger}) {
     if (options.delayBeforeRetry) {
       options.delay = RETRY_REQUEST_INTERVAL
     }
+    options.repeat += 1
     options.retry -= 1
     return axios.request(config)
   }
   throw new Error(reason)
 }
 
-exports.configRequestProxy = configRequestProxy
-exports.configRequest = configRequest
+exports.configAxiosProxy = configAxiosProxy
+exports.configAxiosFromConfiguration = configAxiosFromConfiguration
+exports.configAxiosHeaders = configAxiosHeaders
 exports.prepareRequest = prepareRequest
 
 exports.handleRequestResponse = handleRequestResponse

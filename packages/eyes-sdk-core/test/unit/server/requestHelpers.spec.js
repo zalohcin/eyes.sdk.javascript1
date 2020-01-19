@@ -2,13 +2,37 @@
 
 const assert = require('assert')
 const {ProxySettings, Logger, Configuration} = require('@applitools/eyes-common')
-const {configRequest, configRequestProxy} = require('../../../lib/server/requestHelpers')
+const {
+  configAxiosHeaders,
+  configAxiosFromConfiguration,
+  configAxiosProxy,
+} = require('../../../lib/server/requestHelpers')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
 describe('requestHelpers', () => {
-  it('configRequest works', () => {
-    const APPLITOOLS_API_KEY = process.env.APPLITOOLS_API_KEY || 'ApiKey'
+  it('configAxiosHeaders works', () => {
     const REQUEST_ID = 'RequestId'
+    const TIMESTAMP = new Date()
+    const axiosConfig = {}
+
+    configAxiosHeaders({
+      axiosConfig,
+      requestId: REQUEST_ID,
+      isLongRequest: true,
+      timestamp: TIMESTAMP,
+    })
+
+    assert.deepStrictEqual(axiosConfig, {
+      headers: {
+        'x-applitools-eyes-client-request-id': REQUEST_ID,
+        'Eyes-Expect': '202+location',
+        'Eyes-Date': TIMESTAMP.toUTCString(),
+      },
+    })
+  })
+
+  it('configAxiosFromConfiguration works', () => {
+    const APPLITOOLS_API_KEY = process.env.APPLITOOLS_API_KEY || 'ApiKey'
     const configuration = new Configuration()
     configuration.setApiKey(APPLITOOLS_API_KEY)
     configuration.setProxy({
@@ -16,30 +40,21 @@ describe('requestHelpers', () => {
       username: 'username',
       password: 'password',
     })
-    const config = configRequest({
-      axiosConfig: {
-        _options: {
-          withApiKey: true,
-          requestId: REQUEST_ID,
-        },
-        method: 'POST',
-        url: 'https://some.url/some/api',
-        data: {},
-      },
+    const axiosConfig = {
+      method: 'POST',
+      url: 'https://some.url/some/api',
+      data: {},
+    }
+    configAxiosFromConfiguration({
+      axiosConfig,
+      withApiKey: true,
       configuration: configuration,
       logger,
     })
 
-    assert.deepStrictEqual(config, {
-      _options: {
-        requestId: REQUEST_ID,
-        withApiKey: true,
-      },
+    assert.deepStrictEqual(axiosConfig, {
       method: 'POST',
       url: 'https://some.url/some/api',
-      headers: {
-        ['x-applitools-eyes-client-request-id']: REQUEST_ID,
-      },
       params: {
         apiKey: APPLITOOLS_API_KEY,
       },
@@ -57,11 +72,12 @@ describe('requestHelpers', () => {
     })
   })
 
-  it('configRequestProxy works with https proxy', () => {
+  it('configAxiosProxy works with https proxy', () => {
     const proxy = new ProxySettings('https://some.url:2323', 'daniel', '1234')
-    const config = configRequestProxy({axiosConfig: {}, proxy, logger})
+    const axiosConfig = {}
+    configAxiosProxy({axiosConfig, proxy, logger})
 
-    assert.deepStrictEqual(config, {
+    assert.deepStrictEqual(axiosConfig, {
       proxy: {
         auth: {
           password: '1234',
@@ -75,12 +91,13 @@ describe('requestHelpers', () => {
     })
   })
 
-  it('configRequestProxy works with http only proxy', () => {
+  it('configAxiosProxy works with http only proxy', () => {
     const proxy = new ProxySettings('http://some.url', 'daniel', '1234', true)
-    const config = configRequestProxy({axiosConfig: {}, proxy, logger})
+    const axiosConfig = {}
+    configAxiosProxy({axiosConfig, proxy, logger})
 
-    assert.deepStrictEqual(config.proxy, false)
-    assert.deepStrictEqual(config.httpsAgent.proxyOptions, {
+    assert.deepStrictEqual(axiosConfig.proxy, false)
+    assert.deepStrictEqual(axiosConfig.httpsAgent.proxyOptions, {
       host: 'some.url',
       port: 8080,
       proxyAuth: 'daniel:1234',

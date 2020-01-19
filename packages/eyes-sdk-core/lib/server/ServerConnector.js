@@ -7,7 +7,13 @@ const {GeneralUtils, ArgumentGuard} = require('@applitools/eyes-common')
 
 const {RenderingInfo} = require('./RenderingInfo')
 const {RunningSession} = require('./RunningSession')
-const {prepareRequest, handleRequestResponse, handleRequestError} = require('./requestHelpers')
+const {
+  configAxiosHeaders,
+  configAxiosFromConfiguration,
+  prepareRequest,
+  handleRequestResponse,
+  handleRequestError,
+} = require('./requestHelpers')
 const {TestResults} = require('../TestResults')
 const {MatchResult} = require('../match/MatchResult')
 
@@ -34,6 +40,12 @@ const HTTP_STATUS_CODES = {
   INTERNAL_SERVER_ERROR: 500,
   BAD_GATEWAY: 502,
   GATEWAY_TIMEOUT: 504,
+}
+
+const REQUEST_GUID = GeneralUtils.guid()
+let requestCounter = 0
+function createRequestId() {
+  return `${++requestCounter}--${REQUEST_GUID}`
 }
 
 /**
@@ -76,14 +88,35 @@ class ServerConnector {
       responseType: 'json',
       maxContentLength: 20 * 1024 * 1024, // 20 MB
     })
+
     this._axios.interceptors.request.use(axiosConfig => {
-      axiosConfig._options = Object.assign(
-        {withApiKey: true, retry: 1, repeat: 0, delayBeforeRetry: false},
+      const options = Object.assign(
+        {
+          requestId: createRequestId(),
+          withApiKey: true,
+          retry: 1,
+          repeat: 0,
+          delayBeforeRetry: false,
+        },
         axiosConfig._options,
       )
+
+      axiosConfig._options = options
+      configAxiosHeaders({
+        axiosConfig,
+        requestId: options.requestId,
+        isLongRequest: options.isLongRequest,
+        isPollingRequest: options.isPollingRequest,
+      })
+      configAxiosFromConfiguration({
+        axiosConfig,
+        withApiKey: options.withApiKey,
+        configuration: this._configuration,
+        logger: this._logger,
+      })
+
       return prepareRequest({
         axiosConfig,
-        configuration: this._configuration,
         logger: this._logger,
       })
     })
