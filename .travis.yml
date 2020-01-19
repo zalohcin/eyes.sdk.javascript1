@@ -13,7 +13,7 @@ node_js:
 - '8'
 cache: npm
 install:
-- npm install
+- npm run setup
 stages:
 - lint
   #- unit tests
@@ -21,47 +21,7 @@ stages:
 jobs:
   include:
   - stage: lint
-    name: 'dom-utils'
-    script: cd packages/dom-utils; npm install; npm run lint
-  - stage: lint
-    name: 'eyes-appium'
-    script: cd packages/eyes-appium; npm install; npm run lint
-  - stage: lint
-    name: 'eyes-common'
-    script: cd packages/eyes-common; npm install; npm run lint
-  - stage: lint
-    name: 'eyes-images-browser'
-    script: cd packages/eyes-images-browser; npm install; npm run lint
-  - stage: lint
-    name: 'eyes-images'
-    script: cd packages/eyes-images; npm install; npm run lint
-  - stage: lint
-    name: 'eyes-protractor'
-    script: cd packages/eyes-protractor; npm install; npm run lint
-  - stage: lint
-    name: 'eyes-sdk-core-browser'
-    script: cd packages/eyes-sdk-core-browser; npm install; npm run lint
-  - stage: lint
-    name: 'eyes-sdk-core'
-    script: cd packages/eyes-sdk-core; npm install; npm run lint
-  - stage: lint
-    name: 'eyes-selenium-jest-perf'
-    script: cd packages/eyes-selenium-jest-perf; npm install; npm run lint
-  - stage: lint
-    name: 'eyes-selenium'
-    script: cd packages/eyes-selenium; npm install; npm run lint
-  - stage: lint
-    name: 'eyes-testcafe'
-    script: cd packages/eyes-testcafe; npm install; npm run lint
-  - stage: lint
-    name: 'sdk-fake-eyes-server'
-    script: cd packages/sdk-fake-eyes-server; npm install; npm run lint
-  - stage: lint
-    name: 'sdk-test-kit'
-    script: cd packages/sdk-test-kit; npm install; npm run lint
-  - stage: lint
-    name: 'visual-grid-client'
-    script: cd packages/visual-grid-client; npm install; npm run lint
+    script: npm run lint
     #  - stage: unit tests
     #    node_js: node
     #    script: npm run test:unit
