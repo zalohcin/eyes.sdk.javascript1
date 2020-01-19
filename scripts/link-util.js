@@ -10,7 +10,7 @@ async function execOnLocalDepsForPackage(pkg, cb) {
 
 async function link(pkgPath, depPath) {
   return await pexec(`cd ${pkgPath}; npm link ${depPath}`).catch(
-    async () => await pexec(`cd ${pkgPath}; npm link ${depPath}`).catch(() => {}),
+    async () => await pexec(`cd ${pkgPath}; npm link ${depPath}`),
   )
 }
 
