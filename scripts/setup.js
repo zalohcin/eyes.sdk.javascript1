@@ -15,9 +15,21 @@ async function installPackage(pkg) {
   })
 }
 
+async function cleanPackage(pkg) {
+  await pexec(`cd ${pkg.path}; rm -rf node_modules`)
+}
+
 ;(async function main() {
   console.log(`Setting up packages in the mono with arguments ${args}\n`)
   const start = new Date()
+  if (args.includes('--clean')) {
+    await Promise.all(
+      packages.map(async pkg => {
+        await cleanPackage(pkg)
+        console.log(`[✓] ${pkg.name} (cleaned)`)
+      }),
+    )
+  }
   if (args.includes('--install')) {
     await Promise.all(
       packages.map(async pkg => {
