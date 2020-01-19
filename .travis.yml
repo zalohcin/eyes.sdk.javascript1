@@ -1,27 +1,51 @@
 if: tag IS blank
+
 os:
 - linux
+
 sudo: false
+
 addons:
   chrome: stable
   firefox: latest
+
 language: node_js
+
 node_js:
-- node
-- '12'
-- '10'
-- '8'
-cache: npm
+  - "lts/*"
+
+cache:
+  directories:
+    - node_modules
+    - packages/dom-utils/node_modules
+    - packages/eyes-appium/node_modules
+    - packages/eyes-common/node_modules
+    - packages/eyes-images-browser/node_modules
+    - packages/eyes-images/node_modules
+    - packages/eyes-protractor/node_modules
+    - packages/eyes-sdk-core-browser/node_modules
+    - packages/eyes-sdk-core/node_modules
+    - packages/eyes-selenium-jest-perf/node_modules
+    - packages/eyes-selenium/node_modules
+    - packages/eyes-testcafe/node_modules
+    - packages/sdk-fake-eyes-server/node_modules
+    - packages/sdk-test-kit/node_modules
+    - packages/visual-grid-client/node_modules
+
 install:
-- npm run setup
-stages:
-- lint
-  #- unit tests
-  #- test
+  - npm run setup
+
 jobs:
   include:
-  - stage: lint
+  - stage: Lint
     script: npm run lint
+
+  - stage: Tests
+    name: eyes-selenium
+    script: npm run test:it
+  -
+    name: visual-grid-client 
+    script: npm run test:it
     #  - stage: unit tests
     #    node_js: node
     #    script: npm run test:unit
@@ -31,11 +55,7 @@ jobs:
     #    script: npm run test:unit
     #  - node_js: 8
     #    script: npm run test:unit
-# The script below runs using the default 'test' build stage (a.k.a. 'Test')
-# in the job dashboard. The 'test' build stage uses the node_js languages
-# specified above, but the other stages & jobs need to specify the node_js
-# versions explicitly...
-# script: npm run test:it
+
 notifications:
   slack:
     secure: oV4UyGK1CocNQmhUX0878NtkxgsJisAZsJVwZe7mFfsy0MhcRyQuk4Bux7acDr/hsm6zUepCUwEoJJhA7PFTSmqHQyHko4S1JDBAa70U+R4/b+KFUEzH9bEQC1PjLcA5G1uhqT35Q2ppTcjl64HWudVIDNi09+PAyYR/M2MSf29b1Uji0CLOUchpZk13OKeU1M5I/OhJiyq92wHRKb6WiimvsnorvozLJhqAvPgzCOxxy6tSoqSBuPffTUEC0+Qwc4A3lRai8MypppDl5pqM4bTsL0uwXIQEX5VDr0HK0kQwgkHGAFzUjg4JOrCxVxQY9kGwiymJU8JbkkPMc0QIWjV73wVITzSGz2qHMCmpyAky+mLNxYrZ8SbadrO6g7r2bgp0uQOfzB7TktDIT0/gQriw+tovkda5xoyp6YQFHHtIu/KjD2PnCymXJH43kjwcXcRHapG8RJpJjlNinEQ+FxHgU059Kebjk9/Qpnx016Q54PgO/mP1JG8OnslZkvIVPfB20K+VMnAGr3z7xek0bqJcD2439MzQulyL/60nqPqM6JBdL6oh6BxuBpAY7v9Bk+KkLHpwu6DOzmgRn6r0cc75ep2lAKS5HPW2FVFwve9poeQpwkuNna1qoqDM5ezWo7S8WJ1KMT/kaTwprqxcRAKk3iFhaTSny6m4O4qpQqk=
