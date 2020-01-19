@@ -37,17 +37,17 @@ install:
 
 jobs:
   include:
-  - stage: Lint
+  - stage: lint
     script: npm run lint
 
-  - stage: Unit Tests
+  - stage: unit tests
     name: eyes-selenium
     script: cd eyes-selenium; npm run test:unit
   -
     name: visual-grid-client
     script: cd visual-grid-client; npm run test:unit
 
-  - stage: E2E Tests
+  - stage: end-to-end tests
     name: eyes-selenium
     script: cd packages/eyes-selenium; npm run test:it
   -
