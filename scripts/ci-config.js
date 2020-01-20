@@ -5,21 +5,48 @@ const {makePackagesList} = require('./packages')
 
 const config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', '.travis.yml'), 'utf8'))
 
-function makeJobs() {
-  const pkgs = makePackagesList().map(pkg => pkg.path.match(/packages\/(.*)$/)[1])
-  const lint = {stage: 'lint', script: 'npm run setup; npm run lint'}
-  const test_unit = pkgs.map(pkgName => ({
-    name: pkgName,
-    script: `cd packages/${pkgName}; npm install; npm run test:unit`,
-  }))
-  test_unit[0].stage = 'unit tests'
-  const test_e2e = pkgs.map(pkgName => ({
-    name: pkgName,
-    script: `cd packages/${pkgName}; npm install; npm run test:it`,
-  }))
-  test_e2e[0].stage = 'end-to-end tests'
-  return [lint, ...test_unit, ...test_e2e]
+function makeJobsForLintStage(stageName = 'lint') {
+  const jobs = []
+  jobs.push({stage: stageName, script: 'npm run setup; npm run lint'})
+  return jobs
 }
 
-config.jobs = {include: makeJobs()}
+function makeJobsForUnitStage(stageName = 'unit tests') {
+  const pkgs = makePackagesList()
+  let jobs = []
+  pkgs.forEach(pkg => {
+    if (pkg.scripts.hasOwnProperty('test:unit')) {
+      jobs.push({
+        name: pkg.name,
+        script: `cd packages/${pkg.folderName}; npm install; npm run test:unit`,
+      })
+    } else if (pkg.scripts.hasOwnProperty('test')) {
+      jobs.push({
+        name: pkg.name,
+        script: `cd packages/${pkg.folderName}; npm install; npm run test:unit`,
+      })
+    }
+  })
+  if (jobs.length) jobs[0].stage = stageName
+  return jobs
+}
+
+function makeJobsForItStage(stageName = 'end-to-end tests') {
+  const pkgs = makePackagesList()
+  let jobs = []
+  pkgs.forEach(pkg => {
+    if (pkg.scripts.hasOwnProperty('test:it')) {
+      jobs.push({
+        name: pkg.name,
+        script: `cd packages/${pkg.folderName}; npm install; npm run test:it`,
+      })
+    }
+  })
+  if (jobs.length) jobs[0].stage = stageName
+  return jobs
+}
+
+config.jobs = {
+  include: [...makeJobsForLintStage(), ...makeJobsForUnitStage(), ...makeJobsForItStage()],
+}
 fs.writeFileSync(path.join(__dirname, '..', '.travis.yml'), yaml.safeDump(config))
