@@ -9,7 +9,8 @@
     "clean": "rm -rf ./node_modules && node scripts/setup.js --clean",
     "setup": "npm i && node scripts/setup.js --install --link",
     "link": "node scripts/setup.js --link",
-    "unlink": "node scripts/setup.js --unlink"
+    "unlink": "node scripts/setup.js --unlink",
+    "generate_ci_config": "node scripts/ci-config.js"
   },
   "devDependencies": {
     "eslint": "^6.6.0",
@@ -17,6 +18,7 @@
     "eslint-plugin-mocha-no-only": "^1.1.0",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-prettier": "^3.1.1",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "js-yaml": "^3.13.1"
   }
 }
