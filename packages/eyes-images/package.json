@@ -39,8 +39,7 @@
     "mocha": "^6.2.2"
   },
   "scripts": {
-    "link": "node ../../scripts/link.js eyes-images",
-    "unlink": "node ../../scripts/unlink.js eyes-images",
+    "install": "yarn install --focused",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\""

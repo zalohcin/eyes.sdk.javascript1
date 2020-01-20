@@ -3,8 +3,7 @@
   "private": true,
   "version": "4.5.106",
   "scripts": {
-    "link": "node ../../scripts/link.js eyes-selenium-jest-perf",
-    "unlink": "node ../../scripts/unlink.js eyes-selenium-jest-perf",
+    "install": "yarn install --focused",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test:perf": "jest"
   },

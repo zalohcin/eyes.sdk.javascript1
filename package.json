@@ -4,13 +4,21 @@
     "node": ">=10.0.0"
   },
   "private": true,
+  "workspaces": [
+    "packages/dom-utils",
+    "packages/eyes-common",
+    "packages/eyes-images",
+    "packages/eyes-sdk-core",
+    "packages/eyes-selenium",
+    "packages/eyes-testcafe",
+    "packages/sdk-fake-eyes-server",
+    "packages/sdk-test-kit",
+    "packages/visual-grid-client"
+  ],
   "scripts": {
+    "install": "yarn install",
     "lint": "eslint --ext .js .",
-    "clean": "rm -rf ./node_modules && node scripts/setup.js --clean",
-    "setup": "npm i && node scripts/setup.js --clean --install",
-    "link": "node scripts/setup.js --link",
-    "unlink": "node scripts/setup.js --unlink",
-    "generate_ci_config": "node scripts/ci-config.js"
+    "update-ci-config": "node scripts/ci-config.js"
   },
   "devDependencies": {
     "eslint": "^6.6.0",

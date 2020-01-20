@@ -1,9 +1,22 @@
 const fs = require('fs')
 const yaml = require('js-yaml')
 const path = require('path')
-const {makePackagesList} = require('./packages')
 
 const config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', '.travis.yml'), 'utf8'))
+
+function makePackagesList() {
+  const dir = path.join(__dirname, '..', 'packages')
+  const packages = fs.readdirSync(dir).filter(f => fs.statSync(path.join(dir, f)).isDirectory())
+  return packages.map(pkgName => {
+    const pkgDir = path.join(dir, pkgName)
+    const packageJson = require(path.join(pkgDir, 'package.json'))
+    return {
+      name: packageJson.name,
+      folderName: pkgName,
+      scripts: {...packageJson.scripts},
+    }
+  })
+}
 
 function makeJobsForLintStage(stageName = 'lint') {
   const pkgs = makePackagesList()

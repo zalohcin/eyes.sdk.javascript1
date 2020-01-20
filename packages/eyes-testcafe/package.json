@@ -54,8 +54,7 @@
     "testcafe"
   ],
   "scripts": {
-    "link": "node ../../scripts/link.js eyes-testcafe",
-    "unlink": "node ../../scripts/unlink.js eyes-testcafe",
+    "install": "yarn install --focused",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",

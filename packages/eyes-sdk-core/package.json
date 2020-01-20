@@ -48,8 +48,7 @@
     "tunnel": false
   },
   "scripts": {
-    "link": "node ../../scripts/link.js eyes-sdk-core",
-    "unlink": "node ../../scripts/unlink.js eyes-sdk-core",
+    "install": "yarn install --focused",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\""
