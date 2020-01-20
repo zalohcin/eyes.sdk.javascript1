@@ -10,10 +10,39 @@ node_js:
   - lts/*
 cache:
   npm: false
+install:
+  - npm install
 jobs:
   include:
-    - stage: lint
-      script: npm run setup; npm run lint
+    - name: '@applitools/sdk-fake-eyes-server'
+      script: cd packages/sdk-fake-eyes-server; npm run lint
+      stage: lint
+    - name: '@applitools/eyes-common'
+      script: cd packages/eyes-common; npm run lint
+    - name: '@applitools/eyes-sdk-core'
+      script: cd packages/eyes-sdk-core; npm run lint
+    - name: '@applitools/dom-utils'
+      script: cd packages/dom-utils; npm run lint
+    - name: '@applitools/eyes-appium'
+      script: cd packages/eyes-appium; npm run lint
+    - name: '@applitools/eyes-images'
+      script: cd packages/eyes-images; npm run lint
+    - name: '@applitools/eyes-images-browser'
+      script: cd packages/eyes-images-browser; npm run lint
+    - name: '@applitools/eyes-protractor'
+      script: cd packages/eyes-protractor; npm run lint
+    - name: '@applitools/eyes-sdk-core-browser'
+      script: cd packages/eyes-sdk-core-browser; npm run lint
+    - name: '@applitools/eyes-selenium'
+      script: cd packages/eyes-selenium; npm run lint
+    - name: '@applitools/eyes-selenium-jest-perf'
+      script: cd packages/eyes-selenium-jest-perf; npm run lint
+    - name: '@applitools/eyes-testcafe'
+      script: cd packages/eyes-testcafe; npm run lint
+    - name: '@applitools/sdk-test-kit'
+      script: cd packages/sdk-test-kit; npm run lint
+    - name: '@applitools/visual-grid-client'
+      script: cd packages/visual-grid-client; npm run lint
     - name: '@applitools/sdk-fake-eyes-server'
       script: 'cd packages/sdk-fake-eyes-server; npm install; npm run test:unit'
       stage: unit tests

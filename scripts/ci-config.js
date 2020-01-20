@@ -6,8 +6,15 @@ const {makePackagesList} = require('./packages')
 const config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', '.travis.yml'), 'utf8'))
 
 function makeJobsForLintStage(stageName = 'lint') {
+  const pkgs = makePackagesList()
   const jobs = []
-  jobs.push({stage: stageName, script: 'npm run setup; npm run lint'})
+  pkgs.forEach(pkg => {
+    jobs.push({
+      name: pkg.name,
+      script: `cd packages/${pkg.folderName}; npm run lint`,
+    })
+  })
+  if (jobs.length) jobs[0].stage = stageName
   return jobs
 }
 
