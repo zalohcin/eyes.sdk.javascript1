@@ -18,16 +18,7 @@ function makePackagesList() {
 }
 
 function makeJobsForLintStage(stageName = 'lint') {
-  const pkgs = makePackagesList()
-  const jobs = []
-  pkgs.forEach(pkg => {
-    jobs.push({
-      name: pkg.name,
-      script: `cd ${pkg.path}; npm install; npm run lint`,
-    })
-  })
-  if (jobs.length) jobs[0].stage = stageName
-  return jobs
+  return [{stage: stageName, script: `yarn run lint`}]
 }
 
 function makeJobsForUnitStage(stageName = 'unit tests') {
@@ -37,7 +28,7 @@ function makeJobsForUnitStage(stageName = 'unit tests') {
     if (pkg.scripts.hasOwnProperty('test:unit')) {
       jobs.push({
         name: pkg.name,
-        script: `cd ${pkg.path}; npm install; npm run test:unit`,
+        script: `cd ${pkg.path}; yarn run test:unit`,
       })
     }
   })
@@ -52,7 +43,7 @@ function makeJobsForItStage(stageName = 'end-to-end tests') {
     if (pkg.scripts.hasOwnProperty('test:it')) {
       jobs.push({
         name: pkg.name,
-        script: `cd ${pkg.path}; npm install; npm run test:it`,
+        script: `cd ${pkg.path}; yarn run test:it`,
       })
     }
   })

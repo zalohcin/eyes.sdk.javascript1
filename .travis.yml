@@ -9,52 +9,35 @@ language: node_js
 node_js:
   - lts/*
 cache:
-  npm: false
+  yarn: true
 install:
-  - npm install
+  - yarn install
 jobs:
   include:
-    - name: '@applitools/dom-utils'
-      script: cd packages/dom-utils; npm install; npm run lint
-      stage: lint
+    - stage: lint
+      script: yarn run lint
     - name: '@applitools/eyes-common'
-      script: cd packages/eyes-common; npm install; npm run lint
-    - name: '@applitools/eyes-images'
-      script: cd packages/eyes-images; npm install; npm run lint
-    - name: '@applitools/eyes-sdk-core'
-      script: cd packages/eyes-sdk-core; npm install; npm run lint
-    - name: '@applitools/eyes-selenium'
-      script: cd packages/eyes-selenium; npm install; npm run lint
-    - name: '@applitools/eyes-testcafe'
-      script: cd packages/eyes-testcafe; npm install; npm run lint
-    - name: '@applitools/sdk-fake-eyes-server'
-      script: cd packages/sdk-fake-eyes-server; npm install; npm run lint
-    - name: '@applitools/sdk-test-kit'
-      script: cd packages/sdk-test-kit; npm install; npm run lint
-    - name: '@applitools/visual-grid-client'
-      script: cd packages/visual-grid-client; npm install; npm run lint
-    - name: '@applitools/eyes-common'
-      script: 'cd packages/eyes-common; npm install; npm run test:unit'
+      script: 'cd packages/eyes-common; yarn run test:unit'
       stage: unit tests
     - name: '@applitools/eyes-sdk-core'
-      script: 'cd packages/eyes-sdk-core; npm install; npm run test:unit'
+      script: 'cd packages/eyes-sdk-core; yarn run test:unit'
     - name: '@applitools/eyes-selenium'
-      script: 'cd packages/eyes-selenium; npm install; npm run test:unit'
+      script: 'cd packages/eyes-selenium; yarn run test:unit'
     - name: '@applitools/eyes-testcafe'
-      script: 'cd packages/eyes-testcafe; npm install; npm run test:unit'
+      script: 'cd packages/eyes-testcafe; yarn run test:unit'
     - name: '@applitools/visual-grid-client'
-      script: 'cd packages/visual-grid-client; npm install; npm run test:unit'
+      script: 'cd packages/visual-grid-client; yarn run test:unit'
     - name: '@applitools/dom-utils'
-      script: 'cd packages/dom-utils; npm install; npm run test:it'
+      script: 'cd packages/dom-utils; yarn run test:it'
       stage: end-to-end tests
     - name: '@applitools/eyes-images'
-      script: 'cd packages/eyes-images; npm install; npm run test:it'
+      script: 'cd packages/eyes-images; yarn run test:it'
     - name: '@applitools/eyes-selenium'
-      script: 'cd packages/eyes-selenium; npm install; npm run test:it'
+      script: 'cd packages/eyes-selenium; yarn run test:it'
     - name: '@applitools/eyes-testcafe'
-      script: 'cd packages/eyes-testcafe; npm install; npm run test:it'
+      script: 'cd packages/eyes-testcafe; yarn run test:it'
     - name: '@applitools/visual-grid-client'
-      script: 'cd packages/visual-grid-client; npm install; npm run test:it'
+      script: 'cd packages/visual-grid-client; yarn run test:it'
 notifications:
   slack:
     secure: >-
