@@ -11,7 +11,7 @@ function makeJobsForLintStage(stageName = 'lint') {
   pkgs.forEach(pkg => {
     jobs.push({
       name: pkg.name,
-      script: `cd packages/${pkg.folderName}; npm run lint`,
+      script: `cd packages/${pkg.folderName}; npm install; npm run lint`,
     })
   })
   if (jobs.length) jobs[0].stage = stageName

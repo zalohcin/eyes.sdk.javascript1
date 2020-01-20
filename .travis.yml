@@ -15,34 +15,34 @@ install:
 jobs:
   include:
     - name: '@applitools/sdk-fake-eyes-server'
-      script: cd packages/sdk-fake-eyes-server; npm run lint
+      script: cd packages/sdk-fake-eyes-server; npm install; npm run lint
       stage: lint
     - name: '@applitools/eyes-common'
-      script: cd packages/eyes-common; npm run lint
+      script: cd packages/eyes-common; npm install; npm run lint
     - name: '@applitools/eyes-sdk-core'
-      script: cd packages/eyes-sdk-core; npm run lint
+      script: cd packages/eyes-sdk-core; npm install; npm run lint
     - name: '@applitools/dom-utils'
-      script: cd packages/dom-utils; npm run lint
+      script: cd packages/dom-utils; npm install; npm run lint
     - name: '@applitools/eyes-appium'
-      script: cd packages/eyes-appium; npm run lint
+      script: cd packages/eyes-appium; npm install; npm run lint
     - name: '@applitools/eyes-images'
-      script: cd packages/eyes-images; npm run lint
+      script: cd packages/eyes-images; npm install; npm run lint
     - name: '@applitools/eyes-images-browser'
-      script: cd packages/eyes-images-browser; npm run lint
+      script: cd packages/eyes-images-browser; npm install; npm run lint
     - name: '@applitools/eyes-protractor'
-      script: cd packages/eyes-protractor; npm run lint
+      script: cd packages/eyes-protractor; npm install; npm run lint
     - name: '@applitools/eyes-sdk-core-browser'
-      script: cd packages/eyes-sdk-core-browser; npm run lint
+      script: cd packages/eyes-sdk-core-browser; npm install; npm run lint
     - name: '@applitools/eyes-selenium'
-      script: cd packages/eyes-selenium; npm run lint
+      script: cd packages/eyes-selenium; npm install; npm run lint
     - name: '@applitools/eyes-selenium-jest-perf'
-      script: cd packages/eyes-selenium-jest-perf; npm run lint
+      script: cd packages/eyes-selenium-jest-perf; npm install; npm run lint
     - name: '@applitools/eyes-testcafe'
-      script: cd packages/eyes-testcafe; npm run lint
+      script: cd packages/eyes-testcafe; npm install; npm run lint
     - name: '@applitools/sdk-test-kit'
-      script: cd packages/sdk-test-kit; npm run lint
+      script: cd packages/sdk-test-kit; npm install; npm run lint
     - name: '@applitools/visual-grid-client'
-      script: cd packages/visual-grid-client; npm run lint
+      script: cd packages/visual-grid-client; npm install; npm run lint
     - name: '@applitools/sdk-fake-eyes-server'
       script: 'cd packages/sdk-fake-eyes-server; npm install; npm run test:unit'
       stage: unit tests
