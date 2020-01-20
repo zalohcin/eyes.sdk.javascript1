@@ -16,44 +16,25 @@ node_js:
 
 cache:
   npm: false
-  #  directories:
-  #    - node_modules
-  #    - packages/dom-utils/node_modules
-  #    - packages/eyes-appium/node_modules
-  #    - packages/eyes-common/node_modules
-  #    - packages/eyes-images-browser/node_modules
-  #    - packages/eyes-images/node_modules
-  #    - packages/eyes-protractor/node_modules
-  #    - packages/eyes-sdk-core-browser/node_modules
-  #    - packages/eyes-sdk-core/node_modules
-  #    - packages/eyes-selenium-jest-perf/node_modules
-  #    - packages/eyes-selenium/node_modules
-  #    - packages/eyes-testcafe/node_modules
-  #    - packages/sdk-fake-eyes-server/node_modules
-  #    - packages/sdk-test-kit/node_modules
-  #    - packages/visual-grid-client/node_modules
-
-install:
-  - npm run setup
 
 jobs:
   include:
   - stage: lint
-    script: npm run lint
+    script: npm run setup; npm run lint
 
   - stage: unit tests
     name: eyes-selenium
-    script: cd packages/eyes-selenium; npm run test:unit
+    script: cd packages/eyes-selenium; npm install; npm run test:unit
   -
     name: visual-grid-client
-    script: cd packages/visual-grid-client; npm run test:unit
+    script: cd packages/visual-grid-client; npm install; npm run test:unit
 
   - stage: end-to-end tests
     name: eyes-selenium
-    script: cd packages/eyes-selenium; npm run test:it
+    script: cd packages/eyes-selenium; npm install; npm run test:it
   -
     name: visual-grid-client 
-    script: cd packages/visual-grid-client; npm run test:it
+    script: cd packages/visual-grid-client; npm install; npm run test:it
 
 notifications:
   slack:
