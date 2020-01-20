@@ -24,8 +24,10 @@ function makePackagesList() {
     const packageJson = require(path.join(pkgDir, 'package.json'))
     return {
       name: packageJson.name,
+      folderName: pkgName,
       path: pkgDir,
       deps: {...packageJson.dependencies, ...packageJson.devDependencies},
+      scripts: {...packageJson.scripts},
     }
   })
 }
