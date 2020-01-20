@@ -3,6 +3,8 @@ const {Builder} = require('selenium-webdriver')
 const {Eyes, ClassicRunner, VisualGridRunner, StitchMode} = require('../../../../index')
 const defaultArgs = process.env.HEADLESS === 'true' ? ['headless'] : []
 
+const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
+
 const Browsers = {
   CHROME: {
     browserName: 'chrome',
@@ -72,4 +74,5 @@ module.exports = {
   getDriver: getDriver,
   getEyes: getEyes,
   getSetups: getSetups,
+  sauceUrl: SAUCE_SERVER_URL,
 }
