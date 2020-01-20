@@ -1,18 +1,17 @@
 const fs = require('fs')
-const yaml = require('js-yaml')
 const path = require('path')
+const yaml = require('js-yaml')
 
 const config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', '.travis.yml'), 'utf8'))
 
 function makePackagesList() {
-  const dir = path.join(__dirname, '..', 'packages')
-  const packages = fs.readdirSync(dir).filter(f => fs.statSync(path.join(dir, f)).isDirectory())
-  return packages.map(pkgName => {
-    const pkgDir = path.join(dir, pkgName)
+  const packages = require(path.join(__dirname, '..', 'package.json')).workspaces
+  return packages.map(pkgPath => {
+    const pkgDir = path.join(__dirname, '..', pkgPath)
     const packageJson = require(path.join(pkgDir, 'package.json'))
     return {
       name: packageJson.name,
-      folderName: pkgName,
+      path: pkgPath,
       scripts: {...packageJson.scripts},
     }
   })
@@ -24,7 +23,7 @@ function makeJobsForLintStage(stageName = 'lint') {
   pkgs.forEach(pkg => {
     jobs.push({
       name: pkg.name,
-      script: `cd packages/${pkg.folderName}; npm install; npm run lint`,
+      script: `cd ${pkg.path}; npm install; npm run lint`,
     })
   })
   if (jobs.length) jobs[0].stage = stageName
@@ -38,7 +37,7 @@ function makeJobsForUnitStage(stageName = 'unit tests') {
     if (pkg.scripts.hasOwnProperty('test:unit')) {
       jobs.push({
         name: pkg.name,
-        script: `cd packages/${pkg.folderName}; npm install; npm run test:unit`,
+        script: `cd ${pkg.path}; npm install; npm run test:unit`,
       })
     }
   })
@@ -53,7 +52,7 @@ function makeJobsForItStage(stageName = 'end-to-end tests') {
     if (pkg.scripts.hasOwnProperty('test:it')) {
       jobs.push({
         name: pkg.name,
-        script: `cd packages/${pkg.folderName}; npm install; npm run test:it`,
+        script: `cd ${pkg.path}; npm install; npm run test:it`,
       })
     }
   })
