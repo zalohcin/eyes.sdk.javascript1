@@ -2,7 +2,7 @@
 
 ## Building
 
-__NOTE: [yarn](https://yarnpkg.com/lang/en/) is a dependency.
+__NOTE: [yarn](https://yarnpkg.com/en/docs/install) is required.
 
 ### Getting Started
 
