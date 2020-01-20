@@ -7,7 +7,7 @@
   "scripts": {
     "lint": "eslint --ext .js .",
     "clean": "rm -rf ./node_modules && node scripts/setup.js --clean",
-    "setup": "npm i && node scripts/setup.js --clean --install --link",
+    "setup": "npm i && node scripts/setup.js --clean --install",
     "link": "node scripts/setup.js --link",
     "unlink": "node scripts/setup.js --unlink",
     "generate_ci_config": "node scripts/ci-config.js"
