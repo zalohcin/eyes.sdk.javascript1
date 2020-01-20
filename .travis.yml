@@ -14,63 +14,43 @@ jobs:
   include:
     - stage: lint
       script: npm run setup; npm run lint
-    - name: sdk-fake-eyes-server
+    - name: '@applitools/sdk-fake-eyes-server'
       script: 'cd packages/sdk-fake-eyes-server; npm install; npm run test:unit'
       stage: unit tests
-    - name: eyes-common
+    - name: '@applitools/eyes-common'
       script: 'cd packages/eyes-common; npm install; npm run test:unit'
-    - name: eyes-sdk-core
+    - name: '@applitools/eyes-sdk-core'
       script: 'cd packages/eyes-sdk-core; npm install; npm run test:unit'
-    - name: dom-utils
+    - name: '@applitools/dom-utils'
       script: 'cd packages/dom-utils; npm install; npm run test:unit'
-    - name: eyes-appium
+    - name: '@applitools/eyes-appium'
       script: 'cd packages/eyes-appium; npm install; npm run test:unit'
-    - name: eyes-images
+    - name: '@applitools/eyes-images'
       script: 'cd packages/eyes-images; npm install; npm run test:unit'
-    - name: eyes-images-browser
-      script: 'cd packages/eyes-images-browser; npm install; npm run test:unit'
-    - name: eyes-protractor
+    - name: '@applitools/eyes-protractor'
       script: 'cd packages/eyes-protractor; npm install; npm run test:unit'
-    - name: eyes-sdk-core-browser
-      script: 'cd packages/eyes-sdk-core-browser; npm install; npm run test:unit'
-    - name: eyes-selenium
+    - name: '@applitools/eyes-selenium'
       script: 'cd packages/eyes-selenium; npm install; npm run test:unit'
-    - name: eyes-selenium-jest-perf
-      script: 'cd packages/eyes-selenium-jest-perf; npm install; npm run test:unit'
-    - name: eyes-testcafe
+    - name: '@applitools/eyes-testcafe'
       script: 'cd packages/eyes-testcafe; npm install; npm run test:unit'
-    - name: sdk-test-kit
+    - name: '@applitools/sdk-test-kit'
       script: 'cd packages/sdk-test-kit; npm install; npm run test:unit'
-    - name: visual-grid-client
+    - name: '@applitools/visual-grid-client'
       script: 'cd packages/visual-grid-client; npm install; npm run test:unit'
-    - name: sdk-fake-eyes-server
-      script: 'cd packages/sdk-fake-eyes-server; npm install; npm run test:it'
-      stage: end-to-end tests
-    - name: eyes-common
-      script: 'cd packages/eyes-common; npm install; npm run test:it'
-    - name: eyes-sdk-core
-      script: 'cd packages/eyes-sdk-core; npm install; npm run test:it'
-    - name: dom-utils
+    - name: '@applitools/dom-utils'
       script: 'cd packages/dom-utils; npm install; npm run test:it'
-    - name: eyes-appium
+      stage: end-to-end tests
+    - name: '@applitools/eyes-appium'
       script: 'cd packages/eyes-appium; npm install; npm run test:it'
-    - name: eyes-images
+    - name: '@applitools/eyes-images'
       script: 'cd packages/eyes-images; npm install; npm run test:it'
-    - name: eyes-images-browser
-      script: 'cd packages/eyes-images-browser; npm install; npm run test:it'
-    - name: eyes-protractor
+    - name: '@applitools/eyes-protractor'
       script: 'cd packages/eyes-protractor; npm install; npm run test:it'
-    - name: eyes-sdk-core-browser
-      script: 'cd packages/eyes-sdk-core-browser; npm install; npm run test:it'
-    - name: eyes-selenium
+    - name: '@applitools/eyes-selenium'
       script: 'cd packages/eyes-selenium; npm install; npm run test:it'
-    - name: eyes-selenium-jest-perf
-      script: 'cd packages/eyes-selenium-jest-perf; npm install; npm run test:it'
-    - name: eyes-testcafe
+    - name: '@applitools/eyes-testcafe'
       script: 'cd packages/eyes-testcafe; npm install; npm run test:it'
-    - name: sdk-test-kit
-      script: 'cd packages/sdk-test-kit; npm install; npm run test:it'
-    - name: visual-grid-client
+    - name: '@applitools/visual-grid-client'
       script: 'cd packages/visual-grid-client; npm install; npm run test:it'
 notifications:
   slack:
