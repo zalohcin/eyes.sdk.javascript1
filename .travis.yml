@@ -1,41 +1,78 @@
 if: tag IS blank
-
 os:
-- linux
-
+  - linux
 sudo: false
-
 addons:
   chrome: stable
   firefox: latest
-
 language: node_js
-
 node_js:
-  - "lts/*"
-
+  - lts/*
 cache:
   npm: false
-
 jobs:
   include:
-  - stage: lint
-    script: npm run setup; npm run lint
-
-  - stage: unit tests
-    name: eyes-selenium
-    script: cd packages/eyes-selenium; npm install; npm run test:unit
-  -
-    name: visual-grid-client
-    script: cd packages/visual-grid-client; npm install; npm run test:unit
-
-  - stage: end-to-end tests
-    name: eyes-selenium
-    script: cd packages/eyes-selenium; npm install; npm run test:it
-  -
-    name: visual-grid-client 
-    script: cd packages/visual-grid-client; npm install; npm run test:it
-
+    - stage: lint
+      script: npm run setup; npm run lint
+    - name: sdk-fake-eyes-server
+      script: 'cd packages/sdk-fake-eyes-server; npm install; npm run test:unit'
+      stage: unit tests
+    - name: eyes-common
+      script: 'cd packages/eyes-common; npm install; npm run test:unit'
+    - name: eyes-sdk-core
+      script: 'cd packages/eyes-sdk-core; npm install; npm run test:unit'
+    - name: dom-utils
+      script: 'cd packages/dom-utils; npm install; npm run test:unit'
+    - name: eyes-appium
+      script: 'cd packages/eyes-appium; npm install; npm run test:unit'
+    - name: eyes-images
+      script: 'cd packages/eyes-images; npm install; npm run test:unit'
+    - name: eyes-images-browser
+      script: 'cd packages/eyes-images-browser; npm install; npm run test:unit'
+    - name: eyes-protractor
+      script: 'cd packages/eyes-protractor; npm install; npm run test:unit'
+    - name: eyes-sdk-core-browser
+      script: 'cd packages/eyes-sdk-core-browser; npm install; npm run test:unit'
+    - name: eyes-selenium
+      script: 'cd packages/eyes-selenium; npm install; npm run test:unit'
+    - name: eyes-selenium-jest-perf
+      script: 'cd packages/eyes-selenium-jest-perf; npm install; npm run test:unit'
+    - name: eyes-testcafe
+      script: 'cd packages/eyes-testcafe; npm install; npm run test:unit'
+    - name: sdk-test-kit
+      script: 'cd packages/sdk-test-kit; npm install; npm run test:unit'
+    - name: visual-grid-client
+      script: 'cd packages/visual-grid-client; npm install; npm run test:unit'
+    - name: sdk-fake-eyes-server
+      script: 'cd packages/sdk-fake-eyes-server; npm install; npm run test:it'
+      stage: end-to-end tests
+    - name: eyes-common
+      script: 'cd packages/eyes-common; npm install; npm run test:it'
+    - name: eyes-sdk-core
+      script: 'cd packages/eyes-sdk-core; npm install; npm run test:it'
+    - name: dom-utils
+      script: 'cd packages/dom-utils; npm install; npm run test:it'
+    - name: eyes-appium
+      script: 'cd packages/eyes-appium; npm install; npm run test:it'
+    - name: eyes-images
+      script: 'cd packages/eyes-images; npm install; npm run test:it'
+    - name: eyes-images-browser
+      script: 'cd packages/eyes-images-browser; npm install; npm run test:it'
+    - name: eyes-protractor
+      script: 'cd packages/eyes-protractor; npm install; npm run test:it'
+    - name: eyes-sdk-core-browser
+      script: 'cd packages/eyes-sdk-core-browser; npm install; npm run test:it'
+    - name: eyes-selenium
+      script: 'cd packages/eyes-selenium; npm install; npm run test:it'
+    - name: eyes-selenium-jest-perf
+      script: 'cd packages/eyes-selenium-jest-perf; npm install; npm run test:it'
+    - name: eyes-testcafe
+      script: 'cd packages/eyes-testcafe; npm install; npm run test:it'
+    - name: sdk-test-kit
+      script: 'cd packages/sdk-test-kit; npm install; npm run test:it'
+    - name: visual-grid-client
+      script: 'cd packages/visual-grid-client; npm install; npm run test:it'
 notifications:
   slack:
-    secure: oV4UyGK1CocNQmhUX0878NtkxgsJisAZsJVwZe7mFfsy0MhcRyQuk4Bux7acDr/hsm6zUepCUwEoJJhA7PFTSmqHQyHko4S1JDBAa70U+R4/b+KFUEzH9bEQC1PjLcA5G1uhqT35Q2ppTcjl64HWudVIDNi09+PAyYR/M2MSf29b1Uji0CLOUchpZk13OKeU1M5I/OhJiyq92wHRKb6WiimvsnorvozLJhqAvPgzCOxxy6tSoqSBuPffTUEC0+Qwc4A3lRai8MypppDl5pqM4bTsL0uwXIQEX5VDr0HK0kQwgkHGAFzUjg4JOrCxVxQY9kGwiymJU8JbkkPMc0QIWjV73wVITzSGz2qHMCmpyAky+mLNxYrZ8SbadrO6g7r2bgp0uQOfzB7TktDIT0/gQriw+tovkda5xoyp6YQFHHtIu/KjD2PnCymXJH43kjwcXcRHapG8RJpJjlNinEQ+FxHgU059Kebjk9/Qpnx016Q54PgO/mP1JG8OnslZkvIVPfB20K+VMnAGr3z7xek0bqJcD2439MzQulyL/60nqPqM6JBdL6oh6BxuBpAY7v9Bk+KkLHpwu6DOzmgRn6r0cc75ep2lAKS5HPW2FVFwve9poeQpwkuNna1qoqDM5ezWo7S8WJ1KMT/kaTwprqxcRAKk3iFhaTSny6m4O4qpQqk=
+    secure: >-
+      oV4UyGK1CocNQmhUX0878NtkxgsJisAZsJVwZe7mFfsy0MhcRyQuk4Bux7acDr/hsm6zUepCUwEoJJhA7PFTSmqHQyHko4S1JDBAa70U+R4/b+KFUEzH9bEQC1PjLcA5G1uhqT35Q2ppTcjl64HWudVIDNi09+PAyYR/M2MSf29b1Uji0CLOUchpZk13OKeU1M5I/OhJiyq92wHRKb6WiimvsnorvozLJhqAvPgzCOxxy6tSoqSBuPffTUEC0+Qwc4A3lRai8MypppDl5pqM4bTsL0uwXIQEX5VDr0HK0kQwgkHGAFzUjg4JOrCxVxQY9kGwiymJU8JbkkPMc0QIWjV73wVITzSGz2qHMCmpyAky+mLNxYrZ8SbadrO6g7r2bgp0uQOfzB7TktDIT0/gQriw+tovkda5xoyp6YQFHHtIu/KjD2PnCymXJH43kjwcXcRHapG8RJpJjlNinEQ+FxHgU059Kebjk9/Qpnx016Q54PgO/mP1JG8OnslZkvIVPfB20K+VMnAGr3z7xek0bqJcD2439MzQulyL/60nqPqM6JBdL6oh6BxuBpAY7v9Bk+KkLHpwu6DOzmgRn6r0cc75ep2lAKS5HPW2FVFwve9poeQpwkuNna1qoqDM5ezWo7S8WJ1KMT/kaTwprqxcRAKk3iFhaTSny6m4O4qpQqk=
