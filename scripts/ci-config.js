@@ -17,12 +17,13 @@ function makePackagesList() {
   })
 }
 
+const pkgs = makePackagesList()
+
 function makeJobsForLintStage(stageName = 'lint') {
   return [{stage: stageName, script: `yarn run lint`}]
 }
 
 function makeJobsForUnitStage(stageName = 'unit tests') {
-  const pkgs = makePackagesList()
   let jobs = []
   pkgs.forEach(pkg => {
     if (pkg.scripts.hasOwnProperty('test:unit')) {
@@ -37,7 +38,6 @@ function makeJobsForUnitStage(stageName = 'unit tests') {
 }
 
 function makeJobsForItStage(stageName = 'end-to-end tests') {
-  const pkgs = makePackagesList()
   let jobs = []
   pkgs.forEach(pkg => {
     if (pkg.scripts.hasOwnProperty('test:it')) {
