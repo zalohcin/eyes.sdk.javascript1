@@ -27,11 +27,6 @@ function makeJobsForUnitStage(stageName = 'unit tests') {
         name: pkg.name,
         script: `cd packages/${pkg.folderName}; npm install; npm run test:unit`,
       })
-    } else if (pkg.scripts.hasOwnProperty('test')) {
-      jobs.push({
-        name: pkg.name,
-        script: `cd packages/${pkg.folderName}; npm install; npm run test`,
-      })
     }
   })
   if (jobs.length) jobs[0].stage = stageName
