@@ -1,7 +1,7 @@
 'use strict'
 
 require('chromedriver')
-// eslint-disable-next-line node/no-missing-require
+// eslint-disable-next-line node/no-extraneous-require
 const {Builder, By} = require('selenium-webdriver')
 const {Eyes, ClassicRunner, Target, RectangleSize} = require('../../index')
 
