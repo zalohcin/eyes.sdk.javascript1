@@ -44,26 +44,26 @@ jobs:
     - name: '@applitools/visual-grid-client'
       script: cd packages/visual-grid-client; npm install; npm run lint
     - name: '@applitools/sdk-fake-eyes-server'
-      script: 'cd packages/sdk-fake-eyes-server; npm install; npm run test:unit'
+      script: cd packages/sdk-fake-eyes-server; npm install; npm run test
       stage: unit tests
     - name: '@applitools/eyes-common'
       script: 'cd packages/eyes-common; npm install; npm run test:unit'
     - name: '@applitools/eyes-sdk-core'
       script: 'cd packages/eyes-sdk-core; npm install; npm run test:unit'
     - name: '@applitools/dom-utils'
-      script: 'cd packages/dom-utils; npm install; npm run test:unit'
+      script: cd packages/dom-utils; npm install; npm run test
     - name: '@applitools/eyes-appium'
-      script: 'cd packages/eyes-appium; npm install; npm run test:unit'
+      script: cd packages/eyes-appium; npm install; npm run test
     - name: '@applitools/eyes-images'
-      script: 'cd packages/eyes-images; npm install; npm run test:unit'
+      script: cd packages/eyes-images; npm install; npm run test
     - name: '@applitools/eyes-protractor'
-      script: 'cd packages/eyes-protractor; npm install; npm run test:unit'
+      script: cd packages/eyes-protractor; npm install; npm run test
     - name: '@applitools/eyes-selenium'
       script: 'cd packages/eyes-selenium; npm install; npm run test:unit'
     - name: '@applitools/eyes-testcafe'
       script: 'cd packages/eyes-testcafe; npm install; npm run test:unit'
     - name: '@applitools/sdk-test-kit'
-      script: 'cd packages/sdk-test-kit; npm install; npm run test:unit'
+      script: cd packages/sdk-test-kit; npm install; npm run test
     - name: '@applitools/visual-grid-client'
       script: 'cd packages/visual-grid-client; npm install; npm run test:unit'
     - name: '@applitools/dom-utils'
