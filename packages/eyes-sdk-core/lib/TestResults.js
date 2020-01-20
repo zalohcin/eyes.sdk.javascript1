@@ -246,6 +246,7 @@ class StepInfo {
     this._hasBaselineImage = hasBaselineImage
     this._hasCurrentImage = hasCurrentImage
     this._appUrls = appUrls
+    this._apiUrls = apiUrls
     this._renderId = renderId
   }
 
