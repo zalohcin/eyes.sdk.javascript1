@@ -2,17 +2,11 @@
 
 ## Building
 
-__NOTE: [yarn](https://yarnpkg.com/lang/en/) is a dependency. But there are `npm` scripts to maintain familiarity with the build tooling. The `yarn` equivalent is also provided for reference.
+__NOTE: [yarn](https://yarnpkg.com/lang/en/) is a dependency.
 
 ### Getting Started
 
 Run the following from the root of the repo.
-
-```sh
-> npm i
-```
-
-or
 
 ```sh
 > yarn install
@@ -26,13 +20,6 @@ You can perform a focused installation of a package.
 
 ```sh
 > cd packages/eyes-selenium
-> npm i
-```
-
-or
-
-```sh
-> cd packages/eyes-selenium
 > yarn install --focused
 ```
 
@@ -40,9 +27,17 @@ __NOTE: this will only work for packages that are publicly available on `npm`. F
 
 ### Linting
 
-Linting can be run for all packages from the project root, or from an individual package.
+Just like with `npm` you can run scripts.
+
+Case-in-point, linting can be run this way. Either for all packages from the project root, or from an individual package.
 
 ```sh
-> npm run lint
+> yarn run lint
 ```
 
+or
+
+```sh
+> cd packages/eyes-selenium
+> yarn run lint
+```

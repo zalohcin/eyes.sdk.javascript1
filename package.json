@@ -16,7 +16,6 @@
     "packages/visual-grid-client"
   ],
   "scripts": {
-    "install": "yarn install",
     "lint": "eslint --ext .js .",
     "update-ci-config": "node scripts/ci-config.js"
   },

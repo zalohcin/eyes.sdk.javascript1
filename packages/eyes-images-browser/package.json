@@ -38,7 +38,6 @@
     "uglify-es": "^3.3.9"
   },
   "scripts": {
-    "install": "yarn install --focused",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "browserify": "browserify index.js > dist/eyes-images.browser.js",
     "uglify": "uglifyjs dist/eyes-images.browser.js > dist/eyes-images.browser.min.js",

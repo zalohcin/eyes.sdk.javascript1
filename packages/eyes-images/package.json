@@ -39,7 +39,6 @@
     "mocha": "^6.2.2"
   },
   "scripts": {
-    "install": "yarn install --focused",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\""

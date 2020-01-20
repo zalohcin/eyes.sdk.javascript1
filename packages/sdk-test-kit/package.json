@@ -19,7 +19,6 @@
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "scripts": {
-    "install": "yarn install --focused",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha test/**/*.spec.js",
     "build": "tsc src/coverage-tests/api.ts"

@@ -57,7 +57,6 @@
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "scripts": {
-    "install": "yarn install --focused",
     "lint": "npx eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
