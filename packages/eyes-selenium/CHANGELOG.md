@@ -1,7 +1,8 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+## 4.33.8
+
+- Fix bug when running tests on mobile web [Trello 1415](https://trello.com/c/WUddtk9E)
 
 ## [4.31.24](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-selenium@4.31.23...@applitools/eyes-selenium@4.31.24) (2019-12-02)
 
