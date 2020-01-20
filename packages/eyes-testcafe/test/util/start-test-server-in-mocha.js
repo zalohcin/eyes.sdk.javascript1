@@ -22,4 +22,4 @@ function startTestServer({before, after, port = 0}) {
   }
 }
 
-module.exports = startTestServer // eslint-disable-line node/exports-style
+module.exports = startTestServer

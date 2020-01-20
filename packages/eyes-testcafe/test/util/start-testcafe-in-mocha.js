@@ -2,31 +2,35 @@
 require('dotenv').config()
 const createTestCafe = require('testcafe')
 
-function startTestCafe({beforeEach, afterEach, browser = ['chrome:headless']}) {
+async function startTestCafe() {
   let testCafe, runner
+  let ports = [1337]
+  testCafe = await createTestCafe(null, ...ports)
+  return {runFileInTestCafe, close}
 
-  const isBrowserStack = browser.some(b => b.startsWith('browserstack'))
-  const isApple = browser.some(b => ['safari', 'iPhone', 'iPad'].some(device => b.includes(device)))
-  if (
-    isBrowserStack &&
-    (!process.env.BROWSERSTACK_USERNAME || !process.env.BROWSERSTACK_ACCESS_KEY)
-  ) {
-    throw new Error(
-      'Missing BrowserStack env variables BROWSERSTACK_USERNAME and/or BROWSERSTACK_ACCESS_KEY',
-    )
-  }
-  if (isBrowserStack) {
-    process.env.BROWSERSTACK_USE_AUTOMATE = true
+  async function close() {
+    return testCafe.close()
   }
 
-  beforeEach(async () => {
-    // For ports see: https://www.browserstack.com/question/664
-    let ports = [1337]
-    if (isBrowserStack && isApple) {
-      ports = [8000, 8001]
+  async function runFileInTestCafe(filepath, browser = ['chrome:headless']) {
+    const isBrowserStack = browser.some(b => b.startsWith('browserstack'))
+    if (
+      isBrowserStack &&
+      (!process.env.BROWSERSTACK_USERNAME || !process.env.BROWSERSTACK_ACCESS_KEY)
+    ) {
+      throw new Error(
+        'Missing BrowserStack env variables BROWSERSTACK_USERNAME and/or BROWSERSTACK_ACCESS_KEY',
+      )
+    }
+    if (isBrowserStack) {
+      process.env.BROWSERSTACK_USE_AUTOMATE = true
     }
 
-    testCafe = await createTestCafe(null, ...ports)
+    const isSaucelabs = browser.some(b => b.startsWith('saucelabs'))
+    if (isSaucelabs && (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY)) {
+      throw new Error('Missing SauceLabs env variables SAUCE_USERNAME and/or SAUCE_ACCESS_KEY')
+    }
+
     if (!process.env.LIVE) {
       runner = testCafe.createRunner()
       runner.screenshots('logs/').browsers(browser)
@@ -34,17 +38,9 @@ function startTestCafe({beforeEach, afterEach, browser = ['chrome:headless']}) {
       runner = testCafe.createLiveModeRunner()
       runner.screenshots('logs/').browsers('chrome')
     }
-  })
 
-  afterEach(async () => {
-    await testCafe.close()
-  })
-
-  return {runFileInTestCafe}
-
-  async function runFileInTestCafe(filepath) {
     return runner.src(filepath).run()
   }
 }
 
-module.exports = startTestCafe // eslint-disable-line node/exports-style
+module.exports = startTestCafe

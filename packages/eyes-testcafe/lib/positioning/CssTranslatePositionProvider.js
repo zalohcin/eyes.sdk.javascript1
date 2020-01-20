@@ -4,7 +4,7 @@ const {ArgumentGuard} = require('@applitools/eyes-common')
 const {PositionProvider} = require('@applitools/eyes-sdk-core')
 
 const {EyesTestcafeUtils} = require('../EyesTestcafeUtils')
-const makeFixImageMarkPosition = require('./fixImageMarkPosition')
+const fixImageMarkScript = require('./fixImageMarkScript')
 const {CssTranslatePositionMemento} = require('./CssTranslatePositionMemento')
 
 /**
@@ -32,10 +32,6 @@ class CssTranslatePositionProvider extends PositionProvider {
     this._lastSetPosition = undefined
 
     this._logger.verbose('creating CssTranslatePositionProvider')
-    this._fixImageMarkPosition = makeFixImageMarkPosition({
-      executor: this._executor,
-      logger: this._logger,
-    })
   }
 
   /**
@@ -58,9 +54,9 @@ class CssTranslatePositionProvider extends PositionProvider {
       translate = ''
     }
 
-    await this._fixImageMarkPosition(-location.getX(), -location.getY())
+    const fixMarkScript = fixImageMarkScript(-location.getX(), -location.getY())
     await this._executor.executeScript(
-      `arguments[0].style.transform = '${translate}';`,
+      `${fixMarkScript}; arguments[0].style.transform = '${translate}';`,
       this._scrollRootElement,
     )
 
@@ -111,9 +107,9 @@ class CssTranslatePositionProvider extends PositionProvider {
     if (transform === 'translate(0px, 0px)') {
       transform = ''
     }
-    const script = `arguments[0].style.transform = '${transform}';`
+    const fixMarkScript = fixImageMarkScript(0, 0)
+    const script = `${fixMarkScript}; arguments[0].style.transform = '${transform}';`
 
-    await this._fixImageMarkPosition(0, 0)
     await this._executor.executeScript(script, this._scrollRootElement)
     this._logger.verbose('Transform (position) restored.')
     this._lastSetPosition = state.getPosition()

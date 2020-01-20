@@ -210,6 +210,26 @@ class EyesTestCafe extends Eyes {
     }
   }
 
+  async checkWindowBase(...args) {
+    try {
+      const result = await Eyes.prototype.checkWindowBase.call(this, ...args)
+      return result
+    } catch (e) {
+      this.abort()
+      throw e
+    }
+  }
+
+  async checkSingleWindowBase(...args) {
+    try {
+      const result = await Eyes.prototype.checkSingleWindowBase.call(this, ...args)
+      return result
+    } catch (e) {
+      this.abort()
+      throw e
+    }
+  }
+
   // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * @inheritDoc

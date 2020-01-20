@@ -262,7 +262,7 @@ class EyesWebDriver {
     const filepath = path.resolve(`${SCREENSHOTS_PREFIX}-${guid}`, SCREENSHOTS_FILENAME)
     const screenshotPath = await this._driver.takeScreenshot(filepath)
     if (!screenshotPath) {
-      throw new Error('Failed to get Testcafe screenshot')
+      throw new Error('Failed to get screenshot')
     }
 
     this._logger.log('screenshot created at', screenshotPath)

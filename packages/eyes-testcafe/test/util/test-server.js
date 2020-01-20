@@ -4,7 +4,6 @@ const {promisify: p} = require('util')
 const path = require('path')
 const express = require('express')
 
-// eslint-disable-next-line node/exports-style
 module.exports = ({port = 0} = {port: 0}) => {
   const app = express()
   app.use('/', express.static(path.resolve(__dirname, '../fixtures')))
