@@ -146,6 +146,10 @@ class EyesWebDriver {
     return this._executor.executeScript(script, ...varArgs)
   }
 
+  async executeClientFunction(opts) {
+    return this._executor.executeClientFunction(opts)
+  }
+
   /**
    * @inheritDoc
    */
@@ -276,7 +280,7 @@ class EyesWebDriver {
   }
 
   async getViewport() {
-    return this._executor.executeScript(getViewport)
+    return this._executor.executeClientFunction({script: getViewport, scriptName: 'getViewport'})
   }
 
   async resizeWindow(width, height) {

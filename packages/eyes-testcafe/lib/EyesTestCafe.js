@@ -43,34 +43,6 @@ const {ScrollPositionProvider} = require('./positioning/ScrollPositionProvider')
 const {ElementPositionProvider} = require('./positioning/ElementPositionProvider')
 const {CssTranslatePositionProvider} = require('./positioning/CssTranslatePositionProvider')
 const {Eyes} = require('./Eyes')
-const GEN_XPATH_SCRIPT = `function genXpath(el) {
-  if (!el.ownerDocument) return ''; // this is the document node
-  let xpath = '',
-      currEl = el,
-      doc = el.ownerDocument,
-      frameElement = doc.defaultView.frameElement,
-      index;
-  while (currEl !== doc) {
-    index = window.Array.prototype.filter.call(currEl.parentNode.childNodes, node => node.tagName === currEl.tagName).indexOf(currEl) + 1
-    xpath = currEl.tagName + '[' + index + ']/' + xpath;
-    currEl = currEl.parentNode;
-  }
-  if (frameElement) {
-    xpath = genXpath(frameElement) + ',' + xpath;
-  }
-  return xpath.replace(/\\/$/, '');
-}`
-
-const ELEMENTS_BY_XPATH_SCRIPT = `xpath => {
-  const iterator = document.evaluate(xpath, document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
-  const items = [];
-  let item = iterator.iterateNext();
-  while (item) {
-      items.push(item);
-      item = iterator.iterateNext();
-  }
-  return items;
-}`
 
 /**
  * The main API gateway for the SDK.
@@ -207,26 +179,6 @@ class EyesTestCafe extends Eyes {
       return await this.check(name, checkSettings)
     } finally {
       this.checkWindowBase = originalCheckWindowBase
-    }
-  }
-
-  async checkWindowBase(...args) {
-    try {
-      const result = await Eyes.prototype.checkWindowBase.call(this, ...args)
-      return result
-    } catch (e) {
-      this.abort()
-      throw e
-    }
-  }
-
-  async checkSingleWindowBase(...args) {
-    try {
-      const result = await Eyes.prototype.checkSingleWindowBase.call(this, ...args)
-      return result
-    } catch (e) {
-      this.abort()
-      throw e
     }
   }
 
@@ -1127,12 +1079,41 @@ class EyesTestCafe extends Eyes {
     let activeElementXpath = null
     if (this._configuration.getHideCaret()) {
       try {
-        activeElementXpath = await this._driver.executeScript(
-          `document.activeElement && document.activeElement.blur();
-           return (${GEN_XPATH_SCRIPT})(document.activeElement);`,
-        )
+        activeElementXpath = await this._driver.executeClientFunction({
+          script: () => {
+            function getXpath(element) {
+              // this is the document node
+              if (!element.ownerDocument) return ''
+
+              let xpath = '',
+                currEl = element,
+                doc = element.ownerDocument,
+                frameElement = doc.defaultView.frameElement,
+                index
+              while (currEl !== doc) {
+                index =
+                  // eslint-disable-next-line no-undef
+                  window.Array.prototype.filter
+                    .call(currEl.parentNode.childNodes, node => node.tagName === currEl.tagName)
+                    .indexOf(currEl) + 1
+                xpath = currEl.tagName + '[' + index + ']/' + xpath
+                currEl = currEl.parentNode
+              }
+              if (frameElement) {
+                xpath = getXpath(frameElement) + ',' + xpath
+              }
+              return xpath.replace(/\/$/, '')
+            }
+
+            // eslint-disable-next-line no-undef
+            const doc = document
+            doc.activeElement && doc.activeElement.blur()
+            return getXpath(doc.activeElement)
+          },
+          scriptName: 'getXpath',
+        })
       } catch (err) {
-        this._logger.verbose(`WARNING: Cannot hide caret! ${err}`)
+        this._logger.verbose(`WARNING: Cannot hide caret! ${JSON.stringify(err)}`)
       }
     }
 
@@ -1247,10 +1228,34 @@ class EyesTestCafe extends Eyes {
 
     if (this._configuration.getHideCaret() && activeElementXpath != null) {
       try {
-        await this._driver.executeScript(
-          `const activeElement = (${ELEMENTS_BY_XPATH_SCRIPT})(arguments[0]); activeElement[0].focus();`,
-          activeElementXpath,
-        )
+        await this._driver.executeClientFunction({
+          script: () => {
+            const elementsByXpath = xpath => {
+              // eslint-disable-next-line no-undef
+              const doc = document
+              const iterator = doc.evaluate(
+                xpath,
+                doc,
+                null,
+                // eslint-disable-next-line no-undef
+                XPathResult.UNORDERED_NODE_ITERATOR_TYPE,
+                null,
+              )
+              const items = []
+              let item = iterator.iterateNext()
+              while (item) {
+                items.push(item)
+                item = iterator.iterateNext()
+              }
+              return items
+            }
+
+            const activeElement = elementsByXpath(activeElementXpath)
+            activeElement[0].focus()
+          },
+          scriptName: 'focusElement',
+          args: {activeElementXpath},
+        })
       } catch (err) {
         this._logger.verbose(
           `WARNING: Could not return focus to active element! ${JSON.stringify(err)}`,
