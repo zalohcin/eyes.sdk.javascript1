@@ -51,10 +51,16 @@ test('Play', async t => {
 //   // console.log('XXXXXXXXX: r', r2)
 
 //   await t.resizeWindow(600, 500)
-//   const fixImageMarkScript = require('../../lib/positioning/fixImageMarkScript')
-//   const fixMarkScript = fixImageMarkScript(-600, 0)
-//   const script = `${fixMarkScript}; document.documentElement.style.transform = 'translate(-600px, 0px)';`
-//   await t.eval(new Function(script))
+//   const transformElement = require('../../lib/positioning/transformElement')
+//   await t.eval(transformElement, {
+//     dependencies: {
+//       element: () => document.documentElement,
+//       transformLeft: -600,
+//       transformTop: 0,
+//       markRightMargin: 10,
+//       originalTransform: undefined,
+//     },
+//   })
 
 //   const name = new Date().toISOString().replace(/:/g, '_')
 //   const image = await t.takeScreenshot(`./render-${name}.png`)
