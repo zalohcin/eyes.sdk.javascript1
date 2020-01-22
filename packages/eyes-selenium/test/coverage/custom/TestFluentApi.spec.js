@@ -12,19 +12,6 @@ describe(appName, () => {
     await webDriver.quit()
   })
 
-  let longIframes = [
-    {
-      clickableId: 'hidden_click',
-      IframeSelector: '#modal3 iframe',
-      title: 'TestCheckLongOutOfBoundsIFrameModal',
-    },
-    {
-      clickableId: 'stretched',
-      IframeSelector: '#modal2 iframe',
-      title: 'TestCheckLongIFrameModal',
-    },
-  ]
-
   describe(`Test`, () => {
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
@@ -49,20 +36,32 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    longIframes.forEach(settings => {
-      it(`${settings.title}`, async () => {
-        let driver = await eyes.open(webDriver, appName, `${settings.title}`, {
-          width: 700,
-          height: 460,
-        })
-        await driver.findElement(By.id(settings.clickableId)).click()
-        let frame = await driver.findElement(By.css(settings.IframeSelector))
-        await driver.switchTo().frame(frame)
-        let element = await driver.findElement(By.css('html'))
-        let rect = await element.getRect()
-        await performChecksOnLongRegion(rect, eyes)
-        await eyes.close()
+    it(`TestCheckLongIFrameModal`, async () => {
+      let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal`, {
+        width: 700,
+        height: 460,
       })
+      await driver.findElement(By.id('stretched')).click()
+      let frame = await driver.findElement(By.css('#modal2 iframe'))
+      await driver.switchTo().frame(frame)
+      let element = await driver.findElement(By.css('html'))
+      let rect = await element.getRect()
+      await performChecksOnLongRegion(rect, eyes)
+      await eyes.close()
+    })
+
+    it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
+      let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal`, {
+        width: 700,
+        height: 460,
+      })
+      await driver.findElement(By.id('hidden_click')).click()
+      let frame = await driver.findElement(By.css('#modal3 iframe'))
+      await driver.switchTo().frame(frame)
+      let element = await driver.findElement(By.css('html'))
+      let rect = await element.getRect()
+      await performChecksOnLongRegion(rect, eyes)
+      await eyes.close()
     })
   })
 
@@ -90,20 +89,32 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    longIframes.forEach(settings => {
-      it(`${settings.title}`, async () => {
-        let driver = await eyes.open(webDriver, appName, `${settings.title}_SCROLL`, {
-          width: 700,
-          height: 460,
-        })
-        await driver.findElement(By.id(settings.clickableId)).click()
-        let frame = await driver.findElement(By.css(settings.IframeSelector))
-        await driver.switchTo().frame(frame)
-        let element = await driver.findElement(By.css('html'))
-        let rect = await element.getRect()
-        await performChecksOnLongRegion(rect, eyes)
-        await eyes.close()
+    it(`TestCheckLongIFrameModal`, async () => {
+      let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal`, {
+        width: 700,
+        height: 460,
       })
+      await driver.findElement(By.id('stretched')).click()
+      let frame = await driver.findElement(By.css('#modal2 iframe'))
+      await driver.switchTo().frame(frame)
+      let element = await driver.findElement(By.css('html'))
+      let rect = await element.getRect()
+      await performChecksOnLongRegion(rect, eyes)
+      await eyes.close()
+    })
+
+    it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
+      let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal`, {
+        width: 700,
+        height: 460,
+      })
+      await driver.findElement(By.id('hidden_click')).click()
+      let frame = await driver.findElement(By.css('#modal3 iframe'))
+      await driver.switchTo().frame(frame)
+      let element = await driver.findElement(By.css('html'))
+      let rect = await element.getRect()
+      await performChecksOnLongRegion(rect, eyes)
+      await eyes.close()
     })
   })
 
@@ -131,20 +142,32 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    longIframes.forEach(settings => {
-      it(`${settings.title}`, async () => {
-        let driver = await eyes.open(webDriver, appName, `${settings.title}_VG`, {
-          width: 700,
-          height: 460,
-        })
-        await driver.findElement(By.id(settings.clickableId)).click()
-        let frame = await driver.findElement(By.css(settings.IframeSelector))
-        await driver.switchTo().frame(frame)
-        let element = await driver.findElement(By.css('html'))
-        let rect = await element.getRect()
-        await performChecksOnLongRegion(rect, eyes)
-        await eyes.close()
+    it(`TestCheckLongIFrameModal`, async () => {
+      let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal`, {
+        width: 700,
+        height: 460,
       })
+      await driver.findElement(By.id('stretched')).click()
+      let frame = await driver.findElement(By.css('#modal2 iframe'))
+      await driver.switchTo().frame(frame)
+      let element = await driver.findElement(By.css('html'))
+      let rect = await element.getRect()
+      await performChecksOnLongRegion(rect, eyes)
+      await eyes.close()
+    })
+
+    it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
+      let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal`, {
+        width: 700,
+        height: 460,
+      })
+      await driver.findElement(By.id('hidden_click')).click()
+      let frame = await driver.findElement(By.css('#modal3 iframe'))
+      await driver.switchTo().frame(frame)
+      let element = await driver.findElement(By.css('html'))
+      let rect = await element.getRect()
+      await performChecksOnLongRegion(rect, eyes)
+      await eyes.close()
     })
   })
 })
