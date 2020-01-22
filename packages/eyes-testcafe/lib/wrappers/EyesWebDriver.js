@@ -16,7 +16,7 @@ const {EyesTargetLocator} = require('./EyesTargetLocator')
 const {TestCafeExecutor} = require('../TestCafeExecutor')
 
 const SCREENSHOTS_PREFIX = '/.applitools'
-const SCREENSHOTS_FILENAME = 'screenshot'
+const SCREENSHOTS_FILENAME = 'screenshot.png'
 
 const getViewport = () => ({
   // eslint-disable-next-line no-undef

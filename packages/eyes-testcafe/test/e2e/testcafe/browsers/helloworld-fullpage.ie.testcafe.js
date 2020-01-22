@@ -7,9 +7,11 @@ const {Eyes, Target, ConsoleLogHandler} = require('../../../../index')
 
 fixture`full page IE`.page`http://localhost:5556/full-page.html`
 
-test('full page IE', async t => {
+test('full page css stiching IE', async t => {
   const eyes = new Eyes()
-  eyes.setConfiguration(new Configuration({viewportSize: {width: 600, height: 500}}))
+  eyes.setConfiguration(
+    new Configuration({stitchMode: StitchMode.CSS, viewportSize: {width: 600, height: 500}}),
+  )
   if (process.env.APPLITOOLS_SHOW_LOGS || process.env.APPLITOOLS_DEBUG_TEST) {
     eyes.setLogHandler(new ConsoleLogHandler(true))
   }
@@ -18,11 +20,9 @@ test('full page IE', async t => {
   await eyes.close()
 })
 
-test('full page css stiching IE', async t => {
+test('full page IE', async t => {
   const eyes = new Eyes()
-  eyes.setConfiguration(
-    new Configuration({stitchMode: StitchMode.CSS, viewportSize: {width: 600, height: 500}}),
-  )
+  eyes.setConfiguration(new Configuration({viewportSize: {width: 600, height: 500}}))
   if (process.env.APPLITOOLS_SHOW_LOGS || process.env.APPLITOOLS_DEBUG_TEST) {
     eyes.setLogHandler(new ConsoleLogHandler(true))
   }

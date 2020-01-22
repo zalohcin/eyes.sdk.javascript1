@@ -15,17 +15,18 @@ describe('Eyes TestCafe e2e', () => {
 
   after(async () => close())
 
-  it('runs all e2e (chrome) tests in folder "testcafe"', async () => {
+  it('runs all e2e (chrome) tests', async () => {
     const failedCount = await runFileInTestCafe(path.resolve(__dirname, 'testcafe/*.testcafe.js'))
     expect(failedCount).to.equal(0)
   })
 
   it('runs all e2e Safari tests', async () => {
     const browser = [
-      ['saucelabs:Safari@latest:macOS 10.14'],
+      ['saucelabs:Safari@13.0:macOS 10.13'],
+      // ['saucelabs:Safari@latest:macOS 10.14'], latest
       ['browserstack:safari@13.0:OS X Catalina'],
       ['browserstack:safari@12.1:OS X Mojave'],
-    ][1]
+    ][0]
     const failedCount = await runFileInTestCafe(
       path.resolve(__dirname, 'testcafe/browsers/*.safari.testcafe.js'),
       browser,
@@ -34,7 +35,11 @@ describe('Eyes TestCafe e2e', () => {
   })
 
   it('runs all e2e Edge tests', async () => {
-    const browser = [['saucelabs:MicrosoftEdge@latest:Windows 10'], ['browserstack:edge']][1]
+    const browser = [
+      ['saucelabs:MicrosoftEdge@79.0:macOS 10.13'],
+      // ['saucelabs:MicrosoftEdge@latest:Windows 10'], latest
+      ['browserstack:edge'],
+    ][0]
     const failedCount = await runFileInTestCafe(
       path.resolve(__dirname, 'testcafe/browsers/*.edge.testcafe.js'),
       browser,
