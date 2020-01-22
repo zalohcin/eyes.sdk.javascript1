@@ -65,7 +65,8 @@
     "test:coverage": "coverage-tests run --path test/coverage/index.js",
     "test:coverage:nuke": "coverage-tests nuke",
     "test:coverage:doctor": "coverage-tests doctor",
-    "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\""
+    "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
+    "postpublish": "git push; git push --tags"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

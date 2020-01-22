@@ -4,7 +4,8 @@
   "version": "4.5.106",
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
-    "test:perf": "jest"
+    "test:perf": "jest",
+    "postpublish": "git push; git push --tags"
   },
   "jest": {
     "extraGlobals": [

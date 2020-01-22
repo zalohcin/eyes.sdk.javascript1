@@ -50,7 +50,8 @@
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
-    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\""
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
+    "postpublish": "git push; git push --tags"
   },
   "bin": {
     "eyes-check-network": "./bin/runCheckNetwork.js"

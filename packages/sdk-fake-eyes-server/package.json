@@ -25,7 +25,8 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
-    "test": "mocha --no-timeouts \"test/**/*.test.js\""
+    "test": "mocha --no-timeouts \"test/**/*.test.js\"",
+    "postpublish": "git push; git push --tags"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
