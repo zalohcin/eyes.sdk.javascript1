@@ -19,17 +19,18 @@ function makePackagesList() {
 
 const pkgs = makePackagesList()
 
-function makeJobsForLintStage(stageName = 'lint') {
-  return [{stage: stageName, script: `yarn run lint`}]
+function makeStageWithSingleJob(name, script) {
+  return {stage: name, script}
 }
 
-function makeJobsForUnitStage(stageName = 'unit tests') {
+function makeStageWithJobsForEachPackage(stageName, scriptName, script) {
   let jobs = []
   pkgs.forEach(pkg => {
-    if (pkg.scripts.hasOwnProperty('test:unit')) {
+    const _script = script(pkg.path)
+    if (pkg.scripts.hasOwnProperty(scriptName)) {
       jobs.push({
         name: pkg.name,
-        script: `cd ${pkg.path}; yarn run test:unit`,
+        script: _script,
       })
     }
   })
@@ -37,18 +38,24 @@ function makeJobsForUnitStage(stageName = 'unit tests') {
   return jobs
 }
 
-function makeJobsForItStage(stageName = 'end-to-end tests') {
-  let jobs = []
-  pkgs.forEach(pkg => {
-    if (pkg.scripts.hasOwnProperty('test:it')) {
-      jobs.push({
-        name: pkg.name,
-        script: `cd ${pkg.path}; yarn run test:it`,
-      })
-    }
-  })
-  if (jobs.length) jobs[0].stage = stageName
-  return jobs
+function makeJobsForLintStage() {
+  return [makeStageWithSingleJob('lint', 'yarn run lint')]
+}
+
+function makeJobsForUnitStage() {
+  return makeStageWithJobsForEachPackage(
+    'unit tests',
+    'test:unit',
+    pkgPath => `cd ${pkgPath}; yarn run test:unit`,
+  )
+}
+
+function makeJobsForItStage() {
+  return makeStageWithJobsForEachPackage(
+    'end-to-end tests',
+    'test:it',
+    pkgPath => `cd ${pkgPath}; yarn run test:it`,
+  )
 }
 
 config.jobs = {
