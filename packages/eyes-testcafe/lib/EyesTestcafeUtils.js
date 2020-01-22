@@ -7,11 +7,6 @@ const {EyesDriverOperationError} = require('./errors/EyesDriverOperationError')
 const {ImageOrientationHandler} = require('./ImageOrientationHandler')
 const {JavascriptHandler} = require('./JavascriptHandler')
 
-const JS_GET_ENTIRE_PAGE_SIZE =
-  'var width = Math.max(arguments[0].clientWidth, arguments[0].scrollWidth);' +
-  'var height = Math.max(arguments[0].clientHeight, arguments[0].scrollHeight);' +
-  'return [width, height];'
-
 let imageOrientationHandler = new (class ImageOrientationHandlerImpl extends ImageOrientationHandler {
   /**
    * @inheritDoc
@@ -287,10 +282,21 @@ class EyesTestcafeUtils extends EyesJsBrowserUtils {
    */
   static async getEntireElementSize(executor, element) {
     try {
-      const result = await executor.executeScript(JS_GET_ENTIRE_PAGE_SIZE, element)
+      const result = await executor.executeClientFunction({
+        script: () => {
+          const element = _element()
+          return [
+            Math.max(element.clientWidth, element.scrollWidth),
+            Math.max(element.clientHeight, element.scrollHeight),
+          ]
+        },
+        scriptName: 'getEntireElementSize',
+        args: {_element: element},
+      })
+
       return new RectangleSize(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0)
     } catch (err) {
-      throw new EyesDriverOperationError('Failed to extract entire size!', err)
+      throw new EyesDriverOperationError(`Failed to extract entire size! ${JSON.stringify(err)}`)
     }
   }
 
@@ -336,7 +342,7 @@ class EyesTestcafeUtils extends EyesJsBrowserUtils {
    */
   static async setBrowserSize(logger, driver, requiredViewportSize) {
     const SLEEP = 1000
-    const RETRIES = 3
+    const RETRIES = 1
     return setBrowserSizeLoop(logger, driver, requiredViewportSize, SLEEP, RETRIES)
   }
 

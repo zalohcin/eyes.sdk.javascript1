@@ -189,9 +189,9 @@ class FullPageCaptureAlgorithm {
     let partImage
     for (const partRegion of imageParts) {
       // Skipping screenshot for 0,0 (already taken)
-      // if (partRegion.getLeft() === 0 && partRegion.getTop() === 0) {
-      //   continue;
-      // }
+      if (partRegion.getLeft() === 0 && partRegion.getTop() === 0) {
+        continue
+      }
 
       this._logger.verbose(`Taking screenshot for ${partRegion}`)
       // Set the position to the part's top/left.

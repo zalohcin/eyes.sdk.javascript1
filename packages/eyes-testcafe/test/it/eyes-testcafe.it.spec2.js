@@ -7,7 +7,11 @@ const startTestCafe = require('../util/start-testcafe-in-mocha')
 const startTestServer = require('../util/start-test-server-in-mocha')
 
 describe('Eyes TestCafe Integration', () => {
-  const {runFileInTestCafe} = startTestCafe({beforeEach, afterEach})
+  let runFileInTestCafe, close
+  before(async () => {
+    ;({runFileInTestCafe, close} = await startTestCafe())
+  })
+  after(async () => close())
   startTestServer({after, before, port: 5555})
 
   it('runs all integration tests in folder "testcafe"', async () => {

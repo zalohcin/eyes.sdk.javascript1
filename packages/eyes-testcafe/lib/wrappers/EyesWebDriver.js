@@ -16,7 +16,7 @@ const {EyesTargetLocator} = require('./EyesTargetLocator')
 const {TestCafeExecutor} = require('../TestCafeExecutor')
 
 const SCREENSHOTS_PREFIX = '/.applitools'
-const SCREENSHOTS_FILENAME = 'screenshot'
+const SCREENSHOTS_FILENAME = 'screenshot.png'
 
 const getViewport = () => ({
   // eslint-disable-next-line no-undef
@@ -146,6 +146,10 @@ class EyesWebDriver {
     return this._executor.executeScript(script, ...varArgs)
   }
 
+  async executeClientFunction(opts) {
+    return this._executor.executeClientFunction(opts)
+  }
+
   /**
    * @inheritDoc
    */
@@ -262,7 +266,7 @@ class EyesWebDriver {
     const filepath = path.resolve(`${SCREENSHOTS_PREFIX}-${guid}`, SCREENSHOTS_FILENAME)
     const screenshotPath = await this._driver.takeScreenshot(filepath)
     if (!screenshotPath) {
-      throw new Error('Failed to get Testcafe screenshot')
+      throw new Error('Failed to get screenshot')
     }
 
     this._logger.log('screenshot created at', screenshotPath)
@@ -276,7 +280,7 @@ class EyesWebDriver {
   }
 
   async getViewport() {
-    return this._executor.executeScript(getViewport)
+    return this._executor.executeClientFunction({script: getViewport, scriptName: 'getViewport'})
   }
 
   async resizeWindow(width, height) {

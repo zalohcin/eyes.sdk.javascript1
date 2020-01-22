@@ -13,43 +13,33 @@ const {
 } = require('@applitools/eyes-common')
 // const {MouseTrigger} = require('@applitools/eyes-sdk-core')
 
-const JS_GET_SCROLL_SIZE = 'return [arguments[0].scrollWidth, arguments[0].scrollHeight];'
-
-const JS_GET_CLIENT_SIZE = 'return [arguments[0].clientWidth, arguments[0].clientHeight];'
-
 const JS_GET_COMPUTED_STYLE_FN =
   'function getCmpStyle(el, p) { return window.getComputedStyle ? window.getComputedStyle(el, null).getPropertyValue(p) : (el.currentStyle ? el.currentStyle[p] : null); };'
 
-/**
- * @param {string} styleProp
- * @return {string}
- */
 const JS_GET_COMPUTED_STYLE_FORMATTED_STR = styleProp =>
   `${JS_GET_COMPUTED_STYLE_FN}return getCmpStyle(arguments[0], '${styleProp}');`
 
-const JS_GET_SCROLL_LOCATION = 'return [arguments[0].scrollLeft, arguments[0].scrollTop];'
-
-const JS_GET_OVERFLOW = 'return arguments[0].style.overflow;'
-
-const JS_GET_BORDER_WIDTHS_ARR =
-  'var retVal = retVal || [];' +
-  'if (window.getComputedStyle) { ' +
-  'var computedStyle = window.getComputedStyle(elem, null);' +
-  'retVal.push(computedStyle.getPropertyValue("border-left-width"));' +
-  'retVal.push(computedStyle.getPropertyValue("border-top-width"));' +
-  'retVal.push(computedStyle.getPropertyValue("border-right-width")); ' +
-  'retVal.push(computedStyle.getPropertyValue("border-bottom-width"));' +
-  '} else if (elem.currentStyle) { ' +
-  'retVal.push(elem.currentStyle["border-left-width"]);' +
-  'retVal.push(elem.currentStyle["border-top-width"]);' +
-  'retVal.push(elem.currentStyle["border-right-width"]);' +
-  'retVal.push(elem.currentStyle["border-bottom-width"]);' +
-  '} else { ' +
-  'retVal.push(0,0,0,0);' +
-  '}'
-
-const JS_GET_SIZE_AND_BORDER_WIDTHS = `${'var elem = arguments[0]; ' +
-  'var retVal = [elem.clientWidth, elem.clientHeight]; '}${JS_GET_BORDER_WIDTHS_ARR}return retVal;`
+const getSizeAndBorderWidth = () => {
+  const element = _element()
+  let retVal = [element.clientWidth, element.clientHeight]
+  // eslint-disable-next-line no-undef
+  const win = window
+  if (win.getComputedStyle) {
+    var computedStyle = win.getComputedStyle(element, null)
+    retVal.push(computedStyle.getPropertyValue('border-left-width'))
+    retVal.push(computedStyle.getPropertyValue('border-top-width'))
+    retVal.push(computedStyle.getPropertyValue('border-right-width'))
+    retVal.push(computedStyle.getPropertyValue('border-bottom-width'))
+  } else if (element.currentStyle) {
+    retVal.push(element.currentStyle['border-left-width'])
+    retVal.push(element.currentStyle['border-top-width'])
+    retVal.push(element.currentStyle['border-right-width'])
+    retVal.push(element.currentStyle['border-bottom-width'])
+  } else {
+    retVal.push(0, 0, 0, 0)
+  }
+  return retVal
+}
 
 /**
  * Wraps a Testcafe Web Element.
@@ -150,7 +140,7 @@ class EyesWebElement {
    * @return {Promise<number>} - The value of the scrollLeft property of the element.
    */
   async getScrollLeft() {
-    const result = await this.executeScript(JS_GET_SCROLL_LOCATION)
+    const result = await this._getScrollLocation()
     return Math.ceil(result[0]) || 0
   }
 
@@ -160,7 +150,7 @@ class EyesWebElement {
    * @return {Promise<number>} - The value of the scrollTop property of the element.
    */
   async getScrollTop() {
-    const result = await this.executeScript(JS_GET_SCROLL_LOCATION)
+    const result = await this._getScrollLocation()
     return Math.ceil(result[1]) || 0
   }
 
@@ -168,8 +158,15 @@ class EyesWebElement {
    * @return {Promise<Location>} - The value of the `scrollLeft` and `scrollTop` property of the element.
    */
   async getScrollLocation() {
-    const result = await this.executeScript(JS_GET_SCROLL_LOCATION)
+    const result = await this._getScrollLocation()
     return new Location(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0)
+  }
+
+  async _getScrollLocation() {
+    return this.executeClientFunction({
+      script: () => [_element().scrollLeft, _element().scrollTop],
+      scriptName: 'getScrollLocation',
+    })
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -178,7 +175,7 @@ class EyesWebElement {
    * @return {Promise<number>} - The value of the scrollWidth property of the element.
    */
   async getScrollWidth() {
-    const result = await this.executeScript(JS_GET_SCROLL_SIZE)
+    const result = await this._getScrollSize()
     return Math.ceil(result[0]) || 0
   }
 
@@ -188,7 +185,7 @@ class EyesWebElement {
    * @return {Promise<number>} - The value of the scrollHeight property of the element.
    */
   async getScrollHeight() {
-    const result = await this.executeScript(JS_GET_SCROLL_SIZE)
+    const result = await this._getScrollSize()
     return Math.ceil(result[1]) || 0
   }
 
@@ -196,8 +193,15 @@ class EyesWebElement {
    * @return {Promise<RectangleSize>} - The value of the `scrollWidth` and `scrollHeight` property of the element.
    */
   async getScrollSize() {
-    const result = await this.executeScript(JS_GET_SCROLL_SIZE)
+    const result = await this._getScrollSize()
     return new RectangleSize(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0)
+  }
+
+  async _getScrollSize() {
+    return this.executeClientFunction({
+      script: () => [_element().scrollWidth, _element().scrollHeight],
+      scriptName: 'getScrollSize',
+    })
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -206,7 +210,7 @@ class EyesWebElement {
    * @return {Promise<number>}
    */
   async getClientWidth() {
-    const result = await this.executeScript(JS_GET_CLIENT_SIZE)
+    const result = await this._getClientSize()
     return Math.ceil(result[0]) || 0
   }
 
@@ -216,7 +220,7 @@ class EyesWebElement {
    * @return {Promise<number>}
    */
   async getClientHeight() {
-    const result = await this.executeScript(JS_GET_CLIENT_SIZE)
+    const result = await this._getClientSize()
     return Math.ceil(result[1]) || 0
   }
 
@@ -224,8 +228,15 @@ class EyesWebElement {
    * @return {Promise<RectangleSize>} - The value of the `clientWidth` and `clientHeight` property of the element.
    */
   async getClientSize() {
-    const result = await this.executeScript(JS_GET_CLIENT_SIZE)
+    const result = await this._getClientSize()
     return new RectangleSize(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0)
+  }
+
+  async _getClientSize() {
+    return this.executeClientFunction({
+      script: () => [_element().clientWidth, _element().clientHeight],
+      scriptName: 'getClientSize',
+    })
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -264,7 +275,10 @@ class EyesWebElement {
    * @return {Promise<{top: number, left: number, bottom: number, width: number, right: number, height: number}>}
    */
   async getSizeAndBorders() {
-    const result = await this.executeScript(JS_GET_SIZE_AND_BORDER_WIDTHS)
+    const result = await this.executeClientFunction({
+      script: getSizeAndBorderWidth,
+      scriptName: 'getSizeAndBorderWidth',
+    })
     return {
       width: Math.ceil(result[0]),
       height: Math.ceil(result[1]),
@@ -281,18 +295,32 @@ class EyesWebElement {
    * @param {Location} location - The location to scroll to.
    * @return {Promise<Location>} - the current location after scroll.
    */
-  scrollTo(location) {
+  async scrollTo(location) {
     try {
-      const script = `
-        if (arguments[0] === document.documentElement && window.scrollTo) {
-          window.scrollTo(${location.getX()}, ${location.getY()});
-        } else {
-          arguments[0].scrollLeft=${location.getX()}; arguments[0].scrollTop=${location.getY()};
-        }
-        return [arguments[0].scrollLeft, arguments[0].scrollTop];
-      `
+      const script = () => {
+        // eslint-disable-next-line no-undef
+        const win = window
+        // eslint-disable-next-line no-undef
+        const _left = left
+        // eslint-disable-next-line no-undef
+        const _top = top
 
-      const position = this.executeScript(script)
+        const elem = _element()
+        // eslint-disable-next-line no-undef
+        if (elem === document.documentElement && win.scrollTo) {
+          win.scrollTo(_left, _top)
+        } else {
+          elem.scrollLeft = _left
+          elem.scrollTop = _top
+        }
+        return [elem.scrollLeft, elem.scrollTop]
+      }
+
+      const position = await this.executeClientFunction({
+        script,
+        scriptName: 'scrollTo',
+        args: {left: location.getX(), top: location.getY()},
+      })
       return new Location(Math.ceil(position[0]) || 0, Math.ceil(position[1]) || 0)
     } catch (err) {
       throw EyesError('Could not get scroll position!', err)
@@ -303,7 +331,10 @@ class EyesWebElement {
    * @return {Promise<string>} - The overflow of the element.
    */
   getOverflow() {
-    return this.executeScript(JS_GET_OVERFLOW)
+    return this.executeClientFunction({
+      script: () => _element().style.overflow,
+      scriptName: 'getOverflow',
+    })
   }
 
   /**
@@ -311,7 +342,13 @@ class EyesWebElement {
    * @return {Promise} - The overflow of the element.
    */
   setOverflow(overflow) {
-    return this.executeScript(`arguments[0].style.overflow = '${overflow}'`)
+    return this.executeClientFunction({
+      script: () => (_element().style.overflow = overflow),
+      scriptName: 'setOverflow',
+      args: {
+        overflow,
+      },
+    })
   }
 
   /**
@@ -321,6 +358,17 @@ class EyesWebElement {
   executeScript(script) {
     // noinspection JSValidateTypes
     return this._eyesDriver.executeScript(script, this._webElement)
+  }
+
+  executeClientFunction({script, scriptName, args = {}}) {
+    return this._eyesDriver.executeClientFunction({
+      script,
+      scriptName,
+      args: {
+        _element: this._webElement,
+        ...args,
+      },
+    })
   }
 
   // noinspection JSCheckFunctionSignatures

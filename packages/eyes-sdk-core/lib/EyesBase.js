@@ -1541,7 +1541,7 @@ class EyesBase extends EyesAbstract {
    * @param {RectangleSize} size - The required viewport size.
    * @return {Promise}
    */
-  async setViewportSize(size) {
+  async setViewportSize(_size) {
     // eslint-disable-line no-unused-vars
     throw new TypeError('The method is not implemented!')
   }
