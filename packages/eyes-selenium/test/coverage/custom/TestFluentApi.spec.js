@@ -34,13 +34,12 @@ describe(appName, () => {
     })
 
     it('TestCheckScrollableModal', async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal${setup.title}`, {
+      let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal`, {
         width: 700,
         height: 460,
       })
       driver.findElement(By.id('centered')).click()
-      let scrollRootLocator = setup.stitchMode === 'CSS' ? 'modal-content' : 'modal1'
-      let scrollRootSelector = By.id(scrollRootLocator)
+      let scrollRootSelector = By.id('modal-content')
       await eyes.check(
         'TestCheckScrollableModal',
         Target.region(By.id('modal-content'))
@@ -68,7 +67,6 @@ describe(appName, () => {
   })
 
   describe(`Test_SCROLL`, () => {
-    let webDriver, eyes
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
@@ -110,11 +108,10 @@ describe(appName, () => {
   })
 
   describe(`Test_VG`, () => {
-    let webDriver, eyes
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes(setup.runnerType, setup.stitchMode))
+      ;({eyes} = await getEyes('VG'))
       eyes.setBatch(batch)
     })
 

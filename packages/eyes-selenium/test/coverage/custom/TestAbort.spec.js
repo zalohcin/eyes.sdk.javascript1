@@ -14,36 +14,37 @@ const {
   ClassicRunner,
   VisualGridRunner,
   Eyes,
+  StitchMode,
 } = require('../../../index')
 const appName = 'My application'
 const testedUrl = 'https://applitools.com/docs/topics/overview.html'
 const batch = new BatchInfo('JS My Batch')
 describe(appName, () => {
+  let webDriver, eyes, config, runner
+  after(async () => {
+    await displayRunInfo(runner)
+  })
+
+  afterEach(async () => {
+    if (eyes.getIsOpen()) {
+      await eyes.close(false)
+    } else {
+      await eyes.abort()
+    }
+    await webDriver.quit()
+  })
+
   describe(`TestAbort`, () => {
-    let webDriver, eyes, config, runner
     before(async () => {
       config = getConfig()
-      config.setStitchMode(setup.stitchMode)
+      config.setStitchMode(StitchMode.CSS)
       runner = new ClassicRunner()
-    })
-
-    after(async () => {
-      await displayRunInfo(runner)
     })
 
     beforeEach(async () => {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
       webDriver = await getDriver('CHROME')
-    })
-
-    afterEach(async () => {
-      if (eyes.getIsOpen()) {
-        await eyes.close()
-      } else {
-        await eyes.abort()
-      }
-      await webDriver.quit()
     })
 
     it(`Test_ThrowBeforeOpen`, async () => {
@@ -94,29 +95,15 @@ describe(appName, () => {
   })
 
   describe(`TestAbort_VG`, () => {
-    let webDriver, eyes, config, runner
     before(async () => {
       config = getConfig()
       runner = new VisualGridRunner()
-    })
-
-    after(async () => {
-      await displayRunInfo(runner)
     })
 
     beforeEach(async () => {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
       webDriver = await getDriver('CHROME')
-    })
-
-    afterEach(async () => {
-      if (eyes.getIsOpen()) {
-        await eyes.close()
-      } else {
-        await eyes.abort()
-      }
-      await webDriver.quit()
     })
 
     it(`Test_ThrowBeforeOpen`, async () => {

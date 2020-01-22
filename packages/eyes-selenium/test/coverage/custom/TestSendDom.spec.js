@@ -15,7 +15,7 @@ class DomInterceptingEyes extends EyesSelenium {
 
 describe(appName, () => {
   let batch = new BatchInfo('JS test')
-  describe(`TestSendDom`, () => {
+  describe(`TestSendDom Intercepted`, () => {
     let driver
     beforeEach(async () => {
       driver = await getDriver('CHROME')
@@ -48,7 +48,7 @@ describe(appName, () => {
     })
   })
 
-  describe(`Test run ${setup.title}`, () => {
+  describe(`TestSendDom`, () => {
     let webDriver, eyes
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')

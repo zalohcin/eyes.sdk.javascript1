@@ -21,7 +21,9 @@ async function getApiData(url, token) {
 function assertProperties(actual, expected) {
   for (let property in expected) {
     if (!Array.isArray(expected[property]) && expected.hasOwnProperty(property)) {
-      expect(actual[property]).to.be.eql(expected[property])
+      expect(actual[property], `Property: ${property} is not set as expected`).to.be.eql(
+        expected[property],
+      )
     }
   }
 }
