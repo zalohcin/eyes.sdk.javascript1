@@ -14,6 +14,7 @@ const {
   FileDebugScreenshotsProvider,
   NullDebugScreenshotProvider,
   SessionType,
+  GeneralUtils,
 } = require('@applitools/eyes-common')
 
 const {AppOutputProvider} = require('./capture/AppOutputProvider')
@@ -607,6 +608,8 @@ class EyesBase extends EyesAbstract {
 
     // default result
     const validationResult = new ValidationResult()
+
+    await GeneralUtils.sleep(this._configuration.getWaitBeforeScreenshots())
 
     await this.beforeMatchWindow()
     await this._sessionEventHandlers.validationWillStart(this._autSessionId, validationInfo)
