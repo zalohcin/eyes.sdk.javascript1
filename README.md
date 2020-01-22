@@ -1,5 +1,4 @@
-# eyes-sdk-javascript
-
+# eyes-sdk-javascript 
 ## Building
 
 __NOTE: [yarn](https://yarnpkg.com/en/docs/install) is required.
@@ -19,7 +18,7 @@ This will install the dependencies for the mono root, all packages, and link int
 You can perform a focused installation of a package.
 
 ```sh
-> cd packages/eyes-selenium
+> cd packages/package-name
 > yarn install --focused
 ```
 
@@ -38,6 +37,31 @@ Case-in-point, linting can be run this way. Either for all packages from the pro
 or
 
 ```sh
-> cd packages/eyes-selenium
+> cd packages/package-name
 > yarn run lint
 ```
+
+### Versioning
+
+You can version a package before publishing it with the `version` command.
+
+```sh
+> cd packages/package-name
+> yarn version --patch
+> yarn version --minor
+> yarn version --major
+```
+
+This will automatically update the `package.json` for the package, commit it, and add a tag for the version.
+
+### Publishing
+
+You can then release the package with the `publish` command.
+
+```sh
+> yarn publish
+```
+
+This will publish the package to `npm` and push the version and its tag to GitHub
+
+__NOTE: if you haven't run `version` before publishing then it will prompt you for the version information.__
