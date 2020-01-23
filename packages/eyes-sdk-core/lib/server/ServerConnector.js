@@ -22,9 +22,15 @@ const {RenderStatusResults} = require('../renderer/RenderStatusResults')
 
 // Constants
 const EYES_API_PATH = '/api/sessions'
-const RETRY_REQUEST_INTERVAL = 500 // ms
 const DEFAULT_TIMEOUT_MS = 300000 // ms (5 min)
 const REDUCED_TIMEOUT_MS = 15000 // ms (15 sec)
+const RETRY_REQUEST_INTERVAL = 500 // 0.5s
+const POLLING_DELAY_SEQUENCE = [].concat(
+  Array(5).fill(500), // 5 tries with delay 0.5s
+  Array(5).fill(1000), // 5 tries with delay 1s
+  Array(5).fill(2000), // 5 tries with delay 2s
+  5000, // all next tries with delay 5s
+)
 
 const DEFAULT_HEADERS = {
   Accept: 'application/json',
@@ -82,6 +88,13 @@ class ServerConnector {
     this._renderingInfo = undefined
 
     this._axios = axios.create({
+      withApiKey: true,
+      retry: 1,
+      repeat: 0,
+      delayBeforePolling: POLLING_DELAY_SEQUENCE,
+      get requestId() {
+        return createRequestId()
+      },
       proxy: undefined,
       headers: DEFAULT_HEADERS,
       timeout: DEFAULT_TIMEOUT_MS,
@@ -89,28 +102,26 @@ class ServerConnector {
       maxContentLength: 20 * 1024 * 1024, // 20 MB
     })
 
-    this._axios.interceptors.request.use(axiosConfig => {
-      const options = Object.assign(
+    this._axios.interceptors.request.use(config => {
+      const axiosConfig = Object.assign(
         {
-          requestId: createRequestId(),
-          withApiKey: true,
-          retry: 1,
-          repeat: 0,
-          delayBeforeRetry: false,
+          withApiKey: this._axios.defaults.withApiKey,
+          retry: this._axios.defaults.retry,
+          repeat: this._axios.defaults.repeat,
+          delayBeforePolling: this._axios.defaults.delayBeforePolling,
+          requestId: this._axios.defaults.requestId,
         },
-        axiosConfig._options,
+        config,
       )
-
-      axiosConfig._options = options
       configAxiosHeaders({
         axiosConfig,
-        requestId: options.requestId,
-        isLongRequest: options.isLongRequest,
-        isPollingRequest: options.isPollingRequest,
+        requestId: axiosConfig.requestId,
+        isLongRequest: axiosConfig.isLongRequest,
+        isPollingRequest: axiosConfig.isPollingRequest,
       })
       configAxiosFromConfiguration({
         axiosConfig,
-        withApiKey: options.withApiKey,
+        withApiKey: axiosConfig.withApiKey,
         configuration: this._configuration,
         logger: this._logger,
       })
@@ -157,9 +168,7 @@ class ServerConnector {
     this._logger.verbose(`ServerConnector.startSession called with: ${sessionStartInfo}`)
 
     const config = {
-      _options: {
-        name: 'startSession',
-      },
+      name: 'startSession',
       method: 'POST',
       url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running'),
       data: {
@@ -197,10 +206,8 @@ class ServerConnector {
     )
 
     const config = {
-      _options: {
-        name: 'stopSession',
-        isLongRequest: true,
-      },
+      name: 'stopSession',
+      isLongRequest: true,
       method: 'DELETE',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -236,9 +243,7 @@ class ServerConnector {
     this._logger.verbose(`ServerConnector.deleteBatchSessions called for batchId: ${batchId}`)
 
     const config = {
-      _options: {
-        name: 'deleteBatchSessions',
-      },
+      name: 'deleteBatchSessions',
       method: 'DELETE',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -272,9 +277,7 @@ class ServerConnector {
     this._logger.verbose(`ServerConnector.deleteSession called with ${JSON.stringify(testResults)}`)
 
     const config = {
-      _options: {
-        name: 'deleteSession',
-      },
+      name: 'deleteSession',
       method: 'DELETE',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -302,10 +305,8 @@ class ServerConnector {
   async uploadScreenshot(id, screenshot) {
     const url = this._renderingInfo.getResultsUrl().replace('__random__', id)
     const config = {
-      _options: {
-        name: 'uploadScreenshot',
-        retry: 3,
-      },
+      name: 'uploadScreenshot',
+      retry: 3,
       method: 'PUT',
       url,
       data: screenshot,
@@ -341,10 +342,8 @@ class ServerConnector {
     )
 
     const config = {
-      _options: {
-        name: 'matchWindow',
-        isLongRequest: true,
-      },
+      name: 'matchWindow',
+      isLongRequest: true,
       method: 'POST',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -388,10 +387,8 @@ class ServerConnector {
     this._logger.verbose(`ServerConnector.matchSingleWindow called with ${matchSingleWindowData}`)
 
     const config = {
-      _options: {
-        name: 'matchSingleWindow',
-        isLongRequest: true,
-      },
+      name: 'matchSingleWindow',
+      isLongRequest: true,
       method: 'POST',
       url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH),
       headers: {},
@@ -438,10 +435,8 @@ class ServerConnector {
     )
 
     const config = {
-      _options: {
-        name: 'replaceWindow',
-        isLongRequest: true,
-      },
+      name: 'replaceWindow',
+      isLongRequest: true,
       method: 'PUT',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -480,9 +475,7 @@ class ServerConnector {
     this._logger.verbose('ServerConnector.renderInfo called.')
 
     const config = {
-      _options: {
-        name: 'renderInfo',
-      },
+      name: 'renderInfo',
       method: 'GET',
       url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/renderinfo'),
     }
@@ -510,10 +503,8 @@ class ServerConnector {
 
     const isBatch = Array.isArray(renderRequest)
     const config = {
-      _options: {
-        name: 'render',
-        widthApiKey: false,
-      },
+      name: 'render',
+      widthApiKey: false,
       method: 'POST',
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render'),
       headers: {
@@ -556,10 +547,8 @@ class ServerConnector {
     )
 
     const config = {
-      _options: {
-        name: 'renderCheckResource',
-        widthApiKey: false,
-      },
+      name: 'renderCheckResource',
+      widthApiKey: false,
       method: 'HEAD',
       url: GeneralUtils.urlConcat(
         this._renderingInfo.getServiceUrl(),
@@ -603,10 +592,8 @@ class ServerConnector {
     )
 
     const config = {
-      _options: {
-        name: 'renderPutResource',
-        withApiKey: false,
-      },
+      name: 'renderPutResource',
+      withApiKey: false,
       method: 'PUT',
       url: GeneralUtils.urlConcat(
         this._renderingInfo.getServiceUrl(),
@@ -661,13 +648,11 @@ class ServerConnector {
 
     const isBatch = Array.isArray(renderId)
     const config = {
-      _options: {
-        name: 'renderStatus',
-        retry: 3,
-        delay: delayBeforeRequest ? RETRY_REQUEST_INTERVAL : null,
-        delayBeforeRetry: true,
-        withApiKey: false,
-      },
+      name: 'renderStatus',
+      retry: 3,
+      delay: delayBeforeRequest ? RETRY_REQUEST_INTERVAL : null,
+      delayBeforeRetry: RETRY_REQUEST_INTERVAL,
+      withApiKey: false,
       method: 'POST',
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render-status'),
       headers: {
@@ -706,9 +691,7 @@ class ServerConnector {
     this._logger.verbose('ServerConnector.postDomSnapshot called')
 
     const config = {
-      _options: {
-        name: 'postDomSnapshot',
-      },
+      name: 'postDomSnapshot',
       method: 'POST',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -734,10 +717,8 @@ class ServerConnector {
 
   async getUserAgents() {
     const config = {
-      _options: {
-        name: 'getUserAgents',
-        withApiKey: false,
-      },
+      name: 'getUserAgents',
+      withApiKey: false,
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/user-agents'),
       headers: {
         'X-Auth-Token': this._renderingInfo.getAccessToken(),

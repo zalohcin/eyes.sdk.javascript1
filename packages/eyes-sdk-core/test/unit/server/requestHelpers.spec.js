@@ -1,11 +1,13 @@
 'use strict'
 
 const assert = require('assert')
+const Axios = require('axios')
 const {ProxySettings, Logger, Configuration} = require('@applitools/eyes-common')
 const {
   configAxiosHeaders,
   configAxiosFromConfiguration,
   configAxiosProxy,
+  handleRequestError,
 } = require('../../../lib/server/requestHelpers')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
@@ -101,6 +103,37 @@ describe('requestHelpers', () => {
       host: 'some.url',
       port: 8080,
       proxyAuth: 'daniel:1234',
+    })
+  })
+
+  it('handleRequestError retry request', () => {
+    const RETRY_COUNT = 3
+    const axios = Axios.create({
+      async adapter(config) {
+        if (config.retry > 0) {
+          const error = new Error('Fake Error')
+          error.response = {status: 500, data: {}, headers: {}}
+          error.request = {}
+          error.config = config
+          error.code = null
+          throw error
+        }
+        return {status: 200, config, data: {}, headers: {}, request: {}}
+      },
+    })
+
+    axios.interceptors.response.use(
+      response => {
+        assert.strictEqual(response.config.retry, 0)
+        assert.strictEqual(response.config.repeat, RETRY_COUNT)
+      },
+      err => handleRequestError({err, axios, logger}),
+    )
+
+    axios.request({
+      retry: RETRY_COUNT,
+      repeat: 0,
+      url: 'http://some.url',
     })
   })
 })

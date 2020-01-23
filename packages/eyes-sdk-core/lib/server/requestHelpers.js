@@ -2,14 +2,6 @@ const tunnel = require('tunnel')
 
 const {GeneralUtils, DateTimeUtils, TypeUtils} = require('@applitools/eyes-common')
 
-const RETRY_REQUEST_INTERVAL = 500 // 0.5s
-const POLLING_DELAY_SEQUENCE = [].concat(
-  Array(5).fill(500), // 5 tries with delay 0.5s
-  Array(5).fill(1000), // 5 tries with delay 1s
-  Array(5).fill(2000), // 5 tries with delay 2s
-  5000, // all next tries with delay 5s
-)
-
 const HTTP_STATUS_CODES = {
   CREATED: 201,
   ACCEPTED: 202,
@@ -106,20 +98,17 @@ function configAxiosHeaders({axiosConfig, requestId, timestamp, isLongRequest, i
 }
 
 async function prepareRequest({axiosConfig, logger}) {
-  const options = axiosConfig._options
-
   logger.verbose(
-    `ServerConnector.${options.name} [${options.requestId}] will now call to ${
+    `axios request interceptor - ${axiosConfig.name} [${axiosConfig.requestId}] will now call to ${
       axiosConfig.url
     } with params ${JSON.stringify(axiosConfig.params)}`,
   )
 
-  if (options.delay) {
-    const delay = TypeUtils.isArray(options.delay)
-      ? options.delay[Math.min(options.repeat, options.delay.length - 1)]
-      : options.delay
-    logger.verbose(`ServerConnector.${options.name} request delayed for ${delay} ms.`)
-    await GeneralUtils.sleep(delay)
+  if (axiosConfig.delay) {
+    logger.verbose(
+      `axios request interceptor - ${axiosConfig.name} request delayed for ${axiosConfig.delay} ms.`,
+    )
+    await GeneralUtils.sleep(axiosConfig.delay)
   }
 
   return axiosConfig
@@ -131,13 +120,14 @@ async function handleLongRequestResponse({response, axios}) {
       return response
     }
     case HTTP_STATUS_CODES.ACCEPTED: {
-      const options = response.config._options
+      const prevConfig = response.config
       const config = {
-        _options: {
-          name: options.name,
-          isPollingRequest: true,
-          delay: options.pollingDelaySequence || POLLING_DELAY_SEQUENCE,
-        },
+        name: prevConfig.name,
+        isPollingRequest: true,
+        delayBeforePolling: prevConfig.delayBeforePolling,
+        delay: TypeUtils.isArray(prevConfig.delayBeforePolling)
+          ? prevConfig.delayBeforePolling[0]
+          : prevConfig.delayBeforePolling,
         method: 'GET',
         url: response.headers.location,
       }
@@ -147,11 +137,9 @@ async function handleLongRequestResponse({response, axios}) {
       })
     }
     case HTTP_STATUS_CODES.CREATED: {
-      const options = response.config._options
+      const prevConfig = response.config
       const config = {
-        _options: {
-          name: options.name,
-        },
+        name: prevConfig.name,
         method: 'DELETE',
         url: response.headers.location,
         headers: {
@@ -169,53 +157,57 @@ async function handleLongRequestResponse({response, axios}) {
   }
 }
 async function handleRequestResponse({response, axios, logger}) {
-  const options = response.config._options
+  const {config} = response
 
   logger.verbose(
-    `ServerConnector.${options.name} [${options.requestId}] - result ${response.statusText}, status code ${response.status}, url ${response.config.url}`,
+    `axios response interceptor - ${config.name} [${config.requestId}] - result ${response.statusText}, status code ${response.status}, url ${config.url}`,
   )
 
-  if (options.isLongRequest) {
-    return handleLongRequestResponse({response, axios, logger})
+  if (config.isLongRequest) {
+    return handleLongRequestResponse({response, axios})
   }
 
-  if (options.isPollingRequest && response.status === HTTP_STATUS_CODES.OK) {
-    options.repeat += 1
-    return axios.request(response.config)
+  if (config.isPollingRequest && response.status === HTTP_STATUS_CODES.OK) {
+    config.repeat += 1
+    config.delay = TypeUtils.isArray(config.delayBeforePolling)
+      ? config.delayBeforePolling[Math.min(config.repeat, config.delayBeforePolling.length - 1)]
+      : config.delayBeforePolling
+    return axios.request(config)
   }
 
   return response
 }
 
 async function handleRequestError({err, axios, logger}) {
-  const reason = `${err.message}${err.response ? `(${err.response.statusText})` : ''}`
-  const config = err.config
-  const options = config._options
+  const {response, config} = err
+  const reason = `${err.message}${response ? `(${response.statusText})` : ''}`
 
   logger.log(
-    `ServerConnector.${options.name} [${options.requestId}] - ${
+    `axios error interceptor - ${config.name} [${config.requestId}] - ${
       config.method
     } request failed. reason=${reason} | url=${config.url} ${
-      err.response ? `| status=${err.response.status} ` : ''
-    }| params=${JSON.stringify(config.params).slice(0, 100)}`,
+      response ? `| status=${response.status} ` : ''
+    }| params=${JSON.stringify(config.params)}`,
   )
 
-  if (err.response && err.response.data) {
-    logger.verbose(`ServerConnector.${options.name} - failure body:\n${err.response.data}`)
+  if (response && response.data) {
+    logger.verbose(`axios error interceptor - ${config.name} - failure body:\n${response.data}`)
   }
 
   if (
-    options.retry > 0 &&
-    ((err.response && HTTP_FAILED_CODES.includes(err.response.status)) ||
+    config.retry > 0 &&
+    ((response && HTTP_FAILED_CODES.includes(response.status)) ||
       REQUEST_FAILED_CODES.includes(err.code))
   ) {
-    logger.verbose(`ServerConnector retrying request with delay ${options.delayBeforeRetry}...`)
+    logger.verbose(
+      `axios error interceptor retrying request with delay ${config.delayBeforeRetry}...`,
+    )
 
-    if (options.delayBeforeRetry) {
-      options.delay = RETRY_REQUEST_INTERVAL
+    if (config.delayBeforeRetry) {
+      config.delay = config.delayBeforeRetry
     }
-    options.repeat += 1
-    options.retry -= 1
+    config.repeat += 1
+    config.retry -= 1
     return axios.request(config)
   }
   throw new Error(reason)

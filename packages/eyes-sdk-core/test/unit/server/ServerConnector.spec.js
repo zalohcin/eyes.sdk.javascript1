@@ -100,29 +100,26 @@ describe('ServerConnector', () => {
     const timeouts = []
     let timestampBefore
     serverConnector._axios.defaults.adapter = async config => {
-      const response = {status: 200, config: config, data: {}, headers: {}, request: {}}
-      const options = config._options
-      if (options.isLongRequest) {
+      const response = {status: 200, config, data: {}, headers: {}, request: {}}
+      if (config.isLongRequest) {
         response.status = 202
         timestampBefore = Date.now()
-      } else if (options.isPollingRequest) {
+      } else if (config.isPollingRequest) {
         const timestampAfter = Date.now()
         timeouts.push(timestampAfter - timestampBefore)
         timestampBefore = timestampAfter
-        response.status = options.repeat < ANSWER_AFTER - 1 ? 200 : 201
+        response.status = config.repeat < ANSWER_AFTER - 1 ? 200 : 201
       }
       return response
     }
-    const pollingDelaySequence = [].concat(Array(3).fill(100), Array(3).fill(200), 500)
+    const delayBeforePolling = [].concat(Array(3).fill(100), Array(3).fill(200), 500)
     await serverConnector._axios.request({
-      _options: {
-        isLongRequest: true,
-        pollingDelaySequence,
-      },
+      isLongRequest: true,
+      delayBeforePolling,
     })
     assert.strictEqual(timeouts.length, ANSWER_AFTER)
     timeouts.forEach((timeout, index) => {
-      const expectedTimeout = pollingDelaySequence[Math.min(index, pollingDelaySequence.length - 1)]
+      const expectedTimeout = delayBeforePolling[Math.min(index, delayBeforePolling.length - 1)]
       assert(timeout >= expectedTimeout && timeout <= expectedTimeout + 10)
     })
   })
