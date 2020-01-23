@@ -290,7 +290,7 @@ class EyesJsBrowserUtils {
    * @param {number} [timeInterval = 300] - Milliseconds netween each scroll.
    * @return {Promise} - A promise which resolves once the scrolling is complete.
    */
-  static async scanPage(executor, scrollAmmount = 500, timeInterval = 300) {
+  static async scrollPage(executor, scrollAmmount = 500, timeInterval = 300) {
     const timeout = (50000 / scrollAmmount) * timeInterval * 2 + 5000
     const scrollScript = `
       let resolve, reject, timeoutId
@@ -316,7 +316,7 @@ class EyesJsBrowserUtils {
         }
       }
 
-      timeoutId = setTimeout(() => (isAborted = true, reject()), ${timeout}, 'scanPage timed out after ${timeout}ms!')
+      timeoutId = setTimeout(() => (isAborted = true, reject()), ${timeout}, 'scrollPage timed out after ${timeout}ms!')
       doScan()
       return p;
     `

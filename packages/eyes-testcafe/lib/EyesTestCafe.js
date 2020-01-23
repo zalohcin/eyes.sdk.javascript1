@@ -980,10 +980,15 @@ class EyesTestCafe extends Eyes {
     return this._scrollRootElement
   }
 
-  async _scanPage() {
-    this._logger.verbose('scanPage started')
-    await EyesJsBrowserUtils.scanPage(this._driver)
-    this._logger.verbose('scanPage - done!')
+  async scrollPage() {
+    this._logger.verbose('scrollPage started')
+    if (!this._driver) {
+      throw new Error(
+        'scrollPage was called beofre setting the TestController ! call scrollPage after eyes.open().',
+      )
+    }
+    await EyesJsBrowserUtils.scrollPage(this._driver)
+    this._logger.verbose('scrollPage - done!')
   }
 
   /**
