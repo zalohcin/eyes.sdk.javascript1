@@ -7,16 +7,16 @@
   ],
   "main": "index.js",
   "scripts": {
-    "test": "cd test && ../node_modules/.bin/wdio"
+    "test": "wdio test/wdio.conf.js"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "@applitools/eyes.webdriverio": "^2.11.2"
+    "@applitools/eyes.webdriverio": "2.11.6"
   },
   "devDependencies": {
     "chromedriver": "^2.37.0",
-    "mocha": "^6.1.4",
+    "mocha": "^6.2.2",
     "wdio-dot-reporter": "0.0.10",
     "wdio-mocha-framework": "^0.6.4",
     "wdio-selenium-standalone-service": "0.0.12",
