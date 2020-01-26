@@ -1,7 +1,7 @@
 # eyes-sdk-javascript 
 ## Building
 
-_NOTE: [yarn](https://yarnpkg.com/en/docs/install) is required.
+_NOTE: [yarn](https://yarnpkg.com/en/docs/install) is required._
 
 ### Getting Started
 
