@@ -8,8 +8,15 @@ _NOTE: [yarn](https://yarnpkg.com/en/docs/install) is required._
 Run the following from the root of the repo.
 
 ```sh
-> yarn install
+yarn install
 ```
+
+or just
+
+```sh
+yarn
+```
+
 
 This will install the dependencies for the mono root, all packages, and link internal dependencies together.
 
@@ -18,8 +25,8 @@ This will install the dependencies for the mono root, all packages, and link int
 You can perform a focused installation of a package.
 
 ```sh
-> cd packages/package-name
-> yarn install --focused
+cd packages/package-name
+yarn install --focused
 ```
 
 _NOTE: this will only work for packages that are publicly available on `npm`. For details, read more [here](https://yarnpkg.com/blog/2018/05/18/focused-workspaces/)._
@@ -31,14 +38,14 @@ Just like with `npm` you can run scripts.
 Case-in-point, linting can be run this way. Either for all packages from the project root, or from an individual package.
 
 ```sh
-> yarn lint
+yarn lint
 ```
 
 or
 
 ```sh
-> cd packages/package-name
-> yarn lint
+cd packages/package-name
+yarn lint
 ```
 
 ### Versioning
@@ -46,10 +53,10 @@ or
 You can version a package before publishing it with the `version` command.
 
 ```sh
-> cd packages/package-name
-> yarn version --patch
-> yarn version --minor
-> yarn version --major
+cd packages/package-name
+yarn version --patch
+yarn version --minor
+yarn version --major
 ```
 
 This will automatically update the `package.json` for the package, commit it, and add a tag for the version.
@@ -59,7 +66,7 @@ This will automatically update the `package.json` for the package, commit it, an
 You can then release the package with the `publish` command.
 
 ```sh
-> yarn publish
+yarn publish
 ```
 
 This will publish the package to `npm` and push the version and its tag to GitHub
