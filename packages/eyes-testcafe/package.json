@@ -54,7 +54,7 @@
     "testcafe"
   ],
   "scripts": {
-    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
+    "lint": "eslint . --ext .js --config ../../.eslintrc",
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",
     "test": "mocha --no-timeouts \"test/**/*.spec2.js\"",
@@ -63,7 +63,6 @@
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec2.js\"",
     "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\"",
     "test:coverage": "node test/coverage/index.js",
-    "li": "cd ../../ && npm i && cd -",
     "postpublish": "git push; git push --tags"
   },
   "devDependencies": {

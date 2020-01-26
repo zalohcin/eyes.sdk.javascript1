@@ -32,17 +32,6 @@ set APPLITOOLS_API_KEY=<your_key>
 npx testcafe chrome:headless some-test-dir
 ```
 
-It's also possible to specify the API key in the `applitools.config.js` file. The property name is `apiKey`. For example:
-
-```js
-module.exports = {
-  apiKey: 'YOUR_API_KEY',
-  ...
-}
-```
-
-See the [Advanced configuration](#method-3-the-applitoolsconfigjs-file) section below for more information on using the config file.
-
 ## Usage
 
 After defining the API key, you will be able to use commands from Eyes-Testcafe in your testcafe tests to take screenshots and use Applitools Eyes to manage them:
