@@ -1379,7 +1379,12 @@ class EyesBase extends EyesAbstract {
     let screenshot, screenshotUrl, screenshotBuffer
 
     // START NOTE (amit): the following is something I'm not proud nor confident of. I copied it from EyesSelenium::getScreenshot, and it is to solve https://trello.com/c/O5sTPAU1. This should be rewritten asap.
-    const isMobileDevice = await this._driver.isMobile()
+    let isMobileDevice
+    if (typeof this._driver.isMobile === 'function') {
+      isMobileDevice = await this._driver.isMobile()
+    } else if (typeof this._driver.isMobile === 'object') {
+      isMobileDevice = await this._driver.isMobile
+    }
     const positionProvider = this.getPositionProvider()
     let originalPosition
     if (!isMobileDevice && positionProvider) {
