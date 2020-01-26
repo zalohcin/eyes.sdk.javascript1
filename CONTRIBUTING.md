@@ -72,4 +72,4 @@ yarn publish
 
 This will publish the package to `npm` and push the version and its tag to GitHub
 
-_NOTE: if you haven't run `version` before publishing then it will prompt you for the version information._
+_NOTE: When publishing it will prompt you for version information. If you've already run `version` then don't provide a version number here. Just press `Enter` to continue._
