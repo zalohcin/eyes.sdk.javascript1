@@ -38,9 +38,11 @@
     "uglify-es": "^3.3.9"
   },
   "scripts": {
+    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "browserify": "browserify index.js > dist/eyes-images.browser.js",
     "uglify": "uglifyjs dist/eyes-images.browser.js > dist/eyes-images.browser.min.js",
-    "build": "npm run browserify && npm run uglify"
+    "build": "npm run browserify && npm run uglify",
+    "postpublish": "git push; git push --tags"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
