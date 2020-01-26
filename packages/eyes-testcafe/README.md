@@ -1,6 +1,6 @@
 <p align="center">
   <br/>
-  <img src="https://eyes.applitools.com/app/v/396/Deploy/Main/build/3b185003dd49bb7679d8de4b3696dacf.png" width="200"  alt="base64 test">
+  <img src="https://eyes.applitools.com/app/v/396/Deploy/Main/build/3b185003dd49bb7679d8de4b3696dacf.png" width="300"  alt="base64 test">
 
   <h2 align="center"> Eyes-Testcafe</h1>
   <h4 align="center">SDK for <a href="https://devexpress.github.io/testcafe/">Testcafe</a></h1>
