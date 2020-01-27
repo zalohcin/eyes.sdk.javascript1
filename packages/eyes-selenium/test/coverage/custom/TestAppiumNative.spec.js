@@ -1,9 +1,10 @@
 'use strict'
-const {Eyes, Target} = require('../../../index')
+const {Eyes, Region, Target} = require('../../../index')
 const {Builder} = require('selenium-webdriver')
 const {getBatch, sauceUrl} = require('./util/TestSetup')
 const batch = getBatch()
-const caps = {
+const appiumUrl = 'http://localhost:4723/wd/hub'
+const sauceCaps = {
   browserName: '',
   platformName: 'Android',
   platformVersion: '8.1',
@@ -14,18 +15,16 @@ const caps = {
   app: 'http://appium.s3.amazonaws.com/ContactManager.apk',
 }
 
+const caps = {
+  browserName: '',
+  deviceName: 'Nexus 5',
+  platformName: 'Android',
+  platformVersion: '8.0',
+  app: 'http://appium.s3.amazonaws.com/ContactManager.apk',
+}
+
 describe('TestAppiumNative', () => {
-  before(() => {
-    console.log('before')
-  })
   let driver, eyes
-  beforeEach(async function() {
-    driver = await new Builder()
-      .withCapabilities(caps)
-      .usingServer(sauceUrl)
-      .build()
-    console.log('browser Started')
-  })
 
   afterEach(async () => {
     await driver.quit()
@@ -33,10 +32,36 @@ describe('TestAppiumNative', () => {
   })
 
   it(`Native app on sauce lab`, async () => {
+    driver = await new Builder()
+      .withCapabilities(sauceCaps)
+      .usingServer(sauceUrl)
+      .build()
     eyes = new Eyes()
     eyes.setBatch(batch)
     await eyes.open(driver, 'JS test', 'Checking eyes settings in appium tests')
-    await eyes.check('Check', Target.window().fully())
+    await eyes.check(
+      'Check',
+      Target.window()
+        .ignoreRegions(new Region(900, 0, 540, 100))
+        .fully(),
+    )
+    await eyes.close()
+  })
+
+  it(`Native app on local appium`, async () => {
+    driver = await new Builder()
+      .withCapabilities(caps)
+      .usingServer(appiumUrl)
+      .build()
+    eyes = new Eyes()
+    eyes.setBatch(batch)
+    await eyes.open(driver, 'JS test', 'Checking eyes settings in appium tests_local')
+    await eyes.check(
+      'Check',
+      Target.window()
+        .ignoreRegions(new Region(900, 0, 180, 100))
+        .fully(),
+    )
     await eyes.close()
   })
 })
