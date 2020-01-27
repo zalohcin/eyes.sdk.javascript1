@@ -1,6 +1,6 @@
 'use strict'
 const {Builder} = require('selenium-webdriver')
-const {Eyes, ClassicRunner, VisualGridRunner, StitchMode} = require('../../../../index')
+const {Eyes, ClassicRunner, VisualGridRunner, StitchMode, BatchInfo} = require('../../../../index')
 const defaultArgs = process.env.HEADLESS === 'true' ? ['headless'] : []
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
@@ -20,11 +20,7 @@ const Browsers = {
   },
 }
 
-const SETUPS = {
-  default: {stitchMode: 'CSS', runnerType: 'classic', title: ''},
-  scroll: {stitchMode: 'SCROLL', runnerType: 'classic', title: '_SCROLL'},
-  VG: {stitchMode: 'none', runnerType: 'visualGrid', title: '_VG'},
-}
+const batch = new BatchInfo('JS Coverage Tests - eyes-selenium')
 
 async function getDriver(browser) {
   let capabilities = Browsers[browser]
@@ -66,13 +62,13 @@ function getEyes(runnerType, stitchMode, options) {
   }
 }
 
-function getSetups(...args) {
-  return args.length ? args.map(arg => SETUPS[arg]) : [SETUPS.default, SETUPS.scroll, SETUPS.VG]
+function getBatch() {
+  return batch
 }
 
 module.exports = {
   getDriver: getDriver,
   getEyes: getEyes,
-  getSetups: getSetups,
+  getBatch: getBatch,
   sauceUrl: SAUCE_SERVER_URL,
 }

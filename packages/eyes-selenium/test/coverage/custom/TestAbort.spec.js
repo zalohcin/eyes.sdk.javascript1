@@ -1,12 +1,11 @@
 'use strict'
-const {getDriver} = require('./util/TestSetup')
+const {getDriver, getBatch} = require('./util/TestSetup')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 const expect = chai.expect
 const {
   Configuration,
-  BatchInfo,
   Target,
   BrowserType,
   DeviceName,
@@ -18,7 +17,7 @@ const {
 } = require('../../../index')
 const appName = 'My application'
 const testedUrl = 'https://applitools.com/docs/topics/overview.html'
-const batch = new BatchInfo('JS My Batch')
+const batch = getBatch()
 describe(appName, () => {
   let webDriver, eyes, config, runner
   after(async () => {

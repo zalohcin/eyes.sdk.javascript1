@@ -1,10 +1,11 @@
 'use strict'
 const {assertImage} = require('./util/ApiAssertions')
-const {getDriver, getEyes} = require('./util/TestSetup')
+const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
 const {expect} = require('chai')
 const {By} = require('selenium-webdriver')
-const {EyesSelenium, BatchInfo, Target} = require('../../../index')
+const {EyesSelenium, Target} = require('../../../index')
 const appName = 'Test Send Dom'
+const batch = getBatch()
 
 class DomInterceptingEyes extends EyesSelenium {
   async tryCaptureDom() {
@@ -14,7 +15,6 @@ class DomInterceptingEyes extends EyesSelenium {
 }
 
 describe(appName, () => {
-  let batch = new BatchInfo('JS test')
   describe(`TestSendDom Intercepted`, () => {
     let driver
     beforeEach(async () => {

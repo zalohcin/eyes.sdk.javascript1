@@ -1,11 +1,10 @@
 'use strict'
 const assert = require('assert')
-const {Target, Configuration, BatchInfo} = require('../../../index')
-const {getDriver, getEyes} = require('./util/TestSetup')
-
+const {Target, Configuration} = require('../../../index')
+const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
+const batch = getBatch()
 describe('TestCounts', () => {
   let driver, eyes, runner
-  let batch = new BatchInfo('JS test')
   beforeEach(async () => {
     driver = await getDriver('CHROME')
     await driver.get('https://applitools.com/helloworld')
@@ -18,6 +17,7 @@ describe('TestCounts', () => {
     await eyes.setBranchName('master')
     await eyes.open(driver, 'Test Count', 'Test_VGTestsCount_1', {width: 640, height: 480})
     await eyes.check('Test', Target.window())
+    await eyes.close()
     let results = await runner.getAllTestResults()
     assert.deepStrictEqual(1, results.getAllResults().length)
   })
@@ -31,6 +31,7 @@ describe('TestCounts', () => {
     eyes.setConfiguration(conf)
     await eyes.open(driver, 'Test Count', 'Test_VGTestsCount_2')
     await eyes.check('Test', Target.window())
+    await eyes.close()
     let results = await runner.getAllTestResults()
     assert.deepStrictEqual(2, results.getAllResults().length)
   })
@@ -46,6 +47,7 @@ describe('TestCounts', () => {
     eyes.setConfiguration(conf)
     await eyes.open(driver)
     await eyes.check('Test', Target.window())
+    await eyes.close()
     let results = await runner.getAllTestResults()
     assert.deepStrictEqual(2, results.getAllResults().length)
   })
@@ -59,6 +61,7 @@ describe('TestCounts', () => {
     eyes.setConfiguration(conf)
     await eyes.open(driver)
     await eyes.check('Test', Target.window())
+    await eyes.close()
     let results = await runner.getAllTestResults()
     assert.deepStrictEqual(1, results.getAllResults().length)
   })
@@ -72,6 +75,7 @@ describe('TestCounts', () => {
     eyes.setConfiguration(conf)
     await eyes.open(driver, 'Test Count', 'Test_VGTestsCount_5', {width: 640, height: 480})
     await eyes.check('Test', Target.window())
+    await eyes.close()
     let results = await runner.getAllTestResults()
     assert.deepStrictEqual(2, results.getAllResults().length)
   })

@@ -1,7 +1,6 @@
 'use strict'
-const {getDriver, getEyes} = require('./util/TestSetup')
+const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
 const {
-  BatchInfo,
   Configuration,
   BrowserType,
   AccessibilityLevel,
@@ -10,8 +9,8 @@ const {
 } = require('../../../index')
 const {assertDefaultMatchSettings, assertImageMatchSettings} = require('./util/ApiAssertions')
 const {expect} = require('chai')
+const batch = getBatch()
 
-let batch = new BatchInfo('JS test')
 describe('TestVGServerConfigs', () => {
   let webDriver, eyes, runner
 

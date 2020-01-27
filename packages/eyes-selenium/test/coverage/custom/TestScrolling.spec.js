@@ -1,11 +1,11 @@
 'use strict'
-const {sauceUrl} = require('./util/TestSetup')
-const {BatchInfo, Eyes, EyesWebElement, Target, Region, StitchMode} = require('../../../index')
+const {sauceUrl, getBatch} = require('./util/TestSetup')
+const {Eyes, EyesWebElement, Target, Region, StitchMode} = require('../../../index')
 const {Builder, By} = require('selenium-webdriver')
 const appName = 'TestScrolling'
+const batch = getBatch()
 
 describe(appName, () => {
-  let batch = new BatchInfo('JS test')
   describe('ChromeEmulation', () => {
     let eyes, driver
 

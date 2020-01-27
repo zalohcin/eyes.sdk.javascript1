@@ -1,10 +1,10 @@
 'use strict'
 const {By} = require('selenium-webdriver')
-const {getDriver, getEyes} = require('./util/TestSetup')
-const {Target, Region, BatchInfo, StitchMode} = require('../../../index')
+const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
+const {Target, Region, StitchMode} = require('../../../index')
 const appName = 'Eyes Selenium SDK - Fluent API'
+const batch = getBatch()
 describe(appName, () => {
-  let batch = new BatchInfo('JS test')
   let webDriver, eyes
 
   afterEach(async () => {
