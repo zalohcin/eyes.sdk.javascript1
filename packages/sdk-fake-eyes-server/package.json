@@ -24,7 +24,9 @@
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "scripts": {
-    "test": "mocha --no-timeouts \"test/**/*.test.js\""
+    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
+    "test": "mocha --no-timeouts \"test/**/*.test.js\"",
+    "postpublish": "git push; git push --tags"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"

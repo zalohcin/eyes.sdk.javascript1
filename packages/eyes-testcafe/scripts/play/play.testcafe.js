@@ -10,7 +10,7 @@ const {
   FileDebugScreenshotsProvider,
   Configuration,
   StitchMode,
-} = require('../..')
+} = require('../../index')
 
 /*
  * Play with configuration and test :
@@ -32,7 +32,7 @@ if (process.env.APPLITOOLS_SHOW_LOGS || process.env.LIVE) {
   eyes.setLogHandler(new ConsoleLogHandler(true))
 }
 
-fixture`Play`.page`https://applitools.github.io/demo/TestPages/PageWithHeader/index.html`
+fixture`Play`.page`http://localhost:8080/full-page.html`
 test('Play', async t => {
   await eyes.open(t, 'Play Testcafe', 'play testcafe')
   // await eyes._scanPage()
@@ -42,15 +42,26 @@ test('Play', async t => {
 })
 
 // test('Play', async t => {
-//   const captureFrameAndPollForIE = require('../../dist/captureFrameAndPollForIE')
-//   const {TestCafeExecutor} = require('../../lib/TestCafeExecutor')
-//   const ex = new TestCafeExecutor(t)
-//   console.log('XXXXXXXXX: captureFrameAndPollForIE', captureFrameAndPollForIE.toString())
-//   const r = await ex.executeScript(captureFrameAndPollForIE)
-//   const r2 = await ex.executeScript(captureFrameAndPollForIE)
-//   console.log('XXXXXXXXX: r', r2)
+//   // const captureFrameAndPollForIE = require('../../dist/captureFrameAndPollForIE')
+//   // const {TestCafeExecutor} = require('../../lib/TestCafeExecutor')
+//   // const ex = new TestCafeExecutor(t)
+//   // console.log('XXXXXXXXX: captureFrameAndPollForIE', captureFrameAndPollForIE.toString())
+//   // const r = await ex.executeScript(captureFrameAndPollForIE)
+//   // const r2 = await ex.executeScript(captureFrameAndPollForIE)
+//   // console.log('XXXXXXXXX: r', r2)
 
-//   await t.resizeWindow(1024, 768)
+//   await t.resizeWindow(600, 500)
+//   const transformElement = require('../../lib/positioning/transformElement')
+//   await t.eval(transformElement, {
+//     dependencies: {
+//       element: () => document.documentElement,
+//       transformLeft: -600,
+//       transformTop: 0,
+//       markRightMargin: 10,
+//       originalTransform: undefined,
+//     },
+//   })
+
 //   const name = new Date().toISOString().replace(/:/g, '_')
 //   const image = await t.takeScreenshot(`./render-${name}.png`)
 //   console.log('XXXXXXXXX: image', image)

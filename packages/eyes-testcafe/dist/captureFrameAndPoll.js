@@ -1,5 +1,5 @@
 
-module.exports = () => {
+module.exports = function captureFrameAndPoll () {
   var captureFrameAndPoll = (function () {
 	'use strict';
 

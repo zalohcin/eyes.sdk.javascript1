@@ -203,7 +203,9 @@ class GeneralUtils {
    * @return {Promise} - A promise which is resolved when sleep is done.
    */
   static sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    if (TypeUtils.isNumber(ms)) {
+      return new Promise(resolve => setTimeout(resolve, ms))
+    }
   }
 
   // noinspection JSUnusedGlobalSymbols

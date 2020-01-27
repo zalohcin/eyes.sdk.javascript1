@@ -106,6 +106,7 @@ class DomCapture {
       }, DOM_EXTRACTION_TIMEOUT)
 
       do {
+        this._logger.log('executng dom capture')
         const resultAsString = await this._driver.executeScript(script)
         result = JSON.parse(resultAsString)
         await GeneralUtils.sleep(DOM_CAPTURE_PULL_TIMEOUT)

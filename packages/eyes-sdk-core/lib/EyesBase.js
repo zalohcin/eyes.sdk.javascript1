@@ -14,6 +14,7 @@ const {
   FileDebugScreenshotsProvider,
   NullDebugScreenshotProvider,
   SessionType,
+  GeneralUtils,
 } = require('@applitools/eyes-common')
 
 const {AppOutputProvider} = require('./capture/AppOutputProvider')
@@ -607,6 +608,8 @@ class EyesBase extends EyesAbstract {
 
     // default result
     const validationResult = new ValidationResult()
+
+    await GeneralUtils.sleep(this._configuration.getWaitBeforeScreenshots())
 
     await this.beforeMatchWindow()
     await this._sessionEventHandlers.validationWillStart(this._autSessionId, validationInfo)
@@ -1376,7 +1379,12 @@ class EyesBase extends EyesAbstract {
     let screenshot, screenshotUrl, screenshotBuffer
 
     // START NOTE (amit): the following is something I'm not proud nor confident of. I copied it from EyesSelenium::getScreenshot, and it is to solve https://trello.com/c/O5sTPAU1. This should be rewritten asap.
-    const isMobileDevice = await this._driver.isMobile()
+    let isMobileDevice
+    if (typeof this._driver.isMobile === 'function') {
+      isMobileDevice = await this._driver.isMobile()
+    } else if (typeof this._driver.isMobile === 'object') {
+      isMobileDevice = await this._driver.isMobile
+    }
     const positionProvider = this.getPositionProvider()
     let originalPosition
     if (!isMobileDevice && positionProvider) {
@@ -1538,7 +1546,7 @@ class EyesBase extends EyesAbstract {
    * @param {RectangleSize} size - The required viewport size.
    * @return {Promise}
    */
-  async setViewportSize(size) {
+  async setViewportSize(_size) {
     // eslint-disable-line no-unused-vars
     throw new TypeError('The method is not implemented!')
   }

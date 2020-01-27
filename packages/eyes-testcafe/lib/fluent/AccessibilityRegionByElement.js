@@ -24,7 +24,7 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
    * @param {EyesScreenshot} screenshot
    * @return {Promise<AccessibilityMatchSettings[]>}
    */
-  async getRegion(eyes, screenshot) {
+  async getRegion(_eyes, screenshot) {
     const rect = await this._element.getRect()
     const pTag = screenshot.convertLocation(
       new Location(rect),

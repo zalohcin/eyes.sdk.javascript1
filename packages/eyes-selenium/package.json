@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-selenium",
-  "version": "4.33.7",
+  "version": "4.33.8",
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
     "eyes-selenium",
@@ -38,6 +38,7 @@
   "dependencies": {
     "@applitools/dom-utils": "^4.7.4",
     "@applitools/eyes-common": "^3.17.2",
+    "@applitools/sdk-fake-eyes-server": "^1.0.3",
     "@applitools/eyes-sdk-core": "^6.0.2",
     "@applitools/visual-grid-client": "13.5.8"
   },
@@ -58,6 +59,7 @@
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "scripts": {
+    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "test:it": "mocha-parallel-tests --timeout 120000 \"test/it/**/*.spec.js\"",
@@ -65,7 +67,8 @@
     "test:coverage": "coverage-tests run --path test/coverage/index.js",
     "test:coverage:nuke": "coverage-tests nuke",
     "test:coverage:doctor": "coverage-tests doctor",
-    "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\""
+    "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
+    "postpublish": "git push; git push --tags"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

@@ -23,6 +23,7 @@ exports.DebugLogHandler = core.DebugLogHandler
 exports.FileDebugScreenshotsProvider = core.FileDebugScreenshotsProvider
 exports.FileLogHandler = core.FileLogHandler
 exports.EyesJsBrowserUtils = core.EyesJsBrowserUtils
+exports.EyesJsExecutor = core.EyesJsExecutor
 exports.DiffsFoundError = core.DiffsFoundError
 exports.NewTestError = core.NewTestError
 exports.TestFailedError = core.TestFailedError

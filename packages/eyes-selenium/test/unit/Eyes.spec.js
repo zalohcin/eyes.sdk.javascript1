@@ -1,6 +1,14 @@
 'use strict'
 
+require('chromedriver')
 const assert = require('assert')
+const {Logger} = require('@applitools/eyes-common')
+const {Builder, Capabilities} = require('selenium-webdriver')
+const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
+
+const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
+
+const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
 const {
   Eyes,
@@ -13,6 +21,7 @@ const {
   ProxySettings,
   BatchInfo,
   PropertyData,
+  Target,
 } = require('../../index')
 
 describe('Eyes', function() {
@@ -102,5 +111,88 @@ describe('Eyes', function() {
     )
     assert.strictEqual(eyes.getBaselineEnvName(), 'baselineEnvName')
     assert.strictEqual(eyes.getSendDom(), false)
+  })
+
+  describe('should work wait before viewport screenshot after setWaitBeforeScreenshots', function() {
+    let server, driver, eyes
+    let checkTimestamp, networkTimestamp, duration
+    const thrownScreenshotDone = Symbol()
+    before(async () => {
+      server = await fakeEyesServer({logger})
+      driver = await new Builder()
+        .withCapabilities(Capabilities.chrome())
+        .setChromeOptions(new ChromeOptions().addArguments('disable-infobars').headless())
+        .build()
+      eyes = new Proxy(new Eyes(), {
+        get(target, key, receiver) {
+          if (key === 'checkWindowBase') {
+            checkTimestamp = Date.now()
+          } else if (key === '_ensureRunningSession') {
+            networkTimestamp = Date.now()
+          } else if (key === 'getScreenshot') {
+            const screenshotTimestamp = Date.now()
+            duration =
+              screenshotTimestamp - checkTimestamp - (screenshotTimestamp - networkTimestamp)
+            throw thrownScreenshotDone
+          }
+          return Reflect.get(target, key, receiver)
+        },
+      })
+      eyes.setServerUrl(`http://localhost:${server.port}`)
+      eyes.setApiKey('fakeApiKey')
+      await eyes.open(driver, this.parent.title, this.title)
+    })
+
+    afterEach(() => {
+      eyes.setWaitBeforeScreenshots(undefined)
+    })
+
+    it('should wait default amount of time', async () => {
+      const delay = eyes.getWaitBeforeScreenshots()
+      try {
+        await eyes.check('wait', Target.window())
+      } catch (caught) {
+        if (caught === thrownScreenshotDone) {
+          assert(duration >= delay && duration <= delay + 10)
+        } else {
+          assert.fail()
+        }
+      }
+    })
+
+    it('should wait specified amount of time', async () => {
+      const delay = 500
+      try {
+        eyes.setWaitBeforeScreenshots(delay)
+        await eyes.check('wait', Target.window())
+      } catch (caught) {
+        if (caught === thrownScreenshotDone) {
+          assert(duration >= delay && duration <= delay + 10)
+        } else {
+          assert.fail()
+        }
+      }
+    })
+
+    it('should wait default amount of time set null', async () => {
+      const delay = eyes.getWaitBeforeScreenshots()
+      try {
+        eyes.setWaitBeforeScreenshots(null)
+        await eyes.check('wait', Target.window())
+      } catch (caught) {
+        if (caught === thrownScreenshotDone) {
+          assert(duration >= delay && duration <= delay + 10)
+        } else {
+          assert.fail()
+        }
+      }
+    })
+
+    after(async () => {
+      await eyes.close()
+      await eyes.abort()
+      await driver.quit()
+      await server.close()
+    })
   })
 })
