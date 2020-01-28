@@ -1,6 +1,6 @@
 'use strict'
 
-const axios = require('axios')
+const Axios = require('axios')
 const zlib = require('zlib')
 
 const {GeneralUtils, ArgumentGuard} = require('@applitools/eyes-common')
@@ -10,7 +10,7 @@ const {RunningSession} = require('./RunningSession')
 const {
   configAxiosHeaders,
   configAxiosFromConfiguration,
-  prepareRequest,
+  delayRequest,
   handleRequestResponse,
   handleRequestError,
 } = require('./requestHelpers')
@@ -25,7 +25,7 @@ const EYES_API_PATH = '/api/sessions'
 const DEFAULT_TIMEOUT_MS = 300000 // ms (5 min)
 const REDUCED_TIMEOUT_MS = 15000 // ms (15 sec)
 const RETRY_REQUEST_INTERVAL = 500 // 0.5s
-const POLLING_DELAY_SEQUENCE = [].concat(
+const DELAY_BEFORE_POLLING = [].concat(
   Array(5).fill(500), // 5 tries with delay 0.5s
   Array(5).fill(1000), // 5 tries with delay 1s
   Array(5).fill(2000), // 5 tries with delay 2s
@@ -87,14 +87,12 @@ class ServerConnector {
     /** @type {RenderingInfo} */
     this._renderingInfo = undefined
 
-    this._axios = axios.create({
+    this._axios = Axios.create({
       withApiKey: true,
       retry: 1,
       repeat: 0,
-      delayBeforePolling: POLLING_DELAY_SEQUENCE,
-      get requestId() {
-        return createRequestId()
-      },
+      delayBeforePolling: DELAY_BEFORE_POLLING,
+      createRequestId,
       proxy: undefined,
       headers: DEFAULT_HEADERS,
       timeout: DEFAULT_TIMEOUT_MS,
@@ -102,42 +100,29 @@ class ServerConnector {
       maxContentLength: 20 * 1024 * 1024, // 20 MB
     })
 
-    this._axios.interceptors.request.use(config => {
-      const axiosConfig = Object.assign(
-        {
-          withApiKey: this._axios.defaults.withApiKey,
-          retry: this._axios.defaults.retry,
-          repeat: this._axios.defaults.repeat,
-          delayBeforePolling: this._axios.defaults.delayBeforePolling,
-          requestId: this._axios.defaults.requestId,
-        },
-        config,
-      )
-      configAxiosHeaders({
-        axiosConfig,
-        requestId: axiosConfig.requestId,
-        isLongRequest: axiosConfig.isLongRequest,
-        isPollingRequest: axiosConfig.isPollingRequest,
-      })
+    this._axios.interceptors.request.use(async config => {
+      const axiosConfig = Object.assign({}, this._axios.defaults, config)
+      axiosConfig.requestId = axiosConfig.createRequestId()
+      configAxiosHeaders({axiosConfig})
       configAxiosFromConfiguration({
         axiosConfig,
-        withApiKey: axiosConfig.withApiKey,
         configuration: this._configuration,
         logger: this._logger,
       })
 
-      return prepareRequest({
-        axiosConfig,
-        logger: this._logger,
-      })
+      this._logger.verbose(
+        `axios request interceptor - ${axiosConfig.name} [${axiosConfig.requestId}${
+          axiosConfig.originalRequestId ? ` retry of ${axiosConfig.originalRequestId}` : ''
+        }] will now call to ${axiosConfig.url} with params ${JSON.stringify(axiosConfig.params)}`,
+      )
+
+      await delayRequest({axiosConfig, logger})
+
+      return axiosConfig
     })
     this._axios.interceptors.response.use(
-      response => {
-        return handleRequestResponse({response, axios: this._axios, logger: this._logger})
-      },
-      err => {
-        return handleRequestError({err, axios: this._axios, logger: this._logger})
-      },
+      response => handleRequestResponse({response, axios: this._axios, logger: this._logger}),
+      err => handleRequestError({err, axios: this._axios, logger: this._logger}),
     )
   }
 

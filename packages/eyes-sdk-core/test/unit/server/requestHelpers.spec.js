@@ -15,21 +15,18 @@ describe('requestHelpers', () => {
   it('configAxiosHeaders works', () => {
     const REQUEST_ID = 'RequestId'
     const TIMESTAMP = new Date()
-    const axiosConfig = {}
-
-    configAxiosHeaders({
-      axiosConfig,
+    const axiosConfig = {
       requestId: REQUEST_ID,
       isLongRequest: true,
       timestamp: TIMESTAMP,
-    })
+    }
 
-    assert.deepStrictEqual(axiosConfig, {
-      headers: {
-        'x-applitools-eyes-client-request-id': REQUEST_ID,
-        'Eyes-Expect': '202+location',
-        'Eyes-Date': TIMESTAMP.toUTCString(),
-      },
+    configAxiosHeaders({axiosConfig})
+
+    assert.deepStrictEqual(axiosConfig.headers, {
+      'x-applitools-eyes-client-request-id': REQUEST_ID,
+      'Eyes-Expect': '202+location',
+      'Eyes-Date': TIMESTAMP.toUTCString(),
     })
   })
 
@@ -43,18 +40,19 @@ describe('requestHelpers', () => {
       password: 'password',
     })
     const axiosConfig = {
+      withApiKey: true,
       method: 'POST',
       url: 'https://some.url/some/api',
       data: {},
     }
     configAxiosFromConfiguration({
       axiosConfig,
-      withApiKey: true,
       configuration: configuration,
       logger,
     })
 
     assert.deepStrictEqual(axiosConfig, {
+      withApiKey: true,
       method: 'POST',
       url: 'https://some.url/some/api',
       params: {
