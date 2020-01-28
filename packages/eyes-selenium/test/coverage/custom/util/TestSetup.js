@@ -1,7 +1,9 @@
 'use strict'
 const {Builder} = require('selenium-webdriver')
-const {Eyes, ClassicRunner, VisualGridRunner, StitchMode} = require('../../../../index')
+const {Eyes, ClassicRunner, VisualGridRunner, StitchMode, BatchInfo} = require('../../../../index')
 const defaultArgs = process.env.HEADLESS === 'true' ? ['headless'] : []
+
+const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
 const Browsers = {
   CHROME: {
@@ -18,12 +20,14 @@ const Browsers = {
   },
 }
 
+const batch = new BatchInfo('JS Coverage Tests - eyes-selenium')
+
 async function getDriver(browser) {
   let capabilities = Browsers[browser]
   return new Builder().withCapabilities(capabilities).build()
 }
 
-function getEyes(runnerType, stitchMode, branchName) {
+function getEyes(runnerType, stitchMode, options) {
   let runner, eyes
   switch (runnerType) {
     case 'VG':
@@ -40,7 +44,11 @@ function getEyes(runnerType, stitchMode, branchName) {
       eyes = new Eyes()
       setStitchMode()
   }
-  if (branchName) eyes.setBranchName(branchName)
+  if (options) {
+    if (options.branchName) eyes.setBranchName(options.branchName)
+    else eyes.setBranchName('master')
+    if (options.config) eyes.setConfiguration(options.config)
+  } else setDefault()
   return {eyes: eyes, runner: runner}
 
   function setStitchMode() {
@@ -48,9 +56,19 @@ function getEyes(runnerType, stitchMode, branchName) {
       ? eyes.setStitchMode(StitchMode.CSS)
       : eyes.setStitchMode(StitchMode.SCROLL)
   }
+
+  function setDefault() {
+    eyes.setBranchName('master')
+  }
+}
+
+function getBatch() {
+  return batch
 }
 
 module.exports = {
   getDriver: getDriver,
   getEyes: getEyes,
+  getBatch: getBatch,
+  sauceUrl: SAUCE_SERVER_URL,
 }
