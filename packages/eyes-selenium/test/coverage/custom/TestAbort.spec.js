@@ -15,7 +15,7 @@ const {
   Eyes,
   StitchMode,
 } = require('../../../index')
-const appName = 'My application'
+const appName = 'Test abort'
 const testedUrl = 'https://applitools.com/docs/topics/overview.html'
 const batch = getBatch()
 describe(appName, () => {

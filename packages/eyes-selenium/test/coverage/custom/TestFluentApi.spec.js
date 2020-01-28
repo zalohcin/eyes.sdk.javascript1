@@ -74,7 +74,7 @@ describe(appName, () => {
     })
 
     it('TestCheckScrollableModal', async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal_SCROLL`, {
+      let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal_Scroll`, {
         width: 700,
         height: 460,
       })
@@ -90,7 +90,7 @@ describe(appName, () => {
     })
 
     it(`TestCheckLongIFrameModal`, async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal`, {
+      let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal_Scroll`, {
         width: 700,
         height: 460,
       })
@@ -104,10 +104,15 @@ describe(appName, () => {
     })
 
     it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal`, {
-        width: 700,
-        height: 460,
-      })
+      let driver = await eyes.open(
+        webDriver,
+        appName,
+        `TestCheckLongOutOfBoundsIFrameModal_Scroll`,
+        {
+          width: 700,
+          height: 460,
+        },
+      )
       await driver.findElement(By.id('hidden_click')).click()
       let frame = await driver.findElement(By.css('#modal3 iframe'))
       await driver.switchTo().frame(frame)
@@ -143,7 +148,7 @@ describe(appName, () => {
     })
 
     it(`TestCheckLongIFrameModal`, async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal`, {
+      let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal_VG`, {
         width: 700,
         height: 460,
       })
@@ -157,7 +162,7 @@ describe(appName, () => {
     })
 
     it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal`, {
+      let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal_VG`, {
         width: 700,
         height: 460,
       })
