@@ -1,15 +1,9 @@
 'use strict'
+const isEmulation = require('./isEmulation')
 
-function createEmulationInfo({
-  deviceName,
-  screenOrientation,
-  deviceScaleFactor,
-  mobile,
-  width,
-  height,
-}) {
-  const isEmulation = deviceName || deviceScaleFactor || mobile
-  return isEmulation
+function createEmulationInfo(browserConfig) {
+  const {deviceName, screenOrientation, deviceScaleFactor, mobile, width, height} = browserConfig
+  return isEmulation(browserConfig)
     ? {
         deviceName,
         screenOrientation,

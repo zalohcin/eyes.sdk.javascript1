@@ -13,30 +13,30 @@ describe('translateBrowserNameVersion', () => {
     expect(translateBrowserNameVersion('bla-chrome-one-version-back-bla')).to.equal('bla-chrome-one-version-back-bla'); // eslint-disable-line prettier/prettier
   })
 
-  it('translates to -1 and -2 for supported browsers', async () => {
-    expect(translateBrowserNameVersion('chrome-one-version-back')).to.equal('chrome-1')
-    expect(translateBrowserNameVersion('chrome-two-versions-back')).to.equal('chrome-2')
-    expect(translateBrowserNameVersion('firefox-one-version-back')).to.equal('firefox-1')
-    expect(translateBrowserNameVersion('firefox-two-versions-back')).to.equal('firefox-2')
-    expect(translateBrowserNameVersion('safari-one-version-back')).to.equal('safari-1')
-    expect(translateBrowserNameVersion('safari-two-versions-back')).to.equal('safari-2')
+  it('translates to (1|2)-version(s)-back for supported browsers', async () => {
+    expect(translateBrowserNameVersion('chrome-1')).to.equal('chrome-one-version-back')
+    expect(translateBrowserNameVersion('chrome-2')).to.equal('chrome-two-versions-back')
+    expect(translateBrowserNameVersion('firefox-1')).to.equal('firefox-one-version-back')
+    expect(translateBrowserNameVersion('firefox-2')).to.equal('firefox-two-versions-back')
+    expect(translateBrowserNameVersion('safari-1')).to.equal('safari-one-version-back')
+    expect(translateBrowserNameVersion('safari-2')).to.equal('safari-two-versions-back')
   })
 
-  it("doesn't translate to -1 and -2 for unsupported browsers", async () => {
-    expect(translateBrowserNameVersion('edge-one-version-back')).to.equal('edge-one-version-back')
-    expect(translateBrowserNameVersion('edge-two-versions-back')).to.equal('edge-two-versions-back'); // eslint-disable-line prettier/prettier
-    expect(translateBrowserNameVersion('ie11-one-version-back')).to.equal('ie11-one-version-back')
-    expect(translateBrowserNameVersion('ie11-two-versions-back')).to.equal('ie11-two-versions-back'); // eslint-disable-line prettier/prettier
-    expect(translateBrowserNameVersion('ie10-one-version-back')).to.equal('ie10-one-version-back')
-    expect(translateBrowserNameVersion('ie10-two-versions-back')).to.equal('ie10-two-versions-back'); // eslint-disable-line prettier/prettier
+  it("doesn't translate to (1|2)-version(s)-back for unsupported browsers", async () => {
+    expect(translateBrowserNameVersion('edge-1')).to.equal('edge-1')
+    expect(translateBrowserNameVersion('edge-2')).to.equal('edge-2')
+    expect(translateBrowserNameVersion('ie11-1')).to.equal('ie11-1')
+    expect(translateBrowserNameVersion('ie11-2')).to.equal('ie11-2')
+    expect(translateBrowserNameVersion('ie10-1')).to.equal('ie10-1')
+    expect(translateBrowserNameVersion('ie10-2')).to.equal('ie10-2')
   })
 
-  it("doesn't translate to -3 and onwards", async () => {
-    expect(translateBrowserNameVersion('chrome-three-version-back')).to.equal('chrome-three-version-back'); // eslint-disable-line prettier/prettier
-    expect(translateBrowserNameVersion('chrome-four-versions-back')).to.equal('chrome-four-versions-back'); // eslint-disable-line prettier/prettier
-    expect(translateBrowserNameVersion('firefox-five-version-back')).to.equal('firefox-five-version-back'); // eslint-disable-line prettier/prettier
-    expect(translateBrowserNameVersion('firefox-six-versions-back')).to.equal('firefox-six-versions-back'); // eslint-disable-line prettier/prettier
-    expect(translateBrowserNameVersion('safari-seven-version-back')).to.equal('safari-seven-version-back'); // eslint-disable-line prettier/prettier
-    expect(translateBrowserNameVersion('safari-eight-versions-back')).to.equal('safari-eight-versions-back'); // eslint-disable-line prettier/prettier
+  it("doesn't translate to three-versions-back and onwards", async () => {
+    expect(translateBrowserNameVersion('chrome-3')).to.equal('chrome-3')
+    expect(translateBrowserNameVersion('chrome-4')).to.equal('chrome-4')
+    expect(translateBrowserNameVersion('firefox-5')).to.equal('firefox-5')
+    expect(translateBrowserNameVersion('firefox-6')).to.equal('firefox-6')
+    expect(translateBrowserNameVersion('safari-7')).to.equal('safari-7')
+    expect(translateBrowserNameVersion('safari-8')).to.equal('safari-8')
   })
 })
