@@ -7,11 +7,6 @@ const {EyesDriverOperationError} = require('./errors/EyesDriverOperationError')
 const {ImageOrientationHandler} = require('./ImageOrientationHandler')
 const {JavascriptHandler} = require('./JavascriptHandler')
 
-const JS_GET_ENTIRE_PAGE_SIZE =
-  'var width = Math.max(arguments[0].clientWidth, arguments[0].scrollWidth);' +
-  'var height = Math.max(arguments[0].clientHeight, arguments[0].scrollHeight);' +
-  'return [width, height];'
-
 let imageOrientationHandler = new (class ImageOrientationHandlerImpl extends ImageOrientationHandler {
   /**
    * @inheritDoc
@@ -46,22 +41,32 @@ let javascriptHandler = new (class JavascriptHandlerImpl extends JavascriptHandl
  * @param {number} retriesLeft
  * @return {Promise<boolean>}
  */
-async function setBrowserSizeLoop(
-  logger,
-  driver,
-  browserSize,
-  requiredViewportSize,
-  sleep,
-  retriesLeft,
-) {
-  logger.verbose(
-    `Trying to set browser size to: ${browserSize}  required viewport size: ${requiredViewportSize}`,
-  )
-  const {width, height} = browserSize.toJSON()
-  await driver.resizeWindow(width, height)
+async function setBrowserSizeLoop(logger, driver, requiredViewportSize, sleep, retriesLeft) {
+  logger.verbose(`Setting browser size to required viewport size ${requiredViewportSize}`)
+  await driver.resizeWindow(requiredViewportSize.getWidth(), requiredViewportSize.getHeight())
 
-  const rect = await driver.getViewport()
-  const currentSize = new RectangleSize(rect)
+  let rect = await driver.getViewport()
+  let currentSize = new RectangleSize(rect)
+  logger.verbose(`Current viewport size: ${currentSize}`)
+  if (currentSize.equals(requiredViewportSize)) {
+    return true
+  }
+
+  const requiredBrowserSize = new RectangleSize({
+    width:
+      requiredViewportSize.getWidth() + (requiredViewportSize.getWidth() - currentSize.getWidth()),
+    height:
+      requiredViewportSize.getHeight() +
+      (requiredViewportSize.getHeight() - currentSize.getHeight()),
+  })
+
+  logger.verbose(
+    `Setting browser size to ${requiredBrowserSize} required viewport size ${requiredViewportSize}`,
+  )
+  await driver.resizeWindow(requiredBrowserSize.getWidth(), requiredBrowserSize.getHeight())
+
+  rect = await driver.getViewport()
+  currentSize = new RectangleSize(rect)
   logger.verbose(`Current viewport size: ${currentSize}`)
   if (currentSize.equals(requiredViewportSize)) {
     return true
@@ -72,14 +77,7 @@ async function setBrowserSizeLoop(
     return false
   }
 
-  return setBrowserSizeLoop(
-    logger,
-    driver,
-    browserSize,
-    requiredViewportSize,
-    sleep,
-    retriesLeft - 1,
-  )
+  return setBrowserSizeLoop(logger, driver, requiredViewportSize, sleep, retriesLeft - 1)
 }
 
 // noinspection OverlyComplexFunctionJS
@@ -284,10 +282,21 @@ class EyesTestcafeUtils extends EyesJsBrowserUtils {
    */
   static async getEntireElementSize(executor, element) {
     try {
-      const result = await executor.executeScript(JS_GET_ENTIRE_PAGE_SIZE, element)
+      const result = await executor.executeClientFunction({
+        script: () => {
+          const element = _element()
+          return [
+            Math.max(element.clientWidth, element.scrollWidth),
+            Math.max(element.clientHeight, element.scrollHeight),
+          ]
+        },
+        scriptName: 'getEntireElementSize',
+        args: {_element: element},
+      })
+
       return new RectangleSize(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0)
     } catch (err) {
-      throw new EyesDriverOperationError('Failed to extract entire size!', err)
+      throw new EyesDriverOperationError(`Failed to extract entire size! ${JSON.stringify(err)}`)
     }
   }
 
@@ -329,13 +338,12 @@ class EyesTestcafeUtils extends EyesJsBrowserUtils {
   /**
    * @param {Logger} logger - The logger to use.
    * @param {IWebDriver} driver - The web driver to use.
-   * @param {RectangleSize} browserSize - The size to set
    * @param {RectangleSize} requiredViewportSize - The size to expect
    */
-  static async setBrowserSize(logger, driver, browserSize, requiredViewportSize) {
+  static async setBrowserSize(logger, driver, requiredViewportSize) {
     const SLEEP = 1000
-    const RETRIES = 3
-    return setBrowserSizeLoop(logger, driver, browserSize, requiredViewportSize, SLEEP, RETRIES)
+    const RETRIES = 1
+    return setBrowserSizeLoop(logger, driver, requiredViewportSize, SLEEP, RETRIES)
   }
 
   /**
@@ -346,29 +354,7 @@ class EyesTestcafeUtils extends EyesJsBrowserUtils {
    * @return {Promise<undefined>}
    */
   static async setBrowserSizeByViewportSize(logger, driver, requiredViewportSize) {
-    await driver.resizeWindow(requiredViewportSize.getWidth(), requiredViewportSize.getHeight())
-    const browserSize = requiredViewportSize
-    const currentSize = new RectangleSize(browserSize)
-
-    const {width: actualWidth, height: actualHeight} = await driver.getViewport(driver)
-    logger.verbose(
-      `Current viewport size: ${actualWidth}x${actualHeight} required: ${requiredViewportSize}`,
-    )
-    if (
-      actualHeight != requiredViewportSize.getHeight() ||
-      actualWidth != requiredViewportSize.getWidth()
-    ) {
-      const requiredBrowserSize = new RectangleSize({
-        width: currentSize.getWidth() + (requiredViewportSize.getWidth() - actualWidth),
-        height: currentSize.getHeight() + (requiredViewportSize.getHeight() - actualHeight),
-      })
-      return EyesTestcafeUtils.setBrowserSize(
-        logger,
-        driver,
-        requiredBrowserSize,
-        requiredViewportSize,
-      )
-    }
+    return EyesTestcafeUtils.setBrowserSize(logger, driver, requiredViewportSize)
   }
 
   /**

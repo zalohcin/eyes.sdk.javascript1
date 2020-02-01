@@ -1,5 +1,5 @@
-const {makeRunTests} = require('./coverage-tests/index')
+const coverageTests = require('./coverage-tests/index')
 
 module.exports = {
-  makeRunTests,
+  coverageTests,
 }

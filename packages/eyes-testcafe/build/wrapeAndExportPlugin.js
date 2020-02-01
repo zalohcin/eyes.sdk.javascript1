@@ -6,7 +6,7 @@ module.exports = name => ({
   generateBundle: (_outputOptions, bundle, _isWrite) => {
     const bundleFile = bundle[`${name}.js`]
     bundleFile.code = `
-module.exports = () => {
+module.exports = function ${name} () {
   ${bundleFile.code}
   return ${name}()
 }`

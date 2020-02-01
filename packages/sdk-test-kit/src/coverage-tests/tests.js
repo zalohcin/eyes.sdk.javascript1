@@ -116,7 +116,7 @@ function makeCoverageTests({
       await checkWindow({isClassicApi: false, isFully: false})
       await close(throwException)
     },
-    TestCheckPageWithHeaderFully_Window: async () => {
+    TestCheckPageWithHeader_Window_Fully: async () => {
       await visit('https://applitools.github.io/demo/TestPages/PageWithHeader/index.html')
       await open({appName: 'Eyes Selenium SDK - Page With Header', viewportSize})
       await checkWindow({isClassicApi: false, isFully: true})

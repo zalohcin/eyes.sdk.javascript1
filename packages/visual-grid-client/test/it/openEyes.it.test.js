@@ -292,13 +292,29 @@ describe('openEyes', () => {
     const [err] = await presult(
       openEyes({
         wrappers: [wrapper],
-        browser: {width: 320, height: 480, name: 'firefox222'},
+        browser: {width: 320, height: 480, name: 'firefox-1'},
         url: `${baseUrl}/test.html`,
         appName,
       }),
     )
     expect(err.message).to.equal(
-      `browser name should be one of the following 'chrome', 'firefox', 'safari', 'ie10', 'ie11' or 'edge' but received 'firefox222'.`,
+      `browser name should be one of the following:
+* chrome
+* chrome-canary
+* firefox
+* ie10
+* ie11
+* edge
+* ie
+* safari
+* chrome-one-version-back
+* chrome-two-versions-back
+* firefox-one-version-back
+* firefox-two-versions-back
+* safari-one-version-back
+* safari-two-versions-back
+
+Received: 'firefox-1'.`,
     )
   })
 
@@ -314,6 +330,56 @@ describe('openEyes', () => {
     expect(err.message).to.equal(
       `browser 'firefox' should include 'height' and 'width' parameters.`,
     )
+  })
+
+  it("throws error on emulationInfo for browser that's not chrome", async () => {
+    const [errForMobile] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: {width: 320, height: 400, mobile: true, name: 'firefox'},
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    )
+    expect(errForMobile.message).to.equal(
+      `browser 'firefox' does not support mobile device emulation. Please remove 'mobile:true' or 'deviceName' from the browser configuration`,
+    )
+
+    const [errForDeviceName] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: {deviceName: 'iPhone X', name: 'firefox'},
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    )
+    expect(errForDeviceName.message).to.equal(
+      `browser 'firefox' does not support mobile device emulation. Please remove 'mobile:true' or 'deviceName' from the browser configuration`,
+    )
+
+    const [noErr] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: [
+          {deviceName: 'iPhone X', name: 'chrome-one-version-back'},
+          {deviceName: 'iPhone X', name: 'chrome-two-versions-back'},
+          {deviceName: 'iPhone X', name: 'chrome-canary'},
+        ],
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    )
+    expect(noErr).to.be.undefined
+
+    const [noErrForMissingBrowserName] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: {deviceName: 'iPhone X'},
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    )
+    expect(noErrForMissingBrowserName).to.be.undefined
   })
 
   it('doesnt throw when browser is emulated', async () => {
@@ -2224,7 +2290,7 @@ describe('openEyes', () => {
     const {checkWindow, close} = await openEyes({
       browser: [
         {width: 1, height: 1, name: 'firefox'},
-        {width: 1, height: 1, name: 'safari-1'},
+        {width: 1, height: 1, name: 'safari-one-version-back'},
       ],
       wrappers: [wrapper1, wrapper2],
       url: `bla`,

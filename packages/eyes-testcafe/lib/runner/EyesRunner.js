@@ -12,7 +12,7 @@ class EyesRunner {
    * @param {boolean} [shouldThrowException=true]
    * @return {Promise<TestResultsSummary>}
    */
-  async getAllTestResults(shouldThrowException) {
+  async getAllTestResults(_shouldThrowException) {
     // eslint-disable-line no-unused-vars
     throw new TypeError('The method is not implemented!')
   }

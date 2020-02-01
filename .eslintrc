@@ -11,6 +11,14 @@
   },
   "extends": ["plugin:node/recommended"],
   "plugins": ["prettier", "mocha-no-only", "node"],
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "screenshots/",
+    "applitools.config.js",
+    "logs",
+    "tmp/"
+  ],
   "rules": {
     "prettier/prettier": "error",
     "no-process-exit": "off",

@@ -99,6 +99,7 @@ class SessionResults {
     if (
       expectedAppOutput &&
       expectedAppOutput.length > 0 &&
+      !!expectedAppOutput[0] &&
       !(expectedAppOutput[0] instanceof ExpectedAppOutput)
     ) {
       expectedAppOutput = expectedAppOutput.map(output => new ExpectedAppOutput(output))

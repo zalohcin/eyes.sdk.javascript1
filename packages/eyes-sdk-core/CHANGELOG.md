@@ -1,7 +1,10 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+## 6.0.6
+
+- Fix `isMobile` check in EyesBase to support non-Selenium SDKs
+- Bug fix in SessionResults to prevent a false positive when processing an expectedAppOutput collection that is in a dirty state (e.g., an array with an entry of `null`)
+
 
 ## [5.20.7](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-sdk-core@5.20.6...@applitools/eyes-sdk-core@5.20.7) (2019-11-28)
 

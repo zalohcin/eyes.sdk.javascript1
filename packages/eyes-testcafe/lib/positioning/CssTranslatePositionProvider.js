@@ -1,10 +1,11 @@
 'use strict'
 
+const {MARK_RIGHT_MARGIN} = require('testcafe/lib/screenshots/constants')
 const {ArgumentGuard} = require('@applitools/eyes-common')
 const {PositionProvider} = require('@applitools/eyes-sdk-core')
 
 const {EyesTestcafeUtils} = require('../EyesTestcafeUtils')
-const makeFixImageMarkPosition = require('./fixImageMarkPosition')
+const transformElement = require('./transformElement')
 const {CssTranslatePositionMemento} = require('./CssTranslatePositionMemento')
 
 /**
@@ -32,10 +33,6 @@ class CssTranslatePositionProvider extends PositionProvider {
     this._lastSetPosition = undefined
 
     this._logger.verbose('creating CssTranslatePositionProvider')
-    this._fixImageMarkPosition = makeFixImageMarkPosition({
-      executor: this._executor,
-      logger: this._logger,
-    })
   }
 
   /**
@@ -53,16 +50,17 @@ class CssTranslatePositionProvider extends PositionProvider {
     ArgumentGuard.notNull(location, 'location')
     this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`)
 
-    let translate = `translate(-${location.getX()}px, -${location.getY()}px)`
-    if (location.getX() === 0 && location.getY() === 0) {
-      translate = ''
-    }
-
-    await this._fixImageMarkPosition(-location.getX(), -location.getY())
-    await this._executor.executeScript(
-      `arguments[0].style.transform = '${translate}';`,
-      this._scrollRootElement,
-    )
+    await this._executor.executeClientFunction({
+      script: transformElement,
+      scriptName: 'transformElement',
+      args: {
+        element: this._scrollRootElement,
+        transformLeft: -location.getX(),
+        transformTop: -location.getY(),
+        markRightMargin: MARK_RIGHT_MARGIN,
+        originalTransform: undefined,
+      },
+    })
 
     this._logger.verbose('Done!')
     this._lastSetPosition = location
@@ -86,18 +84,14 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @return {Promise<CssTranslatePositionMemento>}
    */
   async getState() {
-    let transforms = await this._executor.executeScript(
-      'return arguments[0].style.transform;',
-      this._scrollRootElement,
-    )
-    // TODO
-    // maybe we can do something else here ? check, since if later we
-    // try to update to this translate we set it to "" as well..
-    if (!transforms) {
-      transforms = 'translate(0px, 0px)'
-    }
-    this._logger.verbose('Current transform', transforms)
-    return new CssTranslatePositionMemento(transforms, this._lastSetPosition)
+    let transform = await this._executor.executeClientFunction({
+      script: () => _element().style.transform,
+      scriptName: 'getTransform',
+      args: {_element: this._scrollRootElement},
+    })
+
+    this._logger.verbose('Current transform', transform)
+    return new CssTranslatePositionMemento(transform, this._lastSetPosition)
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -107,14 +101,19 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @return {Promise}
    */
   async restoreState(state) {
-    let transform = state.getTransform()
-    if (transform === 'translate(0px, 0px)') {
-      transform = ''
-    }
-    const script = `arguments[0].style.transform = '${transform}';`
+    let originalTransform = state.getTransform()
+    await this._executor.executeClientFunction({
+      script: transformElement,
+      scriptName: 'transformElement',
+      args: {
+        element: this._scrollRootElement,
+        transformLeft: 0,
+        transformTop: 0,
+        markRightMargin: MARK_RIGHT_MARGIN,
+        originalTransform,
+      },
+    })
 
-    await this._fixImageMarkPosition(0, 0)
-    await this._executor.executeScript(script, this._scrollRootElement)
     this._logger.verbose('Transform (position) restored.')
     this._lastSetPosition = state.getPosition()
   }

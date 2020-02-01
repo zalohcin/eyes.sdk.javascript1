@@ -137,6 +137,7 @@ describe('testWindow', () => {
             _hasCurrentImage: undefined,
             _isDifferent: undefined,
             _name: undefined,
+            _apiUrls: undefined,
             _renderId: '{"isGood":true,"sizeMode":"full-page"}',
           },
         ],
