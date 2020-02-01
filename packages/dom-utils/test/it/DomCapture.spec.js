@@ -18,37 +18,26 @@ const {DomCapture} = require('../../index')
 
 /**
  * @param {Logger} logger_
- * @param {string} domJson
- * @param {string} testName
- */
-function writeDomJson(logger_, domJson, testName) {
-  const fileLogger = logger_.getLogHandler()
-  if (fileLogger instanceof FileLogHandler) {
-    const pathName = path.dirname(path.normalize(fileLogger._filename))
-    fs.writeFileSync(path.join(pathName, `${testName}.json`), domJson)
-  }
-}
-
-/**
- * @param {Logger} logger_
  * @param {WebDriver} driver_
  * @param {string} url
  * @param {string} testName
  * @param {function} [initCode]
  * @return {Promise<string>}
  */
-async function captureDom(logger_, driver_, url, testName, initCode) {
+async function captureDom(logger_, driver_, url, testName) {
   try {
     await driver_.get(url)
-
-    if (initCode) {
-      await initCode(driver_)
-    }
 
     const timeStart = PerformanceUtils.start()
     const actualDomJsonString = await DomCapture.getFullWindowDom(logger_, driver_)
     logger_.log(`Capturing actual dom took ${timeStart.end().summary}`)
-    writeDomJson(logger_, actualDomJsonString, testName)
+
+    if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
+      fs.writeFileSync(
+        path.resolve(__dirname, '../fixtures', `${testName}.json`),
+        actualDomJsonString,
+      )
+    }
 
     return actualDomJsonString
   } catch (err) {
@@ -198,11 +187,8 @@ describe('DomCapture', function() {
     const actualDomJsonString = await captureDom(
       logger,
       driver,
-      'https://www.bestbuy.com/site/apple-macbook-pro-13-display-intel-core-i5-8-gb-memory-256gb-flash-storage-silver/6936477.p?skuId=6936477',
+      'https://www.bestbuy.com/site/apple-macbook-pro-13-display-intel-core-i5-8-gb-memory-256gb-flash-storage-silver/6936477.p?skuId=6936477&intl=nosplash',
       this.test.title,
-      async driver => {
-        await driver.findElement(By.css('.us-link')).click()
-      },
     )
     const actualDomJson = JSON.parse(actualDomJsonString)
     assert.ok(actualDomJson)
