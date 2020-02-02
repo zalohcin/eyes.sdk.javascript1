@@ -1,13 +1,19 @@
 'use strict'
 
-const axios = require('axios')
+const Axios = require('axios')
 const zlib = require('zlib')
 
-const {GeneralUtils, TypeUtils, ArgumentGuard, DateTimeUtils} = require('@applitools/eyes-common')
+const {GeneralUtils, ArgumentGuard} = require('@applitools/eyes-common')
 
 const {RenderingInfo} = require('./RenderingInfo')
-const {setProxyOptions} = require('./setProxyOptions')
 const {RunningSession} = require('./RunningSession')
+const {
+  configAxiosHeaders,
+  configAxiosFromConfiguration,
+  delayRequest,
+  handleRequestResponse,
+  handleRequestError,
+} = require('./requestHelpers')
 const {TestResults} = require('../TestResults')
 const {MatchResult} = require('../match/MatchResult')
 
@@ -16,12 +22,15 @@ const {RenderStatusResults} = require('../renderer/RenderStatusResults')
 
 // Constants
 const EYES_API_PATH = '/api/sessions'
-const RETRY_REQUEST_INTERVAL = 500 // ms
-const LONG_REQUEST_DELAY_MS = 2000 // ms
-const MAX_LONG_REQUEST_DELAY_MS = 10000 // ms
 const DEFAULT_TIMEOUT_MS = 300000 // ms (5 min)
 const REDUCED_TIMEOUT_MS = 15000 // ms (15 sec)
-const LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR = 1.5
+const RETRY_REQUEST_INTERVAL = 500 // 0.5s
+const DELAY_BEFORE_POLLING = [].concat(
+  Array(5).fill(500), // 5 tries with delay 0.5s
+  Array(5).fill(1000), // 5 tries with delay 1s
+  Array(5).fill(2000), // 5 tries with delay 2s
+  5000, // all next tries with delay 5s
+)
 
 const DEFAULT_HEADERS = {
   Accept: 'application/json',
@@ -39,169 +48,10 @@ const HTTP_STATUS_CODES = {
   GATEWAY_TIMEOUT: 504,
 }
 
-const HTTP_FAILED_CODES = [
-  HTTP_STATUS_CODES.NOT_FOUND,
-  HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
-  HTTP_STATUS_CODES.BAD_GATEWAY,
-  HTTP_STATUS_CODES.GATEWAY_TIMEOUT,
-]
-
-const REQUEST_FAILED_CODES = ['ECONNRESET', 'ECONNABORTED', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN']
-
-let counter = 0
 const REQUEST_GUID = GeneralUtils.guid()
-
-/**
- * @typedef {{data: *, status: number, statusText: string, headers: *, request: *}} AxiosResponse
- */
-
-/**
- * @private
- * @param {ServerConnector} self
- * @param {string} name
- * @param {object} options
- * @param {number} [retry=1]
- * @param {boolean} [delayBeforeRetry=false]
- * @return {Promise<AxiosResponse>}
- */
-async function sendRequest(self, name, options, retry = 1, delayBeforeRetry = false) {
-  if (options.data instanceof Buffer && options.data.length === 0) {
-    // This 'if' fixes a bug in Axios whereby Axios doesn't send a content-length when the buffer is of length 0.
-    // This behavior makes the rendering-grid's nginx get stuck as it doesn't know when the body ends.
-    // https://github.com/axios/axios/issues/1701
-    options.data = ''
-  }
-
-  counter += 1
-  const requestId = `${counter}--${REQUEST_GUID}`
-  options.headers['x-applitools-eyes-client-request-id'] = requestId
-
-  // eslint-disable-next-line max-len
-  self._logger.verbose(
-    `ServerConnector.${name} [${requestId}] will now call to ${
-      options.url
-    } with params ${JSON.stringify(options.params)}`,
-  )
-
-  try {
-    const response = await axios(options)
-
-    // eslint-disable-next-line max-len
-    self._logger.verbose(
-      `ServerConnector.${name} [${requestId}] - result ${response.statusText}, status code ${response.status}, url ${options.url}`,
-    )
-    return response
-  } catch (err) {
-    const reasonMsg = `${err.message}${err.response ? `(${err.response.statusText})` : ''}`
-
-    self._logger.log(
-      `ServerConnector.${name} [${requestId}] - ${
-        options.method
-      } request failed. reason=${reasonMsg} | url=${options.url} ${
-        err.response ? `| status=${err.response.status} ` : ''
-      }| params=${JSON.stringify(options.params).slice(0, 100)}`,
-    )
-
-    if (err.response && err.response.data) {
-      self._logger.verbose(`ServerConnector.${name} - failure body:\n${err.response.data}`)
-    }
-
-    if (
-      retry > 0 &&
-      ((err.response && HTTP_FAILED_CODES.includes(err.response.status)) ||
-        REQUEST_FAILED_CODES.includes(err.code))
-    ) {
-      self._logger.verbose(`ServerConnector retrying request with delay ${delayBeforeRetry}...`)
-
-      if (delayBeforeRetry) {
-        await GeneralUtils.sleep(RETRY_REQUEST_INTERVAL)
-        return sendRequest(self, name, options, retry - 1, delayBeforeRetry)
-      }
-
-      return sendRequest(self, name, options, retry - 1, delayBeforeRetry)
-    }
-
-    throw new Error(reasonMsg)
-  }
-}
-
-/**
- * @private
- * @param {ServerConnector} self
- * @param {string} name
- * @param {object} options
- * @param {number} delay
- * @return {Promise<AxiosResponse>}
- */
-async function longRequestLoop(self, name, options, delay) {
-  // eslint-disable-next-line no-param-reassign
-  delay = Math.min(
-    MAX_LONG_REQUEST_DELAY_MS,
-    Math.floor(delay * LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR),
-  )
-  self._logger.verbose(`${name}: Still running... Retrying in ${delay} ms`)
-
-  await GeneralUtils.sleep(delay)
-  options.headers['Eyes-Date'] = DateTimeUtils.toRfc1123DateTime() // eslint-disable-line no-param-reassign
-
-  const response = await sendRequest(self, name, options)
-  if (response.status !== HTTP_STATUS_CODES.OK) {
-    return response
-  }
-  return longRequestLoop(self, name, options, delay)
-}
-
-/**
- * @private
- * @param {ServerConnector} self
- * @param {string} name
- * @param {AxiosResponse} response
- * @return {Promise<AxiosResponse>}
- */
-async function longRequestCheckStatus(self, name, response) {
-  switch (response.status) {
-    case HTTP_STATUS_CODES.OK: {
-      return response
-    }
-    case HTTP_STATUS_CODES.ACCEPTED: {
-      const options = self._createHttpOptions({
-        method: 'GET',
-        url: response.headers.location,
-      })
-      const requestResponse = await longRequestLoop(self, name, options, LONG_REQUEST_DELAY_MS)
-      return longRequestCheckStatus(self, name, requestResponse)
-    }
-    case HTTP_STATUS_CODES.CREATED: {
-      const options = self._createHttpOptions({
-        method: 'DELETE',
-        url: response.headers.location,
-        headers: {'Eyes-Date': DateTimeUtils.toRfc1123DateTime()},
-      })
-      return sendRequest(self, name, options)
-    }
-    case HTTP_STATUS_CODES.GONE: {
-      throw new Error('The server task has gone.')
-    }
-    default: {
-      throw new Error(`Unknown error during long request: ${JSON.stringify(response)}`)
-    }
-  }
-}
-
-/**
- * @private
- * @param {ServerConnector} self
- * @param {string} name
- * @param {object} options
- * @return {Promise<AxiosResponse>}
- */
-async function sendLongRequest(self, name, options = {}) {
-  // extend headers of the request
-  options.headers['Eyes-Expect'] = '202+location' // eslint-disable-line no-param-reassign
-  options.headers['Eyes-Date'] = DateTimeUtils.toRfc1123DateTime() // eslint-disable-line no-param-reassign
-
-  const response = await sendRequest(self, name, options)
-  return longRequestCheckStatus(self, name, response)
+let requestCounter = 0
+function createRequestId() {
+  return `${++requestCounter}--${REQUEST_GUID}`
 }
 
 /**
@@ -237,50 +87,43 @@ class ServerConnector {
     /** @type {RenderingInfo} */
     this._renderingInfo = undefined
 
-    this._httpOptions = {
+    this._axios = Axios.create({
+      withApiKey: true,
+      retry: 1,
+      repeat: 0,
+      delayBeforePolling: DELAY_BEFORE_POLLING,
+      createRequestId,
       proxy: undefined,
       headers: DEFAULT_HEADERS,
       timeout: DEFAULT_TIMEOUT_MS,
       responseType: 'json',
-      params: {},
-    }
-  }
+      maxContentLength: 20 * 1024 * 1024, // 20 MB
+    })
 
-  /**
-   * @param {object} requestOptions
-   * @param {boolean} isIncludeApiKey
-   * @param {boolean} isMergeDefaultOptions
-   * @return {object}
-   * @protected
-   */
-  _createHttpOptions(requestOptions, isIncludeApiKey = true, isMergeDefaultOptions = true) {
-    let options = requestOptions
-    if (isMergeDefaultOptions) {
-      options = GeneralUtils.mergeDeep(this._httpOptions, options)
-    } else if (options.params === undefined) {
-      options.params = {}
-    }
+    this._axios.interceptors.request.use(async config => {
+      const axiosConfig = Object.assign({}, this._axios.defaults, config)
+      axiosConfig.requestId = axiosConfig.createRequestId()
+      configAxiosHeaders({axiosConfig})
+      configAxiosFromConfiguration({
+        axiosConfig,
+        configuration: this._configuration,
+        logger: this._logger,
+      })
 
-    if (isIncludeApiKey) {
-      options.params.apiKey = this._configuration.getApiKey()
-    }
+      this._logger.verbose(
+        `axios request interceptor - ${axiosConfig.name} [${axiosConfig.requestId}${
+          axiosConfig.originalRequestId ? ` retry of ${axiosConfig.originalRequestId}` : ''
+        }] will now call to ${axiosConfig.url} with params ${JSON.stringify(axiosConfig.params)}`,
+      )
 
-    if (TypeUtils.isNotNull(this._configuration.getRemoveSession())) {
-      options.params.removeSession = this._configuration.getRemoveSession()
-    }
+      await delayRequest({axiosConfig, logger})
 
-    if (TypeUtils.isNotNull(this._configuration.getConnectionTimeout())) {
-      options.timeout = this._configuration.getConnectionTimeout()
-    }
-
-    const proxy = this._configuration.getProxy()
-    if (TypeUtils.isNotNull(proxy)) {
-      setProxyOptions({options, proxy, logger: this._logger})
-    }
-
-    options.maxContentLength = 20 * 1024 * 1024
-
-    return options
+      return axiosConfig
+    })
+    this._axios.interceptors.response.use(
+      response => handleRequestResponse({response, axios: this._axios, logger: this._logger}),
+      err => handleRequestError({err, axios: this._axios, logger: this._logger}),
+    )
   }
 
   /**
@@ -309,15 +152,16 @@ class ServerConnector {
     ArgumentGuard.notNull(sessionStartInfo, 'sessionStartInfo')
     this._logger.verbose(`ServerConnector.startSession called with: ${sessionStartInfo}`)
 
-    const options = this._createHttpOptions({
+    const config = {
+      name: 'startSession',
       method: 'POST',
       url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/running'),
       data: {
         startInfo: sessionStartInfo,
       },
-    })
+    }
 
-    const response = await sendRequest(this, 'startSession', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED]
     if (validStatusCodes.includes(response.status)) {
       const runningSession = new RunningSession(response.data)
@@ -339,7 +183,6 @@ class ServerConnector {
    */
   async stopSession(runningSession, isAborted, save) {
     ArgumentGuard.notNull(runningSession, 'runningSession')
-    // eslint-disable-next-line max-len
     this._logger.verbose(
       `ServerConnector.stopSession called with ${JSON.stringify({
         isAborted,
@@ -347,7 +190,9 @@ class ServerConnector {
       })} for session: ${runningSession}`,
     )
 
-    const options = this._createHttpOptions({
+    const config = {
+      name: 'stopSession',
+      isLongRequest: true,
       method: 'DELETE',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -359,9 +204,9 @@ class ServerConnector {
         aborted: isAborted,
         updateBaseline: save,
       },
-    })
+    }
 
-    const response = await sendLongRequest(this, 'stopSession', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       const testResults = new TestResults(response.data)
@@ -382,7 +227,8 @@ class ServerConnector {
     ArgumentGuard.notNull(batchId, 'batchId')
     this._logger.verbose(`ServerConnector.deleteBatchSessions called for batchId: ${batchId}`)
 
-    const options = this._createHttpOptions({
+    const config = {
+      name: 'deleteBatchSessions',
       method: 'DELETE',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -391,9 +237,9 @@ class ServerConnector {
         batchId,
         '/close/bypointerid',
       ),
-    })
+    }
 
-    const response = await sendRequest(this, 'deleteBatchSessions', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       this._logger.verbose('ServerConnector.deleteBatchSessions - delete succeeded')
@@ -415,7 +261,8 @@ class ServerConnector {
     ArgumentGuard.notNull(testResults, 'testResults')
     this._logger.verbose(`ServerConnector.deleteSession called with ${JSON.stringify(testResults)}`)
 
-    const options = this._createHttpOptions({
+    const config = {
+      name: 'deleteSession',
       method: 'DELETE',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -428,9 +275,9 @@ class ServerConnector {
       params: {
         accessToken: testResults.getSecretToken(),
       },
-    })
+    }
 
-    const response = await sendRequest(this, 'deleteSession', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       this._logger.verbose('ServerConnector.deleteSession - delete succeeded')
@@ -442,7 +289,9 @@ class ServerConnector {
 
   async uploadScreenshot(id, screenshot) {
     const url = this._renderingInfo.getResultsUrl().replace('__random__', id)
-    const options = this._createHttpOptions({
+    const config = {
+      name: 'uploadScreenshot',
+      retry: 3,
       method: 'PUT',
       url,
       data: screenshot,
@@ -451,9 +300,9 @@ class ServerConnector {
         'x-ms-blob-type': 'BlockBlob',
         'content-type': 'application/octet-stream',
       },
-    })
+    }
 
-    const response = await sendRequest(this, 'uploadScreenshot', options, 3)
+    const response = await this._axios.request(config)
     if (response.status !== HTTP_STATUS_CODES.CREATED) {
       throw new Error(
         `ServerConnector.uploadScreenshot - unexpected status (${response.statusText})`,
@@ -477,7 +326,9 @@ class ServerConnector {
       `ServerConnector.matchWindow called with ${matchWindowData} for session: ${runningSession}`,
     )
 
-    const options = this._createHttpOptions({
+    const config = {
+      name: 'matchWindow',
+      isLongRequest: true,
       method: 'POST',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -485,20 +336,21 @@ class ServerConnector {
         '/running',
         runningSession.getId(),
       ),
+      headers: {},
       data: matchWindowData,
-    })
+    }
 
     if (matchWindowData.getAppOutput().getScreenshot64()) {
       // if there is screenshot64, then we will send application/octet-stream body instead of application/json
       const screenshot64 = matchWindowData.getAppOutput().getScreenshot64()
       matchWindowData.getAppOutput().setScreenshot64(null) // remove screenshot64 from json
-      options.headers['Content-Type'] = 'application/octet-stream'
+      config.headers['Content-Type'] = 'application/octet-stream'
       // noinspection JSValidateTypes
-      options.data = Buffer.concat([createDataBytes(matchWindowData), screenshot64])
+      config.data = Buffer.concat([createDataBytes(matchWindowData), screenshot64])
       matchWindowData.getAppOutput().setScreenshot64(screenshot64)
     }
 
-    const response = await sendLongRequest(this, 'matchWindow', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       const matchResult = new MatchResult(response.data)
@@ -519,23 +371,26 @@ class ServerConnector {
     ArgumentGuard.notNull(matchSingleWindowData, 'matchSingleWindowData')
     this._logger.verbose(`ServerConnector.matchSingleWindow called with ${matchSingleWindowData}`)
 
-    const options = this._createHttpOptions({
+    const config = {
+      name: 'matchSingleWindow',
+      isLongRequest: true,
       method: 'POST',
       url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH),
+      headers: {},
       data: matchSingleWindowData,
-    })
+    }
 
     if (matchSingleWindowData.getAppOutput().getScreenshot64()) {
       // if there is screenshot64, then we will send application/octet-stream body instead of application/json
       const screenshot64 = matchSingleWindowData.getAppOutput().getScreenshot64()
       matchSingleWindowData.getAppOutput().setScreenshot64(null) // remove screenshot64 from json
-      options.headers['Content-Type'] = 'application/octet-stream'
+      config.headers['Content-Type'] = 'application/octet-stream'
       // noinspection JSValidateTypes
-      options.data = Buffer.concat([createDataBytes(matchSingleWindowData), screenshot64])
+      config.data = Buffer.concat([createDataBytes(matchSingleWindowData), screenshot64])
       matchSingleWindowData.getAppOutput().setScreenshot64(screenshot64)
     }
 
-    const response = await sendLongRequest(this, 'matchSingleWindow', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       const testResults = new TestResults(response.data)
@@ -564,7 +419,9 @@ class ServerConnector {
       `ServerConnector.replaceWindow called with ${matchWindowData} for session: ${runningSession}`,
     )
 
-    const options = this._createHttpOptions({
+    const config = {
+      name: 'replaceWindow',
+      isLongRequest: true,
       method: 'PUT',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -580,9 +437,9 @@ class ServerConnector {
         createDataBytes(matchWindowData),
         matchWindowData.getAppOutput().getScreenshot64(),
       ]),
-    })
+    }
 
-    const response = await sendLongRequest(this, 'replaceWindow', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       const matchResult = new MatchResult(response.data)
@@ -602,12 +459,13 @@ class ServerConnector {
   async renderInfo() {
     this._logger.verbose('ServerConnector.renderInfo called.')
 
-    const options = this._createHttpOptions({
+    const config = {
+      name: 'renderInfo',
       method: 'GET',
       url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH, '/renderinfo'),
-    })
+    }
 
-    const response = await sendRequest(this, 'renderInfo', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       this._renderingInfo = new RenderingInfo(response.data)
@@ -629,19 +487,18 @@ class ServerConnector {
     this._logger.verbose(`ServerConnector.render called with ${renderRequest}`)
 
     const isBatch = Array.isArray(renderRequest)
-    const options = this._createHttpOptions(
-      {
-        method: 'POST',
-        url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render'),
-        headers: {
-          'X-Auth-Token': this._renderingInfo.getAccessToken(),
-        },
-        data: isBatch ? renderRequest : [renderRequest],
+    const config = {
+      name: 'render',
+      widthApiKey: false,
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render'),
+      headers: {
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
-      false,
-    )
+      data: isBatch ? renderRequest : [renderRequest],
+    }
 
-    const response = await sendRequest(this, 'render', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       let runningRender = Array.from(response.data).map(
@@ -674,25 +531,24 @@ class ServerConnector {
       `ServerConnector.checkResourceExists called with resource#${resource.getSha256Hash()} for render: ${runningRender}`,
     )
 
-    const options = this._createHttpOptions(
-      {
-        method: 'HEAD',
-        url: GeneralUtils.urlConcat(
-          this._renderingInfo.getServiceUrl(),
-          '/resources/sha256/',
-          resource.getSha256Hash(),
-        ),
-        headers: {
-          'X-Auth-Token': this._renderingInfo.getAccessToken(),
-        },
-        params: {
-          'render-id': runningRender.getRenderId(),
-        },
+    const config = {
+      name: 'renderCheckResource',
+      widthApiKey: false,
+      method: 'HEAD',
+      url: GeneralUtils.urlConcat(
+        this._renderingInfo.getServiceUrl(),
+        '/resources/sha256/',
+        resource.getSha256Hash(),
+      ),
+      headers: {
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
-      false,
-    )
+      params: {
+        'render-id': runningRender.getRenderId(),
+      },
+    }
 
-    const response = await sendRequest(this, 'renderCheckResource', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.NOT_FOUND]
     if (validStatusCodes.includes(response.status)) {
       this._logger.verbose('ServerConnector.checkResourceExists - request succeeded')
@@ -720,28 +576,27 @@ class ServerConnector {
       `ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`,
     )
 
-    const options = this._createHttpOptions(
-      {
-        method: 'PUT',
-        url: GeneralUtils.urlConcat(
-          this._renderingInfo.getServiceUrl(),
-          '/resources/sha256/',
-          resource.getSha256Hash(),
-        ),
-        headers: {
-          'X-Auth-Token': this._renderingInfo.getAccessToken(),
-          'Content-Type': resource.getContentType(),
-        },
-        maxContentLength: 15.5 * 1024 * 1024, // 15.5 MB  (VG limit is 16MB)
-        params: {
-          'render-id': runningRender.getRenderId(),
-        },
-        data: resource.getContent(),
+    const config = {
+      name: 'renderPutResource',
+      withApiKey: false,
+      method: 'PUT',
+      url: GeneralUtils.urlConcat(
+        this._renderingInfo.getServiceUrl(),
+        '/resources/sha256/',
+        resource.getSha256Hash(),
+      ),
+      headers: {
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
+        'Content-Type': resource.getContentType(),
       },
-      false,
-    )
+      maxContentLength: 15.5 * 1024 * 1024, // 15.5 MB  (VG limit is 16MB)
+      params: {
+        'render-id': runningRender.getRenderId(),
+      },
+      data: resource.getContent(),
+    }
 
-    const response = await sendRequest(this, 'renderPutResource', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       this._logger.verbose(
@@ -777,27 +632,22 @@ class ServerConnector {
     this._logger.verbose(`ServerConnector.renderStatus called for render: ${renderId}`)
 
     const isBatch = Array.isArray(renderId)
-    const options = this._createHttpOptions(
-      {
-        method: 'POST',
-        url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render-status'),
-        headers: {
-          'X-Auth-Token': this._renderingInfo.getAccessToken(),
-        },
-        timeout: REDUCED_TIMEOUT_MS,
-        data: isBatch ? renderId : [renderId],
+    const config = {
+      name: 'renderStatus',
+      retry: 3,
+      delay: delayBeforeRequest ? RETRY_REQUEST_INTERVAL : null,
+      delayBeforeRetry: RETRY_REQUEST_INTERVAL,
+      withApiKey: false,
+      method: 'POST',
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render-status'),
+      headers: {
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
-      false,
-    )
-
-    if (delayBeforeRequest) {
-      this._logger.verbose(
-        `ServerConnector.renderStatus request delayed for ${RETRY_REQUEST_INTERVAL} ms.`,
-      )
-      await GeneralUtils.sleep(RETRY_REQUEST_INTERVAL)
+      timeout: REDUCED_TIMEOUT_MS,
+      data: isBatch ? renderId : [renderId],
     }
 
-    const response = await sendRequest(this, 'renderStatus', options, 3, true)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK]
     if (validStatusCodes.includes(response.status)) {
       let renderStatus = Array.from(response.data).map(
@@ -825,7 +675,8 @@ class ServerConnector {
     ArgumentGuard.notNull(domJson, 'domJson')
     this._logger.verbose('ServerConnector.postDomSnapshot called')
 
-    const options = this._createHttpOptions({
+    const config = {
+      name: 'postDomSnapshot',
       method: 'POST',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -835,11 +686,11 @@ class ServerConnector {
       headers: {
         'Content-Type': 'application/octet-stream',
       },
-    })
+    }
 
-    options.data = zlib.gzipSync(Buffer.from(domJson))
+    config.data = zlib.gzipSync(Buffer.from(domJson))
 
-    const response = await sendRequest(this, 'postDomSnapshot', options)
+    const response = await this._axios.request(config)
     const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED]
     if (validStatusCodes.includes(response.status)) {
       this._logger.verbose('ServerConnector.postDomSnapshot - post succeeded')
@@ -849,54 +700,17 @@ class ServerConnector {
     throw new Error(`ServerConnector.postDomSnapshot - unexpected status (${response.statusText})`)
   }
 
-  /**
-   * @param {string} url
-   * @param {boolean} [isSecondRetry=true]
-   * @return {Promise<*>}
-   */
-  async downloadResource(url, isSecondRetry = true) {
-    ArgumentGuard.notNull(url, 'url')
-    this._logger.verbose(`ServerConnector.downloadResource called with url: ${url}`)
-
-    const options = this._createHttpOptions({url}, false, false)
-
-    try {
-      const response = await axios(options)
-
-      // eslint-disable-next-line max-len
-      this._logger.verbose(
-        `ServerConnector.downloadResource - result ${response.statusText}, status code ${response.status}, url ${options.url}`,
-      )
-      return response.data
-    } catch (err) {
-      let reasonMsg = err.message
-      if (err.response && err.response.statusText) {
-        reasonMsg += ` (${err.response.statusText})`
-      }
-
-      // eslint-disable-next-line max-len
-      this._logger.log(`ServerConnector.downloadResource - failed on ${options.url}: ${reasonMsg}`)
-
-      if (isSecondRetry) {
-        return this.downloadResource(url, false)
-      }
-
-      throw new Error(reasonMsg)
-    }
-  }
-
   async getUserAgents() {
-    const options = this._createHttpOptions(
-      {
-        url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/user-agents'),
-        headers: {
-          'X-Auth-Token': this._renderingInfo.getAccessToken(),
-        },
+    const config = {
+      name: 'getUserAgents',
+      withApiKey: false,
+      url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/user-agents'),
+      headers: {
+        'X-Auth-Token': this._renderingInfo.getAccessToken(),
       },
-      false,
-    )
+    }
 
-    const response = await sendRequest(this, 'getUserAgents', options)
+    const response = await this._axios.request(config)
     if (response.status === HTTP_STATUS_CODES.OK) {
       return response.data
     } else {
