@@ -200,6 +200,11 @@ class EyesSelenium extends Eyes {
       name = checkSettings.getName()
     }
 
+    if (!checkSettings.getTargetRegion()) {
+      // default case
+      return this._checkViewport(name)
+    }
+
     this._logger.verbose(`check(${checkSettings}) - begin`)
     this._stitchContent = checkSettings.getStitchContent()
     const targetRegion = checkSettings.getTargetRegion()
@@ -309,6 +314,121 @@ class EyesSelenium extends Eyes {
 
     this._logger.verbose('check - done!')
     return result
+  }
+
+  async _checkViewport(name) {
+    // [-] hide scrollbars + getscrollroot element - EyesSelenium#check
+    // [-] switch to defaultContent frame EyesSelemium#check
+    // [-] validatig session start / end + wait before screenshots + skip if disabled - EyesBase#checkWindowBase
+
+    // Screenshot
+    // [-] has hide caret + frame switch - EyesSelenium#getScreenshot
+    // [-] has scale + cutt + debug - EyesSelenium#_getElementScreenshot
+    // [-] has EyesWebDriverScreenshot.fromScreenshotType - EyesSelenium#_getElementScreenshot
+    // [-] has more cuts by imageProvidder (iOS fo example) - SafariScreenshotImageProvider#getImage
+    // [-] has compression EyesBase#_getAppOutputWithScreenshot
+
+    const screenshot = await this._getViewportScreenshot()
+
+    // DomCapture
+    // [-] has check config for sendDom + setPosition 0,0 - EyesBase#_getAppOutputWithScreenshot (and DomCapture#getFullWindowDom)
+    // [-] has custom DC script + getUrl + loop - DomCapture#getWindowDom
+    // [-] has download CSS and implant + iframes - DomCapture#getFrameDom
+
+    const domUrl = await this._getViewportDomUrl()
+    const title = 'Applitools'
+
+    const appOutput = await this._viewportAppOutput({title, screenshot, domUrl})
+
+    // [-] Retry mechanism based on config sutff (for all of the above) - MatchWindowTask#_takeScreenshot
+
+    const result = this._matchViewport(appOutput, name)
+    // [-] updating _lastScreenshotBounds and _lastScreenshot if not ignoreMismatch in MatchWindowTask#matchWindow
+    // [-] switchToParentFrame - EyesSelenium#check
+
+    // [-] reset scrollbars - EyesSelenium#check
+    // [-] if no result return empty result - EyesSelenium#check
+    return result
+  }
+
+  async _getViewportScreenshot() {
+    const fs = require('fs')
+    const {MutableImage} = require('../index')
+    let _screenshot = fs
+      .readFileSync('./test/fixtures/_tmp//screenshot.png')
+      .toString('base64')
+      .replace(/\r\n/g, '')
+    _screenshot = new MutableImage(_screenshot)
+    // [-] was returning EyesWebDriverScreenshot and setting frames in it etc - EyesSelenium#_getElementScreenshot
+    return _screenshot
+  }
+
+  async _getViewportDomUrl() {
+    const fs = require('fs')
+    const domJson = fs.readFileSync('./test/fixtures/_tmp/domc.json')
+    return this._serverConnector.postDomSnapshot(domJson)
+  }
+
+  async _matchViewport(appOutput, name) {
+    // was getting appOutputWithScreenshot now is AppOutput
+    let source
+    if (await this._driver.isNotMobile()) {
+      source = await this._driver.getCurrentUrl()
+    }
+
+    // Match setting
+    // [-] has getting data from checkSettings and setting defaults + sets regions (with driver and screenshot) - MatchWindowTask#createImageMatchSettings
+    const {ImageMatchSettings} = require('@applitools/eyes-common')
+    const {ImageMatchOptions: Options, MatchWindowData} = require('@applitools/eyes-sdk-core')
+    const imageMatchSettings = new ImageMatchSettings({})
+    // [-] gets userInputs here - EyesBase#matchWindow
+    const options = new Options({
+      name,
+      userInputs: [],
+      ignoreMismatch: false,
+      ignoreMatch: false,
+      forceMismatch: false,
+      forceMatch: false,
+      imageMatchSettings,
+      source,
+    })
+    const data = new MatchWindowData({
+      userInputs: [],
+      appOutput,
+      name,
+      ignoreMismatch: false,
+      options,
+    })
+    if (data.getAppOutput().getScreenshot64()) {
+      const screenshot = data.getAppOutput().getScreenshot64()
+      data.getAppOutput().setScreenshot64(null)
+
+      await this._renderingInfoPromise
+      const {GeneralUtils} = require('@applitools/eyes-common')
+      const id = GeneralUtils.guid()
+      const screenshotUrl = await this._serverConnector.uploadScreenshot(id, screenshot)
+      data.getAppOutput().setScreenshotUrl(screenshotUrl)
+    }
+
+    // Perform match.
+    return this._serverConnector.matchWindow(this._runningSession, data)
+  }
+
+  async _viewportAppOutput({title, screenshot, domUrl}) {
+    // [*] screenshot was EyesWebDriverScreenshot now is MutableImage
+    const {Location} = require('@applitools/eyes-common')
+    const imageLocation = new Location({x: 0, y: 0})
+
+    const {AppOutput} = require('@applitools/eyes-sdk-core')
+    const appOutput = new AppOutput({
+      title,
+      screenshot: await screenshot.getImageBuffer(),
+      screenshotUrl: undefined,
+      domUrl,
+      imageLocation,
+    })
+    // [*] was returning AppOutputWithScreenshot(appOutput, screenshot) now is appOutput
+    return appOutput
   }
 
   /**
