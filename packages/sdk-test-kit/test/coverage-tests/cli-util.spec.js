@@ -7,6 +7,7 @@ const {
   filterTestsByIndexes,
   getTestIndexesFromErrors,
   sortErrorsByType,
+  getPassedTestIndexes,
 } = require('../../src/coverage-tests/cli-util')
 const {makeCoverageTests} = require('../../src/coverage-tests/index')
 const {supportedCommands} = require('../../src/coverage-tests/tests')
@@ -76,6 +77,11 @@ describe('cli-util', () => {
     })
     it('should not get test indexes from errors when none are present', () => {
       assert.deepStrictEqual(getTestIndexesFromErrors([{}]), undefined)
+    })
+    it('should get test indexes for passed tests', () => {
+      const tests = {a: () => {}, b: () => {}, c: () => {}, d: () => {}}
+      const errors = [{testIndex: 1}, {testIndex: 3}]
+      assert.deepStrictEqual(getPassedTestIndexes({tests, errors}), [0, 2])
     })
   })
 })

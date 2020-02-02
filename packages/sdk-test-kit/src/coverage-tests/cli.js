@@ -14,6 +14,7 @@ const {
   filterTestsByIndexes,
   getTestIndexesFromErrors,
   sortErrorsByType,
+  getPassedTestIndexes,
 } = require('./cli-util')
 const os = require('os')
 
@@ -73,7 +74,7 @@ async function run(args) {
     const sdkImplementation = require(path.join(path.resolve('.'), args.path))
     const report = await doRunTests(args, sdkImplementation)
     const sendReportResponse = await doSendReport(args, report)
-    doDisplayResults(args, report, sendReportResponse)
+    doDisplayResults({args, report, sendReportResponse, tests: sdkImplementation.supportedTests})
     doExitCode(report.errors)
   } else {
     console.log('Nothing to run.')
@@ -161,7 +162,7 @@ async function doSendReport(args, report) {
   }
 }
 
-function doDisplayResults(args, report, sendReportResponse) {
+function doDisplayResults({args, report, sendReportResponse, tests}) {
   if (report.errors.length) {
     console.log(`\n-------------------- ERRORS --------------------`)
     let errors = [...report.errors]
@@ -187,13 +188,21 @@ function doDisplayResults(args, report, sendReportResponse) {
       console.log(`Report not sent to the QA dashboard because of: ${sendReportResponse.message}`)
     }
   }
-  if (!args.verbose) console.log('To see errors with stack trace output, run with --verbose')
+  if (!args.verbose) console.log('To see errors with stack trace output, run with --verbose\n')
   if (getTestIndexesFromErrors(report.errors))
     console.log(
       `To re-run just the failed tests, run with --filterIndexes ${getTestIndexesFromErrors(
         report.errors,
-      ).join(',')}`,
+      ).join(',')}\n`,
     )
+  if (getPassedTestIndexes({tests, errors: report.errors})) {
+    console.log(
+      `To re-run just the passed tests, run with --filterIndexes ${getPassedTestIndexes({
+        tests,
+        errors: report.errors,
+      }).join(',')}\n`,
+    )
+  }
 }
 
 async function startChromeDriver(options = []) {
