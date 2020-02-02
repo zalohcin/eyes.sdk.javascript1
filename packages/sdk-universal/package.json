@@ -1,0 +1,34 @@
+{
+  "name": "@applitools/sdk-universal",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "main": "sdk-universal.js",
+  "description": "Universal Core for Applitools JS SDK's",
+  "author": "Applitools team <team@applitools.com>",
+  "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
+  "license": "SEE LICENSE IN LICENSE",
+  "directories": {
+    "src": "./src",
+    "test": "./test"
+  },
+  "types": "./src/types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
+    "test": "mocha test/**/*.spec.js",
+    "postpublish": "git push; git push --tags"
+  },
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "mocha": "^6.2.2"
+  }
+}

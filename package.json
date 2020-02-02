@@ -13,6 +13,7 @@
     "packages/eyes-testcafe",
     "packages/sdk-fake-eyes-server",
     "packages/sdk-test-kit",
+    "packages/sdk-universal",
     "packages/visual-grid-client"
   ],
   "scripts": {
