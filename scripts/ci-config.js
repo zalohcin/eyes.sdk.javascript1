@@ -6,7 +6,7 @@ const config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', '.travis
 const pkgs = makePackagesList()
 
 config.jobs = {
-  include: [...makeJobsForLintStage(), ...makeJobsForUnitStage(), ...makeJobsForItStage()],
+  include: [...makeJobsForLintStage(), ...makeJobsForTestStage()],
 }
 
 fs.writeFileSync(path.join(__dirname, '..', '.travis.yml'), yaml.safeDump(config))
@@ -15,12 +15,8 @@ function makeJobsForLintStage() {
   return makeStageWithSingleJob({stageName: 'lint', scriptName: 'lint'})
 }
 
-function makeJobsForUnitStage() {
-  return makeStageWithJobsForEachPackage({stageName: 'unit tests', scriptName: 'test:unit'})
-}
-
-function makeJobsForItStage() {
-  return makeStageWithJobsForEachPackage({stageName: 'end-to-end tests', scriptName: 'test:it'})
+function makeJobsForTestStage() {
+  return makeStageWithJobsForEachPackage({stageName: 'test', scriptName: 'test'})
 }
 
 function makePackagesList() {

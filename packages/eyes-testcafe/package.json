@@ -57,7 +57,7 @@
     "lint": "eslint . --ext .js --config ../../.eslintrc",
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",
-    "test": "mocha --no-timeouts \"test/**/*.spec2.js\"",
+    "test": "yarn test:unit && yarn test:it && yarn test:e2e",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec2.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec2.js\"",
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec2.js\"",
