@@ -25,8 +25,7 @@ class AccessibilityRegionByRectangle extends GetAccessibilityRegion {
   /**
    * @inheritDoc
    */
-  async getRegion(eyesBase, screenshot) {
-    // eslint-disable-line no-unused-vars
+  async getRegion(_eyesBase, _screenshot) {
     const accessibilityRegion = new AccessibilityMatchSettings({
       left: this._rect.getLeft(),
       top: this._rect.getTop(),

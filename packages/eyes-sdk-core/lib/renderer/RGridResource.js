@@ -63,7 +63,7 @@ class RGridResource {
    * @param {Buffer} value - The resource's content
    */
   setContent(value) {
-    ArgumentGuard.notNull(value, 'content')
+    ArgumentGuard.notNull(value, this._url ? `content (of ${this._url})` : 'content')
     this._content = value
     this._sha256hash = undefined
 

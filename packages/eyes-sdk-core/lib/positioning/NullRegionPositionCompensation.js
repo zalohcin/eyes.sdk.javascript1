@@ -9,8 +9,7 @@ class NullRegionPositionCompensation extends RegionPositionCompensation {
   /**
    * @inheritDoc
    */
-  compensateRegionPosition(region, pixelRatio) {
-    // eslint-disable-line no-unused-vars
+  compensateRegionPosition(region, _pixelRatio) {
     return region
   }
 }
