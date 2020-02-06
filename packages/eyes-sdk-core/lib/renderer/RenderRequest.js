@@ -63,6 +63,13 @@ class RenderRequest {
     return this._webhook
   }
 
+  /**
+   * @return {string}
+   */
+  getStitchingService() {
+    return this._stitchingService
+  }
+
   // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
