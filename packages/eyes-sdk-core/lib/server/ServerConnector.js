@@ -474,6 +474,32 @@ class ServerConnector {
     throw new Error(`ServerConnector.renderInfo - unexpected status (${response.statusText})`)
   }
 
+  async batchInfo(batchId) {
+    ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
+    this._logger.verbose('ServerConnector.batchInfo called.')
+
+    const config = {
+      name: 'batchInfo',
+      method: 'GET',
+      url: GeneralUtils.urlConcat(
+        this._configuration.getServerUrl(),
+        EYES_API_PATH,
+        '/batches',
+        batchId,
+        'config/bypointerId',
+      ),
+    }
+
+    const response = await this._axios.request(config)
+    const validStatusCodes = [HTTP_STATUS_CODES.OK]
+    if (validStatusCodes.includes(response.status)) {
+      this._logger.verbose('ServerConnector.batchInfo - post succeeded', response.data)
+      return response.data
+    }
+
+    throw new Error(`ServerConnector.batchInfo - unexpected status (${response.statusText})`)
+  }
+
   /**
    * Initiate a rendering using RenderingGrid API
    *
@@ -503,7 +529,7 @@ class ServerConnector {
         resultsData => new RunningRender(resultsData),
       )
       if (!isBatch) {
-        runningRender = runningRender[0] // eslint-disable-line prefer-destructuring
+        runningRender = runningRender[0]
       }
 
       this._logger.verbose('ServerConnector.render - post succeeded', runningRender)

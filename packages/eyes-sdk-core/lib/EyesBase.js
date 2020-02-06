@@ -14,7 +14,7 @@ const {
   FileDebugScreenshotsProvider,
   NullDebugScreenshotProvider,
   SessionType,
-  GeneralUtils,
+  GeneralUtils: {sleep, presult},
 } = require('@applitools/eyes-common')
 
 const {AppOutputProvider} = require('./capture/AppOutputProvider')
@@ -178,7 +178,53 @@ class EyesBase extends EyesAbstract {
   }
 
   getAndSaveRenderingInfo() {
-    throw new TypeError('The method is not implemented!')
+    throw new TypeError('The method "getAndSaveRenderingInfo" is not implemented!')
+  }
+
+  _getAndSaveBatchInfoFromServer(_batchId) {
+    throw new TypeError('The method "_getAndSaveBatchInfoFromServer" is not implemented!')
+  }
+
+  _getAndSaveScmMergeBaseTime(_batchKey, _parentBranchName) {
+    throw new TypeError('The method "_getAndSaveScmMergeBaseTime" is not implemented!')
+  }
+
+  async getAndSetBatchInfo() {
+    const batchId = this.getUserSetBatchId()
+    let branchName = this._configuration.getBranchName()
+    let parentBranchName = this._configuration.getParentBranchName()
+
+    const isLocalBranchTest = branchName && parentBranchName && branchName !== parentBranchName
+    const isCiBranchTest = !isLocalBranchTest && batchId
+
+    let parentBranchBaselineSavedBefore, err
+    if (isCiBranchTest) {
+      ;[err, {branchName, parentBranchName, parentBranchBaselineSavedBefore}] = await presult(
+        this._getAndSaveBatchInfoFromServer(batchId),
+      )
+      this._logger.log(
+        `_getAndSaveBatchInfoFromServer done, batchInfo: ${{
+          branchName,
+          parentBranchName,
+          parentBranchBaselineSavedBefore,
+        }} err: ${err}`,
+      )
+    }
+
+    if (isLocalBranchTest || (isCiBranchTest && !parentBranchBaselineSavedBefore)) {
+      const batchKey =
+        batchId ||
+        `${this._configuration.getBranchName()}-${this._configuration.getParentBranchName()}`
+      ;[err, parentBranchBaselineSavedBefore] = await presult(
+        this._getAndSaveScmMergeBaseTime(batchKey, parentBranchName),
+      )
+      this._logger.log(
+        '_getAndSaveScmMergeBaseTime done,',
+        `parentBranchBaselineSavedBefore: ${parentBranchBaselineSavedBefore} err: ${err}`,
+      )
+    }
+
+    return {branchName, parentBranchName, parentBranchBaselineSavedBefore}
   }
 
   /**
@@ -581,7 +627,7 @@ class EyesBase extends EyesAbstract {
     // default result
     const validationResult = new ValidationResult()
 
-    await GeneralUtils.sleep(this._configuration.getWaitBeforeScreenshots())
+    await sleep(this._configuration.getWaitBeforeScreenshots())
 
     await this.beforeMatchWindow()
     await this._sessionEventHandlers.validationWillStart(this._autSessionId, validationInfo)
@@ -909,6 +955,7 @@ class EyesBase extends EyesAbstract {
       if (!this._renderingInfoPromise) {
         this._renderingInfoPromise = this.getAndSaveRenderingInfo()
       }
+      this._batchInfoPromise = this.getAndSetBatchInfo()
 
       await this._sessionEventHandlers.testStarted(await this.getAUTSessionId())
 
@@ -1232,6 +1279,9 @@ class EyesBase extends EyesAbstract {
     this._logger.verbose(`Application environment is ${appEnvironment}`)
     await this._sessionEventHandlers.initEnded()
 
+    const {branchName, parentBranchName, parentBranchBaselineSavedBefore} = await this
+      ._batchInfoPromise
+
     this._sessionStartInfo = new SessionStartInfo({
       agentId: this.getFullAgentId(),
       sessionType: this._configuration.getSessionType(),
@@ -1244,8 +1294,9 @@ class EyesBase extends EyesAbstract {
       environmentName: this._configuration.getEnvironmentName(),
       environment: appEnvironment,
       defaultMatchSettings: this._configuration.getDefaultMatchSettings(),
-      branchName: this._configuration.getBranchName(),
-      parentBranchName: this._configuration.getParentBranchName(),
+      branchName: branchName,
+      parentBranchName: parentBranchName,
+      parentBranchBaselineSavedBefore,
       baselineBranchName: this._configuration.getBaselineBranchName(),
       compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
       ignoreBaseline: this._configuration.getIgnoreBaseline(),
@@ -1284,8 +1335,7 @@ class EyesBase extends EyesAbstract {
 
     try {
       if (this._configuration._batch) {
-        // if use .getBatch(), it will create an empty batch. If session is open, batch should exists
-        const batchId = this._configuration._batch.getId()
+        const batchId = this.getUserSetBatchId()
         await this._serverConnector.deleteBatchSessions(batchId)
       } else {
         this._logger.log('Failed to close batch: no batch found.')
@@ -1293,6 +1343,12 @@ class EyesBase extends EyesAbstract {
     } catch (e) {
       this._logger.log('Failed to close batch: error occurred', e)
     }
+  }
+
+  getUserSetBatchId() {
+    // not doing eyesInstance.getBatch().getId() because
+    // it would generate a new id if called before open
+    return this._configuration._batch && this._configuration._batch.getId()
   }
 
   /**

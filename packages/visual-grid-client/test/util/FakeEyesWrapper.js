@@ -442,7 +442,7 @@ class FakeEyesWrapper extends EventEmitter {
     return this.ignoreDisplacements
   }
 
-  getExistingBatchId() {
+  getUserSetBatchId() {
     return this.batchId
   }
 }

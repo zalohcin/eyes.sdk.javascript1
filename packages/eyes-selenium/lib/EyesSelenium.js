@@ -63,6 +63,7 @@ class EyesSelenium extends Eyes {
     super(serverUrl, isDisabled, runner)
 
     this._runner.makeGetRenderingInfo(this._serverConnector.renderInfo.bind(this._serverConnector))
+    this._runner.makeGetBatchInfo(this._serverConnector.batchInfo.bind(this._serverConnector))
 
     /** @type {boolean} */
     this._checkFrameOrElement = false
@@ -1267,6 +1268,17 @@ class EyesSelenium extends Eyes {
   async getAndSaveRenderingInfo() {
     const renderingInfo = await this._runner.getRenderingInfoWithCache()
     this._serverConnector.setRenderingInfo(renderingInfo)
+  }
+
+  async _getAndSaveBatchInfoFromServer(batchId) {
+    ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
+    return this._runner.getBatchInfoWithCache(batchId)
+  }
+
+  async _getAndSaveScmMergeBaseTime(batchKey, parentBranchName) {
+    ArgumentGuard.notNullOrEmpty(batchKey, 'batchKey')
+    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
+    return this._runner.getScmInfoWithCache(batchKey, parentBranchName)
   }
 }
 

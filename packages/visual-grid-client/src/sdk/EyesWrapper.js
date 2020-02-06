@@ -187,12 +187,6 @@ class EyesWrapper extends EyesBase {
     this.inferredEnvironment = value
   }
 
-  getExistingBatchId() {
-    // not doing eyesInstance.getBatch().getId() because
-    // it would generate a new id if called before open
-    return this._configuration._batch && this._configuration._batch.getId()
-  }
-
   async getAndSaveRenderingInfo() {
     // Do nothing because visual grid client handles rendering info
   }

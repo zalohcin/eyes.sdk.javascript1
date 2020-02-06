@@ -102,6 +102,8 @@ exports.TestResultsFormatter = require('./lib/TestResultsFormatter').TestResults
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus
 
 exports.makeGetRenderingInfo = require('./lib/server/getRenderingInfo')
+exports.makeGetBatchInfo = require('./lib/getBatchInfo')
+exports.getScmInfo = require('./lib/getScmInfo')
 
 // Classes from eyes-common which may be used as part of public API
 exports.AccessibilityLevel = common.AccessibilityLevel
