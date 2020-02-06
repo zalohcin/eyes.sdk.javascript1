@@ -39,6 +39,10 @@ jobs:
       script: cd packages/sdk-test-kit; yarn test
     - name: '@applitools/visual-grid-client'
       script: cd packages/visual-grid-client; yarn test
+    - name: '@applitools/eyes.webdriverio'
+      script: cd packages/eyes-webdriverio-4; yarn test
+    - name: '@applitools/eyes-webdriverio'
+      script: cd packages/eyes-webdriverio-5; yarn test
 notifications:
   slack:
     secure: >-
