@@ -1,0 +1,37 @@
+{
+  "name": "@applitools/eyes.webdriverio",
+  "version": "2.11.8",
+  "description": "Applitools Eyes SDK for WebdriverIO",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint '**/*.js'",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:e2e": "mocha --no-timeouts \"test/+(TestClassicApi*.js|TestFluentApi*.js|TestVisualGrid*.js)\"",
+    "test:unit": "mocha \"test/unit/**/*.js\""
+  },
+  "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": "https://github.com/applitools/eyes-sdk-javascript",
+  "dependencies": {
+    "@applitools/dom-utils": "~4.6.37",
+    "@applitools/eyes-common": "^3.17.2",
+    "@applitools/eyes-sdk-core": "6.0.6",
+    "@applitools/visual-grid-client": "13.5.8",
+    "css": "2.2.4",
+    "css-url-parser": "^1.1.3",
+    "is-absolute-url": "^2.1.0",
+    "request-promise-native": "^1.0.7",
+    "webdriverio": "~4.14.4"
+  },
+  "devDependencies": {
+    "chromedriver": "^79.0.0",
+    "geckodriver": "^1.19.1",
+    "mocha": "4.0.1",
+    "mocha-parallel-tests": "^2.1.0",
+    "shared-examples-for": "^0.1.3",
+    "eslint": "^6.8.0"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  }
+}
