@@ -60,6 +60,7 @@ class FakeEyesWrapper extends EventEmitter {
     this.batchId = batchId
     this.baseUrl = 'http://fake'
     this.resultsRoute = '/results_url'
+    this.stitchingServiceUrl = '/stitching_service'
     this.matchLevel = 'Strict'
     this.accessibilityLevel = 'None'
     this.closeErr = closeErr
@@ -147,7 +148,10 @@ class FakeEyesWrapper extends EventEmitter {
   }
 
   async getRenderInfo() {
-    return {getResultsUrl: () => `${this.baseUrl}${this.resultsRoute}`}
+    return {
+      getResultsUrl: () => `${this.baseUrl}${this.resultsRoute}`,
+      getStitchingServiceUrl: () => `${this.baseUrl}${this.stitchingServiceUrl}`,
+    }
   }
 
   setRenderingInfo(val) {

@@ -21,7 +21,10 @@ describe('createRenderRequests', () => {
     const region = {left: 1, top: 2, width: 3, height: 4}
     const scriptHooks = 'scriptHooks'
     const sendDom = 'sendDom'
-    const renderInfo = {getResultsUrl: () => 'resultsUrl'}
+    const renderInfo = {
+      getResultsUrl: () => 'resultsUrl',
+      getStitchingServiceUrl: () => 'stitchingServiceUrl',
+    }
     const renderRequests = createRenderRequests({
       url,
       resources,
@@ -47,6 +50,7 @@ describe('createRenderRequests', () => {
     expect(renderRequests.map(r => r.toJSON())).to.eql([
       {
         webhook: 'resultsUrl',
+        stitchingService: 'stitchingServiceUrl',
         url,
         dom,
         resources: resourcesObj,
@@ -63,6 +67,7 @@ describe('createRenderRequests', () => {
       },
       {
         webhook: 'resultsUrl',
+        stitchingService: 'stitchingServiceUrl',
         url,
         dom,
         resources: resourcesObj,
@@ -87,7 +92,10 @@ describe('createRenderRequests', () => {
     const deviceName = 'deviceName'
     const screenOrientation = 'screenOrientation'
     const browsers = [{deviceName, screenOrientation}]
-    const renderInfo = {getResultsUrl: () => 'resultsUrl'}
+    const renderInfo = {
+      getResultsUrl: () => 'resultsUrl',
+      getStitchingServiceUrl: () => 'stitchingServiceUrl',
+    }
     const renderRequests = createRenderRequests({
       url,
       resources,
@@ -107,6 +115,7 @@ describe('createRenderRequests', () => {
     expect(renderRequests.map(r => r.toJSON())).to.eql([
       {
         webhook: 'resultsUrl',
+        stitchingService: 'stitchingServiceUrl',
         url,
         dom,
         resources: {},
@@ -127,7 +136,10 @@ describe('createRenderRequests', () => {
     const cdt = 'cdt'
     const resources = []
     const browsers = [{width: 1, height: 2, deviceScaleFactor: 3}]
-    const renderInfo = {getResultsUrl: () => 'resultsUrl'}
+    const renderInfo = {
+      getResultsUrl: () => 'resultsUrl',
+      getStitchingServiceUrl: () => 'stitchingServiceUrl',
+    }
     const renderRequests = createRenderRequests({
       url,
       resources,
@@ -147,6 +159,7 @@ describe('createRenderRequests', () => {
     expect(renderRequests.map(r => r.toJSON())).to.eql([
       {
         webhook: 'resultsUrl',
+        stitchingService: 'stitchingServiceUrl',
         url,
         dom,
         resources: {},
@@ -173,7 +186,10 @@ describe('createRenderRequests', () => {
     const cdt = ''
     const resources = []
     const browsers = [{width: 1, height: 2}]
-    const renderInfo = {getResultsUrl: () => 'resultsUrl'}
+    const renderInfo = {
+      getResultsUrl: () => 'resultsUrl',
+      getStitchingServiceUrl: () => 'stitchingServiceUrl',
+    }
     const ignore = ['kuku', {selector: 'bla'}]
     const layout = [{selector: 'bla2'}, 'kuku2']
     const strict = ['kuku3', {selector: 'bla3'}, {selector: 'bla4'}]
@@ -203,6 +219,7 @@ describe('createRenderRequests', () => {
     expect(renderRequests.map(r => r.toJSON())).to.eql([
       {
         webhook: 'resultsUrl',
+        stitchingService: 'stitchingServiceUrl',
         url,
         dom,
         resources: {},

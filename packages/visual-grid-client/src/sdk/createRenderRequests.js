@@ -38,6 +38,7 @@ function createRenderRequests({
 
       return new RenderRequest({
         webhook: renderInfo.getResultsUrl(),
+        stitchingService: renderInfo.getStitchingServiceUrl(),
         url,
         resources,
         dom,
