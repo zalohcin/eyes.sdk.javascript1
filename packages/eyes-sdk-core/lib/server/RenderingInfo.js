@@ -8,10 +8,11 @@ class RenderingInfo {
    * @param {string} accessToken
    * @param {string} resultsUrl
    */
-  constructor({serviceUrl, accessToken, resultsUrl} = {}) {
+  constructor({serviceUrl, accessToken, resultsUrl, stitchingServiceUrl} = {}) {
     this._serviceUrl = serviceUrl
     this._accessToken = accessToken
     this._resultsUrl = resultsUrl
+    this._stitchingServiceUrl = stitchingServiceUrl
   }
 
   /**
@@ -69,6 +70,13 @@ class RenderingInfo {
       this._payload = GeneralUtils.jwtDecode(this._accessToken)
     }
     return this._payload
+  }
+
+  /**
+   * @return {string}
+   */
+  getStitchingServiceUrl() {
+    return this._stitchingServiceUrl
   }
 
   /**

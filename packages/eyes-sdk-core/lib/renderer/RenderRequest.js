@@ -22,6 +22,7 @@ class RenderRequest {
    */
   constructor({
     webhook,
+    stitchingService,
     url,
     dom,
     resources,
@@ -40,6 +41,7 @@ class RenderRequest {
     ArgumentGuard.notNull(resources, 'resources')
 
     this._webhook = webhook
+    this._stitchingService = stitchingService
     this._url = url
     this._dom = dom
     this._resources = resources
@@ -198,6 +200,7 @@ class RenderRequest {
 
     const object = {
       webhook: this._webhook,
+      stitchingService: this._stitchingService,
       url: this._url,
       dom: this._dom.getHashAsObject(),
       resources,
