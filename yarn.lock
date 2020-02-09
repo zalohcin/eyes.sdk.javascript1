@@ -57,19 +57,6 @@
     es6-promise-pool "2.5.0"
     tunnel "0.0.6"
 
-"@applitools/eyes-webdriverio@5.9.7":
-  version "5.9.7"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-webdriverio/-/eyes-webdriverio-5.9.7.tgz#0c77fe019fee07d9e4398f3afc0c55247b2e24e5"
-  integrity sha512-C1UIurx3MnrBQmiqnfPznhgAujKvmb1KuuCJrNg5maEWICWbyudEsMbBmdLFREhdqPnvTH4ex80GuEzLbU8qCQ==
-  dependencies:
-    "@applitools/dom-utils" "4.7.4"
-    "@applitools/eyes-sdk-core" "6.0.7"
-    "@applitools/visual-grid-client" "13.5.10"
-    chromedriver "^79.0.0"
-    geckodriver "^1.19.1"
-    selenium-webdriver "^4.0.0-alpha.5"
-    webdriverio "^5.18.4"
-
 "@applitools/eyes.webdriverio@2.11.6":
   version "2.11.6"
   resolved "https://registry.yarnpkg.com/@applitools/eyes.webdriverio/-/eyes.webdriverio-2.11.6.tgz#89c3169c617b0248fcb607f657f46fecaf8e1c98"
@@ -9357,7 +9344,7 @@ webdriver@5.18.6:
     lodash.merge "^4.6.1"
     request "^2.83.0"
 
-webdriverio@5.18.6, webdriverio@^5.18.4, webdriverio@^5.18.6:
+webdriverio@5.18.6, webdriverio@^5.18.6:
   version "5.18.6"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-5.18.6.tgz#a86000fc65bf4c33e7f089dd86e97932ad4d5e3a"
   integrity sha512-eJ7bIpjAqxHkeRvsf+fysqv98e4mNQ/9Zn+CBRDbS/+/EcmOKHghLdFSFEh019JoglMY7xYj3+mBDCsC7+aGLA==
