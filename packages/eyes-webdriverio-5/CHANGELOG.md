@@ -1,4 +1,4 @@
-## 5.9.9 - 2019-02-09
+## 5.9.9 - 2020-02-09
 - removed unnecessary dev dependencies
 
 ## [5.9.6]
