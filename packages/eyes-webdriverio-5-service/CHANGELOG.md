@@ -1,3 +1,8 @@
+## 1.3.4 - 2020-02-09
+- added missing require for ConsoleLogHandler
+- exported By and Target from eyes-webdriverio so they can be required directly from this package instead
+- updated the version of eyes-webdriverio to latest
+
 ## [1.2.3] - 2019-11-09 
 ### Fixed
 - Setting viewportSize through configuration. [Ticket 1168](https://trello.com/c/yPqI3erm)
