@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio",
-  "version": "5.9.8",
+  "version": "5.9.9",
   "description": "Applitools Eyes SDK for WebdriverIO",
   "keywords": [
     "eyes-webdriverio",
@@ -39,10 +39,10 @@
     "webdriverio": "^5.18.6"
   },
   "devDependencies": {
-    "chromedriver": "^80.0.0",
-    "geckodriver": "^1.19.1",
     "@applitools/sdk-test-kit": "^1.0.17",
+    "chromedriver": "^80.0.0",
     "eslint": "^6.8.0",
+    "geckodriver": "^1.19.1",
     "mocha": "^6.2.2",
     "mocha-parallel-tests": "^2.2.2",
     "shared-examples-for": "^0.1.3"
