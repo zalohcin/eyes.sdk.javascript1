@@ -1,7 +1,6 @@
-/* eslint-disable no-undef */
 'use strict'
 
-const {Eyes, Target} = require('@applitools/eyes-webdriverio')
+const {ConsoleLogHandler, Eyes, Target} = require('@applitools/eyes-webdriverio')
 
 const DEFAULT_VIEWPORT = {
   width: 800,
