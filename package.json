@@ -15,7 +15,6 @@
     "packages/sdk-test-kit",
     "packages/visual-grid-client",
     "packages/eyes-webdriverio-4",
-    "packages/eyes-webdriverio-4-service",
     "packages/eyes-webdriverio-5",
     "packages/eyes-webdriverio-5-service"
   ],
