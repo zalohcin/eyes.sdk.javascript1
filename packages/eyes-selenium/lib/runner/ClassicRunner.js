@@ -3,7 +3,7 @@
 const {EyesRunner} = require('./EyesRunner')
 const {TestResultsSummary} = require('./TestResultsSummary')
 const {TestResultContainer} = require('./TestResultContainer')
-const {makeGetRenderingInfo, makeGetBatchInfo, getScmInfo} = require('@applitools/eyes-sdk-core')
+const {makeGetRenderingInfo} = require('@applitools/eyes-sdk-core')
 
 class ClassicRunner extends EyesRunner {
   constructor() {
@@ -20,12 +20,6 @@ class ClassicRunner extends EyesRunner {
     }
   }
 
-  makeGetBatchInfo(fetchBatchInfo) {
-    if (!this._getBatchInfo) {
-      this._getBatchInfo = makeGetBatchInfo(fetchBatchInfo)
-    }
-  }
-
   async getRenderingInfoWithCache() {
     if (this._getRenderingInfo) {
       return this._getRenderingInfo()
@@ -34,20 +28,6 @@ class ClassicRunner extends EyesRunner {
         'Eyes runner could not get rendering info since makeGetRenderingInfo was not called before',
       )
     }
-  }
-
-  async getBatchInfoWithCache(batchId) {
-    if (this._getBatchInfo) {
-      return this._getBatchInfo(batchId)
-    } else {
-      throw new Error(
-        'Eyes runner could not get batch info since makeGetBatchInfo was not called before',
-      )
-    }
-  }
-
-  async getScmInfoWithCache(...args) {
-    return getScmInfo(...args)
   }
 
   /**

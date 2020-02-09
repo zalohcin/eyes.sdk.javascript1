@@ -1275,10 +1275,9 @@ class EyesSelenium extends Eyes {
     return this._runner.getBatchInfoWithCache(batchId)
   }
 
-  async _getAndSaveScmMergeBaseTime(batchKey, parentBranchName) {
-    ArgumentGuard.notNullOrEmpty(batchKey, 'batchKey')
+  async _getAndSaveScmMergeBaseTime(parentBranchName) {
     ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
-    return this._runner.getScmInfoWithCache(batchKey, parentBranchName)
+    return this._runner.getScmInfoWithCache(parentBranchName)
   }
 }
 

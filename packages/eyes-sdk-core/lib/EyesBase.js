@@ -185,7 +185,7 @@ class EyesBase extends EyesAbstract {
     throw new TypeError('The method "_getAndSaveBatchInfoFromServer" is not implemented!')
   }
 
-  _getAndSaveScmMergeBaseTime(_batchKey, _parentBranchName) {
+  _getAndSaveScmMergeBaseTime(_parentBranchName) {
     throw new TypeError('The method "_getAndSaveScmMergeBaseTime" is not implemented!')
   }
 
@@ -212,11 +212,8 @@ class EyesBase extends EyesAbstract {
     }
 
     if (isLocalBranchTest || (isCiBranchTest && !parentBranchBaselineSavedBefore)) {
-      const batchKey =
-        batchId ||
-        `${this._configuration.getBranchName()}-${this._configuration.getParentBranchName()}`
       ;[err, parentBranchBaselineSavedBefore] = await presult(
-        this._getAndSaveScmMergeBaseTime(batchKey, parentBranchName),
+        this._getAndSaveScmMergeBaseTime(parentBranchName),
       )
       this._logger.log(
         '_getAndSaveScmMergeBaseTime done,',

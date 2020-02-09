@@ -23,11 +23,11 @@ describe('getScmInfo', () => {
   })
 
   it('works and caches response', async () => {
-    const result = await getScmInfo('some-batch-key', 'master', {cwd: testRepoPath})
+    const result = await getScmInfo('master', {cwd: testRepoPath})
     const testRepoBaseTime = '2020-02-06T15:20:56+02:00'
     assert.strictEqual(result, testRepoBaseTime)
 
-    const result2 = await getScmInfo('some-batch-key', 'master', {cwd: __dirname})
+    const result2 = await getScmInfo('master', {cwd: __dirname})
     assert.strictEqual(result2, testRepoBaseTime)
   })
 })

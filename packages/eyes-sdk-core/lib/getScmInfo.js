@@ -5,16 +5,16 @@ const {
 } = require('@applitools/eyes-common')
 
 const getScmInfo = (function() {
-  const cache = {}
-  return async function getScmInfo(batchKey, parentBranchName, _opts) {
-    if (!cache[batchKey]) {
+  let mergeBaseTime
+  return async function getScmInfo(parentBranchName, _opts) {
+    if (!mergeBaseTime) {
       const {stdout} = await pexec(
         `HASH=$(git merge-base HEAD ${parentBranchName}) && git show -q --format=%cI $HASH`,
         _opts,
       )
-      cache[batchKey] = stdout && stdout.replace(/\s/g, '')
+      mergeBaseTime = stdout && stdout.replace(/\s/g, '')
     }
-    return cache[batchKey]
+    return mergeBaseTime
   }
 })()
 
