@@ -11,7 +11,7 @@ class NullDebugScreenshotProvider extends DebugScreenshotsProvider {
   /**
    * @inheritDoc
    */
-  async save(image, suffix) {
+  async save(_image, _suffix) {
     // eslint-disable-line no-unused-vars
     // Do nothing.
   }

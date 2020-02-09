@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * Represents the types of available stitch modes.
@@ -7,16 +7,16 @@
  * @enum {Number}
  */
 const StitchMode = {
-    /**
-     * Standard JS scrolling.
-     */
-    SCROLL: 'Scroll',
+  /**
+   * Standard JS scrolling.
+   */
+  SCROLL: 'Scroll',
 
-    /**
-     * CSS translation based stitching.
-     */
-    CSS: 'CSS'
-};
+  /**
+   * CSS translation based stitching.
+   */
+  CSS: 'CSS',
+}
 
-Object.freeze(StitchMode);
-module.exports = StitchMode;
+Object.freeze(StitchMode)
+module.exports = StitchMode

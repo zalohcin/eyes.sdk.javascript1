@@ -1,14 +1,13 @@
-'use strict';
+'use strict'
 
-const {ArgumentGuard} = require('@applitools/eyes-sdk-core');
+const {ArgumentGuard} = require('@applitools/eyes-sdk-core')
 
-const TargetLocator = require('../TargetLocator');
+const TargetLocator = require('../TargetLocator')
 
 /**
  * Wraps a target locator so we can keep track of which frames have been switched to.
  */
 class EyesNullTargetLocator extends TargetLocator {
-
   /**
    * Initialized a new EyesNullTargetLocator object.
    *
@@ -16,54 +15,53 @@ class EyesNullTargetLocator extends TargetLocator {
    * @param {EyesWebDriver} driver The WebDriver from which the targetLocator was received.
    */
   constructor(logger, driver) {
-    ArgumentGuard.notNull(logger, "logger");
-    ArgumentGuard.notNull(driver, "driver");
+    ArgumentGuard.notNull(logger, 'logger')
+    ArgumentGuard.notNull(driver, 'driver')
 
-    super(driver.webDriver);
+    super(driver.webDriver)
 
-    this._logger = logger;
+    this._logger = logger
   }
 
-  async frame(arg1) {
-    return null;
+  async frame(_arg1) {
+    return null
   }
-
 
   parentFrame() {
-    return null;
+    return null
   }
 
   async framesDoScroll() {
-    return null;
+    return null
   }
 
   async frames() {
-    return null;
+    return null
   }
 
   async window() {
-    return null;
+    return null
   }
 
   async defaultContent() {
-    return null;
+    return null
   }
 
   async activeElement() {
-    return null;
+    return null
   }
 
   async alert() {
-    return null;
+    return null
   }
 
   async willSwitchToFrame() {
-    return null;
+    return null
   }
 
   async resetScroll() {
-    return null;
+    return null
   }
 }
 
-module.exports = EyesNullTargetLocator;
+module.exports = EyesNullTargetLocator

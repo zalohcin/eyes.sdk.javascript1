@@ -1,19 +1,20 @@
-'use strict';
+/* eslint-disable no-undef */
+'use strict'
 
-const {Eyes, Target} = require('@applitools/eyes-webdriverio');
+const {Eyes, Target} = require('@applitools/eyes-webdriverio')
 
 const DEFAULT_VIEWPORT = {
   width: 800,
-  height: 600
-};
+  height: 600,
+}
 
 class EyesService {
   constructor() {
-    this._eyes = new Eyes();
-    this._scrollRootElement = undefined;
+    this._eyes = new Eyes()
+    this._scrollRootElement = undefined
 
-    this._eyes.setHideScrollbars(true);
-    this._appName = null;
+    this._eyes.setHideScrollbars(true)
+    this._appName = null
   }
 
   /**
@@ -24,14 +25,15 @@ class EyesService {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
+  // eslint-disable-next-line
   beforeSession(config, capabilities, specs) {
-    this._eyesConfig = config.eyes;
+    this._eyesConfig = config.eyes
     if (this._eyesConfig) {
-      this._eyes.setConfiguration(this._eyesConfig);
-      this._appName = this._eyes.getConfiguration().getAppName();
+      this._eyes.setConfiguration(this._eyesConfig)
+      this._appName = this._eyes.getConfiguration().getAppName()
     }
     if (config.enableEyesLogs) {
-      this._eyes.setLogHandler(new ConsoleLogHandler(true));
+      this._eyes.setLogHandler(new ConsoleLogHandler(true))
     }
   }
 
@@ -42,55 +44,59 @@ class EyesService {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
+  // eslint-disable-next-line
   before(capabilities, specs) {
-    global.browser.addCommand('eyesCheck', async (title, checkSettings = Target.window().fully()) => {
-      await this._eyesOpen();
+    global.browser.addCommand(
+      'eyesCheck',
+      async (title, checkSettings = Target.window().fully()) => {
+        await this._eyesOpen()
 
-      const matchResult = await this._eyes.check(title, checkSettings);
-      if (this._eyesConfig.throwErrorIfNotAsExpected && !matchResult.getAsExpected()) {
-        throw new Error('Eyes detected visual mismatch!');
-      }
-      return matchResult;
-    });
+        const matchResult = await this._eyes.check(title, checkSettings)
+        if (this._eyesConfig.throwErrorIfNotAsExpected && !matchResult.getAsExpected()) {
+          throw new Error('Eyes detected visual mismatch!')
+        }
+        return matchResult
+      },
+    )
 
     // deprecated, alias of eyesCheck
     global.browser.addCommand('eyesCheckWindow', async (title, checkSettings) => {
-      return global.browser.eyesCheck(title, checkSettings);
-    });
+      return global.browser.eyesCheck(title, checkSettings)
+    })
 
-    global.browser.addCommand('eyesSetScrollRootElement', (element) => {
-      this._scrollRootElement = element;
-    });
+    global.browser.addCommand('eyesSetScrollRootElement', element => {
+      this._scrollRootElement = element
+    })
 
     global.browser.addCommand('eyesAddProperty', (key, value) => {
-      return this._eyes.addProperty(key, value);
-    });
+      return this._eyes.addProperty(key, value)
+    })
 
     global.browser.addCommand('eyesClearProperties', () => {
-      return this._eyes.clearProperties();
-    });
+      return this._eyes.clearProperties()
+    })
 
     global.browser.addCommand('eyesGetTestResults', async () => {
       // because `afterTest` executes after `afterEach`, this is the way to get results in `afterEach` or `it`
-      await this._eyesClose();
-      return this._testResults;
-    });
+      await this._eyesClose()
+      return this._testResults
+    })
 
-    global.browser.addCommand('eyesSetConfiguration', (configuration) => {
-      return this._eyes.setConfiguration(configuration);
-    });
+    global.browser.addCommand('eyesSetConfiguration', configuration => {
+      return this._eyes.setConfiguration(configuration)
+    })
 
     global.browser.addCommand('eyesGetIsOpen', () => {
-      return this._eyes.getIsOpen();
-    });
+      return this._eyes.getIsOpen()
+    })
 
     global.browser.addCommand('eyesGetConfiguration', () => {
-      return this._eyes.getConfiguration();
-    });
+      return this._eyes.getConfiguration()
+    })
 
     global.browser.addCommand('eyesGetAllTestResults', async () => {
-      return this._eyes.getRunner().getAllTestResults();
-    });
+      return this._eyes.getRunner().getAllTestResults()
+    })
   }
 
   /**
@@ -99,14 +105,14 @@ class EyesService {
    * @param {Object} test test details
    */
   beforeTest(test) {
-    this._eyes.getConfiguration().setTestName(test.title);
+    this._eyes.getConfiguration().setTestName(test.title)
 
     if (!this._appName) {
-      this._eyes.getConfiguration().setAppName(test.parent);
+      this._eyes.getConfiguration().setAppName(test.parent)
     }
 
     if (!this._eyes.getConfiguration().getViewportSize()) {
-      this._eyes.getConfiguration().setViewportSize(DEFAULT_VIEWPORT);
+      this._eyes.getConfiguration().setViewportSize(DEFAULT_VIEWPORT)
     }
   }
 
@@ -116,11 +122,12 @@ class EyesService {
    *
    * @param {Object} test test details
    */
+  // eslint-disable-next-line
   afterTest(test) {
     // the next line is required because if we set an element in one test, then the following test
     // will say that the element is not attached to the page (because different browsers are used)
-    this._eyes._scrollRootElement = undefined;
-    global.browser.call(() => this._eyesClose());
+    this._eyes._scrollRootElement = undefined
+    global.browser.call(() => this._eyesClose())
   }
 
   /**
@@ -130,27 +137,28 @@ class EyesService {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that ran
    */
+  // eslint-disable-next-line
   after(result, capabilities, specs) {
-    global.browser.call(() => this._eyes.abort());
+    global.browser.call(() => this._eyes.abort())
   }
 
   async _eyesOpen() {
     if (!this._eyes.getIsOpen()) {
-      this._testResults = null;
-      await this._eyes.open(global.browser);
+      this._testResults = null
+      await this._eyes.open(global.browser)
     }
 
     if (this._scrollRootElement) {
-      await this._eyes.setScrollRootElement(this._scrollRootElement);
-      this._scrollRootElement = undefined;
+      await this._eyes.setScrollRootElement(this._scrollRootElement)
+      this._scrollRootElement = undefined
     }
   }
 
   async _eyesClose() {
     if (this._eyes.getIsOpen()) {
-      this._testResults = await this._eyes.close(false);
+      this._testResults = await this._eyes.close(false)
     }
   }
 }
 
-exports.EyesService = EyesService;
+exports.EyesService = EyesService

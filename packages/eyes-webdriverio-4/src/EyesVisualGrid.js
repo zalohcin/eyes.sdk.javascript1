@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const {makeVisualGridClient, takeDomSnapshot} = require('@applitools/visual-grid-client');
+const {makeVisualGridClient, takeDomSnapshot} = require('@applitools/visual-grid-client')
 
 const {
   ArgumentGuard,
@@ -12,20 +12,20 @@ const {
   IgnoreRegionByRectangle,
   BrowserType,
   Configuration,
-  RectangleSize
-} = require('@applitools/eyes-sdk-core');
+  RectangleSize,
+} = require('@applitools/eyes-sdk-core')
 
 const {Target} = require('../index')
 
-const {TestResultSummary} = require('./runner/TestResultSummary');
+const {TestResultSummary} = require('./runner/TestResultSummary')
 
-const EyesWebDriver = require('./wrappers/EyesWebDriver');
-const EyesWDIOUtils = require('./EyesWDIOUtils');
-const WDIOJSExecutor = require('./WDIOJSExecutor');
-const WebDriver = require('./wrappers/WebDriver');
-const {VisualGridRunner} = require('./runner/VisualGridRunner');
+const EyesWebDriver = require('./wrappers/EyesWebDriver')
+const EyesWDIOUtils = require('./EyesWDIOUtils')
+const WDIOJSExecutor = require('./WDIOJSExecutor')
+const WebDriver = require('./wrappers/WebDriver')
+const {VisualGridRunner} = require('./runner/VisualGridRunner')
 
-const VERSION = require('../package.json').version;
+const VERSION = require('../package.json').version
 
 class EyesVisualGrid extends EyesBase {
   /** @var {Logger} EyesVisualGrid#_logger */
@@ -41,20 +41,20 @@ class EyesVisualGrid extends EyesBase {
    * @param {EyesRunner} [runner] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    */
   constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
-    super(serverUrl, isDisabled, new Configuration());
-    /** @type {EyesRunner} */ this._runner = runner;
+    super(serverUrl, isDisabled, new Configuration())
+    /** @type {EyesRunner} */ this._runner = runner
 
-    this._runner._eyesInstances.push(this);
+    this._runner._eyesInstances.push(this)
 
-    /** @type {boolean} */ this._isOpen = false;
-    /** @type {boolean} */ this._isVisualGrid = true;
-    /** @type {EyesJsExecutor} */ this._jsExecutor = undefined;
-    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandle.BLANK;
+    /** @type {boolean} */ this._isOpen = false
+    /** @type {boolean} */ this._isVisualGrid = true
+    /** @type {EyesJsExecutor} */ this._jsExecutor = undefined
+    /** @type {CorsIframeHandle} */ this._corsIframeHandle = CorsIframeHandle.BLANK
 
-    /** @function */ this._checkWindowCommand = undefined;
-    /** @function */ this._closeCommand = undefined;
-    /** @function */ this._abortCommand = undefined;
-    /** @type {Promise} */ this._closePromise = undefined;
+    /** @function */ this._checkWindowCommand = undefined
+    /** @function */ this._closeCommand = undefined
+    /** @function */ this._abortCommand = undefined
+    /** @type {Promise} */ this._closePromise = undefined
   }
 
   /**
@@ -70,41 +70,59 @@ class EyesVisualGrid extends EyesBase {
    * @return {Promise<EyesWebDriver>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
   async open(driver, optArg1, optArg2, optArg3, optArg4) {
-    ArgumentGuard.notNull(driver, 'driver');
+    ArgumentGuard.notNull(driver, 'driver')
 
-    await this._initDriver(driver);
+    await this._initDriver(driver)
 
     if (optArg1 instanceof Configuration) {
-      this._configuration.mergeConfig(optArg1);
+      this._configuration.mergeConfig(optArg1)
     } else {
-      this._configuration.setAppName(TypeUtils.getOrDefault(optArg1, this._configuration.getAppName()));
-      this._configuration.setTestName(TypeUtils.getOrDefault(optArg2, this._configuration.getTestName()));
-      this._configuration.setViewportSize(TypeUtils.getOrDefault(optArg3, this._configuration.getViewportSize()));
-      this._configuration.setSessionType(TypeUtils.getOrDefault(optArg4, this._configuration.getSessionType()));
+      this._configuration.setAppName(
+        TypeUtils.getOrDefault(optArg1, this._configuration.getAppName()),
+      )
+      this._configuration.setTestName(
+        TypeUtils.getOrDefault(optArg2, this._configuration.getTestName()),
+      )
+      this._configuration.setViewportSize(
+        TypeUtils.getOrDefault(optArg3, this._configuration.getViewportSize()),
+      )
+      this._configuration.setSessionType(
+        TypeUtils.getOrDefault(optArg4, this._configuration.getSessionType()),
+      )
     }
 
-    ArgumentGuard.notNull(this._configuration.getAppName(), 'appName');
-    ArgumentGuard.notNull(this._configuration.getTestName(), 'testName');
+    ArgumentGuard.notNull(this._configuration.getAppName(), 'appName')
+    ArgumentGuard.notNull(this._configuration.getTestName(), 'testName')
 
-    if (!this._configuration.getViewportSize() && this._configuration.getBrowsersInfo().length > 0) {
+    if (
+      !this._configuration.getViewportSize() &&
+      this._configuration.getBrowsersInfo().length > 0
+    ) {
       for (const browserInfo of this._configuration.getBrowsersInfo()) {
         if (browserInfo.width) {
-          this._configuration.setViewportSize({width: browserInfo.width, height: browserInfo.height});
-          break;
+          this._configuration.setViewportSize({
+            width: browserInfo.width,
+            height: browserInfo.height,
+          })
+          break
         }
       }
     }
     if (!this._configuration.getViewportSize()) {
-      const vs = await this._driver.getDefaultContentViewportSize();
-      this._configuration.setViewportSize(vs);
+      const vs = await this._driver.getDefaultContentViewportSize()
+      this._configuration.setViewportSize(vs)
     }
 
-    if (this._configuration.getBrowsersInfo().length === 0 && this._configuration.getViewportSize()) {
-      const vs = this._configuration.getViewportSize();
-      this._configuration.addBrowser(vs.getWidth(), vs.getHeight(), BrowserType.CHROME);
+    if (
+      this._configuration.getBrowsersInfo().length === 0 &&
+      this._configuration.getViewportSize()
+    ) {
+      const vs = this._configuration.getViewportSize()
+      this._configuration.addBrowser(vs.getWidth(), vs.getHeight(), BrowserType.CHROME)
     }
 
-    if (this._runner.getConcurrentSessions()) this._configuration.setConcurrentSessions(this._runner.getConcurrentSessions());
+    if (this._runner.getConcurrentSessions())
+      this._configuration.setConcurrentSessions(this._runner.getConcurrentSessions())
 
     const {openEyes} = makeVisualGridClient({
       logger: this._logger,
@@ -115,29 +133,31 @@ class EyesVisualGrid extends EyesBase {
       proxy: this._configuration.getProxy(),
       serverUrl: this._configuration.getServerUrl(),
       renderConcurrencyFactor: this._configuration.getConcurrentSessions(),
-    });
+    })
 
     if (this._configuration.getViewportSize()) {
-      const vs = this._configuration.getViewportSize();
-      await this.setViewportSize(vs);
+      const vs = this._configuration.getViewportSize()
+      await this.setViewportSize(vs)
     }
 
-    const {checkWindow, close, abort} = await openEyes(this._configuration.toOpenEyesConfiguration());
+    const {checkWindow, close, abort} = await openEyes(
+      this._configuration.toOpenEyesConfiguration(),
+    )
 
-    this._isOpen = true;
-    this._checkWindowCommand = checkWindow;
+    this._isOpen = true
+    this._checkWindowCommand = checkWindow
     this._closeCommand = async () => {
       return close(true).catch(err => {
         if (Array.isArray(err)) {
-          return err;
+          return err
         }
 
-        throw err;
-      });
-    };
-    this._abortCommand = async () => abort(true);
+        throw err
+      })
+    }
+    this._abortCommand = async () => abort(true)
 
-    return this._driver;
+    return this._driver
   }
 
   /**
@@ -146,11 +166,11 @@ class EyesVisualGrid extends EyesBase {
    */
   async _initDriver(driver) {
     if (driver instanceof EyesWebDriver) {
-      this._driver = driver;
+      this._driver = driver
     } else {
-      this._driver = new EyesWebDriver(this._logger, new WebDriver(driver), this);
+      this._driver = new EyesWebDriver(this._logger, new WebDriver(driver), this)
     }
-    this._jsExecutor = new WDIOJSExecutor(this._driver);
+    this._jsExecutor = new WDIOJSExecutor(this._driver)
   }
 
   /**
@@ -159,22 +179,22 @@ class EyesVisualGrid extends EyesBase {
    */
   async closeAndReturnResults(throwEx = true) {
     try {
-      let resultsPromise = this._closePromise || this._closeCommand();
-      const res = await resultsPromise;
-      const testResultSummary = new TestResultSummary(res);
+      let resultsPromise = this._closePromise || this._closeCommand()
+      const res = await resultsPromise
+      const testResultSummary = new TestResultSummary(res)
 
       if (throwEx === true) {
         for (const result of testResultSummary.getAllResults()) {
           if (result.getException()) {
-            throw result.getException();
+            throw result.getException()
           }
         }
       }
 
-      return testResultSummary;
+      return testResultSummary
     } finally {
-      this._isOpen = false;
-      this._closePromise = undefined;
+      this._isOpen = false
+      this._closePromise = undefined
     }
   }
 
@@ -183,7 +203,7 @@ class EyesVisualGrid extends EyesBase {
    */
   async closeAsync() {
     if (!this._closePromise) {
-      this._closePromise = this._closeCommand();
+      this._closePromise = this._closeCommand()
     }
   }
 
@@ -192,19 +212,19 @@ class EyesVisualGrid extends EyesBase {
    * @return {Promise<TestResults>}
    */
   async close(throwEx = true) {
-    const results = await this.closeAndReturnResults(throwEx);
+    const results = await this.closeAndReturnResults(throwEx)
 
     for (const result of results.getAllResults()) {
       if (result.getException()) {
-        return result.getTestResults();
+        return result.getTestResults()
       }
     }
 
-    return results.getAllResults()[0].getTestResults();
+    return results.getAllResults()[0].getTestResults()
   }
 
   async abortIfNotClosed() {
-    return this.abort();
+    return this.abort()
   }
 
   /**
@@ -213,27 +233,27 @@ class EyesVisualGrid extends EyesBase {
   async abort() {
     if (typeof this._abortCommand === 'function') {
       if (this._closePromise) {
-        this._logger.verbose('Can not abort while closing async, abort added to close promise.');
-        return this._closePromise.then(() => this._abortCommand(true));
+        this._logger.verbose('Can not abort while closing async, abort added to close promise.')
+        return this._closePromise.then(() => this._abortCommand(true))
       }
 
-      return this._abortCommand();
+      return this._abortCommand()
     }
-    return null;
+    return null
   }
 
   /**
    * @return {Promise}
    */
   async abortAsync() {
-    this._closePromise = this.abort();
+    this._closePromise = this.abort()
   }
 
   /**
    * @return {boolean}
    */
   getIsOpen() {
-    return this._isOpen;
+    return this._isOpen
   }
 
   /**
@@ -241,22 +261,22 @@ class EyesVisualGrid extends EyesBase {
    * @return {Promise<void>}
    */
   async closeAndPrintResults(throwEx = true) {
-    const results = await this.closeAndReturnResults(throwEx);
+    const results = await this.closeAndReturnResults(throwEx)
 
-    const testResultsFormatter = new TestResultsFormatter(results);
+    const testResultsFormatter = new TestResultsFormatter(results)
     // eslint-disable-next-line no-console
-    console.log(testResultsFormatter.asFormatterString());
+    console.log(testResultsFormatter.asFormatterString())
   }
 
   getRunner() {
-    return this._runner;
+    return this._runner
   }
 
   /**
    * @return {boolean}
    */
   isEyesClosed() {
-    return this._isOpen;
+    return this._isOpen
   }
 
   /**
@@ -264,30 +284,32 @@ class EyesVisualGrid extends EyesBase {
    * @param {WebdriverioCheckSettings} checkSettings
    */
   async check(name, checkSettings) {
-    ArgumentGuard.notNull(checkSettings, 'checkSettings');
+    ArgumentGuard.notNull(checkSettings, 'checkSettings')
 
     if (TypeUtils.isNotNull(name)) {
-      checkSettings.withName(name);
+      checkSettings.withName(name)
     }
 
-    this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`);
+    this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`)
 
-    let targetSelector = await checkSettings.getTargetProvider();
+    let targetSelector = await checkSettings.getTargetProvider()
     if (targetSelector) {
-      targetSelector = await targetSelector.getSelector(this);
+      targetSelector = await targetSelector.getSelector(this)
     }
 
-    const pageDomResults = await takeDomSnapshot({ executeScript: this._jsExecutor.executeScript.bind(this._jsExecutor) });
-    const { cdt, url: pageUrl, resourceContents, resourceUrls, frames } = pageDomResults;
+    const pageDomResults = await takeDomSnapshot({
+      executeScript: this._jsExecutor.executeScript.bind(this._jsExecutor),
+    })
+    const {cdt, url: pageUrl, resourceContents, resourceUrls, frames} = pageDomResults
 
     if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
-      CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames);
+      CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames)
     }
 
-    this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`);
+    this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
 
-    const source = await this._driver.getCurrentUrl();
-    const ignoreRegions = await this._prepareRegions(checkSettings.getIgnoreRegions());
+    const source = await this._driver.getCurrentUrl()
+    const ignoreRegions = await this._prepareRegions(checkSettings.getIgnoreRegions())
 
     await this._checkWindowCommand({
       resourceUrls,
@@ -296,18 +318,22 @@ class EyesVisualGrid extends EyesBase {
       url: pageUrl,
       cdt,
       tag: checkSettings.getName(),
-      sizeMode: checkSettings.getSizeMode() === 'viewport' && this.getForceFullPageScreenshot() ? 'full-page' : checkSettings.getSizeMode(),
+      sizeMode:
+        checkSettings.getSizeMode() === 'viewport' && this.getForceFullPageScreenshot()
+          ? 'full-page'
+          : checkSettings.getSizeMode(),
       selector: targetSelector ? targetSelector : undefined,
       region: checkSettings.getTargetRegion(),
       scriptHooks: checkSettings.getScriptHooks(),
       ignore: ignoreRegions,
       floating: checkSettings.getFloatingRegions(),
       sendDom: checkSettings.getSendDom() ? checkSettings.getSendDom() : this.getSendDom(),
-      matchLevel: checkSettings.getMatchLevel() ? checkSettings.getMatchLevel() : this.getMatchLevel(),
+      matchLevel: checkSettings.getMatchLevel()
+        ? checkSettings.getMatchLevel()
+        : this.getMatchLevel(),
       source,
-    });
+    })
   }
-
 
   /**
    * Visually validates a region in the screenshot.
@@ -318,30 +344,29 @@ class EyesVisualGrid extends EyesBase {
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkRegion(region, tag, matchTimeout) {
-    await this.check(tag, Target.region(region).timeout(matchTimeout));
+    await this.check(tag, Target.region(region).timeout(matchTimeout))
   }
-
 
   /**
    * @return {Promise<RectangleSize>}
    */
   async getViewportSize() {
-    return this._configuration.getViewportSize();
+    return this._configuration.getViewportSize()
   }
 
   /**
    * @param {RectangleSize|object} viewportSize
    */
   async setViewportSize(viewportSize) {
-    ArgumentGuard.notNull(viewportSize, 'viewportSize');
-    viewportSize = new RectangleSize(viewportSize);
-    this._configuration.setViewportSize(viewportSize);
+    ArgumentGuard.notNull(viewportSize, 'viewportSize')
+    viewportSize = new RectangleSize(viewportSize)
+    this._configuration.setViewportSize(viewportSize)
 
     if (this._driver) {
-      const originalFrame = this._driver.getFrameChain();
-      await this._driver.switchTo().defaultContent();
+      const originalFrame = this._driver.getFrameChain()
+      await this._driver.switchTo().defaultContent()
 
-      await EyesWDIOUtils.setViewportSize(this._logger, this._driver, viewportSize);
+      await EyesWDIOUtils.setViewportSize(this._logger, this._driver, viewportSize)
 
       /*
             try {
@@ -352,7 +377,7 @@ class EyesVisualGrid extends EyesBase {
             }
       */
 
-      await this._driver.switchTo().frames(originalFrame);
+      await this._driver.switchTo().frames(originalFrame)
     }
   }
 
@@ -361,49 +386,49 @@ class EyesVisualGrid extends EyesBase {
    * @return {boolean}
    */
   isVisualGrid() {
-    return this._isVisualGrid;
+    return this._isVisualGrid
   }
 
   /**
    * @param {CorsIframeHandle} corsIframeHandle
    */
   setCorsIframeHandle(corsIframeHandle) {
-    this._corsIframeHandle = corsIframeHandle;
+    this._corsIframeHandle = corsIframeHandle
   }
 
   /**
    * @return {CorsIframeHandle}
    */
   getCorsIframeHandle() {
-    return this._corsIframeHandle;
+    return this._corsIframeHandle
   }
 
   /**
    * @inheritDoc
    */
   getBaseAgentId() {
-    return `eyes.webdriverio.visualgrid/${VERSION}`;
+    return `eyes.webdriverio.visualgrid/${VERSION}`
   }
 
   /**
    * @inheritDoc
    */
   async getInferredEnvironment() {
-    return undefined;
+    return undefined
   }
 
   /**
    * @inheritDoc
    */
   async getScreenshot() {
-    return undefined;
+    return undefined
   }
 
   /**
    * @inheritDoc
    */
   async getTitle() {
-    return undefined;
+    return undefined
   }
 
   /**
@@ -411,7 +436,7 @@ class EyesVisualGrid extends EyesBase {
    * @return {EyesJsExecutor}
    */
   get jsExecutor() {
-    return this._jsExecutor;
+    return this._jsExecutor
   }
 
   /**
@@ -420,10 +445,10 @@ class EyesVisualGrid extends EyesBase {
    */
   setConfiguration(conf) {
     if (!(conf instanceof Configuration)) {
-      conf = new Configuration(conf);
+      conf = new Configuration(conf)
     }
 
-    this._configuration = conf;
+    this._configuration = conf
   }
 
   /**
@@ -431,15 +456,15 @@ class EyesVisualGrid extends EyesBase {
    * @return {Configuration}
    */
   getConfiguration() {
-    return this._configuration;
+    return this._configuration
   }
 
   setApiKey(apiKey) {
-    this._configuration.setApiKey(apiKey);
+    this._configuration.setApiKey(apiKey)
   }
 
   getApiKey() {
-    return this._configuration.getApiKey();
+    return this._configuration.getApiKey()
   }
 
   /**
@@ -448,14 +473,14 @@ class EyesVisualGrid extends EyesBase {
    * @param {boolean} shouldForce Whether to force a full page screenshot or not.
    */
   setForceFullPageScreenshot(shouldForce) {
-    this._configuration.setForceFullPageScreenshot(shouldForce);
+    this._configuration.setForceFullPageScreenshot(shouldForce)
   }
 
   /**
    * @return {boolean} Whether Eyes should force a full page screenshot.
    */
   getForceFullPageScreenshot() {
-    return this._configuration.getForceFullPageScreenshot();
+    return this._configuration.getForceFullPageScreenshot()
   }
 
   /**
@@ -465,26 +490,25 @@ class EyesVisualGrid extends EyesBase {
    */
   async _prepareRegions(regions) {
     if (regions && regions.length > 0) {
-      const newRegions = [];
+      const newRegions = []
 
       for (const region of regions) {
         if (region instanceof IgnoreRegionByRectangle) {
-          const plainRegions = await region.getRegion(this, undefined);
-          plainRegions.forEach((plainRegion) => {
-            newRegions.push(plainRegion.toJSON());
-          });
+          const plainRegions = await region.getRegion(this, undefined)
+          plainRegions.forEach(plainRegion => {
+            newRegions.push(plainRegion.toJSON())
+          })
         } else {
-          const selector = await region.getSelector(this);
-          newRegions.push({ selector });
+          const selector = await region.getSelector(this)
+          newRegions.push({selector})
         }
       }
 
-      return newRegions;
+      return newRegions
     }
 
-    return regions;
+    return regions
   }
-
 }
 
-exports.EyesVisualGrid = EyesVisualGrid;
+exports.EyesVisualGrid = EyesVisualGrid

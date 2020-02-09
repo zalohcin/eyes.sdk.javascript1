@@ -1,21 +1,20 @@
-'use strict';
+'use strict'
 
-const {ImageProvider, MutableImage} = require('@applitools/eyes-sdk-core');
+const {ImageProvider, MutableImage} = require('@applitools/eyes-sdk-core')
 
 /**
  * An image provider based on WebDriver's interface.
  */
 class TakesScreenshotImageProvider extends ImageProvider {
-
   /**
    * @param {Logger} logger A Logger instance.
    * @param {EyesWebDriver} tsInstance
    */
   constructor(logger, tsInstance) {
-    super();
+    super()
 
-    this._logger = logger;
-    this._tsInstance = tsInstance;
+    this._logger = logger
+    this._tsInstance = tsInstance
   }
 
   /**
@@ -23,11 +22,11 @@ class TakesScreenshotImageProvider extends ImageProvider {
    * @return {Promise.<MutableImage>}
    */
   async getImage() {
-    this._logger.verbose("Getting screenshot as base64...");
-    const screenshot64= await this._tsInstance.remoteWebDriver.saveScreenshot();
-    this._logger.verbose("Done getting base64! Creating MutableImage...");
-    return new MutableImage(screenshot64);
+    this._logger.verbose('Getting screenshot as base64...')
+    const screenshot64 = await this._tsInstance.remoteWebDriver.saveScreenshot()
+    this._logger.verbose('Done getting base64! Creating MutableImage...')
+    return new MutableImage(screenshot64)
   }
 }
 
-module.exports = TakesScreenshotImageProvider;
+module.exports = TakesScreenshotImageProvider

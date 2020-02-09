@@ -1,7 +1,14 @@
-const {remote} = require('webdriverio');
-const {By} = require('selenium-webdriver');
-const {makeRunTests} = require('@applitools/sdk-test-kit')
-const {Eyes, BatchInfo, RectangleSize, StitchMode, VisualGridRunner, Target, Region} = require('../../index')
+const {remote} = require('webdriverio')
+const {By} = require('selenium-webdriver')
+const {
+  Eyes,
+  BatchInfo,
+  RectangleSize,
+  StitchMode,
+  VisualGridRunner,
+  Target,
+  Region,
+} = require('../../index')
 
 const sdkName = 'eyes.webdriverio.javascript5'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
@@ -22,11 +29,9 @@ function initialize() {
       capabilities: {
         browserName: 'chrome',
         'goog:chromeOptions': {
-          args: [
-            '--headless',
-          ]
-        }
-      }
+          args: ['--headless'],
+        },
+      },
     }
     driver = await remote(browserOptions)
     runner = options.executionMode.isVisualGrid ? (runner = new VisualGridRunner(10)) : undefined
@@ -187,5 +192,8 @@ module.exports = {
   name: sdkName,
   initialize,
   supportedTests,
-  options: { needsChromeDriver: true, chromeDriverOptions: ['--port=4444', '--url-base=wd/hub', '--silent'] },
+  options: {
+    needsChromeDriver: true,
+    chromeDriverOptions: ['--port=4444', '--url-base=wd/hub', '--silent'],
+  },
 }

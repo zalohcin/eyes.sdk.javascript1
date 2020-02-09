@@ -30,8 +30,8 @@ let imageOrientationHandler = new (class ImageOrientationHandlerImpl extends Ima
   /**
    * @inheritDoc
    */
+  // eslint-disable-next-line no-unused-vars
   async tryAutomaticRotation(logger, driver, image) {
-    // eslint-disable-line no-unused-vars
     return 0
   }
 })()

@@ -24,8 +24,8 @@ class IgnoreRegionByElement extends GetRegion {
    * @param {EyesScreenshot} screenshot
    * @return {Promise<Region[]>}
    */
+  // eslint-disable-next-line no-unused-vars
   async getRegion(eyes, screenshot) {
-    // eslint-disable-line no-unused-vars
     const rect = await this._element.getRect()
     const lTag = screenshot.convertLocation(
       new Location(rect),

@@ -1,9 +1,8 @@
-'use strict';
+'use strict'
 
-const { GeneralUtils } = require('@applitools/eyes-common');
-const { GetSelector } = require('@applitools/eyes-sdk-core');
+const {GeneralUtils, GetSelector} = require('@applitools/eyes-sdk-core')
 
-const EYES_SELECTOR_TAG = 'data-eyes-selector';
+const EYES_SELECTOR_TAG = 'data-eyes-selector'
 
 /**
  * @ignore
@@ -13,8 +12,8 @@ class SelectorByElement extends GetSelector {
    * @param {WebElement} webElement
    */
   constructor(webElement) {
-    super();
-    this._element = webElement;
+    super()
+    this._element = webElement
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -24,10 +23,13 @@ class SelectorByElement extends GetSelector {
    * @return {Promise<string>}
    */
   async getSelector(eyes) {
-    const randId = GeneralUtils.randomAlphanumeric();
-    await eyes._driver.executeScript(`arguments[0].setAttribute('${EYES_SELECTOR_TAG}', '${randId}');`, this._element.element);
-    return `[${EYES_SELECTOR_TAG}="${randId}"]`;
+    const randId = GeneralUtils.randomAlphanumeric()
+    await eyes._driver.executeScript(
+      `arguments[0].setAttribute('${EYES_SELECTOR_TAG}', '${randId}');`,
+      this._element.element,
+    )
+    return `[${EYES_SELECTOR_TAG}="${randId}"]`
   }
 }
 
-exports.SelectorByElement = SelectorByElement;
+exports.SelectorByElement = SelectorByElement

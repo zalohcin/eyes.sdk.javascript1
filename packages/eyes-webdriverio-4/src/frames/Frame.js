@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const {ArgumentGuard} = require('@applitools/eyes-sdk-core');
+const {ArgumentGuard} = require('@applitools/eyes-sdk-core')
 
 /**
  * Encapsulates a frame/iframe. This is a generic type class,
@@ -8,7 +8,6 @@ const {ArgumentGuard} = require('@applitools/eyes-sdk-core');
  * order to switch into the frame.
  */
 class Frame {
-
   /**
    * @param {Logger} logger A Logger instance.
    * @param {WebElement} reference The web element for the frame, used as a reference to switch into the frame.
@@ -19,65 +18,65 @@ class Frame {
    * @param {String} originalOverflow The original overflow value of the frame.
    */
   constructor(logger, reference, location, size, innerSize, originalLocation, originalOverflow) {
-    ArgumentGuard.notNull(logger, "logger");
-    ArgumentGuard.notNull(reference, "reference");
-    ArgumentGuard.notNull(location, "location");
-    ArgumentGuard.notNull(size, "size");
-    ArgumentGuard.notNull(innerSize, "innerSize");
-    ArgumentGuard.notNull(originalLocation, "originalLocation");
+    ArgumentGuard.notNull(logger, 'logger')
+    ArgumentGuard.notNull(reference, 'reference')
+    ArgumentGuard.notNull(location, 'location')
+    ArgumentGuard.notNull(size, 'size')
+    ArgumentGuard.notNull(innerSize, 'innerSize')
+    ArgumentGuard.notNull(originalLocation, 'originalLocation')
 
-    logger.verbose(`Frame(logger, reference, ${location}, ${size}, ${innerSize})`);
+    logger.verbose(`Frame(logger, reference, ${location}, ${size}, ${innerSize})`)
 
-    this._logger = logger;
-    this._reference = reference;
-    this._location = location;
-    this._size = size;
-    this._innerSize = innerSize;
-    this._originalLocation = originalLocation;
-    this._originalOverflow = originalOverflow;
+    this._logger = logger
+    this._reference = reference
+    this._location = location
+    this._size = size
+    this._innerSize = innerSize
+    this._originalLocation = originalLocation
+    this._originalOverflow = originalOverflow
   }
 
   /**
    * @return {WebElement}
    */
   getReference() {
-    return this._reference;
+    return this._reference
   }
 
   /**
    * @return {Location}
    */
   getLocation() {
-    return this._location;
+    return this._location
   }
 
   /**
    * @return {RectangleSize}
    */
   getSize() {
-    return this._size;
+    return this._size
   }
 
   /**
    * @return {RectangleSize}
    */
   getInnerSize() {
-    return this._innerSize;
+    return this._innerSize
   }
 
   /**
    * @return {Location}
    */
   getOriginalLocation() {
-    return this._originalLocation;
+    return this._originalLocation
   }
 
   /**
    * @return {String}
    */
   getOriginalOverflow() {
-    return this._originalOverflow;
+    return this._originalOverflow
   }
 }
 
-module.exports = Frame;
+module.exports = Frame

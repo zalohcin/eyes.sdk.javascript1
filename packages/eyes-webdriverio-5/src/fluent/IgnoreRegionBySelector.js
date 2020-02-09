@@ -1,17 +1,16 @@
-'use strict';
+'use strict'
 
-const { GetRegion, CoordinatesType, Location, Region } = require('@applitools/eyes-sdk-core');
+const {GetRegion, CoordinatesType, Location, Region} = require('@applitools/eyes-sdk-core')
 
-const { SelectorByLocator } = require('./SelectorByLocator');
+const {SelectorByLocator} = require('./SelectorByLocator')
 
 class IgnoreRegionBySelector extends GetRegion {
-
   /**
    * @param {By} regionSelector
    */
   constructor(regionSelector) {
-    super();
-    this._selector = regionSelector;
+    super()
+    this._selector = regionSelector
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -21,23 +20,23 @@ class IgnoreRegionBySelector extends GetRegion {
    * @param {EyesScreenshot} screenshot
    */
   async getRegion(eyes, screenshot) {
-    const elements = await eyes.getDriver().findElements(this._selector);
+    const elements = await eyes.getDriver().findElements(this._selector)
 
-    const values = [];
+    const values = []
     if (elements && elements.length > 0) {
       for (let i = 0; i < elements.length; i += 1) {
-        const point = await elements[i].getLocation();
-        const size = await elements[i].getSize();
+        const point = await elements[i].getLocation()
+        const size = await elements[i].getSize()
         const lTag = screenshot.convertLocation(
-            new Location(point),
-            CoordinatesType.CONTEXT_RELATIVE,
-            CoordinatesType.SCREENSHOT_AS_IS
-        );
-        values.push(new Region(lTag.getX(), lTag.getY(), size.getWidth(), size.getHeight()));
+          new Location(point),
+          CoordinatesType.CONTEXT_RELATIVE,
+          CoordinatesType.SCREENSHOT_AS_IS,
+        )
+        values.push(new Region(lTag.getX(), lTag.getY(), size.getWidth(), size.getHeight()))
       }
     }
 
-    return values;
+    return values
   }
 
   /**
@@ -46,8 +45,8 @@ class IgnoreRegionBySelector extends GetRegion {
    * @return {Promise<string>}
    */
   async getSelector(eyes) {
-    return new SelectorByLocator(this._selector).getSelector(eyes);
+    return new SelectorByLocator(this._selector).getSelector(eyes)
   }
 }
 
-module.exports = IgnoreRegionBySelector;
+module.exports = IgnoreRegionBySelector

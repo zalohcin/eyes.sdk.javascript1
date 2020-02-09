@@ -1,6 +1,5 @@
-'use strict';
+'use strict'
 
+const EyesService = require('./src/EyesService')
 
-const EyesService = require('./src/EyesService');
-
-module.exports = new EyesService();
+module.exports = new EyesService()

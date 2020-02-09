@@ -1,20 +1,19 @@
-'use strict';
+'use strict'
 
-const {Location, RectangleSize, ArgumentGuard, TypeUtils} = require('@applitools/eyes-sdk-core');
+const {Location, RectangleSize, ArgumentGuard, TypeUtils} = require('@applitools/eyes-sdk-core')
 
-const Frame = require('../frames/Frame');
-const FrameChain = require('../frames/FrameChain');
-const ScrollPositionProvider = require('../positioning/ScrollPositionProvider');
-const WDIOJSExecutor = require('../WDIOJSExecutor');
-const EyesWebElement = require('./EyesWebElement');
-const TargetLocator = require('../TargetLocator');
-const WebElement = require('./WebElement');
+const Frame = require('../frames/Frame')
+const FrameChain = require('../frames/FrameChain')
+const ScrollPositionProvider = require('../positioning/ScrollPositionProvider')
+const WDIOJSExecutor = require('../WDIOJSExecutor')
+const EyesWebElement = require('./EyesWebElement')
+const TargetLocator = require('../TargetLocator')
+const WebElement = require('./WebElement')
 
 /**
  * Wraps a target locator so we can keep track of which frames have been switched to.
  */
 class EyesTargetLocator extends TargetLocator {
-
   /**
    * Initialized a new EyesTargetLocator object.
    *
@@ -23,17 +22,17 @@ class EyesTargetLocator extends TargetLocator {
    * @param {TargetLocator} targetLocator The actual TargetLocator object.
    */
   constructor(logger, driver, targetLocator = null) {
-    ArgumentGuard.notNull(logger, "logger");
-    ArgumentGuard.notNull(driver, "driver");
-    ArgumentGuard.notNull(targetLocator, "targetLocator");
+    ArgumentGuard.notNull(logger, 'logger')
+    ArgumentGuard.notNull(driver, 'driver')
+    ArgumentGuard.notNull(targetLocator, 'targetLocator')
 
-    super(driver.webDriver);
+    super(driver.webDriver)
 
-    this._logger = logger;
-    this._tsInstance = driver;
-    this._targetLocator = targetLocator;
-    this._jsExecutor = new WDIOJSExecutor(driver);
-    this._scrollPosition = new ScrollPositionProvider(this._logger, this._jsExecutor);
+    this._logger = logger
+    this._tsInstance = driver
+    this._targetLocator = targetLocator
+    this._jsExecutor = new WDIOJSExecutor(driver)
+    this._scrollPosition = new ScrollPositionProvider(this._logger, this._jsExecutor)
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -54,70 +53,69 @@ class EyesTargetLocator extends TargetLocator {
    */
   async frame(arg1) {
     if (!arg1) {
-      this._logger.verbose("EyesTargetLocator.frame(null)");
-      await this.defaultContent();
-      return;
+      this._logger.verbose('EyesTargetLocator.frame(null)')
+      await this.defaultContent()
+      return
     }
 
     if (TypeUtils.isInteger(arg1)) {
-      const frameIndex = arg1;
-      this._logger.verbose(`EyesTargetLocator.frame(${frameIndex})`);
+      const frameIndex = arg1
+      this._logger.verbose(`EyesTargetLocator.frame(${frameIndex})`)
       // Finding the target element so and reporting it using onWillSwitch.
-      this._logger.verbose("Getting frames list...");
-      const frames = await this._tsInstance.findElementsByCssSelector("frame, iframe");
+      this._logger.verbose('Getting frames list...')
+      const frames = await this._tsInstance.findElementsByCssSelector('frame, iframe')
       if (frameIndex > frames.length) {
-        throw new TypeError(`Frame index [${frameIndex}] is invalid!`);
+        throw new TypeError(`Frame index [${frameIndex}] is invalid!`)
       }
 
-      this._logger.verbose("Done! getting the specific frame...");
-      this._logger.verbose("Done! Making preparations...");
-      await this.willSwitchToFrame(frames[frameIndex]);
-      this._logger.verbose("Done! Switching to frame...");
-      await this._targetLocator.frame(frameIndex);
-      this._logger.verbose("Done!");
-      return;
+      this._logger.verbose('Done! getting the specific frame...')
+      this._logger.verbose('Done! Making preparations...')
+      await this.willSwitchToFrame(frames[frameIndex])
+      this._logger.verbose('Done! Switching to frame...')
+      await this._targetLocator.frame(frameIndex)
+      this._logger.verbose('Done!')
+      return
     }
 
     if (TypeUtils.isString(arg1)) {
-      const frameNameOrId = arg1;
-      this._logger.verbose(`EyesTargetLocator.frame(${frameNameOrId})`);
+      const frameNameOrId = arg1
+      this._logger.verbose(`EyesTargetLocator.frame(${frameNameOrId})`)
       // Finding the target element so we can report it.
       // We use find elements(plural) to avoid exception when the element is not found.
-      this._logger.verbose("Getting frames by name...");
-      let frames = await this._tsInstance.findElementsByName(frameNameOrId);
+      this._logger.verbose('Getting frames by name...')
+      let frames = await this._tsInstance.findElementsByName(frameNameOrId)
       if (frames.length === 0) {
-        this._logger.verbose("No frames Found! Trying by id...");
+        this._logger.verbose('No frames Found! Trying by id...')
         // If there are no frames by that name, we'll try the id
-        frames = await this._tsInstance.findElementsById(frameNameOrId);
+        frames = await this._tsInstance.findElementsById(frameNameOrId)
         if (frames.length === 0) {
           // No such frame, bummer
-          throw new TypeError(`No frame with name or id '${frameNameOrId}' exists!`);
+          throw new TypeError(`No frame with name or id '${frameNameOrId}' exists!`)
         }
       }
-      this._logger.verbose("Done! Making preparations...");
-      await this.willSwitchToFrame(frames[0]);
-      this._logger.verbose("Done! Switching to frame...");
-      let frameElement = frames[0];
+      this._logger.verbose('Done! Making preparations...')
+      await this.willSwitchToFrame(frames[0])
+      this._logger.verbose('Done! Switching to frame...')
+      let frameElement = frames[0]
       if (frameElement instanceof EyesWebElement) {
-        frameElement = frameElement.getWebElement();
+        frameElement = frameElement.getWebElement()
       }
-      await this._targetLocator.frame(frameElement.element);
-      this._logger.verbose("Done!");
-      return;
+      await this._targetLocator.frame(frameElement.element)
+      this._logger.verbose('Done!')
+      return
     }
 
-    let frameElement = arg1;
-    this._logger.verbose("EyesTargetLocator.frame(element)");
-    this._logger.verbose("Making preparations...");
-    await this.willSwitchToFrame(frameElement);
-    this._logger.verbose("Done! Switching to frame...");
+    let frameElement = arg1
+    this._logger.verbose('EyesTargetLocator.frame(element)')
+    this._logger.verbose('Making preparations...')
+    await this.willSwitchToFrame(frameElement)
+    this._logger.verbose('Done! Switching to frame...')
     if (frameElement instanceof EyesWebElement) {
-      frameElement = frameElement.getWebElement();
+      frameElement = frameElement.getWebElement()
     }
-    await this._targetLocator.frame(frameElement.element);
-    this._logger.verbose("Done!");
+    await this._targetLocator.frame(frameElement.element)
+    this._logger.verbose('Done!')
   }
-
 
   /**
    * Change focus to the parent context. If the current context is the top level browsing context, the context remains unchanged.
@@ -125,18 +123,18 @@ class EyesTargetLocator extends TargetLocator {
    * @return {Promise.<EyesWebDriver>}
    */
   parentFrame() {
-    const that = this;
-    this._logger.verbose("EyesTargetLocator.parentFrame()");
+    const that = this
+    this._logger.verbose('EyesTargetLocator.parentFrame()')
     if (this._tsInstance.getFrameChain().size() !== 0) {
-      this._logger.verbose("Making preparations...");
-      this._tsInstance.getFrameChain().pop();
-      this._logger.verbose("Done! Switching to parent frame..");
+      this._logger.verbose('Making preparations...')
+      this._tsInstance.getFrameChain().pop()
+      this._logger.verbose('Done! Switching to parent frame..')
       return this._tsInstance.remoteWebDriver.frameParent().then(() => {
-        that._logger.verbose("Done!");
-        return that._tsInstance;
-      });
+        that._logger.verbose('Done!')
+        return that._tsInstance
+      })
     } else {
-      return this._tsInstance;
+      return this._tsInstance
     }
   }
 
@@ -147,20 +145,20 @@ class EyesTargetLocator extends TargetLocator {
    * @return {Promise.<void>} The WebDriver with the switched context.
    */
   async framesDoScroll(frameChain) {
-    this._logger.verbose('EyesTargetLocator.framesDoScroll(frameChain)');
-    await this._tsInstance.switchTo().defaultContent();
-    this._defaultContentPositionMemento = await this._scrollPosition.getState();
+    this._logger.verbose('EyesTargetLocator.framesDoScroll(frameChain)')
+    await this._tsInstance.switchTo().defaultContent()
+    this._defaultContentPositionMemento = await this._scrollPosition.getState()
 
     for (const frame of frameChain.getFrames()) {
-      this._logger.verbose('Scrolling by parent scroll position...');
-      const frameLocation = frame.getLocation();
-      await this._scrollPosition.setPosition(frameLocation);
-      this._logger.verbose('Done! Switching to frame...');
-      await this._tsInstance.switchTo().frame(frame.getReference());
-      this._logger.verbose('Done!');
+      this._logger.verbose('Scrolling by parent scroll position...')
+      const frameLocation = frame.getLocation()
+      await this._scrollPosition.setPosition(frameLocation)
+      this._logger.verbose('Done! Switching to frame...')
+      await this._tsInstance.switchTo().frame(frame.getReference())
+      this._logger.verbose('Done!')
     }
 
-    this._logger.verbose('Done switching into nested frames!');
+    this._logger.verbose('Done switching into nested frames!')
   }
 
   /**
@@ -171,29 +169,29 @@ class EyesTargetLocator extends TargetLocator {
    */
   async frames(varArg) {
     if (varArg instanceof FrameChain) {
-      this._logger.verbose('EyesTargetLocator.frames(frameChain)');
-      await this._tsInstance.switchTo().defaultContent();
+      this._logger.verbose('EyesTargetLocator.frames(frameChain)')
+      await this._tsInstance.switchTo().defaultContent()
 
       for (const frame of varArg.getFrames()) {
-        this._logger.verbose('Switching to frame...');
-        await this._tsInstance.switchTo().frame(frame.getReference());
-        this._logger.verbose('Done!');
+        this._logger.verbose('Switching to frame...')
+        await this._tsInstance.switchTo().frame(frame.getReference())
+        this._logger.verbose('Done!')
       }
 
-      this._logger.verbose('Done switching into nested frames!');
-      return;
+      this._logger.verbose('Done switching into nested frames!')
+      return
     }
 
     if (Array.isArray(varArg)) {
-      this._logger.verbose('EyesTargetLocator.frames(framesPath)');
+      this._logger.verbose('EyesTargetLocator.frames(framesPath)')
 
       for (const frameNameOrId of varArg) {
-        this._logger.verbose('Switching to frame...');
-        await this._tsInstance.switchTo().frame(frameNameOrId);
-        this._logger.verbose('Done!');
+        this._logger.verbose('Switching to frame...')
+        await this._tsInstance.switchTo().frame(frameNameOrId)
+        this._logger.verbose('Done!')
       }
 
-      this._logger.verbose('Done switching into nested frames!');
+      this._logger.verbose('Done switching into nested frames!')
     }
   }
 
@@ -207,14 +205,14 @@ class EyesTargetLocator extends TargetLocator {
    * @return {Promise.<EyesWebDriver>}
    */
   window(nameOrHandle) {
-    const that = this;
-    that._logger.verbose("EyesTargetLocator.window()");
-    that._tsInstance.getFrameChain().clear();
-    that._logger.verbose("Done! Switching to window...");
+    const that = this
+    that._logger.verbose('EyesTargetLocator.window()')
+    that._tsInstance.getFrameChain().clear()
+    that._logger.verbose('Done! Switching to window...')
     return that._targetLocator.window(nameOrHandle).then(() => {
-      that._logger.verbose("Done!");
-      return that._tsInstance;
-    });
+      that._logger.verbose('Done!')
+      return that._tsInstance
+    })
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -224,14 +222,14 @@ class EyesTargetLocator extends TargetLocator {
    * @override
    */
   async defaultContent() {
-    this._logger.verbose("EyesTargetLocator.defaultContent()");
+    this._logger.verbose('EyesTargetLocator.defaultContent()')
     if (this._tsInstance.getFrameChain().size() !== 0) {
-      this._logger.verbose("Making preparations...");
-      this._tsInstance.getFrameChain().clear();
-      this._logger.verbose("Done! Switching to default content...");
+      this._logger.verbose('Making preparations...')
+      this._tsInstance.getFrameChain().clear()
+      this._logger.verbose('Done! Switching to default content...')
     }
-    await this._targetLocator.defaultContent();
-    this._logger.verbose("Done!");
+    await this._targetLocator.defaultContent()
+    this._logger.verbose('Done!')
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -243,13 +241,17 @@ class EyesTargetLocator extends TargetLocator {
    * @return {!EyesWebElement}
    */
   activeElement() {
-    this._logger.verbose("EyesTargetLocator.activeElement()");
-    this._logger.verbose("Switching to element...");
+    this._logger.verbose('EyesTargetLocator.activeElement()')
+    this._logger.verbose('Switching to element...')
     // noinspection JSCheckFunctionSignatures
-    const element = this._tsInstance.remoteWebDriver.elementActive();
+    const element = this._tsInstance.remoteWebDriver.elementActive()
     // const element = this._tsInstance.schedule(new command.Command(command.Name.GET_ACTIVE_ELEMENT), 'WebDriver.switchTo().activeElement()');
-    this._logger.verbose("Done!");
-    return new EyesWebElement(this._logger, this._tsInstance, new WebElement(this._tsInstance.remoteWebDriver, element));
+    this._logger.verbose('Done!')
+    return new EyesWebElement(
+      this._logger,
+      this._tsInstance,
+      new WebElement(this._tsInstance.remoteWebDriver, element),
+    )
   }
 
   /**
@@ -259,11 +261,11 @@ class EyesTargetLocator extends TargetLocator {
    * @return {!AlertPromise} The open alert.
    */
   alert() {
-    this._logger.verbose("EyesTargetLocator.alert()");
-    this._logger.verbose("Switching to alert...");
-    const result = this._targetLocator.alert();
-    this._logger.verbose("Done!");
-    return result;
+    this._logger.verbose('EyesTargetLocator.alert()')
+    this._logger.verbose('Switching to alert...')
+    const result = this._targetLocator.alert()
+    this._logger.verbose('Done!')
+    return result
   }
 
   /**
@@ -273,46 +275,68 @@ class EyesTargetLocator extends TargetLocator {
    * @return {Promise}
    */
   willSwitchToFrame(targetFrame) {
-    ArgumentGuard.notNull(targetFrame, "targetFrame");
+    ArgumentGuard.notNull(targetFrame, 'targetFrame')
 
-    this._logger.verbose("willSwitchToFrame()");
-    this._logger.verbose("Frame");
+    this._logger.verbose('willSwitchToFrame()')
+    this._logger.verbose('Frame')
 
-    const eyesFrame = (targetFrame instanceof EyesWebElement) ? targetFrame : new EyesWebElement(this._logger, this._tsInstance, targetFrame);
+    const eyesFrame =
+      targetFrame instanceof EyesWebElement
+        ? targetFrame
+        : new EyesWebElement(this._logger, this._tsInstance, targetFrame)
 
-    const that = this;
-    let location, elementSize, clientSize, contentLocation, originalLocation, originalOverflow;
-    return eyesFrame.getLocation().then(pl => {
-      location = new Location(pl);
-    }).then(() => {
-      return eyesFrame.getSize().then(ds => {
-        elementSize = new RectangleSize(ds);
-      });
-    }).then(() => {
-      return eyesFrame.getClientWidth().then(clientWidth => {
-        return eyesFrame.getClientHeight().then(clientHeight => {
-          clientSize = new RectangleSize(clientWidth, clientHeight);
-        });
-      });
-    }).then(() => {
-      return eyesFrame.getComputedStyleInteger("border-left-width").then(borderLeftWidth => {
-        return eyesFrame.getComputedStyleInteger("border-top-width").then(borderTopWidth => {
-          contentLocation = new Location(location.getX() + borderLeftWidth, location.getY() + borderTopWidth);
-        });
-      });
-    }).then(() => {
-      return that._scrollPosition.getCurrentPosition().then(location => {
-        originalLocation = location;
-      });
-    }).then(() => {
-      return eyesFrame.getOverflow().then(overflow => {
-        originalOverflow = overflow;
-      });
-    }).then(() => {
-      const frame = new Frame(that._logger, targetFrame, contentLocation, elementSize, clientSize, originalLocation, originalOverflow);
-      that._tsInstance.getFrameChain().push(frame);
-    });
+    const that = this
+    let location, elementSize, clientSize, contentLocation, originalLocation, originalOverflow
+    return eyesFrame
+      .getLocation()
+      .then(pl => {
+        location = new Location(pl)
+      })
+      .then(() => {
+        return eyesFrame.getSize().then(ds => {
+          elementSize = new RectangleSize(ds)
+        })
+      })
+      .then(() => {
+        return eyesFrame.getClientWidth().then(clientWidth => {
+          return eyesFrame.getClientHeight().then(clientHeight => {
+            clientSize = new RectangleSize(clientWidth, clientHeight)
+          })
+        })
+      })
+      .then(() => {
+        return eyesFrame.getComputedStyleInteger('border-left-width').then(borderLeftWidth => {
+          return eyesFrame.getComputedStyleInteger('border-top-width').then(borderTopWidth => {
+            contentLocation = new Location(
+              location.getX() + borderLeftWidth,
+              location.getY() + borderTopWidth,
+            )
+          })
+        })
+      })
+      .then(() => {
+        return that._scrollPosition.getCurrentPosition().then(location => {
+          originalLocation = location
+        })
+      })
+      .then(() => {
+        return eyesFrame.getOverflow().then(overflow => {
+          originalOverflow = overflow
+        })
+      })
+      .then(() => {
+        const frame = new Frame(
+          that._logger,
+          targetFrame,
+          contentLocation,
+          elementSize,
+          clientSize,
+          originalLocation,
+          originalOverflow,
+        )
+        that._tsInstance.getFrameChain().push(frame)
+      })
   }
 }
 
-module.exports = EyesTargetLocator;
+module.exports = EyesTargetLocator

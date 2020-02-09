@@ -1,31 +1,30 @@
-'use strict';
+'use strict'
 
-const {PositionProvider, ArgumentGuard, Location} = require('@applitools/eyes-sdk-core');
+const {PositionProvider, ArgumentGuard, Location} = require('@applitools/eyes-sdk-core')
 
-const EyesWDIOUtils = require('../EyesWDIOUtils');
-const CssTranslatePositionMemento = require('./CssTranslatePositionMemento');
-const ScrollPositionProvider = require('./ScrollPositionProvider');
+const EyesWDIOUtils = require('../EyesWDIOUtils')
+const CssTranslatePositionMemento = require('./CssTranslatePositionMemento')
+const ScrollPositionProvider = require('./ScrollPositionProvider')
 
 /**
  * A {@link PositionProvider} which is based on CSS translates. This is
  * useful when we want to stitch a page which contains fixed position elements.
  */
 class CssTranslatePositionProvider extends PositionProvider {
-
   /**
    * @param {Logger} logger A Logger instance.
    * @param {EyesJsExecutor} executor
    */
   constructor(logger, executor) {
-    ArgumentGuard.notNull(logger, "logger");
-    ArgumentGuard.notNull(executor, "executor");
-    super();
+    ArgumentGuard.notNull(logger, 'logger')
+    ArgumentGuard.notNull(executor, 'executor')
+    super()
 
-    this._logger = logger;
-    this._executor = executor;
-    this._lastSetPosition = undefined;
+    this._logger = logger
+    this._executor = executor
+    this._lastSetPosition = undefined
 
-    this._logger.verbose("creating CssTranslatePositionProvider");
+    this._logger.verbose('creating CssTranslatePositionProvider')
   }
 
   /**
@@ -33,8 +32,8 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @inheritDoc
    */
   async getCurrentPosition() {
-    this._logger.verbose("position to return: ", this._lastSetPosition);
-    return this._lastSetPosition;
+    this._logger.verbose('position to return: ', this._lastSetPosition)
+    return this._lastSetPosition
   }
 
   /**
@@ -42,16 +41,18 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @inheritDoc
    */
   async setPosition(location) {
-    ArgumentGuard.notNull(location, "location");
+    ArgumentGuard.notNull(location, 'location')
 
-    this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`);
+    this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`)
 
-    const spp = new ScrollPositionProvider(this._logger, this._executor);
-    await spp.setPosition(Location.ZERO);
-    await this._executor.executeScript(`document.documentElement.style.transform = 'translate(10px, -${location.getY()}px)';`);
-    await EyesWDIOUtils.translateTo(this._executor, location);
-    this._logger.verbose("Done!");
-    this._lastSetPosition = location;
+    const spp = new ScrollPositionProvider(this._logger, this._executor)
+    await spp.setPosition(Location.ZERO)
+    await this._executor.executeScript(
+      `document.documentElement.style.transform = 'translate(10px, -${location.getY()}px)';`,
+    )
+    await EyesWDIOUtils.translateTo(this._executor, location)
+    this._logger.verbose('Done!')
+    this._lastSetPosition = location
   }
 
   /**
@@ -59,11 +60,11 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @inheritDoc
    */
   getEntireSize() {
-    const that = this;
+    const that = this
     return EyesWDIOUtils.getCurrentFrameContentEntireSize(this._executor).then(entireSize => {
-      that._logger.verbose(`CssTranslatePositionProvider - Entire size: ${entireSize}`);
-      return entireSize;
-    });
+      that._logger.verbose(`CssTranslatePositionProvider - Entire size: ${entireSize}`)
+      return entireSize
+    })
   }
 
   /**
@@ -71,11 +72,11 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @return {Promise.<CssTranslatePositionMemento>}
    */
   getState() {
-    const that = this;
+    const that = this
     return EyesWDIOUtils.getCurrentTransform(this._executor).then(transforms => {
-      that._logger.verbose("Current transform", transforms);
-      return new CssTranslatePositionMemento(transforms, that._lastSetPosition);
-    });
+      that._logger.verbose('Current transform', transforms)
+      return new CssTranslatePositionMemento(transforms, that._lastSetPosition)
+    })
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -85,12 +86,12 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @return {Promise}
    */
   restoreState(state) {
-    const that = this;
+    const that = this
     return EyesWDIOUtils.setTransforms(this._executor, state.transform).then(() => {
-      that._logger.verbose("Transform (position) restored.");
-      that._lastSetPosition = state.position;
-    });
+      that._logger.verbose('Transform (position) restored.')
+      that._lastSetPosition = state.position
+    })
   }
 }
 
-module.exports = CssTranslatePositionProvider;
+module.exports = CssTranslatePositionProvider

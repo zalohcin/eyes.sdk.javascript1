@@ -1,31 +1,33 @@
-'use strict';
+'use strict'
 
-const {TestSpecialCases} = require('./TestSpecialCases');
-const Common = require('./Common');
+const {TestSpecialCases} = require('./TestSpecialCases')
+const Common = require('./Common')
 
-const appName = 'Eyes Selenium SDK - Special Cases';
-const testedPageUrl = 'http://applitools.github.io/demo/TestPages/WixLikeTestPage/index.html';
+const appName = 'Eyes Selenium SDK - Special Cases'
+const testedPageUrl = 'http://applitools.github.io/demo/TestPages/WixLikeTestPage/index.html'
 
-const test = new Common({testedPageUrl: testedPageUrl, browserName: 'chrome'});
+const test = new Common({testedPageUrl: testedPageUrl, browserName: 'chrome'})
 
+describe.skip(appName, function() {
+  before(function() {
+    return test.beforeTest({})
+  })
 
-describe.skip(appName, function () {
+  beforeEach(function() {
+    return test.beforeEachTest({
+      appName: appName,
+      testName: this.currentTest.title,
+      browserOptions: Common.CHROME,
+    })
+  })
 
-  before(function () {
-    return test.beforeTest({});
-  });
+  afterEach(function() {
+    return test.afterEachTest()
+  })
 
-  beforeEach(function () {
-    return test.beforeEachTest({appName: appName, testName: this.currentTest.title, browserOptions: Common.CHROME});
-  });
+  after(function() {
+    return test.afterTest()
+  })
 
-  afterEach(function () {
-    return test.afterEachTest();
-  });
-
-  after(function () {
-    return test.afterTest();
-  });
-
-  TestSpecialCases.shouldBehaveLike('TestSpecialCases', test);
-});
+  TestSpecialCases.shouldBehaveLike('TestSpecialCases', test)
+})

@@ -1,16 +1,16 @@
-'use strict';
+'use strict'
 
-const {EyesRunner} = require('./EyesRunner');
-const {TestResultSummary} = require('./TestResultSummary');
-const {TestResultContainer} = require('./TestResultContainer');
+const {EyesRunner} = require('./EyesRunner')
+const {TestResultSummary} = require('./TestResultSummary')
+const {TestResultContainer} = require('./TestResultContainer')
 const {makeGetRenderingInfo} = require('@applitools/eyes-sdk-core')
 
 class ClassicRunner extends EyesRunner {
   constructor() {
-    super();
+    super()
 
     /** @type {TestResults[]} */
-    this._allTestResult = [];
+    this._allTestResult = []
     this._getRenderingInfo = undefined
   }
 
@@ -34,15 +34,17 @@ class ClassicRunner extends EyesRunner {
    * @param {boolean} [shouldThrowException=true]
    * @return {Promise<TestResultSummary>}
    */
-  async getAllTestResults(shouldThrowException = true) { // eslint-disable-line no-unused-vars
-    const allResults = [];
+  // https://trello.com/c/McCg97IK/214-getalltestresults-doesnt-throw-exceptions
+  // eslint-disable-next-line
+  async getAllTestResults(shouldThrowException = true) {
+    const allResults = []
     for (const testResults of this._allTestResult) {
-      allResults.push(new TestResultContainer(testResults));
+      allResults.push(new TestResultContainer(testResults))
     }
 
-    await this._closeAllBatches();
-    return new TestResultSummary(allResults);
+    await this._closeAllBatches()
+    return new TestResultSummary(allResults)
   }
 }
 
-exports.ClassicRunner = ClassicRunner;
+exports.ClassicRunner = ClassicRunner

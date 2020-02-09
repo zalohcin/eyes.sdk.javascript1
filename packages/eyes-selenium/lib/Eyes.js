@@ -140,8 +140,8 @@ class Eyes extends EyesBase {
    * @param {SessionType} [sessionType] - The type of test (e.g.,  standard test / visual performance test).
    * @return {Promise<EyesWebDriver>} - A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
+  // eslint-disable-next-line no-unused-vars
   async open(driver, appName, testName, viewportSize, sessionType) {
-    // eslint-disable-line no-unused-vars
     throw new TypeError('The method is not implemented!')
   }
 
@@ -168,8 +168,7 @@ class Eyes extends EyesBase {
    * @param {SeleniumCheckSettings} checkSettings - Target instance which describes whether we want a window/region/frame
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async check(name, checkSettings) {
-    // eslint-disable-line no-unused-vars
+  async check(_name, _checkSettings) {
     throw new TypeError('The method is not implemented!')
   }
 

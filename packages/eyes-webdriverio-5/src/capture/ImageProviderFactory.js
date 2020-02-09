@@ -1,13 +1,12 @@
-'use strict';
+'use strict'
 
-const {BrowserNames} = require('@applitools/eyes-sdk-core');
+const {BrowserNames} = require('@applitools/eyes-sdk-core')
 
-const TakesScreenshotImageProvider = require('./TakesScreenshotImageProvider');
-const FirefoxScreenshotImageProvider = require('./FirefoxScreenshotImageProvider');
-const SafariScreenshotImageProvider = require('./SafariScreenshotImageProvider');
+const TakesScreenshotImageProvider = require('./TakesScreenshotImageProvider')
+const FirefoxScreenshotImageProvider = require('./FirefoxScreenshotImageProvider')
+const SafariScreenshotImageProvider = require('./SafariScreenshotImageProvider')
 
 class ImageProviderFactory {
-
   /**
    * @param {UserAgent} userAgent
    * @param {Eyes|EyesWDIO} eyes
@@ -20,17 +19,17 @@ class ImageProviderFactory {
       if (userAgent.getBrowser() === BrowserNames.Firefox) {
         try {
           if (parseInt(userAgent.getBrowserMajorVersion(), 10) >= 48) {
-            return new FirefoxScreenshotImageProvider(eyes, logger, driver);
+            return new FirefoxScreenshotImageProvider(eyes, logger, driver)
           }
         } catch (ignored) {
-          return new TakesScreenshotImageProvider(logger, driver);
+          return new TakesScreenshotImageProvider(logger, driver)
         }
       } else if (userAgent.getBrowser() === BrowserNames.Safari) {
-        return new SafariScreenshotImageProvider(eyes, logger, driver, userAgent);
+        return new SafariScreenshotImageProvider(eyes, logger, driver, userAgent)
       }
     }
-    return new TakesScreenshotImageProvider(logger, driver);
+    return new TakesScreenshotImageProvider(logger, driver)
   }
 }
 
-module.exports = ImageProviderFactory;
+module.exports = ImageProviderFactory

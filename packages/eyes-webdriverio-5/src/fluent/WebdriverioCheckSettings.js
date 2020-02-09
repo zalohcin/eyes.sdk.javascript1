@@ -1,49 +1,47 @@
-'use strict';
+'use strict'
 
-const {CheckSettings, Region, TypeUtils} = require('@applitools/eyes-sdk-core');
-const {By} = require('selenium-webdriver'); // TODO: remove usage
-const WebElement = require('../wrappers/WebElement');
-const EyesWebElement = require('../wrappers/EyesWebElement');
-const FrameLocator = require('./FrameLocator');
-const IgnoreRegionBySelector = require('./IgnoreRegionBySelector');
-const IgnoreRegionByElement = require('./IgnoreRegionByElement');
-const {SelectorByElement} = require('./SelectorByElement');
-const {SelectorByLocator} = require('./SelectorByLocator');
-const FloatingRegionBySelector = require('./FloatingRegionBySelector');
-const FloatingRegionByElement = require('./FloatingRegionByElement');
-const AccessibilityRegionBySelector = require('./AccessibilityRegionBySelector');
-const AccessibilityRegionByElement = require('./AccessibilityRegionByElement');
+const {CheckSettings, Region, TypeUtils} = require('@applitools/eyes-sdk-core')
+const {By} = require('selenium-webdriver') // TODO: remove usage
+const WebElement = require('../wrappers/WebElement')
+const EyesWebElement = require('../wrappers/EyesWebElement')
+const FrameLocator = require('./FrameLocator')
+const IgnoreRegionBySelector = require('./IgnoreRegionBySelector')
+const IgnoreRegionByElement = require('./IgnoreRegionByElement')
+const {SelectorByElement} = require('./SelectorByElement')
+const {SelectorByLocator} = require('./SelectorByLocator')
+const FloatingRegionBySelector = require('./FloatingRegionBySelector')
+const FloatingRegionByElement = require('./FloatingRegionByElement')
+const AccessibilityRegionBySelector = require('./AccessibilityRegionBySelector')
+const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
 
-const USE_DEFAULT_MATCH_TIMEOUT = -1;
-const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot';
+const USE_DEFAULT_MATCH_TIMEOUT = -1
+const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
 
 class WebdriverioCheckSettings extends CheckSettings {
-
   /**
    *
    * @param {Region|By|WebElement|EyesWebElement} [region]
    * @param {int|String|By} [frame]
    */
   constructor(region, frame) {
-    super();
+    super()
 
     /** @type {By} */
-    this._targetSelector = null;
+    this._targetSelector = null
     /** @type {WebElement} */
-    this._targetElement = null;
-    this._frameChain = [];
+    this._targetElement = null
+    this._frameChain = []
 
     if (region) {
-      this.region(region);
+      this.region(region)
     }
 
     if (frame) {
-      this.frame(frame);
+      this.frame(frame)
     }
 
-    /** @type {Map<string, string>} */ this._scriptHooks = new Map();
+    /** @type {Map<string, string>} */ this._scriptHooks = new Map()
   }
-
 
   /**
    * @package
@@ -52,16 +50,15 @@ class WebdriverioCheckSettings extends CheckSettings {
    */
   getTargetProvider() {
     if (this._targetSelector) {
-      return new SelectorByLocator(this._targetSelector);
+      return new SelectorByLocator(this._targetSelector)
     }
 
     if (this._targetElement) {
-      return new SelectorByElement(this._targetElement);
+      return new SelectorByElement(this._targetElement)
     }
 
-    return undefined;
+    return undefined
   }
-
 
   /**
    *
@@ -70,17 +67,17 @@ class WebdriverioCheckSettings extends CheckSettings {
    */
   region(region) {
     if (Region.isRegionCompatible(region)) {
-      super.updateTargetRegion(region);
+      super.updateTargetRegion(region)
     } else if (region instanceof By) {
-      this._targetSelector = region;
+      this._targetSelector = region
     } else if (region instanceof WebElement) {
-      this._targetElement = region;
+      this._targetElement = region
     } else if (TypeUtils.isString(region)) {
-      this._targetSelector = By.css(region);
+      this._targetSelector = By.css(region)
     } else {
-      throw new TypeError("region method called with argument of unknown type!");
+      throw new TypeError('region method called with argument of unknown type!')
     }
-    return this;
+    return this
   }
 
   /**
@@ -88,21 +85,21 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @returns {WebdriverioCheckSettings}
    */
   frame(frame) {
-    const fl = new FrameLocator();
+    const fl = new FrameLocator()
     // noinspection IfStatementWithTooManyBranchesJS
     if (TypeUtils.isInteger(frame)) {
-      fl.setFrameIndex(frame);
+      fl.setFrameIndex(frame)
     } else if (TypeUtils.isString(frame)) {
-      fl.setFrameNameOrId(frame);
+      fl.setFrameNameOrId(frame)
     } else if (frame instanceof By) {
-      fl.setFrameSelector(frame);
+      fl.setFrameSelector(frame)
     } else if (frame instanceof WebElement) {
-      fl.setFrameElement(frame);
+      fl.setFrameElement(frame)
     } else {
-      throw new TypeError("frame method called with argument of unknown type!");
+      throw new TypeError('frame method called with argument of unknown type!')
     }
-    this._frameChain.push(fl);
-    return this;
+    this._frameChain.push(fl)
+    return this
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -115,16 +112,15 @@ class WebdriverioCheckSettings extends CheckSettings {
    */
   ignore(regionOrContainer) {
     if (regionOrContainer instanceof By) {
-      this._ignoreRegions.push(new IgnoreRegionBySelector(regionOrContainer));
+      this._ignoreRegions.push(new IgnoreRegionBySelector(regionOrContainer))
     } else if (regionOrContainer instanceof WebElement) {
-      this._ignoreRegions.push(new IgnoreRegionByElement(regionOrContainer));
+      this._ignoreRegions.push(new IgnoreRegionByElement(regionOrContainer))
     } else {
-      super.ignoreRegions(regionOrContainer);
+      super.ignoreRegions(regionOrContainer)
     }
 
-    return this;
+    return this
   }
-
 
   // noinspection JSCheckFunctionSignatures
   /**
@@ -135,10 +131,9 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {WebdriverioCheckSettings} This instance of the settings object.
    */
   ignores(...regionsOrContainers) {
-    super.ignoreRegions(...regionsOrContainers);
-    return this;
+    super.ignoreRegions(...regionsOrContainers)
+    return this
   }
-
 
   /**
    * @inheritDoc
@@ -147,7 +142,7 @@ class WebdriverioCheckSettings extends CheckSettings {
    */
   ignoreRegions(...regions) {
     // noinspection JSValidateTypes
-    return super.ignoreRegions(...regions);
+    return super.ignoreRegions(...regions)
   }
 
   /**
@@ -157,7 +152,7 @@ class WebdriverioCheckSettings extends CheckSettings {
    */
   layoutRegions(...regions) {
     // noinspection JSValidateTypes
-    return super.layoutRegions(...regions);
+    return super.layoutRegions(...regions)
   }
 
   /**
@@ -167,9 +162,8 @@ class WebdriverioCheckSettings extends CheckSettings {
    */
   strictRegions(...regions) {
     // noinspection JSValidateTypes
-    return super.strictRegions(...regions);
+    return super.strictRegions(...regions)
   }
-
 
   /**
    * @inheritDoc
@@ -178,16 +172,15 @@ class WebdriverioCheckSettings extends CheckSettings {
    */
   _regionToRegionProvider(region) {
     if (EyesWebElement.isLocator(region)) {
-      return new IgnoreRegionBySelector(region);
+      return new IgnoreRegionBySelector(region)
     }
 
     if (region instanceof WebElement) {
-      return new IgnoreRegionByElement(region);
+      return new IgnoreRegionByElement(region)
     }
 
-    return super._regionToRegionProvider(region);
+    return super._regionToRegionProvider(region)
   }
-
 
   // noinspection JSCheckFunctionSignatures
   /**
@@ -203,13 +196,35 @@ class WebdriverioCheckSettings extends CheckSettings {
    */
   floating(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
     if (regionOrContainer instanceof By) {
-      this._floatingRegions.push(new FloatingRegionBySelector(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset));
+      this._floatingRegions.push(
+        new FloatingRegionBySelector(
+          regionOrContainer,
+          maxUpOffset,
+          maxDownOffset,
+          maxLeftOffset,
+          maxRightOffset,
+        ),
+      )
     } else if (regionOrContainer instanceof WebElement) {
-      this._floatingRegions.push(new FloatingRegionByElement(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset));
+      this._floatingRegions.push(
+        new FloatingRegionByElement(
+          regionOrContainer,
+          maxUpOffset,
+          maxDownOffset,
+          maxLeftOffset,
+          maxRightOffset,
+        ),
+      )
     } else {
-      super.floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset);
+      super.floatingRegion(
+        regionOrContainer,
+        maxUpOffset,
+        maxDownOffset,
+        maxLeftOffset,
+        maxRightOffset,
+      )
     }
-    return this;
+    return this
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -222,8 +237,8 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {WebdriverioCheckSettings} This instance of the settings object.
    */
   floatings(maxOffset, ...regionsOrContainers) {
-    super.floatings(maxOffset, ...regionsOrContainers);
-    return this;
+    super.floatings(maxOffset, ...regionsOrContainers)
+    return this
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -236,15 +251,15 @@ class WebdriverioCheckSettings extends CheckSettings {
    */
   accessibilityRegion(regionOrContainer, regionType) {
     if (regionOrContainer instanceof By) {
-      const accessibilityRegion = new AccessibilityRegionBySelector(regionOrContainer, regionType);
-      this._accessibilityRegions.push(accessibilityRegion);
+      const accessibilityRegion = new AccessibilityRegionBySelector(regionOrContainer, regionType)
+      this._accessibilityRegions.push(accessibilityRegion)
     } else if (regionOrContainer instanceof WebElement) {
-      const floatingRegion = new AccessibilityRegionByElement(regionOrContainer, regionType);
-      this._accessibilityRegions.push(floatingRegion);
+      const floatingRegion = new AccessibilityRegionByElement(regionOrContainer, regionType)
+      this._accessibilityRegions.push(floatingRegion)
     } else {
-      super.accessibilityRegion(regionOrContainer, regionType);
+      super.accessibilityRegion(regionOrContainer, regionType)
     }
-    return this;
+    return this
   }
 
   /**
@@ -253,10 +268,9 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @returns {WebdriverioCheckSettings}
    */
   timeout(timeoutMilliseconds = USE_DEFAULT_MATCH_TIMEOUT) {
-    super.timeout(timeoutMilliseconds);
-    return this;
+    super.timeout(timeoutMilliseconds)
+    return this
   }
-
 
   /**
    * Defines that the screenshot will contain the entire element or region, even if it's outside the view.
@@ -266,10 +280,9 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {WebdriverioCheckSettings} This instance of the settings object.
    */
   fully(fully) {
-    super.fully(fully);
-    return this;
+    super.fully(fully)
+    return this
   }
-
 
   /**
    * @override
@@ -277,30 +290,29 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {WebdriverioCheckSettings}
    */
   stitchContent(stitchContent = true) {
-    super.stitchContent(stitchContent);
-    return this;
+    super.stitchContent(stitchContent)
+    return this
   }
-
 
   /**
    * @returns {By}
    */
   get targetSelector() {
-    return this._targetSelector;
+    return this._targetSelector
   }
 
   /**
    * @returns {WebElement}
    */
   get targetElement() {
-    return this._targetElement;
+    return this._targetElement
   }
 
   /**
    * @returns {FrameLocator[]}
    */
   getFrameChain() {
-    return this._frameChain;
+    return this._frameChain
   }
 
   /**
@@ -309,20 +321,20 @@ class WebdriverioCheckSettings extends CheckSettings {
   getSizeMode() {
     if (!this._targetRegion && !this._targetElement && !this._targetSelector) {
       if (this.getStitchContent()) {
-        return 'full-page';
+        return 'full-page'
       }
-      return 'viewport';
+      return 'viewport'
     }
     if (this._targetRegion) {
       if (this.getStitchContent()) {
-        return 'region';
+        return 'region'
       }
-      return 'region';
+      return 'region'
     }
     if (this.getStitchContent()) {
-      return 'selector';
+      return 'selector'
     }
-    return 'selector';
+    return 'selector'
   }
 
   /**
@@ -332,17 +344,17 @@ class WebdriverioCheckSettings extends CheckSettings {
   scrollRootElement(element) {
     if (EyesWebElement.isLocator(element)) {
       if (this._frameChain.length === 0) {
-        this._scrollRootSelector = element;
+        this._scrollRootSelector = element
       } else {
-        this._frameChain[this._frameChain.length - 1].setScrollRootSelector(element);
+        this._frameChain[this._frameChain.length - 1].setScrollRootSelector(element)
       }
     } else if (this._frameChain.length === 0) {
-      this._scrollRootElement = element;
+      this._scrollRootElement = element
     } else {
-      this._frameChain[this._frameChain.length - 1].setScrollRootElement(element);
+      this._frameChain[this._frameChain.length - 1].setScrollRootElement(element)
     }
 
-    return this;
+    return this
   }
 
   /**
@@ -350,7 +362,7 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {Promise<WebElement>}
    */
   async getScrollRootElement() {
-    return this._scrollRootElement;
+    return this._scrollRootElement
   }
 
   /**
@@ -358,19 +370,19 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {By}
    */
   getScrollRootSelector() {
-    return this._scrollRootSelector;
+    return this._scrollRootSelector
   }
 
   /**
    * @param {string} script
    */
   addScriptHook(script) {
-    let scripts = this._scriptHooks.get(BEFORE_CAPTURE_SCREENSHOT);
+    let scripts = this._scriptHooks.get(BEFORE_CAPTURE_SCREENSHOT)
     if (scripts == null) {
-      scripts = [];
-      this._scriptHooks.set(BEFORE_CAPTURE_SCREENSHOT, scripts);
+      scripts = []
+      this._scriptHooks.set(BEFORE_CAPTURE_SCREENSHOT, scripts)
     }
-    scripts.add(script);
+    scripts.add(script)
   }
 
   /**
@@ -379,7 +391,7 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {this}
    */
   webHook(hook) {
-    return this.beforeRenderScreenshotHook(hook);
+    return this.beforeRenderScreenshotHook(hook)
   }
 
   /**
@@ -387,8 +399,8 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {this}
    */
   beforeRenderScreenshotHook(hook) {
-    this._scriptHooks[BEFORE_CAPTURE_SCREENSHOT] = hook;
-    return this;
+    this._scriptHooks[BEFORE_CAPTURE_SCREENSHOT] = hook
+    return this
   }
 
   /**
@@ -396,64 +408,59 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {Map<string, string>}
    */
   getScriptHooks() {
-    return this._scriptHooks;
+    return this._scriptHooks
   }
-
 
   strictRegions(...regions) {
     regions.forEach(region => {
-      this._processStrictRegions(region);
-    });
-    return this;
+      this._processStrictRegions(region)
+    })
+    return this
   }
-
 
   layoutRegions(...regions) {
     regions.forEach(region => {
-      this._processLayoutRegions(region);
-    });
-    return this;
+      this._processLayoutRegions(region)
+    })
+    return this
   }
-
 
   contentRegions(...regions) {
     regions.forEach(region => {
-      this._processContentRegions(region);
-    });
-    return this;
+      this._processContentRegions(region)
+    })
+    return this
   }
-
 
   _processStrictRegions(regionOrContainer) {
     if (regionOrContainer instanceof By) {
-      this._strictRegions.push(new IgnoreRegionBySelector(regionOrContainer));
+      this._strictRegions.push(new IgnoreRegionBySelector(regionOrContainer))
     } else if (regionOrContainer instanceof WebElement) {
-      this._strictRegions.push(new IgnoreRegionByElement(regionOrContainer));
+      this._strictRegions.push(new IgnoreRegionByElement(regionOrContainer))
     } else {
-      super.strictRegions(regionOrContainer);
+      super.strictRegions(regionOrContainer)
     }
   }
 
   _processLayoutRegions(regionOrContainer) {
     if (regionOrContainer instanceof By) {
-      this._layoutRegions.push(new IgnoreRegionBySelector(regionOrContainer));
+      this._layoutRegions.push(new IgnoreRegionBySelector(regionOrContainer))
     } else if (regionOrContainer instanceof WebElement) {
-      this._layoutRegions.push(new IgnoreRegionByElement(regionOrContainer));
+      this._layoutRegions.push(new IgnoreRegionByElement(regionOrContainer))
     } else {
-      super.layoutRegions(regionOrContainer);
+      super.layoutRegions(regionOrContainer)
     }
   }
 
   _processContentRegions(regionOrContainer) {
     if (regionOrContainer instanceof By) {
-      this._contentRegions.push(new IgnoreRegionBySelector(regionOrContainer));
+      this._contentRegions.push(new IgnoreRegionBySelector(regionOrContainer))
     } else if (regionOrContainer instanceof WebElement) {
-      this._contentRegions.push(new IgnoreRegionByElement(regionOrContainer));
+      this._contentRegions.push(new IgnoreRegionByElement(regionOrContainer))
     } else {
-      super.contentRegions(regionOrContainer);
+      super.contentRegions(regionOrContainer)
     }
   }
-
 }
 
-module.exports = WebdriverioCheckSettings;
+module.exports = WebdriverioCheckSettings

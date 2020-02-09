@@ -1,84 +1,81 @@
-'use strict';
+/* eslint-disable no-undef */
+'use strict'
 
-const {Configuration, Eyes, Target, StitchMode} = require('@applitools/eyes.webdriverio');
-
+const {Eyes, Target} = require('@applitools/eyes.webdriverio')
 
 const DEFAULT_VIEWPORT = {
   width: 800,
-  height: 600
-};
-
+  height: 600,
+}
 
 class EyesService {
-
   /**
    *
    * @param {Configuration} [config]
    */
+  // eslint-disable-next-line
   constructor(config) {
-    this._eyes = new Eyes();
+    this._eyes = new Eyes()
 
-    this._appName = null;
+    this._appName = null
   }
 
-
+  // eslint-disable-next-line
   beforeSession(config, caps) {
-    const eyesConfig = config.eyes;
+    const eyesConfig = config.eyes
     if (eyesConfig) {
-      this._eyes.setConfiguration(eyesConfig);
-      this._appName = this._eyes.getConfiguration().getAppName();
+      this._eyes.setConfiguration(eyesConfig)
+      this._appName = this._eyes.getConfiguration().getAppName()
 
       if (!process.env.APPLITOOLS_API_KEY) {
-        process.env.APPLITOOLS_API_KEY = eyesConfig.apiKey;
+        process.env.APPLITOOLS_API_KEY = eyesConfig.apiKey
       }
     }
-    this._eyes.setHideScrollbars(true);
+    this._eyes.setHideScrollbars(true)
   }
 
-
+  // eslint-disable-next-line
   before(caps) {
     browser.addCommand('eyesCheck', (title, checkSettings = Target.window().fully()) => {
-      return this._eyes.check(title, checkSettings);
-    });
+      return this._eyes.check(title, checkSettings)
+    })
 
     browser.addCommand('eyesCheckWindow', (title, checkSettings) => {
-      return this._eyes.check(title, checkSettings);
-    });
+      return this._eyes.check(title, checkSettings)
+    })
 
     browser.addCommand('eyesGetConfiguration', () => {
-      return this._eyes.getConfiguration();
-    });
-
+      return this._eyes.getConfiguration()
+    })
   }
-
 
   async beforeTest(test) {
     if (!this._appName) {
-      this._eyes.getConfiguration().setAppName(test.parent);
+      this._eyes.getConfiguration().setAppName(test.parent)
     }
 
-    this._eyes.getConfiguration().setTestName(test.title);
+    this._eyes.getConfiguration().setTestName(test.title)
 
     if (!this._eyes.getConfiguration().getViewportSize()) {
-      this._eyes.getConfiguration().setViewportSize(DEFAULT_VIEWPORT);
+      this._eyes.getConfiguration().setViewportSize(DEFAULT_VIEWPORT)
     }
 
-    await global.browser.call(() => this._eyes.open(global.browser));
+    await global.browser.call(() => this._eyes.open(global.browser))
   }
 
-
+  // eslint-disable-next-line
   async afterTest(exitCode, config, capabilities) {
     try {
-      const result = await browser.call(() => this._eyes.close(false));
+      // eslint-disable-next-line
+      const result = await browser.call(() => this._eyes.close(false))
     } catch (e) {
-      await browser.call(() => this._eyes.abortIfNotClosed());
+      await browser.call(() => this._eyes.abortIfNotClosed())
     }
   }
-
 
   after() {
     // browser.call(() => this.eyes.abortIfNotClosed());
   }
 }
 
-module.exports = EyesService;
+module.exports = EyesService

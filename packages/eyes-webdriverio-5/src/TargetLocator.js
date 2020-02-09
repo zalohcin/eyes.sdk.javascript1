@@ -1,26 +1,20 @@
-'use strict';
-
+'use strict'
 
 class TargetLocator {
-
-
   /**
    * @param {WebDriver} driver
    */
   constructor(driver) {
-    this._tsInstance = driver;
+    this._tsInstance = driver
   }
-
 
   defaultContent() {
-    return this._tsInstance.remoteWebDriver.switchToFrame(null);
+    return this._tsInstance.remoteWebDriver.switchToFrame(null)
   }
-
 
   frame(id) {
-    return this._tsInstance.remoteWebDriver.switchToFrame(id);
+    return this._tsInstance.remoteWebDriver.switchToFrame(id)
   }
-
 
   /**
    *
@@ -28,7 +22,6 @@ class TargetLocator {
   alert() {
     // todo
   }
-
 }
 
-module.exports = TargetLocator;
+module.exports = TargetLocator

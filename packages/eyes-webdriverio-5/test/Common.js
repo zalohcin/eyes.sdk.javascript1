@@ -1,6 +1,6 @@
 'use strict'
 
-const {AssertionError, deepEqual} = require('assert')
+const {deepStrictEqual} = require('assert')
 const {remote} = require('webdriverio')
 const chromedriver = require('chromedriver')
 const geckodriver = require('geckodriver')
@@ -12,10 +12,7 @@ const {
   FloatingMatchSettings,
   metadata,
   RectangleSize,
-  Region,
   TypeUtils,
-  AccessibilityRegionByRectangle,
-  AccessibilityLevel
 } = require('@applitools/eyes-sdk-core')
 const {ActualAppOutput, ImageMatchSettings, SessionResults} = metadata
 const url = require('url')
@@ -24,18 +21,14 @@ const batchName = TypeUtils.getOrDefault(process.env.APPLITOOLS_BATCH_NAME, 'Web
 let batchInfo = new BatchInfo(batchName)
 
 class Common {
-
   static get CHROME() {
     return {
       capabilities: {
         browserName: 'chrome',
         'goog:chromeOptions': {
-          args: [
-            '--disable-infobars',
-            'headless'
-          ]
-        }
-      }
+          args: ['--disable-infobars', 'headless'],
+        },
+      },
     }
   }
 
@@ -43,11 +36,11 @@ class Common {
     return {
       capabilities: {
         browserName: 'firefox',
-        "moz:firefoxOptions": {
+        'moz:firefoxOptions': {
           // flag to activate Firefox headless mode (see https://github.com/mozilla/geckodriver/blob/master/README.md#firefox-capabilities for more details about moz:firefoxOptions)
-          args: ['-headless']
-        }
-      }
+          args: ['-headless'],
+        },
+      },
     }
   }
 
@@ -55,15 +48,15 @@ class Common {
     return {
       capabilities: {
         browserName: 'safari',
-        version: '11.1'
-      }
+        version: '11.1',
+      },
     }
   }
 
   static get MOBILE_IOS_SAFARI() {
     return {
-      remoteHost: "http://127.0.0.1:4723/wd/hub",
-      hostname: "127.0.0.1",
+      remoteHost: 'http://127.0.0.1:4723/wd/hub',
+      hostname: '127.0.0.1',
       port: 4723,
       capabilities: {
         browserName: 'Safari',
@@ -71,14 +64,14 @@ class Common {
         deviceName: 'iPhone 11',
         platformName: 'iOS',
         platformVersion: '13.2',
-      }
+      },
     }
   }
 
   static get MOBILE_IOS_NATIVE_APP() {
     return {
-      remoteHost: "http://127.0.0.1:4723/wd/hub",
-      hostname: "127.0.0.1",
+      remoteHost: 'http://127.0.0.1:4723/wd/hub',
+      hostname: '127.0.0.1',
       port: 4723,
       capabilities: {
         app: 'https://store.applitools.com/download/iOS.TestApp.app.zip',
@@ -87,7 +80,7 @@ class Common {
         deviceName: 'iPhone 11',
         platformName: 'iOS',
         platformVersion: '13.2',
-      }
+      },
     }
   }
 
@@ -134,8 +127,14 @@ class Common {
     }
     this._eyes.setBatch(batchInfo)
 
-    if (!this._seleniumStandAloneMode && !(process.env.SELENIUM_SERVER_URL === 'http://ondemand.saucelabs.com/wd/hub'
-      && process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY)) {
+    if (
+      !this._seleniumStandAloneMode &&
+      !(
+        process.env.SELENIUM_SERVER_URL === 'http://ondemand.saucelabs.com/wd/hub' &&
+        process.env.SAUCE_USERNAME &&
+        process.env.SAUCE_ACCESS_KEY
+      )
+    ) {
       if (this._browserName === 'chrome') {
         this._chromeDriverPort = 9515
         const options = [`--port=${this._chromeDriverPort}`, '--url-base=/']
@@ -144,29 +143,31 @@ class Common {
         this._eyes._logger.verbose('Chromedriver is started')
       } else if (this._browserName === 'firefox') {
         geckodriver.start()
-        await new Promise(res => (setTimeout(res, 2000)))
+        await new Promise(res => setTimeout(res, 2000))
         this._eyes._logger.verbose('Geckodriver is started')
       }
     }
   }
 
   async beforeEachTest({
-                         appName,
-                         testName,
-                         browserOptions: browserOptions,
-                         rectangleSize = {
-                           width: 800,
-                           height: 600
-                         },
-                         testedPageUrl = this._testedPageUrl,
-                         platform = Common.getPlatform(browserOptions)
-                       }) {
-
-    if (process.env.SELENIUM_SERVER_URL === 'http://ondemand.saucelabs.com/wd/hub'
-      && process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
+    appName,
+    testName,
+    browserOptions: browserOptions,
+    rectangleSize = {
+      width: 800,
+      height: 600,
+    },
+    testedPageUrl = this._testedPageUrl,
+    platform = Common.getPlatform(browserOptions),
+  }) {
+    if (
+      process.env.SELENIUM_SERVER_URL === 'http://ondemand.saucelabs.com/wd/hub' &&
+      process.env.SAUCE_USERNAME &&
+      process.env.SAUCE_ACCESS_KEY
+    ) {
       this._eyes._logger.verbose('Sauce is used')
 
-      const seleniumServerUrl = url.parse(process.env.SELENIUM_SERVER_URL)
+      const seleniumServerUrl = new url.URL(process.env.SELENIUM_SERVER_URL)
       browserOptions.host = seleniumServerUrl.hostname
       browserOptions.hostname = seleniumServerUrl.hostname
 
@@ -207,13 +208,12 @@ class Common {
   }
 
   async afterEachTest() {
-    let error
     try {
       const results = await this._eyes.close(true)
       const query = `?format=json&AccessToken=${results.getSecretToken()}&apiKey=${this.eyes.getApiKey()}`
       const apiSessionUrl = results.getApiUrls().getSession() + query
 
-      const apiSessionUri = url.parse(apiSessionUrl)
+      const apiSessionUri = new url.URL(apiSessionUrl)
       // apiSessionUri.searchParams.append('format', 'json')
       // apiSessionUri.searchParams.append('AccessToken', results.getSecretToken())
       // apiSessionUri.searchParams.append('apiKey', this.eyes.getApiKey())
@@ -229,16 +229,25 @@ class Common {
 
       if (this._expectedFloatingsRegions) {
         const f = imageMatchSettings.getFloating()[0]
-        const floating = new FloatingMatchSettings(f.left, f.top, f.width, f.height, f.maxUpOffset, f.maxDownOffset, f.maxLeftOffset, f.maxRightOffset)
+        const floating = new FloatingMatchSettings(
+          f.left,
+          f.top,
+          f.width,
+          f.height,
+          f.maxUpOffset,
+          f.maxDownOffset,
+          f.maxLeftOffset,
+          f.maxRightOffset,
+        )
 
-        deepEqual(this._expectedFloatingsRegions, floating, 'Floating regions lists differ')
+        deepStrictEqual(this._expectedFloatingsRegions, floating, 'Floating regions lists differ')
       }
 
       //if (this._expectedIgnoreRegions) {
       //  // here
       //  const ignoreRegions = new Region(imageMatchSettings.getIgnore())
 
-      //  deepEqual(this._expectedIgnoreRegions, ignoreRegions, 'Ignore regions lists differ')
+      //  deepStrictEqual(this._expectedIgnoreRegions, ignoreRegions, 'Ignore regions lists differ')
       //}
     } finally {
       await this._browser.deleteSession()
@@ -247,8 +256,14 @@ class Common {
   }
 
   afterTest() {
-    if (!this._seleniumStandAloneMode && !(process.env.SELENIUM_SERVER_URL === 'http://ondemand.saucelabs.com/wd/hub'
-      && process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY)) {
+    if (
+      !this._seleniumStandAloneMode &&
+      !(
+        process.env.SELENIUM_SERVER_URL === 'http://ondemand.saucelabs.com/wd/hub' &&
+        process.env.SAUCE_USERNAME &&
+        process.env.SAUCE_ACCESS_KEY
+      )
+    ) {
       if (this._browserName === 'chrome') {
         chromedriver.stop()
       } else if (this._browserName === 'firefox') {
@@ -280,11 +295,13 @@ class Common {
     this._expectedFloatingsRegions = expectedFloatingsRegions
   }
 
-
   static getPlatform(browserOptions) {
     let platform
-    if (browserOptions && browserOptions.capabilities
-      && (browserOptions.capabilities.platform || browserOptions.capabilities.platformName)) {
+    if (
+      browserOptions &&
+      browserOptions.capabilities &&
+      (browserOptions.capabilities.platform || browserOptions.capabilities.platformName)
+    ) {
       if (browserOptions.capabilities.platform) {
         platform = browserOptions.capabilities.platform
       } else {

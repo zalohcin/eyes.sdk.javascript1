@@ -1,16 +1,16 @@
-'use strict';
+'use strict'
 
-const RegionPositionCompensation = require('./RegionPositionCompensation');
+const RegionPositionCompensation = require('./RegionPositionCompensation')
 
 class NullRegionPositionCompensation extends RegionPositionCompensation {
-
-    /**
-     * @override
-     * @inheritDoc
-     */
-    compensateRegionPosition(region, pixelRatio) {
-        return region;
-    }
+  /**
+   * @override
+   * @inheritDoc
+   */
+  // eslint-disable-next-line
+  compensateRegionPosition(region, pixelRatio) {
+    return region
+  }
 }
 
-module.exports = NullRegionPositionCompensation;
+module.exports = NullRegionPositionCompensation

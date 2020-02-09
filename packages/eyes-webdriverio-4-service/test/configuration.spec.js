@@ -1,16 +1,15 @@
-'use strict';
+/* eslint-disable no-undef */
+'use strict'
 
-const {deepEqual} = require('assert');
+const {deepStrictEqual} = require('assert')
 
 describe('ConfigurationTest', () => {
-
   beforeEach(() => {
-    browser.url('http://applitools.github.io/demo/TestPages/FramesTestPage/');
-  });
+    browser.url('http://applitools.github.io/demo/TestPages/FramesTestPage/')
+  })
 
   it('checkWindow', () => {
-    const actualViewportSize = browser.eyesGetConfiguration().getViewportSize();
-    deepEqual({width: 600, height: 500}, actualViewportSize.toJSON());
-  });
-
-});
+    const actualViewportSize = browser.eyesGetConfiguration().getViewportSize()
+    deepStrictEqual({width: 600, height: 500}, actualViewportSize.toJSON())
+  })
+})

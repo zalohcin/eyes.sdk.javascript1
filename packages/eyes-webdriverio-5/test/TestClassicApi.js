@@ -1,11 +1,9 @@
 'use strict'
 
-const {equal} = require('assert')
 const shared = require('shared-examples-for')
 const {By} = require('../index')
 
-
-shared.examplesFor('TestClassicApi', function (test) {
+shared.examplesFor('TestClassicApi', function(test) {
   it('TestCheckWindow', async () => {
     await test.eyes.checkWindow('Window')
   })
@@ -19,7 +17,13 @@ shared.examplesFor('TestClassicApi', function (test) {
   })
 
   it('TestCheckRegionInFrame', async () => {
-    await test.eyes.checkRegionInFrame('frame1', By.id('inner-frame-div'), null, 'Inner frame div', true)
+    await test.eyes.checkRegionInFrame(
+      'frame1',
+      By.id('inner-frame-div'),
+      null,
+      'Inner frame div',
+      true,
+    )
   })
 
   it('TestCheckRegion2', async () => {
@@ -27,10 +31,16 @@ shared.examplesFor('TestClassicApi', function (test) {
   })
 
   it.skip('TestCheckInnerFrame', async () => {
-    await test.eyes.getDriver().switchTo().defaultContent()
+    await test.eyes
+      .getDriver()
+      .switchTo()
+      .defaultContent()
     const frame = await test.eyes.getDriver().webDriver.findElement(By.name('frame1'))
-    await test.eyes.getDriver().switchTo().frame(frame)
-    const result = await test.eyes.checkFrame('frame1-1', 'inner-frame')
+    await test.eyes
+      .getDriver()
+      .switchTo()
+      .frame(frame)
+    await test.eyes.checkFrame('frame1-1', 'inner-frame')
   })
 })
 

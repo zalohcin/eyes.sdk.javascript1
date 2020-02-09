@@ -1,10 +1,10 @@
-'use strict';
+'use strict'
 
-const {EyesWDIO} = require('./EyesWDIO');
-const {EyesVisualGrid} = require('./EyesVisualGrid');
-const {ClassicRunner} = require('./runner/ClassicRunner');
-const {EyesRunner} = require('./runner/EyesRunner');
-const {VisualGridRunner} = require('./runner/VisualGridRunner');
+const {EyesWDIO} = require('./EyesWDIO')
+const {EyesVisualGrid} = require('./EyesVisualGrid')
+const {ClassicRunner} = require('./runner/ClassicRunner')
+const {EyesRunner} = require('./runner/EyesRunner')
+const {VisualGridRunner} = require('./runner/VisualGridRunner')
 
 /**
  * @abstract
@@ -23,17 +23,16 @@ class Eyes {
    */
   constructor(serverUrl, isDisabled, runner = new ClassicRunner()) {
     if (serverUrl instanceof EyesRunner) {
-      runner = serverUrl;
-      serverUrl = undefined;
+      runner = serverUrl
+      serverUrl = undefined
     }
 
     if (runner && runner instanceof VisualGridRunner) {
-      return new EyesVisualGrid(serverUrl, isDisabled, runner);
+      return new EyesVisualGrid(serverUrl, isDisabled, runner)
     }
 
-    return new EyesWDIO(serverUrl, isDisabled);
+    return new EyesWDIO(serverUrl, isDisabled)
   }
-
 }
 
-exports.Eyes = Eyes;
+exports.Eyes = Eyes

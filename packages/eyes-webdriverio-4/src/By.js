@@ -1,40 +1,36 @@
-'use strict';
+'use strict'
 
 class By {
-
   /**
    *
    * @param {String} value
    */
   constructor(value) {
-    this._value = value;
+    this._value = value
   }
 
   static id(id) {
-    return new By(`body #${id}`);
+    return new By(`body #${id}`)
   }
 
-
   static name(name) {
-    return new By(`[name=${name}]`);
+    return new By(`[name=${name}]`)
   }
 
   /**
    * @alias css
    */
   static cssSelector(cssSelector) {
-    return By.css(cssSelector);
+    return By.css(cssSelector)
   }
 
   static css(cssSelector) {
-    return new By(cssSelector);
+    return new By(cssSelector)
   }
-
 
   static xPath(xPath) {
-    return new By(xPath);
+    return new By(xPath)
   }
-
 
   /**
    *
@@ -42,18 +38,16 @@ class By {
    * @return {By}
    */
   static tagName(tagName) {
-    return new By(`<${tagName}>`);
+    return new By(`<${tagName}>`)
   }
 
-
   static attributeValue(attributeName, value) {
-    return new By(`[${attributeName}=${value}]`);
+    return new By(`[${attributeName}=${value}]`)
   }
 
   get value() {
-    return this._value;
+    return this._value
   }
-
 }
 
-module.exports = By;
+module.exports = By

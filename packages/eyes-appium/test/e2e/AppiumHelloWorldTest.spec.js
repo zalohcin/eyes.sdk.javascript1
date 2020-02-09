@@ -1,6 +1,6 @@
 'use strict'
 
-const {Builder, By, Capabilities, Capability} = require('selenium-webdriver')
+const {Builder, By, Capabilities} = require('selenium-webdriver')
 const {Eyes} = require('../../index')
 
 describe('AppiumHelloWorldTest', function() {

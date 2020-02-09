@@ -1,18 +1,21 @@
-'use strict';
+/* eslint-disable no-undef */
+'use strict'
 
-const {By, Target} = require('@applitools/eyes-webdriverio');
+const {By, Target} = require('@applitools/eyes-webdriverio')
 
 describe('EyesServiceTest', () => {
-
   beforeEach(() => {
-    browser.url('https://cooking.nytimes.com/see-our-features');
-  });
+    browser.url('https://cooking.nytimes.com/see-our-features')
+  })
 
   it('checkWindow', () => {
-    browser.eyesCheck('see our features', Target.window()
-      .layoutRegions(By.css('a.nytc---navbtn---desktop-link-child.nytc---navbtn---navLabel:first-of-type'))
-      .ignoreRegions(By.css('.features-onboarding-top-video'))
-    );
-  });
-
-});
+    browser.eyesCheck(
+      'see our features',
+      Target.window()
+        .layoutRegions(
+          By.css('a.nytc---navbtn---desktop-link-child.nytc---navbtn---navLabel:first-of-type'),
+        )
+        .ignoreRegions(By.css('.features-onboarding-top-video')),
+    )
+  })
+})

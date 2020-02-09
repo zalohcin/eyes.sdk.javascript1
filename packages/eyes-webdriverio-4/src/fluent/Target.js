@@ -1,9 +1,8 @@
-'use strict';
+'use strict'
 
-const WebdriverioCheckSettings = require('./WebdriverioCheckSettings');
+const WebdriverioCheckSettings = require('./WebdriverioCheckSettings')
 
 class Target {
-
   /**
    * Validate current window
    *
@@ -11,7 +10,7 @@ class Target {
    * @constructor
    */
   static window() {
-    return new WebdriverioCheckSettings();
+    return new WebdriverioCheckSettings()
   }
 
   /**
@@ -23,7 +22,7 @@ class Target {
    * @constructor
    */
   static region(region, frame) {
-    return new WebdriverioCheckSettings(region, frame);
+    return new WebdriverioCheckSettings(region, frame)
   }
 
   /**
@@ -34,8 +33,8 @@ class Target {
    * @constructor
    */
   static frame(frame) {
-    return new WebdriverioCheckSettings(null, frame);
+    return new WebdriverioCheckSettings(null, frame)
   }
 }
 
-module.exports = Target;
+module.exports = Target

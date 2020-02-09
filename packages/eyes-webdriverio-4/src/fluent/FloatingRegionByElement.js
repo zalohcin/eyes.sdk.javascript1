@@ -1,9 +1,13 @@
-'use strict';
+'use strict'
 
-const {GetFloatingRegion, FloatingMatchSettings, Location, CoordinatesType} = require('@applitools/eyes-sdk-core');
+const {
+  GetFloatingRegion,
+  FloatingMatchSettings,
+  Location,
+  CoordinatesType,
+} = require('@applitools/eyes-sdk-core')
 
 class FloatingRegionByElement extends GetFloatingRegion {
-
   /**
    * @param {WebElement} webElement
    * @param {int} maxUpOffset
@@ -12,12 +16,12 @@ class FloatingRegionByElement extends GetFloatingRegion {
    * @param {int} maxRightOffset
    */
   constructor(webElement, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
-    super();
-    this._element = webElement;
-    this._maxUpOffset = maxUpOffset;
-    this._maxDownOffset = maxDownOffset;
-    this._maxLeftOffset = maxLeftOffset;
-    this._maxRightOffset = maxRightOffset;
+    super()
+    this._element = webElement
+    this._maxUpOffset = maxUpOffset
+    this._maxDownOffset = maxDownOffset
+    this._maxLeftOffset = maxLeftOffset
+    this._maxRightOffset = maxRightOffset
   }
 
   // noinspection JSCheckFunctionSignatures
@@ -26,14 +30,15 @@ class FloatingRegionByElement extends GetFloatingRegion {
    * @param {Eyes} eyesBase
    * @param {EyesScreenshot} screenshot
    */
+  // eslint-disable-next-line
   async getRegion(eyesBase, screenshot) {
-    const point = await this._element.getLocation();
-    const size = await this._element.getSize();
+    const point = await this._element.getLocation()
+    const size = await this._element.getSize()
     const lTag = screenshot.convertLocation(
       new Location(point),
       CoordinatesType.CONTEXT_RELATIVE,
-      CoordinatesType.SCREENSHOT_AS_IS
-    );
+      CoordinatesType.SCREENSHOT_AS_IS,
+    )
 
     const floatingRegion = new FloatingMatchSettings({
       left: lTag.getX(),
@@ -44,9 +49,9 @@ class FloatingRegionByElement extends GetFloatingRegion {
       maxDownOffset: this._maxDownOffset,
       maxLeftOffset: this._maxLeftOffset,
       maxRightOffset: this._maxRightOffset,
-    });
-    return [floatingRegion];
+    })
+    return [floatingRegion]
   }
 }
 
-module.exports = FloatingRegionByElement;
+module.exports = FloatingRegionByElement

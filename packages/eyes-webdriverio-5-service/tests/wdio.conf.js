@@ -1,5 +1,5 @@
-const path = require('path');
-const {EyesService} = require('../index');
+const path = require('path')
+const {EyesService} = require('../index')
 
 exports.config = {
   //
@@ -19,9 +19,7 @@ exports.config = {
   // NPM script (see https://docs.npmjs.com/cli/run-script) then the current working
   // directory is where your package.json resides, so `wdio` will be called from there.
   //
-  specs: [
-    path.join(__dirname, process.env.TEST_SPECS ? process.env.TEST_SPECS : '*.spec.js')
-  ],
+  specs: [path.join(__dirname, process.env.TEST_SPECS ? process.env.TEST_SPECS : '*.spec.js')],
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
@@ -48,21 +46,23 @@ exports.config = {
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
   // https://docs.saucelabs.com/reference/platforms-configurator
   //
-  capabilities: [{
-    // maxInstances can get overwritten per capability. So if you have an in-house Selenium
-    // grid with only 5 firefox instances available you can make sure that not more than
-    // 5 instances get started at a time.
-    maxInstances: 5,
-    //
-    browserName: 'chrome',
-    // If outputDir is provided WebdriverIO can capture driver session logs
-    // it is possible to configure which logTypes to include/exclude.
-    // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
-    // excludeDriverLogs: ['bugreport', 'server'],
-    "goog:chromeOptions": {
-      args: ['--headless', '--disable-gpu'],
-    }
-  }],
+  capabilities: [
+    {
+      // maxInstances can get overwritten per capability. So if you have an in-house Selenium
+      // grid with only 5 firefox instances available you can make sure that not more than
+      // 5 instances get started at a time.
+      maxInstances: 5,
+      //
+      browserName: 'chrome',
+      // If outputDir is provided WebdriverIO can capture driver session logs
+      // it is possible to configure which logTypes to include/exclude.
+      // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
+      // excludeDriverLogs: ['bugreport', 'server'],
+      'goog:chromeOptions': {
+        args: ['--headless', '--disable-gpu'],
+      },
+    },
+  ],
   //
   // ===================
   // Test Configurations
@@ -116,7 +116,7 @@ exports.config = {
 
   port: 9515,
   path: '/',
-  
+
   //
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -139,15 +139,13 @@ exports.config = {
   // See the full list at http://mochajs.org/
   mochaOpts: {
     ui: 'bdd',
-    timeout: 60000
+    timeout: 60000,
   },
   eyes: {
     // batch: { id: 'BatchId', name: 'WebDriverIO eyes-service tests' },
     // batch: 'WebDriverIO eyes-service tests',
     // stitchMode: 'CSS',
-    properties: [
-      {name: 'propName', value: 'propValue'}
-    ]
+    properties: [{name: 'propName', value: 'propValue'}],
   },
   enableEyesLogs: process.env.ENABLE_EYES_LOGS ? eval(process.env.ENABLE_EYES_LOGS) : false,
   //
