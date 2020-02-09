@@ -45,19 +45,6 @@
     es6-promise-pool "^2.5.0"
     tunnel "0.0.6"
 
-"@applitools/eyes-sdk-core@6.0.6":
-  version "6.0.6"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-6.0.6.tgz#e9749f068d6d1bc9f7abf7ebbbdcdec53171cee7"
-  integrity sha512-+pFTbji9OzQhMgVo9zZP5bdBStZWTFRPZ085ybAvu8EGis2aQCAkNYU0OHgnAZnmiXibh2BL5DW5cObztXaAZQ==
-  dependencies:
-    "@applitools/eyes-common" "^3.17.2"
-    "@applitools/isomorphic-fetch" "^3.0.0"
-    "@applitools/sdk-fake-eyes-server" "^1.0.4"
-    axios "^0.19.1"
-    chalk "^3.0.0"
-    es6-promise-pool "^2.5.0"
-    tunnel "0.0.6"
-
 "@applitools/eyes-sdk-core@6.0.7":
   version "6.0.7"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-6.0.7.tgz#e4e0fa797cd6bf50875014f8ddd1ccc3979a7ffe"
@@ -1883,7 +1870,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.9.1.tgz#7e33d8f7d449b3f673cd72deb9abdc552dbe528e"
   integrity sha512-wMHVg2EOHaMRxbzgFJ9gtjOOCrI80OHLG14rxi28XwOW8ux6IiEbRCGGGqCtdAIg4FQCbW20k9RsT4y3gJlFug==
 
-axios@0.19.2, axios@^0.19.0, axios@^0.19.1:
+axios@0.19.2, axios@^0.19.0:
   version "0.19.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
   integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
@@ -3101,6 +3088,18 @@ chromedriver@^79.0.2:
   version "79.0.3"
   resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-79.0.3.tgz#b3a5d62017e68b9a86e3475b66e3eb23fca26273"
   integrity sha512-XkgXrYF+M1oAT02aIIEjaM4x0oaUXTBoB+PvCNdh3rKUhn596byCc6Jy3USutZj4/0R/K+Bqf4I+4RESvfjehg==
+  dependencies:
+    "@testim/chrome-version" "^1.0.7"
+    del "^4.1.1"
+    extract-zip "^1.6.7"
+    mkdirp "^0.5.1"
+    request "^2.88.0"
+    tcp-port-used "^1.0.1"
+
+chromedriver@^80.0.0:
+  version "80.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-80.0.0.tgz#f9e2af4c2117e7e07dc4558cf9496a70ad6c3ddc"
+  integrity sha512-W4tIbaOve7HeGFLnbbZMV4AUlnBaapL+H41fvDFKOXCmUvgPhxVN9y/c3EgmsOcokLQkqxpOC/txEujms1eT0w==
   dependencies:
     "@testim/chrome-version" "^1.0.7"
     del "^4.1.1"

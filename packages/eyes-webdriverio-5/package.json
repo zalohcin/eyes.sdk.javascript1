@@ -35,12 +35,12 @@
     "@applitools/dom-utils": "4.7.4",
     "@applitools/eyes-sdk-core": "6.0.9",
     "@applitools/visual-grid-client": "13.5.10",
-    "chromedriver": "^79.0.0",
-    "geckodriver": "^1.19.1",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "webdriverio": "^5.18.4"
   },
   "devDependencies": {
+    "chromedriver": "^80.0.0",
+    "geckodriver": "^1.19.1",
     "@applitools/sdk-test-kit": "^1.0.17",
     "eslint": "^6.8.0",
     "mocha": "^6.2.2",
