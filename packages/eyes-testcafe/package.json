@@ -28,7 +28,7 @@
   "dependencies": {
     "@applitools/dom-utils": "^4.7.4",
     "@applitools/eyes-common": "^3.18.1",
-    "@applitools/eyes-sdk-core": "^6.0.5",
+    "@applitools/eyes-sdk-core": "^6.0.9",
     "@applitools/functional-commons": "^1.5.4",
     "@applitools/visual-grid-client": "^13.5.8",
     "rimraf": "^3.0.0"
