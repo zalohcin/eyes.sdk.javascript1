@@ -8,7 +8,6 @@ describe('Location', () => {
   const top = 1
   const left = 2
 
-  // noinspection FunctionTooLongJS
   it('simple constructor', () => {
     const location = new Location(left, top)
     assert.strictEqual(location.getX(), left, 'x')
@@ -39,7 +38,6 @@ describe('Location', () => {
     let l2 = new Location(l1)
     assert.strictEqual(l1.equals(l2), true, 'Locations should be equal!')
 
-    // noinspection JSAccessibilityCheck
     l2 = l2.scale(2)
     assert.strictEqual(l1.equals(l2), false, 'Locations should be differ!')
   })

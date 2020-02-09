@@ -7,7 +7,6 @@
  * @abstract
  */
 class ImageOrientationHandler {
-  // noinspection JSMethodCanBeStatic
   /**
    * @param {IWebDriver} driver
    * @return {Promise<boolean>}
@@ -16,7 +15,6 @@ class ImageOrientationHandler {
     throw Error('Method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @param {Logger} logger
    * @param {IWebDriver} driver

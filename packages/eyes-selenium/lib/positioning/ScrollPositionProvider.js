@@ -95,7 +95,6 @@ class ScrollPositionProvider extends PositionProvider {
     return new ScrollPositionMemento(position)
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {ScrollPositionMemento} state - The initial state of position

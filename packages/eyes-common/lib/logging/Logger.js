@@ -45,7 +45,6 @@ class Logger {
     this._sessionId = sessionId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} isIncludeTime
    */
@@ -105,7 +104,6 @@ class Logger {
     )
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @private
    * @return {string} - The name of the method which called the logger, if possible, or an empty string.
@@ -124,7 +122,6 @@ class Logger {
     }} ${this._getMethodName()}${elapsedTime}${message}`
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @private
    * @return {string} - The name of the method which called the logger, if possible, or an empty string.
@@ -141,7 +138,7 @@ class Logger {
        * @property {function(): number} getColumnNumber if this function was defined in a script returns the current column number
        * @property {function(): boolean} isNative is this call in native V8 code?
        */
-      // noinspection JSUnresolvedFunction
+
       /** @type {CallSite[]} */
       const trace = stackTrace.get()
 

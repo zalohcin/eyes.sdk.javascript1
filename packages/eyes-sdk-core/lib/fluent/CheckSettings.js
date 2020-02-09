@@ -56,7 +56,6 @@ class CheckSettings {
     this._accessibilityRegions = []
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * A setter for the checkpoint name.
    *
@@ -68,7 +67,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @ignore
    * @return {string}
@@ -77,7 +75,6 @@ class CheckSettings {
     return this._name
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Defines whether to send the document DOM or not.
    *
@@ -97,7 +94,6 @@ class CheckSettings {
     return this._sendDom
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Set the render ID of the screenshot.
    *
@@ -118,7 +114,6 @@ class CheckSettings {
     return this._renderId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Shortcut to set the match level to {@code MatchLevel.LAYOUT}.
    *
@@ -129,7 +124,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Shortcut to set the match level to {@code MatchLevel.EXACT}.
    *
@@ -140,7 +134,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Shortcut to set the match level to {@code MatchLevel.STRICT}.
    *
@@ -151,7 +144,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Shortcut to set the match level to {@code MatchLevel.CONTENT}.
    *
@@ -162,7 +154,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Set the match level by which to compare the screenshot.
    *
@@ -182,7 +173,6 @@ class CheckSettings {
     return this._matchLevel
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Set the accessibilityLevel level for the screenshot.
    *
@@ -202,7 +192,6 @@ class CheckSettings {
     return this._accessibilityLevel
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Defines if to detect and ignore a blinking caret in the screenshot.
    *
@@ -222,7 +211,6 @@ class CheckSettings {
     return this._ignoreCaret
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Defines that the screenshot will contain the entire element or region, even if it's outside the view.
    *
@@ -234,7 +222,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} [stitchContent=true]
    * @return {this}
@@ -252,7 +239,6 @@ class CheckSettings {
     return this._stitchContent
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Defines useDom for enabling the match algorithm to use dom.
    *
@@ -272,7 +258,6 @@ class CheckSettings {
     return this._useDom
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Enabling the match algorithms for pattern detection
    *
@@ -292,7 +277,6 @@ class CheckSettings {
     return this._enablePatterns
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} [ignoreDisplacements=true]
    * @return {this} - This instance of the settings object.
@@ -310,7 +294,6 @@ class CheckSettings {
     return this._ignoreDisplacements
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Defines the timeout to use when acquiring and comparing screenshots.
    *
@@ -346,7 +329,6 @@ class CheckSettings {
     return this._targetRegion
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @protected
    * @param {GetRegion|Region|RegionObject} region
@@ -364,7 +346,6 @@ class CheckSettings {
     throw new TypeError('Method called with argument of unknown type!')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds one or more ignore regions.
    *
@@ -383,7 +364,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds one or more layout regions.
    * @param {...(GetRegion|Region)} regions - A region to match using the Layout method.
@@ -401,7 +381,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds one or more strict regions.
    * @param {...(GetRegion|Region)} regions - A region to match using the Strict method.
@@ -419,7 +398,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds one or more content regions.
    * @param {...(GetRegion|Region)} regions - A region to match using the Content method.
@@ -437,7 +415,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger
    * region.
@@ -451,7 +428,6 @@ class CheckSettings {
    * @return {this} - This instance of the settings object.
    */
   floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
-    // noinspection IfStatementWithTooManyBranchesJS
     if (regionOrContainer instanceof GetFloatingRegion) {
       this._floatingRegions.push(regionOrContainer)
     } else if (regionOrContainer instanceof FloatingMatchSettings) {
@@ -481,7 +457,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a
    * bigger region.
@@ -502,7 +477,6 @@ class CheckSettings {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds an accessibility region. An accessibility region is a region that has an accessibility type.
    *
@@ -512,7 +486,6 @@ class CheckSettings {
    * @return {this} - This instance of the settings object.
    */
   accessibilityRegion(regionOrContainer, regionType) {
-    // noinspection IfStatementWithTooManyBranchesJS
     if (regionOrContainer instanceof GetAccessibilityRegion) {
       this._accessibilityRegions.push(regionOrContainer)
     } else if (regionOrContainer instanceof AccessibilityMatchSettings) {

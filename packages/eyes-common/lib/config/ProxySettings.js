@@ -35,32 +35,26 @@ class ProxySettings {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   getUri() {
     return this._uri
   }
 
-  // noinspection JSUnusedGlobalSymbols
   getUsername() {
     return this._username
   }
 
-  // noinspection JSUnusedGlobalSymbols
   getPassword() {
     return this._password
   }
 
-  // noinspection JSUnusedGlobalSymbols
   getIsHttpOnly() {
     return this._isHttpOnly
   }
 
-  // noinspection JSUnusedGlobalSymbols
   getIsDisabled() {
     return this._isDisabled
   }
 
-  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * @return {{protocol: string, host: string, port: number, auth: {username: string, password: string}, isHttpOnly: boolean}|boolean}
    */

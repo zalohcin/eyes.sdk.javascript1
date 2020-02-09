@@ -7,7 +7,6 @@ const {DebugScreenshotsProvider} = require('./DebugScreenshotsProvider')
  * A mock debug screenshot provider.
  */
 class NullDebugScreenshotProvider extends DebugScreenshotsProvider {
-  // noinspection JSMethodCanBeStatic
   /**
    * @inheritDoc
    */

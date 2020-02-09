@@ -381,7 +381,6 @@ class EyesVisualGrid extends EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */

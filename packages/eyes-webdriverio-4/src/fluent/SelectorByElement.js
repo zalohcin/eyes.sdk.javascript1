@@ -17,7 +17,6 @@ class SelectorByElement extends GetSelector {
     this._element = webElement
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {Eyes} eyes

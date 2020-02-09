@@ -86,7 +86,7 @@ class WebdriverioCheckSettings extends CheckSettings {
    */
   frame(frame) {
     const fl = new FrameLocator()
-    // noinspection IfStatementWithTooManyBranchesJS
+
     if (TypeUtils.isInteger(frame)) {
       fl.setFrameIndex(frame)
     } else if (TypeUtils.isString(frame)) {
@@ -102,7 +102,6 @@ class WebdriverioCheckSettings extends CheckSettings {
     return this
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * Adds a region to ignore.
    *
@@ -122,7 +121,6 @@ class WebdriverioCheckSettings extends CheckSettings {
     return this
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * Adds one or more ignore regions.
    *
@@ -141,7 +139,6 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {this}
    */
   ignoreRegions(...regions) {
-    // noinspection JSValidateTypes
     return super.ignoreRegions(...regions)
   }
 
@@ -151,7 +148,6 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {this}
    */
   layoutRegions(...regions) {
-    // noinspection JSValidateTypes
     return super.layoutRegions(...regions)
   }
 
@@ -161,7 +157,6 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @return {this}
    */
   strictRegions(...regions) {
-    // noinspection JSValidateTypes
     return super.strictRegions(...regions)
   }
 
@@ -182,7 +177,6 @@ class WebdriverioCheckSettings extends CheckSettings {
     return super._regionToRegionProvider(region)
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger region.
    *
@@ -227,7 +221,6 @@ class WebdriverioCheckSettings extends CheckSettings {
     return this
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger region.
    *
@@ -241,7 +234,6 @@ class WebdriverioCheckSettings extends CheckSettings {
     return this
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {GetAccessibilityRegion|Region|AccessibilityMatchSettings|By|WebElement|EyesWebElement} regionOrContainer -

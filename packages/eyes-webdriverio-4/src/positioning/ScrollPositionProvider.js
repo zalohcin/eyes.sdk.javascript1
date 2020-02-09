@@ -80,7 +80,6 @@ class ScrollPositionProvider extends PositionProvider {
     return this.getCurrentPosition().then(position => new ScrollPositionMemento(position))
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @override
    * @param {ScrollPositionMemento} state The initial state of position

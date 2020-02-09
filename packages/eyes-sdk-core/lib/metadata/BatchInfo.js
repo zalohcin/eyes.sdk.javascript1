@@ -18,7 +18,6 @@ class BatchInfo {
     this._startedAt = startedAt
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -26,7 +25,6 @@ class BatchInfo {
     return this._id
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -34,7 +32,6 @@ class BatchInfo {
     this._id = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -42,7 +39,6 @@ class BatchInfo {
     return this._name
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -50,7 +46,6 @@ class BatchInfo {
     this._name = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Date}
    */
@@ -58,7 +53,6 @@ class BatchInfo {
     return this._startedAt
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Date} value
    */

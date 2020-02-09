@@ -173,7 +173,6 @@ class EyesWebDriver {
     )
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {By} locator
    * @return {Promise.<EyesWebElement[]>}
@@ -284,7 +283,6 @@ class EyesWebDriver {
     return this.webDriver.url(url)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   async getCurrentUrl() {
     if (!EyesWDIOUtils.isMobileDevice(this.remoteWebDriver)) {
       return await this.getUrl()
@@ -447,7 +445,6 @@ class EyesWebDriver {
     throw new TypeError('findElementsByPartialLinkText method is not implemented!')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} tagName
    * @return {Promise.<EyesWebElement>} A promise that will resolve to a EyesWebElement.
@@ -456,7 +453,6 @@ class EyesWebDriver {
     return this.findElement(By.tagName(tagName))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} tagName
    * @return {!Promise.<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
@@ -465,7 +461,6 @@ class EyesWebDriver {
     return this.findElements(By.tagName(tagName))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} xpath
    * @return {Promise.<EyesWebElement>} A promise that will resolve to a EyesWebElement.
@@ -474,7 +469,6 @@ class EyesWebDriver {
     return this.findElement(By.xPath(xpath))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} xpath
    * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.

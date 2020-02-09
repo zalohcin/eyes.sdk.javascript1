@@ -24,7 +24,6 @@ class FloatingRegionBySelector extends GetFloatingRegion {
     this._maxRightOffset = maxRightOffset
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @override
    * @param {Eyes} eyesBase

@@ -59,7 +59,6 @@ describe('TypeUtils', () => {
 
   describe('isString()', () => {
     it('check string object', () => {
-      // noinspection JSPrimitiveTypeWrapperUsage
       assert.ok(TypeUtils.isString(new String('I am a string object'))) // eslint-disable-line no-new-wrappers
     })
 
@@ -95,7 +94,6 @@ describe('TypeUtils', () => {
 
   describe('isNumber()', () => {
     it('check string object', () => {
-      // noinspection JSPrimitiveTypeWrapperUsage
       assert.ok(!TypeUtils.isNumber(new String('I am a string object'))) // eslint-disable-line no-new-wrappers
     })
 
@@ -145,7 +143,6 @@ describe('TypeUtils', () => {
 
   describe('isBoolean()', () => {
     it('check string object', () => {
-      // noinspection JSPrimitiveTypeWrapperUsage
       assert.ok(!TypeUtils.isBoolean(new String('I am a string object'))) // eslint-disable-line no-new-wrappers
     })
 
@@ -185,7 +182,6 @@ describe('TypeUtils', () => {
 
   describe('isObject()', () => {
     it('check string object', () => {
-      // noinspection JSPrimitiveTypeWrapperUsage
       assert.ok(TypeUtils.isObject(new String('I am a string object'))) // eslint-disable-line no-new-wrappers
     })
 
@@ -221,7 +217,6 @@ describe('TypeUtils', () => {
 
   describe('isPlainObject()', () => {
     it('check string object', () => {
-      // noinspection JSPrimitiveTypeWrapperUsage
       assert.ok(!TypeUtils.isPlainObject(new String('I am a string object'))) // eslint-disable-line no-new-wrappers
     })
 
@@ -257,7 +252,6 @@ describe('TypeUtils', () => {
 
   describe('isArray()', () => {
     it('check string object', () => {
-      // noinspection JSPrimitiveTypeWrapperUsage
       assert.ok(!TypeUtils.isArray(new String('I am a string object'))) // eslint-disable-line no-new-wrappers
     })
 
@@ -293,7 +287,6 @@ describe('TypeUtils', () => {
 
   describe('isBuffer()', () => {
     it('check string object', () => {
-      // noinspection JSPrimitiveTypeWrapperUsage
       assert.ok(!TypeUtils.isBuffer(new String('I am a string object'))) // eslint-disable-line no-new-wrappers
     })
 
@@ -333,7 +326,6 @@ describe('TypeUtils', () => {
 
   describe('isBase64()', () => {
     it('check string object', () => {
-      // noinspection JSPrimitiveTypeWrapperUsage
       assert.ok(!TypeUtils.isBase64(new String('I am a string object'))) // eslint-disable-line no-new-wrappers
     })
 

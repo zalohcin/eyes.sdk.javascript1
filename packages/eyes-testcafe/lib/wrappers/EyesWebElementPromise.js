@@ -29,13 +29,11 @@ class EyesWebElementPromise extends EyesWebElement {
 
     this._foundBy = String(locator)
 
-    // noinspection JSUnresolvedVariable
     /**
      * @inheritDoc
      */
     this.then = wrapper.then.bind(wrapper)
 
-    // noinspection JSUnresolvedVariable
     /**
      * @inheritDoc
      */

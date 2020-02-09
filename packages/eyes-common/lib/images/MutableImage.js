@@ -95,7 +95,6 @@ class MutableImage {
     return result
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Coordinates represent the image's position in a larger context (if any).
    * E.g., A screenshot of the browser's viewport of a web page.
@@ -106,7 +105,6 @@ class MutableImage {
     return new Location({x: this._left, y: this._top})
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Coordinates represent the image's position in a larger context (if any).
    * E.g., A screenshot of the browser's viewport of a web page.
@@ -144,7 +142,6 @@ class MutableImage {
     return this._height
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Return the image as buffer and image width and height.
    *
@@ -223,7 +220,6 @@ class MutableImage {
    * @return {Promise<MutableImage>}
    */
   async rotate(degrees) {
-    // noinspection MagicNumberJS
     if (degrees % 360 === 0) {
       return this
     }

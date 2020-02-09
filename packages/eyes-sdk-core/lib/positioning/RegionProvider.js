@@ -11,7 +11,6 @@ class RegionProvider {
     this._region = region
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @return {Promise<Region>} - A region with "as is" viewport coordinates.
    */

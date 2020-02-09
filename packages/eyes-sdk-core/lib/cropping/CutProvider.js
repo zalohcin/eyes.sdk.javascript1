@@ -8,7 +8,6 @@
  * @abstract
  */
 class CutProvider {
-  // noinspection JSMethodCanBeStatic
   /**
    * @param {MutableImage} image - The image to cut.
    * @return {Promise<MutableImage>} - A new cut image.
@@ -17,7 +16,6 @@ class CutProvider {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * Get a scaled version of the cut provider.
    *

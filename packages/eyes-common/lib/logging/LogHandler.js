@@ -19,11 +19,9 @@ class LogHandler {
    * @param {boolean} isVerbose
    */
   setIsVerbose(isVerbose) {
-    // noinspection PointlessBooleanExpressionJS
     this._isVerbose = !!isVerbose
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Whether to handle or ignore verbose log messages.
    *

@@ -74,7 +74,6 @@ class FullPageCaptureAlgorithm {
     await this._debugScreenshotsProvider.save(image, suffix)
   }
 
-  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * Returns a stitching of a region.
    *

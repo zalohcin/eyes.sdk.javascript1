@@ -21,7 +21,6 @@ class AccessibilityRegionBySelector extends GetAccessibilityRegion {
     this._regionType = regionType
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {Eyes} eyes

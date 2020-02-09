@@ -46,7 +46,6 @@ class DebugScreenshotsProvider {
     }
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @abstract
    * @param {MutableImage} image

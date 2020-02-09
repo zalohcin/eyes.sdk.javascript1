@@ -487,7 +487,6 @@ class MatchWindowTask {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {EyesScreenshot}
    */
@@ -495,7 +494,6 @@ class MatchWindowTask {
     return this._lastScreenshot
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region}
    */

@@ -9,7 +9,6 @@ const {EyesSimpleScreenshot} = require('./EyesSimpleScreenshot')
  * @ignore
  */
 class EyesSimpleScreenshotFactory extends EyesScreenshotFactory {
-  // noinspection JSMethodCanBeStatic
   /**
    * @inheritDoc
    * @return {Promise<EyesSimpleScreenshot>}

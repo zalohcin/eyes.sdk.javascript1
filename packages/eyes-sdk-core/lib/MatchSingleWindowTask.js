@@ -36,7 +36,6 @@ class MatchSingleWindowTask extends MatchWindowTask {
     /** @type {boolean} */ this._saveNewTests = saveNewTests
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * Creates the match model and calls the server connector matchWindow method.
    *

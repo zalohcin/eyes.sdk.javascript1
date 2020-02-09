@@ -194,7 +194,6 @@ class EyesWebElement extends WebElement {
     return Math.ceil(parseFloat(value))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise.<int>} The width of the left border.
    */
@@ -202,7 +201,6 @@ class EyesWebElement extends WebElement {
     return this.getComputedStyleInteger('border-left-width')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise.<int>} The width of the right border.
    */
@@ -210,7 +208,6 @@ class EyesWebElement extends WebElement {
     return this.getComputedStyleInteger('border-right-width')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise.<int>} The width of the top border.
    */
@@ -218,7 +215,6 @@ class EyesWebElement extends WebElement {
     return this.getComputedStyleInteger('border-top-width')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise.<int>} The width of the bottom border.
    */
@@ -300,7 +296,6 @@ class EyesWebElement extends WebElement {
     elements.map(element => new EyesWebElement(this._logger, this._eyesWebDriver, element))
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @Override
    * @inheritDoc
@@ -315,7 +310,6 @@ class EyesWebElement extends WebElement {
     return this.getWebElement().click()
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @Override
    * @inheritDoc
@@ -356,7 +350,6 @@ class EyesWebElement extends WebElement {
     return this.getWebElement().getText()
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @override
    * @inheritDoc
@@ -367,7 +360,6 @@ class EyesWebElement extends WebElement {
     return new RectangleSize(Math.ceil(width), Math.ceil(height))
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @override
    * @inheritDoc
@@ -444,7 +436,6 @@ class EyesWebElement extends WebElement {
     return this.getWebElement().getElementScroll()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {WebElement} The original element object
    */

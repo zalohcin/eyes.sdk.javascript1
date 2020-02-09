@@ -79,7 +79,6 @@ class CssTranslatePositionProvider extends PositionProvider {
     })
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @override
    * @param {CssTranslatePositionMemento} state The initial state of position

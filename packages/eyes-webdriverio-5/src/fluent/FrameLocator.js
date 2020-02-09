@@ -84,7 +84,6 @@ class FrameLocator {
     this._scrollRootElement = scrollRootElement
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {By}
    */

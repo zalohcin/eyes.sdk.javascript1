@@ -9,7 +9,6 @@
  * @abstract
  */
 class EyesScreenshotFactory {
-  // noinspection JSMethodCanBeStatic
   /**
    * @param {MutableImage} image
    * @return {Promise<EyesScreenshot>}

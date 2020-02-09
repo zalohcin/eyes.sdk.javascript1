@@ -7,7 +7,6 @@
  * @abstract
  */
 class RegionVisibilityStrategy {
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
    * @param {PositionProvider} positionProvider
    * @param {Location} location
@@ -17,7 +16,6 @@ class RegionVisibilityStrategy {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
    * @param {PositionProvider} positionProvider
    * @return {Promise}

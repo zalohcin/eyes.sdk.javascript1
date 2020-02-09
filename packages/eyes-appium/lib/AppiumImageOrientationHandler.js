@@ -42,7 +42,6 @@ class AppiumImageOrientationHandler extends ImageOrientationHandler {
         EyesAppiumUtils.isLandscapeOrientationFromCaps(capabilities) &&
         image.getHeight() > image.getWidth()
       ) {
-        // noinspection MagicNumberJS
         degrees = EyesAppiumUtils.isAndroidFromCaps(capabilities) ? 90 : -90
       }
 

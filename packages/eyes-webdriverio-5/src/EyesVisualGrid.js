@@ -422,7 +422,6 @@ class EyesVisualGrid extends EyesBase {
     EyesBase.prototype.addMouseTriggerBase.call(this, action, control, cursor)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */

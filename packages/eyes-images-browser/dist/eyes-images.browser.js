@@ -36101,7 +36101,7 @@ class Eyes extends EyesBase {
     }
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @private
    * @param {ImagesCheckSettings} checkSettings The settings to use when checking the image.
@@ -36132,7 +36132,7 @@ class Eyes extends EyesBase {
     throw new EyesError("Can't recognize supported image from checkSettings.");
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Replaces the actual image in a running session.
    *
@@ -36162,7 +36162,7 @@ class Eyes extends EyesBase {
     return results.getAsExpected();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds a mouse trigger.
    *
@@ -36174,7 +36174,7 @@ class Eyes extends EyesBase {
     super.addMouseTriggerBase(action, control, cursor);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds a keyboard trigger.
    *
@@ -36190,7 +36190,7 @@ class Eyes extends EyesBase {
     return Promise.resolve(this._viewportSizeHandler.get());
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Set the viewport size.
    *
@@ -36209,7 +36209,7 @@ class Eyes extends EyesBase {
     return Promise.resolve(this._inferred);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the inferred environment for the test.
    *
@@ -36398,7 +36398,7 @@ class ImagesCheckSettings extends CheckSettings {
     return this._domString;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {boolean} [ignoreMismatch=true] True if the server should ignore a negative result for the visual validation.
    *  Default value is `false`, but if you call to .ignoreMismatch() without arguments it will set value to `true`.
@@ -36534,7 +36534,7 @@ class Target {
    */
   static region(image, rect) {
     const checkSettings = Target.image(image);
-    // noinspection JSAccessibilityCheck
+    
     checkSettings.region(rect);
     return checkSettings;
   }
@@ -36754,7 +36754,7 @@ class AppEnvironment {
     this._inferred = undefined;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Creates a new AppEnvironment instance.
    *
@@ -36767,7 +36767,7 @@ class AppEnvironment {
     return env;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Gets the information inferred from the execution environment or {@code null} if no information could be inferred.
    *
@@ -36804,7 +36804,7 @@ class AppEnvironment {
     this._os = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Gets the application hosting the application under test or {@code null} if unknown.
    *
@@ -36823,7 +36823,7 @@ class AppEnvironment {
     this._hostingApp = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Gets the display size of the application or {@code null} if unknown.
    *
@@ -36860,7 +36860,7 @@ class AppEnvironment {
     this._osInfo = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Gets the application hosting the application under test or {@code null} if unknown. (not part of test signature)
    *
@@ -36879,7 +36879,7 @@ class AppEnvironment {
     this._hostingAppInfo = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Gets the device info (not part of test signature)
    *
@@ -36920,7 +36920,7 @@ const { TypeUtils } = require('./utils/TypeUtils');
  * Argument validation utilities.
  */
 class ArgumentGuard {
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if the input parameter equals the input value.
    *
@@ -36934,7 +36934,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if the input parameter contains some special characters or punctuation
    *
@@ -36947,7 +36947,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if the input parameter is null.
    *
@@ -36960,7 +36960,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if the input parameter is not null.
    *
@@ -36973,7 +36973,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if the input parameter string is null or empty.
    *
@@ -36986,7 +36986,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if the input integer parameter is negative.
    *
@@ -37004,7 +37004,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if the input integer parameter is smaller than 1.
    *
@@ -37022,7 +37022,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if the input integer parameter is equal to 0.
    * @param param The input parameter.
@@ -37039,7 +37039,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if the input number is not integer
    *
@@ -37053,7 +37053,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if param is not a string.
    *
@@ -37067,7 +37067,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if param is not a number.
    *
@@ -37081,7 +37081,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if param is not a boolean.
    *
@@ -37095,7 +37095,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if param is not a buffer.
    *
@@ -37109,7 +37109,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if param is not a base64 string.
    *
@@ -37121,7 +37121,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if isValid is false.
    *
@@ -37134,7 +37134,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if isValid is false.
    *
@@ -37147,7 +37147,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Fails if isValid is false.
    *
@@ -37160,7 +37160,7 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Check if object contains all required properties
    *
@@ -37229,7 +37229,7 @@ class BatchInfo {
     return this._id;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets a unique identifier for the batch. Sessions with batch info which includes the same ID will be grouped
    * together.
@@ -37241,7 +37241,7 @@ class BatchInfo {
     this._id = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return The name of the batch or {@code null} if anonymous.
    */
@@ -37249,7 +37249,7 @@ class BatchInfo {
     return this._name;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {Date} The batch start date
    */
@@ -37344,7 +37344,7 @@ const USE_DEFAULT_TIMEOUT = -1;
  * Core/Base class for Eyes - to allow code reuse for different SDKs (images, selenium, etc).
  */
 class EyesBase {
-  // noinspection FunctionTooLongJS
+  
   /**
    * Creates a new {@code EyesBase}instance that interacts with the Eyes Server at the specified url.
    *
@@ -37405,7 +37405,7 @@ class EyesBase {
      */
     this._saveFailedTests = false;
 
-    // noinspection JSUnusedGlobalSymbols
+    
     /** @type {RenderWindowTask} */
     this._renderWindowTask = new RenderWindowTask(this._logger, this._serverConnector);
 
@@ -37456,7 +37456,7 @@ class EyesBase {
     /** @type {boolean} */ this._sendDom = true;
   }
 
-  // noinspection FunctionWithMoreThanThreeNegationsJS
+  
   /**
    * @param {boolean} [hardReset=false] If false, init providers only if they're not initialized.
    * @private
@@ -37500,7 +37500,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the user given agent id of the SDK.
    *
@@ -37528,7 +37528,7 @@ class EyesBase {
     this._serverConnector.setApiKey(apiKey);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The currently set API key or {@code null} if no key is set.
    */
@@ -37536,7 +37536,7 @@ class EyesBase {
     return this._serverConnector.getApiKey();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the current server URL used by the rest client.
    *
@@ -37550,7 +37550,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The URI of the eyes server.
    */
@@ -37558,7 +37558,7 @@ class EyesBase {
     return this._serverConnector.getServerUrl();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the authToken for rendering server.
    *
@@ -37568,7 +37568,7 @@ class EyesBase {
     this._serverConnector.setRenderingAuthToken(authToken);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The currently authToken or {@code null} if no key is set.
    */
@@ -37576,7 +37576,7 @@ class EyesBase {
     return this._serverConnector.getRenderingAuthToken();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the current rendering server URL used by the rest client.
    *
@@ -37586,7 +37586,7 @@ class EyesBase {
     this._serverConnector.setRenderingServerUrl(serverUrl);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The URI of the eyes server.
    */
@@ -37594,7 +37594,7 @@ class EyesBase {
     return this._serverConnector.getRenderingServerUrl();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the proxy settings to be used for all requests to Eyes server.
    * Alternatively, proxy can be set via global variables `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`.
@@ -37613,7 +37613,7 @@ class EyesBase {
     return this._serverConnector.setProxy(varArg, username, password);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {ProxySettings} current proxy settings used by the server connector, or {@code null} if no proxy is set.
    */
@@ -37621,7 +37621,7 @@ class EyesBase {
     return this._serverConnector.getProxy();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param isDisabled {boolean} If true, all interactions with this API will be silently ignored.
    */
@@ -37629,7 +37629,7 @@ class EyesBase {
     this._isDisabled = isDisabled;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} Whether eyes is disabled.
    */
@@ -37637,7 +37637,7 @@ class EyesBase {
     return this._isDisabled;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param appName {string} The name of the application under test.
    */
@@ -37645,7 +37645,7 @@ class EyesBase {
     this._appName = appName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The name of the application under test.
    */
@@ -37653,7 +37653,7 @@ class EyesBase {
     return this._currentAppName || this._appName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the branch in which the baseline for subsequent test runs resides. If the branch does not already exist it
    * will be created under the specified parent branch (see {@link #setParentBranchName}). Changes to the baseline
@@ -37665,7 +37665,7 @@ class EyesBase {
     this._branchName = branchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The current branch name.
    */
@@ -37673,7 +37673,7 @@ class EyesBase {
     return this._branchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the branch under which new branches are created.
    *
@@ -37683,7 +37683,7 @@ class EyesBase {
     this._parentBranchName = parentBranchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The name of the current parent branch under which new branches will be created.
    */
@@ -37691,7 +37691,7 @@ class EyesBase {
     return this._parentBranchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the baseline branch under which new branches are created.
    *
@@ -37701,7 +37701,7 @@ class EyesBase {
     this._baselineBranchName = baselineBranchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The name of the baseline branch
    */
@@ -37709,7 +37709,7 @@ class EyesBase {
     return this._baselineBranchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Clears the user inputs list.
    *
@@ -37722,7 +37722,7 @@ class EyesBase {
     this._userInputs.length = 0;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @protected
    * @return {Trigger[]} User inputs collected between {@code checkWindowBase} invocations.
@@ -37735,7 +37735,7 @@ class EyesBase {
     return this._userInputs.map(input => Object.assign(Object.create(input), input));
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the maximum time (in ms) a match operation tries to perform a match.
    * @param {number} ms Total number of ms to wait for a match.
@@ -37754,7 +37754,7 @@ class EyesBase {
     this._matchTimeout = ms;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {number} The maximum time in ms {@link #checkWindowBase(RegionProvider, string, boolean, number)} waits
    *   for a match.
@@ -37763,7 +37763,7 @@ class EyesBase {
     return this._matchTimeout;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Set whether or not new tests are saved by default.
    *
@@ -37773,7 +37773,7 @@ class EyesBase {
     this._saveNewTests = saveNewTests;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} True if new tests are saved by default.
    */
@@ -37781,7 +37781,7 @@ class EyesBase {
     return this._saveNewTests;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Set whether or not failed tests are saved by default.
    *
@@ -37791,7 +37791,7 @@ class EyesBase {
     this._saveFailedTests = saveFailedTests;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} True if failed tests are saved by default.
    */
@@ -37799,7 +37799,7 @@ class EyesBase {
     return this._saveFailedTests;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the batch in which context future tests will run or {@code null} if tests are to run standalone.
    *
@@ -37817,7 +37817,7 @@ class EyesBase {
     this._logger.verbose(`setBatch(${this._batch})`);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {BatchInfo} The currently set batch info.
    */
@@ -37830,7 +37830,7 @@ class EyesBase {
     return this._batch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {FailureReports} failureReports Use one of the values in FailureReports.
    */
@@ -37839,7 +37839,7 @@ class EyesBase {
     this._failureReports = failureReports;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {FailureReports} The failure reports setting.
    */
@@ -37847,7 +37847,7 @@ class EyesBase {
     return this._failureReports;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Updates the match settings to be used for the session.
    *
@@ -37858,7 +37858,7 @@ class EyesBase {
     this._defaultMatchSettings = defaultMatchSettings;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {ImageMatchSettings} The match settings used for the session.
    */
@@ -37866,7 +37866,7 @@ class EyesBase {
     return this._defaultMatchSettings;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * The test-wide match level to use when checking application screenshot with the expected output.
    *
@@ -37877,7 +37877,7 @@ class EyesBase {
     this._defaultMatchSettings.setMatchLevel(matchLevel);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {MatchLevel} The test-wide match level.
    */
@@ -37885,7 +37885,7 @@ class EyesBase {
     return this._defaultMatchSettings.getMatchLevel();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The full agent id composed of both the base agent id and the user given agent id.
    */
@@ -37894,11 +37894,11 @@ class EyesBase {
     if (!agentId) {
       return this.getBaseAgentId();
     }
-    // noinspection JSUnresolvedFunction
+    
     return `${agentId} [${this.getBaseAgentId()}]`;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} Whether a session is open.
    */
@@ -37922,7 +37922,7 @@ class EyesBase {
     this._logger.setLogHandler(logHandler);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {LogHandler} The currently set log handler.
    */
@@ -37930,7 +37930,7 @@ class EyesBase {
     return this._logger.getLogHandler();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Manually set the the sizes to cut from an image before it's validated.
    *
@@ -37951,7 +37951,7 @@ class EyesBase {
     return this._cutProviderHandler && !(this._cutProviderHandler.get() instanceof NullCutProvider);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Manually set the scale ratio for the images being validated.
    *
@@ -37965,7 +37965,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {number} The ratio used to scale the images being validated.
    */
@@ -37973,7 +37973,7 @@ class EyesBase {
     return this._scaleProviderHandler.get().getScaleRatio();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds a property to be sent to the server.
    *
@@ -37985,7 +37985,7 @@ class EyesBase {
     return this._properties.push(pd);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Clears the list of custom properties.
    */
@@ -37993,7 +37993,7 @@ class EyesBase {
     this._properties.length = 0;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {boolean} value If true, createSession request will return renderingInfo properties
    */
@@ -38001,7 +38001,7 @@ class EyesBase {
     this._render = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean}
    */
@@ -38009,7 +38009,7 @@ class EyesBase {
     return this._render;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Automatically save differences as a baseline.
    *
@@ -38019,7 +38019,7 @@ class EyesBase {
     this._saveDiffs = saveDiffs;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} whether to automatically save differences as baseline.
    */
@@ -38027,7 +38027,7 @@ class EyesBase {
     return this._saveDiffs;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {boolean} saveDebugScreenshots If true, will save all screenshots to local directory.
    */
@@ -38042,7 +38042,7 @@ class EyesBase {
     this._debugScreenshotsProvider.setPath(prev.getPath());
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean}
    */
@@ -38050,7 +38050,7 @@ class EyesBase {
     return !(this._debugScreenshotsProvider instanceof NullDebugScreenshotProvider);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {string} pathToSave Path where you want to save the debug screenshots.
    */
@@ -38058,7 +38058,7 @@ class EyesBase {
     this._debugScreenshotsProvider.setPath(pathToSave);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The path where you want to save the debug screenshots.
    */
@@ -38066,7 +38066,7 @@ class EyesBase {
     return this._debugScreenshotsProvider.getPath();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {string} prefix The prefix for the screenshots' names.
    */
@@ -38074,7 +38074,7 @@ class EyesBase {
     this._debugScreenshotsProvider.setPrefix(prefix);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The prefix for the screenshots' names.
    */
@@ -38082,7 +38082,7 @@ class EyesBase {
     return this._debugScreenshotsProvider.getPrefix();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {DebugScreenshotsProvider} debugScreenshotsProvider
    */
@@ -38090,7 +38090,7 @@ class EyesBase {
     this._debugScreenshotsProvider = debugScreenshotsProvider;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {DebugScreenshotsProvider}
    */
@@ -38098,7 +38098,7 @@ class EyesBase {
     return this._debugScreenshotsProvider;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the ignore blinking caret value.
    *
@@ -38108,7 +38108,7 @@ class EyesBase {
     this._defaultMatchSettings.setIgnoreCaret(value);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} Whether to ignore or the blinking caret or not when comparing images.
    */
@@ -38117,7 +38117,7 @@ class EyesBase {
     return ignoreCaret || true;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {boolean} compareWithParentBranch New compareWithParentBranch value, default is false
    */
@@ -38125,7 +38125,7 @@ class EyesBase {
     this._compareWithParentBranch = compareWithParentBranch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} The currently compareWithParentBranch value
    */
@@ -38133,7 +38133,7 @@ class EyesBase {
     return this._compareWithParentBranch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {boolean} ignoreBaseline New ignoreBaseline value, default is false
    */
@@ -38141,7 +38141,7 @@ class EyesBase {
     this._ignoreBaseline = ignoreBaseline;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} The currently ignoreBaseline value
    */
@@ -38184,7 +38184,7 @@ class EyesBase {
       const sessionResultsUrl = this._runningSession.getUrl();
 
       this._logger.verbose('Ending server session...');
-      // noinspection OverlyComplexBooleanExpressionJS
+      
       const save = (isNewSession && this._saveNewTests) || (!isNewSession && this._saveFailedTests);
       this._logger.verbose(`Automatically save test? ${save}`);
 
@@ -38212,20 +38212,20 @@ class EyesBase {
         if (results.getIsNew()) {
           this._logger.log(`--- New test ended. Please approve the new baseline at ${sessionResultsUrl}`);
           if (throwEx) {
-            // noinspection ExceptionCaughtLocallyJS
+            
             throw new NewTestError(results, this._sessionStartInfo);
           }
         } else {
           this._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`);
           if (throwEx) {
-            // noinspection ExceptionCaughtLocallyJS
+            
             throw new DiffsFoundError(results, this._sessionStartInfo);
           }
         }
       } else if (status === TestResultsStatus.Failed) {
         this._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`);
         if (throwEx) {
-          // noinspection ExceptionCaughtLocallyJS
+          
           throw new TestFailedError(results, this._sessionStartInfo);
         }
       } else {
@@ -38283,7 +38283,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the host OS name - overrides the one in the agent string.
    *
@@ -38299,7 +38299,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The host OS as set by the user.
    */
@@ -38307,7 +38307,7 @@ class EyesBase {
     return this._hostOS;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the host application - overrides the one in the agent string.
    *
@@ -38323,7 +38323,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The application name running the AUT.
    */
@@ -38331,7 +38331,7 @@ class EyesBase {
     return this._hostApp;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the host OS name - overrides the one in the agent string.
    *
@@ -38346,7 +38346,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The host OS as set by the user.
    */
@@ -38354,7 +38354,7 @@ class EyesBase {
     return this._hostOSInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the host application - overrides the one in the agent string.
    *
@@ -38369,7 +38369,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The application name running the AUT.
    */
@@ -38377,7 +38377,7 @@ class EyesBase {
     return this._hostAppInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the host application - overrides the one in the agent string.
    *
@@ -38392,7 +38392,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The application name running the AUT.
    */
@@ -38400,7 +38400,7 @@ class EyesBase {
     return this._deviceInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @deprecated Only available for backward compatibility. See {@link #setBaselineEnvName(string)}.
    * @param baselineName {string} If specified, determines the baseline to compare with and disables automatic baseline
@@ -38410,7 +38410,7 @@ class EyesBase {
     this.setBaselineEnvName(baselineName);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @deprecated Only available for backward compatibility. See {@link #getBaselineEnvName()}.
    * @return {string} The baseline name, if it was specified.
@@ -38419,7 +38419,7 @@ class EyesBase {
     return this.getBaselineEnvName();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * If not {@code null}, determines the name of the environment of the baseline.
    *
@@ -38435,7 +38435,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * If not {@code null}, determines the name of the environment of the baseline.
    *
@@ -38445,7 +38445,7 @@ class EyesBase {
     return this._baselineEnvName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * If not {@code null} specifies a name for the environment in which the application under test is running.
    *
@@ -38461,7 +38461,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * If not {@code null} specifies a name for the environment in which the application under test is running.
    *
@@ -38471,7 +38471,7 @@ class EyesBase {
     return this._environmentName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {PositionProvider} The currently set position provider.
    */
@@ -38479,7 +38479,7 @@ class EyesBase {
     return this._positionProviderHandler.get();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {PositionProvider} positionProvider The position provider to be used.
    */
@@ -38540,7 +38540,7 @@ class EyesBase {
     return matchResult;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Takes a snapshot of the application under test and matches it with the expected output.
    *
@@ -38587,10 +38587,10 @@ class EyesBase {
       properties: this._properties,
     });
 
-    // noinspection JSClosureCompilerSyntax
+    
     const outputProvider = new AppOutputProvider();
     // A callback which will call getAppOutput
-    // noinspection AnonymousFunctionJS
+    
     outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
       this._getAppOutputWithScreenshot(region, lastScreenshot, checkSettingsLocal);
 
@@ -38619,11 +38619,11 @@ class EyesBase {
     this._validateResult(tag, matchResult);
 
     this._logger.verbose('Done!');
-    // noinspection JSValidateTypes
+    
     return testResult;
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @protected
    * @return {Promise<void>}
@@ -38632,7 +38632,7 @@ class EyesBase {
     return Promise.resolve();
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @protected
    * @return {Promise<void>}
@@ -38641,7 +38641,7 @@ class EyesBase {
     return Promise.resolve();
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @protected
    * @return {Promise<?string>}
@@ -38709,7 +38709,7 @@ class EyesBase {
       imageMatchSettings.setUseDom(useDom);
     }
 
-    // noinspection JSUnresolvedVariable
+    
     self._logger.verbose(`CheckWindowBase(${regionProvider.constructor.name}, '${tag}', ${ignoreMismatch}, ${retryTimeout})`);
 
     if (!skipStartingSession) {
@@ -38823,7 +38823,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @protected
    * @return {Promise<void>}
@@ -38832,7 +38832,7 @@ class EyesBase {
     return Promise.resolve();
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @protected
    * @return {Promise<void>}
@@ -38855,7 +38855,7 @@ class EyesBase {
     this._logger.setSessionId(this._runningSession.getSessionId());
     this._logger.verbose('Done!');
 
-    // noinspection JSClosureCompilerSyntax
+    
     const outputProvider = new AppOutputProvider();
     // A callback which will call getAppOutput
     outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
@@ -38906,7 +38906,7 @@ class EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Define the viewport size as {@code size} without doing any actual action on the
    *
@@ -38925,7 +38925,7 @@ class EyesBase {
     this._isViewportSizeSet = true;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds a trigger to the current list of user inputs.
    *
@@ -38979,7 +38979,7 @@ class EyesBase {
     this._logger.verbose(`Added ${trigger}`);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds a mouse trigger.
    *
@@ -39235,7 +39235,7 @@ class EyesBase {
     return result;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {SessionEventHandlers}
    */
@@ -39243,7 +39243,7 @@ class EyesBase {
     return this._sessionEventHandlers;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {SessionEventHandler} eventHandler
    */
@@ -39251,7 +39251,7 @@ class EyesBase {
     this._sessionEventHandlers.addEventHandler(eventHandler);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {SessionEventHandler} eventHandler
    */
@@ -39259,12 +39259,12 @@ class EyesBase {
     this._sessionEventHandlers.removeEventHandler(eventHandler);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   clearSessionEventHandlers() {
     this._sessionEventHandlers.clearEventHandlers();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Whether sessions are removed immediately after they are finished.
    *
@@ -39274,7 +39274,7 @@ class EyesBase {
     this._serverConnector.setRemoveSession(shouldRemove);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} Whether sessions are removed immediately after they are finished.
    */
@@ -39282,7 +39282,7 @@ class EyesBase {
     return this._serverConnector.getRemoveSession();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {?string} The name of the currently running test.
    */
@@ -39290,7 +39290,7 @@ class EyesBase {
     return this._testName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {RunningSession} An object containing data about the currently running session.
    */
@@ -39298,7 +39298,7 @@ class EyesBase {
     return this._runningSession;
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @protected
    * @abstract
@@ -39308,7 +39308,7 @@ class EyesBase {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * Get the session id.
    *
@@ -39319,7 +39319,7 @@ class EyesBase {
     return Promise.resolve(undefined);
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * The viewport size of the AUT.
    *
@@ -39331,7 +39331,7 @@ class EyesBase {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @protected
    * @abstract
@@ -39342,7 +39342,7 @@ class EyesBase {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * The inferred string is in the format "source:info" where source is either "useragent" or "pos".
    * Information associated with a "useragent" source is a valid browser user agent string. Information associated with
@@ -39357,7 +39357,7 @@ class EyesBase {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * An updated screenshot.
    *
@@ -39369,7 +39369,7 @@ class EyesBase {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * An updated screenshot.
    *
@@ -39381,7 +39381,7 @@ class EyesBase {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * The current title of of the AUT.
    *
@@ -39393,7 +39393,7 @@ class EyesBase {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * A url pointing to a DOM capture of the AUT at the time of screenshot
    *
@@ -39411,7 +39411,7 @@ class EyesBase {
     this._sendDom = sendDom;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean}
    */
@@ -39419,7 +39419,7 @@ class EyesBase {
     return this._sendDom;
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * The location of the image relative to the logical full page image, when cropping an image e.g. with checkRegion
    *
@@ -39837,7 +39837,7 @@ class MatchSingleWindowTask extends MatchWindowTask {
     /** @type {boolean} */ this._saveNewTests = saveNewTests;
   }
 
-  // noinspection JSCheckFunctionSignatures
+  
   /**
    * Creates the match data and calls the server connector matchWindow method.
    *
@@ -40223,7 +40223,7 @@ class MatchWindowTask {
     return Promise.resolve();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {EyesScreenshot}
    */
@@ -40231,7 +40231,7 @@ class MatchWindowTask {
     return this._lastScreenshot;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {Region}
    */
@@ -40266,7 +40266,7 @@ class RenderWindowTask {
     this._serverConnector = serverConnector;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {RenderRequest} renderRequest
    * @return {Promise<string>} Rendered image URL
@@ -40293,7 +40293,7 @@ class RenderWindowTask {
     return newRender;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {RenderRequest[]} renderRequests
    * @return {Promise<RunningRender>}
@@ -40302,7 +40302,7 @@ class RenderWindowTask {
     return this._serverConnector.render(renderRequests);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {RenderRequest} renderRequest
    * @return {Promise<void>}
@@ -40334,7 +40334,7 @@ class RenderWindowTask {
     return renderStatusResults;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {string[]} renderIds
    * @param {boolean} [delayBeforeRequest=false] If {@code true}, then the request will be delayed
@@ -40390,25 +40390,25 @@ class SessionUrls {
     this._session = session;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBatch() {
     return this._batch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBatch(value) {
     this._batch = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getSession() {
     return this._session;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setSession(value) {
     this._session = value;
@@ -40436,61 +40436,61 @@ class ApiUrls {
     this._diffImage = diffImage;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBaselineImage() {
     return this._baselineImage;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBaselineImage(value) {
     this._baselineImage = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getCurrentImage() {
     return this._currentImage;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setCurrentImage(value) {
     this._currentImage = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getCheckpointImage() {
     return this._checkpointImage;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setCheckpointImage(value) {
     this._checkpointImage = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getCheckpointImageThumbnail() {
     return this._checkpointImageThumbnail;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setCheckpointImageThumbnail(value) {
     this._checkpointImageThumbnail = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getDiffImage() {
     return this._diffImage;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setDiffImage(value) {
     this._diffImage = value;
@@ -40512,25 +40512,25 @@ class AppUrls {
     this._stepEditor = stepEditor;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getStep() {
     return this._step;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setStep(value) {
     this._step = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getStepEditor() {
     return this._stepEditor;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setStepEditor(value) {
     this._stepEditor = value;
@@ -40568,73 +40568,73 @@ class StepInfo {
     this._apiUrls = apiUrls;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getName() {
     return this._name;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setName(value) {
     this._name = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIsDifferent() {
     return this._isDifferent;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsDifferent(value) {
     this._isDifferent = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getHasBaselineImage() {
     return this._hasBaselineImage;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setHasBaselineImage(value) {
     this._hasBaselineImage = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getHasCurrentImage() {
     return this._hasCurrentImage;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setHasCurrentImage(value) {
     this._hasCurrentImage = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {AppUrls} */
   getAppUrls() {
     return this._appUrls;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {AppUrls} value */
   setAppUrls(value) {
     this._appUrls = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {ApiUrls} */
   getApiUrls() {
     return this._apiUrls;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {ApiUrls} value */
   setApiUrls(value) {
     this._apiUrls = value;
@@ -40650,7 +40650,7 @@ class StepInfo {
  * Eyes test results.
  */
 class TestResults {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
+  
   /**
    * @param {string} [id]
    * @param {string} [name]
@@ -40743,157 +40743,157 @@ class TestResults {
     this._serverConnector = undefined;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getId() {
     return this._id;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setId(value) {
     this._id = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getName() {
     return this._name;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setName(value) {
     this._name = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getSecretToken() {
     return this._secretToken;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setSecretToken(value) {
     this._secretToken = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {TestResultsStatus} */
   getStatus() {
     return this._status;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {TestResultsStatus} value */
   setStatus(value) {
     this._status = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getAppName() {
     return this._appName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setAppName(value) {
     this._appName = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBatchName() {
     return this._batchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBatchName(value) {
     this._batchName = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBatchId() {
     return this._batchId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBatchId(value) {
     this._batchId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBranchName() {
     return this._branchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBranchName(value) {
     this._branchName = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getHostOS() {
     return this._hostOS;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setHostOS(value) {
     this._hostOS = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getHostApp() {
     return this._hostApp;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setHostApp(value) {
     this._hostApp = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {RectangleSize} */
   getHostDisplaySize() {
     return this._hostDisplaySize;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {RectangleSize} value */
   setHostDisplaySize(value) {
     this._hostDisplaySize = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Date} */
   getStartedAt() {
     return this._startedAt;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Date} value */
   setStartedAt(value) {
     this._startedAt = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} */
   getDuration() {
     return this._duration;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setDuration(value) {
     this._duration = value;
@@ -40924,79 +40924,79 @@ class TestResults {
     return this._isDifferent;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsDifferent(value) {
     this._isDifferent = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIsAborted() {
     return this._isAborted;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsAborted(value) {
     this._isAborted = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {SessionUrls} */
   getAppUrls() {
     return this._appUrls;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {SessionUrls} value */
   setAppUrls(value) {
     this._appUrls = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {SessionUrls} */
   getApiUrls() {
     return this._apiUrls;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {SessionUrls} value */
   setApiUrls(value) {
     this._apiUrls = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {StepInfo[]} */
   getStepsInfo() {
     return this._stepsInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {StepInfo[]} value */
   setStepsInfo(value) {
     this._stepsInfo = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} The total number of test steps. */
   getSteps() {
     return this._steps;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value The number of visual checkpoints in the test. */
   setSteps(value) {
     this._steps = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} The total number of test steps that matched the baseline. */
   getMatches() {
     return this._matches;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param value {number} The number of visual matches in the test. */
   setMatches(value) {
     this._matches = value;
@@ -41007,7 +41007,7 @@ class TestResults {
     return this._mismatches;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value The number of mismatches in the test. */
   setMismatches(value) {
     this._mismatches = value;
@@ -41018,7 +41018,7 @@ class TestResults {
     return this._missing;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {number} value The number of visual checkpoints that were available in the baseline but were not found
    *   in the current test.
@@ -41027,61 +41027,61 @@ class TestResults {
     this._missing = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} The total number of test steps that exactly matched the baseline. */
   getExactMatches() {
     return this._exactMatches;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value The number of matches performed with match level set to {@link MatchLevel#Exact} */
   setExactMatches(value) {
     this._exactMatches = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} The total number of test steps that strictly matched the baseline. */
   getStrictMatches() {
     return this._strictMatches;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value The number of matches performed with match level set to {@link MatchLevel#Strict} */
   setStrictMatches(value) {
     this._strictMatches = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} The total number of test steps that matched the baseline by content. */
   getContentMatches() {
     return this._contentMatches;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value The number of matches performed with match level set to {@link MatchLevel#Content} */
   setContentMatches(value) {
     this._contentMatches = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} The total number of test steps that matched the baseline by layout. */
   getLayoutMatches() {
     return this._layoutMatches;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value The number of matches performed with match level set to {@link MatchLevel#Layout} */
   setLayoutMatches(value) {
     this._layoutMatches = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} The total number of test steps that matched the baseline without performing any comparison. */
   getNoneMatches() {
     return this._noneMatches;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value The number of matches performed with match level set to {@link MatchLevel#None} */
   setNoneMatches(value) {
     this._noneMatches = value;
@@ -41097,7 +41097,7 @@ class TestResults {
     this._url = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} Whether or not this test passed. */
   isPassed() {
     return this._status === TestResultsStatus.Passed;
@@ -41110,7 +41110,7 @@ class TestResults {
     this._serverConnector = serverConnector;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {Promise<void>}
    */
@@ -41159,7 +41159,7 @@ exports.TestResultsStatus = TestResultsStatus;
  * @abstract
  */
 class AppOutputProvider {
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
+  
   /**
    * @param {Region} region
    * @param {EyesScreenshot} lastScreenshot
@@ -41236,7 +41236,7 @@ class EyesScreenshot {
     return this._image;
   }
 
-  // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
+  
   /**
    * Returns a part of the screenshot based on the given region.
    *
@@ -41249,7 +41249,7 @@ class EyesScreenshot {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
+  
   /**
    * Converts a location's coordinates with the {@code from} coordinates type to the {@code to} coordinates type.
    *
@@ -41263,7 +41263,7 @@ class EyesScreenshot {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
+  
   /**
    * Calculates the location in the screenshot of the location given as parameter.
    *
@@ -41277,7 +41277,7 @@ class EyesScreenshot {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
+  
   /**
    * Get the intersection of the given region with the screenshot.
    * @abstract
@@ -41326,7 +41326,7 @@ exports.EyesScreenshot = EyesScreenshot;
  * @abstract
  */
 class EyesScreenshotFactory {
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @param {MutableImage} image
    * @return {Promise<EyesScreenshot>}
@@ -41516,7 +41516,7 @@ exports.EyesSimpleScreenshot = EyesSimpleScreenshot;
  * @abstract
  */
 class ImageProvider {
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @return {Promise<MutableImage>}
    */
@@ -41538,7 +41538,7 @@ exports.ImageProvider = ImageProvider;
  * @abstract
  */
 class CutProvider {
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @param {MutableImage} image The image to cut.
    * @return {Promise<MutableImage>} A new cut image.
@@ -41547,7 +41547,7 @@ class CutProvider {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * Get a scaled version of the cut provider.
    *
@@ -41743,7 +41743,7 @@ class DebugScreenshotsProvider {
     }
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @abstract
    * @param {MutableImage} image
@@ -41789,7 +41789,7 @@ const { DebugScreenshotsProvider } = require('./DebugScreenshotsProvider');
  * A mock debug screenshot provider.
  */
 class NullDebugScreenshotProvider extends DebugScreenshotsProvider {
-  // noinspection JSMethodCanBeStatic
+  
   /** @inheritDoc */
   async save(image, suffix) { // eslint-disable-line no-unused-vars
     // Do nothing.
@@ -41950,7 +41950,7 @@ class TestFailedError extends EyesError {
     this._testResults = testResults;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {TestResults} The failed test results, or {@code null} if the test has not yet ended (e.g., when thrown
    *   due to {@link FailureReports#IMMEDIATE} settings).
@@ -42402,7 +42402,7 @@ class CheckSettings {
   }
 
   // TODO: finish implementation withName
-  // // noinspection JSUnusedGlobalSymbols
+  // 
   // /**
   //  * A setter for the checkpoint name.
   //  *
@@ -42414,7 +42414,7 @@ class CheckSettings {
   //   return this;
   // }
   //
-  // // noinspection JSUnusedGlobalSymbols
+  // 
   // /**
   //  * @return {string}
   //  */
@@ -42422,7 +42422,7 @@ class CheckSettings {
   //   return this._name;
   // }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Defines whether to send the document DOM or not.
    *
@@ -42441,7 +42441,7 @@ class CheckSettings {
     return this._sendDom;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Shortcut to set the match level to {@code MatchLevel.LAYOUT}.
    *
@@ -42452,7 +42452,7 @@ class CheckSettings {
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Shortcut to set the match level to {@code MatchLevel.EXACT}.
    *
@@ -42463,7 +42463,7 @@ class CheckSettings {
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Shortcut to set the match level to {@code MatchLevel.STRICT}.
    *
@@ -42474,7 +42474,7 @@ class CheckSettings {
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Shortcut to set the match level to {@code MatchLevel.CONTENT}.
    *
@@ -42485,7 +42485,7 @@ class CheckSettings {
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Set the match level by which to compare the screenshot.
    *
@@ -42504,7 +42504,7 @@ class CheckSettings {
     return this._matchLevel;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Defines if to detect and ignore a blinking caret in the screenshot.
    *
@@ -42523,7 +42523,7 @@ class CheckSettings {
     return this._ignoreCaret;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Defines that the screenshot will contain the entire element or region, even if it's outside the view.
    *
@@ -42535,7 +42535,7 @@ class CheckSettings {
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {boolean} [stitchContent=true]
    * @return {this}
@@ -42552,7 +42552,7 @@ class CheckSettings {
     return this._stitchContent;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Defines the timeout to use when acquiring and comparing screenshots.
    *
@@ -42586,7 +42586,7 @@ class CheckSettings {
     return this._targetRegion;
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @protected
    * @param {GetRegion|Region|RegionObject} region
@@ -42604,7 +42604,7 @@ class CheckSettings {
     throw new TypeError('Method called with argument of unknown type!');
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds one or more ignore regions.
    *
@@ -42623,7 +42623,7 @@ class CheckSettings {
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds one or more layout regions.
    * @param {(GetRegion|Region)...} regions A region to match using the Layout method.
@@ -42641,7 +42641,7 @@ class CheckSettings {
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds one or more strict regions.
    * @param {(GetRegion|Region)...} regions A region to match using the Strict method.
@@ -42659,7 +42659,7 @@ class CheckSettings {
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds one or more content regions.
    * @param {(GetRegion|Region)...} regions A region to match using the Content method.
@@ -42677,7 +42677,7 @@ class CheckSettings {
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger
    * region.
@@ -42691,7 +42691,7 @@ class CheckSettings {
    * @return {this} This instance of the settings object.
    */
   floatingRegion(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
-    // noinspection IfStatementWithTooManyBranchesJS
+    
     if (regionOrContainer instanceof GetFloatingRegion) {
       this._floatingRegions.push(regionOrContainer);
     } else if (regionOrContainer instanceof FloatingMatchSettings) {
@@ -42717,7 +42717,7 @@ class CheckSettings {
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a
    * bigger region.
@@ -42849,7 +42849,7 @@ exports.FloatingRegionByRectangle = FloatingRegionByRectangle;
  * @abstract
  */
 class GetFloatingRegion {
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @param {EyesBase} eyesBase
    * @param {EyesScreenshot} screenshot
@@ -42871,7 +42871,7 @@ exports.GetFloatingRegion = GetFloatingRegion;
  * @abstract
  */
 class GetRegion {
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @param {EyesBase} eyesBase
    * @param {EyesScreenshot} screenshot
@@ -43193,7 +43193,7 @@ const { CoordinatesType } = require('./CoordinatesType');
  * @typedef {{left: number, top: number, width: number, height: number, coordinatesType?: CoordinatesType}} RegionObject
  */
 
-// noinspection FunctionWithMultipleLoopsJS
+
 /**
  * @private
  * @param {Region} containerRegion The region to divide into sub-regions.
@@ -43251,7 +43251,7 @@ const getSubRegionsWithFixedSize = (containerRegion, subRegionSize) => {
   return subRegions;
 };
 
-// noinspection FunctionWithMultipleLoopsJS
+
 /**
  * @private
  * @param {Region} containerRegion The region to divide into sub-regions.
@@ -43359,7 +43359,7 @@ class Region {
     return this._left;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {number} value
    */
@@ -43374,7 +43374,7 @@ class Region {
     return this._top;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {number} value
    */
@@ -43403,7 +43403,7 @@ class Region {
     return this._width;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {number} value
    */
@@ -43418,7 +43418,7 @@ class Region {
     return this._height;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {number} value
    */
@@ -43433,7 +43433,7 @@ class Region {
     return this._coordinatesType;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {CoordinatesType} value
    */
@@ -43488,7 +43488,7 @@ class Region {
       return false;
     }
 
-    // noinspection OverlyComplexBooleanExpressionJS
+    
     return (
       this.getLeft() === obj.getLeft() &&
       this.getTop() === obj.getTop() &&
@@ -43501,7 +43501,7 @@ class Region {
    * @return {boolean} {@code true} if the region is empty; {@code false} otherwise.
    */
   isEmpty() {
-    // noinspection OverlyComplexBooleanExpressionJS
+    
     return (
       this.getLeft() === Region.EMPTY.getLeft() &&
       this.getTop() === Region.EMPTY.getTop() &&
@@ -43580,7 +43580,7 @@ class Region {
    */
   contains(locationOrRegion) {
     if (locationOrRegion instanceof Location) {
-      // noinspection OverlyComplexBooleanExpressionJS
+      
       return (
         locationOrRegion.getX() >= this._left &&
         locationOrRegion.getX() <= this._left + this._width &&
@@ -43590,7 +43590,7 @@ class Region {
     }
 
     if (locationOrRegion instanceof Region) {
-      // noinspection OverlyComplexBooleanExpressionJS
+      
       return (
         this._top <= locationOrRegion.getTop() &&
         this._left <= locationOrRegion.getLeft() &&
@@ -43617,7 +43617,7 @@ class Region {
     const otherRight = otherLeft + other.getWidth();
     const otherBottom = otherTop + other.getHeight();
 
-    // noinspection OverlyComplexBooleanExpressionJS
+    
     return (
       ((this._left <= otherLeft && otherLeft <= right) || (otherLeft <= this._left && this._left <= otherRight)) &&
       ((this._top <= otherTop && otherTop <= bottom) || (otherTop <= this._top && this._top <= otherBottom))
@@ -43801,7 +43801,7 @@ const compareAndCopyBlockChannelData = (
  * Provides image compression based on delta between consecutive images
  */
 class ImageDeltaCompressor {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
+  
   /**
    * Compresses a target image based on a difference from a source image.
    *
@@ -43933,7 +43933,7 @@ class ImageUtils {
       // pass the file to PNG using read stream
       const imageReadableStream = new ReadableBufferStream(buffer, undefined);
       const image = new png.Image({ filterType: 4 });
-      // noinspection JSUnresolvedFunction
+      
       return imageReadableStream.pipe(image).on('parsed', () => resolve(image));
     });
   }
@@ -43952,7 +43952,7 @@ class ImageUtils {
 
       // Write back to a temp png file
       const imageWritableStream = new WritableBufferStream();
-      // noinspection JSUnresolvedFunction
+      
       return image.pack().pipe(imageWritableStream)
         .on('finish', () => resolve(imageWritableStream.getBuffer()));
     });
@@ -43966,7 +43966,7 @@ class ImageUtils {
    * @return {png.Image|Image}
    */
   static createImage(width, height) {
-    // noinspection JSValidateTypes
+    
     return new png.Image({ filterType: 4, width, height });
   }
 
@@ -44023,7 +44023,7 @@ class ImageUtils {
     const a0 = (x3 - x2 - x0) + x1;
     const a1 = x0 - x1 - a0;
     const a2 = x2 - x0;
-    // noinspection MagicNumberJS
+    
     return Math.ceil(Math.max(0, Math.min(255, (a0 * (t * t * t)) + (a1 * (t * t)) + ((a2 * t) + x1))));
   }
 
@@ -44055,7 +44055,7 @@ class ImageUtils {
     for (let i = 0; i < hDst; i += 1) {
       for (let j = 0; j < wDst; j += 1) {
         const y = (i * (hSrc - 1)) / hDst;
-        // noinspection JSSuspiciousNameCombination
+        
         const yPos = Math.floor(y);
         const t = y - yPos;
         const buf1Pos = ((yPos * wDst) + j) * 4;
@@ -44066,7 +44066,7 @@ class ImageUtils {
           const y1 = bufSrc[kPos];
           const y2 = bufSrc[kPos + (wDst * 4)];
           const y3 = yPos < hSrc - 2 ? bufSrc[kPos + (wDst * 8)] : (2 * bufSrc[kPos + (wDst * 4)]) - bufSrc[kPos];
-          // noinspection JSSuspiciousNameCombination
+          
           buf[buf2Pos + k] = ImageUtils._interpolateCubic(y0, y1, y2, y3, t);
         }
       }
@@ -44279,7 +44279,7 @@ class ImageUtils {
 
       image.data = Buffer.from(dstBuffer);
       const tmp = image.width;
-      // noinspection JSSuspiciousNameCombination
+      
       image.width = image.height;
       image.height = tmp;
 
@@ -44331,12 +44331,12 @@ class ImageUtils {
    * @return {{width: number, height: number}}
    */
   static getImageSizeFromBuffer(imageBuffer) {
-    // noinspection MagicNumberJS
+    
     if (imageBuffer[12] === 0x49 && imageBuffer[13] === 0x48 && imageBuffer[14] === 0x44 && imageBuffer[15] === 0x52) {
-      // noinspection MagicNumberJS
+      
       const width =
         (imageBuffer[16] * 256 * 256 * 256) + (imageBuffer[17] * 256 * 256) + (imageBuffer[18] * 256) + imageBuffer[19];
-      // noinspection MagicNumberJS
+      
       const height =
         (imageBuffer[20] * 256 * 256 * 256) + (imageBuffer[21] * 256 * 256) + (imageBuffer[22] * 256) + imageBuffer[23];
       return { width, height };
@@ -44485,7 +44485,7 @@ class MutableImage {
     return result;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Coordinates represent the image's position in a larger context (if any).
    * E.g., A screenshot of the browser's viewport of a web page.
@@ -44496,7 +44496,7 @@ class MutableImage {
     return new Location({ x: this._left, y: this._top });
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Coordinates represent the image's position in a larger context (if any).
    * E.g., A screenshot of the browser's viewport of a web page.
@@ -44534,7 +44534,7 @@ class MutableImage {
     return this._height;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Return the image as buffer and image width and height.
    *
@@ -44613,7 +44613,7 @@ class MutableImage {
    * @return {Promise<MutableImage>}
    */
   async rotate(degrees) {
-    // noinspection MagicNumberJS
+    
     if (degrees % 360 === 0) {
       return this;
     }
@@ -44718,7 +44718,7 @@ class ConsoleLogHandler extends LogHandler {
 
   close() {}
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Handle a message to be logged.
    *
@@ -44796,7 +44796,7 @@ class FileLogHandler extends LogHandler {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Handle a message to be logged.
    *
@@ -44829,18 +44829,18 @@ class LogHandler {
     this._sessionId = null;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Whether to handle or ignore verbose log messages.
    *
    * @param {boolean} isVerbose
    */
   setIsVerbose(isVerbose) {
-    // noinspection PointlessBooleanExpressionJS
+    
     this._isVerbose = !!isVerbose;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Whether to handle or ignore verbose log messages.
    *
@@ -44850,7 +44850,7 @@ class LogHandler {
     return this._isVerbose;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * If set to {@code true} then log output include session id, useful in multi-thread environment
    *
@@ -44860,7 +44860,7 @@ class LogHandler {
     this._isPrintSessionId = isPrintSessionId || false;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean}
    */
@@ -44875,7 +44875,7 @@ class LogHandler {
     this._sessionId = sessionId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string}
    */
@@ -44973,7 +44973,7 @@ class Logger {
     this._logHandler.onMessage(false, `[LOG    ] ${this._getPrefix()}${GeneralUtils.stringify(...args)}`);
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @private
    * @return {string} The name of the method which called the logger, if possible, or an empty string.
@@ -45057,13 +45057,13 @@ class AppOutput {
     this._imageLocation = imageLocation;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getTitle() {
     return this._title;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setTitle(value) {
     this._title = value;
@@ -45079,25 +45079,25 @@ class AppOutput {
     this._screenshot64 = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getScreenshotUrl() {
     return this._screenshotUrl;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setScreenshotUrl(value) {
     this._screenshotUrl = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getDomUrl() {
     return this._domUrl;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setDomUrl(value) {
     this._domUrl = value;
@@ -45184,7 +45184,7 @@ class ExactMatchSettings {
     this._matchThreshold = matchThreshold || 0;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {number} The minimum intensity difference of pixel to be considered a change.
    */
@@ -45192,7 +45192,7 @@ class ExactMatchSettings {
     return this._minDiffIntensity;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {number} value The minimum intensity difference of pixel to be considered a change. Valid values are 0-255.
    */
@@ -45200,7 +45200,7 @@ class ExactMatchSettings {
     this._minDiffIntensity = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {number} The minimum width of an intensity filtered pixels cluster to be considered a change.
    */
@@ -45208,7 +45208,7 @@ class ExactMatchSettings {
     return this._minDiffWidth;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {number} value The minimum width of an intensity filtered pixels cluster to be considered a change.
    *   Must be >= 0.
@@ -45217,7 +45217,7 @@ class ExactMatchSettings {
     this._minDiffWidth = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {number} The minimum width of an intensity filtered pixels cluster to be considered a change.
    */
@@ -45225,7 +45225,7 @@ class ExactMatchSettings {
     return this._minDiffHeight;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {number} value The minimum height of an intensity filtered pixels cluster to be considered a change. Must
    *   be >= 0.
@@ -45234,7 +45234,7 @@ class ExactMatchSettings {
     this._minDiffHeight = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {number} The maximum percentage(!) of different pixels (after intensity, width and height filtering) which
    *   is still considered as a match.
@@ -45243,7 +45243,7 @@ class ExactMatchSettings {
     return this._matchThreshold;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {number} value The maximum percentage(!) of different pixels (after intensity, width and height filtering)
    *   which is still considered as a match. Valid values are fractions between 0-1.
@@ -45300,25 +45300,25 @@ class FloatingMatchSettings {
     this._maxRightOffset = maxRightOffset;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} */
   getLeft() {
     return this._left;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setLeft(value) {
     this._left = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} */
   getTop() {
     return this._top;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setTop(value) {
     this._top = value;
@@ -45329,7 +45329,7 @@ class FloatingMatchSettings {
     return this._width;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setWidth(value) {
     this._width = value;
@@ -45340,7 +45340,7 @@ class FloatingMatchSettings {
     return this._height;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setHeight(value) {
     this._height = value;
@@ -45351,7 +45351,7 @@ class FloatingMatchSettings {
     return this._maxUpOffset;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setMaxUpOffset(value) {
     this._maxUpOffset = value;
@@ -45362,7 +45362,7 @@ class FloatingMatchSettings {
     return this._maxDownOffset;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setMaxDownOffset(value) {
     this._maxDownOffset = value;
@@ -45373,7 +45373,7 @@ class FloatingMatchSettings {
     return this._maxLeftOffset;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setMaxLeftOffset(value) {
     this._maxLeftOffset = value;
@@ -45384,7 +45384,7 @@ class FloatingMatchSettings {
     return this._maxRightOffset;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setMaxRightOffset(value) {
     this._maxRightOffset = value;
@@ -45447,7 +45447,7 @@ class ImageMatchSettings {
     this._floatingMatchSettings = [];
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {MatchLevel} The match level to use.
    */
@@ -45455,7 +45455,7 @@ class ImageMatchSettings {
     return this._matchLevel;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {MatchLevel} value The match level to use.
    */
@@ -45464,7 +45464,7 @@ class ImageMatchSettings {
     this._matchLevel = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {ExactMatchSettings} The additional threshold params when the {@code Exact} match level is used, if any.
    */
@@ -45472,7 +45472,7 @@ class ImageMatchSettings {
     return this._exact;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {ExactMatchSettings} value The additional threshold parameters when the {@code Exact} match level is used.
    */
@@ -45480,7 +45480,7 @@ class ImageMatchSettings {
     this._exact = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} The parameters for the "IgnoreCaret" match settings.
    */
@@ -45488,7 +45488,7 @@ class ImageMatchSettings {
     return this._ignoreCaret;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {boolean} value The parameters for the "ignoreCaret" match settings.
    */
@@ -45496,7 +45496,7 @@ class ImageMatchSettings {
     this._ignoreCaret = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean}
    */
@@ -45504,7 +45504,7 @@ class ImageMatchSettings {
     return this._useDom;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {boolean} value
    */
@@ -45512,7 +45512,7 @@ class ImageMatchSettings {
     this._useDom = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Returns the array of regions to ignore.
    * @return {Region[]} the array of regions to ignore.
@@ -45521,7 +45521,7 @@ class ImageMatchSettings {
     return this._ignoreRegions;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets an array of regions to ignore.
    * @param {Region[]} ignoreRegions The array of regions to ignore.
@@ -45530,7 +45530,7 @@ class ImageMatchSettings {
     this._ignoreRegions = ignoreRegions;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets an array of regions to check using the Layout method.
    * @param {Region[]} layoutRegions The array of regions to ignore.
@@ -45539,7 +45539,7 @@ class ImageMatchSettings {
     this._layoutRegions = layoutRegions;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Returns the array of regions to check using the Layout method.
    * @return {Region[]} the array of regions to ignore.
@@ -45548,7 +45548,7 @@ class ImageMatchSettings {
     return this._layoutRegions;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Returns the array of regions to check using the Strict method.
    * @return {Region[]} the array of regions to ignore.
@@ -45557,7 +45557,7 @@ class ImageMatchSettings {
     return this._strictRegions;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets an array of regions to check using the Strict method.
    * @param {Region[]} strictRegions The array of regions to ignore.
@@ -45566,7 +45566,7 @@ class ImageMatchSettings {
     this._strictRegions = strictRegions;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Returns the array of regions to check using the Content method.
    * @return {Region[]} the array of regions to ignore.
@@ -45575,7 +45575,7 @@ class ImageMatchSettings {
     return this._contentRegions;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets an array of regions to check using the Content method.
    * @param {Region[]} contentRegions The array of regions to ignore.
@@ -45584,7 +45584,7 @@ class ImageMatchSettings {
     this._contentRegions = contentRegions;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Returns an array of floating regions.
    * @return {FloatingMatchSettings[]} an array of floating regions.
@@ -45593,7 +45593,7 @@ class ImageMatchSettings {
     return this._floatingMatchSettings;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets an array of floating regions.
    * @param {FloatingMatchSettings[]} floatingMatchSettings The array of floating regions.
@@ -45684,13 +45684,13 @@ class MatchResult {
     this._asExpected = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} */
   getWindowId() {
     return this._windowId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setWindowId(value) {
     this._windowId = value;
@@ -45745,85 +45745,85 @@ class MatchSingleWindowData extends MatchWindowData {
     this._agentId = undefined;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {SessionStartInfo} */
   getStartInfo() {
     return this._startInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {SessionStartInfo} startInfo */
   setStartInfo(startInfo) {
     this._startInfo = startInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getUpdateBaseline() {
     return this._updateBaseline;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} updateBaseline */
   setUpdateBaseline(updateBaseline) {
     this._updateBaseline = updateBaseline;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getUpdateBaselineIfDifferent() {
     return this._updateBaselineIfDifferent;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} updateBaselineIfDifferent */
   setUpdateBaselineIfDifferent(updateBaselineIfDifferent) {
     this._updateBaselineIfDifferent = updateBaselineIfDifferent;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getUpdateBaselineIfNew() {
     return this._updateBaselineIfNew;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} updateBaselineIfNew */
   setUpdateBaselineIfNew(updateBaselineIfNew) {
     this._updateBaselineIfNew = updateBaselineIfNew;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getRemoveSession() {
     return this._removeSession;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} removeSession */
   setRemoveSession(removeSession) {
     this._removeSession = removeSession;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getRemoveSessionIfMatching() {
     return this._removeSessionIfMatching;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} removeSessionIfMatching */
   setRemoveSessionIfMatching(removeSessionIfMatching) {
     this._removeSessionIfMatching = removeSessionIfMatching;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getAgentId() {
     return this._agentId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} agentId */
   setAgentId(agentId) {
     this._agentId = agentId;
@@ -45838,9 +45838,9 @@ class MatchSingleWindowData extends MatchWindowData {
   toString() {
     const object = this.toJSON();
 
-    // noinspection JSUnresolvedVariable
+    
     if (object.appOutput.screenshot64) {
-      // noinspection JSUnresolvedVariable
+      
       object.appOutput.screenshot64 = 'REMOVED_FROM_OUTPUT';
     }
 
@@ -45891,43 +45891,43 @@ class Options {
     this._imageMatchSettings = imageMatchSettings;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getName() {
     return this._name;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Trigger[]} */
   getUserInputs() {
     return this._userInputs;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIgnoreMismatch() {
     return this._ignoreMismatch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIgnoreMatch() {
     return this._ignoreMatch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getForceMismatch() {
     return this._forceMismatch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getForceMatch() {
     return this._forceMatch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {ImageMatchSettings} */
   getImageMatchSettings() {
     return this._imageMatchSettings;
@@ -45970,31 +45970,31 @@ class MatchWindowData {
     this._options = options;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Trigger[]} */
   getUserInputs() {
     return this._userInputs;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {AppOutput} */
   getAppOutput() {
     return this._appOutput;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getTag() {
     return this._tag;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {?boolean} */
   getIgnoreMismatch() {
     return this._ignoreMismatch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {?Options} */
   getOptions() {
     return this._options;
@@ -46009,9 +46009,9 @@ class MatchWindowData {
   toString() {
     const object = this.toJSON();
 
-    // noinspection JSUnresolvedVariable
+    
     if (object.appOutput.screenshot64) {
-      // noinspection JSUnresolvedVariable
+      
       object.appOutput.screenshot64 = 'REMOVED_FROM_OUTPUT';
     }
 
@@ -46045,13 +46045,13 @@ class MatchWindowDataWithScreenshot {
     this._screenshot = screenshot;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {MatchWindowData} */
   getMatchWindowData() {
     return this._matchWindowData;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {EyesScreenshot} */
   getScreenshot() {
     return this._screenshot;
@@ -46078,7 +46078,7 @@ const { ImageMatchSettings } = require('./ImageMatchSettings');
 const { Image } = require('./Image');
 
 class ActualAppOutput {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
+  
   /**
    * @param {Image|object} image
    * @param {Image|object} thumbprint
@@ -46123,133 +46123,133 @@ class ActualAppOutput {
     this._isPrimary = isPrimary;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Image} */
   getImage() {
     return this._image;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Image} value */
   setImage(value) {
     this._image = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Image} */
   getThumbprint() {
     return this._thumbprint;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Image} value */
   setThumbprint(value) {
     this._thumbprint = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {ImageMatchSettings} */
   getImageMatchSettings() {
     return this._imageMatchSettings;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {ImageMatchSettings} value */
   setImageMatchSettings(value) {
     this._imageMatchSettings = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIgnoreExpectedOutputSettings() {
     return this._ignoreExpectedOutputSettings;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIgnoreExpectedOutputSettings(value) {
     this._ignoreExpectedOutputSettings = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIsMatching() {
     return this._isMatching;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsMatching(value) {
     this._isMatching = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getAreImagesMatching() {
     return this._areImagesMatching;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setAreImagesMatching(value) {
     this._areImagesMatching = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Date} */
   getOccurredAt() {
     return this._occurredAt;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Date} value */
   setOccurredAt(value) {
     this._occurredAt = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {object[]} */
   getUserInputs() {
     return this._userInputs;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {object[]} value */
   setUserInputs(value) {
     this._userInputs = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getWindowTitle() {
     return this._windowTitle;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setWindowTitle(value) {
     this._windowTitle = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getTag() {
     return this._tag;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setTag(value) {
     this._tag = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIsPrimary() {
     return this._isPrimary;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsPrimary(value) {
     this._isPrimary = value;
@@ -46276,7 +46276,7 @@ const { Region } = require('../geometry/Region');
 const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 
 class Annotations {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
+  
   /**
    * @param floating
    * @param ignore
@@ -46312,61 +46312,61 @@ class Annotations {
     this._layout = layout;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {FloatingMatchSettings[]} */
   getFloating() {
     return this._floating;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {FloatingMatchSettings[]} value */
   setFloating(value) {
     this._floating = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Region[]} */
   getIgnore() {
     return this._ignore;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Region[]} value */
   setIgnore(value) {
     this._ignore = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Region[]} */
   getStrict() {
     return this._strict;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Region[]} value */
   setStrict(value) {
     this._strict = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Region[]} */
   getContent() {
     return this._content;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Region[]} value */
   setContent(value) {
     this._content = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Region[]} */
   getLayout() {
     return this._layout;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Region[]} value */
   setLayout(value) {
     this._layout = value;
@@ -46406,37 +46406,37 @@ class BatchInfo {
     this._startedAt = startedAt;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getId() {
     return this._id;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setId(value) {
     this._id = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getName() {
     return this._name;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setName(value) {
     this._name = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Date} */
   getStartedAt() {
     return this._startedAt;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Date} value */
   setStartedAt(value) {
     this._startedAt = value;
@@ -46474,49 +46474,49 @@ class Branch {
     this._updateInfo = updateInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getId() {
     return this._id;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setId(value) {
     this._id = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getName() {
     return this._name;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setName(value) {
     this._name = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIsDeleted() {
     return this._isDeleted;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsDeleted(value) {
     this._isDeleted = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {object} */
   getUpdateInfo() {
     return this._updateInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {object} value */
   setUpdateInfo(value) {
     this._updateInfo = value;
@@ -46543,7 +46543,7 @@ const { Annotations } = require('./Annotations');
 const { Image } = require('./Image');
 
 class ExpectedAppOutput {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
+  
   /**
    * @param {string} tag
    * @param {Image|object} image
@@ -46575,61 +46575,61 @@ class ExpectedAppOutput {
     this._annotations = annotations;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getTag() {
     return this._tag;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setTag(value) {
     this._tag = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Image} */
   getImage() {
     return this._image;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Image} value */
   setImage(value) {
     this._image = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Image} */
   getThumbprint() {
     return this._thumbprint;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Image} value */
   setThumbprint(value) {
     this._thumbprint = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Date} */
   getOccurredAt() {
     return this._occurredAt;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Date} value */
   setOccurredAt(value) {
     this._occurredAt = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Annotations} */
   getAnnotations() {
     return this._annotations;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Annotations} value */
   setAnnotations(value) {
     this._annotations = value;
@@ -46668,25 +46668,25 @@ class Image {
     this._size = size;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getId() {
     return this._id;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setId(value) {
     this._id = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {RectangleSize} */
   getSize() {
     return this._size;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {RectangleSize} value */
   setSize(value) {
     this._size = value;
@@ -46713,7 +46713,7 @@ const { Region } = require('../geometry/Region');
 const { FloatingMatchSettings } = require('../match/FloatingMatchSettings');
 
 class ImageMatchSettings {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
+  
   /**
    * @param {MatchLevel|string} matchLevel
    * @param {Region[]|object[]} ignore
@@ -46762,133 +46762,133 @@ class ImageMatchSettings {
     this._remainder = remainder;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {MatchLevel} */
   getMatchLevel() {
     return this._matchLevel;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {MatchLevel} value */
   setMatchLevel(value) {
     this._matchLevel = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Region[]} */
   getIgnore() {
     return this._ignore;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Region[]} value */
   setIgnore(value) {
     this._ignore = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Region[]} */
   getStrict() {
     return this._strict;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Region[]} value */
   setStrict(value) {
     this._strict = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Region[]} */
   getContent() {
     return this._content;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Region[]} value */
   setContent(value) {
     this._content = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Region[]} */
   getLayout() {
     return this._layout;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Region[]} value */
   setLayout(value) {
     this._layout = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {FloatingMatchSettings[]} */
   getFloating() {
     return this._floating;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {FloatingMatchSettings[]} value */
   setFloating(value) {
     this._floating = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} */
   getSplitTopHeight() {
     return this._splitTopHeight;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setSplitTopHeight(value) {
     this._splitTopHeight = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} */
   getSplitBottomHeight() {
     return this._splitBottomHeight;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setSplitBottomHeight(value) {
     this._splitBottomHeight = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIgnoreCaret() {
     return this._ignoreCaret;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIgnoreCaret(value) {
     this._ignoreCaret = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} */
   getScale() {
     return this._scale;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setScale(value) {
     this._scale = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} */
   getRemainder() {
     return this._remainder;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setRemainder(value) {
     this._remainder = value;
@@ -46918,7 +46918,7 @@ const { StartInfo } = require('./StartInfo');
 const { AppEnvironment } = require('../AppEnvironment');
 
 class SessionResults {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
+  
   /**
    * @param {string} id
    * @param {number} revision
@@ -47009,349 +47009,349 @@ class SessionResults {
     this._isNew = isNew;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getId() {
     return this._id;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setId(value) {
     this._id = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} */
   getRevision() {
     return this._revision;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setRevision(value) {
     this._revision = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getRunningSessionId() {
     return this._runningSessionId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setRunningSessionId(value) {
     this._runningSessionId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIsAborted() {
     return this._isAborted;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsAborted(value) {
     this._isAborted = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIsStarred() {
     return this._isStarred;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsStarred(value) {
     this._isStarred = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {StartInfo} */
   getStartInfo() {
     return this._startInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {StartInfo} value */
   setStartInfo(value) {
     this._startInfo = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBatchId() {
     return this._batchId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBatchId(value) {
     this._batchId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getSecretToken() {
     return this._secretToken;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setSecretToken(value) {
     this._secretToken = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getState() {
     return this._state;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setState(value) {
     this._state = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getStatus() {
     return this._status;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setStatus(value) {
     this._status = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIsDefaultStatus() {
     return this._isDefaultStatus;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsDefaultStatus(value) {
     this._isDefaultStatus = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getStartedAt() {
     return this._startedAt;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setStartedAt(value) {
     this._startedAt = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {number} */
   getDuration() {
     return this._duration;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {number} value */
   setDuration(value) {
     this._duration = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIsDifferent() {
     return this._isDifferent;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsDifferent(value) {
     this._isDifferent = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {AppEnvironment} */
   getEnv() {
     return this._env;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {AppEnvironment} value */
   setEnv(value) {
     this._env = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {Branch} */
   getBranch() {
     return this._branch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {Branch} value */
   setBranch(value) {
     this._branch = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {ExpectedAppOutput[]} */
   getExpectedAppOutput() {
     return this._expectedAppOutput;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {ExpectedAppOutput[]} value */
   setExpectedAppOutput(value) {
     this._expectedAppOutput = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {ActualAppOutput[]} */
   getActualAppOutput() {
     return this._actualAppOutput;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {ActualAppOutput[]} value */
   setActualAppOutput(value) {
     this._actualAppOutput = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBaselineId() {
     return this._baselineId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBaselineId(value) {
     this._baselineId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBaselineRevId() {
     return this._baselineRevId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBaselineRevId(value) {
     this._baselineRevId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getScenarioId() {
     return this._scenarioId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setScenarioId(value) {
     this._scenarioId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getScenarioName() {
     return this._scenarioName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setScenarioName(value) {
     this._scenarioName = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getAppId() {
     return this._appId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setAppId(value) {
     this._appId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBaselineModelId() {
     return this._baselineModelId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBaselineModelId(value) {
     this._baselineModelId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBaselineEnvId() {
     return this._baselineEnvId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBaselineEnvId(value) {
     this._baselineEnvId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {AppEnvironment} */
   getBaselineEnv() {
     return this._baselineEnv;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {AppEnvironment} value */
   setBaselineEnv(value) {
     this._baselineEnv = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getAppName() {
     return this._appName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setAppName(value) {
     this._appName = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBaselineBranchName() {
     return this._baselineBranchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBaselineBranchName(value) {
     this._baselineBranchName = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIsNew() {
     return this._isNew;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsNew(value) {
     this._isNew = value;
@@ -47423,157 +47423,157 @@ class StartInfo {
     this._render = render;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getSessionType() {
     return this._sessionType;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setSessionType(value) {
     this._sessionType = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIsTransient() {
     return this._isTransient;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIsTransient(value) {
     this._isTransient = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIgnoreBaseline() {
     return this._ignoreBaseline;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setIgnoreBaseline(value) {
     this._ignoreBaseline = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getAppIdOrName() {
     return this._appIdOrName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setAppIdOrName(value) {
     this._appIdOrName = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getCompareWithParentBranch() {
     return this._compareWithParentBranch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setCompareWithParentBranch(value) {
     this._compareWithParentBranch = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getScenarioIdOrName() {
     return this._scenarioIdOrName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setScenarioIdOrName(value) {
     this._scenarioIdOrName = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {BatchInfo} */
   getBatchInfo() {
     return this._batchInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {BatchInfo} value */
   setBatchInfo(value) {
     this._batchInfo = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {AppEnvironment} */
   getEnvironment() {
     return this._environment;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {AppEnvironment} value */
   setEnvironment(value) {
     this._environment = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getMatchLevel() {
     return this._matchLevel;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setMatchLevel(value) {
     this._matchLevel = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {ImageMatchSettings} */
   getDefaultMatchSettings() {
     return this._defaultMatchSettings;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {ImageMatchSettings} value */
   setDefaultMatchSettings(value) {
     this._defaultMatchSettings = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getAgentId() {
     return this._agentId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setAgentId(value) {
     this._agentId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {object[]} */
   getProperties() {
     return this._properties;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {object[]} value */
   setProperties(value) {
     this._properties = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getRender() {
     return this._render;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setRender(value) {
     this._render = value;
@@ -47656,7 +47656,7 @@ exports.PositionMemento = PositionMemento;
  * @abstract
  */
 class PositionProvider {
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @return {Promise<Location>} The current position, or {@code null} if position is not available.
    */
@@ -47664,7 +47664,7 @@ class PositionProvider {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * Go to the specified location.
    *
@@ -47675,7 +47675,7 @@ class PositionProvider {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @return {Promise<RectangleSize>} The entire size of the container which the position is relative to.
    */
@@ -47683,7 +47683,7 @@ class PositionProvider {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @return {Promise<PositionMemento>}
    */
@@ -47691,7 +47691,7 @@ class PositionProvider {
     throw new TypeError('The method is not implemented!');
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @param {PositionMemento} state The initial state of position
    * @return {Promise<void>}
@@ -47717,7 +47717,7 @@ class RegionProvider {
     this._region = region;
   }
 
-  // noinspection JSMethodCanBeStatic
+  
   /**
    * @return {Promise<Region>} A region with "as is" viewport coordinates.
    */
@@ -47895,7 +47895,7 @@ class RGridDom {
     this._contentAsCdt = undefined;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {object} The domNodes of the current page.
    */
@@ -47903,7 +47903,7 @@ class RGridDom {
     return this._domNodes;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {object} value The page's domNodes
    */
@@ -47919,7 +47919,7 @@ class RGridDom {
     return this._resources;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {RGridResource[]} value The page's resourceType
    */
@@ -48013,7 +48013,7 @@ class RGridResource {
     return this._url;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @param {string} value The resource's url
    */
@@ -48180,13 +48180,13 @@ class RenderInfo {
     this._region = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {EmulationInfo} */
   getEmulationInfo() {
     return this._emulationInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {EmulationInfo} value */
   setEmulationInfo(value) {
     this._emulationInfo = value;
@@ -48260,79 +48260,79 @@ class RenderRequest {
     this._sendDom = sendDom;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getWebhook() {
     return this._webhook;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getUrl() {
     return this._url;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {RGridDom} */
   getDom() {
     return this._dom;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {RGridResource[]} */
   getResources() {
     return this._resources;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {RenderInfo} */
   getRenderInfo() {
     return this._renderInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getPlatform() {
     return this._platform;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBrowserName() {
     return this._browserName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getRenderId() {
     return this._renderId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setRenderId(value) {
     this._renderId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getScriptHooks() {
     return this._scriptHooks;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setScriptHooks(value) {
     this._scriptHooks = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string[]} */
   getSelectorsToFindRegionsFor() {
     return this._selectorsToFindRegionsFor;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string[]} value */
   setSelectorsToFindRegionsFor(value) {
     this._selectorsToFindRegionsFor = value;
@@ -48616,19 +48616,19 @@ class RunningRender {
     return this._renderId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setRenderId(value) {
     this._renderId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getJobId() {
     return this._jobId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setJobId(value) {
     this._jobId = value;
@@ -48639,7 +48639,7 @@ class RunningRender {
     return this._renderStatus;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {RenderStatus} value */
   setRenderStatus(value) {
     this._renderStatus = value;
@@ -48650,7 +48650,7 @@ class RunningRender {
     return this._needMoreResources;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string[]} value */
   setNeedMoreResources(value) {
     this._needMoreResources = value;
@@ -48661,7 +48661,7 @@ class RunningRender {
     return this._needMoreDom;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {boolean} value */
   setNeedMoreDom(value) {
     this._needMoreDom = value;
@@ -48961,7 +48961,7 @@ class ScaleProviderFactory {
     return scaleProvider;
   }
 
-  // noinspection JSMethodCanBeStatic, JSUnusedLocalSymbols
+  
   /**
    * The implementation of getting/creating the scale provider, should be implemented by child classes.
    *
@@ -49021,25 +49021,25 @@ class PropertyData {
     this._value = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getName() {
     return this._name;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setName(value) {
     this._name = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getValue() {
     return this._value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setValue(value) {
     this._value = value;
@@ -49087,22 +49087,22 @@ class ProxySettings {
     this._url = url.parse(uri.includes('://') ? uri : `http://${uri}`);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   getUri() {
     return this._uri;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   getUsername() {
     return this._username;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   getPassword() {
     return this._password;
   }
 
-  // noinspection FunctionWithMoreThanThreeNegationsJS
+  
   /**
    * @return {{protocol: string, host: string, port: number, auth: {username: string, password: string}}}
    */
@@ -49156,7 +49156,7 @@ class RenderingInfo {
     return this._serviceUrl;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setServiceUrl(value) {
     this._serviceUrl = value;
@@ -49167,25 +49167,25 @@ class RenderingInfo {
     return this._accessToken;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setAccessToken(value) {
     this._accessToken = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getResultsUrl() {
     return this._resultsUrl;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setResultsUrl(value) {
     this._resultsUrl = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {{sub: string, exp: number, iss: string}} */
   getDecodedAccessToken() {
     if (this._payload) {
@@ -49245,43 +49245,43 @@ class RunningSession {
     return this._id;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setId(value) {
     this._id = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getSessionId() {
     return this._sessionId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setSessionId(value) {
     this._sessionId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBatchId() {
     return this._batchId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBatchId(value) {
     this._batchId = value;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBaselineId() {
     return this._baselineId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setBaselineId(value) {
     this._baselineId = value;
@@ -49292,7 +49292,7 @@ class RunningSession {
     return this._url;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {string} value */
   setUrl(value) {
     this._url = value;
@@ -49303,7 +49303,7 @@ class RunningSession {
     return this._renderingInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @param {RenderingInfo} value */
   setRenderingInfo(value) {
     this._renderingInfo = value;
@@ -49585,7 +49585,7 @@ class ServerConnector {
    * @return {string} The currently set API key or {@code null} if no key is set.
    */
   getApiKey() {
-    // noinspection JSUnresolvedVariable
+    
     return this._apiKey || process.env.APPLITOOLS_API_KEY;
   }
 
@@ -49599,7 +49599,7 @@ class ServerConnector {
     this._renderingServerUrl = serverUrl;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string} The URI of the rendering server.
    */
@@ -49617,7 +49617,7 @@ class ServerConnector {
     this._renderingAuthToken = authToken;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    *
    * @return {string} The currently set API key or {@code null} if no key is set.
@@ -49684,7 +49684,7 @@ class ServerConnector {
     return !!this._httpOptions.params.removeSession;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Sets the connect and read timeouts for web requests.
    *
@@ -49826,7 +49826,7 @@ class ServerConnector {
       const screenshot64 = matchWindowData.getAppOutput().getScreenshot64();
       matchWindowData.getAppOutput().setScreenshot64(null); // remove screenshot64 from json
       options.headers['Content-Type'] = 'application/octet-stream';
-      // noinspection JSValidateTypes
+      
       options.data = Buffer.concat([createDataBytes(matchWindowData), screenshot64]);
       matchWindowData.getAppOutput().setScreenshot64(screenshot64);
     }
@@ -49866,7 +49866,7 @@ class ServerConnector {
       const screenshot64 = matchSingleWindowData.getAppOutput().getScreenshot64();
       matchSingleWindowData.getAppOutput().setScreenshot64(null); // remove screenshot64 from json
       options.headers['Content-Type'] = 'application/octet-stream';
-      // noinspection JSValidateTypes
+      
       options.data = Buffer.concat([createDataBytes(matchSingleWindowData), screenshot64]);
       matchSingleWindowData.getAppOutput().setScreenshot64(screenshot64);
     }
@@ -49882,7 +49882,7 @@ class ServerConnector {
     throw new Error(`ServerConnector.matchSingleWindow - unexpected status (${response.statusText})`);
   }
 
-  // noinspection JSValidateJSDoc
+  
   /**
    * Replaces an actual image in the current running session.
    *
@@ -49919,7 +49919,7 @@ class ServerConnector {
     throw new Error(`ServerConnector.replaceWindow - unexpected status (${response.statusText})`);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Initiate a rendering using RenderingGrid API
    *
@@ -49982,7 +49982,7 @@ class ServerConnector {
     throw new Error(`ServerConnector.render - unexpected status (${response.statusText})`);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Check if resource exists on the server
    *
@@ -50202,109 +50202,109 @@ class SessionStartInfo {
     this._properties = properties;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getAgentId() {
     return this._agentId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {SessionType} */
   getSessionType() {
     return this._sessionType;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getAppIdOrName() {
     return this._appIdOrName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getVerId() {
     return this._verId;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getScenarioIdOrName() {
     return this._scenarioIdOrName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {BatchInfo} */
   getBatchInfo() {
     return this._batchInfo;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBaselineEnvName() {
     return this._baselineEnvName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getEnvironmentName() {
     return this._environmentName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {AppEnvironment} */
   getEnvironment() {
     return this._environment;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {ImageMatchSettings} */
   getDefaultMatchSettings() {
     return this._defaultMatchSettings;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBranchName() {
     return this._branchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getParentBranchName() {
     return this._parentBranchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {string} */
   getBaselineBranchName() {
     return this._baselineBranchName;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getCompareWithParentBranch() {
     return this._compareWithParentBranch;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getIgnoreBaseline() {
     return this._ignoreBaseline;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {PropertyData[]} */
   getProperties() {
     return this._properties;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getRender() {
     return this._render;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /** @return {boolean} */
   getSaveDiffs() {
     return this._saveDiffs;
@@ -50373,7 +50373,7 @@ class MouseTrigger extends Trigger {
     this._location = location; // Relative to the top left corner of {@link #control}, or null if unknown.
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {MouseTrigger.MouseAction}
    */
@@ -50381,7 +50381,7 @@ class MouseTrigger extends Trigger {
     return this._mouseAction;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {Region}
    */
@@ -50389,7 +50389,7 @@ class MouseTrigger extends Trigger {
     return this._control;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {Location}
    */
@@ -50397,7 +50397,7 @@ class MouseTrigger extends Trigger {
     return this._location;
   }
 
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
+  
   /**
    * @return {Trigger.TriggerType}
    */
@@ -50453,7 +50453,7 @@ class TextTrigger extends Trigger {
     this._control = control;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {string}
    */
@@ -50461,7 +50461,7 @@ class TextTrigger extends Trigger {
     return this._text;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {Region}
    */
@@ -50469,7 +50469,7 @@ class TextTrigger extends Trigger {
     return this._control;
   }
 
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
+  
   /**
    * @return {Trigger.TriggerType}
    */
@@ -50494,7 +50494,7 @@ exports.TextTrigger = TextTrigger;
  * @abstract
  */
 class Trigger {
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
+  
   /**
    * @return {Trigger.TriggerType}
    */
@@ -50663,9 +50663,9 @@ class GeneralUtils {
    */
   static guid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      // noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
+      
       const r = (Math.random() * 16) | 0; // eslint-disable-line no-bitwise
-      // noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
+      
       const v = c === 'x' ? r : (r & 0x3) | 0x8; // eslint-disable-line no-bitwise
       return v.toString(16);
     });
@@ -51051,7 +51051,7 @@ class ReadableBufferStream extends Stream.Readable {
     this._buffer = buffer;
   }
 
-  // noinspection JSUnusedGlobalSymbols,JSCheckFunctionSignatures
+  
   /**
    * Override of the _read function, as required when implementing a stream.
    * @private
@@ -51072,7 +51072,7 @@ class WritableBufferStream extends Stream.Writable {
     this._buffer = Buffer.alloc(0);
   }
 
-  // noinspection JSUnusedGlobalSymbols,JSCheckFunctionSignatures
+  
   /**
    * Override of the _write function, as require when implementing a Writable stream.
    * @param {Buffer|string} chunk The chunk to write to the stream.
@@ -51087,7 +51087,7 @@ class WritableBufferStream extends Stream.Writable {
     next();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
    *   emitted before continuing to write additional data, otherwise {@code true}.
@@ -51098,7 +51098,7 @@ class WritableBufferStream extends Stream.Writable {
     return this.write(buf);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
    *   emitted before continuing to write additional data, otherwise {@code true}.
@@ -51109,7 +51109,7 @@ class WritableBufferStream extends Stream.Writable {
     return this.write(buf);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
    *   emitted before continuing to write additional data, otherwise {@code true}.
@@ -51120,7 +51120,7 @@ class WritableBufferStream extends Stream.Writable {
     return this.write(buf);
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * @return {Buffer} The buffer which contains the chunks written up to this point.
    */
@@ -51128,7 +51128,7 @@ class WritableBufferStream extends Stream.Writable {
     return this._buffer;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Resets the buffer which contains the chunks written so far.
    * @return {Buffer} The buffer which contains the chunks written up to the reset.
@@ -51158,7 +51158,7 @@ class TestResultsFormatter {
     this._resultsList = [];
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Adds an additional results object to the currently stored results list.
    *
@@ -51173,7 +51173,7 @@ class TestResultsFormatter {
     return this;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Creates a TAP representation of the tests results list in hierarchic format.
    *
@@ -51245,7 +51245,7 @@ class TestResultsFormatter {
     return tapString;
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  
   /**
    * Creates a TAP representation of the tests results list in which each steps are colored as success/fail.
    *
@@ -51597,7 +51597,7 @@ class UserAgent {
     }
 
     // OS Normalization
-    // noinspection IfStatementWithTooManyBranchesJS
+    
     if (result._OS.startsWith('CPU')) {
       result._OS = OSNames.IOS;
     } else if (result._OS === 'Windows XP') {

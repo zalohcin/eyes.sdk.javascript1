@@ -94,7 +94,7 @@ class TestcafeCheckSettings extends CheckSettings {
    */
   frame(frame) {
     const fl = new FrameLocator()
-    // noinspection IfStatementWithTooManyBranchesJS
+
     if (TypeUtils.isInteger(frame)) {
       fl.setFrameIndex(frame)
     } else if (TypeUtils.isString(frame)) {
@@ -115,7 +115,6 @@ class TestcafeCheckSettings extends CheckSettings {
    * @return {this}
    */
   region(region) {
-    // noinspection IfStatementWithTooManyBranchesJS
     if (Region.isRegionCompatible(region)) {
       super.updateTargetRegion(region)
     } else if (TypeUtils.isString(region)) {
@@ -130,7 +129,6 @@ class TestcafeCheckSettings extends CheckSettings {
     return this
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @inheritDoc
    * @protected
@@ -154,7 +152,6 @@ class TestcafeCheckSettings extends CheckSettings {
    * @return {this}
    */
   ignoreRegions(...regions) {
-    // noinspection JSValidateTypes
     return super.ignoreRegions(...regions)
   }
 
@@ -164,7 +161,6 @@ class TestcafeCheckSettings extends CheckSettings {
    * @return {this}
    */
   layoutRegions(...regions) {
-    // noinspection JSValidateTypes
     return super.layoutRegions(...regions)
   }
 
@@ -174,7 +170,6 @@ class TestcafeCheckSettings extends CheckSettings {
    * @return {this}
    */
   strictRegions(...regions) {
-    // noinspection JSValidateTypes
     return super.strictRegions(...regions)
   }
 
@@ -184,11 +179,9 @@ class TestcafeCheckSettings extends CheckSettings {
    * @return {this}
    */
   contentRegions(...regions) {
-    // noinspection JSValidateTypes
     return super.contentRegions(...regions)
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {GetFloatingRegion|Region|FloatingMatchSettings|By|WebElement|EyesWebElement} regionOrContainer - The content
@@ -230,7 +223,6 @@ class TestcafeCheckSettings extends CheckSettings {
     return this
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {number} maxOffset - How much each of the content rectangles can move in any direction.
@@ -242,7 +234,6 @@ class TestcafeCheckSettings extends CheckSettings {
     return super.floatingRegions(maxOffset, ...regionsOrContainers)
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {GetAccessibilityRegion|Region|AccessibilityMatchSettings|By|WebElement|EyesWebElement} regionOrContainer - The

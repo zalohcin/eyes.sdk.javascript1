@@ -99,13 +99,12 @@ class EyesTestCafe extends Eyes {
 
     ArgumentGuard.notNull(driver, 'driver')
 
-    // noinspection NonBlockStatementBodyJS
     if (appName) this._configuration.setAppName(appName)
-    // noinspection NonBlockStatementBodyJS
+
     if (testName) this._configuration.setTestName(testName)
-    // noinspection NonBlockStatementBodyJS
+
     if (viewportSize) this._configuration.setViewportSize(viewportSize)
-    // noinspection NonBlockStatementBodyJS
+
     if (sessionType) this._configuration.setSessionType(sessionType)
 
     ArgumentGuard.notNull(this._configuration.getAppName(), 'appName')
@@ -182,7 +181,6 @@ class EyesTestCafe extends Eyes {
     }
   }
 
-  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * @inheritDoc
    */
@@ -438,7 +436,6 @@ class EyesTestCafe extends Eyes {
      * @type {RegionProvider}
      */
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
-      // noinspection JSUnusedGlobalSymbols
       /** @inheritDoc */
       async getRegion() {
         const region = await self._getFullFrameOrElementRegion()
@@ -625,11 +622,10 @@ class EyesTestCafe extends Eyes {
      * @type {RegionProvider}
      */
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
-      // noinspection JSUnusedGlobalSymbols
       /** @inheritDoc */
       async getRegion() {
         const rect = await self._targetElement.getRect()
-        // noinspection JSSuspiciousNameCombination
+
         const region = new Region(
           Math.ceil(rect.x),
           Math.ceil(rect.y),
@@ -1017,7 +1013,6 @@ class EyesTestCafe extends Eyes {
     return this._driver.findElement('html')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {EyesWebElement} scrollRootElement
    * @return {PositionProvider}
@@ -1034,7 +1029,6 @@ class EyesTestCafe extends Eyes {
     return positionProvider
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @protected
    * @inheritDoc

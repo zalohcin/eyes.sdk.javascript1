@@ -6,7 +6,6 @@ class EyesRunner {
     this._eyesInstances = []
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @abstract
    * @param {boolean} [shouldThrowException=true]

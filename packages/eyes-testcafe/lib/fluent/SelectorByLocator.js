@@ -17,7 +17,6 @@ class SelectorByLocator extends GetSelector {
     this._selector = regionLocator
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {Eyes} eyes

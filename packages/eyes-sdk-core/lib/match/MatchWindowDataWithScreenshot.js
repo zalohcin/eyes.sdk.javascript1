@@ -22,7 +22,6 @@ class MatchWindowDataWithScreenshot {
     this._screenshot = screenshot
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {MatchWindowData}
    */
@@ -30,7 +29,6 @@ class MatchWindowDataWithScreenshot {
     return this._matchWindowData
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {EyesScreenshot}
    */

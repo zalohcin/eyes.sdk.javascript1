@@ -16,7 +16,6 @@ class Branch {
     this._updateInfo = updateInfo
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -24,7 +23,6 @@ class Branch {
     return this._id
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -32,7 +30,6 @@ class Branch {
     this._id = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -40,7 +37,6 @@ class Branch {
     return this._name
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -48,7 +44,6 @@ class Branch {
     this._name = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -56,7 +51,6 @@ class Branch {
     return this._isDeleted
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -64,7 +58,6 @@ class Branch {
     this._isDeleted = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {object}
    */
@@ -72,7 +65,6 @@ class Branch {
     return this._updateInfo
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {object} value
    */

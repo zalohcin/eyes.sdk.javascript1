@@ -14,7 +14,6 @@ class TestResultsFormatter {
     this._resultsList = resultsList
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds an additional results object to the currently stored results list.
    *
@@ -29,7 +28,6 @@ class TestResultsFormatter {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds an additional results object to the currently stored results list.
    *
@@ -41,7 +39,6 @@ class TestResultsFormatter {
     return this.addTestResults(results)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {TestResults[]}
    */
@@ -49,7 +46,6 @@ class TestResultsFormatter {
     return this._resultsList
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {void}
    */
@@ -57,7 +53,6 @@ class TestResultsFormatter {
     this._resultsList = []
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Creates a TAP representation of the tests results list in hierarchic format.
    *
@@ -111,7 +106,6 @@ class TestResultsFormatter {
     return formattedString
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Creates a TAP representation of the tests results list in hierarchic format.
    *
@@ -179,7 +173,6 @@ class TestResultsFormatter {
     return tapString
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Creates a TAP representation of the tests results list in which each steps are colored as success/fail.
    *

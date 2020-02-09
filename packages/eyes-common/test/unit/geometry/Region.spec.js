@@ -10,7 +10,6 @@ describe('Region', () => {
   const width = 3
   const height = 4
 
-  // noinspection FunctionTooLongJS
   it('simple constructor', () => {
     let region = new Region(left, top, width, height)
     assert.strictEqual(region.getLeft(), left, 'left')
@@ -19,54 +18,44 @@ describe('Region', () => {
     assert.strictEqual(region.getHeight(), height, 'height')
 
     // This should still be ok
-    // noinspection JSUnusedAssignment
+
     region = new Region(1, 2, 0, 0)
 
     // Making sure negative positions are valid.
     try {
-      // noinspection JSUnusedAssignment
       region = new Region(-1, 2, 3, 4)
     } catch (ignore) {
       assert.fail('Left can be <= 0')
     }
 
     try {
-      // noinspection JSUnusedAssignment
       region = new Region(1, -2, 3, 4)
     } catch (ignore) {
       assert.fail('Top can be <= 0')
     }
 
-    // noinspection EmptyCatchBlockJS
     try {
-      // noinspection JSUnusedAssignment
       region = new Region(1, 2, -1, 0)
       assert.fail('Width must be >=0')
     } catch (ignore) {
       // ignore
     }
 
-    // noinspection EmptyCatchBlockJS
     try {
-      // noinspection JSUnusedAssignment
       region = new Region(1, 2, 3, -1)
       assert.fail('Height must be >=0')
     } catch (ignore) {
       // ignore
     }
 
-    // noinspection EmptyCatchBlockJS
     try {
-      // noinspection JSUnusedAssignment
       region = new Region(null, new RectangleSize({width: 3, height: 4}))
       assert.fail('Location must not be null!')
     } catch (ignore) {
       // ignore
     }
 
-    // noinspection EmptyCatchBlockJS
     try {
-      // noinspection JSUnusedAssignment
       region = new Region(new Location({x: left, y: top}), null)
       assert.fail('Size must not be null!')
     } catch (ignore) {
@@ -144,7 +133,6 @@ describe('Region', () => {
     const r2 = new Region(r1)
     assert.strictEqual(r1.equals(r2), true, 'Regions should be equal!')
 
-    // noinspection JSAccessibilityCheck
     r2.makeEmpty()
     assert.strictEqual(r1.equals(r2), false, 'Regions should be differ!')
   })

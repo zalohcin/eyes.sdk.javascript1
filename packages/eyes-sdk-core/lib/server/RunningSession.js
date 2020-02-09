@@ -38,7 +38,6 @@ class RunningSession {
     return this._id
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -46,7 +45,6 @@ class RunningSession {
     this._id = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -54,7 +52,6 @@ class RunningSession {
     return this._sessionId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -62,7 +59,6 @@ class RunningSession {
     this._sessionId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -70,7 +66,6 @@ class RunningSession {
     return this._batchId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -78,7 +73,6 @@ class RunningSession {
     this._batchId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -86,7 +80,6 @@ class RunningSession {
     return this._baselineId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -101,7 +94,6 @@ class RunningSession {
     return this._url
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -116,7 +108,6 @@ class RunningSession {
     return this._renderingInfo
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {RenderingInfo} value
    */

@@ -26,7 +26,6 @@ class ScaleProviderFactory {
     return scaleProvider
   }
 
-  // noinspection JSMethodCanBeStatic, JSUnusedLocalSymbols
   /**
    * The implementation of getting/creating the scale provider, should be implemented by child classes.
    *

@@ -116,7 +116,6 @@ class FrameChain {
     return new Location(this._frames[0].getOriginalLocation())
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {RectangleSize} - The size of the current frame.
    */
@@ -141,7 +140,6 @@ class FrameChain {
    * @return {IterableIterator<Frame>} iterator to go over the frames in the chain.
    */
   [Symbol.iterator]() {
-    // noinspection JSValidateTypes
     return this._frames[Symbol.iterator]()
   }
 

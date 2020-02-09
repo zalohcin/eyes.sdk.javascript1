@@ -3,7 +3,6 @@
 const {GeneralUtils, Region, FloatingMatchSettings} = require('@applitools/eyes-common')
 
 class Annotations {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * @param {FloatingMatchSettings[]|object[]} floating
    * @param {Region[]|object[]} ignore
@@ -39,7 +38,6 @@ class Annotations {
     this._layout = layout
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {FloatingMatchSettings[]}
    */
@@ -47,7 +45,6 @@ class Annotations {
     return this._floating
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {FloatingMatchSettings[]} value
    */
@@ -55,7 +52,6 @@ class Annotations {
     this._floating = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region[]}
    */
@@ -63,7 +59,6 @@ class Annotations {
     return this._ignore
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Region[]} value
    */
@@ -71,7 +66,6 @@ class Annotations {
     this._ignore = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region[]}
    */
@@ -79,7 +73,6 @@ class Annotations {
     return this._strict
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Region[]} value
    */
@@ -87,7 +80,6 @@ class Annotations {
     this._strict = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region[]}
    */
@@ -95,7 +87,6 @@ class Annotations {
     return this._content
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Region[]} value
    */
@@ -103,7 +94,6 @@ class Annotations {
     this._content = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region[]}
    */
@@ -111,7 +101,6 @@ class Annotations {
     return this._layout
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Region[]} value
    */

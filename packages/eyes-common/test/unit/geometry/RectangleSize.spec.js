@@ -8,7 +8,6 @@ describe('RectangleSize', () => {
   const width = 4
   const height = 5
 
-  // noinspection FunctionTooLongJS
   it('simple constructor', () => {
     const size = new RectangleSize({width, height})
     assert.strictEqual(size.getWidth(), width, 'width')
@@ -47,7 +46,6 @@ describe('RectangleSize', () => {
     let l2 = new RectangleSize(l1)
     assert.strictEqual(l1.equals(l2), true, 'RectangleSizes should be equal!')
 
-    // noinspection JSAccessibilityCheck
     l2 = l2.scale(2)
     assert.strictEqual(l1.equals(l2), false, 'RectangleSizes should be differ!')
   })

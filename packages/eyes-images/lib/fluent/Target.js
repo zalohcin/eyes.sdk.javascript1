@@ -149,7 +149,7 @@ class Target {
    */
   static region(image, rect) {
     const checkSettings = Target.image(image)
-    // noinspection JSAccessibilityCheck
+
     checkSettings.region(rect)
     return checkSettings
   }

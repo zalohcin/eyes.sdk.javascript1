@@ -28,7 +28,6 @@ class RGridResource {
     return this._url
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value - The resource's url
    */

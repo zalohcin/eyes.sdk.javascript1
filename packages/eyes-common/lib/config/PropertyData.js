@@ -43,7 +43,6 @@ class PropertyData {
     this._value = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -51,7 +50,6 @@ class PropertyData {
     return this._name
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -59,7 +57,6 @@ class PropertyData {
     this._name = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -67,7 +64,6 @@ class PropertyData {
     return this._value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */

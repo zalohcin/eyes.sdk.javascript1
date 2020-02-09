@@ -246,7 +246,6 @@ class Configuration {
    * @return {this}
    */
   setProxy(value) {
-    // noinspection IfStatementWithTooManyBranchesJS
     if (TypeUtils.isNull(value)) {
       this._proxySettings = undefined
     } else if (value === false || TypeUtils.isString(value)) {
@@ -358,7 +357,6 @@ class Configuration {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean} - True if failed tests are saved by default.
    */

@@ -20,7 +20,6 @@ class Image {
     this._hasDom = hasDom
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -28,7 +27,6 @@ class Image {
     return this._id
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -36,7 +34,6 @@ class Image {
     this._id = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {RectangleSize}
    */
@@ -44,7 +41,6 @@ class Image {
     return this._size
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {RectangleSize} value
    */
@@ -52,7 +48,6 @@ class Image {
     this._size = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -60,7 +55,6 @@ class Image {
     return this._hasDom
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */

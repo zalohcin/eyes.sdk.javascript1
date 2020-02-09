@@ -12,7 +12,6 @@ let imageOrientationHandler = new (class ImageOrientationHandlerImpl extends Ima
    * @inheritDoc
    */
   async isLandscapeOrientation(driver) {
-    // noinspection JSValidateTypes
     try {
       const capabilities = await driver.getCapabilities()
       return EyesTestcafeUtils.isLandscapeOrientationFromCaps(capabilities)
@@ -80,7 +79,6 @@ async function setBrowserSizeLoop(logger, driver, requiredViewportSize, sleep, r
   return setBrowserSizeLoop(logger, driver, requiredViewportSize, sleep, retriesLeft - 1)
 }
 
-// noinspection OverlyComplexFunctionJS
 /**
  * @param {Logger} logger
  * @param {WebDriver} driver
@@ -317,12 +315,11 @@ class EyesTestcafeUtils extends EyesJsBrowserUtils {
       logger.verbose('Using window size as viewport size.')
       let {width, height} = await driver.getViewport()
 
-      // noinspection EmptyCatchBlockJS
       try {
         const isLandscape = await EyesTestcafeUtils.isLandscapeOrientation(driver)
         if (isLandscape && height > width) {
           const temp = width
-          // noinspection JSSuspiciousNameCombination
+
           width = height
           height = temp
         }

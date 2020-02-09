@@ -65,7 +65,6 @@ class ElementPositionProvider extends PositionProvider {
     return new ElementPositionMemento(position)
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {ElementPositionMemento} state - The initial state of position

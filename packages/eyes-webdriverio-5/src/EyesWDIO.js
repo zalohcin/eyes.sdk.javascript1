@@ -128,7 +128,6 @@ class EyesWDIO extends EyesBase {
     this._scrollRootElement = undefined
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Object} driver
    * @param {String} [appName] - Application name
@@ -301,7 +300,6 @@ class EyesWDIO extends EyesBase {
     )
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    *
    * @param {By} selector
@@ -450,7 +448,6 @@ class EyesWDIO extends EyesBase {
     const that = this
 
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
-      // noinspection JSUnusedGlobalSymbols
       /** @override */
       async getRegion() {
         const p = await that._targetElement.getLocation()
@@ -718,7 +715,6 @@ class EyesWDIO extends EyesBase {
     this._logger.verbose('checkFullFrameOrElement()')
 
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
-      // noinspection JSUnusedGlobalSymbols
       /** @override */
       async getRegion() {
         const region = await that._getFullFrameOrElementRegion()
@@ -742,10 +738,9 @@ class EyesWDIO extends EyesBase {
   async _getFullFrameOrElementRegion() {
     const that = this
     if (that._checkFrameOrElement) {
-      // noinspection JSUnresolvedFunction
       return that._ensureFrameVisible().then(fc => {
         // FIXME - Scaling should be handled in a single place instead
-        // noinspection JSUnresolvedFunction
+
         return that._updateScalingParams().then(scaleProviderFactory => {
           let screenshotImage
           return that._imageProvider
@@ -922,7 +917,6 @@ class EyesWDIO extends EyesBase {
     EyesBase.prototype.addMouseTriggerBase.call(this, action, control, cursor)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a mouse trigger.
    *
@@ -1072,7 +1066,6 @@ class EyesWDIO extends EyesBase {
     return viewportSize ? viewportSize : this._driver.getDefaultContentViewportSize()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
    *
@@ -1131,7 +1124,6 @@ class EyesWDIO extends EyesBase {
     return EyesWDIOUtils.setViewportSize(this._logger, driver, new RectangleSize(viewportSize))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    *
    * @param {By} locator
@@ -1528,7 +1520,7 @@ class EyesWDIO extends EyesBase {
     const that = this
     const originalFC = new FrameChain(this._logger, this._driver.getFrameChain())
     const fc = new FrameChain(this._logger, this._driver.getFrameChain())
-    // noinspection JSValidateTypes
+
     return ensureFrameVisibleLoop(this, this.getPositionProvider(), fc, this._driver.switchTo())
       .then(() => {
         return that._driver.switchTo().frames(originalFC)
@@ -1601,7 +1593,6 @@ class EyesWDIO extends EyesBase {
       })
   }
 
-  // noinspection JSUnusedGlobalSymbols
   getInferredEnvironment() {
     return this._driver
       .getUserAgent()
@@ -1613,7 +1604,6 @@ class EyesWDIO extends EyesBase {
       })
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @override
    */
@@ -1635,7 +1625,6 @@ class EyesWDIO extends EyesBase {
     EyesBase.prototype.setFailureReport.call(this, mode)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Set the image rotation degrees.
    * @param degrees The amount of degrees to set the rotation to.
@@ -1645,7 +1634,6 @@ class EyesWDIO extends EyesBase {
     this.setRotation(new ImageRotation(degrees))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Get the rotation degrees.
    * @return {number} The rotation degrees.
@@ -1732,7 +1720,6 @@ class EyesWDIO extends EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   async getAUTSessionId() {
     if (!this._driver) {
       return undefined
@@ -1760,7 +1747,6 @@ class EyesWDIO extends EyesBase {
     return this._driver.webDriver.remoteWebDriver
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Forces a full page screenshot (by scrolling and stitching) if the browser only supports viewport screenshots).
    *
@@ -1778,7 +1764,6 @@ class EyesWDIO extends EyesBase {
     return this._configuration.getForceFullPageScreenshot()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    *
    * @returns {Region}
@@ -1810,7 +1795,6 @@ class EyesWDIO extends EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number} The time to wait just before taking a screenshot.
    */

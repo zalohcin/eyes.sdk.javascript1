@@ -13,7 +13,6 @@ class IgnoreRegionByElement extends GetRegion {
     this._element = webElement
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @override
    * @param {Eyes} eyesBase

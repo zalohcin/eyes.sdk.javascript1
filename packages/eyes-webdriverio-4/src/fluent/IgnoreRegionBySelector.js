@@ -13,7 +13,6 @@ class IgnoreRegionBySelector extends GetRegion {
     this._selector = regionSelector
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @override
    * @param {Eyes} eyes

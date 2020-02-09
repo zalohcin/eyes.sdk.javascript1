@@ -47,7 +47,6 @@ class EyesVisualGrid extends Eyes {
     /** @type {Promise} */ this._closePromise = undefined
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @override
    * @protected
@@ -164,7 +163,6 @@ class EyesVisualGrid extends Eyes {
     return results.getAllResults()[0].getTestResults()
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @return {Promise<?TestResults>}
    */

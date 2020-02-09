@@ -16,7 +16,6 @@ class IgnoreRegionBySelector extends GetRegion {
     this._selector = regionSelector
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {Eyes} eyes
@@ -42,7 +41,6 @@ class IgnoreRegionBySelector extends GetRegion {
     return values
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {Eyes} eyes

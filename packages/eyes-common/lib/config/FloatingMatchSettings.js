@@ -41,7 +41,6 @@ class FloatingMatchSettings {
     this._maxRightOffset = maxRightOffset
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number}
    */
@@ -49,7 +48,6 @@ class FloatingMatchSettings {
     return this._left
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -57,7 +55,6 @@ class FloatingMatchSettings {
     this._left = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number}
    */
@@ -65,7 +62,6 @@ class FloatingMatchSettings {
     return this._top
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -80,7 +76,6 @@ class FloatingMatchSettings {
     return this._width
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -95,7 +90,6 @@ class FloatingMatchSettings {
     return this._height
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -110,7 +104,6 @@ class FloatingMatchSettings {
     return this._maxUpOffset
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -125,7 +118,6 @@ class FloatingMatchSettings {
     return this._maxDownOffset
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -140,7 +132,6 @@ class FloatingMatchSettings {
     return this._maxLeftOffset
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -155,7 +146,6 @@ class FloatingMatchSettings {
     return this._maxRightOffset
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */

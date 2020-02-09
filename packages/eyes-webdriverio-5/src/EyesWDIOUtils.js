@@ -39,7 +39,6 @@ let imageOrientationHandler = new (class ImageOrientationHandlerImpl extends Ima
   }
 })()
 
-// noinspection JSUnusedLocalSymbols
 let javascriptHandler = new (class JavascriptHandlerImpl extends JavascriptHandler {})()
 
 class EyesWDIOUtils {
@@ -183,7 +182,6 @@ class EyesWDIOUtils {
     )
   }
 
-  // noinspection JSUnusedGlobalSymbols
   static get JS_RETURN_CONTENT_ENTIRE_SIZE() {
     return EyesWDIOUtils.JS_COMPUTE_CONTENT_ENTIRE_SIZE + 'return [totalWidth, totalHeight];'
   }
@@ -373,7 +371,6 @@ class EyesWDIOUtils {
     return EyesJsBrowserUtils.setOverflow(executor, value, scrollbarsRoot)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {EyesJsExecutor} executor The executor to use.
    * @return {Promise.<Boolean>} A promise which resolves to the {@code true} if body overflow is hidden, {@code false} otherwise.
@@ -386,7 +383,6 @@ class EyesWDIOUtils {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Updates the document's body "overflow" value
    *
@@ -472,7 +468,7 @@ class EyesWDIOUtils {
       const result = await EyesWDIOUtils.isLandscapeOrientation(executor)
       if (result && height > width) {
         const temp = width
-        // noinspection JSSuspiciousNameCombination
+
         width = height
         height = temp
       }

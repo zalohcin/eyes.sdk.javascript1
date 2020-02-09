@@ -28,7 +28,6 @@ class RunningRender {
     return this._renderId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -36,7 +35,6 @@ class RunningRender {
     this._renderId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -44,7 +42,6 @@ class RunningRender {
     return this._jobId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -59,7 +56,6 @@ class RunningRender {
     return this._renderStatus
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {RenderStatus} value
    */
@@ -74,7 +70,6 @@ class RunningRender {
     return this._needMoreResources
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string[]} value
    */
@@ -89,7 +84,6 @@ class RunningRender {
     return this._needMoreDom
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */

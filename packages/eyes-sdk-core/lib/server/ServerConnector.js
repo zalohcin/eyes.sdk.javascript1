@@ -345,7 +345,7 @@ class ServerConnector {
       const screenshot64 = matchWindowData.getAppOutput().getScreenshot64()
       matchWindowData.getAppOutput().setScreenshot64(null) // remove screenshot64 from json
       config.headers['Content-Type'] = 'application/octet-stream'
-      // noinspection JSValidateTypes
+
       config.data = Buffer.concat([createDataBytes(matchWindowData), screenshot64])
       matchWindowData.getAppOutput().setScreenshot64(screenshot64)
     }
@@ -385,7 +385,7 @@ class ServerConnector {
       const screenshot64 = matchSingleWindowData.getAppOutput().getScreenshot64()
       matchSingleWindowData.getAppOutput().setScreenshot64(null) // remove screenshot64 from json
       config.headers['Content-Type'] = 'application/octet-stream'
-      // noinspection JSValidateTypes
+
       config.data = Buffer.concat([createDataBytes(matchSingleWindowData), screenshot64])
       matchSingleWindowData.getAppOutput().setScreenshot64(screenshot64)
     }
@@ -403,7 +403,6 @@ class ServerConnector {
     )
   }
 
-  // noinspection JSValidateJSDoc
   /**
    * Replaces an actual image in the current running session.
    *
@@ -450,7 +449,6 @@ class ServerConnector {
     throw new Error(`ServerConnector.replaceWindow - unexpected status (${response.statusText})`)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Initiate a rendering using RenderingGrid API
    *
@@ -515,7 +513,6 @@ class ServerConnector {
     throw new Error(`ServerConnector.render - unexpected status (${response.statusText})`)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Check if resource exists on the server
    *

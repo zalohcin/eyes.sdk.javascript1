@@ -9,7 +9,6 @@ const VERSION = require('../package.json').version
  * The main type - to be used by the users of the library to access all functionality.
  */
 class Eyes extends EyesSelenium {
-  // noinspection JSMethodCanBeStatic
   /**
    * @inheritDoc
    */

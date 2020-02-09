@@ -92,7 +92,6 @@ class ElementPositionProvider extends PositionProvider {
     return this.getCurrentPosition().then(position => new ElementPositionMemento(position))
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @override
    * @param {ElementPositionMemento} state The initial state of position

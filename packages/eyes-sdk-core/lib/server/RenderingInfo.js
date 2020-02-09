@@ -22,7 +22,6 @@ class RenderingInfo {
     return this._serviceUrl
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -37,7 +36,6 @@ class RenderingInfo {
     return this._accessToken
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -45,7 +43,6 @@ class RenderingInfo {
     this._accessToken = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -53,7 +50,6 @@ class RenderingInfo {
     return this._resultsUrl
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -61,7 +57,6 @@ class RenderingInfo {
     this._resultsUrl = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {{sub: string, exp: number, iss: string}}
    */

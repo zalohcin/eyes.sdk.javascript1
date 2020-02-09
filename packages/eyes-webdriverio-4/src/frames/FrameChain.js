@@ -35,7 +35,6 @@ class FrameChain {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Compares two frame chains.
    * @param {FrameChain} c1 Frame chain to be compared against c2.
@@ -67,7 +66,6 @@ class FrameChain {
     return this._frames
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {int} index Index of needed frame
    * @return {Frame} frame by index in array
@@ -88,7 +86,6 @@ class FrameChain {
     return this._frames.length
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Removes all current frames in the frame chain.
    */
@@ -96,7 +93,6 @@ class FrameChain {
     return (this._frames = [])
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Removes the last inserted frame element. Practically means we switched
    * back to the parent of the current frame
@@ -112,7 +108,6 @@ class FrameChain {
     return this._frames[this._frames.length - 1]
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Appends a frame to the frame chain.
    * @param {Frame} frame The frame to be added.
@@ -121,7 +116,6 @@ class FrameChain {
     return this._frames.push(frame)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Location} The location of the current frame in the page.
    */
@@ -145,7 +139,6 @@ class FrameChain {
     return new Location(this._frames[0].getOriginalLocation())
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {{width: number, height: number}} The size of the current frame.
    */

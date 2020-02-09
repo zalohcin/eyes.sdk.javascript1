@@ -5,7 +5,7 @@ const {remote} = require('webdriverio')
 const chromedriver = require('chromedriver')
 const geckodriver = require('geckodriver')
 const {Configuration, Eyes, NetHelper, StitchMode} = require('../index')
-// noinspection JSUnusedLocalSymbols
+
 const {
   BatchInfo,
   ConsoleLogHandler,

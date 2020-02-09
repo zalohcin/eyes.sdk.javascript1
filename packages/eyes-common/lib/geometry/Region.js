@@ -10,7 +10,6 @@ const {CoordinatesType} = require('./CoordinatesType')
  * @typedef {{left: number, top: number, width: number, height: number, coordinatesType: CoordinatesType|undefined}} RegionObject
  */
 
-// noinspection FunctionWithMultipleLoopsJS
 /**
  * @private
  * @param {Region} containerRegion - The region to divide into sub-regions.
@@ -71,7 +70,6 @@ const getSubRegionsWithFixedSize = (containerRegion, subRegionSize) => {
   return subRegions
 }
 
-// noinspection FunctionWithMultipleLoopsJS
 /**
  * @private
  * @param {Region} containerRegion - The region to divide into sub-regions.
@@ -216,7 +214,6 @@ class Region {
     return this._left
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -231,7 +228,6 @@ class Region {
     return this._top
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -260,7 +256,6 @@ class Region {
     return this._width
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -275,7 +270,6 @@ class Region {
     return this._height
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -290,7 +284,6 @@ class Region {
     return this._coordinatesType
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {CoordinatesType} value
    */
@@ -305,7 +298,6 @@ class Region {
     return this._error
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -360,7 +352,6 @@ class Region {
       return false
     }
 
-    // noinspection OverlyComplexBooleanExpressionJS
     return (
       this.getLeft() === obj.getLeft() &&
       this.getTop() === obj.getTop() &&
@@ -373,7 +364,6 @@ class Region {
    * @return {boolean} - A {@code true} if the region is empty; {@code false} otherwise.
    */
   isEmpty() {
-    // noinspection OverlyComplexBooleanExpressionJS
     return (
       this.getLeft() === Region.EMPTY.getLeft() &&
       this.getTop() === Region.EMPTY.getTop() &&
@@ -453,7 +443,6 @@ class Region {
    */
   contains(locationOrRegion) {
     if (locationOrRegion instanceof Location) {
-      // noinspection OverlyComplexBooleanExpressionJS
       return (
         locationOrRegion.getX() >= this._left &&
         locationOrRegion.getX() <= this._left + this._width &&
@@ -463,7 +452,6 @@ class Region {
     }
 
     if (locationOrRegion instanceof Region) {
-      // noinspection OverlyComplexBooleanExpressionJS
       return (
         this._top <= locationOrRegion.getTop() &&
         this._left <= locationOrRegion.getLeft() &&
@@ -490,7 +478,6 @@ class Region {
     const otherRight = otherLeft + other.getWidth()
     const otherBottom = otherTop + other.getHeight()
 
-    // noinspection OverlyComplexBooleanExpressionJS
     return (
       ((this._left <= otherLeft && otherLeft <= right) ||
         (otherLeft <= this._left && this._left <= otherRight)) &&

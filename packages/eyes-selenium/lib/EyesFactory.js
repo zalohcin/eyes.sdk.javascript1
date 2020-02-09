@@ -12,7 +12,6 @@ const {EyesVisualGrid} = require('./EyesVisualGrid')
  * @ignore
  */
 class EyesFactory {
-  // noinspection JSAnnotator
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *

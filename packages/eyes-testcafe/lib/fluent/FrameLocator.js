@@ -61,7 +61,6 @@ class FrameLocator {
     this._frameSelector = frameSelector
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {WebElement}
    */
@@ -76,7 +75,6 @@ class FrameLocator {
     this._frameElement = frameElement
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {WebElement}
    */
@@ -91,7 +89,6 @@ class FrameLocator {
     this._scrollRootElement = scrollRootElement
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {By}
    */

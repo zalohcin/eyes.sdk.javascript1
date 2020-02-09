@@ -12,7 +12,6 @@ const {VisualGridRunner} = require('./runner/VisualGridRunner')
  * @extends EyesWDIO
  */
 class Eyes {
-  // noinspection JSAnnotator
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *

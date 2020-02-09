@@ -76,7 +76,6 @@ class SessionStartInfo {
     this._properties = properties
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -84,7 +83,6 @@ class SessionStartInfo {
     return this._agentId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {SessionType}
    */
@@ -92,7 +90,6 @@ class SessionStartInfo {
     return this._sessionType
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -100,7 +97,6 @@ class SessionStartInfo {
     return this._appIdOrName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -108,7 +104,6 @@ class SessionStartInfo {
     return this._verId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -116,7 +111,6 @@ class SessionStartInfo {
     return this._scenarioIdOrName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -124,7 +118,6 @@ class SessionStartInfo {
     return this._displayName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {BatchInfo}
    */
@@ -132,7 +125,6 @@ class SessionStartInfo {
     return this._batchInfo
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -140,7 +132,6 @@ class SessionStartInfo {
     return this._baselineEnvName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -148,7 +139,6 @@ class SessionStartInfo {
     return this._environmentName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {AppEnvironment}
    */
@@ -156,7 +146,6 @@ class SessionStartInfo {
     return this._environment
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {ImageMatchSettings}
    */
@@ -164,7 +153,6 @@ class SessionStartInfo {
     return this._defaultMatchSettings
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -172,7 +160,6 @@ class SessionStartInfo {
     return this._branchName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -180,7 +167,6 @@ class SessionStartInfo {
     return this._parentBranchName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -188,7 +174,6 @@ class SessionStartInfo {
     return this._baselineBranchName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -196,7 +181,6 @@ class SessionStartInfo {
     return this._compareWithParentBranch
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -204,7 +188,6 @@ class SessionStartInfo {
     return this._ignoreBaseline
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {PropertyData[]}
    */
@@ -212,7 +195,6 @@ class SessionStartInfo {
     return this._properties
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -220,7 +202,6 @@ class SessionStartInfo {
     return this._render
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */

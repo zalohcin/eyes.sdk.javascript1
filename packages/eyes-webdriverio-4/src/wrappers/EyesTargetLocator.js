@@ -35,7 +35,6 @@ class EyesTargetLocator extends TargetLocator {
     this._scrollPosition = new ScrollPositionProvider(this._logger, this._jsExecutor)
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * Schedules a command to switch the focus of all future commands to another
    * frame on the page. The target frame may be specified as one of the following:
@@ -195,7 +194,6 @@ class EyesTargetLocator extends TargetLocator {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Schedules a command to switch the focus of all future commands to another window.
    * Windows may be specified by their {@code window.name} attribute or by its handle.
@@ -215,7 +213,6 @@ class EyesTargetLocator extends TargetLocator {
     })
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * Schedules a command to switch focus of all future commands to the topmost frame on the page.
    *
@@ -232,7 +229,6 @@ class EyesTargetLocator extends TargetLocator {
     this._logger.verbose('Done!')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Schedules a command retrieve the {@code document.activeElement} element on the current document,
    * or {@code document.body} if activeElement is not available.
@@ -243,7 +239,7 @@ class EyesTargetLocator extends TargetLocator {
   activeElement() {
     this._logger.verbose('EyesTargetLocator.activeElement()')
     this._logger.verbose('Switching to element...')
-    // noinspection JSCheckFunctionSignatures
+
     const element = this._tsInstance.remoteWebDriver.elementActive()
     // const element = this._tsInstance.schedule(new command.Command(command.Name.GET_ACTIVE_ELEMENT), 'WebDriver.switchTo().activeElement()');
     this._logger.verbose('Done!')

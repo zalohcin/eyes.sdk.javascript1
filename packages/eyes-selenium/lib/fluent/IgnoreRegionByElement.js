@@ -17,7 +17,6 @@ class IgnoreRegionByElement extends GetRegion {
     this._element = webElement
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @override
    * @param {Eyes} eyes
@@ -36,7 +35,6 @@ class IgnoreRegionByElement extends GetRegion {
     return [new Region(lTag.getX(), lTag.getY(), rect.width, rect.height)]
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {Eyes} eyes

@@ -7,7 +7,6 @@
  * @abstract
  */
 class GetAccessibilityRegion {
-  // noinspection JSMethodCanBeStatic
   /**
    * @param {EyesBase} eyesBase
    * @param {EyesScreenshot} screenshot

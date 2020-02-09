@@ -55,7 +55,6 @@ class RenderRequest {
     this._agentId = agentId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -70,7 +69,6 @@ class RenderRequest {
     return this._stitchingService
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -78,7 +76,6 @@ class RenderRequest {
     return this._url
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {RGridDom}
    */
@@ -86,7 +83,6 @@ class RenderRequest {
     return this._dom
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {RGridResource[]}
    */
@@ -94,7 +90,6 @@ class RenderRequest {
     return this._resources
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {RenderInfo}
    */
@@ -102,7 +97,6 @@ class RenderRequest {
     return this._renderInfo
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -110,7 +104,6 @@ class RenderRequest {
     return this._platform
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -118,7 +111,6 @@ class RenderRequest {
     return this._browserName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -126,7 +118,6 @@ class RenderRequest {
     return this._renderId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -134,7 +125,6 @@ class RenderRequest {
     return this._agentId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -142,7 +132,6 @@ class RenderRequest {
     this._agentId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -150,7 +139,6 @@ class RenderRequest {
     this._renderId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -158,7 +146,6 @@ class RenderRequest {
     return this._scriptHooks
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -166,7 +153,6 @@ class RenderRequest {
     this._scriptHooks = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string[]}
    */
@@ -174,7 +160,6 @@ class RenderRequest {
     return this._selectorsToFindRegionsFor
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string[]} value
    */

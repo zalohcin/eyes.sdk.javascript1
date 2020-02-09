@@ -68,7 +68,6 @@ class EyesWDIOScreenshot extends EyesScreenshot {
     this._regionWindow = null
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Creates a frame(!) window screenshot.
    *

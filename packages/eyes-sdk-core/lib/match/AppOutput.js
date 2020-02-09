@@ -27,7 +27,6 @@ class AppOutput {
     this._imageLocation = imageLocation
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -35,7 +34,6 @@ class AppOutput {
     return this._title
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -57,7 +55,6 @@ class AppOutput {
     this._screenshot64 = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -65,7 +62,6 @@ class AppOutput {
     return this._screenshotUrl
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -73,7 +69,6 @@ class AppOutput {
     this._screenshotUrl = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -81,7 +76,6 @@ class AppOutput {
     return this._domUrl
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */

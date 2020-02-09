@@ -49,7 +49,6 @@ describe('TestEyesImages', function() {
     await eyes.open('TestEyesImages', 'TestImageProvider(Bitmap)', {width: 800, height: 500})
 
     const ImageProviderImpl = class ImageProviderImpl extends ImageProvider {
-      // noinspection JSUnusedGlobalSymbols
       /**
        * @override
        */
