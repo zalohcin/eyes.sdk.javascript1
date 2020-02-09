@@ -58,7 +58,7 @@ const Eyes = {
           proxy.isHttpOnly,
         )
       }
-      configAxiosProxy({axiosConfig: config, proxy: proxySettings, logger: console})
+      configAxiosProxy({axiosConfig: config, proxy: proxySettings})
     }
 
     const [err, res] = await presult(axios(config))
