@@ -6,7 +6,6 @@ const {
   DiffsFoundError,
   NewTestError,
   TestFailedError,
-  ArgumentGuard,
 } = require('@applitools/eyes-sdk-core')
 const {presult} = require('@applitools/functional-commons')
 
