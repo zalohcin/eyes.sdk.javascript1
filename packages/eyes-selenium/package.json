@@ -39,7 +39,7 @@
     "@applitools/dom-utils": "4.7.4",
     "@applitools/eyes-common": "3.18.2",
     "@applitools/eyes-sdk-core": "6.0.9",
-    "@applitools/visual-grid-client": "13.5.10"
+    "@applitools/visual-grid-client": "13.5.11"
   },
   "devDependencies": {
     "@applitools/sdk-fake-eyes-server": "1.0.4",

@@ -1,7 +1,8 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+## 13.5.12
+
+- Send stitching service URL to visual grid [Trello 212](https://trello.com/c/Sqh6k2VV)
 
 ## [13.3.6](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/visual-grid-client@13.3.5...@applitools/visual-grid-client@13.3.6) (2019-11-28)
 
