@@ -22,7 +22,7 @@
     "@applitools/eyes-selenium": "^4.33.4"
   },
   "devDependencies": {
-    "chromedriver": "^78.0.0",
+    "chromedriver": "^80.0.0",
     "jest": "^24.9.0",
     "selenium-webdriver": "^4.0.0-alpha.5"
   },

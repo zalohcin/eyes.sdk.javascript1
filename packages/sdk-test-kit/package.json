@@ -28,7 +28,7 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "dependencies": {
-    "chromedriver": "^79.0.0",
+    "chromedriver": "^80.0.0",
     "node-fetch": "^2.6.0",
     "throat": "^5.0.0",
     "yargs": "^15.0.2"

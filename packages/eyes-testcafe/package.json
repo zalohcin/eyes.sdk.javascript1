@@ -77,7 +77,7 @@
     "assert-rejects": "^1.0.0",
     "axios": "^0.19.0",
     "chai": "^4.2.0",
-    "chromedriver": "^78.0.0",
+    "chromedriver": "^80.0.0",
     "core-js": "^3.6.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
