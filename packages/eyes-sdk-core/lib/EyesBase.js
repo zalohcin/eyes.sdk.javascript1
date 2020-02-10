@@ -14,7 +14,7 @@ const {
   FileDebugScreenshotsProvider,
   NullDebugScreenshotProvider,
   SessionType,
-  GeneralUtils: {sleep, presult},
+  GeneralUtils: {sleep, presult, getEnvValue},
 } = require('@applitools/eyes-common')
 
 const {AppOutputProvider} = require('./capture/AppOutputProvider')
@@ -195,23 +195,23 @@ class EyesBase extends EyesAbstract {
     let parentBranchName = this._configuration.getParentBranchName()
 
     const isLocalBranchTest = branchName && parentBranchName && branchName !== parentBranchName
-    const isCiBranchTest = !isLocalBranchTest && batchId
+    const isCiBranchTest = batchId && !branchName && !parentBranchName
 
-    let parentBranchBaselineSavedBefore, err
+    let err
     if (isCiBranchTest) {
-      ;[err, {branchName, parentBranchName, parentBranchBaselineSavedBefore}] = await presult(
+      ;[err, {ScmSourceBranch: branchName, ScmTargetBranch: parentBranchName} = {}] = await presult(
         this._getAndSaveBatchInfoFromServer(batchId),
       )
       this._logger.log(
-        `_getAndSaveBatchInfoFromServer done, batchInfo: ${{
+        `_getAndSaveBatchInfoFromServer done for ${batchId}, batchInfo: ${{
           branchName,
           parentBranchName,
-          parentBranchBaselineSavedBefore,
         }} err: ${err}`,
       )
     }
 
-    if (isLocalBranchTest || (isCiBranchTest && !parentBranchBaselineSavedBefore)) {
+    let parentBranchBaselineSavedBefore
+    if ((isLocalBranchTest || isCiBranchTest) && !err) {
       ;[err, parentBranchBaselineSavedBefore] = await presult(
         this._getAndSaveScmMergeBaseTime(parentBranchName),
       )
@@ -1291,8 +1291,8 @@ class EyesBase extends EyesAbstract {
       environmentName: this._configuration.getEnvironmentName(),
       environment: appEnvironment,
       defaultMatchSettings: this._configuration.getDefaultMatchSettings(),
-      branchName: branchName,
-      parentBranchName: parentBranchName,
+      branchName,
+      parentBranchName,
       parentBranchBaselineSavedBefore,
       baselineBranchName: this._configuration.getBaselineBranchName(),
       compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
@@ -1342,10 +1342,18 @@ class EyesBase extends EyesAbstract {
     }
   }
 
+  /*
+   * Get batch id if set by user.
+   * do not do eyesInstance.getBatch().getId() because it would generate
+   * a new id if called before open.
+   */
   getUserSetBatchId() {
-    // not doing eyesInstance.getBatch().getId() because
-    // it would generate a new id if called before open
-    return this._configuration._batch && this._configuration._batch.getId()
+    // TODO
+    // we need the Configuration to check for default values like getEnvValue('BATCH_ID') instead of
+    // it creating new Objects (with defaults) on demand, see Configuration#getBatch().
+    return (
+      (this._configuration._batch && this._configuration._batch.getId()) || getEnvValue('BATCH_ID')
+    )
   }
 
   /**

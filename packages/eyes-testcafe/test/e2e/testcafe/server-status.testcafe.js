@@ -5,7 +5,7 @@
 const {Selector} = require('testcafe')
 const {GeneralUtils} = require('@applitools/eyes-common')
 const {presult} = require('@applitools/functional-commons')
-const {Eyes, Target, ConsoleLogHandler} = require('../../..')
+const {Eyes, Target, ConsoleLogHandler} = require('../../../index')
 const {RectangleSize, NewTestError, DiffsFoundError, TestResults} = require('../../../index')
 
 fixture`Server status`.page`https://applitools.com/helloworld`.before(async ctx => {

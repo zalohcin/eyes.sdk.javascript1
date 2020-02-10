@@ -6,6 +6,7 @@ const {
   DiffsFoundError,
   NewTestError,
   TestFailedError,
+  ArgumentGuard,
 } = require('@applitools/eyes-sdk-core')
 const {presult} = require('@applitools/functional-commons')
 
@@ -189,6 +190,14 @@ class EyesWrapper extends EyesBase {
 
   async getAndSaveRenderingInfo() {
     // Do nothing because visual grid client handles rendering info
+  }
+
+  async _getAndSaveBatchInfoFromServer(_batchId) {
+    // TODO
+  }
+
+  async _getAndSaveScmMergeBaseTime(_parentBranchName) {
+    // TODO
   }
 }
 

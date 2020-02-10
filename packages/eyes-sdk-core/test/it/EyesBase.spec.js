@@ -15,9 +15,13 @@ describe('EyesBase', () => {
       eyes._getAndSaveScmMergeBaseTime = async _parentBranchName =>
         `some-datetime-of-${_parentBranchName}`
       eyes._getAndSaveBatchInfoFromServer = async batchId => ({
-        branchName: `barnch-name-of-${batchId}`,
-        parentBranchName: `parent-barnch-name-of-${batchId}`,
+        ScmSourceBranch: `barnch-name-of-${batchId}`,
+        ScmTargetBranch: `parent-barnch-name-of-${batchId}`,
       })
+
+      process.env.APPLITOOLS_BRANCH = null
+      process.env.APPLITOOLS_PARENT_BRANCH = null
+      process.env.APPLITOOLS_BATCH_ID = null
     })
 
     it('should return batch info on local branch test', async () => {
@@ -36,8 +40,33 @@ describe('EyesBase', () => {
       assert.deepStrictEqual(result, expected)
     })
 
+    it('should return batch info on local branch test with env variables', async () => {
+      process.env.APPLITOOLS_BRANCH = 'some-feature'
+      process.env.APPLITOOLS_PARENT_BRANCH = 'master-branch'
+      const result = await eyes.getAndSetBatchInfo()
+
+      const expected = {
+        branchName: 'some-feature',
+        parentBranchName: 'master-branch',
+        parentBranchBaselineSavedBefore: 'some-datetime-of-master-branch',
+      }
+      assert.deepStrictEqual(result, expected)
+    })
+
     it('should return batch info on ci branch test', async () => {
       eyes.setBatch('batch-name', 'some-batch-id')
+      const result = await eyes.getAndSetBatchInfo()
+
+      const expected = {
+        branchName: 'barnch-name-of-some-batch-id',
+        parentBranchName: 'parent-barnch-name-of-some-batch-id',
+        parentBranchBaselineSavedBefore: 'some-datetime-of-parent-barnch-name-of-some-batch-id',
+      }
+      assert.deepStrictEqual(result, expected)
+    })
+
+    it('should return batch info on ci branch test with env variables', async () => {
+      process.env.APPLITOOLS_BATCH_ID = 'some-batch-id'
       const result = await eyes.getAndSetBatchInfo()
 
       const expected = {
