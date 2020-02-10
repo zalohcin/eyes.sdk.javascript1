@@ -113,8 +113,6 @@ class EyesWDIO extends EyesBase {
     this._elementPositionProvider = undefined
     /** @type {int} */
     this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS
-    /** @type {int} */
-    this._stitchingOverlap = DEFAULT_STITCHING_OVERLAP
     /** @type {Region} */
     this._effectiveViewport = Region.EMPTY
     /** @type {string}*/
@@ -1731,10 +1729,19 @@ class EyesWDIO extends EyesBase {
   }
 
   /**
-   * @return {int} Returns the stitching overlap in pixels.
+   * Sets the stitching overlap in pixels.
+   *
+   * @param {number} stitchOverlap - The width (in pixels) of the overlap.
+   */
+  setStitchOverlap(stitchOverlap) {
+    this._configuration.setStitchOverlap(stitchOverlap)
+  }
+
+  /**
+   * @return {number} - Returns the stitching overlap in pixels.
    */
   getStitchOverlap() {
-    return this._stitchingOverlap
+    return this._configuration.getStitchOverlap()
   }
 
   /**
