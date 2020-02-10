@@ -34,6 +34,8 @@ class ClassicRunner extends EyesRunner {
    * @param {boolean} [shouldThrowException=true]
    * @return {Promise<TestResultsSummary>}
    */
+  // https://trello.com/c/McCg97IK/214-getalltestresults-doesnt-throw-exceptions
+  // eslint-disable-next-line
   async getAllTestResults(shouldThrowException = true) {
     // eslint-disable-line no-unused-vars
     const allResults = []

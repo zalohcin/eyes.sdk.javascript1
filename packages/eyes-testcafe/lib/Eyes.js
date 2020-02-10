@@ -118,7 +118,6 @@ class Eyes extends EyesBase {
     this._serverConnector._configuration = this._configuration
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @override
    * @protected
@@ -128,7 +127,6 @@ class Eyes extends EyesBase {
     return `eyes-testcafe-classic/${VERSION}`
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * Starts a test.
    *
@@ -150,7 +148,6 @@ class Eyes extends EyesBase {
    */
   _initDriver(driver) {
     if (driver instanceof EyesWebDriver) {
-      // noinspection JSValidateTypes
       this._driver = driver
     } else {
       this._driver = new EyesWebDriver(this._logger, this, driver)
@@ -159,7 +156,6 @@ class Eyes extends EyesBase {
     this._jsExecutor = new TestCafeExecutor(this._driver._driver)
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * Perform visual validation
    *
@@ -173,7 +169,6 @@ class Eyes extends EyesBase {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Takes a snapshot of the application under test and matches it with the expected output.
    *
@@ -185,7 +180,6 @@ class Eyes extends EyesBase {
     return this.check(tag, Target.window().timeout(matchTimeout))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Matches the frame given as parameter, by switching into the frame and using stitching to get an image of the frame.
    *
@@ -203,7 +197,6 @@ class Eyes extends EyesBase {
     )
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
    *
@@ -221,7 +214,6 @@ class Eyes extends EyesBase {
     )
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
    *
@@ -239,7 +231,6 @@ class Eyes extends EyesBase {
     )
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Visually validates a region in the screenshot.
    *
@@ -252,7 +243,6 @@ class Eyes extends EyesBase {
     return this.check(tag, Target.region(region).timeout(matchTimeout))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Visually validates a region in the screenshot.
    *
@@ -265,7 +255,6 @@ class Eyes extends EyesBase {
     return this.check(tag, Target.region(element).timeout(matchTimeout))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Visually validates a region in the screenshot.
    *
@@ -285,7 +274,6 @@ class Eyes extends EyesBase {
     )
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Switches into the given frame, takes a snapshot of the application under test and matches a region specified by
    * the given selector.
@@ -308,7 +296,6 @@ class Eyes extends EyesBase {
     )
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a mouse trigger.
    *
@@ -341,7 +328,6 @@ class Eyes extends EyesBase {
     this.addMouseTriggerBase(action, control, cursor)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a mouse trigger.
    *
@@ -442,13 +428,12 @@ class Eyes extends EyesBase {
     ArgumentGuard.notNull(element, 'element')
 
     const rect = element.getRect()
-    // noinspection JSSuspiciousNameCombination
+
     const elementRegion = new Region(Math.ceil(rect.x), Math.ceil(rect.y), rect.width, rect.height)
 
     this.addTextTrigger(elementRegion, text)
   }
 
-  // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
   /**
    * @return {Promise}
    */
@@ -456,7 +441,6 @@ class Eyes extends EyesBase {
     await this.close(false)
   }
 
-  // noinspection JSMethodCanBeStatic,JSUnusedGlobalSymbols
   /**
    * @return {Promise}
    */
@@ -471,7 +455,6 @@ class Eyes extends EyesBase {
     return this._configuration.getViewportSize()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Use this method only if you made a previous call to {@link #open(WebDriver, string, string)}.
    *
@@ -508,7 +491,6 @@ class Eyes extends EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols, JSCheckFunctionSignatures
   /**
    * Call this method if for some reason you don't want to call {@link #open(WebDriver, string, string)} (or one of its
    * variants) yet.
@@ -521,7 +503,6 @@ class Eyes extends EyesBase {
     return EyesTestcafeUtils.getViewportSizeOrDisplaySize(new Logger(), driver)
   }
 
-  // noinspection JSUnusedGlobalSymbols, JSCheckFunctionSignatures
   /**
    * Set the viewport size using the driver. Call this method if for some reason you don't want to call
    * {@link #open(WebDriver, string, string)} (or one of its variants) yet.
@@ -537,7 +518,6 @@ class Eyes extends EyesBase {
     await EyesTestcafeUtils.setViewportSize(new Logger(), driver, new RectangleSize(viewportSize))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number} - The device pixel ratio, or {@link Eyes.UNKNOWN_DEVICE_PIXEL_RATIO} if the DPR is not known yet or if
    *   it wasn't possible to extract it.
@@ -606,7 +586,6 @@ class Eyes extends EyesBase {
     return new URL(currentUrl).origin
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Get the session id.
    * @return {Promise<string>} - A promise which resolves to the webdriver's session ID.
@@ -635,7 +614,6 @@ class Eyes extends EyesBase {
     return this._runner
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region}
    */
@@ -643,7 +621,6 @@ class Eyes extends EyesBase {
     return this._regionToCheck
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Region} regionToCheck
    */
@@ -651,7 +628,6 @@ class Eyes extends EyesBase {
     this._regionToCheck = regionToCheck
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -659,7 +635,6 @@ class Eyes extends EyesBase {
     return this._stitchContent
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Turns on/off the automatic scrolling to a region being checked by {@code checkRegion}.
    *
@@ -673,7 +648,6 @@ class Eyes extends EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean} - Whether to automatically scroll to a region being validated.
    */
@@ -681,7 +655,6 @@ class Eyes extends EyesBase {
     return !(this._regionVisibilityStrategy instanceof NopRegionVisibilityStrategy)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {By} element
    */
@@ -728,7 +701,6 @@ class Eyes extends EyesBase {
     return scrollRootElement
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise<WebElement>}
    */
@@ -736,7 +708,6 @@ class Eyes extends EyesBase {
     return this._scrollRootElement
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {ImageRotation} rotation - The image rotation data.
    */
@@ -748,7 +719,6 @@ class Eyes extends EyesBase {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {ImageRotation} - The image rotation data.
    */
@@ -756,7 +726,6 @@ class Eyes extends EyesBase {
     return this._rotation
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Set the image rotation degrees.
    * @param {number} degrees - The amount of degrees to set the rotation to.
@@ -766,7 +735,6 @@ class Eyes extends EyesBase {
     this.setRotation(new ImageRotation(degrees))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Get the rotation degrees.
    * @return {number} - The rotation degrees.
@@ -787,7 +755,6 @@ class Eyes extends EyesBase {
     return this._domUrl
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} domUrl
    */
@@ -811,7 +778,6 @@ class Eyes extends EyesBase {
 
   /* ------------ Getters/Setters from Configuration ------------ */
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -819,7 +785,6 @@ class Eyes extends EyesBase {
     return this._configuration.getHideCaret()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} hideCaret
    */
@@ -827,7 +792,6 @@ class Eyes extends EyesBase {
     this._configuration.setHideCaret(hideCaret)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Forces a full page screenshot (by scrolling and stitching) if the browser only supports viewport screenshots).
    *
@@ -837,7 +801,6 @@ class Eyes extends EyesBase {
     this._configuration.setForceFullPageScreenshot(shouldForce)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean} - Whether Eyes should force a full page screenshot.
    */
@@ -845,7 +808,6 @@ class Eyes extends EyesBase {
     return this._configuration.getForceFullPageScreenshot()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the time to wait just before taking a screenshot (e.g., to allow positioning to stabilize when performing a
    * full page stitching).
@@ -857,7 +819,6 @@ class Eyes extends EyesBase {
     this._configuration.setWaitBeforeScreenshots(waitBeforeScreenshots)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number} - The time to wait just before taking a screenshot.
    */
@@ -865,7 +826,6 @@ class Eyes extends EyesBase {
     return this._configuration.getWaitBeforeScreenshots()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Hide the scrollbars when taking screenshots.
    *
@@ -875,7 +835,6 @@ class Eyes extends EyesBase {
     this._configuration.setHideScrollbars(shouldHide)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean} - Whether or not scrollbars are hidden when taking screenshots.
    */
@@ -883,7 +842,6 @@ class Eyes extends EyesBase {
     return this._configuration.getHideScrollbars()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Set the type of stitching used for full page screenshots. When the page includes fixed position header/sidebar,
    * use {@link StitchMode#CSS}. Default is {@link StitchMode#SCROLL}.
@@ -895,7 +853,6 @@ class Eyes extends EyesBase {
     this._configuration.setStitchMode(mode)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {StitchMode} - The current stitch mode settings.
    */
@@ -903,7 +860,6 @@ class Eyes extends EyesBase {
     return this._configuration.getStitchMode()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the stitching overlap in pixels.
    *
@@ -913,7 +869,6 @@ class Eyes extends EyesBase {
     this._configuration.setStitchOverlap(stitchOverlap)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number} - Returns the stitching overlap in pixels.
    */

@@ -38,6 +38,7 @@ describe('RenderRequest', () => {
     it('fills values', () => {
       const renderRequest = new RenderRequest({
         webhook: 'webhook',
+        stitchingService: 'stitchingService',
         url: 'url',
         dom: 'dom',
         resources: 'resources',
@@ -58,6 +59,7 @@ describe('RenderRequest', () => {
       assert.strictEqual(renderRequest.getScriptHooks(), 'scriptHooks')
       assert.strictEqual(renderRequest.getSelectorsToFindRegionsFor(), 'selectorsToFindRegionsFor')
       assert.strictEqual(renderRequest.getSendDom(), 'sendDom')
+      assert.strictEqual(renderRequest.getStitchingService(), 'stitchingService')
     })
   })
 
@@ -104,6 +106,7 @@ describe('RenderRequest', () => {
         sendDom: 'sendDom',
       })
       const expected = {
+        stitchingService: undefined,
         webhook: 'webhook',
         url: 'url',
         dom: 'dom_hashAsObject',
@@ -138,6 +141,7 @@ describe('RenderRequest', () => {
         platform: 'platform',
       })
       const expected = {
+        stitchingService: undefined,
         webhook: 'webhook',
         url: 'url',
         dom: 'dom_hashAsObject',

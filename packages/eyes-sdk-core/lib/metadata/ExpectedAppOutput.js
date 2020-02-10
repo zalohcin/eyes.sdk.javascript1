@@ -6,7 +6,6 @@ const {Annotations} = require('./Annotations')
 const {Image} = require('./Image')
 
 class ExpectedAppOutput {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * @param {string} tag
    * @param {Image|object} image
@@ -38,7 +37,6 @@ class ExpectedAppOutput {
     this._annotations = annotations
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -46,7 +44,6 @@ class ExpectedAppOutput {
     return this._tag
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -54,7 +51,6 @@ class ExpectedAppOutput {
     this._tag = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Image}
    */
@@ -62,7 +58,6 @@ class ExpectedAppOutput {
     return this._image
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Image} value
    */
@@ -70,7 +65,6 @@ class ExpectedAppOutput {
     this._image = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Image}
    */
@@ -78,7 +72,6 @@ class ExpectedAppOutput {
     return this._thumbprint
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Image} value
    */
@@ -86,7 +79,6 @@ class ExpectedAppOutput {
     this._thumbprint = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Date}
    */
@@ -94,7 +86,6 @@ class ExpectedAppOutput {
     return this._occurredAt
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Date} value
    */
@@ -102,7 +93,6 @@ class ExpectedAppOutput {
     this._occurredAt = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Annotations}
    */
@@ -110,7 +100,6 @@ class ExpectedAppOutput {
     return this._annotations
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Annotations} value
    */

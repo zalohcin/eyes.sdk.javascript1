@@ -247,7 +247,6 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     return frameLocationInScreenshot
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @private
    * @param {PositionProvider} positionProvider
@@ -326,7 +325,6 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     return new FrameChain(this._logger, this._frameChain)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Returns a part of the screenshot based on the given region.
    *
@@ -372,7 +370,6 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     return result
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Returns a part of the screenshot based on the given region.
    *
@@ -416,7 +413,6 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     return result
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Converts a location's coordinates with the {@code from} coordinates type to the {@code to} coordinates type.
    *
@@ -542,7 +538,6 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     return result
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @override
    * @param {Location} location
@@ -615,7 +610,6 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
     return intersectedRegion
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Gets the elements region in the screenshot.
    *

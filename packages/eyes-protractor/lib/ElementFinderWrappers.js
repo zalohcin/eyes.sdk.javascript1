@@ -146,7 +146,6 @@ class ElementArrayFinderWrapper {
       })
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Wrap the getWebElements function
    *

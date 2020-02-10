@@ -29,7 +29,6 @@ class ExactMatchSettings {
     this._matchThreshold = matchThreshold || 0
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number} - The minimum intensity difference of pixel to be considered a change.
    */
@@ -37,7 +36,6 @@ class ExactMatchSettings {
     return this._minDiffIntensity
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value - The minimum intensity difference of pixel to be considered a change. Valid values are 0-255.
    */
@@ -45,7 +43,6 @@ class ExactMatchSettings {
     this._minDiffIntensity = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number} - The minimum width of an intensity filtered pixels cluster to be considered a change.
    */
@@ -53,7 +50,6 @@ class ExactMatchSettings {
     return this._minDiffWidth
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value - The minimum width of an intensity filtered pixels cluster to be considered a change.
    *   Must be >= 0.
@@ -62,7 +58,6 @@ class ExactMatchSettings {
     this._minDiffWidth = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number} - The minimum width of an intensity filtered pixels cluster to be considered a change.
    */
@@ -70,7 +65,6 @@ class ExactMatchSettings {
     return this._minDiffHeight
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value - The minimum height of an intensity filtered pixels cluster to be considered a change. Must
    *   be >= 0.
@@ -79,7 +73,6 @@ class ExactMatchSettings {
     this._minDiffHeight = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number} - The maximum percentage(!) of different pixels (after intensity, width and height filtering) which
    *   is still considered as a match.
@@ -88,7 +81,6 @@ class ExactMatchSettings {
     return this._matchThreshold
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value - The maximum percentage(!) of different pixels (after intensity, width and height filtering)
    *   which is still considered as a match. Valid values are fractions between 0-1.

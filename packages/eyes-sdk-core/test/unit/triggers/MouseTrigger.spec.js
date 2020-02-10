@@ -20,7 +20,7 @@ describe('MouseTrigger', () => {
     const control = new Region(1, 2, 3, 4)
 
     assert.throws(() => {
-      const mt = new MouseTrigger(MouseTrigger.MouseAction.Click, control, null)
+      new MouseTrigger(MouseTrigger.MouseAction.Click, control, null)
     })
   })
 })

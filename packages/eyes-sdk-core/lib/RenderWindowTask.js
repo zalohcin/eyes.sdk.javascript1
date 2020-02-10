@@ -24,7 +24,6 @@ class RenderWindowTask {
     this._serverConnector = serverConnector
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {RenderRequest} renderRequest
    * @return {Promise<string>} - Rendered image URL
@@ -51,7 +50,6 @@ class RenderWindowTask {
     return newRender
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {RenderRequest[]} renderRequests
    * @return {Promise<RunningRender>}
@@ -60,7 +58,6 @@ class RenderWindowTask {
     return this._serverConnector.render(renderRequests)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {RenderRequest} renderRequest
    * @return {Promise}
@@ -98,7 +95,6 @@ class RenderWindowTask {
     return renderStatusResults
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string[]} renderIds
    * @param {boolean} [delayBeforeRequest=false] - If {@code true}, then the request will be delayed

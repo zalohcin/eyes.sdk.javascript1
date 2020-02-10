@@ -11,7 +11,6 @@ class GetSelector {
     this._selector = selector
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @param {Eyes} eyes
    * @return {Promise<string>}

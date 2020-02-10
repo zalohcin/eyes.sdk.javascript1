@@ -23,7 +23,6 @@ class TextTrigger extends Trigger {
     this._control = control
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -31,7 +30,6 @@ class TextTrigger extends Trigger {
     return this._text
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region}
    */
@@ -39,7 +37,6 @@ class TextTrigger extends Trigger {
     return this._control
   }
 
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
    * @return {Trigger.TriggerType}
    */

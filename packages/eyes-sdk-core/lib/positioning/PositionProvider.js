@@ -8,7 +8,6 @@
  * @abstract
  */
 class PositionProvider {
-  // noinspection JSMethodCanBeStatic
   /**
    * @return {Promise<Location>} - The current position, or {@code null} if position is not available.
    */
@@ -16,7 +15,6 @@ class PositionProvider {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * Go to the specified location.
    *
@@ -27,7 +25,6 @@ class PositionProvider {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @return {Promise<RectangleSize>} - The entire size of the container which the position is relative to.
    */
@@ -35,7 +32,6 @@ class PositionProvider {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * Get the current state of the position provider. This is different from {@link #getCurrentPosition()} in
    * that the state of the position provider might include other model than just the coordinates.
@@ -49,7 +45,6 @@ class PositionProvider {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * Restores the state of the position provider to the state provided as a parameter.
    *
@@ -60,7 +55,6 @@ class PositionProvider {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @return {*}
    */

@@ -13,7 +13,10 @@
     "packages/eyes-testcafe",
     "packages/sdk-fake-eyes-server",
     "packages/sdk-test-kit",
-    "packages/visual-grid-client"
+    "packages/visual-grid-client",
+    "packages/eyes-webdriverio-4",
+    "packages/eyes-webdriverio-5",
+    "packages/eyes-webdriverio-5-service"
   ],
   "scripts": {
     "lint": "eslint --ext .js .",

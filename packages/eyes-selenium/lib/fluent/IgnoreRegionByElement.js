@@ -17,15 +17,14 @@ class IgnoreRegionByElement extends GetRegion {
     this._element = webElement
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @override
    * @param {Eyes} eyes
    * @param {EyesScreenshot} screenshot
    * @return {Promise<Region[]>}
    */
+  // eslint-disable-next-line no-unused-vars
   async getRegion(eyes, screenshot) {
-    // eslint-disable-line no-unused-vars
     const rect = await this._element.getRect()
     const lTag = screenshot.convertLocation(
       new Location(rect),
@@ -36,7 +35,6 @@ class IgnoreRegionByElement extends GetRegion {
     return [new Region(lTag.getX(), lTag.getY(), rect.width, rect.height)]
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {Eyes} eyes

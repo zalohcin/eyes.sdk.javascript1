@@ -7,18 +7,19 @@ const {promisify: p} = require('util')
 const {ServerConnector} = require('../../index')
 const {ConfigUtils, Configuration} = require('../../index')
 
-const configuration = new Configuration(this.userConfig)
+const _userConfig = ConfigUtils.getConfig({configParams: ['apiKey', 'serverUrl', 'proxy']})
+const _configuration = new Configuration(_userConfig)
 
 const Utils = {
-  userConfig: ConfigUtils.getConfig({configParams: ['apiKey', 'serverUrl', 'proxy']}),
+  userConfig: _userConfig,
+  configuration: _configuration,
   pexec: p(exec),
   presult: promise =>
     promise.then(
       v => [undefined, v],
       err => [err],
     ),
-  configuration,
-  apiKey: configuration.getApiKey(),
+  apiKey: _configuration.getApiKey(),
   curlGet: async url => {
     const {stdout} = await Utils.pexec(`curl -s ${url}`, {maxBuffer: 10000000})
     return stdout
@@ -27,7 +28,7 @@ const Utils = {
     let server
     return () => {
       if (!server) {
-        server = new ServerConnector({verbose: () => {}, log: () => {}}, configuration)
+        server = new ServerConnector({verbose: () => {}, log: () => {}}, _configuration)
       }
       return server
     }

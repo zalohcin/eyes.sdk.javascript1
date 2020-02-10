@@ -6,7 +6,7 @@ const https = require('https')
 const axios = require('axios')
 const {ProxySettings, TypeUtils, GeneralUtils} = require('../../index')
 const {presult, userConfig, curlGet, getServer, configuration, apiKey} = require('./utils')
-const {setProxyOptions} = require('../server/setProxyOptions')
+const {configAxiosProxy} = require('../server/requestHelpers')
 require('@applitools/isomorphic-fetch')
 
 const RENDER_INFO_URL = GeneralUtils.urlConcat(
@@ -33,7 +33,7 @@ const Eyes = {
     validateRednerInfoResult(result)
   },
   testAxios: async () => {
-    const options = {
+    const config = {
       method: 'GET',
       url: RENDER_INFO_URL,
       proxy: false,
@@ -58,10 +58,10 @@ const Eyes = {
           proxy.isHttpOnly,
         )
       }
-      setProxyOptions({options, proxy: proxySettings, logger: console})
+      configAxiosProxy({axiosConfig: config, proxy: proxySettings})
     }
 
-    const [err, res] = await presult(axios(options))
+    const [err, res] = await presult(axios(config))
     if (err) {
       throw err
     }

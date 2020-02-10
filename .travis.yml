@@ -20,28 +20,31 @@ jobs:
   include:
     - stage: lint
       script: yarn lint
-    - name: '@applitools/eyes-common'
-      script: 'cd packages/eyes-common; yarn test:unit'
-      stage: unit tests
-    - name: '@applitools/eyes-sdk-core'
-      script: 'cd packages/eyes-sdk-core; yarn test:unit'
-    - name: '@applitools/eyes-selenium'
-      script: 'cd packages/eyes-selenium; yarn test:unit'
-    - name: '@applitools/eyes-testcafe'
-      script: 'cd packages/eyes-testcafe; yarn test:unit'
-    - name: '@applitools/visual-grid-client'
-      script: 'cd packages/visual-grid-client; yarn test:unit'
     - name: '@applitools/dom-utils'
-      script: 'cd packages/dom-utils; yarn test:it'
-      stage: end-to-end tests
+      script: cd packages/dom-utils; yarn test
+      stage: test
+    - name: '@applitools/eyes-common'
+      script: cd packages/eyes-common; yarn test
     - name: '@applitools/eyes-images'
-      script: 'cd packages/eyes-images; yarn test:it'
+      script: cd packages/eyes-images; yarn test
+    - name: '@applitools/eyes-sdk-core'
+      script: cd packages/eyes-sdk-core; yarn test
     - name: '@applitools/eyes-selenium'
-      script: 'cd packages/eyes-selenium; yarn test:it'
+      script: cd packages/eyes-selenium; yarn test
     - name: '@applitools/eyes-testcafe'
-      script: 'cd packages/eyes-testcafe; yarn test:it'
+      script: cd packages/eyes-testcafe; yarn test
+    - name: '@applitools/sdk-fake-eyes-server'
+      script: cd packages/sdk-fake-eyes-server; yarn test
+    - name: '@applitools/sdk-test-kit'
+      script: cd packages/sdk-test-kit; yarn test
     - name: '@applitools/visual-grid-client'
-      script: 'cd packages/visual-grid-client; yarn test:it'
+      script: cd packages/visual-grid-client; yarn test
+    - name: '@applitools/eyes.webdriverio'
+      script: cd packages/eyes-webdriverio-4; yarn test
+    - name: '@applitools/eyes-webdriverio'
+      script: cd packages/eyes-webdriverio-5; yarn test
+    - name: '@applitools/eyes-webdriverio5-service'
+      script: cd packages/eyes-webdriverio-5-service; yarn test
 notifications:
   slack:
     secure: >-

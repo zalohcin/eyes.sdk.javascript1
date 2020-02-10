@@ -47,7 +47,6 @@ class EyesVisualGrid extends Eyes {
     /** @type {Promise} */ this._closePromise = undefined
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @override
    * @protected
@@ -64,16 +63,14 @@ class EyesVisualGrid extends Eyes {
   async open(driver, appName, testName, viewportSize, sessionType) {
     ArgumentGuard.notNull(driver, 'driver')
 
-    // noinspection NonBlockStatementBodyJS
     if (appName) this._configuration.setAppName(appName)
-    // noinspection NonBlockStatementBodyJS
+
     if (testName) this._configuration.setTestName(testName)
-    // noinspection NonBlockStatementBodyJS
+
     if (viewportSize) this._configuration.setViewportSize(viewportSize)
-    // noinspection NonBlockStatementBodyJS
+
     if (sessionType) this._configuration.setSessionType(sessionType)
 
-    // noinspection NonBlockStatementBodyJS
     if (this._runner.getConcurrentSessions()) {
       this._configuration.setConcurrentSessions(this._runner.getConcurrentSessions())
     }
@@ -206,7 +203,6 @@ class EyesVisualGrid extends Eyes {
     return results.getAllResults()[0].getTestResults()
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @return {Promise<?TestResults>}
    */

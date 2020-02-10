@@ -24,8 +24,7 @@ class ScaleProviderIdentityFactory extends ScaleProviderFactory {
    *   factory, but this is not mandatory.
    * @return {ScaleProvider} - The scale provider to be used.
    */
-  getScaleProviderImpl(imageToScaleWidth) {
-    // eslint-disable-line no-unused-vars
+  getScaleProviderImpl(_imageToScaleWidth) {
     return this._scaleProvider
   }
 }

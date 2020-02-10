@@ -6,7 +6,6 @@
  * @ignore
  */
 class JavascriptHandler {
-  // noinspection JSMethodCanBeStatic
   /**
    * @param {!string} script
    * @param {...object} args

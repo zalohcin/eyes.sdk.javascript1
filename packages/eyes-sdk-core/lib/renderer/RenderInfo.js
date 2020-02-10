@@ -113,7 +113,6 @@ class RenderInfo {
     this._region = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {EmulationInfo}
    */
@@ -121,7 +120,6 @@ class RenderInfo {
     return this._emulationInfo
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {EmulationInfo} value
    */

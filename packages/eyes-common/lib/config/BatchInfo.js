@@ -79,7 +79,6 @@ class BatchInfo {
     return this._id
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets a unique identifier for the batch. Sessions with batch info which includes the same ID will be grouped
    * together.
@@ -93,7 +92,6 @@ class BatchInfo {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string} - The name of the batch or {@code null} if anonymous.
    */
@@ -101,7 +99,6 @@ class BatchInfo {
     return this._name
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} name - The name of the batch to use.
    * @return {this}
@@ -111,7 +108,6 @@ class BatchInfo {
     return this
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Date} - The batch start date
    */

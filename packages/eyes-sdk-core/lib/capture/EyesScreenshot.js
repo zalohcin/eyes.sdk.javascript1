@@ -25,7 +25,6 @@ class EyesScreenshot {
     return this._image
   }
 
-  // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
   /**
    * Returns a part of the screenshot based on the given region.
    *
@@ -38,7 +37,6 @@ class EyesScreenshot {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
   /**
    * Converts a location's coordinates with the {@code from} coordinates type to the {@code to} coordinates type.
    *
@@ -52,7 +50,6 @@ class EyesScreenshot {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
   /**
    * Calculates the location in the screenshot of the location given as parameter.
    *
@@ -66,7 +63,6 @@ class EyesScreenshot {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSUnusedLocalSymbols, JSMethodCanBeStatic
   /**
    * Get the intersection of the given region with the screenshot.
    * @abstract

@@ -26,7 +26,6 @@ class ScaleProviderFactory {
     return scaleProvider
   }
 
-  // noinspection JSMethodCanBeStatic, JSUnusedLocalSymbols
   /**
    * The implementation of getting/creating the scale provider, should be implemented by child classes.
    *
@@ -34,8 +33,7 @@ class ScaleProviderFactory {
    *   factory, but this is not mandatory.
    * @return {ScaleProvider} - The scale provider to be used.
    */
-  getScaleProviderImpl(imageToScaleWidth) {
-    // eslint-disable-line no-unused-vars
+  getScaleProviderImpl(_imageToScaleWidth) {
     throw new TypeError('The method is not implemented!')
   }
 }

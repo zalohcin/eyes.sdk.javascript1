@@ -171,7 +171,6 @@ class ImagesCheckSettings extends CheckSettings {
     return this._imageLocation
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} [ignoreMismatch=true] - True if the server should ignore a negative result for the visual validation.
    *  Default value is `false`, but if you call to .ignoreMismatch() without arguments it will set value to `true`.

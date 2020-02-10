@@ -52,7 +52,6 @@ class Options {
     this._source = source
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -60,7 +59,6 @@ class Options {
     return this._name
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -68,7 +66,6 @@ class Options {
     return this._renderId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Trigger[]}
    */
@@ -76,7 +73,6 @@ class Options {
     return this._userInputs
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -84,7 +80,6 @@ class Options {
     return this._ignoreMismatch
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -92,7 +87,6 @@ class Options {
     return this._ignoreMatch
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -100,7 +94,6 @@ class Options {
     return this._forceMismatch
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -108,7 +101,6 @@ class Options {
     return this._forceMatch
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {ImageMatchSettings}
    */
@@ -116,7 +108,6 @@ class Options {
     return this._imageMatchSettings
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -165,7 +156,6 @@ class MatchWindowData {
     this._options = options
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Trigger[]}
    */
@@ -173,7 +163,6 @@ class MatchWindowData {
     return this._userInputs
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {AppOutput}
    */
@@ -181,7 +170,6 @@ class MatchWindowData {
     return this._appOutput
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -189,7 +177,6 @@ class MatchWindowData {
     return this._tag
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {?boolean}
    */
@@ -197,7 +184,6 @@ class MatchWindowData {
     return this._ignoreMismatch
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {?Options}
    */
@@ -218,9 +204,7 @@ class MatchWindowData {
   toString() {
     const object = this.toJSON()
 
-    // noinspection JSUnresolvedVariable
     if (object.appOutput.screenshot64) {
-      // noinspection JSUnresolvedVariable
       object.appOutput.screenshot64 = 'REMOVED_FROM_OUTPUT'
     }
 

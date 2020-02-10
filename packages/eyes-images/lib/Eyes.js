@@ -212,7 +212,6 @@ class Eyes extends EyesBase {
     }
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @private
    * @param {ImagesCheckSettings} checkSettings - The settings to use when checking the image.
@@ -243,7 +242,6 @@ class Eyes extends EyesBase {
     throw new EyesError("Can't recognize supported image from checkSettings.")
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Replaces the actual image in a running session.
    *
@@ -277,7 +275,6 @@ class Eyes extends EyesBase {
     return results.getAsExpected()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a mouse trigger.
    *
@@ -289,7 +286,6 @@ class Eyes extends EyesBase {
     super.addMouseTriggerBase(action, control, cursor)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a keyboard trigger.
    *
@@ -307,7 +303,6 @@ class Eyes extends EyesBase {
     return this._viewportSizeHandler.get()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Set the viewport size.
    *
@@ -327,7 +322,6 @@ class Eyes extends EyesBase {
     return this._inferred
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets the inferred environment for the test.
    *

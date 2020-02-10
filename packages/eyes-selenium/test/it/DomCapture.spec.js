@@ -160,6 +160,10 @@ describe('DOM Capture', () => {
 
   it.skip('gets the correct coordinates when taking a full element screenshot even when the element and the page are scrolled', async () => {})
 
+  it.skip('gets the correct coordinates when taking a region screenshot inside a frame', async () => {})
+
+  it.skip("gets the correct coordinates when taking a region screenshot inside a frame that's scrolled", async () => {})
+
   // TODO utilities for fake server, i.e. a way to observe inputs
   function getRunningSession(sessionId) {
     return fetch(`${serverUrl}/api/sessions/running/${sessionId}`).then(r => r.json())

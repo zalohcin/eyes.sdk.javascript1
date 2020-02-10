@@ -123,7 +123,7 @@ class UserAgent {
     }
 
     // OS Normalization
-    // noinspection IfStatementWithTooManyBranchesJS
+
     if (result._OS.startsWith('CPU')) {
       result._OS = OSNames.IOS
     } else if (result._OS === 'Windows XP') {

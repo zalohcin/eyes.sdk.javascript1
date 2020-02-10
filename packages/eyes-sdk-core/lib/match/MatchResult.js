@@ -29,7 +29,6 @@ class MatchResult {
     this._asExpected = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number}
    */
@@ -37,7 +36,6 @@ class MatchResult {
     return this._windowId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */

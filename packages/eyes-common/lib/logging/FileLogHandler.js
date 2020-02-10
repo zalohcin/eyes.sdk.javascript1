@@ -64,7 +64,6 @@ class FileLogHandler extends LogHandler {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Handle a message to be logged.
    *

@@ -13,7 +13,6 @@ class GetRegion extends GetSelector {
     super(undefined)
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @param {EyesBase} eyesBase
    * @param {EyesScreenshot} screenshot

@@ -6,7 +6,6 @@ const {EyesSeleniumUtils} = require('@applitools/eyes-selenium')
  * @ignore
  */
 class EyesAppiumUtils extends EyesSeleniumUtils {
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {IWebDriver} driver - The driver to test.
    * @return {Promise<boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
@@ -24,7 +23,6 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
     return capabilities.get('platformName').toUpperCase() === 'ANDROID'
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {IWebDriver} driver - The driver to test.
    * @return {Promise<boolean>} {@code true} if the driver is an Android driver. {@code false} otherwise.
@@ -42,7 +40,6 @@ class EyesAppiumUtils extends EyesSeleniumUtils {
     return capabilities.get('platformName').toUpperCase() === 'IOS'
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {IWebDriver} driver - The driver to get the platform version from.
    * @return {Promise<string>} - The platform version or {@code null} if it is undefined.

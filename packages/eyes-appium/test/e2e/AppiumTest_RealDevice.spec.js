@@ -4,7 +4,6 @@ const {Builder, Capabilities} = require('selenium-webdriver')
 const {
   Eyes,
   Target,
-  BatchInfo,
   FileLogHandler,
   FileDebugScreenshotsProvider,
   FixedCutProvider,

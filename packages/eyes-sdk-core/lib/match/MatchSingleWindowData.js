@@ -36,7 +36,6 @@ class MatchSingleWindowData extends MatchWindowData {
     this._agentId = undefined
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {SessionStartInfo}
    */
@@ -44,7 +43,6 @@ class MatchSingleWindowData extends MatchWindowData {
     return this._startInfo
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {SessionStartInfo} startInfo
    */
@@ -52,7 +50,6 @@ class MatchSingleWindowData extends MatchWindowData {
     this._startInfo = startInfo
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -60,7 +57,6 @@ class MatchSingleWindowData extends MatchWindowData {
     return this._updateBaseline
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} updateBaseline
    */
@@ -68,7 +64,6 @@ class MatchSingleWindowData extends MatchWindowData {
     this._updateBaseline = updateBaseline
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -76,7 +71,6 @@ class MatchSingleWindowData extends MatchWindowData {
     return this._updateBaselineIfDifferent
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} updateBaselineIfDifferent
    */
@@ -84,7 +78,6 @@ class MatchSingleWindowData extends MatchWindowData {
     this._updateBaselineIfDifferent = updateBaselineIfDifferent
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -92,7 +85,6 @@ class MatchSingleWindowData extends MatchWindowData {
     return this._updateBaselineIfNew
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} updateBaselineIfNew
    */
@@ -100,7 +92,6 @@ class MatchSingleWindowData extends MatchWindowData {
     this._updateBaselineIfNew = updateBaselineIfNew
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -108,7 +99,6 @@ class MatchSingleWindowData extends MatchWindowData {
     return this._removeSession
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} removeSession
    */
@@ -116,7 +106,6 @@ class MatchSingleWindowData extends MatchWindowData {
     this._removeSession = removeSession
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -124,7 +113,6 @@ class MatchSingleWindowData extends MatchWindowData {
     return this._removeSessionIfMatching
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} removeSessionIfMatching
    */
@@ -132,7 +120,6 @@ class MatchSingleWindowData extends MatchWindowData {
     this._removeSessionIfMatching = removeSessionIfMatching
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -140,7 +127,6 @@ class MatchSingleWindowData extends MatchWindowData {
     return this._agentId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} agentId
    */
@@ -161,9 +147,7 @@ class MatchSingleWindowData extends MatchWindowData {
   toString() {
     const object = this.toJSON()
 
-    // noinspection JSUnresolvedVariable
     if (object.appOutput.screenshot64) {
-      // noinspection JSUnresolvedVariable
       object.appOutput.screenshot64 = 'REMOVED_FROM_OUTPUT'
     }
 

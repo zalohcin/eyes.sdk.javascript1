@@ -8,7 +8,6 @@ const {TypeUtils} = require('./TypeUtils')
  * @ignore
  */
 class ArgumentGuard {
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if the input parameter equals the input value.
    *
@@ -22,7 +21,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if the input parameter contains some special characters or punctuation
    *
@@ -35,7 +33,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if the input parameter is null.
    *
@@ -48,7 +45,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if the input parameter is not null.
    *
@@ -61,7 +57,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if the input parameter string is null or empty.
    *
@@ -74,7 +69,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if the input integer parameter is negative.
    *
@@ -92,7 +86,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if the input integer parameter is smaller than 1.
    *
@@ -110,7 +103,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if the input integer parameter is equal to 0.
    *
@@ -128,7 +120,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if the input number is not integer
    *
@@ -142,7 +133,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if param is not a string.
    *
@@ -156,7 +146,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if param is not a number.
    *
@@ -170,7 +159,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if param is not a boolean.
    *
@@ -184,7 +172,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if param is not an array.
    *
@@ -198,7 +185,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if param is not a buffer.
    *
@@ -212,7 +198,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if param is not a base64 string.
    *
@@ -224,7 +209,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if isValid is false.
    *
@@ -237,7 +221,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if isValid is false.
    *
@@ -251,7 +234,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Fails if isValid is false.
    *
@@ -268,7 +250,6 @@ class ArgumentGuard {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Check if object contains all required properties
    *

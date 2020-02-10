@@ -6,7 +6,6 @@
  * @abstract
  */
 class ImageProvider {
-  // noinspection JSMethodCanBeStatic
   /**
    * @return {Promise<MutableImage>}
    */

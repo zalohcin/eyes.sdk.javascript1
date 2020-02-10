@@ -61,7 +61,6 @@ class EyesWebDriver {
     // this._logger.verbose("Driver session is " + this.getSessionId());
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Eyes}
    */
@@ -73,7 +72,6 @@ class EyesWebDriver {
    * @return {WebDriver}
    */
   getRemoteWebDriver() {
-    // noinspection JSUnresolvedVariable
     return this._driver.driver || this._driver
   }
 
@@ -230,7 +228,6 @@ class EyesWebDriver {
     return Selector('title').with({boundTestRun: this._driver}).innerText
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {!(By|Function)} locator The locator strategy to use when searching for the element.
@@ -240,7 +237,6 @@ class EyesWebDriver {
     return Selector(locator).with({boundTestRun: this._driver})
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {!(By|Function)} locator The locator strategy to use when searching for the element.
@@ -311,7 +307,6 @@ class EyesWebDriver {
     return this._elementsIds
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {ImageRotation} - The image rotation data.
    */
@@ -326,73 +321,59 @@ class EyesWebDriver {
     this._rotation = rotation
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} className
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByClassName(className) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElement(toClassName(className))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} className
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByClassName(className) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(toClassName(className))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} cssSelector
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByCssSelector(cssSelector) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElement(cssSelector)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} cssSelector
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByCssSelector(cssSelector) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(cssSelector)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} id
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementById(id) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElement(`#${escapeCss(id)}`)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} id
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsById(id) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(`#${escapeCss(id)}`)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} name
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByName(name) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(`*[name="${escapeCss(name)}"]`)
   }
 
@@ -458,7 +439,6 @@ class EyesWebDriver {
     return this._clientFunctions[functionName].with({boundTestRun: this._driver})
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise<string>} - A copy of the current frame chain.
    */

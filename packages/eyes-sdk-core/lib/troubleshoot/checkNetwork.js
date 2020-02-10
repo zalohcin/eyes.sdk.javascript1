@@ -7,10 +7,12 @@ const {userConfig, presult, ptimeoutWithError} = require('./utils')
 const TIMEOUT = 15000
 
 function makeCheckNetwork({stream = process.stdout, eyes = _eyes, vg = _vg}) {
+  const hasClearLine = stream.clearLine && stream.cursorTo
+
   async function doTest(func, name) {
     const delimiterLength = 30 - name.length
     const delimiter = new Array(delimiterLength).join(' ')
-    printSuccess(name, delimiter, '[ ?  ]')
+    hasClearLine && printSuccess(name, delimiter, '[ ?  ]')
 
     const start = new Date()
     const funcWithTimeout = ptimeoutWithError(func(), TIMEOUT, new Error('request timeout out!'))
@@ -45,8 +47,10 @@ function makeCheckNetwork({stream = process.stdout, eyes = _eyes, vg = _vg}) {
   }
 
   function clearLine() {
-    stream.clearLine()
-    stream.cursorTo(0)
+    if (hasClearLine) {
+      stream.clearLine()
+      stream.cursorTo(0)
+    }
   }
 
   return async function checkNetwork() {

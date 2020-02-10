@@ -22,6 +22,7 @@ class RenderRequest {
    */
   constructor({
     webhook,
+    stitchingService,
     url,
     dom,
     resources,
@@ -40,6 +41,7 @@ class RenderRequest {
     ArgumentGuard.notNull(resources, 'resources')
 
     this._webhook = webhook
+    this._stitchingService = stitchingService
     this._url = url
     this._dom = dom
     this._resources = resources
@@ -53,7 +55,6 @@ class RenderRequest {
     this._agentId = agentId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -61,7 +62,13 @@ class RenderRequest {
     return this._webhook
   }
 
-  // noinspection JSUnusedGlobalSymbols
+  /**
+   * @return {string}
+   */
+  getStitchingService() {
+    return this._stitchingService
+  }
+
   /**
    * @return {string}
    */
@@ -69,7 +76,6 @@ class RenderRequest {
     return this._url
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {RGridDom}
    */
@@ -77,7 +83,6 @@ class RenderRequest {
     return this._dom
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {RGridResource[]}
    */
@@ -85,7 +90,6 @@ class RenderRequest {
     return this._resources
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {RenderInfo}
    */
@@ -93,7 +97,6 @@ class RenderRequest {
     return this._renderInfo
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -101,7 +104,6 @@ class RenderRequest {
     return this._platform
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -109,7 +111,6 @@ class RenderRequest {
     return this._browserName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -117,7 +118,6 @@ class RenderRequest {
     return this._renderId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -125,7 +125,6 @@ class RenderRequest {
     return this._agentId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -133,7 +132,6 @@ class RenderRequest {
     this._agentId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -141,7 +139,6 @@ class RenderRequest {
     this._renderId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -149,7 +146,6 @@ class RenderRequest {
     return this._scriptHooks
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -157,7 +153,6 @@ class RenderRequest {
     this._scriptHooks = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string[]}
    */
@@ -165,7 +160,6 @@ class RenderRequest {
     return this._selectorsToFindRegionsFor
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string[]} value
    */
@@ -198,6 +192,7 @@ class RenderRequest {
 
     const object = {
       webhook: this._webhook,
+      stitchingService: this._stitchingService,
       url: this._url,
       dom: this._dom.getHashAsObject(),
       resources,

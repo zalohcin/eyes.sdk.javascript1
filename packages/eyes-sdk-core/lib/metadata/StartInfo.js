@@ -64,7 +64,6 @@ class StartInfo {
     this._render = render
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -72,7 +71,6 @@ class StartInfo {
     return this._sessionType
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -80,7 +78,6 @@ class StartInfo {
     this._sessionType = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -88,7 +85,6 @@ class StartInfo {
     return this._isTransient
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -96,7 +92,6 @@ class StartInfo {
     this._isTransient = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -104,7 +99,6 @@ class StartInfo {
     return this._ignoreBaseline
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -112,7 +106,6 @@ class StartInfo {
     this._ignoreBaseline = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -120,7 +113,6 @@ class StartInfo {
     return this._appIdOrName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -128,7 +120,6 @@ class StartInfo {
     this._appIdOrName = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -136,7 +127,6 @@ class StartInfo {
     return this._compareWithParentBranch
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -144,7 +134,6 @@ class StartInfo {
     this._compareWithParentBranch = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -152,7 +141,6 @@ class StartInfo {
     return this._scenarioIdOrName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -160,7 +148,6 @@ class StartInfo {
     this._scenarioIdOrName = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {BatchInfo}
    */
@@ -168,7 +155,6 @@ class StartInfo {
     return this._batchInfo
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {BatchInfo} value
    */
@@ -176,7 +162,6 @@ class StartInfo {
     this._batchInfo = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {AppEnvironment}
    */
@@ -184,7 +169,6 @@ class StartInfo {
     return this._environment
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {AppEnvironment} value
    */
@@ -192,7 +176,6 @@ class StartInfo {
     this._environment = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -200,7 +183,6 @@ class StartInfo {
     return this._matchLevel
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -208,7 +190,6 @@ class StartInfo {
     this._matchLevel = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {ImageMatchSettings}
    */
@@ -216,7 +197,6 @@ class StartInfo {
     return this._defaultMatchSettings
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {ImageMatchSettings} value
    */
@@ -224,7 +204,6 @@ class StartInfo {
     this._defaultMatchSettings = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -232,7 +211,6 @@ class StartInfo {
     return this._agentId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -240,7 +218,6 @@ class StartInfo {
     this._agentId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {object[]}
    */
@@ -248,7 +225,6 @@ class StartInfo {
     return this._properties
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {object[]} value
    */
@@ -256,7 +232,6 @@ class StartInfo {
     this._properties = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -264,7 +239,6 @@ class StartInfo {
     return this._render
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */

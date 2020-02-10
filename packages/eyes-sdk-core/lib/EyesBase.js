@@ -99,7 +99,6 @@ class EyesBase extends EyesAbstract {
     /** @type {SessionEventHandlers} */
     this._sessionEventHandlers = new SessionEventHandlers()
 
-    // noinspection JSUnusedGlobalSymbols
     /** @type {RenderWindowTask} */ this._renderWindowTask = new RenderWindowTask(
       this._logger,
       this._serverConnector,
@@ -135,7 +134,6 @@ class EyesBase extends EyesAbstract {
     this._userInputs = []
   }
 
-  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * @param {boolean} [hardReset=false] - If false, init providers only if they're not initialized.
    * @private
@@ -190,7 +188,6 @@ class EyesBase extends EyesAbstract {
     this._serverConnector.setRenderingInfo(renderingInfo)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string} - The name of the application under test.
    */
@@ -198,7 +195,6 @@ class EyesBase extends EyesAbstract {
     return this._currentAppName || this._configuration.getAppName()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Clears the user inputs list.
    *
@@ -211,7 +207,6 @@ class EyesBase extends EyesAbstract {
     this._userInputs.length = 0
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @protected
    * @return {Trigger[]} - User inputs collected between {@code checkWindowBase} invocations.
@@ -224,7 +219,6 @@ class EyesBase extends EyesAbstract {
     return this._userInputs.map(input => Object.assign(Object.create(input), input))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {FailureReports} failureReports - Use one of the values in FailureReports.
    */
@@ -233,7 +227,6 @@ class EyesBase extends EyesAbstract {
     this._failureReports = failureReports
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {FailureReports} - The failure reports setting.
    */
@@ -241,7 +234,6 @@ class EyesBase extends EyesAbstract {
     return this._failureReports
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string} - The full agent id composed of both the base agent id and the user given agent id.
    */
@@ -250,11 +242,10 @@ class EyesBase extends EyesAbstract {
     if (!agentId) {
       return this.getBaseAgentId()
     }
-    // noinspection JSUnresolvedFunction
+
     return `${agentId} [${this.getBaseAgentId()}]`
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean} - Whether a session is open.
    */
@@ -262,7 +253,6 @@ class EyesBase extends EyesAbstract {
     return this._isOpen
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Manually set the the sizes to cut from an image before it's validated.
    *
@@ -276,7 +266,6 @@ class EyesBase extends EyesAbstract {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Manually set the the sizes to cut from an image before it's validated.
    *
@@ -293,7 +282,6 @@ class EyesBase extends EyesAbstract {
     return this._cutProviderHandler && !(this._cutProviderHandler.get() instanceof NullCutProvider)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Manually set the scale ratio for the images being validated.
    *
@@ -310,7 +298,6 @@ class EyesBase extends EyesAbstract {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number} - The ratio used to scale the images being validated.
    */
@@ -318,7 +305,6 @@ class EyesBase extends EyesAbstract {
     return this._scaleProviderHandler.get().getScaleRatio()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value - If true, createSession request will return renderingInfo properties
    */
@@ -326,7 +312,6 @@ class EyesBase extends EyesAbstract {
     this._render = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -334,7 +319,6 @@ class EyesBase extends EyesAbstract {
     return this._render
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} saveDebugScreenshots - If true, will save all screenshots to local directory.
    */
@@ -349,7 +333,6 @@ class EyesBase extends EyesAbstract {
     this._debugScreenshotsProvider.setPath(prev.getPath())
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -357,7 +340,6 @@ class EyesBase extends EyesAbstract {
     return !(this._debugScreenshotsProvider instanceof NullDebugScreenshotProvider)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} pathToSave - Path where you want to save the debug screenshots.
    */
@@ -365,7 +347,6 @@ class EyesBase extends EyesAbstract {
     this._debugScreenshotsProvider.setPath(pathToSave)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string} - The path where you want to save the debug screenshots.
    */
@@ -373,7 +354,6 @@ class EyesBase extends EyesAbstract {
     return this._debugScreenshotsProvider.getPath()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} prefix - The prefix for the screenshots' names.
    */
@@ -381,7 +361,6 @@ class EyesBase extends EyesAbstract {
     this._debugScreenshotsProvider.setPrefix(prefix)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string} - The prefix for the screenshots' names.
    */
@@ -389,7 +368,6 @@ class EyesBase extends EyesAbstract {
     return this._debugScreenshotsProvider.getPrefix()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {DebugScreenshotsProvider} debugScreenshotsProvider
    */
@@ -397,7 +375,6 @@ class EyesBase extends EyesAbstract {
     this._debugScreenshotsProvider = debugScreenshotsProvider
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {DebugScreenshotsProvider}
    */
@@ -440,7 +417,7 @@ class EyesBase extends EyesAbstract {
       const sessionResultsUrl = this._runningSession.getUrl()
 
       this._logger.verbose('Ending server session...')
-      // noinspection OverlyComplexBooleanExpressionJS
+
       const save =
         (isNewSession && this._configuration.getSaveNewTests()) ||
         (!isNewSession && this._configuration.getSaveFailedTests())
@@ -471,20 +448,17 @@ class EyesBase extends EyesAbstract {
             `--- New test ended. Please approve the new baseline at ${sessionResultsUrl}`,
           )
           if (throwEx) {
-            // noinspection ExceptionCaughtLocallyJS
             throw new NewTestError(results, this._sessionStartInfo)
           }
         } else {
           this._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`)
           if (throwEx) {
-            // noinspection ExceptionCaughtLocallyJS
             throw new DiffsFoundError(results, this._sessionStartInfo)
           }
         }
       } else if (status === TestResultsStatus.Failed) {
         this._logger.log(`--- Failed test ended. See details at ${sessionResultsUrl}`)
         if (throwEx) {
-          // noinspection ExceptionCaughtLocallyJS
           throw new TestFailedError(results, this._sessionStartInfo)
         }
       } else {
@@ -552,7 +526,6 @@ class EyesBase extends EyesAbstract {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {PositionProvider} - The currently set position provider.
    */
@@ -560,7 +533,6 @@ class EyesBase extends EyesAbstract {
     return this._positionProviderHandler.get()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {PositionProvider} positionProvider - The position provider to be used.
    */
@@ -642,7 +614,6 @@ class EyesBase extends EyesAbstract {
     return matchResult
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Takes a snapshot of the application under test and matches it with the expected output.
    *
@@ -694,10 +665,9 @@ class EyesBase extends EyesAbstract {
       properties: this._configuration.getProperties(),
     })
 
-    // noinspection JSClosureCompilerSyntax
     const outputProvider = new AppOutputProvider()
     // A callback which will call getAppOutput
-    // noinspection AnonymousFunctionJS
+
     outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
       this._getAppOutputWithScreenshot(region, lastScreenshot, checkSettingsLocal)
 
@@ -734,11 +704,10 @@ class EyesBase extends EyesAbstract {
     this._validateResult(tag, matchResult)
 
     this._logger.verbose('Done!')
-    // noinspection JSValidateTypes
+
     return testResult
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @protected
    * @return {Promise}
@@ -747,7 +716,6 @@ class EyesBase extends EyesAbstract {
     return undefined
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @protected
    * @return {Promise}
@@ -756,7 +724,6 @@ class EyesBase extends EyesAbstract {
     return undefined
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @protected
    * @return {Promise<?string>}
@@ -765,7 +732,6 @@ class EyesBase extends EyesAbstract {
     return undefined
   }
 
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
    * @protected
    * @return {Promise<?string>}
@@ -839,7 +805,6 @@ class EyesBase extends EyesAbstract {
       retryTimeout = checkSettings.getTimeout()
     }
 
-    // noinspection JSUnresolvedVariable
     self._logger.verbose(
       `CheckWindowBase(${regionProvider.constructor.name}, '${tag}', ${ignoreMismatch}, ${retryTimeout})`,
     )
@@ -922,7 +887,6 @@ class EyesBase extends EyesAbstract {
   ) {
     this._logger.getLogHandler().open()
 
-    // noinspection NonBlockStatementBodyJS
     if (viewportSize) this._configuration.setViewportSize(viewportSize)
 
     try {
@@ -976,7 +940,6 @@ class EyesBase extends EyesAbstract {
     }
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @protected
    * @return {Promise}
@@ -985,7 +948,6 @@ class EyesBase extends EyesAbstract {
     return undefined
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @protected
    * @return {Promise}
@@ -1009,7 +971,6 @@ class EyesBase extends EyesAbstract {
     this._logger.setSessionId(this._runningSession.getSessionId())
     this._logger.verbose('Done!')
 
-    // noinspection JSClosureCompilerSyntax
     const outputProvider = new AppOutputProvider()
     // A callback which will call getAppOutput
     outputProvider.getAppOutput = (region, lastScreenshot, checkSettingsLocal) =>
@@ -1062,7 +1023,6 @@ class EyesBase extends EyesAbstract {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Define the viewport size as {@code size} without doing any actual action on the
    *
@@ -1086,7 +1046,6 @@ class EyesBase extends EyesAbstract {
     this._isViewportSizeSet = true
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a trigger to the current list of user inputs.
    *
@@ -1140,7 +1099,6 @@ class EyesBase extends EyesAbstract {
     this._logger.verbose(`Added ${trigger}`)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Adds a mouse trigger.
    *
@@ -1473,7 +1431,6 @@ class EyesBase extends EyesAbstract {
     return result
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {SessionEventHandlers}
    */
@@ -1481,7 +1438,6 @@ class EyesBase extends EyesAbstract {
     return this._sessionEventHandlers
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {SessionEventHandler} eventHandler
    */
@@ -1489,7 +1445,6 @@ class EyesBase extends EyesAbstract {
     this._sessionEventHandlers.addEventHandler(eventHandler)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {SessionEventHandler} eventHandler
    */
@@ -1497,12 +1452,10 @@ class EyesBase extends EyesAbstract {
     this._sessionEventHandlers.removeEventHandler(eventHandler)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   clearSessionEventHandlers() {
     this._sessionEventHandlers.clearEventHandlers()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {RunningSession} - An object containing data about the currently running session.
    */
@@ -1510,7 +1463,6 @@ class EyesBase extends EyesAbstract {
     return this._runningSession
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @protected
    * @abstract
@@ -1520,7 +1472,6 @@ class EyesBase extends EyesAbstract {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * Get the session id.
    *
@@ -1531,7 +1482,6 @@ class EyesBase extends EyesAbstract {
     return undefined
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @protected
    * @abstract
@@ -1541,7 +1491,6 @@ class EyesBase extends EyesAbstract {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @protected
    * @abstract
@@ -1553,7 +1502,6 @@ class EyesBase extends EyesAbstract {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * The inferred string is in the format "source:info" where source is either "useragent" or "pos".
    * Information associated with a "useragent" source is a valid browser user agent string. Information associated with
@@ -1568,7 +1516,6 @@ class EyesBase extends EyesAbstract {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * An updated screenshot.
    *
@@ -1580,7 +1527,6 @@ class EyesBase extends EyesAbstract {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * An updated screenshot.
    *
@@ -1591,7 +1537,6 @@ class EyesBase extends EyesAbstract {
     return undefined
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * The current title of of the AUT.
    *
@@ -1603,7 +1548,6 @@ class EyesBase extends EyesAbstract {
     throw new TypeError('The method is not implemented!')
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * A url pointing to a DOM capture of the AUT at the time of screenshot
    *
@@ -1614,7 +1558,6 @@ class EyesBase extends EyesAbstract {
     return undefined
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * The location of the image relative to the logical full page image, when cropping an image e.g. with checkRegion
    *

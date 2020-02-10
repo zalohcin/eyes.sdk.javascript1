@@ -9,7 +9,6 @@
  * @abstract
  */
 class AppOutputProvider {
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
    * @param {Region} region
    * @param {EyesScreenshot} lastScreenshot

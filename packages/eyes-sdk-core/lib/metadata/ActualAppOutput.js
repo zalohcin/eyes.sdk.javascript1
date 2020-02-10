@@ -6,7 +6,6 @@ const {ImageMatchSettings} = require('./ImageMatchSettings')
 const {Image} = require('./Image')
 
 class ActualAppOutput {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * @param {Image|object} image
    * @param {Image|object} thumbprint
@@ -62,7 +61,6 @@ class ActualAppOutput {
     this._isPrimary = isPrimary
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Image}
    */
@@ -70,7 +68,6 @@ class ActualAppOutput {
     return this._image
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Image} value
    */
@@ -78,7 +75,6 @@ class ActualAppOutput {
     this._image = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Image}
    */
@@ -86,7 +82,6 @@ class ActualAppOutput {
     return this._thumbprint
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Image} value
    */
@@ -94,7 +89,6 @@ class ActualAppOutput {
     this._thumbprint = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {ImageMatchSettings}
    */
@@ -102,7 +96,6 @@ class ActualAppOutput {
     return this._imageMatchSettings
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {ImageMatchSettings} value
    */
@@ -110,7 +103,6 @@ class ActualAppOutput {
     this._imageMatchSettings = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -118,7 +110,6 @@ class ActualAppOutput {
     return this._ignoreExpectedOutputSettings
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -126,7 +117,6 @@ class ActualAppOutput {
     this._ignoreExpectedOutputSettings = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -134,7 +124,6 @@ class ActualAppOutput {
     return this._isMatching
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -142,7 +131,6 @@ class ActualAppOutput {
     this._isMatching = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -150,7 +138,6 @@ class ActualAppOutput {
     return this._areImagesMatching
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -158,7 +145,6 @@ class ActualAppOutput {
     this._areImagesMatching = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Date}
    */
@@ -166,7 +152,6 @@ class ActualAppOutput {
     return this._occurredAt
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Date} value
    */
@@ -174,7 +159,6 @@ class ActualAppOutput {
     this._occurredAt = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {object[]}
    */
@@ -182,7 +166,6 @@ class ActualAppOutput {
     return this._userInputs
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {object[]} value
    */
@@ -190,7 +173,6 @@ class ActualAppOutput {
     this._userInputs = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -198,7 +180,6 @@ class ActualAppOutput {
     return this._windowTitle
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -206,7 +187,6 @@ class ActualAppOutput {
     this._windowTitle = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -214,7 +194,6 @@ class ActualAppOutput {
     return this._tag
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -222,7 +201,6 @@ class ActualAppOutput {
     this._tag = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -230,7 +208,6 @@ class ActualAppOutput {
     return this._isPrimary
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */

@@ -8,10 +8,11 @@ class RenderingInfo {
    * @param {string} accessToken
    * @param {string} resultsUrl
    */
-  constructor({serviceUrl, accessToken, resultsUrl} = {}) {
+  constructor({serviceUrl, accessToken, resultsUrl, stitchingServiceUrl} = {}) {
     this._serviceUrl = serviceUrl
     this._accessToken = accessToken
     this._resultsUrl = resultsUrl
+    this._stitchingServiceUrl = stitchingServiceUrl
   }
 
   /**
@@ -21,7 +22,6 @@ class RenderingInfo {
     return this._serviceUrl
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -36,7 +36,6 @@ class RenderingInfo {
     return this._accessToken
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -44,7 +43,6 @@ class RenderingInfo {
     this._accessToken = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -52,7 +50,6 @@ class RenderingInfo {
     return this._resultsUrl
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -60,7 +57,6 @@ class RenderingInfo {
     this._resultsUrl = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {{sub: string, exp: number, iss: string}}
    */
@@ -69,6 +65,13 @@ class RenderingInfo {
       this._payload = GeneralUtils.jwtDecode(this._accessToken)
     }
     return this._payload
+  }
+
+  /**
+   * @return {string}
+   */
+  getStitchingServiceUrl() {
+    return this._stitchingServiceUrl
   }
 
   /**

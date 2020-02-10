@@ -96,7 +96,6 @@ class ImageMatchSettings {
     this._floatingMatchSettings = floating || []
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {MatchLevel} - The match level to use.
    */
@@ -104,7 +103,6 @@ class ImageMatchSettings {
     return this._matchLevel
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {MatchLevel} value - The match level to use.
    */
@@ -113,7 +111,6 @@ class ImageMatchSettings {
     this._matchLevel = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {AccessibilityLevel} - The accessablity level to use.
    */
@@ -121,7 +118,6 @@ class ImageMatchSettings {
     return this._accessibilityLevel
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {AccessibilityLevel} value - The accessablity level to use.
    */
@@ -130,7 +126,6 @@ class ImageMatchSettings {
     this._accessibilityLevel = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {ExactMatchSettings} - The additional threshold params when the {@code Exact} match level is used, if any.
    */
@@ -138,7 +133,6 @@ class ImageMatchSettings {
     return this._exact
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {ExactMatchSettings} value - The additional threshold parameters when the {@code Exact} match level is used.
    */
@@ -146,7 +140,6 @@ class ImageMatchSettings {
     this._exact = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean} - The parameters for the "IgnoreCaret" match settings.
    */
@@ -154,7 +147,6 @@ class ImageMatchSettings {
     return this._ignoreCaret
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value - The parameters for the "ignoreCaret" match settings.
    */
@@ -162,7 +154,6 @@ class ImageMatchSettings {
     this._ignoreCaret = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -170,7 +161,6 @@ class ImageMatchSettings {
     return this._useDom
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -178,7 +168,6 @@ class ImageMatchSettings {
     this._useDom = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -186,7 +175,6 @@ class ImageMatchSettings {
     return this._enablePatterns
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -194,7 +182,6 @@ class ImageMatchSettings {
     this._enablePatterns = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -202,7 +189,6 @@ class ImageMatchSettings {
     return this._ignoreDisplacements
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -210,7 +196,6 @@ class ImageMatchSettings {
     this._ignoreDisplacements = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Returns the array of regions to ignore.
    * @return {Region[]} - the array of regions to ignore.
@@ -219,7 +204,6 @@ class ImageMatchSettings {
     return this._ignoreRegions
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of regions to ignore.
    * @param {Region[]} ignoreRegions - The array of regions to ignore.
@@ -228,7 +212,6 @@ class ImageMatchSettings {
     this._ignoreRegions = ignoreRegions
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of regions to check using the Layout method.
    * @param {Region[]} layoutRegions - The array of regions to ignore.
@@ -237,7 +220,6 @@ class ImageMatchSettings {
     this._layoutRegions = layoutRegions
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Returns the array of regions to check using the Layout method.
    * @return {Region[]} - the array of regions to ignore.
@@ -246,7 +228,6 @@ class ImageMatchSettings {
     return this._layoutRegions
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Returns the array of regions to check using the Strict method.
    * @return {Region[]} - the array of regions to ignore.
@@ -255,7 +236,6 @@ class ImageMatchSettings {
     return this._strictRegions
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of regions to check using the Strict method.
    * @param {Region[]} strictRegions - The array of regions to ignore.
@@ -264,7 +244,6 @@ class ImageMatchSettings {
     this._strictRegions = strictRegions
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Returns the array of regions to check using the Content method.
    * @return {Region[]} - the array of regions to ignore.
@@ -273,7 +252,6 @@ class ImageMatchSettings {
     return this._contentRegions
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of regions to check using the Content method.
    * @param {Region[]} contentRegions - The array of regions to ignore.
@@ -282,7 +260,6 @@ class ImageMatchSettings {
     this._contentRegions = contentRegions
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Returns an array of floating regions.
    * @return {FloatingMatchSettings[]} - an array of floating regions.
@@ -291,7 +268,6 @@ class ImageMatchSettings {
     return this._floatingMatchSettings
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of accessibility regions.
    * @param {AccessibilityMatchSettings[]} accessibilityMatchSettings - The array of accessibility regions.
@@ -300,7 +276,6 @@ class ImageMatchSettings {
     this._accessibilityMatchSettings = accessibilityMatchSettings
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Returns an array of accessibility regions.
    * @return {AccessibilityMatchSettings[]} - an array of accessibility regions.
@@ -309,7 +284,6 @@ class ImageMatchSettings {
     return this._accessibilityMatchSettings
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Sets an array of floating regions.
    * @param {FloatingMatchSettings[]} floatingMatchSettings - The array of floating regions.

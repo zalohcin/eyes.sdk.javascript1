@@ -25,7 +25,6 @@ class MouseTrigger extends Trigger {
     this._location = location // Relative to the top left corner of {@link #control}, or null if unknown.
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {MouseTrigger.MouseAction}
    */
@@ -33,7 +32,6 @@ class MouseTrigger extends Trigger {
     return this._mouseAction
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region}
    */
@@ -41,7 +39,6 @@ class MouseTrigger extends Trigger {
     return this._control
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Location}
    */
@@ -49,7 +46,6 @@ class MouseTrigger extends Trigger {
     return this._location
   }
 
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
    * @return {Trigger.TriggerType}
    */

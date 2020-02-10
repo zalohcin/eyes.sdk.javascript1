@@ -21,7 +21,6 @@ class RGridDom {
     this._contentAsCdt = undefined
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {object} - The domNodes of the current page.
    */
@@ -29,7 +28,6 @@ class RGridDom {
     return this._domNodes
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {object} value - The page's domNodes
    */
@@ -45,7 +43,6 @@ class RGridDom {
     return this._resources
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {RGridResource[]} value - The page's resourceType
    */

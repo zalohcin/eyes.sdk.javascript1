@@ -24,7 +24,7 @@ class ImageUtils {
       // pass the file to PNG using read stream
       const imageReadableStream = new ReadableBufferStream(buffer, undefined)
       const image = new png.Image({filterType: 4})
-      // noinspection JSUnresolvedFunction
+
       return imageReadableStream
         .pipe(image)
         .on('parsed', () => resolve(image))
@@ -42,7 +42,7 @@ class ImageUtils {
     return new Promise(resolve => {
       // Write back to a temp png file
       const imageWritableStream = new WritableBufferStream()
-      // noinspection JSUnresolvedFunction
+
       return image
         .pack()
         .pipe(imageWritableStream)
@@ -58,7 +58,6 @@ class ImageUtils {
    * @return {png.Image|Image}
    */
   static createImage(width, height) {
-    // noinspection JSValidateTypes
     return new png.Image({filterType: 4, width, height})
   }
 
@@ -115,7 +114,7 @@ class ImageUtils {
     const a0 = x3 - x2 - x0 + x1
     const a1 = x0 - x1 - a0
     const a2 = x2 - x0
-    // noinspection MagicNumberJS
+
     return Math.ceil(Math.max(0, Math.min(255, a0 * (t * t * t) + a1 * (t * t) + (a2 * t + x1))))
   }
 
@@ -147,7 +146,7 @@ class ImageUtils {
     for (let i = 0; i < hDst; i += 1) {
       for (let j = 0; j < wDst; j += 1) {
         const y = (i * (hSrc - 1)) / hDst
-        // noinspection JSSuspiciousNameCombination
+
         const yPos = Math.floor(y)
         const t = y - yPos
         const buf1Pos = (yPos * wDst + j) * 4
@@ -159,7 +158,7 @@ class ImageUtils {
           const y2 = bufSrc[kPos + wDst * 4]
           const y3 =
             yPos < hSrc - 2 ? bufSrc[kPos + wDst * 8] : 2 * bufSrc[kPos + wDst * 4] - bufSrc[kPos]
-          // noinspection JSSuspiciousNameCombination
+
           buf[buf2Pos + k] = ImageUtils._interpolateCubic(y0, y1, y2, y3, t)
         }
       }
@@ -372,7 +371,7 @@ class ImageUtils {
 
       image.data = Buffer.from(dstBuffer)
       const tmp = image.width
-      // noinspection JSSuspiciousNameCombination
+
       image.width = image.height
       image.height = tmp
 
@@ -426,20 +425,18 @@ class ImageUtils {
    * @return {{width: number, height: number}}
    */
   static getImageSizeFromBuffer(imageBuffer) {
-    // noinspection MagicNumberJS
     if (
       imageBuffer[12] === 0x49 &&
       imageBuffer[13] === 0x48 &&
       imageBuffer[14] === 0x44 &&
       imageBuffer[15] === 0x52
     ) {
-      // noinspection MagicNumberJS
       const width =
         imageBuffer[16] * 256 * 256 * 256 +
         imageBuffer[17] * 256 * 256 +
         imageBuffer[18] * 256 +
         imageBuffer[19]
-      // noinspection MagicNumberJS
+
       const height =
         imageBuffer[20] * 256 * 256 * 256 +
         imageBuffer[21] * 256 * 256 +

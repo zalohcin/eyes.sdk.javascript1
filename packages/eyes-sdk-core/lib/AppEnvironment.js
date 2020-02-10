@@ -32,7 +32,6 @@ class AppEnvironment {
     this._inferred = undefined
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Creates a new AppEnvironment instance.
    *
@@ -45,7 +44,6 @@ class AppEnvironment {
     return env
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Gets the information inferred from the execution environment or {@code null} if no information could be inferred.
    *
@@ -82,7 +80,6 @@ class AppEnvironment {
     this._os = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Gets the application hosting the application under test or {@code null} if unknown.
    *
@@ -101,7 +98,6 @@ class AppEnvironment {
     this._hostingApp = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Gets the display size of the application or {@code null} if unknown.
    *
@@ -138,7 +134,6 @@ class AppEnvironment {
     this._osInfo = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Gets the application hosting the application under test or {@code null} if unknown. (not part of test signature)
    *
@@ -157,7 +152,6 @@ class AppEnvironment {
     this._hostingAppInfo = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Gets the device info (not part of test signature)
    *

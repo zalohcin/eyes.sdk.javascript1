@@ -1,35 +1,12 @@
 'use strict'
 
 const assert = require('assert')
+const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
 const {ServerConnector, Logger, Configuration, GeneralUtils} = require('../../../')
 const {presult} = require('../../../lib/troubleshoot/utils')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
-const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
 
 describe('ServerConnector', () => {
-  it('_createHttpOptions works', () => {
-    const configuratiion = new Configuration()
-    const connector = new ServerConnector(logger, configuratiion)
-    const options = connector._createHttpOptions({
-      method: 'POST',
-      url: 'https://some.url/some/api',
-      data: {},
-    })
-
-    delete options.params.apiKey
-    assert.deepStrictEqual(options, {
-      proxy: undefined,
-      headers: {Accept: 'application/json', 'Content-Type': 'application/json'},
-      timeout: 300000,
-      responseType: 'json',
-      params: {},
-      method: 'POST',
-      url: 'https://some.url/some/api',
-      data: {},
-      maxContentLength: 20971520,
-    })
-  })
-
   it('sends startSession request', async () => {
     const {port, close} = await fakeEyesServer({logger})
     try {
@@ -114,5 +91,36 @@ describe('ServerConnector', () => {
     const buffer = Buffer.from('something')
     const result = await serverConnector.uploadScreenshot(id, buffer)
     assert.strictEqual(result, renderingInfo.getResultsUrl().replace('__random__', id))
+  })
+
+  it('long request waits right amount of time', async () => {
+    const configuration = new Configuration()
+    const serverConnector = new ServerConnector(logger, configuration)
+    const ANSWER_AFTER = 8 // requests
+    const timeouts = []
+    let timestampBefore
+    serverConnector._axios.defaults.adapter = async config => {
+      const response = {status: 200, config, data: {}, headers: {}, request: {}}
+      if (config.isLongRequest) {
+        response.status = 202
+        timestampBefore = Date.now()
+      } else if (config.isPollingRequest) {
+        const timestampAfter = Date.now()
+        timeouts.push(timestampAfter - timestampBefore)
+        timestampBefore = timestampAfter
+        response.status = config.repeat < ANSWER_AFTER - 1 ? 200 : 201
+      }
+      return response
+    }
+    const delayBeforePolling = [].concat(Array(3).fill(100), Array(3).fill(200), 500)
+    await serverConnector._axios.request({
+      isLongRequest: true,
+      delayBeforePolling,
+    })
+    assert.strictEqual(timeouts.length, ANSWER_AFTER)
+    timeouts.forEach((timeout, index) => {
+      const expectedTimeout = delayBeforePolling[Math.min(index, delayBeforePolling.length - 1)]
+      assert(timeout >= expectedTimeout && timeout <= expectedTimeout + 10)
+    })
   })
 })

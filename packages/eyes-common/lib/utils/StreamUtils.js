@@ -15,7 +15,6 @@ class ReadableBufferStream extends Stream.Readable {
     this._buffer = buffer
   }
 
-  // noinspection JSUnusedGlobalSymbols,JSCheckFunctionSignatures
   /**
    * Override of the _read function, as required when implementing a stream.
    * @private
@@ -39,7 +38,6 @@ class WritableBufferStream extends Stream.Writable {
     this._buffer = Buffer.alloc(0)
   }
 
-  // noinspection JSUnusedGlobalSymbols,JSCheckFunctionSignatures
   /**
    * Override of the _write function, as require when implementing a Writable stream.
    * @param {Buffer|string} chunk - The chunk to write to the stream.
@@ -54,7 +52,6 @@ class WritableBufferStream extends Stream.Writable {
     next()
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
    *   emitted before continuing to write additional data, otherwise {@code true}.
@@ -65,7 +62,6 @@ class WritableBufferStream extends Stream.Writable {
     return this.write(buf)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
    *   emitted before continuing to write additional data, otherwise {@code true}.
@@ -76,7 +72,6 @@ class WritableBufferStream extends Stream.Writable {
     return this.write(buf)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean} {@code false} if the stream wishes for the calling code to wait for the 'drain' event to be
    *   emitted before continuing to write additional data, otherwise {@code true}.
@@ -87,7 +82,6 @@ class WritableBufferStream extends Stream.Writable {
     return this.write(buf)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Buffer} - The buffer which contains the chunks written up to this point.
    */
@@ -95,7 +89,6 @@ class WritableBufferStream extends Stream.Writable {
     return this._buffer
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Resets the buffer which contains the chunks written so far.
    * @return {Buffer} - The buffer which contains the chunks written up to the reset.

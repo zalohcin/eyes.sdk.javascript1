@@ -24,7 +24,6 @@ class TestFailedError extends EyesError {
     this._testResults = testResults
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {TestResults} - The failed test results, or {@code null} if the test has not yet ended (e.g., when thrown
    *   due to {@link FailureReports#IMMEDIATE} settings).

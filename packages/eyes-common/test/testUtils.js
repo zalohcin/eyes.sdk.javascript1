@@ -61,7 +61,6 @@ const imageMock2String = imageMock => {
       const b = imageMock.data[i + 2]
       const a = imageMock.data[i + 3]
 
-      // noinspection NonShortCircuitBooleanExpressionJS
       const color =
         ((((r & 0xff) << 24) >>> 0) | ((g & 0xff) << 16) | ((b & 0xff) << 8) | (a & 0xff)) >>> 0
 

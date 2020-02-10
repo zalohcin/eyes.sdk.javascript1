@@ -7,7 +7,6 @@
  * @abstract
  */
 class GetFloatingRegion {
-  // noinspection JSMethodCanBeStatic
   /**
    * @param {EyesBase} eyesBase
    * @param {EyesScreenshot} screenshot

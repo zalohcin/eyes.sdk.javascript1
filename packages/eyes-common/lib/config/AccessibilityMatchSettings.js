@@ -29,7 +29,6 @@ class AccessibilityMatchSettings {
     this._type = type
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number}
    */
@@ -37,7 +36,6 @@ class AccessibilityMatchSettings {
     return this._left
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -45,7 +43,6 @@ class AccessibilityMatchSettings {
     this._left = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number}
    */
@@ -53,7 +50,6 @@ class AccessibilityMatchSettings {
     return this._top
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -68,7 +64,6 @@ class AccessibilityMatchSettings {
     return this._width
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -83,7 +78,6 @@ class AccessibilityMatchSettings {
     return this._height
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -98,7 +92,6 @@ class AccessibilityMatchSettings {
     return this._type
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {AccessibilityRegionType} value
    */

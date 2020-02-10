@@ -198,6 +198,26 @@ class TypeUtils {
 
     return defaultValue
   }
+
+  /**
+   * Checks if `value` has a type `function`
+   *
+   * @param {*} value
+   * @return {boolean}
+   */
+  static isFunction(value) {
+    return typeof value === 'function'
+  }
+
+  /**
+   * Checks if `value` is implements iterator protocol
+   *
+   * @param {*} value
+   * @return {boolean}
+   */
+  static isIterator(value) {
+    return Boolean(value) && TypeUtils.isFunction(value.next)
+  }
 }
 
 exports.TypeUtils = TypeUtils

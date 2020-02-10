@@ -29,7 +29,6 @@ function filterTestsByMode(filter, tests) {
 }
 
 function filterTestsByIndexes(indexes, tests) {
-  debugger
   if (!indexes) return tests
   const _indexes =
     typeof indexes === 'string' ? indexes.split(',').map(id => Math.floor(id)) : indexes
@@ -58,6 +57,18 @@ function getTestIndexesFromErrors(errors) {
   return indexes.length ? indexes : undefined
 }
 
+function getPassedTestIndexes({tests, errors}) {
+  if (!tests || !errors) return undefined
+  const errorIndexes = errors.map(e => e.testIndex)
+  const testIndexes = Object.keys(tests).map((_test, index) => index)
+  errorIndexes.forEach(errorIndex => {
+    const result = testIndexes.find(testIndex => testIndex === errorIndex)
+    const resultIndex = testIndexes.findIndex(testIndex => testIndex === result)
+    testIndexes.splice(resultIndex, 1)
+  })
+  return testIndexes.length ? testIndexes : undefined
+}
+
 module.exports = {
   findUnsupportedTests,
   findUnimplementedCommands,
@@ -66,4 +77,5 @@ module.exports = {
   filterTestsByIndexes,
   getTestIndexesFromErrors,
   sortErrorsByType,
+  getPassedTestIndexes,
 }

@@ -6,7 +6,6 @@
  * @abstract
  */
 class Trigger {
-  // noinspection JSMethodCanBeStatic, JSUnusedGlobalSymbols
   /**
    * @return {Trigger.TriggerType}
    */

@@ -175,9 +175,8 @@ class GeneralUtils {
    */
   static guid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      // noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
       const r = (Math.random() * 16) | 0 // eslint-disable-line no-bitwise
-      // noinspection MagicNumberJS, NonShortCircuitBooleanExpressionJS
+
       const v = c === 'x' ? r : (r & 0x3) | 0x8 // eslint-disable-line no-bitwise
       return v.toString(16)
     })
@@ -208,7 +207,6 @@ class GeneralUtils {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Convert a Date object to a ISO-8601 date string
    *
@@ -220,7 +218,6 @@ class GeneralUtils {
     return DateTimeUtils.toISO8601DateTime(date)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Convert a Date object to a RFC-1123 date string
    *
@@ -232,7 +229,6 @@ class GeneralUtils {
     return DateTimeUtils.toRfc1123DateTime(date)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @deprecated Use {@link DateTimeUtils.toLogFileDateTime} instead
    * @param {Date} [date] - Date which will be converted
@@ -242,7 +238,6 @@ class GeneralUtils {
     return DateTimeUtils.toLogFileDateTime(date)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * Creates {@link Date} instance from an ISO 8601 formatted string.
    *

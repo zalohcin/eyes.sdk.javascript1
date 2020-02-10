@@ -40,7 +40,6 @@ class EyesTargetLocator extends TargetLocator {
     this._defaultContentPositionMemento = undefined
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * Schedules a command to switch the focus of all future commands to another frame on the page. The target frame may
    * be specified as one of the following:
@@ -226,7 +225,6 @@ class EyesTargetLocator extends TargetLocator {
     }
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    */
@@ -253,7 +251,6 @@ class EyesTargetLocator extends TargetLocator {
     this._logger.verbose('Done!')
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * Schedules a command retrieve the {@code document.activeElement} element on the current document, or
    * {@code document.body} if activeElement is not available.
@@ -263,7 +260,7 @@ class EyesTargetLocator extends TargetLocator {
    */
   activeElement() {
     this._logger.verbose('Switching to element...')
-    // noinspection JSCheckFunctionSignatures
+
     const id = this._driver.execute(new Command(Name.GET_ACTIVE_ELEMENT))
 
     this._logger.verbose('Done!')

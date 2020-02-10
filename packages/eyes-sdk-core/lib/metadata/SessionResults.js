@@ -9,7 +9,6 @@ const {StartInfo} = require('./StartInfo')
 const {AppEnvironment} = require('../AppEnvironment')
 
 class SessionResults {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * @param {string} id
    * @param {number} revision
@@ -136,7 +135,6 @@ class SessionResults {
     this._isNew = isNew
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -144,7 +142,6 @@ class SessionResults {
     return this._id
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -152,7 +149,6 @@ class SessionResults {
     this._id = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number}
    */
@@ -160,7 +156,6 @@ class SessionResults {
     return this._revision
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -168,7 +163,6 @@ class SessionResults {
     this._revision = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -176,7 +170,6 @@ class SessionResults {
     return this._runningSessionId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -184,7 +177,6 @@ class SessionResults {
     this._runningSessionId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -192,7 +184,6 @@ class SessionResults {
     return this._isAborted
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -200,7 +191,6 @@ class SessionResults {
     this._isAborted = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -208,7 +198,6 @@ class SessionResults {
     return this._isStarred
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -216,7 +205,6 @@ class SessionResults {
     this._isStarred = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {StartInfo}
    */
@@ -224,7 +212,6 @@ class SessionResults {
     return this._startInfo
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {StartInfo} value
    */
@@ -232,7 +219,6 @@ class SessionResults {
     this._startInfo = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -240,7 +226,6 @@ class SessionResults {
     return this._batchId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -248,7 +233,6 @@ class SessionResults {
     this._batchId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -256,7 +240,6 @@ class SessionResults {
     return this._secretToken
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -264,7 +247,6 @@ class SessionResults {
     this._secretToken = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -272,7 +254,6 @@ class SessionResults {
     return this._state
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -280,7 +261,6 @@ class SessionResults {
     this._state = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -288,7 +268,6 @@ class SessionResults {
     return this._status
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -296,7 +275,6 @@ class SessionResults {
     this._status = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -304,7 +282,6 @@ class SessionResults {
     return this._isDefaultStatus
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -312,7 +289,6 @@ class SessionResults {
     this._isDefaultStatus = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -320,7 +296,6 @@ class SessionResults {
     return this._startedAt
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -328,7 +303,6 @@ class SessionResults {
     this._startedAt = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number}
    */
@@ -336,7 +310,6 @@ class SessionResults {
     return this._duration
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -344,7 +317,6 @@ class SessionResults {
     this._duration = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -352,7 +324,6 @@ class SessionResults {
     return this._isDifferent
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -360,7 +331,6 @@ class SessionResults {
     this._isDifferent = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {AppEnvironment}
    */
@@ -368,7 +338,6 @@ class SessionResults {
     return this._env
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {AppEnvironment} value
    */
@@ -376,7 +345,6 @@ class SessionResults {
     this._env = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Branch}
    */
@@ -384,7 +352,6 @@ class SessionResults {
     return this._branch
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Branch} value
    */
@@ -392,7 +359,6 @@ class SessionResults {
     this._branch = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {ExpectedAppOutput[]}
    */
@@ -400,7 +366,6 @@ class SessionResults {
     return this._expectedAppOutput
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {ExpectedAppOutput[]} value
    */
@@ -408,7 +373,6 @@ class SessionResults {
     this._expectedAppOutput = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {ActualAppOutput[]}
    */
@@ -416,7 +380,6 @@ class SessionResults {
     return this._actualAppOutput
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {ActualAppOutput[]} value
    */
@@ -424,7 +387,6 @@ class SessionResults {
     this._actualAppOutput = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -432,7 +394,6 @@ class SessionResults {
     return this._baselineId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -440,7 +401,6 @@ class SessionResults {
     this._baselineId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -448,7 +408,6 @@ class SessionResults {
     return this._baselineRevId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -456,7 +415,6 @@ class SessionResults {
     this._baselineRevId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -464,7 +422,6 @@ class SessionResults {
     return this._scenarioId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -472,7 +429,6 @@ class SessionResults {
     this._scenarioId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -480,7 +436,6 @@ class SessionResults {
     return this._scenarioName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -488,7 +443,6 @@ class SessionResults {
     this._scenarioName = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -496,7 +450,6 @@ class SessionResults {
     return this._appId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -504,7 +457,6 @@ class SessionResults {
     this._appId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -512,7 +464,6 @@ class SessionResults {
     return this._baselineModelId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -520,7 +471,6 @@ class SessionResults {
     this._baselineModelId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -528,7 +478,6 @@ class SessionResults {
     return this._baselineEnvId
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -536,7 +485,6 @@ class SessionResults {
     this._baselineEnvId = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {AppEnvironment}
    */
@@ -544,7 +492,6 @@ class SessionResults {
     return this._baselineEnv
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {AppEnvironment} value
    */
@@ -552,7 +499,6 @@ class SessionResults {
     this._baselineEnv = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -560,7 +506,6 @@ class SessionResults {
     return this._appName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -568,7 +513,6 @@ class SessionResults {
     this._appName = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */
@@ -576,7 +520,6 @@ class SessionResults {
     return this._baselineBranchName
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} value
    */
@@ -584,7 +527,6 @@ class SessionResults {
     this._baselineBranchName = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -592,7 +534,6 @@ class SessionResults {
     return this._isNew
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */

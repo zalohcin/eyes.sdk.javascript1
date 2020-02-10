@@ -44,7 +44,6 @@ class EyesWebDriver extends IWebDriver {
     // this._logger.verbose("Driver session is " + this.getSessionId());
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Eyes}
    */
@@ -56,7 +55,6 @@ class EyesWebDriver extends IWebDriver {
    * @return {WebDriver}
    */
   getRemoteWebDriver() {
-    // noinspection JSUnresolvedVariable
     return this._driver.driver || this._driver
   }
 
@@ -232,7 +230,6 @@ class EyesWebDriver extends IWebDriver {
     return this._driver.getTitle()
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {!(By|Function)} locator The locator strategy to use when searching for the element.
@@ -242,7 +239,6 @@ class EyesWebDriver extends IWebDriver {
     return new EyesWebElementPromise(this._logger, this, this._driver.findElement(locator), locator)
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @param {!(By|Function)} locator The locator strategy to use when searching for the element.
@@ -300,7 +296,6 @@ class EyesWebDriver extends IWebDriver {
     return this._elementsIds
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {ImageRotation} - The image rotation data.
    */
@@ -315,163 +310,131 @@ class EyesWebDriver extends IWebDriver {
     this._rotation = rotation
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} className
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByClassName(className) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElement(By.className(className))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} className
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByClassName(className) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(By.className(className))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} cssSelector
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByCssSelector(cssSelector) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElement(By.css(cssSelector))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} cssSelector
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByCssSelector(cssSelector) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(By.css(cssSelector))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} id
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementById(id) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElement(By.id(id))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} id
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsById(id) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(By.id(id))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} linkText
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByLinkText(linkText) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElement(By.linkText(linkText))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} linkText
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByLinkText(linkText) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(By.linkText(linkText))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} partialLinkText
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByPartialLinkText(partialLinkText) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElement(By.partialLinkText(partialLinkText))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} partialLinkText
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByPartialLinkText(partialLinkText) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(By.partialLinkText(partialLinkText))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} name
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByName(name) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElement(By.name(name))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} name
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByName(name) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(By.name(name))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} tagName
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByTagName(tagName) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElement(By.css(tagName))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} tagName
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByTagName(tagName) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(By.css(tagName))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} xpath
    * @return {EyesWebElementPromise} - A promise that will resolve to a EyesWebElement.
    */
   findElementByXPath(xpath) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElement(By.xpath(xpath))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {string} xpath
    * @return {!Promise<!Array<!EyesWebElement>>} - A promise that will resolve to an array of EyesWebElements.
    */
   findElementsByXPath(xpath) {
-    // noinspection JSCheckFunctionSignatures
     return this.findElements(By.xpath(xpath))
   }
 
@@ -534,7 +497,6 @@ class EyesWebDriver extends IWebDriver {
     return null
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise<string>} - A copy of the current frame chain.
    */

@@ -3,7 +3,6 @@
 const {GeneralUtils, Region, FloatingMatchSettings} = require('@applitools/eyes-common')
 
 class ImageMatchSettings {
-  // noinspection FunctionWithMoreThanThreeNegationsJS
   /**
    * @param {MatchLevel|string} matchLevel
    * @param {number} ignoreCaret
@@ -64,7 +63,6 @@ class ImageMatchSettings {
     this._remainder = remainder
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {MatchLevel}
    */
@@ -72,7 +70,6 @@ class ImageMatchSettings {
     return this._matchLevel
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {MatchLevel} value
    */
@@ -80,7 +77,6 @@ class ImageMatchSettings {
     this._matchLevel = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region[]}
    */
@@ -88,7 +84,6 @@ class ImageMatchSettings {
     return this._ignore
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Region[]} value
    */
@@ -96,7 +91,6 @@ class ImageMatchSettings {
     this._ignore = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region[]}
    */
@@ -104,7 +98,6 @@ class ImageMatchSettings {
     return this._strict
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Region[]} value
    */
@@ -112,7 +105,6 @@ class ImageMatchSettings {
     this._strict = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region[]}
    */
@@ -120,7 +112,6 @@ class ImageMatchSettings {
     return this._content
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Region[]} value
    */
@@ -128,7 +119,6 @@ class ImageMatchSettings {
     this._content = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Region[]}
    */
@@ -136,7 +126,6 @@ class ImageMatchSettings {
     return this._layout
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {Region[]} value
    */
@@ -144,7 +133,6 @@ class ImageMatchSettings {
     this._layout = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {FloatingMatchSettings[]}
    */
@@ -152,7 +140,6 @@ class ImageMatchSettings {
     return this._floating
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {FloatingMatchSettings[]} value
    */
@@ -160,7 +147,6 @@ class ImageMatchSettings {
     this._floating = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number}
    */
@@ -168,7 +154,6 @@ class ImageMatchSettings {
     return this._splitTopHeight
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -176,7 +161,6 @@ class ImageMatchSettings {
     this._splitTopHeight = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number}
    */
@@ -184,7 +168,6 @@ class ImageMatchSettings {
     return this._splitBottomHeight
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -192,7 +175,6 @@ class ImageMatchSettings {
     this._splitBottomHeight = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean}
    */
@@ -200,7 +182,6 @@ class ImageMatchSettings {
     return this._ignoreCaret
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {boolean} value
    */
@@ -208,7 +189,6 @@ class ImageMatchSettings {
     this._ignoreCaret = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number}
    */
@@ -216,7 +196,6 @@ class ImageMatchSettings {
     return this._scale
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */
@@ -224,7 +203,6 @@ class ImageMatchSettings {
     this._scale = value
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {number}
    */
@@ -232,7 +210,6 @@ class ImageMatchSettings {
     return this._remainder
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @param {number} value
    */

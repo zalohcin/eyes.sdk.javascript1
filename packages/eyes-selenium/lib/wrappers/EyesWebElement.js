@@ -96,7 +96,6 @@ class EyesWebElement extends WebElement {
    */
   static async equals(a, b) {
     if (a instanceof WebElement && b instanceof WebElement) {
-      // noinspection JSValidateTypes
       return (await a.getId()) === (await b.getId())
     }
 
@@ -168,7 +167,6 @@ class EyesWebElement extends WebElement {
     return Math.round(parseFloat(result.trim().replace('px', '')))
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @deprecated use {@link getScrollLocation} instead
    * @return {Promise<number>} - The value of the scrollLeft property of the element.
@@ -178,7 +176,6 @@ class EyesWebElement extends WebElement {
     return Math.ceil(result[0]) || 0
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @deprecated use {@link getScrollLocation} instead
    * @return {Promise<number>} - The value of the scrollTop property of the element.
@@ -196,7 +193,6 @@ class EyesWebElement extends WebElement {
     return new Location(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @deprecated use {@link getScrollSize} instead
    * @return {Promise<number>} - The value of the scrollWidth property of the element.
@@ -206,7 +202,6 @@ class EyesWebElement extends WebElement {
     return Math.ceil(result[0]) || 0
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @deprecated use {@link getScrollSize} instead
    * @return {Promise<number>} - The value of the scrollHeight property of the element.
@@ -224,7 +219,6 @@ class EyesWebElement extends WebElement {
     return new RectangleSize(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @deprecated use {@link getClientSize} instead
    * @return {Promise<number>}
@@ -234,7 +228,6 @@ class EyesWebElement extends WebElement {
     return Math.ceil(result[0]) || 0
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @deprecated use {@link getClientSize} instead
    * @return {Promise<number>}
@@ -252,7 +245,6 @@ class EyesWebElement extends WebElement {
     return new RectangleSize(Math.ceil(result[0]) || 0, Math.ceil(result[1]) || 0)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise<number>} - The width of the left border.
    */
@@ -260,7 +252,6 @@ class EyesWebElement extends WebElement {
     return this.getComputedStyleInteger('border-left-width')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise<number>} - The width of the right border.
    */
@@ -268,7 +259,6 @@ class EyesWebElement extends WebElement {
     return this.getComputedStyleInteger('border-right-width')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise<number>} - The width of the top border.
    */
@@ -276,7 +266,6 @@ class EyesWebElement extends WebElement {
     return this.getComputedStyleInteger('border-top-width')
   }
 
-  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {Promise<number>} - The width of the bottom border.
    */
@@ -338,11 +327,9 @@ class EyesWebElement extends WebElement {
    * @return {Promise<*>} - The result returned from the script
    */
   executeScript(script) {
-    // noinspection JSValidateTypes
     return this._eyesDriver.executeScript(script, this)
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @return {!EyesWebElement} A WebElement that can be used to issue commands against the located element.
@@ -362,7 +349,6 @@ class EyesWebElement extends WebElement {
     return elements.map(element => new EyesWebElement(this._logger, this._eyesDriver, element))
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    * @return {Promise}
@@ -375,7 +361,6 @@ class EyesWebElement extends WebElement {
     return super.click()
   }
 
-  // noinspection JSCheckFunctionSignatures
   /**
    * @inheritDoc
    */

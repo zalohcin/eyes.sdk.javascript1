@@ -46,14 +46,13 @@ class DebugScreenshotsProvider {
     }
   }
 
-  // noinspection JSMethodCanBeStatic
   /**
    * @abstract
    * @param {MutableImage} image
    * @param {string} suffix
    * @return {Promise}
    */
-  async save(image, suffix) {
+  async save(_image, _suffix) {
     // eslint-disable-line no-unused-vars
     throw new TypeError('The method is not implemented!')
   }
