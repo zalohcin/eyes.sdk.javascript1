@@ -362,7 +362,7 @@ class EyesWebDriverScreenshot extends EyesScreenshot {
       subScreenshotImage,
       new Region(
         region.getLeft(),
-        region.getRight(),
+        region.getTop(),
         subScreenshotImage.getWidth(),
         subScreenshotImage.getHeight(),
       ),
