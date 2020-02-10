@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@applitools/dom-capture@^7.0.17", "@applitools/dom-capture@^7.0.22", "@applitools/dom-capture@^7.1.2":
+"@applitools/dom-capture@^7.0.22", "@applitools/dom-capture@^7.1.2":
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/@applitools/dom-capture/-/dom-capture-7.1.3.tgz#4348bacc1e0bea937568ccfd454ddd0bad1ad133"
   integrity sha512-mR8UhWCtE9iIos6u0J5O/zzHZsUgzI2AepQ7xqTQtxoeT4gIGsHuxlVLVJb2ixuUtteMChrsaCPVWXNz8mRRtA==
@@ -22,15 +22,6 @@
   integrity sha512-Z6eDcSBahtCEGi4PpS6v3ZPVMjzqo7CsDIKJUdP+TTI7FGodMSbnCrn+8duEjko2euPvDgKTlbWSV7PaF+RGvg==
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
-
-"@applitools/dom-utils@~4.6.37":
-  version "4.6.41"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.6.41.tgz#929f927d08dd6b030e6cb22396baccbad19e0703"
-  integrity sha512-wp7zSlVOzkuK55e5R5FeUwTdxec1ZX+Q6dVCC22vI/D3lA1vOJ7I0tQWcT67pxwZ4BTezmGu9xWRUxnJM6ERqg==
-  dependencies:
-    "@applitools/dom-capture" "^7.0.17"
-    "@applitools/eyes-common" "^3.12.2"
-    axios "^0.19.0"
 
 "@applitools/eyes-sdk-core@6.0.0":
   version "6.0.0"
@@ -56,6 +47,29 @@
     chalk "3.0.0"
     es6-promise-pool "2.5.0"
     tunnel "0.0.6"
+
+"@applitools/eyes-sdk-core@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-6.0.8.tgz#418aec0cfd24bc3cc9272f6aa0bbaaaf44313284"
+  integrity sha512-LIWvXilUiR8wZsd6W6/9CAyV6s6xgLe0JL4bq6KSbqsUgqp7osIM7z3+GdjIY5zX8q093NF3sRAY6FERveAzaQ==
+  dependencies:
+    "@applitools/eyes-common" "3.18.2"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    axios "0.19.2"
+    chalk "3.0.0"
+    es6-promise-pool "2.5.0"
+    tunnel "0.0.6"
+
+"@applitools/eyes-webdriverio@5.9.10":
+  version "5.9.10"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-webdriverio/-/eyes-webdriverio-5.9.10.tgz#c245b2dda0ccb360034e749b736ac977f9a0a217"
+  integrity sha512-u1FJoDWLc2X1CCzoh0sgHm63eCBZuB81dZKZZi2pzCYkke1Aw5IwYPBXRBw+GqBVuobFSNT7ezrL9CM7XraIXw==
+  dependencies:
+    "@applitools/dom-utils" "4.7.4"
+    "@applitools/eyes-sdk-core" "6.0.9"
+    "@applitools/visual-grid-client" "13.5.10"
+    selenium-webdriver "^4.0.0-alpha.5"
+    webdriverio "^5.18.6"
 
 "@applitools/functional-commons@1.5.4", "@applitools/functional-commons@^1.4.1", "@applitools/functional-commons@^1.5.2", "@applitools/functional-commons@^1.5.4":
   version "1.5.4"
