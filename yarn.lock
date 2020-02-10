@@ -16,26 +16,6 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
-"@applitools/dom-snapshot@^3.1.4":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.3.0.tgz#8c5e84018528673183595e597e7dbd0a894b7bf6"
-  integrity sha512-Z6eDcSBahtCEGi4PpS6v3ZPVMjzqo7CsDIKJUdP+TTI7FGodMSbnCrn+8duEjko2euPvDgKTlbWSV7PaF+RGvg==
-  dependencies:
-    "@applitools/functional-commons" "^1.5.4"
-
-"@applitools/eyes-sdk-core@6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-6.0.0.tgz#8a1cc1902c4da6b1abbbd466a229034142173fcd"
-  integrity sha512-FEsn410tXp11dmdB4dgcXcf6v2E9xXlAIyFFpQb8gIeGE1TqbbRqOaYj4+dF55E5NocAFhBO0Ek5Ov2qvxsJjg==
-  dependencies:
-    "@applitools/eyes-common" "^3.17.2"
-    "@applitools/isomorphic-fetch" "^3.0.0"
-    "@applitools/sdk-fake-eyes-server" "^1.0.3"
-    axios "^0.19.0"
-    chalk "^3.0.0"
-    es6-promise-pool "^2.5.0"
-    tunnel "0.0.6"
-
 "@applitools/eyes-sdk-core@6.0.7":
   version "6.0.7"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-6.0.7.tgz#e4e0fa797cd6bf50875014f8ddd1ccc3979a7ffe"
@@ -71,7 +51,7 @@
     selenium-webdriver "^4.0.0-alpha.5"
     webdriverio "^5.18.6"
 
-"@applitools/functional-commons@1.5.4", "@applitools/functional-commons@^1.4.1", "@applitools/functional-commons@^1.5.2", "@applitools/functional-commons@^1.5.4":
+"@applitools/functional-commons@1.5.4", "@applitools/functional-commons@^1.5.2", "@applitools/functional-commons@^1.5.4":
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/@applitools/functional-commons/-/functional-commons-1.5.4.tgz#d32f2bbc6a2598872b3a385d054fcf8e40c30a40"
   integrity sha512-R+p4fliS8j6YlZNSLgsx6cBpjlmZaec67v9PpophPW5vXnOJFVcELnoeO21AVG1kbHu0FeAk025xr99EUTppFw==
@@ -88,19 +68,7 @@
     lodash.merge "^4.6.2"
     node-fetch "^2.6.0"
 
-"@applitools/http-commons@^1.3.9":
-  version "1.3.9"
-  resolved "https://registry.yarnpkg.com/@applitools/http-commons/-/http-commons-1.3.9.tgz#bdc197d5e827e322f5f7a1660b90a21aa46d1cea"
-  integrity sha512-hGb5xhKJ9y2cMJ6ajMBuXXuy3prMSr/AtAdv38iGozeNqNc+HC51BDsaQXas95jbU6ZHEJFSsmvCYWb8O8DHrw==
-  dependencies:
-    "@applitools/functional-commons" "^1.4.1"
-    "@applitools/monitoring-commons" "^1.0.15"
-    agentkeepalive "^4.0.2"
-    debug "^4.1.1"
-    lodash.merge "^4.6.2"
-    node-fetch "^2.6.0"
-
-"@applitools/isomorphic-fetch@3.0.0", "@applitools/isomorphic-fetch@^3.0.0":
+"@applitools/isomorphic-fetch@3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@applitools/isomorphic-fetch/-/isomorphic-fetch-3.0.0.tgz#3a3a838954b8b8bb89f1078e4f82b8c6bccaa884"
   integrity sha512-7rutaN/2M5wYjOIOTKS/Zuc1Na90fJNEAqvo/jCxt7nSD1kYscHV3aCk9t7RD59gmzLMvUTIxFbjl4RUMV8qfg==
@@ -108,7 +76,7 @@
     node-fetch "^2.3.0"
     whatwg-fetch ">=0.10.0"
 
-"@applitools/jsdom@1.0.2", "@applitools/jsdom@^1.0.1":
+"@applitools/jsdom@1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@applitools/jsdom/-/jsdom-1.0.2.tgz#ad44b25f2ba117ccaa672afb2e8f1b91bc881740"
   integrity sha512-VDnXYjqYn3IFEbvYTxZYyR4vAgnUtN1ovYwEYpe7a9vc9aXZ+UT9S3Gww/yFdTVMHWIoa8PcR32PaL6SmWlVfg==
@@ -179,25 +147,6 @@
     "@applitools/isomorphic-fetch" "3.0.0"
     "@applitools/jsdom" "1.0.2"
     he "1.2.0"
-    lodash.mapvalues "^4.6.0"
-    mime-types "^2.1.24"
-    mkdirp "^0.5.1"
-    postcss-value-parser "^4.0.2"
-    throat "^5.0.0"
-
-"@applitools/visual-grid-client@13.5.8":
-  version "13.5.8"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-13.5.8.tgz#91b4b8a1bc77963ad79a2eb470976ac135bf9dc2"
-  integrity sha512-30i4mefJFSoiWZWGJHaVEf5ao4YhuzvFI9mDFKhzo8AI8DHBRZPaL61CDb2EgtbSH7LxeG2YHEM4h2uXniu2ww==
-  dependencies:
-    "@applitools/dom-snapshot" "^3.1.4"
-    "@applitools/eyes-common" "^3.17.2"
-    "@applitools/eyes-sdk-core" "6.0.0"
-    "@applitools/functional-commons" "^1.5.2"
-    "@applitools/http-commons" "^1.3.9"
-    "@applitools/isomorphic-fetch" "^3.0.0"
-    "@applitools/jsdom" "^1.0.1"
-    he "^1.2.0"
     lodash.mapvalues "^4.6.0"
     mime-types "^2.1.24"
     mkdirp "^0.5.1"
@@ -3933,7 +3882,7 @@ es-to-primitive@^1.2.1:
     is-date-object "^1.0.1"
     is-symbol "^1.0.2"
 
-es6-promise-pool@2.5.0, es6-promise-pool@^2.5.0:
+es6-promise-pool@2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/es6-promise-pool/-/es6-promise-pool-2.5.0.tgz#147c612b36b47f105027f9d2bf54a598a99d9ccb"
   integrity sha1-FHxhKza0fxBQJ/nSv1SlmKmdnMs=
@@ -4964,7 +4913,7 @@ he@1.1.1:
   resolved "https://registry.yarnpkg.com/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
   integrity sha1-k0EP0hsAlzUVH4howvJx80J+I/0=
 
-he@1.2.0, he@^1.2.0:
+he@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
