@@ -1,3 +1,7 @@
+## 1.3.5 - 2020-02-10
+
+- update SDK version to 5.9.12
+
 ## 1.3.4 - 2020-02-09
 - added missing require for ConsoleLogHandler
 - exported By and Target from eyes-webdriverio so they can be required directly from this package instead
