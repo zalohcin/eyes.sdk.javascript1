@@ -24,15 +24,18 @@ function fromCacheToRGridResource({url, type, hash, content}) {
   return resource
 }
 
-function fromFetchedToRGridResource({url, type, value}) {
-  const rGridResource = new RGridResource()
-  rGridResource.setUrl(url)
-  rGridResource.setContentType(type || 'application/x-applitools-unknown') // TODO test this
-  rGridResource.setContent(value)
-  return rGridResource
-}
-
 function makeGetAllResources({resourceCache, fetchResource, extractCssResources, logger}) {
+  function fromFetchedToRGridResource({url, type, value}) {
+    const rGridResource = new RGridResource()
+    rGridResource.setUrl(url)
+    rGridResource.setContentType(type || 'application/x-applitools-unknown') // TODO test this
+    rGridResource.setContent(value || '')
+    if (!value) {
+      logger.log(`warning! the resource ${url} ${type} has no content.`)
+    }
+    return rGridResource
+  }
+
   return function getAllResources({resourceUrls, preResources, fetchOptions}) {
     const handledResources = new Set()
     return getOrFetchResources(resourceUrls, preResources)

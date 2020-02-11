@@ -319,6 +319,21 @@ describe('getAllResources', () => {
     expect(resources).to.eql({})
   })
 
+  it('handles empty resources', async () => {
+    const resources = await getAllResources({
+      preResources: {
+        one: {url: 'one', type: 'some-type', value: null},
+        two: {url: 'two', type: 'some-type', value: 'some-content'},
+      },
+    })
+    const result = Object.entries(resources).map(r => r.toString())
+    const expected = [
+      'one,RGridResource { {"url":"one","contentType":"some-type","content":""} }',
+      'two,RGridResource { {"url":"two","contentType":"some-type","content":"some-content"} }',
+    ]
+    expect(result).to.eql(expected)
+  })
+
   it('handles uppercase urls', async () => {
     const server = await testServer()
     closeServer = server.close
