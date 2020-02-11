@@ -1,3 +1,9 @@
+# Change Log
+
+## 2.11.9
+
+- Send stitching service URL to visual grid [Trello 212](https://trello.com/c/Sqh6k2VV)
+
 ## 2.11.8
 - Fixed error when performing a URL lookup on native mobile. [Trello 208](https://trello.com/c/ZPkZsyaI)
 
