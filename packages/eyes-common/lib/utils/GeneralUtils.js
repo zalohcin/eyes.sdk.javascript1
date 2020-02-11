@@ -433,6 +433,20 @@ class GeneralUtils {
     }
     return pexec(...args)
   }
+
+  static cachify(getterFunction, cacheRegardlessOfArgs = false) {
+    const cachedGetter = (function() {
+      const cache = {}
+      return function(arg1AndKey, ...args) {
+        const cacheKey = (!cacheRegardlessOfArgs && arg1AndKey) || 'default'
+        if (!cache[cacheKey]) {
+          cache[cacheKey] = getterFunction(arg1AndKey, ...args)
+        }
+        return cache[cacheKey]
+      }
+    })()
+    return cachedGetter
+  }
 }
 
 exports.GeneralUtils = GeneralUtils

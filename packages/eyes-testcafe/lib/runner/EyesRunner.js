@@ -1,6 +1,7 @@
 'use strict'
 
-const {makeGetBatchInfo, getScmInfo} = require('@applitools/eyes-sdk-core')
+const {getScmInfo} = require('@applitools/eyes-sdk-core')
+const {GeneralUtils} = require('@applitools/eyes-common')
 
 class EyesRunner {
   constructor() {
@@ -40,7 +41,7 @@ class EyesRunner {
 
   makeGetBatchInfo(fetchBatchInfo) {
     if (!this._getBatchInfo) {
-      this._getBatchInfo = makeGetBatchInfo(fetchBatchInfo)
+      this._getBatchInfo = GeneralUtils.cachify(fetchBatchInfo)
     }
   }
 

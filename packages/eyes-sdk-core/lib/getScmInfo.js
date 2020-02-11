@@ -1,21 +1,15 @@
 'use strict'
 
 const {
-  GeneralUtils: {pexec},
+  GeneralUtils: {pexec, cachify},
 } = require('@applitools/eyes-common')
 
-const getScmInfo = (function() {
-  let mergeBaseTime
-  return async function getScmInfo(parentBranchName, _opts) {
-    if (!mergeBaseTime) {
-      const {stdout} = await pexec(
-        `HASH=$(git merge-base HEAD ${parentBranchName}) && git show -q --format=%cI $HASH`,
-        _opts,
-      )
-      mergeBaseTime = stdout && stdout.replace(/\s/g, '')
-    }
-    return mergeBaseTime
-  }
-})()
+async function doGetScmInfo(parentBranchName, _opts) {
+  const {stdout} = await pexec(
+    `HASH=$(git merge-base HEAD ${parentBranchName}) && git show -q --format=%cI $HASH`,
+    _opts,
+  )
+  return stdout && stdout.replace(/\s/g, '')
+}
 
-module.exports = getScmInfo
+module.exports = cachify(doGetScmInfo, true)

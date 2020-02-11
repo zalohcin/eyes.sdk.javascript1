@@ -48,6 +48,7 @@ const ImageRotation = require('./positioning/ImageRotation')
 
 const VERSION = require('../package.json').version
 
+// eslint-disable-next-line no-unused-vars
 const DEFAULT_STITCHING_OVERLAP = 50 // px
 const DEFAULT_WAIT_BEFORE_SCREENSHOTS = 100 // Milliseconds
 

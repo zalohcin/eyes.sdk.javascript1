@@ -35,6 +35,7 @@
     "@applitools/dom-utils": "4.7.4",
     "@applitools/eyes-sdk-core": "6.0.9",
     "@applitools/visual-grid-client": "13.5.12",
+    "@applitools/eyes-common": "^3.17.2",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "webdriverio": "^5.18.6"
   },

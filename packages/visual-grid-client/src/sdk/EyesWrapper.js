@@ -12,10 +12,13 @@ const {presult} = require('@applitools/functional-commons')
 const VERSION = require('../../package.json').version
 
 class EyesWrapper extends EyesBase {
-  constructor({apiKey, logHandler} = {}) {
+  constructor({apiKey, logHandler, getBatchInfoWithCache, getScmInfoWithCache} = {}) {
     super()
     apiKey && this.setApiKey(apiKey)
     logHandler && this.setLogHandler(logHandler)
+
+    this._getScmInfoWithCache = getScmInfoWithCache
+    this._getBatchInfoWithCache = getBatchInfoWithCache
   }
 
   async open({appName, testName, viewportSize, skipStartingSession}) {
@@ -191,12 +194,12 @@ class EyesWrapper extends EyesBase {
     // Do nothing because visual grid client handles rendering info
   }
 
-  async _getAndSaveBatchInfoFromServer(_batchId) {
-    // TODO
+  async _getAndSaveBatchInfoFromServer(batchId) {
+    return this._getBatchInfoWithCache(batchId)
   }
 
-  async _getAndSaveScmMergeBaseTime(_parentBranchName) {
-    // TODO
+  async _getAndSaveScmMergeBaseTime(parentBranchName) {
+    return this._getScmInfoWithCache(parentBranchName)
   }
 }
 
