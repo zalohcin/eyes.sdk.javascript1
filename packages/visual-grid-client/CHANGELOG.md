@@ -1,5 +1,9 @@
 # Change Log
 
+## 13.5.13
+
+- Handling empty resources
+
 ## 13.5.12
 
 - Send stitching service URL to visual grid [Trello 212](https://trello.com/c/Sqh6k2VV)
