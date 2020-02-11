@@ -38,6 +38,21 @@ describe('CheckFluent', () => {
     })
   })
 
+  it('check region with ignored region', async () => {
+    await driver.executeScript(`
+      const block = document.querySelector('#overflowing-div');
+      const random = document.createElement('div');
+      random.innerText = Date.now();
+      random.id = 'random-div'
+      block.prepend(random)
+    `)
+    await eyes.check(
+      'Ignore Region',
+      Target.region(By.id('overflowing-div')).ignoreRegions(By.id('random-div')),
+    )
+    return eyes.close()
+  })
+
   it('check region fully', async () => {
     eyes.setStitchMode(StitchMode.CSS)
     await eyes.check(
