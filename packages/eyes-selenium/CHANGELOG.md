@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.33.13
+
+- Fix ignore regions when checking region [Trello 212](https://trello.com/c/m7vRDQyP)
+
 ## 4.33.12
 
 - Send stitching service URL to visual grid [Trello 212](https://trello.com/c/Sqh6k2VV)
