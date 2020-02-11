@@ -2,6 +2,7 @@
 
 const {
   ArgumentGuard,
+  ConfigUtils,
   TypeUtils,
   EyesError,
   Region,
@@ -193,6 +194,10 @@ class EyesBase extends EyesAbstract {
     const batchId = this.getUserSetBatchId()
     let branchName = this._configuration.getBranchName()
     let parentBranchName = this._configuration.getParentBranchName()
+
+    if (ConfigUtils.isFeatureFlagOff('USE_BRANCH_BASE')) {
+      return {branchName, parentBranchName}
+    }
 
     const isLocalBranchTest = branchName && parentBranchName && branchName !== parentBranchName
     const isCiBranchTest = batchId && !branchName && !parentBranchName
