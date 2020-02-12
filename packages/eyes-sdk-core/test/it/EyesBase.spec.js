@@ -7,7 +7,7 @@ const {
 const {FakeEyes} = require('../testUtils')
 const {EyesBase, Configuration, RunningSession} = require('../../index')
 
-process.env.APPLITOOLS_USE_BRANCH_BASE = true
+process.env.APPLITOOLS_COMPARE_TO_BRANCH_BASE = true
 
 describe('EyesBase', () => {
   let eyes
