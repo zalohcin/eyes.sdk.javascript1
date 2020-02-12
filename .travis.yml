@@ -1,51 +1,55 @@
 if: tag IS blank
 os:
-  - linux
+- linux
 sudo: false
 addons:
   chrome: stable
   firefox: latest
 language: node_js
 node_js:
-  - lts/*
+- lts/*
 cache:
   yarn: true
 before_install:
-  - 'curl -o- -L https://yarnpkg.com/install.sh | bash'
-  - 'export PATH="$HOME/.yarn/bin:$PATH"'
-  - yarn -v
+- curl -o- -L https://yarnpkg.com/install.sh | bash
+- export PATH="$HOME/.yarn/bin:$PATH"
+- yarn -v
 install:
-  - yarn install
+- yarn install
 jobs:
   include:
-    - stage: lint
-      script: yarn lint
-    - name: '@applitools/dom-utils'
-      script: cd packages/dom-utils; yarn test
-      stage: test
-    - name: '@applitools/eyes-common'
-      script: cd packages/eyes-common; yarn test
-    - name: '@applitools/eyes-images'
-      script: cd packages/eyes-images; yarn test
-    - name: '@applitools/eyes-sdk-core'
-      script: cd packages/eyes-sdk-core; yarn test
-    - name: '@applitools/eyes-selenium'
-      script: cd packages/eyes-selenium; yarn test
-    - name: '@applitools/eyes-testcafe'
-      script: cd packages/eyes-testcafe; yarn test
-    - name: '@applitools/sdk-fake-eyes-server'
-      script: cd packages/sdk-fake-eyes-server; yarn test
-    - name: '@applitools/sdk-test-kit'
-      script: cd packages/sdk-test-kit; yarn test
-    - name: '@applitools/visual-grid-client'
-      script: cd packages/visual-grid-client; yarn test
-    - name: '@applitools/eyes.webdriverio'
-      script: cd packages/eyes-webdriverio-4; yarn test
-    - name: '@applitools/eyes-webdriverio'
-      script: cd packages/eyes-webdriverio-5; yarn test
-    - name: '@applitools/eyes-webdriverio5-service'
-      script: cd packages/eyes-webdriverio-5-service; yarn test
+  - stage: lint
+    script: yarn lint
+  - name: "@applitools/dom-utils"
+    script: cd packages/dom-utils; yarn test
+    stage: test
+  - name: "@applitools/eyes-common"
+    script: cd packages/eyes-common; yarn test
+  - name: "@applitools/eyes-images"
+    script: cd packages/eyes-images; yarn test
+  - name: "@applitools/eyes-sdk-core"
+    script: cd packages/eyes-sdk-core; yarn test
+  - name: "@applitools/eyes-selenium"
+    script: cd packages/eyes-selenium; yarn test
+  - name: "@applitools/eyes-testcafe"
+    script: cd packages/eyes-testcafe; yarn test
+  - name: "@applitools/sdk-fake-eyes-server"
+    script: cd packages/sdk-fake-eyes-server; yarn test
+  - name: "@applitools/sdk-test-kit"
+    script: cd packages/sdk-test-kit; yarn test
+  - name: "@applitools/visual-grid-client"
+    script: cd packages/visual-grid-client; yarn test
+  - name: "@applitools/eyes.webdriverio"
+    script: cd packages/eyes-webdriverio-4; yarn test
+  - name: "@applitools/eyes-webdriverio"
+    script: cd packages/eyes-webdriverio-5; yarn test
+  - name: "@applitools/eyes-webdriverio5-service"
+    script: cd packages/eyes-webdriverio-5-service; yarn test
 notifications:
   slack:
-    secure: >-
-      oV4UyGK1CocNQmhUX0878NtkxgsJisAZsJVwZe7mFfsy0MhcRyQuk4Bux7acDr/hsm6zUepCUwEoJJhA7PFTSmqHQyHko4S1JDBAa70U+R4/b+KFUEzH9bEQC1PjLcA5G1uhqT35Q2ppTcjl64HWudVIDNi09+PAyYR/M2MSf29b1Uji0CLOUchpZk13OKeU1M5I/OhJiyq92wHRKb6WiimvsnorvozLJhqAvPgzCOxxy6tSoqSBuPffTUEC0+Qwc4A3lRai8MypppDl5pqM4bTsL0uwXIQEX5VDr0HK0kQwgkHGAFzUjg4JOrCxVxQY9kGwiymJU8JbkkPMc0QIWjV73wVITzSGz2qHMCmpyAky+mLNxYrZ8SbadrO6g7r2bgp0uQOfzB7TktDIT0/gQriw+tovkda5xoyp6YQFHHtIu/KjD2PnCymXJH43kjwcXcRHapG8RJpJjlNinEQ+FxHgU059Kebjk9/Qpnx016Q54PgO/mP1JG8OnslZkvIVPfB20K+VMnAGr3z7xek0bqJcD2439MzQulyL/60nqPqM6JBdL6oh6BxuBpAY7v9Bk+KkLHpwu6DOzmgRn6r0cc75ep2lAKS5HPW2FVFwve9poeQpwkuNna1qoqDM5ezWo7S8WJ1KMT/kaTwprqxcRAKk3iFhaTSny6m4O4qpQqk=
+    secure: oV4UyGK1CocNQmhUX0878NtkxgsJisAZsJVwZe7mFfsy0MhcRyQuk4Bux7acDr/hsm6zUepCUwEoJJhA7PFTSmqHQyHko4S1JDBAa70U+R4/b+KFUEzH9bEQC1PjLcA5G1uhqT35Q2ppTcjl64HWudVIDNi09+PAyYR/M2MSf29b1Uji0CLOUchpZk13OKeU1M5I/OhJiyq92wHRKb6WiimvsnorvozLJhqAvPgzCOxxy6tSoqSBuPffTUEC0+Qwc4A3lRai8MypppDl5pqM4bTsL0uwXIQEX5VDr0HK0kQwgkHGAFzUjg4JOrCxVxQY9kGwiymJU8JbkkPMc0QIWjV73wVITzSGz2qHMCmpyAky+mLNxYrZ8SbadrO6g7r2bgp0uQOfzB7TktDIT0/gQriw+tovkda5xoyp6YQFHHtIu/KjD2PnCymXJH43kjwcXcRHapG8RJpJjlNinEQ+FxHgU059Kebjk9/Qpnx016Q54PgO/mP1JG8OnslZkvIVPfB20K+VMnAGr3z7xek0bqJcD2439MzQulyL/60nqPqM6JBdL6oh6BxuBpAY7v9Bk+KkLHpwu6DOzmgRn6r0cc75ep2lAKS5HPW2FVFwve9poeQpwkuNna1qoqDM5ezWo7S8WJ1KMT/kaTwprqxcRAKk3iFhaTSny6m4O4qpQqk=
+env:
+  jobs:
+    - APPLITOOLS_SERVER_URL=https://test2eyesapi.applitools.com
+  global:
+    secure: NuhqPimZzWYA7tuHtvgtsNk25nzMkPyLHqacCgpkmGjC5+UZRBO5G8zroZPEcPKyB8zv7XDYhxd+UW68rrFJWFwak+Qlok+HETJMMXTKxBT7gyAWtaw+52F56W9AYetjArGy8EL6zyJNO79NKSIS5RVQ5DsDzN/AR0flEp08KlJZ3NmX5CXhTP909sG3qJmQe0jxyVbBapfhbPeeF93zuN1Mp1sAOynY6mlmQcTm+jUk4835hb9BRFJctQ9Ply7O6/MNB1XB8PdCou4/IH5iehQCoFg7F9GIa0Yp3fxcXFPro+GY1GVV4X9ZhzZacl3ena6OSVB3ySD9pKMv3gt5w+v+Cj9d9v9j89/iWLxVA2/xkvND3iVRdTfR4ICtaS75QgPPsMq2+YCCSXlRODiMwtGAtN7Qt8OJcdFncwH+iivgWDeKh9rsGBbxB0bS+OW5CCpQddkO4zOlxX3Wmjkt9CPMdg9ZRoiIeIRIbHEjMx/H0kiKE5ETrBt5eNi7dQbe8k0veO0oD8/zL9cbsHumFYnLbQ3OjyFvkYubEgc1xr46Xf4tQqG/KogZ//VMoEHaaf0ovmQaSrnKxjsaN3MqexzWcYN2BHjzLQmAdp8xWKo3XstMJeagw91VUU3J49w6gbqmibaCOyT3QqGU+uggZc8HwfT2U+nb2DOoIQWrWcA=
