@@ -1,6 +1,6 @@
 'use strict'
 
-const {makeGetRenderingInfo} = require('@applitools/eyes-sdk-core')
+const {GeneralUtils} = require('@applitools/eyes-common')
 const {EyesRunner} = require('./EyesRunner')
 const {TestResultsSummary} = require('./TestResultsSummary')
 const {TestResultContainer} = require('./TestResultContainer')
@@ -31,7 +31,7 @@ class ClassicRunner extends EyesRunner {
 
   makeGetRenderingInfo(getRenderingInfo) {
     if (!this._getRenderingInfo) {
-      this._getRenderingInfo = makeGetRenderingInfo(getRenderingInfo)
+      this._getRenderingInfo = GeneralUtils.cachify(getRenderingInfo)
     }
   }
 

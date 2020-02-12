@@ -12,10 +12,13 @@ const {presult} = require('@applitools/functional-commons')
 const VERSION = require('../../package.json').version
 
 class EyesWrapper extends EyesBase {
-  constructor({apiKey, logHandler} = {}) {
+  constructor({apiKey, logHandler, getBatchInfoWithCache, getScmInfoWithCache} = {}) {
     super()
     apiKey && this.setApiKey(apiKey)
     logHandler && this.setLogHandler(logHandler)
+
+    this._getScmInfoWithCache = getScmInfoWithCache
+    this._getBatchInfoWithCache = getBatchInfoWithCache
   }
 
   async open({appName, testName, viewportSize, skipStartingSession}) {
@@ -187,14 +190,16 @@ class EyesWrapper extends EyesBase {
     this.inferredEnvironment = value
   }
 
-  getExistingBatchId() {
-    // not doing eyesInstance.getBatch().getId() because
-    // it would generate a new id if called before open
-    return this._configuration._batch && this._configuration._batch.getId()
-  }
-
   async getAndSaveRenderingInfo() {
     // Do nothing because visual grid client handles rendering info
+  }
+
+  async _getAndSaveBatchInfoFromServer(batchId) {
+    return this._getBatchInfoWithCache(batchId)
+  }
+
+  async _getAndSaveScmMergeBaseTime(parentBranchName) {
+    return this._getScmInfoWithCache(parentBranchName)
   }
 }
 

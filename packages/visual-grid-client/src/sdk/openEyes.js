@@ -1,7 +1,8 @@
 'use strict'
 const {
-  GeneralUtils: {backwardCompatible},
+  GeneralUtils: {backwardCompatible, cachify},
 } = require('@applitools/eyes-common')
+const {getScmInfo} = require('@applitools/eyes-sdk-core')
 const makeCheckWindow = require('./checkWindow')
 const makeAbort = require('./makeAbort')
 const makeClose = require('./makeClose')
@@ -166,8 +167,24 @@ function makeOpenEyes({
       logger,
     ))
 
+    let doGetBatchInfoWithCache
+    const getBatchInfoWithCache = batchId => {
+      if (!doGetBatchInfoWithCache) {
+        const serverConnector = getServerConnector(wrappers)
+        doGetBatchInfoWithCache = cachify(serverConnector.batchInfo.bind(serverConnector))
+      }
+      return doGetBatchInfoWithCache(batchId)
+    }
+
     wrappers =
-      wrappers || initWrappers({count: browsers.length, apiKey, logHandler: logger.getLogHandler()})
+      wrappers ||
+      initWrappers({
+        count: browsers.length,
+        apiKey,
+        logHandler: logger.getLogHandler(),
+        getBatchInfoWithCache,
+        getScmInfo,
+      })
 
     configureWrappers({
       wrappers,
@@ -201,8 +218,9 @@ function makeOpenEyes({
     })
 
     if (!globalState.batchStore.hasCloseBatch()) {
+      const serverConnector = getServerConnector(wrappers)
       globalState.batchStore.setCloseBatch(
-        wrappers[0]._serverConnector.deleteBatchSessions.bind(wrappers[0]._serverConnector),
+        serverConnector.deleteBatchSessions.bind(serverConnector),
       )
     }
 
@@ -285,6 +303,10 @@ function makeOpenEyes({
       checkWindow,
       close,
       abort,
+    }
+
+    function getServerConnector(wrappers) {
+      return wrappers[0]._serverConnector
     }
 
     function getCheckWindowPromises() {

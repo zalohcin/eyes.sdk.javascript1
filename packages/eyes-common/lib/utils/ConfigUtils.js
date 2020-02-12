@@ -56,6 +56,14 @@ class ConfigUtils {
   static toEnvVarName(camelCaseStr) {
     return camelCaseStr.replace(/(.)([A-Z])/g, '$1_$2').toUpperCase()
   }
+
+  static isFeatureFlagOn(featureName) {
+    return GeneralUtils.getEnvValue(featureName, true)
+  }
+
+  static isFeatureFlagOff(featureName) {
+    return !ConfigUtils.isFeatureFlagOn(featureName)
+  }
 }
 
 exports.ConfigUtils = ConfigUtils
