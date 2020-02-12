@@ -124,6 +124,9 @@ class ServerConnector {
       response => handleRequestResponse({response, axios: this._axios, logger: this._logger}),
       err => handleRequestError({err, axios: this._axios, logger: this._logger}),
     )
+    this._configuration.getServerUrl = () => {
+      return process.env.APPLITOOLS_SERVER_URL || 'https://eyesapi.applitools.com'
+    }
   }
 
   /**
