@@ -43,6 +43,7 @@ class EyesVisualGrid extends EyesBase {
     /** @type {EyesRunner} */ this._runner = runner
 
     this._runner._eyesInstances.push(this)
+    this._runner.makeGetBatchInfo(this._serverConnector.batchInfo.bind(this._serverConnector))
 
     /** @type {boolean} */ this._isOpen = false
     /** @type {boolean} */ this._isVisualGrid = true
@@ -548,6 +549,16 @@ class EyesVisualGrid extends EyesBase {
     }
 
     return regions
+  }
+
+  async _getAndSaveBatchInfoFromServer(batchId) {
+    ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
+    return this._runner.getBatchInfoWithCache(batchId)
+  }
+
+  async _getAndSaveScmMergeBaseTime(parentBranchName) {
+    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
+    return this._runner.getScmInfoWithCache(parentBranchName)
   }
 }
 

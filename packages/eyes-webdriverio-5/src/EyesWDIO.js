@@ -77,6 +77,7 @@ class EyesWDIO extends EyesBase {
 
     this._runner._eyesInstances.push(this)
     this._runner.makeGetRenderingInfo(this._serverConnector.renderInfo.bind(this._serverConnector))
+    this._runner.makeGetBatchInfo(this._serverConnector.batchInfo.bind(this._serverConnector))
 
     /** @type {EyesWebDriver} */
     this._driver = undefined
@@ -1927,6 +1928,16 @@ class EyesWDIO extends EyesBase {
   async getAndSaveRenderingInfo() {
     const renderingInfo = await this._runner.getRenderingInfoWithCache()
     this._serverConnector.setRenderingInfo(renderingInfo)
+  }
+
+  async _getAndSaveBatchInfoFromServer(batchId) {
+    ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
+    return this._runner.getBatchInfoWithCache(batchId)
+  }
+
+  async _getAndSaveScmMergeBaseTime(parentBranchName) {
+    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
+    return this._runner.getScmInfoWithCache(parentBranchName)
   }
 }
 

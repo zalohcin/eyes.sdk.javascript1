@@ -52,6 +52,7 @@
     "lint": "eslint '**/*.js'",
     "test": "npm run test:unit && npm run test:e2e",
     "test:e2e": "mocha --no-timeouts \"test/+(TestClassicApi*.js|TestFluentApi*.js|TestVisualGrid*.js)\"",
+    "test:it": "mocha --no-timeouts \"test/it/*.js\"",
     "test:unit": "mocha \"test/unit/**/*.js\"",
     "test:coverage": "coverage-tests run --path test/coverage/index.js",
     "test:coverage:nuke": "coverage-tests nuke"

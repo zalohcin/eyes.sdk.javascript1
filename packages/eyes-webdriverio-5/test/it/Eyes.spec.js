@@ -81,10 +81,11 @@ describe('Eyes', function() {
   })
 
   it('_getAndSaveScmMergeBaseTime() works with VG runner', async function() {
-    const res1 = await eyesVG._getAndSaveScmMergeBaseTime('parentBranchName')
-    const res2 = await eyesVG2._getAndSaveScmMergeBaseTime('parentBranchName')
-    const res3 = await eyesVGOtherRunner._getAndSaveScmMergeBaseTime('parentBranchName')
-
+    const [res1, res2, res3] = await Promise.all([
+      eyesVG._getAndSaveScmMergeBaseTime('parentBranchName'),
+      eyesVG2._getAndSaveScmMergeBaseTime('parentBranchName'),
+      eyesVGOtherRunner._getAndSaveScmMergeBaseTime('parentBranchName'),
+    ])
     assert.strictEqual(res1, 'csm not from cache parentBranchName')
     assert.strictEqual(res2, 'csm from cache parentBranchName')
     assert.strictEqual(res3, 'csm not from cache parentBranchName')
