@@ -7,6 +7,8 @@ const {
 const {FakeEyes} = require('../testUtils')
 const {EyesBase, Configuration, RunningSession} = require('../../index')
 
+process.env.APPLITOOLS_USE_BRANCH_BASE = true
+
 describe('EyesBase', () => {
   let eyes
   describe('getAndSetBatchInfo()', () => {
