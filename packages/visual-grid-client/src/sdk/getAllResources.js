@@ -19,7 +19,7 @@ function fromCacheToRGridResource({url, type, hash, content}) {
   const resource = new RGridResource()
   resource.setUrl(url)
   resource.setContentType(type)
-  content && resource.setContent(content)
+  resource.setContent(content || '')
   resource._sha256hash = hash // yuck! but RGridResource assumes it always has the content, which we prefer not to save in cache.
   return resource
 }

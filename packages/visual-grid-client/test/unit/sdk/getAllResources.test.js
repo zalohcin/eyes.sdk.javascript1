@@ -159,7 +159,7 @@ describe('getAllResources', () => {
     const type = 'type'
     const value = 'value'
     const rGridResource = toRGridResource({url, type, value})
-    rGridResource._content = undefined // yuck! but this is the symmetrical yuck of getAllResources::fromCacheToRGridResource since we save resource in cache without content, but with SHA256
+    rGridResource._content = '' // yuck! but this is the symmetrical yuck of getAllResources::fromCacheToRGridResource since we save resource in cache without content, but with SHA256
 
     resourceCache.setValue(url, {url, type, hash: undefined})
 
@@ -294,7 +294,7 @@ describe('getAllResources', () => {
       (o, url) => {
         const rGridResource = toRGridResource({type: o.type, value: o.value, url})
         if (resourceType(rGridResource.getContentType()) !== 'CSS') {
-          rGridResource._content = undefined // yuck! but this is the symmetrical yuck of getAllResources::fromCacheToRGridResource since we save resource in cache without content, but with SHA256
+          rGridResource._content = '' // yuck! but this is the symmetrical yuck of getAllResources::fromCacheToRGridResource since we save resource in cache without content, but with SHA256
         }
         return rGridResource
       },
@@ -332,6 +332,29 @@ describe('getAllResources', () => {
       'two,RGridResource { {"url":"two","contentType":"some-type","content":"some-content"} }',
     ]
     expect(result).to.eql(expected)
+  })
+
+  it('handles empty resources extracted from cache', async () => {
+    const url = 'https://some.com/img.jpg'
+    const type = 'image/jpeg'
+    const value = null
+
+    const fetchResource = () => {}
+    resourceCache = createResourceCache()
+    // value was set in previous checkWindow or previous frame calls to createRGridDOMAndGetResourceMapping
+    resourceCache.setValue(url, {url, type, value})
+    getAllResources = makeGetAllResources({
+      resourceCache,
+      extractCssResources,
+      fetchResource,
+      logger: testLogger,
+    })
+
+    const resourcesFromCache = await getAllResources({
+      resourceUrls: [url],
+    })
+    const content = resourcesFromCache[url].getContent()
+    expect(content).to.eql('')
   })
 
   it('handles uppercase urls', async () => {
