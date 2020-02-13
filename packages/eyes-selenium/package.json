@@ -59,7 +59,7 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
-    "test": "yarn test:unit && yarn test:it",
+    "test": "yarn yarn test:it",
     "render": "node scripts/render.js",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "test:it": "mocha-parallel-tests --timeout 120000 \"test/it/**/*.spec.js\"",
