@@ -410,6 +410,14 @@ class GeneralUtils {
     return sb
   }
 
+  static isFeatureFlagOn(featureName) {
+    return GeneralUtils.getEnvValue(featureName, true)
+  }
+
+  static isFeatureFlagOff(featureName) {
+    return !GeneralUtils.isFeatureFlagOn(featureName)
+  }
+
   /**
    * @template T
    * @param {PromiseLike<T>} promise

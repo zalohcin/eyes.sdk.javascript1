@@ -2,7 +2,7 @@
 
 const {
   ArgumentGuard,
-  ConfigUtils,
+  GeneralUtils,
   TypeUtils,
   EyesError,
   Region,
@@ -195,7 +195,7 @@ class EyesBase extends EyesAbstract {
     let branchName = this._configuration.getBranchName()
     let parentBranchName = this._configuration.getParentBranchName()
 
-    if (ConfigUtils.isFeatureFlagOff('COMPARE_TO_BRANCH_BASE')) {
+    if (GeneralUtils.isFeatureFlagOff('COMPARE_TO_BRANCH_BASE')) {
       return {branchName, parentBranchName}
     }
 
