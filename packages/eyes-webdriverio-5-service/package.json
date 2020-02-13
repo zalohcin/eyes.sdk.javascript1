@@ -33,7 +33,8 @@
     "wdio-chromedriver-service": "^5.0.2"
   },
   "scripts": {
-    "test": "wdio tests/wdio.conf.js"
+    "test": "wdio tests/wdio.conf.js",
+    "postpublish": "git push; git push --tags"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
