@@ -1,5 +1,9 @@
 # Change Log
 
+## 13.5.14
+
+- Handling empty resources fetched from cache
+
 ## 13.5.13
 
 - Handling empty resources
