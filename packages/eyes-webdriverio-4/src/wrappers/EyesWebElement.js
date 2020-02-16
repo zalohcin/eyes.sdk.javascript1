@@ -11,6 +11,8 @@ const {
   RectangleSize,
 } = require('@applitools/eyes-sdk-core')
 
+const {getElementLocation} = require('./web-element-util')
+
 const JS_GET_SCROLL_LEFT = 'return arguments[0].scrollLeft;'
 
 const JS_GET_SCROLL_TOP = 'return arguments[0].scrollTop;'
@@ -88,6 +90,10 @@ class EyesWebElement extends WebElement {
    */
   async getBounds() {
     const location = await this.getLocation()
+    //const location = await getElementLocation(
+    //  this._eyesWebDriver.webDriver,
+    //  this._webElement._locator,
+    //)
     const size = await this.getSize()
 
     let left = location.getX()
