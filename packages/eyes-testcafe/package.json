@@ -1,7 +1,7 @@
 {
   "name": "@applitools/eyes-testcafe",
   "private": true,
-  "version": "2.0.0-beta.12",
+  "version": "2.0.0",
   "description": "Applitools Eyes SDK for Testcafe",
   "homepage": "https://applitools.com",
   "author": {
