@@ -90,10 +90,6 @@ class EyesWebElement extends WebElement {
    */
   async getBounds() {
     const location = await this.getLocation()
-    //const location = await getElementLocation(
-    //  this._eyesWebDriver.webDriver,
-    //  this._webElement._locator,
-    //)
     const size = await this.getSize()
 
     let left = location.getX()
@@ -370,7 +366,10 @@ class EyesWebElement extends WebElement {
    * @returns {Promise.<Location>}
    */
   async getLocation() {
-    const r = await super.getLocation()
+    const r = await getElementLocation({
+      driver: this._eyesWebDriver.remoteWebDriver,
+      selector: this._webElement._locator.value,
+    })
     const x = Math.ceil(r && r.x ? r.x : 0)
     const y = Math.ceil(r && r.y ? r.y : 0)
     return new Location(x, y)
