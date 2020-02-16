@@ -37,7 +37,7 @@ describe('web-element-util', () => {
       await driver.frame(0)
       await driver.frame(0)
       await driver.frame(0)
-      assert.deepStrictEqual(await getElementLocation(driver, '#here'), {x: 32, y: 176})
+      assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 32, y: 176})
     })
   })
 })

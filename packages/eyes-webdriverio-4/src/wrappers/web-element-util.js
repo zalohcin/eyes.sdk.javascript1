@@ -1,5 +1,4 @@
-async function getElementLocation(driver, selector) {
-  debugger
+async function getElementLocation({driver, selector}) {
   const elementCoords = await driver.getLocation(selector)
   const elementIsInTopDocument = await _isElementInTopDocument(driver, selector)
   if (elementIsInTopDocument) {
