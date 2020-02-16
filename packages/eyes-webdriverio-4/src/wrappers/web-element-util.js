@@ -40,8 +40,8 @@ function _calculateNestedElementLocation({frameCoords, elementCoords}) {
   elementLocation.x += elementCoords.x
   elementLocation.y += elementCoords.y
   frameCoords.forEach(frameCoord => {
-    elementLocation.x += frameCoord.x
-    elementLocation.y += frameCoord.y
+    elementLocation.x += Math.ceil(frameCoord.x)
+    elementLocation.y += Math.ceil(frameCoord.y)
   })
   return elementLocation
 }
