@@ -39,5 +39,13 @@ describe('web-element-util', () => {
       await driver.frame(0)
       assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 40, y: 184})
     })
+
+    it('simple page', async () => {
+      await driver.url(`file:///${__dirname}/examples/simple.html`)
+      assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 8, y: 8})
+    })
+
+    // TODO
+    it.skip('cors', async () => {})
   })
 })
