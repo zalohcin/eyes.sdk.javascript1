@@ -210,7 +210,7 @@
 
 ### Bug Fixes
 
-* **eyes-selenium:** gaurding error in Runners for close batch exceptions ([17705be](https://github.com/applitools/eyes.sdk.javascript1/commit/17705be))
+* **eyes-selenium:** guarding error in Runners for close batch exceptions ([17705be](https://github.com/applitools/eyes.sdk.javascript1/commit/17705be))
 
 
 
