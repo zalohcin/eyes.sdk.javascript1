@@ -13,10 +13,13 @@ const {
   BatchInfo,
   Region,
   CorsIframeHandle,
+  ConsoleLogHandler,
 } = require('../../index')
 
-let /** @type {WebDriver} */ driver
-describe('VisualGrid Resources', () => {
+let driver
+const showLogs = true
+
+describe.only('VisualGrid Resources', () => {
   before(async function() {
     driver = await new Builder()
       .forBrowser('chrome')
@@ -33,6 +36,7 @@ describe('VisualGrid Resources', () => {
     const eyes = new Eyes(new VisualGridRunner())
     eyes.setBatch(batchInfo)
     eyes.setCorsIframeHandle(CorsIframeHandle.BLANK)
+    eyes.setLogHandler(new ConsoleLogHandler(showLogs))
 
     const configuration = new Configuration()
     configuration.setTestName('Open Concurrency with Batch 2')
@@ -60,7 +64,7 @@ describe('VisualGrid Resources', () => {
     await driver.get('https://astappiev.github.io/test-html-pages/index-invalid-resource.html')
 
     const eyes = new Eyes(new VisualGridRunner())
-
+    eyes.setLogHandler(new ConsoleLogHandler(showLogs))
     await eyes.open(driver, 'Applitools Eyes JavaScript SDK', this.test.title, {
       width: 800,
       height: 600,
