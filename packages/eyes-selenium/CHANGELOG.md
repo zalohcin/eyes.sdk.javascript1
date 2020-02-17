@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.33.14
+
+- Supporting branch base commit compare 
+
 ## 4.33.13
 
 - Fix ignore regions when checking region [Trello 212](https://trello.com/c/m7vRDQyP)
