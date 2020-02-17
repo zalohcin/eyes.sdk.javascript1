@@ -68,9 +68,9 @@
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.test.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.test.js\"",
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.test.js\"",
-    "build:browser": "cd test/fixtures/test-app && npm i && npm run build",
+    "build:browser": "cd test/fixtures/test-app && yarn && yarn build",
     "test:browser": "mocha --no-timeouts 'test/browser/**/*.test.js'",
-    "test": "npm run build:browser && npm run test:mocha",
+    "test": "yarn build:browser && yarn test:mocha",
     "render": "node example/render.js",
     "postpublish": "git push; git push --tags"
   },
