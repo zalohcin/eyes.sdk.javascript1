@@ -19,7 +19,7 @@ const {
 let driver
 const showLogs = true
 
-describe.only('VisualGrid Resources', () => {
+describe('VisualGrid Resources', () => {
   before(async function() {
     driver = await new Builder()
       .forBrowser('chrome')
