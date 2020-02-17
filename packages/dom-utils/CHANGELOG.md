@@ -1,7 +1,9 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+## 4.7.5
+
+- update @applitools/eyes-common@3.18.4
+
 
 ## [4.6.41](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/dom-utils@4.6.40...@applitools/dom-utils@4.6.41) (2019-11-28)
 
