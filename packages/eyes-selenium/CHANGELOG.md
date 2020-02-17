@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.33.15
+
+- fix Configuration and ImageMatchSettings copy constructor [Trello 204](https://trello.com/c/oH7Ne5EZ/204-js4ignoredisplacements-is-not-working)
+
 ## 4.33.14
 
 - Supporting branch base commit compare 
