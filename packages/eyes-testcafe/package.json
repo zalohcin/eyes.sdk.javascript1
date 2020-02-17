@@ -29,13 +29,13 @@
     "@applitools/eyes-common": "3.18.3",
     "@applitools/eyes-sdk-core": "6.0.10",
     "@applitools/functional-commons": "1.5.4",
-    "@applitools/visual-grid-client": "13.5.11",
+    "@applitools/visual-grid-client": "13.5.15",
     "rimraf": "^3.0.0"
   },
   "peerDependencies": {
     "testcafe": "^1.5.0"
   },
-  "license": "SEE LICENSE FILE",
+  "license": "SEE LICENSE IN LICENSE",
   "engines": {
     "node": ">=10.13.0"
   },
@@ -54,6 +54,7 @@
   ],
   "scripts": {
     "lint": "eslint . --ext .js --config ../../.eslintrc",
+    "vv": "node ../../scripts/verify-versions.js",
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e",

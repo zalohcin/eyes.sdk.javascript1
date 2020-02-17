@@ -25,6 +25,7 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
+    "vv": "node ../../scripts/verify-versions.js",
     "test": "mocha --no-timeouts \"test/**/*.test.js\"",
     "postpublish": "git push; git push --tags"
   },

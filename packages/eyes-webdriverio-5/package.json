@@ -33,9 +33,9 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/dom-utils": "4.7.4",
-    "@applitools/eyes-sdk-core": "6.0.9",
-    "@applitools/visual-grid-client": "13.5.12",
-    "@applitools/eyes-common": "3.18.2",
+    "@applitools/eyes-sdk-core": "6.0.10",
+    "@applitools/visual-grid-client": "13.5.15",
+    "@applitools/eyes-common": "3.18.3",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "webdriverio": "^5.18.6"
   },
@@ -50,6 +50,7 @@
   },
   "scripts": {
     "lint": "eslint '**/*.js'",
+    "vv": "node ../../scripts/verify-versions.js",
     "test": "yarn test:unit && yarn test:e2e",
     "test:e2e": "mocha --no-timeouts \"test/+(TestClassicApi*.js|TestFluentApi*.js|TestVisualGrid*.js)\"",
     "test:it": "mocha --no-timeouts \"test/it/*.js\"",

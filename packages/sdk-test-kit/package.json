@@ -20,6 +20,7 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
+    "vv": "node ../../scripts/verify-versions.js",
     "test": "mocha test/**/*.spec.js",
     "build": "tsc src/coverage-tests/api.ts",
     "postpublish": "git push; git push --tags"
