@@ -1,5 +1,9 @@
 # Change Log
 
+## 13.5.16
+
+- fix Configuration and ImageMatchSettings copy constructor [Trello 204](https://trello.com/c/oH7Ne5EZ/204-js4ignoredisplacements-is-not-working)
+
 ## 13.5.14
 
 - Handling empty resources fetched from cache
