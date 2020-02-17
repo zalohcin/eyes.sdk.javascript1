@@ -2,7 +2,6 @@
 
 const {EyesRunner} = require('./EyesRunner')
 const {TestResultSummary} = require('./TestResultSummary')
-const {TestResultContainer} = require('./TestResultContainer')
 const {GeneralUtils} = require('@applitools/eyes-common')
 
 class ClassicRunner extends EyesRunner {
@@ -34,17 +33,19 @@ class ClassicRunner extends EyesRunner {
    * @param {boolean} [shouldThrowException=true]
    * @return {Promise<TestResultSummary>}
    */
-  // https://trello.com/c/McCg97IK/214-getalltestresults-doesnt-throw-exceptions
-  // eslint-disable-next-line
   async getAllTestResults(shouldThrowException = true) {
-    // eslint-disable-line no-unused-vars
-    const allResults = []
-    for (const testResults of this._allTestResult) {
-      allResults.push(new TestResultContainer(testResults))
+    const testResultSummary = new TestResultSummary(this._allTestResult)
+
+    if (shouldThrowException === true) {
+      testResultSummary.getAllResults().forEach(result => {
+        if (result.getException()) {
+          throw result.getException()
+        }
+      })
     }
 
     await this._closeAllBatches()
-    return new TestResultSummary(allResults)
+    return testResultSummary
   }
 }
 
