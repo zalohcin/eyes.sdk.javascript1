@@ -1,11 +1,15 @@
-async function getElementLocation({driver, selector}) {
-  const elementCoords = await driver.getLocation(selector)
-  const elementIsInTopDocument = await _isElementInTopDocument(driver, selector)
-  if (elementIsInTopDocument) {
-    return elementCoords
-  } else {
-    const frameCoords = await _getFrameCoordsToElement(driver, selector)
-    return _calculateNestedElementLocation({frameCoords, elementCoords})
+async function getElementLocation({driver, selector, logger}) {
+  try {
+    const elementCoords = await driver.getLocation(selector)
+    const elementIsInTopDocument = await _isElementInTopDocument(driver, selector)
+    if (elementIsInTopDocument) {
+      return elementCoords
+    } else {
+      const frameCoords = await _getFrameCoordsToElement(driver, selector)
+      return _calculateNestedElementLocation({frameCoords, elementCoords})
+    }
+  } catch (error) {
+    logger.log(`WARNING - web-element-util.getElementLocation errored: ${error}`)
   }
 }
 
