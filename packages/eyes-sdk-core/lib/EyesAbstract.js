@@ -61,7 +61,7 @@ class EyesAbstract {
       configuration = new Configuration(configuration)
     }
 
-    this._configuration = configuration
+    this._configuration = configuration.cloneConfig()
   }
 
   /**

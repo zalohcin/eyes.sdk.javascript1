@@ -2,7 +2,7 @@
 
 const assert = require('assert')
 
-const {EyesBase} = require('../../index')
+const {EyesBase, Configuration} = require('../../index')
 
 describe('EyesBase', () => {
   describe('setBatch()', () => {
@@ -113,7 +113,6 @@ describe('EyesBase', () => {
       assert.strictEqual(batch.getName(), 'fake batch name in env')
       assert.strictEqual(batch.getSequenceName(), 'delta sequence')
     })
-
     afterEach(() => {
       eyes.setBatch(undefined)
 
@@ -121,5 +120,28 @@ describe('EyesBase', () => {
       delete process.env.APPLITOOLS_BATCH_NAME
       delete process.env.APPLITOOLS_BATCH_SEQUENCE
     })
+  })
+
+  it('should not modify Configuration object', async () => {
+    const eyes = new EyesBase()
+    const originalConfig = new Configuration()
+    originalConfig.setAppName('AppName')
+    originalConfig.setTestName('TestName')
+    originalConfig.setViewportSize({width: 500, height: 500})
+    eyes.setConfiguration(originalConfig)
+
+    //imitate internal use
+    eyes._configuration.setAppName('OtherAppName')
+    eyes._configuration.setTestName('OtherTestName')
+    eyes._configuration.setViewportSize({width: 300, height: 300})
+
+    const eyesConfig = eyes.getConfiguration()
+
+    assert.strictEqual(originalConfig.getAppName(), 'AppName')
+    assert.strictEqual(eyesConfig.getAppName(), 'OtherAppName')
+    assert.strictEqual(originalConfig.getTestName(), 'TestName')
+    assert.strictEqual(eyesConfig.getTestName(), 'OtherTestName')
+    assert.deepStrictEqual(originalConfig.getViewportSize().toJSON(), {width: 500, height: 500})
+    assert.deepStrictEqual(eyesConfig.getViewportSize().toJSON(), {width: 300, height: 300})
   })
 })
