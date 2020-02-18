@@ -1,11 +1,13 @@
-async function getElementLocation({driver, selector, logger}) {
+async function getElementLocation({driver, element, logger}) {
+  debugger
   try {
-    const elementCoords = await driver.getLocation(selector)
-    const elementIsInTopDocument = await _isElementInTopDocument(driver, selector)
+    const elementRect = await driver.elementIdRect(element.ELEMENT)
+    const elementCoords = {x: Math.ceil(elementRect.value.x), y: Math.ceil(elementRect.value.y)}
+    const elementIsInTopDocument = await _isElementInTopDocument(driver, element)
     if (elementIsInTopDocument) {
       return elementCoords
     } else {
-      const frameCoords = await _getFrameCoordsToElement(driver, selector)
+      const frameCoords = await _getFrameCoordsToElement(driver, element)
       return _calculateNestedElementLocation({frameCoords, elementCoords})
     }
   } catch (error) {
@@ -13,33 +15,32 @@ async function getElementLocation({driver, selector, logger}) {
       const errorMessage = error.message.replace(/<unknown>: /, '')
       throw new Error(errorMessage)
     }
+    if (error.message.includes('invalid element state')) throw error
     logger.log(`WARNING - web-element-util.getElementLocation errored: ${error}`)
   }
 }
 
-async function _isElementInTopDocument(driver, selector) {
-  const r = await driver.execute(_selector => {
+async function _isElementInTopDocument(driver, element) {
+  const r = await driver.execute(_element => {
     // eslint-disable-next-line
-    return document.querySelector(_selector).ownerDocument === window.top.document
-  }, selector)
+    return _element.ownerDocument === window.top.document
+  }, element)
   return r && r.value ? r.value : false
 }
 
-async function _getFrameCoordsToElement(driver, selector) {
-  const r = await driver.execute(_selector => {
+async function _getFrameCoordsToElement(driver, element) {
+  const r = await driver.execute(_element => {
     const frameCoords = []
     // eslint-disable-next-line
-    let targetDocument = document.querySelector(_selector).ownerDocument
-    console.log(`${targetDocument.body.innerHTML}`)
+    let targetDocument = _element.ownerDocument
     // eslint-disable-next-line
     while (targetDocument !== window.top.document) {
-      console.log('get frame coords')
       const frame = targetDocument.defaultView.frameElement
       frameCoords.push(frame.getBoundingClientRect())
       targetDocument = frame.ownerDocument
     }
     return frameCoords
-  }, selector)
+  }, element)
   return r && r.value ? r.value : []
 }
 

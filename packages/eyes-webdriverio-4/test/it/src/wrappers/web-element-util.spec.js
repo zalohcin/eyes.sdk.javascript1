@@ -32,9 +32,28 @@ describe('web-element-util', () => {
       chromedriver.stop()
     })
 
-    it('basic page', async () => {
+    it('basic page - css', async () => {
       await driver.url(`file:///${__dirname}/examples/simple.html`)
-      assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 8, y: 8})
+      const element = await driver.element('#here')
+      assert.deepStrictEqual(
+        await getElementLocation({driver, element: element.value, logger: console}),
+        {
+          x: 8,
+          y: 8,
+        },
+      )
+    })
+
+    it('basic page - xpath', async () => {
+      await driver.url('http://applitools.github.io/demo/TestPages/FramesTestPage/')
+      const element = await driver.element('/html/body/input')
+      assert.deepStrictEqual(
+        await getElementLocation({driver, element: element.value, logger: console}),
+        {
+          x: 8,
+          y: 1494,
+        },
+      )
     })
 
     it('nested frame', async () => {
@@ -42,15 +61,23 @@ describe('web-element-util', () => {
       await driver.frame(0)
       await driver.frame(0)
       await driver.frame(0)
-      assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 32, y: 176})
+      const element = await driver.element('#here')
+      assert.deepStrictEqual(
+        await getElementLocation({driver, element: element.value, logger: console}),
+        {
+          x: 32,
+          y: 176,
+        },
+      )
     })
 
     it('cors frame', async () => {
       await driver.url(`file:///${__dirname}/examples/cors.html`)
       await driver.frame(0)
+      const element = await driver.element('button')
       // eslint-disable-next-line
       return assert.rejects(async () => {
-        await getElementLocation({driver, selector: 'button'})
+        await getElementLocation({driver, element: element.value, logger: console})
       }, /Blocked a frame with origin/)
     })
   })
