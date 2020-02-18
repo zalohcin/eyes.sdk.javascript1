@@ -32,6 +32,11 @@ describe('web-element-util', () => {
       chromedriver.stop()
     })
 
+    it('basic page', async () => {
+      await driver.url(`file:///${__dirname}/examples/simple.html`)
+      assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 8, y: 8})
+    })
+
     it('nested frame', async () => {
       await driver.url(`file:///${__dirname}/examples/nested-frames.html`)
       await driver.frame(0)
@@ -40,12 +45,13 @@ describe('web-element-util', () => {
       assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 40, y: 184})
     })
 
-    it('simple page', async () => {
-      await driver.url(`file:///${__dirname}/examples/simple.html`)
-      assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 8, y: 8})
+    it('cors frame', async () => {
+      await driver.url(`file:///${__dirname}/examples/cors.html`)
+      await driver.frame(0)
+      // eslint-disable-next-line
+      return assert.rejects(async () => {
+        await getElementLocation({driver, selector: 'button'})
+      }, /Blocked a frame with origin/)
     })
-
-    // TODO
-    it.skip('cors', async () => {})
   })
 })

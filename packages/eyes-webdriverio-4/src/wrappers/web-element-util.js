@@ -9,6 +9,10 @@ async function getElementLocation({driver, selector, logger}) {
       return _calculateNestedElementLocation({frameCoords, elementCoords})
     }
   } catch (error) {
+    if (error.message.includes('Blocked a frame with origin')) {
+      const errorMessage = error.message.replace(/<unknown>: /, '')
+      throw new Error(errorMessage)
+    }
     logger.log(`WARNING - web-element-util.getElementLocation errored: ${error}`)
   }
 }
