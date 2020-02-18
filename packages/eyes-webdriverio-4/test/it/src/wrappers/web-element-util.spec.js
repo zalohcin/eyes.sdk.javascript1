@@ -42,7 +42,7 @@ describe('web-element-util', () => {
       await driver.frame(0)
       await driver.frame(0)
       await driver.frame(0)
-      assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 40, y: 184})
+      assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 32, y: 176})
     })
 
     it('cors frame', async () => {

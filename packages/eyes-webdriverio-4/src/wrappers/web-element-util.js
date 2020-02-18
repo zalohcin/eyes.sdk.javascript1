@@ -44,9 +44,7 @@ async function _getFrameCoordsToElement(driver, selector) {
 }
 
 function _calculateNestedElementLocation({frameCoords, elementCoords}) {
-  let elementLocation = {x: 8, y: 8} // for the default 8px margin of the body tag
-  elementLocation.x += elementCoords.x
-  elementLocation.y += elementCoords.y
+  let elementLocation = {x: elementCoords.x, y: elementCoords.y}
   frameCoords.forEach(frameCoord => {
     elementLocation.x += Math.ceil(frameCoord.x)
     elementLocation.y += Math.ceil(frameCoord.y)
