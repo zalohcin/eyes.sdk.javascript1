@@ -1,5 +1,4 @@
 async function getElementLocation({driver, element, logger}) {
-  debugger
   try {
     const elementRect = await driver.elementIdRect(element.ELEMENT)
     const elementCoords = {x: Math.ceil(elementRect.value.x), y: Math.ceil(elementRect.value.y)}
@@ -13,9 +12,10 @@ async function getElementLocation({driver, element, logger}) {
   } catch (error) {
     if (error.message.includes('Blocked a frame with origin')) {
       const errorMessage = error.message.replace(/<unknown>: /, '')
-      throw new Error(errorMessage)
+      throw new Error(`web-element-util.getElementLocation errored: ${errorMessage}`)
     }
-    if (error.message.includes('invalid element state')) throw error
+    if (error.message.includes(`number or type of arguments don't agree`))
+      throw new Error('web-element-util.getElementLocation errored: Invalid element provided')
     logger.log(`WARNING - web-element-util.getElementLocation errored: ${error}`)
   }
 }

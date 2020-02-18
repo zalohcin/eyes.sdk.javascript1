@@ -80,5 +80,12 @@ describe('web-element-util', () => {
         await getElementLocation({driver, element: element.value, logger: console})
       }, /Blocked a frame with origin/)
     })
+
+    it('bogus web element', async () => {
+      // eslint-disable-next-line
+      return assert.rejects(async () => {
+        await getElementLocation({driver, element: {}, logger: console})
+      }, /Invalid element provided/)
+    })
   })
 })
