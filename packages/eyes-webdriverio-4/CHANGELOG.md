@@ -1,5 +1,8 @@
 # Change Log
 
+## 2.12.1
+- Fixed regression which broke xpath selectors when looking up the location of an element
+
 ## 2.12.0
 - Added nested frame support (without CORS) for checkRegion by locator [Trello 213](https://trello.com/c/Xyyhdb5t)
 
