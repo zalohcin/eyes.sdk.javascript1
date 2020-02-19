@@ -29,6 +29,7 @@ if (errors.length) {
         })
         .join('\n'),
     )
+    process.exit(1)
   }
 }
 
