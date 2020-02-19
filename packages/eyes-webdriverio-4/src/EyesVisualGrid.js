@@ -174,24 +174,25 @@ class EyesVisualGrid extends EyesBase {
   }
 
   /**
+   * @package
    * @param {boolean} [throwEx=true]
-   * @return {Promise<TestResults>}
+   * @return {Promise<TestResultsSummary>}
    */
   async closeAndReturnResults(throwEx = true) {
     try {
-      let resultsPromise = this._closePromise || this._closeCommand()
+      const resultsPromise = this._closePromise || this._closeCommand()
       const res = await resultsPromise
-      const testResultSummary = new TestResultsSummary(res)
+      const testResultsSummary = new TestResultsSummary(res)
 
       if (throwEx === true) {
-        for (const result of testResultSummary.getAllResults()) {
+        for (const result of testResultsSummary.getAllResults()) {
           if (result.getException()) {
             throw result.getException()
           }
         }
       }
 
-      return testResultSummary
+      return testResultsSummary
     } finally {
       this._isOpen = false
       this._closePromise = undefined
@@ -223,8 +224,11 @@ class EyesVisualGrid extends EyesBase {
     return results.getAllResults()[0].getTestResults()
   }
 
-  async abortIfNotClosed() {
-    return this.abort()
+  /**
+   * @return {Promise}
+   */
+  async abortAsync() {
+    this._closePromise = this.abort()
   }
 
   /**
@@ -240,13 +244,6 @@ class EyesVisualGrid extends EyesBase {
       return this._abortCommand()
     }
     return null
-  }
-
-  /**
-   * @return {Promise}
-   */
-  async abortAsync() {
-    this._closePromise = this.abort()
   }
 
   /**

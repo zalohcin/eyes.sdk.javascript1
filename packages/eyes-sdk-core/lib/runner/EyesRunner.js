@@ -1,6 +1,7 @@
 'use strict'
 
 const {GeneralUtils} = require('@applitools/eyes-common')
+const {TestResultsSummary} = require('./TestResultsSummary')
 const getScmInfo = require('../getScmInfo')
 
 class EyesRunner {
@@ -30,12 +31,36 @@ class EyesRunner {
   }
 
   /**
-   * @abstract
    * @param {boolean} [throwEx=true]
    * @return {Promise<TestResultsSummary>}
    */
-  async getAllTestResults(_throwEx) {
-    throw new TypeError('The method is not implemented!')
+  async getAllTestResults(throwEx = true) {
+    if (this._eyesInstances.length === 1) {
+      const [eyes] = this._eyesInstances
+      return eyes.closeAndReturnResults(throwEx)
+    } else if (this._eyesInstances.length > 1) {
+      const results = await Promise.all(
+        this._eyesInstances.map(async eyes => eyes.closeAndReturnResults(false)),
+      )
+
+      console.log(results)
+
+      const allResults = []
+      for (const result of results) {
+        allResults.push(...result.getAllResults())
+      }
+
+      if (throwEx === true) {
+        for (const result of allResults) {
+          if (result.getException()) throw result.getException()
+        }
+      }
+
+      await this._closeAllBatches()
+      return new TestResultsSummary(allResults)
+    }
+
+    return null
   }
 
   /**

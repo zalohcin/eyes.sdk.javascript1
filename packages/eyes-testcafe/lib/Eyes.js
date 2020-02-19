@@ -17,6 +17,7 @@ const {
   TestFailedError,
   CorsIframeHandle,
   ClassicRunner,
+  TestResultsSummary,
 } = require('@applitools/eyes-sdk-core')
 
 const {FrameChain} = require('./frames/FrameChain')
@@ -99,6 +100,9 @@ class Eyes extends EyesBase {
     this._dontGetTitle = false
     /** @type {CorsIframeHandle} */
     this._corsIframeHandle = CorsIframeHandle.KEEP
+
+    /** @type {Promise} */
+    this._closePromise = undefined
 
     EyesTestcafeUtils.setJavascriptHandler(new JavascriptHandler())
   }
@@ -439,18 +443,85 @@ class Eyes extends EyesBase {
     this.addTextTrigger(elementRegion, text)
   }
 
+  async _closeCommand() {
+    return super.close(true).catch(err => [err])
+  }
+
+  async _abortCommand() {
+    return super.abort(true)
+  }
+
+  /**
+   * @package
+   * @param {boolean} [throwEx=true]
+   * @return {Promise<TestResultsSummary>}
+   */
+  async closeAndReturnResults(throwEx = true) {
+    try {
+      const resultsPromise = this._closePromise || this._closeCommand()
+      const res = await resultsPromise
+      const testResultsSummary = new TestResultsSummary(res)
+
+      if (throwEx === true) {
+        for (const result of testResultsSummary.getAllResults()) {
+          if (result.getException()) {
+            throw result.getException()
+          }
+        }
+      }
+
+      return testResultsSummary
+    } finally {
+      this._isOpen = false
+      this._closePromise = undefined
+    }
+  }
+
   /**
    * @return {Promise}
    */
   async closeAsync() {
-    await this.close(false)
+    if (!this._closePromise) {
+      this._closePromise = this._closeCommand()
+    }
+  }
+
+  /**
+   * @param {boolean} [throwEx]
+   * @return {Promise<TestResults>}
+   */
+  async close(throwEx = true) {
+    const results = await this.closeAndReturnResults(throwEx)
+
+    for (const result of results.getAllResults()) {
+      if (result.getException()) {
+        return result.getTestResults()
+      }
+    }
+
+    return results.getAllResults()[0].getTestResults()
   }
 
   /**
    * @return {Promise}
    */
   async abortAsync() {
-    await this.abort()
+    this._closePromise = this.abort()
+  }
+
+  /**
+   * @return {Promise<?TestResults>}
+   */
+  async abort() {
+    if (typeof this._abortCommand === 'function') {
+      if (this._closePromise) {
+        this._logger.verbose('Can not abort while closing async, abort added to close promise.')
+        return this._closePromise.then(() => this._abortCommand(true))
+      }
+
+      return this._abortCommand()
+    }
+    return null
   }
 
   /**

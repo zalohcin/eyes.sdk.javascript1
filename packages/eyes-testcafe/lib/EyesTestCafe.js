@@ -796,20 +796,6 @@ class EyesTestCafe extends Eyes {
   }
 
   /**
-   * @param {boolean} [throwEx]
-   * @return {Promise<TestResults>}
-   */
-  async close(throwEx = true) {
-    const results = await Eyes.prototype.close.call(this, throwEx)
-
-    if (this._runner) {
-      this._runner._allTestResult.push(results)
-    }
-
-    return results
-  }
-
-  /**
    * @inheritDoc
    */
   async getViewportSize() {
