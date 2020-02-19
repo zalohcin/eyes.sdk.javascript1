@@ -25,10 +25,10 @@ const {
   NullCutProvider,
   MatchResult,
   EyesJsBrowserUtils,
+  ClassicRunner,
 } = require('@applitools/eyes-sdk-core')
 const getCaptureDomScript = require('./getCaptureDomScript')
 
-const {ClassicRunner} = require('./runner/ClassicRunner')
 const {ImageProviderFactory} = require('./capture/ImageProviderFactory')
 const {EyesWebDriverScreenshotFactory} = require('./capture/EyesWebDriverScreenshotFactory')
 const {FrameChain} = require('./frames/FrameChain')

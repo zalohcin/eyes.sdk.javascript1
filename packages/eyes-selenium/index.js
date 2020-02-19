@@ -45,11 +45,6 @@ exports.MoveToRegionVisibilityStrategy = require('./lib/regionVisibility/MoveToR
 exports.NopRegionVisibilityStrategy = require('./lib/regionVisibility/NopRegionVisibilityStrategy').NopRegionVisibilityStrategy
 exports.RegionVisibilityStrategy = require('./lib/regionVisibility/RegionVisibilityStrategy').RegionVisibilityStrategy
 
-exports.ClassicRunner = require('./lib/runner/ClassicRunner').ClassicRunner
-exports.VisualGridRunner = require('./lib/runner/VisualGridRunner').VisualGridRunner
-exports.TestResultContainer = require('./lib/runner/TestResultContainer').TestResultContainer
-exports.TestResultsSummary = require('./lib/runner/TestResultsSummary').TestResultsSummary
-
 exports.EyesTargetLocator = require('./lib/wrappers/EyesTargetLocator').EyesTargetLocator
 exports.EyesWebDriver = require('./lib/wrappers/EyesWebDriver').EyesWebDriver
 exports.EyesWebElement = require('./lib/wrappers/EyesWebElement').EyesWebElement
@@ -133,3 +128,7 @@ exports.FailureReports = core.FailureReports
 exports.TestResults = core.TestResults
 exports.TestResultsFormatter = core.TestResultsFormatter
 exports.TestResultsStatus = core.TestResultsStatus
+exports.ClassicRunner = core.ClassicRunner
+exports.VisualGridRunner = core.VisualGridRunner
+exports.TestResultContainer = core.TestResultContainer
+exports.TestResultsSummary = core.TestResultsSummary

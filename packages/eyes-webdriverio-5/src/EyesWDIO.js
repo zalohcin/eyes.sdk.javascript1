@@ -23,6 +23,7 @@ const {
   ArgumentGuard,
   Configuration,
   SimplePropertyHandler,
+  ClassicRunner,
 } = require('@applitools/eyes-sdk-core')
 
 const {DomCapture} = require('@applitools/dom-utils')
@@ -46,7 +47,7 @@ const Target = require('./fluent/Target')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
 const WebDriver = require('./wrappers/WebDriver')
 const ReadOnlyPropertyHandler = require('@applitools/eyes-sdk-core/index').ReadOnlyPropertyHandler
-const {ClassicRunner} = require('./runner/ClassicRunner')
+
 const {ImageRotation} = require('./positioning/ImageRotation')
 
 const VERSION = require('../package.json').version

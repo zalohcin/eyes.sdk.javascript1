@@ -25,9 +25,9 @@ const {
   ScaleProviderIdentityFactory,
   NullCutProvider,
   MatchResult,
+  ClassicRunner,
 } = require('@applitools/eyes-sdk-core')
 
-const {ClassicRunner} = require('./runner/ClassicRunner')
 const {ImageProviderFactory} = require('./capture/ImageProviderFactory')
 const {EyesWebDriverScreenshotFactory} = require('./capture/EyesWebDriverScreenshotFactory')
 const {FrameChain} = require('./frames/FrameChain')
