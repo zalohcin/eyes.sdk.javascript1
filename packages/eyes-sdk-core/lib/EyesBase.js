@@ -136,6 +136,14 @@ class EyesBase extends EyesAbstract {
   }
 
   /**
+   * @param {Configuration|object} configuration
+   */
+  setConfiguration(configuration) {
+    super.setConfiguration(configuration)
+    this._serverConnector._configuration = this._configuration
+  }
+
+  /**
    * @param {boolean} [hardReset=false] - If false, init providers only if they're not initialized.
    * @private
    */
