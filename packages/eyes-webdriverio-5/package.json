@@ -57,7 +57,8 @@
     "test:unit": "mocha \"test/unit/**/*.js\"",
     "test:coverage": "coverage-tests run --path test/coverage/index.js",
     "test:coverage:nuke": "coverage-tests nuke",
-    "postpublish": "git push; git push --tags"
+    "postpublish": "git push; git push --tags",
+    "prepublishOnly": "yarn vv"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

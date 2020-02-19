@@ -9,7 +9,8 @@
   "scripts": {
     "vv": "node ../../scripts/verify-versions.js",
     "test": "wdio test/wdio.conf.js",
-    "postpublish": "git push; git push --tags"
+    "postpublish": "git push; git push --tags",
+    "prepublishOnly": "yarn vv"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",

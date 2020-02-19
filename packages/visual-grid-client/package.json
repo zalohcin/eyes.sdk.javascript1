@@ -73,7 +73,8 @@
     "test:browser": "mocha --no-timeouts 'test/browser/**/*.test.js'",
     "test": "yarn build:browser && yarn test:mocha",
     "render": "node example/render.js",
-    "postpublish": "git push; git push --tags"
+    "postpublish": "git push; git push --tags",
+    "prepublishOnly": "yarn vv"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
