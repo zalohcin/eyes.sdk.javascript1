@@ -9,17 +9,21 @@ const {resolve} = require('path')
 
 describe('getScmInfo', () => {
   const testRepoPath = resolve(__dirname, '../fixtures/test-git-repo/')
+  const remoteRepoDir = resolve(__dirname, '../fixtures/')
 
   before(async () => {
     // make test-git-repo dir a valid repo
     const gitDir = resolve(testRepoPath, '.git-dontignore')
-    pexec(`mv ${gitDir} ${gitDir.replace('-dontignore', '')}`)
+    await pexec(`mv ${gitDir} ${gitDir.replace('-dontignore', '')}`)
   })
 
   after(async () => {
-    // make test-git-repo a non valid repo so we can commit it
     const gitDir = resolve(testRepoPath, '.git')
-    pexec(`mv ${gitDir} ${gitDir}-dontignore`)
+    await Promise.all([
+      // make test-git-repo a non valid repo so we can commit it
+      pexec(`mv ${gitDir} ${gitDir}-dontignore`),
+      pexec(`rm -rf tmp_git_test/`, {cwd: remoteRepoDir}),
+    ])
   })
 
   it('works and caches response', async () => {
@@ -29,5 +33,20 @@ describe('getScmInfo', () => {
 
     const result2 = await getScmInfo('master', {cwd: __dirname})
     assert.strictEqual(result2, testRepoBaseTime)
+  })
+
+  it('works with missing remote branches', async () => {
+    // getScmInfo is cached per node process, so flush..
+    delete require.cache[require.resolve('../../lib/getScmInfo')]
+    const getScmInfo = require('../../lib/getScmInfo')
+
+    await pexec(
+      `git clone --single-branch --branch some-branch-name https://github.com/applitools/testing-exmaple-repo.git tmp_git_test`,
+      {cwd: remoteRepoDir},
+    )
+    const remoteRepoPath = resolve(remoteRepoDir, 'tmp_git_test')
+    const result = await getScmInfo('master', {cwd: remoteRepoPath})
+    const testRepoBaseTime = '2020-02-19T17:14:31+02:00'
+    assert.strictEqual(result, testRepoBaseTime)
   })
 })
