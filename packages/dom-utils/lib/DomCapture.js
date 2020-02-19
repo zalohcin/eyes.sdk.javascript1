@@ -106,9 +106,8 @@ class DomCapture {
       }, DOM_EXTRACTION_TIMEOUT)
 
       do {
-        this._logger.log('executing dom capture')
+        this._logger.log('executng dom capture')
         const resultAsString = await this._driver.executeScript(script)
-        this._logger.log('executed dom capture')
         result = JSON.parse(resultAsString)
         await GeneralUtils.sleep(DOM_CAPTURE_PULL_TIMEOUT)
       } while (result.status === SCRIPT_RESPONSE_STATUS.WIP && !isCheckTimerTimedOut)
@@ -126,8 +125,6 @@ class DomCapture {
     if (isCheckTimerTimedOut) {
       throw new EyesError('DomCapture Timed out')
     }
-
-    this._logger.log('Browser script executed')
 
     const domSnapshotRawArr = result && result.value ? result.value.split('\n') : []
 
