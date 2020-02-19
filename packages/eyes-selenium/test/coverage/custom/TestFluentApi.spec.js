@@ -21,7 +21,7 @@ describe(appName, () => {
     })
 
     it('TestCheckRegionInFrame2_Fluent', async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckRegionInFrame2_Fluent`, {
+      await eyes.open(webDriver, appName, `TestCheckRegionInFrame2_Fluent`, {
         width: 700,
         height: 460,
       })
@@ -36,7 +36,7 @@ describe(appName, () => {
     })
 
     it('TestCheckRegionInFrameInFrame_Fluent', async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckRegionInFrameInFrame_Fluent`, {
+      await eyes.open(webDriver, appName, `TestCheckRegionInFrameInFrame_Fluent`, {
         width: 700,
         height: 460,
       })
@@ -104,7 +104,7 @@ describe(appName, () => {
     })
 
     it('TestCheckRegionInFrame2_Fluent', async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckRegionInFrame2_Fluent_SCROLL`, {
+      await eyes.open(webDriver, appName, `TestCheckRegionInFrame2_Fluent_SCROLL`, {
         width: 700,
         height: 460,
       })
@@ -119,15 +119,10 @@ describe(appName, () => {
     })
 
     it('TestCheckRegionInFrameInFrame_Fluent', async () => {
-      let driver = await eyes.open(
-        webDriver,
-        appName,
-        `TestCheckRegionInFrameInFrame_Fluent_SCROLL`,
-        {
-          width: 700,
-          height: 460,
-        },
-      )
+      await eyes.open(webDriver, appName, `TestCheckRegionInFrameInFrame_Fluent_SCROLL`, {
+        width: 700,
+        height: 460,
+      })
       await eyes.check(
         'Fluent - Region in Frame in Frame',
         Target.frame('frame1')
