@@ -11,6 +11,8 @@ const {
   RectangleSize,
 } = require('@applitools/eyes-sdk-core')
 
+const {getElementLocation} = require('./web-element-util')
+
 const JS_GET_SCROLL_LEFT = 'return arguments[0].scrollLeft;'
 
 const JS_GET_SCROLL_TOP = 'return arguments[0].scrollTop;'
@@ -87,34 +89,30 @@ class EyesWebElement extends WebElement {
    * @return {Promise.<Region>}
    */
   async getBounds() {
-    try {
-      const location = await this.getLocation()
-      const size = await this.getSize()
+    const location = await this.getLocation()
+    const size = await this.getSize()
 
-      let left = location.getX()
-      let top = location.getY()
-      let width = 0
-      let height = 0
+    let left = location.getX()
+    let top = location.getY()
+    let width = 0
+    let height = 0
 
-      if (size) {
-        width = size.getWidth()
-        height = size.getHeight()
-      }
-
-      if (left < 0) {
-        width = Math.max(0, width + left)
-        left = 0
-      }
-
-      if (top < 0) {
-        height = Math.max(0, height + top)
-        top = 0
-      }
-
-      return new Region(left, top, width, height, CoordinatesType.CONTEXT_RELATIVE)
-    } catch (ignored) {
-      return null
+    if (size) {
+      width = size.getWidth()
+      height = size.getHeight()
     }
+
+    if (left < 0) {
+      width = Math.max(0, width + left)
+      left = 0
+    }
+
+    if (top < 0) {
+      height = Math.max(0, height + top)
+      top = 0
+    }
+
+    return new Region(left, top, width, height, CoordinatesType.CONTEXT_RELATIVE)
   }
 
   /**
@@ -356,8 +354,10 @@ class EyesWebElement extends WebElement {
    * @returns {Promise.<RectangleSize>}
    */
   async getSize() {
-    const {width, height} = await super.getSize()
-    return new RectangleSize(Math.ceil(width), Math.ceil(height))
+    const r = await super.getSize()
+    const width = Math.ceil(r && r.width ? r.width : 0)
+    const height = Math.ceil(r && r.height ? r.height : 0)
+    return new RectangleSize(width, height)
   }
 
   /**
@@ -366,11 +366,13 @@ class EyesWebElement extends WebElement {
    * @returns {Promise.<Location>}
    */
   async getLocation() {
-    // The workaround is similar to Java one, but in js we always get raw data with decimal value which we should round up.
-    const r = await super.getLocation()
-    let {x = 0, y = 0} = r
-    x = Math.ceil(x)
-    y = Math.ceil(y)
+    const r = await getElementLocation({
+      driver: this._eyesWebDriver.remoteWebDriver,
+      element: this._webElement._element,
+      logger: this._logger,
+    })
+    const x = Math.ceil(r && r.x ? r.x : 0)
+    const y = Math.ceil(r && r.y ? r.y : 0)
     return new Location(x, y)
   }
 

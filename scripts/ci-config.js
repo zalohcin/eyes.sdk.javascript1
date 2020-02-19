@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const yaml = require('js-yaml')
+const makePackagesList = require('./package-list')
 
 const config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', '.travis.yml'), 'utf8'))
 const pkgs = makePackagesList()
@@ -19,19 +20,6 @@ function makeJobsForTestStage() {
   return makeStageWithJobsForEachPackage({stageName: 'test', scriptName: 'test'})
 }
 
-function makePackagesList() {
-  const packages = require(path.join(__dirname, '..', 'package.json')).workspaces
-  return packages.map(pkgPath => {
-    const pkgDir = path.join(__dirname, '..', pkgPath)
-    const packageJson = require(path.join(pkgDir, 'package.json'))
-    return {
-      name: packageJson.name,
-      path: pkgPath,
-      scripts: {...packageJson.scripts},
-    }
-  })
-}
-
 function makeStageWithSingleJob({stageName, scriptName}) {
   return [{stage: stageName, script: `yarn ${scriptName}`}]
 }
@@ -39,7 +27,8 @@ function makeStageWithSingleJob({stageName, scriptName}) {
 function makeStageWithJobsForEachPackage({stageName, scriptName}) {
   let jobs = []
   pkgs.forEach(pkg => {
-    if (pkg.scripts.hasOwnProperty(scriptName)) {
+    const {scripts} = require(path.resolve(__dirname, '..', pkg.path, 'package.json'))
+    if (scripts.hasOwnProperty(scriptName)) {
       jobs.push({
         name: pkg.name,
         script: `cd ${pkg.path}; yarn ${scriptName}`,

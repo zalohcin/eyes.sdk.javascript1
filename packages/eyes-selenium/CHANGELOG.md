@@ -1,5 +1,13 @@
 # Change Log
 
+## 4.33.15
+
+- fix Configuration and ImageMatchSettings copy constructor [Trello 204](https://trello.com/c/oH7Ne5EZ/204-js4ignoredisplacements-is-not-working)
+
+## 4.33.14
+
+- Supporting branch base commit compare 
+
 ## 4.33.13
 
 - Fix ignore regions when checking region [Trello 212](https://trello.com/c/m7vRDQyP)
@@ -206,7 +214,7 @@
 
 ### Bug Fixes
 
-* **eyes-selenium:** gaurding error in Runners for close batch exceptions ([17705be](https://github.com/applitools/eyes.sdk.javascript1/commit/17705be))
+* **eyes-selenium:** guarding error in Runners for close batch exceptions ([17705be](https://github.com/applitools/eyes.sdk.javascript1/commit/17705be))
 
 
 

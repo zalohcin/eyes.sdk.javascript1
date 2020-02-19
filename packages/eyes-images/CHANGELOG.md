@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.12.36](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.12.36...@applitools/eyes-images@4.12.25) (2020-02-16)
+
+Eyes branch improvements.
+
 ## [4.12.25](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.12.24...@applitools/eyes-images@4.12.25) (2019-11-28)
 
 **Note:** Version bump only for package @applitools/eyes-images

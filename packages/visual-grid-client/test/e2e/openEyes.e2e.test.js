@@ -129,7 +129,7 @@ describe('openEyes', () => {
       beforeCaptureScreenshot: "document.body.style.backgroundColor = 'gold'",
     }
 
-    cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = "hi, I'm green"
+    cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = 'WRONG TEXT'
 
     checkWindow({
       resourceUrls,

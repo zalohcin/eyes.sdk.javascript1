@@ -82,5 +82,16 @@ describe('ImageMatchSettings', () => {
         'ImageMatchSettings serialization does not match!',
       )
     })
+
+    it('copy ctor', () => {
+      const ims = new ImageMatchSettings({
+        ignoreDisplacements: true,
+        ignore: [new Region(10, 20, 30, 40)],
+      })
+      const imsCopy = new ImageMatchSettings(ims)
+
+      assert.strictEqual(imsCopy.getIgnoreDisplacements(), true)
+      assert.deepStrictEqual(imsCopy.getIgnoreRegions(), [new Region(10, 20, 30, 40)])
+    })
   })
 })

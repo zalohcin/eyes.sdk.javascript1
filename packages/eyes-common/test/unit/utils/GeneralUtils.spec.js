@@ -308,4 +308,41 @@ describe('GeneralUtils', () => {
       assert.strictEqual(GeneralUtils.cleanStringForJSON(str), 'hello world �')
     })
   })
+
+  describe('cachify()', () => {
+    it('works', () => {
+      let calledCount = 0
+      const func = () => (++calledCount, 'rv-func')
+      const cachedFunc = GeneralUtils.cachify(func)
+
+      assert.strictEqual(cachedFunc(), 'rv-func')
+      assert.strictEqual(cachedFunc(), 'rv-func')
+      assert.strictEqual(calledCount, 1)
+    })
+
+    it('works by arg1 cache key', () => {
+      let calledCount = {key1: 0, key2: 0}
+      const func = (key, arg2) => (++calledCount[key], `key: ${key}, arg2 ${arg2}`)
+      const cachedFunc = GeneralUtils.cachify(func)
+
+      assert.strictEqual(cachedFunc('key1', 1), `key: key1, arg2 1`)
+      assert.strictEqual(cachedFunc('key2', 1), `key: key2, arg2 1`)
+      assert.strictEqual(cachedFunc('key1'), `key: key1, arg2 1`)
+      assert.strictEqual(cachedFunc('key2'), `key: key2, arg2 1`)
+      assert.strictEqual(calledCount['key1'], 1)
+      assert.strictEqual(calledCount['key2'], 1)
+    })
+
+    it('works by ignoring arg1 cache key', () => {
+      let calledCount = {key1: 0, key2: 0}
+      const func = (key, arg2) => (++calledCount[key], `key: ${key}, arg2 ${arg2}`)
+      const cachedFunc = GeneralUtils.cachify(func, true)
+
+      assert.strictEqual(cachedFunc('key1', 1), `key: key1, arg2 1`)
+      assert.strictEqual(cachedFunc('key2'), `key: key1, arg2 1`)
+      assert.strictEqual(cachedFunc('key1'), `key: key1, arg2 1`)
+      assert.strictEqual(cachedFunc('key2'), `key: key1, arg2 1`)
+      assert.strictEqual(calledCount['key1'], 1)
+    })
+  })
 })

@@ -11,6 +11,8 @@ const {
   RegionProvider,
   NullRegionProvider,
   EyesSimpleScreenshot,
+  getScmInfo,
+  GeneralUtils,
 } = require('@applitools/eyes-sdk-core')
 
 const {Target} = require('./fluent/Target')
@@ -30,6 +32,9 @@ class Eyes extends EyesBase {
   constructor(serverUrl, isDisabled) {
     super(serverUrl, isDisabled)
 
+    this._getBatchInfo = GeneralUtils.cachify(
+      this._serverConnector.batchInfo.bind(this._serverConnector),
+    )
     /** @type {String} */ this._title = undefined
     /** @type {String} */ this._domString = undefined
     /** @type {Location} */ this._imageLocation = undefined
@@ -377,6 +382,16 @@ class Eyes extends EyesBase {
 
   getAndSaveRenderingInfo() {
     return this._serverConnector.renderInfo()
+  }
+
+  async _getAndSaveBatchInfoFromServer(batchId) {
+    ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
+    return this._getBatchInfo(batchId)
+  }
+
+  async _getAndSaveScmMergeBaseTime(parentBranchName) {
+    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
+    return getScmInfo(parentBranchName)
   }
 }
 

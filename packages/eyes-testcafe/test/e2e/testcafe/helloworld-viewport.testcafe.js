@@ -3,7 +3,7 @@
 'use strict'
 
 const {Configuration, ConsoleLogHandler} = require('@applitools/eyes-common')
-const {Eyes, Target} = require('../../../')
+const {Eyes, Target} = require('../../../index')
 
 fixture`Hello world`.page`https://applitools.com/helloworld`
 

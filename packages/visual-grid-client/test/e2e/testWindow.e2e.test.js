@@ -98,7 +98,7 @@ describe('testWindow', () => {
       saveDebugData: process.env.APPLITOOLS_SAVE_DEBUG_DATA,
     }
 
-    cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = "hi, I'm green"
+    cdt.find(node => node.nodeValue === "hi, I'm red").nodeValue = 'WRONG TEXT'
     const checkParams = {
       resourceUrls,
       resourceContents,

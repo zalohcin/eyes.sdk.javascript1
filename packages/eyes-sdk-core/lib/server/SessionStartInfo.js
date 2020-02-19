@@ -20,6 +20,7 @@ class SessionStartInfo {
    * @param {ImageMatchSettings} defaultMatchSettings
    * @param {string} [branchName]
    * @param {string} [parentBranchName]
+   * @param {string} [parentBranchBaselineSavedBefore]
    * @param {string} [baselineBranchName]
    * @param {boolean} [compareWithParentBranch]
    * @param {boolean} [ignoreBaseline]
@@ -41,6 +42,7 @@ class SessionStartInfo {
     defaultMatchSettings,
     branchName,
     parentBranchName,
+    parentBranchBaselineSavedBefore,
     baselineBranchName,
     compareWithParentBranch,
     ignoreBaseline,
@@ -68,6 +70,7 @@ class SessionStartInfo {
     this._defaultMatchSettings = defaultMatchSettings
     this._branchName = branchName
     this._parentBranchName = parentBranchName
+    this._parentBranchBaselineSavedBefore = parentBranchBaselineSavedBefore
     this._baselineBranchName = baselineBranchName
     this._compareWithParentBranch = compareWithParentBranch
     this._ignoreBaseline = ignoreBaseline
@@ -167,6 +170,14 @@ class SessionStartInfo {
     return this._parentBranchName
   }
 
+  /**
+   * @return {string}
+   */
+  getParentBranchBaselineSavedBefore() {
+    return this._parentBranchBaselineSavedBefore
+  }
+
+  // noinspection JSUnusedGlobalSymbols
   /**
    * @return {string}
    */

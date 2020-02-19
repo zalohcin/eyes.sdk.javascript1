@@ -30,7 +30,7 @@ class Eyes {
       return new EyesVisualGrid(serverUrl, isDisabled, runner)
     }
 
-    return new EyesWDIO(serverUrl, isDisabled)
+    return new EyesWDIO(serverUrl, isDisabled, runner)
   }
 }
 

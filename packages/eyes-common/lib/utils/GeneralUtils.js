@@ -1,11 +1,12 @@
 'use strict'
 
 const merge = require('deepmerge')
-// const util = require('util');
-
+const {exec} = require('child_process')
+const {promisify: p} = require('util')
 const {TypeUtils} = require('./TypeUtils')
 const {DateTimeUtils} = require('./DateTimeUtils')
 
+const pexec = p && exec && p(exec)
 const ENV_PREFIXES = ['APPLITOOLS_', 'bamboo_APPLITOOLS_']
 const ALPHANUMERIC_MASK = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
@@ -407,6 +408,52 @@ class GeneralUtils {
     }
 
     return sb
+  }
+
+  static isFeatureFlagOn(featureName) {
+    return GeneralUtils.getEnvValue(featureName, true)
+  }
+
+  static isFeatureFlagOff(featureName) {
+    return !GeneralUtils.isFeatureFlagOn(featureName)
+  }
+
+  /**
+   * @template T
+   * @param {PromiseLike<T>} promise
+   *
+   * @returns {PromiseLike<[any|undefined, T|undefined]>} a 2-tuple where the first element is the error if promise is rejected,
+   *   or undefined if resolved,
+   *   and the second value is the value resolved by the promise, or undefined if rejected
+   *
+   * Note: copyied @applitools/functional-commons
+   */
+  static presult(promise) {
+    return promise.then(
+      v => [undefined, v],
+      err => [err],
+    )
+  }
+
+  static pexec(...args) {
+    if (!pexec) {
+      throw new Error('cannot find exec and/or promisify perhaps you are running in the browser?')
+    }
+    return pexec(...args)
+  }
+
+  static cachify(getterFunction, cacheRegardlessOfArgs = false) {
+    const cachedGetter = (function() {
+      const cache = {}
+      return function(arg1AndKey, ...args) {
+        const cacheKey = (!cacheRegardlessOfArgs && arg1AndKey) || 'default'
+        if (!cache[cacheKey]) {
+          cache[cacheKey] = getterFunction(arg1AndKey, ...args)
+        }
+        return cache[cacheKey]
+      }
+    })()
+    return cachedGetter
   }
 }
 

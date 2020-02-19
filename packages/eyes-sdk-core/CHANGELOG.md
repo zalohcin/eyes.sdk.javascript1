@@ -1,5 +1,9 @@
 # Change Log
 
+## 6.0.11
+
+- fix Configuration and ImageMatchSettings copy constructor [Trello 204](https://trello.com/c/oH7Ne5EZ/204-js4ignoredisplacements-is-not-working)
+
 ## 6.0.6
 
 - Fix `isMobile` check in EyesBase to support non-Selenium SDKs
