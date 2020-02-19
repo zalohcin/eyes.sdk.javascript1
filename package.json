@@ -5,6 +5,7 @@
   },
   "private": true,
   "workspaces": [
+    "packages/dom-capture",
     "packages/dom-utils",
     "packages/eyes-common",
     "packages/eyes-images",
