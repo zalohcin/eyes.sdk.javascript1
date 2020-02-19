@@ -32,20 +32,60 @@ describe('web-element-util', () => {
       chromedriver.stop()
     })
 
+    it('basic page - css', async () => {
+      await driver.url(`file:///${__dirname}/examples/simple.html`)
+      const element = await driver.element('#here')
+      assert.deepStrictEqual(
+        await getElementLocation({driver, element: element.value, logger: console}),
+        {
+          x: 8,
+          y: 8,
+        },
+      )
+    })
+
+    it('basic page - xpath', async () => {
+      await driver.url('http://applitools.github.io/demo/TestPages/FramesTestPage/')
+      const element = await driver.element('/html/body/input')
+      assert.deepStrictEqual(
+        await getElementLocation({driver, element: element.value, logger: console}),
+        {
+          x: 8,
+          y: 1494,
+        },
+      )
+    })
+
     it('nested frame', async () => {
       await driver.url(`file:///${__dirname}/examples/nested-frames.html`)
       await driver.frame(0)
       await driver.frame(0)
       await driver.frame(0)
-      assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 40, y: 184})
+      const element = await driver.element('#here')
+      assert.deepStrictEqual(
+        await getElementLocation({driver, element: element.value, logger: console}),
+        {
+          x: 32,
+          y: 176,
+        },
+      )
     })
 
-    it('simple page', async () => {
-      await driver.url(`file:///${__dirname}/examples/simple.html`)
-      assert.deepStrictEqual(await getElementLocation({driver, selector: '#here'}), {x: 8, y: 8})
+    it('cors frame', async () => {
+      await driver.url(`file:///${__dirname}/examples/cors.html`)
+      await driver.frame(0)
+      const element = await driver.element('button')
+      // eslint-disable-next-line
+      return assert.rejects(async () => {
+        await getElementLocation({driver, element: element.value, logger: console})
+      }, /Blocked a frame with origin/)
     })
 
-    // TODO
-    it.skip('cors', async () => {})
+    it('bogus web element', async () => {
+      // eslint-disable-next-line
+      return assert.rejects(async () => {
+        await getElementLocation({driver, element: {}, logger: console})
+      }, /Invalid element provided/)
+    })
   })
 })

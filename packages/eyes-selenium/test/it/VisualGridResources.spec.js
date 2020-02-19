@@ -17,7 +17,7 @@ const {
 } = require('../../index')
 
 let driver
-const showLogs = true
+const showLogs = false
 
 describe('VisualGrid Resources', () => {
   before(async function() {

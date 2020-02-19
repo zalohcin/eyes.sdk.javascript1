@@ -35,24 +35,30 @@ class ImageMatchSettings {
    * @param {FloatingMatchSettings[]} [floating]
    * @param {AccessibilityLevel} [accessibilityLevel]
    */
-  constructor({
-    matchLevel,
-    exact,
-    ignoreCaret,
-    useDom,
-    enablePatterns,
-    ignoreDisplacements,
-    ignore,
-    layout,
-    strict,
-    content,
-    accessibility,
-    floating,
-    accessibilityLevel,
-  } = {}) {
+  constructor(imageMatchSettings) {
     if (arguments.length > 1) {
       throw new TypeError('Please, use object as a parameter to the constructor!')
     }
+
+    if (arguments[0] && arguments[0].constructor.name === 'ImageMatchSettings') {
+      return new ImageMatchSettings(arguments[0].toJSON())
+    }
+
+    const {
+      matchLevel,
+      exact,
+      ignoreCaret,
+      useDom,
+      enablePatterns,
+      ignoreDisplacements,
+      ignore,
+      layout,
+      strict,
+      content,
+      accessibility,
+      floating,
+      accessibilityLevel,
+    } = imageMatchSettings || {}
 
     ArgumentGuard.isValidEnumValue(matchLevel, MatchLevel, false)
     ArgumentGuard.isValidEnumValue(accessibilityLevel, AccessibilityLevel, false)

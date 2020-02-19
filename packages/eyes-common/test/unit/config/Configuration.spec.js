@@ -170,11 +170,18 @@ describe('Configuration', () => {
       const configuration = new Configuration()
       configuration.setAppName('test')
       configuration.setApiKey('apiKey')
+      configuration.setIgnoreDisplacements(true)
+      configuration.setMatchLevel(MatchLevel.Layout)
 
       const configurationCopy = new Configuration(configuration)
 
       assert.strictEqual(configuration.getAppName(), configurationCopy.getAppName())
       assert.strictEqual(configuration.getApiKey(), configurationCopy.getApiKey())
+      assert.strictEqual(configuration.getMatchLevel(), configurationCopy.getMatchLevel())
+      assert.strictEqual(
+        configuration.getIgnoreDisplacements(),
+        configurationCopy.getIgnoreDisplacements(),
+      )
 
       configuration.setDisplayName('test name1')
       configurationCopy.setDisplayName('test name2')

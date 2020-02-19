@@ -368,7 +368,8 @@ class EyesWebElement extends WebElement {
   async getLocation() {
     const r = await getElementLocation({
       driver: this._eyesWebDriver.remoteWebDriver,
-      selector: this._webElement._locator.value,
+      element: this._webElement._element,
+      logger: this._logger,
     })
     const x = Math.ceil(r && r.x ? r.x : 0)
     const y = Math.ceil(r && r.y ? r.y : 0)
