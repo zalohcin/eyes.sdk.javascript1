@@ -22,15 +22,19 @@ async function doGetScmInfo(parentBranchName, _opts) {
       pexec(`${fetchBranchCmd} && ${commitTimeCmd}`, _opts),
     )
   }
+
+  if (stdout) {
+    stdout = stdout.replace(/\s/g, '')
+  }
   if (!_isCorrectInfo(stdout)) {
     throw new Error(`stderr: ${stderr}, stdout: ${stdout}`)
   }
 
-  return stdout.replace(/\s/g, '')
+  return stdout
 }
 
 function _isCorrectInfo(stdout) {
-  return stdout && stdout.match(/\s*\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}\s*/)
+  return stdout && stdout.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/)
 }
 
 module.exports = cachify(doGetScmInfo, true)
