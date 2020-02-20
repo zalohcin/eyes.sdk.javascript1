@@ -18,10 +18,10 @@
     "packages/eyes-webdriverio-4",
     "packages/eyes-webdriverio-5",
     "packages/eyes-webdriverio-5-service",
-    "packages/eyes.images",
-    "packages/eyes.sdk",
-    "packages/eyes.selenium",
-    "packages/eyes.utils"
+    "packages/eyes-common-legacy",
+    "packages/eyes-images-legacy",
+    "packages/eyes-sdk-core-legacy",
+    "packages/eyes-selenium-3"
   ],
   "scripts": {
     "lint": "eslint --ext .js ."

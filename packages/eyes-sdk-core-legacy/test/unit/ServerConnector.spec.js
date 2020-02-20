@@ -5,8 +5,6 @@ const {
   _makeBodyOutputString,
 } = require('../../src/ServerConnector')
 
-function PromiseFactory() {}
-
 describe('ServerConnector', () => {
   describe('makeParamsOutputString', () => {
     it('should return a message when params are provided', () => {
@@ -21,6 +19,7 @@ describe('ServerConnector', () => {
       assert.deepStrictEqual(_makeResponseOutputString({blah: 'blah'}), '{"blah":"blah"}')
     })
     it('should return an interpolated string when JSON stringify throws', () => {
+      // eslint-disable-next-line
       assert.deepStrictEqual(_makeResponseOutputString(BigInt(9001)), '9001')
     })
   })

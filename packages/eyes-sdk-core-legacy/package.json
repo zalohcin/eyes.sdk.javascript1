@@ -1,20 +1,16 @@
 {
-  "name": "eyes.selenium",
-  "version": "3.8.9",
-  "description": "Applitools Eyes SDK For Selenium JavaScript WebDriver",
+  "name": "eyes.sdk",
+  "version": "4.0.5",
+  "description": "Applitools Eyes SDK For JavaScript",
   "keywords": [
-    "eyes.selenium",
+    "eyes.sdk",
     "applitools",
     "eyes",
     "test automation",
     "visual regression",
     "automation",
-    "selenium",
-    "tests",
     "testing",
-    "webdriver",
-    "webdriverjs",
-    "protractor"
+    "tests"
   ],
   "homepage": "https://applitools.com",
   "author": {
@@ -30,7 +26,6 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript/issues"
   },
   "directories": {
-    "example": "./example",
     "lib": "./src",
     "test": "./test"
   },
@@ -44,34 +39,27 @@
   "main": "./index.js",
   "types": "./typings/index.d.ts",
   "dependencies": {
-    "eyes.sdk": "^4.0.5",
-    "eyes.utils": "^3.8.1"
+    "eyes.utils": "^3.8.1",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "@types/node": "*",
-    "chromedriver": "^78.0.0",
     "mocha": "^6.2.2",
-    "protractor": "^5.4.2",
-    "selenium-webdriver": "^3.6.0",
     "typescript": "^3.6.4"
   },
-  "peerDependencies": {
-    "selenium-webdriver": "< 4.0.0"
-  },
   "scripts": {
-    "test": "npm run test:unit && npm run test:e2e",
-    "test:e2e": "npm run test:selenium",
-    "test:unit": "mocha --no-timeouts \"test/unit/**/*.js\"",
-    "test:appium": "mocha --no-timeouts \"test/e2e/appium/**/*.js\"",
-    "test:selenium": "mocha --no-timeouts \"test/e2e/selenium/**/*.js\"",
-    "test:protractor": "protractor test/e2e/protractor/protractor.conf.js",
+    "test": "npm run test:unit",
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "typings": "tsc --declaration",
     "postpublish": "git push; git push --tags",
     "preversion": "yarn vv",
     "vv": "node ../../scripts/verify-versions.js"
   },
+  "browser": {
+    "./src/FileLogHandler": false
+  },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": ">= 6.9.0"
+    "node": ">= 10.0.0"
   }
 }

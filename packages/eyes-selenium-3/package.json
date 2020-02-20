@@ -1,16 +1,20 @@
 {
-  "name": "eyes.images",
-  "version": "3.8.7",
-  "description": "Applitools Eyes SDK for working directly with images",
+  "name": "eyes.selenium",
+  "version": "3.8.9",
+  "description": "Applitools Eyes SDK For Selenium JavaScript WebDriver",
   "keywords": [
-    "eyes.images",
+    "eyes.selenium",
     "applitools",
     "eyes",
     "test automation",
     "visual regression",
     "automation",
+    "selenium",
+    "tests",
     "testing",
-    "tests"
+    "webdriver",
+    "webdriverjs",
+    "protractor"
   ],
   "homepage": "https://applitools.com",
   "author": {
@@ -35,7 +39,7 @@
     "LICENSE",
     "index.js",
     "src/",
-    "dist/eyes-browser.min.js"
+    "typings/"
   ],
   "main": "./index.js",
   "types": "./typings/index.d.ts",
@@ -45,20 +49,22 @@
   },
   "devDependencies": {
     "@types/node": "*",
-    "browserify": "^16.5.0",
-    "browserify-fs": "^1.0.0",
-    "browserify-zlib": "^0.2.0",
+    "chromedriver": "^78.0.0",
     "mocha": "^6.2.2",
-    "node-fetch": "^2.6.0",
-    "typescript": "^3.6.4",
-    "uglify-js": "^3.6.5"
+    "protractor": "^5.4.2",
+    "selenium-webdriver": "^3.6.0",
+    "typescript": "^3.6.4"
+  },
+  "peerDependencies": {
+    "selenium-webdriver": "< 4.0.0"
   },
   "scripts": {
-    "test": "npm run test:e2e",
-    "test:e2e": "node test/simplerun.js",
-    "build": "npm run browserify && npm run uglify",
-    "browserify": "browserify eyes-browser-loader.js > dist/eyes-browser.js",
-    "uglify": "uglifyjs dist/eyes-browser.js > dist/eyes-browser.min.js",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:e2e": "npm run test:selenium",
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.js\"",
+    "test:appium": "mocha --no-timeouts \"test/e2e/appium/**/*.js\"",
+    "test:selenium": "mocha --no-timeouts \"test/e2e/selenium/**/*.js\"",
+    "test:protractor": "protractor test/e2e/protractor/protractor.conf.js",
     "typings": "tsc --declaration",
     "postpublish": "git push; git push --tags",
     "preversion": "yarn vv",
@@ -66,6 +72,6 @@
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
-    "node": ">= 6.9.0"
+    "node": ">= 10.0.0"
   }
 }
