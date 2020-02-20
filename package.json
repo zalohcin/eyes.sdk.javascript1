@@ -17,10 +17,14 @@
     "packages/visual-grid-client",
     "packages/eyes-webdriverio-4",
     "packages/eyes-webdriverio-5",
-    "packages/eyes-webdriverio-5-service"
+    "packages/eyes-webdriverio-5-service",
+    "packages/eyes.images",
+    "packages/eyes.sdk",
+    "packages/eyes.selenium",
+    "packages/eyes.utils"
   ],
   "scripts": {
-    "lint": "eslint --ext .js .",
+    "lint": "eslint --ext .js ."
   },
   "devDependencies": {
     "eslint": "^6.6.0",
