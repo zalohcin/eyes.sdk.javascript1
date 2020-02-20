@@ -801,7 +801,10 @@ class EyesSelenium extends Eyes {
    * @return {Promise<TestResults>}
    */
   async close(throwEx = true) {
-    const results = await super.close(throwEx)
+    const results = await super.close(true).catch(err => {
+      if (!throwEx) return err
+      else throw err
+    })
 
     if (this._runner) {
       this._runner._allTestResult.push(results)

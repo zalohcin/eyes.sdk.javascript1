@@ -1048,7 +1048,7 @@ class EyesWDIO extends EyesBase {
    */
   async close(throwEx = true) {
     const results = await super.close(true).catch(err => {
-      if (!throwEx && err instanceof TestFailedError) return err
+      if (!throwEx) return err
       else throw err
     })
 

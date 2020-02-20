@@ -33,6 +33,7 @@ class ClassicRunner extends EyesRunner {
    * @return {Promise<TestResultsSummary>}
    */
   async getAllTestResults(throwEx = true) {
+    await this._closeAllBatches()
     const summary = new TestResultsSummary(this._allTestResult)
 
     if (throwEx === true) {
@@ -42,8 +43,6 @@ class ClassicRunner extends EyesRunner {
         }
       }
     }
-
-    await this._closeAllBatches()
     return summary
   }
 }

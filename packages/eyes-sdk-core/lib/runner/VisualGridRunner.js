@@ -23,6 +23,7 @@ class VisualGridRunner extends EyesRunner {
    * @return {Promise<TestResultsSummary>}
    */
   async getAllTestResults(throwEx = true) {
+    await this._closeAllBatches()
     if (this._eyesInstances.length === 1) {
       const [eyes] = this._eyesInstances
       return eyes.closeAndReturnResults(throwEx)
@@ -41,8 +42,6 @@ class VisualGridRunner extends EyesRunner {
           if (result.getException()) throw result.getException()
         }
       }
-
-      await this._closeAllBatches()
       return new TestResultsSummary(allResults)
     }
 
