@@ -33,8 +33,8 @@ describe('TestVGServerConfigs', () => {
     let conf = new Configuration()
     conf.setBatch(batch)
     conf.setProxy(new ProxySettings('http://127.0.0.1:8080', undefined, undefined, true))
-    conf.setAppName('app')
-    conf.setTestName('test')
+    conf.setAppName('Eyes Selenium SDK - Test Proxy')
+    conf.setTestName('proxy test')
     eyes.setConfiguration(conf)
 
     await eyes.open(webDriver)
@@ -48,8 +48,8 @@ describe('TestVGServerConfigs', () => {
     let conf = new Configuration()
     conf.setBatch(batch)
     conf.setProxy(new ProxySettings('http://127.0.0.1:8081', undefined, undefined, true))
-    conf.setAppName('app')
-    conf.setTestName('test')
+    conf.setAppName('Eyes Selenium SDK - Test Proxy')
+    conf.setTestName('proxy test')
     eyes.setConfiguration(conf)
     await expect(eyes.open(webDriver)).to.be.rejectedWith(
       Error,
