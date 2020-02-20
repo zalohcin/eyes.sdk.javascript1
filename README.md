@@ -12,3 +12,4 @@
 - [eyes-webdriverio5-service](packages/eyes-webdriverio-4-service) (WDIO5 service)
 - [eyes-cypress](packages/eyes-cypress) (Cypress)
 - [eyes-storybook](packages/eyes-storybook) (Storybook)
+- [eyes.leanft](packages/eyes-leanft) (LeanFT)
