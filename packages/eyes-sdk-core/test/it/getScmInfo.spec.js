@@ -3,7 +3,7 @@
 const assert = require('assert')
 const getScmInfo = require('../../lib/getScmInfo')
 const {
-  GeneralUtils: {pexec},
+  GeneralUtils: {pexec, presult},
 } = require('@applitools/eyes-common')
 const {resolve} = require('path')
 
@@ -19,11 +19,7 @@ describe('getScmInfo', () => {
 
   after(async () => {
     const gitDir = resolve(testRepoPath, '.git')
-    await Promise.all([
-      // make test-git-repo a non valid repo so we can commit it
-      pexec(`mv ${gitDir} ${gitDir}-dontignore`),
-      pexec(`rm -rf tmp_git_test/`, {cwd: remoteRepoDir}),
-    ])
+    await pexec(`mv ${gitDir} ${gitDir}-dontignore`)
   })
 
   it('works and caches response', async () => {
@@ -35,18 +31,53 @@ describe('getScmInfo', () => {
     assert.strictEqual(result2, testRepoBaseTime)
   })
 
-  it('works with missing remote branches', async () => {
-    // getScmInfo is cached per node process, so flush..
-    delete require.cache[require.resolve('../../lib/getScmInfo')]
-    const getScmInfo = require('../../lib/getScmInfo')
+  describe('remote branches', () => {
+    afterEach(async () => pexec(`rm -rf tmp_git_test/`, {cwd: remoteRepoDir}))
 
-    await pexec(
-      `git clone --single-branch --branch some-branch-name https://github.com/applitools/testing-exmaple-repo.git tmp_git_test`,
-      {cwd: remoteRepoDir},
-    )
-    const remoteRepoPath = resolve(remoteRepoDir, 'tmp_git_test')
-    const result = await getScmInfo('master', {cwd: remoteRepoPath})
-    const testRepoBaseTime = '2020-02-19T17:14:31+02:00'
-    assert.strictEqual(result, testRepoBaseTime)
+    it('fetches missing remote branch', async () => {
+      // getScmInfo is cached per node process, so flush..
+      delete require.cache[require.resolve('../../lib/getScmInfo')]
+      const getScmInfo = require('../../lib/getScmInfo')
+
+      await pexec(
+        `git clone --single-branch --branch some-branch-name https://github.com/applitools/testing-exmaple-repo.git tmp_git_test`,
+        {cwd: remoteRepoDir},
+      )
+      const remoteRepoPath = resolve(remoteRepoDir, 'tmp_git_test')
+      const result = await getScmInfo('master', {cwd: remoteRepoPath})
+      const testRepoBaseTime = '2020-02-19T17:14:31+02:00'
+      assert.strictEqual(result, testRepoBaseTime)
+    })
+
+    it('fetches missing commits in current branch', async () => {
+      // getScmInfo is cached per node process, so flush..
+      delete require.cache[require.resolve('../../lib/getScmInfo')]
+      const getScmInfo = require('../../lib/getScmInfo')
+
+      await pexec(
+        `git clone --depth=1 --branch some-branch-name https://github.com/applitools/testing-exmaple-repo.git tmp_git_test`,
+        {cwd: remoteRepoDir},
+      )
+      const remoteRepoPath = resolve(remoteRepoDir, 'tmp_git_test')
+      const result = await getScmInfo('master', {cwd: remoteRepoPath})
+      const testRepoBaseTime = '2020-02-19T17:14:31+02:00'
+      assert.strictEqual(result, testRepoBaseTime)
+    })
+
+    it("throws error when can't get the info", async () => {
+      // getScmInfo is cached per node process, so flush..
+      delete require.cache[require.resolve('../../lib/getScmInfo')]
+      const getScmInfo = require('../../lib/getScmInfo')
+
+      await pexec(
+        `git clone --branch some-branch-name https://github.com/applitools/testing-exmaple-repo.git tmp_git_test`,
+        {cwd: remoteRepoDir},
+      )
+      const remoteRepoPath = resolve(remoteRepoDir, 'tmp_git_test')
+      const [err] = await presult(getScmInfo('not-there', {cwd: remoteRepoPath}))
+      const expectedError = 'fatal: --unshallow on a complete repository does not make sense'
+      assert.ok(err && err.message)
+      assert.ok(err.message.includes(expectedError), `Got ${err.message} expected defined error`)
+    })
   })
 })
