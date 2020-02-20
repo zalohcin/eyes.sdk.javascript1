@@ -65,7 +65,10 @@
     "test:appium": "mocha --no-timeouts \"test/e2e/appium/**/*.js\"",
     "test:selenium": "mocha --no-timeouts \"test/e2e/selenium/**/*.js\"",
     "test:protractor": "protractor test/e2e/protractor/protractor.conf.js",
-    "typings": "tsc --declaration"
+    "typings": "tsc --declaration",
+    "postpublish": "git push; git push --tags",
+    "preversion": "yarn vv",
+    "vv": "node ../../scripts/verify-versions.js"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

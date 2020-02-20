@@ -52,7 +52,10 @@
   "scripts": {
     "test": "npm run test:unit",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
-    "typings": "tsc --declaration"
+    "typings": "tsc --declaration",
+    "postpublish": "git push; git push --tags",
+    "preversion": "yarn vv",
+    "vv": "node ../../scripts/verify-versions.js"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

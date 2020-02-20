@@ -59,7 +59,10 @@
     "build": "npm run browserify && npm run uglify",
     "browserify": "browserify eyes-browser-loader.js > dist/eyes-browser.js",
     "uglify": "uglifyjs dist/eyes-browser.js > dist/eyes-browser.min.js",
-    "typings": "tsc --declaration"
+    "typings": "tsc --declaration",
+    "postpublish": "git push; git push --tags",
+    "preversion": "yarn vv",
+    "vv": "node ../../scripts/verify-versions.js"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
