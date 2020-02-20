@@ -1,10 +1,10 @@
-(function () {
-  'use strict';
+;(function() {
+  'use strict'
 
-  var path = require('path');
-  var fs = require('fs');
+  var path = require('path')
+  var fs = require('fs')
 
-  var LogHandler = require('./LogHandler').LogHandler;
+  var LogHandler = require('./LogHandler').LogHandler
 
   /**
    * Write log massages to the browser/node console
@@ -16,15 +16,15 @@
    * @extends LogHandler
    **/
   function FileLogHandler(isVerbose, filename, append) {
-    LogHandler.call(this);
+    LogHandler.call(this)
 
-    this._filename = filename || 'eyes.log';
-    this._append = append !== undefined ? append : true;
-    this.setIsVerbose(isVerbose);
+    this._filename = filename || 'eyes.log'
+    this._append = append !== undefined ? append : true
+    this.setIsVerbose(isVerbose)
   }
 
-  FileLogHandler.prototype = Object.create(LogHandler.prototype);
-  FileLogHandler.prototype.constructor = LogHandler;
+  FileLogHandler.prototype = Object.create(LogHandler.prototype)
+  FileLogHandler.prototype.constructor = LogHandler
 
   //noinspection JSUnusedGlobalSymbols
   /**
@@ -32,9 +32,9 @@
    *
    * @param {string} fileName
    */
-  FileLogHandler.prototype.setFileName = function (fileName) {
-    this._fileName = fileName;
-  };
+  FileLogHandler.prototype.setFileName = function(fileName) {
+    this._fileName = fileName
+  }
 
   //noinspection JSUnusedGlobalSymbols
   /**
@@ -42,9 +42,9 @@
    *
    * @return {string} the file name
    */
-  FileLogHandler.prototype.getFileName = function () {
-    return this._fileName;
-  };
+  FileLogHandler.prototype.getFileName = function() {
+    return this._fileName
+  }
 
   //noinspection JSUnusedGlobalSymbols
   /**
@@ -52,9 +52,9 @@
    *
    * @param {string} fileDirectory
    */
-  FileLogHandler.prototype.setFileDirectory = function (fileDirectory) {
-    this._fileDirectory = fileDirectory;
-  };
+  FileLogHandler.prototype.setFileDirectory = function(fileDirectory) {
+    this._fileDirectory = fileDirectory
+  }
 
   //noinspection JSUnusedGlobalSymbols
   /**
@@ -62,34 +62,34 @@
    *
    * @return {string} the file Directory
    */
-  FileLogHandler.prototype.getFileDirectory = function () {
-    return this._fileDirectory;
-  };
+  FileLogHandler.prototype.getFileDirectory = function() {
+    return this._fileDirectory
+  }
 
   /**
    * Create a winston file logger
    */
-  FileLogHandler.prototype.open = function () {
-    this.close();
+  FileLogHandler.prototype.open = function() {
+    this.close()
 
-    var file = path.normalize(this._filename);
+    var file = path.normalize(this._filename)
     var opts = {
       flags: this._append ? 'a' : 'w',
-      encoding: 'utf8'
-    };
+      encoding: 'utf8',
+    }
 
-    this._writer = fs.createWriteStream(file, opts);
-  };
+    this._writer = fs.createWriteStream(file, opts)
+  }
 
   /**
    * Close the winston file logger
    */
-  FileLogHandler.prototype.close = function () {
+  FileLogHandler.prototype.close = function() {
     if (this._writer) {
-      this._writer.end('\n');
-      this._writer = undefined;
+      this._writer.end('\n')
+      this._writer = undefined
     }
-  };
+  }
 
   //noinspection JSUnusedGlobalSymbols
   /**
@@ -98,11 +98,11 @@
    * @param {boolean} verbose Whether this message is flagged as verbose or not.
    * @param {String} logString The string to log.
    */
-  FileLogHandler.prototype.onMessage = function (verbose, logString) {
+  FileLogHandler.prototype.onMessage = function(verbose, logString) {
     if (this._writer && (!verbose || this._isVerbose)) {
-      this._writer.write(this.formatMessage(logString) + '\n');
+      this._writer.write(this.formatMessage(logString) + '\n')
     }
-  };
+  }
 
-  exports.FileLogHandler = FileLogHandler;
-}());
+  exports.FileLogHandler = FileLogHandler
+})()

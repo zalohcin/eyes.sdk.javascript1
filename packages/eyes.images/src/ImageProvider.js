@@ -1,15 +1,15 @@
-(function () {
-    'use strict';
+;(function() {
+  'use strict'
 
-    /**
-     * @constructor
-     **/
-    function ImageProvider() {}
+  /**
+   * @constructor
+   **/
+  function ImageProvider() {}
 
-    /**
-     * @return {Promise<MutableImage>}
-     */
-    ImageProvider.prototype.getScreenshot = function () {};
+  /**
+   * @return {Promise<MutableImage>}
+   */
+  ImageProvider.prototype.getScreenshot = function() {}
 
-    exports.ImageProvider = ImageProvider;
-}());
+  exports.ImageProvider = ImageProvider
+})()

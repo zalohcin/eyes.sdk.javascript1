@@ -1,6 +1,9 @@
 const assert = require('assert')
-const {_makeParamsOutputString, _makeResponseOutputString, _makeBodyOutputString} = require('../../src/ServerConnector')
-
+const {
+  _makeParamsOutputString,
+  _makeResponseOutputString,
+  _makeBodyOutputString,
+} = require('../../src/ServerConnector')
 
 function PromiseFactory() {}
 

@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * Encapsulates image retrieval.
@@ -12,4 +12,4 @@ class ImageProvider {
   getImage() {}
 }
 
-exports.ImageProvider = ImageProvider;
+exports.ImageProvider = ImageProvider

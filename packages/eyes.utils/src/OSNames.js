@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * @readonly
@@ -10,7 +10,7 @@ const OSNames = {
   IOS: 'IOS',
   Macintosh: 'Macintosh',
   ChromeOS: 'ChromeOS',
-};
+}
 
-Object.freeze(OSNames);
-exports.OSNames = OSNames;
+Object.freeze(OSNames)
+exports.OSNames = OSNames
