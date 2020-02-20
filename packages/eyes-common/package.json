@@ -47,7 +47,7 @@
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "postpublish": "git push; git push --tags",
-    "prepublishOnly": "yarn vv"
+    "preversion": "yarn vv"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

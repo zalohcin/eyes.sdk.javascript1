@@ -24,7 +24,7 @@
     "test": "mocha test/**/*.spec.js",
     "build": "tsc src/coverage-tests/api.ts",
     "postpublish": "git push; git push --tags",
-    "prepublishOnly": "yarn vv"
+    "preversion": "yarn vv"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"

@@ -74,7 +74,7 @@
     "test": "yarn build:browser && yarn test:mocha",
     "render": "node example/render.js",
     "postpublish": "git push; git push --tags",
-    "prepublishOnly": "yarn vv"
+    "preversion": "yarn vv"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

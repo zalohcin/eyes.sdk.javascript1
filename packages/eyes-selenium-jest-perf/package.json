@@ -6,7 +6,7 @@
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test:perf": "jest",
     "postpublish": "git push; git push --tags",
-    "prepublishOnly": "yarn vv"
+    "preversion": "yarn vv"
   },
   "jest": {
     "extraGlobals": [

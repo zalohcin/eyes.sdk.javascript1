@@ -52,7 +52,7 @@
     "vv": "node ../../scripts/verify-versions.js",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "postpublish": "git push; git push --tags",
-    "prepublishOnly": "yarn vv"
+    "preversion": "yarn vv"
   },
   "bin": {
     "eyes-check-network": "./bin/runCheckNetwork.js"

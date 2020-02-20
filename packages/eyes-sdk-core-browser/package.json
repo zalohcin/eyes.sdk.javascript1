@@ -43,7 +43,7 @@
     "uglify": "uglifyjs dist/eyes-sdk-core.browser.js > dist/eyes-sdk-core.browser.min.js",
     "build": "npm run browserify && npm run uglify",
     "postpublish": "git push; git push --tags",
-    "prepublishOnly": "yarn vv"
+    "preversion": "yarn vv"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

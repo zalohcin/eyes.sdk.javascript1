@@ -13,7 +13,7 @@
     "build": "rollup -c rollup.config.js",
     "build:watch": "rollup -c rollup.config.js --watch",
     "surge": "surge tests/fixtures applitools-dom-capture-origin-1.surge.sh && surge tests/fixtures applitools-dom-capture-origin-2.surge.sh",
-    "prepublishOnly": "yarn vv"
+    "preversion": "yarn vv"
   },
   "engines": {
     "node": ">=8.0.0"

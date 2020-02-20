@@ -38,7 +38,7 @@
     "vv": "node ../../scripts/verify-versions.js",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "postpublish": "git push; git push --tags",
-    "prepublishOnly": "yarn vv"
+    "preversion": "yarn vv"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

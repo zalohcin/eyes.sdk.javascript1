@@ -64,7 +64,7 @@
     "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\"",
     "test:coverage": "node test/coverage/index.js",
     "postpublish": "git push; git push --tags",
-    "prepublishOnly": "yarn vv"
+    "preversion": "yarn vv"
   },
   "devDependencies": {
     "@applitools/dom-capture": "^7.1.2",

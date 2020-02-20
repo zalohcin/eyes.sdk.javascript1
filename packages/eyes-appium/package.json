@@ -52,7 +52,7 @@
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\"",
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\"",
     "postpublish": "git push; git push --tags",
-    "prepublishOnly": "yarn vv"
+    "preversion": "yarn vv"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

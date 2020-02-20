@@ -70,7 +70,7 @@
     "test:coverage:doctor": "coverage-tests doctor",
     "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
     "postpublish": "git push; git push --tags",
-    "prepublishOnly": "yarn vv"
+    "preversion": "yarn vv"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
