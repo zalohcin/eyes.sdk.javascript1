@@ -48,8 +48,8 @@
   "author": "Applitools Team <team@applitools.com>",
   "license": "SEE LICENSE IN LICENSE",
   "repository": {
-    "url": "https://github.com/applitools/eyes-storybook",
-    "type": "git"
+    "type": "git",
+    "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "dependencies": {
     "@applitools/dom-snapshot": "3.2.3",
