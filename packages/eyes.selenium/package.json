@@ -1,0 +1,74 @@
+{
+  "name": "eyes.selenium",
+  "version": "3.8.9",
+  "description": "Applitools Eyes SDK For Selenium JavaScript WebDriver",
+  "keywords": [
+    "eyes.selenium",
+    "applitools",
+    "eyes",
+    "test automation",
+    "visual regression",
+    "automation",
+    "selenium",
+    "tests",
+    "testing",
+    "webdriver",
+    "webdriverjs",
+    "protractor"
+  ],
+  "homepage": "https://applitools.com",
+  "author": {
+    "name": "Applitools Team",
+    "email": "team@applitools.com",
+    "url": "https://applitools.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/applitools/eyes.sdk.javascript.git"
+  },
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.sdk.javascript/issues"
+  },
+  "directories": {
+    "example": "./example",
+    "lib": "./src",
+    "test": "./test"
+  },
+  "files": [
+    "README.md",
+    "LICENSE",
+    "index.js",
+    "src/",
+    "typings/"
+  ],
+  "main": "./index.js",
+  "types": "./typings/index.d.ts",
+  "dependencies": {
+    "eyes.sdk": "^4.0.5",
+    "eyes.utils": "^3.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "*",
+    "chromedriver": "^78.0.0",
+    "mocha": "^6.2.2",
+    "protractor": "^5.4.2",
+    "selenium-webdriver": "^3.6.0",
+    "typescript": "^3.6.4"
+  },
+  "peerDependencies": {
+    "selenium-webdriver": "< 4.0.0"
+  },
+  "scripts": {
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:e2e": "npm run test:selenium",
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.js\"",
+    "test:appium": "mocha --no-timeouts \"test/e2e/appium/**/*.js\"",
+    "test:selenium": "mocha --no-timeouts \"test/e2e/selenium/**/*.js\"",
+    "test:protractor": "protractor test/e2e/protractor/protractor.conf.js",
+    "typings": "tsc --declaration"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": {
+    "node": ">= 6.9.0"
+  }
+}
