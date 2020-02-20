@@ -1,11 +1,12 @@
 const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
 const assert = require('assert')
-const {getElementLocation} = require('../../../../src/wrappers/web-element-util')
+const {getAbsoluteElementLocation} = require('../../../../src/wrappers/web-element-util')
 
 describe('web-element-util', () => {
-  describe('getElementLocation', () => {
+  describe('getAbsoluteElementLocation', () => {
     let driver
+    let jsExecutor
 
     before(async () => {
       await chromedriver.start(['--port=4444', '--url-base=wd/hub', '--silent'], true)
@@ -22,6 +23,7 @@ describe('web-element-util', () => {
       }
       driver = remote(browserOptions)
       await driver.init()
+      jsExecutor = driver.execute.bind(this)
     })
 
     afterEach(async () => {
@@ -36,7 +38,7 @@ describe('web-element-util', () => {
       await driver.url(`file:///${__dirname}/examples/simple.html`)
       const element = await driver.element('#here')
       assert.deepStrictEqual(
-        await getElementLocation({driver, element: element.value, logger: console}),
+        await getAbsoluteElementLocation({jsExecutor, element: element.value, logger: console}),
         {
           x: 8,
           y: 8,
@@ -48,7 +50,7 @@ describe('web-element-util', () => {
       await driver.url('http://applitools.github.io/demo/TestPages/FramesTestPage/')
       const element = await driver.element('/html/body/input')
       assert.deepStrictEqual(
-        await getElementLocation({driver, element: element.value, logger: console}),
+        await getAbsoluteElementLocation({jsExecutor, element: element.value, logger: console}),
         {
           x: 8,
           y: 1494,
@@ -63,7 +65,7 @@ describe('web-element-util', () => {
       await driver.frame(0)
       const element = await driver.element('#here')
       assert.deepStrictEqual(
-        await getElementLocation({driver, element: element.value, logger: console}),
+        await getAbsoluteElementLocation({jsExecutor, element: element.value, logger: console}),
         {
           x: 32,
           y: 176,
@@ -77,14 +79,14 @@ describe('web-element-util', () => {
       const element = await driver.element('button')
       // eslint-disable-next-line
       return assert.rejects(async () => {
-        await getElementLocation({driver, element: element.value, logger: console})
+        await getAbsoluteElementLocation({jsExecutor, element: element.value, logger: console})
       }, /Blocked a frame with origin/)
     })
 
     it('bogus web element', async () => {
       // eslint-disable-next-line
       return assert.rejects(async () => {
-        await getElementLocation({driver, element: {}, logger: console})
+        await getAbsoluteElementLocation({jsExecutor, element: {}, logger: console})
       }, /Invalid element provided/)
     })
   })

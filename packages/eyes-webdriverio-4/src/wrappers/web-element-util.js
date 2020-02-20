@@ -1,35 +1,50 @@
-async function getElementLocation({driver, element, logger}) {
+async function getAbsoluteElementLocation({jsExecutor, element, logger}) {
   try {
-    const elementRect = await driver.elementIdRect(element.ELEMENT)
-    const elementCoords = {x: Math.ceil(elementRect.value.x), y: Math.ceil(elementRect.value.y)}
-    const elementIsInTopDocument = await _isElementInTopDocument(driver, element)
+    const elementRect = await _getElementRect({jsExecutor, element})
+    const elementCoords = {x: Math.ceil(elementRect.x), y: Math.ceil(elementRect.y)}
+    const elementIsInTopDocument = await _isElementInTopDocument(jsExecutor, element)
     if (elementIsInTopDocument) {
       return elementCoords
     } else {
-      const frameCoords = await _getFrameCoordsToElement(driver, element)
+      const frameCoords = await _getFrameCoordsToElement(jsExecutor, element)
       return _calculateNestedElementLocation({frameCoords, elementCoords})
     }
   } catch (error) {
     if (error.message.includes('Blocked a frame with origin')) {
       const errorMessage = error.message.replace(/<unknown>: /, '')
-      throw new Error(`web-element-util.getElementLocation errored: ${errorMessage}`)
+      throw new Error(_concatenateLogMessage(errorMessage))
     }
-    if (error.message.includes(`number or type of arguments don't agree`))
-      throw new Error('web-element-util.getElementLocation errored: Invalid element provided')
-    logger.log(`WARNING - web-element-util.getElementLocation errored: ${error}`)
+    if (
+      error.message.includes(`number or type of arguments don't agree`) ||
+      error.message.includes(`getBoundingClientRect is not a function`)
+    )
+      throw new Error(_concatenateLogMessage('Invalid element provided'))
+    logger.log(`WARNING - ${_concatenateLogMessage(error)}`)
   }
 }
 
-async function _isElementInTopDocument(driver, element) {
-  const r = await driver.execute(_element => {
-    // eslint-disable-next-line
-    return _element.ownerDocument === window.top.document
-  }, element)
-  return r && r.value ? r.value : false
+function _calculateNestedElementLocation({frameCoords, elementCoords}) {
+  let elementLocation = {x: elementCoords.x, y: elementCoords.y}
+  frameCoords.forEach(frameCoord => {
+    elementLocation.x += Math.ceil(frameCoord.x)
+    elementLocation.y += Math.ceil(frameCoord.y)
+  })
+  return elementLocation
 }
 
-async function _getFrameCoordsToElement(driver, element) {
-  const r = await driver.execute(_element => {
+function _concatenateLogMessage(message) {
+  return `web-element-util.getAbsoluteElementLocation errored: ${message}`
+}
+
+async function _getElementRect({jsExecutor, element}) {
+  const r = await jsExecutor(_element => {
+    return _element.getBoundingClientRect()
+  }, element)
+  return r ? r.value : {}
+}
+
+async function _getFrameCoordsToElement(jsExecutor, element) {
+  const r = await jsExecutor(_element => {
     const frameCoords = []
     // eslint-disable-next-line
     let targetDocument = _element.ownerDocument
@@ -44,15 +59,14 @@ async function _getFrameCoordsToElement(driver, element) {
   return r && r.value ? r.value : []
 }
 
-function _calculateNestedElementLocation({frameCoords, elementCoords}) {
-  let elementLocation = {x: elementCoords.x, y: elementCoords.y}
-  frameCoords.forEach(frameCoord => {
-    elementLocation.x += Math.ceil(frameCoord.x)
-    elementLocation.y += Math.ceil(frameCoord.y)
-  })
-  return elementLocation
+async function _isElementInTopDocument(jsExecutor, element) {
+  const r = await jsExecutor(_element => {
+    // eslint-disable-next-line
+    return _element.ownerDocument === window.top.document
+  }, element)
+  return r && r.value ? r.value : false
 }
 
 module.exports = {
-  getElementLocation,
+  getAbsoluteElementLocation,
 }
