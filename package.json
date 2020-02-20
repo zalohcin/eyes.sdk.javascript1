@@ -21,7 +21,6 @@
   ],
   "scripts": {
     "lint": "eslint --ext .js .",
-    "update-ci-config": "node scripts/ci-config.js"
   },
   "devDependencies": {
     "eslint": "^6.6.0",
