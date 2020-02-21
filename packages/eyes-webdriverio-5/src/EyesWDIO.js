@@ -1047,13 +1047,18 @@ class EyesWDIO extends EyesBase {
    * @return {Promise<TestResults>}
    */
   async close(throwEx = true) {
+    let isErrorCaught = false
     const results = await super.close(true).catch(err => {
-      if (!throwEx) return err
-      else throw err
+      isErrorCaught = true
+      return err
     })
 
     if (this._runner) {
       this._runner._allTestResult.push(results)
+    }
+
+    if (throwEx && isErrorCaught) {
+      throw results
     }
 
     return results
