@@ -1,15 +1,14 @@
 'use strict'
 const childProcess = require('child_process')
-const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
-const {Configuration, ProxySettings, ConsoleLogHandler} = require('../../../index')
+const {getDriver, getEyes, batch} = require('./util/TestSetup')
+const {ConsoleLogHandler} = require('../../../index')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 const expect = chai.expect
-const batch = getBatch()
 describe('TestProxy', () => {
   it('testNetworkThroughProxy', async () => {
-    await checkNetworkFailIfNoProxy()
+    await checkNetworkFailIfNoProxy() // chai dont catch error throwed due to missed proxy
     try {
       await startProxy()
       await checkNetworkPassThroughProxy()
@@ -20,21 +19,17 @@ describe('TestProxy', () => {
 
   async function checkNetworkPassThroughProxy() {
     let webDriver = await getDriver('CHROME')
-    let {eyes} = await getEyes('VG')
+    let eyes = await getEyes('CSS')
     eyes.setLogHandler(new ConsoleLogHandler(true))
     try {
-      let conf = new Configuration()
-      conf.setBatch(batch)
-      conf.setProxy(new ProxySettings('http://127.0.0.1:8080', undefined, undefined, true))
-      conf.setAppName('Eyes Selenium SDK - Test Proxy')
-      conf.setTestName('proxy test')
-      eyes.setConfiguration(conf)
+      eyes.setBatch(batch)
+      eyes.setProxy('http://127.0.0.1:5050')
 
-      await eyes.open(webDriver)
+      await eyes.open(webDriver, 'Eyes Selenium SDK - Test Proxy', 'proxy test')
       await webDriver.get('https://applitools.com/helloworld')
       await eyes.checkWindow()
       await eyes.close()
-      await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
+      await expect(eyes.close()).to.be.rejectedWith('close called with Eyes not open')
     } finally {
       await eyes.abortIfNotClosed()
       await webDriver.quit()
@@ -43,19 +38,12 @@ describe('TestProxy', () => {
 
   async function checkNetworkFailIfNoProxy() {
     let webDriver = await getDriver('CHROME')
-    let {eyes} = await getEyes('VG')
+    let eyes = await getEyes('CSS')
     eyes.setLogHandler(new ConsoleLogHandler(true))
     try {
-      let conf = new Configuration()
-      conf.setBatch(batch)
-      conf.setProxy(new ProxySettings('http://127.0.0.1:8080', undefined, undefined, true))
-      conf.setAppName('Eyes Selenium SDK - Test Proxy')
-      conf.setTestName('proxy test')
-      eyes.setConfiguration(conf)
-      await expect(eyes.open(webDriver)).to.be.rejectedWith(
-        Error,
-        'tunneling socket could not be established',
-      )
+      eyes.setBatch(batch)
+      eyes.setProxy('http://127.0.0.1:8080')
+      await eyes.open(webDriver, 'Eyes Selenium SDK - Test Proxy', 'proxy test')
     } finally {
       await eyes.abortIfNotClosed()
       await webDriver.quit()
