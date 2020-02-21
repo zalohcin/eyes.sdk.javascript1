@@ -100,26 +100,6 @@ class Eyes extends EyesBase {
   }
 
   /**
-   * @return {Configuration}
-   */
-  getConfiguration() {
-    return this._configuration.cloneConfig()
-  }
-
-  /**
-   * @override
-   * @param {Configuration|object} configuration
-   */
-  setConfiguration(configuration) {
-    if (!(configuration instanceof Configuration)) {
-      configuration = new Configuration(configuration)
-    }
-
-    this._configuration = configuration
-    this._serverConnector._configuration = this._configuration
-  }
-
-  /**
    * @override
    * @protected
    * @return {string} - The base agent id of the SDK.

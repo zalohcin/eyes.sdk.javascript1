@@ -480,26 +480,6 @@ class EyesVisualGrid extends EyesBase {
     return this._jsExecutor
   }
 
-  /**
-   * @deprecated
-   * @param {Configuration} conf
-   */
-  setConfiguration(conf) {
-    if (!(conf instanceof Configuration)) {
-      conf = new Configuration(conf)
-    }
-
-    this._configuration.mergeConfig(conf)
-  }
-
-  /**
-   * @deprecated
-   * @return {Configuration}
-   */
-  getConfiguration() {
-    return this._configuration
-  }
-
   setApiKey(apiKey) {
     this._configuration.setApiKey(apiKey)
   }
