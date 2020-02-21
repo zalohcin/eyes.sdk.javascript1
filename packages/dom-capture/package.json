@@ -6,13 +6,14 @@
   "scripts": {
     "vv": "node ../../scripts/verify-versions.js",
     "test:mocha": "mocha --no-timeouts tests/**/*.test.js",
-    "eslint:node": "eslint '**/*.js' --ignore-pattern 'src/browser'",
-    "eslint:browser": "eslint -c 'src/browser/.eslintrc.json' 'src/browser/**/*.js'",
-    "eslint": "npm run eslint:node && npm run eslint:browser",
-    "test": "npm run eslint && npm run test:mocha",
+    "lint:node": "eslint '**/*.js' --ignore-pattern 'src/browser'",
+    "lint:browser": "eslint -c 'src/browser/.eslintrc.json' 'src/browser/**/*.js'",
+    "lint": "yarn lint:node && yarn lint:browser",
+    "test": "yarn lint && yarn test:mocha",
     "build": "rollup -c rollup.config.js",
     "build:watch": "rollup -c rollup.config.js --watch",
     "surge": "surge tests/fixtures applitools-dom-capture-origin-1.surge.sh && surge tests/fixtures applitools-dom-capture-origin-2.surge.sh",
+    "postpublish": "git push; git push --tags",
     "preversion": "yarn vv"
   },
   "engines": {
@@ -29,7 +30,7 @@
     "chai": "^4.2.0",
     "core-js": "^3.6.1",
     "cssom": "git+https://github.com/amitzur/CSSOM.git#925260ff2c8f8387cf76df4d5776a06044a644c8",
-    "eslint": "5.7.0",
+    "eslint": "^6.8.0",
     "eslint-plugin-mocha-no-only": "1.0.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-prettier": "3.0.0",

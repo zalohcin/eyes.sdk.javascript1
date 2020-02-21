@@ -21,7 +21,10 @@
     "packages/eyes-common-legacy",
     "packages/eyes-images-legacy",
     "packages/eyes-sdk-core-legacy",
-    "packages/eyes-selenium-3"
+    "packages/eyes-selenium-3",
+    "packages/eyes-cypress",
+    "packages/eyes-storybook",
+    "packages/eyes-leanft"
   ],
   "scripts": {
     "lint": "eslint --ext .js ."

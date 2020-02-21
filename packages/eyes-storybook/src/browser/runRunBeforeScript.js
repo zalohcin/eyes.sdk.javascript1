@@ -1,4 +1,3 @@
-/* global document */
 const getClientAPI = require('./getClientAPI');
 
 function runRunBeforeScript(index) {

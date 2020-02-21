@@ -5,7 +5,7 @@ const VERTICAL_SPACE_BETWEEN_STORIES = 2;
 const STORY_HEIGHT = 3;
 
 let url;
-const p = new URLSearchParams(location.search);
+const p = new URLSearchParams(location.search); // eslint-disable-line node/no-unsupported-features/node-builtins
 if (!p.has('file')) {
   alert('no file selected. need file URL param');
 } else {

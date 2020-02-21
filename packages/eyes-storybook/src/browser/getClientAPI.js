@@ -1,4 +1,3 @@
-/* global window */
 'use strict';
 
 const API_VERSIONS = {
