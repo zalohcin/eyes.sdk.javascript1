@@ -45,6 +45,7 @@ class EyesVisualGrid extends EyesBase {
 
     this._runner._eyesInstances.push(this)
     this._runner.makeGetBatchInfo(this._serverConnector.batchInfo.bind(this._serverConnector))
+    this._runner.makeGetVisualGridClient(makeVisualGridClient)
 
     /** @type {boolean} */ this._isOpen = false
     /** @type {boolean} */ this._isVisualGrid = true
@@ -124,7 +125,7 @@ class EyesVisualGrid extends EyesBase {
     if (this._runner.getConcurrentSessions())
       this._configuration.setConcurrentSessions(this._runner.getConcurrentSessions())
 
-    const {openEyes} = makeVisualGridClient({
+    const {openEyes} = this._runner.getVisualGridClient({
       logger: this._logger,
       agentId: this.getFullAgentId(),
       apiKey: this._configuration.getApiKey(),

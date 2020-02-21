@@ -1,6 +1,8 @@
 'use strict'
-const {TestResultsSummary} = require('./TestResultsSummary')
+
+const {GeneralUtils} = require('@applitools/eyes-common')
 const {EyesRunner} = require('./EyesRunner')
+const {TestResultsSummary} = require('./TestResultsSummary')
 
 class VisualGridRunner extends EyesRunner {
   /**
@@ -16,6 +18,22 @@ class VisualGridRunner extends EyesRunner {
    */
   getConcurrentSessions() {
     return this._concurrentSessions
+  }
+
+  makeGetVisualGridClient(makeVisualGridClient) {
+    if (!this._getVisualGridClient) {
+      this._getVisualGridClient = GeneralUtils.cachify(makeVisualGridClient)
+    }
+  }
+
+  async getVisualGridClientWithCache(config) {
+    if (this._getVisualGridClient) {
+      return this._getVisualGridClient(config)
+    } else {
+      throw new Error(
+        'VisualGrid runner could not get visual grid client since makeGetVisualGridClient was not called before',
+      )
+    }
   }
 
   /**

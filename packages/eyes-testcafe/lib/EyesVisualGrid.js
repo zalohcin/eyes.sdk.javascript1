@@ -38,6 +38,9 @@ class EyesVisualGrid extends Eyes {
     super(serverUrl, isDisabled, runner)
 
     this._isVisualGrid = true
+
+    this._runner.makeGetVisualGridClient(makeVisualGridClient)
+
     /** @type {UserAgent} */
     this._userAgent = undefined
 
@@ -82,7 +85,7 @@ class EyesVisualGrid extends Eyes {
       this._userAgent = UserAgent.parseUserAgentString(uaString, true)
     }
 
-    const {openEyes} = makeVisualGridClient({
+    const {openEyes} = this._runner.getVisualGridClient({
       logger: this._logger,
       agentId: this.getFullAgentId(),
       apiKey: this._configuration.getApiKey(),
