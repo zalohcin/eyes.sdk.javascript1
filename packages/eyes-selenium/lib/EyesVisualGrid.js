@@ -82,7 +82,7 @@ class EyesVisualGrid extends Eyes {
       this._userAgent = UserAgent.parseUserAgentString(uaString, true)
     }
 
-    const {openEyes} = this._runner.getVisualGridClient({
+    const {openEyes} = this._runner.getVisualGridClientWithCache({
       logger: this._logger,
       agentId: this.getFullAgentId(),
       apiKey: this._configuration.getApiKey(),

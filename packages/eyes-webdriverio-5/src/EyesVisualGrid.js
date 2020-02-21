@@ -112,7 +112,7 @@ class EyesVisualGrid extends EyesBase {
     if (this._runner.getConcurrentSessions())
       this._configuration.setConcurrentSessions(this._runner.getConcurrentSessions())
 
-    const {openEyes} = this._runner.getVisualGridClient({
+    const {openEyes} = this._runner.getVisualGridClientWithCache({
       logger: this._logger,
       agentId: this.getFullAgentId(),
       apiKey: this._configuration.getApiKey(),
