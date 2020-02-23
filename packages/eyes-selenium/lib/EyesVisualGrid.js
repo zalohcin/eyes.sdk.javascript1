@@ -124,7 +124,7 @@ class EyesVisualGrid extends Eyes {
     let isErrorCaught = false
     const results = await this._closeCommand(true).catch(err => {
       isErrorCaught = true
-      return TypeUtils.isArray(err) ? err[0] : err
+      return err
     })
 
     this._isOpen = false
@@ -134,7 +134,7 @@ class EyesVisualGrid extends Eyes {
     }
 
     if (throwEx && isErrorCaught) {
-      throw results
+      throw TypeUtils.isArray(results) ? results[0] : results
     }
 
     return results
