@@ -78,7 +78,7 @@ class EyesBase {
     /** @var {Logger} */
     this._logger = new Logger(configuration.getShowLogs())
     /** @var {Configuration} */
-    this.configuration = configuration.cloneConfig()
+    this._configuration = configuration.cloneConfig()
 
     this._configuration.setServerUrl(serverUrl)
     this._configuration.setIsDisabled(isDisabled)
