@@ -80,7 +80,7 @@ describe('Runners', () => {
     assert.strictEqual(results.getAllResults().length, 3)
   })
 
-  it.only('VisualGridRunner', async function() {
+  it('VisualGridRunner', async function() {
     const displayName = this.test.title
     const runner = new VisualGridRunner(10)
     const initializeEyes = makeInitializeEyes({runner, batchName: displayName, isVisualGrid: true})
