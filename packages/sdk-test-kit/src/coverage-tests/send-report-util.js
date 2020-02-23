@@ -33,10 +33,14 @@ function hasPassed(errors, testName, executionMode) {
   })
 }
 
-function makeSendReport(
-  {browser = 'chrome', errors, group = 'selenium', sdkName, testsRan} = {},
+function makeSendReport({
+  browser = 'chrome',
+  errors,
+  group = 'selenium',
+  sdkName,
+  testsRan,
   sandbox = true,
-) {
+} = {}) {
   return {
     sdk: convertSdkNameToReportName(sdkName),
     group,

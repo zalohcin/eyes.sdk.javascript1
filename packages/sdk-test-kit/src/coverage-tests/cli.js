@@ -158,7 +158,9 @@ async function doSendReport(args, report) {
   if (args.sendReport) {
     process.stdout.write('\nSending report to QA dashboard... ')
     const isSandbox = args.sendReport !== 'sandbox' ? false : true
-    const result = await sendReport(report.toSendReportSchema(isSandbox))
+    const _report = report.toSendReportSchema()
+    _report.sandbox = isSandbox
+    const result = await sendReport(_report)
     process.stdout.write(result.isSuccessful ? 'Done!\n' : 'Failed!\n')
     return result
   }
