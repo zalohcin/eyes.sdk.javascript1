@@ -48,6 +48,7 @@ function makeCoverageTests({
       await type('#username', 'adamC')
       await type('#password', 'MySecret123?')
       await checkRegion(['#username', '#password'])
+      await close(throwException)
     },
     TestCheckElementFully_Fluent: async () => {
       await visit(url)
