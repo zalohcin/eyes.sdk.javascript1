@@ -535,12 +535,6 @@ class EyesVisualGrid extends EyesBase {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._runner.getBatchInfoWithCache(batchId)
   }
-
-  async _getAndSaveScmMergeBaseTime(branchName, parentBranchName) {
-    ArgumentGuard.notNullOrEmpty(branchName, 'branchName')
-    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
-    return this._runner.getScmInfoWithCache(branchName, parentBranchName)
-  }
 }
 
 exports.EyesVisualGrid = EyesVisualGrid

@@ -2,7 +2,6 @@
 const {
   GeneralUtils: {backwardCompatible, cachify},
 } = require('@applitools/eyes-common')
-const {getScmInfo} = require('@applitools/eyes-sdk-core')
 const makeCheckWindow = require('./checkWindow')
 const makeAbort = require('./makeAbort')
 const makeClose = require('./makeClose')
@@ -183,7 +182,6 @@ function makeOpenEyes({
         apiKey,
         logHandler: logger.getLogHandler(),
         getBatchInfoWithCache,
-        getScmInfo,
       })
 
     configureWrappers({

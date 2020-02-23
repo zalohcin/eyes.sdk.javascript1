@@ -59,6 +59,7 @@ const {FailureReports} = require('./FailureReports')
 const {AppEnvironment} = require('./AppEnvironment')
 const {MatchWindowTask} = require('./MatchWindowTask')
 const {MatchSingleWindowTask} = require('./MatchSingleWindowTask')
+const getScmInfo = require('./getScmInfo')
 
 const USE_DEFAULT_TIMEOUT = -1
 
@@ -889,8 +890,10 @@ class EyesBase {
     throw new TypeError('The method "_getAndSaveBatchInfoFromServer" is not implemented!')
   }
 
-  _getAndSaveScmMergeBaseTime(_parentBranchName) {
-    throw new TypeError('The method "_getAndSaveScmMergeBaseTime" is not implemented!')
+  async _getScmMergeBaseTime(branchName, parentBranchName) {
+    ArgumentGuard.notNullOrEmpty(branchName, 'branchName')
+    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
+    return getScmInfo(branchName, parentBranchName)
   }
 
   async getAndSetBatchInfo() {
@@ -921,10 +924,10 @@ class EyesBase {
     let parentBranchBaselineSavedBefore
     if ((isLocalBranchTest || isCiBranchTest) && !err) {
       ;[err, parentBranchBaselineSavedBefore] = await presult(
-        this._getAndSaveScmMergeBaseTime(parentBranchName),
+        this._getScmMergeBaseTime(branchName, parentBranchName),
       )
       this._logger.log(
-        '_getAndSaveScmMergeBaseTime done,',
+        '_getScmMergeBaseTime done,',
         `parentBranchBaselineSavedBefore: ${parentBranchBaselineSavedBefore} err: ${err}`,
       )
     }

@@ -11,7 +11,6 @@ const {
   RegionProvider,
   NullRegionProvider,
   EyesSimpleScreenshot,
-  getScmInfo,
   GeneralUtils,
 } = require('@applitools/eyes-sdk-core')
 
@@ -387,12 +386,6 @@ class Eyes extends EyesBase {
   async _getAndSaveBatchInfoFromServer(batchId) {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._getBatchInfo(batchId)
-  }
-
-  async _getAndSaveScmMergeBaseTime(branchName, parentBranchName) {
-    ArgumentGuard.notNullOrEmpty(branchName, 'branchName')
-    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
-    return getScmInfo(branchName, parentBranchName)
   }
 }
 

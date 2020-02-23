@@ -14,8 +14,8 @@ describe('EyesBase', () => {
   describe('getAndSetBatchInfo()', () => {
     beforeEach(() => {
       eyes = new EyesBase()
-      eyes._getAndSaveScmMergeBaseTime = async _parentBranchName =>
-        `some-datetime-of-${_parentBranchName}`
+      eyes._getScmMergeBaseTime = async (branchName, parentBranchName) =>
+        `some-datetime-of-${branchName}-${parentBranchName}`
       eyes._getAndSaveBatchInfoFromServer = async batchId => ({
         ScmSourceBranch: `barnch-name-of-${batchId}`,
         ScmTargetBranch: `parent-barnch-name-of-${batchId}`,
@@ -37,7 +37,7 @@ describe('EyesBase', () => {
       const expected = {
         branchName: 'some-feature',
         parentBranchName: 'master-branch',
-        parentBranchBaselineSavedBefore: 'some-datetime-of-master-branch',
+        parentBranchBaselineSavedBefore: 'some-datetime-of-some-feature-master-branch',
       }
       assert.deepStrictEqual(result, expected)
     })
@@ -50,7 +50,7 @@ describe('EyesBase', () => {
       const expected = {
         branchName: 'some-feature',
         parentBranchName: 'master-branch',
-        parentBranchBaselineSavedBefore: 'some-datetime-of-master-branch',
+        parentBranchBaselineSavedBefore: 'some-datetime-of-some-feature-master-branch',
       }
       assert.deepStrictEqual(result, expected)
     })
@@ -62,7 +62,8 @@ describe('EyesBase', () => {
       const expected = {
         branchName: 'barnch-name-of-some-batch-id',
         parentBranchName: 'parent-barnch-name-of-some-batch-id',
-        parentBranchBaselineSavedBefore: 'some-datetime-of-parent-barnch-name-of-some-batch-id',
+        parentBranchBaselineSavedBefore:
+          'some-datetime-of-barnch-name-of-some-batch-id-parent-barnch-name-of-some-batch-id',
       }
       assert.deepStrictEqual(result, expected)
     })
@@ -74,7 +75,8 @@ describe('EyesBase', () => {
       const expected = {
         branchName: 'barnch-name-of-some-batch-id',
         parentBranchName: 'parent-barnch-name-of-some-batch-id',
-        parentBranchBaselineSavedBefore: 'some-datetime-of-parent-barnch-name-of-some-batch-id',
+        parentBranchBaselineSavedBefore:
+          'some-datetime-of-barnch-name-of-some-batch-id-parent-barnch-name-of-some-batch-id',
       }
       assert.deepStrictEqual(result, expected)
     })
@@ -107,7 +109,7 @@ describe('EyesBase', () => {
       const expected = {
         branchName: 'some-feature',
         parentBranchName: 'master-branch',
-        parentBranchBaselineSavedBefore: 'some-datetime-of-master-branch',
+        parentBranchBaselineSavedBefore: 'some-datetime-of-some-feature-master-branch',
       }
       assert.deepStrictEqual(result, expected)
     })

@@ -1,6 +1,5 @@
 'use strict'
 
-const {getScmInfo} = require('@applitools/eyes-sdk-core')
 const {GeneralUtils} = require('@applitools/eyes-common')
 
 class EyesRunner {
@@ -53,10 +52,6 @@ class EyesRunner {
         'Eyes runner could not get batch info since makeGetBatchInfo was not called before',
       )
     }
-  }
-
-  async getScmInfoWithCache(...args) {
-    return getScmInfo(...args)
   }
 }
 
