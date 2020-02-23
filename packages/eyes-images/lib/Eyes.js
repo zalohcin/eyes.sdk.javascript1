@@ -389,9 +389,10 @@ class Eyes extends EyesBase {
     return this._getBatchInfo(batchId)
   }
 
-  async _getAndSaveScmMergeBaseTime(parentBranchName) {
+  async _getAndSaveScmMergeBaseTime(branchName, parentBranchName) {
+    ArgumentGuard.notNullOrEmpty(branchName, 'branchName')
     ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
-    return getScmInfo(parentBranchName)
+    return getScmInfo(branchName, parentBranchName)
   }
 }
 

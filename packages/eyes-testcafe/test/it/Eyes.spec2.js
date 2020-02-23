@@ -17,15 +17,16 @@ describe('Eyes', function() {
     eyesClassic3._runner._getBatchInfo = batchInfo
 
     // save CSM info on runner
-    const getScmInfoWithCache = function(arg) {
+    const getScmInfoWithCache = function(branchName, parentBranchName) {
       if (!this.__cache) {
         this.__cache = {}
       }
-      if (!this.__cache[arg]) {
-        this.__cache[arg] = true
-        return `csm not from cache ${arg}`
+      const cacheKey = `${branchName}-${parentBranchName}`
+      if (!this.__cache[cacheKey]) {
+        this.__cache[cacheKey] = true
+        return `csm not from cache ${cacheKey}`
       }
-      return `csm from cache ${arg}`
+      return `csm from cache ${cacheKey}`
     }
     eyesClassic._runner.getScmInfoWithCache = getScmInfoWithCache
   })
@@ -42,9 +43,9 @@ describe('Eyes', function() {
   })
 
   it('_getAndSaveScmMergeBaseTime() works', async function() {
-    const res1 = await eyesClassic._getAndSaveScmMergeBaseTime('parentBranchName')
-    assert.strictEqual(res1, 'csm not from cache parentBranchName')
-    const res2 = await eyesClassic._getAndSaveScmMergeBaseTime('parentBranchName')
-    assert.strictEqual(res2, 'csm from cache parentBranchName')
+    const res1 = await eyesClassic._getAndSaveScmMergeBaseTime('branchName', 'parentBranchName')
+    assert.strictEqual(res1, 'csm not from cache branchName-parentBranchName')
+    const res2 = await eyesClassic._getAndSaveScmMergeBaseTime('branchName', 'parentBranchName')
+    assert.strictEqual(res2, 'csm from cache branchName-parentBranchName')
   })
 })

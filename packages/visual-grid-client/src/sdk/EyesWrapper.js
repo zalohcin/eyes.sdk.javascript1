@@ -198,8 +198,8 @@ class EyesWrapper extends EyesBase {
     return this._getBatchInfoWithCache(batchId)
   }
 
-  async _getAndSaveScmMergeBaseTime(parentBranchName) {
-    return this._getScmInfoWithCache(parentBranchName)
+  async _getAndSaveScmMergeBaseTime(branchName, parentBranchName) {
+    return this._getScmInfoWithCache(branchName, parentBranchName)
   }
 }
 

@@ -29,15 +29,16 @@ describe('Eyes', function() {
     eyesVG3._runner._getBatchInfo = batchInfo
 
     // save CSM info on runner
-    const getScmInfoWithCache = function(arg) {
+    const getScmInfoWithCache = function(branchName, parentBranchName) {
       if (!this.__cache) {
         this.__cache = {}
       }
-      if (!this.__cache[arg]) {
-        this.__cache[arg] = true
-        return `csm not from cache ${arg}`
+      const argsKey = `${branchName}-${parentBranchName}`
+      if (!this.__cache[argsKey]) {
+        this.__cache[argsKey] = true
+        return `csm not from cache ${argsKey}`
       }
-      return `csm from cache ${arg}`
+      return `csm from cache ${argsKey}`
     }
 
     eyesClassic._runner.getScmInfoWithCache = getScmInfoWithCache
@@ -71,23 +72,26 @@ describe('Eyes', function() {
   })
 
   it('_getAndSaveScmMergeBaseTime() works with classic runner', async function() {
-    const res1 = await eyesClassic._getAndSaveScmMergeBaseTime('parentBranchName')
-    const res2 = await eyesClassic2._getAndSaveScmMergeBaseTime('parentBranchName')
-    const res3 = await eyesClassicOtherRuuner._getAndSaveScmMergeBaseTime('parentBranchName')
+    const res1 = await eyesClassic._getAndSaveScmMergeBaseTime('branchName', 'parentBranchName')
+    const res2 = await eyesClassic2._getAndSaveScmMergeBaseTime('branchName', 'parentBranchName')
+    const res3 = await eyesClassicOtherRuuner._getAndSaveScmMergeBaseTime(
+      'branchName',
+      'parentBranchName',
+    )
 
-    assert.strictEqual(res1, 'csm not from cache parentBranchName')
-    assert.strictEqual(res2, 'csm from cache parentBranchName')
-    assert.strictEqual(res3, 'csm not from cache parentBranchName')
+    assert.strictEqual(res1, 'csm not from cache branchName-parentBranchName')
+    assert.strictEqual(res2, 'csm from cache branchName-parentBranchName')
+    assert.strictEqual(res3, 'csm not from cache branchName-parentBranchName')
   })
 
   it('_getAndSaveScmMergeBaseTime() works with VG runner', async function() {
     const [res1, res2, res3] = await Promise.all([
-      eyesVG._getAndSaveScmMergeBaseTime('parentBranchName'),
-      eyesVG2._getAndSaveScmMergeBaseTime('parentBranchName'),
-      eyesVGOtherRunner._getAndSaveScmMergeBaseTime('parentBranchName'),
+      eyesVG._getAndSaveScmMergeBaseTime('branchName', 'parentBranchName'),
+      eyesVG2._getAndSaveScmMergeBaseTime('branchName', 'parentBranchName'),
+      eyesVGOtherRunner._getAndSaveScmMergeBaseTime('branchName', 'parentBranchName'),
     ])
-    assert.strictEqual(res1, 'csm not from cache parentBranchName')
-    assert.strictEqual(res2, 'csm from cache parentBranchName')
-    assert.strictEqual(res3, 'csm not from cache parentBranchName')
+    assert.strictEqual(res1, 'csm not from cache branchName-parentBranchName')
+    assert.strictEqual(res2, 'csm from cache branchName-parentBranchName')
+    assert.strictEqual(res3, 'csm not from cache branchName-parentBranchName')
   })
 })

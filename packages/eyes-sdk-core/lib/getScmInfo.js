@@ -4,18 +4,20 @@ const {
   GeneralUtils: {pexec, cachify, presult},
 } = require('@applitools/eyes-common')
 
-async function doGetScmInfo(parentBranchName, _opts) {
-  const commitTimeCmd = `HASH=$(git merge-base HEAD ${parentBranchName}) && git show -q --format=%cI $HASH`
+async function doGetScmInfo(branchName, parentBranchName, _opts) {
+  const commitTimeCmd = `HASH=$(git merge-base ${branchName} ${parentBranchName}) && git show -q --format=%cI $HASH`
   let [{stderr} = {}, {stdout} = {}] = await presult(pexec(commitTimeCmd, _opts))
 
-  // missing parent branch info
-  if (stderr && stderr.includes('Not a valid object name')) {
-    const fetchParentCmd = `git fetch origin ${parentBranchName}:${parentBranchName}`
+  // missing branch info
+  let missingBranch = _missingBranchName(stderr)
+  if (missingBranch) {
+    const fetchBranchCmd = `git fetch origin ${missingBranch}:${missingBranch}`
     ;[{stderr} = {}, {stdout} = {}] = await presult(
-      pexec(`${fetchParentCmd} && ${commitTimeCmd}`, _opts),
+      pexec(`${fetchBranchCmd} && ${commitTimeCmd}`, _opts),
     )
   }
-  // missing current branch info
+
+  // missing current branch commits
   if (!stdout) {
     const fetchBranchCmd = 'git fetch origin --unshallow'
     ;[{stderr} = {}, {stdout} = {}] = await presult(
@@ -35,6 +37,11 @@ async function doGetScmInfo(parentBranchName, _opts) {
 
 function _isCorrectInfo(stdout) {
   return stdout && stdout.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/)
+}
+
+function _missingBranchName(stderr) {
+  const m = stderr && stderr.match(/Not a valid object name ([^\s]+)/)
+  return m && m[1]
 }
 
 module.exports = cachify(doGetScmInfo, true)

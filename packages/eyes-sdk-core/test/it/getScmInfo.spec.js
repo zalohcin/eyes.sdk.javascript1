@@ -23,11 +23,11 @@ describe('getScmInfo', () => {
   })
 
   it('works and caches response', async () => {
-    const result = await getScmInfo('master', {cwd: testRepoPath})
+    const result = await getScmInfo('master', 'some-feat', {cwd: testRepoPath})
     const testRepoBaseTime = '2020-02-06T15:20:56+02:00'
     assert.strictEqual(result, testRepoBaseTime)
 
-    const result2 = await getScmInfo('master', {cwd: __dirname})
+    const result2 = await getScmInfo('master', 'some-feat', {cwd: __dirname})
     assert.strictEqual(result2, testRepoBaseTime)
   })
 
@@ -44,7 +44,7 @@ describe('getScmInfo', () => {
         {cwd: remoteRepoDir},
       )
       const remoteRepoPath = resolve(remoteRepoDir, 'tmp_git_test')
-      const result = await getScmInfo('master', {cwd: remoteRepoPath})
+      const result = await getScmInfo('master', 'some-branch-name', {cwd: remoteRepoPath})
       const testRepoBaseTime = '2020-02-19T17:14:31+02:00'
       assert.strictEqual(result, testRepoBaseTime)
     })
@@ -59,7 +59,7 @@ describe('getScmInfo', () => {
         {cwd: remoteRepoDir},
       )
       const remoteRepoPath = resolve(remoteRepoDir, 'tmp_git_test')
-      const result = await getScmInfo('master', {cwd: remoteRepoPath})
+      const result = await getScmInfo('master', 'some-branch-name', {cwd: remoteRepoPath})
       const testRepoBaseTime = '2020-02-19T17:14:31+02:00'
       assert.strictEqual(result, testRepoBaseTime)
     })
@@ -74,10 +74,32 @@ describe('getScmInfo', () => {
         {cwd: remoteRepoDir},
       )
       const remoteRepoPath = resolve(remoteRepoDir, 'tmp_git_test')
-      const [err] = await presult(getScmInfo('not-there', {cwd: remoteRepoPath}))
+      const [err] = await presult(
+        getScmInfo('not-there', 'some-branch-name', {cwd: remoteRepoPath}),
+      )
       const expectedError = 'fatal: --unshallow on a complete repository does not make sense'
       assert.ok(err && err.message)
       assert.ok(err.message.includes(expectedError), `Got ${err.message} expected defined error`)
+    })
+
+    it('handles missing feature branch', async () => {
+      // getScmInfo is cached per node process, so flush..
+      delete require.cache[require.resolve('../../lib/getScmInfo')]
+      const getScmInfo = require('../../lib/getScmInfo')
+
+      await pexec(
+        `git clone --single-branch --branch master https://github.com/applitools/testing-exmaple-repo.git tmp_git_test && 
+         cd tmp_git_test && 
+         git fetch origin +refs/pull/1/merge && 
+         git checkout -qf FETCH_HEAD`,
+        {
+          cwd: remoteRepoDir,
+        },
+      )
+      const remoteRepoPath = resolve(remoteRepoDir, 'tmp_git_test')
+      const [, res] = await presult(getScmInfo('some-branch-name', 'master', {cwd: remoteRepoPath}))
+      const testRepoBaseTime = '2020-02-19T17:14:31+02:00'
+      assert.strictEqual(res, testRepoBaseTime)
     })
   })
 })
