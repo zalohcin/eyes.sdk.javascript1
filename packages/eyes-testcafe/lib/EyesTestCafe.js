@@ -800,7 +800,7 @@ class EyesTestCafe extends Eyes {
    * @return {Promise<TestResults>}
    */
   async close(throwEx = true) {
-    const results = await super.close(true).catch(err => {
+    const results = await Eyes.prototype.close.call(this, true).catch(err => {
       if (!throwEx) return err
       else throw err
     })
