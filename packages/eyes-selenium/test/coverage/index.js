@@ -41,7 +41,7 @@ function initialize() {
   }
 
   async function abort() {
-    await eyes.abortIfNotClosed()
+    eyes ? await eyes.abortIfNotClosed() : undefined
   }
 
   async function checkFrame(
