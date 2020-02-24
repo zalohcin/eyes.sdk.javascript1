@@ -31,7 +31,7 @@ describe('package and install', () => {
     packageFilePath = resolve(rootPath, `${packageName}-${version}.tgz`);
     await pexec(`npm pack ${rootPath}`);
     process.chdir(testAppPath);
-    await pexec(`npm install ${resolve(rootPath, 'node_modules/cypress')}`);
+    await pexec(`npm install`);
     await pexec(`npm install ${packageFilePath}`);
 
     try {

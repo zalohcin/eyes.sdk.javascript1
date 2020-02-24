@@ -15,7 +15,7 @@ const testAppPath = resolve(__dirname, '../fixtures/testApp');
 describe('cypress run', () => {
   before(async () => {
     process.chdir(testAppPath);
-    await pexec(`npm install ${resolve(rootPath, 'node_modules/cypress')}`, {
+    await pexec(`npm install`, {
       maxBuffer: 1000000,
     });
   });
