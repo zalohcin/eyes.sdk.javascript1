@@ -88,6 +88,21 @@ describe('captureFrame', () => {
     expect(domStr).to.eql(expected);
   });
 
+  it('drills into iframes with srcdoc', async () => {
+    await page.goto(`${baseUrl}/testWithSrcdocIframe.html`);
+
+    const domStr = beautifyOutput(await page.evaluate(captureFrameWithMetrics));
+
+    if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
+      fs.writeFileSync('tests/fixtures/testWithSrcdocIframe.dom.json', domStr);
+    }
+    const expected = loadFixture('testWithSrcdocIframe.dom.json').replace(
+      'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
+      version,
+    );
+    expect(domStr).to.eql(expected);
+  });
+
   it("places iframe tokens when there's cross origin", async () => {
     const port = 7272;
     const anotherTestServer = await startTestServer({port});
