@@ -9,19 +9,22 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
-"@applitools/dom-utils@4.7.4":
-  version "4.7.4"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.7.4.tgz#d063f868364b588f8aeaaf9fede88f3172ed8d3d"
-  integrity sha512-5zsDmkzwcjBQfBaf5xGdgQ8vAddmxnonaZmoOyZzjaijPI+HyR+omE2rCY5jRNzai9dICGiFgrHki+QeKcGHiQ==
-  dependencies:
-    "@applitools/dom-capture" "^7.0.22"
-    "@applitools/eyes-common" "^3.17.2"
-    axios "^0.19.0"
-
 "@applitools/eyes-common@3.18.3":
   version "3.18.3"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.18.3.tgz#723b45f0c8bb79c1a9ce8f273b56b708c647bfd3"
   integrity sha512-vyl9OodJFEWKeRV9qO8Zf7RVgtn4iG7v9LphYFimLU5v5jMZblLB2bRtj1WYrRh5VIx28Gbf/1rkjGBIKv0yKQ==
+  dependencies:
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+
+"@applitools/eyes-common@3.18.4":
+  version "3.18.4"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.18.4.tgz#bd63ff0a4fdf6474bc76aa7531cf07f1c09c68d9"
+  integrity sha512-QpHO9O/FKMIOBgvZYJwz2ZOi4NYcAIuTCL1UIRmdJhAqTNDndOniut1tI03gJXmIkjJN7d8QTaZ75zktrlvSDg==
   dependencies:
     cosmiconfig "^6.0.0"
     dateformat "^3.0.3"
@@ -2106,6 +2109,13 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
+
+"@types/png-async@*":
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/@types/png-async/-/png-async-0.9.4.tgz#2a1732cd80d26ecf6d5a4b6bb5f801198b81264f"
+  integrity sha512-cIaM89GfFn911g5DXS6W2+WEnw1v/Anw4lIZaDqBW6F5EpOAb/G5FaHDIcSkdc4lovu1jNDKYOdIl7CtFpXXgg==
+  dependencies:
+    png-async "*"
 
 "@types/prop-types@*":
   version "15.7.3"
@@ -7357,6 +7367,25 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
+eyes.sdk@0.0.71:
+  version "0.0.71"
+  resolved "https://registry.yarnpkg.com/eyes.sdk/-/eyes.sdk-0.0.71.tgz#29b34ba4be8ce94e1b4894393e21536dd87dcc3b"
+  integrity sha512-ppVTgi7CnPQFzEazH913hrusWdDDQygq/cyq2t6FQz7P2eaDeNedTnwQtRNKnncIqumB/odQyxOQsUrqtzthRQ==
+  dependencies:
+    "@types/node" "*"
+    eyes.utils "0.0.29"
+    request "^2.87.0"
+
+eyes.utils@0.0.29:
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/eyes.utils/-/eyes.utils-0.0.29.tgz#ae50c0863b10705b93a54028ff2f1e1dc1a6dd97"
+  integrity sha1-rlDAhjsQcFuTpUAo/y8eHcGm3Zc=
+  dependencies:
+    "@types/node" "*"
+    "@types/png-async" "*"
+    dateformat "^3.0.3"
+    png-async "^0.9.2"
+
 fast-deep-equal@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
@@ -11934,7 +11963,7 @@ pn@^1.1.0:
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
   integrity sha512-2qHaIQr2VLRFoxe2nASzsV6ef4yOOH+Fi9FBOVH6cqeSgUnoyySPZkxzLuzd+RYOQTRpROA0ztTMqxROKSb/nA==
 
-png-async@^0.9.4:
+png-async@*, png-async@^0.9.2, png-async@^0.9.4:
   version "0.9.4"
   resolved "https://registry.yarnpkg.com/png-async/-/png-async-0.9.4.tgz#0638817508fcf4e732706b2f82c74c947cb83f78"
   integrity sha512-B//AXX9TkneKfgtOpT1mdUnnhk2BImGD+a98vImsMU8uo1dBeHyW/kM2erWZ/CsYteTPU/xKG+t6T62heHkC3A==
