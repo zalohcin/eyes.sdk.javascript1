@@ -9,6 +9,13 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
+"@applitools/dom-snapshot@3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.3.3.tgz#ee2d3269e169ed4ebf598fcdef9502021982210f"
+  integrity sha512-qGiYHPbMO6rp7zZKZ5idLLpesPBy9ZzYNOEzX3d6PE7grq2OV8D6V67miqG4GiQY1o5owSuG+ieIuWkGiQJSoA==
+  dependencies:
+    "@applitools/functional-commons" "^1.5.4"
+
 "@applitools/eyes-common@3.18.3":
   version "3.18.3"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.18.3.tgz#723b45f0c8bb79c1a9ce8f273b56b708c647bfd3"
@@ -39,6 +46,18 @@
   integrity sha512-Zir8bhlQqozID9ZQWPIduEyT1g1jDdFt4ejmP4jnCCZ3WkgLQEIwChQA8zqlizq5nQAuTkB+FDk4UYhh9HGc8w==
   dependencies:
     "@applitools/eyes-common" "3.18.3"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    axios "0.19.2"
+    chalk "3.0.0"
+    es6-promise-pool "2.5.0"
+    tunnel "0.0.6"
+
+"@applitools/eyes-sdk-core@6.0.11":
+  version "6.0.11"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-6.0.11.tgz#3b0a2b87e79fc216e9788ab6338dcf5e8c95808c"
+  integrity sha512-xGu0qD4leXQAAT916fQO4f0myStntbO6q1pmzdty3bJdnGhCXpjV0TDCCZ+qi4OdIpGhqrU7lVBvRIZjmtxPqw==
+  dependencies:
+    "@applitools/eyes-common" "3.18.4"
     "@applitools/isomorphic-fetch" "3.0.0"
     axios "0.19.2"
     chalk "3.0.0"
