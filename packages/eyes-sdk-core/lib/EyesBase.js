@@ -909,7 +909,7 @@ class EyesBase {
 
     let err
     if (isCiBranchTest) {
-      ;[err, {ScmSourceBranch: branchName, ScmTargetBranch: parentBranchName} = {}] = await presult(
+      ;[err, {scmSourceBranch: branchName, scmTargetBranch: parentBranchName} = {}] = await presult(
         this._getAndSaveBatchInfoFromServer(batchId),
       )
       this._logger.log(
