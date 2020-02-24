@@ -29,7 +29,7 @@
     "@applitools/eyes-common": "3.18.3",
     "@applitools/eyes-sdk-core": "6.0.10",
     "@applitools/functional-commons": "1.5.4",
-    "@applitools/visual-grid-client": "13.5.11",
+    "@applitools/visual-grid-client": "13.5.15",
     "rimraf": "^3.0.0"
   },
   "peerDependencies": {
