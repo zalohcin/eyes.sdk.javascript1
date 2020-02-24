@@ -1,17 +1,13 @@
 'use strict'
-
+const {TestResultsSummary} = require('./TestResultsSummary')
 const {EyesRunner} = require('./EyesRunner')
-const {TestResultSummary} = require('./TestResultSummary')
 
 class VisualGridRunner extends EyesRunner {
-  // this class is just a mock for compatibility with Java
-
   /**
    * @param {number} [concurrentSessions]
    */
   constructor(concurrentSessions) {
     super()
-
     this._concurrentSessions = concurrentSessions
   }
 
@@ -24,34 +20,29 @@ class VisualGridRunner extends EyesRunner {
 
   /**
    * @param {boolean} [throwEx=true]
-   * @return {Promise<TestResultSummary>}
+   * @return {Promise<TestResultsSummary>}
    */
   async getAllTestResults(throwEx = true) {
+    await this._closeAllBatches()
     if (this._eyesInstances.length === 1) {
-      return this._eyesInstances[0].closeAndReturnResults(throwEx)
+      const [eyes] = this._eyesInstances
+      return eyes.closeAndReturnResults(throwEx)
     } else if (this._eyesInstances.length > 1) {
-      const resultsPromise = []
+      const results = await Promise.all(
+        this._eyesInstances.map(async eyes => eyes.closeAndReturnResults(false)),
+      )
+
       const allResults = []
-
-      for (const eyesInstance of this._eyesInstances) {
-        resultsPromise.push(eyesInstance.closeAndReturnResults(false))
-      }
-
-      const results = await Promise.all(resultsPromise)
       for (const result of results) {
         allResults.push(...result.getAllResults())
       }
 
       if (throwEx === true) {
         for (const result of allResults) {
-          if (result.getException()) {
-            throw result.getException()
-          }
+          if (result.getException()) throw result.getException()
         }
       }
-
-      await this._closeAllBatches()
-      return new TestResultSummary(allResults)
+      return new TestResultsSummary(allResults)
     }
 
     return null

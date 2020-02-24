@@ -12,9 +12,13 @@ const {
   Configuration,
 } = require('@applitools/eyes-common')
 
-const {EyesBase, TestFailedError, CorsIframeHandle} = require('@applitools/eyes-sdk-core')
+const {
+  EyesBase,
+  TestFailedError,
+  CorsIframeHandle,
+  ClassicRunner,
+} = require('@applitools/eyes-sdk-core')
 
-const {ClassicRunner} = require('./runner/ClassicRunner')
 const {FrameChain} = require('./frames/FrameChain')
 const {EyesTestcafeUtils} = require('./EyesTestcafeUtils')
 const {ImageRotation} = require('./positioning/ImageRotation')

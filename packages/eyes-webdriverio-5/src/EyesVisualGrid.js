@@ -12,14 +12,14 @@ const {
   IgnoreRegionByRectangle,
   RectangleSize,
   Configuration,
+  TestResultsSummary,
+  VisualGridRunner,
 } = require('@applitools/eyes-sdk-core')
 
-const {TestResultSummary} = require('./runner/TestResultSummary')
 const EyesWebDriver = require('./wrappers/EyesWebDriver')
 const EyesWDIOUtils = require('./EyesWDIOUtils')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
 const WebDriver = require('./wrappers/WebDriver')
-const {VisualGridRunner} = require('./runner/VisualGridRunner')
 const Target = require('./fluent/Target')
 const FrameChain = require('./frames/FrameChain')
 
@@ -169,7 +169,7 @@ class EyesVisualGrid extends EyesBase {
     try {
       let resultsPromise = this._closePromise || this._closeCommand()
       const res = await resultsPromise
-      const testResultSummary = new TestResultSummary(res)
+      const testResultSummary = new TestResultsSummary(res)
 
       if (throwEx === true) {
         for (const result of testResultSummary.getAllResults()) {

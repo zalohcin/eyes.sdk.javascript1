@@ -1,6 +1,7 @@
 'use strict'
 
-const {takeDomSnapshot} = require('@applitools/visual-grid-client')
+const {makeVisualGridClient, takeDomSnapshot} = require('@applitools/visual-grid-client')
+
 const {
   ArgumentGuard,
   TypeUtils,
@@ -12,10 +13,10 @@ const {
   CorsIframeHandle,
   CorsIframeHandler,
   IgnoreRegionByRectangle,
+  VisualGridRunner,
+  TestResultsSummary,
 } = require('@applitools/eyes-sdk-core')
 
-const {TestResultsSummary} = require('./runner/TestResultsSummary')
-const {VisualGridRunner} = require('./runner/VisualGridRunner')
 const {Eyes} = require('./Eyes')
 
 const VERSION = require('../package.json').version
@@ -78,7 +79,16 @@ class EyesVisualGrid extends Eyes {
       this._userAgent = UserAgent.parseUserAgentString(uaString, true)
     }
 
-    this._runner.initializeVgClient(this._getVgClientParameters())
+    const {openEyes} = makeVisualGridClient({
+      logger: this._logger,
+      agentId: this.getFullAgentId(),
+      apiKey: this._configuration.getApiKey(),
+      showLogs: this._configuration.getShowLogs(),
+      saveDebugData: this._configuration.getSaveDebugData(),
+      proxy: this._configuration.getProxy(),
+      serverUrl: this._configuration.getServerUrl(),
+      concurrency: this._configuration.getConcurrentSessions(),
+    })
 
     if (this._configuration.getViewportSize()) {
       await this.setViewportSize(this._configuration.getViewportSize())
@@ -93,7 +103,7 @@ class EyesVisualGrid extends Eyes {
       }
     }
 
-    const {checkWindow, close, abort} = await this._runner.vgClient.openEyes(
+    const {checkWindow, close, abort} = await openEyes(
       this._configuration.toOpenEyesConfiguration(),
     )
 
@@ -274,19 +284,6 @@ class EyesVisualGrid extends Eyes {
     }
 
     return regions
-  }
-
-  _getVgClientParameters() {
-    return {
-      logger: this._logger,
-      agentId: this.getFullAgentId(),
-      apiKey: this._configuration.getApiKey(),
-      showLogs: this._configuration.getShowLogs(),
-      saveDebugData: this._configuration.getSaveDebugData(),
-      proxy: this._configuration.getProxy(),
-      serverUrl: this._configuration.getServerUrl(),
-      concurrency: this._configuration.getConcurrentSessions(),
-    }
   }
 }
 
