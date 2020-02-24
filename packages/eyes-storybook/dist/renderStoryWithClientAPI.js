@@ -3,8 +3,6 @@ function __renderStoryWithClientAPI(...args) {
   var renderStoryWithClientAPI = (function () {
   'use strict';
 
-  /* global window */
-
   const API_VERSIONS = {
     v4: 'v4',
     v5: 'v5',
