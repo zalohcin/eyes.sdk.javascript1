@@ -17,8 +17,8 @@ describe('EyesBase', () => {
       eyes._getScmMergeBaseTime = async (branchName, parentBranchName) =>
         `some-datetime-of-${branchName}-${parentBranchName}`
       eyes._getAndSaveBatchInfoFromServer = async batchId => ({
-        ScmSourceBranch: `barnch-name-of-${batchId}`,
-        ScmTargetBranch: `parent-barnch-name-of-${batchId}`,
+        scmSourceBranch: `barnch-name-of-${batchId}`,
+        scmTargetBranch: `parent-barnch-name-of-${batchId}`,
       })
 
       process.env.APPLITOOLS_BRANCH = null
