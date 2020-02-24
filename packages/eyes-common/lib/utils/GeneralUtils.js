@@ -411,7 +411,12 @@ class GeneralUtils {
   }
 
   static isFeatureFlagOn(featureName) {
-    return GeneralUtils.getEnvValue(featureName)
+    const envValue = GeneralUtils.getEnvValue(featureName)
+    return (
+      envValue === '1' ||
+      envValue === 'true' ||
+      (envValue && envValue !== '0' && envValue !== 'false' && envValue !== 'undefined')
+    )
   }
 
   static isFeatureFlagOff(featureName) {
