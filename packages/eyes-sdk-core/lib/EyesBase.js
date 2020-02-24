@@ -913,10 +913,8 @@ class EyesBase {
         this._getAndSaveBatchInfoFromServer(batchId),
       )
       this._logger.log(
-        `_getAndSaveBatchInfoFromServer done for ${batchId}, batchInfo: ${{
-          branchName,
-          parentBranchName,
-        }} err: ${err}`,
+        `_getAndSaveBatchInfoFromServer done for ${batchId}, 
+        branchName: ${branchName}, parentBranchName: ${parentBranchName}, err: ${err}`,
       )
     }
 
