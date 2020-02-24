@@ -33,9 +33,11 @@ function verifyChangelog({changelogContents, version}) {
   })
   if (unreleasedEntries.length)
     throw 'Found unreleased entries in the changelog. Move them into their own version entry before releasing.'
-  const latestReleaseHeading = _getLatestReleaseHeading(changelogContents)
-  if (latestReleaseHeading !== version)
-    throw 'Matching version entry not found in the changelog. Add a entry this version before releasing.'
+  const latestReleaseNumber = _getReleaseNumberFromHeading(
+    _getLatestReleaseHeading(changelogContents),
+  )
+  if (latestReleaseNumber === version)
+    throw 'Matching version entry found in the changelog. Add a new version entry before releasing.'
 }
 
 module.exports = {
