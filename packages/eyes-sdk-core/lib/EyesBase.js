@@ -3,7 +3,6 @@
 const {
   Logger,
   ArgumentGuard,
-  GeneralUtils,
   TypeUtils,
   EyesError,
   Region,
@@ -17,7 +16,7 @@ const {
   NullDebugScreenshotProvider,
   SessionType,
   Configuration,
-  GeneralUtils: {sleep, presult, getEnvValue},
+  GeneralUtils: {sleep, presult, getEnvValue, isFeatureFlagOff},
 } = require('@applitools/eyes-common')
 
 const {AppOutputProvider} = require('./capture/AppOutputProvider')
@@ -901,7 +900,7 @@ class EyesBase {
     let branchName = this._configuration.getBranchName()
     let parentBranchName = this._configuration.getParentBranchName()
 
-    if (GeneralUtils.isFeatureFlagOff('COMPARE_TO_BRANCH_BASE')) {
+    if (isFeatureFlagOff('COMPARE_TO_BRANCH_BASE')) {
       return {branchName, parentBranchName}
     }
 

@@ -411,7 +411,7 @@ class GeneralUtils {
   }
 
   static isFeatureFlagOn(featureName) {
-    return GeneralUtils.getEnvValue(featureName, true)
+    return GeneralUtils.getEnvValue(featureName)
   }
 
   static isFeatureFlagOff(featureName) {
