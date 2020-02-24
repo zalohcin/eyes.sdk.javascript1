@@ -16,7 +16,7 @@ const {
   NullDebugScreenshotProvider,
   SessionType,
   Configuration,
-  GeneralUtils: {sleep, presult, getEnvValue, isFeatureFlagOff},
+  GeneralUtils: {sleep, presult, getEnvValue},
 } = require('@applitools/eyes-common')
 
 const {AppOutputProvider} = require('./capture/AppOutputProvider')
@@ -896,10 +896,6 @@ class EyesBase {
   }
 
   async handleScmMergeBaseTime() {
-    if (isFeatureFlagOff('COMPARE_TO_BRANCH_BASE')) {
-      return
-    }
-
     const batchId = this.getUserSetBatchId()
     let scmSourceBranch = this._configuration.getBranchName()
     let scmTargetBranch = this._configuration.getParentBranchName()
