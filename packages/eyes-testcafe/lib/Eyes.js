@@ -104,26 +104,6 @@ class Eyes extends EyesBase {
   }
 
   /**
-   * @return {Configuration}
-   */
-  getConfiguration() {
-    return this._configuration.cloneConfig()
-  }
-
-  /**
-   * @override
-   * @param {Configuration|object} configuration
-   */
-  setConfiguration(configuration) {
-    if (!(configuration instanceof Configuration)) {
-      configuration = new Configuration(configuration)
-    }
-
-    this._configuration = configuration
-    this._serverConnector._configuration = this._configuration
-  }
-
-  /**
    * @override
    * @protected
    * @return {string} - The base agent id of the SDK.
@@ -884,11 +864,6 @@ class Eyes extends EyesBase {
   async _getAndSaveBatchInfoFromServer(batchId) {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._runner.getBatchInfoWithCache(batchId)
-  }
-
-  async _getAndSaveScmMergeBaseTime(parentBranchName) {
-    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
-    return this._runner.getScmInfoWithCache(parentBranchName)
   }
 }
 

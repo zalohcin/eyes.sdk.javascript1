@@ -35,7 +35,7 @@
   "peerDependencies": {
     "testcafe": "^1.5.0"
   },
-  "license": "SEE LICENSE FILE",
+  "license": "SEE LICENSE IN LICENSE",
   "engines": {
     "node": ">=10.13.0"
   },
@@ -54,6 +54,7 @@
   ],
   "scripts": {
     "lint": "eslint . --ext .js --config ../../.eslintrc",
+    "vv": "node ../../scripts/verify-versions.js",
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e",
@@ -62,7 +63,8 @@
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec2.js\"",
     "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\"",
     "test:coverage": "node test/coverage/index.js",
-    "postpublish": "git push; git push --tags"
+    "postpublish": "git push; git push --tags",
+    "preversion": "yarn vv"
   },
   "devDependencies": {
     "@applitools/dom-capture": "^7.1.2",

@@ -37,9 +37,9 @@ function makeSendReport({
   browser = 'chrome',
   errors,
   group = 'selenium',
-  sandbox = true,
   sdkName,
   testsRan,
+  sandbox = true,
 } = {}) {
   return {
     sdk: convertSdkNameToReportName(sdkName),

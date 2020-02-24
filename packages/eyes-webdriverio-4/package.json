@@ -1,24 +1,26 @@
 {
   "name": "@applitools/eyes.webdriverio",
-  "version": "2.11.9",
+  "version": "2.12.1",
   "description": "Applitools Eyes SDK for WebdriverIO",
   "main": "index.js",
   "scripts": {
     "lint": "eslint '**/*.js'",
+    "vv": "node ../../scripts/verify-versions.js",
     "test": "yarn test:unit && yarn test:e2e",
     "test:e2e": "mocha --no-timeouts \"test/+(TestClassicApi*.js|TestFluentApi*.js|TestVisualGrid*.js)\"",
     "test:it": "mocha --no-timeouts \"test/it/*.js\"",
     "test:unit": "mocha \"test/unit/**/*.js\"",
-    "postpublish": "git push; git push --tags"
+    "postpublish": "git push; git push --tags",
+    "preversion": "yarn vv"
   },
   "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
   "license": "SEE LICENSE IN LICENSE",
   "repository": "https://github.com/applitools/eyes.sdk.javascript1",
   "dependencies": {
-    "@applitools/dom-utils": "4.7.4",
-    "@applitools/eyes-common": "3.18.3",
-    "@applitools/eyes-sdk-core": "6.0.10",
-    "@applitools/visual-grid-client": "13.5.15",
+    "@applitools/dom-utils": "4.7.5",
+    "@applitools/eyes-common": "3.18.4",
+    "@applitools/eyes-sdk-core": "6.0.11",
+    "@applitools/visual-grid-client": "13.5.16",
     "css": "2.2.4",
     "css-url-parser": "^1.1.3",
     "is-absolute-url": "^2.1.0",

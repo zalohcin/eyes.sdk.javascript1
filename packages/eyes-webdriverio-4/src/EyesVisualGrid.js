@@ -438,26 +438,6 @@ class EyesVisualGrid extends EyesBase {
     return this._jsExecutor
   }
 
-  /**
-   * @deprecated
-   * @param {Configuration} conf
-   */
-  setConfiguration(conf) {
-    if (!(conf instanceof Configuration)) {
-      conf = new Configuration(conf)
-    }
-
-    this._configuration = conf
-  }
-
-  /**
-   * @deprecated
-   * @return {Configuration}
-   */
-  getConfiguration() {
-    return this._configuration
-  }
-
   setApiKey(apiKey) {
     this._configuration.setApiKey(apiKey)
   }
@@ -512,11 +492,6 @@ class EyesVisualGrid extends EyesBase {
   async _getAndSaveBatchInfoFromServer(batchId) {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._runner.getBatchInfoWithCache(batchId)
-  }
-
-  async _getAndSaveScmMergeBaseTime(parentBranchName) {
-    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
-    return this._runner.getScmInfoWithCache(parentBranchName)
   }
 }
 

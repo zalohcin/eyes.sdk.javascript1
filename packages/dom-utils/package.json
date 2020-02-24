@@ -1,6 +1,6 @@
 {
   "name": "@applitools/dom-utils",
-  "version": "4.7.4",
+  "version": "4.7.5",
   "description": "Applitools DOM Utils is a shared utility package",
   "keywords": [
     "dom-utils",
@@ -25,7 +25,7 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/dom-capture": "^7.0.22",
-    "@applitools/eyes-common": "^3.18.3",
+    "@applitools/eyes-common": "3.18.4",
     "axios": "^0.19.0"
   },
   "devDependencies": {
@@ -35,8 +35,10 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
+    "vv": "node ../../scripts/verify-versions.js",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
-    "postpublish": "git push; git push --tags"
+    "postpublish": "git push; git push --tags",
+    "preversion": "yarn vv"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

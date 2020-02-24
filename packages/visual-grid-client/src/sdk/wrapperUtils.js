@@ -2,10 +2,10 @@
 const EyesWrapper = require('./EyesWrapper')
 const {BatchInfo, RectangleSize, TypeUtils} = require('@applitools/eyes-sdk-core')
 
-function initWrappers({count, apiKey, logHandler, getBatchInfoWithCache, getScmInfoWithCache}) {
+function initWrappers({count, apiKey, logHandler, getBatchInfoWithCache}) {
   return Array.from(
     new Array(count),
-    () => new EyesWrapper({apiKey, logHandler, getBatchInfoWithCache, getScmInfoWithCache}),
+    () => new EyesWrapper({apiKey, logHandler, getBatchInfoWithCache}),
   )
 }
 

@@ -1804,27 +1804,6 @@ class EyesWDIO extends EyesBase {
     return this._runner
   }
 
-  /**
-   * @deprecated
-   * @param {Configuration|object} conf
-   */
-  setConfiguration(conf) {
-    if (!(conf instanceof Configuration)) {
-      conf = new Configuration(conf)
-    }
-
-    this._serverConnector._configuration = conf
-    this._configuration = conf
-  }
-
-  /**
-   * @deprecated
-   * @return {Configuration}
-   */
-  getConfiguration() {
-    return this._configuration
-  }
-
   setApiKey(apiKey) {
     this._configuration.setApiKey(apiKey)
   }
@@ -1848,11 +1827,6 @@ class EyesWDIO extends EyesBase {
   async _getAndSaveBatchInfoFromServer(batchId) {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._runner.getBatchInfoWithCache(batchId)
-  }
-
-  async _getAndSaveScmMergeBaseTime(parentBranchName) {
-    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
-    return this._runner.getScmInfoWithCache(parentBranchName)
   }
 }
 
