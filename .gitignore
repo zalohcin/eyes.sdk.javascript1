@@ -14,7 +14,7 @@ logs
 node_modules
 
 # Other
-.DS_STORE
+.DS_Store
 .eslintcache
 *.swp
 *~
