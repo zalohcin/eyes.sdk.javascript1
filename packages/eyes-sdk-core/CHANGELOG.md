@@ -7,6 +7,10 @@
 - remove EyesAbstract
 - new branching model for Eyes [Trello 145](https://trello.com/c/VhEHv3YI/145-modify-branching-model-to-be-more-git-like-adjust-github-bitbucket-integrations-109-108-hotfix)
 
+## 6.0.15
+
+- identical to 6.0.9
+
 ## 6.0.14
 
 - identical to 6.0.11
