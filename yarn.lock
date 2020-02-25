@@ -16,31 +16,10 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
-"@applitools/dom-utils@4.7.5":
-  version "4.7.5"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.7.5.tgz#fc1d8de5e95f7f26dfbc88879823159e30d40b40"
-  integrity sha512-/MXwVjnaFD2piF/HoWdHx9OdRjud5UOrGj4Ck5k9jAxGWT3f7S/RfQEe/X/jwIjqQHcVuVUOOmHzKuU5ToLs8A==
-  dependencies:
-    "@applitools/dom-capture" "^7.0.22"
-    "@applitools/eyes-common" "3.18.4"
-    axios "^0.19.0"
-
 "@applitools/eyes-common@3.18.3":
   version "3.18.3"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.18.3.tgz#723b45f0c8bb79c1a9ce8f273b56b708c647bfd3"
   integrity sha512-vyl9OodJFEWKeRV9qO8Zf7RVgtn4iG7v9LphYFimLU5v5jMZblLB2bRtj1WYrRh5VIx28Gbf/1rkjGBIKv0yKQ==
-  dependencies:
-    cosmiconfig "^6.0.0"
-    dateformat "^3.0.3"
-    debug "^4.1.1"
-    deepmerge "^4.2.2"
-    png-async "^0.9.4"
-    stack-trace "^0.0.10"
-
-"@applitools/eyes-common@3.18.4":
-  version "3.18.4"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.18.4.tgz#bd63ff0a4fdf6474bc76aa7531cf07f1c09c68d9"
-  integrity sha512-QpHO9O/FKMIOBgvZYJwz2ZOi4NYcAIuTCL1UIRmdJhAqTNDndOniut1tI03gJXmIkjJN7d8QTaZ75zktrlvSDg==
   dependencies:
     cosmiconfig "^6.0.0"
     dateformat "^3.0.3"
@@ -55,30 +34,6 @@
   integrity sha512-Zir8bhlQqozID9ZQWPIduEyT1g1jDdFt4ejmP4jnCCZ3WkgLQEIwChQA8zqlizq5nQAuTkB+FDk4UYhh9HGc8w==
   dependencies:
     "@applitools/eyes-common" "3.18.3"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    axios "0.19.2"
-    chalk "3.0.0"
-    es6-promise-pool "2.5.0"
-    tunnel "0.0.6"
-
-"@applitools/eyes-sdk-core@6.0.11":
-  version "6.0.11"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-6.0.11.tgz#3b0a2b87e79fc216e9788ab6338dcf5e8c95808c"
-  integrity sha512-xGu0qD4leXQAAT916fQO4f0myStntbO6q1pmzdty3bJdnGhCXpjV0TDCCZ+qi4OdIpGhqrU7lVBvRIZjmtxPqw==
-  dependencies:
-    "@applitools/eyes-common" "3.18.4"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    axios "0.19.2"
-    chalk "3.0.0"
-    es6-promise-pool "2.5.0"
-    tunnel "0.0.6"
-
-"@applitools/eyes-sdk-core@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-6.0.13.tgz#936817ff7e87077a886684d1effdfbe987d9b861"
-  integrity sha512-JANAjQjsvl4d+P/MLbGzhJA95boS0vM50bpzOkgs52m6f9/TgCeXGxbKJPn03pp9jXjgkjmYka7D/StbLlSEwA==
-  dependencies:
-    "@applitools/eyes-common" "3.18.5"
     "@applitools/isomorphic-fetch" "3.0.0"
     axios "0.19.2"
     chalk "3.0.0"
@@ -148,44 +103,6 @@
   integrity sha512-rzEOvGoiEF4KnK0PJ9I0btdwnaNlIPLYhjF1vTEG15PoucbbKpix9fYusxWlDG7kMiZya8ZycVPc0woVlNaHRQ==
   dependencies:
     debug "^4.1.0"
-
-"@applitools/visual-grid-client@13.5.16":
-  version "13.5.16"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-13.5.16.tgz#fdd746a776b0641572f64fdd707b06f15f88a1b1"
-  integrity sha512-BYUUIFcKrBoB+qne4SlPSm1YICW+T05tH7FMn+YwdqxD7aT+wrucpzleyaGOmEoLx1I1pNOSvkphCv9/JFtHwg==
-  dependencies:
-    "@applitools/dom-snapshot" "3.2.3"
-    "@applitools/eyes-common" "3.18.4"
-    "@applitools/eyes-sdk-core" "6.0.11"
-    "@applitools/functional-commons" "1.5.4"
-    "@applitools/http-commons" "2.3.12"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    "@applitools/jsdom" "1.0.2"
-    he "1.2.0"
-    lodash.mapvalues "^4.6.0"
-    mime-types "^2.1.24"
-    mkdirp "^0.5.1"
-    postcss-value-parser "^4.0.2"
-    throat "^5.0.0"
-
-"@applitools/visual-grid-client@13.5.18":
-  version "13.5.18"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-13.5.18.tgz#3eaf6cf2eac812070c82a11ab338a8e45feeb049"
-  integrity sha512-TtHSMaAoAGJC/PHRhX2yT0cE2MUeYyTLyR3k//p6LL+hbfPCFkYSOsySnTxj/dxSDhw/vPJErfqHxLMdedRyrw==
-  dependencies:
-    "@applitools/dom-snapshot" "3.3.3"
-    "@applitools/eyes-common" "3.18.5"
-    "@applitools/eyes-sdk-core" "6.0.13"
-    "@applitools/functional-commons" "1.5.4"
-    "@applitools/http-commons" "2.3.12"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    "@applitools/jsdom" "1.0.2"
-    he "1.2.0"
-    lodash.mapvalues "^4.6.0"
-    mime-types "^2.1.24"
-    mkdirp "^0.5.1"
-    postcss-value-parser "^4.0.2"
-    throat "^5.0.0"
 
 "@babel/code-frame@7.5.5":
   version "7.5.5"

@@ -39,7 +39,7 @@
     "tunnel": "0.0.6"
   },
   "devDependencies": {
-    "@applitools/sdk-fake-eyes-server": "1.0.4",
+    "@applitools/sdk-fake-eyes-server": "1.0.5",
     "chai": "4.2.0",
     "chai-uuid": "1.0.6",
     "mocha": "7.0.1"

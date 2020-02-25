@@ -1,21 +1,33 @@
 'use strict'
 
 const assert = require('assert')
-const {Eyes} = require('../../index')
+const {Eyes, ConsoleLogHandler, Configuration} = require('../../index')
+const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
 
 describe('Eyes', function() {
   let eyesClassic, eyesClassic2, eyesClassic3
+  let closeServer
 
-  before(function() {
+  before(async function() {
     eyesClassic = new Eyes()
     eyesClassic2 = new Eyes()
     eyesClassic3 = new Eyes()
 
-    const batchInfo = id => `batchInfo of ${id}`
-    eyesClassic._runner._getBatchInfo = batchInfo
-    eyesClassic2._runner._getBatchInfo = batchInfo
-    eyesClassic3._runner._getBatchInfo = batchInfo
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      eyesClassic.setLogHandler(new ConsoleLogHandler(true))
+    }
+    const {port, close} = await fakeEyesServer({logger: eyesClassic._logger})
+    closeServer = close
+    const serverUrl = `http://localhost:${port}`
+    const configuration = new Configuration()
+    configuration.setServerUrl(serverUrl)
+
+    eyesClassic.setConfiguration(configuration)
+    eyesClassic2.setConfiguration(configuration)
+    eyesClassic3.setConfiguration(configuration)
   })
+
+  after(() => closeServer())
 
   it('_getAndSaveBatchInfoFromServer() works', async function() {
     const [res1, res2, res3] = await Promise.all([
@@ -23,8 +35,17 @@ describe('Eyes', function() {
       eyesClassic2._getAndSaveBatchInfoFromServer('id1'),
       eyesClassic3._getAndSaveBatchInfoFromServer('id2'),
     ])
-    assert.strictEqual(res1, 'batchInfo of id1')
-    assert.strictEqual(res2, 'batchInfo of id1')
-    assert.strictEqual(res3, 'batchInfo of id2')
+    assert.deepStrictEqual(res1, {
+      scmSourceBranch: 'scmSourceBranch_id1',
+      scmTargetBranch_: 'scmTargetBranch_id1',
+    })
+    assert.deepStrictEqual(res2, {
+      scmSourceBranch: 'scmSourceBranch_id1',
+      scmTargetBranch_: 'scmTargetBranch_id1',
+    })
+    assert.deepStrictEqual(res3, {
+      scmSourceBranch: 'scmSourceBranch_id2',
+      scmTargetBranch_: 'scmTargetBranch_id2',
+    })
   })
 })
