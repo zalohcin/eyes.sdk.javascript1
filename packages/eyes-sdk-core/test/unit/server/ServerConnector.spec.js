@@ -103,6 +103,7 @@ describe('ServerConnector', () => {
       const response = {status: 200, config, data: {}, headers: {}, request: {}}
       if (config.isLongRequest) {
         response.status = 202
+        response.headers.location = 'http://some.url'
         timestampBefore = Date.now()
       } else if (config.isPollingRequest) {
         const timestampAfter = Date.now()

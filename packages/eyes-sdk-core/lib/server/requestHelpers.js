@@ -89,6 +89,7 @@ function configAxiosHeaders({axiosConfig}) {
   if (!(CUSTOM_HEADER_NAMES.REQUEST_ID in axiosConfig.headers)) {
     axiosConfig.headers[CUSTOM_HEADER_NAMES.REQUEST_ID] = axiosConfig.requestId
   }
+  // TODO remove when Eyes server will be updated to 10.9
   if (axiosConfig.isLongRequest) {
     axiosConfig.headers[CUSTOM_HEADER_NAMES.EYES_EXPECT] = '202+location'
   }
@@ -108,48 +109,6 @@ async function delayRequest({axiosConfig, logger}) {
   }
 }
 
-async function handleLongRequestResponse({response, axios}) {
-  switch (response.status) {
-    case HTTP_STATUS_CODES.OK: {
-      return response
-    }
-    case HTTP_STATUS_CODES.ACCEPTED: {
-      const prevConfig = response.config
-      const config = {
-        name: prevConfig.name,
-        isPollingRequest: true,
-        delayBeforePolling: prevConfig.delayBeforePolling,
-        delay: TypeUtils.isArray(prevConfig.delayBeforePolling)
-          ? prevConfig.delayBeforePolling[0]
-          : prevConfig.delayBeforePolling,
-        method: 'GET',
-        url: response.headers.location,
-      }
-      return handleLongRequestResponse({
-        response: await axios.request(config),
-        axios,
-      })
-    }
-    case HTTP_STATUS_CODES.CREATED: {
-      const prevConfig = response.config
-      const config = {
-        name: prevConfig.name,
-        method: 'DELETE',
-        url: response.headers.location,
-        headers: {
-          [CUSTOM_HEADER_NAMES.EYES_DATE]: DateTimeUtils.toRfc1123DateTime(),
-        },
-      }
-      return axios.request(config)
-    }
-    case HTTP_STATUS_CODES.GONE: {
-      throw new Error('The server task has gone.')
-    }
-    default: {
-      throw new Error(`Unknown error during long request: ${JSON.stringify(response)}`)
-    }
-  }
-}
 async function handleRequestResponse({response, axios, logger}) {
   const {config} = response
 
@@ -157,21 +116,57 @@ async function handleRequestResponse({response, axios, logger}) {
     `axios response interceptor - ${config.name} [${config.requestId}] - result ${response.statusText}, status code ${response.status}, url ${config.url}`,
   )
 
-  if (config.isLongRequest) {
-    return handleLongRequestResponse({response, axios})
+  if (isLongRequest(response)) {
+    return startPollingRequest({url: response.headers.location, config, axios})
   }
 
-  if (config.isPollingRequest && response.status === HTTP_STATUS_CODES.OK) {
-    config.repeat += 1
-    config.delay = TypeUtils.isArray(config.delayBeforePolling)
-      ? config.delayBeforePolling[Math.min(config.repeat, config.delayBeforePolling.length - 1)]
-      : config.delayBeforePolling
-    return axios.request(config)
+  if (config.isPollingRequest) {
+    if (response.status === HTTP_STATUS_CODES.OK) {
+      config.repeat += 1
+      config.delay = TypeUtils.isArray(config.delayBeforePolling)
+        ? config.delayBeforePolling[Math.min(config.repeat, config.delayBeforePolling.length - 1)]
+        : config.delayBeforePolling
+      return axios.request(config)
+    }
   }
 
   return response
 }
-
+function isLongRequest(response) {
+  return response.status === HTTP_STATUS_CODES.ACCEPTED && Boolean(response.headers.location)
+}
+async function startPollingRequest({url, config, axios}) {
+  const pollingConfig = {
+    name: config.name,
+    isPollingRequest: true,
+    delayBeforePolling: config.delayBeforePolling,
+    delay: TypeUtils.isArray(config.delayBeforePolling)
+      ? config.delayBeforePolling[0]
+      : config.delayBeforePolling,
+    method: 'GET',
+    url,
+  }
+  const response = await axios.request(pollingConfig)
+  switch (response.status) {
+    case HTTP_STATUS_CODES.OK:
+      return response
+    case HTTP_STATUS_CODES.CREATED:
+      const {config} = response
+      const nextConfig = {
+        name: config.name,
+        method: 'DELETE',
+        url: response.headers.location,
+        headers: {
+          [CUSTOM_HEADER_NAMES.EYES_DATE]: DateTimeUtils.toRfc1123DateTime(),
+        },
+      }
+      return axios.request(nextConfig)
+    case HTTP_STATUS_CODES.GONE:
+      throw new Error('The server task has gone.')
+    default:
+      throw new Error(`Unknown error during long request: ${JSON.stringify(response)}`)
+  }
+}
 async function handleRequestError({err, axios, logger}) {
   const {response, config} = err
   const reason = `${err.message}${response ? `(${response.statusText})` : ''}`
