@@ -1,10 +1,14 @@
 # Change Log
 
-## 4.33.16
+## 4.33.17
 
 - getAllTestResults now throws exception when it should [Trello 214](https://trello.com/c/McCg97IK/214-getalltestresults-doesnt-throw-exceptions)
 - fix setConfiguration cloned configuration [Trello 220](https://trello.com/c/d3rahmUd/220-setconfiguration-does-not-clone-the-configuration)
 - new branching model for Eyes [Trello 145](https://trello.com/c/VhEHv3YI/145-modify-branching-model-to-be-more-git-like-adjust-github-bitbucket-integrations-109-108-hotfix)
+
+## 4.33.16
+
+- unpublished
 
 ## 4.33.15
 

@@ -38,8 +38,8 @@
   "dependencies": {
     "@applitools/dom-utils": "4.7.6",
     "@applitools/eyes-common": "3.18.5",
-    "@applitools/eyes-sdk-core": "6.0.13",
-    "@applitools/visual-grid-client": "13.5.18"
+    "@applitools/eyes-sdk-core": "7.0.0",
+    "@applitools/visual-grid-client": "13.5.19"
   },
   "devDependencies": {
     "@applitools/sdk-fake-eyes-server": "1.0.4",
