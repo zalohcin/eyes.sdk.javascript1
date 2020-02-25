@@ -1,10 +1,18 @@
 # Change Log
 
-## 13.5.17
+## 13.7.19
 
 - new branching model for Eyes [Trello 145](https://trello.com/c/VhEHv3YI/145-modify-branching-model-to-be-more-git-like-adjust-github-bitbucket-integrations-109-108-hotfix)
 - support srcset properly [Trello 450](https://trello.com/c/ZS0Wb1FN/219-johnhancock-page-does-not-render-correctly)
 - support iframes with srcdoc
+
+## 13.7.18
+
+- unpublished
+
+## 13.5.17
+
+- unpublished
 
 ## 13.5.16
 
