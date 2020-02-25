@@ -1,15 +1,23 @@
 # Change Log
 
-## 6.0.13
-
-- enabled branch feature
-
-## 6.0.12
+## 7.0.0
 
 - move all runners to eyes-sdk-core
 - fix setConfiguration cloned configuration [Trello 220](https://trello.com/c/d3rahmUd/220-setconfiguration-does-not-clone-the-configuration)
 - remove EyesAbstract
 - new branching model for Eyes [Trello 145](https://trello.com/c/VhEHv3YI/145-modify-branching-model-to-be-more-git-like-adjust-github-bitbucket-integrations-109-108-hotfix)
+
+## 6.0.14
+
+- identical to 6.0.11
+
+## 6.0.13
+
+- unpublished
+
+## 6.0.12
+
+- unpublished
 
 ## 6.0.11
 
