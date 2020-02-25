@@ -13,8 +13,6 @@ exports.EyesWDIOScreenshot = require('./src/capture/EyesWDIOScreenshot')
 exports.EyesWDIOUtils = require('./src/EyesWDIOUtils')
 exports.NetHelper = require('./src/services/NetHelper')
 exports.StitchMode = require('./src/StitchMode')
-exports.ClassicRunner = require('./src/runner/ClassicRunner').ClassicRunner
-exports.VisualGridRunner = require('./src/runner/VisualGridRunner').VisualGridRunner
 
 // eyes-common
 exports.AccessibilityLevel = core.AccessibilityLevel
@@ -84,3 +82,5 @@ exports.FailureReports = core.FailureReports
 exports.TestResults = core.TestResults
 exports.TestResultsFormatter = core.TestResultsFormatter
 exports.TestResultsStatus = core.TestResultsStatus
+exports.ClassicRunner = core.ClassicRunner
+exports.VisualGridRunner = core.VisualGridRunner

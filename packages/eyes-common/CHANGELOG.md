@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.18.5]
+
+- fix isFeatureFlagOn and isFeatureFlagOff
+
 ## [3.18.4]
 
 - fix Configuration and ImageMatchSettings copy constructor [Trello 204](https://trello.com/c/oH7Ne5EZ/204-js4ignoredisplacements-is-not-working)

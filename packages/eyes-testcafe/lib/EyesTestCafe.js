@@ -25,10 +25,10 @@ const {
   NullCutProvider,
   MatchResult,
   EyesJsBrowserUtils,
+  ClassicRunner,
 } = require('@applitools/eyes-sdk-core')
 const getCaptureDomScript = require('./getCaptureDomScript')
 
-const {ClassicRunner} = require('./runner/ClassicRunner')
 const {ImageProviderFactory} = require('./capture/ImageProviderFactory')
 const {EyesWebDriverScreenshotFactory} = require('./capture/EyesWebDriverScreenshotFactory')
 const {FrameChain} = require('./frames/FrameChain')
@@ -800,7 +800,10 @@ class EyesTestCafe extends Eyes {
    * @return {Promise<TestResults>}
    */
   async close(throwEx = true) {
-    const results = await Eyes.prototype.close.call(this, throwEx)
+    const results = await Eyes.prototype.close.call(this, true).catch(err => {
+      if (!throwEx) return err
+      else throw err
+    })
 
     if (this._runner) {
       this._runner._allTestResult.push(results)

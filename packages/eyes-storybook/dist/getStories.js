@@ -3,8 +3,6 @@ function __getStories(...args) {
   var getStories = (function () {
   'use strict';
 
-  /* global window */
-
   const API_VERSIONS = {
     v4: 'v4',
     v5: 'v5',
@@ -113,9 +111,6 @@ function __getStories(...args) {
   }
 
   var getClientAPI_1 = getClientAPI;
-
-  /* global document */
-
 
   const DEFAULT_TIMEOUT = 60000;
 

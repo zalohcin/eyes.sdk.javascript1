@@ -100,6 +100,12 @@ exports.AccessibilityStatus = require('./lib/AccessibilityStatus').Accessibility
 exports.TestResultsFormatter = require('./lib/TestResultsFormatter').TestResultsFormatter
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus
 
+exports.EyesRunner = require('./lib/runner/EyesRunner').EyesRunner
+exports.ClassicRunner = require('./lib/runner/ClassicRunner').ClassicRunner
+exports.VisualGridRunner = require('./lib/runner/VisualGridRunner').VisualGridRunner
+exports.TestResultContainer = require('./lib/runner/TestResultContainer').TestResultContainer
+exports.TestResultsSummary = require('./lib/runner/TestResultsSummary').TestResultsSummary
+
 // Classes from eyes-common which may be used as part of public API
 exports.AccessibilityLevel = common.AccessibilityLevel
 exports.AccessibilityMatchSettings = common.AccessibilityMatchSettings
