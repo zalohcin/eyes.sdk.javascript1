@@ -41,10 +41,8 @@ class EyesVisualGrid extends EyesBase {
    */
   constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
     super(serverUrl, isDisabled, new Configuration())
-    /** @type {EyesRunner} */ this._runner = runner
-
-    this._runner._eyesInstances.push(this)
-    this._runner.makeGetBatchInfo(this._serverConnector.batchInfo.bind(this._serverConnector))
+    this._runner = runner
+    this._runner.attachEyes(this, this._serverConnector)
 
     /** @type {boolean} */ this._isOpen = false
     /** @type {boolean} */ this._isVisualGrid = true
