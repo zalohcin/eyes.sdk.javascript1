@@ -69,18 +69,13 @@ function _getReleaseNumberFromHeading(heading) {
   return heading.match(/([0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2})/)[0]
 }
 
-function verifyChangelog({changelogContents, version}) {
+function verifyChangelog({changelogContents}) {
   const unreleasedEntries = _getEntriesForHeading({
     changelogContents,
     targetHeading: '## Unreleased',
   })
   if (!unreleasedEntries.length)
     throw 'No unreleased entries found in the changelog. Add some before releasing.'
-  const latestReleaseNumber = _getReleaseNumberFromHeading(
-    _getLatestReleaseHeading(changelogContents).heading,
-  )
-  if (latestReleaseNumber === version)
-    throw 'Matching version entry found in the changelog. Add a new version entry before releasing.'
 }
 
 module.exports = {

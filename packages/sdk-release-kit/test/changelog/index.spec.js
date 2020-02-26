@@ -55,26 +55,6 @@ describe('verify-changelog', () => {
       verifyChangelog({changelogContents: _changelogContents})
     }, /No unreleased entries found/)
   })
-  it('should throw if there is a matching version entry', () => {
-    const _changelogContents = `
-      # Changelog
-
-      ## Unreleased
-
-      - blah
-
-      ## 1.2.3 - date
-
-      - more blah
-
-      ## [3.2.1] - date
-
-      - some more blah as well
-    `
-    assert.throws(() => {
-      verifyChangelog({changelogContents: _changelogContents, version: '1.2.3'})
-    }, /Matching version entry found/)
-  })
 })
 
 describe('update-changelog', () => {
