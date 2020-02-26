@@ -63,8 +63,6 @@ class EyesTestCafe extends Eyes {
   constructor(serverUrl, isDisabled, runner = new ClassicRunner()) {
     super(serverUrl, isDisabled, runner)
 
-    this._runner.makeGetRenderingInfo(this._serverConnector.renderInfo.bind(this._serverConnector))
-
     /** @type {boolean} */
     this._checkFrameOrElement = false
 
