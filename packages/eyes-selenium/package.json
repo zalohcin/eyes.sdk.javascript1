@@ -61,6 +61,7 @@
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "vv": "node ../../scripts/verify-versions.js",
     "vc": "node ../../scripts/verify-changelog.js",
+    "uc": "node ../../scripts/update-changelog.js",
     "test": "yarn test:unit && yarn test:it",
     "render": "node scripts/render.js",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
@@ -70,9 +71,10 @@
     "test:coverage:nuke": "coverage-tests nuke",
     "test:coverage:doctor": "coverage-tests doctor",
     "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
-    "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv",
-    "release": "TODO"
+    "preversion": "yarn vv && yarn vc && yarn test:coverage",
+    "version": "yarn uc; git add CHANGELOG.md",
+    "postversion": "TODO: send notification email",
+    "postpublish": "git push; git push --tags"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
