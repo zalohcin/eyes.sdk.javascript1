@@ -1,6 +1,7 @@
 # Change Log
 
 ## 2.12.2
+- branching base commit support
 - make functions in runners 
 
 ## 2.12.1
