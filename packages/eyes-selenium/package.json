@@ -62,6 +62,7 @@
     "vv": "node ../../scripts/verify-versions.js",
     "vc": "node ../../scripts/verify-changelog.js",
     "uc": "node ../../scripts/update-changelog.js",
+    "send-release-notification": "node ../../scripts/send-release-notification.js",
     "test": "yarn test:unit && yarn test:it",
     "render": "node scripts/render.js",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
@@ -72,9 +73,8 @@
     "test:coverage:doctor": "coverage-tests doctor",
     "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
     "preversion": "yarn vv && yarn vc && yarn test:coverage",
-    "version": "yarn uc; git add CHANGELOG.md",
-    "postversion": "TODO: send notification email",
-    "postpublish": "git push; git push --tags"
+    "version": "yarn uc && git add CHANGELOG.md",
+    "postpublish": "git push && git push --tags"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
