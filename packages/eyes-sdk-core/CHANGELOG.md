@@ -1,5 +1,9 @@
 # Change Log
 
+## 8.0.0
+
+Moved server connector makers to runners
+
 ## 7.0.0
 
 - move all runners to eyes-sdk-core
