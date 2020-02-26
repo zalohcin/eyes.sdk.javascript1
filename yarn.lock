@@ -40,18 +40,6 @@
     es6-promise-pool "2.5.0"
     tunnel "0.0.6"
 
-"@applitools/eyes-sdk-core@6.0.11":
-  version "6.0.11"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-6.0.11.tgz#3b0a2b87e79fc216e9788ab6338dcf5e8c95808c"
-  integrity sha512-xGu0qD4leXQAAT916fQO4f0myStntbO6q1pmzdty3bJdnGhCXpjV0TDCCZ+qi4OdIpGhqrU7lVBvRIZjmtxPqw==
-  dependencies:
-    "@applitools/eyes-common" "3.18.4"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    axios "0.19.2"
-    chalk "3.0.0"
-    es6-promise-pool "2.5.0"
-    tunnel "0.0.6"
-
 "@applitools/functional-commons@1.5.4", "@applitools/functional-commons@^1.5.2", "@applitools/functional-commons@^1.5.4":
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/@applitools/functional-commons/-/functional-commons-1.5.4.tgz#d32f2bbc6a2598872b3a385d054fcf8e40c30a40"
@@ -116,28 +104,6 @@
   dependencies:
     debug "^4.1.0"
 
-<<<<<<< HEAD
-=======
-"@applitools/visual-grid-client@13.5.16":
-  version "13.5.16"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-13.5.16.tgz#fdd746a776b0641572f64fdd707b06f15f88a1b1"
-  integrity sha512-BYUUIFcKrBoB+qne4SlPSm1YICW+T05tH7FMn+YwdqxD7aT+wrucpzleyaGOmEoLx1I1pNOSvkphCv9/JFtHwg==
-  dependencies:
-    "@applitools/dom-snapshot" "3.2.3"
-    "@applitools/eyes-common" "3.18.4"
-    "@applitools/eyes-sdk-core" "6.0.11"
-    "@applitools/functional-commons" "1.5.4"
-    "@applitools/http-commons" "2.3.12"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    "@applitools/jsdom" "1.0.2"
-    he "1.2.0"
-    lodash.mapvalues "^4.6.0"
-    mime-types "^2.1.24"
-    mkdirp "^0.5.1"
-    postcss-value-parser "^4.0.2"
-    throat "^5.0.0"
-
->>>>>>> moved makeGetRenderingInfo and makeGetBatchInfo to runners
 "@babel/code-frame@7.5.5":
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.5.5.tgz#bc0782f6d69f7b7d49531219699b988f669a8f9d"
