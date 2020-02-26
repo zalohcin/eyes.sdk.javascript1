@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 
-async function sendReport(payload) {
-  const result = await fetch('http://sdk-test-results.herokuapp.com/result', {
+async function _send({uri, payload}) {
+  const result = await fetch(uri, {
     method: 'post',
     body: JSON.stringify(payload),
     headers: {'Content-Type': 'application/json'},
@@ -9,4 +9,12 @@ async function sendReport(payload) {
   return {isSuccessful: result.status === 200, message: result.statusText}
 }
 
-module.exports = {sendReport}
+async function sendReport(payload) {
+  return _send({uri: 'http://sdk-test-results.herokuapp.com/result', payload})
+}
+
+async function sendNotification(payload) {
+  return _send({uri: 'http://sdk-test-results.herokuapp.com/send_mail/sdks', payload})
+}
+
+module.exports = {sendReport, sendNotification}
