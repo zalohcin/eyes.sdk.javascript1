@@ -1,24 +1,52 @@
-function addReleaseEntryForUnreleasedItems({changelogContents, version}) {
+function updateChangelogContents({changelogContents, version}) {
+  let _changelogContents = changelogContents
+  _changelogContents = _addReleaseEntryForUnreleasedItems({
+    changelogContents: _changelogContents,
+    version,
+  })
+  _changelogContents = _removeUnreleasedItems({changelogContents: _changelogContents, version})
+  return _changelogContents
+}
+
+function _addReleaseEntryForUnreleasedItems({changelogContents, version}) {
   const unreleasedEntries = _getEntriesForHeading({
     changelogContents,
     targetHeading: '## Unreleased',
   })
-  const indentationCount = unreleasedEntries[0].length - unreleasedEntries[0].trim().length
+  const indentationCount =
+    unreleasedEntries[0].entry.length - unreleasedEntries[0].entry.trim().length
   const padding = new Array(indentationCount + 1).join(' ')
-  const releaseEntry = ['', `${padding}## ${version}\n`, ...unreleasedEntries]
+  const releaseEntry = [
+    '',
+    `${padding}## ${version}\n`,
+    ...unreleasedEntries.map(entry => entry.entry),
+  ]
   const latestReleaseHeadingIndex = _getLatestReleaseHeading(changelogContents).index
   const _changelogContents = changelogContents.split('\n')
   _changelogContents.splice(latestReleaseHeadingIndex - 1, 0, ...releaseEntry)
   return _changelogContents.join('\n')
 }
 
+function _removeUnreleasedItems({changelogContents}) {
+  const unreleasedEntries = _getEntriesForHeading({
+    changelogContents,
+    targetHeading: '## Unreleased',
+  })
+  const _changelogContents = changelogContents.split('\n')
+  const entryIndexes = unreleasedEntries.map(entry => entry.index)
+  entryIndexes.reverse().forEach(index => {
+    _changelogContents.splice(index, 1)
+  })
+  return _changelogContents.join('\n')
+}
+
 function _getEntriesForHeading({changelogContents, targetHeading}) {
   let foundEntries = []
   let headingFound = false
-  for (let entry of changelogContents.split('\n')) {
+  for (let [index, entry] of changelogContents.split('\n').entries()) {
     const _entry = entry.trim()
     if (_entry !== targetHeading && _entry.includes('##')) break
-    if (headingFound && _entry.length) foundEntries.push(entry)
+    if (headingFound && _entry.length) foundEntries.push({entry, index})
     if (_entry === targetHeading) headingFound = true
   }
   return foundEntries
@@ -60,5 +88,5 @@ module.exports = {
   _getLatestReleaseHeading,
   _getReleaseNumberFromHeading,
   verifyChangelog,
-  updateChangelogContents: addReleaseEntryForUnreleasedItems,
+  updateChangelogContents,
 }

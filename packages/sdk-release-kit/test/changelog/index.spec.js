@@ -30,7 +30,10 @@ describe('verify-changelog', () => {
   it('should get entries for an explicit heading', () => {
     assert.deepStrictEqual(
       _getEntriesForHeading({changelogContents, targetHeading: '## Unreleased'}),
-      ['      - blah', '      - also blah'],
+      [
+        {entry: '      - blah', index: 5},
+        {entry: '      - also blah', index: 6},
+      ],
     )
   })
   it('should get latest release heading', () => {
@@ -81,7 +84,6 @@ describe('update-changelog', () => {
       # Changelog
 
       ## Unreleased
-
       - blah
       - also blah
 
@@ -94,7 +96,7 @@ describe('update-changelog', () => {
       - some more blah as well
     `
   })
-  it('should add release entry to the change for unreleased items', () => {
+  it('should add release entry and move unreleased items into it', () => {
     const updatedChangelog = updateChangelogContents({
       changelogContents,
       version: '1.2.4',
@@ -103,9 +105,6 @@ describe('update-changelog', () => {
       # Changelog
 
       ## Unreleased
-
-      - blah
-      - also blah
 
       ## 1.2.4
 
