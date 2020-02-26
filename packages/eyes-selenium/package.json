@@ -63,7 +63,7 @@
     "vv": "node ../../scripts/verify-versions.js",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
-    "send-release-notification": "node ../../scripts/send-release-notification.js",
+    "send-release-notification": "bongo --send-release-notification",
     "test": "yarn test:unit && yarn test:it",
     "render": "node scripts/render.js",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",

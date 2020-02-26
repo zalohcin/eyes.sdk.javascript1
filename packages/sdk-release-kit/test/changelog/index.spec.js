@@ -4,8 +4,28 @@ const {
   _getReleaseNumberFromHeading,
   verifyChangelog,
   updateChangelogContents,
+  getLatestReleaseEntries,
 } = require('../../src/changelog')
 const assert = require('assert')
+
+describe('query-changelog', () => {
+  it('should get entries for the latest release', () => {
+    const changelogContents = `
+      # Changelog
+
+      ## Unreleased
+
+      ## 1.2.3 - date
+
+      - more blah
+
+      ## [3.2.1] - date
+
+      - some more blah as well
+    `
+    assert.deepStrictEqual(getLatestReleaseEntries(changelogContents), ['      - more blah'])
+  })
+})
 
 describe('verify-changelog', () => {
   let changelogContents
@@ -34,6 +54,10 @@ describe('verify-changelog', () => {
         {entry: '      - blah', index: 5},
         {entry: '      - also blah', index: 6},
       ],
+    )
+    assert.deepStrictEqual(
+      _getEntriesForHeading({changelogContents, targetHeading: '## 1.2.3 - date'}),
+      [{entry: '      - more blah', index: 10}],
     )
   })
   it('should get latest release heading', () => {

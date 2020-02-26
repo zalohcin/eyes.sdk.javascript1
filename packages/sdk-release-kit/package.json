@@ -27,7 +27,8 @@
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "dependencies": {
-    "yargs": "^15.0.2"
+    "yargs": "^15.0.2",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
     "mocha": "^6.2.2"
