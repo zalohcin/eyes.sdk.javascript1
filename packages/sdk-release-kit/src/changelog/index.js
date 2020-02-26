@@ -60,5 +60,5 @@ module.exports = {
   _getLatestReleaseHeading,
   _getReleaseNumberFromHeading,
   verifyChangelog,
-  addReleaseEntryForUnreleasedItems,
+  updateChangelogContents: addReleaseEntryForUnreleasedItems,
 }

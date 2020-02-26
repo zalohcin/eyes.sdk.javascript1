@@ -3,7 +3,7 @@ const {
   _getLatestReleaseHeading,
   _getReleaseNumberFromHeading,
   verifyChangelog,
-  addReleaseEntryForUnreleasedItems,
+  updateChangelogContents,
 } = require('../../src/changelog')
 const assert = require('assert')
 
@@ -95,7 +95,7 @@ describe('update-changelog', () => {
     `
   })
   it('should add release entry to the change for unreleased items', () => {
-    const updatedChangelog = addReleaseEntryForUnreleasedItems({
+    const updatedChangelog = updateChangelogContents({
       changelogContents,
       version: '1.2.4',
     })
