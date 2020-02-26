@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-sdk-core",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "The core components of Eyes JavaScript SDK",
   "keywords": [
     "applitools",
