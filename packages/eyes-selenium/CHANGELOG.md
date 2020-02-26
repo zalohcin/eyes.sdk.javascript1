@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.33.21
+
+make function in runners
+
 ## 4.33.17
 
 - getAllTestResults now throws exception when it should [Trello 214](https://trello.com/c/McCg97IK/214-getalltestresults-doesnt-throw-exceptions)

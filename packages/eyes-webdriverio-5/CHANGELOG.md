@@ -1,5 +1,8 @@
 # Change Log
 
+## 5.9.13
+- make functions in runners 
+
 ## 5.9.12
 
 - Send stitching service URL to visual grid [Trello 212](https://trello.com/c/Sqh6k2VV)

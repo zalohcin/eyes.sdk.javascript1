@@ -1,5 +1,8 @@
 # Change Log
 
+## 2.12.2
+- make functions in runners 
+
 ## 2.12.1
 - Fixed regression which broke xpath selectors when looking up the location of an element
 
