@@ -1145,6 +1145,10 @@ class Configuration {
    * @return {this}
    */
   addBrowsers(...browsersInfo) {
+    for (const [i, b] of browsersInfo.entries()) {
+      ArgumentGuard.isPlainObject(b, `addBrowsers( arg${i} )`)
+    }
+
     if (!this._browsersInfo) {
       this._browsersInfo = []
     }
