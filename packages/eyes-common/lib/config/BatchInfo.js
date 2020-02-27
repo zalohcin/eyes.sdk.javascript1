@@ -44,6 +44,7 @@ class BatchInfo {
         sequenceName: varArg1.getSequenceName(),
         notifyOnCompletion: varArg1.getNotifyOnCompletion(),
         isCompleted: varArg1.getIsCompleted(),
+        isGeneratedId: varArg1.getIsGeneratedId(),
       })
     }
 
@@ -51,19 +52,25 @@ class BatchInfo {
       return new BatchInfo({id: varArg3, name: varArg1, startedAt: varArg2})
     }
 
-    let {id, name, startedAt, sequenceName, notifyOnCompletion, isCompleted} = varArg1 || {}
+    let {id, name, startedAt, sequenceName, notifyOnCompletion, isCompleted, isGeneratedId} =
+      varArg1 || {}
     ArgumentGuard.isString(id, 'batchId', false)
     ArgumentGuard.isString(name, 'batchName', false)
     ArgumentGuard.isString(sequenceName, 'sequenceName', false)
     ArgumentGuard.isBoolean(notifyOnCompletion, 'notifyOnCompletion', false)
     ArgumentGuard.isBoolean(isCompleted, 'isCompleted', false)
+    ArgumentGuard.isBoolean(isGeneratedId, 'isGeneratedId', false)
 
     if (startedAt && !(startedAt instanceof Date)) {
       ArgumentGuard.isString(startedAt, 'startedAt', false)
       startedAt = DateTimeUtils.fromISO8601DateTime(startedAt)
     }
 
-    this._id = id || GeneralUtils.getEnvValue('BATCH_ID') || GeneralUtils.guid()
+    this._id = id || GeneralUtils.getEnvValue('BATCH_ID')
+    this._isGeneratedId = !!isGeneratedId
+    if (!this._id) {
+      this._generateAndSetId()
+    }
     this._name = name || GeneralUtils.getEnvValue('BATCH_NAME')
     this._startedAt = startedAt || new Date()
     this._sequenceName = sequenceName || GeneralUtils.getEnvValue('BATCH_SEQUENCE')
@@ -77,6 +84,14 @@ class BatchInfo {
    */
   getId() {
     return this._id
+  }
+
+  getIsGeneratedId() {
+    return this._isGeneratedId
+  }
+
+  setIsGeneratedId(value) {
+    return (this._isGeneratedId = value)
   }
 
   /**
@@ -176,7 +191,7 @@ class BatchInfo {
    * @override
    */
   toJSON() {
-    return GeneralUtils.toPlain(this, ['_isCompleted'], {
+    return GeneralUtils.toPlain(this, ['_isCompleted', '_isGeneratedId'], {
       sequenceName: 'batchSequenceName',
     })
   }
@@ -186,6 +201,11 @@ class BatchInfo {
    */
   toString() {
     return `BatchInfo { ${JSON.stringify(this)} }`
+  }
+
+  _generateAndSetId() {
+    this._isGeneratedId = true
+    this._id = GeneralUtils.guid()
   }
 }
 

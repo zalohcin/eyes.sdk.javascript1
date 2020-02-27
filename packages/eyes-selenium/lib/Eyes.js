@@ -69,10 +69,8 @@ class Eyes extends EyesBase {
     }
 
     super(serverUrl, isDisabled, new Configuration())
-
-    /** @type {EyesRunner} */ this._runner = runner
-    this._runner._eyesInstances.push(this)
-    this._runner.makeGetBatchInfo(this._serverConnector.batchInfo.bind(this._serverConnector))
+    this._runner = runner
+    this._runner.attachEyes(this, this._serverConnector)
 
     /** @type {EyesWebDriver} */
     this._driver = undefined

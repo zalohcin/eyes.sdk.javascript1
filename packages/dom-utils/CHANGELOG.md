@@ -1,5 +1,7 @@
 # Change Log
 
+## Unreleased
+
 ## 4.7.6
 
 - update @applitools/eyes-common@3.18.5

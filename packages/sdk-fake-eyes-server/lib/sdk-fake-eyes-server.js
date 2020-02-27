@@ -254,6 +254,13 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
     res.status(200).send()
   })
 
+  app.get('/api/sessions/batches/:batchId/config/bypointerId', (req, res) => {
+    res.status(200).send({
+      scmSourceBranch: `scmSourceBranch_${req.params.batchId}`,
+      scmTargetBranch_: `scmTargetBranch_${req.params.batchId}`,
+    })
+  })
+
   function createTestResultFromRunningSession(runningSession) {
     const status = runningSession.steps.every(x => !!x.asExpected)
       ? 'Passed' // TestResultsStatus.Passed

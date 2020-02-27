@@ -2,6 +2,7 @@ const {NODE_TYPES} = require('./nodeTypes');
 const parseCss = require('./parseCss');
 const absolutizeUrl = require('./absolutizeUrl');
 const getHrefAttr = require('./getHrefAttr');
+const isInlineFrame = require('./isInlineFrame');
 const isLinkToStyleSheet = require('./isLinkToStyleSheet');
 
 function makePrefetchAllCss(fetchCss) {
@@ -9,7 +10,7 @@ function makePrefetchAllCss(fetchCss) {
     const cssMap = {};
     const start = Date.now();
     const promises = [];
-    doFetchAllCssFromFrame(doc, cssMap, promises);
+    doFetchAllCssFromFrame(doc, doc.location.href, cssMap, promises);
     await Promise.all(promises);
     console.log('[prefetchAllCss]', Date.now() - start);
 
@@ -55,11 +56,11 @@ function makePrefetchAllCss(fetchCss) {
       }
     }
 
-    function doFetchAllCssFromFrame(frameDoc, cssMap, promises) {
+    function doFetchAllCssFromFrame(frameDoc, baseUrl, cssMap, promises) {
       fetchAllCssFromNode(frameDoc.documentElement);
 
       function fetchAllCssFromNode(node) {
-        promises.push(fetchNodeCss(node, frameDoc.location.href, cssMap));
+        promises.push(fetchNodeCss(node, baseUrl, cssMap));
 
         switch (node.nodeType) {
           case NODE_TYPES.ELEMENT: {
@@ -80,7 +81,8 @@ function makePrefetchAllCss(fetchCss) {
       async function fetchAllCssFromIframe(el) {
         fetchAllCssFromElement(el);
         try {
-          doFetchAllCssFromFrame(el.contentDocument, cssMap, promises);
+          const baseUrl = isInlineFrame(el) ? el.baseURI : el.contentDocument.location.href;
+          doFetchAllCssFromFrame(el.contentDocument, baseUrl, cssMap, promises);
         } catch (ex) {
           console.log(ex);
         }
