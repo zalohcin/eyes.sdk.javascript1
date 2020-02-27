@@ -2049,12 +2049,16 @@ class EyesBase {
    * a new id if called before open.
    */
   getUserSetBatchId() {
+    const isGeneratedId =
+      this._configuration._batch && this._configuration._batch.getIsGeneratedId()
     // TODO
     // we need the Configuration to check for default values like getEnvValue('BATCH_ID') instead of
     // it creating new Objects (with defaults) on demand, see Configuration#getBatch().
-    return (
+    const batchId =
       (this._configuration._batch && this._configuration._batch.getId()) || getEnvValue('BATCH_ID')
-    )
+    if (!isGeneratedId) {
+      return batchId
+    }
   }
 
   /**
