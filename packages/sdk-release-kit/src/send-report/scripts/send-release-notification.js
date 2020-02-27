@@ -7,11 +7,11 @@ const targetFolder = process.cwd()
 const changelogContents = readFileSync(path.resolve(targetFolder, 'CHANGELOG.md'), 'utf8')
 const pkgJson = JSON.parse(readFileSync(path.resolve(targetFolder, 'package.json'), 'utf8'))
 
-async function run({sdkName, sdkVersion, changelog, testCoverageGap}, recipient) {
+async function run({sdkName, sdkVersion, changeLog, testCoverageGap}, recipient) {
   const payload = {
     sdk: sdkName,
     version: sdkVersion,
-    changelog,
+    changeLog,
     testCoverageGap,
     specificRecipient: recipient,
   }
@@ -41,6 +41,6 @@ function convertSdkNameToReportName(sdkName) {
 module.exports = run.bind(undefined, {
   sdkName: convertSdkNameToReportName(pkgJson.name),
   sdkVersion: pkgJson.version,
-  changelog: getLatestReleaseEntries(changelogContents).join('\n'),
+  changeLog: getLatestReleaseEntries(changelogContents).join('\n'),
   testCoverageGap: 'TODO', // track in a file in the package, get it from there
 })
