@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+fix exception on aborts - using _getSetBatchId in closeBatch so we dont generate batch id but still get the generated batch id.
+guarding addBrowsers arguments for sending an array
+
 ## 8.0.1
 
 getUserSetBatchId() can now run after generating batch id
