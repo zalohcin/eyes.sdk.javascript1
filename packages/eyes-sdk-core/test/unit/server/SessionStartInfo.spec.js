@@ -22,7 +22,7 @@ const {
 } = require('../../../index')
 
 describe('SessionStartInfo', () => {
-  it.only('TestSerialization', () => {
+  it('TestSerialization', () => {
     const properties = []
     properties.push(new PropertyData('property 1', 'value 1'))
 
