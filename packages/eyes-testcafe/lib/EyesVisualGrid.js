@@ -133,7 +133,7 @@ class EyesVisualGrid extends Eyes {
     this._isOpen = false
 
     if (this._runner) {
-      this._runner._allTestResult.push(results)
+      this._runner._allTestResult.push(...results)
     }
 
     if (throwEx && isErrorCaught) {

@@ -41,6 +41,7 @@ class EyesVisualGrid extends EyesBase {
     super(serverUrl, isDisabled, new Configuration())
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
+    this._runner.makeGetVisualGridClient(makeVisualGridClient)
 
     /** @type {boolean} */ this._isOpen = false
     /** @type {boolean} */ this._isVisualGrid = true
@@ -150,6 +151,20 @@ class EyesVisualGrid extends EyesBase {
   }
 
   /**
+   * @return {Promise}
+   */
+  async closeAsync() {
+    await this.close(false)
+  }
+
+  /**
+   * @return {Promise}
+   */
+  async abortAsync() {
+    await this.abort()
+  }
+
+  /**
    * @param {boolean} [throwEx]
    * @return {Promise<TestResults>}
    */
@@ -163,7 +178,7 @@ class EyesVisualGrid extends EyesBase {
     this._isOpen = false
 
     if (this._runner) {
-      this._runner._allTestResult.push(results)
+      this._runner._allTestResult.push(...results)
     }
 
     if (throwEx && isErrorCaught) {
