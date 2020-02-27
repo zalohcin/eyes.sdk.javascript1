@@ -124,4 +124,43 @@ describe('ServerConnector', () => {
       assert(timeout >= expectedTimeout && timeout <= expectedTimeout + 10)
     })
   })
+
+  it('check polling protocol', async () => {
+    const configuration = new Configuration()
+    const serverConnector = new ServerConnector(logger, configuration)
+    const MAX_POLLS_COUNT = 2
+    const RES_DATA = {createdAt: Date.now()}
+    let pollingWasStarted = false
+    let pollsCount = 0
+    let pollingWasFinished = false
+    serverConnector._axios.defaults.adapter = async config => {
+      const response = {status: 200, config, data: {}, headers: {}, request: {}}
+      if (!pollingWasStarted) {
+        response.status = 202
+        response.headers.location = 'http://polling.url'
+        pollingWasStarted = true
+      } else if (config.url === 'http://polling.url') {
+        pollsCount += 1
+        if (pollsCount >= MAX_POLLS_COUNT) {
+          response.status = 201
+          response.headers.location = 'http://finish-polling.url'
+        } else {
+          response.status = 200
+        }
+      } else if (config.url === 'http://finish-polling.url') {
+        response.status = 200
+        response.data = RES_DATA
+        pollingWasFinished = true
+      }
+      return response
+    }
+    const result = await serverConnector._axios.request({
+      url: 'http://long-request.url',
+    })
+
+    assert(pollingWasStarted)
+    assert.strictEqual(pollsCount, MAX_POLLS_COUNT)
+    assert(pollingWasFinished)
+    assert.deepStrictEqual(result.data, RES_DATA)
+  })
 })
