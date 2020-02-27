@@ -1,5 +1,7 @@
 # Change Log
 
+## Unreleased
+
 ## [4.12.37](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.12.36...@applitools/eyes-images@4.12.37) (2020-02-16)
 
 Branching base commit support
