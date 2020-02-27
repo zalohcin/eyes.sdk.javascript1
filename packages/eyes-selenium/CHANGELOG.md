@@ -6,6 +6,18 @@
 
 make function in runners
 
+## 4.33.20
+
+- not released, skipped
+
+## 4.33.19
+
+- not released, skipped
+
+## 4.33.18
+
+- not released, skipped
+
 ## 4.33.17
 
 - getAllTestResults now throws exception when it should [Trello 214](https://trello.com/c/McCg97IK/214-getalltestresults-doesnt-throw-exceptions)
