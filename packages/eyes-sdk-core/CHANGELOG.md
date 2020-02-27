@@ -1,5 +1,9 @@
 # Change Log
 
+## 8.0.1
+
+getUserSetBatchId() can now run after generating batch id
+
 ## 8.0.0
 
 Moved server connector makers to runners
