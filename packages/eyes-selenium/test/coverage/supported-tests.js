@@ -52,7 +52,10 @@ const supportedTests = [
     name: 'TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent',
     executionMode: {isCssStitching: true},
   },
-  {name: 'TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent', executionMode: {}},
+  {
+    name: 'TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent',
+    executionMode: {isScrollStitching: true},
+  },
   {name: 'TestCheckOverflowingRegionByCoordinates_Fluent', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckOverflowingRegionByCoordinates_Fluent', executionMode: {isCssStitching: true}},
   {
@@ -118,7 +121,10 @@ const supportedTests = [
     name: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame',
     executionMode: {isCssStitching: true},
   },
-  {name: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame', executionMode: {}},
+  {
+    name: 'TestCheckRegionInAVeryBigFrameAfterManualSwitchToFrame',
+    executionMode: {isScrollStitching: true},
+  },
   {name: 'TestCheckRegionWithIgnoreRegion_Fluent', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckRegionWithIgnoreRegion_Fluent', executionMode: {isCssStitching: true}},
   {name: 'TestCheckRegionWithIgnoreRegion_Fluent', executionMode: {isScrollStitching: true}},

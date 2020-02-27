@@ -47,7 +47,9 @@ function makeCoverageTests({
       await open({appName: 'Eyes Selenium SDK - ACME', viewportSize: '1024x768'})
       await type('#username', 'adamC')
       await type('#password', 'MySecret123?')
-      await checkRegion(['#username', '#password'])
+      await checkRegion('#username')
+      await checkRegion('#password')
+      await close(throwException)
     },
     TestCheckElementFully_Fluent: async () => {
       await visit(url)

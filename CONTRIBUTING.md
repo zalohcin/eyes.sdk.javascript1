@@ -62,6 +62,13 @@ yarn version --major
 
 This will automatically update the `package.json` for the package, commit it, and add a tag for the version.
 
+#### Verify workspace versions
+
+Running `yarn vv` in a package folder will verify that its applitools dependencies (the ones considered workspaces in this repo) have the same versions as the local source code. This is important in order to have the latest verions while also keeping exact versioning.
+To verify the entire workspace, run in the root folder `yarn workspaces run vv`.
+
+To automatically fix mismatches, run `yarn vv --fix`, or in the root folder: `yarn workspaces run vv --fix`.
+
 ### Publishing
 
 You can then release the package with the `publish` command.

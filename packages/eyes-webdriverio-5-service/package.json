@@ -33,8 +33,10 @@
     "wdio-chromedriver-service": "^5.0.2"
   },
   "scripts": {
+    "vv": "node ../../scripts/verify-versions.js",
     "test": "wdio tests/wdio.conf.js",
-    "postpublish": "git push; git push --tags"
+    "postpublish": "git push; git push --tags",
+    "preversion": "yarn vv"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

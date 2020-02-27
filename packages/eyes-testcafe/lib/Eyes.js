@@ -69,10 +69,8 @@ class Eyes extends EyesBase {
     }
 
     super(serverUrl, isDisabled, new Configuration())
-
-    /** @type {EyesRunner} */ this._runner = runner
-    this._runner._eyesInstances.push(this)
-    this._runner.makeGetBatchInfo(this._serverConnector.batchInfo.bind(this._serverConnector))
+    this._runner = runner
+    this._runner.attachEyes(this, this._serverConnector)
 
     /** @type {EyesWebDriver} */
     this._driver = undefined
@@ -101,26 +99,6 @@ class Eyes extends EyesBase {
     this._corsIframeHandle = CorsIframeHandle.KEEP
 
     EyesTestcafeUtils.setJavascriptHandler(new JavascriptHandler())
-  }
-
-  /**
-   * @return {Configuration}
-   */
-  getConfiguration() {
-    return this._configuration.cloneConfig()
-  }
-
-  /**
-   * @override
-   * @param {Configuration|object} configuration
-   */
-  setConfiguration(configuration) {
-    if (!(configuration instanceof Configuration)) {
-      configuration = new Configuration(configuration)
-    }
-
-    this._configuration = configuration
-    this._serverConnector._configuration = this._configuration
   }
 
   /**
@@ -884,11 +862,6 @@ class Eyes extends EyesBase {
   async _getAndSaveBatchInfoFromServer(batchId) {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._runner.getBatchInfoWithCache(batchId)
-  }
-
-  async _getAndSaveScmMergeBaseTime(parentBranchName) {
-    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
-    return this._runner.getScmInfoWithCache(parentBranchName)
   }
 }
 

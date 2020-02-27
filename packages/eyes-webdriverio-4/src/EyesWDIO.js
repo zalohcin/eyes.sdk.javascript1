@@ -70,11 +70,8 @@ class EyesWDIO extends EyesBase {
    **/
   constructor(serverUrl, isDisabled = false, runner = new ClassicRunner()) {
     super(serverUrl, isDisabled, new Configuration())
-    /** @type {EyesRunner} */ this._runner = runner
-
-    this._runner._eyesInstances.push(this)
-    this._runner.makeGetRenderingInfo(this._serverConnector.renderInfo.bind(this._serverConnector))
-    this._runner.makeGetBatchInfo(this._serverConnector.batchInfo.bind(this._serverConnector))
+    this._runner = runner
+    this._runner.attachEyes(this, this._serverConnector)
 
     /** @type {EyesWebDriver} */
     this._driver = undefined
@@ -1809,27 +1806,6 @@ class EyesWDIO extends EyesBase {
     return this._runner
   }
 
-  /**
-   * @deprecated
-   * @param {Configuration|object} conf
-   */
-  setConfiguration(conf) {
-    if (!(conf instanceof Configuration)) {
-      conf = new Configuration(conf)
-    }
-
-    this._serverConnector._configuration = conf
-    this._configuration = conf
-  }
-
-  /**
-   * @deprecated
-   * @return {Configuration}
-   */
-  getConfiguration() {
-    return this._configuration
-  }
-
   setApiKey(apiKey) {
     this._configuration.setApiKey(apiKey)
   }
@@ -1853,11 +1829,6 @@ class EyesWDIO extends EyesBase {
   async _getAndSaveBatchInfoFromServer(batchId) {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._runner.getBatchInfoWithCache(batchId)
-  }
-
-  async _getAndSaveScmMergeBaseTime(parentBranchName) {
-    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
-    return this._runner.getScmInfoWithCache(parentBranchName)
   }
 }
 

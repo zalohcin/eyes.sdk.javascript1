@@ -87,7 +87,6 @@ exports.TextTrigger = require('./lib/triggers/TextTrigger').TextTrigger
 exports.Trigger = require('./lib/triggers/Trigger').Trigger
 
 exports.AppEnvironment = require('./lib/AppEnvironment').AppEnvironment
-exports.EyesAbstract = require('./lib/EyesAbstract').EyesAbstract
 exports.EyesBase = require('./lib/EyesBase').EyesBase
 exports.EyesJsBrowserUtils = require('./lib/EyesJsBrowserUtils').EyesJsBrowserUtils
 exports.EyesJsExecutor = require('./lib/EyesJsExecutor').EyesJsExecutor
@@ -100,7 +99,6 @@ exports.TestAccessibilityStatus = require('./lib/TestResults').TestAccessibility
 exports.AccessibilityStatus = require('./lib/AccessibilityStatus').AccessibilityStatus
 exports.TestResultsFormatter = require('./lib/TestResultsFormatter').TestResultsFormatter
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus
-exports.getScmInfo = require('./lib/getScmInfo')
 
 exports.EyesRunner = require('./lib/runner/EyesRunner').EyesRunner
 exports.ClassicRunner = require('./lib/runner/ClassicRunner').ClassicRunner

@@ -5,23 +5,16 @@ logs
 # JetBrains
 .idea
 
-# VS Code
-.vscode
-*.code-workspace
-.history
-
 # Dependency directory
 node_modules
 
 # Other
-.DS_STORE
+.DS_Store
 .eslintcache
 *.swp
 *~
-/packages/visual-grid-client/test/fixtures/test-app/dist/*
-packages/visual-grid-client/test/fixtures/src/*
-packages/eyes-testcafe/screenshots/*
+
 *.log
-packages/eyes-testcafe/**/*.pvt.testcafe.js
 tmp
 .env
+.vscode

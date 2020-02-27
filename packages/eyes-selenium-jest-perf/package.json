@@ -5,7 +5,8 @@
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test:perf": "jest",
-    "postpublish": "git push; git push --tags"
+    "postpublish": "git push; git push --tags",
+    "preversion": "yarn vv"
   },
   "jest": {
     "extraGlobals": [

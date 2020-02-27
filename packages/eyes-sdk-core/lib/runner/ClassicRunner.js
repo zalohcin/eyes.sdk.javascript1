@@ -9,8 +9,10 @@ class ClassicRunner extends EyesRunner {
     this._getRenderingInfo = undefined
   }
 
-  makeGetRenderingInfo(getRenderingInfo) {
+  attachEyes(eyes, serverConnector) {
+    super.attachEyes(eyes, serverConnector)
     if (!this._getRenderingInfo) {
+      const getRenderingInfo = serverConnector.renderInfo.bind(serverConnector)
       this._getRenderingInfo = GeneralUtils.cachify(getRenderingInfo)
     }
   }
@@ -20,7 +22,7 @@ class ClassicRunner extends EyesRunner {
       return this._getRenderingInfo()
     } else {
       throw new Error(
-        'Eyes runner could not get rendering info since makeGetRenderingInfo was not called before',
+        'Eyes runner could not get rendering info since attachEyes was not called before',
       )
     }
   }

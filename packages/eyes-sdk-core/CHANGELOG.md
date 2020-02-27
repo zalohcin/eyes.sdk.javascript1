@@ -1,5 +1,36 @@
 # Change Log
 
+## 8.0.0
+
+Moved server connector makers to runners
+
+## 7.0.0
+
+- move all runners to eyes-sdk-core
+- fix setConfiguration cloned configuration [Trello 220](https://trello.com/c/d3rahmUd/220-setconfiguration-does-not-clone-the-configuration)
+- remove EyesAbstract
+- new branching model for Eyes [Trello 145](https://trello.com/c/VhEHv3YI/145-modify-branching-model-to-be-more-git-like-adjust-github-bitbucket-integrations-109-108-hotfix)
+
+## 6.0.15
+
+- identical to 6.0.9
+
+## 6.0.14
+
+- identical to 6.0.11
+
+## 6.0.13
+
+- unpublished
+
+## 6.0.12
+
+- unpublished
+
+## 6.0.11
+
+- fix Configuration and ImageMatchSettings copy constructor [Trello 204](https://trello.com/c/oH7Ne5EZ/204-js4ignoredisplacements-is-not-working)
+
 ## 6.0.6
 
 - Fix `isMobile` check in EyesBase to support non-Selenium SDKs
@@ -135,7 +166,7 @@
 
 ### Bug Fixes
 
-* **eyes-sdk-core, visual-grid-client:** removed getter and setter for accessibilityLevel from EyesAbstarct ([9bb7e39](https://github.com/applitools/eyes.sdk.javascript1/commit/9bb7e39))
+* **eyes-sdk-core, visual-grid-client:** removed getter and setter for accessibilityLevel from EyesAbstract ([9bb7e39](https://github.com/applitools/eyes.sdk.javascript1/commit/9bb7e39))
 
 
 
@@ -581,7 +612,7 @@
 * **eyes-sdk-core:** add `getScrolledElement` to PositionProvider ([2afebbb](https://github.com/applitools/eyes.sdk.javascript1/commit/2afebbb))
 * **eyes-sdk-core:** add `setConfiguration` method to Eyes ([64813e4](https://github.com/applitools/eyes.sdk.javascript1/commit/64813e4))
 * **eyes-sdk-core:** add `setIsVisualGrid` method ([94662fb](https://github.com/applitools/eyes.sdk.javascript1/commit/94662fb))
-* **eyes-sdk-core:** added setters in eyes-abstarct for useDom & enablePattrens ([15439d8](https://github.com/applitools/eyes.sdk.javascript1/commit/15439d8))
+* **eyes-sdk-core:** added setters in eyes-abstract for useDom & enablePatterns ([15439d8](https://github.com/applitools/eyes.sdk.javascript1/commit/15439d8))
 * **eyes-sdk-core:** remove deprecated methods ([7decce1](https://github.com/applitools/eyes.sdk.javascript1/commit/7decce1))
 * **eyes-selenium:** add `data-applitools-original-overflow` only if we hide element ([5247feb](https://github.com/applitools/eyes.sdk.javascript1/commit/5247feb))
 * **eyes-selenium:** add `data-applitools-original-overflow` tag to elements where we change overflow ([26016a9](https://github.com/applitools/eyes.sdk.javascript1/commit/26016a9))
@@ -605,7 +636,7 @@
 
 * **eyes-sdk-core:** 🎸 added useDom and enablePatterns to match request ([5e16823](https://github.com/applitools/eyes.sdk.javascript1/commit/5e16823))
 * **eyes-sdk-core:** add `configuration` to constructor of EyesBase ([7b69423](https://github.com/applitools/eyes.sdk.javascript1/commit/7b69423))
-* **eyes-sdk-core, visua-grid-client:** 🎸 supporting useDom and enablePatterns for match request ([03ae908](https://github.com/applitools/eyes.sdk.javascript1/commit/03ae908))
+* **eyes-sdk-core, visual-grid-client:** 🎸 supporting useDom and enablePatterns for match request ([03ae908](https://github.com/applitools/eyes.sdk.javascript1/commit/03ae908))
 
 
 
@@ -696,7 +727,7 @@
 
 * **eyes-images:** fix issue when any string means url in Target ctor ([c9a02d6](https://github.com/applitools/eyes.sdk.javascript1/commit/c9a02d6))
 * **eyes-sdk-core:** use correct URL props for user/pass in ProxySettings ([a40a1c6](https://github.com/applitools/eyes.sdk.javascript1/commit/a40a1c6))
-* **eyes-selenium:** rename ImageMatchSettings's `useDom` property to `sendDom`, set it from EyesBase's setSendDom() and use it in MatchSettingsTask ([abd9e2e](https://github.com/applitools/eyes.sdk.javascript1/commit/abd9e2e))
+* **eyes-selenium:** rename ImageMatchSetting's `useDom` property to `sendDom`, set it from EyesBase's setSendDom() and use it in MatchSettingsTask ([abd9e2e](https://github.com/applitools/eyes.sdk.javascript1/commit/abd9e2e))
 
 
 ### Features

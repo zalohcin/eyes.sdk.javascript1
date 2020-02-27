@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-images",
-  "version": "4.12.36",
+  "version": "4.12.37",
   "description": "The simplest implementation of Applitools Eyes SDK, uploads images for validation",
   "keywords": [
     "eyes-images",
@@ -31,7 +31,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "6.0.10"
+    "@applitools/eyes-sdk-core": "7.0.0"
   },
   "devDependencies": {
     "assert-rejects": "^1.0.0",
@@ -40,8 +40,10 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
+    "vv": "node ../../scripts/verify-versions.js",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
-    "postpublish": "git push; git push --tags"
+    "postpublish": "git push; git push --tags",
+    "preversion": "yarn vv"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

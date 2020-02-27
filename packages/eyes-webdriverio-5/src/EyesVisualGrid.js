@@ -39,11 +39,8 @@ class EyesVisualGrid extends EyesBase {
    */
   constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
     super(serverUrl, isDisabled, new Configuration())
-    /** @type {EyesRunner} */ this._runner = runner
-
-    this._runner._eyesInstances.push(this)
-    this._runner.makeGetBatchInfo(this._serverConnector.batchInfo.bind(this._serverConnector))
-    this._runner.makeGetVisualGridClient(makeVisualGridClient)
+    this._runner = runner
+    this._runner.attachEyes(this, this._serverConnector)
 
     /** @type {boolean} */ this._isOpen = false
     /** @type {boolean} */ this._isVisualGrid = true
@@ -427,26 +424,6 @@ class EyesVisualGrid extends EyesBase {
     return this._jsExecutor
   }
 
-  /**
-   * @deprecated
-   * @param {Configuration} conf
-   */
-  setConfiguration(conf) {
-    if (!(conf instanceof Configuration)) {
-      conf = new Configuration(conf)
-    }
-
-    this._configuration.mergeConfig(conf)
-  }
-
-  /**
-   * @deprecated
-   * @return {Configuration}
-   */
-  getConfiguration() {
-    return this._configuration
-  }
-
   setApiKey(apiKey) {
     this._configuration.setApiKey(apiKey)
   }
@@ -501,11 +478,6 @@ class EyesVisualGrid extends EyesBase {
   async _getAndSaveBatchInfoFromServer(batchId) {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._runner.getBatchInfoWithCache(batchId)
-  }
-
-  async _getAndSaveScmMergeBaseTime(parentBranchName) {
-    ArgumentGuard.notNullOrEmpty(parentBranchName, 'parentBranchName')
-    return this._runner.getScmInfoWithCache(parentBranchName)
   }
 }
 

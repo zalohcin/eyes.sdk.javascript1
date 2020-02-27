@@ -12,12 +12,10 @@ const {presult} = require('@applitools/functional-commons')
 const VERSION = require('../../package.json').version
 
 class EyesWrapper extends EyesBase {
-  constructor({apiKey, logHandler, getBatchInfoWithCache, getScmInfoWithCache} = {}) {
+  constructor({apiKey, logHandler, getBatchInfoWithCache} = {}) {
     super()
     apiKey && this.setApiKey(apiKey)
     logHandler && this.setLogHandler(logHandler)
-
-    this._getScmInfoWithCache = getScmInfoWithCache
     this._getBatchInfoWithCache = getBatchInfoWithCache
   }
 
@@ -196,10 +194,6 @@ class EyesWrapper extends EyesBase {
 
   async _getAndSaveBatchInfoFromServer(batchId) {
     return this._getBatchInfoWithCache(batchId)
-  }
-
-  async _getAndSaveScmMergeBaseTime(parentBranchName) {
-    return this._getScmInfoWithCache(parentBranchName)
   }
 }
 

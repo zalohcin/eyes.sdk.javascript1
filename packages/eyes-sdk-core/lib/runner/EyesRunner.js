@@ -1,7 +1,6 @@
 'use strict'
 
 const {GeneralUtils} = require('@applitools/eyes-common')
-const getScmInfo = require('../getScmInfo')
 const {TestResultsSummary} = require('./TestResultsSummary')
 
 class EyesRunner {
@@ -10,10 +9,13 @@ class EyesRunner {
     this._eyesInstances = []
     /** @type {TestResults[]} */
     this._allTestResult = []
+    this._getBatchInfo = undefined
   }
 
-  makeGetBatchInfo(fetchBatchInfo) {
+  attachEyes(eyes, serverConnector) {
+    this._eyesInstances.push(eyes)
     if (!this._getBatchInfo) {
+      const fetchBatchInfo = serverConnector.batchInfo.bind(serverConnector)
       this._getBatchInfo = GeneralUtils.cachify(fetchBatchInfo)
     }
   }
@@ -22,14 +24,8 @@ class EyesRunner {
     if (this._getBatchInfo) {
       return this._getBatchInfo(batchId)
     } else {
-      throw new Error(
-        'Eyes runner could not get batch info since makeGetBatchInfo was not called before',
-      )
+      throw new Error('Eyes runner could not get batch info since attachEyes was not called before')
     }
-  }
-
-  async getScmInfoWithCache(...args) {
-    return getScmInfo(...args)
   }
 
   /**

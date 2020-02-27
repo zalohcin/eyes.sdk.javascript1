@@ -345,4 +345,50 @@ describe('GeneralUtils', () => {
       assert.strictEqual(calledCount['key1'], 1)
     })
   })
+
+  describe('isFeatureFlagOn()', () => {
+    it('works', () => {
+      process.env.APPLITOOLS_MY_FLAG = 'true'
+      assert.strictEqual(GeneralUtils.isFeatureFlagOn('MY_FLAG'), true)
+
+      process.env.APPLITOOLS_MY_FLAG = '1'
+      assert.strictEqual(GeneralUtils.isFeatureFlagOn('MY_FLAG'), true)
+
+      process.env.APPLITOOLS_MY_FLAG = 'false'
+      assert.strictEqual(GeneralUtils.isFeatureFlagOn('MY_FLAG'), false)
+
+      process.env.APPLITOOLS_MY_FLAG = '0'
+      assert.strictEqual(GeneralUtils.isFeatureFlagOn('MY_FLAG'), false)
+
+      process.env.APPLITOOLS_MY_FLAG = undefined
+      assert.strictEqual(GeneralUtils.isFeatureFlagOn('MY_FLAG'), false)
+
+      process.env.APPLITOOLS_MY_FLAG = 'just some value'
+      assert.strictEqual(GeneralUtils.isFeatureFlagOn('MY_FLAG'), true)
+      process.env.APPLITOOLS_MY_FLAG = undefined
+    })
+  })
+
+  describe('isFeatureFlagOff()', () => {
+    it('works', () => {
+      process.env.APPLITOOLS_MY_FLAG = 'true'
+      assert.strictEqual(GeneralUtils.isFeatureFlagOff('MY_FLAG'), false)
+
+      process.env.APPLITOOLS_MY_FLAG = '1'
+      assert.strictEqual(GeneralUtils.isFeatureFlagOff('MY_FLAG'), false)
+
+      process.env.APPLITOOLS_MY_FLAG = 'false'
+      assert.strictEqual(GeneralUtils.isFeatureFlagOff('MY_FLAG'), true)
+
+      process.env.APPLITOOLS_MY_FLAG = '0'
+      assert.strictEqual(GeneralUtils.isFeatureFlagOff('MY_FLAG'), true)
+
+      process.env.APPLITOOLS_MY_FLAG = undefined
+      assert.strictEqual(GeneralUtils.isFeatureFlagOff('MY_FLAG'), true)
+
+      process.env.APPLITOOLS_MY_FLAG = 'just some value'
+      assert.strictEqual(GeneralUtils.isFeatureFlagOff('MY_FLAG'), false)
+      process.env.APPLITOOLS_MY_FLAG = undefined
+    })
+  })
 })

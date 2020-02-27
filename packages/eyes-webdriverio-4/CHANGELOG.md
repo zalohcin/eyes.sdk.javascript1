@@ -1,7 +1,16 @@
 # Change Log
 
-## 2.11.9
+## 2.12.2
+- branching base commit support
+- make functions in runners 
 
+## 2.12.1
+- Fixed regression which broke xpath selectors when looking up the location of an element
+
+## 2.12.0
+- Added nested frame support (without CORS) for checkRegion by locator [Trello 213](https://trello.com/c/Xyyhdb5t)
+
+## 2.11.9
 - Send stitching service URL to visual grid [Trello 212](https://trello.com/c/Sqh6k2VV)
 
 ## 2.11.8
@@ -10,7 +19,7 @@
 ## 2.11.7
 - Fixed error when getting images on Safari. Related to [Trello 99](https://trello.com/c/C0oZf2oc)
 
-## [unversioned] - 
+## [un versioned] - 
 ### Fixed
 - Crop safari url bar and status bar on mobile devices (IOS). [Trello 939](https://trello.com/c/SM80YzdM)
 

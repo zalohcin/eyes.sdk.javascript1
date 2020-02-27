@@ -53,6 +53,7 @@ yargs
   .option('sendReport', {
     alias: 's',
     describe: 'send a result report to the sandbox QA dashboard',
+    default: 'sandbox',
   })
   .option('verbose', {
     alias: 'v',
@@ -156,7 +157,10 @@ async function doRunTests(args, sdkImplementation) {
 async function doSendReport(args, report) {
   if (args.sendReport) {
     process.stdout.write('\nSending report to QA dashboard... ')
-    const result = await sendReport(report.toSendReportSchema())
+    const isSandbox = args.sendReport !== 'sandbox' ? false : true
+    const _report = report.toSendReportSchema()
+    _report.sandbox = isSandbox
+    const result = await sendReport(_report)
     process.stdout.write(result.isSuccessful ? 'Done!\n' : 'Failed!\n')
     return result
   }

@@ -1,0 +1,36 @@
+{
+  "name": "@applitools/sdk-release-kit",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "directories": {
+    "lib": "./src",
+    "test": "./test"
+  },
+  "bin": {
+    "bongo": "./src/cli/index.js"
+  },
+  "description": "Release Kit for Applitools SDKs",
+  "author": "David Haeffner <dhaeffner@gmail.com>",
+  "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
+  },
+  "scripts": {
+    "test": "mocha test/**/*.spec.js"
+  },
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
+  },
+  "dependencies": {
+    "yargs": "^15.0.2",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.2"
+  }
+}

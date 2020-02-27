@@ -94,9 +94,11 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
 
   // matchSingleWindow
   app.post('/api/sessions', jsonMiddleware, (req, res) => {
-    const {startInfo, appOutput} = req.body
+    const {startInfo} = req.body
+    const matchWindowData = JSON.parse(JSON.stringify(req.body))
+    delete matchWindowData.startInfo
     const runningSession = createRunningSessionFromStartInfo(startInfo)
-    runningSession.steps = [{asExpected: true, appOutput}] // TODO
+    runningSession.steps = [{asExpected: true, matchWindowData}]
     runningSessions[runningSession.id] = runningSession
     res.set(
       'location',
@@ -246,6 +248,17 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
     const runningSession = runningSessions[req.params.id]
 
     res.send(createTestResultFromRunningSession(runningSession))
+  })
+
+  app.delete('/api/sessions/batches/:batchPointerId/close/bypointerid', (_req, res) => {
+    res.status(200).send()
+  })
+
+  app.get('/api/sessions/batches/:batchId/config/bypointerId', (req, res) => {
+    res.status(200).send({
+      scmSourceBranch: `scmSourceBranch_${req.params.batchId}`,
+      scmTargetBranch_: `scmTargetBranch_${req.params.batchId}`,
+    })
   })
 
   function createTestResultFromRunningSession(runningSession) {
