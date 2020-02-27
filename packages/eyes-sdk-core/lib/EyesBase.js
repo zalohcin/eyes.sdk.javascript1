@@ -2055,7 +2055,8 @@ class EyesBase {
     // we need the Configuration to check for default values like getEnvValue('BATCH_ID') instead of
     // it creating new Objects (with defaults) on demand, see Configuration#getBatch().
     const batchId =
-      (this._configuration._batch && this._configuration._batch.getId()) || getEnvValue('BATCH_ID')
+      (this._configuration._batch && this._configuration._batch.getId()) ||
+      GeneralUtils.getEnvValue('BATCH_ID')
     if (!isGeneratedId) {
       return batchId
     }
