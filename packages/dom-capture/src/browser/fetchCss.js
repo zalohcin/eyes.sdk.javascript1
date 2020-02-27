@@ -16,7 +16,7 @@ function makeFetchCss(fetch, {fetchTimeLimit} = {}) {
     const result = [response];
     if (!Number.isNaN(Number(fetchTimeLimit))) {
       result.push(
-        new Promise(resolve => setTimeout(resolve, fetchTimeLimit)).then(() => controller.abort())
+        new Promise(resolve => setTimeout(resolve, fetchTimeLimit)).then(() => controller.abort()),
       );
     }
     return Promise.race(result);

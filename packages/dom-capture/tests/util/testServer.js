@@ -4,10 +4,10 @@ const express = require('express');
 module.exports = ({port, delayRecourses} = {port: 0}) => {
   const app = express();
   if (delayRecourses > 0) {
-    app.use((req, res, next) => {
-      if (/\.(css|jpe?g)$/.test(req.url)) setTimeout(next, delayRecourses)
-      else next()
-    })
+    app.use((req, _, next) => {
+      if (/\.(css|jpe?g)$/.test(req.url)) setTimeout(next, delayRecourses);
+      else next();
+    });
   }
   app.use('/', express.static(path.resolve(__dirname, '../fixtures')));
 

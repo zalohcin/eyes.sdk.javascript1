@@ -11,14 +11,20 @@ const {loadFixture} = require('./util/loadFixture');
 const {version} = require('../package.json');
 
 describe('captureFrame', () => {
-  let browser, page, baseUrl, closeTestServer, captureFrameWithMetrics, captureFrameWithFetchTimeLimit, captureFrame;
+  let browser,
+    page,
+    baseUrl,
+    closeTestServer,
+    captureFrameWithMetrics,
+    captureFrameWithFetchTimeLimit,
+    captureFrame;
 
   before(async () => {
     browser = await puppeteer.launch();
     const testServer = await startTestServer({port: 50993});
     baseUrl = `http://localhost:${testServer.port}`;
     closeTestServer = testServer.close;
-    const captureDomScript = await getCaptureDomScript()
+    const captureDomScript = await getCaptureDomScript();
     captureFrame = `(${captureDomScript})()`;
     captureFrameWithMetrics = `(${captureDomScript})(undefined, undefined, true)`;
     captureFrameWithFetchTimeLimit = `(${captureDomScript})(undefined, undefined, true, 5000)`;
@@ -137,7 +143,7 @@ describe('captureFrame', () => {
     }
   });
 
-  it.only("don't fetch css if fetching is to long", async () => {
+  it("don't fetch css if fetching is to long", async () => {
     const port = 7272;
     const anotherTestServer = await startTestServer({port, delayRecourses: 10000});
 
