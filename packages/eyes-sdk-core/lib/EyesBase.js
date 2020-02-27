@@ -16,7 +16,7 @@ const {
   NullDebugScreenshotProvider,
   SessionType,
   Configuration,
-  GeneralUtils: {sleep, presult, getEnvValue, isFeatureFlagOff},
+  GeneralUtils: {sleep, presult, getEnvValue},
 } = require('@applitools/eyes-common')
 
 const {AppOutputProvider} = require('./capture/AppOutputProvider')
@@ -895,41 +895,35 @@ class EyesBase {
     return getScmInfo(branchName, parentBranchName)
   }
 
-  async getAndSetBatchInfo() {
+  async handleScmMergeBaseTime() {
     const batchId = this.getUserSetBatchId()
-    let branchName = this._configuration.getBranchName()
-    let parentBranchName = this._configuration.getParentBranchName()
+    let scmSourceBranch = this._configuration.getBranchName()
+    let scmTargetBranch = this._configuration.getParentBranchName()
 
-    if (isFeatureFlagOff('COMPARE_TO_BRANCH_BASE')) {
-      return {branchName, parentBranchName}
-    }
-
-    const isLocalBranchTest = branchName && parentBranchName && branchName !== parentBranchName
-    const isCiBranchTest = batchId && !branchName && !parentBranchName
+    const isLocalBranchTest =
+      scmSourceBranch && scmTargetBranch && scmSourceBranch !== scmTargetBranch
+    const isCiBranchTest = batchId && !scmSourceBranch && !scmTargetBranch
 
     let err
     if (isCiBranchTest) {
-      ;[err, {scmSourceBranch: branchName, scmTargetBranch: parentBranchName} = {}] = await presult(
+      ;[err, {scmSourceBranch, scmTargetBranch} = {}] = await presult(
         this._getAndSaveBatchInfoFromServer(batchId),
       )
       this._logger.log(
         `_getAndSaveBatchInfoFromServer done for ${batchId}, 
-        branchName: ${branchName}, parentBranchName: ${parentBranchName}, err: ${err}`,
+        branchName: ${scmSourceBranch}, parentBranchName: ${scmTargetBranch}, err: ${err}`,
       )
     }
 
-    let parentBranchBaselineSavedBefore
+    let mergeBaseTime
     if ((isLocalBranchTest || isCiBranchTest) && !err) {
-      ;[err, parentBranchBaselineSavedBefore] = await presult(
-        this._getScmMergeBaseTime(branchName, parentBranchName),
+      ;[err, mergeBaseTime] = await presult(
+        this._getScmMergeBaseTime(scmSourceBranch, scmTargetBranch),
       )
-      this._logger.log(
-        '_getScmMergeBaseTime done,',
-        `parentBranchBaselineSavedBefore: ${parentBranchBaselineSavedBefore} err: ${err}`,
-      )
+      this._logger.log('_getScmMergeBaseTime done,', `mergeBaseTime: ${mergeBaseTime} err: ${err}`)
     }
 
-    return {branchName, parentBranchName, parentBranchBaselineSavedBefore}
+    return mergeBaseTime
   }
 
   /**
@@ -1660,7 +1654,7 @@ class EyesBase {
       if (!this._renderingInfoPromise) {
         this._renderingInfoPromise = this.getAndSaveRenderingInfo()
       }
-      this._batchInfoPromise = this.getAndSetBatchInfo()
+      this._scmMergeBaseTimePromise = this.handleScmMergeBaseTime()
 
       await this._sessionEventHandlers.testStarted(await this.getAUTSessionId())
 
@@ -1984,8 +1978,7 @@ class EyesBase {
     this._logger.verbose(`Application environment is ${appEnvironment}`)
     await this._sessionEventHandlers.initEnded()
 
-    const {branchName, parentBranchName, parentBranchBaselineSavedBefore} = await this
-      ._batchInfoPromise
+    const parentBranchBaselineSavedBefore = await this._scmMergeBaseTimePromise
 
     this._sessionStartInfo = new SessionStartInfo({
       agentId: this.getFullAgentId(),
@@ -1999,8 +1992,8 @@ class EyesBase {
       environmentName: this._configuration.getEnvironmentName(),
       environment: appEnvironment,
       defaultMatchSettings: this._configuration.getDefaultMatchSettings(),
-      branchName,
-      parentBranchName,
+      branchName: this._configuration.getBranchName(),
+      parentBranchName: this._configuration.getParentBranchName(),
       parentBranchBaselineSavedBefore,
       baselineBranchName: this._configuration.getBaselineBranchName(),
       compareWithParentBranch: this._configuration.getCompareWithParentBranch(),
@@ -2056,12 +2049,16 @@ class EyesBase {
    * a new id if called before open.
    */
   getUserSetBatchId() {
+    const isGeneratedId =
+      this._configuration._batch && this._configuration._batch.getIsGeneratedId()
     // TODO
     // we need the Configuration to check for default values like getEnvValue('BATCH_ID') instead of
     // it creating new Objects (with defaults) on demand, see Configuration#getBatch().
-    return (
+    const batchId =
       (this._configuration._batch && this._configuration._batch.getId()) || getEnvValue('BATCH_ID')
-    )
+    if (!isGeneratedId) {
+      return batchId
+    }
   }
 
   /**

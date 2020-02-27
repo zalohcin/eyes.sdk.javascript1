@@ -5,7 +5,7 @@ const {
   GeneralUtils: {sleep},
 } = require('@applitools/eyes-common')
 const {FakeEyes} = require('../testUtils')
-const {EyesBase, Configuration, RunningSession} = require('../../index')
+const {EyesBase, Configuration, RunningSession, BatchInfo} = require('../../index')
 
 process.env.APPLITOOLS_COMPARE_TO_BRANCH_BASE = true
 
@@ -32,52 +32,36 @@ describe('EyesBase', () => {
         parentBranchName: 'master-branch',
       })
       eyes.setConfiguration(configuration)
-      const result = await eyes.getAndSetBatchInfo()
+      const result = await eyes.handleScmMergeBaseTime()
 
-      const expected = {
-        branchName: 'some-feature',
-        parentBranchName: 'master-branch',
-        parentBranchBaselineSavedBefore: 'some-datetime-of-some-feature-master-branch',
-      }
+      const expected = 'some-datetime-of-some-feature-master-branch'
       assert.deepStrictEqual(result, expected)
     })
 
     it('should return batch info on local branch test with env variables', async () => {
       process.env.APPLITOOLS_BRANCH = 'some-feature'
       process.env.APPLITOOLS_PARENT_BRANCH = 'master-branch'
-      const result = await eyes.getAndSetBatchInfo()
+      const result = await eyes.handleScmMergeBaseTime()
 
-      const expected = {
-        branchName: 'some-feature',
-        parentBranchName: 'master-branch',
-        parentBranchBaselineSavedBefore: 'some-datetime-of-some-feature-master-branch',
-      }
+      const expected = 'some-datetime-of-some-feature-master-branch'
       assert.deepStrictEqual(result, expected)
     })
 
     it('should return batch info on ci branch test', async () => {
       eyes.setBatch('batch-name', 'some-batch-id')
-      const result = await eyes.getAndSetBatchInfo()
+      const result = await eyes.handleScmMergeBaseTime()
 
-      const expected = {
-        branchName: 'barnch-name-of-some-batch-id',
-        parentBranchName: 'parent-barnch-name-of-some-batch-id',
-        parentBranchBaselineSavedBefore:
-          'some-datetime-of-barnch-name-of-some-batch-id-parent-barnch-name-of-some-batch-id',
-      }
+      const expected =
+        'some-datetime-of-barnch-name-of-some-batch-id-parent-barnch-name-of-some-batch-id'
       assert.deepStrictEqual(result, expected)
     })
 
     it('should return batch info on ci branch test with env variables', async () => {
       process.env.APPLITOOLS_BATCH_ID = 'some-batch-id'
-      const result = await eyes.getAndSetBatchInfo()
+      const result = await eyes.handleScmMergeBaseTime()
 
-      const expected = {
-        branchName: 'barnch-name-of-some-batch-id',
-        parentBranchName: 'parent-barnch-name-of-some-batch-id',
-        parentBranchBaselineSavedBefore:
-          'some-datetime-of-barnch-name-of-some-batch-id-parent-barnch-name-of-some-batch-id',
-      }
+      const expected =
+        'some-datetime-of-barnch-name-of-some-batch-id-parent-barnch-name-of-some-batch-id'
       assert.deepStrictEqual(result, expected)
     })
 
@@ -87,13 +71,9 @@ describe('EyesBase', () => {
         parentBranchName: 'some-feature',
       })
       eyes.setConfiguration(configuration)
-      const result = await eyes.getAndSetBatchInfo()
+      const result = await eyes.handleScmMergeBaseTime()
 
-      const expected = {
-        branchName: 'some-feature',
-        parentBranchName: 'some-feature',
-        parentBranchBaselineSavedBefore: undefined,
-      }
+      const expected = undefined
       assert.deepStrictEqual(result, expected)
     })
 
@@ -104,13 +84,9 @@ describe('EyesBase', () => {
       })
       eyes.setConfiguration(configuration)
       eyes.setBatch('batch-name', 'BID')
-      const result = await eyes.getAndSetBatchInfo()
+      const result = await eyes.handleScmMergeBaseTime()
 
-      const expected = {
-        branchName: 'some-feature',
-        parentBranchName: 'master-branch',
-        parentBranchBaselineSavedBefore: 'some-datetime-of-some-feature-master-branch',
-      }
+      const expected = 'some-datetime-of-some-feature-master-branch'
       assert.deepStrictEqual(result, expected)
     })
   })
@@ -120,25 +96,68 @@ describe('EyesBase', () => {
 
     beforeEach(async () => {
       eyes = new FakeEyes()
-      eyes.getAndSetBatchInfo = async () => {
+      eyes.handleScmMergeBaseTime = async () => {
         await sleep(10)
-        return {
-          branchName: 'some-feature',
-          parentBranchName: 'master-branch',
-          parentBranchBaselineSavedBefore: 'some-datetime',
-        }
+        return 'some-datetime'
       }
       const rs = new RunningSession()
       eyes._serverConnector = {startSession: async args => ((startSessionArgs = args), rs)}
       await eyes.openBase('appName', 'testName')
     })
 
-    it('should set SessionStartInfo with batch info', async () => {
+    it('should set SessionStartInfo with ParentBranchBaselineSavedBefore', async () => {
       await eyes.startSession()
 
-      assert.strictEqual(startSessionArgs.getBranchName(), 'some-feature')
-      assert.strictEqual(startSessionArgs.getParentBranchName(), 'master-branch')
+      assert.strictEqual(startSessionArgs.getBranchName(), undefined)
+      assert.strictEqual(startSessionArgs.getParentBranchName(), undefined)
       assert.strictEqual(startSessionArgs.getParentBranchBaselineSavedBefore(), 'some-datetime')
+    })
+
+    it('should set SessionStartInfo with branch name and parent branch name', async () => {
+      const configuration = new Configuration({
+        branchName: 'aaa',
+        parentBranchName: 'bbb',
+        testName: 'ddd',
+      })
+      eyes.setConfiguration(configuration)
+      await eyes.startSession()
+
+      assert.strictEqual(startSessionArgs.getBranchName(), 'aaa')
+      assert.strictEqual(startSessionArgs.getParentBranchName(), 'bbb')
+      assert.strictEqual(startSessionArgs.getParentBranchBaselineSavedBefore(), 'some-datetime')
+    })
+  })
+
+  describe('getUserSetBatchId()', () => {
+    beforeEach(() => {
+      eyes = new EyesBase()
+      process.env.APPLITOOLS_BATCH_ID = null
+    })
+
+    it('returns user set batchId', async () => {
+      process.env.APPLITOOLS_BATCH_ID = 'someId'
+      const batchId = eyes.getUserSetBatchId()
+      assert.strictEqual(batchId, 'someId')
+    })
+
+    it('returns user set batchId in configuration', async () => {
+      const configuration = new Configuration({})
+      configuration.setBatch(new BatchInfo({id: 'some id'}))
+      eyes.setConfiguration(configuration)
+
+      const batchId = eyes.getUserSetBatchId()
+      assert.strictEqual(batchId, 'some id')
+    })
+
+    it('returns undefined if user did not set batch id', async () => {
+      const batchId = eyes.getUserSetBatchId()
+      assert.strictEqual(batchId, undefined)
+    })
+
+    it('returns undefined if the user did not set batch id but it was auto generated', async () => {
+      eyes.getBatch().getId()
+      const batchId = eyes.getUserSetBatchId()
+      assert.strictEqual(batchId, undefined)
     })
   })
 })

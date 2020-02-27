@@ -1,12 +1,15 @@
 'use strict'
 
 const assert = require('assert')
-const {Eyes, ClassicRunner, VisualGridRunner} = require('../../index')
+const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
+const {Eyes, ClassicRunner, VisualGridRunner, Logger, Configuration} = require('../../index')
+const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
 describe('Eyes', function() {
   let eyesClassic, eyesClassic2, eyesClassic3, eyesVG, eyesVG2, eyesVG3
+  let closeServer
 
-  before(function() {
+  before(async function() {
     const cr = new ClassicRunner()
     eyesClassic = new Eyes(cr)
     eyesClassic2 = new Eyes(cr)
@@ -17,14 +20,21 @@ describe('Eyes', function() {
     eyesVG2 = new Eyes(vgr)
     eyesVG3 = new Eyes(vgr)
 
-    const batchInfo = id => `batchInfo of ${id}`
-    eyesClassic._runner._getBatchInfo = batchInfo
-    eyesClassic2._runner._getBatchInfo = batchInfo
-    eyesClassic3._runner._getBatchInfo = batchInfo
-    eyesVG._runner._getBatchInfo = batchInfo
-    eyesVG2._runner._getBatchInfo = batchInfo
-    eyesVG3._runner._getBatchInfo = batchInfo
+    const {port, close} = await fakeEyesServer({logger})
+    closeServer = close
+    const serverUrl = `http://localhost:${port}`
+    const configuration = new Configuration()
+    configuration.setServerUrl(serverUrl)
+
+    eyesClassic.setConfiguration(configuration)
+    eyesClassic2.setConfiguration(configuration)
+    eyesClassic3.setConfiguration(configuration)
+    eyesVG.setConfiguration(configuration)
+    eyesVG2.setConfiguration(configuration)
+    eyesVG3.setConfiguration(configuration)
   })
+
+  after(() => closeServer())
 
   it('_getAndSaveBatchInfoFromServer() works with classic runner', async function() {
     const [res1, res2, res3] = await Promise.all([
@@ -32,9 +42,18 @@ describe('Eyes', function() {
       eyesClassic2._getAndSaveBatchInfoFromServer('id1'),
       eyesClassic3._getAndSaveBatchInfoFromServer('id2'),
     ])
-    assert.strictEqual(res1, 'batchInfo of id1')
-    assert.strictEqual(res2, 'batchInfo of id1')
-    assert.strictEqual(res3, 'batchInfo of id2')
+    assert.deepStrictEqual(res1, {
+      scmSourceBranch: 'scmSourceBranch_id1',
+      scmTargetBranch_: 'scmTargetBranch_id1',
+    })
+    assert.deepStrictEqual(res2, {
+      scmSourceBranch: 'scmSourceBranch_id1',
+      scmTargetBranch_: 'scmTargetBranch_id1',
+    })
+    assert.deepStrictEqual(res3, {
+      scmSourceBranch: 'scmSourceBranch_id2',
+      scmTargetBranch_: 'scmTargetBranch_id2',
+    })
   })
 
   it('_getAndSaveBatchInfoFromServer() works with VG runner', async function() {
@@ -43,8 +62,17 @@ describe('Eyes', function() {
       eyesVG2._getAndSaveBatchInfoFromServer('id1'),
       eyesVG3._getAndSaveBatchInfoFromServer('id2'),
     ])
-    assert.strictEqual(res1, 'batchInfo of id1')
-    assert.strictEqual(res2, 'batchInfo of id1')
-    assert.strictEqual(res3, 'batchInfo of id2')
+    assert.deepStrictEqual(res1, {
+      scmSourceBranch: 'scmSourceBranch_id1',
+      scmTargetBranch_: 'scmTargetBranch_id1',
+    })
+    assert.deepStrictEqual(res2, {
+      scmSourceBranch: 'scmSourceBranch_id1',
+      scmTargetBranch_: 'scmTargetBranch_id1',
+    })
+    assert.deepStrictEqual(res3, {
+      scmSourceBranch: 'scmSourceBranch_id2',
+      scmTargetBranch_: 'scmTargetBranch_id2',
+    })
   })
 })

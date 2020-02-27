@@ -19,6 +19,7 @@ async function captureFrame(
   {styleProps, rectProps, ignoredTagNames} = defaultDomProps,
   doc = document,
   addStats = false,
+  fetchTimeLimit = 30000,
 ) {
   const performance = {total: {}, prefetchCss: {}, doCaptureFrame: {}, waitForImages: {}};
   function startTime(obj) {
@@ -37,7 +38,7 @@ async function captureFrame(
   const separator = '-----';
 
   startTime(performance.prefetchCss);
-  const prefetchAllCss = makePrefetchAllCss(makeFetchCss(fetch));
+  const prefetchAllCss = makePrefetchAllCss(makeFetchCss(fetch, {fetchTimeLimit}));
   const getCssFromCache = await prefetchAllCss(doc);
   endTime(performance.prefetchCss);
 

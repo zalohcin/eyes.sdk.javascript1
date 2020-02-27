@@ -11,15 +11,23 @@ const {loadFixture} = require('./util/loadFixture');
 const {version} = require('../package.json');
 
 describe('captureFrame', () => {
-  let browser, page, baseUrl, closeTestServer, captureFrameWithMetrics, captureFrame;
+  let browser,
+    page,
+    baseUrl,
+    closeTestServer,
+    captureFrameWithMetrics,
+    captureFrameWithFetchTimeLimit,
+    captureFrame;
 
   before(async () => {
     browser = await puppeteer.launch();
     const testServer = await startTestServer({port: 50993});
     baseUrl = `http://localhost:${testServer.port}`;
     closeTestServer = testServer.close;
-    captureFrameWithMetrics = `(${await getCaptureDomScript()})(undefined, undefined, true)`;
-    captureFrame = `(${await getCaptureDomScript()})()`;
+    const captureDomScript = await getCaptureDomScript();
+    captureFrame = `(${captureDomScript})()`;
+    captureFrameWithMetrics = `(${captureDomScript})(undefined, undefined, true)`;
+    captureFrameWithFetchTimeLimit = `(${captureDomScript})(undefined, undefined, true, 5000)`;
   });
 
   after(async () => {
@@ -139,6 +147,30 @@ describe('captureFrame', () => {
     }
 
     const expected = loadFixture('crossOrigin.dom.json').replace(
+      'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
+      version,
+    );
+
+    try {
+      expect(domStr).to.eql(expected);
+    } finally {
+      await anotherTestServer.close();
+    }
+  });
+
+  it("don't fetch css if fetching is to long", async () => {
+    const port = 7272;
+    const anotherTestServer = await startTestServer({port, delayRecourses: 10000});
+
+    await page.goto(`http://localhost:${port}/longCss.html`);
+
+    const domStr = beautifyOutput(await page.evaluate(captureFrameWithFetchTimeLimit));
+
+    if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
+      fs.writeFileSync('tests/fixtures/longCss.dom.json', domStr);
+    }
+
+    const expected = loadFixture('longCss.dom.json').replace(
       'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
       version,
     );
