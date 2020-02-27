@@ -3,6 +3,7 @@ const defaultDomProps = require('./defaultDomProps');
 const getBackgroundImageUrl = require('./getBackgroundImageUrl');
 const getImageSizes = require('./getImageSizes');
 const genXpath = require('./genXpath');
+const isInlineFrame = require('./isInlineFrame');
 const absolutizeUrl = require('./absolutizeUrl');
 const makeGetBundledCssFromCssText = require('./getBundledCssFromCssText');
 const parseCss = require('./parseCss');
@@ -109,7 +110,7 @@ async function captureFrame(
     };
   }
 
-  function doCaptureFrame(frameDoc) {
+  function doCaptureFrame(frameDoc, baseUrl = frameDoc.location.href) {
     const bgImages = new Set();
     let bundledCss = '';
     const ret = captureNode(frameDoc.documentElement);
@@ -120,7 +121,7 @@ async function captureFrame(
     function captureNode(node) {
       const {bundledCss: nodeCss, unfetchedResources: nodeUnfetched} = captureNodeCss(
         node,
-        frameDoc.location.href,
+        baseUrl,
       );
       bundledCss += nodeCss;
       if (nodeUnfetched) for (const elem of nodeUnfetched) unfetchedResources.add(elem);
@@ -197,7 +198,9 @@ async function captureFrame(
       }
       try {
         if (doc) {
-          obj.childNodes = [doCaptureFrame(el.contentDocument)];
+          obj.childNodes = [
+            doCaptureFrame(doc, isInlineFrame(el) ? el.baseURI : doc.location.href),
+          ];
         } else {
           markFrameAsCors();
         }
