@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
+
 ## 4.33.21
 
 - make function in runners

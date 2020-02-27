@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
+
 ## [1.0.2] - 2019-11-09 
 ### Fixed
 - Setting viewportSize through configuration. [Ticket_1168](https://trello.com/c/yPqI3erm)

@@ -2,16 +2,17 @@
 
 ## Unreleased
 
-fix exception on aborts - using _getSetBatchId in closeBatch so we dont generate batch id but still get the generated batch id.
+- fix exception on aborts - using _getSetBatchId in closeBatch so we dont generate batch id but still get the generated batch id.
 guarding addBrowsers arguments for sending an array
+- upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
 
 ## 8.0.1
 
-getUserSetBatchId() can now run after generating batch id
+- getUserSetBatchId() can now run after generating batch id
 
 ## 8.0.0
 
-Moved server connector makers to runners
+- Moved server connector makers to runners
 
 ## 7.0.0
 
