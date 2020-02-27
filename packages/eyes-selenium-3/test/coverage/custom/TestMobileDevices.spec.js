@@ -13,12 +13,6 @@ const sauceCaps = {
   idleTimeout: 360,
 }
 
-let getDeviceEmulationCaps = mobileEmulation => ({
-  browserName: 'chrome',
-  'goog:chromeOptions': {
-    mobileEmulation: mobileEmulation,
-  },
-})
 const iPadAgent11 =
   'Mozilla/5.0 (iPad; CPU OS 11_0_1 like Mac OS X) AppleWebKit/604.2.10 (KHTML, like Gecko) Version/11.0 Mobile/15A8401 Safari/604.1'
 const iPadAgent10 =
@@ -137,7 +131,15 @@ let iPhonePortrait = [
     name: 'iPhone 5s Simulator 10.3',
   },
 ]
+let androidAgent =
+  'Mozilla/5.0 (Linux; Android 8.0.0; Android SDK built for x86_64 Build/OSR1.180418.004) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36'
+let android = {
+  mobileEmulation: getMobileEmulation(androidAgent, 384, 512, 2),
+  name: 'Android Emulator 8.0',
+  orientation: 'Portrait',
+}
 const data = [
+  android,
   ...addOrientation(iPadLandscape, 'Landscape'),
   ...addOrientation(iPadPortrait, 'Portrait'),
   ...addOrientation(iPhoneLandscape, 'Landscape'),
@@ -147,8 +149,11 @@ describe('TestMobileDevices', () => {
   let page = ['mobile', 'desktop', 'scrolled_mobile']
   page.forEach(page => {
     describe(`${page}`, () => {
+      before(function() {
+        if (page === 'desktop') this.skip()
+      })
       data.forEach(device => {
-        it('testChromeEmulation', async () => {
+        it(`${device.name}`, async () => {
           let webDriver, eyes
           try {
             webDriver = await new Builder()
@@ -180,7 +185,7 @@ describe('TestMobileDevices', () => {
     })
   })
 
-  it('testSauce', async () => {
+  it.skip('testSauce', async () => {
     let webDriver, eyes
     try {
       webDriver = await new Builder()
@@ -223,4 +228,13 @@ function getMobileEmulation(agent, width, height, pixelRatio) {
 function addOrientation(data, orientation) {
   data = data.map(device => ({...device, orientation: orientation}))
   return data
+}
+function getDeviceEmulationCaps(mobileEmulation) {
+  return {
+    browserName: 'chrome',
+    'goog:chromeOptions': {
+      mobileEmulation: mobileEmulation,
+      args: ['headless'],
+    },
+  }
 }
