@@ -98,6 +98,7 @@ function configAxiosHeaders({axiosConfig}) {
       axiosConfig.timestamp,
     )
   }
+  // ---
 }
 
 async function delayRequest({axiosConfig, logger}) {
@@ -154,7 +155,7 @@ async function startPollingRequest({url, config, axios}) {
       const {config} = response
       const nextConfig = {
         name: config.name,
-        method: 'DELETE',
+        method: 'DELETE', // TODO should be changed to GET when Eyes server will be updated to 10.9
         url: response.headers.location,
         headers: {
           [CUSTOM_HEADER_NAMES.EYES_DATE]: DateTimeUtils.toRfc1123DateTime(),
