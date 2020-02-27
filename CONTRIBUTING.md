@@ -49,18 +49,13 @@ cd packages/package-name
 yarn lint
 ```
 
-### Versioning
+### Changelog
 
-You can version a package before publishing it with the `version` command.
+When contributing code to a package, add an entry to the changelog for that package (e.g., `packages/eyes-selenium/CHANGELOG.md`).
 
-```sh
-cd packages/package-name
-yarn version --patch
-yarn version --minor
-yarn version --major
-```
+At the top of each changelog file is a section with the heading `## Unreleased`. Simply add a bullet to this section with a note about what you changed. This section will be used to automtically create a changelog entry when cutting a release.
 
-This will automatically update the `package.json` for the package, commit it, and add a tag for the version.
+_NOTE: If your change involves updating the version of an internal package, add the changelog entry from that internal package to the changelog of the package you are updating._
 
 #### Verify workspace versions
 
@@ -69,14 +64,17 @@ To verify the entire workspace, run in the root folder `yarn workspaces run vv`.
 
 To automatically fix mismatches, run `yarn vv --fix`, or in the root folder: `yarn workspaces run vv --fix`.
 
-### Publishing
+### Versioning & Publishing
 
-You can then release the package with the `publish` command.
+You can version a package as part of publishing it.
 
 ```sh
-yarn publish
+cd packages/package-name
+yarn publish --patch # or --minor or --major
 ```
 
-This will publish the package to `npm` and push the version and its tag to GitHub
+This will automatically update the `package.json` and changelog for the package, commit them, and add a tag for the version. It will also publish the package to `npm` and push the version and its tag to GitHub.
 
-_NOTE: When publishing it will prompt you for version information. If you've already run `version` then don't provide a version number here. Just press `Enter` to continue._
+_NOTE: If you don't provide a version argument, you will be prompted for a version._
+
+_NOTE: Client facing SDKs have additional things that will run as part of versioning/publishing. They will run end-to-end coverage tests and send out a release notification.__
