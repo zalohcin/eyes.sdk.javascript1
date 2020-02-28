@@ -30,4 +30,39 @@ describe('ArgumentGuard', () => {
       })
     })
   })
+
+  describe('isPlainObject()', () => {
+    it('works', () => {
+      assert.doesNotThrow(() => {
+        ArgumentGuard.isPlainObject({}, 'some-name')
+      })
+      assert.doesNotThrow(() => {
+        ArgumentGuard.isPlainObject({a: true}, 'some-name')
+      })
+      assert.doesNotThrow(() => {
+        ArgumentGuard.isPlainObject(new Object(), 'some-name')
+      })
+      assert.throws(() => {
+        ArgumentGuard.isPlainObject('Not an object', 'some-name')
+      })
+      assert.throws(() => {
+        ArgumentGuard.isPlainObject(undefined, 'some-name')
+      })
+      assert.throws(() => {
+        ArgumentGuard.isPlainObject(null, 'some-name')
+      })
+      assert.throws(() => {
+        ArgumentGuard.isPlainObject([], 'some-name')
+      })
+    })
+
+    it('works with strict false', () => {
+      assert.doesNotThrow(() => {
+        ArgumentGuard.isPlainObject(undefined, 'some-name', false)
+      })
+      assert.doesNotThrow(() => {
+        ArgumentGuard.isPlainObject(null, 'some-name', false)
+      })
+    })
+  })
 })

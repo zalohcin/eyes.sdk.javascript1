@@ -16,7 +16,7 @@ const {
   NullDebugScreenshotProvider,
   SessionType,
   Configuration,
-  GeneralUtils: {sleep, presult, getEnvValue},
+  GeneralUtils,
 } = require('@applitools/eyes-common')
 
 const {AppOutputProvider} = require('./capture/AppOutputProvider')
@@ -906,7 +906,7 @@ class EyesBase {
 
     let err
     if (isCiBranchTest) {
-      ;[err, {scmSourceBranch, scmTargetBranch} = {}] = await presult(
+      ;[err, {scmSourceBranch, scmTargetBranch} = {}] = await GeneralUtils.presult(
         this._getAndSaveBatchInfoFromServer(batchId),
       )
       this._logger.log(
@@ -917,7 +917,7 @@ class EyesBase {
 
     let mergeBaseTime
     if ((isLocalBranchTest || isCiBranchTest) && !err) {
-      ;[err, mergeBaseTime] = await presult(
+      ;[err, mergeBaseTime] = await GeneralUtils.presult(
         this._getScmMergeBaseTime(scmSourceBranch, scmTargetBranch),
       )
       this._logger.log('_getScmMergeBaseTime done,', `mergeBaseTime: ${mergeBaseTime} err: ${err}`)
@@ -1326,7 +1326,7 @@ class EyesBase {
     // default result
     const validationResult = new ValidationResult()
 
-    await sleep(this._configuration.getWaitBeforeScreenshots())
+    await GeneralUtils.sleep(this._configuration.getWaitBeforeScreenshots())
 
     await this.beforeMatchWindow()
     await this._sessionEventHandlers.validationWillStart(this._autSessionId, validationInfo)
@@ -1582,8 +1582,8 @@ class EyesBase {
     if (!domJson) {
       return null
     }
-
-    return this._serverConnector.postDomSnapshot(domJson)
+    const id = GeneralUtils.guid()
+    return this._serverConnector.postDomSnapshot(id, domJson)
   }
 
   /**
@@ -2033,7 +2033,7 @@ class EyesBase {
 
     try {
       if (this._configuration._batch) {
-        const batchId = this.getUserSetBatchId()
+        const batchId = this._getSetBatchId()
         await this._serverConnector.deleteBatchSessions(batchId)
       } else {
         this._logger.log('Failed to close batch: no batch found.')
@@ -2043,17 +2043,26 @@ class EyesBase {
     }
   }
 
+  getUserSetBatchId() {
+    const isGeneratedId =
+      this._configuration._batch && this._configuration._batch.getIsGeneratedId()
+    if (!isGeneratedId) {
+      return this._getSetBatchId()
+    }
+  }
+
   /*
    * Get batch id if set by user.
    * do not do eyesInstance.getBatch().getId() because it would generate
    * a new id if called before open.
    */
-  getUserSetBatchId() {
+  _getSetBatchId() {
     // TODO
     // we need the Configuration to check for default values like getEnvValue('BATCH_ID') instead of
     // it creating new Objects (with defaults) on demand, see Configuration#getBatch().
     return (
-      (this._configuration._batch && this._configuration._batch.getId()) || getEnvValue('BATCH_ID')
+      (this._configuration._batch && this._configuration._batch.getId()) ||
+      GeneralUtils.getEnvValue('BATCH_ID')
     )
   }
 

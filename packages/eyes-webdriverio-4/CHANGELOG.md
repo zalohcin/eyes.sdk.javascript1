@@ -1,5 +1,13 @@
 # Change Log
 
+## Unreleased
+
+- upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
+
+## 2.12.2
+- branching base commit support
+- make functions in runners 
+
 ## 2.12.1
 - Fixed regression which broke xpath selectors when looking up the location of an element
 
@@ -15,7 +23,7 @@
 ## 2.11.7
 - Fixed error when getting images on Safari. Related to [Trello 99](https://trello.com/c/C0oZf2oc)
 
-## [unversioned] - 
+## [un versioned] - 
 ### Fixed
 - Crop safari url bar and status bar on mobile devices (IOS). [Trello 939](https://trello.com/c/SM80YzdM)
 

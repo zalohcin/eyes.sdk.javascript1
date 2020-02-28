@@ -694,33 +694,33 @@ class ServerConnector {
    * @param {string} domJson
    * @return {Promise<string>}
    */
-  async postDomSnapshot(domJson) {
+  async postDomSnapshot(id, domJson) {
     ArgumentGuard.notNull(domJson, 'domJson')
     this._logger.verbose('ServerConnector.postDomSnapshot called')
+    const url = this._renderingInfo.getResultsUrl().replace('__random__', id)
 
     const config = {
       name: 'postDomSnapshot',
-      method: 'POST',
-      url: GeneralUtils.urlConcat(
-        this._configuration.getServerUrl(),
-        EYES_API_PATH,
-        '/running/data',
-      ),
+      retry: 3,
+      method: 'PUT',
+      url,
+      data: zlib.gzipSync(Buffer.from(domJson)),
       headers: {
+        Date: new Date().toISOString(),
+        'x-ms-blob-type': 'BlockBlob',
         'Content-Type': 'application/octet-stream',
       },
     }
 
-    config.data = zlib.gzipSync(Buffer.from(domJson))
-
     const response = await this._axios.request(config)
-    const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED]
-    if (validStatusCodes.includes(response.status)) {
-      this._logger.verbose('ServerConnector.postDomSnapshot - post succeeded')
-      return response.headers.location
+    if (response.status !== HTTP_STATUS_CODES.CREATED) {
+      throw new Error(
+        `ServerConnector.postDomSnapshot - unexpected status (${response.statusText})`,
+      )
     }
 
-    throw new Error(`ServerConnector.postDomSnapshot - unexpected status (${response.statusText})`)
+    this._logger.verbose('ServerConnector.postDomSnapshot - post succeeded')
+    return url
   }
 
   async getUserAgents() {

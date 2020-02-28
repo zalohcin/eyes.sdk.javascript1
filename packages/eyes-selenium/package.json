@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-selenium",
-  "version": "4.33.17",
+  "version": "4.33.21",
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
     "eyes-selenium",
@@ -38,11 +38,12 @@
   "dependencies": {
     "@applitools/dom-utils": "4.7.6",
     "@applitools/eyes-common": "3.18.5",
-    "@applitools/eyes-sdk-core": "7.0.0",
+    "@applitools/eyes-sdk-core": "8.0.0",
     "@applitools/visual-grid-client": "13.5.19"
   },
   "devDependencies": {
     "@applitools/sdk-fake-eyes-server": "1.0.5",
+    "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/sdk-test-kit": "^1.0.14",
     "assert-rejects": "^1.0.0",
     "axios": "^0.19.0",
@@ -60,6 +61,9 @@
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "vv": "node ../../scripts/verify-versions.js",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
+    "send-release-notification": "bongo --send-release-notification",
     "test": "yarn test:unit && yarn test:it",
     "render": "node scripts/render.js",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
@@ -69,8 +73,9 @@
     "test:coverage:nuke": "coverage-tests nuke",
     "test:coverage:doctor": "coverage-tests doctor",
     "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
-    "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv"
+    "preversion": "yarn vv && yarn vc && yarn test:coverage",
+    "version": "yarn uc && git add CHANGELOG.md",
+    "postpublish": "git push && git push --tags && yarn send-release-notification"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

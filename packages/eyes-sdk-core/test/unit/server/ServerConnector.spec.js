@@ -83,13 +83,23 @@ describe('ServerConnector', () => {
     }
   })
 
-  it('uploadScreenshot works', async () => {
+  it('uploadScreenshot uploads to resultsUrl webhook', async () => {
     const configuration = new Configuration()
     const serverConnector = new ServerConnector(logger, configuration)
     const renderingInfo = await serverConnector.renderInfo()
     const id = GeneralUtils.guid()
     const buffer = Buffer.from('something')
     const result = await serverConnector.uploadScreenshot(id, buffer)
+    assert.strictEqual(result, renderingInfo.getResultsUrl().replace('__random__', id))
+  })
+
+  it('postDomSnapshot uploads to resultsUrl webhook', async () => {
+    const configuration = new Configuration()
+    const serverConnector = new ServerConnector(logger, configuration)
+    const renderingInfo = await serverConnector.renderInfo()
+    const buffer = Buffer.from('something')
+    const id = GeneralUtils.guid()
+    const result = await serverConnector.postDomSnapshot(id, buffer)
     assert.strictEqual(result, renderingInfo.getResultsUrl().replace('__random__', id))
   })
 

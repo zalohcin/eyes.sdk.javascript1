@@ -1,5 +1,25 @@
 # Change Log
 
+## Unreleased
+
+- upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
+
+## 4.33.21
+
+- make function in runners
+
+## 4.33.20
+
+- not released, skipped
+
+## 4.33.19
+
+- not released, skipped
+
+## 4.33.18
+
+- not released, skipped
+
 ## 4.33.17
 
 - getAllTestResults now throws exception when it should [Trello 214](https://trello.com/c/McCg97IK/214-getalltestresults-doesnt-throw-exceptions)

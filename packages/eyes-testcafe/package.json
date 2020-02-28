@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-testcafe",
-  "version": "2.0.0-beta.13",
+  "version": "2.0.0-beta.15",
   "description": "Applitools Eyes SDK for Testcafe",
   "homepage": "https://applitools.com",
   "author": {
@@ -27,7 +27,7 @@
   "dependencies": {
     "@applitools/dom-utils": "4.7.6",
     "@applitools/eyes-common": "3.18.5",
-    "@applitools/eyes-sdk-core": "7.0.0",
+    "@applitools/eyes-sdk-core": "8.0.0",
     "@applitools/functional-commons": "1.5.4",
     "@applitools/visual-grid-client": "13.5.19",
     "rimraf": "^3.0.0"
