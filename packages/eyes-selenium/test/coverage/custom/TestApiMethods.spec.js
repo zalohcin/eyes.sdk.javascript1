@@ -3,37 +3,27 @@ const {By} = require('selenium-webdriver')
 const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
 const {Target, StitchMode} = require('../../../index')
 const batch = getBatch()
-describe('classic', function() {
-  this.ctx.data = 'data'
+describe('api tests', function() {
   beforeEach(async function() {
-    this.webDriver = await getDriver('CHROME')
-    let {eyes, runner} = await getEyes('classic', StitchMode.CSS)
+    this.currentTest.ctx.webDriver = await getDriver('CHROME')
+    let {eyes, runner} = await getEyes(...this.currentTest.ctx.eyesType)
     eyes.setBatch(batch)
-    this.eyes = eyes
-    this.runner = runner
+    this.currentTest.ctx.eyes = eyes
+    this.currentTest.ctx.runner = runner
   })
   afterEach(async function() {
-    await this.webDriver.quit()
-    await this.eyes.abortIfNotClosed()
+    await this.currentTest.ctx.webDriver.quit()
+    await this.currentTest.ctx.eyes.abortIfNotClosed()
   })
+  describe('classic', function() {
+    this.ctx.eyesType = ['classic', StitchMode.CSS]
 
-  it('TestCloseAsync', testCloseAsync)
-})
-describe('visualGrid', function() {
-  this.ctx.data = 'data'
-  beforeEach(async function() {
-    this.webDriver = await getDriver('CHROME')
-    let {eyes, runner} = await getEyes('VG')
-    eyes.setBatch(batch)
-    this.eyes = eyes
-    this.runner = runner
+    it('TestCloseAsync', testCloseAsync)
   })
-  afterEach(async function() {
-    await this.webDriver.quit()
-    await this.eyes.abortIfNotClosed()
+  describe('visualGrid', function() {
+    this.ctx.eyesType = ['VG']
+    it('TestCloseAsync', testCloseAsync)
   })
-
-  it('TestCloseAsync', testCloseAsync)
 })
 
 async function testCloseAsync() {
