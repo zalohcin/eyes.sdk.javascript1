@@ -36,6 +36,6 @@ describe('TestRenderings', async () => {
     await webDriver.get('https://applitools.github.io/demo/TestPages/DynamicResolution/mobile.html')
     await eyes.check('Test Mobile Only', Target.window().fully())
     await eyes.close()
-    // await runner.getAllTestResults();
+    await runner.getAllTestResults()
   })
 })
