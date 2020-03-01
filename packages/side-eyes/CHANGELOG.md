@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+## v1.10.1
+- Updated underlying dependencies to support 10.9 fallback mode ([Trello 242](https://trello.com/c/540knBrZ) and [Trello 255](https://trello.com/c/M9o24k6d))
+
 ## v1.10.0
 - Fixed UX bug with the tooltip when downloading the visual grid config
 - Added Safari as a browser option when running on the visual grid [Trello 179](https://trello.com/c/h8KIkB4x)
