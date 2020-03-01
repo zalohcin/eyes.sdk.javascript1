@@ -44,10 +44,12 @@ export default {
           },
           // Process JS with Babel.
           {
-            test: /\.(jsx?)$/,
+            test: /\.js$/,
             include: [
               path.resolve(__dirname, 'src'),
               /\/node_modules\/@applitools\/visual-grid-client/,
+              path.resolve(__dirname, '..'),
+              /\/visual-grid-client/,
             ],
             use: [
               {
@@ -60,10 +62,6 @@ export default {
           },
           {
             test: /\.(jsx?)$/,
-            include: [
-              path.resolve(__dirname, 'src'),
-              /\/node_modules\/@applitools\/eyes-sdk-core/,
-            ],
             use: [
               {
                 loader: 'babel-loader',
@@ -132,6 +130,7 @@ export default {
     process: true,
     fs: 'empty',
     url: true,
+    child_process: 'empty',
   },
   plugins: [
     new webpack.NamedModulesPlugin(),
