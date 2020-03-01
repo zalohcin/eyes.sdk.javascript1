@@ -2,6 +2,7 @@
 
 ## SDKs
 
+- [applitools-for-selenium-ide](packages/side-eyes) (SIDE Eyes)
 - [eyes.images](packages/eyes-images-legacy) (Images Legacy)
 - [eyes.utils](packages/eyes-common-legacy) (Common Legacy)
 - [eyes.sdk](packages/eyes-sdk-core-legacy) (SDK Core Legacy)
