@@ -4,6 +4,8 @@
   "repository": "git@github.com:applitools/applitools-for-selenium-ide.git",
   "private": true,
   "scripts": {
+    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
+    "vv": "node ../../scripts/verify-versions.js",
     "start": "webpack-dev-server --hot",
     "build": "yarn build:page && webpack",
     "build:prod": "rm -rf build && env NODE_ENV=production yarn build",
