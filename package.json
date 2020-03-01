@@ -25,7 +25,8 @@
     "packages/eyes-selenium-3",
     "packages/eyes-cypress",
     "packages/eyes-storybook",
-    "packages/eyes-leanft"
+    "packages/eyes-leanft",
+    "packages/side-eyes"
   ],
   "scripts": {
     "lint": "eslint --ext .js ."
