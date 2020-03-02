@@ -58,6 +58,7 @@
     "test:unit": "mocha \"test/unit/**/*.js\"",
     "test:coverage": "coverage-tests run --path test/coverage/index.js",
     "test:coverage:nuke": "coverage-tests nuke",
+    "render": "node scripts/render.js",
     "postpublish": "git push; git push --tags",
     "preversion": "yarn vv"
   },
