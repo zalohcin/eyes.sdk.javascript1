@@ -112,6 +112,20 @@ class EyesWebDriver extends IWebDriver {
   }
 
   /**
+   * Returns {@code true} if current WebDriver is open for mobile browser
+   *
+   * @package
+   * @return {boolean}
+   */
+  async isMobileBrowser() {
+    if (this._isMobileBrowser === undefined) {
+      this._isMobileBrowser = await EyesSeleniumUtils.isMobileBrowser(this)
+    }
+
+    return this._isMobileBrowser
+  }
+
+  /**
    * Returns {@code true} if current WebDriver is not mobile web driver (not Android and not IOS)
    *
    * @package

@@ -783,13 +783,13 @@ class EyesSelenium extends Eyes {
   async _getScaleProviderFactory() {
     const element = await this._driver.findElement(By.css('html'))
     const entireSize = await EyesSeleniumUtils.getEntireElementSize(this._jsExecutor, element)
-
+    const isMobile = await this._driver.isMobile() || await this._driver.isMobileBrowser()
     return new ContextBasedScaleProviderFactory(
       this._logger,
       entireSize,
       this._viewportSizeHandler.get(),
       this._devicePixelRatio,
-      false,
+      isMobile,
       this._scaleProviderHandler,
     )
   }

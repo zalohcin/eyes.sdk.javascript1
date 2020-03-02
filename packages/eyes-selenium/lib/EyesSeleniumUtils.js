@@ -196,6 +196,22 @@ class EyesSeleniumUtils extends EyesJsBrowserUtils {
     const browserName = capabilities.get('browserName')
     return platformName && ['ANDROID', 'IOS'].includes(platformName.toUpperCase()) && !browserName
   }
+  /**
+   * @param {IWebDriver} driver - The driver for which to check if it represents a mobile browser.
+   * @return {Promise<boolean>} {@code true} if the browser running the test is a mobile browser. {@code false} otherwise.
+   */
+  static async isMobileBrowser(driver) {
+    const userAgent = await driver.executeScript("return navigator.userAgent;")
+    return EyesSeleniumUtils.isMobileBrowserFromUserAgent(userAgent)
+  }
+
+  /**
+   * @param {string} userAgent - The user-agent string.
+   * @return {boolean} {@code true} if the browser running the test is a mobile browser. {@code false} otherwise.
+   */
+  static isMobileBrowserFromUserAgent(userAgent) {
+    return /Mobile/.test(userAgent)
+  }
 
   /**
    * @param {IWebDriver} driver - The driver for which to check the orientation.
