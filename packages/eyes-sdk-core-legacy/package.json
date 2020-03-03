@@ -43,17 +43,21 @@
     "request": "^2.88.0"
   },
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.1.0",
     "@types/node": "*",
     "mocha": "^6.2.2",
     "typescript": "^3.6.4"
   },
   "scripts": {
+    "vv": "node ../../scripts/verify-versions.js",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
     "test": "npm run test:unit",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "typings": "tsc --declaration",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv",
-    "vv": "node ../../scripts/verify-versions.js"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "browser": {
     "./src/FileLogHandler": false

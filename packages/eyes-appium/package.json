@@ -47,12 +47,16 @@
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "scripts": {
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
+    "vv": "node ../../scripts/verify-versions.js",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\"",
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\"",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

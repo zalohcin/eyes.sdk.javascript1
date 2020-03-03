@@ -39,6 +39,7 @@
     "tunnel": "0.0.6"
   },
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/sdk-fake-eyes-server": "1.0.5",
     "chai": "4.2.0",
     "chai-uuid": "1.0.6",
@@ -48,11 +49,14 @@
     "tunnel": false
   },
   "scripts": {
-    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "vv": "node ../../scripts/verify-versions.js",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
+    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "bin": {
     "eyes-check-network": "./bin/runCheckNetwork.js"

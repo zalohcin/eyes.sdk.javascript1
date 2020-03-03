@@ -53,8 +53,10 @@
     "testcafe"
   ],
   "scripts": {
-    "lint": "eslint . --ext .js --config ../../.eslintrc",
     "vv": "node ../../scripts/verify-versions.js",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
+    "lint": "eslint . --ext .js --config ../../.eslintrc",
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e",
@@ -64,9 +66,11 @@
     "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\"",
     "test:coverage": "node test/coverage/index.js",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/dom-capture": "^7.1.2",
     "@applitools/sdk-fake-eyes-server": "1.0.5",
     "@applitools/sdk-test-kit": "^1.0.17",

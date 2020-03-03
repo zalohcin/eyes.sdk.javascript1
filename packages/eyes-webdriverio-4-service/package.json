@@ -8,9 +8,12 @@
   "main": "index.js",
   "scripts": {
     "vv": "node ../../scripts/verify-versions.js",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
     "test": "wdio test/wdio.conf.js",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",
@@ -18,6 +21,7 @@
     "@applitools/eyes.webdriverio": "2.11.6"
   },
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.1.0",
     "chromedriver": "^80.0.0",
     "mocha": "^6.2.2",
     "wdio-dot-reporter": "0.0.10",

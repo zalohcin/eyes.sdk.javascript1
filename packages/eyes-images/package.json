@@ -34,16 +34,20 @@
     "@applitools/eyes-sdk-core": "7.0.0"
   },
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.1.0",
     "assert-rejects": "^1.0.0",
     "axios": "^0.19.0",
     "mocha": "^6.2.2"
   },
   "scripts": {
-    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "vv": "node ../../scripts/verify-versions.js",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
+    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

@@ -49,6 +49,7 @@
     "@applitools/jsdom": false
   },
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.1.0",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.4",
@@ -62,8 +63,10 @@
     "ua-parser-js": "^0.7.20"
   },
   "scripts": {
-    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "vv": "node ../../scripts/verify-versions.js",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
+    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test:mocha": "mocha --no-timeouts \"test/**/*.test.js\"",
     "test:sanity": "mocha --no-timeouts 'test/!(browser||e2e)/**/*.test.js'",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.test.js\"",
@@ -74,7 +77,8 @@
     "test": "yarn build:browser && yarn test:mocha",
     "render": "node example/render.js",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

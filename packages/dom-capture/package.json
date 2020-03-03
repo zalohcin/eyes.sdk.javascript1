@@ -4,6 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
     "vv": "node ../../scripts/verify-versions.js",
     "test:mocha": "mocha --no-timeouts tests/**/*.test.js",
     "lint:node": "eslint '**/*.js' --ignore-pattern 'src/browser'",
@@ -14,7 +16,8 @@
     "build:watch": "rollup -c rollup.config.js --watch",
     "surge": "surge tests/fixtures applitools-dom-capture-origin-1.surge.sh && surge tests/fixtures applitools-dom-capture-origin-2.surge.sh",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "engines": {
     "node": ">=8.9.0"
@@ -24,6 +27,7 @@
     "dist"
   ],
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/monitoring-commons": "^1.0.15",
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
