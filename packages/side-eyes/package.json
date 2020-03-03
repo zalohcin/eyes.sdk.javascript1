@@ -4,7 +4,7 @@
   "repository": "git@github.com:applitools/applitools-for-selenium-ide.git",
   "private": true,
   "scripts": {
-    "vv": "node ../../scripts/verify-versions.js",
+    "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
     "lint": "eslint webpack.config.babel.js src/ --ext .js --ext .jsx",

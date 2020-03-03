@@ -4,7 +4,7 @@
   "description": "Applitools Eyes SDK for WebdriverIO",
   "main": "index.js",
   "scripts": {
-    "vv": "node ../../scripts/verify-versions.js",
+    "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
     "lint": "eslint '**/*.js'",

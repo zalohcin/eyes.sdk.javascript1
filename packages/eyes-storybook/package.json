@@ -15,7 +15,7 @@
     "eyes-storybook": "./bin/eyes-storybook.js"
   },
   "scripts": {
-    "vv": "node ../../scripts/verify-versions.js",
+    "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
     "test": "yarn build && yarn test:mocha && yarn lint && yarn msg:success || yarn msg:failure",

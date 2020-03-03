@@ -47,9 +47,9 @@
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "scripts": {
+    "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
-    "vv": "node ../../scripts/verify-versions.js",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\"",

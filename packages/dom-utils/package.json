@@ -35,10 +35,10 @@
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "scripts": {
+    "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
-    "vv": "node ../../scripts/verify-versions.js",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "postpublish": "git push; git push --tags",
     "preversion": "yarn vv && yarn vc",

@@ -63,7 +63,7 @@
     "ua-parser-js": "^0.7.20"
   },
   "scripts": {
-    "vv": "node ../../scripts/verify-versions.js",
+    "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",

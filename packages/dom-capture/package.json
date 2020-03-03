@@ -4,9 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
-    "vv": "node ../../scripts/verify-versions.js",
     "test:mocha": "mocha --no-timeouts tests/**/*.test.js",
     "lint:node": "eslint '**/*.js' --ignore-pattern 'src/browser'",
     "lint:browser": "eslint -c 'src/browser/.eslintrc.json' 'src/browser/**/*.js'",

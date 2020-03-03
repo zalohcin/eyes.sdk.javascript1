@@ -61,7 +61,7 @@
     "leanft.sdk.wpf": "*"
   },
   "scripts": {
-    "vv": "node ../../scripts/verify-versions.js",
+    "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
     "test": "mocha ./test/**/*.js",

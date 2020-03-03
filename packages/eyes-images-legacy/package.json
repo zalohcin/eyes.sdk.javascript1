@@ -55,7 +55,7 @@
     "uglify-js": "^3.6.5"
   },
   "scripts": {
-    "vv": "node ../../scripts/verify-versions.js",
+    "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
     "test": "npm run test:e2e",
