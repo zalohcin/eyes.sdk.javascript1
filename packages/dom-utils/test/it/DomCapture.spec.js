@@ -220,7 +220,7 @@ describe('DomCapture', function() {
   })
 
   afterEach(async function() {
-    await driver.quit()
+    await driver.close()
   })
 
   after(async function() {
