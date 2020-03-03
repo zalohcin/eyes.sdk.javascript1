@@ -21,6 +21,7 @@ const EyesWDIOUtils = require('./EyesWDIOUtils')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
 const WebDriver = require('./wrappers/WebDriver')
 const Target = require('./fluent/Target')
+const makeToPersistedRegion = require('./fluent/toPersistedRegion')
 const FrameChain = require('./frames/FrameChain')
 
 const VERSION = require('../package.json').version
@@ -142,6 +143,8 @@ class EyesVisualGrid extends EyesBase {
       })
     }
     this._abortCommand = async () => abort(true)
+    const toPersistedRegion = makeToPersistedRegion({driver: this._driver})
+    this._toPersistedRegions = regions => Promise.all(regions.map(r => toPersistedRegion(r)))
 
     return this._driver
   }
@@ -293,9 +296,16 @@ class EyesVisualGrid extends EyesBase {
     }
 
     this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
-
     const source = await this._driver.getCurrentUrl()
-    const ignoreRegions = await this._prepareRegions(checkSettings.getIgnoreRegions())
+
+    const [ignore, floating, strict, layout, content, accessibility] = await Promise.all([
+      this._toPersistedRegions(checkSettings.getIgnoreRegions()),
+      this._toPersistedRegions(checkSettings.getFloatingRegions()),
+      this._toPersistedRegions(checkSettings.getStrictRegions()),
+      this._toPersistedRegions(checkSettings.getLayoutRegions()),
+      this._toPersistedRegions(checkSettings.getContentRegions()),
+      this._toPersistedRegions(checkSettings.getAccessibilityRegions()),
+    ])
 
     await this._checkWindowCommand({
       resourceUrls,
@@ -311,8 +321,12 @@ class EyesVisualGrid extends EyesBase {
       selector: targetSelector ? targetSelector : undefined,
       region: checkSettings.getTargetRegion(),
       scriptHooks: checkSettings.getScriptHooks(),
-      ignore: ignoreRegions,
-      floating: checkSettings.getFloatingRegions(),
+      ignore,
+      floating,
+      strict,
+      layout,
+      content,
+      accessibility,
       sendDom: checkSettings.getSendDom() ? checkSettings.getSendDom() : this.getSendDom(),
       matchLevel: checkSettings.getMatchLevel()
         ? checkSettings.getMatchLevel()
