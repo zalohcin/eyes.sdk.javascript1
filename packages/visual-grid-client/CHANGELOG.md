@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 13.5.20
+
 - update @applitools/eyes-common@3.19.0, @applitools/eyes-sdk-core@8.0.1
 
 ## 13.7.19
