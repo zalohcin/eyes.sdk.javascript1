@@ -54,6 +54,8 @@
     "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
+    "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\"",
     "postpublish": "git push; git push --tags",
     "preversion": "yarn vv && yarn vc",
     "version": "yarn uc && git add CHANGELOG.md"
