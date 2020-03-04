@@ -24,8 +24,8 @@ if (!url) {
   console.log('Running WDIO 5 render for', url, '\n')
   chromedriver.start()
 
-  // const runner = new ClassicRunner()
-  const runner = new VisualGridRunner()
+  const runner = new ClassicRunner()
+  // const runner = new VisualGridRunner()
   const eyes = new Eyes(runner)
 
   let batch = new BatchInfo('WDIO5 Render VG')
@@ -37,7 +37,7 @@ if (!url) {
   let configuration = new Configuration()
   configuration.setAppName('WDIO5 VG')
   configuration.setTestName('WDIO5 VG')
-  configuration.addBrowser(1024, 768, BrowserType.Chrome)
+  // configuration.addBrowser(1024, 768, BrowserType.Chrome)
   eyes.setConfiguration(configuration)
 
   const browser = await remote({
@@ -53,16 +53,7 @@ if (!url) {
   })
   await browser.url(url)
   await eyes.open(browser, 'WDIO5 render', 'WDIO5 render', {width: 1024, height: 768})
-  await eyes.check(
-    'check',
-    Target.region(By.css('#app > div > main > section:nth-child(2) > ul > li:nth-child(2) > div'))
-      .layout()
-      .strictRegions(
-        By.css(
-          '#app > div > main > section:nth-child(2) > ul > li:nth-child(2) > div > div._3lllR._30XnG',
-        ),
-      ),
-  )
+  await eyes.check('WDIO5 render', Target.window())
   await eyes.closeAsync()
   const results = await eyes.getRunner().getAllTestResults()
   await eyes.abortIfNotClosed()
