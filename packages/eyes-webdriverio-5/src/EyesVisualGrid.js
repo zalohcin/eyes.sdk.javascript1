@@ -21,7 +21,6 @@ const EyesWDIOUtils = require('./EyesWDIOUtils')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
 const WebDriver = require('./wrappers/WebDriver')
 const Target = require('./fluent/Target')
-const makeToPersistedRegions = require('./fluent/toPersistedRegions')
 const FrameChain = require('./frames/FrameChain')
 
 const VERSION = require('../package.json').version
@@ -143,12 +142,6 @@ class EyesVisualGrid extends EyesBase {
       })
     }
     this._abortCommand = async () => abort(true)
-    const persistOneRegion = makeToPersistedRegions({driver: this._driver})
-    this._toPersistedRegions = async regions => {
-      const results = await Promise.all(regions.map(r => persistOneRegion(r)))
-      return results.flat()
-    }
-
     return this._driver
   }
 
@@ -302,12 +295,12 @@ class EyesVisualGrid extends EyesBase {
     const source = await this._driver.getCurrentUrl()
 
     const [ignore, floating, strict, layout, content, accessibility] = await Promise.all([
-      this._toPersistedRegions(checkSettings.getIgnoreRegions()),
-      this._toPersistedRegions(checkSettings.getFloatingRegions()),
-      this._toPersistedRegions(checkSettings.getStrictRegions()),
-      this._toPersistedRegions(checkSettings.getLayoutRegions()),
-      this._toPersistedRegions(checkSettings.getContentRegions()),
-      this._toPersistedRegions(checkSettings.getAccessibilityRegions()),
+      this._persistRegions(checkSettings.getIgnoreRegions()),
+      this._persistRegions(checkSettings.getFloatingRegions()),
+      this._persistRegions(checkSettings.getStrictRegions()),
+      this._persistRegions(checkSettings.getLayoutRegions()),
+      this._persistRegions(checkSettings.getContentRegions()),
+      this._persistRegions(checkSettings.getAccessibilityRegions()),
     ])
 
     await this._checkWindowCommand({
@@ -336,6 +329,11 @@ class EyesVisualGrid extends EyesBase {
         : this.getMatchLevel(),
       source,
     })
+  }
+
+  async _persistRegions(regions) {
+    const persisted = await Promise.all(regions.map(r => r.toPersistedRegions(this._driver)))
+    return persisted.flat()
   }
 
   /**
