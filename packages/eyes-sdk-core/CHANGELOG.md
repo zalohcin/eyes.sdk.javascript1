@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- regions support for toPersistedRegions() for VGC
 
 ## 8.0.2
 
