@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 8.1.1
+
+- updated eyes common to latest
+
 ## 8.1.0
 
 - regions support for toPersistedRegions() for VGC
