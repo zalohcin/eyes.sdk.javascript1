@@ -551,6 +551,17 @@ class Region {
     }
   }
 
+  async toPersistedRegions(_driver) {
+    return [
+      {
+        left: this._left,
+        top: this._top,
+        width: this._width,
+        height: this._height,
+      },
+    ]
+  }
+
   /**
    * @override
    */

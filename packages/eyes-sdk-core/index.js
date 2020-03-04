@@ -40,6 +40,7 @@ exports.GetFloatingRegion = require('./lib/fluent/GetFloatingRegion').GetFloatin
 exports.GetRegion = require('./lib/fluent/GetRegion').GetRegion
 exports.GetSelector = require('./lib/fluent/GetSelector').GetSelector
 exports.IgnoreRegionByRectangle = require('./lib/fluent/IgnoreRegionByRectangle').IgnoreRegionByRectangle
+exports.locatorToPersistedRegions = require('./lib/fluent/locatorToPersistedRegions')
 
 exports.AppOutput = require('./lib/match/AppOutput').AppOutput
 exports.MatchResult = require('./lib/match/MatchResult').MatchResult
