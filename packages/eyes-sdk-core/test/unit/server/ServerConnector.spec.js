@@ -111,9 +111,9 @@ describe('ServerConnector', () => {
     let timestampBefore
     serverConnector._axios.defaults.adapter = async config => {
       const response = {status: 200, config, data: {}, headers: {}, request: {}}
-      if (config.isLongRequest) {
+      if (config.url === 'http://long-request.url') {
         response.status = 202
-        response.headers.location = 'http://some.url'
+        response.headers.location = 'http://polling.url'
         timestampBefore = Date.now()
       } else if (config.isPollingRequest) {
         const timestampAfter = Date.now()
@@ -125,7 +125,7 @@ describe('ServerConnector', () => {
     }
     const delayBeforePolling = [].concat(Array(3).fill(100), Array(3).fill(200), 500)
     await serverConnector._axios.request({
-      isLongRequest: true,
+      url: 'http://long-request.url',
       delayBeforePolling,
     })
     assert.strictEqual(timeouts.length, ANSWER_AFTER)
