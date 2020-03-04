@@ -7,8 +7,7 @@ const pkgs = makePackagesList()
 const results = []
 const rootFolder = process.cwd()
 
-module.exports = (isFix) => {
-  debugger
+module.exports = isFix => {
   verifyDependencies({pkgs, pkgPath: rootFolder, results})
 
   const errors = results.filter(({depVersion, sourceVersion}) => depVersion !== sourceVersion)
