@@ -3,9 +3,14 @@
 ## Unreleased
 
 
-## 4.33.22
+## 4.33.23
 
 - upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
+- support future long running tasks [Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks)
+
+## 4.33.22
+
+- no new content
 
 ## 4.33.21
 
