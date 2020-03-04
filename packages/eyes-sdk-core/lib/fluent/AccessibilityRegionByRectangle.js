@@ -35,6 +35,18 @@ class AccessibilityRegionByRectangle extends GetAccessibilityRegion {
     })
     return [accessibilityRegion]
   }
+
+  async toPersistedRegions(_driver) {
+    return [
+      {
+        left: this._rect.getLeft(),
+        top: this._rect.getTop(),
+        width: this._rect.getWidth(),
+        height: this._rect.getHeight(),
+        accessibilityType: this._type,
+      },
+    ]
+  }
 }
 
 exports.AccessibilityRegionByRectangle = AccessibilityRegionByRectangle

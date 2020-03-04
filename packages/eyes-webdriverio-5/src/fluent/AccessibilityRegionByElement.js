@@ -4,6 +4,7 @@ const {
   GetAccessibilityRegion,
   AccessibilityMatchSettings,
   Location,
+  EyesJsBrowserUtils,
   CoordinatesType,
 } = require('@applitools/eyes-sdk-core')
 
@@ -42,6 +43,17 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
       type: this._regionType,
     })
     return [accessibilityRegion]
+  }
+
+  async toPersistedRegions(driver) {
+    const xpath = await EyesJsBrowserUtils.getElementXpath(driver, this._element)
+    return [
+      {
+        type: 'xpath',
+        selector: xpath,
+        accessibilityType: this._regionType,
+      },
+    ]
   }
 }
 

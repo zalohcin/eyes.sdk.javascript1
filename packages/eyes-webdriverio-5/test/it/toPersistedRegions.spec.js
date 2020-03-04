@@ -2,11 +2,18 @@
 
 const assert = require('assert')
 const {By, Region} = require('../../index')
-const {IgnoreRegionByRectangle, FloatingRegionByRectangle} = require('@applitools/eyes-sdk-core')
+const {
+  IgnoreRegionByRectangle,
+  FloatingRegionByRectangle,
+  AccessibilityRegionByRectangle,
+  AccessibilityRegionType,
+} = require('@applitools/eyes-sdk-core')
 const IgnoreRegionBySelector = require('../../src/fluent/IgnoreRegionBySelector')
 const IgnoreRegionByElement = require('../../src/fluent/IgnoreRegionByElement')
 const FloatingRegionBySelector = require('../../src/fluent/FloatingRegionBySelector')
 const FloatingRegionByElement = require('../../src/fluent/FloatingRegionByElement')
+const AccessibilityRegionByElement = require('../../src/fluent/AccessibilityRegionByElement')
+const AccessibilityRegionBySelector = require('../../src/fluent/AccessibilityRegionBySelector')
 
 describe('toPersistedRegions()', function() {
   let driver
@@ -23,6 +30,24 @@ describe('toPersistedRegions()', function() {
     )
     const [{left, top, width, height}] = await region.toPersistedRegions(driver)
     assert.deepStrictEqual({left, top, width, height}, {left: 15, top: 15, width: 15, height: 15})
+  })
+
+  it('AccessibilityRegionByRectangle', async function() {
+    const region = new AccessibilityRegionByRectangle(
+      new Region({left: 15, top: 15, width: 15, height: 15}),
+      AccessibilityRegionType.RegularText,
+    )
+    const [{left, top, width, height, accessibilityType}] = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(
+      {left, top, width, height, accessibilityType},
+      {
+        left: 15,
+        top: 15,
+        width: 15,
+        height: 15,
+        accessibilityType: AccessibilityRegionType.RegularText,
+      },
+    )
   })
 
   it('FloatingRegionByRectangle', async function() {
@@ -73,6 +98,21 @@ describe('toPersistedRegions()', function() {
         maxLeftOffset: 3,
         maxRightOffset: 4,
         maxUpOffset: 1,
+      },
+    ])
+  })
+
+  it('FloatingRegionByElement', async function() {
+    const region = new AccessibilityRegionByElement(
+      'my-web-element',
+      AccessibilityRegionType.RegularText,
+    )
+    const persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'xpath',
+        selector: 'xpath of my-web-element',
+        accessibilityType: AccessibilityRegionType.RegularText,
       },
     ])
   })
@@ -283,6 +323,141 @@ describe('toPersistedRegions()', function() {
           maxDownOffset: 2,
           maxLeftOffset: 3,
           maxRightOffset: 4,
+        },
+      ])
+    })
+  })
+
+  describe('AccessibilityRegionBySelector', function() {
+    it('works', async function() {
+      let region = new AccessibilityRegionBySelector(
+        By.css('some'),
+        AccessibilityRegionType.RegularText,
+      )
+      let persistedRegion = await region.toPersistedRegions(driver)
+      assert.deepStrictEqual(persistedRegion, [
+        {
+          type: 'css',
+          selector: 'some',
+          accessibilityType: AccessibilityRegionType.RegularText,
+        },
+      ])
+
+      region = new AccessibilityRegionBySelector(By.id('some'), AccessibilityRegionType.RegularText)
+      persistedRegion = await region.toPersistedRegions(driver)
+      assert.deepStrictEqual(persistedRegion, [
+        {
+          type: 'css',
+          selector: '*[id="some"]',
+          accessibilityType: AccessibilityRegionType.RegularText,
+        },
+      ])
+
+      region = new AccessibilityRegionBySelector(
+        By.className('some'),
+        AccessibilityRegionType.RegularText,
+      )
+      persistedRegion = await region.toPersistedRegions(driver)
+      assert.deepStrictEqual(persistedRegion, [
+        {
+          type: 'css',
+          selector: '.some',
+          accessibilityType: AccessibilityRegionType.RegularText,
+        },
+      ])
+
+      region = new AccessibilityRegionBySelector(
+        By.name('some'),
+        AccessibilityRegionType.RegularText,
+      )
+      persistedRegion = await region.toPersistedRegions(driver)
+      assert.deepStrictEqual(persistedRegion, [
+        {
+          type: 'css',
+          selector: '*[name="some"]',
+          accessibilityType: AccessibilityRegionType.RegularText,
+        },
+      ])
+
+      region = new AccessibilityRegionBySelector(
+        By.xpath('//some'),
+        AccessibilityRegionType.RegularText,
+      )
+      persistedRegion = await region.toPersistedRegions(driver)
+      assert.deepStrictEqual(persistedRegion, [
+        {
+          type: 'xpath',
+          selector: '//some',
+          accessibilityType: AccessibilityRegionType.RegularText,
+        },
+      ])
+    })
+
+    it('works with non selector locators', async function() {
+      let region = new AccessibilityRegionBySelector(
+        By.js('some'),
+        AccessibilityRegionType.RegularText,
+      )
+      let persistedRegion = await region.toPersistedRegions(driver)
+      assert.deepStrictEqual(persistedRegion, [
+        {
+          type: 'xpath',
+          selector: 'xpath of webelement of undefined',
+          accessibilityType: AccessibilityRegionType.RegularText,
+        },
+      ])
+
+      region = new AccessibilityRegionBySelector(
+        By.linkText('some 1'),
+        AccessibilityRegionType.RegularText,
+      )
+      persistedRegion = await region.toPersistedRegions(driver)
+      assert.deepStrictEqual(persistedRegion, [
+        {
+          type: 'xpath',
+          selector: 'xpath of webelement of some 1',
+          accessibilityType: AccessibilityRegionType.RegularText,
+        },
+      ])
+
+      region = new AccessibilityRegionBySelector(
+        By.partialLinkText('some 2'),
+        AccessibilityRegionType.RegularText,
+      )
+      persistedRegion = await region.toPersistedRegions(driver)
+      assert.deepStrictEqual(persistedRegion, [
+        {
+          type: 'xpath',
+          selector: 'xpath of webelement of some 2',
+          accessibilityType: AccessibilityRegionType.RegularText,
+        },
+      ])
+    })
+
+    it('works with multiple elements', async function() {
+      const origFindElements = driver.findElements
+      driver.findElements = async locator => [
+        `webelement1 of ${locator.value}`,
+        `webelement2 of ${locator.value}`,
+      ]
+
+      let region = new AccessibilityRegionBySelector(
+        By.js('some'),
+        AccessibilityRegionType.RegularText,
+      )
+      let persistedRegion = await region.toPersistedRegions(driver)
+      driver.findElements = origFindElements
+
+      assert.deepStrictEqual(persistedRegion, [
+        {
+          type: 'xpath',
+          selector: 'xpath of webelement1 of undefined',
+          accessibilityType: AccessibilityRegionType.RegularText,
+        },
+        {
+          type: 'xpath',
+          selector: 'xpath of webelement2 of undefined',
+          accessibilityType: AccessibilityRegionType.RegularText,
         },
       ])
     })
