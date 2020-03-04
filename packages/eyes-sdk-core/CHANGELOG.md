@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 8.0.2
+
 - fix exception on aborts - using _getSetBatchId in closeBatch so we dont generate batch id but still get the generated batch id.
 guarding addBrowsers arguments for sending an array
 - upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)

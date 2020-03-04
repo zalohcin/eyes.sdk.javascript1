@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-sdk-core",
-  "version": "8.0.1",
+  "version": "8.0.2",
   "description": "The core components of Eyes JavaScript SDK",
   "keywords": [
     "applitools",
@@ -39,8 +39,8 @@
     "tunnel": "0.0.6"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/sdk-fake-eyes-server": "1.0.5",
+    "@applitools/sdk-release-kit": "0.1.0",
     "chai": "4.2.0",
     "chai-uuid": "1.0.6",
     "mocha": "7.0.1"
