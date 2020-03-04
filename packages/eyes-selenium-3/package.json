@@ -50,7 +50,7 @@
   "devDependencies": {
     "@applitools/sdk-release-kit": "0.1.0",
     "@types/node": "*",
-    "chromedriver": "^78.0.0",
+    "chromedriver": "^80.0.1",
     "mocha": "^6.2.2",
     "protractor": "^5.4.2",
     "selenium-webdriver": "^3.6.0",
