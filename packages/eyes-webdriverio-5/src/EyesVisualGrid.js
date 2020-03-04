@@ -21,7 +21,7 @@ const EyesWDIOUtils = require('./EyesWDIOUtils')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
 const WebDriver = require('./wrappers/WebDriver')
 const Target = require('./fluent/Target')
-const makeToPersistedRegion = require('./fluent/toPersistedRegion')
+const makeToPersistedRegions = require('./fluent/toPersistedRegions')
 const FrameChain = require('./frames/FrameChain')
 
 const VERSION = require('../package.json').version
@@ -143,8 +143,11 @@ class EyesVisualGrid extends EyesBase {
       })
     }
     this._abortCommand = async () => abort(true)
-    const toPersistedRegion = makeToPersistedRegion({driver: this._driver})
-    this._toPersistedRegions = regions => Promise.all(regions.map(r => toPersistedRegion(r)))
+    const persistOneRegion = makeToPersistedRegions({driver: this._driver})
+    this._toPersistedRegions = async regions => {
+      const results = await Promise.all(regions.map(r => persistOneRegion(r)))
+      return results.flat()
+    }
 
     return this._driver
   }
