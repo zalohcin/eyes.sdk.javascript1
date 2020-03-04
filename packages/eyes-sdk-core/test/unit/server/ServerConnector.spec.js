@@ -163,4 +163,41 @@ describe('ServerConnector', () => {
     assert(pollingWasFinished)
     assert.deepStrictEqual(result.data, RES_DATA)
   })
+
+  // NOTE: this can be deleted when Eyes server stops being backwards compatible with old SDK's that don't support long running tasks
+  it('sends special request headers for all requests', async () => {
+    const serverConnector = new ServerConnector(logger, new Configuration())
+    serverConnector._axios.defaults.adapter = async config => ({
+      status: 200,
+      config,
+      data: config.headers,
+      headers: {},
+      request: {},
+    })
+
+    const {data} = await serverConnector._axios.request({url: 'http://bla.url'})
+
+    assert.strictEqual(data['Eyes-Expect'], '202+location')
+    assert.ok(data['Eyes-Date'])
+  })
+
+  // NOTE: this can be deleted when Eyes server stops being backwards compatible with old SDK's that don't support long running tasks
+  it("doesn't send special request headers for polling requests", async () => {
+    const serverConnector = new ServerConnector(logger, new Configuration())
+    serverConnector._axios.defaults.adapter = async config => ({
+      status: 202,
+      config,
+      data: config.headers,
+      headers: {},
+      request: {},
+    })
+
+    const {data} = await serverConnector._axios.request({
+      url: 'http://polling.url',
+      isPollingRequest: true,
+    })
+
+    assert.strictEqual(data['Eyes-Expect'], undefined)
+    assert.strictEqual(data['Eyes-Date'], undefined)
+  })
 })

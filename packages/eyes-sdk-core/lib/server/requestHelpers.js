@@ -89,11 +89,9 @@ function configAxiosHeaders({axiosConfig}) {
   if (!(CUSTOM_HEADER_NAMES.REQUEST_ID in axiosConfig.headers)) {
     axiosConfig.headers[CUSTOM_HEADER_NAMES.REQUEST_ID] = axiosConfig.requestId
   }
-  // TODO remove when Eyes server will be updated to 10.9
-  if (axiosConfig.isLongRequest) {
+  // TODO remove when Eyes server stops being backwards compatible with old SDK's that don't support long running tasks
+  if (!axiosConfig.isPollingRequest) {
     axiosConfig.headers[CUSTOM_HEADER_NAMES.EYES_EXPECT] = '202+location'
-  }
-  if (axiosConfig.isLongRequest || axiosConfig.isPollingRequest) {
     axiosConfig.headers[CUSTOM_HEADER_NAMES.EYES_DATE] = DateTimeUtils.toRfc1123DateTime(
       axiosConfig.timestamp,
     )
