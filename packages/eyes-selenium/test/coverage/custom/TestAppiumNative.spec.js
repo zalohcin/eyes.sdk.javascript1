@@ -48,7 +48,7 @@ describe('TestAppiumNative', () => {
     await eyes.close()
   })
 
-  it(`Native app on local appium`, async () => {
+  it.skip(`Native app on local appium`, async () => {
     driver = await new Builder()
       .withCapabilities(caps)
       .usingServer(appiumUrl)

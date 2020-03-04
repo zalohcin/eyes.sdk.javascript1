@@ -1,35 +1,55 @@
 'use strict'
-const {By} = require('selenium-webdriver')
-const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
-const {Target, Region, StitchMode} = require('../../../index')
+
+const {remote} = require('webdriverio')
+const {
+  Target,
+  Region,
+  StitchMode,
+  BatchInfo,
+  Eyes,
+  VisualGridRunner,
+  By,
+  BrowserType,
+  ConsoleLogHandler,
+} = require('../../../index')
 const appName = 'Eyes Selenium SDK - Fluent API'
-const batch = getBatch()
+const batch = new BatchInfo('WebdriverIO 5 test')
 describe(appName, () => {
-  let webDriver, eyes
+  let browser, eyes
+
+  beforeEach(async () => {
+    browser = await remote({
+      logLevel: 'silent',
+      capabilities: {
+        browserName: 'chrome',
+      },
+    })
+    await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+  })
 
   afterEach(async () => {
+    await browser.deleteSession()
     await eyes.abortIfNotClosed()
-    await webDriver.quit()
   })
 
   describe(`Test`, () => {
     beforeEach(async () => {
-      webDriver = await getDriver('CHROME')
-      await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('classic', StitchMode.CSS))
+      eyes = new Eyes()
+      eyes.setStitchMode(StitchMode.CSS)
       eyes.setBatch(batch)
     })
 
     it('TestCheckScrollableModal', async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal`, {
+      let driver = await eyes.open(browser, appName, `TestCheckScrollableModal`, {
         width: 700,
         height: 460,
       })
-      driver.findElement(By.id('centered')).click()
-      let scrollRootSelector = By.id('modal1')
+      let el = await driver.findElement(By.id('centered'))
+      await el.click()
+      let scrollRootSelector = await driver.findElement(By.id('modal1'))
       await eyes.check(
         'TestCheckScrollableModal',
-        Target.region(By.id('modal-content'))
+        Target.region(await driver.findElement(By.id('modal-content')))
           .fully()
           .scrollRootElement(scrollRootSelector),
       )
@@ -37,11 +57,12 @@ describe(appName, () => {
     })
 
     it(`TestCheckLongIFrameModal`, async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal`, {
+      let driver = await eyes.open(browser, appName, `TestCheckLongIFrameModal`, {
         width: 700,
         height: 460,
       })
-      await driver.findElement(By.id('stretched')).click()
+      let el = await driver.findElement(By.id('stretched'))
+      await el.click()
       let frame = await driver.findElement(By.css('#modal2 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
@@ -51,11 +72,12 @@ describe(appName, () => {
     })
 
     it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal`, {
+      let driver = await eyes.open(browser, appName, `TestCheckLongOutOfBoundsIFrameModal`, {
         width: 700,
         height: 460,
       })
-      await driver.findElement(By.id('hidden_click')).click()
+      let el = await driver.findElement(By.id('hidden_click'))
+      await el.click()
       let frame = await driver.findElement(By.css('#modal3 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
@@ -67,18 +89,18 @@ describe(appName, () => {
 
   describe(`Test_SCROLL`, () => {
     beforeEach(async () => {
-      webDriver = await getDriver('CHROME')
-      await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('classic', StitchMode.SCROLL))
+      eyes = new Eyes()
+      eyes.setStitchMode(StitchMode.CSS)
       eyes.setBatch(batch)
     })
 
     it('TestCheckScrollableModal', async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal_Scroll`, {
+      let driver = await eyes.open(browser, appName, `TestCheckScrollableModal_Scroll`, {
         width: 700,
         height: 460,
       })
-      driver.findElement(By.id('centered')).click()
+      let el = await driver.findElement(By.id('centered'))
+      await el.click()
       let scrollRootSelector = By.id('modal1')
       await eyes.check(
         'TestCheckScrollableModal',
@@ -90,7 +112,7 @@ describe(appName, () => {
     })
 
     it(`TestCheckLongIFrameModal`, async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal_Scroll`, {
+      let driver = await eyes.open(browser, appName, `TestCheckLongIFrameModal_Scroll`, {
         width: 700,
         height: 460,
       })
@@ -104,15 +126,10 @@ describe(appName, () => {
     })
 
     it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
-      let driver = await eyes.open(
-        webDriver,
-        appName,
-        `TestCheckLongOutOfBoundsIFrameModal_Scroll`,
-        {
-          width: 700,
-          height: 460,
-        },
-      )
+      let driver = await eyes.open(browser, appName, `TestCheckLongOutOfBoundsIFrameModal_Scroll`, {
+        width: 700,
+        height: 460,
+      })
       await driver.findElement(By.id('hidden_click')).click()
       let frame = await driver.findElement(By.css('#modal3 iframe'))
       await driver.switchTo().frame(frame)
@@ -125,18 +142,22 @@ describe(appName, () => {
 
   describe(`Test_VG`, () => {
     beforeEach(async () => {
-      webDriver = await getDriver('CHROME')
-      await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('VG'))
+      let runner = new VisualGridRunner(10)
+      eyes = new Eyes(runner)
       eyes.setBatch(batch)
+      let conf = eyes.getConfiguration()
+      conf.addBrowser(1600, 1200, BrowserType.CHROME)
+      eyes.setConfiguration(conf)
+      eyes.setLogHandler(new ConsoleLogHandler(true))
     })
 
     it('TestCheckScrollableModal', async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal_VG`, {
+      let driver = await eyes.open(browser, appName, `TestCheckScrollableModal_VG`, {
         width: 700,
         height: 460,
       })
-      driver.findElement(By.id('centered')).click()
+      let el = await driver.findElement(By.id('centered'))
+      await el.click()
       let scrollRootSelector = By.id('modal-content')
       await eyes.check(
         'TestCheckScrollableModal',
@@ -148,21 +169,22 @@ describe(appName, () => {
     })
 
     it(`TestCheckLongIFrameModal`, async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal_VG`, {
+      let driver = await eyes.open(browser, appName, `TestCheckLongIFrameModal_VG`, {
         width: 700,
         height: 460,
       })
-      await driver.findElement(By.id('stretched')).click()
+      let el = await driver.findElement(By.id('stretched'))
+      await el.click()
       let frame = await driver.findElement(By.css('#modal2 iframe'))
       await driver.switchTo().frame(frame)
-      let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let element = await browser.$('html')
+      let rect = await browser.getElementRect(element.elementId)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
 
     it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
-      let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal_VG`, {
+      let driver = await eyes.open(browser, appName, `TestCheckLongOutOfBoundsIFrameModal_VG`, {
         width: 700,
         height: 460,
       })

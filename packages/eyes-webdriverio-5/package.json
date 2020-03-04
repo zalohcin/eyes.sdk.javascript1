@@ -37,7 +37,9 @@
     "@applitools/eyes-sdk-core": "8.0.0",
     "@applitools/visual-grid-client": "13.5.19",
     "selenium-webdriver": "^4.0.0-alpha.5",
-    "webdriverio": "^5.18.6"
+    "webdriverio": "^5.18.6",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1"
   },
   "devDependencies": {
     "@applitools/sdk-fake-eyes-server": "1.0.5",
@@ -58,6 +60,7 @@
     "test:unit": "mocha \"test/unit/**/*.js\"",
     "test:coverage": "coverage-tests run --path test/coverage/index.js",
     "test:coverage:nuke": "coverage-tests nuke",
+    "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
     "render": "node scripts/render.js",
     "postpublish": "git push; git push --tags",
     "preversion": "yarn vv"

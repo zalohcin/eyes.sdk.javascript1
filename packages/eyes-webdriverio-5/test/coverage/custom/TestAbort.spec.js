@@ -1,5 +1,4 @@
 'use strict'
-const {getDriver, getBatch} = require('./util/TestSetup')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
@@ -14,14 +13,26 @@ const {
   VisualGridRunner,
   Eyes,
   StitchMode,
+  BatchInfo,
 } = require('../../../index')
+const {remote} = require('webdriverio')
 const appName = 'Test abort'
 const testedUrl = 'https://applitools.com/docs/topics/overview.html'
-const batch = getBatch()
+const batch = new BatchInfo('WebDriverIO 5 tests')
 describe(appName, () => {
-  let webDriver, eyes, config, runner
+  let browser, eyes, config, runner
   after(async () => {
     await displayRunInfo(runner)
+  })
+
+  beforeEach(async () => {
+    browser = await remote({
+      logLevel: 'silent',
+      capabilities: {
+        browserName: 'chrome',
+      },
+    })
+    // await browser.init()
   })
 
   afterEach(async () => {
@@ -30,7 +41,7 @@ describe(appName, () => {
     } else {
       await eyes.abort()
     }
-    await webDriver.quit()
+    await browser.deleteSession()
   })
 
   function Test_ThrowBeforeOpen() {
@@ -44,7 +55,7 @@ describe(appName, () => {
     let testConfig = eyes.getConfiguration()
     testConfig.setTestName(`test URL : ${testedUrl}`)
     eyes.setConfiguration(testConfig)
-    await eyes.open(webDriver)
+    await eyes.open(browser)
     throw new Error('After Open')
   }
 
@@ -52,8 +63,8 @@ describe(appName, () => {
     let testConfig = eyes.getConfiguration()
     testConfig.setTestName(`test URL : ${testedUrl}`)
     eyes.setConfiguration(testConfig)
-    let driver = await eyes.open(webDriver)
-    await driver.get(testedUrl)
+    let driver = await eyes.open(browser)
+    await driver.url(testedUrl)
     await eyes.check(`Step 1 Content - ${testedUrl}`, Target.frame('non-existing frame'))
   }
 
@@ -61,8 +72,8 @@ describe(appName, () => {
     let testConfig = eyes.getConfiguration()
     testConfig.setTestName(`test URL : ${testedUrl}`)
     eyes.setConfiguration(testConfig)
-    let driver = await eyes.open(webDriver)
-    await driver.get(testedUrl)
+    let driver = await eyes.open(browser)
+    await driver.url(testedUrl)
     await eyes.check(`Step 1 Content - ${testedUrl}`, Target.window())
     throw new Error('After Check')
   }
@@ -77,7 +88,6 @@ describe(appName, () => {
     beforeEach(async () => {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
-      webDriver = await getDriver('CHROME')
     })
 
     it(`Test_ThrowBeforeOpen`, async () => {
@@ -106,7 +116,6 @@ describe(appName, () => {
     beforeEach(async () => {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
-      webDriver = await getDriver('CHROME')
     })
 
     it(`Test_ThrowBeforeOpen`, async () => {

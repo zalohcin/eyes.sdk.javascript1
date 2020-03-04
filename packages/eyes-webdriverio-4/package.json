@@ -10,6 +10,7 @@
     "test:e2e": "mocha --no-timeouts \"test/+(TestClassicApi*.js|TestFluentApi*.js|TestVisualGrid*.js)\"",
     "test:it": "mocha --no-timeouts \"test/it/*.js\"",
     "test:unit": "mocha \"test/unit/**/*.js\"",
+    "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
     "postpublish": "git push; git push --tags",
     "preversion": "yarn vv"
   },
