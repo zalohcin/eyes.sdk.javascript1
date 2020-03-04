@@ -34,8 +34,8 @@
   "dependencies": {
     "@applitools/dom-utils": "4.7.7",
     "@applitools/eyes-common": "3.19.0",
-    "@applitools/eyes-sdk-core": "8.0.1",
-    "@applitools/visual-grid-client": "13.5.20",
+    "@applitools/eyes-sdk-core": "8.1.0",
+    "@applitools/visual-grid-client": "13.5.21",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "webdriverio": "^5.18.6"
   },
