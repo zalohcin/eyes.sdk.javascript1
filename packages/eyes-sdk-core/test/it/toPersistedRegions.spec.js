@@ -9,7 +9,7 @@ const {
   Region,
 } = require('../../index')
 
-describe.only('toPersistedRegions()', function() {
+describe('toPersistedRegions()', function() {
   let driver
   before(() => {
     driver = {
