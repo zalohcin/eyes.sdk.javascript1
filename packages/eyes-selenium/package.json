@@ -73,7 +73,7 @@
     "test:coverage:nuke": "coverage-tests nuke",
     "test:coverage:doctor": "coverage-tests doctor",
     "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
-    "preversion": "yarn vv && yarn vc && yarn test:coverage",
+    "preversion": "yarn vv && yarn vc && yarn test:coverage --send-report prod",
     "version": "yarn uc && git add CHANGELOG.md",
     "postpublish": "git push && git push --tags && yarn send-release-notification"
   },
