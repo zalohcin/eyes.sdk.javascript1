@@ -34,16 +34,21 @@
     "@applitools/eyes-images": "^4.12.33"
   },
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.1.0",
     "browserify": "^16.2.3",
     "uglify-es": "^3.3.9"
   },
   "scripts": {
+    "vv": "bongo --verify-versions",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "browserify": "browserify index.js > dist/eyes-images.browser.js",
     "uglify": "uglifyjs dist/eyes-images.browser.js > dist/eyes-images.browser.min.js",
     "build": "npm run browserify && npm run uglify",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

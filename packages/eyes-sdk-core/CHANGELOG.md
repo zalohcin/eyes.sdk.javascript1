@@ -2,9 +2,22 @@
 
 ## Unreleased
 
+
+## 8.1.1
+
+- updated eyes common to latest
+
+## 8.1.0
+
+- regions support for toPersistedRegions() for VGC
+
+## 8.0.2
+
 - fix exception on aborts - using _getSetBatchId in closeBatch so we dont generate batch id but still get the generated batch id.
 guarding addBrowsers arguments for sending an array
 - upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
+- support future long running tasks [Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks)
+- fix regression in css stitching [Trello](https://trello.com/c/dp5IIoFw/235-css-stitching-regression-in-41533)
 
 ## 8.0.1
 

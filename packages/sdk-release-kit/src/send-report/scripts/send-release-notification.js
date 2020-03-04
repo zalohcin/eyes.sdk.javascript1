@@ -27,9 +27,9 @@ function convertSdkNameToReportName(sdkName) {
       return 'js_selenium_4'
     case 'eyes.selenium':
       return 'js_selenium_3'
-    case 'eyes.webdriverio.javascript5':
+    case 'eyes-webdriverio':
       return 'js_wdio_5'
-    case 'eyes.webdriverio.javascript4':
+    case 'eyes.webdriverio':
       return 'js_wdio_4'
     case 'eyes-images':
       return 'js_images'

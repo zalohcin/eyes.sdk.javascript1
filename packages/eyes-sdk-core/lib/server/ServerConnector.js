@@ -192,7 +192,6 @@ class ServerConnector {
 
     const config = {
       name: 'stopSession',
-      isLongRequest: true,
       method: 'DELETE',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -328,7 +327,6 @@ class ServerConnector {
 
     const config = {
       name: 'matchWindow',
-      isLongRequest: true,
       method: 'POST',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),
@@ -373,7 +371,6 @@ class ServerConnector {
 
     const config = {
       name: 'matchSingleWindow',
-      isLongRequest: true,
       method: 'POST',
       url: GeneralUtils.urlConcat(this._configuration.getServerUrl(), EYES_API_PATH),
       headers: {},
@@ -420,7 +417,6 @@ class ServerConnector {
 
     const config = {
       name: 'replaceWindow',
-      isLongRequest: true,
       method: 'PUT',
       url: GeneralUtils.urlConcat(
         this._configuration.getServerUrl(),

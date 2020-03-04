@@ -4,15 +4,18 @@
   "description": "Applitools Eyes SDK for WebdriverIO",
   "main": "index.js",
   "scripts": {
+    "vv": "bongo --verify-versions",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
     "lint": "eslint '**/*.js'",
-    "vv": "node ../../scripts/verify-versions.js",
     "test": "yarn test:unit && yarn test:e2e",
     "test:e2e": "mocha --no-timeouts \"test/+(TestClassicApi*.js|TestFluentApi*.js|TestVisualGrid*.js)\"",
     "test:it": "mocha --no-timeouts \"test/it/*.js\"",
     "test:unit": "mocha \"test/unit/**/*.js\"",
     "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "author": "Applitools Team <team@applitools.com> (http://www.applitools.com/)",
   "license": "SEE LICENSE IN LICENSE",
@@ -29,6 +32,7 @@
     "webdriverio": "~4.14.4"
   },
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/sdk-fake-eyes-server": "1.0.5",
     "chromedriver": "^80.0.0",
     "eslint": "^6.8.0",

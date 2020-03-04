@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+
+## 13.5.21
+
+- support future long running tasks [Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks)
+
+## 13.5.20
+
+- update @applitools/eyes-common@3.19.0, @applitools/eyes-sdk-core@8.0.1
+
 ## 13.7.19
 
 - new branching model for Eyes [Trello 145](https://trello.com/c/VhEHv3YI/145-modify-branching-model-to-be-more-git-like-adjust-github-bitbucket-integrations-109-108-hotfix)

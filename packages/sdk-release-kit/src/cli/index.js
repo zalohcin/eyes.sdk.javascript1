@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 
 const args = require('yargs').argv
-const verifyChangelog = require('../changelog/scripts/verify-changelog')
-const updateChangelog = require('../changelog/scripts/update-changelog')
-const sendReleaseNotification = require('../send-report/scripts/send-release-notification')
 
 async function execute(cb) {
   try {
@@ -15,11 +12,17 @@ async function execute(cb) {
 }
 
 if (args['verify-changelog']) {
+  const verifyChangelog = require('../changelog/scripts/verify-changelog')
   execute(verifyChangelog)
 } else if (args['update-changelog']) {
+  const updateChangelog = require('../changelog/scripts/update-changelog')
   execute(updateChangelog)
 } else if (args['send-release-notification']) {
+  const sendReleaseNotification = require('../send-report/scripts/send-release-notification')
   execute(sendReleaseNotification.bind(undefined, args.recipient))
+} else if (args['verify-versions']) {
+  const verifyVersions = require('../versions/scripts/verify-versions.js')
+  execute(verifyVersions.bind(undefined, args.fix))
 } else {
   execute(() => {
     throw 'Invalid option provided'
