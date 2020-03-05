@@ -10,49 +10,33 @@ const uuidv4 = require('uuid/v4')
 const sdkName = 'eyes-testcafe'
 const branchId = uuidv4()
 
-function makeCommands() {
-  let baselineTestName
-  let cache = {
-    setup: [],
-  }
-  function _out() {
-    return cache
-  }
-  function _setup(options) {
-    baselineTestName = options.baselineTestName
-    cache.setup.push(`eyes.setBranchName('${options.branchName}')`)
-    options.executionMode.isCssStitching
-      ? cache.setup.push(`eyes.setStitchMode(StitchMode.CSS)`)
-      : undefined
-    options.executionMode.isScrollStitching
-      ? cache.setup.push(`eyes.setStitchMode(StitchMode.SCROLL)`)
-      : undefined
-    cache.setup.push(`eyes.setBatch('JS Coverage Tests - ${sdkName}', '${branchId}')`)
-  }
+function makeCommands({baselineTestName, cache}) {
   function abort() {}
   function visit(url) {
     cache.visit = url
   }
   function open(options) {
     const viewportSizes = options.viewportSize.split('x')
-    cache.open = `await eyes.open(driver, '${options.appName}', '${baselineTestName}', {width: ${viewportSizes[0]}, height: ${viewportSizes[1]}})`
+    cache.testCommands.push(
+      `await eyes.open(driver, '${options.appName}', '${baselineTestName}', {width: ${viewportSizes[0]}, height: ${viewportSizes[1]}})`,
+    )
   }
   function checkFrame() {}
   function checkRegion() {}
   function checkWindow(options) {
     const isFully = !!(options && options.isFully)
-    cache.checkWindow = `await eyes.check(undefined, Target.window().fully(${isFully}))`
+    cache.testCommands.push(`await eyes.check(undefined, Target.window().fully(${isFully}))`)
   }
   function close(_options) {
-    cache.close = `await eyes.close()`
+    cache.testCommands.push(`await eyes.close()`)
   }
-  function getAllTestResults() {}
+  function getAllTestResults() {
+    // cache.getAllTestResults = true
+  }
   function scrollDown() {}
   function switchToFrame() {}
   function type() {}
   return {
-    _out,
-    _setup,
     abort,
     checkFrame,
     checkRegion,
@@ -67,24 +51,35 @@ function makeCommands() {
   }
 }
 
+function setup({branchName, executionMode}) {
+  const setupCommands = [`eyes.setBranchName('${branchName}')`]
+  if (executionMode.isCssStitching) {
+    setupCommands.push(`eyes.setStitchMode(StitchMode.CSS)`)
+  }
+  if (executionMode.isScrollStitching) {
+    setupCommands.push(`eyes.setStitchMode(StitchMode.SCROLL)`)
+  }
+
+  setupCommands.push(`eyes.setBatch('JS Coverage Tests - ${sdkName}', '${branchId}')`)
+  return setupCommands
+}
+
 function createTestFiles(testFileDir, supportedTests) {
   supportedTests.forEach(async supportedTest => {
-    const commands = makeCommands()
-    const tests = makeCoverageTests(commands)
     const baselineTestName = `${supportedTest.name}${convertExecutionModeToSuffix(
       supportedTest.executionMode,
     )}`
-    if (commands._setup) {
-      commands._setup({
-        baselineTestName,
-        branchName: 'master',
-        executionMode: supportedTest.executionMode,
-      })
-    }
+    const setupCommands = setup({
+      branchName: 'master',
+      executionMode: supportedTest.executionMode,
+    })
+    const cache = {setupCommands, testCommands: []}
+    const commands = makeCommands({baselineTestName, cache})
+    const tests = makeCoverageTests(commands)
     // run test to generate cache
     await tests[supportedTest.name]()
     // emit test contents from cache
-    const body = emitTest(supportedTest.name, commands._out())
+    const body = emitTest(supportedTest.name, cache)
     if (!fs.existsSync(testFileDir)) {
       fs.mkdirSync(testFileDir)
     }
@@ -92,23 +87,19 @@ function createTestFiles(testFileDir, supportedTests) {
   })
 }
 
-function emitTest(testName, output) {
-  let testCommands = {...output}
-  delete testCommands.visit
-  delete testCommands.getAllTestResults
-  delete testCommands.setup
+function emitTest(testName, {testCommands, visit, getAllTestResults, setupCommands}) {
   return `const {Eyes, StitchMode, Target} = require('../../../index')
 const eyes = new Eyes()
 
 fixture\`${testName}\`
-  .page('${output.visit}')
+  .page('${visit}')
   .beforeEach(async () => {
-    ${output.setup.join('\n    ')}
+    ${setupCommands.join('\n    ')}
   })
-  ${output.getAllTestResults ? '.after(async () => ' + output.getAllTestResults + ')' : ''}
+  ${getAllTestResults ? '.after(async () => ' + getAllTestResults + ')' : ''}
 
 test('${testName}', async driver => {
-  ${Object.values(testCommands).join('\n  ')}
+  ${testCommands.join('\n  ')}
 })`
 }
 
