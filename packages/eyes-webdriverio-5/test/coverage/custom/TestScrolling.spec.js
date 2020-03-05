@@ -60,7 +60,7 @@ describe(appName, () => {
               userAgent:
                 'Mozilla/5.0 (Linux; Android 7.1.1; Nexus 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
             },
-            args: ['--window-size=386,512' /*, 'headless'*/],
+            args: ['--window-size=386,512', 'headless'],
           },
         },
       })
@@ -68,6 +68,7 @@ describe(appName, () => {
         await browser.url('https://applitools.github.io/demo/TestPages/MobileDemo/AccessPayments/')
         eyes = new Eyes()
         eyes.setBatch(batch)
+        eyes.setParentBranchName('master')
         eyes.setStitchMode(StitchMode.CSS)
         await eyes.open(browser, appName, 'TestWebAppScrolling2', {width: 386, height: 512})
         await eyes.check('big page on mobile', Target.window().fully())
@@ -96,6 +97,7 @@ describe(appName, () => {
         await browser.url('https://www.applitools.com/customers')
         eyes = new Eyes()
         eyes.setBatch(batch)
+        eyes.setParentBranchName('master')
         await eyes.open(browser, appName, 'TestWebAppScrolling3', {width: 386, height: 512})
         await eyes.check(
           'long page on mobile',
@@ -111,7 +113,7 @@ describe(appName, () => {
     })
   })
 
-  describe('SauceLabs', () => {
+  describe.skip('SauceLabs', () => {
     let eyes, browser
     const sauceCaps = {
       browserName: 'Chrome',

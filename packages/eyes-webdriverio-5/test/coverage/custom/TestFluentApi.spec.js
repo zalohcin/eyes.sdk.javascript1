@@ -9,7 +9,6 @@ const {
   Eyes,
   VisualGridRunner,
   By,
-  BrowserType,
   ConsoleLogHandler,
 } = require('../../../index')
 const appName = 'Eyes Selenium SDK - Fluent API'
@@ -37,6 +36,7 @@ describe(appName, () => {
       eyes = new Eyes()
       eyes.setStitchMode(StitchMode.CSS)
       eyes.setBatch(batch)
+      eyes.setParentBranchName('master')
     })
 
     it('TestCheckScrollableModal', async () => {
@@ -66,7 +66,7 @@ describe(appName, () => {
       let frame = await driver.findElement(By.css('#modal2 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let rect = await browser.getElementRect(element.elementId)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
@@ -81,7 +81,7 @@ describe(appName, () => {
       let frame = await driver.findElement(By.css('#modal3 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let rect = await browser.getElementRect(element.elementId)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
@@ -92,6 +92,7 @@ describe(appName, () => {
       eyes = new Eyes()
       eyes.setStitchMode(StitchMode.CSS)
       eyes.setBatch(batch)
+      eyes.setParentBranchName('master')
     })
 
     it('TestCheckScrollableModal', async () => {
@@ -116,11 +117,12 @@ describe(appName, () => {
         width: 700,
         height: 460,
       })
-      await driver.findElement(By.id('stretched')).click()
+      let el = await driver.findElement(By.id('stretched'))
+      await el.click()
       let frame = await driver.findElement(By.css('#modal2 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let rect = await browser.getElementRect(element.elementId)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
@@ -130,11 +132,12 @@ describe(appName, () => {
         width: 700,
         height: 460,
       })
-      await driver.findElement(By.id('hidden_click')).click()
+      let el = await driver.findElement(By.id('hidden_click'))
+      await el.click()
       let frame = await driver.findElement(By.css('#modal3 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let rect = await browser.getElementRect(element.elementId)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
@@ -145,9 +148,7 @@ describe(appName, () => {
       let runner = new VisualGridRunner(10)
       eyes = new Eyes(runner)
       eyes.setBatch(batch)
-      let conf = eyes.getConfiguration()
-      conf.addBrowser(1600, 1200, BrowserType.CHROME)
-      eyes.setConfiguration(conf)
+      eyes.setParentBranchName('master')
       eyes.setLogHandler(new ConsoleLogHandler(true))
     })
 
@@ -188,11 +189,12 @@ describe(appName, () => {
         width: 700,
         height: 460,
       })
-      await driver.findElement(By.id('hidden_click')).click()
+      let el = await driver.findElement(By.id('hidden_click'))
+      await el.click()
       let frame = await driver.findElement(By.css('#modal3 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let rect = await browser.getElementRect(element.elementId)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })

@@ -58,6 +58,18 @@
     png-async "^0.9.4"
     stack-trace "^0.0.10"
 
+"@applitools/eyes-common@3.19.0":
+  version "3.19.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.19.0.tgz#aad9b9bbff2707ce98cfd8185740536d5b1a7386"
+  integrity sha512-56WfLzDqMn0/nJEiix54Den4pxU/LtkDjKkEFQxDJNPJaWqNcZYqTmJWBBKBeFR0AwqAMGMH39UK/NoNRVRspw==
+  dependencies:
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+
 "@applitools/eyes-sdk-core@6.0.9":
   version "6.0.9"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-6.0.9.tgz#abea028ec3c5c2e588b7730b223e24ca8673eaf0"
