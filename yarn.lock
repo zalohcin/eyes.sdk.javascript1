@@ -94,6 +94,18 @@
     es6-promise-pool "2.5.0"
     tunnel "0.0.6"
 
+"@applitools/eyes-sdk-core@8.0.2":
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-8.0.2.tgz#9f94b78d9720c73c5db43e9672e0ee66ed15e867"
+  integrity sha512-7BOwNvjgGLN1vHcHvpfOaPTjo3cCmhw+KLeIuh3Kf5RzlJ/WoRCDljJfskltIb4gBBwDJjCg90Xwhi4DWZFXuw==
+  dependencies:
+    "@applitools/eyes-common" "3.19.0"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    axios "0.19.2"
+    chalk "3.0.0"
+    es6-promise-pool "2.5.0"
+    tunnel "0.0.6"
+
 "@applitools/eyes-webdriverio@5.9.12":
   version "5.9.12"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-webdriverio/-/eyes-webdriverio-5.9.12.tgz#b85165b2e9364d603e4835cc21c79ba6abb46817"

@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-sdk-core",
-  "version": "8.0.2",
+  "version": "8.1.1",
   "description": "The core components of Eyes JavaScript SDK",
   "keywords": [
     "applitools",
@@ -31,7 +31,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-common": "3.19.0",
+    "@applitools/eyes-common": "3.20.0",
     "@applitools/isomorphic-fetch": "3.0.0",
     "axios": "0.19.2",
     "chalk": "3.0.0",
@@ -54,6 +54,8 @@
     "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
+    "test:it": "mocha --no-timeouts \"test/it/**/*.spec.js\"",
     "postpublish": "git push; git push --tags",
     "preversion": "yarn vv && yarn vc",
     "version": "yarn uc && git add CHANGELOG.md"

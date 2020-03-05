@@ -3,6 +3,14 @@
 ## Unreleased
 
 
+## 8.1.1
+
+- updated eyes common to latest
+
+## 8.1.0
+
+- regions support for toPersistedRegions() for VGC
+
 ## 8.0.2
 
 - fix exception on aborts - using _getSetBatchId in closeBatch so we dont generate batch id but still get the generated batch id.
