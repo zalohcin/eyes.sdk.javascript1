@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio",
-  "version": "5.20.0",
+  "version": "5.10.0",
   "description": "Applitools Eyes SDK for WebdriverIO",
   "keywords": [
     "eyes-webdriverio",
