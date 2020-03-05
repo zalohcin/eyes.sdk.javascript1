@@ -72,7 +72,11 @@ function makeRunTests(sdkName, initializeSdkImplementation) {
       })
     })
     const start = new Date()
-    await Promise.all(p.map(throat(concurrency, testRun => testRun())))
+    try {
+      await Promise.all(p.map(throat(concurrency, testRun => testRun())))
+    } catch (error) {
+      debugger
+    }
     const end = new Date()
 
     return makeReport({sdkName, testsRan: supportedTests, errors, start, end})
