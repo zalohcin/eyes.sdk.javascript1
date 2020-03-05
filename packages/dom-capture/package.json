@@ -27,10 +27,11 @@
     "dist"
   ],
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/monitoring-commons": "^1.0.15",
+    "@applitools/sdk-release-kit": "0.1.0",
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
+    "abortcontroller-polyfill": "^1.4.0",
     "chai": "^4.2.0",
     "core-js": "^3.6.1",
     "cssom": "git+https://github.com/amitzur/CSSOM.git#925260ff2c8f8387cf76df4d5776a06044a644c8",
