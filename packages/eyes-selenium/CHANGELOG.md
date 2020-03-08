@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 4.33.24
+
+- fix trying to fetch branch info from server on non github integration runs
+
 ## 4.33.23
 
 - upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
