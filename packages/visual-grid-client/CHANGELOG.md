@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 13.6.0
+
 - accepting batchInfo to override batch data in open eyes
 
 ## 13.5.21
