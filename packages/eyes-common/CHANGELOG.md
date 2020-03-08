@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- returning batchInfo from toOpenEyesConfiguration
 
 ## 3.20.0
 
