@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+
+## 5.9.15
+
+- fix trying to fetch branch info from server on non github integration runs
+
 ## 5.20.0
 
 - same as 5.9.14
