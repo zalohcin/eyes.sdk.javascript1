@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 13.6.1
+
 - add missing browsers to TypeScript definitions [Trello](https://trello.com/c/2QEofssH/264-cypress-js-vs-ts-not-the-same-goodrx-poc)
 
 ## 13.6.0
