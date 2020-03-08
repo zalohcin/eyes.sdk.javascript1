@@ -3,7 +3,11 @@
 ## Unreleased
 
 
-## 2.0.0-bata.16
+## 2.0.0-beta.17
+
+- fix version name, same version as 2.0.0-beta.16
+
+## 2.0.0-beta.16
 
 - fix trying to fetch branch info from server on non github integration runs
 - upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
