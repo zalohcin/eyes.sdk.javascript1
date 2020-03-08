@@ -166,7 +166,18 @@ declare namespace Eyes {
     interface BrowserViewport {
       height:number
       width:number
-      name:'chrome'|'firefox'|'edge'|'ie10'|'ie11'
+      name:'chrome'                   |
+           'firefox'                  |
+           'edge'                     |
+           'ie10'                     |
+           'ie11'                     |
+           'safari'                   |
+           'chrome-one-version-back'  |
+           'chrome-two-versions-back' |
+           'firefox-one-version-back' |
+           'firefox-two-versions-back'|
+           'safari-one-version-back'  |
+           'safari-two-versions-back'
     }
 
     interface DeviceViewport {
