@@ -25,6 +25,15 @@
     "@applitools/eyes-common" "^3.17.2"
     axios "^0.19.0"
 
+"@applitools/dom-utils@4.7.7":
+  version "4.7.7"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.7.7.tgz#c23d2726da1637eaae54bc40fa0eff050991349d"
+  integrity sha512-Z3I3XNAiriYEtqFpET+GCSiJjrXEE+pOb8GM7uK/MtGktLd2O5NUHEkapYy5VW+SyqnhdfTp6uDdCgiRAadwoQ==
+  dependencies:
+    "@applitools/dom-capture" "7.1.3"
+    "@applitools/eyes-common" "3.19.0"
+    axios "^0.19.0"
+
 "@applitools/eyes-common@3.18.2":
   version "3.18.2"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.18.2.tgz#08562b08069aa6d9c86af9fdb42c2ac88e363927"
@@ -41,6 +50,18 @@
   version "3.18.5"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.18.5.tgz#b8ed277ed962867346c6962fc2a21d5ee00fef63"
   integrity sha512-S3fXqNAhoKZ1hXYBSinnhLGLFUaBW84e6mPM3SnqjBDeIgA93v0SsolTHzoES8ZKbYkRiMdrhtIrPq5L2Kh9ig==
+  dependencies:
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+
+"@applitools/eyes-common@3.19.0":
+  version "3.19.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.19.0.tgz#aad9b9bbff2707ce98cfd8185740536d5b1a7386"
+  integrity sha512-56WfLzDqMn0/nJEiix54Den4pxU/LtkDjKkEFQxDJNPJaWqNcZYqTmJWBBKBeFR0AwqAMGMH39UK/NoNRVRspw==
   dependencies:
     cosmiconfig "^6.0.0"
     dateformat "^3.0.3"
