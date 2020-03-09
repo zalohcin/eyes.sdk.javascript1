@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- update @applitools/eyes-common@3.20.1
 
 ## 8.1.1
 
