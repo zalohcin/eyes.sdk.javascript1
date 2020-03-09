@@ -8,7 +8,27 @@
         {
           "name": "checkElement",
           "options": {
-            "isFully": false,
+            "isFully": true,
+          }
+        },
+        {
+          "name": "close",
+          "options": {
+            "throwException": true,
+          }
+        }
+      ]
+    },
+    "Check Element In Frame": {
+      "commands": [
+        {
+          "name": "open"
+        },
+        {
+          "name": "checkElement",
+          "options": {
+            "isFully": true,
+            "inFrame": true,
           }
         },
         {

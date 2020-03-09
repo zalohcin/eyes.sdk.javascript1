@@ -37,6 +37,22 @@
         "commandApi": "classic"
       }
     ],
+    "Check Element In Frame": [
+      {
+        "baselineTestName": "TestCheckRegionInFrame",
+        "appName": "Eyes Selenium SDK - Classic API",
+        "target": "#inner-frame-div",
+        "frameTarget": "[name='frame1']",
+        "commandApi": "classic"
+      },
+      {
+        "baselineTestName": "TestCheckRegionInFrame_Fluent",
+        "appName": "Eyes Selenium SDK - Fluent API",
+        "target": "#inner-frame-div",
+        "frameTarget": "[name='frame1']",
+        "commandApi": "fluent"
+      }
+    ],
     "Check Window Viewport": [
       {
         "baselineTestName": "TestCheckWindowViewport",
