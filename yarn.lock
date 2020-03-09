@@ -16,10 +16,10 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
-"@applitools/dom-snapshot@3.3.4":
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.3.4.tgz#e4fc572302a2380075a85561dfb9b51ba5db5589"
-  integrity sha512-y0lqHzXemslb9GfVyotwy6QbnO+VQo17bOk8KNkJtVNayxVfjcOz3K8POeaT8xU4XBn9CyouLOr3OOFXt8+Z0A==
+"@applitools/dom-snapshot@3.3.5":
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.3.5.tgz#d16ee69d0e0e70329eaaa063bbee49fc42864f53"
+  integrity sha512-/oDqAImcQUm8NCZI+XWtaKPW6WvTPn6wqTm7MYH+xcdvulDCGTjoxutmgPIrcn4RDH0RY1q40xaKrqqhw7KtqQ==
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
