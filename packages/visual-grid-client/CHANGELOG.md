@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 13.6.2
+
 - update @applitools/eyes-sdk-core@8.1.2
 
 ## 13.6.1
