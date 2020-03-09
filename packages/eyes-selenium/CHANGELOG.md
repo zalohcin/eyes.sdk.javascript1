@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 4.33.25
+
 - update @applitools/eyes-common@3.20.1
 - update @applitools/visual-grid-client@13.6.1
 
