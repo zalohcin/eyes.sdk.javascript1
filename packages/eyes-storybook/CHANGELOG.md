@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.2.13
+
 - dom snapshot log for fetched resources now shows the byte length that was fetched [Trello](https://trello.com/c/CjSvn1OQ/262-storybook-409-conflict-wrong-sha)
 
 ## 3.2.12
