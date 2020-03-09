@@ -1,48 +1,8 @@
 {
   "tests": {
-    "Check Window Viewport": [
-      {
-        "environment": "Linux",
-        "baselineTestName": "TestCheckWindowViewport",
-        "testNameSuffix": {
-          "isCssStitching": {
-            "testNameSuffix": ""
-          },
-          "isScrollStitching": {
-            "testNameSuffix": "_Scroll"
-          },
-          "isVisualGrid": {
-            "testNameSuffix": "_VG"
-          }
-        },
-        "browserName": "Chrome",
-        "environment": "Linux",
-        "URL": "https://applitools.github.io/demo/TestPages/FramesTestPage/",
-        "appName": "Eyes Selenium SDK - Classic API",
-        "viewportSize": "700x460",
-      {
-        "environment": "Linux",
-        "baselineTestName": "TestCheckWindow_Fluent",
-        "testNameSuffix": {
-          "isCssStitching": {
-            "testNameSuffix": ""
-          },
-          "isScrollStitching": {
-            "testNameSuffix": "_Scroll"
-          },
-          "isVisualGrid": {
-            "testNameSuffix": "_VG"
-          }
-        },
-        "browserName": "Chrome",
-        "environment": "Linux",
-        "URL": "https://applitools.github.io/demo/TestPages/FramesTestPage/",
-        "appName": "Eyes Selenium SDK - Classic API",
-        "viewportSize": "700x460"
-      }
-    ],
-    "Check Window Fully": {
-      "baselineTestName": "TestCheckWindowFully",
+    "defaults": {
+      "browserName": "Chrome",
+      "platformName": "Linux",
       "testNameSuffix": {
         "isCssStitching": {
           "testNameSuffix": ""
@@ -54,11 +14,21 @@
           "testNameSuffix": "_VG"
         }
       },
-      "browserName": "Chrome",
-      "environment": "Linux",
-      "URL": "https://applitools.github.io/demo/TestPages/FramesTestPage/",
+      "viewportSize": "700x460",
+      "URL": "https://applitools.github.io/demo/TestPages/FramesTestPage/"
+    },
+    "Check Window Viewport": [
+      {
+        "baselineTestName": "TestCheckWindowViewport",
+        "appName": "Eyes Selenium SDK - Classic API",
+      {
+        "baselineTestName": "TestCheckWindow_Fluent",
+        "appName": "Eyes Selenium SDK - Classic API",
+      }
+    ],
+    "Check Window Fully": {
+      "baselineTestName": "TestCheckWindowFully",
       "appName": "Eyes Selenium SDK - Classic API",
-      "viewportSize": "700x460"
     }
   }
 }
