@@ -16,6 +16,13 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
+"@applitools/dom-snapshot@3.3.4":
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.3.4.tgz#e4fc572302a2380075a85561dfb9b51ba5db5589"
+  integrity sha512-y0lqHzXemslb9GfVyotwy6QbnO+VQo17bOk8KNkJtVNayxVfjcOz3K8POeaT8xU4XBn9CyouLOr3OOFXt8+Z0A==
+  dependencies:
+    "@applitools/functional-commons" "^1.5.4"
+
 "@applitools/dom-utils@4.7.4":
   version "4.7.4"
   resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.7.4.tgz#d063f868364b588f8aeaaf9fede88f3172ed8d3d"
@@ -100,6 +107,18 @@
   integrity sha512-LosGNya0uZpbbg9G1DzD4RGXxx21yfSDbTAq76Q40TUPs1PccGl7fT2XAQzEsT0rPDv5cmXz0lcCQzkAKCMejQ==
   dependencies:
     "@applitools/eyes-common" "3.18.5"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    axios "0.19.2"
+    chalk "3.0.0"
+    es6-promise-pool "2.5.0"
+    tunnel "0.0.6"
+
+"@applitools/eyes-sdk-core@8.1.1":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-8.1.1.tgz#17cff8a4e72e492324fc1f290b55aa4dcb4eec31"
+  integrity sha512-rM/u6kJlBd1m0c34sbIjOWYqWpXz9qEkCdhmJ8igqdqB6DCPyqpx6BRcrdF5BNCT1imYMRjUlU+dHqWfzz8wzg==
+  dependencies:
+    "@applitools/eyes-common" "3.20.0"
     "@applitools/isomorphic-fetch" "3.0.0"
     axios "0.19.2"
     chalk "3.0.0"
@@ -226,6 +245,25 @@
   dependencies:
     "@applitools/dom-snapshot" "3.3.3"
     "@applitools/eyes-common" "3.20.0"
+    "@applitools/eyes-sdk-core" "8.1.1"
+    "@applitools/functional-commons" "1.5.4"
+    "@applitools/http-commons" "2.3.12"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/jsdom" "1.0.2"
+    he "1.2.0"
+    lodash.mapvalues "^4.6.0"
+    mime-types "^2.1.24"
+    mkdirp "^0.5.1"
+    postcss-value-parser "^4.0.2"
+    throat "^5.0.0"
+
+"@applitools/visual-grid-client@13.6.1":
+  version "13.6.1"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-13.6.1.tgz#f972d7909d2a9d2fa7027b46c5e3a5020875356b"
+  integrity sha512-sxnp3Xw3bfadkz7lZtwaGANyL+m8bD1Ag0HkMKRNK0I5rjwPiub+9zS0FlSnVG8B+rXCrgN29cWFHdtUV8JLiw==
+  dependencies:
+    "@applitools/dom-snapshot" "3.3.3"
+    "@applitools/eyes-common" "3.20.1"
     "@applitools/eyes-sdk-core" "8.1.1"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"
