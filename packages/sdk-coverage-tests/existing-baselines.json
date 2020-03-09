@@ -21,14 +21,18 @@
       {
         "baselineTestName": "TestCheckWindowViewport",
         "appName": "Eyes Selenium SDK - Classic API",
+        "commandApi": "classic"
+      },
       {
         "baselineTestName": "TestCheckWindow_Fluent",
         "appName": "Eyes Selenium SDK - Classic API",
+        "commandApi": "fluent"
       }
     ],
     "Check Window Fully": {
       "baselineTestName": "TestCheckWindowFully",
       "appName": "Eyes Selenium SDK - Classic API",
+      "commandApi": "classic"
     }
   }
 }
