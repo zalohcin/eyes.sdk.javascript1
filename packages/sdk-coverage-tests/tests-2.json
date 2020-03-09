@@ -1,7 +1,6 @@
 {
-  "tests": [
-    {
-      "name": "Check Window Fully",
+  "tests": {
+    "Check Window Fully": {
       "commands": [
         {
           "name": "open"
@@ -20,8 +19,7 @@
         }
       ]
     },
-    {
-      "name": "Check Window Viewport",
+    "Check Window Viewport": {
       "commands": [
         {
           "name": "open"
@@ -40,5 +38,5 @@
         }
       ]
     }
-  ]
+  }
 }
