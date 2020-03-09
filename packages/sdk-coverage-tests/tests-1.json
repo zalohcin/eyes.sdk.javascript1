@@ -1,0 +1,62 @@
+{
+  "tests": [
+    {
+      "name": "TestCheckWindowFully",
+      "commands": [
+        {
+          "name": "visit",
+          "url": "https://applitools.github.io/demo/TestPages/FramesTestPage/"
+        },
+        {
+          "name": "open",
+          "options": {
+            "appName": "Eyes Selenium SDK - Classic API",
+            "viewportSize": "700x460",
+          },
+        },
+        {
+          "name": "checkWindow",
+          "options": {
+            "isClassicApi": true,
+            "isFully": true,
+          }
+        },
+        {
+          "name": "close",
+          "options": {
+            "throwException": true,
+          }
+        }
+      ]
+    },
+    {
+      "name": "TestCheckWindowViewport",
+      "commands": [
+        {
+          "name": "visit",
+          "url": "https://applitools.github.io/demo/TestPages/FramesTestPage/"
+        },
+        {
+          "name": "open",
+          "options": {
+            "appName": "Eyes Selenium SDK - Classic API",
+            "viewportSize": "700x460",
+          },
+        },
+        {
+          "name": "checkWindow",
+          "options": {
+            "isClassicApi": true,
+            "isFully": false,
+          }
+        },
+        {
+          "name": "close",
+          "options": {
+            "throwException": true,
+          }
+        }
+      ]
+    }
+  ]
+}

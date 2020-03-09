@@ -1,0 +1,44 @@
+{
+  "tests": [
+    {
+      "name": "Check Window Fully",
+      "commands": [
+        {
+          "name": "open"
+        },
+        {
+          "name": "checkWindow",
+          "options": {
+            "isFully": true,
+          }
+        },
+        {
+          "name": "close",
+          "options": {
+            "throwException": true,
+          }
+        }
+      ]
+    },
+    {
+      "name": "Check Window Viewport",
+      "commands": [
+        {
+          "name": "open"
+        },
+        {
+          "name": "checkWindow",
+          "options": {
+            "isFully": false,
+          }
+        },
+        {
+          "name": "close",
+          "options": {
+            "throwException": true,
+          }
+        }
+      ]
+    }
+  ]
+}
