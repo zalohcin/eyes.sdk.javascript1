@@ -17,6 +17,26 @@
       "viewportSize": "700x460",
       "URL": "https://applitools.github.io/demo/TestPages/FramesTestPage/"
     },
+    "Check Element": [
+      {
+        "baselineTestName": "TestCheckElementFully_Fluent",
+        "appName": "Eyes Selenium SDK - Fluent API",
+        "target": "[name='frame1']",
+        "commandApi": "fluent"
+      },
+      {
+        "baselineTestName": "TestCheckRegion",
+        "appName": "Eyes Selenium SDK - Classic API",
+        "target": "#overflowing-div",
+        "commandApi": "classic"
+      },
+      {
+        "baselineTestName": "TestCheckRegion2",
+        "appName": "Eyes Selenium SDK - Classic API",
+        "target": "#overflowing-div-image",
+        "commandApi": "classic"
+      }
+    ],
     "Check Window Viewport": [
       {
         "baselineTestName": "TestCheckWindowViewport",
@@ -25,7 +45,7 @@
       },
       {
         "baselineTestName": "TestCheckWindow_Fluent",
-        "appName": "Eyes Selenium SDK - Classic API",
+        "appName": "Eyes Selenium SDK - Fluent API",
         "commandApi": "fluent"
       }
     ],
