@@ -10,6 +10,7 @@ module.exports = {
   showStorybookOutput: false,
   waitBeforeScreenshot: 50,
   waitBeforeScreenshots: 50, // backward compatibility
+  viewportSize: undefined,
   tapFilePath: undefined,
   exitcode: true,
   readStoriesTimeout: 60000,
