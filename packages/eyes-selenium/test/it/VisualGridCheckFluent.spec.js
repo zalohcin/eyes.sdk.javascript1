@@ -112,6 +112,7 @@ describe('Multi version browsers in Visual Grid', () => {
     await driver.get('http://applitools.github.io/demo/TestPages/FramesTestPage/')
     driver = await eyes.open(driver)
     await eyes.check('Window', Target.window())
+    await eyes.closeAsync()
     const results = await eyes.getRunner().getAllTestResults()
     expect(results._passed).to.equal(browsers.length)
   })

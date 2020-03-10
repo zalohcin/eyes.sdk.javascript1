@@ -14,7 +14,6 @@ const {
   CorsIframeHandler,
   IgnoreRegionByRectangle,
   VisualGridRunner,
-  TestResultsSummary,
 } = require('@applitools/eyes-sdk-core')
 
 const {Eyes} = require('./Eyes')
@@ -39,13 +38,15 @@ class EyesVisualGrid extends Eyes {
     super(serverUrl, isDisabled, runner)
 
     this._isVisualGrid = true
+
+    this._runner.makeGetVisualGridClient(makeVisualGridClient)
+
     /** @type {UserAgent} */
     this._userAgent = undefined
 
     /** @function */ this._checkWindowCommand = undefined
     /** @function */ this._closeCommand = undefined
     /** @function */ this._abortCommand = undefined
-    /** @type {Promise} */ this._closePromise = undefined
   }
 
   /**
@@ -79,7 +80,7 @@ class EyesVisualGrid extends Eyes {
       this._userAgent = UserAgent.parseUserAgentString(uaString, true)
     }
 
-    const {openEyes} = makeVisualGridClient({
+    const {openEyes} = await this._runner.getVisualGridClientWithCache({
       logger: this._logger,
       agentId: this.getFullAgentId(),
       apiKey: this._configuration.getApiKey(),
@@ -109,52 +110,10 @@ class EyesVisualGrid extends Eyes {
 
     this._isOpen = true
     this._checkWindowCommand = checkWindow
-    this._closeCommand = async () =>
-      close(true).catch(err => {
-        if (Array.isArray(err)) {
-          return err
-        }
-
-        throw err
-      })
-    this._abortCommand = async () => abort(true)
+    this._closeCommand = close
+    this._abortCommand = abort
 
     return this._driver
-  }
-
-  /**
-   * @package
-   * @param {boolean} [throwEx=true]
-   * @return {Promise<TestResultsSummary>}
-   */
-  async closeAndReturnResults(throwEx = true) {
-    try {
-      const resultsPromise = this._closePromise || this._closeCommand()
-      const res = await resultsPromise
-      const testResultsSummary = new TestResultsSummary(res)
-
-      if (throwEx === true) {
-        for (const result of testResultsSummary.getAllResults()) {
-          if (result.getException()) {
-            throw result.getException()
-          }
-        }
-      }
-
-      return testResultsSummary
-    } finally {
-      this._isOpen = false
-      this._closePromise = undefined
-    }
-  }
-
-  /**
-   * @return {Promise}
-   */
-  async closeAsync() {
-    if (!this._closePromise) {
-      this._closePromise = this._closeCommand()
-    }
   }
 
   /**
@@ -162,37 +121,31 @@ class EyesVisualGrid extends Eyes {
    * @return {Promise<TestResults>}
    */
   async close(throwEx = true) {
-    const results = await this.closeAndReturnResults(throwEx)
+    let isErrorCaught = false
+    const results = await this._closeCommand(true).catch(err => {
+      isErrorCaught = true
+      return err
+    })
 
-    for (const result of results.getAllResults()) {
-      if (result.getException()) {
-        return result.getTestResults()
-      }
+    this._isOpen = false
+
+    if (this._runner) {
+      this._runner._allTestResult.push(...results)
     }
 
-    return results.getAllResults()[0].getTestResults()
+    if (throwEx && isErrorCaught) {
+      throw TypeUtils.isArray(results) ? results[0] : results
+    }
+
+    return results
   }
 
   /**
    * @return {Promise<?TestResults>}
    */
   async abort() {
-    if (typeof this._abortCommand === 'function') {
-      if (this._closePromise) {
-        this._logger.verbose('Can not abort while closing async, abort added to close promise.')
-        return this._closePromise.then(() => this._abortCommand(true))
-      }
-
-      return this._abortCommand()
-    }
-    return null
-  }
-
-  /**
-   * @return {Promise}
-   */
-  async abortAsync() {
-    this._closePromise = this.abort()
+    this._isOpen = false
+    return this._abortCommand()
   }
 
   /**
