@@ -128,8 +128,8 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
       const runningSession = createRunningSessionFromStartInfo(req.body.startInfo)
       runningSessions[runningSession.id] = runningSession
 
-      const {id, sessionId, batchId, baselineId, url} = runningSession
-      res.send({id, sessionId, batchId, baselineId, url})
+      const {id, sessionId, batchId, baselineId, url, isNew} = runningSession
+      res.send({id, sessionId, batchId, baselineId, url, isNew})
     } catch (ex) {
       logger.log('bad request for startSession', ex.message)
       res.status(400).send(ex.message)
@@ -157,6 +157,7 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
       hostOS: `${os.name}${os.version ? `@${os.version}` : ''}`,
       hostApp: `${browser.name}@${browser.major}`,
       batchId,
+      isNew: true, // TODO make configurable
     }
   }
 
