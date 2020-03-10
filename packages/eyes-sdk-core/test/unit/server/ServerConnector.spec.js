@@ -30,7 +30,7 @@ describe('ServerConnector', () => {
         baselineId: `${sessionId}__baseline`,
         batchId,
         id: `${sessionId}__running`,
-        isNewSession: false,
+        isNew: undefined,
         renderingInfo: undefined,
         sessionId,
         url: `${sessionId}__url`,

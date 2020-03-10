@@ -910,7 +910,7 @@ class EyesBase {
         this._getAndSaveBatchInfoFromServer(batchId),
       )
       this._logger.log(
-        `_getAndSaveBatchInfoFromServer done for ${batchId}, 
+        `_getAndSaveBatchInfoFromServer done for ${batchId},
         branchName: ${scmSourceBranch}, parentBranchName: ${scmTargetBranch}, err: ${err}`,
       )
     }
@@ -1158,7 +1158,7 @@ class EyesBase {
         return new TestResults()
       }
 
-      const isNewSession = this._runningSession.getIsNewSession()
+      const isNewSession = this._runningSession.getIsNew()
       const sessionResultsUrl = this._runningSession.getUrl()
 
       this._logger.verbose('Ending server session...')
@@ -1598,7 +1598,7 @@ class EyesBase {
 
     this._shouldMatchWindowRunOnceOnTimeout = true
 
-    if (this._runningSession && !this._runningSession.getIsNewSession()) {
+    if (this._runningSession && !this._runningSession.getIsNew()) {
       this._logger.log(`Mismatch! (${tag})`)
     }
 
@@ -2012,7 +2012,7 @@ class EyesBase {
     }
 
     const testInfo = `'${this._configuration.getTestName()}' of '${this.getAppName()}' "${appEnvironment}`
-    if (this._runningSession.getIsNewSession()) {
+    if (this._runningSession.getIsNew()) {
       this._logger.log(`--- New test started - ${testInfo}`)
       this._shouldMatchWindowRunOnceOnTimeout = true
     } else {
