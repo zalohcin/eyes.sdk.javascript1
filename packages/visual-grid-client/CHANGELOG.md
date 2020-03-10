@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- RunningSession is no longer determined to be new according to startSession's response status, but rather by the response's payload of `isNew`. ([Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks))
 
 ## 13.6.2
 
