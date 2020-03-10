@@ -212,6 +212,17 @@
   dependencies:
     debug "^4.1.0"
 
+"@applitools/sdk-fake-eyes-server@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@applitools/sdk-fake-eyes-server/-/sdk-fake-eyes-server-1.0.5.tgz#acc24bfb1eeae4b620a989fc20e747a4694e9b5b"
+  integrity sha512-J+fSRWsNF4l2SPLXXcGCLwQ6zTP5c/faqAVnOfhKjt4A1etXlRvk3kV/mkgZKqGqKjyQDXAPvAoxsb2FyRsQxQ==
+  dependencies:
+    express "^4.17.1"
+    filenamify "^4.1.0"
+    node-fetch "^2.6.0"
+    ua-parser-js "^0.7.21"
+    uuid "^3.3.3"
+
 "@applitools/visual-grid-client@13.5.12":
   version "13.5.12"
   resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-13.5.12.tgz#edd00d5d509a3dff0f1faf784b940e953b15c042"
