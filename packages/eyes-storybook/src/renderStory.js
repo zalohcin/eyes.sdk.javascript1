@@ -20,6 +20,7 @@ function makeRenderStory({logger, testWindow, performance, timeItAsync}) {
       selector,
       region,
       tag,
+      properties,
     } = eyesOptions;
 
     if (sizeMode) {
@@ -33,6 +34,7 @@ function makeRenderStory({logger, testWindow, performance, timeItAsync}) {
       properties: [
         {name: 'Component name', value: kind},
         {name: 'State', value: name},
+        ...properties,
       ],
     };
 
