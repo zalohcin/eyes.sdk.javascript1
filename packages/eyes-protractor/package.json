@@ -38,14 +38,19 @@
     "@applitools/eyes-selenium": "^4.33.4"
   },
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.1.0",
     "protractor": "^6.0.0-beta"
   },
   "scripts": {
+    "vv": "bongo --verify-versions",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "protractor test/protractor.conf.js",
     "test:it": "protractor test/protractor.conf.js",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

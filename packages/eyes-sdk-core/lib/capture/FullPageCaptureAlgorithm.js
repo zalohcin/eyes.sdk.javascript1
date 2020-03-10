@@ -95,6 +95,7 @@ class FullPageCaptureAlgorithm {
     // Saving the original position (in case we were already in the outermost frame).
     const originalPosition = await this._originProvider.getState()
     await this._originProvider.setPosition(Location.ZERO) // first scroll to 0,0 so CSS stitching works.
+    await positionProvider.setPosition(Location.ZERO) // set initial 0,0 position with specified method
 
     // Saving the original position (in case we were already in the outermost frame).
     const originalStitchedState = await positionProvider.getState()

@@ -3,6 +3,7 @@
   "private": true,
   "version": "4.5.106",
   "scripts": {
+    "vv": "bongo --verify-versions",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test:perf": "jest",
     "postpublish": "git push; git push --tags",

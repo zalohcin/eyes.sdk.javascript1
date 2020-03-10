@@ -186,6 +186,19 @@ class ArgumentGuard {
   }
 
   /**
+   * Fails if param is not a plain object.
+   *
+   * @param {object} param - The input parameter.
+   * @param {string} paramName - The input parameter name.
+   * @param {boolean} [strict=true] - If {@code false} then the value can be null|undefined
+   */
+  static isPlainObject(param, paramName, strict = true) {
+    if ((strict || param) && !TypeUtils.isPlainObject(param)) {
+      throw new Error(`IllegalType: ${paramName} is not an object`)
+    }
+  }
+
+  /**
    * Fails if param is not a buffer.
    *
    * @param {object} param - The input parameter.

@@ -48,8 +48,9 @@
     "eyes.utils": "^3.8.1"
   },
   "devDependencies": {
+    "@applitools/sdk-release-kit": "0.1.0",
     "@types/node": "*",
-    "chromedriver": "^78.0.0",
+    "chromedriver": "^80.0.1",
     "mocha": "^6.2.2",
     "protractor": "^5.4.2",
     "selenium-webdriver": "^3.6.0",
@@ -59,6 +60,9 @@
     "selenium-webdriver": "< 4.0.0"
   },
   "scripts": {
+    "vv": "bongo --verify-versions",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
     "test": "npm run test:unit && npm run test:e2e",
     "test:e2e": "npm run test:selenium",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.js\"",
@@ -67,8 +71,8 @@
     "test:protractor": "protractor test/e2e/protractor/protractor.conf.js",
     "typings": "tsc --declaration",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv",
-    "vv": "node ../../scripts/verify-versions.js"
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

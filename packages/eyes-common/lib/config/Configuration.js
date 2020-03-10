@@ -1145,6 +1145,10 @@ class Configuration {
    * @return {this}
    */
   addBrowsers(...browsersInfo) {
+    for (const [i, b] of browsersInfo.entries()) {
+      ArgumentGuard.isPlainObject(b, `addBrowsers( arg${i} )`)
+    }
+
     if (!this._browsersInfo) {
       this._browsersInfo = []
     }
@@ -1222,10 +1226,7 @@ class Configuration {
       displayName: this.getDisplayName(),
       browser: this.getBrowsersInfo(),
       properties: this.getProperties(),
-      batchSequenceName: this.getBatch() && this.getBatch().getSequenceName(),
-      batchName: this.getBatch() && this.getBatch().getName(),
-      batchId: this.getBatch() && this.getBatch().getId(),
-      batchNotify: this.getBatch() && this.getBatch().getNotifyOnCompletion(),
+      batch: this.getBatch(),
       baselineBranchName: this.getBaselineBranchName(),
       baselineEnvName: this.getBaselineEnvName(),
       baselineName: this.getBaselineEnvName(),
@@ -1238,7 +1239,6 @@ class Configuration {
       parentBranchName: this.getParentBranchName(),
       isDisabled: this.getIsDisabled(),
       matchTimeout: this.getMatchTimeout(),
-
       ignoreCaret: this.getIgnoreCaret(),
       matchLevel: this.getMatchLevel(),
       useDom: this.getUseDom(),

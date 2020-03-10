@@ -111,7 +111,8 @@ class EyesVisualGrid extends EyesBase {
     }
 
     if (
-      this._configuration.getBrowsersInfo().length === 0 &&
+      (!this._configuration.getBrowsersInfo() ||
+        this._configuration.getBrowsersInfo().length === 0) &&
       this._configuration.getViewportSize()
     ) {
       const vs = this._configuration.getViewportSize()

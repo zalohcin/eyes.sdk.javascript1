@@ -5,7 +5,7 @@ const {
   GeneralUtils: {sleep},
 } = require('@applitools/eyes-common')
 const {FakeEyes} = require('../testUtils')
-const {EyesBase, Configuration, RunningSession} = require('../../index')
+const {EyesBase, Configuration, RunningSession, BatchInfo} = require('../../index')
 
 process.env.APPLITOOLS_COMPARE_TO_BRANCH_BASE = true
 
@@ -125,6 +125,39 @@ describe('EyesBase', () => {
       assert.strictEqual(startSessionArgs.getBranchName(), 'aaa')
       assert.strictEqual(startSessionArgs.getParentBranchName(), 'bbb')
       assert.strictEqual(startSessionArgs.getParentBranchBaselineSavedBefore(), 'some-datetime')
+    })
+  })
+
+  describe('getUserSetBatchId()', () => {
+    beforeEach(() => {
+      eyes = new EyesBase()
+      process.env.APPLITOOLS_BATCH_ID = null
+    })
+
+    it('returns user set batchId', async () => {
+      process.env.APPLITOOLS_BATCH_ID = 'someId'
+      const batchId = eyes.getUserSetBatchId()
+      assert.strictEqual(batchId, 'someId')
+    })
+
+    it('returns user set batchId in configuration', async () => {
+      const configuration = new Configuration({})
+      configuration.setBatch(new BatchInfo({id: 'some id'}))
+      eyes.setConfiguration(configuration)
+
+      const batchId = eyes.getUserSetBatchId()
+      assert.strictEqual(batchId, 'some id')
+    })
+
+    it('returns undefined if user did not set batch id', async () => {
+      const batchId = eyes.getUserSetBatchId()
+      assert.strictEqual(batchId, undefined)
+    })
+
+    it('returns undefined if the user did not set batch id but it was auto generated', async () => {
+      eyes.getBatch().getId()
+      const batchId = eyes.getUserSetBatchId()
+      assert.strictEqual(batchId, undefined)
     })
   })
 })

@@ -1,8 +1,44 @@
 # Change Log
 
+## Unreleased
+
+- update @applitools/eyes-sdk-core@9.0.1, @applitools/visual-grid-client@13.6.3
+- RunningSession is no longer determined to be new according to startSession's response status, but rather by the response's payload of `isNew`. ([Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks))
+
+## 4.33.25
+
+- update @applitools/eyes-common@3.20.1
+- update @applitools/visual-grid-client@13.6.1
+
+## 4.33.24
+
+- fix trying to fetch branch info from server on non github integration runs
+
+## 4.33.23
+
+- upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
+- support future long running tasks [Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks)
+- fix regression in css stitching [Trello](https://trello.com/c/dp5IIoFw/235-css-stitching-regression-in-41533)
+
+## 4.33.22
+
+- no new content
+
 ## 4.33.21
 
-make function in runners
+- make function in runners
+
+## 4.33.20
+
+- not released, skipped
+
+## 4.33.19
+
+- not released, skipped
+
+## 4.33.18
+
+- not released, skipped
 
 ## 4.33.17
 

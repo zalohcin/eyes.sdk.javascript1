@@ -1,5 +1,15 @@
 # Change Log
 
+## Unreleased
+
+
+## 2.12.3
+
+- fix trying to fetch branch info from server on non github integration runs
+- upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
+- fix regression in css stitching [Trello](https://trello.com/c/dp5IIoFw/235-css-stitching-regression-in-41533)
+- support future long running tasks [Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks)
+
 ## 2.12.2
 - branching base commit support
 - make functions in runners 

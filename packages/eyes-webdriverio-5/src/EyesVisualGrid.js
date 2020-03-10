@@ -254,9 +254,16 @@ class EyesVisualGrid extends EyesBase {
     }
 
     this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
-
     const source = await this._driver.getCurrentUrl()
-    const ignoreRegions = await this._prepareRegions(checkSettings.getIgnoreRegions())
+
+    const [ignore, floating, strict, layout, content, accessibility] = await Promise.all([
+      this._persistRegions(checkSettings.getIgnoreRegions()),
+      this._persistRegions(checkSettings.getFloatingRegions()),
+      this._persistRegions(checkSettings.getStrictRegions()),
+      this._persistRegions(checkSettings.getLayoutRegions()),
+      this._persistRegions(checkSettings.getContentRegions()),
+      this._persistRegions(checkSettings.getAccessibilityRegions()),
+    ])
 
     await this._checkWindowCommand({
       resourceUrls,
@@ -272,14 +279,23 @@ class EyesVisualGrid extends EyesBase {
       selector: targetSelector ? targetSelector : undefined,
       region: checkSettings.getTargetRegion(),
       scriptHooks: checkSettings.getScriptHooks(),
-      ignore: ignoreRegions,
-      floating: checkSettings.getFloatingRegions(),
+      ignore,
+      floating,
+      strict,
+      layout,
+      content,
+      accessibility,
       sendDom: checkSettings.getSendDom() ? checkSettings.getSendDom() : this.getSendDom(),
       matchLevel: checkSettings.getMatchLevel()
         ? checkSettings.getMatchLevel()
         : this.getMatchLevel(),
       source,
     })
+  }
+
+  async _persistRegions(regions) {
+    const persisted = await Promise.all(regions.map(r => r.toPersistedRegions(this._driver)))
+    return persisted.flat()
   }
 
   /**

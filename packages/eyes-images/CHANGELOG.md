@@ -1,5 +1,9 @@
 # Change Log
 
+## Unreleased
+
+- upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
+
 ## [4.12.37](https://github.com/applitools/eyes.sdk.javascript1/compare/@applitools/eyes-images@4.12.36...@applitools/eyes-images@4.12.37) (2020-02-16)
 
 Branching base commit support

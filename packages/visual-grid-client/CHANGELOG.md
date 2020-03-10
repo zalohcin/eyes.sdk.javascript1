@@ -1,5 +1,32 @@
 # Change Log
 
+## Unreleased
+
+
+## 13.6.3
+
+- RunningSession is no longer determined to be new according to startSession's response status, but rather by the response's payload of `isNew`. ([Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks))
+
+## 13.6.2
+
+- update @applitools/eyes-sdk-core@8.1.2
+
+## 13.6.1
+
+- add missing browsers to TypeScript definitions [Trello](https://trello.com/c/2QEofssH/264-cypress-js-vs-ts-not-the-same-goodrx-poc)
+
+## 13.6.0
+
+- accepting batchInfo to override batch data in open eyes
+
+## 13.5.21
+
+- support future long running tasks [Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks)
+
+## 13.5.20
+
+- update @applitools/eyes-common@3.19.0, @applitools/eyes-sdk-core@8.0.1
+
 ## 13.7.19
 
 - new branching model for Eyes [Trello 145](https://trello.com/c/VhEHv3YI/145-modify-branching-model-to-be-more-git-like-adjust-github-bitbucket-integrations-109-108-hotfix)
