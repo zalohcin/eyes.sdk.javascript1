@@ -127,6 +127,9 @@ async function eyesStorybook({
   async function initPage(pageId) {
     logger.log('initializing puppeteer page number ', pageId);
     const page = await browser.newPage();
+    if (config.viewportSize) {
+      await page.setViewport(config.viewportSize);
+    }
     if (config.showLogs) {
       browserLog({
         page,
