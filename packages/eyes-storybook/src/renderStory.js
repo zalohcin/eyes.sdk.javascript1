@@ -2,17 +2,27 @@
 const getStoryTitle = require('./getStoryTitle');
 const deprecationWarning = require('./deprecationWarning');
 
-function makeRenderStory({logger, testWindow, performance, timeItAsync}) {
+function makeRenderStory({config, logger, testWindow, performance, timeItAsync}) {
+  const {
+    ignore: globalIgnore = [],
+    accessibility: globalAccessibility = [],
+    floating: globalFloating = [],
+    strict: globalStrict = [],
+    content: globalContent = [],
+    layout: globalLayout = [],
+  } = config;
+
   return function renderStory({story, resourceUrls, resourceContents, frames, cdt, url}) {
     const {name, kind, parameters} = story;
     const title = getStoryTitle({name, kind, parameters});
     const eyesOptions = (parameters && parameters.eyes) || {};
     const {
-      ignore,
-      accessibility,
-      floating,
-      strict,
-      layout,
+      ignore = [],
+      accessibility = [],
+      floating = [],
+      strict = [],
+      content = [],
+      layout = [],
       scriptHooks,
       sizeMode,
       target,
@@ -42,11 +52,12 @@ function makeRenderStory({logger, testWindow, performance, timeItAsync}) {
       resourceContents,
       url,
       frames,
-      ignore,
-      accessibility,
-      floating,
-      strict,
-      layout,
+      ignore: globalIgnore.concat(ignore),
+      floating: globalFloating.concat(floating),
+      layout: globalLayout.concat(layout),
+      strict: globalStrict.concat(strict),
+      content: globalContent.concat(content),
+      accessibility: globalAccessibility.concat(accessibility),
       scriptHooks,
       sizeMode,
       target,

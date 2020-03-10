@@ -80,6 +80,7 @@ async function eyesStorybook({
 
     const getStoryData = makeGetStoryData({logger, processPageAndSerialize, waitBeforeScreenshot});
     const renderStory = makeRenderStory({
+      config,
       logger: logger.extend('renderStory'),
       testWindow,
       performance,
