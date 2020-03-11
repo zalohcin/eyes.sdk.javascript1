@@ -5,6 +5,7 @@ const {makeVisualGridClient} = require('@applitools/visual-grid-client');
 const {getProcessPageAndSerialize} = require('@applitools/dom-snapshot');
 const {presult} = require('@applitools/functional-commons');
 const chalk = require('chalk');
+const makeInitPage = require('./initPage');
 const makeRenderStory = require('./renderStory');
 const makeRenderStories = require('./renderStories');
 const makeGetStoryData = require('./getStoryData');
@@ -31,6 +32,15 @@ async function eyesStorybook({
   takeMemLoop();
   logger.log('eyesStorybook started');
   const {storybookUrl, waitBeforeScreenshot, readStoriesTimeout, reloadPagePerStory} = config;
+
+  let iframeUrl;
+  try {
+    iframeUrl = getIframeUrl(storybookUrl);
+  } catch (ex) {
+    logger.log(ex);
+    throw new Error(`Storybook URL is not valid: ${storybookUrl}`);
+  }
+
   const browser = await puppeteer.launch(config.puppeteerOptions);
   logger.log('browser launched');
   const page = await browser.newPage();
@@ -41,7 +51,9 @@ async function eyesStorybook({
     logger: logger.extend('vgc'),
   });
 
-  const pagePool = createPagePool({logger, initPage});
+  const initPage = makeInitPage({iframeUrl, config, browser, logger});
+
+  const pagePool = createPagePool({initPage, logger});
 
   const processPageAndSerialize = `(${await getProcessPageAndSerialize()})(document, {useSessionCache: true, showLogs: ${
     config.showLogs
@@ -53,14 +65,6 @@ async function eyesStorybook({
       logger.log(`master tab: ${text}`);
     },
   });
-
-  let iframeUrl;
-  try {
-    iframeUrl = getIframeUrl(storybookUrl);
-  } catch (ex) {
-    logger.log(ex);
-    throw new Error(`Storybook URL is not valid: ${storybookUrl}`);
-  }
 
   try {
     const [stories] = await Promise.all(
@@ -122,48 +126,6 @@ async function eyesStorybook({
     logger.log('perf results', performance);
     await browser.close();
     clearTimeout(memoryTimeout);
-  }
-
-  async function initPage(pageId) {
-    logger.log('initializing puppeteer page number ', pageId);
-    const page = await browser.newPage();
-    if (config.viewportSize) {
-      await page.setViewport(config.viewportSize);
-    }
-    if (config.showLogs) {
-      browserLog({
-        page,
-        onLog: text => {
-          if (text.match(/\[dom-snapshot\]/)) {
-            logger.log(`tab ${pageId}: ${text}`);
-          }
-        },
-      });
-    }
-    page.on('error', async err => {
-      logger.log(`Puppeteer error for page ${pageId}:`, err);
-      pagePool.removePage(pageId);
-      const {pageId} = await pagePool.createPage();
-      pagePool.addToPool(pageId);
-    });
-    page.on('close', async () => {
-      if (pagePool.isInPool(pageId)) {
-        logger.log(
-          `Puppeteer page closed [page ${pageId}] while still in page pool, creating a new one instead`,
-        );
-        pagePool.removePage(pageId);
-        const {pageId} = await pagePool.createPage();
-        pagePool.addToPool(pageId);
-      }
-    });
-    const [err] = await presult(page.goto(iframeUrl, {timeout: readStoriesTimeout}));
-    if (err) {
-      logger.log(`error navigating to iframe.html`, err);
-      if (pagePool.isInPool(pageId)) {
-        throw err;
-      }
-    }
-    return page;
   }
 
   function takeMemLoop() {
