@@ -140,6 +140,42 @@ class EyesJsBrowserUtils {
   }
 
   /**
+   * Gets the element xpath.
+   *
+   * @param {EyesJsExecutor} executor - The executor to use.
+   * @param {WebElement} element - The element.
+   */
+  static async getElementXpath(executor, element) {
+    const script = `
+      function genXpath(el) {
+        if (!el.ownerDocument) return ''; // this is the document node
+
+        let xpath = '',
+          currEl = el,
+          doc = el.ownerDocument,
+          frameElement = doc.defaultView.frameElement;
+        while (currEl !== doc) {
+          xpath = currEl.tagName + '[' + getIndex(currEl) + ']/' + xpath;
+          currEl = currEl.parentNode;
+        }
+        if (frameElement) {
+          xpath = genXpath(frameElement) + ',' + xpath;
+        }
+        return xpath.replace(/\/$/, '');
+      }
+      function getIndex(el) {
+        return (
+          Array.prototype.filter
+            .call(el.parentNode.childNodes, node => node.tagName === el.tagName)
+            .indexOf(el) + 1
+        );
+      }
+      return genXpath(arguments[0])
+    `
+    return executor.executeScript(script, element)
+  }
+
+  /**
    * Sets the scroll position of the current frame.
    *
    * @param {EyesJsExecutor} executor - The executor to use.

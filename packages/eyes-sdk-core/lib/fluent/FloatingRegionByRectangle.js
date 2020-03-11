@@ -40,6 +40,21 @@ class FloatingRegionByRectangle extends GetFloatingRegion {
     })
     return [floatingRegion]
   }
+
+  async toPersistedRegions(_driver) {
+    return [
+      {
+        left: this._rect.getLeft(),
+        top: this._rect.getTop(),
+        width: this._rect.getWidth(),
+        height: this._rect.getHeight(),
+        maxUpOffset: this._maxUpOffset,
+        maxDownOffset: this._maxDownOffset,
+        maxLeftOffset: this._maxLeftOffset,
+        maxRightOffset: this._maxRightOffset,
+      },
+    ]
+  }
 }
 
 exports.FloatingRegionByRectangle = FloatingRegionByRectangle

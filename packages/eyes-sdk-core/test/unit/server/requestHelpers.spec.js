@@ -17,7 +17,6 @@ describe('requestHelpers', () => {
     const TIMESTAMP = new Date()
     const axiosConfig = {
       requestId: REQUEST_ID,
-      isLongRequest: true,
       timestamp: TIMESTAMP,
     }
 

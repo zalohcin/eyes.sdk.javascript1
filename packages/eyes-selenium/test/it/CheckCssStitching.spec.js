@@ -16,7 +16,6 @@ describe('Check CSS Stitching', () => {
     eyes = new Eyes()
     eyes.setLogHandler(new ConsoleLogHandler(false))
     eyes.setStitchMode(StitchMode.CSS)
-    await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   })
 
   beforeEach(async function() {
@@ -27,6 +26,13 @@ describe('Check CSS Stitching', () => {
   })
 
   it('with check window', async () => {
+    await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+    await eyes.check('Window', Target.window().fully())
+    return eyes.close()
+  })
+
+  it('works for pages with bottom popup', async () => {
+    await driver.get('https://applitools.github.io/demo/TestPages/PopupTestPage/')
     await eyes.check('Window', Target.window().fully())
     return eyes.close()
   })

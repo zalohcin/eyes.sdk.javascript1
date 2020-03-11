@@ -153,15 +153,6 @@ class WebdriverioCheckSettings extends CheckSettings {
 
   /**
    * @inheritDoc
-   * @param {...(By|WebElement|EyesWebElement|GetRegion|Region)} regions - A region to match using the Strict method.
-   * @return {this}
-   */
-  strictRegions(...regions) {
-    return super.strictRegions(...regions)
-  }
-
-  /**
-   * @inheritDoc
    * @protected
    * @param {By|WebElement|EyesWebElement|GetRegion|Region} region
    */

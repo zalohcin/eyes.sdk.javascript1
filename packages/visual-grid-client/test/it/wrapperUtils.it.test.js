@@ -1,6 +1,7 @@
 'use strict'
 const {describe, it} = require('mocha')
 const {expect} = require('chai')
+const {BatchInfo} = require('@applitools/eyes-common')
 const EyesWrapper = require('../../src/sdk/EyesWrapper')
 const {configureWrappers} = require('../../src/sdk/wrapperUtils')
 
@@ -42,5 +43,24 @@ describe('wrapperUtils', () => {
       batchNotify: true,
     })
     expect(wrapper._configuration.getBatch().getNotifyOnCompletion()).to.be.true
+  })
+
+  it('overrides batch data with batch', () => {
+    let wrapper = new EyesWrapper()
+    const id = 'myId'
+    const name = 'myName'
+    const notifyOnCompletion = true
+    const batch = new BatchInfo({id, name, notifyOnCompletion})
+    configureWrappers({
+      wrappers: [wrapper],
+      browsers: [{}],
+      batch,
+      batchId: 'override this id',
+      batchName: 'override this name',
+      notifyOnCompletion: false,
+    })
+    expect(wrapper._configuration.getBatch().getNotifyOnCompletion()).to.be.true
+    expect(wrapper._configuration.getBatch().getName()).to.equal('myName')
+    expect(wrapper._configuration.getBatch().getId()).to.equal('myId')
   })
 })

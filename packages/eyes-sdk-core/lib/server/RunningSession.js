@@ -16,7 +16,7 @@ class RunningSession {
    * @param {string} url
    * @param {RenderingInfo|object} renderingInfo
    */
-  constructor({id, sessionId, batchId, baselineId, url, renderingInfo} = {}) {
+  constructor({id, sessionId, batchId, baselineId, url, renderingInfo, isNew} = {}) {
     if (renderingInfo && !(renderingInfo instanceof RenderingInfo)) {
       renderingInfo = new RenderingInfo(renderingInfo)
     }
@@ -27,8 +27,7 @@ class RunningSession {
     this._baselineId = baselineId
     this._url = url
     this._renderingInfo = renderingInfo
-
-    this._isNewSession = false
+    this._isNew = isNew
   }
 
   /**
@@ -118,15 +117,15 @@ class RunningSession {
   /**
    * @return {boolean}
    */
-  getIsNewSession() {
-    return this._isNewSession
+  getIsNew() {
+    return this._isNew
   }
 
   /**
    * @param {boolean} value
    */
-  setNewSession(value) {
-    this._isNewSession = value
+  setIsNew(value) {
+    this._isNew = value
   }
 
   /**

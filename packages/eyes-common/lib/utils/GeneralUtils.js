@@ -450,10 +450,14 @@ class GeneralUtils {
   static cachify(getterFunction, cacheRegardlessOfArgs = false) {
     const cachedGetter = (function() {
       const cache = {}
-      return function(arg1AndKey, ...args) {
-        const cacheKey = (!cacheRegardlessOfArgs && arg1AndKey) || 'default'
-        if (!cache[cacheKey]) {
-          cache[cacheKey] = getterFunction(arg1AndKey, ...args)
+      return function(...args) {
+        let cacheKey = 'default'
+        if (!cacheRegardlessOfArgs) {
+          const [key] = args
+          cacheKey = GeneralUtils.stringify(key)
+        }
+        if (!(cacheKey in cache)) {
+          cache[cacheKey] = getterFunction(...args)
         }
         return cache[cacheKey]
       }

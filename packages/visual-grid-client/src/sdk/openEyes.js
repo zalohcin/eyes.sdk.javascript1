@@ -45,6 +45,7 @@ function makeOpenEyes({
   batchSequence: _batchSequence,
   batchName: _batchName,
   batchId: _batchId,
+  batchNotify: _batchNotify,
   properties: _properties,
   baselineBranchName: _baselineBranchName,
   baselineBranch: _baselineBranch,
@@ -81,7 +82,6 @@ function makeOpenEyes({
   getRenderInfo,
   agentId,
   notifyOnCompletion: _notifyOnCompletion,
-  batchNotify: _batchNotify,
   getUserAgents: _getUserAgents,
   globalState,
   wrappers: _wrappers,
@@ -99,6 +99,8 @@ function makeOpenEyes({
     batchSequence = _batchSequence,
     batchName = _batchName,
     batchId = _batchId,
+    batchNotify = _batchNotify,
+    batch,
     properties = _properties,
     baselineBranchName = _baselineBranchName,
     baselineBranch = _baselineBranch,
@@ -121,7 +123,6 @@ function makeOpenEyes({
     compareWithParentBranch = _compareWithParentBranch,
     ignoreBaseline = _ignoreBaseline,
     notifyOnCompletion = _notifyOnCompletion,
-    batchNotify = _batchNotify,
     getUserAgents = _getUserAgents,
   }) {
     logger.verbose(`openEyes: testName=${testName}, browser=`, browser)
@@ -192,6 +193,8 @@ function makeOpenEyes({
       batchSequence,
       batchName,
       batchId,
+      batchNotify,
+      batch,
       properties,
       baselineBranch,
       baselineEnvName,
@@ -212,7 +215,6 @@ function makeOpenEyes({
       ignoreBaseline,
       serverUrl,
       agentId,
-      batchNotify,
     })
 
     if (!globalState.batchStore.hasCloseBatch()) {

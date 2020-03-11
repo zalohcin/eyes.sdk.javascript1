@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+
+## 4.7.8
+
+- update @applitools/eyes-common@3.20.1
+
+## 4.7.7
+
+- update @applitools/eyes-common@3.19.0
+
 ## 4.7.6
 
 - update @applitools/eyes-common@3.18.5

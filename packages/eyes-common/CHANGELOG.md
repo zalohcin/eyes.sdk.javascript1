@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+
+## 3.20.1
+
+- returning batchInfo from toOpenEyesConfiguration
+
+## 3.20.0
+
+- Region supports toPersistedRegions() for VGC
+
 ## [3.19.0]
 
 - batchInfo has generating batch id info

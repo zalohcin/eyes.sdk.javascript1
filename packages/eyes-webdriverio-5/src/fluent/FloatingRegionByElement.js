@@ -5,6 +5,7 @@ const {
   FloatingMatchSettings,
   Location,
   CoordinatesType,
+  EyesJsBrowserUtils,
 } = require('@applitools/eyes-sdk-core')
 
 class FloatingRegionByElement extends GetFloatingRegion {
@@ -50,6 +51,20 @@ class FloatingRegionByElement extends GetFloatingRegion {
       maxRightOffset: this._maxRightOffset,
     })
     return [floatingRegion]
+  }
+
+  async toPersistedRegions(driver) {
+    const xpath = await EyesJsBrowserUtils.getElementXpath(driver, this._element)
+    return [
+      {
+        type: 'xpath',
+        selector: xpath,
+        maxUpOffset: this._maxUpOffset,
+        maxDownOffset: this._maxDownOffset,
+        maxLeftOffset: this._maxLeftOffset,
+        maxRightOffset: this._maxRightOffset,
+      },
+    ]
   }
 }
 

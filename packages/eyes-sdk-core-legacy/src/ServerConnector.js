@@ -178,13 +178,6 @@
     return this._renderingInfo
   }
 
-  /**
-   * Starts a new running session in the server. Based on the given parameters, this running session will either be
-   * linked to an existing session, or to a completely new session.
-   *
-   * @param {SessionStartInfo} sessionStartInfo - The start parameters for the session.
-   * @return {Promise<RunningSession>} Promise with a resolve result that represents the current running session.
-   **/
   ServerConnector.prototype.startSession = function(sessionStartInfo) {
     this._logger.verbose('ServerConnector.startSession called with:', sessionStartInfo)
 
@@ -194,7 +187,7 @@
       body: JSON.stringify({startInfo: sessionStartInfo}),
     }
 
-    return _sendRequest(that, 'startSession', uri, 'post', options).then(function(results) {
+    return _sendLongRequest(that, 'startSession', uri, 'post', options).then(function(results) {
       if (results.status === HTTP_STATUS_CODES.OK || results.status === HTTP_STATUS_CODES.CREATED) {
         that._logger.verbose('ServerConnector.startSession - post succeeded')
 
@@ -214,15 +207,6 @@
     })
   }
 
-  /**
-   *
-   * Ends a running session in the server. Session results are received from the server.
-   *
-   * @param {RunningSession} runningSession - The session to end.
-   * @param {boolean} isAborted.
-   * @param {boolean} save Save the session.
-   * @return {Promise<TestResults>} Promise with a resolve result that represents the test results.
-   **/
   ServerConnector.prototype.endSession = function(runningSession, isAborted, save) {
     this._logger.verbose(
       'ServerConnector.endSession called with isAborted:',
@@ -262,7 +246,7 @@
     var that = this
     var uri = GeneralUtils.urlConcat(this._serverUrl, '/api/sessions/renderinfo')
 
-    return _sendRequest(this, 'renderInfo', uri, 'get').then(function(results) {
+    return _sendLongRequest(this, 'renderInfo', uri, 'get').then(function(results) {
       if (results.status === HTTP_STATUS_CODES.OK) {
         that._renderingInfo = new RenderingInfo(
           results.body.serviceUrl,
@@ -291,7 +275,7 @@
       },
     }
 
-    return _sendRequest(this, 'uploadScreenshot', uri, 'put', options, 3).then(function(results) {
+    return _sendLongRequest(this, 'uploadScreenshot', uri, 'put', options, 3).then(function(results) {
       if (results.status !== HTTP_STATUS_CODES.CREATED) {
         throw new Error(
           `ServerConnector.uploadScreenshot - unexpected status ${_makeResponseOutputString(
@@ -399,7 +383,7 @@
    * @param {object} options
    * @return {Promise<{status: int, body: object, response: {statusCode: int, statusMessage: string, headers: object}}>}
    */
-  function _sendLongRequest(that, name, uri, method, options) {
+  function _sendLongRequest(that, name, uri, method, options = {}) {
     var headers = {
       'Eyes-Expect': '202+location',
       'Eyes-Date': GeneralUtils.getRfc1123Date(),
@@ -409,7 +393,14 @@
       ? GeneralUtils.objectAssign(options.headers, headers)
       : headers
     return _sendRequest(that, name, uri, method, options).then(function(results) {
-      return _longRequestCheckStatus(that, name, uri, method, options, results, true)
+      if (
+        results.status === HTTP_STATUS_CODES.ACCEPTED &&
+        Boolean(results.response.headers.location)
+      ) {
+        return _longRequestCheckStatus(that, name, uri, method, options, results, true)
+      } else {
+        return results
+      }
     })
   }
 

@@ -20,6 +20,10 @@ class IgnoreRegionByRectangle extends GetRegion {
   async getRegion(_eyesBase, _screenshot) {
     return [this._region]
   }
+
+  async toPersistedRegions(_driver) {
+    return [this._region.toJSON()]
+  }
 }
 
 exports.IgnoreRegionByRectangle = IgnoreRegionByRectangle

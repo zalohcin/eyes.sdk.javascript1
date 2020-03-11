@@ -159,7 +159,7 @@ describe('captureFrame', () => {
   });
 
   it("don't fetch css if fetching is to long", async () => {
-    const port = 7272;
+    const port = 7273; // Use unique port to avoid cache of css resource
     const anotherTestServer = await startTestServer({port, delayRecourses: 10000});
 
     await page.goto(`http://localhost:${port}/longCss.html`);
