@@ -38,7 +38,7 @@
     "stack-trace": "^0.0.10"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-release-kit": "file:../../packages/sdk-release-kit",
     "chai": "^4.2.0",
     "mocha": "^6.2.2"
   },

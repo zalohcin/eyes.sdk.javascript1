@@ -32,8 +32,8 @@
   ],
   "dependencies": {
     "@applitools/dom-snapshot": "3.3.3",
-    "@applitools/eyes-common": "3.20.1",
-    "@applitools/eyes-sdk-core": "9.0.2",
+    "@applitools/eyes-common": "file:../../src/common",
+    "@applitools/eyes-sdk-core": "file:../../src/core",
     "@applitools/functional-commons": "1.5.4",
     "@applitools/http-commons": "2.3.12",
     "@applitools/isomorphic-fetch": "3.0.0",
