@@ -86,6 +86,10 @@ describe('getStories', () => {
             kind: 'Interaction',
             parameters: {bgColor: 'lime', eyes: {runBefore: '__func'}},
           },
+          {
+            kind: 'Responsive UI',
+            name: 'Red/green',
+          },
         ].map((story, index) => {
           const {name, kind, parameters, error} = story;
           const res = {

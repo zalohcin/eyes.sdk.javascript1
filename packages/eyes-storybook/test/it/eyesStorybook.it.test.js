@@ -83,6 +83,7 @@ describe('eyesStorybook', () => {
       {name: 'RTL: local RTL config [rtl]', isPassed: true},
       {name: 'RTL: should also do RTL', isPassed: true},
       {name: 'RTL: should also do RTL [rtl]', isPassed: true},
+      {name: 'Responsive UI: Red/green', isPassed: true},
       {name: 'SOME section|Nested/Component: story 1.1', isPassed: true},
       {name: 'SOME section|Nested/Component: story 1.2', isPassed: true},
       {name: 'Text: appears after a delay', isPassed: true},
@@ -94,8 +95,8 @@ describe('eyesStorybook', () => {
 
     expect(getEvents().join('')).to.equal(`- Reading stories
 ✔ Reading stories
-- Done 0 stories out of 18
-✔ Done 18 stories out of 18
+- Done 0 stories out of 19
+✔ Done 19 stories out of 19
 `);
   });
 });

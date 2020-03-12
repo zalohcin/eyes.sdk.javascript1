@@ -5,6 +5,7 @@ module.exports = {
   batchName: 'Simple storybook',
   storybookConfigDir: path.resolve(__dirname, '../../fixtures/appWithStorybook'),
   storybookStaticDir: path.resolve(__dirname, '../../fixtures'),
+  viewportSize: {width: 900, height: 800},
   include: ({name}) => !/^\[SKIP\]/.test(name),
   variations: ({name}) => {
     if (/should also do RTL/.test(name)) {
