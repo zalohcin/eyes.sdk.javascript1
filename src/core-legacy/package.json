@@ -1,6 +1,7 @@
 {
   "name": "eyes.sdk",
   "version": "4.0.5",
+  "private": true,
   "description": "Applitools Eyes SDK For JavaScript",
   "keywords": [
     "eyes.sdk",

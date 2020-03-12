@@ -1,6 +1,7 @@
 {
   "name": "eyes.utils",
   "version": "3.8.1",
+  "private": true,
   "description": "General purpose Javascript utilities.",
   "keywords": [
     "eyes.utils",
