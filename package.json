@@ -4,25 +4,6 @@
     "node": ">=10.0.0"
   },
   "private": true,
-  "workspaces": [
-    "packages/dom-capture",
-    "packages/eyes-images",
-    "packages/eyes-selenium",
-    "packages/eyes-testcafe",
-    "packages/sdk-fake-eyes-server",
-    "packages/sdk-test-kit",
-    "packages/sdk-release-kit",
-    "packages/visual-grid-client",
-    "packages/eyes-webdriverio-4",
-    "packages/eyes-webdriverio-5",
-    "packages/eyes-webdriverio-5-service",
-    "packages/eyes-images-legacy",
-    "packages/eyes-selenium-3",
-    "packages/eyes-cypress",
-    "packages/eyes-storybook",
-    "packages/eyes-leanft",
-    "packages/side-eyes"
-  ],
   "scripts": {
     "lint": "eslint --ext .js ."
   },
