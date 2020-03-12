@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.3.0
+
 - Add `viewportSize` parameter to control the puppeteer browser size ([Trello](https://trello.com/c/lGEGpIZI/237-bad-rendering-of-element-storybook))
 
 ## 3.2.14
