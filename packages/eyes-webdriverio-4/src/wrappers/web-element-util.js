@@ -10,6 +10,9 @@ async function getAbsoluteElementLocation({jsExecutor, element, logger}) {
       return _calculateNestedElementLocation({frameCoords, elementCoords})
     }
   } catch (error) {
+    if (error.seleniumStack && error.seleniumStack.type === 'StaleElementReference') {
+      throw error
+    }
     if (error.message.includes('Blocked a frame with origin')) {
       const errorMessage = error.message.replace(/<unknown>: /, '')
       throw new Error(_concatenateLogMessage(errorMessage))

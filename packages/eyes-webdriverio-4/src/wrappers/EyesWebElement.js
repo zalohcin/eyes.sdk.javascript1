@@ -81,8 +81,6 @@ class EyesWebElement extends WebElement {
     this._logger = logger
     /** @type {EyesWebDriver}*/
     this._eyesWebDriver = eyesDriver
-    /** @type {WebElement}*/
-    this._webElement = webElement
   }
 
   /**
@@ -111,6 +109,8 @@ class EyesWebElement extends WebElement {
       height = Math.max(0, height + top)
       top = 0
     }
+
+    console.log(left, top)
 
     return new Region(left, top, width, height, CoordinatesType.CONTEXT_RELATIVE)
   }
@@ -252,11 +252,16 @@ class EyesWebElement extends WebElement {
    * @returns {Promise} The result returned from the script
    */
   async executeScript(script) {
-    const webElement = await WebElement.findElement(
-      this._eyesWebDriver.webDriver,
-      this.getWebElement()._locator,
-    )
-    return this._eyesWebDriver.executeScript(script, webElement.element)
+    try {
+      const webElement = await WebElement.findElement(this._eyesWebDriver.webDriver, this._locator)
+      return this._eyesWebDriver.executeScript(script, webElement.element)
+    } catch (err) {
+      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
+        await this.refresh()
+        if (!this._element) throw err
+        return this.executeScript(script)
+      }
+    }
   }
 
   /**
@@ -264,7 +269,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   getDriver() {
-    return this.getWebElement().getDriver()
+    return super.getDriver()
   }
 
   /**
@@ -272,7 +277,7 @@ class EyesWebElement extends WebElement {
    * @return {promise.Thenable.<string>}
    */
   getId() {
-    return this.getWebElement().getId()
+    return super.getId()
   }
 
   /**
@@ -281,7 +286,7 @@ class EyesWebElement extends WebElement {
    * return {EyesWebElement}
    */
   async findElement(locator) {
-    const element = await this.getWebElement().findElement(locator)
+    const element = await super.findElement(locator)
     return new EyesWebElement(this._logger, this._eyesWebDriver, element)
   }
 
@@ -290,7 +295,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   async findElements(locator) {
-    const elements = await this.getWebElement().findElements(locator)
+    const elements = await super.findElements(locator)
     elements.map(element => new EyesWebElement(this._logger, this._eyesWebDriver, element))
   }
 
@@ -305,7 +310,7 @@ class EyesWebElement extends WebElement {
     this._eyesWebDriver.eyes.addMouseTrigger(MouseTrigger.MouseAction.Click, this)
     this._logger.verbose(`click(${currentControl})`)
 
-    return this.getWebElement().click()
+    return super.click()
   }
 
   /**
@@ -321,7 +326,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   getTagName() {
-    return this.getWebElement().getTagName()
+    return super.getTagName()
   }
 
   /**
@@ -329,7 +334,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   getCssValue(cssStyleProperty) {
-    return this.getWebElement().getCssValue(cssStyleProperty)
+    return super.getCssValue(cssStyleProperty)
   }
 
   /**
@@ -337,7 +342,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   getAttribute(attributeName) {
-    return this.getWebElement().getAttribute(attributeName)
+    return super.getAttribute(attributeName)
   }
 
   /**
@@ -345,7 +350,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   getText() {
-    return this.getWebElement().getText()
+    return super.getText()
   }
 
   /**
@@ -354,10 +359,18 @@ class EyesWebElement extends WebElement {
    * @returns {Promise.<RectangleSize>}
    */
   async getSize() {
-    const r = await super.getSize()
-    const width = Math.ceil(r && r.width ? r.width : 0)
-    const height = Math.ceil(r && r.height ? r.height : 0)
-    return new RectangleSize(width, height)
+    try {
+      const r = await super.getSize()
+      const width = Math.ceil(r && r.width ? r.width : 0)
+      const height = Math.ceil(r && r.height ? r.height : 0)
+      return new RectangleSize(width, height)
+    } catch (err) {
+      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
+        await this.refresh()
+        if (!this._element) throw err
+        return this.getSize()
+      }
+    }
   }
 
   /**
@@ -366,14 +379,24 @@ class EyesWebElement extends WebElement {
    * @returns {Promise.<Location>}
    */
   async getLocation() {
-    const r = await getAbsoluteElementLocation({
-      jsExecutor: this._eyesWebDriver.remoteWebDriver.execute.bind(this),
-      element: this._webElement._element,
-      logger: this._logger,
-    })
-    const x = Math.ceil(r && r.x ? r.x : 0)
-    const y = Math.ceil(r && r.y ? r.y : 0)
-    return new Location(x, y)
+    try {
+      // const r = await getAbsoluteElementLocation({
+      //   jsExecutor: this._eyesWebDriver.remoteWebDriver.execute.bind(this),
+      //   element: this._element,
+      //   logger: this._logger,
+      // })
+      const r = await super.getLocation()
+      const x = Math.ceil(r && r.x ? r.x : 0)
+      const y = Math.ceil(r && r.y ? r.y : 0)
+
+      return new Location(x, y)
+    } catch (err) {
+      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
+        await this.refresh()
+        if (!this._element) throw err
+        return this.getLocation()
+      }
+    }
   }
 
   /**
@@ -381,7 +404,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   isEnabled() {
-    return this.getWebElement().isEnabled()
+    return super.isEnabled()
   }
 
   /**
@@ -389,7 +412,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   isSelected() {
-    return this.getWebElement().isSelected()
+    return super.isSelected()
   }
 
   /**
@@ -397,7 +420,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   submit() {
-    return this.getWebElement().submit()
+    return super.submit()
   }
 
   /**
@@ -405,7 +428,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   clear() {
-    return this.getWebElement().clear()
+    return super.clear()
   }
 
   /**
@@ -413,7 +436,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   isDisplayed() {
-    return this.getWebElement().isDisplayed()
+    return super.isDisplayed()
   }
 
   /**
@@ -421,28 +444,28 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   takeScreenshot(opt_scroll) {
-    return this.getWebElement().takeScreenshot(opt_scroll)
+    return super.takeScreenshot(opt_scroll)
   }
 
   /**
    * @returns {Promise.<{offsetLeft, offsetTop}>}
    */
   getElementOffset() {
-    return this.getWebElement().getElementOffset()
+    return super.getElementOffset()
   }
 
   /**
    * @returns {Promise.<{scrollLeft, scrollTop}>}
    */
   getElementScroll() {
-    return this.getWebElement().getElementScroll()
+    return super.getElementScroll()
   }
 
   /**
    * @return {WebElement} The original element object
    */
   getWebElement() {
-    return this._webElement
+    return this
   }
 }
 

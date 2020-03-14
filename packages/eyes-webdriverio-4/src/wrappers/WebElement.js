@@ -49,6 +49,11 @@ class WebElement {
    */
   findElements(_locator) {}
 
+  async refresh() {
+    const {value: element} = await this._driver.remoteWebDriver.element(this._locator.value)
+    this._element = element
+  }
+
   /**
    * @returns {Promise.<{x, y}>}
    */
