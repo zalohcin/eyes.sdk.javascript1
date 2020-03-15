@@ -23,6 +23,9 @@ if (args['verify-changelog']) {
 } else if (args['verify-versions']) {
   const verifyVersions = require('../versions/scripts/verify-versions.js')
   execute(verifyVersions.bind(undefined, args.fix))
+} else if (args['build']) {
+  const copyInternalPackages = require('../build/scripts/copy-internal-packages')
+  execute(copyInternalPackages)
 } else {
   execute(() => {
     throw 'Invalid option provided'
