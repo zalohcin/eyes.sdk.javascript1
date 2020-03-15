@@ -4,6 +4,29 @@
     "node": ">=10.0.0"
   },
   "private": true,
+  "workspaces": [
+    "src/dom-utils",
+    "src/sdk-core",
+    "src/sdk-core-legacy",
+    "src/common",
+    "src/common-legacy",
+    "src/fake-eyes-server",
+    "src/test-kit",
+    "src/release-kit",
+    "packages/dom-capture",
+    "packages/eyes-images",
+    "packages/eyes-selenium",
+    "packages/eyes-testcafe",
+    "packages/visual-grid-client",
+    "packages/eyes-webdriverio-4",
+    "packages/eyes-webdriverio-5",
+    "packages/eyes-webdriverio-5-service",
+    "packages/eyes-images-legacy",
+    "packages/eyes-selenium-3",
+    "packages/eyes-cypress",
+    "packages/eyes-storybook",
+    "packages/side-eyes"
+  ],
   "scripts": {
     "lint": "eslint --ext .js ."
   },

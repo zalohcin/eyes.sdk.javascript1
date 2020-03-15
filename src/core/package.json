@@ -31,7 +31,7 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-common": "file:../common",
+    "@applitools/eyes-common": "portal:../common",
     "@applitools/isomorphic-fetch": "3.0.0",
     "axios": "0.19.2",
     "chalk": "3.0.0",
@@ -39,8 +39,8 @@
     "tunnel": "0.0.6"
   },
   "devDependencies": {
-    "@applitools/sdk-fake-eyes-server": "file:../fake-eyes-server",
-    "@applitools/sdk-release-kit": "file:../release-kit",
+    "@applitools/sdk-fake-eyes-server": "portal:../fake-eyes-server",
+    "@applitools/sdk-release-kit": "portal:../release-kit",
     "chai": "4.2.0",
     "chai-uuid": "1.0.6",
     "mocha": "7.0.1"

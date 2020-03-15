@@ -4,8 +4,7 @@
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
     "eyes-selenium",
-    "eyes-rendering",
-    "eyes-visual-grid",
+    "eyes-rendering", "eyes-visual-grid",
     "applitools",
     "eyes",
     "test automation",
@@ -36,15 +35,15 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/dom-utils": "file:../../src/dom-utils",
-    "@applitools/eyes-common": "file:../../src/common",
-    "@applitools/eyes-sdk-core": "file:../../src/core",
+    "@applitools/dom-utils": "portal:../../src/dom-utils",
+    "@applitools/eyes-common": "portal:../../src/common",
+    "@applitools/eyes-sdk-core": "portal:../../src/core",
     "@applitools/visual-grid-client": "13.6.4"
   },
   "devDependencies": {
-    "@applitools/sdk-fake-eyes-server": "file:../../src/fake-eyes-server",
-    "@applitools/sdk-release-kit": "file:../../src/release-kit",
-    "@applitools/sdk-test-kit": "file:../../src/test-kit",
+    "@applitools/sdk-fake-eyes-server": "portal:../../src/fake-eyes-server",
+    "@applitools/sdk-release-kit": "portal:../../src/release-kit",
+    "@applitools/sdk-test-kit": "portal:../../src/test-kit",
     "assert-rejects": "^1.0.0",
     "axios": "^0.19.0",
     "chai": "^4.2.0",

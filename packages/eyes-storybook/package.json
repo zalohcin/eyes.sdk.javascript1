@@ -11,9 +11,7 @@
     "bin",
     "dist"
   ],
-  "bin": {
-    "eyes-storybook": "./bin/eyes-storybook.js"
-  },
+  "bin": "./bin/eyes-storybook.js",
   "scripts": {
     "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
