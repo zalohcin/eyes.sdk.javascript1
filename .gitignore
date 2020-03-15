@@ -18,3 +18,9 @@ node_modules
 tmp
 .env
 .vscode
+
+# Yarn
+.yarn/*
+!.yarn/cache
+!.yarn/releases
+!.yarn/plugins
