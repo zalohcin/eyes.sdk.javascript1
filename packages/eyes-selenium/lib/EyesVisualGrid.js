@@ -47,6 +47,9 @@ class EyesVisualGrid extends Eyes {
     /** @function */ this._checkWindowCommand = undefined
     /** @function */ this._closeCommand = undefined
     /** @function */ this._abortCommand = undefined
+
+    /** @type {Promise<void>} */
+    this._closePromise = Promise.resolve()
   }
 
   /**
@@ -122,22 +125,23 @@ class EyesVisualGrid extends Eyes {
    */
   async close(throwEx = true) {
     let isErrorCaught = false
-    const results = await this._closeCommand(true).catch(err => {
-      isErrorCaught = true
-      return err
-    })
+    this._closePromise = this._closeCommand(true)
+      .catch(err => {
+        isErrorCaught = true
+        return err
+      })
+      .then(results => {
+        this._isOpen = false
+        if (this._runner) {
+          this._runner._allTestResult.push(...results)
+        }
+        if (throwEx && isErrorCaught) {
+          throw TypeUtils.isArray(results) ? results[0] : results
+        }
+        return results
+      })
 
-    this._isOpen = false
-
-    if (this._runner) {
-      this._runner._allTestResult.push(...results)
-    }
-
-    if (throwEx && isErrorCaught) {
-      throw TypeUtils.isArray(results) ? results[0] : results
-    }
-
-    return results
+    return this._closePromise
   }
 
   /**

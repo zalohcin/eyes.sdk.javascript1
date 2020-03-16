@@ -34,6 +34,7 @@ class EyesRunner {
    */
   async getAllTestResults(throwEx = true) {
     await this._closeAllBatches()
+    await this._awaitAllClosePromises()
 
     const summary = new TestResultsSummary(this._allTestResult)
 
@@ -45,6 +46,12 @@ class EyesRunner {
       }
     }
     return summary
+  }
+
+  async _awaitAllClosePromises() {
+    if (this._eyesInstances.length > 0) {
+      await Promise.all(this._eyesInstances.map(eyes => eyes._closePromise))
+    }
   }
 
   /**
