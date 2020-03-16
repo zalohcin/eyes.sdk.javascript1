@@ -1,3 +1,4 @@
+const path = require('path')
 const {exec} = require('child_process')
 const {promisify} = require('util')
 const pexec = promisify(exec)
@@ -5,19 +6,33 @@ const pexec = promisify(exec)
 async function copyInternalPackagesToBuildFolder({dependencies, buildFolder}) {
   const internalPackages = getPathsToInternalPackages(dependencies)
   for (const internalPackage in internalPackages) {
-    await copyRecurisvely(internalPackages[internalPackage], buildFolder)
+    await _copyRecurisvely(internalPackages[internalPackage], buildFolder)
   }
 }
 
-async function copyRecurisvely(target, destination) {
+async function _copyRecurisvely(target, destination) {
   await pexec(`cp -R ${target} ${destination}`)
 }
 
-function getPathsToInternalPackages(deps = {}) {
+function _isInternalPackage(target) {
+  return target.includes('portal:')
+}
+
+function getPathsToInternalPackages(deps) {
   return Object.entries(deps)
-    .filter(dep => dep[1].includes('file:'))
+    .filter(dep => _isInternalPackage(dep[1]))
     .map(dep => dep[1])
-    .map(dep => dep.replace(/file\:/, ''))
+    .map(dep => dep.replace(/portal\:/, ''))
+}
+
+function getPathsToInternalPackagesRecursively(deps) {
+  let results = []
+  results.push(...getPathsToInternalPackages(deps))
+  results.forEach(result => {
+    const {dependencies} = require(path.resolve(result, 'package.json'))
+    results.push(...getPathsToInternalPackagesRecursively(dependencies, results))
+  })
+  return new Set(results)
 }
 
 module.exports = {
