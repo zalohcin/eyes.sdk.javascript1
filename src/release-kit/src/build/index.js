@@ -14,13 +14,9 @@ async function _copyRecurisvely(target, destination) {
   await pexec(`cp -R ${target} ${destination}`)
 }
 
-function _isInternalPackage(target) {
-  return target.includes('portal:')
-}
-
 function getPathsToInternalPackages(deps) {
   return Object.entries(deps)
-    .filter(dep => _isInternalPackage(dep[1]))
+    .filter(dep => dep[1].includes('portal:'))
     .map(dep => dep[1])
     .map(dep => dep.replace(/portal\:/, ''))
 }
