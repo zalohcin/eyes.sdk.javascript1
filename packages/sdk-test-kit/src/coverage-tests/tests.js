@@ -355,6 +355,7 @@ function makeCoverageTests({
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkRegion({left: 50, top: 50, width: 100, height: 100})
+      await close(throwException)
     },
     TestScrollbarsHiddenAndReturned_Fluent: async () => {
       await visit(url)
