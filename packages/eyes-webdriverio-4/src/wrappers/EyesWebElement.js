@@ -1,6 +1,7 @@
 'use strict'
 
 const WebElement = require('./WebElement')
+const FrameChain = require('../frames/FrameChain')
 
 const {
   Region,
@@ -75,12 +76,42 @@ class EyesWebElement extends WebElement {
     ArgumentGuard.notNull(eyesDriver, 'eyesDriver')
     ArgumentGuard.notNull(webElement, 'webElement')
 
+    if (webElement instanceof EyesWebElement) {
+      return webElement
+    }
+
     super(eyesDriver.webDriver, webElement.element, webElement.locator)
 
     /** @type {Logger}*/
     this._logger = logger
     /** @type {EyesWebDriver}*/
     this._eyesWebDriver = eyesDriver
+    /** @type {FrameChain} */
+    this._frameChain = new FrameChain(this._logger, this._eyesWebDriver.getFrameChain())
+  }
+
+  /**
+   * Refresh the element by locator and frame chain.
+   */
+  async refresh() {
+    const switchTo = this._eyesWebDriver.switchTo()
+    const originalFrameChain = new FrameChain(this._logger, this._eyesWebDriver.getFrameChain())
+    if (originalFrameChain.size() > 0) {
+      await switchTo.defaultContent()
+    }
+    if (this._frameChain.size() > 0) {
+      await switchTo.frames(this._frameChain)
+    }
+
+    const {value: element} = await this._eyesWebDriver.remoteWebDriver.element(this._locator.value)
+    this._element = element
+
+    if (this._frameChain.size() > 0) {
+      await switchTo.defaultContent()
+    }
+    if (originalFrameChain.size() > 0) {
+      await switchTo.frames(originalFrameChain)
+    }
   }
 
   /**
@@ -109,8 +140,6 @@ class EyesWebElement extends WebElement {
       height = Math.max(0, height + top)
       top = 0
     }
-
-    console.log(left, top)
 
     return new Region(left, top, width, height, CoordinatesType.CONTEXT_RELATIVE)
   }
@@ -305,20 +334,48 @@ class EyesWebElement extends WebElement {
    * @return {Promise}
    */
   async click() {
-    // Letting the driver know about the current action.
-    const currentControl = await this.getBounds()
-    this._eyesWebDriver.eyes.addMouseTrigger(MouseTrigger.MouseAction.Click, this)
-    this._logger.verbose(`click(${currentControl})`)
+    try {
+      // Letting the driver know about the current action.
+      const currentControl = await this.getBounds()
+      this._eyesWebDriver.eyes.addMouseTrigger(MouseTrigger.MouseAction.Click, this)
+      this._logger.verbose(`click(${currentControl})`)
 
-    return super.click()
+      return super.click()
+    } catch (err) {
+      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
+        await this.refresh()
+        if (!this._element) throw err
+        return this.click()
+      }
+    }
   }
 
   /**
    * @Override
    * @inheritDoc
    */
-  sendKeys(keysToSend) {
-    return super.sendKeys(keysToSend)
+  async sendKeys(keysToSend) {
+    try {
+      return super.sendKeys(keysToSend)
+    } catch (err) {
+      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
+        await this.refresh()
+        if (!this._element) throw err
+        return this.sendKeys(keysToSend)
+      }
+    }
+  }
+
+  async getRect() {
+    try {
+      return super.getRect()
+    } catch (err) {
+      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
+        await this.refresh()
+        if (!this._element) throw err
+        return this.getRect()
+      }
+    }
   }
 
   /**
@@ -450,15 +507,31 @@ class EyesWebElement extends WebElement {
   /**
    * @returns {Promise.<{offsetLeft, offsetTop}>}
    */
-  getElementOffset() {
-    return super.getElementOffset()
+  async getElementOffset() {
+    try {
+      return super.getElementOffset()
+    } catch (err) {
+      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
+        await this.refresh()
+        if (!this._element) throw err
+        return this.getElementOffset()
+      }
+    }
   }
 
   /**
    * @returns {Promise.<{scrollLeft, scrollTop}>}
    */
-  getElementScroll() {
-    return super.getElementScroll()
+  async getElementScroll() {
+    try {
+      return super.getElementScroll()
+    } catch (err) {
+      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
+        await this.refresh()
+        if (!this._element) throw err
+        return this.getElementScroll()
+      }
+    }
   }
 
   /**
