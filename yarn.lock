@@ -432,7 +432,6 @@ __metadata:
     chromedriver: ^80.0.0
     mocha: ^6.2.2
     mocha-parallel-tests: ^2.2.2
-    ndb: 1.1.4
     node-fetch: ^2.6.0
     selenium-webdriver: ^4.0.0-alpha.5
     webpack: ^4.42.0
@@ -8199,16 +8198,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"carlo@npm:^0.9.46":
-  version: 0.9.46
-  resolution: "carlo@npm:0.9.46"
-  dependencies:
-    debug: ^4.1.0
-    puppeteer-core: ~1.12.0
-  checksum: 2/2699ba034e230fa414bd404e9dda2a56ac9f1c2cd0ed8dbfde501b21baa06ae2fc57f6bb8b4fcf454d7430d2382dcc6c26dc04223f732149523c8125f0476b4d
-  languageName: node
-  linkType: hard
-
 "case-sensitive-paths-webpack-plugin@npm:^2.2.0":
   version: 2.3.0
   resolution: "case-sensitive-paths-webpack-plugin@npm:2.3.0"
@@ -8431,7 +8420,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chokidar@npm:^3.0.0, chokidar@npm:^3.0.2":
+"chokidar@npm:^3.0.0":
   version: 3.3.1
   resolution: "chokidar@npm:3.3.1"
   dependencies:
@@ -12948,36 +12937,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@2.0.7#builtin<compat/fsevents>":
-  version: 2.0.7
-  resolution: "fsevents@patch:fsevents@npm%3A2.0.7#builtin<compat/fsevents>::version=2.0.7&hash=77dfe6"
-  dependencies:
-    node-gyp: latest
-  checksum: 2/fed5c5e15952d7a2516009a837aa0b3249d33111d5a0f43784d3922995ab476698959c2556ccfb652577d27d160fcc0865132b8478588666bf39804ec8ffbadd
-  languageName: node
-  linkType: hard
-
-"fsevents@patch:fsevents@^1.2.7#builtin<compat/fsevents>":
-  version: 1.2.11
-  resolution: "fsevents@patch:fsevents@npm%3A1.2.11#builtin<compat/fsevents>::version=1.2.11&hash=77dfe6"
-  dependencies:
-    bindings: ^1.5.0
-    nan: ^2.12.1
-    node-gyp: latest
-    node-pre-gyp: "*"
-  checksum: 2/bed0c750c8ed79e28fb83283e6a059c50d0f522fa20267476ce8b905ea6b4e89dbe16ad23ab019527fef694c339a391baedf04fd5b521eb150ffaeab6d199049
-  languageName: node
-  linkType: hard
-
-"fsevents@patch:fsevents@~2.1.1#builtin<compat/fsevents>, fsevents@patch:fsevents@~2.1.2#builtin<compat/fsevents>":
-  version: 2.1.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.1.2#builtin<compat/fsevents>::version=2.1.2&hash=77dfe6"
-  dependencies:
-    node-gyp: latest
-  checksum: 2/6fb6ae0c1e5aca68fec6c0bf119d0dc9a1d653af60925c7ec69868f0ac68fa6930eeb769745030ecb560e00c144c74068da62bb77a000cc7dc263963ba4e2d7f
-  languageName: node
-  linkType: hard
-
 "fsevents@~2.1.1, fsevents@~2.1.2":
   version: 2.1.2
   resolution: "fsevents@npm:2.1.2"
@@ -15431,15 +15390,6 @@ fsevents@^1.2.7:
   version: 2.0.5
   resolution: "isarray@npm:2.0.5"
   checksum: 2/cfb3e907b3c7957fb18e479bbe9102df4e84c5386839b4a33076f38ee31a8934e77d43ff517967fd39192a7c06b894770454886a5ffc8a3ddc36f6b746d70726
-  languageName: node
-  linkType: hard
-
-"isbinaryfile@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "isbinaryfile@npm:3.0.3"
-  dependencies:
-    buffer-alloc: ^1.2.0
-  checksum: 2/e89339ea4c9336c61c5d2de34c4b330654907938131f8a52270c2b7b27fa5dc99818c4c0826e811c82426f9184f3e52fe1626be8055b7166eb5965704a010aef
   languageName: node
   linkType: hard
 
@@ -18538,30 +18488,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"ndb@npm:1.1.4":
-  version: 1.1.4
-  resolution: "ndb@npm:1.1.4"
-  dependencies:
-    carlo: ^0.9.46
-    chokidar: ^3.0.2
-    debug: ^4.1.1
-    isbinaryfile: ^3.0.3
-    mime: ^2.4.4
-    node-pty: ^0.9.0-beta18
-    opn: ^5.5.0
-    update-notifier: ^2.5.0
-    which: ^1.3.1
-    ws: ^6.2.1
-    xterm: ^3.14.5
-  dependenciesMeta:
-    node-pty:
-      optional: true
-  bin:
-    ndb: ./ndb.js
-  checksum: 2/0d64bb6ea02bbab1affd16751d19b3959a580f704691fc97319db344edd32fd6c99b9053c4bbef64887d0fd9748f3ebcaf4dd980633b4ba47ac51320ffce102f
-  languageName: node
-  linkType: hard
-
 "needle@npm:^2.2.1":
   version: 2.4.0
   resolution: "needle@npm:2.4.0"
@@ -18823,15 +18749,6 @@ fsevents@^1.2.7:
   bin:
     node-pre-gyp: ./bin/node-pre-gyp
   checksum: 2/04dfb46fa5a0ad300ed894fbf293105ff98b190c26c5200b0f87da46e643ff9ebaf7a54c4079370d345f135f2016e164d7a20b09a4e9bd9c48236b350372a01e
-  languageName: node
-  linkType: hard
-
-"node-pty@npm:^0.9.0-beta18":
-  version: 0.9.0
-  resolution: "node-pty@npm:0.9.0"
-  dependencies:
-    nan: ^2.14.0
-  checksum: 2/7573fd5848c95c7bdd08c86300cdd1d93d483e7f7d3bee62aa2b534f630b926d9e187e3190e3dcbcfcd9a544ccef2cd93a457fa529f4c5377ac221c72f95c922
   languageName: node
   linkType: hard
 
@@ -19281,7 +19198,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"opn@npm:^5.1.0, opn@npm:^5.5.0":
+"opn@npm:^5.1.0":
   version: 5.5.0
   resolution: "opn@npm:5.5.0"
   dependencies:
@@ -21080,22 +20997,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"puppeteer-core@npm:~1.12.0":
-  version: 1.12.2
-  resolution: "puppeteer-core@npm:1.12.2"
-  dependencies:
-    debug: ^4.1.0
-    extract-zip: ^1.6.6
-    https-proxy-agent: ^2.2.1
-    mime: ^2.0.3
-    progress: ^2.0.1
-    proxy-from-env: ^1.0.0
-    rimraf: ^2.6.1
-    ws: ^6.1.0
-  checksum: 2/088a7c0ff32f6fbed33690145bb470c4ca51fb8cdcf94fb1513b384c5e2bf88f7803b0c69a5c4c81af67c7fb80d6adeec75b78fed136366d734d64720501dbdb
-  languageName: node
-  linkType: hard
-
 "puppeteer@npm:^1.20.0":
   version: 1.20.0
   resolution: "puppeteer@npm:1.20.0"
@@ -22409,31 +22310,6 @@ resolve@1.1.7:
   dependencies:
     path-parse: ^1.0.6
   checksum: 2/cfeb171d758a17a681b77c26b61dbfcdf328c19aaba8ce7563f3dac5644e650d15a44735fd7bc60fe58beb41a64c009f6575367a30f39d1300011ec60fa058f4
-  languageName: node
-  linkType: hard
-
-"resolve@patch:resolve@1.1.7#builtin<compat/resolve>":
-  version: 1.1.7
-  resolution: "resolve@patch:resolve@npm%3A1.1.7#builtin<compat/resolve>::version=1.1.7&hash=8fccd0"
-  checksum: 2/5238277188664a6948dd7288d16f1a09e098fb36d4f9b2c749130969c998faa9bccefd30fd618073af5210fdc768730cadfc15588bbee4fc64b257f20cab6783
-  languageName: node
-  linkType: hard
-
-"resolve@patch:resolve@^1.1.4#builtin<compat/resolve>, resolve@patch:resolve@^1.1.6#builtin<compat/resolve>, resolve@patch:resolve@^1.11.0#builtin<compat/resolve>, resolve@patch:resolve@^1.11.1#builtin<compat/resolve>, resolve@patch:resolve@^1.15.1#builtin<compat/resolve>, resolve@patch:resolve@^1.3.2#builtin<compat/resolve>, resolve@patch:resolve@^1.4.0#builtin<compat/resolve>, resolve@patch:resolve@^1.8.1#builtin<compat/resolve>":
-  version: 1.15.1
-  resolution: "resolve@patch:resolve@npm%3A1.15.1#builtin<compat/resolve>::version=1.15.1&hash=8fccd0"
-  dependencies:
-    path-parse: ^1.0.6
-  checksum: 2/fe7e72ddef33d5c157991b824ba2d439cafcd386cb4b26d86c32e77fea442bdd9a93c6cdd93ab90f87a29449008df64b53a8310dd89ebe88ea87fb5db09c03aa
-  languageName: node
-  linkType: hard
-
-"resolve@patch:resolve@^1.10.0#builtin<compat/resolve>, resolve@patch:resolve@^1.10.1#builtin<compat/resolve>, resolve@patch:resolve@^1.12.0#builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#builtin<compat/resolve>":
-  version: 1.15.0
-  resolution: "resolve@patch:resolve@npm%3A1.15.0#builtin<compat/resolve>::version=1.15.0&hash=8fccd0"
-  dependencies:
-    path-parse: ^1.0.6
-  checksum: 2/a977306c59618000d5954b2fb9d6c100c15f2c4df6acdab3e86bdbd3ae1e8d52e89cbbf19e6dce93ce535af1bba097c26332b1a0f85fd4daa45943ec06d90fe8
   languageName: node
   linkType: hard
 
@@ -25569,16 +25445,6 @@ resolve@1.1.7:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^3.3.3#builtin<compat/typescript>, typescript@patch:typescript@^3.6.4#builtin<compat/typescript>, typescript@patch:typescript@^3.7.4#builtin<compat/typescript>":
-  version: 3.8.3
-  resolution: "typescript@patch:typescript@npm%3A3.8.3#builtin<compat/typescript>::version=3.8.3&hash=270b6c"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 2/2950b292ac700898647d49ca5f07fa546f6c3d28983ba559c5b4fa360babdc1734493b7f5f72553735eaa401c850989d7bbbd70f739df3c0b7fc83c82e37d8a5
-  languageName: node
-  linkType: hard
-
 "ua-parser-js@npm:^0.7.17, ua-parser-js@npm:^0.7.18, ua-parser-js@npm:^0.7.20, ua-parser-js@npm:^0.7.21":
   version: 0.7.21
   resolution: "ua-parser-js@npm:0.7.21"
@@ -25872,7 +25738,7 @@ resolve@1.1.7:
   languageName: node
   linkType: hard
 
-"update-notifier@npm:^2.2.0, update-notifier@npm:^2.5.0":
+"update-notifier@npm:^2.2.0":
   version: 2.5.0
   resolution: "update-notifier@npm:2.5.0"
   dependencies:
@@ -26971,7 +26837,7 @@ resolve@1.1.7:
   languageName: node
   linkType: hard
 
-"ws@npm:^6.1.0, ws@npm:^6.1.2, ws@npm:^6.2.1":
+"ws@npm:^6.1.0, ws@npm:^6.1.2":
   version: 6.2.1
   resolution: "ws@npm:6.2.1"
   dependencies:
@@ -27098,13 +26964,6 @@ resolve@1.1.7:
   version: 3.0.0
   resolution: "xtend@npm:3.0.0"
   checksum: 2/bcba207830b7842d5052eac815872b89b070eba9dd0e1e4087b58fb8e780de21c051fbefdb43e80950ab2caf2895d4a4803332d3f9e98fcdff3db5933f0ab286
-  languageName: node
-  linkType: hard
-
-"xterm@npm:^3.14.5":
-  version: 3.14.5
-  resolution: "xterm@npm:3.14.5"
-  checksum: 2/4997a3086514331b769218036104a9885f97b891d70aa638640ab55b1809a1b2796016b25cca7f4361b1a6e37079841a998645bfbca3957e588b65339612e7f7
   languageName: node
   linkType: hard
 

@@ -4,7 +4,8 @@
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
     "eyes-selenium",
-    "eyes-rendering", "eyes-visual-grid",
+    "eyes-rendering",
+    "eyes-visual-grid",
     "applitools",
     "eyes",
     "test automation",
