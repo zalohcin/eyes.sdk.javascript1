@@ -2,6 +2,10 @@ const assert = require('assert')
 const {getPathsToInternalPackages} = require('../../src/build/index')
 
 describe('build', () => {
+  describe('updatePackageJson', () => {
+    it.skip('rewrites dependencies portal paths to reference packages in the build folder', () => {})
+    it.skip('creates frankenstein dependencies block from dependencies dependencies', () => {})
+  })
   describe('getPathsToInternalPackages', () => {
     it('returns a collection of relative file paths for just internal packages', () => {
       const deps = {
