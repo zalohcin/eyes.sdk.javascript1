@@ -10,7 +10,7 @@ const {
   Region,
 } = require('../../index')
 
-const sdkName = 'eyes.webdriverio.javascript5'
+const sdkName = 'eyes.webdriverio.javascript4'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
 const supportedTests = require('./supported-tests')
 
