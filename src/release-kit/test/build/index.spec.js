@@ -11,5 +11,13 @@ describe('build', () => {
       }
       assert.deepStrictEqual(getPathsToInternalPackages(deps), ['../blah/blah', '../blah/blahblah'])
     })
+    it('returns a collection of anchored relative paths from nested internal packages', () => {
+      const deps = {
+        blah: 'portal:../blah',
+      }
+      assert.deepStrictEqual(getPathsToInternalPackages(deps, '../../src/blahblah'), [
+        '../../src/blah',
+      ])
+    })
   })
 })
