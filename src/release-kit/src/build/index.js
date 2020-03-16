@@ -22,6 +22,7 @@ function getPathsToInternalPackages(deps, packageDir) {
   return packageDir ? result.map(dep => path.join(packageDir, dep)) : result
 }
 
+// TODO: add it test
 function getPathsToInternalPackagesRecursively(deps, packageDir) {
   let results = []
   results.push(...getPathsToInternalPackages(deps, packageDir))
