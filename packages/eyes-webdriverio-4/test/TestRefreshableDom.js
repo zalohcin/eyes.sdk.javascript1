@@ -15,20 +15,23 @@ describe('TestRefreshableDom', function() {
     eyes.setLogHandler(new ConsoleLogHandler(false))
   })
 
-  beforeEach(async () => {
+  beforeEach(async function() {
     const chrome = {
       port: 9515,
       path: '/',
       desiredCapabilities: {
         browserName: 'chrome',
         chromeOptions: {
-          args: ['disable-infobars'],
+          args: ['headless', 'disable-infobars'],
         },
       },
     }
     browser = remote(chrome)
     await browser.init()
-    driver = await eyes.open(browser, 'AppName', this.title, {width: 600, height: 500})
+    driver = await eyes.open(browser, 'AppName', this.currentTest.fullTitle(), {
+      width: 600,
+      height: 500,
+    })
     await driver.url('https://applitools.github.io/demo/TestPages/RefreshDomPage/')
   })
 
