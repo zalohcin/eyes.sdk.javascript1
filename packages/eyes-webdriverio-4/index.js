@@ -21,6 +21,7 @@ exports.ClassicRunner = core.ClassicRunner
 exports.VisualGridRunner = core.VisualGridRunner
 exports.Configuration = core.Configuration
 exports.ConsoleLogHandler = core.ConsoleLogHandler
+exports.FileLogHandler = core.FileLogHandler
 exports.BatchInfo = core.BatchInfo
 exports.BrowserType = core.BrowserType
 exports.DeviceName = core.DeviceName

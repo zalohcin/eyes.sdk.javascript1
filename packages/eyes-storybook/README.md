@@ -414,6 +414,7 @@ storiesOf('UI components', module)
       }
     },
   })
+```
 
 ## Running Eyes-Storybook in Docker
 

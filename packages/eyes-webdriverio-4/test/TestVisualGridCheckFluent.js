@@ -55,19 +55,6 @@ describe('VisualGridCheckFluent', function() {
     return eyes.close()
   })
 
-  it('TestCheckWindowFully', async function() {
-    await eyes.check('Full Window', Target.window().fully())
-    return eyes.close()
-  })
-
-  it('TestCheckRegion', async function() {
-    await eyes.check(
-      'Region by selector',
-      Target.region(By.id('overflowing-div')).ignoreRegions(new Region(50, 50, 100, 100)),
-    )
-    return eyes.close()
-  })
-
   it('TestCheckRegionFully', async function() {
     await eyes.check('Region Fully', Target.region(By.id('overflowing-div-image')).fully())
     return eyes.close()
