@@ -8,7 +8,8 @@ module.exports = () => {
   // TODO
   // clean package/dist
   // mirror package into package/dist (e.g., cp -R package into package/dist)
-  // cd into package/dist and work from here
+  // set cwd to package/dist and work from here
+  // prepare package/dist/dist
   copyInternalPackagesToBuildFolder({
     dependencies: packageJson.dependencies,
     buildFolder,
