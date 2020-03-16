@@ -8,7 +8,9 @@ const {
   VisualGridRunner,
   Target,
   Region,
+  FileLogHandler,
 } = require('../../index')
+const path = require('path')
 
 const sdkName = 'eyes.webdriverio.javascript4'
 const batch = new BatchInfo(`JS Coverage Tests - ${sdkName}`)
@@ -41,6 +43,16 @@ function initialize() {
     options.executionMode.isScrollStitching ? eyes.setStitchMode(StitchMode.SCROLL) : undefined
     eyes.setBranchName(options.branchName)
     eyes.setBatch(batch)
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      const logsFolder = path.resolve(__dirname, 'logs')
+      const logHandler = new FileLogHandler(
+        true,
+        path.resolve(logsFolder, `${baselineTestName}.log`),
+        false,
+      )
+      logHandler.open()
+      eyes.setLogHandler(logHandler)
+    }
   }
 
   async function _cleanup() {
