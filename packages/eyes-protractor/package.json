@@ -38,7 +38,7 @@
     "@applitools/eyes-selenium": "^4.33.4"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-release-kit": "portal:../../src/release-kit",
     "protractor": "^6.0.0-beta"
   },
   "scripts": {

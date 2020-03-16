@@ -56,8 +56,8 @@
   },
   "dependencies": {
     "@applitools/dom-snapshot": "3.3.5",
-    "@applitools/eyes-common": "3.20.1",
-    "@applitools/eyes-sdk-core": "9.0.2",
+    "@applitools/eyes-common": "portal:../../src/common",
+    "@applitools/eyes-sdk-core": "portal:../../src/core",
     "@applitools/functional-commons": "1.5.4",
     "@applitools/monitoring-commons": "1.0.19",
     "@applitools/visual-grid-client": "13.6.4",
@@ -71,7 +71,7 @@
     "yargs": "^12.0.5"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-release-kit": "portal:../../src/release-kit",
     "@storybook/addon-options": "^5.2.8",
     "@storybook/react": "^5.2.8",
     "@testing-library/dom": "^5.6.1",

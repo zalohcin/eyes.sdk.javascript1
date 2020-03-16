@@ -32,17 +32,17 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/dom-utils": "4.7.8",
-    "@applitools/eyes-common": "3.20.1",
-    "@applitools/eyes-sdk-core": "9.0.2",
+    "@applitools/dom-utils": "portal:../../src/dom-utils",
+    "@applitools/eyes-common": "portal:../../src/common",
+    "@applitools/eyes-sdk-core": "portal:../../src/core",
     "@applitools/visual-grid-client": "13.6.4",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "webdriverio": "^5.18.6"
   },
   "devDependencies": {
-    "@applitools/sdk-fake-eyes-server": "1.0.5",
-    "@applitools/sdk-release-kit": "0.1.0",
-    "@applitools/sdk-test-kit": "1.0.17",
+    "@applitools/sdk-fake-eyes-server": "portal:../../src/fake-eyes-server",
+    "@applitools/sdk-release-kit": "portal:../../src/release-kit",
+    "@applitools/sdk-test-kit": "portal:../../src/test-kit",
     "chromedriver": "^80.0.0",
     "eslint": "^6.8.0",
     "geckodriver": "^1.19.1",

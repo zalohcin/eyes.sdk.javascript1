@@ -34,7 +34,7 @@
     "@applitools/eyes-images": "^4.12.33"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-release-kit": "portal:../../src/release-kit",
     "browserify": "^16.2.3",
     "uglify-es": "^3.3.9"
   },

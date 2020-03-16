@@ -39,7 +39,7 @@
     "yargs": "^15.0.2"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-release-kit": "portal:../release-kit",
     "@typescript-eslint/parser": "^2.14.0",
     "mocha": "^6.2.2",
     "typescript": "^3.7.4"

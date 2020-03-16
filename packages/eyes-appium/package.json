@@ -35,8 +35,8 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-common": "^3.17.2",
-    "@applitools/eyes-sdk-core": "^5.24.0",
+    "@applitools/eyes-common": "portal:../../src/common",
+    "@applitools/eyes-sdk-core": "portal:../../src/core",
     "@applitools/eyes-selenium": "^4.33.4"
   },
   "devDependencies": {

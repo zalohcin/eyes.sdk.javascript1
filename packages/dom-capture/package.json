@@ -28,7 +28,7 @@
   ],
   "devDependencies": {
     "@applitools/monitoring-commons": "^1.0.15",
-    "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-release-kit": "portal:../../src/release-kit",
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
     "abortcontroller-polyfill": "^1.4.0",

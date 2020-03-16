@@ -31,10 +31,10 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "^5.24.0"
+    "@applitools/eyes-sdk-core": "portal:../../src/core"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-release-kit": "portal:../../src/release-kit",
     "browserify": "^16.2.3",
     "uglify-es": "^3.3.9"
   },

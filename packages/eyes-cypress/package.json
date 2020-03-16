@@ -46,8 +46,8 @@
   },
   "dependencies": {
     "@applitools/dom-snapshot": "3.2.3",
-    "@applitools/eyes-common": "3.20.1",
-    "@applitools/eyes-sdk-core": "9.0.2",
+    "@applitools/eyes-common": "portal:../../src/common",
+    "@applitools/eyes-sdk-core": "portal:../../src/core",
     "@applitools/functional-commons": "1.5.4",
     "@applitools/visual-grid-client": "13.6.4",
     "body-parser": "^1.19.0",
@@ -57,7 +57,7 @@
     "lodash.flatten": "^4.4.0"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-release-kit": "portal:../../src/release-kit",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
     "cookie-parser": "^1.4.4",

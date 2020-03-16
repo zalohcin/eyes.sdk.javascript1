@@ -31,10 +31,10 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "9.0.2"
+    "@applitools/eyes-sdk-core": "portal:../../src/core"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
+    "@applitools/sdk-release-kit": "portal:../../src/release-kit",
     "assert-rejects": "^1.0.0",
     "axios": "^0.19.0",
     "mocha": "^6.2.2"
