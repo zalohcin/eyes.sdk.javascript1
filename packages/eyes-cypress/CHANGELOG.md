@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.9.17
+
 - Typescript type defs: mark `cy.eyesCheckWindow` arguments as optional
 
 ## 3.9.16
