@@ -24,14 +24,12 @@ describe(appName, () => {
     await displayRunInfo(runner)
   })
 
-  afterEach(async () => {
+  async function afterEach() {
     if (eyes.getIsOpen()) {
       await eyes.close(false)
-    } else {
-      await eyes.abort()
     }
     await webDriver.quit()
-  })
+  }
 
   describe(`TestAbort`, () => {
     before(async () => {
@@ -40,17 +38,25 @@ describe(appName, () => {
       runner = new ClassicRunner()
     })
 
-    beforeEach(async () => {
+    async function beforeEach() {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
       webDriver = await getDriver('CHROME')
-    })
+    }
 
     it(`Test_GetAllResults`, async () => {
+      await beforeEach()
       expect(Test_ThrowBeforeOpen).to.throw('Before Open')
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowAfterOpen()).to.be.rejectedWith(Error, 'After Open')
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowDuringCheck()).to.be.rejectedWith(Error)
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowAfterCheck()).to.be.rejectedWith(Error, 'After Check')
+      await afterEach()
     })
   })
 
@@ -60,17 +66,25 @@ describe(appName, () => {
       runner = new VisualGridRunner()
     })
 
-    beforeEach(async () => {
+    async function beforeEach() {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
       webDriver = await getDriver('CHROME')
-    })
+    }
 
-    it(`Test_GetAllResults_VG`, async () => {
+    it.skip(`Test_GetAllResults_VG`, async () => {
+      await beforeEach()
       expect(Test_ThrowBeforeOpen).to.throw('Before Open')
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowAfterOpen()).to.be.rejectedWith(Error, 'After Open')
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowDuringCheck()).to.be.rejectedWith(Error)
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowAfterCheck()).to.be.rejectedWith(Error, 'After Check')
+      await afterEach()
     })
   })
   function Test_ThrowBeforeOpen() {

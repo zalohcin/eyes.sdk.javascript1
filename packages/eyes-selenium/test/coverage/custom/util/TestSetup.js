@@ -58,7 +58,7 @@ function getEyes(runnerType, stitchMode, options) {
   }
 
   function setDefault() {
-    eyes.setBranchName('master')
+    eyes.setParentBranchName('master')
   }
 }
 

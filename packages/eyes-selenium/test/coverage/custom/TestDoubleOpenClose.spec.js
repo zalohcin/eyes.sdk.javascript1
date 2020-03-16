@@ -24,7 +24,7 @@ describe(appName, () => {
       webDriver = await getDriver('CHROME')
       ;({eyes, runner} = await getEyes('classic', StitchMode.CSS))
       eyes.setBatch(batch)
-      eyes.setLogHandler(new ConsoleLogHandler(true))
+      eyes.setLogHandler(new ConsoleLogHandler(false))
     })
 
     it('TestDoubleOpenCheckClose', async () => {
@@ -153,6 +153,7 @@ describe(appName, () => {
 
     let eyes1 = new Eyes(runner)
     eyes1.setBatch(batch)
+    eyes1.setHostOS('Linux')
     await eyes1.open(webDriver, appName, 'TestDoubleOpenCheckCloseAsyncWithDifferentInstances', {
       width: 1200,
       height: 800,
@@ -167,6 +168,7 @@ describe(appName, () => {
 
     let eyes2 = new Eyes(runner)
     eyes2.setBatch(batch)
+    eyes2.setHostOS('Linux')
     await eyes2.open(webDriver, appName, 'TestDoubleOpenCheckCloseAsyncWithDifferentInstances', {
       width: 1200,
       height: 800,
@@ -189,6 +191,7 @@ describe(appName, () => {
 
     let eyes1 = new Eyes(runner)
     eyes1.setBatch(batch)
+    eyes1.setHostOS('Linux')
     await eyes1.open(webDriver, appName, 'TestDoubleOpenCheckCloseAsyncWithDifferentInstances_VG', {
       width: 1200,
       height: 800,
@@ -203,6 +206,7 @@ describe(appName, () => {
 
     let eyes2 = new Eyes(runner)
     eyes2.setBatch(batch)
+    eyes2.setHostOS('Linux')
     await eyes2.open(webDriver, appName, 'TestDoubleOpenCheckCloseAsyncWithDifferentInstances_VG', {
       width: 1200,
       height: 800,

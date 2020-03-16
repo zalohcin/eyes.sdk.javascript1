@@ -4,7 +4,7 @@ const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
 const {Target} = require('../../../index')
 const appName = 'TestRendersMatch'
 const batch = getBatch()
-describe(appName, async () => {
+describe.skip(appName, async () => {
   let driver, eyes, runner
   beforeEach(async () => {
     driver = await getDriver('CHROME')

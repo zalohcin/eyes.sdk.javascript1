@@ -57,8 +57,10 @@ describe('TestProxy', () => {
         'tunneling socket could not be established',
       )
     } finally {
-      await eyes.abortIfNotClosed()
       await webDriver.quit()
+      if (eyes.getIsOpen()) {
+        await eyes.abort()
+      }
     }
   }
 })

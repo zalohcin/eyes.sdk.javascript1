@@ -8,7 +8,8 @@ const {
   MatchLevel,
 } = require('../../../index')
 const {getDriver, getBatch} = require('./util/TestSetup')
-const {assertImages} = require('./util/ApiAssertions')
+const {assertImages, getApiData} = require('./util/ApiAssertions')
+const assert = require('assert')
 const batch = getBatch()
 
 describe('TestEyesDifferentRunners', () => {
@@ -26,6 +27,7 @@ describe('TestEyesDifferentRunners', () => {
       eyes = new Eyes()
       eyes.setBatch(batch)
       eyes.setSaveNewTests(false)
+      eyes.setSendDom(true)
       await eyes.open(webDriver, 'Top Sites', `Top Sites - ${this.currentTest.title}`, {
         width: 1024,
         height: 768,
@@ -36,7 +38,7 @@ describe('TestEyesDifferentRunners', () => {
       await assertImages(results, [
         {/*hasDom: true,*/ size: {width: 1024, height: 768}},
         {
-          /*hasDom: true*/
+          /*hasDom: true,*/
         },
       ])
     })
@@ -73,11 +75,7 @@ describe('TestEyesDifferentRunners', () => {
     })
 
     describe('VG', () => {
-      let testCase = testSetup(getCheckSettings, async () =>
-        console.log(
-          'Need merge of the runners updates to retrieve the test results for assertions',
-        ),
-      )
+      let testCase = testSetup(getCheckSettings, validateVG)
       let cases = [
         ['https://amazon.com', MatchLevel.Layout],
         ['https://applitools.com/docs/topics/overview.html', MatchLevel.Strict],
@@ -101,11 +99,7 @@ describe('TestEyesDifferentRunners', () => {
     })
 
     describe('VG with hooks', () => {
-      let testCase = testSetup(getCheckSettingsWithHook, async () =>
-        console.log(
-          'Need merge of the runners updates to retrieve the test results for assertions',
-        ),
-      )
+      let testCase = testSetup(getCheckSettingsWithHook, validateVG)
       let cases = [
         ['https://instagram.com', MatchLevel.Strict],
         ['https://twitter.com', MatchLevel.Strict],
@@ -153,7 +147,7 @@ describe('TestEyesDifferentRunners', () => {
         await eyes.check(`Step 1 - ${url}`, checkSettings)
         await eyes.check(`Step 2 - ${url}`, checkSettings.fully())
         await eyes.close(false)
-        await validateResults(eyes /*.getTestResults()*/)
+        await validateResults(eyes)
       }
     }
   }
@@ -166,4 +160,52 @@ function getCheckSettingsWithHook() {
   return getCheckSettings().beforeRenderScreenshotHook(
     'document.body.style="background-color: red"',
   )
+}
+
+async function validateVG(eyes) {
+  let browserTypes = {}
+  browserTypes[BrowserType.FIREFOX] = 'Firefox'
+  browserTypes[BrowserType.CHROME] = 'Chrome'
+  browserTypes[BrowserType.IE_10] = 'IE 10.0'
+  browserTypes[BrowserType.IE_11] = 'IE 11.0'
+  let browsers = eyes.getConfiguration().getBrowsersInfo()
+  assert.deepStrictEqual(
+    browsers.length,
+    4,
+    `There should be 4 set in the config but were found: ${browsers.length}`,
+  )
+  let container = await eyes.getRunner().getAllTestResults(false)
+  let results = container.getAllResults()
+  for (let result of results) {
+    let data = await getApiData(
+      result
+        .getTestResults()
+        .getApiUrls()
+        .getSession(),
+      result.getTestResults().getSecretToken(),
+    )
+    assert.deepStrictEqual(
+      data.actualAppOutput.length,
+      2,
+      `There should be 2 images detected but was found: ${data.actualAppOutput.length}`,
+    )
+    let hostDisplaySize = result.getTestResults().getHostDisplaySize()
+    let image1 = data.actualAppOutput[0].image
+    assert.ok(image1.hasDom)
+    assert.deepStrictEqual(hostDisplaySize.getWidth(), image1.size.width)
+    assert.deepStrictEqual(hostDisplaySize.getHeight(), image1.size.height)
+
+    let image2 = data.actualAppOutput[1].image
+    assert.ok(image2.hasDom)
+    let env = data.env
+
+    let browserIndex = browsers.findIndex(
+      item =>
+        item.width === env.displaySize.width &&
+        item.height === env.displaySize.height &&
+        env.hostingAppInfo.includes(browserTypes[item.name]),
+    )
+    browsers.splice(browserIndex, 1)
+  }
+  assert.deepStrictEqual(browsers.length, 0)
 }

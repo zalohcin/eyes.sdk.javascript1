@@ -70,3 +70,4 @@ module.exports.assertImageMatchSettings = assertImageMatchSettings
 module.exports.assertImage = assertImage
 module.exports.assertImages = assertImages
 module.exports.assertDefaultMatchSettings = assertDefaultMatchSettings
+module.exports.getApiData = getApiData
