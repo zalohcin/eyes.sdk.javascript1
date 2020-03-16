@@ -43,6 +43,9 @@ function initialize() {
     options.executionMode.isScrollStitching ? eyes.setStitchMode(StitchMode.SCROLL) : undefined
     eyes.setBranchName(options.branchName)
     eyes.setBatch(batch)
+    if (!options.executionMode.isVisualGrid) {
+      eyes.setHideScrollbars(true)
+    }
     if (process.env.APPLITOOLS_SHOW_LOGS) {
       const logsFolder = path.resolve(__dirname, 'logs')
       const logHandler = new FileLogHandler(

@@ -368,7 +368,8 @@ function makeCoverageTests({
       await visit('https://applitools.com/helloworld')
       await open({appName: 'Test Count', viewportSize: '640x480'})
       await checkWindow({isFully: true})
-      assert.deepStrictEqual((await getAllTestResults()).length, 1)
+      await close(false) // VisualGridRunner::getAllResults doesn't call Eyes::close. In non-JS SDK's it does, but that should be deprecated. Users should be instructed to call close explicitly.
+      assert.deepStrictEqual((await getAllTestResults(throwException)).length, 1)
     },
   }
 }
