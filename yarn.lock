@@ -136,6 +136,36 @@ __metadata:
   languageName: node
   linkType: soft
 
+"@applitools/dom-utils@workspace:src/dom-utils":
+  version: 0.0.0-use.local
+  resolution: "@applitools/dom-utils@workspace:src/dom-utils"
+  dependencies:
+    "@applitools/dom-capture": 7.1.3
+    "@applitools/eyes-common": 3.20.1
+    "@applitools/sdk-release-kit": "portal:../release-kit"
+    axios: ^0.19.0
+    chromedriver: ^80.0.0
+    mocha: ^6.2.2
+    selenium-webdriver: ^4.0.0-alpha.5
+  languageName: unknown
+  linkType: soft
+
+"@applitools/eyes-common@3.20.1, @applitools/eyes-common@^3.17.2, @applitools/eyes-common@workspace:src/common":
+  version: 0.0.0-use.local
+  resolution: "@applitools/eyes-common@workspace:src/common"
+  dependencies:
+    "@applitools/sdk-release-kit": "portal:../release-kit"
+    chai: ^4.2.0
+    cosmiconfig: ^6.0.0
+    dateformat: ^3.0.3
+    debug: ^4.1.1
+    deepmerge: ^4.2.2
+    mocha: ^6.2.2
+    png-async: ^0.9.4
+    stack-trace: ^0.0.10
+  languageName: unknown
+  linkType: soft
+
 "@applitools/eyes-common@npm:3.18.2":
   version: 3.18.2
   resolution: "@applitools/eyes-common@npm:3.18.2"
@@ -175,20 +205,6 @@ __metadata:
     png-async: ^0.9.4
     stack-trace: ^0.0.10
   checksum: 2/cb80edb3da459435a16e4204e056b89b643a3b5c77c4c7c120402e7e1ae8d51605642c1ae62f958f827e1f39d19119e0699ccd0f0bd4fd06a033420bb9d8e2c8
-  languageName: node
-  linkType: hard
-
-"@applitools/eyes-common@npm:3.20.1, @applitools/eyes-common@npm:^3.17.2":
-  version: 3.20.1
-  resolution: "@applitools/eyes-common@npm:3.20.1"
-  dependencies:
-    cosmiconfig: ^6.0.0
-    dateformat: ^3.0.3
-    debug: ^4.1.1
-    deepmerge: ^4.2.2
-    png-async: ^0.9.4
-    stack-trace: ^0.0.10
-  checksum: 2/98ff202e998db5d54328288c9dd7c2fc879628b609c55ca8d04b907eb8ea64838c6a532005a1af12acba4d52aecbf6eb45ad0d72b8c274e7e4eb52b4faa923ab
   languageName: node
   linkType: hard
 
@@ -419,6 +435,22 @@ __metadata:
 "@applitools/eyes-common@portal:../common::locator=%40applitools%2Feyes-sdk-core%40portal%3A..%2F..%2Fsrc%2Fcore%3A%3Alocator%3D%2540applitools%252Fvisual-grid-client%2540workspace%253Apackages%252Fvisual-grid-client":
   version: 0.0.0-use.local
   resolution: "@applitools/eyes-common@portal:../common::locator=%40applitools%2Feyes-sdk-core%40portal%3A..%2F..%2Fsrc%2Fcore%3A%3Alocator%3D%2540applitools%252Fvisual-grid-client%2540workspace%253Apackages%252Fvisual-grid-client"
+  dependencies:
+    "@applitools/sdk-release-kit": "portal:../release-kit"
+    chai: ^4.2.0
+    cosmiconfig: ^6.0.0
+    dateformat: ^3.0.3
+    debug: ^4.1.1
+    deepmerge: ^4.2.2
+    mocha: ^6.2.2
+    png-async: ^0.9.4
+    stack-trace: ^0.0.10
+  languageName: node
+  linkType: soft
+
+"@applitools/eyes-common@portal:../common::locator=%40applitools%2Feyes-sdk-core%40workspace%3Asrc%2Fcore":
+  version: 0.0.0-use.local
+  resolution: "@applitools/eyes-common@portal:../common::locator=%40applitools%2Feyes-sdk-core%40workspace%3Asrc%2Fcore"
   dependencies:
     "@applitools/sdk-release-kit": "portal:../release-kit"
     chai: ^4.2.0
@@ -693,6 +725,26 @@ __metadata:
   bin:
     eyes-check-network: ./bin/runCheckNetwork.js
   languageName: node
+  linkType: soft
+
+"@applitools/eyes-sdk-core@workspace:src/core":
+  version: 0.0.0-use.local
+  resolution: "@applitools/eyes-sdk-core@workspace:src/core"
+  dependencies:
+    "@applitools/eyes-common": "portal:../common"
+    "@applitools/isomorphic-fetch": 3.0.0
+    "@applitools/sdk-fake-eyes-server": "portal:../fake-eyes-server"
+    "@applitools/sdk-release-kit": "portal:../release-kit"
+    axios: 0.19.2
+    chai: 4.2.0
+    chai-uuid: 1.0.6
+    chalk: 3.0.0
+    es6-promise-pool: 2.5.0
+    mocha: 7.0.1
+    tunnel: 0.0.6
+  bin:
+    eyes-check-network: ./bin/runCheckNetwork.js
+  languageName: unknown
   linkType: soft
 
 "@applitools/eyes-selenium@workspace:packages/eyes-selenium":
@@ -1154,6 +1206,36 @@ __metadata:
   languageName: node
   linkType: soft
 
+"@applitools/sdk-fake-eyes-server@portal:../fake-eyes-server::locator=%40applitools%2Feyes-sdk-core%40workspace%3Asrc%2Fcore":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-fake-eyes-server@portal:../fake-eyes-server::locator=%40applitools%2Feyes-sdk-core%40workspace%3Asrc%2Fcore"
+  dependencies:
+    "@applitools/sdk-release-kit": "portal:../release-kit"
+    chai: ^4.2.0
+    express: ^4.17.1
+    filenamify: ^4.1.0
+    mocha: ^7.0.0
+    node-fetch: ^2.6.0
+    ua-parser-js: ^0.7.21
+    uuid: ^3.3.3
+  languageName: node
+  linkType: soft
+
+"@applitools/sdk-fake-eyes-server@workspace:src/fake-eyes-server":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-fake-eyes-server@workspace:src/fake-eyes-server"
+  dependencies:
+    "@applitools/sdk-release-kit": "portal:../release-kit"
+    chai: ^4.2.0
+    express: ^4.17.1
+    filenamify: ^4.1.0
+    mocha: ^7.0.0
+    node-fetch: ^2.6.0
+    ua-parser-js: ^0.7.21
+    uuid: ^3.3.3
+  languageName: unknown
+  linkType: soft
+
 "@applitools/sdk-release-kit@portal:../../src/release-kit::locator=%40applitools%2Fdom-capture%40workspace%3Apackages%2Fdom-capture":
   version: 0.0.0-use.local
   resolution: "@applitools/sdk-release-kit@portal:../../src/release-kit::locator=%40applitools%2Fdom-capture%40workspace%3Apackages%2Fdom-capture"
@@ -1358,6 +1440,18 @@ __metadata:
   languageName: node
   linkType: soft
 
+"@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Fdom-utils%40workspace%3Asrc%2Fdom-utils":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Fdom-utils%40workspace%3Asrc%2Fdom-utils"
+  dependencies:
+    mocha: ^6.2.2
+    node-fetch: ^2.6.0
+    yargs: ^15.0.2
+  bin:
+    bongo: ./src/cli/index.js
+  languageName: node
+  linkType: soft
+
 "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-common%40portal%3A..%2F..%2Fsrc%2Fcommon%3A%3Alocator%3D%2540applitools%252Feyes-cypress%2540workspace%253Apackages%252Feyes-cypress":
   version: 0.0.0-use.local
   resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-common%40portal%3A..%2F..%2Fsrc%2Fcommon%3A%3Alocator%3D%2540applitools%252Feyes-cypress%2540workspace%253Apackages%252Feyes-cypress"
@@ -1538,6 +1632,30 @@ __metadata:
   languageName: node
   linkType: soft
 
+"@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-common%40portal%3A..%2Fcommon%3A%3Alocator%3D%2540applitools%252Feyes-sdk-core%2540workspace%253Asrc%252Fcore":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-common%40portal%3A..%2Fcommon%3A%3Alocator%3D%2540applitools%252Feyes-sdk-core%2540workspace%253Asrc%252Fcore"
+  dependencies:
+    mocha: ^6.2.2
+    node-fetch: ^2.6.0
+    yargs: ^15.0.2
+  bin:
+    bongo: ./src/cli/index.js
+  languageName: node
+  linkType: soft
+
+"@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-common%40workspace%3Asrc%2Fcommon":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-common%40workspace%3Asrc%2Fcommon"
+  dependencies:
+    mocha: ^6.2.2
+    node-fetch: ^2.6.0
+    yargs: ^15.0.2
+  bin:
+    bongo: ./src/cli/index.js
+  languageName: node
+  linkType: soft
+
 "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-sdk-core%40portal%3A..%2F..%2Fsrc%2Fcore%3A%3Alocator%3D%2540applitools%252Feyes-cypress%2540workspace%253Apackages%252Feyes-cypress":
   version: 0.0.0-use.local
   resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-sdk-core%40portal%3A..%2F..%2Fsrc%2Fcore%3A%3Alocator%3D%2540applitools%252Feyes-cypress%2540workspace%253Apackages%252Feyes-cypress"
@@ -1625,6 +1743,18 @@ __metadata:
 "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-sdk-core%40portal%3A..%2F..%2Fsrc%2Fcore%3A%3Alocator%3D%2540applitools%252Fvisual-grid-client%2540workspace%253Apackages%252Fvisual-grid-client":
   version: 0.0.0-use.local
   resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-sdk-core%40portal%3A..%2F..%2Fsrc%2Fcore%3A%3Alocator%3D%2540applitools%252Fvisual-grid-client%2540workspace%253Apackages%252Fvisual-grid-client"
+  dependencies:
+    mocha: ^6.2.2
+    node-fetch: ^2.6.0
+    yargs: ^15.0.2
+  bin:
+    bongo: ./src/cli/index.js
+  languageName: node
+  linkType: soft
+
+"@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-sdk-core%40workspace%3Asrc%2Fcore":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Feyes-sdk-core%40workspace%3Asrc%2Fcore"
   dependencies:
     mocha: ^6.2.2
     node-fetch: ^2.6.0
@@ -1766,6 +1896,30 @@ __metadata:
   languageName: node
   linkType: soft
 
+"@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Fsdk-fake-eyes-server%40portal%3A..%2Ffake-eyes-server%3A%3Alocator%3D%2540applitools%252Feyes-sdk-core%2540workspace%253Asrc%252Fcore":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Fsdk-fake-eyes-server%40portal%3A..%2Ffake-eyes-server%3A%3Alocator%3D%2540applitools%252Feyes-sdk-core%2540workspace%253Asrc%252Fcore"
+  dependencies:
+    mocha: ^6.2.2
+    node-fetch: ^2.6.0
+    yargs: ^15.0.2
+  bin:
+    bongo: ./src/cli/index.js
+  languageName: node
+  linkType: soft
+
+"@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Fsdk-fake-eyes-server%40workspace%3Asrc%2Ffake-eyes-server":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Fsdk-fake-eyes-server%40workspace%3Asrc%2Ffake-eyes-server"
+  dependencies:
+    mocha: ^6.2.2
+    node-fetch: ^2.6.0
+    yargs: ^15.0.2
+  bin:
+    bongo: ./src/cli/index.js
+  languageName: node
+  linkType: soft
+
 "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Fsdk-test-kit%40portal%3A..%2F..%2Fsrc%2Ftest-kit%3A%3Alocator%3D%2540applitools%252Feyes-selenium%2540workspace%253Apackages%252Feyes-selenium":
   version: 0.0.0-use.local
   resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Fsdk-test-kit%40portal%3A..%2F..%2Fsrc%2Ftest-kit%3A%3Alocator%3D%2540applitools%252Feyes-selenium%2540workspace%253Apackages%252Feyes-selenium"
@@ -1802,6 +1956,18 @@ __metadata:
   languageName: node
   linkType: soft
 
+"@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Fsdk-test-kit%40workspace%3Asrc%2Ftest-kit":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=%40applitools%2Fsdk-test-kit%40workspace%3Asrc%2Ftest-kit"
+  dependencies:
+    mocha: ^6.2.2
+    node-fetch: ^2.6.0
+    yargs: ^15.0.2
+  bin:
+    bongo: ./src/cli/index.js
+  languageName: node
+  linkType: soft
+
 "@applitools/sdk-release-kit@portal:../release-kit::locator=eyes.sdk%40portal%3A..%2F..%2Fsrc%2Fcore-legacy%3A%3Alocator%3Deyes.images%2540workspace%253Apackages%252Feyes-images-legacy":
   version: 0.0.0-use.local
   resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=eyes.sdk%40portal%3A..%2F..%2Fsrc%2Fcore-legacy%3A%3Alocator%3Deyes.images%2540workspace%253Apackages%252Feyes-images-legacy"
@@ -1817,6 +1983,18 @@ __metadata:
 "@applitools/sdk-release-kit@portal:../release-kit::locator=eyes.sdk%40portal%3A..%2F..%2Fsrc%2Fcore-legacy%3A%3Alocator%3Deyes.selenium%2540workspace%253Apackages%252Feyes-selenium-3":
   version: 0.0.0-use.local
   resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=eyes.sdk%40portal%3A..%2F..%2Fsrc%2Fcore-legacy%3A%3Alocator%3Deyes.selenium%2540workspace%253Apackages%252Feyes-selenium-3"
+  dependencies:
+    mocha: ^6.2.2
+    node-fetch: ^2.6.0
+    yargs: ^15.0.2
+  bin:
+    bongo: ./src/cli/index.js
+  languageName: node
+  linkType: soft
+
+"@applitools/sdk-release-kit@portal:../release-kit::locator=eyes.sdk%40workspace%3Asrc%2Fcore-legacy":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=eyes.sdk%40workspace%3Asrc%2Fcore-legacy"
   dependencies:
     mocha: ^6.2.2
     node-fetch: ^2.6.0
@@ -1850,21 +2028,46 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@applitools/sdk-test-kit@npm:^1.0.17":
-  version: 1.0.17
-  resolution: "@applitools/sdk-test-kit@npm:1.0.17"
+"@applitools/sdk-release-kit@portal:../release-kit::locator=eyes.utils%40workspace%3Asrc%2Fcommon-legacy":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-release-kit@portal:../release-kit::locator=eyes.utils%40workspace%3Asrc%2Fcommon-legacy"
   dependencies:
+    mocha: ^6.2.2
+    node-fetch: ^2.6.0
+    yargs: ^15.0.2
+  bin:
+    bongo: ./src/cli/index.js
+  languageName: node
+  linkType: soft
+
+"@applitools/sdk-release-kit@workspace:src/release-kit":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-release-kit@workspace:src/release-kit"
+  dependencies:
+    mocha: ^6.2.2
+    node-fetch: ^2.6.0
+    yargs: ^15.0.2
+  bin:
+    bongo: ./src/cli/index.js
+  languageName: unknown
+  linkType: soft
+
+"@applitools/sdk-test-kit@^1.0.17, @applitools/sdk-test-kit@workspace:src/test-kit":
+  version: 0.0.0-use.local
+  resolution: "@applitools/sdk-test-kit@workspace:src/test-kit"
+  dependencies:
+    "@applitools/sdk-release-kit": "portal:../release-kit"
     "@typescript-eslint/parser": ^2.14.0
-    chromedriver: ^79.0.0
+    chromedriver: ^80.0.0
+    mocha: ^6.2.2
     node-fetch: ^2.6.0
     throat: ^5.0.0
     typescript: ^3.7.4
     yargs: ^15.0.2
   bin:
     coverage-tests: ./src/coverage-tests/cli.js
-  checksum: 2/969c52a369aaf4a40b712c6d6916ee0dd5b6269233f785b23abe97583a84d985b5df64573397b1f01355cf437c2c6a1f1ddcbd0fa6d5f83e942032b503193ee3
-  languageName: node
-  linkType: hard
+  languageName: unknown
+  linkType: soft
 
 "@applitools/sdk-test-kit@portal:../../src/test-kit::locator=%40applitools%2Feyes-selenium%40workspace%3Apackages%2Feyes-selenium":
   version: 0.0.0-use.local
@@ -9514,22 +9717,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:^79.0.0":
-  version: 79.0.3
-  resolution: "chromedriver@npm:79.0.3"
-  dependencies:
-    "@testim/chrome-version": ^1.0.7
-    del: ^4.1.1
-    extract-zip: ^1.6.7
-    mkdirp: ^0.5.1
-    request: ^2.88.0
-    tcp-port-used: ^1.0.1
-  bin:
-    chromedriver: bin/chromedriver
-  checksum: 2/594c38fd91965bfb1d05018ad266666f52461b2229d352581ce7c5cfe053a4747caf249d019574d5554138272ec3b41e1a07b6df472b88c2c788799ff3106112
-  languageName: node
-  linkType: hard
-
 "chromedriver@npm:^80.0.0, chromedriver@npm:^80.0.1":
   version: 80.0.1
   resolution: "chromedriver@npm:80.0.1"
@@ -11264,21 +11451,6 @@ __metadata:
     pify: ^3.0.0
     rimraf: ^2.2.8
   checksum: 2/88112a09f91b3e44d0f830ab603c1a91e30c00ddd1e910beb40c8ff73e81605b3f0f745ecdd1e8d73aff733567736e56e742ef6a4401a0134461fb3ef2e8bb10
-  languageName: node
-  linkType: hard
-
-"del@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "del@npm:4.1.1"
-  dependencies:
-    "@types/glob": ^7.1.1
-    globby: ^6.1.0
-    is-path-cwd: ^2.0.0
-    is-path-in-cwd: ^2.0.0
-    p-map: ^2.0.0
-    pify: ^4.0.1
-    rimraf: ^2.6.3
-  checksum: 2/87eecb2af52e794f8d9c8d200a31e0032cec8c255f08a97ef28be771bf561f16023746f2329d7b436e0a1fe09abafe80a25b2546131aa809cbd9a6bf49220cf3
   languageName: node
   linkType: hard
 
@@ -13202,6 +13374,19 @@ __metadata:
   languageName: node
   linkType: soft
 
+"eyes.sdk@workspace:src/core-legacy":
+  version: 0.0.0-use.local
+  resolution: "eyes.sdk@workspace:src/core-legacy"
+  dependencies:
+    "@applitools/sdk-release-kit": "portal:../release-kit"
+    "@types/node": "*"
+    eyes.utils: ^3.8.1
+    mocha: ^6.2.2
+    request: ^2.88.0
+    typescript: ^3.6.4
+  languageName: unknown
+  linkType: soft
+
 "eyes.selenium@workspace:packages/eyes-selenium-3":
   version: 0.0.0-use.local
   resolution: "eyes.selenium@workspace:packages/eyes-selenium-3"
@@ -13220,15 +13405,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"eyes.utils@npm:^3.8.1":
-  version: 3.8.1
-  resolution: "eyes.utils@npm:3.8.1"
+"eyes.utils@^3.8.1, eyes.utils@workspace:src/common-legacy":
+  version: 0.0.0-use.local
+  resolution: "eyes.utils@workspace:src/common-legacy"
   dependencies:
+    "@applitools/sdk-release-kit": "portal:../release-kit"
+    "@types/node": "*"
     dateformat: ^3.0.3
+    mocha: ^6.2.2
     png-async: ^0.9.4
-  checksum: 2/09d8e1ed75469a4b39628d33af4ad0b9dc42efd6cde79c7328f3cd3278c6c7cdd8818d4e0cccf10b5a3883864f9f362cce8410fa16e1a84f1399b93410f45638
-  languageName: node
-  linkType: hard
+    typescript: ^3.6.4
+  languageName: unknown
+  linkType: soft
 
 "eyes.utils@portal:../../src/common-legacy::locator=eyes.images%40workspace%3Apackages%2Feyes-images-legacy":
   version: 0.0.0-use.local
@@ -16198,7 +16386,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-path-cwd@npm:^2.0.0, is-path-cwd@npm:^2.2.0":
+"is-path-cwd@npm:^2.2.0":
   version: 2.2.0
   resolution: "is-path-cwd@npm:2.2.0"
   checksum: 2/900f6e81445b9979705952189d7dbada79dbe6d77be3b5fc95aed3dc1cc9d77de5b286db2d525942a72a717c81aa549509b76705883415fb655183dfefce9541
@@ -16214,30 +16402,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-path-in-cwd@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "is-path-in-cwd@npm:2.1.0"
-  dependencies:
-    is-path-inside: ^2.1.0
-  checksum: 2/d814427f4e8757e960031bf9cf202f764a688a7d6be3bc8889335e5dc112e88731fda95556b8b6c7dc030358f4e6385e27ac9af95d0406411fc5271a94abef86
-  languageName: node
-  linkType: hard
-
 "is-path-inside@npm:^1.0.0":
   version: 1.0.1
   resolution: "is-path-inside@npm:1.0.1"
   dependencies:
     path-is-inside: ^1.0.1
   checksum: 2/7ccbc0bedfb98d07191f9a6c839f78ffb102c24fb77f58ecca52fec13d618d15b7bd52d6335637a80c8830bc4864849adda8fd4107755a96747d690336190beb
-  languageName: node
-  linkType: hard
-
-"is-path-inside@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "is-path-inside@npm:2.1.0"
-  dependencies:
-    path-is-inside: ^1.0.2
-  checksum: 2/e289fc4ec6df457600bac34068b7c564bf17eee703888d9eea2b0a363a0ac67bb5864e715ba428904dd683287154cab0f7f9536d7e4c23e3410c5cc024a5839b
   languageName: node
   linkType: hard
 
@@ -20551,13 +20721,6 @@ __metadata:
   version: 1.2.0
   resolution: "p-map@npm:1.2.0"
   checksum: 2/cffb7e4e5dfe0a3ffa05c10513d1c973a620deb46e3b8ecfc7d9fdbad0f97adfe51c99b3d8b1596387fedaed9c6170a17f5142ffb408fd19abfb085f7bf9630c
-  languageName: node
-  linkType: hard
-
-"p-map@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "p-map@npm:2.1.0"
-  checksum: 2/8557e841ed832a489aaee7d825b7bea73e0559c452578821f5af418f430a8455727ab8dd5b4318b6b6733096029cfa571aa0e8d21bdd2c213025f02f919f7a9a
   languageName: node
   linkType: hard
 
