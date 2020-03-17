@@ -3,6 +3,26 @@
 ## Unreleased
 
 
+## 13.6.4
+
+- Support both new and old server versions for identifying new running sessions. ([Trello](https://trello.com/c/mtSiheZ9/267-support-startsession-as-long-running-task))
+
+## 13.6.3
+
+- RunningSession is no longer determined to be new according to startSession's response status, but rather by the response's payload of `isNew`. ([Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks))
+
+## 13.6.2
+
+- update @applitools/eyes-sdk-core@8.1.2
+
+## 13.6.1
+
+- add missing browsers to TypeScript definitions [Trello](https://trello.com/c/2QEofssH/264-cypress-js-vs-ts-not-the-same-goodrx-poc)
+
+## 13.6.0
+
+- accepting batchInfo to override batch data in open eyes
+
 ## 13.5.21
 
 - support future long running tasks [Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks)

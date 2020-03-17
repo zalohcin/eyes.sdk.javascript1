@@ -9,7 +9,7 @@ const logger = require('../util/testLogger');
 // TODO (amit): unskip
 describe.skip('page pool', () => {
   it('starts with "x" free pages', async () => {
-    const initPage = async index => index;
+    const initPage = async ({pageId}) => pageId;
     const {getFreePage} = await createPagePool({logger, numOfPages: 3, initPage});
     const p1 = await getFreePage();
     expect(p1.page).to.equal(0);
@@ -23,7 +23,7 @@ describe.skip('page pool', () => {
   });
 
   it("doesn't provide a page if pool is full", async () => {
-    const initPage = async index => index;
+    const initPage = async ({pageId}) => pageId;
     const {getFreePage} = await createPagePool({logger, numOfPages: 1, initPage});
     const {markPageAsFree} = await getFreePage();
     delay(100).then(markPageAsFree);
@@ -32,7 +32,7 @@ describe.skip('page pool', () => {
   });
 
   it('returns free pages in FIFO order', async () => {
-    const initPage = async index => index;
+    const initPage = async ({pageId}) => pageId;
     const {getFreePage} = await createPagePool({logger, numOfPages: 2, initPage});
     const p1 = await getFreePage();
     expect(p1.pageId).to.equal(0);

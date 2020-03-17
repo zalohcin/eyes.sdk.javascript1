@@ -120,6 +120,8 @@ class EyesWDIO extends EyesBase {
     this._screenshotFactory = undefined
     /** @type {WebElement} */
     this._scrollRootElement = undefined
+    /** @type {Promise<void>} */
+    this._closePromise = Promise.resolve()
   }
 
   /**
@@ -1007,16 +1009,24 @@ class EyesWDIO extends EyesBase {
    * @return {Promise<TestResults>}
    */
   async close(throwEx = true) {
-    const results = await super.close(true).catch(err => {
-      if (!throwEx) return err
-      else throw err
-    })
+    let isErrorCaught = false
+    this._closePromise = super
+      .close(true)
+      .catch(err => {
+        isErrorCaught = true
+        return err
+      })
+      .then(results => {
+        if (this._runner) {
+          this._runner._allTestResult.push(results)
+        }
+        if (throwEx && isErrorCaught) {
+          throw results
+        }
+        return results
+      })
 
-    if (this._runner) {
-      this._runner._allTestResult.push(results)
-    }
-
-    return results
+    return this._closePromise
   }
 
   /**

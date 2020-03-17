@@ -1,11 +1,11 @@
 'use strict';
 
-function createPagePool({logger, initPage}) {
+function createPagePool({initPage, logger}) {
   let counter = 0;
   const fullPageObjs = [];
   logger.log(`[page pool] created`);
   let currWaitOnFreePage = Promise.resolve();
-  return {
+  const pagePool = {
     getFreePage,
     createPage: async () => {
       const fullPageObj = await createPage();
@@ -30,6 +30,8 @@ function createPagePool({logger, initPage}) {
     },
   };
 
+  return pagePool;
+
   async function getFreePage() {
     logger.log(`[page pool] waiting for free page`);
     await currWaitOnFreePage;
@@ -53,7 +55,7 @@ function createPagePool({logger, initPage}) {
     let resolveWork;
     let isActive;
     let createdAt;
-    const page = await initPage(pageId);
+    const page = await initPage({pageId, pagePool});
     return {
       page,
       pageId,

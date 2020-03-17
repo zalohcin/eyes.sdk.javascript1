@@ -16,7 +16,7 @@ describe('renderStories', () => {
   it('returns empty array for 0 stories', async () => {
     const pagePool = createPagePool({
       logger,
-      initPage: async index => ({evaluate: async () => index + 1}),
+      initPage: async ({pageId}) => ({evaluate: async () => pageId + 1}),
     });
     const {stream, getEvents} = testStream();
     const renderStories = makeRenderStories({
@@ -35,7 +35,7 @@ describe('renderStories', () => {
   it('returns results from renderStory', async () => {
     const pagePool = createPagePool({
       logger,
-      initPage: async index => ({evaluate: async () => index + 1}),
+      initPage: async ({pageId}) => ({evaluate: async () => pageId + 1}),
     });
     pagePool.addToPool((await pagePool.createPage()).pageId);
     pagePool.addToPool((await pagePool.createPage()).pageId);
@@ -103,7 +103,7 @@ describe('renderStories', () => {
   it('passes waitBeforeScreenshot to getStoryData', async () => {
     const pagePool = createPagePool({
       logger,
-      initPage: async index => ({evaluate: async () => index + 1}),
+      initPage: async ({pageId}) => ({evaluate: async () => pageId + 1}),
     });
     pagePool.addToPool((await pagePool.createPage()).pageId);
 
@@ -145,7 +145,7 @@ describe('renderStories', () => {
   it('returns errors from getStoryData', async () => {
     const pagePool = createPagePool({
       logger,
-      initPage: async index => ({evaluate: async () => index + 1}),
+      initPage: async ({pageId}) => ({evaluate: async () => pageId + 1}),
     });
     pagePool.addToPool((await pagePool.createPage()).pageId);
     const getStoryData = async () => {
@@ -181,7 +181,7 @@ describe('renderStories', () => {
   it('returns errors from renderStory', async () => {
     const pagePool = createPagePool({
       logger,
-      initPage: async index => ({evaluate: async () => index + 1}),
+      initPage: async ({pageId}) => ({evaluate: async () => pageId + 1}),
     });
     pagePool.addToPool((await pagePool.createPage()).pageId);
     const getStoryData = async () => ({});
@@ -219,7 +219,7 @@ describe('renderStories', () => {
       try {
         const pagePool = createPagePool({
           logger,
-          initPage: async index => (index === 0 ? page : browser.newPage()),
+          initPage: async ({pageId}) => (pageId === 0 ? page : browser.newPage()),
         });
         pagePool.addToPool((await pagePool.createPage()).pageId);
         await page.close();
@@ -281,9 +281,9 @@ describe('renderStories', () => {
       try {
         const pagePool = createPagePool({
           logger,
-          initPage: async index => {
+          initPage: async ({pageId}) => {
             const page = await browser.newPage();
-            if (index === 1) {
+            if (pageId === 1) {
               await page.evaluate(() => (window.__failTest = true)); // eslint-disable-line no-undef
             }
             return page;
@@ -363,7 +363,7 @@ describe('renderStories', () => {
   it.skip("doesn't have memory issues", async () => {
     const pagePool = createPagePool({
       logger,
-      initPage: async index => index + 1,
+      initPage: async ({pageId}) => pageId + 1,
     });
     pagePool.addToPool((await pagePool.createPage()).pageId);
     const length = 1000;

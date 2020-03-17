@@ -30,7 +30,7 @@ describe('ServerConnector', () => {
         baselineId: `${sessionId}__baseline`,
         batchId,
         id: `${sessionId}__running`,
-        isNewSession: false,
+        isNew: true, // TODO make configurable in fake-eyes-server
         renderingInfo: undefined,
         sessionId,
         url: `${sessionId}__url`,
@@ -209,5 +209,50 @@ describe('ServerConnector', () => {
 
     assert.strictEqual(data['Eyes-Expect'], undefined)
     assert.strictEqual(data['Eyes-Date'], undefined)
+  })
+
+  it('does NOT mark RunningSession as new if there is no isNew in the payload and response status is 200', async () => {
+    const serverConnector = new ServerConnector(logger, new Configuration())
+    serverConnector._axios.defaults.adapter = async config => ({
+      status: 200,
+      data: {},
+      config,
+    })
+
+    const runningSession = await serverConnector.startSession({})
+    assert.strictEqual(runningSession.getIsNew(), false)
+  })
+
+  it('marks RunningSession as new if there is no isNew in the payload and response status is 201', async () => {
+    const serverConnector = new ServerConnector(logger, new Configuration())
+    serverConnector._axios.defaults.adapter = async config => ({
+      status: 201,
+      data: {},
+      config,
+    })
+
+    const runningSession = await serverConnector.startSession({})
+    assert.strictEqual(runningSession.getIsNew(), true)
+  })
+
+  it('sets RunningSession.isNew with the value of isNew in the payload', async () => {
+    const serverConnector = new ServerConnector(logger, new Configuration())
+    serverConnector._axios.defaults.adapter = async config => ({
+      status: 200,
+      data: {isNew: true},
+      config,
+    })
+
+    const runningSessionWithIsNewTrue = await serverConnector.startSession({})
+    assert.strictEqual(runningSessionWithIsNewTrue.getIsNew(), true)
+
+    serverConnector._axios.defaults.adapter = async config => ({
+      status: 200,
+      data: {isNew: false},
+      config,
+    })
+
+    const runningSessionWithIsNewFalse = await serverConnector.startSession({})
+    assert.strictEqual(runningSessionWithIsNewFalse.getIsNew(), false)
   })
 })

@@ -81,11 +81,11 @@ storiesOf('skipped tests', module)
 storiesOf('Text', module)
   .add(
     'appears after a delay',
-    () => 
-      <WithScript script={() => { 
+    () =>
+      <WithScript script={() => {
           window.setTimeout(() => {
             document.getElementById('delay').innerText = 'Now Ready - snapshot me!'
-            document.getElementById('delay').className = 'ready' 
+            document.getElementById('delay').className = 'ready'
           }, 1000)
         }}
       >
@@ -105,6 +105,11 @@ storiesOf('Interaction', module)
     },
     bgColor: 'lime',
   })
+
+storiesOf('Responsive UI', module)
+  .add('Red/green', () =>
+    <div style={{background: window.innerWidth < 1000 && window.innerHeight < 1000 ? 'lime' : 'red'}}>test should pass if background is lime</div>
+  )
 
 class Popover extends React.Component {
   state = {isOpen: false, transition: undefined};

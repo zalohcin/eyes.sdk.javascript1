@@ -53,7 +53,13 @@ function config({inputFileName, outputFileName, type = 'iife', usePolyfillAndBab
       usePolyfillAndBabel
         ? polyfill(
             inputFileName,
-            ['core-js/stable', 'regenerator-runtime/runtime', 'url-polyfill', 'whatwg-fetch'],
+            [
+              'core-js/stable',
+              'regenerator-runtime/runtime',
+              'url-polyfill',
+              'whatwg-fetch',
+              'abortcontroller-polyfill',
+            ],
             {
               method: 'commonjs',
             },

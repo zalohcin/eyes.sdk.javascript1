@@ -2,10 +2,23 @@
 
 ## Unreleased
 
+- Support both new and old server versions for identifying new running sessions. ([Trello](https://trello.com/c/mtSiheZ9/267-support-startsession-as-long-running-task))
+
+## 5.9.15
+
+- fix trying to fetch branch info from server on non github integration runs
 
 ## 5.20.0
 
-- regions support for VG
+- same as 5.9.14
+
+## 5.10.0
+
+- same as 5.9.14
+
+## 5.9.14
+
+- regions fixes for VG
 - upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
 - support future long running tasks [Trello](https://trello.com/c/60Rm4xXG/240-support-future-long-running-tasks)
 - fix regression in css stitching [Trello](https://trello.com/c/dp5IIoFw/235-css-stitching-regression-in-41533)

@@ -28,6 +28,16 @@ function assertProperties(actual, expected) {
   }
 }
 
+async function assertImages(testSummary, expected) {
+  let results = await getTestResults(testSummary)
+  let data = await getApiData(results.getApiUrls().getSession(), results.getSecretToken())
+  let appOutput = data.actualAppOutput
+  expect(appOutput.length).to.be.eql(expected.length)
+  appOutput.forEach((output, index) => {
+    assertProperties(output.image, expected[index])
+  })
+}
+
 async function assertImage(testSummary, expected, index = 0) {
   let results = await getTestResults(testSummary)
   let data = await getApiData(results.getApiUrls().getSession(), results.getSecretToken())
@@ -58,4 +68,6 @@ async function assertDefaultMatchSettings(testSummary, expected) {
 
 module.exports.assertImageMatchSettings = assertImageMatchSettings
 module.exports.assertImage = assertImage
+module.exports.assertImages = assertImages
 module.exports.assertDefaultMatchSettings = assertDefaultMatchSettings
+module.exports.getApiData = getApiData

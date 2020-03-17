@@ -1,10 +1,13 @@
 module.exports = function isLinkToStyleSheet(node) {
-  return (
-    node.nodeName &&
-    node.nodeName.toUpperCase() === 'LINK' &&
-    node.attributes &&
-    Array.from(node.attributes).find(
-      attr => attr.name.toLowerCase() === 'rel' && attr.value.toLowerCase() === 'stylesheet',
-    )
-  );
+  if (node.nodeName && node.nodeName.toUpperCase() === 'LINK' && node.attributes) {
+    const attributes = new Map(
+      Array.from(node.attributes, attr => [attr.name.toLowerCase(), attr.value.toLowerCase()]),
+    );
+    return (
+      attributes.get('rel') === 'stylesheet' ||
+      (attributes.get('as') === 'style' && ['preload', 'prefetch'].includes(attributes.get('rel')))
+    );
+  } else {
+    return false;
+  }
 };

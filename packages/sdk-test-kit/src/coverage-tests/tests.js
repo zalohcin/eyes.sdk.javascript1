@@ -355,6 +355,7 @@ function makeCoverageTests({
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkRegion({left: 50, top: 50, width: 100, height: 100})
+      await close(throwException)
     },
     TestScrollbarsHiddenAndReturned_Fluent: async () => {
       await visit(url)
@@ -368,7 +369,8 @@ function makeCoverageTests({
       await visit('https://applitools.com/helloworld')
       await open({appName: 'Test Count', viewportSize: '640x480'})
       await checkWindow({isFully: true})
-      assert.deepStrictEqual((await getAllTestResults()).length, 1)
+      await close(false) // VisualGridRunner::getAllResults doesn't call Eyes::close. In non-JS SDK's it does, but that should be deprecated. Users should be instructed to call close explicitly.
+      assert.deepStrictEqual((await getAllTestResults(throwException)).length, 1)
     },
   }
 }

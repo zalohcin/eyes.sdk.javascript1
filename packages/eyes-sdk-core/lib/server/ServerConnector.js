@@ -165,7 +165,9 @@ class ServerConnector {
     const validStatusCodes = [HTTP_STATUS_CODES.OK, HTTP_STATUS_CODES.CREATED]
     if (validStatusCodes.includes(response.status)) {
       const runningSession = new RunningSession(response.data)
-      runningSession.setNewSession(response.status === HTTP_STATUS_CODES.CREATED)
+      if (response.data.isNew === undefined) {
+        runningSession.setIsNew(response.status === HTTP_STATUS_CODES.CREATED)
+      }
       this._logger.verbose('ServerConnector.startSession - post succeeded', runningSession)
       return runningSession
     }

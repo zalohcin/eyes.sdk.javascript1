@@ -20,6 +20,36 @@ describe(appName, () => {
       eyes.setBatch(batch)
     })
 
+    it('TestCheckRegionInFrame2_Fluent', async () => {
+      await eyes.open(webDriver, appName, `TestCheckRegionInFrame2_Fluent`, {
+        width: 700,
+        height: 460,
+      })
+      await eyes.check(
+        'Fluent - Inner frame div 1',
+        Target.frame('frame1')
+          .region(By.id('inner-frame-div'))
+          .fully()
+          .ignoreRegions(new Region(50, 50, 100, 100)),
+      )
+      await eyes.close()
+    })
+
+    it('TestCheckRegionInFrameInFrame_Fluent', async () => {
+      await eyes.open(webDriver, appName, `TestCheckRegionInFrameInFrame_Fluent`, {
+        width: 700,
+        height: 460,
+      })
+      await eyes.check(
+        'Fluent - Region in Frame in Frame',
+        Target.frame('frame1')
+          .frame('frame1-1')
+          .region(By.css('img'))
+          .fully(),
+      )
+      await eyes.close()
+    })
+
     it('TestCheckScrollableModal', async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal`, {
         width: 700,
@@ -71,6 +101,36 @@ describe(appName, () => {
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
       ;({eyes} = await getEyes('classic', StitchMode.SCROLL))
       eyes.setBatch(batch)
+    })
+
+    it('TestCheckRegionInFrame2_Fluent', async () => {
+      await eyes.open(webDriver, appName, `TestCheckRegionInFrame2_Fluent_SCROLL`, {
+        width: 700,
+        height: 460,
+      })
+      await eyes.check(
+        'Fluent - Inner frame div 1',
+        Target.frame('frame1')
+          .region(By.id('inner-frame-div'))
+          .fully()
+          .ignoreRegions(new Region(50, 50, 100, 100)),
+      )
+      await eyes.close()
+    })
+
+    it('TestCheckRegionInFrameInFrame_Fluent', async () => {
+      await eyes.open(webDriver, appName, `TestCheckRegionInFrameInFrame_Fluent_SCROLL`, {
+        width: 700,
+        height: 460,
+      })
+      await eyes.check(
+        'Fluent - Region in Frame in Frame',
+        Target.frame('frame1')
+          .frame('frame1-1')
+          .region(By.css('img'))
+          .fully(),
+      )
+      await eyes.close()
     })
 
     it('TestCheckScrollableModal', async () => {

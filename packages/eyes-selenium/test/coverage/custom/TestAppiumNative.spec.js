@@ -31,7 +31,7 @@ describe('TestAppiumNative', () => {
     await eyes.abortIfNotClosed()
   })
 
-  it(`Native app on sauce lab`, async () => {
+  it(`Native android app on sauce lab`, async () => {
     driver = await new Builder()
       .withCapabilities(sauceCaps)
       .usingServer(sauceUrl)
@@ -43,6 +43,35 @@ describe('TestAppiumNative', () => {
       'Check',
       Target.window()
         .ignoreRegions(new Region(900, 0, 540, 100))
+        .fully(),
+    )
+    await eyes.close()
+  })
+
+  it.skip(`Native iOS app on sauce lab`, async () => {
+    driver = await new Builder()
+      .withCapabilities({
+        browserName: '',
+        platformName: 'iOS',
+        platformVersion: '10.3',
+        deviceName: 'iPhone 7 Simulator',
+        deviceOrientation: 'portrait',
+        username: process.env.SAUCE_USERNAME,
+        accessKey: process.env.SAUCE_ACCESS_KEY,
+        app: 'https://store.applitools.com/download/iOS.TestApp.app.zip',
+        clearSystemFiles: true,
+        noReset: true,
+      })
+      .usingServer(sauceUrl)
+      .build()
+    eyes = new Eyes()
+    eyes.setBatch(batch)
+    // await driver.get('https://google.com')
+    await eyes.open(driver, 'JS test', 'Checking eyes settings in appium tests')
+    await eyes.check(
+      'Check',
+      Target.window()
+        // .ignoreRegions(new Region(900, 0, 540, 100))
         .fully(),
     )
     await eyes.close()

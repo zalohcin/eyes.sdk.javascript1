@@ -13,7 +13,6 @@ const {
   BrowserType,
   Configuration,
   RectangleSize,
-  TestResultsSummary,
   VisualGridRunner,
 } = require('@applitools/eyes-sdk-core')
 
@@ -43,6 +42,7 @@ class EyesVisualGrid extends EyesBase {
     super(serverUrl, isDisabled, new Configuration())
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
+    this._runner.makeGetVisualGridClient(makeVisualGridClient)
 
     /** @type {boolean} */ this._isOpen = false
     /** @type {boolean} */ this._isVisualGrid = true
@@ -52,7 +52,9 @@ class EyesVisualGrid extends EyesBase {
     /** @function */ this._checkWindowCommand = undefined
     /** @function */ this._closeCommand = undefined
     /** @function */ this._abortCommand = undefined
-    /** @type {Promise} */ this._closePromise = undefined
+
+    /** @type {Promise<void>} */
+    this._closePromise = Promise.resolve()
   }
 
   /**
@@ -112,7 +114,8 @@ class EyesVisualGrid extends EyesBase {
     }
 
     if (
-      this._configuration.getBrowsersInfo().length === 0 &&
+      (!this._configuration.getBrowsersInfo() ||
+        this._configuration.getBrowsersInfo().length === 0) &&
       this._configuration.getViewportSize()
     ) {
       const vs = this._configuration.getViewportSize()
@@ -122,7 +125,7 @@ class EyesVisualGrid extends EyesBase {
     if (this._runner.getConcurrentSessions())
       this._configuration.setConcurrentSessions(this._runner.getConcurrentSessions())
 
-    const {openEyes} = makeVisualGridClient({
+    const {openEyes} = await this._runner.getVisualGridClientWithCache({
       logger: this._logger,
       agentId: this.getFullAgentId(),
       apiKey: this._configuration.getApiKey(),
@@ -144,16 +147,8 @@ class EyesVisualGrid extends EyesBase {
 
     this._isOpen = true
     this._checkWindowCommand = checkWindow
-    this._closeCommand = async () => {
-      return close(true).catch(err => {
-        if (Array.isArray(err)) {
-          return err
-        }
-
-        throw err
-      })
-    }
-    this._abortCommand = async () => abort(true)
+    this._closeCommand = close
+    this._abortCommand = abort
 
     return this._driver
   }
@@ -172,37 +167,17 @@ class EyesVisualGrid extends EyesBase {
   }
 
   /**
-   * @param {boolean} [throwEx=true]
-   * @return {Promise<TestResults>}
+   * @return {Promise}
    */
-  async closeAndReturnResults(throwEx = true) {
-    try {
-      let resultsPromise = this._closePromise || this._closeCommand()
-      const res = await resultsPromise
-      const testResultSummary = new TestResultsSummary(res)
-
-      if (throwEx === true) {
-        for (const result of testResultSummary.getAllResults()) {
-          if (result.getException()) {
-            throw result.getException()
-          }
-        }
-      }
-
-      return testResultSummary
-    } finally {
-      this._isOpen = false
-      this._closePromise = undefined
-    }
+  async closeAsync() {
+    await this.close(false)
   }
 
   /**
    * @return {Promise}
    */
-  async closeAsync() {
-    if (!this._closePromise) {
-      this._closePromise = this._closeCommand()
-    }
+  async abortAsync() {
+    await this.abort()
   }
 
   /**
@@ -210,41 +185,32 @@ class EyesVisualGrid extends EyesBase {
    * @return {Promise<TestResults>}
    */
   async close(throwEx = true) {
-    const results = await this.closeAndReturnResults(throwEx)
+    let isErrorCaught = false
+    this._closePromise = this._closeCommand(true)
+      .catch(err => {
+        isErrorCaught = true
+        return err
+      })
+      .then(results => {
+        this._isOpen = false
+        if (this._runner) {
+          this._runner._allTestResult.push(...results)
+        }
+        if (throwEx && isErrorCaught) {
+          throw TypeUtils.isArray(results) ? results[0] : results
+        }
+        return results
+      })
 
-    for (const result of results.getAllResults()) {
-      if (result.getException()) {
-        return result.getTestResults()
-      }
-    }
-
-    return results.getAllResults()[0].getTestResults()
-  }
-
-  async abortIfNotClosed() {
-    return this.abort()
+    return this._closePromise
   }
 
   /**
    * @return {Promise<?TestResults>}
    */
   async abort() {
-    if (typeof this._abortCommand === 'function') {
-      if (this._closePromise) {
-        this._logger.verbose('Can not abort while closing async, abort added to close promise.')
-        return this._closePromise.then(() => this._abortCommand(true))
-      }
-
-      return this._abortCommand()
-    }
-    return null
-  }
-
-  /**
-   * @return {Promise}
-   */
-  async abortAsync() {
-    this._closePromise = this.abort()
+    this._isOpen = false
+    return this._abortCommand()
   }
 
   /**
@@ -259,7 +225,7 @@ class EyesVisualGrid extends EyesBase {
    * @return {Promise<void>}
    */
   async closeAndPrintResults(throwEx = true) {
-    const results = await this.closeAndReturnResults(throwEx)
+    const results = await this.close(throwEx)
 
     const testResultsFormatter = new TestResultsFormatter(results)
     // eslint-disable-next-line no-console
