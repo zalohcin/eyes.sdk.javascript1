@@ -94,23 +94,28 @@ class EyesWebElement extends WebElement {
    * Refresh the element by locator and frame chain.
    */
   async refresh() {
-    const switchTo = this._eyesWebDriver.switchTo()
     const originalFrameChain = new FrameChain(this._logger, this._eyesWebDriver.getFrameChain())
-    if (originalFrameChain.size() > 0) {
-      await switchTo.defaultContent()
-    }
-    if (this._frameChain.size() > 0) {
-      await switchTo.frames(this._frameChain)
+    const switchTo = this._eyesWebDriver.switchTo()
+    const isSameFrameChain = FrameChain.isSameFrameChain(originalFrameChain, this._frameChain)
+    if (!isSameFrameChain) {
+      if (originalFrameChain.size() > 0) {
+        await switchTo.defaultContent()
+      }
+      if (this._frameChain.size() > 0) {
+        await switchTo.frames(this._frameChain)
+      }
     }
 
     const {value: element} = await this._eyesWebDriver.remoteWebDriver.element(this._locator.value)
     this._element = element
 
-    if (this._frameChain.size() > 0) {
-      await switchTo.defaultContent()
-    }
-    if (originalFrameChain.size() > 0) {
-      await switchTo.frames(originalFrameChain)
+    if (!isSameFrameChain) {
+      if (this._frameChain.size() > 0) {
+        await switchTo.defaultContent()
+      }
+      if (originalFrameChain.size() > 0) {
+        await switchTo.frames(originalFrameChain)
+      }
     }
   }
 
@@ -448,6 +453,7 @@ class EyesWebElement extends WebElement {
 
       return new Location(x, y)
     } catch (err) {
+      console.log(err)
       if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
         await this.refresh()
         if (!this._element) throw err

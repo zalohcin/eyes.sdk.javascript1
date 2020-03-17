@@ -44,6 +44,15 @@ class WebElement {
       })
   }
 
+  findElement(locator) {
+    return this._driver.remoteWebDriver
+      .elementIdElement(this._element.ELEMENT, locator.value)
+      .then(r => {
+        const {value: element} = r
+        return new WebElement(this._driver, element, locator)
+      })
+  }
+
   /**
    * @todo
    */
