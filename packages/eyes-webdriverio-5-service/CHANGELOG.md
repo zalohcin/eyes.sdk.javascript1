@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 1.3.7
+
+- missed commit (no changes)
+
 ## 1.3.6
 
 - upload domsnapshot directly to Azure [Trello](https://trello.com/c/ZCLJo8Fy/241-upload-dom-directly-to-azure)
