@@ -2,7 +2,7 @@
   "name": "@applitools/dom-snapshot",
   "version": "3.4.0",
   "main": "index.js",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "test:mocha": "mocha --no-timeouts tests/**/*.test.js",
     "eslint:node": "eslint '**/*.js' --ignore-pattern 'src/browser'",
@@ -16,7 +16,7 @@
     "changelog:init": "git config changelog.format \"* %s [[%h]($(echo $npm_package_repository_url|cut -d+ -f2|cut -d. -f1-2)/commit/%H)]\""
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=8.9.0"
   },
   "files": [
     "src",
@@ -24,7 +24,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/applitools/mono/"
+    "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "devDependencies": {
     "@applitools/eslint-plugin-compat": "^0.7.0",
