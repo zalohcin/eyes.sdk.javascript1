@@ -17,6 +17,7 @@ function makeRenderStory({config, logger, testWindow, performance, timeItAsync})
     const title = getStoryTitle({name, kind, parameters});
     const eyesOptions = (parameters && parameters.eyes) || {};
     const {
+      ignoreDisplacements,
       ignore = [],
       accessibility = [],
       floating = [],
@@ -46,6 +47,7 @@ function makeRenderStory({config, logger, testWindow, performance, timeItAsync})
         {name: 'State', value: name},
         ...properties,
       ],
+      ignoreDisplacements,
     };
 
     const checkParams = {
