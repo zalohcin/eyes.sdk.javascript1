@@ -139,7 +139,7 @@ exports.config = {
   // See the full list at http://mochajs.org/
   mochaOpts: {
     ui: 'bdd',
-    timeout: 60000,
+    timeout: 120000,
   },
   eyes: {
     // batch: { id: 'BatchId', name: 'WebDriverIO eyes-service tests' },

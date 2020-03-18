@@ -10,7 +10,9 @@ describe('EyesServiceTest', () => {
 
   it('checkWindow', () => {
     const viewportSize = {width: 500, height: 400}
-    browser.eyesGetConfiguration().setViewportSize(viewportSize)
+    const configuration = browser.eyesGetConfiguration()
+    configuration.setViewportSize(viewportSize)
+    browser.eyesSetConfiguration(configuration)
 
     browser.eyesCheck('window')
 
