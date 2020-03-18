@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 13.6.5
+
 - update @applitools/dom-snapshot@3.4.0
 
 ## 13.6.4
