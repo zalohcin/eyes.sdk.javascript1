@@ -4,16 +4,20 @@
   "main": "index.js",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
+    "vv": "bongo --verify-versions",
+    "vc": "bongo --verify-changelog",
+    "uc": "bongo --update-changelog",
     "test:mocha": "mocha --no-timeouts tests/**/*.test.js",
     "eslint:node": "eslint '**/*.js' --ignore-pattern 'src/browser'",
     "eslint:browser": "eslint -c 'src/browser/.eslintrc.json' 'src/browser/**/*.js'",
-    "eslint": "npm run eslint:node && npm run eslint:browser",
-    "test": "npm run eslint && npm run test:mocha",
+    "eslint": "yarn eslint:node && yarn eslint:browser",
+    "test": "yarn eslint && yarn test:mocha",
     "build": "rollup -c rollup.config.js",
     "build:watch": "rollup -c rollup.config.js --watch",
     "surge": "surge tests/fixtures applitools-dom-snapshot.surge.sh",
-    "changelog": "git changelog -x -p  | grep  -e '^* ds[,:]' > History.md && git add ./History.md && git commit -m 'ds: changelog'",
-    "changelog:init": "git config changelog.format \"* %s [[%h]($(echo $npm_package_repository_url|cut -d+ -f2|cut -d. -f1-2)/commit/%H)]\""
+    "postpublish": "git push; git push --tags",
+    "preversion": "yarn vv && yarn vc",
+    "version": "yarn uc && git add CHANGELOG.md"
   },
   "engines": {
     "node": ">=8.9.0"
@@ -29,6 +33,7 @@
   "devDependencies": {
     "@applitools/eslint-plugin-compat": "^0.7.0",
     "@applitools/monitoring-commons": "^1.0.19",
+    "@applitools/sdk-release-kit": "0.1.0",
     "@babel/core": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
     "canvas": "^2.6.1",
@@ -37,7 +42,7 @@
     "cors": "^2.8.5",
     "css-tree": "^1.0.0-alpha.39",
     "cssom": "^0.4.4",
-    "eslint": "5.7.0",
+    "eslint": "^6.8.0",
     "eslint-plugin-mocha-no-only": "1.0.0",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-prettier": "3.0.0",

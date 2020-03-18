@@ -1,4 +1,3 @@
-/* global window */
 'use strict';
 
 function fetchUrl(url, fetch = window.fetch) {
