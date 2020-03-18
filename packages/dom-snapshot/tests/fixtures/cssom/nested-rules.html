@@ -1,0 +1,8 @@
+<style id="nested_rules">
+  @media screen {
+    body { font-weight: 700; }
+  }
+</style>
+<script>
+  document.querySelector('#nested_rules').sheet.cssRules[0].insertRule('body { color: yellow }', 1)
+</script>
