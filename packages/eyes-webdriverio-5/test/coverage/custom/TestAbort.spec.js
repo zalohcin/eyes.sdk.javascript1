@@ -25,24 +25,21 @@ describe(appName, () => {
     await displayRunInfo(runner)
   })
 
-  beforeEach(async () => {
+  async function startDriver() {
     browser = await remote({
       logLevel: 'silent',
       capabilities: {
         browserName: 'chrome',
       },
     })
-    // await browser.init()
-  })
+  }
 
-  afterEach(async () => {
+  async function afterEach() {
     if (eyes.getIsOpen()) {
       await eyes.close(false)
-    } else {
-      await eyes.abort()
     }
     await browser.deleteSession()
-  })
+  }
 
   function Test_ThrowBeforeOpen() {
     let testConfig = eyes.getConfiguration()
@@ -85,53 +82,77 @@ describe(appName, () => {
       runner = new ClassicRunner()
     })
 
-    beforeEach(async () => {
+    async function beforeEach() {
+      await startDriver()
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
-    })
+    }
 
-    it(`Test_ThrowBeforeOpen`, async () => {
-      expect(Test_ThrowBeforeOpen).to.throw('Before Open')
-    })
-
-    it(`Test_ThrowAfterOpen`, async () => {
-      await expect(Test_ThrowAfterOpen()).to.be.rejectedWith(Error, 'After Open')
-    })
-
-    it(`Test_ThrowDuringCheck`, async () => {
-      await expect(Test_ThrowDuringCheck()).to.be.rejectedWith(Error)
-    })
-
-    it(`Test_ThrowAfterCheck`, async () => {
-      await expect(Test_ThrowAfterCheck()).to.be.rejectedWith(Error, 'After Check')
+    it(`Test_GetAllResults`, async () => {
+      await beforeEach()
+      try {
+        expect(Test_ThrowBeforeOpen).to.throw('Before Open')
+      } finally {
+        await afterEach()
+      }
+      await beforeEach()
+      try {
+        await expect(Test_ThrowAfterOpen()).to.be.rejectedWith(Error, 'After Open')
+      } finally {
+        await afterEach()
+      }
+      await beforeEach()
+      try {
+        await expect(Test_ThrowDuringCheck()).to.be.rejectedWith(Error)
+      } finally {
+        await afterEach()
+      }
+      await beforeEach()
+      try {
+        await expect(Test_ThrowAfterCheck()).to.be.rejectedWith(Error, 'After Check')
+      } finally {
+        await afterEach()
+      }
     })
   })
 
-  describe(`TestAbort_VG`, () => {
+  describe.skip(`TestAbort_VG`, () => {
     before(async () => {
       config = getConfig()
       runner = new VisualGridRunner()
     })
 
-    beforeEach(async () => {
+    async function beforeEach() {
+      await startDriver()
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
-    })
+    }
 
-    it(`Test_ThrowBeforeOpen`, async () => {
-      expect(Test_ThrowBeforeOpen).to.throw('Before Open')
-    })
-
-    it(`Test_ThrowAfterOpen`, async () => {
-      await expect(Test_ThrowAfterOpen()).to.be.rejectedWith(Error, 'After Open')
-    })
-
-    it(`Test_ThrowDuringCheck`, async () => {
-      await expect(Test_ThrowDuringCheck()).to.be.rejectedWith(Error)
-    })
-
-    it(`Test_ThrowAfterCheck`, async () => {
-      await expect(Test_ThrowAfterCheck()).to.be.rejectedWith(Error, 'After Check')
+    it(`Test_GetAllResults_VG`, async () => {
+      await beforeEach()
+      try {
+        expect(Test_ThrowBeforeOpen).to.throw('Before Open')
+      } finally {
+        await afterEach()
+      }
+      await beforeEach()
+      try {
+        await expect(Test_ThrowAfterOpen()).to.be.rejectedWith(Error, 'After Open')
+      } finally {
+        await afterEach()
+      }
+      await beforeEach()
+      try {
+        await expect(Test_ThrowDuringCheck()).to.be.rejectedWith(Error)
+      } finally {
+        await afterEach()
+      }
+      await beforeEach()
+      try {
+        await expect(Test_ThrowAfterCheck()).to.be.rejectedWith(Error, 'After Check')
+      } finally {
+        await afterEach()
+      }
     })
   })
 })
@@ -153,15 +174,16 @@ function getConfig() {
 }
 
 async function displayRunInfo(runner) {
-  let testResultSummary = await runner.getAllTestResults(false)
-  let containers = testResultSummary.getAllResults()
-  containers.forEach(container => {
-    let ex = container.getException()
-    if (ex) console.log(`System error occured while checking target: ${ex}`)
-    let result = container.getTestResults()
-    result
-      ? console.log(
-          `AppName = ${result.getAppName()},
+  if (process.env.TEST_LOGGING === 'verbose') {
+    let testResultSummary = await runner.getAllTestResults(false)
+    let containers = testResultSummary.getAllResults()
+    containers.forEach(container => {
+      let ex = container.getException()
+      if (ex) console.log(`System error occured while checking target: ${ex}`)
+      let result = container.getTestResults()
+      result
+        ? console.log(
+            `AppName = ${result.getAppName()},
                  testname = ${result.getName()},
                  Browser = ${result.getHostApp()},
                  OS = ${result.getHostOS()},
@@ -170,7 +192,8 @@ async function displayRunInfo(runner) {
                  mismatched = ${result.getMismatches()},
                  missing = ${result.getMissing()},
                  aborted = ${result.getIsAborted()}\\n`,
-        )
-      : console.log(`No test results information available`)
-  })
+          )
+        : console.log(`No test results information available`)
+    })
+  }
 }

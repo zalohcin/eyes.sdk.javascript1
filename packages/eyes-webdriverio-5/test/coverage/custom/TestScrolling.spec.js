@@ -8,8 +8,9 @@ describe(appName, () => {
   describe('ChromeEmulation', () => {
     let eyes, browser
 
-    it.skip('TestWebAppScrolling', async () => {
+    it('TestWebAppScrolling', async () => {
       browser = await remote({
+        logLevel: 'silent',
         capabilities: {
           browserName: 'chrome',
           'goog:chromeOptions': {
@@ -31,7 +32,6 @@ describe(appName, () => {
           height: 740,
         })
         let element = await eyesDriver.findElement(By.css('.content'))
-        // let eyesElement = new EyesWebElement(eyes._logger, eyesDriver, element)
         let scrollHeight = await element.getScrollHeight()
         let width = await element.getScrollWidth()
         for (let currentPosition = 0; currentPosition < scrollHeight; currentPosition += 6000) {
@@ -52,6 +52,7 @@ describe(appName, () => {
 
     it('TestWebAppScrolling2', async () => {
       browser = await remote({
+        logLevel: 'silent',
         capabilities: {
           browserName: 'chrome',
           'goog:chromeOptions': {
@@ -81,6 +82,7 @@ describe(appName, () => {
 
     it('TestWebAppScrolling3', async () => {
       browser = await remote({
+        logLevel: 'silent',
         capabilities: {
           browserName: 'chrome',
           'goog:chromeOptions': {
@@ -113,7 +115,7 @@ describe(appName, () => {
     })
   })
 
-  describe.skip('SauceLabs', () => {
+  describe('SauceLabs', () => {
     let eyes, browser
     const sauceCaps = {
       browserName: 'Chrome',
@@ -177,6 +179,7 @@ describe(appName, () => {
       await browser.url('https://www.applitools.com/customers')
       eyes = new Eyes()
       eyes.setBatch(batch)
+      eyes.setParentBranchName('master')
       await eyes.open(browser, appName, 'TestWebAppScrolling3', {width: 386, height: 512})
       await eyes.check(
         'long page on mobile',
