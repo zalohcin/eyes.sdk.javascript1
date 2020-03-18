@@ -3,9 +3,13 @@
 ## Unreleased
 
 
+## 13.6.6
+
+- update @applitools/dom-snapshot@3.4.1 (no changes)
+
 ## 13.6.5
 
-- update @applitools/dom-snapshot@3.4.0
+- update @applitools/dom-snapshot@3.4.0 (new css extraction strategy)
 
 ## 13.6.4
 
