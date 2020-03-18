@@ -2,7 +2,7 @@
 const getStoryTitle = require('./getStoryTitle');
 const deprecationWarning = require('./deprecationWarning');
 
-function makeRenderStory({config, logger, testWindow, performance, timeItAsync}) {
+function makeRenderStory({config = {}, logger, testWindow, performance, timeItAsync}) {
   const {
     ignore: globalIgnore = [],
     accessibility: globalAccessibility = [],
@@ -31,7 +31,7 @@ function makeRenderStory({config, logger, testWindow, performance, timeItAsync})
       selector,
       region,
       tag,
-      properties,
+      properties = [],
     } = eyesOptions;
 
     if (sizeMode) {

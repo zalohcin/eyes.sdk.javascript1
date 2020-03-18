@@ -20,7 +20,11 @@ describe('renderStory', () => {
   it('calls testWindow with proper arguments and sets performance timing', async () => {
     const testWindow = async x => x;
 
-    const renderStory = makeRenderStory({logger, testWindow, performance, timeItAsync});
+    const config = {
+      ignore: ['globalIgnore'],
+    };
+
+    const renderStory = makeRenderStory({config, logger, testWindow, performance, timeItAsync});
 
     const cdt = 'cdt';
     const resourceUrls = 'resourceUrls';
@@ -28,10 +32,10 @@ describe('renderStory', () => {
     const url = 'url';
     const eyesOptions = {
       ignore: ['ignore'],
-      floating: 'floating',
-      accessibility: 'accessibility',
-      strict: 'strict',
-      layout: 'layout',
+      floating: ['floating'],
+      accessibility: ['accessibility'],
+      strict: ['strict'],
+      layout: ['layout'],
       scriptHooks: 'scriptHooks',
       sizeMode: 'sizeMode',
       target: 'target',
@@ -39,15 +43,19 @@ describe('renderStory', () => {
       selector: 'selector',
       region: 'region',
       tag: 'tag',
+      ignoreDisplacements: true,
+      properties: [{name: 'Custom property', value: null}],
     };
     const story = {name: 'name', kind: 'kind', parameters: {eyes: eyesOptions}};
     const title = getStoryTitle(story);
 
     const results = await renderStory({story, resourceUrls, resourceContents, cdt, url});
 
+    const {ignoreDisplacements, properties, ...checkParams} = eyesOptions;
     expect(results).to.eql({
       throwEx: false,
       openParams: {
+        ignoreDisplacements,
         properties: [
           {
             name: 'Component name',
@@ -57,6 +65,7 @@ describe('renderStory', () => {
             name: 'State',
             value: 'name',
           },
+          ...properties,
         ],
         testName: title,
       },
@@ -66,7 +75,9 @@ describe('renderStory', () => {
         resourceUrls,
         url,
         frames: undefined,
-        ...eyesOptions,
+        content: [],
+        ...checkParams,
+        ignore: config.ignore.concat(eyesOptions.ignore),
       },
     });
 
