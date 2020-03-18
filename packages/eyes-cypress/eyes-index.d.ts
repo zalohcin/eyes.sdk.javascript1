@@ -6,7 +6,7 @@ declare namespace Cypress {
       /**
        * Create an Applitools test.
        * This will start a session with the Applitools server.
-       * @example 
+       * @example
        * cy.eyesOpen({ appName: 'My App' })
       */
       eyesOpen(options?: Eyes.Open.Options): null // add isDisabled
@@ -20,10 +20,10 @@ declare namespace Cypress {
        *
        * cy.eyesCheckWindow({
        *  target: 'region',
-       *  selector: '.my-element' 
+       *  selector: '.my-element'
        * });
       */
-      eyesCheckWindow(config: Eyes.Check.Options): null
+      eyesCheckWindow(config?: Eyes.Check.Options): null
 
       /**
        * Close the applitools test and check that all screenshots are valid.

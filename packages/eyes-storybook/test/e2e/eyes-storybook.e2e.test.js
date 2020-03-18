@@ -65,6 +65,7 @@ Interaction: Popover [1024x768] - Passed
 Nested: story 1 [1024x768] - Passed
 Nested/Component: story 1.1 [1024x768] - Passed
 Nested/Component: story 1.2 [1024x768] - Passed
+Responsive UI: Red/green [1024x768] - Passed
 RTL: local RTL config [1024x768] - Passed
 RTL: local RTL config [rtl] [1024x768] - Passed
 RTL: should also do RTL [1024x768] - Passed
@@ -92,8 +93,8 @@ Need a higher concurrency in your account? Email us @ sdr@applitools.com with yo
 ✔ Storybook was started
 - Reading stories
 ✔ Reading stories
-- Done 0 stories out of 18
-✔ Done 18 stories out of 18
+- Done 0 stories out of 19
+✔ Done 19 stories out of 19
 `);
   });
 

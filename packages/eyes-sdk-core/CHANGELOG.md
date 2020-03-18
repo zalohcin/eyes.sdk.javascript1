@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 9.0.2
+
+- Support both new and old server versions for identifying new running sessions. ([Trello](https://trello.com/c/mtSiheZ9/267-support-startsession-as-long-running-task))
+
 ## 9.0.1
 
 - identical to 9.0.0 (commit was added)

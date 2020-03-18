@@ -24,14 +24,12 @@ describe(appName, () => {
     await displayRunInfo(runner)
   })
 
-  afterEach(async () => {
+  async function afterEach() {
     if (eyes.getIsOpen()) {
       await eyes.close(false)
-    } else {
-      await eyes.abort()
     }
     await webDriver.quit()
-  })
+  }
 
   describe(`TestAbort`, () => {
     before(async () => {
@@ -40,56 +38,25 @@ describe(appName, () => {
       runner = new ClassicRunner()
     })
 
-    beforeEach(async () => {
+    async function beforeEach() {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
       webDriver = await getDriver('CHROME')
-    })
+    }
 
-    it(`Test_ThrowBeforeOpen`, async () => {
+    it(`Test_GetAllResults`, async () => {
+      await beforeEach()
       expect(Test_ThrowBeforeOpen).to.throw('Before Open')
-      function Test_ThrowBeforeOpen() {
-        let testConfig = eyes.getConfiguration()
-        testConfig.setTestName(`test URL : ${testedUrl}`)
-        eyes.setConfiguration(testConfig)
-        throw new Error('Before Open')
-      }
-    })
-
-    it(`Test_ThrowAfterOpen`, async () => {
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowAfterOpen()).to.be.rejectedWith(Error, 'After Open')
-      async function Test_ThrowAfterOpen() {
-        let testConfig = eyes.getConfiguration()
-        testConfig.setTestName(`test URL : ${testedUrl}`)
-        eyes.setConfiguration(testConfig)
-        await eyes.open(webDriver)
-        throw new Error('After Open')
-      }
-    })
-
-    it(`Test_ThrowDuringCheck`, async () => {
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowDuringCheck()).to.be.rejectedWith(Error)
-      async function Test_ThrowDuringCheck() {
-        let testConfig = eyes.getConfiguration()
-        testConfig.setTestName(`test URL : ${testedUrl}`)
-        eyes.setConfiguration(testConfig)
-        let driver = await eyes.open(webDriver)
-        await driver.get(testedUrl)
-        await eyes.check(`Step 1 Content - ${testedUrl}`, Target.frame('non-existing frame'))
-      }
-    })
-
-    it(`Test_ThrowAfterCheck`, async () => {
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowAfterCheck()).to.be.rejectedWith(Error, 'After Check')
-      async function Test_ThrowAfterCheck() {
-        let testConfig = eyes.getConfiguration()
-        testConfig.setTestName(`test URL : ${testedUrl}`)
-        eyes.setConfiguration(testConfig)
-        let driver = await eyes.open(webDriver)
-        await driver.get(testedUrl)
-        await eyes.check(`Step 1 Content - ${testedUrl}`, Target.window())
-        throw new Error('After Check')
-      }
+      await afterEach()
     })
   })
 
@@ -99,58 +66,57 @@ describe(appName, () => {
       runner = new VisualGridRunner()
     })
 
-    beforeEach(async () => {
+    async function beforeEach() {
       eyes = new Eyes(runner)
       eyes.setConfiguration(config)
       webDriver = await getDriver('CHROME')
-    })
+    }
 
-    it(`Test_ThrowBeforeOpen`, async () => {
+    it.skip(`Test_GetAllResults_VG`, async () => {
+      await beforeEach()
       expect(Test_ThrowBeforeOpen).to.throw('Before Open')
-      function Test_ThrowBeforeOpen() {
-        let testConfig = eyes.getConfiguration()
-        testConfig.setTestName(`test URL : ${testedUrl}`)
-        eyes.setConfiguration(testConfig)
-        throw new Error('Before Open')
-      }
-    })
-
-    it(`Test_ThrowAfterOpen`, async () => {
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowAfterOpen()).to.be.rejectedWith(Error, 'After Open')
-      async function Test_ThrowAfterOpen() {
-        let testConfig = eyes.getConfiguration()
-        testConfig.setTestName(`test URL : ${testedUrl}`)
-        eyes.setConfiguration(testConfig)
-        await eyes.open(webDriver)
-        throw new Error('After Open')
-      }
-    })
-
-    it(`Test_ThrowDuringCheck`, async () => {
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowDuringCheck()).to.be.rejectedWith(Error)
-      async function Test_ThrowDuringCheck() {
-        let testConfig = eyes.getConfiguration()
-        testConfig.setTestName(`test URL : ${testedUrl}`)
-        eyes.setConfiguration(testConfig)
-        let driver = await eyes.open(webDriver)
-        await driver.get(testedUrl)
-        await eyes.check(`Step 1 Content - ${testedUrl}`, Target.frame('non-existing frame'))
-      }
-    })
-
-    it(`Test_ThrowAfterCheck`, async () => {
+      await afterEach()
+      await beforeEach()
       await expect(Test_ThrowAfterCheck()).to.be.rejectedWith(Error, 'After Check')
-      async function Test_ThrowAfterCheck() {
-        let testConfig = eyes.getConfiguration()
-        testConfig.setTestName(`test URL : ${testedUrl}`)
-        eyes.setConfiguration(testConfig)
-        let driver = await eyes.open(webDriver)
-        await driver.get(testedUrl)
-        await eyes.check(`Step 1 Content - ${testedUrl}`, Target.window())
-        throw new Error('After Check')
-      }
+      await afterEach()
     })
   })
+  function Test_ThrowBeforeOpen() {
+    let testConfig = eyes.getConfiguration()
+    testConfig.setTestName(`test URL : ${testedUrl}`)
+    eyes.setConfiguration(testConfig)
+    throw new Error('Before Open')
+  }
+  async function Test_ThrowAfterOpen() {
+    let testConfig = eyes.getConfiguration()
+    testConfig.setTestName(`test URL : ${testedUrl}`)
+    eyes.setConfiguration(testConfig)
+    await eyes.open(webDriver)
+    throw new Error('After Open')
+  }
+  async function Test_ThrowDuringCheck() {
+    let testConfig = eyes.getConfiguration()
+    testConfig.setTestName(`test URL : ${testedUrl}`)
+    eyes.setConfiguration(testConfig)
+    let driver = await eyes.open(webDriver)
+    await driver.get(testedUrl)
+    await eyes.check(`Step 1 Content - ${testedUrl}`, Target.frame('non-existing frame'))
+  }
+  async function Test_ThrowAfterCheck() {
+    let testConfig = eyes.getConfiguration()
+    testConfig.setTestName(`test URL : ${testedUrl}`)
+    eyes.setConfiguration(testConfig)
+    let driver = await eyes.open(webDriver)
+    await driver.get(testedUrl)
+    await eyes.check(`Step 1 Content - ${testedUrl}`, Target.window())
+    throw new Error('After Check')
+  }
 })
 
 function getConfig() {

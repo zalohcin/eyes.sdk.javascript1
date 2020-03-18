@@ -52,7 +52,7 @@ describe(appName, () => {
     let webDriver, eyes
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
-      ;({eyes} = await getEyes('VG'))
+      ;({eyes} = await getEyes('classic', 'CSS'))
       eyes.setBatch(batch)
     })
 
@@ -69,7 +69,7 @@ describe(appName, () => {
       })
       await eyes.check('region', Target.region(By.css('#scroll1')))
       let results = await eyes.close(false)
-      await assertImage(results, {
+      await assertImage(results[0], {
         hasDom: true,
       })
     })
@@ -81,7 +81,7 @@ describe(appName, () => {
       })
       await eyes.check('region', Target.window().sendDom(false))
       let results = await eyes.close(false)
-      await assertImage(results, {
+      await assertImage(results[0], {
         hasDom: false,
       })
     })
@@ -103,7 +103,7 @@ describe(appName, () => {
         await eyes.open(webDriver, 'Test Send DOM', `${domCase.title}`)
         await eyes.checkWindow()
         let results = await eyes.close(false)
-        await assertImage(results, {hasDom: true})
+        await assertImage(results[0], {hasDom: true})
       })
     })
   })

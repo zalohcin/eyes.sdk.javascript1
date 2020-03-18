@@ -103,7 +103,9 @@
     var that = this
     return this._driver.getCapabilities().then(function(capabilities) {
       const platformName = capabilities.get('platformName')
-      that._isMobileDevice = platformName && ['ANDROID', 'IOS'].includes(platformName.toUpperCase())
+      const browserName = capabilities.get('browserName')
+      that._isMobileDevice =
+        platformName && ['ANDROID', 'IOS'].includes(platformName.toUpperCase()) && !browserName
       return that._isMobileDevice
     })
   }

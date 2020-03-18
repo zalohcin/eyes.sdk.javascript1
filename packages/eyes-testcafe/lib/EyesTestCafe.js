@@ -84,6 +84,8 @@ class EyesTestCafe extends Eyes {
     this._effectiveViewport = Region.EMPTY
     /** @type {EyesWebDriverScreenshotFactory} */
     this._screenshotFactory = undefined
+    /** @type {Promise<void>} */
+    this._closePromise = Promise.resolve()
   }
 
   /**
@@ -799,20 +801,23 @@ class EyesTestCafe extends Eyes {
    */
   async close(throwEx = true) {
     let isErrorCaught = false
-    const results = await Eyes.prototype.close.call(this, true).catch(err => {
-      isErrorCaught = true
-      return err
-    })
+    this._closePromise = Eyes.prototype.close
+      .call(this, true)
+      .catch(err => {
+        isErrorCaught = true
+        return err
+      })
+      .then(results => {
+        if (this._runner) {
+          this._runner._allTestResult.push(results)
+        }
+        if (throwEx && isErrorCaught) {
+          throw results
+        }
+        return results
+      })
 
-    if (this._runner) {
-      this._runner._allTestResult.push(results)
-    }
-
-    if (throwEx && isErrorCaught) {
-      throw results
-    }
-
-    return results
+    return this._closePromise
   }
 
   /**

@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+## 5.9.16
+
+- Support both new and old server versions for identifying new running sessions. ([Trello](https://trello.com/c/mtSiheZ9/267-support-startsession-as-long-running-task))
+- Fix exception in older Node.js versions ([Trello](https://trello.com/c/QGpZcMKS/249-strict-region-shows-up-on-classic-runner-test-but-not-on-ug-runner-test))
+
 ## 5.9.15
 
 - fix trying to fetch branch info from server on non github integration runs
