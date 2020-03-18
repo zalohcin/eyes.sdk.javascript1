@@ -298,7 +298,7 @@ class EyesVisualGrid extends EyesBase {
 
   async _persistRegions(regions) {
     const persisted = await Promise.all(regions.map(r => r.toPersistedRegions(this._driver)))
-    return persisted.flat()
+    return [].concat(...persisted)
   }
 
   /**
