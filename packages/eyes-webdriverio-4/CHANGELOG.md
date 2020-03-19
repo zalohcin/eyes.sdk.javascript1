@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.12.5
+
 - handle stale elements during check operation ([Trello](https://trello.com/c/JJ5vm3wS/269-frames-shadow-dom-break-region-checking))
 
 ## 2.12.4
