@@ -4,7 +4,7 @@ const {remote} = require('webdriverio')
 const appName = 'TestScrolling'
 const batch = new BatchInfo('Webdriverio 5 tests')
 
-describe(appName, () => {
+describe.skip(appName, () => {
   describe('ChromeEmulation', () => {
     let eyes, browser
 
@@ -115,7 +115,7 @@ describe(appName, () => {
     })
   })
 
-  describe('SauceLabs', () => {
+  describe.skip('SauceLabs', () => {
     let eyes, browser
     const sauceCaps = {
       browserName: 'Chrome',

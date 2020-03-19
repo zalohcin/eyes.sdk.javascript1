@@ -63,13 +63,13 @@ describe(appName, () => {
 
     it(`TestSendDOM_Selector`, async () => {
       await webDriver.get('https://applitools.github.io/demo/TestPages/DomTest/dom_capture.html')
-      await eyes.open(webDriver, 'Test Send Dom', `Test SendDom`, {
+      await eyes.open(webDriver, 'Test SendDom', `Test SendDom`, {
         width: 1000,
         height: 700,
       })
       await eyes.check('region', Target.region(By.css('#scroll1')))
       let results = await eyes.close(false)
-      await assertImage(results[0], {
+      await assertImage(results, {
         hasDom: true,
       })
     })
@@ -81,7 +81,7 @@ describe(appName, () => {
       })
       await eyes.check('region', Target.window().sendDom(false))
       let results = await eyes.close(false)
-      await assertImage(results[0], {
+      await assertImage(results, {
         hasDom: false,
       })
     })
@@ -103,7 +103,7 @@ describe(appName, () => {
         await eyes.open(webDriver, 'Test Send DOM', `${domCase.title}`)
         await eyes.checkWindow()
         let results = await eyes.close(false)
-        await assertImage(results[0], {hasDom: true})
+        await assertImage(results, {hasDom: true})
       })
     })
   })
