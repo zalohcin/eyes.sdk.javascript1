@@ -10,7 +10,7 @@ const {
   CorsIframeHandle,
   ConsoleLogHandler,
 } = require('@applitools/eyes-sdk-core')
-const {Eyes, Target, VisualGridRunner} = require('../index')
+const {Eyes, Target, VisualGridRunner} = require('../../index')
 
 const Common = require('./Common')
 

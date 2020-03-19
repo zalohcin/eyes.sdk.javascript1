@@ -1,7 +1,7 @@
 'use strict'
 
 const shared = require('shared-examples-for')
-const {By} = require('../index')
+const {By} = require('../../index')
 
 shared.examplesFor('TestClassicApi', function(test) {
   it('TestIgnoreCaret', async () => {
