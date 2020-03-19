@@ -70,6 +70,11 @@ async function _isElementInTopDocument(jsExecutor, element) {
   return r && r.value ? r.value : false
 }
 
+function isWDIOElement(object) {
+  return object && object.ELEMENT
+}
+
 module.exports = {
   getAbsoluteElementLocation,
+  isWDIOElement,
 }

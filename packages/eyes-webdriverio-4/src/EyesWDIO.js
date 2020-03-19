@@ -34,6 +34,8 @@ const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
 const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory')
 const EyesWebDriver = require('./wrappers/EyesWebDriver')
 const EyesWebElement = require('./wrappers/EyesWebElement')
+const WebElement = require('./wrappers/WebElement')
+const {isWDIOElement} = require('./wrappers/web-element-util')
 const EyesWDIOScreenshot = require('./capture/EyesWDIOScreenshot')
 const FrameChain = require('./frames/FrameChain')
 const EyesWDIOScreenshotFactory = require('./capture/EyesWDIOScreenshotFactory')
@@ -46,6 +48,7 @@ const WebDriver = require('./wrappers/WebDriver')
 const ReadOnlyPropertyHandler = require('@applitools/eyes-sdk-core/index').ReadOnlyPropertyHandler
 const ImageRotation = require('./positioning/ImageRotation')
 const handleStaleElement = require('./wrappers/handleStaleElement')
+
 
 const VERSION = require('../package.json').version
 
@@ -354,6 +357,8 @@ class EyesWDIO extends EyesBase {
               let targetElement = checkSettings.targetElement
               if (!targetElement && targetSelector) {
                 targetElement = await that._driver.findElement(targetSelector)
+              } else if (isWDIOElement(targetElement)) {
+                targetElement = new WebElement(that._driver, targetElement, '')
               }
 
               if (targetElement) {
