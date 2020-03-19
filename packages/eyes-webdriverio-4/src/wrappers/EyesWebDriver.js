@@ -243,13 +243,6 @@ class EyesWebDriver {
     try {
       const result = await this.remoteWebDriver.execute(script, ...varArgs)
       this._logger.verbose('Done!')
-      if (result.value && result.value.ELEMENT) {
-        return new EyesWebElement(
-          this._logger,
-          this,
-          new WebElement(this._tsInstance, result.value, ''),
-        )
-      }
       return result.value
     } catch (e) {
       this._logger.verbose('WARNING: execute script error: ' + e)
