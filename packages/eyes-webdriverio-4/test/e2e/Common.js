@@ -4,7 +4,7 @@ const {deepStrictEqual} = require('assert')
 const webdriverio = require('webdriverio')
 const chromedriver = require('chromedriver')
 const geckodriver = require('geckodriver')
-const {Eyes, NetHelper, StitchMode} = require('../index')
+const {Eyes, NetHelper, StitchMode} = require('../../index')
 const {
   BatchInfo,
   ConsoleLogHandler,

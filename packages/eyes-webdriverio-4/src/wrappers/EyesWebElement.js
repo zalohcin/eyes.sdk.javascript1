@@ -12,8 +12,6 @@ const {
   RectangleSize,
 } = require('@applitools/eyes-sdk-core')
 
-const {getAbsoluteElementLocation} = require('./web-element-util')
-
 const JS_GET_SCROLL_LEFT = 'return arguments[0].scrollLeft;'
 
 const JS_GET_SCROLL_TOP = 'return arguments[0].scrollTop;'
@@ -32,12 +30,12 @@ const JS_GET_CLIENT_HEIGHT = 'return arguments[0].clientHeight;'
  * @return {String}
  */
 const JS_GET_COMPUTED_STYLE_FORMATTED_STR = function getScript(styleProp) {
-  return `var elem = arguments[0], styleProp = '${styleProp}'; 
-    if (window.getComputedStyle) { 
+  return `var elem = arguments[0], styleProp = '${styleProp}';
+    if (window.getComputedStyle) {
        return window.getComputedStyle(elem, null).getPropertyValue(styleProp);
-    } else if (elem.currentStyle) { 
+    } else if (elem.currentStyle) {
        return elem.currentStyle[styleProp];
-    } else { 
+    } else {
        return null;
     }`
 }

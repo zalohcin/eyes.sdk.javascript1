@@ -3,7 +3,7 @@
 const assert = require('assert')
 const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
-const {Eyes, ConsoleLogHandler, Target, By} = require('../index')
+const {Eyes, ConsoleLogHandler, Target, By} = require('../../index')
 
 let browser, eyes, driver
 
