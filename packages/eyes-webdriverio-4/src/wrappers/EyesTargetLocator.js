@@ -307,8 +307,6 @@ class EyesTargetLocator extends TargetLocator {
 
     originalLocation = await this._scrollPosition.getCurrentPosition()
 
-
-
     const frame = new Frame(
       this._logger,
       targetFrame,

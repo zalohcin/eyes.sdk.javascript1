@@ -49,7 +49,6 @@ const ReadOnlyPropertyHandler = require('@applitools/eyes-sdk-core/index').ReadO
 const ImageRotation = require('./positioning/ImageRotation')
 const handleStaleElement = require('./wrappers/handleStaleElement')
 
-
 const VERSION = require('../package.json').version
 
 // eslint-disable-next-line no-unused-vars
