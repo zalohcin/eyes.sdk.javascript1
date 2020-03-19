@@ -7,7 +7,7 @@ const {Eyes, ConsoleLogHandler, Target, By} = require('../../index')
 
 let browser, eyes, driver
 
-describe.only('TestRefreshableDom', function() {
+describe('TestRefreshableDom', function() {
   before(async () => {
     await chromedriver.start([], true)
 
