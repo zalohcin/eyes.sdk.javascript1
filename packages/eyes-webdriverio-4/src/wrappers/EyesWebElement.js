@@ -403,22 +403,21 @@ class EyesWebElement extends WebElement {
    * @returns {Promise.<Location>}
    */
   async getLocation() {
-    // method #1
-    const r = await getAbsoluteElementLocation({
-      jsExecutor: this._eyesWebDriver.remoteWebDriver.execute.bind(this),
-      element: this._element,
-      logger: this._logger,
-    })
-
-    // method #2 - doesn't throw StaleElementReference error
-    // const r = await super.getLocation()
-
-    // method #3 - throws StaleElementReference, but doesn't compensate frames offset in case user switched without wrapper
-    // const res = await this._eyesWebDriver.remoteWebDriver.execute(
-    //   e => e.getBoundingClientRect(),
-    //   this._element,
-    // )
-    // const r = res.value
+    let r
+    if (this._frameChain.size() > 0) {
+      // not using super.getLocation() since it wouldn't throw StaleElementReference error if the element is stale
+      const res = await this._eyesWebDriver.remoteWebDriver.execute(
+        e => e.getBoundingClientRect(),
+        this._element,
+      )
+      r = res.value
+    } else {
+      r = await getAbsoluteElementLocation({
+        jsExecutor: this._eyesWebDriver.remoteWebDriver.execute.bind(this),
+        element: this._element,
+        logger: this._logger,
+      })
+    }
 
     const x = Math.ceil(r && r.x ? r.x : 0)
     const y = Math.ceil(r && r.y ? r.y : 0)
