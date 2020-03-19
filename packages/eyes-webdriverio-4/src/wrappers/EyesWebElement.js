@@ -451,7 +451,7 @@ class EyesWebElement extends WebElement {
 
       return new Location(x, y)
     } catch (err) {
-      console.log(err)
+      this._logger.log(err)
       if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
         await this.refresh()
         if (!this._element) throw err
