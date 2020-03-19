@@ -7,7 +7,7 @@ const {Eyes, ConsoleLogHandler, Target, By} = require('../../index')
 
 let browser, eyes, driver
 
-describe('TestRefreshableDom', function() {
+describe.only('TestRefreshableDom', function() {
   before(async () => {
     await chromedriver.start([], true)
 
@@ -50,8 +50,8 @@ describe('TestRefreshableDom', function() {
     await switchTo.frame('frame')
     const region = await driver.findElement(By.css('#inner-img'))
     const button = await driver.findElement(By.css('#refresh-button'))
-    await switchTo.defaultContent()
     await button.click()
+    await switchTo.defaultContent()
 
     await eyes.check('Handle', Target.frame('frame').region(region))
     return eyes.close()

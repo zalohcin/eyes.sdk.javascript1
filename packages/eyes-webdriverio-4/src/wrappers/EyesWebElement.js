@@ -2,6 +2,7 @@
 
 const WebElement = require('./WebElement')
 const FrameChain = require('../frames/FrameChain')
+const {getAbsoluteElementLocation} = require('./web-element-util')
 
 const {
   Region,
@@ -105,7 +106,9 @@ class EyesWebElement extends WebElement {
     }
 
     const {value: element} = await this._eyesWebDriver.remoteWebDriver.element(this._locator.value)
-    this._element = element
+    if (element) {
+      this._element = element
+    }
 
     if (!isSameFrameChain) {
       if (this._frameChain.size() > 0) {
@@ -115,6 +118,7 @@ class EyesWebElement extends WebElement {
         await switchTo.frames(originalFrameChain)
       }
     }
+    return Boolean(element)
   }
 
   /**
@@ -284,16 +288,8 @@ class EyesWebElement extends WebElement {
    * @returns {Promise} The result returned from the script
    */
   async executeScript(script) {
-    try {
-      const webElement = await WebElement.findElement(this._eyesWebDriver.webDriver, this._locator)
-      return this._eyesWebDriver.executeScript(script, webElement.element)
-    } catch (err) {
-      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
-        await this.refresh()
-        if (!this._element) throw err
-        return this.executeScript(script)
-      }
-    }
+    const webElement = await WebElement.findElement(this._eyesWebDriver.webDriver, this._locator)
+    return this._eyesWebDriver.executeScript(script, webElement.element)
   }
 
   /**
@@ -337,20 +333,12 @@ class EyesWebElement extends WebElement {
    * @return {Promise}
    */
   async click() {
-    try {
-      // Letting the driver know about the current action.
-      const currentControl = await this.getBounds()
-      this._eyesWebDriver.eyes.addMouseTrigger(MouseTrigger.MouseAction.Click, this)
-      this._logger.verbose(`click(${currentControl})`)
+    // Letting the driver know about the current action.
+    const currentControl = await this.getBounds()
+    this._eyesWebDriver.eyes.addMouseTrigger(MouseTrigger.MouseAction.Click, this)
+    this._logger.verbose(`click(${currentControl})`)
 
-      return super.click()
-    } catch (err) {
-      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
-        await this.refresh()
-        if (!this._element) throw err
-        return this.click()
-      }
-    }
+    return super.click()
   }
 
   /**
@@ -358,27 +346,11 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   async sendKeys(keysToSend) {
-    try {
-      return super.sendKeys(keysToSend)
-    } catch (err) {
-      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
-        await this.refresh()
-        if (!this._element) throw err
-        return this.sendKeys(keysToSend)
-      }
-    }
+    return super.sendKeys(keysToSend)
   }
 
   async getRect() {
-    try {
-      return super.getRect()
-    } catch (err) {
-      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
-        await this.refresh()
-        if (!this._element) throw err
-        return this.getRect()
-      }
-    }
+    return super.getRect()
   }
 
   /**
@@ -419,18 +391,10 @@ class EyesWebElement extends WebElement {
    * @returns {Promise.<RectangleSize>}
    */
   async getSize() {
-    try {
-      const r = await super.getSize()
-      const width = Math.ceil(r && r.width ? r.width : 0)
-      const height = Math.ceil(r && r.height ? r.height : 0)
-      return new RectangleSize(width, height)
-    } catch (err) {
-      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
-        await this.refresh()
-        if (!this._element) throw err
-        return this.getSize()
-      }
-    }
+    const r = await super.getSize()
+    const width = Math.ceil(r && r.width ? r.width : 0)
+    const height = Math.ceil(r && r.height ? r.height : 0)
+    return new RectangleSize(width, height)
   }
 
   /**
@@ -439,25 +403,16 @@ class EyesWebElement extends WebElement {
    * @returns {Promise.<Location>}
    */
   async getLocation() {
-    try {
-      // const r = await getAbsoluteElementLocation({
-      //   jsExecutor: this._eyesWebDriver.remoteWebDriver.execute.bind(this),
-      //   element: this._element,
-      //   logger: this._logger,
-      // })
-      const r = await super.getLocation()
-      const x = Math.ceil(r && r.x ? r.x : 0)
-      const y = Math.ceil(r && r.y ? r.y : 0)
+    const r = await getAbsoluteElementLocation({
+      jsExecutor: this._eyesWebDriver.remoteWebDriver.execute.bind(this),
+      element: this._element,
+      logger: this._logger,
+    })
+    // const r = await super.getLocation()
+    const x = Math.ceil(r && r.x ? r.x : 0)
+    const y = Math.ceil(r && r.y ? r.y : 0)
 
-      return new Location(x, y)
-    } catch (err) {
-      console.log(err)
-      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
-        await this.refresh()
-        if (!this._element) throw err
-        return this.getLocation()
-      }
-    }
+    return new Location(x, y)
   }
 
   /**
@@ -512,30 +467,14 @@ class EyesWebElement extends WebElement {
    * @returns {Promise.<{offsetLeft, offsetTop}>}
    */
   async getElementOffset() {
-    try {
-      return super.getElementOffset()
-    } catch (err) {
-      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
-        await this.refresh()
-        if (!this._element) throw err
-        return this.getElementOffset()
-      }
-    }
+    return super.getElementOffset()
   }
 
   /**
    * @returns {Promise.<{scrollLeft, scrollTop}>}
    */
   async getElementScroll() {
-    try {
-      return super.getElementScroll()
-    } catch (err) {
-      if (err.seleniumStack && err.seleniumStack.type === 'StaleElementReference') {
-        await this.refresh()
-        if (!this._element) throw err
-        return this.getElementScroll()
-      }
-    }
+    return super.getElementScroll()
   }
 
   /**
