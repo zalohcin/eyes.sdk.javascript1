@@ -165,12 +165,11 @@ describe.skip(appName, () => {
       await eyes.close()
     })
 
-    it.skip('TestWebAppScrolling2', async () => {
-      await browser.get('https://applitools.github.io/demo/TestPages/MobileDemo/AccessPayments/')
+    it('TestWebAppScrolling2', async () => {
+      await browser.url('https://applitools.github.io/demo/TestPages/MobileDemo/AccessPayments/')
       eyes = new Eyes()
       eyes.setBatch(batch)
       await eyes.open(browser, appName, 'TestWebAppScrolling2', {width: 386, height: 512})
-      eyes.setStitchMode(StitchMode.CSS)
       await eyes.check('big page on mobile', Target.window().fully())
       await eyes.close()
     })
