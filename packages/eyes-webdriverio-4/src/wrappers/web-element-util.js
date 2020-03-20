@@ -71,7 +71,7 @@ async function _isElementInTopDocument(jsExecutor, element) {
 }
 
 function isWDIOElement(object) {
-  return object && object.ELEMENT
+  return object && (object.value || object.ELEMENT)
 }
 
 module.exports = {
