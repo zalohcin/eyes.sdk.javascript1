@@ -1,3 +1,4 @@
+const assert = require('assert')
 const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
 const {Target, Eyes, ConsoleLogHandler} = require('../../index')
@@ -53,29 +54,29 @@ describe('Trello 269', () => {
     return eyes.close()
   })
 
-  //it('refresh element after StaleElementReference', async () => {
-  //  await driver.url('https://applitools.github.io/demo/TestPages/RefreshDomPage')
-  //  const region = await driver.findElement(By.css('#inner-img'))
-  //  const button = await driver.findElement(By.css('#refresh-button'))
-  //  await button.click()
+  it('refresh element after StaleElementReference', async () => {
+    await driver.url('https://applitools.github.io/demo/TestPages/RefreshDomPage')
+    const region = await driver.element('#inner-img')
+    await driver.click('#refresh-button')
 
-  //  await eyes.check('Handle', Target.region(region))
-  //  return eyes.close()
-  //})
+    await eyes.check('Handle', Target.region(region))
+    return eyes.close()
+  })
 
-  //it('throw after unhandled StaleElementReference', async () => {
-  //  await driver.url('https://applitools.github.io/demo/TestPages/RefreshDomPage')
+  it('throw after unhandled StaleElementReference', async () => {
+    await driver.url('https://applitools.github.io/demo/TestPages/RefreshDomPage')
 
-  //  const region = await driver.findElement(By.css('#inner-img'))
-  //  const button = await driver.findElement(By.css('#invalidate-button'))
-  //  await button.click()
-  //  try {
-  //    await eyes.check('Throw', Target.region(region))
-  //    assert.fail()
-  //  } catch (err) {
-  //    assert.strictEqual(err.seleniumStack && err.seleniumStack.type, 'StaleElementReference')
-  //  } finally {
-  //    return eyes.close(false)
-  //  }
-  //})
+    const region = await driver.element('#inner-img')
+    await driver.click('#invalidate-button')
+
+    try {
+      await eyes.check('Throw', Target.region(region))
+      assert.fail()
+    } catch (err) {
+      if (err.constructor.name === 'AssertionError') throw err
+      assert.strictEqual(err.seleniumStack && err.seleniumStack.type, 'StaleElementReference')
+    } finally {
+      await eyes.close(false)
+    }
+  })
 })
