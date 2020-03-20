@@ -18,8 +18,7 @@ function calculateSelectorsToFindRegionsFor({
   const offsetCombined = offsetSelectors.reduce((combined, arr) => combined.concat(arr || []), [])
   const selectors = noOffsetCombined
     .concat(offsetCombined)
-    .filter(region => region.selector)
-    .map(({selector}) => selector)
+    .filter(region => region.selector && (region.type === 'css' || region.type === 'xpath'))
 
   // NOTE: in rare cases there might be duplicates here. Intentionally not removing them because later we map `selectorsToFindRegionsFor` to `selectorRegions`.
   return (selectorsToFindRegionsFor || []).concat(selectors)
