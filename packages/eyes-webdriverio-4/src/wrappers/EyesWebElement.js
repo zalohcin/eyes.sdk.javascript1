@@ -1,6 +1,8 @@
 'use strict'
 
 const WebElement = require('./WebElement')
+const FrameChain = require('../frames/FrameChain')
+const {getAbsoluteElementLocation} = require('./web-element-util')
 
 const {
   Region,
@@ -10,8 +12,6 @@ const {
   Location,
   RectangleSize,
 } = require('@applitools/eyes-sdk-core')
-
-const {getAbsoluteElementLocation} = require('./web-element-util')
 
 const JS_GET_SCROLL_LEFT = 'return arguments[0].scrollLeft;'
 
@@ -31,12 +31,12 @@ const JS_GET_CLIENT_HEIGHT = 'return arguments[0].clientHeight;'
  * @return {String}
  */
 const JS_GET_COMPUTED_STYLE_FORMATTED_STR = function getScript(styleProp) {
-  return `var elem = arguments[0], styleProp = '${styleProp}'; 
-    if (window.getComputedStyle) { 
+  return `var elem = arguments[0], styleProp = '${styleProp}';
+    if (window.getComputedStyle) {
        return window.getComputedStyle(elem, null).getPropertyValue(styleProp);
-    } else if (elem.currentStyle) { 
+    } else if (elem.currentStyle) {
        return elem.currentStyle[styleProp];
-    } else { 
+    } else {
        return null;
     }`
 }
@@ -75,14 +75,50 @@ class EyesWebElement extends WebElement {
     ArgumentGuard.notNull(eyesDriver, 'eyesDriver')
     ArgumentGuard.notNull(webElement, 'webElement')
 
+    if (webElement instanceof EyesWebElement) {
+      return webElement
+    }
+
     super(eyesDriver.webDriver, webElement.element, webElement.locator)
 
     /** @type {Logger}*/
     this._logger = logger
     /** @type {EyesWebDriver}*/
     this._eyesWebDriver = eyesDriver
-    /** @type {WebElement}*/
-    this._webElement = webElement
+    /** @type {FrameChain} */
+    this._frameChain = new FrameChain(this._logger, this._eyesWebDriver.getFrameChain())
+  }
+
+  /**
+   * Refresh the element by locator and frame chain.
+   */
+  async refresh() {
+    const originalFrameChain = new FrameChain(this._logger, this._eyesWebDriver.getFrameChain())
+    const switchTo = this._eyesWebDriver.switchTo()
+    const isSameFrameChain = FrameChain.isSameFrameChain(originalFrameChain, this._frameChain)
+    if (!isSameFrameChain) {
+      if (originalFrameChain.size() > 0) {
+        await switchTo.defaultContent()
+      }
+      if (this._frameChain.size() > 0) {
+        await switchTo.frames(this._frameChain)
+      }
+    }
+
+    const {value: element} = await this._eyesWebDriver.remoteWebDriver.element(this._locator.value)
+    if (element) {
+      this._element = element
+    }
+
+    if (!isSameFrameChain) {
+      if (this._frameChain.size() > 0) {
+        await switchTo.defaultContent()
+      }
+      if (originalFrameChain.size() > 0) {
+        await switchTo.frames(originalFrameChain)
+      }
+    }
+    return Boolean(element)
   }
 
   /**
@@ -252,10 +288,7 @@ class EyesWebElement extends WebElement {
    * @returns {Promise} The result returned from the script
    */
   async executeScript(script) {
-    const webElement = await WebElement.findElement(
-      this._eyesWebDriver.webDriver,
-      this.getWebElement()._locator,
-    )
+    const webElement = await WebElement.findElement(this._eyesWebDriver.webDriver, this._locator)
     return this._eyesWebDriver.executeScript(script, webElement.element)
   }
 
@@ -264,7 +297,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   getDriver() {
-    return this.getWebElement().getDriver()
+    return super.getDriver()
   }
 
   /**
@@ -272,7 +305,7 @@ class EyesWebElement extends WebElement {
    * @return {promise.Thenable.<string>}
    */
   getId() {
-    return this.getWebElement().getId()
+    return super.getId()
   }
 
   /**
@@ -281,7 +314,7 @@ class EyesWebElement extends WebElement {
    * return {EyesWebElement}
    */
   async findElement(locator) {
-    const element = await this.getWebElement().findElement(locator)
+    const element = await super.findElement(locator)
     return new EyesWebElement(this._logger, this._eyesWebDriver, element)
   }
 
@@ -290,7 +323,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   async findElements(locator) {
-    const elements = await this.getWebElement().findElements(locator)
+    const elements = await super.findElements(locator)
     elements.map(element => new EyesWebElement(this._logger, this._eyesWebDriver, element))
   }
 
@@ -305,15 +338,19 @@ class EyesWebElement extends WebElement {
     this._eyesWebDriver.eyes.addMouseTrigger(MouseTrigger.MouseAction.Click, this)
     this._logger.verbose(`click(${currentControl})`)
 
-    return this.getWebElement().click()
+    return super.click()
   }
 
   /**
    * @Override
    * @inheritDoc
    */
-  sendKeys(keysToSend) {
+  async sendKeys(keysToSend) {
     return super.sendKeys(keysToSend)
+  }
+
+  async getRect() {
+    return super.getRect()
   }
 
   /**
@@ -321,7 +358,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   getTagName() {
-    return this.getWebElement().getTagName()
+    return super.getTagName()
   }
 
   /**
@@ -329,7 +366,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   getCssValue(cssStyleProperty) {
-    return this.getWebElement().getCssValue(cssStyleProperty)
+    return super.getCssValue(cssStyleProperty)
   }
 
   /**
@@ -337,7 +374,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   getAttribute(attributeName) {
-    return this.getWebElement().getAttribute(attributeName)
+    return super.getAttribute(attributeName)
   }
 
   /**
@@ -345,7 +382,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   getText() {
-    return this.getWebElement().getText()
+    return super.getText()
   }
 
   /**
@@ -366,13 +403,25 @@ class EyesWebElement extends WebElement {
    * @returns {Promise.<Location>}
    */
   async getLocation() {
-    const r = await getAbsoluteElementLocation({
-      jsExecutor: this._eyesWebDriver.remoteWebDriver.execute.bind(this),
-      element: this._webElement._element,
-      logger: this._logger,
-    })
+    let r
+    if (this._frameChain.size() > 0) {
+      // not using super.getLocation() since it wouldn't throw StaleElementReference error if the element is stale
+      const res = await this._eyesWebDriver.remoteWebDriver.execute(
+        e => e.getBoundingClientRect(),
+        this._element,
+      )
+      r = res.value
+    } else {
+      r = await getAbsoluteElementLocation({
+        jsExecutor: this._eyesWebDriver.remoteWebDriver.execute.bind(this),
+        element: this._element,
+        logger: this._logger,
+      })
+    }
+
     const x = Math.ceil(r && r.x ? r.x : 0)
     const y = Math.ceil(r && r.y ? r.y : 0)
+
     return new Location(x, y)
   }
 
@@ -381,7 +430,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   isEnabled() {
-    return this.getWebElement().isEnabled()
+    return super.isEnabled()
   }
 
   /**
@@ -389,7 +438,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   isSelected() {
-    return this.getWebElement().isSelected()
+    return super.isSelected()
   }
 
   /**
@@ -397,7 +446,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   submit() {
-    return this.getWebElement().submit()
+    return super.submit()
   }
 
   /**
@@ -405,7 +454,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   clear() {
-    return this.getWebElement().clear()
+    return super.clear()
   }
 
   /**
@@ -413,7 +462,7 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   isDisplayed() {
-    return this.getWebElement().isDisplayed()
+    return super.isDisplayed()
   }
 
   /**
@@ -421,28 +470,28 @@ class EyesWebElement extends WebElement {
    * @inheritDoc
    */
   takeScreenshot(opt_scroll) {
-    return this.getWebElement().takeScreenshot(opt_scroll)
+    return super.takeScreenshot(opt_scroll)
   }
 
   /**
    * @returns {Promise.<{offsetLeft, offsetTop}>}
    */
-  getElementOffset() {
-    return this.getWebElement().getElementOffset()
+  async getElementOffset() {
+    return super.getElementOffset()
   }
 
   /**
    * @returns {Promise.<{scrollLeft, scrollTop}>}
    */
-  getElementScroll() {
-    return this.getWebElement().getElementScroll()
+  async getElementScroll() {
+    return super.getElementScroll()
   }
 
   /**
    * @return {WebElement} The original element object
    */
   getWebElement() {
-    return this._webElement
+    return this
   }
 }
 

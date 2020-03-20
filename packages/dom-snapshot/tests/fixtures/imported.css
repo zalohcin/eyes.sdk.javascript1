@@ -1,0 +1,4 @@
+@import 'imported2.css';
+div {
+  color: gold;
+}

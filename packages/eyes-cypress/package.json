@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-cypress",
-  "version": "3.9.17",
+  "version": "3.9.18",
   "main": "index.js",
   "license": "SEE LICENSE IN LICENSE",
   "bin": {
@@ -45,11 +45,11 @@
     "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "dependencies": {
-    "@applitools/dom-snapshot": "3.2.3",
+    "@applitools/dom-snapshot": "3.4.0",
     "@applitools/eyes-common": "3.20.1",
     "@applitools/eyes-sdk-core": "9.0.2",
     "@applitools/functional-commons": "1.5.4",
-    "@applitools/visual-grid-client": "13.6.4",
+    "@applitools/visual-grid-client": "13.6.5",
     "body-parser": "^1.19.0",
     "chalk": "^2.4.2",
     "cors": "^2.8.5",

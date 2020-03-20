@@ -10,6 +10,9 @@ async function getAbsoluteElementLocation({jsExecutor, element, logger}) {
       return _calculateNestedElementLocation({frameCoords, elementCoords})
     }
   } catch (error) {
+    if (error.seleniumStack && error.seleniumStack.type === 'StaleElementReference') {
+      throw error
+    }
     if (error.message.includes('Blocked a frame with origin')) {
       const errorMessage = error.message.replace(/<unknown>: /, '')
       throw new Error(_concatenateLogMessage(errorMessage))
@@ -67,6 +70,11 @@ async function _isElementInTopDocument(jsExecutor, element) {
   return r && r.value ? r.value : false
 }
 
+function isWDIOElement(object) {
+  return object && object.ELEMENT
+}
+
 module.exports = {
   getAbsoluteElementLocation,
+  isWDIOElement,
 }

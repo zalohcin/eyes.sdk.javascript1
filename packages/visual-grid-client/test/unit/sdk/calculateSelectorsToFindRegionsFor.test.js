@@ -31,131 +31,171 @@ describe('calculateSelectorsToFindRegionsFor', () => {
   it('handles no sizeMode selector, with no-offset selector', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        noOffsetSelectors: [{selector: 'bla'}],
+        noOffsetSelectors: [{type: 'css', selector: 'bla'}],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla'])
+    ).to.eql([{type: 'css', selector: 'bla'}])
   })
 
   it('handles no sizeMode selector, with no-offset second index selector', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        noOffsetSelectors: [undefined, {selector: 'bla'}],
+        noOffsetSelectors: [undefined, {type: 'xpath', selector: 'bla'}],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla'])
+    ).to.eql([{type: 'xpath', selector: 'bla'}])
   })
 
   it('handles no sizeMode selector, with no-offset multiple selectors', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        noOffsetSelectors: [undefined, {selector: 'bla'}, {selector: 'bla2'}],
+        noOffsetSelectors: [
+          undefined,
+          {type: 'css', selector: 'bla'},
+          {type: 'xpath', selector: 'bla2'},
+        ],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla', 'bla2'])
+    ).to.eql([
+      {type: 'css', selector: 'bla'},
+      {type: 'xpath', selector: 'bla2'},
+    ])
   })
 
   it('handles no sizeMode selector, with no-offset array', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        noOffsetSelectors: [[{selector: 'bla'}], undefined, undefined],
+        noOffsetSelectors: [[{type: 'css', selector: 'bla'}], undefined, undefined],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla'])
+    ).to.eql([{type: 'css', selector: 'bla'}])
   })
 
   it('handles no sizeMode selector, with no-offset second index array', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        noOffsetSelectors: [undefined, [{selector: 'bla'}], undefined],
+        noOffsetSelectors: [undefined, [{type: 'xpath', selector: 'bla'}], undefined],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla'])
+    ).to.eql([{type: 'xpath', selector: 'bla'}])
   })
 
   it('handles no sizeMode selector, with no-offset multiple arrays', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        noOffsetSelectors: [[{selector: 'bla'}], undefined, [{selector: 'bla2'}]],
+        noOffsetSelectors: [
+          [{type: 'css', selector: 'bla'}],
+          undefined,
+          [{type: 'css', selector: 'bla2'}],
+        ],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla', 'bla2'])
+    ).to.eql([
+      {type: 'css', selector: 'bla'},
+      {type: 'css', selector: 'bla2'},
+    ])
   })
 
   it('handles no sizeMode selector, with combined no-offset arrays and selectors', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
-        noOffsetSelectors: [undefined, [{selector: 'bla'}], {selector: 'bla2'}],
+        noOffsetSelectors: [
+          undefined,
+          [{type: 'css', selector: 'bla'}],
+          {type: 'css', selector: 'bla2'},
+        ],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla', 'bla2'])
+    ).to.eql([
+      {type: 'css', selector: 'bla'},
+      {type: 'css', selector: 'bla2'},
+    ])
   })
 
   it('handles no sizeMode selector, with no-offset combined selector and absolute regions', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         noOffsetSelectors: [
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}],
+          [{a: 'b'}, {type: 'xpath', selector: 'bla'}, {c: 'd'}, {type: 'xpath', selector: 'kuku'}],
           undefined,
           undefined,
         ],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla', 'kuku'])
+    ).to.eql([
+      {type: 'xpath', selector: 'bla'},
+      {type: 'xpath', selector: 'kuku'},
+    ])
   })
 
   it('handles no sizeMode selector, with no-offset combined selector and absolute regions', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         noOffsetSelectors: [
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}],
-          [{a: 'b'}, {selector: 'aaa'}, {c: 'd'}, {selector: 'bbb'}],
+          [{a: 'b'}, {type: 'xpath', selector: 'bla'}, {c: 'd'}, {type: 'xpath', selector: 'kuku'}],
+          [{a: 'b'}, {type: 'css', selector: 'aaa'}, {c: 'd'}, {type: 'css', selector: 'bbb'}],
           undefined,
         ],
         offsetSelectors: [],
       }),
-    ).to.eql(['bla', 'kuku', 'aaa', 'bbb'])
+    ).to.eql([
+      {type: 'xpath', selector: 'bla'},
+      {type: 'xpath', selector: 'kuku'},
+      {type: 'css', selector: 'aaa'},
+      {type: 'css', selector: 'bbb'},
+    ])
   })
 
   it('handles no sizeMode selector, with offset-selector', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         noOffsetSelectors: [undefined, undefined, undefined],
-        offsetSelectors: [{selector: 'bla'}],
+        offsetSelectors: [{type: 'css', selector: 'bla'}],
       }),
-    ).to.eql(['bla'])
+    ).to.eql([{type: 'css', selector: 'bla'}])
   })
 
   it('handles no sizeMode selector, with offset-selector array', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         noOffsetSelectors: [undefined, undefined, undefined],
-        offsetSelectors: [[{selector: 'bla'}]],
+        offsetSelectors: [[{type: 'css', selector: 'bla'}]],
       }),
-    ).to.eql(['bla'])
+    ).to.eql([{type: 'css', selector: 'bla'}])
   })
 
   it('handles no sizeMode selector, with offset combined selector and absolute regions', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         noOffsetSelectors: [undefined, undefined, undefined],
-        offsetSelectors: [[{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}]],
+        offsetSelectors: [
+          [{a: 'b'}, {type: 'css', selector: 'bla'}, {c: 'd'}, {type: 'css', selector: 'kuku'}],
+        ],
       }),
-    ).to.eql(['bla', 'kuku'])
+    ).to.eql([
+      {type: 'css', selector: 'bla'},
+      {type: 'css', selector: 'kuku'},
+    ])
   })
 
   it('handles no sizeMode selector, no-offset AND offset selectors', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         noOffsetSelectors: [
-          {selector: 'ignore'},
-          {selector: 'layout'},
-          {selector: 'strict'},
-          {selector: 'content'},
+          {type: 'css', selector: 'ignore'},
+          {type: 'css', selector: 'layout'},
+          {type: 'css', selector: 'strict'},
+          {type: 'css', selector: 'content'},
         ],
-        offsetSelectors: [{selector: 'float'}],
+        offsetSelectors: [{type: 'css', selector: 'float'}],
       }),
-    ).to.eql(['ignore', 'layout', 'strict', 'content', 'float'])
+    ).to.eql([
+      {type: 'css', selector: 'ignore'},
+      {type: 'css', selector: 'layout'},
+      {type: 'css', selector: 'strict'},
+      {type: 'css', selector: 'content'},
+      {type: 'css', selector: 'float'},
+    ])
   })
 
   it('handles sizeMode selector, with no-offset AND offset selectors', () => {
@@ -164,42 +204,61 @@ describe('calculateSelectorsToFindRegionsFor', () => {
         sizeMode: 'selector',
         selector: 'selector',
         noOffsetSelectors: [
-          {selector: 'ignore'},
-          {selector: 'layout'},
-          {selector: 'strict'},
-          {selector: 'content'},
+          {type: 'css', selector: 'ignore'},
+          {type: 'css', selector: 'layout'},
+          {type: 'css', selector: 'strict'},
+          {type: 'css', selector: 'content'},
         ],
-        offsetSelectors: [{selector: 'float'}],
+        offsetSelectors: [{type: 'css', selector: 'float'}],
       }),
-    ).to.eql(['selector', 'ignore', 'layout', 'strict', 'content', 'float'])
+    ).to.eql([
+      'selector',
+      {type: 'css', selector: 'ignore'},
+      {type: 'css', selector: 'layout'},
+      {type: 'css', selector: 'strict'},
+      {type: 'css', selector: 'content'},
+      {type: 'css', selector: 'float'},
+    ])
   })
 
   it('handles no sizeMode selector, with no-offset selector AND offset selector *arrays* (including duplicates)', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         noOffsetSelectors: [
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'ignore'}],
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'layout'}],
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'strict'}],
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'content'}],
+          [
+            {a: 'b'},
+            {type: 'css', selector: 'bla'},
+            {c: 'd'},
+            {type: 'css', selector: 'kuku'},
+            {type: 'css', selector: 'ignore'},
+          ],
+          [{a: 'b'}, {type: 'css', selector: 'bla'}, {c: 'd'}, {type: 'css', selector: 'layout'}],
+          [{a: 'b'}, {type: 'css', selector: 'bla'}, {c: 'd'}, {type: 'css', selector: 'strict'}],
+          [{a: 'b'}, {type: 'css', selector: 'bla'}, {c: 'd'}, {type: 'css', selector: 'content'}],
         ],
         offsetSelectors: [
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'float'}],
+          [
+            {a: 'b'},
+            {type: 'css', selector: 'bla'},
+            {c: 'd'},
+            {type: 'css', selector: 'kuku'},
+            {type: 'css', selector: 'float'},
+          ],
         ],
       }),
     ).to.eql([
-      'bla',
-      'kuku',
-      'ignore',
-      'bla',
-      'layout',
-      'bla',
-      'strict',
-      'bla',
-      'content',
-      'bla',
-      'kuku',
-      'float',
+      {type: 'css', selector: 'bla'},
+      {type: 'css', selector: 'kuku'},
+      {type: 'css', selector: 'ignore'},
+      {type: 'css', selector: 'bla'},
+      {type: 'css', selector: 'layout'},
+      {type: 'css', selector: 'bla'},
+      {type: 'css', selector: 'strict'},
+      {type: 'css', selector: 'bla'},
+      {type: 'css', selector: 'content'},
+      {type: 'css', selector: 'bla'},
+      {type: 'css', selector: 'kuku'},
+      {type: 'css', selector: 'float'},
     ])
   })
 
@@ -207,29 +266,41 @@ describe('calculateSelectorsToFindRegionsFor', () => {
     expect(
       calculateSelectorsToFindRegionsFor({
         noOffsetSelectors: [
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'ignore'}],
-          {selector: 'layout'},
-          [{selector: 'strict'}, {selector: 'yo'}, {d: 'g'}],
-          [{selector: 'content'}],
+          [
+            {a: 'b'},
+            {type: 'css', selector: 'bla'},
+            {c: 'd'},
+            {type: 'css', selector: 'kuku'},
+            {type: 'css', selector: 'ignore'},
+          ],
+          {type: 'css', selector: 'layout'},
+          [{type: 'css', selector: 'strict'}, {type: 'css', selector: 'yo'}, {d: 'g'}],
+          [{type: 'css', selector: 'content'}],
         ],
         offsetSelectors: [
-          [{a: 'b'}, {selector: 'bla'}, {c: 'd'}, {selector: 'kuku'}, {selector: 'float'}],
+          [
+            {a: 'b'},
+            {type: 'css', selector: 'bla'},
+            {c: 'd'},
+            {type: 'css', selector: 'kuku'},
+            {type: 'css', selector: 'float'},
+          ],
         ],
         sizeMode: 'selector',
         selector: 'selector',
       }),
     ).to.eql([
       'selector',
-      'bla',
-      'kuku',
-      'ignore',
-      'layout',
-      'strict',
-      'yo',
-      'content',
-      'bla',
-      'kuku',
-      'float',
+      {type: 'css', selector: 'bla'},
+      {type: 'css', selector: 'kuku'},
+      {type: 'css', selector: 'ignore'},
+      {type: 'css', selector: 'layout'},
+      {type: 'css', selector: 'strict'},
+      {type: 'css', selector: 'yo'},
+      {type: 'css', selector: 'content'},
+      {type: 'css', selector: 'bla'},
+      {type: 'css', selector: 'kuku'},
+      {type: 'css', selector: 'float'},
     ])
   })
 })
