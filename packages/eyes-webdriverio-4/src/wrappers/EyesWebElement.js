@@ -105,7 +105,8 @@ class EyesWebElement extends WebElement {
       }
     }
 
-    const {value: element} = await this._eyesWebDriver.remoteWebDriver.element(this._locator.value)
+    const locator = this._locator ? this._locator.value : this._element.selector
+    const {value: element} = await this._eyesWebDriver.remoteWebDriver.element(locator)
     if (element) {
       this._element = element
     }
