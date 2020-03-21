@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+## 4.7.9
+
+- add support of iframes with srcdoc attr. [Trello](https://trello.com/c/LgVKNT5Y/196-iframe-srcdoc-attribute-not-supported-in-dom-snapshot-and-dom-capture)
+- add time limit to fetch. [Trello](https://trello.com/c/wL1UaMT8/231-dom-capture-fetches-are-not-time-limited)
+
 ## 4.7.8
 
 - update @applitools/eyes-common@3.20.1
