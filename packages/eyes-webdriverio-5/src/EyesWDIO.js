@@ -1619,7 +1619,7 @@ class EyesWDIO extends EyesBase {
    * @override
    */
   getBaseAgentId() {
-    return `eyes.webdriverio/${VERSION}`
+    return `eyes-webdriverio/${VERSION}`
   }
 
   //noinspection JSUnusedGlobalSymbols
