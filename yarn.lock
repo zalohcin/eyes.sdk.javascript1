@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@applitools/dom-capture@7.1.3":
+  version "7.1.3"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-capture/-/dom-capture-7.1.3.tgz#4348bacc1e0bea937568ccfd454ddd0bad1ad133"
+  integrity sha512-mR8UhWCtE9iIos6u0J5O/zzHZsUgzI2AepQ7xqTQtxoeT4gIGsHuxlVLVJb2ixuUtteMChrsaCPVWXNz8mRRtA==
+  dependencies:
+    "@applitools/functional-commons" "^1.5.4"
+
 "@applitools/dom-snapshot@3.3.3":
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.3.3.tgz#ee2d3269e169ed4ebf598fcdef9502021982210f"
