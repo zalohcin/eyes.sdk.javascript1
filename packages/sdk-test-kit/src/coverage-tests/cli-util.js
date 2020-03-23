@@ -1,6 +1,7 @@
 const {findDifferencesBetweenCollections} = require('./common-util')
 const {makeCoverageTests} = require('./index')
 const {supportedCommands} = require('./tests')
+const {isMatch} = require('micromatch')
 
 function findUnsupportedTests(sdkImplementation) {
   const allTests = makeCoverageTests()
@@ -17,7 +18,7 @@ function findUnimplementedCommands(sdkImplementation) {
 function filterTestsByName(filter, tests) {
   if (!filter) return tests
   return tests.filter(test => {
-    return test.name.includes(filter)
+    return isMatch(test.name, filter)
   })
 }
 
