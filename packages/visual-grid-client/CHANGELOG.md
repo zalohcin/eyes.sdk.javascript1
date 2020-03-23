@@ -1,6 +1,9 @@
 # Change Log
 
 ## Unreleased
+
+## 13.6.7
+
 - support typed selectors in selectorsToFindRegionsFor
 
 ## 13.6.6
