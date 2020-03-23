@@ -1,42 +1,110 @@
 'use strict'
 
+const chromedriver = require('chromedriver')
+const {remote} = require('webdriverio')
 const assert = require('assert')
-const {By} = require('../../index')
 const {AccessibilityRegionType} = require('@applitools/eyes-sdk-core')
+const {By, WebElement} = require('../../index')
 const IgnoreRegionBySelector = require('../../src/fluent/IgnoreRegionBySelector')
 const IgnoreRegionByElement = require('../../src/fluent/IgnoreRegionByElement')
 const FloatingRegionBySelector = require('../../src/fluent/FloatingRegionBySelector')
 const FloatingRegionByElement = require('../../src/fluent/FloatingRegionByElement')
 const AccessibilityRegionByElement = require('../../src/fluent/AccessibilityRegionByElement')
 const AccessibilityRegionBySelector = require('../../src/fluent/AccessibilityRegionBySelector')
+const {SelectorByElement} = require('../../src/fluent/SelectorByElement')
+const {SelectorByLocator} = require('../../src/fluent/SelectorByLocator')
+const EyesWebDriver = require('../../src/wrappers/EyesWebDriver')
+const WebDriver = require('../../src/wrappers/WebDriver')
 
 describe('toPersistedRegions()', function() {
-  let driver
-  before(() => {
-    driver = {
-      executeScript: async (_script, element) => `xpath of ${element}`,
-      findElements: async locator => [`webelement of ${locator.value}`],
-    }
+  let eyesWebDriver, driver
+  before(async () => {
+    await chromedriver.start()
+    const browser = await remote({
+      capabilities: {
+        browserName: 'chrome',
+        'goog:chromeOptions': {
+          args: ['--disable-infobars', 'headless'],
+        },
+      },
+      path: '/',
+      port: 9515,
+      logLevel: 'error',
+    })
+    const url = 'https://applitools.com/helloworld'
+    await browser.url(url)
+
+    const logger = {verbose: console.log}
+    eyesWebDriver = new EyesWebDriver(logger, new WebDriver(browser), {_logger: logger})
+    driver = browser
   })
 
-  it('IgnoreRegionByElement', async function() {
-    const region = new IgnoreRegionByElement('my-web-element')
-    const persistedRegion = await region.toPersistedRegions(driver)
+  after(async () => {
+    await driver.deleteSession()
+    await chromedriver.stop()
+  })
+
+  async function getWebElement(selector) {
+    const webElement = await driver.$(selector)
+    return new WebElement(driver, webElement, '')
+  }
+
+  it('SelectorByElement', async function() {
+    const we = await getWebElement('button')
+    const region = new SelectorByElement(we)
+    const persistedRegion = await region.toPersistedRegions(eyesWebDriver)
     assert.deepStrictEqual(persistedRegion, [
       {
         type: 'xpath',
-        selector: 'xpath of my-web-element',
+        selector: 'HTML[1]/BODY[1]/DIV[1]/DIV[3]/BUTTON[1]',
+      },
+    ])
+  })
+
+  describe('SelectorByLocator', function() {
+    it('works', async function() {
+      let region = new SelectorByLocator(By.css('some'))
+      let persistedRegion = await region.toPersistedRegions(eyesWebDriver)
+      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: 'some'}])
+
+      region = new SelectorByLocator(By.id('some'))
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
+      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[id="some"]'}])
+
+      region = new SelectorByLocator(By.className('some'))
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
+      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '.some'}])
+
+      region = new SelectorByLocator(By.name('some'))
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
+      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[name="some"]'}])
+
+      region = new SelectorByLocator(By.xpath('//some'))
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
+      assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: '//some'}])
+    })
+  })
+
+  it('IgnoreRegionByElement', async function() {
+    const we = await getWebElement('button')
+    const region = new IgnoreRegionByElement(we)
+    const persistedRegion = await region.toPersistedRegions(eyesWebDriver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'xpath',
+        selector: 'HTML[1]/BODY[1]/DIV[1]/DIV[3]/BUTTON[1]',
       },
     ])
   })
 
   it('FloatingRegionByElement', async function() {
-    const region = new FloatingRegionByElement('my-web-element', 1, 2, 3, 4)
-    const persistedRegion = await region.toPersistedRegions(driver)
+    const we = await getWebElement('button')
+    const region = new FloatingRegionByElement(we, 1, 2, 3, 4)
+    const persistedRegion = await region.toPersistedRegions(eyesWebDriver)
     assert.deepStrictEqual(persistedRegion, [
       {
         type: 'xpath',
-        selector: 'xpath of my-web-element',
+        selector: 'HTML[1]/BODY[1]/DIV[1]/DIV[3]/BUTTON[1]',
         maxDownOffset: 2,
         maxLeftOffset: 3,
         maxRightOffset: 4,
@@ -46,15 +114,13 @@ describe('toPersistedRegions()', function() {
   })
 
   it('FloatingRegionByElement', async function() {
-    const region = new AccessibilityRegionByElement(
-      'my-web-element',
-      AccessibilityRegionType.RegularText,
-    )
-    const persistedRegion = await region.toPersistedRegions(driver)
+    const we = await getWebElement('button')
+    const region = new AccessibilityRegionByElement(we, AccessibilityRegionType.RegularText)
+    const persistedRegion = await region.toPersistedRegions(eyesWebDriver)
     assert.deepStrictEqual(persistedRegion, [
       {
         type: 'xpath',
-        selector: 'xpath of my-web-element',
+        selector: 'HTML[1]/BODY[1]/DIV[1]/DIV[3]/BUTTON[1]',
         accessibilityType: AccessibilityRegionType.RegularText,
       },
     ])
@@ -63,77 +129,31 @@ describe('toPersistedRegions()', function() {
   describe('IgnoreRegionBySelector', function() {
     it('works', async function() {
       let region = new IgnoreRegionBySelector(By.css('some'))
-      let persistedRegion = await region.toPersistedRegions(driver)
+      let persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: 'some'}])
 
       region = new IgnoreRegionBySelector(By.id('some'))
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[id="some"]'}])
 
       region = new IgnoreRegionBySelector(By.className('some'))
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '.some'}])
 
       region = new IgnoreRegionBySelector(By.name('some'))
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[name="some"]'}])
 
       region = new IgnoreRegionBySelector(By.xpath('//some'))
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: '//some'}])
-    })
-
-    it('works with multiple elements', async function() {
-      const origFindElements = driver.findElements
-      driver.findElements = async locator => [
-        `webelement1 of ${locator.value}`,
-        `webelement2 of ${locator.value}`,
-      ]
-
-      let region = new IgnoreRegionBySelector(By.js('some'))
-      let persistedRegion = await region.toPersistedRegions(driver)
-      driver.findElements = origFindElements
-
-      assert.deepStrictEqual(persistedRegion, [
-        {type: 'xpath', selector: 'xpath of webelement1 of undefined'},
-        {type: 'xpath', selector: 'xpath of webelement2 of undefined'},
-      ])
-    })
-
-    it('works with non selector locators', async function() {
-      let region = new IgnoreRegionBySelector(By.js('some'))
-      let persistedRegion = await region.toPersistedRegions(driver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement of undefined',
-        },
-      ])
-
-      region = new IgnoreRegionBySelector(By.linkText('some 1'))
-      persistedRegion = await region.toPersistedRegions(driver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement of some 1',
-        },
-      ])
-
-      region = new IgnoreRegionBySelector(By.partialLinkText('some 2'))
-      persistedRegion = await region.toPersistedRegions(driver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement of some 2',
-        },
-      ])
     })
   })
 
   describe('FloatingRegionBySelector', function() {
     it('works', async function() {
       let region = new FloatingRegionBySelector(By.css('some'), 1, 2, 3, 4)
-      let persistedRegion = await region.toPersistedRegions(driver)
+      let persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [
         {
           type: 'css',
@@ -146,7 +166,7 @@ describe('toPersistedRegions()', function() {
       ])
 
       region = new FloatingRegionBySelector(By.id('some'), 1, 2, 3, 4)
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [
         {
           type: 'css',
@@ -159,7 +179,7 @@ describe('toPersistedRegions()', function() {
       ])
 
       region = new FloatingRegionBySelector(By.className('some'), 1, 2, 3, 4)
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [
         {
           type: 'css',
@@ -172,7 +192,7 @@ describe('toPersistedRegions()', function() {
       ])
 
       region = new FloatingRegionBySelector(By.name('some'), 1, 2, 3, 4)
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [
         {
           type: 'css',
@@ -185,7 +205,7 @@ describe('toPersistedRegions()', function() {
       ])
 
       region = new FloatingRegionBySelector(By.xpath('//some'), 1, 2, 3, 4)
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [
         {
           type: 'xpath',
@@ -197,78 +217,6 @@ describe('toPersistedRegions()', function() {
         },
       ])
     })
-
-    it('works with non selector locators', async function() {
-      let region = new FloatingRegionBySelector(By.js('some'), 1, 2, 3, 4)
-      let persistedRegion = await region.toPersistedRegions(driver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement of undefined',
-          maxDownOffset: 2,
-          maxLeftOffset: 3,
-          maxRightOffset: 4,
-          maxUpOffset: 1,
-        },
-      ])
-
-      region = new FloatingRegionBySelector(By.linkText('some 1'), 1, 2, 3, 4)
-      persistedRegion = await region.toPersistedRegions(driver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement of some 1',
-          maxDownOffset: 2,
-          maxLeftOffset: 3,
-          maxRightOffset: 4,
-          maxUpOffset: 1,
-        },
-      ])
-
-      region = new FloatingRegionBySelector(By.partialLinkText('some 2'), 1, 2, 3, 4)
-      persistedRegion = await region.toPersistedRegions(driver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement of some 2',
-          maxDownOffset: 2,
-          maxLeftOffset: 3,
-          maxRightOffset: 4,
-          maxUpOffset: 1,
-        },
-      ])
-    })
-
-    it('works with multiple elements', async function() {
-      const origFindElements = driver.findElements
-      driver.findElements = async locator => [
-        `webelement1 of ${locator.value}`,
-        `webelement2 of ${locator.value}`,
-      ]
-
-      let region = new FloatingRegionBySelector(By.js('some'), 1, 2, 3, 4)
-      let persistedRegion = await region.toPersistedRegions(driver)
-      driver.findElements = origFindElements
-
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement1 of undefined',
-          maxUpOffset: 1,
-          maxDownOffset: 2,
-          maxLeftOffset: 3,
-          maxRightOffset: 4,
-        },
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement2 of undefined',
-          maxUpOffset: 1,
-          maxDownOffset: 2,
-          maxLeftOffset: 3,
-          maxRightOffset: 4,
-        },
-      ])
-    })
   })
 
   describe('AccessibilityRegionBySelector', function() {
@@ -277,7 +225,7 @@ describe('toPersistedRegions()', function() {
         By.css('some'),
         AccessibilityRegionType.RegularText,
       )
-      let persistedRegion = await region.toPersistedRegions(driver)
+      let persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [
         {
           type: 'css',
@@ -287,7 +235,7 @@ describe('toPersistedRegions()', function() {
       ])
 
       region = new AccessibilityRegionBySelector(By.id('some'), AccessibilityRegionType.RegularText)
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [
         {
           type: 'css',
@@ -300,7 +248,7 @@ describe('toPersistedRegions()', function() {
         By.className('some'),
         AccessibilityRegionType.RegularText,
       )
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [
         {
           type: 'css',
@@ -313,7 +261,7 @@ describe('toPersistedRegions()', function() {
         By.name('some'),
         AccessibilityRegionType.RegularText,
       )
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [
         {
           type: 'css',
@@ -326,80 +274,11 @@ describe('toPersistedRegions()', function() {
         By.xpath('//some'),
         AccessibilityRegionType.RegularText,
       )
-      persistedRegion = await region.toPersistedRegions(driver)
+      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
       assert.deepStrictEqual(persistedRegion, [
         {
           type: 'xpath',
           selector: '//some',
-          accessibilityType: AccessibilityRegionType.RegularText,
-        },
-      ])
-    })
-
-    it('works with non selector locators', async function() {
-      let region = new AccessibilityRegionBySelector(
-        By.js('some'),
-        AccessibilityRegionType.RegularText,
-      )
-      let persistedRegion = await region.toPersistedRegions(driver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement of undefined',
-          accessibilityType: AccessibilityRegionType.RegularText,
-        },
-      ])
-
-      region = new AccessibilityRegionBySelector(
-        By.linkText('some 1'),
-        AccessibilityRegionType.RegularText,
-      )
-      persistedRegion = await region.toPersistedRegions(driver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement of some 1',
-          accessibilityType: AccessibilityRegionType.RegularText,
-        },
-      ])
-
-      region = new AccessibilityRegionBySelector(
-        By.partialLinkText('some 2'),
-        AccessibilityRegionType.RegularText,
-      )
-      persistedRegion = await region.toPersistedRegions(driver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement of some 2',
-          accessibilityType: AccessibilityRegionType.RegularText,
-        },
-      ])
-    })
-
-    it('works with multiple elements', async function() {
-      const origFindElements = driver.findElements
-      driver.findElements = async locator => [
-        `webelement1 of ${locator.value}`,
-        `webelement2 of ${locator.value}`,
-      ]
-
-      let region = new AccessibilityRegionBySelector(
-        By.js('some'),
-        AccessibilityRegionType.RegularText,
-      )
-      let persistedRegion = await region.toPersistedRegions(driver)
-      driver.findElements = origFindElements
-
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement1 of undefined',
-          accessibilityType: AccessibilityRegionType.RegularText,
-        },
-        {
-          type: 'xpath',
-          selector: 'xpath of webelement2 of undefined',
           accessibilityType: AccessibilityRegionType.RegularText,
         },
       ])
