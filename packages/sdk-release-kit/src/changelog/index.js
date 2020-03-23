@@ -81,7 +81,7 @@ function verifyChangelog({changelogContents}) {
     targetHeading: '## Unreleased',
   })
   if (!unreleasedEntries.length)
-    throw 'No unreleased entries found in the changelog. Add some before releasing.'
+    throw new Error('No unreleased entries found in the changelog. Add some before releasing.')
 }
 
 module.exports = {
