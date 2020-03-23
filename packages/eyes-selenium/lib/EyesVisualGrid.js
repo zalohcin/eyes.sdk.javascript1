@@ -168,9 +168,6 @@ class EyesVisualGrid extends Eyes {
       targetSelector = await targetSelector.getSelector(this)
     }
 
-    // prepare regions, add custom tag if by selector (SHOULD BE BEFORE CAPTURING DOM)
-    const ignoreRegions = await this._prepareRegions(checkSettings.getIgnoreRegions())
-
     try {
       this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`)
 
@@ -189,6 +186,11 @@ class EyesVisualGrid extends Eyes {
 
       const source = await this._driver.getCurrentUrl()
 
+      const [ignore, floating] = await Promise.all([
+        this._persistRegions(checkSettings.getIgnoreRegions()),
+        this._persistRegions(checkSettings.getFloatingRegions()),
+      ])
+
       await this._checkWindowCommand({
         resourceUrls,
         resourceContents,
@@ -203,8 +205,8 @@ class EyesVisualGrid extends Eyes {
         selector: targetSelector,
         region: checkSettings.getTargetRegion(),
         scriptHooks: checkSettings.getScriptHooks(),
-        ignore: ignoreRegions,
-        floating: checkSettings.getFloatingRegions(),
+        ignore,
+        floating,
         sendDom: checkSettings.getSendDom() ? checkSettings.getSendDom() : this.getSendDom(),
         matchLevel: checkSettings.getMatchLevel()
           ? checkSettings.getMatchLevel()
@@ -214,6 +216,11 @@ class EyesVisualGrid extends Eyes {
     } catch (e) {
       throw new EyesError(`Failed to extract DOM from the page: ${e.toString()}`, e)
     }
+  }
+
+  async _persistRegions(regions) {
+    const persisted = await Promise.all(regions.map(r => r.toPersistedRegions(this._driver)))
+    return [].concat(...persisted)
   }
 
   /**
