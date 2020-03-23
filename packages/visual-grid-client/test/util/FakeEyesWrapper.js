@@ -141,7 +141,9 @@ class FakeEyesWrapper extends EventEmitter {
         userAgent: browserName,
         deviceSize: emulationInfo && emulationInfo.deviceName && devices[emulationInfo.deviceName],
         selectorRegions: selectorsToFindRegionsFor
-          ? selectorsToFindRegionsFor.map(selector => selectorsToLocations[selector])
+          ? selectorsToFindRegionsFor.map(
+              selector => selectorsToLocations[selector.selector || selector],
+            )
           : undefined,
       })
     })
