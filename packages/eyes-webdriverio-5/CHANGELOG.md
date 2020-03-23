@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fix Target regions for Visual Grid
+- Fix WebElement regions for Visual Grid
+
 ## 5.9.18
 
 - update @applitools/visual-grid-client@13.6.7 to support xpath selectors for regions ([Trello](https://trello.com/c/QGpZcMKS/249-strict-region-shows-up-on-classic-runner-test-but-not-on-ug-runner-test))

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix xpath calculations
+- Added toCheckWindowConfiguration() to CheckSettings
 
 ## 9.0.2
 
