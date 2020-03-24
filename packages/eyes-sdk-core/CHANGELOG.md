@@ -7,6 +7,7 @@
 
 - Fix getElementXpath in EyesJsBrowserUtils
 - Added toCheckWindowConfiguration() to CheckSettings
+- EyesRunner: `getAllTestResults` method now awaits existing close operations
 
 ## 9.0.2
 
