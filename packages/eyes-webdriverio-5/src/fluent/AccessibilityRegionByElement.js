@@ -46,7 +46,7 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
   }
 
   async toPersistedRegions(driver) {
-    const xpath = await EyesJsBrowserUtils.getElementXpath(driver, this._element)
+    const xpath = await EyesJsBrowserUtils.getElementXpath(driver, this._element.element)
     return [
       {
         type: 'xpath',

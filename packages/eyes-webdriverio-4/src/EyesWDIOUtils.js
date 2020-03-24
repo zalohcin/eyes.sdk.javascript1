@@ -142,10 +142,10 @@ class EyesWDIOUtils {
    */
   static get JS_GET_CONTENT_ENTIRE_SIZE() {
     return `var scrollWidth = document.documentElement.scrollWidth;
-      var bodyScrollWidth = document.body.scrollWidth; 
-      var totalWidth = Math.max(scrollWidth, bodyScrollWidth); 
+      var bodyScrollWidth = document.body.scrollWidth;
+      var totalWidth = Math.max(scrollWidth, bodyScrollWidth);
       var clientHeight = document.documentElement.clientHeight;
-      var bodyClientHeight = document.body.clientHeight; 
+      var bodyClientHeight = document.body.clientHeight;
       var scrollHeight = document.documentElement.scrollHeight;
       var bodyScrollHeight = document.body.scrollHeight;
       var maxDocElementHeight = Math.max(clientHeight, scrollHeight);

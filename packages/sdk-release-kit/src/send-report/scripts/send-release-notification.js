@@ -34,7 +34,7 @@ function convertSdkNameToReportName(sdkName) {
     case 'eyes-images':
       return 'js_images'
     default:
-      throw 'Unsupported SDK'
+      throw new Error('Unsupported SDK')
   }
 }
 

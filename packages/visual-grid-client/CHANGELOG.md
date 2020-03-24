@@ -3,6 +3,22 @@
 ## Unreleased
 
 
+## 13.6.8
+
+- updated eyes-common and eyes-sdk-core
+
+## 13.6.7
+
+- support typed selectors in selectorsToFindRegionsFor
+
+## 13.6.6
+
+- update @applitools/dom-snapshot@3.4.1 (no changes)
+
+## 13.6.5
+
+- update @applitools/dom-snapshot@3.4.0 (new css extraction strategy)
+
 ## 13.6.4
 
 - Support both new and old server versions for identifying new running sessions. ([Trello](https://trello.com/c/mtSiheZ9/267-support-startsession-as-long-running-task))

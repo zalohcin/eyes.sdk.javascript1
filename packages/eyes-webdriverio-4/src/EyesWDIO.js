@@ -34,6 +34,8 @@ const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
 const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory')
 const EyesWebDriver = require('./wrappers/EyesWebDriver')
 const EyesWebElement = require('./wrappers/EyesWebElement')
+const WebElement = require('./wrappers/WebElement')
+const {isWDIOElement} = require('./wrappers/web-element-util')
 const EyesWDIOScreenshot = require('./capture/EyesWDIOScreenshot')
 const FrameChain = require('./frames/FrameChain')
 const EyesWDIOScreenshotFactory = require('./capture/EyesWDIOScreenshotFactory')
@@ -45,6 +47,7 @@ const WDIOJSExecutor = require('./WDIOJSExecutor')
 const WebDriver = require('./wrappers/WebDriver')
 const ReadOnlyPropertyHandler = require('@applitools/eyes-sdk-core/index').ReadOnlyPropertyHandler
 const ImageRotation = require('./positioning/ImageRotation')
+const handleStaleElement = require('./wrappers/handleStaleElement')
 
 const VERSION = require('../package.json').version
 
@@ -327,7 +330,6 @@ class EyesWDIO extends EyesBase {
         that._logger.verbose(`check("${name}", checkSettings) - begin`)
         that._stitchContent = checkSettings.getStitchContent()
         const targetRegion = checkSettings.getTargetRegion()
-
         let switchedToFrameCount
         return this._switchToFrame(checkSettings)
           .then(async switchedToFrameCount_ => {
@@ -356,6 +358,8 @@ class EyesWDIO extends EyesBase {
               let targetElement = checkSettings.targetElement
               if (!targetElement && targetSelector) {
                 targetElement = await that._driver.findElement(targetSelector)
+              } else if (isWDIOElement(targetElement)) {
+                targetElement = new WebElement(that._driver, targetElement, '')
               }
 
               if (targetElement) {
@@ -435,13 +439,18 @@ class EyesWDIO extends EyesBase {
    */
   async _checkRegion(name, checkSettings) {
     const that = this
-
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       /** @override */
       async getRegion() {
-        const p = await that._targetElement.getLocation()
+        const p = await handleStaleElement(
+          that._targetElement.getLocation.bind(that._targetElement),
+          that._targetElement.refresh.bind(that._targetElement),
+        )()
         that._targetElementLocation = p
-        const d = await that._targetElement.getSize()
+        const d = await handleStaleElement(
+          that._targetElement.getSize.bind(that._targetElement),
+          that._targetElement.refresh.bind(that._targetElement),
+        )()
         return new Region(
           Math.ceil(p.getX()),
           Math.ceil(p.getY()),
@@ -1437,8 +1446,8 @@ class EyesWDIO extends EyesBase {
     const eyesRemoteWebElement = new EyesWebElement(this._logger, this._driver, element)
     return eyesRemoteWebElement
       .getBounds()
-      .then(bounds => {
-        const currentFrameOffset = originalFC.getCurrentFrameOffset()
+      .then(async bounds => {
+        const currentFrameOffset = await originalFC.getCurrentFrameOffset()
         elementBounds = bounds.offset(currentFrameOffset.getX(), currentFrameOffset.getY())
         return that._getViewportScrollBounds()
       })

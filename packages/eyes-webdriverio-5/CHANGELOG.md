@@ -3,6 +3,23 @@
 ## Unreleased
 
 
+  ## 5.9.20
+
+- Updated internal packages  
+
+## 5.9.19
+
+- Fix Target regions for Visual Grid
+- Fix WebElement regions for Visual Grid
+
+## 5.9.18
+
+- update @applitools/visual-grid-client@13.6.7 to support xpath selectors for regions ([Trello](https://trello.com/c/QGpZcMKS/249-strict-region-shows-up-on-classic-runner-test-but-not-on-ug-runner-test))
+
+## 5.9.17
+
+- update @applitools/dom-snapshot@3.4.0 to get correct css in DOM snapshots ([Trello](https://trello.com/c/3BFtM4hx/188-hidden-spinners-in-text-field-are-visible-in-firefox), [Trello](https://trello.com/c/S4XT7ONp/192-vg-dom-snapshot-deletes-duplicate-keys-from-css-rules), [Trello](https://trello.com/c/mz8CKKB7/173-selector-not-seen-as-it-should-be-issue-with-css-variable), [Trello](https://trello.com/c/KZ25vktg/245-edge-screenshot-different-from-chrome-and-ff))
+
 ## 5.9.16
 
 - Support both new and old server versions for identifying new running sessions. ([Trello](https://trello.com/c/mtSiheZ9/267-support-startsession-as-long-running-task))

@@ -14,7 +14,9 @@ function loadFixtureBuffer(filename) {
 }
 
 function loadFixture(filename) {
-  return loadFixtureBuffer(filename).toString();
+  return loadFixtureBuffer(filename)
+    .toString()
+    .trim();
 }
 
 module.exports = {

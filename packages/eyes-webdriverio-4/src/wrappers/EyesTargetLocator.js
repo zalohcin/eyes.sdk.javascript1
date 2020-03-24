@@ -9,6 +9,7 @@ const WDIOJSExecutor = require('../WDIOJSExecutor')
 const EyesWebElement = require('./EyesWebElement')
 const TargetLocator = require('../TargetLocator')
 const WebElement = require('./WebElement')
+const handleStaleElement = require('./handleStaleElement')
 
 /**
  * Wraps a target locator so we can keep track of which frames have been switched to.
@@ -94,12 +95,15 @@ class EyesTargetLocator extends TargetLocator {
       }
       this._logger.verbose('Done! Making preparations...')
       await this.willSwitchToFrame(frames[0])
+
       this._logger.verbose('Done! Switching to frame...')
       let frameElement = frames[0]
       if (frameElement instanceof EyesWebElement) {
         frameElement = frameElement.getWebElement()
       }
+
       await this._targetLocator.frame(frameElement.element)
+
       this._logger.verbose('Done!')
       return
     }
@@ -270,7 +274,7 @@ class EyesTargetLocator extends TargetLocator {
    * @param {WebElement|EyesWebElement} targetFrame The element about to be switched to.
    * @return {Promise}
    */
-  willSwitchToFrame(targetFrame) {
+  async willSwitchToFrame(targetFrame) {
     ArgumentGuard.notNull(targetFrame, 'targetFrame')
 
     this._logger.verbose('willSwitchToFrame()')
@@ -281,57 +285,38 @@ class EyesTargetLocator extends TargetLocator {
         ? targetFrame
         : new EyesWebElement(this._logger, this._tsInstance, targetFrame)
 
-    const that = this
     let location, elementSize, clientSize, contentLocation, originalLocation, originalOverflow
-    return eyesFrame
-      .getLocation()
-      .then(pl => {
-        location = new Location(pl)
-      })
-      .then(() => {
-        return eyesFrame.getSize().then(ds => {
-          elementSize = new RectangleSize(ds)
+
+    await handleStaleElement(async () => {
+      location = await eyesFrame.getLocation()
+      elementSize = await eyesFrame.getSize()
+      clientSize = await eyesFrame.getClientWidth().then(clientWidth => {
+        return eyesFrame.getClientHeight().then(clientHeight => {
+          return new RectangleSize(clientWidth, clientHeight)
         })
       })
-      .then(() => {
-        return eyesFrame.getClientWidth().then(clientWidth => {
-          return eyesFrame.getClientHeight().then(clientHeight => {
-            clientSize = new RectangleSize(clientWidth, clientHeight)
-          })
-        })
-      })
-      .then(() => {
-        return eyesFrame.getComputedStyleInteger('border-left-width').then(borderLeftWidth => {
+      contentLocation = await eyesFrame
+        .getComputedStyleInteger('border-left-width')
+        .then(borderLeftWidth => {
           return eyesFrame.getComputedStyleInteger('border-top-width').then(borderTopWidth => {
-            contentLocation = new Location(
-              location.getX() + borderLeftWidth,
-              location.getY() + borderTopWidth,
-            )
+            return new Location(location.getX() + borderLeftWidth, location.getY() + borderTopWidth)
           })
         })
-      })
-      .then(() => {
-        return that._scrollPosition.getCurrentPosition().then(location => {
-          originalLocation = location
-        })
-      })
-      .then(() => {
-        return eyesFrame.getOverflow().then(overflow => {
-          originalOverflow = overflow
-        })
-      })
-      .then(() => {
-        const frame = new Frame(
-          that._logger,
-          targetFrame,
-          contentLocation,
-          elementSize,
-          clientSize,
-          originalLocation,
-          originalOverflow,
-        )
-        that._tsInstance.getFrameChain().push(frame)
-      })
+      originalOverflow = await eyesFrame.getOverflow()
+    }, eyesFrame.refresh.bind(eyesFrame))()
+
+    originalLocation = await this._scrollPosition.getCurrentPosition()
+
+    const frame = new Frame(
+      this._logger,
+      targetFrame,
+      contentLocation,
+      elementSize,
+      clientSize,
+      originalLocation,
+      originalOverflow,
+    )
+    this._tsInstance.getFrameChain().push(frame)
   }
 }
 

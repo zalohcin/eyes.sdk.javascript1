@@ -161,7 +161,7 @@ class EyesJsBrowserUtils {
         if (frameElement) {
           xpath = genXpath(frameElement) + ',' + xpath;
         }
-        return xpath.replace(/\/$/, '');
+        return xpath.replace(/\\/$/, '');
       }
       function getIndex(el) {
         return (

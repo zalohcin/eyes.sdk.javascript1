@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-selenium",
-  "version": "4.33.28",
+  "version": "4.33.29",
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
     "eyes-selenium",
@@ -39,7 +39,7 @@
     "@applitools/dom-utils": "4.7.8",
     "@applitools/eyes-common": "3.20.1",
     "@applitools/eyes-sdk-core": "9.0.2",
-    "@applitools/visual-grid-client": "13.6.4"
+    "@applitools/visual-grid-client": "13.6.6"
   },
   "devDependencies": {
     "@applitools/sdk-fake-eyes-server": "1.0.5",
@@ -62,6 +62,7 @@
     "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
+    "verify-commits": "bongo --verify-commits",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "send-release-notification": "bongo --send-release-notification",
     "test": "yarn test:unit && yarn test:it",
@@ -73,7 +74,7 @@
     "test:coverage:nuke": "coverage-tests nuke",
     "test:coverage:doctor": "coverage-tests doctor",
     "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
-    "preversion": "yarn vv && yarn vc && yarn test:coverage --send-report prod",
+    "preversion": "yarn vv && yarn vc && yarn verify-commits && yarn test:coverage --send-report prod",
     "version": "yarn uc && git add CHANGELOG.md",
     "postpublish": "git push && git push --tags && yarn send-release-notification"
   },

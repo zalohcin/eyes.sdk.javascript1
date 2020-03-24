@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio5-service",
-  "version": "1.3.5",
+  "version": "1.3.7",
   "description": "",
   "keywords": [
     "wdio-plugin",
@@ -20,7 +20,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "@applitools/eyes-webdriverio": "5.9.12"
+    "@applitools/eyes-webdriverio": "5.9.17"
   },
   "devDependencies": {
     "@applitools/sdk-release-kit": "0.1.0",
@@ -37,9 +37,10 @@
     "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
+    "verify-commits": "bongo --verify-commits",
     "test": "wdio tests/wdio.conf.js",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc",
+    "preversion": "yarn vv && yarn vc && yarn verify-commits",
     "version": "yarn uc && git add CHANGELOG.md"
   },
   "license": "SEE LICENSE IN LICENSE",
