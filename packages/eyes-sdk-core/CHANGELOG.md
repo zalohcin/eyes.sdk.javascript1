@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- Fix xpath calculations
+
+## 9.0.3
+
+- Fix getElementXpath in EyesJsBrowserUtils
 - Added toCheckWindowConfiguration() to CheckSettings
 
 ## 9.0.2
