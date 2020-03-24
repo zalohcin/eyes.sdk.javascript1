@@ -54,6 +54,7 @@
     "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
+    "verify-commits": "bongo --verify-commits",
     "send-release-notification": "bongo --send-release-notification",
     "lint": "eslint '**/*.js'",
     "test": "yarn test:unit && yarn test:e2e",

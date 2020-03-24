@@ -22,11 +22,12 @@
     "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
+    "verify-commits": "bongo --verify-commits",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha test/**/*.spec.js",
     "build": "tsc src/coverage-tests/api.ts",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc",
+    "preversion": "yarn vv && yarn vc && yarn verify-commits",
     "version": "yarn uc && git add CHANGELOG.md"
   },
   "bugs": {
