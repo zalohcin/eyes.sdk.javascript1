@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fix bug when calculating if a captured image fits within the viewport on Chrome on Android [Trello 275](https://trello.com/c/PrGEKzhJ)
 
 ## 5.9.20
 
