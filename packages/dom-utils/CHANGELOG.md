@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+## 4.7.10
+
+- updated eyes-common
+- changed log level of DomCapture to verbose
+
 ## 4.7.9
 
 - add support of iframes with srcdoc attr. [Trello](https://trello.com/c/LgVKNT5Y/196-iframe-srcdoc-attribute-not-supported-in-dom-snapshot-and-dom-capture)
