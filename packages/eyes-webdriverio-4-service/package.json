@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio4-service",
-  "version": "1.0.4",
+  "version": "1.0.3",
   "description": "",
   "keywords": [
     "wdio-service"
@@ -13,7 +13,7 @@
     "verify-commits": "bongo --verify-commits",
     "test": "wdio test/wdio.conf.js",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vc && yarn verify-commits",
+    "preversion": "yarn vv && yarn vc && yarn verify-commits",
     "version": "yarn uc && git add CHANGELOG.md"
   },
   "author": "",
