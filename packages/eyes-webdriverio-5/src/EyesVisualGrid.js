@@ -9,7 +9,6 @@ const {
   CorsIframeHandle,
   CorsIframeHandler,
   TypeUtils,
-  IgnoreRegionByRectangle,
   RectangleSize,
   Configuration,
   VisualGridRunner,
@@ -475,33 +474,6 @@ class EyesVisualGrid extends EyesBase {
    */
   getForceFullPageScreenshot() {
     return this._configuration.getForceFullPageScreenshot()
-  }
-
-  /**
-   * @private
-   * @param {GetRegion[]} regions
-   * @return {{type: string, url: string, value: Buffer}[]}
-   */
-  async _prepareRegions(regions) {
-    if (regions && regions.length > 0) {
-      const newRegions = []
-
-      for (const region of regions) {
-        if (region instanceof IgnoreRegionByRectangle) {
-          const plainRegions = await region.getRegion(this, undefined)
-          plainRegions.forEach(plainRegion => {
-            newRegions.push(plainRegion.toJSON())
-          })
-        } else {
-          const selector = await region.getSelector(this)
-          newRegions.push({selector})
-        }
-      }
-
-      return newRegions
-    }
-
-    return regions
   }
 
   async _getAndSaveBatchInfoFromServer(batchId) {
