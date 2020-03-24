@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- updated eyes-common and eyes-sdk-core
+
 ## 13.6.7
 
 - support typed selectors in selectorsToFindRegionsFor
