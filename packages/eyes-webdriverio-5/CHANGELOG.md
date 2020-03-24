@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 5.9.19
+
 - Fix Target regions for Visual Grid
 - Fix WebElement regions for Visual Grid
 
