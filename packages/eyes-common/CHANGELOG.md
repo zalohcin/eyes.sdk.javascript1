@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.20.2
+
 - fix isFeatureFlagOn
 - cachify cache key can now be a serialized object
 
