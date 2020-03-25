@@ -41,11 +41,7 @@ function makeOpenEyes({
   appName: _appName,
   browser: _browser,
   saveDebugData: _saveDebugData,
-  batchSequenceName: _batchSequenceName,
-  batchSequence: _batchSequence,
-  batchName: _batchName,
-  batchId: _batchId,
-  batchNotify: _batchNotify,
+  batch: _batch,
   properties: _properties,
   baselineBranchName: _baselineBranchName,
   baselineBranch: _baselineBranch,
@@ -81,7 +77,6 @@ function makeOpenEyes({
   getHandledRenderInfoPromise,
   getRenderInfo,
   agentId,
-  notifyOnCompletion: _notifyOnCompletion,
   getUserAgents: _getUserAgents,
   globalState,
   wrappers: _wrappers,
@@ -95,12 +90,12 @@ function makeOpenEyes({
     appName = _appName,
     browser = _browser,
     saveDebugData = _saveDebugData,
-    batchSequenceName = _batchSequenceName,
-    batchSequence = _batchSequence,
-    batchName = _batchName,
-    batchId = _batchId,
-    batchNotify = _batchNotify,
-    batch,
+    batchSequenceName,
+    batchSequence,
+    batchName,
+    batchId,
+    batchNotify,
+    batch = _batch,
     properties = _properties,
     baselineBranchName = _baselineBranchName,
     baselineBranch = _baselineBranch,
@@ -122,7 +117,7 @@ function makeOpenEyes({
     saveNewTests = _saveNewTests,
     compareWithParentBranch = _compareWithParentBranch,
     ignoreBaseline = _ignoreBaseline,
-    notifyOnCompletion = _notifyOnCompletion,
+    notifyOnCompletion,
     getUserAgents = _getUserAgents,
   }) {
     logger.verbose(`openEyes: testName=${testName}, browser=`, browser)
@@ -167,6 +162,8 @@ function makeOpenEyes({
       logger,
     ))
 
+    setIndividualBatchProperties({batch, batchId, batchName, batchSequence, batchNotify})
+
     let doGetBatchInfoWithCache
     const getBatchInfoWithCache = batchId => {
       if (!doGetBatchInfoWithCache) {
@@ -190,10 +187,6 @@ function makeOpenEyes({
       browsers,
       isDisabled,
       displayName,
-      batchSequence,
-      batchName,
-      batchId,
-      batchNotify,
       batch,
       properties,
       baselineBranch,
@@ -342,6 +335,24 @@ function makeOpenEyes({
     function isSupportsDeviceEmulation(browserName) {
       return !browserName || /^chrome/.test(browserName)
     }
+  }
+}
+
+function setIndividualBatchProperties({batch, batchId, batchName, batchSequence, batchNotify}) {
+  if (batchId !== undefined) {
+    batch.setId(batchId)
+  }
+
+  if (batchSequence !== undefined) {
+    batch.setSequenceName(batchSequence)
+  }
+
+  if (batchName !== undefined) {
+    batch.setName(batchName)
+  }
+
+  if (batchNotify !== undefined) {
+    batch.setNotifyOnCompletion(batchNotify)
   }
 }
 

@@ -138,6 +138,41 @@ describe('openEyes', () => {
     expect(wrapper.getBatch().getId()).to.equal(batchId)
   })
 
+  it('sets batch isGeneratedId property', async () => {
+    await openEyes({wrappers: [wrapper], appName})
+    const batch = wrapper.getBatch()
+    expect(batch.getIsGeneratedId()).to.be.true
+  })
+
+  it('sets batch properties passed to makeRenderingGridClient', async () => {
+    const now = Date.now()
+    const batchId = `batchId_${now}`
+    const batchName = `batchName_${now}`
+    const batchSequence = `batchSequence_${now}`
+
+    openEyes = makeRenderingGridClient({
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      apiKey,
+      renderWrapper: wrapper,
+      fetchResourceTimeout: 2000,
+      // logger: console,
+
+      // These are the properties that are relevant for the tests:
+      batchId,
+      batchName,
+      batchSequence,
+      batchNotify: true,
+    }).openEyes
+
+    await openEyes({wrappers: [wrapper], appName})
+    const batch = wrapper.getBatch()
+    expect(batch.getIsGeneratedId()).to.be.false
+    expect(batch.getId()).to.equal(batchId)
+    expect(batch.getName()).to.equal(batchName)
+    expect(batch.getSequenceName()).to.equal(batchSequence)
+    expect(batch.getNotifyOnCompletion()).to.be.true
+  })
+
   it('renders the correct target', async () => {
     const {checkWindow, close} = await openEyes({
       wrappers: [wrapper],
