@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.9.19
+
 - update @applitools/dom-snapshot@3.4.1 to fix missing css-tree dependency issue
 
 ## 3.9.18

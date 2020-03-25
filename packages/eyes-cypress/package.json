@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-cypress",
-  "version": "3.9.18",
+  "version": "3.9.19",
   "main": "index.js",
   "license": "SEE LICENSE IN LICENSE",
   "bin": {
@@ -27,7 +27,7 @@
     "changelog:init": "git config changelog.format \"* %s [[%h]($(echo $npm_package_repository_url|cut -d+ -f2|cut -d. -f1-2)/commit/%H)]\"",
     "changelog:install": "sudo apt-get install git-extras",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc && yarn verify-commits",
+    "preversion": "yarn vv && yarn vc && yarn verify-commits --force",
     "version": "yarn uc && git add CHANGELOG.md"
   },
   "files": [
