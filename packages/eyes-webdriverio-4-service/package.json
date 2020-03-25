@@ -10,23 +10,24 @@
     "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
+    "verify-commits": "bongo --verify-commits",
     "test": "wdio test/wdio.conf.js",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc",
+    "preversion": "yarn vv && yarn vc && yarn verify-commits",
     "version": "yarn uc && git add CHANGELOG.md"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "@applitools/eyes.webdriverio": "2.11.6"
+    "@applitools/eyes.webdriverio": "2.12.5"
   },
   "devDependencies": {
     "@applitools/sdk-release-kit": "0.1.0",
     "chromedriver": "^80.0.0",
     "mocha": "^6.2.2",
+    "wdio-chromedriver-service": "^0.1.5",
     "wdio-dot-reporter": "0.0.10",
     "wdio-mocha-framework": "^0.6.4",
-    "wdio-selenium-standalone-service": "0.0.12",
     "wdio-sync": "^0.7.3",
     "webdriverio": "^4.14.4"
   },

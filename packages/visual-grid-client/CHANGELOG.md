@@ -3,6 +3,14 @@
 ## Unreleased
 
 
+## 13.6.8
+
+- updated eyes-common and eyes-sdk-core
+
+## 13.6.7
+
+- support typed selectors in selectorsToFindRegionsFor
+
 ## 13.6.6
 
 - update @applitools/dom-snapshot@3.4.1 (no changes)

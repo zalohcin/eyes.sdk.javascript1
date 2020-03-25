@@ -17,6 +17,14 @@ describe('cli-util', () => {
     it('filter tests by name', () => {
       assert.deepStrictEqual(filterTestsByName('a', [{name: 'a'}, {name: 'b'}]), [{name: 'a'}])
     })
+    it('filter tests by name - exact match', () => {
+      assert.deepStrictEqual(filterTestsByName('a', [{name: 'abc'}, {name: 'bbc'}]), [])
+    })
+    it('filter tests by name - glob wildcard', () => {
+      assert.deepStrictEqual(filterTestsByName('a*', [{name: 'abc'}, {name: 'bbc'}]), [
+        {name: 'abc'},
+      ])
+    })
     it('filter tests by mode', () => {
       assert.deepStrictEqual(
         filterTestsByMode('isBlah', [

@@ -56,6 +56,7 @@
     "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
+    "verify-commits": "bongo --verify-commits",
     "lint": "eslint . --ext .js --config ../../.eslintrc",
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",
@@ -66,7 +67,7 @@
     "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\"",
     "test:coverage": "node test/coverage/index.js",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc",
+    "preversion": "yarn vv && yarn vc && yarn verify-commits",
     "version": "yarn uc && git add CHANGELOG.md"
   },
   "devDependencies": {

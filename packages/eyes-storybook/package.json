@@ -18,6 +18,7 @@
     "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
+    "verify-commits": "bongo --verify-commits",
     "test": "yarn build && yarn test:mocha && yarn lint && yarn msg:success || yarn msg:failure",
     "test:mocha": "mocha --no-timeouts --trace-warnings 'test/unit/*.test.js' 'test/it/*.test.js' 'test/e2e/*.test.js'",
     "test:unit": "mocha --no-timeouts --trace-warnings 'test/unit/*.test.js'",
@@ -38,7 +39,7 @@
     "changelog:install": "sudo apt-get install git-extras",
     "postinstall": "node src/postinstall",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc",
+    "preversion": "yarn vv && yarn vc && yarn verify-commits",
     "version": "yarn uc && git add CHANGELOG.md"
   },
   "keywords": [

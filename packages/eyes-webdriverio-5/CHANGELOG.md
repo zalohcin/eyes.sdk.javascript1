@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- Fix bug when calculating if a captured image fits within the viewport on Chrome on Android [Trello 275](https://trello.com/c/PrGEKzhJ)
+
+## 5.9.20
+
+- Updated internal packages
+
+## 5.9.19
+
+- Fix Target regions for Visual Grid
+- Fix WebElement regions for Visual Grid
+
+## 5.9.18
+
+- update @applitools/visual-grid-client@13.6.7 to support xpath selectors for regions ([Trello](https://trello.com/c/QGpZcMKS/249-strict-region-shows-up-on-classic-runner-test-but-not-on-ug-runner-test))
 
 ## 5.9.17
 

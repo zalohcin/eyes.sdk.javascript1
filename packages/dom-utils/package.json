@@ -1,6 +1,6 @@
 {
   "name": "@applitools/dom-utils",
-  "version": "4.7.9",
+  "version": "4.7.10",
   "description": "Applitools DOM Utils is a shared utility package",
   "keywords": [
     "dom-utils",
@@ -25,7 +25,7 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/dom-capture": "7.1.4",
-    "@applitools/eyes-common": "3.20.1",
+    "@applitools/eyes-common": "3.20.2",
     "axios": "^0.19.0"
   },
   "devDependencies": {
@@ -38,10 +38,11 @@
     "vv": "bongo --verify-versions",
     "vc": "bongo --verify-changelog",
     "uc": "bongo --update-changelog",
+    "verify-commits": "bongo --verify-commits",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc",
+    "preversion": "yarn vv && yarn vc && yarn verify-commits",
     "version": "yarn uc && git add CHANGELOG.md"
   },
   "license": "SEE LICENSE IN LICENSE",
