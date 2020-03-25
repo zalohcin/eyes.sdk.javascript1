@@ -1,7 +1,7 @@
 # Change Log
 
 ## Unreleased
-
+- fixed bug when target region wasn't cleared after check
 
 ## 5.9.17
 
