@@ -372,9 +372,8 @@ class EyesWDIOScreenshot extends EyesScreenshot {
             browserName.toLowerCase() === 'chrome'
               ? 56
               : 0
-          // resolve possible off-by-one error
+          // resolve possible off-by-one error (when the image is 1px bigger than the viewport size)
           if (image.getHeight() - (viewportSize.getHeight() + result) === 1) result++
-          if (image.getHeight() - (viewportSize.getHeight() + result) === -1) result++
           return result
         }
 
