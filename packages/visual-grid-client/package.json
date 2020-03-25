@@ -78,7 +78,7 @@
     "test": "yarn build:browser && yarn test:mocha",
     "render": "node example/render.js",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc && yarn verify-commits --force",
+    "preversion": "yarn vv && yarn vc && yarn verify-commits",
     "version": "yarn uc && git add CHANGELOG.md"
   },
   "license": "SEE LICENSE IN LICENSE",
