@@ -195,7 +195,10 @@
           sessionId: results.body.id,
           legacySessionId: results.body.legacySessionId,
           sessionUrl: results.body.url,
-          isNewSession: results.status === HTTP_STATUS_CODES.CREATED,
+          isNewSession:
+            results.body.isNew === undefined
+              ? results.status === HTTP_STATUS_CODES.CREATED
+              : results.body.isNew,
         }
       }
 
