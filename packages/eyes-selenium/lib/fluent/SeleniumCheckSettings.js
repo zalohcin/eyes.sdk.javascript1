@@ -89,6 +89,12 @@ class SeleniumCheckSettings extends CheckSettings {
     return this._frameChain
   }
 
+  _getTargetType() {
+    return !this._targetRegion && !this._targetElement && !this._targetSelector
+      ? 'window'
+      : 'region'
+  }
+
   /**
    * @param {number|string|By|WebElement|EyesWebElement} frame - The frame to switch to.
    * @return {this}
