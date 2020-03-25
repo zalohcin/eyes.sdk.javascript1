@@ -8,7 +8,7 @@ const chalk = require('chalk')
 const {makePackagesList} = require('..')
 const pkgs = makePackagesList()
 
-async function verifyDependencies(pkgPath) {
+async function verifyDependencies({pkgPath, isForce}) {
   const packageJson = require(path.resolve(pkgPath, 'package.json'))
   const {dependencies} = packageJson
   const workspaceDeps = pkgs.filter(pkg => pkg.name in dependencies)
@@ -21,7 +21,7 @@ async function verifyDependencies(pkgPath) {
     )
   ).filter(x => x.output)
 
-  if (results.length) {
+  if (results.length && !isForce) {
     throw new Error(
       'There are unreleased commits in dependencies of this package:\n' +
         results.map(({name, output}) => `${chalk.yellow(name)}\n${chalk.cyan(output)}`).join('\n'),
