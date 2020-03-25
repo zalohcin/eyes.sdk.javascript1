@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "13.6.8",
+  "version": "13.6.9",
   "description": "",
   "keywords": [
     "applitools",
@@ -78,7 +78,7 @@
     "test": "yarn build:browser && yarn test:mocha",
     "render": "node example/render.js",
     "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc && yarn verify-commits",
+    "preversion": "yarn vv && yarn vc && yarn verify-commits --force",
     "version": "yarn uc && git add CHANGELOG.md"
   },
   "license": "SEE LICENSE IN LICENSE",
