@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- fix shorthand mappings merge
 
 ## 3.4.1
 
