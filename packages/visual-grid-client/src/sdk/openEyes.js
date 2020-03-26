@@ -1,7 +1,8 @@
 'use strict'
 const {
   GeneralUtils: {backwardCompatible, cachify},
-} = require('@applitools/eyes-common')
+} = require('@applitools/eyes-common') // TODO import from eyes-sdk-core
+const {BatchInfo} = require('@applitools/eyes-sdk-core')
 const makeCheckWindow = require('./checkWindow')
 const makeAbort = require('./makeAbort')
 const makeClose = require('./makeClose')
@@ -162,7 +163,13 @@ function makeOpenEyes({
       logger,
     ))
 
-    setIndividualBatchProperties({batch, batchId, batchName, batchSequence, batchNotify})
+    const mergedBatch = mergeBatchProperties({
+      batch,
+      batchId,
+      batchName,
+      batchSequence,
+      batchNotify,
+    })
 
     let doGetBatchInfoWithCache
     const getBatchInfoWithCache = batchId => {
@@ -187,7 +194,7 @@ function makeOpenEyes({
       browsers,
       isDisabled,
       displayName,
-      batch,
+      batch: mergedBatch,
       properties,
       baselineBranch,
       baselineEnvName,
@@ -338,22 +345,15 @@ function makeOpenEyes({
   }
 }
 
-function setIndividualBatchProperties({batch, batchId, batchName, batchSequence, batchNotify}) {
-  if (batchId !== undefined) {
-    batch.setId(batchId)
-  }
-
-  if (batchSequence !== undefined) {
-    batch.setSequenceName(batchSequence)
-  }
-
-  if (batchName !== undefined) {
-    batch.setName(batchName)
-  }
-
-  if (batchNotify !== undefined) {
-    batch.setNotifyOnCompletion(batchNotify)
-  }
+function mergeBatchProperties({batch, batchId, batchName, batchSequence, batchNotify}) {
+  const isGeneratedId = batchId !== undefined ? false : batch.getIsGeneratedId()
+  return new BatchInfo({
+    id: batchId !== undefined ? batchId : batch.getId(),
+    name: batchName !== undefined ? batchName : batch.getName(),
+    sequenceName: batchSequence !== undefined ? batchSequence : batch.getSequenceName(),
+    notifyOnCompletion: batchNotify !== undefined ? batchNotify : batch.getNotifyOnCompletion(),
+    isGeneratedId,
+  })
 }
 
 module.exports = makeOpenEyes
