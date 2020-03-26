@@ -163,7 +163,8 @@ class EyesWDIO extends EyesBase {
     ArgumentGuard.notNull(this._configuration.getAppName(), 'appName')
     ArgumentGuard.notNull(this._configuration.getTestName(), 'testName')
 
-    if (!this._configuration.getViewportSize() && driver && !driver.isMobile) {
+    const isMobile = await EyesWDIOUtils.isMobileDevice(this._driver.remoteWebDriver)
+    if (!this._configuration.getViewportSize() && !isMobile) {
       const vs = await this._driver.getDefaultContentViewportSize()
       this._configuration.setViewportSize(vs)
     }
@@ -173,7 +174,7 @@ class EyesWDIO extends EyesBase {
       return driver
     }
 
-    if (driver && driver.isMobile) {
+    if (isMobile) {
       // set viewportSize to null if browser is mobile
       viewportSize = null
       this._configuration.setViewportSize(null)
@@ -1620,7 +1621,7 @@ class EyesWDIO extends EyesBase {
    * @override
    */
   getBaseAgentId() {
-    return `eyes.webdriverio/${VERSION}`
+    return `eyes-webdriverio/${VERSION}`
   }
 
   //noinspection JSUnusedGlobalSymbols

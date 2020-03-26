@@ -357,9 +357,36 @@ class EyesWDIOScreenshot extends EyesScreenshot {
           viewportSize = viewportSize.scale(pixelRatio)
         }
 
+        // NOTE: Chrome on Android ends up with a 56 pixel difference between
+        // the height of the image and the height of the viewport when they should
+        // be identical -- or nearly the same after scaling (e.g., a viewport screenshot).
+        // re: https://trello.com/c/PrGEKzhJ
+        // TODO: revisit this fix as part of refactoring, or as part of the bigger redesign
+        const heightCompensation = () => {
+          const platformName = that._driver.remoteWebDriver.capabilities.platformName
+          const browserName = that._driver.remoteWebDriver.capabilities.browserName
+          let result =
+            platformName &&
+            platformName.toLowerCase() === 'android' &&
+            browserName &&
+            browserName.toLowerCase() === 'chrome'
+              ? 56
+              : 0
+          // resolve possible off-by-one error (when the image is 1px bigger than the viewport size)
+          if (image.getHeight() - (viewportSize.getHeight() + result) === 1) result++
+          return result
+        }
+
+        const imageFitsInViewport = () => {
+          const result =
+            image.getWidth() <= viewportSize.getWidth() &&
+            image.getHeight() <= viewportSize.getHeight() + heightCompensation()
+          debugger
+          return result
+        }
+
         if (
-          (image.getWidth() <= viewportSize.getWidth() &&
-            image.getHeight() <= viewportSize.getHeight()) ||
+          imageFitsInViewport() ||
           (that._driver.eyes._checkSettings.getFrameChain().length > 0 && // workaround: define screenshotType as VIEWPORT
             that._driver.eyes._userAgent.getBrowser() === BrowserNames.Firefox &&
             parseInt(that._driver.eyes._userAgent.getBrowserMajorVersion(), 10) < 48)

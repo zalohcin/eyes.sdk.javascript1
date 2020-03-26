@@ -1,6 +1,6 @@
 'use strict'
 
-const {ConsoleLogHandler, Eyes} = require('../index')
+const {ConsoleLogHandler, Eyes} = require('../../index')
 const {TestNativeApp} = require('./TestNativeApp')
 const webdriverio = require('webdriverio')
 
@@ -9,7 +9,7 @@ const appName = 'NativeApp'
 let eyes = new Eyes()
 let browser
 
-describe(appName, function() {
+describe.skip(appName, function() {
   before(function() {
     eyes.setApiKey(process.env.APPLITOOLS_API_KEY)
     eyes.setLogHandler(new ConsoleLogHandler(true))

@@ -44,6 +44,15 @@ class WebElement {
       })
   }
 
+  findElement(locator) {
+    return this._driver.remoteWebDriver
+      .elementIdElement(this._element.ELEMENT, locator.value)
+      .then(r => {
+        const {value: element} = r
+        return new WebElement(this._driver, element, locator)
+      })
+  }
+
   /**
    * @todo
    */
@@ -53,13 +62,9 @@ class WebElement {
    * @returns {Promise.<{x, y}>}
    */
   async getLocation() {
-    try {
-      const r = await this._driver.remoteWebDriver.elementIdLocation(this._element.ELEMENT)
-      const {value: location} = r
-      return location
-    } catch (e) {
-      throw e
-    }
+    const r = await this._driver.remoteWebDriver.elementIdLocation(this._element.ELEMENT)
+    const {value: location} = r
+    return location
   }
 
   /**

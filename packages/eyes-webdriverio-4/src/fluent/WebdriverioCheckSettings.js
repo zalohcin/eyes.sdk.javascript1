@@ -13,6 +13,7 @@ const FloatingRegionBySelector = require('./FloatingRegionBySelector')
 const FloatingRegionByElement = require('./FloatingRegionByElement')
 const AccessibilityRegionBySelector = require('./AccessibilityRegionBySelector')
 const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
+const {isWDIOElement} = require('../wrappers/web-element-util')
 
 const USE_DEFAULT_MATCH_TIMEOUT = -1
 const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
@@ -70,7 +71,7 @@ class WebdriverioCheckSettings extends CheckSettings {
       super.updateTargetRegion(region)
     } else if (region instanceof By) {
       this._targetSelector = region
-    } else if (region instanceof WebElement) {
+    } else if (region instanceof WebElement || isWDIOElement(region)) {
       this._targetElement = region
     } else if (TypeUtils.isString(region)) {
       this._targetSelector = By.cssSelector(region)

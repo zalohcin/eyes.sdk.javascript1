@@ -26,8 +26,8 @@ HTML[1]/BODY[1]/IFRAME[2]
     "visibility": "visible"
   },
   "rect": {
-    "width": 767,
-    "height": 967.4099731445312,
+    "width": 784,
+    "height": 537,
     "top": 0,
     "left": 0
   },
@@ -324,8 +324,8 @@ HTML[1]/BODY[1]/IFRAME[2]
                 "visibility": "visible"
               },
               "rect": {
-                "width": 283,
-                "height": 612,
+                "width": 300,
+                "height": 150,
                 "top": 0,
                 "left": 0
               },
