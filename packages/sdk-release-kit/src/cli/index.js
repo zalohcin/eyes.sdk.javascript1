@@ -33,3 +33,8 @@ if (args['verify-changelog']) {
     throw new Error('Invalid option provided')
   })
 }
+// release-pre-check
+// - verify-changelog
+// - verify versions
+// - verify-commits
+// - verify-installed-versions
