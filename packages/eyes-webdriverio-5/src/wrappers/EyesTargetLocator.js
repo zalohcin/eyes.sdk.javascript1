@@ -95,10 +95,7 @@ class EyesTargetLocator extends TargetLocator {
     this._logger.verbose('Making preparations...')
     await this.willSwitchToFrame(frameElement)
     this._logger.verbose('Done! Switching to frame...')
-    if (frameElement instanceof EyesWebElement) {
-      frameElement = frameElement.getWebElement()
-    }
-    await this._targetLocator.frame(frameElement.element)
+    await this._targetLocator.frame(frameElement.jsonElement)
     this._logger.verbose('Done!')
   }
 
