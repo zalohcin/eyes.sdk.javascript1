@@ -39,7 +39,35 @@ function verifyDependencies({pkgs, pkgPath, results}) {
   }
 }
 
+function checkPackagesForUniqueVersions(input, packageNames) {
+  let errors = []
+  packageNames.forEach(packageName => {
+    const versions = _findVersionNumbersForPackage(input, packageName)
+    if (versions.size > 1) errors.push({name: packageName, versions})
+  })
+  if (errors.length) {
+    const affectedPackages = errors.map(error => error.name).join(', ')
+    throw new Error(`Non-unique package versions found of ${affectedPackages}`)
+  }
+}
+
+function _findVersionNumbersForPackage(input, pkgName) {
+  let versionNumbers = []
+  const packageEntries = _grep(input, pkgName)
+  packageEntries.forEach(entry => {
+    const versionNumber = entry.match(/(\d+\.)?(\d+\.)?(\*|\d+)/)[0]
+    versionNumbers.push(versionNumber)
+  })
+  return new Set(versionNumbers)
+}
+
+function _grep(input, target) {
+  if (typeof input === 'string') input = input.split('\n')
+  return input.filter(entry => entry.includes(target))
+}
+
 module.exports = {
   makePackagesList,
   verifyDependencies,
+  checkPackagesForUniqueVersions,
 }

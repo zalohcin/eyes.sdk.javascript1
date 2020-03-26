@@ -27,9 +27,14 @@ if (args['verify-changelog']) {
   execute(verifyVersions.bind(undefined, {isFix: args.fix, pkgPath: cwd}))
 } else if (args['verify-commits']) {
   const verifyCommits = require('../versions/scripts/verify-commits')
-  execute(verifyCommits.bind(undefined, cwd))
+  execute(verifyCommits.bind(undefined, {pkgPath: cwd, isForce: args.force}))
 } else {
   execute(() => {
     throw new Error('Invalid option provided')
   })
 }
+// release-pre-check
+// - verify-changelog
+// - verify versions
+// - verify-commits
+// - verify-installed-versions

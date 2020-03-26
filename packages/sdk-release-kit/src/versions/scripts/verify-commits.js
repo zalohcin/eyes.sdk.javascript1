@@ -8,7 +8,7 @@ const chalk = require('chalk')
 const {makePackagesList} = require('..')
 const pkgs = makePackagesList()
 
-async function verifyDependencies(pkgPath) {
+async function verifyDependencies({pkgPath, isForce}) {
   const packageJson = require(path.resolve(pkgPath, 'package.json'))
   const {dependencies} = packageJson
   const workspaceDeps = pkgs.filter(pkg => pkg.name in dependencies)
@@ -21,7 +21,7 @@ async function verifyDependencies(pkgPath) {
     )
   ).filter(x => x.output)
 
-  if (results.length) {
+  if (results.length && !isForce) {
     throw new Error(
       'There are unreleased commits in dependencies of this package:\n' +
         results.map(({name, output}) => `${chalk.yellow(name)}\n${chalk.cyan(output)}`).join('\n'),
@@ -33,8 +33,9 @@ async function verifyCommits(pkgPath) {
   const packageJson = require(path.resolve(pkgPath, 'package.json'))
   const {name, version} = packageJson
   const tagName = `${name}@${version}`
+  const exclusions = `":(exclude,icase)../*/changelog.md" ":!../*/test/*"`
   try {
-    return (await pexec(`git log --oneline ${tagName}..HEAD -- ${pkgPath}`)).stdout
+    return (await pexec(`git log --oneline ${tagName}..HEAD -- ${pkgPath} ${exclusions}`)).stdout
   } catch (ex) {
     if (/bad revision/.test(ex.message)) {
       const tagNameCyan = chalk.cyan(tagName)

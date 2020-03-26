@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 13.6.9
+
+- revert compatibility with untyped selectors in selectorsToFindRegionsFor
+
 ## 13.6.8
 
 - updated eyes-common and eyes-sdk-core
