@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## 3.4.2
+
 - fix shorthand mappings merge
 
 ## 3.4.1
