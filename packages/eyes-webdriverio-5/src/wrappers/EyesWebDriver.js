@@ -170,6 +170,9 @@ class EyesWebDriver {
     if (element.error) {
       throw new Error(element.error.message)
     }
+    if (!element.ELEMENT && element.elementId) {
+      element.ELEMENT = element.elementId
+    }
     return new EyesWebElement(
       this._logger,
       this,

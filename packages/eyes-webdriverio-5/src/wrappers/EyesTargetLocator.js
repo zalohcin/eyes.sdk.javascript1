@@ -98,7 +98,7 @@ class EyesTargetLocator extends TargetLocator {
     if (frameElement instanceof EyesWebElement) {
       frameElement = frameElement.getWebElement()
     }
-    await this._targetLocator.frame({ELEMENT: frameElement.elementId})
+    await this._targetLocator.frame(frameElement.element)
     this._logger.verbose('Done!')
   }
 
