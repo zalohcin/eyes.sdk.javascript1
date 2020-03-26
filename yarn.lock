@@ -16,6 +16,14 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
+"@applitools/dom-snapshot@3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.4.1.tgz#ada21ed5a210f6e0b3be295a2c4607abb1974c94"
+  integrity sha512-oL1KAMjROyl/Lak991uIsIUZuf1jM2LYaRtdhWV61IlrFLStMKNSpTceUDjc2HE4UeGRnLLHKCsFDdBKfJlaow==
+  dependencies:
+    "@applitools/functional-commons" "^1.5.4"
+    css-tree "^1.0.0-alpha.39"
+
 "@applitools/dom-utils@4.7.7":
   version "4.7.7"
   resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.7.7.tgz#c23d2726da1637eaae54bc40fa0eff050991349d"
@@ -244,6 +252,25 @@
     "@applitools/dom-snapshot" "3.3.3"
     "@applitools/eyes-common" "3.20.0"
     "@applitools/eyes-sdk-core" "8.1.1"
+    "@applitools/functional-commons" "1.5.4"
+    "@applitools/http-commons" "2.3.12"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/jsdom" "1.0.2"
+    he "1.2.0"
+    lodash.mapvalues "^4.6.0"
+    mime-types "^2.1.24"
+    mkdirp "^0.5.1"
+    postcss-value-parser "^4.0.2"
+    throat "^5.0.0"
+
+"@applitools/visual-grid-client@13.6.10":
+  version "13.6.10"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-13.6.10.tgz#1c4f95574c86aa5847a4f4143c4fca7dcc555643"
+  integrity sha512-UuX9ejevVTDoHm79+92PSQ3Fckc+RKrHEOmJM8zCtDAnp/EfsuJWdc3wHVBXTXlCanXo9HxM/43vAmGIQqJ9QA==
+  dependencies:
+    "@applitools/dom-snapshot" "3.4.1"
+    "@applitools/eyes-common" "3.20.2"
+    "@applitools/eyes-sdk-core" "9.0.3"
     "@applitools/functional-commons" "1.5.4"
     "@applitools/http-commons" "2.3.12"
     "@applitools/isomorphic-fetch" "3.0.0"
