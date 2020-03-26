@@ -7,7 +7,7 @@ const {Eyes, Target, By} = require('../../../index')
 
 const Common = require('../../Common')
 
-describe('Configuration', () => {
+describe('TestStateAfterOperation', () => {
   let browser, eyes
 
   before(async () => {
