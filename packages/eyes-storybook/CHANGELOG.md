@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.3.2
+
 - avoid unnecessary requests to get batchInfo (due to wrong `isGeneratedId` value on batchInfo)
 
 ## 3.3.1
