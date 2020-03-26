@@ -11,7 +11,7 @@ const {
   By,
   ConsoleLogHandler,
 } = require('../../../index')
-const appName = 'Eyes Selenium SDK - Fluent API'
+const appName = 'Eyes WDIO5 SDK - Fluent API'
 const batch = new BatchInfo('WebdriverIO 5 test')
 describe(appName, () => {
   let browser, eyes
