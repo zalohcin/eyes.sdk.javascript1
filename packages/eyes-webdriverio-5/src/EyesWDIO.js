@@ -1298,7 +1298,7 @@ class EyesWDIO extends EyesBase {
         while (fc.size() > 0) {
           const frame = fc.pop()
           await frame.returnToOriginalOverflow(this._driver)
-          await EyesTargetLocator.tryParentFrame(this._driver.getRemoteWebDriver().switchTo(), fc)
+          await EyesTargetLocator.tryParentFrame(this._driver.switchTo(), fc)
         }
       } else {
         this._logger.verbose('returning overflow of element to its original value')
