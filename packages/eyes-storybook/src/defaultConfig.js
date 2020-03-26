@@ -11,7 +11,6 @@ module.exports = {
   waitBeforeScreenshot: 50,
   waitBeforeScreenshots: 50, // backward compatibility
   viewportSize: {width: 1024, height: 768},
-  ignoreDisplacements: false,
   tapFilePath: undefined,
   exitcode: true,
   readStoriesTimeout: 60000,

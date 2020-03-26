@@ -17,25 +17,51 @@ describe('renderStory', () => {
     timeItAsync = timing.timeItAsync;
   });
 
-  it('calls testWindow with proper arguments and sets performance timing', async () => {
+  it('passes correct parameters to testWindow - basic', async () => {
     const testWindow = async x => x;
 
-    const config = {
-      ignore: ['globalIgnore'],
-    };
+    const renderStory = makeRenderStory({config: {}, logger, testWindow, performance, timeItAsync});
+    const story = {name: 'name', kind: 'kind'};
+    const title = getStoryTitle(story);
+    const results = await renderStory({
+      story,
+      resourceUrls: 'resourceUrls',
+      resourceContents: 'resourceContents',
+      cdt: 'cdt',
+      url: 'url',
+    });
 
-    const renderStory = makeRenderStory({config, logger, testWindow, performance, timeItAsync});
+    deleteUndefinedPropsRecursive(results);
 
-    const cdt = 'cdt';
-    const resourceUrls = 'resourceUrls';
-    const resourceContents = 'resourceContents';
-    const url = 'url';
+    expect(results).to.eql({
+      checkParams: {
+        resourceUrls: 'resourceUrls',
+        resourceContents: 'resourceContents',
+        cdt: 'cdt',
+        url: 'url',
+      },
+      openParams: {
+        properties: [
+          {name: 'Component name', value: 'kind'},
+          {name: 'State', value: 'name'},
+        ],
+        testName: title,
+      },
+      throwEx: false,
+    });
+  });
+
+  it('passes correct parameters to testWindow - local configuration', async () => {
+    const testWindow = async x => x;
+
+    const renderStory = makeRenderStory({config: {}, logger, testWindow, performance, timeItAsync});
+
     const eyesOptions = {
-      ignore: ['ignore'],
-      floating: ['floating'],
-      accessibility: ['accessibility'],
-      strict: ['strict'],
-      layout: ['layout'],
+      ignore: 'ignore',
+      floating: 'floating',
+      accessibility: 'accessibility',
+      strict: 'strict',
+      layout: 'layout',
       scriptHooks: 'scriptHooks',
       sizeMode: 'sizeMode',
       target: 'target',
@@ -46,10 +72,13 @@ describe('renderStory', () => {
       ignoreDisplacements: true,
       properties: [{name: 'Custom property', value: null}],
     };
+
     const story = {name: 'name', kind: 'kind', parameters: {eyes: eyesOptions}};
     const title = getStoryTitle(story);
 
-    const results = await renderStory({story, resourceUrls, resourceContents, cdt, url});
+    const results = await renderStory({story});
+
+    deleteUndefinedPropsRecursive(results);
 
     const {ignoreDisplacements, properties, ...checkParams} = eyesOptions;
     expect(results).to.eql({
@@ -69,18 +98,135 @@ describe('renderStory', () => {
         ],
         testName: title,
       },
-      checkParams: {
-        cdt,
-        resourceContents,
-        resourceUrls,
-        url,
-        frames: undefined,
-        content: [],
-        ...checkParams,
-        ignore: config.ignore.concat(eyesOptions.ignore),
-      },
+      checkParams,
+    });
+  });
+
+  it('passes correct parameters to testWindow - global configuration', async () => {
+    const testWindow = async x => x;
+
+    const globalConfig = {
+      ignore: 'ignore',
+      floating: 'floating',
+      accessibility: 'accessibility',
+      strict: 'strict',
+      layout: 'layout',
+      ignoreDisplacements: true,
+      properties: [{name: 'Custom property', value: null}],
+    };
+
+    const renderStory = makeRenderStory({
+      config: globalConfig,
+      logger,
+      testWindow,
+      performance,
+      timeItAsync,
     });
 
+    const story = {name: 'name', kind: 'kind'};
+    const title = getStoryTitle(story);
+
+    const results = await renderStory({story});
+
+    deleteUndefinedPropsRecursive(results);
+
+    const {ignoreDisplacements, properties, ...checkParams} = globalConfig;
+    expect(results).to.eql({
+      throwEx: false,
+      openParams: {
+        ignoreDisplacements,
+        properties: [
+          {
+            name: 'Component name',
+            value: 'kind',
+          },
+          {
+            name: 'State',
+            value: 'name',
+          },
+          ...properties,
+        ],
+        testName: title,
+      },
+      checkParams,
+    });
+  });
+
+  it('passes correct parameters to testWindow - local configuration overrides global configuration', async () => {
+    const testWindow = async x => x;
+
+    const globalConfig = {
+      ignore: 'global ignore',
+      floating: 'global floating',
+      accessibility: 'global accessibility',
+      strict: 'global strict',
+      layout: 'global layout',
+      ignoreDisplacements: true,
+      properties: [{name: 'global Custom property', value: null}],
+    };
+
+    const renderStory = makeRenderStory({
+      config: globalConfig,
+      logger,
+      testWindow,
+      performance,
+      timeItAsync,
+    });
+
+    const eyesOptions = {
+      ignore: 'ignore',
+      floating: 'floating',
+      accessibility: 'accessibility',
+      strict: 'strict',
+      layout: 'layout',
+      scriptHooks: 'scriptHooks',
+      sizeMode: 'sizeMode',
+      target: 'target',
+      fully: 'fully',
+      selector: 'selector',
+      region: 'region',
+      tag: 'tag',
+      ignoreDisplacements: true,
+      properties: [{name: 'Custom property', value: null}],
+    };
+
+    const story = {name: 'name', kind: 'kind', parameters: {eyes: eyesOptions}};
+    const title = getStoryTitle(story);
+
+    const results = await renderStory({story});
+
+    deleteUndefinedPropsRecursive(results);
+
+    const {ignoreDisplacements, properties, ...checkParams} = eyesOptions; // and NOT globalConfig
+    expect(results).to.eql({
+      throwEx: false,
+      openParams: {
+        ignoreDisplacements,
+        properties: [
+          {
+            name: 'Component name',
+            value: 'kind',
+          },
+          {
+            name: 'State',
+            value: 'name',
+          },
+          ...properties,
+        ],
+        testName: title,
+      },
+      checkParams,
+    });
+  });
+
+  it('sets performance timing', async () => {
+    const testWindow = async x => x;
+
+    const renderStory = makeRenderStory({config: {}, logger, testWindow, performance, timeItAsync});
+
+    const story = {name: 'name', kind: 'kind'};
+    const title = getStoryTitle(story);
+    await renderStory({story});
     expect(performance[title]).not.to.equal(undefined);
   });
 
@@ -90,8 +236,21 @@ describe('renderStory', () => {
       throw new Error('bla');
     };
 
-    const renderStory = makeRenderStory({logger, testWindow, performance, timeItAsync});
+    const renderStory = makeRenderStory({config: {}, logger, testWindow, performance, timeItAsync});
     const [{message}] = await presult(renderStory({story: {}}));
     expect(message).to.equal('bla');
   });
 });
+
+function deleteUndefinedPropsRecursive(obj) {
+  for (const prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+      if (obj[prop] === undefined) {
+        delete obj[prop];
+      }
+      if (typeof obj[prop] === 'object') {
+        deleteUndefinedPropsRecursive(obj[prop]);
+      }
+    }
+  }
+}

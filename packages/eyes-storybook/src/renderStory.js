@@ -2,28 +2,19 @@
 const getStoryTitle = require('./getStoryTitle');
 const deprecationWarning = require('./deprecationWarning');
 
-function makeRenderStory({config = {}, logger, testWindow, performance, timeItAsync}) {
-  const {
-    ignore: globalIgnore = [],
-    accessibility: globalAccessibility = [],
-    floating: globalFloating = [],
-    strict: globalStrict = [],
-    content: globalContent = [],
-    layout: globalLayout = [],
-  } = config;
-
+function makeRenderStory({config, logger, testWindow, performance, timeItAsync}) {
   return function renderStory({story, resourceUrls, resourceContents, frames, cdt, url}) {
     const {name, kind, parameters} = story;
     const title = getStoryTitle({name, kind, parameters});
     const eyesOptions = (parameters && parameters.eyes) || {};
     const {
       ignoreDisplacements,
-      ignore = [],
-      accessibility = [],
-      floating = [],
-      strict = [],
-      content = [],
-      layout = [],
+      ignore,
+      accessibility,
+      floating,
+      strict,
+      content,
+      layout,
       scriptHooks,
       sizeMode,
       target,
@@ -31,7 +22,7 @@ function makeRenderStory({config = {}, logger, testWindow, performance, timeItAs
       selector,
       region,
       tag,
-      properties = [],
+      properties,
     } = eyesOptions;
 
     if (sizeMode) {
@@ -45,9 +36,10 @@ function makeRenderStory({config = {}, logger, testWindow, performance, timeItAs
       properties: [
         {name: 'Component name', value: kind},
         {name: 'State', value: name},
-        ...properties,
+        ...(properties !== undefined ? properties : config.properties || []),
       ],
-      ignoreDisplacements,
+      ignoreDisplacements:
+        ignoreDisplacements !== undefined ? ignoreDisplacements : config.ignoreDisplacements,
     };
 
     const checkParams = {
@@ -56,12 +48,12 @@ function makeRenderStory({config = {}, logger, testWindow, performance, timeItAs
       resourceContents,
       url,
       frames,
-      ignore: globalIgnore.concat(ignore),
-      floating: globalFloating.concat(floating),
-      layout: globalLayout.concat(layout),
-      strict: globalStrict.concat(strict),
-      content: globalContent.concat(content),
-      accessibility: globalAccessibility.concat(accessibility),
+      ignore: ignore !== undefined ? ignore : config.ignore,
+      floating: floating !== undefined ? floating : config.floating,
+      layout: layout !== undefined ? layout : config.layout,
+      strict: strict !== undefined ? strict : config.strict,
+      content: content !== undefined ? content : config.content,
+      accessibility: accessibility !== undefined ? accessibility : config.accessibility,
       scriptHooks,
       sizeMode,
       target,
