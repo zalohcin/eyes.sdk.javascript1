@@ -77,9 +77,9 @@
     "test:browser": "mocha --no-timeouts 'test/browser/**/*.test.js'",
     "test": "yarn build:browser && yarn test:mocha",
     "render": "node example/render.js",
-    "postpublish": "git push; git push --tags",
     "preversion": "yarn vv && yarn vc && yarn verify-commits",
-    "version": "yarn uc && git add CHANGELOG.md"
+    "version": "yarn uc && git add CHANGELOG.md",
+    "postversion": "git push --follow-tags"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
