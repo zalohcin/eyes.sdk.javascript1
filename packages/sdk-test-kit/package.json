@@ -32,10 +32,10 @@
     "micromatch": "^4.0.2",
     "node-fetch": "^2.6.0",
     "throat": "^5.0.0",
-    "yargs": "^15.0.2"
+    "yargs": "^15.0.2",
+    "chalk": "^3.0.0"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
     "@typescript-eslint/parser": "^2.14.0",
     "mocha": "^6.2.2",
     "typescript": "^3.7.4"
