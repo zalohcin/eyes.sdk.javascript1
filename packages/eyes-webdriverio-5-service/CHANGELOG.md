@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 1.3.8 - 29/3/2020
+
 - update SDK version to 5.9.22
 
 ## 1.3.7
