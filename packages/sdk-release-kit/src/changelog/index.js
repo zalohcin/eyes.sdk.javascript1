@@ -8,7 +8,7 @@ function updateChangelogContents({changelogContents, version, withDate}) {
   let _changelogContents = changelogContents
   const now = new Date()
   let _version = withDate
-    ? version + ` - ${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`
+    ? version + ` - ${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`
     : version
   _changelogContents = _addReleaseEntryForUnreleasedItems({
     changelogContents: _changelogContents,

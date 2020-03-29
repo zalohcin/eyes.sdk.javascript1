@@ -132,7 +132,7 @@ describe('update-changelog', () => {
     })
     const date = () => {
       const now = new Date()
-      return `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`
+      return `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`
     }
     const expectedChangelogContents = `
       # Changelog
