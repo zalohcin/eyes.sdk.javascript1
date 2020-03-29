@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- update @applitools/dom-utils@4.7.10, @applitools/eyes-common@3.20.2, @applitools/visual-grid-client@13.6.11, @applitools/eyes-sdk-core@9.0.3
 
 ## 4.33.29
 
