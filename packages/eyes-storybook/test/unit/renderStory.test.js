@@ -111,8 +111,6 @@ describe('renderStory', () => {
       accessibility: 'accessibility',
       strict: 'strict',
       layout: 'layout',
-      ignoreDisplacements: true,
-      properties: [{name: 'Custom property', value: null}],
     };
 
     const renderStory = makeRenderStory({
@@ -130,11 +128,10 @@ describe('renderStory', () => {
 
     deleteUndefinedPropsRecursive(results);
 
-    const {ignoreDisplacements, properties, ...checkParams} = globalConfig;
+    const {...checkParams} = globalConfig;
     expect(results).to.eql({
       throwEx: false,
       openParams: {
-        ignoreDisplacements,
         properties: [
           {
             name: 'Component name',
@@ -144,7 +141,6 @@ describe('renderStory', () => {
             name: 'State',
             value: 'name',
           },
-          ...properties,
         ],
         testName: title,
       },

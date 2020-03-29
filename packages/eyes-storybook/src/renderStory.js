@@ -38,8 +38,7 @@ function makeRenderStory({config, logger, testWindow, performance, timeItAsync})
         {name: 'State', value: name},
         ...(properties !== undefined ? properties : config.properties || []),
       ],
-      ignoreDisplacements:
-        ignoreDisplacements !== undefined ? ignoreDisplacements : config.ignoreDisplacements,
+      ignoreDisplacements,
     };
 
     const checkParams = {
