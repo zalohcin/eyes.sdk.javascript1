@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- update SDK version to 5.9.22
 
 ## 1.3.7
 
