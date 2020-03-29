@@ -17,6 +17,7 @@ const {
   getPassedTestIndexes,
 } = require('./cli-util')
 const os = require('os')
+const chalk = require('chalk')
 
 yargs
   .usage(`Coverage Tests DSL (v${version})`)
@@ -65,8 +66,8 @@ async function run(args) {
   console.log(`Coverage Tests DSL (v${version})`)
   console.log('a.k.a. Da Schwartz Lang - accept no substitutes\n')
   if (!process.env.APPLITOOLS_API_KEY_SDK) {
-    console.log(`WARNING! running without APPLITOOLS_API_KEY_SDK set`)
-    console.log(`To test against the correct baselines, be sure to set this.`)
+    console.log(chalk.yellow(`You're running without APPLITOOLS_API_KEY_SDK set!`))
+    console.log(chalk.yellow(`To test with the correct baselines, be sure to set it.`))
   }
   const command = args._[0]
   if (command === 'nuke') {
