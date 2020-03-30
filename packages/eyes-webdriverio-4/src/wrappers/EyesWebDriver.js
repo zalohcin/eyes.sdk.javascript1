@@ -41,6 +41,15 @@ class EyesWebDriver {
     this._rotation = null
   }
 
+  async getTargetFrame() {
+    const {value: element} = await this.remoteWebDriver.execute(() => {
+      // eslint-disable-next-line
+      return window.frameElement
+    })
+
+    return element
+  }
+
   //noinspection JSUnusedGlobalSymbols
   get eyes() {
     return this._eyes

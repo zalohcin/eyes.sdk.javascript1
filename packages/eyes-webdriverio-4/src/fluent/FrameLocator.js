@@ -10,27 +10,10 @@ class FrameLocator {
     this._frameNameOrId = null
     /** @type {Integer} */
     this._frameIndex = null
-  }
-
-  /**
-   * @return {Integer}
-   */
-  getFrameIndex() {
-    return this._frameIndex
-  }
-
-  /**
-   * @return {String}
-   */
-  getFrameNameOrId() {
-    return this._frameNameOrId
-  }
-
-  /**
-   * @return {By}
-   */
-  getFrameSelector() {
-    return this._frameSelector
+    /** @type {WebElement} */
+    this._scrollRootElement = undefined
+    /** @type {By} */
+    this._scrollRootSelector = undefined
   }
 
   /**
@@ -41,10 +24,31 @@ class FrameLocator {
   }
 
   /**
+   * @param frameElement
+   */
+  setFrameElement(frameElement) {
+    this._frameElement = frameElement
+  }
+
+  /**
+   * @return {By}
+   */
+  getFrameSelector() {
+    return this._frameSelector
+  }
+
+  /**
    * @param frameSelector
    */
   setFrameSelector(frameSelector) {
     this._frameSelector = frameSelector
+  }
+
+  /**
+   * @return {String}
+   */
+  getFrameNameOrId() {
+    return this._frameNameOrId
   }
 
   /**
@@ -55,6 +59,13 @@ class FrameLocator {
   }
 
   /**
+   * @return {Integer}
+   */
+  getFrameIndex() {
+    return this._frameIndex
+  }
+
+  /**
    * @param frameIndex
    */
   setFrameIndex(frameIndex) {
@@ -62,10 +73,31 @@ class FrameLocator {
   }
 
   /**
-   * @param frameElement
+   * @return {WebElement}
    */
-  setFrameElement(frameElement) {
-    this._frameElement = frameElement
+  getScrollRootElement() {
+    return this._scrollRootElement
+  }
+
+  /**
+   * @param {WebElement} scrollRootElement
+   */
+  setScrollRootElement(scrollRootElement) {
+    this._scrollRootElement = scrollRootElement
+  }
+
+  /**
+   * @return {By}
+   */
+  getScrollRootSelector() {
+    return this._scrollRootSelector
+  }
+
+  /**
+   * @param {By} scrollRootSelector
+   */
+  setScrollRootSelector(scrollRootSelector) {
+    this._scrollRootSelector = scrollRootSelector
   }
 }
 

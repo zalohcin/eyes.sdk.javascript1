@@ -19,17 +19,7 @@ class FrameChain {
     if (other) {
       this._logger.verbose('Frame chain copy constructor (size ' + other.size() + ')')
       for (const otherFrame of other.getFrames()) {
-        this._frames.push(
-          new Frame(
-            logger,
-            otherFrame.getReference(),
-            otherFrame.getLocation(),
-            otherFrame.getSize(),
-            otherFrame.getInnerSize(),
-            otherFrame.getOriginalLocation(),
-            otherFrame.getOriginalOverflow(),
-          ),
-        )
+        this._frames.push(new Frame(otherFrame))
       }
       this._logger.verbose('Done!')
     }

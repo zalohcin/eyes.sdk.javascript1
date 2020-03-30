@@ -311,6 +311,42 @@ class WebdriverioCheckSettings extends CheckSettings {
   }
 
   /**
+   * @param {By|WebElement|EyesWebElement} element
+   * @return {this}
+   */
+  scrollRootElement(element) {
+    if (EyesWebElement.isLocator(element)) {
+      if (this._frameChain.length === 0) {
+        this._scrollRootSelector = element
+      } else {
+        this._frameChain[this._frameChain.length - 1].setScrollRootSelector(element)
+      }
+    } else if (this._frameChain.length === 0) {
+      this._scrollRootElement = element
+    } else {
+      this._frameChain[this._frameChain.length - 1].setScrollRootElement(element)
+    }
+
+    return this
+  }
+
+  /**
+   * @ignore
+   * @return {Promise<WebElement>}
+   */
+  getScrollRootElement() {
+    return this._scrollRootElement
+  }
+
+  /**
+   * @ignore
+   * @return {By}
+   */
+  getScrollRootSelector() {
+    return this._scrollRootSelector
+  }
+
+  /**
    * @param {string} script
    */
   addScriptHook(script) {
