@@ -1,8 +1,8 @@
 <p align="center">
   <br/>
-  <img src="https://eyes.applitools.com/app/v/396/Deploy/Main/build/3b185003dd49bb7679d8de4b3696dacf.png" width="250"  alt="base64 test">
+  <img src="https://eyes.applitools.com/app/v/396/Deploy/Main/build/3b185003dd49bb7679d8de4b3696dacf.png" width="250" alt="Applitools Eyes">
 
-  <h3 align="center">Eyes-Testcafe SDK for <a href="https://devexpress.github.io/testcafe/">Testcafe</a></h1>
+  <h3 align="center">Eyes-TestCafe SDK for <a href="https://devexpress.github.io/testcafe/">TestCafe</a></h1>
 
   <br/>
   <div align="center">
@@ -15,7 +15,7 @@
 
 ## Installation
 
-Install Eyes-Testcafe as a local dev dependency in your tested project:
+Install Eyes-TestCafe as a local dev dependency in your tested project:
 
 ```bash
 npm i -D @applitools/eyes-testcafe@beta
@@ -23,7 +23,7 @@ npm i -D @applitools/eyes-testcafe@beta
 
 ## Applitools API key
 
-In order to authenticate via the Applitools server, you need to supply the Eyes-Testcafe SDK with the API key you got from Applitools. Read more about how to obtain the API key [here](https://applitools.com/docs/topics/overview/obtain-api-key.html).
+In order to authenticate via the Applitools server, you need to supply the Eyes-TestCafe SDK with the API key you got from Applitools. Read more about how to obtain the API key [here](https://applitools.com/docs/topics/overview/obtain-api-key.html).
 
 To to this, set the environment variable `APPLITOOLS_API_KEY` to the API key before running your tests.
 For example, on Linux/Mac:
@@ -40,9 +40,15 @@ set APPLITOOLS_API_KEY=<your_key>
 npx testcafe chrome:headless some-test-dir
 ```
 
+It's also possible to set the API key programmatically like so:
+
+```js
+eyes.setApiKey('<your API key>')
+```
+
 ## Usage
 
-After defining the API key, you will be able to use commands from Eyes-Testcafe in your testcafe tests to take screenshots and use Applitools Eyes to manage them:
+After defining the API key, you will be able to use commands from Eyes-TestCafe in your testcafe tests to take screenshots and use Applitools Eyes to manage them:
 
 ### Example
 
@@ -107,10 +113,136 @@ const testResults = await eyes.close(throwEx);
 
 ## Best practice for using the SDK
 
-Every call to `eyes.open` and `eyes.close` defines a test in Applitools Eyes, and all the calls to `eyes.check` between them are called "steps". In order to get a test structure in Applitools that corresponds to the test structure in Testcafe, it's best to open/close tests in every `test` call. **You can use `afterEach` for calling `eyes.close()`**
+Every call to `eyes.open` and `eyes.close` defines a test in Applitools Eyes, and all the calls to `eyes.check` between them are called "steps". In order to get a test structure in Applitools that corresponds to the test structure in TestCafe, it's best to open/close tests in every `test` call. **You can use `afterEach` for calling `eyes.close()`**
 
 ```js
 fixture`Hello world`
   .page('https://applitools.com/helloworld')
   .afterEach(async () => eyes.close());
 ```
+
+## Receipes for common tasks
+
+### Logging
+
+To enable logging to the console, use the `ConsoleLogHandler` class:
+
+```js
+import {Eyes, ConsoleLogHandler} from '@applitools/eyes-testcafe';
+
+const eyes = new Eyes();
+eyes.setLogHandler(new ConsoleLogHandler())
+
+// To enable verbose logging:
+eyes.setLogHandler(new ConsoleLogHandler(true))
+```
+
+To write logs to file, use the `FileLogHandler` class. It's possible to configure the file path, verbosity, and whether to append to file.
+
+The API is as follows:
+
+```js
+new FileLogHandler(isVerbose, filepath, append)
+```
+Default values are:
+- `isVerbose`: `false`
+- `filepath`: `'eyes.log'`, meaning a file with this name will be created in the current working directory.
+- `append`: `true`, meaning that every test will append to the file instead of recreating it.
+
+For example:
+
+```js
+import {Eyes, FileLogHandler} from '@applitools/eyes-testcafe';
+import path from 'path'
+
+const eyes = new Eyes();
+
+// append non-verbose logs to logs/eyes.log (relative to current working directory)
+eyes.setLogHandler(new FileLogHandler(false, path.resolve('logs', 'eyes.log')))
+
+// write verbose logs to a new file at logs/eyes-{timestamp}.log (relative to current working directory)
+eyes.setLogHandler(new FileLogHandler(true, path.resolve('logs', `eyes-${Date.now()}.log`), false))
+```
+
+### Stitch mode
+
+Eyes-TestCafe allows you to control if the checkpoint image should include only the viewport - i.e. what you see in the browser window when you first load a page, or if it should also include the full page - i.e. what you would see if you manually scrolled down, or across, a page that is larger than the viewport.
+
+When Eyes-TestCafe takes a full page screenshot, it does so by taking multiple screenshots of the viewport at different locations of the page (via the TestCafe test controller), and then "stitching" them together. The output is one clear, potentially very large, screenshot of what can be revealed on the page when it is scrolled.
+
+#### Stitch modes
+
+There are two methods for creating the stitched screenshot, and they are both related to the way the page is moved relative to the viewport. Here they are:
+
+##### 1. Stitch mode: Scroll
+
+Using this method, the page is scrolled, just as a user would scroll. Eyes-TestCafe takes the viewport screenshot, then scrolls the page to calculated locations.
+The issue with this method is that the page might respond to scroll events, and change the way it appears visually between the screenshots.
+
+##### 2. Stitch mode: CSS
+
+Using this method, the page is moved around by changing the CSS property `transform` on the HTML element with different values for `translate(x,y)`.
+This method is not sensitive to scroll events, and is usually the recommended method for stitching.
+
+#### Changing the stitch mode
+
+The default stitch mode is `scroll`. In order to change methods:
+
+```js
+import {Eyes, StitchMode} from '@applitools/eyes-testcafe';
+
+const eyes = new Eyes()
+eyes.setStitchMode(StitchMode.CSS)
+
+// to go back to scroll:
+eyes.setStitchMode(StitchMode.SCROLL)
+```
+
+### Configure Server URL
+
+By default, Eyes-TestCafe communicates with Applitools' public Eyes cloud server, located at `https://eyesapi.applitools.com`.
+
+If you have a dedicated cloud or an on-premise server, configure a different Eyes server URL as follows:
+
+```js
+eyes.setServerUrl('https://mycompanyeyesapi.applitools.com')
+```
+
+### Configure Proxy
+
+If your company's network requires requests to go through the corporate proxy, you may configure it as follows:
+
+```js
+eyes.setProxy('http://yourproxy.com')
+
+// provide username and password:
+eyes.setProxy('http://user:pass@yourproxy.com')
+// OR
+eyes.setProxy({
+  url: 'https://yourproxy.com',
+  username: 'user',
+  password: 'pass'
+})
+
+// use tunneling in case of HTTP over HTTPS proxy:
+eyes.setProxy({
+  url: 'http://yourproxy.com',
+  isHttpOnly: true
+})
+```
+
+### Aggregate tests in batches
+
+By using the `open`/`check`/`close` methods on `Eyes`, you are creating visual tests in Applitools Eyes.
+
+### Stich overlap
+
+### Match level
+
+### Ignore displacements
+
+### Test properties
+
+### Test results
+
+### Error types
