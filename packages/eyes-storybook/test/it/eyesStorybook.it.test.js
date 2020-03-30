@@ -92,11 +92,11 @@ describe('eyesStorybook', () => {
     ];
 
     const [strict, layout, content, floating, accessibility] = [
-      globalConfig.strict,
-      globalConfig.layout,
-      globalConfig.content,
-      globalConfig.floating,
-      globalConfig.accessibility,
+      globalConfig.strictRegions,
+      globalConfig.layoutRegions,
+      globalConfig.contentRegions,
+      globalConfig.floatingRegions,
+      globalConfig.accessibilityRegions,
     ].map(([{selector}]) => {
       const {x, y, width, height} = JSON.parse(selector);
       return [
@@ -109,6 +109,7 @@ describe('eyesStorybook', () => {
       ];
     });
 
+    expect(results.some(x => x instanceof Error)).to.be.false;
     expect(results).to.have.length(expectedResults.length);
 
     for (const testResults of results) {

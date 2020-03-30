@@ -20,7 +20,7 @@ storiesOf('Button', module)
   ), {
     someParam: 'i was here, goodbye',
     eyes: {
-      ignore: [{selector: '.ignore-this'}]
+      ignoreRegions: [{selector: '.ignore-this'}]
     }
   })
   .add('with some emoji', () => (

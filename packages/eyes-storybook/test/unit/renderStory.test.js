@@ -57,11 +57,12 @@ describe('renderStory', () => {
     const renderStory = makeRenderStory({config: {}, logger, testWindow, performance, timeItAsync});
 
     const eyesOptions = {
-      ignore: 'ignore',
-      floating: 'floating',
-      accessibility: 'accessibility',
-      strict: 'strict',
-      layout: 'layout',
+      ignoreRegions: 'ignore',
+      floatingRegions: 'floating',
+      accessibilityRegions: 'accessibility',
+      strictRegions: 'strict',
+      layoutRegions: 'layout',
+      contentRegions: 'content',
       scriptHooks: 'scriptHooks',
       sizeMode: 'sizeMode',
       target: 'target',
@@ -80,7 +81,7 @@ describe('renderStory', () => {
 
     deleteUndefinedPropsRecursive(results);
 
-    const {ignoreDisplacements, properties, ...checkParams} = eyesOptions;
+    const {ignoreDisplacements, properties} = eyesOptions;
     expect(results).to.eql({
       throwEx: false,
       openParams: {
@@ -98,7 +99,21 @@ describe('renderStory', () => {
         ],
         testName: title,
       },
-      checkParams,
+      checkParams: {
+        ignore: 'ignore',
+        floating: 'floating',
+        accessibility: 'accessibility',
+        strict: 'strict',
+        layout: 'layout',
+        content: 'content',
+        scriptHooks: 'scriptHooks',
+        sizeMode: 'sizeMode',
+        target: 'target',
+        fully: 'fully',
+        selector: 'selector',
+        region: 'region',
+        tag: 'tag',
+      },
     });
   });
 
@@ -106,11 +121,12 @@ describe('renderStory', () => {
     const testWindow = async x => x;
 
     const globalConfig = {
-      ignore: 'ignore',
-      floating: 'floating',
-      accessibility: 'accessibility',
-      strict: 'strict',
-      layout: 'layout',
+      ignoreRegions: 'ignore',
+      floatingRegions: 'floating',
+      accessibilityRegions: 'accessibility',
+      strictRegions: 'strict',
+      layoutRegions: 'layout',
+      contentRegions: 'content',
     };
 
     const renderStory = makeRenderStory({
@@ -128,7 +144,6 @@ describe('renderStory', () => {
 
     deleteUndefinedPropsRecursive(results);
 
-    const {...checkParams} = globalConfig;
     expect(results).to.eql({
       throwEx: false,
       openParams: {
@@ -144,7 +159,14 @@ describe('renderStory', () => {
         ],
         testName: title,
       },
-      checkParams,
+      checkParams: {
+        ignore: 'ignore',
+        floating: 'floating',
+        accessibility: 'accessibility',
+        strict: 'strict',
+        layout: 'layout',
+        content: 'content',
+      },
     });
   });
 
@@ -152,11 +174,12 @@ describe('renderStory', () => {
     const testWindow = async x => x;
 
     const globalConfig = {
-      ignore: 'global ignore',
-      floating: 'global floating',
-      accessibility: 'global accessibility',
-      strict: 'global strict',
-      layout: 'global layout',
+      ignoreRegions: 'global ignore',
+      floatingRegions: 'global floating',
+      accessibilityRegions: 'global accessibility',
+      strictRegions: 'global strict',
+      layoutRegions: 'global layout',
+      contentRegions: 'global content',
       ignoreDisplacements: true,
       properties: [{name: 'global Custom property', value: null}],
     };
@@ -170,11 +193,12 @@ describe('renderStory', () => {
     });
 
     const eyesOptions = {
-      ignore: 'ignore',
-      floating: 'floating',
-      accessibility: 'accessibility',
-      strict: 'strict',
-      layout: 'layout',
+      ignoreRegions: 'ignore',
+      floatingRegions: 'floating',
+      accessibilityRegions: 'accessibility',
+      strictRegions: 'strict',
+      layoutRegions: 'layout',
+      contentRegions: 'content',
       scriptHooks: 'scriptHooks',
       sizeMode: 'sizeMode',
       target: 'target',
@@ -193,7 +217,7 @@ describe('renderStory', () => {
 
     deleteUndefinedPropsRecursive(results);
 
-    const {ignoreDisplacements, properties, ...checkParams} = eyesOptions; // and NOT globalConfig
+    const {ignoreDisplacements, properties} = eyesOptions; // and NOT globalConfig
     expect(results).to.eql({
       throwEx: false,
       openParams: {
@@ -211,7 +235,21 @@ describe('renderStory', () => {
         ],
         testName: title,
       },
-      checkParams,
+      checkParams: {
+        ignore: 'ignore',
+        floating: 'floating',
+        accessibility: 'accessibility',
+        strict: 'strict',
+        layout: 'layout',
+        content: 'content',
+        scriptHooks: 'scriptHooks',
+        sizeMode: 'sizeMode',
+        target: 'target',
+        fully: 'fully',
+        selector: 'selector',
+        region: 'region',
+        tag: 'tag',
+      },
     });
   });
 

@@ -12,6 +12,6 @@ module.exports = {
       return ['rtl'];
     }
   },
-  ignore: [{selector: '.global-ignore-this'}],
+  ignoreRegions: [{selector: '.global-ignore-this'}],
   // puppeteerOptions: {headless: false, devtools: true},
 };
