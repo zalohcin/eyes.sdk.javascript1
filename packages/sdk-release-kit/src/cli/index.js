@@ -27,9 +27,15 @@ if (args['verify-changelog']) {
   execute(verifyVersions.bind(undefined, {isFix: args.fix, pkgPath: cwd}))
 } else if (args['verify-commits']) {
   const verifyCommits = require('../versions/scripts/verify-commits')
-  execute(verifyCommits.bind(undefined, {pkgPath: cwd, isForce: args.force}))
+  const isForce = args.force || process.env.BONGO_VERIFY_COMMITS_FORCE
+  execute(verifyCommits.bind(undefined, {pkgPath: cwd, isForce}))
 } else {
   execute(() => {
     throw new Error('Invalid option provided')
   })
 }
+// release-pre-check
+// - verify-changelog
+// - verify versions
+// - verify-commits
+// - verify-installed-versions

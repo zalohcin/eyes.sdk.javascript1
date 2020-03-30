@@ -33,8 +33,9 @@ async function verifyCommits(pkgPath) {
   const packageJson = require(path.resolve(pkgPath, 'package.json'))
   const {name, version} = packageJson
   const tagName = `${name}@${version}`
+  const exclusions = `":(exclude,icase)../*/changelog.md" ":!../*/test/*"`
   try {
-    return (await pexec(`git log --oneline ${tagName}..HEAD -- ${pkgPath}`)).stdout
+    return (await pexec(`git log --oneline ${tagName}..HEAD -- ${pkgPath} ${exclusions}`)).stdout
   } catch (ex) {
     if (/bad revision/.test(ex.message)) {
       const tagNameCyan = chalk.cyan(tagName)
