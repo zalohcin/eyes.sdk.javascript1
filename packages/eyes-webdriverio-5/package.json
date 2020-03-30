@@ -51,10 +51,7 @@
     "shared-examples-for": "^0.1.3"
   },
   "scripts": {
-    "vv": "bongo --verify-versions",
-    "vc": "bongo --verify-changelog",
-    "uc": "bongo --update-changelog",
-    "verify-commits": "bongo --verify-commits",
+    "release-pre-check": "bongo --release-pre-check",
     "send-release-notification": "bongo --send-release-notification",
     "lint": "eslint '**/*.js'",
     "test": "yarn test:unit && yarn test:e2e",
@@ -65,7 +62,7 @@
     "test:coverage:custom": "mocha \"test/coverage/custom/**/*.spec.js\" --no-timeouts",
     "test:coverage:nuke": "coverage-tests nuke",
     "render": "node scripts/render.js",
-    "preversion": "yarn vv && yarn vc && yarn verify-commits && yarn test:coverage --send-report prod",
+    "preversion": "yarn release-pre-check && yarn test:coverage --send-report prod",
     "version": "yarn uc && git add CHANGELOG.md",
     "postversion": "git push --follow-tags && yarn send-release-notification"
   },

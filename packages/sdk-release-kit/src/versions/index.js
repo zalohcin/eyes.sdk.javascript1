@@ -1,4 +1,5 @@
 const path = require('path')
+const {isMatch} = require('micromatch')
 
 function _isAlreadyChecked({pkgName, dep, results}) {
   return results.find(result => result.pkgName === pkgName && result.dep === dep)
@@ -54,13 +55,15 @@ function checkPackagesForUniqueVersions(input, packageNames) {
   })
   if (errors.length) {
     const affectedPackages = errors.map(error => error.name).join(', ')
-    throw new Error(`Non-unique package versions found of ${affectedPackages}`)
+    throw new Error(
+      `Non-unique package versions found of ${affectedPackages} \n\nTo learn more, run \`npx bongo --ls-dry-run\`.`,
+    )
   }
 }
 
 function _findVersionNumbersForPackage(input, pkgName) {
   let versionNumbers = []
-  const packageEntries = _grep(input, pkgName)
+  const packageEntries = findEntryByPackageName(input, pkgName)
   packageEntries.forEach(entry => {
     const versionNumber = entry.match(/(\d+\.)?(\d+\.)?(\*|\d+)/)[0]
     versionNumbers.push(versionNumber)
@@ -68,13 +71,18 @@ function _findVersionNumbersForPackage(input, pkgName) {
   return new Set(versionNumbers)
 }
 
-function _grep(input, target) {
+function findEntryByPackageName(input, target) {
   if (typeof input === 'string') input = input.split('\n')
-  return input.filter(entry => entry.includes(target))
+  return input.filter(entry => {
+    const result = entry.match(/(@?\w+\/?\w+\-?\w+)@/)
+    const _entry = result ? result[1] : ''
+    return isMatch(_entry, target)
+  })
 }
 
 module.exports = {
   makePackagesList,
   verifyDependencies,
   checkPackagesForUniqueVersions,
+  findEntryByPackageName,
 }
