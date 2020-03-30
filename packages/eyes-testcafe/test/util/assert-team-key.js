@@ -3,7 +3,7 @@ const chalk = require('chalk')
 
 if (!process.env.APPLITOOLS_API_KEY_SDK) {
   console.log(chalk.red('Missing APPLITOOLS_API_KEY_SDK!'))
-  exit(1)
+  process.exit(1)
 }
 
 const origApiKey = process.env.APPLITOOLS_API_KEY
