@@ -11,7 +11,7 @@ const {
   DateTimeUtils,
   BatchInfo,
   RectangleSize,
-} = require('@applitools/eyes-common')
+} = require('@applitools/eyes-sdk-core')
 const {metadata} = require('@applitools/eyes-sdk-core')
 const {StitchMode, Eyes} = require('../../../index')
 

@@ -2,7 +2,7 @@
 
 'use strict'
 
-const {Configuration, StitchMode} = require('@applitools/eyes-common')
+const {Configuration, StitchMode} = require('@applitools/eyes-sdk-core')
 const {Eyes, Target, ConsoleLogHandler} = require('../../../index')
 
 fixture`full page`.page`http://localhost:5556/full-page.html`

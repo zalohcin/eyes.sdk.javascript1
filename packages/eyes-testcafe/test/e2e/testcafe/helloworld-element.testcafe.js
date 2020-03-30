@@ -2,7 +2,7 @@
 
 'use strict'
 
-const {Configuration} = require('@applitools/eyes-common')
+const {Configuration} = require('@applitools/eyes-sdk-core')
 const {Selector} = require('testcafe')
 const {Eyes, Target} = require('../../../')
 

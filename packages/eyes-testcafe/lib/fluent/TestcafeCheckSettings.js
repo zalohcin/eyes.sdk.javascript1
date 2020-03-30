@@ -1,6 +1,6 @@
 'use strict'
 
-const {TypeUtils, Region} = require('@applitools/eyes-common')
+const {TypeUtils, Region} = require('@applitools/eyes-sdk-core')
 const {CheckSettings} = require('@applitools/eyes-sdk-core')
 
 const {IgnoreRegionBySelector} = require('./IgnoreRegionBySelector')

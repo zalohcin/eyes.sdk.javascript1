@@ -6,7 +6,7 @@ const {
   Region,
   Location,
   RectangleSize,
-} = require('@applitools/eyes-common')
+} = require('@applitools/eyes-sdk-core')
 const {
   EyesScreenshot,
   CoordinatesTypeConversionError,

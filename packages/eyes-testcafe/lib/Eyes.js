@@ -10,7 +10,7 @@ const {
   RectangleSize,
   ArgumentGuard,
   Configuration,
-} = require('@applitools/eyes-common')
+} = require('@applitools/eyes-sdk-core')
 
 const {EyesBase, TestFailedError, CorsIframeHandle} = require('@applitools/eyes-sdk-core')
 

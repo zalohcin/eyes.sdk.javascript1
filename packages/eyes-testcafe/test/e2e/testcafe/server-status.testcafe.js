@@ -3,12 +3,12 @@
 'use strict'
 
 const {Selector} = require('testcafe')
-const {GeneralUtils} = require('@applitools/eyes-common')
+const {GeneralUtils} = require('@applitools/eyes-sdk-core')
 const {presult} = require('@applitools/functional-commons')
 const {Eyes, Target, ConsoleLogHandler} = require('../../..')
 const {RectangleSize, NewTestError, DiffsFoundError, TestResults} = require('../../../index')
 
-fixture`Server status`.page`https://applitools.com/helloworld`.before(async ctx => {
+fixture.only`Server status`.page`https://applitools.com/helloworld`.before(async ctx => {
   ctx.eyes = new Eyes()
   if (process.env.APPLITOOLS_SHOW_LOGS || process.env.APPLITOOLS_DEBUG_TEST) {
     ctx.eyes.setLogHandler(new ConsoleLogHandler(true))

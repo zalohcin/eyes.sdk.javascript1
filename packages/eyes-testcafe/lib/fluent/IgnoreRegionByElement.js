@@ -1,6 +1,6 @@
 'use strict'
 
-const {Location, Region, CoordinatesType} = require('@applitools/eyes-common')
+const {Location, Region, CoordinatesType} = require('@applitools/eyes-sdk-core')
 const {GetRegion} = require('@applitools/eyes-sdk-core')
 
 const {SelectorByElement} = require('./SelectorByElement')

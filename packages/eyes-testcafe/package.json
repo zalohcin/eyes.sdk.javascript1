@@ -1,7 +1,7 @@
 {
   "name": "@applitools/eyes-testcafe",
   "private": true,
-  "version": "2.0.0-beta.12",
+  "version": "2.0.0-beta.18",
   "description": "Applitools Eyes SDK for Testcafe",
   "homepage": "https://applitools.com",
   "author": {
@@ -26,11 +26,9 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/dom-utils": "^4.7.4",
-    "@applitools/eyes-common": "^3.18.1",
-    "@applitools/eyes-sdk-core": "^6.0.5",
-    "@applitools/functional-commons": "^1.5.4",
-    "@applitools/visual-grid-client": "^13.5.8",
+    "@applitools/dom-utils": "4.7.10",
+    "@applitools/eyes-sdk-core": "6.0.15",
+    "@applitools/visual-grid-client": "13.6.11",
     "rimraf": "^3.0.0"
   },
   "peerDependencies": {
@@ -56,16 +54,17 @@
   "scripts": {
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",
-    "test": "mocha --no-timeouts \"test/**/*.spec2.js\"",
-    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec2.js\"",
-    "test:it": "mocha --no-timeouts \"test/it/**/*.spec2.js\"",
-    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec2.js\"",
-    "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\"",
-    "test:coverage": "node test/coverage/index.js"
+    "test": "node test/util/assert-team-key.js && mocha --no-timeouts \"test/**/*.spec2.js\"",
+    "test:unit": "node test/util/assert-team-key.js && mocha --no-timeouts \"test/unit/**/*.spec2.js\"",
+    "test:it": "node test/util/assert-team-key.js && mocha --no-timeouts \"test/it/**/*.spec2.js\"",
+    "test:e2e": "node test/util/assert-team-key.js && mocha --no-timeouts \"test/e2e/**/*.spec2.js\"",
+    "test:perf": "node test/util/assert-team-key.js && mocha --no-timeouts \"test/perf/**/*.spec.js\"",
+    "test:coverage": "node test/util/assert-team-key.js && node test/coverage/index.js"
   },
   "devDependencies": {
-    "@applitools/dom-capture": "^7.1.2",
-    "@applitools/sdk-test-kit": "^1.0.17",
+    "@applitools/dom-capture": "7.1.4",
+    "@applitools/functional-commons": "1.5.5",
+    "@applitools/sdk-test-kit": "1.0.17",
     "@babel/plugin-transform-async-to-generator": "^7.7.4",
     "@babel/plugin-transform-regenerator": "^7.7.5",
     "@babel/plugin-transform-runtime": "^7.7.6",
