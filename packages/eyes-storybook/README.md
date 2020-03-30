@@ -167,6 +167,13 @@ In addition to command-line arguments, it's possible to define the following con
 | `dontCloseBatches`        | false                       | If true, batches are not closed for notifyOnCompletion.|
 | `concurrency`             | 10                          | The maximum number of tests that can run concurrently. The default value is the allowed amount for free accounts. For paid accounts, set this number to the quota set for your account. |
 | `readStoriesTimeout`      | 60000                       | The amount of time (in milliseconds) Eyes-Storybook waits for storybook to load. For old storybook versions 2 and 3, this is also the time it takes for Eyes-Storybook to acknowledge it is working on those versions. So it is recommended to make this value small (e.g. 3000) when working with Storybook version 2 or 3. |
+| `ignoreDisplacements`     | false                       | Sets whether Test Manager should intially display mismatches for image features that have only been displaced, as opposed to real mismatches. |
+| `properties`              | undefined                   | TODO |
+| `ignoreRegions`           | undefined                   | TODO |
+| `layoutRegions`           | undefined                   | TODO |
+| `strictRegions`           | undefined                   | TODO |
+| `contentRegions`          | undefined                   | TODO |
+| `floatingRegions`         | undefined                   | TODO |
 
 <!-- | `accessibilityLevel`      | None                        | The accessibility level to use for the screenshots. Possible values are `None`, `AA` and `AAA`. | -->
 There are 2 ways to specify test configuration:
@@ -349,6 +356,10 @@ storiesOf('Components with a waitBeforeScreenshot', module)
 
 _Note that the predicate option for `waitBeforeScreenshot` is currently not available in the per component configuration._
 
+### `properties`
+
+TODO
+
 ### `ignoreRegions`
 
 A single or an array of regions to ignore when checking for visual differences. For example:
@@ -365,6 +376,22 @@ storiesOf('Components with ignored region', module)
     {eyes: { ignoreRegions: [{selector: '.ignore-this'}] }}
   )
 ```
+
+### `layoutRegions`
+
+TODO
+
+### `contentRegions`
+
+TODO
+
+### `strictRegions`
+
+TODO
+
+### `floatingRegions`
+
+TODO
 
 ### _The following parameters cannot be set as an [Advanced configuration](#advanced-configuration) :_
 
