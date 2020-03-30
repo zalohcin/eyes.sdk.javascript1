@@ -274,6 +274,73 @@ describe('renderStory', () => {
     const [{message}] = await presult(renderStory({story: {}}));
     expect(message).to.equal('bla');
   });
+
+  it('passes local ignore param for backward compatibility', async () => {
+    const testWindow = async x => x;
+
+    const renderStory = makeRenderStory({config: {}, logger, testWindow, performance, timeItAsync});
+    const story = {
+      name: 'name',
+      kind: 'kind',
+      parameters: {
+        eyes: {
+          ignore: 'ignore',
+        },
+      },
+    };
+    const title = getStoryTitle(story);
+    const results = await renderStory({story});
+
+    deleteUndefinedPropsRecursive(results);
+
+    expect(results).to.eql({
+      checkParams: {
+        ignore: 'ignore',
+      },
+      openParams: {
+        properties: [
+          {name: 'Component name', value: 'kind'},
+          {name: 'State', value: 'name'},
+        ],
+        testName: title,
+      },
+      throwEx: false,
+    });
+  });
+
+  it('ignoreRegions take precedence over ignore param', async () => {
+    const testWindow = async x => x;
+
+    const renderStory = makeRenderStory({config: {}, logger, testWindow, performance, timeItAsync});
+    const story = {
+      name: 'name',
+      kind: 'kind',
+      parameters: {
+        eyes: {
+          ignore: 'ignore',
+          ignoreRegions: 'ignoreRegions',
+        },
+      },
+    };
+    const title = getStoryTitle(story);
+    const results = await renderStory({story});
+
+    deleteUndefinedPropsRecursive(results);
+
+    expect(results).to.eql({
+      checkParams: {
+        ignore: 'ignoreRegions',
+      },
+      openParams: {
+        properties: [
+          {name: 'Component name', value: 'kind'},
+          {name: 'State', value: 'name'},
+        ],
+        testName: title,
+      },
+      throwEx: false,
+    });
+  });
 });
 
 function deleteUndefinedPropsRecursive(obj) {

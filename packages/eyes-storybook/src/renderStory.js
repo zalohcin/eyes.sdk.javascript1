@@ -23,10 +23,17 @@ function makeRenderStory({config, logger, testWindow, performance, timeItAsync})
       region,
       tag,
       properties,
+      ignore,
     } = eyesOptions;
 
     if (sizeMode) {
       console.log(deprecationWarning("'sizeMode'", "'target'"));
+    }
+
+    let ignoreRegionsBackCompat = ignoreRegions;
+    if (ignore && ignoreRegions === undefined) {
+      console.log(deprecationWarning("'ignore'", "'ignoreRegions'"));
+      ignoreRegionsBackCompat = ignore;
     }
 
     logger.log('running story', title);
@@ -47,7 +54,8 @@ function makeRenderStory({config, logger, testWindow, performance, timeItAsync})
       resourceContents,
       url,
       frames,
-      ignore: ignoreRegions !== undefined ? ignoreRegions : config.ignoreRegions,
+      ignore:
+        ignoreRegionsBackCompat !== undefined ? ignoreRegionsBackCompat : config.ignoreRegions,
       floating: floatingRegions !== undefined ? floatingRegions : config.floatingRegions,
       layout: layoutRegions !== undefined ? layoutRegions : config.layoutRegions,
       strict: strictRegions !== undefined ? strictRegions : config.strictRegions,
