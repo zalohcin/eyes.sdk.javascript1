@@ -15,53 +15,43 @@ const verifyInstalledVersions = require('../versions/scripts/verify-installed-ve
 const lsDryRun = require('../dry-run/scripts/ls-dry-run.js')
 
 ;(async () => {
-  async function execute(cb) {
-    try {
-      await cb()
-    } catch (error) {
-      console.log(chalk.red(error.message))
-      process.exit(1)
-    }
-  }
-
-  if (args['verify-changelog']) {
-    execute(verifyChangelog.bind(undefined, cwd))
-  } else if (args['update-changelog']) {
-    execute(updateChangelog.bind(undefined, cwd))
-  } else if (args['send-release-notification']) {
-    execute(sendReleaseNotification.bind(undefined, cwd, args.recipient))
-  } else if (args['verify-versions']) {
-    execute(verifyVersions.bind(undefined, {isFix: args.fix, pkgPath: cwd}))
-  } else if (args['verify-commits']) {
-    const isForce = args.force || process.env.BONGO_VERIFY_COMMITS_FORCE
-    execute(verifyCommits.bind(undefined, {pkgPath: cwd, isForce}))
-  } else if (args['verify-installed-versions']) {
-    execute(createDotFolder.bind(undefined, cwd))
-    await execute(packInstall.bind(undefined, cwd))
-    await execute(
-      verifyInstalledVersions.bind(undefined, {
+  try {
+    if (args['verify-changelog']) {
+      await verifyChangelog(cwd)
+    } else if (args['update-changelog']) {
+      updateChangelog(cwd)
+    } else if (args['send-release-notification']) {
+      await sendReleaseNotification(cwd, args.recipient)
+    } else if (args['verify-versions']) {
+      await verifyVersions({isFix: args.fix, pkgPath: cwd})
+    } else if (args['verify-commits']) {
+      const isForce = args.force || process.env.BONGO_VERIFY_COMMITS_FORCE
+      await verifyCommits({pkgPath: cwd, isForce})
+    } else if (args['verify-installed-versions']) {
+      createDotFolder(cwd)
+      await packInstall(cwd)
+      await verifyInstalledVersions({
         pkgPath: cwd,
         installedDirectory: path.join('.bongo', 'dry-run'),
-      }),
-    )
-  } else if (args['release-pre-check']) {
-    execute(verifyChangelog.bind(undefined, cwd))
-    execute(verifyVersions.bind(undefined, {isFix: args.fix, pkgPath: cwd}))
-    const isForce = args.force || process.env.BONGO_VERIFY_COMMITS_FORCE
-    execute(verifyCommits.bind(undefined, {pkgPath: cwd, isForce}))
-    execute(createDotFolder.bind(undefined, cwd))
-    await execute(packInstall.bind(undefined, cwd))
-    await execute(
-      verifyInstalledVersions.bind(undefined, {
+      })
+    } else if (args['release-pre-check']) {
+      await verifyChangelog(cwd)
+      await verifyVersions({isFix: args.fix, pkgPath: cwd})
+      const isForce = args.force || process.env.BONGO_VERIFY_COMMITS_FORCE
+      await verifyCommits({pkgPath: cwd, isForce})
+      createDotFolder(cwd)
+      await packInstall(cwd)
+      await verifyInstalledVersions({
         pkgPath: cwd,
         installedDirectory: path.join('.bongo', 'dry-run'),
-      }),
-    )
-  } else if (args['ls-dry-run']) {
-    execute(lsDryRun)
-  } else {
-    execute(() => {
+      })
+    } else if (args['ls-dry-run']) {
+      lsDryRun()
+    } else {
       throw new Error('Invalid option provided')
-    })
+    }
+  } catch (error) {
+    console.log(chalk.red(error.message))
+    process.exit(1)
   }
 })()
