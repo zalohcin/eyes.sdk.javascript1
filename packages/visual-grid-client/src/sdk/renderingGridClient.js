@@ -3,10 +3,10 @@
 
 const throatPkg = require('throat')
 const {
+  BatchInfo,
   Logger,
   GeneralUtils: {backwardCompatible},
-} = require('@applitools/eyes-sdk-core') // TODO import from eyes-sdk-core
-const {BatchInfo} = require('@applitools/eyes-sdk-core')
+} = require('@applitools/eyes-sdk-core')
 const {ptimeoutWithError} = require('@applitools/functional-commons')
 const makeGetAllResources = require('./getAllResources')
 const extractCssResources = require('./extractCssResources')

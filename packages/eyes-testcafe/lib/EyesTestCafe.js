@@ -12,9 +12,6 @@ const {
   ArgumentGuard,
   TypeUtils,
   StitchMode,
-} = require('@applitools/eyes-sdk-core')
-
-const {
   FullPageCaptureAlgorithm,
   FixedScaleProviderFactory,
   NullScaleProvider,

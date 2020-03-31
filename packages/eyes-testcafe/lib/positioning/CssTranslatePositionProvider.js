@@ -1,9 +1,7 @@
 'use strict'
 
 const {MARK_RIGHT_MARGIN} = require('testcafe/lib/screenshots/constants')
-const {ArgumentGuard} = require('@applitools/eyes-sdk-core')
-const {PositionProvider} = require('@applitools/eyes-sdk-core')
-
+const {PositionProvider, ArgumentGuard} = require('@applitools/eyes-sdk-core')
 const {EyesTestcafeUtils} = require('../EyesTestcafeUtils')
 const transformElement = require('./transformElement')
 const {CssTranslatePositionMemento} = require('./CssTranslatePositionMemento')

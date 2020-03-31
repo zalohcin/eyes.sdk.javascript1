@@ -25,7 +25,7 @@ const {
 } = require('@applitools/eyes-sdk-core')
 
 const {DomCapture} = require('@applitools/dom-utils')
-const {RectangleSize} = require('@applitools/eyes-common')
+const {RectangleSize} = require('@applitools/eyes-sdk-core')
 
 const ImageProviderFactory = require('./capture/ImageProviderFactory')
 const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider')

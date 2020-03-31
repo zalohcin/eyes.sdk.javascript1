@@ -6,12 +6,12 @@ const {
   ArgumentGuard,
   CoordinatesType,
   // TypeUtils,
+  // MouseTrigger,
   RectangleSize,
   Location,
   EyesError,
   GeneralUtils,
 } = require('@applitools/eyes-sdk-core')
-// const {MouseTrigger} = require('@applitools/eyes-sdk-core')
 
 const JS_GET_COMPUTED_STYLE_FN =
   'function getCmpStyle(el, p) { return window.getComputedStyle ? window.getComputedStyle(el, null).getPropertyValue(p) : (el.currentStyle ? el.currentStyle[p] : null); };'
