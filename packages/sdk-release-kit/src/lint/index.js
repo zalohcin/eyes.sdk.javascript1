@@ -5,7 +5,7 @@ const path = require('path')
 
 async function lint(targetDirectory) {
   const {scripts} = require(path.resolve(targetDirectory, 'package.json'))
-  const hasYarnScript = scripts.lint
+  const hasYarnScript = !!scripts.lint
   try {
     hasYarnScript
       ? await pexec(`yarn lint`)
