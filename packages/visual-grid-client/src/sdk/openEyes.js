@@ -1,7 +1,7 @@
 'use strict'
 const {
   GeneralUtils: {backwardCompatible, cachify},
-} = require('@applitools/eyes-common') // TODO import from eyes-sdk-core
+} = require('@applitools/eyes-sdk-core') // TODO import from eyes-sdk-core
 const {BatchInfo} = require('@applitools/eyes-sdk-core')
 const makeCheckWindow = require('./checkWindow')
 const makeAbort = require('./makeAbort')

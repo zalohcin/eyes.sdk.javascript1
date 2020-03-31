@@ -1,4 +1,5 @@
 const path = require('path')
+const chalk = require('chalk')
 const {isMatch} = require('micromatch')
 const {exec} = require('child_process')
 const {promisify} = require('util')

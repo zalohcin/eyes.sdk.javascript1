@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- removed eyes-common dependency
 
 ## 13.6.11
 
