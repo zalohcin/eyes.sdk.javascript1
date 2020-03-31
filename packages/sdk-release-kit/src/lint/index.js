@@ -4,7 +4,7 @@ const pexec = promisify(exec)
 
 async function lint() {
   try {
-    await pexec(`eslint . --ext .js --no-eslintrc --config ../../.eslintrc`)
+    await pexec(`yarn lint`)
   } catch (error) {
     throw new Error(error.stdout)
   }
