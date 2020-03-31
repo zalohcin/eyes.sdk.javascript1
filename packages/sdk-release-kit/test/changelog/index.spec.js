@@ -3,10 +3,9 @@ const {
   getLatestReleaseHeading,
   getReleaseNumberFromHeading,
   verifyChangelogContents,
-  updateChangelogContents,
   getLatestReleaseEntries,
-  addUnreleasedItem,
-} = require('../../src/changelog/changelog-utils')
+} = require('../../src/changelog/query')
+const {addUnreleasedItem, createReleaseEntry} = require('../../src/changelog/update')
 const assert = require('assert')
 
 describe('add-changelog-entry', () => {
@@ -161,7 +160,7 @@ describe('update-changelog', () => {
     `
   })
   it('should add release entry and move unreleased items into it', () => {
-    const updatedChangelog = updateChangelogContents({
+    const updatedChangelog = createReleaseEntry({
       changelogContents,
       version: '1.2.4',
     })
@@ -186,7 +185,7 @@ describe('update-changelog', () => {
     assert.deepStrictEqual(updatedChangelog, expectedChangelogContents)
   })
   it('should add release entry with date', () => {
-    const updatedChangelog = updateChangelogContents({
+    const updatedChangelog = createReleaseEntry({
       changelogContents,
       version: '1.2.4',
       withDate: true,

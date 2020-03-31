@@ -4,7 +4,7 @@ const args = require('yargs').argv
 const chalk = require('chalk')
 const cwd = process.cwd()
 const path = require('path')
-const {verifyChangelog, updateChangelog} = require('../changelog')
+const {verifyChangelog, writeReleaseEntryToChangelog} = require('../changelog')
 const {packInstall, lsDryRun} = require('../dry-run')
 const {lint} = require('../lint')
 const sendReleaseNotification = require('../send-report')
@@ -16,7 +16,7 @@ const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../ver
     if (args['verify-changelog']) {
       await verifyChangelog(cwd)
     } else if (args['update-changelog']) {
-      updateChangelog(cwd)
+      writeReleaseEntryToChangelog(cwd)
     } else if (args['send-release-notification']) {
       await sendReleaseNotification(cwd, args.recipient)
     } else if (args['verify-versions']) {
