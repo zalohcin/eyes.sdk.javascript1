@@ -31,6 +31,8 @@ const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../ver
         pkgPath: cwd,
         installedDirectory: path.join('.bongo', 'dry-run'),
       })
+    } else if (args['lint']) {
+      await lint(cwd)
     } else if (args['release-pre-check']) {
       await lint(cwd)
       await verifyChangelog(cwd)
