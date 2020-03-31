@@ -1,6 +1,6 @@
 'use strict'
 
-const {MutableImage, Region, OSNames} = require('@applitools/eyes-common')
+const {MutableImage, Region, OSNames} = require('@applitools/eyes-sdk-core')
 const {ImageProvider} = require('@applitools/eyes-sdk-core')
 
 const {TestCafeExecutor} = require('../TestCafeExecutor')

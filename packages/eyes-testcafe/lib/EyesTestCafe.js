@@ -12,7 +12,7 @@ const {
   ArgumentGuard,
   TypeUtils,
   StitchMode,
-} = require('@applitools/eyes-common')
+} = require('@applitools/eyes-sdk-core')
 
 const {
   FullPageCaptureAlgorithm,

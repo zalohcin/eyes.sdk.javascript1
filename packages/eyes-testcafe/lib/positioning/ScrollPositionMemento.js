@@ -1,6 +1,6 @@
 'use strict'
 
-const {Location} = require('@applitools/eyes-common')
+const {Location} = require('@applitools/eyes-sdk-core')
 const {PositionMemento} = require('@applitools/eyes-sdk-core')
 
 /**

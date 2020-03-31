@@ -1,6 +1,6 @@
 'use strict'
 
-const {Location, CoordinatesType, FloatingMatchSettings} = require('@applitools/eyes-common')
+const {Location, CoordinatesType, FloatingMatchSettings} = require('@applitools/eyes-sdk-core')
 const {GetFloatingRegion} = require('@applitools/eyes-sdk-core')
 
 /**

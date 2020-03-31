@@ -10,7 +10,7 @@ const {
   Location,
   EyesError,
   GeneralUtils,
-} = require('@applitools/eyes-common')
+} = require('@applitools/eyes-sdk-core')
 // const {MouseTrigger} = require('@applitools/eyes-sdk-core')
 
 const JS_GET_COMPUTED_STYLE_FN =

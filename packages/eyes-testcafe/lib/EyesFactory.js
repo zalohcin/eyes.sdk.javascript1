@@ -1,6 +1,6 @@
 'use strict'
 
-const {Configuration} = require('@applitools/eyes-common')
+const {Configuration} = require('@applitools/eyes-sdk-core')
 const {CorsIframeHandle, EyesRunner, VisualGridRunner} = require('@applitools/eyes-sdk-core')
 
 // eslint-disable-next-line node/no-missing-require

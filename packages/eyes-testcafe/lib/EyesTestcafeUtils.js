@@ -1,6 +1,6 @@
 'use strict'
 
-const {RectangleSize, ArgumentGuard} = require('@applitools/eyes-common')
+const {RectangleSize, ArgumentGuard} = require('@applitools/eyes-sdk-core')
 const {EyesJsBrowserUtils, GeneralUtils, EyesError} = require('@applitools/eyes-sdk-core')
 
 const {EyesDriverOperationError} = require('./errors/EyesDriverOperationError')

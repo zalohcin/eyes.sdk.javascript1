@@ -1,7 +1,7 @@
 'use strict'
 
 const {Selector} = require('testcafe')
-const {ArgumentGuard, /* MutableImage, */ GeneralUtils} = require('@applitools/eyes-common')
+const {ArgumentGuard, /* MutableImage, */ GeneralUtils} = require('@applitools/eyes-sdk-core')
 
 const fs = require('fs')
 const path = require('path')

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- removed eyes-common dependency
+
+## 2.0.0-beta.18
+
+- using fixed version numbers for all internal dependencies
+- reverted to 2.0.0-beta.12 (not using eyes-sdk-core of Eyes 10.9 release)
 
 ## 2.0.0-beta.17
 
