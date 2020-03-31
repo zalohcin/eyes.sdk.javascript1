@@ -1,7 +1,7 @@
 const path = require('path')
 const {readFileSync} = require('fs')
 const {sendNotification} = require('./send-report-util')
-const {getLatestReleaseEntries} = require('../changelog/changelog-utils')
+const {getLatestReleaseEntries} = require('../changelog/query')
 
 async function sendReport({sdkName, sdkVersion, changeLog, testCoverageGap}, recipient) {
   const payload = {
