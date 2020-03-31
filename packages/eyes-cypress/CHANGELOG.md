@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- removed eyes-common dependency
 
 ## 3.9.20
 
