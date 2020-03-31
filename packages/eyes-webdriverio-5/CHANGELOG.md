@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- removed eyes-common dependency
 - update @applitools/visual-grid-client@13.6.11
 
 ## 5.9.22

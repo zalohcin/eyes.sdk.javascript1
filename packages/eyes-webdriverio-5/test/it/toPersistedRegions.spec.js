@@ -40,7 +40,7 @@ describe('toPersistedRegions()', function() {
   })
 
   after(async () => {
-    await driver.deleteSession()
+    driver && (await driver.deleteSession())
     await chromedriver.stop()
   })
 
