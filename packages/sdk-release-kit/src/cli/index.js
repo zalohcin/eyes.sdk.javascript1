@@ -13,6 +13,7 @@ const createDotFolder = require('../setup/scripts/create-dot-folder')
 const packInstall = require('../dry-run/scripts/pack-install')
 const verifyInstalledVersions = require('../versions/scripts/verify-installed-versions')
 const lsDryRun = require('../dry-run/scripts/ls-dry-run.js')
+const {lint} = require('../lint')
 
 ;(async () => {
   try {
@@ -35,6 +36,7 @@ const lsDryRun = require('../dry-run/scripts/ls-dry-run.js')
         installedDirectory: path.join('.bongo', 'dry-run'),
       })
     } else if (args['release-pre-check']) {
+      await lint()
       await verifyChangelog(cwd)
       await verifyVersions({isFix: args.fix, pkgPath: cwd})
       const isForce = args.force || process.env.BONGO_VERIFY_COMMITS_FORCE
