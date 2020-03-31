@@ -1,5 +1,8 @@
 const assert = require('assert')
-const {checkPackagesForUniqueVersions, findEntryByPackageName} = require('../../src/versions')
+const {
+  checkPackagesForUniqueVersions,
+  findEntryByPackageName,
+} = require('../../src/versions/versions-utils')
 
 describe('versions', () => {
   describe('verify-installed-versions', () => {

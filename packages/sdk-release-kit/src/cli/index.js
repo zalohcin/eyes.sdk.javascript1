@@ -4,16 +4,12 @@ const args = require('yargs').argv
 const chalk = require('chalk')
 const cwd = process.cwd()
 const path = require('path')
-const verifyChangelog = require('../changelog/scripts/verify-changelog')
-const updateChangelog = require('../changelog/scripts/update-changelog')
-const sendReleaseNotification = require('../send-report/scripts/send-release-notification')
-const verifyVersions = require('../versions/scripts/verify-versions')
-const verifyCommits = require('../versions/scripts/verify-commits')
-const createDotFolder = require('../setup/scripts/create-dot-folder')
-const packInstall = require('../dry-run/scripts/pack-install')
-const verifyInstalledVersions = require('../versions/scripts/verify-installed-versions')
-const lsDryRun = require('../dry-run/scripts/ls-dry-run.js')
+const {verifyChangelog, updateChangelog} = require('../changelog')
+const {packInstall, lsDryRun} = require('../dry-run')
 const {lint} = require('../lint')
+const sendReleaseNotification = require('../send-report')
+const {createDotFolder} = require('../setup')
+const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
 
 ;(async () => {
   try {

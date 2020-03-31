@@ -5,7 +5,7 @@ const {
   verifyChangelog,
   updateChangelogContents,
   getLatestReleaseEntries,
-} = require('../../src/changelog')
+} = require('../../src/changelog/changelog-utils')
 const assert = require('assert')
 
 describe('query-changelog', () => {

@@ -1,88 +1,79 @@
+const fs = require('fs')
 const path = require('path')
-const {isMatch} = require('micromatch')
+const chalk = require('chalk')
+const {
+  checkPackageCommits,
+  checkPackagesForUniqueVersions,
+  makePackagesList,
+  npmLs,
+  verifyDependencies,
+} = require('./versions-utils')
 
-function _isAlreadyChecked({pkgName, dep, results}) {
-  return results.find(result => result.pkgName === pkgName && result.dep === dep)
-}
-
-function _isWorkspacePackage({pkgs, pkgName}) {
-  return pkgs.find(({name}) => name === pkgName)
-}
-
-function makePackagesList() {
-  const {packages} = require(path.join(
-    __dirname,
-    '..',
-    '..',
-    '..',
-    '..',
-    'package.json',
-  )).workspaces
-  return packages.map(pkgPath => {
-    const pkgDir = path.join(__dirname, '..', '..', '..', '..', pkgPath)
-    const packageJson = require(path.join(pkgDir, 'package.json'))
-    return {
-      name: packageJson.name,
-      path: pkgDir,
-    }
-  })
-}
-
-function verifyDependencies({pkgs, pkgPath, results}) {
-  const packageJsonPath = path.resolve(pkgPath, 'package.json')
-  const packageJson = require(packageJsonPath)
-  const pkgName = packageJson.name
+async function verifyCommits({pkgPath, isForce}) {
+  const pkgs = makePackagesList()
+  const packageJson = require(path.resolve(pkgPath, 'package.json'))
   const {dependencies} = packageJson
+  const workspaceDeps = pkgs.filter(pkg => pkg.name in dependencies)
+  const results = (
+    await Promise.all(
+      workspaceDeps.map(async dep => {
+        const output = await checkPackageCommits(dep.path)
+        return {name: dep.name, output}
+      }),
+    )
+  ).filter(x => x.output)
 
-  for (const dep in dependencies) {
-    if (!_isAlreadyChecked({pkgName, dep, results}) && _isWorkspacePackage({pkgs, pkgName: dep})) {
-      const depVersion = dependencies[dep]
-      const pkg = pkgs.find(({name}) => name === dep)
-      const depPackageJsonPath = path.join(pkg.path, 'package.json')
-      const depPackageJson = require(depPackageJsonPath)
-      const sourceVersion = depPackageJson.version
-      results.push({pkgName, dep, depVersion, sourceVersion, error: true})
-      verifyDependencies({pkgs, pkgPath: pkg.path, results})
-    }
-  }
-}
-
-function checkPackagesForUniqueVersions(input, packageNames) {
-  let errors = []
-  packageNames.forEach(packageName => {
-    const versions = _findVersionNumbersForPackage(input, packageName)
-    if (versions.size > 1) errors.push({name: packageName, versions})
-  })
-  if (errors.length) {
-    const affectedPackages = errors.map(error => error.name).join(', ')
+  if (results.length && !isForce) {
     throw new Error(
-      `Non-unique package versions found of ${affectedPackages} \n\nTo learn more, run \`npx bongo --ls-dry-run\`.`,
+      'There are unreleased commits in dependencies of this package:\n' +
+        results.map(({name, output}) => `${chalk.yellow(name)}\n${chalk.cyan(output)}`).join('\n'),
     )
   }
 }
 
-function _findVersionNumbersForPackage(input, pkgName) {
-  let versionNumbers = []
-  const packageEntries = findEntryByPackageName(input, pkgName)
-  packageEntries.forEach(entry => {
-    const versionNumber = entry.match(/(\d+\.)?(\d+\.)?(\*|\d+)/)[0]
-    versionNumbers.push(versionNumber)
-  })
-  return new Set(versionNumbers)
+async function verifyInstalledVersions({pkgPath, installedDirectory}) {
+  const internalPackages = makePackagesList()
+  const {dependencies} = require(path.join(pkgPath, 'package.json'))
+  const filteredPackageNames = Object.keys(dependencies).filter(pkgName =>
+    internalPackages.find(({name}) => name === pkgName),
+  )
+  if (installedDirectory) {
+    process.chdir(installedDirectory)
+  }
+  checkPackagesForUniqueVersions(await npmLs(), filteredPackageNames)
 }
 
-function findEntryByPackageName(input, target) {
-  if (typeof input === 'string') input = input.split('\n')
-  return input.filter(entry => {
-    const result = entry.match(/(@?\w+\/?\w+\-?\w+)@/)
-    const _entry = result ? result[1] : ''
-    return isMatch(_entry, target)
-  })
+function verifyVersions({isFix, pkgPath}) {
+  const pkgs = makePackagesList()
+  const results = []
+  verifyDependencies({pkgs, pkgPath, results})
+
+  const errors = results.filter(({depVersion, sourceVersion}) => depVersion !== sourceVersion)
+
+  if (errors.length) {
+    if (isFix) {
+      for (const error of errors) {
+        const pkg = pkgs.find(({name}) => name === error.pkgName)
+        const packageJsonPath = path.resolve(pkg.path, 'package.json')
+        const packageJson = require(packageJsonPath)
+        packageJson.dependencies[error.dep] = error.sourceVersion
+        fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
+      }
+    } else {
+      console.log(
+        errors
+          .map(({pkgName, dep, depVersion, sourceVersion}) => {
+            return `[${pkgName}] [MISMATCH] ${dep}: version ${depVersion} is required, but source has version ${sourceVersion}`
+          })
+          .join('\n'),
+      )
+      process.exit(1)
+    }
+  }
 }
 
 module.exports = {
-  makePackagesList,
-  verifyDependencies,
-  checkPackagesForUniqueVersions,
-  findEntryByPackageName,
+  verifyCommits,
+  verifyInstalledVersions,
+  verifyVersions,
 }
