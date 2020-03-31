@@ -8,6 +8,7 @@ const {
   npmLs,
   verifyDependencies,
 } = require('./versions-utils')
+const {writeUnreleasedItemToChangelog} = require('../changelog')
 
 async function verifyCommits({pkgPath, isForce}) {
   const pkgs = makePackagesList()
@@ -58,6 +59,8 @@ function verifyVersions({isFix, pkgPath}) {
         const packageJson = require(packageJsonPath)
         packageJson.dependencies[error.dep] = error.sourceVersion
         fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
+        const changelogEntry = `- updated to ${error.dep}@${error.sourceVersion}`
+        writeUnreleasedItemToChangelog({targetFolder: pkg.path, entry: changelogEntry})
       }
     } else {
       console.log(
