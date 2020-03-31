@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 13.6.12 - 2020/3/31
+
 - removed eyes-common dependency
 
 ## 13.6.11
