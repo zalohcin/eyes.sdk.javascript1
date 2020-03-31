@@ -36,6 +36,7 @@
   },
   "scripts": {
     "release-pre-check": "bongo --release-pre-check",
+    "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
     "preversion": "yarn release-pre-check",

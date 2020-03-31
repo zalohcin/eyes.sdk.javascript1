@@ -40,6 +40,7 @@
   },
   "scripts": {
     "release-pre-check": "bongo --release-pre-check",
+    "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "browserify": "browserify index.js > dist/eyes-images.browser.js",
     "uglify": "uglifyjs dist/eyes-images.browser.js > dist/eyes-images.browser.min.js",

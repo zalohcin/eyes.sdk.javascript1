@@ -25,6 +25,7 @@
   },
   "scripts": {
     "release-pre-check": "bongo --release-pre-check",
+    "uc": "bongo --update-changelog",
     "start": "node ./scripts/run-fake-eyes-server.js",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.test.js\"",

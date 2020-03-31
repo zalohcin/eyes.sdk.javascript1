@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "release-pre-check": "bongo --release-pre-check",
+    "uc": "bongo --update-changelog",
     "send-release-notification": "bongo --send-release-notification",
     "lint": "eslint '**/*.js'",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e",

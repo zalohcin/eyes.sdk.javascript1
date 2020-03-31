@@ -54,6 +54,7 @@
   ],
   "scripts": {
     "release-pre-check": "bongo --release-pre-check",
+    "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --config ../../.eslintrc",
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",

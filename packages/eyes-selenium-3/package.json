@@ -63,6 +63,7 @@
   },
   "scripts": {
     "release-pre-check": "bongo --release-pre-check",
+    "uc": "bongo --update-changelog",
     "test": "npm run test:unit && npm run test:e2e",
     "test:e2e": "npm run test:selenium",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.js\"",

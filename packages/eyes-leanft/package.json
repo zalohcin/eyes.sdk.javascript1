@@ -62,6 +62,7 @@
   },
   "scripts": {
     "release-pre-check": "bongo --release-pre-check",
+    "uc": "bongo --update-changelog",
     "test": "mocha ./test/**/*.js",
     "build": "webpack",
     "minify": "uglifyjs -c -m reserved=[module.exports] --warn bundle.js -o bundle.js",

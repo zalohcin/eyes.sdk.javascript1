@@ -50,6 +50,7 @@
   },
   "scripts": {
     "release-pre-check": "bongo --release-pre-check",
+    "uc": "bongo --update-changelog",
     "test": "npm run test:unit",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "typings": "tsc --declaration",
