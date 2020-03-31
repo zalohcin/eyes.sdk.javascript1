@@ -13,9 +13,6 @@ const {
   ArgumentGuard,
   TypeUtils,
   StitchMode,
-} = require('@applitools/eyes-common')
-
-const {
   FullPageCaptureAlgorithm,
   FixedScaleProviderFactory,
   NullScaleProvider,
