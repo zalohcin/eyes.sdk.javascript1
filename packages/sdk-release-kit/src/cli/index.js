@@ -32,7 +32,7 @@ const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../ver
         installedDirectory: path.join('.bongo', 'dry-run'),
       })
     } else if (args['release-pre-check']) {
-      await lint()
+      await lint(cwd)
       await verifyChangelog(cwd)
       await verifyVersions({isFix: args.fix, pkgPath: cwd})
       const isForce = args.force || process.env.BONGO_VERIFY_COMMITS_FORCE
