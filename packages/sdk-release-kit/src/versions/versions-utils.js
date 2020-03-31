@@ -4,6 +4,7 @@ const {isMatch} = require('micromatch')
 const {exec} = require('child_process')
 const {promisify} = require('util')
 const pexec = promisify(exec)
+const chalk = require('chalk')
 
 function _isAlreadyChecked({pkgName, dep, results}) {
   return results.find(result => result.pkgName === pkgName && result.dep === dep)
