@@ -1,8 +1,5 @@
 const {readFileSync} = require('fs')
-const {
-  verifyChangelog: verifyChangelogContents,
-  updateChangelogContents,
-} = require('./changelog-utils')
+const {verifyChangelogContents, updateChangelogContents} = require('./changelog-utils')
 const path = require('path')
 const {writeFileSync} = require('fs')
 

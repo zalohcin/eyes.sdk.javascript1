@@ -2,7 +2,7 @@ const {
   getEntriesForHeading,
   getLatestReleaseHeading,
   getReleaseNumberFromHeading,
-  verifyChangelog,
+  verifyChangelogContents,
   updateChangelogContents,
   getLatestReleaseEntries,
   addUnreleasedItem,
@@ -136,7 +136,7 @@ describe('verify-changelog', () => {
       ## Unreleased
     `
     assert.throws(() => {
-      verifyChangelog({changelogContents: _changelogContents})
+      verifyChangelogContents({changelogContents: _changelogContents})
     }, /No unreleased entries found/)
   })
 })

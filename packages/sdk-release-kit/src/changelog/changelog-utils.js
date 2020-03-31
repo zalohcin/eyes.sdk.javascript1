@@ -96,7 +96,7 @@ function getReleaseNumberFromHeading(heading) {
   return heading.match(/([0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2})/)[0]
 }
 
-function verifyChangelog({changelogContents}) {
+function verifyChangelogContents({changelogContents}) {
   const unreleasedEntries = getEntriesForHeading({
     changelogContents,
     targetHeading: '## Unreleased',
@@ -106,11 +106,11 @@ function verifyChangelog({changelogContents}) {
 }
 
 module.exports = {
+  addUnreleasedItem,
   getEntriesForHeading,
+  getLatestReleaseEntries,
   getLatestReleaseHeading,
   getReleaseNumberFromHeading,
-  verifyChangelog,
   updateChangelogContents,
-  getLatestReleaseEntries,
-  addUnreleasedItem,
+  verifyChangelogContents,
 }
