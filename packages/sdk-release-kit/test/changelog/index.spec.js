@@ -1,18 +1,79 @@
 const {
-  _getEntriesForHeading,
-  _getLatestReleaseHeading,
-  _getReleaseNumberFromHeading,
+  getEntriesForHeading,
+  getLatestReleaseHeading,
+  getReleaseNumberFromHeading,
   verifyChangelog,
   updateChangelogContents,
   getLatestReleaseEntries,
+  addUnreleasedItem,
 } = require('../../src/changelog/changelog-utils')
 const assert = require('assert')
+
+describe('add-changelog-entry', () => {
+  it('should append an entry to a populated unreleased section', () => {
+    const changelogContents = `
+# Changelog
+
+## Unreleased
+- a
+- b
+
+## 1.2.3 - date
+
+- more blah
+`
+    const updatedChangelogContents = addUnreleasedItem({
+      changelogContents,
+      entry: '- blah blah',
+    })
+    const expectedChangelogContents = `
+# Changelog
+
+## Unreleased
+- a
+- b
+- blah blah
+
+## 1.2.3 - date
+
+- more blah
+`
+    assert.deepStrictEqual(updatedChangelogContents, expectedChangelogContents)
+  })
+  it('should append an entry to an empty unreleased section', () => {
+    const changelogContents = `
+# Changelog
+
+## Unreleased
+
+## 1.2.3 - date
+
+- more blah
+`
+    const updatedChangelogContents = addUnreleasedItem({
+      changelogContents,
+      entry: '- blah blah',
+    })
+    const expectedChangelogContents = `
+# Changelog
+
+## Unreleased
+- blah blah
+
+## 1.2.3 - date
+
+- more blah
+`
+    assert.deepStrictEqual(updatedChangelogContents, expectedChangelogContents)
+  })
+})
 
 describe('query-changelog', () => {
   it('should get entries for the latest release', () => {
     const changelogContents = `
       # Changelog
-## Unreleased
+
+      ## Unreleased
 
       ## 1.2.3 - date
 
@@ -48,25 +109,25 @@ describe('verify-changelog', () => {
   })
   it('should get entries for an explicit heading', () => {
     assert.deepStrictEqual(
-      _getEntriesForHeading({changelogContents, targetHeading: '## Unreleased'}),
+      getEntriesForHeading({changelogContents, targetHeading: '## Unreleased'}),
       [
         {entry: '      - blah', index: 5},
         {entry: '      - also blah', index: 6},
       ],
     )
     assert.deepStrictEqual(
-      _getEntriesForHeading({changelogContents, targetHeading: '## 1.2.3 - date'}),
+      getEntriesForHeading({changelogContents, targetHeading: '## 1.2.3 - date'}),
       [{entry: '      - more blah', index: 10}],
     )
   })
   it('should get latest release heading', () => {
-    const result = _getLatestReleaseHeading(changelogContents)
+    const result = getLatestReleaseHeading(changelogContents)
     assert.deepStrictEqual(result.heading, '## 1.2.3 - date')
     assert.deepStrictEqual(result.index, 8)
   })
   it('should get version number from release heading', () => {
-    assert.deepStrictEqual(_getReleaseNumberFromHeading('## 1.2.3 - date'), '1.2.3')
-    assert.deepStrictEqual(_getReleaseNumberFromHeading('## [3.2.1] - date'), '3.2.1')
+    assert.deepStrictEqual(getReleaseNumberFromHeading('## 1.2.3 - date'), '1.2.3')
+    assert.deepStrictEqual(getReleaseNumberFromHeading('## [3.2.1] - date'), '3.2.1')
   })
   it('should throw if the unreleased entries is empty', () => {
     const _changelogContents = `

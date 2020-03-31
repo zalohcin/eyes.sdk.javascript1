@@ -1,25 +1,25 @@
 function getLatestReleaseEntries(changelogContents) {
-  const targetHeading = _getLatestReleaseHeading(changelogContents).heading
-  const entries = _getEntriesForHeading({changelogContents, targetHeading})
+  const targetHeading = getLatestReleaseHeading(changelogContents).heading
+  const entries = getEntriesForHeading({changelogContents, targetHeading})
   return entries.map(entry => entry.entry)
 }
 
 function updateChangelogContents({changelogContents, version, withDate}) {
-  let _changelogContents = changelogContents
+  let mutableChangelogContents = changelogContents
   const now = new Date()
   let _version = withDate
     ? version + ` - ${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`
     : version
-  _changelogContents = _addReleaseEntryForUnreleasedItems({
-    changelogContents: _changelogContents,
+  mutableChangelogContents = _addReleaseEntryForUnreleasedItems({
+    changelogContents: mutableChangelogContents,
     version: _version,
   })
-  _changelogContents = _removeUnreleasedItems({changelogContents: _changelogContents})
-  return _changelogContents
+  mutableChangelogContents = _removeUnreleasedItems({changelogContents: mutableChangelogContents})
+  return mutableChangelogContents
 }
 
 function _addReleaseEntryForUnreleasedItems({changelogContents, version}) {
-  const unreleasedEntries = _getEntriesForHeading({
+  const unreleasedEntries = getEntriesForHeading({
     changelogContents,
     targetHeading: '## Unreleased',
   })
@@ -31,38 +31,55 @@ function _addReleaseEntryForUnreleasedItems({changelogContents, version}) {
     `${padding}## ${version}\n`,
     ...unreleasedEntries.map(entry => entry.entry),
   ]
-  const latestReleaseHeadingIndex = _getLatestReleaseHeading(changelogContents).index
-  const _changelogContents = changelogContents.split('\n')
-  _changelogContents.splice(latestReleaseHeadingIndex - 1, 0, ...releaseEntry)
-  return _changelogContents.join('\n')
+  const latestReleaseHeadingIndex = getLatestReleaseHeading(changelogContents).index
+  const mutableChangelogContents = changelogContents.split('\n')
+  mutableChangelogContents.splice(latestReleaseHeadingIndex - 1, 0, ...releaseEntry)
+  return mutableChangelogContents.join('\n')
 }
 
 function _removeUnreleasedItems({changelogContents}) {
-  const unreleasedEntries = _getEntriesForHeading({
+  const unreleasedEntries = getEntriesForHeading({
     changelogContents,
     targetHeading: '## Unreleased',
   })
-  const _changelogContents = changelogContents.split('\n')
+  const mutableChangelogContents = changelogContents.split('\n')
   const entryIndexes = unreleasedEntries.map(entry => entry.index)
   entryIndexes.reverse().forEach(index => {
-    _changelogContents.splice(index, 1)
+    mutableChangelogContents.splice(index, 1)
   })
-  return _changelogContents.join('\n')
+  return mutableChangelogContents.join('\n')
 }
 
-function _getEntriesForHeading({changelogContents, targetHeading}) {
+function addUnreleasedItem({changelogContents, entry}) {
+  const unreleasedEntries = getEntriesForHeading({
+    changelogContents,
+    targetHeading: '## Unreleased',
+    includeHeading: true,
+  })
+  const targetIndex = unreleasedEntries[unreleasedEntries.length - 1].index + 1
+  const mutableChangelogContents = changelogContents.split('\n')
+  mutableChangelogContents.splice(targetIndex, 0, entry)
+  return mutableChangelogContents.join('\n')
+}
+
+// returns the entries for a given heading
+// each entry has an index for where it is in the changelog
+function getEntriesForHeading({changelogContents, targetHeading, includeHeading}) {
   let foundEntries = []
   let headingFound = false
   for (let [index, entry] of changelogContents.split('\n').entries()) {
     const _entry = entry.trim()
     if (headingFound && _entry.includes('##')) break
     if (headingFound && _entry.length) foundEntries.push({entry, index})
-    if (_entry === targetHeading) headingFound = true
+    if (_entry === targetHeading) {
+      if (includeHeading) foundEntries.push({entry, index})
+      headingFound = true
+    }
   }
   return foundEntries
 }
 
-function _getLatestReleaseHeading(changelogContents) {
+function getLatestReleaseHeading(changelogContents) {
   let latestReleaseHeading = {}
   for (let [index, entry] of changelogContents.split('\n').entries()) {
     const _entry = entry.trim()
@@ -75,12 +92,12 @@ function _getLatestReleaseHeading(changelogContents) {
   return latestReleaseHeading
 }
 
-function _getReleaseNumberFromHeading(heading) {
+function getReleaseNumberFromHeading(heading) {
   return heading.match(/([0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2})/)[0]
 }
 
 function verifyChangelog({changelogContents}) {
-  const unreleasedEntries = _getEntriesForHeading({
+  const unreleasedEntries = getEntriesForHeading({
     changelogContents,
     targetHeading: '## Unreleased',
   })
@@ -89,10 +106,11 @@ function verifyChangelog({changelogContents}) {
 }
 
 module.exports = {
-  _getEntriesForHeading,
-  _getLatestReleaseHeading,
-  _getReleaseNumberFromHeading,
+  getEntriesForHeading,
+  getLatestReleaseHeading,
+  getReleaseNumberFromHeading,
   verifyChangelog,
   updateChangelogContents,
   getLatestReleaseEntries,
+  addUnreleasedItem,
 }
