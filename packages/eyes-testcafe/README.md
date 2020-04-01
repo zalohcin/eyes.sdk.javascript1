@@ -57,20 +57,20 @@ After defining the API key, you will be able to use commands from Eyes-TestCafe 
 ### Example
 
 ```js
-import {Eyes, Target} from '@applitools/eyes-testcafe';
+import {Eyes, Target} from '@applitools/eyes-testcafe'
 
-const eyes = new Eyes();
+const eyes = new Eyes()
 
 fixture`Hello world`
   .page('https://applitools.com/helloworld')
-  .afterEach(() => eyes.close());
+  .afterEach(() => eyes.close())
   
 test('Hello world page', async t => {
-  await eyes.open(t, 'Hello World!', 'My first JavaScript test!', {width: 1200, height: 800});
-  await eyes.check('Main Page', Target.window());
+  await eyes.open(t, 'Hello World!', 'My first JavaScript test!', {width: 1200, height: 800})
+  await eyes.check('Main Page', Target.window())
   await t.click('button')
-  await eyes.check('Click!', Target.window());
-});
+  await eyes.check('Click!', Target.window())
+})
 ```
 
 ## API
@@ -112,7 +112,7 @@ Close the applitools test and check that all screenshots are valid.
 It is important to call this at the end of each test, symmetrically to `open`(or in `afterEach()`, see [Best practice for using the SDK](#best-practice-for-using-the-sdk)).
 
 ```js
-const testResults = await eyes.close(throwEx);
+const testResults = await eyes.close(throwEx)
 ```
 
 ## Best practice for using the SDK
@@ -122,7 +122,7 @@ Every call to `eyes.open` and `eyes.close` defines a test in Applitools Eyes, an
 ```js
 fixture`Hello world`
   .page('https://applitools.com/helloworld')
-  .afterEach(async () => eyes.close());
+  .afterEach(async () => eyes.close())
 ```
 
 ## Receipes for common tasks
@@ -132,9 +132,9 @@ fixture`Hello world`
 To enable logging to the console, use the `ConsoleLogHandler` class:
 
 ```js
-import {Eyes, ConsoleLogHandler} from '@applitools/eyes-testcafe';
+import {Eyes, ConsoleLogHandler} from '@applitools/eyes-testcafe'
 
-const eyes = new Eyes();
+const eyes = new Eyes()
 eyes.setLogHandler(new ConsoleLogHandler())
 
 // To enable verbose logging:
@@ -148,7 +148,9 @@ The API is as follows:
 ```js
 new FileLogHandler(isVerbose, filepath, append)
 ```
+
 Default values are:
+
 - `isVerbose`: `false`
 - `filepath`: `'eyes.log'`, meaning a file with this name will be created in the current working directory.
 - `append`: `true`, meaning that every test will append to the file instead of recreating it.
@@ -156,10 +158,10 @@ Default values are:
 For example:
 
 ```js
-import {Eyes, FileLogHandler} from '@applitools/eyes-testcafe';
+import {Eyes, FileLogHandler} from '@applitools/eyes-testcafe'
 import path from 'path'
 
-const eyes = new Eyes();
+const eyes = new Eyes()
 
 // append non-verbose logs to logs/eyes.log (relative to current working directory)
 eyes.setLogHandler(new FileLogHandler(false, path.resolve('logs', 'eyes.log')))
@@ -201,13 +203,11 @@ eyes.setProxy({
 })
 ```
 
-### Aggregate tests in batches
+### Organize tests in batches
 
-It's possible to manage how visual tests are aggregated into batches.
+It's possible to manage how visual tests are aggregated into batches. Here are two methods for clustering tests into a single batch:
 
-#### TL;DR - set batch ID
-
-##### Method 1: environment variable
+#### Method 1: environment variable
 
 Run all the processes that execute testcafe with the same value for `APPLITOOLS_BATCH_ID`. For example, execute all testcafe files with the same randomly generated UUID:
 
@@ -224,7 +224,7 @@ export APPLITOOLS_BATCH_NAME="Login tests"
 npm test
 ```
 
-##### Method 2: `eyes.setBatch`
+#### Method 2: `eyes.setBatch`
 
 Provide all Eyes instances with the same value for batch ID. For example:
 
@@ -236,8 +236,6 @@ eyes.setBatch({
 ```
 
 #### Background information
-
-What are batches and visual tests?
 
 ##### Visual tests and baselines
 
@@ -251,20 +249,22 @@ By using the `open`/`check`/`close` methods on `Eyes`, you are creating visual t
 
 The baseline is created automatically when running a test with specific values for these 5 parameters for the first time. For example, you run a test with **Chrome** on **OS X** and specify the **app name**, **test name** and **viewport size** via `eyes.open(t, 'some app', 'some test', {width: 1200, height: 800})`. The first time the test runs with these parameters, a baseline will be created. Any subsequent execution with the same values will compare screenshots against this baseline. The test will actually be created after running `eyes.close`, and the results of the test are returned as a `TestResults` object.
 
-##### Batches
+_For more information, visit our documentation page:
+https://applitools.com/docs/topics/general-concepts/how-eyes-compares-checkpoints.html_
 
-In Applitools' Test Manager, tests are presented in batches. Batches are just collections of tests aggregated together for easier management. By default, all tests that are run using the same Eyes instance are batched together.
+##### Batches
 
 It's possible to aggregate tests that are run in different processes, or in different Eyes instances, under the same batch. This is done by providing the same batch ID to these tests.
 
+_For more information, visit our documentation page:
+https://applitools.com/docs/topics/working-with-test-batches/working-with-test-batches-in-overview.html_
+
 ### Stitch mode
 
-#### TL;DR - how to change stitch mode
-
-The default stitch mode is `Scroll`. In order to change methods:
+The default stitch mode is `Scroll`. In order to change it:
 
 ```js
-import {Eyes, StitchMode} from '@applitools/eyes-testcafe';
+import {Eyes, StitchMode} from '@applitools/eyes-testcafe'
 
 const eyes = new Eyes()
 eyes.setStitchMode(StitchMode.CSS)
@@ -295,26 +295,98 @@ This method is not sensitive to scroll events, and is usually the recommended me
 
 ### Stitch overlap
 
-#### TL;DR - how to change the stitch overlap
+The default stitch overlap is 50 pixels. To change it:
 
-#### Background information
+```js
+eyes.setStitchOverlap(60)
+```
 
-What is the stitch overlap?
+The stitch overlap is the length of the intersecting area between two screenshots that are stitched together. It's like placing two printed pictures one on top of the other with some overlapping area between them.
+
+This is useful in cases of fixed elements, like a footer, that show up in each of the sub-screenshots. Using a stitch overlap bigger than the size of the footer would make it disappear from every image, and only show up at the bottom of the full page screenshot.
 
 ### Match level
 
-#### TL;DR - how to change the match level
+The default match level is `Strict`. To change it:
 
-#### Background information
+```js
+// For the rest of the execution
+import {MatchLevel} from '@applitools/eyes-testcafe'
+eyes.setMatchLevel(MatchLevel.Layout)
+
+// For a single checkpoint
+eyes.check(Target.window().layout())
+eyes.check(Target.window().strict())
+eyes.check(Target.window().content())
+eyes.check(Target.window().exact())
+```
+
+_For more information, visit our documentation page: https://applitools.com/docs/common/cmn-eyes-match-levels.html_
 
 ### Ignore displacements
 
-#### TL;DR - how to set ignore displacements
+The default is `false`. To change it:
 
-#### Background information
+```js
+// For the rest of the execution
+eyes.setIgnoreDisplacements(true)
+
+// For a single checkpoint
+eyes.check(Target.window().ignoreDisplacements())
+```
+
+_For more information, visit our documentation page: https://applitools.com/docs/topics/test-manager/viewers/tm-diff-displacement.html_
 
 ### Test properties
 
+It's possible to provide additional information about each test in custom fields, which can then show up in Test Manager in their own column.
+
+This is done by calling `setProperties` on the configuration, and providing it with an array of properties with the structure `{name, value}`. For exmaple:
+
+```js
+import {Eyes, Target} from '@applitools/eyes-testcafe'
+
+const eyes = new Eyes()
+
+const configuration = eyes.getConfiguration()
+configuration.setProperties([{name: 'my custom property', value: 'some value'}])
+eyes.setConfiguration(configuration)
+```
+
 ### Test results
 
-### Error types
+The results of the test can be consumed as the return value from `eyes.close`. Here's an example for creating a formatted output string out of the `TestResults` object:
+
+```js
+function formatTestResults(testResults) {
+  return `
+Test name                 : ${testResults.getName()}
+Test status               : ${testResults.getStatus()}
+URL to results            : ${testResults.getUrl()}
+Total number of steps     : ${testResults.getSteps()}
+Number of matching steps  : ${testResults.getMatches()}
+Number of visual diffs    : ${testResults.getMismatches()}
+Number of missing steps   : ${testResults.getMissing()}
+Display size              : ${testResults.getHostDisplaySize().toString()}
+Steps                     :
+${testResults
+  .getStepsInfo()
+  .map(step => {
+    return `  ${step.getName()} - ${getStepStatus(step)}`
+  })
+  .join('\n')}`
+}
+
+function getStepStatus(step) {
+  if (step.getIsDifferent()) {
+    return 'Diff'
+  } else if (!step.getHasBaselineImage()) {
+    return 'New'
+  } else if (!step.getHasCurrentImage()) {
+    return 'Missing'
+  } else {
+    return 'Passed'
+  }
+}
+```
+_For the full list of methods, visit our documentation page: https://applitools.com/docs/api/eyes-sdk/index-gen/class-testresults-selenium4-javascript.html_ (This is for our Selenium SDK, but all methods are relevant for Eyes-TestCafe as well)
