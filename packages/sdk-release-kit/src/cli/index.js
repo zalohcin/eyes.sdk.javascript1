@@ -36,7 +36,8 @@ const {addFile, pushWithTags} = require('../git')
 
 ;(async () => {
   try {
-    let isForce
+    const isSkipVerifyCommits =
+      args.force || process.env.BONGO_VERIFY_COMMITS_FORCE || args['skip-verify-commits']
     const command = args._[0]
     switch (command) {
       case 'lint':
@@ -55,9 +56,7 @@ const {addFile, pushWithTags} = require('../git')
         await lint(cwd)
         await verifyChangelog(cwd)
         await verifyVersions({isFix: args.fix, pkgPath: cwd})
-        isForce =
-          args.force || process.env.BONGO_VERIFY_COMMITS_FORCE || args['skip-verify-commits']
-        await verifyCommits({pkgPath: cwd, isForce})
+        await verifyCommits({pkgPath: cwd, isForce: isSkipVerifyCommits})
         createDotFolder(cwd)
         await packInstall(cwd)
         return await verifyInstalledVersions({
@@ -75,9 +74,7 @@ const {addFile, pushWithTags} = require('../git')
         return await verifyChangelog(cwd)
       case 'verify-commits':
       case 'vco':
-        isForce =
-          args.force || process.env.BONGO_VERIFY_COMMITS_FORCE || args['skip-verify-commits']
-        return await verifyCommits({pkgPath: cwd, isForce})
+        return await verifyCommits({pkgPath: cwd, isForce: isSkipVerifyCommits})
       case 'verify-installed-versions':
       case 'viv':
         createDotFolder(cwd)
