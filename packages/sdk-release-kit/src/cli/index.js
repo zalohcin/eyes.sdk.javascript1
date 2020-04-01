@@ -32,7 +32,7 @@ const {lint} = require('../lint')
 const sendReleaseNotification = require('../send-report')
 const {createDotFolder} = require('../setup')
 const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
-const {addFile, pushWithTags} = require('../git')
+const {gitPullWithRebase, gitAddFile, gitPushWithTags} = require('../git')
 
 ;(async () => {
   try {
@@ -46,7 +46,7 @@ const {addFile, pushWithTags} = require('../git')
         return lsDryRun()
       case 'postversion':
       case 'post-version':
-        await pushWithTags()
+        await gitPushWithTags()
         if (!args['skip-release-notification']) {
           await sendReleaseNotification(cwd, args.recipient)
         }
@@ -54,6 +54,7 @@ const {addFile, pushWithTags} = require('../git')
       case 'preversion':
       case 'pre-version':
       case 'release-pre-check':
+        await gitPullWithRebase()
         await lint(cwd)
         await verifyChangelog(cwd)
         await verifyVersions({isFix: args.fix, pkgPath: cwd})
@@ -89,7 +90,7 @@ const {addFile, pushWithTags} = require('../git')
         return await verifyVersions({isFix: args.fix, pkgPath: cwd})
       case 'version':
         writeReleaseEntryToChangelog(cwd)
-        return await addFile('CHANGELOG.md')
+        return await gitAddFile('CHANGELOG.md')
       default:
         throw new Error('Invalid option provided')
     }
