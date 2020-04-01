@@ -58,10 +58,7 @@
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "scripts": {
-    "release-pre-check": "bongo --release-pre-check",
-    "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
-    "send-release-notification": "bongo --send-release-notification",
     "test": "yarn test:unit && yarn test:it",
     "render": "node scripts/render.js",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
@@ -71,9 +68,9 @@
     "test:coverage:nuke": "coverage-tests nuke",
     "test:coverage:doctor": "coverage-tests doctor",
     "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
-    "preversion": "yarn release-pre-check && yarn test:coverage --send-report prod",
-    "version": "yarn uc && git add CHANGELOG.md",
-    "postversion": "git push --follow-tags && yarn send-release-notification"
+    "preversion": "bongo preversion && yarn test:coverage --send-report prod",
+    "version": "bongo version",
+    "postversion": "bongo postversion"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

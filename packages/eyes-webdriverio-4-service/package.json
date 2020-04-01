@@ -7,12 +7,10 @@
   ],
   "main": "index.js",
   "scripts": {
-    "release-pre-check": "bongo --release-pre-check",
-    "uc": "bongo --update-changelog",
     "test": "wdio test/wdio.conf.js",
-    "preversion": "yarn release-pre-check",
-    "version": "yarn uc && git add CHANGELOG.md",
-    "postversion": "git push --follow-tags"
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",

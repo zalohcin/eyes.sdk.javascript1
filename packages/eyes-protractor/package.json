@@ -42,14 +42,12 @@
     "protractor": "^6.0.0-beta"
   },
   "scripts": {
-    "release-pre-check": "bongo --release-pre-check",
-    "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "protractor test/protractor.conf.js",
     "test:it": "protractor test/protractor.conf.js",
-    "preversion": "yarn release-pre-check",
-    "version": "yarn uc && git add CHANGELOG.md",
-    "postversion": "git push --follow-tags"
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

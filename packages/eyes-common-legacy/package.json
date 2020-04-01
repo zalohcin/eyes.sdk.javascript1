@@ -51,14 +51,12 @@
     "typescript": "^3.6.4"
   },
   "scripts": {
-    "release-pre-check": "bongo --release-pre-check",
-    "uc": "bongo --update-changelog",
     "test": "npm run test:unit",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "typings": "tsc --declaration",
-    "preversion": "yarn release-pre-check",
-    "version": "yarn uc && git add CHANGELOG.md",
-    "postversion": "git push --follow-tags"
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

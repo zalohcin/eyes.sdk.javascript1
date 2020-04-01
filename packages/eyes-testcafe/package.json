@@ -52,8 +52,6 @@
     "testcafe"
   ],
   "scripts": {
-    "release-pre-check": "bongo --release-pre-check",
-    "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --config ../../.eslintrc",
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",
@@ -63,9 +61,9 @@
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec2.js\"",
     "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\"",
     "test:coverage": "node test/coverage/index.js",
-    "preversion": "yarn release-pre-check",
-    "version": "yarn uc && git add CHANGELOG.md",
-    "postversion": "git push --follow-tags"
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "devDependencies": {
     "@applitools/dom-capture": "^7.1.2",
