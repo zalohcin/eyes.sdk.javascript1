@@ -67,9 +67,11 @@ function verifyVersions({isFix, pkgPath}) {
       console.log(
         errors
           .map(({pkgName, dep, depVersion, sourceVersion}) => {
-            return `[${pkgName}] [MISMATCH] ${dep}: version ${depVersion} is required, but source has version ${sourceVersion}`
+            return chalk.red(
+              `[${pkgName}] [MISMATCH] ${dep}: version ${depVersion} is required, but source has version ${sourceVersion}`,
+            )
           })
-          .join('\n'),
+          .join('\n') + chalk.yellow('\n\nTo fix these, run `npx bongo verify-versions --fix`'),
       )
       process.exit(1)
     }
