@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.4.0 - 2020/4/1
+
 - Add capability to specify `ignoreDisplacements` (both via global and local configuration). ([Trello](https://trello.com/c/IfkEZ4V3/45-storybook-add-set-get-ignoredisplacements-to-eyes-global-and-fluent))
 - Add capability to specify Layout, Strict, Content, Floating regions (both via global and local configuration). ([Trello](https://trello.com/c/NNko9uQr/200-storybook-add-capability-to-add-layout-strict-content-floating-regions-via-the-config))
 - Add capability to specify custom properties (both via global and local configuration) ([Trello](https://trello.com/c/yWbAZ2Fm/170-storybook-sdk-custom-properties-support))
