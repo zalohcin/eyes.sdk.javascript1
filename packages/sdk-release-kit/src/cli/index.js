@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
 const args = require('yargs')
-  .command(['preversion', 'release-pre-check'], 'Run all verification checks pre-release')
-  // TODO: implement
-  // TODO: then update all packages
-  //.command(['version'], 'Supportive steps to version a package')
-  //.command(['postversion'], 'Supportive steps to after a package has been versioned')
+  .command(
+    ['preversion', 'release-pre-check', 'pre-version'],
+    'Run all verification checks pre-release',
+  )
+  .command(['version'], 'Supportive steps to version a package')
+  .command(['postversion, post-version'], 'Supportive steps to after a package has been versioned')
   .command(['lint', 'l'], 'Static code analysis ftw')
   .command(['verify-changelog', 'vch'], 'Verify changelog has unreleased entries')
   .command(
@@ -31,6 +32,7 @@ const {lint} = require('../lint')
 const sendReleaseNotification = require('../send-report')
 const {createDotFolder} = require('../setup')
 const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
+const {addFile, pushWithTags} = require('../git')
 
 ;(async () => {
   try {
@@ -43,7 +45,12 @@ const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../ver
       case 'ls-dry-run':
       case 'ls':
         return lsDryRun()
+      case 'postversion':
+      case 'post-version':
+        await pushWithTags()
+        return await sendReleaseNotification(cwd, args.recipient)
       case 'preversion':
+      case 'pre-version':
       case 'release-pre-check':
         await lint(cwd)
         await verifyChangelog(cwd)
@@ -82,6 +89,9 @@ const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../ver
       case 'verify-versions':
       case 'vv':
         return await verifyVersions({isFix: args.fix, pkgPath: cwd})
+      case 'version':
+        writeReleaseEntryToChangelog(cwd)
+        return await addFile('CHANGELOG.md')
       default:
         throw new Error('Invalid option provided')
     }
