@@ -18,8 +18,10 @@
 - [Installation](#installation)
 - [Applitools API key](#applitools-api-key)
 - [Usage](#usage)
-- [API](#api)
+- [Getting started with the API](#getting-started-with-the-api)
   * [open](#open)
+    + [Visual tests and baselines](#visual-tests-and-baselines)
+    + [Batches](#batches)
   * [check](#check)
     + [Arguments to `eyes.check`](#arguments-to--eyescheck-)
       - [`tag`](#-tag-)
@@ -27,28 +29,21 @@
   * [close](#close)
 - [Best practice for using the SDK](#best-practice-for-using-the-sdk)
 - [Receipes for common tasks](#receipes-for-common-tasks)
-  * [Logging](#logging)
   * [Configure Server URL](#configure-server-url)
   * [Configure Proxy](#configure-proxy)
   * [Organize tests in batches](#organize-tests-in-batches)
     + [Method 1: environment variable](#method-1--environment-variable)
     + [Method 2: `eyes.setBatch`](#method-2---eyessetbatch-)
-    + [Background information](#background-information)
-      - [Visual tests and baselines](#visual-tests-and-baselines)
-      - [Batches](#batches)
   * [Stitch mode](#stitch-mode)
-    + [Background information](#background-information-1)
-      - [Stitch modes](#stitch-modes)
-        * [1. Stitch mode: Scroll](#1-stitch-mode--scroll)
-        * [2. Stitch mode: CSS](#2-stitch-mode--css)
+    + [Background information](#background-information)
+      - [1. Stitch mode: Scroll](#1-stitch-mode--scroll)
+      - [2. Stitch mode: CSS](#2-stitch-mode--css)
   * [Stitch overlap](#stitch-overlap)
   * [Match level](#match-level)
   * [Ignore displacements](#ignore-displacements)
   * [Test properties](#test-properties)
   * [Test results](#test-results)
-
-<small>_Table of contents generated with [markdown-toc](http://ecotrust-canada.github.io/markdown-toc/)_</small>
-
+  * [Logging](#logging)
 
 ## Installation
 
@@ -106,7 +101,7 @@ test('Hello world page', async t => {
 })
 ```
 
-## API
+## Getting started with the API
 
 ### open
 
@@ -116,6 +111,28 @@ This will start a session with the Applitools server.
 ```js
 eyes.open(t, appName, testName, viewportSize)
 ```
+
+#### Visual tests and baselines
+
+By using the `open`/`check`/`close` methods on `Eyes`, you are creating visual tests in Applitools Eyes. A visual test is a sequence of screenshots, compared with a baseline. The baseline is also a sequence of screenshots. The specific baseline to compare against is found by using the values for:
+
+1. Browser
+2. Operating system
+3. App name
+4. Test name
+5. Viewport size
+
+The baseline is created automatically when running a test with specific values for these 5 parameters for the first time. For example, you run a test with **Chrome** on **OS X** and specify the **app name**, **test name** and **viewport size** via `eyes.open(t, 'some app', 'some test', {width: 1200, height: 800})`. The first time the test runs with these parameters, a baseline will be created. Any subsequent execution with the same values will compare screenshots against this baseline. The test will actually be created after running `eyes.close`, and the results of the test are returned as a `TestResults` object.
+
+_For more information, visit our documentation page:
+https://applitools.com/docs/topics/general-concepts/how-eyes-compares-checkpoints.html_
+
+#### Batches
+
+It's possible to aggregate tests that are run in different processes, or in different Eyes instances, under the same batch. This is done by providing the same batch ID to these tests.
+
+_For more information, visit our documentation page:
+https://applitools.com/docs/topics/working-with-test-batches/working-with-test-batches-in-overview.html_
 
 ### check
 
@@ -159,49 +176,6 @@ fixture`Hello world`
 ```
 
 ## Receipes for common tasks
-
-### Logging
-
-To enable logging to the console, use the `ConsoleLogHandler` class:
-
-```js
-import {Eyes, ConsoleLogHandler} from '@applitools/eyes-testcafe'
-
-const eyes = new Eyes()
-eyes.setLogHandler(new ConsoleLogHandler())
-
-// To enable verbose logging:
-eyes.setLogHandler(new ConsoleLogHandler(true))
-```
-
-To write logs to file, use the `FileLogHandler` class. It's possible to configure the file path, verbosity, and whether to append to file.
-
-The API is as follows:
-
-```js
-new FileLogHandler(isVerbose, filepath, append)
-```
-
-Default values are:
-
-- `isVerbose`: `false`
-- `filepath`: `'eyes.log'`, meaning a file with this name will be created in the current working directory.
-- `append`: `true`, meaning that every test will append to the file instead of recreating it.
-
-For example:
-
-```js
-import {Eyes, FileLogHandler} from '@applitools/eyes-testcafe'
-import path from 'path'
-
-const eyes = new Eyes()
-
-// append non-verbose logs to logs/eyes.log (relative to current working directory)
-eyes.setLogHandler(new FileLogHandler(false, path.resolve('logs', 'eyes.log')))
-
-// write verbose logs to a new file at logs/eyes-{timestamp}.log (relative to current working directory)
-eyes.setLogHandler(new FileLogHandler(true, path.resolve('logs', `eyes-${Date.now()}.log`), false))
-```
 
 ### Configure Server URL
 
@@ -268,30 +242,6 @@ eyes.setBatch({
 })
 ```
 
-#### Background information
-
-##### Visual tests and baselines
-
-By using the `open`/`check`/`close` methods on `Eyes`, you are creating visual tests in Applitools Eyes. A visual test is a sequence of screenshots, compared with a baseline. The baseline is also a sequence of screenshots. The specific baseline to compare against is found by using the values for:
-
-1. Browser
-2. Operating system
-3. Viewport size
-4. Test name
-5. App name
-
-The baseline is created automatically when running a test with specific values for these 5 parameters for the first time. For example, you run a test with **Chrome** on **OS X** and specify the **app name**, **test name** and **viewport size** via `eyes.open(t, 'some app', 'some test', {width: 1200, height: 800})`. The first time the test runs with these parameters, a baseline will be created. Any subsequent execution with the same values will compare screenshots against this baseline. The test will actually be created after running `eyes.close`, and the results of the test are returned as a `TestResults` object.
-
-_For more information, visit our documentation page:
-https://applitools.com/docs/topics/general-concepts/how-eyes-compares-checkpoints.html_
-
-##### Batches
-
-It's possible to aggregate tests that are run in different processes, or in different Eyes instances, under the same batch. This is done by providing the same batch ID to these tests.
-
-_For more information, visit our documentation page:
-https://applitools.com/docs/topics/working-with-test-batches/working-with-test-batches-in-overview.html_
-
 ### Stitch mode
 
 The default stitch mode is `Scroll`. In order to change it:
@@ -312,16 +262,14 @@ Eyes-TestCafe allows you to control if the checkpoint image should include only 
 
 When Eyes-TestCafe takes a full page screenshot, it does so by taking multiple screenshots of the viewport at different locations of the page (via the TestCafe test controller), and then "stitching" them together. The output is one clear, potentially very large, screenshot of what can be revealed on the page when it is scrolled.
 
-##### Stitch modes
-
 There are two methods for creating the stitched screenshot, and they are both related to the way the page is moved relative to the viewport. Here they are:
 
-###### 1. Stitch mode: Scroll
+##### 1. Stitch mode: Scroll
 
 Using this method, the page is scrolled, just as a user would scroll. Eyes-TestCafe takes the viewport screenshot, then scrolls the page to calculated locations.
 The issue with this method is that the page might respond to scroll events, and change the way it appears visually between the screenshots.
 
-###### 2. Stitch mode: CSS
+##### 2. Stitch mode: CSS
 
 Using this method, the page is moved around by changing the CSS property `transform` on the HTML element with different values for `translate(x,y)`.
 This method is not sensitive to scroll events, and is usually the recommended method for stitching.
@@ -340,6 +288,8 @@ This is useful in cases of fixed elements, like a footer, that show up in each o
 
 ### Match level
 
+The **match level** determines the way by which Eyes compares the checkpoint image with the baseline image.
+
 The default match level is `Strict`. To change it:
 
 ```js
@@ -357,6 +307,8 @@ eyes.check(Target.window().exact())
 _For more information, visit our documentation page: https://applitools.com/docs/common/cmn-eyes-match-levels.html_
 
 ### Ignore displacements
+
+By using **ignore displacements** you can hide diffs that arise from content whose position on the page has changed, and focus on mismatches caused by actual changes in the content.
 
 The default is `false`. To change it:
 
@@ -422,4 +374,48 @@ function getStepStatus(step) {
   }
 }
 ```
+
 _For the full list of methods, visit our documentation page: https://applitools.com/docs/api/eyes-sdk/index-gen/class-testresults-selenium4-javascript.html_ (This is for our Selenium SDK, but all methods are relevant for Eyes-TestCafe as well)
+
+### Logging
+
+To enable logging to the console, use the `ConsoleLogHandler` class:
+
+```js
+import {Eyes, ConsoleLogHandler} from '@applitools/eyes-testcafe'
+
+const eyes = new Eyes()
+eyes.setLogHandler(new ConsoleLogHandler())
+
+// To enable verbose logging:
+eyes.setLogHandler(new ConsoleLogHandler(true))
+```
+
+To write logs to file, use the `FileLogHandler` class. It's possible to configure the file path, verbosity, and whether to append to file.
+
+The API is as follows:
+
+```js
+new FileLogHandler(isVerbose, filepath, append)
+```
+
+Default values are:
+
+- `isVerbose`: `false`
+- `filepath`: `'eyes.log'`, meaning a file with this name will be created in the current working directory.
+- `append`: `true`, meaning that every test will append to the file instead of recreating it.
+
+For example:
+
+```js
+import {Eyes, FileLogHandler} from '@applitools/eyes-testcafe'
+import path from 'path'
+
+const eyes = new Eyes()
+
+// append non-verbose logs to logs/eyes.log (relative to current working directory)
+eyes.setLogHandler(new FileLogHandler(false, path.resolve('logs', 'eyes.log')))
+
+// write verbose logs to a new file at logs/eyes-{timestamp}.log (relative to current working directory)
+eyes.setLogHandler(new FileLogHandler(true, path.resolve('logs', `eyes-${Date.now()}.log`), false))
+```
