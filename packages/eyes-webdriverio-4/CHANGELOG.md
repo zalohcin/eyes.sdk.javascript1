@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.12.8 - 2020/4/1
+
 - fixed regions support for VG
 
 ## 2.12.7 - 2020/3/31
