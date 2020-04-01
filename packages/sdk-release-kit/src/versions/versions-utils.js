@@ -60,7 +60,7 @@ function checkPackagesForUniqueVersions(input, packageNames) {
   if (errors.length) {
     const affectedPackages = errors.map(error => error.name).join(', ')
     throw new Error(
-      `Non-unique package versions found of ${affectedPackages} \n\nTo learn more, run \`npx bongo --ls-dry-run\`.`,
+      `Non-unique package versions found of ${affectedPackages} \n\nTo learn more, run \`npx bongo ls-dry-run\`.`,
     )
   }
 }
