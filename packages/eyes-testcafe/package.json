@@ -54,12 +54,12 @@
   "scripts": {
     "build": "rollup -c ./build/rollup.config.js",
     "render": "node scripts/render.js",
-    "test": "node test/util/assert-team-key.js && mocha --no-timeouts \"test/**/*.spec2.js\"",
-    "test:unit": "node test/util/assert-team-key.js && mocha --no-timeouts \"test/unit/**/*.spec2.js\"",
-    "test:it": "node test/util/assert-team-key.js && mocha --no-timeouts \"test/it/**/*.spec2.js\"",
-    "test:e2e": "node test/util/assert-team-key.js && mocha --no-timeouts \"test/e2e/**/*.spec2.js\"",
-    "test:perf": "node test/util/assert-team-key.js && mocha --no-timeouts \"test/perf/**/*.spec.js\"",
-    "test:coverage": "node test/util/assert-team-key.js && node test/coverage/index.js"
+    "test": "node test/util/assert-js-key.js && APPLITOOLS_API_KEY=$APPLITOOLS_API_KEY_JSSDK mocha --no-timeouts \"test/**/*.spec2.js\"",
+    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec2.js\"",
+    "test:it": "node test/util/assert-js-key.js && APPLITOOLS_API_KEY=$APPLITOOLS_API_KEY_JSSDK mocha --no-timeouts \"test/it/**/*.spec2.js\"",
+    "test:e2e": "node test/util/assert-js-key.js && APPLITOOLS_API_KEY=$APPLITOOLS_API_KEY_JSSDK mocha --no-timeouts \"test/e2e/**/*.spec2.js\"",
+    "test:perf": "mocha --no-timeouts \"test/perf/**/*.spec.js\"",
+    "test:coverage": "node test/coverage/index.js"
   },
   "devDependencies": {
     "@applitools/dom-capture": "7.1.4",
