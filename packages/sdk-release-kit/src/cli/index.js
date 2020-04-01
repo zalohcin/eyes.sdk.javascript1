@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 
-// TODO: update switch to use aliases
 const args = require('yargs')
   .command(['preversion', 'release-pre-check'], 'Run all verification checks pre-release')
   // TODO: implement
-  .command(['version'], 'Supportive steps to version a package')
-  // TODO: implement
-  .command(['postversion'], 'Supportive steps to after a package has been versioned')
   // TODO: then update all packages
+  //.command(['version'], 'Supportive steps to version a package')
+  //.command(['postversion'], 'Supportive steps to after a package has been versioned')
   .command(['lint', 'l'], 'Static code analysis ftw')
   .command(['verify-changelog', 'vch'], 'Verify changelog has unreleased entries')
   .command(
@@ -39,27 +37,13 @@ const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../ver
     let isForce
     const command = args._[0]
     switch (command) {
-      case 'verify-changelog':
-        return await verifyChangelog(cwd)
-      case 'update-changelog':
-        return writeReleaseEntryToChangelog(cwd)
-      case 'send-release-notification':
-        return await sendReleaseNotification(cwd, args.recipient)
-      case 'verify-versions':
-        return await verifyVersions({isFix: args.fix, pkgPath: cwd})
-      case 'verify-commits':
-        isForce =
-          args.force || process.env.BONGO_VERIFY_COMMITS_FORCE || args['skip-verify-commits']
-        return await verifyCommits({pkgPath: cwd, isForce})
-      case 'verify-installed-versions':
-        createDotFolder(cwd)
-        await packInstall(cwd)
-        return await verifyInstalledVersions({
-          pkgPath: cwd,
-          installedDirectory: path.join('.bongo', 'dry-run'),
-        })
       case 'lint':
+      case 'l':
         return await lint(cwd)
+      case 'ls-dry-run':
+      case 'ls':
+        return lsDryRun()
+      case 'preversion':
       case 'release-pre-check':
         await lint(cwd)
         await verifyChangelog(cwd)
@@ -73,8 +57,31 @@ const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../ver
           pkgPath: cwd,
           installedDirectory: path.join('.bongo', 'dry-run'),
         })
-      case 'ls-dry-run':
-        return lsDryRun()
+      case 'send-release-notification':
+      case 'hello-world':
+        return await sendReleaseNotification(cwd, args.recipient)
+      case 'update-changelog':
+      case 'uc':
+        return writeReleaseEntryToChangelog(cwd)
+      case 'verify-changelog':
+      case 'vch':
+        return await verifyChangelog(cwd)
+      case 'verify-commits':
+      case 'vco':
+        isForce =
+          args.force || process.env.BONGO_VERIFY_COMMITS_FORCE || args['skip-verify-commits']
+        return await verifyCommits({pkgPath: cwd, isForce})
+      case 'verify-installed-versions':
+      case 'viv':
+        createDotFolder(cwd)
+        await packInstall(cwd)
+        return await verifyInstalledVersions({
+          pkgPath: cwd,
+          installedDirectory: path.join('.bongo', 'dry-run'),
+        })
+      case 'verify-versions':
+      case 'vv':
+        return await verifyVersions({isFix: args.fix, pkgPath: cwd})
       default:
         throw new Error('Invalid option provided')
     }
