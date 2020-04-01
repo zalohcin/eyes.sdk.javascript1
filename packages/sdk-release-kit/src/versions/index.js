@@ -27,7 +27,8 @@ async function verifyCommits({pkgPath, isForce}) {
   if (results.length && !isForce) {
     throw new Error(
       'There are unreleased commits in dependencies of this package:\n' +
-        results.map(({name, output}) => `${chalk.yellow(name)}\n${chalk.cyan(output)}`).join('\n'),
+        results.map(({name, output}) => `${chalk.yellow(name)}\n${chalk.cyan(output)}`).join('\n') +
+        `\nTo ignore these, re-run with --skip-verify-commits`,
     )
   }
 }
