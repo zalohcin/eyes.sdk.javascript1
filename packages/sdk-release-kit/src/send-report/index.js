@@ -24,7 +24,8 @@ async function sendReleaseNotification(
 module.exports = async (targetFolder, recipient) => {
   const changelogContents = readFileSync(path.resolve(targetFolder, 'CHANGELOG.md'), 'utf8')
   const {name, version} = require(path.resolve(targetFolder, 'package.json'))
-  await sendReleaseNotification(
+  const send = sendReleaseNotification.bind(
+    undefined,
     {
       sdkName: convertSdkNameToReportName(name),
       sdkVersion: version,
@@ -33,4 +34,9 @@ module.exports = async (targetFolder, recipient) => {
     },
     recipient,
   )
+  try {
+    await send()
+  } catch (error) {
+    await send()
+  }
 }
