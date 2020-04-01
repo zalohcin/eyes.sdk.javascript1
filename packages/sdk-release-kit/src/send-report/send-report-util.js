@@ -17,4 +17,22 @@ async function sendNotification(payload) {
   return _send({uri: 'http://sdk-test-results.herokuapp.com/send_mail/sdks', payload})
 }
 
-module.exports = {sendReport, sendNotification}
+function convertSdkNameToReportName(sdkName) {
+  const name = sdkName.includes('@applitools') ? sdkName.split('/')[1] : sdkName
+  switch (name) {
+    case 'eyes-selenium':
+      return 'js_selenium_4'
+    case 'eyes.selenium':
+      return 'js_selenium_3'
+    case 'eyes-webdriverio':
+      return 'js_wdio_5'
+    case 'eyes.webdriverio':
+      return 'js_wdio_4'
+    case 'eyes-images':
+      return 'js_images'
+    default:
+      throw new Error('Unsupported SDK')
+  }
+}
+
+module.exports = {convertSdkNameToReportName, sendReport, sendNotification}

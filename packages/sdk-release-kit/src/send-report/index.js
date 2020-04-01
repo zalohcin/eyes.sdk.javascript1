@@ -1,9 +1,12 @@
 const path = require('path')
 const {readFileSync} = require('fs')
-const {sendNotification} = require('./send-report-util')
-const {getLatestReleaseEntries} = require('../changelog/query')
+const {convertSdkNameToReportName, sendNotification} = require('./send-report-util')
+const {getLatestReleaseEntries} = require('../changelog')
 
-async function sendReport({sdkName, sdkVersion, changeLog, testCoverageGap}, recipient) {
+async function sendReleaseNotification(
+  {sdkName, sdkVersion, changeLog, testCoverageGap},
+  recipient,
+) {
   const payload = {
     sdk: sdkName,
     version: sdkVersion,
@@ -18,28 +21,10 @@ async function sendReport({sdkName, sdkVersion, changeLog, testCoverageGap}, rec
     )
 }
 
-function convertSdkNameToReportName(sdkName) {
-  const name = sdkName.includes('@applitools') ? sdkName.split('/')[1] : sdkName
-  switch (name) {
-    case 'eyes-selenium':
-      return 'js_selenium_4'
-    case 'eyes.selenium':
-      return 'js_selenium_3'
-    case 'eyes-webdriverio':
-      return 'js_wdio_5'
-    case 'eyes.webdriverio':
-      return 'js_wdio_4'
-    case 'eyes-images':
-      return 'js_images'
-    default:
-      throw new Error('Unsupported SDK')
-  }
-}
-
 module.exports = async (targetFolder, recipient) => {
   const changelogContents = readFileSync(path.resolve(targetFolder, 'CHANGELOG.md'), 'utf8')
   const {name, version} = require(path.resolve(targetFolder, 'package.json'))
-  await sendReport(
+  await sendReleaseNotification(
     {
       sdkName: convertSdkNameToReportName(name),
       sdkVersion: version,

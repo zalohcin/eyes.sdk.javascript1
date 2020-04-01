@@ -1,3 +1,6 @@
+const path = require('path')
+const {readFileSync} = require('fs')
+const {writeFileSync} = require('fs')
 const {getEntriesForHeading, getLatestReleaseHeading} = require('./query')
 
 function addReleaseEntryForUnreleasedItems({changelogContents, version}) {
@@ -58,7 +61,22 @@ function createReleaseEntry({changelogContents, version, withDate}) {
   return mutableChangelogContents
 }
 
+function writeReleaseEntryToChangelog(targetFolder) {
+  const changeLogFilePath = path.resolve(targetFolder, 'CHANGELOG.md')
+  const changelogContents = readFileSync(changeLogFilePath, 'utf8')
+  const {version} = require(path.resolve(targetFolder, 'package.json'))
+  writeFileSync(changeLogFilePath, createReleaseEntry({changelogContents, version, withDate: true}))
+}
+
+function writeUnreleasedItemToChangelog({targetFolder, entry}) {
+  const changeLogFilePath = path.resolve(targetFolder, 'CHANGELOG.md')
+  const changelogContents = readFileSync(changeLogFilePath, 'utf8')
+  writeFileSync(changeLogFilePath, addUnreleasedItem({changelogContents, entry}))
+}
+
 module.exports = {
   addUnreleasedItem,
   createReleaseEntry,
+  writeReleaseEntryToChangelog,
+  writeUnreleasedItemToChangelog,
 }
