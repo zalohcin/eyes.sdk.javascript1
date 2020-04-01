@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
+// TODO: update switch to use aliases
 const args = require('yargs')
   .command(['preversion', 'release-pre-check'], 'Run all verification checks pre-release')
+  // TODO: implement
   .command(['version'], 'Supportive steps to version a package')
+  // TODO: implement
   .command(['postversion'], 'Supportive steps to after a package has been versioned')
+  // TODO: then update all packages
   .command(['lint', 'l'], 'Static code analysis ftw')
-  .command(['ls-dry-run', 'ls'], 'Display dependencies from a verify-installed-versions run')
   .command(['verify-changelog', 'vch'], 'Verify changelog has unreleased entries')
   .command(
     ['verify-commits', 'vco'],
@@ -13,6 +16,7 @@ const args = require('yargs')
   )
   .command(['verify-versions', 'vv'], 'Verify consistent versions in relevant packages')
   .command(['verify-installed-versions', 'viv'], 'Verify correct dependencies are installable')
+  .command(['ls-dry-run', 'ls'], 'Display dependencies from a verify-installed-versions run')
   .command(['update-changelog', 'uc'], 'Create release entry in the changelog')
   .command(
     ['send-release-notification', 'hello-world'],
