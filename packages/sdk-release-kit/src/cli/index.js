@@ -49,7 +49,10 @@ const {addFile, pushWithTags} = require('../git')
       case 'postversion':
       case 'post-version':
         await pushWithTags()
-        return await sendReleaseNotification(cwd, args.recipient)
+        if (!args['skip-release-notification']) {
+          await sendReleaseNotification(cwd, args.recipient)
+        }
+        return
       case 'preversion':
       case 'pre-version':
       case 'release-pre-check':
