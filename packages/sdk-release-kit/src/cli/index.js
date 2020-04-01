@@ -14,7 +14,10 @@ const args = require('yargs')
   .command(['verify-versions', 'vv'], 'Verify consistent versions in relevant packages')
   .command(['verify-installed-versions', 'viv'], 'Verify correct dependencies are installable')
   .command(['update-changelog', 'uc'], 'Create release entry in the changelog')
-  .command(['send-release-notification'], 'Send a notification that a has been released')
+  .command(
+    ['send-release-notification', 'hello-world'],
+    'Send a notification that a has been released',
+  )
   .demandCommand()
   .help().argv
 const chalk = require('chalk')
