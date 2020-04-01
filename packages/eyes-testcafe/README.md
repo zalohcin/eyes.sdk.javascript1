@@ -13,6 +13,10 @@
 </p>
 <br/>
 
+## Table of contents
+
+TODO
+
 ## Installation
 
 Install Eyes-TestCafe as a local dev dependency in your tested project:
@@ -164,40 +168,6 @@ eyes.setLogHandler(new FileLogHandler(false, path.resolve('logs', 'eyes.log')))
 eyes.setLogHandler(new FileLogHandler(true, path.resolve('logs', `eyes-${Date.now()}.log`), false))
 ```
 
-### Stitch mode
-
-Eyes-TestCafe allows you to control if the checkpoint image should include only the viewport - i.e. what you see in the browser window when you first load a page, or if it should also include the full page - i.e. what you would see if you manually scrolled down, or across, a page that is larger than the viewport.
-
-When Eyes-TestCafe takes a full page screenshot, it does so by taking multiple screenshots of the viewport at different locations of the page (via the TestCafe test controller), and then "stitching" them together. The output is one clear, potentially very large, screenshot of what can be revealed on the page when it is scrolled.
-
-#### Stitch modes
-
-There are two methods for creating the stitched screenshot, and they are both related to the way the page is moved relative to the viewport. Here they are:
-
-##### 1. Stitch mode: Scroll
-
-Using this method, the page is scrolled, just as a user would scroll. Eyes-TestCafe takes the viewport screenshot, then scrolls the page to calculated locations.
-The issue with this method is that the page might respond to scroll events, and change the way it appears visually between the screenshots.
-
-##### 2. Stitch mode: CSS
-
-Using this method, the page is moved around by changing the CSS property `transform` on the HTML element with different values for `translate(x,y)`.
-This method is not sensitive to scroll events, and is usually the recommended method for stitching.
-
-#### Changing the stitch mode
-
-The default stitch mode is `scroll`. In order to change methods:
-
-```js
-import {Eyes, StitchMode} from '@applitools/eyes-testcafe';
-
-const eyes = new Eyes()
-eyes.setStitchMode(StitchMode.CSS)
-
-// to go back to scroll:
-eyes.setStitchMode(StitchMode.SCROLL)
-```
-
 ### Configure Server URL
 
 By default, Eyes-TestCafe communicates with Applitools' public Eyes cloud server, located at `https://eyesapi.applitools.com`.
@@ -233,13 +203,115 @@ eyes.setProxy({
 
 ### Aggregate tests in batches
 
-By using the `open`/`check`/`close` methods on `Eyes`, you are creating visual tests in Applitools Eyes.
+It's possible to manage how visual tests are aggregated into batches.
 
-### Stich overlap
+#### TL;DR - set batch ID
+
+##### Method 1: environment variable
+
+Run all the processes that execute testcafe with the same value for `APPLITOOLS_BATCH_ID`. For example, execute all testcafe files with the same randomly generated UUID:
+
+```sh
+#! Unix based machines:
+APPLITOOLS_BATCH_ID=`uuidgen` npx testcafe chrome:headless tests/*.testcafe.js
+```
+
+It's also possible to control the batch name that shows up in Test Manager. For example:
+
+```sh
+export APPLITOOLS_BATCH_ID=`uuidgen`
+export APPLITOOLS_BATCH_NAME="Login tests"
+npm test
+```
+
+##### Method 2: `eyes.setBatch`
+
+Provide all Eyes instances with the same value for batch ID. For example:
+
+```js
+eyes.setBatch({
+  id: SOME_SHARED_VALUE_THAT_WILL_BE_THE_SAME_FOR_ALL_TEST_FILES,
+  name: 'My batch'
+})
+```
+
+#### Background information
+
+What are batches and visual tests?
+
+##### Visual tests and baselines
+
+By using the `open`/`check`/`close` methods on `Eyes`, you are creating visual tests in Applitools Eyes. A visual test is a sequence of screenshots, compared with a baseline. The baseline is also a sequence of screenshots. The specific baseline to compare against is found by using the values for:
+
+1. Browser
+2. Operating system
+3. Viewport size
+4. Test name
+5. App name
+
+The baseline is created automatically when running a test with specific values for these 5 parameters for the first time. For example, you run a test with **Chrome** on **OS X** and specify the **app name**, **test name** and **viewport size** via `eyes.open(t, 'some app', 'some test', {width: 1200, height: 800})`. The first time the test runs with these parameters, a baseline will be created. Any subsequent execution with the same values will compare screenshots against this baseline. The test will actually be created after running `eyes.close`, and the results of the test are returned as a `TestResults` object.
+
+##### Batches
+
+In Applitools' Test Manager, tests are presented in batches. Batches are just collections of tests aggregated together for easier management. By default, all tests that are run using the same Eyes instance are batched together.
+
+It's possible to aggregate tests that are run in different processes, or in different Eyes instances, under the same batch. This is done by providing the same batch ID to these tests.
+
+### Stitch mode
+
+#### TL;DR - how to change stitch mode
+
+The default stitch mode is `Scroll`. In order to change methods:
+
+```js
+import {Eyes, StitchMode} from '@applitools/eyes-testcafe';
+
+const eyes = new Eyes()
+eyes.setStitchMode(StitchMode.CSS)
+
+// to go back to scroll:
+eyes.setStitchMode(StitchMode.SCROLL)
+```
+
+#### Background information
+
+Eyes-TestCafe allows you to control if the checkpoint image should include only the viewport - i.e. what you see in the browser window when you first load a page, or if it should also include the full page - i.e. what you would see if you manually scrolled down, or across, a page that is larger than the viewport.
+
+When Eyes-TestCafe takes a full page screenshot, it does so by taking multiple screenshots of the viewport at different locations of the page (via the TestCafe test controller), and then "stitching" them together. The output is one clear, potentially very large, screenshot of what can be revealed on the page when it is scrolled.
+
+##### Stitch modes
+
+There are two methods for creating the stitched screenshot, and they are both related to the way the page is moved relative to the viewport. Here they are:
+
+###### 1. Stitch mode: Scroll
+
+Using this method, the page is scrolled, just as a user would scroll. Eyes-TestCafe takes the viewport screenshot, then scrolls the page to calculated locations.
+The issue with this method is that the page might respond to scroll events, and change the way it appears visually between the screenshots.
+
+###### 2. Stitch mode: CSS
+
+Using this method, the page is moved around by changing the CSS property `transform` on the HTML element with different values for `translate(x,y)`.
+This method is not sensitive to scroll events, and is usually the recommended method for stitching.
+
+### Stitch overlap
+
+#### TL;DR - how to change the stitch overlap
+
+#### Background information
+
+What is the stitch overlap?
 
 ### Match level
 
+#### TL;DR - how to change the match level
+
+#### Background information
+
 ### Ignore displacements
+
+#### TL;DR - how to set ignore displacements
+
+#### Background information
 
 ### Test properties
 
