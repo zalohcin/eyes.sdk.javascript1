@@ -1,6 +1,11 @@
+/* eslint-disable no-unused-vars */
 /* global fixture, test */
-// eslint-disable-next-line no-unused-vars
-const {StitchMode, Configuration, FileDebugScreenshotsProvider} = require('@applitools/eyes-common')
+
+const {
+  StitchMode,
+  Configuration,
+  FileDebugScreenshotsProvider,
+} = require('@applitools/eyes-sdk-core')
 const {Eyes, Target, ConsoleLogHandler} = require('../')
 
 const eyes = new Eyes()

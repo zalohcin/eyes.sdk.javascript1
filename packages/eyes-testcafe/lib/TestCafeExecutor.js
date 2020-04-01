@@ -1,8 +1,7 @@
 'use strict'
 
 const {ClientFunction} = require('testcafe')
-const {EyesJsExecutor} = require('@applitools/eyes-sdk-core')
-const {TypeUtils, ArgumentGuard} = require('@applitools/eyes-common')
+const {TypeUtils, ArgumentGuard, EyesJsExecutor} = require('@applitools/eyes-sdk-core')
 const isTestcafeSelector = require('./isTestcafeSelector')
 const makeSafeExecuteFunction = require('./safeExecuteFunction')
 

@@ -1,7 +1,6 @@
 'use strict'
 
 const {URL} = require('url')
-
 const {
   Logger,
   ReadOnlyPropertyHandler,
@@ -10,9 +9,6 @@ const {
   RectangleSize,
   ArgumentGuard,
   Configuration,
-} = require('@applitools/eyes-common')
-
-const {
   EyesBase,
   TestFailedError,
   CorsIframeHandle,

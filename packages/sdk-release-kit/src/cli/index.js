@@ -3,39 +3,55 @@
 const args = require('yargs').argv
 const chalk = require('chalk')
 const cwd = process.cwd()
+const path = require('path')
+const {verifyChangelog, writeReleaseEntryToChangelog} = require('../changelog')
+const {packInstall, lsDryRun} = require('../dry-run')
+const {lint} = require('../lint')
+const sendReleaseNotification = require('../send-report')
+const {createDotFolder} = require('../setup')
+const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
 
-async function execute(cb) {
+;(async () => {
   try {
-    await cb()
+    if (args['verify-changelog']) {
+      await verifyChangelog(cwd)
+    } else if (args['update-changelog']) {
+      writeReleaseEntryToChangelog(cwd)
+    } else if (args['send-release-notification']) {
+      await sendReleaseNotification(cwd, args.recipient)
+    } else if (args['verify-versions']) {
+      await verifyVersions({isFix: args.fix, pkgPath: cwd})
+    } else if (args['verify-commits']) {
+      const isForce = args.force || process.env.BONGO_VERIFY_COMMITS_FORCE
+      await verifyCommits({pkgPath: cwd, isForce})
+    } else if (args['verify-installed-versions']) {
+      createDotFolder(cwd)
+      await packInstall(cwd)
+      await verifyInstalledVersions({
+        pkgPath: cwd,
+        installedDirectory: path.join('.bongo', 'dry-run'),
+      })
+    } else if (args['lint']) {
+      await lint(cwd)
+    } else if (args['release-pre-check']) {
+      await lint(cwd)
+      await verifyChangelog(cwd)
+      await verifyVersions({isFix: args.fix, pkgPath: cwd})
+      const isForce = args.force || process.env.BONGO_VERIFY_COMMITS_FORCE
+      await verifyCommits({pkgPath: cwd, isForce})
+      createDotFolder(cwd)
+      await packInstall(cwd)
+      await verifyInstalledVersions({
+        pkgPath: cwd,
+        installedDirectory: path.join('.bongo', 'dry-run'),
+      })
+    } else if (args['ls-dry-run']) {
+      lsDryRun()
+    } else {
+      throw new Error('Invalid option provided')
+    }
   } catch (error) {
     console.log(chalk.red(error.message))
     process.exit(1)
   }
-}
-
-if (args['verify-changelog']) {
-  const verifyChangelog = require('../changelog/scripts/verify-changelog')
-  execute(verifyChangelog)
-} else if (args['update-changelog']) {
-  const updateChangelog = require('../changelog/scripts/update-changelog')
-  execute(updateChangelog)
-} else if (args['send-release-notification']) {
-  const sendReleaseNotification = require('../send-report/scripts/send-release-notification')
-  execute(sendReleaseNotification.bind(undefined, args.recipient))
-} else if (args['verify-versions']) {
-  const verifyVersions = require('../versions/scripts/verify-versions')
-  execute(verifyVersions.bind(undefined, {isFix: args.fix, pkgPath: cwd}))
-} else if (args['verify-commits']) {
-  const verifyCommits = require('../versions/scripts/verify-commits')
-  const isForce = args.force || process.env.BONGO_VERIFY_COMMITS_FORCE
-  execute(verifyCommits.bind(undefined, {pkgPath: cwd, isForce}))
-} else {
-  execute(() => {
-    throw new Error('Invalid option provided')
-  })
-}
-// release-pre-check
-// - verify-changelog
-// - verify versions
-// - verify-commits
-// - verify-installed-versions
+})()

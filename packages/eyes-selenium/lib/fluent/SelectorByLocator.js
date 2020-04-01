@@ -1,7 +1,6 @@
 'use strict'
 
-const {GeneralUtils} = require('@applitools/eyes-common')
-const {GetSelector} = require('@applitools/eyes-sdk-core')
+const {GetSelector, GeneralUtils} = require('@applitools/eyes-sdk-core')
 
 const EYES_SELECTOR_TAG = 'data-eyes-selector'
 

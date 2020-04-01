@@ -1,6 +1,6 @@
 'use strict'
 
-const {ArgumentGuard} = require('@applitools/eyes-common')
+const {ArgumentGuard} = require('@applitools/eyes-sdk-core')
 const {ScrollPositionMemento} = require('../positioning/ScrollPositionMemento')
 const {ScrollPositionProvider} = require('../positioning/ScrollPositionProvider')
 
