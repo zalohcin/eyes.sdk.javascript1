@@ -5,16 +5,17 @@ class By {
    *
    * @param {String} value
    */
-  constructor(value) {
+  constructor(value, using = 'css selector') {
     this._value = value
+    this._using = using
   }
 
   static id(id) {
-    return new By(`body #${id}`)
+    return new By(`*[id="${id}"]`)
   }
 
   static name(name) {
-    return new By(`[name=${name}]`)
+    return new By(`*[name="${name}"]`)
   }
 
   /**
@@ -29,7 +30,11 @@ class By {
   }
 
   static xPath(xPath) {
-    return new By(xPath)
+    return new By(xPath, 'xpath')
+  }
+
+  static xpath(xPath) {
+    return this.xPath(xPath)
   }
 
   /**
@@ -38,15 +43,23 @@ class By {
    * @return {By}
    */
   static tagName(tagName) {
-    return new By(`<${tagName}>`)
+    return new By(tagName)
   }
 
   static attributeValue(attributeName, value) {
-    return new By(`[${attributeName}=${value}]`)
+    return new By(`[${attributeName}="${value}"]`)
+  }
+
+  static className(value) {
+    return new By(`.${value}`)
   }
 
   get value() {
     return this._value
+  }
+
+  get using() {
+    return this._using
   }
 }
 
