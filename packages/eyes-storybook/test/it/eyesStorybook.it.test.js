@@ -11,6 +11,7 @@ const {makeTiming} = require('@applitools/monitoring-commons');
 const logger = require('../util/testLogger');
 const testStream = require('../util/testStream');
 const {performance, timeItAsync} = makeTiming();
+const fetch = require('node-fetch');
 
 describe('eyesStorybook', () => {
   let closeStorybook;
@@ -42,6 +43,7 @@ describe('eyesStorybook', () => {
   it('renders test storybook with fake eyes and visual grid', async () => {
     const {stream, getEvents} = testStream();
     const configPath = path.resolve(__dirname, '../fixtures/applitools.config.js');
+    const globalConfig = require(configPath);
     const defaultConfig = {waitBeforeScreenshots: 50};
     const config = generateConfig({argv: {conf: configPath}, defaultConfig, externalConfigParams});
     const results = await eyesStorybook({
@@ -61,11 +63,7 @@ describe('eyesStorybook', () => {
       outputStream: stream,
     });
 
-    expect(
-      results
-        .map(r => ({name: r.getName(), isPassed: r.isPassed()}))
-        .sort((a, b) => (a.name < b.name ? -1 : 1)),
-    ).to.eql([
+    const expectedResults = [
       {
         name: 'Button with-space yes-indeed/nested with-space yes/nested again-yes a: c yes-a b',
         isPassed: true,
@@ -91,7 +89,71 @@ describe('eyesStorybook', () => {
         name: 'Wow|one with-space yes-indeed/nested with-space yes/nested again-yes a: c yes-a b',
         isPassed: true,
       },
-    ]);
+    ];
+
+    const [strict, layout, content, floating, accessibility] = [
+      globalConfig.strictRegions,
+      globalConfig.layoutRegions,
+      globalConfig.contentRegions,
+      globalConfig.floatingRegions,
+      globalConfig.accessibilityRegions,
+    ].map(([{selector}]) => {
+      const {x, y, width, height} = JSON.parse(selector);
+      return [
+        {
+          left: x,
+          top: y,
+          width,
+          height,
+        },
+      ];
+    });
+
+    expect(results.some(x => x instanceof Error)).to.be.false;
+    expect(results).to.have.length(expectedResults.length);
+
+    for (const testResults of results) {
+      const sessionUrl = `${serverUrl}/api/sessions/batches/${encodeURIComponent(
+        testResults.getBatchId(),
+      )}/${encodeURIComponent(testResults.getId())}`;
+
+      const session = await fetch(sessionUrl).then(r => r.json());
+      const {scenarioIdOrName} = session.startInfo;
+      const [componentName, state] = scenarioIdOrName.split(':').map(s => s.trim());
+      expect(session.startInfo.defaultMatchSettings.ignoreDisplacements).to.be.true;
+      expect(session.startInfo.properties).to.eql([
+        {name: 'Component name', value: componentName},
+        {name: 'State', value: state.replace(/ \[.+\]$/, '')}, // strip off variation
+        {name: 'some prop', value: 'some value'},
+      ]);
+
+      expect(session.steps[0].options.imageMatchSettings.strict).to.eql([
+        {
+          ...strict[0],
+          coordinatesType: 'SCREENSHOT_AS_IS',
+        },
+      ]);
+      expect(session.steps[0].options.imageMatchSettings.layout).to.eql([
+        {
+          ...layout[0],
+          coordinatesType: 'SCREENSHOT_AS_IS',
+        },
+      ]);
+      expect(session.steps[0].options.imageMatchSettings.content).to.eql([
+        {
+          ...content[0],
+          coordinatesType: 'SCREENSHOT_AS_IS',
+        },
+      ]);
+      expect(session.steps[0].options.imageMatchSettings.floating).to.eql(floating);
+      expect(session.steps[0].options.imageMatchSettings.accessibility).to.eql(accessibility);
+    }
+
+    expect(
+      results
+        .map(r => ({name: r.getName(), isPassed: r.isPassed()}))
+        .sort((a, b) => (a.name < b.name ? -1 : 1)),
+    ).to.eql(expectedResults);
 
     expect(getEvents().join('')).to.equal(`- Reading stories
 ✔ Reading stories
