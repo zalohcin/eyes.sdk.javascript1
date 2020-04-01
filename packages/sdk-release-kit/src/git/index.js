@@ -3,7 +3,7 @@ const {promisify} = require('util')
 const pexec = promisify(exec)
 
 async function pushWithTags() {
-  await pexec(`git push --folow-tags`)
+  await pexec(`git push --follow-tags`)
 }
 
 async function addFile(file) {
