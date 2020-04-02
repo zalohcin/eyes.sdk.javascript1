@@ -27,10 +27,10 @@
       - [`tag`](#-tag-)
       - [`checkSettings`](#-checksettings-)
   * [close](#close)
-- [Best practice for using the SDK](#best-practice-for-using-the-sdk)
 - [Receipes for common tasks](#receipes-for-common-tasks)
   * [Configure Server URL](#configure-server-url)
   * [Configure Proxy](#configure-proxy)
+  * [Make every visual test correspond to a TestCafe test](#make-every-visual-test-correspond-to-a-testcafe-test)
   * [Organize tests in batches](#organize-tests-in-batches)
     + [Method 1: environment variable](#method-1--environment-variable)
     + [Method 2: `eyes.setBatch`](#method-2---eyessetbatch-)
@@ -131,6 +131,8 @@ https://applitools.com/docs/topics/general-concepts/how-eyes-compares-checkpoint
 
 It's possible to aggregate tests that are run in different processes, or in different Eyes instances, under the same batch. This is done by providing the same batch ID to these tests.
 
+For instructions, see the [Organize tests in batches](#organize-tests-in-batches) section below.
+
 _For more information, visit our documentation page:
 https://applitools.com/docs/topics/working-with-test-batches/working-with-test-batches-in-overview.html_
 
@@ -163,16 +165,6 @@ It is important to call this at the end of each test, symmetrically to `open`(or
 
 ```js
 const testResults = await eyes.close(throwEx)
-```
-
-## Best practice for using the SDK
-
-Every call to `eyes.open` and `eyes.close` defines a test in Applitools Eyes, and all the calls to `eyes.check` between them are called "steps". In order to get a test structure in Applitools that corresponds to the test structure in TestCafe, it's best to open/close tests in every `test` call. **You can use `afterEach` for calling `eyes.close()`**
-
-```js
-fixture`Hello world`
-  .page('https://applitools.com/helloworld')
-  .afterEach(async () => eyes.close())
 ```
 
 ## Receipes for common tasks
@@ -208,6 +200,16 @@ eyes.setProxy({
   url: 'http://yourproxy.com',
   isHttpOnly: true
 })
+```
+
+### Make every visual test correspond to a TestCafe test
+
+Every call to `eyes.open` and `eyes.close` defines a test in Applitools Eyes, and all the calls to `eyes.check` between them are called "steps". In order to get a test structure in Applitools that corresponds to the test structure in TestCafe, it's best to open/close tests in every `test` call. **You can use `afterEach` for calling `eyes.close()`**
+
+```js
+fixture`Hello world`
+  .page('https://applitools.com/helloworld')
+  .afterEach(async () => eyes.close())
 ```
 
 ### Organize tests in batches
