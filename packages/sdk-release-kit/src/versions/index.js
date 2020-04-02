@@ -33,16 +33,24 @@ async function verifyCommits({pkgPath, isForce}) {
   }
 }
 
-async function verifyInstalledVersions({pkgPath, installedDirectory}) {
+async function verifyInstalledVersions(
+  {pkgPath, installedDirectory},
+  {isNpmLs} = {isNpmLs: false},
+) {
   const internalPackages = makePackagesList()
   const {dependencies} = require(path.join(pkgPath, 'package.json'))
   const filteredPackageNames = Object.keys(dependencies).filter(pkgName =>
     internalPackages.find(({name}) => name === pkgName),
   )
-  if (installedDirectory) {
+  if (isNpmLs) {
     process.chdir(installedDirectory)
+    checkPackagesForUniqueVersions(await npmLs(), filteredPackageNames)
+  } else {
+    const packageLock = require(path.resolve(installedDirectory, 'package-lock.json'))
+    checkPackagesForUniqueVersions(packageLock, filteredPackageNames, {
+      isNpmLs,
+    })
   }
-  checkPackagesForUniqueVersions(await npmLs(), filteredPackageNames)
 }
 
 function verifyVersions({isFix, pkgPath}) {
