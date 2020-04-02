@@ -167,7 +167,7 @@ It is important to call this at the end of each test, symmetrically to `open`(or
 const testResults = await eyes.close(throwEx)
 ```
 
-## Receipes for common tasks
+## Recipes for common tasks
 
 ### Configure Server URL
 
