@@ -45,11 +45,11 @@ async function getPropertyValue(logger, element, propName) {
   let cssValue
   try {
     if (element instanceof EyesWebElement) {
-      logger.verbose("Element is an EyesWebElement, using 'getComputedStyle'.")
+      logger.verbose("Element is an EyesWebElement, using 'getCssProperty'.")
       try {
-        cssValue = await element.getComputedStyle(propName)
+        cssValue = await element.getCssProperty(propName)
       } catch (e) {
-        logger.verbose(`Using getComputedStyle failed: ${e}`)
+        logger.verbose(`Using getCssProperty failed: ${e}`)
         logger.verbose('Using getCssValue...')
         cssValue = await element.getCssValue(propName)
       }

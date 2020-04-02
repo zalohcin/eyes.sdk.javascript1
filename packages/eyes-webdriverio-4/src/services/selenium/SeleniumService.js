@@ -3,8 +3,8 @@
 const Command = require('./Command')
 
 class SeleniumService {
-  constructor(driver) {
-    this._driver = driver
+  constructor(requestHandler) {
+    this._requestHandler = requestHandler
   }
 
   /**
@@ -12,7 +12,7 @@ class SeleniumService {
    * returns {Promise}
    */
   execute(cmd) {
-    const requestHandler = this._driver.requestHandler
+    const requestHandler = this._requestHandler
     cmd.setParameter('sessionId', requestHandler.sessionID)
 
     const cmdPath = COMMAND_MAP.get(cmd.getName())

@@ -45,13 +45,12 @@ describe('TestRefreshableDom', function() {
 
   it('refresh element inside iframe after StaleElementReference', async () => {
     await driver.url('https://applitools.github.io/demo/TestPages/RefreshDomPage/iframe')
-    const switchTo = driver.switchTo()
-    await switchTo.defaultContent()
-    await switchTo.frame('frame')
-    const region = await driver.findElement(By.css('#inner-img'))
-    const button = await driver.findElement(By.css('#refresh-button'))
+    await driver.frame()
+    await driver.frame('frame')
+    const region = await driver.element(By.css('#inner-img'))
+    const button = await driver.element(By.css('#refresh-button'))
     await button.click()
-    await switchTo.defaultContent()
+    await driver.frame()
 
     await eyes.check('Handle', Target.frame('frame').region(region))
     return eyes.close()
@@ -59,8 +58,8 @@ describe('TestRefreshableDom', function() {
 
   it('refresh element after StaleElementReference', async () => {
     await driver.url('https://applitools.github.io/demo/TestPages/RefreshDomPage')
-    const region = await driver.findElement(By.css('#inner-img'))
-    const button = await driver.findElement(By.css('#refresh-button'))
+    const region = await driver.element(By.css('#inner-img'))
+    const button = await driver.element(By.css('#refresh-button'))
     await button.click()
 
     await eyes.check('Handle', Target.region(region))
@@ -70,8 +69,8 @@ describe('TestRefreshableDom', function() {
   it('throw after unhandled StaleElementReference', async () => {
     await driver.url('https://applitools.github.io/demo/TestPages/RefreshDomPage')
 
-    const region = await driver.findElement(By.css('#inner-img'))
-    const button = await driver.findElement(By.css('#invalidate-button'))
+    const region = await driver.element(By.css('#inner-img'))
+    const button = await driver.element(By.css('#invalidate-button'))
     await button.click()
     try {
       await eyes.check('Throw', Target.region(region))

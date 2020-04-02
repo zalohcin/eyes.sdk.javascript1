@@ -10,7 +10,7 @@ const EYES_SELECTOR_TAG = 'data-eyes-selector'
  */
 class SelectorByElement extends GetSelector {
   /**
-   * @param {WebElement} webElement
+   * @param {EyesWebElement} webElement
    */
   constructor(webElement) {
     super()
@@ -24,9 +24,9 @@ class SelectorByElement extends GetSelector {
    */
   async getSelector(eyes) {
     const randId = GeneralUtils.randomAlphanumeric()
-    await eyes._driver.executeScript(
+    await eyes._driver.execute(
       `arguments[0].setAttribute('${EYES_SELECTOR_TAG}', '${randId}');`,
-      this._element.element,
+      this._element,
     )
     return `[${EYES_SELECTOR_TAG}="${randId}"]`
   }

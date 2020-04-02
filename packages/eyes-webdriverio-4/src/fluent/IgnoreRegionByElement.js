@@ -6,7 +6,7 @@ const {SelectorByElement} = require('./SelectorByElement')
 
 class IgnoreRegionByElement extends GetRegion {
   /**
-   * @param {WebElement} webElement
+   * @param {EyesWebElement} webElement
    */
   constructor(webElement) {
     super()

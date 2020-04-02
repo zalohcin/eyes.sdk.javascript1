@@ -19,7 +19,7 @@ class IgnoreRegionBySelector extends GetRegion {
    * @param {EyesScreenshot} screenshot
    */
   async getRegion(eyes, screenshot) {
-    const elements = await eyes.getDriver().findElements(this._selector)
+    const elements = await eyes.getDriver().elements(this._selector)
 
     const values = []
     if (elements && elements.length > 0) {

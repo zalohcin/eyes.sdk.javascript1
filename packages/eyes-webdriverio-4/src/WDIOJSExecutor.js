@@ -19,11 +19,11 @@ class WDIOJSExecutor extends EyesJsExecutor {
    */
   async executeScript(script, ...varArgs) {
     try {
-      const result = await this._driver.remoteWebDriver.execute(script, ...varArgs)
-      this._driver.eyes._logger.verbose('Done!')
-      return result.value
+      const result = await this._driver.execute(script, ...varArgs)
+      this._driver._logger.verbose('Done!')
+      return result
     } catch (e) {
-      this._driver.eyes._logger.verbose(
+      this._driver._logger.verbose(
         `Error executeScript: ${script}\nargs: ${JSON.stringify(varArgs)}`,
       )
       throw e
@@ -33,11 +33,11 @@ class WDIOJSExecutor extends EyesJsExecutor {
   /** @override */
   async executeAsyncScript(script, ...varArgs) {
     try {
-      const result = await this._driver.remoteWebDriver.executeAsync(script, ...varArgs)
-      this._driver.eyes._logger.verbose('Done!')
-      return result.value
+      const result = await this._driver.executeAsync(script, ...varArgs)
+      this._driver._logger.verbose('Done!')
+      return result
     } catch (e) {
-      this._driver.eyes._logger.verbose('WARNING: execute script error: ' + e)
+      this._driver._logger.verbose('WARNING: execute script error: ' + e)
       throw e
     }
   }
@@ -47,8 +47,7 @@ class WDIOJSExecutor extends EyesJsExecutor {
    * @inheritDoc
    */
   sleep(millis) {
-    // todo
-    return this._driver.sleep(millis)
+    return this._driver.remoteWebDriver.pause(millis)
   }
 }
 

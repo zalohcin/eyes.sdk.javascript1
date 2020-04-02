@@ -249,7 +249,7 @@ class EyesWDIOUtils {
 
   /**
    * @param {WDIOJSExecutor} executor
-   * @param {Promise.<WebElement>} webElementPromise
+   * @param {Promise.<EyesWebElement>} webElementPromise
    * @param transform
    * @return {*|Promise}
    */
@@ -319,7 +319,7 @@ class EyesWDIOUtils {
   /**
    *
    * @param {WDIOJSExecutor} executor
-   * @param {Promise.<WebElement>} webElementPromise
+   * @param {Promise.<EyesWebElement>} webElementPromise
    * @param {Location} position
    * @return {*}
    */
@@ -366,7 +366,7 @@ class EyesWDIOUtils {
    *
    * @param {EyesJsExecutor} executor - The executor to use.
    * @param {?string} value - The overflow value to set.
-   * @param {WebElement} [scrollbarsRoot]
+   * @param {EyesWebElement} [scrollbarsRoot]
    * @return {Promise<string>} - The previous value of overflow (could be {@code null} if undefined).
    */
   static setOverflow(executor, value, scrollbarsRoot) {
@@ -420,7 +420,7 @@ class EyesWDIOUtils {
    *
    * @param {EyesJsExecutor} executor The executor to use.
    * @param {int} stabilizationTimeout The amount of time to wait for the "hide scrollbars" action to take effect (Milliseconds). Zero/negative values are ignored.
-   * @param {WebElement} scrollbarsRoot
+   * @param {EyesWebElement} scrollbarsRoot
    * @return {Promise.<String>} The previous value of the overflow property (could be {@code null}).
    */
   static async hideScrollbars(executor, stabilizationTimeout, scrollbarsRoot) {

@@ -34,8 +34,6 @@ const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
 const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory')
 const EyesWebDriver = require('./wrappers/EyesWebDriver')
 const EyesWebElement = require('./wrappers/EyesWebElement')
-const WebElement = require('./wrappers/WebElement')
-const {isWDIOElement} = require('./wrappers/web-element-util')
 const EyesWDIOScreenshot = require('./capture/EyesWDIOScreenshot')
 const FrameChain = require('./frames/FrameChain')
 const EyesWDIOScreenshotFactory = require('./capture/EyesWDIOScreenshotFactory')
@@ -44,10 +42,8 @@ const ElementPositionProvider = require('./positioning/ElementPositionProvider')
 const StitchMode = require('./StitchMode')
 const Target = require('./fluent/Target')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
-const WebDriver = require('./wrappers/WebDriver')
 const ReadOnlyPropertyHandler = require('@applitools/eyes-sdk-core/index').ReadOnlyPropertyHandler
 const ImageRotation = require('./positioning/ImageRotation')
-const handleStaleElement = require('./wrappers/handleStaleElement')
 
 const VERSION = require('../package.json').version
 
@@ -121,7 +117,7 @@ class EyesWDIO extends EyesBase {
     this._domUrl
     /** @type {EyesWDIOScreenshotFactory} */
     this._screenshotFactory = undefined
-    /** @type {WebElement} */
+    /** @type {EyesWebElement} */
     this._scrollRootElement = undefined
     /** @type {Promise<void>} */
     this._closePromise = Promise.resolve()
@@ -140,10 +136,7 @@ class EyesWDIO extends EyesBase {
 
     this._logger.verbose('Running using Webdriverio module')
 
-    this._driver =
-      driver instanceof EyesWebDriver
-        ? driver
-        : new EyesWebDriver(this._logger, new WebDriver(driver), this)
+    this._driver = new EyesWebDriver(driver, this, this._logger)
     this._jsExecutor = new WDIOJSExecutor(this._driver)
 
     this._configuration.setAppName(
@@ -205,7 +198,6 @@ class EyesWDIO extends EyesBase {
     this._initPositionProvider()
 
     this._driver.rotation = this._rotation
-
     return this._driver
   }
 
@@ -239,8 +231,8 @@ class EyesWDIO extends EyesBase {
   /**
    * Matches the frame given as parameter, by switching into the frame and using stitching to get an image of the frame.
    *
-   * @param {Integer|String|By|WebElement|EyesWebElement} element The element which is the frame to switch to. (as
-   * would be used in a call to driver.switchTo().frame() ).
+   * @param {Integer|String|By|EyesWebElement} element The element which is the frame to switch to. (as
+   * would be used in a call to driver.frame() ).
    * @param {int|null} matchTimeout The amount of time to retry matching (milliseconds).
    * @param {String} tag An optional tag to be associated with the match.
    * @return {Promise} A promise which is resolved when the validation is finished.
@@ -281,7 +273,7 @@ class EyesWDIO extends EyesBase {
   /**
    * Switches into the given frame, takes a snapshot of the application under test and matches a region specified by the given selector.
    *
-   * @param {String} frameNameOrId The name or id of the frame to switch to. (as would be used in a call to driver.switchTo().frame()).
+   * @param {String} frameNameOrId The name or id of the frame to switch to. (as would be used in a call to driver.frame()).
    * @param {By} selector A Selector specifying the region to check.
    * @param {int|null} matchTimeout The amount of time to retry matching. (Milliseconds)
    * @param {String} tag An optional tag to be associated with the snapshot.
@@ -321,7 +313,7 @@ class EyesWDIO extends EyesBase {
 
     this._checkSettings = checkSettings
 
-    await this._driver.switchTo().refresh()
+    await this._driver.framesRefresh()
 
     let result
     await this.getPositionProvider().setPosition(Location.ZERO)
@@ -349,16 +341,13 @@ class EyesWDIO extends EyesBase {
       const targetSelector = checkSettings.targetSelector
       let targetElement = checkSettings.targetElement
       if (!targetElement && targetSelector) {
-        targetElement = await this._driver.findElement(targetSelector)
-      } else if (isWDIOElement(targetElement)) {
-        targetElement = new WebElement(this._driver, targetElement, '')
+        targetElement = await this._driver.element(targetSelector)
+      } else if (EyesWebElement.isWDIOElement(targetElement)) {
+        targetElement = new EyesWebElement(targetElement, '', this._driver, this._logger)
       }
 
       if (targetElement) {
-        this._targetElement =
-          targetElement instanceof EyesWebElement
-            ? targetElement
-            : new EyesWebElement(this._logger, this._driver, targetElement)
+        this._targetElement = targetElement
         if (this._stitchContent) {
           result = await this._checkElement(name, checkSettings)
         } else {
@@ -412,22 +401,18 @@ class EyesWDIO extends EyesBase {
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       /** @override */
       async getRegion() {
-        const p = await handleStaleElement(
-          that._targetElement.getLocation.bind(that._targetElement),
-          that._targetElement.refresh.bind(that._targetElement),
-        )()
-        that._targetElementLocation = p
-        const d = await handleStaleElement(
-          that._targetElement.getSize.bind(that._targetElement),
-          that._targetElement.refresh.bind(that._targetElement),
-        )()
-        return new Region(
-          Math.ceil(p.getX()),
-          Math.ceil(p.getY()),
-          d.getWidth(),
-          d.getHeight(),
-          CoordinatesType.CONTEXT_RELATIVE,
-        )
+        return EyesWebElement.refreshElement(async () => {
+          const p = await that._targetElement.getLocation()
+          that._targetElementLocation = p
+          const d = await that._targetElement.getSize()
+          return new Region(
+            Math.ceil(p.getX()),
+            Math.ceil(p.getY()),
+            d.getWidth(),
+            d.getHeight(),
+            CoordinatesType.CONTEXT_RELATIVE,
+          )
+        }, that._targetElement)
       }
     }
 
@@ -477,9 +462,8 @@ class EyesWDIO extends EyesBase {
         that._targetElementLocation = pl
         that._checkFrameOrElement = true
 
-        let elementLocation, elementSize
         return eyesElement
-          .getComputedStyle('display')
+          .getCssProperty('display')
           .then(displayStyle => {
             if (displayStyle !== 'inline') {
               that._elementPositionProvider = new ElementPositionProvider(
@@ -500,31 +484,21 @@ class EyesWDIO extends EyesBase {
               })
             }
           })
-          .then(() => {
-            return eyesElement.getClientWidth().then(elementWidth => {
-              return eyesElement.getClientHeight().then(elementHeight => {
-                elementSize = new RectangleSize(elementWidth, elementHeight)
-              })
-            })
-          })
-          .then(() => {
-            return eyesElement
-              .getComputedStyleInteger('border-left-width')
-              .then(borderLeftWidth => {
-                return eyesElement
-                  .getComputedStyleInteger('border-top-width')
-                  .then(borderTopWidth => {
-                    elementLocation = new Location(
-                      pl.getX() + borderLeftWidth,
-                      pl.getY() + borderTopWidth,
-                    )
-                  })
-              })
-          })
           .then(async () => {
+            const [
+              [clientWidth, clientHeight],
+              [borderLeftWidth, borderTopWidth],
+            ] = await Promise.all([
+              eyesElement.getProperties(['clientWidth', 'clientHeight']),
+              eyesElement.getCssProperties(['border-left-width', 'border-top-width']),
+            ])
+
             const elementRegion = new Region(
-              elementLocation,
-              elementSize,
+              new Location(
+                Math.round(pl.getX() + Number.parseFloat(borderLeftWidth)),
+                Math.round(pl.getY() + Number.parseFloat(borderTopWidth)),
+              ),
+              new RectangleSize(Math.round(clientWidth), Math.round(clientHeight)),
               CoordinatesType.CONTEXT_AS_IS,
             )
 
@@ -541,11 +515,7 @@ class EyesWDIO extends EyesBase {
             }
 
             const isElement = true
-            const insideAFrame =
-              that
-                .getDriver()
-                .getFrameChain()
-                .size() > 0
+            const insideAFrame = that.getDriver().frameChain.size > 0
             if (
               isElement &&
               insideAFrame &&
@@ -654,8 +624,7 @@ class EyesWDIO extends EyesBase {
             })
             .then(screenshotImage_ => {
               screenshotImage = screenshotImage_
-              const switchTo = that._driver.switchTo()
-              return switchTo.frames(fc)
+              return that._driver.frames(fc)
             })
             .then(() => {
               const screenshot = new EyesWDIOScreenshot(that._logger, that._driver, screenshotImage)
@@ -679,15 +648,15 @@ class EyesWDIO extends EyesBase {
    * @return {Promise}
    */
   async _checkFrameFluent(name, checkSettings) {
-    const frameChain = new FrameChain(this._logger, this._driver.getFrameChain())
+    const frameChain = new FrameChain(this._logger, this._driver.frameChain)
     const targetFrame = frameChain.pop()
     this._targetElement = targetFrame.getReference()
 
-    await this._driver.switchTo().framesDoScroll(frameChain)
+    await this._driver.framesDoScroll(frameChain)
     const r = await this._checkRegion(name, checkSettings)
     this._targetElement = null
     this._targetElementLocation = Location.ZERO
-    await this._driver.switchTo().frame(targetFrame)
+    await this._driver.frame(targetFrame)
     return r
   }
 
@@ -763,7 +732,7 @@ class EyesWDIO extends EyesBase {
    */
   async _switchToParentFrame(switchedToFrameCount) {
     if (switchedToFrameCount > 0) {
-      await this._driver.switchTo().parentFrame()
+      await this._driver.frameParent()
       return this._switchToParentFrame(switchedToFrameCount - 1)
     }
 
@@ -796,7 +765,6 @@ class EyesWDIO extends EyesBase {
    * @return {Promise.<boolean>}
    */
   async _switchToFrameLocator(frameLocator) {
-    const switchTo = this._driver.switchTo()
     let reference
     if (frameLocator.getFrameIndex()) {
       reference = frameLocator.getFrameIndex()
@@ -805,16 +773,16 @@ class EyesWDIO extends EyesBase {
     } else if (frameLocator.getFrameElement()) {
       reference = frameLocator.getFrameElement()
     } else if (frameLocator.getFrameSelector()) {
-      reference = await this._driver.findElement(frameLocator.getFrameSelector())
+      reference = await this._driver.element(frameLocator.getFrameSelector())
     }
 
     if (reference) {
-      await switchTo.frame(reference)
-      const frame = this._driver.getFrameChain().peek()
+      await this._driver.frame(reference)
+      const frame = this._driver.frameChain.peek()
       if (frame) {
         let scrollRootElement = frameLocator.getScrollRootElement()
         if (!scrollRootElement && frameLocator.getScrollRootSelector()) {
-          scrollRootElement = await this._driver.findElement(frameLocator.getScrollRootSelector())
+          scrollRootElement = await this._driver.element(frameLocator.getScrollRootSelector())
         }
         if (scrollRootElement) {
           frame.setScrollRootElement(scrollRootElement)
@@ -846,10 +814,7 @@ class EyesWDIO extends EyesBase {
     }
 
     if (
-      !FrameChain.isSameFrameChain(
-        this._driver.getFrameChain(),
-        this._lastScreenshot.getFrameChain(),
-      )
+      !FrameChain.isSameFrameChain(this._driver.frameChain, this._lastScreenshot.getFrameChain())
     ) {
       this._logger.verbose(`Ignoring ${action} (different frame)`)
       return
@@ -862,7 +827,7 @@ class EyesWDIO extends EyesBase {
    * Adds a mouse trigger.
    *
    * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {WebElement} element The WebElement on which the click was called.
+   * @param {EyesWebElement} element The EyesWebElement on which the click was called.
    * @return {Promise}
    */
   async addMouseTriggerForElement(action, element) {
@@ -878,10 +843,7 @@ class EyesWDIO extends EyesBase {
     }
 
     if (
-      !FrameChain.isSameFrameChain(
-        this._driver.getFrameChain(),
-        this._lastScreenshot.getFrameChain(),
-      )
+      !FrameChain.isSameFrameChain(this._driver.frameChain, this._lastScreenshot.getFrameChain())
     ) {
       this._logger.verbose(`Ignoring ${action} (different frame)`)
       return Promise.resolve()
@@ -919,10 +881,7 @@ class EyesWDIO extends EyesBase {
     }
 
     if (
-      !FrameChain.isSameFrameChain(
-        this._driver.getFrameChain(),
-        this._lastScreenshot.getFrameChain(),
-      )
+      !FrameChain.isSameFrameChain(this._driver.frameChain, this._lastScreenshot.getFrameChain())
     ) {
       this._logger.verbose(`Ignoring ${text} (different frame)`)
       return
@@ -951,10 +910,7 @@ class EyesWDIO extends EyesBase {
     }
 
     if (
-      !FrameChain.isSameFrameChain(
-        this._driver.getFrameChain(),
-        this._lastScreenshot.getFrameChain(),
-      )
+      !FrameChain.isSameFrameChain(this._driver.frameChain, this._lastScreenshot.getFrameChain())
     ) {
       this._logger.verbose(`Ignoring ${text} (different frame)`)
       return Promise.resolve()
@@ -1034,8 +990,8 @@ class EyesWDIO extends EyesBase {
       ArgumentGuard.notNull(viewportSize, 'viewportSize')
       viewportSize = new RectangleSize(viewportSize)
 
-      const originalFrame = this._driver.getFrameChain()
-      await this._driver.switchTo().defaultContent()
+      const originalFrame = this._driver.frameChain
+      await this._driver.frameDefault()
       try {
         await EyesWDIOUtils.setViewportSize(
           this._logger,
@@ -1044,11 +1000,11 @@ class EyesWDIO extends EyesBase {
         )
         this._effectiveViewport = new Region(Location.ZERO, viewportSize)
       } catch (e) {
-        await this._driver.switchTo().frames(originalFrame)
+        await this._driver.frames(originalFrame)
         throw new TestFailedError('Failed to set the viewport size', e)
       }
 
-      await this._driver.switchTo().frames(originalFrame)
+      await this._driver.frames(originalFrame)
     }
 
     this._viewportSizeHandler.set(new RectangleSize(viewportSize))
@@ -1082,7 +1038,7 @@ class EyesWDIO extends EyesBase {
    * @returns {Region}
    */
   async getRegionByLocator(locator) {
-    const element = await this._driver.findElement(locator)
+    const element = await this._driver.element(locator)
     const elementSize = await element.getSize()
     const point = await element.getLocation()
     return new Region(point.x, point.y, elementSize.width, elementSize.height)
@@ -1156,20 +1112,19 @@ class EyesWDIO extends EyesBase {
     const isMobile = await EyesWDIOUtils.isMobileDevice(this._driver.remoteWebDriver)
     if (isMobile) return
     if (this._hideScrollbars || this._scrollRootElement) {
-      const originalFC = new FrameChain(this._logger, this._driver.getFrameChain())
-      await this._driver.switchTo().defaultContent()
+      const originalFC = this._driver.frameChain.clone()
+      await this._driver.frameDefault()
 
       this._logger.verbose('hiding scrollbars of default content')
       const scrollRootElement = await this.getScrollRootElement()
       this._originalOverflow = await EyesWDIOUtils.setOverflow(
         this._jsExecutor,
         'hidden',
-        scrollRootElement.element,
+        scrollRootElement,
       )
 
       for (const frame of originalFC.getFrames()) {
-        console.log('try hide frame')
-        await this._driver.switchTo().frame(frame.getReference())
+        await this._driver.frame(frame.getReference())
         await frame.hideScrollbars()
       }
       this._logger.verbose('done hiding scrollbars.')
@@ -1184,17 +1139,13 @@ class EyesWDIO extends EyesBase {
     const isMobile = await EyesWDIOUtils.isMobileDevice(this._driver.remoteWebDriver)
     if (isMobile) return
     if (this._hideScrollbars) {
-      const originalFC = new FrameChain(this._logger, this._driver.getFrameChain())
-      await this._driver.switchTo().defaultContent()
+      const originalFC = new FrameChain(this._logger, this._driver.frameChain)
+      await this._driver.frameDefault()
       const scrollRootElement = await this.getScrollRootElement()
-      await EyesWDIOUtils.setOverflow(
-        this._jsExecutor,
-        this._originalOverflow,
-        scrollRootElement.element,
-      )
+      await EyesWDIOUtils.setOverflow(this._jsExecutor, this._originalOverflow, scrollRootElement)
 
       for (const frame of originalFC.getFrames()) {
-        await this._driver.switchTo().frame(frame)
+        await this._driver.frame(frame)
         await frame.restoreScrollbars()
       }
       this._logger.verbose('done hiding scrollbars.')
@@ -1211,8 +1162,7 @@ class EyesWDIO extends EyesBase {
 
     const scaleProviderFactory = await this._updateScalingParams()
 
-    const originalFrameChain = new FrameChain(this._logger, this._driver.getFrameChain())
-    const switchTo = this._driver.switchTo()
+    const originalFrameChain = new FrameChain(this._logger, this._driver.frameChain)
 
     const fullPageCapture = new FullPageCaptureAlgorithm(
       this._logger,
@@ -1230,7 +1180,7 @@ class EyesWDIO extends EyesBase {
     let activeElement = null
     if (this.getHideCaret()) {
       try {
-        activeElement = await this._driver.executeScript(
+        activeElement = await this._driver.execute(
           'var activeElement = document.activeElement; activeElement && activeElement.blur(); return activeElement;',
         )
       } catch (err) {
@@ -1242,15 +1192,15 @@ class EyesWDIO extends EyesBase {
     if (this._checkFrameOrElement) {
       this._logger.verbose('Check frame/element requested')
 
-      await switchTo.frames(originalFrameChain)
+      await this._driver.frames(originalFrameChain)
 
       let scrolledElement = this.getElementPositionProvider().element
       if (!scrolledElement) {
-        scrolledElement = await this._driver.findElementByTagName('html')
+        scrolledElement = await this._driver.element('html')
       }
       await this._jsExecutor.executeScript(
         'var e = arguments[0]; if (e != null) e.setAttribute("data-applitools-scroll", "true");',
-        scrolledElement.element,
+        scrolledElement,
       )
       const entireFrameOrElement = await fullPageCapture.getStitchedRegion(
         this._regionToCheck,
@@ -1274,16 +1224,16 @@ class EyesWDIO extends EyesBase {
 
       // Save the current frame path.
       const originalFramePosition =
-        originalFrameChain.size() > 0
+        originalFrameChain.size > 0
           ? originalFrameChain.getDefaultContentScrollPosition()
           : new Location(Location.ZERO)
 
-      await switchTo.defaultContent()
+      await this._driver.frameDefault()
 
       const scrollRootElement = await this.getScrollRootElement()
       await this._jsExecutor.executeScript(
         'var e = arguments[0]; if (e != null) e.setAttribute("data-applitools-scroll", "true");',
-        scrollRootElement.element,
+        scrollRootElement,
       )
       const fullPageImage = await fullPageCapture.getStitchedRegion(
         Region.EMPTY,
@@ -1291,7 +1241,7 @@ class EyesWDIO extends EyesBase {
         this._positionProviderHandler.get(),
       )
 
-      await switchTo.frames(originalFrameChain)
+      await this._driver.frames(originalFrameChain)
       result = await EyesWDIOScreenshot.fromScreenshotType(
         this._logger,
         this._driver,
@@ -1331,7 +1281,7 @@ class EyesWDIO extends EyesBase {
 
     if (this.getHideCaret() && activeElement != null) {
       try {
-        await this._driver.executeScript('arguments[0].focus();', activeElement)
+        await this._driver.execute('arguments[0].focus();', activeElement)
       } catch (err) {
         this._logger.verbose(`WARNING: Could not return focus to active element! ${err}`)
       }
@@ -1368,12 +1318,11 @@ class EyesWDIO extends EyesBase {
       return
     }
 
-    const originalFC = new FrameChain(this._logger, this._driver.getFrameChain())
-    const switchTo = this._driver.switchTo()
+    const originalFC = new FrameChain(this._logger, this._driver.frameChain)
 
     const that = this
     let elementBounds
-    const eyesRemoteWebElement = new EyesWebElement(this._logger, this._driver, element)
+    const eyesRemoteWebElement = new EyesWebElement(element, '', this._driver, this._logger)
     return eyesRemoteWebElement
       .getBounds()
       .then(async bounds => {
@@ -1395,8 +1344,8 @@ class EyesWDIO extends EyesBase {
               return EyesWebElement.equals(element, originalFC.peek())
             })
             .then(equals => {
-              if (originalFC.size() > 0 && !equals) {
-                return switchTo.frames(originalFC)
+              if (originalFC.size > 0 && !equals) {
+                return this._driver.frames(originalFC)
               }
             })
             .then(() => {
@@ -1412,12 +1361,12 @@ class EyesWDIO extends EyesBase {
    */
   _ensureFrameVisible() {
     const that = this
-    const originalFC = new FrameChain(this._logger, this._driver.getFrameChain())
-    const fc = new FrameChain(this._logger, this._driver.getFrameChain())
+    const originalFC = new FrameChain(this._logger, this._driver.frameChain)
+    const fc = new FrameChain(this._logger, this._driver.frameChain)
 
-    return ensureFrameVisibleLoop(this, this.getPositionProvider(), fc, this._driver.switchTo())
+    return ensureFrameVisibleLoop(this, this.getPositionProvider(), fc)
       .then(() => {
-        return that._driver.switchTo().frames(originalFC)
+        return that._driver.frames(originalFC)
       })
       .then(() => originalFC)
   }
@@ -1428,14 +1377,13 @@ class EyesWDIO extends EyesBase {
    */
   _getViewportScrollBounds() {
     const that = this
-    const originalFrameChain = new FrameChain(this._logger, this._driver.getFrameChain())
-    const switchTo = this._driver.switchTo()
-    return switchTo.defaultContent().then(() => {
+    const originalFrameChain = new FrameChain(this._logger, this._driver.frameChain)
+    return this._driver.frameDefault().then(() => {
       const spp = new ScrollPositionProvider(that._logger, that._jsExecutor)
       return spp.getCurrentPosition().then(location => {
         return that.getViewportSize().then(size => {
           const viewportBounds = new Region(location, size)
-          return switchTo.frames(originalFrameChain).then(() => viewportBounds)
+          return this._driver.frames(originalFrameChain).then(() => viewportBounds)
         })
       })
     })
@@ -1540,7 +1488,7 @@ class EyesWDIO extends EyesBase {
    * @param {By} element
    */
   setScrollRootElement(element) {
-    this._scrollRootElement = this._driver.findElement(element)
+    this._scrollRootElement = this._driver.element(element)
   }
 
   /**
@@ -1552,7 +1500,7 @@ class EyesWDIO extends EyesBase {
     if (!EyesWDIOUtils.isMobileDevice(this._driver)) {
       scrollRootElement = this._scrollRootElement
         ? this._scrollRootElement
-        : await this._driver.findElementByTagName('html')
+        : await this._driver.element('html')
     }
 
     return scrollRootElement
@@ -1604,7 +1552,7 @@ class EyesWDIO extends EyesBase {
   }
 
   getRemoteWebDriver() {
-    return this._driver.webDriver.remoteWebDriver
+    return this._driver.remoteWebDriver
   }
 
   /**
@@ -1783,11 +1731,11 @@ class EyesWDIO extends EyesBase {
  * @param switchTo
  * @return {Promise}
  */
-async function ensureFrameVisibleLoop(that, positionProvider, frameChain, switchTo) {
+async function ensureFrameVisibleLoop(that, positionProvider, frameChain) {
   return Promise.resolve().then(() => {
-    if (frameChain.size() > 0) {
-      return switchTo
-        .parentFrame()
+    if (frameChain.size > 0) {
+      return that._driver
+        .frameParent()
         .then(() => {
           const frame = frameChain.pop()
 
@@ -1797,7 +1745,7 @@ async function ensureFrameVisibleLoop(that, positionProvider, frameChain, switch
           return positionProvider.setPosition(frame.getLocation())
         })
         .then(() => {
-          return ensureFrameVisibleLoop(that, positionProvider, frameChain, switchTo)
+          return ensureFrameVisibleLoop(that, positionProvider, frameChain)
         })
     }
   })

@@ -1,10 +1,8 @@
 'use strict'
 
-const {ArgumentGuard, RectangleSize, Location} = require('@applitools/eyes-sdk-core')
+const {ArgumentGuard} = require('@applitools/eyes-sdk-core')
 const EyesWDIOUtils = require('../EyesWDIOUtils')
-const WDIOJSExecutor = require('../WDIOJSExecutor')
 const By = require('../By')
-const handleStaleElement = require('../wrappers/handleStaleElement')
 
 /**
  * Encapsulates a frame/iframe. This is a generic type class,
@@ -12,34 +10,9 @@ const handleStaleElement = require('../wrappers/handleStaleElement')
  * order to switch into the frame.
  */
 class Frame {
-  static async from(frameOrElement) {
-    if (frameOrElement instanceof Frame) {
-      frameOrElement._logger.verbose('Frame.from(frame)')
-      return new Frame(frameOrElement)
-    }
-    const element = frameOrElement
-    ArgumentGuard.notNull(element, 'element')
-    element._logger.verbose('Frame.from(element)')
-
-    const {size, innerSize, contentLocation} = await element.getAllDimensions()
-    const originalOverflow = await element.getOverflow()
-    const originalLocation = await EyesWDIOUtils.getCurrentScrollPosition(element._driver)
-
-    return new Frame({
-      logger: element._logger,
-      driver: element._driver,
-      element,
-      size,
-      innerSize,
-      location: contentLocation,
-      originalLocation,
-      originalOverflow,
-    })
-  }
-
   /**
    * @param {Logger} logger A Logger instance.
-   * @param {WebElement} element The web element for the frame, used as a element to switch into the frame.
+   * @param {EyesWebElement} element The web element for the frame, used as a element to switch into the frame.
    * @param {Location} location The location of the frame within the current frame.
    * @param {RectangleSize} size The frame element size (i.e., the size of the frame on the screen, not the internal document size).
    * @param {RectangleSize} innerSize The frame element inner size (i.e., the size of the frame actual size, without borders).
@@ -90,7 +63,7 @@ class Frame {
   }
 
   /**
-   * @return {WebElement}
+   * @return {EyesWebElement}
    */
   getReference() {
     return this._element
@@ -132,26 +105,26 @@ class Frame {
   }
 
   /**
-   * @param {WebElement} scrollRootElement
+   * @param {EyesWebElement} scrollRootElement
    */
   setScrollRootElement(scrollRootElement) {
     this._scrollRootElement = scrollRootElement
   }
 
   /**
-   * @return {WebElement}
+   * @return {EyesWebElement}
    */
   getScrollRootElement() {
     return this._scrollRootElement
   }
 
   /**
-   * @return {Promise<WebElement>}
+   * @return {Promise<EyesWebElement>}
    */
   async getForceScrollRootElement() {
     if (!this._scrollRootElement) {
       this._logger.verbose('no scroll root element. selecting default.')
-      this._scrollRootElement = await this._driver.findElement(By.css('html'))
+      this._scrollRootElement = await this._driver.element(By.css('html'))
     }
     return this._scrollRootElement
   }
@@ -161,11 +134,11 @@ class Frame {
    */
   async hideScrollbars() {
     const scrollRootElement = await this.getForceScrollRootElement()
-    this._logger.verbose('hiding scrollbars of element:', scrollRootElement.element)
+    this._logger.verbose('hiding scrollbars of element:', scrollRootElement.jsonElement)
     this._originalOverflow = await EyesWDIOUtils.hideScrollbars(
-      new WDIOJSExecutor(this._element.getDriver()),
+      this._element.driver.jsExecutor,
       200,
-      scrollRootElement.element,
+      scrollRootElement,
     )
   }
 

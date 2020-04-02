@@ -1,94 +1,84 @@
-'use strict'
+const {
+  ArgumentGuard,
+  TypeUtils,
+  EyesJsBrowserUtils,
+  MutableImage,
+  RectangleSize,
+  Location,
+} = require('@applitools/eyes-sdk-core')
 
-const {ArgumentGuard, MutableImage} = require('@applitools/eyes-sdk-core')
 const FrameChain = require('../frames/FrameChain')
+const Frame = require('../frames/Frame')
+const SeleniumService = require('../services/selenium/SeleniumService')
 const EyesWebElement = require('./EyesWebElement')
-const EyesTargetLocator = require('./EyesTargetLocator')
-const EyesNullTargetLocator = require('./EyesNullTargetLocator')
-const WebElement = require('./WebElement')
 const EyesWDIOUtils = require('../EyesWDIOUtils')
+const WDIOJSExecutor = require('../WDIOJSExecutor')
+const ScrollPositionProvider = require('../positioning/ScrollPositionProvider')
 const By = require('../By')
 
-/*
- ---
-
- name: EyesWebDriver
-
- description: Wraps a Remote Web Driver.
-
- ---
- */
-
 class EyesWebDriver {
-  /**
-   *
-   * C'tor = initializes the module settings
-   *
-   * @constructor
-   * @param {Object} logger
-   * @param {WebDriver} webDriver
-   * @param {Eyes|EyesWDIO|EyesVisualGrid} eyes An instance of Eyes
-   **/
-  constructor(logger, webDriver, eyes) {
-    /** @type {WebDriver} */
-    this._tsInstance = webDriver
-    /** @type {Eyes} */
+  constructor(webdriver, eyes, logger) {
+    if (webdriver instanceof EyesWebDriver) {
+      return webdriver
+    }
+
+    this._webdriver = webdriver.getPrototype()
+    this._isMobile = webdriver.isMobile
+    this._isIOS = webdriver.isIOS
+    this._isAndroid = webdriver.isAndroid
+    this._desiredCapabilities = webdriver.desiredCapabilities
+    this._seleniumService = new SeleniumService(webdriver.requestHandler)
     this._eyes = eyes
     this._logger = logger
-
-    this._frameChain = new FrameChain(this._logger, null)
-    // this._defaultContentViewportSize = null;
+    this._jsExecutor = new WDIOJSExecutor(this)
+    this._scrollPosition = new ScrollPositionProvider(this._logger, this._jsExecutor)
+    this._frameChain = new FrameChain(this._logger)
     this._rotation = null
-  }
 
-  async getTargetFrame() {
-    const {value: element} = await this.remoteWebDriver.execute(() => {
-      // eslint-disable-next-line
-      return window.frameElement
+    return new Proxy(this, {
+      get(target, key, receiver) {
+        if (key in target) {
+          return Reflect.get(target, key, receiver)
+        }
+        return Reflect.get(target._webdriver, key)
+      },
     })
-
-    return element
   }
 
-  //noinspection JSUnusedGlobalSymbols
+  get desiredCapabilities() {
+    return this._desiredCapabilities
+  }
+
+  get isMobile() {
+    return this._isMobile
+  }
+
+  get isAndroid() {
+    return this._isAndroid
+  }
+
+  get isIOS() {
+    return this._isIOS
+  }
+
+  get remoteWebDriver() {
+    return this._webdriver
+  }
+
   get eyes() {
     return this._eyes
   }
 
-  //noinspection JSUnusedGlobalSymbols
-  set eyes(eyes) {
-    this._eyes = eyes
+  get jsExecutor() {
+    return this._jsExecutor
   }
 
-  //noinspection JSUnusedGlobalSymbols
-  get webDriver() {
-    return this._tsInstance
+  get frameChain() {
+    return this._frameChain
   }
 
-  get remoteWebDriver() {
-    return this._tsInstance.remoteWebDriver
-  }
-
-  /**
-   * @return {number} The degrees by which to rotate.
-   */
   get rotation() {
     return this._rotation
-  }
-
-  /** @override */
-  sleep(ms) {
-    return this.webDriver.sleep(ms)
-  }
-
-  /** @override */
-  getCapabilities() {
-    return this.webDriver.getCapabilities()
-  }
-
-  /** @override */
-  end() {
-    return this.webDriver.end()
   }
 
   /**
@@ -98,139 +88,204 @@ class EyesWebDriver {
     this._rotation = rotation
   }
 
-  /**
-   * @param {boolean} [forceQuery=false] If true, we will perform the query even if we have a cached viewport size.
-   * @return {Promise.<RectangleSize>} The viewport size of the default content (outer most frame).
-   */
-  async getDefaultContentViewportSize(forceQuery = false) {
-    this._logger.verbose('getDefaultContentViewportSize()')
-    if (this._defaultContentViewportSize && !forceQuery) {
-      this._logger.verbose('Using cached viewport size: ', this._defaultContentViewportSize)
-      return this._defaultContentViewportSize
-    }
-
-    const switchTo = this.switchTo()
-    const currentFrames = new FrameChain(this._logger, this.getFrameChain())
-
-    // Optimization
-    if (currentFrames.size() > 0) {
-      await switchTo.defaultContent()
-    }
-
-    this._logger.verbose('Extracting viewport size...')
-    this._defaultContentViewportSize = await EyesWDIOUtils.getViewportSizeOrDisplaySize(
-      this._logger,
-      this,
-    )
-    this._logger.verbose('Done! Viewport size: ', this._defaultContentViewportSize)
-
-    if (currentFrames.size() > 0) {
-      await switchTo.frames(currentFrames)
-    }
-
-    return this._defaultContentViewportSize
-  }
-
-  async getUserAgent() {
-    try {
-      let {value: userAgent} = await this.remoteWebDriver.execute('return navigator.userAgent')
-      this._logger.verbose('user agent: ' + userAgent)
-      return userAgent
-    } catch (e) {
-      this._logger.verbose('Failed to obtain user-agent string')
-      return null
-    }
-  }
-
-  /**
-   * @returns {FrameChain}
-   */
-  getFrameChain() {
-    return this._frameChain
-  }
-
-  /**
-   * @override
-   * @return {EyesTargetLocator} The target locator interface for this instance.
-   */
-  switchTo() {
-    this._logger.verbose('switchTo()')
-    if (!EyesWDIOUtils.isMobileDevice(this.remoteWebDriver)) {
-      return new EyesTargetLocator(this._logger, this, this.webDriver.switchTo())
-    } else {
-      return new EyesNullTargetLocator(this._logger, this)
-    }
-  }
-
-  /**
-   * @param {By} locator
-   * @return {Promise.<EyesWebElement>}
-   */
-  async findElement(locator) {
-    const result = await this.remoteWebDriver.element(locator.value)
-    const {value: element} = result
+  async element(locator) {
+    const selector = locator.value || locator
+    const result = await this._webdriver.element(selector)
+    const element = result.value
     if (element === null && result.type === 'NoSuchElement' && result.state === 'failure') {
       throw new Error(result.message)
     }
-    return new EyesWebElement(
-      this._logger,
-      this,
-      new WebElement(this._tsInstance, element, locator),
-    )
+    return new EyesWebElement(element, locator, this, this._logger)
   }
 
-  /**
-   * @param {By} locator
-   * @return {Promise.<EyesWebElement[]>}
-   */
-  async findElements(locator) {
-    const {value: elements} = await this.remoteWebDriver.elements(locator.value)
+  async elements(locator) {
+    const selector = locator.value || locator
+    const result = await this._webdriver.elements(selector)
+    const elements = result.value
+    return elements.map(element => new EyesWebElement(element, locator, this, this._logger))
+  }
 
-    return elements.map(element => {
-      return new EyesWebElement(
-        this._logger,
-        this,
-        new WebElement(this._tsInstance, element, locator),
+  async execute(script, ...args) {
+    try {
+      const result = await this._webdriver.execute(
+        script,
+        ...args.map(arg => (arg instanceof EyesWebElement ? arg.jsonElement : arg)),
       )
+      this._logger.verbose('Done!')
+      return result.value
+    } catch (err) {
+      this._logger.verbose('WARNING: execute script error: ' + err)
+      throw err
+    }
+  }
+
+  async executeAsync(script, ...args) {
+    try {
+      const result = await this._webdriver.executeAsync(
+        script,
+        ...args.map(arg => (arg instanceof EyesWebElement ? arg.jsonElement : arg)),
+      )
+      this._logger.verbose('Done!')
+      return result.value
+    } catch (err) {
+      this._logger.verbose('WARNING: execute async script error: ' + err)
+      throw err
+    }
+  }
+
+  async frame(arg) {
+    if (!arg) {
+      this._logger.verbose('EyesWebDriver.frame(null)')
+      return this.frameDefault()
+    }
+
+    let frame
+    if (TypeUtils.isInteger(arg)) {
+      const frameIndex = arg
+      this._logger.verbose(`EyesWebDriver.frame(${frameIndex})`)
+      this._logger.verbose('Getting frames list...')
+      const frames = await this.elements('frame, iframe')
+      if (frameIndex > frames.length) {
+        throw new TypeError(`Frame index [${frameIndex}] is invalid!`)
+      }
+      this._logger.verbose('Done! getting the specific frame...')
+      frame = await this.frameInit(frames[frameIndex])
+    } else if (TypeUtils.isString(arg)) {
+      const frameNameOrId = arg
+      this._logger.verbose(`EyesWebDriver.frame(${frameNameOrId})`)
+      this._logger.verbose('Getting frames by name...')
+      let frames = await this.elements(By.name(frameNameOrId))
+      if (frames.length === 0) {
+        this._logger.verbose('No frames Found! Trying by id...')
+        frames = await this.elements(By.id(frameNameOrId))
+        if (frames.length === 0) {
+          throw new TypeError(`No frame with name or id '${frameNameOrId}' exists!`)
+        }
+      }
+      frame = await this.frameInit(frames[0])
+    } else if (arg instanceof EyesWebElement) {
+      this._logger.verbose('EyesWebDriver.frame(wdioElement)')
+      frame = await this.frameInit(arg)
+    } else if (EyesWebElement.isWDIOElement(arg)) {
+      this._logger.verbose('EyesWebDriver.frame(wdioElement)')
+      frame = await this.frameInit(new EyesWebElement(arg, '', this, this._logger))
+    } else if (arg instanceof Frame) {
+      frame = arg
+    } else {
+      throw new TypeError('Method called with argument of unknown type!')
+    }
+
+    this._logger.verbose('Done! Switching to frame...')
+    await this._webdriver.frame(frame.getReference().jsonElement)
+    await this._frameChain.push(frame)
+    this._logger.verbose('Done!')
+  }
+
+  async frameParent() {
+    this._logger.verbose('EyesWebDriver.frameParent()')
+    await this._webdriver.frameParent()
+    if (this._frameChain.size > 0) {
+      this._logger.verbose('Making preparations...')
+      this._frameChain.pop()
+    }
+    this._logger.verbose('Done! Switching to parent frame..')
+  }
+
+  async frameDefault() {
+    this._logger.verbose('EyesWebDriver.frameDefault()')
+    if (this._frameChain.size > 0) {
+      this._logger.verbose('Making preparations...')
+      this._frameChain.clear()
+    }
+    this._logger.verbose('Done! Switching to default content...')
+    await this._webdriver.frame()
+    this._logger.verbose('Done!')
+  }
+
+  async frameInit(element) {
+    const [
+      rect,
+      [clientWidth, clientHeight],
+      [borderLeftWidth, borderTopWidth],
+      originalOverflow,
+      originalLocation,
+    ] = await EyesWebElement.refreshElement(() => {
+      return Promise.all([
+        element.getRect(),
+        element.getProperties(['clientWidth', 'clientHeight']),
+        element.getCssProperties(['border-left-width', 'border-top-width']),
+        element.getOverflow(),
+        EyesWDIOUtils.getCurrentScrollPosition(element.driver.jsExecutor),
+      ])
+    }, element)
+
+    return new Frame({
+      logger: this._logger,
+      driver: this,
+      element,
+      size: new RectangleSize(Math.round(rect.width), Math.round(rect.height)),
+      innerSize: new RectangleSize(Math.round(clientWidth), Math.round(clientHeight)),
+      location: new Location(
+        Math.round(rect.x + Number.parseFloat(borderLeftWidth)),
+        Math.round(rect.y + Number.parseFloat(borderTopWidth)),
+      ),
+      originalLocation,
+      originalOverflow,
     })
   }
 
-  /**
-   * @param {String} id
-   * @return {Promise.<EyesWebElement>} A promise that will resolve to a EyesWebElement.
-   */
-  findElementById(id) {
-    return this.findElement(By.id(id))
+  async frames(arg) {
+    if (arg instanceof FrameChain) {
+      const frameChain = arg
+      this._logger.verbose('EyesWebDriver.frames(frameChain)')
+      await this.frameDefault()
+      for (const frame of frameChain) {
+        await this.frame(frame.getReference())
+      }
+      this._logger.verbose('Done switching into nested frames!')
+    } else if (TypeUtils.isArray(arg)) {
+      const framePath = arg
+      this._logger.verbose('EyesWebDriver.frames(framesPath)')
+      for (const frameNameOrId of framePath) {
+        await this.frame(frameNameOrId)
+      }
+      this._logger.verbose('Done switching into nested frames!')
+    }
   }
 
-  /**
-   * @param {String} id
-   * @return {!Promise.<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsById(id) {
-    return this.findElements(By.id(id))
+  // TODO try to remove
+  async framesDoScroll(frameChain) {
+    this._logger.verbose('EyesWebDriver.framesDoScroll(frameChain)')
+    await this.frameDefault()
+    this._frameDefaultPositionMemento = await this._scrollPosition.getState()
+    for (const frame of frameChain) {
+      this._logger.verbose('Scrolling by parent scroll position...')
+      const frameLocation = frame.getLocation()
+      await this._scrollPosition.setPosition(frameLocation)
+      await this.frame(frame)
+    }
+    this._logger.verbose('Done switching into nested frames!')
   }
 
-  /**
-   * @param {String} name
-   * @return {Promise.<EyesWebElement>} A promise that will resolve to a EyesWebElement.
-   */
-  findElementByName(name) {
-    return this.findElement(By.name(name))
+  // TODO
+  async framesRefresh() {
+    const currentFrame = this._frameChain.peek()
+    const framePath = []
+    let targetFrame
+    while ((targetFrame = await this.getTargetFrame())) {
+      if (currentFrame && currentFrame.getReference().elementId === targetFrame.ELEMENT) break
+      await this.frameParent()
+      const xpath = await EyesJsBrowserUtils.getElementXpath(this._jsExecutor, targetFrame)
+      framePath.unshift(new EyesWebElement(targetFrame, By.xPath(`/${xpath}`), this, this._logger))
+    }
+
+    await this.frames(framePath)
   }
 
-  /**
-   * @param {String} name
-   * @return {!Promise.<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsByName(name) {
-    return this.findElements(By.name(name))
-  }
-
-  /** @override */
+  // TODO
   async takeScreenshot() {
     // Get the image as base64.
-    const screenshot64 = await this._tsInstance.takeScreenshot()
+    const screenshot64 = await this._webdriver.saveScreenshot()
     let screenshot = new MutableImage(screenshot64)
     screenshot = await EyesWebDriver.normalizeRotation(
       this._logger,
@@ -241,234 +296,64 @@ class EyesWebDriver {
     return screenshot.getImageBase64()
   }
 
-  /**
-   *
-   * @param {String} script
-   * @param varArgs
-   * @returns {*}
-   * @override
-   */
-  async executeScript(script, ...varArgs) {
+  async getUserAgent() {
     try {
-      const result = await this.remoteWebDriver.execute(script, ...varArgs)
-      this._logger.verbose('Done!')
-      return result.value
+      let {value: userAgent} = await this._webdriver.execute('return navigator.userAgent')
+      this._logger.verbose('user agent: ' + userAgent)
+      return userAgent
     } catch (e) {
-      this._logger.verbose('WARNING: execute script error: ' + e)
-      throw e
+      this._logger.verbose('Failed to obtain user-agent string')
+      return null
     }
   }
 
-  /** @override */
-  async executeAsyncScript(script, ...varArgs) {
-    try {
-      const result = await this.remoteWebDriver.executeAsync(script, ...varArgs)
-      this._logger.verbose('Done!')
-      return result.value
-    } catch (e) {
-      this._logger.verbose('WARNING: execute script error: ' + e)
-      throw e
+  async getTargetFrame() {
+    const {value: element} = await this._webdriver.execute('return window.frameElement')
+    return element
+  }
+
+  // TODO
+  async getDefaultContentViewportSize(forceQuery = false) {
+    this._logger.verbose('getDefaultContentViewportSize()')
+    if (this._defaultContentViewportSize && !forceQuery) {
+      this._logger.verbose('Using cached viewport size: ', this._defaultContentViewportSize)
+      return this._defaultContentViewportSize
     }
-  }
-
-  /**
-   * @param {By} selector
-   * @return {Promise<void>}
-   */
-  async click(selector) {
-    await this.remoteWebDriver.click(selector.value)
-  }
-
-  /**
-   * @param {String} [url]
-   * @return {*|Promise}
-   * @override
-   */
-  url(url) {
-    this._frameChain.clear()
-    return this.webDriver.url(url)
+    const currentFrames = this._frameChain.clone()
+    if (currentFrames.size > 0) {
+      await this.frameDefault()
+    }
+    this._logger.verbose('Extracting viewport size...')
+    this._defaultContentViewportSize = await EyesWDIOUtils.getViewportSizeOrDisplaySize(
+      this._logger,
+      this,
+    )
+    this._logger.verbose('Done! Viewport size: ', this._defaultContentViewportSize)
+    if (currentFrames.size > 0) {
+      await this.frames(currentFrames)
+    }
+    return this._defaultContentViewportSize
   }
 
   async getCurrentUrl() {
-    if (!EyesWDIOUtils.isMobileDevice(this.remoteWebDriver)) {
-      return await this.getUrl()
+    if (!EyesWDIOUtils.isMobileDevice(this._webdriver)) {
+      return this._webdriver.getUrl()
     } else {
       return null
     }
   }
 
-  /** @override */
-  getUrl() {
-    return this.webDriver.getUrl()
-  }
-
-  /** @override */
-  close() {
-    return this.webDriver.close()
-  }
-
-  /** @override */
-  getTitle() {
-    return this.webDriver.getTitle()
+  async url(url) {
+    this._frameChain.clear()
+    return this._webdriver.url(url)
   }
 
   /**
-   * Rotates the image as necessary. The rotation is either manually forced by passing a non-null ImageRotation, or automatically inferred.
-   *
-   * @param {Logger} logger The underlying driver which produced the screenshot.
-   * @param {WebDriver} driver The underlying driver which produced the screenshot.
-   * @param {MutableImage} image The image to normalize.
-   * @param {ImageRotation} rotation The degrees by which to rotate the image:
-   *                 positive values = clockwise rotation,
-   *                 negative values = counter-clockwise,
-   *                 0 = force no rotation,
-   *                 null = rotate automatically as needed.
-   * @return {Promise.<MutableImage>} A normalized image.
+   * @param {Command} cmd
+   * @returns {Promise<void>}
    */
-  static async normalizeRotation(logger, driver, image, rotation) {
-    ArgumentGuard.notNull(logger, 'logger')
-    ArgumentGuard.notNull(driver, 'driver')
-    ArgumentGuard.notNull(image, 'image')
-
-    let degrees
-    if (rotation) {
-      degrees = await rotation.getRotation()
-    } else {
-      degrees = await EyesWDIOUtils.tryAutomaticRotation(logger, driver, image)
-    }
-    return image.rotate(degrees)
-  }
-
-  /** @override */
-  getSource() {
-    return this.webDriver.getSource()
-  }
-
-  /** @override */
-  windowHandle() {
-    return this.webDriver.windowHandle()
-  }
-
-  /** @override */
-  navigate() {
-    //todo
-    // return this.webDriver.navigate();
-    throw new TypeError('navigate method is not implemented!')
-  }
-
-  /** @override */
-  manage() {
-    //todo
-    // return this.webDriver.manage();
-    throw new TypeError('manage method is not implemented!')
-  }
-
-  /**
-   * @param {string} className
-   * @return {Promise.<EyesWebElement>} A promise that will resolve to a EyesWebElement.
-   */
-  findElementByClassName(_className) {
-    //todo
-    // return this.findElement(by.By.className(className));
-    throw new TypeError('findElementByClassName method is not implemented!')
-  }
-
-  /**
-   * @param {string} className
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsByClassName(_className) {
-    //todo
-    // return this.findElements(by.By.className(className));
-    throw new TypeError('findElementsByClassName method is not implemented!')
-  }
-
-  /**
-   * @param {string} cssSelector
-   * @return {Promise.<EyesWebElement>} A promise that will resolve to a EyesWebElement.
-   */
-  findElementByCssSelector(cssSelector) {
-    return this.findElement(By.cssSelector(cssSelector))
-  }
-
-  /**
-   * @param {string} cssSelector
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsByCssSelector(cssSelector) {
-    return this.findElements(By.cssSelector(cssSelector))
-  }
-
-  /**
-   * @param {string} linkText
-   * @return {Promise.<EyesWebElement>} A promise that will resolve to a EyesWebElement.
-   */
-  findElementByLinkText(_linkText) {
-    //todo
-    // return this.findElement(by.By.linkText(linkText));
-    throw new TypeError('findElementByLinkText method is not implemented!')
-  }
-
-  /**
-   * @param {string} linkText
-   * @return {!Promise.<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsByLinkText(_linkText) {
-    //todo
-    // return this.findElements(by.By.linkText(linkText));
-    throw new TypeError('findElementsByLinkText method is not implemented!')
-  }
-
-  /**
-   * @param {string} partialLinkText
-   * @return {Promise.<EyesWebElement>} A promise that will resolve to a EyesWebElement.
-   */
-  findElementByPartialLinkText(_partialLinkText) {
-    //todo
-    // return this.findElement(by.By.partialLinkText(partialLinkText));
-    throw new TypeError('findElementByPartialLinkText method is not implemented!')
-  }
-
-  /**
-   * @param {string} partialLinkText
-   * @return {!Promise.<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsByPartialLinkText(_partialLinkText) {
-    //todo
-    // return this.findElements(by.By.partialLinkText(partialLinkText));
-    throw new TypeError('findElementsByPartialLinkText method is not implemented!')
-  }
-
-  /**
-   * @param {string} tagName
-   * @return {Promise.<EyesWebElement>} A promise that will resolve to a EyesWebElement.
-   */
-  findElementByTagName(tagName) {
-    return this.findElement(By.tagName(tagName))
-  }
-
-  /**
-   * @param {string} tagName
-   * @return {!Promise.<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsByTagName(tagName) {
-    return this.findElements(By.tagName(tagName))
-  }
-
-  /**
-   * @param {string} xpath
-   * @return {Promise.<EyesWebElement>} A promise that will resolve to a EyesWebElement.
-   */
-  findElementByXPath(xpath) {
-    return this.findElement(By.xPath(xpath))
-  }
-
-  /**
-   * @param {string} xpath
-   * @return {!Promise<!Array<!EyesWebElement>>} A promise that will resolve to an array of EyesWebElements.
-   */
-  findElementsByXPath(xpath) {
-    return this.findElements(By.xPath(xpath))
+  executeCommand(cmd) {
+    return this._seleniumService.execute(cmd)
   }
 }
 

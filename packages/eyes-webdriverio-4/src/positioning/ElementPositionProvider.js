@@ -23,7 +23,7 @@ class ElementPositionProvider extends PositionProvider {
 
     this._logger = logger
     this._element =
-      element instanceof EyesWebElement ? element : new EyesWebElement(logger, driver, element)
+      element instanceof EyesWebElement ? element : new EyesWebElement(element, '', driver, logger)
 
     this._logger.verbose('creating ElementPositionProvider')
   }

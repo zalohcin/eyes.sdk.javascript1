@@ -3,7 +3,7 @@
 const {Location} = require('@applitools/eyes-sdk-core')
 
 const ElementPositionProvider = require('./ElementPositionProvider')
-const WebElement = require('./../wrappers/WebElement')
+const EyesWebElement = require('../wrappers/EyesWebElement')
 const EyesWDIOUtils = require('./../EyesWDIOUtils')
 
 class CssTranslateElementPositionProvider extends ElementPositionProvider {
@@ -67,10 +67,7 @@ class CssTranslateElementPositionProvider extends ElementPositionProvider {
       })
       .then(
         /** @type {Location}*/ transformsOffset => {
-          const webElementPromise = WebElement.findElement(
-            that._driver.webDriver,
-            that.element.getWebElement()._locator,
-          )
+          const webElementPromise = EyesWebElement.findElement(that._driver, that.element.locator)
 
           const position = transformsOffset.offsetNegative(outOfEyes)
           return EyesWDIOUtils.elementTranslateTo(
@@ -93,10 +90,7 @@ class CssTranslateElementPositionProvider extends ElementPositionProvider {
 
     const that = this
 
-    const webElementPromise = WebElement.findElement(
-      this._driver.webDriver,
-      this.element.getWebElement()._locator,
-    )
+    const webElementPromise = EyesWebElement.findElement(this._driver, this.element.locator)
 
     return webElementPromise
       .then(webElement => {

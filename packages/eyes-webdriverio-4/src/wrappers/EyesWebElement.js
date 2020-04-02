@@ -1,259 +1,166 @@
 'use strict'
 
-const WebElement = require('./WebElement')
-const FrameChain = require('../frames/FrameChain')
-const {getAbsoluteElementLocation} = require('./web-element-util')
-
 const {
   Region,
   MouseTrigger,
   ArgumentGuard,
+  TypeUtils,
   CoordinatesType,
   Location,
   RectangleSize,
 } = require('@applitools/eyes-sdk-core')
+const FrameChain = require('../frames/FrameChain')
+const command = require('../services/selenium/Command')
+const By = require('../By')
 
-const JS_GET_SCROLL_LEFT = 'return arguments[0].scrollLeft;'
-
-const JS_GET_SCROLL_TOP = 'return arguments[0].scrollTop;'
-
-const JS_GET_SCROLL_WIDTH = 'return arguments[0].scrollWidth;'
-
-const JS_GET_SCROLL_HEIGHT = 'return arguments[0].scrollHeight;'
-
-const JS_GET_OVERFLOW = 'return arguments[0].style.overflow;'
-
-const JS_GET_CLIENT_WIDTH = 'return arguments[0].clientWidth;'
-const JS_GET_CLIENT_HEIGHT = 'return arguments[0].clientHeight;'
-
-/**
- * @param {String} styleProp
- * @return {String}
- */
-const JS_GET_COMPUTED_STYLE_FORMATTED_STR = function getScript(styleProp) {
-  return `var elem = arguments[0], styleProp = '${styleProp}';
-    if (window.getComputedStyle) {
-       return window.getComputedStyle(elem, null).getPropertyValue(styleProp);
-    } else if (elem.currentStyle) {
-       return elem.currentStyle[styleProp];
-    } else {
-       return null;
-    }`
-}
-
-/**
- * @param {int} scrollLeft
- * @param {int} scrollTop
- * @return {String}
- */
-const JS_SCROLL_TO_FORMATTED_STR = function getScript(scrollLeft, scrollTop) {
-  return (
-    'arguments[0].scrollLeft = ' + scrollLeft + '; ' + 'arguments[0].scrollTop = ' + scrollTop + ';'
-  )
-}
-
-/**
- * @param {String} overflow
- * @return {String}
- */
-const JS_SET_OVERFLOW_FORMATTED_STR = function getScript(overflow) {
-  return "arguments[0].style.overflow = '" + overflow + "'"
-}
+const WEB_ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
 
 /**
  * Wraps a Webdriverio Web Element.
  */
-class EyesWebElement extends WebElement {
+class EyesWebElement {
   /**
+   * @param {Object} element
+   * @param {By|String} locator
+   * @param {EyesWebDriver} driver
    * @param {Logger} logger
-   * @param {EyesWebDriver} eyesDriver
-   * @param {WebElement} webElement
    *
    **/
-  constructor(logger, eyesDriver, webElement) {
+  constructor(element, locator, driver, logger) {
+    ArgumentGuard.notNull(element, 'element')
+    ArgumentGuard.notNull(locator, 'locator')
+    ArgumentGuard.notNull(driver, 'driver')
     ArgumentGuard.notNull(logger, 'logger')
-    ArgumentGuard.notNull(eyesDriver, 'eyesDriver')
-    ArgumentGuard.notNull(webElement, 'webElement')
 
-    if (webElement instanceof EyesWebElement) {
-      return webElement
+    if (element instanceof EyesWebElement) {
+      return element
     }
 
-    super(eyesDriver.webDriver, webElement.element, webElement.locator)
-
+    if (element.value && element.selector) {
+      this._element = element.value
+      this._locator = element.selector
+    } else {
+      this._element = element
+      this._locator = locator
+    }
+    /** @type {EyesWebDriver}*/
+    this._driver = driver
     /** @type {Logger}*/
     this._logger = logger
-    /** @type {EyesWebDriver}*/
-    this._driver = eyesDriver
     /** @type {FrameChain} */
-    this._frameChain = new FrameChain(this._logger, this._driver.getFrameChain())
+    this._frameChain = new FrameChain(this._logger, this._driver.frameChain)
   }
 
-  /**
-   * Refresh the element by locator and frame chain.
-   */
+  get elementId() {
+    return this._element.ELEMENT || this._element[WEB_ELEMENT_ID]
+  }
+
+  get jsonElement() {
+    return {
+      [WEB_ELEMENT_ID]: this.elementId,
+      ELEMENT: this.elementId,
+    }
+  }
+
+  get driver() {
+    return this._driver
+  }
+
   async refresh() {
-    const originalFrameChain = new FrameChain(this._logger, this._driver.getFrameChain())
-    const switchTo = this._driver.switchTo()
+    const originalFrameChain = this._driver.frameChain.clone()
     const isSameFrameChain = FrameChain.isSameFrameChain(originalFrameChain, this._frameChain)
     if (!isSameFrameChain) {
-      if (originalFrameChain.size() > 0) {
-        await switchTo.defaultContent()
-      }
-      if (this._frameChain.size() > 0) {
-        await switchTo.frames(this._frameChain)
-      }
+      await this._driver.frames(this._frameChain)
     }
-
-    const {value: element} = await this._driver.remoteWebDriver.element(this._locator.value)
+    const selector = this._locator.value || this._locator
+    const {value: element} = await this._driver.remoteWebDriver.element(selector)
     if (element) {
       this._element = element
     }
-
     if (!isSameFrameChain) {
-      if (this._frameChain.size() > 0) {
-        await switchTo.defaultContent()
-      }
-      if (originalFrameChain.size() > 0) {
-        await switchTo.frames(originalFrameChain)
-      }
+      await this._driver.frames(originalFrameChain)
     }
     return Boolean(element)
   }
 
-  /**
-   * @return {Promise.<Region>}
-   */
   async getBounds() {
-    const location = await this.getLocation()
-    const size = await this.getSize()
-
-    let left = location.getX()
-    let top = location.getY()
-    let width = 0
-    let height = 0
-
-    if (size) {
-      width = size.getWidth()
-      height = size.getHeight()
-    }
-
+    const {value: rect} = await this._driver.elementIdRect(this.elementId)
+    let left = Math.ceil(rect && rect.x ? rect.x : 0)
+    let top = Math.ceil(rect && rect.y ? rect.y : 0)
+    let width = Math.ceil(rect && rect.width ? rect.width : 0)
+    let height = Math.ceil(rect && rect.height ? rect.height : 0)
     if (left < 0) {
       width = Math.max(0, width + left)
       left = 0
     }
-
     if (top < 0) {
       height = Math.max(0, height + top)
       top = 0
     }
-
     return new Region(left, top, width, height, CoordinatesType.CONTEXT_RELATIVE)
   }
 
-  /**
-   * Returns the computed value of the style property for the current element.
-   *
-   * @param {String} propStyle The style property which value we would like to extract.
-   * @return {Promise.<String>} The value of the style property of the element, or {@code null}.
-   */
-  async getComputedStyle(propStyle) {
-    try {
-      return await this.executeScript(JS_GET_COMPUTED_STYLE_FORMATTED_STR(propStyle))
-    } catch (e) {
-      this._logger.verbose('WARNING: getComputedStyle error: ' + e)
-      throw e
-    }
+  async getRect() {
+    const {value: size} = await this._driver.elementIdRect(this.elementId)
+    return size
   }
 
-  /**
-   * @param {String} propStyle The style property which value we would like to extract.
-   * @return {Promise.<int>} The integer value of a computed style.
-   */
-  async getComputedStyleInteger(propStyle) {
-    try {
-      const value = await this.getComputedStyle(propStyle)
-      return Math.round(parseFloat(value.trim().replace('px', '')))
-    } catch (e) {
-      this._logger.log(`WARNING: getComputedStyleInteger error: ${e}`)
-      throw e
-    }
+  async getSize() {
+    const {value: size} = await this._driver.elementIdSize(this.elementId)
+    const width = Math.ceil(size && size.width ? size.width : 0)
+    const height = Math.ceil(size && size.height ? size.height : 0)
+    return new RectangleSize(width, height)
   }
 
-  /**
-   * @return {Promise.<int>} The value of the scrollLeft property of the element.
-   */
-  async getScrollLeft() {
-    const value = await this.executeScript(JS_GET_SCROLL_LEFT)
-    return Math.ceil(parseFloat(value))
+  async getLocation() {
+    const r = await this._driver.elementIdLocation(this.elementId)
+    const {value: location} = r
+    const x = Math.ceil(location && location.x ? location.x : 0)
+    const y = Math.ceil(location && location.y ? location.y : 0)
+    return new Location(x, y)
   }
 
-  /**
-   * @return {Promise.<int>} The value of the scrollTop property of the element.
-   */
-  async getScrollTop() {
-    const value = await this.executeScript(JS_GET_SCROLL_TOP)
-    return Math.ceil(parseFloat(value))
+  async getCssProperty(cssPropertyName) {
+    return await this.execute(`
+      var elem = arguments[0], styleProp = '${cssPropertyName}';
+      if (window.getComputedStyle) {
+          return window.getComputedStyle(elem, null).getPropertyValue(styleProp);
+      } else if (elem.currentStyle) {
+          return elem.currentStyle[styleProp];
+      } else {
+          return null;
+      }
+    `)
   }
 
-  /**
-   * @return {Promise.<int>} The value of the scrollWidth property of the element.
-   */
-  async getScrollWidth() {
-    const value = await this.executeScript(JS_GET_SCROLL_WIDTH)
-    return Math.ceil(parseFloat(value))
+  async getCssProperties(cssPropertyNames) {
+    return this.execute(`
+      var elem = arguments[0];
+      if (window.getComputedStyle) {
+        const computedStyle = window.getComputedStyle(elem, null);
+        return [${cssPropertyNames
+          .map(cssPropertyName => `computedStyle.getPropertyValue('${cssPropertyName}')`)
+          .join(',')}];
+      } else if (elem.currentStyle) {
+        return [${cssPropertyNames
+          .map(cssPropertyName => `elem.currentStyle['${cssPropertyName}']`)
+          .join(',')}];
+      } else {
+        return [];
+      }
+    `)
   }
 
-  /**
-   * @return {Promise.<int>} The value of the scrollHeight property of the element.
-   */
-  async getScrollHeight() {
-    const value = await this.executeScript(JS_GET_SCROLL_HEIGHT)
-    return Math.ceil(parseFloat(value))
+  async getProperty(propertyName) {
+    const property = await this.execute(`return arguments[0]['${propertyName}'];`)
+    return property
   }
 
-  /**
-   * @return {Promise.<int>}
-   */
-  async getClientWidth() {
-    const value = await this.executeScript(JS_GET_CLIENT_WIDTH)
-    return Math.ceil(parseFloat(value))
-  }
-
-  /**
-   * @return {Promise.<int>}
-   */
-  async getClientHeight() {
-    const value = await this.executeScript(JS_GET_CLIENT_HEIGHT)
-    return Math.ceil(parseFloat(value))
-  }
-
-  /**
-   * @return {Promise.<int>} The width of the left border.
-   */
-  getBorderLeftWidth() {
-    return this.getComputedStyleInteger('border-left-width')
-  }
-
-  /**
-   * @return {Promise.<int>} The width of the right border.
-   */
-  getBorderRightWidth() {
-    return this.getComputedStyleInteger('border-right-width')
-  }
-
-  /**
-   * @return {Promise.<int>} The width of the top border.
-   */
-  getBorderTopWidth() {
-    return this.getComputedStyleInteger('border-top-width')
-  }
-
-  /**
-   * @return {Promise.<int>} The width of the bottom border.
-   */
-  getBorderBottomWidth() {
-    return this.getComputedStyleInteger('border-bottom-width')
+  async getProperties(propertyNames) {
+    const properties = await this.execute(`return [
+      ${propertyNames.map(propertyName => `arguments[0]['${propertyName}']`).join(',')}
+    ];`)
+    return properties
   }
 
   /**
@@ -263,14 +170,17 @@ class EyesWebElement extends WebElement {
    * @return {Promise}
    */
   scrollTo(location) {
-    return this.executeScript(JS_SCROLL_TO_FORMATTED_STR(location.getX(), location.getY()))
+    return this.execute(`
+      arguments[0].scrollLeft = ${location.getX()};
+      arguments[0].scrollTop = ${location.getY()};
+    `)
   }
 
   /**
    * @return {Promise.<String>} The overflow of the element.
    */
   async getOverflow() {
-    const value = await this.executeScript(JS_GET_OVERFLOW)
+    const value = await this.execute(`return arguments[0].style.overflow;`)
     const overflow = Math.ceil(parseFloat(value))
     return overflow ? overflow : null
   }
@@ -280,247 +190,103 @@ class EyesWebElement extends WebElement {
    * @return {Promise} The overflow of the element.
    */
   async setOverflow(overflow) {
-    return this.executeScript(JS_SET_OVERFLOW_FORMATTED_STR(overflow))
+    return this.execute(`arguments[0].style.overflow = '${overflow}'`)
   }
 
-  async getAllDimensions() {
-    console.log(this.element)
-    const {size, innerSize, location, contentLocation} = await this.executeScript(el => {
-      var rect = el.getBoundingClientRect()
-      var borderTopWidth = 0
-      var borderLeftWidth = 0
-      if (window.getComputedStyle) {
-        var computedStyle = window.getComputedStyle(el, null)
-        borderTopWidth = parseFloat(computedStyle.getPropertyValue('border-top-width'))
-        borderLeftWidth = parseFloat(computedStyle.getPropertyValue('border-left-width'))
-      } else if (el.currentStyle) {
-        borderTopWidth = parseFloat(el.currentStyle['border-top-width'])
-        borderLeftWidth = parseFloat(el.currentStyle['border-left-width'])
-      }
-      return {
-        size: {width: rect.width, height: rect.height},
-        innerSize: {width: el.clientWidth, height: el.clientHeight},
-        location: {x: rect.x, y: rect.y},
-        contentLocation: {x: rect.x + borderLeftWidth, y: rect.y + borderTopWidth},
-      }
-    })
-    return {
-      size: new RectangleSize(Math.round(size.width), Math.round(size.height)),
-      innerSize: new RectangleSize(Math.round(innerSize.width), Math.round(innerSize.height)),
-      location: new Location(Math.round(location.x), Math.round(location.y)),
-      contentLocation: new Location(Math.round(contentLocation.x), Math.round(contentLocation.y)),
-    }
+  async getValue() {
+    return this.getProperty('value')
+  }
+
+  async setValue(keys) {
+    return this._driver.elementIdValue(this.elementId, keys)
+  }
+
+  async click() {
+    this._driver.eyes.addMouseTrigger(MouseTrigger.MouseAction.Click, this)
+    return this._driver.elementIdClick(this.elementId)
   }
 
   /**
-   * @param {String} script The script to execute with the element as last parameter
+   * @param {String|Function} script The script to execute with the element as last parameter
    * @returns {Promise} The result returned from the script
    */
-  async executeScript(script) {
-    const webElement = await WebElement.findElement(this._driver.webDriver, this._locator)
-    return this._driver.executeScript(script, webElement.element)
+  async execute(script) {
+    return this._driver.execute(script, this)
+  }
+
+  async element(locator) {
+    const selector = locator.value || locator
+    const result = await this._driver.elementIdElement(this.elementId, selector)
+    const element = result.value
+    if (element === null && result.type === 'NoSuchElement' && result.state === 'failure') {
+      throw new Error(result.message)
+    }
+    return new EyesWebElement(element, locator, this._driver, this._logger)
+  }
+
+  async elements(locator) {
+    const selector = locator.value || locator
+    const result = await this._driver.elementIdElements(this.elementId, selector)
+    const elements = result.value
+    return elements.map(element => new EyesWebElement(element, locator, this._driver, this._logger))
+  }
+
+  static findElement(driver, locator, retry = 0) {
+    return driver.element(locator).catch(err => {
+      if (retry > 3) {
+        throw err
+      } else {
+        return EyesWebElement.findElement(driver, locator, retry++)
+      }
+    })
+  }
+
+  static isWDIOElement(object) {
+    if (!object) return false
+    return object.value
+      ? object.value.ELEMENT || object.value[WEB_ELEMENT_ID]
+      : object.ELEMENT || object[WEB_ELEMENT_ID]
   }
 
   /**
-   * @Override
-   * @inheritDoc
+   * @param {object} object
+   * @return {boolean}
    */
-  getDriver() {
-    return super.getDriver()
+  static isLocator(object) {
+    return object instanceof By || TypeUtils.has(object, ['using', 'value'])
   }
 
-  /**
-   * @Override
-   * @return {promise.Thenable.<string>}
-   */
-  get elementId() {
-    return this._element.ELEMENT
+  static equals(elementA, elementB) {
+    if (elementA == null || elementB == null) {
+      return false
+    }
+    if (!(elementA instanceof EyesWebElement) || !(elementB instanceof EyesWebElement)) {
+      return false
+    }
+    if (elementA === elementB) {
+      return true
+    }
+    const elementAId = elementA.elementId
+    const elementBId = elementB.elementId
+    if (elementAId === elementBId) {
+      return true
+    }
+    const cmd = new command.Command(command.Name.ELEMENT_EQUALS)
+    cmd.setParameter('id', elementA)
+    cmd.setParameter('other', elementB)
+    return elementA._driver.executeCommand(cmd).then(({value}) => value)
   }
 
-  /**
-   * @Override
-   * @inheritDoc
-   * return {EyesWebElement}
-   */
-  async findElement(locator) {
-    const element = await super.findElement(locator)
-    return new EyesWebElement(this._logger, this._driver, element)
-  }
-
-  /**
-   * @Override
-   * @inheritDoc
-   */
-  async findElements(locator) {
-    const elements = await super.findElements(locator)
-    elements.map(element => new EyesWebElement(this._logger, this._driver, element))
-  }
-
-  /**
-   * @Override
-   * @inheritDoc
-   * @return {Promise}
-   */
-  async click() {
-    // Letting the driver know about the current action.
-    const currentControl = await this.getBounds()
-    this._driver.eyes.addMouseTrigger(MouseTrigger.MouseAction.Click, this)
-    this._logger.verbose(`click(${currentControl})`)
-
-    return super.click()
-  }
-
-  /**
-   * @Override
-   * @inheritDoc
-   */
-  async sendKeys(keysToSend) {
-    return super.sendKeys(keysToSend)
-  }
-
-  async getRect() {
-    return super.getRect()
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   */
-  getTagName() {
-    return super.getTagName()
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   */
-  getCssValue(cssStyleProperty) {
-    return super.getCssValue(cssStyleProperty)
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   */
-  getAttribute(attributeName) {
-    return super.getAttribute(attributeName)
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   */
-  getText() {
-    return super.getText()
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   * @returns {Promise.<RectangleSize>}
-   */
-  async getSize() {
-    const r = await super.getSize()
-    const width = Math.ceil(r && r.width ? r.width : 0)
-    const height = Math.ceil(r && r.height ? r.height : 0)
-    return new RectangleSize(width, height)
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   * @returns {Promise.<Location>}
-   */
-  async getLocation() {
-    let r = await super.getLocation()
-    // if (this._frameChain.size() > 0) {
-    //   // not using super.getLocation() since it wouldn't throw StaleElementReference error if the element is stale
-    //   const res = await this._driver.remoteWebDriver.execute(
-    //     e => e.getBoundingClientRect(),
-    //     this._element,
-    //   )
-    //   r = res.value
-    // } else {
-    //   r = await getAbsoluteElementLocation({
-    //     jsExecutor: this._driver.remoteWebDriver.execute.bind(this),
-    //     element: this._element,
-    //     logger: this._logger,
-    //   })
-    // }
-
-    const x = Math.ceil(r && r.x ? r.x : 0)
-    const y = Math.ceil(r && r.y ? r.y : 0)
-
-    return new Location(x, y)
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   */
-  isEnabled() {
-    return super.isEnabled()
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   */
-  isSelected() {
-    return super.isSelected()
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   */
-  submit() {
-    return super.submit()
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   */
-  clear() {
-    return super.clear()
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   */
-  isDisplayed() {
-    return super.isDisplayed()
-  }
-
-  /**
-   * @override
-   * @inheritDoc
-   */
-  takeScreenshot(opt_scroll) {
-    return super.takeScreenshot(opt_scroll)
-  }
-
-  /**
-   * @returns {Promise.<{offsetLeft, offsetTop}>}
-   */
-  async getElementOffset() {
-    return super.getElementOffset()
-  }
-
-  /**
-   * @returns {Promise.<{scrollLeft, scrollTop}>}
-   */
-  async getElementScroll() {
-    return super.getElementScroll()
-  }
-
-  /**
-   * @return {WebElement} The original element object
-   */
-  getWebElement() {
-    return this
+  static async refreshElement(executor, element) {
+    try {
+      const result = await executor()
+      return result
+    } catch (err) {
+      if (!err.seleniumStack || err.seleniumStack.type !== 'StaleElementReference') throw err
+      const refreshed = await element.refresh()
+      if (refreshed) return executor()
+      else throw err
+    }
   }
 }
 

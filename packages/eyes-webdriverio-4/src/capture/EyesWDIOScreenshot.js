@@ -42,7 +42,7 @@ class EyesWDIOScreenshot extends EyesScreenshot {
     this._logger = logger
     this._driver = driver
     /** @type {FrameChain} */
-    this._frameChain = driver.getFrameChain()
+    this._frameChain = driver.frameChain
     /** @type {Location} */
     this._currentFrameScrollPosition = null
     /** @type {ScreenshotType} */
@@ -120,7 +120,7 @@ class EyesWDIOScreenshot extends EyesScreenshot {
     screenshot._screenshotType = await screenshot._updateScreenshotType(screenshotType, image)
     const positionProvider = driver.eyes.getPositionProvider()
 
-    screenshot._frameChain = driver.getFrameChain()
+    screenshot._frameChain = driver.frameChain
     const frameSize = await screenshot._getFrameSize(positionProvider)
 
     screenshot._currentFrameScrollPosition = await screenshot._getUpdatedScrollPosition(
@@ -154,7 +154,7 @@ class EyesWDIOScreenshot extends EyesScreenshot {
 
       const positionProvider = that._driver.eyes.getPositionProvider()
 
-      that._frameChain = that._driver.getFrameChain()
+      that._frameChain = that._driver.frameChain
       return that._getFrameSize(positionProvider).then(frameSize => {
         return EyesWDIOScreenshot.getUpdatedScrollPosition(positionProvider)
           .then(currentFrameScrollPosition => {
@@ -189,20 +189,19 @@ class EyesWDIOScreenshot extends EyesScreenshot {
   static getDefaultContentScrollPosition(logger, currentFrames, driver) {
     const jsExecutor = new WDIOJSExecutor(driver)
     const positionProvider = new ScrollPositionProvider(logger, jsExecutor)
-    if (currentFrames.size() === 0) {
+    if (currentFrames.size === 0) {
       return positionProvider.getCurrentPosition()
     }
 
-    const originalFC = new FrameChain(logger, currentFrames)
+    const originalFC = currentFrames.clone()
 
-    const switchTo = driver.switchTo()
-    return switchTo
-      .defaultContent()
+    return driver
+      .frameDefault()
       .then(() => {
         return positionProvider.getCurrentPosition()
       })
       .then(defaultContentScrollPosition => {
-        return switchTo.frames(originalFC).then(() => defaultContentScrollPosition)
+        return driver.frames(originalFC).then(() => defaultContentScrollPosition)
       })
   }
 
@@ -228,10 +227,9 @@ class EyesWDIOScreenshot extends EyesScreenshot {
             -windowScroll.getY(),
           )
         }
-
         logger.verbose('Iterating over frames..')
         let frame
-        for (let i = 1, l = frameChain.size(); i < l; ++i) {
+        for (let i = 1, l = frameChain.size; i < l; ++i) {
           logger.verbose('Getting next frame...')
           frame = frameChain.getFrame(i)
           logger.verbose('Done!')
@@ -258,7 +256,7 @@ class EyesWDIOScreenshot extends EyesScreenshot {
    */
   async _getUpdatedFrameLocationInScreenshot(frameLocationInScreenshot) {
     this._logger.verbose(`frameLocationInScreenshot: ${frameLocationInScreenshot}`)
-    if (this._frameChain.size() > 0) {
+    if (this._frameChain.size > 0) {
       return EyesWDIOScreenshot.calcFrameLocationInScreenshot(
         this._logger,
         this._driver,
@@ -313,7 +311,7 @@ class EyesWDIOScreenshot extends EyesScreenshot {
    * @return {Promise.<RectangleSize>}
    */
   async _getFrameSize(positionProvider) {
-    if (this._frameChain.size() === 0) {
+    if (this._frameChain.size === 0) {
       // get entire page size might throw an exception for applications which don't support Javascript (e.g., Appium).
       // In that case we'll use the viewport size as the frame's size.
       const that = this
@@ -443,7 +441,7 @@ class EyesWDIOScreenshot extends EyesScreenshot {
 
     // If we're not inside a frame, and the screenshot is the entire page, then the context as-is/relative are the same (notice
     // screenshot as-is might be different, e.g., if it is actually a sub-screenshot of a region).
-    if (this._frameChain.size() === 0 && this._screenshotType === ScreenshotType.ENTIRE_FRAME) {
+    if (this._frameChain.size === 0 && this._screenshotType === ScreenshotType.ENTIRE_FRAME) {
       if (
         (from === CoordinatesType.CONTEXT_RELATIVE || from === CoordinatesType.CONTEXT_AS_IS) &&
         to === CoordinatesType.SCREENSHOT_AS_IS
@@ -622,7 +620,7 @@ class EyesWDIOScreenshot extends EyesScreenshot {
   /**
    * Gets the elements region in the screenshot.
    *
-   * @param {WebElement} element The element which region we want to intersect.
+   * @param {EyesWebElement} element The element which region we want to intersect.
    * @return {Promise.<Region>} The intersected region, in {@code SCREENSHOT_AS_IS} coordinates type.
    */
   getIntersectedRegionFromElement(element) {

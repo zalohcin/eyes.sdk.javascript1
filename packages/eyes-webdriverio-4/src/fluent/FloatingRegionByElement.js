@@ -9,7 +9,7 @@ const {
 
 class FloatingRegionByElement extends GetFloatingRegion {
   /**
-   * @param {WebElement} webElement
+   * @param {EyesWebElement} webElement
    * @param {int} maxUpOffset
    * @param {int} maxDownOffset
    * @param {int} maxLeftOffset

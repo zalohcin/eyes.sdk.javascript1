@@ -2,7 +2,6 @@
 
 const {CheckSettings, Region, TypeUtils} = require('@applitools/eyes-sdk-core')
 const By = require('../By')
-const WebElement = require('../wrappers/WebElement')
 const EyesWebElement = require('../wrappers/EyesWebElement')
 const FrameLocator = require('./FrameLocator')
 const IgnoreRegionBySelector = require('./IgnoreRegionBySelector')
@@ -13,7 +12,6 @@ const FloatingRegionBySelector = require('./FloatingRegionBySelector')
 const FloatingRegionByElement = require('./FloatingRegionByElement')
 const AccessibilityRegionBySelector = require('./AccessibilityRegionBySelector')
 const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
-const {isWDIOElement} = require('../wrappers/web-element-util')
 
 const USE_DEFAULT_MATCH_TIMEOUT = -1
 const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
@@ -21,7 +19,7 @@ const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
 class WebdriverioCheckSettings extends CheckSettings {
   /**
    *
-   * @param {Region|By|WebElement|EyesWebElement} [region]
+   * @param {Region|By|EyesWebElement} [region]
    * @param {int|String|By} [frame]
    */
   constructor(region, frame) {
@@ -29,7 +27,7 @@ class WebdriverioCheckSettings extends CheckSettings {
 
     /** @type {By} */
     this._targetSelector = null
-    /** @type {WebElement} */
+    /** @type {EyesWebElement} */
     this._targetElement = null
     this._frameChain = []
 
@@ -63,7 +61,7 @@ class WebdriverioCheckSettings extends CheckSettings {
 
   /**
    *
-   * @param {Region|By|WebElement} region
+   * @param {Region|By|EyesWebElement} region
    * @returns {WebdriverioCheckSettings}
    */
   region(region) {
@@ -71,7 +69,7 @@ class WebdriverioCheckSettings extends CheckSettings {
       super.updateTargetRegion(region)
     } else if (region instanceof By) {
       this._targetSelector = region
-    } else if (region instanceof WebElement || isWDIOElement(region)) {
+    } else if (region instanceof EyesWebElement || EyesWebElement.isWDIOElement(region)) {
       this._targetElement = region
     } else if (TypeUtils.isString(region)) {
       this._targetSelector = By.cssSelector(region)
@@ -82,7 +80,7 @@ class WebdriverioCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {Integer|String|By|WebElement|EyesWebElement} frame The frame to switch to.
+   * @param {Integer|String|By|EyesWebElement} frame The frame to switch to.
    * @returns {WebdriverioCheckSettings}
    */
   frame(frame) {
@@ -94,7 +92,7 @@ class WebdriverioCheckSettings extends CheckSettings {
       fl.setFrameNameOrId(frame)
     } else if (frame instanceof By) {
       fl.setFrameSelector(frame)
-    } else if (frame instanceof WebElement) {
+    } else if (frame instanceof EyesWebElement) {
       fl.setFrameElement(frame)
     } else {
       throw new TypeError('frame method called with argument of unknown type!')
@@ -107,13 +105,13 @@ class WebdriverioCheckSettings extends CheckSettings {
    * Adds a region to ignore.
    *
    * @override
-   * @param {GetRegion|Region|By|WebElement|EyesWebElement} regionOrContainer The region or region container to ignore when validating the screenshot.
+   * @param {GetRegion|Region|By|EyesWebElement} regionOrContainer The region or region container to ignore when validating the screenshot.
    * @return {WebdriverioCheckSettings} This instance of the settings object.
    */
   ignore(regionOrContainer) {
     if (regionOrContainer instanceof By) {
       this._ignoreRegions.push(new IgnoreRegionBySelector(regionOrContainer))
-    } else if (regionOrContainer instanceof WebElement) {
+    } else if (regionOrContainer instanceof EyesWebElement) {
       this._ignoreRegions.push(new IgnoreRegionByElement(regionOrContainer))
     } else {
       super.ignoreRegions(regionOrContainer)
@@ -126,7 +124,7 @@ class WebdriverioCheckSettings extends CheckSettings {
    * Adds one or more ignore regions.
    *
    * @override
-   * @param {(GetRegion|Region|By|WebElement|EyesWebElement)...} regionsOrContainers One or more regions or region containers to ignore when validating the screenshot.
+   * @param {(GetRegion|Region|By|EyesWebElement)...} regionsOrContainers One or more regions or region containers to ignore when validating the screenshot.
    * @return {WebdriverioCheckSettings} This instance of the settings object.
    */
   ignores(...regionsOrContainers) {
@@ -136,7 +134,7 @@ class WebdriverioCheckSettings extends CheckSettings {
 
   /**
    * @inheritDoc
-   * @param {...(By|WebElement|EyesWebElement|GetRegion|Region)} regions - A region to ignore when validating.
+   * @param {...(By|EyesWebElement|GetRegion|Region)} regions - A region to ignore when validating.
    * @return {this}
    */
   ignoreRegions(...regions) {
@@ -145,7 +143,7 @@ class WebdriverioCheckSettings extends CheckSettings {
 
   /**
    * @inheritDoc
-   * @param {...(By|WebElement|EyesWebElement|GetRegion|Region)} regions - A region to match using the Layout method.
+   * @param {...(By|EyesWebElement|GetRegion|Region)} regions - A region to match using the Layout method.
    * @return {this}
    */
   layoutRegions(...regions) {
@@ -154,7 +152,7 @@ class WebdriverioCheckSettings extends CheckSettings {
 
   /**
    * @inheritDoc
-   * @param {...(By|WebElement|EyesWebElement|GetRegion|Region)} regions - A region to match using the Strict method.
+   * @param {...(By|EyesWebElement|GetRegion|Region)} regions - A region to match using the Strict method.
    * @return {this}
    */
   strictRegions(...regions) {
@@ -164,14 +162,14 @@ class WebdriverioCheckSettings extends CheckSettings {
   /**
    * @inheritDoc
    * @protected
-   * @param {By|WebElement|EyesWebElement|GetRegion|Region} region
+   * @param {By|EyesWebElement|GetRegion|Region} region
    */
   _regionToRegionProvider(region) {
     if (EyesWebElement.isLocator(region)) {
       return new IgnoreRegionBySelector(region)
     }
 
-    if (region instanceof WebElement) {
+    if (region instanceof EyesWebElement) {
       return new IgnoreRegionByElement(region)
     }
 
@@ -182,7 +180,7 @@ class WebdriverioCheckSettings extends CheckSettings {
    * Adds a floating region. A floating region is a a region that can be placed within the boundaries of a bigger region.
    *
    * @override
-   * @param {GetFloatingRegion|Region|FloatingMatchSettings|By|WebElement|EyesWebElement} regionOrContainer The content rectangle or region container
+   * @param {GetFloatingRegion|Region|FloatingMatchSettings|By|EyesWebElement} regionOrContainer The content rectangle or region container
    * @param {int} [maxUpOffset] How much the content can move up.
    * @param {int} [maxDownOffset] How much the content can move down.
    * @param {int} [maxLeftOffset] How much the content can move to the left.
@@ -200,7 +198,7 @@ class WebdriverioCheckSettings extends CheckSettings {
           maxRightOffset,
         ),
       )
-    } else if (regionOrContainer instanceof WebElement) {
+    } else if (regionOrContainer instanceof EyesWebElement) {
       this._floatingRegions.push(
         new FloatingRegionByElement(
           regionOrContainer,
@@ -227,7 +225,7 @@ class WebdriverioCheckSettings extends CheckSettings {
    *
    * @override
    * @param {int} maxOffset How much each of the content rectangles can move in any direction.
-   * @param {(GetFloatingRegion|Region|By|WebElement|EyesWebElement)...} regionsOrContainers One or more content rectangles or region containers
+   * @param {(GetFloatingRegion|Region|By|EyesWebElement)...} regionsOrContainers One or more content rectangles or region containers
    * @return {WebdriverioCheckSettings} This instance of the settings object.
    */
   floatings(maxOffset, ...regionsOrContainers) {
@@ -275,7 +273,7 @@ class WebdriverioCheckSettings extends CheckSettings {
   }
 
   /**
-   * @returns {WebElement}
+   * @returns {EyesWebElement}
    */
   get targetElement() {
     return this._targetElement
@@ -311,7 +309,7 @@ class WebdriverioCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {By|WebElement|EyesWebElement} element
+   * @param {By|EyesWebElement} element
    * @return {this}
    */
   scrollRootElement(element) {
@@ -332,7 +330,7 @@ class WebdriverioCheckSettings extends CheckSettings {
 
   /**
    * @ignore
-   * @return {Promise<WebElement>}
+   * @return {Promise<EyesWebElement>}
    */
   getScrollRootElement() {
     return this._scrollRootElement
@@ -407,7 +405,7 @@ class WebdriverioCheckSettings extends CheckSettings {
 
   /**
    * @inheritDoc
-   * @param {GetAccessibilityRegion|Region|AccessibilityMatchSettings|By|WebElement|EyesWebElement} regionOrContainer -
+   * @param {GetAccessibilityRegion|Region|AccessibilityMatchSettings|By|EyesWebElement} regionOrContainer -
    *   The content rectangle or region container
    * @param {AccessibilityRegionType} [regionType] - Type of accessibility.
    * @return {this}
@@ -416,7 +414,7 @@ class WebdriverioCheckSettings extends CheckSettings {
     if (regionOrContainer instanceof By) {
       const accessibilityRegion = new AccessibilityRegionBySelector(regionOrContainer, regionType)
       this._accessibilityRegions.push(accessibilityRegion)
-    } else if (regionOrContainer instanceof WebElement) {
+    } else if (regionOrContainer instanceof EyesWebElement) {
       const floatingRegion = new AccessibilityRegionByElement(regionOrContainer, regionType)
       this._accessibilityRegions.push(floatingRegion)
     } else {
@@ -428,7 +426,7 @@ class WebdriverioCheckSettings extends CheckSettings {
   _processStrictRegions(regionOrContainer) {
     if (regionOrContainer instanceof By) {
       this._strictRegions.push(new IgnoreRegionBySelector(regionOrContainer))
-    } else if (regionOrContainer instanceof WebElement) {
+    } else if (regionOrContainer instanceof EyesWebElement) {
       this._strictRegions.push(new IgnoreRegionByElement(regionOrContainer))
     } else {
       super.strictRegions(regionOrContainer)
@@ -438,7 +436,7 @@ class WebdriverioCheckSettings extends CheckSettings {
   _processLayoutRegions(regionOrContainer) {
     if (regionOrContainer instanceof By) {
       this._layoutRegions.push(new IgnoreRegionBySelector(regionOrContainer))
-    } else if (regionOrContainer instanceof WebElement) {
+    } else if (regionOrContainer instanceof EyesWebElement) {
       this._layoutRegions.push(new IgnoreRegionByElement(regionOrContainer))
     } else {
       super.layoutRegions(regionOrContainer)
@@ -448,7 +446,7 @@ class WebdriverioCheckSettings extends CheckSettings {
   _processContentRegions(regionOrContainer) {
     if (regionOrContainer instanceof By) {
       this._contentRegions.push(new IgnoreRegionBySelector(regionOrContainer))
-    } else if (regionOrContainer instanceof WebElement) {
+    } else if (regionOrContainer instanceof EyesWebElement) {
       this._contentRegions.push(new IgnoreRegionByElement(regionOrContainer))
     } else {
       super.contentRegions(regionOrContainer)

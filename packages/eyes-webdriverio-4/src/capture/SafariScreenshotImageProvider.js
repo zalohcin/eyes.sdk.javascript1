@@ -106,10 +106,10 @@ class SafariScreenshotImageProvider extends ImageProvider {
         }
       }
     } else if (!this._eyes.getForceFullPageScreenshot()) {
-      const currentFrameChain = this._eyes.getDriver().getFrameChain()
+      const currentFrameChain = this._eyes.getDriver().frameChain
 
       let loc
-      if (currentFrameChain.size() === 0) {
+      if (currentFrameChain.size === 0) {
         const positionProvider = new ScrollPositionProvider(this._logger, this._jsExecutor)
         loc = await positionProvider.getCurrentPosition()
       } else {

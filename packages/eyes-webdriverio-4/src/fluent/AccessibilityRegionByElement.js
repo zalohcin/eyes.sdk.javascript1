@@ -9,7 +9,7 @@ const {
 
 class AccessibilityRegionByElement extends GetAccessibilityRegion {
   /**
-   * @param {WebElement} webElement
+   * @param {EyesWebElement} webElement
    * @param {AccessibilityRegionType} regionType
    */
   constructor(webElement, regionType) {

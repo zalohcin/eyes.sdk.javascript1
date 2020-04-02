@@ -21,7 +21,6 @@ const {Target} = require('../index')
 const EyesWebDriver = require('./wrappers/EyesWebDriver')
 const EyesWDIOUtils = require('./EyesWDIOUtils')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
-const WebDriver = require('./wrappers/WebDriver')
 
 const VERSION = require('../package.json').version
 
@@ -161,7 +160,7 @@ class EyesVisualGrid extends EyesBase {
     if (driver instanceof EyesWebDriver) {
       this._driver = driver
     } else {
-      this._driver = new EyesWebDriver(this._logger, new WebDriver(driver), this)
+      this._driver = new EyesWebDriver(driver, this, this._logger)
     }
     this._jsExecutor = new WDIOJSExecutor(this._driver)
   }
@@ -327,8 +326,8 @@ class EyesVisualGrid extends EyesBase {
     this._configuration.setViewportSize(viewportSize)
 
     if (this._driver) {
-      const originalFrame = this._driver.getFrameChain()
-      await this._driver.switchTo().defaultContent()
+      const originalFrame = this._driver.frameChain
+      await this._driver.frameDefault()
 
       await EyesWDIOUtils.setViewportSize(this._logger, this._driver, viewportSize)
 
@@ -336,12 +335,12 @@ class EyesVisualGrid extends EyesBase {
             try {
               await EyesWDIOUtils.setViewportSize(this._logger, this._driver, viewportSize);
             } catch (err) {
-              await this._driver.switchTo().frames(originalFrame); // Just in case the user catches that error
+              await this._driver.frames(originalFrame); // Just in case the user catches that error
               throw new TestFailedError('Failed to set the viewport size', err);
             }
       */
 
-      await this._driver.switchTo().frames(originalFrame)
+      await this._driver.frames(originalFrame)
     }
   }
 

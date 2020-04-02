@@ -2,7 +2,7 @@
 
 class FrameLocator {
   constructor() {
-    /** @type {WebElement} */
+    /** @type {EyesWebElement} */
     this._frameElement = null
     /** @type {By} */
     this._frameSelector = null
@@ -10,14 +10,14 @@ class FrameLocator {
     this._frameNameOrId = null
     /** @type {Integer} */
     this._frameIndex = null
-    /** @type {WebElement} */
+    /** @type {EyesWebElement} */
     this._scrollRootElement = undefined
     /** @type {By} */
     this._scrollRootSelector = undefined
   }
 
   /**
-   * @return {WebElement}
+   * @return {EyesWebElement}
    */
   getFrameElement() {
     return this._frameElement
@@ -73,14 +73,14 @@ class FrameLocator {
   }
 
   /**
-   * @return {WebElement}
+   * @return {EyesWebElement}
    */
   getScrollRootElement() {
     return this._scrollRootElement
   }
 
   /**
-   * @param {WebElement} scrollRootElement
+   * @param {EyesWebElement} scrollRootElement
    */
   setScrollRootElement(scrollRootElement) {
     this._scrollRootElement = scrollRootElement
