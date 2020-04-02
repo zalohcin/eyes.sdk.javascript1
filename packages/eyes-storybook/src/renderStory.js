@@ -2,17 +2,19 @@
 const getStoryTitle = require('./getStoryTitle');
 const deprecationWarning = require('./deprecationWarning');
 
-function makeRenderStory({logger, testWindow, performance, timeItAsync}) {
+function makeRenderStory({config, logger, testWindow, performance, timeItAsync}) {
   return function renderStory({story, resourceUrls, resourceContents, frames, cdt, url}) {
     const {name, kind, parameters} = story;
     const title = getStoryTitle({name, kind, parameters});
     const eyesOptions = (parameters && parameters.eyes) || {};
     const {
-      ignore,
-      accessibility,
-      floating,
-      strict,
-      layout,
+      ignoreDisplacements,
+      ignoreRegions,
+      accessibilityRegions,
+      floatingRegions,
+      strictRegions,
+      contentRegions,
+      layoutRegions,
       scriptHooks,
       sizeMode,
       target,
@@ -20,10 +22,18 @@ function makeRenderStory({logger, testWindow, performance, timeItAsync}) {
       selector,
       region,
       tag,
+      properties,
+      ignore,
     } = eyesOptions;
 
     if (sizeMode) {
       console.log(deprecationWarning("'sizeMode'", "'target'"));
+    }
+
+    let ignoreRegionsBackCompat = ignoreRegions;
+    if (ignore && ignoreRegions === undefined) {
+      console.log(deprecationWarning("'ignore'", "'ignoreRegions'"));
+      ignoreRegionsBackCompat = ignore;
     }
 
     logger.log('running story', title);
@@ -33,7 +43,9 @@ function makeRenderStory({logger, testWindow, performance, timeItAsync}) {
       properties: [
         {name: 'Component name', value: kind},
         {name: 'State', value: name},
+        ...(properties !== undefined ? properties : config.properties || []),
       ],
+      ignoreDisplacements,
     };
 
     const checkParams = {
@@ -42,11 +54,14 @@ function makeRenderStory({logger, testWindow, performance, timeItAsync}) {
       resourceContents,
       url,
       frames,
-      ignore,
-      accessibility,
-      floating,
-      strict,
-      layout,
+      ignore:
+        ignoreRegionsBackCompat !== undefined ? ignoreRegionsBackCompat : config.ignoreRegions,
+      floating: floatingRegions !== undefined ? floatingRegions : config.floatingRegions,
+      layout: layoutRegions !== undefined ? layoutRegions : config.layoutRegions,
+      strict: strictRegions !== undefined ? strictRegions : config.strictRegions,
+      content: contentRegions !== undefined ? contentRegions : config.contentRegions,
+      accessibility:
+        accessibilityRegions !== undefined ? accessibilityRegions : config.accessibilityRegions,
       scriptHooks,
       sizeMode,
       target,

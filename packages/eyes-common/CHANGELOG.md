@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+## 3.20.2
+
+- fix isFeatureFlagOn
+- cachify cache key can now be a serialized object
+
 ## 3.20.1
 
 - returning batchInfo from toOpenEyesConfiguration

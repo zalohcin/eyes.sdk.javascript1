@@ -1,8 +1,6 @@
 'use strict'
 
-const {ArgumentGuard} = require('@applitools/eyes-common')
-const {PositionProvider} = require('@applitools/eyes-sdk-core')
-
+const {PositionProvider, ArgumentGuard} = require('@applitools/eyes-sdk-core')
 const {EyesSeleniumUtils} = require('../EyesSeleniumUtils')
 const {CssTranslatePositionMemento} = require('./CssTranslatePositionMemento')
 

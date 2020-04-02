@@ -2,6 +2,7 @@
 
 const {By, WebElement} = require('selenium-webdriver')
 const {
+  MouseTrigger,
   Region,
   ArgumentGuard,
   CoordinatesType,
@@ -10,8 +11,7 @@ const {
   Location,
   EyesError,
   GeneralUtils,
-} = require('@applitools/eyes-common')
-const {MouseTrigger} = require('@applitools/eyes-sdk-core')
+} = require('@applitools/eyes-sdk-core')
 
 const JS_GET_SCROLL_SIZE = 'return [arguments[0].scrollWidth, arguments[0].scrollHeight];'
 

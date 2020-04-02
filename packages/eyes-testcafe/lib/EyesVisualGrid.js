@@ -7,8 +7,6 @@ const {
   EyesError,
   UserAgent,
   BrowserType,
-} = require('@applitools/eyes-common')
-const {
   CorsIframeHandle,
   CorsIframeHandler,
   IgnoreRegionByRectangle,

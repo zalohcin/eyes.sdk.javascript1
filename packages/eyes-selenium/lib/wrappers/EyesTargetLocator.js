@@ -4,7 +4,7 @@ const {Command, Name} = require('selenium-webdriver/lib/command')
 const {TargetLocator} = require('selenium-webdriver/lib/webdriver')
 const {By} = require('selenium-webdriver')
 
-const {Location, RectangleSize, ArgumentGuard, TypeUtils} = require('@applitools/eyes-common')
+const {Location, RectangleSize, ArgumentGuard, TypeUtils} = require('@applitools/eyes-sdk-core')
 
 const {Frame} = require('../frames/Frame')
 const {FrameChain} = require('../frames/FrameChain')

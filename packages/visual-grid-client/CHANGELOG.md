@@ -3,6 +3,30 @@
 ## Unreleased
 
 
+## 13.6.12 - 2020/3/31
+
+- removed eyes-common dependency
+
+## 13.6.11
+
+- update @applitools/dom-snapshot@3.4.2
+
+## 13.6.10
+
+- avoid unnecessary requests to get batchInfo (due to wrong `isGeneratedId` value on batchInfo)
+
+## 13.6.9
+
+- revert compatibility with untyped selectors in selectorsToFindRegionsFor
+
+## 13.6.8
+
+- updated eyes-common and eyes-sdk-core
+
+## 13.6.7
+
+- support typed selectors in selectorsToFindRegionsFor
+
 ## 13.6.6
 
 - update @applitools/dom-snapshot@3.4.1 (no changes)

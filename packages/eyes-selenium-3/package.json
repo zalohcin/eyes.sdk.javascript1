@@ -1,6 +1,6 @@
 {
   "name": "eyes.selenium",
-  "version": "3.8.10",
+  "version": "3.8.11",
   "description": "Applitools Eyes SDK For Selenium JavaScript WebDriver",
   "keywords": [
     "eyes.selenium",
@@ -44,8 +44,8 @@
   "main": "./index.js",
   "types": "./typings/index.d.ts",
   "dependencies": {
-    "eyes.sdk": "4.0.5",
-    "eyes.utils": "3.8.1"
+    "eyes.sdk": "5.0.0",
+    "eyes.utils": "4.0.0"
   },
   "devDependencies": {
     "@applitools/sdk-release-kit": "0.1.0",
@@ -62,9 +62,6 @@
     "selenium-webdriver": "< 4.0.0"
   },
   "scripts": {
-    "vv": "bongo --verify-versions",
-    "vc": "bongo --verify-changelog",
-    "uc": "bongo --update-changelog",
     "test": "npm run test:unit && npm run test:e2e",
     "test:e2e": "npm run test:selenium",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.js\"",
@@ -73,9 +70,9 @@
     "test:protractor": "protractor test/e2e/protractor/protractor.conf.js",
     "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
     "typings": "tsc --declaration",
-    "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc",
-    "version": "yarn uc && git add CHANGELOG.md"
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

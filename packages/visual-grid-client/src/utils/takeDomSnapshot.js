@@ -4,7 +4,7 @@ const {
   getProcessPageAndSerializePoll,
   getProcessPageAndSerializePollForIE,
 } = require('@applitools/dom-snapshot')
-const {GeneralUtils, deserializeDomSnapshotResult} = require('@applitools/eyes-common')
+const {GeneralUtils, deserializeDomSnapshotResult} = require('@applitools/eyes-sdk-core')
 
 const PULL_TIMEOUT = 200 // ms
 const CAPTURE_DOM_TIMEOUT_MS = 5 * 60 * 1000 // 5 min

@@ -1,5 +1,6 @@
 {
   "name": "@applitools/sdk-test-kit",
+  "private": true,
   "version": "1.0.17",
   "engines": {
     "node": ">=10.0.0"
@@ -19,30 +20,25 @@
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "scripts": {
-    "vv": "bongo --verify-versions",
-    "vc": "bongo --verify-changelog",
-    "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha test/**/*.spec.js",
-    "build": "tsc src/coverage-tests/api.ts",
-    "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc",
-    "version": "yarn uc && git add CHANGELOG.md"
+    "build": "tsc src/coverage-tests/api.ts"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "dependencies": {
     "chromedriver": "^80.0.0",
+    "micromatch": "^4.0.2",
     "node-fetch": "^2.6.0",
     "throat": "^5.0.0",
-    "yargs": "^15.0.2"
+    "yargs": "^15.0.2",
+    "chalk": "^3.0.0"
   },
   "devDependencies": {
-    "@applitools/sdk-release-kit": "0.1.0",
+    "@typescript-eslint/parser": "^2.14.0",
     "mocha": "^6.2.2",
-    "typescript": "^3.7.4",
-    "@typescript-eslint/parser": "^2.14.0"
+    "typescript": "^3.7.4"
   },
   "bin": {
     "coverage-tests": "./src/coverage-tests/cli.js"
