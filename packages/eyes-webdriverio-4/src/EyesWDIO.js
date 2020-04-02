@@ -1359,16 +1359,23 @@ class EyesWDIO extends EyesBase {
    * @private
    * @return {Promise.<FrameChain>}
    */
-  _ensureFrameVisible() {
-    const that = this
-    const originalFC = new FrameChain(this._logger, this._driver.frameChain)
-    const fc = new FrameChain(this._logger, this._driver.frameChain)
+  async _ensureFrameVisible() {
+    const originalFrameChain = new FrameChain(this._logger, this._driver.frameChain)
+    const positionProvider = this.getPositionProvider()
 
-    return ensureFrameVisibleLoop(this, this.getPositionProvider(), fc)
-      .then(() => {
-        return that._driver.frames(originalFC)
-      })
-      .then(() => originalFC)
+    let position = new Location(0, 0)
+    for (let index = originalFrameChain.size - 1; index >= 0; --index) {
+      const frame = originalFrameChain.getFrame(index)
+      await this._driver.frameParent()
+      const reg = new Region(Location.ZERO, frame.getInnerSize())
+      this._effectiveViewport.intersect(reg)
+      position = position.offsetByLocation(frame.getLocation())
+      await positionProvider.setPosition(position)
+      position = position.offsetNegative(await positionProvider.getCurrentPosition())
+    }
+
+    await this._driver.frames(originalFrameChain)
+    return originalFrameChain
   }
 
   /**
@@ -1721,34 +1728,6 @@ class EyesWDIO extends EyesBase {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._runner.getBatchInfoWithCache(batchId)
   }
-}
-
-/**
- * @private
- * @param that
- * @param positionProvider
- * @param frameChain
- * @param switchTo
- * @return {Promise}
- */
-async function ensureFrameVisibleLoop(that, positionProvider, frameChain) {
-  return Promise.resolve().then(() => {
-    if (frameChain.size > 0) {
-      return that._driver
-        .frameParent()
-        .then(() => {
-          const frame = frameChain.pop()
-
-          const reg = new Region(Location.ZERO, frame.getInnerSize())
-          that._effectiveViewport.intersect(reg)
-
-          return positionProvider.setPosition(frame.getLocation())
-        })
-        .then(() => {
-          return ensureFrameVisibleLoop(that, positionProvider, frameChain)
-        })
-    }
-  })
 }
 
 exports.EyesWDIO = EyesWDIO

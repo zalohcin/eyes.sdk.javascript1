@@ -66,6 +66,10 @@ class EyesWebElement {
     return this._driver
   }
 
+  get selector() {
+    return this._locator.value || this._locator
+  }
+
   async refresh() {
     const originalFrameChain = this._driver.frameChain.clone()
     const isSameFrameChain = FrameChain.isSameFrameChain(originalFrameChain, this._frameChain)
@@ -256,25 +260,20 @@ class EyesWebElement {
     return object instanceof By || TypeUtils.has(object, ['using', 'value'])
   }
 
-  static equals(elementA, elementB) {
-    if (elementA == null || elementB == null) {
-      return false
-    }
-    if (!(elementA instanceof EyesWebElement) || !(elementB instanceof EyesWebElement)) {
-      return false
-    }
-    if (elementA === elementB) {
-      return true
-    }
-    const elementAId = elementA.elementId
-    const elementBId = elementB.elementId
-    if (elementAId === elementBId) {
-      return true
-    }
-    const cmd = new command.Command(command.Name.ELEMENT_EQUALS)
-    cmd.setParameter('id', elementA)
-    cmd.setParameter('other', elementB)
-    return elementA._driver.executeCommand(cmd).then(({value}) => value)
+  static equals(leftElement, rightElement) {
+    if (!leftElement || !rightElement) return false
+
+    const leftElementId =
+      leftElement instanceof EyesWebElement
+        ? leftElement.elementId
+        : leftElement.ELEMENT || leftElement[WEB_ELEMENT_ID]
+
+    const rightElementId =
+      rightElement instanceof EyesWebElement
+        ? rightElement.elementId
+        : rightElement.ELEMENT || rightElement[WEB_ELEMENT_ID]
+
+    return leftElementId === rightElementId
   }
 
   static async refreshElement(executor, element) {

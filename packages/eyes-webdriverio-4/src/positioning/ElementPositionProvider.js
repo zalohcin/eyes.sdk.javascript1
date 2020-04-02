@@ -32,22 +32,12 @@ class ElementPositionProvider extends PositionProvider {
    * @override
    * @inheritDoc
    */
-  getCurrentPosition() {
+  async getCurrentPosition() {
     this._logger.verbose('getCurrentScrollPosition()')
-
-    const that = this
-    let scrollLeft
-    return that._element
-      .getScrollLeft()
-      .then(_scrollLeft => {
-        scrollLeft = _scrollLeft
-        return that._element.getScrollTop()
-      })
-      .then(_scrollTop => {
-        const location = new Location(scrollLeft, _scrollTop)
-        that._logger.verbose(`Current position: ${location}`)
-        return location
-      })
+    const [scrollLeft, scrollTop] = await this._element.getProperties(['scrollLeft', 'scrollTop'])
+    const location = new Location(scrollLeft, scrollTop)
+    this._logger.verbose(`Current position: ${location}`)
+    return location
   }
 
   /**

@@ -183,12 +183,13 @@ class EyesWebDriver {
 
   async frameParent() {
     this._logger.verbose('EyesWebDriver.frameParent()')
-    await this._webdriver.frameParent()
+    const result = await this._webdriver.frameParent()
     if (this._frameChain.size > 0) {
       this._logger.verbose('Making preparations...')
       this._frameChain.pop()
     }
     this._logger.verbose('Done! Switching to parent frame..')
+    return result
   }
 
   async frameDefault() {
@@ -267,19 +268,43 @@ class EyesWebDriver {
     this._logger.verbose('Done switching into nested frames!')
   }
 
-  // TODO
   async framesRefresh() {
-    const currentFrame = this._frameChain.peek()
-    const framePath = []
-    let targetFrame
-    while ((targetFrame = await this.getTargetFrame())) {
-      if (currentFrame && currentFrame.getReference().elementId === targetFrame.ELEMENT) break
-      await this.frameParent()
-      const xpath = await EyesJsBrowserUtils.getElementXpath(this._jsExecutor, targetFrame)
-      framePath.unshift(new EyesWebElement(targetFrame, By.xPath(`/${xpath}`), this, this._logger))
+    let frameInfo = await this.getFrameInfo()
+    if (frameInfo.isRoot) {
+      this._frameChain.clear()
+    } else {
+      const framePath = []
+      const lastTrackedFrame = this._frameChain.peek()
+        ? this._frameChain.peek().getReference().elementId
+        : null
+      while (!frameInfo.isRoot) {
+        let frameTarget
+        await this.frameParent()
+        if (frameInfo.isCORS) {
+          const {value: frameElements} = await this._webdriver.elements('frame, iframe')
+          for (const frameElement of frameElements) {
+            await this.frame(frameElement)
+            const {value: contentDocument} = await this._webdriver.execute('return document')
+            await this.frameParent()
+            if (EyesWebElement.equals(contentDocument, frameInfo.contentDocument)) {
+              frameTarget = frameElement
+              break
+            }
+          }
+        } else {
+          frameTarget = frameInfo.frameElement
+        }
+        if (!frameTarget) throw new Error('Unable to find out the chain of frames')
+        if (EyesWebElement.equals(frameTarget, lastTrackedFrame)) break
+        const xpath = await EyesJsBrowserUtils.getElementXpath(this._jsExecutor, frameTarget)
+        framePath.unshift(
+          new EyesWebElement(frameTarget, By.xPath(`/${xpath}`), this, this._logger),
+        )
+        frameInfo = await this.getFrameInfo()
+      }
+      if (frameInfo.isRoot) this._frameChain.clear()
+      await this.frames(framePath)
     }
-
-    await this.frames(framePath)
   }
 
   // TODO
@@ -307,9 +332,19 @@ class EyesWebDriver {
     }
   }
 
-  async getTargetFrame() {
-    const {value: element} = await this._webdriver.execute('return window.frameElement')
-    return element
+  async getFrameInfo() {
+    const {value} = await this._webdriver.execute(`
+      var isCORS, isRoot;
+      try {
+        isRoot = window.top.document === window.document;
+        isCORS = false;
+      } catch(err) {
+        isRoot = false;
+        isCORS = true;
+      }
+      return {isCORS: isCORS,isRoot: isRoot, frameElement: window.frameElement, contentDocument: document};
+    `)
+    return value
   }
 
   // TODO
