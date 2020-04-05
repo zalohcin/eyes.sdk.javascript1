@@ -89,37 +89,44 @@ if (!url) {
   console.log('log file at:', logFilePath)
 
   await driver.get(url)
-  await eyes.open(driver, 'selenium render', url)
 
-  let target = Target.window()
-  if (args.fully) {
-    target = target.fully()
+  try {
+    await eyes.open(driver, 'selenium render', url)
+
+    let target = Target.window()
+    if (args.fully) {
+      target = target.fully()
+    }
+
+    if (args.ignoreRegions) {
+      target.ignoreRegions.apply(
+        target,
+        args.ignoreRegions.split(',').map(s => By.css(s.trim())),
+      )
+    }
+
+    logger.log('[render script] awaiting delay...', args.delay * 1000)
+    await new Promise(r => setTimeout(r, args.delay * 1000))
+    logger.log('[render script] awaiting delay... DONE')
+
+    // debugger
+
+    await eyes.check('selenium render', target)
+    await eyes.close(false)
+
+    const testResultsSummary = await runner.getAllTestResults(false)
+    const resultsStr = testResultsSummary
+      .getAllResults()
+      .map(testResultContainer => {
+        const testResults = testResultContainer.getTestResults()
+        return testResults ? formatResults(testResults) : testResultContainer.getException()
+      })
+      .join('\n')
+
+    console.log('\nRender results:\n', resultsStr)
+  } finally {
+    await driver.quit()
   }
-
-  if (args.ignoreRegions) {
-    target.ignoreRegions.apply(
-      target,
-      args.ignoreRegions.split(',').map(s => By.css(s.trim())),
-    )
-  }
-
-  logger.log('[render script] awaiting delay...', args.delay * 1000)
-  await new Promise(r => setTimeout(r, args.delay * 1000))
-  logger.log('[render script] awaiting delay... DONE')
-
-  await eyes.check('selenium render', target)
-  await eyes.close(false)
-
-  const testResultsSummary = await runner.getAllTestResults(false)
-  const resultsStr = testResultsSummary
-    .getAllResults()
-    .map(testResultContainer => {
-      const testResults = testResultContainer.getTestResults()
-      return testResults ? formatResults(testResults) : testResultContainer.getException()
-    })
-    .join('\n')
-
-  console.log('\nRender results:\n', resultsStr)
 })()
 
 function buildDriver({headless} = {}) {
