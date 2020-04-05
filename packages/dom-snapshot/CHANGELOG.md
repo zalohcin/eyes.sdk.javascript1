@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- fix javascript values returned from on<event> attributes
 
 ## 3.4.2
 

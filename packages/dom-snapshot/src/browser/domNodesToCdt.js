@@ -20,6 +20,7 @@ const NEED_MAP_INPUT_TYPES = new Set([
   'url',
   'week',
 ]);
+const ON_EVENT_REGEX = /^on[a-z]+$/;
 
 function domNodesToCdt(docNode, baseUrl, log = noop) {
   const cdt = [{nodeType: Node.DOCUMENT_NODE}];
@@ -132,6 +133,8 @@ function domNodesToCdt(docNode, baseUrl, log = noop) {
         const name = elementNode.attributes[key].name;
         if (/^blob:/.test(value)) {
           value = value.replace(/^blob:/, '');
+        } else if (ON_EVENT_REGEX.test(name)) {
+          value = '';
         }
         return {
           name,
@@ -177,10 +180,14 @@ function domNodesToCdt(docNode, baseUrl, log = noop) {
       nodeType: Node.ELEMENT_NODE,
       nodeName: 'SCRIPT',
       attributes: nodeAttributes(elementNode)
-        .map(key => ({
-          name: elementNode.attributes[key].name,
-          value: elementNode.attributes[key].value,
-        }))
+        .map(key => {
+          const name = elementNode.attributes[key].name;
+          const value = ON_EVENT_REGEX.test(name) ? '' : elementNode.attributes[key].value;
+          return {
+            name,
+            value,
+          };
+        })
         .filter(attr => attr.name !== 'src'),
       childNodeIndexes: [],
     };
