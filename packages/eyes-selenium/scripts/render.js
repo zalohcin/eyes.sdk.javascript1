@@ -25,8 +25,8 @@ const args = yargs
     type: 'boolean',
     describe: 'when specified, use CSS stitch mode',
   })
-  .option('browser', {
-    alias: 'b',
+  .option('headless', {
+    default: true,
     type: 'boolean',
     describe: 'open browser in non-headless mode',
   })
@@ -38,6 +38,12 @@ const args = yargs
     describe: 'delay in seconds before capturing page',
     type: 'number',
     default: 0,
+  })
+  .option('browser', {
+    alias: 'b',
+    describe: 'the browser to render to when in vg mode',
+    type: 'string',
+    coerce: parseBrowser,
   })
   .option('ignore-displacements', {
     describe: 'when specified, ignore displaced content',
@@ -62,7 +68,7 @@ if (!url) {
       .map(key => (!['_', '$0'].includes(key) ? `* ${key}: ${args[key]}` : ''))
       .join('\n  '),
   )
-  const driver = await buildDriver({headless: !args.browser})
+  const driver = await buildDriver({headless: args.headless})
 
   const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
   const eyes = new Eyes(runner)
@@ -72,6 +78,9 @@ if (!url) {
   })
   if (args.ignoreDisplacements) {
     configuration.setIgnoreDisplacements(true)
+  }
+  if (args.browser) {
+    configuration.addBrowsers(args.browser)
   }
   eyes.setConfiguration(configuration)
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
@@ -174,4 +183,17 @@ function formatDate(d) {
   const minutes = String(d.getMinutes()).padStart(2, '0')
   const seconds = String(d.getSeconds()).padStart(2, '0')
   return `${d.getFullYear()}-${month}-${date}-${hours}-${minutes}-${seconds}`
+}
+
+function parseBrowser(arg) {
+  const match = /^(chrome|chrome-1|chrome-2|chrome-canary|firefox|firefox-1|firefox-2|ie11|ie10|edge|safari|safari-1|safari-2|ie-vmware|edge-chromium|edge-chromium-1|edge-chromium-2)(\( *(\d+) *(x|,) *(\d+) *\))?$/.exec(
+    arg,
+  )
+
+  if (!match)
+    throw new Error(
+      'invalid syntax. Supports only chrome[-one-version-back/-two-versions-back], firefox[-one-version-back/-two-versions-back], ie11, ie10, edge, safari[-one-version-back/-two-versions-back] as browsers, and the syntax is browser(widthxheight)',
+    )
+
+  return {name: match[1], width: parseInt(match[3], 10), height: parseInt(match[5], 10)}
 }
