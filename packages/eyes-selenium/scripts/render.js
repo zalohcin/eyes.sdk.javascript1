@@ -5,6 +5,7 @@ const {Builder} = require('selenium-webdriver')
 const {
   Eyes,
   ClassicRunner,
+  VisualGridRunner,
   Target,
   FileLogHandler,
   Configuration,
@@ -13,21 +14,53 @@ const {
   // FileDebugScreenshotsProvider,
 } = require('../index')
 const path = require('path')
+const yargs = require('yargs')
+const args = yargs
+  .usage('yarn render <url> [options]')
+  .option('vg', {
+    type: 'boolean',
+    describe: 'when specified, use visual grid instead of classic runner',
+  })
+  .option('css', {
+    type: 'boolean',
+    describe: 'when specified, use CSS stitch mode',
+  })
+  .option('browser', {
+    alias: 'b',
+    type: 'boolean',
+    describe: 'open browser in non-headless mode',
+  })
+  .option('fully', {
+    type: 'boolean',
+    describe: 'whether to check target fully',
+  })
+  .option('delay', {
+    describe: 'delay in seconds before capturing page',
+    type: 'number',
+    default: 0,
+  })
+  .help().argv
 
-const url = process.argv[2]
+const [url] = args._
 if (!url) {
   throw new Error('missing url argument!')
 }
 
 ;(async function() {
-  console.log('Running Selenium render for', url, '\n')
-  const driver = await buildDriver({headless: true})
+  console.log('Running Selenium render for', url)
+  console.log(
+    'Options: ',
+    Object.keys(args)
+      .map(key => (!['_', '$0'].includes(key) ? `* ${key}: ${args[key]}` : ''))
+      .join('\n  '),
+  )
+  const driver = await buildDriver({headless: !args.browser})
 
-  const runner = new ClassicRunner()
+  const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
   const eyes = new Eyes(runner)
   const configuration = new Configuration({
     viewportSize: {width: 1024, height: 768},
-    stitchMode: StitchMode.CSS,
+    stitchMode: args.css ? StitchMode.CSS : StitchMode.SCROLL,
   })
   eyes.setConfiguration(configuration)
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
@@ -36,7 +69,17 @@ if (!url) {
 
   await driver.get(url)
   await eyes.open(driver, 'selenium render', url)
-  await eyes.check('selenium render', Target.window().fully())
+
+  let target = Target.window()
+  if (args.fully) {
+    target = target.fully()
+  }
+
+  logger.log('render script awaiting delay...', args.delay * 1000)
+  await new Promise(r => setTimeout(r, args.delay * 1000))
+  logger.log('render script awaiting delay... DONE')
+
+  await eyes.check('selenium render', target)
   await eyes.close(false)
 
   const testResultsSummary = await runner.getAllTestResults(false)
@@ -48,7 +91,7 @@ if (!url) {
     })
     .join('\n')
 
-  console.log('\nRender results\n\n', resultsStr)
+  console.log('\nRender results:\n', resultsStr)
 })()
 
 function buildDriver({headless} = {}) {
