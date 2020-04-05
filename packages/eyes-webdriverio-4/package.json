@@ -28,7 +28,7 @@
     "webdriverio": "~4.14.4"
   },
   "devDependencies": {
-    "@applitools/sdk-fake-eyes-server": "1.0.5",
+    "@applitools/sdk-fake-eyes-server": "1.1.1",
     "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/sdk-test-kit": "1.0.17",
     "chromedriver": "^80.0.0",
