@@ -1,7 +1,7 @@
 'use strict'
 
 const {URL} = require('url')
-const {Builder} = require('selenium-webdriver')
+const {Builder, By} = require('selenium-webdriver')
 const {
   Eyes,
   ClassicRunner,
@@ -39,6 +39,14 @@ const args = yargs
     type: 'number',
     default: 0,
   })
+  .option('ignore-displacements', {
+    describe: 'when specified, ignore displaced content',
+    type: 'boolean',
+  })
+  .option('ignore-regions', {
+    describe: 'comma-separated list of selectors to ignore',
+    type: 'string',
+  })
   .help().argv
 
 const [url] = args._
@@ -62,9 +70,13 @@ if (!url) {
     viewportSize: {width: 1024, height: 768},
     stitchMode: args.css ? StitchMode.CSS : StitchMode.SCROLL,
   })
+  if (args.ignoreDisplacements) {
+    configuration.setIgnoreDisplacements(true)
+  }
   eyes.setConfiguration(configuration)
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
-  logger.log('Running Selenium render for', url)
+  logger.log('[render script] Running Selenium render for', url)
+  logger.log(`[render script] process versions: ${JSON.stringify(process.versions)}`)
   console.log('log file at:', logFilePath)
 
   await driver.get(url)
@@ -75,9 +87,16 @@ if (!url) {
     target = target.fully()
   }
 
-  logger.log('render script awaiting delay...', args.delay * 1000)
+  if (args.ignoreRegions) {
+    target.ignoreRegions.apply(
+      target,
+      args.ignoreRegions.split(',').map(s => By.css(s.trim())),
+    )
+  }
+
+  logger.log('[render script] awaiting delay...', args.delay * 1000)
   await new Promise(r => setTimeout(r, args.delay * 1000))
-  logger.log('render script awaiting delay... DONE')
+  logger.log('[render script] awaiting delay... DONE')
 
   await eyes.check('selenium render', target)
   await eyes.close(false)
