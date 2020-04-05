@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- supporting env variable for setting applitools config file path 
 
 ## 3.20.2
 
