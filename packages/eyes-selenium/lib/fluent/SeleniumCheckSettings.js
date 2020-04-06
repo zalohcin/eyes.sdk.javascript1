@@ -262,29 +262,6 @@ class SeleniumCheckSettings extends CheckSettings {
   }
 
   /**
-   * @ignore
-   * @return {string}
-   */
-  getSizeMode() {
-    if (!this._targetRegion && !this._targetElement && !this._targetSelector) {
-      if (this.getStitchContent()) {
-        return 'full-page'
-      }
-      return 'viewport'
-    }
-    if (this._targetRegion) {
-      if (this.getStitchContent()) {
-        return 'region'
-      }
-      return 'region'
-    }
-    if (this.getStitchContent()) {
-      return 'selector'
-    }
-    return 'selector'
-  }
-
-  /**
    * @param {By|WebElement|EyesWebElement} element
    * @return {this}
    */
