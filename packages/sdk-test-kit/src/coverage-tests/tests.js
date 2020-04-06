@@ -54,7 +54,7 @@ function makeCoverageTests({
     TestCheckElementFully_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      await checkRegion('[name="frame1"]', {isFully: true})
+      await checkRegion('#overflowing-div-image', {isFully: true})
       await close(throwException)
     },
     TestCheckElementWithIgnoreRegionByElementOutsideTheViewport_Fluent: async () => {
