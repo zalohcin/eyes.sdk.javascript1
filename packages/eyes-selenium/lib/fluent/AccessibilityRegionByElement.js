@@ -1,9 +1,10 @@
 'use strict'
 
-const {Location, CoordinatesType} = require('@applitools/eyes-common')
 const {
   GetAccessibilityRegion,
   AccessibilityMatchSettings,
+  Location,
+  CoordinatesType,
   EyesJsBrowserUtils,
 } = require('@applitools/eyes-sdk-core')
 

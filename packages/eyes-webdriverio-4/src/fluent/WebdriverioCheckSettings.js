@@ -288,26 +288,10 @@ class WebdriverioCheckSettings extends CheckSettings {
     return this._frameChain
   }
 
-  /**
-   * @return {string}
-   */
-  getSizeMode() {
-    if (!this._targetRegion && !this._targetElement && !this._targetSelector) {
-      if (this.getStitchContent()) {
-        return 'full-page'
-      }
-      return 'viewport'
-    }
-    if (this._targetRegion) {
-      if (this.getStitchContent()) {
-        return 'region'
-      }
-      return 'region'
-    }
-    if (this.getStitchContent()) {
-      return 'selector'
-    }
-    return 'selector'
+  _getTargetType() {
+    return !this._targetRegion && !this._targetElement && !this._targetSelector
+      ? 'window'
+      : 'region'
   }
 
   /**

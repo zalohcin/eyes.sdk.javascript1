@@ -1173,6 +1173,39 @@ describe('domNodesToCdt', () => {
     expect(cdt[3]).to.deep.equal(expectedCdtDiv);
   });
 
+  it('sanitizes on<event-name> attributes for basic node', () => {
+    const document = getDocNode('<div onclick="some()" attrkey="attrval">text</div>');
+    const {cdt} = domNodesToCdt(document);
+    const expectedCdtDiv = {
+      nodeType: 1,
+      nodeName: 'DIV',
+      attributes: [
+        {name: 'onclick', value: ''},
+        {name: 'attrkey', value: 'attrval'},
+      ],
+      childNodeIndexes: [2],
+    };
+    expect(cdt[3]).to.deep.equal(expectedCdtDiv);
+  });
+
+  it('sanitizes on<event-name> attributes for script node', () => {
+    const docNode = getDocNode('<script onload="foo()" src="dont-return-me.js"></script>');
+    const {cdt} = domNodesToCdt(docNode);
+    const expectedCdt = [
+      {nodeType: 9, childNodeIndexes: [4]},
+      {
+        nodeType: 1,
+        nodeName: 'SCRIPT',
+        attributes: [{name: 'onload', value: ''}],
+        childNodeIndexes: [],
+      },
+      {nodeType: 1, nodeName: 'HEAD', attributes: [], childNodeIndexes: [1]},
+      {nodeType: 1, nodeName: 'BODY', attributes: [], childNodeIndexes: []},
+      {nodeType: 1, nodeName: 'HTML', attributes: [], childNodeIndexes: [2, 3]},
+    ];
+    expect(cdt).to.deep.equal(expectedCdt);
+  });
+
   //this is for generating the cdt files
   it.skip('works for test-iframe.html', () => {
     const docNode = getDocNode(loadFixture('test-iframe.html'));

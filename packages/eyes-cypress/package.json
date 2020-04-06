@@ -1,16 +1,12 @@
 {
   "name": "@applitools/eyes-cypress",
-  "version": "3.9.18",
+  "version": "3.9.21",
   "main": "index.js",
   "license": "SEE LICENSE IN LICENSE",
   "bin": {
     "eyes-setup": "./bin/eyes-setup.js"
   },
   "scripts": {
-    "vv": "bongo --verify-versions",
-    "vc": "bongo --verify-changelog",
-    "uc": "bongo --update-changelog",
-    "verify-commits": "bongo --verify-commits",
     "render": "run(){ npx cypress run --config integrationFolder=tests/fixtures/testApp/cypress/render,pluginsFile=tests/fixtures/testApp/cypress/plugins/index-render.js,supportFile=tests/fixtures/testApp/cypress/support/index-run.js --env url=$1; }; run",
     "test:mocha": "mocha --no-timeouts 'tests/**/*.test.js'",
     "test:unit": "mocha --no-timeouts 'tests/unit/**/*.test.js'",
@@ -26,9 +22,9 @@
     "changelog": "git changelog -x -p -f v$npm_package_version > History.md && git add ./History.md && git commit -am 'changelog'",
     "changelog:init": "git config changelog.format \"* %s [[%h]($(echo $npm_package_repository_url|cut -d+ -f2|cut -d. -f1-2)/commit/%H)]\"",
     "changelog:install": "sudo apt-get install git-extras",
-    "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc && yarn verify-commits",
-    "version": "yarn uc && git add CHANGELOG.md"
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "files": [
     "src",
@@ -46,11 +42,10 @@
     "url": "git://github.com/applitools/eyes.sdk.javascript1.git"
   },
   "dependencies": {
-    "@applitools/dom-snapshot": "3.4.0",
-    "@applitools/eyes-common": "3.20.1",
-    "@applitools/eyes-sdk-core": "9.0.2",
+    "@applitools/dom-snapshot": "3.4.2",
+    "@applitools/eyes-sdk-core": "9.0.3",
     "@applitools/functional-commons": "1.5.4",
-    "@applitools/visual-grid-client": "13.6.5",
+    "@applitools/visual-grid-client": "13.6.11",
     "body-parser": "^1.19.0",
     "chalk": "^2.4.2",
     "cors": "^2.8.5",

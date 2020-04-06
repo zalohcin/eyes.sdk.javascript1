@@ -40,15 +40,11 @@
     "mocha": "^6.2.2"
   },
   "scripts": {
-    "vv": "bongo --verify-versions",
-    "vc": "bongo --verify-changelog",
-    "uc": "bongo --update-changelog",
-    "verify-commits": "bongo --verify-commits",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "test": "mocha --no-timeouts \"test/**/*.spec.js\"",
-    "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc && yarn verify-commits",
-    "version": "yarn uc && git add CHANGELOG.md"
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

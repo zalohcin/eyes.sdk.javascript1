@@ -1,25 +1,21 @@
 {
   "name": "@applitools/eyes-webdriverio4-service",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "",
   "keywords": [
     "wdio-service"
   ],
   "main": "index.js",
   "scripts": {
-    "vv": "bongo --verify-versions",
-    "vc": "bongo --verify-changelog",
-    "uc": "bongo --update-changelog",
-    "verify-commits": "bongo --verify-commits",
     "test": "wdio test/wdio.conf.js",
-    "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc && yarn verify-commits",
-    "version": "yarn uc && git add CHANGELOG.md"
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "@applitools/eyes.webdriverio": "2.12.5"
+    "@applitools/eyes.webdriverio": "2.12.6"
   },
   "devDependencies": {
     "@applitools/sdk-release-kit": "0.1.0",

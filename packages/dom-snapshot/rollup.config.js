@@ -65,7 +65,7 @@ function config({inputFileName, outputFileName, type = 'iife', usePolyfillAndBab
       json(),
       ignore(['source-map', 'source-map-resolve']),
       resolve({browser: true}),
-      commonjs({include: '**', ignoreGlobal: true}),
+      commonjs({include: '../../**', ignoreGlobal: true}),
       builtins(),
       globals(),
       replace({

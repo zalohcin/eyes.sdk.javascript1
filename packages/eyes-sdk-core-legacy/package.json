@@ -1,6 +1,6 @@
 {
   "name": "eyes.sdk",
-  "version": "4.0.5",
+  "version": "5.0.0",
   "description": "Applitools Eyes SDK For JavaScript",
   "keywords": [
     "eyes.sdk",
@@ -39,7 +39,7 @@
   "main": "./index.js",
   "types": "./typings/index.d.ts",
   "dependencies": {
-    "eyes.utils": "3.8.1",
+    "eyes.utils": "4.0.0",
     "request": "^2.88.0"
   },
   "devDependencies": {
@@ -49,16 +49,12 @@
     "typescript": "^3.6.4"
   },
   "scripts": {
-    "vv": "bongo --verify-versions",
-    "vc": "bongo --verify-changelog",
-    "uc": "bongo --update-changelog",
-    "verify-commits": "bongo --verify-commits",
     "test": "npm run test:unit",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "typings": "tsc --declaration",
-    "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc && yarn verify-commits",
-    "version": "yarn uc && git add CHANGELOG.md"
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "browser": {
     "./src/FileLogHandler": false

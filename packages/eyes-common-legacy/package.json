@@ -1,6 +1,6 @@
 {
   "name": "eyes.utils",
-  "version": "3.8.1",
+  "version": "4.0.0",
   "description": "General purpose Javascript utilities.",
   "keywords": [
     "eyes.utils",
@@ -51,16 +51,12 @@
     "typescript": "^3.6.4"
   },
   "scripts": {
-    "vv": "bongo --verify-versions",
-    "vc": "bongo --verify-changelog",
-    "uc": "bongo --update-changelog",
-    "verify-commits": "bongo --verify-commits",
     "test": "npm run test:unit",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
     "typings": "tsc --declaration",
-    "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc && yarn verify-commits",
-    "version": "yarn uc && git add CHANGELOG.md"
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {
