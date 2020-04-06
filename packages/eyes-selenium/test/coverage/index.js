@@ -49,7 +49,7 @@ function initialize() {
 
   async function checkFrame(
     target,
-    {isClassicApi = false, isFully = false, tag, matchTimeout, isLayout, floatingRegion} = {},
+    {isClassicApi = false, isFully = false, tag, matchTimeout = 0, isLayout, floatingRegion} = {},
   ) {
     if (isClassicApi) {
       await eyes.checkFrame(By.css(target), matchTimeout, tag)
@@ -76,7 +76,7 @@ function initialize() {
       if (isLayout) {
         _checkSettings.layout()
       }
-      _checkSettings.fully(isFully)
+      _checkSettings.fully(isFully).timeout(matchTimeout)
       await eyes.check(tag, _checkSettings)
     }
   }
@@ -90,7 +90,7 @@ function initialize() {
       inFrame,
       ignoreRegion,
       isLayout,
-      matchTimeout,
+      matchTimeout = 0,
       tag,
     } = {},
   ) {
@@ -130,7 +130,7 @@ function initialize() {
       if (isLayout) {
         _checkSettings.layout()
       }
-      _checkSettings.fully(isFully)
+      _checkSettings.fully(isFully).timeout(matchTimeout)
       await eyes.check(tag, _checkSettings)
     }
   }
@@ -142,7 +142,7 @@ function initialize() {
     floatingRegion,
     scrollRootElement,
     tag,
-    matchTimeout,
+    matchTimeout = 0,
   } = {}) {
     if (isClassicApi) {
       await eyes.checkWindow(tag, matchTimeout, isFully)
@@ -150,6 +150,7 @@ function initialize() {
       let _checkSettings = Target.window()
         .fully(isFully)
         .ignoreCaret()
+        .timeout(matchTimeout)
       if (scrollRootElement) {
         _checkSettings.scrollRootElement(By.css(scrollRootElement))
       }
