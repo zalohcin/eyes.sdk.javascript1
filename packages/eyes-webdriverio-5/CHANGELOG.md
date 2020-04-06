@@ -7,7 +7,7 @@
 
 - removed eyes-common dependency
 - update @applitools/visual-grid-client@13.6.11
-- handle switchToFrame on MS Edge <= 18
+- handle switchToFrame on MS Edge <= 18 ([Trello](https://trello.com/c/SLUduLu8/68-can-take-baseline-screenshot-but-checkpoint-screenshots-not-showing-up.))
 
 ## 5.9.22
 
