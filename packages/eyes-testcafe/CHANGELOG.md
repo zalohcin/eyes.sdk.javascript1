@@ -1,8 +1,12 @@
 # Change Log
 
+## 2.0.0-beta.19
+
+- fix failure to check chrome emulated devices 
+
 ## 2.0.0-beta.18
 
-- using fixed version numbers for all internal dependencies
+- using fixed version numbers    for all internal dependencies
 - reverted to 2.0.0-beta.12 (not using eyes-sdk-core of Eyes 10.9 release)
 
 ## 2.0.0-beta.17
