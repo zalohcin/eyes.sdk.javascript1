@@ -82,6 +82,14 @@ const args = yargs
     type: 'number',
     default: 0,
   })
+  .option('server-url', {
+    describe: 'server url',
+    type: 'string',
+  })
+  .option('api-key', {
+    describe: 'API key',
+    type: 'string',
+  })
 
   .help().argv
 
@@ -110,6 +118,12 @@ if (!url) {
   configuration.setViewportSize({width, height})
   if (args.browser) {
     configuration.addBrowsers(args.browser)
+  }
+  if (args.serverUrl) {
+    configuration.setServerUrl(args.serverUrl)
+  }
+  if (args.apiKey) {
+    configuration.setApiKey(args.apiKey)
   }
   eyes.setConfiguration(configuration)
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
