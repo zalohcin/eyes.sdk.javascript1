@@ -7,6 +7,7 @@
 
 - removed eyes-common dependency
 - update @applitools/visual-grid-client@13.6.11
+- handle switchToFrame on MS Edge <= 18
 
 ## 5.9.22
 
