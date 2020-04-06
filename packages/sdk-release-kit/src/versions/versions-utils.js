@@ -51,17 +51,39 @@ function verifyDependencies({pkgs, pkgPath, results}) {
   }
 }
 
-function checkPackagesForUniqueVersions(input, packageNames) {
-  let errors = []
-  packageNames.forEach(packageName => {
-    const versions = _findVersionNumbersForPackage(input, packageName)
-    if (versions.size > 1) errors.push({name: packageName, versions})
-  })
-  if (errors.length) {
-    const affectedPackages = errors.map(error => error.name).join(', ')
-    throw new Error(
-      `Non-unique package versions found of ${affectedPackages} \n\nTo learn more, run \`npx bongo ls-dry-run\`.`,
-    )
+function checkPackagesForUniqueVersions(input, packageNames, {isNpmLs} = {isNpmLs: true}) {
+  if (isNpmLs) {
+    let errors = []
+    packageNames.forEach(packageName => {
+      const versions = _findVersionNumbersForPackage(input, packageName)
+      if (versions.size > 1) errors.push({name: packageName, versions})
+    })
+    if (errors.length) {
+      const affectedPackages = errors.map(error => error.name).join(', ')
+      throw new Error(
+        `Non-unique package versions found of ${affectedPackages} \n\nTo learn more, run \`npx bongo ls-dry-run\`.`,
+      )
+    }
+  } else {
+    let found = {}
+    packageNames.forEach(packageName => {
+      found[packageName] = findPackageInPackageLock({packageLock: input, packageName})
+    })
+    let affectedPackages = []
+    for (const packageName in found) {
+      const versions = found[packageName].map(entry => Object.values(entry)[0])
+      const hasUniqueVersion = new Set(versions).size === 1
+      if (!hasUniqueVersion) {
+        found[packageName].forEach(versionEntry => {
+          for (const [key, value] of Object.entries(versionEntry)) {
+            console.log(chalk.cyan(`${key} \n -> ${value}\n`))
+          }
+        })
+        affectedPackages.push(packageName)
+      }
+    }
+    if (affectedPackages.length)
+      throw new Error(`Non-unique package versions found of ${affectedPackages.join(', ')}.`)
   }
 }
 
@@ -116,6 +138,20 @@ async function npmLs() {
   }
 }
 
+function findPackageInPackageLock({packageLock, packageName}) {
+  const dependencies = packageLock.dependencies
+  let found = []
+  for (const depName in dependencies) {
+    const {requires, version} = dependencies[depName]
+    if (requires && requires[packageName]) {
+      const result = {}
+      result[`${depName}@${version}`] = `${packageName}@${requires[packageName]}`
+      found.push(result)
+    }
+  }
+  return found
+}
+
 module.exports = {
   makePackagesList,
   verifyDependencies,
@@ -123,4 +159,5 @@ module.exports = {
   findEntryByPackageName,
   checkPackageCommits,
   npmLs,
+  findPackageInPackageLock,
 }

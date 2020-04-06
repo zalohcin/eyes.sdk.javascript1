@@ -17,7 +17,7 @@ async function packInstall(packageDir) {
   await pexec(`rm -rf ${packFile}`)
   fs.mkdirSync(installDir)
   await pexec(`yarn pack --filename ${packFile}`)
-  await pexec(`npm install ${packFile} --prefix ${installDir}`)
+  await pexec(`npm install ${packFile} --prefix ${installDir} --package-lock-only`)
 }
 
 module.exports = {
