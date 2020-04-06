@@ -19,8 +19,8 @@ describe('TestEdgeSwitchToFrame', () => {
         browserVersion: '18.0',
       },
       logLevel: 'error',
-      user: process.env.BROWSERSTACK_USER,
-      key: process.env.BROWSERSTACK_KEY,
+      user: process.env.BROWSERSTACK_USERNAME,
+      key: process.env.BROWSERSTACK_ACCESS_KEY,
     }
     browser = await remote(edgeBstack)
   })
