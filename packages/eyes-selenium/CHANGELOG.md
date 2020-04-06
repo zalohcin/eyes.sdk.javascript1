@@ -1,7 +1,8 @@
 # Change Log
 
 ## Unreleased
-
+- support typed selectors
+- support ignore, floating, strict, layout, content, accessibility regions for VG
 
 ## 4.33.31 - 2020/3/31
 
