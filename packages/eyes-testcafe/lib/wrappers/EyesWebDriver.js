@@ -399,7 +399,7 @@ class EyesWebDriver {
     this._logger.verbose('Extracting viewport size...')
     this._defaultContentViewportSize = await EyesTestcafeUtils.getViewportSizeOrDisplaySize(
       this._logger,
-      this._driver,
+      this,
     )
     this._logger.verbose('Done! Viewport size: ', this._defaultContentViewportSize)
 
