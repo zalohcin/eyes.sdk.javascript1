@@ -10,6 +10,7 @@ const {
   FileLogHandler,
   Configuration,
   StitchMode,
+  EyesSeleniumUtils,
   // BatchInfo,
   // FileDebugScreenshotsProvider,
 } = require('../index')
@@ -17,6 +18,18 @@ const path = require('path')
 const yargs = require('yargs')
 const args = yargs
   .usage('yarn render <url> [options]')
+  .example(
+    'yarn render http://example.org --viewport-size 800x600 --css',
+    'classic viewport screenshot, browser width 800 pixels, browser height 600 pixels, css stitching',
+  )
+  .example(
+    'yarn render http://example.org --vg --browser firefox(1200x900)',
+    'visual grid render, defalut viewport size of 1024x768, vg browser is firefox at 1200x900',
+  )
+  .example(
+    'yarn render http://example.org --ignore-regions "#ignore-this,.dynamic-element" --fully',
+    'classic full page screenshot, 2 ignore selectors',
+  )
   .option('vg', {
     type: 'boolean',
     describe: 'when specified, use visual grid instead of classic runner',
@@ -33,6 +46,7 @@ const args = yargs
   .option('fully', {
     type: 'boolean',
     describe: 'whether to check target fully',
+    default: false,
   })
   .option('delay', {
     describe: 'delay in seconds before capturing page',
@@ -48,11 +62,27 @@ const args = yargs
   .option('ignore-displacements', {
     describe: 'when specified, ignore displaced content',
     type: 'boolean',
+    default: false,
   })
   .option('ignore-regions', {
     describe: 'comma-separated list of selectors to ignore',
     type: 'string',
   })
+  .option('viewport-size', {
+    describe: 'the viewport size to open the browser (widthxheight)',
+    type: 'string',
+    default: '1024x768',
+  })
+  .option('scroll-page', {
+    describe: 'before taking the screenshot, scroll page to the bottom and up',
+    type: 'boolean',
+  })
+  .options('match-timeout', {
+    describe: 'match timeout',
+    type: 'number',
+    default: 0,
+  })
+
   .help().argv
 
 const [url] = args._
@@ -76,9 +106,8 @@ if (!url) {
     viewportSize: {width: 1024, height: 768},
     stitchMode: args.css ? StitchMode.CSS : StitchMode.SCROLL,
   })
-  if (args.ignoreDisplacements) {
-    configuration.setIgnoreDisplacements(true)
-  }
+  const [width, height] = args.viewportSize.split('x').map(Number)
+  configuration.setViewportSize({width, height})
   if (args.browser) {
     configuration.addBrowsers(args.browser)
   }
@@ -94,9 +123,9 @@ if (!url) {
     await eyes.open(driver, 'selenium render', url)
 
     let target = Target.window()
-    if (args.fully) {
-      target = target.fully()
-    }
+      .fully(args.fully)
+      .ignoreDisplacements(args.ignoreDisplacements)
+      .timeout(args.matchTimeout)
 
     if (args.ignoreRegions) {
       target.ignoreRegions.apply(
@@ -110,6 +139,10 @@ if (!url) {
     logger.log('[render script] awaiting delay... DONE')
 
     // debugger
+
+    if (args.scrollPage) {
+      await EyesSeleniumUtils.scrollPage(driver)
+    }
 
     await eyes.check('selenium render', target)
     await eyes.close(false)
