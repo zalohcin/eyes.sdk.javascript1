@@ -50,6 +50,7 @@ function makeCheckWindow({
     floating,
     accessibility,
     sendDom = true,
+    platform,
     matchLevel = _matchLevel,
     accessibilityLevel = _accessibilityLevel,
     layout,
@@ -297,6 +298,7 @@ function makeCheckWindow({
         noOffsetSelectors: noOffsetSelectors.all,
         offsetSelectors: offsetSelectors.all,
         sendDom,
+        platform,
       })
 
       globalState.setQueuedRendersCount(globalState.getQueuedRendersCount() + 1)

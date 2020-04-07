@@ -17,6 +17,7 @@ function createRenderRequests({
   noOffsetSelectors = [],
   offsetSelectors = [],
   sendDom,
+  platform,
 }) {
   const selectorsToFindRegionsFor = calculateSelectorsToFindRegionsFor({
     sizeMode,
@@ -55,6 +56,7 @@ function createRenderRequests({
         scriptHooks,
         selectorsToFindRegionsFor,
         sendDom,
+        platform,
       })
     },
   )

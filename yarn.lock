@@ -255,6 +255,24 @@
     postcss-value-parser "^4.0.2"
     throat "^5.0.0"
 
+"@applitools/visual-grid-client@13.6.12":
+  version "13.6.12"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-13.6.12.tgz#1cba580b698d82759c636a5ad672d3bf54dbc3f9"
+  integrity sha512-tOBEXi6h9aimhNE3qTU0dbJ0z/cZtm6Zuf9VkVqSZZZ/JpC7ShYqkL9MxBS+G+M6O9QLikGAPG4GTeoV8PI3cw==
+  dependencies:
+    "@applitools/dom-snapshot" "3.4.2"
+    "@applitools/eyes-sdk-core" "9.0.3"
+    "@applitools/functional-commons" "1.5.4"
+    "@applitools/http-commons" "2.3.12"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/jsdom" "1.0.2"
+    he "1.2.0"
+    lodash.mapvalues "^4.6.0"
+    mime-types "^2.1.24"
+    mkdirp "^0.5.1"
+    postcss-value-parser "^4.0.2"
+    throat "^5.0.0"
+
 "@applitools/visual-grid-client@13.6.9":
   version "13.6.9"
   resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-13.6.9.tgz#16895cb3b5b4f86fc128d1fb1add37d3f5e77c30"

@@ -21,6 +21,7 @@ describe('createRenderRequests', () => {
     const region = {left: 1, top: 2, width: 3, height: 4}
     const scriptHooks = 'scriptHooks'
     const sendDom = 'sendDom'
+    const platform = 'platform'
     const renderInfo = {
       getResultsUrl: () => 'resultsUrl',
       getStitchingServiceUrl: () => 'stitchingServiceUrl',
@@ -36,6 +37,7 @@ describe('createRenderRequests', () => {
       region,
       scriptHooks,
       sendDom,
+      platform,
       noOffsetSelectors: [],
       offsetSelectors: [],
     })
@@ -54,9 +56,10 @@ describe('createRenderRequests', () => {
         url,
         dom,
         resources: resourcesObj,
-        browser: {name: 'b1', platform: 'Linux'},
+        browser: {name: 'b1'},
         scriptHooks,
         sendDom,
+        platform: {name: platform},
         renderInfo: {
           width: 1,
           height: 2,
@@ -71,9 +74,10 @@ describe('createRenderRequests', () => {
         url,
         dom,
         resources: resourcesObj,
-        browser: {name: 'b2', platform: 'Linux'},
+        browser: {name: 'b2'},
         scriptHooks,
         sendDom,
+        platform: {name: platform},
         renderInfo: {
           width: 3,
           height: 4,
