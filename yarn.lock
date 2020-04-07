@@ -32,6 +32,14 @@
     "@applitools/functional-commons" "^1.5.4"
     css-tree "^1.0.0-alpha.39"
 
+"@applitools/dom-snapshot@3.4.2":
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.4.2.tgz#6e6d1ff50a194de8e0156509c0592cdb66291af7"
+  integrity sha512-j5lxX+H/SNcYZR769baL5fN3TEjDlHiAWY2MohlVwDpafGAHUflVjthzbkdmRTxtvjQZ4ht8jlRkRtm4C9cQdA==
+  dependencies:
+    "@applitools/functional-commons" "^1.5.4"
+    css-tree "^1.0.0-alpha.39"
+
 "@applitools/eslint-plugin-compat@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@applitools/eslint-plugin-compat/-/eslint-plugin-compat-0.7.0.tgz#61785cfb4156ddbb06141116b7fd381ecf11afea"
@@ -53,6 +61,18 @@
   version "3.20.1"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.20.1.tgz#8c5047fcf0359fada2a73f109f32b68f4bc84aba"
   integrity sha512-biGqtXa7veCvUfufox2xGLkNRy1mW1mmeB10tsRfcxplPCnRT2iFpi2hynWDsbIUCyGYsx4wJwiALu9sOKfM/w==
+  dependencies:
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+
+"@applitools/eyes-common@3.20.2":
+  version "3.20.2"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.20.2.tgz#435c3c05a2509952b242031cc276d5004bd1b9d3"
+  integrity sha512-UwpZB99bXn+cYC4IRcfQzS/SFmbSIJO0Qh5DaLO59NphzIcvLEEWND9o8t2o3dF3l9Qpd0ir3YXLamQDopqA5Q==
   dependencies:
     cosmiconfig "^6.0.0"
     dateformat "^3.0.3"
@@ -98,6 +118,18 @@
   integrity sha512-/J7ZghU7GLF86MXvEowsiTpw+PMf/OQK7k5xp+b5QnJ8NX5GyFsSyTyijqHaRWptvjA8/gZSno6bX5n85moxeQ==
   dependencies:
     "@applitools/eyes-common" "3.20.1"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    axios "0.19.2"
+    chalk "3.0.0"
+    es6-promise-pool "2.5.0"
+    tunnel "0.0.6"
+
+"@applitools/eyes-sdk-core@9.0.3":
+  version "9.0.3"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-9.0.3.tgz#bff1857dc369d2185ebd863e96608f838d5c6c25"
+  integrity sha512-urqAGiY8j4N+jHrj0nn+mo/89BW5bYjo5v9BWOpfOgHKgZuKd9GHWkT7OG/TXL8xDdCcFhFmYMwlZ4sxGYG28A==
+  dependencies:
+    "@applitools/eyes-common" "3.20.2"
     "@applitools/isomorphic-fetch" "3.0.0"
     axios "0.19.2"
     chalk "3.0.0"
