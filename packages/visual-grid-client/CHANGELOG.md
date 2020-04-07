@@ -3,6 +3,8 @@
 ## Unreleased
 
 - add edgelegacy and edgechromium under flag
+- updated to @applitools/dom-snapshot@3.4.3
+- updated to @applitools/eyes-sdk-core@9.1.0
 
 ## 13.6.12 - 2020/3/31
 
