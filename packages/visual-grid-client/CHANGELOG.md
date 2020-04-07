@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add edgelegacy and edgechromium under flag
 
 ## 13.6.12 - 2020/3/31
 
