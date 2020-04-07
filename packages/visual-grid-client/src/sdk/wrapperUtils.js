@@ -1,6 +1,6 @@
 'use strict'
 const EyesWrapper = require('./EyesWrapper')
-const {BatchInfo, RectangleSize, TypeUtils} = require('@applitools/eyes-sdk-core')
+const {RectangleSize, TypeUtils} = require('@applitools/eyes-sdk-core')
 
 function initWrappers({count, apiKey, logHandler, getBatchInfoWithCache}) {
   return Array.from(

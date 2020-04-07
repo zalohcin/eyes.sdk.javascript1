@@ -144,5 +144,5 @@ HTML[1]/BODY[1]/IFRAME[1]
   "css": "#####http://localhost:7272/test.css#####",
   "images": {},
   "version": "1.1.0",
-  "scriptVersion": "DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED"
+  "scriptVersion": "7.1.4"
 }

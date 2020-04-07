@@ -1,6 +1,12 @@
 'use strict'
 
-const {GetRegion, CoordinatesType, Location, Region} = require('@applitools/eyes-sdk-core')
+const {
+  GetRegion,
+  CoordinatesType,
+  Location,
+  Region,
+  locatorToPersistedRegions,
+} = require('@applitools/eyes-sdk-core')
 
 const {SelectorByLocator} = require('./SelectorByLocator')
 
@@ -45,6 +51,10 @@ class IgnoreRegionBySelector extends GetRegion {
    */
   async getSelector(driver) {
     return new SelectorByLocator(this._selector).getSelector(driver)
+  }
+
+  async toPersistedRegions(driver) {
+    return locatorToPersistedRegions(this._selector, driver)
   }
 }
 

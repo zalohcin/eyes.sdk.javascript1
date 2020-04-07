@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+ ## 3.21.0 - 2020/4/5
+
+- supporting env variable for setting applitools config file path 
+
 ## 3.20.2
 
 - fix isFeatureFlagOn

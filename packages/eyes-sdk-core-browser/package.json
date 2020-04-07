@@ -1,8 +1,7 @@
 {
   "name": "@applitools/eyes-sdk-core-browser",
   "private": true,
-  "version": "4.7.0",
-  "description": "Applitools Eyes SDK for browser",
+  "version": "4.7.0", "description": "Applitools Eyes SDK for browser",
   "keywords": [
     "eyes-sdk-core",
     "applitools",
@@ -39,17 +38,13 @@
     "uglify-es": "^3.3.9"
   },
   "scripts": {
-    "vv": "bongo --verify-versions",
-    "vc": "bongo --verify-changelog",
-    "uc": "bongo --update-changelog",
-    "verify-commits": "bongo --verify-commits",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
     "browserify": "browserify index.js > dist/eyes-sdk-core.browser.js",
     "uglify": "uglifyjs dist/eyes-sdk-core.browser.js > dist/eyes-sdk-core.browser.min.js",
     "build": "npm run browserify && npm run uglify",
-    "postpublish": "git push; git push --tags",
-    "preversion": "yarn vv && yarn vc && yarn verify-commits",
-    "version": "yarn uc && git add CHANGELOG.md"
+    "preversion": "bongo preversion",
+    "version": "bongo version",
+    "postversion": "bongo postversion --skip-release-notification"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

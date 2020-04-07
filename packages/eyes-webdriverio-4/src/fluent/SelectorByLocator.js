@@ -1,6 +1,6 @@
 'use strict'
 
-const {GeneralUtils, GetSelector} = require('@applitools/eyes-sdk-core')
+const {GeneralUtils, GetSelector, locatorToPersistedRegions} = require('@applitools/eyes-sdk-core')
 
 const EYES_SELECTOR_TAG = 'data-eyes-selector'
 
@@ -34,6 +34,10 @@ class SelectorByLocator extends GetSelector {
     }
 
     return `[${EYES_SELECTOR_TAG}="${randId}"]`
+  }
+
+  async toPersistedRegions(driver) {
+    return locatorToPersistedRegions(this._selector, driver)
   }
 }
 

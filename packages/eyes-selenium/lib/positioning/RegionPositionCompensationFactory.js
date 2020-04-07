@@ -1,7 +1,6 @@
 'use strict'
 
-const {BrowserNames} = require('@applitools/eyes-common')
-const {NullRegionPositionCompensation} = require('@applitools/eyes-sdk-core')
+const {NullRegionPositionCompensation, BrowserNames} = require('@applitools/eyes-sdk-core')
 
 const {FirefoxRegionPositionCompensation} = require('./FirefoxRegionPositionCompensation')
 const {SafariRegionPositionCompensation} = require('./SafariRegionPositionCompensation')

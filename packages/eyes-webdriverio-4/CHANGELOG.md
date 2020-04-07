@@ -3,6 +3,18 @@
 ## Unreleased
 
 
+## 2.12.8 - 2020/4/1
+
+- fixed regions support for VG
+
+## 2.12.7 - 2020/3/31
+
+- removed eyes-common dependency
+
+## 2.12.6
+
+- update @applitools/dom-utils@4.7.10, @applitools/eyes-common@3.20.2, @applitools/eyes-sdk-core@9.0.3, @applitools/visual-grid-client@13.6.11
+
 ## 2.12.5
 
 - handle stale elements during check operation ([Trello](https://trello.com/c/JJ5vm3wS/269-frames-shadow-dom-break-region-checking))

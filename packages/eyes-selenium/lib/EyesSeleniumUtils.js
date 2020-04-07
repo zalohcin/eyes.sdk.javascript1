@@ -1,8 +1,7 @@
 'use strict'
 
 const {Command, Name} = require('selenium-webdriver/lib/command')
-const {RectangleSize, ArgumentGuard} = require('@applitools/eyes-common')
-const {EyesJsBrowserUtils} = require('@applitools/eyes-sdk-core')
+const {EyesJsBrowserUtils, RectangleSize, ArgumentGuard} = require('@applitools/eyes-sdk-core')
 
 const {EyesDriverOperationError} = require('./errors/EyesDriverOperationError')
 const {ImageOrientationHandler} = require('./ImageOrientationHandler')

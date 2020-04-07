@@ -1,7 +1,7 @@
 'use strict'
 
 const {ClientFunction} = require('testcafe')
-const {TypeUtils} = require('@applitools/eyes-common')
+const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const EYES_NAME_SPACE = '__EYES__APPLITOOLS__'
 const MAX_OBJECT_SIZE = 1024 * 1024 * 4.0 // 4 MB
 const {isString} = TypeUtils

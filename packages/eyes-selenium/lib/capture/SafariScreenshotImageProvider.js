@@ -1,8 +1,7 @@
 'use strict'
 
 const {By} = require('selenium-webdriver')
-const {MutableImage, Region, OSNames} = require('@applitools/eyes-common')
-const {ImageProvider} = require('@applitools/eyes-sdk-core')
+const {ImageProvider, MutableImage, Region, OSNames} = require('@applitools/eyes-sdk-core')
 
 const {ScrollPositionProvider} = require('../positioning/ScrollPositionProvider')
 const {SeleniumJavaScriptExecutor} = require('../SeleniumJavaScriptExecutor')

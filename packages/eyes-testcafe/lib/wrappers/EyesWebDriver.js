@@ -1,7 +1,7 @@
 'use strict'
 
 const {Selector} = require('testcafe')
-const {ArgumentGuard, /* MutableImage, */ GeneralUtils} = require('@applitools/eyes-common')
+const {ArgumentGuard, /* MutableImage, */ GeneralUtils} = require('@applitools/eyes-sdk-core')
 
 const fs = require('fs')
 const path = require('path')
@@ -399,7 +399,7 @@ class EyesWebDriver {
     this._logger.verbose('Extracting viewport size...')
     this._defaultContentViewportSize = await EyesTestcafeUtils.getViewportSizeOrDisplaySize(
       this._logger,
-      this._driver,
+      this,
     )
     this._logger.verbose('Done! Viewport size: ', this._defaultContentViewportSize)
 

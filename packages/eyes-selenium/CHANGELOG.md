@@ -1,7 +1,16 @@
 # Change Log
 
 ## Unreleased
+- support typed selectors
+- support ignore, floating, strict, layout, content, accessibility regions for VG
 
+## 4.33.31 - 2020/3/31
+
+- removed eyes-common dependency
+
+## 4.33.30 - 29/3/2020
+
+- update @applitools/dom-utils@4.7.10, @applitools/eyes-common@3.20.2, @applitools/visual-grid-client@13.6.11, @applitools/eyes-sdk-core@9.0.3
 
 ## 4.33.29
 

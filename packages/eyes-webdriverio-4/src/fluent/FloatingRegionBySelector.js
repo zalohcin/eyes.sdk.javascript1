@@ -5,6 +5,7 @@ const {
   FloatingMatchSettings,
   Location,
   CoordinatesType,
+  locatorToPersistedRegions,
 } = require('@applitools/eyes-sdk-core')
 
 class FloatingRegionBySelector extends GetFloatingRegion {
@@ -57,6 +58,17 @@ class FloatingRegionBySelector extends GetFloatingRegion {
     }
 
     return values
+  }
+
+  async toPersistedRegions(driver) {
+    const regions = await locatorToPersistedRegions(this._selector, driver)
+    return regions.map(reg => ({
+      ...reg,
+      maxUpOffset: this._maxUpOffset,
+      maxDownOffset: this._maxDownOffset,
+      maxLeftOffset: this._maxLeftOffset,
+      maxRightOffset: this._maxRightOffset,
+    }))
   }
 }
 
