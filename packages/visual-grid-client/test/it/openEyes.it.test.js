@@ -12,6 +12,7 @@ const {promisify: p} = require('util')
 const nock = require('nock')
 const psetTimeout = p(setTimeout)
 const {presult} = require('@applitools/functional-commons')
+const {nonEnvironmentVariableSource} = require('@applitools/feature-flags')
 const {
   RenderStatus,
   RenderStatusResults,
@@ -368,6 +369,45 @@ describe('openEyes', () => {
 
 Received: 'firefox-1'.`,
     )
+  })
+
+  it('allows edgelegacy and edgechromium under flag', async () => {
+    const [errEdgeLegacy] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: {width: 320, height: 480, name: 'edgelegacy'},
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    )
+
+    expect(errEdgeLegacy).not.to.be.undefined
+
+    const [errEdgeChromium] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: {width: 320, height: 480, name: 'edgechromium'},
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    )
+
+    expect(errEdgeChromium).not.to.be.undefined
+
+    nonEnvironmentVariableSource({'vg-cli-edge': true})
+
+    const [noErr] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: [
+          {width: 320, height: 480, name: 'edgelegacy'},
+          {width: 320, height: 480, name: 'edgechromium'},
+        ],
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    )
+    expect(noErr).to.be.undefined
   })
 
   it('throws error on browser with no size', async () => {
