@@ -441,8 +441,7 @@ class EyesWebDriver {
    */
   async getUserAgent() {
     try {
-      // eslint-disable-next-line no-undef
-      const userAgent = await this._evalWithDriver(() => navigator.userAgent, 'getUserAgent')()
+      const userAgent = this._driver.browser.userAgent
       this._logger.verbose(`user agent: ${userAgent}`)
       return userAgent
     } catch (err) {
