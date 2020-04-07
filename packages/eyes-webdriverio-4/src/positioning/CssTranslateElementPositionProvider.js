@@ -62,7 +62,10 @@ class CssTranslateElementPositionProvider extends ElementPositionProvider {
   async _transformsOffset() {
     this._logger.verbose('Getting element transforms...')
     const element = await this._driver.finder.findElement(this._element.selector)
-    const transforms = await EyesWDIOUtils.getCurrentElementTransforms(this._driver, element)
+    const transforms = await EyesWDIOUtils.getCurrentElementTransforms(
+      this._driver.executor,
+      element,
+    )
     this._logger.verbose(`Current transforms: ${JSON.stringify(transforms)}`)
     const transformPositions = Object.keys(transforms)
       .filter(key => transforms[key] !== null && transforms[key] !== '')

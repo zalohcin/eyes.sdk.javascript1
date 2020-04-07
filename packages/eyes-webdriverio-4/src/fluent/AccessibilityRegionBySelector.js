@@ -5,8 +5,8 @@ const {
   Location,
   CoordinatesType,
   AccessibilityMatchSettings,
-  locatorToPersistedRegions,
 } = require('@applitools/eyes-sdk-core')
+const EyesWDIOUtils = require('../EyesWDIOUtils')
 
 class AccessibilityRegionBySelector extends GetAccessibilityRegion {
   /**
@@ -53,7 +53,7 @@ class AccessibilityRegionBySelector extends GetAccessibilityRegion {
   }
 
   async toPersistedRegions(driver) {
-    const regions = await locatorToPersistedRegions(this._selector, driver)
+    const regions = await EyesWDIOUtils.locatorToPersistedRegions(this._selector, driver)
     return regions.map(reg => ({
       ...reg,
       accessibilityType: this._regionType,

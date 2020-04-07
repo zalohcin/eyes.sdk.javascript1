@@ -5,8 +5,8 @@ const {
   FloatingMatchSettings,
   Location,
   CoordinatesType,
-  locatorToPersistedRegions,
 } = require('@applitools/eyes-sdk-core')
+const EyesWDIOUtils = require('../EyesWDIOUtils')
 
 class FloatingRegionBySelector extends GetFloatingRegion {
   /**
@@ -61,7 +61,7 @@ class FloatingRegionBySelector extends GetFloatingRegion {
   }
 
   async toPersistedRegions(driver) {
-    const regions = await locatorToPersistedRegions(this._selector, driver)
+    const regions = await EyesWDIOUtils.locatorToPersistedRegions(this._selector, driver)
     return regions.map(reg => ({
       ...reg,
       maxUpOffset: this._maxUpOffset,

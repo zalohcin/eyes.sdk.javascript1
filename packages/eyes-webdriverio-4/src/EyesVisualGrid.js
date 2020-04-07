@@ -254,7 +254,7 @@ class EyesVisualGrid extends EyesBase {
 
     this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
 
-    const source = await this._driver.getCurrentUrl()
+    const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
 
     const [config, {region, selector}] = await Promise.all([
       checkSettings.toCheckWindowConfiguration(this._driver),

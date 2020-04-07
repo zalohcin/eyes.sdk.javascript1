@@ -33,7 +33,7 @@ class SelectorByElement extends GetSelector {
   }
 
   async toPersistedRegions(driver) {
-    const xpath = await EyesJsBrowserUtils.getElementXpath(driver, this._element.element.value)
+    const xpath = await EyesJsBrowserUtils.getElementXpath(driver.executor, this._element)
     return [{type: 'xpath', selector: xpath}]
   }
 }
