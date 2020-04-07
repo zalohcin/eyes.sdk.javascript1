@@ -4,6 +4,10 @@
 
 - removed eyes-common dependency
 
+## 2.0.0-beta.20
+
+- fix wrong browser and OS names when running emulated devices 
+
 ## 2.0.0-beta.19
 
 - fix failure to check chrome emulated devices 
