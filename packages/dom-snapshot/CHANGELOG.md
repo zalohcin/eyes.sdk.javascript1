@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## 3.4.4 - 2020/4/7
+
 - fix missing resources when dealing with fake shadow dom
 
 ## 3.4.3 - 2020/4/5
