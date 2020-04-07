@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+## 3.4.5 - 2020/4/7
+
 - fix missing audio tag src attribute resources
 
 ## 3.4.4 - 2020/4/7
