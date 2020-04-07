@@ -3,14 +3,13 @@
 const {Location} = require('@applitools/eyes-sdk-core')
 
 const ElementPositionProvider = require('./ElementPositionProvider')
-const EyesWebElement = require('../wrappers/EyesWebElement')
 const EyesWDIOUtils = require('./../EyesWDIOUtils')
 
 class CssTranslateElementPositionProvider extends ElementPositionProvider {
   /**
    * @param {Logger} logger A Logger instance.
-   * @param {EyesWebDriver} driver
-   * @param {EyesWebElement} element
+   * @param {WDIODriver} driver
+   * @param {WDIOElement} element
    */
   constructor(logger, driver, element) {
     super(logger, driver, element)
@@ -46,77 +45,36 @@ class CssTranslateElementPositionProvider extends ElementPositionProvider {
    * @override
    * @inheritDoc
    */
-  setPosition(location) {
-    const that = this
-
+  async setPosition(location) {
     const loc = new Location(location)
-    let outOfEyes
-
-    return super
-      .setPosition(location)
-      .then(() => {
-        return that.getCurrentPosition()
-      })
-      .then(currentPosition => {
-        return loc.offsetNegative(currentPosition)
-      })
-      .then(outOfEyes_ => {
-        outOfEyes = outOfEyes_
-
-        return that._transformsOffset()
-      })
-      .then(
-        /** @type {Location}*/ transformsOffset => {
-          const webElementPromise = EyesWebElement.findElement(that._driver, that.element.locator)
-
-          const position = transformsOffset.offsetNegative(outOfEyes)
-          return EyesWDIOUtils.elementTranslateTo(
-            that._driver.eyes.jsExecutor,
-            webElementPromise,
-            position,
-          )
-        },
-      )
-      .catch(e => {
-        throw e
-      })
+    await super.setPosition(location)
+    const currentPosition = await this.getCurrentPosition()
+    const outOfEyes = loc.offsetNegative(currentPosition)
+    const transformsOffset = await this._transformsOffset()
+    const webElementPromise = this._driver.finder.findElement(this._element.selector)
+    const position = transformsOffset.offsetNegative(outOfEyes)
+    return EyesWDIOUtils.elementTranslateTo(this._driver.executor, webElementPromise, position)
   }
 
   /**
    * @return {Promise.<Location>}
    */
-  _transformsOffset() {
+  async _transformsOffset() {
     this._logger.verbose('Getting element transforms...')
+    const element = await this._driver.finder.findElement(this._element.selector)
+    const transforms = await EyesWDIOUtils.getCurrentElementTransforms(this._driver, element)
+    this._logger.verbose(`Current transforms: ${JSON.stringify(transforms)}`)
+    const transformPositions = Object.keys(transforms)
+      .filter(key => transforms[key] !== null && transforms[key] !== '')
+      .map(key => CssTranslateElementPositionProvider._getPositionFromTransforms(transforms[key]))
 
-    const that = this
+    for (let tpIndex in transformPositions) {
+      if (!transformPositions[0].equals(transformPositions[tpIndex])) {
+        throw new Error('Got different css positions!')
+      }
+    }
 
-    const webElementPromise = EyesWebElement.findElement(this._driver, this.element.locator)
-
-    return webElementPromise
-      .then(webElement => {
-        return EyesWDIOUtils.getCurrentElementTransforms(that._driver, webElement.element)
-      })
-      .then(transforms => {
-        that._logger.verbose(`Current transforms: ${JSON.stringify(transforms)}`)
-
-        const transformPositions = Object.keys(transforms)
-          .filter(key => {
-            return transforms[key] !== null && transforms[key] !== ''
-          })
-          .map(key => {
-            const t = transforms[key]
-
-            return CssTranslateElementPositionProvider._getPositionFromTransforms(t)
-          })
-
-        for (let tpIndex in transformPositions) {
-          if (!transformPositions[0].equals(transformPositions[tpIndex])) {
-            throw new Error('Got different css positions!')
-          }
-        }
-
-        return transformPositions[0] || Location.ZERO
-      })
+    return transformPositions[0] || Location.ZERO
   }
 
   static _getPositionFromTransforms(transform) {

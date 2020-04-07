@@ -20,7 +20,7 @@ describe('PreserveTargetFrameAfterCheck', () => {
       desiredCapabilities: {
         browserName: 'chrome',
         chromeOptions: {
-          args: ['disable-infobars', 'headless'],
+          args: ['disable-infobars']//, 'headless'],
         },
       },
       logLevel: 'error',
@@ -46,7 +46,7 @@ describe('PreserveTargetFrameAfterCheck', () => {
     chromedriver.stop()
   })
 
-  it('CheckWindow_EyesWebDriver', async function() {
+  it('CheckWindow_WrappedDriver', async function() {
     const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
     await driver.frame('frame-main')
 
@@ -56,10 +56,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckWindow_WDIODriver', async function() {
+  it('CheckWindow_UnwrappedDriver', async function() {
     await eyes.open(browser, this.test.parent.title, this.test.title)
     await browser.frame('frame-main')
 
@@ -69,10 +69,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckNestedFrame_EyesWebDriver', async function() {
+  it('CheckNestedFrame_WrappedDriver', async function() {
     const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
     await driver.frame('frame-main')
 
@@ -82,10 +82,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckNestedFrame_WDIODriver', async function() {
+  it('CheckNestedFrame_UnwrappedDriver', async function() {
     await eyes.open(browser, this.test.parent.title, this.test.title)
     await browser.frame('frame-main')
 
@@ -95,10 +95,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckRegionInsideFrameBySelector_EyesWebDriver', async function() {
+  it('CheckRegionInsideFrameBySelector_WrappedDriver', async function() {
     const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
     await driver.frame('frame-main')
     await driver.frame('frame-comb')
@@ -110,10 +110,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckRegionInsideFrameBySelector_WDIODriver', async function() {
+  it('CheckRegionInsideFrameBySelector_UnwrappedDriver', async function() {
     await eyes.open(browser, this.test.parent.title, this.test.title)
     await browser.frame('frame-main')
     await browser.frame('frame-comb')
@@ -125,16 +125,16 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckRegionInsideFrameByElement_EyesWebDriver', async function() {
+  it('CheckRegionInsideFrameByElement_WrappedDriver', async function() {
     const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
     await driver.frame('frame-main')
     await driver.frame('frame-comb')
     await driver.frame('frame-image')
 
-    const element = await driver.element(By.id('image'))
+    const element = await driver.element('#image')
 
     const frameElementBeforeCheck = await getDocumentElement()
     await eyes.check('region', Target.region(element))
@@ -142,10 +142,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckRegionInsideFrameByElement_WDIODriver', async function() {
+  it('CheckRegionInsideFrameByElement_UnwrappedDriver', async function() {
     await eyes.open(browser, this.test.parent.title, this.test.title)
     await browser.frame('frame-main')
     await browser.frame('frame-comb')
@@ -159,10 +159,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckFrameFully_EyesWebDriver', async function() {
+  it('CheckFrameFully_WrappedDriver', async function() {
     const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
     await driver.frame('frame-main')
     await driver.frame('frame-comb')
@@ -173,10 +173,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckFrameFully_WDIODriver', async function() {
+  it('CheckFrameFully_UnwrappedDriver', async function() {
     await eyes.open(browser, this.test.parent.title, this.test.title)
     await browser.frame('frame-main')
     await browser.frame('frame-comb')
@@ -187,10 +187,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckCORSFrameRegionBySelector_EyesWebDriver', async function() {
+  it('CheckCORSFrameRegionBySelector_WrappedDriver', async function() {
     const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
     await driver.frame('frame-main')
     await driver.frame('frame-cors')
@@ -201,10 +201,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckCORSFrameRegionBySelector_WDIODriver', async function() {
+  it('CheckCORSFrameRegionBySelector_UnwrappedDriver', async function() {
     await eyes.open(browser, this.test.parent.title, this.test.title)
     await browser.frame('frame-main')
     await browser.frame('frame-cors')
@@ -215,10 +215,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckCORSFrameRegionByElement_EyesWebDriver', async function() {
+  it('CheckCORSFrameRegionByElement_WrappedDriver', async function() {
     const driver = await eyes.open(browser, this.test.parent.title, this.test.title)
     await driver.frame('frame-main')
     await driver.frame('frame-cors')
@@ -231,10 +231,10 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 
-  it('CheckCORSFrameRegionByElement_WDIODriver', async function() {
+  it('CheckCORSFrameRegionByElement_UnwrappedDriver', async function() {
     await eyes.open(browser, this.test.parent.title, this.test.title)
     await browser.frame('frame-main')
     await browser.frame('frame-cors')
@@ -247,6 +247,6 @@ describe('PreserveTargetFrameAfterCheck', () => {
 
     assert.deepStrictEqual(frameElementAfterCheck, frameElementBeforeCheck)
 
-    return eyes.close(false)
+    return eyes.close()
   })
 })

@@ -13,14 +13,14 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
   /**
    * @param {Eyes} eyes
    * @param {Logger} logger
-   * @param {EyesWebDriver} tsInstance
+   * @param {WDIODriver} driver
    */
-  constructor(eyes, logger, tsInstance) {
+  constructor(eyes, logger, driver) {
     super()
 
     this._eyes = eyes
     this._logger = logger
-    this._tsInstance = tsInstance
+    this._driver = driver
   }
 
   /**
@@ -29,7 +29,7 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
    */
   async getImage() {
     this._logger.verbose('Getting screenshot as base64...')
-    const screenshot64 = await this._tsInstance.takeScreenshot()
+    const screenshot64 = await this._driver.saveScreenshot()
     this._logger.verbose('Done getting base64! Creating BufferedImage...')
 
     const image = new MutableImage(screenshot64)
@@ -41,7 +41,7 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
       // Region region = this._eyes.getRegionToCheck();
       const screenshot = await EyesWDIOScreenshot.fromScreenshotType(
         this._logger,
-        this._eyes.getDriver(),
+        this._eyes,
         image,
       )
 

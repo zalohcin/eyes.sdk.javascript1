@@ -1,25 +1,26 @@
 'use strict'
 
 const {GetRegion, Region, Location, CoordinatesType} = require('@applitools/eyes-sdk-core')
-
+const WDIOElement = require('../wrappers/WDIOElement')
 const {SelectorByElement} = require('./SelectorByElement')
 
 class IgnoreRegionByElement extends GetRegion {
   /**
-   * @param {EyesWebElement} webElement
+   * @param {WDIOElement|object} element
    */
-  constructor(webElement) {
+  constructor(element) {
     super()
-    this._element = webElement
+    this._element = element
   }
 
   /**
    * @override
-   * @param {Eyes} eyesBase
+   * @param {Eyes} eyes
    * @param {EyesScreenshot} screenshot
    */
   // eslint-disable-next-line
-  async getRegion(eyesBase, screenshot) {
+  async getRegion(eyes, screenshot) {
+    this._element = new WDIOElement(eyes._logger, eyes.getDriver(), this._element)
     const point = await this._element.getLocation()
     const size = await this._element.getSize()
     const lTag = screenshot.convertLocation(
@@ -33,11 +34,11 @@ class IgnoreRegionByElement extends GetRegion {
 
   /**
    * @inheritDoc
-   * @param {Eyes} eyes
+   * @param {WDIODriver} driver
    * @return {Promise<string>}
    */
-  async getSelector(eyes) {
-    return new SelectorByElement(this._element).getSelector(eyes)
+  async getSelector(driver) {
+    return new SelectorByElement(this._element).getSelector(driver)
   }
 }
 

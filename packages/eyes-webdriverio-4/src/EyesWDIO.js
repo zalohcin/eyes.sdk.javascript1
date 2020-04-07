@@ -22,6 +22,7 @@ const {
   SimplePropertyHandler,
   Configuration,
   ClassicRunner,
+  FrameChain,
 } = require('@applitools/eyes-sdk-core')
 
 const {DomCapture} = require('@applitools/dom-utils')
@@ -32,16 +33,14 @@ const CssTranslatePositionProvider = require('./positioning/CssTranslatePosition
 const CssTranslateElementPositionProvider = require('./positioning/CssTranslateElementPositionProvider')
 const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
 const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory')
-const EyesWebDriver = require('./wrappers/EyesWebDriver')
-const EyesWebElement = require('./wrappers/EyesWebElement')
+const WDIODriver = require('./wrappers/WDIODriver')
+const WDIOElement = require('./wrappers/WDIOElement')
 const EyesWDIOScreenshot = require('./capture/EyesWDIOScreenshot')
-const FrameChain = require('./frames/FrameChain')
 const EyesWDIOScreenshotFactory = require('./capture/EyesWDIOScreenshotFactory')
 const EyesWDIOUtils = require('./EyesWDIOUtils')
 const ElementPositionProvider = require('./positioning/ElementPositionProvider')
 const StitchMode = require('./StitchMode')
 const Target = require('./fluent/Target')
-const WDIOJSExecutor = require('./WDIOJSExecutor')
 const ReadOnlyPropertyHandler = require('@applitools/eyes-sdk-core/index').ReadOnlyPropertyHandler
 const ImageRotation = require('./positioning/ImageRotation')
 
@@ -72,8 +71,14 @@ class EyesWDIO extends EyesBase {
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
 
-    /** @type {EyesWebDriver} */
+    /** @type {WDIODriver} */
     this._driver = undefined
+    /** @type {EyesJsExecutor} */
+    this._executor = undefined
+    /** @type {EyesElementFinder} */
+    this._finder = undefined
+    /** @type {EyesBrowsingContext} */
+    this._context = undefined
     /** @type {boolean} */
     this._dontGetTitle = false
 
@@ -92,8 +97,6 @@ class EyesWDIO extends EyesBase {
 
     /** @type {String} */
     this._originalOverflow = null
-    /** @type {EyesJsExecutor} */
-    this._jsExecutor = undefined
     this._rotation = undefined
     /** @type {ImageProvider} */
     this._imageProvider = undefined
@@ -103,7 +106,7 @@ class EyesWDIO extends EyesBase {
     this._devicePixelRatio = EyesWDIO.UNKNOWN_DEVICE_PIXEL_RATIO
     /** @type {Region} */
     this._regionToCheck = null
-    /** @type {EyesWebElement} */
+    /** @type {WDIOElement} */
     this._targetElement = null
     /** @type {Location} */
     this._targetElementLocation = null
@@ -117,7 +120,7 @@ class EyesWDIO extends EyesBase {
     this._domUrl
     /** @type {EyesWDIOScreenshotFactory} */
     this._screenshotFactory = undefined
-    /** @type {EyesWebElement} */
+    /** @type {WDIOElement} */
     this._scrollRootElement = undefined
     /** @type {Promise<void>} */
     this._closePromise = Promise.resolve()
@@ -129,15 +132,17 @@ class EyesWDIO extends EyesBase {
    * @param {String} [testName] - Test name
    * @param {RectangleSize|{width: number, height: number}} [viewportSize] - Viewport size
    * @param {SessionType} [sessionType] - The type of test (e.g.,  standard test / visual performance test).
-   * @returns {Promise<EyesWebDriver|object>}
+   * @returns {Promise<WDIODriver>}
    */
   async open(driver, appName, testName, viewportSize, sessionType) {
     ArgumentGuard.notNull(driver, 'driver')
 
     this._logger.verbose('Running using Webdriverio module')
 
-    this._driver = new EyesWebDriver(driver, this, this._logger)
-    this._jsExecutor = new WDIOJSExecutor(this._driver)
+    this._driver = new WDIODriver(this._logger, driver)
+    this._executor = this._driver.executor
+    this._finder = this._driver.finder
+    this._context = this._driver.context
 
     this._configuration.setAppName(
       TypeUtils.getOrDefault(appName, this._configuration.getAppName()),
@@ -153,7 +158,7 @@ class EyesWDIO extends EyesBase {
     )
 
     if (!this._configuration.getViewportSize()) {
-      const vs = await this._driver.getDefaultContentViewportSize()
+      const vs = await EyesWDIOUtils.getTopContextViewportSize(this._driver)
       this._configuration.setViewportSize(vs.toJSON())
     }
 
@@ -167,9 +172,9 @@ class EyesWDIO extends EyesBase {
       viewportSize = null
     }
 
-    this._screenshotFactory = new EyesWDIOScreenshotFactory(this._logger, this._driver)
+    this._screenshotFactory = new EyesWDIOScreenshotFactory(this._logger, this)
 
-    const userAgentString = await this._driver.getUserAgent()
+    const userAgentString = await EyesWDIOUtils.getUserAgent(this._executor)
     if (userAgentString) {
       this._userAgent = UserAgent.parseUserAgentString(userAgentString, true)
     }
@@ -197,24 +202,7 @@ class EyesWDIO extends EyesBase {
 
     this._initPositionProvider()
 
-    this._driver.rotation = this._rotation
     return this._driver
-  }
-
-  /**
-   * @private
-   * @return {Promise<ScaleProviderFactory>}
-   */
-  async _getScaleProviderFactory() {
-    const entireSize = await this.getPositionProvider().getEntireSize()
-    return new ContextBasedScaleProviderFactory(
-      this._logger,
-      entireSize,
-      this._viewportSizeHandler.get(),
-      this._devicePixelRatio,
-      false,
-      this._scaleProviderHandler,
-    )
   }
 
   /**
@@ -231,7 +219,7 @@ class EyesWDIO extends EyesBase {
   /**
    * Matches the frame given as parameter, by switching into the frame and using stitching to get an image of the frame.
    *
-   * @param {Integer|String|By|EyesWebElement} element The element which is the frame to switch to. (as
+   * @param {Integer|String|By|WDIOElement} element The element which is the frame to switch to. (as
    * would be used in a call to driver.frame() ).
    * @param {int|null} matchTimeout The amount of time to retry matching (milliseconds).
    * @param {String} tag An optional tag to be associated with the match.
@@ -313,7 +301,7 @@ class EyesWDIO extends EyesBase {
 
     this._checkSettings = checkSettings
 
-    await this._driver.framesRefresh()
+    await this._context.framesRefresh()
 
     let result
     await this.getPositionProvider().setPosition(Location.ZERO)
@@ -329,7 +317,7 @@ class EyesWDIO extends EyesBase {
 
     if (targetRegion) {
       this._targetElementLocation = targetRegion.getLocation()
-      const source = await this._driver.getCurrentUrl()
+      const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
       result = await super.checkWindowBase(
         new RegionProvider(targetRegion),
         name,
@@ -341,9 +329,9 @@ class EyesWDIO extends EyesBase {
       const targetSelector = checkSettings.targetSelector
       let targetElement = checkSettings.targetElement
       if (!targetElement && targetSelector) {
-        targetElement = await this._driver.element(targetSelector)
-      } else if (EyesWebElement.isWDIOElement(targetElement)) {
-        targetElement = new EyesWebElement(targetElement, '', this._driver, this._logger)
+        targetElement = await this._finder.findElement(targetSelector)
+      } else if (WDIOElement.isCompatible(targetElement)) {
+        targetElement = new WDIOElement(this._logger, this._driver, targetElement)
       }
 
       if (targetElement) {
@@ -363,7 +351,7 @@ class EyesWDIO extends EyesBase {
       } else {
         const originalPosition = await this.getPositionProvider().getState()
         await this.getPositionProvider().setPosition(Location.ZERO)
-        const source = await this._driver.getCurrentUrl()
+        const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
         result = await super.checkWindowBase(
           new NullRegionProvider(),
           name,
@@ -393,6 +381,45 @@ class EyesWDIO extends EyesBase {
   }
 
   /**
+   * @param {boolean} [throwEx]
+   * @return {Promise<TestResults>}
+   */
+  async close(throwEx = true) {
+    let isErrorCaught = false
+    this._closePromise = super
+      .close(true)
+      .catch(err => {
+        isErrorCaught = true
+        return err
+      })
+      .then(results => {
+        if (this._runner) {
+          this._runner._allTestResult.push(results)
+        }
+        if (throwEx && isErrorCaught) {
+          throw results
+        }
+        return results
+      })
+
+    return this._closePromise
+  }
+
+  /**
+   * @return {Promise}
+   */
+  async closeAsync() {
+    await this.close(false)
+  }
+
+  /**
+   * @return {Promise}
+   */
+  async abortAsync() {
+    await this.abort()
+  }
+
+  /**
    * @private
    * @return {Promise}
    */
@@ -401,22 +428,19 @@ class EyesWDIO extends EyesBase {
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
       /** @override */
       async getRegion() {
-        return EyesWebElement.refreshElement(async () => {
-          const p = await that._targetElement.getLocation()
-          that._targetElementLocation = p
-          const d = await that._targetElement.getSize()
-          return new Region(
-            Math.ceil(p.getX()),
-            Math.ceil(p.getY()),
-            d.getWidth(),
-            d.getHeight(),
-            CoordinatesType.CONTEXT_RELATIVE,
-          )
-        }, that._targetElement)
+        const rect = await that._targetElement.getRect()
+        that._targetElementLocation = rect.getLocation()
+        return new Region(
+          Math.ceil(rect.getLeft()),
+          Math.ceil(rect.getTop()),
+          rect.getWidth(),
+          rect.getHeight(),
+          CoordinatesType.CONTEXT_RELATIVE,
+        )
       }
     }
 
-    const source = await this._driver.getCurrentUrl()
+    const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
     const r = await super.checkWindowBase(
       new RegionProviderImpl(),
       name,
@@ -442,7 +466,7 @@ class EyesWDIO extends EyesBase {
     const that = this
     let originalScrollPosition, originalOverflow, error
     const originalPositionProvider = this.getPositionProvider()
-    const scrollPositionProvider = new ScrollPositionProvider(this._logger, this._jsExecutor)
+    const scrollPositionProvider = new ScrollPositionProvider(this._logger, this._executor)
 
     return this.getPositionProvider()
       .getState()
@@ -489,8 +513,8 @@ class EyesWDIO extends EyesBase {
               [clientWidth, clientHeight],
               [borderLeftWidth, borderTopWidth],
             ] = await Promise.all([
-              eyesElement.getProperties(['clientWidth', 'clientHeight']),
-              eyesElement.getCssProperties(['border-left-width', 'border-top-width']),
+              eyesElement.getProperty('clientWidth', 'clientHeight'),
+              eyesElement.getCssProperty('border-left-width', 'border-top-width'),
             ])
 
             const elementRegion = new Region(
@@ -515,7 +539,7 @@ class EyesWDIO extends EyesBase {
             }
 
             const isElement = true
-            const insideAFrame = that.getDriver().frameChain.size > 0
+            const insideAFrame = that._context.frameChain.size > 0
             if (
               isElement &&
               insideAFrame &&
@@ -526,7 +550,7 @@ class EyesWDIO extends EyesBase {
               )
             }
 
-            const source = await this._driver.getCurrentUrl()
+            const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
             return super.checkWindowBase(
               new NullRegionProvider(),
               name,
@@ -556,7 +580,7 @@ class EyesWDIO extends EyesBase {
       })
       .then(() => {
         if (originalScrollPosition) {
-          return scrollPositionProvider.setPosition(originalScrollPosition)
+          // return scrollPositionProvider.setPosition(originalScrollPosition)
         }
       })
       .then(() => {
@@ -586,7 +610,7 @@ class EyesWDIO extends EyesBase {
       }
     }
 
-    const source = await this._driver.getCurrentUrl()
+    const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
     const r = await super.checkWindowBase(
       new RegionProviderImpl(),
       name,
@@ -624,10 +648,10 @@ class EyesWDIO extends EyesBase {
             })
             .then(screenshotImage_ => {
               screenshotImage = screenshotImage_
-              return that._driver.frames(fc)
+              return that._context.frames(fc)
             })
             .then(() => {
-              const screenshot = new EyesWDIOScreenshot(that._logger, that._driver, screenshotImage)
+              const screenshot = new EyesWDIOScreenshot(that._logger, that, screenshotImage)
               return screenshot.init()
             })
             .then(screenshot => {
@@ -648,82 +672,16 @@ class EyesWDIO extends EyesBase {
    * @return {Promise}
    */
   async _checkFrameFluent(name, checkSettings) {
-    const frameChain = new FrameChain(this._logger, this._driver.frameChain)
+    const frameChain = this._context.frameChain
     const targetFrame = frameChain.pop()
     this._targetElement = targetFrame.getReference()
 
-    await this._driver.framesDoScroll(frameChain)
+    await this._context.framesDoScroll(frameChain)
     const r = await this._checkRegion(name, checkSettings)
     this._targetElement = null
     this._targetElementLocation = Location.ZERO
-    await this._driver.frame(targetFrame)
+    await this._context.frame(targetFrame)
     return r
-  }
-
-  /**
-   * @return {Promise<number>}
-   * @private
-   */
-  async _getMobilePixelRation() {
-    const viewportSize = await this.getViewportSize()
-    const s = await this.getDriver().takeScreenshot()
-    const screenshot = new MutableImage(s)
-    return screenshot.getWidth() / viewportSize.getWidth()
-  }
-
-  /**
-   * Updates the state of scaling related parameters.
-   *
-   * @protected
-   * @return {Promise.<ScaleProviderFactory>}
-   */
-  async _updateScalingParams() {
-    // Update the scaling params only if we haven't done so yet, and the user hasn't set anything else manually.
-    if (
-      this._devicePixelRatio === EyesWDIO.UNKNOWN_DEVICE_PIXEL_RATIO &&
-      this._scaleProviderHandler.get() instanceof NullScaleProvider
-    ) {
-      this._logger.verbose('Trying to extract device pixel ratio...')
-
-      const that = this
-      return EyesWDIOUtils.getDevicePixelRatio(that._jsExecutor)
-        .then(ratio => {
-          that._devicePixelRatio = ratio
-        })
-        .catch(async err => {
-          if (EyesWDIOUtils.isMobileDevice(that._driver.remoteWebDriver)) {
-            const ratio = await that._getMobilePixelRation()
-            that._devicePixelRatio = ratio
-          } else {
-            throw err
-          }
-        })
-        .catch(err => {
-          that._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
-          that._devicePixelRatio = EyesWDIO.DEFAULT_DEVICE_PIXEL_RATIO
-        })
-        .then(() => {
-          that._logger.verbose(`Device pixel ratio: ${that._devicePixelRatio}`)
-          that._logger.verbose('Setting scale provider...')
-          return that._getScaleProviderFactory()
-        })
-        .catch(err => {
-          that._logger.verbose('Failed to set ContextBasedScaleProvider.', err)
-          that._logger.verbose('Using FixedScaleProvider instead...')
-          return new FixedScaleProviderFactory(
-            1 / that._devicePixelRatio,
-            that._scaleProviderHandler,
-          )
-        })
-        .then(factory => {
-          that._logger.verbose('Done!')
-          return factory
-        })
-    }
-
-    // If we already have a scale provider set, we'll just use it, and pass a mock as provider handler.
-    const nullProvider = new SimplePropertyHandler()
-    return new ScaleProviderIdentityFactory(this._scaleProviderHandler.get(), nullProvider)
   }
 
   /**
@@ -732,7 +690,7 @@ class EyesWDIO extends EyesBase {
    */
   async _switchToParentFrame(switchedToFrameCount) {
     if (switchedToFrameCount > 0) {
-      await this._driver.frameParent()
+      await this._context.frameParent()
       return this._switchToParentFrame(switchedToFrameCount - 1)
     }
 
@@ -773,16 +731,16 @@ class EyesWDIO extends EyesBase {
     } else if (frameLocator.getFrameElement()) {
       reference = frameLocator.getFrameElement()
     } else if (frameLocator.getFrameSelector()) {
-      reference = await this._driver.element(frameLocator.getFrameSelector())
+      reference = await this._finder.findElement(frameLocator.getFrameSelector())
     }
 
     if (reference) {
-      await this._driver.frame(reference)
-      const frame = this._driver.frameChain.peek()
+      await this._context.frame(reference)
+      const frame = this._context.frameChain.peek()
       if (frame) {
         let scrollRootElement = frameLocator.getScrollRootElement()
         if (!scrollRootElement && frameLocator.getScrollRootSelector()) {
-          scrollRootElement = await this._driver.element(frameLocator.getScrollRootSelector())
+          scrollRootElement = await this._finder.findElement(frameLocator.getScrollRootSelector())
         }
         if (scrollRootElement) {
           frame.setScrollRootElement(scrollRootElement)
@@ -792,6 +750,193 @@ class EyesWDIO extends EyesBase {
     }
 
     return false
+  }
+
+  /**
+   * @private
+   * @return {Promise}
+   */
+  async _tryHideScrollbars() {
+    const isMobile = await EyesWDIOUtils.isMobileDevice(this._driver)
+    if (isMobile) return
+    if (this._hideScrollbars || this._scrollRootElement) {
+      const originalFrameChain = this._context.frameChain
+      await this._context.frameDefault()
+
+      this._logger.verbose('hiding scrollbars of default content')
+      const scrollRootElement = await this.getScrollRootElement()
+      this._originalOverflow = await EyesWDIOUtils.setOverflow(
+        this._executor,
+        'hidden',
+        scrollRootElement,
+      )
+
+      for (const frame of originalFrameChain) {
+        await this._context.frame(frame.getReference())
+        await frame.hideScrollbars()
+      }
+      this._logger.verbose('done hiding scrollbars.')
+    }
+  }
+
+  /**
+   * @private
+   * @return {Promise}
+   */
+  async _tryRestoreScrollbars() {
+    const isMobile = await EyesWDIOUtils.isMobileDevice(this._driver)
+    if (isMobile) return
+    if (this._hideScrollbars) {
+      const originalFrameChain = this._context.frameChain
+      await this._context.frameDefault()
+      const scrollRootElement = await this.getScrollRootElement()
+      await EyesWDIOUtils.setOverflow(this._executor, this._originalOverflow, scrollRootElement)
+
+      for (const frame of originalFrameChain) {
+        await this._context.frame(frame)
+        await frame.restoreScrollbars()
+      }
+      this._logger.verbose('done hiding scrollbars.')
+    }
+  }
+
+  /**
+   * @private
+   * @param {WebElement} element
+   * @return {Promise<void>}
+   */
+  async _ensureElementVisible(element) {
+    if (!element) {
+      // No element? we must be checking the window.
+      return Promise.resolve()
+    }
+
+    if (EyesWDIOUtils.isMobileDevice(this._driver)) {
+      this._logger.verbose(`NATIVE context identified, skipping 'ensure element visible'`)
+      return
+    }
+
+    const elementFrameBounds = await element.getBounds()
+    const frameOffset = await this._context.frameChain.getCurrentFrameOffset()
+    const elementViewportBounds = elementFrameBounds.offset(frameOffset.getX(), frameOffset.getY())
+    const viewportBounds = await this._getViewportScrollBounds()
+    if (!viewportBounds.contains(elementViewportBounds)) {
+      await this._ensureFrameVisible()
+      const elementLocation = await element.getLocation()
+      await this.getPositionProvider().setPosition(elementLocation)
+    }
+  }
+
+  /**
+   * @private
+   * @return {Promise.<FrameChain>}
+   */
+  async _ensureFrameVisible() {
+    const originalFrameChain = this._context.frameChain
+    const positionProvider = this.getPositionProvider()
+
+    let position = new Location(0, 0)
+    for (let index = originalFrameChain.size - 1; index >= 0; --index) {
+      const frame = originalFrameChain.getFrame(index)
+      await this._context.frameParent()
+      const reg = new Region(Location.ZERO, frame.getInnerSize())
+      this._effectiveViewport.intersect(reg)
+      position = position.offsetByLocation(frame.getLocation())
+      await positionProvider.setPosition(position)
+      position = position.offsetNegative(await positionProvider.getCurrentPosition())
+    }
+
+    await this._context.frames(originalFrameChain)
+    return originalFrameChain
+  }
+
+  /**
+   * @private
+   * @return {Promise.<Region>}
+   */
+  async _getViewportScrollBounds() {
+    const originalFrameChain = this._context.frameChain
+    await this._context.frameDefault()
+    const spp = new ScrollPositionProvider(this._logger, this._executor)
+    const location = await spp.getCurrentPosition()
+    const size = await this.getViewportSize()
+    const viewportBounds = new Region(location, size)
+    await this._context.frames(originalFrameChain)
+    return viewportBounds
+  }
+
+  /**
+   * Updates the state of scaling related parameters.
+   *
+   * @protected
+   * @return {Promise.<ScaleProviderFactory>}
+   */
+  async _updateScalingParams() {
+    // Update the scaling params only if we haven't done so yet, and the user hasn't set anything else manually.
+    if (
+      this._devicePixelRatio === EyesWDIO.UNKNOWN_DEVICE_PIXEL_RATIO &&
+      this._scaleProviderHandler.get() instanceof NullScaleProvider
+    ) {
+      this._logger.verbose('Trying to extract device pixel ratio...')
+
+      const that = this
+      return EyesWDIOUtils.getDevicePixelRatio(that._executor)
+        .then(ratio => {
+          that._devicePixelRatio = ratio
+        })
+        .catch(async err => {
+          if (EyesWDIOUtils.isMobileDevice(that._driver)) {
+            const viewportSize = await this.getViewportSize()
+            that._devicePixelRatio = await EyesWDIOUtils.getMobilePixelRatio(
+              this._driver,
+              viewportSize,
+            )
+          } else {
+            throw err
+          }
+        })
+        .catch(err => {
+          that._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
+          that._devicePixelRatio = EyesWDIO.DEFAULT_DEVICE_PIXEL_RATIO
+        })
+        .then(() => {
+          that._logger.verbose(`Device pixel ratio: ${that._devicePixelRatio}`)
+          that._logger.verbose('Setting scale provider...')
+          return that._getScaleProviderFactory()
+        })
+        .catch(err => {
+          that._logger.verbose('Failed to set ContextBasedScaleProvider.', err)
+          that._logger.verbose('Using FixedScaleProvider instead...')
+          return new FixedScaleProviderFactory(
+            1 / that._devicePixelRatio,
+            that._scaleProviderHandler,
+          )
+        })
+        .then(factory => {
+          that._logger.verbose('Done!')
+          return factory
+        })
+    }
+
+    // If we already have a scale provider set, we'll just use it, and pass a mock as provider handler.
+    const nullProvider = new SimplePropertyHandler()
+    return new ScaleProviderIdentityFactory(this._scaleProviderHandler.get(), nullProvider)
+  }
+
+  /**
+   * @private
+   * @return {Promise<ScaleProviderFactory>}
+   */
+  async _getScaleProviderFactory() {
+    const entireSize = await this.getPositionProvider().getEntireSize()
+    return new ContextBasedScaleProviderFactory(
+      this._logger,
+      entireSize,
+      this._viewportSizeHandler.get(),
+      this._devicePixelRatio,
+      false,
+      this._scaleProviderHandler,
+    )
   }
 
   /**
@@ -814,7 +959,7 @@ class EyesWDIO extends EyesBase {
     }
 
     if (
-      !FrameChain.isSameFrameChain(this._driver.frameChain, this._lastScreenshot.getFrameChain())
+      !FrameChain.isSameFrameChain(this._context.frameChain, this._lastScreenshot.getFrameChain())
     ) {
       this._logger.verbose(`Ignoring ${action} (different frame)`)
       return
@@ -827,7 +972,7 @@ class EyesWDIO extends EyesBase {
    * Adds a mouse trigger.
    *
    * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {EyesWebElement} element The EyesWebElement on which the click was called.
+   * @param {WDIOElement} element The WDIOElement on which the click was called.
    * @return {Promise}
    */
   async addMouseTriggerForElement(action, element) {
@@ -843,7 +988,7 @@ class EyesWDIO extends EyesBase {
     }
 
     if (
-      !FrameChain.isSameFrameChain(this._driver.frameChain, this._lastScreenshot.getFrameChain())
+      !FrameChain.isSameFrameChain(this._context.frameChain, this._lastScreenshot.getFrameChain())
     ) {
       this._logger.verbose(`Ignoring ${action} (different frame)`)
       return Promise.resolve()
@@ -881,7 +1026,7 @@ class EyesWDIO extends EyesBase {
     }
 
     if (
-      !FrameChain.isSameFrameChain(this._driver.frameChain, this._lastScreenshot.getFrameChain())
+      !FrameChain.isSameFrameChain(this._context.frameChain, this._lastScreenshot.getFrameChain())
     ) {
       this._logger.verbose(`Ignoring ${text} (different frame)`)
       return
@@ -893,7 +1038,7 @@ class EyesWDIO extends EyesBase {
   /**
    * Adds a keyboard trigger.
    *
-   * @param {EyesWebElement} element The element for which we sent keys.
+   * @param {WDIOElement} element The element for which we sent keys.
    * @param {String} text  The trigger's text.
    * @return {Promise}
    */
@@ -910,7 +1055,7 @@ class EyesWDIO extends EyesBase {
     }
 
     if (
-      !FrameChain.isSameFrameChain(this._driver.frameChain, this._lastScreenshot.getFrameChain())
+      !FrameChain.isSameFrameChain(this._context.frameChain, this._lastScreenshot.getFrameChain())
     ) {
       this._logger.verbose(`Ignoring ${text} (different frame)`)
       return Promise.resolve()
@@ -925,45 +1070,6 @@ class EyesWDIO extends EyesBase {
   }
 
   /**
-   * @return {Promise}
-   */
-  async closeAsync() {
-    await this.close(false)
-  }
-
-  /**
-   * @return {Promise}
-   */
-  async abortAsync() {
-    await this.abort()
-  }
-
-  /**
-   * @param {boolean} [throwEx]
-   * @return {Promise<TestResults>}
-   */
-  async close(throwEx = true) {
-    let isErrorCaught = false
-    this._closePromise = super
-      .close(true)
-      .catch(err => {
-        isErrorCaught = true
-        return err
-      })
-      .then(results => {
-        if (this._runner) {
-          this._runner._allTestResult.push(results)
-        }
-        if (throwEx && isErrorCaught) {
-          throw results
-        }
-        return results
-      })
-
-    return this._closePromise
-  }
-
-  /**
    * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
    *
    * @override
@@ -971,7 +1077,7 @@ class EyesWDIO extends EyesBase {
    */
   async getViewportSize() {
     const viewportSize = this._viewportSizeHandler.get()
-    return viewportSize ? viewportSize : this._driver.getDefaultContentViewportSize()
+    return viewportSize ? viewportSize : EyesWDIOUtils.getTopContextViewportSize(this._driver)
   }
 
   /**
@@ -986,12 +1092,12 @@ class EyesWDIO extends EyesBase {
       return Promise.resolve()
     }
 
-    if (!EyesWDIOUtils.isMobileDevice(this._driver.remoteWebDriver)) {
+    if (!EyesWDIOUtils.isMobileDevice(this._driver)) {
       ArgumentGuard.notNull(viewportSize, 'viewportSize')
       viewportSize = new RectangleSize(viewportSize)
 
-      const originalFrame = this._driver.frameChain
-      await this._driver.frameDefault()
+      const originalFrame = this._context.frameChain
+      await this._context.frameDefault()
       try {
         await EyesWDIOUtils.setViewportSize(
           this._logger,
@@ -1000,36 +1106,14 @@ class EyesWDIO extends EyesBase {
         )
         this._effectiveViewport = new Region(Location.ZERO, viewportSize)
       } catch (e) {
-        await this._driver.frames(originalFrame)
+        await this._context.frames(originalFrame)
         throw new TestFailedError('Failed to set the viewport size', e)
       }
 
-      await this._driver.frames(originalFrame)
+      await this._context.frames(originalFrame)
     }
 
     this._viewportSizeHandler.set(new RectangleSize(viewportSize))
-  }
-
-  /**
-   * @param {EyesJsExecutor} executor The executor to use.
-   * @return {Promise.<RectangleSize>} The viewport size of the current context, or the display size if the viewport size cannot be retrieved.
-   */
-  static getViewportSize(executor) {
-    return EyesWDIOUtils.getViewportSizeOrDisplaySize(this._logger, executor)
-  }
-
-  /**
-   * Set the viewport size using the driver. Call this method if for some reason you don't want to call {@link #open(WebDriver, String, String)} (or one of its variants) yet.
-   *
-   * @param {EyesWebDriver} driver The driver to use for setting the viewport.
-   * @param {RectangleSize} viewportSize The required viewport size.
-   * @return {Promise}
-   */
-  static setViewportSize(driver, viewportSize) {
-    ArgumentGuard.notNull(driver, 'driver')
-    ArgumentGuard.notNull(viewportSize, 'viewportSize')
-
-    return EyesWDIOUtils.setViewportSize(this._logger, driver, new RectangleSize(viewportSize))
   }
 
   /**
@@ -1038,7 +1122,7 @@ class EyesWDIO extends EyesBase {
    * @returns {Region}
    */
   async getRegionByLocator(locator) {
-    const element = await this._driver.element(locator)
+    const element = await this._finder.findElement(locator)
     const elementSize = await element.getSize()
     const point = await element.getLocation()
     return new Region(point.x, point.y, elementSize.width, elementSize.height)
@@ -1051,10 +1135,10 @@ class EyesWDIO extends EyesBase {
     this._logger.verbose(`initializing position provider. stitchMode: ${stitchMode}`)
     switch (stitchMode) {
       case StitchMode.CSS:
-        this.setPositionProvider(new CssTranslatePositionProvider(this._logger, this._jsExecutor))
+        this.setPositionProvider(new CssTranslatePositionProvider(this._logger, this._executor))
         break
       default:
-        this.setPositionProvider(new ScrollPositionProvider(this._logger, this._jsExecutor))
+        this.setPositionProvider(new ScrollPositionProvider(this._logger, this._executor))
     }
   }
 
@@ -1063,14 +1147,14 @@ class EyesWDIO extends EyesBase {
    * @return {EyesJsExecutor}
    */
   get jsExecutor() {
-    return this._jsExecutor
+    return this._executor
   }
 
   /** @override */
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...')
-      return await DomCapture.getFullWindowDom(this._logger, this.getDriver())
+      return await DomCapture.getFullWindowDom(this._logger, this._driver)
     } catch (ignored) {
       return ''
     }
@@ -1105,54 +1189,6 @@ class EyesWDIO extends EyesBase {
   }
 
   /**
-   * @private
-   * @return {Promise}
-   */
-  async _tryHideScrollbars() {
-    const isMobile = await EyesWDIOUtils.isMobileDevice(this._driver.remoteWebDriver)
-    if (isMobile) return
-    if (this._hideScrollbars || this._scrollRootElement) {
-      const originalFC = this._driver.frameChain.clone()
-      await this._driver.frameDefault()
-
-      this._logger.verbose('hiding scrollbars of default content')
-      const scrollRootElement = await this.getScrollRootElement()
-      this._originalOverflow = await EyesWDIOUtils.setOverflow(
-        this._jsExecutor,
-        'hidden',
-        scrollRootElement,
-      )
-
-      for (const frame of originalFC.getFrames()) {
-        await this._driver.frame(frame.getReference())
-        await frame.hideScrollbars()
-      }
-      this._logger.verbose('done hiding scrollbars.')
-    }
-  }
-
-  /**
-   * @private
-   * @return {Promise}
-   */
-  async _tryRestoreScrollbars() {
-    const isMobile = await EyesWDIOUtils.isMobileDevice(this._driver.remoteWebDriver)
-    if (isMobile) return
-    if (this._hideScrollbars) {
-      const originalFC = new FrameChain(this._logger, this._driver.frameChain)
-      await this._driver.frameDefault()
-      const scrollRootElement = await this.getScrollRootElement()
-      await EyesWDIOUtils.setOverflow(this._jsExecutor, this._originalOverflow, scrollRootElement)
-
-      for (const frame of originalFC.getFrames()) {
-        await this._driver.frame(frame)
-        await frame.restoreScrollbars()
-      }
-      this._logger.verbose('done hiding scrollbars.')
-    }
-  }
-
-  /**
    *
    * @returns {Promise.<EyesWDIOScreenshot>}
    * @override
@@ -1162,7 +1198,7 @@ class EyesWDIO extends EyesBase {
 
     const scaleProviderFactory = await this._updateScalingParams()
 
-    const originalFrameChain = new FrameChain(this._logger, this._driver.frameChain)
+    const originalFrameChain = this._context.frameChain
 
     const fullPageCapture = new FullPageCaptureAlgorithm(
       this._logger,
@@ -1170,7 +1206,7 @@ class EyesWDIO extends EyesBase {
       this.getWaitBeforeScreenshots(),
       this._debugScreenshotsProvider,
       this._screenshotFactory,
-      new ScrollPositionProvider(this._logger, this._jsExecutor),
+      new ScrollPositionProvider(this._logger, this._executor),
       scaleProviderFactory,
       this._cutProviderHandler.get(),
       this.getStitchOverlap(),
@@ -1180,7 +1216,7 @@ class EyesWDIO extends EyesBase {
     let activeElement = null
     if (this.getHideCaret()) {
       try {
-        activeElement = await this._driver.execute(
+        activeElement = await this._executor.executeScript(
           'var activeElement = document.activeElement; activeElement && activeElement.blur(); return activeElement;',
         )
       } catch (err) {
@@ -1192,13 +1228,13 @@ class EyesWDIO extends EyesBase {
     if (this._checkFrameOrElement) {
       this._logger.verbose('Check frame/element requested')
 
-      await this._driver.frames(originalFrameChain)
+      await this._context.frames(originalFrameChain)
 
       let scrolledElement = this.getElementPositionProvider().element
       if (!scrolledElement) {
-        scrolledElement = await this._driver.element('html')
+        scrolledElement = await this._finder.findElement('html')
       }
-      await this._jsExecutor.executeScript(
+      await this._executor.executeScript(
         'var e = arguments[0]; if (e != null) e.setAttribute("data-applitools-scroll", "true");',
         scrolledElement,
       )
@@ -1215,7 +1251,7 @@ class EyesWDIO extends EyesBase {
       )
       result = await EyesWDIOScreenshot.fromFrameSize(
         this._logger,
-        this._driver,
+        this,
         entireFrameOrElement,
         size,
       )
@@ -1228,10 +1264,10 @@ class EyesWDIO extends EyesBase {
           ? originalFrameChain.getDefaultContentScrollPosition()
           : new Location(Location.ZERO)
 
-      await this._driver.frameDefault()
+      await this._context.frameDefault()
 
       const scrollRootElement = await this.getScrollRootElement()
-      await this._jsExecutor.executeScript(
+      await this._executor.executeScript(
         'var e = arguments[0]; if (e != null) e.setAttribute("data-applitools-scroll", "true");',
         scrollRootElement,
       )
@@ -1241,10 +1277,10 @@ class EyesWDIO extends EyesBase {
         this._positionProviderHandler.get(),
       )
 
-      await this._driver.frames(originalFrameChain)
+      await this._context.frames(originalFrameChain)
       result = await EyesWDIOScreenshot.fromScreenshotType(
         this._logger,
-        this._driver,
+        this,
         fullPageImage,
         null,
         originalFramePosition,
@@ -1272,16 +1308,12 @@ class EyesWDIO extends EyesBase {
       }
 
       this._logger.verbose('Creating screenshot object...')
-      result = await EyesWDIOScreenshot.fromScreenshotType(
-        this._logger,
-        this._driver,
-        screenshotImage,
-      )
+      result = await EyesWDIOScreenshot.fromScreenshotType(this._logger, this, screenshotImage)
     }
 
     if (this.getHideCaret() && activeElement != null) {
       try {
-        await this._driver.execute('arguments[0].focus();', activeElement)
+        await this._executor.executeScript('arguments[0].focus();', activeElement)
       } catch (err) {
         this._logger.verbose(`WARNING: Could not return focus to active element! ${err}`)
       }
@@ -1302,155 +1334,25 @@ class EyesWDIO extends EyesBase {
     return Location.ZERO
   }
 
-  /**
-   * @private
-   * @param {WebElement} element
-   * @return {Promise<void>}
-   */
-  async _ensureElementVisible(element) {
-    if (!element) {
-      // No element? we must be checking the window.
-      return Promise.resolve()
+  async getAppEnvironment() {
+    const appEnv = await super.getAppEnvironment()
+
+    if (!appEnv._os) {
+      const os = await EyesWDIOUtils.getOS(this._driver)
+      if (os) {
+        appEnv.setOs(os)
+      }
     }
+    return appEnv
+  }
 
-    if (EyesWDIOUtils.isMobileDevice(this._driver.remoteWebDriver)) {
-      this._logger.verbose(`NATIVE context identified, skipping 'ensure element visible'`)
-      return
+  async getInferredEnvironment() {
+    try {
+      const userAgent = await EyesWDIOUtils.getUserAgent(this._executor)
+      return userAgent ? 'useragent:' + userAgent : userAgent
+    } catch (err) {
+      return null
     }
-
-    const originalFC = new FrameChain(this._logger, this._driver.frameChain)
-
-    const that = this
-    let elementBounds
-    const eyesRemoteWebElement = new EyesWebElement(element, '', this._driver, this._logger)
-    return eyesRemoteWebElement
-      .getBounds()
-      .then(async bounds => {
-        const currentFrameOffset = await originalFC.getCurrentFrameOffset()
-        elementBounds = bounds.offset(currentFrameOffset.getX(), currentFrameOffset.getY())
-        return that._getViewportScrollBounds()
-      })
-      .then(viewportBounds => {
-        if (!viewportBounds.contains(elementBounds)) {
-          let elementLocation
-          return that
-            ._ensureFrameVisible()
-            .then(() => {
-              return element.getLocation()
-            })
-            .then(l => {
-              elementLocation = l
-
-              return EyesWebElement.equals(element, originalFC.peek())
-            })
-            .then(equals => {
-              if (originalFC.size > 0 && !equals) {
-                return this._driver.frames(originalFC)
-              }
-            })
-            .then(() => {
-              return that.getPositionProvider().setPosition(elementLocation)
-            })
-        }
-      })
-  }
-
-  /**
-   * @private
-   * @return {Promise.<FrameChain>}
-   */
-  async _ensureFrameVisible() {
-    const originalFrameChain = new FrameChain(this._logger, this._driver.frameChain)
-    const positionProvider = this.getPositionProvider()
-
-    let position = new Location(0, 0)
-    for (let index = originalFrameChain.size - 1; index >= 0; --index) {
-      const frame = originalFrameChain.getFrame(index)
-      await this._driver.frameParent()
-      const reg = new Region(Location.ZERO, frame.getInnerSize())
-      this._effectiveViewport.intersect(reg)
-      position = position.offsetByLocation(frame.getLocation())
-      await positionProvider.setPosition(position)
-      position = position.offsetNegative(await positionProvider.getCurrentPosition())
-    }
-
-    await this._driver.frames(originalFrameChain)
-    return originalFrameChain
-  }
-
-  /**
-   * @private
-   * @return {Promise.<Region>}
-   */
-  _getViewportScrollBounds() {
-    const that = this
-    const originalFrameChain = new FrameChain(this._logger, this._driver.frameChain)
-    return this._driver.frameDefault().then(() => {
-      const spp = new ScrollPositionProvider(that._logger, that._jsExecutor)
-      return spp.getCurrentPosition().then(location => {
-        return that.getViewportSize().then(size => {
-          const viewportBounds = new Region(location, size)
-          return this._driver.frames(originalFrameChain).then(() => viewportBounds)
-        })
-      })
-    })
-  }
-
-  getAppEnvironment() {
-    const that = this
-    let appEnv
-
-    return super
-      .getAppEnvironment()
-      .then(appEnv_ => {
-        appEnv = appEnv_
-        if (!appEnv._os) {
-          if (that.getDriver().remoteWebDriver.isMobile) {
-            let platformName = null
-            if (that.getDriver().remoteWebDriver.isAndroid) {
-              that._logger.log('Android detected.')
-              platformName = 'Android'
-            } else if (that.getDriver().remoteWebDriver.isIOS) {
-              that._logger.log('iOS detected.')
-              platformName = 'iOS'
-            } else {
-              that._logger.log('Unknown device type.')
-            }
-
-            if (platformName) {
-              let os = platformName
-              let platformVersion
-              if (that.getDriver().remoteWebDriver.capabilities) {
-                platformVersion = that.getDriver().remoteWebDriver.capabilities.platformVersion
-              } else if (that.getDriver().remoteWebDriver.desiredCapabilities) {
-                platformVersion = that.getDriver().remoteWebDriver.desiredCapabilities
-                  .platformVersion
-              }
-              if (platformVersion) {
-                os += ` ${platformVersion}`
-              }
-              that._logger.verbose(`Setting OS: ${os}`)
-              appEnv.setOs(os)
-            }
-          } else {
-            that._logger.log('No mobile OS detected.')
-          }
-        }
-      })
-      .then(() => {
-        return appEnv
-      })
-  }
-
-  getInferredEnvironment() {
-    return this._driver
-      .getUserAgent()
-      .then(userAgent => {
-        return userAgent ? 'useragent:' + userAgent : userAgent
-      })
-      .catch(() => {
-        return null
-      })
   }
 
   /**
@@ -1492,10 +1394,10 @@ class EyesWDIO extends EyesBase {
   }
 
   /**
-   * @param {By} element
+   * @param {By} locator
    */
-  setScrollRootElement(element) {
-    this._scrollRootElement = this._driver.element(element)
+  setScrollRootElement(locator) {
+    this._scrollRootElement = this._finder.findElement(locator)
   }
 
   /**
@@ -1507,7 +1409,7 @@ class EyesWDIO extends EyesBase {
     if (!EyesWDIOUtils.isMobileDevice(this._driver)) {
       scrollRootElement = this._scrollRootElement
         ? this._scrollRootElement
-        : await this._driver.element('html')
+        : await this._finder.findElement('html')
     }
 
     return scrollRootElement
@@ -1518,48 +1420,25 @@ class EyesWDIO extends EyesBase {
    */
   setRotation(rotation) {
     this._rotation = rotation
-    if (this._driver) {
-      this._driver.setRotation(rotation)
-    }
   }
 
   async getAUTSessionId() {
     if (!this._driver) {
       return undefined
     }
-
-    let autSessionId
-
-    if (
-      this.getRemoteWebDriver() &&
-      this.getRemoteWebDriver().requestHandler &&
-      this.getRemoteWebDriver().requestHandler.sessionID
-    ) {
-      autSessionId = this.getRemoteWebDriver().requestHandler.sessionID
-    } else {
-      autSessionId = this.getRemoteWebDriver().sessionId
-    }
-
-    return autSessionId
+    return EyesWDIOUtils.getAUTSessionId(this._driver)
   }
 
   async getTitle() {
     if (!this._dontGetTitle) {
       try {
-        return await this._driver.getTitle()
+        return await EyesWDIOUtils.getTitle(this._driver)
       } catch (e) {
         this._logger.verbose(`failed (${e})`)
         this._dontGetTitle = true
       }
-
-      return ''
     }
-
     return ''
-  }
-
-  getRemoteWebDriver() {
-    return this._driver.remoteWebDriver
   }
 
   /**
@@ -1571,7 +1450,6 @@ class EyesWDIO extends EyesBase {
     this._configuration.setForceFullPageScreenshot(shouldForce)
   }
 
-  //noinspection JSUnusedGlobalSymbols
   /**
    * @return {boolean} Whether Eyes should force a full page screenshot.
    */
@@ -1627,10 +1505,14 @@ class EyesWDIO extends EyesBase {
   }
 
   /**
-   * @return {?EyesWebDriver}
+   * @return {?WDIODriver}
    */
   getDriver() {
     return this._driver
+  }
+
+  getRemoteWebDriver() {
+    return this._driver.unwrapped
   }
 
   /**

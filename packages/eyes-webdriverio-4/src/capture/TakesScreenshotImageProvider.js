@@ -8,13 +8,13 @@ const {ImageProvider, MutableImage} = require('@applitools/eyes-sdk-core')
 class TakesScreenshotImageProvider extends ImageProvider {
   /**
    * @param {Logger} logger A Logger instance.
-   * @param {EyesWebDriver} tsInstance
+   * @param {WDIODriver} driver
    */
-  constructor(logger, tsInstance) {
+  constructor(logger, driver) {
     super()
 
     this._logger = logger
-    this._tsInstance = tsInstance
+    this._driver = driver
   }
 
   /**
@@ -23,7 +23,7 @@ class TakesScreenshotImageProvider extends ImageProvider {
    */
   async getImage() {
     this._logger.verbose('Getting screenshot as base64...')
-    const screenshot64 = await this._tsInstance.remoteWebDriver.saveScreenshot()
+    const screenshot64 = await this._driver.saveScreenshot()
     this._logger.verbose('Done getting base64! Creating MutableImage...')
     return new MutableImage(screenshot64)
   }

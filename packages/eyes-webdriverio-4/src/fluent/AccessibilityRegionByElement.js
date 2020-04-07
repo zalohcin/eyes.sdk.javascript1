@@ -6,15 +6,15 @@ const {
   Location,
   CoordinatesType,
 } = require('@applitools/eyes-sdk-core')
-
+const WDIOElement = require('../wrappers/WDIOElement')
 class AccessibilityRegionByElement extends GetAccessibilityRegion {
   /**
-   * @param {EyesWebElement} webElement
+   * @param {WDIOElement|object} element
    * @param {AccessibilityRegionType} regionType
    */
-  constructor(webElement, regionType) {
+  constructor(element, regionType) {
     super()
-    this._element = webElement
+    this._element = element
     this._regionType = regionType
   }
 
@@ -26,6 +26,7 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
    */
   // eslint-disable-next-line
   async getRegion(eyes, screenshot) {
+    this._element = new WDIOElement(eyes._logger, eyes.getDriver(), this._element)
     const point = await this._element.getLocation()
     const size = await this._element.getSize()
     const pTag = screenshot.convertLocation(

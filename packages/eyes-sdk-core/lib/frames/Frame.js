@@ -1,8 +1,7 @@
 'use strict'
 
-const {ArgumentGuard} = require('@applitools/eyes-sdk-core')
-const EyesWDIOUtils = require('../EyesWDIOUtils')
-const By = require('../By')
+const {ArgumentGuard} = require('@applitools/eyes-common')
+const {EyesJsBrowserUtils} = require('../EyesJsBrowserUtils')
 
 /**
  * Encapsulates a frame/iframe. This is a generic type class,
@@ -61,87 +60,79 @@ class Frame {
       this._originalOverflow = originalOverflow
     }
   }
-
   /**
    * @return {EyesWebElement}
    */
   getReference() {
     return this._element
   }
-
   /**
    * @return {Location}
    */
   getLocation() {
     return this._location
   }
-
   /**
    * @return {RectangleSize}
    */
   getSize() {
     return this._size
   }
-
   /**
    * @return {RectangleSize}
    */
   getInnerSize() {
     return this._innerSize
   }
-
   /**
    * @return {Location}
    */
   getOriginalLocation() {
     return this._originalLocation
   }
-
   /**
    * @return {String}
    */
   getOriginalOverflow() {
     return this._originalOverflow
   }
-
   /**
    * @param {EyesWebElement} scrollRootElement
    */
   setScrollRootElement(scrollRootElement) {
     this._scrollRootElement = scrollRootElement
   }
-
   /**
    * @return {EyesWebElement}
    */
   getScrollRootElement() {
     return this._scrollRootElement
   }
-
   /**
    * @return {Promise<EyesWebElement>}
    */
   async getForceScrollRootElement() {
     if (!this._scrollRootElement) {
       this._logger.verbose('no scroll root element. selecting default.')
-      this._scrollRootElement = await this._driver.element(By.css('html'))
+      this._scrollRootElement = await this._driver.finder.findElement({
+        using: 'css selector',
+        value: 'html',
+      })
     }
     return this._scrollRootElement
   }
-
   /**
    * @return {Promise}
    */
   async hideScrollbars() {
     const scrollRootElement = await this.getForceScrollRootElement()
-    this._logger.verbose('hiding scrollbars of element:', scrollRootElement.jsonElement)
-    this._originalOverflow = await EyesWDIOUtils.hideScrollbars(
-      this._element.driver.jsExecutor,
+    this._logger.verbose('hiding scrollbars of element:', scrollRootElement.unwrapped)
+    this._originalOverflow = await EyesJsBrowserUtils.hideScrollbars(
+      this._driver.executor,
       200,
       scrollRootElement,
     )
   }
-
   /**
    * @return {Promise}
    */
@@ -149,10 +140,10 @@ class Frame {
     const scrollRootElement = await this.getForceScrollRootElement()
     this._logger.verbose(
       'returning overflow of element to its original value:',
-      scrollRootElement.element,
+      scrollRootElement.unwrapped,
     )
     await scrollRootElement.setOverflow(this._originalOverflow)
   }
 }
 
-module.exports = Frame
+exports.Frame = Frame

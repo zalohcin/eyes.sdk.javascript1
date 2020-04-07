@@ -9,7 +9,6 @@ const {
 } = require('@applitools/eyes-sdk-core')
 
 const ScrollPositionProvider = require('../positioning/ScrollPositionProvider')
-const WDIOJSExecutor = require('../WDIOJSExecutor')
 
 /**
  * @private
@@ -30,20 +29,19 @@ class SafariScreenshotImageProvider extends ImageProvider {
   /**
    * @param {Eyes} eyes
    * @param {Logger} logger A Logger instance.
-   * @param {EyesWebDriver} tsInstance
+   * @param {WDIODriver} driver
    * @param {UserAgent} userAgent
    */
-  constructor(eyes, logger, tsInstance, userAgent) {
+  constructor(eyes, logger, driver, userAgent) {
     super()
 
     this._eyes = eyes
     this._logger = logger
-    this._tsInstance = tsInstance
+    this._driver = driver
     this._userAgent = userAgent
 
     /** @type {Map<int, [Region]>} */
     this._devicesRegions = undefined
-    this._jsExecutor = new WDIOJSExecutor(tsInstance)
   }
 
   /**
@@ -52,7 +50,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
    */
   async getImage() {
     this._logger.verbose('Getting screenshot as base64...')
-    let screenshot64 = await this._tsInstance.takeScreenshot()
+    let screenshot64 = await this._driver.saveScreenshot()
     screenshot64 = screenshot64.replace(/\r\n/g, '') // Because of SauceLabs returns image with line breaks
 
     this._logger.verbose('Done getting base64! Creating MutableImage...')
@@ -110,7 +108,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
 
       let loc
       if (currentFrameChain.size === 0) {
-        const positionProvider = new ScrollPositionProvider(this._logger, this._jsExecutor)
+        const positionProvider = new ScrollPositionProvider(this._logger, this._driver.executor)
         loc = await positionProvider.getCurrentPosition()
       } else {
         loc = currentFrameChain.getDefaultContentScrollPosition()

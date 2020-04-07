@@ -6,15 +6,14 @@ const {
   RectangleSize,
   Location,
 } = require('@applitools/eyes-sdk-core')
-
+const WDIOElement = require('../wrappers/WDIOElement')
 const ElementPositionMemento = require('./ElementPositionMemento')
-const EyesWebElement = require('./../wrappers/EyesWebElement')
 
 class ElementPositionProvider extends PositionProvider {
   /**
    * @param {Logger} logger A Logger instance.
-   * @param {EyesWebDriver} driver
-   * @param {EyesWebElement} element
+   * @param {WDIODriver} driver
+   * @param {WDIOElement|Object} element
    */
   constructor(logger, driver, element) {
     super()
@@ -22,8 +21,7 @@ class ElementPositionProvider extends PositionProvider {
     ArgumentGuard.notNull(element, 'element')
 
     this._logger = logger
-    this._element =
-      element instanceof EyesWebElement ? element : new EyesWebElement(element, '', driver, logger)
+    this._element = new WDIOElement(this._logger, driver, element)
 
     this._logger.verbose('creating ElementPositionProvider')
   }
@@ -34,7 +32,7 @@ class ElementPositionProvider extends PositionProvider {
    */
   async getCurrentPosition() {
     this._logger.verbose('getCurrentScrollPosition()')
-    const [scrollLeft, scrollTop] = await this._element.getProperties(['scrollLeft', 'scrollTop'])
+    const [scrollLeft, scrollTop] = await this._element.getProperty('scrollLeft', 'scrollTop')
     const location = new Location(scrollLeft, scrollTop)
     this._logger.verbose(`Current position: ${location}`)
     return location
@@ -45,10 +43,9 @@ class ElementPositionProvider extends PositionProvider {
    * @inheritDoc
    */
   setPosition(location) {
-    const that = this
-    that._logger.verbose(`Scrolling element to: ${location}`)
-    return that._element.scrollTo(location).then(() => {
-      that._logger.verbose('Done scrolling element!')
+    this._logger.verbose(`Scrolling element to: ${location}`)
+    return this._element.scrollTo(location).then(() => {
+      this._logger.verbose('Done scrolling element!')
     })
   }
 
@@ -96,7 +93,7 @@ class ElementPositionProvider extends PositionProvider {
 
   /**
    *
-   * @returns {EyesWebElement|*}
+   * @returns {WDIOElement}
    */
   get element() {
     return this._element

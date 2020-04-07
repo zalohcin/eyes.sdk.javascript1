@@ -1,8 +1,8 @@
 'use strict'
 
-const {ArgumentGuard, Location} = require('@applitools/eyes-sdk-core')
-const Frame = require('./Frame')
-const NoFramesError = require('./../errors/NoFramesError')
+const {ArgumentGuard, Location} = require('@applitools/eyes-common')
+const {Frame} = require('./Frame')
+const {NoFramesError} = require('../errors/NoFramesError')
 
 class FrameChain {
   /**
@@ -24,7 +24,6 @@ class FrameChain {
       this._logger.verbose('Done!')
     }
   }
-
   /**
    * Compares two frame chains.
    * @param {FrameChain} c1 Frame chain to be compared against c2.
@@ -35,21 +34,19 @@ class FrameChain {
     if (c1.size !== c2.size) {
       return false
     }
-    for (let i = 0; i < c1.size; ++i) {
-      if (c1.getFrames()[i].reference !== c2.getFrames()[i].getReference()) {
+    for (let index = 0; index < c1.size; ++index) {
+      if (c1.getFrame(index).getReference() !== c2.getFrames(index).getReference()) {
         return false
       }
     }
     return true
   }
-
   /**
-   * @return {Array.<Frame>} frames stored in chain
+   * @return {Array<Frame>} frames stored in chain
    */
   getFrames() {
     return this._frames
   }
-
   /**
    * @param {int} index Index of needed frame
    * @return {Frame} frame by index in array
@@ -61,7 +58,6 @@ class FrameChain {
 
     throw new Error('No frames for given index')
   }
-
   /**
    *
    * @return {int} The number of frames in the chain.
@@ -69,18 +65,21 @@ class FrameChain {
   get size() {
     return this._frames.length
   }
-
   /**
    * Removes all current frames in the frame chain.
    */
   clear() {
-    return (this._frames = [])
+    this._frames = []
   }
-
   clone() {
     return new FrameChain(this._logger, this)
   }
-
+  /**
+   * @return {Frame} Returns the top frame in the chain.
+   */
+  peek() {
+    return this._frames[this._frames.length - 1]
+  }
   /**
    * Removes the last inserted frame element. Practically means we switched
    * back to the parent of the current frame
@@ -88,14 +87,6 @@ class FrameChain {
   pop() {
     return this._frames.pop()
   }
-
-  /**
-   * @return {Frame} Returns the top frame in the chain.
-   */
-  peek() {
-    return this._frames[this._frames.length - 1]
-  }
-
   /**
    * Appends a frame to the frame chain.
    * @param {Frame} frame The frame to be added.
@@ -103,11 +94,9 @@ class FrameChain {
   push(frame) {
     return this._frames.push(frame)
   }
-
   [Symbol.iterator]() {
     return this._frames[Symbol.iterator]()
   }
-
   /**
    * @return {Location} The location of the current frame in the page.
    */
@@ -120,7 +109,6 @@ class FrameChain {
 
     return result
   }
-
   /**
    * @return {Location} The outermost frame's location, or NoFramesException.
    */
@@ -130,7 +118,6 @@ class FrameChain {
     }
     return new Location(this._frames[0].getOriginalLocation())
   }
-
   /**
    * @return {{width: number, height: number}} The size of the current frame.
    */
@@ -140,7 +127,6 @@ class FrameChain {
     this._logger.verbose('Done!')
     return result
   }
-
   /**
    * @return {RectangleSize} The inner size of the current frame.
    */
@@ -152,4 +138,4 @@ class FrameChain {
   }
 }
 
-module.exports = FrameChain
+exports.FrameChain = FrameChain

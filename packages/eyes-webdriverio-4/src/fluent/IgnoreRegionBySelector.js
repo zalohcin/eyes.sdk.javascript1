@@ -40,11 +40,11 @@ class IgnoreRegionBySelector extends GetRegion {
 
   /**
    * @inheritDoc
-   * @param {Eyes} eyes
+   * @param {WDIODriver} driver
    * @return {Promise<string>}
    */
-  async getSelector(eyes) {
-    return new SelectorByLocator(this._selector).getSelector(eyes)
+  async getSelector(driver) {
+    return new SelectorByLocator(this._selector).getSelector(driver)
   }
 }
 

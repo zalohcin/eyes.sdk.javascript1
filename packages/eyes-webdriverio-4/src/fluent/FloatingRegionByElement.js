@@ -6,18 +6,19 @@ const {
   Location,
   CoordinatesType,
 } = require('@applitools/eyes-sdk-core')
+const WDIOElement = require('../wrappers/WDIOElement')
 
 class FloatingRegionByElement extends GetFloatingRegion {
   /**
-   * @param {EyesWebElement} webElement
+   * @param {WDIOElement|object} element
    * @param {int} maxUpOffset
    * @param {int} maxDownOffset
    * @param {int} maxLeftOffset
    * @param {int} maxRightOffset
    */
-  constructor(webElement, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
+  constructor(element, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
     super()
-    this._element = webElement
+    this._element = element
     this._maxUpOffset = maxUpOffset
     this._maxDownOffset = maxDownOffset
     this._maxLeftOffset = maxLeftOffset
@@ -26,11 +27,13 @@ class FloatingRegionByElement extends GetFloatingRegion {
 
   /**
    * @override
-   * @param {Eyes} eyesBase
+   * @param {Eyes} eyes
    * @param {EyesScreenshot} screenshot
    */
   // eslint-disable-next-line
-  async getRegion(eyesBase, screenshot) {
+  async getRegion(eyes, screenshot) {
+    this._element = new WDIOElement(eyes._logger, eyes.getDriver(), this._element)
+
     const point = await this._element.getLocation()
     const size = await this._element.getSize()
     const lTag = screenshot.convertLocation(

@@ -11,7 +11,7 @@ class ImageProviderFactory {
    * @param {UserAgent} userAgent
    * @param {Eyes|EyesWDIO} eyes
    * @param {Logger} logger
-   * @param {EyesWebDriver} driver
+   * @param {WDIODriver} driver
    * @return {ImageProvider}
    */
   static getImageProvider(userAgent, eyes, logger, driver) {

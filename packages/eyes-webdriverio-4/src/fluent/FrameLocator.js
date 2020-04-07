@@ -2,7 +2,7 @@
 
 class FrameLocator {
   constructor() {
-    /** @type {EyesWebElement} */
+    /** @type {WDIOElement|object} */
     this._frameElement = null
     /** @type {By} */
     this._frameSelector = null
@@ -10,35 +10,35 @@ class FrameLocator {
     this._frameNameOrId = null
     /** @type {Integer} */
     this._frameIndex = null
-    /** @type {EyesWebElement} */
+    /** @type {WDIOElement|object} */
     this._scrollRootElement = undefined
-    /** @type {By} */
+    /** @type {By|string} */
     this._scrollRootSelector = undefined
   }
 
   /**
-   * @return {EyesWebElement}
+   * @return {WDIOElement|object}
    */
   getFrameElement() {
     return this._frameElement
   }
 
   /**
-   * @param frameElement
+   * @param {WDIOElement|object} frameElement
    */
   setFrameElement(frameElement) {
     this._frameElement = frameElement
   }
 
   /**
-   * @return {By}
+   * @return {By|string}
    */
   getFrameSelector() {
     return this._frameSelector
   }
 
   /**
-   * @param frameSelector
+   * @param {By|string} frameSelector
    */
   setFrameSelector(frameSelector) {
     this._frameSelector = frameSelector
@@ -52,7 +52,7 @@ class FrameLocator {
   }
 
   /**
-   * @param frameNameOrId
+   * @param {String} frameNameOrId
    */
   setFrameNameOrId(frameNameOrId) {
     this._frameNameOrId = frameNameOrId
@@ -73,28 +73,28 @@ class FrameLocator {
   }
 
   /**
-   * @return {EyesWebElement}
+   * @return {WDIOElement|object}
    */
   getScrollRootElement() {
     return this._scrollRootElement
   }
 
   /**
-   * @param {EyesWebElement} scrollRootElement
+   * @param {WDIOElement|object} scrollRootElement
    */
   setScrollRootElement(scrollRootElement) {
     this._scrollRootElement = scrollRootElement
   }
 
   /**
-   * @return {By}
+   * @return {By|string}
    */
   getScrollRootSelector() {
     return this._scrollRootSelector
   }
 
   /**
-   * @param {By} scrollRootSelector
+   * @param {By|string} scrollRootSelector
    */
   setScrollRootSelector(scrollRootSelector) {
     this._scrollRootSelector = scrollRootSelector

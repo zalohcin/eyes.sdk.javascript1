@@ -8,8 +8,8 @@ const {
   CoordinatesType,
   Location,
   RectangleSize,
+  FrameChain,
 } = require('@applitools/eyes-sdk-core')
-const FrameChain = require('../frames/FrameChain')
 const command = require('../services/selenium/Command')
 const By = require('../By')
 

@@ -12,7 +12,7 @@ const Frame = require('../frames/Frame')
 const SeleniumService = require('../services/selenium/SeleniumService')
 const EyesWebElement = require('./EyesWebElement')
 const EyesWDIOUtils = require('../EyesWDIOUtils')
-const WDIOJSExecutor = require('../WDIOJSExecutor')
+const WDIOJSExecutor = require('./WDIOJSExecutor')
 const ScrollPositionProvider = require('../positioning/ScrollPositionProvider')
 const By = require('../By')
 

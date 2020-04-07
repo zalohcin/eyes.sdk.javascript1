@@ -90,7 +90,6 @@ exports.Trigger = require('./lib/triggers/Trigger').Trigger
 exports.AppEnvironment = require('./lib/AppEnvironment').AppEnvironment
 exports.EyesBase = require('./lib/EyesBase').EyesBase
 exports.EyesJsBrowserUtils = require('./lib/EyesJsBrowserUtils').EyesJsBrowserUtils
-exports.EyesJsExecutor = require('./lib/EyesJsExecutor').EyesJsExecutor
 exports.FailureReports = require('./lib/FailureReports').FailureReports
 exports.MatchSingleWindowTask = require('./lib/MatchSingleWindowTask').MatchSingleWindowTask
 exports.MatchWindowTask = require('./lib/MatchWindowTask').MatchWindowTask
@@ -100,6 +99,15 @@ exports.TestAccessibilityStatus = require('./lib/TestResults').TestAccessibility
 exports.AccessibilityStatus = require('./lib/AccessibilityStatus').AccessibilityStatus
 exports.TestResultsFormatter = require('./lib/TestResultsFormatter').TestResultsFormatter
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus
+
+exports.FrameChain = require('./lib/frames/FrameChain').FrameChain
+exports.Frame = require('./lib/frames/Frame').Frame
+
+exports.EyesWrappedDriver = require('./lib/wrappers/EyesWrappedDriver').EyesWrappedDriver
+exports.EyesWrappedElement = require('./lib/wrappers/EyesWrappedElement').EyesWrappedElement
+exports.EyesJsExecutor = require('./lib/wrappers/EyesJsExecutor').EyesJsExecutor
+exports.EyesElementFinder = require('./lib/wrappers/EyesElementFinder').EyesElementFinder
+exports.EyesBrowsingContext = require('./lib/wrappers/EyesBrowsingContext').EyesBrowsingContext
 
 exports.EyesRunner = require('./lib/runner/EyesRunner').EyesRunner
 exports.ClassicRunner = require('./lib/runner/ClassicRunner').ClassicRunner

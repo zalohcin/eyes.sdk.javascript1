@@ -1,0 +1,62 @@
+const {EyesWrappedDriver} = require('@applitools/eyes-sdk-core')
+const WDIOJSExecutor = require('./WDIOJSExecutor')
+const WDIOElementFinder = require('./WDIOElementFinder')
+const WDIOBrowsingContext = require('./WDIOBrowsingContext')
+
+class WDIODriver extends EyesWrappedDriver {
+  constructor(logger, driver) {
+    super()
+    this._logger = logger
+    this._driver = driver
+
+    this._proxy = new Proxy(this, {
+      get(target, key, receiver) {
+        // WORKAROUND we couldn't return this object from the async function because it think this is a Promise
+        if (key === 'then') {
+          return undefined
+        } else if (key in target) {
+          return Reflect.get(target, key, receiver)
+        } else {
+          return Reflect.get(target._driver, key)
+        }
+      },
+    })
+
+    this._executor = new WDIOJSExecutor(this._logger, this._proxy)
+    this._finder = new WDIOElementFinder(this._logger, this._proxy)
+    this._context = new WDIOBrowsingContext(this._logger, this._proxy)
+
+    return this._proxy
+  }
+
+  get unwrapped() {
+    return this._driver
+  }
+
+  get executor() {
+    return this._executor
+  }
+
+  get finder() {
+    return this._finder
+  }
+
+  get context() {
+    return this._context
+  }
+
+  async frame(arg) {
+    return this._context.frame(arg)
+  }
+
+  async frameParent() {
+    return this._context.frameParent()
+  }
+
+  async url(url) {
+    this._context.reset()
+    return this._driver.url(url)
+  }
+}
+
+module.exports = WDIODriver

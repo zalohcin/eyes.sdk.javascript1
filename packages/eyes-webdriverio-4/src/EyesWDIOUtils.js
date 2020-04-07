@@ -6,6 +6,7 @@ const {
   Location,
   ArgumentGuard,
   GeneralUtils,
+  MutableImage,
 } = require('@applitools/eyes-sdk-core')
 
 const EyesDriverOperationError = require('./errors/EyesDriverOperationError')
@@ -26,7 +27,7 @@ let imageOrientationHandler = new (class ImageOrientationHandlerImpl extends Ima
   /** @override */
   async isLandscapeOrientation(driver) {
     try {
-      const orientation = await driver.remoteWebDriver.getOrientation()
+      const orientation = await driver.getOrientation()
       return orientation === 'landscape'
     } catch (e) {
       throw new EyesDriverOperationError('Failed to get orientation!', e)
@@ -214,6 +215,37 @@ class EyesWDIOUtils {
     return parseFloat(result)
   }
 
+  static async getMobilePixelRatio(driver, viewportSize) {
+    const screenshot64 = await driver.saveScreenshot()
+    const screenshot = new MutableImage(screenshot64)
+    return screenshot.getWidth() / viewportSize.getWidth()
+  }
+
+  /**
+   * Rotates the image as necessary. The rotation is either manually forced by passing a non-null ImageRotation, or automatically inferred.
+   * @param {WebDriver} driver The underlying driver which produced the screenshot.
+   * @param {MutableImage} image The image to normalize.
+   * @param {ImageRotation} rotation The degrees by which to rotate the image:
+   *                 positive values = clockwise rotation,
+   *                 negative values = counter-clockwise,
+   *                 0 = force no rotation,
+   *                 null = rotate automatically as needed.
+   * @return {Promise.<MutableImage>} A normalized image.
+   */
+  static async normalizeRotation(logger, driver, image, rotation) {
+    ArgumentGuard.notNull(logger, 'logger')
+    ArgumentGuard.notNull(driver, 'driver')
+    ArgumentGuard.notNull(image, 'image')
+
+    let degrees
+    if (rotation) {
+      degrees = await rotation.getRotation()
+    } else {
+      degrees = await EyesWDIOUtils.tryAutomaticRotation(logger, driver, image)
+    }
+    return image.rotate(degrees)
+  }
+
   /**
    * Get the current transform of page.
    *
@@ -249,7 +281,7 @@ class EyesWDIOUtils {
 
   /**
    * @param {WDIOJSExecutor} executor
-   * @param {Promise.<EyesWebElement>} webElementPromise
+   * @param {Promise<EyesWebElement>} webElementPromise
    * @param transform
    * @return {*|Promise}
    */
@@ -450,11 +482,11 @@ class EyesWDIOUtils {
    * @param {EyesJsExecutor} executor The executor to use.
    * @return {Promise.<RectangleSize>} The viewport size of the current context, or the display size if the viewport size cannot be retrieved.
    */
-  static async getViewportSizeOrDisplaySize(logger, executor) {
+  static async getViewportSizeOrDisplaySize(logger, driver) {
     logger.verbose('getViewportSizeOrDisplaySize()')
 
     try {
-      return await EyesWDIOUtils.getViewportSize(executor)
+      return await EyesWDIOUtils.getViewportSize(driver)
     } catch (e) {
       logger.verbose('Failed to extract viewport size using Javascript:', e)
 
@@ -462,11 +494,11 @@ class EyesWDIOUtils {
       logger.verbose('Using window size as viewport size.')
 
       /** {width:number, height:number} */
-      const {value: size} = await executor.remoteWebDriver.windowHandleSize()
+      const {value: size} = await driver.windowHandleSize()
       let width = size.width
       let height = size.height
       try {
-        const result = await EyesWDIOUtils.isLandscapeOrientation(executor)
+        const result = await EyesWDIOUtils.isLandscapeOrientation(driver)
         if (result && height > width) {
           const temp = width
 
@@ -480,6 +512,21 @@ class EyesWDIOUtils {
       logger.verbose(`Done! Size ${width} x ${height}`)
       return new RectangleSize(width, height)
     }
+  }
+
+  static async getTopContextViewportSize(driver) {
+    driver._logger.verbose('getTopContextViewportSize(driver)')
+    const currentFrames = driver.context.frameChain
+    if (currentFrames.size > 0) {
+      await driver.context.frameDefault()
+    }
+    driver._logger.verbose('Extracting viewport size...')
+    const result = await EyesWDIOUtils.getViewportSizeOrDisplaySize(driver._logger, driver)
+    driver._logger.verbose('Done! Viewport size: ', result)
+    if (currentFrames.size > 0) {
+      await driver.context.frames(currentFrames)
+    }
+    return result
   }
 
   /**
@@ -519,12 +566,12 @@ class EyesWDIOUtils {
   static async _setBrowserSizeLoop(logger, browser, requiredSize, sleep = 1000, retries = 3) {
     logger.verbose('Trying to set browser size to:', requiredSize)
 
-    await browser.remoteWebDriver.windowHandleSize({
+    await browser.windowHandleSize({
       width: requiredSize.getWidth(),
       height: requiredSize.getHeight(),
     })
     await GeneralUtils.sleep(sleep)
-    const size = await browser.remoteWebDriver.windowHandleSize()
+    const size = await browser.windowHandleSize()
     const currentSize = new RectangleSize(size.value.width, size.value.height)
     logger.log(`Current browser size: ${currentSize}`)
     if (currentSize.equals(requiredSize)) {
@@ -553,7 +600,7 @@ class EyesWDIOUtils {
     requiredViewportSize,
   ) {
     /** {width:number, height:number} */
-    const browserSize = await browser.remoteWebDriver.windowHandleSize()
+    const browserSize = await browser.windowHandleSize()
     logger.verbose('Current browser size:', browserSize)
     const requiredBrowserSize = {
       width:
@@ -580,7 +627,7 @@ class EyesWDIOUtils {
     // Then we'll check the viewport size and increase the window size accordingly.
     logger.verbose('setViewportSize(', requiredSize, ')')
 
-    let jsExecutor = browser.eyes.jsExecutor
+    let jsExecutor = browser.executor
     /** RectangleSize */
     let actualViewportSize = await EyesWDIOUtils.getViewportSize(jsExecutor)
     logger.verbose('Initial viewport size:', actualViewportSize)
@@ -593,7 +640,7 @@ class EyesWDIOUtils {
     // We move the window to (0,0) to have the best chance to be able to
     // set the viewport size as requested.
     try {
-      await browser.remoteWebDriver.windowHandlePosition({x: 0, y: 0})
+      await browser.windowHandlePosition({x: 0, y: 0})
     } catch (ignored) {
       logger.verbose('Warning: Failed to move the browser window to (0,0)')
     }
@@ -634,7 +681,7 @@ class EyesWDIOUtils {
     const heightDiff = actualViewportSize.getHeight() - requiredSize.getHeight()
     const heightStep = heightDiff > 0 ? -1 : 1
 
-    const browserSize = await browser.remoteWebDriver.windowHandleSize()
+    const browserSize = await browser.windowHandleSize()
     const currWidthChange = 0
     const currHeightChange = 0
     // We try the zoom workaround only if size difference is reasonable.
@@ -730,7 +777,7 @@ class EyesWDIOUtils {
 
     await EyesWDIOUtils.setBrowserSize(logger, browser, requiredBrowserSize)
     lastRequiredBrowserSize = requiredBrowserSize
-    actualViewportSize = EyesWDIOUtils.getViewportSize(browser.eyes.jsExecutor)
+    actualViewportSize = EyesWDIOUtils.getViewportSize(browser.executor)
 
     logger.verbose('Current viewport size:', actualViewportSize)
     if (actualViewportSize.equals(requiredSize)) {
@@ -778,6 +825,68 @@ class EyesWDIOUtils {
    */
   static isMobileDevice(driver) {
     return !!(driver && driver.isMobile)
+  }
+
+  static async getUserAgent(executor) {
+    try {
+      const userAgent = await executor.executeScript('return navigator.userAgent')
+      executor._logger.verbose('user agent: ' + userAgent)
+      return userAgent
+    } catch (e) {
+      executor._logger.verbose('Failed to obtain user-agent string')
+      return null
+    }
+  }
+
+  static async getCurrentUrl(driver) {
+    if (!EyesWDIOUtils.isMobileDevice(driver)) {
+      return driver.getUrl()
+    } else {
+      return null
+    }
+  }
+
+  static async getTitle(driver) {
+    return driver.getTitle()
+  }
+
+  static async getOS(driver) {
+    if (driver.isMobile) {
+      let os = ''
+      if (driver.isAndroid) {
+        driver._logger.log('Android detected.')
+        os = 'Android'
+      } else if (driver.isIOS) {
+        driver._logger.log('iOS detected.')
+        os = 'iOS'
+      } else {
+        driver._logger.log('Unknown device type.')
+      }
+
+      if (os) {
+        let version
+        if (driver.capabilities) {
+          version = driver.capabilities.platformVersion
+        } else if (driver.desiredCapabilities) {
+          version = driver.desiredCapabilities.platformVersion
+        }
+        if (version) {
+          os += ` ${version}`
+        }
+        driver._logger.verbose(`Setting OS: ${os}`)
+        return os
+      }
+    } else {
+      driver._logger.log('No mobile OS detected.')
+    }
+  }
+
+  static async getAUTSessionId(driver) {
+    if (driver.requestHandler.sessionID) {
+      return driver.requestHandler.sessionID
+    } else {
+      return driver.sessionId
+    }
   }
 }
 

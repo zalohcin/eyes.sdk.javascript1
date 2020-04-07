@@ -21,12 +21,12 @@ class SelectorByLocator extends GetSelector {
    * @param {Eyes} eyes
    * @return {Promise<string>}
    */
-  async getSelector(eyes) {
+  async getSelector(driver) {
     const randId = GeneralUtils.randomAlphanumeric()
-    const elements = await eyes._driver.elements(this._selector)
+    const elements = await driver.finder.findElements(this._selector)
     if (elements && elements.length > 0) {
       for (let i = 0; i < elements.length; i += 1) {
-        await eyes._driver.execute(
+        await driver.executor.executeScript(
           `arguments[0].setAttribute('${EYES_SELECTOR_TAG}', '${randId}');`,
           elements[i],
         )
