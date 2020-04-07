@@ -1960,6 +1960,24 @@ Received: 'firefox-1'.`,
     expect(results.getStepsInfo()[0].result.getAsExpected()).to.equal(true)
   })
 
+  it.only('renders iosDeviceInfo', async () => {
+    const deviceName = 'iPhone 4'
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      browser: {
+        platform: 'ios',
+        name: 'safari',
+        iosDeviceInfo: {screenOrientation: 'portrait', version: 'latest'},
+      },
+      appName,
+    })
+
+    checkWindow({url: '', cdt: []})
+    const [results] = await close()
+    expect(wrapper.getDeviceInfo()).to.equal(`${deviceName} (Chrome emulation)`)
+    expect(results.getStepsInfo()[0].result.getAsExpected()).to.equal(true)
+  })
+
   it("does't call getRenderInfo on wrapper passed to openEyes", async () => {
     let flag = true
     wrapper.getRenderInfo = async function() {

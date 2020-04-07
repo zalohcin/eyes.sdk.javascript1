@@ -17,7 +17,6 @@ function createRenderRequests({
   noOffsetSelectors = [],
   offsetSelectors = [],
   sendDom,
-  platform,
 }) {
   const selectorsToFindRegionsFor = calculateSelectorsToFindRegionsFor({
     sizeMode,
@@ -27,7 +26,17 @@ function createRenderRequests({
   })
 
   return browsers.map(
-    ({width, height, name, deviceName, screenOrientation, deviceScaleFactor, mobile}) => {
+    ({
+      width,
+      height,
+      name,
+      deviceName,
+      screenOrientation,
+      deviceScaleFactor,
+      mobile,
+      platform,
+      iosDeviceInfo,
+    }) => {
       const emulationInfo = createEmulationInfo({
         deviceName,
         screenOrientation,
@@ -50,8 +59,8 @@ function createRenderRequests({
           selector,
           region,
           emulationInfo,
+          iosDeviceInfo,
         }),
-        platform: 'Linux',
         browserName: name,
         scriptHooks,
         selectorsToFindRegionsFor,

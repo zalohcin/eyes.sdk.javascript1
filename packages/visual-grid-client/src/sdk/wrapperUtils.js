@@ -60,7 +60,7 @@ function configureWrappers({
     const wrapper = wrappers[i]
     const browser = browsers[i]
 
-    const deviceInfo = browser.deviceName ? `${browser.deviceName} (Chrome emulation)` : 'Desktop'
+    const deviceInfo = browser.deviceName ? `${browser.deviceName} (Chrome emulation)` : 'Desktop' // TODO handle iosDeviceInfo
     wrapper.setDeviceInfo(deviceInfo)
 
     validateAndAddProperties(wrapper, properties)
