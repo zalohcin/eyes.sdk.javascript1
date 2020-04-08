@@ -27,11 +27,11 @@ class FloatingRegionBySelector extends GetFloatingRegion {
 
   /**
    * @override
-   * @param {Eyes} eyesBase
+   * @param {Eyes} eyes
    * @param {EyesScreenshot} screenshot
    */
-  async getRegion(eyesBase, screenshot) {
-    const elements = await eyesBase.getDriver().elements(this._selector)
+  async getRegion(eyes, screenshot) {
+    const elements = await eyes.getDriver().finder.findElements(this._selector)
 
     const values = []
     if (elements && elements.length > 0) {

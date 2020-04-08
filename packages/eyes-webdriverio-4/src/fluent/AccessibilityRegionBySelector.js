@@ -26,7 +26,7 @@ class AccessibilityRegionBySelector extends GetAccessibilityRegion {
    * @return {Promise<AccessibilityMatchSettings[]>}
    */
   async getRegion(eyes, screenshot) {
-    const elements = await eyes.getDriver().elements(this._selector)
+    const elements = await eyes.getDriver().finder.findElements(this._selector)
 
     const values = []
     if (elements && elements.length > 0) {

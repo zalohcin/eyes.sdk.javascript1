@@ -104,7 +104,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
         }
       }
     } else if (!this._eyes.getForceFullPageScreenshot()) {
-      const currentFrameChain = this._eyes.getDriver().frameChain
+      const currentFrameChain = this._driver.context.frameChain
 
       let loc
       if (currentFrameChain.size === 0) {
