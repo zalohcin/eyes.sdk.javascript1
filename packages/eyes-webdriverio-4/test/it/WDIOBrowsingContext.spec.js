@@ -37,12 +37,12 @@ describe('WDIOBrowsingContext', function() {
       port: 9515,
       path: '/',
     })
-    driver = new WDIODriver(logger, browser)
   })
 
   beforeEach(async () => {
     await browser.init()
     await browser.url('https://applitools.github.io/demo/TestPages/FramesAndRegionsPage/')
+    driver = new WDIODriver(logger, browser)
     context = new WDIOBrowsingContext(logger, driver)
   })
 
@@ -72,12 +72,20 @@ describe('WDIOBrowsingContext', function() {
     assert.deepStrictEqual(elementId(currentFrameElement), elementId(frameElement))
   })
 
-  it('frame(WDIOElement)', async () => {
+  it('frame(element)', async () => {
     const {value: frameElement} = await browser.element('iframe#frame_main')
     await context.frame(frameElement)
     assert.strictEqual(context.frameChain.size, 1)
     const currentFrameElement = await getFrameElement(browser)
     assert.deepStrictEqual(elementId(currentFrameElement), elementId(frameElement))
+  })
+
+  it('frame(elementWrapper)', async () => {
+    const frameElement = await driver.finder.findElement('iframe#frame_main')
+    await context.frame(frameElement)
+    assert.strictEqual(context.frameChain.size, 1)
+    const currentFrameElement = await getFrameElement(browser)
+    assert.deepStrictEqual(elementId(currentFrameElement), frameElement.elementId)
   })
 
   it('frame(null)', async () => {

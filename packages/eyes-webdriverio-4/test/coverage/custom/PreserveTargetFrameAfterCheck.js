@@ -20,7 +20,7 @@ describe('PreserveTargetFrameAfterCheck', () => {
       desiredCapabilities: {
         browserName: 'chrome',
         chromeOptions: {
-          args: ['disable-infobars']//, 'headless'],
+          args: ['disable-infobars', 'headless'],
         },
       },
       logLevel: 'error',

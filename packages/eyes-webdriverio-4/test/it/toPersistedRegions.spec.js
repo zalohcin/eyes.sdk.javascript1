@@ -4,7 +4,7 @@ const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
 const assert = require('assert')
 const {AccessibilityRegionType} = require('@applitools/eyes-sdk-core')
-const {By, WebElement} = require('../../index')
+const {By, Logger} = require('../../index')
 const IgnoreRegionBySelector = require('../../src/fluent/IgnoreRegionBySelector')
 const IgnoreRegionByElement = require('../../src/fluent/IgnoreRegionByElement')
 const FloatingRegionBySelector = require('../../src/fluent/FloatingRegionBySelector')
@@ -13,14 +13,13 @@ const AccessibilityRegionByElement = require('../../src/fluent/AccessibilityRegi
 const AccessibilityRegionBySelector = require('../../src/fluent/AccessibilityRegionBySelector')
 const {SelectorByElement} = require('../../src/fluent/SelectorByElement')
 const {SelectorByLocator} = require('../../src/fluent/SelectorByLocator')
-const EyesWebDriver = require('../../src/wrappers/EyesWebDriver')
-const WebDriver = require('../../src/wrappers/WebDriver')
+const WDIODriver = require('../../src/wrappers/WDIODriver')
 
 describe('toPersistedRegions()', function() {
-  let eyesWebDriver, driver
+  let browser, driver, logger
   before(async () => {
-    await chromedriver.start()
-    const browser = remote({
+    await chromedriver.start([], true)
+    browser = remote({
       desiredCapabilities: {
         browserName: 'chrome',
         chromeOptions: {
@@ -34,26 +33,19 @@ describe('toPersistedRegions()', function() {
     const url = 'https://applitools.com/helloworld'
     await browser.init()
     await browser.url(url)
-
-    const logger = {verbose: console.log}
-    eyesWebDriver = new EyesWebDriver(logger, new WebDriver(browser), {_logger: logger})
-    driver = browser
+    logger = new Logger(false)
+    driver = new WDIODriver(logger, browser)
   })
 
   after(async () => {
-    driver && (await driver.end())
+    await driver.end()
     await chromedriver.stop()
   })
 
-  async function getWebElement(selector) {
-    const webElement = await driver.$(selector)
-    return new WebElement(driver, webElement, '')
-  }
-
-  it('SelectorByElement', async function() {
-    const we = await getWebElement('button')
-    const region = new SelectorByElement(we)
-    const persistedRegion = await region.toPersistedRegions(eyesWebDriver)
+  it('SelectorByElement', async () => {
+    const {value: element} = await browser.$('button')
+    const region = new SelectorByElement(element)
+    const persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {
         type: 'xpath',
@@ -62,34 +54,10 @@ describe('toPersistedRegions()', function() {
     ])
   })
 
-  describe('SelectorByLocator', function() {
-    it('works', async function() {
-      let region = new SelectorByLocator(By.css('some'))
-      let persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: 'some'}])
-
-      region = new SelectorByLocator(By.id('some'))
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[id="some"]'}])
-
-      region = new SelectorByLocator(By.className('some'))
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '.some'}])
-
-      region = new SelectorByLocator(By.name('some'))
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[name="some"]'}])
-
-      region = new SelectorByLocator(By.xpath('//some'))
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: '//some'}])
-    })
-  })
-
-  it('IgnoreRegionByElement', async function() {
-    const we = await getWebElement('button')
-    const region = new IgnoreRegionByElement(we)
-    const persistedRegion = await region.toPersistedRegions(eyesWebDriver)
+  it('IgnoreRegionByElement', async () => {
+    const {value: element} = await browser.$('button')
+    const region = new IgnoreRegionByElement(element)
+    const persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {
         type: 'xpath',
@@ -98,10 +66,10 @@ describe('toPersistedRegions()', function() {
     ])
   })
 
-  it('FloatingRegionByElement', async function() {
-    const we = await getWebElement('button')
-    const region = new FloatingRegionByElement(we, 1, 2, 3, 4)
-    const persistedRegion = await region.toPersistedRegions(eyesWebDriver)
+  it('FloatingRegionByElement', async () => {
+    const {value: element} = await browser.$('button')
+    const region = new FloatingRegionByElement(element, 1, 2, 3, 4)
+    const persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {
         type: 'xpath',
@@ -114,10 +82,10 @@ describe('toPersistedRegions()', function() {
     ])
   })
 
-  it('FloatingRegionByElement', async function() {
-    const we = await getWebElement('button')
-    const region = new AccessibilityRegionByElement(we, AccessibilityRegionType.RegularText)
-    const persistedRegion = await region.toPersistedRegions(eyesWebDriver)
+  it('AccessibilityRegionByElement', async () => {
+    const {value: element} = await browser.$('button')
+    const region = new AccessibilityRegionByElement(element, AccessibilityRegionType.RegularText)
+    const persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {
         type: 'xpath',
@@ -127,162 +95,210 @@ describe('toPersistedRegions()', function() {
     ])
   })
 
-  describe('IgnoreRegionBySelector', function() {
-    it('works', async function() {
-      let region = new IgnoreRegionBySelector(By.css('some'))
-      let persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: 'some'}])
+  it('SelectorByLocator', async () => {
+    let region = new SelectorByLocator(By.css('some'))
+    let persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: 'some'}])
 
-      region = new IgnoreRegionBySelector(By.id('some'))
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[id="some"]'}])
+    region = new SelectorByLocator(By.id('some'))
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[id="some"]'}])
 
-      region = new IgnoreRegionBySelector(By.className('some'))
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '.some'}])
+    region = new SelectorByLocator(By.className('some'))
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '.some'}])
 
-      region = new IgnoreRegionBySelector(By.name('some'))
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[name="some"]'}])
+    region = new SelectorByLocator(By.name('some'))
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[name="some"]'}])
 
-      region = new IgnoreRegionBySelector(By.xpath('//some'))
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: '//some'}])
-    })
+    region = new SelectorByLocator(By.xpath('//some'))
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: '//some'}])
+
+    region = new SelectorByLocator('button')
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {type: 'xpath', selector: 'HTML[1]/BODY[1]/DIV[1]/DIV[3]/BUTTON[1]'},
+    ])
   })
 
-  describe('FloatingRegionBySelector', function() {
-    it('works', async function() {
-      let region = new FloatingRegionBySelector(By.css('some'), 1, 2, 3, 4)
-      let persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'css',
-          selector: 'some',
-          maxDownOffset: 2,
-          maxLeftOffset: 3,
-          maxRightOffset: 4,
-          maxUpOffset: 1,
-        },
-      ])
+  it('IgnoreRegionBySelector', async () => {
+    let region = new IgnoreRegionBySelector(By.css('some'))
+    let persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: 'some'}])
 
-      region = new FloatingRegionBySelector(By.id('some'), 1, 2, 3, 4)
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'css',
-          selector: '*[id="some"]',
-          maxDownOffset: 2,
-          maxLeftOffset: 3,
-          maxRightOffset: 4,
-          maxUpOffset: 1,
-        },
-      ])
+    region = new IgnoreRegionBySelector(By.id('some'))
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[id="some"]'}])
 
-      region = new FloatingRegionBySelector(By.className('some'), 1, 2, 3, 4)
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'css',
-          selector: '.some',
-          maxDownOffset: 2,
-          maxLeftOffset: 3,
-          maxRightOffset: 4,
-          maxUpOffset: 1,
-        },
-      ])
+    region = new IgnoreRegionBySelector(By.className('some'))
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '.some'}])
 
-      region = new FloatingRegionBySelector(By.name('some'), 1, 2, 3, 4)
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'css',
-          selector: '*[name="some"]',
-          maxDownOffset: 2,
-          maxLeftOffset: 3,
-          maxRightOffset: 4,
-          maxUpOffset: 1,
-        },
-      ])
+    region = new IgnoreRegionBySelector(By.name('some'))
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[name="some"]'}])
 
-      region = new FloatingRegionBySelector(By.xpath('//some'), 1, 2, 3, 4)
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: '//some',
-          maxDownOffset: 2,
-          maxLeftOffset: 3,
-          maxRightOffset: 4,
-          maxUpOffset: 1,
-        },
-      ])
-    })
+    region = new IgnoreRegionBySelector(By.xpath('//some'))
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: '//some'}])
+
+    region = new IgnoreRegionBySelector('button')
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {type: 'xpath', selector: 'HTML[1]/BODY[1]/DIV[1]/DIV[3]/BUTTON[1]'},
+    ])
   })
 
-  describe('AccessibilityRegionBySelector', function() {
-    it('works', async function() {
-      let region = new AccessibilityRegionBySelector(
-        By.css('some'),
-        AccessibilityRegionType.RegularText,
-      )
-      let persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'css',
-          selector: 'some',
-          accessibilityType: AccessibilityRegionType.RegularText,
-        },
-      ])
+  it('FloatingRegionBySelector', async () => {
+    let region = new FloatingRegionBySelector(By.css('some'), 1, 2, 3, 4)
+    let persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'css',
+        selector: 'some',
+        maxDownOffset: 2,
+        maxLeftOffset: 3,
+        maxRightOffset: 4,
+        maxUpOffset: 1,
+      },
+    ])
 
-      region = new AccessibilityRegionBySelector(By.id('some'), AccessibilityRegionType.RegularText)
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'css',
-          selector: '*[id="some"]',
-          accessibilityType: AccessibilityRegionType.RegularText,
-        },
-      ])
+    region = new FloatingRegionBySelector(By.id('some'), 1, 2, 3, 4)
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'css',
+        selector: '*[id="some"]',
+        maxDownOffset: 2,
+        maxLeftOffset: 3,
+        maxRightOffset: 4,
+        maxUpOffset: 1,
+      },
+    ])
 
-      region = new AccessibilityRegionBySelector(
-        By.className('some'),
-        AccessibilityRegionType.RegularText,
-      )
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'css',
-          selector: '.some',
-          accessibilityType: AccessibilityRegionType.RegularText,
-        },
-      ])
+    region = new FloatingRegionBySelector(By.className('some'), 1, 2, 3, 4)
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'css',
+        selector: '.some',
+        maxDownOffset: 2,
+        maxLeftOffset: 3,
+        maxRightOffset: 4,
+        maxUpOffset: 1,
+      },
+    ])
 
-      region = new AccessibilityRegionBySelector(
-        By.name('some'),
-        AccessibilityRegionType.RegularText,
-      )
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'css',
-          selector: '*[name="some"]',
-          accessibilityType: AccessibilityRegionType.RegularText,
-        },
-      ])
+    region = new FloatingRegionBySelector(By.name('some'), 1, 2, 3, 4)
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'css',
+        selector: '*[name="some"]',
+        maxDownOffset: 2,
+        maxLeftOffset: 3,
+        maxRightOffset: 4,
+        maxUpOffset: 1,
+      },
+    ])
 
-      region = new AccessibilityRegionBySelector(
-        By.xpath('//some'),
-        AccessibilityRegionType.RegularText,
-      )
-      persistedRegion = await region.toPersistedRegions(eyesWebDriver)
-      assert.deepStrictEqual(persistedRegion, [
-        {
-          type: 'xpath',
-          selector: '//some',
-          accessibilityType: AccessibilityRegionType.RegularText,
-        },
-      ])
-    })
+    region = new FloatingRegionBySelector(By.xpath('//some'), 1, 2, 3, 4)
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'xpath',
+        selector: '//some',
+        maxDownOffset: 2,
+        maxLeftOffset: 3,
+        maxRightOffset: 4,
+        maxUpOffset: 1,
+      },
+    ])
+
+    region = new FloatingRegionBySelector('button', 1, 2, 3, 4)
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'xpath',
+        selector: 'HTML[1]/BODY[1]/DIV[1]/DIV[3]/BUTTON[1]',
+        maxDownOffset: 2,
+        maxLeftOffset: 3,
+        maxRightOffset: 4,
+        maxUpOffset: 1,
+      },
+    ])
+  })
+
+  it('AccessibilityRegionBySelector', async () => {
+    let region = new AccessibilityRegionBySelector(
+      By.css('some'),
+      AccessibilityRegionType.RegularText,
+    )
+    let persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'css',
+        selector: 'some',
+        accessibilityType: AccessibilityRegionType.RegularText,
+      },
+    ])
+
+    region = new AccessibilityRegionBySelector(By.id('some'), AccessibilityRegionType.RegularText)
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'css',
+        selector: '*[id="some"]',
+        accessibilityType: AccessibilityRegionType.RegularText,
+      },
+    ])
+
+    region = new AccessibilityRegionBySelector(
+      By.className('some'),
+      AccessibilityRegionType.RegularText,
+    )
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'css',
+        selector: '.some',
+        accessibilityType: AccessibilityRegionType.RegularText,
+      },
+    ])
+
+    region = new AccessibilityRegionBySelector(By.name('some'), AccessibilityRegionType.RegularText)
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'css',
+        selector: '*[name="some"]',
+        accessibilityType: AccessibilityRegionType.RegularText,
+      },
+    ])
+
+    region = new AccessibilityRegionBySelector(
+      By.xpath('//some'),
+      AccessibilityRegionType.RegularText,
+    )
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'xpath',
+        selector: '//some',
+        accessibilityType: AccessibilityRegionType.RegularText,
+      },
+    ])
+
+    region = new AccessibilityRegionBySelector('button', AccessibilityRegionType.RegularText)
+    persistedRegion = await region.toPersistedRegions(driver)
+    assert.deepStrictEqual(persistedRegion, [
+      {
+        type: 'xpath',
+        selector: 'HTML[1]/BODY[1]/DIV[1]/DIV[3]/BUTTON[1]',
+        accessibilityType: AccessibilityRegionType.RegularText,
+      },
+    ])
   })
 })

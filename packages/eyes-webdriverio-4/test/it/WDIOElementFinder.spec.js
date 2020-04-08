@@ -29,12 +29,12 @@ describe('WDIOElementFinder', function() {
       port: 9515,
       path: '/',
     })
-    driver = new WDIODriver(logger, browser)
   })
 
   beforeEach(async () => {
     await browser.init()
     await browser.url('https://applitools.github.io/demo/TestPages/FramesAndRegionsPage/')
+    driver = new WDIODriver(logger, browser)
     finder = new WDIOElementFinder(logger, driver)
   })
 
