@@ -6,8 +6,9 @@ const {
   EyesWrappedElement,
   FrameChain,
 } = require('@applitools/eyes-sdk-core')
+const LegacyAPIElement = require('./LegacyAPIElement')
 
-const WEB_ELEMENT_ID = ''
+const WEB_ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
 
 class WDIOElement extends EyesWrappedElement {
   constructor(logger, driver, element, selector) {
@@ -189,4 +190,4 @@ class WDIOElement extends EyesWrappedElement {
   }
 }
 
-module.exports = WDIOElement
+module.exports = LegacyAPIElement(WDIOElement)

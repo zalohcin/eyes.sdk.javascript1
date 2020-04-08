@@ -2,6 +2,7 @@ const {EyesWrappedDriver} = require('@applitools/eyes-sdk-core')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
 const WDIOElementFinder = require('./WDIOElementFinder')
 const WDIOBrowsingContext = require('./WDIOBrowsingContext')
+const LegacyAPIDriver = require('./LegacyAPIDriver')
 
 class WDIODriver extends EyesWrappedDriver {
   constructor(logger, driver) {
@@ -59,4 +60,4 @@ class WDIODriver extends EyesWrappedDriver {
   }
 }
 
-module.exports = WDIODriver
+module.exports = LegacyAPIDriver(WDIODriver)
