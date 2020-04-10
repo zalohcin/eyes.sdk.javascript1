@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
 
 ## 2.12.8 - 2020/4/1
 

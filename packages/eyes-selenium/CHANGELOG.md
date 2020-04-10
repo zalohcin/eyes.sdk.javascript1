@@ -1,8 +1,10 @@
 # Change Log
 
 ## Unreleased
+
 - support typed selectors
 - support ignore, floating, strict, layout, content, accessibility regions for VG
+- fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
 
 ## 4.33.31 - 2020/3/31
 

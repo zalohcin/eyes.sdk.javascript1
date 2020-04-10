@@ -3,6 +3,7 @@
 ## Unreleased 
 
 - removed eyes-common dependency
+- fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
 
 ## 2.0.0-beta.20
 
