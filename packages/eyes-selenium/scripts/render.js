@@ -90,6 +90,10 @@ const args = yargs
     describe: 'API key',
     type: 'string',
   })
+  .option('proxy', {
+    describe: 'proxy string, e.g. http://localhost:8888',
+    type: 'string',
+  })
 
   .help().argv
 
@@ -124,6 +128,9 @@ if (!url) {
   }
   if (args.apiKey) {
     configuration.setApiKey(args.apiKey)
+  }
+  if (args.proxy) {
+    configuration.setProxy(args.proxy)
   }
   eyes.setConfiguration(configuration)
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
