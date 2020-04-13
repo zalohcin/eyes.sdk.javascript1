@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- added base agent id to Configuration
 
  ## 3.21.0 - 2020/4/5
 

@@ -1,19 +1,20 @@
 ;(function() {
   'use strict'
 
-  var request = require('request')
-  var GeneralUtils = require('eyes.utils').GeneralUtils
-  var RenderingInfo = require('./RenderingInfo').RenderingInfo
+  let request = require('request')
+  let GeneralUtils = require('eyes.utils').GeneralUtils
+  let ArgumentGuard = require('eyes.utils').ArgumentGuard
+  let RenderingInfo = require('./RenderingInfo').RenderingInfo
 
   // constants
-  var TIMEOUT = 5 * 60 * 1000,
+  let TIMEOUT = 5 * 60 * 1000,
     API_PATH = '/api/sessions/running',
     DEFAULT_HEADERS = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     }
 
-  var LONG_REQUEST_DELAY = 2000, // ms
+  let LONG_REQUEST_DELAY = 2000, // ms
     MAX_LONG_REQUEST_DELAY = 10000, // ms
     LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR = 1.5
 
@@ -38,6 +39,7 @@
   ]
 
   const REQUEST_FAILED_CODES = ['ECONNRESET', 'ECONNABORTED', 'ETIMEDOUT', 'ENOTFOUND', 'EAI_AGAIN']
+  const AGENT_ID_HEADER = 'x-applitools-eyes-client'
 
   /**
    * Provides an API for communication with the Applitools server.
@@ -47,7 +49,9 @@
    * @param {Logger} logger
    * @constructor
    **/
-  function ServerConnector(promiseFactory, serverUrl, logger) {
+  function ServerConnector({promiseFactory, serverUrl, logger, agentId}) {
+    ArgumentGuard.notNullOrEmpty(agentId, 'agentId')
+
     this._promiseFactory = promiseFactory
     this._logger = logger
     this._runKey = undefined
@@ -55,7 +59,7 @@
     this._httpOptions = {
       proxy: null,
       strictSSL: false,
-      headers: DEFAULT_HEADERS,
+      headers: {...DEFAULT_HEADERS, [AGENT_ID_HEADER]: agentId},
       timeout: TIMEOUT,
       qs: {},
     }
@@ -278,7 +282,9 @@
       },
     }
 
-    return _sendLongRequest(this, 'uploadScreenshot', uri, 'put', options, 3).then(function(results) {
+    return _sendLongRequest(this, 'uploadScreenshot', uri, 'put', options, 3).then(function(
+      results,
+    ) {
       if (results.status !== HTTP_STATUS_CODES.CREATED) {
         throw new Error(
           `ServerConnector.uploadScreenshot - unexpected status ${_makeResponseOutputString(

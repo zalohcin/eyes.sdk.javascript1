@@ -11,6 +11,7 @@ const {
   Configuration,
   StitchMode,
   EyesSeleniumUtils,
+  // ProxySettings,
   // BatchInfo,
   // FileDebugScreenshotsProvider,
 } = require('../index')
@@ -137,6 +138,8 @@ if (!url) {
     configuration.setProxy(args.proxy)
   }
   eyes.setConfiguration(configuration)
+  // eyes.setProxy(new ProxySettings('localhost:8888'))
+
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
   logger.log('[render script] Running Selenium render for', url)
   logger.log(`[render script] process versions: ${JSON.stringify(process.versions)}`)

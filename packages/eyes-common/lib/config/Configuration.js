@@ -68,6 +68,8 @@ class Configuration {
     this._viewportSize = undefined
     /** @type {string} */
     this._agentId = undefined
+    /** @type {string} */
+    this._baseAgentId = undefined
 
     /** @type {string} */
     this._apiKey = undefined
@@ -518,6 +520,24 @@ class Configuration {
     ArgumentGuard.isString(value, 'agentId')
     this._agentId = value
     return this
+  }
+
+  /**
+   * @return {string} - The full agent id composed of both the base agent id and the user given agent id.
+   */
+  getFullAgentId() {
+    if (!this._baseAgentId) {
+      throw new Error('SKD base agent id was not set')
+    }
+    return this._agentId ? `${this._agentId} [${this._baseAgentId}]` : this._baseAgentId
+  }
+
+  setBaseAgentId(baseAgentId) {
+    this._baseAgentId = baseAgentId
+  }
+
+  getBaseAgentId() {
+    return this._baseAgentId
   }
 
   /**

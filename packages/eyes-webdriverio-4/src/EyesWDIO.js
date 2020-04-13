@@ -20,7 +20,6 @@ const {
   UserAgent,
   ArgumentGuard,
   SimplePropertyHandler,
-  Configuration,
   ClassicRunner,
 } = require('@applitools/eyes-sdk-core')
 
@@ -72,7 +71,7 @@ class EyesWDIO extends EyesBase {
    * @param {ClassicRunner} [runner] - Set shared ClassicRunner if you want to group results.
    **/
   constructor(serverUrl, isDisabled = false, runner = new ClassicRunner()) {
-    super(serverUrl, isDisabled, new Configuration())
+    super(serverUrl, isDisabled)
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
 

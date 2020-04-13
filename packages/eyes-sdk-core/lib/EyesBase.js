@@ -82,6 +82,7 @@ class EyesBase {
 
     this._configuration.setServerUrl(serverUrl)
     this._configuration.setIsDisabled(isDisabled)
+    this._configuration.setBaseAgentId(this.getBaseAgentId())
 
     /** @type {ServerConnector} */
     this._serverConnector = new ServerConnector(this._logger, this._configuration)
@@ -186,6 +187,7 @@ class EyesBase {
     }
 
     this._configuration = configuration.cloneConfig()
+    this._configuration.setBaseAgentId(this.getBaseAgentId())
     this._serverConnector._configuration = this._configuration
   }
 
@@ -980,15 +982,11 @@ class EyesBase {
   }
 
   /**
+   * @protected
    * @return {string} - The full agent id composed of both the base agent id and the user given agent id.
    */
   getFullAgentId() {
-    const agentId = this._configuration.getAgentId()
-    if (!agentId) {
-      return this.getBaseAgentId()
-    }
-
-    return `${agentId} [${this.getBaseAgentId()}]`
+    return this._configuration.getFullAgentId()
   }
 
   /**
@@ -2240,7 +2238,14 @@ class EyesBase {
    * @return {string} - The base agent id of the SDK.
    */
   getBaseAgentId() {
-    throw new TypeError('The method is not implemented!')
+    if (EyesBase._baseAgentId) {
+      return EyesBase._baseAgentId
+    }
+    throw new TypeError('Base agent id is not implemented!')
+  }
+
+  static set baseAgentId(baseAgentId) {
+    EyesBase._baseAgentId = baseAgentId
   }
 
   /**

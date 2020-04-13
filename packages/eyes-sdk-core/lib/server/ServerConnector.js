@@ -8,7 +8,7 @@ const {GeneralUtils, ArgumentGuard} = require('@applitools/eyes-common')
 const {RenderingInfo} = require('./RenderingInfo')
 const {RunningSession} = require('./RunningSession')
 const {
-  configAxiosHeaders,
+  configureAxios,
   configAxiosFromConfiguration,
   delayRequest,
   handleRequestResponse,
@@ -46,6 +46,11 @@ const HTTP_STATUS_CODES = {
   INTERNAL_SERVER_ERROR: 500,
   BAD_GATEWAY: 502,
   GATEWAY_TIMEOUT: 504,
+}
+
+const SERVER_CONFIG = {
+  EYES: {withApiKey: true, withAgentId: true},
+  VG: {withApiKey: false, withAgentId: false},
 }
 
 const REQUEST_GUID = GeneralUtils.guid()
@@ -88,7 +93,7 @@ class ServerConnector {
     this._renderingInfo = undefined
 
     this._axios = Axios.create({
-      withApiKey: true,
+      serverConfig: SERVER_CONFIG.EYES,
       retry: 1,
       repeat: 0,
       delayBeforePolling: DELAY_BEFORE_POLLING,
@@ -103,7 +108,7 @@ class ServerConnector {
     this._axios.interceptors.request.use(async config => {
       const axiosConfig = Object.assign({}, this._axios.defaults, config)
       axiosConfig.requestId = axiosConfig.createRequestId()
-      configAxiosHeaders({axiosConfig})
+      configureAxios({axiosConfig})
       configAxiosFromConfiguration({
         axiosConfig,
         configuration: this._configuration,
@@ -511,7 +516,7 @@ class ServerConnector {
     const isBatch = Array.isArray(renderRequest)
     const config = {
       name: 'render',
-      widthApiKey: false,
+      serverConfig: SERVER_CONFIG.VG,
       method: 'POST',
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render'),
       headers: {
@@ -554,7 +559,7 @@ class ServerConnector {
 
     const config = {
       name: 'renderCheckResource',
-      widthApiKey: false,
+      serverConfig: SERVER_CONFIG.VG,
       method: 'HEAD',
       url: GeneralUtils.urlConcat(
         this._renderingInfo.getServiceUrl(),
@@ -599,7 +604,7 @@ class ServerConnector {
 
     const config = {
       name: 'renderPutResource',
-      withApiKey: false,
+      serverConfig: SERVER_CONFIG.VG,
       method: 'PUT',
       url: GeneralUtils.urlConcat(
         this._renderingInfo.getServiceUrl(),
@@ -658,7 +663,7 @@ class ServerConnector {
       retry: 3,
       delay: delayBeforeRequest ? RETRY_REQUEST_INTERVAL : null,
       delayBeforeRetry: RETRY_REQUEST_INTERVAL,
-      withApiKey: false,
+      serverConfig: SERVER_CONFIG.VG,
       method: 'POST',
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render-status'),
       headers: {
@@ -724,7 +729,7 @@ class ServerConnector {
   async getUserAgents() {
     const config = {
       name: 'getUserAgents',
-      withApiKey: false,
+      serverConfig: SERVER_CONFIG.VG,
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/user-agents'),
       headers: {
         'X-Auth-Token': this._renderingInfo.getAccessToken(),

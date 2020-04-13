@@ -12,7 +12,8 @@ const {presult} = require('@applitools/functional-commons')
 const VERSION = require('../../package.json').version
 
 class EyesWrapper extends EyesBase {
-  constructor({apiKey, logHandler, getBatchInfoWithCache} = {}) {
+  constructor({agentId, apiKey, logHandler, getBatchInfoWithCache} = {}) {
+    EyesBase.baseAgentId = agentId || `visual-grid-client/${VERSION}`
     super()
     apiKey && this.setApiKey(apiKey)
     logHandler && this.setLogHandler(logHandler)
@@ -76,15 +77,6 @@ class EyesWrapper extends EyesBase {
    */
   async getAUTSessionId() {
     return // TODO is this good?
-  }
-
-  /** @override */
-  getBaseAgentId() {
-    return this.agentId || `visual-grid-client/${VERSION}`
-  }
-
-  setBaseAgentId(agentId) {
-    this.agentId = agentId
   }
 
   setAccessibilityValidation(accessibilityLevel) {

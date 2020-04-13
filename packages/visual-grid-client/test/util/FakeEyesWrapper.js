@@ -45,6 +45,7 @@ class FakeEyesWrapper extends EventEmitter {
     goodResources = [],
     closeErr = false,
     failRender,
+    agentId,
     batchId = '1',
   }) {
     super()
@@ -66,6 +67,7 @@ class FakeEyesWrapper extends EventEmitter {
     this.closeErr = closeErr
     this.failRender = failRender
     this._serverConnector = {deleteBatchSessions: () => {}}
+    this._baseAgentId = agentId || 'fake wrapper'
   }
 
   async open(...args) {
@@ -388,12 +390,8 @@ class FakeEyesWrapper extends EventEmitter {
     this.deviceInfo = value
   }
 
-  setBaseAgentId(value) {
-    this.agentId = value
-  }
-
   getBaseAgentId() {
-    return this.agentId || 'fake wrapper'
+    return this._baseAgentId
   }
 
   getApiKey() {

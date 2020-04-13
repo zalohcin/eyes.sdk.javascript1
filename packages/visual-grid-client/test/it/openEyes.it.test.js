@@ -1230,7 +1230,6 @@ Received: 'firefox-1'.`,
       renderWrapper: wrapper,
       serverUrl: 'serverUrl',
       proxy: 'proxy',
-      agentId: 'agentId',
     }).openEyes
 
     openEyes({
@@ -1252,7 +1251,6 @@ Received: 'firefox-1'.`,
       compareWithParentBranch: 'compareWithParentBranch',
       ignoreBaseline: 'ignoreBaseline',
       browser: [{deviceName: 'device1'}, {deviceName: 'device2'}, {}],
-      agentId: 'agentId',
       batchNotify: true,
     })
 
@@ -1273,7 +1271,6 @@ Received: 'firefox-1'.`,
       expect(wrapper.compareWithParentBranch).to.equal('compareWithParentBranch')
       expect(wrapper.ignoreBaseline).to.equal('ignoreBaseline')
       expect(wrapper.serverUrl).to.equal('serverUrl')
-      expect(wrapper.agentId).to.equal('agentId')
       expect(wrapper.batch.getNotifyOnCompletion()).to.be.true
     }
 
@@ -1311,7 +1308,6 @@ Received: 'firefox-1'.`,
       compareWithParentBranch: 'compareWithParentBranch',
       ignoreBaseline: 'ignoreBaseline',
       browser: [{deviceName: 'device1'}, {deviceName: 'device2'}, {}],
-      agentId: 'agentId',
     }).openEyes
 
     openEyes({
@@ -1336,7 +1332,6 @@ Received: 'firefox-1'.`,
       expect(wrapper.compareWithParentBranch).to.equal('compareWithParentBranch')
       expect(wrapper.ignoreBaseline).to.equal('ignoreBaseline')
       expect(wrapper.serverUrl).to.equal('serverUrl')
-      expect(wrapper.agentId).to.equal('agentId')
     }
 
     expect(wrappers[0].deviceInfo).to.equal('device1 (Chrome emulation)')
