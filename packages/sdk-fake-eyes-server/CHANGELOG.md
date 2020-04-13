@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 1.1.3 - 2020/4/13
+
+- add bin script
+
 ## 1.1.1
 
 - no changes
