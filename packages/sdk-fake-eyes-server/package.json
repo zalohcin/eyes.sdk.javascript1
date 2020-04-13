@@ -9,7 +9,7 @@
   "homepage": "https://github.com/applitools/eyes.sdk.javascript1",
   "license": "SEE LICENSE IN LICENSE",
   "bin": {
-    "fake-eyes-server": "./scripts/run-fake-eyes-server"
+    "fake-eyes-server": "./scripts/run-fake-eyes-server.js"
   },
   "main": "lib/sdk-fake-eyes-server.js",
   "directories": {
