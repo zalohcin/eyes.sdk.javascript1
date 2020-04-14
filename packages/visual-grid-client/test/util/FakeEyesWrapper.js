@@ -389,7 +389,7 @@ class FakeEyesWrapper extends EventEmitter {
   }
 
   getBaseAgentId() {
-    return 'fake warpper'
+    return 'fake wrapper'
   }
 
   getApiKey() {
