@@ -68,6 +68,10 @@ const args = yargs
     describe: 'comma-separated list of selectors to ignore',
     type: 'string',
   })
+  .option('layout-regions', {
+    describe: 'comma-separated list of selectors for layout regions',
+    type: 'string',
+  })
   .option('viewport-size', {
     describe: 'the viewport size to open the browser (widthxheight)',
     type: 'string',
@@ -152,6 +156,13 @@ if (!url) {
       target.ignoreRegions.apply(
         target,
         args.ignoreRegions.split(',').map(s => By.css(s.trim())),
+      )
+    }
+
+    if (args.layoutRegions) {
+      target.layoutRegions.apply(
+        target,
+        args.layoutRegions.split(',').map(s => By.css(s.trim())),
       )
     }
 
