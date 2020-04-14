@@ -40,7 +40,7 @@ describe('requestHelpers', () => {
       password: 'password',
     })
     const axiosConfig = {
-      serverConfig: {withApiKey: true, withAgentId: true},
+      withApiKey: true,
       method: 'POST',
       url: 'https://some.url/some/api',
       data: {},
@@ -52,7 +52,7 @@ describe('requestHelpers', () => {
     })
 
     assert.deepStrictEqual(axiosConfig, {
-      serverConfig: {withApiKey: true, withAgentId: true},
+      withApiKey: true,
       method: 'POST',
       url: 'https://some.url/some/api',
       params: {

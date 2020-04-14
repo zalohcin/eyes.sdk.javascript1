@@ -62,11 +62,10 @@ function configAxiosFromConfiguration({axiosConfig, configuration, logger}) {
   axiosConfig.params = axiosConfig.params || {}
   axiosConfig.headers = axiosConfig.headers || {}
 
-  const {withApiKey, withAgentId} = axiosConfig.serverConfig
-  if (withApiKey && !('apiKey' in axiosConfig.params)) {
+  if (axiosConfig.withApiKey && !('apiKey' in axiosConfig.params)) {
     axiosConfig.params.apiKey = configuration.getApiKey()
   }
-  if (withAgentId & !(CUSTOM_HEADER_NAMES.AGENT_ID in axiosConfig.headers)) {
+  if (!(CUSTOM_HEADER_NAMES.AGENT_ID in axiosConfig.headers)) {
     axiosConfig.headers[CUSTOM_HEADER_NAMES.AGENT_ID] = configuration.getFullAgentId()
   }
 

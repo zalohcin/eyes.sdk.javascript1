@@ -48,11 +48,6 @@ const HTTP_STATUS_CODES = {
   GATEWAY_TIMEOUT: 504,
 }
 
-const SERVER_CONFIG = {
-  EYES: {withApiKey: true, withAgentId: true},
-  VG: {withApiKey: false, withAgentId: true},
-}
-
 const REQUEST_GUID = GeneralUtils.guid()
 let requestCounter = 0
 function createRequestId() {
@@ -93,7 +88,7 @@ class ServerConnector {
     this._renderingInfo = undefined
 
     this._axios = Axios.create({
-      serverConfig: SERVER_CONFIG.EYES,
+      withApiKey: true,
       retry: 1,
       repeat: 0,
       delayBeforePolling: DELAY_BEFORE_POLLING,
@@ -516,7 +511,7 @@ class ServerConnector {
     const isBatch = Array.isArray(renderRequest)
     const config = {
       name: 'render',
-      serverConfig: SERVER_CONFIG.VG,
+      withApiKey: false,
       method: 'POST',
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render'),
       headers: {
@@ -559,7 +554,7 @@ class ServerConnector {
 
     const config = {
       name: 'renderCheckResource',
-      serverConfig: SERVER_CONFIG.VG,
+      withApiKey: false,
       method: 'HEAD',
       url: GeneralUtils.urlConcat(
         this._renderingInfo.getServiceUrl(),
@@ -604,7 +599,7 @@ class ServerConnector {
 
     const config = {
       name: 'renderPutResource',
-      serverConfig: SERVER_CONFIG.VG,
+      withApiKey: false,
       method: 'PUT',
       url: GeneralUtils.urlConcat(
         this._renderingInfo.getServiceUrl(),
@@ -663,7 +658,7 @@ class ServerConnector {
       retry: 3,
       delay: delayBeforeRequest ? RETRY_REQUEST_INTERVAL : null,
       delayBeforeRetry: RETRY_REQUEST_INTERVAL,
-      serverConfig: SERVER_CONFIG.VG,
+      withApiKey: false,
       method: 'POST',
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/render-status'),
       headers: {
@@ -729,7 +724,7 @@ class ServerConnector {
   async getUserAgents() {
     const config = {
       name: 'getUserAgents',
-      serverConfig: SERVER_CONFIG.VG,
+      withApiKey: false,
       url: GeneralUtils.urlConcat(this._renderingInfo.getServiceUrl(), '/user-agents'),
       headers: {
         'X-Auth-Token': this._renderingInfo.getAccessToken(),
