@@ -50,7 +50,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
    */
   async getImage() {
     this._logger.verbose('Getting screenshot as base64...')
-    let screenshot64 = await this._driver.saveScreenshot()
+    let screenshot64 = await this._driver.controller.takeScreenshot()
     screenshot64 = screenshot64.replace(/\r\n/g, '') // Because of SauceLabs returns image with line breaks
 
     this._logger.verbose('Done getting base64! Creating MutableImage...')

@@ -1,9 +1,8 @@
 'use strict'
 
-const {Location} = require('@applitools/eyes-sdk-core')
+const {Location, EyesUtils} = require('@applitools/eyes-sdk-core')
 
 const ElementPositionProvider = require('./ElementPositionProvider')
-const EyesWDIOUtils = require('./../EyesWDIOUtils')
 
 class CssTranslateElementPositionProvider extends ElementPositionProvider {
   /**
@@ -51,9 +50,9 @@ class CssTranslateElementPositionProvider extends ElementPositionProvider {
     const currentPosition = await this.getCurrentPosition()
     const outOfEyes = loc.offsetNegative(currentPosition)
     const transformsOffset = await this._transformsOffset()
-    const webElementPromise = this._driver.finder.findElement(this._element.selector)
     const position = transformsOffset.offsetNegative(outOfEyes)
-    return EyesWDIOUtils.elementTranslateTo(this._driver.executor, webElementPromise, position)
+    const element = await this._driver.finder.findElement(this._element.selector)
+    return EyesUtils.translateTo(this._logger, this._driver.executor, position, element)
   }
 
   /**
@@ -62,10 +61,7 @@ class CssTranslateElementPositionProvider extends ElementPositionProvider {
   async _transformsOffset() {
     this._logger.verbose('Getting element transforms...')
     const element = await this._driver.finder.findElement(this._element.selector)
-    const transforms = await EyesWDIOUtils.getCurrentElementTransforms(
-      this._driver.executor,
-      element,
-    )
+    const transforms = await EyesUtils.getTransforms(this._logger, this._driver.executor, element)
     this._logger.verbose(`Current transforms: ${JSON.stringify(transforms)}`)
     const transformPositions = Object.keys(transforms)
       .filter(key => transforms[key] !== null && transforms[key] !== '')

@@ -1,10 +1,8 @@
 'use strict'
 
-const {PositionProvider, ArgumentGuard, Location} = require('@applitools/eyes-sdk-core')
+const {PositionProvider, ArgumentGuard, EyesUtils} = require('@applitools/eyes-sdk-core')
 
-const EyesWDIOUtils = require('../EyesWDIOUtils')
 const CssTranslatePositionMemento = require('./CssTranslatePositionMemento')
-const ScrollPositionProvider = require('./ScrollPositionProvider')
 
 /**
  * A {@link PositionProvider} which is based on CSS translates. This is
@@ -45,12 +43,7 @@ class CssTranslatePositionProvider extends PositionProvider {
 
     this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`)
 
-    const spp = new ScrollPositionProvider(this._logger, this._executor)
-    await spp.setPosition(Location.ZERO)
-    await this._executor.executeScript(
-      `document.documentElement.style.transform = 'translate(10px, -${location.getY()}px)';`,
-    )
-    await EyesWDIOUtils.translateTo(this._executor, location)
+    await EyesUtils.translateTo(this._logger, this._executor, location)
     this._logger.verbose('Done!')
     this._lastSetPosition = location
   }
@@ -59,24 +52,20 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @override
    * @inheritDoc
    */
-  getEntireSize() {
-    const that = this
-    return EyesWDIOUtils.getCurrentFrameContentEntireSize(this._executor).then(entireSize => {
-      that._logger.verbose(`CssTranslatePositionProvider - Entire size: ${entireSize}`)
-      return entireSize
-    })
+  async getEntireSize() {
+    const size = await EyesUtils.getCurrentFrameContentEntireSize(this._logger, this._executor)
+    this._logger.verbose(`CssTranslatePositionProvider - Entire size: ${size}`)
+    return size
   }
 
   /**
    * @override
    * @return {Promise.<CssTranslatePositionMemento>}
    */
-  getState() {
-    const that = this
-    return EyesWDIOUtils.getCurrentTransform(this._executor).then(transforms => {
-      that._logger.verbose('Current transform', transforms)
-      return new CssTranslatePositionMemento(transforms, that._lastSetPosition)
-    })
+  async getState() {
+    const transforms = await EyesUtils.getTransforms(this._logger, this._executor)
+    this._logger.verbose('Current transform', transforms)
+    return new CssTranslatePositionMemento(transforms, this._lastSetPosition)
   }
 
   /**
@@ -84,12 +73,10 @@ class CssTranslatePositionProvider extends PositionProvider {
    * @param {CssTranslatePositionMemento} state The initial state of position
    * @return {Promise}
    */
-  restoreState(state) {
-    const that = this
-    return EyesWDIOUtils.setTransforms(this._executor, state.transform).then(() => {
-      that._logger.verbose('Transform (position) restored.')
-      that._lastSetPosition = state.position
-    })
+  async restoreState(state) {
+    await EyesUtils.setTransforms(this._logger, this._executor, state.transform)
+    this._logger.verbose('Transform (position) restored.')
+    this._lastSetPosition = state.position
   }
 }
 

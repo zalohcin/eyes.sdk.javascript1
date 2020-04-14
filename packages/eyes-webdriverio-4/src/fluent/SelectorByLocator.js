@@ -1,7 +1,6 @@
 'use strict'
 
-const {GeneralUtils, GetSelector} = require('@applitools/eyes-sdk-core')
-const EyesWDIOUtils = require('../EyesWDIOUtils')
+const {GeneralUtils, GetSelector, EyesUtils} = require('@applitools/eyes-sdk-core')
 
 const EYES_SELECTOR_TAG = 'data-eyes-selector'
 
@@ -38,7 +37,7 @@ class SelectorByLocator extends GetSelector {
   }
 
   async toPersistedRegions(driver) {
-    return EyesWDIOUtils.locatorToPersistedRegions(this._selector, driver)
+    return EyesUtils.locatorToPersistedRegions(driver._logger, driver, this._selector)
   }
 }
 

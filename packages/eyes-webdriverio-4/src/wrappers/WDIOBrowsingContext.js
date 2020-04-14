@@ -1,16 +1,15 @@
 const {
   TypeUtils,
-  EyesJsBrowserUtils,
   RectangleSize,
   Location,
   EyesBrowsingContext,
   FrameChain,
   Frame,
+  EyesUtils,
 } = require('@applitools/eyes-sdk-core')
 const ScrollPositionProvider = require('../positioning/ScrollPositionProvider')
 const By = require('../By')
 const WDIOElement = require('./WDIOElement')
-const EyesWDIOUtils = require('../EyesWDIOUtils')
 
 class WDIOBrowsingContext extends EyesBrowsingContext {
   constructor(logger, driver) {
@@ -56,7 +55,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
       element.getProperty('clientWidth', 'clientHeight'),
       element.getCssProperty('border-left-width', 'border-top-width'),
       element.getOverflow(),
-      EyesWDIOUtils.getCurrentScrollPosition(this._driver.executor),
+      EyesUtils.getScrollLocation(this._logger, this._driver.executor),
     ])
 
     return new Frame({
@@ -76,14 +75,14 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
 
   async frame(arg) {
     if (!arg) {
-      this._logger.verbose('WDIOTBrowsingContext.frame(null)')
+      this._logger.verbose('WDIOBrowsingContext.frame(null)')
       return this.frameDefault()
     }
 
     let frame
     if (TypeUtils.isInteger(arg)) {
       const frameIndex = arg
-      this._logger.verbose(`WDIOTBrowsingContext.frame(${frameIndex})`)
+      this._logger.verbose(`WDIOBrowsingContext.frame(${frameIndex})`)
       this._logger.verbose('Getting frames list...')
       const frameElements = await this._driver.finder.findElements('frame, iframe')
       if (frameIndex > frameElements.length) {
@@ -93,7 +92,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
       frame = await this.frameInit(frameElements[frameIndex])
     } else if (TypeUtils.isString(arg)) {
       const frameNameOrId = arg
-      this._logger.verbose(`WDIOTBrowsingContext.frame(${frameNameOrId})`)
+      this._logger.verbose(`WDIOBrowsingContext.frame(${frameNameOrId})`)
       this._logger.verbose('Getting frames by name...')
       let frameElement = await this._driver.finder.findElement(By.name(frameNameOrId))
       if (!frameElement) {
@@ -105,10 +104,10 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
       }
       frame = await this.frameInit(frameElement)
     } else if (arg instanceof WDIOElement) {
-      this._logger.verbose('WDIOTBrowsingContext.frame(wdioElement)')
+      this._logger.verbose('WDIOBrowsingContext.frame(wdioElement)')
       frame = await this.frameInit(arg)
     } else if (WDIOElement.isCompatible(arg)) {
-      this._logger.verbose('WDIOTBrowsingContext.frame(wdioElement)')
+      this._logger.verbose('WDIOBrowsingContext.frame(wdioElement)')
       frame = await this.frameInit(new WDIOElement(this._logger, this._driver, arg))
     } else if (arg instanceof Frame) {
       frame = arg
@@ -124,7 +123,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async frameDefault() {
-    this._logger.verbose('WDIOTBrowsingContext.frameDefault()')
+    this._logger.verbose('WDIOBrowsingContext.frameDefault()')
     const result = await this._driver.unwrapped.frame()
     this._logger.verbose('Done! Switching to default content...')
     if (this._frameChain.size > 0) {
@@ -134,7 +133,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async frameParent() {
-    this._logger.verbose('WDIOTBrowsingContext.frameParent()')
+    this._logger.verbose('WDIOBrowsingContext.frameParent()')
     const result = await this._driver.unwrapped.frameParent()
     this._logger.verbose('Done! Switching to parent frame..')
     if (this._frameChain.size > 0) {
@@ -153,13 +152,13 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   async framesAppend(arg) {
     if (arg instanceof FrameChain) {
       const frameChain = arg
-      this._logger.verbose('WDIOTBrowsingContext.frames(frameChain)')
+      this._logger.verbose('WDIOBrowsingContext.frames(frameChain)')
       for (const frame of frameChain) {
         await this.frame(frame.getReference())
       }
     } else if (TypeUtils.isArray(arg)) {
       const framePath = arg
-      this._logger.verbose('WDIOTBrowsingContext.frames(framesPath)')
+      this._logger.verbose('WDIOBrowsingContext.frames(framesPath)')
       for (const frameReference of framePath) {
         await this.frame(frameReference)
       }
@@ -168,7 +167,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async framesDoScroll(frameChain) {
-    this._logger.verbose('WDIOTBrowsingContext.framesDoScroll(frameChain)')
+    this._logger.verbose('WDIOBrowsingContext.framesDoScroll(frameChain)')
     await this.frameDefault()
     this._frameDefaultPositionMemento = await this._scrollPosition.getState()
     for (const frame of frameChain) {
@@ -208,12 +207,26 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
         }
         if (!frameTarget) throw new Error('Unable to find out the chain of frames')
         if (WDIOElement.equals(frameTarget, lastTrackedFrame)) break
-        const xpath = await EyesJsBrowserUtils.getElementXpath(this._driver.executor, frameTarget)
+        const xpath = await EyesUtils.getElementXpath(
+          this._logger,
+          this._driver.executor,
+          frameTarget,
+        )
         framePath.unshift(new WDIOElement(this._logger, this._driver, frameTarget, `/${xpath}`))
         frameInfo = await this.getFrameInfo()
       }
       if (frameInfo.isRoot) this._frameChain.clear()
       await this.framesAppend(framePath)
+    }
+  }
+
+  async framesToAndFro(toPath, operation) {
+    const originalFrameChain = this.frameChain
+    await this.frames(toPath)
+    try {
+      return await operation(toPath)
+    } finally {
+      await this.frames(originalFrameChain)
     }
   }
 }

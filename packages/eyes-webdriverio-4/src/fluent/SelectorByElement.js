@@ -1,6 +1,6 @@
 'use strict'
 
-const {GetSelector, GeneralUtils, EyesJsBrowserUtils} = require('@applitools/eyes-sdk-core')
+const {GetSelector, GeneralUtils, EyesUtils} = require('@applitools/eyes-sdk-core')
 const WDIOElement = require('../wrappers/WDIOElement')
 
 const EYES_SELECTOR_TAG = 'data-eyes-selector'
@@ -33,7 +33,7 @@ class SelectorByElement extends GetSelector {
   }
 
   async toPersistedRegions(driver) {
-    const xpath = await EyesJsBrowserUtils.getElementXpath(driver.executor, this._element)
+    const xpath = await EyesUtils.getElementXpath(driver._logger, driver.executor, this._element)
     return [{type: 'xpath', selector: xpath}]
   }
 }

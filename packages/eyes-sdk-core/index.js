@@ -90,6 +90,7 @@ exports.Trigger = require('./lib/triggers/Trigger').Trigger
 exports.AppEnvironment = require('./lib/AppEnvironment').AppEnvironment
 exports.EyesBase = require('./lib/EyesBase').EyesBase
 exports.EyesJsBrowserUtils = require('./lib/EyesJsBrowserUtils').EyesJsBrowserUtils
+exports.EyesUtils = require('./lib/EyesUtils')
 exports.FailureReports = require('./lib/FailureReports').FailureReports
 exports.MatchSingleWindowTask = require('./lib/MatchSingleWindowTask').MatchSingleWindowTask
 exports.MatchWindowTask = require('./lib/MatchWindowTask').MatchWindowTask

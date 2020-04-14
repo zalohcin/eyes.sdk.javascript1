@@ -888,20 +888,6 @@ class EyesWDIOUtils {
       return driver.sessionId
     }
   }
-
-  static async locatorToPersistedRegions(locator, driver) {
-    if (locator.using === 'xpath') {
-      return [{type: 'xpath', selector: locator.value}]
-    } else if (locator.using === 'css selector') {
-      return [{type: 'css', selector: locator.value}]
-    } else {
-      const elements = await driver.finder.findElements(locator)
-      const xpaths = await Promise.all(
-        elements.map(element => EyesJsBrowserUtils.getElementXpath(driver.executor, element)),
-      )
-      return xpaths.map(xpath => ({type: 'xpath', selector: xpath}))
-    }
-  }
 }
 
 module.exports = EyesWDIOUtils

@@ -5,7 +5,7 @@ const {
   AccessibilityMatchSettings,
   Location,
   CoordinatesType,
-  EyesJsBrowserUtils,
+  EyesUtils,
 } = require('@applitools/eyes-sdk-core')
 const WDIOElement = require('../wrappers/WDIOElement')
 class AccessibilityRegionByElement extends GetAccessibilityRegion {
@@ -47,7 +47,7 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
   }
 
   async toPersistedRegions(driver) {
-    const xpath = await EyesJsBrowserUtils.getElementXpath(driver.executor, this._element)
+    const xpath = await EyesUtils.getElementXpath(driver._logger, driver.executor, this._element)
     return [
       {
         type: 'xpath',

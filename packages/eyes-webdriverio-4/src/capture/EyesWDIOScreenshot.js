@@ -11,9 +11,9 @@ const {
   CoordinatesTypeConversionError,
   OutOfBoundsError,
   FrameChain,
+  EyesUtils,
 } = require('@applitools/eyes-sdk-core')
 
-const EyesWDIOUtils = require('../EyesWDIOUtils')
 const ScrollPositionProvider = require('../positioning/ScrollPositionProvider')
 
 /**
@@ -308,9 +308,8 @@ class EyesWDIOScreenshot extends EyesScreenshot {
     if (this._frameChain.size === 0) {
       // get entire page size might throw an exception for applications which don't support Javascript (e.g., Appium).
       // In that case we'll use the viewport size as the frame's size.
-      const that = this
       return positionProvider.getEntireSize().catch(() => {
-        return EyesWDIOUtils.getTopContextViewportSize(that.eyes.getDriver())
+        return EyesUtils.getTopContextViewportSize(this._logger, this._eyes.getDriver())
       })
     } else {
       return this._frameChain.getCurrentFrameInnerSize()

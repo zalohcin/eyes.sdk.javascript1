@@ -8,7 +8,6 @@ const {
   FixedScaleProviderFactory,
   FullPageCaptureAlgorithm,
   Location,
-  MutableImage,
   NullCutProvider,
   NullScaleProvider,
   NullRegionProvider,
@@ -23,6 +22,7 @@ const {
   Configuration,
   ClassicRunner,
   FrameChain,
+  EyesUtils,
 } = require('@applitools/eyes-sdk-core')
 
 const {DomCapture} = require('@applitools/dom-utils')
@@ -37,7 +37,6 @@ const WDIODriver = require('./wrappers/WDIODriver')
 const WDIOElement = require('./wrappers/WDIOElement')
 const EyesWDIOScreenshot = require('./capture/EyesWDIOScreenshot')
 const EyesWDIOScreenshotFactory = require('./capture/EyesWDIOScreenshotFactory')
-const EyesWDIOUtils = require('./EyesWDIOUtils')
 const ElementPositionProvider = require('./positioning/ElementPositionProvider')
 const StitchMode = require('./StitchMode')
 const Target = require('./fluent/Target')
@@ -143,6 +142,7 @@ class EyesWDIO extends EyesBase {
     this._executor = this._driver.executor
     this._finder = this._driver.finder
     this._context = this._driver.context
+    this._controller = this._driver.controller
 
     this._configuration.setAppName(
       TypeUtils.getOrDefault(appName, this._configuration.getAppName()),
@@ -158,7 +158,7 @@ class EyesWDIO extends EyesBase {
     )
 
     if (!this._configuration.getViewportSize()) {
-      const vs = await EyesWDIOUtils.getTopContextViewportSize(this._driver)
+      const vs = await EyesUtils.getTopContextViewportSize(this._logger, this._driver)
       this._configuration.setViewportSize(vs.toJSON())
     }
 
@@ -174,7 +174,7 @@ class EyesWDIO extends EyesBase {
 
     this._screenshotFactory = new EyesWDIOScreenshotFactory(this._logger, this)
 
-    const userAgentString = await EyesWDIOUtils.getUserAgent(this._executor)
+    const userAgentString = await this._controller.getUserAgent()
     if (userAgentString) {
       this._userAgent = UserAgent.parseUserAgentString(userAgentString, true)
     }
@@ -317,7 +317,7 @@ class EyesWDIO extends EyesBase {
 
     if (targetRegion) {
       this._targetElementLocation = targetRegion.getLocation()
-      const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
+      const source = await this._controller.getSource()
       result = await super.checkWindowBase(
         new RegionProvider(targetRegion),
         name,
@@ -351,7 +351,7 @@ class EyesWDIO extends EyesBase {
       } else {
         const originalPosition = await this.getPositionProvider().getState()
         await this.getPositionProvider().setPosition(Location.ZERO)
-        const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
+        const source = await this._controller.getSource()
         result = await super.checkWindowBase(
           new NullRegionProvider(),
           name,
@@ -440,7 +440,7 @@ class EyesWDIO extends EyesBase {
       }
     }
 
-    const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
+    const source = await this._controller.getSource()
     const r = await super.checkWindowBase(
       new RegionProviderImpl(),
       name,
@@ -550,7 +550,7 @@ class EyesWDIO extends EyesBase {
               )
             }
 
-            const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
+            const source = await this._controller.getSource()
             return super.checkWindowBase(
               new NullRegionProvider(),
               name,
@@ -610,7 +610,7 @@ class EyesWDIO extends EyesBase {
       }
     }
 
-    const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
+    const source = await this._controller.getSource()
     const r = await super.checkWindowBase(
       new RegionProviderImpl(),
       name,
@@ -757,15 +757,15 @@ class EyesWDIO extends EyesBase {
    * @return {Promise}
    */
   async _tryHideScrollbars() {
-    const isMobile = await EyesWDIOUtils.isMobileDevice(this._driver)
-    if (isMobile) return
+    if (await this._controller.isMobileDevice()) return
     if (this._hideScrollbars || this._scrollRootElement) {
       const originalFrameChain = this._context.frameChain
       await this._context.frameDefault()
 
       this._logger.verbose('hiding scrollbars of default content')
       const scrollRootElement = await this.getScrollRootElement()
-      this._originalOverflow = await EyesWDIOUtils.setOverflow(
+      this._originalOverflow = await EyesUtils.setOverflow(
+        this._logger,
         this._executor,
         'hidden',
         scrollRootElement,
@@ -784,13 +784,17 @@ class EyesWDIO extends EyesBase {
    * @return {Promise}
    */
   async _tryRestoreScrollbars() {
-    const isMobile = await EyesWDIOUtils.isMobileDevice(this._driver)
-    if (isMobile) return
+    if (await this._controller.isMobileDevice()) return
     if (this._hideScrollbars) {
       const originalFrameChain = this._context.frameChain
       await this._context.frameDefault()
       const scrollRootElement = await this.getScrollRootElement()
-      await EyesWDIOUtils.setOverflow(this._executor, this._originalOverflow, scrollRootElement)
+      await EyesUtils.setOverflow(
+        this._logger,
+        this._executor,
+        this._originalOverflow,
+        scrollRootElement,
+      )
 
       for (const frame of originalFrameChain) {
         await this._context.frame(frame)
@@ -806,12 +810,10 @@ class EyesWDIO extends EyesBase {
    * @return {Promise<void>}
    */
   async _ensureElementVisible(element) {
-    if (!element) {
-      // No element? we must be checking the window.
-      return Promise.resolve()
-    }
+    // No element? we must be checking the window.
+    if (!element) return
 
-    if (EyesWDIOUtils.isMobileDevice(this._driver)) {
+    if (await this._controller.isMobileDevice()) {
       this._logger.verbose(`NATIVE context identified, skipping 'ensure element visible'`)
       return
     }
@@ -880,14 +882,15 @@ class EyesWDIO extends EyesBase {
       this._logger.verbose('Trying to extract device pixel ratio...')
 
       const that = this
-      return EyesWDIOUtils.getDevicePixelRatio(that._executor)
+      return EyesUtils.getDevicePixelRatio(this._logger, this._driver)
         .then(ratio => {
           that._devicePixelRatio = ratio
         })
         .catch(async err => {
-          if (EyesWDIOUtils.isMobileDevice(that._driver)) {
+          if (await this._controller.isMobileDevice()) {
             const viewportSize = await this.getViewportSize()
-            that._devicePixelRatio = await EyesWDIOUtils.getMobilePixelRatio(
+            that._devicePixelRatio = await EyesUtils.getMobilePixelRatio(
+              this._logger,
               this._driver,
               viewportSize,
             )
@@ -1077,7 +1080,9 @@ class EyesWDIO extends EyesBase {
    */
   async getViewportSize() {
     const viewportSize = this._viewportSizeHandler.get()
-    return viewportSize ? viewportSize : EyesWDIOUtils.getTopContextViewportSize(this._driver)
+    return viewportSize
+      ? viewportSize
+      : EyesUtils.getTopContextViewportSize(this._logger, this._driver)
   }
 
   /**
@@ -1092,25 +1097,15 @@ class EyesWDIO extends EyesBase {
       return Promise.resolve()
     }
 
-    if (!EyesWDIOUtils.isMobileDevice(this._driver)) {
+    if (!(await this._controller.isMobileDevice())) {
       ArgumentGuard.notNull(viewportSize, 'viewportSize')
       viewportSize = new RectangleSize(viewportSize)
-
-      const originalFrame = this._context.frameChain
-      await this._context.frameDefault()
       try {
-        await EyesWDIOUtils.setViewportSize(
-          this._logger,
-          this._driver,
-          new RectangleSize(viewportSize),
-        )
+        await EyesUtils.setViewportSize(this._logger, this._driver, new RectangleSize(viewportSize))
         this._effectiveViewport = new Region(Location.ZERO, viewportSize)
       } catch (e) {
-        await this._context.frames(originalFrame)
         throw new TestFailedError('Failed to set the viewport size', e)
       }
-
-      await this._context.frames(originalFrame)
     }
 
     this._viewportSizeHandler.set(new RectangleSize(viewportSize))
@@ -1338,7 +1333,7 @@ class EyesWDIO extends EyesBase {
     const appEnv = await super.getAppEnvironment()
 
     if (!appEnv._os) {
-      const os = await EyesWDIOUtils.getOS(this._driver)
+      const os = await this._controller.getMobileOS(this._driver)
       if (os) {
         appEnv.setOs(os)
       }
@@ -1348,7 +1343,7 @@ class EyesWDIO extends EyesBase {
 
   async getInferredEnvironment() {
     try {
-      const userAgent = await EyesWDIOUtils.getUserAgent(this._executor)
+      const userAgent = await this._controller.getUserAgent()
       return userAgent ? 'useragent:' + userAgent : userAgent
     } catch (err) {
       return null
@@ -1406,7 +1401,7 @@ class EyesWDIO extends EyesBase {
   async getScrollRootElement() {
     let scrollRootElement = null
 
-    if (!EyesWDIOUtils.isMobileDevice(this._driver)) {
+    if (!(await this._controller.isMobileDevice())) {
       scrollRootElement = this._scrollRootElement
         ? this._scrollRootElement
         : await this._finder.findElement('html')
@@ -1426,13 +1421,13 @@ class EyesWDIO extends EyesBase {
     if (!this._driver) {
       return undefined
     }
-    return EyesWDIOUtils.getAUTSessionId(this._driver)
+    return this._controller.getAUTSessionId()
   }
 
   async getTitle() {
     if (!this._dontGetTitle) {
       try {
-        return await EyesWDIOUtils.getTitle(this._driver)
+        return await this._controller.getTitle()
       } catch (e) {
         this._logger.verbose(`failed (${e})`)
         this._dontGetTitle = true
@@ -1597,8 +1592,8 @@ class EyesWDIO extends EyesBase {
   /**
    * @return {boolean}
    */
-  getSendDom() {
-    return !EyesWDIOUtils.isMobileDevice(this._driver) && super.getSendDom()
+  async getSendDom() {
+    return !(await this._controller.isMobileDevice()) && super.getSendDom()
   }
 
   async getAndSaveRenderingInfo() {
