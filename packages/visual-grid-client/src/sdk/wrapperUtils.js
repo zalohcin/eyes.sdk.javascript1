@@ -3,9 +3,12 @@ const EyesWrapper = require('./EyesWrapper')
 const {RectangleSize, TypeUtils} = require('@applitools/eyes-sdk-core')
 
 function initWrappers({count, agentId, apiKey, logHandler, getBatchInfoWithCache}) {
+  if (agentId) {
+    EyesWrapper.prototype.getBaseAgentId = () => agentId
+  }
   return Array.from(
     new Array(count),
-    () => new EyesWrapper({agentId, apiKey, logHandler, getBatchInfoWithCache}),
+    () => new EyesWrapper({apiKey, logHandler, getBatchInfoWithCache}),
   )
 }
 

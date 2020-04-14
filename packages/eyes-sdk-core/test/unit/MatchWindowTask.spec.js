@@ -14,6 +14,7 @@ const {
   AppOutputWithScreenshot,
 } = require('../../index')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
+EyesBase.prototype.getBaseAgentId = () => 'testAgent'
 
 describe('MatchWindowTask', () => {
   describe('createImageMatchSettings', () => {

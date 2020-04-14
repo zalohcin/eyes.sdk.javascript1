@@ -1,20 +1,20 @@
 ;(function() {
   'use strict'
 
-  let request = require('request')
-  let GeneralUtils = require('eyes.utils').GeneralUtils
-  let ArgumentGuard = require('eyes.utils').ArgumentGuard
-  let RenderingInfo = require('./RenderingInfo').RenderingInfo
+  const request = require('request')
+  const GeneralUtils = require('eyes.utils').GeneralUtils
+  const ArgumentGuard = require('eyes.utils').ArgumentGuard
+  const RenderingInfo = require('./RenderingInfo').RenderingInfo
 
   // constants
-  let TIMEOUT = 5 * 60 * 1000,
+  const TIMEOUT = 5 * 60 * 1000,
     API_PATH = '/api/sessions/running',
     DEFAULT_HEADERS = {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     }
 
-  let LONG_REQUEST_DELAY = 2000, // ms
+  const LONG_REQUEST_DELAY = 2000, // ms
     MAX_LONG_REQUEST_DELAY = 10000, // ms
     LONG_REQUEST_DELAY_MULTIPLICATIVE_INCREASE_FACTOR = 1.5
 

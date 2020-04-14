@@ -50,7 +50,7 @@ const HTTP_STATUS_CODES = {
 
 const SERVER_CONFIG = {
   EYES: {withApiKey: true, withAgentId: true},
-  VG: {withApiKey: false, withAgentId: false},
+  VG: {withApiKey: false, withAgentId: true},
 }
 
 const REQUEST_GUID = GeneralUtils.guid()

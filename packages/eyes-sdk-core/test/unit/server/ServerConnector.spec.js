@@ -11,7 +11,7 @@ describe('ServerConnector', () => {
     const {port, close} = await fakeEyesServer({logger})
     try {
       const serverUrl = `http://localhost:${port}`
-      const configuration = new Configuration()
+      const configuration = new Configuration({baseAgentId: 'test'})
       configuration.setServerUrl(serverUrl)
       const serverConnector = new ServerConnector(logger, configuration)
       const appIdOrName = 'ServerConnector unit test'
@@ -45,7 +45,7 @@ describe('ServerConnector', () => {
     const {port, close} = await fakeEyesServer({logger, hangUp: true})
     try {
       const serverUrl = `http://localhost:${port}`
-      const configuration = new Configuration()
+      const configuration = new Configuration({baseAgentId: 'test'})
       configuration.setServerUrl(serverUrl)
       const serverConnector = new ServerConnector(logger, configuration)
       const [err] = await presult(serverConnector.startSession({}))
@@ -59,7 +59,7 @@ describe('ServerConnector', () => {
     const {port, close} = await fakeEyesServer({logger})
     try {
       const serverUrl = `http://localhost:${port}`
-      const configuration = new Configuration()
+      const configuration = new Configuration({baseAgentId: 'test'})
       configuration.setServerUrl(serverUrl)
       const serverConnector = new ServerConnector(logger, configuration)
       await serverConnector.renderInfo()
@@ -84,7 +84,7 @@ describe('ServerConnector', () => {
   })
 
   it('uploadScreenshot uploads to resultsUrl webhook', async () => {
-    const configuration = new Configuration()
+    const configuration = new Configuration({baseAgentId: 'test'})
     const serverConnector = new ServerConnector(logger, configuration)
     const renderingInfo = await serverConnector.renderInfo()
     const id = GeneralUtils.guid()
@@ -94,7 +94,7 @@ describe('ServerConnector', () => {
   })
 
   it('postDomSnapshot uploads to resultsUrl webhook', async () => {
-    const configuration = new Configuration()
+    const configuration = new Configuration({baseAgentId: 'test'})
     const serverConnector = new ServerConnector(logger, configuration)
     const renderingInfo = await serverConnector.renderInfo()
     const buffer = Buffer.from('something')
@@ -104,7 +104,7 @@ describe('ServerConnector', () => {
   })
 
   it('long request waits right amount of time', async () => {
-    const configuration = new Configuration()
+    const configuration = new Configuration({baseAgentId: 'test'})
     const serverConnector = new ServerConnector(logger, configuration)
     const ANSWER_AFTER = 8 // requests
     const timeouts = []
@@ -136,7 +136,7 @@ describe('ServerConnector', () => {
   })
 
   it('check polling protocol', async () => {
-    const configuration = new Configuration()
+    const configuration = new Configuration({baseAgentId: 'test'})
     const serverConnector = new ServerConnector(logger, configuration)
     const MAX_POLLS_COUNT = 2
     const RES_DATA = {createdAt: Date.now()}
@@ -176,7 +176,7 @@ describe('ServerConnector', () => {
 
   // NOTE: this can be deleted when Eyes server stops being backwards compatible with old SDK's that don't support long running tasks
   it('sends special request headers for all requests', async () => {
-    const serverConnector = new ServerConnector(logger, new Configuration())
+    const serverConnector = new ServerConnector(logger, new Configuration({baseAgentId: 'test'}))
     serverConnector._axios.defaults.adapter = async config => ({
       status: 200,
       config,
@@ -193,7 +193,7 @@ describe('ServerConnector', () => {
 
   // NOTE: this can be deleted when Eyes server stops being backwards compatible with old SDK's that don't support long running tasks
   it("doesn't send special request headers for polling requests", async () => {
-    const serverConnector = new ServerConnector(logger, new Configuration())
+    const serverConnector = new ServerConnector(logger, new Configuration({baseAgentId: 'test'}))
     serverConnector._axios.defaults.adapter = async config => ({
       status: 202,
       config,
@@ -212,7 +212,7 @@ describe('ServerConnector', () => {
   })
 
   it('does NOT mark RunningSession as new if there is no isNew in the payload and response status is 200', async () => {
-    const serverConnector = new ServerConnector(logger, new Configuration())
+    const serverConnector = new ServerConnector(logger, new Configuration({baseAgentId: 'test'}))
     serverConnector._axios.defaults.adapter = async config => ({
       status: 200,
       data: {},
@@ -224,7 +224,7 @@ describe('ServerConnector', () => {
   })
 
   it('marks RunningSession as new if there is no isNew in the payload and response status is 201', async () => {
-    const serverConnector = new ServerConnector(logger, new Configuration())
+    const serverConnector = new ServerConnector(logger, new Configuration({baseAgentId: 'test'}))
     serverConnector._axios.defaults.adapter = async config => ({
       status: 201,
       data: {},
@@ -236,7 +236,7 @@ describe('ServerConnector', () => {
   })
 
   it('sets RunningSession.isNew with the value of isNew in the payload', async () => {
-    const serverConnector = new ServerConnector(logger, new Configuration())
+    const serverConnector = new ServerConnector(logger, new Configuration({baseAgentId: 'test'}))
     serverConnector._axios.defaults.adapter = async config => ({
       status: 200,
       data: {isNew: true},

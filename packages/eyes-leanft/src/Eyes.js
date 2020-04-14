@@ -71,7 +71,7 @@
     EyesBase.call(this, this._promiseFactory, serverUrl || EyesBase.DEFAULT_EYES_SERVER, isDisabled)
   }
 
-  EyesBase.prototype._getBaseAgentId = function() {
+  Eyes.prototype._getBaseAgentId = function() {
     return 'leanft-js/' + VERSION
   }
   Eyes.prototype = new EyesBase()

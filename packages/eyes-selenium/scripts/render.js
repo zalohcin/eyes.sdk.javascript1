@@ -11,7 +11,6 @@ const {
   Configuration,
   StitchMode,
   EyesSeleniumUtils,
-  // ProxySettings,
   // BatchInfo,
   // FileDebugScreenshotsProvider,
 } = require('../index')

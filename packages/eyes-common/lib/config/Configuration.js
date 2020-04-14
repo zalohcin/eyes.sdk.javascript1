@@ -527,7 +527,7 @@ class Configuration {
    */
   getFullAgentId() {
     if (!this._baseAgentId) {
-      throw new Error('SKD base agent id was not set')
+      throw new Error('base agent id was not set')
     }
     return this._agentId ? `${this._agentId} [${this._baseAgentId}]` : this._baseAgentId
   }

@@ -8,12 +8,10 @@ const {
   TestFailedError,
 } = require('@applitools/eyes-sdk-core')
 const {presult} = require('@applitools/functional-commons')
-
 const VERSION = require('../../package.json').version
 
 class EyesWrapper extends EyesBase {
-  constructor({agentId, apiKey, logHandler, getBatchInfoWithCache} = {}) {
-    EyesBase.baseAgentId = agentId || `visual-grid-client/${VERSION}`
+  constructor({apiKey, logHandler, getBatchInfoWithCache} = {}) {
     super()
     apiKey && this.setApiKey(apiKey)
     logHandler && this.setLogHandler(logHandler)
@@ -178,6 +176,14 @@ class EyesWrapper extends EyesBase {
 
   setInferredEnvironment(value) {
     this.inferredEnvironment = value
+  }
+
+  /**
+   * @override
+   */
+  getBaseAgentId() {
+    // default
+    return `visual-grid-client/${VERSION}`
   }
 
   async getAndSaveRenderingInfo() {

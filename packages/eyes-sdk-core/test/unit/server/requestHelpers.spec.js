@@ -4,7 +4,7 @@ const assert = require('assert')
 const Axios = require('axios')
 const {ProxySettings, Logger, Configuration} = require('@applitools/eyes-common')
 const {
-  configAxiosHeaders,
+  configureAxios,
   configAxiosFromConfiguration,
   configAxiosProxy,
   handleRequestError,
@@ -12,7 +12,7 @@ const {
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
 describe('requestHelpers', () => {
-  it('configAxiosHeaders works', () => {
+  it('configureAxios works', () => {
     const REQUEST_ID = 'RequestId'
     const TIMESTAMP = new Date()
     const axiosConfig = {
@@ -20,7 +20,7 @@ describe('requestHelpers', () => {
       timestamp: TIMESTAMP,
     }
 
-    configAxiosHeaders({axiosConfig})
+    configureAxios({axiosConfig})
 
     assert.deepStrictEqual(axiosConfig.headers, {
       'x-applitools-eyes-client-request-id': REQUEST_ID,
@@ -33,13 +33,14 @@ describe('requestHelpers', () => {
     const APPLITOOLS_API_KEY = process.env.APPLITOOLS_API_KEY || 'ApiKey'
     const configuration = new Configuration()
     configuration.setApiKey(APPLITOOLS_API_KEY)
+    configuration.setBaseAgentId('testAgent')
     configuration.setProxy({
       url: 'http://some.proxy.url:3000',
       username: 'username',
       password: 'password',
     })
     const axiosConfig = {
-      withApiKey: true,
+      serverConfig: {withApiKey: true, withAgentId: true},
       method: 'POST',
       url: 'https://some.url/some/api',
       data: {},
@@ -51,11 +52,14 @@ describe('requestHelpers', () => {
     })
 
     assert.deepStrictEqual(axiosConfig, {
-      withApiKey: true,
+      serverConfig: {withApiKey: true, withAgentId: true},
       method: 'POST',
       url: 'https://some.url/some/api',
       params: {
         apiKey: APPLITOOLS_API_KEY,
+      },
+      headers: {
+        'x-applitools-eyes-client': 'testAgent',
       },
       data: {},
       proxy: {

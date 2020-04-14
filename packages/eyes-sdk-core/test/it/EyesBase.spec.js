@@ -13,7 +13,7 @@ describe('EyesBase', () => {
   let eyes
   describe('getAndSetBatchInfo()', () => {
     beforeEach(() => {
-      eyes = new EyesBase()
+      eyes = new FakeEyes()
       eyes._getScmMergeBaseTime = async (branchName, parentBranchName) =>
         `some-datetime-of-${branchName}-${parentBranchName}`
       eyes._getAndSaveBatchInfoFromServer = async batchId => ({

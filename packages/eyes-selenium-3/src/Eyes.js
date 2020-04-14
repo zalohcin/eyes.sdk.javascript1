@@ -77,7 +77,7 @@
     EyesBase.call(this, this._promiseFactory, serverUrl || EyesBase.DEFAULT_EYES_SERVER, isDisabled)
   }
 
-  EyesBase.prototype._getBaseAgentId = () => 'eyes.selenium.javascript/' + VERSION
+  Eyes.prototype._getBaseAgentId = () => 'eyes.selenium.javascript/' + VERSION
   Eyes.prototype = new EyesBase()
   Eyes.prototype.constructor = Eyes
 

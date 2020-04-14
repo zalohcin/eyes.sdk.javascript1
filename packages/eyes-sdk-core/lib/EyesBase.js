@@ -2238,14 +2238,7 @@ class EyesBase {
    * @return {string} - The base agent id of the SDK.
    */
   getBaseAgentId() {
-    if (EyesBase._baseAgentId) {
-      return EyesBase._baseAgentId
-    }
-    throw new TypeError('Base agent id is not implemented!')
-  }
-
-  static set baseAgentId(baseAgentId) {
-    EyesBase._baseAgentId = baseAgentId
+    throw new TypeError('The method "getBaseAgentId" is not implemented!')
   }
 
   /**
