@@ -674,7 +674,7 @@ class EyesWDIO extends EyesBase {
   async _checkFrameFluent(name, checkSettings) {
     const frameChain = this._context.frameChain
     const targetFrame = frameChain.pop()
-    this._targetElement = targetFrame.getReference()
+    this._targetElement = targetFrame.element
 
     await this._context.framesDoScroll(frameChain)
     const r = await this._checkRegion(name, checkSettings)
@@ -736,14 +736,14 @@ class EyesWDIO extends EyesBase {
 
     if (reference) {
       await this._context.frame(reference)
-      const frame = this._context.frameChain.peek()
+      const frame = this._context.frameChain.current
       if (frame) {
         let scrollRootElement = frameLocator.getScrollRootElement()
         if (!scrollRootElement && frameLocator.getScrollRootSelector()) {
           scrollRootElement = await this._finder.findElement(frameLocator.getScrollRootSelector())
         }
         if (scrollRootElement) {
-          frame.setScrollRootElement(scrollRootElement)
+          frame.scrollRootElement = scrollRootElement
         }
       }
       return true
@@ -772,7 +772,7 @@ class EyesWDIO extends EyesBase {
       )
 
       for (const frame of originalFrameChain) {
-        await this._context.frame(frame.getReference())
+        await this._context.frame(frame.element)
         await frame.hideScrollbars()
       }
       this._logger.verbose('done hiding scrollbars.')
@@ -839,11 +839,11 @@ class EyesWDIO extends EyesBase {
 
     let position = new Location(0, 0)
     for (let index = originalFrameChain.size - 1; index >= 0; --index) {
-      const frame = originalFrameChain.getFrame(index)
+      const frame = originalFrameChain.frameAt(index)
       await this._context.frameParent()
-      const reg = new Region(Location.ZERO, frame.getInnerSize())
+      const reg = new Region(Location.ZERO, frame.innerSize)
       this._effectiveViewport.intersect(reg)
-      position = position.offsetByLocation(frame.getLocation())
+      position = position.offsetByLocation(frame.location)
       await positionProvider.setPosition(position)
       position = position.offsetNegative(await positionProvider.getCurrentPosition())
     }
@@ -961,9 +961,7 @@ class EyesWDIO extends EyesBase {
       return
     }
 
-    if (
-      !FrameChain.isSameFrameChain(this._context.frameChain, this._lastScreenshot.getFrameChain())
-    ) {
+    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
       this._logger.verbose(`Ignoring ${action} (different frame)`)
       return
     }
@@ -990,9 +988,7 @@ class EyesWDIO extends EyesBase {
       return Promise.resolve()
     }
 
-    if (
-      !FrameChain.isSameFrameChain(this._context.frameChain, this._lastScreenshot.getFrameChain())
-    ) {
+    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
       this._logger.verbose(`Ignoring ${action} (different frame)`)
       return Promise.resolve()
     }
@@ -1028,9 +1024,7 @@ class EyesWDIO extends EyesBase {
       return
     }
 
-    if (
-      !FrameChain.isSameFrameChain(this._context.frameChain, this._lastScreenshot.getFrameChain())
-    ) {
+    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
       this._logger.verbose(`Ignoring ${text} (different frame)`)
       return
     }
@@ -1057,9 +1051,7 @@ class EyesWDIO extends EyesBase {
       return Promise.resolve()
     }
 
-    if (
-      !FrameChain.isSameFrameChain(this._context.frameChain, this._lastScreenshot.getFrameChain())
-    ) {
+    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
       this._logger.verbose(`Ignoring ${text} (different frame)`)
       return Promise.resolve()
     }
@@ -1256,7 +1248,7 @@ class EyesWDIO extends EyesBase {
       // Save the current frame path.
       const originalFramePosition =
         originalFrameChain.size > 0
-          ? originalFrameChain.getDefaultContentScrollPosition()
+          ? originalFrameChain.getTopFrameScrollPosition()
           : new Location(Location.ZERO)
 
       await this._context.frameDefault()

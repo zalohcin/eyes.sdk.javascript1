@@ -58,8 +58,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
       EyesUtils.getScrollLocation(this._logger, this._driver.executor),
     ])
 
-    return new Frame({
-      logger: this._logger,
+    return new Frame(this._logger, {
       driver: this._driver,
       element,
       size: new RectangleSize(Math.round(rect.getWidth()), Math.round(rect.getHeight())),
@@ -116,7 +115,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
     }
 
     this._logger.verbose('Done! Switching to frame...')
-    const result = await this._driver.unwrapped.frame(frame.getReference().unwrapped)
+    const result = await this._driver.unwrapped.frame(frame.element.unwrapped)
     await this._frameChain.push(frame)
     this._logger.verbose('Done!')
     return result
@@ -154,7 +153,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
       const frameChain = arg
       this._logger.verbose('WDIOBrowsingContext.frames(frameChain)')
       for (const frame of frameChain) {
-        await this.frame(frame.getReference())
+        await this.frame(frame.element)
       }
     } else if (TypeUtils.isArray(arg)) {
       const framePath = arg
@@ -172,7 +171,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
     this._frameDefaultPositionMemento = await this._scrollPosition.getState()
     for (const frame of frameChain) {
       this._logger.verbose('Scrolling by parent scroll position...')
-      const frameLocation = frame.getLocation()
+      const frameLocation = frame.location
       await this._scrollPosition.setPosition(frameLocation)
       await this.frame(frame)
     }
@@ -185,8 +184,8 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
       this._frameChain.clear()
     } else {
       const framePath = []
-      const lastTrackedFrame = this._frameChain.peek()
-        ? this._frameChain.peek().getReference().elementId
+      const lastTrackedFrame = this._frameChain.current
+        ? this._frameChain.current.element.elementId
         : null
       while (!frameInfo.isRoot) {
         let frameTarget
