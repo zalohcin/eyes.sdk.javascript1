@@ -14,8 +14,6 @@ const {
   EyesUtils,
 } = require('@applitools/eyes-sdk-core')
 
-const ScrollPositionProvider = require('../positioning/ScrollPositionProvider')
-
 /**
  * @readonly
  * @enum {number}
@@ -176,71 +174,40 @@ class EyesWDIOScreenshot extends EyesScreenshot {
 
   /**
    * @param {Logger} logger
-   * @param {FrameChain} currentFrames
-   * @param {WDIODriver} driver
-   * @return {Promise.<Location>}
-   */
-  static getDefaultContentScrollPosition(logger, currentFrames, driver) {
-    const positionProvider = new ScrollPositionProvider(logger, driver.executor)
-
-    if (currentFrames.size === 0) {
-      return positionProvider.getCurrentPosition()
-    }
-
-    const originalFC = currentFrames.clone()
-
-    return driver.context
-      .frameDefault()
-      .then(() => {
-        return positionProvider.getCurrentPosition()
-      })
-      .then(defaultContentScrollPosition => {
-        return driver.context.frames(originalFC).then(() => defaultContentScrollPosition)
-      })
-  }
-
-  /**
-   * @param {Logger} logger
    * @param {WDIODriver} driver
    * @param {FrameChain} frameChain
    * @param {ScreenshotType} screenshotType
    * @return {Promise.<Location>}
    */
-  static calcFrameLocationInScreenshot(logger, driver, frameChain, screenshotType) {
-    return EyesWDIOScreenshot.getDefaultContentScrollPosition(logger, frameChain, driver).then(
-      windowScroll => {
-        logger.verbose('Getting first frame...')
-        const firstFrame = frameChain.frameAt(0)
-        logger.verbose('Done!')
-        let locationInScreenshot = new Location(firstFrame.location)
+  static async calcFrameLocationInScreenshot(logger, driver, frameChain, screenshotType) {
+    const windowScroll = await EyesUtils.getTopContextScrollLocation(logger, driver)
+    logger.verbose('Getting first frame...')
+    const firstFrame = frameChain.frameAt(0)
+    logger.verbose('Done!')
+    let locationInScreenshot = new Location(firstFrame.location)
 
-        // We only consider scroll of the default content if this is a viewport screenshot.
-        if (screenshotType === ScreenshotType.VIEWPORT) {
-          locationInScreenshot = locationInScreenshot.offset(
-            -windowScroll.getX(),
-            -windowScroll.getY(),
-          )
-        }
-        logger.verbose('Iterating over frames..')
-        let frame
-        for (let i = 1, l = frameChain.size; i < l; ++i) {
-          logger.verbose('Getting next frame...')
-          frame = frameChain.frameAt(i)
-          logger.verbose('Done!')
-          const frameLocation = frame.location
-          // For inner frames we must consider the scroll
-          const frameOriginalLocation = frame.originalLocation
-          // Offsetting the location in the screenshot
-          locationInScreenshot = locationInScreenshot.offset(
-            frameLocation.getX() - frameOriginalLocation.getX(),
-            frameLocation.getY() - frameOriginalLocation.getY(),
-          )
-        }
+    // We only consider scroll of the default content if this is a viewport screenshot.
+    if (screenshotType === ScreenshotType.VIEWPORT) {
+      locationInScreenshot = locationInScreenshot.offset(-windowScroll.getX(), -windowScroll.getY())
+    }
+    logger.verbose('Iterating over frames..')
+    let frame
+    for (let i = 1, l = frameChain.size; i < l; ++i) {
+      logger.verbose('Getting next frame...')
+      frame = frameChain.frameAt(i)
+      logger.verbose('Done!')
+      const frameLocation = frame.location
+      // For inner frames we must consider the scroll
+      const frameOriginalLocation = frame.originalLocation
+      // Offsetting the location in the screenshot
+      locationInScreenshot = locationInScreenshot.offset(
+        frameLocation.getX() - frameOriginalLocation.getX(),
+        frameLocation.getY() - frameOriginalLocation.getY(),
+      )
+    }
 
-        logger.verbose('Done!')
-        return locationInScreenshot
-      },
-    )
+    logger.verbose('Done!')
+    return locationInScreenshot
   }
 
   /**

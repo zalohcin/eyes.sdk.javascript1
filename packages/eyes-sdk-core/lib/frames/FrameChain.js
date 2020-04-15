@@ -37,7 +37,7 @@ class FrameChain {
       return false
     }
     for (let index = 0; index < c1.size; ++index) {
-      if (c1.getFrame(index).element !== c2.getFrame(index).element) {
+      if (c1.frameAt(index).element !== c2.frameAt(index).element) {
         return false
       }
     }

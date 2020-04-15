@@ -167,37 +167,32 @@ async function _setWindowSize(logger, {controller}, requiredWindowSize, sleep = 
 
 async function getTopContextViewportSize(logger, {controller, context, executor}) {
   logger.verbose('getTopContextViewportSize')
-  const currentFrames = context.frameChain
-  if (currentFrames.size > 0) {
-    await context.frameDefault()
-  }
-  logger.verbose('Extracting viewport size...')
-  let viewportSize
-  try {
-    viewportSize = await getViewportSize({executor})
-  } catch (err) {
-    logger.verbose('Failed to extract viewport size using Javascript:', err)
-    // If we failed to extract the viewport size using JS, will use the window size instead.
-    logger.verbose('Using window size as viewport size.')
+  return context.framesToAndFro(null, async () => {
+    logger.verbose('Extracting viewport size...')
+    let viewportSize
+    try {
+      viewportSize = await getViewportSize({executor})
+    } catch (err) {
+      logger.verbose('Failed to extract viewport size using Javascript:', err)
+      // If we failed to extract the viewport size using JS, will use the window size instead.
+      logger.verbose('Using window size as viewport size.')
 
-    const windowSize = await controller.getWindowSize()
-    let width = windowSize.getWidth()
-    let height = windowSize.getHeight()
-    const isLandscapeOrientation = await controller.isLandscapeOrientation().catch(() => {
-      // Not every IWebDriver supports querying for orientation.
-    })
-    if (isLandscapeOrientation && height > width) {
-      const temp = width
-      width = height
-      height = temp
+      const windowSize = await controller.getWindowSize()
+      let width = windowSize.getWidth()
+      let height = windowSize.getHeight()
+      const isLandscapeOrientation = await controller.isLandscapeOrientation().catch(() => {
+        // Not every IWebDriver supports querying for orientation.
+      })
+      if (isLandscapeOrientation && height > width) {
+        const temp = width
+        width = height
+        height = temp
+      }
+      viewportSize = new RectangleSize(width, height)
     }
-    viewportSize = new RectangleSize(width, height)
-  }
-  logger.verbose('Done! Viewport size: ', viewportSize)
-  if (currentFrames.size > 0) {
-    await context.frames(currentFrames)
-  }
-  return viewportSize
+    logger.verbose('Done! Viewport size: ', viewportSize)
+    return viewportSize
+  })
 }
 
 async function getCurrentFrameContentEntireSize(_logger, executor) {
@@ -208,6 +203,12 @@ async function getCurrentFrameContentEntireSize(_logger, executor) {
     // throw new EyesDriverOperationError('Failed to extract entire size!', err)
     throw err
   }
+}
+
+async function getTopContextScrollLocation(logger, {context, executor}) {
+  // TODO I think we can use here Frame::originalLocation which is the scroll location
+  // of the parent element in the moment of changing context
+  return context.framesToAndFro(null, async () => getScrollLocation(logger, executor))
 }
 
 async function getDevicePixelRatio(_logger, {executor}) {
@@ -292,6 +293,7 @@ module.exports = {
   setViewportSize,
   getTopContextViewportSize,
   getCurrentFrameContentEntireSize,
+  getTopContextScrollLocation,
   getDevicePixelRatio,
   getMobilePixelRatio,
   getScrollLocation,

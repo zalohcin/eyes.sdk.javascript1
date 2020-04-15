@@ -648,7 +648,7 @@ class EyesWDIO extends EyesBase {
             })
             .then(screenshotImage_ => {
               screenshotImage = screenshotImage_
-              return that._context.frames(fc)
+              // return that._context.frames(fc)
             })
             .then(() => {
               const screenshot = new EyesWDIOScreenshot(that._logger, that, screenshotImage)
@@ -848,7 +848,8 @@ class EyesWDIO extends EyesBase {
       position = position.offsetNegative(await positionProvider.getCurrentPosition())
     }
 
-    await this._context.frames(originalFrameChain)
+    //passing array of frame elements instead of frame chain to be sure that frame metrics will be recalculated
+    await this._context.frames(originalFrameChain.toArray().map(frame => frame.element))
     return originalFrameChain
   }
 
@@ -1215,7 +1216,7 @@ class EyesWDIO extends EyesBase {
     if (this._checkFrameOrElement) {
       this._logger.verbose('Check frame/element requested')
 
-      await this._context.frames(originalFrameChain)
+      // await this._context.frames(originalFrameChain)
 
       let scrolledElement = this.getElementPositionProvider().element
       if (!scrolledElement) {

@@ -46,10 +46,10 @@ class EyesBrowsingContext {
   async frameParent() {}
   /**
    * Switch to the specified frame path from the top level
-   * @param {FrameChain|FrameReference[]} arg
+   * @param {Iterable<FrameReference>} path
    * @return {Promise<*>}
    */
-  async frames(arg) {}
+  async frames(path) {}
   /**
    * Refresh frame chain from the real driver target context
    * @return {Promise<*>}

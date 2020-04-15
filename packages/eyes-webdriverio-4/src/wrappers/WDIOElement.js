@@ -63,6 +63,10 @@ class WDIOElement extends EyesWrappedElement {
     }
   }
 
+  async equals(element) {
+    return WDIOElement.equals(this, element)
+  }
+
   async getRect() {
     const {value: rect} = await this.withRefresh(() => this._driver.elementIdRect(this.elementId))
     const left = rect && rect.x ? Math.ceil(rect.x) : 0

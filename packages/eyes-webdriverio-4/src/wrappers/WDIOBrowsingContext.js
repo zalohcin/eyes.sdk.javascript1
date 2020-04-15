@@ -131,36 +131,58 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
     return result
   }
 
-  async frameParent() {
-    this._logger.verbose('WDIOBrowsingContext.frameParent()')
-    const result = await this._driver.unwrapped.frameParent()
-    this._logger.verbose('Done! Switching to parent frame..')
-    if (this._frameChain.size > 0) {
-      this._frameChain.pop()
+  async frameParent(elevation = 1) {
+    this._logger.verbose(`WDIOBrowsingContext.frameParent(${elevation})`)
+    let result
+    while (elevation-- > 0) {
+      result = await this._driver.unwrapped.frameParent()
+      this._logger.verbose('Done! Switching to parent frame..')
+      if (this._frameChain.size > 0) {
+        this._frameChain.pop()
+      }
     }
     return result
   }
 
-  async frames(arg) {
-    if (this._frameChain.size > 0) {
-      await this.frameDefault()
+  async frames(path) {
+    const currentPath = this._frameChain.toArray()
+    const requiredPath = Array.from(path || [])
+    if (currentPath.length <= 0) return this.framesAppend(requiredPath)
+    if (requiredPath.length <= 0) return this.frameDefault()
+    const diffIndex = requiredPath.findIndex(
+      (frame, index) => !Frame.equals(currentPath[index], frame),
+    )
+    // required path is same as current or it is a sub-path of current
+    if (diffIndex < 0) {
+      // required path is same as current
+      if (currentPath.length === requiredPath.length) return
+
+      // required path is a sub-path of current
+      // chose an optimal way to traverse from current context to target context
+      if (currentPath.length - requiredPath.length <= requiredPath.length) {
+        return this.frameParent(currentPath.length - requiredPath.length)
+      } else {
+        await this.frameDefault()
+        return this.framesAppend(requiredPath)
+      }
     }
-    await this.framesAppend(arg)
+
+    // required path is different from current or they are partially intersected
+    // chose an optimal way to traverse from current context to target context
+    if (currentPath.length - diffIndex <= diffIndex) {
+      await this.frameParent(currentPath.length - diffIndex)
+      const diffPath = requiredPath.slice(diffIndex)
+      return this.framesAppend(diffPath)
+    } else {
+      await this.frameDefault()
+      return this.framesAppend(requiredPath)
+    }
   }
 
-  async framesAppend(arg) {
-    if (arg instanceof FrameChain) {
-      const frameChain = arg
-      this._logger.verbose('WDIOBrowsingContext.frames(frameChain)')
-      for (const frame of frameChain) {
-        await this.frame(frame.element)
-      }
-    } else if (TypeUtils.isArray(arg)) {
-      const framePath = arg
-      this._logger.verbose('WDIOBrowsingContext.frames(framesPath)')
-      for (const frameReference of framePath) {
-        await this.frame(frameReference)
-      }
+  async framesAppend(path) {
+    this._logger.verbose('WDIOBrowsingContext.framesAppend(path)')
+    for (const frameReference of path) {
+      await this.frame(frameReference)
     }
     this._logger.verbose('Done switching into nested frames!')
   }
