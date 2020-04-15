@@ -157,7 +157,7 @@ class WDIOElement extends EyesWrappedElement {
       return true
     }
     const originalFrameChain = this._driver.context.frameChain
-    const isSameFrameChain = FrameChain.isSameFrameChain(originalFrameChain, this._frameChain)
+    const isSameFrameChain = FrameChain.equals(originalFrameChain, this._frameChain)
     if (!isSameFrameChain) {
       await this._driver.context.frames(this._frameChain)
     }

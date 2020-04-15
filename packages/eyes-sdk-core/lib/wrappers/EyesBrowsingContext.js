@@ -1,6 +1,17 @@
 'use strict'
-
 /* eslint-disable no-unused-vars */
+
+/**
+ * @typedef {import('../frames/FrameChain').FrameChain} FrameChain
+ * @typedef {import('../frames/Frame').Frame} Frame
+ * @typedef {import('./EyesWrappedElement').EyesWrappedElement} EyesWrappedElement
+ * @typedef {import('./EyesWrappedElement').UnwrappedElement} UnwrappedElement
+ */
+/**
+ * Reference to the frame, index of the frame in the current context, name or id of the element,
+ * framework element object, {@link EyesWrappedElement} implementation object or a {@link Frame} object
+ * @typedef {number|string|UnwrappedElement|EyesWrappedElement|Frame} FrameReference
+ */
 
 /**
  * An interface for browsing context
@@ -19,7 +30,7 @@ class EyesBrowsingContext {
   reset() {}
   /**
    * Switch to the child (frame) context by reference
-   * @param {number|string|object|EyesWrappedElement|Frame} arg reference to the frame
+   * @param {FrameReference} arg reference to the frame
    * @return {Promise<*>}
    */
   async frame(arg) {}
@@ -35,7 +46,7 @@ class EyesBrowsingContext {
   async frameParent() {}
   /**
    * Switch to the specified frame path from the top level
-   * @param {FrameChain|Array<*>} arg
+   * @param {FrameChain|FrameReference[]} arg
    * @return {Promise<*>}
    */
   async frames(arg) {}

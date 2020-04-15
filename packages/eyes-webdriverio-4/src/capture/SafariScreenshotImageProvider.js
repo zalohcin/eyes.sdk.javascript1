@@ -111,7 +111,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
         const positionProvider = new ScrollPositionProvider(this._logger, this._driver.executor)
         loc = await positionProvider.getCurrentPosition()
       } else {
-        loc = currentFrameChain.getDefaultContentScrollPosition()
+        loc = currentFrameChain.getTopFrameScrollPosition()
       }
 
       loc = new Location(Math.ceil(loc.getX() * scaleRatio), Math.ceil(loc.getY() * scaleRatio))

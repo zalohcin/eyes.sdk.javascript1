@@ -210,9 +210,9 @@ class EyesWDIOScreenshot extends EyesScreenshot {
     return EyesWDIOScreenshot.getDefaultContentScrollPosition(logger, frameChain, driver).then(
       windowScroll => {
         logger.verbose('Getting first frame...')
-        const firstFrame = frameChain.getFrame(0)
+        const firstFrame = frameChain.frameAt(0)
         logger.verbose('Done!')
-        let locationInScreenshot = new Location(firstFrame.getLocation())
+        let locationInScreenshot = new Location(firstFrame.location)
 
         // We only consider scroll of the default content if this is a viewport screenshot.
         if (screenshotType === ScreenshotType.VIEWPORT) {
@@ -225,11 +225,11 @@ class EyesWDIOScreenshot extends EyesScreenshot {
         let frame
         for (let i = 1, l = frameChain.size; i < l; ++i) {
           logger.verbose('Getting next frame...')
-          frame = frameChain.getFrame(i)
+          frame = frameChain.frameAt(i)
           logger.verbose('Done!')
-          const frameLocation = frame.getLocation()
+          const frameLocation = frame.location
           // For inner frames we must consider the scroll
-          const frameOriginalLocation = frame.getOriginalLocation()
+          const frameOriginalLocation = frame.originalLocation
           // Offsetting the location in the screenshot
           locationInScreenshot = locationInScreenshot.offset(
             frameLocation.getX() - frameOriginalLocation.getX(),

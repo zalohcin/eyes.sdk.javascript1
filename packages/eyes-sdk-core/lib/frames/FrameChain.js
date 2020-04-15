@@ -3,6 +3,11 @@
 const {ArgumentGuard, Location} = require('@applitools/eyes-common')
 const {Frame} = require('./Frame')
 const {NoFramesError} = require('../errors/NoFramesError')
+/**
+ * @typedef {import('@applitools/eyes-common').Logger} Logger
+ * @typedef {import('@applitools/eyes-common').Location} Location
+ * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
+ */
 
 class FrameChain {
   /**
@@ -17,11 +22,8 @@ class FrameChain {
     this._frames = []
 
     if (other) {
-      this._logger.verbose('Frame chain copy constructor (size ' + other.size + ')')
-      for (const otherFrame of other.getFrames()) {
-        this._frames.push(new Frame(otherFrame))
-      }
-      this._logger.verbose('Done!')
+      this._logger.verbose(`FrameChain copy constructor (size ${other.size})`)
+      this._frames = Array.from(other, frame => new Frame(this._logger, frame))
     }
   }
   /**
@@ -30,40 +32,44 @@ class FrameChain {
    * @param {FrameChain} c2 Frame chain to be compared against c1.
    * @return {boolean} True if both frame chains represent the same frame, false otherwise.
    */
-  static isSameFrameChain(c1, c2) {
+  static equals(c1, c2) {
     if (c1.size !== c2.size) {
       return false
     }
     for (let index = 0; index < c1.size; ++index) {
-      if (c1.getFrame(index).getReference() !== c2.getFrames(index).getReference()) {
+      if (c1.getFrame(index).element !== c2.getFrame(index).element) {
         return false
       }
     }
     return true
   }
   /**
-   * @return {Array<Frame>} frames stored in chain
+   * @return {Frame[]} frames stored in chain
    */
-  getFrames() {
-    return this._frames
+  toArray() {
+    return Array.from(this._frames)
   }
   /**
-   * @param {int} index Index of needed frame
+   * @param {number} index Index of needed frame
    * @return {Frame} frame by index in array
    */
-  getFrame(index) {
+  frameAt(index) {
     if (this._frames.length > index) {
       return this._frames[index]
     }
-
     throw new Error('No frames for given index')
   }
   /**
-   *
-   * @return {int} The number of frames in the chain.
+   * @return {number} the number of frames in the chain.
    */
   get size() {
     return this._frames.length
+  }
+  /**
+   * @return {Frame} get current frame context (the last frame in the chain)
+   */
+  get current() {
+    return this._frames[this._frames.length - 1]
   }
   /**
    * Removes all current frames in the frame chain.
@@ -71,14 +77,11 @@ class FrameChain {
   clear() {
     this._frames = []
   }
+  /**
+   * @return {FrameChain} cloned frame chain
+   */
   clone() {
     return new FrameChain(this._logger, this)
-  }
-  /**
-   * @return {Frame} Returns the top frame in the chain.
-   */
-  peek() {
-    return this._frames[this._frames.length - 1]
   }
   /**
    * Removes the last inserted frame element. Practically means we switched
@@ -94,9 +97,6 @@ class FrameChain {
   push(frame) {
     return this._frames.push(frame)
   }
-  [Symbol.iterator]() {
-    return this._frames[Symbol.iterator]()
-  }
   /**
    * @return {Location} The location of the current frame in the page.
    */
@@ -104,7 +104,7 @@ class FrameChain {
     let result = Location.ZERO
 
     this._frames.forEach(frame => {
-      result = result.offsetByLocation(frame.getLocation())
+      result = result.offsetByLocation(frame.location)
     })
 
     return result
@@ -112,29 +112,35 @@ class FrameChain {
   /**
    * @return {Location} The outermost frame's location, or NoFramesException.
    */
-  getDefaultContentScrollPosition() {
+  getTopFrameScrollPosition() {
     if (this._frames.length === 0) {
       throw new NoFramesError('No frames in frame chain')
     }
-    return new Location(this._frames[0].getOriginalLocation())
+    return new Location(this._frames[0].originalLocation)
   }
   /**
-   * @return {{width: number, height: number}} The size of the current frame.
+   * @return {RectangleSize} The size of the current frame.
    */
   getCurrentFrameSize() {
-    this._logger.verbose('getCurrentFrameSize()')
+    if (this._frames.length === 0) {
+      throw new NoFramesError('No frames in frame chain')
+    }
     const result = this._frames[this._frames.length - 1].size
-    this._logger.verbose('Done!')
     return result
   }
   /**
    * @return {RectangleSize} The inner size of the current frame.
    */
   getCurrentFrameInnerSize() {
-    this._logger.verbose('getCurrentFrameInnerSize()')
-    const result = this._frames[this._frames.length - 1].getInnerSize()
-    this._logger.verbose('Done!')
+    if (this._frames.length === 0) {
+      throw new NoFramesError('No frames in frame chain')
+    }
+    const result = this._frames[this._frames.length - 1].innerSize
     return result
+  }
+
+  [Symbol.iterator]() {
+    return this._frames[Symbol.iterator]()
   }
 }
 

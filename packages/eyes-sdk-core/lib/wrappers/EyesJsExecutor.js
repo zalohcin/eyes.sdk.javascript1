@@ -1,10 +1,8 @@
 'use strict'
-
 /* eslint-disable no-unused-vars */
 
 /**
  * An interface for JsExecutors
- *
  * @ignore
  * @interface
  */
@@ -15,19 +13,23 @@ class EyesJsExecutor {
    * that function will be converted to a string for injection into the target window.
    *
    * @param {!(string|Function)} script The script to execute.
-   * @param {...*} varArgs - The arguments to pass to the script.
-   * @return {Promise<T>} - A promise that will resolve to the scripts return value.
+   * @param {...*} varArgs The arguments to pass to the script.
+   * @return {Promise<T>} A promise that will resolve to the scripts return value.
    * @template T
    */
-  executeScript(script, ...varArgs) {}
+  executeScript(script, ...varArgs) {
+    throw new TypeError('The method is not implemented!')
+  }
 
   /**
    * Schedules a command to make the driver sleep for the given amount of time.
    *
-   * @param {number} ms - The amount of time, in milliseconds, to sleep.
-   * @return {!Promise} - A promise that will be resolved when the sleep has finished.
+   * @param {number} ms The amount of time, in milliseconds, to sleep.
+   * @return {Promise<void>} A promise that will be resolved when the sleep has finished.
    */
-  sleep(ms) {}
+  sleep(ms) {
+    throw new TypeError('The method is not implemented!')
+  }
 }
 
 exports.EyesJsExecutor = EyesJsExecutor
