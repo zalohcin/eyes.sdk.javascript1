@@ -41,7 +41,7 @@
     "@applitools/visual-grid-client": "13.6.12"
   },
   "devDependencies": {
-    "@applitools/sdk-fake-eyes-server": "1.1.1",
+    "@applitools/sdk-fake-eyes-server": "^1.1.1",
     "@applitools/sdk-release-kit": "0.1.0",
     "@applitools/sdk-test-kit": "1.0.17",
     "assert-rejects": "^1.0.0",
