@@ -30,6 +30,90 @@ describe('TestAppiumNative', () => {
     await eyes.abortIfNotClosed()
   })
 
+  describe('Android', () => {
+    beforeEach(async () => {
+      driver = await new Builder()
+        .withCapabilities(sauceCaps)
+        .usingServer(sauceUrl)
+        .build()
+      eyes = new Eyes()
+      eyes.setBatch(batch)
+      eyes.setBranchName('master')
+    })
+
+    it('AndroidNativeApp checkWindow', async () => {
+      await eyes.open(driver, 'AndroidNativeApp', 'AndroidNativeApp checkWindow')
+      await eyes.check('', Target.window().ignore({left: 1271, top: 0, width: 158, height: 100}))
+      await eyes.close()
+    })
+
+    it('AndroidNativeApp checkRegion', async () => {
+      await eyes.open(driver, 'AndroidNativeApp', 'AndroidNativeApp checkRegionFloating')
+      await eyes.check(
+        '',
+        Target.region({left: 0, top: 100, width: 1400, height: 2000}).floating({
+          left: 10,
+          top: 10,
+          width: 20,
+          height: 20,
+          maxLeftOffset: 3,
+          maxRightOffset: 3,
+          maxUpOffset: 20,
+          maxDownOffset: 30,
+        }),
+      )
+      await eyes.close()
+    })
+  })
+
+  describe('iOS', () => {
+    beforeEach(async () => {
+      driver = await new Builder()
+        .withCapabilities({
+          browserName: '',
+          platformName: 'iOS',
+          platformVersion: '12.2',
+          deviceName: 'iPhone XS Simulator',
+          username: process.env.SAUCE_USERNAME,
+          accessKey: process.env.SAUCE_ACCESS_KEY,
+          app: 'https://applitools.bintray.com/Examples/HelloWorldiOS_1_0.zip',
+          clearSystemFiles: true,
+          noReset: true,
+          NATIVE_APP: true,
+          idleTimeout: 200,
+        })
+        .usingServer(appiumUrl)
+        .build()
+      eyes = new Eyes()
+      eyes.setBatch(batch)
+      eyes.setBranchName('master')
+    })
+
+    it('iOSNativeApp checkWindow', async () => {
+      await eyes.open(driver, 'iOSNativeApp', 'Smoke iOSNativeApp checkWindow')
+      await eyes.check('', Target.window().ignore({left: 0, top: 0, width: 300, height: 100}))
+      await eyes.close()
+    })
+
+    it('iOSNativeApp checkRegion', async () => {
+      await eyes.open(driver, 'iOSNativeApp', 'Smoke iOSNativeApp checkRegion')
+      await eyes.check(
+        '',
+        Target.region({left: 0, top: 100, width: 375, height: 712}).floating({
+          left: 10,
+          top: 10,
+          width: 20,
+          height: 20,
+          maxLeftOffset: 3,
+          maxRightOffset: 3,
+          maxUpOffset: 20,
+          maxDownOffset: 30,
+        }),
+      )
+      await eyes.close()
+    })
+  })
+
   it(`Native app on sauce lab`, async () => {
     driver = await new Builder()
       .withCapabilities(sauceCaps)
