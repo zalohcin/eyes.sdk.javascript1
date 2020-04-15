@@ -149,7 +149,7 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
 
     return {
       id: runningSessionId,
-      startInfo: startInfo,
+      startInfo,
       baselineId,
       sessionId,
       url,
@@ -243,6 +243,23 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
     }
   })
 
+  // API to get session (normally requires read permissions)
+  app.get('/api/sessions/batches/:batchId/:sessionId', (req, res) => {
+    const runningSession = Object.values(runningSessions).find(runningSession => {
+      if (
+        runningSession.batchId === decodeURIComponent(req.params.batchId) &&
+        runningSession.sessionId === decodeURIComponent(req.params.sessionId)
+      ) {
+        return runningSession
+      }
+    })
+    if (runningSession) {
+      res.send(runningSession)
+    } else {
+      res.status(404).send()
+    }
+  })
+
   // stopSession
   app.delete('/api/sessions/running/:id', (req, res) => {
     const {aborted: _aborted, updateBaseline: _updateBaseline} = req.query
@@ -265,8 +282,8 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
   function createTestResultFromRunningSession(runningSession) {
     const status = runningSession.steps.every(x => !!x.asExpected)
       ? 'Passed' // TestResultsStatus.Passed
-      : 'Failed' //TestResultsStatus.Failed
-    // TODO TestResultsStatus.Unresolved
+      : 'Unresolved' //TestResultsStatus.Unresolved
+    // TODO TestResultsStatus.Failed
 
     const stepsInfo = runningSession.steps.map(({matchWindowData, asExpected}) => {
       return {
@@ -282,12 +299,12 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
     return {
       name: runningSession.startInfo.scenarioIdOrName,
       secretToken: 'bla',
-      id: runningSession.id, // TODO runningSession.sessionId, but then how do we query the server for data based on test results? it only has running sessions. We'd need to copy those into sessions. Should we just have the same sessionId and id?
+      id: runningSession.sessionId,
       status,
       appName: runningSession.startInfo.appIdOrName,
       baselineId: runningSession.baselineId,
-      batchName: runningSession.startInfo.batchName,
-      batchId: runningSession.startInfo.batchId,
+      batchName: runningSession.startInfo.batchInfo.name,
+      batchId: runningSession.startInfo.batchInfo.id,
       hostOS: runningSession.hostOS,
       hostApp: runningSession.hostApp,
       hostDisplaySize: runningSession.startInfo.environment.displaySize || {width: 7, height: 8},
