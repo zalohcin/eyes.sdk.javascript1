@@ -6,6 +6,7 @@ const {
   Configuration,
   MatchLevel,
   AccessibilityLevel,
+  AccessibilityVersion,
   RectangleSize,
   StitchMode,
   BatchInfo,
@@ -244,7 +245,6 @@ describe('Configuration', () => {
       const configuration = new Configuration()
 
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Strict)
-      assert.strictEqual(configuration.getAccessibilityValidation(), AccessibilityLevel.None)
       assert.strictEqual(configuration.getIgnoreCaret(), true)
       assert.strictEqual(configuration.getUseDom(), false)
       assert.strictEqual(configuration.getEnablePatterns(), false)
@@ -254,7 +254,10 @@ describe('Configuration', () => {
     it('set values', () => {
       const configuration = new Configuration()
       configuration.setMatchLevel(MatchLevel.Content)
-      configuration.setAccessibilityValidation(AccessibilityLevel.AA)
+      configuration.setAccessibilityValidation({
+        level: AccessibilityLevel.AA,
+        version: AccessibilityVersion.WCAG_2_0,
+      })
       configuration.setIgnoreCaret(false)
       configuration.setUseDom(true)
       configuration.setEnablePatterns(true)
@@ -267,7 +270,10 @@ describe('Configuration', () => {
       })
 
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content)
-      assert.strictEqual(configuration.getAccessibilityValidation(), AccessibilityLevel.AA)
+      assert.deepStrictEqual(configuration.getAccessibilityValidation(), {
+        level: AccessibilityLevel.AA,
+        version: AccessibilityVersion.WCAG_2_0,
+      })
       assert.strictEqual(configuration.getIgnoreCaret(), false)
       assert.strictEqual(configuration.getUseDom(), true)
       assert.strictEqual(configuration.getEnablePatterns(), true)
@@ -287,7 +293,10 @@ describe('Configuration', () => {
     it('to object', () => {
       const configuration = new Configuration()
       configuration.setMatchLevel(MatchLevel.Content)
-      configuration.setAccessibilityValidation(AccessibilityLevel.AA)
+      configuration.setAccessibilityValidation({
+        level: AccessibilityLevel.AA,
+        version: AccessibilityVersion.WCAG_2_0,
+      })
       configuration.setIgnoreCaret(false)
       configuration.setUseDom(true)
       configuration.setEnablePatterns(true)
@@ -295,7 +304,7 @@ describe('Configuration', () => {
 
       assert.deepStrictEqual(configuration.toJSON().defaultMatchSettings, {
         matchLevel: 'Content',
-        accessibilityLevel: 'AA',
+        accessibilitySettings: {level: 'AA', version: 'WCAG_2_0'},
         enablePatterns: true,
         ignoreDisplacements: true,
         ignoreCaret: false,
@@ -314,7 +323,10 @@ describe('Configuration', () => {
       const configuration = new Configuration()
       configuration.setDefaultMatchSettings({
         matchLevel: 'Content',
-        accessibilityLevel: 'AA',
+        accessibilitySettings: {
+          level: AccessibilityLevel.AA,
+          version: AccessibilityVersion.WCAG_2_0,
+        },
         enablePatterns: true,
         ignoreDisplacements: true,
         ignoreCaret: false,
@@ -328,7 +340,10 @@ describe('Configuration', () => {
       })
 
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content)
-      assert.strictEqual(configuration.getAccessibilityValidation(), AccessibilityLevel.AA)
+      assert.deepStrictEqual(configuration.getAccessibilityValidation(), {
+        level: 'AA',
+        version: 'WCAG_2_0',
+      })
       assert.strictEqual(configuration.getIgnoreCaret(), false)
       assert.strictEqual(configuration.getUseDom(), true)
       assert.strictEqual(configuration.getEnablePatterns(), true)

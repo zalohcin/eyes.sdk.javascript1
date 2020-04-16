@@ -143,7 +143,7 @@ declare namespace Eyes {
        * The accessibility level to use for the screenshots
        * Default value: 'None'
        */
-      accessibilityLevel?:AccessibilityLevel
+      accessibilitySettings?:AccessibilitySettings
 
       /**
        * DEPRECATED, use batchNotify.
@@ -188,6 +188,12 @@ declare namespace Eyes {
   }
 
   type AccessibilityLevel = "None"|"AA"|"AAA"
+  type AccessibilityVersion = "WCAG_2_0"|"WCAG_2_1"
+
+  interface AccessibilitySettings {
+    level: AccessibilityLevel
+    version: AccessibilityVersion
+  }
 
   export namespace Check {
     interface Options {
@@ -271,12 +277,6 @@ declare namespace Eyes {
        * and not for normal production use.
        */
       sendDom?:boolean
-
-      /**
-       * The accessibility level to use for the screenshot
-       * Default value: 'None'
-       */
-      accessibilityLevel?:AccessibilityLevel
     }
 
     interface Selector {

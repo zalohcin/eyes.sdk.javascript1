@@ -172,11 +172,6 @@ class MatchWindowTask {
         matchLevel = this._eyes.getDefaultMatchSettings().getMatchLevel()
       }
 
-      let accessibilityLevel = checkSettings.getAccessibilityValidation()
-      if (TypeUtils.isNull(accessibilityLevel)) {
-        accessibilityLevel = this._eyes.getDefaultMatchSettings().getAccessibilityValidation()
-      }
-
       let ignoreCaret = checkSettings.getIgnoreCaret()
       if (TypeUtils.isNull(ignoreCaret)) {
         ignoreCaret = this._eyes.getDefaultMatchSettings().getIgnoreCaret()
@@ -199,7 +194,6 @@ class MatchWindowTask {
 
       imageMatchSettings = new ImageMatchSettings({
         matchLevel,
-        accessibilityLevel,
         exact: null,
         ignoreCaret,
         useDom,

@@ -6,6 +6,7 @@ const {
   TestResults,
   TestAccessibilityStatus,
   AccessibilityLevel,
+  AccessibilityVersion,
   AccessibilityStatus,
   TestResultsStatus,
 } = require('../../index')
@@ -108,7 +109,10 @@ describe('TestResults', () => {
       isAborted: false,
       defaultMatchSettings: {
         matchLevel: 'Strict',
-        accessibilityLevel: 'None',
+        accessibilitySettings: {
+          level: AccessibilityLevel.AA,
+          version: AccessibilityVersion.WCAG_2_0,
+        },
         ignore: [],
         strict: [],
         content: [],

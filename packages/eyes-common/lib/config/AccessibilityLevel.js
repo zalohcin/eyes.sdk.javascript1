@@ -8,10 +8,6 @@
  */
 const AccessibilityLevel = {
   /**
-   * No accessibility - default level.
-   */
-  None: 'None',
-  /**
    * Low accessibility level.
    */
   AA: 'AA',

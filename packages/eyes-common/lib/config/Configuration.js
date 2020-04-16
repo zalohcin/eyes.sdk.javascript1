@@ -1245,6 +1245,7 @@ class Configuration {
       enablePatterns: this.getEnablePatterns(),
       ignoreDisplacements: this.getIgnoreDisplacements(),
       saveDebugData: this.getSaveDebugData(),
+      accessibilitySettings: this.getAccessibilityValidation(),
     }
   }
 

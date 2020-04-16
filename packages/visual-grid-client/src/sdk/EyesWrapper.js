@@ -87,8 +87,8 @@ class EyesWrapper extends EyesBase {
     this.agentId = agentId
   }
 
-  setAccessibilityValidation(accessibilityLevel) {
-    this._configuration.getDefaultMatchSettings().setAccessibilityValidation(accessibilityLevel)
+  setAccessibilityValidation(value) {
+    this._configuration.getDefaultMatchSettings().setAccessibilityValidation(value)
   }
 
   /**

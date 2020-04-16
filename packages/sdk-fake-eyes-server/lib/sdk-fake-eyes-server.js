@@ -68,7 +68,6 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
             const imageResource = Object.values(rendering.resources).find(
               ({contentType}) => contentType === 'application/x-applitools-screenshot',
             )
-            debugger
             const imageLocation = `${serverUrl}/api/resources/image_${renderId}`
             const domLocation = `${serverUrl}/api/resources/dom_${renderId}`
             await fetch(imageLocation, {

@@ -42,7 +42,7 @@ function configureWrappers({
   envName,
   ignoreCaret,
   matchLevel,
-  accessibilityLevel,
+  accessibilitySettings,
   parentBranch,
   branch,
   proxy,
@@ -74,7 +74,7 @@ function configureWrappers({
     ignoreCaret !== undefined && wrapper.setIgnoreCaret(ignoreCaret)
     isDisabled !== undefined && wrapper.setIsDisabled(isDisabled)
     matchLevel !== undefined && wrapper.setMatchLevel(matchLevel)
-    accessibilityLevel !== undefined && wrapper.setAccessibilityValidation(accessibilityLevel)
+    accessibilitySettings !== undefined && wrapper.setAccessibilityValidation(accessibilitySettings)
     useDom !== undefined && wrapper.setUseDom(useDom)
     enablePatterns !== undefined && wrapper.setEnablePatterns(enablePatterns)
     ignoreDisplacements !== undefined && wrapper.setIgnoreDisplacements(ignoreDisplacements)

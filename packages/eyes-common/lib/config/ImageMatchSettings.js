@@ -5,11 +5,18 @@ const {GeneralUtils} = require('../utils/GeneralUtils')
 const {TypeUtils} = require('../utils/TypeUtils')
 const {MatchLevel} = require('./MatchLevel')
 const {AccessibilityLevel} = require('./AccessibilityLevel')
+const {AccessibilityVersion} = require('./AccessibilityVersion')
 const {ExactMatchSettings} = require('./ExactMatchSettings')
+
+/**
+ * @typedef AccessibilitySettings
+ * @type {object}
+ * @property {AccessibilityLevel} level - accessibility level.
+ * @property {AccessibilityVersion} version - accessibility version.
+ */
 
 const DEFAULT_VALUES = {
   matchLevel: MatchLevel.Strict,
-  accessibilityLevel: AccessibilityLevel.None,
   ignoreCaret: true,
   useDom: false,
   enablePatterns: false,
@@ -33,7 +40,7 @@ class ImageMatchSettings {
    * @param {Region[]} [content]
    * @param {AccessibilityMatchSettings[]} [accessibility]
    * @param {FloatingMatchSettings[]} [floating]
-   * @param {AccessibilityLevel} [accessibilityLevel]
+   * @param {AccessibilitySettings[]} [accessibilitySettings]
    */
   constructor(imageMatchSettings) {
     if (arguments.length > 1) {
@@ -57,11 +64,14 @@ class ImageMatchSettings {
       content,
       accessibility,
       floating,
-      accessibilityLevel,
+      accessibilitySettings,
     } = imageMatchSettings || {}
 
     ArgumentGuard.isValidEnumValue(matchLevel, MatchLevel, false)
-    ArgumentGuard.isValidEnumValue(accessibilityLevel, AccessibilityLevel, false)
+    if (accessibilitySettings) {
+      ArgumentGuard.isValidEnumValue(accessibilitySettings.level, AccessibilityLevel)
+      ArgumentGuard.isValidEnumValue(accessibilitySettings.version, AccessibilityVersion)
+    }
     ArgumentGuard.isBoolean(ignoreCaret, 'ignoreCaret', false)
     ArgumentGuard.isBoolean(useDom, 'useDom', false)
     ArgumentGuard.isBoolean(enablePatterns, 'enablePatterns', false)
@@ -75,10 +85,6 @@ class ImageMatchSettings {
     ArgumentGuard.isValidType(exact, ExactMatchSettings, false)
 
     this._matchLevel = TypeUtils.getOrDefault(matchLevel, DEFAULT_VALUES.matchLevel)
-    this._accessibilityLevel = TypeUtils.getOrDefault(
-      accessibilityLevel,
-      DEFAULT_VALUES.accessibilityLevel,
-    )
     this._ignoreCaret = TypeUtils.getOrDefault(ignoreCaret, DEFAULT_VALUES.ignoreCaret)
     this._useDom = TypeUtils.getOrDefault(useDom, DEFAULT_VALUES.useDom)
     this._enablePatterns = TypeUtils.getOrDefault(enablePatterns, DEFAULT_VALUES.enablePatterns)
@@ -98,6 +104,8 @@ class ImageMatchSettings {
     this._contentRegions = content || []
     /** @type {AccessibilityMatchSettings[]} */
     this._accessibilityMatchSettings = accessibility || []
+    /** @type {AccessibilitySettings[]} */
+    this._accessibilitySettings = accessibilitySettings
     /** @type {FloatingMatchSettings[]} */
     this._floatingMatchSettings = floating || []
   }
@@ -121,15 +129,16 @@ class ImageMatchSettings {
    * @return {AccessibilityLevel} - The accessablity level to use.
    */
   getAccessibilityValidation() {
-    return this._accessibilityLevel
+    return this._accessibilitySettings
   }
 
   /**
    * @param {AccessibilityLevel} value - The accessablity level to use.
    */
   setAccessibilityValidation(value) {
-    ArgumentGuard.isValidEnumValue(value, AccessibilityLevel)
-    this._accessibilityLevel = value
+    ArgumentGuard.isValidEnumValue(value.level, AccessibilityLevel)
+    ArgumentGuard.isValidEnumValue(value.version, AccessibilityVersion)
+    this._accessibilitySettings = value
   }
 
   /**
