@@ -58,17 +58,11 @@ function configAxiosProxy({axiosConfig, proxy, logger}) {
   logger.log('proxy is set as http only, using tunnel', proxyObject.host, proxyObject.port)
 }
 
-function configAxiosFromConfiguration({axiosConfig, configuration, logger}) {
+function configureAxios({axiosConfig, configuration, logger}) {
   axiosConfig.params = axiosConfig.params || {}
-  axiosConfig.headers = axiosConfig.headers || {}
-
   if (axiosConfig.withApiKey && !('apiKey' in axiosConfig.params)) {
     axiosConfig.params.apiKey = configuration.getApiKey()
   }
-  if (!(CUSTOM_HEADER_NAMES.AGENT_ID in axiosConfig.headers)) {
-    axiosConfig.headers[CUSTOM_HEADER_NAMES.AGENT_ID] = configuration.getFullAgentId()
-  }
-
   if (!('removeSession' in axiosConfig.params)) {
     const removeSession = configuration.getRemoveSession()
     if (TypeUtils.isNotNull(removeSession)) {
@@ -87,10 +81,11 @@ function configAxiosFromConfiguration({axiosConfig, configuration, logger}) {
       configAxiosProxy({axiosConfig, proxy, logger})
     }
   }
-}
 
-function configureAxios({axiosConfig}) {
   axiosConfig.headers = axiosConfig.headers || {}
+  if (!(CUSTOM_HEADER_NAMES.AGENT_ID in axiosConfig.headers)) {
+    axiosConfig.headers[CUSTOM_HEADER_NAMES.AGENT_ID] = configuration.getFullAgentId()
+  }
   if (!(CUSTOM_HEADER_NAMES.REQUEST_ID in axiosConfig.headers)) {
     axiosConfig.headers[CUSTOM_HEADER_NAMES.REQUEST_ID] = axiosConfig.requestId
   }
@@ -208,7 +203,6 @@ async function handleRequestError({err, axios, logger}) {
 }
 
 exports.configAxiosProxy = configAxiosProxy
-exports.configAxiosFromConfiguration = configAxiosFromConfiguration
 exports.configureAxios = configureAxios
 exports.delayRequest = delayRequest
 

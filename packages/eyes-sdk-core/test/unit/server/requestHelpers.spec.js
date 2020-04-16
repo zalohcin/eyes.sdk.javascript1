@@ -5,7 +5,6 @@ const Axios = require('axios')
 const {ProxySettings, Logger, Configuration} = require('@applitools/eyes-common')
 const {
   configureAxios,
-  configAxiosFromConfiguration,
   configAxiosProxy,
   handleRequestError,
 } = require('../../../lib/server/requestHelpers')
@@ -13,24 +12,10 @@ const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
 describe('requestHelpers', () => {
   it('configureAxios works', () => {
+    const APPLITOOLS_API_KEY = process.env.APPLITOOLS_API_KEY || 'ApiKey'
     const REQUEST_ID = 'RequestId'
     const TIMESTAMP = new Date()
-    const axiosConfig = {
-      requestId: REQUEST_ID,
-      timestamp: TIMESTAMP,
-    }
 
-    configureAxios({axiosConfig})
-
-    assert.deepStrictEqual(axiosConfig.headers, {
-      'x-applitools-eyes-client-request-id': REQUEST_ID,
-      'Eyes-Expect': '202+location',
-      'Eyes-Date': TIMESTAMP.toUTCString(),
-    })
-  })
-
-  it('configAxiosFromConfiguration works', () => {
-    const APPLITOOLS_API_KEY = process.env.APPLITOOLS_API_KEY || 'ApiKey'
     const configuration = new Configuration()
     configuration.setApiKey(APPLITOOLS_API_KEY)
     configuration.setBaseAgentId('testAgent')
@@ -44,12 +29,11 @@ describe('requestHelpers', () => {
       method: 'POST',
       url: 'https://some.url/some/api',
       data: {},
+      requestId: REQUEST_ID,
+      timestamp: TIMESTAMP,
     }
-    configAxiosFromConfiguration({
-      axiosConfig,
-      configuration: configuration,
-      logger,
-    })
+
+    configureAxios({axiosConfig, configuration, logger})
 
     assert.deepStrictEqual(axiosConfig, {
       withApiKey: true,
@@ -58,8 +42,13 @@ describe('requestHelpers', () => {
       params: {
         apiKey: APPLITOOLS_API_KEY,
       },
+      requestId: REQUEST_ID,
+      timestamp: TIMESTAMP,
       headers: {
         'x-applitools-eyes-client': 'testAgent',
+        'x-applitools-eyes-client-request-id': REQUEST_ID,
+        'Eyes-Expect': '202+location',
+        'Eyes-Date': TIMESTAMP.toUTCString(),
       },
       data: {},
       proxy: {

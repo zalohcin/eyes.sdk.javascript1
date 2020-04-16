@@ -9,7 +9,6 @@ const {RenderingInfo} = require('./RenderingInfo')
 const {RunningSession} = require('./RunningSession')
 const {
   configureAxios,
-  configAxiosFromConfiguration,
   delayRequest,
   handleRequestResponse,
   handleRequestError,
@@ -103,12 +102,7 @@ class ServerConnector {
     this._axios.interceptors.request.use(async config => {
       const axiosConfig = Object.assign({}, this._axios.defaults, config)
       axiosConfig.requestId = axiosConfig.createRequestId()
-      configureAxios({axiosConfig})
-      configAxiosFromConfiguration({
-        axiosConfig,
-        configuration: this._configuration,
-        logger: this._logger,
-      })
+      configureAxios({axiosConfig, configuration: this._configuration, logger: this._logger})
 
       this._logger.verbose(
         `axios request interceptor - ${axiosConfig.name} [${axiosConfig.requestId}${
