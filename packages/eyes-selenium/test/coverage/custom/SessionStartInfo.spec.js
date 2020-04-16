@@ -4,14 +4,15 @@ const path = require('path')
 const assert = require('assert')
 const fetch = require('node-fetch')
 const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
-const {fakeDriver} = require('../../util/fake-driver')
+const {fakeDriverServer} = require('../../util/fake-driver-server')
 const {Eyes, Logger, Target, ConsoleLogHandler, TestResultsStatus} = require('../../../index')
+const {Builder} = require('selenium-webdriver')
 
 const fixturesPath = path.resolve(__dirname, '../../fixtures')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
 describe('SessionStartInfo', () => {
-  let server, serverUrl
+  let server, serverUrl, driver
 
   before(async () => {
     server = await fakeEyesServer({
@@ -20,15 +21,24 @@ describe('SessionStartInfo', () => {
       updateFixtures: process.env.APPLITOOLS_UPDATE_FIXTURES,
     })
     serverUrl = `http://localhost:${server.port}`
+    fakeDriverServer()
   })
 
   after(async () => {
     await server.close()
   })
 
+  beforeEach(async () => {
+    driver = await new Builder()
+      .withCapabilities({
+        browserName: 'chrome',
+      })
+      .usingServer('http://localhost:4444')
+      .build()
+  })
+
   it('sends correct data in startSession in classic mode', async () => {
     const eyes = setupEyes()
-    const driver = fakeDriver()
 
     const configuration = eyes.getConfiguration()
     configuration.setIgnoreDisplacements(true)
