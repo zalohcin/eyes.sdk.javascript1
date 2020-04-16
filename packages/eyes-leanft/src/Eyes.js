@@ -71,11 +71,11 @@
     EyesBase.call(this, this._promiseFactory, serverUrl || EyesBase.DEFAULT_EYES_SERVER, isDisabled)
   }
 
+  Eyes.prototype = new EyesBase()
+  Eyes.prototype.constructor = Eyes
   Eyes.prototype._getBaseAgentId = function() {
     return 'leanft-js/' + VERSION
   }
-  Eyes.prototype = new EyesBase()
-  Eyes.prototype.constructor = Eyes
 
   //noinspection JSUnusedGlobalSymbols
   /**

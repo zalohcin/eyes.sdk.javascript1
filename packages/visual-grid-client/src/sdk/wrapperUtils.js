@@ -2,10 +2,7 @@
 const EyesWrapper = require('./EyesWrapper')
 const {RectangleSize, TypeUtils} = require('@applitools/eyes-sdk-core')
 
-function initWrappers({count, agentId, apiKey, logHandler, getBatchInfoWithCache}) {
-  if (agentId) {
-    EyesWrapper.prototype.getBaseAgentId = () => agentId
-  }
+function initWrappers({count, apiKey, logHandler, getBatchInfoWithCache}) {
   return Array.from(
     new Array(count),
     () => new EyesWrapper({apiKey, logHandler, getBatchInfoWithCache}),
@@ -54,6 +51,7 @@ function configureWrappers({
   compareWithParentBranch,
   ignoreBaseline,
   serverUrl,
+  agentId,
   useDom,
   enablePatterns,
   ignoreDisplacements,
@@ -89,6 +87,7 @@ function configureWrappers({
       wrapper.setCompareWithParentBranch(compareWithParentBranch)
     ignoreBaseline !== undefined && wrapper.setIgnoreBaseline(ignoreBaseline)
     serverUrl !== undefined && wrapper.setServerUrl(serverUrl)
+    agentId !== undefined && wrapper.setBaseAgentId(agentId)
   }
 }
 
@@ -127,9 +126,10 @@ function openWrappers({
 }
 
 function createRenderWrapper({serverUrl, apiKey, logHandler, proxy, agentId}) {
-  const wrapper = new EyesWrapper({agentId, apiKey, logHandler})
+  const wrapper = new EyesWrapper({apiKey, logHandler})
   serverUrl !== undefined && wrapper.setServerUrl(serverUrl)
   proxy !== undefined && wrapper.setProxy(proxy)
+  agentId !== undefined && wrapper.setBaseAgentId(agentId)
   return wrapper
 }
 

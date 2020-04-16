@@ -49,17 +49,16 @@
    * @param {Logger} logger
    * @constructor
    **/
-  function ServerConnector({promiseFactory, serverUrl, logger, agentId}) {
-    ArgumentGuard.notNullOrEmpty(agentId, 'agentId')
-
+  function ServerConnector({promiseFactory, serverUrl, logger, getAgentId}) {
     this._promiseFactory = promiseFactory
+    this._getAgentId = getAgentId
     this._logger = logger
     this._runKey = undefined
     this._renderingInfo = undefined
     this._httpOptions = {
       proxy: null,
       strictSSL: false,
-      headers: {...DEFAULT_HEADERS, [AGENT_ID_HEADER]: agentId},
+      headers: DEFAULT_HEADERS,
       timeout: TIMEOUT,
       qs: {},
     }
@@ -517,6 +516,7 @@
     options = options || {}
 
     const req = GeneralUtils.clone(that._httpOptions)
+    req.headers = {...req.headers, [AGENT_ID_HEADER]: that._getAgentId()}
     req.uri = uri
     req.method = method
     if (options.query) req.qs = GeneralUtils.objectAssign(req.qs, options.query)

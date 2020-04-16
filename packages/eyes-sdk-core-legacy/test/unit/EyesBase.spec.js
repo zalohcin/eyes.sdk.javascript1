@@ -5,7 +5,6 @@ const EyesSDK = require('../../index')
 const PromiseFactory = require('eyes.utils').PromiseFactory
 
 const EyesBase = EyesSDK.EyesBase
-EyesBase.prototype._getBaseAgentId = () => 'testAgent'
 
 describe('EyesBase', function() {
   /** @type {EyesBase} */ var eyes

@@ -16,9 +16,9 @@ describe('requestHelpers', () => {
     const REQUEST_ID = 'RequestId'
     const TIMESTAMP = new Date()
 
+    const agentId = 'testAgent'
     const configuration = new Configuration()
     configuration.setApiKey(APPLITOOLS_API_KEY)
-    configuration.setBaseAgentId('testAgent')
     configuration.setProxy({
       url: 'http://some.proxy.url:3000',
       username: 'username',
@@ -33,7 +33,7 @@ describe('requestHelpers', () => {
       timestamp: TIMESTAMP,
     }
 
-    configureAxios({axiosConfig, configuration, logger})
+    configureAxios({axiosConfig, configuration, logger, agentId})
 
     assert.deepStrictEqual(axiosConfig, {
       withApiKey: true,

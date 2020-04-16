@@ -31,7 +31,6 @@ const STRING_CONFIGS = [
   '_hostAppInfo',
   '_hostOSInfo',
   '_deviceInfo',
-  '_baseAgentId',
 ]
 
 const BOOLEAN_CONFIGS = [
@@ -489,28 +488,5 @@ describe('Configuration', () => {
     assert.strictEqual(result.batch.getId(), conf.batch.id)
     assert.strictEqual(result.batch.getName(), conf.batch.name)
     assert.strictEqual(result.batch.getNotifyOnCompletion(), conf.batch.notifyOnCompletion)
-  })
-
-  describe('getFullAgentId', () => {
-    it('works with base agent id only', () => {
-      const configuration = new Configuration()
-      configuration.setBaseAgentId('base id')
-      assert.strictEqual(configuration.getFullAgentId(), 'base id')
-    })
-
-    it('works with base agent and user set agent id', () => {
-      const configuration = new Configuration()
-      configuration.setBaseAgentId('some-sdk')
-      configuration.setAgentId('custom')
-      assert.strictEqual(configuration.getFullAgentId(), 'custom [some-sdk]')
-    })
-
-    it('thorws when no base agent id was not set', () => {
-      const configuration = new Configuration()
-      configuration.setAgentId('custom')
-      assert.throws(() => {
-        configuration.getFullAgentId()
-      })
-    })
   })
 })

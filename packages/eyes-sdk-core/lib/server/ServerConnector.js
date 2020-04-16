@@ -79,7 +79,7 @@ class ServerConnector {
    * @param {Logger} logger
    * @param {Configuration} configuration
    */
-  constructor(logger, configuration) {
+  constructor({logger, configuration, getAgentId}) {
     this._logger = logger
     this._configuration = configuration
 
@@ -102,7 +102,12 @@ class ServerConnector {
     this._axios.interceptors.request.use(async config => {
       const axiosConfig = Object.assign({}, this._axios.defaults, config)
       axiosConfig.requestId = axiosConfig.createRequestId()
-      configureAxios({axiosConfig, configuration: this._configuration, logger: this._logger})
+      configureAxios({
+        axiosConfig,
+        configuration: this._configuration,
+        logger: this._logger,
+        agentId: getAgentId(),
+      })
 
       this._logger.verbose(
         `axios request interceptor - ${axiosConfig.name} [${axiosConfig.requestId}${

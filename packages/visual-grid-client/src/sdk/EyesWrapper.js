@@ -77,6 +77,15 @@ class EyesWrapper extends EyesBase {
     return // TODO is this good?
   }
 
+  /** @override */
+  getBaseAgentId() {
+    return this._baseAgentId || `visual-grid-client/${VERSION}`
+  }
+
+  setBaseAgentId(baseAgentId) {
+    this._baseAgentId = baseAgentId
+  }
+
   setAccessibilityValidation(accessibilityLevel) {
     this._configuration.getDefaultMatchSettings().setAccessibilityValidation(accessibilityLevel)
   }
@@ -176,14 +185,6 @@ class EyesWrapper extends EyesBase {
 
   setInferredEnvironment(value) {
     this.inferredEnvironment = value
-  }
-
-  /**
-   * @override
-   */
-  getBaseAgentId() {
-    // default
-    return `visual-grid-client/${VERSION}`
   }
 
   async getAndSaveRenderingInfo() {

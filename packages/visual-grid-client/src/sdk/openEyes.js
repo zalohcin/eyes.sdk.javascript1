@@ -171,7 +171,6 @@ function makeOpenEyes({
         apiKey,
         logHandler: logger.getLogHandler(),
         getBatchInfoWithCache,
-        agentId,
       })
 
     configureWrappers({
@@ -199,6 +198,7 @@ function makeOpenEyes({
       compareWithParentBranch,
       ignoreBaseline,
       serverUrl,
+      agentId,
     })
 
     if (!globalState.batchStore.hasCloseBatch()) {

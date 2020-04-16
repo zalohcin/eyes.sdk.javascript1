@@ -200,7 +200,7 @@
       promiseFactory,
       serverUrl: this._serverUrl,
       logger: this._logger,
-      agentId: this._getFullAgentId(),
+      getAgentId: this._getFullAgentId.bind(this),
     })
     this._positionProvider = null
     this._scaleProviderHandler = new SimplePropertyHandler(new NullScaleProvider())

@@ -11,9 +11,9 @@ const getResource = fileName => fs.readFileSync(getResourcePath(fileName))
 
 const getResourceAsText = fileName => fs.readFileSync(getResourcePath(fileName), 'utf8').trim()
 
-class FakeEyes extends EyesBase {
+class EyesBaseImpl extends EyesBase {
   getBaseAgentId() {
-    return 'fakeAgentId'
+    return 'implBaseAgent'
   }
   getAndSetBatchInfo() {}
   getAndSaveRenderingInfo() {}
@@ -23,4 +23,4 @@ class FakeEyes extends EyesBase {
 exports.getResourcePath = getResourcePath
 exports.getResource = getResource
 exports.getResourceAsText = getResourceAsText
-exports.FakeEyes = FakeEyes
+exports.EyesBaseImpl = EyesBaseImpl

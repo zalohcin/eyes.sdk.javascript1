@@ -58,7 +58,7 @@ function configAxiosProxy({axiosConfig, proxy, logger}) {
   logger.log('proxy is set as http only, using tunnel', proxyObject.host, proxyObject.port)
 }
 
-function configureAxios({axiosConfig, configuration, logger}) {
+function configureAxios({axiosConfig, configuration, agentId, logger}) {
   axiosConfig.params = axiosConfig.params || {}
   if (axiosConfig.withApiKey && !('apiKey' in axiosConfig.params)) {
     axiosConfig.params.apiKey = configuration.getApiKey()
@@ -84,7 +84,7 @@ function configureAxios({axiosConfig, configuration, logger}) {
 
   axiosConfig.headers = axiosConfig.headers || {}
   if (!(CUSTOM_HEADER_NAMES.AGENT_ID in axiosConfig.headers)) {
-    axiosConfig.headers[CUSTOM_HEADER_NAMES.AGENT_ID] = configuration.getFullAgentId()
+    axiosConfig.headers[CUSTOM_HEADER_NAMES.AGENT_ID] = agentId
   }
   if (!(CUSTOM_HEADER_NAMES.REQUEST_ID in axiosConfig.headers)) {
     axiosConfig.headers[CUSTOM_HEADER_NAMES.REQUEST_ID] = axiosConfig.requestId

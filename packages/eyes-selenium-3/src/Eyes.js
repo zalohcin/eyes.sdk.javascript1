@@ -77,9 +77,9 @@
     EyesBase.call(this, this._promiseFactory, serverUrl || EyesBase.DEFAULT_EYES_SERVER, isDisabled)
   }
 
-  Eyes.prototype._getBaseAgentId = () => 'eyes.selenium.javascript/' + VERSION
   Eyes.prototype = new EyesBase()
   Eyes.prototype.constructor = Eyes
+  Eyes.prototype._getBaseAgentId = () => 'eyes.selenium.javascript/' + VERSION
 
   function _init(that, flow) {
     // Set PromiseFactory to work with the protractor control flow and promises

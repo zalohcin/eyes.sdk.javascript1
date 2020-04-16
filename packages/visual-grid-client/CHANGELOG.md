@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- setting eyes agent id on wrapper creation
+
 
 ## 13.6.13 - 2020/4/7
 

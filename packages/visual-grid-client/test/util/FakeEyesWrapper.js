@@ -388,8 +388,12 @@ class FakeEyesWrapper extends EventEmitter {
     this.deviceInfo = value
   }
 
+  setBaseAgentId(value) {
+    this.baseAgentId = value
+  }
+
   getBaseAgentId() {
-    return 'fake wrapper'
+    return this.baseAgentId || 'fake wrapper'
   }
 
   getApiKey() {
