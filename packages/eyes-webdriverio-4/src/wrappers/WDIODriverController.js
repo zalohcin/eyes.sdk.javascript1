@@ -4,8 +4,8 @@ const {
   RectangleSize,
   Region,
   MutableImage,
+  EyesDriverOperationError,
 } = require('@applitools/eyes-sdk-core')
-const EyesDriverOperationError = require('../errors/EyesDriverOperationError')
 
 class WDIODriverController {
   constructor(logger, driver) {
