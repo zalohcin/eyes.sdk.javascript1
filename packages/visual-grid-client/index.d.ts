@@ -187,7 +187,7 @@ declare namespace Eyes {
     }
   }
 
-  type AccessibilityLevel = "None"|"AA"|"AAA"
+  type AccessibilityLevel = "AA"|"AAA"
   type AccessibilityVersion = "WCAG_2_0"|"WCAG_2_1"
 
   interface AccessibilitySettings {
