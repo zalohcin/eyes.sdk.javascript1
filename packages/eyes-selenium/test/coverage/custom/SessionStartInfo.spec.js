@@ -14,6 +14,7 @@ const {
   TestResultsStatus,
   AccessibilityLevel,
   AccessibilityVersion,
+  Configuration,
 } = require('../../../index')
 const {Builder} = require('selenium-webdriver')
 
@@ -46,61 +47,68 @@ describe('SessionStartInfo', () => {
       .build()
   })
 
-  it('sends correct data in startSession in classic mode', async () => {
-    const eyes = setupEyes()
-    configureEyes(eyes)
-
-    await eyes.open(driver, 'SessionStartInfo', 'classic')
-    await eyes.check('bla', Target.window())
-    const testResults = await eyes.close(false)
-    assert.strictEqual(testResults.getStatus(), TestResultsStatus.Passed) // sanity check
-
-    const {startInfo} = await getSession(testResults)
-
-    assert.strictEqual(startInfo.defaultMatchSettings.ignoreDisplacements, true)
-    assert.deepStrictEqual(startInfo.defaultMatchSettings.accessibilitySettings, {
-      level: 'AA',
-      version: 'WCAG_2_0',
+  describe('AccessibilityValidation', () => {
+    const configuration = new Configuration({
+      defaultMatchSettings: {
+        accessibilitySettings: {
+          level: AccessibilityLevel.AA,
+          version: AccessibilityVersion.WCAG_2_0,
+        },
+      },
     })
+
+    it('TestAccessibiltyValidation', async () => {
+      await runTest()
+    })
+
+    it('TestAccessibiltyValidation_VG', async () => {
+      await runTest(new VisualGridRunner())
+    })
+
+    async function runTest(runner) {
+      const eyes = setupEyes({runner, configuration})
+
+      await eyes.open(driver, 'SessionStartInfo', 'classic')
+      await eyes.check('bla', Target.window())
+      const testResults = await eyes.close(false)
+      assert.strictEqual(testResults.getStatus(), TestResultsStatus.Passed) // sanity check
+
+      const {startInfo} = await getSession(testResults)
+
+      assert.deepStrictEqual(startInfo.defaultMatchSettings.accessibilitySettings, {
+        level: 'AA',
+        version: 'WCAG_2_0',
+      })
+
+      // reset value
+      eyes.setConfiguration(eyes.getConfiguration().setAccessibilityValidation())
+
+      await eyes.open(driver, 'SessionStartInfo', 'classic')
+      await eyes.check('bla', Target.window())
+      const testResultsWithoutAccessibility = await eyes.close(false)
+      assert.strictEqual(testResultsWithoutAccessibility.getStatus(), TestResultsStatus.Passed) // sanity check
+
+      const {startInfo: startInfoWithoutAccessibility} = await getSession(
+        testResultsWithoutAccessibility,
+      )
+
+      assert.strictEqual(
+        startInfoWithoutAccessibility.defaultMatchSettings.accessibilitySettings,
+        undefined,
+      )
+    }
   })
 
-  it('sends correct data in startSession in visual grid mode', async () => {
-    const eyes = setupEyes(new VisualGridRunner())
-    configureEyes(eyes)
-
-    await eyes.open(driver, 'SessionStartInfo', 'vg')
-    await eyes.check('bla', Target.window())
-    const testResults = await eyes.close(false)
-    assert.strictEqual(testResults.getStatus(), TestResultsStatus.Passed) // sanity check
-
-    const {startInfo} = await getSession(testResults)
-
-    assert.strictEqual(startInfo.defaultMatchSettings.ignoreDisplacements, true)
-    assert.deepStrictEqual(startInfo.defaultMatchSettings.accessibilitySettings, {
-      level: 'AA',
-      version: 'WCAG_2_0',
-    })
-  })
-
-  function setupEyes(runner) {
+  function setupEyes({runner, configuration} = {}) {
     const eyes = new Eyes(runner)
-    eyes.setServerUrl(serverUrl)
-    eyes.setApiKey('fakeApiKey')
+    configuration.setServerUrl(serverUrl)
+    configuration.setApiKey('fakeApiKey')
     if (process.env.APPLITOOLS_SHOW_LOGS) {
       eyes.setLogHandler(new ConsoleLogHandler(true))
     }
-    eyes.setMatchTimeout(0)
-    return eyes
-  }
-
-  function configureEyes(eyes) {
-    const configuration = eyes.getConfiguration()
-    configuration.setIgnoreDisplacements(true)
-    configuration.setAccessibilityValidation({
-      level: AccessibilityLevel.AA,
-      version: AccessibilityVersion.WCAG_2_0,
-    })
+    configuration.setMatchTimeout(0)
     eyes.setConfiguration(configuration)
+    return eyes
   }
 
   async function getSession(testResults) {
