@@ -112,7 +112,7 @@ function makeHandlers({
       enablePatterns,
       ignoreDisplacements,
       referrer,
-      accessibilityLevel,
+      accessibilitySettings,
       accessibility,
     }) => {
       logger.log(`[handlers] checkWindow: checkWindow=${typeof checkWindow}`);
@@ -153,7 +153,7 @@ function makeHandlers({
         ignoreDisplacements,
         referrer,
         accessibility,
-        accessibilityLevel,
+        accessibilitySettings,
       });
     },
 

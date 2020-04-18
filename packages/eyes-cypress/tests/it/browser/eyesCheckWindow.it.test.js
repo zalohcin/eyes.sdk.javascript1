@@ -53,7 +53,7 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        accessibilityLevel: undefined,
+        accessibilitySettings: undefined,
         referrer: 'some ref',
       },
     });
@@ -122,7 +122,7 @@ describe('eyesCheckWindow', () => {
     const enablePatterns = 'enablePatterns';
     const ignoreDisplacements = 'ignoreDisplacements';
     const accessibility = 'accessibility';
-    const accessibilityLevel = 'accessibilityLevel';
+    const accessibilitySettings = 'accessibilitySettings';
 
     await eyesCheckWindow('bla doc', {
       tag,
@@ -142,7 +142,7 @@ describe('eyesCheckWindow', () => {
       enablePatterns,
       ignoreDisplacements,
       accessibility,
-      accessibilityLevel,
+      accessibilitySettings,
     });
 
     expect(sendRequestInput).to.eql({
@@ -174,7 +174,7 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements,
         referrer: 'some referrer',
         accessibility,
-        accessibilityLevel,
+        accessibilitySettings,
       },
     });
     expect(resourcesPutted).to.eql([
@@ -284,7 +284,7 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        accessibilityLevel: undefined,
+        accessibilitySettings: undefined,
         referrer: 'some ref',
       },
     });
@@ -370,7 +370,7 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements: undefined,
         referrer: 'some ref',
         accessibility: undefined,
-        accessibilityLevel: undefined,
+        accessibilitySettings: undefined,
       },
     });
     expect(resourcesPutted).to.eql([
@@ -443,7 +443,7 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        accessibilityLevel: undefined,
+        accessibilitySettings: undefined,
         referrer: 'some ref',
       },
     });

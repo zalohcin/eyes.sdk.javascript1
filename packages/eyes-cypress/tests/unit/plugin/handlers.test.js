@@ -145,7 +145,7 @@ describe('handlers', () => {
     const ignoreDisplacements = 'ignoreDisplacements';
     const referrer = 'referrer';
     const accessibility = 'accessibility';
-    const accessibilityLevel = 'accessibilityLevel';
+    const accessibilitySettings = 'accessibilitySettings';
     const resourceContents = {};
 
     const result = await handlers.checkWindow({
@@ -170,7 +170,7 @@ describe('handlers', () => {
       ignoreDisplacements,
       referrer,
       accessibility,
-      accessibilityLevel,
+      accessibilitySettings,
     });
 
     expect(result).to.eql({
@@ -198,7 +198,7 @@ describe('handlers', () => {
       frames: [],
       referrer,
       accessibility,
-      accessibilityLevel,
+      accessibilitySettings,
     });
   });
 
@@ -296,7 +296,7 @@ describe('handlers', () => {
       ignoreDisplacements: undefined,
       referrer: undefined,
       accessibility: undefined,
-      accessibilityLevel: undefined,
+      accessibilitySettings: undefined,
     });
   });
 
