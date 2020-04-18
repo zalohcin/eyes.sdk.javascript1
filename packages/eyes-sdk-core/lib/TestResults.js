@@ -338,51 +338,13 @@ class StepInfo {
   }
 }
 
-class TestAccessibilityStatus {
-  /**
-   * @param {AccessibilityStatus} status
-   * @param {AccessibilityLevel} level
-   */
-  constructor({status, level} = {}) {
-    this._status = status
-    this._level = level
-  }
-
-  /**
-   * @return {string}
-   */
-  getStatus() {
-    return this._status
-  }
-
-  /**
-   * @param {string} value
-   */
-  setStatus(value) {
-    this._status = value
-  }
-
-  /**
-   * @return {string}
-   */
-  getLevel() {
-    return this._level
-  }
-
-  /**
-   * @param {string} value
-   */
-  setLevel(value) {
-    this._level = value
-  }
-
-  /**
-   * @override
-   */
-  toJSON() {
-    return GeneralUtils.toPlain(this)
-  }
-}
+/**
+ * @typedef TestAccessibilityStatus
+ * @type {object}
+ * @property {AccessibilityLevel} level - accessibility level.
+ * @property {AccessibilityVersion} version - accessibility version.
+ * @property {AccessibilityStatus} starus - test accessibility version.
+ */
 
 /**
  * Eyes test results.
@@ -400,7 +362,7 @@ class TestResults {
    * @param {string} [hostOS]
    * @param {string} [hostApp]
    * @param {RectangleSize|object} [hostDisplaySize]
-   * @param {TestAccessibilityStatus|object} [accessibilityStatus]
+   * @param {TestAccessibilityStatus} [accessibilityStatus]
    * @param {Date|string} [startedAt]
    * @param {number} [duration]
    * @param {boolean} [isNew]
@@ -470,10 +432,6 @@ class TestResults {
 
     if (stepsInfo && stepsInfo.length > 0 && !(stepsInfo[0] instanceof StepInfo)) {
       stepsInfo = stepsInfo.map(step => new StepInfo(step))
-    }
-
-    if (accessibilityStatus && !(accessibilityStatus instanceof TestAccessibilityStatus)) {
-      accessibilityStatus = new TestAccessibilityStatus(accessibilityStatus)
     }
 
     this._id = id
@@ -975,4 +933,3 @@ class TestResults {
 }
 
 exports.TestResults = TestResults
-exports.TestAccessibilityStatus = TestAccessibilityStatus
