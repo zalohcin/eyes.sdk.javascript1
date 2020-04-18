@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- support accessibility validation
 
 ## 5.0.0 - 29/3/2020
 

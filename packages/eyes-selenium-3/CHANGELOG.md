@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- support accessibility validation
 
 ## 3.8.11 - 2020/3/29
 
