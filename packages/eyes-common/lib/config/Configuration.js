@@ -123,7 +123,9 @@ class Configuration {
     this._deviceInfo = undefined
 
     /** @type {ImageMatchSettings} */
-    this._defaultMatchSettings = new ImageMatchSettings()
+    this._defaultMatchSettings = new ImageMatchSettings(
+      configuration ? configuration.defaultMatchSettings : undefined,
+    )
 
     // classic (selenium)
     /** @type {boolean} */

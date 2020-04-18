@@ -320,23 +320,24 @@ describe('Configuration', () => {
     })
 
     it('from object', () => {
-      const configuration = new Configuration()
-      configuration.setDefaultMatchSettings({
-        matchLevel: 'Content',
-        accessibilitySettings: {
-          level: AccessibilityLevel.AA,
-          version: AccessibilityVersion.WCAG_2_0,
+      const configuration = new Configuration({
+        defaultMatchSettings: {
+          matchLevel: 'Content',
+          accessibilitySettings: {
+            level: AccessibilityLevel.AA,
+            version: AccessibilityVersion.WCAG_2_0,
+          },
+          enablePatterns: true,
+          ignoreDisplacements: true,
+          ignoreCaret: false,
+          useDom: true,
+          ignore: [],
+          content: [],
+          layout: [],
+          strict: [],
+          floating: [],
+          exact: undefined,
         },
-        enablePatterns: true,
-        ignoreDisplacements: true,
-        ignoreCaret: false,
-        useDom: true,
-        ignore: [],
-        content: [],
-        layout: [],
-        strict: [],
-        floating: [],
-        exact: undefined,
       })
 
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content)
@@ -351,8 +352,6 @@ describe('Configuration', () => {
     })
 
     it('invalid values - accessibilityValidation', () => {
-      const configuration = new Configuration()
-
       const invalidAccSettingsMessage =
         "IllegalArgument: accessibilityValidation should have the following properties: 'level,version'"
 
@@ -363,27 +362,9 @@ describe('Configuration', () => {
       // from object: invalid accessibilitySettings type
       assert.throws(
         () => {
-          configuration.setDefaultMatchSettings({
-            accessibilitySettings: 'bla',
-          })
-        },
-        {message: invalidAccSettingsMessage},
-      )
-
-      // setAccessibilityValidation: invalid accessibilitySettings type
-      assert.throws(
-        () => {
-          configuration.setAccessibilityValidation('bla')
-        },
-        {message: invalidAccSettingsMessage},
-      )
-
-      // from object: missing version
-      assert.throws(
-        () => {
-          configuration.setDefaultMatchSettings({
-            accessibilitySettings: {
-              level: 'bla',
+          new Configuration({
+            defaultMatchSettings: {
+              accessibilitySettings: 'bla',
             },
           })
         },
@@ -393,6 +374,30 @@ describe('Configuration', () => {
       // setAccessibilityValidation: invalid accessibilitySettings type
       assert.throws(
         () => {
+          const configuration = new Configuration()
+          configuration.setAccessibilityValidation('bla')
+        },
+        {message: invalidAccSettingsMessage},
+      )
+
+      // from object: missing version
+      assert.throws(
+        () => {
+          new Configuration({
+            defaultMatchSettings: {
+              accessibilitySettings: {
+                level: 'bla',
+              },
+            },
+          })
+        },
+        {message: invalidAccSettingsMessage},
+      )
+
+      // setAccessibilityValidation: invalid accessibilitySettings type
+      assert.throws(
+        () => {
+          const configuration = new Configuration()
           configuration.setAccessibilityValidation({
             accessibilitySettings: {
               level: 'bla',
@@ -405,10 +410,12 @@ describe('Configuration', () => {
       // from object: invalid accessibilityLevel value
       assert.throws(
         () => {
-          configuration.setDefaultMatchSettings({
-            accessibilitySettings: {
-              level: 'bla',
-              version: 'bla',
+          new Configuration({
+            defaultMatchSettings: {
+              accessibilitySettings: {
+                level: 'bla',
+                version: 'bla',
+              },
             },
           })
         },
@@ -418,6 +425,7 @@ describe('Configuration', () => {
       // setAccessibilityValidation: invalid accessibilityLevel value
       assert.throws(
         () => {
+          const configuration = new Configuration()
           configuration.setAccessibilityValidation({
             level: 'bla',
             version: 'bla',
@@ -429,10 +437,12 @@ describe('Configuration', () => {
       // from object: invalid accessibilityVersion value
       assert.throws(
         () => {
-          configuration.setDefaultMatchSettings({
-            accessibilitySettings: {
-              level: 'AA',
-              version: 'bla',
+          new Configuration({
+            defaultMatchSettings: {
+              accessibilitySettings: {
+                level: 'AA',
+                version: 'bla',
+              },
             },
           })
         },
@@ -442,11 +452,10 @@ describe('Configuration', () => {
       // setAccessibilityValidation: invalid accessibilityVersion value
       assert.throws(
         () => {
-          configuration.setDefaultMatchSettings({
-            accessibilitySettings: {
-              level: 'AA',
-              version: 'bla',
-            },
+          const configuration = new Configuration()
+          configuration.setAccessibilityValidation({
+            level: 'AA',
+            version: 'bla',
           })
         },
         {message: invalidAccVersionMessage},
