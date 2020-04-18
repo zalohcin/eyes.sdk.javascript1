@@ -53,7 +53,6 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        accessibilitySettings: undefined,
         referrer: 'some ref',
       },
     });
@@ -122,7 +121,6 @@ describe('eyesCheckWindow', () => {
     const enablePatterns = 'enablePatterns';
     const ignoreDisplacements = 'ignoreDisplacements';
     const accessibility = 'accessibility';
-    const accessibilitySettings = 'accessibilitySettings';
 
     await eyesCheckWindow('bla doc', {
       tag,
@@ -142,7 +140,6 @@ describe('eyesCheckWindow', () => {
       enablePatterns,
       ignoreDisplacements,
       accessibility,
-      accessibilitySettings,
     });
 
     expect(sendRequestInput).to.eql({
@@ -174,7 +171,6 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements,
         referrer: 'some referrer',
         accessibility,
-        accessibilitySettings,
       },
     });
     expect(resourcesPutted).to.eql([
@@ -284,7 +280,6 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        accessibilitySettings: undefined,
         referrer: 'some ref',
       },
     });
@@ -370,7 +365,6 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements: undefined,
         referrer: 'some ref',
         accessibility: undefined,
-        accessibilitySettings: undefined,
       },
     });
     expect(resourcesPutted).to.eql([
@@ -443,7 +437,6 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        accessibilitySettings: undefined,
         referrer: 'some ref',
       },
     });

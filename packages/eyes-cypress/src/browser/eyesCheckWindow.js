@@ -20,7 +20,6 @@ function makeEyesCheckWindow({sendRequest, processPage, win = window}) {
       useDom,
       enablePatterns,
       ignoreDisplacements,
-      accessibilitySettings,
       accessibility;
     if (typeof args === 'string') {
       tag = args;
@@ -41,7 +40,6 @@ function makeEyesCheckWindow({sendRequest, processPage, win = window}) {
       useDom = args.useDom;
       enablePatterns = args.enablePatterns;
       ignoreDisplacements = args.ignoreDisplacements;
-      accessibilitySettings = args.accessibilitySettings;
       accessibility = args.accessibility;
     }
 
@@ -73,7 +71,6 @@ function makeEyesCheckWindow({sendRequest, processPage, win = window}) {
             useDom,
             enablePatterns,
             ignoreDisplacements,
-            accessibilitySettings,
             accessibility,
             referrer: win.location.href,
           },
