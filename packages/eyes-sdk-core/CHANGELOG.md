@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- add AccessibilityVersion enum
+- remove accessibilityLevel from checkSettings
 
 ## 9.1.0 - 2020/4/5
 

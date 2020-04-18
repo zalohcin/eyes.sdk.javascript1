@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- support accessibilitySettings
 
 ## 13.6.13 - 2020/4/7
 

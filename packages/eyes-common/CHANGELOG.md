@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- add AccessibilityVersion enum
+- support AccessibilitySettings with level and version in defaultMatchSettings
+- support ability to specify defaultMatchSettings in Configuration c'tor
 
  ## 3.21.0 - 2020/4/5
 
