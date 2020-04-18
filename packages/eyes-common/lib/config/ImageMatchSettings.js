@@ -68,10 +68,6 @@ class ImageMatchSettings {
     } = imageMatchSettings || {}
 
     ArgumentGuard.isValidEnumValue(matchLevel, MatchLevel, false)
-    if (accessibilitySettings) {
-      ArgumentGuard.isValidEnumValue(accessibilitySettings.level, AccessibilityLevel)
-      ArgumentGuard.isValidEnumValue(accessibilitySettings.version, AccessibilityVersion)
-    }
     ArgumentGuard.isBoolean(ignoreCaret, 'ignoreCaret', false)
     ArgumentGuard.isBoolean(useDom, 'useDom', false)
     ArgumentGuard.isBoolean(enablePatterns, 'enablePatterns', false)
@@ -105,7 +101,7 @@ class ImageMatchSettings {
     /** @type {AccessibilityMatchSettings[]} */
     this._accessibilityMatchSettings = accessibility || []
     /** @type {AccessibilitySettings[]} */
-    this._accessibilitySettings = accessibilitySettings
+    this.setAccessibilityValidation(accessibilitySettings)
     /** @type {FloatingMatchSettings[]} */
     this._floatingMatchSettings = floating || []
   }
@@ -136,8 +132,11 @@ class ImageMatchSettings {
    * @param {AccessibilityLevel} value - The accessablity level to use.
    */
   setAccessibilityValidation(value) {
-    ArgumentGuard.isValidEnumValue(value.level, AccessibilityLevel)
-    ArgumentGuard.isValidEnumValue(value.version, AccessibilityVersion)
+    if (value) {
+      ArgumentGuard.hasProperties(value, ['level', 'version'], 'accessibilityValidation')
+      ArgumentGuard.isValidEnumValue(value.level, AccessibilityLevel)
+      ArgumentGuard.isValidEnumValue(value.version, AccessibilityVersion)
+    }
     this._accessibilitySettings = value
   }
 

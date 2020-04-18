@@ -349,6 +349,109 @@ describe('Configuration', () => {
       assert.strictEqual(configuration.getEnablePatterns(), true)
       assert.strictEqual(configuration.getIgnoreDisplacements(), true)
     })
+
+    it('invalid values - accessibilityValidation', () => {
+      const configuration = new Configuration()
+
+      const invalidAccSettingsMessage =
+        "IllegalArgument: accessibilityValidation should have the following properties: 'level,version'"
+
+      const invalidAccLevelMessage = "IllegalType: bla is not a valid 'AccessibilityLevel' value"
+      const invalidAccVersionMessage =
+        "IllegalType: bla is not a valid 'AccessibilityVersion' value"
+
+      // from object: invalid accessibilitySettings type
+      assert.throws(
+        () => {
+          configuration.setDefaultMatchSettings({
+            accessibilitySettings: 'bla',
+          })
+        },
+        {message: invalidAccSettingsMessage},
+      )
+
+      // setAccessibilityValidation: invalid accessibilitySettings type
+      assert.throws(
+        () => {
+          configuration.setAccessibilityValidation('bla')
+        },
+        {message: invalidAccSettingsMessage},
+      )
+
+      // from object: missing version
+      assert.throws(
+        () => {
+          configuration.setDefaultMatchSettings({
+            accessibilitySettings: {
+              level: 'bla',
+            },
+          })
+        },
+        {message: invalidAccSettingsMessage},
+      )
+
+      // setAccessibilityValidation: invalid accessibilitySettings type
+      assert.throws(
+        () => {
+          configuration.setAccessibilityValidation({
+            accessibilitySettings: {
+              level: 'bla',
+            },
+          })
+        },
+        {message: invalidAccSettingsMessage},
+      )
+
+      // from object: invalid accessibilityLevel value
+      assert.throws(
+        () => {
+          configuration.setDefaultMatchSettings({
+            accessibilitySettings: {
+              level: 'bla',
+              version: 'bla',
+            },
+          })
+        },
+        {message: invalidAccLevelMessage},
+      )
+
+      // setAccessibilityValidation: invalid accessibilityLevel value
+      assert.throws(
+        () => {
+          configuration.setAccessibilityValidation({
+            level: 'bla',
+            version: 'bla',
+          })
+        },
+        {message: invalidAccLevelMessage},
+      )
+
+      // from object: invalid accessibilityVersion value
+      assert.throws(
+        () => {
+          configuration.setDefaultMatchSettings({
+            accessibilitySettings: {
+              level: 'AA',
+              version: 'bla',
+            },
+          })
+        },
+        {message: invalidAccVersionMessage},
+      )
+
+      // setAccessibilityValidation: invalid accessibilityVersion value
+      assert.throws(
+        () => {
+          configuration.setDefaultMatchSettings({
+            accessibilitySettings: {
+              level: 'AA',
+              version: 'bla',
+            },
+          })
+        },
+        {message: invalidAccVersionMessage},
+      )
+    })
   })
 
   it('should parse empty config', () => {
