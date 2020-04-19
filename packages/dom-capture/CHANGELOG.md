@@ -3,6 +3,7 @@
 
 ## Unreleased
 
+- added font-weight style property
 
 ## 7.1.4
 
