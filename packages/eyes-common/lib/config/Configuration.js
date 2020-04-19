@@ -15,6 +15,7 @@ const {GeneralUtils} = require('../utils/GeneralUtils')
 /**
  * @typedef {{width: number, height: number, name: BrowserType}} RenderBrowserInfo
  * @typedef {{deviceName: string, screenOrientation: ScreenOrientation}} DeviceInfo
+ * @typedef {{level: AccessibilityLevel, version: AccessibilityVersion}} AccessibilitySettings
  */
 
 const MIN_MATCH_TIMEOUT = 500

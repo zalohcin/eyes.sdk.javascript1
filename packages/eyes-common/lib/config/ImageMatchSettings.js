@@ -8,13 +8,6 @@ const {AccessibilityLevel} = require('./AccessibilityLevel')
 const {AccessibilityVersion} = require('./AccessibilityVersion')
 const {ExactMatchSettings} = require('./ExactMatchSettings')
 
-/**
- * @typedef AccessibilitySettings
- * @type {object}
- * @property {AccessibilityLevel} level - accessibility level.
- * @property {AccessibilityVersion} version - accessibility version.
- */
-
 const DEFAULT_VALUES = {
   matchLevel: MatchLevel.Strict,
   ignoreCaret: true,
