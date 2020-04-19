@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+
+ ## 7.1.5 - 2020/4/19
+
 - added font-weight style property ** Dom Capture version 1.2.0 ** 
 
 ## 7.1.4
