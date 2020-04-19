@@ -861,20 +861,20 @@ class Configuration {
   }
 
   /**
-   * @return {AccessibilityLevel} - The test-wide accessibility level.
+   * @return {AccessibilitySettings} - The test-wide accessibility settings.
    */
   getAccessibilityValidation() {
-    return this._defaultMatchSettings.getAccessibilityValidation()
+    return this._defaultMatchSettings.getAccessibilitySettings()
   }
 
   /**
-   * The test-wide accessibility level to use when checking application screenshot.
+   * The test-wide accessibility settings to use when checking application screenshot.
    *
-   * @param {AccessibilityLevel} value - The test-wide accessibility level to use when checking application screenshot.
+   * @param {AccessibilitySettings} value - The test-wide accessibility settings to use when checking application screenshot.
    * @return {this}
    */
   setAccessibilityValidation(value) {
-    this._defaultMatchSettings.setAccessibilityValidation(value)
+    this._defaultMatchSettings.setAccessibilitySettings(value)
     return this
   }
 

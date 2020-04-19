@@ -353,7 +353,7 @@ describe('Configuration', () => {
 
     it('invalid values - accessibilityValidation', () => {
       const invalidAccSettingsMessage =
-        "IllegalArgument: accessibilityValidation should have the following properties: 'level,version'"
+        "IllegalArgument: accessibilitySettings should have the following properties: 'level,version'"
 
       const invalidAccLevelMessage = "IllegalType: bla is not a valid 'AccessibilityLevel' value"
       const invalidAccVersionMessage =

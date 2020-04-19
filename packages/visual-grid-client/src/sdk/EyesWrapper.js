@@ -88,7 +88,7 @@ class EyesWrapper extends EyesBase {
   }
 
   setAccessibilityValidation(value) {
-    this._configuration.getDefaultMatchSettings().setAccessibilityValidation(value)
+    this._configuration.getDefaultMatchSettings().setAccessibilitySettings(value)
   }
 
   /**

@@ -21,7 +21,7 @@ const {Builder} = require('selenium-webdriver')
 const fixturesPath = path.resolve(__dirname, '../../fixtures')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
-describe('SessionStartInfo', () => {
+describe.only('SessionStartInfo', () => {
   let server, serverUrl, driver
 
   before(async () => {
