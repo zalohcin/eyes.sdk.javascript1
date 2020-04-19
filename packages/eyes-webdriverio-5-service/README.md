@@ -70,10 +70,10 @@ After completing the installation and defining the service and the API key, you 
 
 ```js
 describe('webdriver.io page', () => {
-    it('is visually perfect', () => {
-        browser.url('https://webdriver.io')
-        browser.eyesCheck('homepage')
-    })
+  it('is visually perfect', () => {
+    browser.url('https://webdriver.io')
+    browser.eyesCheck('homepage')
+  })
 })
 ```
 
@@ -87,7 +87,7 @@ Here are the main differences between the service and the SDK:
 
 2. No need to specify `testName` and `appName` in the configuration. These values are automatically extracted from the `it`'s and `describe`'s. The default test name is the containing `it`, and the default app name is the `it`'s containing `describe`.
 
-3. 
+3. No need to instantiate the `Eyes` class. It is instantiated for you, and configured appropriately from `wdio.conf.js`.
 
 ### Configuration
 
@@ -127,13 +127,13 @@ exports.config = {
 
 Generate a screenshot of the current page and add it to the Applitools Test.
 
-Arguments:
+##### Arguments to `browser.eyesCheck`
 
-##### `tag`
+`tag`
 
 Defines a name for the checkpoint in the Eyes Test Manager. The name may be any string and serves to identify the step to the user in the Test manager. You may change the tag value without impacting testing in any way since Eyes does not use the tag to identify the baseline step that corresponds to the checkpoint - Eyes matches steps based on their content and position in the sequences of images of the test. See [How Eyes compares checkpoints and baseline images](https://applitools.com/docs/topics/general-concepts/how-eyes-compares-checkpoints.html) for details.
 
-##### `checkSettings`
+`checkSettings`
 
 Holds the checkpoint's configuration. This is defined using the fluent API, starting with `Target`. The default is `Target.window().fully()`, which takes a full page screenshot.
 
@@ -157,20 +157,20 @@ Close the current visual test and return the test results. For example:
 
 ```js
 describe('webdriver.io page', () => {
-    it('is visually perfect', () => {
-        browser.url('https://webdriver.io')
-        browser.eyesCheck('homepage')
-        $('a[href="/docs/gettingstarted.html"]').click()
-        browser.eyesCheck('getting started page')
-        const testResults = browser.eyesGetTestResults()
+  it('is visually perfect', () => {
+    browser.url('https://webdriver.io')
+    browser.eyesCheck('homepage')
+    $('a[href="/docs/gettingstarted.html"]').click()
+    browser.eyesCheck('getting started page')
+    const testResults = browser.eyesGetTestResults()
 
-        // example for using the testResults -
-        // fail the test if visual differences were found
-        if (testResults.getStatus() !== 'Passed') {
-          const testName = `'${testResults.getName()}' of '${testResults.getAppName()}'`
-          throw new Error(`Test ${testName} detected differences! See details at: ${testResults.getUrl()}`)
-        }
-    })
+    // example for using the testResults -
+    // fail the test if visual differences were found
+    if (testResults.getStatus() !== 'Passed') {
+      const testName = `'${testResults.getName()}' of '${testResults.getAppName()}'`
+      throw new Error(`Test ${testName} detected differences! See details at: ${testResults.getUrl()}`)
+    }
+  })
 })
 ```
 
@@ -180,6 +180,15 @@ _For more information, visit our documentation page: https://applitools.com/docs
 
 Set the scroll root element to a specific element on the page. This is the element that will be scrolled when taking a full page screenshot.
 
+For example:
+
+```js
+const {By} = require('@applitools/eyes-webdriverio5-service')
+
+// ...
+browser.eyesSetScrollRootElement(By.css('.container'))
+```
+
 #### `browser.eyesSetConfiguration(configuration)`
 
 Set a new configuration for the underlying Eyes instance. This will override the configuration specified in the `wdio.conf.js` file for the remainder of test execution.
@@ -188,6 +197,10 @@ Set a new configuration for the underlying Eyes instance. This will override the
 
 Get the configuration object that's defined for the underlying Eyes instance.
 
-#### `browser.eyesAddProperty`
+#### `browser.eyesAddProperty(key, value)`
+
+Add a custom property to the the test. This can later be viewed in Eyes dashboard.
 
 #### `browser.eyesClearProperties`
+
+Clear all custom properties related to the test.
