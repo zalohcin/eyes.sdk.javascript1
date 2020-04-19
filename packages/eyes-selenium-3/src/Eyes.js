@@ -79,11 +79,7 @@
 
   Eyes.prototype = new EyesBase()
   Eyes.prototype.constructor = Eyes
-
-  //noinspection JSUnusedGlobalSymbols
-  Eyes.prototype._getBaseAgentId = function() {
-    return 'eyes.selenium.javascript/' + VERSION
-  }
+  Eyes.prototype._getBaseAgentId = () => 'eyes.selenium.javascript/' + VERSION
 
   function _init(that, flow) {
     // Set PromiseFactory to work with the protractor control flow and promises

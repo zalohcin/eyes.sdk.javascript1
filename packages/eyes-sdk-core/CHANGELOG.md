@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- added SDK agent id header for eyes server requests
 
 ## 9.1.0 - 2020/4/5
 

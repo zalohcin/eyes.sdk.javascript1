@@ -9,7 +9,6 @@ const {
   CorsIframeHandle,
   CorsIframeHandler,
   TypeUtils,
-  IgnoreRegionByRectangle,
   BrowserType,
   Configuration,
   RectangleSize,
@@ -39,7 +38,7 @@ class EyesVisualGrid extends EyesBase {
    * @param {EyesRunner} [runner] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    */
   constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
-    super(serverUrl, isDisabled, new Configuration())
+    super(serverUrl, isDisabled)
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
     this._runner.makeGetVisualGridClient(makeVisualGridClient)
