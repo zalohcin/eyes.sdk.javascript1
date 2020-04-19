@@ -199,14 +199,14 @@ class EyesBase {
    * @param {string} agentId - The agent ID to set.
    */
   setAgentId(agentId) {
-    this._agentId = agentId
+    this._configuration.setAgentId(agentId)
   }
 
   /**
    * @return {string} - The user given agent id of the SDK.
    */
   getAgentId() {
-    return this._agentId
+    return this._configuration.getAgentId()
   }
 
   /**
@@ -984,11 +984,12 @@ class EyesBase {
   }
 
   /**
-   * @protected
    * @return {string} - The full agent id composed of both the base agent id and the user given agent id.
    */
   getFullAgentId() {
-    return this._agentId ? `${this._agentId} [${this.getBaseAgentId()}]` : this.getBaseAgentId()
+    return this.getAgentId()
+      ? `${this.getAgentId()} [${this.getBaseAgentId()}]`
+      : this.getBaseAgentId()
   }
 
   /**

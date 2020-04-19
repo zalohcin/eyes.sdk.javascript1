@@ -175,5 +175,18 @@ describe('EyesBase', () => {
         eyes.getFullAgentId()
       })
     })
+
+    it('sets agent id via configuration', () => {
+      const origGetBaseAgentID = EyesBase.prototype.getBaseAgentId
+      try {
+        EyesBase.prototype.getBaseAgentId = () => 'base id'
+        const eyes = new EyesBase()
+        eyes.setAgentId('custom-wrong')
+        eyes.setConfiguration(new Configuration({agentId: 'custom'}))
+        assert.strictEqual(eyes.getFullAgentId(), 'custom [base id]')
+      } finally {
+        EyesBase.prototype.getBaseAgentId = origGetBaseAgentID
+      }
+    })
   })
 })
