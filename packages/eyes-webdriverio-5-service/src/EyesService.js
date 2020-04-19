@@ -1,6 +1,7 @@
 'use strict'
 
-const {ConsoleLogHandler, Eyes, Target} = require('@applitools/eyes-webdriverio')
+const {ConsoleLogHandler, Eyes, Target, VisualGridRunner} = require('@applitools/eyes-webdriverio')
+const VERSION = require('../package.json').version
 
 const DEFAULT_VIEWPORT = {
   width: 800,
@@ -8,11 +9,21 @@ const DEFAULT_VIEWPORT = {
 }
 
 class EyesService {
-  constructor() {
-    this._eyes = new Eyes()
+  constructor(config) {
+    const runner =
+      config && config.eyes && config.eyes.useVisualGrid
+        ? new VisualGridRunner(config.eyes.concurrency)
+        : undefined
+    this._eyes = new Eyes(runner)
+    this._eyes.getBaseAgentId = () =>
+      runner
+        ? `eyes-webdriverio-service-visualgrid/${VERSION}`
+        : `eyes-webdriverio-service/${VERSION}`
     this._scrollRootElement = undefined
 
-    this._eyes.setHideScrollbars(true)
+    if (!runner) {
+      this._eyes.setHideScrollbars(true)
+    }
     this._appName = null
   }
 

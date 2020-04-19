@@ -34,7 +34,9 @@
     "wdio-chromedriver-service": "^5.0.2"
   },
   "scripts": {
-    "test": "wdio tests/wdio.conf.js",
+    "test": "yarn test:classic && yarn test:vg",
+    "test:classic": "wdio tests/wdio.conf.js",
+    "test:vg": "wdio tests/wdio.conf.vg.js",
     "preversion": "bongo preversion",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification"
