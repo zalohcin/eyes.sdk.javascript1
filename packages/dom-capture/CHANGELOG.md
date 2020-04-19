@@ -3,7 +3,7 @@
 
 ## Unreleased
 
-- added font-weight style property
+- added font-weight style property ** Dom Capture version 1.2.0 ** 
 
 ## 7.1.4
 
