@@ -149,8 +149,8 @@ class EyesService {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that ran
    */
-  // eslint-disable-next-line
-  after(result, capabilities, specs) {
+  after(_result, _capabilities, _specs) {
+    global.browser.call(() => this._eyes.getRunner().getAllTestResults(false))
     global.browser.call(() => this._eyes.abort())
   }
 
