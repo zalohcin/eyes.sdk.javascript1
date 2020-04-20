@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "General purpose Javascript utilities.",
   "keywords": [
+    "eyes-common-legacy",
     "eyes.utils",
     "applitools",
     "eyes",
