@@ -1,7 +1,7 @@
 'use strict'
 
 const {Builder, Capabilities, By} = require('selenium-webdriver')
-const {GeneralUtils} = require('eyes.utils')
+const {GeneralUtils} = require('@applitools/eyes-common-legacy')
 const {ConsoleLogHandler} = require('eyes.sdk')
 const {Eyes, Target, StitchMode} = require('../../../index')
 

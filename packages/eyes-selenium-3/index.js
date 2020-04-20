@@ -55,7 +55,7 @@ exports.SessionEventHandler = EyesSDK.SessionEventHandler
 exports.TestResultsFormatter = EyesSDK.TestResultsFormatter
 exports.Triggers = EyesSDK.Triggers
 
-var EyesUtils = require('eyes.utils')
+var EyesUtils = require('@applitools/eyes-common-legacy')
 exports.ArgumentGuard = EyesUtils.ArgumentGuard
 exports.GeneralUtils = EyesUtils.GeneralUtils
 exports.GeometryUtils = EyesUtils.GeometryUtils

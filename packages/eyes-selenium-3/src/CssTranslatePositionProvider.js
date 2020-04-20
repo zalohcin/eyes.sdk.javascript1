@@ -2,7 +2,7 @@
   'use strict'
 
   var EyesSDK = require('eyes.sdk'),
-    EyesUtils = require('eyes.utils'),
+    EyesUtils = require('@applitools/eyes-common-legacy'),
     EyesSeleniumUtils = require('./EyesSeleniumUtils').EyesSeleniumUtils
   var PositionProvider = EyesSDK.PositionProvider,
     ArgumentGuard = EyesUtils.ArgumentGuard

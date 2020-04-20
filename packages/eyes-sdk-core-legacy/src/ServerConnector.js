@@ -2,8 +2,8 @@
   'use strict'
 
   const request = require('request')
-  const GeneralUtils = require('eyes.utils').GeneralUtils
-  const ArgumentGuard = require('eyes.utils').ArgumentGuard
+  const GeneralUtils = require('@applitools/eyes-common-legacy').GeneralUtils
+  const ArgumentGuard = require('@applitools/eyes-common-legacy').ArgumentGuard
   const RenderingInfo = require('./RenderingInfo').RenderingInfo
 
   // constants

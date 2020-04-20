@@ -26,7 +26,7 @@
 ;(function() {
   'use strict'
 
-  var EyesUtils = require('eyes.utils'),
+  var EyesUtils = require('@applitools/eyes-common-legacy'),
     MatchSettings = require('./MatchSettings'),
     ServerConnector = require('./ServerConnector').ServerConnector,
     MatchWindowTask = require('./MatchWindowTask').MatchWindowTask,

@@ -2,7 +2,7 @@
   'use strict'
 
   var EyesSDK = require('eyes.sdk'),
-    EyesUtils = require('eyes.utils')
+    EyesUtils = require('@applitools/eyes-common-legacy')
   var MutableImage = EyesSDK.MutableImage,
     CoordinatesType = EyesSDK.CoordinatesType,
     GeneralUtils = EyesUtils.GeneralUtils,

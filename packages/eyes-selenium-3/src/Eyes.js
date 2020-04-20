@@ -18,7 +18,7 @@
     SimplePropertyHandler,
     GeometryUtils,
     UserAgent,
-  } = require('eyes.utils')
+  } = require('@applitools/eyes-common-legacy')
   var EyesWebDriver = require('./EyesWebDriver').EyesWebDriver,
     ImageProviderFactory = require('./capture/ImageProviderFactory').ImageProviderFactory,
     EyesSeleniumUtils = require('./EyesSeleniumUtils').EyesSeleniumUtils,
