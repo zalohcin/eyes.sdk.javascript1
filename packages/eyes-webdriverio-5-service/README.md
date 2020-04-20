@@ -1,6 +1,30 @@
 # Applitools Eyes Service for webdriver.io 5
 
-Applitools Eyes service for [webdriver.io](https://webdriver.io/).
+Offical Applitools Eyes service for version 5 of the [webdriver.io](https://webdriver.io/) automation framework.
+
+## Table of contents
+
+- [Table of contents](#table-of-contents)
+- [Installation](#installation)
+  * [Install npm package](#install-npm-package)
+  * [Add the service to webdriver.io's configuration](#add-the-service-to-webdriverio-s-configuration)
+  * [Applitools API key](#applitools-api-key)
+    + [Using an environment variable](#using-an-environment-variable)
+    + [Using webdriver.io's config file](#using-webdriverio-s-config-file)
+- [Usage](#usage)
+  * [Example](#example)
+  * [Using the service vs. direct SDK](#using-the-service-vs-direct-sdk)
+  * [Configuration](#configuration)
+    + [Verbose logging](#verbose-logging)
+    + [Override `testName` and `appName`](#override--testname--and--appname-)
+  * [Commands](#commands)
+    + [`browser.eyesCheck(tag, checkSettings)`](#-browsereyescheck-tag--checksettings--)
+    + [`browser.eyesGetTestResults()`](#-browsereyesgettestresults---)
+    + [`browser.eyesSetScrollRootElement(By)`](#-browsereyessetscrollrootelement-by--)
+    + [`browser.eyesSetConfiguration(configuration)`](#-browsereyessetconfiguration-configuration--)
+    + [`browser.eyesGetConfiguration()`](#-browsereyesgetconfiguration---)
+    + [`browser.eyesAddProperty(key, value)`](#-browsereyesaddproperty-key--value--)
+    + [`browser.eyesClearProperties()`](#-browsereyesclearproperties---)
 
 ## Installation
 
@@ -87,7 +111,11 @@ Here are the main differences between the service and the SDK:
 
 2. No need to specify `testName` and `appName` in the configuration. These values are automatically extracted from the `it`'s and `describe`'s. The default test name is the containing `it`, and the default app name is the `it`'s containing `describe`.
 
+    _For more information, see [Override `testName` and `appName`](#override--testname--and--appname-) section_.
+
 3. No need to instantiate the `Eyes` class. It is instantiated for you, and configured appropriately from `wdio.conf.js`.
+
+4. Batch notifications // TODO
 
 ### Configuration
 
@@ -121,13 +149,22 @@ exports.config = {
 }
 ```
 
+#### Override `testName` and `appName`
+
+```js
+const configuration = browser.eyesGetConfiguration()
+configuration.setAppName('<YOUR_APP_NAME>')
+configuration.setTestName('<YOUR_TEST_NAME>')
+browser.eyesSetConfiguration(configuration)
+```
+
 ### Commands
 
 #### `browser.eyesCheck(tag, checkSettings)`
 
 Generate a screenshot of the current page and add it to the Applitools Test.
 
-##### Arguments to `browser.eyesCheck`
+Arguments:
 
 `tag`
 
@@ -178,7 +215,7 @@ _For more information, visit our documentation page: https://applitools.com/docs
 
 #### `browser.eyesSetScrollRootElement(By)`
 
-Set the scroll root element to a specific element on the page. This is the element that will be scrolled when taking a full page screenshot.
+Sets the scroll root element to a specific element on the page. This is the element that will be scrolled when taking a full page screenshot.
 
 For example:
 
@@ -191,16 +228,20 @@ browser.eyesSetScrollRootElement(By.css('.container'))
 
 #### `browser.eyesSetConfiguration(configuration)`
 
-Set a new configuration for the underlying Eyes instance. This will override the configuration specified in the `wdio.conf.js` file for the remainder of test execution.
+Sets a new configuration for the underlying Eyes instance. This will override the configuration specified in the `wdio.conf.js` file for the remainder of test execution.
+
+_For example, see the [Override `testName` and `appName`](#override--testname--and--appname-) section_.
 
 #### `browser.eyesGetConfiguration()`
 
-Get the configuration object that's defined for the underlying Eyes instance.
+Gets the configuration object that's defined for the underlying Eyes instance.
+
+_For example, see the [Override `testName` and `appName`](#override--testname--and--appname-) section_.
 
 #### `browser.eyesAddProperty(key, value)`
 
-Add a custom property to the the test. This can later be viewed in Eyes dashboard.
+Adds a custom key name/value property that will be associated with your tests. You can view these properties and filter and group by these properties in the Test Manager
 
-#### `browser.eyesClearProperties`
+#### `browser.eyesClearProperties()`
 
-Clear all custom properties related to the test.
+Clears any custom key name/value properties.
