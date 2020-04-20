@@ -422,7 +422,7 @@ class EyesVisualGrid extends EyesBase {
    * @inheritDoc
    */
   getBaseAgentId() {
-    return `eyes.webdriverio.visualgrid/${VERSION}`
+    return `eyes-webdriverio.visualgrid/${VERSION}`
   }
 
   /**
