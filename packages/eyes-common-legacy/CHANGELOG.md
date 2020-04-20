@@ -2,11 +2,11 @@
 
 ## Unreleased
 
-## 1.0.1
+## 1.0.1 - 20/4/2020
 
 - fix missing package content from npm
 
-## 1.0.0
+## 1.0.0 - - 20/4/2020
 
 - new package name: @applitools/eyes-common-legacy
 
