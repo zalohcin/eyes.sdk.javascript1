@@ -30,7 +30,7 @@ In order to authenticate via the Applitools server, you need to supply the Appli
 
 #### Using an environment variable
 
-To to this, set the environment variable `APPLITOOLS_API_KEY` to the API key before running your tests.
+To do this, set the environment variable `APPLITOOLS_API_KEY` to the API key before running your tests.
 For example, on Linux/Mac:
 
 ```bash
