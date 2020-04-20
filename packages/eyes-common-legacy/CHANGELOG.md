@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- new package name: @applitools/eyes-common-legacy
 
 ## 4.0.0 - 29/3/2020
 
