@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- new package name: @applitools/eyes-sdk-core-legacy
 - added SDK agent id header for eyes server requests
 
 ## 5.0.0 - 29/3/2020
