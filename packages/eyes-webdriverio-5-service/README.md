@@ -4,7 +4,6 @@ Offical Applitools Eyes service for version 5 of the [webdriver.io](https://webd
 
 ## Table of contents
 
-- [Table of contents](#table-of-contents)
 - [Installation](#installation)
   * [Install npm package](#install-npm-package)
   * [Add the service to webdriver.io's configuration](#add-the-service-to-webdriverio-s-configuration)
@@ -17,6 +16,7 @@ Offical Applitools Eyes service for version 5 of the [webdriver.io](https://webd
   * [Configuration](#configuration)
     + [Verbose logging](#verbose-logging)
     + [Override `testName` and `appName`](#override--testname--and--appname-)
+    + [Batch completion notifications](#batch-completion-notifications)
   * [Commands](#commands)
     + [`browser.eyesCheck(tag, checkSettings)`](#-browsereyescheck-tag--checksettings--)
     + [`browser.eyesGetTestResults()`](#-browsereyesgettestresults---)
@@ -115,7 +115,7 @@ Here are the main differences between the service and the SDK:
 
 3. No need to instantiate the `Eyes` class. It is instantiated for you, and configured appropriately from `wdio.conf.js`.
 
-4. Batch notifications // TODO
+4. Receiving batch notifications when test execution is done. See [Batch notifications](TODO)
 
 ### Configuration
 
@@ -151,12 +151,32 @@ exports.config = {
 
 #### Override `testName` and `appName`
 
+Here's an example for overriding the default values:
+
 ```js
 const configuration = browser.eyesGetConfiguration()
 configuration.setAppName('<YOUR_APP_NAME>')
 configuration.setTestName('<YOUR_TEST_NAME>')
 browser.eyesSetConfiguration(configuration)
 ```
+
+#### Batch completion notifications
+
+Here's how to setup batch notifications:
+
+```js
+// wdio.conf.js
+
+exports.config = {
+  // ...
+  eyes: {
+    batch: {notifyOnCompletion: true}
+  }
+  // ...
+}
+```
+
+_For more information about batch notifications, and the remaining steps required to setup notifications, see https://applitools.com/docs/features/batch-completion-notifications.html_.
 
 ### Commands
 
