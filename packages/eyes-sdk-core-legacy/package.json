@@ -1,8 +1,9 @@
 {
-  "name": "eyes.sdk",
-  "version": "5.0.0",
+  "name": "@applitools/eyes-sdk-core-legacy",
+  "version": "1.0.0",
   "description": "Applitools Eyes SDK For JavaScript",
   "keywords": [
+    "eyes-sdk-core-legacy",
     "eyes.sdk",
     "applitools",
     "eyes",
