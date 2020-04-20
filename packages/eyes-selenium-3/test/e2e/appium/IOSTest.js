@@ -2,7 +2,7 @@
 
 const {Builder, Capabilities, By} = require('selenium-webdriver')
 const {GeneralUtils} = require('@applitools/eyes-common-legacy')
-const {ConsoleLogHandler} = require('eyes.sdk')
+const {ConsoleLogHandler} = require('@applitools/eyes-sdk-core-legacy')
 const {Eyes, Target, StitchMode} = require('../../../index')
 
 describe('IOSTest', function() {

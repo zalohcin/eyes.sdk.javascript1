@@ -2,7 +2,7 @@
   'use strict'
 
   var EyesUtils = require('@applitools/eyes-common-legacy'),
-    EyesSDK = require('eyes.sdk'),
+    EyesSDK = require('@applitools/eyes-sdk-core-legacy'),
     EyesWebDriverScreenshot = require('./capture/EyesWebDriverScreenshot').EyesWebDriverScreenshot
   var RegionProvider = EyesSDK.RegionProvider,
     GeometryUtils = EyesUtils.GeometryUtils

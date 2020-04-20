@@ -19,7 +19,7 @@ exports.FrameChain = require('./src/FrameChain').FrameChain
 exports.ScrollPositionProvider = require('./src/ScrollPositionProvider').ScrollPositionProvider
 exports.Target = require('./src/Target').Target
 
-var EyesSDK = require('eyes.sdk')
+var EyesSDK = require('@applitools/eyes-sdk-core-legacy')
 exports.ConsoleLogHandler = EyesSDK.ConsoleLogHandler
 exports.ContextBasedScaleProvider = EyesSDK.ContextBasedScaleProvider
 exports.ContextBasedScaleProviderFactory = EyesSDK.ContextBasedScaleProviderFactory

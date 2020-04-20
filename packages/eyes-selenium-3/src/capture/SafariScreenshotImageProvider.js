@@ -2,7 +2,7 @@
 
 const {By} = require('selenium-webdriver')
 const {OSNames} = require('@applitools/eyes-common-legacy')
-const {ImageProvider, MutableImage} = require('eyes.sdk')
+const {ImageProvider, MutableImage} = require('@applitools/eyes-sdk-core-legacy')
 
 const {ScrollPositionProvider} = require('../ScrollPositionProvider')
 

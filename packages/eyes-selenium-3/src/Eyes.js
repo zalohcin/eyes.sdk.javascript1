@@ -11,7 +11,7 @@
     CoordinatesType,
     MutableImage,
     ScaleProviderIdentityFactory,
-  } = require('eyes.sdk')
+  } = require('@applitools/eyes-sdk-core-legacy')
   var {
     PromiseFactory,
     ArgumentGuard,

@@ -1,7 +1,7 @@
 ;(function() {
   'use strict'
 
-  var EyesSDK = require('eyes.sdk'),
+  var EyesSDK = require('@applitools/eyes-sdk-core-legacy'),
     EyesUtils = require('@applitools/eyes-common-legacy'),
     ScrollPositionProvider = require('../ScrollPositionProvider').ScrollPositionProvider,
     FrameChain = require('../FrameChain').FrameChain
