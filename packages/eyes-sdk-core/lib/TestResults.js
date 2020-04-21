@@ -343,7 +343,7 @@ class StepInfo {
  * @type {object}
  * @property {AccessibilityLevel} level - accessibility level.
  * @property {AccessibilityVersion} version - accessibility version.
- * @property {AccessibilityStatus} status - test accessibility version.
+ * @property {AccessibilityStatus} status - test accessibility status.
  */
 
 /**
