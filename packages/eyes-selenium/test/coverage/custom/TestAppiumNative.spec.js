@@ -3,7 +3,7 @@ const {Eyes, Region, Target} = require('../../../index')
 const {Builder} = require('selenium-webdriver')
 const {getBatch, sauceUrl} = require('./util/TestSetup')
 const batch = getBatch()
-const sauceCaps = {
+const androidCaps = {
   browserName: '',
   platformName: 'Android',
   platformVersion: '8.1',
@@ -27,7 +27,7 @@ describe('TestAppiumNative', () => {
   describe('Android', () => {
     beforeEach(async () => {
       driver = await new Builder()
-        .withCapabilities(sauceCaps)
+        .withCapabilities(androidCaps)
         .usingServer(sauceUrl)
         .build()
       eyes = new Eyes()
@@ -82,13 +82,13 @@ describe('TestAppiumNative', () => {
     })
 
     it('iOSNativeApp checkWindow', async () => {
-      await eyes.open(driver, 'iOSNativeApp', 'Smoke iOSNativeApp checkWindow')
+      await eyes.open(driver, 'iOSNativeApp', 'iOSNativeApp checkWindow')
       await eyes.check('', Target.window().ignoreRegions(new Region(0, 0, 300, 100)))
       await eyes.close()
     })
 
     it('iOSNativeApp checkRegion', async () => {
-      await eyes.open(driver, 'iOSNativeApp', 'Smoke iOSNativeApp checkRegion')
+      await eyes.open(driver, 'iOSNativeApp', 'iOSNativeApp checkRegionFloating')
       await eyes.check(
         '',
         Target.region(new Region(0, 100, 375, 712)).floatingRegion(
@@ -105,7 +105,7 @@ describe('TestAppiumNative', () => {
 
   it(`Native android app on sauce lab`, async () => {
     driver = await new Builder()
-      .withCapabilities(sauceCaps)
+      .withCapabilities(androidCaps)
       .usingServer(sauceUrl)
       .build()
     eyes = new Eyes()
