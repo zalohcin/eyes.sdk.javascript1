@@ -6,12 +6,13 @@ const common = require('@applitools/eyes-common')
 
 exports.AppOutputProvider = require('./lib/capture/AppOutputProvider').AppOutputProvider
 exports.AppOutputWithScreenshot = require('./lib/capture/AppOutputWithScreenshot').AppOutputWithScreenshot
-exports.EyesScreenshot = require('./lib/capture/EyesScreenshot').EyesScreenshot
-exports.EyesScreenshotFactory = require('./lib/capture/EyesScreenshotFactory').EyesScreenshotFactory
+exports.EyesScreenshot = require('./lib/capture_new/EyesScreenshot')
+exports.EyesScreenshotFactory = require('./lib/capture_new/EyesScreenshotFactory')
 exports.EyesSimpleScreenshot = require('./lib/capture/EyesSimpleScreenshot').EyesSimpleScreenshot
 exports.EyesSimpleScreenshotFactory = require('./lib/capture/EyesSimpleScreenshotFactory').EyesSimpleScreenshotFactory
 exports.FullPageCaptureAlgorithm = require('./lib/capture/FullPageCaptureAlgorithm').FullPageCaptureAlgorithm
 exports.ImageProvider = require('./lib/capture/ImageProvider').ImageProvider
+exports.ImageProviderFactory = require('./lib/capture_new/ImageProviderFactory')
 exports.CorsIframeHandle = require('./lib/capture/CorsIframeHandler').CorsIframeHandle
 exports.CorsIframeHandler = require('./lib/capture/CorsIframeHandler').CorsIframeHandler
 
@@ -32,16 +33,25 @@ exports.OutOfBoundsError = require('./lib/errors/OutOfBoundsError').OutOfBoundsE
 exports.TestFailedError = require('./lib/errors/TestFailedError').TestFailedError
 exports.EyesDriverOperationError = require('./lib/errors/EyesDriverOperationError').EyesDriverOperationError
 
-exports.AccessibilityRegionByRectangle = require('./lib/fluent/AccessibilityRegionByRectangle').AccessibilityRegionByRectangle
 exports.CheckSettings = require('./lib/fluent/CheckSettings').CheckSettings
 exports.CheckTarget = require('./lib/fluent/CheckTarget').CheckTarget
-exports.FloatingRegionByRectangle = require('./lib/fluent/FloatingRegionByRectangle').FloatingRegionByRectangle
-exports.GetAccessibilityRegion = require('./lib/fluent/GetAccessibilityRegion').GetAccessibilityRegion
-exports.GetFloatingRegion = require('./lib/fluent/GetFloatingRegion').GetFloatingRegion
+exports.FrameLocator = require('./lib/fluent/FrameLocator')
+exports.locatorToPersistedRegions = require('./lib/fluent/locatorToPersistedRegions')
 exports.GetRegion = require('./lib/fluent/GetRegion').GetRegion
 exports.GetSelector = require('./lib/fluent/GetSelector').GetSelector
 exports.IgnoreRegionByRectangle = require('./lib/fluent/IgnoreRegionByRectangle').IgnoreRegionByRectangle
-exports.locatorToPersistedRegions = require('./lib/fluent/locatorToPersistedRegions')
+exports.IgnoreRegionBySelector = require('./lib/fluent/IgnoreRegionBySelector')
+exports.IgnoreRegionByElement = require('./lib/fluent/IgnoreRegionByElement')
+exports.GetFloatingRegion = require('./lib/fluent/GetFloatingRegion').GetFloatingRegion
+exports.FloatingRegionByRectangle = require('./lib/fluent/FloatingRegionByRectangle').FloatingRegionByRectangle
+exports.FloatingRegionBySelector = require('./lib/fluent/FloatingRegionBySelector')
+exports.FloatingRegionByElement = require('./lib/fluent/FloatingRegionByElement')
+exports.GetAccessibilityRegion = require('./lib/fluent/GetAccessibilityRegion').GetAccessibilityRegion
+exports.AccessibilityRegionByRectangle = require('./lib/fluent/AccessibilityRegionByRectangle').AccessibilityRegionByRectangle
+exports.AccessibilityRegionBySelector = require('./lib/fluent/AccessibilityRegionBySelector')
+exports.AccessibilityRegionByElement = require('./lib/fluent/AccessibilityRegionByElement')
+exports.TargetRegionBySelector = require('./lib/fluent/TargetRegionBySelector')
+exports.TargetRegionByElement = require('./lib/fluent/TargetRegionByElement')
 
 exports.AppOutput = require('./lib/match/AppOutput').AppOutput
 exports.MatchResult = require('./lib/match/MatchResult').MatchResult

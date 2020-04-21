@@ -1,16 +1,12 @@
 'use strict'
 
-const {
-  GetAccessibilityRegion,
-  AccessibilityMatchSettings,
-  Location,
-  CoordinatesType,
-  EyesUtils,
-} = require('@applitools/eyes-sdk-core')
-const WDIOElement = require('../wrappers/WDIOElement')
+const {AccessibilityMatchSettings, CoordinatesType} = require('@applitools/eyes-common')
+const {GetAccessibilityRegion} = require('./GetAccessibilityRegion')
+const EyesUtils = require('../EyesUtils')
+
 class AccessibilityRegionByElement extends GetAccessibilityRegion {
   /**
-   * @param {WDIOElement|object} element
+   * @param {EyesWrappedElement} element
    * @param {AccessibilityRegionType} regionType
    */
   constructor(element, regionType) {
@@ -25,13 +21,11 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
    * @param {EyesScreenshot} screenshot
    * @return {Promise<AccessibilityMatchSettings[]>}
    */
-  // eslint-disable-next-line
   async getRegion(eyes, screenshot) {
-    this._element = new WDIOElement(eyes._logger, eyes.getDriver(), this._element)
-    const point = await this._element.getLocation()
-    const size = await this._element.getSize()
+    this._element.bind(eyes.getDriver())
+    const rect = await this._element.getRect()
     const pTag = screenshot.convertLocation(
-      new Location(point),
+      rect.getLocation(),
       CoordinatesType.CONTEXT_RELATIVE,
       CoordinatesType.SCREENSHOT_AS_IS,
     )
@@ -39,8 +33,8 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
     const accessibilityRegion = new AccessibilityMatchSettings({
       left: pTag.getX(),
       top: pTag.getY(),
-      width: size.getWidth(),
-      height: size.getHeight(),
+      width: rect.getWidth(),
+      height: rect.getHeight(),
       type: this._regionType,
     })
     return [accessibilityRegion]

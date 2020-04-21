@@ -3,14 +3,16 @@
 const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
 const assert = require('assert')
-const {AccessibilityRegionType} = require('@applitools/eyes-sdk-core')
+const {
+  AccessibilityRegionType,
+  IgnoreRegionBySelector,
+  IgnoreRegionByElement,
+  FloatingRegionBySelector,
+  FloatingRegionByElement,
+  AccessibilityRegionByElement,
+  AccessibilityRegionBySelector,
+} = require('@applitools/eyes-sdk-core')
 const {By, Logger} = require('../../index')
-const IgnoreRegionBySelector = require('../../src/fluent/IgnoreRegionBySelector')
-const IgnoreRegionByElement = require('../../src/fluent/IgnoreRegionByElement')
-const FloatingRegionBySelector = require('../../src/fluent/FloatingRegionBySelector')
-const FloatingRegionByElement = require('../../src/fluent/FloatingRegionByElement')
-const AccessibilityRegionByElement = require('../../src/fluent/AccessibilityRegionByElement')
-const AccessibilityRegionBySelector = require('../../src/fluent/AccessibilityRegionBySelector')
 const {SelectorByElement} = require('../../src/fluent/SelectorByElement')
 const {SelectorByLocator} = require('../../src/fluent/SelectorByLocator')
 const WDIODriver = require('../../src/wrappers/WDIODriver')

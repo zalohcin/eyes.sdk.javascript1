@@ -1,12 +1,8 @@
 'use strict'
 
-const {
-  GetFloatingRegion,
-  FloatingMatchSettings,
-  Location,
-  CoordinatesType,
-  EyesUtils,
-} = require('@applitools/eyes-sdk-core')
+const {FloatingMatchSettings, CoordinatesType} = require('@applitools/eyes-common')
+const {GetFloatingRegion} = require('./GetFloatingRegion')
+const EyesUtils = require('../EyesUtils')
 
 class FloatingRegionBySelector extends GetFloatingRegion {
   /**
@@ -33,31 +29,28 @@ class FloatingRegionBySelector extends GetFloatingRegion {
   async getRegion(eyes, screenshot) {
     const elements = await eyes.getDriver().finder.findElements(this._selector)
 
-    const values = []
-    if (elements && elements.length > 0) {
-      for (let i = 0; i < elements.length; i += 1) {
-        const point = await elements[i].getLocation()
-        const size = await elements[i].getSize()
-        const lTag = screenshot.convertLocation(
-          new Location(point),
-          CoordinatesType.CONTEXT_RELATIVE,
-          CoordinatesType.SCREENSHOT_AS_IS,
-        )
-        const floatingRegion = new FloatingMatchSettings({
-          left: lTag.getX(),
-          top: lTag.getY(),
-          width: size.getWidth(),
-          height: size.getHeight(),
-          maxUpOffset: this._maxUpOffset,
-          maxDownOffset: this._maxDownOffset,
-          maxLeftOffset: this._maxLeftOffset,
-          maxRightOffset: this._maxRightOffset,
-        })
-        values.push(floatingRegion)
-      }
+    const regions = []
+    for (const element of elements) {
+      const rect = await element.getRect()
+      const lTag = screenshot.convertLocation(
+        rect.getLocation(),
+        CoordinatesType.CONTEXT_RELATIVE,
+        CoordinatesType.SCREENSHOT_AS_IS,
+      )
+      const floatingRegion = new FloatingMatchSettings({
+        left: lTag.getX(),
+        top: lTag.getY(),
+        width: rect.getWidth(),
+        height: rect.getHeight(),
+        maxUpOffset: this._maxUpOffset,
+        maxDownOffset: this._maxDownOffset,
+        maxLeftOffset: this._maxLeftOffset,
+        maxRightOffset: this._maxRightOffset,
+      })
+      regions.push(floatingRegion)
     }
 
-    return values
+    return regions
   }
 
   async toPersistedRegions(driver) {

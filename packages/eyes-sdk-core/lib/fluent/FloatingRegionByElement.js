@@ -1,17 +1,12 @@
 'use strict'
 
-const {
-  GetFloatingRegion,
-  FloatingMatchSettings,
-  Location,
-  CoordinatesType,
-  EyesUtils,
-} = require('@applitools/eyes-sdk-core')
-const WDIOElement = require('../wrappers/WDIOElement')
+const {FloatingMatchSettings, CoordinatesType} = require('@applitools/eyes-common')
+const {GetFloatingRegion} = require('./GetFloatingRegion')
+const EyesUtils = require('../EyesUtils')
 
 class FloatingRegionByElement extends GetFloatingRegion {
   /**
-   * @param {WDIOElement|object} element
+   * @param {EyesWrappedElement} element
    * @param {int} maxUpOffset
    * @param {int} maxDownOffset
    * @param {int} maxLeftOffset
@@ -31,14 +26,12 @@ class FloatingRegionByElement extends GetFloatingRegion {
    * @param {Eyes} eyes
    * @param {EyesScreenshot} screenshot
    */
-  // eslint-disable-next-line
   async getRegion(eyes, screenshot) {
-    this._element = new WDIOElement(eyes._logger, eyes.getDriver(), this._element)
+    this._element.bind(eyes.getDriver())
 
-    const point = await this._element.getLocation()
-    const size = await this._element.getSize()
+    const rect = await this._element.getRect()
     const lTag = screenshot.convertLocation(
-      new Location(point),
+      rect.getLocation(),
       CoordinatesType.CONTEXT_RELATIVE,
       CoordinatesType.SCREENSHOT_AS_IS,
     )
@@ -46,8 +39,8 @@ class FloatingRegionByElement extends GetFloatingRegion {
     const floatingRegion = new FloatingMatchSettings({
       left: lTag.getX(),
       top: lTag.getY(),
-      width: size.getWidth(),
-      height: size.getHeight(),
+      width: rect.getWidth(),
+      height: rect.getHeight(),
       maxUpOffset: this._maxUpOffset,
       maxDownOffset: this._maxDownOffset,
       maxLeftOffset: this._maxLeftOffset,

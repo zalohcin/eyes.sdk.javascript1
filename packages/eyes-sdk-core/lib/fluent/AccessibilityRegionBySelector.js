@@ -1,12 +1,8 @@
 'use strict'
 
-const {
-  GetAccessibilityRegion,
-  Location,
-  CoordinatesType,
-  AccessibilityMatchSettings,
-  EyesUtils,
-} = require('@applitools/eyes-sdk-core')
+const {CoordinatesType, AccessibilityMatchSettings} = require('@applitools/eyes-common')
+const {GetAccessibilityRegion} = require('./GetAccessibilityRegion')
+const EyesUtils = require('../EyesUtils')
 
 class AccessibilityRegionBySelector extends GetAccessibilityRegion {
   /**
@@ -20,7 +16,6 @@ class AccessibilityRegionBySelector extends GetAccessibilityRegion {
   }
 
   /**
-   * @inheritDoc
    * @param {Eyes} eyes
    * @param {EyesScreenshot} screenshot
    * @return {Promise<AccessibilityMatchSettings[]>}
@@ -28,28 +23,25 @@ class AccessibilityRegionBySelector extends GetAccessibilityRegion {
   async getRegion(eyes, screenshot) {
     const elements = await eyes.getDriver().finder.findElements(this._selector)
 
-    const values = []
-    if (elements && elements.length > 0) {
-      for (let i = 0; i < elements.length; i += 1) {
-        const point = await elements[i].getLocation()
-        const size = await elements[i].getSize()
-        const lTag = screenshot.convertLocation(
-          new Location(point),
-          CoordinatesType.CONTEXT_RELATIVE,
-          CoordinatesType.SCREENSHOT_AS_IS,
-        )
-        const accessibilityRegion = new AccessibilityMatchSettings({
-          left: lTag.getX(),
-          top: lTag.getY(),
-          width: size.getWidth(),
-          height: size.getHeight(),
-          type: this._regionType,
-        })
-        values.push(accessibilityRegion)
-      }
+    const regions = []
+    for (const element of elements) {
+      const rect = await element.getRect()
+      const lTag = screenshot.convertLocation(
+        rect.getLocation(),
+        CoordinatesType.CONTEXT_RELATIVE,
+        CoordinatesType.SCREENSHOT_AS_IS,
+      )
+      const accessibilityRegion = new AccessibilityMatchSettings({
+        left: lTag.getX(),
+        top: lTag.getY(),
+        width: rect.getWidth(),
+        height: rect.getHeight(),
+        type: this._regionType,
+      })
+      regions.push(accessibilityRegion)
     }
 
-    return values
+    return regions
   }
 
   async toPersistedRegions(driver) {

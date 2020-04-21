@@ -23,38 +23,52 @@ class EyesBrowsingContext {
    * Returns current frame chain
    * @return {FrameChain} copy of the current frame chain
    */
-  get frameChain() {}
+  get frameChain() {
+    throw new TypeError('The method is not implemented!')
+  }
   /**
    * Clear current frame chain
    */
-  reset() {}
+  reset() {
+    throw new TypeError('The method is not implemented!')
+  }
   /**
    * Switch to the child (frame) context by reference
    * @param {FrameReference} arg reference to the frame
    * @return {Promise<*>}
    */
-  async frame(arg) {}
+  async frame(arg) {
+    throw new TypeError('The method is not implemented!')
+  }
   /**
    * Switch to the top level context
    * @return {Promise<*>}
    */
-  async frameDefault() {}
+  async frameDefault() {
+    throw new TypeError('The method is not implemented!')
+  }
   /**
    * Switch to the parent context
    * @return {Promise<*>}
    */
-  async frameParent() {}
+  async frameParent() {
+    throw new TypeError('The method is not implemented!')
+  }
   /**
    * Switch to the specified frame path from the top level
    * @param {Iterable<FrameReference>} path
    * @return {Promise<*>}
    */
-  async frames(path) {}
+  async frames(path) {
+    throw new TypeError('The method is not implemented!')
+  }
   /**
    * Refresh frame chain from the real driver target context
    * @return {Promise<*>}
    */
-  async framesRefresh() {}
+  async framesRefresh() {
+    throw new TypeError('The method is not implemented!')
+  }
 }
 
 exports.EyesBrowsingContext = EyesBrowsingContext

@@ -1,14 +1,15 @@
 'use strict'
 
-const {GetSelector, GeneralUtils, EyesUtils} = require('@applitools/eyes-sdk-core')
-const WDIOElement = require('../wrappers/WDIOElement')
+const {GeneralUtils} = require('@applitools/eyes-common')
+const {GetSelector} = require('./GetSelector')
+const EyesUtils = require('../EyesUtils')
 
 const EYES_SELECTOR_TAG = 'data-eyes-selector'
 
 /**
  * @ignore
  */
-class SelectorByElement extends GetSelector {
+class TargetSelectorByElement extends GetSelector {
   /**
    * @param {WDIOElement|object} element
    */
@@ -23,7 +24,7 @@ class SelectorByElement extends GetSelector {
    * @return {Promise<string>}
    */
   async getSelector(driver) {
-    this._element = new WDIOElement(driver._logger, driver, this.element)
+    this._element.bind(driver)
     const randId = GeneralUtils.randomAlphanumeric()
     await driver.executor.executeScript(
       `arguments[0].setAttribute('${EYES_SELECTOR_TAG}', '${randId}');`,
@@ -38,4 +39,4 @@ class SelectorByElement extends GetSelector {
   }
 }
 
-exports.SelectorByElement = SelectorByElement
+module.exports = TargetSelectorByElement

@@ -101,18 +101,23 @@ class FrameChain {
    * @return {Location} The location of the current frame in the page.
    */
   getCurrentFrameOffset() {
-    let result = Location.ZERO
+    return this._frames.reduce((location, frame) => {
+      return location.offsetByLocation(frame.location)
+    }, Location.ZERO)
+  }
 
-    this._frames.forEach(frame => {
-      result = result.offsetByLocation(frame.location)
-    })
-
-    return result
+  getCurrentFrameLocationInViewport() {
+    return this._frames.reduce((location, frame) => {
+      return location.offset(
+        frame.location.getX() - frame.originalLocation.getX(),
+        frame.location.getY() - frame.originalLocation.getY(),
+      )
+    }, Location.ZERO)
   }
   /**
    * @return {Location} The outermost frame's location, or NoFramesException.
    */
-  getTopFrameScrollPosition() {
+  getTopFrameScrollLocation() {
     if (this._frames.length === 0) {
       throw new NoFramesError('No frames in frame chain')
     }

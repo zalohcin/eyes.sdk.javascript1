@@ -1,13 +1,15 @@
 'use strict'
 
-const {GeneralUtils, GetSelector, EyesUtils} = require('@applitools/eyes-sdk-core')
+const {GeneralUtils} = require('@applitools/eyes-common')
+const {GetSelector} = require('./GetSelector')
+const EyesUtils = require('../EyesUtils')
 
 const EYES_SELECTOR_TAG = 'data-eyes-selector'
 
 /**
  * @ignore
  */
-class SelectorByLocator extends GetSelector {
+class TargetRegionBySelector extends GetSelector {
   /**
    * @param {By} regionLocator
    */
@@ -41,4 +43,4 @@ class SelectorByLocator extends GetSelector {
   }
 }
 
-exports.SelectorByLocator = SelectorByLocator
+module.exports = TargetRegionBySelector

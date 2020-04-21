@@ -1,17 +1,21 @@
 'use strict'
 
-const {CheckSettings, Region, TypeUtils} = require('@applitools/eyes-sdk-core')
+const {
+  TypeUtils,
+  CheckSettings,
+  FrameLocator,
+  Region,
+  TargetRegionBySelector,
+  TargetRegionByElement,
+  IgnoreRegionBySelector,
+  IgnoreRegionByElement,
+  FloatingRegionBySelector,
+  FloatingRegionByElement,
+  AccessibilityRegionBySelector,
+  AccessibilityRegionByElement,
+} = require('@applitools/eyes-sdk-core')
 const WDIOElement = require('../wrappers/WDIOElement')
 const WDIOElementFinder = require('../wrappers/WDIOElementFinder')
-const FrameLocator = require('./FrameLocator')
-const IgnoreRegionBySelector = require('./IgnoreRegionBySelector')
-const IgnoreRegionByElement = require('./IgnoreRegionByElement')
-const {SelectorByElement} = require('./SelectorByElement')
-const {SelectorByLocator} = require('./SelectorByLocator')
-const FloatingRegionBySelector = require('./FloatingRegionBySelector')
-const FloatingRegionByElement = require('./FloatingRegionByElement')
-const AccessibilityRegionBySelector = require('./AccessibilityRegionBySelector')
-const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
 
 const USE_DEFAULT_MATCH_TIMEOUT = -1
 const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
@@ -19,8 +23,8 @@ const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
 class WebdriverioCheckSettings extends CheckSettings {
   /**
    *
-   * @param {Region|By|String|WDIOElement|Object} [region]
-   * @param {Integer|String|By|WDIOElement|Object} [frame]
+   * @param {Region|By|String|WDIOElement} [region]
+   * @param {Integer|String|By|WDIOElement} [frame]
    */
   constructor(region, frame) {
     super()
@@ -49,11 +53,11 @@ class WebdriverioCheckSettings extends CheckSettings {
    */
   getTargetProvider() {
     if (this._targetSelector) {
-      return new SelectorByLocator(this._targetSelector)
+      return new TargetRegionBySelector(this._targetSelector)
     }
 
     if (this._targetElement) {
-      return new SelectorByElement(this._targetElement)
+      return new TargetRegionByElement(WDIOElement.partial(this._targetElement))
     }
 
     return undefined
@@ -61,7 +65,7 @@ class WebdriverioCheckSettings extends CheckSettings {
 
   /**
    *
-   * @param {Region|By|String|WDIOElement|Object} region
+   * @param {Region|By|String|WDIOElement} region
    * @returns {WebdriverioCheckSettings}
    */
   region(region) {
@@ -70,7 +74,7 @@ class WebdriverioCheckSettings extends CheckSettings {
     } else if (WDIOElementFinder.isLocator(region)) {
       this._targetSelector = region
     } else if (region instanceof WDIOElement || WDIOElement.isCompatible(region)) {
-      this._targetElement = region
+      this._targetElement = WDIOElement.partial(region)
     } else {
       throw new TypeError('region method called with argument of unknown type!')
     }
@@ -78,7 +82,7 @@ class WebdriverioCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {Integer|String|By|WDIOElement|Object} frame The frame to switch to.
+   * @param {Integer|String|By|WDIOElement} frame The frame to switch to.
    * @returns {WebdriverioCheckSettings}
    */
   frame(frame) {
@@ -91,7 +95,7 @@ class WebdriverioCheckSettings extends CheckSettings {
     } else if (WDIOElementFinder.isLocator(frame)) {
       fl.setFrameSelector(frame)
     } else if (frame instanceof WDIOElement || WDIOElement.isCompatible(frame)) {
-      fl.setFrameElement(frame)
+      fl.setFrameElement(WDIOElement.partial(frame))
     } else {
       throw new TypeError('frame method called with argument of unknown type!')
     }
@@ -106,16 +110,14 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @param {GetRegion|Region|By|String|WDIOElement|Object} regionOrContainer The region or region container to ignore when validating the screenshot.
    * @return {WebdriverioCheckSettings} This instance of the settings object.
    */
-  ignore(regionOrContainer) {
-    if (WDIOElementFinder.isLocator(regionOrContainer)) {
-      this._ignoreRegions.push(new IgnoreRegionBySelector(regionOrContainer))
-    } else if (
-      regionOrContainer instanceof WDIOElement ||
-      WDIOElement.isCompatible(regionOrContainer)
-    ) {
-      this._ignoreRegions.push(new IgnoreRegionByElement(regionOrContainer))
+  ignore(region) {
+    if (WDIOElementFinder.isLocator(region)) {
+      this._ignoreRegions.push(new IgnoreRegionBySelector(region))
+    } else if (region instanceof WDIOElement || WDIOElement.isCompatible(region)) {
+      const element = WDIOElement.partial(region)
+      this._ignoreRegions.push(new IgnoreRegionByElement(element))
     } else {
-      super.ignoreRegions(regionOrContainer)
+      super.ignoreRegions(region)
     }
 
     return this
@@ -171,7 +173,7 @@ class WebdriverioCheckSettings extends CheckSettings {
     }
 
     if (region instanceof WDIOElement || WDIOElement.isCompatible(region)) {
-      return new IgnoreRegionByElement(region)
+      return new IgnoreRegionByElement(WDIOElement.partial(region))
     }
 
     return super._regionToRegionProvider(region)
@@ -188,24 +190,22 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @param {int} [maxRightOffset] How much the content can move to the right.
    * @return {WebdriverioCheckSettings} This instance of the settings object.
    */
-  floating(regionOrContainer, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
-    if (WDIOElementFinder.isLocator(regionOrContainer)) {
+  floating(region, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
+    if (WDIOElementFinder.isLocator(region)) {
       this._floatingRegions.push(
         new FloatingRegionBySelector(
-          regionOrContainer,
+          region,
           maxUpOffset,
           maxDownOffset,
           maxLeftOffset,
           maxRightOffset,
         ),
       )
-    } else if (
-      regionOrContainer instanceof WDIOElement ||
-      WDIOElement.isCompatible(regionOrContainer)
-    ) {
+    } else if (region instanceof WDIOElement || WDIOElement.isCompatible(region)) {
+      const element = WDIOElement.partial(region)
       this._floatingRegions.push(
         new FloatingRegionByElement(
-          regionOrContainer,
+          element,
           maxUpOffset,
           maxDownOffset,
           maxLeftOffset,
@@ -213,13 +213,7 @@ class WebdriverioCheckSettings extends CheckSettings {
         ),
       )
     } else {
-      super.floatingRegion(
-        regionOrContainer,
-        maxUpOffset,
-        maxDownOffset,
-        maxLeftOffset,
-        maxRightOffset,
-      )
+      super.floatingRegion(region, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset)
     }
     return this
   }
@@ -398,58 +392,47 @@ class WebdriverioCheckSettings extends CheckSettings {
    * @param {AccessibilityRegionType} [regionType] - Type of accessibility.
    * @return {this}
    */
-  accessibilityRegion(regionOrContainer, regionType) {
-    if (WDIOElementFinder.isLocator(regionOrContainer)) {
-      const accessibilityRegion = new AccessibilityRegionBySelector(regionOrContainer, regionType)
+  accessibilityRegion(region, regionType) {
+    if (WDIOElementFinder.isLocator(region)) {
+      const accessibilityRegion = new AccessibilityRegionBySelector(region, regionType)
       this._accessibilityRegions.push(accessibilityRegion)
-    } else if (
-      regionOrContainer instanceof WDIOElement ||
-      WDIOElement.isCompatible(regionOrContainer)
-    ) {
-      const floatingRegion = new AccessibilityRegionByElement(regionOrContainer, regionType)
+    } else if (region instanceof WDIOElement || WDIOElement.isCompatible(region)) {
+      const element = WDIOElement.partial(region)
+      const floatingRegion = new AccessibilityRegionByElement(element, regionType)
       this._accessibilityRegions.push(floatingRegion)
     } else {
-      super.accessibilityRegion(regionOrContainer, regionType)
+      super.accessibilityRegion(region, regionType)
     }
     return this
   }
 
-  _processStrictRegions(regionOrContainer) {
-    if (WDIOElementFinder.isLocator(regionOrContainer)) {
-      this._strictRegions.push(new IgnoreRegionBySelector(regionOrContainer))
-    } else if (
-      regionOrContainer instanceof WDIOElement ||
-      WDIOElement.isCompatible(regionOrContainer)
-    ) {
-      this._strictRegions.push(new IgnoreRegionByElement(regionOrContainer))
+  _processStrictRegions(region) {
+    if (WDIOElementFinder.isLocator(region)) {
+      this._strictRegions.push(new IgnoreRegionBySelector(region))
+    } else if (region instanceof WDIOElement || WDIOElement.isCompatible(region)) {
+      this._strictRegions.push(new IgnoreRegionByElement(WDIOElement.partial(region)))
     } else {
-      super.strictRegions(regionOrContainer)
+      super.strictRegions(region)
     }
   }
 
-  _processLayoutRegions(regionOrContainer) {
-    if (WDIOElementFinder.isLocator(regionOrContainer)) {
-      this._layoutRegions.push(new IgnoreRegionBySelector(regionOrContainer))
-    } else if (
-      regionOrContainer instanceof WDIOElement ||
-      WDIOElement.isCompatible(regionOrContainer)
-    ) {
-      this._layoutRegions.push(new IgnoreRegionByElement(regionOrContainer))
+  _processLayoutRegions(region) {
+    if (WDIOElementFinder.isLocator(region)) {
+      this._layoutRegions.push(new IgnoreRegionBySelector(region))
+    } else if (region instanceof WDIOElement || WDIOElement.isCompatible(region)) {
+      this._layoutRegions.push(new IgnoreRegionByElement(WDIOElement.partial(region)))
     } else {
-      super.layoutRegions(regionOrContainer)
+      super.layoutRegions(region)
     }
   }
 
-  _processContentRegions(regionOrContainer) {
-    if (WDIOElementFinder.isLocator(regionOrContainer)) {
-      this._contentRegions.push(new IgnoreRegionBySelector(regionOrContainer))
-    } else if (
-      regionOrContainer instanceof WDIOElement ||
-      WDIOElement.isCompatible(regionOrContainer)
-    ) {
-      this._contentRegions.push(new IgnoreRegionByElement(regionOrContainer))
+  _processContentRegions(region) {
+    if (WDIOElementFinder.isLocator(region)) {
+      this._contentRegions.push(new IgnoreRegionBySelector(region))
+    } else if (region instanceof WDIOElement || WDIOElement.isCompatible(region)) {
+      this._contentRegions.push(new IgnoreRegionByElement(WDIOElement.partial(region)))
     } else {
-      super.contentRegions(regionOrContainer)
+      super.contentRegions(region)
     }
   }
 }

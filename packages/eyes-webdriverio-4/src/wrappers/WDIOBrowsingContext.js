@@ -104,7 +104,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
       frame = await this.frameInit(frameElement)
     } else if (arg instanceof WDIOElement) {
       this._logger.verbose('WDIOBrowsingContext.frame(wdioElement)')
-      frame = await this.frameInit(arg)
+      frame = await this.frameInit(arg.bind(this._driver))
     } else if (WDIOElement.isCompatible(arg)) {
       this._logger.verbose('WDIOBrowsingContext.frame(wdioElement)')
       frame = await this.frameInit(new WDIOElement(this._logger, this._driver, arg))
@@ -193,9 +193,8 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
     this._frameDefaultPositionMemento = await this._scrollPosition.getState()
     for (const frame of frameChain) {
       this._logger.verbose('Scrolling by parent scroll position...')
-      const frameLocation = frame.location
-      await this._scrollPosition.setPosition(frameLocation)
-      await this.frame(frame)
+      await this._scrollPosition.setPosition(frame.location)
+      await this.frame(frame.element)
     }
     this._logger.verbose('Done switching into nested frames!')
   }

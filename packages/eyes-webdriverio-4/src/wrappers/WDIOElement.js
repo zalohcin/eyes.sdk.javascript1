@@ -1,4 +1,5 @@
 const {
+  ArgumentGuard,
   Location,
   RectangleSize,
   Region,
@@ -13,6 +14,7 @@ const WEB_ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
 class WDIOElement extends EyesWrappedElement {
   constructor(logger, driver, element, selector) {
     super()
+    ArgumentGuard.notNull(element, 'element')
     if (element instanceof WDIOElement) {
       return element
     } else if (WDIOElement.isCompatible(element)) {
@@ -24,10 +26,20 @@ class WDIOElement extends EyesWrappedElement {
         this._element = element
         this._selector = selector
       }
+    } else {
+      throw new TypeError('WDIOElement constructor called with argument of unknown type!')
     }
-    this._logger = logger
-    this._driver = driver
-    this._frameChain = driver.context.frameChain
+    if (logger) {
+      this._logger = logger
+    }
+    if (driver) {
+      this._driver = driver
+      this._frameChain = driver.context.frameChain
+    }
+  }
+
+  static partial(element) {
+    return new WDIOElement(null, null, element)
   }
 
   static isCompatible(object) {
@@ -63,8 +75,19 @@ class WDIOElement extends EyesWrappedElement {
     }
   }
 
-  async equals(element) {
+  equals(element) {
     return WDIOElement.equals(this, element)
+  }
+
+  bind(driver) {
+    if (!this._driver) {
+      this._driver = driver
+      this._frameChain = driver.context.frameChain
+      if (!this._logger) {
+        this._logger = driver._logger
+      }
+    }
+    return this
   }
 
   async getRect() {
