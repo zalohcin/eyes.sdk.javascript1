@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.12.9 - 2020/4/22
+
 - fix capture region failures on IE
 - fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
 - updated to @applitools/eyes-sdk-core@9.1.1
