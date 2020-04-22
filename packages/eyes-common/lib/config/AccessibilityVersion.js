@@ -8,9 +8,9 @@ const {Enum} = require('../utils/Enum')
  * @readonly
  * @enum {string}
  */
-const AccessibilityVersion = Enum('AccessibilityVersion', {
+const AccessibilityVersion = {
   WCAG_2_0: 'WCAG_2_0',
   WCAG_2_1: 'WCAG_2_1',
-})
+}
 
-exports.AccessibilityVersion = AccessibilityVersion
+exports.AccessibilityVersion = Enum('AccessibilityVersion', AccessibilityVersion)

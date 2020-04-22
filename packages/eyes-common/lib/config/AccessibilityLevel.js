@@ -8,7 +8,7 @@ const {Enum} = require('../utils/Enum')
  * @readonly
  * @enum {string}
  */
-const AccessibilityLevel = Enum('AccessibilityLevel', {
+const AccessibilityLevel = {
   /**
    * Low accessibility level.
    */
@@ -17,6 +17,6 @@ const AccessibilityLevel = Enum('AccessibilityLevel', {
    * Highest accessibility level.
    */
   AAA: 'AAA',
-})
+}
 
-exports.AccessibilityLevel = AccessibilityLevel
+exports.AccessibilityLevel = Enum('AccessibilityLevel', AccessibilityLevel)
