@@ -11,6 +11,8 @@ const {
   Configuration,
   StitchMode,
   EyesSeleniumUtils,
+  DeviceName,
+  ScreenOrientation,
   // BatchInfo,
   // FileDebugScreenshotsProvider,
 } = require('../index')
@@ -58,6 +60,17 @@ const args = yargs
     describe: 'the browser to render to when in vg mode',
     type: 'string',
     coerce: parseBrowser,
+  })
+  .option('device-emulation', {
+    describe: 'the device emulation to render to when in vg mode',
+    type: 'string',
+    choices: Object.keys(DeviceName),
+  })
+  .option('screen-orientation', {
+    describe: 'the device emulation screen oriantation to render to when in device-emulation mode',
+    type: 'string',
+    choices: Object.keys(ScreenOrientation),
+    default: 'PORTRAIT',
   })
   .option('ignore-displacements', {
     describe: 'when specified, ignore displaced content',
@@ -136,6 +149,13 @@ if (!url) {
   if (args.browser) {
     configuration.addBrowsers(args.browser)
   }
+  if (args.deviceEmulation) {
+    const orientation = args.screenOrientation || 'PORTRAIT'
+    configuration.addDeviceEmulation(
+      DeviceName[args.deviceEmulation],
+      ScreenOrientation[orientation],
+    )
+  }
   if (args.serverUrl) {
     configuration.setServerUrl(args.serverUrl)
   }
@@ -187,7 +207,7 @@ if (!url) {
     }
 
     await eyes.check('selenium render', target)
-    await eyes.close(false)
+    await eyes.close(true)
 
     const testResultsSummary = await runner.getAllTestResults(false)
     const resultsStr = testResultsSummary
