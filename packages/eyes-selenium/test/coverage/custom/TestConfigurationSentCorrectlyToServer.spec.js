@@ -26,8 +26,8 @@ describe('TestEyesConfiguration', async () => {
     it(`TestEyesConfiguration_${index}`, async () => {
       let runner = data.useVisualGrid ? new VisualGridRunner(10) : new ClassicRunner()
       let eyes = new Eyes(runner)
-      let browser = await getDriver('CHROME')
-      await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+      let driver = await getDriver('CHROME')
+      await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
       let originalBatchSequence = process.env.APPLITOOLS_BATCH_SEQUENCE
       if (data.sequenceNameEnvVar !== undefined) {
         process.env.APPLITOOLS_BATCH_SEQUENCE = data.sequenceNameEnvVar
@@ -47,6 +47,7 @@ describe('TestEyesConfiguration', async () => {
         }
       }
 
+      let results
       try {
         assert.deepStrictEqual(effectiveSequenceName, batchInfo.getSequenceName(), 'SequenceName')
         let conf = new Configuration()
@@ -60,7 +61,7 @@ describe('TestEyesConfiguration', async () => {
           .setBatch(batchInfo)
         eyes.setConfiguration(conf)
 
-        await eyes.open(browser)
+        await eyes.open(driver)
 
         eyes.setMatchLevel(MatchLevel.Layout)
         await eyes.check('', Target.window())
@@ -68,9 +69,9 @@ describe('TestEyesConfiguration', async () => {
         eyes.setMatchLevel(MatchLevel.Content)
         await eyes.check('', Target.window())
       } finally {
-        await browser.deleteSession()
+        results = await eyes.close(false)
+        await driver.quit()
       }
-      let results = await eyes.close(false)
       if (data.useVisualGrid) {
         results = results[0]
       }

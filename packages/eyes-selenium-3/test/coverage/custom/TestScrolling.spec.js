@@ -12,7 +12,7 @@ describe(appName, () => {
     await driver.quit()
   })
   describe('ChromeEmulation', () => {
-    it('TestWebAppScrolling', async () => {
+    it.skip('TestWebAppScrolling', async () => {
       driver = await new Builder()
         .withCapabilities({
           browserName: 'chrome',

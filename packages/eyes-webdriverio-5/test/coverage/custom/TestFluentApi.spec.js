@@ -1,28 +1,13 @@
 'use strict'
 
-const {remote} = require('webdriverio')
-const {
-  Target,
-  Region,
-  StitchMode,
-  BatchInfo,
-  Eyes,
-  VisualGridRunner,
-  By,
-  ConsoleLogHandler,
-} = require('../../../index')
-const appName = 'Eyes WDIO5 SDK - Fluent API'
-const batch = new BatchInfo('WebdriverIO 5 test')
+const {getDriver, getEyes} = require('./util/TestSetup')
+const {Target, Region, StitchMode, By, BrowserType} = require('../../../index')
+const appName = 'Eyes Selenium SDK - Fluent API'
 describe(appName, () => {
   let browser, eyes
 
   beforeEach(async () => {
-    browser = await remote({
-      logLevel: 'silent',
-      capabilities: {
-        browserName: 'chrome',
-      },
-    })
+    browser = await getDriver('CHROME')
     await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   })
 
@@ -33,10 +18,7 @@ describe(appName, () => {
 
   describe(`Test`, () => {
     beforeEach(async () => {
-      eyes = new Eyes()
-      eyes.setStitchMode(StitchMode.CSS)
-      eyes.setBatch(batch)
-      eyes.setParentBranchName('master')
+      ;({eyes} = await getEyes('classic', StitchMode.CSS))
     })
 
     it('TestCheckRegionInFrame2_Fluent', async () => {
@@ -119,10 +101,7 @@ describe(appName, () => {
 
   describe(`Test_SCROLL`, () => {
     beforeEach(async () => {
-      eyes = new Eyes()
-      eyes.setStitchMode(StitchMode.CSS)
-      eyes.setBatch(batch)
-      eyes.setParentBranchName('master')
+      ;({eyes} = await getEyes('classic', StitchMode.SCROLL))
     })
 
     it('TestCheckRegionInFrame2_Fluent', async () => {
@@ -205,11 +184,10 @@ describe(appName, () => {
 
   describe(`Test_VG`, () => {
     beforeEach(async () => {
-      let runner = new VisualGridRunner(10)
-      eyes = new Eyes(runner)
-      eyes.setBatch(batch)
-      eyes.setParentBranchName('master')
-      eyes.setLogHandler(new ConsoleLogHandler(true))
+      ;({eyes} = await getEyes('VG'))
+      let conf = eyes.getConfiguration()
+      conf.addBrowser(700, 460, BrowserType.CHROME)
+      eyes.setConfiguration(conf)
     })
 
     it('TestCheckScrollableModal', async () => {

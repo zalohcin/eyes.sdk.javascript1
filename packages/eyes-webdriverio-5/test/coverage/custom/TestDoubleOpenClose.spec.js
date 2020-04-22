@@ -1,14 +1,7 @@
 'use strict'
 const assert = require('assert')
 const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
-const {
-  Target,
-  ConsoleLogHandler,
-  StitchMode,
-  ClassicRunner,
-  VisualGridRunner,
-  Eyes,
-} = require('../../../index')
+const {Target, StitchMode, ClassicRunner, VisualGridRunner, Eyes} = require('../../../index')
 const appName = 'Applitools Eyes SDK'
 const batch = getBatch()
 describe(appName, () => {
@@ -24,7 +17,6 @@ describe(appName, () => {
       browser = await getDriver('CHROME')
       ;({eyes, runner} = await getEyes('classic', StitchMode.CSS))
       eyes.setBatch(batch)
-      eyes.setLogHandler(new ConsoleLogHandler(false))
     })
 
     it('TestDoubleOpenCheckClose', async () => {
@@ -93,7 +85,6 @@ describe(appName, () => {
       browser = await getDriver('CHROME')
       ;({eyes, runner} = await getEyes('VG'))
       eyes.setBatch(batch)
-      // eyes.setLogHandler(new ConsoleLogHandler(true))
     })
 
     it('TestDoubleOpenCheckClose', async () => {

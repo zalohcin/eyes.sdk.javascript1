@@ -1,7 +1,6 @@
 'use strict'
-const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
+const {getDriver, getEyes} = require('./util/TestSetup')
 const {Target, StitchMode} = require('../../../index')
-const batch = getBatch()
 describe('api methods', () => {
   let browser, eyes, runner
   afterEach(async function() {
@@ -12,7 +11,6 @@ describe('api methods', () => {
     beforeEach(async function() {
       browser = await getDriver('CHROME')
       ;({eyes, runner} = await getEyes('classic', StitchMode.CSS))
-      eyes.setBatch(batch)
     })
     it('TestCloseAsync', testCloseAsync)
   })
@@ -20,7 +18,6 @@ describe('api methods', () => {
     beforeEach(async function() {
       browser = await getDriver('CHROME')
       ;({eyes, runner} = await getEyes('VG'))
-      eyes.setBatch(batch)
     })
     it('TestCloseAsync', testCloseAsync)
   })

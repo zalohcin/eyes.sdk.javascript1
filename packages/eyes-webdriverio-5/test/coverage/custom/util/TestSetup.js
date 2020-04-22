@@ -62,6 +62,7 @@ function getEyes(runnerType, stitchMode, options) {
 
   function setDefault() {
     eyes.setParentBranchName('master')
+    eyes.setBatch(batch)
   }
 }
 

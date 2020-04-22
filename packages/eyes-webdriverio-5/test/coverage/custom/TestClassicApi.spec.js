@@ -1,34 +1,32 @@
 'use strict'
-const {By} = require('selenium-webdriver')
-const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
-const {StitchMode} = require('../../../index')
+const {getDriver, getEyes} = require('./util/TestSetup')
+const {StitchMode, By} = require('../../../index')
 const appName = 'Eyes Selenium SDK - Classic API'
-const batch = getBatch()
 describe(appName, () => {
-  let webDriver, eyes
+  let browser, eyes
 
   afterEach(async () => {
     await eyes.abortIfNotClosed()
-    await webDriver.quit()
+    await browser.deleteSession()
   })
   describe('CSS', () => {
     beforeEach(async () => {
-      webDriver = await getDriver('CHROME')
-      await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+      browser = await getDriver('CHROME')
+      await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
       ;({eyes} = await getEyes('classic', StitchMode.CSS))
-      eyes.setBatch(batch)
     })
 
     it('TestCheckInnerFrame', async () => {
       eyes.hideScrollbars = false
-      let driver = await eyes.open(webDriver, appName, 'TestCheckInnerFrame')
+      let driver = await eyes.open(browser, appName, 'TestCheckInnerFrame')
       await driver.executeScript(scrollTop)
       await driver.switchTo().defaultContent()
-      await driver.switchTo().frame(driver.findElement(By.name('frame1')))
+      let element = await driver.findElement(By.name('frame1'))
+      await driver.switchTo().frame(element)
       await eyes.checkFrame('frame1-1')
       await eyes.checkWindow('window after check frame')
-      let innerFrameBody = driver.findElement(By.css('body'))
-      await driver.executeScript(makeItRed, innerFrameBody)
+      let innerFrameBody = await browser.$('body')
+      await browser.execute(makeItRed, innerFrameBody)
       await eyes.checkWindow('window after change background color of inner frame')
       await eyes.close()
     })
@@ -36,22 +34,22 @@ describe(appName, () => {
 
   describe('SCROLL', () => {
     beforeEach(async () => {
-      webDriver = await getDriver('CHROME')
-      await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+      browser = await getDriver('CHROME')
+      await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
       ;({eyes} = await getEyes('classic', StitchMode.SCROLL))
-      eyes.setBatch(batch)
     })
 
     it('TestCheckInnerFrame_SCROLL', async () => {
       eyes.hideScrollbars = false
-      let driver = await eyes.open(webDriver, appName, 'TestCheckInnerFrame_SCROLL')
+      let driver = await eyes.open(browser, appName, 'TestCheckInnerFrame_SCROLL')
       await driver.executeScript(scrollTop)
       await driver.switchTo().defaultContent()
-      await driver.switchTo().frame(driver.findElement(By.name('frame1')))
+      let element = await driver.findElement(By.name('frame1'))
+      await driver.switchTo().frame(element)
       await eyes.checkFrame('frame1-1')
       await eyes.checkWindow('window after check frame')
-      let innerFrameBody = driver.findElement(By.css('body'))
-      await driver.executeScript(makeItRed, innerFrameBody)
+      let innerFrameBody = await browser.$('body')
+      await browser.execute(makeItRed, innerFrameBody)
       await eyes.checkWindow('window after change background color of inner frame')
       await eyes.close()
     })
@@ -59,25 +57,25 @@ describe(appName, () => {
 
   describe('VG', () => {
     beforeEach(async () => {
-      webDriver = await getDriver('CHROME')
-      await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
+      browser = await getDriver('CHROME')
+      await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
       ;({eyes} = await getEyes('VG'))
-      eyes.setBatch(batch)
     })
 
     it('TestCheckInnerFrame_VG', async () => {
       eyes.hideScrollbars = false
-      let driver = await eyes.open(webDriver, appName, 'TestCheckInnerFrame_VG', {
+      let driver = await eyes.open(browser, appName, 'TestCheckInnerFrame_VG', {
         width: 700,
         height: 460,
       })
       await driver.executeScript(scrollTop)
       await driver.switchTo().defaultContent()
-      await driver.switchTo().frame(driver.findElement(By.name('frame1')))
+      let element = await driver.findElement(By.name('frame1'))
+      await driver.switchTo().frame(element)
       await eyes.checkFrame('frame1-1')
       await eyes.checkWindow('window after check frame')
-      let innerFrameBody = driver.findElement(By.css('body'))
-      await driver.executeScript(makeItRed, innerFrameBody)
+      let innerFrameBody = await browser.$('body')
+      await browser.execute(makeItRed, innerFrameBody)
       await eyes.checkWindow('window after change background color of inner frame')
       await eyes.close()
     })

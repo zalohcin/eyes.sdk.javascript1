@@ -1,7 +1,7 @@
 'use strict'
 const childProcess = require('child_process')
 const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
-const {Configuration, ProxySettings, ConsoleLogHandler} = require('../../../index')
+const {Configuration, ProxySettings} = require('../../../index')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
@@ -21,7 +21,6 @@ describe('TestProxy', () => {
   async function checkNetworkPassThroughProxy() {
     let webDriver = await getDriver('CHROME')
     let {eyes} = await getEyes('VG')
-    eyes.setLogHandler(new ConsoleLogHandler(true))
     try {
       let conf = new Configuration()
       conf.setBatch(batch)
@@ -44,7 +43,6 @@ describe('TestProxy', () => {
   async function checkNetworkFailIfNoProxy() {
     let webDriver = await getDriver('CHROME')
     let {eyes} = await getEyes('VG')
-    eyes.setLogHandler(new ConsoleLogHandler(true))
     try {
       let conf = new Configuration()
       conf.setBatch(batch)

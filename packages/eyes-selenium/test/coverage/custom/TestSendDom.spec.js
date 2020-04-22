@@ -53,7 +53,6 @@ describe(appName, () => {
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       ;({eyes} = await getEyes('classic', 'CSS'))
-      eyes.setBatch(batch)
     })
 
     afterEach(async () => {

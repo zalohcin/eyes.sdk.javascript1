@@ -13,12 +13,11 @@ const {
   VisualGridRunner,
   Eyes,
   StitchMode,
-  BatchInfo,
 } = require('../../../index')
-const {remote} = require('webdriverio')
+const {getDriver, getBatch} = require('./util/TestSetup')
 const appName = 'Test abort'
 const testedUrl = 'https://applitools.com/docs/topics/overview.html'
-const batch = new BatchInfo('WebDriverIO 5 tests')
+const batch = getBatch()
 describe(appName, () => {
   let browser, eyes, config, runner
   after(async () => {
@@ -26,12 +25,7 @@ describe(appName, () => {
   })
 
   async function startDriver() {
-    browser = await remote({
-      logLevel: 'silent',
-      capabilities: {
-        browserName: 'chrome',
-      },
-    })
+    browser = await getDriver('CHROME')
   }
 
   async function afterEach() {

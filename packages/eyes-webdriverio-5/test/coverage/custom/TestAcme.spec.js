@@ -1,8 +1,7 @@
 'use strict'
-const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
+const {getDriver, getEyes} = require('./util/TestSetup')
 const {Target, StitchMode, By} = require('../../../index')
 const appName = 'Eyes Selenium SDK - ACME'
-const batch = getBatch()
 
 describe(appName, async () => {
   let browser, eyes
@@ -14,7 +13,6 @@ describe(appName, async () => {
     beforeEach(async () => {
       browser = await getDriver('CHROME')
       ;({eyes} = await getEyes('classic', StitchMode.CSS))
-      eyes.setBatch(batch)
     })
     it('TestAcmeLogin', TestAcmeLogin('TestAcmeLogin'))
   })
@@ -23,7 +21,6 @@ describe(appName, async () => {
     beforeEach(async () => {
       browser = await getDriver('CHROME')
       ;({eyes} = await getEyes('classic', StitchMode.SCROLL))
-      eyes.setBatch(batch)
     })
     it('TestAcmeLogin', TestAcmeLogin('TestAcmeLogin_Scroll'))
   })
@@ -32,7 +29,6 @@ describe(appName, async () => {
     beforeEach(async () => {
       browser = await getDriver('CHROME')
       ;({eyes} = await getEyes('VG'))
-      eyes.setBatch(batch)
     })
     it('TestAcmeLogin', TestAcmeLogin('TestAcmeLogin_VG'))
   })
