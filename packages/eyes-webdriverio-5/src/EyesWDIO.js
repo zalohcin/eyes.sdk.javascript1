@@ -21,9 +21,9 @@ const {
   TypeUtils,
   UserAgent,
   ArgumentGuard,
-  Configuration,
   SimplePropertyHandler,
   ClassicRunner,
+  StitchMode,
 } = require('@applitools/eyes-sdk-core')
 
 const {DomCapture} = require('@applitools/dom-utils')
@@ -41,7 +41,6 @@ const FrameChain = require('./frames/FrameChain')
 const EyesWDIOScreenshotFactory = require('./capture/EyesWDIOScreenshotFactory')
 const EyesWDIOUtils = require('./EyesWDIOUtils')
 const ElementPositionProvider = require('./positioning/ElementPositionProvider')
-const StitchMode = require('./StitchMode')
 const {By} = require('./By')
 const Target = require('./fluent/Target')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
