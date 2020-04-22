@@ -1,9 +1,12 @@
 # Change Log
 
 ## Unreleased
+
+
+## 4.7.11 - 2020/4/22
+
 - updated to @applitools/dom-capture@7.1.5
 - updated to @applitools/eyes-common@3.21.0
-
 
 ## 4.7.10
 
