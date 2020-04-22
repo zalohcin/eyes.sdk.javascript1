@@ -1,8 +1,9 @@
 'use strict'
 
-const {PositionProvider, ArgumentGuard, EyesUtils} = require('@applitools/eyes-sdk-core')
-
+const {ArgumentGuard} = require('@applitools/eyes-common')
+const PositionProvider = require('./PositionProvider')
 const CssTranslatePositionMemento = require('./CssTranslatePositionMemento')
+const EyesUtils = require('../EyesUtils')
 
 /**
  * A {@link PositionProvider} which is based on CSS translates. This is
@@ -20,9 +21,8 @@ class CssTranslatePositionProvider extends PositionProvider {
 
     this._logger = logger
     this._executor = executor
-    this._lastSetPosition = undefined
 
-    this._logger.verbose('creating CssTranslatePositionProvider')
+    this._lastSetPosition = undefined
   }
 
   /**
@@ -43,7 +43,7 @@ class CssTranslatePositionProvider extends PositionProvider {
 
     this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`)
 
-    await EyesUtils.translateTo(this._logger, this._executor, location)
+    await EyesUtils.translateTo(this._logger, this._executor, location, this._element)
     this._logger.verbose('Done!')
     this._lastSetPosition = location
   }
@@ -54,7 +54,7 @@ class CssTranslatePositionProvider extends PositionProvider {
    */
   async getEntireSize() {
     const size = await EyesUtils.getCurrentFrameContentEntireSize(this._logger, this._executor)
-    this._logger.verbose(`CssTranslatePositionProvider - Entire size: ${size}`)
+    this._logger.verbose(`ScrollPositionProvider - Entire size: ${size}`)
     return size
   }
 

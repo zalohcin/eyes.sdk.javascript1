@@ -27,22 +27,23 @@ describe('PreserveTargetFrameAfterCheck', () => {
       port: 9515,
       path: '/',
     })
-  })
-
-  beforeEach(async () => {
     await browser.init()
-    eyes = new Eyes()
-    eyes.setHideScrollbars(true)
-    eyes.setBatch(batch)
     await browser.url('https://applitools.github.io/demo/TestPages/FramesAndRegionsPage/')
   })
 
+  beforeEach(async () => {
+    await browser.frame(null)
+    eyes = new Eyes()
+    eyes.setHideScrollbars(true)
+    eyes.setBatch(batch)
+  })
+
   afterEach(async () => {
-    await browser.end()
     await eyes.abort()
   })
 
   after(async () => {
+    await browser.end()
     chromedriver.stop()
   })
 

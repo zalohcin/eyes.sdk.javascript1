@@ -198,17 +198,20 @@ async function getTopContextViewportSize(logger, {controller, context, executor}
 
 async function getCurrentFrameContentEntireSize(_logger, executor) {
   try {
-    const value = await executor.executeScript(EyesJsSnippets.GET_CONTENT_ENTIRE_SIZE)
-    return new RectangleSize(parseInt(value[0], 10) || 0, parseInt(value[1], 10) || 0)
+    const [width, height] = await executor.executeScript(EyesJsSnippets.GET_CONTENT_ENTIRE_SIZE)
+    return new RectangleSize(Number.parseInt(width, 10) || 0, Number.parseInt(height, 10) || 0)
   } catch (err) {
     throw new EyesDriverOperationError('Failed to extract entire size!', err)
   }
 }
 
-async function getTopContextScrollLocation(logger, {context, executor}) {
-  // TODO I think we can use here Frame::originalLocation which is the scroll location
-  // of the parent element in the moment of changing context
-  return context.framesToAndFro(null, async () => getScrollLocation(logger, executor))
+async function getElementEntireSize(_logger, executor) {
+  try {
+    const [width, height] = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_ENTIRE_SIZE)
+    return new RectangleSize(Number.parseInt(width, 10) || 0, Number.parseInt(height, 10) || 0)
+  } catch (err) {
+    throw new EyesDriverOperationError('Failed to extract element size!', err)
+  }
 }
 
 async function getDevicePixelRatio(_logger, {executor}) {
@@ -222,9 +225,15 @@ async function getMobilePixelRatio(_logger, {controller}, viewportSize) {
   return screenshot.getWidth() / viewportSize.getWidth()
 }
 
+async function getTopContextScrollLocation(logger, {context, executor}) {
+  // TODO I think we can use here Frame::originalLocation which is the scroll location
+  // of the parent element in the moment of changing context
+  return context.framesToAndFro(null, async () => getScrollLocation(logger, executor))
+}
+
 async function getScrollLocation(_logger, executor, element) {
   const [x, y] = await executor.executeScript(EyesJsSnippets.GET_SCROLL_POSITION, element)
-  return new Location(Math.ceil(x) || 0, Math.ceil(y) || 0)
+  return new Location(Math.ceil(Number.parseFloat(x)) || 0, Math.ceil(Number.parseFloat(y)) || 0)
 }
 
 async function scrollTo(_logger, executor, location, element) {
@@ -237,6 +246,24 @@ async function getTransforms(_logger, executor, element) {
 
 async function setTransforms(_logger, executor, transforms, element) {
   return executor.executeScript(EyesJsSnippets.SET_TRANSFORMS(transforms), element)
+}
+
+async function getTranslateLocation(_logger, executor, element) {
+  const transforms = await getTransforms(_logger, executor, element)
+  const translateLocations = Object.values(transforms)
+    .filter(transform => Boolean(transform))
+    .map(transform => {
+      const data = transform.match(/^translate\(\s*(\-?[\d, \.]+)px,\s*(\-?[\d, \.]+)px\s*\)/)
+      if (!data) {
+        throw new Error(`Can't parse CSS transition: ${transform}!`)
+      }
+      const [_, x, y] = data
+      return new Location(Math.round(-Number.parseFloat(x)), Math.round(-Number.parseFloat(y)))
+    })
+  if (translateLocations.some(location => !translateLocations[0].equals(location))) {
+    throw new Error('Got different css positions!')
+  }
+  return translateLocations[0] || Location.ZERO
 }
 
 async function translateTo(_logger, executor, location, element) {
@@ -293,13 +320,15 @@ module.exports = {
   setViewportSize,
   getTopContextViewportSize,
   getCurrentFrameContentEntireSize,
-  getTopContextScrollLocation,
+  getElementEntireSize,
   getDevicePixelRatio,
   getMobilePixelRatio,
+  getTopContextScrollLocation,
   getScrollLocation,
   scrollTo,
   getTransforms,
   setTransforms,
+  getTranslateLocation,
   translateTo,
   getOverflow,
   setOverflow,

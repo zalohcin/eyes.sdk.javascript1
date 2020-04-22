@@ -1,32 +1,32 @@
 'use strict'
 
-const {PositionMemento, Location} = require('@applitools/eyes-sdk-core')
+const {Location} = require('@applitools/eyes-common')
+const PositionMemento = require('./PositionMemento')
 
 /**
  * Encapsulates state for {@link ScrollPositionProvider} instances.
  */
 class ScrollPositionMemento extends PositionMemento {
   /**
-   * @param {Location} position The current location to be saved.
+   * @param {Location} location The current location to be saved.
    */
-  constructor(position) {
+  constructor(location) {
     super()
-
-    this._position = new Location(position)
+    this._location = new Location(location)
   }
 
   /**
    * @return {int}
    */
   getX() {
-    return this._position.getX()
+    return this._location.getX()
   }
 
   /**
    * @return {int}
    */
   getY() {
-    return this._position.getY()
+    return this._location.getY()
   }
 }
 

@@ -1,6 +1,6 @@
 'use strict'
 
-const {Region} = require('@applitools/eyes-sdk-core')
+const {Region} = require('@applitools/eyes-common')
 const RegionPositionCompensation = require('./RegionPositionCompensation')
 
 class FirefoxRegionPositionCompensation extends RegionPositionCompensation {
@@ -24,8 +24,7 @@ class FirefoxRegionPositionCompensation extends RegionPositionCompensation {
       return region
     }
 
-    const eyesWebDriver = this._eyes.getDriver()
-    const frameChain = eyesWebDriver.context.frameChain
+    const frameChain = this._eyes.getDriver().context.frameChain
     if (frameChain.size > 0) {
       return region
     }

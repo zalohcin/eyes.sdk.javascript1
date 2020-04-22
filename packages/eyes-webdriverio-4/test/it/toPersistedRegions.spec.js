@@ -5,6 +5,8 @@ const {remote} = require('webdriverio')
 const assert = require('assert')
 const {
   AccessibilityRegionType,
+  TargetRegionBySelector,
+  TargetRegionByElement,
   IgnoreRegionBySelector,
   IgnoreRegionByElement,
   FloatingRegionBySelector,
@@ -12,10 +14,8 @@ const {
   AccessibilityRegionByElement,
   AccessibilityRegionBySelector,
 } = require('@applitools/eyes-sdk-core')
-const {By, Logger} = require('../../index')
-const {SelectorByElement} = require('../../src/fluent/SelectorByElement')
-const {SelectorByLocator} = require('../../src/fluent/SelectorByLocator')
 const WDIODriver = require('../../src/wrappers/WDIODriver')
+const {By, Logger} = require('../../index')
 
 describe('toPersistedRegions()', function() {
   let browser, driver, logger
@@ -44,9 +44,9 @@ describe('toPersistedRegions()', function() {
     await chromedriver.stop()
   })
 
-  it('SelectorByElement', async () => {
+  it('TargetRegionByElement', async () => {
     const {value: element} = await browser.$('button')
-    const region = new SelectorByElement(element)
+    const region = new TargetRegionByElement(element)
     const persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {
@@ -97,28 +97,28 @@ describe('toPersistedRegions()', function() {
     ])
   })
 
-  it('SelectorByLocator', async () => {
-    let region = new SelectorByLocator(By.css('some'))
+  it('TargetRegionByLocator', async () => {
+    let region = new TargetRegionBySelector(By.css('some'))
     let persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: 'some'}])
 
-    region = new SelectorByLocator(By.id('some'))
+    region = new TargetRegionBySelector(By.id('some'))
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[id="some"]'}])
 
-    region = new SelectorByLocator(By.className('some'))
+    region = new TargetRegionBySelector(By.className('some'))
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '.some'}])
 
-    region = new SelectorByLocator(By.name('some'))
+    region = new TargetRegionBySelector(By.name('some'))
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '*[name="some"]'}])
 
-    region = new SelectorByLocator(By.xpath('//some'))
+    region = new TargetRegionBySelector(By.xpath('//some'))
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: '//some'}])
 
-    region = new SelectorByLocator('button')
+    region = new TargetRegionBySelector('button')
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {type: 'xpath', selector: 'HTML[1]/BODY[1]/DIV[1]/DIV[3]/BUTTON[1]'},

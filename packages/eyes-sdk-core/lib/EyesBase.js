@@ -28,7 +28,7 @@ const {NullScaleProvider} = require('./scaling/NullScaleProvider')
 
 const {NullCutProvider} = require('./cropping/NullCutProvider')
 
-const {InvalidPositionProvider} = require('./positioning/InvalidPositionProvider')
+const InvalidPositionProvider = require('./positioning/InvalidPositionProvider')
 
 const {TextTrigger} = require('./triggers/TextTrigger')
 const {MouseTrigger} = require('./triggers/MouseTrigger')

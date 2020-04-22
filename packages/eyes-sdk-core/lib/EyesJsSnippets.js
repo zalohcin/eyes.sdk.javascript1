@@ -22,6 +22,11 @@ const GET_CONTENT_ENTIRE_SIZE = `
   return [totalWidth, totalHeight];
 `
 
+const GET_ELEMENT_ENTIRE_SIZE = `
+  var element = arguments[0];
+  return [element.scrollWidth, element.scrollHeight];
+`
+
 const GET_SCROLL_POSITION = `
   var element = arguments[0] || document.scrollingElement;
   if (element) return [element.scrollLeft, element.scrollTop];
@@ -102,6 +107,7 @@ const GET_ELEMENT_XPATH = `
 module.exports = {
   GET_VIEWPORT_SIZE,
   GET_CONTENT_ENTIRE_SIZE,
+  GET_ELEMENT_ENTIRE_SIZE,
   GET_SCROLL_POSITION,
   SCROLL_TO,
   GET_TRANSFORMS,

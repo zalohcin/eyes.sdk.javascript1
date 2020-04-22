@@ -11,6 +11,7 @@ const {
   EyesScreenshotFactory,
   ImageProviderFactory,
   Location,
+  RectangleSize,
   NullCutProvider,
   NullScaleProvider,
   NullRegionProvider,
@@ -22,26 +23,22 @@ const {
   UserAgent,
   ArgumentGuard,
   SimplePropertyHandler,
+  ReadOnlyPropertyHandler,
   Configuration,
   ClassicRunner,
   FrameChain,
   EyesUtils,
   StitchMode,
+  ImageRotation,
+  CssTranslatePositionProvider,
+  CssTranslateElementPositionProvider,
+  ScrollPositionProvider,
+  ScrollElementPositionProvider,
+  RegionPositionCompensationFactory,
 } = require('@applitools/eyes-sdk-core')
-
 const {DomCapture} = require('@applitools/dom-utils')
-const {RectangleSize} = require('@applitools/eyes-sdk-core')
-
-const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider')
-const CssTranslateElementPositionProvider = require('./positioning/CssTranslateElementPositionProvider')
-const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
-const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory')
+const WDIOCheckSettings = require('./WDIOCheckSettings')
 const WDIODriver = require('./wrappers/WDIODriver')
-const WDIOElement = require('./wrappers/WDIOElement')
-const ElementPositionProvider = require('./positioning/ElementPositionProvider')
-const Target = require('./fluent/Target')
-const ReadOnlyPropertyHandler = require('@applitools/eyes-sdk-core/index').ReadOnlyPropertyHandler
-const ImageRotation = require('./positioning/ImageRotation')
 
 const VERSION = require('../package.json').version
 
@@ -109,7 +106,7 @@ class EyesWDIO extends EyesBase {
     this._targetElement = null
     /** @type {Location} */
     this._targetElementLocation = null
-    /** @type {ElementPositionProvider} */
+    /** @type {ScrollElementPositionProvider} */
     this._elementPositionProvider = undefined
     /** @type {int} */
     this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS
@@ -213,7 +210,7 @@ class EyesWDIO extends EyesBase {
    * @return {Promise} A promise which is resolved when the validation is finished.
    */
   checkWindow(tag, matchTimeout) {
-    return this.check(tag, Target.window().timeout(matchTimeout))
+    return this.check(tag, WDIOCheckSettings.window().timeout(matchTimeout))
   }
 
   /**
@@ -228,7 +225,7 @@ class EyesWDIO extends EyesBase {
   checkFrame(element, matchTimeout, tag) {
     return this.check(
       tag,
-      Target.frame(element)
+      WDIOCheckSettings.frame(element)
         .timeout(matchTimeout)
         .fully(),
     )
@@ -243,7 +240,7 @@ class EyesWDIO extends EyesBase {
    * @return {Promise} A promise which is resolved when the validation is finished.
    */
   checkRegion(region, tag, matchTimeout) {
-    return this.check(tag, Target.region(region).timeout(matchTimeout))
+    return this.check(tag, WDIOCheckSettings.region(region).timeout(matchTimeout))
   }
 
   /**
@@ -271,7 +268,7 @@ class EyesWDIO extends EyesBase {
   checkRegionInFrame(frameNameOrId, selector, matchTimeout, tag, stitchContent) {
     return this.check(
       tag,
-      Target.region(selector, frameNameOrId)
+      WDIOCheckSettings.region(selector, frameNameOrId)
         .timeout(matchTimeout)
         .stitchContent(stitchContent),
     )
@@ -285,7 +282,7 @@ class EyesWDIO extends EyesBase {
    * @returns {Promise.<*>}
    */
   checkElementBySelector(selector, matchTimeout, tag) {
-    return this.check(tag, Target.region(selector).timeout(matchTimeout))
+    return this.check(tag, WDIOCheckSettings.region(selector).timeout(matchTimeout))
   }
 
   /**
@@ -470,7 +467,7 @@ class EyesWDIO extends EyesBase {
 
       const displayStyle = await this._targetElement.getCssProperty('display')
       if (displayStyle !== 'inline') {
-        this._elementPositionProvider = new ElementPositionProvider(
+        this._elementPositionProvider = new ScrollElementPositionProvider(
           this._logger,
           this._driver,
           this._targetElement,

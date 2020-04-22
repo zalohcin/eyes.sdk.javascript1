@@ -33,7 +33,8 @@ exports.OutOfBoundsError = require('./lib/errors/OutOfBoundsError').OutOfBoundsE
 exports.TestFailedError = require('./lib/errors/TestFailedError').TestFailedError
 exports.EyesDriverOperationError = require('./lib/errors/EyesDriverOperationError').EyesDriverOperationError
 
-exports.CheckSettings = require('./lib/fluent/CheckSettings').CheckSettings
+exports.CheckSettings = require('./lib/fluent/CheckSettings')
+exports.CheckSettingsFactory = require('./lib/fluent/CheckSettingsFactory')
 exports.CheckTarget = require('./lib/fluent/CheckTarget').CheckTarget
 exports.FrameLocator = require('./lib/fluent/FrameLocator')
 exports.locatorToPersistedRegions = require('./lib/fluent/locatorToPersistedRegions')
@@ -62,13 +63,23 @@ exports.MatchWindowDataWithScreenshot = require('./lib/match/MatchWindowDataWith
 
 exports.metadata = require('./lib/metadata/index')
 
-exports.InvalidPositionProvider = require('./lib/positioning/InvalidPositionProvider').InvalidPositionProvider
-exports.NullRegionPositionCompensation = require('./lib/positioning/NullRegionPositionCompensation').NullRegionPositionCompensation
-exports.NullRegionProvider = require('./lib/positioning/NullRegionProvider').NullRegionProvider
-exports.PositionMemento = require('./lib/positioning/PositionMemento').PositionMemento
-exports.PositionProvider = require('./lib/positioning/PositionProvider').PositionProvider
-exports.RegionPositionCompensation = require('./lib/positioning/RegionPositionCompensation').RegionPositionCompensation
-exports.RegionProvider = require('./lib/positioning/RegionProvider').RegionProvider
+exports.ImageRotation = require('./lib/positioning/ImageRotation')
+exports.RegionProvider = require('./lib/positioning/RegionProvider')
+exports.NullRegionProvider = require('./lib/positioning/NullRegionProvider')
+exports.RegionPositionCompensation = require('./lib/positioning/RegionPositionCompensation')
+exports.NullRegionPositionCompensation = require('./lib/positioning/NullRegionPositionCompensation')
+exports.FirefoxRegionPositionCompensation = require('./lib/positioning/FirefoxRegionPositionCompensation')
+exports.SafariRegionPositionCompensation = require('./lib/positioning/SafariRegionPositionCompensation')
+exports.RegionPositionCompensationFactory = require('./lib/positioning/RegionPositionCompensationFactory')
+exports.PositionProvider = require('./lib/positioning/PositionProvider')
+exports.InvalidPositionProvider = require('./lib/positioning/InvalidPositionProvider')
+exports.ScrollPositionProvider = require('./lib/positioning/ScrollPositionProvider')
+exports.CssTranslatePositionProvider = require('./lib/positioning/CssTranslatePositionProvider')
+exports.ScrollElementPositionProvider = require('./lib/positioning/ScrollElementPositionProvider')
+exports.CssTranslateElementPositionProvider = require('./lib/positioning/CssTranslateElementPositionProvider')
+exports.PositionMemento = require('./lib/positioning/PositionMemento')
+exports.ScrollPositionMemento = require('./lib/positioning/ScrollPositionMemento')
+exports.CssTranslatePositionMemento = require('./lib/positioning/CssTranslatePositionMemento')
 
 exports.RenderInfo = require('./lib/renderer/RenderInfo').RenderInfo
 exports.RenderRequest = require('./lib/renderer/RenderRequest').RenderRequest

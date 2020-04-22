@@ -7,7 +7,6 @@ const {
   Frame,
   EyesUtils,
 } = require('@applitools/eyes-sdk-core')
-const ScrollPositionProvider = require('../positioning/ScrollPositionProvider')
 const By = require('../By')
 const WDIOElement = require('./WDIOElement')
 
@@ -17,8 +16,6 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
     this._logger = logger
     this._driver = driver
     this._frameChain = new FrameChain(this._logger)
-
-    this._scrollPosition = new ScrollPositionProvider(this._logger, this._driver.executor)
   }
 
   get frameChain() {
@@ -190,10 +187,9 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   async framesDoScroll(frameChain) {
     this._logger.verbose('WDIOBrowsingContext.framesDoScroll(frameChain)')
     await this.frameDefault()
-    this._frameDefaultPositionMemento = await this._scrollPosition.getState()
     for (const frame of frameChain) {
       this._logger.verbose('Scrolling by parent scroll position...')
-      await this._scrollPosition.setPosition(frame.location)
+      await EyesUtils.scrollTo(this._logger, this._driver.executor, frame.location)
       await this.frame(frame.element)
     }
     this._logger.verbose('Done switching into nested frames!')

@@ -1,8 +1,9 @@
 'use strict'
 
-const {ArgumentGuard, PositionProvider, Location, EyesUtils} = require('@applitools/eyes-sdk-core')
-
+const {ArgumentGuard, Location} = require('@applitools/eyes-common')
+const PositionProvider = require('./PositionProvider')
 const ScrollPositionMemento = require('./ScrollPositionMemento')
+const EyesUtils = require('../EyesUtils')
 
 class ScrollPositionProvider extends PositionProvider {
   /**
@@ -17,8 +18,6 @@ class ScrollPositionProvider extends PositionProvider {
 
     this._logger = logger
     this._executor = executor
-
-    this._logger.verbose('creating ScrollPositionProvider')
   }
 
   /**
@@ -34,7 +33,7 @@ class ScrollPositionProvider extends PositionProvider {
     } catch (err) {
       // Sometimes it is expected e.g. on Appium, otherwise, take care
       this._logger.verbose(`Failed to extract current scroll position!`)
-      return new Location(0, 0)
+      return Location.ZERO
     }
   }
 
@@ -67,8 +66,9 @@ class ScrollPositionProvider extends PositionProvider {
    * @override
    * @return {Promise.<ScrollPositionMemento>}
    */
-  getState() {
-    return this.getCurrentPosition().then(position => new ScrollPositionMemento(position))
+  async getState() {
+    const location = await this.getCurrentPosition()
+    return new ScrollPositionMemento(location)
   }
 
   /**
@@ -76,11 +76,9 @@ class ScrollPositionProvider extends PositionProvider {
    * @param {ScrollPositionMemento} state The initial state of position
    * @return {Promise}
    */
-  restoreState(state) {
-    const that = this
-    return this.setPosition(new Location(state.getX(), state.getY())).then(() => {
-      that._logger.verbose('Position restored.')
-    })
+  async restoreState(state) {
+    await this.setPosition(new Location(state.getX(), state.getY()))
+    this._logger.verbose('Position restored.')
   }
 }
 
