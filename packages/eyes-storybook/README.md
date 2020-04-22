@@ -62,7 +62,7 @@ npx eyes-storybook
     - [variations](#variations)
     - [waitBeforeScreenshot](#waitBeforeScreenshot)
   - [Per component params](#ignore)
-    - [ignore](#ignore)
+    - [ignore](#ignoreRegions)
     <!-- - [accessibility](#accessibility) -->
     - [runBefore](#runBefore)
 - [Running Eyes-Storybook in Docker](#Running-Eyes-Storybook-in-Docker)
@@ -167,6 +167,13 @@ In addition to command-line arguments, it's possible to define the following con
 | `dontCloseBatches`        | false                       | If true, batches are not closed for notifyOnCompletion.|
 | `concurrency`             | 10                          | The maximum number of tests that can run concurrently. The default value is the allowed amount for free accounts. For paid accounts, set this number to the quota set for your account. |
 | `readStoriesTimeout`      | 60000                       | The amount of time (in milliseconds) Eyes-Storybook waits for storybook to load. For old storybook versions 2 and 3, this is also the time it takes for Eyes-Storybook to acknowledge it is working on those versions. So it is recommended to make this value small (e.g. 3000) when working with Storybook version 2 or 3. |
+| `ignoreDisplacements`     | false                       | Sets whether Test Manager should intially display mismatches for image features that have only been displaced, as opposed to real mismatches. |
+| `properties`              | undefined                   | Adds custom properties for each test. These show up in Test Manager, and tests can be grouped by custom properties. By default, Eyes-Storybook adds 2 custom properties for each test: the **Component name** and **State** of each component. Adding more properties via this config param will **not** override these two properties.|
+| `ignoreRegions`           | undefined                   | An array of regions to ignore when comparing the checkpoint screenshot with the baseline screenshot. For more information, see [per component  configuration - ignoreRegions](#ignoreRegions)|
+| `floatingRegions`         | undefined                   | An array of regions to consider as floating when comparing the checkpoint screenshot with the baseline screenshot. For more information, see [per component  configuration - floatingRegions](#floatingRegions)|
+| `layoutRegions`           | undefined                   | An array of regions to consider as match level **Layout** when comparing the checkpoint screenshot with the baseline screenshot. For more information, see [per component  configuration - layoutRegions](#layoutRegions)|
+| `strictRegions`           | undefined                   | An array of regions to consider as match level **Strict** when comparing the checkpoint screenshot with the baseline screenshot. For more information, see [per component  configuration - strictRegions](#strictRegions)|
+| `contentRegions`          | undefined                   | An array of regions to consider as match level **Content** when comparing the checkpoint screenshot with the baseline screenshot. For more information, see [per component  configuration - contentRegions](#contentRegions)|
 
 <!-- | `accessibilityLevel`      | None                        | The accessibility level to use for the screenshots. Possible values are `None`, `AA` and `AAA`. | -->
 There are 2 ways to specify test configuration:
@@ -349,6 +356,101 @@ storiesOf('Components with a waitBeforeScreenshot', module)
 
 _Note that the predicate option for `waitBeforeScreenshot` is currently not available in the per component configuration._
 
+### `properties`
+
+Adds custom properties for each test. These show up in Test Manager, and tests can be grouped by custom properties. By default, Eyes-Storybook adds 2 custom properties for each test: the **Component name** and **State** of each component. Adding more properties via this config param will **not** override these two properties.
+
+### `ignoreRegions`
+
+A single or an array of regions to ignore when checking for visual differences. For example:
+
+```js
+storiesOf('Components with ignored region', module)
+  .add(
+    'Some story',
+    () =>
+      <div>
+        <span>I am visually perfect!</span>
+        <span className="ignore-this">this should be ignored</span>
+      </div>,
+    {eyes: { ignoreRegions: [{selector: '.ignore-this'}] }}
+  )
+```
+
+### `floatingRegions`
+
+An array of regions to consider as floating when comparing the checkpoint screenshot with the baseline screenshot. For example:
+
+```js
+storiesOf('Components with floating region', module)
+  .add(
+    'Some story',
+    () =>
+      <div>
+        <span>I am visually perfect!</span>
+        <span className="floating-region">this should be floating</span>
+      </div>,
+    {eyes: { floatingRegions: [{
+      selector: '.floating-region',
+      maxUpOffset: 10,
+      maxDownOffset: 20,
+      maxLeftOffset: 30,
+      maxRightOffset: 40,
+    }] }}
+  )
+```
+
+### `layoutRegions`
+
+An array of regions to consider as match level **Layout** when comparing the checkpoint screenshot with the baseline screenshot. For example:
+
+```js
+storiesOf('Components with layout region', module)
+  .add(
+    'Some story',
+    () =>
+      <div>
+        <span>I am visually perfect!</span>
+        <span className="layout-region">this should be compared with layout match level</span>
+      </div>,
+    {eyes: { layoutRegions: [{selector: '.layout-region'}] }}
+  )
+```
+
+### `contentRegions`
+
+An array of regions to consider as match level **Content** when comparing the checkpoint screenshot with the baseline screenshot. For example:
+
+```js
+storiesOf('Components with content region', module)
+  .add(
+    'Some story',
+    () =>
+      <div>
+        <span>I am visually perfect!</span>
+        <span className="content-region">this should be compared with content match level</span>
+      </div>,
+    {eyes: { contentRegions: [{selector: '.content-region'}] }}
+  )
+```
+
+### `strictRegions`
+
+An array of regions to consider as match level **Strict** when comparing the checkpoint screenshot with the baseline screenshot. For example:
+
+```js
+storiesOf('Components with strict region', module)
+  .add(
+    'Some story',
+    () =>
+      <div>
+        <span>I am visually perfect!</span>
+        <span className="strict-region">this should be compared with strict match level</span>
+      </div>,
+    {eyes: { strictRegions: [{selector: '.strict-region'}] }}
+  )
+```
+
 ### _The following parameters cannot be set as an [Advanced configuration](#advanced-configuration) :_
 
 <!-- ### `accessibility`
@@ -372,23 +474,6 @@ storiesOf('Components with accessibility regions', module)
 ```
 
 Possible accessibilityType values are: `IgnoreContrast`,`RegularText`,`LargeText`,`BoldText` and `GraphicalObject`. -->
-
-### `ignore`
-
-A single or an array of regions to ignore when checking for visual differences. For example:
-
-```js
-storiesOf('Components with ignored region', module)
-  .add(
-    'Some story',
-    () =>
-      <div>
-        <span>I am visually perfect!</span>
-        <span className="ignore-this">this should be ignored</span>
-      </div>,
-    {eyes: { ignore: [{selector: '.ignore-this'}] }}
-  )
-```
 
 ### `runBefore`
 

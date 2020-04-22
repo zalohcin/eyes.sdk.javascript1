@@ -9,7 +9,6 @@ const {
   CorsIframeHandle,
   CorsIframeHandler,
   TypeUtils,
-  IgnoreRegionByRectangle,
   RectangleSize,
   Configuration,
   VisualGridRunner,
@@ -38,7 +37,7 @@ class EyesVisualGrid extends EyesBase {
    * @param {EyesRunner} [runner] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    */
   constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
-    super(serverUrl, isDisabled, new Configuration())
+    super(serverUrl, isDisabled)
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
     this._runner.makeGetVisualGridClient(makeVisualGridClient)
@@ -182,10 +181,12 @@ class EyesVisualGrid extends EyesBase {
         if (this._runner) {
           this._runner._allTestResult.push(...results)
         }
-        if (throwEx && isErrorCaught) {
-          throw TypeUtils.isArray(results) ? results[0] : results
+        if (isErrorCaught) {
+          const error = TypeUtils.isArray(results) ? results[0] : results
+          if (throwEx) throw error
+          else return error.getTestResults()
         }
-        return results
+        return TypeUtils.isArray(results) ? results[0] : results
       })
 
     return this._closePromise
@@ -242,15 +243,10 @@ class EyesVisualGrid extends EyesBase {
 
     this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`)
 
-    let targetSelector = await checkSettings.getTargetProvider()
-    if (targetSelector) {
-      targetSelector = await targetSelector.getSelector(this)
-    }
-
     const pageDomResults = await takeDomSnapshot({
       executeScript: this._jsExecutor.executeScript.bind(this._jsExecutor),
     })
-    const {cdt, url: pageUrl, resourceContents, resourceUrls, frames} = pageDomResults
+    const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults
 
     if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
       CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames)
@@ -259,46 +255,46 @@ class EyesVisualGrid extends EyesBase {
     this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
     const source = await this._driver.getCurrentUrl()
 
-    const [ignore, floating, strict, layout, content, accessibility] = await Promise.all([
-      this._persistRegions(checkSettings.getIgnoreRegions()),
-      this._persistRegions(checkSettings.getFloatingRegions()),
-      this._persistRegions(checkSettings.getStrictRegions()),
-      this._persistRegions(checkSettings.getLayoutRegions()),
-      this._persistRegions(checkSettings.getContentRegions()),
-      this._persistRegions(checkSettings.getAccessibilityRegions()),
+    const [config, {region, selector}] = await Promise.all([
+      checkSettings.toCheckWindowConfiguration(this._driver),
+      this._getTargetConfiguration(checkSettings),
     ])
+    const overrideConfig = {
+      fully: this.getForceFullPageScreenshot() || config.fully,
+      sendDom: this.getSendDom() || config.sendDom,
+      matchLevel: this.getMatchLevel() || config.matchLevel,
+    }
 
     await this._checkWindowCommand({
+      ...config,
+      ...overrideConfig,
+      region,
+      selector,
       resourceUrls,
       resourceContents,
       frames,
-      url: pageUrl,
+      url,
       cdt,
-      tag: checkSettings.getName(),
-      sizeMode:
-        checkSettings.getSizeMode() === 'viewport' && this.getForceFullPageScreenshot()
-          ? 'full-page'
-          : checkSettings.getSizeMode(),
-      selector: targetSelector ? targetSelector : undefined,
-      region: checkSettings.getTargetRegion(),
-      scriptHooks: checkSettings.getScriptHooks(),
-      ignore,
-      floating,
-      strict,
-      layout,
-      content,
-      accessibility,
-      sendDom: checkSettings.getSendDom() ? checkSettings.getSendDom() : this.getSendDom(),
-      matchLevel: checkSettings.getMatchLevel()
-        ? checkSettings.getMatchLevel()
-        : this.getMatchLevel(),
       source,
     })
   }
 
-  async _persistRegions(regions) {
-    const persisted = await Promise.all(regions.map(r => r.toPersistedRegions(this._driver)))
-    return [].concat(...persisted)
+  async _getTargetConfiguration(checkSettings) {
+    const targetSelector =
+      checkSettings.getTargetProvider() &&
+      checkSettings
+        .getTargetProvider()
+        .toPersistedRegions(this._driver)
+        .then(r => r[0])
+    const targetRegion =
+      checkSettings.getTargetRegion() &&
+      checkSettings
+        .getTargetRegion()
+        .toPersistedRegions(this._driver)
+        .then(r => r[0])
+
+    const [region, selector] = await Promise.all([targetRegion, targetSelector])
+    return {region, selector}
   }
 
   /**
@@ -480,33 +476,6 @@ class EyesVisualGrid extends EyesBase {
    */
   getForceFullPageScreenshot() {
     return this._configuration.getForceFullPageScreenshot()
-  }
-
-  /**
-   * @private
-   * @param {GetRegion[]} regions
-   * @return {{type: string, url: string, value: Buffer}[]}
-   */
-  async _prepareRegions(regions) {
-    if (regions && regions.length > 0) {
-      const newRegions = []
-
-      for (const region of regions) {
-        if (region instanceof IgnoreRegionByRectangle) {
-          const plainRegions = await region.getRegion(this, undefined)
-          plainRegions.forEach(plainRegion => {
-            newRegions.push(plainRegion.toJSON())
-          })
-        } else {
-          const selector = await region.getSelector(this)
-          newRegions.push({selector})
-        }
-      }
-
-      return newRegions
-    }
-
-    return regions
   }
 
   async _getAndSaveBatchInfoFromServer(batchId) {

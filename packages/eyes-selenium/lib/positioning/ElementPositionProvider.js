@@ -1,8 +1,6 @@
 'use strict'
 
-const {ArgumentGuard, Location} = require('@applitools/eyes-common')
-const {PositionProvider} = require('@applitools/eyes-sdk-core')
-
+const {PositionProvider, ArgumentGuard, Location} = require('@applitools/eyes-sdk-core')
 const {ElementPositionMemento} = require('./ElementPositionMemento')
 const {EyesWebElement} = require('../wrappers/EyesWebElement')
 

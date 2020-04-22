@@ -66,7 +66,7 @@ function config({inputFileName, outputFileName, type = 'iife', usePolyfillAndBab
           )
         : undefined,
       resolve({}),
-      commonjs({include: '**', ignoreGlobal: true}),
+      commonjs({include: '../../**', ignoreGlobal: true}),
       builtins(),
       globals(),
       replace({

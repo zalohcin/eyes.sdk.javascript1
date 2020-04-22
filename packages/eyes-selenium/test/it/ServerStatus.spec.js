@@ -5,7 +5,7 @@ const assert = require('assert')
 const assertRejects = require('assert-rejects')
 const {Builder, By, Capabilities} = require('selenium-webdriver')
 const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
-const {GeneralUtils} = require('@applitools/eyes-common')
+const {GeneralUtils} = require('@applitools/eyes-sdk-core')
 
 const {
   Eyes,

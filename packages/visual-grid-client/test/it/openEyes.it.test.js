@@ -12,6 +12,7 @@ const {promisify: p} = require('util')
 const nock = require('nock')
 const psetTimeout = p(setTimeout)
 const {presult} = require('@applitools/functional-commons')
+const {nonEnvironmentVariableSource} = require('@applitools/feature-flags')
 const {
   RenderStatus,
   RenderStatusResults,
@@ -136,6 +137,58 @@ describe('openEyes', () => {
     expect(wrapper.getBatch().getSequenceName()).to.equal(batchSequence)
     expect(wrapper.getBatch().getName()).to.equal(batchName)
     expect(wrapper.getBatch().getId()).to.equal(batchId)
+  })
+
+  it('sets batch isGeneratedId property', async () => {
+    await openEyes({wrappers: [wrapper], appName})
+    const batch = wrapper.getBatch()
+    expect(batch.getIsGeneratedId()).to.be.true
+
+    await openEyes({wrappers: [wrapper], appName, batchId: `batchId_${Date.now()}`})
+    const userSetBatch = wrapper.getBatch()
+    expect(userSetBatch.getIsGeneratedId()).to.be.false
+  })
+
+  it('sets batch properties passed to makeRenderingGridClient', async () => {
+    const now = Date.now()
+    const batchId = `batchId_${now}`
+    const batchName = `batchName_${now}`
+    const batchSequence = `batchSequence_${now}`
+
+    openEyes = makeRenderingGridClient({
+      showLogs: APPLITOOLS_SHOW_LOGS,
+      apiKey,
+      renderWrapper: wrapper,
+      fetchResourceTimeout: 2000,
+      // logger: console,
+
+      // These are the properties that are relevant for the tests:
+      batchId,
+      batchName,
+      batchSequence,
+      batchNotify: true,
+    }).openEyes
+
+    await openEyes({wrappers: [wrapper], appName})
+    const batch = wrapper.getBatch()
+    expect(batch.getIsGeneratedId()).to.be.false
+    expect(batch.getId()).to.equal(batchId)
+    expect(batch.getName()).to.equal(batchName)
+    expect(batch.getSequenceName()).to.equal(batchSequence)
+    expect(batch.getNotifyOnCompletion()).to.be.true
+  })
+
+  it("doesn't create race condition on batch object", async () => {
+    const wrapper1 = createFakeWrapper(baseUrl)
+    const wrapper2 = createFakeWrapper(baseUrl)
+
+    await openEyes({appName, wrappers: [wrapper1], batchId: 'batch 1'})
+    await openEyes({appName, wrappers: [wrapper2], batchId: 'batch 2'})
+    const batch1 = wrapper1.getBatch()
+    const batch2 = wrapper2.getBatch()
+
+    expect(batch1.getId()).to.equal('batch 1')
+    expect(batch2.getId()).to.equal('batch 2')
   })
 
   it('renders the correct target', async () => {
@@ -316,6 +369,45 @@ describe('openEyes', () => {
 
 Received: 'firefox-1'.`,
     )
+  })
+
+  it('allows edgelegacy and edgechromium under flag', async () => {
+    const [errEdgeLegacy] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: {width: 320, height: 480, name: 'edgelegacy'},
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    )
+
+    expect(errEdgeLegacy).not.to.be.undefined
+
+    const [errEdgeChromium] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: {width: 320, height: 480, name: 'edgechromium'},
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    )
+
+    expect(errEdgeChromium).not.to.be.undefined
+
+    nonEnvironmentVariableSource({'vg-cli-edge': true})
+
+    const [noErr] = await presult(
+      openEyes({
+        wrappers: [wrapper],
+        browser: [
+          {width: 320, height: 480, name: 'edgelegacy'},
+          {width: 320, height: 480, name: 'edgechromium'},
+        ],
+        url: `${baseUrl}/test.html`,
+        appName,
+      }),
+    )
+    expect(noErr).to.be.undefined
   })
 
   it('throws error on browser with no size', async () => {
@@ -1181,7 +1273,7 @@ Received: 'firefox-1'.`,
       expect(wrapper.compareWithParentBranch).to.equal('compareWithParentBranch')
       expect(wrapper.ignoreBaseline).to.equal('ignoreBaseline')
       expect(wrapper.serverUrl).to.equal('serverUrl')
-      expect(wrapper.agentId).to.equal('agentId')
+      expect(wrapper.baseAgentId).to.equal('agentId')
       expect(wrapper.batch.getNotifyOnCompletion()).to.be.true
     }
 
@@ -1244,7 +1336,7 @@ Received: 'firefox-1'.`,
       expect(wrapper.compareWithParentBranch).to.equal('compareWithParentBranch')
       expect(wrapper.ignoreBaseline).to.equal('ignoreBaseline')
       expect(wrapper.serverUrl).to.equal('serverUrl')
-      expect(wrapper.agentId).to.equal('agentId')
+      expect(wrapper.baseAgentId).to.equal('agentId')
     }
 
     expect(wrappers[0].deviceInfo).to.equal('device1 (Chrome emulation)')
@@ -1371,7 +1463,7 @@ Received: 'firefox-1'.`,
       appName,
     })
 
-    const ignoreSelector1 = {selector: 'sel1'}
+    const ignoreSelector1 = {type: 'css', selector: 'sel1'}
     const region1FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel1']
     const region1 = new Region({
       left: region1FromStatusResults.x,
@@ -1380,7 +1472,7 @@ Received: 'firefox-1'.`,
       height: region1FromStatusResults.height,
     })
 
-    const layoutSelector1 = {selector: 'sel2'}
+    const layoutSelector1 = {type: 'css', selector: 'sel2'}
     const regionLayout1FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel2']
     const regionLayout1 = new Region({
       left: regionLayout1FromStatusResults.x,
@@ -1389,7 +1481,7 @@ Received: 'firefox-1'.`,
       height: regionLayout1FromStatusResults.height,
     })
 
-    const strictSelector1 = {selector: 'sel3'}
+    const strictSelector1 = {type: 'css', selector: 'sel3'}
     const regionStrict1FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel3']
     const regionStrict1 = new Region({
       left: regionStrict1FromStatusResults.x,
@@ -1398,7 +1490,7 @@ Received: 'firefox-1'.`,
       height: regionStrict1FromStatusResults.height,
     })
 
-    const contentSelector1 = {selector: 'sel9'}
+    const contentSelector1 = {type: 'css', selector: 'sel9'}
     const regionContent1FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel9']
     const regionContent1 = new Region({
       left: regionContent1FromStatusResults.x,
@@ -1407,7 +1499,7 @@ Received: 'firefox-1'.`,
       height: regionContent1FromStatusResults.height,
     })
 
-    const accessibilitySelector1 = {selector: 'sel4', accessibilityType: 'LargeText'}
+    const accessibilitySelector1 = {type: 'css', selector: 'sel4', accessibilityType: 'LargeText'}
     const regionAaccessibility1FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel4']
     const regionAccessibility1 = new Region({
       left: regionAaccessibility1FromStatusResults.x,
@@ -1416,7 +1508,7 @@ Received: 'firefox-1'.`,
       height: regionAaccessibility1FromStatusResults.height,
     })
 
-    const ignoreSelector2 = {selector: 'sel5'}
+    const ignoreSelector2 = {type: 'css', selector: 'sel5'}
     const region2FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel5']
     const region2 = new Region({
       left: region2FromStatusResults.x,
@@ -1425,7 +1517,7 @@ Received: 'firefox-1'.`,
       height: region2FromStatusResults.height,
     })
 
-    const layoutSelector2 = {selector: 'sel6'}
+    const layoutSelector2 = {type: 'css', selector: 'sel6'}
     const regionLayout2FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel6']
     const regionLayout2 = new Region({
       left: regionLayout2FromStatusResults.x,
@@ -1434,7 +1526,7 @@ Received: 'firefox-1'.`,
       height: regionLayout2FromStatusResults.height,
     })
 
-    const strictSelector2 = {selector: 'sel7'}
+    const strictSelector2 = {type: 'css', selector: 'sel7'}
     const regionStrict2FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel7']
     const regionStrict2 = new Region({
       left: regionStrict2FromStatusResults.x,
@@ -1443,7 +1535,7 @@ Received: 'firefox-1'.`,
       height: regionStrict2FromStatusResults.height,
     })
 
-    const contentSelector2 = {selector: 'sel10'}
+    const contentSelector2 = {type: 'css', selector: 'sel10'}
     const regionContentFromStatusResults = FakeEyesWrapper.selectorsToLocations['sel10']
     const regionContent2 = new Region({
       left: regionContentFromStatusResults.x,
@@ -1452,7 +1544,7 @@ Received: 'firefox-1'.`,
       height: regionContentFromStatusResults.height,
     })
 
-    const accessibilitySelector2 = {selector: 'sel8', accessibilityType: 'RegularText'}
+    const accessibilitySelector2 = {type: 'css', selector: 'sel8', accessibilityType: 'RegularText'}
     const regionAaccessibility2FromStatusResults = FakeEyesWrapper.selectorsToLocations['sel8']
     const regionAccessibility2 = new Region({
       left: regionAaccessibility2FromStatusResults.x,
@@ -1513,11 +1605,11 @@ Received: 'firefox-1'.`,
       height: 4000,
       accessibilityType: 'LargeText',
     }
-    const ignoreSelector = {selector: 'sel2'}
-    const layoutSelector = {selector: 'sel1'}
-    const strictSelector = {selector: 'sel3'}
-    const contentSelector = {selector: 'sel5'}
-    const accessibilitySelector = {selector: 'sel4', accessibilityType: 'RegularText'}
+    const ignoreSelector = {type: 'css', selector: 'sel2'}
+    const layoutSelector = {type: 'css', selector: 'sel1'}
+    const strictSelector = {type: 'css', selector: 'sel3'}
+    const contentSelector = {type: 'css', selector: 'sel5'}
+    const accessibilitySelector = {type: 'css', selector: 'sel4', accessibilityType: 'RegularText'}
     const imageOffset = FakeEyesWrapper.selectorsToLocations[selector]
     const expectedIgnoreSelectorRegion = FakeEyesWrapper.selectorsToLocations['sel2']
     const expectedLayoutSelectorRegion = FakeEyesWrapper.selectorsToLocations['sel1']
@@ -1616,11 +1708,11 @@ Received: 'firefox-1'.`,
       height: 4000,
       accessibilityType: 'LargeText',
     }
-    const ignoreSelector = {selector: 'sel2'}
-    const layoutSelector = {selector: 'sel1'}
-    const strictSelector = {selector: 'sel3'}
-    const contentSelector = {selector: 'sel5'}
-    const accessibilitySelector = {selector: 'sel4', accessibilityType: 'RegularText'}
+    const ignoreSelector = {type: 'css', selector: 'sel2'}
+    const layoutSelector = {type: 'css', selector: 'sel1'}
+    const strictSelector = {type: 'css', selector: 'sel3'}
+    const contentSelector = {type: 'css', selector: 'sel5'}
+    const accessibilitySelector = {type: 'css', selector: 'sel4', accessibilityType: 'RegularText'}
     const imageOffset = FakeEyesWrapper.selectorsToLocations[selector]
     const expectedIgnoreSelectorRegion = FakeEyesWrapper.selectorsToLocations['sel2']
     const expectedLayoutSelectorRegion = FakeEyesWrapper.selectorsToLocations['sel1']
@@ -1641,6 +1733,7 @@ Received: 'firefox-1'.`,
 
     const expectedFloatingRegion = FakeEyesWrapper.selectorsToLocations['sel3']
     const floatingSelector = {
+      type: 'css',
       selector: 'sel3',
       maxUpOffset: 18,
       maxDownOffset: 19,

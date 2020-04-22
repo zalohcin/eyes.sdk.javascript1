@@ -1,8 +1,7 @@
 'use strict'
 
 const {WebElement, By} = require('selenium-webdriver')
-const {TypeUtils, Region} = require('@applitools/eyes-common')
-const {CheckSettings} = require('@applitools/eyes-sdk-core')
+const {CheckSettings, TypeUtils, Region} = require('@applitools/eyes-sdk-core')
 
 const {IgnoreRegionBySelector} = require('./IgnoreRegionBySelector')
 const {IgnoreRegionByElement} = require('./IgnoreRegionByElement')
@@ -87,6 +86,12 @@ class SeleniumCheckSettings extends CheckSettings {
    */
   getFrameChain() {
     return this._frameChain
+  }
+
+  _getTargetType() {
+    return !this._targetRegion && !this._targetElement && !this._targetSelector
+      ? 'window'
+      : 'region'
   }
 
   /**
@@ -253,29 +258,6 @@ class SeleniumCheckSettings extends CheckSettings {
       super.accessibilityRegion(regionOrContainer, regionType)
     }
     return this
-  }
-
-  /**
-   * @ignore
-   * @return {string}
-   */
-  getSizeMode() {
-    if (!this._targetRegion && !this._targetElement && !this._targetSelector) {
-      if (this.getStitchContent()) {
-        return 'full-page'
-      }
-      return 'viewport'
-    }
-    if (this._targetRegion) {
-      if (this.getStitchContent()) {
-        return 'region'
-      }
-      return 'region'
-    }
-    if (this.getStitchContent()) {
-      return 'selector'
-    }
-    return 'selector'
   }
 
   /**

@@ -3,6 +3,15 @@
 ## Unreleased
 
 
+ ## 3.21.0 - 2020/4/5
+
+- supporting env variable for setting applitools config file path 
+
+## 3.20.2
+
+- fix isFeatureFlagOn
+- cachify cache key can now be a serialized object
+
 ## 3.20.1
 
 - returning batchInfo from toOpenEyesConfiguration

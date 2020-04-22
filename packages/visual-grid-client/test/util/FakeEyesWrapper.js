@@ -141,7 +141,9 @@ class FakeEyesWrapper extends EventEmitter {
         userAgent: browserName,
         deviceSize: emulationInfo && emulationInfo.deviceName && devices[emulationInfo.deviceName],
         selectorRegions: selectorsToFindRegionsFor
-          ? selectorsToFindRegionsFor.map(selector => selectorsToLocations[selector])
+          ? selectorsToFindRegionsFor.map(
+              selector => selectorsToLocations[selector.selector || selector],
+            )
           : undefined,
       })
     })
@@ -387,11 +389,11 @@ class FakeEyesWrapper extends EventEmitter {
   }
 
   setBaseAgentId(value) {
-    this.agentId = value
+    this.baseAgentId = value
   }
 
   getBaseAgentId() {
-    return this.agentId || 'fake wrapper'
+    return this.baseAgentId || 'fake wrapper'
   }
 
   getApiKey() {

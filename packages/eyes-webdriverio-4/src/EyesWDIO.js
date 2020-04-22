@@ -20,12 +20,12 @@ const {
   UserAgent,
   ArgumentGuard,
   SimplePropertyHandler,
-  Configuration,
   ClassicRunner,
+  StitchMode,
 } = require('@applitools/eyes-sdk-core')
 
 const {DomCapture} = require('@applitools/dom-utils')
-const {RectangleSize} = require('@applitools/eyes-common')
+const {RectangleSize} = require('@applitools/eyes-sdk-core')
 
 const ImageProviderFactory = require('./capture/ImageProviderFactory')
 const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider')
@@ -41,7 +41,6 @@ const FrameChain = require('./frames/FrameChain')
 const EyesWDIOScreenshotFactory = require('./capture/EyesWDIOScreenshotFactory')
 const EyesWDIOUtils = require('./EyesWDIOUtils')
 const ElementPositionProvider = require('./positioning/ElementPositionProvider')
-const StitchMode = require('./StitchMode')
 const Target = require('./fluent/Target')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
 const WebDriver = require('./wrappers/WebDriver')
@@ -72,7 +71,7 @@ class EyesWDIO extends EyesBase {
    * @param {ClassicRunner} [runner] - Set shared ClassicRunner if you want to group results.
    **/
   constructor(serverUrl, isDisabled = false, runner = new ClassicRunner()) {
-    super(serverUrl, isDisabled, new Configuration())
+    super(serverUrl, isDisabled)
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
 
@@ -1029,8 +1028,9 @@ class EyesWDIO extends EyesBase {
         if (this._runner) {
           this._runner._allTestResult.push(results)
         }
-        if (throwEx && isErrorCaught) {
-          throw results
+        if (isErrorCaught) {
+          if (throwEx) throw results
+          else return results.getTestResults()
         }
         return results
       })

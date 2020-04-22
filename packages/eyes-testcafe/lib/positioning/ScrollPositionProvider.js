@@ -1,8 +1,12 @@
 'use strict'
 
-const {ArgumentGuard, Location, RectangleSize, EyesError} = require('@applitools/eyes-common')
-const {PositionProvider} = require('@applitools/eyes-sdk-core')
-
+const {
+  PositionProvider,
+  ArgumentGuard,
+  Location,
+  RectangleSize,
+  EyesError,
+} = require('@applitools/eyes-sdk-core')
 const {ScrollPositionMemento} = require('./ScrollPositionMemento')
 
 class ScrollPositionProvider extends PositionProvider {

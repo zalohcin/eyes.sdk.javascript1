@@ -162,10 +162,15 @@ class EyesWebDriver {
    * @return {Promise.<EyesWebElement>}
    */
   async findElement(locator) {
+    if (!locator.value) {
+      throw new Error('This strategy type is not supported')
+    }
+
     const element = await this.remoteWebDriver.$(locator.value)
     if (element.error) {
       throw new Error(element.error.message)
     }
+
     return new EyesWebElement(
       this._logger,
       this,
@@ -178,6 +183,9 @@ class EyesWebDriver {
    * @return {Promise.<EyesWebElement[]>}
    */
   async findElements(locator) {
+    if (!locator.value) {
+      throw new Error('This strategy type is not supported')
+    }
     const elements = await this.remoteWebDriver.$$(locator.value)
 
     return elements.map(element => {

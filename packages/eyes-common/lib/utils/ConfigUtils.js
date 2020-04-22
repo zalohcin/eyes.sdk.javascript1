@@ -1,9 +1,11 @@
 'use strict'
 
 const {cosmiconfigSync} = require('cosmiconfig')
-
+const {join} = require('path')
 const {GeneralUtils} = require('./GeneralUtils')
 const {Logger} = require('../logging/Logger')
+
+const _CONFIG_FILE_NAMES = ['applitools.config.js', 'package.json', 'eyes.config.js', 'eyes.json']
 
 /**
  * @ignore
@@ -15,12 +17,15 @@ class ConfigUtils {
     logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS),
   } = {}) {
     const explorer = cosmiconfigSync('applitools', {
-      searchPlaces: ['package.json', 'applitools.config.js', 'eyes.config.js', 'eyes.json'],
+      searchPlaces: _CONFIG_FILE_NAMES,
     })
 
     let defaultConfig = {}
     try {
-      const result = configPath ? explorer.load(configPath) : explorer.search()
+      const path = GeneralUtils.getEnvValue('CONFIG_PATH') || configPath
+      const fullPath = path && ConfigUtils._fullConfigPath(path)
+      const result = fullPath ? explorer.load(fullPath) : explorer.search()
+
       if (result) {
         const {config, filepath} = result
         logger.log('Loading configuration from', filepath)
@@ -55,6 +60,11 @@ class ConfigUtils {
    */
   static toEnvVarName(camelCaseStr) {
     return camelCaseStr.replace(/(.)([A-Z])/g, '$1_$2').toUpperCase()
+  }
+
+  static _fullConfigPath(path) {
+    const isFullPath = _CONFIG_FILE_NAMES.some(name => path.endsWith(name))
+    return isFullPath ? path : join(path, 'applitools.config.js')
   }
 }
 

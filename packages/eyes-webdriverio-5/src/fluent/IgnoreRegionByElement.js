@@ -47,7 +47,7 @@ class IgnoreRegionByElement extends GetRegion {
   }
 
   async toPersistedRegions(driver) {
-    const xpath = await EyesJsBrowserUtils.getElementXpath(driver, this._element)
+    const xpath = await EyesJsBrowserUtils.getElementXpath(driver, this._element.element)
     return [{type: 'xpath', selector: xpath}]
   }
 }

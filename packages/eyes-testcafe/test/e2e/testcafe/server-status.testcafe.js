@@ -3,7 +3,7 @@
 'use strict'
 
 const {Selector} = require('testcafe')
-const {GeneralUtils} = require('@applitools/eyes-common')
+const {GeneralUtils} = require('@applitools/eyes-sdk-core')
 const {presult} = require('@applitools/functional-commons')
 const {Eyes, Target, ConsoleLogHandler} = require('../../../index')
 const {RectangleSize, NewTestError, DiffsFoundError, TestResults} = require('../../../index')

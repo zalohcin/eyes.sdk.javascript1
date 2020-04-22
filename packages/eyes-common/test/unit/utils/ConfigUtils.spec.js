@@ -41,6 +41,41 @@ describe('ConfigUtils', () => {
       assert.deepStrictEqual(config, expectedConfig)
     })
 
+    it('loads applitools.config.js with dir path set by env variable', () => {
+      const configFullPath = path.join(configPath, 'applitools.config.js')
+      process.env.APPLITOOLS_CONFIG_PATH = configFullPath
+      try {
+        const config = ConfigUtils.getConfig()
+        const expectedConfig = {bla: 'kuku', it: 'works'}
+        assert.deepStrictEqual(config, expectedConfig)
+      } finally {
+        process.env.APPLITOOLS_CONFIG_PATH = ''
+      }
+    })
+
+    it('loads eyes.config.js with file path set by env variable', () => {
+      const configFullPath = path.join(configPath, 'eyes.config.js')
+      process.env.APPLITOOLS_CONFIG_PATH = configFullPath
+      try {
+        const config = ConfigUtils.getConfig()
+        const expectedConfig = {bla: 'kuku-eyes', it: 'works-eyes'}
+        assert.deepStrictEqual(config, expectedConfig)
+      } finally {
+        process.env.APPLITOOLS_CONFIG_PATH = ''
+      }
+    })
+
+    it('loads config with file path set by env variable', () => {
+      process.env.APPLITOOLS_CONFIG_PATH = configPath
+      try {
+        const config = ConfigUtils.getConfig()
+        const expectedConfig = {bla: 'kuku', it: 'works'}
+        assert.deepStrictEqual(config, expectedConfig)
+      } finally {
+        process.env.APPLITOOLS_CONFIG_PATH = ''
+      }
+    })
+
     it('loads config with bamboo prefix variable', () => {
       process.env.bamboo_APPLITOOLS_BLA = 'env kuku bamboo'
       const config = getConfigAtConfigPath({configParams: ['bla']})

@@ -2,6 +2,35 @@
 
 ## Unreleased
 
+- fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
+
+## 5.9.23 - 2020/4/1
+
+- removed eyes-common dependency
+- update @applitools/visual-grid-client@13.6.11
+- handle switchToFrame on MS Edge <= 18 ([Trello](https://trello.com/c/SLUduLu8/68-can-take-baseline-screenshot-but-checkpoint-screenshots-not-showing-up.))
+
+## 5.9.22
+
+- fixed bug when target region wasn't cleared after check ([Trello](https://trello.com/c/gMwZw0C0/268-wdio5-cannot-read-property-offset-of-null-when-taking-window-screenshot-after-region))
+- fix exception when restoring scrollbars
+
+## 5.9.21
+
+- Fix bug when calculating if a captured image fits within the viewport on Chrome on Android [Trello 275](https://trello.com/c/PrGEKzhJ)
+
+## 5.9.20
+
+- Updated internal packages
+
+## 5.9.19
+
+- Fix Target regions for Visual Grid
+- Fix WebElement regions for Visual Grid
+
+## 5.9.18
+
+- update @applitools/visual-grid-client@13.6.7 to support xpath selectors for regions ([Trello](https://trello.com/c/QGpZcMKS/249-strict-region-shows-up-on-classic-runner-test-but-not-on-ug-runner-test))
 
 ## 5.9.17
 

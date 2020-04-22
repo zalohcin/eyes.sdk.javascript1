@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-selenium",
-  "version": "4.33.29",
+  "version": "4.33.31",
   "description": "Applitools Eyes SDK for Selenium WebDriver",
   "keywords": [
     "eyes-selenium",
@@ -36,15 +36,14 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/dom-utils": "4.7.8",
-    "@applitools/eyes-common": "3.20.1",
-    "@applitools/eyes-sdk-core": "9.0.2",
-    "@applitools/visual-grid-client": "13.6.6"
+    "@applitools/dom-utils": "4.7.10",
+    "@applitools/eyes-sdk-core": "9.1.0",
+    "@applitools/visual-grid-client": "13.6.13"
   },
   "devDependencies": {
-    "@applitools/sdk-fake-eyes-server": "1.0.5",
+    "@applitools/sdk-fake-eyes-server": "^1.1.1",
     "@applitools/sdk-release-kit": "0.1.0",
-    "@applitools/sdk-test-kit": "^1.0.14",
+    "@applitools/sdk-test-kit": "1.0.17",
     "assert-rejects": "^1.0.0",
     "axios": "^0.19.0",
     "chai": "^4.2.0",
@@ -52,18 +51,16 @@
     "chromedriver": "^80.0.0",
     "mocha": "^6.2.2",
     "mocha-parallel-tests": "^2.2.2",
+    "nock": "^12.0.3",
     "node-fetch": "^2.6.0",
-    "selenium-webdriver": "^4.0.0-alpha.5"
+    "selenium-webdriver": "^4.0.0-alpha.5",
+    "yargs": "^15.3.1"
   },
   "peerDependencies": {
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "scripts": {
-    "vv": "bongo --verify-versions",
-    "vc": "bongo --verify-changelog",
-    "uc": "bongo --update-changelog",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
-    "send-release-notification": "bongo --send-release-notification",
     "test": "yarn test:unit && yarn test:it",
     "render": "node scripts/render.js",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
@@ -73,9 +70,9 @@
     "test:coverage:nuke": "coverage-tests nuke",
     "test:coverage:doctor": "coverage-tests doctor",
     "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
-    "preversion": "yarn vv && yarn vc && yarn test:coverage --send-report prod",
-    "version": "yarn uc && git add CHANGELOG.md",
-    "postpublish": "git push && git push --tags && yarn send-release-notification"
+    "preversion": "bongo preversion && yarn test:coverage --send-report prod",
+    "version": "bongo version",
+    "postversion": "bongo postversion"
   },
   "license": "SEE LICENSE IN LICENSE",
   "engines": {

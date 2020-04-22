@@ -6,6 +6,7 @@ const {remote} = require('webdriverio')
 const {
   Eyes,
   ClassicRunner,
+  WebElement,
   By,
   VisualGridRunner,
   ConsoleLogHandler,
@@ -22,21 +23,19 @@ if (!url) {
 
 ;(async function() {
   console.log('Running WDIO 5 render for', url, '\n')
-  chromedriver.start()
+  await chromedriver.start()
 
   const runner = new ClassicRunner()
   // const runner = new VisualGridRunner()
   const eyes = new Eyes(runner)
 
-  let batch = new BatchInfo('WDIO5 Render VG')
+  let batch = new BatchInfo('WDIO5 Render')
   eyes.setBatch(batch)
   if (process.env.APPLITOOLS_SHOW_LOGS) {
     eyes.setLogHandler(new ConsoleLogHandler(true))
   }
 
   let configuration = new Configuration()
-  configuration.setAppName('WDIO5 VG')
-  configuration.setTestName('WDIO5 VG')
   // configuration.addBrowser(1024, 768, BrowserType.Chrome)
   eyes.setConfiguration(configuration)
 
@@ -59,5 +58,6 @@ if (!url) {
   await eyes.abortIfNotClosed()
 
   console.log('\nRender results\n\n', results.getAllResults().toString())
+  await browser.deleteSession()
   await chromedriver.stop()
 })()

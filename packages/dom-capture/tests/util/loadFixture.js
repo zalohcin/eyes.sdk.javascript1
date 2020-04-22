@@ -13,8 +13,11 @@ function loadFixtureBuffer(filename) {
   return fs.readFileSync(path.resolve(__dirname, `../fixtures/${filename}`));
 }
 
-function loadFixture(filename) {
-  return loadFixtureBuffer(filename).toString();
+function loadFixture(filename, {replaceSource, replaceTarget} = {}) {
+  return loadFixtureBuffer(filename)
+    .toString()
+    .trim()
+    .replace(replaceSource, replaceTarget);
 }
 
 module.exports = {

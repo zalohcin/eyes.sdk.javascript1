@@ -2,7 +2,7 @@
 
 require('chromedriver')
 const assert = require('assert')
-const {Logger} = require('@applitools/eyes-common')
+const {Logger} = require('@applitools/eyes-sdk-core')
 const {Builder, Capabilities} = require('selenium-webdriver')
 const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
 

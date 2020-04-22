@@ -190,16 +190,16 @@ describe('createRenderRequests', () => {
       getResultsUrl: () => 'resultsUrl',
       getStitchingServiceUrl: () => 'stitchingServiceUrl',
     }
-    const ignore = ['kuku', {selector: 'bla'}]
-    const layout = [{selector: 'bla2'}, 'kuku2']
-    const strict = ['kuku3', {selector: 'bla3'}, {selector: 'bla4'}]
-    const content = ['c1', {selector: 'c2'}, {selector: 'c3'}]
+    const ignore = ['kuku', {type: 'css', selector: 'bla'}]
+    const layout = [{type: 'css', selector: 'bla2'}, 'kuku2']
+    const strict = ['kuku3', {type: 'css', selector: 'bla3'}, {type: 'css', selector: 'bla4'}]
+    const content = ['c1', {type: 'css', selector: 'c2'}, {type: 'css', selector: 'c3'}]
     const accessibility = [
       'kuku4',
-      {selector: 'bla5', accessibilityType: 'RegularText'},
-      {selector: 'bla6', accessibilityType: 'LargeText'},
+      {type: 'css', selector: 'bla5', accessibilityType: 'RegularText'},
+      {type: 'css', selector: 'bla6', accessibilityType: 'LargeText'},
     ]
-    const floating = [{some: 'thing'}, {selector: 'sel'}]
+    const floating = [{some: 'thing'}, {type: 'css', selector: 'sel'}]
     const renderRequests = createRenderRequests({
       url,
       resources,
@@ -231,15 +231,15 @@ describe('createRenderRequests', () => {
           sizeMode: undefined,
         },
         selectorsToFindRegionsFor: [
-          'bla',
-          'bla2',
-          'bla3',
-          'bla4',
-          'c2',
-          'c3',
-          'bla5',
-          'bla6',
-          'sel',
+          {type: 'css', selector: 'bla'},
+          {type: 'css', selector: 'bla2'},
+          {type: 'css', selector: 'bla3'},
+          {type: 'css', selector: 'bla4'},
+          {type: 'css', selector: 'c2'},
+          {type: 'css', selector: 'c3'},
+          {type: 'css', selector: 'bla5'},
+          {type: 'css', selector: 'bla6'},
+          {type: 'css', selector: 'sel'},
         ],
       },
     ])

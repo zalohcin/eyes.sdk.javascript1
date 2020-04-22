@@ -1,7 +1,6 @@
 'use strict'
 
 const {URL} = require('url')
-
 const {
   Logger,
   ReadOnlyPropertyHandler,
@@ -9,10 +8,6 @@ const {
   Location,
   RectangleSize,
   ArgumentGuard,
-  Configuration,
-} = require('@applitools/eyes-common')
-
-const {
   EyesBase,
   TestFailedError,
   CorsIframeHandle,
@@ -68,7 +63,7 @@ class Eyes extends EyesBase {
       )
     }
 
-    super(serverUrl, isDisabled, new Configuration())
+    super(serverUrl, isDisabled)
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
 

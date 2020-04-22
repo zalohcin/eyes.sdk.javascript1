@@ -3,6 +3,20 @@
 ## Unreleased
 
 
+## 9.1.1 - 2020/4/19
+
+- added SDK agent id header for eyes server requests
+
+## 9.1.0 - 2020/4/5
+
+- updated to @applitools/eyes-common@3.21.0
+
+## 9.0.3
+
+- Fix getElementXpath in EyesJsBrowserUtils
+- Added toCheckWindowConfiguration() to CheckSettings
+- EyesRunner: `getAllTestResults` method now awaits existing close operations
+
 ## 9.0.2
 
 - Support both new and old server versions for identifying new running sessions. ([Trello](https://trello.com/c/mtSiheZ9/267-support-startsession-as-long-running-task))

@@ -19,16 +19,18 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
-  },
-  "scripts": {
-    "test": "mocha test/**/*.spec.js"
+  }, "scripts": {
+    "test": "mocha test/**/*.spec.js",
+    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "dependencies": {
+    "chalk": "3.0.0",
+    "node-fetch": "^2.6.0",
     "yargs": "^15.0.2",
-    "node-fetch": "^2.6.0"
+    "micromatch": "^4.0.2"
   },
   "devDependencies": {
     "mocha": "^6.2.2"

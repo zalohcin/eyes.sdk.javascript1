@@ -1,5 +1,5 @@
 /* global fixture, test */
-const {Configuration, StitchMode} = require('@applitools/eyes-common')
+const {Configuration, StitchMode} = require('@applitools/eyes-sdk-core')
 const {Eyes, Target, ConsoleLogHandler} = require('../..')
 
 const eyes = new Eyes()

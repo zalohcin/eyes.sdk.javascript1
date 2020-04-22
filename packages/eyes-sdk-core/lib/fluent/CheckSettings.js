@@ -346,6 +346,10 @@ class CheckSettings {
     throw new TypeError('Method called with argument of unknown type!')
   }
 
+  _getTargetType() {
+    return !this._targetRegion ? 'window' : 'region'
+  }
+
   /**
    * Adds one or more ignore regions.
    *
@@ -559,6 +563,37 @@ class CheckSettings {
    */
   toString() {
     return `${this.constructor.name} ${GeneralUtils.toString(this)}`
+  }
+
+  async toCheckWindowConfiguration(eyesWebDriver) {
+    const regions = await this._getPersistedRegions(eyesWebDriver)
+    return {
+      ...regions,
+      target: this._getTargetType(),
+      fully: this.getStitchContent(),
+      tag: this.getName(),
+      scriptHooks: this.getScriptHooks(),
+      sendDom: this.getSendDom(),
+      matchLevel: this.getMatchLevel(),
+    }
+  }
+
+  async _getPersistedRegions(eyesWebDriver) {
+    const [ignore, floating, strict, layout, content, accessibility] = await Promise.all([
+      persistRegions(this.getIgnoreRegions()),
+      persistRegions(this.getFloatingRegions()),
+      persistRegions(this.getStrictRegions()),
+      persistRegions(this.getLayoutRegions()),
+      persistRegions(this.getContentRegions()),
+      persistRegions(this.getAccessibilityRegions()),
+    ])
+
+    return {ignore, floating, strict, layout, content, accessibility}
+
+    async function persistRegions(regions) {
+      const persisted = await Promise.all(regions.map(r => r.toPersistedRegions(eyesWebDriver)))
+      return [].concat(...persisted)
+    }
   }
 }
 

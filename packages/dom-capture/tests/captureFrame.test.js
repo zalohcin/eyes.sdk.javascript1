@@ -51,10 +51,10 @@ describe('captureFrame', () => {
     if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
       fs.writeFileSync('tests/fixtures/captureFrame.dom.json', domStr);
     }
-    const expected = loadFixture('captureFrame.dom.json').replace(
-      'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
-      version,
-    );
+    const expected = loadFixture('captureFrame.dom.json', {
+      replaceSource: /\"scriptVersion\": \"\d+\.\d+\.\d+\"/,
+      replaceTarget: `"scriptVersion": "${version}"`,
+    });
     expect(domStr).to.eql(expected);
     const metrics = getPerformanceMetrics(output);
     expect(metrics).to.exist;
@@ -72,10 +72,10 @@ describe('captureFrame', () => {
     if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
       fs.writeFileSync('tests/fixtures/captureFrame.dom.json', domStr);
     }
-    const expected = loadFixture('captureFrame.dom.json').replace(
-      'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
-      version,
-    );
+    const expected = loadFixture('captureFrame.dom.json', {
+      replaceSource: /\"scriptVersion\": \"\d+\.\d+\.\d+\"/,
+      replaceTarget: `"scriptVersion": "${version}"`,
+    });
     expect(domStr).to.eql(expected);
     const metrics = getPerformanceMetrics(output);
     expect(metrics).to.equal(undefined);
@@ -89,10 +89,10 @@ describe('captureFrame', () => {
     if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
       fs.writeFileSync('tests/fixtures/testWithIframe.dom.json', domStr);
     }
-    const expected = loadFixture('testWithIframe.dom.json').replace(
-      'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
-      version,
-    );
+    const expected = loadFixture('testWithIframe.dom.json', {
+      replaceSource: /\"scriptVersion\": \"\d+\.\d+\.\d+\"/,
+      replaceTarget: `"scriptVersion": "${version}"`,
+    });
     expect(domStr).to.eql(expected);
   });
 
@@ -104,10 +104,10 @@ describe('captureFrame', () => {
     if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
       fs.writeFileSync('tests/fixtures/testWithSrcdocIframe.dom.json', domStr);
     }
-    const expected = loadFixture('testWithSrcdocIframe.dom.json').replace(
-      'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
-      version,
-    );
+    const expected = loadFixture('testWithSrcdocIframe.dom.json', {
+      replaceSource: /\"scriptVersion\": \"\d+\.\d+\.\d+\"/,
+      replaceTarget: `"scriptVersion": "${version}"`,
+    });
     expect(domStr).to.eql(expected);
   });
 
@@ -122,10 +122,10 @@ describe('captureFrame', () => {
       fs.writeFileSync('tests/fixtures/testWithCrossOriginIframe.dom.json', domStr);
     }
 
-    const expected = loadFixture('testWithCrossOriginIframe.dom.json').replace(
-      'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
-      version,
-    );
+    const expected = loadFixture('testWithCrossOriginIframe.dom.json', {
+      replaceSource: /\"scriptVersion\": \"\d+\.\d+\.\d+\"/,
+      replaceTarget: `"scriptVersion": "${version}"`,
+    });
 
     try {
       expect(domStr).to.eql(expected);
@@ -146,10 +146,10 @@ describe('captureFrame', () => {
       fs.writeFileSync('tests/fixtures/crossOrigin.dom.json', domStr);
     }
 
-    const expected = loadFixture('crossOrigin.dom.json').replace(
-      'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
-      version,
-    );
+    const expected = loadFixture('crossOrigin.dom.json', {
+      replaceSource: /\"scriptVersion\": \"\d+\.\d+\.\d+\"/,
+      replaceTarget: `"scriptVersion": "${version}"`,
+    });
 
     try {
       expect(domStr).to.eql(expected);
@@ -170,10 +170,10 @@ describe('captureFrame', () => {
       fs.writeFileSync('tests/fixtures/longCss.dom.json', domStr);
     }
 
-    const expected = loadFixture('longCss.dom.json').replace(
-      'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
-      version,
-    );
+    const expected = loadFixture('longCss.dom.json', {
+      replaceSource: /\"scriptVersion\": \"\d+\.\d+\.\d+\"/,
+      replaceTarget: `"scriptVersion": "${version}"`,
+    });
 
     try {
       expect(domStr).to.eql(expected);
@@ -194,10 +194,10 @@ describe('captureFrame', () => {
       fs.writeFileSync('tests/fixtures/crossFrame.dom.json', domStr);
     }
 
-    const expected = loadFixture('crossFrame.dom.json').replace(
-      'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
-      version,
-    );
+    const expected = loadFixture('crossFrame.dom.json', {
+      replaceSource: /\"scriptVersion\": \"\d+\.\d+\.\d+\"/,
+      replaceTarget: `"scriptVersion": "${version}"`,
+    });
     try {
       expect(domStr).to.eql(expected);
     } finally {

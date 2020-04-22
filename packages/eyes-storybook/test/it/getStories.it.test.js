@@ -35,7 +35,7 @@ describe('getStories', () => {
             kind: 'Button',
             parameters: {
               someParam: 'i was here, goodbye',
-              eyes: {ignore: [{selector: '.ignore-this'}]},
+              eyes: {ignoreRegions: [{selector: '.ignore-this'}]},
             },
           },
           {

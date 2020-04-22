@@ -47,18 +47,25 @@ class EyesService {
     browser.addCommand('eyesGetConfiguration', () => {
       return this._eyes.getConfiguration()
     })
+
+    browser.addCommand('eyesSetConfiguration', configuration => {
+      return this._eyes.setConfiguration(configuration)
+    })
   }
 
   async beforeTest(test) {
+    const configuration = this._eyes.getConfiguration()
     if (!this._appName) {
-      this._eyes.getConfiguration().setAppName(test.parent)
+      configuration.setAppName(test.parent)
     }
 
-    this._eyes.getConfiguration().setTestName(test.title)
+    configuration.setTestName(test.title)
 
-    if (!this._eyes.getConfiguration().getViewportSize()) {
-      this._eyes.getConfiguration().setViewportSize(DEFAULT_VIEWPORT)
+    if (!configuration.getViewportSize()) {
+      configuration.setViewportSize(DEFAULT_VIEWPORT)
     }
+
+    this._eyes.setConfiguration(configuration)
 
     await global.browser.call(() => this._eyes.open(global.browser))
   }
@@ -75,6 +82,10 @@ class EyesService {
 
   after() {
     // browser.call(() => this.eyes.abortIfNotClosed());
+  }
+
+  toJSON() {
+    return {}
   }
 }
 
