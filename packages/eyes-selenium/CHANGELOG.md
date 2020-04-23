@@ -6,8 +6,6 @@
 - support typed selectors
 - support ignore, floating, strict, layout, content, accessibility regions for VG
 - fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
-- updated to @applitools/eyes-sdk-core@9.1.0
-- updated to @applitools/dom-utils@4.7.11
 - updated to @applitools/eyes-sdk-core@9.1.1
 - updated to @applitools/visual-grid-client@13.6.14
 - updated to @applitools/dom-utils@4.7.12
