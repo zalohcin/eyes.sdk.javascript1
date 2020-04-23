@@ -188,11 +188,11 @@ declare namespace Eyes {
   }
 
   type AccessibilityLevel = "AA"|"AAA"
-  type AccessibilityVersion = "WCAG_2_0"|"WCAG_2_1"
+  type AccessibilityGuidelinesVersion = "WCAG_2_0"|"WCAG_2_1"
 
   interface AccessibilitySettings {
     level: AccessibilityLevel
-    version: AccessibilityVersion
+    version: AccessibilityGuidelinesVersion
   }
 
   export namespace Check {

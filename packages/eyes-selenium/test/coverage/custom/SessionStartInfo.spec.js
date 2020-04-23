@@ -13,7 +13,7 @@ const {
   ConsoleLogHandler,
   TestResultsStatus,
   AccessibilityLevel,
-  AccessibilityVersion,
+  AccessibilityGuidelinesVersion,
   Configuration,
 } = require('../../../index')
 const {Builder} = require('selenium-webdriver')
@@ -21,7 +21,7 @@ const {Builder} = require('selenium-webdriver')
 const fixturesPath = path.resolve(__dirname, '../../fixtures')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 
-describe.only('SessionStartInfo', () => {
+describe('SessionStartInfo', () => {
   let server, serverUrl, driver
 
   before(async () => {
@@ -52,7 +52,7 @@ describe.only('SessionStartInfo', () => {
       defaultMatchSettings: {
         accessibilitySettings: {
           level: AccessibilityLevel.AA,
-          version: AccessibilityVersion.WCAG_2_0,
+          version: AccessibilityGuidelinesVersion.WCAG_2_0,
         },
       },
     })

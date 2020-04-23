@@ -14,7 +14,7 @@ const {
   RectangleSize,
   FloatingMatchSettings,
   AccessibilityLevel,
-  AccessibilityVersion,
+  AccessibilityGuidelinesVersion,
   AccessibilityRegionType,
   AccessibilityRegionByRectangle,
   CheckTarget,
@@ -69,7 +69,7 @@ describe('SessionStartInfo', () => {
         ],
         accessibilitySettings: {
           level: AccessibilityLevel.AA,
-          version: AccessibilityVersion.WCAG_2_0,
+          version: AccessibilityGuidelinesVersion.WCAG_2_0,
         },
       }),
       branchName: 'some branch',

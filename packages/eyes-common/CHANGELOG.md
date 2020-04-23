@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- add AccessibilityVersion enum
+- add AccessibilityGuidelinesVersion enum
 - support AccessibilitySettings with level and version in defaultMatchSettings
 - support ability to specify defaultMatchSettings in Configuration c'tor
 

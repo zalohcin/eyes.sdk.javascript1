@@ -4,7 +4,7 @@
 
 // config
 exports.AccessibilityLevel = require('./lib/config/AccessibilityLevel').AccessibilityLevel
-exports.AccessibilityVersion = require('./lib/config/AccessibilityVersion').AccessibilityVersion
+exports.AccessibilityGuidelinesVersion = require('./lib/config/AccessibilityGuidelinesVersion').AccessibilityGuidelinesVersion
 exports.AccessibilityMatchSettings = require('./lib/config/AccessibilityMatchSettings').AccessibilityMatchSettings
 exports.AccessibilityRegionType = require('./lib/config/AccessibilityRegionType').AccessibilityRegionType
 exports.BatchInfo = require('./lib/config/BatchInfo').BatchInfo

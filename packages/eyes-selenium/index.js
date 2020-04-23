@@ -61,7 +61,7 @@ exports.EyesVisualGrid = require('./lib/EyesVisualGrid').EyesVisualGrid
 
 // eyes-common
 exports.AccessibilityLevel = core.AccessibilityLevel
-exports.AccessibilityVersion = core.AccessibilityVersion
+exports.AccessibilityGuidelinesVersion = core.AccessibilityGuidelinesVersion
 exports.AccessibilityMatchSettings = core.AccessibilityMatchSettings
 exports.AccessibilityRegionType = core.AccessibilityRegionType
 exports.BatchInfo = core.BatchInfo

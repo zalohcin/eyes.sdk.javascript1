@@ -6,7 +6,7 @@ const {
   Configuration,
   MatchLevel,
   AccessibilityLevel,
-  AccessibilityVersion,
+  AccessibilityGuidelinesVersion,
   RectangleSize,
   StitchMode,
   BatchInfo,
@@ -256,7 +256,7 @@ describe('Configuration', () => {
       configuration.setMatchLevel(MatchLevel.Content)
       configuration.setAccessibilityValidation({
         level: AccessibilityLevel.AA,
-        version: AccessibilityVersion.WCAG_2_0,
+        version: AccessibilityGuidelinesVersion.WCAG_2_0,
       })
       configuration.setIgnoreCaret(false)
       configuration.setUseDom(true)
@@ -272,7 +272,7 @@ describe('Configuration', () => {
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content)
       assert.deepStrictEqual(configuration.getAccessibilityValidation(), {
         level: AccessibilityLevel.AA,
-        version: AccessibilityVersion.WCAG_2_0,
+        version: AccessibilityGuidelinesVersion.WCAG_2_0,
       })
       assert.strictEqual(configuration.getIgnoreCaret(), false)
       assert.strictEqual(configuration.getUseDom(), true)
@@ -295,7 +295,7 @@ describe('Configuration', () => {
       configuration.setMatchLevel(MatchLevel.Content)
       configuration.setAccessibilityValidation({
         level: AccessibilityLevel.AA,
-        version: AccessibilityVersion.WCAG_2_0,
+        version: AccessibilityGuidelinesVersion.WCAG_2_0,
       })
       configuration.setIgnoreCaret(false)
       configuration.setUseDom(true)
@@ -325,7 +325,7 @@ describe('Configuration', () => {
           matchLevel: 'Content',
           accessibilitySettings: {
             level: AccessibilityLevel.AA,
-            version: AccessibilityVersion.WCAG_2_0,
+            version: AccessibilityGuidelinesVersion.WCAG_2_0,
           },
           enablePatterns: true,
           ignoreDisplacements: true,
@@ -357,7 +357,7 @@ describe('Configuration', () => {
 
       const invalidAccLevelMessage = "IllegalType: bla is not a valid 'AccessibilityLevel' value"
       const invalidAccVersionMessage =
-        "IllegalType: bla is not a valid 'AccessibilityVersion' value"
+        "IllegalType: bla is not a valid 'AccessibilityGuidelinesVersion' value"
 
       // from object: invalid accessibilitySettings type
       assert.throws(

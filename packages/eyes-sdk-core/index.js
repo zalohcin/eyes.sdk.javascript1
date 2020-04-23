@@ -108,7 +108,7 @@ exports.TestResultsSummary = require('./lib/runner/TestResultsSummary').TestResu
 
 // Classes from eyes-common which may be used as part of public API
 exports.AccessibilityLevel = common.AccessibilityLevel
-exports.AccessibilityVersion = common.AccessibilityVersion
+exports.AccessibilityGuidelinesVersion = common.AccessibilityGuidelinesVersion
 exports.AccessibilityMatchSettings = common.AccessibilityMatchSettings
 exports.AccessibilityRegionType = common.AccessibilityRegionType
 exports.BatchInfo = common.BatchInfo

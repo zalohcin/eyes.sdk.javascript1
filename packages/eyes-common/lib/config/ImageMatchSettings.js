@@ -5,7 +5,7 @@ const {GeneralUtils} = require('../utils/GeneralUtils')
 const {TypeUtils} = require('../utils/TypeUtils')
 const {MatchLevel} = require('./MatchLevel')
 const {AccessibilityLevel} = require('./AccessibilityLevel')
-const {AccessibilityVersion} = require('./AccessibilityVersion')
+const {AccessibilityGuidelinesVersion} = require('./AccessibilityGuidelinesVersion')
 const {ExactMatchSettings} = require('./ExactMatchSettings')
 
 const DEFAULT_VALUES = {
@@ -128,7 +128,7 @@ class ImageMatchSettings {
     if (value) {
       ArgumentGuard.hasProperties(value, ['level', 'version'], 'accessibilitySettings')
       ArgumentGuard.isValidEnumValue(value.level, AccessibilityLevel)
-      ArgumentGuard.isValidEnumValue(value.version, AccessibilityVersion)
+      ArgumentGuard.isValidEnumValue(value.version, AccessibilityGuidelinesVersion)
     }
     this._accessibilitySettings = value
   }

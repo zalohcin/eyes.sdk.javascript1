@@ -5,7 +5,7 @@ const assert = require('assert')
 const {
   MatchLevel,
   AccessibilityLevel,
-  AccessibilityVersion,
+  AccessibilityGuidelinesVersion,
   Region,
   ImageMatchSettings,
   ExactMatchSettings,
@@ -30,7 +30,7 @@ describe('ImageMatchSettings', () => {
         matchLevel: MatchLevel.Content,
         accessibilitySettings: {
           level: AccessibilityLevel.AA,
-          version: AccessibilityVersion.WCAG_2_0,
+          version: AccessibilityGuidelinesVersion.WCAG_2_0,
         },
         exact: new ExactMatchSettings(),
         ignoreCaret: true,

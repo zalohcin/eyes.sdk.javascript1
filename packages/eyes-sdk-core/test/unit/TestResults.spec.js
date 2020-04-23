@@ -5,7 +5,7 @@ const assert = require('assert')
 const {
   TestResults,
   AccessibilityLevel,
-  AccessibilityVersion,
+  AccessibilityGuidelinesVersion,
   AccessibilityStatus,
   TestResultsStatus,
 } = require('../../index')
@@ -60,7 +60,7 @@ describe('TestResults', () => {
     tr.setStatus(TestResultsStatus.Failed)
     tr.setAccessibilityStatus({
       level: AccessibilityLevel.AAA,
-      version: AccessibilityVersion.WCAG_2_1,
+      version: AccessibilityGuidelinesVersion.WCAG_2_1,
       status: AccessibilityStatus.Passed,
     })
 
@@ -112,7 +112,7 @@ describe('TestResults', () => {
         matchLevel: 'Strict',
         accessibilitySettings: {
           level: AccessibilityLevel.AA,
-          version: AccessibilityVersion.WCAG_2_0,
+          version: AccessibilityGuidelinesVersion.WCAG_2_0,
         },
         ignore: [],
         strict: [],
