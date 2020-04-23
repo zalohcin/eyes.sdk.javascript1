@@ -6,6 +6,10 @@
 - support AccessibilitySettings with level and version in defaultMatchSettings
 - support ability to specify defaultMatchSettings in Configuration c'tor
 
+## 3.21.1 - 2020/4/23
+
+- added device names to the emulation device list
+
  ## 3.21.0 - 2020/4/5
 
 - supporting env variable for setting applitools config file path 

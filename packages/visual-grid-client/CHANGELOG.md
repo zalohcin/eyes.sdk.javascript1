@@ -4,6 +4,15 @@
 
 - support accessibilitySettings
 
+## 13.6.15 - 2020/4/23
+
+- updated to @applitools/eyes-sdk-core@9.1.2
+
+## 13.6.14 - 2020/4/19
+
+- updated to @applitools/dom-snapshot@3.4.5
+- updated to @applitools/eyes-sdk-core@9.1.1
+
 ## 13.6.13 - 2020/4/7
 
 - add edgelegacy and edgechromium under flag

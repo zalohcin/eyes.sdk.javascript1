@@ -20,8 +20,8 @@ const {
   UserAgent,
   ArgumentGuard,
   SimplePropertyHandler,
-  Configuration,
   ClassicRunner,
+  StitchMode,
 } = require('@applitools/eyes-sdk-core')
 
 const {DomCapture} = require('@applitools/dom-utils')
@@ -41,7 +41,6 @@ const FrameChain = require('./frames/FrameChain')
 const EyesWDIOScreenshotFactory = require('./capture/EyesWDIOScreenshotFactory')
 const EyesWDIOUtils = require('./EyesWDIOUtils')
 const ElementPositionProvider = require('./positioning/ElementPositionProvider')
-const StitchMode = require('./StitchMode')
 const Target = require('./fluent/Target')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
 const WebDriver = require('./wrappers/WebDriver')
@@ -72,7 +71,7 @@ class EyesWDIO extends EyesBase {
    * @param {ClassicRunner} [runner] - Set shared ClassicRunner if you want to group results.
    **/
   constructor(serverUrl, isDisabled = false, runner = new ClassicRunner()) {
-    super(serverUrl, isDisabled, new Configuration())
+    super(serverUrl, isDisabled)
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
 

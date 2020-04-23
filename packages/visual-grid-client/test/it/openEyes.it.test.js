@@ -1273,7 +1273,7 @@ Received: 'firefox-1'.`,
       expect(wrapper.compareWithParentBranch).to.equal('compareWithParentBranch')
       expect(wrapper.ignoreBaseline).to.equal('ignoreBaseline')
       expect(wrapper.serverUrl).to.equal('serverUrl')
-      expect(wrapper.agentId).to.equal('agentId')
+      expect(wrapper.baseAgentId).to.equal('agentId')
       expect(wrapper.batch.getNotifyOnCompletion()).to.be.true
     }
 
@@ -1336,7 +1336,7 @@ Received: 'firefox-1'.`,
       expect(wrapper.compareWithParentBranch).to.equal('compareWithParentBranch')
       expect(wrapper.ignoreBaseline).to.equal('ignoreBaseline')
       expect(wrapper.serverUrl).to.equal('serverUrl')
-      expect(wrapper.agentId).to.equal('agentId')
+      expect(wrapper.baseAgentId).to.equal('agentId')
     }
 
     expect(wrappers[0].deviceInfo).to.equal('device1 (Chrome emulation)')

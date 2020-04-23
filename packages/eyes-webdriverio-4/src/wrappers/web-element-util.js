@@ -40,21 +40,33 @@ function _concatenateLogMessage(message) {
 }
 
 async function _getElementRect({jsExecutor, element}) {
-  const r = await jsExecutor(_element => {
-    return _element.getBoundingClientRect()
+  const r = await jsExecutor(function(e) {
+    const rect = e.getBoundingClientRect()
+    return {
+      x: rect.x !== undefined ? rect.x : rect.left,
+      y: rect.y !== undefined ? rect.y : rect.top,
+      height: rect.height,
+      width: rect.width,
+    }
   }, element)
   return r ? r.value : {}
 }
 
 async function _getFrameCoordsToElement(jsExecutor, element) {
-  const r = await jsExecutor(_element => {
+  const r = await jsExecutor(function(e) {
     const frameCoords = []
-    // eslint-disable-next-line
-    let targetDocument = _element.ownerDocument
+    let targetDocument = e.ownerDocument
     // eslint-disable-next-line
     while (targetDocument !== window.top.document) {
       const frame = targetDocument.defaultView.frameElement
-      frameCoords.push(frame.getBoundingClientRect())
+      const rect = frame.getBoundingClientRect()
+      const safeRect = {
+        x: rect.x !== undefined ? rect.x : rect.left,
+        y: rect.y !== undefined ? rect.y : rect.top,
+        height: rect.height,
+        width: rect.width,
+      }
+      frameCoords.push(safeRect)
       targetDocument = frame.ownerDocument
     }
     return frameCoords
@@ -63,9 +75,9 @@ async function _getFrameCoordsToElement(jsExecutor, element) {
 }
 
 async function _isElementInTopDocument(jsExecutor, element) {
-  const r = await jsExecutor(_element => {
-    // eslint-disable-next-line
-    return _element.ownerDocument === window.top.document
+  const r = await jsExecutor(function(e) {
+    // eslint-disable-next-line no-undef
+    return e.ownerDocument === window.top.document
   }, element)
   return r && r.value ? r.value : false
 }
