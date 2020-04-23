@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.21.1 - 2020/4/23
+
 - added device names to the emulation device list
 
  ## 3.21.0 - 2020/4/5
