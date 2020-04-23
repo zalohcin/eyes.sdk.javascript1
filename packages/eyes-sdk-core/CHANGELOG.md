@@ -1,8 +1,11 @@
 # Change Log
 
 ## Unreleased
-- updated to @applitools/eyes-common@3.21.1
 
+
+## 9.1.2 - 2020/4/23
+
+- updated to @applitools/eyes-common@3.21.1
 
 ## 9.1.1 - 2020/4/19
 
