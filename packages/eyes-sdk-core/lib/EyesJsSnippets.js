@@ -104,6 +104,30 @@ const GET_ELEMENT_XPATH = `
   return genXpath(arguments[0])
 `
 
+const GET_FRAME_INFO = `
+  var isCORS, isRoot, frameElement;
+  try {
+    isRoot = window.top.document === window.document;
+  } catch (err) {
+    isRoot = false;
+  }
+  try {
+    isCORS = !window.parent.document === window.document;
+    frameElement = window.frameElement;
+  } catch (err) {
+    isCORS = true;
+    frameElement = null;
+  }
+  return {isRoot: isRoot, isCORS: isCORS, frameElement: frameElement, contentDocument: document};
+`
+
+const GET_CORS_FRAMES = `
+  var frames = document.querySelectorAll('frame, iframe');
+  return Array.prototype.filter.call(frames, function(frameElement) {
+    return !frameElement.contentDocument;
+  });
+`
+
 module.exports = {
   GET_VIEWPORT_SIZE,
   GET_CONTENT_ENTIRE_SIZE,
@@ -116,4 +140,6 @@ module.exports = {
   GET_OVERFLOW,
   SET_OVERFLOW_AND_RETURN_ORIGIN_VALUE,
   GET_ELEMENT_XPATH,
+  GET_FRAME_INFO,
+  GET_CORS_FRAMES,
 }

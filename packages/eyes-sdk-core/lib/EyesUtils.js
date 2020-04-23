@@ -315,6 +315,22 @@ async function locatorToPersistedRegions(_logger, {finder, executor}, locator) {
   }
 }
 
+async function getCurrentFrameInfo(_logger, executor) {
+  return executor.executeScript(EyesJsSnippets.GET_FRAME_INFO)
+}
+
+async function findCORSFrame(_logger, {executor, context}, comparator) {
+  const frameElements = await executor.executeScript(EyesJsSnippets.GET_CORS_FRAMES)
+  for (const frameElement of frameElements) {
+    await context.frame(frameElement)
+    const contentDocument = await executor.executeScript('return document')
+    await context.frameParent()
+    if (comparator(contentDocument, frameElement)) {
+      return frameElement
+    }
+  }
+}
+
 module.exports = {
   getViewportSize,
   setViewportSize,
@@ -334,4 +350,6 @@ module.exports = {
   setOverflow,
   getElementXpath,
   locatorToPersistedRegions,
+  getCurrentFrameInfo,
+  findCORSFrame,
 }

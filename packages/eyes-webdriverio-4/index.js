@@ -4,7 +4,6 @@ exports.Eyes = require('./src/Eyes').Eyes
 exports.EyesWDIO = require('./src/EyesWDIO').EyesWDIO
 exports.EyesVisualGrid = require('./src/EyesVisualGrid').EyesVisualGrid
 exports.By = require('./src/By')
-exports.NetHelper = require('./src/services/NetHelper')
 exports.Target = require('./src/WDIOCheckSettings')
 exports.WebdriverioCheckSettings = require('./src/WDIOCheckSettings')
 

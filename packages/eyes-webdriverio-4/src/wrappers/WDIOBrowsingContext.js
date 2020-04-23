@@ -26,20 +26,6 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
     this._frameChain.clear()
   }
 
-  async getFrameInfo() {
-    return this._driver.executor.executeScript(`
-      var isCORS, isRoot;
-      try {
-        isRoot = window.top.document === window.document;
-        isCORS = false;
-      } catch(err) {
-        isRoot = false;
-        isCORS = true;
-      }
-      return {isCORS: isCORS,isRoot: isRoot, frameElement: window.frameElement, contentDocument: document};
-    `)
-  }
-
   async frameInit(element) {
     const [
       rect,
@@ -196,40 +182,33 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async framesRefresh() {
-    let frameInfo = await this.getFrameInfo()
+    let frameInfo = await EyesUtils.getCurrentFrameInfo(this._logger, this._driver.executor)
     if (frameInfo.isRoot) {
       this._frameChain.clear()
     } else {
       const framePath = []
-      const lastTrackedFrame = this._frameChain.current
-        ? this._frameChain.current.element.elementId
-        : null
+      const frameChain = this._frameChain.clone()
+      const lastTrackedFrame = frameChain.current ? frameChain.current.element : null
       while (!frameInfo.isRoot) {
-        let frameTarget
         await this.frameParent()
-        if (frameInfo.isCORS) {
-          const frameElements = await this._driver.finder.findElements('frame, iframe')
-          for (const frameElement of frameElements) {
-            await this.frame(frameElement)
-            const contentDocument = await this._driver.executor.executeScript('return document')
-            await this.frameParent()
-            if (WDIOElement.equals(contentDocument, frameInfo.contentDocument)) {
-              frameTarget = frameElement
-              break
-            }
-          }
+        const frameElement = frameInfo.isCORS
+          ? await EyesUtils.findCORSFrame(this._logger, this._driver, contentDocument =>
+              WDIOElement.equals(contentDocument, frameInfo.contentDocument),
+            )
+          : frameInfo.frameElement
+        if (!frameElement) throw new Error('Unable to find out the chain of frames')
+        if (WDIOElement.equals(frameElement, lastTrackedFrame)) {
+          await this.frameParent(frameChain.size - 1)
+          framePath.unshift(...frameChain)
         } else {
-          frameTarget = frameInfo.frameElement
+          const xpath = await EyesUtils.getElementXpath(
+            this._logger,
+            this._driver.executor,
+            frameElement,
+          )
+          framePath.unshift(new WDIOElement(this._logger, this._driver, frameElement, `/${xpath}`))
         }
-        if (!frameTarget) throw new Error('Unable to find out the chain of frames')
-        if (WDIOElement.equals(frameTarget, lastTrackedFrame)) break
-        const xpath = await EyesUtils.getElementXpath(
-          this._logger,
-          this._driver.executor,
-          frameTarget,
-        )
-        framePath.unshift(new WDIOElement(this._logger, this._driver, frameTarget, `/${xpath}`))
-        frameInfo = await this.getFrameInfo()
+        frameInfo = await EyesUtils.getCurrentFrameInfo(this._logger, this._driver.executor)
       }
       if (frameInfo.isRoot) this._frameChain.clear()
       await this.framesAppend(framePath)

@@ -13,11 +13,12 @@ const WEB_ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
 
 class WDIOElement extends EyesWrappedElement {
   constructor(logger, driver, element, selector) {
-    super()
     ArgumentGuard.notNull(element, 'element')
     if (element instanceof WDIOElement) {
       return element
-    } else if (WDIOElement.isCompatible(element)) {
+    }
+    super()
+    if (WDIOElement.isCompatible(element)) {
       // in case of wrapping not an element but response with value
       if (element.value) {
         this._element = element.value

@@ -1,4 +1,4 @@
-const {EyesWrappedDriver} = require('@applitools/eyes-sdk-core')
+const {ArgumentGuard, EyesWrappedDriver} = require('@applitools/eyes-sdk-core')
 const WDIOJSExecutor = require('./WDIOJSExecutor')
 const WDIOElementFinder = require('./WDIOElementFinder')
 const WDIOBrowsingContext = require('./WDIOBrowsingContext')
@@ -7,6 +7,10 @@ const LegacyAPIDriver = require('./LegacyAPIDriver')
 
 class WDIODriver extends EyesWrappedDriver {
   constructor(logger, driver) {
+    ArgumentGuard.notNull(driver, 'driver')
+    if (driver instanceof WDIODriver) {
+      return driver
+    }
     super()
     this._logger = logger
     this._driver = driver

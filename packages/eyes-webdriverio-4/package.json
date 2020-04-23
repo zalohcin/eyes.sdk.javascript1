@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint '**/*.js'",
+    "surge": "surge ./test/fixtures/frames/main applitools-test-frames.surge.sh && surge ./test/fixtures/frames/frame1 applitools-test-frames-1.surge.sh && surge ./test/fixtures/frames/frame2 applitools-test-frames-2.surge.sh",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e",
     "test:e2e": "mocha --no-timeouts \"test/e2e/*.js\"",
     "test:it": "mocha --no-timeouts \"test/it/**/*.js\"",
