@@ -4,7 +4,7 @@ const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
 const {StitchMode} = require('../../../index')
 const appName = 'Eyes Selenium SDK - Classic API'
 const batch = getBatch()
-describe(appName, () => {
+describe.skip(appName, () => {
   let webDriver, eyes
 
   afterEach(async () => {

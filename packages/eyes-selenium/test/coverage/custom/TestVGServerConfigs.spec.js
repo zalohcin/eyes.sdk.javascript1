@@ -35,7 +35,7 @@ describe('TestVGServerConfigs', () => {
     await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
   })
 
-  it('TestVGChangeConfigAfterOpen', async () => {
+  it.skip('TestVGChangeConfigAfterOpen', async () => {
     let conf = new Configuration()
     conf.setBatch(batch)
     conf.setAppName('app')

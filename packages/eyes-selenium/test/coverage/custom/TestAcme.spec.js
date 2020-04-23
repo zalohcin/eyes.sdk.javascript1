@@ -5,7 +5,7 @@ const {Target, StitchMode} = require('../../../index')
 const appName = 'Eyes Selenium SDK - ACME'
 const batch = getBatch()
 
-describe(appName, async () => {
+describe.skip(appName, async () => {
   let driver, eyes
   afterEach(async () => {
     await driver.quit()

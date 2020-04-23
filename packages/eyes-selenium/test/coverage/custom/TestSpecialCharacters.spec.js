@@ -14,7 +14,7 @@ describe(appName, () => {
     await webDriver.quit()
   })
 
-  it('TestRenderSpecialCharacters', async () => {
+  it.skip('TestRenderSpecialCharacters', async () => {
     let conf = new Configuration()
     conf.setTestName('Special Characters')
     conf.setAppName(appName)

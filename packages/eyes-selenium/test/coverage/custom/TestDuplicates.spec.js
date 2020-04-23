@@ -29,7 +29,7 @@ describe(appName, async () => {
     it('TestDuplicatedIFrames', TestDuplicatedIFrames('TestDuplicatedIFrames_Scroll'))
   })
 
-  describe('VG', async () => {
+  describe.skip('VG', async () => {
     beforeEach(async () => {
       driver = await getDriver('CHROME')
       ;({eyes} = await getEyes('VG'))

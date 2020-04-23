@@ -5,7 +5,7 @@ const {Builder, By} = require('selenium-webdriver')
 const appName = 'TestScrolling'
 const batch = getBatch()
 
-describe(appName, () => {
+describe.skip(appName, () => {
   describe('ChromeEmulation', () => {
     let eyes, driver
 

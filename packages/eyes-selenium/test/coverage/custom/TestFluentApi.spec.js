@@ -11,7 +11,7 @@ describe(appName, () => {
     await webDriver.quit()
   })
 
-  describe(`Test`, () => {
+  describe.skip(`Test`, () => {
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
@@ -93,7 +93,7 @@ describe(appName, () => {
     })
   })
 
-  describe(`Test_SCROLL`, () => {
+  describe.skip(`Test_SCROLL`, () => {
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
@@ -187,7 +187,7 @@ describe(appName, () => {
       ;({eyes} = await getEyes('VG'))
     })
 
-    it('TestCheckScrollableModal', async () => {
+    it.skip('TestCheckScrollableModal', async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal_VG`, {
         width: 700,
         height: 460,

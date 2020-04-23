@@ -87,7 +87,7 @@ describe(appName, () => {
       eyes.setBatch(batch)
     })
 
-    it('TestDoubleOpenCheckClose', async () => {
+    it.skip('TestDoubleOpenCheckClose', async () => {
       await webDriver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
       await eyes.open(webDriver, appName, 'TestDoubleOpenCheckClose_VG', {
         width: 1200,

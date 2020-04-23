@@ -146,7 +146,7 @@ const data = [
   ...addOrientation(iPhoneLandscape, 'Landscape'),
   ...addOrientation(iPhonePortrait, 'Portrait'),
 ]
-describe('TestMobileDevices', () => {
+describe.skip('TestMobileDevices', () => {
   let page = ['mobile', 'desktop', 'scrolled_mobile']
   page.forEach(page => {
     describe(`${page}`, () => {
