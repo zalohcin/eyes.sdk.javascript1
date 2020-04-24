@@ -203,44 +203,44 @@ class Common {
   async afterEachTest() {
     try {
       const results = await this._eyes.close(true)
-      const query = `?format=json&AccessToken=${results.getSecretToken()}&apiKey=${this.eyes.getApiKey()}`
-      const apiSessionUrl = results.getApiUrls().getSession() + query
+      // const query = `?format=json&AccessToken=${results.getSecretToken()}&apiKey=${this.eyes.getApiKey()}`
+      // const apiSessionUrl = results.getApiUrls().getSession() + query
 
-      const apiSessionUri = new url.URL(apiSessionUrl)
-      // apiSessionUri.searchParams.append('format', 'json');
-      // apiSessionUri.searchParams.append('AccessToken', results.getSecretToken());
-      // apiSessionUri.searchParams.append('apiKey', this.eyes.getApiKey());
+      // const apiSessionUri = new url.URL(apiSessionUrl)
+      // // apiSessionUri.searchParams.append('format', 'json');
+      // // apiSessionUri.searchParams.append('AccessToken', results.getSecretToken());
+      // // apiSessionUri.searchParams.append('apiKey', this.eyes.getApiKey());
 
-      const res = await NetHelper.get(apiSessionUri)
-      const resultObject = JSON.parse(res)
-      /** @type {SessionResults} */
-      const sessionResults = new SessionResults(resultObject)
-      /** @type {ActualAppOutput} */
-      const actualAppOutput = new ActualAppOutput(sessionResults.getActualAppOutput()[0])
-      /** @type {ImageMatchSettings} */
-      const imageMatchSettings = new ImageMatchSettings(actualAppOutput.getImageMatchSettings())
+      // const res = await NetHelper.get(apiSessionUri)
+      // const resultObject = JSON.parse(res)
+      // /** @type {SessionResults} */
+      // const sessionResults = new SessionResults(resultObject)
+      // /** @type {ActualAppOutput} */
+      // const actualAppOutput = new ActualAppOutput(sessionResults.getActualAppOutput()[0])
+      // /** @type {ImageMatchSettings} */
+      // const imageMatchSettings = new ImageMatchSettings(actualAppOutput.getImageMatchSettings())
 
-      if (this._expectedFloatingsRegions) {
-        const f = imageMatchSettings.getFloating()[0]
-        const floating = new FloatingMatchSettings(
-          f.left,
-          f.top,
-          f.width,
-          f.height,
-          f.maxUpOffset,
-          f.maxDownOffset,
-          f.maxLeftOffset,
-          f.maxRightOffset,
-        )
+      // if (this._expectedFloatingsRegions) {
+      //   const f = imageMatchSettings.getFloating()[0]
+      //   const floating = new FloatingMatchSettings(
+      //     f.left,
+      //     f.top,
+      //     f.width,
+      //     f.height,
+      //     f.maxUpOffset,
+      //     f.maxDownOffset,
+      //     f.maxLeftOffset,
+      //     f.maxRightOffset,
+      //   )
 
-        deepStrictEqual(this._expectedFloatingsRegions, floating, 'Floating regions lists differ')
-      }
+      //   deepStrictEqual(this._expectedFloatingsRegions, floating, 'Floating regions lists differ')
+      // }
 
-      if (this._expectedIgnoreRegions) {
-        const ignoreRegions = new Region(imageMatchSettings.getIgnore())
+      // if (this._expectedIgnoreRegions) {
+      //   const ignoreRegions = new Region(imageMatchSettings.getIgnore())
 
-        deepStrictEqual(this._expectedIgnoreRegions, ignoreRegions, 'Ignore regions lists differ')
-      }
+      //   deepStrictEqual(this._expectedIgnoreRegions, ignoreRegions, 'Ignore regions lists differ')
+      // }
 
       // if (this._expectedAccessibilityRegions) {
       //   const accessibilityRegions = new Region(imageMatchSettings.getAccessibility());

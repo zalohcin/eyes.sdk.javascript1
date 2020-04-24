@@ -5,7 +5,7 @@ const WDIOBrowsingContext = require('./WDIOBrowsingContext')
 const WDIODriverController = require('./WDIODriverController')
 const LegacyAPIDriver = require('./LegacyAPIDriver')
 
-class WDIODriver extends EyesWrappedDriver {
+class WDIODriver extends LegacyAPIDriver(EyesWrappedDriver) {
   constructor(logger, driver) {
     ArgumentGuard.notNull(driver, 'driver')
     if (driver instanceof WDIODriver) {
@@ -70,4 +70,4 @@ class WDIODriver extends EyesWrappedDriver {
   }
 }
 
-module.exports = LegacyAPIDriver(WDIODriver)
+module.exports = WDIODriver

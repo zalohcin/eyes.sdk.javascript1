@@ -3,6 +3,7 @@ const {
   ArgumentGuard,
   Location,
   RectangleSize,
+  Region,
   MutableImage,
   EyesError,
 } = require('@applitools/eyes-common')
@@ -20,7 +21,7 @@ async function setViewportSize(logger, {controller, executor, context}, required
   // Then we'll check the viewport size and increase the window size accordingly.
   logger.verbose(`setViewportSize(${requiredViewportSize})`)
 
-  return context.framesToAndFro(null, async () => {
+  return context.framesSwitchAndReturn(null, async () => {
     let actualViewportSize = await getViewportSize(logger, {executor})
     logger.verbose(`Initial viewport size: ${actualViewportSize}`)
 
@@ -166,9 +167,17 @@ async function _setWindowSize(logger, {controller}, requiredWindowSize, sleep = 
   }
 }
 
+async function getTopContextViewportRect(logger, {controller, executor, context}) {
+  return context.framesSwitchAndReturn(null, async () => {
+    const location = await getTopContextScrollLocation(logger, {executor, context})
+    const size = await getTopContextViewportSize(logger, {controller, executor, context})
+    return new Region(location, size)
+  })
+}
+
 async function getTopContextViewportSize(logger, {controller, context, executor}) {
   logger.verbose('getTopContextViewportSize')
-  return context.framesToAndFro(null, async () => {
+  return context.framesSwitchAndReturn(null, async () => {
     logger.verbose('Extracting viewport size...')
     let viewportSize
     try {
@@ -228,7 +237,7 @@ async function getMobilePixelRatio(_logger, {controller}, viewportSize) {
 async function getTopContextScrollLocation(logger, {context, executor}) {
   // TODO I think we can use here Frame::originalLocation which is the scroll location
   // of the parent element in the moment of changing context
-  return context.framesToAndFro(null, async () => getScrollLocation(logger, executor))
+  return context.framesSwitchAndReturn(null, async () => getScrollLocation(logger, executor))
 }
 
 async function getScrollLocation(_logger, executor, element) {
@@ -331,9 +340,59 @@ async function findCORSFrame(_logger, {executor, context}, comparator) {
   }
 }
 
+async function ensureElementVisible(
+  logger,
+  {controller, context, executor},
+  positionProvider,
+  effectiveViewportRect,
+  element,
+) {
+  if (!element) return
+  if (await controller.isMobileDevice()) {
+    logger.verbose(`NATIVE context identified, skipping 'ensure element visible'`)
+    return
+  }
+  const elementFrameRect = await element.getBounds()
+  const frameOffset = context.frameChain.getCurrentFrameOffset()
+  const elementViewportRect = elementFrameRect.offset(frameOffset.getX(), frameOffset.getY())
+  const viewportRect = await getTopContextViewportRect(logger, {controller, context, executor})
+  if (!viewportRect.contains(elementViewportRect)) {
+    const intersectedEffectiveViewportRect = await ensureFrameVisible(
+      logger,
+      context,
+      positionProvider,
+      effectiveViewportRect,
+    )
+    const elementLocation = await element.getLocation()
+    await positionProvider.setPosition(elementLocation)
+    return intersectedEffectiveViewportRect
+  }
+  return effectiveViewportRect
+}
+
+async function ensureFrameVisible(_logger, context, positionProvider, effectiveViewportRect) {
+  const originalFrameChain = context.frameChain
+  const intersectedEffectiveViewportRect = new Region(effectiveViewportRect)
+  let location = Location.ZERO
+  for (let index = originalFrameChain.size - 1; index >= 0; --index) {
+    const frame = originalFrameChain.frameAt(index)
+    await context.frameParent()
+    intersectedEffectiveViewportRect.intersect(new Region(Location.ZERO, frame.innerSize))
+    location = location.offsetByLocation(frame.location)
+    // TODO make scrollTo return actual scroll location after operation
+    await positionProvider.setPosition(location)
+    const actualLocation = await positionProvider.getCurrentPosition()
+    location = location.offsetNegative(actualLocation)
+  }
+  // passing array of frame references instead of frame chain to be sure that frame metrics will be re-calculated
+  await context.frames(Array.from(originalFrameChain, frame => frame.toReference()))
+  return intersectedEffectiveViewportRect
+}
+
 module.exports = {
   getViewportSize,
   setViewportSize,
+  getTopContextViewportRect,
   getTopContextViewportSize,
   getCurrentFrameContentEntireSize,
   getElementEntireSize,
@@ -352,4 +411,6 @@ module.exports = {
   locatorToPersistedRegions,
   getCurrentFrameInfo,
   findCORSFrame,
+  ensureElementVisible,
+  ensureFrameVisible,
 }

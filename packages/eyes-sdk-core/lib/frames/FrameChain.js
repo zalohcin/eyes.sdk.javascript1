@@ -1,7 +1,7 @@
 'use strict'
 
 const {ArgumentGuard, Location} = require('@applitools/eyes-common')
-const {Frame} = require('./Frame')
+const Frame = require('./Frame')
 const {NoFramesError} = require('../errors/NoFramesError')
 /**
  * @typedef {import('@applitools/eyes-common').Logger} Logger
@@ -22,8 +22,7 @@ class FrameChain {
     this._frames = []
 
     if (other) {
-      this._logger.verbose(`FrameChain copy constructor (size ${other.size})`)
-      this._frames = Array.from(other, frame => new Frame(this._logger, frame))
+      this._frames = Array.from(other)
     }
   }
   /**
@@ -37,17 +36,11 @@ class FrameChain {
       return false
     }
     for (let index = 0; index < c1.size; ++index) {
-      if (c1.frameAt(index).element !== c2.frameAt(index).element) {
+      if (Frame.equals(c1.frameAt(index), c2.frameAt(index))) {
         return false
       }
     }
     return true
-  }
-  /**
-   * @return {Frame[]} frames stored in chain
-   */
-  toArray() {
-    return Array.from(this._frames)
   }
   /**
    * @param {number} index Index of needed frame
@@ -124,16 +117,6 @@ class FrameChain {
     return new Location(this._frames[0].originalLocation)
   }
   /**
-   * @return {RectangleSize} The size of the current frame.
-   */
-  getCurrentFrameSize() {
-    if (this._frames.length === 0) {
-      throw new NoFramesError('No frames in frame chain')
-    }
-    const result = this._frames[this._frames.length - 1].size
-    return result
-  }
-  /**
    * @return {RectangleSize} The inner size of the current frame.
    */
   getCurrentFrameInnerSize() {
@@ -149,4 +132,4 @@ class FrameChain {
   }
 }
 
-exports.FrameChain = FrameChain
+module.exports = FrameChain

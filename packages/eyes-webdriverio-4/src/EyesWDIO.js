@@ -39,6 +39,7 @@ const {
 const {DomCapture} = require('@applitools/dom-utils')
 const WDIOCheckSettings = require('./WDIOCheckSettings')
 const WDIODriver = require('./wrappers/WDIODriver')
+const WDIOElement = require('./wrappers/WDIOElement')
 
 const VERSION = require('../package.json').version
 
@@ -117,7 +118,7 @@ class EyesWDIO extends EyesBase {
     /** @type {EyesScreenshotFactory} */
     this._screenshotFactory = undefined
     /** @type {WDIOElement} */
-    this._scrollRootElement = undefined
+    this._scrollRootElement = WDIOElement.fromSelector({using: 'css selector', value: 'html'})
     /** @type {Promise<void>} */
     this._closePromise = Promise.resolve()
   }
@@ -293,46 +294,32 @@ class EyesWDIO extends EyesBase {
    */
   async check(name, checkSettings) {
     ArgumentGuard.notNull(checkSettings, 'checkSettings')
-
-    checkSettings.ignoreCaret(checkSettings.getIgnoreCaret() || this.getIgnoreCaret())
-
+    this._logger.verbose(`check("${name}", checkSettings) - begin`)
     this._checkSettings = checkSettings
 
-    await this._context.framesRefresh()
-
-    let result
     await this.getPositionProvider().setPosition(Location.ZERO)
 
-    this._logger.verbose(`check("${name}", checkSettings) - begin`)
-    this._stitchContent = checkSettings.getStitchContent()
-    const targetRegion = checkSettings.getTargetRegion()
-    const switchedToFrameCount = await this._switchToFrame(checkSettings)
-    this._regionToCheck = null
-    this._targetElementLocation = null
-
-    await this._tryHideScrollbars()
-
-    if (targetRegion) {
-      this._targetElementLocation = targetRegion.getLocation()
-      const source = await this._controller.getSource()
-      result = await super.checkWindowBase(
-        new RegionProvider(targetRegion),
-        name,
-        false,
-        checkSettings,
-        source,
-      )
-    } else if (checkSettings) {
-      const targetSelector = checkSettings.targetSelector
-      let targetElement = checkSettings.targetElement
-      if (targetElement) {
-        targetElement.bind(this._driver)
-      } else if (targetSelector) {
-        targetElement = await this._finder.findElement(targetSelector)
-      }
-
-      if (targetElement) {
-        this._targetElement = targetElement
+    checkSettings.ignoreCaret(checkSettings.getIgnoreCaret() || this.getIgnoreCaret())
+    await this._context.framesRefresh()
+    return this._beforeAndAfterCheck(checkSettings, async () => {
+      let result
+      this._stitchContent = checkSettings.getStitchContent()
+      this._regionToCheck = null
+      this._targetElementLocation = null
+      const targetRegion = checkSettings.getTargetRegion()
+      const targetElement = checkSettings.targetElement
+      if (targetRegion) {
+        this._targetElementLocation = targetRegion.getLocation()
+        const source = await this._controller.getSource()
+        result = await super.checkWindowBase(
+          new RegionProvider(targetRegion),
+          name,
+          false,
+          checkSettings,
+          source,
+        )
+      } else if (targetElement) {
+        this._targetElement = await targetElement.init(this._driver)
         if (this._stitchContent) {
           result = await this._checkElement(name, checkSettings)
         } else {
@@ -358,23 +345,46 @@ class EyesWDIO extends EyesBase {
         )
         await this.getPositionProvider().restoreState(originalPosition)
       }
+      this._targetElement = null
+      this._targetElementLocation = null
+      this._stitchContent = false
+      this._logger.verbose('check - done!')
+      return result
+    })
+  }
+
+  async _beforeAndAfterCheck(checkSettings, operation) {
+    const originalFrameChain = this._context.frameChain
+    const appendFrameChain = checkSettings.frameChain
+    const isMobile = await this._controller.isMobileDevice()
+    const shouldHideScrollbars = !isMobile && this._hideScrollbars
+    if (shouldHideScrollbars) {
+      await this._context.frameDefault()
+      await this._scrollRootElement.init(this._driver)
+      await this._scrollRootElement.hideScrollbars()
+      for (const frame of originalFrameChain) {
+        await this._context.frame(frame.toReference())
+        await frame.hideScrollbars()
+      }
+    }
+    for (const frame of appendFrameChain) {
+      await this._context.frame(frame)
+      if (shouldHideScrollbars) await frame.hideScrollbars()
     }
 
-    await this._tryRestoreScrollbars()
-
-    // if (!result) {
-    //   result = new MatchResult()
-    // }
-
-    this._targetElement = null
-    this._targetElementLocation = null
-
-    await this._switchToParentFrame(switchedToFrameCount)
-
-    this._stitchContent = false
-    this._logger.verbose('check - done!')
-
-    return result
+    try {
+      return await operation()
+    } finally {
+      if (shouldHideScrollbars) {
+        const fullFrameChain = this._context.frameChain
+        for (let index = fullFrameChain.size - 1; index >= 0; --index) {
+          await fullFrameChain.frameAt(index).restoreScrollbars()
+          await this._context.frameParent()
+        }
+        await this._scrollRootElement.restoreScrollbars()
+      }
+      await this._context.frames(originalFrameChain)
+    }
   }
 
   /**
@@ -460,7 +470,13 @@ class EyesWDIO extends EyesBase {
     const originalPositionMemento = await this.getPositionProvider().getState()
     const scrollPositionProvider = new ScrollPositionProvider(this._logger, this._executor)
     try {
-      await this._ensureElementVisible(this._targetElement)
+      this._effectiveViewport = await EyesUtils.ensureElementVisible(
+        this._logger,
+        this._driver,
+        this._positionProviderHandler.get(),
+        this._effectiveViewport,
+        this._targetElement,
+      )
       originalScrollPosition = await scrollPositionProvider.getCurrentPosition()
       this._targetElementLocation = await this._targetElement.getLocation()
       this._checkFrameOrElement = true
@@ -476,8 +492,7 @@ class EyesWDIO extends EyesBase {
         this._elementPositionProvider = null
       }
       if (this._hideScrollbars) {
-        originalOverflow = await this._targetElement.getOverflow()
-        await this._targetElement.setOverflow('hidden')
+        await this._targetElement.hideScrollbars()
       }
 
       const [[clientWidth, clientHeight], [borderLeftWidth, borderTopWidth]] = await Promise.all([
@@ -519,9 +534,7 @@ class EyesWDIO extends EyesBase {
         source,
       )
     } finally {
-      if (originalOverflow) {
-        await this._targetElement.setOverflow(originalOverflow)
-      }
+      await this._targetElement.restoreScrollbars()
       this._checkFrameOrElement = false
       this.setPositionProvider(originalPositionProvider)
       this._regionToCheck = null
@@ -567,41 +580,39 @@ class EyesWDIO extends EyesBase {
   async _getFullFrameOrElementRegion() {
     const that = this
     if (that._checkFrameOrElement) {
-      return that._ensureFrameVisible().then(fc => {
-        // FIXME - Scaling should be handled in a single place instead
-
-        return that._updateScalingParams().then(scaleProviderFactory => {
-          let screenshotImage
-          return that._imageProvider
-            .getImage()
-            .then(screenshotImage_ => {
-              screenshotImage = screenshotImage_
-              return that._debugScreenshotsProvider.save(
-                screenshotImage_,
-                'checkFullFrameOrElement',
-              )
-            })
-            .then(() => {
-              const scaleProvider = scaleProviderFactory.getScaleProvider(
-                screenshotImage.getWidth(),
-              )
-              // TODO: do we need to scale the image? We don't do it in Java
-              return screenshotImage.scale(scaleProvider.getScaleRatio())
-            })
-            .then(screenshotImage_ => {
-              screenshotImage = screenshotImage_
-              // return that._context.frames(fc)
-            })
-            .then(() => {
-              return EyesScreenshot.fromScreenshotType(this._logger, this, screenshotImage)
-            })
-            .then(screenshot => {
-              that._logger.verbose('replacing regionToCheck')
-              that.setRegionToCheck(screenshot.getFrameWindow())
-              // return screenshot.getFrameWindow();
-              return Region.EMPTY
-            })
-        })
+      this._effectiveViewport = await EyesUtils.ensureFrameVisible(
+        this._logger,
+        this._context,
+        this._positionProviderHandler.get(),
+        this._effectiveViewport,
+      )
+      // FIXME - Scaling should be handled in a single place instead
+      return that._updateScalingParams().then(scaleProviderFactory => {
+        let screenshotImage
+        return that._imageProvider
+          .getImage()
+          .then(screenshotImage_ => {
+            screenshotImage = screenshotImage_
+            return that._debugScreenshotsProvider.save(screenshotImage_, 'checkFullFrameOrElement')
+          })
+          .then(() => {
+            const scaleProvider = scaleProviderFactory.getScaleProvider(screenshotImage.getWidth())
+            // TODO: do we need to scale the image? We don't do it in Java
+            return screenshotImage.scale(scaleProvider.getScaleRatio())
+          })
+          .then(screenshotImage_ => {
+            screenshotImage = screenshotImage_
+            // return that._context.frames(fc)
+          })
+          .then(() => {
+            return EyesScreenshot.fromScreenshotType(this._logger, this, screenshotImage)
+          })
+          .then(screenshot => {
+            that._logger.verbose('replacing regionToCheck')
+            that.setRegionToCheck(screenshot.getFrameWindow())
+            // return screenshot.getFrameWindow();
+            return Region.EMPTY
+          })
       })
     }
 
@@ -623,190 +634,6 @@ class EyesWDIO extends EyesBase {
     this._targetElementLocation = Location.ZERO
     await this._context.frame(targetFrame)
     return r
-  }
-
-  /**
-   * @private
-   * @return {Promise.<int>}
-   */
-  async _switchToParentFrame(switchedToFrameCount) {
-    if (switchedToFrameCount > 0) {
-      await this._context.frameParent()
-      return this._switchToParentFrame(switchedToFrameCount - 1)
-    }
-
-    return switchedToFrameCount
-  }
-
-  /**
-   * @private
-   * @return {Promise.<int>}
-   */
-  async _switchToFrame(checkSettings) {
-    if (!checkSettings) {
-      return 0
-    }
-
-    const frameChain = checkSettings.getFrameChain()
-
-    let switchedToFrameCount = 0
-    for (const frameLocator of frameChain) {
-      const b = await this._switchToFrameLocator(frameLocator)
-      if (b) {
-        switchedToFrameCount += 1
-      }
-    }
-    return switchedToFrameCount
-  }
-
-  /**
-   * @private
-   * @return {Promise.<boolean>}
-   */
-  async _switchToFrameLocator(frameLocator) {
-    let reference
-    if (frameLocator.getFrameIndex()) {
-      reference = frameLocator.getFrameIndex()
-    } else if (frameLocator.getFrameNameOrId()) {
-      reference = frameLocator.getFrameNameOrId()
-    } else if (frameLocator.getFrameElement()) {
-      reference = frameLocator.getFrameElement()
-    } else if (frameLocator.getFrameSelector()) {
-      reference = await this._finder.findElement(frameLocator.getFrameSelector())
-    }
-
-    if (reference) {
-      await this._context.frame(reference)
-      const frame = this._context.frameChain.current
-      if (frame) {
-        let scrollRootElement = frameLocator.getScrollRootElement()
-        if (!scrollRootElement && frameLocator.getScrollRootSelector()) {
-          scrollRootElement = await this._finder.findElement(frameLocator.getScrollRootSelector())
-        }
-        if (scrollRootElement) {
-          frame.scrollRootElement = scrollRootElement
-        }
-      }
-      return true
-    }
-
-    return false
-  }
-
-  /**
-   * @private
-   * @return {Promise}
-   */
-  async _tryHideScrollbars() {
-    if (await this._controller.isMobileDevice()) return
-    if (this._hideScrollbars || this._scrollRootElement) {
-      const originalFrameChain = this._context.frameChain
-      await this._context.frameDefault()
-
-      this._logger.verbose('hiding scrollbars of default content')
-      const scrollRootElement = await this.getScrollRootElement()
-      this._originalOverflow = await EyesUtils.setOverflow(
-        this._logger,
-        this._executor,
-        'hidden',
-        scrollRootElement,
-      )
-
-      for (const frame of originalFrameChain) {
-        await this._context.frame(frame.element)
-        await frame.hideScrollbars()
-      }
-      this._logger.verbose('done hiding scrollbars.')
-    }
-  }
-
-  /**
-   * @private
-   * @return {Promise}
-   */
-  async _tryRestoreScrollbars() {
-    if (await this._controller.isMobileDevice()) return
-    if (this._hideScrollbars) {
-      const originalFrameChain = this._context.frameChain
-      await this._context.frameDefault()
-      const scrollRootElement = await this.getScrollRootElement()
-      await EyesUtils.setOverflow(
-        this._logger,
-        this._executor,
-        this._originalOverflow,
-        scrollRootElement,
-      )
-
-      for (const frame of originalFrameChain) {
-        await this._context.frame(frame)
-        await frame.restoreScrollbars()
-      }
-      this._logger.verbose('done hiding scrollbars.')
-    }
-  }
-
-  /**
-   * @private
-   * @param {WebElement} element
-   * @return {Promise<void>}
-   */
-  async _ensureElementVisible(element) {
-    // No element? we must be checking the window.
-    if (!element) return
-
-    if (await this._controller.isMobileDevice()) {
-      this._logger.verbose(`NATIVE context identified, skipping 'ensure element visible'`)
-      return
-    }
-
-    const elementFrameBounds = await element.getBounds()
-    const frameOffset = await this._context.frameChain.getCurrentFrameOffset()
-    const elementViewportBounds = elementFrameBounds.offset(frameOffset.getX(), frameOffset.getY())
-    const viewportBounds = await this._getViewportScrollBounds()
-    if (!viewportBounds.contains(elementViewportBounds)) {
-      await this._ensureFrameVisible()
-      const elementLocation = await element.getLocation()
-      await this.getPositionProvider().setPosition(elementLocation)
-    }
-  }
-
-  /**
-   * @private
-   * @return {Promise.<FrameChain>}
-   */
-  async _ensureFrameVisible() {
-    const originalFrameChain = this._context.frameChain
-    const positionProvider = this.getPositionProvider()
-
-    let position = new Location(0, 0)
-    for (let index = originalFrameChain.size - 1; index >= 0; --index) {
-      const frame = originalFrameChain.frameAt(index)
-      await this._context.frameParent()
-      const reg = new Region(Location.ZERO, frame.innerSize)
-      this._effectiveViewport.intersect(reg)
-      position = position.offsetByLocation(frame.location)
-      await positionProvider.setPosition(position)
-      position = position.offsetNegative(await positionProvider.getCurrentPosition())
-    }
-
-    //passing array of frame elements instead of frame chain to be sure that frame metrics will be recalculated
-    await this._context.frames(originalFrameChain.toArray().map(frame => frame.element))
-    return originalFrameChain
-  }
-
-  /**
-   * @private
-   * @return {Promise.<Region>}
-   */
-  async _getViewportScrollBounds() {
-    const originalFrameChain = this._context.frameChain
-    await this._context.frameDefault()
-    const spp = new ScrollPositionProvider(this._logger, this._executor)
-    const location = await spp.getCurrentPosition()
-    const size = await this.getViewportSize()
-    const viewportBounds = new Region(location, size)
-    await this._context.frames(originalFrameChain)
-    return viewportBounds
   }
 
   /**
@@ -882,128 +709,6 @@ class EyesWDIO extends EyesBase {
       false,
       this._scaleProviderHandler,
     )
-  }
-
-  /**
-   * Adds a mouse trigger.
-   *
-   * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {Region} control The control on which the trigger is activated (context relative coordinates).
-   * @param {Location} cursor  The cursor's position relative to the control.
-   */
-  async addMouseTrigger(action, control, cursor) {
-    if (this._configuration.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${action} (disabled)`)
-      return
-    }
-
-    // Triggers are actually performed on the previous window.
-    if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${action} (no screenshot)`)
-      return
-    }
-
-    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${action} (different frame)`)
-      return
-    }
-
-    EyesBase.prototype.addMouseTriggerBase.call(this, action, control, cursor)
-  }
-
-  /**
-   * Adds a mouse trigger.
-   *
-   * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {WDIOElement} element The WDIOElement on which the click was called.
-   * @return {Promise}
-   */
-  async addMouseTriggerForElement(action, element) {
-    if (this.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${action} (disabled)`)
-      return Promise.resolve()
-    }
-
-    // Triggers are actually performed on the previous window.
-    if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${action} (no screenshot)`)
-      return Promise.resolve()
-    }
-
-    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${action} (different frame)`)
-      return Promise.resolve()
-    }
-
-    ArgumentGuard.notNull(element, 'element')
-
-    const loc = await element.getLocation()
-    const ds = await element.getSize()
-    const elementRegion = new Region(loc.x, loc.y, ds.width, ds.height)
-    EyesBase.prototype.addMouseTriggerBase.call(
-      this,
-      action,
-      elementRegion,
-      elementRegion.getMiddleOffset(),
-    )
-  }
-
-  /**
-   * Adds a keyboard trigger.
-   *
-   * @param {Region} control The control on which the trigger is activated (context relative coordinates).
-   * @param {String} text  The trigger's text.
-   */
-  addTextTrigger(control, text) {
-    if (this.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${text} (disabled)`)
-      return
-    }
-
-    // Triggers are actually performed on the previous window.
-    if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${text} (no screenshot)`)
-      return
-    }
-
-    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${text} (different frame)`)
-      return
-    }
-
-    EyesBase.prototype.addTextTriggerBase.call(this, control, text)
-  }
-
-  /**
-   * Adds a keyboard trigger.
-   *
-   * @param {WDIOElement} element The element for which we sent keys.
-   * @param {String} text  The trigger's text.
-   * @return {Promise}
-   */
-  async addTextTriggerForElement(element, text) {
-    if (this.getIsDisabled()) {
-      this._logger.verbose(`Ignoring ${text} (disabled)`)
-      return Promise.resolve()
-    }
-
-    // Triggers are actually performed on the previous window.
-    if (!this._lastScreenshot) {
-      this._logger.verbose(`Ignoring ${text} (no screenshot)`)
-      return Promise.resolve()
-    }
-
-    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
-      this._logger.verbose(`Ignoring ${text} (different frame)`)
-      return Promise.resolve()
-    }
-
-    ArgumentGuard.notNull(element, 'element')
-
-    const p1 = await element.getLocation()
-    const ds = await element.getSize()
-    const elementRegion = new Region(Math.ceil(p1.x), Math.ceil(p1.y), ds.width, ds.height)
-    EyesBase.prototype.addTextTrigger.call(this, elementRegion, text)
   }
 
   /**
@@ -1210,7 +915,13 @@ class EyesWDIO extends EyesBase {
         originalFramePosition,
       )
     } else {
-      await this._ensureElementVisible(this._targetElement)
+      this._effectiveViewport = await EyesUtils.ensureElementVisible(
+        this._logger,
+        this._driver,
+        this._positionProviderHandler.get(),
+        this._effectiveViewport,
+        this._targetElement,
+      )
 
       this._logger.verbose('Screenshot requested...')
       let screenshotImage = await this._imageProvider.getImage()
@@ -1320,23 +1031,17 @@ class EyesWDIO extends EyesBase {
   /**
    * @param {By} locator
    */
-  setScrollRootElement(locator) {
-    this._scrollRootElement = this._finder.findElement(locator)
+  setScrollRootElement(selector) {
+    if (WDIOElement.isSelector(selector)) {
+      this._scrollRootElement = WDIOElement.fromSelector(selector)
+    }
   }
 
   /**
    * @return {WebElement}
    */
   async getScrollRootElement() {
-    let scrollRootElement = null
-
-    if (!(await this._controller.isMobileDevice())) {
-      scrollRootElement = this._scrollRootElement
-        ? this._scrollRootElement
-        : await this._finder.findElement('html')
-    }
-
-    return scrollRootElement
+    return this._scrollRootElement.init(this._driver)
   }
 
   /**
@@ -1533,6 +1238,130 @@ class EyesWDIO extends EyesBase {
   async _getAndSaveBatchInfoFromServer(batchId) {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._runner.getBatchInfoWithCache(batchId)
+  }
+
+  //Triggers API
+
+  /**
+   * Adds a mouse trigger.
+   *
+   * @param {MouseTrigger.MouseAction} action  Mouse action.
+   * @param {Region} control The control on which the trigger is activated (context relative coordinates).
+   * @param {Location} cursor  The cursor's position relative to the control.
+   */
+  async addMouseTrigger(action, control, cursor) {
+    if (this._configuration.getIsDisabled()) {
+      this._logger.verbose(`Ignoring ${action} (disabled)`)
+      return
+    }
+
+    // Triggers are actually performed on the previous window.
+    if (!this._lastScreenshot) {
+      this._logger.verbose(`Ignoring ${action} (no screenshot)`)
+      return
+    }
+
+    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
+      this._logger.verbose(`Ignoring ${action} (different frame)`)
+      return
+    }
+
+    EyesBase.prototype.addMouseTriggerBase.call(this, action, control, cursor)
+  }
+
+  /**
+   * Adds a mouse trigger.
+   *
+   * @param {MouseTrigger.MouseAction} action  Mouse action.
+   * @param {WDIOElement} element The WDIOElement on which the click was called.
+   * @return {Promise}
+   */
+  async addMouseTriggerForElement(action, element) {
+    if (this.getIsDisabled()) {
+      this._logger.verbose(`Ignoring ${action} (disabled)`)
+      return Promise.resolve()
+    }
+
+    // Triggers are actually performed on the previous window.
+    if (!this._lastScreenshot) {
+      this._logger.verbose(`Ignoring ${action} (no screenshot)`)
+      return Promise.resolve()
+    }
+
+    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
+      this._logger.verbose(`Ignoring ${action} (different frame)`)
+      return Promise.resolve()
+    }
+
+    ArgumentGuard.notNull(element, 'element')
+
+    const loc = await element.getLocation()
+    const ds = await element.getSize()
+    const elementRegion = new Region(loc.x, loc.y, ds.width, ds.height)
+    EyesBase.prototype.addMouseTriggerBase.call(
+      this,
+      action,
+      elementRegion,
+      elementRegion.getMiddleOffset(),
+    )
+  }
+
+  /**
+   * Adds a keyboard trigger.
+   *
+   * @param {Region} control The control on which the trigger is activated (context relative coordinates).
+   * @param {String} text  The trigger's text.
+   */
+  addTextTrigger(control, text) {
+    if (this.getIsDisabled()) {
+      this._logger.verbose(`Ignoring ${text} (disabled)`)
+      return
+    }
+
+    // Triggers are actually performed on the previous window.
+    if (!this._lastScreenshot) {
+      this._logger.verbose(`Ignoring ${text} (no screenshot)`)
+      return
+    }
+
+    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
+      this._logger.verbose(`Ignoring ${text} (different frame)`)
+      return
+    }
+
+    EyesBase.prototype.addTextTriggerBase.call(this, control, text)
+  }
+
+  /**
+   * Adds a keyboard trigger.
+   *
+   * @param {WDIOElement} element The element for which we sent keys.
+   * @param {String} text  The trigger's text.
+   * @return {Promise}
+   */
+  async addTextTriggerForElement(element, text) {
+    if (this.getIsDisabled()) {
+      this._logger.verbose(`Ignoring ${text} (disabled)`)
+      return Promise.resolve()
+    }
+
+    // Triggers are actually performed on the previous window.
+    if (!this._lastScreenshot) {
+      this._logger.verbose(`Ignoring ${text} (no screenshot)`)
+      return Promise.resolve()
+    }
+
+    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
+      this._logger.verbose(`Ignoring ${text} (different frame)`)
+      return Promise.resolve()
+    }
+
+    ArgumentGuard.notNull(element, 'element')
+
+    const p1 = await element.getLocation()
+    const ds = await element.getSize()
+    const elementRegion = new Region(Math.ceil(p1.x), Math.ceil(p1.y), ds.width, ds.height)
+    EyesBase.prototype.addTextTrigger.call(this, elementRegion, text)
   }
 }
 

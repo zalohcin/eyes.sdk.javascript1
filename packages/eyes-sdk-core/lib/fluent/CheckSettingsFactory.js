@@ -1,9 +1,8 @@
 'use strict'
 
-const {TypeUtils, Region} = require('@applitools/eyes-common')
+const {Region} = require('@applitools/eyes-common')
 
 const CheckSettings = require('./CheckSettings')
-const FrameLocator = require('./FrameLocator')
 const TargetRegionBySelector = require('./TargetRegionBySelector')
 const TargetRegionByElement = require('./TargetRegionByElement')
 const IgnoreRegionBySelector = require('./IgnoreRegionBySelector')
@@ -13,9 +12,17 @@ const FloatingRegionByElement = require('./FloatingRegionByElement')
 const AccessibilityRegionBySelector = require('./AccessibilityRegionBySelector')
 const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
 
+/**
+ * @typedef {import('../wrappers/EyesWrappedElement').EyesWrappedElement} EyesWrappedElement
+ */
+
 const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
 
-function CheckSettingsFactory(WrappedElement, ElementFinder) {
+/**
+ * @param {EyesWrappedElement} WrappedElement
+ * @param {*} Frame
+ */
+function CheckSettingsFactory(WrappedElement, Frame) {
   return class DriverCheckSettings extends CheckSettings {
     /**
      *
@@ -24,9 +31,7 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
      */
     constructor(region, frame) {
       super()
-      /** @type {?} */
-      this._targetSelector = null
-      /** @type {EyesWrappedElement} */
+      /** @type {typeof WrappedElement} */
       this._targetElement = null
       this._frameChain = []
 
@@ -59,10 +64,10 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
      */
     ignoreRegion(region) {
       let ignoreRegion
-      if (ElementFinder.isLocator(region)) {
+      if (WrappedElement.isSelector(region)) {
         ignoreRegion = new IgnoreRegionBySelector(region)
-      } else if (region instanceof WrappedElement || WrappedElement.isCompatible(region)) {
-        ignoreRegion = new IgnoreRegionByElement(WrappedElement.partial(region))
+      } else if (WrappedElement.isCompatible(region)) {
+        ignoreRegion = new IgnoreRegionByElement(WrappedElement.fromElement(region))
       } else {
         return super.ignoreRegion(region)
       }
@@ -73,10 +78,10 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
 
     layoutRegion(region) {
       let layoutRegion
-      if (ElementFinder.isLocator(region)) {
+      if (WrappedElement.isSelector(region)) {
         layoutRegion = new IgnoreRegionBySelector(region)
-      } else if (region instanceof WrappedElement || WrappedElement.isCompatible(region)) {
-        layoutRegion = new IgnoreRegionByElement(WrappedElement.partial(region))
+      } else if (WrappedElement.isCompatible(region)) {
+        layoutRegion = new IgnoreRegionByElement(WrappedElement.fromElement(region))
       } else {
         return super.layoutRegion(region)
       }
@@ -87,10 +92,10 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
 
     strictRegion(region) {
       let strictRegion
-      if (ElementFinder.isLocator(region)) {
+      if (WrappedElement.isSelector(region)) {
         strictRegion = new IgnoreRegionBySelector(region)
-      } else if (region instanceof WrappedElement || WrappedElement.isCompatible(region)) {
-        strictRegion = new IgnoreRegionByElement(WrappedElement.partial(region))
+      } else if (WrappedElement.isCompatible(region)) {
+        strictRegion = new IgnoreRegionByElement(WrappedElement.fromElement(region))
       } else {
         return super.strictRegion(region)
       }
@@ -101,10 +106,10 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
 
     contentRegion(region) {
       let contentRegion
-      if (ElementFinder.isLocator(region)) {
+      if (WrappedElement.isSelector(region)) {
         contentRegion = new IgnoreRegionBySelector(region)
-      } else if (region instanceof WrappedElement || WrappedElement.isCompatible(region)) {
-        contentRegion = new IgnoreRegionByElement(WrappedElement.partial(region))
+      } else if (WrappedElement.isCompatible(region)) {
+        contentRegion = new IgnoreRegionByElement(WrappedElement.fromElement(region))
       } else {
         return super.contentRegion(region)
       }
@@ -127,7 +132,7 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
      */
     floatingRegion(region, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
       let floatingRegion
-      if (ElementFinder.isLocator(region)) {
+      if (WrappedElement.isSelector(region)) {
         floatingRegion = new FloatingRegionBySelector(
           region,
           maxUpOffset,
@@ -135,9 +140,9 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
           maxLeftOffset,
           maxRightOffset,
         )
-      } else if (region instanceof WrappedElement || WrappedElement.isCompatible(region)) {
+      } else if (WrappedElement.isCompatible(region)) {
         floatingRegion = new FloatingRegionByElement(
-          WrappedElement.partial(region),
+          WrappedElement.fromElement(region),
           maxUpOffset,
           maxDownOffset,
           maxLeftOffset,
@@ -167,11 +172,11 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
      */
     accessibilityRegion(region, regionType) {
       let accessibilityRegion
-      if (ElementFinder.isLocator(region)) {
+      if (WrappedElement.isSelector(region)) {
         accessibilityRegion = new AccessibilityRegionBySelector(region, regionType)
-      } else if (region instanceof WrappedElement || WrappedElement.isCompatible(region)) {
+      } else if (WrappedElement.isCompatible(region)) {
         accessibilityRegion = new AccessibilityRegionByElement(
-          WrappedElement.partial(region),
+          WrappedElement.fromElement(region),
           regionType,
         )
       } else {
@@ -190,10 +195,10 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
     region(region) {
       if (Region.isRegionCompatible(region)) {
         this._targetRegion = new Region(region)
-      } else if (ElementFinder.isLocator(region)) {
-        this._targetSelector = region
-      } else if (region instanceof WrappedElement || WrappedElement.isCompatible(region)) {
-        this._targetElement = WrappedElement.partial(region)
+      } else if (WrappedElement.isSelector(region)) {
+        this._targetElement = WrappedElement.fromSelector(region)
+      } else if (WrappedElement.isCompatible(region)) {
+        this._targetElement = WrappedElement.fromElement(region)
       } else {
         throw new TypeError('region method called with argument of unknown type!')
       }
@@ -204,21 +209,12 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
      * @param {Integer|String|By|WrappedElement} frame The frame to switch to.
      * @returns {WebdriverioCheckSettings}
      */
-    frame(frame) {
-      const fl = new FrameLocator()
-
-      if (TypeUtils.isInteger(frame)) {
-        fl.setFrameIndex(frame)
-      } else if (TypeUtils.isString(frame)) {
-        fl.setFrameNameOrId(frame)
-      } else if (ElementFinder.isLocator(frame)) {
-        fl.setFrameSelector(frame)
-      } else if (frame instanceof WrappedElement || WrappedElement.isCompatible(frame)) {
-        fl.setFrameElement(WrappedElement.partial(frame))
+    frame(frameReference) {
+      if (Frame.isReference(frameReference)) {
+        this._frameChain.push(Frame.fromReference(frameReference))
       } else {
         throw new TypeError('frame method called with argument of unknown type!')
       }
-      this._frameChain.push(fl)
       return this
     }
 
@@ -228,18 +224,9 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
      * @return {?GetSelector}
      */
     getTargetProvider() {
-      if (this._targetSelector) {
-        return new TargetRegionBySelector(this._targetSelector)
-      } else if (this._targetElement) {
-        return new TargetRegionByElement(WrappedElement.partial(this._targetElement))
+      if (this._targetElement) {
+        return new TargetRegionByElement(this._targetElement)
       }
-    }
-
-    /**
-     * @returns {By}
-     */
-    get targetSelector() {
-      return this._targetSelector
     }
 
     /**
@@ -250,16 +237,18 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
     }
 
     /**
-     * @returns {FrameLocator[]}
+     * @returns {Frame[]}
      */
     getFrameChain() {
       return this._frameChain
     }
 
+    get frameChain() {
+      return Array.from(this._frameChain)
+    }
+
     _getTargetType() {
-      return !this._targetRegion && !this._targetElement && !this._targetSelector
-        ? 'window'
-        : 'region'
+      return !this._targetRegion && !this._targetElement ? 'window' : 'region'
     }
 
     /**
@@ -267,16 +256,20 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
      * @return {this}
      */
     scrollRootElement(element) {
-      if (ElementFinder.isLocator(element)) {
-        if (this._frameChain.length === 0) {
-          this._scrollRootSelector = element
-        } else {
-          this._frameChain[this._frameChain.length - 1].setScrollRootSelector(element)
-        }
-      } else if (this._frameChain.length === 0) {
-        this._scrollRootElement = element
+      let scrollRootElement
+      if (WrappedElement.isSelector(element)) {
+        scrollRootElement = WrappedElement.fromSelector(element)
+      } else if (WrappedElement.isCompatible(element)) {
+        scrollRootElement = WrappedElement.fromElement(element)
       } else {
-        this._frameChain[this._frameChain.length - 1].setScrollRootElement(element)
+        throw new TypeError('scrollRootElement method called with argument of unknown type!')
+      }
+
+      if (this._frameChain.length === 0) {
+        this._scrollRootElement = scrollRootElement
+      } else {
+        const frameReference = this._frameChain[this._frameChain.length - 1]
+        frameReference.scrollRootElement = scrollRootElement
       }
 
       return this
@@ -288,14 +281,6 @@ function CheckSettingsFactory(WrappedElement, ElementFinder) {
      */
     getScrollRootElement() {
       return this._scrollRootElement
-    }
-
-    /**
-     * @ignore
-     * @return {By}
-     */
-    getScrollRootSelector() {
-      return this._scrollRootSelector
     }
 
     /**

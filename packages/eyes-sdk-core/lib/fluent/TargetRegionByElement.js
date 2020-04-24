@@ -24,7 +24,7 @@ class TargetSelectorByElement extends GetSelector {
    * @return {Promise<string>}
    */
   async getSelector(driver) {
-    this._element.bind(driver)
+    await this._element.init(driver)
     const randId = GeneralUtils.randomAlphanumeric()
     await driver.executor.executeScript(
       `arguments[0].setAttribute('${EYES_SELECTOR_TAG}', '${randId}');`,
@@ -34,6 +34,7 @@ class TargetSelectorByElement extends GetSelector {
   }
 
   async toPersistedRegions(driver) {
+    await this._element.init(driver)
     const xpath = await EyesUtils.getElementXpath(driver._logger, driver.executor, this._element)
     return [{type: 'xpath', selector: xpath}]
   }

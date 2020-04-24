@@ -22,7 +22,7 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
    * @return {Promise<AccessibilityMatchSettings[]>}
    */
   async getRegion(eyes, screenshot) {
-    this._element.bind(eyes.getDriver())
+    await this._element.init(eyes.getDriver())
     const rect = await this._element.getRect()
     const pTag = screenshot.convertLocation(
       rect.getLocation(),

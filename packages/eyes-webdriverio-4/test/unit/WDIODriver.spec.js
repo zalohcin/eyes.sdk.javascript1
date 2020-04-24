@@ -7,23 +7,26 @@ const WDIOJSExecutor = require('../../src/wrappers/WDIOJSExecutor')
 const {Logger} = require('../../index')
 
 describe('WDIODriver', function() {
-  let logger, browser
+  let logger
 
   before(async () => {
     logger = new Logger(false)
   })
 
   it('get executor', async () => {
+    const browser = {}
     const driver = new WDIODriver(logger, browser)
     assert.ok(driver.executor instanceof WDIOJSExecutor)
   })
 
   it('get context', async () => {
+    const browser = {}
     const driver = new WDIODriver(logger, browser)
     assert.ok(driver.context instanceof WDIOBrowsingContext)
   })
 
   it('get finder', async () => {
+    const browser = {}
     const driver = new WDIODriver(logger, browser)
     assert.ok(driver.finder instanceof WDIOElementFinder)
   })

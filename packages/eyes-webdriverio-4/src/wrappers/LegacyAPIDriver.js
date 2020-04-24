@@ -1,7 +1,7 @@
 const By = require('../By')
 
-function LegacyAPIDriver(WDIODriver) {
-  return class EyesWebDriver extends WDIODriver {
+function LegacyAPIDriver(EyesWrappedDriver) {
+  return class EyesWebDriver extends EyesWrappedDriver {
     async executeScript(script, ...varArgs) {
       return this._executor.executeScript(script, ...varArgs)
     }

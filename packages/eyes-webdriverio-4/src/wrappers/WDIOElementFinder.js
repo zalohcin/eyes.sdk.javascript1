@@ -1,20 +1,11 @@
-const {EyesElementFinder, TypeUtils} = require('@applitools/eyes-sdk-core')
+const {EyesElementFinder} = require('@applitools/eyes-sdk-core')
 const WDIOElement = require('./WDIOElement')
-const By = require('../By')
 
 class WDIOElementFinder extends EyesElementFinder {
   constructor(logger, driver) {
     super()
     this._logger = logger
     this._driver = driver
-  }
-
-  static isLocator(object) {
-    return (
-      TypeUtils.isString(object) ||
-      TypeUtils.has(object, ['using', 'value']) ||
-      object instanceof By
-    )
   }
 
   async findElement(locator, parentElement) {

@@ -36,7 +36,6 @@ exports.EyesDriverOperationError = require('./lib/errors/EyesDriverOperationErro
 exports.CheckSettings = require('./lib/fluent/CheckSettings')
 exports.CheckSettingsFactory = require('./lib/fluent/CheckSettingsFactory')
 exports.CheckTarget = require('./lib/fluent/CheckTarget').CheckTarget
-exports.FrameLocator = require('./lib/fluent/FrameLocator')
 exports.locatorToPersistedRegions = require('./lib/fluent/locatorToPersistedRegions')
 exports.GetRegion = require('./lib/fluent/GetRegion').GetRegion
 exports.GetSelector = require('./lib/fluent/GetSelector').GetSelector
@@ -123,8 +122,8 @@ exports.AccessibilityStatus = require('./lib/AccessibilityStatus').Accessibility
 exports.TestResultsFormatter = require('./lib/TestResultsFormatter').TestResultsFormatter
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus
 
-exports.FrameChain = require('./lib/frames/FrameChain').FrameChain
-exports.Frame = require('./lib/frames/Frame').Frame
+exports.FrameChain = require('./lib/frames/FrameChain')
+exports.FrameFactory = require('./lib/frames/Frame')
 
 exports.EyesWrappedDriver = require('./lib/wrappers/EyesWrappedDriver').EyesWrappedDriver
 exports.EyesWrappedElement = require('./lib/wrappers/EyesWrappedElement').EyesWrappedElement

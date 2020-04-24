@@ -1,4 +1,5 @@
 const {
+  TypeUtils,
   ArgumentGuard,
   Location,
   RectangleSize,
@@ -6,14 +7,15 @@ const {
   CoordinatesType,
   EyesWrappedElement,
   FrameChain,
+  EyesUtils,
 } = require('@applitools/eyes-sdk-core')
+const By = require('../By')
 const LegacyAPIElement = require('./LegacyAPIElement')
 
 const WEB_ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
 
-class WDIOElement extends EyesWrappedElement {
+class WDIOElement extends LegacyAPIElement(EyesWrappedElement) {
   constructor(logger, driver, element, selector) {
-    ArgumentGuard.notNull(element, 'element')
     if (element instanceof WDIOElement) {
       return element
     }
@@ -27,6 +29,8 @@ class WDIOElement extends EyesWrappedElement {
         this._element = element
         this._selector = selector
       }
+    } else if (WDIOElement.isSelector(selector)) {
+      this._selector = selector
     } else {
       throw new TypeError('WDIOElement constructor called with argument of unknown type!')
     }
@@ -39,15 +43,30 @@ class WDIOElement extends EyesWrappedElement {
     }
   }
 
-  static partial(element) {
+  static fromElement(element) {
     return new WDIOElement(null, null, element)
   }
 
-  static isCompatible(object) {
-    if (!object) return false
-    return object.value
-      ? Boolean(object.value.ELEMENT || object.value[WEB_ELEMENT_ID])
-      : Boolean(object.ELEMENT || object[WEB_ELEMENT_ID])
+  static fromSelector(selector) {
+    return new WDIOElement(null, null, null, selector)
+  }
+
+  static isCompatible(element) {
+    if (!element) return false
+    return (
+      element instanceof WDIOElement ||
+      (element.value
+        ? Boolean(element.value.ELEMENT || element.value[WEB_ELEMENT_ID])
+        : Boolean(element.ELEMENT || element[WEB_ELEMENT_ID]))
+    )
+  }
+
+  static isSelector(selector) {
+    return (
+      TypeUtils.isString(selector) ||
+      TypeUtils.has(selector, ['using', 'value']) ||
+      selector instanceof By
+    )
   }
 
   static equals(leftElement, rightElement) {
@@ -80,7 +99,14 @@ class WDIOElement extends EyesWrappedElement {
     return WDIOElement.equals(this, element)
   }
 
-  bind(driver) {
+  async init(driver) {
+    if (!this._element) {
+      const element = await driver.finder.findElement(this._selector)
+      if (!element) {
+        throw new Error('Could not get element from selector!')
+      }
+      this._element = element.unwrapped
+    }
     if (!this._driver) {
       this._driver = driver
       this._frameChain = driver.context.frameChain
@@ -157,26 +183,21 @@ class WDIOElement extends EyesWrappedElement {
     return propertyNames.length <= 1 ? properties[0] : properties
   }
 
-  async getOverflow() {
-    const overflow = await this.withRefresh(() =>
-      this._driver.executor.executeScript(`return arguments[0].style.overflow;`, this),
-    )
-    return overflow || null
-  }
-
-  async setOverflow(overflow) {
-    return this.withRefresh(() =>
-      this._driver.executor.executeScript(`arguments[0].style.overflow = '${overflow}'`, this),
-    )
-  }
-
-  async scrollTo(location) {
-    return this.withRefresh(() =>
-      this._driver.executor.executeScript(
-        `arguments[0].scrollLeft = ${location.getX()}; arguments[0].scrollTop = ${location.getY()};`,
+  async hideScrollbars() {
+    return this.withRefresh(async () => {
+      this._originalOverflow = await EyesUtils.setOverflow(
+        this._logger,
+        this._driver.executor,
+        'hidden',
         this,
-      ),
-    )
+      )
+    })
+  }
+
+  async restoreScrollbars() {
+    return this.withRefresh(async () => {
+      await EyesUtils.setOverflow(this._logger, this._driver.executor, this._originalOverflow, this)
+    })
   }
 
   async refresh(freshElement) {
@@ -218,4 +239,4 @@ class WDIOElement extends EyesWrappedElement {
   }
 }
 
-module.exports = LegacyAPIElement(WDIOElement)
+module.exports = WDIOElement
