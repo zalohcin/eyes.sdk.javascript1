@@ -3,7 +3,7 @@ const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
 const {Target, Configuration, BrowserType} = require('../../../index')
 const appName = 'Eyes Selenium SDK - Special Characters Test'
 const batch = getBatch()
-describe(appName, () => {
+describe.skip(appName, () => {
   let browser, eyes, runner
   beforeEach(async () => {
     browser = await getDriver('CHROME')

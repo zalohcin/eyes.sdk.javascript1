@@ -1,18 +1,13 @@
 'use strict'
 const assert = require('assert')
+const {getDriver} = require('./util/TestSetup')
 const {remote} = require('webdriverio')
 const {Target, Configuration, BatchInfo, Eyes, VisualGridRunner} = require('../../../index')
 const batch = new BatchInfo('WebdriverIO 5 tests')
 describe('TestCounts', () => {
   let browser, eyes, runner
   beforeEach(async () => {
-    browser = await remote({
-      logLevel: 'silent',
-      capabilities: {
-        browserName: 'chrome',
-      },
-    })
-    // await browser.init()
+    browser = await getDriver('CHROME')
     await browser.url('https://applitools.com/helloworld')
     runner = new VisualGridRunner(10)
     eyes = new Eyes(runner)

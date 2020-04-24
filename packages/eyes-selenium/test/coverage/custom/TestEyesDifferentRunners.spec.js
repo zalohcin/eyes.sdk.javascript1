@@ -12,6 +12,7 @@ const {assertImages, getApiData} = require('./util/ApiAssertions')
 const assert = require('assert')
 const batch = getBatch()
 
+
 describe('TestEyesDifferentRunners', () => {
   let webDriver, eyes
 

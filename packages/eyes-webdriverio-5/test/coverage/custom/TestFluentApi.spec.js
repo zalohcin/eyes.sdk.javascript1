@@ -16,7 +16,7 @@ describe(appName, () => {
     await eyes.abortIfNotClosed()
   })
 
-  describe(`Test`, () => {
+  describe.skip(`Test`, () => {
     beforeEach(async () => {
       ;({eyes} = await getEyes('classic', StitchMode.CSS))
     })
@@ -99,7 +99,7 @@ describe(appName, () => {
     })
   })
 
-  describe(`Test_SCROLL`, () => {
+  describe.skip(`Test_SCROLL`, () => {
     beforeEach(async () => {
       ;({eyes} = await getEyes('classic', StitchMode.SCROLL))
     })

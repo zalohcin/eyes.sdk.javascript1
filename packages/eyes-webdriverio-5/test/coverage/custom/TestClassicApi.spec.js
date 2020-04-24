@@ -1,8 +1,8 @@
 'use strict'
 const {getDriver, getEyes} = require('./util/TestSetup')
-const {StitchMode, By} = require('../../../index')
+const {StitchMode, By, RectangleSize, BrowserType} = require('../../../index')
 const appName = 'Eyes Selenium SDK - Classic API'
-describe(appName, () => {
+describe.skip(appName, () => {
   let browser, eyes
 
   afterEach(async () => {
@@ -18,7 +18,7 @@ describe(appName, () => {
 
     it('TestCheckInnerFrame', async () => {
       eyes.hideScrollbars = false
-      let driver = await eyes.open(browser, appName, 'TestCheckInnerFrame')
+      let driver = await eyes.open(browser, appName, 'TestCheckInnerFrame', new RectangleSize(700, 460))
       await driver.executeScript(scrollTop)
       await driver.switchTo().defaultContent()
       let element = await driver.findElement(By.name('frame1'))
@@ -41,7 +41,7 @@ describe(appName, () => {
 
     it('TestCheckInnerFrame_SCROLL', async () => {
       eyes.hideScrollbars = false
-      let driver = await eyes.open(browser, appName, 'TestCheckInnerFrame_SCROLL')
+      let driver = await eyes.open(browser, appName, 'TestCheckInnerFrame_Scroll', new RectangleSize(700, 460))
       await driver.executeScript(scrollTop)
       await driver.switchTo().defaultContent()
       let element = await driver.findElement(By.name('frame1'))
@@ -60,14 +60,14 @@ describe(appName, () => {
       browser = await getDriver('CHROME')
       await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
       ;({eyes} = await getEyes('VG'))
+      let conf = eyes.getConfiguration()
+      conf.addBrowser(700, 460, BrowserType.CHROME)
+      eyes.setConfiguration(conf)
     })
 
     it('TestCheckInnerFrame_VG', async () => {
       eyes.hideScrollbars = false
-      let driver = await eyes.open(browser, appName, 'TestCheckInnerFrame_VG', {
-        width: 700,
-        height: 460,
-      })
+      let driver = await eyes.open(browser, appName, 'TestCheckInnerFrame_VG')
       await driver.executeScript(scrollTop)
       await driver.switchTo().defaultContent()
       let element = await driver.findElement(By.name('frame1'))

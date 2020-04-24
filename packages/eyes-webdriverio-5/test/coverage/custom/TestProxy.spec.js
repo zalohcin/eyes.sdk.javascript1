@@ -29,8 +29,8 @@ describe('TestProxy', () => {
       conf.setTestName('proxy test')
       eyes.setConfiguration(conf)
 
-      await eyes.open(browser)
       await browser.url('https://applitools.com/helloworld')
+      await eyes.open(browser)
       await eyes.checkWindow()
       await eyes.close()
       await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
