@@ -48,7 +48,7 @@ describe('ServerConnector', () => {
 
   // [trello] https://trello.com/c/qjmAw1Sc/160-storybook-receiving-an-inconsistent-typeerror
   it("doesn't throw exception on server failure", async () => {
-    const {port, close} = await fakeEyesServer({logger, hangUp: true})
+    const {port, close} = await startFakeEyesServer({logger, hangUp: true})
     try {
       const serverUrl = `http://localhost:${port}`
       const serverConnector = getServerConnector({serverUrl})
@@ -60,7 +60,7 @@ describe('ServerConnector', () => {
   })
 
   it('getUserAgents works', async () => {
-    const {port, close} = await fakeEyesServer({logger})
+    const {port, close} = await startFakeEyesServer({logger})
     try {
       const serverUrl = `http://localhost:${port}`
       const serverConnector = getServerConnector({serverUrl})

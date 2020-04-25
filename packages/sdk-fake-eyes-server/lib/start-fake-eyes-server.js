@@ -260,7 +260,10 @@ function startFakeEyesServer({
       }
     })
     if (runningSession) {
-      res.send(runningSession)
+      res.send({
+        ...runningSession,
+        id: runningSession.sessionId,
+      })
     } else {
       res.status(404).send()
     }

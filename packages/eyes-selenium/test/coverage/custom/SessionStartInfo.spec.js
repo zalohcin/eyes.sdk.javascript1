@@ -2,8 +2,7 @@
 
 const path = require('path')
 const assert = require('assert')
-const fetch = require('node-fetch')
-const {startFakeEyesServer} = require('@applitools/sdk-fake-eyes-server')
+const {startFakeEyesServer, getSession} = require('@applitools/sdk-fake-eyes-server')
 const {fakeDriverServer} = require('../../util/fake-driver-server')
 const {Eyes, Logger, Target, ConsoleLogHandler, TestResultsStatus} = require('../../../index')
 const {Builder} = require('selenium-webdriver')
@@ -67,13 +66,5 @@ describe('SessionStartInfo', () => {
     }
     eyes.setMatchTimeout(0)
     return eyes
-  }
-
-  async function getSession(testResults) {
-    const sessionUrl = `${serverUrl}/api/sessions/batches/${encodeURIComponent(
-      testResults.getBatchId(),
-    )}/${encodeURIComponent(testResults.getId())}`
-    const session = await fetch(sessionUrl).then(r => r.json())
-    return session
   }
 })
