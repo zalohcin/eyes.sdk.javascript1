@@ -5,45 +5,80 @@
  * @typedef {import('@applitools/eyes-common').Region} Region
  * @typedef {import('@applitools/eyes-common').Location} Location
  * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
+ * @typedef {import('./EyesWrappedDriver')} EyesWrappedDriver
  */
 
 /**
  * The object for which which is compatible with concrete {@link EyesWrappedElement} implementation
  * @typedef {Object} UnwrappedElement
- * @property {*}
+ * @property {?}
+ *
+ * The object which should be supported as a selector
+ * @typedef {Object} UniversalSelector
+ * @property {!string} UniversalSelector.using
+ * @property {!string} UniversalSelector.value
  */
 
 /**
  * An interface for element wrappers
- * @ignore
  * @interface
  */
 class EyesWrappedElement {
   /**
-   * Check if object could be wrapped with this class
-   * @param {Object} object
-   * @return {boolean} true - object could be wrapped with this class, otherwise - false
+   * Create partial wrapped element object from the element, this object need to be initialized before use
+   * @param {UnwrappedElement} element - unwrapped element object
+   * @return {EyesWrappedElement} partially wrapped object
    */
-  static isCompatible(object) {
+  static fromElement(element) {
     throw new TypeError('The method is not implemented!')
   }
+
+  /**
+   * Create partial wrapped element object from the selector, this object need to be initialized before use
+   * @param {UniversalSelector} selector - universal selector object or any kind of supported selector
+   * @return {EyesWrappedElement} partially wrapped object
+   */
+  static fromSelector(selector) {
+    throw new TypeError('The method is not implemented!')
+  }
+
+  /**
+   * Check if object could be wrapped with this class
+   * @param {*} element - object to check compatibility
+   * @return {boolean} true if object could be wrapped with this class, otherwise false
+   */
+  static isCompatible(element) {
+    throw new TypeError('The method is not implemented!')
+  }
+
+  /**
+   * Check if passed selector is supported by current implementation
+   * @param {*} selector
+   * @returns {boolean} true if selector is supported and could be passed in the {@link EyesWrappedElement.fromSelector} implementation
+   */
+  static isSelector(selector) {
+    throw new TypeError('The method is not implemented!')
+  }
+
   /**
    * Compare two elements, these elements could be an instances of this class or compatible objects
-   * @param {EyesWrappedElement|UnwrappedElement} leftElement
-   * @param {EyesWrappedElement|UnwrappedElement} rightElement
-   * @return {boolean} true - elements are equal, otherwise - false
+   * @param {EyesWrappedElement|UnwrappedElement} leftElement - element to compare
+   * @param {EyesWrappedElement|UnwrappedElement} rightElement - element to compare
+   * @return {boolean} true if elements are equal, false otherwise
    */
   static equals(leftElement, rightElement) {
     throw new TypeError('The method is not implemented!')
   }
+
   /**
    * Extract element ID from this class instance or compatible object
-   * @param {EyesWrappedElement|UnwrappedElement} element
+   * @param {EyesWrappedElement|UnwrappedElement} element - element to extract ID
    * @return {?string} if extraction is succeed returns ID of provided element, otherwise null
    */
   static elementId(element) {
     throw new TypeError('The method is not implemented!')
   }
+
   /**
    * Returns ID of the wrapped element
    * @return {string} ID of the wrapped element
@@ -51,6 +86,15 @@ class EyesWrappedElement {
   get elementId() {
     throw new TypeError('The method is not implemented!')
   }
+
+  /**
+   * Returns selector of the wrapped element
+   * @return {UniversalSelector} selector of the wrapped element
+   */
+  get selector() {
+    throw new TypeError('The method is not implemented!')
+  }
+
   /**
    * Returns unwrapped elements
    * @return {UnwrappedElement} unwrapped element
@@ -58,6 +102,17 @@ class EyesWrappedElement {
   get unwrapped() {
     throw new TypeError('The method is not implemented!')
   }
+
+  /**
+   * Initialize element created from {@link UnwrappedElement} or {@link UniversalSelector}
+   * or other kind of supported selector
+   * @param {EyesWrappedDriver} driver - instance of {@link EyesWrappedDriver} implementation
+   * @return {Promise<this>} initialized element
+   */
+  async init(driver) {
+    throw new TypeError('The method is not implemented!')
+  }
+
   /**
    * Returns element's rect related to context
    * @return {Promise<Region>} rect of the element
@@ -65,6 +120,7 @@ class EyesWrappedElement {
   async getRect() {
     throw new TypeError('The method is not implemented!')
   }
+
   /**
    * Returns element's bounds related to context
    * @return {Promise<Region>} bounds of the element
@@ -72,6 +128,7 @@ class EyesWrappedElement {
   async getBounds() {
     throw new TypeError('The method is not implemented!')
   }
+
   /**
    * Returns element's size
    * @return {Promise<RectangleSize>} size of the element
@@ -79,6 +136,7 @@ class EyesWrappedElement {
   async getSize() {
     throw new TypeError('The method is not implemented!')
   }
+
   /**
    * Returns element's location related to context
    * @return {Promise<Location>} location of the element
@@ -86,37 +144,40 @@ class EyesWrappedElement {
   async getLocation() {
     throw new TypeError('The method is not implemented!')
   }
+
   /**
    * Returns computed values for specified css properties
-   * @param  {...string} cssPropertyNames
+   * @param  {...string} cssPropertyNames - names of css properties
    * @return {Promise<string[]|string>} returns array of css values if multiple properties were specified,
    *  otherwise returns string
    */
   async getCssProperty(...cssPropertyNames) {
     throw new TypeError('The method is not implemented!')
   }
+
   /**
    * Returns values for specified element's properties
-   * @param  {...string} propertyNames
+   * @param  {...string} propertyNames - names of element properties
    * @return {Promise<*[]|*>} returns array of values if multiple properties were specified,
    *  otherwise returns value
    */
   async getProperty(...propertyNames) {
     throw new TypeError('The method is not implemented!')
   }
+
   /**
-   * Returns element's overflow from style attribute
-   * @return {Promise<?string>} returns element's overflow if it was specified, otherwise returns null
+   * Set overflow `hidden` in element's style attribute
+   * @return {Promise<?string>}
    */
-  async getOverflow() {
+  async hideScrollbars() {
     throw new TypeError('The method is not implemented!')
   }
+
   /**
-   * Set overflow in element's style attribute
-   * @param {?string} overflow
+   * Set original overflow in element's style attribute
    * @return {Promise<void>}
    */
-  async setOverflow(overflow) {
+  async restoreScrollbars() {
     throw new TypeError('The method is not implemented!')
   }
 }

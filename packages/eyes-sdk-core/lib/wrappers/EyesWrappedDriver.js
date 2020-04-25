@@ -2,15 +2,15 @@
 /* eslint-disable no-unused-vars */
 
 /**
- * @typedef {import('./EyesJsExecutor').EyesJsExecutor} EyesJsExecutor
- * @typedef {import('./EyesBrowsingContext').EyesBrowsingContext} EyesBrowsingContext
- * @typedef {import('./EyesElementFinder').EyesElementFinder} EyesElementFinder
+ * @typedef {import('./EyesJsExecutor')} EyesJsExecutor
+ * @typedef {import('./EyesBrowsingContext')} EyesBrowsingContext
+ * @typedef {import('./EyesElementFinder')} EyesElementFinder
+ * @typedef {import('./EyesDriverController')} EyesDriverController
  */
 
 /**
  * An interface for driver wrappers
  *
- * @ignore
  * @interface
  */
 class EyesWrappedDriver {
@@ -36,6 +36,12 @@ class EyesWrappedDriver {
    * @return {EyesElementFinder} implementation of element finder interface for specific SDK
    */
   get finder() {
+    throw new TypeError('The method is not implemented!')
+  }
+  /**
+   * @return {EyesDriverController} implementation of driver controller interface for specific SDK
+   */
+  get controller() {
     throw new TypeError('The method is not implemented!')
   }
 }

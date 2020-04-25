@@ -9,9 +9,15 @@ const EyesUtils = require('../EyesUtils')
  * @typedef {import('@applitools/eyes-common').Location} Location
  * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('../wrappers/EyesWrappedElement').UnwrappedElement} UnwrappedElement
+ * @typedef {import('../wrappers/EyesWrappedElement').UniversalSelector} UniversalSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
- *
- * @typedef {number|string|EyesWrappedElement} FrameReference
+ */
+
+/**
+ * Reference to the frame, index of the frame in the current context, name or id of the element,
+ * framework element object, {@link EyesWrappedElement} implementation object
+ * @typedef {number|string|UniversalSelector|UnwrappedElement|EyesWrappedElement} FrameReference
  */
 
 /**
