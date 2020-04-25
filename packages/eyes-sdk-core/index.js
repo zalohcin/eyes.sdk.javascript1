@@ -106,6 +106,7 @@ exports.ClassicRunner = require('./lib/runner/ClassicRunner').ClassicRunner
 exports.VisualGridRunner = require('./lib/runner/VisualGridRunner').VisualGridRunner
 exports.TestResultContainer = require('./lib/runner/TestResultContainer').TestResultContainer
 exports.TestResultsSummary = require('./lib/runner/TestResultsSummary').TestResultsSummary
+exports.showBrowserWarning = require('./lib/renderer/showBrowserWarning').showBrowserWarning
 
 // Classes from eyes-common which may be used as part of public API
 exports.AccessibilityLevel = common.AccessibilityLevel

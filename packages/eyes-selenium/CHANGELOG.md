@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- support edgelegacy, edgechromium, and edgechromium-one-version-back
 - added emulation devices
 - support typed selectors
 - support ignore, floating, strict, layout, content, accessibility regions for VG

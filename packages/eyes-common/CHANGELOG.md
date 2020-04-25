@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add EDGE_CHROMIUM, EDGE_LEGACY and EDGE_CHROMIUM_ONE_VERSION_BACK to `BrowserType`
 
 ## 3.21.1 - 2020/4/23
 

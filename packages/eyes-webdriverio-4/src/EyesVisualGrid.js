@@ -13,6 +13,7 @@ const {
   Configuration,
   RectangleSize,
   VisualGridRunner,
+  showBrowserWarning,
 } = require('@applitools/eyes-sdk-core')
 
 const {Target} = require('../index')
@@ -140,6 +141,7 @@ class EyesVisualGrid extends EyesBase {
       await this.setViewportSize(vs)
     }
 
+    showBrowserWarning(this._configuration.getBrowsersInfo())
     const {checkWindow, close, abort} = await openEyes(
       this._configuration.toOpenEyesConfiguration(),
     )

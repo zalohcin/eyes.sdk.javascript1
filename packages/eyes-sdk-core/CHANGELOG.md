@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add `showBrowserWarning` function for edge browser
 
 ## 9.1.2 - 2020/4/23
 

@@ -1,6 +1,7 @@
 'use strict'
 
 require('chromedriver')
+const util = require('util')
 const {expect} = require('chai')
 const {Builder, By} = require('selenium-webdriver')
 const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
@@ -106,6 +107,7 @@ describe('Multi version browsers in Visual Grid', () => {
       {width: 640, height: 480, name: BrowserType.CHROME_TWO_VERSIONS_BACK},
       {width: 640, height: 480, name: BrowserType.FIREFOX_TWO_VERSIONS_BACK},
       {width: 640, height: 480, name: BrowserType.SAFARI_TWO_VERSIONS_BACK},
+      {width: 640, height: 480, name: BrowserType.EDGE_CHROMIUM_ONE_VERSION_BACK},
     ]
     configuration.addBrowsers.apply(configuration, browsers)
     eyes.setConfiguration(configuration)
@@ -115,5 +117,33 @@ describe('Multi version browsers in Visual Grid', () => {
     await eyes.closeAsync()
     const results = await eyes.getRunner().getAllTestResults()
     expect(results._passed).to.equal(browsers.length)
+  })
+})
+
+describe('Miscellaneous VG tests', () => {
+  before(async () => {
+    driver = await buildDriver()
+  })
+
+  it("shows warning for 'edge'", async () => {
+    const origConsoleLog = console.log
+    const logOutput = []
+    console.log = (...args) => logOutput.push(util.format(...args))
+    const yellowStart = '\u001b[33m'
+    const yellowEnd = '\u001b[39m'
+    const edgeWarningText = `The 'EDGE' option that is being used in your browsers' configuration will soon be deprecated. Please change it to either "EDGE_LEGACY" for the legacy version or to "EDGE_CHROMIUM" for the new Chromium-based version.`
+    const edgeWarning = `${yellowStart}${edgeWarningText}${yellowEnd}`
+
+    try {
+      eyes = new Eyes(new VisualGridRunner())
+      const configuration = eyes.getConfiguration()
+      configuration.addBrowser(1000, 900, BrowserType.EDGE)
+      configuration.addBrowser(1000, 900, BrowserType.FIREFOX)
+      eyes.setConfiguration(configuration)
+      await eyes.open(driver, 'some app', 'some test', {width: 800, height: 600})
+      expect(logOutput).to.eql([edgeWarning])
+    } finally {
+      console.log = origConsoleLog
+    }
   })
 })
