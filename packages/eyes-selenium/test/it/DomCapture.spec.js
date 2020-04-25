@@ -5,7 +5,7 @@ const {expect} = require('chai')
 const {EyesSelenium, Target, Logger, ConsoleLogHandler} = require('../../')
 const {Builder, By} = require('selenium-webdriver')
 const {Options} = require('selenium-webdriver/chrome')
-const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
+const {startFakeEyesServer} = require('@applitools/sdk-fake-eyes-server')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 const path = require('path')
 const fetch = require('node-fetch')
@@ -26,7 +26,7 @@ describe('DOM Capture', () => {
       fs.mkdirSync(expectedFolder)
     }
 
-    const {port, close} = await fakeEyesServer({
+    const {port, close} = await startFakeEyesServer({
       logger,
       updateFixtures: true,
       expectedFolder,
@@ -51,7 +51,7 @@ describe('DOM Capture', () => {
     await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   })
 
-  it('gets the correct coordinates when taking a viewport screenshot and not scrolled', async () => {
+  it.only('gets the correct coordinates when taking a viewport screenshot and not scrolled', async () => {
     await eyes.open(driver, 'DOM capture', 'viewport 0,0', {
       width: 500,
       height: 500,
@@ -60,7 +60,7 @@ describe('DOM Capture', () => {
     await driver.executeScript('window.scrollTo(0,0)')
     await eyes.check('', Target.window())
     const testResults = await eyes.close()
-    const runningSession = await getRunningSession(testResults.getId())
+    const runningSession = await getSession(testResults)
     const dom = await getDom(runningSession)
     expect(dom.rect.top).to.equal(0)
     expect(dom.rect.left).to.equal(0)
@@ -175,6 +175,14 @@ describe('DOM Capture', () => {
     ).then(r => r.buffer())
 
     return JSON.parse(zlib.unzipSync(compressedDom).toString())
+  }
+
+  async function getSession(testResults) {
+    const sessionUrl = `${serverUrl}/api/sessions/batches/${encodeURIComponent(
+      testResults.getBatchId(),
+    )}/${encodeURIComponent(testResults.getId())}`
+    const session = await fetch(sessionUrl).then(r => r.json())
+    return session
   }
 
   // TODO this should be a central utility also for production code (well, modified for cross browser compat and optimize to get also dimensions), not only tests!

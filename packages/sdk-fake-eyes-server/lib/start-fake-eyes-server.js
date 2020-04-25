@@ -9,7 +9,13 @@ const filenamify = require('filenamify')
 const uuid = require('uuid/v4')
 const fetch = require('node-fetch')
 
-function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console, hangUp} = {}) {
+function startFakeEyesServer({
+  expectedFolder,
+  updateFixtures,
+  port,
+  logger = console,
+  hangUp,
+} = {}) {
   const runningSessions = {}
   let serverUrl
   let renderCounter = 0
@@ -340,4 +346,4 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
   })
 }
 
-module.exports = fakeEyesServer
+module.exports = {startFakeEyesServer}

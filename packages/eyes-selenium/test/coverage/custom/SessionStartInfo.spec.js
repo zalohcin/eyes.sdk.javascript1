@@ -3,7 +3,7 @@
 const path = require('path')
 const assert = require('assert')
 const fetch = require('node-fetch')
-const fakeEyesServer = require('@applitools/sdk-fake-eyes-server')
+const {startFakeEyesServer} = require('@applitools/sdk-fake-eyes-server')
 const {fakeDriverServer} = require('../../util/fake-driver-server')
 const {Eyes, Logger, Target, ConsoleLogHandler, TestResultsStatus} = require('../../../index')
 const {Builder} = require('selenium-webdriver')
@@ -15,7 +15,7 @@ describe('SessionStartInfo', () => {
   let server, serverUrl, driver
 
   before(async () => {
-    server = await fakeEyesServer({
+    server = await startFakeEyesServer({
       logger,
       expectedFolder: fixturesPath,
       updateFixtures: process.env.APPLITOOLS_UPDATE_FIXTURES,

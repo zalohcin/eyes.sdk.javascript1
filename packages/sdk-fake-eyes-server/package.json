@@ -11,7 +11,7 @@
   "bin": {
     "fake-eyes-server": "./scripts/run-fake-eyes-server.js"
   },
-  "main": "lib/sdk-fake-eyes-server.js",
+  "main": "sdk-fake-eyes-server.js",
   "directories": {
     "lib": "lib",
     "test": "test"
