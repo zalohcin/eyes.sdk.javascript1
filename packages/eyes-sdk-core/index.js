@@ -125,11 +125,11 @@ exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus
 exports.FrameChain = require('./lib/frames/FrameChain')
 exports.FrameFactory = require('./lib/frames/Frame')
 
-exports.EyesWrappedDriver = require('./lib/wrappers/EyesWrappedDriver').EyesWrappedDriver
-exports.EyesWrappedElement = require('./lib/wrappers/EyesWrappedElement').EyesWrappedElement
-exports.EyesJsExecutor = require('./lib/wrappers/EyesJsExecutor').EyesJsExecutor
-exports.EyesElementFinder = require('./lib/wrappers/EyesElementFinder').EyesElementFinder
-exports.EyesBrowsingContext = require('./lib/wrappers/EyesBrowsingContext').EyesBrowsingContext
+exports.EyesWrappedDriver = require('./lib/wrappers/EyesWrappedDriver')
+exports.EyesWrappedElement = require('./lib/wrappers/EyesWrappedElement')
+exports.EyesJsExecutor = require('./lib/wrappers/EyesJsExecutor')
+exports.EyesElementFinder = require('./lib/wrappers/EyesElementFinder')
+exports.EyesBrowsingContext = require('./lib/wrappers/EyesBrowsingContext')
 
 exports.EyesRunner = require('./lib/runner/EyesRunner').EyesRunner
 exports.ClassicRunner = require('./lib/runner/ClassicRunner').ClassicRunner

@@ -121,4 +121,4 @@ class EyesWrappedElement {
   }
 }
 
-exports.EyesWrappedElement = EyesWrappedElement
+module.exports = EyesWrappedElement

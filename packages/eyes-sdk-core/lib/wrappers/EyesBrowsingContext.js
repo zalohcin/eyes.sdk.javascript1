@@ -71,4 +71,4 @@ class EyesBrowsingContext {
   }
 }
 
-exports.EyesBrowsingContext = EyesBrowsingContext
+module.exports = EyesBrowsingContext

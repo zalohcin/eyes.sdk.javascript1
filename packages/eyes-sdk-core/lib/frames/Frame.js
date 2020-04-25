@@ -8,27 +8,35 @@ const EyesUtils = require('../EyesUtils')
  * @typedef {import('@applitools/eyes-common').Logger} Logger
  * @typedef {import('@applitools/eyes-common').Location} Location
  * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
- * @typedef {import('../wrappers/EyesWrappedElement').EyesWrappedElement} EyesWrappedElement
+ * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ *
+ * @typedef {number|string|EyesWrappedElement} FrameReference
  */
 
 /**
- * Encapsulates a frame/iframe. This is a generic type class,
- * and it's actual type is determined by the element used by the user in
- * order to switch into the frame.
+ * Factory which bind {@link Frame} class to the specific {@link EyesWrappedElement} implementation
+ * @param {EyesWrappedElement} WrappedElement - implementation of {@link EyesWrappedElement}
+ * @return specific {@link Frame} class bound to {@link EyesWrappedElement} implementation
  */
 function FrameFactory(WrappedElement) {
+  /**
+   * Encapsulates a frame/iframe. This is a generic type class,
+   * and it's actual type is determined by the element used by the user in
+   * order to switch into the frame.
+   */
   return class Frame {
     /**
      * Create frame from components
-     * @param {Logger} logger logger instance.
-     * @param {EyesWebDriver} deriver frame components
-     * @param {Object} frame frame components
-     * @param {EyesWrappedElement} frame.element frame element, used as a element to switch into the frame.
-     * @param {Location} frame.location location of the frame within the current frame.
-     * @param {RectangleSize} frame.size frame element size (i.e., the size of the frame on the screen, not the internal document size).
-     * @param {RectangleSize} frame.innerSize The frame element inner size (i.e., the size of the frame actual size, without borders).
-     * @param {Location} frame.originalLocation The scroll location of the frame.
-     * @param {string} frame.scrollRootElement The scroll root element.
+     * @param {Logger} logger - logger instance
+     * @param {EyesWrappedDriver} driver - wrapped driver
+     * @param {Object} frame - frame components
+     * @param {EyesWrappedElement} frame.element - frame element, used as a element to switch into the frame
+     * @param {Location} frame.location - location of the frame within the current frame
+     * @param {RectangleSize} frame.size - frame element size (i.e., the size of the frame on the screen, not the internal document size)
+     * @param {RectangleSize} frame.innerSize - frame element inner size (i.e., the size of the frame actual size, without borders)
+     * @param {Location} frame.parentScrollLocation - scroll location of the frame
+     * @param {EyesWrappedElement} frame.scrollRootElement - scroll root element
      */
     constructor(logger, driver, frame) {
       if (frame instanceof Frame) {
@@ -45,13 +53,13 @@ function FrameFactory(WrappedElement) {
           'location',
           'size',
           'innerSize',
-          'originalLocation',
+          'parentScrollLocation',
         ])
         this._element = frame.element
         this._location = frame.location
         this._size = frame.size
         this._innerSize = frame.innerSize
-        this._originalLocation = frame.originalLocation
+        this._parentScrollLocation = frame.parentScrollLocation
         this._scrollRootElement =
           frame.scrollRootElement ||
           WrappedElement.fromSelector({using: 'css selector', value: 'html'})
@@ -64,12 +72,23 @@ function FrameFactory(WrappedElement) {
       }
     }
 
+    /**
+     * Construct frame reference object which could be later initialized to the full frame object
+     * @param {FrameReference} reference - reference to the frame on its parent context
+     * @param {EyesWrappedElement} scrollRootElement - scroll root element
+     * @return {Frame} frame reference object
+     */
     static fromReference(reference, scrollRootElement) {
       const frame = new Frame(null, null, reference)
       frame.scrollRootElement = scrollRootElement
       return frame
     }
 
+    /**
+     * Check value for belonging to the {@link FrameReference} type
+     * @param {*} reference - value to check if is it a reference
+     * @return {boolean} true if value is a valid reference, otherwise false
+     */
     static isReference(reference) {
       return (
         TypeUtils.isInteger(reference) ||
@@ -80,6 +99,12 @@ function FrameFactory(WrappedElement) {
       )
     }
 
+    /**
+     * Equality check for two frame objects or frame elements
+     * @param {Frame|EyesWrappedDriver} leftFrame - frame object or frame element
+     * @param {Frame|EyesWrappedDriver} rightFrame - frame object or frame element
+     * @return true if frames are described the same frame element, otherwise false
+     */
     static equals(leftFrame, rightFrame) {
       let leftElement = null
       if (leftFrame instanceof Frame) leftElement = leftFrame.element
@@ -123,8 +148,8 @@ function FrameFactory(WrappedElement) {
     /**
      * @return {Location}
      */
-    get originalLocation() {
-      return this._originalLocation
+    get parentScrollLocation() {
+      return this._parentScrollLocation
     }
 
     /**
@@ -134,12 +159,21 @@ function FrameFactory(WrappedElement) {
       return this._scrollRootElement
     }
 
-    set scrollRootElement(element) {
-      if (element) {
-        this._scrollRootElement = element
+    /**
+     * @param {!EyesWrappedElement} scrollRootElement
+     */
+    set scrollRootElement(scrollRootElement) {
+      if (scrollRootElement) {
+        this._scrollRootElement = scrollRootElement
       }
     }
 
+    /**
+     * Initialize frame reference by finding frame element and calculate metrics
+     * @param {Logger} logger - logger instance
+     * @param {EyesWrappedDriver} driver - wrapped driver targeted on parent context
+     * @return {this} initialized frame object
+     */
     async init(logger, driver) {
       if (this._element) return this
       this._logger = logger
@@ -184,12 +218,16 @@ function FrameFactory(WrappedElement) {
       return this.refresh()
     }
 
+    /**
+     * Recalculate frame object metrics. Driver should be targeted on a parent context
+     * @return {this} this frame object
+     */
     async refresh() {
       const [
         rect,
         [clientWidth, clientHeight],
         [borderLeftWidth, borderTopWidth],
-        originalLocation,
+        parentScrollLocation,
       ] = await Promise.all([
         this._element.getRect(),
         this._element.getProperty('clientWidth', 'clientHeight'),
@@ -203,12 +241,16 @@ function FrameFactory(WrappedElement) {
         Math.round(rect.getLeft() + Number.parseFloat(borderLeftWidth)),
         Math.round(rect.getTop() + Number.parseFloat(borderTopWidth)),
       )
-      this._originalLocation = originalLocation
+      this._parentScrollLocation = parentScrollLocation
       return this
     }
 
+    /**
+     * Create reference from current frame object
+     * @return {Frame} frame reference object
+     */
     toReference() {
-      return Frame.fromReference(this._element, this._scrollRootElement)
+      return Frame.fromReference(this._element || this._reference, this._scrollRootElement)
     }
 
     /**

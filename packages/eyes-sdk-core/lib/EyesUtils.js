@@ -235,8 +235,7 @@ async function getMobilePixelRatio(_logger, {controller}, viewportSize) {
 }
 
 async function getTopContextScrollLocation(logger, {context, executor}) {
-  // TODO I think we can use here Frame::originalLocation which is the scroll location
-  // of the parent element in the moment of changing context
+  // TODO I think we can use here Frame::parentScrollLocation
   return context.framesSwitchAndReturn(null, async () => getScrollLocation(logger, executor))
 }
 

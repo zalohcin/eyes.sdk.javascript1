@@ -890,7 +890,7 @@ class EyesWDIO extends EyesBase {
       // Save the current frame path.
       const originalFramePosition =
         originalFrameChain.size > 0
-          ? originalFrameChain.getTopFrameScrollLocation()
+          ? originalFrameChain.first.parentScrollLocation
           : new Location(Location.ZERO)
 
       await this._context.frameDefault()

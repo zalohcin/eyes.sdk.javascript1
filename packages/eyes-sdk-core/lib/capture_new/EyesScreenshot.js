@@ -154,10 +154,10 @@ class EyesScreenshot {
       this._frameLocationInScreenshot = this._frameChain.getCurrentFrameLocationInViewport()
       if (this._screenshotType === ScreenshotType.ENTIRE_FRAME) {
         this._frameLocationInScreenshot = this._frameLocationInScreenshot.offsetByLocation(
-          this._frameChain.getTopFrameScrollLocation(),
+          this._frameChain.first.parentScrollLocation,
         )
       }
-      this._frameSize = this._frameChain.getCurrentFrameInnerSize()
+      this._frameSize = this._frameChain.current.innerSize
     } else {
       this._frameLocationInScreenshot = frameLocationInScreenshot || Location.ZERO
       // get entire page size might throw an exception for applications which don't support Javascript (e.g., Appium).

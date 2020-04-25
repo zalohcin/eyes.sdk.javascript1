@@ -40,4 +40,4 @@ class EyesWrappedDriver {
   }
 }
 
-exports.EyesWrappedDriver = EyesWrappedDriver
+module.exports = EyesWrappedDriver

@@ -74,7 +74,7 @@ class SafariScreenshotImageProvider extends ImageProvider {
       const frameChain = this._driver.context.frameChain
       let loc =
         frameChain.size > 0
-          ? frameChain.getTopFrameScrollLocation()
+          ? frameChain.first.parentScrollLocation
           : await EyesUtils.getScrollLocation(this._logger, this._driver.executor).catch(
               () => Location.ZERO,
             )

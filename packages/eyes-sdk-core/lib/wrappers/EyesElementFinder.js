@@ -46,4 +46,4 @@ class EyesElementFinder {
   }
 }
 
-exports.EyesElementFinder = EyesElementFinder
+module.exports = EyesElementFinder

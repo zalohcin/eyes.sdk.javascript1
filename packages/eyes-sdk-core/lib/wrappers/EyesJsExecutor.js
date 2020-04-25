@@ -32,4 +32,4 @@ class EyesJsExecutor {
   }
 }
 
-exports.EyesJsExecutor = EyesJsExecutor
+module.exports = EyesJsExecutor
