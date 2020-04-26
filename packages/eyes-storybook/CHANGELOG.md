@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- support edgelegacy, edgechromium, and edgechromium-one-version-back
 
 ## 3.4.0 - 2020/4/1
 
