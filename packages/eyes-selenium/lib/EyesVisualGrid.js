@@ -10,7 +10,6 @@ const {
   CorsIframeHandle,
   CorsIframeHandler,
   VisualGridRunner,
-  showBrowserWarning,
 } = require('@applitools/eyes-sdk-core')
 
 const {Eyes} = require('./Eyes')
@@ -104,7 +103,6 @@ class EyesVisualGrid extends Eyes {
       }
     }
 
-    showBrowserWarning(this._configuration.getBrowsersInfo())
     const {checkWindow, close, abort} = await openEyes(
       this._configuration.toOpenEyesConfiguration(),
     )
