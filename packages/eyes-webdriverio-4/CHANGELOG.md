@@ -3,6 +3,11 @@
 ## Unreleased
 
 - support edgelegacy, edgechromium, and edgechromium-one-version-back
+- added emulation devices
+- updated to @applitools/dom-utils@4.7.12
+- updated to @applitools/eyes-sdk-core@9.1.2
+- updated to @applitools/visual-grid-client@13.6.15
+
 
 ## 2.12.9 - 2020/4/22
 
