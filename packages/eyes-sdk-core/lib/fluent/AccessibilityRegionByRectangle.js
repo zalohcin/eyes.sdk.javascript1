@@ -36,7 +36,7 @@ class AccessibilityRegionByRectangle extends GetAccessibilityRegion {
     return [accessibilityRegion]
   }
 
-  async toPersistedRegions(_driver) {
+  async toPersistedRegions() {
     return [
       {
         left: this._rect.getLeft(),

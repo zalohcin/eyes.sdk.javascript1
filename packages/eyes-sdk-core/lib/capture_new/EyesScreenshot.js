@@ -4,9 +4,9 @@ const {
   ArgumentGuard,
   BrowserNames,
   CoordinatesType,
-  Region,
   Location,
   RectangleSize,
+  Region,
 } = require('@applitools/eyes-common')
 const CoordinatesTypeConversionError = require('../errors/CoordinatesTypeConversionError')
 const OutOfBoundsError = require('../errors/OutOfBoundsError')
@@ -14,21 +14,30 @@ const FrameChain = require('../frames/FrameChain')
 const EyesUtils = require('../EyesUtils')
 
 /**
+ * @typedef {import('@applitools/eyes-common').Logger} Logger
+ * @typedef {import('@applitools/eyes-common').MutableImage} MutableImage
+ * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
+ */
+
+/**
  * @readonly
  * @enum {number}
  */
-const ScreenshotType = {
+const ScreenshotType = Object.freeze({
   VIEWPORT: 1,
   ENTIRE_FRAME: 2,
-}
+})
 
+/**
+ * Class for handling screenshots.
+ */
 class EyesScreenshot {
   /**
-   * !WARNING! After creating new instance of EyesScreenshot, it should be initialized by calling to init or initFromFrameSize method
-   *
-   * @param {Logger} logger A Logger instance.
-   * @param {Eyes} eyes The web eyes used to get the screenshot.
-   * @param {MutableImage} image The actual screenshot image.
+   * !WARNING! After creating new instance of EyesScreenshot, it should be initialized by calling
+   * to init or initFromFrameSize method
+   * @param {Logger} logger - logger instance
+   * @param {Eyes} eyes - web eyes used to get the screenshot
+   * @param {MutableImage} image - actual screenshot image
    */
   constructor(logger, eyes, image) {
     ArgumentGuard.notNull(logger, 'logger')
@@ -46,27 +55,24 @@ class EyesScreenshot {
     /**
      * The top/left coordinates of the frame window(!) relative to the top/left
      * of the screenshot. Used for calculations, so can also be outside(!) the screenshot.
-     *
      * @type {Location}
      */
     this._frameLocationInScreenshot = null
-
+    /** @type {RectangleSize} */
     this._frameSize = null
-
     /**
      * The top/left coordinates of the frame window(!) relative to the top/left
      * of the screenshot. Used for calculations, so can also be outside(!) the screenshot.
-     *
      * @type {Region}
      */
     this._frameRect = null
   }
 
   /**
-   * @private
-   * @param {ScreenshotType} screenshotType
-   * @param {MutableImage} image
-   * @return {Promise.<ScreenshotType>}
+   * Detect screenshot type of image
+   * @param {MutableImage} image - actual screenshot image
+   * @param {Eyes} eyes - eyes instance used to get the screenshot
+   * @return {Promise<ScreenshotType>}
    */
   static async getScreenshotType(image, eyes) {
     let viewportSize = await eyes.getViewportSize()
@@ -90,12 +96,11 @@ class EyesScreenshot {
   }
 
   /**
-   * Creates a frame(!) window screenshot.
-   *
-   * @param {Logger} logger A Logger instance.
-   * @param {EyesWDIO} eyes The eyes instance used to get the screenshot.
-   * @param {MutableImage} image The actual screenshot image.
-   * @param {RectangleSize} entireFrameSize The full internal size of the frame.
+   * Creates a frame(!) window screenshot
+   * @param {Logger} logger - logger instance
+   * @param {Eyes} eyes - eyes instance used to get the screenshot
+   * @param {MutableImage} image - actual screenshot image
+   * @param {RectangleSize} entireFrameSize - full internal size of the frame
    * @return {Promise<EyesScreenshot>}
    */
   static async fromFrameSize(logger, eyes, image, entireFrameSize) {
@@ -104,13 +109,12 @@ class EyesScreenshot {
   }
 
   /**
-   * Creates a frame(!) window screenshot from screenshot type and location.
-   *
-   * @param {Logger} logger A Logger instance.
-   * @param {EyesWDIO} eyes The eyes instance used to get the screenshot.
-   * @param {MutableImage} image The actual screenshot image.
-   * @param {ScreenshotType} [screenshotType] The screenshot's type (e.g., viewport/full page).
-   * @param {Location} [frameLocationInScreenshot[ The current frame's location in the screenshot.
+   * Creates a frame(!) window screenshot from screenshot type and location
+   * @param {Logger} logger - Logger instance
+   * @param {Eyes} eyes - eyes instance used to get the screenshot
+   * @param {MutableImage} image - actual screenshot image
+   * @param {ScreenshotType} [screenshotType] - screenshot's type (e.g., viewport/full page)
+   * @param {Location} [frameLocationInScreenshot] - current frame's location in the screenshot
    * @return {Promise<EyesScreenshot>}
    */
   static async fromScreenshotType(logger, eyes, image, screenshotType, frameLocationInScreenshot) {
@@ -120,8 +124,7 @@ class EyesScreenshot {
 
   /**
    * Creates a frame(!) window screenshot.
-   *
-   * @param {RectangleSize} entireFrameSize The full internal size of the frame.
+   * @param {RectangleSize} entireFrameSize - full internal size of the frame
    * @return {Promise<EyesScreenshot>}
    */
   async initFromFrameSize(entireFrameSize) {
@@ -136,8 +139,8 @@ class EyesScreenshot {
   }
 
   /**
-   * @param {ScreenshotType} [screenshotType] The screenshot's type (e.g., viewport/full page).
-   * @param {Location} [frameLocationInScreenshot] The current frame's location in the screenshot.
+   * @param {ScreenshotType} [screenshotType] - screenshot's type (e.g., viewport/full page)
+   * @param {Location} [frameLocationInScreenshot] - current frame's location in the screenshot
    * @return {Promise<EyesScreenshot>}
    */
   async init(screenshotType, frameLocationInScreenshot) {
@@ -179,28 +182,27 @@ class EyesScreenshot {
   }
 
   /**
-   * @return {MutableImage} - the screenshot image.
+   * @return {MutableImage} - screenshot image
    */
   getImage() {
     return this._image
   }
 
   /**
-   * @return {Region} The region of the frame which is available in the screenshot, in screenshot coordinates.
+   * @return {Region} - region of the frame which is available in the screenshot, in screenshot coordinates
    */
   getFrameWindow() {
     return this._frameRect
   }
 
   /**
-   * @return {FrameChain} A copy of the frame chain which was available when the screenshot was created.
+   * @return {FrameChain} - copy of the frame chain which was available when the screenshot was created
    */
   getFrameChain() {
     return new FrameChain(this._logger, this._frameChain)
   }
 
   /**
-   * @override
    * @param {Location} location
    * @param {CoordinatesType} coordinatesType
    * @return {Location}
@@ -222,7 +224,6 @@ class EyesScreenshot {
   }
 
   /**
-   * @override
    * @param {Region} region
    * @param {CoordinatesType} resultCoordinatesType
    * @return {Region}
@@ -272,11 +273,10 @@ class EyesScreenshot {
   }
 
   /**
-   *
-   * @param {Region} region The region which location's coordinates needs to be converted.
-   * @param {CoordinatesType} from The current coordinates type for {@code region}.
-   * @param {CoordinatesType} to The target coordinates type for {@code region}.
-   * @return {Region} A new region which is the transformation of {@code region} to the {@code to} coordinates type.
+   * @param {Region} region - region which location's coordinates needs to be converted.
+   * @param {CoordinatesType} from - current coordinates type for {@code region}.
+   * @param {CoordinatesType} to - target coordinates type for {@code region}.
+   * @return {Region} new region which is the transformation of {@code region} to the {@code to} coordinates type.
    */
   convertRegionLocation(region, from, to) {
     ArgumentGuard.notNull(region, 'region')
@@ -295,12 +295,10 @@ class EyesScreenshot {
 
   /**
    * Converts a location's coordinates with the {@code from} coordinates type to the {@code to} coordinates type.
-   *
-   * @override
-   * @param {Location} location The location which coordinates needs to be converted.
-   * @param {CoordinatesType} from The current coordinates type for {@code location}.
-   * @param {CoordinatesType} to The target coordinates type for {@code location}.
-   * @return {Location} A new location which is the transformation of {@code location} to the {@code to} coordinates type.
+   * @param {Location} location - location which coordinates needs to be converted.
+   * @param {CoordinatesType} from - current coordinates type for {@code location}.
+   * @param {CoordinatesType} to - target coordinates type for {@code location}.
+   * @return {Location} new location which is the transformation of {@code location} to the {@code to} coordinates type.
    */
   convertLocation(location, from, to) {
     ArgumentGuard.notNull(location, 'location')
@@ -419,9 +417,8 @@ class EyesScreenshot {
 
   /**
    * Gets the elements region in the screenshot.
-   *
-   * @param {WDIOElement} element The element which region we want to intersect.
-   * @return {Promise.<Region>} The intersected region, in {@code SCREENSHOT_AS_IS} coordinates type.
+   * @param {EyesWrappedElement} element - element which region we want to intersect.
+   * @return {Promise<Region>} intersected region, in {@code SCREENSHOT_AS_IS} coordinates type.
    */
   async getIntersectedRegionFromElement(element) {
     ArgumentGuard.notNull(element, 'element')
@@ -444,11 +441,9 @@ class EyesScreenshot {
 
   /**
    * Returns a part of the screenshot based on the given region.
-   *
-   * @override
-   * @param {Region} region The region for which we should get the sub screenshot.
-   * @param {Boolean} throwIfClipped Throw an EyesException if the region is not fully contained in the screenshot.
-   * @return {Promise<EyesScreenshot>} A screenshot instance containing the given region.
+   * @param {Region} region - region for which we should get the sub screenshot.
+   * @param {Boolean} throwIfClipped - throw an EyesException if the region is not fully contained in the screenshot.
+   * @return {Promise<EyesScreenshot>} screenshot instance containing the given region.
    */
   async getSubScreenshot(region, throwIfClipped) {
     this._logger.verbose(`getSubScreenshot([${region}], ${throwIfClipped})`)
@@ -483,5 +478,5 @@ class EyesScreenshot {
   }
 }
 
-EyesScreenshot.ScreenshotType = Object.freeze(ScreenshotType)
+EyesScreenshot.ScreenshotType = ScreenshotType
 module.exports = EyesScreenshot

@@ -4,6 +4,11 @@ const {CoordinatesType, AccessibilityMatchSettings} = require('@applitools/eyes-
 const {GetAccessibilityRegion} = require('./GetAccessibilityRegion')
 const EyesUtils = require('../EyesUtils')
 
+/**
+ * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ */
+
 class AccessibilityRegionBySelector extends GetAccessibilityRegion {
   /**
    * @param {By} regionSelector
@@ -44,6 +49,9 @@ class AccessibilityRegionBySelector extends GetAccessibilityRegion {
     return regions
   }
 
+  /**
+   * @param {EyesWrappedDriver} driver
+   */
   async toPersistedRegions(driver) {
     const regions = await EyesUtils.locatorToPersistedRegions(
       driver._logger,

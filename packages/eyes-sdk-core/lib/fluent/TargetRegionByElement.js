@@ -11,7 +11,7 @@ const EYES_SELECTOR_TAG = 'data-eyes-selector'
  */
 class TargetSelectorByElement extends GetSelector {
   /**
-   * @param {WDIOElement|object} element
+   * @param {EyesWrappedElement} element
    */
   constructor(element) {
     super()
