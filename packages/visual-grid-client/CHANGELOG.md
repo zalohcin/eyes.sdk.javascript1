@@ -2,9 +2,12 @@
 
 ## Unreleased
 
+
+
+## 13.7.0 - 2020/4/26
+
 - support edgelegacy, edgechromium, and edgechromium-one-version-back
 - updated to @applitools/eyes-sdk-core@9.2.0
-
 
 ## 13.6.15 - 2020/4/23
 
