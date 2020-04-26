@@ -65,6 +65,7 @@ npx eyes-storybook
     - [ignore](#ignoreRegions)
     <!-- - [accessibility](#accessibility) -->
     - [runBefore](#runBefore)
+    - [scriptHooks](#scriptHooks)
 - [Running Eyes-Storybook in Docker](#Running-Eyes-Storybook-in-Docker)
 - [Dealing with dynamic data](#Dealing-with-dynamic-data)
 - [Troubleshooting](#Troubleshooting)
@@ -500,6 +501,29 @@ storiesOf('UI components', module)
     },
   })
 ```
+
+### `scriptHooks`
+
+A set of scripts to be run by the browser during the rendering. It is intended to be used as a means to alter the page's state and structure at the time of rendering. 
+An object with the following properties:
+
+  #### beforeCaptureScreenshot 
+  A script that runs after the page is loaded but before taking the screenshot. For example:
+
+
+  ```js
+  storiesOf('Components', module)
+    .add(
+      'Some story',
+      () =>
+        <div>Some Story</div>, { 
+          eyes: { 
+            scriptHooks: {
+              beforeCaptureScreenshot: "document.body.style.backgroundColor = 'gold'"
+            }
+          }
+        })
+  ```
 
 ## Running Eyes-Storybook in Docker
 
