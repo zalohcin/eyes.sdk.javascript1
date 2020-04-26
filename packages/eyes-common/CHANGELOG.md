@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix bug with config: handle configPath (including env var) as full path to config file
 
 ## 3.22.0 - 2020/4/26
 
