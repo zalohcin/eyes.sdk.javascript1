@@ -19,7 +19,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "repository": "https://github.com/applitools/eyes.sdk.javascript1",
   "dependencies": {
-    "@applitools/dom-utils": "4.7.12",
+    "@applitools/dom-utils": "4.7.13",
     "@applitools/eyes-sdk-core": "9.2.0",
     "@applitools/visual-grid-client": "13.7.0",
     "css": "2.2.4",
