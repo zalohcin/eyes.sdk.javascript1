@@ -7,7 +7,8 @@ const WDIOJSExecutor = require('../../src/wrappers/WDIOJSExecutor')
 const {Logger} = require('../../index')
 
 describe('WDIODriver', function() {
-  let logger, browser
+  let logger,
+    browser = {}
 
   before(async () => {
     logger = new Logger(false)
