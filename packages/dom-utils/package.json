@@ -1,6 +1,6 @@
 {
   "name": "@applitools/dom-utils",
-  "version": "4.7.12",
+  "version": "4.7.13",
   "description": "Applitools DOM Utils is a shared utility package",
   "keywords": [
     "dom-utils",
