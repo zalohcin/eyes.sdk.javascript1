@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.10.0 - 2020/4/26
+
 - support edgelegacy, edgechromium, and edgechromium-one-version-back
 - updated to @applitools/dom-snapshot@3.4.5
 - updated to @applitools/eyes-sdk-core@9.2.1
