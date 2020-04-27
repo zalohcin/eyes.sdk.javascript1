@@ -48,7 +48,11 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
    * @param {EyesWrappedDriver} driver
    */
   async toPersistedRegions(driver) {
-    const xpath = await EyesUtils.getElementXpath(driver._logger, driver.executor, this._element)
+    const xpath = await EyesUtils.getElementAbsoluteXpath(
+      driver._logger,
+      driver.executor,
+      this._element,
+    )
     return [
       {
         type: 'xpath',

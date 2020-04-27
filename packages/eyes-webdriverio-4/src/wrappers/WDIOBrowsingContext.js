@@ -108,35 +108,37 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async framesRefresh() {
-    let frameInfo = await EyesUtils.getCurrentFrameInfo(this._logger, this._driver.executor)
-    if (frameInfo.isRoot) {
+    let contextInfo = await EyesUtils.getCurrentContextInfo(this._logger, this._driver.executor)
+    if (contextInfo.isRoot) {
       this._frameChain.clear()
     } else {
       const framePath = []
       const frameChain = this._frameChain.clone()
       const lastTrackedFrame = frameChain.current ? frameChain.current.element : null
-      while (!frameInfo.isRoot) {
-        await this.frameParent()
-        const frameElement = frameInfo.isCORS
-          ? await EyesUtils.findCORSFrame(this._logger, this._driver, contentDocument =>
-              WDIOElement.equals(contentDocument, frameInfo.contentDocument),
-            )
-          : frameInfo.frameElement
+      while (!contextInfo.isRoot) {
+        await this._driver.unwrapped.frameParent()
+        let frameElement
+        if (contextInfo.selector) {
+          frameElement = await this._driver.finder.findElement(contextInfo.selector)
+        } else {
+          const {element, selector} = await EyesUtils.findFrameByContext(
+            this._logger,
+            this._driver,
+            contextInfo,
+            WDIOElement.equals,
+          )
+          frameElement = new WDIOElement(this._logger, this._driver, element, selector)
+        }
         if (!frameElement) throw new Error('Unable to find out the chain of frames')
         if (WDIOElement.equals(frameElement, lastTrackedFrame)) {
           await this.frameParent(frameChain.size - 1)
           framePath.unshift(...frameChain)
         } else {
-          const xpath = await EyesUtils.getElementXpath(
-            this._logger,
-            this._driver.executor,
-            frameElement,
-          )
-          framePath.unshift(new WDIOElement(this._logger, this._driver, frameElement, `/${xpath}`))
+          framePath.unshift(frameElement)
         }
-        frameInfo = await EyesUtils.getCurrentFrameInfo(this._logger, this._driver.executor)
+        contextInfo = await EyesUtils.getCurrentContextInfo(this._logger, this._driver.executor)
       }
-      if (frameInfo.isRoot) this._frameChain.clear()
+      if (contextInfo.isRoot) this._frameChain.clear()
       await this.framesAppend(framePath)
     }
   }

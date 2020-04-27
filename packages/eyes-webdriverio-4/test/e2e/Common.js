@@ -4,7 +4,8 @@ const {deepStrictEqual} = require('assert')
 const webdriverio = require('webdriverio')
 const chromedriver = require('chromedriver')
 const geckodriver = require('geckodriver')
-const {Eyes, NetHelper, StitchMode} = require('../../index')
+const {Eyes, StitchMode} = require('../../index')
+const fetch = require('node-fetch')
 const {
   BatchInfo,
   ConsoleLogHandler,
@@ -203,38 +204,37 @@ class Common {
   async afterEachTest() {
     try {
       const results = await this._eyes.close(true)
-      // const query = `?format=json&AccessToken=${results.getSecretToken()}&apiKey=${this.eyes.getApiKey()}`
-      // const apiSessionUrl = results.getApiUrls().getSession() + query
+      const query = `?format=json&AccessToken=${results.getSecretToken()}&apiKey=${this.eyes.getApiKey()}`
+      const apiSessionUrl = results.getApiUrls().getSession() + query
 
-      // const apiSessionUri = new url.URL(apiSessionUrl)
-      // // apiSessionUri.searchParams.append('format', 'json');
-      // // apiSessionUri.searchParams.append('AccessToken', results.getSecretToken());
-      // // apiSessionUri.searchParams.append('apiKey', this.eyes.getApiKey());
+      const apiSessionUri = new url.URL(apiSessionUrl)
+      // apiSessionUri.searchParams.append('format', 'json');
+      // apiSessionUri.searchParams.append('AccessToken', results.getSecretToken());
+      // apiSessionUri.searchParams.append('apiKey', this.eyes.getApiKey());
 
-      // const res = await NetHelper.get(apiSessionUri)
-      // const resultObject = JSON.parse(res)
-      // /** @type {SessionResults} */
-      // const sessionResults = new SessionResults(resultObject)
-      // /** @type {ActualAppOutput} */
-      // const actualAppOutput = new ActualAppOutput(sessionResults.getActualAppOutput()[0])
-      // /** @type {ImageMatchSettings} */
-      // const imageMatchSettings = new ImageMatchSettings(actualAppOutput.getImageMatchSettings())
+      const resultObject = await fetch(apiSessionUri).then(r => r.json())
+      /** @type {SessionResults} */
+      const sessionResults = new SessionResults(resultObject)
+      /** @type {ActualAppOutput} */
+      const actualAppOutput = new ActualAppOutput(sessionResults.getActualAppOutput()[0])
+      /** @type {ImageMatchSettings} */
+      const imageMatchSettings = new ImageMatchSettings(actualAppOutput.getImageMatchSettings())
 
-      // if (this._expectedFloatingsRegions) {
-      //   const f = imageMatchSettings.getFloating()[0]
-      //   const floating = new FloatingMatchSettings(
-      //     f.left,
-      //     f.top,
-      //     f.width,
-      //     f.height,
-      //     f.maxUpOffset,
-      //     f.maxDownOffset,
-      //     f.maxLeftOffset,
-      //     f.maxRightOffset,
-      //   )
+      if (this._expectedFloatingsRegions) {
+        const f = imageMatchSettings.getFloating()[0]
+        const floating = new FloatingMatchSettings(
+          f.left,
+          f.top,
+          f.width,
+          f.height,
+          f.maxUpOffset,
+          f.maxDownOffset,
+          f.maxLeftOffset,
+          f.maxRightOffset,
+        )
 
-      //   deepStrictEqual(this._expectedFloatingsRegions, floating, 'Floating regions lists differ')
-      // }
+        deepStrictEqual(this._expectedFloatingsRegions, floating, 'Floating regions lists differ')
+      }
 
       // if (this._expectedIgnoreRegions) {
       //   const ignoreRegions = new Region(imageMatchSettings.getIgnore())
