@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 4.35.0 - 2020/4/27
+
 - support edgelegacy, edgechromium, and edgechromium-one-version-back
 - updated to @applitools/dom-utils@4.7.13
 - updated to @applitools/eyes-sdk-core@9.2.1
