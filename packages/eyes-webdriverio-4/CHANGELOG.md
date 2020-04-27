@@ -1,11 +1,14 @@
 # Change Log
 
 ## Unreleased
+
+
+
+## 2.13.1 - 2020/4/27
+
 - updated to @applitools/dom-utils@4.7.14
 - updated to @applitools/eyes-sdk-core@9.2.1
 - updated to @applitools/visual-grid-client@13.7.2
-
-
 
 ## 2.13.0 - 2020/4/26
 
