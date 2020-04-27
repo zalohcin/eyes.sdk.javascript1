@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 5.10.1 - 2020/4/27
+
 - support edgelegacy, edgechromium, and edgechromium-one-version-back
 - added emulation devices
 - fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
