@@ -1,6 +1,6 @@
 'use strict'
 const {Eyes, Target} = require('../../../index')
-const {Builder} = require('selenium-webdriver')
+const {Builder, By} = require('selenium-webdriver')
 const {getBatch, sauceUrl} = require('./util/TestSetup')
 const batch = getBatch()
 
@@ -18,7 +18,7 @@ describe('TestAppiumNative', () => {
         browserName: '',
         username: process.env.SAUCE_USERNAME,
         accessKey: process.env.SAUCE_ACCESS_KEY,
-        name: 'AndroidNAtiveAppTest1',
+        name: 'AndroidNativeAppTest1',
         platformName: 'Android',
         deviceName: 'Android Emulator',
         platformVersion: '6.0',
@@ -35,7 +35,7 @@ describe('TestAppiumNative', () => {
     await eyes.close()
   })
 
-  it.skip(`AndroidNativeAppTest2`, async () => {
+  it.only(`AndroidNativeAppTest2`, async () => {
     driver = await new Builder()
       .withCapabilities({
         browserName: '',
@@ -57,8 +57,8 @@ describe('TestAppiumNative', () => {
     eyes.setBatch(batch)
     await eyes.open(driver, 'Mobile Native Tests', 'Android Native App 2')
 
-    let scrollableElement = await driver.elementByAndroidUIAutomator(
-      'new UiSelector().scrollable(true)',
+    let scrollableElement = await driver.findElement(
+      new By('-android uiautomator', 'new UiSelector().scrollable(true)'),
     )
     await eyes.check(
       'Main window with ignore',

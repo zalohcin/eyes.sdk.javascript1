@@ -11,7 +11,7 @@ describe(appName, () => {
     await eyes.abortIfNotClosed()
     await driver.quit()
   })
-  describe('ChromeEmulation', () => {
+  describe.skip('ChromeEmulation', () => {
     it.skip('TestWebAppScrolling', async () => {
       driver = await new Builder()
         .withCapabilities({
@@ -94,7 +94,7 @@ describe(appName, () => {
     })
   })
 
-  describe('SauceLabs', () => {
+  describe.skip('SauceLabs', () => {
     const sauceCaps = {
       browserName: 'Chrome',
       deviceName: 'Samsung Galaxy S9 WQHD GoogleAPI Emulator',
