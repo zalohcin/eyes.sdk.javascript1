@@ -5,9 +5,9 @@
 - support edgelegacy, edgechromium, and edgechromium-one-version-back
 - added emulation devices
 - fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
-- updated to @applitools/dom-utils@4.7.12
-- updated to @applitools/eyes-sdk-core@9.1.2
-- updated to @applitools/visual-grid-client@13.6.15
+- updated to @applitools/dom-utils@4.7.14
+- updated to @applitools/eyes-sdk-core@9.2.1
+- updated to @applitools/visual-grid-client@13.7.2
 
 ## 5.9.23 - 2020/4/1
 
