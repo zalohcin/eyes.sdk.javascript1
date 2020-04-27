@@ -1126,7 +1126,7 @@ class EyesWDIO extends EyesBase {
   /**
    * Set the viewport size using the driver. Call this method if for some reason you don't want to call {@link #open(WebDriver, String, String)} (or one of its variants) yet.
    *
-   * @param {EyesWebDriver} driver - he driver to use for setting the viewport.
+   * @param {EyesWebDriver} driver - The driver to use for setting the viewport.
    * @param {RectangleSize} viewportSize - The required viewport size.
    * @return {Promise}
    */
@@ -1885,19 +1885,19 @@ class EyesWDIO extends EyesBase {
     this._hideScrollbars = shouldHide
   }
   /**
-  * @private
-  */
+   * @private
+   */
   async getScreenshotUrl() {
     return undefined
   }
   /**
-  * @private
-  */
+   * @private
+   */
   setCorsIframeHandle(_corsIframeHandle) {}
 
   /**
-  * @private
-  */
+   * @private
+   */
   getCorsIframeHandle() {
     return null
   }
@@ -1910,14 +1910,14 @@ class EyesWDIO extends EyesBase {
   }
 
   /**
-  * @param {String} apiKey
-  */
+   * @param {String} apiKey
+   */
   setApiKey(apiKey) {
     this._configuration.setApiKey(apiKey)
   }
   /**
-  * @return {String}
-  */
+   * @return {String}
+   */
   getApiKey() {
     return this._configuration.getApiKey()
   }
@@ -1930,16 +1930,16 @@ class EyesWDIO extends EyesBase {
   }
 
   /**
-  * @private
-  */
+   * @private
+   */
   async getAndSaveRenderingInfo() {
     const renderingInfo = await this._runner.getRenderingInfoWithCache()
     this._serverConnector.setRenderingInfo(renderingInfo)
   }
 
   /**
-  * @private
-  */
+   * @private
+   */
   async _getAndSaveBatchInfoFromServer(batchId) {
     ArgumentGuard.notNullOrEmpty(batchId, 'batchId')
     return this._runner.getBatchInfoWithCache(batchId)

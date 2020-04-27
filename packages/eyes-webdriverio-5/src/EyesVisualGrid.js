@@ -375,11 +375,11 @@ class EyesVisualGrid extends EyesBase {
     }
   }
 
-    /**
-     * @param {TBDTYPE} action
-     * @param {TBDTYPE} control
-     * @param {TBDTYPE} cursor
-    */
+  /**
+   * @param {TBDTYPE} action
+   * @param {TBDTYPE} control
+   * @param {TBDTYPE} cursor
+   */
   async addMouseTrigger(action, control, cursor) {
     if (this._configuration.getIsDisabled()) {
       this._logger.verbose(`Ignoring ${action} (disabled)`)
@@ -462,7 +462,7 @@ class EyesVisualGrid extends EyesBase {
   }
 
   /**
-  * @private
+   * @private
    * Get jsExecutor
    * @return {EyesJsExecutor}
    */
@@ -476,8 +476,8 @@ class EyesVisualGrid extends EyesBase {
   setApiKey(apiKey) {
     this._configuration.setApiKey(apiKey)
   }
- /**
-    * @return {String} 
+  /**
+   * @return {String}
    */
   getApiKey() {
     return this._configuration.getApiKey()
@@ -498,7 +498,8 @@ class EyesVisualGrid extends EyesBase {
   getForceFullPageScreenshot() {
     return this._configuration.getForceFullPageScreenshot()
   }
-   /*
+
+  /*
    * @private
    */
   async _getAndSaveBatchInfoFromServer(batchId) {
