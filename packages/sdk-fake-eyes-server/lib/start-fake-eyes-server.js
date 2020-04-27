@@ -9,7 +9,13 @@ const filenamify = require('filenamify')
 const uuid = require('uuid/v4')
 const fetch = require('node-fetch')
 
-function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console, hangUp} = {}) {
+function startFakeEyesServer({
+  expectedFolder,
+  updateFixtures,
+  port,
+  logger = console,
+  hangUp,
+} = {}) {
   const runningSessions = {}
   let serverUrl
   let renderCounter = 0
@@ -277,7 +283,10 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
       }
     })
     if (runningSession) {
-      res.send(runningSession)
+      res.send({
+        ...runningSession,
+        id: runningSession.sessionId,
+      })
     } else {
       res.status(404).send()
     }
@@ -363,4 +372,4 @@ function fakeEyesServer({expectedFolder, updateFixtures, port, logger = console,
   })
 }
 
-module.exports = fakeEyesServer
+module.exports = {startFakeEyesServer}

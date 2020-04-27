@@ -4,6 +4,19 @@
 
 - support accessibilitySettings
 
+## 13.7.2 - 2020/4/27
+
+- add edgechromium to types
+
+## 13.7.1 - 2020/4/26
+
+- updated to @applitools/eyes-sdk-core@9.2.1
+
+## 13.7.0 - 2020/4/26
+
+- support edgelegacy, edgechromium, and edgechromium-one-version-back
+- updated to @applitools/eyes-sdk-core@9.2.0
+
 ## 13.6.15 - 2020/4/23
 
 - updated to @applitools/eyes-sdk-core@9.1.2

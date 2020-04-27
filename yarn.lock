@@ -40,6 +40,24 @@
     "@applitools/functional-commons" "^1.5.4"
     css-tree "^1.0.0-alpha.39"
 
+"@applitools/dom-utils@4.7.12":
+  version "4.7.12"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.7.12.tgz#d6676ed5878e3a260e2a1170a57482ee78d1df49"
+  integrity sha512-IOsXMXrBNcfzvQHqs3qZ2fVJyynm4QRpnw6r0weLgzOTfGi/Z/8mp4wF6pKVEdX+ZBZ/hd78qVh/DUmeYvqoYA==
+  dependencies:
+    "@applitools/dom-capture" "7.1.5"
+    "@applitools/eyes-common" "3.21.1"
+    axios "^0.19.0"
+
+"@applitools/dom-utils@4.7.13":
+  version "4.7.13"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.7.13.tgz#98581c390dfca5c5f24510be212178985c3191a4"
+  integrity sha512-tMQdNc+bfqeq+OnBUxxaippLs8R4DXSEBeVVb+V7ldsXqjURzlgb040MYe9y85X4sPD/Baw8i9by4JuOmdAUSg==
+  dependencies:
+    "@applitools/dom-capture" "7.1.5"
+    "@applitools/eyes-common" "3.22.0"
+    axios "^0.19.0"
+
 "@applitools/eslint-plugin-compat@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@applitools/eslint-plugin-compat/-/eslint-plugin-compat-0.7.0.tgz#61785cfb4156ddbb06141116b7fd381ecf11afea"
@@ -73,6 +91,30 @@
   version "3.20.2"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.20.2.tgz#435c3c05a2509952b242031cc276d5004bd1b9d3"
   integrity sha512-UwpZB99bXn+cYC4IRcfQzS/SFmbSIJO0Qh5DaLO59NphzIcvLEEWND9o8t2o3dF3l9Qpd0ir3YXLamQDopqA5Q==
+  dependencies:
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+
+"@applitools/eyes-common@3.21.1":
+  version "3.21.1"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.21.1.tgz#b1c16bbdc8b0e3b58bcab6efe0b1b6856c5f4f46"
+  integrity sha512-uYUtcy6Pw+y8JOdtm5Y/13myhuoPxm8NoJOdRu8tGTj4nRgyIvvhiMVvewygMf9fzD5ImYg5hMgCtZPRVHOn9g==
+  dependencies:
+    cosmiconfig "^6.0.0"
+    dateformat "^3.0.3"
+    debug "^4.1.1"
+    deepmerge "^4.2.2"
+    png-async "^0.9.4"
+    stack-trace "^0.0.10"
+
+"@applitools/eyes-common@3.22.0":
+  version "3.22.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-common/-/eyes-common-3.22.0.tgz#864ad6a5f4579fa3d6a8921a9d7048813cb3aafe"
+  integrity sha512-vXHMv5+tISFKsgL7kf4FQu/Vx6NyCZw2X+LAm/YQLeMtdjb5N1j7NIUGhCu8Ek1YNM4iHvyHH6Lg2WA+HY3dsw==
   dependencies:
     cosmiconfig "^6.0.0"
     dateformat "^3.0.3"
@@ -224,17 +266,6 @@
   integrity sha512-rzEOvGoiEF4KnK0PJ9I0btdwnaNlIPLYhjF1vTEG15PoucbbKpix9fYusxWlDG7kMiZya8ZycVPc0woVlNaHRQ==
   dependencies:
     debug "^4.1.0"
-
-"@applitools/sdk-fake-eyes-server@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@applitools/sdk-fake-eyes-server/-/sdk-fake-eyes-server-1.1.1.tgz#da3b2b5061d908c21868b0bc6a4ef97b2d74771f"
-  integrity sha512-JCEJFADGcMfUSysy2Wl6eCmspXCQmsHQhVbeRXv6bKVOjxrIHzHrh7z3/x8lu6t+P9+yWb83zSEp8MCkQc44BQ==
-  dependencies:
-    express "^4.17.1"
-    filenamify "^4.1.0"
-    node-fetch "^2.6.0"
-    ua-parser-js "^0.7.21"
-    uuid "^3.3.3"
 
 "@applitools/visual-grid-client@13.5.19":
   version "13.5.19"
@@ -21287,3 +21318,8 @@ zip-stream@^2.1.2:
     archiver-utils "^2.1.0"
     compress-commons "^2.1.1"
     readable-stream "^3.4.0"
+
+zlib@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/zlib/-/zlib-1.0.5.tgz#6e7c972fc371c645a6afb03ab14769def114fcc0"
+  integrity sha1-bnyXL8NxxkWmr7A6sUdp3vEU/MA=

@@ -3,6 +3,15 @@
 ## Unreleased
 
 
+
+## 2.13.0 - 2020/4/26
+
+- support edgelegacy, edgechromium, and edgechromium-one-version-back
+- added emulation devices
+- updated to @applitools/eyes-sdk-core@9.2.0
+- updated to @applitools/visual-grid-client@13.7.0
+- updated to @applitools/dom-utils@4.7.13
+
 ## 2.12.9 - 2020/4/22
 
 - fix capture region failures on IE
