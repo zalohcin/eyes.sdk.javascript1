@@ -9,7 +9,7 @@ const EYES_SELECTOR_TAG = 'data-eyes-selector'
 /**
  * @ignore
  */
-class TargetSelectorByElement extends GetSelector {
+class TargetRegionByElement extends GetSelector {
   /**
    * @param {WDIOElement|object} element
    */
@@ -39,4 +39,4 @@ class TargetSelectorByElement extends GetSelector {
   }
 }
 
-module.exports = TargetSelectorByElement
+module.exports = TargetRegionByElement
