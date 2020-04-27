@@ -142,7 +142,8 @@ class Eyes extends EyesBase {
    * @param {SeleniumCheckSettings} checkSettings - Target instance which describes whether we want a window/region/frame
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async check(_name, _checkSettings) {
+  // eslint-disable-next-line no-unused-vars
+  async check(name, checkSettings) {
     throw new TypeError('The method is not implemented!')
   }
 
