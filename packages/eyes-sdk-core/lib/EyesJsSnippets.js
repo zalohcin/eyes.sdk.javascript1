@@ -77,35 +77,45 @@ const SET_OVERFLOW_AND_RETURN_ORIGIN_VALUE = overflow => `
   return origOverflow;
 `
 
-const GET_ELEMENT_XPATH = `
-  function genXpath(el) {
-    if (!el.ownerDocument) return ''; // this is the document node
-
-    let xpath = '',
-      currEl = el,
-      doc = el.ownerDocument,
-      frameElement = doc.defaultView.frameElement;
-    while (currEl !== doc) {
-      xpath = currEl.tagName + '[' + getIndex(currEl) + ']/' + xpath;
-      currEl = currEl.parentNode;
+const GET_ELEMENT_XPATH_FUNC = `
+  function getElementXpath(element) {
+    var ownerDocument = element.ownerDocument;
+    if (!ownerDocument) return ''; // this is the document node
+    var xpath = '';
+    var targetElement = element
+    while (targetElement !== ownerDocument) {
+      var index = 1 + Array.prototype
+        .filter.call(targetElement.parentNode.childNodes, function(node) {
+          return node.tagName === targetElement.tagName;
+        })
+        .indexOf(targetElement);
+      xpath = '/' + targetElement.tagName + '[' + index + ']' + xpath;
+      targetElement = targetElement.parentNode;
     }
-    if (frameElement) {
-      xpath = genXpath(frameElement) + ',' + xpath;
-    }
-    return xpath.replace(/\\/$/, '');
+    return xpath;
   }
-  function getIndex(el) {
-    return (
-      Array.prototype.filter
-        .call(el.parentNode.childNodes, node => node.tagName === el.tagName)
-        .indexOf(el) + 1
-    );
-  }
-  return genXpath(arguments[0])
 `
 
-const GET_FRAME_INFO = `
-  var isCORS, isRoot, frameElement;
+const GET_ELEMENT_ABSOLUTE_XPATH = `
+  ${GET_ELEMENT_XPATH_FUNC}
+  function getElementAbsoluteXpath(element) {
+    var xpath = getElementXpath(element).slice(1);
+    var frameElement = element.ownerDocument.defaultView.frameElement;
+    if (frameElement) {
+      xpath = getElementAbsoluteXpath(frameElement) + ',' + xpath;
+    }
+    return xpath;
+  }
+  return getElementAbsoluteXpath(arguments[0]);
+`
+
+const GET_ELEMENT_XPATH = `
+  ${GET_ELEMENT_XPATH_FUNC}
+  return getElementXpath(arguments[0]);
+`
+
+const GET_CURRENT_CONTEXT_INFO = `
+  var isCORS, isRoot, frameSelector;
   try {
     isRoot = window.top.document === window.document;
   } catch (err) {
@@ -113,18 +123,32 @@ const GET_FRAME_INFO = `
   }
   try {
     isCORS = !window.parent.document === window.document;
-    frameElement = window.frameElement;
   } catch (err) {
     isCORS = true;
-    frameElement = null;
   }
-  return {isRoot: isRoot, isCORS: isCORS, frameElement: frameElement, contentDocument: document};
+  if (!isCORS) {
+    try {
+      frameSelector = getElementSelector(window.frameElement);
+    } catch (err) {
+      frameSelector = null;
+    }
+  }
+  return {
+    isRoot: isRoot,
+    isCORS: isCORS,
+    document: document,
+    frameSelector: frameSelector,
+  };
 `
 
-const GET_CORS_FRAMES = `
+const GET_FRAMES = `
   var frames = document.querySelectorAll('frame, iframe');
-  return Array.prototype.filter.call(frames, function(frameElement) {
-    return !frameElement.contentDocument;
+  return Array.prototype.map.call(frames, function(frameElement) {
+    return {
+      isCORS: !frameElement.contentDocument,
+      element: frameElement,
+      src: frameElement.src
+    };
   });
 `
 
@@ -140,6 +164,7 @@ module.exports = {
   GET_OVERFLOW,
   SET_OVERFLOW_AND_RETURN_ORIGIN_VALUE,
   GET_ELEMENT_XPATH,
-  GET_FRAME_INFO,
-  GET_CORS_FRAMES,
+  GET_ELEMENT_ABSOLUTE_XPATH,
+  GET_CURRENT_CONTEXT_INFO,
+  GET_FRAMES,
 }

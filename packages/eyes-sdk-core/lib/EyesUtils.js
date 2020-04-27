@@ -295,8 +295,16 @@ async function setOverflow(_logger, executor, overflow, element) {
   }
 }
 
+async function getElementAbsoluteXpath(_logger, executor, element) {
+  return executor.executeScript(EyesJsSnippets.GET_ELEMENT_ABSOLUTE_XPATH, element)
+}
+
 async function getElementXpath(_logger, executor, element) {
-  return executor.executeScript(EyesJsSnippets.GET_ELEMENT_XPATH, element)
+  try {
+    return await executor.executeScript(EyesJsSnippets.GET_ELEMENT_SELECTOR, element)
+  } catch (err) {
+    return null
+  }
 }
 
 async function locatorToPersistedRegions(_logger, {finder, executor}, locator) {
@@ -309,26 +317,32 @@ async function locatorToPersistedRegions(_logger, {finder, executor}, locator) {
     return Promise.all(
       elements.map(async element => ({
         type: 'xpath',
-        selector: await getElementXpath(executor, element),
+        selector: await getElementAbsoluteXpath(executor, element),
       })),
     )
   }
 }
 
-async function getCurrentFrameInfo(_logger, executor) {
-  return executor.executeScript(EyesJsSnippets.GET_FRAME_INFO)
+async function getCurrentContextInfo(_logger, executor) {
+  return executor.executeScript(EyesJsSnippets.GET_CURRENT_CONTEXT_INFO)
 }
 
-async function findCORSFrame(_logger, {executor, context}, comparator) {
-  const frameElements = await executor.executeScript(EyesJsSnippets.GET_CORS_FRAMES)
-  for (const frameElement of frameElements) {
-    await context.frame(frameElement)
+async function findFrameByContext(logger, {executor, context}, contextInfo, comparator) {
+  const framesInfo = await executor.executeScript(EyesJsSnippets.GET_FRAMES)
+  for (const frameInfo of framesInfo) {
+    if (frameInfo.isCORS !== contextInfo.isCORS) continue
+    await context.frame(frameInfo.element)
     const contentDocument = await executor.executeScript('return document')
     await context.frameParent()
-    if (comparator(contentDocument, frameElement)) {
-      return frameElement
+    if (comparator(contentDocument, contextInfo.document)) {
+      frameInfo.selector = await getElementXpath(logger, executor, frameInfo.element)
+      return frameInfo
     }
   }
+}
+
+async function getCurrentDocument(_logger, executor) {
+  return executor.executeScript(EyesJsSnippets.GET_CURRENT_DOCUMENT)
 }
 
 module.exports = {
@@ -349,7 +363,9 @@ module.exports = {
   getOverflow,
   setOverflow,
   getElementXpath,
+  getElementAbsoluteXpath,
   locatorToPersistedRegions,
-  getCurrentFrameInfo,
-  findCORSFrame,
+  getCurrentContextInfo,
+  findFrameByContext,
+  getCurrentDocument,
 }
