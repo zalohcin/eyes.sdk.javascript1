@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 3.5.1 - 2020/4/27
+
+- add edgechromium to readme
+
 ## 3.5.0 - 2020/4/26
 
 - support edgelegacy, edgechromium, and edgechromium-one-version-back
