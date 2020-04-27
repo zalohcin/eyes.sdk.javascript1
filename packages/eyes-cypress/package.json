@@ -45,7 +45,7 @@
     "@applitools/dom-snapshot": "3.4.5",
     "@applitools/eyes-sdk-core": "9.2.1",
     "@applitools/functional-commons": "1.5.4",
-    "@applitools/visual-grid-client": "13.7.1",
+    "@applitools/visual-grid-client": "13.7.2",
     "body-parser": "^1.19.0",
     "chalk": "3.0.0",
     "cors": "^2.8.5",
