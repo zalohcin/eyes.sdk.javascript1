@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.10.2 - 2020/4/27
+
 - add edgechromium to types
 - updated to @applitools/visual-grid-client@13.7.2
 
