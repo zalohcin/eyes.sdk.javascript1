@@ -49,6 +49,15 @@
     "@applitools/eyes-common" "3.21.1"
     axios "^0.19.0"
 
+"@applitools/dom-utils@4.7.13":
+  version "4.7.13"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.7.13.tgz#98581c390dfca5c5f24510be212178985c3191a4"
+  integrity sha512-tMQdNc+bfqeq+OnBUxxaippLs8R4DXSEBeVVb+V7ldsXqjURzlgb040MYe9y85X4sPD/Baw8i9by4JuOmdAUSg==
+  dependencies:
+    "@applitools/dom-capture" "7.1.5"
+    "@applitools/eyes-common" "3.22.0"
+    axios "^0.19.0"
+
 "@applitools/eslint-plugin-compat@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@applitools/eslint-plugin-compat/-/eslint-plugin-compat-0.7.0.tgz#61785cfb4156ddbb06141116b7fd381ecf11afea"

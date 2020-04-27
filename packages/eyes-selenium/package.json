@@ -36,9 +36,9 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/dom-utils": "4.7.12",
-    "@applitools/eyes-sdk-core": "9.1.2",
-    "@applitools/visual-grid-client": "13.6.15"
+    "@applitools/dom-utils": "4.7.14",
+    "@applitools/eyes-sdk-core": "9.2.1",
+    "@applitools/visual-grid-client": "13.7.2"
   },
   "devDependencies": {
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
