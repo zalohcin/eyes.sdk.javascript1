@@ -3,6 +3,9 @@
 ## Unreleased
 
 
+## 13.7.2 - 2020/4/27
+
+- add edgechromium to types
 
 ## 13.7.1 - 2020/4/26
 
