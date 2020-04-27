@@ -35,7 +35,7 @@ describe('TestAppiumNative', () => {
     await eyes.close()
   })
 
-  it.only(`AndroidNativeAppTest2`, async () => {
+  it.skip(`AndroidNativeAppTest2`, async () => {
     driver = await new Builder()
       .withCapabilities({
         browserName: '',
