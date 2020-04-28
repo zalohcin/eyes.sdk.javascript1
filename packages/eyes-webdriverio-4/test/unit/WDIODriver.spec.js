@@ -35,11 +35,22 @@ describe('WDIODriver', function() {
       someMethod() {
         return this.someField
       },
+      async someAsyncMethod() {
+        return this.someField
+      },
     }
     const driver = new WDIODriver(logger, browser)
-    Object.keys(browser).forEach(propName => {
+    Object.keys(browser).forEach(async propName => {
       if (typeof browser[propName] === 'function') {
-        assert.strictEqual(browser[propName](), driver[propName]())
+        let browserResult = browser[propName]()
+        let driverResult = driver[propName]()
+        if (typeof browserResult.then === 'function') {
+          browserResult = await browserResult
+        }
+        if (typeof driverResult.then === 'function') {
+          driverResult = await driverResult
+        }
+        assert.strictEqual(browserResult, driverResult)
       } else {
         assert.strictEqual(browser[propName], driver[propName])
       }
