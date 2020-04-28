@@ -16,10 +16,10 @@ const {
   AccessibilityLevel,
   AccessibilityRegionType,
   AccessibilityRegionByRectangle,
-  EyesBase,
   CheckTarget,
   MatchWindowTask,
 } = require('../../../index')
+const {EyesBaseImpl} = require('../../testUtils')
 
 describe('SessionStartInfo', () => {
   it('TestSerialization', () => {
@@ -105,7 +105,7 @@ describe('SessionStartInfo', () => {
         .enablePatterns(enablePatterns)
         .ignoreDisplacements(ignoreDisplacements)
 
-      const eyes = new EyesBase()
+      const eyes = new EyesBaseImpl()
       const task = new MatchWindowTask(true, true, true, true, eyes, true)
       const imageMatchSettings = await task.createImageMatchSettings(settings, null)
 
@@ -126,7 +126,7 @@ describe('SessionStartInfo', () => {
         .useDom(useDom)
         .enablePatterns(enablePatterns)
 
-      const eyes = new EyesBase()
+      const eyes = new EyesBaseImpl()
       const configuration = eyes.getConfiguration()
       configuration.setIgnoreDisplacements(ignoreDisplacements)
       eyes.setConfiguration(configuration)
@@ -148,7 +148,7 @@ describe('SessionStartInfo', () => {
     it(`TestConfigurationSerialization (${useDom}, ${enablePatterns}, ${ignoreDisplacements})`, async () => {
       const settings = CheckTarget.window().fully()
 
-      const eyes = new EyesBase()
+      const eyes = new EyesBaseImpl()
       const configuration = eyes.getConfiguration()
       configuration.setUseDom(useDom)
       configuration.setEnablePatterns(enablePatterns)

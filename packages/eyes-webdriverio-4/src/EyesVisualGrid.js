@@ -36,7 +36,7 @@ class EyesVisualGrid extends EyesBase {
    * @param {EyesRunner} [runner] - Set {@code true} to disable Applitools Eyes and use the WebDriver directly.
    */
   constructor(serverUrl, isDisabled, runner = new VisualGridRunner()) {
-    super(serverUrl, isDisabled, new Configuration())
+    super(serverUrl, isDisabled)
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
     this._runner.makeGetVisualGridClient(makeVisualGridClient)
@@ -184,10 +184,12 @@ class EyesVisualGrid extends EyesBase {
         if (this._runner) {
           this._runner._allTestResult.push(...results)
         }
-        if (throwEx && isErrorCaught) {
-          throw TypeUtils.isArray(results) ? results[0] : results
+        if (isErrorCaught) {
+          const error = TypeUtils.isArray(results) ? results[0] : results
+          if (throwEx) throw error
+          else return error.getTestResults()
         }
-        return results
+        return TypeUtils.isArray(results) ? results[0] : results
       })
 
     return this._closePromise

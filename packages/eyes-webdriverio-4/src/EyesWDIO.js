@@ -63,7 +63,7 @@ class EyesWDIO extends EyesBase {
    * @param {ClassicRunner} [runner] - Set shared ClassicRunner if you want to group results.
    **/
   constructor(serverUrl, isDisabled = false, runner = new ClassicRunner()) {
-    super(serverUrl, isDisabled, new Configuration())
+    super(serverUrl, isDisabled)
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
 
@@ -393,8 +393,9 @@ class EyesWDIO extends EyesBase {
         if (this._runner) {
           this._runner._allTestResult.push(results)
         }
-        if (throwEx && isErrorCaught) {
-          throw results
+        if (isErrorCaught) {
+          if (throwEx) throw results
+          else return results.getTestResults()
         }
         return results
       })

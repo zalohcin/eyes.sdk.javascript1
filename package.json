@@ -31,7 +31,7 @@
       "packages/eyes-leanft",
       "packages/side-eyes"
     ],
-    "nohoist": ["**/@wdio/*", "**/wdio-*"]
+    "nohoist": ["**/@wdio/*", "**/wdio-*", "**/webdriverio"]
   },
   "scripts": {
     "lint": "eslint --ext .js ."
