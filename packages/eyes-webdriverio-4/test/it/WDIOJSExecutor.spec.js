@@ -24,20 +24,17 @@ describe('WDIOJSExecutor', function() {
       port: 9515,
       path: '/',
     })
+    await browser.init()
+    await browser.url('https://applitools.github.io/demo/TestPages/FramesAndRegionsPage/')
   })
 
   beforeEach(async () => {
-    await browser.init()
-    await browser.url('https://applitools.github.io/demo/TestPages/FramesAndRegionsPage/')
     driver = new WDIODriver(logger, browser)
     executor = new WDIOJSExecutor(logger, driver)
   })
 
-  afterEach(async () => {
-    await browser.end()
-  })
-
   after(async () => {
+    await browser.end()
     chromedriver.stop()
   })
 

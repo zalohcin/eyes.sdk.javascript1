@@ -24,19 +24,16 @@ describe('WDIOElement', function() {
       port: 9515,
       path: '/',
     })
+    await browser.init()
+    await browser.url('https://applitools.github.io/demo/TestPages/FramesAndRegionsPage/')
   })
 
   beforeEach(async () => {
-    await browser.init()
-    await browser.url('https://applitools.github.io/demo/TestPages/FramesAndRegionsPage/')
     driver = new WDIODriver(logger, browser)
   })
 
-  afterEach(async () => {
-    await browser.end()
-  })
-
   after(async () => {
+    await browser.end()
     chromedriver.stop()
   })
 

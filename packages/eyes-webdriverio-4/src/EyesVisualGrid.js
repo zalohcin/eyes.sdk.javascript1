@@ -13,12 +13,12 @@ const {
   Configuration,
   RectangleSize,
   VisualGridRunner,
+  EyesUtils,
 } = require('@applitools/eyes-sdk-core')
 
 const {Target} = require('../index')
 
 const WDIODriver = require('./wrappers/WDIODriver')
-const EyesWDIOUtils = require('./EyesWDIOUtils')
 
 const VERSION = require('../package.json').version
 
@@ -73,6 +73,7 @@ class EyesVisualGrid extends EyesBase {
     this._executor = this._driver.executor
     this._finder = this._driver.finder
     this._context = this._driver.context
+    this._controller = this._driver.controller
 
     if (optArg1 instanceof Configuration) {
       this._configuration.mergeConfig(optArg1)
@@ -109,7 +110,7 @@ class EyesVisualGrid extends EyesBase {
       }
     }
     if (!this._configuration.getViewportSize()) {
-      const vs = await EyesWDIOUtils.getTopContextViewportSize(this._driver)
+      const vs = await EyesUtils.getTopContextViewportSize(this._logger, this._driver)
       this._configuration.setViewportSize(vs)
     }
 
@@ -254,7 +255,7 @@ class EyesVisualGrid extends EyesBase {
 
     this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
 
-    const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
+    const source = await this._controller.getSource()
 
     const [config, {region, selector}] = await Promise.all([
       checkSettings.toCheckWindowConfiguration(this._driver),
@@ -262,7 +263,7 @@ class EyesVisualGrid extends EyesBase {
     ])
     const overrideConfig = {
       fully: this.getForceFullPageScreenshot() || config.fully,
-      sendDom: this.getSendDom() || config.sendDom,
+      sendDom: (await this.getSendDom()) || config.sendDom,
       matchLevel: this.getMatchLevel() || config.matchLevel,
     }
 
@@ -326,21 +327,7 @@ class EyesVisualGrid extends EyesBase {
     this._configuration.setViewportSize(viewportSize)
 
     if (this._driver) {
-      const originalFrame = this._context.frameChain
-      await this._context.frameDefault()
-
-      await EyesWDIOUtils.setViewportSize(this._logger, this._driver, viewportSize)
-
-      /*
-            try {
-              await EyesWDIOUtils.setViewportSize(this._logger, this._driver, viewportSize);
-            } catch (err) {
-              await this._context.frames(originalFrame); // Just in case the user catches that error
-              throw new TestFailedError('Failed to set the viewport size', err);
-            }
-      */
-
-      await this._context.frames(originalFrame)
+      await EyesUtils.setViewportSize(this._logger, this._driver, viewportSize)
     }
   }
 

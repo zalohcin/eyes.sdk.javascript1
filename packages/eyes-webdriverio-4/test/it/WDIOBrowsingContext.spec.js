@@ -37,20 +37,18 @@ describe('WDIOBrowsingContext', function() {
       port: 9515,
       path: '/',
     })
+    await browser.init()
+    await browser.url('https://applitools.github.io/demo/TestPages/FramesAndRegionsPage/')
   })
 
   beforeEach(async () => {
-    await browser.init()
-    await browser.url('https://applitools.github.io/demo/TestPages/FramesAndRegionsPage/')
+    await browser.frame(null)
     driver = new WDIODriver(logger, browser)
     context = new WDIOBrowsingContext(logger, driver)
   })
 
-  afterEach(async () => {
-    await browser.end()
-  })
-
   after(async () => {
+    await browser.end()
     chromedriver.stop()
   })
 

@@ -1,19 +1,14 @@
 const core = require('@applitools/eyes-sdk-core')
 
-exports.AccessibilityLevel = core.AccessibilityLevel
-exports.AccessibilityRegionType = core.AccessibilityRegionType
-exports.AccessibilityMatchSettings = core.AccessibilityMatchSettings
-
 exports.Eyes = require('./src/Eyes').Eyes
 exports.EyesWDIO = require('./src/EyesWDIO').EyesWDIO
 exports.EyesVisualGrid = require('./src/EyesVisualGrid').EyesVisualGrid
 exports.By = require('./src/By')
-exports.Target = require('./src/fluent/Target')
-exports.WebdriverioCheckSettings = require('./src/fluent/WebdriverioCheckSettings')
-exports.EyesWDIOScreenshot = require('./src/capture/EyesWDIOScreenshot')
-exports.EyesWDIOUtils = require('./src/EyesWDIOUtils')
-exports.NetHelper = require('./src/services/NetHelper')
-exports.StitchMode = require('./src/StitchMode')
+exports.Target = require('./src/WDIOCheckSettings')
+exports.WebdriverioCheckSettings = require('./src/WDIOCheckSettings')
+
+exports.EyesScreenshot = core.EyesScreenshot
+exports.StitchMode = core.StitchMode
 exports.Logger = core.Logger
 exports.ClassicRunner = core.ClassicRunner
 exports.VisualGridRunner = core.VisualGridRunner
@@ -27,3 +22,6 @@ exports.ScreenOrientation = core.ScreenOrientation
 exports.Region = core.Region
 exports.MatchLevel = core.MatchLevel
 exports.RectangleSize = core.RectangleSize
+exports.AccessibilityLevel = core.AccessibilityLevel
+exports.AccessibilityRegionType = core.AccessibilityRegionType
+exports.AccessibilityMatchSettings = core.AccessibilityMatchSettings

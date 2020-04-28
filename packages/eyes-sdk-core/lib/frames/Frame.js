@@ -2,6 +2,7 @@
 
 const {ArgumentGuard} = require('@applitools/eyes-common')
 const {EyesJsBrowserUtils} = require('../EyesJsBrowserUtils')
+const {EyesWrappedElement} = require('../wrappers/EyesWrappedElement')
 /**
  * @typedef {import('@applitools/eyes-common').Logger} Logger
  * @typedef {import('@applitools/eyes-common').Location} Location
@@ -65,6 +66,18 @@ class Frame {
       this._originalLocation = components.originalLocation
       this._originalOverflow = components.originalOverflow
     }
+  }
+
+  static equals(leftFrame, rightFrame) {
+    let leftElement = null
+    if (leftFrame instanceof Frame) leftElement = leftFrame.element
+    else if (leftFrame instanceof EyesWrappedElement) leftElement = leftFrame
+    let rightElement = null
+    if (rightFrame instanceof Frame) rightElement = rightFrame.element
+    else if (rightFrame instanceof EyesWrappedElement) rightElement = rightFrame
+
+    if (!leftElement || !rightElement) return false
+    return leftElement.equals(rightElement)
   }
 
   /**

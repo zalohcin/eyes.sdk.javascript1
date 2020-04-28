@@ -76,7 +76,7 @@ function LegacyAPIDriver(WDIODriver) {
       return this._driver.pause(ms)
     }
     async takeScreenshot() {
-      return this._driver.saveScreenshot()
+      return this._driver.controller.takeScreenshot()
     }
   }
 }

@@ -7,8 +7,11 @@ const {
   FailureReports,
   FixedScaleProviderFactory,
   FullPageCaptureAlgorithm,
+  EyesScreenshot,
+  EyesScreenshotFactory,
+  ImageProviderFactory,
   Location,
-  MutableImage,
+  RectangleSize,
   NullCutProvider,
   NullScaleProvider,
   NullRegionProvider,
@@ -20,29 +23,22 @@ const {
   UserAgent,
   ArgumentGuard,
   SimplePropertyHandler,
+  ReadOnlyPropertyHandler,
   Configuration,
   ClassicRunner,
   FrameChain,
+  EyesUtils,
+  StitchMode,
+  ImageRotation,
+  CssTranslatePositionProvider,
+  CssTranslateElementPositionProvider,
+  ScrollPositionProvider,
+  ScrollElementPositionProvider,
+  RegionPositionCompensationFactory,
 } = require('@applitools/eyes-sdk-core')
-
 const {DomCapture} = require('@applitools/dom-utils')
-const {RectangleSize} = require('@applitools/eyes-sdk-core')
-
-const ImageProviderFactory = require('./capture/ImageProviderFactory')
-const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider')
-const CssTranslateElementPositionProvider = require('./positioning/CssTranslateElementPositionProvider')
-const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
-const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory')
+const WDIOCheckSettings = require('./WDIOCheckSettings')
 const WDIODriver = require('./wrappers/WDIODriver')
-const WDIOElement = require('./wrappers/WDIOElement')
-const EyesWDIOScreenshot = require('./capture/EyesWDIOScreenshot')
-const EyesWDIOScreenshotFactory = require('./capture/EyesWDIOScreenshotFactory')
-const EyesWDIOUtils = require('./EyesWDIOUtils')
-const ElementPositionProvider = require('./positioning/ElementPositionProvider')
-const StitchMode = require('./StitchMode')
-const Target = require('./fluent/Target')
-const ReadOnlyPropertyHandler = require('@applitools/eyes-sdk-core/index').ReadOnlyPropertyHandler
-const ImageRotation = require('./positioning/ImageRotation')
 
 const VERSION = require('../package.json').version
 
@@ -110,7 +106,7 @@ class EyesWDIO extends EyesBase {
     this._targetElement = null
     /** @type {Location} */
     this._targetElementLocation = null
-    /** @type {ElementPositionProvider} */
+    /** @type {ScrollElementPositionProvider} */
     this._elementPositionProvider = undefined
     /** @type {int} */
     this._waitBeforeScreenshots = DEFAULT_WAIT_BEFORE_SCREENSHOTS
@@ -118,7 +114,7 @@ class EyesWDIO extends EyesBase {
     this._effectiveViewport = Region.EMPTY
     /** @type {string}*/
     this._domUrl
-    /** @type {EyesWDIOScreenshotFactory} */
+    /** @type {EyesScreenshotFactory} */
     this._screenshotFactory = undefined
     /** @type {WDIOElement} */
     this._scrollRootElement = undefined
@@ -143,6 +139,7 @@ class EyesWDIO extends EyesBase {
     this._executor = this._driver.executor
     this._finder = this._driver.finder
     this._context = this._driver.context
+    this._controller = this._driver.controller
 
     this._configuration.setAppName(
       TypeUtils.getOrDefault(appName, this._configuration.getAppName()),
@@ -158,7 +155,7 @@ class EyesWDIO extends EyesBase {
     )
 
     if (!this._configuration.getViewportSize()) {
-      const vs = await EyesWDIOUtils.getTopContextViewportSize(this._driver)
+      const vs = await EyesUtils.getTopContextViewportSize(this._logger, this._driver)
       this._configuration.setViewportSize(vs.toJSON())
     }
 
@@ -172,18 +169,18 @@ class EyesWDIO extends EyesBase {
       viewportSize = null
     }
 
-    this._screenshotFactory = new EyesWDIOScreenshotFactory(this._logger, this)
+    this._screenshotFactory = new EyesScreenshotFactory(this._logger, this)
 
-    const userAgentString = await EyesWDIOUtils.getUserAgent(this._executor)
+    const userAgentString = await this._controller.getUserAgent()
     if (userAgentString) {
       this._userAgent = UserAgent.parseUserAgentString(userAgentString, true)
     }
 
     this._imageProvider = ImageProviderFactory.getImageProvider(
-      this._userAgent,
-      this,
       this._logger,
       this._driver,
+      this,
+      this._userAgent,
     )
     this._regionPositionCompensation = RegionPositionCompensationFactory.getRegionPositionCompensation(
       this._userAgent,
@@ -213,7 +210,7 @@ class EyesWDIO extends EyesBase {
    * @return {Promise} A promise which is resolved when the validation is finished.
    */
   checkWindow(tag, matchTimeout) {
-    return this.check(tag, Target.window().timeout(matchTimeout))
+    return this.check(tag, WDIOCheckSettings.window().timeout(matchTimeout))
   }
 
   /**
@@ -228,7 +225,7 @@ class EyesWDIO extends EyesBase {
   checkFrame(element, matchTimeout, tag) {
     return this.check(
       tag,
-      Target.frame(element)
+      WDIOCheckSettings.frame(element)
         .timeout(matchTimeout)
         .fully(),
     )
@@ -243,7 +240,7 @@ class EyesWDIO extends EyesBase {
    * @return {Promise} A promise which is resolved when the validation is finished.
    */
   checkRegion(region, tag, matchTimeout) {
-    return this.check(tag, Target.region(region).timeout(matchTimeout))
+    return this.check(tag, WDIOCheckSettings.region(region).timeout(matchTimeout))
   }
 
   /**
@@ -271,7 +268,7 @@ class EyesWDIO extends EyesBase {
   checkRegionInFrame(frameNameOrId, selector, matchTimeout, tag, stitchContent) {
     return this.check(
       tag,
-      Target.region(selector, frameNameOrId)
+      WDIOCheckSettings.region(selector, frameNameOrId)
         .timeout(matchTimeout)
         .stitchContent(stitchContent),
     )
@@ -285,7 +282,7 @@ class EyesWDIO extends EyesBase {
    * @returns {Promise.<*>}
    */
   checkElementBySelector(selector, matchTimeout, tag) {
-    return this.check(tag, Target.region(selector).timeout(matchTimeout))
+    return this.check(tag, WDIOCheckSettings.region(selector).timeout(matchTimeout))
   }
 
   /**
@@ -317,7 +314,7 @@ class EyesWDIO extends EyesBase {
 
     if (targetRegion) {
       this._targetElementLocation = targetRegion.getLocation()
-      const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
+      const source = await this._controller.getSource()
       result = await super.checkWindowBase(
         new RegionProvider(targetRegion),
         name,
@@ -328,10 +325,10 @@ class EyesWDIO extends EyesBase {
     } else if (checkSettings) {
       const targetSelector = checkSettings.targetSelector
       let targetElement = checkSettings.targetElement
-      if (!targetElement && targetSelector) {
+      if (targetElement) {
+        targetElement.bind(this._driver)
+      } else if (targetSelector) {
         targetElement = await this._finder.findElement(targetSelector)
-      } else if (WDIOElement.isCompatible(targetElement)) {
-        targetElement = new WDIOElement(this._logger, this._driver, targetElement)
       }
 
       if (targetElement) {
@@ -351,7 +348,7 @@ class EyesWDIO extends EyesBase {
       } else {
         const originalPosition = await this.getPositionProvider().getState()
         await this.getPositionProvider().setPosition(Location.ZERO)
-        const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
+        const source = await this._controller.getSource()
         result = await super.checkWindowBase(
           new NullRegionProvider(),
           name,
@@ -440,7 +437,7 @@ class EyesWDIO extends EyesBase {
       }
     }
 
-    const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
+    const source = await this._controller.getSource()
     const r = await super.checkWindowBase(
       new RegionProviderImpl(),
       name,
@@ -457,139 +454,84 @@ class EyesWDIO extends EyesBase {
    * @return {Promise}
    */
   async _checkElement(name, checkSettings) {
-    const eyesElement = this._targetElement
-
+    let originalOverflow, originalScrollPosition
     this._regionToCheck = null
-    let originalPositionMemento
-
-    let result
-    const that = this
-    let originalScrollPosition, originalOverflow, error
     const originalPositionProvider = this.getPositionProvider()
+    const originalPositionMemento = await this.getPositionProvider().getState()
     const scrollPositionProvider = new ScrollPositionProvider(this._logger, this._executor)
+    try {
+      await this._ensureElementVisible(this._targetElement)
+      originalScrollPosition = await scrollPositionProvider.getCurrentPosition()
+      this._targetElementLocation = await this._targetElement.getLocation()
+      this._checkFrameOrElement = true
 
-    return this.getPositionProvider()
-      .getState()
-      .then(originalPositionMemento_ => {
-        originalPositionMemento = originalPositionMemento_
+      const displayStyle = await this._targetElement.getCssProperty('display')
+      if (displayStyle !== 'inline') {
+        this._elementPositionProvider = new ScrollElementPositionProvider(
+          this._logger,
+          this._driver,
+          this._targetElement,
+        )
+      } else {
+        this._elementPositionProvider = null
+      }
+      if (this._hideScrollbars) {
+        originalOverflow = await this._targetElement.getOverflow()
+        await this._targetElement.setOverflow('hidden')
+      }
 
-        return this._ensureElementVisible(eyesElement)
-      })
-      .then(() => {
-        return scrollPositionProvider.getCurrentPosition()
-      })
-      .then(originalScrollPosition_ => {
-        originalScrollPosition = originalScrollPosition_
-        return eyesElement.getLocation()
-      })
-      .then(pl => {
-        that._targetElementLocation = pl
-        that._checkFrameOrElement = true
+      const [[clientWidth, clientHeight], [borderLeftWidth, borderTopWidth]] = await Promise.all([
+        this._targetElement.getProperty('clientWidth', 'clientHeight'),
+        this._targetElement.getCssProperty('border-left-width', 'border-top-width'),
+      ])
 
-        return eyesElement
-          .getCssProperty('display')
-          .then(displayStyle => {
-            if (displayStyle !== 'inline') {
-              that._elementPositionProvider = new ElementPositionProvider(
-                that._logger,
-                that._driver,
-                eyesElement,
-              )
-            } else {
-              that._elementPositionProvider = null
-            }
-          })
-          .then(() => {
-            if (that._hideScrollbars) {
-              return eyesElement.getOverflow().then(originalOverflow_ => {
-                originalOverflow = originalOverflow_
-                // Set overflow to "hidden".
-                return eyesElement.setOverflow('hidden')
-              })
-            }
-          })
-          .then(async () => {
-            const [
-              [clientWidth, clientHeight],
-              [borderLeftWidth, borderTopWidth],
-            ] = await Promise.all([
-              eyesElement.getProperty('clientWidth', 'clientHeight'),
-              eyesElement.getCssProperty('border-left-width', 'border-top-width'),
-            ])
+      const elementRegion = new Region(
+        Math.round(this._targetElementLocation.getX() + Number.parseFloat(borderLeftWidth)),
+        Math.round(this._targetElementLocation.getY() + Number.parseFloat(borderTopWidth)),
+        Math.round(clientWidth),
+        Math.round(clientHeight),
+        CoordinatesType.CONTEXT_AS_IS,
+      )
 
-            const elementRegion = new Region(
-              new Location(
-                Math.round(pl.getX() + Number.parseFloat(borderLeftWidth)),
-                Math.round(pl.getY() + Number.parseFloat(borderTopWidth)),
-              ),
-              new RectangleSize(Math.round(clientWidth), Math.round(clientHeight)),
-              CoordinatesType.CONTEXT_AS_IS,
-            )
+      this._logger.verbose('Element region: ' + elementRegion)
 
-            that._logger.verbose('Element region: ' + elementRegion)
+      this._logger.verbose('replacing regionToCheck')
+      this._regionToCheck = elementRegion
 
-            that._logger.verbose('replacing regionToCheck')
-            that._regionToCheck = elementRegion
+      // todo isSizeEmpty
+      if (!(this._effectiveViewport.getWidth() <= 0 || this._effectiveViewport.getHeight() <= 0)) {
+        this._regionToCheck.intersect(this._effectiveViewport)
+      }
 
-            // todo isSizeEmpty
-            if (
-              !(that._effectiveViewport.getWidth() <= 0 || that._effectiveViewport.getHeight() <= 0)
-            ) {
-              that._regionToCheck.intersect(that._effectiveViewport)
-            }
+      const insideAFrame = this._context.frameChain.size > 0
+      if (insideAFrame && this._configuration.getStitchMode() === StitchMode.CSS) {
+        this.setPositionProvider(
+          new CssTranslateElementPositionProvider(this._logger, this._driver, this._targetElement),
+        )
+      }
 
-            const isElement = true
-            const insideAFrame = that._context.frameChain.size > 0
-            if (
-              isElement &&
-              insideAFrame &&
-              that._configuration.getStitchMode() === StitchMode.CSS
-            ) {
-              that.setPositionProvider(
-                new CssTranslateElementPositionProvider(that._logger, that._driver, eyesElement),
-              )
-            }
-
-            const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
-            return super.checkWindowBase(
-              new NullRegionProvider(),
-              name,
-              false,
-              checkSettings,
-              source,
-            )
-          })
-      })
-      .catch(error_ => {
-        error = error_
-      })
-      .then(r => {
-        result = r
-        if (originalOverflow) {
-          return eyesElement.setOverflow(originalOverflow)
-        }
-      })
-      .then(() => {
-        that._checkFrameOrElement = false
-        that.setPositionProvider(originalPositionProvider)
-        that._regionToCheck = null
-        that._elementPositionProvider = null
-        that._targetElementLocation = null
-
-        return originalPositionProvider.restoreState(originalPositionMemento)
-      })
-      .then(() => {
-        if (originalScrollPosition) {
-          // return scrollPositionProvider.setPosition(originalScrollPosition)
-        }
-      })
-      .then(() => {
-        if (error) {
-          throw error
-        }
-
-        return result
-      })
+      const source = await this._controller.getSource()
+      return await super.checkWindowBase(
+        new NullRegionProvider(),
+        name,
+        false,
+        checkSettings,
+        source,
+      )
+    } finally {
+      if (originalOverflow) {
+        await this._targetElement.setOverflow(originalOverflow)
+      }
+      this._checkFrameOrElement = false
+      this.setPositionProvider(originalPositionProvider)
+      this._regionToCheck = null
+      this._elementPositionProvider = null
+      this._targetElementLocation = null
+      await originalPositionProvider.restoreState(originalPositionMemento)
+      if (originalScrollPosition) {
+        // return scrollPositionProvider.setPosition(originalScrollPosition)
+      }
+    }
   }
 
   /**
@@ -610,7 +552,7 @@ class EyesWDIO extends EyesBase {
       }
     }
 
-    const source = await EyesWDIOUtils.getCurrentUrl(this._driver)
+    const source = await this._controller.getSource()
     const r = await super.checkWindowBase(
       new RegionProviderImpl(),
       name,
@@ -648,11 +590,10 @@ class EyesWDIO extends EyesBase {
             })
             .then(screenshotImage_ => {
               screenshotImage = screenshotImage_
-              return that._context.frames(fc)
+              // return that._context.frames(fc)
             })
             .then(() => {
-              const screenshot = new EyesWDIOScreenshot(that._logger, that, screenshotImage)
-              return screenshot.init()
+              return EyesScreenshot.fromScreenshotType(this._logger, this, screenshotImage)
             })
             .then(screenshot => {
               that._logger.verbose('replacing regionToCheck')
@@ -757,15 +698,15 @@ class EyesWDIO extends EyesBase {
    * @return {Promise}
    */
   async _tryHideScrollbars() {
-    const isMobile = await EyesWDIOUtils.isMobileDevice(this._driver)
-    if (isMobile) return
+    if (await this._controller.isMobileDevice()) return
     if (this._hideScrollbars || this._scrollRootElement) {
       const originalFrameChain = this._context.frameChain
       await this._context.frameDefault()
 
       this._logger.verbose('hiding scrollbars of default content')
       const scrollRootElement = await this.getScrollRootElement()
-      this._originalOverflow = await EyesWDIOUtils.setOverflow(
+      this._originalOverflow = await EyesUtils.setOverflow(
+        this._logger,
         this._executor,
         'hidden',
         scrollRootElement,
@@ -784,13 +725,17 @@ class EyesWDIO extends EyesBase {
    * @return {Promise}
    */
   async _tryRestoreScrollbars() {
-    const isMobile = await EyesWDIOUtils.isMobileDevice(this._driver)
-    if (isMobile) return
+    if (await this._controller.isMobileDevice()) return
     if (this._hideScrollbars) {
       const originalFrameChain = this._context.frameChain
       await this._context.frameDefault()
       const scrollRootElement = await this.getScrollRootElement()
-      await EyesWDIOUtils.setOverflow(this._executor, this._originalOverflow, scrollRootElement)
+      await EyesUtils.setOverflow(
+        this._logger,
+        this._executor,
+        this._originalOverflow,
+        scrollRootElement,
+      )
 
       for (const frame of originalFrameChain) {
         await this._context.frame(frame)
@@ -806,12 +751,10 @@ class EyesWDIO extends EyesBase {
    * @return {Promise<void>}
    */
   async _ensureElementVisible(element) {
-    if (!element) {
-      // No element? we must be checking the window.
-      return Promise.resolve()
-    }
+    // No element? we must be checking the window.
+    if (!element) return
 
-    if (EyesWDIOUtils.isMobileDevice(this._driver)) {
+    if (await this._controller.isMobileDevice()) {
       this._logger.verbose(`NATIVE context identified, skipping 'ensure element visible'`)
       return
     }
@@ -846,7 +789,8 @@ class EyesWDIO extends EyesBase {
       position = position.offsetNegative(await positionProvider.getCurrentPosition())
     }
 
-    await this._context.frames(originalFrameChain)
+    //passing array of frame elements instead of frame chain to be sure that frame metrics will be recalculated
+    await this._context.frames(originalFrameChain.toArray().map(frame => frame.element))
     return originalFrameChain
   }
 
@@ -880,14 +824,15 @@ class EyesWDIO extends EyesBase {
       this._logger.verbose('Trying to extract device pixel ratio...')
 
       const that = this
-      return EyesWDIOUtils.getDevicePixelRatio(that._executor)
+      return EyesUtils.getDevicePixelRatio(this._logger, this._driver)
         .then(ratio => {
           that._devicePixelRatio = ratio
         })
         .catch(async err => {
-          if (EyesWDIOUtils.isMobileDevice(that._driver)) {
+          if (await this._controller.isMobileDevice()) {
             const viewportSize = await this.getViewportSize()
-            that._devicePixelRatio = await EyesWDIOUtils.getMobilePixelRatio(
+            that._devicePixelRatio = await EyesUtils.getMobilePixelRatio(
+              this._logger,
               this._driver,
               viewportSize,
             )
@@ -1069,7 +1014,9 @@ class EyesWDIO extends EyesBase {
    */
   async getViewportSize() {
     const viewportSize = this._viewportSizeHandler.get()
-    return viewportSize ? viewportSize : EyesWDIOUtils.getTopContextViewportSize(this._driver)
+    return viewportSize
+      ? viewportSize
+      : EyesUtils.getTopContextViewportSize(this._logger, this._driver)
   }
 
   /**
@@ -1084,25 +1031,15 @@ class EyesWDIO extends EyesBase {
       return Promise.resolve()
     }
 
-    if (!EyesWDIOUtils.isMobileDevice(this._driver)) {
+    if (!(await this._controller.isMobileDevice())) {
       ArgumentGuard.notNull(viewportSize, 'viewportSize')
       viewportSize = new RectangleSize(viewportSize)
-
-      const originalFrame = this._context.frameChain
-      await this._context.frameDefault()
       try {
-        await EyesWDIOUtils.setViewportSize(
-          this._logger,
-          this._driver,
-          new RectangleSize(viewportSize),
-        )
+        await EyesUtils.setViewportSize(this._logger, this._driver, new RectangleSize(viewportSize))
         this._effectiveViewport = new Region(Location.ZERO, viewportSize)
       } catch (e) {
-        await this._context.frames(originalFrame)
         throw new TestFailedError('Failed to set the viewport size', e)
       }
-
-      await this._context.frames(originalFrame)
     }
 
     this._viewportSizeHandler.set(new RectangleSize(viewportSize))
@@ -1182,7 +1119,7 @@ class EyesWDIO extends EyesBase {
 
   /**
    *
-   * @returns {Promise.<EyesWDIOScreenshot>}
+   * @returns {Promise<EyesScreenshot>}
    * @override
    */
   async getScreenshot() {
@@ -1220,9 +1157,9 @@ class EyesWDIO extends EyesBase {
     if (this._checkFrameOrElement) {
       this._logger.verbose('Check frame/element requested')
 
-      await this._context.frames(originalFrameChain)
+      // await this._context.frames(originalFrameChain)
 
-      let scrolledElement = this.getElementPositionProvider().element
+      let scrolledElement = this._targetElement
       if (!scrolledElement) {
         scrolledElement = await this._finder.findElement('html')
       }
@@ -1241,19 +1178,14 @@ class EyesWDIO extends EyesBase {
         entireFrameOrElement.getWidth(),
         entireFrameOrElement.getHeight(),
       )
-      result = await EyesWDIOScreenshot.fromFrameSize(
-        this._logger,
-        this,
-        entireFrameOrElement,
-        size,
-      )
+      result = await EyesScreenshot.fromFrameSize(this._logger, this, entireFrameOrElement, size)
     } else if (this.getForceFullPageScreenshot() || this._stitchContent) {
       this._logger.verbose('Full page screenshot requested.')
 
       // Save the current frame path.
       const originalFramePosition =
         originalFrameChain.size > 0
-          ? originalFrameChain.getTopFrameScrollPosition()
+          ? originalFrameChain.getTopFrameScrollLocation()
           : new Location(Location.ZERO)
 
       await this._context.frameDefault()
@@ -1270,7 +1202,7 @@ class EyesWDIO extends EyesBase {
       )
 
       await this._context.frames(originalFrameChain)
-      result = await EyesWDIOScreenshot.fromScreenshotType(
+      result = await EyesScreenshot.fromScreenshotType(
         this._logger,
         this,
         fullPageImage,
@@ -1300,7 +1232,7 @@ class EyesWDIO extends EyesBase {
       }
 
       this._logger.verbose('Creating screenshot object...')
-      result = await EyesWDIOScreenshot.fromScreenshotType(this._logger, this, screenshotImage)
+      result = await EyesScreenshot.fromScreenshotType(this._logger, this, screenshotImage)
     }
 
     if (this.getHideCaret() && activeElement != null) {
@@ -1330,7 +1262,7 @@ class EyesWDIO extends EyesBase {
     const appEnv = await super.getAppEnvironment()
 
     if (!appEnv._os) {
-      const os = await EyesWDIOUtils.getOS(this._driver)
+      const os = await this._controller.getMobileOS(this._driver)
       if (os) {
         appEnv.setOs(os)
       }
@@ -1340,7 +1272,7 @@ class EyesWDIO extends EyesBase {
 
   async getInferredEnvironment() {
     try {
-      const userAgent = await EyesWDIOUtils.getUserAgent(this._executor)
+      const userAgent = await this._controller.getUserAgent()
       return userAgent ? 'useragent:' + userAgent : userAgent
     } catch (err) {
       return null
@@ -1398,7 +1330,7 @@ class EyesWDIO extends EyesBase {
   async getScrollRootElement() {
     let scrollRootElement = null
 
-    if (!EyesWDIOUtils.isMobileDevice(this._driver)) {
+    if (!(await this._controller.isMobileDevice())) {
       scrollRootElement = this._scrollRootElement
         ? this._scrollRootElement
         : await this._finder.findElement('html')
@@ -1418,13 +1350,13 @@ class EyesWDIO extends EyesBase {
     if (!this._driver) {
       return undefined
     }
-    return EyesWDIOUtils.getAUTSessionId(this._driver)
+    return this._controller.getAUTSessionId()
   }
 
   async getTitle() {
     if (!this._dontGetTitle) {
       try {
-        return await EyesWDIOUtils.getTitle(this._driver)
+        return await this._controller.getTitle()
       } catch (e) {
         this._logger.verbose(`failed (${e})`)
         this._dontGetTitle = true
@@ -1589,8 +1521,8 @@ class EyesWDIO extends EyesBase {
   /**
    * @return {boolean}
    */
-  getSendDom() {
-    return !EyesWDIOUtils.isMobileDevice(this._driver) && super.getSendDom()
+  async getSendDom() {
+    return !(await this._controller.isMobileDevice()) && super.getSendDom()
   }
 
   async getAndSaveRenderingInfo() {
