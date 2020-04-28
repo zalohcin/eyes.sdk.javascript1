@@ -13,23 +13,23 @@ describe(appName, async () => {
   it('TestSuccess', async () => {
     let runner = new VisualGridRunner(10)
 
-    let driver = await getDriver('CHROME')
-    await driver.get('https://applitools.com/helloworld')
+    let browser = await getDriver('CHROME')
+    await browser.url('https://applitools.com/helloworld')
     let eyes
     try {
       for (let viewport of viewportList) {
-        eyes = await initEyes(undefined, driver, viewport, 'TestSuccess')
+        eyes = await initEyes(undefined, browser, viewport, 'TestSuccess')
         await eyes.check('check', Target.window().fully())
         await eyes.closeAsync()
 
-        eyes = await initEyes(runner, driver, viewport, 'TestSuccess')
+        eyes = await initEyes(runner, browser, viewport, 'TestSuccess')
         await eyes.check('check', Target.window().fully())
         await eyes.closeAsync()
       }
       let results = await runner.getAllTestResults()
       assert.deepStrictEqual(results.getAllResults().length, 4)
     } finally {
-      await driver.quit()
+      await browser.deleteSession()
       await eyes.abortIfNotClosed()
     }
   })
@@ -37,25 +37,26 @@ describe(appName, async () => {
   it.skip('TestFailure', async () => {
     let runner = new VisualGridRunner(10)
 
-    let driver = await getDriver('CHROME')
-    await driver.get('https://applitools.com/helloworld')
+    let browser = await getDriver('CHROME')
+    await browser.url('https://applitools.com/helloworld')
     let eyes
     try {
       let resultsTotal = 0
       for (let viewport of viewportList) {
-        eyes = await initEyes(undefined, driver, viewport, 'TestFailure')
+        eyes = await initEyes(undefined, browser, viewport, 'TestFailure')
         await eyes.check('check', Target.window().fully())
         await eyes.close()
 
-        eyes = await initEyes(runner, driver, viewport, 'TestFailure')
+        eyes = await initEyes(runner, browser, viewport, 'TestFailure')
         await eyes.check('check', Target.window().fully())
         await eyes.close()
         let results = await runner.getAllTestResults()
-        resultsTotal += results.getAllResults().length
+        let allResults = results.getAllResults()
+        resultsTotal += allResults.length
       }
       assert.deepStrictEqual(resultsTotal, 4)
     } finally {
-      await driver.quit()
+      await browser.deleteSession()
       await eyes.abortIfNotClosed()
     }
   })

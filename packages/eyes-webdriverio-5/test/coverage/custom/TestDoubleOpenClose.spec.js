@@ -2,26 +2,26 @@
 const assert = require('assert')
 const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
 const {Target, StitchMode, ClassicRunner, VisualGridRunner, Eyes} = require('../../../index')
-const appName = 'Eyes Selenium SDK - Double Open Close'
+const appName = 'Applitools Eyes SDK'
 const batch = getBatch()
 describe(appName, () => {
-  let webDriver, eyes
+  let browser, eyes
 
   afterEach(async () => {
     await eyes.abortIfNotClosed()
-    await webDriver.quit()
+    await browser.deleteSession()
   })
   describe('Classic', () => {
     let runner
     beforeEach(async () => {
-      webDriver = await getDriver('CHROME')
+      browser = await getDriver('CHROME')
       ;({eyes, runner} = await getEyes('classic', StitchMode.CSS))
       eyes.setBatch(batch)
     })
 
     it('TestDoubleOpenCheckClose', async () => {
-      await webDriver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
-      await eyes.open(webDriver, appName, 'TestDoubleOpenCheckClose', {
+      await browser.url('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
+      await eyes.open(browser, appName, 'TestDoubleOpenCheckClose', {
         width: 1200,
         height: 800,
       })
@@ -33,7 +33,7 @@ describe(appName, () => {
       )
       await eyes.close(false)
 
-      await eyes.open(webDriver, appName, 'TestDoubleOpenCheckClose', {
+      await eyes.open(browser, appName, 'TestDoubleOpenCheckClose', {
         width: 1200,
         height: 800,
       })
@@ -50,8 +50,8 @@ describe(appName, () => {
     })
 
     it('TestDoubleOpenCheckCloseAsync', async () => {
-      await webDriver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
-      await eyes.open(webDriver, appName, 'TestDoubleOpenCheckCloseAsync', {
+      await browser.url('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
+      await eyes.open(browser, appName, 'TestDoubleOpenCheckCloseAsync', {
         width: 1200,
         height: 800,
       })
@@ -62,7 +62,7 @@ describe(appName, () => {
           .ignoreDisplacements(false),
       )
       await eyes.closeAsync(false)
-      await eyes.open(webDriver, appName, 'TestDoubleOpenCheckCloseAsync', {
+      await eyes.open(browser, appName, 'TestDoubleOpenCheckCloseAsync', {
         width: 1200,
         height: 800,
       })
@@ -82,14 +82,14 @@ describe(appName, () => {
   describe('VG', () => {
     let runner
     beforeEach(async () => {
-      webDriver = await getDriver('CHROME')
+      browser = await getDriver('CHROME')
       ;({eyes, runner} = await getEyes('VG'))
       eyes.setBatch(batch)
     })
 
     it.skip('TestDoubleOpenCheckClose', async () => {
-      await webDriver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
-      await eyes.open(webDriver, appName, 'TestDoubleOpenCheckClose_VG', {
+      await browser.url('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
+      await eyes.open(browser, appName, 'TestDoubleOpenCheckClose_VG', {
         width: 1200,
         height: 800,
       })
@@ -101,7 +101,7 @@ describe(appName, () => {
       )
       await eyes.close(false)
 
-      await eyes.open(webDriver, appName, 'TestDoubleOpenCheckClose_VG', {
+      await eyes.open(browser, appName, 'TestDoubleOpenCheckClose_VG', {
         width: 1200,
         height: 800,
       })
@@ -118,8 +118,8 @@ describe(appName, () => {
     })
 
     it('TestDoubleCheckDontGetAllResults', async () => {
-      await webDriver.get('https://applitools.com/helloworld')
-      await eyes.open(webDriver, appName, 'TestDoubleCheckDontGetAllResults_VG', {
+      await browser.url('https://applitools.com/helloworld')
+      await eyes.open(browser, appName, 'TestDoubleCheckDontGetAllResults_VG', {
         width: 1200,
         height: 800,
       })
@@ -131,21 +131,21 @@ describe(appName, () => {
 })
 
 describe(appName, () => {
-  let webDriver
+  let browser
   beforeEach(async () => {
-    webDriver = await getDriver('CHROME')
+    browser = await getDriver('CHROME')
   })
   afterEach(async () => {
-    await webDriver.quit()
+    await browser.deleteSession()
   })
   it('TestDoubleOpenCheckCloseAsyncWithDifferentInstances', async () => {
-    await webDriver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
+    await browser.url('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
     let runner = new ClassicRunner()
 
     let eyes1 = await makeCheck(
       runner,
       batch,
-      webDriver,
+      browser,
       appName,
       'TestDoubleOpenCheckCloseAsyncWithDifferentInstances',
       'Step 1',
@@ -155,7 +155,7 @@ describe(appName, () => {
     let eyes2 = await makeCheck(
       runner,
       batch,
-      webDriver,
+      browser,
       appName,
       'TestDoubleOpenCheckCloseAsyncWithDifferentInstances',
       'Step 1',
@@ -166,14 +166,14 @@ describe(appName, () => {
     assert.deepStrictEqual(allTestResults.getAllResults().length, 2)
   })
 
-  it('TestDoubleOpenCheckAsyncWithDifferentInstances', async () => {
-    await webDriver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
+  it('TestDoubleOpenCheckCloseWithDifferentInstances', async () => {
+    await browser.url('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
     let runner = new ClassicRunner()
 
     let eyes1 = await makeCheck(
       runner,
       batch,
-      webDriver,
+      browser,
       appName,
       'TestDoubleOpenCheckCloseWithDifferentInstances',
       'Step 1',
@@ -183,9 +183,37 @@ describe(appName, () => {
     let eyes2 = await makeCheck(
       runner,
       batch,
-      webDriver,
+      browser,
       appName,
       'TestDoubleOpenCheckCloseWithDifferentInstances',
+      'Step 1',
+    )
+    await eyes2.close(false)
+
+    let allTestResults = await runner.getAllTestResults(false)
+    assert.deepStrictEqual(allTestResults.getAllResults().length, 2)
+  })
+
+  it('TestDoubleOpenCheckCloseWithDifferentInstances_VG', async () => {
+    await browser.url('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
+    let runner = new VisualGridRunner()
+
+    let eyes1 = await makeCheck(
+      runner,
+      batch,
+      browser,
+      appName,
+      'TestDoubleOpenCheckCloseWithDifferentInstances_VG',
+      'Step 1',
+    )
+    await eyes1.close(false)
+
+    let eyes2 = await makeCheck(
+      runner,
+      batch,
+      browser,
+      appName,
+      'TestDoubleOpenCheckCloseWithDifferentInstances_VG',
       'Step 1',
     )
     await eyes2.close(false)
@@ -195,13 +223,13 @@ describe(appName, () => {
   })
 
   it('TestDoubleOpenCheckCloseAsyncWithDifferentInstances_VG', async () => {
-    await webDriver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
+    await browser.url('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
     let runner = new VisualGridRunner()
 
     let eyes1 = await makeCheck(
       runner,
       batch,
-      webDriver,
+      browser,
       appName,
       'TestDoubleOpenCheckCloseAsyncWithDifferentInstances_VG',
       'Step 1',
@@ -211,40 +239,12 @@ describe(appName, () => {
     let eyes2 = await makeCheck(
       runner,
       batch,
-      webDriver,
+      browser,
       appName,
       'TestDoubleOpenCheckCloseAsyncWithDifferentInstances_VG',
       'Step 1',
     )
     await eyes2.closeAsync(false)
-
-    let allTestResults = await runner.getAllTestResults(false)
-    assert.deepStrictEqual(allTestResults.getAllResults().length, 2)
-  })
-
-  it('TestDoubleOpenCheckCloseWithDifferentInstances_VG', async () => {
-    await webDriver.get('https://applitools.github.io/demo/TestPages/VisualGridTestPage/')
-    let runner = new VisualGridRunner()
-
-    let eyes1 = await makeCheck(
-      runner,
-      batch,
-      webDriver,
-      appName,
-      'TestDoubleOpenCheckCloseWithDifferentInstances_VG',
-      'Step 1',
-    )
-    await eyes1.close(false)
-
-    let eyes2 = await makeCheck(
-      runner,
-      batch,
-      webDriver,
-      appName,
-      'TestDoubleOpenCheckCloseWithDifferentInstances_VG',
-      'Step 1',
-    )
-    await eyes2.close(false)
 
     let allTestResults = await runner.getAllTestResults(false)
     assert.deepStrictEqual(allTestResults.getAllResults().length, 2)

@@ -1,7 +1,7 @@
 'use strict'
-const {Builder} = require('selenium-webdriver')
+const {remote} = require('webdriverio')
 const {Eyes, ClassicRunner, VisualGridRunner, StitchMode, BatchInfo} = require('../../../../index')
-const defaultArgs = process.env.NO_HEADLESS ? [] : ['headless']
+const defaultArgs = process.env.HEADLESS === 'true' ? ['headless'] : []
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
@@ -20,11 +20,14 @@ const Browsers = {
   },
 }
 
-const batch = new BatchInfo('JS Coverage Tests - eyes-selenium')
+const batch = new BatchInfo('WDIO 5 Coverage Tests')
 
 async function getDriver(browser) {
   let capabilities = Browsers[browser]
-  return new Builder().withCapabilities(capabilities).build()
+  return remote({
+    logLevel: 'silent',
+    capabilities: capabilities,
+  })
 }
 
 function getEyes(runnerType, stitchMode, options) {
