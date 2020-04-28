@@ -38,6 +38,7 @@ function makeCoverageTests({
   return {
     'Test Abort': async () => {
       await visit('data:text/html,<p>Test</p>')
+      await open({appName: 'Test Abort', viewportSize: '1200x800'})
       await checkWindow()
       await sleep(15000)
       await abort()
