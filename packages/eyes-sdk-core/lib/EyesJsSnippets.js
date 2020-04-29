@@ -24,7 +24,10 @@ const GET_CONTENT_ENTIRE_SIZE = `
 
 const GET_ELEMENT_ENTIRE_SIZE = `
   var element = arguments[0];
-  return [element.scrollWidth, element.scrollHeight];
+  return [
+    Math.max(element.clientWidth, element.scrollWidth),
+    Math.max(element.clientHeight, element.scrollHeight)
+  ];
 `
 
 const GET_SCROLL_POSITION = `

@@ -1169,6 +1169,7 @@ class EyesWDIO extends EyesBase {
         'var e = arguments[0]; if (e != null) e.setAttribute("data-applitools-scroll", "true");',
         scrolledElement,
       )
+
       const entireFrameOrElement = await fullPageCapture.getStitchedRegion(
         this._regionToCheck,
         null,

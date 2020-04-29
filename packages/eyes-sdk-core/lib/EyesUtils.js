@@ -6,7 +6,7 @@ const {
   MutableImage,
   EyesError,
 } = require('@applitools/eyes-common')
-const EyesDriverOperationError = require('./errors/EyesDriverOperationError')
+const {EyesDriverOperationError} = require('./errors/EyesDriverOperationError')
 const EyesJsSnippets = require('./EyesJsSnippets')
 
 async function getViewportSize(_logger, {executor}) {
@@ -205,9 +205,12 @@ async function getCurrentFrameContentEntireSize(_logger, executor) {
   }
 }
 
-async function getElementEntireSize(_logger, executor) {
+async function getElementEntireSize(_logger, executor, element) {
   try {
-    const [width, height] = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_ENTIRE_SIZE)
+    const [width, height] = await executor.executeScript(
+      EyesJsSnippets.GET_ELEMENT_ENTIRE_SIZE,
+      element,
+    )
     return new RectangleSize(Number.parseInt(width, 10) || 0, Number.parseInt(height, 10) || 0)
   } catch (err) {
     throw new EyesDriverOperationError('Failed to extract element size!', err)
