@@ -16,7 +16,7 @@ const {
   EyesUtils,
 } = require('@applitools/eyes-sdk-core')
 
-const {Target} = require('../index')
+const Target = require('./WDIOCheckSettings')
 
 const WDIODriver = require('./wrappers/WDIODriver')
 
@@ -299,6 +299,15 @@ class EyesVisualGrid extends EyesBase {
 
     const [region, selector] = await Promise.all([targetRegion, targetSelector])
     return {region, selector}
+  }
+
+  async checkWindow(tag, matchTimeout, fully = false) {
+    return this.check(
+      tag,
+      Target.window()
+        .timeout(matchTimeout)
+        .fully(fully),
+    )
   }
 
   /**
