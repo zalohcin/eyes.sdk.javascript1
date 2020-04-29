@@ -19,7 +19,7 @@ describe('TestProxy', () => {
   })
 
   async function checkNetworkPassThroughProxy() {
-    let webDriver = await getDriver('CHROME')
+    let browser = await getDriver('CHROME')
     let {eyes} = await getEyes('VG')
     try {
       let conf = new Configuration()
@@ -29,20 +29,19 @@ describe('TestProxy', () => {
       conf.setTestName('proxy test')
       eyes.setConfiguration(conf)
 
-      await webDriver.get('https://applitools.com/helloworld')
-      await webDriver.sleep(2000)
-      await eyes.open(webDriver)
+      await browser.url('https://applitools.com/helloworld')
+      await eyes.open(browser)
       await eyes.checkWindow()
       await eyes.close()
       await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
     } finally {
       await eyes.abortIfNotClosed()
-      await webDriver.quit()
+      await browser.deleteSession()
     }
   }
 
   async function checkNetworkFailIfNoProxy() {
-    let webDriver = await getDriver('CHROME')
+    let browser = await getDriver('CHROME')
     let {eyes} = await getEyes('VG')
     try {
       let conf = new Configuration()
@@ -51,12 +50,12 @@ describe('TestProxy', () => {
       conf.setAppName('Eyes Selenium SDK - Test Proxy')
       conf.setTestName('proxy test')
       eyes.setConfiguration(conf)
-      await expect(eyes.open(webDriver)).to.be.rejectedWith(
+      await expect(eyes.open(browser)).to.be.rejectedWith(
         Error,
         'tunneling socket could not be established',
       )
     } finally {
-      await webDriver.quit()
+      await browser.deleteSession()
       if (eyes.getIsOpen()) {
         await eyes.abort()
       }

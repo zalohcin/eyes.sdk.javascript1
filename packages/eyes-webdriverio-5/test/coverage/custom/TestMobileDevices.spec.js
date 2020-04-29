@@ -1,18 +1,11 @@
 'use strict'
-const {Eyes, Target, StitchMode, ConsoleLogHandler} = require('../../../index')
-const {Builder} = require('selenium-webdriver')
-const {sauceUrl, batch} = require('./util/TestSetup')
-const sauceCaps = {
-  browserName: 'safari',
-  platformName: 'iOS',
-  platformVersion: '11.0',
-  deviceName: 'iPad Air 2 Simulator',
-  deviceOrientation: 'portrait',
-  username: process.env.SAUCE_USERNAME,
-  accessKey: process.env.SAUCE_ACCESS_KEY,
-  idleTimeout: 360,
-}
+const {Eyes, Target, StitchMode} = require('../../../index')
+const {remote} = require('webdriverio')
+const {getBatch} = require('./util/TestSetup')
+const batch = getBatch()
 
+const iPhoneAgent =
+  'Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1'
 const iPadAgent11 =
   'Mozilla/5.0 (iPad; CPU OS 11_0_1 like Mac OS X) AppleWebKit/604.2.10 (KHTML, like Gecko) Version/11.0 Mobile/15A8401 Safari/604.1'
 const iPadAgent10 =
@@ -61,8 +54,6 @@ let iPadPortrait = [
     name: 'iPad (5th generation) Simulator 11.0',
   },
 ]
-const iPhoneAgent =
-  'Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1'
 let iPhoneLandscape = [
   {
     mobileEmulation: getMobileEmulation(iPhoneAgent, 724, 304, 3),
@@ -145,7 +136,7 @@ const data = [
   ...addOrientation(iPhoneLandscape, 'Landscape'),
   ...addOrientation(iPhonePortrait, 'Portrait'),
 ]
-describe('TestMobileDevices', () => {
+describe.skip('TestMobileDevices', () => {
   let page = ['mobile', 'desktop', 'scrolled_mobile']
   page.forEach(page => {
     describe(`${page}`, () => {
@@ -154,63 +145,35 @@ describe('TestMobileDevices', () => {
       })
       data.forEach(device => {
         it(`${device.name}`, async () => {
-          let webDriver, eyes
+          let browser, eyes
           try {
-            webDriver = await new Builder()
-              .withCapabilities(getDeviceEmulationCaps(device.mobileEmulation))
-              .build()
+            browser = await remote({
+              logLevel: 'silent',
+              capabilities: getDeviceEmulationCaps(device.mobileEmulation),
+            })
             eyes = new Eyes()
             eyes.setBatch(batch)
             eyes.setSaveNewTests(false)
-            eyes.StitchMode = StitchMode.CSS
+            eyes.StitchMode = StitchMode.SCROLL
             eyes.addProperty('Orientation', device.orientation.toLowerCase())
             eyes.addProperty('Page', page)
-            webDriver.get(
+            browser.url(
               `https://applitools.github.io/demo/TestPages/DynamicResolution/${page}.html`,
             )
             await eyes.open(
-              webDriver,
+              browser,
               'Eyes Selenium SDK - iOS Safari Cropping',
               `${device.name} ${device.orientation} ${page} fully`,
             )
             await eyes.check('step 1', Target.window().fully())
             await eyes.close()
           } finally {
-            await webDriver.quit()
+            await browser.deleteSession()
             await eyes.abortIfNotClosed()
           }
         })
       })
     })
-  })
-
-  it.skip('testSauce', async () => {
-    let webDriver, eyes
-    try {
-      webDriver = await new Builder()
-        .withCapabilities(sauceCaps)
-        .usingServer(sauceUrl)
-        .build()
-      let page = 'mobile'
-      eyes = new Eyes()
-      eyes.setBatch(batch)
-      eyes.setSaveNewTests(false)
-      eyes.StitchMode = StitchMode.CSS
-      eyes.addProperty('Orientation', 'portrait')
-      eyes.addProperty('Page', page)
-      eyes.setLogHandler(new ConsoleLogHandler(true))
-      webDriver.get(`https://applitools.github.io/demo/TestPages/DynamicResolution/${page}.html`)
-      await eyes.open(
-        webDriver,
-        'Eyes Selenium SDK - iOS Safari Cropping',
-        'iPad Air 2 Simulator 10.3 Portrait mobile fully',
-      )
-      await eyes.check('step 1', Target.window().fully())
-      await eyes.close()
-    } finally {
-      await webDriver.quit()
-      await eyes.abortIfNotClosed()
-    }
   })
 })
 
@@ -228,6 +191,7 @@ function addOrientation(data, orientation) {
   data = data.map(device => ({...device, orientation: orientation}))
   return data
 }
+
 function getDeviceEmulationCaps(mobileEmulation) {
   return {
     browserName: 'chrome',

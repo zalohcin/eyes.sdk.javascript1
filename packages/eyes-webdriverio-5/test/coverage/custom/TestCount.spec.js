@@ -1,15 +1,28 @@
 'use strict'
 const assert = require('assert')
-const {Target, Configuration} = require('../../../index')
-const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
-const batch = getBatch()
+const {getDriver} = require('./util/TestSetup')
+const {remote} = require('webdriverio')
+const {Target, Configuration, BatchInfo, Eyes, VisualGridRunner} = require('../../../index')
+const batch = new BatchInfo('WebdriverIO 5 tests')
 describe('TestCounts', () => {
-  let driver, eyes, runner
+  let browser, eyes, runner
   beforeEach(async () => {
-    driver = await getDriver('CHROME')
-    await driver.get('https://applitools.com/helloworld')
-    ;({eyes, runner} = await getEyes('VG'))
+    browser = await getDriver('CHROME')
+    await browser.url('https://applitools.com/helloworld')
+    runner = new VisualGridRunner(10)
+    eyes = new Eyes(runner)
+    eyes.setParentBranchName('master')
     await eyes.setSendDom(false)
+  })
+
+  it('Test_VGTestsCount_1', async () => {
+    await eyes.setBatch(batch)
+    await eyes.setBranchName('master')
+    await eyes.open(browser, 'Test Count', 'Test_VGTestsCount_1', {width: 640, height: 480})
+    await eyes.check('Test', Target.window())
+    await eyes.close()
+    let results = await runner.getAllTestResults()
+    assert.deepStrictEqual(1, results.getAllResults().length)
   })
 
   it('Test_VGTestsCount_2', async () => {
@@ -19,7 +32,7 @@ describe('TestCounts', () => {
     conf.addBrowser(1024, 768)
     conf.setBranchName('master')
     eyes.setConfiguration(conf)
-    await eyes.open(driver, 'Test Count', 'Test_VGTestsCount_2')
+    await eyes.open(browser, 'Test Count', 'Test_VGTestsCount_2')
     await eyes.check('Test', Target.window())
     await eyes.close()
     let results = await runner.getAllTestResults()
@@ -35,7 +48,7 @@ describe('TestCounts', () => {
     conf.setTestName('Test_VGTestsCount_3')
     conf.setBranchName('master')
     eyes.setConfiguration(conf)
-    await eyes.open(driver)
+    await eyes.open(browser)
     await eyes.check('Test', Target.window())
     await eyes.close()
     let results = await runner.getAllTestResults()
@@ -49,7 +62,7 @@ describe('TestCounts', () => {
     conf.setTestName('Test_VGTestsCount_4')
     conf.setBranchName('master')
     eyes.setConfiguration(conf)
-    await eyes.open(driver)
+    await eyes.open(browser)
     await eyes.check('Test', Target.window())
     await eyes.close()
     let results = await runner.getAllTestResults()
@@ -63,7 +76,7 @@ describe('TestCounts', () => {
     conf.addBrowser(1024, 768)
     conf.setBranchName('master')
     eyes.setConfiguration(conf)
-    await eyes.open(driver, 'Test Count', 'Test_VGTestsCount_5', {width: 640, height: 480})
+    await eyes.open(browser, 'Test Count', 'Test_VGTestsCount_5', {width: 640, height: 480})
     await eyes.check('Test', Target.window())
     await eyes.close()
     let results = await runner.getAllTestResults()
@@ -71,7 +84,7 @@ describe('TestCounts', () => {
   })
 
   afterEach(async () => {
-    await driver.quit()
+    await browser.deleteSession()
     await eyes.abortIfNotClosed()
   })
 })

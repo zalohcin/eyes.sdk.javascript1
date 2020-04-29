@@ -4,16 +4,16 @@ const {getDriver, getBatch} = require('./util/TestSetup')
 const batch = getBatch()
 
 describe('TestRenderings', async () => {
-  let webDriver, eyes, runner
+  let browser, eyes, runner
 
   beforeEach(async () => {
-    webDriver = await getDriver('CHROME')
+    browser = await getDriver('CHROME')
     runner = new VisualGridRunner(30)
     eyes = new Eyes(runner)
     eyes.setBranchName('master')
   })
   afterEach(async () => {
-    await webDriver.quit()
+    await browser.deleteSession()
     await eyes.abortIfNotClosed()
   })
 
@@ -24,8 +24,8 @@ describe('TestRenderings', async () => {
     conf.setBatch(batch)
     conf.addDeviceEmulation(DeviceName.Galaxy_S5)
     eyes.setConfiguration(conf)
-    await eyes.open(webDriver)
-    await webDriver.get('https://applitools.github.io/demo/TestPages/DynamicResolution/mobile.html')
+    await eyes.open(browser)
+    await browser.url('https://applitools.github.io/demo/TestPages/DynamicResolution/mobile.html')
     await eyes.check('Test Mobile Only', Target.window().fully())
     await eyes.close()
     await runner.getAllTestResults()
