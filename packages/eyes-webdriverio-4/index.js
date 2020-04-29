@@ -1,8 +1,8 @@
 const core = require('@applitools/eyes-sdk-core')
 
 exports.Eyes = require('./src/Eyes').Eyes
-exports.EyesWDIO = require('./src/EyesWDIO').EyesWDIO
-exports.EyesVisualGrid = require('./src/EyesVisualGrid').EyesVisualGrid
+exports.EyesWDIO = require('./src/EyesWDIO')
+exports.EyesVisualGrid = require('./src/EyesVisualGrid')
 exports.By = require('./src/By')
 exports.Target = require('./src/WDIOCheckSettings')
 exports.WebdriverioCheckSettings = require('./src/WDIOCheckSettings')

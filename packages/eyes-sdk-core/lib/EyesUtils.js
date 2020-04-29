@@ -7,7 +7,7 @@ const {
   MutableImage,
   EyesError,
 } = require('@applitools/eyes-common')
-const EyesDriverOperationError = require('./errors/EyesDriverOperationError')
+const {EyesDriverOperationError} = require('./errors/EyesDriverOperationError')
 const EyesJsSnippets = require('./EyesJsSnippets')
 
 async function getViewportSize(_logger, {executor}) {
@@ -214,9 +214,12 @@ async function getCurrentFrameContentEntireSize(_logger, executor) {
   }
 }
 
-async function getElementEntireSize(_logger, executor) {
+async function getElementEntireSize(_logger, executor, element) {
   try {
-    const [width, height] = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_ENTIRE_SIZE)
+    const [width, height] = await executor.executeScript(
+      EyesJsSnippets.GET_ELEMENT_ENTIRE_SIZE,
+      element,
+    )
     return new RectangleSize(Number.parseInt(width, 10) || 0, Number.parseInt(height, 10) || 0)
   } catch (err) {
     throw new EyesDriverOperationError('Failed to extract element size!', err)
@@ -245,7 +248,11 @@ async function getScrollLocation(_logger, executor, element) {
 }
 
 async function scrollTo(_logger, executor, location, element) {
-  return executor.executeScript(EyesJsSnippets.SCROLL_TO(location.getX(), location.getY()), element)
+  const [x, y] = await executor.executeScript(
+    EyesJsSnippets.SCROLL_TO(location.getX(), location.getY()),
+    element,
+  )
+  return new Location(Math.ceil(Number.parseFloat(x)) || 0, Math.ceil(Number.parseFloat(y)) || 0)
 }
 
 async function getTransforms(_logger, executor, element) {
@@ -275,10 +282,19 @@ async function getTranslateLocation(_logger, executor, element) {
 }
 
 async function translateTo(_logger, executor, location, element) {
-  return executor.executeScript(
+  await executor.executeScript(
     EyesJsSnippets.TRANSLATE_TO(location.getX(), location.getY()),
     element,
   )
+  return location
+}
+
+async function getScrollRootElement(_logger, executor) {
+  return executor.executeScript(EyesJsSnippets.GET_SCROLL_ROOT_ELEMENT)
+}
+
+async function markScrollRootElement(_logger, executor, element) {
+  return executor.executorScript(EyesJsSnippets.MARK_SCROLL_ROOT_ELEMENT, element)
 }
 
 async function getOverflow(_logger, executor, element) {
@@ -300,6 +316,22 @@ async function setOverflow(_logger, executor, overflow, element) {
     return result
   } catch (err) {
     throw new EyesError('Failed to set overflow', err)
+  }
+}
+
+async function blurElement(logger, executor, element) {
+  try {
+    return await executor.executeScript(EyesJsSnippets.BLUR_ELEMENT, element)
+  } catch (err) {
+    logger.verbose(`WARNING: Cannot hide caret! ${err}`)
+  }
+}
+
+async function focusElement(logger, executor, element) {
+  try {
+    return await executor.executeScript(EyesJsSnippets.FOCUS_ELEMENT, element)
+  } catch (err) {
+    logger.verbose(`WARNING: Cannot hide caret! ${err}`)
   }
 }
 
@@ -353,7 +385,6 @@ async function ensureElementVisible(
   logger,
   {controller, context, executor},
   positionProvider,
-  effectiveViewportRect,
   element,
 ) {
   if (!element) return
@@ -361,41 +392,35 @@ async function ensureElementVisible(
     logger.verbose(`NATIVE context identified, skipping 'ensure element visible'`)
     return
   }
+  const frameChain = context.frameChain
   const elementFrameRect = await element.getBounds()
-  const frameOffset = context.frameChain.getCurrentFrameOffset()
+  const frameOffset = frameChain.getCurrentFrameOffset()
   const elementViewportRect = elementFrameRect.offset(frameOffset.getX(), frameOffset.getY())
   const viewportRect = await getTopContextViewportRect(logger, {controller, context, executor})
   if (!viewportRect.contains(elementViewportRect)) {
-    const intersectedEffectiveViewportRect = await ensureFrameVisible(
-      logger,
-      context,
-      positionProvider,
-      effectiveViewportRect,
-    )
+    const effectiveViewportRect = await ensureFrameVisible(logger, context, positionProvider)
     const elementLocation = await element.getLocation()
-    await positionProvider.setPosition(elementLocation)
-    return intersectedEffectiveViewportRect
+    const scrollRootElement = frameChain.current ? frameChain.current.scrollRootElement : null
+    await positionProvider.setPosition(elementLocation, scrollRootElement)
+    return effectiveViewportRect
   }
-  return effectiveViewportRect
 }
 
-async function ensureFrameVisible(_logger, context, positionProvider, effectiveViewportRect) {
-  const originalFrameChain = context.frameChain
-  const intersectedEffectiveViewportRect = new Region(effectiveViewportRect)
-  let location = Location.ZERO
-  for (let index = originalFrameChain.size - 1; index >= 0; --index) {
-    const frame = originalFrameChain.frameAt(index)
+async function ensureFrameVisible(_logger, context, positionProvider) {
+  const frameChain = context.frameChain
+  let offset = Location.ZERO
+  for (let index = frameChain.size - 1; index >= 0; --index) {
     await context.frameParent()
-    intersectedEffectiveViewportRect.intersect(new Region(Location.ZERO, frame.innerSize))
-    location = location.offsetByLocation(frame.location)
-    // TODO make scrollTo return actual scroll location after operation
-    await positionProvider.setPosition(location)
-    const actualLocation = await positionProvider.getCurrentPosition()
-    location = location.offsetNegative(actualLocation)
+    const prevFrame = frameChain.frameAt(index)
+    const currentFrame = frameChain.frameAt(index - 1)
+
+    offset = offset.offsetByLocation(prevFrame.location)
+    const scrollRootElement = currentFrame ? currentFrame.scrollRootElement : null
+    const actualOffset = await positionProvider.setPosition(offset, scrollRootElement)
+    offset = offset.offsetNegative(actualOffset)
   }
   // passing array of frame references instead of frame chain to be sure that frame metrics will be re-calculated
-  await context.frames(Array.from(originalFrameChain, frame => frame.toReference()))
-  return intersectedEffectiveViewportRect
+  await context.frames(Array.from(frameChain, frame => frame.toReference()))
 }
 
 module.exports = {
@@ -414,8 +439,12 @@ module.exports = {
   setTransforms,
   getTranslateLocation,
   translateTo,
+  getScrollRootElement,
+  markScrollRootElement,
   getOverflow,
   setOverflow,
+  blurElement,
+  focusElement,
   getElementXpath,
   getElementAbsoluteXpath,
   locatorToPersistedRegions,

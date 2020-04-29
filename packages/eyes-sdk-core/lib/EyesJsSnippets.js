@@ -24,7 +24,10 @@ const GET_CONTENT_ENTIRE_SIZE = `
 
 const GET_ELEMENT_ENTIRE_SIZE = `
   var element = arguments[0];
-  return [element.scrollWidth, element.scrollHeight];
+  return [
+    Math.max(arguments[0].clientWidth, arguments[0].scrollWidth),
+    Math.max(arguments[0].clientHeight, arguments[0].scrollHeight)
+  ];
 `
 
 const GET_SCROLL_POSITION = `
@@ -42,6 +45,7 @@ const GET_SCROLL_POSITION = `
 const SCROLL_TO = (x, y) => `
   var element = arguments[0] || document.scrollingElement || window;
   element.scrollTo(${x}, ${y});
+  return [element.scrollLeft, element.scrollTop];
 `
 
 const TRANSFORM_KEYS = ['transform', '-webkit-transform']
@@ -65,6 +69,15 @@ const TRANSLATE_TO = (x, y) => `
   ${TRANSFORM_KEYS.map(key => `element.style['${key}'] = 'translate(-${x}px, -${y}px)'`).join(';')}
 `
 
+const GET_SCROLL_ROOT_ELEMENT = `
+  return document.scrollingElement || document.documentElement;
+`
+
+const MARK_SCROLL_ROOT_ELEMENT = `
+  var element =  arguments[0] || document.scrollingElement || document.documentElement;
+  element.setAttribute("data-applitools-scroll", "true");
+`
+
 const GET_OVERFLOW = `
   var el = arguments[0];
   return el.style.overflow;
@@ -75,6 +88,17 @@ const SET_OVERFLOW_AND_RETURN_ORIGIN_VALUE = overflow => `
   el.style.overflow = newOverflow;
   if (newOverflow.toUpperCase() === 'HIDDEN' && origOverflow.toUpperCase() !== 'HIDDEN') { el.setAttribute('data-applitools-original-overflow', origOverflow); }
   return origOverflow;
+`
+
+const BLUR_ELEMENT = `
+  var activeElement = arguments[0] || document.activeElement;
+  if (activeElement) activeElement.blur();
+  return activeElement;
+`
+
+const FOCUS_ELEMENT = `
+  var activeElement = arguments[0];
+  if (activeElement) activeElement.focus();
 `
 
 const GET_ELEMENT_XPATH_FUNC = `
@@ -161,8 +185,12 @@ module.exports = {
   GET_TRANSFORMS,
   SET_TRANSFORMS,
   TRANSLATE_TO,
+  GET_SCROLL_ROOT_ELEMENT,
+  MARK_SCROLL_ROOT_ELEMENT,
   GET_OVERFLOW,
   SET_OVERFLOW_AND_RETURN_ORIGIN_VALUE,
+  BLUR_ELEMENT,
+  FOCUS_ELEMENT,
   GET_ELEMENT_XPATH,
   GET_ELEMENT_ABSOLUTE_XPATH,
   GET_CURRENT_CONTEXT_INFO,

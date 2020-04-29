@@ -2,8 +2,8 @@
 
 const {EyesRunner, ClassicRunner, VisualGridRunner} = require('@applitools/eyes-sdk-core')
 
-const {EyesWDIO} = require('./EyesWDIO')
-const {EyesVisualGrid} = require('./EyesVisualGrid')
+const EyesWDIO = require('./EyesWDIO')
+const EyesVisualGrid = require('./EyesVisualGrid')
 
 /**
  * @abstract

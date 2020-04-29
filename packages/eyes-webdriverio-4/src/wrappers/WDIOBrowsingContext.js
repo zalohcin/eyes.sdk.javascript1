@@ -25,6 +25,9 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
     }
     const frame = await WDIOFrame.fromReference(reference).init(this._logger, this._driver)
     const result = await this._driver.unwrapped.frame(frame.element.unwrapped)
+    if (frame.scrollRootElement) {
+      await frame.scrollRootElement.init(this._driver)
+    }
     await this._frameChain.push(frame)
     this._logger.verbose('Done!')
     return result
@@ -56,8 +59,8 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   async frames(path) {
     const currentPath = Array.from(this._frameChain)
     const requiredPath = Array.from(path || [])
-    if (currentPath.length <= 0) return this.framesAppend(requiredPath)
-    if (requiredPath.length <= 0) return this.frameDefault()
+    if (currentPath.length === 0) return this.framesAppend(requiredPath)
+    if (requiredPath.length === 0) return this.frameDefault()
     const diffIndex = requiredPath.findIndex(
       (frame, index) => !WDIOFrame.equals(currentPath[index], frame),
     )

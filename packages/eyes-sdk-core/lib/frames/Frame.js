@@ -51,10 +51,6 @@ class Frame {
       return frame
     } else if (Frame.isReference(frame)) {
       this._reference = frame
-      this._scrollRootElement = Frame.WrappedElement.fromSelector({
-        using: 'css selector',
-        value: 'html',
-      })
     } else if (TypeUtils.isObject(frame)) {
       ArgumentGuard.hasProperties(frame, [
         'element',
@@ -68,9 +64,7 @@ class Frame {
       this._size = frame.size
       this._innerSize = frame.innerSize
       this._parentScrollLocation = frame.parentScrollLocation
-      this._scrollRootElement =
-        frame.scrollRootElement ||
-        Frame.WrappedElement.fromSelector({using: 'css selector', value: 'html'})
+      this._scrollRootElement = frame.scrollRootElement
     }
     if (driver) {
       this._driver = driver
@@ -272,7 +266,10 @@ class Frame {
    * @return {Promise<void>}
    */
   async hideScrollbars() {
-    await this._scrollRootElement.init(this._driver)
+    if (!this._scrollRootElement) {
+      const element = await EyesUtils.getScrollRootElement(this._logger, this._driver.executor)
+      this._scrollRootElement = new Frame.WrappedElement(this._logger, this._driver, element)
+    }
     this._logger.verbose('hiding scrollbars of element')
     await this._scrollRootElement.hideScrollbars()
   }
@@ -281,7 +278,10 @@ class Frame {
    * @return {Promise<void>}
    */
   async restoreScrollbars() {
-    await this._scrollRootElement.init(this._driver)
+    if (!this._scrollRootElement) {
+      const element = await EyesUtils.getScrollRootElement(this._logger, this._driver.executor)
+      this._scrollRootElement = new Frame.WrappedElement(this._logger, this._driver, element)
+    }
     this._logger.verbose('returning overflow of element to its original value')
     await this._scrollRootElement.restoreScrollbars()
   }

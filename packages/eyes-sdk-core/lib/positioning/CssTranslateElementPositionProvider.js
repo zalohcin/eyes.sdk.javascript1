@@ -65,6 +65,14 @@ class CssTranslateElementPositionProvider extends PositionProvider {
     return size
   }
 
+  async markScrollRootElement() {
+    try {
+      await EyesUtils.markScrollRootElement(this._logger, this._executor, this._element)
+    } catch (err) {
+      this._logger.verbose("Can't set data attribute for element", err)
+    }
+  }
+
   /**
    * @override
    * @return {Promise.<CssTranslatePositionMemento>}

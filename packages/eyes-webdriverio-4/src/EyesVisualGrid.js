@@ -1,10 +1,7 @@
 'use strict'
 
-const {makeVisualGridClient, takeDomSnapshot} = require('@applitools/visual-grid-client')
-
 const {
   ArgumentGuard,
-  EyesBase,
   TestResultsFormatter,
   CorsIframeHandle,
   CorsIframeHandler,
@@ -15,18 +12,19 @@ const {
   VisualGridRunner,
   EyesUtils,
 } = require('@applitools/eyes-sdk-core')
-
-const {Target} = require('../index')
-
+const {makeVisualGridClient, takeDomSnapshot} = require('@applitools/visual-grid-client')
 const WDIODriver = require('./wrappers/WDIODriver')
+const EyesCore = require('./EyesCore')
 
 const VERSION = require('../package.json').version
 
-class EyesVisualGrid extends EyesBase {
-  /** @var {Logger} EyesVisualGrid#_logger */
-  /** @var {Configuration} EyesVisualGrid#_configuration */
-
-  /** @var {ImageMatchSettings} EyesVisualGrid#_defaultMatchSettings */
+class EyesVisualGrid extends EyesCore {
+  /**
+   * @inheritDoc
+   */
+  getBaseAgentId() {
+    return `eyes.webdriverio.visualgrid/${VERSION}`
+  }
 
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
@@ -155,83 +153,6 @@ class EyesVisualGrid extends EyesBase {
   }
 
   /**
-   * @return {Promise}
-   */
-  async closeAsync() {
-    await this.close(false)
-  }
-
-  /**
-   * @return {Promise}
-   */
-  async abortAsync() {
-    await this.abort()
-  }
-
-  /**
-   * @param {boolean} [throwEx]
-   * @return {Promise<TestResults>}
-   */
-  async close(throwEx = true) {
-    let isErrorCaught = false
-    this._closePromise = this._closeCommand(true)
-      .catch(err => {
-        isErrorCaught = true
-        return err
-      })
-      .then(results => {
-        this._isOpen = false
-        if (this._runner) {
-          this._runner._allTestResult.push(...results)
-        }
-        if (throwEx && isErrorCaught) {
-          throw TypeUtils.isArray(results) ? results[0] : results
-        }
-        return results
-      })
-
-    return this._closePromise
-  }
-
-  /**
-   * @return {Promise<?TestResults>}
-   */
-  async abort() {
-    this._isOpen = false
-    return this._abortCommand()
-  }
-
-  /**
-   * @return {boolean}
-   */
-  getIsOpen() {
-    return this._isOpen
-  }
-
-  /**
-   * @param {boolean} [throwEx]
-   * @return {Promise<void>}
-   */
-  async closeAndPrintResults(throwEx = true) {
-    const results = await this.close(throwEx)
-
-    const testResultsFormatter = new TestResultsFormatter(results)
-    // eslint-disable-next-line no-console
-    console.log(testResultsFormatter.asFormatterString())
-  }
-
-  getRunner() {
-    return this._runner
-  }
-
-  /**
-   * @return {boolean}
-   */
-  isEyesClosed() {
-    return this._isOpen
-  }
-
-  /**
    * @param {string} name
    * @param {WebdriverioCheckSettings} checkSettings
    */
@@ -300,15 +221,55 @@ class EyesVisualGrid extends EyesBase {
   }
 
   /**
-   * Visually validates a region in the screenshot.
-   *
-   * @param {Region} region - The region to validate (in screenshot coordinates).
-   * @param {string} [tag] - An optional tag to be associated with the screenshot.
-   * @param {number} [matchTimeout] - The amount of time to retry matching.
-   * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
+   * @inheritDoc
    */
-  async checkRegion(region, tag, matchTimeout) {
-    await this.check(tag, Target.region(region).timeout(matchTimeout))
+  async getScreenshot() {
+    return undefined
+  }
+
+  /**
+   * @param {boolean} [throwEx]
+   * @return {Promise<TestResults>}
+   */
+  async close(throwEx = true) {
+    let isErrorCaught = false
+    this._closePromise = this._closeCommand(true)
+      .catch(err => {
+        isErrorCaught = true
+        return err
+      })
+      .then(results => {
+        this._isOpen = false
+        if (this._runner) {
+          this._runner._allTestResult.push(...results)
+        }
+        if (throwEx && isErrorCaught) {
+          throw TypeUtils.isArray(results) ? results[0] : results
+        }
+        return results
+      })
+
+    return this._closePromise
+  }
+
+  /**
+   * @param {boolean} [throwEx]
+   * @return {Promise<void>}
+   */
+  async closeAndPrintResults(throwEx = true) {
+    const results = await this.close(throwEx)
+
+    const testResultsFormatter = new TestResultsFormatter(results)
+    // eslint-disable-next-line no-console
+    console.log(testResultsFormatter.asFormatterString())
+  }
+
+  /**
+   * @return {Promise<?TestResults>}
+   */
+  async abort() {
+    this._isOpen = false
+    return this._abortCommand()
   }
 
   /**
@@ -332,84 +293,10 @@ class EyesVisualGrid extends EyesBase {
   }
 
   /**
-   * @return {boolean}
-   */
-  isVisualGrid() {
-    return this._isVisualGrid
-  }
-
-  /**
-   * @param {CorsIframeHandle} corsIframeHandle
-   */
-  setCorsIframeHandle(corsIframeHandle) {
-    this._corsIframeHandle = corsIframeHandle
-  }
-
-  /**
-   * @return {CorsIframeHandle}
-   */
-  getCorsIframeHandle() {
-    return this._corsIframeHandle
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getBaseAgentId() {
-    return `eyes.webdriverio.visualgrid/${VERSION}`
-  }
-
-  /**
    * @inheritDoc
    */
   async getInferredEnvironment() {
     return undefined
-  }
-
-  /**
-   * @inheritDoc
-   */
-  async getScreenshot() {
-    return undefined
-  }
-
-  /**
-   * @inheritDoc
-   */
-  async getTitle() {
-    return undefined
-  }
-
-  /**
-   * Get jsExecutor
-   * @return {EyesJsExecutor}
-   */
-  get jsExecutor() {
-    return this._driver.executor
-  }
-
-  setApiKey(apiKey) {
-    this._configuration.setApiKey(apiKey)
-  }
-
-  getApiKey() {
-    return this._configuration.getApiKey()
-  }
-
-  /**
-   * Forces a full page screenshot (by scrolling and stitching) if the browser only supports viewport screenshots).
-   *
-   * @param {boolean} shouldForce Whether to force a full page screenshot or not.
-   */
-  setForceFullPageScreenshot(shouldForce) {
-    this._configuration.setForceFullPageScreenshot(shouldForce)
-  }
-
-  /**
-   * @return {boolean} Whether Eyes should force a full page screenshot.
-   */
-  getForceFullPageScreenshot() {
-    return this._configuration.getForceFullPageScreenshot()
   }
 
   async _getAndSaveBatchInfoFromServer(batchId) {
@@ -417,5 +304,4 @@ class EyesVisualGrid extends EyesBase {
     return this._runner.getBatchInfoWithCache(batchId)
   }
 }
-
-exports.EyesVisualGrid = EyesVisualGrid
+module.exports = EyesVisualGrid

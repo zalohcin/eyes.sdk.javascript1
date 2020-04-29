@@ -87,7 +87,7 @@ class DriverCheckSettings extends CheckSettings {
    * Get specified implementation of {@link EyesWrappedElement}
    * @return {EyesWrappedElement} specified implementation of {@link EyesWrappedElement}
    */
-  get WrappedElement() {
+  static get WrappedElement() {
     if (!DriverCheckSettings._WrappedElement) {
       throw new TypeError('You need first specialize EyesWrappedElement implementation')
     }
@@ -98,7 +98,7 @@ class DriverCheckSettings extends CheckSettings {
    * Get specified {@link Frame} class
    * @return {EyesWrappedElement} specified {@link Frame} class
    */
-  get Frame() {
+  static get Frame() {
     if (!DriverCheckSettings._WrappedElement) {
       throw new TypeError('You need first specialize Frame class')
     }

@@ -1,6 +1,6 @@
 'use strict'
 
-const {ArgumentGuard, Location} = require('@applitools/eyes-common')
+const {ArgumentGuard, Location, RectangleSize, Region} = require('@applitools/eyes-common')
 const Frame = require('./Frame')
 /**
  * @typedef {import('@applitools/eyes-common').Logger} Logger
@@ -47,10 +47,7 @@ class FrameChain {
    * @return {Frame} frame by index in array
    */
   frameAt(index) {
-    if (this._frames.length > index) {
-      return this._frames[index]
-    }
-    throw new Error('No frames for given index')
+    return this._frames[index]
   }
 
   /**
@@ -98,9 +95,10 @@ class FrameChain {
   /**
    * Removes the last inserted frame element. Practically means we switched
    * back to the parent of the current frame
+   * @return {?Frame} removed frame
    */
   pop() {
-    this._frames.pop()
+    return this._frames.pop()
   }
 
   /**
@@ -130,6 +128,21 @@ class FrameChain {
         frame.location.getY() - frame.parentScrollLocation.getY(),
       )
     }, Location.ZERO)
+  }
+
+  /**
+   * @return {RectangleSize} effective size of current frame
+   */
+  getCurrentFrameEffectiveSize() {
+    if (!this.isEmpty) {
+      const effectiveRect = new Region(Location.ZERO, this.first.innerSize)
+      this._frames.forEach(frame => {
+        effectiveRect.intersect(new Region(Location.ZERO, frame.innerSize))
+      })
+      return effectiveRect.getSize()
+    } else {
+      return RectangleSize.ZERO
+    }
   }
 
   [Symbol.iterator]() {
