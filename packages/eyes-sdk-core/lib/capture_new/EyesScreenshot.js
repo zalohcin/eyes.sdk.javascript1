@@ -9,7 +9,7 @@ const {
   Region,
 } = require('@applitools/eyes-common')
 const CoordinatesTypeConversionError = require('../errors/CoordinatesTypeConversionError')
-const OutOfBoundsError = require('../errors/OutOfBoundsError')
+const OutOfBoundsError = require('../errors/OutOfBoundsError').OutOfBoundsError
 const FrameChain = require('../frames/FrameChain')
 const EyesUtils = require('../EyesUtils')
 

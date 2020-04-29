@@ -97,7 +97,7 @@ describe('toPersistedRegions()', function() {
     ])
   })
 
-  it('TargetRegionByLocator', async () => {
+  it('TargetRegionBySelector', async () => {
     let region = new TargetRegionBySelector(By.css('some'))
     let persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: 'some'}])

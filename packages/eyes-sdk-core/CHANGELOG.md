@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 9.2.1 - 2020/4/26
+
+- updated to @applitools/eyes-common@3.22.1
+
+## 9.2.0 - 2020/4/26
+
+- updated to @applitools/eyes-common@3.22.0
+
+## 9.1.2 - 2020/4/23
+
+- updated to @applitools/eyes-common@3.21.1
+
+## 9.1.1 - 2020/4/19
+
+- added SDK agent id header for eyes server requests
 
 ## 9.1.0 - 2020/4/5
 
