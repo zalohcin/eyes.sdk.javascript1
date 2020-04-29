@@ -11,7 +11,7 @@ describe(appName, () => {
     await eyes.abortIfNotClosed()
     await driver.quit()
   })
-  describe.skip('ChromeEmulation', () => {
+  describe('ChromeEmulation', () => {
     it.skip('TestWebAppScrolling', async () => {
       driver = await new Builder()
         .withCapabilities({
@@ -48,7 +48,7 @@ describe(appName, () => {
       await eyes.close()
     })
     // test fails if viewportSize is set due to: "Failed to set viewport size!" was thrown, throw an Error :)
-    it('TestWebAppScrolling2', async () => {
+    it.skip('TestWebAppScrolling2', async () => {
       driver = await new Builder()
         .withCapabilities({
           browserName: 'chrome',
@@ -89,7 +89,7 @@ describe(appName, () => {
       eyes = new Eyes()
       eyes.setBatch(batch)
       await eyes.open(driver, appName, 'TestWebAppScrolling3', {width: 386, height: 512})
-      await eyes.check('long page on mobile', Target.region(By.css('div.page')).fully(false))
+      await eyes.check('long page on mobile', Target.region(By.css('main#site-main')).fully(false))
       await eyes.close()
     })
   })

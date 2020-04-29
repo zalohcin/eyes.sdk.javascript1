@@ -4,11 +4,11 @@ const {remote} = require('webdriverio')
 const appName = 'TestScrolling'
 const batch = new BatchInfo('Webdriverio 5 tests')
 
-describe.skip(appName, () => {
+describe(appName, () => {
   describe('ChromeEmulation', () => {
     let eyes, browser
 
-    it('TestWebAppScrolling', async () => {
+    it.skip('TestWebAppScrolling', async () => {
       browser = await remote({
         logLevel: 'silent',
         capabilities: {
@@ -50,7 +50,7 @@ describe.skip(appName, () => {
       }
     })
 
-    it('TestWebAppScrolling2', async () => {
+    it.skip('TestWebAppScrolling2', async () => {
       browser = await remote({
         logLevel: 'silent',
         capabilities: {
@@ -103,7 +103,7 @@ describe.skip(appName, () => {
         await eyes.open(browser, appName, 'TestWebAppScrolling3', {width: 386, height: 512})
         await eyes.check(
           'long page on mobile',
-          Target.region(By.css('div.page'))
+          Target.region(By.css('main#site-main'))
             .fully(false)
             .sendDom(false),
         )

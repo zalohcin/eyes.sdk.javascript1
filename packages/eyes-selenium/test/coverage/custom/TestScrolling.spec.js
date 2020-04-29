@@ -5,7 +5,7 @@ const {Builder, By} = require('selenium-webdriver')
 const appName = 'TestScrolling'
 const batch = getBatch()
 
-describe.skip(appName, () => {
+describe(appName, () => {
   describe('ChromeEmulation', () => {
     let eyes, driver
 
@@ -51,7 +51,7 @@ describe.skip(appName, () => {
       }
     })
 
-    it('TestWebAppScrolling2', async () => {
+    it.skip('TestWebAppScrolling2', async () => {
       driver = await new Builder()
         .withCapabilities({
           browserName: 'chrome',
@@ -61,7 +61,7 @@ describe.skip(appName, () => {
               userAgent:
                 'Mozilla/5.0 (Linux; Android 7.1.1; Nexus 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
             },
-            args: ['--window-size=386,512' /*, 'headless'*/],
+            args: ['--window-size=386,512' , 'headless'],
           },
         })
         .build()
@@ -102,7 +102,7 @@ describe.skip(appName, () => {
         await eyes.open(driver, appName, 'TestWebAppScrolling3', {width: 386, height: 512})
         await eyes.check(
           'long page on mobile',
-          Target.region(By.css('div.page'))
+          Target.region(By.css('main#site-main'))
             .fully(false)
             .sendDom(false),
         )
