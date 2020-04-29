@@ -1,7 +1,6 @@
 'use strict'
 
-const {MutableImage} = require('@applitools/eyes-common')
-const {ImageProvider} = require('../capture/ImageProvider')
+const {ImageProvider} = require('./ImageProvider')
 
 /**
  * An image provider based on WebDriver's interface.
@@ -9,13 +8,19 @@ const {ImageProvider} = require('../capture/ImageProvider')
 class TakesScreenshotImageProvider extends ImageProvider {
   /**
    * @param {Logger} logger A Logger instance.
+   * @param {ImageRotation} rotation
    * @param {EyesWrappedDriver} driver
    */
-  constructor(logger, driver) {
+  constructor(logger, driver, rotation) {
     super()
 
     this._logger = logger
     this._driver = driver
+    this._rotation = rotation
+  }
+
+  set rotation(rotation) {
+    this._rotation = rotation
   }
 
   /**
@@ -24,9 +29,11 @@ class TakesScreenshotImageProvider extends ImageProvider {
    */
   async getImage() {
     this._logger.verbose('Getting screenshot as base64...')
-    const screenshot64 = await this._driver.controller.takeScreenshot()
-    this._logger.verbose('Done getting base64! Creating MutableImage...')
-    return new MutableImage(screenshot64)
+    const image = await this._driver.controller.takeScreenshot()
+    if (this._rotation) {
+      await image.rotate(this._rotation)
+    }
+    return image
   }
 }
 

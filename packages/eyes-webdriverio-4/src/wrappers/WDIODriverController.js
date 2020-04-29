@@ -57,17 +57,8 @@ class WDIODriverController {
 
   async takeScreenshot() {
     const screenshot64 = await this._driver.saveScreenshot()
-
-    return screenshot64
-
-    // let screenshot = new MutableImage(screenshot64)
-    // screenshot = await EyesUtils.normalizeRotation(
-    //   this._logger,
-    //   this._tsInstance,
-    //   screenshot,
-    //   this._rotation,
-    // )
-    // return screenshot.getImageBase64()
+    const image = new MutableImage(screenshot64)
+    return image
   }
 
   async isLandscapeOrientation() {

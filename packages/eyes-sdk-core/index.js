@@ -6,13 +6,14 @@ const common = require('@applitools/eyes-common')
 
 exports.AppOutputProvider = require('./lib/capture/AppOutputProvider').AppOutputProvider
 exports.AppOutputWithScreenshot = require('./lib/capture/AppOutputWithScreenshot').AppOutputWithScreenshot
-exports.EyesScreenshot = require('./lib/capture_new/EyesScreenshot')
-exports.EyesScreenshotFactory = require('./lib/capture_new/EyesScreenshotFactory')
+exports.EyesScreenshot = require('./lib/capture/EyesScreenshot').EyesScreenshot
+exports.EyesScreenshotNew = require('./lib/capture/EyesScreenshotNew')
+exports.EyesScreenshotFactory = require('./lib/capture/EyesScreenshotFactory')
 exports.EyesSimpleScreenshot = require('./lib/capture/EyesSimpleScreenshot').EyesSimpleScreenshot
 exports.EyesSimpleScreenshotFactory = require('./lib/capture/EyesSimpleScreenshotFactory').EyesSimpleScreenshotFactory
 exports.FullPageCaptureAlgorithm = require('./lib/capture/FullPageCaptureAlgorithm').FullPageCaptureAlgorithm
 exports.ImageProvider = require('./lib/capture/ImageProvider').ImageProvider
-exports.ImageProviderFactory = require('./lib/capture_new/ImageProviderFactory')
+exports.ImageProviderFactory = require('./lib/capture/ImageProviderFactory')
 exports.CorsIframeHandle = require('./lib/capture/CorsIframeHandler').CorsIframeHandle
 exports.CorsIframeHandler = require('./lib/capture/CorsIframeHandler').CorsIframeHandler
 

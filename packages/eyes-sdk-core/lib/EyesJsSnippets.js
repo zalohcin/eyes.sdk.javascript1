@@ -25,8 +25,8 @@ const GET_CONTENT_ENTIRE_SIZE = `
 const GET_ELEMENT_ENTIRE_SIZE = `
   var element = arguments[0];
   return [
-    Math.max(arguments[0].clientWidth, arguments[0].scrollWidth),
-    Math.max(arguments[0].clientHeight, arguments[0].scrollHeight)
+    Math.max(element.clientWidth, element.scrollWidth),
+    Math.max(element.clientHeight, element.scrollHeight)
   ];
 `
 
@@ -139,6 +139,7 @@ const GET_ELEMENT_XPATH = `
 `
 
 const GET_CURRENT_CONTEXT_INFO = `
+  ${GET_ELEMENT_XPATH_FUNC}
   var isCORS, isRoot, frameSelector;
   try {
     isRoot = window.top.document === window.document;
@@ -152,7 +153,7 @@ const GET_CURRENT_CONTEXT_INFO = `
   }
   if (!isCORS) {
     try {
-      frameSelector = getElementSelector(window.frameElement);
+      frameSelector = getElementXpath(window.frameElement);
     } catch (err) {
       frameSelector = null;
     }

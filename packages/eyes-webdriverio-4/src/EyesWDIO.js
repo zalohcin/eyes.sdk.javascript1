@@ -6,7 +6,7 @@ const {
   FailureReports,
   FixedScaleProviderFactory,
   FullPageCaptureAlgorithm,
-  EyesScreenshot,
+  EyesScreenshotNew: EyesScreenshot,
   EyesScreenshotFactory,
   ImageProviderFactory,
   Location,
@@ -189,6 +189,7 @@ class EyesWDIO extends EyesCore {
     this._imageProvider = ImageProviderFactory.getImageProvider(
       this._logger,
       this._driver,
+      this._rotation,
       this,
       this._userAgent,
       this._rotation,
