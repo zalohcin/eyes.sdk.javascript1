@@ -299,10 +299,11 @@ async function getElementAbsoluteXpath(_logger, executor, element) {
   return executor.executeScript(EyesJsSnippets.GET_ELEMENT_ABSOLUTE_XPATH, element)
 }
 
-async function getElementXpath(_logger, executor, element) {
+async function getElementXpath(logger, executor, element) {
   try {
-    return await executor.executeScript(EyesJsSnippets.GET_ELEMENT_SELECTOR, element)
+    return await executor.executeScript(EyesJsSnippets.GET_ELEMENT_XPATH, element)
   } catch (err) {
+    logger.verbose('Warning: Failed to get element selector (xpath)')
     return null
   }
 }
