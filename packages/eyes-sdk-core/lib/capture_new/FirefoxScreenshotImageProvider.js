@@ -1,6 +1,6 @@
 'use strict'
 
-const {MutableImage, Region} = require('@applitools/eyes-common')
+const {Region} = require('@applitools/eyes-common')
 const {ImageProvider} = require('../capture/ImageProvider')
 const EyesScreenshot = require('./EyesScreenshot')
 
@@ -13,14 +13,20 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
   /**
    * @param {Logger} logger
    * @param {EyesWrappedDriver} driver
+   * @param {ImageRotation} rotation
    * @param {Eyes} eyes
    */
-  constructor(logger, driver, eyes) {
+  constructor(logger, driver, rotation, eyes) {
     super()
 
     this._logger = logger
     this._driver = driver
+    this._rotation = rotation
     this._eyes = eyes
+  }
+
+  set rotation(rotation) {
+    this._rotation = rotation
   }
 
   /**
@@ -29,10 +35,10 @@ class FirefoxScreenshotImageProvider extends ImageProvider {
    */
   async getImage() {
     this._logger.verbose('Getting screenshot as base64...')
-    const screenshot64 = await this._driver.controller.takeScreenshot()
-    this._logger.verbose('Done getting base64! Creating BufferedImage...')
-
-    const image = new MutableImage(screenshot64)
+    const image = await this._driver.controller.takeScreenshot()
+    if (this._rotation) {
+      await image.rotate(this._rotation)
+    }
     await this._eyes.getDebugScreenshotsProvider().save(image, 'FIREFOX_FRAME')
 
     const frameChain = this._driver.context.frameChain

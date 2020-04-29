@@ -179,6 +179,7 @@ class EyesWDIO extends EyesBase {
     this._imageProvider = ImageProviderFactory.getImageProvider(
       this._logger,
       this._driver,
+      this._rotation,
       this,
       this._userAgent,
     )
@@ -1345,6 +1346,9 @@ class EyesWDIO extends EyesBase {
    */
   setRotation(rotation) {
     this._rotation = rotation
+    if (this._imageProvider) {
+      this._imageProvider.rotation = rotation
+    }
   }
 
   async getAUTSessionId() {

@@ -1,6 +1,6 @@
 'use strict'
 
-const {Location, MutableImage, Region, OSNames} = require('@applitools/eyes-common')
+const {Location, Region, OSNames} = require('@applitools/eyes-common')
 const {ImageProvider} = require('../capture/ImageProvider')
 const EyesUtils = require('../EyesUtils')
 
@@ -11,13 +11,18 @@ class SafariScreenshotImageProvider extends ImageProvider {
    * @param {Eyes} eyes
    * @param {UserAgent} userAgent
    */
-  constructor(logger, driver, eyes, userAgent) {
+  constructor(logger, driver, rotation, eyes, userAgent) {
     super()
 
     this._logger = logger
     this._driver = driver
+    this._rotation = rotation
     this._eyes = eyes
     this._userAgent = userAgent
+  }
+
+  set rotation(rotation) {
+    this._rotation = rotation
   }
 
   /**
@@ -26,11 +31,10 @@ class SafariScreenshotImageProvider extends ImageProvider {
    */
   async getImage() {
     this._logger.verbose('Getting screenshot as base64...')
-    let screenshot64 = await this._driver.controller.takeScreenshot()
-    screenshot64 = screenshot64.replace(/\r\n/g, '') // Because of SauceLabs returns image with line breaks
-
-    this._logger.verbose('Done getting base64! Creating MutableImage...')
-    const image = new MutableImage(screenshot64)
+    const image = await this._driver.controller.takeScreenshot()
+    if (this._rotation) {
+      await image.rotate(this._rotation)
+    }
     await this._eyes.getDebugScreenshotsProvider().save(image, 'SAFARI')
 
     if (this._eyes.getIsCutProviderExplicitlySet()) {
