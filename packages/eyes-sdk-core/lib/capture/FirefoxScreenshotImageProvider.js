@@ -1,8 +1,8 @@
 'use strict'
 
 const {Region} = require('@applitools/eyes-common')
-const {ImageProvider} = require('../capture/ImageProvider')
-const EyesScreenshot = require('./EyesScreenshot')
+const {ImageProvider} = require('./ImageProvider')
+const EyesScreenshot = require('./EyesScreenshotNew')
 
 /**
  * This class is needed because in certain versions of firefox, a frame screenshot only brings the frame viewport.

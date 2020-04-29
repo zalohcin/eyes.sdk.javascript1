@@ -7,7 +7,7 @@ exports.By = require('./src/By')
 exports.Target = require('./src/WDIOCheckSettings')
 exports.WebdriverioCheckSettings = require('./src/WDIOCheckSettings')
 
-exports.EyesScreenshot = core.EyesScreenshot
+exports.EyesScreenshot = core.EyesScreenshotNew
 exports.StitchMode = core.StitchMode
 exports.Logger = core.Logger
 exports.ClassicRunner = core.ClassicRunner

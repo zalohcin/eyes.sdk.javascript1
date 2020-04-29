@@ -7,7 +7,7 @@ const {
   FailureReports,
   FixedScaleProviderFactory,
   FullPageCaptureAlgorithm,
-  EyesScreenshot,
+  EyesScreenshotNew: EyesScreenshot,
   EyesScreenshotFactory,
   ImageProviderFactory,
   Location,

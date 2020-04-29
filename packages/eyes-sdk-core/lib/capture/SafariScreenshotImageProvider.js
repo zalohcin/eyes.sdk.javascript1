@@ -1,7 +1,7 @@
 'use strict'
 
 const {Location, Region, OSNames} = require('@applitools/eyes-common')
-const {ImageProvider} = require('../capture/ImageProvider')
+const {ImageProvider} = require('./ImageProvider')
 const EyesUtils = require('../EyesUtils')
 
 class SafariScreenshotImageProvider extends ImageProvider {
