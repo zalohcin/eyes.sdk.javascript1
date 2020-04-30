@@ -7,6 +7,8 @@
 - preserve frame state after check operation ([Trello](https://trello.com/c/R1H28Z9z/218-wdio-45-constant-need-to-switch-to-new-iframe))
 - many bug fixes
 - updated to @applitools/visual-grid-client@13.7.3
+- updated to @applitools/eyes-sdk-core@10.0.0
+- updated to @applitools/visual-grid-client@13.7.5
 
 ## 2.13.1 - 2020/4/27
 
