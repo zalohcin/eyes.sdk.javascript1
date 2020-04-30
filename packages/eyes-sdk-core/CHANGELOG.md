@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 9.3.0 - 2020/4/30
+
 - consolidate classes into core
 
 ## 9.2.1 - 2020/4/26
