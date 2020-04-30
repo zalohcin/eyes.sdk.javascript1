@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 13.7.3 - 2020/4/30
+
+- updated to @applitools/dom-snapshot@3.5.0
+
 ## 13.7.2 - 2020/4/27
 
 - add edgechromium to types
