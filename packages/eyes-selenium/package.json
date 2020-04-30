@@ -65,7 +65,7 @@
     "test": "yarn test:unit && yarn test:it",
     "render": "node scripts/render.js",
     "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
-    "test:it": "mocha --timeout 120000 \"test/it/**/*.spec.js\"",
+    "test:it": "mocha-parallel-tests --timeout 120000 \"test/it/**/*.spec.js\"",
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\"",
     "coverage:sandbox": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "coverage-tests create-tests && yarn test:coverage && coverage-tests process-report --send-report prod",
