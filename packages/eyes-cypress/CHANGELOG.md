@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- updated to @applitools/dom-snapshot@3.5.0 (support disabled links and scripts)
+- updated to @applitools/dom-snapshot@3.5.0 
+- updated to @applitools/visual-grid-client@13.7.3
 
 ## 3.10.2 - 2020/4/27
 
