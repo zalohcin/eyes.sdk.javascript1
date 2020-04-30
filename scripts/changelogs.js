@@ -8,7 +8,6 @@ const preadFile = util.promisify(readFile)
 const pwriteFile = util.promisify(writeFile)
 
 const HISTORY_SIZE = 5
-const PAGE_FILE_NAME = 'changelogs.html'
 const PACKAGE_DIRS = [
   'eyes-selenium',
   'eyes-webdriverio-4',
@@ -34,17 +33,17 @@ const PACKAGE_DIRS = [
 })()
 
 async function loadPage() {
-  const pagePath = path.join(__dirname, PAGE_FILE_NAME)
+  const pagePath = path.join(__dirname, 'changelogs.html')
   return preadFile(pagePath, {encoding: 'utf8'})
 }
 
 async function savePage(content) {
-  const pagePath = path.join(__dirname, PAGE_FILE_NAME)
+  const pagePath = path.join(__dirname, '.tmp-changelogs.html')
   await pwriteFile(pagePath, content, {encoding: 'utf8'})
 }
 
 function openPage() {
-  const pagePath = path.join(__dirname, PAGE_FILE_NAME)
+  const pagePath = path.join(__dirname, '.tmp-changelogs.html')
   opn(`file://${pagePath}`)
 }
 
