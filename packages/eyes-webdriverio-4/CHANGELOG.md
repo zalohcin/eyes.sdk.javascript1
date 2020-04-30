@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-
+- support webdriver API in the driver returning from `eyes.open`
+- support both EyesWrappedElement and webdriver.io objects (elements or responses) in all API's ([Trello](https://trello.com/c/JJ5vm3wS/269-frames-shadow-dom-break-region-checking))
+- preserve frame state after check operation ([Trello](https://trello.com/c/R1H28Z9z/218-wdio-45-constant-need-to-switch-to-new-iframe))
+- many bug fixes
+- updated to @applitools/visual-grid-client@13.7.3
 
 ## 2.13.1 - 2020/4/27
 
