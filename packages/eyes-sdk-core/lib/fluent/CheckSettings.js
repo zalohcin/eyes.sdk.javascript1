@@ -366,7 +366,8 @@ class CheckSettings {
     } else if (Region.isRegionCompatible(region)) {
       ignoreRegion = new IgnoreRegionByRectangle(new Region(region))
     } else {
-      throw new TypeError('Method called with argument of unknown type!')
+      //TODO remove it after all SDK will be migrated to the common core
+      ignoreRegion = this._regionToRegionProvider(region)
     }
     this._ignoreRegions.push(ignoreRegion)
 
@@ -394,7 +395,8 @@ class CheckSettings {
     } else if (Region.isRegionCompatible(region)) {
       layoutRegion = new IgnoreRegionByRectangle(new Region(region))
     } else {
-      throw new TypeError('Method called with argument of unknown type!')
+      //TODO remove it after all SDK will be migrated to the common core
+      layoutRegion = this._regionToRegionProvider(region)
     }
     this._layoutRegions.push(layoutRegion)
 
@@ -418,7 +420,8 @@ class CheckSettings {
     } else if (Region.isRegionCompatible(region)) {
       strictRegion = new IgnoreRegionByRectangle(new Region(region))
     } else {
-      throw new TypeError('Method called with argument of unknown type!')
+      //TODO remove it after all SDK will be migrated to the common core
+      strictRegion = this._regionToRegionProvider(region)
     }
     this._strictRegions.push(strictRegion)
 
@@ -442,7 +445,8 @@ class CheckSettings {
     } else if (Region.isRegionCompatible(region)) {
       contentRegion = new IgnoreRegionByRectangle(new Region(region))
     } else {
-      throw new TypeError('Method called with argument of unknown type!')
+      //TODO remove it after all SDK will be migrated to the common core
+      contentRegion = this._regionToRegionProvider(region)
     }
     this._contentRegions.push(contentRegion)
 
