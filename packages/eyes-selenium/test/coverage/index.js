@@ -167,14 +167,9 @@ function initialize() {
       if (isLayout) {
         result.storeCommand(`_checkSettings.layout()`)
       }
-<<<<<<< HEAD
-      result.storeCommand(`_checkSettings.fully(${isFully})`)
+      result.storeCommand(`_checkSettings.fully(${isFully}).timeout(${matchTimeout})`)
       result.storeCommand(`await eyes.check(${tag ? '"' + tag + '"' : undefined}, _checkSettings)`)
       result.storeCommand(`}`)
-=======
-      _checkSettings.fully(isFully).timeout(matchTimeout)
-      await eyes.check(tag, _checkSettings)
->>>>>>> master
     }
   }
 
@@ -192,19 +187,13 @@ function initialize() {
         `await eyes.checkWindow(${tag ? '"' + tag + '"' : undefined}, ${matchTimeout}, ${isFully})`,
       )
     } else {
-<<<<<<< HEAD
       result.storeCommand(`{`)
       result.storeCommand(
         `let _checkSettings = Target.window()
         .fully(${isFully})
-        .ignoreCaret()`,
-      )
-=======
-      let _checkSettings = Target.window()
-        .fully(isFully)
         .ignoreCaret()
-        .timeout(matchTimeout)
->>>>>>> master
+        .timeout(${matchTimeout})`,
+      )
       if (scrollRootElement) {
         result.storeCommand(`_checkSettings.scrollRootElement(By.css('${scrollRootElement}'))`)
       }
