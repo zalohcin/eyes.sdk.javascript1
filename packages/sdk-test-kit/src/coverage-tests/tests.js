@@ -82,6 +82,13 @@ function makeCoverageTests({
       await checkFrame('[name="frame1"]')
       await close(throwException)
     },
+    TestCheckFrameHideScrollbars_Fluent: async () => {
+      // This test is identical to TestCheckFrame_Fluent, and exists only in order to have a new baseline. Once all SDK's implement this test properly, we can remove it and update the baseline for TestCheckFrame_Fluent
+      await visit(url)
+      await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      await checkFrame('[name="frame1"]')
+      await close(throwException)
+    },
     TestCheckFrameFully_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
