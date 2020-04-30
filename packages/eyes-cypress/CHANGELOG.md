@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+ ## 3.10.3 - 2020/4/30
+
 - updated to @applitools/dom-snapshot@3.5.0 
 - updated to @applitools/visual-grid-client@13.7.3
 
