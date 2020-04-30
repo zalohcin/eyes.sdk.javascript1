@@ -1,13 +1,13 @@
 {
-  "name": "@applitools/sdk-test-kit",
+  "name": "@applitools/sdk-coverage-tests",
   "private": true,
-  "version": "1.0.17",
+  "version": "1.0.0",
   "engines": {
     "node": ">=10.0.0"
   },
   "main": "src/index.js",
-  "description": "Test Kit for Applitools SDKs",
-  "author": "David Haeffner <dhaeffner@gmail.com>",
+  "description": "Coverage Tests for Applitools SDKs",
+  "author": "Applitools <team@applitools.com>",
   "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
   "license": "SEE LICENSE IN LICENSE",
   "directories": {
@@ -21,19 +21,18 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
-    "test": "mocha test/**/*.spec.js",
+    "test": "mocha 'test/**/*.spec.js'",
     "build": "tsc src/coverage-tests/api.ts"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
   "dependencies": {
-    "chromedriver": "^80.0.0",
     "micromatch": "^4.0.2",
     "node-fetch": "^2.6.0",
-    "throat": "^5.0.0",
     "yargs": "^15.0.2",
-    "chalk": "3.0.0"
+    "chalk": "3.0.0",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^2.14.0",
@@ -41,6 +40,6 @@
     "typescript": "^3.7.4"
   },
   "bin": {
-    "coverage-tests": "./src/coverage-tests/cli.js"
+    "coverage-tests": "./src/cli.js"
   }
 }

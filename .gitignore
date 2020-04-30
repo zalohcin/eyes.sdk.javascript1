@@ -22,4 +22,9 @@ tmp
 # sdk-release-kit
 .bongo
 
+# sdk-coverage-tests
+**/test/coverage/generic/
+coverage-test-report.xml
+
+# yarn
 .yarn
