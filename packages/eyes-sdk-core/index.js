@@ -36,7 +36,6 @@ exports.EyesDriverOperationError = require('./lib/errors/EyesDriverOperationErro
 
 exports.CheckSettings = require('./lib/fluent/CheckSettings')
 exports.CheckSettingsFactory = require('./lib/fluent/CheckSettingsFactory')
-exports.CheckTarget = require('./lib/fluent/CheckTarget').CheckTarget
 exports.FrameLocator = require('./lib/fluent/FrameLocator')
 exports.locatorToPersistedRegions = require('./lib/fluent/locatorToPersistedRegions')
 exports.GetRegion = require('./lib/fluent/GetRegion').GetRegion
