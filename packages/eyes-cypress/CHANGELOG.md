@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- updated to @applitools/dom-snapshot@3.5.0 (support disabled links and scripts)
 
 ## 3.10.2 - 2020/4/27
 
