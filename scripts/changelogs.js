@@ -33,7 +33,7 @@ const PACKAGE_DIRS = [
 })()
 
 async function loadPage() {
-  const pagePath = path.join(__dirname, 'changelogs.html')
+  const pagePath = path.join(__dirname, 'changelogs-template.html')
   return preadFile(pagePath, {encoding: 'utf8'})
 }
 
