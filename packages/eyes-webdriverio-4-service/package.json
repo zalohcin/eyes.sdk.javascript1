@@ -15,7 +15,7 @@
   "author": "",
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "@applitools/eyes.webdriverio": "2.13.1"
+    "@applitools/eyes.webdriverio": "2.14.0"
   },
   "devDependencies": {
     "@applitools/sdk-release-kit": "0.1.0",
