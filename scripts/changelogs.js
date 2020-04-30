@@ -26,18 +26,18 @@ const PACKAGE_DIRS = [
 ]
 
 ;(async () => {
-  let [content, packagesInfo] = await Promise.all([loadPage(), loadPackagesInfo()])
+  let [content, packagesInfo] = await Promise.all([loadTemplatePage(), loadPackagesInfo()])
   content = addInfoToPage(content, packagesInfo)
-  await savePage(content)
+  await saveHtml(content)
   openPage()
 })()
 
-async function loadPage() {
+async function loadTemplatePage() {
   const pagePath = path.join(__dirname, 'changelogs-template.html')
   return preadFile(pagePath, {encoding: 'utf8'})
 }
 
-async function savePage(content) {
+async function saveHtml(content) {
   const pagePath = path.join(__dirname, '.tmp-changelogs.html')
   await pwriteFile(pagePath, content, {encoding: 'utf8'})
 }
