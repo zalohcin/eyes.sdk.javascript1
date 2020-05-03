@@ -27,6 +27,7 @@ const {JavascriptHandler} = require('./JavascriptHandler')
 const {EyesWebDriver} = require('./wrappers/EyesWebDriver')
 const {Target} = require('./fluent/Target')
 const {TestCafeExecutor} = require('./TestCafeExecutor')
+const deviceInfoFromInferred = require('./deviceInfoFromInferred')
 
 const VERSION = require('../package.json').version
 
@@ -563,6 +564,22 @@ class Eyes extends EyesBase {
     } catch (ignored) {
       return undefined
     }
+  }
+
+  /*
+   * TODO
+   * Here we set deviceInfo on configuration basicaly, this is the way
+   * VGC does it as well.
+   * Since EyesBase defines it's "driver needs", and this device info is another "driver need"
+   * we probably need to add this to EyesBase#getAppEnvironment so other SDKs get this
+   * functionallity (so need to change the VGC and Testcafe impl).
+   *
+   * Once beta is merged to master we can add the new driver functionallity to Base.
+   */
+  async beforeOpen() {
+    const inferredDeviceInfo = this._driver.getInferredDeviceInfo()
+    const deviceInfo = deviceInfoFromInferred(inferredDeviceInfo)
+    this.setDeviceInfo(deviceInfo)
   }
 
   /**

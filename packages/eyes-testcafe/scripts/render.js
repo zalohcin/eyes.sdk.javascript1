@@ -31,6 +31,8 @@ createTestCafe(null, 1339)
 
       browser = [
         'chrome:headless',
+        'chrome:emulation:width=100;height=200;mobile=true;orientation=vertical;touch=true',
+        'chrome:emulation:device=iphone X',
         'browserstack:safari@13.0:OS X Catalina',
         'browserstack:safari@12.1:OS X Mojave',
         'browserstack:edge',

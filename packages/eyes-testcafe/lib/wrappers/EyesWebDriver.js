@@ -450,6 +450,10 @@ class EyesWebDriver {
     }
   }
 
+  getInferredDeviceInfo() {
+    return this._driver.browser.alias
+  }
+
   _evalWithDriver(func, functionName) {
     if (!this._clientFunctions[functionName]) {
       this._clientFunctions[functionName] = ClientFunction(func)
