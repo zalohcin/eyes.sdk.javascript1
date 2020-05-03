@@ -23,6 +23,7 @@ const PACKAGE_DIRS = [
   'dom-capture',
   'eyes-sdk-core',
   'eyes-common',
+  'visual-grid-client',
 ]
 
 ;(async () => {
