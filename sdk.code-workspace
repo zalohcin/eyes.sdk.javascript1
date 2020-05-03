@@ -97,8 +97,16 @@
 			"path": "packages/eyes-webdriverio-5-service"
 		},
 		{
+			"name": "sdk-coverage-tests",
+			"path": "packages/sdk-coverage-tests"
+		},
+		{
 			"name": "sdk-fake-eyes-server",
 			"path": "packages/sdk-fake-eyes-server"
+		},
+		{
+			"name": "sdk-release-kit",
+			"path": "packages/sdk-release-kit"
 		},
 		{
 			"name": "sdk-test-kit",
