@@ -1,5 +1,7 @@
 # Change Log
 
+## 2.0.0-beta.21
+
 - fix missing device info in dashboard  
 
 ## 2.0.0-beta.20
