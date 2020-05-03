@@ -53,6 +53,14 @@ To use this when running coverage-tests you'll want to become familiar with a co
 - `SKIP_CHROMEDRIVER`
 - `CVG_TESTS_REMOTE`
 
-When running coverage-tests for the WDIO SDKs, they implicitly look for a driver running on `http://localhost:4444/wd/hub`. To support this, an instance of ChromeDriver is spun up on this port. If instead you want to use the Docker container specified above, simply call `SKIP_CHROMEDRIVER=true` when running the tests.
+### SKIP_CHROMEDRIVER
 
-When running coverage-tests on eyes-selenium, you can specify `CVG_TESTS_REMOTE=http://localhost:4444/wd/hub` to have it use the Docker container.
+When running coverage-tests for the WDIO SDKs, they implicitly look for a driver running on `http://localhost:4444/wd/hub`. To support this, the coverage-tests script in the SDK spins up an instance of ChromeDriver on this port as a preliminary step.
+
+But, instead, if you want to use the Docker container specified above, run the tests with `SKIP_CHROMEDRIVER=true`.
+
+### CVG_TESTS_REMOTE
+
+When running coverage-tests on eyes-selenium, no preliminary steps are taken by the SDK's coverage-tests script since Selenium handles this behind the scenes.
+
+If you want to use the Docker container, specify `CVG_TESTS_REMOTE=http://localhost:4444/wd/hub`.
