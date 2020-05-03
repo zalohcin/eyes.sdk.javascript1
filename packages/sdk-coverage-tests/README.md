@@ -4,8 +4,8 @@
 
 - [eyes-selenium](../eyes-selenium/test/coverage/index.js)
 - [eyes-testcafe](../eyes-testcafe/test/coverage/index.js)
-- [eyes-webdriverio-4](../eyes-webdriver-4/test/coverage/index.js)
-- [eyes-webdriverio-5](../eyes-webdriver-5/test/coverage/index.js)
+- [eyes-webdriverio-4](../eyes-webdriverio-4/test/coverage/index.js)
+- [eyes-webdriverio-5](../eyes-webdriverio-5/test/coverage/index.js)
 
 ## Workflow
 
