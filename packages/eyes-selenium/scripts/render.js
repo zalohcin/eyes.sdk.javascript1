@@ -155,11 +155,12 @@ if (!url) {
   const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
   const eyes = new Eyes(runner)
   const configuration = new Configuration({
-    viewportSize: {width: 1024, height: 768},
     stitchMode: args.css ? StitchMode.CSS : StitchMode.SCROLL,
   })
-  const [width, height] = args.viewportSize.split('x').map(Number)
-  configuration.setViewportSize({width, height})
+  if (args.viewportSize) {
+    const [width, height] = args.viewportSize.split('x').map(Number)
+    configuration.setViewportSize({width, height})
+  }
   if (args.browser) {
     configuration.addBrowsers(args.browser)
   }
