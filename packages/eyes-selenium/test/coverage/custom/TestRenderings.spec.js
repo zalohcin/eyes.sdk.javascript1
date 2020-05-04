@@ -11,6 +11,9 @@ describe('TestRenderings', async () => {
     runner = new VisualGridRunner(30)
     eyes = new Eyes(runner)
     eyes.setBranchName('master')
+    if(process.env['APPLITOOLS_API_KEY_SDK']){
+      eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
+    }
   })
   afterEach(async () => {
     await webDriver.quit()

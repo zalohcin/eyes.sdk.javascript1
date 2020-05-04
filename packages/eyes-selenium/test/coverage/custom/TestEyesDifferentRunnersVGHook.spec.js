@@ -1,12 +1,9 @@
 'use strict'
 const {
-  Eyes,
-  VisualGridRunner,
-  Configuration,
   BrowserType,
   MatchLevel,
 } = require('../../../index')
-const {getDriver, getBatch} = require('./util/TestSetup')
+const {getDriver, getBatch, getEyes} = require('./util/TestSetup')
 const {testSetup, getCheckSettingsWithHook, validateVG} = require('./util/EyesDifferentRunners')
 const batch = getBatch()
 
@@ -19,9 +16,8 @@ describe('TestEyesDifferentRunners VG with hooks', () => {
 
   beforeEach(async function() {
     this.webDriver = await getDriver('CHROME')
-    this.runner = new VisualGridRunner(40)
-    this.eyes = new Eyes(this.runner)
-    let conf = new Configuration()
+    this.eyes = await getEyes('VG')
+    let conf = this.eyes.getConfiguration()
     conf.setTestName(`Top Sites - ${this.currentTest.title}`)
     conf.setAppName(`Top Sites`)
     conf.setBatch(batch)

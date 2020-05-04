@@ -1,6 +1,6 @@
 'use strict'
-const {Eyes, MatchLevel} = require('../../../index')
-const {getDriver, getBatch} = require('./util/TestSetup')
+const {MatchLevel} = require('../../../index')
+const {getDriver, getBatch, getEyes} = require('./util/TestSetup')
 const {assertImages} = require('./util/ApiAssertions')
 const {testSetup, getCheckSettings} = require('./util/EyesDifferentRunners')
 const batch = getBatch()
@@ -8,7 +8,7 @@ const batch = getBatch()
 describe('TestEyesDifferentRunners Selenium', () => {
   beforeEach(async function() {
     this.webDriver = await getDriver('CHROME')
-    this.eyes = new Eyes()
+    this.eyes = await getEyes('classic')
     this.eyes.setBatch(batch)
     this.eyes.setSaveNewTests(false)
     this.eyes.setSendDom(true)
