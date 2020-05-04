@@ -141,9 +141,9 @@ function initialize() {
             }, ${isFully})`,
           )
         : result.storeCommand(
-            `await eyes.checkRegionBy(By.css('${target}'), ${matchTimeout}, ${
+            `await eyes.checkRegionBy(By.css('${target}'), ${
               tag ? '"' + tag + '"' : undefined
-            })`,
+            }, ${matchTimeout}, ${isFully})`,
           )
     } else {
       result.storeCommand(`{`)

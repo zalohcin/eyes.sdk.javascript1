@@ -365,7 +365,7 @@ function makeCoverageTests({
       visit(url)
       open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       checkWindow({isFully: true})
-      checkRegion('#inner-frame-div', {isFully: true})
+      checkRegion('#inner-frame-div', {isFully: true, inFrame: '[name="frame1"]'})
       checkWindow({isFully: true})
       close(throwException)
     },
