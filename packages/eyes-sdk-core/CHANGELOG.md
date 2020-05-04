@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+
+## 10.0.0 - 2020/4/30
+
+- consolidate classes into core (no changes from 9.3.0)
+
+## 9.3.0 - 2020/4/30
+
+- consolidate classes into core
+
 ## 9.2.1 - 2020/4/26
 
 - updated to @applitools/eyes-common@3.22.1

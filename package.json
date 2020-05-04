@@ -15,7 +15,7 @@
       "packages/eyes-selenium",
       "packages/eyes-testcafe",
       "packages/sdk-fake-eyes-server",
-      "packages/sdk-test-kit",
+      "packages/sdk-coverage-tests",
       "packages/sdk-release-kit",
       "packages/visual-grid-client",
       "packages/eyes-webdriverio-4",
@@ -31,10 +31,16 @@
       "packages/eyes-leanft",
       "packages/side-eyes"
     ],
-    "nohoist": ["**/@wdio/*", "**/wdio-*", "**/webdriverio"]
+    "nohoist": [
+      "**/@wdio/*",
+      "**/wdio-*",
+      "**/webdriverio"
+    ]
   },
   "scripts": {
-    "lint": "eslint --ext .js ."
+    "lint": "eslint --ext .js .",
+    "changelogs": "node scripts/changelogs.js",
+    "versions-ls": "node scripts/versions.js"
   },
   "devDependencies": {
     "eslint": "^6.6.0",
@@ -43,6 +49,7 @@
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-prettier": "^3.1.1",
     "js-yaml": "^3.13.1",
+    "open": "^7.0.3",
     "prettier": "^1.18.2",
     "yargs": "^15.1.0"
   }

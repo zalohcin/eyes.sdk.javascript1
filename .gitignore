@@ -13,7 +13,7 @@ node_modules
 .eslintcache
 *.swp
 *~
-
+.tmp-changelogs.html
 *.log
 tmp
 .env
@@ -22,4 +22,9 @@ tmp
 # sdk-release-kit
 .bongo
 
+# sdk-coverage-tests
+**/test/coverage/generic/
+coverage-test-report.xml
+
+# yarn
 .yarn

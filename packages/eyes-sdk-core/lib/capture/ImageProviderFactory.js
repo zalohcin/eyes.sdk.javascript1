@@ -23,7 +23,7 @@ class ImageProviderFactory {
             return new FirefoxScreenshotImageProvider(logger, driver, rotation, eyes)
           }
         } catch (ignored) {
-          return new TakesScreenshotImageProvider(logger, driver)
+          return new TakesScreenshotImageProvider(logger, driver, rotation)
         }
       } else if (userAgent.getBrowser() === BrowserNames.Safari) {
         return new SafariScreenshotImageProvider(logger, driver, rotation, eyes, userAgent)
