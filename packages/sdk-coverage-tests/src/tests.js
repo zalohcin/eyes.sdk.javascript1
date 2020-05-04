@@ -51,7 +51,7 @@ function makeCoverageTests({
     TestCheckElementFully_Fluent: () => {
       visit(url)
       open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      checkRegion('[name="frame1"]', {isFully: true})
+      checkRegion('#overflowing-div-image', {isFully: true})
       close(throwException)
     },
     TestCheckElementWithIgnoreRegionByElementOutsideTheViewport_Fluent: () => {
@@ -168,7 +168,7 @@ function makeCoverageTests({
     TestCheckRegionByCoordinates_Fluent: () => {
       visit(url)
       open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
-      checkRegion({left: 50, top: 50, width: 100, height: 100})
+      checkRegion({left: 50, top: 70, width: 90, height: 110})
       close(throwException)
     },
     TestCheckRegionByCoordinateInFrame_Fluent: () => {
