@@ -844,6 +844,8 @@ class EyesWDIO extends EyesCore {
         }
         return results
       })
+
+    return this._closePromise
   }
 
   async tryCaptureDom() {
