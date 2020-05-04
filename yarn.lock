@@ -103,6 +103,18 @@
   dependencies:
     "@applitools/eyes-sdk-core" "7.0.0"
 
+"@applitools/eyes-sdk-core@10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-10.0.0.tgz#dd947f3b37d23618e163a6e9004510748cfa8e13"
+  integrity sha512-EHEsm9fQYW2740//mjrSinVKyOw8lzNPh06Zk1ej0LfVx1dHPJEG/2heOUD7kYen0pVljIVZ8KOs+9pJognGXg==
+  dependencies:
+    "@applitools/eyes-common" "3.22.1"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    axios "0.19.2"
+    chalk "3.0.0"
+    es6-promise-pool "2.5.0"
+    tunnel "0.0.6"
+
 "@applitools/eyes-sdk-core@7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-7.0.0.tgz#5360cb8f3eb955965ac2ced0732f0ac0cb74a046"
