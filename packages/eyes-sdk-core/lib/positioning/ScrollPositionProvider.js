@@ -20,6 +20,10 @@ class ScrollPositionProvider extends PositionProvider {
     this._scrollRootElement = scrollRootElement
   }
 
+  get scrollRootElement() {
+    return this._scrollRootElement
+  }
+
   /**
    * @override
    * @inheritDoc
@@ -47,6 +51,7 @@ class ScrollPositionProvider extends PositionProvider {
    */
   async setPosition(location, customScrollRootElement) {
     try {
+      ArgumentGuard.notNull(location, 'location')
       this._logger.verbose(`ScrollPositionProvider - Scrolling to ${location}`)
       const actualLocation = await EyesUtils.scrollTo(
         this._logger,

@@ -163,43 +163,52 @@ class EyesVisualGrid extends EyesCore {
       checkSettings.withName(name)
     }
 
-    this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`)
+    await this._context.framesRefresh()
+    return this._beforeAndAfterCheck(checkSettings, async () => {
+      // this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`)
+      const pageDomResults = await takeDomSnapshot({
+        executeScript: this._executor.executeScript.bind(this._executor),
+      })
+      const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults
+      if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
+        CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames)
+      }
+      // this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
 
-    const pageDomResults = await takeDomSnapshot({
-      executeScript: this._executor.executeScript.bind(this._executor),
+      const [config, {region, selector}] = await Promise.all([
+        checkSettings.toCheckWindowConfiguration(this._driver),
+        this._getTargetConfiguration(checkSettings),
+      ])
+      const overrideConfig = {
+        fully: this.getForceFullPageScreenshot() || config.fully,
+        sendDom: (await this.getSendDom()) || config.sendDom,
+        matchLevel: this.getMatchLevel() || config.matchLevel,
+      }
+      const source = await this._controller.getSource()
+      await this._checkWindowCommand({
+        ...config,
+        ...overrideConfig,
+        region,
+        selector,
+        resourceUrls,
+        resourceContents,
+        frames,
+        url,
+        cdt,
+        source,
+      })
     })
-    const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults
+  }
 
-    if (this.getCorsIframeHandle() === CorsIframeHandle.BLANK) {
-      CorsIframeHandler.blankCorsIframeSrcOfCdt(cdt, frames)
+  async _beforeAndAfterCheck(checkSettings, operation) {
+    const originalFrameChain = this._context.frameChain
+    const appendFrameChain = checkSettings.frameChain
+    await this._context.frames(appendFrameChain)
+    try {
+      return await operation()
+    } finally {
+      await this._context.frames(originalFrameChain)
     }
-
-    this._logger.verbose(`Dom extracted  (${checkSettings.toString()})   $$$$$$$$$$$$`)
-
-    const source = await this._controller.getSource()
-
-    const [config, {region, selector}] = await Promise.all([
-      checkSettings.toCheckWindowConfiguration(this._driver),
-      this._getTargetConfiguration(checkSettings),
-    ])
-    const overrideConfig = {
-      fully: this.getForceFullPageScreenshot() || config.fully,
-      sendDom: (await this.getSendDom()) || config.sendDom,
-      matchLevel: this.getMatchLevel() || config.matchLevel,
-    }
-
-    await this._checkWindowCommand({
-      ...config,
-      ...overrideConfig,
-      region,
-      selector,
-      resourceUrls,
-      resourceContents,
-      frames,
-      url,
-      cdt,
-      source,
-    })
   }
 
   async _getTargetConfiguration(checkSettings) {

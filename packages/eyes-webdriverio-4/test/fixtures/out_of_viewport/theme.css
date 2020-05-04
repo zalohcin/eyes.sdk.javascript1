@@ -1,0 +1,49 @@
+body {
+  margin: 10px;
+  background-color: #274469;
+  color: white;
+}
+.content {
+  width: 800px;
+  margin: 10 auto;
+  overflow: hidden;
+}
+.out_of_viewport {
+  width: 100%;
+  height: 150vh;
+  box-sizing: border-box;
+}
+.no_cors {
+  border: 2px solid white;
+}
+#list {
+  height: 100%;
+  margin: 0;
+  background: black;
+  list-style: lower-alpha;
+  padding: 10px 10px 10px 30px;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+#list > li:nth-child(7n+1) {
+  color: red;
+}
+#list > li:nth-child(7n+2) {
+  color: orange;
+}
+#list > li:nth-child(7n+3) {
+  color: yellow;
+}
+#list > li:nth-child(7n+4) {
+  color: greenyellow;
+}
+#list > li:nth-child(7n+5) {
+  color: lightskyblue;
+}
+#list > li:nth-child(7n+6) {
+  color: cornflowerblue;
+}
+#list > li:nth-child(7n+7) {
+  color: violet;
+}

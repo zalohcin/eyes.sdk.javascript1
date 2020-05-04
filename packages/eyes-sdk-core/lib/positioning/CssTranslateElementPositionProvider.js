@@ -1,6 +1,6 @@
 'use strict'
 
-const {ArgumentGuard} = require('@applitools/eyes-common')
+const {ArgumentGuard, Location} = require('@applitools/eyes-common')
 const PositionProvider = require('./PositionProvider')
 const CssTranslatePositionMemento = require('./CssTranslatePositionMemento')
 const EyesUtils = require('../EyesUtils')
@@ -25,34 +25,55 @@ class CssTranslateElementPositionProvider extends PositionProvider {
     this._element = element
   }
 
-  /**
-   * @override
-   * @inheritDoc
-   */
-  async getCurrentPosition() {
-    const [scrollLocation, translateLocation] = await Promise.all([
-      EyesUtils.getScrollLocation(this._logger, this._executor, this._element),
-      EyesUtils.getTranslateLocation(this._logger, this._executor, this._element),
-    ])
-    return scrollLocation.offsetNegative(translateLocation)
+  get scrollRootElement() {
+    return this._element
   }
 
   /**
    * @override
    * @inheritDoc
    */
-  async setPosition(requiredLocation) {
-    ArgumentGuard.notNull(requiredLocation, 'requiredLocation')
-    await EyesUtils.scrollTo(this._logger, this._executor, requiredLocation, this._element)
-    const currentLocation = await this.getCurrentPosition()
-    const outOfBoundsLocation = requiredLocation.offsetNegative(currentLocation)
-    const translateLocation = await EyesUtils.getTranslateLocation(
-      this._logger,
-      this._executor,
-      this._element,
-    )
-    const location = translateLocation.offsetNegative(outOfBoundsLocation)
-    await EyesUtils.translateTo(this._logger, this._executor, location, this._element)
+  async getCurrentPosition() {
+    try {
+      const [scrollLocation, translateLocation] = await Promise.all([
+        EyesUtils.getScrollLocation(this._logger, this._executor, this._element),
+        EyesUtils.getTranslateLocation(this._logger, this._executor, this._element),
+      ])
+      return scrollLocation.offsetByLocation(translateLocation)
+    } catch (err) {
+      // Sometimes it is expected e.g. on Appium, otherwise, take care
+      this._logger.verbose(`Failed to set current scroll position!.`)
+      return Location.ZERO
+    }
+  }
+
+  /**
+   * @override
+   * @inheritDoc
+   */
+  async setPosition(location) {
+    try {
+      ArgumentGuard.notNull(location, 'location')
+      const actualScrollLocation = await EyesUtils.scrollTo(
+        this._logger,
+        this._executor,
+        location,
+        this._element,
+      )
+      const outOfBoundsLocation = location.offsetNegative(actualScrollLocation)
+      const actualTranslateLocation = await EyesUtils.translateTo(
+        this._logger,
+        this._executor,
+        outOfBoundsLocation,
+        this._element,
+      )
+
+      return actualScrollLocation.offsetByLocation(actualTranslateLocation)
+    } catch (err) {
+      // Sometimes it is expected e.g. on Appium, otherwise, take care
+      this._logger.verbose(`Failed to set current scroll position!.`)
+      return Location.ZERO
+    }
   }
 
   /**
@@ -78,9 +99,14 @@ class CssTranslateElementPositionProvider extends PositionProvider {
    * @return {Promise.<CssTranslatePositionMemento>}
    */
   async getState() {
-    const transforms = await EyesUtils.getTransforms(this._logger, this._executor)
-    this._logger.verbose('Current transform', transforms)
-    return new CssTranslatePositionMemento(transforms, this._lastSetPosition)
+    try {
+      const transforms = await EyesUtils.getTransforms(this._logger, this._executor, this._element)
+      this._logger.verbose('Current transform', transforms)
+      return new CssTranslatePositionMemento(transforms, Location.ZERO)
+    } catch (err) {
+      this._logger.verbose(`Failed to get current transforms!.`)
+      return new CssTranslatePositionMemento({}, Location.ZERO)
+    }
   }
 
   /**
@@ -89,9 +115,12 @@ class CssTranslateElementPositionProvider extends PositionProvider {
    * @return {Promise}
    */
   async restoreState(state) {
-    await EyesUtils.setTransforms(this._logger, this._executor, state.transform)
-    this._logger.verbose('Transform (position) restored.')
-    this._lastSetPosition = state.position
+    try {
+      await EyesUtils.setTransforms(this._logger, this._executor, state.transform, this._element)
+      this._logger.verbose('Transform (position) restored.')
+    } catch (err) {
+      this._logger.verbose(`Failed to restore state!.`)
+    }
   }
 }
 

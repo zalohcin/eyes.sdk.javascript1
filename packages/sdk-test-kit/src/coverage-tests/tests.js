@@ -362,7 +362,7 @@ function makeCoverageTests({
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkWindow({isFully: true})
-      await checkRegion('#inner-frame-div', {isFully: true})
+      await checkRegion('#inner-frame-div', {inFrame: '[name="frame1"]', isFully: true})
       await checkWindow({isFully: true})
       await close(throwException)
     },

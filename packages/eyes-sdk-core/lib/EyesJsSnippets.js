@@ -64,8 +64,6 @@ const SET_TRANSFORMS = transforms => `
 
 const TRANSLATE_TO = (x, y) => `
   var element = arguments[0] || document.documentElement;
-  element.scrollTo(0, 0);
-  ${TRANSFORM_KEYS.map(key => `element.style['${key}'] = 'translate(10px, -${y}px)'`).join(';')}
   ${TRANSFORM_KEYS.map(key => `element.style['${key}'] = 'translate(-${x}px, -${y}px)'`).join(';')}
 `
 

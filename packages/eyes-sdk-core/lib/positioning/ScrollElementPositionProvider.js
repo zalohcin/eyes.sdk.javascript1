@@ -26,7 +26,7 @@ class ScrollElementPositionProvider extends PositionProvider {
    *
    * @returns {EyesWrappedElement}
    */
-  get element() {
+  get scrollRootElement() {
     return this._element
   }
 
@@ -57,6 +57,7 @@ class ScrollElementPositionProvider extends PositionProvider {
    */
   async setPosition(location) {
     try {
+      ArgumentGuard.notNull(location, 'location')
       this._logger.verbose(`ScrollElementPositionProvider - Scrolling to ${location}`)
       await EyesUtils.scrollTo(this._logger, this._executor, location, this._element)
       this._logger.verbose('ScrollElementPositionProvider - Done scrolling!')

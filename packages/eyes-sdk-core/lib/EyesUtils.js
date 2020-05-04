@@ -181,7 +181,7 @@ async function getTopContextViewportSize(logger, {controller, context, executor}
     logger.verbose('Extracting viewport size...')
     let viewportSize
     try {
-      viewportSize = await getViewportSize({executor})
+      viewportSize = await getViewportSize(logger, {executor})
     } catch (err) {
       logger.verbose('Failed to extract viewport size using Javascript:', err)
       // If we failed to extract the viewport size using JS, will use the window size instead.
@@ -336,7 +336,7 @@ async function focusElement(logger, executor, element) {
 }
 
 async function getElementAbsoluteXpath(_logger, executor, element) {
-  return executor.executeScript(EyesJsSnippets.GET_ELEMENT_ABSOLUTE_XPATH, element)
+  return executor.executeScript(EyesJsSnippets.GET_ELEMENT_XPATH, element)
 }
 
 async function getElementXpath(logger, executor, element) {
@@ -358,7 +358,7 @@ async function locatorToPersistedRegions(_logger, {finder, executor}, locator) {
     return Promise.all(
       elements.map(async element => ({
         type: 'xpath',
-        selector: await getElementAbsoluteXpath(executor, element),
+        selector: await getElementXpath(executor, element),
       })),
     )
   }
@@ -382,39 +382,49 @@ async function findFrameByContext(logger, {executor, context}, contextInfo, comp
   }
 }
 
-async function ensureElementVisible(
+async function ensureRegionVisible(
   logger,
   {controller, context, executor},
   positionProvider,
-  element,
+  region,
 ) {
-  if (!element) return
+  if (!region) return
   if (await controller.isMobileDevice()) {
     logger.verbose(`NATIVE context identified, skipping 'ensure element visible'`)
     return
   }
   const frameChain = context.frameChain
-  const elementFrameRect = await element.getBounds()
   const frameOffset = frameChain.getCurrentFrameOffset()
+  const elementFrameRect = new Region(region)
   const elementViewportRect = elementFrameRect.offset(frameOffset.getX(), frameOffset.getY())
   const viewportRect = await getTopContextViewportRect(logger, {controller, context, executor})
   if (!viewportRect.contains(elementViewportRect)) {
-    const effectiveViewportRect = await ensureFrameVisible(logger, context, positionProvider)
-    const elementLocation = await element.getLocation()
+    const offset = elementFrameRect.getLocation()
+    const remainingOffset = await ensureFrameVisible(logger, context, positionProvider, offset)
     const scrollRootElement = frameChain.current ? frameChain.current.scrollRootElement : null
-    await positionProvider.setPosition(elementLocation, scrollRootElement)
-    return effectiveViewportRect
+    if (!viewportRect.contains(remainingOffset)) {
+      const actualLocation = await positionProvider.setPosition(remainingOffset, scrollRootElement)
+      return actualLocation
+    } else if (!remainingOffset.equals(Location.ZERO)) {
+      const actualLocation = await positionProvider.setPosition(
+        new Location(
+          Math.min(elementFrameRect.getLeft(), remainingOffset.getX()),
+          Math.min(elementFrameRect.getTop(), remainingOffset.getY()),
+        ),
+        scrollRootElement,
+      )
+      return actualLocation
+    }
   }
+  return Location.ZERO
 }
 
-async function ensureFrameVisible(_logger, context, positionProvider) {
+async function ensureFrameVisible(_logger, context, positionProvider, offset = Location.ZERO) {
   const frameChain = context.frameChain
-  let offset = Location.ZERO
   for (let index = frameChain.size - 1; index >= 0; --index) {
     await context.frameParent()
     const prevFrame = frameChain.frameAt(index)
     const currentFrame = frameChain.frameAt(index - 1)
-
     offset = offset.offsetByLocation(prevFrame.location)
     const scrollRootElement = currentFrame ? currentFrame.scrollRootElement : null
     const actualOffset = await positionProvider.setPosition(offset, scrollRootElement)
@@ -422,6 +432,7 @@ async function ensureFrameVisible(_logger, context, positionProvider) {
   }
   // passing array of frame references instead of frame chain to be sure that frame metrics will be re-calculated
   await context.frames(Array.from(frameChain, frame => frame.toReference()))
+  return offset
 }
 
 module.exports = {
@@ -449,7 +460,7 @@ module.exports = {
   getElementXpath,
   getElementAbsoluteXpath,
   locatorToPersistedRegions,
-  ensureElementVisible,
+  ensureRegionVisible,
   ensureFrameVisible,
   getCurrentContextInfo,
   findFrameByContext,

@@ -98,7 +98,7 @@ function initialize() {
     if (isClassicApi) {
       inFrame
         ? await eyes.checkRegionInFrame(By.css(inFrame), By.css(target), matchTimeout, tag, isFully)
-        : await eyes.checkRegion(By.css(target), matchTimeout, tag)
+        : await eyes.checkRegionBy(By.css(target), matchTimeout, tag, isFully)
     } else {
       let _checkSettings
       if (inFrame) _checkSettings = Target.frame(By.css(inFrame))
@@ -183,7 +183,11 @@ function initialize() {
   }
 
   async function switchToFrame(selector) {
-    await driver.frame(By.css(selector))
+    const result = await driver.$(selector)
+    if (result.state === 'failure') {
+      throw new Error(result.message)
+    }
+    await driver.frame(result.value)
   }
 
   async function type(selector, text) {

@@ -24,6 +24,10 @@ class CssTranslatePositionProvider extends PositionProvider {
     this._scrollRootElement = scrollRootElement
   }
 
+  get scrollRootElement() {
+    return this._scrollRootElement
+  }
+
   /**
    * @override
    * @inheritDoc
@@ -51,7 +55,14 @@ class CssTranslatePositionProvider extends PositionProvider {
    */
   async setPosition(location, customScrollRootElement) {
     try {
+      ArgumentGuard.notNull(location, 'location')
       this._logger.verbose(`CssTranslatePositionProvider - Setting position to: ${location}`)
+      await EyesUtils.scrollTo(
+        this._logger,
+        this._executor,
+        Location.ZERO,
+        customScrollRootElement || this._scrollRootElement,
+      )
       const actualLocation = await EyesUtils.translateTo(
         this._logger,
         this._executor,

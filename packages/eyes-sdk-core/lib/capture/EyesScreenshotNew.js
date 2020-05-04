@@ -146,14 +146,19 @@ class EyesScreenshot {
   async init(screenshotType, frameLocationInScreenshot) {
     this._screenshotType =
       screenshotType || (await EyesScreenshot.getScreenshotType(this._image, this._eyes))
-    const positionProvider = this._eyes.getPositionProvider()
-    this._currentFrameScrollPosition = await positionProvider
-      .getCurrentPosition()
-      .then(location => location || Location.ZERO)
-      .catch(() => Location.ZERO)
-
     this._frameChain = this._eyes._context.frameChain
-    if (this._frameChain.size > 0) {
+    const positionProvider = this._eyes.getPositionProvider()
+
+    const scrollRootElement = !this._frameChain.isEmpty
+      ? this._frameChain.current.scrollRootElement
+      : positionProvider.scrollRootElement
+    this._currentFrameScrollPosition = await EyesUtils.getScrollLocation(
+      this._logger,
+      this._eyes._executor,
+      scrollRootElement,
+    ).catch(() => Location.ZERO)
+
+    if (!this._frameChain.isEmpty) {
       this._frameLocationInScreenshot = this._frameChain.getCurrentFrameLocationInViewport()
       if (this._screenshotType === ScreenshotType.ENTIRE_FRAME) {
         this._frameLocationInScreenshot = this._frameLocationInScreenshot.offsetByLocation(

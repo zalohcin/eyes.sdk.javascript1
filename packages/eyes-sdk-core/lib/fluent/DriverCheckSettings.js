@@ -1,6 +1,6 @@
 'use strict'
 
-const {Region} = require('@applitools/eyes-common')
+const {Region, CoordinatesType} = require('@applitools/eyes-common')
 
 const CheckSettings = require('./CheckSettings')
 const TargetRegionByElement = require('./TargetRegionByElement')
@@ -257,6 +257,7 @@ class DriverCheckSettings extends CheckSettings {
   region(region) {
     if (Region.isRegionCompatible(region)) {
       this._targetRegion = new Region(region)
+      this._targetRegion.setCoordinatesType(CoordinatesType.CONTEXT_RELATIVE)
     } else if (DriverCheckSettings.WrappedElement.isSelector(region)) {
       this._targetElement = DriverCheckSettings.WrappedElement.fromSelector(region)
     } else if (DriverCheckSettings.WrappedElement.isCompatible(region)) {

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint '**/*.js'",
-    "surge": "surge ./test/fixtures/frames/main applitools-test-frames.surge.sh && surge ./test/fixtures/frames/frame1 applitools-test-frames-1.surge.sh && surge ./test/fixtures/frames/frame2 applitools-test-frames-2.surge.sh",
+    "surge": "surge ./test/fixtures/out_of_viewport applitools-test-out-of-viewport.surge.sh && surge ./test/fixtures/frames/main applitools-test-frames.surge.sh && surge ./test/fixtures/frames/frame1 applitools-test-frames-1.surge.sh && surge ./test/fixtures/frames/frame2 applitools-test-frames-2.surge.sh",
     "test": "yarn test:unit && yarn test:it && yarn test:e2e",
     "test:tmp": "mocha --no-timeouts test/coverage/custom/* # TEST AND REMOVE SCRIPT AFTER PR 151 MERGE !!",
     "test:e2e": "mocha --no-timeouts \"test/e2e/*.js\"",
