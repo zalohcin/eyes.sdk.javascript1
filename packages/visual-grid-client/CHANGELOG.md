@@ -3,6 +3,18 @@
 ## Unreleased
 
 
+## 13.7.5 - 2020/4/30
+
+- updated to @applitools/eyes-sdk-core@10.0.0
+
+## 13.7.4 - 2020/4/30
+
+- updated to @applitools/eyes-sdk-core@9.3.0
+
+## 13.7.3 - 2020/4/30
+
+- updated to @applitools/dom-snapshot@3.5.0
+
 ## 13.7.2 - 2020/4/27
 
 - add edgechromium to types

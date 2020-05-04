@@ -1,0 +1,45 @@
+{
+  "name": "@applitools/sdk-coverage-tests",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "main": "src/index.js",
+  "description": "Coverage Tests for Applitools SDKs",
+  "author": "Applitools <team@applitools.com>",
+  "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
+  "license": "SEE LICENSE IN LICENSE",
+  "directories": {
+    "lib": "./src",
+    "test": "./test"
+  },
+  "types": "./src/coverage-tests/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
+    "test": "mocha 'test/**/*.spec.js'",
+    "build": "tsc src/coverage-tests/api.ts"
+  },
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
+  },
+  "dependencies": {
+    "micromatch": "^4.0.2",
+    "node-fetch": "^2.6.0",
+    "yargs": "^15.0.2",
+    "chalk": "3.0.0",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^2.14.0",
+    "mocha": "^6.2.2",
+    "typescript": "^3.7.4"
+  },
+  "bin": {
+    "coverage-tests": "./src/cli.js"
+  }
+}

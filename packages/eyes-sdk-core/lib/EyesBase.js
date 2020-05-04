@@ -28,7 +28,7 @@ const {NullScaleProvider} = require('./scaling/NullScaleProvider')
 
 const {NullCutProvider} = require('./cropping/NullCutProvider')
 
-const {InvalidPositionProvider} = require('./positioning/InvalidPositionProvider')
+const InvalidPositionProvider = require('./positioning/InvalidPositionProvider')
 
 const {TextTrigger} = require('./triggers/TextTrigger')
 const {MouseTrigger} = require('./triggers/MouseTrigger')
@@ -2171,7 +2171,7 @@ class EyesBase {
     const imageLocation = await this.getImageLocation()
     this._logger.verbose('Done getting title, domUrl, imageLocation!')
 
-    if (!domUrl && TypeUtils.getOrDefault(checkSettings.getSendDom(), this.getSendDom())) {
+    if (!domUrl && TypeUtils.getOrDefault(checkSettings.getSendDom(), await this.getSendDom())) {
       // START NOTE (amit): the following is something I'm not proud nor confident of. I copied it from EyesSelenium::getScreenshot, and it is to solve https://trello.com/c/O5sTPAU1. This should be rewritten asap.
       const forceFullPageScreenshot = this._configuration.getForceFullPageScreenshot()
       if ((forceFullPageScreenshot || this._stitchContent) && !isMobileDevice) {
