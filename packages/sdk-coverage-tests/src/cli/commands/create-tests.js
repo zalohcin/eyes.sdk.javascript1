@@ -9,12 +9,17 @@ async function createTests(args) {
   const supportedTests = filterTests({tests: sdkImplementation.supportedTests, args})
   const emittedTests = makeEmitTests(sdkImplementation.initialize).emitTests(supportedTests, {
     host: args.remote,
+    all: args.all,
   })
   await createTestFiles(emittedTests, sdkImplementation.testFrameworkTemplate)
   console.log(
-    `\nCreated ${numberOfTestVariations(supportedTests)} test files for ${numberOfUniqueTests(
-      supportedTests,
-    )} unique tests.`,
+    `\nCreated ${numberOfTestVariations({
+      tests: supportedTests,
+      args,
+    })} test files for ${numberOfUniqueTests({
+      tests: supportedTests,
+      args,
+    })} unique tests.`,
   )
 }
 
