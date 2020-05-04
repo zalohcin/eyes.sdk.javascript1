@@ -16,6 +16,13 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
+"@applitools/dom-capture@7.1.5":
+  version "7.1.5"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-capture/-/dom-capture-7.1.5.tgz#22942ced3fad22eb32bbee1167a1fea60e5fa8b1"
+  integrity sha512-Tmq6ca308FWXkC1MQlWXaQfLBJtzWyAgC7s0cl0piZeEO5mZkJy6r0rxmdRTgZptib8BGwfRsHaeLqWVFU1fjQ==
+  dependencies:
+    "@applitools/functional-commons" "^1.5.4"
+
 "@applitools/dom-snapshot@3.3.3":
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/@applitools/dom-snapshot/-/dom-snapshot-3.3.3.tgz#ee2d3269e169ed4ebf598fcdef9502021982210f"

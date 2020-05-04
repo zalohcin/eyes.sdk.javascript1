@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- added resource info on putRender Error
 
 ## 10.0.0 - 2020/4/30
 
