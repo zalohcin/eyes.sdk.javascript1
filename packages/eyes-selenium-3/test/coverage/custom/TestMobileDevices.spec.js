@@ -140,7 +140,7 @@ describe('TestMobileDevices', () => {
   page.forEach(page => {
     describe(`${page}`, () => {
       before(function() {
-        if (page === 'desktop') this.skip()
+        if (page === 'desktop' || page === 'scrolled_mobile') this.skip()
       })
       data.forEach(device => {
         it(`${device.name}`, async () => {
