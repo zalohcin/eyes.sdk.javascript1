@@ -48,12 +48,17 @@ function filterTests({tests, args}) {
   return result
 }
 
-function numberOfUniqueTests(tests) {
-  return [...new Set(tests.map(t => t.name))].length
+function numberOfUniqueTests({tests, args}) {
+  return tests.reduce((set, t) => {
+    if (args.all || !t.disabled) {
+      set.add(t.name)
+    }
+    return set
+  }, new Set()).size
 }
 
-function numberOfTestVariations(tests) {
-  return tests.filter(t => !t.disabled).length
+function numberOfTestVariations({tests, args}) {
+  return tests.filter(t => args.all || !t.disabled).length
 }
 
 function sortErrorsByType(errors) {
