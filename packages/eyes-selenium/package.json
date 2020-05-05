@@ -70,7 +70,7 @@
     "coverage:sandbox": "coverage-tests create-tests --remote=$CVG_TEST_REMOTE && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "coverage-tests create-tests --remote=$CVG_TEST_REMOTE && yarn test:coverage && coverage-tests process-report --send-report prod",
     "test:coverage": "env APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-selenium' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha-parallel-tests --no-timeouts --reporter spec-xunit-file --max-parallel 15 test/coverage/generic/*.spec.js",
-    "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/*.spec.js\"",
+    "test:coverage:custom": "mocha --no-timeouts \"test/coverage/custom/**/*.spec.js\"",
     "preversion": "bongo preversion && yarn coverage:prod",
     "version": "bongo version",
     "postversion": "bongo postversion"

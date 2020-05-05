@@ -2,7 +2,6 @@
 const {Eyes, Target} = require('../../../index')
 const {Builder, By} = require('selenium-webdriver')
 const {sauceUrl, batch} = require('./util/TestSetup')
-const appiumUrl = 'http://localhost:4723/wd/hub'
 const androidCaps = {
   browserName: '',
   platformName: 'Android',
@@ -11,14 +10,6 @@ const androidCaps = {
   deviceOrientation: 'portrait',
   username: process.env.SAUCE_USERNAME,
   accessKey: process.env.SAUCE_ACCESS_KEY,
-  app: 'http://appium.s3.amazonaws.com/ContactManager.apk',
-}
-
-const caps = {
-  browserName: '',
-  deviceName: 'Nexus 5',
-  platformName: 'Android',
-  platformVersion: '8.0',
   app: 'http://appium.s3.amazonaws.com/ContactManager.apk',
 }
 
