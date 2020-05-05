@@ -15,6 +15,10 @@ yargs
     describe: 'path to implementation file',
     default: 'test/coverage/index.js',
   })
+  .option('all', {
+    alias: 'a',
+    describe: 'run all of the tests and ignore filtering',
+  })
   .option('filterName', {
     alias: 'fn',
     describe: 'filter which tests are run by name',

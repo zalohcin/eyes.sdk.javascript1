@@ -116,6 +116,19 @@ const args = yargs
       'whether to use charles as a proxy to webdriver calls (works on port 8888, need to start Charles manually prior to running this script',
     type: 'boolean',
   })
+  .option('env-name', {
+    describe: 'baseline env name',
+    type: 'string',
+  })
+  .option('driver-capabilities', {
+    describe:
+      'capabilities for driver. Comma-separated with colon for key/value. Example: --sauce-options "deviceName:iPhone 8 Simulator,platformName:iOS,platformVersion:13.2,appiumVersion:1.16.0,browserName:Safari"',
+    type: 'string',
+  })
+  .option('driver-server', {
+    describe: 'server for driver.',
+    type: 'string',
+  })
 
   .help().argv
 
@@ -136,16 +149,21 @@ if (!url) {
   if (args.webdriverProxy) {
     await chromedriver.start(['--whitelisted-ips=127.0.0.1'], true)
   }
-  const driver = await buildDriver({headless: args.headless, webdriverProxy: args.webdriverProxy})
+
+  const driver = await buildDriver({
+    ...args,
+    driverCapabilities: parseCompoundParameter(args.driverCapabilities),
+  })
 
   const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
   const eyes = new Eyes(runner)
   const configuration = new Configuration({
-    viewportSize: {width: 1024, height: 768},
     stitchMode: args.css ? StitchMode.CSS : StitchMode.SCROLL,
   })
-  const [width, height] = args.viewportSize.split('x').map(Number)
-  configuration.setViewportSize({width, height})
+  if (args.viewportSize) {
+    const [width, height] = args.viewportSize.split('x').map(Number)
+    configuration.setViewportSize({width, height})
+  }
   if (args.browser) {
     configuration.addBrowsers(args.browser)
   }
@@ -164,6 +182,10 @@ if (!url) {
   }
   if (args.proxy) {
     configuration.setProxy(args.proxy)
+  }
+  if (args.envName) {
+    configuration.setBaselineEnvName(args.envName) // determines the baseline
+    configuration.setEnvironmentName(args.envName) // shows up in the Environment column in the dasboard
   }
   eyes.setConfiguration(configuration)
 
@@ -207,7 +229,7 @@ if (!url) {
     }
 
     await eyes.check('selenium render', target)
-    await eyes.close(true)
+    await eyes.close(false)
 
     const testResultsSummary = await runner.getAllTestResults(false)
     const resultsStr = testResultsSummary
@@ -227,18 +249,27 @@ if (!url) {
   }
 })()
 
-function buildDriver({headless, webdriverProxy} = {}) {
-  let builder = new Builder().withCapabilities({
+function buildDriver({headless, webdriverProxy, driverCapabilities, driverServer} = {}) {
+  const capabilities = {
     browserName: 'chrome',
     'goog:chromeOptions': {
       args: headless ? ['--headless'] : [],
     },
-  })
+    username: process.env.SAUCE_USERNAME,
+    accesskey: process.env.SAUCE_ACCESS_KEY,
+    ...driverCapabilities,
+  }
+
+  const driverServerUrl = process.env.SAUCE_SELENIUM_URL || process.env.SELENIUM_URL || driverServer
+
+  let builder = new Builder().withCapabilities(capabilities).usingServer(driverServerUrl)
+
   if (webdriverProxy) {
     builder = builder
       .usingServer('http://localhost.charlesproxy.com:9515')
       .usingWebDriverProxy('http://localhost:8888')
   }
+
   return builder.build()
 }
 
@@ -301,4 +332,19 @@ function parseBrowser(arg) {
     )
 
   return {name: match[1], width: parseInt(match[3], 10), height: parseInt(match[5], 10)}
+}
+
+/**
+ * "key1:value1,key2:value2,key3:value3" --> {key1: value1, key2: value2, key3: value3}
+ */
+function parseCompoundParameter(str) {
+  if (!str) return str
+
+  return str
+    .split(',')
+    .map(keyValue => keyValue.split(':'))
+    .reduce((acc, [key, value]) => {
+      acc[key] = value // not casting to Number or Boolean since I didn't need it
+      return acc
+    }, {})
 }

@@ -591,7 +591,6 @@ class ServerConnector {
     ArgumentGuard.notNull(runningRender, 'runningRender')
     ArgumentGuard.notNull(resource, 'resource')
     ArgumentGuard.notNull(resource.getContent(), 'resource.getContent()')
-    // eslint-disable-next-line max-len
     this._logger.verbose(
       `ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`,
     )
@@ -626,7 +625,11 @@ class ServerConnector {
       return true
     }
 
-    throw new Error(`ServerConnector.putResource - unexpected status (${response.statusText})`)
+    throw new Error(
+      `ServerConnector.putResource - unexpected status (${
+        response.statusText
+      }) for resource ${resource.getUrl() || ''} ${resource.getContentType()}`,
+    )
   }
 
   /**
