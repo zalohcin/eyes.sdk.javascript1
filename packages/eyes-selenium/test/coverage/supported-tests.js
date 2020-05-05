@@ -32,35 +32,39 @@ module.exports = [
   {name: 'TestCheckFrame', executionMode: {isVisualGrid: true}, disabled: true},
   {name: 'TestCheckFrame', executionMode: {isCssStitching: true}, disabled: true},
   {name: 'TestCheckFrame', executionMode: {isScrollStitching: true}, disabled: true},
-  {name: 'TestCheckFrame_Fluent', executionMode: {isVisualGrid: true}, disabled: true},
-  {name: 'TestCheckFrame_Fluent', executionMode: {isCssStitching: true}, disabled: true}, // should be failing, instead TestCheckFrameHideScrollbars_Fluent should pass until all SDK's implemenet this and then the baseline for this tests should be updated
-  {name: 'TestCheckFrame_Fluent', executionMode: {isScrollStitching: true}, disabled: true}, // should be failing, instead TestCheckFrameHideScrollbars_Fluent should pass until all SDK's implemenet this and then the baseline for this tests should be updated
+  {name: 'TestCheckFrame_Fluent_v2', executionMode: {isVisualGrid: true}, disabled: true},
+  {name: 'TestCheckFrame_Fluent_v2', executionMode: {isCssStitching: true}, disabled: true},
+  {name: 'TestCheckFrame_Fluent_v2', executionMode: {isScrollStitching: true}, disabled: true},
   {name: 'TestCheckFrameFully_Fluent', executionMode: {isVisualGrid: true}},
   {name: 'TestCheckFrameFully_Fluent', executionMode: {isCssStitching: true}, disabled: true},
   {name: 'TestCheckFrameFully_Fluent', executionMode: {isScrollStitching: true}, disabled: true},
-  {name: 'TestCheckFrameInFrame_Fully_Fluent', executionMode: {isVisualGrid: true}, disabled: true},
   {
-    name: 'TestCheckFrameInFrame_Fully_Fluent',
-    executionMode: {isCssStitching: true},
-    disabled: true,
-  },
-  {
-    name: 'TestCheckFrameInFrame_Fully_Fluent',
-    executionMode: {isScrollStitching: true},
-    disabled: true,
-  },
-  {
-    name: 'TestCheckFrameInFrame_Fully_Fluent2',
+    name: 'TestCheckFrameInFrame_Fully_Fluent_v1',
     executionMode: {isVisualGrid: true},
     disabled: true,
   },
   {
-    name: 'TestCheckFrameInFrame_Fully_Fluent2',
+    name: 'TestCheckFrameInFrame_Fully_Fluent_v1',
     executionMode: {isCssStitching: true},
     disabled: true,
   },
   {
-    name: 'TestCheckFrameInFrame_Fully_Fluent2',
+    name: 'TestCheckFrameInFrame_Fully_Fluent_v1',
+    executionMode: {isScrollStitching: true},
+    disabled: true,
+  },
+  {
+    name: 'TestCheckFrameInFrame_Fully_Fluent2_v1',
+    executionMode: {isVisualGrid: true},
+    disabled: true,
+  },
+  {
+    name: 'TestCheckFrameInFrame_Fully_Fluent2_v1',
+    executionMode: {isCssStitching: true},
+    disabled: true,
+  },
+  {
+    name: 'TestCheckFrameInFrame_Fully_Fluent2_v1',
     executionMode: {isScrollStitching: true},
     disabled: true,
   },
@@ -295,16 +299,6 @@ module.exports = [
   {
     name: 'Test_VGTestsCount_1',
     executionMode: {isVisualGrid: true, useStrictName: true},
-    disabled: true,
-  },
-  {
-    name: 'TestCheckFrameHideScrollbars_Fluent',
-    executionMode: {isCssStitching: true},
-    disabled: true,
-  },
-  {
-    name: 'TestCheckFrameHideScrollbars_Fluent',
-    executionMode: {isScrollStitching: true},
     disabled: true,
   },
 ]
