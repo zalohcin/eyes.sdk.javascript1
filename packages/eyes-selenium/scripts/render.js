@@ -120,9 +120,13 @@ const args = yargs
     describe: 'baseline env name',
     type: 'string',
   })
-  .option('sauce-options', {
+  .option('driver-capabilities', {
     describe:
-      'options for sauce labs. Comma-separated with colon for key/value. Example: --sauce-options "deviceName:iPhone 8 Simulator,platformName:iOS,platformVersion:13.2,appiumVersion:1.16.0,browserName:Safari"',
+      'capabilities for driver. Comma-separated with colon for key/value. Example: --sauce-options "deviceName:iPhone 8 Simulator,platformName:iOS,platformVersion:13.2,appiumVersion:1.16.0,browserName:Safari"',
+    type: 'string',
+  })
+  .option('driver-server', {
+    describe: 'server for driver.',
     type: 'string',
   })
 
@@ -147,9 +151,8 @@ if (!url) {
   }
 
   const driver = await buildDriver({
-    headless: args.headless,
-    webdriverProxy: args.webdriverProxy,
-    sauceOptions: parseCompoundParameter(args.sauceOptions),
+    ...args,
+    driverCapabilities: parseCompoundParameter(args.driverCapabilities),
   })
 
   const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
@@ -246,36 +249,27 @@ if (!url) {
   }
 })()
 
-function buildDriver({headless, webdriverProxy, sauceOptions} = {}) {
-  let builder = new Builder()
-  if (sauceOptions) {
-    builder = builder
-      .withCapabilities({
-        appiumVersion: '1.9.1',
-        deviceOrientation: 'portrait',
-        browserName: 'Chrome',
-        platformVersion: '8.1',
-        platformName: 'Android',
-        deviceName: 'Samsung Galaxy S8 HD GoogleAPI Emulator',
-        username: process.env.SAUCE_USERNAME,
-        accesskey: process.env.SAUCE_ACCESS_KEY,
-        ...sauceOptions,
-      })
-      .usingServer(process.env.SAUCE_SELENIUM_URL || 'https://ondemand.saucelabs.com:443/wd/hub')
-  } else {
-    builder = new Builder().withCapabilities({
-      browserName: 'chrome',
-      'goog:chromeOptions': {
-        args: headless ? ['--headless'] : [],
-      },
-    })
+function buildDriver({headless, webdriverProxy, driverCapabilities, driverServer} = {}) {
+  const capabilities = {
+    browserName: 'chrome',
+    'goog:chromeOptions': {
+      args: headless ? ['--headless'] : [],
+    },
+    username: process.env.SAUCE_USERNAME,
+    accesskey: process.env.SAUCE_ACCESS_KEY,
+    ...driverCapabilities,
   }
+
+  const driverServerUrl = process.env.SAUCE_SELENIUM_URL || process.env.SELENIUM_URL || driverServer
+
+  let builder = new Builder().withCapabilities(capabilities).usingServer(driverServerUrl)
 
   if (webdriverProxy) {
     builder = builder
       .usingServer('http://localhost.charlesproxy.com:9515')
       .usingWebDriverProxy('http://localhost:8888')
   }
+
   return builder.build()
 }
 
