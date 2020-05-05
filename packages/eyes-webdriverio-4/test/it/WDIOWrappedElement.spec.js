@@ -3,11 +3,11 @@ const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
 const assert = require('assert')
 const {Location, RectangleSize, Region} = require('@applitools/eyes-sdk-core')
-const WDIODriver = require('../../src/wrappers/WDIODriver')
-const WDIOElement = require('../../src/wrappers/WDIOElement')
+const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
+const WDIOWrappedElement = require('../../src/WDIOWrappedElement')
 const {Logger} = require('../../index')
 
-describe('WDIOElement', function() {
+describe('WDIOWrappedElement', function() {
   let logger, browser, driver
 
   before(async () => {
@@ -29,7 +29,7 @@ describe('WDIOElement', function() {
   })
 
   beforeEach(async () => {
-    driver = new WDIODriver(logger, browser)
+    driver = new WDIOWrappedDriver(logger, browser)
   })
 
   after(async () => {
@@ -39,44 +39,44 @@ describe('WDIOElement', function() {
 
   it('static isCompatible(element)', async () => {
     const {value: element} = await browser.element('#frame_main')
-    assert.ok(WDIOElement.isCompatible(element))
+    assert.ok(WDIOWrappedElement.isCompatible(element))
   })
 
   it('static isCompatible(elementResponse)', async () => {
     const elementResponse = await browser.element('#frame_main')
-    assert.ok(WDIOElement.isCompatible(elementResponse))
+    assert.ok(WDIOWrappedElement.isCompatible(elementResponse))
   })
 
   it('static elementId(element)', async () => {
     const {value: element} = await browser.element('#frame_main')
     const elementId = element.ELEMENT || element['element-6066-11e4-a52e-4f735466cecf']
-    assert.strictEqual(WDIOElement.elementId(element), elementId)
+    assert.strictEqual(WDIOWrappedElement.elementId(element), elementId)
   })
 
   it('static elementId(elementWrapper)', async () => {
     const {value: element} = await browser.element('#frame_main')
     const elementId = element.ELEMENT || element['element-6066-11e4-a52e-4f735466cecf']
-    const elementWrapper = new WDIOElement(logger, driver, element)
-    assert.strictEqual(WDIOElement.elementId(elementWrapper), elementId)
+    const elementWrapper = new WDIOWrappedElement(logger, driver, element)
+    assert.strictEqual(WDIOWrappedElement.elementId(elementWrapper), elementId)
   })
 
   it('constructor(element)', async () => {
     const {value: element} = await browser.element('#frame_main')
-    const constructed = new WDIOElement(logger, driver, element)
-    assert.strictEqual(constructed.elementId, WDIOElement.elementId(element))
+    const constructed = new WDIOWrappedElement(logger, driver, element)
+    assert.strictEqual(constructed.elementId, WDIOWrappedElement.elementId(element))
   })
 
   it('constructor(elementResponse)', async () => {
     const selector = '#frame_main'
     const elementResponse = await browser.element(selector)
-    const constructed = new WDIOElement(logger, driver, elementResponse)
-    assert.strictEqual(constructed.elementId, WDIOElement.elementId(elementResponse.value))
+    const constructed = new WDIOWrappedElement(logger, driver, elementResponse)
+    assert.strictEqual(constructed.elementId, WDIOWrappedElement.elementId(elementResponse.value))
     assert.strictEqual(constructed.selector, selector)
   })
 
   it('constructor(elementWrapper)', async () => {
     const elementWrapper = await driver.finder.findElement('#frame_main')
-    const constructed = new WDIOElement(logger, driver, elementWrapper)
+    const constructed = new WDIOWrappedElement(logger, driver, elementWrapper)
     assert.strictEqual(constructed, elementWrapper)
   })
 

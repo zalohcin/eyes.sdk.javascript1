@@ -11,31 +11,31 @@ function LegacyAPIElement(EyesWrappedElement) {
     }
     async getComputedStyleInteger(propStyle) {
       const value = await this.getCssProperty(propStyle)
-      return Math.round(parseFloat(value))
+      return Math.round(Number.parseFloat(value))
     }
     async getScrollLeft() {
       const value = await this.getProperty('scrollLeft')
-      return Math.ceil(parseFloat(value))
+      return Math.ceil(Number.parseFloat(value))
     }
     async getScrollTop() {
       const value = await this.getProperty('scrollTop')
-      return Math.ceil(parseFloat(value))
+      return Math.ceil(Number.parseFloat(value))
     }
     async getScrollWidth() {
       const value = await this.getProperty('scrollWidth')
-      return Math.ceil(parseFloat(value))
+      return Math.ceil(Number.parseFloat(value))
     }
     async getScrollHeight() {
       const value = await this.getProperty('scrollHeight')
-      return Math.ceil(parseFloat(value))
+      return Math.ceil(Number.parseFloat(value))
     }
     async getClientWidth() {
       const value = await this.getProperty('clientWidth')
-      return Math.ceil(parseFloat(value))
+      return Math.ceil(Number.parseFloat(value))
     }
     async getClientHeight() {
       const value = await this.getProperty('clientHeight')
-      return Math.ceil(parseFloat(value))
+      return Math.ceil(Number.parseFloat(value))
     }
     getBorderLeftWidth() {
       return this.getComputedStyleInteger('border-left-width')

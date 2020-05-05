@@ -14,7 +14,7 @@ const {
   AccessibilityRegionByElement,
   AccessibilityRegionBySelector,
 } = require('@applitools/eyes-sdk-core')
-const WDIODriver = require('../../src/wrappers/WDIODriver')
+const WDIODriver = require('../../src/WDIOWrappedDriver')
 const {By, Logger} = require('../../index')
 
 describe('toPersistedRegions()', function() {

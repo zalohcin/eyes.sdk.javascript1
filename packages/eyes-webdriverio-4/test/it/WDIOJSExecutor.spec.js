@@ -2,12 +2,12 @@
 const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
 const assert = require('assert')
-const WDIODriver = require('../../src/wrappers/WDIODriver')
-const WDIOElement = require('../../src/wrappers/WDIOElement')
-const WDIOJSExecutor = require('../../src/wrappers/WDIOJSExecutor')
+const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
+const WDIOWrappedElement = require('../../src/WDIOWrappedElement')
+const WDIOJsExecutor = require('../../src/WDIOJsExecutor')
 const {Logger} = require('../../index')
 
-describe('WDIOJSExecutor', function() {
+describe('WDIOJsExecutor', function() {
   let logger, browser, driver, executor
 
   before(async () => {
@@ -29,8 +29,8 @@ describe('WDIOJSExecutor', function() {
   })
 
   beforeEach(async () => {
-    driver = new WDIODriver(logger, browser)
-    executor = new WDIOJSExecutor(logger, driver)
+    driver = new WDIOWrappedDriver(logger, browser)
+    executor = new WDIOJsExecutor(logger, driver)
   })
 
   after(async () => {
@@ -44,7 +44,10 @@ describe('WDIOJSExecutor', function() {
     const args = [element, wrappedFrame]
     const results = await executor.executeScript('return arguments', ...args)
     args.forEach((arg, index) => {
-      assert.strictEqual(WDIOElement.elementId(arg), WDIOElement.elementId(results[index]))
+      assert.strictEqual(
+        WDIOWrappedElement.elementId(arg),
+        WDIOWrappedElement.elementId(results[index]),
+      )
     })
   })
 })

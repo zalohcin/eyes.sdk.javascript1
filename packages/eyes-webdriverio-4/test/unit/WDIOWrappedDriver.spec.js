@@ -1,12 +1,12 @@
 'use strict'
 const assert = require('assert')
-const WDIODriver = require('../../src/wrappers/WDIODriver')
-const WDIOElementFinder = require('../../src/wrappers/WDIOElementFinder')
-const WDIOBrowsingContext = require('../../src/wrappers/WDIOBrowsingContext')
-const WDIOJSExecutor = require('../../src/wrappers/WDIOJSExecutor')
+const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
+const WDIOElementFinder = require('../../src/WDIOElementFinder')
+const WDIOBrowsingContext = require('../../src/WDIOBrowsingContext')
+const WDIOJsExecutor = require('../../src/WDIOJsExecutor')
 const {Logger} = require('../../index')
 
-describe('WDIODriver', function() {
+describe('WDIOWrappedDriver', function() {
   let logger
 
   before(async () => {
@@ -15,19 +15,19 @@ describe('WDIODriver', function() {
 
   it('get executor', async () => {
     const browser = {}
-    const driver = new WDIODriver(logger, browser)
-    assert.ok(driver.executor instanceof WDIOJSExecutor)
+    const driver = new WDIOWrappedDriver(logger, browser)
+    assert.ok(driver.executor instanceof WDIOJsExecutor)
   })
 
   it('get context', async () => {
     const browser = {}
-    const driver = new WDIODriver(logger, browser)
+    const driver = new WDIOWrappedDriver(logger, browser)
     assert.ok(driver.context instanceof WDIOBrowsingContext)
   })
 
   it('get finder', async () => {
     const browser = {}
-    const driver = new WDIODriver(logger, browser)
+    const driver = new WDIOWrappedDriver(logger, browser)
     assert.ok(driver.finder instanceof WDIOElementFinder)
   })
 
@@ -41,7 +41,7 @@ describe('WDIODriver', function() {
         return this.someField
       },
     }
-    const driver = new WDIODriver(logger, browser)
+    const driver = new WDIOWrappedDriver(logger, browser)
     Object.keys(browser).forEach(async propName => {
       if (typeof browser[propName] === 'function') {
         let browserResult = browser[propName]()

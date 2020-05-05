@@ -2,10 +2,10 @@
 const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
 const assert = require('assert')
-const WDIODriver = require('../../src/wrappers/WDIODriver')
-const WDIOElement = require('../../src/wrappers/WDIOElement')
-const WDIOElementFinder = require('../../src/wrappers/WDIOElementFinder')
-const By = require('../../src/By')
+const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
+const WDIOWrappedElement = require('../../src/WDIOWrappedElement')
+const WDIOElementFinder = require('../../src/WDIOElementFinder')
+const By = require('../../src/LegacySelector')
 const {Logger} = require('../../index')
 
 describe('WDIOElementFinder', function() {
@@ -34,7 +34,7 @@ describe('WDIOElementFinder', function() {
   })
 
   beforeEach(async () => {
-    driver = new WDIODriver(logger, browser)
+    driver = new WDIOWrappedDriver(logger, browser)
     finder = new WDIOElementFinder(logger, driver)
   })
 
@@ -46,14 +46,14 @@ describe('WDIOElementFinder', function() {
   it('findElement(string)', async () => {
     const {value: expectedElement} = await browser.element('#frame_main')
     const foundElement = await finder.findElement('#frame_main')
-    assert.ok(foundElement instanceof WDIOElement)
+    assert.ok(foundElement instanceof WDIOWrappedElement)
     assert.deepStrictEqual(foundElement.elementId, elementId(expectedElement))
   })
 
   it('findElement(by)', async () => {
     const {value: expectedElement} = await browser.element('[name="frame-aside"]')
     const foundElement = await finder.findElement(By.name('frame-aside'))
-    assert.ok(foundElement instanceof WDIOElement)
+    assert.ok(foundElement instanceof WDIOWrappedElement)
     assert.deepStrictEqual(foundElement.elementId, elementId(expectedElement))
   })
 
@@ -62,7 +62,7 @@ describe('WDIOElementFinder', function() {
     const foundElements = await finder.findElements('iframe')
     assert.strictEqual(foundElements.length, expectedElements.length)
     foundElements.forEach(foundElement => {
-      assert.ok(foundElement instanceof WDIOElement)
+      assert.ok(foundElement instanceof WDIOWrappedElement)
     })
     foundElements.forEach((foundElement, index) => {
       assert.deepStrictEqual(foundElement.elementId, elementId(expectedElements[index]))
@@ -74,7 +74,7 @@ describe('WDIOElementFinder', function() {
     const foundElements = await finder.findElements(By.tagName('iframe'))
     assert.strictEqual(foundElements.length, expectedElements.length)
     foundElements.forEach(foundElement => {
-      assert.ok(foundElement instanceof WDIOElement)
+      assert.ok(foundElement instanceof WDIOWrappedElement)
     })
     foundElements.forEach((foundElement, index) => {
       assert.deepStrictEqual(foundElement.elementId, elementId(expectedElements[index]))
