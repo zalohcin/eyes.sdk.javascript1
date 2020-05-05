@@ -1,15 +1,14 @@
 'use strict'
 
-const {Eyes, Target, Region} = require('../../../../index')
+const {Eyes, Target} = require('../../../../index')
 const {Builder} = require('selenium-webdriver')
-const {getBatch, sauceUrl} = require('../util/TestSetup')
-const {iOSCaps} = require('../util/NativeApp')
-const batch = getBatch()
+const {batch, sauceUrl} = require('../util/TestSetup')
+const {androidCaps} = require('../util/NativeApp')
 
-describe('iOS', () => {
-  it.skip('iOSNativeApp checkWindow', async () => {
+describe('Android', () => {
+  it('AndroidNativeApp checkWindow', async () => {
     let driver = await new Builder()
-      .withCapabilities(iOSCaps)
+      .withCapabilities(androidCaps)
       .usingServer(sauceUrl)
       .build()
     let eyes = new Eyes()
@@ -19,8 +18,8 @@ describe('iOS', () => {
       eyes.setApiKey(process.env.APPLITOOLS_API_KEY_SDK)
     }
     try {
-      await eyes.open(driver, 'iOSNativeApp', 'iOSNativeApp checkWindow')
-      await eyes.check('', Target.window().ignoreRegions(new Region(0, 0, 300, 100)))
+      await eyes.open(driver, 'AndroidNativeApp', 'AndroidNativeApp checkWindow')
+      await eyes.check('', Target.window().ignore({left: 0, top: 0, width: 1429, height: 100}))
       await eyes.close()
     } finally {
       await driver.quit()

@@ -1,13 +1,12 @@
 'use strict'
 
-const {Eyes, Target, Region} = require('../../../../index')
+const {Eyes, Target} = require('../../../../index')
 const {Builder} = require('selenium-webdriver')
-const {getBatch, sauceUrl} = require('../util/TestSetup')
+const {batch, sauceUrl} = require('../util/TestSetup')
 const {iOSCaps} = require('../util/NativeApp')
-const batch = getBatch()
 
 describe('iOS', () => {
-  it.skip('iOSNativeApp checkRegion', async () => {
+  it.skip('iOSNativeApp checkWindow', async () => {
     let driver = await new Builder()
       .withCapabilities(iOSCaps)
       .usingServer(sauceUrl)
@@ -19,17 +18,8 @@ describe('iOS', () => {
       eyes.setApiKey(process.env.APPLITOOLS_API_KEY_SDK)
     }
     try {
-      await eyes.open(driver, 'iOSNativeApp', 'iOSNativeApp checkRegionFloating')
-      await eyes.check(
-        '',
-        Target.region(new Region(0, 100, 375, 712)).floatingRegion(
-          new Region(10, 10, 20, 20),
-          3,
-          3,
-          20,
-          30,
-        ),
-      )
+      await eyes.open(driver, 'iOSNativeApp', 'iOSNativeApp checkWindow')
+      await eyes.check('', Target.window().ignore({left: 0, top: 0, width: 300, height: 100}))
       await eyes.close()
     } finally {
       await driver.quit()

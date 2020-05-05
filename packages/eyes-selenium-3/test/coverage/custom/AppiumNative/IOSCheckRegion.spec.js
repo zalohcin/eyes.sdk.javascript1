@@ -1,10 +1,9 @@
 'use strict'
 
-const {Eyes, Target, Region} = require('../../../../index')
+const {Eyes, Target} = require('../../../../index')
 const {Builder} = require('selenium-webdriver')
-const {getBatch, sauceUrl} = require('../util/TestSetup')
+const {batch, sauceUrl} = require('../util/TestSetup')
 const {iOSCaps} = require('../util/NativeApp')
-const batch = getBatch()
 
 describe('iOS', () => {
   it.skip('iOSNativeApp checkRegion', async () => {
@@ -22,13 +21,16 @@ describe('iOS', () => {
       await eyes.open(driver, 'iOSNativeApp', 'iOSNativeApp checkRegionFloating')
       await eyes.check(
         '',
-        Target.region(new Region(0, 100, 375, 712)).floatingRegion(
-          new Region(10, 10, 20, 20),
-          3,
-          3,
-          20,
-          30,
-        ),
+        Target.region({left: 0, top: 100, width: 375, height: 712}).floating({
+          left: 10,
+          top: 10,
+          width: 20,
+          height: 20,
+          maxLeftOffset: 3,
+          maxRightOffset: 3,
+          maxUpOffset: 20,
+          maxDownOffset: 30,
+        }),
       )
       await eyes.close()
     } finally {
