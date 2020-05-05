@@ -1,5 +1,4 @@
 const {
-  TypeUtils,
   Location,
   RectangleSize,
   Region,

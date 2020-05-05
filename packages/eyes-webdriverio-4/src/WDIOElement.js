@@ -1,6 +1,5 @@
 const {
   TypeUtils,
-  ArgumentGuard,
   Location,
   RectangleSize,
   Region,
@@ -9,7 +8,7 @@ const {
   FrameChain,
   EyesUtils,
 } = require('@applitools/eyes-sdk-core')
-const By = require('../By')
+const By = require('./By')
 const LegacyAPIElement = require('./LegacyAPIElement')
 
 const WEB_ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
@@ -124,6 +123,25 @@ class WDIOElement extends LegacyAPIElement(EyesWrappedElement) {
     const width = rect && rect.width ? Math.ceil(rect.width) : 0
     const height = rect && rect.height ? Math.ceil(rect.height) : 0
     return new Region(left, top, width, height)
+  }
+
+  async getContentRect() {
+    const [
+      location,
+      [borderLeftWidth, borderTopWidth],
+      [clientWidth, clientHeight],
+    ] = await Promise.all([
+      this.getLocation(),
+      this.getCssProperty('border-left-width', 'border-top-width'),
+      this.getProperty('clientWidth', 'clientHeight'),
+    ])
+    return new Region(
+      Math.round(location.getX() + Number.parseFloat(borderLeftWidth)),
+      Math.round(location.getY() + Number.parseFloat(borderTopWidth)),
+      Math.round(clientWidth),
+      Math.round(clientHeight),
+      CoordinatesType.CONTEXT_RELATIVE,
+    )
   }
 
   async getBounds() {

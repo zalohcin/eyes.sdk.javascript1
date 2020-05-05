@@ -1,24 +1,37 @@
 'use strict'
 
 const {
-  ArgumentGuard,
-  TestResultsFormatter,
-  CorsIframeHandle,
-  CorsIframeHandler,
-  TypeUtils,
   BrowserType,
-  Configuration,
+  ArgumentGuard,
+  TypeUtils,
   RectangleSize,
-  VisualGridRunner,
-  EyesUtils,
-} = require('@applitools/eyes-sdk-core')
-const {makeVisualGridClient, takeDomSnapshot} = require('@applitools/visual-grid-client')
-const WDIODriver = require('./wrappers/WDIODriver')
+  Configuration,
+} = require('@applitools/eyes-common')
+const TestResultsFormatter = require('./TestResultsFormatter')
+const {CorsIframeHandler, CorsIframeHandle} = require('./capture/CorsIframeHandler')
+const {VisualGridRunner} = require('./runner/VisualGridRunner')
+const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
 const VERSION = require('../package.json').version
 
 class EyesVisualGrid extends EyesCore {
+  static specialize({WrappedDriver, WrappedElement, CheckSettings, VisualGridClient}) {
+    return class extends EyesVisualGrid {
+      static get WrappedDriver() {
+        return WrappedDriver
+      }
+      static get WrappedElement() {
+        return WrappedElement
+      }
+      static get CheckSettings() {
+        return CheckSettings
+      }
+      static get VisualGridClient() {
+        return VisualGridClient
+      }
+    }
+  }
   /**
    * @inheritDoc
    */
@@ -37,7 +50,7 @@ class EyesVisualGrid extends EyesCore {
     super(serverUrl, isDisabled)
     this._runner = runner
     this._runner.attachEyes(this, this._serverConnector)
-    this._runner.makeGetVisualGridClient(makeVisualGridClient)
+    this._runner.makeGetVisualGridClient(this.constructor.VisualGridClient.makeVisualGridClient)
 
     /** @type {boolean} */ this._isOpen = false
     /** @type {boolean} */ this._isVisualGrid = true
@@ -62,12 +75,12 @@ class EyesVisualGrid extends EyesCore {
    * @param {RectangleSize|object} [optArg3] The required browser's viewport size
    *   (i.e., the visible part of the document's body) or to use the current window's viewport.
    * @param {Configuration} [optArg4] The Configuration for the test
-   * @return {Promise<WDIODriver>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
+   * @return {Promise<EyesWrappedDriver>} A wrapped WebDriver which enables Eyes trigger recording and frame handling.
    */
   async open(driver, optArg1, optArg2, optArg3, optArg4) {
     ArgumentGuard.notNull(driver, 'driver')
 
-    this._driver = new WDIODriver(this._logger, driver)
+    this._driver = new this.constructor.WrappedDriver(this._logger, driver)
     this._executor = this._driver.executor
     this._finder = this._driver.finder
     this._context = this._driver.context
@@ -166,7 +179,7 @@ class EyesVisualGrid extends EyesCore {
     await this._context.framesRefresh()
     return this._beforeAndAfterCheck(checkSettings, async () => {
       // this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`)
-      const pageDomResults = await takeDomSnapshot({
+      const pageDomResults = await this.constructor.VisualGridClient.takeDomSnapshot({
         executeScript: this._executor.executeScript.bind(this._executor),
       })
       const {cdt, url, resourceContents, resourceUrls, frames} = pageDomResults

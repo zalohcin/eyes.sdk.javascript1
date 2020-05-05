@@ -1,11 +1,13 @@
 const core = require('@applitools/eyes-sdk-core')
+const WDIOCheckSettings = require('./src/WDIOCheckSettings')
+const {WDIOEyesClassic, WDIOEyesVisualGrid, WDIOEyesFactory} = require('./src/Eyes')
 
-exports.Eyes = require('./src/Eyes').Eyes
-exports.EyesWDIO = require('./src/EyesWDIO')
-exports.EyesVisualGrid = require('./src/EyesVisualGrid')
+exports.Eyes = WDIOEyesFactory
+exports.EyesWDIO = WDIOEyesClassic
+exports.EyesVisualGrid = WDIOEyesVisualGrid
+exports.Target = WDIOCheckSettings
+exports.WebdriverioCheckSettings = WDIOCheckSettings
 exports.By = require('./src/By')
-exports.Target = require('./src/WDIOCheckSettings')
-exports.WebdriverioCheckSettings = require('./src/WDIOCheckSettings')
 
 exports.EyesScreenshot = core.EyesScreenshotNew
 exports.StitchMode = core.StitchMode

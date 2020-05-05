@@ -110,6 +110,9 @@ exports.Trigger = require('./lib/triggers/Trigger').Trigger
 
 exports.AppEnvironment = require('./lib/AppEnvironment').AppEnvironment
 exports.EyesBase = require('./lib/EyesBase').EyesBase
+exports.EyesClassic = require('./lib/EyesClassic')
+exports.EyesVisualGrid = require('./lib/EyesVisualGrid')
+exports.EyesFactory = require('./lib/EyesFactory')
 exports.EyesJsBrowserUtils = require('./lib/EyesJsBrowserUtils').EyesJsBrowserUtils
 exports.EyesUtils = require('./lib/EyesUtils')
 exports.FailureReports = require('./lib/FailureReports').FailureReports

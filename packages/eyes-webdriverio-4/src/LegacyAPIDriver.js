@@ -1,4 +1,4 @@
-const By = require('../By')
+const By = require('./By')
 
 function LegacyAPIDriver(EyesWrappedDriver) {
   return class EyesWebDriver extends EyesWrappedDriver {

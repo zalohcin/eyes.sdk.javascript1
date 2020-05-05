@@ -1,13 +1,7 @@
-const {
-  ArgumentGuard,
-  EyesBase,
-  ImageRotation,
-  Region,
-  FrameChain,
-} = require('@applitools/eyes-sdk-core')
-
-const WDIOElement = require('./wrappers/WDIOElement')
-const WDIOCheckSettings = require('./WDIOCheckSettings')
+const {ArgumentGuard, Region} = require('@applitools/eyes-common')
+const FrameChain = require('./frames/FrameChain')
+const ImageRotation = require('./positioning/ImageRotation')
+const EyesBase = require('./EyesBase').EyesBase
 
 class EyesCore extends EyesBase {
   /* ------------ Method Aliases ------------ */
@@ -23,7 +17,7 @@ class EyesCore extends EyesBase {
   async checkWindow(tag, matchTimeout, stitchContent = false) {
     return this.check(
       tag,
-      WDIOCheckSettings.window()
+      this.constructor.CheckSettings.window()
         .timeout(matchTimeout)
         .stitchContent(stitchContent),
     )
@@ -40,7 +34,7 @@ class EyesCore extends EyesBase {
   async checkFrame(element, matchTimeout, tag) {
     return this.check(
       tag,
-      WDIOCheckSettings.frame(element)
+      this.constructor.CheckSettings.frame(element)
         .timeout(matchTimeout)
         .fully(),
     )
@@ -57,7 +51,7 @@ class EyesCore extends EyesBase {
   async checkElement(element, matchTimeout, tag) {
     return this.check(
       tag,
-      WDIOCheckSettings.region(element)
+      this.constructor.CheckSettings.region(element)
         .timeout(matchTimeout)
         .fully(),
     )
@@ -74,7 +68,7 @@ class EyesCore extends EyesBase {
   async checkElementBy(locator, matchTimeout, tag) {
     return this.check(
       tag,
-      WDIOCheckSettings.region(locator)
+      this.constructor.CheckSettings.region(locator)
         .timeout(matchTimeout)
         .fully(),
     )
@@ -89,7 +83,7 @@ class EyesCore extends EyesBase {
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkRegion(region, tag, matchTimeout) {
-    return this.check(tag, WDIOCheckSettings.region(region).timeout(matchTimeout))
+    return this.check(tag, this.constructor.CheckSettings.region(region).timeout(matchTimeout))
   }
 
   /**
@@ -101,7 +95,7 @@ class EyesCore extends EyesBase {
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
   async checkRegionByElement(element, tag, matchTimeout) {
-    return this.check(tag, WDIOCheckSettings.region(element).timeout(matchTimeout))
+    return this.check(tag, this.constructor.CheckSettings.region(element).timeout(matchTimeout))
   }
 
   /**
@@ -117,7 +111,7 @@ class EyesCore extends EyesBase {
   async checkRegionBy(by, tag, matchTimeout, stitchContent = false) {
     return this.check(
       tag,
-      WDIOCheckSettings.region(by)
+      this.constructor.CheckSettings.region(by)
         .timeout(matchTimeout)
         .stitchContent(stitchContent),
     )
@@ -139,7 +133,7 @@ class EyesCore extends EyesBase {
   async checkRegionInFrame(frameNameOrId, locator, matchTimeout, tag, stitchContent = false) {
     return this.check(
       tag,
-      WDIOCheckSettings.region(locator, frameNameOrId)
+      this.constructor.CheckSettings.region(locator, frameNameOrId)
         .timeout(matchTimeout)
         .stitchContent(stitchContent),
     )
@@ -358,33 +352,13 @@ class EyesCore extends EyesBase {
     return this._stitchContent
   }
 
-  // /**
-  //  * Turns on/off the automatic scrolling to a region being checked by {@code checkRegion}.
-  //  *
-  //  * @param {boolean} shouldScroll - Whether to automatically scroll to a region being validated.
-  //  */
-  // setScrollToRegion(shouldScroll) {
-  //   if (shouldScroll) {
-  //     this._regionVisibilityStrategy = new MoveToRegionVisibilityStrategy(this._logger)
-  //   } else {
-  //     this._regionVisibilityStrategy = new NopRegionVisibilityStrategy(this._logger)
-  //   }
-  // }
-
-  // /**
-  //  * @return {boolean} - Whether to automatically scroll to a region being validated.
-  //  */
-  // getScrollToRegion() {
-  //   return !(this._regionVisibilityStrategy instanceof NopRegionVisibilityStrategy)
-  // }
-
   /**
    * @param {By} element
    */
   setScrollRootElement(scrollRootElement) {
-    if (WDIOElement.isSelector(scrollRootElement)) {
-      this._scrollRootElement = WDIOElement.fromSelector(scrollRootElement)
-    } else if (WDIOElement.isCompatible(scrollRootElement)) {
+    if (this.constructor.isSelector(scrollRootElement)) {
+      this._scrollRootElement = this.constructor.fromSelector(scrollRootElement)
+    } else if (this.constructor.isCompatible(scrollRootElement)) {
       this._scrollRootElement = scrollRootElement
     } else {
       this._scrollRootElement = null

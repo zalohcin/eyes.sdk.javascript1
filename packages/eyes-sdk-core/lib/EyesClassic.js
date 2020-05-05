@@ -1,75 +1,85 @@
 'use strict'
-
 const {
-  ContextBasedScaleProviderFactory,
+  StitchMode,
   CoordinatesType,
-  FailureReports,
-  FixedScaleProviderFactory,
-  FullPageCaptureAlgorithm,
-  EyesScreenshotNew: EyesScreenshot,
-  EyesScreenshotFactory,
-  ImageProviderFactory,
+  ArgumentGuard,
+  TypeUtils,
   Location,
   RectangleSize,
-  NullCutProvider,
-  NullScaleProvider,
-  NullRegionProvider,
-  ScaleProviderIdentityFactory,
   Region,
-  RegionProvider,
-  TestFailedError,
-  TypeUtils,
   UserAgent,
-  ArgumentGuard,
-  SimplePropertyHandler,
   ReadOnlyPropertyHandler,
-  ClassicRunner,
-  EyesUtils,
-  StitchMode,
-  CssTranslatePositionProvider,
-  CssTranslateElementPositionProvider,
-  ScrollPositionProvider,
-  ScrollElementPositionProvider,
-  RegionPositionCompensationFactory,
-  MatchResult,
-} = require('@applitools/eyes-sdk-core')
-const {DomCapture} = require('@applitools/dom-utils')
-const WDIODriver = require('./wrappers/WDIODriver')
-const WDIOElement = require('./wrappers/WDIOElement')
+  SimplePropertyHandler,
+} = require('@applitools/eyes-common')
+
+const {FailureReports} = require('./FailureReports')
+const {TestFailedError} = require('./errors/TestFailedError')
+const {MatchResult} = require('./match/MatchResult')
+const {FullPageCaptureAlgorithm} = require('./capture/FullPageCaptureAlgorithm')
+const EyesScreenshot = require('./capture/EyesScreenshotNew')
+const EyesScreenshotFactory = require('./capture/EyesScreenshotFactory')
+const ImageProviderFactory = require('./capture/ImageProviderFactory')
+const NullRegionProvider = require('./positioning/NullRegionProvider')
+const RegionProvider = require('./positioning/RegionProvider')
+const {NullCutProvider} = require('./cropping/NullCutProvider')
+const {NullScaleProvider} = require('./scaling/NullScaleProvider')
+const {ScaleProviderIdentityFactory} = require('./scaling/ScaleProviderIdentityFactory')
+const {ContextBasedScaleProviderFactory} = require('./scaling/ContextBasedScaleProviderFactory')
+const {FixedScaleProviderFactory} = require('./scaling/FixedScaleProviderFactory')
+const RegionPositionCompensationFactory = require('./positioning/RegionPositionCompensationFactory')
+const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider')
+const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
+const CssTranslateElementPositionProvider = require('./positioning/CssTranslateElementPositionProvider')
+const ScrollElementPositionProvider = require('./positioning/ScrollElementPositionProvider')
+const ClassicRunner = require('./runner/ClassicRunner')
+const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
 const VERSION = require('../package.json').version
 
 /**
- * @typedef {import('@applitools/eyes-sdk-core').EyesWrappedDriver} EyesWrappedDriver
- * @typedef {import('@applitools/eyes-sdk-core').EyesWrappedElement} EyesWrappedElement
- * @typedef {import('@applitools/eyes-sdk-core').EyesBrowsingContext} EyesBrowsingContext
- * @typedef {import('@applitools/eyes-sdk-core').EyesElementFinder} EyesElementFinder
- * @typedef {import('@applitools/eyes-sdk-core').EyesDriverController} EyesDriverController
- * @typedef {import('@applitools/eyes-sdk-core').EyesJsExecutor} EyesJsExecutor
+ * @typedef {import('./wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('./wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('./wrappers/EyesBrowsingContext')} EyesBrowsingContext
+ * @typedef {import('./wrappers/EyesElementFinder')} EyesElementFinder
+ * @typedef {import('./wrappers/EyesDriverController')} EyesDriverController
+ * @typedef {import('./wrappers/EyesJsExecutor')} EyesJsExecutor
  */
 
-class EyesWDIO extends EyesCore {
-  static get UNKNOWN_DEVICE_PIXEL_RATIO() {
-    return 0
-  }
+const UNKNOWN_DEVICE_PIXEL_RATIO = 0
+const DEFAULT_DEVICE_PIXEL_RATIO = 1
 
-  static get DEFAULT_DEVICE_PIXEL_RATIO() {
-    return 1
-  }
-
+class EyesClassic extends EyesCore {
   /**
-   * @override
+   * Create a specialized version of this class
+   * @param {EyesWrappedDriver} WrappedDriver - class which implements {@link EyesWrappedDriver}
+   * @param {EyesWrappedElement} WrappedElement - class which implements {@link EyesWrappedElement}
+   * @return {EyesClassic} specialized version of this class
    */
-  getBaseAgentId() {
-    return `eyes.webdriverio/${VERSION}`
+  static specialize({WrappedDriver, WrappedElement, CheckSettings, DomCapture}) {
+    /**
+     * @return {EyesWrappedDriver} class which implements {@link EyesWrappedDriver}
+     */
+    return class extends EyesClassic {
+      static get WrappedDriver() {
+        return WrappedDriver
+      }
+      static get WrappedElement() {
+        return WrappedElement
+      }
+      static get CheckSettings() {
+        return CheckSettings
+      }
+      static get DomCapture() {
+        return DomCapture
+      }
+    }
   }
 
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
-   *
-   * @param {String} [serverUrl] The Eyes server URL.
-   * @param {Boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
+   * @param {String} [serverUrl] - Eyes server URL.
+   * @param {Boolean} [isDisabled=false] - Set to true to disable Applitools Eyes and use the webdriver directly.
    * @param {ClassicRunner} [runner] - Set shared ClassicRunner if you want to group results.
    **/
   constructor(serverUrl, isDisabled = false, runner = new ClassicRunner()) {
@@ -110,7 +120,7 @@ class EyesWDIO extends EyesCore {
     /** @type {RegionPositionCompensation} */
     this._regionPositionCompensation = undefined
     /** @type {number} */
-    this._devicePixelRatio = EyesWDIO.UNKNOWN_DEVICE_PIXEL_RATIO
+    this._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO
     /** @type {Region} */
     this._regionToCheck = null
     /** @type {PositionProvider} */
@@ -121,10 +131,17 @@ class EyesWDIO extends EyesCore {
     this._domUrl
     /** @type {EyesScreenshotFactory} */
     this._screenshotFactory = undefined
-    /** @type {WDIOElement} */
+    /** @type {EyesWrappedElement} */
     this._scrollRootElement = null
     /** @type {Promise<void>} */
     this._closePromise = Promise.resolve()
+  }
+
+  /**
+   * @override
+   */
+  getBaseAgentId() {
+    return `eyes.webdriverio/${VERSION}`
   }
 
   /**
@@ -133,14 +150,14 @@ class EyesWDIO extends EyesCore {
    * @param {String} [testName] - Test name
    * @param {RectangleSize|{width: number, height: number}} [viewportSize] - Viewport size
    * @param {SessionType} [sessionType] - The type of test (e.g.,  standard test / visual performance test).
-   * @returns {Promise<WDIODriver>}
+   * @returns {Promise<EyesWrappedDriver>}
    */
   async open(driver, appName, testName, viewportSize, sessionType) {
     ArgumentGuard.notNull(driver, 'driver')
 
     this._logger.verbose('Running using Webdriverio module')
 
-    this._driver = new WDIODriver(this._logger, driver)
+    this._driver = new this.constructor.WrappedDriver(this._logger, driver)
     this._executor = this._driver.executor
     this._finder = this._driver.finder
     this._context = this._driver.context
@@ -169,7 +186,7 @@ class EyesWDIO extends EyesCore {
       return driver
     }
 
-    this._devicePixelRatio = EyesWDIO.UNKNOWN_DEVICE_PIXEL_RATIO
+    this._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO
 
     if (await this._controller.isMobileDevice()) {
       // set viewportSize to null if browser is mobile
@@ -291,7 +308,11 @@ class EyesWDIO extends EyesCore {
         await this._scrollRootElement.init(this._driver)
       } else {
         const element = await EyesUtils.getScrollRootElement(this._logger, this._executor)
-        this._scrollRootElement = new WDIOElement(this._logger, this._driver, element)
+        this._scrollRootElement = new this.constructor.WrappedElement(
+          this._logger,
+          this._driver,
+          element,
+        )
       }
       if (shouldHideScrollbars) {
         await this._scrollRootElement.hideScrollbars()
@@ -363,7 +384,7 @@ class EyesWDIO extends EyesCore {
       this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
 
       this._regionToCheck = new Region(targetRegion)
-      this._fullRegionToCheck = new Region(
+      this._regionFullArea = new Region(
         Location.ZERO,
         targetRegion.getSize(),
         CoordinatesType.CONTEXT_RELATIVE,
@@ -436,11 +457,17 @@ class EyesWDIO extends EyesCore {
   async _checkFullElement(checkSettings, targetElement) {
     try {
       this._shouldCheckFullRegion = true
-      const offset = await EyesUtils.ensureRegionVisible(
+
+      if (this._configuration.getHideScrollbars()) {
+        await targetElement.hideScrollbars()
+      }
+
+      const region = await targetElement.getContentRect()
+      await EyesUtils.ensureRegionVisible(
         this._logger,
         this._driver,
         this._positionProviderHandler.get(),
-        await targetElement.getBounds(),
+        region,
       )
 
       const frameChain = this._context.frameChain
@@ -460,33 +487,14 @@ class EyesWDIO extends EyesCore {
           ? frameChain.current.scrollRootElement
           : this._scrollRootElement
         this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
-        this._fullRegionToCheck = new Region(
-          offset,
-          await targetElement.getSize(),
+        this._regionFullArea = new Region(
+          Location.ZERO,
+          region.getSize(),
           CoordinatesType.CONTEXT_RELATIVE,
         )
       }
 
-      if (this._configuration.getHideScrollbars()) {
-        await targetElement.hideScrollbars()
-      }
-
-      const [
-        location,
-        [borderLeftWidth, borderTopWidth],
-        [clientWidth, clientHeight],
-      ] = await Promise.all([
-        targetElement.getLocation(),
-        targetElement.getCssProperty('border-left-width', 'border-top-width'),
-        targetElement.getProperty('clientWidth', 'clientHeight'),
-      ])
-      this._regionToCheck = new Region(
-        Math.round(location.getX() + Number.parseFloat(borderLeftWidth)),
-        Math.round(location.getY() + Number.parseFloat(borderTopWidth)),
-        Math.round(clientWidth),
-        Math.round(clientHeight),
-        CoordinatesType.CONTEXT_RELATIVE,
-      )
+      this._regionToCheck = new Region(region)
 
       // if (!frameChain.isEmpty) {
       //   const effectiveSize = frameChain.getCurrentFrameEffectiveSize()
@@ -507,10 +515,10 @@ class EyesWDIO extends EyesCore {
         source,
       )
     } finally {
-      await targetElement.restoreScrollbars()
       this._regionToCheck = null
-      this._fullRegionToCheck = null
+      this._regionFullArea = null
       this._targetPositionProvider = null
+      await targetElement.restoreScrollbars()
       this._shouldCheckFullRegion = false
     }
   }
@@ -656,7 +664,7 @@ class EyesWDIO extends EyesCore {
     await this._targetPositionProvider.markScrollRootElement()
     const fullRegionImage = await fullPageCapture.getStitchedRegion(
       this._regionToCheck,
-      this._fullRegionToCheck,
+      this._regionFullArea,
       this._targetPositionProvider,
     )
 
@@ -697,7 +705,7 @@ class EyesWDIO extends EyesCore {
       let scrollRootElement = positionProvider.scrollRootElement
       if (!scrollRootElement) {
         const element = await EyesUtils.getScrollRootElement(this._logger, this._executor)
-        scrollRootElement = new WDIOElement(this._logger, this._driver, element)
+        scrollRootElement = new this.constructor.WrappedElement(this._logger, this._driver, element)
       }
       // TODO replace with js snippet
       const [
@@ -767,7 +775,7 @@ class EyesWDIO extends EyesCore {
   async _updateScalingParams() {
     // Update the scaling params only if we haven't done so yet, and the user hasn't set anything else manually.
     if (
-      this._devicePixelRatio !== EyesWDIO.UNKNOWN_DEVICE_PIXEL_RATIO &&
+      this._devicePixelRatio !== UNKNOWN_DEVICE_PIXEL_RATIO &&
       !(this._scaleProviderHandler.get() instanceof NullScaleProvider)
     ) {
       // If we already have a scale provider set, we'll just use it, and pass a mock as provider handler.
@@ -789,7 +797,7 @@ class EyesWDIO extends EyesCore {
       })
       .catch(err => {
         this._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
-        this._devicePixelRatio = EyesWDIO.DEFAULT_DEVICE_PIXEL_RATIO
+        this._devicePixelRatio = DEFAULT_DEVICE_PIXEL_RATIO
       })
 
     this._logger.verbose(`Device pixel ratio: ${this._devicePixelRatio}`)
@@ -851,7 +859,7 @@ class EyesWDIO extends EyesCore {
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...')
-      return await DomCapture.getFullWindowDom(this._logger, this._driver)
+      return await this.constructor.DomCapture.getFullWindowDom(this._logger, this._driver)
     } catch (ignored) {
       return ''
     }
@@ -960,4 +968,4 @@ class EyesWDIO extends EyesCore {
   }
 }
 
-module.exports = EyesWDIO
+module.exports = EyesClassic

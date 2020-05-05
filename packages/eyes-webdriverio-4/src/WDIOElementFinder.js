@@ -13,10 +13,6 @@ class WDIOElementFinder extends EyesElementFinder {
     const {value: element} = parentElement
       ? await this._driver.elementIdElement(WDIOElement.elementId(parentElement), selector)
       : await this._driver.element(selector)
-    // TODO Do we need throw if not found?
-    // if (element === null && result.type === 'NoSuchElement' && result.state === 'failure') {
-    //   throw new Error(result.message)
-    // }
     return element ? new WDIOElement(this._logger, this._driver, element, selector) : null
   }
 
