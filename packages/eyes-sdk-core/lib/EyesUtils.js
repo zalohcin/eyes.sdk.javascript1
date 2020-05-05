@@ -289,6 +289,10 @@ async function translateTo(_logger, executor, location, element) {
   return location
 }
 
+async function isScrollable(_logger, executor, element) {
+  return executor.executeScript(EyesJsSnippets.IS_SCROLLABLE, element)
+}
+
 async function getScrollRootElement(_logger, executor) {
   return executor.executeScript(EyesJsSnippets.GET_SCROLL_ROOT_ELEMENT)
 }
@@ -451,6 +455,7 @@ module.exports = {
   setTransforms,
   getTranslateLocation,
   translateTo,
+  isScrollable,
   getScrollRootElement,
   markScrollRootElement,
   getOverflow,

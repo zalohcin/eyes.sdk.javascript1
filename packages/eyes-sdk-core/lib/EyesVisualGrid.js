@@ -38,7 +38,6 @@ class EyesVisualGrid extends EyesCore {
   getBaseAgentId() {
     return `eyes.webdriverio.visualgrid/${VERSION}`
   }
-
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
    *
@@ -64,7 +63,6 @@ class EyesVisualGrid extends EyesCore {
     /** @type {Promise<void>} */
     this._closePromise = Promise.resolve()
   }
-
   /**
    * @signature `open(driver, configuration)`
    * @signature `open(driver, appName, testName, ?viewportSize, ?configuration)`
@@ -164,7 +162,6 @@ class EyesVisualGrid extends EyesCore {
 
     return this._driver
   }
-
   /**
    * @param {string} name
    * @param {WebdriverioCheckSettings} checkSettings
@@ -177,7 +174,7 @@ class EyesVisualGrid extends EyesCore {
     }
 
     await this._context.framesRefresh()
-    return this._beforeAndAfterCheck(checkSettings, async () => {
+    return this._checkPrepare(checkSettings, async () => {
       // this._logger.verbose(`Dom extraction starting   (${checkSettings.toString()})   $$$$$$$$$$$$`)
       const pageDomResults = await this.constructor.VisualGridClient.takeDomSnapshot({
         executeScript: this._executor.executeScript.bind(this._executor),
@@ -213,7 +210,7 @@ class EyesVisualGrid extends EyesCore {
     })
   }
 
-  async _beforeAndAfterCheck(checkSettings, operation) {
+  async _checkPrepare(checkSettings, operation) {
     const originalFrameChain = this._context.frameChain
     const appendFrameChain = checkSettings.frameChain
     await this._context.frames(appendFrameChain)
@@ -241,14 +238,12 @@ class EyesVisualGrid extends EyesCore {
     const [region, selector] = await Promise.all([targetRegion, targetSelector])
     return {region, selector}
   }
-
   /**
    * @inheritDoc
    */
   async getScreenshot() {
     return undefined
   }
-
   /**
    * @param {boolean} [throwEx]
    * @return {Promise<TestResults>}
@@ -275,7 +270,6 @@ class EyesVisualGrid extends EyesCore {
 
     return this._closePromise
   }
-
   /**
    * @param {boolean} [throwEx]
    * @return {Promise<void>}
@@ -287,7 +281,6 @@ class EyesVisualGrid extends EyesCore {
     // eslint-disable-next-line no-console
     console.log(testResultsFormatter.asFormatterString())
   }
-
   /**
    * @return {Promise<?TestResults>}
    */
@@ -295,14 +288,12 @@ class EyesVisualGrid extends EyesCore {
     this._isOpen = false
     return this._abortCommand()
   }
-
   /**
    * @return {Promise<RectangleSize>}
    */
   async getViewportSize() {
     return this._configuration.getViewportSize()
   }
-
   /**
    * @param {RectangleSize|object} viewportSize
    */
@@ -315,7 +306,6 @@ class EyesVisualGrid extends EyesCore {
       await EyesUtils.setViewportSize(this._logger, this._driver, viewportSize)
     }
   }
-
   /**
    * @inheritDoc
    */

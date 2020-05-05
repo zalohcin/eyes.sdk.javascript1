@@ -77,8 +77,6 @@ exports.CssTranslatePositionProvider = require('./lib/positioning/CssTranslatePo
 exports.ScrollElementPositionProvider = require('./lib/positioning/ScrollElementPositionProvider')
 exports.CssTranslateElementPositionProvider = require('./lib/positioning/CssTranslateElementPositionProvider')
 exports.PositionMemento = require('./lib/positioning/PositionMemento')
-exports.ScrollPositionMemento = require('./lib/positioning/ScrollPositionMemento')
-exports.CssTranslatePositionMemento = require('./lib/positioning/CssTranslatePositionMemento')
 
 exports.RenderInfo = require('./lib/renderer/RenderInfo').RenderInfo
 exports.RenderRequest = require('./lib/renderer/RenderRequest').RenderRequest

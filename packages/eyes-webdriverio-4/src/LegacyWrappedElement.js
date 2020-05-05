@@ -1,5 +1,5 @@
-function LegacyAPIElement(WDIOElement) {
-  return class EyesWebElement extends WDIOElement {
+function LegacyAPIElement(EyesWrappedElement) {
+  return class EyesWebElement extends EyesWrappedElement {
     getDriver() {
       return this._driver
     }

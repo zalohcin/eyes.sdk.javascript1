@@ -1,5 +1,5 @@
 const {EyesElementFinder} = require('@applitools/eyes-sdk-core')
-const WDIOElement = require('./WDIOElement')
+const WDIOWrappedElement = require('./WDIOWrappedElement')
 
 class WDIOElementFinder extends EyesElementFinder {
   constructor(logger, driver) {
@@ -11,17 +11,19 @@ class WDIOElementFinder extends EyesElementFinder {
   async findElement(locator, parentElement) {
     const selector = locator.value || locator
     const {value: element} = parentElement
-      ? await this._driver.elementIdElement(WDIOElement.elementId(parentElement), selector)
+      ? await this._driver.elementIdElement(WDIOWrappedElement.elementId(parentElement), selector)
       : await this._driver.element(selector)
-    return element ? new WDIOElement(this._logger, this._driver, element, selector) : null
+    return element ? new WDIOWrappedElement(this._logger, this._driver, element, selector) : null
   }
 
   async findElements(locator, parentElement) {
     const selector = locator.value || locator
     const {value: elements} = parentElement
-      ? await this._driver.elementIdElements(WDIOElement.elementId(parentElement), selector)
+      ? await this._driver.elementIdElements(WDIOWrappedElement.elementId(parentElement), selector)
       : await this._driver.elements(selector)
-    return elements.map(element => new WDIOElement(this._logger, this._driver, element, selector))
+    return elements.map(
+      element => new WDIOWrappedElement(this._logger, this._driver, element, selector),
+    )
   }
 }
 

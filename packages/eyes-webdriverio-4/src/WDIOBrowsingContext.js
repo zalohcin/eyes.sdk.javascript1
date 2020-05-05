@@ -1,5 +1,5 @@
 const {EyesBrowsingContext, FrameChain, EyesUtils} = require('@applitools/eyes-sdk-core')
-const WDIOElement = require('./WDIOElement')
+const WDIOWrappedElement = require('./WDIOWrappedElement')
 const WDIOFrame = require('./WDIOFrame')
 
 class WDIOBrowsingContext extends EyesBrowsingContext {
@@ -128,12 +128,12 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
             this._logger,
             this._driver,
             contextInfo,
-            WDIOElement.equals,
+            WDIOWrappedElement.equals,
           )
-          frameElement = new WDIOElement(this._logger, this._driver, element, selector)
+          frameElement = new WDIOWrappedElement(this._logger, this._driver, element, selector)
         }
         if (!frameElement) throw new Error('Unable to find out the chain of frames')
-        if (WDIOElement.equals(frameElement, lastTrackedFrame)) {
+        if (WDIOWrappedElement.equals(frameElement, lastTrackedFrame)) {
           await this.frameParent(frameChain.size - 1)
           framePath.unshift(...frameChain)
         } else {

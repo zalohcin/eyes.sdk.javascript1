@@ -1,7 +1,7 @@
 const {DriverCheckSettings} = require('@applitools/eyes-sdk-core')
-const WDIOElement = require('./WDIOElement')
-const WDIOFrame = require('./WDIOFrame')
+const WrappedElement = require('./WDIOWrappedElement')
+const Frame = require('./WDIOFrame')
 
-DriverCheckSettings.specialize(WDIOElement, WDIOFrame)
+DriverCheckSettings.specialize({WrappedElement, Frame})
 
 module.exports = DriverCheckSettings

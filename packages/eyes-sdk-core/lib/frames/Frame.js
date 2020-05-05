@@ -271,19 +271,33 @@ class Frame {
       this._scrollRootElement = new Frame.WrappedElement(this._logger, this._driver, element)
     }
     this._logger.verbose('hiding scrollbars of element')
-    await this._scrollRootElement.hideScrollbars()
+    return this._scrollRootElement.hideScrollbars()
   }
 
   /**
    * @return {Promise<void>}
    */
   async restoreScrollbars() {
+    if (this._scrollRootElement) {
+      this._logger.verbose('returning overflow of element to its original value')
+      await this._scrollRootElement.restoreScrollbars()
+    }
+  }
+
+  async preservePosition(positionProvider) {
     if (!this._scrollRootElement) {
       const element = await EyesUtils.getScrollRootElement(this._logger, this._driver.executor)
       this._scrollRootElement = new Frame.WrappedElement(this._logger, this._driver, element)
     }
-    this._logger.verbose('returning overflow of element to its original value')
-    await this._scrollRootElement.restoreScrollbars()
+    this._logger.verbose('saving frame position')
+    return this._scrollRootElement.preservePosition(positionProvider)
+  }
+
+  async restorePosition(positionProvider) {
+    if (this._scrollRootElement) {
+      this._logger.verbose('restoring frame position')
+      await this._scrollRootElement.restorePosition(positionProvider)
+    }
   }
 }
 

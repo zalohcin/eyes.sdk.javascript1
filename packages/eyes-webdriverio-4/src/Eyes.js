@@ -1,8 +1,8 @@
 const {EyesFactory, EyesClassic, EyesVisualGrid} = require('@applitools/eyes-sdk-core')
 const {DomCapture} = require('@applitools/dom-utils')
 const VisualGridClient = require('@applitools/visual-grid-client')
-const WrappedDriver = require('./WDIODriver')
-const WrappedElement = require('./WDIOElement')
+const WrappedDriver = require('./WDIOWrappedDriver')
+const WrappedElement = require('./WDIOWrappedElement')
 const CheckSettings = require('./WDIOCheckSettings')
 
 const WDIOEyesClassic = EyesClassic.specialize({

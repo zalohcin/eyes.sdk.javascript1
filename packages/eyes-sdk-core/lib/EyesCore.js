@@ -1,14 +1,20 @@
 const {ArgumentGuard, Region} = require('@applitools/eyes-common')
 const FrameChain = require('./frames/FrameChain')
 const ImageRotation = require('./positioning/ImageRotation')
-const EyesBase = require('./EyesBase').EyesBase
+const {EyesBase} = require('./EyesBase')
+
+/**
+ * @typedef {import('./wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('./wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('./wrappers/EyesWrappedElement').UnwrappedElement} UnwrappedElement
+ * @typedef {import('./wrappers/EyesWrappedElement').UniversalSelector} UniversalSelector
+ * @typedef {import('./frames/Frame').FrameReference} FrameReference
+ */
 
 class EyesCore extends EyesBase {
   /* ------------ Method Aliases ------------ */
-
   /**
    * Takes a snapshot of the application under test and matches it with the expected output.
-   *
    * @param {string} [tag] - An optional tag to be associated with the snapshot.
    * @param {number} [matchTimeout] - The amount of time to retry matching (Milliseconds).
    * @param {boolean} [stitchContent=false] - If {@code true}, stitch the internal content of the window.
@@ -22,11 +28,9 @@ class EyesCore extends EyesBase {
         .stitchContent(stitchContent),
     )
   }
-
   /**
    * Matches the frame given as parameter, by switching into the frame and using stitching to get an image of the frame.
-   *
-   * @param {number|string|By|WebElement|EyesWebElement} element - The element which is the frame to switch to.
+   * @param {FrameReference} element - The element which is the frame to switch to.
    * @param {number} [matchTimeout] - The amount of time to retry matching (milliseconds).
    * @param {string} [tag] - An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
@@ -39,11 +43,9 @@ class EyesCore extends EyesBase {
         .fully(),
     )
   }
-
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
-   *
-   * @param {WebElement|EyesWebElement} element - The element to check.
+   * @param {EyesWrappedElement|UnwrappedElement} element - The element to check.
    * @param {?number} [matchTimeout] - The amount of time to retry matching (milliseconds).
    * @param {string} [tag] - An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
@@ -56,11 +58,9 @@ class EyesCore extends EyesBase {
         .fully(),
     )
   }
-
   /**
    * Takes a snapshot of the application under test and matches a specific element with the expected region output.
-   *
-   * @param {By} locator - The element to check.
+   * @param {UniversalSelector} locator - The element to check.
    * @param {?number} [matchTimeout] - The amount of time to retry matching (milliseconds).
    * @param {string} [tag] - An optional tag to be associated with the match.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
@@ -73,10 +73,8 @@ class EyesCore extends EyesBase {
         .fully(),
     )
   }
-
   /**
    * Visually validates a region in the screenshot.
-   *
    * @param {Region} region - The region to validate (in screenshot coordinates).
    * @param {string} [tag] - An optional tag to be associated with the screenshot.
    * @param {number} [matchTimeout] - The amount of time to retry matching.
@@ -85,11 +83,10 @@ class EyesCore extends EyesBase {
   async checkRegion(region, tag, matchTimeout) {
     return this.check(tag, this.constructor.CheckSettings.region(region).timeout(matchTimeout))
   }
-
   /**
    * Visually validates a region in the screenshot.
    *
-   * @param {WebElement|EyesWebElement} element - The element defining the region to validate.
+   * @param {EyesWrappedElement|UnwrappedElement} element - The element defining the region to validate.
    * @param {string} [tag] - An optional tag to be associated with the screenshot.
    * @param {number} [matchTimeout] - The amount of time to retry matching.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
@@ -97,11 +94,10 @@ class EyesCore extends EyesBase {
   async checkRegionByElement(element, tag, matchTimeout) {
     return this.check(tag, this.constructor.CheckSettings.region(element).timeout(matchTimeout))
   }
-
   /**
    * Visually validates a region in the screenshot.
    *
-   * @param {By} by - The WebDriver selector used for finding the region to validate.
+   * @param {UniversalSelector} by - The selector used for finding the region to validate.
    * @param {string} [tag] - An optional tag to be associated with the screenshot.
    * @param {number} [matchTimeout] - The amount of time to retry matching.
    * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
@@ -116,48 +112,40 @@ class EyesCore extends EyesBase {
         .stitchContent(stitchContent),
     )
   }
-
   /**
    * Switches into the given frame, takes a snapshot of the application under test and matches a region specified by
    * the given selector.
-   *
-   * @param {string} frameNameOrId - The name or id of the frame to switch to. (as would be used in a call to
-   *   driver.switchTo().frame()).
-   * @param {By} locator - A Selector specifying the region to check.
+   * @param {FrameReference} frameReference - The name or id of the frame to switch to.
+   * @param {UniversalSelector} locator - A Selector specifying the region to check.
    * @param {?number} [matchTimeout] - The amount of time to retry matching. (Milliseconds)
    * @param {string} [tag] - An optional tag to be associated with the snapshot.
    * @param {boolean} [stitchContent] - If {@code true}, stitch the internal content of the region (i.e., perform
    *   {@link #checkElement(By, number, string)} on the region.
    * @return {Promise<MatchResult>} - A promise which is resolved when the validation is finished.
    */
-  async checkRegionInFrame(frameNameOrId, locator, matchTimeout, tag, stitchContent = false) {
+  async checkRegionInFrame(frameReference, locator, matchTimeout, tag, stitchContent = false) {
     return this.check(
       tag,
-      this.constructor.CheckSettings.region(locator, frameNameOrId)
+      this.constructor.CheckSettings.region(locator, frameReference)
         .timeout(matchTimeout)
         .stitchContent(stitchContent),
     )
   }
-
   /**
    * @return {Promise}
    */
   async closeAsync() {
     await this.close(false)
   }
-
   /**
    * @return {Promise}
    */
   async abortAsync() {
     await this.abort()
   }
-
   /* ------------ Triggers API ------------ */
-
   /**
    * Adds a mouse trigger.
-   *
    * @param {MouseTrigger.MouseAction} action  Mouse action.
    * @param {Region} control The control on which the trigger is activated (context relative coordinates).
    * @param {Location} cursor  The cursor's position relative to the control.
@@ -181,12 +169,10 @@ class EyesCore extends EyesBase {
 
     EyesBase.prototype.addMouseTriggerBase.call(this, action, control, cursor)
   }
-
   /**
    * Adds a mouse trigger.
-   *
    * @param {MouseTrigger.MouseAction} action  Mouse action.
-   * @param {WDIOElement} element The WDIOElement on which the click was called.
+   * @param {EyesWrappedElement} element The element on which the click was called.
    * @return {Promise}
    */
   async addMouseTriggerForElement(action, element) {
@@ -218,10 +204,8 @@ class EyesCore extends EyesBase {
       elementRegion.getMiddleOffset(),
     )
   }
-
   /**
    * Adds a keyboard trigger.
-   *
    * @param {Region} control The control on which the trigger is activated (context relative coordinates).
    * @param {String} text  The trigger's text.
    */
@@ -244,11 +228,9 @@ class EyesCore extends EyesBase {
 
     EyesBase.prototype.addTextTriggerBase.call(this, control, text)
   }
-
   /**
    * Adds a keyboard trigger.
-   *
-   * @param {WDIOElement} element The element for which we sent keys.
+   * @param {EyesWrappedElement} element The element for which we sent keys.
    * @param {String} text  The trigger's text.
    * @return {Promise}
    */
@@ -276,9 +258,7 @@ class EyesCore extends EyesBase {
     const elementRegion = new Region(Math.ceil(p1.x), Math.ceil(p1.y), ds.width, ds.height)
     EyesBase.prototype.addTextTrigger.call(this, elementRegion, text)
   }
-
   /* ------------ Getters/Setters ------------ */
-
   async getAUTSessionId() {
     if (!this._driver) {
       return undefined
@@ -297,9 +277,8 @@ class EyesCore extends EyesBase {
     }
     return ''
   }
-
   /**
-   * @return {?EyesWebDriver}
+   * @return {?EyesWrappedDriver}
    */
   getDriver() {
     return this._driver
@@ -308,7 +287,6 @@ class EyesCore extends EyesBase {
   getRemoteWebDriver() {
     return this._driver.unwrapped
   }
-
   /**
    * Get jsExecutor
    * @return {EyesJsExecutor}
@@ -316,44 +294,38 @@ class EyesCore extends EyesBase {
   get jsExecutor() {
     return this._executor
   }
-
   /**
    * @return {EyesRunner}
    */
   getRunner() {
     return this._runner
   }
-
   /**
    * @return {number} The device pixel ratio, or {@link #UNKNOWN_DEVICE_PIXEL_RATIO} if the DPR is not known yet or if it wasn't possible to extract it.
    */
   getDevicePixelRatio() {
     return this._devicePixelRatio
   }
-
   /**
    * @return {Region}
    */
   getRegionToCheck() {
     return this._regionToCheck
   }
-
   /**
    * @param {Region} regionToCheck
    */
   setRegionToCheck(regionToCheck) {
     this._regionToCheck = regionToCheck
   }
-
   /**
    * @return {boolean}
    */
   shouldStitchContent() {
     return this._stitchContent
   }
-
   /**
-   * @param {By} element
+   * @param {EyesWrappedElement|UnwrappedElement|UniversalSelector} element
    */
   setScrollRootElement(scrollRootElement) {
     if (this.constructor.isSelector(scrollRootElement)) {
@@ -364,9 +336,8 @@ class EyesCore extends EyesBase {
       this._scrollRootElement = null
     }
   }
-
   /**
-   * @return {Promise<WebElement>}
+   * @return {Promise<EyesWrappedElement>}
    */
   async getScrollRootElement() {
     return this._scrollRootElement ? this._scrollRootElement.init(this._driver) : null

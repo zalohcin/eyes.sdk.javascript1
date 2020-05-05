@@ -67,6 +67,11 @@ const TRANSLATE_TO = (x, y) => `
   ${TRANSFORM_KEYS.map(key => `element.style['${key}'] = 'translate(-${x}px, -${y}px)'`).join(';')}
 `
 
+const IS_SCROLLABLE = `
+  var element = arguments[0] || document.scrollingElement || document.documentElement;
+  return element.scrollWidth > element.clientWidth || element.scrollHeight > element.clientHeight
+`
+
 const GET_SCROLL_ROOT_ELEMENT = `
   return document.scrollingElement || document.documentElement;
 `
@@ -184,6 +189,7 @@ module.exports = {
   GET_TRANSFORMS,
   SET_TRANSFORMS,
   TRANSLATE_TO,
+  IS_SCROLLABLE,
   GET_SCROLL_ROOT_ELEMENT,
   MARK_SCROLL_ROOT_ELEMENT,
   GET_OVERFLOW,

@@ -31,7 +31,7 @@ const CssTranslatePositionProvider = require('./positioning/CssTranslatePosition
 const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
 const CssTranslateElementPositionProvider = require('./positioning/CssTranslateElementPositionProvider')
 const ScrollElementPositionProvider = require('./positioning/ScrollElementPositionProvider')
-const ClassicRunner = require('./runner/ClassicRunner')
+const {ClassicRunner} = require('./runner/ClassicRunner')
 const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
@@ -44,6 +44,7 @@ const VERSION = require('../package.json').version
  * @typedef {import('./wrappers/EyesElementFinder')} EyesElementFinder
  * @typedef {import('./wrappers/EyesDriverController')} EyesDriverController
  * @typedef {import('./wrappers/EyesJsExecutor')} EyesJsExecutor
+ * @typedef {import('./fluent/DriverCheckSettings')} DriverCheckSettings
  */
 
 const UNKNOWN_DEVICE_PIXEL_RATIO = 0
@@ -52,36 +53,47 @@ const DEFAULT_DEVICE_PIXEL_RATIO = 1
 class EyesClassic extends EyesCore {
   /**
    * Create a specialized version of this class
-   * @param {EyesWrappedDriver} WrappedDriver - class which implements {@link EyesWrappedDriver}
-   * @param {EyesWrappedElement} WrappedElement - class which implements {@link EyesWrappedElement}
+   * @param {Object} implementations - implementations of related classes
+   * @param {EyesWrappedDriver} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
+   * @param {EyesWrappedElement} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
+   * @param {DriverCheckSettings} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
+   * @param {DomCapture} implementations.DomCapture - specialized class for creation a dom capture
    * @return {EyesClassic} specialized version of this class
    */
   static specialize({WrappedDriver, WrappedElement, CheckSettings, DomCapture}) {
-    /**
-     * @return {EyesWrappedDriver} class which implements {@link EyesWrappedDriver}
-     */
     return class extends EyesClassic {
+      /**
+       * @return {EyesWrappedDriver} implementation for {@link EyesWrappedDriver}
+       */
       static get WrappedDriver() {
         return WrappedDriver
       }
+      /**
+       * @return {EyesWrappedElement} implementation for {@link EyesWrappedElement}
+       */
       static get WrappedElement() {
         return WrappedElement
       }
+      /**
+       * @return {DriverCheckSettings} specialized version of {@link DriverCheckSettings}
+       */
       static get CheckSettings() {
         return CheckSettings
       }
+      /**
+       * @return {DomCapture} specialized class for creation a dom capture
+       */
       static get DomCapture() {
         return DomCapture
       }
     }
   }
-
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
-   * @param {String} [serverUrl] - Eyes server URL.
-   * @param {Boolean} [isDisabled=false] - Set to true to disable Applitools Eyes and use the webdriver directly.
-   * @param {ClassicRunner} [runner] - Set shared ClassicRunner if you want to group results.
-   **/
+   * @param {string|boolean|VisualGridRunner} [serverUrl=EyesBase.getDefaultServerUrl()] - Eyes server URL
+   * @param {boolean} [isDisabled=false] - set to true to disable Applitools Eyes and use the webdriver directly
+   * @param {ClassicRunner} [runner=new ClassicRunner()] - runner related to the wanted Eyes implementation
+   */
   constructor(serverUrl, isDisabled = false, runner = new ClassicRunner()) {
     super(serverUrl, isDisabled)
     this._runner = runner
@@ -136,20 +148,18 @@ class EyesClassic extends EyesCore {
     /** @type {Promise<void>} */
     this._closePromise = Promise.resolve()
   }
-
   /**
    * @override
    */
   getBaseAgentId() {
     return `eyes.webdriverio/${VERSION}`
   }
-
   /**
-   * @param {Object} driver
-   * @param {String} [appName] - Application name
-   * @param {String} [testName] - Test name
-   * @param {RectangleSize|{width: number, height: number}} [viewportSize] - Viewport size
-   * @param {SessionType} [sessionType] - The type of test (e.g.,  standard test / visual performance test).
+   * @param {Object} driver - driver object for the specific framework
+   * @param {String} [appName] - application name
+   * @param {String} [testName] - test name
+   * @param {RectangleSize|{width: number, height: number}} [viewportSize] - viewport size
+   * @param {SessionType} [sessionType] - type of test (e.g.,  standard test / visual performance test).
    * @returns {Promise<EyesWrappedDriver>}
    */
   async open(driver, appName, testName, viewportSize, sessionType) {
@@ -221,12 +231,10 @@ class EyesClassic extends EyesCore {
 
     return this._driver
   }
-
   /**
-   *
-   * @param name
-   * @param {WebdriverioCheckSettings} checkSettings
-   * @returns {Promise.<*>}
+   * @param name - name of the test case
+   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @returns {Promise<MatchResult>}
    */
   async check(name, checkSettings) {
     if (this._configuration.getIsDisabled()) {
@@ -279,7 +287,12 @@ class EyesClassic extends EyesCore {
       }
     })
   }
-
+  /**
+   * @private
+   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {AsyncFunction} operation - check operation
+   * @return {Promise<MatchResult>}
+   */
   async _checkPrepare(checkSettings, operation) {
     this._stitchContent = checkSettings.getStitchContent()
     // sync stored frame chain with actual browsing context
@@ -301,52 +314,65 @@ class EyesClassic extends EyesCore {
         this._context.frameChain.current.scrollRootElement = scrollRootElement
       }
     }
-    // in case scroll root element was set globally, or need to hide scrollbars
-    if (this._scrollRootElement || shouldHideScrollbars) {
-      await this._context.frameDefault()
-      if (this._scrollRootElement) {
-        await this._scrollRootElement.init(this._driver)
-      } else {
-        const element = await EyesUtils.getScrollRootElement(this._logger, this._executor)
-        this._scrollRootElement = new this.constructor.WrappedElement(
-          this._logger,
-          this._driver,
-          element,
-        )
-      }
-      if (shouldHideScrollbars) {
-        await this._scrollRootElement.hideScrollbars()
-      } else {
-        await this._context.frames(originalFrameChain)
-      }
-    }
-    this.setPositionProvider(this._createPositionProvider(this._scrollRootElement))
 
+    await this._context.frameDefault()
+
+    if (this._scrollRootElement) {
+      await this._scrollRootElement.init(this._driver)
+    } else if (shouldHideScrollbars) {
+      const element = await EyesUtils.getScrollRootElement(this._logger, this._executor)
+      this._scrollRootElement = new this.constructor.WrappedElement(
+        this._logger,
+        this._driver,
+        element,
+      )
+    }
+
+    const positionProvider = this._createPositionProvider(this._scrollRootElement)
+    this.setPositionProvider(positionProvider)
+
+    await this._scrollRootElement.preservePosition(positionProvider)
+    if (shouldHideScrollbars) {
+      await this._scrollRootElement.hideScrollbars()
+    }
+
+    // If we changing a frame (hiding scrollbars in this case) then we need to switch to the frame by a reference
     const absoluteFrameChain = shouldHideScrollbars
       ? Array.from(originalFrameChain, frame => frame.toReference()).concat(appendFrameChain)
-      : appendFrameChain
+      : Array.from(originalFrameChain).concat(appendFrameChain)
 
     for (const frame of absoluteFrameChain) {
       await this._context.frame(frame)
-      if (shouldHideScrollbars) await frame.hideScrollbars()
+      if (shouldHideScrollbars) {
+        await frame.hideScrollbars()
+      }
+      await frame.preservePosition(positionProvider)
     }
 
     try {
       return await operation()
     } finally {
-      if (shouldHideScrollbars) {
-        const currentFrameChain = this._context.frameChain
-        for (let index = currentFrameChain.size - 1; index >= 0; --index) {
-          await currentFrameChain.frameAt(index).restoreScrollbars()
-          await this._context.frameParent()
+      const currentFrameChain = this._context.frameChain
+      for (let index = currentFrameChain.size - 1; index >= 0; --index) {
+        const frame = currentFrameChain.frameAt(index)
+        await frame.restorePosition(positionProvider)
+        if (shouldHideScrollbars) {
+          await frame.restoreScrollbars()
         }
-        await this._scrollRootElement.restoreScrollbars()
+        await this._context.frameParent()
       }
+      await this._scrollRootElement.preservePosition(positionProvider)
+      await this._scrollRootElement.restoreScrollbars()
       await this._context.frames(originalFrameChain)
       this._stitchContent = false
     }
   }
-
+  /**
+   * @private
+   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {Region} targetRegion - region to check
+   * @return {Promise<MatchResult>}
+   */
   async _checkRegion(checkSettings, targetRegion) {
     const actualLocation = await EyesUtils.ensureRegionVisible(
       this._logger,
@@ -366,40 +392,43 @@ class EyesClassic extends EyesCore {
       source,
     )
   }
-
+  /**
+   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {Region} targetRegion - region to check
+   * @return {Promise<MatchResult>}
+   */
   async _checkFullRegion(checkSettings, targetRegion) {
+    this._shouldCheckFullRegion = true
+    await EyesUtils.ensureRegionVisible(
+      this._logger,
+      this._driver,
+      this._positionProviderHandler.get(),
+      targetRegion,
+    )
+
+    const frameChain = this._context.frameChain
+    const scrollRootElement = !frameChain.isEmpty
+      ? frameChain.current.scrollRootElement
+      : this._scrollRootElement
+    this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
+
+    this._regionFullArea = new Region(
+      Location.ZERO,
+      targetRegion.getSize(),
+      CoordinatesType.CONTEXT_RELATIVE,
+    )
+    this._regionToCheck = new Region(targetRegion)
+
+    if (!frameChain.isEmpty) {
+      const effectiveSize = frameChain.getCurrentFrameEffectiveSize()
+      this._effectiveViewport.intersect(new Region(Location.ZERO, effectiveSize))
+    }
+    if (!this._effectiveViewport.isSizeEmpty()) {
+      this._regionToCheck.intersect(this._effectiveViewport)
+    }
+
+    this._logger.verbose('Region to check: ' + this._regionToCheck)
     try {
-      this._shouldCheckFullRegion = true
-      await EyesUtils.ensureRegionVisible(
-        this._logger,
-        this._driver,
-        this._positionProviderHandler.get(),
-        targetRegion,
-      )
-
-      const frameChain = this._context.frameChain
-      const scrollRootElement = !frameChain.isEmpty
-        ? frameChain.current.scrollRootElement
-        : this._scrollRootElement
-      this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
-
-      this._regionToCheck = new Region(targetRegion)
-      this._regionFullArea = new Region(
-        Location.ZERO,
-        targetRegion.getSize(),
-        CoordinatesType.CONTEXT_RELATIVE,
-      )
-
-      if (!frameChain.isEmpty) {
-        const effectiveSize = frameChain.getCurrentFrameEffectiveSize()
-        this._effectiveViewport.intersect(new Region(Location.ZERO, effectiveSize))
-      }
-      if (!this._effectiveViewport.isSizeEmpty()) {
-        this._regionToCheck.intersect(this._effectiveViewport)
-      }
-
-      this._logger.verbose('Region to check: ' + this._regionToCheck)
-
       const source = await this._controller.getSource()
       return await super.checkWindowBase(
         new NullRegionProvider(),
@@ -414,10 +443,11 @@ class EyesClassic extends EyesCore {
       this._shouldCheckFullRegion = false
     }
   }
-
   /**
    * @private
-   * @return {Promise}
+   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {EyesWrappedElement} targetElement - element to check
+   * @return {Promise<MatchResult>}
    */
   async _checkElement(checkSettings, targetElement) {
     await EyesUtils.ensureRegionVisible(
@@ -449,63 +479,52 @@ class EyesClassic extends EyesCore {
       source,
     )
   }
-
   /**
    * @private
-   * @return {Promise}
+   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @param {EyesWrappedElement} targetElement - element to check
+   * @return {Promise<MatchResult>}
    */
   async _checkFullElement(checkSettings, targetElement) {
-    try {
-      this._shouldCheckFullRegion = true
+    this._shouldCheckFullRegion = true
 
-      if (this._configuration.getHideScrollbars()) {
-        await targetElement.hideScrollbars()
-      }
+    if (this._configuration.getHideScrollbars()) {
+      await targetElement.hideScrollbars()
+    }
 
-      const region = await targetElement.getContentRect()
-      await EyesUtils.ensureRegionVisible(
-        this._logger,
-        this._driver,
-        this._positionProviderHandler.get(),
-        region,
-      )
+    const region = await targetElement.getContentRect()
+    await EyesUtils.ensureRegionVisible(
+      this._logger,
+      this._driver,
+      this._positionProviderHandler.get(),
+      region,
+    )
 
+    const isScrollable = await EyesUtils.isScrollable(this._logger, this._executor, targetElement)
+    if (isScrollable) {
+      this._targetPositionProvider =
+        this._configuration.getStitchMode() === StitchMode.CSS
+          ? new CssTranslateElementPositionProvider(this._logger, this._driver, targetElement)
+          : new ScrollElementPositionProvider(this._logger, this._driver, targetElement)
+      // we don't need to specify it explicitly since this is the same as entire size
+      this._regionFullArea = null
+      await targetElement.preservePosition(this._targetPositionProvider)
+    } else {
       const frameChain = this._context.frameChain
-      const displayStyle = await targetElement.getCssProperty('display')
-      const hasScroll = await targetElement
-        .getProperty('scrollWidth', 'scrollHeight', 'clientWidth', 'clientHeight')
-        .then(([scrollWidth, scrollHeight, clientWidth, clientHeight]) => {
-          return scrollWidth > clientWidth || scrollHeight > clientHeight
-        })
-      if (displayStyle !== 'inline' && hasScroll) {
-        this._targetPositionProvider =
-          this._configuration.getStitchMode() === StitchMode.CSS
-            ? new CssTranslateElementPositionProvider(this._logger, this._driver, targetElement)
-            : new ScrollElementPositionProvider(this._logger, this._driver, targetElement)
-      } else {
-        const scrollRootElement = !frameChain.isEmpty
-          ? frameChain.current.scrollRootElement
-          : this._scrollRootElement
-        this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
-        this._regionFullArea = new Region(
-          Location.ZERO,
-          region.getSize(),
-          CoordinatesType.CONTEXT_RELATIVE,
-        )
-      }
+      const scrollRootElement = !frameChain.isEmpty
+        ? frameChain.current.scrollRootElement
+        : this._scrollRootElement
+      this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
+      this._regionFullArea = new Region(
+        Location.ZERO,
+        region.getSize(),
+        CoordinatesType.CONTEXT_RELATIVE,
+      )
+    }
+    this._regionToCheck = new Region(region)
+    this._logger.verbose('Element region: ' + this._regionToCheck)
 
-      this._regionToCheck = new Region(region)
-
-      // if (!frameChain.isEmpty) {
-      //   const effectiveSize = frameChain.getCurrentFrameEffectiveSize()
-      //   this._effectiveViewport.intersect(new Region(Location.ZERO, effectiveSize))
-      // }
-      // if (!this._effectiveViewport.isSizeEmpty()) {
-      //   this._regionToCheck.intersect(new Region(this._effectiveViewport))
-      // }
-
-      this._logger.verbose('Element region: ' + this._regionToCheck)
-
+    try {
       const source = await this._controller.getSource()
       return await super.checkWindowBase(
         new NullRegionProvider(),
@@ -517,15 +536,16 @@ class EyesClassic extends EyesCore {
     } finally {
       this._regionToCheck = null
       this._regionFullArea = null
+      await targetElement.restorePosition(this._targetPositionProvider)
       this._targetPositionProvider = null
       await targetElement.restoreScrollbars()
       this._shouldCheckFullRegion = false
     }
   }
-
   /**
    * @private
-   * @return {Promise}
+   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @return {Promise<MatchResult>}
    */
   async _checkFrame(checkSettings) {
     const targetFrame = this._context.frameChain.current
@@ -537,39 +557,41 @@ class EyesClassic extends EyesCore {
       await this._context.frame(targetFrame)
     }
   }
-
   /**
    * @private
-   * @return {Promise}
+   * @param {DriverCheckSettings} checkSettings - check settings for the described test case
+   * @return {Promise<MatchResult>}
    */
   async _checkFullFrame(checkSettings) {
+    this._shouldCheckFullRegion = true
+    await EyesUtils.ensureFrameVisible(
+      this._logger,
+      this._context,
+      this._positionProviderHandler.get(),
+    )
+
+    const frameChain = this._context.frameChain
+    const targetFrame = frameChain.current
+    const scrollRootElement = targetFrame.scrollRootElement
+    this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
+
+    // we don't need to specify it explicitly since this is the same as entire size
+    this._regionFullArea = null
+    this._regionToCheck = new Region(
+      Location.ZERO,
+      targetFrame.innerSize,
+      CoordinatesType.CONTEXT_RELATIVE,
+    )
+
+    const effectiveSize = frameChain.getCurrentFrameEffectiveSize()
+    this._effectiveViewport.intersect(new Region(Location.ZERO, effectiveSize))
+    if (!this._effectiveViewport.isSizeEmpty()) {
+      this._regionToCheck.intersect(this._effectiveViewport)
+    }
+
+    this._logger.verbose('Element region: ' + this._regionToCheck)
+
     try {
-      this._shouldCheckFullRegion = true
-      await EyesUtils.ensureFrameVisible(
-        this._logger,
-        this._context,
-        this._positionProviderHandler.get(),
-      )
-
-      const frameChain = this._context.frameChain
-      const targetFrame = frameChain.current
-      const scrollRootElement = targetFrame.scrollRootElement
-      this._targetPositionProvider = this._createPositionProvider(scrollRootElement)
-
-      this._regionToCheck = new Region(
-        Location.ZERO,
-        targetFrame.innerSize,
-        CoordinatesType.CONTEXT_RELATIVE,
-      )
-
-      const effectiveSize = frameChain.getCurrentFrameEffectiveSize()
-      this._effectiveViewport.intersect(new Region(Location.ZERO, effectiveSize))
-      if (!this._effectiveViewport.isSizeEmpty()) {
-        this._regionToCheck.intersect(this._effectiveViewport)
-      }
-
-      this._logger.verbose('Element region: ' + this._regionToCheck)
-
       const source = await this._controller.getSource()
       return await super.checkWindowBase(
         new NullRegionProvider(),
@@ -584,9 +606,9 @@ class EyesClassic extends EyesCore {
       this._shouldCheckFullRegion = false
     }
   }
-
   /**
    * @private
+   * @param {EyesWrappedElement} scrollRootElement - scroll root element
    * @return {PositionProvider}
    */
   _createPositionProvider(scrollRootElement) {
@@ -597,11 +619,9 @@ class EyesClassic extends EyesCore {
       ? new CssTranslatePositionProvider(this._logger, this._executor, scrollRootElement)
       : new ScrollPositionProvider(this._logger, this._executor, scrollRootElement)
   }
-
   /**
-   *
-   * @returns {Promise<EyesScreenshot>}
-   * @override
+   * Create a screenshot of the specified in check method region
+   * @return {Promise<EyesScreenshot>}
    */
   async getScreenshot() {
     this._logger.verbose('getScreenshot()')
@@ -627,11 +647,16 @@ class EyesClassic extends EyesCore {
       this._logger.verbose('Done!')
     }
   }
-
+  /**
+   * @override
+   */
   async getScreenshotUrl() {
     return undefined
   }
-
+  /**
+   * Create a full region screenshot
+   * @return {Promise<EyesScreenshot>}
+   */
   async _getFullRegionScreenshot() {
     this._logger.verbose('Check full frame/element requested')
 
@@ -676,7 +701,10 @@ class EyesClassic extends EyesCore {
       fullRegionImage.getSize(),
     )
   }
-
+  /**
+   * Create a full page screenshot
+   * @return {Promise<EyesScreenshot>}
+   */
   async _getFullPageScreenshot() {
     this._logger.verbose('Full page screenshot requested.')
 
@@ -740,7 +768,10 @@ class EyesClassic extends EyesCore {
       originalFramePosition,
     )
   }
-
+  /**
+   * Create a viewport page screenshot
+   * @return {Promise<EyesScreenshot>}
+   */
   async _getViewportScreenshot() {
     this._logger.verbose('Screenshot requested...')
     const scaleProviderFactory = await this._updateScalingParams()
@@ -765,11 +796,8 @@ class EyesClassic extends EyesCore {
     this._logger.verbose('Building screenshot object...')
     return EyesScreenshot.fromScreenshotType(this._logger, this, screenshotImage)
   }
-
   /**
-   * Updates the state of scaling related parameters.
-   *
-   * @protected
+   * @private
    * @return {Promise<ScaleProviderFactory>}
    */
   async _updateScalingParams() {
@@ -810,7 +838,6 @@ class EyesClassic extends EyesCore {
     this._logger.verbose('Done!')
     return factory
   }
-
   /**
    * @private
    * @return {Promise<ScaleProviderFactory>}
@@ -829,9 +856,8 @@ class EyesClassic extends EyesCore {
       this._scaleProviderHandler,
     )
   }
-
   /**
-   * @param {boolean} [throwEx]
+   * @param {boolean} [throwEx=true] - true if need to throw exception for unresolved tests, otherwise false
    * @return {Promise<TestResults>}
    */
   async close(throwEx = true) {
@@ -864,7 +890,6 @@ class EyesClassic extends EyesCore {
       return ''
     }
   }
-
   /**
    * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
    *
@@ -877,7 +902,6 @@ class EyesClassic extends EyesCore {
       ? viewportSize
       : EyesUtils.getTopContextViewportSize(this._logger, this._driver)
   }
-
   /**
    * Use this method only if you made a previous call to {@link #open(WebDriver, String, String)} or one of its variants.
    *
@@ -915,7 +939,6 @@ class EyesClassic extends EyesCore {
     }
     return appEnv
   }
-
   /**
    * Set the failure report.
    * @param {FailureReports} mode Use one of the values in FailureReports.
@@ -928,7 +951,6 @@ class EyesClassic extends EyesCore {
 
     EyesCore.prototype.setFailureReport.call(this, mode)
   }
-
   /**
    * @return {boolean}
    */

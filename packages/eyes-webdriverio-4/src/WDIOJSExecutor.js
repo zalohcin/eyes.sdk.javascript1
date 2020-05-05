@@ -1,9 +1,9 @@
 'use strict'
 
 const {EyesJsExecutor} = require('@applitools/eyes-sdk-core')
-const WDIOElement = require('./WDIOElement')
+const WDIOWrappedElement = require('./WDIOWrappedElement')
 
-class WDIOJSExecutor extends EyesJsExecutor {
+class WDIOJsExecutor extends EyesJsExecutor {
   /**
    * @param {WDIODriver} driver
    */
@@ -22,7 +22,7 @@ class WDIOJSExecutor extends EyesJsExecutor {
     try {
       const {value} = await this._driver.execute(
         script,
-        ...args.map(arg => (arg instanceof WDIOElement ? arg.unwrapped : arg)),
+        ...args.map(arg => (arg instanceof WDIOWrappedElement ? arg.unwrapped : arg)),
       )
       this._logger.verbose('Done!')
       return value
@@ -37,7 +37,7 @@ class WDIOJSExecutor extends EyesJsExecutor {
     try {
       const value = await this._driver.executeAsync(
         script,
-        ...args.map(arg => (arg instanceof WDIOElement ? arg.unwrapped : arg)),
+        ...args.map(arg => (arg instanceof WDIOWrappedElement ? arg.unwrapped : arg)),
       )
       this._logger.verbose('Done!')
       return value
@@ -56,4 +56,4 @@ class WDIOJSExecutor extends EyesJsExecutor {
   }
 }
 
-module.exports = WDIOJSExecutor
+module.exports = WDIOJsExecutor

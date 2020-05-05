@@ -2,8 +2,14 @@
 
 const {ArgumentGuard, Location} = require('@applitools/eyes-common')
 const PositionProvider = require('./PositionProvider')
-const CssTranslatePositionMemento = require('./CssTranslatePositionMemento')
+const PositionMemento = require('./PositionMemento')
 const EyesUtils = require('../EyesUtils')
+
+/**
+ * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
+ * @typedef {import('../wrappers/EyesJsExecutor')} EyesJsExecutor
+ * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
+ */
 
 /**
  * A {@link PositionProvider} which is based on CSS translates. This is
@@ -11,8 +17,9 @@ const EyesUtils = require('../EyesUtils')
  */
 class CssTranslateElementPositionProvider extends PositionProvider {
   /**
-   * @param {Logger} logger A Logger instance.
-   * @param {EyesJsExecutor} executor
+   * @param {Logger} logger - logger instance
+   * @param {EyesJsExecutor} executor - js executor
+   * @param {EyesWrappedElement} element - scrolling element
    */
   constructor(logger, executor, element) {
     ArgumentGuard.notNull(logger, 'logger')
@@ -25,21 +32,33 @@ class CssTranslateElementPositionProvider extends PositionProvider {
     this._element = element
   }
 
+  /**
+   * @return {EyesWrappedElement} scroll root element
+   */
   get scrollRootElement() {
     return this._element
   }
 
   /**
-   * @override
-   * @inheritDoc
+   * Get position of the provided element using css translate algorithm
+   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   *  it will be user as a base element for this operation
    */
-  async getCurrentPosition() {
+  async getCurrentPosition(customScrollRootElement) {
     try {
-      const [scrollLocation, translateLocation] = await Promise.all([
-        EyesUtils.getScrollLocation(this._logger, this._executor, this._element),
-        EyesUtils.getTranslateLocation(this._logger, this._executor, this._element),
+      const [scrollPosition, translatePosition] = await Promise.all([
+        EyesUtils.getScrollLocation(
+          this._logger,
+          this._executor,
+          customScrollRootElement || this._element,
+        ),
+        EyesUtils.getTranslateLocation(
+          this._logger,
+          this._executor,
+          customScrollRootElement || this._element,
+        ),
       ])
-      return scrollLocation.offsetByLocation(translateLocation)
+      return scrollPosition.offsetByLocation(translatePosition)
     } catch (err) {
       // Sometimes it is expected e.g. on Appium, otherwise, take care
       this._logger.verbose(`Failed to set current scroll position!.`)
@@ -48,27 +67,30 @@ class CssTranslateElementPositionProvider extends PositionProvider {
   }
 
   /**
-   * @override
-   * @inheritDoc
+   * Set position of the provided element using css translate algorithm
+   * @param {Location} position - position to set
+   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   *  it will be user as a base element for this operation
+   * @return {Location} actual position after set
    */
-  async setPosition(location) {
+  async setPosition(position, customScrollRootElement) {
     try {
-      ArgumentGuard.notNull(location, 'location')
-      const actualScrollLocation = await EyesUtils.scrollTo(
+      ArgumentGuard.notNull(position, 'position')
+      const actualScrollPosition = await EyesUtils.scrollTo(
         this._logger,
         this._executor,
-        location,
-        this._element,
+        position,
+        customScrollRootElement || this._element,
       )
-      const outOfBoundsLocation = location.offsetNegative(actualScrollLocation)
-      const actualTranslateLocation = await EyesUtils.translateTo(
+      const outOfBoundsPosition = position.offsetNegative(actualScrollPosition)
+      const actualTranslatePosition = await EyesUtils.translateTo(
         this._logger,
         this._executor,
-        outOfBoundsLocation,
-        this._element,
+        outOfBoundsPosition,
+        customScrollRootElement || this._element,
       )
 
-      return actualScrollLocation.offsetByLocation(actualTranslateLocation)
+      return actualScrollPosition.offsetByLocation(actualTranslatePosition)
     } catch (err) {
       // Sometimes it is expected e.g. on Appium, otherwise, take care
       this._logger.verbose(`Failed to set current scroll position!.`)
@@ -77,15 +99,18 @@ class CssTranslateElementPositionProvider extends PositionProvider {
   }
 
   /**
-   * @override
-   * @inheritDoc
+   * Returns entire size of the scrolling element
+   * @return {RectangleSize} container's entire size
    */
   async getEntireSize() {
     const size = await EyesUtils.getElementEntireSize(this._logger, this._executor, this._element)
-    this._logger.verbose(`ScrollPositionProvider - Entire size: ${size}`)
+    this._logger.verbose(`CssTranslatePositionProvider - Entire size: ${size}`)
     return size
   }
 
+  /**
+   * Add "data-applitools-scroll" attribute to the scrolling element
+   */
   async markScrollRootElement() {
     try {
       await EyesUtils.markScrollRootElement(this._logger, this._executor, this._element)
@@ -95,28 +120,52 @@ class CssTranslateElementPositionProvider extends PositionProvider {
   }
 
   /**
-   * @override
-   * @return {Promise.<CssTranslatePositionMemento>}
+   * Returns current position of the scrolling element for future restoring
+   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   *  it will be user as a base element for this operation
+   * @return {Promise<PositionMemento>} current state of scrolling element
    */
-  async getState() {
+  async getState(customScrollRootElement) {
     try {
-      const transforms = await EyesUtils.getTransforms(this._logger, this._executor, this._element)
+      const position = await EyesUtils.getScrollLocation(
+        this._logger,
+        this._executor,
+        customScrollRootElement || this._element,
+      )
+      const transforms = await EyesUtils.getTransforms(
+        this._logger,
+        this._executor,
+        customScrollRootElement || this._element,
+      )
       this._logger.verbose('Current transform', transforms)
-      return new CssTranslatePositionMemento(transforms, Location.ZERO)
+      return new PositionMemento({transforms, position})
     } catch (err) {
       this._logger.verbose(`Failed to get current transforms!.`)
-      return new CssTranslatePositionMemento({}, Location.ZERO)
+      return new PositionMemento({})
     }
   }
 
   /**
-   * @override
-   * @param {CssTranslatePositionMemento} state The initial state of position
+   * Restore position of the element from the state
+   * @param {PositionMemento} state - initial state of position
+   * @param {EyesWrappedElement} [customScrollRootElement] - if custom scroll root element provided
+   *  it will be user as a base element for this operation
    * @return {Promise}
    */
-  async restoreState(state) {
+  async restoreState(state, customScrollRootElement) {
     try {
-      await EyesUtils.setTransforms(this._logger, this._executor, state.transform, this._element)
+      await EyesUtils.scrollTo(
+        this._logger,
+        this._executor,
+        state.position,
+        customScrollRootElement || this._element,
+      )
+      await EyesUtils.setTransforms(
+        this._logger,
+        this._executor,
+        state.transforms,
+        customScrollRootElement || this._element,
+      )
       this._logger.verbose('Transform (position) restored.')
     } catch (err) {
       this._logger.verbose(`Failed to restore state!.`)

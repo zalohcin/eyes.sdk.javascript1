@@ -8,18 +8,18 @@ const {
   FrameChain,
   EyesUtils,
 } = require('@applitools/eyes-sdk-core')
-const By = require('./By')
-const LegacyAPIElement = require('./LegacyAPIElement')
+const By = require('./LegacySelector')
+const LegacyWrappedElement = require('./LegacyWrappedElement')
 
 const WEB_ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
 
-class WDIOElement extends LegacyAPIElement(EyesWrappedElement) {
+class WDIOWrappedElement extends LegacyWrappedElement(EyesWrappedElement) {
   constructor(logger, driver, element, selector) {
-    if (element instanceof WDIOElement) {
+    if (element instanceof WDIOWrappedElement) {
       return element
     }
     super()
-    if (WDIOElement.isCompatible(element)) {
+    if (WDIOWrappedElement.isCompatible(element)) {
       // in case of wrapping not an element but response with value
       if (element.value) {
         this._element = element.value
@@ -28,10 +28,10 @@ class WDIOElement extends LegacyAPIElement(EyesWrappedElement) {
         this._element = element
         this._selector = selector
       }
-    } else if (WDIOElement.isSelector(selector)) {
+    } else if (WDIOWrappedElement.isSelector(selector)) {
       this._selector = selector
     } else {
-      throw new TypeError('WDIOElement constructor called with argument of unknown type!')
+      throw new TypeError('WDIOWrappedElement constructor called with argument of unknown type!')
     }
     if (logger) {
       this._logger = logger
@@ -43,17 +43,17 @@ class WDIOElement extends LegacyAPIElement(EyesWrappedElement) {
   }
 
   static fromElement(element) {
-    return new WDIOElement(null, null, element)
+    return new WDIOWrappedElement(null, null, element)
   }
 
   static fromSelector(selector) {
-    return new WDIOElement(null, null, null, selector)
+    return new WDIOWrappedElement(null, null, null, selector)
   }
 
   static isCompatible(element) {
     if (!element) return false
     return (
-      element instanceof WDIOElement ||
+      element instanceof WDIOWrappedElement ||
       (element.value
         ? Boolean(element.value.ELEMENT || element.value[WEB_ELEMENT_ID])
         : Boolean(element.ELEMENT || element[WEB_ELEMENT_ID]))
@@ -70,11 +70,11 @@ class WDIOElement extends LegacyAPIElement(EyesWrappedElement) {
 
   static equals(leftElement, rightElement) {
     if (!leftElement || !rightElement) return false
-    return WDIOElement.elementId(leftElement) === WDIOElement.elementId(rightElement)
+    return WDIOWrappedElement.elementId(leftElement) === WDIOWrappedElement.elementId(rightElement)
   }
 
   static elementId(element) {
-    return element instanceof WDIOElement
+    return element instanceof WDIOWrappedElement
       ? element.elementId
       : element.ELEMENT || element[WEB_ELEMENT_ID]
   }
@@ -95,7 +95,7 @@ class WDIOElement extends LegacyAPIElement(EyesWrappedElement) {
   }
 
   equals(element) {
-    return WDIOElement.equals(this, element)
+    return WDIOWrappedElement.equals(this, element)
   }
 
   async init(driver) {
@@ -209,6 +209,7 @@ class WDIOElement extends LegacyAPIElement(EyesWrappedElement) {
         'hidden',
         this,
       )
+      return this._originalOverflow
     })
   }
 
@@ -216,6 +217,21 @@ class WDIOElement extends LegacyAPIElement(EyesWrappedElement) {
     return this.withRefresh(async () => {
       await EyesUtils.setOverflow(this._logger, this._driver.executor, this._originalOverflow, this)
     })
+  }
+
+  async preservePosition(positionProvider) {
+    return this.withRefresh(async () => {
+      this._positionMemento = await positionProvider.getState(this)
+      return this._positionMemento
+    })
+  }
+
+  async restorePosition(positionProvider) {
+    if (this._positionMemento) {
+      return this.withRefresh(async () => {
+        await positionProvider.restoreState(this._positionMemento, this)
+      })
+    }
   }
 
   async refresh(freshElement) {
@@ -257,4 +273,4 @@ class WDIOElement extends LegacyAPIElement(EyesWrappedElement) {
   }
 }
 
-module.exports = WDIOElement
+module.exports = WDIOWrappedElement

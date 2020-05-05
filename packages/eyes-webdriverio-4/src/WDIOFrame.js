@@ -1,6 +1,6 @@
 const {Frame} = require('@applitools/eyes-sdk-core')
-const WDIOElement = require('./WDIOElement')
+const WrappedElement = require('./WDIOWrappedElement')
 
-Frame.specialize(WDIOElement)
+Frame.specialize({WrappedElement})
 
 module.exports = Frame

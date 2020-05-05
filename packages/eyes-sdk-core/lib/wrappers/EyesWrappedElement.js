@@ -114,7 +114,7 @@ class EyesWrappedElement {
   }
 
   /**
-   * Returns element's rect related to context
+   * Returns element rect related to context
    * @return {Promise<Region>} rect of the element
    */
   async getRect() {
@@ -122,7 +122,15 @@ class EyesWrappedElement {
   }
 
   /**
-   * Returns element's bounds related to context
+   * Returns element's content rect related to context
+   * @return {Promise<Region>} rect of the element
+   */
+  async getRect() {
+    throw new TypeError('The method is not implemented!')
+  }
+
+  /**
+   * Returns element bounds related to context
    * @return {Promise<Region>} bounds of the element
    */
   async getBounds() {
@@ -178,6 +186,24 @@ class EyesWrappedElement {
    * @return {Promise<void>}
    */
   async restoreScrollbars() {
+    throw new TypeError('The method is not implemented!')
+  }
+
+  /**
+   * Save current element position for future restoration
+   * @param {PositionProvider} - position provider which is implementing specific algorithm
+   * @return {Promise<PositionMemento>} current position
+   */
+  async preservePosition(positionProvider) {
+    throw new TypeError('The method is not implemented!')
+  }
+
+  /**
+   * Restore previously saved position
+   * @param {PositionProvider} - position provider which is implementing specific algorithm
+   * @return {Promise<PositionMemento>} current position
+   */
+  async restorePosition(positionProvider) {
     throw new TypeError('The method is not implemented!')
   }
 }
