@@ -28,12 +28,16 @@ const EyesUtils = require('../EyesUtils')
 class Frame {
   /**
    * Specialize {@link Frame} class to the specific {@link EyesWrappedElement} implementation
-   * @param {EyesWrappedElement} WrappedElement - implementation of {@link EyesWrappedElement}
+   * @param {Object} implementations
+   * @param {EyesWrappedElement} implementations.WrappedElement - implementation of {@link EyesWrappedElement}
    */
-  static specialize(WrappedElement) {
-    Frame._WrappedElement = WrappedElement
+  static specialize({WrappedElement}) {
+    return class extends Frame {
+      static get WrappedElement() {
+        return WrappedElement
+      }
+    }
   }
-
   /**
    * Create frame from components
    * @param {Logger} logger - logger instance
@@ -49,7 +53,7 @@ class Frame {
   constructor(logger, driver, frame) {
     if (frame instanceof Frame) {
       return frame
-    } else if (Frame.isReference(frame)) {
+    } else if (this.constructor.isReference(frame)) {
       this._reference = frame
     } else if (TypeUtils.isObject(frame)) {
       ArgumentGuard.hasProperties(frame, [
@@ -73,7 +77,6 @@ class Frame {
       this._logger = logger
     }
   }
-
   /**
    * Construct frame reference object which could be later initialized to the full frame object
    * @param {FrameReference} reference - reference to the frame on its parent context
@@ -81,11 +84,10 @@ class Frame {
    * @return {Frame} frame reference object
    */
   static fromReference(reference, scrollRootElement) {
-    const frame = new Frame(null, null, reference)
+    const frame = new this(null, null, reference)
     frame.scrollRootElement = scrollRootElement
     return frame
   }
-
   /**
    * Check value for belonging to the {@link FrameReference} type
    * @param {*} reference - value to check if is it a reference
@@ -95,12 +97,11 @@ class Frame {
     return (
       TypeUtils.isInteger(reference) ||
       TypeUtils.isString(reference) ||
-      Frame.WrappedElement.isSelector(reference) ||
-      Frame.WrappedElement.isCompatible(reference) ||
+      this.WrappedElement.isSelector(reference) ||
+      this.WrappedElement.isCompatible(reference) ||
       reference instanceof Frame
     )
   }
-
   /**
    * Equality check for two frame objects or frame elements
    * @param {Frame|EyesWrappedDriver} leftFrame - frame object or frame element
@@ -118,56 +119,42 @@ class Frame {
     if (!leftElement || !rightElement) return false
     return leftElement.equals(rightElement)
   }
-
-  static get WrappedElement() {
-    if (!Frame._WrappedElement) {
-      throw new TypeError('You need first specialize EyesWrappedElement implementation')
-    }
-    return Frame._WrappedElement
-  }
-
   /**
    * @return {EyesWrappedElement}
    */
   get element() {
     return this._element
   }
-
   /**
    * @return {Location}
    */
   get location() {
     return this._location
   }
-
   /**
    * @return {RectangleSize}
    */
   get size() {
     return this._size
   }
-
   /**
    * @return {RectangleSize}
    */
   get innerSize() {
     return this._innerSize
   }
-
   /**
    * @return {Location}
    */
   get parentScrollLocation() {
     return this._parentScrollLocation
   }
-
   /**
    * @return {EyesWrappedElement}
    */
   get scrollRootElement() {
     return this._scrollRootElement
   }
-
   /**
    * @param {!EyesWrappedElement} scrollRootElement
    */
@@ -176,15 +163,13 @@ class Frame {
       this._scrollRootElement = scrollRootElement
     }
   }
-
   /**
    * Create reference from current frame object
    * @return {Frame} frame reference object
    */
   toReference() {
-    return Frame.fromReference(this._element || this._reference, this._scrollRootElement)
+    return this.constructor.fromReference(this._element || this._reference, this._scrollRootElement)
   }
-
   /**
    * Initialize frame reference by finding frame element and calculate metrics
    * @param {Logger} logger - logger instance
@@ -221,20 +206,23 @@ class Frame {
         }
       }
       this._element = element
-    } else if (Frame.WrappedElement.isSelector(this._reference)) {
+    } else if (this.constructor.WrappedElement.isSelector(this._reference)) {
       const element = await this._driver.finder.findElement(this._reference)
       if (!element) {
         throw new TypeError(`No frame found by locator '${this._reference}'!`)
       }
       this._element = element
-    } else if (Frame.WrappedElement.isCompatible(this._reference)) {
-      this._element = new Frame.WrappedElement(this._logger, this._driver, this._reference)
+    } else if (this.constructor.WrappedElement.isCompatible(this._reference)) {
+      this._element = new this.constructor.WrappedElement(
+        this._logger,
+        this._driver,
+        this._reference,
+      )
     } else {
       throw new TypeError('Reference type does not supported!')
     }
     return this.refresh()
   }
-
   /**
    * Recalculate frame object metrics. Driver should be targeted on a parent context
    * @return {this} this frame object
@@ -261,19 +249,21 @@ class Frame {
     this._parentScrollLocation = parentScrollLocation
     return this
   }
-
   /**
    * @return {Promise<void>}
    */
   async hideScrollbars() {
     if (!this._scrollRootElement) {
       const element = await EyesUtils.getScrollRootElement(this._logger, this._driver.executor)
-      this._scrollRootElement = new Frame.WrappedElement(this._logger, this._driver, element)
+      this._scrollRootElement = new this.constructor.WrappedElement(
+        this._logger,
+        this._driver,
+        element,
+      )
     }
     this._logger.verbose('hiding scrollbars of element')
     return this._scrollRootElement.hideScrollbars()
   }
-
   /**
    * @return {Promise<void>}
    */
@@ -283,16 +273,26 @@ class Frame {
       await this._scrollRootElement.restoreScrollbars()
     }
   }
-
+  /**
+   * @param {positionProvider} positionProvider
+   * @return {Promise<void>}
+   */
   async preservePosition(positionProvider) {
     if (!this._scrollRootElement) {
       const element = await EyesUtils.getScrollRootElement(this._logger, this._driver.executor)
-      this._scrollRootElement = new Frame.WrappedElement(this._logger, this._driver, element)
+      this._scrollRootElement = new this.constructor.WrappedElement(
+        this._logger,
+        this._driver,
+        element,
+      )
     }
     this._logger.verbose('saving frame position')
     return this._scrollRootElement.preservePosition(positionProvider)
   }
-
+  /**
+   * @param {positionProvider} positionProvider
+   * @return {Promise<void>}
+   */
   async restorePosition(positionProvider) {
     if (this._scrollRootElement) {
       this._logger.verbose('restoring frame position')

@@ -28,12 +28,20 @@ const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
 
 class DriverCheckSettings extends CheckSettings {
   /**
-   * @param {EyesWrappedElement} WrappedElement
-   * @param {Frame} Frame
+   * @param {Object} implementations
+   * @param {EyesWrappedElement} implementations.WrappedElement
+   * @param {Frame} implementations.Frame
+   * @return {DriverCheckSettings}
    */
-  static specialize(WrappedElement, Frame) {
-    DriverCheckSettings._WrappedElement = WrappedElement
-    DriverCheckSettings._Frame = Frame
+  static specialize({WrappedElement, Frame}) {
+    return class extends DriverCheckSettings {
+      static get WrappedElement() {
+        return WrappedElement
+      }
+      static get Frame() {
+        return Frame
+      }
+    }
   }
 
   /**
@@ -61,7 +69,7 @@ class DriverCheckSettings extends CheckSettings {
    * @return {DriverCheckSettings} check settings object
    */
   static window() {
-    return new DriverCheckSettings()
+    return new this()
   }
 
   /**
@@ -71,7 +79,7 @@ class DriverCheckSettings extends CheckSettings {
    * @return {DriverCheckSettings} check settings object
    */
   static region(region, frame) {
-    return new DriverCheckSettings(region, frame)
+    return new this(region, frame)
   }
 
   /**
@@ -80,29 +88,7 @@ class DriverCheckSettings extends CheckSettings {
    * @return {DriverCheckSettings} check settings object
    */
   static frame(frame) {
-    return new DriverCheckSettings(null, frame)
-  }
-
-  /**
-   * Get specified implementation of {@link EyesWrappedElement}
-   * @return {EyesWrappedElement} specified implementation of {@link EyesWrappedElement}
-   */
-  static get WrappedElement() {
-    if (!DriverCheckSettings._WrappedElement) {
-      throw new TypeError('You need first specialize EyesWrappedElement implementation')
-    }
-    return DriverCheckSettings._WrappedElement
-  }
-
-  /**
-   * Get specified {@link Frame} class
-   * @return {EyesWrappedElement} specified {@link Frame} class
-   */
-  static get Frame() {
-    if (!DriverCheckSettings._WrappedElement) {
-      throw new TypeError('You need first specialize Frame class')
-    }
-    return DriverCheckSettings._Frame
+    return new this(null, frame)
   }
 
   /**
@@ -113,12 +99,10 @@ class DriverCheckSettings extends CheckSettings {
    */
   ignoreRegion(region) {
     let ignoreRegion
-    if (DriverCheckSettings.WrappedElement.isSelector(region)) {
+    if (this.constructor.WrappedElement.isSelector(region)) {
       ignoreRegion = new IgnoreRegionBySelector(region)
-    } else if (DriverCheckSettings.WrappedElement.isCompatible(region)) {
-      ignoreRegion = new IgnoreRegionByElement(
-        DriverCheckSettings.WrappedElement.fromElement(region),
-      )
+    } else if (this.constructor.WrappedElement.isCompatible(region)) {
+      ignoreRegion = new IgnoreRegionByElement(this.constructor.WrappedElement.fromElement(region))
     } else {
       return super.ignoreRegion(region)
     }
@@ -135,12 +119,10 @@ class DriverCheckSettings extends CheckSettings {
    */
   layoutRegion(region) {
     let layoutRegion
-    if (DriverCheckSettings.WrappedElement.isSelector(region)) {
+    if (this.constructor.WrappedElement.isSelector(region)) {
       layoutRegion = new IgnoreRegionBySelector(region)
-    } else if (DriverCheckSettings.WrappedElement.isCompatible(region)) {
-      layoutRegion = new IgnoreRegionByElement(
-        DriverCheckSettings.WrappedElement.fromElement(region),
-      )
+    } else if (this.constructor.WrappedElement.isCompatible(region)) {
+      layoutRegion = new IgnoreRegionByElement(this.constructor.WrappedElement.fromElement(region))
     } else {
       return super.layoutRegion(region)
     }
@@ -156,12 +138,10 @@ class DriverCheckSettings extends CheckSettings {
    */
   strictRegion(region) {
     let strictRegion
-    if (DriverCheckSettings.WrappedElement.isSelector(region)) {
+    if (this.constructor.WrappedElement.isSelector(region)) {
       strictRegion = new IgnoreRegionBySelector(region)
-    } else if (DriverCheckSettings.WrappedElement.isCompatible(region)) {
-      strictRegion = new IgnoreRegionByElement(
-        DriverCheckSettings.WrappedElement.fromElement(region),
-      )
+    } else if (this.constructor.WrappedElement.isCompatible(region)) {
+      strictRegion = new IgnoreRegionByElement(this.constructor.WrappedElement.fromElement(region))
     } else {
       return super.strictRegion(region)
     }
@@ -177,12 +157,10 @@ class DriverCheckSettings extends CheckSettings {
    */
   contentRegion(region) {
     let contentRegion
-    if (DriverCheckSettings.WrappedElement.isSelector(region)) {
+    if (this.constructor.WrappedElement.isSelector(region)) {
       contentRegion = new IgnoreRegionBySelector(region)
-    } else if (DriverCheckSettings.WrappedElement.isCompatible(region)) {
-      contentRegion = new IgnoreRegionByElement(
-        DriverCheckSettings.WrappedElement.fromElement(region),
-      )
+    } else if (this.constructor.WrappedElement.isCompatible(region)) {
+      contentRegion = new IgnoreRegionByElement(this.constructor.WrappedElement.fromElement(region))
     } else {
       return super.contentRegion(region)
     }
@@ -203,7 +181,7 @@ class DriverCheckSettings extends CheckSettings {
    */
   floatingRegion(region, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
     let floatingRegion
-    if (DriverCheckSettings.WrappedElement.isSelector(region)) {
+    if (this.constructor.WrappedElement.isSelector(region)) {
       floatingRegion = new FloatingRegionBySelector(
         region,
         maxUpOffset,
@@ -211,9 +189,9 @@ class DriverCheckSettings extends CheckSettings {
         maxLeftOffset,
         maxRightOffset,
       )
-    } else if (DriverCheckSettings.WrappedElement.isCompatible(region)) {
+    } else if (this.constructor.WrappedElement.isCompatible(region)) {
       floatingRegion = new FloatingRegionByElement(
-        DriverCheckSettings.WrappedElement.fromElement(region),
+        this.constructor.WrappedElement.fromElement(region),
         maxUpOffset,
         maxDownOffset,
         maxLeftOffset,
@@ -235,11 +213,11 @@ class DriverCheckSettings extends CheckSettings {
    */
   accessibilityRegion(region, regionType) {
     let accessibilityRegion
-    if (DriverCheckSettings.WrappedElement.isSelector(region)) {
+    if (this.constructor.WrappedElement.isSelector(region)) {
       accessibilityRegion = new AccessibilityRegionBySelector(region, regionType)
-    } else if (DriverCheckSettings.WrappedElement.isCompatible(region)) {
+    } else if (this.constructor.WrappedElement.isCompatible(region)) {
       accessibilityRegion = new AccessibilityRegionByElement(
-        DriverCheckSettings.WrappedElement.fromElement(region),
+        this.constructor.WrappedElement.fromElement(region),
         regionType,
       )
     } else {
@@ -258,10 +236,10 @@ class DriverCheckSettings extends CheckSettings {
     if (Region.isRegionCompatible(region)) {
       this._targetRegion = new Region(region)
       this._targetRegion.setCoordinatesType(CoordinatesType.CONTEXT_RELATIVE)
-    } else if (DriverCheckSettings.WrappedElement.isSelector(region)) {
-      this._targetElement = DriverCheckSettings.WrappedElement.fromSelector(region)
-    } else if (DriverCheckSettings.WrappedElement.isCompatible(region)) {
-      this._targetElement = DriverCheckSettings.WrappedElement.fromElement(region)
+    } else if (this.constructor.WrappedElement.isSelector(region)) {
+      this._targetElement = this.constructor.WrappedElement.fromSelector(region)
+    } else if (this.constructor.WrappedElement.isCompatible(region)) {
+      this._targetElement = this.constructor.WrappedElement.fromElement(region)
     } else {
       throw new TypeError('region method called with argument of unknown type!')
     }
@@ -273,8 +251,8 @@ class DriverCheckSettings extends CheckSettings {
    * @returns {this}
    */
   frame(frameReference) {
-    if (DriverCheckSettings.Frame.isReference(frameReference)) {
-      this._frameChain.push(DriverCheckSettings.Frame.fromReference(frameReference))
+    if (this.constructor.Frame.isReference(frameReference)) {
+      this._frameChain.push(this.constructor.Frame.fromReference(frameReference))
     } else {
       throw new TypeError('frame method called with argument of unknown type!')
     }
@@ -287,10 +265,10 @@ class DriverCheckSettings extends CheckSettings {
    */
   scrollRootElement(element) {
     let scrollRootElement
-    if (DriverCheckSettings.WrappedElement.isSelector(element)) {
-      scrollRootElement = DriverCheckSettings.WrappedElement.fromSelector(element)
-    } else if (DriverCheckSettings.WrappedElement.isCompatible(element)) {
-      scrollRootElement = DriverCheckSettings.WrappedElement.fromElement(element)
+    if (this.constructor.WrappedElement.isSelector(element)) {
+      scrollRootElement = this.constructor.WrappedElement.fromSelector(element)
+    } else if (this.constructor.WrappedElement.isCompatible(element)) {
+      scrollRootElement = this.constructor.WrappedElement.fromElement(element)
     } else {
       throw new TypeError('scrollRootElement method called with argument of unknown type!')
     }
