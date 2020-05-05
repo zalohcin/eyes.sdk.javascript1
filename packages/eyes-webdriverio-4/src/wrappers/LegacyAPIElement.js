@@ -1,5 +1,11 @@
 function LegacyAPIElement(WDIOElement) {
   return class EyesWebElement extends WDIOElement {
+    get element() {
+      return this.unwrapped
+    }
+    get locator() {
+      return this.selector
+    }
     getDriver() {
       return this._driver
     }
