@@ -124,6 +124,7 @@ const args = yargs
     describe:
       'capabilities for driver. Comma-separated with colon for key/value. Example: --sauce-options "deviceName:iPhone 8 Simulator,platformName:iOS,platformVersion:13.2,appiumVersion:1.16.0,browserName:Safari"',
     type: 'string',
+    coerce: parseCompoundParameter,
   })
   .option('driver-server', {
     describe: 'server for driver.',
@@ -140,9 +141,10 @@ if (!url) {
 ;(async function() {
   console.log('Running Selenium render for', url)
   console.log(
-    'Options: ',
-    Object.keys(args)
-      .map(key => (!['_', '$0'].includes(key) ? `* ${key}: ${args[key]}` : ''))
+    'Options:\n ',
+    Object.entries(args)
+      .map(argToString)
+      .filter(x => x)
       .join('\n  '),
   )
 
@@ -150,10 +152,7 @@ if (!url) {
     await chromedriver.start(['--whitelisted-ips=127.0.0.1'], true)
   }
 
-  const driver = await buildDriver({
-    ...args,
-    driverCapabilities: parseCompoundParameter(args.driverCapabilities),
-  })
+  const driver = await buildDriver(args)
 
   const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
   const eyes = new Eyes(runner)
@@ -345,4 +344,10 @@ function parseCompoundParameter(str) {
       acc[key] = value // not casting to Number or Boolean since I didn't need it
       return acc
     }, {})
+}
+
+function argToString([key, value]) {
+  const valueStr = typeof value === 'object' ? JSON.stringify(value) : value
+  const shouldShow = !['_', '$0'].includes(key) && key.indexOf('-') === -1 // don't show the entire cli, and show only the camelCase version of each arg
+  return shouldShow && `* ${key}: ${valueStr}`
 }
