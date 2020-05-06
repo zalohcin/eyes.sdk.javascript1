@@ -165,7 +165,7 @@ if (!url) {
   if (args.browser) {
     configuration.addBrowsers(args.browser)
   }
-  if (args.deviceEmulation) {
+  if (args.deviceName) {
     configuration.addDeviceEmulation(args.deviceName, args.screenOrientation)
   }
   if (args.serverUrl) {
