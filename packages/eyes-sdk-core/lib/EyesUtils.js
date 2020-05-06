@@ -352,7 +352,7 @@ async function getElementXpath(logger, executor, element) {
   }
 }
 
-async function locatorToPersistedRegions(_logger, {finder, executor}, locator) {
+async function locatorToPersistedRegions(logger, {finder, executor}, locator) {
   if (locator.using === 'xpath') {
     return [{type: 'xpath', selector: locator.value}]
   } else if (locator.using === 'css selector') {
@@ -362,7 +362,7 @@ async function locatorToPersistedRegions(_logger, {finder, executor}, locator) {
     return Promise.all(
       elements.map(async element => ({
         type: 'xpath',
-        selector: await getElementXpath(executor, element),
+        selector: await getElementXpath(logger, executor, element),
       })),
     )
   }
