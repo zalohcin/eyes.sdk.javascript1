@@ -260,9 +260,7 @@ function buildDriver({headless, webdriverProxy, driverCapabilities, driverServer
     ...driverCapabilities,
   }
 
-  const driverServerUrl = process.env.SAUCE_SELENIUM_URL || process.env.SELENIUM_URL || driverServer
-
-  let builder = new Builder().withCapabilities(capabilities).usingServer(driverServerUrl)
+  let builder = new Builder().withCapabilities(capabilities).usingServer(driverServer)
 
   if (webdriverProxy) {
     builder = builder
