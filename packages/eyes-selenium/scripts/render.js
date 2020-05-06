@@ -61,16 +61,15 @@ const args = yargs
     type: 'string',
     coerce: parseBrowser,
   })
-  .option('device-emulation', {
-    describe: 'the device emulation to render to when in vg mode',
+  .option('device-name', {
+    describe: 'the chrome-emulation device name to render to when in vg mode',
     type: 'string',
-    choices: Object.keys(DeviceName),
+    choices: Object.values(DeviceName),
   })
   .option('screen-orientation', {
-    describe: 'the device emulation screen oriantation to render to when in device-emulation mode',
+    describe: 'the device screen oriantation to render to when in chrome emulation',
     type: 'string',
-    choices: Object.keys(ScreenOrientation),
-    default: 'PORTRAIT',
+    choices: Object.values(ScreenOrientation),
   })
   .option('ignore-displacements', {
     describe: 'when specified, ignore displaced content',
@@ -167,11 +166,7 @@ if (!url) {
     configuration.addBrowsers(args.browser)
   }
   if (args.deviceEmulation) {
-    const orientation = args.screenOrientation || 'PORTRAIT'
-    configuration.addDeviceEmulation(
-      DeviceName[args.deviceEmulation],
-      ScreenOrientation[orientation],
-    )
+    configuration.addDeviceEmulation(args.deviceName, args.screenOrientation)
   }
   if (args.serverUrl) {
     configuration.setServerUrl(args.serverUrl)
