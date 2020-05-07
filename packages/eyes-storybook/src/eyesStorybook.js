@@ -10,7 +10,6 @@ const makeRenderStory = require('./renderStory');
 const makeRenderStories = require('./renderStories');
 const makeGetStoryData = require('./getStoryData');
 const ora = require('ora');
-const flatten = require('lodash.flatten');
 const filterStories = require('./filterStories');
 const addVariationStories = require('./addVariationStories');
 const browserLog = require('./browserLog');
@@ -120,7 +119,7 @@ async function eyesStorybook({
       logger.log(error);
       throw new Error(msg);
     } else {
-      return flatten(results);
+      return results;
     }
   } finally {
     logger.log('total time: ', performance['renderStories']);

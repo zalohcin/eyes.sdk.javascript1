@@ -1,5 +1,11 @@
 function LegacyAPIElement(EyesWrappedElement) {
   return class EyesWebElement extends EyesWrappedElement {
+    get element() {
+      return this.unwrapped
+    }
+    get locator() {
+      return this.selector
+    }
     getDriver() {
       return this._driver
     }

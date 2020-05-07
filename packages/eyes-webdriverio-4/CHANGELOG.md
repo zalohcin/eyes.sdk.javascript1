@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- return support for legacy `element` and `locator` fields in WDIOWrappedElement
 
 ## 2.14.0 - 2020/4/30
 

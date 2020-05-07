@@ -33,7 +33,7 @@ describe('captureDom for IE', () => {
     fs.writeFileSync(path.resolve(__dirname, `fixtures/${name}`), content);
   }
 
-  async function buildDriver(browserName) {
+  async function openPageWith(browserName) {
     const username = process.env.SAUCE_USERNAME;
     const accessKey = process.env.SAUCE_ACCESS_KEY;
     if (!username || !accessKey) {
@@ -53,16 +53,20 @@ describe('captureDom for IE', () => {
       .usingServer(sauceUrl)
       .build();
     await driver.manage().setTimeouts({script: 10000});
+    const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
+    await driver
+      .manage()
+      .window()
+      .setRect({width: 1024, height: 768});
+
+    await driver.get(url);
     return driver;
   }
 
   it('works in Edge', async () => {
-    const driver = await buildDriver('MicrosoftEdge');
+    const driver = await openPageWith('MicrosoftEdge');
     try {
       const fixtureName = 'edge.dom.json';
-      const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
-      await driver.get(url);
-
       const result = await captureDom(driver);
       const domStr = beautifyOutput(result);
       if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
@@ -81,12 +85,9 @@ describe('captureDom for IE', () => {
   });
 
   it('works in IE 11', async () => {
-    const driver = await buildDriver('internet explorer');
+    const driver = await openPageWith('internet explorer');
     try {
       const fixtureName = 'ie11.dom.json';
-      const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
-      await driver.get(url);
-
       const domStr = beautifyOutput(await captureDom(driver));
 
       if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
@@ -105,11 +106,9 @@ describe('captureDom for IE', () => {
   });
 
   it('works in IE 10 with poll', async () => {
-    const driver = await buildDriver('internet explorer');
+    const driver = await openPageWith('internet explorer');
     try {
       const fixtureName = 'ie10.dom.json';
-      const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
-      await driver.get(url);
 
       async function doPoll() {
         const result = await driver.executeScript(`return (${captureDomAndPoll})()`);

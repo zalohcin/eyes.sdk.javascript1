@@ -27,7 +27,7 @@ HTML[1]/BODY[1]/IFRAME[2]
     "visibility": "visible"
   },
   "rect": {
-    "width": 1007,
+    "width": 991,
     "height": 967.4099731445312,
     "top": 0,
     "left": 0
@@ -61,7 +61,7 @@ HTML[1]/BODY[1]/IFRAME[2]
         "visibility": "visible"
       },
       "rect": {
-        "width": 967,
+        "width": 951,
         "height": 927.4099731445312,
         "top": 20,
         "left": 20
@@ -98,7 +98,7 @@ HTML[1]/BODY[1]/IFRAME[2]
             "visibility": "visible"
           },
           "rect": {
-            "width": 967,
+            "width": 951,
             "height": 36,
             "top": 20,
             "left": 20
@@ -141,7 +141,7 @@ HTML[1]/BODY[1]/IFRAME[2]
             "visibility": "visible"
           },
           "rect": {
-            "width": 967,
+            "width": 951,
             "height": 36,
             "top": 56,
             "left": 20
