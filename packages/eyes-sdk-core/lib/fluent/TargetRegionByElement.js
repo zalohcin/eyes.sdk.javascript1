@@ -7,6 +7,11 @@ const EyesUtils = require('../EyesUtils')
 const EYES_SELECTOR_TAG = 'data-eyes-selector'
 
 /**
+ * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ */
+
+/**
  * @ignore
  */
 class TargetRegionByElement extends GetSelector {
@@ -20,7 +25,7 @@ class TargetRegionByElement extends GetSelector {
 
   /**
    * @inheritDoc
-   * @param {Eyes} eyes
+   * @param {EyesWrappedDriver} driver
    * @return {Promise<string>}
    */
   async getSelector(driver) {

@@ -7,20 +7,25 @@ const EyesUtils = require('../EyesUtils')
 const EYES_SELECTOR_TAG = 'data-eyes-selector'
 
 /**
+ * @typedef {import('../wrappers/EyesWrappedElement').UniversalSelector} UniversalSelector
+ * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ */
+
+/**
  * @ignore
  */
 class TargetRegionBySelector extends GetSelector {
   /**
-   * @param {By} regionLocator
+   * @param {UniversalSelector} selector
    */
-  constructor(regionLocator) {
+  constructor(selector) {
     super()
-    this._selector = regionLocator
+    this._selector = selector
   }
 
   /**
    * @inheritDoc
-   * @param {Eyes} eyes
+   * @param {EyesWrappedDriver} driver
    * @return {Promise<string>}
    */
   async getSelector(driver) {

@@ -5,28 +5,28 @@ const {GetAccessibilityRegion} = require('./GetAccessibilityRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('../wrappers/EyesWrappedElement').UniversalSelector} UniversalSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  */
 
 class AccessibilityRegionBySelector extends GetAccessibilityRegion {
   /**
-   * @param {By} regionSelector
+   * @param {UniversalSelector} selector
    * @param {AccessibilityRegionType} regionType
    */
-  constructor(regionSelector, regionType) {
+  constructor(selector, regionType) {
     super()
-    this._selector = regionSelector
+    this._selector = selector
     this._regionType = regionType
   }
 
   /**
-   * @param {Eyes} eyes
+   * @param {EyesWrappedDriver} driver
    * @param {EyesScreenshot} screenshot
    * @return {Promise<AccessibilityMatchSettings[]>}
    */
-  async getRegion(eyes, screenshot) {
-    const elements = await eyes.getDriver().finder.findElements(this._selector)
+  async getRegion(driver, screenshot) {
+    const elements = await driver.finder.findElements(this._selector)
 
     const regions = []
     for (const element of elements) {

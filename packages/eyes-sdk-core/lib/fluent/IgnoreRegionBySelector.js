@@ -4,6 +4,11 @@ const {CoordinatesType, Region} = require('@applitools/eyes-common')
 const {GetRegion} = require('./GetRegion')
 const EyesUtils = require('../EyesUtils')
 
+/**
+ * @typedef {import('../wrappers/EyesWrappedElement').UniversalSelector} UniversalSelector
+ * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ */
+
 class IgnoreRegionBySelector extends GetRegion {
   /**
    * @param {By} selector
@@ -14,12 +19,13 @@ class IgnoreRegionBySelector extends GetRegion {
   }
 
   /**
-   * @override
-   * @param {Eyes} eyes
+   * @param {EyesWrappedDriver} driver
    * @param {EyesScreenshot} screenshot
+   * @return {Promise<Region[]>}
    */
-  async getRegion(eyes, screenshot) {
-    const elements = await eyes.getDriver().finder.findElements(this._selector)
+  async getRegion(driver, screenshot) {
+    const elements = await driver.finder.findElements(this._selector)
+
     const regions = []
     for (const element of elements) {
       const rect = await element.getRect()

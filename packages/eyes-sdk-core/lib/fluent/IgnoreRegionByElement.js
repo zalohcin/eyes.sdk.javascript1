@@ -4,6 +4,11 @@ const {Region, CoordinatesType} = require('@applitools/eyes-common')
 const {GetRegion} = require('./GetRegion')
 const EyesUtils = require('../EyesUtils')
 
+/**
+ * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ */
+
 class IgnoreRegionByElement extends GetRegion {
   /**
    * @param {EyesWrappedElement} element
@@ -15,11 +20,12 @@ class IgnoreRegionByElement extends GetRegion {
 
   /**
    * @override
-   * @param {Eyes} eyes
+   * @param {EyesWrappedDriver} driver
    * @param {EyesScreenshot} screenshot
+   * @return {Promise<Region[]>}
    */
-  async getRegion(eyes, screenshot) {
-    await this._element.init(eyes.getDriver())
+  async getRegion(driver, screenshot) {
+    await this._element.init(driver)
     const rect = await this._element.getRect()
     const lTag = screenshot.convertLocation(
       rect.getLocation(),

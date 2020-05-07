@@ -4,6 +4,11 @@ const {FloatingMatchSettings, CoordinatesType} = require('@applitools/eyes-commo
 const {GetFloatingRegion} = require('./GetFloatingRegion')
 const EyesUtils = require('../EyesUtils')
 
+/**
+ * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
+ * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ */
+
 class FloatingRegionByElement extends GetFloatingRegion {
   /**
    * @param {EyesWrappedElement} element
@@ -23,11 +28,11 @@ class FloatingRegionByElement extends GetFloatingRegion {
 
   /**
    * @override
-   * @param {Eyes} eyes
+   * @param {EyesWrappedDriver} driver
    * @param {EyesScreenshot} screenshot
    */
-  async getRegion(eyes, screenshot) {
-    await this._element.init(eyes.getDriver())
+  async getRegion(driver, screenshot) {
+    await this._element.init(driver)
     const rect = await this._element.getRect()
     const lTag = screenshot.convertLocation(
       rect.getLocation(),

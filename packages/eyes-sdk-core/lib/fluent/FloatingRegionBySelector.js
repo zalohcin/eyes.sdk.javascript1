@@ -4,6 +4,11 @@ const {FloatingMatchSettings, CoordinatesType} = require('@applitools/eyes-commo
 const {GetFloatingRegion} = require('./GetFloatingRegion')
 const EyesUtils = require('../EyesUtils')
 
+/**
+ * @typedef {import('../wrappers/EyesWrappedElement').UniversalSelector} UniversalSelector
+ * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ */
+
 class FloatingRegionBySelector extends GetFloatingRegion {
   /**
    * @param {By} regionSelector
@@ -23,11 +28,12 @@ class FloatingRegionBySelector extends GetFloatingRegion {
 
   /**
    * @override
-   * @param {Eyes} eyes
+   * @param {EyesWrappedDriver} driver
    * @param {EyesScreenshot} screenshot
+   * @return {Promise<FloatingMatchSettings[]>}
    */
-  async getRegion(eyes, screenshot) {
-    const elements = await eyes.getDriver().finder.findElements(this._selector)
+  async getRegion(driver, screenshot) {
+    const elements = await driver.finder.findElements(this._selector)
 
     const regions = []
     for (const element of elements) {
