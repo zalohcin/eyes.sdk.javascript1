@@ -3,6 +3,10 @@
 ## Unreleased
 
 
+## 4.7.15 - 2020/5/7
+
+- updated to @applitools/dom-capture@7.2.0
+
 ## 4.7.14 - 2020/4/27
 
 - updated to @applitools/eyes-common@3.22.1
