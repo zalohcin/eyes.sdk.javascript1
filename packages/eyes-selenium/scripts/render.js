@@ -129,7 +129,11 @@ const args = yargs
     describe: 'server for driver.',
     type: 'string',
   })
-
+  .option('tag', {
+    describe: 'tag for checkpoint',
+    type: 'string',
+    default: 'selenium render',
+  })
   .help().argv
 
 const [url] = args._
@@ -222,7 +226,7 @@ if (!url) {
       await EyesSeleniumUtils.scrollPage(driver)
     }
 
-    await eyes.check('selenium render', target)
+    await eyes.check(args.tag, target)
     await eyes.close(false)
 
     const testResultsSummary = await runner.getAllTestResults(false)
