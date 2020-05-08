@@ -106,6 +106,7 @@ class EyesVisualGrid extends EyesCore {
 
     if (
       !this._configuration.getViewportSize() &&
+      this._configuration.getBrowsersInfo() &&
       this._configuration.getBrowsersInfo().length > 0
     ) {
       for (const browserInfo of this._configuration.getBrowsersInfo()) {

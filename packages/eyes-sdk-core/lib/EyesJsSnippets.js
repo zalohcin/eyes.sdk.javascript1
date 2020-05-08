@@ -30,6 +30,47 @@ const GET_ELEMENT_ENTIRE_SIZE = `
   ];
 `
 
+const GET_ELEMENT_RECT = `
+  var element = arguments[0];
+  var rect = element.getBoundingClientRect();
+  var computedStyle = window.getComputedStyle(element);
+  return {
+    x: rect.left + (window.scrollX || window.pageXOffset),
+    y: rect.top + (window.scrollY || window.pageYOffset),
+    width: rect.width,
+    height: rect.height
+  };
+`
+
+const GET_ELEMENT_CLIENT_RECT = `
+  var element = arguments[0];
+  var rect = element.getBoundingClientRect();
+  var computedStyle = window.getComputedStyle(element);
+  var borderLeftWidth = parseInt(computedStyle.getPropertyValue('border-left-width'));
+  var borderTopWidth = parseInt(computedStyle.getPropertyValue('border-top-width'));
+  return {
+    x: rect.left + (window.scrollX || window.pageXOffset) + borderLeftWidth,
+    y: rect.top + (window.scrollY || window.pageYOffset) + borderTopWidth,
+    width: element.clientWidth,
+    height: element.clientHeight
+  };
+`
+
+const GET_ELEMENT_PROPERTIES = `
+  var properties = arguments[0];
+  var element = arguments[1];
+  return properties.map(function(property) { return element[property]; });
+`
+
+const GET_ELEMENT_CSS_PROPERTIES = `
+  var properties = arguments[0];
+  var element = arguments[1];
+  var computedStyle = window.getComputedStyle(element, null);
+  return computedStyle
+    ? properties.map(function(property) { return computedStyle.getPropertyValue(property); })
+    : [];
+`
+
 const GET_SCROLL_POSITION = `
   var element = arguments[0] || document.scrollingElement;
   if (element) return [element.scrollLeft, element.scrollTop];
@@ -184,6 +225,10 @@ module.exports = {
   GET_VIEWPORT_SIZE,
   GET_CONTENT_ENTIRE_SIZE,
   GET_ELEMENT_ENTIRE_SIZE,
+  GET_ELEMENT_RECT,
+  GET_ELEMENT_CLIENT_RECT,
+  GET_ELEMENT_CSS_PROPERTIES,
+  GET_ELEMENT_PROPERTIES,
   GET_SCROLL_POSITION,
   SCROLL_TO,
   GET_TRANSFORMS,

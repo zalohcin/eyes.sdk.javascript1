@@ -33,8 +33,8 @@
   "main": "./index.js",
   "dependencies": {
     "@applitools/dom-utils": "4.7.14",
-    "@applitools/eyes-sdk-core": "9.2.1",
-    "@applitools/visual-grid-client": "13.7.2",
+    "@applitools/eyes-sdk-core": "10.0.1",
+    "@applitools/visual-grid-client": "13.7.6",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "webdriverio": "^5.18.6"
   },
@@ -50,7 +50,6 @@
     "mocha": "^6.2.2",
     "mocha-parallel-tests": "^2.2.2",
     "shared-examples-for": "^0.1.3",
-    "mocha-parallel-tests": "^2.2.2",
     "spec-xunit-file": "0.0.1-3"
   },
   "scripts": {

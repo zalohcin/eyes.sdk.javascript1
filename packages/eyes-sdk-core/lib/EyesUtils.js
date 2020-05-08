@@ -1,6 +1,7 @@
 const {
   GeneralUtils,
   ArgumentGuard,
+  CoordinatesType,
   Location,
   RectangleSize,
   Region,
@@ -299,6 +300,63 @@ async function getElementEntireSize(_logger, executor, element) {
   } catch (err) {
     throw new EyesDriverOperationError('Failed to extract element size!', err)
   }
+}
+/**
+ * Get element client rect relative to the current context
+ * @param {Logger} _logger - logger instance
+ * @param {EyesJsExecutor} executor - js executor
+ * @param {EyesWrappedElement|UnwrappedElement} element - element to get client rect
+ * @return {Promise<Region>} element client rect
+ */
+async function getElementClientRect(_logger, executor, element) {
+  const {x, y, width, height} = await executor.executeScript(
+    EyesJsSnippets.GET_ELEMENT_CLIENT_RECT,
+    element,
+  )
+  return new Region(x, y, width, height, CoordinatesType.CONTEXT_RELATIVE)
+}
+/**
+ * Get element rect relative to the current context
+ * @param {Logger} _logger - logger instance
+ * @param {EyesJsExecutor} executor - js executor
+ * @param {EyesWrappedElement|UnwrappedElement} element - element to get rect
+ * @return {Promise<Region>} element rect
+ */
+async function getElementRect(_logger, executor, element) {
+  try {
+    const rect = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_RECT, element)
+    return new Region({
+      left: Math.ceil(rect.x),
+      top: Math.ceil(rect.y),
+      width: Math.ceil(rect.width),
+      height: Math.ceil(rect.height),
+      coordinatesType: CoordinatesType.CONTEXT_RELATIVE,
+    })
+  } catch (err) {
+    return Region.EMPTY
+  }
+}
+/**
+ * Extract values of specified properties for specified element
+ * @param {Logger} _logger - logger instance
+ * @param {EyesJsExecutor} executor - js executor
+ * @param {string[]} properties - names of properties to extract
+ * @param {EyesWrappedElement|UnwrappedElement} element - element to extract properties
+ * @return {*[]} extracted values
+ */
+async function getElementProperties(_logger, executor, properties, element) {
+  return executor.executeScript(EyesJsSnippets.GET_ELEMENT_PROPERTIES, properties, element)
+}
+/**
+ * Extract css values of specified css properties for specified element
+ * @param {Logger} _logger - logger instance
+ * @param {EyesJsExecutor} executor - js executor
+ * @param {string[]} properties - names of css properties to extract
+ * @param {EyesWrappedElement|UnwrappedElement} element - element to extract css properties
+ * @return {string[]} extracted css values
+ */
+async function getElementCssProperties(_logger, executor, properties, element) {
+  return executor.executeScript(EyesJsSnippets.GET_ELEMENT_CSS_PROPERTIES, properties, element)
 }
 /**
  * Get device pixel ratio
@@ -678,6 +736,10 @@ module.exports = {
   getTopContextViewportSize,
   getCurrentFrameContentEntireSize,
   getElementEntireSize,
+  getElementClientRect,
+  getElementRect,
+  getElementProperties,
+  getElementCssProperties,
   getDevicePixelRatio,
   getMobilePixelRatio,
   getTopContextScrollLocation,
