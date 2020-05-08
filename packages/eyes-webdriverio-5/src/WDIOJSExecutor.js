@@ -1,15 +1,16 @@
 'use strict'
 
 const {EyesJsExecutor} = require('@applitools/eyes-sdk-core')
+const WDIOWrappedElement = require('./WDIOWrappedElement')
 
-class WDIOJSExecutor extends EyesJsExecutor {
+class WDIOJsExecutor extends EyesJsExecutor {
   /**
-   * @param {EyesWebDriver} driver
+   * @param {WDIODriver} driver
    */
-  constructor(driver) {
+  constructor(logger, driver) {
     super()
-
-    /** @type {EyesWebDriver} */
+    this._logger = logger
+    /** @type {WDIODriver} */
     this._driver = driver
   }
 
@@ -17,28 +18,32 @@ class WDIOJSExecutor extends EyesJsExecutor {
    * @override
    * @inheritDoc
    */
-  async executeScript(script, ...varArgs) {
+  async executeScript(script, ...args) {
     try {
-      const result = await this._driver.remoteWebDriver.execute(script, ...varArgs)
-      this._driver.eyes._logger.verbose('Done!')
-      return result
-    } catch (e) {
-      this._driver.eyes._logger.verbose(
-        `Error executeScript: ${script}\nargs: ${JSON.stringify(varArgs)}`,
+      const result = await this._driver.unwrapped.execute(
+        script,
+        ...args.map(arg => (arg instanceof WDIOWrappedElement ? arg.unwrapped : arg)),
       )
-      throw e
+      this._logger.verbose('Done!')
+      return result
+    } catch (err) {
+      this._logger.verbose('WARNING: execute script error: ' + err)
+      throw err
     }
   }
 
   /** @override */
-  async executeAsyncScript(script, ...varArgs) {
+  async executeAsyncScript(script, ...args) {
     try {
-      const result = await this._driver.remoteWebDriver.executeAsync(script, ...varArgs)
-      this._driver.eyes._logger.verbose('Done!')
+      const result = await this._driver.unwrapped.executeAsync(
+        script,
+        ...args.map(arg => (arg instanceof WDIOWrappedElement ? arg.unwrapped : arg)),
+      )
+      this._logger.verbose('Done!')
       return result
-    } catch (e) {
-      this._driver.eyes._logger.verbose('WARNING: execute script error: ' + e)
-      throw e
+    } catch (err) {
+      this._logger.verbose('WARNING: execute script error: ' + err)
+      throw err
     }
   }
 
@@ -47,9 +52,8 @@ class WDIOJSExecutor extends EyesJsExecutor {
    * @inheritDoc
    */
   sleep(millis) {
-    // todo
-    return this._driver.sleep(millis)
+    return this._driver.pause(millis)
   }
 }
 
-module.exports = WDIOJSExecutor
+module.exports = WDIOJsExecutor

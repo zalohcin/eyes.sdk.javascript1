@@ -1,17 +1,14 @@
 const core = require('@applitools/eyes-sdk-core')
+const WDIOCheckSettings = require('./src/WDIOCheckSettings')
+const LegacySelector = require('./src/LegacySelector')
+const {WDIOEyesClassic, WDIOEyesVisualGrid, WDIOEyesFactory} = require('./src/Eyes')
 
-exports.Eyes = require('./src/Eyes').Eyes
-exports.EyesWDIO = require('./src/EyesWDIO').EyesWDIO
-exports.EyesVisualGrid = require('./src/EyesVisualGrid').EyesVisualGrid
-exports.By = require('./src/By').By
-exports.Target = require('./src/fluent/Target')
-exports.WebDriver = require('./src/wrappers/WebDriver')
-exports.WebElement = require('./src/wrappers/WebElement')
-exports.EyesWebDriver = require('./src/wrappers/EyesWebDriver')
-exports.WebdriverioCheckSettings = require('./src/fluent/WebdriverioCheckSettings')
-exports.EyesWDIOScreenshot = require('./src/capture/EyesWDIOScreenshot')
-exports.EyesWDIOUtils = require('./src/EyesWDIOUtils')
-exports.NetHelper = require('./src/services/NetHelper')
+exports.Eyes = WDIOEyesFactory
+exports.EyesWDIO = WDIOEyesClassic
+exports.EyesVisualGrid = WDIOEyesVisualGrid
+exports.By = LegacySelector
+exports.Target = WDIOCheckSettings
+exports.WebdriverioCheckSettings = WDIOCheckSettings
 
 // eyes-common
 exports.AccessibilityLevel = core.AccessibilityLevel

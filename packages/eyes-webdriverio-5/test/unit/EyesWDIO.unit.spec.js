@@ -1,4 +1,4 @@
-const {Eyes} = require('../../../')
+const {Eyes} = require('../..')
 const assert = require('assert')
 
 describe('EyesWDIO', () => {
