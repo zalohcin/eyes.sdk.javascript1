@@ -7,7 +7,7 @@ const EyesUtils = require('../EyesUtils')
 const EYES_SELECTOR_TAG = 'data-eyes-selector'
 
 /**
- * @typedef {import('../wrappers/EyesWrappedElement').UniversalSelector} UniversalSelector
+ * @typedef {import('../UniversalSelector')} UniversalSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  */
 

@@ -35,7 +35,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
 
   async frameDefault() {
     this._logger.verbose('WDIOBrowsingContext.frameDefault()')
-    const result = await this._driver.unwrapped.frame()
+    const result = await this._driver.unwrapped.frame(null)
     this._logger.verbose('Done! Switching to default content...')
     if (this._frameChain.size > 0) {
       this._frameChain.clear()

@@ -18,6 +18,8 @@ const EyesJsSnippets = require('./EyesJsSnippets')
  * @typedef {import('./wrappers/EyesJsExecutor')} EyesJsExecutor
  * @typedef {import('./wrappers/EyesWrappedElement')} EyesWrappedElement
  * @typedef {import('./wrappers/EyesWrappedElement').UnwrappedElement} UnwrappedElement
+ * @typedef {import('./positioning/PositionProvider')} PositionProvider
+ * @typedef {import('./UniversalSelector')} UniversalSelector
  */
 
 /**

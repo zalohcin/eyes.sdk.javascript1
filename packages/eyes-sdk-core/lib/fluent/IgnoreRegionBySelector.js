@@ -5,7 +5,7 @@ const {GetRegion} = require('./GetRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../wrappers/EyesWrappedElement').UniversalSelector} UniversalSelector
+ * @typedef {import('../UniversalSelector')} UniversalSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  */
 
