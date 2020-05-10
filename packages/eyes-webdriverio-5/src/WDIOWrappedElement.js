@@ -2,10 +2,10 @@ const {
   TypeUtils,
   Region,
   FrameChain,
+  UniversalSelector,
   EyesWrappedElement,
   EyesUtils,
 } = require('@applitools/eyes-sdk-core')
-const By = require('./LegacySelector')
 const LegacyWrappedElement = require('./LegacyWrappedElement')
 
 const WEB_ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
@@ -50,11 +50,7 @@ class WDIOWrappedElement extends LegacyWrappedElement(EyesWrappedElement) {
   }
 
   static isSelector(selector) {
-    return (
-      TypeUtils.isString(selector) ||
-      TypeUtils.has(selector, ['using', 'value']) ||
-      selector instanceof By
-    )
+    return TypeUtils.isString(selector) || selector instanceof UniversalSelector
   }
 
   static equals(leftElement, rightElement) {

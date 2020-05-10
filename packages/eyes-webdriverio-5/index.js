@@ -1,16 +1,14 @@
 const core = require('@applitools/eyes-sdk-core')
 const WDIOCheckSettings = require('./src/WDIOCheckSettings')
-const LegacySelector = require('./src/LegacySelector')
 const {WDIOEyesClassic, WDIOEyesVisualGrid, WDIOEyesFactory} = require('./src/Eyes')
 
 exports.Eyes = WDIOEyesFactory
 exports.EyesWDIO = WDIOEyesClassic
 exports.EyesVisualGrid = WDIOEyesVisualGrid
-exports.By = LegacySelector
 exports.Target = WDIOCheckSettings
 exports.WebdriverioCheckSettings = WDIOCheckSettings
 
-// eyes-common
+exports.By = core.UniversalSelector
 exports.AccessibilityLevel = core.AccessibilityLevel
 exports.AccessibilityMatchSettings = core.AccessibilityMatchSettings
 exports.AccessibilityRegionType = core.AccessibilityRegionType
@@ -46,7 +44,6 @@ exports.Logger = core.Logger
 exports.LogHandler = core.LogHandler
 exports.NullLogHandler = core.NullLogHandler
 
-// eyes-sdk-core
 exports.ImageProvider = core.ImageProvider
 exports.FullPageCaptureAlgorithm = core.FullPageCaptureAlgorithm
 exports.EyesSimpleScreenshotFactory = core.EyesSimpleScreenshotFactory
