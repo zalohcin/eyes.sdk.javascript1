@@ -8,19 +8,23 @@ class WDIOElementFinder extends EyesElementFinder {
     this._driver = driver
   }
 
-  async findElement(locator, parentElement) {
-    const selector = locator.value || locator
+  async findElement(selector, parentElement) {
     const {value: element} = parentElement
-      ? await this._driver.elementIdElement(WDIOWrappedElement.elementId(parentElement), selector)
-      : await this._driver.element(selector)
+      ? await this._driver.unwrapped.elementIdElement(
+          WDIOWrappedElement.elementId(parentElement),
+          selector.toString(),
+        )
+      : await this._driver.unwrapped.element(selector.toString())
     return element ? new WDIOWrappedElement(this._logger, this._driver, element, selector) : null
   }
 
-  async findElements(locator, parentElement) {
-    const selector = locator.value || locator
+  async findElements(selector, parentElement) {
     const {value: elements} = parentElement
-      ? await this._driver.elementIdElements(WDIOWrappedElement.elementId(parentElement), selector)
-      : await this._driver.elements(selector)
+      ? await this._driver.unwrapped.elementIdElements(
+          WDIOWrappedElement.elementId(parentElement),
+          selector.toString(),
+        )
+      : await this._driver.unwrapped.elements(selector.toString())
     return elements.map(
       element => new WDIOWrappedElement(this._logger, this._driver, element, selector),
     )

@@ -214,7 +214,7 @@ class EyesVisualGrid extends EyesCore {
   async _checkPrepare(checkSettings, operation) {
     const originalFrameChain = this._context.frameChain
     const appendFrameChain = checkSettings.frameChain
-    await this._context.frames(appendFrameChain)
+    await this._context.framesAppend(appendFrameChain)
     try {
       return await operation()
     } finally {

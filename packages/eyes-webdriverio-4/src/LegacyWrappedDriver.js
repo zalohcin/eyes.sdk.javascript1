@@ -1,4 +1,4 @@
-const By = require('./LegacySelector')
+const {UniversalSelector} = require('@applitools/eyes-sdk-core')
 
 function LegacyAPIDriver(EyesWrappedDriver) {
   return class EyesWebDriver extends EyesWrappedDriver {
@@ -15,22 +15,22 @@ function LegacyAPIDriver(EyesWrappedDriver) {
       return this._finder.findElements(locator)
     }
     async findElementById(id) {
-      return this.findElement(By.id(id))
+      return this.findElement(UniversalSelector.id(id))
     }
     async findElementsById(id) {
-      return this.findElements(By.id(id))
+      return this.findElements(UniversalSelector.id(id))
     }
     async findElementByName(name) {
-      return this.findElement(By.name(name))
+      return this.findElement(UniversalSelector.name(name))
     }
     async findElementsByName(name) {
-      return this.findElements(By.name(name))
+      return this.findElements(UniversalSelector.name(name))
     }
     async findElementByCssSelector(cssSelector) {
-      return this.findElement(By.cssSelector(cssSelector))
+      return this.findElement(UniversalSelector.cssSelector(cssSelector))
     }
     async findElementsByCssSelector(cssSelector) {
-      return this.findElements(By.cssSelector(cssSelector))
+      return this.findElements(UniversalSelector.cssSelector(cssSelector))
     }
     async findElementByClassName(_className) {
       throw new TypeError('findElementByClassName method is not implemented!')
@@ -51,16 +51,16 @@ function LegacyAPIDriver(EyesWrappedDriver) {
       throw new TypeError('findElementsByPartialLinkText method is not implemented!')
     }
     async findElementByTagName(tagName) {
-      return this.findElement(By.tagName(tagName))
+      return this.findElement(UniversalSelector.tagName(tagName))
     }
     async findElementsByTagName(tagName) {
-      return this.findElements(By.tagName(tagName))
+      return this.findElements(UniversalSelector.tagName(tagName))
     }
     async findElementByXPath(xpath) {
-      return this.findElement(By.xPath(xpath))
+      return this.findElement(UniversalSelector.xPath(xpath))
     }
     async findElementsByXPath(xpath) {
-      return this.findElements(By.xPath(xpath))
+      return this.findElements(UniversalSelector.xPath(xpath))
     }
     getFrameChain() {
       return this._context._frameChain

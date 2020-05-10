@@ -6,9 +6,9 @@ const {
   CoordinatesType,
   EyesWrappedElement,
   FrameChain,
+  UniversalSelector,
   EyesUtils,
 } = require('@applitools/eyes-sdk-core')
-const By = require('./LegacySelector')
 const LegacyWrappedElement = require('./LegacyWrappedElement')
 
 const WEB_ELEMENT_ID = 'element-6066-11e4-a52e-4f735466cecf'
@@ -61,11 +61,7 @@ class WDIOWrappedElement extends LegacyWrappedElement(EyesWrappedElement) {
   }
 
   static isSelector(selector) {
-    return (
-      TypeUtils.isString(selector) ||
-      TypeUtils.has(selector, ['using', 'value']) ||
-      selector instanceof By
-    )
+    return TypeUtils.isString(selector) || selector instanceof UniversalSelector
   }
 
   static equals(leftElement, rightElement) {
@@ -117,7 +113,9 @@ class WDIOWrappedElement extends LegacyWrappedElement(EyesWrappedElement) {
   }
 
   async getRect() {
-    const {value: rect} = await this.withRefresh(() => this._driver.elementIdRect(this.elementId))
+    const {value: rect} = await this.withRefresh(() =>
+      this._driver.unwrapped.elementIdRect(this.elementId),
+    )
     const left = rect && rect.x ? Math.ceil(rect.x) : 0
     const top = rect && rect.y ? Math.ceil(rect.y) : 0
     const width = rect && rect.width ? Math.ceil(rect.width) : 0
@@ -125,7 +123,7 @@ class WDIOWrappedElement extends LegacyWrappedElement(EyesWrappedElement) {
     return new Region(left, top, width, height)
   }
 
-  async getContentRect() {
+  async getClientRect() {
     const [
       location,
       [borderLeftWidth, borderTopWidth],
@@ -144,25 +142,10 @@ class WDIOWrappedElement extends LegacyWrappedElement(EyesWrappedElement) {
     )
   }
 
-  async getBounds() {
-    const {value: rect} = await this.withRefresh(() => this._driver.elementIdRect(this.elementId))
-    let left = rect && rect.x ? Math.ceil(rect.x) : 0
-    let top = rect && rect.y ? Math.ceil(rect.y) : 0
-    let width = rect && rect.width ? Math.ceil(rect.width) : 0
-    let height = rect && rect.height ? Math.ceil(rect.height) : 0
-    if (left < 0) {
-      width = Math.max(0, width + left)
-      left = 0
-    }
-    if (top < 0) {
-      height = Math.max(0, height + top)
-      top = 0
-    }
-    return new Region(left, top, width, height, CoordinatesType.CONTEXT_RELATIVE)
-  }
-
   async getSize() {
-    const {value: size} = await this.withRefresh(() => this._driver.elementIdSize(this.elementId))
+    const {value: size} = await this.withRefresh(() =>
+      this._driver.unwrapped.elementIdSize(this.elementId),
+    )
     const width = size && size.width ? Math.ceil(size.width) : 0
     const height = size && size.height ? Math.ceil(size.height) : 0
     return new RectangleSize(width, height)
@@ -170,7 +153,7 @@ class WDIOWrappedElement extends LegacyWrappedElement(EyesWrappedElement) {
 
   async getLocation() {
     const {value: location} = await this.withRefresh(() =>
-      this._driver.elementIdLocation(this.elementId),
+      this._driver.unwrapped.elementIdLocation(this.elementId),
     )
     const left = location && location.x ? Math.ceil(location.x) : 0
     const top = location && location.y ? Math.ceil(location.y) : 0
@@ -244,7 +227,7 @@ class WDIOWrappedElement extends LegacyWrappedElement(EyesWrappedElement) {
     if (!isSameFrameChain) {
       await this._driver.context.frames(this._frameChain)
     }
-    const {value: element} = await this._driver.element(this._selector)
+    const {value: element} = await this._driver.unwrapped.element(this._selector)
     if (element) {
       this._element = element
     }

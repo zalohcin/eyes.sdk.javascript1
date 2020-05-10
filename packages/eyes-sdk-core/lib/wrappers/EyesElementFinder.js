@@ -4,7 +4,7 @@
 /**
  * @typedef {import('./EyesWrappedElement')} EyesWrappedElement
  * @typedef {import('./EyesWrappedElement').UnwrappedElement} UnwrappedElement
- * @typedef {import('./EyesWrappedElement').UniversalSelector} UniversalSelector
+ * @typedef {import('../UniversalSelector')} UniversalSelector
  */
 
 /**

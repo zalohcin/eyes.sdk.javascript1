@@ -35,7 +35,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
 
   async frameDefault() {
     this._logger.verbose('WDIOBrowsingContext.frameDefault()')
-    const result = await this._driver.unwrapped.frame()
+    const result = await this._driver.unwrapped.frame(null)
     this._logger.verbose('Done! Switching to default content...')
     if (this._frameChain.size > 0) {
       this._frameChain.clear()
@@ -99,17 +99,6 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
     this._logger.verbose('Done switching into nested frames!')
   }
 
-  async framesDoScroll(frameChain) {
-    this._logger.verbose('WDIOBrowsingContext.framesDoScroll(frameChain)')
-    await this.frameDefault()
-    for (const frame of frameChain) {
-      this._logger.verbose('Scrolling by parent scroll position...')
-      await EyesUtils.scrollTo(this._logger, this._driver.executor, frame.location)
-      await this.frame(frame.element)
-    }
-    this._logger.verbose('Done switching into nested frames!')
-  }
-
   async framesRefresh() {
     let contextInfo = await EyesUtils.getCurrentContextInfo(this._logger, this._driver.executor)
     if (contextInfo.isRoot) {
@@ -119,7 +108,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
       const frameChain = this._frameChain.clone()
       const lastTrackedFrame = frameChain.current ? frameChain.current.element : null
       while (!contextInfo.isRoot) {
-        await this._driver.unwrapped.frameParent()
+        await this.frameParent()
         let frameElement
         if (contextInfo.selector) {
           frameElement = await this._driver.finder.findElement(contextInfo.selector)

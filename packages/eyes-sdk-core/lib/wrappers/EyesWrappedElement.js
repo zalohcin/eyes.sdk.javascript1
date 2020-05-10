@@ -6,17 +6,13 @@
  * @typedef {import('@applitools/eyes-common').Location} Location
  * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
  * @typedef {import('./EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('../UniversalSelector')} UniversalSelector
  */
 
 /**
  * The object for which which is compatible with concrete {@link EyesWrappedElement} implementation
  * @typedef {Object} UnwrappedElement
  * @property {?}
- *
- * The object which should be supported as a selector
- * @typedef {Object} UniversalSelector
- * @property {!string} UniversalSelector.using
- * @property {!string} UniversalSelector.value
  */
 
 /**
@@ -122,18 +118,10 @@ class EyesWrappedElement {
   }
 
   /**
-   * Returns element's content rect related to context
+   * Returns element client rect (element rect without borders) related to context
    * @return {Promise<Region>} rect of the element
    */
-  async getRect() {
-    throw new TypeError('The method is not implemented!')
-  }
-
-  /**
-   * Returns element bounds related to context
-   * @return {Promise<Region>} bounds of the element
-   */
-  async getBounds() {
+  async getClientRect() {
     throw new TypeError('The method is not implemented!')
   }
 

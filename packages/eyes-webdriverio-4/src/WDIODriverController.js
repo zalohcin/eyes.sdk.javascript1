@@ -1,7 +1,6 @@
 const {
   Location,
   RectangleSize,
-  Region,
   MutableImage,
   EyesDriverOperationError,
 } = require('@applitools/eyes-sdk-core')
@@ -12,57 +11,39 @@ class WDIODriverController {
     this._driver = driver
   }
 
-  async getWindowRect(handle) {
-    const [location, size] = await Promise.all([
-      this.getWindowLocation(handle),
-      this.getWindowSize(handle),
-    ])
-    return new Region(location, size)
-  }
-
-  async setWindowRect(rect, handle) {
-    if (rect instanceof Region) {
-      rect = Object.assign(rect.getLocation().toJSON(), rect.getSize().toJSON())
-    }
-    await Promise.all([
-      this.setWindowLocation(handle, {x: rect.x, y: rect.y}),
-      this.setWindowSize(handle, {width: rect.width, height: rect.height}),
-    ])
-  }
-
-  async getWindowLocation(handle) {
-    const {value: location} = await this._driver.windowHandlePosition(handle)
+  async getWindowLocation() {
+    const {value: location} = await this._driver.unwrapped.windowHandlePosition()
     return new Location(location)
   }
 
-  async setWindowLocation(location, handle) {
+  async setWindowLocation(location) {
     if (location instanceof Location) {
       location = location.toJSON()
     }
-    await this._driver.windowHandlePosition(handle, location)
+    await this._driver.unwrapped.windowHandlePosition(location)
   }
 
-  async getWindowSize(handle) {
-    const {value: size} = await this._driver.windowHandleSize(handle)
+  async getWindowSize() {
+    const {value: size} = await this._driver.unwrapped.windowHandleSize()
     return new RectangleSize(size)
   }
 
-  async setWindowSize(size, handle) {
+  async setWindowSize(size) {
     if (size instanceof RectangleSize) {
       size = size.toJSON()
     }
-    await this._driver.windowHandleSize(handle, size)
+    await this._driver.unwrapped.windowHandleSize(size)
   }
 
   async takeScreenshot() {
-    const screenshot64 = await this._driver.saveScreenshot()
+    const screenshot64 = await this._driver.unwrapped.saveScreenshot()
     const image = new MutableImage(screenshot64)
     return image
   }
 
   async isLandscapeOrientation() {
     try {
-      const orientation = await this._driver.getOrientation()
+      const orientation = await this._driver.unwrapped.getOrientation()
       return orientation === 'landscape'
     } catch (err) {
       throw new EyesDriverOperationError('Failed to get orientation!', err)
@@ -70,16 +51,16 @@ class WDIODriverController {
   }
 
   async isMobileDevice() {
-    return this._driver.isMobile
+    return this._driver.unwrapped.isMobile
   }
 
   async getMobileOS() {
-    if (this._driver.isMobile) {
+    if (this._driver.unwrapped.isMobile) {
       let os = ''
-      if (this._driver.isAndroid) {
+      if (this._driver.unwrapped.isAndroid) {
         this._logger.log('Android detected.')
         os = 'Android'
-      } else if (this._driver.isIOS) {
+      } else if (this._driver.unwrapped.isIOS) {
         this._logger.log('iOS detected.')
         os = 'iOS'
       } else {
@@ -88,10 +69,10 @@ class WDIODriverController {
 
       if (os) {
         let version
-        if (this._driver.capabilities) {
-          version = this._driver.capabilities.platformVersion
-        } else if (this._driver.desiredCapabilities) {
-          version = this._driver.desiredCapabilities.platformVersion
+        if (this._driver.unwrapped.capabilities) {
+          version = this._driver.unwrapped.capabilities.platformVersion
+        } else if (this._driver.unwrapped.desiredCapabilities) {
+          version = this._driver.unwrapped.desiredCapabilities.platformVersion
         }
         if (version) {
           os += ` ${version}`
@@ -105,11 +86,11 @@ class WDIODriverController {
   }
 
   async getAUTSessionId() {
-    return this._driver.requestHandler.sessionID || this._driver.sessionId
+    return this._driver.unwrapped.requestHandler.sessionID || this._driver.unwrapped.sessionId
   }
 
   async getTitle() {
-    return this._driver.getTitle()
+    return this._driver.unwrapped.getTitle()
   }
 
   async getUserAgent() {
@@ -125,7 +106,7 @@ class WDIODriverController {
 
   async getSource() {
     if (!(await this.isMobileDevice())) {
-      return this._driver.getUrl()
+      return this._driver.unwrapped.getUrl()
     } else {
       return null
     }

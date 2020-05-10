@@ -14,7 +14,7 @@ const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
 /**
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
  * @typedef {import('../wrappers/EyesWrappedElement').UnwrappedElement} UnwrappedElement
- * @typedef {import('../wrappers/EyesWrappedElement').UniversalSelector} UniversalSelector
+ * @typedef {import('../UniversalSelector')} UniversalSelector
  * @typedef {import('../frames/Frame')} Frame
  * @typedef {import('../frames/Frame').FrameReference} FrameReference
  */

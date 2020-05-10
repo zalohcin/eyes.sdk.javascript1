@@ -2,6 +2,7 @@
 
 const {ArgumentGuard, TypeUtils, Location, RectangleSize} = require('@applitools/eyes-common')
 const {EyesWrappedElement} = require('../wrappers/EyesWrappedElement')
+const UniversalSelector = require('../UniversalSelector')
 const EyesUtils = require('../EyesUtils')
 
 /**
@@ -10,7 +11,6 @@ const EyesUtils = require('../EyesUtils')
  * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
  * @typedef {import('../wrappers/EyesWrappedElement').UnwrappedElement} UnwrappedElement
- * @typedef {import('../wrappers/EyesWrappedElement').UniversalSelector} UniversalSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  */
 
@@ -191,16 +191,10 @@ class Frame {
       this._element = elements[this._reference]
     } else if (TypeUtils.isString(this._reference)) {
       this._logger.verbose('Getting frames by name...')
-      let element = await this._driver.finder.findElement({
-        using: 'css selector',
-        value: `[name="${this._reference}"]`,
-      })
+      let element = await this._driver.finder.findElement(UniversalSelector.name(this._reference))
       if (!element) {
         this._logger.verbose('No frames Found! Trying by id...')
-        element = await this._driver.finder.findElement({
-          using: 'css selector',
-          value: `#${this._reference}`,
-        })
+        element = await this._driver.finder.findElement(UniversalSelector.id(this._reference))
         if (!element) {
           throw new TypeError(`No frame with name or id '${this._reference}' exists!`)
         }

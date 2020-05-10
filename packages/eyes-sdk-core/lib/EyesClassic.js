@@ -454,7 +454,7 @@ class EyesClassic extends EyesCore {
       this._logger,
       this._driver,
       this._positionProviderHandler.get(),
-      await targetElement.getBounds(),
+      await targetElement.getRect(),
     )
 
     const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
@@ -492,7 +492,7 @@ class EyesClassic extends EyesCore {
       await targetElement.hideScrollbars()
     }
 
-    const region = await targetElement.getContentRect()
+    const region = await targetElement.getClientRect()
     await EyesUtils.ensureRegionVisible(
       this._logger,
       this._driver,
