@@ -32,6 +32,11 @@ const args = yargs
     'yarn render http://example.org --ignore-regions "#ignore-this,.dynamic-element" --fully',
     'classic full page screenshot, 2 ignore selectors',
   )
+  .option('api-key', {
+    describe: 'Applitools API key',
+    type: 'string',
+    default: process.env.APPLITOOLS_API_KEY,
+  })
   .option('vg', {
     type: 'boolean',
     describe: 'when specified, use visual grid instead of classic runner',
@@ -134,6 +139,16 @@ const args = yargs
     type: 'string',
     default: 'selenium render',
   })
+  .option('app-name', {
+    describe: 'app name for baseline',
+    type: 'string',
+    default: 'selenium render',
+  })
+  .option('display-name', {
+    describe:
+      "display name for test. This is what shows up in the dashboard as the test name, but doesn't affect the baseline.",
+    type: 'string',
+  })
   .help().argv
 
 const [url] = args._
@@ -185,6 +200,9 @@ if (!url) {
     configuration.setBaselineEnvName(args.envName) // determines the baseline
     configuration.setEnvironmentName(args.envName) // shows up in the Environment column in the dasboard
   }
+  if (args.displayName) {
+    configuration.setDisplayName(args.displayName)
+  }
   eyes.setConfiguration(configuration)
 
   const {logger, logFilePath} = initLog(eyes, new URL(url).hostname.replace(/\./g, '-'))
@@ -195,7 +213,7 @@ if (!url) {
   await driver.get(url)
 
   try {
-    await eyes.open(driver, 'selenium render', url)
+    await eyes.open(driver, args.appName, url)
 
     let target = Target.window()
       .fully(args.fully)
