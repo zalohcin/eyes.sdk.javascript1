@@ -1,7 +1,6 @@
 const {
   Location,
   RectangleSize,
-  Region,
   MutableImage,
   EyesDriverOperationError,
 } = require('@applitools/eyes-sdk-core')
@@ -12,46 +11,28 @@ class WDIODriverController {
     this._driver = driver
   }
 
-  async getWindowRect(handle) {
-    const [location, size] = await Promise.all([
-      this.getWindowLocation(handle),
-      this.getWindowSize(handle),
-    ])
-    return new Region(location, size)
-  }
-
-  async setWindowRect(rect, handle) {
-    if (rect instanceof Region) {
-      rect = Object.assign(rect.getLocation().toJSON(), rect.getSize().toJSON())
-    }
-    await Promise.all([
-      this.setWindowLocation(handle, {x: rect.x, y: rect.y}),
-      this.setWindowSize(handle, {width: rect.width, height: rect.height}),
-    ])
-  }
-
-  async getWindowLocation(handle) {
-    const {value: location} = await this._driver.unwrapped.windowHandlePosition(handle)
+  async getWindowLocation() {
+    const {value: location} = await this._driver.unwrapped.windowHandlePosition()
     return new Location(location)
   }
 
-  async setWindowLocation(location, handle) {
+  async setWindowLocation(location) {
     if (location instanceof Location) {
       location = location.toJSON()
     }
-    await this._driver.unwrapped.windowHandlePosition(handle, location)
+    await this._driver.unwrapped.windowHandlePosition(location)
   }
 
-  async getWindowSize(handle) {
-    const {value: size} = await this._driver.unwrapped.windowHandleSize(handle)
+  async getWindowSize() {
+    const {value: size} = await this._driver.unwrapped.windowHandleSize()
     return new RectangleSize(size)
   }
 
-  async setWindowSize(size, handle) {
+  async setWindowSize(size) {
     if (size instanceof RectangleSize) {
       size = size.toJSON()
     }
-    await this._driver.unwrapped.windowHandleSize(handle, size)
+    await this._driver.unwrapped.windowHandleSize(size)
   }
 
   async takeScreenshot() {

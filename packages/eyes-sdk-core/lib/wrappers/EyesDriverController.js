@@ -5,6 +5,7 @@
  * @typedef {import('@applitools/eyes-common').Location} Location
  * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
  * @typedef {import('@applitools/eyes-common').Region} Region
+ * @typedef {import('@applitools/eyes-common').MutableImage} MutableImage
  */
 
 /**
@@ -13,65 +14,42 @@
  */
 class EyesDriverController {
   /**
-   * Get window size and location
-   * @param {string} [handle] - window handle, if not specified use current window
-   * @return {Promise<Region>} windows size and location
-   */
-  async getWindowRect(handle) {
-    throw new TypeError('The method is not implemented!')
-  }
-
-  /**
-   * Set window size and location
-   * @param {Region} rect - required windows size and location
-   * @param {string} [handle] - window handle, if not specified use current window
-   * @returns {Promise<void>}
-   */
-  async setWindowRect(rect, handle) {
-    throw new TypeError('The method is not implemented!')
-  }
-
-  /**
    * Get window location
-   * @param {string} [handle] - window handle, if not specified use current window
    * @return {Promise<Location>} windows location
    */
-  async getWindowLocation(handle) {
+  async getWindowLocation() {
     throw new TypeError('The method is not implemented!')
   }
 
   /**
    * Set window location
    * @param {Location} location - required  windows location
-   * @param {string} [handle] - window handle, if not specified use current window
    * @returns {Promise<void>}
    */
-  async setWindowLocation(location, handle) {
+  async setWindowLocation(location) {
     throw new TypeError('The method is not implemented!')
   }
 
   /**
    * Get window size
-   * @param {string} [handle] - window handle, if not specified use current window
-   * @return {Promise<Region>} windows size
+   * @return {Promise<RectangleSize>} windows size
    */
-  async getWindowSize(handle) {
+  async getWindowSize() {
     throw new TypeError('The method is not implemented!')
   }
 
   /**
    * Set window size
-   * @param {RectangleSize} rect - required windows size
-   * @param {string} [handle] - window handle, if not specified use current window
+   * @param {RectangleSize} size - required windows size
    * @returns {Promise<void>}
    */
-  async setWindowSize(size, handle) {
+  async setWindowSize(size) {
     throw new TypeError('The method is not implemented!')
   }
 
   /**
    * Take screenshot of the current viewport
-   * @return {Promise<Buffer>} image of screenshot
+   * @return {Promise<MutableImage>} image of screenshot
    */
   async takeScreenshot() {
     throw new TypeError('The method is not implemented!')
