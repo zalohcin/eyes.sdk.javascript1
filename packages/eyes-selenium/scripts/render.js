@@ -13,7 +13,6 @@ const {
   EyesSeleniumUtils,
   DeviceName,
   ScreenOrientation,
-  // BatchInfo,
   // FileDebugScreenshotsProvider,
 } = require('../index')
 const path = require('path')
@@ -149,6 +148,14 @@ const args = yargs
       "display name for test. This is what shows up in the dashboard as the test name, but doesn't affect the baseline.",
     type: 'string',
   })
+  .option('batch-id', {
+    describe: 'batch id',
+    type: 'string',
+  })
+  .option('batch-name', {
+    describe: 'batch name',
+    type: 'string',
+  })
   .help().argv
 
 const [url] = args._
@@ -166,18 +173,20 @@ if (!url) {
       .join('\n  '),
   )
 
+  const isMobileEmulation = args.deviceName && !args.vg
+
   if (args.webdriverProxy) {
     await chromedriver.start(['--whitelisted-ips=127.0.0.1'], true)
   }
 
-  const driver = await buildDriver(args)
+  const driver = await buildDriver({...args, isMobileEmulation})
 
   const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
   const eyes = new Eyes(runner)
   const configuration = new Configuration({
     stitchMode: args.css ? StitchMode.CSS : StitchMode.SCROLL,
   })
-  if (args.viewportSize) {
+  if (args.viewportSize && !isMobileEmulation) {
     const [width, height] = args.viewportSize.split('x').map(Number)
     configuration.setViewportSize({width, height})
   }
@@ -202,6 +211,12 @@ if (!url) {
   }
   if (args.displayName) {
     configuration.setDisplayName(args.displayName)
+  }
+  if (args.batchId || args.batchName) {
+    configuration.setBatch({id: args.batchId, name: args.batchName})
+  }
+  if (args.batchId) {
+    configuration.setDontCloseBatches(true)
   }
   eyes.setConfiguration(configuration)
 
@@ -265,11 +280,19 @@ if (!url) {
   }
 })()
 
-function buildDriver({headless, webdriverProxy, driverCapabilities, driverServer} = {}) {
+function buildDriver({
+  headless,
+  webdriverProxy,
+  driverCapabilities,
+  driverServer,
+  isMobileEmulation,
+  deviceName,
+} = {}) {
   const capabilities = {
     browserName: 'chrome',
     'goog:chromeOptions': {
       args: headless ? ['--headless'] : [],
+      mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
     },
     username: process.env.SAUCE_USERNAME,
     accesskey: process.env.SAUCE_ACCESS_KEY,
