@@ -45,6 +45,8 @@ function createRenderRequests({
         width,
         height,
       })
+      const filledBrowserName = iosDeviceInfo && !name ? 'safari' : name
+      const filledPlatform = iosDeviceInfo && !platform ? 'ios' : platform
 
       return new RenderRequest({
         webhook: renderInfo.getResultsUrl(),
@@ -61,11 +63,11 @@ function createRenderRequests({
           emulationInfo,
           iosDeviceInfo,
         }),
-        browserName: name,
+        browserName: filledBrowserName,
         scriptHooks,
         selectorsToFindRegionsFor,
         sendDom,
-        platform,
+        platform: filledPlatform,
       })
     },
   )

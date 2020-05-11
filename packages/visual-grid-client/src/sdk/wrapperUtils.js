@@ -1,6 +1,7 @@
 'use strict'
 const EyesWrapper = require('./EyesWrapper')
 const {RectangleSize, TypeUtils} = require('@applitools/eyes-sdk-core')
+const getDeviceInfoFromBrowserConfig = require('./getDeviceInfoFromBrowserConfig')
 
 function initWrappers({count, apiKey, logHandler, getBatchInfoWithCache}) {
   return Array.from(
@@ -60,7 +61,7 @@ function configureWrappers({
     const wrapper = wrappers[i]
     const browser = browsers[i]
 
-    const deviceInfo = browser.deviceName ? `${browser.deviceName} (Chrome emulation)` : 'Desktop' // TODO handle iosDeviceInfo
+    const deviceInfo = getDeviceInfoFromBrowserConfig(browser)
     wrapper.setDeviceInfo(deviceInfo)
 
     validateAndAddProperties(wrapper, properties)

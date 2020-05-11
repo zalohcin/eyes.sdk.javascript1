@@ -6,6 +6,23 @@ const createRenderRequests = require('../../../src/sdk/createRenderRequests')
 const createRGridDom = require('../../../src/sdk/createRGridDom')
 
 describe('createRenderRequests', () => {
+  let url, renderInfo, dom, rGridDom
+
+  beforeEach(() => {
+    url = 'url'
+    renderInfo = {
+      getResultsUrl: () => 'resultsUrl',
+      getStitchingServiceUrl: () => 'stitchingServiceUrl',
+    }
+    const cdt = 'cdt'
+    dom = {
+      contentType: 'x-applitools-html/cdt',
+      hash: getSha256Hash(JSON.stringify({resources: {}, domNodes: cdt})),
+      hashFormat: 'sha256',
+    }
+    rGridDom = createRGridDom({resources: {}, cdt})
+  })
+
   it('works', () => {
     const r1 = {getUrl: () => 'url1', getHashAsObject: () => 'hash1'}
     const r2 = {getUrl: () => 'url2', getHashAsObject: () => 'hash2'}
@@ -21,11 +38,7 @@ describe('createRenderRequests', () => {
     const region = {left: 1, top: 2, width: 3, height: 4}
     const scriptHooks = 'scriptHooks'
     const sendDom = 'sendDom'
-    const platform = 'platform'
-    const renderInfo = {
-      getResultsUrl: () => 'resultsUrl',
-      getStitchingServiceUrl: () => 'stitchingServiceUrl',
-    }
+
     const renderRequests = createRenderRequests({
       url,
       resources,
@@ -37,7 +50,6 @@ describe('createRenderRequests', () => {
       region,
       scriptHooks,
       sendDom,
-      platform,
       noOffsetSelectors: [],
       offsetSelectors: [],
     })
@@ -59,7 +71,6 @@ describe('createRenderRequests', () => {
         browser: {name: 'b1'},
         scriptHooks,
         sendDom,
-        platform: {name: platform},
         renderInfo: {
           width: 1,
           height: 2,
@@ -77,7 +88,6 @@ describe('createRenderRequests', () => {
         browser: {name: 'b2'},
         scriptHooks,
         sendDom,
-        platform: {name: platform},
         renderInfo: {
           width: 3,
           height: 4,
@@ -90,31 +100,18 @@ describe('createRenderRequests', () => {
   })
 
   it('handles emulation info with deviceName', () => {
-    const url = 'url'
-    const cdt = 'cdt'
-    const resources = []
     const deviceName = 'deviceName'
     const screenOrientation = 'screenOrientation'
     const browsers = [{deviceName, screenOrientation}]
-    const renderInfo = {
-      getResultsUrl: () => 'resultsUrl',
-      getStitchingServiceUrl: () => 'stitchingServiceUrl',
-    }
     const renderRequests = createRenderRequests({
       url,
-      resources,
-      dom: createRGridDom({resources: {}, cdt}),
+      resources: [],
+      dom: rGridDom,
       browsers,
       renderInfo,
       noOffsetSelectors: [],
       offsetSelectors: [],
     })
-
-    const dom = {
-      contentType: 'x-applitools-html/cdt',
-      hash: getSha256Hash(JSON.stringify({resources: {}, domNodes: 'cdt'})),
-      hashFormat: 'sha256',
-    }
 
     expect(renderRequests.map(r => r.toJSON())).to.eql([
       {
@@ -136,9 +133,6 @@ describe('createRenderRequests', () => {
   })
 
   it('handles emulation info with device', () => {
-    const url = 'url'
-    const cdt = 'cdt'
-    const resources = []
     const browsers = [{width: 1, height: 2, deviceScaleFactor: 3}]
     const renderInfo = {
       getResultsUrl: () => 'resultsUrl',
@@ -146,19 +140,13 @@ describe('createRenderRequests', () => {
     }
     const renderRequests = createRenderRequests({
       url,
-      resources,
-      dom: createRGridDom({resources: {}, cdt}),
+      resources: [],
+      dom: rGridDom,
       browsers,
       renderInfo,
       noOffsetSelectors: [],
       offsetSelectors: [],
     })
-
-    const dom = {
-      contentType: 'x-applitools-html/cdt',
-      hash: getSha256Hash(JSON.stringify({resources: {}, domNodes: 'cdt'})),
-      hashFormat: 'sha256',
-    }
 
     expect(renderRequests.map(r => r.toJSON())).to.eql([
       {
@@ -186,14 +174,7 @@ describe('createRenderRequests', () => {
   })
 
   it('handles ignore, layout, strict, content, accessibility and floating regions', () => {
-    const url = 'url'
-    const cdt = ''
-    const resources = []
     const browsers = [{width: 1, height: 2}]
-    const renderInfo = {
-      getResultsUrl: () => 'resultsUrl',
-      getStitchingServiceUrl: () => 'stitchingServiceUrl',
-    }
     const ignore = ['kuku', {type: 'css', selector: 'bla'}]
     const layout = [{type: 'css', selector: 'bla2'}, 'kuku2']
     const strict = ['kuku3', {type: 'css', selector: 'bla3'}, {type: 'css', selector: 'bla4'}]
@@ -206,19 +187,13 @@ describe('createRenderRequests', () => {
     const floating = [{some: 'thing'}, {type: 'css', selector: 'sel'}]
     const renderRequests = createRenderRequests({
       url,
-      resources,
-      dom: createRGridDom({resources: {}, cdt}),
+      resources: [],
+      dom: rGridDom,
       browsers,
       renderInfo,
       noOffsetSelectors: [ignore, layout, strict, content, accessibility],
       offsetSelectors: [floating],
     })
-
-    const dom = {
-      contentType: 'x-applitools-html/cdt',
-      hash: getSha256Hash(JSON.stringify({resources: {}, domNodes: ''})),
-      hashFormat: 'sha256',
-    }
 
     expect(renderRequests.map(r => r.toJSON())).to.eql([
       {
@@ -245,6 +220,42 @@ describe('createRenderRequests', () => {
           {type: 'css', selector: 'bla6'},
           {type: 'css', selector: 'sel'},
         ],
+      },
+    ])
+  })
+
+  it('handles iosDeviceInfo', () => {
+    const iosDeviceInfo = {
+      name: 'ios device',
+      version: 'ios version',
+      screenOrientation: 'ios screen orientation',
+    }
+    const browsers = [{iosDeviceInfo}]
+    const renderRequests = createRenderRequests({
+      url,
+      resources: [],
+      dom: rGridDom,
+      browsers,
+      renderInfo,
+    })
+
+    expect(renderRequests.map(r => r.toJSON())).to.eql([
+      {
+        webhook: 'resultsUrl',
+        stitchingService: 'stitchingServiceUrl',
+        url,
+        dom,
+        resources: {},
+        browser: {name: 'safari'},
+        platform: {name: 'ios'},
+        renderInfo: {
+          iosDeviceInfo,
+          region: undefined,
+          selector: undefined,
+          sizeMode: undefined,
+          width: undefined,
+          height: undefined,
+        },
       },
     ])
   })

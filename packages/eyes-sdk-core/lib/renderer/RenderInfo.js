@@ -4,6 +4,10 @@ const {GeneralUtils, Region} = require('@applitools/eyes-common')
 
 const {EmulationInfo} = require('./EmulationInfo')
 
+/**
+ * @typedef {{name: IosDeviceName, version: IosVersion, screenOrientation: IosScreenOrientation}} IosDeviceInfo
+ */
+
 class RenderInfo {
   /**
    * @param {number} width
@@ -12,6 +16,7 @@ class RenderInfo {
    * @param {string} selector
    * @param {Region|object} region
    * @param {EmulationInfo|object} emulationInfo
+   * @param {IosDeviceInfo} iosDeviceInfo
    * @param {object} iosDeviceInfo
    */
   constructor({width, height, sizeMode, selector, region, emulationInfo, iosDeviceInfo} = {}) {
