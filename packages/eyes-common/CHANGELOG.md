@@ -2,12 +2,13 @@
 
 ## Unreleased
 
+- added Galaxy S10 Plus to device emulation  
 
 ## 3.23.0 - 2020/5/11
 
 - add iosDeviceInfo related enums
 
-  ## 3.22.2 - 2020/5/11
+## 3.22.2 - 2020/5/11
 
 - fix device emulation names  
 

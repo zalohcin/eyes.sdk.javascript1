@@ -16,6 +16,7 @@ const DeviceName = {
   Galaxy_Note_8: 'Galaxy Note 8',
   Galaxy_Note_9: 'Galaxy Note 9',
   Galaxy_S10: 'Galaxy S10',
+  Galaxy_S10_Plus: 'Galaxy S10 Plus',
   Galaxy_S3: 'Galaxy S3',
   Galaxy_S5: 'Galaxy S5',
   Galaxy_S8: 'Galaxy S8',

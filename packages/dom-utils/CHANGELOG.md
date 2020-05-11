@@ -1,6 +1,7 @@
 # Change Log
 
 ## Unreleased
+- updated to @applitools/eyes-common@3.22.2
 
 
 ## 4.7.15 - 2020/5/7
