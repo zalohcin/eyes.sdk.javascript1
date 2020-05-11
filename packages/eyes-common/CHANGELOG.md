@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 3.23.0 - 2020/5/11
+
 - add iosDeviceInfo related enums
 
   ## 3.22.2 - 2020/5/11
