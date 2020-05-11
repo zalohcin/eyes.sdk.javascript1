@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add iosDeviceInfo support
 
 ## 13.7.7 - 2020/5/7
 
