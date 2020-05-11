@@ -1,10 +1,9 @@
 # Change Log
 
 ## Unreleased
-- updated to @applitools/eyes-sdk-core@10.0.2
 
+- updated to @applitools/eyes-sdk-core@10.0.2
 - add iosDeviceInfo support
-- updated to @applitools/eyes-sdk-core@10.1.1
 
 ## 13.7.7 - 2020/5/7
 
