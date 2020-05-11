@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+  ## 3.23.1 - 2020/5/11
+
 - added Galaxy S10 Plus to device emulation  
 
 ## 3.23.0 - 2020/5/11
