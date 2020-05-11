@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fix device emulation names  
 
 ## 3.22.1 - 2020/4/26
 
