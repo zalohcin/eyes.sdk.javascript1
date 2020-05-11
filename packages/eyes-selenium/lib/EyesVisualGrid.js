@@ -1,7 +1,6 @@
 'use strict'
 
 const {makeVisualGridClient, takeDomSnapshot} = require('@applitools/visual-grid-client')
-
 const {
   ArgumentGuard,
   TypeUtils,
@@ -10,7 +9,6 @@ const {
   BrowserType,
   CorsIframeHandle,
   CorsIframeHandler,
-  IgnoreRegionByRectangle,
   VisualGridRunner,
 } = require('@applitools/eyes-sdk-core')
 
@@ -133,10 +131,12 @@ class EyesVisualGrid extends Eyes {
         if (this._runner) {
           this._runner._allTestResult.push(...results)
         }
-        if (throwEx && isErrorCaught) {
-          throw TypeUtils.isArray(results) ? results[0] : results
+        if (isErrorCaught) {
+          const error = TypeUtils.isArray(results) ? results[0] : results
+          if (throwEx) throw error
+          else return error.getTestResults()
         }
-        return results
+        return TypeUtils.isArray(results) ? results[0] : results
       })
 
     return this._closePromise

@@ -1,4 +1,5 @@
 const {describe, it, before, after} = require('mocha');
+const flatten = require('lodash.flatten');
 const {expect} = require('chai');
 const testStorybook = require('../util/testStorybook');
 const path = require('path');
@@ -46,7 +47,7 @@ describe('eyesStorybook', () => {
     const globalConfig = require(configPath);
     const defaultConfig = {waitBeforeScreenshots: 50};
     const config = generateConfig({argv: {conf: configPath}, defaultConfig, externalConfigParams});
-    const results = await eyesStorybook({
+    let results = await eyesStorybook({
       config: {
         serverUrl,
         storybookUrl: 'http://localhost:9001',
@@ -109,6 +110,30 @@ describe('eyesStorybook', () => {
       ];
     });
 
+    const expectedTitles = [
+      'Button: with some emoji',
+      'Button: with text',
+      'Nested: story 1',
+      'Image: image',
+      'Nested/Component: story 1.1',
+      'Nested/Component: story 1.2',
+      'Button with-space yes-indeed: a yes-a b',
+      'Button with-space yes-indeed/nested with-space yes: b yes-a b',
+      'Button with-space yes-indeed/nested with-space yes/nested again-yes a: c yes-a b',
+      'SOME section|Nested/Component: story 1.1',
+      'SOME section|Nested/Component: story 1.2',
+      'Wow|one with-space yes-indeed/nested with-space yes/nested again-yes a: c yes-a b',
+      'RTL: local RTL config',
+      'RTL: should also do RTL',
+      'Responsive UI: Red/green',
+      'RTL: should also do RTL [rtl]',
+      'RTL: local RTL config [rtl]',
+      'Text: appears after a delay',
+      'Interaction: Popover',
+    ];
+
+    expect(results.map(e => e.title).sort()).to.eql(expectedTitles.sort());
+    results = flatten(results.map(r => r.resultsOrErr));
     expect(results.some(x => x instanceof Error)).to.be.false;
     expect(results).to.have.length(expectedResults.length);
 

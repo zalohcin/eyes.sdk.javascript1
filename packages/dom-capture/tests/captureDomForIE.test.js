@@ -8,14 +8,14 @@ const fs = require('fs');
 const path = require('path');
 const {Builder} = require('selenium-webdriver');
 const ie = require('selenium-webdriver/ie');
+const {ptimeoutWithError} = require('@applitools/functional-commons');
 const {version} = require('../package.json');
 
 function executeAsyncScript(driver, func) {
   const script = `
-var callback = arguments[arguments.length-1];
-(${func})().then(callback, function(err) {callback(err.message);});
-setTimeout(function(){},0);
-`;
+    const callback = arguments[arguments.length - 1];
+    (${func})().then(callback, function (err) { callback({ error: err && err.message || err })});
+  `;
   return driver.executeAsyncScript(script);
 }
 
@@ -33,33 +33,42 @@ describe('captureDom for IE', () => {
     fs.writeFileSync(path.resolve(__dirname, `fixtures/${name}`), content);
   }
 
-  async function buildDriver({browserName, serverIP}) {
-    const driver = new Builder()
-      .forBrowser(browserName)
-      .setIeOptions(new ie.Options().addArguments('-k', '-private'))
-      .usingServer(`http://${serverIP}:4444/wd/hub`)
-      .build();
+  async function openPageWith(browserName) {
+    const username = process.env.SAUCE_USERNAME;
+    const accessKey = process.env.SAUCE_ACCESS_KEY;
+    if (!username || !accessKey) {
+      throw new Error('Missing SAUCE_USERNAME and/or SAUCE_ACCESS_KEY!');
+    }
 
+    const sauceUrl = 'https://ondemand.saucelabs.com:443/wd/hub';
+    const sauceCaps = {
+      browserName,
+      username: process.env.SAUCE_USERNAME,
+      accessKey: process.env.SAUCE_ACCESS_KEY,
+    };
+
+    const driver = await new Builder()
+      .withCapabilities(sauceCaps)
+      .setIeOptions(new ie.Options().addArguments('-k', '-private'))
+      .usingServer(sauceUrl)
+      .build();
     await driver.manage().setTimeouts({script: 10000});
+    const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
     await driver
       .manage()
       .window()
-      .setRect({width: 800, height: 600});
+      .setRect({width: 1024, height: 768});
+
+    await driver.get(url);
     return driver;
   }
 
   it('works in Edge', async () => {
-    const driver = await buildDriver({
-      browserName: 'MicrosoftEdge',
-      serverIP: process.env.SELENIUM_VM_IP,
-    });
+    const driver = await openPageWith('MicrosoftEdge');
     try {
       const fixtureName = 'edge.dom.json';
-      const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
-      await driver.get(url);
-
-      const domStr = beautifyOutput(await captureDom(driver));
-
+      const result = await captureDom(driver);
+      const domStr = beautifyOutput(result);
       if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
         saveFixture(fixtureName, domStr);
       }
@@ -76,15 +85,9 @@ describe('captureDom for IE', () => {
   });
 
   it('works in IE 11', async () => {
-    const driver = await buildDriver({
-      browserName: 'internet explorer',
-      serverIP: process.env.SELENIUM_VM_IP,
-    });
+    const driver = await openPageWith('internet explorer');
     try {
       const fixtureName = 'ie11.dom.json';
-      const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
-      await driver.get(url);
-
       const domStr = beautifyOutput(await captureDom(driver));
 
       if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
@@ -102,43 +105,43 @@ describe('captureDom for IE', () => {
     }
   });
 
-  it('works in IE 10', async () => {
-    const driver = await buildDriver({
-      browserName: 'internet explorer',
-      serverIP: process.env.SELENIUM_VM_IP_IE10,
-    });
+  it('works in IE 10 with poll', async () => {
+    const driver = await openPageWith('internet explorer');
     try {
       const fixtureName = 'ie10.dom.json';
-      const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
-      await driver.get(url);
 
-      const domStr = beautifyOutput(await captureDom(driver));
+      async function doPoll() {
+        const result = await driver.executeScript(`return (${captureDomAndPoll})()`);
+        return JSON.parse(result);
+      }
+      let result = await doPoll();
+      expect(result).to.eql({status: 'WIP', value: null, error: null});
 
+      let resolve, reject;
+      const done = new Promise((res, rej) => ((resolve = res), (reject = rej)));
+      async function loopPoll() {
+        const {status, value, error} = await doPoll();
+        if (status === 'WIP') {
+          setTimeout(loopPoll, 500);
+        } else if (status === 'SUCCESS') {
+          resolve(value);
+        } else {
+          reject(error);
+        }
+      }
+
+      await loopPoll();
+      result = await ptimeoutWithError(done, 10000, 'timeout!');
+      const domStr = beautifyOutput(result);
       if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
         saveFixture(fixtureName, domStr);
       }
-
       const expected = loadFixture(fixtureName).replace(
         'DOM_CAPTURE_SCRIPT_VERSION_TO_BE_REPLACED',
         version,
       );
 
       expect(domStr).to.eql(expected);
-    } finally {
-      await driver.quit();
-    }
-  });
-
-  it('poll works in IE 10', async () => {
-    const driver = await buildDriver({
-      browserName: 'internet explorer',
-      serverIP: process.env.SELENIUM_VM_IP_IE10,
-    });
-    try {
-      const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
-      await driver.get(url);
-      const result = await driver.executeScript(`return (${captureDomAndPoll})()`);
-      expect(JSON.parse(result)).to.eql({status: 'WIP', value: null, error: null});
     } finally {
       await driver.quit();
     }

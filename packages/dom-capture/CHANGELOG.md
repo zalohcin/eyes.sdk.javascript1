@@ -4,6 +4,14 @@
 ## Unreleased
 
 
+ ## 7.2.0 - 2020/5/3
+
+- added shadow dom support ** Dom Capture version 1.3.0 ** 
+
+ ## 7.1.5 - 2020/4/19
+
+- added font-weight style property ** Dom Capture version 1.2.0 ** 
+
 ## 7.1.4
 
 - add support of iframes with srcdoc attr. [Trello](https://trello.com/c/LgVKNT5Y/196-iframe-srcdoc-attribute-not-supported-in-dom-snapshot-and-dom-capture)

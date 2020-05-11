@@ -3,6 +3,15 @@
 ## Unreleased 
 
 - removed eyes-common dependency
+- fix returned value from `close` method ([Trello](https://trello.com/c/m6K2Ftd5/277-wdio5-difficulty-getting-test-results-object))
+
+## 2.0.0-beta.21
+
+- fix missing device info in dashboard  
+
+## 2.0.0-beta.20
+
+- fix wrong browser and OS names when running emulated devices 
 
 ## 2.0.0-beta.19
 
