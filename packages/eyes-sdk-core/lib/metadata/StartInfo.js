@@ -151,7 +151,7 @@ class StartInfo {
     this._scenarioIdOrName = value
   }
 
-    /**
+  /**
    * @return {string}
    */
   getDisplayName() {
