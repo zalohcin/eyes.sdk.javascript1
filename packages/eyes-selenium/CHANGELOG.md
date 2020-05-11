@@ -3,9 +3,9 @@
 ## Unreleased
 
 - added device emulation types
-- updated to @applitools/dom-utils@4.7.15
 - updated to @applitools/eyes-sdk-core@10.0.2
-- updated to @applitools/visual-grid-client@13.7.7
+- updated to @applitools/dom-utils@4.7.16
+- updated to @applitools/visual-grid-client@13.8.0
 
 
 ## 4.35.0 - 2020/4/27
