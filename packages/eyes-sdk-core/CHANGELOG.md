@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 10.1.0 - 2020/5/11
+
 - add iosDeviceInfo support
 - updated to @applitools/eyes-common@3.23.0
 
