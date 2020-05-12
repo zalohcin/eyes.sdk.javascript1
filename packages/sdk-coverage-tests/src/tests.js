@@ -72,7 +72,7 @@ function makeCoverageTests({
       checkFrame('[name="frame1"]', {isClassicApi: true})
       close(throwException)
     },
-    TestCheckFrame_Fluent_v2: async () => {
+    TestCheckFrame_Fluent: async () => {
       await visit(url)
       await open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       await checkFrame('[name="frame1"]')
@@ -84,13 +84,13 @@ function makeCoverageTests({
       checkFrame('[name="frame1"]', {isFully: true})
       close(throwException)
     },
-    TestCheckFrameInFrame_Fully_Fluent_v1: () => {
+    TestCheckFrameInFrame_Fully_Fluent: () => {
       visit(url)
       open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       checkFrame(['[name="frame1"]', '[name="frame1-1"]'], {isFully: true})
       close(throwException)
     },
-    TestCheckFrameInFrame_Fully_Fluent2_v1: () => {
+    TestCheckFrameInFrame_Fully_Fluent2: () => {
       visit(url)
       open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
       checkWindow({isFully: true})
