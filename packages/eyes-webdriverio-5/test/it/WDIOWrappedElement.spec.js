@@ -3,8 +3,8 @@ const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
 const assert = require('assert')
 const {Location, RectangleSize, Region} = require('@applitools/eyes-sdk-core')
-const WDIOWrappedDriver = require('../../src/core/WDIOWrappedDriver')
-const WDIOWrappedElement = require('../../src/core/WDIOWrappedElement')
+const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
+const WDIOWrappedElement = require('../../src/WDIOWrappedElement')
 const {Logger} = require('../../index')
 
 describe('WDIOWrappedElement', function() {

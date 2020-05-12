@@ -86,9 +86,9 @@ function LegacyAPIDriver(EyesWrappedDriver) {
     }
     switchTo() {
       return {
-        defaultContent: () => this.frame(),
-        frame: arg => this.frame(arg),
-        parentFrame: () => this.frameParent(),
+        defaultContent: () => this.switchToFrame(null),
+        frame: arg => this.switchToFrame(arg),
+        parentFrame: () => this.switchToParentFrame(),
       }
     }
     async getUserAgent() {

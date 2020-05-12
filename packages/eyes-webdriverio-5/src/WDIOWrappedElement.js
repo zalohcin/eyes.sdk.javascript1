@@ -107,27 +107,10 @@ class WDIOWrappedElement extends LegacyWrappedElement(EyesWrappedElement) {
     )
   }
 
-  async getContentRect() {
+  async getClientRect() {
     return this.withRefresh(() =>
       EyesUtils.getElementClientRect(this._logger, this._driver.executor, this),
     )
-  }
-
-  async getBounds() {
-    const rect = await this.getRect()
-    let left = rect.getLeft()
-    let top = rect.getTop()
-    let width = rect.getWidth()
-    let height = rect.getHeight()
-    if (left < 0) {
-      width = Math.max(0, width + left)
-      left = 0
-    }
-    if (top < 0) {
-      height = Math.max(0, height + top)
-      top = 0
-    }
-    return new Region(left, top, width, height, rect.getCoordinatesType())
   }
 
   async getSize() {

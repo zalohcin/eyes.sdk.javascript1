@@ -12,7 +12,7 @@ class WDIOJsExecutor extends EyesJsExecutor {
 
   async executeScript(script, ...args) {
     try {
-      const {value} = await this._driver.execute(
+      const value = await this._driver.unwrapped.execute(
         script,
         ...args.map(arg => (arg instanceof WDIOWrappedElement ? arg.unwrapped : arg)),
       )
@@ -26,7 +26,7 @@ class WDIOJsExecutor extends EyesJsExecutor {
 
   async executeAsyncScript(script, ...args) {
     try {
-      const value = await this._driver.executeAsync(
+      const value = await this._driver.unwrapped.executeAsync(
         script,
         ...args.map(arg => (arg instanceof WDIOWrappedElement ? arg.unwrapped : arg)),
       )
@@ -39,7 +39,7 @@ class WDIOJsExecutor extends EyesJsExecutor {
   }
 
   sleep(ms) {
-    return this._driver.pause(ms)
+    return this._driver.unwrapped.pause(ms)
   }
 }
 
