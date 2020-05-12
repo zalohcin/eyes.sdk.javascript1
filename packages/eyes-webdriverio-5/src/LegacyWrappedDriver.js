@@ -1,19 +1,38 @@
-const {UniversalSelector} = require('@applitools/eyes-sdk-core')
+const {TypeUtils, UniversalSelector} = require('@applitools/eyes-sdk-core')
 
 function LegacyAPIDriver(EyesWrappedDriver) {
   return class EyesWebDriver extends EyesWrappedDriver {
+    get remoteWebDriver() {
+      return this._driver
+    }
     async executeScript(script, ...varArgs) {
-      return this._executor.executeScript(script, ...varArgs)
+      if (TypeUtils.isFunction(script) || varArgs.length > 1 || !TypeUtils.isArray(varArgs[0])) {
+        return this._executor.executeScript(script, ...varArgs)
+      } else {
+        return this._driver.executeScript(script, varArgs[0])
+      }
     }
     async executeAsyncScript(script, ...varArgs) {
-      return this._executor.executeAsyncScript(script, ...varArgs)
+      if (TypeUtils.isFunction(script) || varArgs.length > 1 || !TypeUtils.isArray(varArgs[0])) {
+        return this._executor.executeAsyncScript(script, ...varArgs)
+      } else {
+        return this._driver.executeAsyncScript(script, varArgs[0])
+      }
     }
-    // async findElement(locator) {
-    //   return this._finder.findElement(locator)
-    // }
-    // async findElements(locator) {
-    //   return this._finder.findElements(locator)
-    // }
+    async findElement(usingOrLocator, value) {
+      if (usingOrLocator instanceof UniversalSelector) {
+        return this._finder.findElement(usingOrLocator)
+      } else {
+        return this._driver.findElement(usingOrLocator, value)
+      }
+    }
+    async findElements(usingOrLocator, value) {
+      if (usingOrLocator instanceof UniversalSelector) {
+        return this._finder.findElements(usingOrLocator)
+      } else {
+        return this._driver.findElements(usingOrLocator, value)
+      }
+    }
     async findElementById(id) {
       return this.findElement(UniversalSelector.id(id))
     }
@@ -72,11 +91,20 @@ function LegacyAPIDriver(EyesWrappedDriver) {
         parentFrame: () => this.frameParent(),
       }
     }
+    async getUserAgent() {
+      return this._controller.getUserAgent()
+    }
+    async end() {
+      return this._driver.deleteSession()
+    }
+    async close() {
+      return this._driver.deleteSession()
+    }
     async sleep(ms) {
       return this._driver.pause(ms)
     }
     async takeScreenshot() {
-      return this._driver.controller.takeScreenshot()
+      return this._driver.takeScreenshot()
     }
   }
 }
