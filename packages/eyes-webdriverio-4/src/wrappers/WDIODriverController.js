@@ -13,6 +13,10 @@ class WDIODriverController {
     this._driver = driver
   }
 
+  async visit(url) {
+    return this._driver.url(url)
+  }
+
   async getWindowRect(handle) {
     const [location, size] = await Promise.all([
       this.getWindowLocation(handle),
