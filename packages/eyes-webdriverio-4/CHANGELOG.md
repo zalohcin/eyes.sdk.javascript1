@@ -2,7 +2,11 @@
 
 ## Unreleased
 
+- added devices to device emulation
 - return support for legacy `element` and `locator` fields in WDIOWrappedElement
+- updated to @applitools/dom-utils@4.7.16
+- updated to @applitools/eyes-sdk-core@10.1.1
+- updated to @applitools/visual-grid-client@13.8.0
 
 ## 2.14.0 - 2020/4/30
 

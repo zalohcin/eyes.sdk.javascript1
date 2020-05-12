@@ -155,6 +155,9 @@ exports.ProxySettings = common.ProxySettings
 exports.ScreenOrientation = common.ScreenOrientation
 exports.SessionType = common.SessionType
 exports.StitchMode = common.StitchMode
+exports.IosVersion = common.IosVersion
+exports.IosScreenOrientation = common.IosScreenOrientation
+exports.IosDeviceName = common.IosDeviceName
 
 exports.DebugScreenshotsProvider = common.DebugScreenshotsProvider
 exports.FileDebugScreenshotsProvider = common.FileDebugScreenshotsProvider
