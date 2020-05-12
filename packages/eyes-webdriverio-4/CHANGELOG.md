@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 2.14.1 - 2020/5/12
+
 - added devices to device emulation
 - return support for legacy `element` and `locator` fields in WDIOWrappedElement
 - updated to @applitools/dom-utils@4.7.16
