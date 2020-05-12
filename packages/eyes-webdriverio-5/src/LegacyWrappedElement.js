@@ -65,11 +65,11 @@ function LegacyAPIElement(EyesWrappedElement) {
       return this._driver.finder.findElements(locator, this)
     }
     async sendKeys(keysToSend) {
-      await this._driver.elementIdClick(this.elementId)
+      await this._driver.elementClick(this.elementId)
       return this._driver.keys(keysToSend)
     }
     async click() {
-      return this._driver.elementIdClick(this.elementId)
+      return this._driver.elementClick(this.elementId)
     }
   }
 }
