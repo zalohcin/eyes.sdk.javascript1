@@ -2,8 +2,8 @@
 const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
 const assert = require('assert')
-const WDIOWrappedDriver = require('../../src/core/WDIOWrappedDriver')
-const WDIOBrowsingContext = require('../../src/core/WDIOBrowsingContext')
+const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
+const WDIOBrowsingContext = require('../../src/WDIOBrowsingContext')
 const {Logger} = require('../../index')
 
 describe('WDIOBrowsingContext', function() {

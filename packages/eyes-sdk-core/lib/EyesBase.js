@@ -2116,6 +2116,8 @@ class EyesBase {
         isMobileDevice = await this._driver.isMobile()
       } else if (typeof this._driver.isMobile === 'object') {
         isMobileDevice = await this._driver.isMobile
+      } else if (typeof this._driver.controller === 'object') {
+        isMobileDevice = await this._driver.controller.isMobileDevice()
       }
 
       if (!isMobileDevice && positionProvider) {

@@ -19,6 +19,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async frame(reference) {
+    if (await this._driver.controller.isMobileDevice()) return
     if (!reference) {
       this._logger.verbose('WDIOBrowsingContext.frame(null)')
       return this.frameDefault()
@@ -34,6 +35,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async frameDefault() {
+    if (await this._driver.controller.isMobileDevice()) return
     this._logger.verbose('WDIOBrowsingContext.frameDefault()')
     const result = await this._driver.unwrapped.switchToFrame(null)
     this._logger.verbose('Done! Switching to default content...')
@@ -44,6 +46,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async frameParent(elevation = 1) {
+    if (await this._driver.controller.isMobileDevice()) return
     this._logger.verbose(`WDIOBrowsingContext.frameParent(${elevation})`)
     let result
     while (elevation-- > 0) {
@@ -57,6 +60,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async frames(path) {
+    if (await this._driver.controller.isMobileDevice()) return
     const currentPath = Array.from(this._frameChain)
     const requiredPath = Array.from(path || [])
     if (currentPath.length === 0) return this.framesAppend(requiredPath)
@@ -92,6 +96,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async framesAppend(path) {
+    if (await this._driver.controller.isMobileDevice()) return
     this._logger.verbose('WDIOBrowsingContext.framesAppend(path)')
     for (const frameReference of path) {
       await this.frame(frameReference)
@@ -99,18 +104,8 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
     this._logger.verbose('Done switching into nested frames!')
   }
 
-  async framesDoScroll(frameChain) {
-    this._logger.verbose('WDIOBrowsingContext.framesDoScroll(frameChain)')
-    await this.frameDefault()
-    for (const frame of frameChain) {
-      this._logger.verbose('Scrolling by parent scroll position...')
-      await EyesUtils.scrollTo(this._logger, this._driver.executor, frame.location)
-      await this.frame(frame.element)
-    }
-    this._logger.verbose('Done switching into nested frames!')
-  }
-
   async framesRefresh() {
+    if (await this._driver.controller.isMobileDevice()) return
     let contextInfo = await EyesUtils.getCurrentContextInfo(this._logger, this._driver.executor)
     if (contextInfo.isRoot) {
       this._frameChain.clear()
@@ -147,6 +142,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async framesSwitchAndReturn(framePath, operation) {
+    if (await this._driver.controller.isMobileDevice()) return operation()
     const frameChain = this.frameChain
     await this.frames(framePath)
     try {
@@ -157,6 +153,7 @@ class WDIOBrowsingContext extends EyesBrowsingContext {
   }
 
   async framesAppendAndReturn(framePath, operation) {
+    if (await this._driver.controller.isMobileDevice()) return operation()
     const depth = framePath.length
     await this.framesAppend(framePath)
     try {

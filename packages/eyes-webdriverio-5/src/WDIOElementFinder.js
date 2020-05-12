@@ -14,9 +14,9 @@ class WDIOElementFinder extends EyesElementFinder {
       const extendedParentElement = await this._driver.unwrapped.$(
         parentElement instanceof WDIOWrappedElement ? parentElement.unwrapped : parentElement,
       )
-      element = await extendedParentElement.$(selector.toString)
+      element = await extendedParentElement.$(selector.toString())
     } else {
-      element = await this._driver.unwrapped.$(selector.toString)
+      element = await this._driver.unwrapped.$(selector.toString())
     }
     return !element.error
       ? new WDIOWrappedElement(this._logger, this._driver, element, selector)
