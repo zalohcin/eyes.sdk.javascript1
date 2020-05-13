@@ -60,12 +60,21 @@ module.exports = [
     baselineVersion: 1,
   },
   {
-    name: 'TestCheckFrameInFrame_Fully_Fluent2_v1',
+    name: 'TestCheckFrameInFrame_Fully_Fluent2',
     executionMode: {isVisualGrid: true},
     disabled: true,
+    baselineVersion: 1,
   },
-  {name: 'TestCheckFrameInFrame_Fully_Fluent2_v1', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckFrameInFrame_Fully_Fluent2_v1', executionMode: {isScrollStitching: true}},
+  {
+    name: 'TestCheckFrameInFrame_Fully_Fluent2',
+    executionMode: {isCssStitching: true},
+    baselineVersion: 1,
+  },
+  {
+    name: 'TestCheckFrameInFrame_Fully_Fluent2',
+    executionMode: {isScrollStitching: true},
+    baselineVersion: 1,
+  },
   {
     name: 'TestCheckFullWindowWithMultipleIgnoreRegionsBySelector_Fluent',
     executionMode: {isVisualGrid: true},
