@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- added retry for requests returning with a status code of 503   
 
 ## 10.1.1 - 2020/5/11
 
