@@ -305,6 +305,7 @@ class EyesClassic extends EyesCore {
       (this._configuration.getHideScrollbars() ||
         (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent))
 
+    const originalScrollRootElement = this._scrollRootElement
     const scrollRootElement = checkSettings.getScrollRootElement()
     if (scrollRootElement) {
       await scrollRootElement.init(this._driver)
@@ -319,7 +320,7 @@ class EyesClassic extends EyesCore {
 
     if (this._scrollRootElement) {
       await this._scrollRootElement.init(this._driver)
-    } else if (shouldHideScrollbars) {
+    } else {
       const element = await EyesUtils.getScrollRootElement(this._logger, this._executor)
       this._scrollRootElement = new this.constructor.WrappedElement(
         this._logger,
@@ -363,6 +364,7 @@ class EyesClassic extends EyesCore {
       }
       await this._scrollRootElement.preservePosition(positionProvider)
       await this._scrollRootElement.restoreScrollbars()
+      this._scrollRootElement = originalScrollRootElement
       await this._context.frames(originalFrameChain)
       this._stitchContent = false
     }
