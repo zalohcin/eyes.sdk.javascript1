@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes.webdriverio",
-  "version": "2.14.0",
+  "version": "2.14.1",
   "description": "Applitools Eyes SDK for WebdriverIO",
   "main": "index.js",
   "scripts": {
@@ -36,9 +36,9 @@
     "webdriverio": "~4.14.4"
   },
   "devDependencies": {
+    "@applitools/sdk-coverage-tests": "1.0.0",
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.1.0",
-    "@applitools/sdk-coverage-tests": "1.0.0",
     "chromedriver": "^81.0.0",
     "eslint": "^6.8.0",
     "geckodriver": "^1.19.1",
