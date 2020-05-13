@@ -4,7 +4,7 @@ module.exports = [
   {name: 'TestAcmeLogin', executionMode: {isScrollStitching: true}, disabled: true},
   {name: 'TestCheckElementFully_Fluent', executionMode: {isVisualGrid: true}, disabled: true},
   {name: 'TestCheckElementFully_Fluent', executionMode: {isCssStitching: true}},
-  {name: 'TestCheckElementFully_Fluent', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckElementFully_Fluent', executionMode: {isScrollStitching: true}, disabled: true},
   {
     name: 'TestCheckElementWithIgnoreRegionByElementOutsideTheViewport_Fluent',
     executionMode: {isVisualGrid: true},
