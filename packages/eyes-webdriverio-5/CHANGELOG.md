@@ -5,6 +5,7 @@
 - updated to @applitools/dom-utils@4.7.16
 - updated to @applitools/eyes-sdk-core@10.1.1
 - updated to @applitools/visual-grid-client@13.8.0
+- updated to @applitools/eyes-sdk-core@10.1.2
 
 
 ## 5.10.1 - 2020/4/27
