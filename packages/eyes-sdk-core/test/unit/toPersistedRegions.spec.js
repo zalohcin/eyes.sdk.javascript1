@@ -41,15 +41,15 @@ describe('toPersistedRegions()', () => {
 
   it('IgnoreRegionByRectangle', async () => {
     const region = new IgnoreRegionByRectangle(
-      new Region({left: 15, top: 15, width: 15, height: 15}),
+      new Region({left: 15, top: 16, width: 17, height: 18}),
     )
     const [{left, top, width, height}] = await region.toPersistedRegions(driver)
-    assert.deepStrictEqual({left, top, width, height}, {left: 15, top: 15, width: 15, height: 15})
+    assert.deepStrictEqual({left, top, width, height}, {left: 15, top: 16, width: 17, height: 18})
   })
 
   it('AccessibilityRegionByRectangle', async () => {
     const region = new AccessibilityRegionByRectangle(
-      new Region({left: 15, top: 15, width: 15, height: 15}),
+      new Region({left: 15, top: 16, width: 17, height: 18}),
       AccessibilityRegionType.RegularText,
     )
     const [{left, top, width, height, accessibilityType}] = await region.toPersistedRegions(driver)
@@ -57,9 +57,9 @@ describe('toPersistedRegions()', () => {
       {left, top, width, height, accessibilityType},
       {
         left: 15,
-        top: 15,
-        width: 15,
-        height: 15,
+        top: 16,
+        width: 17,
+        height: 18,
         accessibilityType: AccessibilityRegionType.RegularText,
       },
     )
@@ -67,7 +67,7 @@ describe('toPersistedRegions()', () => {
 
   it('FloatingRegionByRectangle', async () => {
     const region = new FloatingRegionByRectangle(
-      new Region({left: 15, top: 15, width: 15, height: 15}),
+      new Region({left: 15, top: 16, width: 17, height: 18}),
       1,
       2,
       3,
@@ -80,9 +80,9 @@ describe('toPersistedRegions()', () => {
       {left, top, width, height, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset},
       {
         left: 15,
-        top: 15,
-        width: 15,
-        height: 15,
+        top: 16,
+        width: 17,
+        height: 18,
         maxUpOffset: 1,
         maxDownOffset: 2,
         maxLeftOffset: 3,
