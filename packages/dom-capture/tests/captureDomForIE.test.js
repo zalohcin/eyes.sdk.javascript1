@@ -33,7 +33,7 @@ describe('captureDom for IE', () => {
     fs.writeFileSync(path.resolve(__dirname, `fixtures/${name}`), content);
   }
 
-  async function openPageWith(browserName) {
+  async function openPageWith(browserName, version) {
     const username = process.env.SAUCE_USERNAME;
     const accessKey = process.env.SAUCE_ACCESS_KEY;
     if (!username || !accessKey) {
@@ -43,6 +43,7 @@ describe('captureDom for IE', () => {
     const sauceUrl = 'https://ondemand.saucelabs.com:443/wd/hub';
     const sauceCaps = {
       browserName,
+      version,
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
     };
@@ -64,7 +65,7 @@ describe('captureDom for IE', () => {
   }
 
   it('works in Edge', async () => {
-    const driver = await openPageWith('MicrosoftEdge');
+    const driver = await openPageWith('MicrosoftEdge', '18');
     try {
       const fixtureName = 'edge.dom.json';
       const result = await captureDom(driver);
