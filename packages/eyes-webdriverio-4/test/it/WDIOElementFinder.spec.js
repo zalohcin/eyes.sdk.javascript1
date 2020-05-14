@@ -5,7 +5,7 @@ const assert = require('assert')
 const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
 const WDIOWrappedElement = require('../../src/WDIOWrappedElement')
 const WDIOElementFinder = require('../../src/WDIOElementFinder')
-const By = require('../../src/LegacySelector')
+const {UniversalSelector: By} = require('@applitools/eyes-sdk-core')
 const {Logger} = require('../../index')
 
 describe('WDIOElementFinder', function() {
