@@ -8,35 +8,55 @@ describe('JS Coverage Tests - WDIO5', async () => {
 
   before(async () => {
     const browserOptions = {
-      host: 'hub-cloud.browserstack.com',
-      user: process.env.BROWSERSTACK_USERNAME,
-      key: process.env.BROWSERSTACK_ACCESS_KEY,
-      capabilities: {
-        browserName: 'IE',
-        browserVersion: '11.0',
-        'browserstack.selenium_version': '3.141.59',
-        'bstack:options': {
-          os: 'Windows',
-          osVersion: '10',
-          projectName: 'SDK Coverage Tests',
-          debug: 'true',
-          resolution: '1920x1080',
-          networkLogs: 'true',
-          consoleLogs: 'verbose',
-          //idleTimeout: 300,
-          ie: {
-            noFlash: 'true',
-            driver: '3.141.59',
-            enablePopups: 'true',
+      saucelabs: {
+        host: 'ondemand.saucelabs.com',
+        hostname: 'ondemand.saucelabs.com',
+        port: 80,
+        path: '/wd/hub',
+        capabilities: {
+          browserName: 'internet explorer',
+          browserVersion: '11.285',
+          platformName: 'Windows 10',
+          //seleniumVersion: '3.141.59',
+          'sauce:options': {
+            screenResolution: '1920x1080',
+            username: process.env.SAUCE_USERNAME,
+            accesskey: process.env.SAUCE_ACCESS_KEY,
+          },
+        },
+      },
+      browserStack: {
+        host: 'hub-cloud.browserstack.com',
+        user: process.env.BROWSERSTACK_USERNAME,
+        key: process.env.BROWSERSTACK_ACCESS_KEY,
+        capabilities: {
+          browserName: 'IE',
+          browserVersion: '11.0',
+          'browserstack.selenium_version': '3.141.59',
+          'bstack:options': {
+            os: 'Windows',
+            osVersion: '10',
+            projectName: 'SDK Coverage Tests',
+            debug: 'true',
+            resolution: '1920x1080',
+            networkLogs: 'true',
+            consoleLogs: 'verbose',
+            //idleTimeout: 300,
+            ie: {
+              noFlash: 'true',
+              driver: '3.141.59',
+              enablePopups: 'true',
+            },
           },
         },
       },
     }
-    browser = await remote(browserOptions)
+    browser = await remote(browserOptions.browserStack)
     eyes = new Eyes()
   })
 
   after(async () => {
+    await browser.deleteSession()
     await eyes.abortIfNotClosed()
   })
 
