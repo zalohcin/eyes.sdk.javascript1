@@ -55,6 +55,8 @@ class DriverCheckSettings extends CheckSettings {
     this._targetElement = null
     /** @type {Frame[]} */
     this._frameChain = []
+    /** @type {Object<string, string>} */
+    this._scriptHooks = {}
 
     if (region) {
       this.region(region)
@@ -323,18 +325,6 @@ class DriverCheckSettings extends CheckSettings {
 
   _getTargetType() {
     return !this._targetRegion && !this._targetElement ? 'window' : 'region'
-  }
-
-  /**
-   * @param {string} script
-   */
-  addScriptHook(script) {
-    let scripts = this._scriptHooks.get(BEFORE_CAPTURE_SCREENSHOT)
-    if (scripts == null) {
-      scripts = []
-      this._scriptHooks.set(BEFORE_CAPTURE_SCREENSHOT, scripts)
-    }
-    scripts.add(script)
   }
 
   /**
