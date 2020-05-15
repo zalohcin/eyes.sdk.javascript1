@@ -4,7 +4,6 @@ const {remote} = require('webdriverio')
 const assert = require('assert')
 const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
 const WDIOWrappedElement = require('../../src/WDIOWrappedElement')
-const WDIOJsExecutor = require('../../src/WDIOJsExecutor')
 const {Logger} = require('../../index')
 
 describe('WDIOJsExecutor', function() {
@@ -30,7 +29,7 @@ describe('WDIOJsExecutor', function() {
 
   beforeEach(async () => {
     driver = new WDIOWrappedDriver(logger, browser)
-    executor = new WDIOJsExecutor(logger, driver)
+    executor = driver.executor
   })
 
   after(async () => {
@@ -45,8 +44,8 @@ describe('WDIOJsExecutor', function() {
     const results = await executor.executeScript('return arguments', ...args)
     args.forEach((arg, index) => {
       assert.strictEqual(
-        WDIOWrappedElement.elementId(arg),
-        WDIOWrappedElement.elementId(results[index]),
+        WDIOWrappedElement.extractId(arg),
+        WDIOWrappedElement.extractId(results[index]),
       )
     })
   })

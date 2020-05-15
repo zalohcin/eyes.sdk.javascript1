@@ -1,9 +1,6 @@
 'use strict'
 const assert = require('assert')
 const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
-const WDIOElementFinder = require('../../src/WDIOElementFinder')
-const WDIOBrowsingContext = require('../../src/WDIOBrowsingContext')
-const WDIOJsExecutor = require('../../src/WDIOJsExecutor')
 const {Logger} = require('../../index')
 
 describe('WDIOWrappedDriver', function() {
@@ -16,19 +13,19 @@ describe('WDIOWrappedDriver', function() {
   it('get executor', async () => {
     const browser = {}
     const driver = new WDIOWrappedDriver(logger, browser)
-    assert.ok(driver.executor instanceof WDIOJsExecutor)
+    assert.ok(driver.executor instanceof WDIOWrappedDriver.JsExecutor)
   })
 
   it('get context', async () => {
     const browser = {}
     const driver = new WDIOWrappedDriver(logger, browser)
-    assert.ok(driver.context instanceof WDIOBrowsingContext)
+    assert.ok(driver.context instanceof WDIOWrappedDriver.BrowsingContext)
   })
 
   it('get finder', async () => {
     const browser = {}
     const driver = new WDIOWrappedDriver(logger, browser)
-    assert.ok(driver.finder instanceof WDIOElementFinder)
+    assert.ok(driver.finder instanceof WDIOWrappedDriver.ElementFinder)
   })
 
   it('preserve native API', async () => {

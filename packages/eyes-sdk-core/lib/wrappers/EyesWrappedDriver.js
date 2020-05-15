@@ -1,48 +1,187 @@
 'use strict'
-/* eslint-disable no-unused-vars */
+const {ArgumentGuard} = require('@applitools/eyes-common')
+const EyesJsExecutor = require('./EyesJsExecutor')
+const EyesBrowsingContext = require('./EyesBrowsingContext')
+const EyesElementFinder = require('./EyesElementFinder')
+const EyesDriverController = require('./EyesDriverController')
 
 /**
- * @typedef {import('./EyesJsExecutor')} EyesJsExecutor
- * @typedef {import('./EyesBrowsingContext')} EyesBrowsingContext
- * @typedef {import('./EyesElementFinder')} EyesElementFinder
- * @typedef {import('./EyesDriverController')} EyesDriverController
+ * @typedef {import('@applitools/eyes-common').Logger} Logger
+ * @typedef {import('./EyesJsExecutor').SpecsJsExecutor} SpecsJsExecutor
+ * @typedef {import('./EyesBrowsingContext').SpecsBrowsingContext} SpecsBrowsingContext
+ * @typedef {import('./EyesElementFinder').SpecsElementFinder} SpecsElementFinder
+ * @typedef {import('./EyesDriverController').SpecsDriverController} SpecsDriverController
  */
 
 /**
- * An interface for driver wrappers
- *
- * @interface
+ * @typedef {Object} UnwrappedDriver
+ * @property {?}
  */
+
+/**
+ * @typedef {SpecsJsExecutor & SpecsBrowsingContext & SpecsElementFinder & SpecsDriverController} SpecsWrappedDriver
+ */
+
 class EyesWrappedDriver {
   /**
-   * @return {Object} unwrapped driver for specific SDK
+   * @param {SpecsWrappedDriver} SpecsWrappedDriver - specifications for the specific framework
+   * @return {EyesWrappedDriver} specialized version of this class
+   */
+  static specialize(SpecsWrappedDriver) {
+    const BrowsingContext = EyesBrowsingContext.specialize(SpecsWrappedDriver)
+    const JsExecutor = EyesJsExecutor.specialize(SpecsWrappedDriver)
+    const ElementFinder = EyesElementFinder.specialize(SpecsWrappedDriver)
+    const DriverController = EyesDriverController.specialize(SpecsWrappedDriver)
+    return class extends EyesWrappedDriver {
+      /** @override */
+      static get specs() {
+        return SpecsWrappedDriver
+      }
+      /** @override */
+      get specs() {
+        return SpecsWrappedDriver
+      }
+      /** @override */
+      static get JsExecutor() {
+        return JsExecutor
+      }
+      /** @override */
+      get JsExecutor() {
+        return JsExecutor
+      }
+      /** @override */
+      static get BrowsingContext() {
+        return BrowsingContext
+      }
+      /** @override */
+      get BrowsingContext() {
+        return BrowsingContext
+      }
+      /** @override */
+      static get ElementFinder() {
+        return ElementFinder
+      }
+      /** @override */
+      get ElementFinder() {
+        return ElementFinder
+      }
+      /** @override */
+      static get DriverController() {
+        return DriverController
+      }
+      /** @override */
+      get DriverController() {
+        return DriverController
+      }
+    }
+  }
+  /** @type {SpecsWrappedDriver} */
+  static get specs() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {SpecsWrappedDriver} */
+  get specs() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {EyesJsExecutor} */
+  static get JsExecutor() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {EyesJsExecutor} */
+  get JsExecutor() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {EyesBrowsingContext} */
+  static get BrowsingContext() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {EyesBrowsingContext} */
+  get BrowsingContext() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {EyesElementFinder} */
+  static get ElementFinder() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {EyesElementFinder} */
+  get ElementFinder() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {EyesDriverController} */
+  static get DriverController() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {EyesDriverController} */
+  get DriverController() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /**
+   * Construct wrapped driver instance and initialize all of helpers interfaces
+   * @param {Logger} logger - logger instance
+   * @param {UnwrappedDriver} driver - specific driver object for the framework
+   */
+  constructor(logger, driver) {
+    ArgumentGuard.notNull(driver, 'driver')
+    if (driver instanceof EyesWrappedDriver) {
+      return driver
+    }
+    this._logger = logger
+    this._driver = driver
+
+    this._proxy = new Proxy(this, {
+      get(target, key, receiver) {
+        // WORKAROUND we couldn't return this object from the async function because it think this is a Promise
+        if (key === 'then') {
+          return undefined
+        } else if (key in target) {
+          return Reflect.get(target, key, receiver)
+        } else {
+          return Reflect.get(target._driver, key)
+        }
+      },
+    })
+
+    this._executor = new this.JsExecutor(this._logger, this)
+    this._finder = new this.ElementFinder(this._logger, this)
+    this._context = new this.BrowsingContext(this._logger, this)
+    this._controller = new this.DriverController(this._logger, this)
+
+    return this._proxy
+  }
+  /**
+   * Unwrapped driver for specific SDK
+   * @type {UnwrappedDriver}
    */
   get unwrapped() {
-    throw new TypeError('The method is not implemented!')
+    return this._driver
   }
   /**
-   * @return {EyesJsExecutor} implementation of JavaScript executor interface for specific SDK
+   * Implementation of JavaScript executor interface for specific SDK
+   * @type {EyesJsExecutor}
    */
   get executor() {
-    throw new TypeError('The method is not implemented!')
+    return this._executor
   }
   /**
-   * @return {EyesBrowsingContext} implementation of browsing context switcher interface for specific SDK
+   * Implementation of browsing context switcher interface for specific SDK
+   * @type {EyesBrowsingContext}
    */
   get context() {
-    throw new TypeError('The method is not implemented!')
+    return this._context
   }
   /**
-   * @return {EyesElementFinder} implementation of element finder interface for specific SDK
+   * Implementation of element finder interface for specific SDK
+   * @type {EyesElementFinder}
    */
   get finder() {
-    throw new TypeError('The method is not implemented!')
+    return this._finder
   }
   /**
-   * @return {EyesDriverController} implementation of driver controller interface for specific SDK
+   * Implementation of driver controller interface for specific SDK
+   * @type {EyesDriverController}
    */
   get controller() {
-    throw new TypeError('The method is not implemented!')
+    return this._controller
   }
 }
 

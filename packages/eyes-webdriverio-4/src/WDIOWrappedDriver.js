@@ -1,73 +1,21 @@
-const {ArgumentGuard, EyesWrappedDriver} = require('@applitools/eyes-sdk-core')
-const WDIOJsExecutor = require('./WDIOJsExecutor')
-const WDIOElementFinder = require('./WDIOElementFinder')
-const WDIOBrowsingContext = require('./WDIOBrowsingContext')
-const WDIODriverController = require('./WDIODriverController')
+const {EyesWrappedDriver} = require('@applitools/eyes-sdk-core')
+const SpecWrappedDriver = require('./SpecWrappedDriver')
 const LegacyWrappedDriver = require('./LegacyWrappedDriver')
 
-class WDIOWrappedDriver extends LegacyWrappedDriver(EyesWrappedDriver) {
-  constructor(logger, driver) {
-    ArgumentGuard.notNull(driver, 'driver')
-    if (driver instanceof WDIOWrappedDriver) {
-      return driver
-    }
-    super()
-    this._logger = logger
-    this._driver = driver
-
-    this._proxy = new Proxy(this, {
-      get(target, key, receiver) {
-        // WORKAROUND we couldn't return this object from the async function because it think this is a Promise
-        if (key === 'then') {
-          return undefined
-        } else if (key in target) {
-          return Reflect.get(target, key, receiver)
-        } else {
-          return Reflect.get(target._driver, key)
-        }
-      },
-    })
-
-    this._executor = new WDIOJsExecutor(this._logger, this._proxy)
-    this._finder = new WDIOElementFinder(this._logger, this._proxy)
-    this._context = new WDIOBrowsingContext(this._logger, this._proxy)
-    this._controller = new WDIODriverController(this._logger, this._proxy)
-
-    return this._proxy
+class WDIOWrappedDriver extends EyesWrappedDriver.specialize(SpecWrappedDriver) {
+  /** @override */
+  async frame(reference) {
+    return this._context.frame(reference)
   }
-
-  get unwrapped() {
-    return this._driver
-  }
-
-  get executor() {
-    return this._executor
-  }
-
-  get finder() {
-    return this._finder
-  }
-
-  get context() {
-    return this._context
-  }
-
-  get controller() {
-    return this._controller
-  }
-
-  async frame(arg) {
-    return this._context.frame(arg)
-  }
-
+  /** @override */
   async frameParent() {
     return this._context.frameParent()
   }
-
+  /** @override */
   async url(url) {
     this._context.reset()
-    return this._driver.url(url)
+    return this.specs.visit(this.unwrapped, url)
   }
 }
 
-module.exports = WDIOWrappedDriver
+module.exports = LegacyWrappedDriver(WDIOWrappedDriver)

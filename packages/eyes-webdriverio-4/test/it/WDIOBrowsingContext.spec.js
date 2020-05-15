@@ -3,7 +3,6 @@ const chromedriver = require('chromedriver')
 const {remote} = require('webdriverio')
 const assert = require('assert')
 const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
-const WDIOBrowsingContext = require('../../src/WDIOBrowsingContext')
 const {Logger} = require('../../index')
 
 describe('WDIOBrowsingContext', function() {
@@ -44,7 +43,7 @@ describe('WDIOBrowsingContext', function() {
   beforeEach(async () => {
     await browser.frame(null)
     driver = new WDIOWrappedDriver(logger, browser)
-    context = new WDIOBrowsingContext(logger, driver)
+    context = driver.context
   })
 
   after(async () => {

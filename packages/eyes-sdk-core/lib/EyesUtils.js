@@ -1,6 +1,7 @@
 const {
   GeneralUtils,
   ArgumentGuard,
+  CoordinatesType,
   Location,
   RectangleSize,
   Region,
@@ -303,6 +304,62 @@ async function getElementEntireSize(_logger, executor, element) {
   }
 }
 /**
+ * Get element client rect relative to the current context
+ * @param {Logger} _logger - logger instance
+ * @param {EyesJsExecutor} executor - js executor
+ * @param {EyesWrappedElement|UnwrappedElement} element - element to get client rect
+ * @return {Promise<Region>} element client rect
+ */
+async function getElementClientRect(_logger, executor, element) {
+  const rect = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_CLIENT_RECT, element)
+  return new Region({
+    left: Math.ceil(rect.x),
+    top: Math.ceil(rect.y),
+    width: Math.ceil(rect.width),
+    height: Math.ceil(rect.height),
+    coordinatesType: CoordinatesType.CONTEXT_RELATIVE,
+  })
+}
+/**
+ * Get element rect relative to the current context
+ * @param {Logger} _logger - logger instance
+ * @param {EyesJsExecutor} executor - js executor
+ * @param {EyesWrappedElement|UnwrappedElement} element - element to get rect
+ * @return {Promise<Region>} element rect
+ */
+async function getElementRect(_logger, executor, element) {
+  const rect = await executor.executeScript(EyesJsSnippets.GET_ELEMENT_RECT, element)
+  return new Region({
+    left: Math.ceil(rect.x),
+    top: Math.ceil(rect.y),
+    width: Math.ceil(rect.width),
+    height: Math.ceil(rect.height),
+    coordinatesType: CoordinatesType.CONTEXT_RELATIVE,
+  })
+}
+/**
+ * Extract values of specified properties for specified element
+ * @param {Logger} _logger - logger instance
+ * @param {EyesJsExecutor} executor - js executor
+ * @param {string[]} properties - names of properties to extract
+ * @param {EyesWrappedElement|UnwrappedElement} element - element to extract properties
+ * @return {*[]} extracted values
+ */
+async function getElementProperties(_logger, executor, properties, element) {
+  return executor.executeScript(EyesJsSnippets.GET_ELEMENT_PROPERTIES, properties, element)
+}
+/**
+ * Extract css values of specified css properties for specified element
+ * @param {Logger} _logger - logger instance
+ * @param {EyesJsExecutor} executor - js executor
+ * @param {string[]} properties - names of css properties to extract
+ * @param {EyesWrappedElement|UnwrappedElement} element - element to extract css properties
+ * @return {string[]} extracted css values
+ */
+async function getElementCssProperties(_logger, executor, properties, element) {
+  return executor.executeScript(EyesJsSnippets.GET_ELEMENT_CSS_PROPERTIES, properties, element)
+}
+/**
  * Get device pixel ratio
  * @param {Logger} _logger - logger instance
  * @param {Object} driver
@@ -582,25 +639,23 @@ async function getCurrentContextInfo(_logger, executor) {
  * @property {string} selector - xpath to the frame element related to the parent context
  *
  * Find by context information
- * @param {Logger} logger - logger instance
+ * @param {Logger} _logger - logger instance
  * @param {Object} driver
  * @param {EyesElementFinder} driver.finder - element finder
  * @param {EyesJsExecutor} driver.executor - js executor
  * @param {ContextInfo} contextInfo - target context info
  * @param {(left: UnwrappedElement, right: UnwrappedElement) => boolean} comparator - check if two document elements are equal
- * @return {Promise<FrameInfo>} frame info
+ * @return {Promise<Frame>} frame
  */
-async function findFrameByContext(logger, {executor, context}, contextInfo, comparator) {
+async function findFrameByContext(_logger, {executor, context}, contextInfo, comparator) {
   const framesInfo = await executor.executeScript(EyesJsSnippets.GET_FRAMES)
   for (const frameInfo of framesInfo) {
     if (frameInfo.isCORS !== contextInfo.isCORS) continue
     await context.frame(frameInfo.element)
+    const frame = context.frameChain.current
     const contentDocument = await executor.executeScript('return document')
     await context.frameParent()
-    if (comparator(contentDocument, contextInfo.document)) {
-      frameInfo.selector = await getElementXpath(logger, executor, frameInfo.element)
-      return frameInfo
-    }
+    if (comparator(contentDocument, contextInfo.document)) return frame
   }
 }
 /**
@@ -680,6 +735,10 @@ module.exports = {
   getTopContextViewportSize,
   getCurrentFrameContentEntireSize,
   getElementEntireSize,
+  getElementClientRect,
+  getElementRect,
+  getElementProperties,
+  getElementCssProperties,
   getDevicePixelRatio,
   getMobilePixelRatio,
   getTopContextScrollLocation,

@@ -362,7 +362,7 @@ class EyesClassic extends EyesCore {
         }
         await this._context.frameParent()
       }
-      await this._scrollRootElement.preservePosition(positionProvider)
+      await this._scrollRootElement.restorePosition(positionProvider)
       await this._scrollRootElement.restoreScrollbars()
       this._scrollRootElement = originalScrollRootElement
       await this._context.frames(originalFrameChain)

@@ -47,30 +47,30 @@ describe('WDIOWrappedElement', function() {
     assert.ok(WDIOWrappedElement.isCompatible(elementResponse))
   })
 
-  it('static elementId(element)', async () => {
+  it('static extractId(element)', async () => {
     const {value: element} = await browser.element('#frame_main')
     const elementId = element.ELEMENT || element['element-6066-11e4-a52e-4f735466cecf']
-    assert.strictEqual(WDIOWrappedElement.elementId(element), elementId)
+    assert.strictEqual(WDIOWrappedElement.extractId(element), elementId)
   })
 
-  it('static elementId(elementWrapper)', async () => {
+  it('static extractId(elementWrapper)', async () => {
     const {value: element} = await browser.element('#frame_main')
     const elementId = element.ELEMENT || element['element-6066-11e4-a52e-4f735466cecf']
     const elementWrapper = new WDIOWrappedElement(logger, driver, element)
-    assert.strictEqual(WDIOWrappedElement.elementId(elementWrapper), elementId)
+    assert.strictEqual(WDIOWrappedElement.extractId(elementWrapper), elementId)
   })
 
   it('constructor(element)', async () => {
     const {value: element} = await browser.element('#frame_main')
     const constructed = new WDIOWrappedElement(logger, driver, element)
-    assert.strictEqual(constructed.elementId, WDIOWrappedElement.elementId(element))
+    assert.strictEqual(constructed.elementId, WDIOWrappedElement.extractId(element))
   })
 
   it('constructor(elementResponse)', async () => {
     const selector = '#frame_main'
     const elementResponse = await browser.element(selector)
     const constructed = new WDIOWrappedElement(logger, driver, elementResponse)
-    assert.strictEqual(constructed.elementId, WDIOWrappedElement.elementId(elementResponse.value))
+    assert.strictEqual(constructed.elementId, WDIOWrappedElement.extractId(elementResponse.value))
     assert.strictEqual(constructed.selector, selector)
   })
 

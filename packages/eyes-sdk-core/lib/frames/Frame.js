@@ -1,7 +1,6 @@
 'use strict'
 
 const {ArgumentGuard, TypeUtils, Location, RectangleSize} = require('@applitools/eyes-common')
-const {EyesWrappedElement} = require('../wrappers/EyesWrappedElement')
 const UniversalSelector = require('../UniversalSelector')
 const EyesUtils = require('../EyesUtils')
 
@@ -106,18 +105,12 @@ class Frame {
    * Equality check for two frame objects or frame elements
    * @param {Frame|EyesWrappedDriver} leftFrame - frame object or frame element
    * @param {Frame|EyesWrappedDriver} rightFrame - frame object or frame element
-   * @return true if frames are described the same frame element, otherwise false
+   * @return {boolean} true if frames are described the same frame element, otherwise false
    */
   static equals(leftFrame, rightFrame) {
-    let leftElement = null
-    if (leftFrame instanceof Frame) leftElement = leftFrame.element
-    else if (leftFrame instanceof EyesWrappedElement) leftElement = leftFrame
-    let rightElement = null
-    if (rightFrame instanceof Frame) rightElement = rightFrame.element
-    else if (rightFrame instanceof EyesWrappedElement) rightElement = rightFrame
-
-    if (!leftElement || !rightElement) return false
-    return leftElement.equals(rightElement)
+    const leftElement = leftFrame instanceof Frame ? leftFrame.element : leftFrame
+    const rightElement = rightFrame instanceof Frame ? rightFrame.element : rightFrame
+    return this.WrappedElement.equals(leftElement, rightElement)
   }
   /**
    * @return {EyesWrappedElement}

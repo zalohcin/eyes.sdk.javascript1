@@ -4,7 +4,6 @@ const {remote} = require('webdriverio')
 const assert = require('assert')
 const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
 const WDIOWrappedElement = require('../../src/WDIOWrappedElement')
-const WDIOElementFinder = require('../../src/WDIOElementFinder')
 const {UniversalSelector: By} = require('@applitools/eyes-sdk-core')
 const {Logger} = require('../../index')
 
@@ -35,7 +34,7 @@ describe('WDIOElementFinder', function() {
 
   beforeEach(async () => {
     driver = new WDIOWrappedDriver(logger, browser)
-    finder = new WDIOElementFinder(logger, driver)
+    finder = driver.finder
   })
 
   after(async () => {
