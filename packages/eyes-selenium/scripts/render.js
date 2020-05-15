@@ -36,6 +36,10 @@ const args = yargs
     type: 'string',
     default: process.env.APPLITOOLS_API_KEY,
   })
+  .option('target-element', {
+    describe: '',
+    type: 'string',
+  })
   .option('vg', {
     type: 'boolean',
     describe: 'when specified, use visual grid instead of classic runner',
@@ -230,7 +234,14 @@ if (!url) {
   try {
     await eyes.open(driver, args.appName, url)
 
-    let target = Target.window()
+    let target
+
+    if (args.targetElement) {
+      target = Target.region(By.css(args.targetElement))
+    } else {
+      target = Target.window()
+    }
+    target = target
       .fully(args.fully)
       .ignoreDisplacements(args.ignoreDisplacements)
       .timeout(args.matchTimeout)
