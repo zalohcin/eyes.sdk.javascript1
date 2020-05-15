@@ -13,7 +13,7 @@ const EyesUtils = require('../EyesUtils')
  * The object which implements the lowest-level functions to work with browsing context
  * @typedef {Object} SpecsBrowsingContext
  * @property {(leftFrame: FrameReference, rightFrame: FrameReference) => boolean} isEqualFrames - return true if two frames are equal, false otherwise
- * @property {(reference: FrameReference) => Frame} createFrame - return new frame reference
+ * @property {(reference: FrameReference) => Frame} createFrameReference - return new frame reference
  * @property {(driver: UnwrappedDriver, reference: FrameReference) => void} switchToFrame - switch to frame specified with a reference
  * @property {(driver: UnwrappedDriver) => void} switchToParentFrame - switch to parent frame
  */
@@ -76,7 +76,7 @@ class EyesBrowsingContext {
       this._logger.verbose('EyesBrowsingContext.frame(null)')
       return this.frameDefault()
     }
-    const frame = await this.specs.createFrame(reference).init(this._logger, this._driver)
+    const frame = await this.specs.createFrameReference(reference).init(this._logger, this._driver)
     const result = await this.specs.switchToFrame(this._driver.unwrapped, frame.element.unwrapped)
     if (frame.scrollRootElement) {
       await frame.scrollRootElement.init(this._driver)

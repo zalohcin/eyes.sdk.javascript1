@@ -20,22 +20,42 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
+ * @typedef {Object} SpecsFrame
+ * @property {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
+ * @property {(element) => boolean} isCompatibleElement - return true if the value is an element, false otherwise
+ * @property {(leftElement: SupportedElement|EyesWrappedElement, leftElement: SupportedElement|EyesWrappedElement) => boolean} isEqualElements - return true if elements are equal, false otherwise
+ * @property {(logger: Logger, driver: EyesWrappedDriver, element: SupportedElement, selector: SupportedSelector) => EyesWrappedElement} createElement - return wrapped element instance
+ */
+
+/**
  * Encapsulates a frame/iframe. This is a generic type class,
  * and it's actual type is determined by the element used by the user in
  * order to switch into the frame.
  */
 class Frame {
   /**
-   * Specialize {@link Frame} class to the specific {@link EyesWrappedElement} implementation
-   * @param {Object} implementations
-   * @param {EyesWrappedElement} implementations.WrappedElement - implementation of {@link EyesWrappedElement}
+   * @param {SpecsFrame} SpecsFrame
+   * @return {Frame} specialized version of this class
    */
-  static specialize({WrappedElement}) {
+  static specialize(SpecsFrame) {
     return class extends Frame {
-      static get WrappedElement() {
-        return WrappedElement
+      /** @override */
+      static get specs() {
+        return SpecsFrame
+      }
+      /** @override */
+      get specs() {
+        return SpecsFrame
       }
     }
+  }
+  /** @type {SpecsFrame} */
+  static get specs() {
+    throw new TypeError('Frame is not specialized')
+  }
+  /** @type {SpecsFrame} */
+  get specs() {
+    throw new TypeError('Frame is not specialized')
   }
   /**
    * Create frame from components
@@ -96,8 +116,8 @@ class Frame {
     return (
       TypeUtils.isInteger(reference) ||
       TypeUtils.isString(reference) ||
-      this.WrappedElement.isSelector(reference) ||
-      this.WrappedElement.isCompatible(reference) ||
+      this.specs.isSelector(reference) ||
+      this.specs.isCompatibleElement(reference) ||
       reference instanceof Frame
     )
   }
@@ -110,7 +130,7 @@ class Frame {
   static equals(leftFrame, rightFrame) {
     const leftElement = leftFrame instanceof Frame ? leftFrame.element : leftFrame
     const rightElement = rightFrame instanceof Frame ? rightFrame.element : rightFrame
-    return this.WrappedElement.equals(leftElement, rightElement)
+    return this.specs.isEqualElements(leftElement, rightElement)
   }
   /**
    * @return {EyesWrappedElement}
@@ -192,19 +212,15 @@ class Frame {
       if (!element) {
         throw new TypeError(`No frame with name or id '${this._reference}' exists!`)
       }
-      this._element = new this.constructor.WrappedElement(this._logger, this._driver, element)
-    } else if (this.constructor.WrappedElement.isSelector(this._reference)) {
+      this._element = this.specs.createElement(this._logger, this._driver, element)
+    } else if (this.specs.isSelector(this._reference)) {
       const element = await this._driver.finder.findElement(this._reference)
       if (!element) {
         throw new TypeError(`No frame found by selector '${this._reference}'!`)
       }
       this._element = element
-    } else if (this.constructor.WrappedElement.isCompatible(this._reference)) {
-      this._element = new this.constructor.WrappedElement(
-        this._logger,
-        this._driver,
-        this._reference,
-      )
+    } else if (this.specs.isCompatibleElement(this._reference)) {
+      this._element = this.specs.createElement(this._logger, this._driver, this._reference)
     } else {
       throw new TypeError('Reference type does not supported!')
     }
@@ -242,11 +258,7 @@ class Frame {
   async hideScrollbars() {
     if (!this._scrollRootElement) {
       const element = await EyesUtils.getScrollRootElement(this._logger, this._driver.executor)
-      this._scrollRootElement = new this.constructor.WrappedElement(
-        this._logger,
-        this._driver,
-        element,
-      )
+      this._scrollRootElement = this.specs.createElement(this._logger, this._driver, element)
     }
     this._logger.verbose('hiding scrollbars of element')
     return this._scrollRootElement.hideScrollbars()
@@ -267,11 +279,7 @@ class Frame {
   async preservePosition(positionProvider) {
     if (!this._scrollRootElement) {
       const element = await EyesUtils.getScrollRootElement(this._logger, this._driver.executor)
-      this._scrollRootElement = new this.constructor.WrappedElement(
-        this._logger,
-        this._driver,
-        element,
-      )
+      this._scrollRootElement = this.specs.createElement(this._logger, this._driver, element)
     }
     this._logger.verbose('saving frame position')
     return this._scrollRootElement.preservePosition(positionProvider)

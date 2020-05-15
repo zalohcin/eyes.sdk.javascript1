@@ -24,24 +24,42 @@ const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
  * @typedef {Region|SupportedSelector|SupportedElement|EyesWrappedElement} RegionReference
  */
 
+/**
+ * @typedef {Object} SpecsCheckSettings
+ * @property {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
+ * @property {(element) => boolean} isCompatibleElement - return true if the value is an element, false otherwise
+ * @property {(selector: SupportedSelector) => EyesWrappedElement} createElementFromSelector - return partially created element
+ * @property {(element: SupportedElement) => EyesWrappedElement} createElementFromElement - return partially created element
+ * @property {(reference) => boolean} isFrameReference - return true if the value is a frame reference, false otherwise
+ * @property {(reference: FrameReference) => Frame} createFrameReference - return frame reference
+ */
+
 const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
 
 class DriverCheckSettings extends CheckSettings {
   /**
-   * @param {Object} implementations
-   * @param {EyesWrappedElement} implementations.WrappedElement
-   * @param {Frame} implementations.Frame
-   * @return {DriverCheckSettings}
+   * @param {SpecsCheckSettings} SpecsCheckSettings
+   * @return {DriverCheckSettings} specialized version of this class
    */
-  static specialize({WrappedElement, Frame}) {
+  static specialize(SpecsCheckSettings) {
     return class extends DriverCheckSettings {
-      static get WrappedElement() {
-        return WrappedElement
+      /** @override */
+      static get specs() {
+        return SpecsCheckSettings
       }
-      static get Frame() {
-        return Frame
+      /** @override */
+      get specs() {
+        return SpecsCheckSettings
       }
     }
+  }
+  /** @type {SpecsCheckSettings} */
+  static get specs() {
+    throw new TypeError('DriverCheckSettings is not specialized')
+  }
+  /** @type {SpecsCheckSettings} */
+  get specs() {
+    throw new TypeError('DriverCheckSettings is not specialized')
   }
 
   /**
@@ -101,10 +119,10 @@ class DriverCheckSettings extends CheckSettings {
    */
   ignoreRegion(region) {
     let ignoreRegion
-    if (this.constructor.WrappedElement.isSelector(region)) {
+    if (this.specs.isSelector(region)) {
       ignoreRegion = new IgnoreRegionBySelector(region)
-    } else if (this.constructor.WrappedElement.isCompatible(region)) {
-      ignoreRegion = new IgnoreRegionByElement(this.constructor.WrappedElement.fromElement(region))
+    } else if (this.specs.isCompatibleElement(region)) {
+      ignoreRegion = new IgnoreRegionByElement(this.specs.createElementFromElement(region))
     } else {
       return super.ignoreRegion(region)
     }
@@ -121,10 +139,10 @@ class DriverCheckSettings extends CheckSettings {
    */
   layoutRegion(region) {
     let layoutRegion
-    if (this.constructor.WrappedElement.isSelector(region)) {
+    if (this.specs.isSelector(region)) {
       layoutRegion = new IgnoreRegionBySelector(region)
-    } else if (this.constructor.WrappedElement.isCompatible(region)) {
-      layoutRegion = new IgnoreRegionByElement(this.constructor.WrappedElement.fromElement(region))
+    } else if (this.specs.isCompatibleElement(region)) {
+      layoutRegion = new IgnoreRegionByElement(this.specs.createElementFromElement(region))
     } else {
       return super.layoutRegion(region)
     }
@@ -140,10 +158,10 @@ class DriverCheckSettings extends CheckSettings {
    */
   strictRegion(region) {
     let strictRegion
-    if (this.constructor.WrappedElement.isSelector(region)) {
+    if (this.specs.isSelector(region)) {
       strictRegion = new IgnoreRegionBySelector(region)
-    } else if (this.constructor.WrappedElement.isCompatible(region)) {
-      strictRegion = new IgnoreRegionByElement(this.constructor.WrappedElement.fromElement(region))
+    } else if (this.specs.isCompatibleElement(region)) {
+      strictRegion = new IgnoreRegionByElement(this.specs.createElementFromElement(region))
     } else {
       return super.strictRegion(region)
     }
@@ -159,10 +177,10 @@ class DriverCheckSettings extends CheckSettings {
    */
   contentRegion(region) {
     let contentRegion
-    if (this.constructor.WrappedElement.isSelector(region)) {
+    if (this.specs.isSelector(region)) {
       contentRegion = new IgnoreRegionBySelector(region)
-    } else if (this.constructor.WrappedElement.isCompatible(region)) {
-      contentRegion = new IgnoreRegionByElement(this.constructor.WrappedElement.fromElement(region))
+    } else if (this.specs.isCompatibleElement(region)) {
+      contentRegion = new IgnoreRegionByElement(this.specs.createElementFromElement(region))
     } else {
       return super.contentRegion(region)
     }
@@ -183,7 +201,7 @@ class DriverCheckSettings extends CheckSettings {
    */
   floatingRegion(region, maxUpOffset, maxDownOffset, maxLeftOffset, maxRightOffset) {
     let floatingRegion
-    if (this.constructor.WrappedElement.isSelector(region)) {
+    if (this.specs.isSelector(region)) {
       floatingRegion = new FloatingRegionBySelector(
         region,
         maxUpOffset,
@@ -191,9 +209,9 @@ class DriverCheckSettings extends CheckSettings {
         maxLeftOffset,
         maxRightOffset,
       )
-    } else if (this.constructor.WrappedElement.isCompatible(region)) {
+    } else if (this.specs.isCompatibleElement(region)) {
       floatingRegion = new FloatingRegionByElement(
-        this.constructor.WrappedElement.fromElement(region),
+        this.specs.createElementFromElement(region),
         maxUpOffset,
         maxDownOffset,
         maxLeftOffset,
@@ -215,11 +233,11 @@ class DriverCheckSettings extends CheckSettings {
    */
   accessibilityRegion(region, regionType) {
     let accessibilityRegion
-    if (this.constructor.WrappedElement.isSelector(region)) {
+    if (this.specs.isSelector(region)) {
       accessibilityRegion = new AccessibilityRegionBySelector(region, regionType)
-    } else if (this.constructor.WrappedElement.isCompatible(region)) {
+    } else if (this.specs.isCompatibleElement(region)) {
       accessibilityRegion = new AccessibilityRegionByElement(
-        this.constructor.WrappedElement.fromElement(region),
+        this.specs.createElementFromElement(region),
         regionType,
       )
     } else {
@@ -238,10 +256,10 @@ class DriverCheckSettings extends CheckSettings {
     if (Region.isRegionCompatible(region)) {
       this._targetRegion = new Region(region)
       this._targetRegion.setCoordinatesType(CoordinatesType.CONTEXT_RELATIVE)
-    } else if (this.constructor.WrappedElement.isSelector(region)) {
-      this._targetElement = this.constructor.WrappedElement.fromSelector(region)
-    } else if (this.constructor.WrappedElement.isCompatible(region)) {
-      this._targetElement = this.constructor.WrappedElement.fromElement(region)
+    } else if (this.specs.isSelector(region)) {
+      this._targetElement = this.specs.createElementFromSelector(region)
+    } else if (this.specs.isCompatibleElement(region)) {
+      this._targetElement = this.specs.createElementFromElement(region)
     } else {
       throw new TypeError('region method called with argument of unknown type!')
     }
@@ -253,8 +271,8 @@ class DriverCheckSettings extends CheckSettings {
    * @returns {this}
    */
   frame(frameReference) {
-    if (this.constructor.Frame.isReference(frameReference)) {
-      this._frameChain.push(this.constructor.Frame.fromReference(frameReference))
+    if (this.specs.isFrameReference(frameReference)) {
+      this._frameChain.push(this.specs.createFrameReference(frameReference))
     } else {
       throw new TypeError('frame method called with argument of unknown type!')
     }
@@ -267,10 +285,10 @@ class DriverCheckSettings extends CheckSettings {
    */
   scrollRootElement(element) {
     let scrollRootElement
-    if (this.constructor.WrappedElement.isSelector(element)) {
-      scrollRootElement = this.constructor.WrappedElement.fromSelector(element)
-    } else if (this.constructor.WrappedElement.isCompatible(element)) {
-      scrollRootElement = this.constructor.WrappedElement.fromElement(element)
+    if (this.specs.isSelector(element)) {
+      scrollRootElement = this.specs.createElementFromSelector(element)
+    } else if (this.specs.isCompatibleElement(element)) {
+      scrollRootElement = this.specs.createElementFromElement(element)
     } else {
       throw new TypeError('scrollRootElement method called with argument of unknown type!')
     }

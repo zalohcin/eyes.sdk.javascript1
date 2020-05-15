@@ -18,7 +18,7 @@ module.exports = {
   isEqualFrames(leftFrame, rightFrame) {
     return WDIOFrame.equals(leftFrame, rightFrame)
   },
-  createFrame(reference) {
+  createFrameReference(reference) {
     return WDIOFrame.fromReference(reference)
   },
   async findElement(driver, selector) {
