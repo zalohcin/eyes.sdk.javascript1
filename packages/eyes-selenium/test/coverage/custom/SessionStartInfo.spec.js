@@ -72,7 +72,7 @@ describe('SessionStartInfo', () => {
       const testResults = await eyes.close(false)
       assert.strictEqual(testResults.getStatus(), TestResultsStatus.Passed) // sanity check
 
-      const {startInfo} = await getSession(testResults)
+      const {startInfo} = await getSession(testResults, serverUrl)
 
       assert.deepStrictEqual(startInfo.defaultMatchSettings.accessibilitySettings, {
         level: 'AA',

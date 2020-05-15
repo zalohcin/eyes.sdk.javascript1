@@ -4,6 +4,35 @@
 
 - support accessibilitySettings
 
+## 13.8.1 - 2020/5/13
+
+- updated to @applitools/eyes-sdk-core@10.1.2
+
+## 13.8.0 - 2020/5/11
+
+- updated to @applitools/eyes-sdk-core@10.1.1
+- add iosDeviceInfo support
+
+## 13.7.7 - 2020/5/7
+
+- updated to @applitools/dom-snapshot@3.5.2
+
+## 13.7.6 - 2020/5/4
+
+- updated to @applitools/eyes-sdk-core@10.0.1
+
+## 13.7.5 - 2020/4/30
+
+- updated to @applitools/eyes-sdk-core@10.0.0
+
+## 13.7.4 - 2020/4/30
+
+- updated to @applitools/eyes-sdk-core@9.3.0
+
+## 13.7.3 - 2020/4/30
+
+- updated to @applitools/dom-snapshot@3.5.0
+
 ## 13.7.2 - 2020/4/27
 
 - add edgechromium to types

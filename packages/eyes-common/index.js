@@ -20,6 +20,9 @@ exports.ProxySettings = require('./lib/config/ProxySettings').ProxySettings
 exports.ScreenOrientation = require('./lib/config/ScreenOrientation').ScreenOrientation
 exports.SessionType = require('./lib/config/SessionType').SessionType
 exports.StitchMode = require('./lib/config/StitchMode').StitchMode
+exports.IosDeviceName = require('./lib/config/IosDeviceName').IosDeviceName
+exports.IosScreenOrientation = require('./lib/config/IosScreenOrientation').IosScreenOrientation
+exports.IosVersion = require('./lib/config/IosVersion').IosVersion
 
 // debug
 exports.DebugScreenshotsProvider = require('./lib/debug/DebugScreenshotsProvider').DebugScreenshotsProvider

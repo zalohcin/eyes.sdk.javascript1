@@ -9,8 +9,11 @@ const {
   MatchLevel,
 } = require('../../../index')
 const {assertDefaultMatchSettings, assertImageMatchSettings} = require('./util/ApiAssertions')
-const {expect} = require('chai')
 const util = require('util')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+chai.use(chaiAsPromised)
+const expect = chai.expect
 const batch = getBatch()
 
 describe('TestVGServerConfigs', () => {
@@ -37,7 +40,7 @@ describe('TestVGServerConfigs', () => {
     await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
   })
 
-  it('TestVGChangeConfigAfterOpen', async () => {
+  it.skip('TestVGChangeConfigAfterOpen', async () => {
     let conf = new Configuration()
     conf.setBatch(batch)
     conf.setAppName('app')

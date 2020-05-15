@@ -1937,6 +1937,44 @@ Received: 'firefox-1'.`,
     expect(results.getStepsInfo()[0].result.getAsExpected()).to.equal(true)
   })
 
+  it('renders iosDeviceInfo', async () => {
+    const deviceName = 'iPhone 4'
+    const iosDeviceInfo = {screenOrientation: 'portrait', version: 'latest', name: deviceName}
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      browser: {
+        name: 'safari',
+        iosDeviceInfo,
+      },
+      appName,
+    })
+
+    checkWindow({url: '', cdt: []})
+    const [results] = await close()
+    expect(wrapper.getDeviceInfo()).to.equal(deviceName)
+    expect(wrapper.iosDeviceInfo).to.eql(iosDeviceInfo)
+    expect(wrapper.getViewportSize()).to.eql(FakeEyesWrapper.devices['iPhone 4'])
+    expect(results.getStepsInfo()[0].result.getAsExpected()).to.equal(true)
+  })
+
+  it('adds "safari" browser name and "ios" platform if "iosDeviceInfo" is defined', async () => {
+    const deviceName = 'iPhone 4'
+    const {checkWindow, close} = await openEyes({
+      wrappers: [wrapper],
+      browser: {
+        iosDeviceInfo: {screenOrientation: 'portrait', version: 'latest', name: deviceName},
+      },
+      appName,
+    })
+
+    checkWindow({url: '', cdt: []})
+    const [results] = await close()
+    expect(wrapper.results[0].__browserName).to.equal('safari')
+    expect(wrapper.results[0].__platform).to.equal('ios')
+    expect(wrapper.getDeviceInfo()).to.equal(deviceName)
+    expect(results.getStepsInfo()[0].result.getAsExpected()).to.equal(true)
+  })
+
   it("does't call getRenderInfo on wrapper passed to openEyes", async () => {
     let flag = true
     wrapper.getRenderInfo = async function() {
