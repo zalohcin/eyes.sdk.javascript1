@@ -19,8 +19,8 @@ const EyesJsSnippets = require('./EyesJsSnippets')
  * @typedef {import('./wrappers/EyesJsExecutor')} EyesJsExecutor
  * @typedef {import('./wrappers/EyesWrappedElement')} EyesWrappedElement
  * @typedef {import('./wrappers/EyesWrappedElement').UnwrappedElement} UnwrappedElement
+ * @typedef {import('./wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
  * @typedef {import('./positioning/PositionProvider')} PositionProvider
- * @typedef {import('./UniversalSelector')} UniversalSelector
  */
 
 /**
@@ -599,10 +599,11 @@ async function getElementXpath(logger, executor, element) {
  * @param {Object} driver
  * @param {EyesElementFinder} driver.finder - element finder
  * @param {EyesJsExecutor} driver.executor - js executor
- * @param {UniversalSelector} selector - element selector
+ * @param {SupportedSelector} selector - element selector
  * @return {Promise<{type: string, selector: string}[]>} persisted regions for selector
  */
 async function locatorToPersistedRegions(logger, {finder, executor}, selector) {
+  // TODO move away from selenium like selectors
   if (selector.using === 'xpath') {
     return [{type: 'xpath', selector: selector.value}]
   } else if (selector.using === 'css selector') {
@@ -631,6 +632,16 @@ async function locatorToPersistedRegions(logger, {finder, executor}, selector) {
  */
 async function getCurrentContextInfo(_logger, executor) {
   return executor.executeScript(EyesJsSnippets.GET_CURRENT_CONTEXT_INFO)
+}
+/**
+ * Get frame element by name or id
+ * @param {Logger} _logger - logger instance
+ * @param {EyesJsExecutor} executor - js executor
+ * @param {string} nameOrId - name or id of the element
+ * @return {UnwrappedElement} frame element
+ */
+async function getFrameByNameOrId(_logger, executor, nameOrId) {
+  return executor.executeScript(EyesJsSnippets.GET_FRAME_BY_NAME_OR_ID, nameOrId)
 }
 /**
  * @typedef {Object} FrameInfo
@@ -761,5 +772,6 @@ module.exports = {
   ensureRegionVisible,
   ensureFrameVisible,
   getCurrentContextInfo,
+  getFrameByNameOrId,
   findFrameByContext,
 }

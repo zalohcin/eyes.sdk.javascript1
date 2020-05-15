@@ -13,15 +13,15 @@ const AccessibilityRegionByElement = require('./AccessibilityRegionByElement')
 
 /**
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('../wrappers/EyesWrappedElement').UnwrappedElement} UnwrappedElement
- * @typedef {import('../UniversalSelector')} UniversalSelector
+ * @typedef {import('../wrappers/EyesWrappedElement').SupportedElement} SupportedElement
+ * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
  * @typedef {import('../frames/Frame')} Frame
  * @typedef {import('../frames/Frame').FrameReference} FrameReference
  */
 
 /**
  * Reference to the region
- * @typedef {Region|UniversalSelector|UnwrappedElement|EyesWrappedElement} RegionReference
+ * @typedef {Region|SupportedSelector|SupportedElement|EyesWrappedElement} RegionReference
  */
 
 const BEFORE_CAPTURE_SCREENSHOT = 'beforeCaptureScreenshot'
@@ -262,7 +262,7 @@ class DriverCheckSettings extends CheckSettings {
   }
 
   /**
-   * @param {UniversalSelector|UnwrappedElement|EyesWrappedElement} element
+   * @param {SupportedSelector|SupportedElement|EyesWrappedElement} element
    * @return {this}
    */
   scrollRootElement(element) {

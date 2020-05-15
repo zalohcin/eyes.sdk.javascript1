@@ -5,7 +5,7 @@ const {GetFloatingRegion} = require('./GetFloatingRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../UniversalSelector')} UniversalSelector
+ * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('../EyesClassic')} EyesClassic
  *
@@ -20,7 +20,7 @@ const EyesUtils = require('../EyesUtils')
 
 class FloatingRegionBySelector extends GetFloatingRegion {
   /**
-   * @param {UniversalSelector} regionSelector
+   * @param {SupportedSelector} regionSelector
    * @param {number} maxUpOffset
    * @param {number} maxDownOffset
    * @param {number} maxLeftOffset

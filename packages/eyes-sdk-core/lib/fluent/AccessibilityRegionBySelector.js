@@ -6,7 +6,7 @@ const EyesUtils = require('../EyesUtils')
 
 /**
  * @typedef {import('@applitools/eyes-common').AccessibilityRegionType} AccessibilityRegionType
- * @typedef {import('../UniversalSelector')} UniversalSelector
+ * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('../EyesClassic')} EyesClassic
  *
@@ -18,7 +18,7 @@ const EyesUtils = require('../EyesUtils')
 
 class AccessibilityRegionBySelector extends GetAccessibilityRegion {
   /**
-   * @param {UniversalSelector} selector
+   * @param {SupportedSelector} selector
    * @param {AccessibilityRegionType} regionType
    */
   constructor(selector, regionType) {

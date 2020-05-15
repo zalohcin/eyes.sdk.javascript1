@@ -131,7 +131,6 @@ exports.EyesWrappedElement = require('./lib/wrappers/EyesWrappedElement')
 exports.EyesJsExecutor = require('./lib/wrappers/EyesJsExecutor')
 exports.EyesElementFinder = require('./lib/wrappers/EyesElementFinder')
 exports.EyesBrowsingContext = require('./lib/wrappers/EyesBrowsingContext')
-exports.UniversalSelector = require('./lib/UniversalSelector')
 
 exports.EyesRunner = require('./lib/runner/EyesRunner').EyesRunner
 exports.ClassicRunner = require('./lib/runner/ClassicRunner').ClassicRunner

@@ -210,6 +210,11 @@ const GET_CURRENT_CONTEXT_INFO = `
   };
 `
 
+const GET_FRAME_BY_NAME_OR_ID = `
+  var nameOrId = arguments[0];
+  return document.querySelector('iframe[name="' + nameOrId + '"],iframe#' + nameOrId)
+`
+
 const GET_FRAMES = `
   var frames = document.querySelectorAll('frame, iframe');
   return Array.prototype.map.call(frames, function(frameElement) {
@@ -244,5 +249,6 @@ module.exports = {
   GET_ELEMENT_XPATH,
   GET_ELEMENT_ABSOLUTE_XPATH,
   GET_CURRENT_CONTEXT_INFO,
+  GET_FRAME_BY_NAME_OR_ID,
   GET_FRAMES,
 }

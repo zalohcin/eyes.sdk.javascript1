@@ -1,6 +1,6 @@
 'use strict'
 
-class UniversalSelector {
+class LegacySelector {
   /**
    * @param {string} value - selector itself
    * @param {string} using - selector type
@@ -24,71 +24,71 @@ class UniversalSelector {
   /**
    * Create css selector
    * @param {string} cssSelector - selector string
-   * @return {UniversalSelector} selector instance
+   * @return {LegacySelector} selector instance
    */
   static css(cssSelector) {
-    return new UniversalSelector(cssSelector)
+    return new LegacySelector(cssSelector)
   }
   /**
    * @alias css
    */
   static cssSelector(cssSelector) {
-    return UniversalSelector.css(cssSelector)
+    return LegacySelector.css(cssSelector)
   }
   /**
    * Create css selector by id
    * @param {string} id - element id
-   * @return {UniversalSelector} selector instance
+   * @return {LegacySelector} selector instance
    */
   static id(id) {
-    return new UniversalSelector(`*[id="${id}"]`)
+    return new LegacySelector(`*[id="${id}"]`)
   }
   /**
    * Create css selector by class
    * @param {string} className - element class
-   * @return {UniversalSelector} selector instance
+   * @return {LegacySelector} selector instance
    */
   static className(className) {
-    return new UniversalSelector(`.${className}`)
+    return new LegacySelector(`.${className}`)
   }
   /**
    * Create css selector by attribute an its value
    * @param {string} attributeName - attribute name
    * @param {string} value - attribute value
-   * @return {UniversalSelector} selector instance
+   * @return {LegacySelector} selector instance
    */
   static attributeValue(attributeName, value) {
-    return new UniversalSelector(`*[${attributeName}="${value}"]`)
+    return new LegacySelector(`*[${attributeName}="${value}"]`)
   }
   /**
    * Create css selector by name attribute
    * @param {string} name - name attribute value
-   * @return {UniversalSelector} selector instance
+   * @return {LegacySelector} selector instance
    */
   static name(name) {
-    return UniversalSelector.attributeValue('name', name)
+    return LegacySelector.attributeValue('name', name)
   }
   /**
    * Create css selector by tag name
    * @param {string} tagName - element tag name
-   * @return {UniversalSelector} selector instance
+   * @return {LegacySelector} selector instance
    */
   static tagName(tagName) {
-    return new UniversalSelector(tagName)
+    return new LegacySelector(tagName)
   }
   /**
    * Create xpath selector
    * @param {string} xpath - xpath string
-   * @return {UniversalSelector} selector instance
+   * @return {LegacySelector} selector instance
    */
   static xpath(xpath) {
-    return new UniversalSelector(xpath, 'xpath')
+    return new LegacySelector(xpath, 'xpath')
   }
   /**
    * @alias xpath
    */
   static xPath(xpath) {
-    return UniversalSelector.xpath(xpath)
+    return LegacySelector.xpath(xpath)
   }
   /**
    * @override
@@ -98,4 +98,4 @@ class UniversalSelector {
   }
 }
 
-module.exports = UniversalSelector
+module.exports = LegacySelector

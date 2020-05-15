@@ -1,7 +1,6 @@
 'use strict'
 
 const {ArgumentGuard, TypeUtils, Location, RectangleSize} = require('@applitools/eyes-common')
-const UniversalSelector = require('../UniversalSelector')
 const EyesUtils = require('../EyesUtils')
 
 /**
@@ -9,14 +8,15 @@ const EyesUtils = require('../EyesUtils')
  * @typedef {import('@applitools/eyes-common').Location} Location
  * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
- * @typedef {import('../wrappers/EyesWrappedElement').UnwrappedElement} UnwrappedElement
+ * @typedef {import('../wrappers/EyesWrappedElement').SupportedElement} SupportedElement
+ * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  */
 
 /**
  * Reference to the frame, index of the frame in the current context, name or id of the element,
  * framework element object, {@link EyesWrappedElement} implementation object
- * @typedef {number|string|UniversalSelector|UnwrappedElement|EyesWrappedElement|Frame} FrameReference
+ * @typedef {number|string|SupportedSelector|SupportedElement|EyesWrappedElement|Frame} FrameReference
  */
 
 /**
@@ -183,20 +183,20 @@ class Frame {
       this._logger.verbose('Done! getting the specific frame...')
       this._element = elements[this._reference]
     } else if (TypeUtils.isString(this._reference)) {
-      this._logger.verbose('Getting frames by name...')
-      let element = await this._driver.finder.findElement(UniversalSelector.name(this._reference))
+      this._logger.verbose('Getting frames by name or id...')
+      let element = await EyesUtils.getFrameByNameOrId(
+        this._logger,
+        this._driver.executor,
+        this._reference,
+      )
       if (!element) {
-        this._logger.verbose('No frames Found! Trying by id...')
-        element = await this._driver.finder.findElement(UniversalSelector.id(this._reference))
-        if (!element) {
-          throw new TypeError(`No frame with name or id '${this._reference}' exists!`)
-        }
+        throw new TypeError(`No frame with name or id '${this._reference}' exists!`)
       }
-      this._element = element
+      this._element = new this.constructor.WrappedElement(this._logger, this._driver, element)
     } else if (this.constructor.WrappedElement.isSelector(this._reference)) {
       const element = await this._driver.finder.findElement(this._reference)
       if (!element) {
-        throw new TypeError(`No frame found by locator '${this._reference}'!`)
+        throw new TypeError(`No frame found by selector '${this._reference}'!`)
       }
       this._element = element
     } else if (this.constructor.WrappedElement.isCompatible(this._reference)) {

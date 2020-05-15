@@ -1,5 +1,4 @@
 'use strict'
-const UniversalSelector = require('../UniversalSelector')
 const EyesUtils = require('../EyesUtils')
 
 /**
@@ -11,17 +10,19 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
+ * Compatible element type
  * @typedef {Object} SupportedElement
  * @property {?}
  */
 
 /**
+ * Supported selector type
  * @typedef {Object} SupportedSelector
  * @property {?}
  */
 
 /**
- * The object for which which is compatible with concrete {@link EyesWrappedElement} implementation
+ * Unwrapped element supported by framework
  * @typedef {Object} UnwrappedElement
  * @property {?}
  */
@@ -69,7 +70,7 @@ class EyesWrappedElement {
    * @param {Logger} [logger] - logger instance
    * @param {EyesWrappedDriver} [driver] - parent driver instance
    * @param {SupportedElement} [element] - supported element object to wrap
-   * @param {UniversalSelector|SupportedSelector} [selector] - universal selector object or any kind of supported selector
+   * @param {SupportedSelector} [selector] - universal selector object or any kind of supported selector
    */
   constructor(logger, driver, element, selector) {
     if (element instanceof EyesWrappedElement) {
@@ -102,7 +103,7 @@ class EyesWrappedElement {
   }
   /**
    * Create partial wrapped element object from the selector, this object need to be initialized before use
-   * @param {UniversalSelector|SupportedSelector} selector - universal selector object or any kind of supported selector
+   * @param {SupportedSelector} selector - any kind of supported selector
    * @return {EyesWrappedElement} partially wrapped object
    */
   static fromSelector(selector) {
@@ -123,7 +124,7 @@ class EyesWrappedElement {
    * @returns {boolean} true if selector is supported and could be passed in the {@link EyesWrappedElement.fromSelector} implementation
    */
   static isSelector(selector) {
-    return selector instanceof UniversalSelector || this.specs.isSelector(selector)
+    return this.specs.isSelector(selector)
   }
   /**
    * Extract element ID from this class instance or unwrapped element object
@@ -152,7 +153,7 @@ class EyesWrappedElement {
   }
   /**
    * Selector of the wrapped element
-   * @type {UniversalSelector}
+   * @type {SupportedSelector}
    */
   get selector() {
     return this._selector

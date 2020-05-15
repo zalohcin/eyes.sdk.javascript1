@@ -4,7 +4,7 @@ const {GetSelector} = require('./GetSelector')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../UniversalSelector')} UniversalSelector
+ * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  *
  * @typedef {Object} PersistedRegions
@@ -17,7 +17,7 @@ const EyesUtils = require('../EyesUtils')
  */
 class TargetRegionBySelector extends GetSelector {
   /**
-   * @param {UniversalSelector} selector
+   * @param {SupportedSelector} selector
    */
   constructor(selector) {
     super()

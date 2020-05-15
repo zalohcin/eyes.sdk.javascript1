@@ -5,7 +5,7 @@ const {GetRegion} = require('./GetRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../UniversalSelector')} UniversalSelector
+ * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('../EyesClassic')} EyesClassic
  *
@@ -16,7 +16,7 @@ const EyesUtils = require('../EyesUtils')
 
 class IgnoreRegionBySelector extends GetRegion {
   /**
-   * @param {UniversalSelector} selector
+   * @param {SupportedSelector} selector
    */
   constructor(selector) {
     super()
