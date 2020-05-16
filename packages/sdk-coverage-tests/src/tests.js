@@ -362,6 +362,18 @@ function makeCoverageTests({
       checkWindow({isFully: true})
       close(throwException)
     },
+    TestCheckFixedRegion: () => {
+      visit('http://applitools.github.io/demo/TestPages/fixed-position')
+      open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      checkRegion('#fixed')
+      close(throwException)
+    },
+    TestCheckFixedRegion_Fully: () => {
+      visit('http://applitools.github.io/demo/TestPages/fixed-position')
+      open({appName: 'Eyes Selenium SDK - Fluent API', viewportSize})
+      checkRegion('#fixed', {isFully: true})
+      close(throwException)
+    },
     //Test_VGTestsCount_1: () => {
     //  visit('https://applitools.com/helloworld')
     //  open({appName: 'Test Count', viewportSize: '640x480'})

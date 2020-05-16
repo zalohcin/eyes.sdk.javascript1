@@ -295,4 +295,10 @@ module.exports = [
   {name: 'Test Abort', executionMode: {isVisualGrid: true}},
   {name: 'Test Abort', executionMode: {isCssStitching: true}},
   {name: 'Test_VGTestsCount_1', executionMode: {isVisualGrid: true, useStrictName: true}},
+  {name: 'TestCheckFixedRegion', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckFixedRegion', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckFixedRegion', executionMode: {isScrollStitching: true}},
+  {name: 'TestCheckFixedRegion_Fully', executionMode: {isVisualGrid: true}},
+  {name: 'TestCheckFixedRegion_Fully', executionMode: {isCssStitching: true}},
+  {name: 'TestCheckFixedRegion_Fully', executionMode: {isScrollStitching: true}},
 ]

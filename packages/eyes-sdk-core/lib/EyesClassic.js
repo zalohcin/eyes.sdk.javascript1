@@ -494,13 +494,13 @@ class EyesClassic extends EyesCore {
       await targetElement.hideScrollbars()
     }
 
-    const region = await targetElement.getClientRect()
     await EyesUtils.ensureRegionVisible(
       this._logger,
       this._driver,
       this._positionProviderHandler.get(),
-      region,
+      await targetElement.getClientRect(),
     )
+    const region = await targetElement.getClientRect()
 
     const isScrollable = await EyesUtils.isScrollable(this._logger, this._executor, targetElement)
     if (isScrollable) {
