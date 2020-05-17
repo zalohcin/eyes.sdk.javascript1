@@ -59,7 +59,6 @@ function makeCheckWindow({
     enablePatterns,
     ignoreDisplacements,
     source,
-    referrer,
   }) {
     if (target === 'window' && !fully) {
       sizeMode = 'viewport'
@@ -68,7 +67,7 @@ function makeCheckWindow({
     } else if (target === 'region' && region) {
       sizeMode = 'region'
     }
-    fetchHeaders['Referer'] = referrer
+    fetchHeaders['Referer'] = source
 
     const accErr = isInvalidAccessibility(accessibility)
     if (accErr) {

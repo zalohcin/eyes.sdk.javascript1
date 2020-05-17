@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- BREAKING CHANGE - removed "referer" parameter from checkWindow, now using "source" 
 
 ## 13.8.1 - 2020/5/13
 
