@@ -4,7 +4,7 @@
 
 - updated VGC for using source instead of referer
 - updated to @applitools/eyes-sdk-core@10.1.2
-- updated to @applitools/visual-grid-client@13.8.1
+- updated to @applitools/visual-grid-client@14.0.0
 
 ## 3.10.4 - 2020/5/7
 
