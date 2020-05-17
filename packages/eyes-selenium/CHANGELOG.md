@@ -1,9 +1,10 @@
 # Change Log
 
 ## Unreleased
-- updated to @applitools/eyes-sdk-core@10.1.2
-- updated to @applitools/visual-grid-client@13.8.1
 
+- fetching resources with "referer" header.
+- updated to @applitools/eyes-sdk-core@10.1.2
+- updated to @applitools/visual-grid-client@14.0.0
 
 
 ## 4.36.0 - 2020/5/12
