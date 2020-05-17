@@ -12,7 +12,7 @@ const {EyesBase} = require('./EyesBase')
  */
 
 class EyesCore extends EyesBase {
-  /* ------------ Method Aliases ------------ */
+  /* ------------ Classic API ------------ */
   /**
    * Takes a snapshot of the application under test and matches it with the expected output.
    * @param {string} [tag] - An optional tag to be associated with the snapshot.
@@ -131,6 +131,7 @@ class EyesCore extends EyesBase {
         .stitchContent(stitchContent),
     )
   }
+  /* ------------ Redundant API ------------ */
   /**
    * @return {Promise}
    */

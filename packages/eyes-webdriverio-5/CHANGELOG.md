@@ -4,6 +4,12 @@
 - updated to @applitools/eyes-sdk-core@10.0.1
 - updated to @applitools/visual-grid-client@13.7.6
 
+- added retry for requests failing with a 503 response status
+- added more devices for device emulation
+- updated to @applitools/dom-utils@4.7.16
+- updated to @applitools/eyes-sdk-core@10.1.2
+- updated to @applitools/visual-grid-client@13.8.1
+
 
 ## 5.10.1 - 2020/4/27
 

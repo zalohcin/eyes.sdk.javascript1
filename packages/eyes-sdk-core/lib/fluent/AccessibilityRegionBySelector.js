@@ -5,8 +5,15 @@ const {GetAccessibilityRegion} = require('./GetAccessibilityRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
+ * @typedef {import('@applitools/eyes-common').AccessibilityRegionType} AccessibilityRegionType
  * @typedef {import('../UniversalSelector')} UniversalSelector
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
+ * @typedef {import('../EyesClassic')} EyesClassic
+ *
+ * @typedef {Object} AccessibilityPersistedRegions
+ * @property {string} type - selector type (css or xpath)
+ * @property {string} selector - selector itself
+ * @property {AccessibilityRegionType} accessibilityType - accessibility region type
  */
 
 class AccessibilityRegionBySelector extends GetAccessibilityRegion {
@@ -19,14 +26,14 @@ class AccessibilityRegionBySelector extends GetAccessibilityRegion {
     this._selector = selector
     this._regionType = regionType
   }
-
   /**
-   * @param {EyesWrappedDriver} driver
+   * @param {EyesClassic} eyes
    * @param {EyesScreenshot} screenshot
    * @return {Promise<AccessibilityMatchSettings[]>}
    */
-  async getRegion(driver, screenshot) {
-    const elements = await driver.finder.findElements(this._selector)
+  async getRegion(eyes, screenshot) {
+    // TODO eyes should be replaced with driver once all SDKs will use this implementation
+    const elements = await eyes.getDriver().finder.findElements(this._selector)
 
     const regions = []
     for (const element of elements) {
@@ -48,9 +55,9 @@ class AccessibilityRegionBySelector extends GetAccessibilityRegion {
 
     return regions
   }
-
   /**
    * @param {EyesWrappedDriver} driver
+   * @return {Promise<AccessibilityPersistedRegions[]>}
    */
   async toPersistedRegions(driver) {
     const regions = await EyesUtils.locatorToPersistedRegions(

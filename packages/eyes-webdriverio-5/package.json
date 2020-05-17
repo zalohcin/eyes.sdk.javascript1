@@ -32,9 +32,9 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/dom-utils": "4.7.14",
-    "@applitools/eyes-sdk-core": "10.0.1",
-    "@applitools/visual-grid-client": "13.7.6",
+    "@applitools/dom-utils": "4.7.16",
+    "@applitools/eyes-sdk-core": "10.1.2",
+    "@applitools/visual-grid-client": "13.8.1",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "webdriverio": "^5.18.6"
   },
@@ -60,7 +60,7 @@
     "test:unit": "mocha \"test/unit/**/*.js\"",
     "coverage:sandbox": "coverage-tests create-tests --remote=$CVG_TEST_REMOTE && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "coverage-tests create-tests --remote=$CVG_TEST_REMOTE && yarn test:coverage && coverage-tests process-report --send-report prod",
-    "test:coverage": "yarn start-chromedriver && env APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio-5' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha-parallel-tests --no-timeouts --reporter spec-xunit-file --max-parallel 15 test/coverage/generic/*.spec.js",
+    "test:coverage": "yarn start-chromedriver && env APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio-5' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha-parallel-tests --no-timeouts --reporter spec-xunit-file --max-parallel 15 test/coverage/generic/*.spec.js; yarn stop-chromedriver",
     "test:coverage:custom": "mocha \"test/coverage/custom/**/*.spec.js\" --no-timeouts",
     "render": "node scripts/render.js",
     "preversion": "bongo preversion && yarn coverage:prod",
