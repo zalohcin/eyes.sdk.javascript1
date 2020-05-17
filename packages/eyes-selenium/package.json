@@ -38,7 +38,7 @@
   "dependencies": {
     "@applitools/dom-utils": "4.7.16",
     "@applitools/eyes-sdk-core": "10.1.2",
-    "@applitools/visual-grid-client": "14.0.0"
+    "@applitools/visual-grid-client": "14.0.1"
   },
   "devDependencies": {
     "@applitools/sdk-coverage-tests": "1.0.0",

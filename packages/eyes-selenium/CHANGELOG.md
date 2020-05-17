@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- removed "source" attribute from VG checkWindow
+- updated to @applitools/visual-grid-client@14.0.1
+
 
 
 ## 4.36.1 - 2020/5/17
