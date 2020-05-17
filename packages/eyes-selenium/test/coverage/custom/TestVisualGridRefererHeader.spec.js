@@ -12,7 +12,7 @@ const {
   VisualGridRunner,
 } = require('../../../index')
 
-describe('VGFetch', () => {
+describe('TestVisualGridRefererHeader', () => {
   let closeTestServer, closeTestServer2
   let serverUrl, driver
 
@@ -54,7 +54,7 @@ describe('VGFetch', () => {
       .build()
   })
 
-  it('send referer header ', async () => {
+  it('send referer header', async () => {
     const url = 'http://localhost:5555/cors.html'
     await driver.get(url)
     const eyes = setupEyes()
