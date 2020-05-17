@@ -329,9 +329,9 @@ class EyesCore extends EyesBase {
    * @param {EyesWrappedElement|SupportedElement|SupportedSelector} element
    */
   setScrollRootElement(scrollRootElement) {
-    if (this.constructor.isSelector(scrollRootElement)) {
-      this._scrollRootElement = this.constructor.fromSelector(scrollRootElement)
-    } else if (this.constructor.isCompatible(scrollRootElement)) {
+    if (this.constructor.WrappedElement.isSelector(scrollRootElement)) {
+      this._scrollRootElement = this.constructor.WrappedElement.fromSelector(scrollRootElement)
+    } else if (this.constructor.WrappedElement.isCompatible(scrollRootElement)) {
       this._scrollRootElement = scrollRootElement
     } else {
       this._scrollRootElement = null
