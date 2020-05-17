@@ -1,8 +1,9 @@
 'use strict'
 
 const assert = require('assert')
-const {Logger} = require('@applitools/eyes-common')
 const {
+  Region,
+  Logger,
   TargetRegionByElement,
   TargetRegionBySelector,
   IgnoreRegionByRectangle,
@@ -15,28 +16,22 @@ const {
   AccessibilityRegionByElement,
   AccessibilityRegionBySelector,
   AccessibilityRegionType,
-  Region,
 } = require('../../index')
-
-const EyesJsSnippet = require('../../lib/EyesJsSnippets')
-const FakeWrappedDriver = require('../utils/wrappers/FakeWrappedDriver')
-const FakeWrappedElement = require('../utils/wrappers/FakeWrappedElement')
+const EyesJsSnippets = require('../../lib/EyesJsSnippets')
+const MockDriver = require('../utils/MockDriver')
+const FakeWrappedDriver = require('../utils/FakeWrappedDriver')
 
 describe('toPersistedRegions()', () => {
   let driver, element
 
-  before(() => {
-    const logger = new Logger(false)
-    element = new FakeWrappedElement(logger, driver, Symbol('unwrapped element'), {
-      using: 'css selector',
-      value: '.element',
+  before(async () => {
+    const mock = new MockDriver()
+    mock.mockScript(EyesJsSnippets.GET_ELEMENT_XPATH, element => element.xpath)
+    mock.mockElement('custom selector', {
+      xpath: '/calculated[1]/xpath[1]/some[1]',
     })
-    element.addMockProperty('xpath', '/calculated[1]/xpath[1]/some[1]')
-    driver = new FakeWrappedDriver(logger)
-    driver.executor.addMockScript(EyesJsSnippet.GET_ELEMENT_XPATH, element =>
-      element.getMockValue('xpath'),
-    )
-    driver.finder.addMockElement({using: 'custom', value: 'some'}, element)
+    driver = new FakeWrappedDriver(new Logger(false), mock)
+    element = await driver.finder.findElement('custom selector')
   })
 
   it('IgnoreRegionByRectangle', async () => {
@@ -94,23 +89,13 @@ describe('toPersistedRegions()', () => {
   it('TargetRegionByElement', async () => {
     const region = new TargetRegionByElement(element)
     const persistedRegion = await region.toPersistedRegions(driver)
-    assert.deepStrictEqual(persistedRegion, [
-      {
-        type: 'xpath',
-        selector: element.getMockValue('xpath'),
-      },
-    ])
+    assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: element.unwrapped.xpath}])
   })
 
   it('IgnoreRegionByElement', async () => {
     const region = new IgnoreRegionByElement(element)
     const persistedRegion = await region.toPersistedRegions(driver)
-    assert.deepStrictEqual(persistedRegion, [
-      {
-        type: 'xpath',
-        selector: element.getMockValue('xpath'),
-      },
-    ])
+    assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: element.unwrapped.xpath}])
   })
 
   it('FloatingRegionByElement', async () => {
@@ -119,7 +104,7 @@ describe('toPersistedRegions()', () => {
     assert.deepStrictEqual(persistedRegion, [
       {
         type: 'xpath',
-        selector: element.getMockValue('xpath'),
+        selector: element.unwrapped.xpath,
         maxDownOffset: 2,
         maxLeftOffset: 3,
         maxRightOffset: 4,
@@ -134,7 +119,7 @@ describe('toPersistedRegions()', () => {
     assert.deepStrictEqual(persistedRegion, [
       {
         type: 'xpath',
-        selector: element.getMockValue('xpath'),
+        selector: element.unwrapped.xpath,
         accessibilityType: AccessibilityRegionType.RegularText,
       },
     ])
@@ -149,11 +134,9 @@ describe('toPersistedRegions()', () => {
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: '//some'}])
 
-    region = new TargetRegionBySelector({using: 'custom', value: 'some'})
+    region = new TargetRegionBySelector('custom selector')
     persistedRegion = await region.toPersistedRegions(driver)
-    assert.deepStrictEqual(persistedRegion, [
-      {type: 'xpath', selector: element.getMockValue('xpath')},
-    ])
+    assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: element.unwrapped.xpath}])
   })
 
   it('IgnoreRegionBySelector', async () => {
@@ -165,11 +148,9 @@ describe('toPersistedRegions()', () => {
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: '//some'}])
 
-    region = new IgnoreRegionBySelector({using: 'custom', value: 'some'})
+    region = new IgnoreRegionBySelector('custom selector')
     persistedRegion = await region.toPersistedRegions(driver)
-    assert.deepStrictEqual(persistedRegion, [
-      {type: 'xpath', selector: element.getMockValue('xpath')},
-    ])
+    assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: element.unwrapped.xpath}])
   })
 
   it('FloatingRegionBySelector', async () => {
@@ -199,12 +180,12 @@ describe('toPersistedRegions()', () => {
       },
     ])
 
-    region = new FloatingRegionBySelector({using: 'custom', value: 'some'}, 1, 2, 3, 4)
+    region = new FloatingRegionBySelector('custom selector', 1, 2, 3, 4)
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {
         type: 'xpath',
-        selector: element.getMockValue('xpath'),
+        selector: element.unwrapped.xpath,
         maxDownOffset: 2,
         maxLeftOffset: 3,
         maxRightOffset: 4,
@@ -241,14 +222,14 @@ describe('toPersistedRegions()', () => {
     ])
 
     region = new AccessibilityRegionBySelector(
-      {using: 'custom', value: 'some'},
+      'custom selector',
       AccessibilityRegionType.RegularText,
     )
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {
         type: 'xpath',
-        selector: element.getMockValue('xpath'),
+        selector: element.unwrapped.xpath,
         accessibilityType: AccessibilityRegionType.RegularText,
       },
     ])

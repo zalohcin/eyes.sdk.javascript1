@@ -184,7 +184,7 @@ const GET_ELEMENT_XPATH = `
 
 const GET_CURRENT_CONTEXT_INFO = `
   ${GET_ELEMENT_XPATH_FUNC}
-  var isCORS, isRoot, frameSelector;
+  var isCORS, isRoot, selector;
   try {
     isRoot = window.top.document === window.document;
   } catch (err) {
@@ -197,16 +197,16 @@ const GET_CURRENT_CONTEXT_INFO = `
   }
   if (!isCORS) {
     try {
-      frameSelector = getElementXpath(window.frameElement);
+      selector = getElementXpath(window.frameElement);
     } catch (err) {
-      frameSelector = null;
+      selector = null;
     }
   }
   return {
     isRoot: isRoot,
     isCORS: isCORS,
     document: document,
-    frameSelector: frameSelector,
+    selector: selector,
   };
 `
 
