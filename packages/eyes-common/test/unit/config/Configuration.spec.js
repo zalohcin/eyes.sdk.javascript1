@@ -256,7 +256,7 @@ describe('Configuration', () => {
       configuration.setMatchLevel(MatchLevel.Content)
       configuration.setAccessibilityValidation({
         level: AccessibilityLevel.AA,
-        version: AccessibilityGuidelinesVersion.WCAG_2_0,
+        guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
       })
       configuration.setIgnoreCaret(false)
       configuration.setUseDom(true)
@@ -272,7 +272,7 @@ describe('Configuration', () => {
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content)
       assert.deepStrictEqual(configuration.getAccessibilityValidation(), {
         level: AccessibilityLevel.AA,
-        version: AccessibilityGuidelinesVersion.WCAG_2_0,
+        guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
       })
       assert.strictEqual(configuration.getIgnoreCaret(), false)
       assert.strictEqual(configuration.getUseDom(), true)
@@ -295,7 +295,7 @@ describe('Configuration', () => {
       configuration.setMatchLevel(MatchLevel.Content)
       configuration.setAccessibilityValidation({
         level: AccessibilityLevel.AA,
-        version: AccessibilityGuidelinesVersion.WCAG_2_0,
+        guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
       })
       configuration.setIgnoreCaret(false)
       configuration.setUseDom(true)
@@ -325,7 +325,7 @@ describe('Configuration', () => {
           matchLevel: 'Content',
           accessibilitySettings: {
             level: AccessibilityLevel.AA,
-            version: AccessibilityGuidelinesVersion.WCAG_2_0,
+            guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
           },
           enablePatterns: true,
           ignoreDisplacements: true,
@@ -343,7 +343,7 @@ describe('Configuration', () => {
       assert.strictEqual(configuration.getMatchLevel(), MatchLevel.Content)
       assert.deepStrictEqual(configuration.getAccessibilityValidation(), {
         level: 'AA',
-        version: 'WCAG_2_0',
+        guidelinesVersion: 'WCAG_2_0',
       })
       assert.strictEqual(configuration.getIgnoreCaret(), false)
       assert.strictEqual(configuration.getUseDom(), true)
@@ -353,7 +353,7 @@ describe('Configuration', () => {
 
     it('invalid values - accessibilityValidation', () => {
       const invalidAccSettingsMessage =
-        "IllegalArgument: accessibilitySettings should have the following properties: 'level,version'"
+        "IllegalArgument: accessibilitySettings should have the following properties: 'level,guidelinesVersion'"
 
       const invalidAccLevelMessage = "IllegalType: bla is not a valid 'AccessibilityLevel' value"
       const invalidAccVersionMessage =
@@ -414,7 +414,7 @@ describe('Configuration', () => {
             defaultMatchSettings: {
               accessibilitySettings: {
                 level: 'bla',
-                version: 'bla',
+                guidelinesVersion: 'bla',
               },
             },
           })
@@ -428,7 +428,7 @@ describe('Configuration', () => {
           const configuration = new Configuration()
           configuration.setAccessibilityValidation({
             level: 'bla',
-            version: 'bla',
+            guidelinesVersion: 'bla',
           })
         },
         {message: invalidAccLevelMessage},
@@ -441,7 +441,7 @@ describe('Configuration', () => {
             defaultMatchSettings: {
               accessibilitySettings: {
                 level: 'AA',
-                version: 'bla',
+                guidelinesVersion: 'bla',
               },
             },
           })
@@ -455,7 +455,7 @@ describe('Configuration', () => {
           const configuration = new Configuration()
           configuration.setAccessibilityValidation({
             level: 'AA',
-            version: 'bla',
+            guidelinesVersion: 'bla',
           })
         },
         {message: invalidAccVersionMessage},

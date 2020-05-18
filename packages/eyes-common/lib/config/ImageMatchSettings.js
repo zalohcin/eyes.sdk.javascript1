@@ -33,7 +33,7 @@ class ImageMatchSettings {
    * @param {Region[]} [content]
    * @param {AccessibilityMatchSettings[]} [accessibility]
    * @param {FloatingMatchSettings[]} [floating]
-   * @param {AccessibilitySettings[]} [accessibilitySettings]
+   * @param {AccessibilitySettings} [accessibilitySettings]
    */
   constructor(imageMatchSettings) {
     if (arguments.length > 1) {
@@ -41,7 +41,7 @@ class ImageMatchSettings {
     }
 
     if (arguments[0] && arguments[0].constructor.name === 'ImageMatchSettings') {
-      return new ImageMatchSettings(arguments[0].toJSON())
+      return new ImageMatchSettings(arguments[0]._toPlain())
     }
 
     const {
@@ -126,9 +126,9 @@ class ImageMatchSettings {
    */
   setAccessibilitySettings(value) {
     if (value) {
-      ArgumentGuard.hasProperties(value, ['level', 'version'], 'accessibilitySettings')
+      ArgumentGuard.hasProperties(value, ['level', 'guidelinesVersion'], 'accessibilitySettings')
       ArgumentGuard.isValidEnumValue(value.level, AccessibilityLevel)
-      ArgumentGuard.isValidEnumValue(value.version, AccessibilityGuidelinesVersion)
+      ArgumentGuard.isValidEnumValue(value.guidelinesVersion, AccessibilityGuidelinesVersion)
     }
     this._accessibilitySettings = value
   }
@@ -303,6 +303,17 @@ class ImageMatchSettings {
    * @override
    */
   toJSON() {
+    const obj = this._toPlain()
+    if (obj.accessibilitySettings) {
+      obj.accessibilitySettings = {
+        level: obj.accessibilitySettings.level,
+        version: obj.accessibilitySettings.guidelinesVersion,
+      }
+    }
+    return obj
+  }
+
+  _toPlain() {
     return GeneralUtils.toPlain(this, [], {
       ignoreRegions: 'ignore',
       layoutRegions: 'layout',

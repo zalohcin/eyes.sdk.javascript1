@@ -194,7 +194,7 @@ declare namespace Eyes {
 
   interface AccessibilitySettings {
     level: AccessibilityLevel
-    version: AccessibilityGuidelinesVersion
+    guidelinesVersion: AccessibilityGuidelinesVersion
   }
 
   export namespace Check {

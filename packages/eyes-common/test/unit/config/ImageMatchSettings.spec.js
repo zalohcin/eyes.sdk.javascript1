@@ -30,7 +30,7 @@ describe('ImageMatchSettings', () => {
         matchLevel: MatchLevel.Content,
         accessibilitySettings: {
           level: AccessibilityLevel.AA,
-          version: AccessibilityGuidelinesVersion.WCAG_2_0,
+          guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
         },
         exact: new ExactMatchSettings(),
         ignoreCaret: true,
@@ -88,14 +88,20 @@ describe('ImageMatchSettings', () => {
     })
 
     it('copy ctor', () => {
+      const accessibilitySettings = {
+        level: AccessibilityLevel.AAA,
+        guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
+      }
       const ims = new ImageMatchSettings({
         ignoreDisplacements: true,
         ignore: [new Region(10, 20, 30, 40)],
+        accessibilitySettings,
       })
       const imsCopy = new ImageMatchSettings(ims)
 
       assert.strictEqual(imsCopy.getIgnoreDisplacements(), true)
       assert.deepStrictEqual(imsCopy.getIgnoreRegions(), [new Region(10, 20, 30, 40)])
+      assert.deepStrictEqual(imsCopy.getAccessibilitySettings(), accessibilitySettings)
     })
   })
 })
