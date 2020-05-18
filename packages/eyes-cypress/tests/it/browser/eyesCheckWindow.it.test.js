@@ -53,7 +53,7 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        referrer: 'some ref',
+        source: 'some ref',
       },
     });
     expect(resourcesPutted).to.eql([
@@ -169,7 +169,7 @@ describe('eyesCheckWindow', () => {
         useDom,
         enablePatterns,
         ignoreDisplacements,
-        referrer: 'some referrer',
+        source: 'some referrer',
         accessibility,
       },
     });
@@ -280,7 +280,7 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        referrer: 'some ref',
+        source: 'some ref',
       },
     });
     expect(resourcesPutted).to.eql([
@@ -363,7 +363,7 @@ describe('eyesCheckWindow', () => {
         useDom: undefined,
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
-        referrer: 'some ref',
+        source: 'some ref',
         accessibility: undefined,
       },
     });
@@ -437,7 +437,7 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        referrer: 'some ref',
+        source: 'some ref',
       },
     });
     expect(resourcesPutted).to.eql([

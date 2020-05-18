@@ -72,7 +72,7 @@ function makeEyesCheckWindow({sendRequest, processPage, win = window}) {
             enablePatterns,
             ignoreDisplacements,
             accessibility,
-            referrer: win.location.href,
+            source: win.location.href,
           },
         }),
       );

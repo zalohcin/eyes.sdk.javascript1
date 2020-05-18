@@ -113,7 +113,7 @@ function makeHandlers({
       useDom,
       enablePatterns,
       ignoreDisplacements,
-      referrer,
+      source,
       accessibility,
     }) => {
       logger.log(`[handlers] checkWindow: checkWindow=${typeof checkWindow}`);
@@ -152,7 +152,7 @@ function makeHandlers({
         useDom,
         enablePatterns,
         ignoreDisplacements,
-        referrer,
+        source,
         accessibility,
       });
     },

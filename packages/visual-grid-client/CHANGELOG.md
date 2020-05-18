@@ -4,6 +4,14 @@
 
 - support accessibilitySettings
 
+## 14.0.1 - 2020/5/17
+
+- using "url" instead of "source" ad referer header and eyes test source.
+
+ ## 14.0.0 - 2020/5/17
+
+- BREAKING CHANGE - removed "referer" parameter from checkWindow, now using "source" 
+
 ## 13.8.1 - 2020/5/13
 
 - updated to @applitools/eyes-sdk-core@10.1.2

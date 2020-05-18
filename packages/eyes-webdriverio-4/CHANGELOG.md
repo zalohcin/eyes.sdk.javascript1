@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- removed "source" attribute from VG checkWindow
+- updated to @applitools/eyes-sdk-core@10.1.2
+- updated to @applitools/visual-grid-client@14.0.1
+
 
 ## 2.14.1 - 2020/5/12
 

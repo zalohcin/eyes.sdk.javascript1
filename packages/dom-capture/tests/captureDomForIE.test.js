@@ -67,7 +67,7 @@ describe('captureDom for IE', () => {
     return driver;
   }
 
-  it.skip('works in Edge', async () => {
+  it('works in Edge', async () => {
     const driver = await openPageWith({browserName: 'MicrosoftEdge', version: '18'});
     try {
       const fixtureName = 'edge.dom.json';

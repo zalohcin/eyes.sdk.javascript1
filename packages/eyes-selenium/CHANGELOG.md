@@ -2,7 +2,16 @@
 
 ## Unreleased
 
+- removed "source" attribute from VG checkWindow
+- updated to @applitools/visual-grid-client@14.0.1
 
+
+
+## 4.36.1 - 2020/5/17
+
+- fetching resources with "referer" header.
+- updated to @applitools/eyes-sdk-core@10.1.2
+- updated to @applitools/visual-grid-client@14.0.0
 
 ## 4.36.0 - 2020/5/12
 
