@@ -5,7 +5,7 @@ describe('TestAPI', () => {
   let browser, eyes
   beforeEach(async () => {
     browser = await getDriver('CHROME')
-    ;({eyes} = await getEyes('classic', 'CSS'))
+    eyes = await getEyes('classic', 'CSS')
   })
   afterEach(async () => {
     await eyes.abortIfNotClosed()

@@ -1,15 +1,14 @@
 'use strict'
-const {Eyes, Target, VisualGridRunner, Configuration, DeviceName} = require('../../../index')
-const {getDriver, getBatch} = require('./util/TestSetup')
+const {Target, Configuration, DeviceName} = require('../../../index')
+const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
 const batch = getBatch()
 
 describe('TestRenderings', async () => {
-  let browser, eyes, runner
+  let browser, eyes
 
   beforeEach(async () => {
     browser = await getDriver('CHROME')
-    runner = new VisualGridRunner(30)
-    eyes = new Eyes(runner)
+    eyes = getEyes('VG')
     eyes.setBranchName('master')
   })
   afterEach(async () => {
@@ -28,6 +27,6 @@ describe('TestRenderings', async () => {
     await browser.url('https://applitools.github.io/demo/TestPages/DynamicResolution/mobile.html')
     await eyes.check('Test Mobile Only', Target.window().fully())
     await eyes.close()
-    await runner.getAllTestResults()
+    await eyes.getRunner().getAllTestResults()
   })
 })

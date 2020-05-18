@@ -13,7 +13,7 @@ describe.skip(appName, () => {
     beforeEach(async () => {
       browser = await getDriver('CHROME')
       await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('classic', StitchMode.CSS))
+      eyes = await getEyes('classic', StitchMode.CSS)
     })
 
     it('TestCheckInnerFrame', async () => {
@@ -36,7 +36,7 @@ describe.skip(appName, () => {
     beforeEach(async () => {
       browser = await getDriver('CHROME')
       await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('classic', StitchMode.SCROLL))
+      eyes = await getEyes('classic', StitchMode.SCROLL)
     })
 
     it('TestCheckInnerFrame_SCROLL', async () => {
@@ -59,7 +59,7 @@ describe.skip(appName, () => {
     beforeEach(async () => {
       browser = await getDriver('CHROME')
       await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('VG'))
+      eyes = await getEyes('VG')
       let conf = eyes.getConfiguration()
       conf.addBrowser(700, 460, BrowserType.CHROME)
       eyes.setConfiguration(conf)

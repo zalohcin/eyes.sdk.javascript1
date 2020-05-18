@@ -1,7 +1,7 @@
 'use strict'
 const childProcess = require('child_process')
 const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
-const {Configuration, ProxySettings} = require('../../../index')
+const {ProxySettings} = require('../../../index')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
@@ -20,9 +20,9 @@ describe('TestProxy', () => {
 
   async function checkNetworkPassThroughProxy() {
     let browser = await getDriver('CHROME')
-    let {eyes} = await getEyes('VG')
+    let eyes = await getEyes('VG')
     try {
-      let conf = new Configuration()
+      let conf = eyes.getConfiguration()
       conf.setBatch(batch)
       conf.setProxy(new ProxySettings('http://127.0.0.1:8080', undefined, undefined, true))
       conf.setAppName('Eyes Selenium SDK - Test Proxy')
@@ -42,9 +42,9 @@ describe('TestProxy', () => {
 
   async function checkNetworkFailIfNoProxy() {
     let browser = await getDriver('CHROME')
-    let {eyes} = await getEyes('VG')
+    let eyes = await getEyes('VG')
     try {
-      let conf = new Configuration()
+      let conf = eyes.getConfiguration()
       conf.setBatch(batch)
       conf.setProxy(new ProxySettings('http://127.0.0.1:8080', undefined, undefined, true))
       conf.setAppName('Eyes Selenium SDK - Test Proxy')

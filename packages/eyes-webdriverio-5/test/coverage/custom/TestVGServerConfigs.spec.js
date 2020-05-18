@@ -1,7 +1,6 @@
 'use strict'
-const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
+const {getDriver, getEyes} = require('./util/TestSetup')
 const {
-  Configuration,
   BrowserType,
   AccessibilityLevel,
   DeviceName,
@@ -9,23 +8,22 @@ const {
 } = require('../../../index')
 const {assertDefaultMatchSettings, assertImageMatchSettings} = require('./util/ApiAssertions')
 const {expect} = require('chai')
-const batch = getBatch()
 
 describe('TestVGServerConfigs', () => {
   let browser, eyes, runner
 
   beforeEach(async () => {
     browser = await getDriver('CHROME')
-    ;({eyes, runner} = await getEyes('VG'))
+    eyes = await getEyes('VG')
+    runner = eyes.getRunner()
   })
 
   afterEach(async () => {
     await browser.deleteSession()
   })
 
-  it(`TestVGDoubleCloseNoCheck`, async () => {
-    let conf = new Configuration()
-    conf.setBatch(batch)
+  it.skip(`TestVGDoubleCloseNoCheck`, async () => {
+    let conf = eyes.getConfiguration()
     conf.setAppName('app')
     conf.setTestName('test')
     eyes.setConfiguration(conf)
@@ -35,9 +33,8 @@ describe('TestVGServerConfigs', () => {
     await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
   })
 
-  it.skip('TestVGChangeConfigAfterOpen', async () => {
-    let conf = new Configuration()
-    conf.setBatch(batch)
+  it('TestVGChangeConfigAfterOpen', async () => {
+    let conf = eyes.getConfiguration()
     conf.setAppName('app')
     conf.setTestName('js test')
 

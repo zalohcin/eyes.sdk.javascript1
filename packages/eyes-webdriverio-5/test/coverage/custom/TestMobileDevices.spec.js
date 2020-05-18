@@ -1,8 +1,7 @@
 'use strict'
-const {Eyes, Target, StitchMode} = require('../../../index')
+const {Target, StitchMode} = require('../../../index')
 const {remote} = require('webdriverio')
-const {getBatch} = require('./util/TestSetup')
-const batch = getBatch()
+const {getEyes} = require('./util/TestSetup')
 
 const iPhoneAgent =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1'
@@ -151,10 +150,8 @@ describe.skip('TestMobileDevices', () => {
               logLevel: 'silent',
               capabilities: getDeviceEmulationCaps(device.mobileEmulation),
             })
-            eyes = new Eyes()
-            eyes.setBatch(batch)
+            eyes = getEyes('classic', StitchMode.SCROLL)
             eyes.setSaveNewTests(false)
-            eyes.StitchMode = StitchMode.SCROLL
             eyes.addProperty('Orientation', device.orientation.toLowerCase())
             eyes.addProperty('Page', page)
             browser.url(

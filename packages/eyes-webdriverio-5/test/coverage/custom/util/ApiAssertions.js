@@ -13,9 +13,10 @@ async function getTestResults(testSummary) {
 
 async function getApiData(url, token) {
   return new Promise(function(resolve, reject) {
+    let key = process.env.APPLITOOLS_API_KEY_SDK ? process.env.APPLITOOLS_API_KEY_SDK : process.env.APPLITOOLS_API_KEY
     https
       .get(
-        `${url}?format=json&AccessToken=${token}&apiKey=${process.env.APPLITOOLS_API_KEY}`,
+        `${url}?format=json&AccessToken=${token}&apiKey=${key}`,
         res => {
           let data = ''
           res.on('data', chunk => (data += chunk))

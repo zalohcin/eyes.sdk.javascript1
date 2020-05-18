@@ -7,7 +7,8 @@ describe.skip(appName, () => {
   let browser, eyes, runner
   beforeEach(async () => {
     browser = await getDriver('CHROME')
-    ;({eyes, runner} = await getEyes('VG'))
+    eyes = await getEyes('VG')
+    runner = eyes.getRunner()
   })
   afterEach(async () => {
     await eyes.abortIfNotClosed()

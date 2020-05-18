@@ -26,6 +26,9 @@ describe.skip('TestEyesConfiguration', async () => {
     it(`TestEyesConfiguration_${index}`, async () => {
       let runner = data.useVisualGrid ? new VisualGridRunner(10) : new ClassicRunner()
       let eyes = new Eyes(runner)
+      if(process.env['APPLITOOLS_API_KEY_SDK']){
+        eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
+      }
       let browser = await getDriver('CHROME')
       await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
       let originalBatchSequence = process.env.APPLITOOLS_BATCH_SEQUENCE
@@ -71,9 +74,6 @@ describe.skip('TestEyesConfiguration', async () => {
         await browser.deleteSession()
       }
       let results = await eyes.close(false)
-      if (data.useVisualGrid) {
-        results = results[0]
-      }
       let sessionResults = await getApiData(
         results.getApiUrls().getSession(),
         results.getSecretToken(),
