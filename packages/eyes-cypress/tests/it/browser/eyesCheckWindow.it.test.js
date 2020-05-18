@@ -19,7 +19,6 @@ describe('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
-      win: {location: {href: 'some ref'}},
     });
 
     const tag = 'some tag';
@@ -101,7 +100,6 @@ describe('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
-      win: {location: {href: 'some referrer'}},
     });
 
     const tag = 'some tag';
@@ -230,7 +228,6 @@ describe('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
-      win: {location: {href: 'some ref'}},
     });
 
     await eyesCheckWindow('bla doc');
@@ -336,7 +333,6 @@ describe('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
-      win: {location: {href: 'some ref'}},
     });
 
     await eyesCheckWindow('bla doc');
@@ -407,7 +403,6 @@ describe('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
-      win: {location: {href: 'some ref'}},
     });
 
     const tag = 'some tag';
