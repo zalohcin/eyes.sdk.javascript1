@@ -5,13 +5,17 @@ const WrappedDriver = require('./WDIOWrappedDriver')
 const WrappedElement = require('./WDIOWrappedElement')
 const CheckSettings = require('./WDIOCheckSettings')
 
+const {version} = require('../package.json')
+
 const WDIOEyesClassic = EyesClassic.specialize({
+  agentId: `eyes.webdriverio/${version}`,
   WrappedDriver,
   WrappedElement,
   CheckSettings,
   DomCapture,
 })
 const WDIOEyesVisualGrid = EyesVisualGrid.specialize({
+  agentId: `eyes.webdriverio.visualgrid/${version}`,
   WrappedDriver,
   WrappedElement,
   CheckSettings,
