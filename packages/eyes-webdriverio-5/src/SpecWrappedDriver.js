@@ -38,19 +38,22 @@ module.exports = {
     return new WDIOWrappedElement(logger, driver, element, selector)
   },
   async getWindowLocation(driver) {
-    return driver.getWindowPosition()
+    const rect = await driver.getWindowRect()
+    return {x: rect.x, y: rect.y}
   },
   async setWindowLocation(driver, location) {
-    return driver.setWindowPosition(location.x, location.y)
+    return driver.setWindowRect(location.x, location.y, null, null)
   },
   async getWindowSize(driver) {
-    return driver.getWindowSize()
+    const rect = await driver.getWindowRect()
+    return {width: rect.width, height: rect.height}
   },
   async setWindowSize(driver, size) {
-    return driver.setWindowSize(size.width, size.height)
+    return driver.setWindowRect(null, null, size.width, size.height)
   },
   async getOrientation(driver) {
-    return driver.getOrientation()
+    const orientation = await driver.getOrientation()
+    return orientation.toLowerCase()
   },
   async isMobile(driver) {
     return driver.isMobile

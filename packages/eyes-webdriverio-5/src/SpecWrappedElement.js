@@ -34,7 +34,11 @@ module.exports = {
     return Boolean(element.elementId || element[ELEMENT_ID] || element[LEGACY_ELEMENT_ID])
   },
   isSelector(selector) {
-    return TypeUtils.isString(selector) || selector instanceof LegacySelector
+    return (
+      TypeUtils.isString(selector) ||
+      TypeUtils.isFunction(selector) ||
+      selector instanceof LegacySelector
+    )
   },
   extractId(element) {
     return element.elementId || element[ELEMENT_ID] || element[LEGACY_ELEMENT_ID]
@@ -48,10 +52,8 @@ module.exports = {
   extractSelector(element) {
     return element.selector
   },
-  isStaleElementReferenceResult(result, wrapper) {
-    // if (!result) return false
-    // return result instanceof Error
-    //   ? result.seleniumStack && result.seleniumStack.type === 'StaleElementReference'
-    //   : result.value && result.selector && result.selector === wrapper.selector
+  isStaleElementReferenceResult(result) {
+    if (!result) return false
+    return result instanceof Error && result.name === 'stale element reference'
   },
 }
