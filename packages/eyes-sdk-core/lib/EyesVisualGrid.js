@@ -13,10 +13,8 @@ const {VisualGridRunner} = require('./runner/VisualGridRunner')
 const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
-const VERSION = require('../package.json').version
-
 class EyesVisualGrid extends EyesCore {
-  static specialize({WrappedDriver, WrappedElement, CheckSettings, VisualGridClient}) {
+  static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings, VisualGridClient}) {
     return class extends EyesVisualGrid {
       static get WrappedDriver() {
         return WrappedDriver
@@ -30,13 +28,13 @@ class EyesVisualGrid extends EyesCore {
       static get VisualGridClient() {
         return VisualGridClient
       }
+      /**
+       * @return {string} base agent id
+       */
+      getBaseAgentId() {
+        return agentId
+      }
     }
-  }
-  /**
-   * @inheritDoc
-   */
-  getBaseAgentId() {
-    return `eyes.webdriverio.visualgrid/${VERSION}`
   }
   /**
    * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.

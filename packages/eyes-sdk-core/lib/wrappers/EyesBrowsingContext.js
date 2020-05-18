@@ -90,7 +90,7 @@ class EyesBrowsingContext {
    * @return {Promise<void>}
    */
   async frameDefault() {
-    this._logger.verbose('WDIOBrowsingContext.frameDefault()')
+    this._logger.verbose('EyesBrowsingContext.frameDefault()')
     const result = await this.specs.switchToFrame(this._driver.unwrapped, null)
     this._logger.verbose('Done! Switching to default content...')
     if (this._frameChain.size > 0) {
@@ -104,7 +104,7 @@ class EyesBrowsingContext {
    * @return {Promise<void>}
    */
   async frameParent(elevation = 1) {
-    this._logger.verbose(`WDIOBrowsingContext.frameParent(${elevation})`)
+    this._logger.verbose(`EyesBrowsingContext.frameParent(${elevation})`)
     let result
     while (elevation-- > 0) {
       result = await this.specs.switchToParentFrame(this._driver.unwrapped)
@@ -160,7 +160,7 @@ class EyesBrowsingContext {
    * @return {Promise<void>}
    */
   async framesAppend(path) {
-    this._logger.verbose('WDIOBrowsingContext.framesAppend(path)')
+    this._logger.verbose('EyesBrowsingContext.framesAppend(path)')
     for (const frameReference of path) {
       await this.frame(frameReference)
     }

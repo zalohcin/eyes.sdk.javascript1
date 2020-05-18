@@ -35,8 +35,6 @@ const {ClassicRunner} = require('./runner/ClassicRunner')
 const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
-const VERSION = require('../package.json').version
-
 /**
  * @typedef {import('./wrappers/EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('./wrappers/EyesWrappedElement')} EyesWrappedElement
@@ -60,7 +58,7 @@ class EyesClassic extends EyesCore {
    * @param {DomCapture} implementations.DomCapture - specialized class for creation a dom capture
    * @return {EyesClassic} specialized version of this class
    */
-  static specialize({WrappedDriver, WrappedElement, CheckSettings, DomCapture}) {
+  static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings, DomCapture}) {
     return class extends EyesClassic {
       /**
        * @return {EyesWrappedDriver} implementation for {@link EyesWrappedDriver}
@@ -85,6 +83,12 @@ class EyesClassic extends EyesCore {
        */
       static get DomCapture() {
         return DomCapture
+      }
+      /**
+       * @return {string} base agent id
+       */
+      getBaseAgentId() {
+        return agentId
       }
     }
   }
@@ -147,12 +151,6 @@ class EyesClassic extends EyesCore {
     this._scrollRootElement = null
     /** @type {Promise<void>} */
     this._closePromise = Promise.resolve()
-  }
-  /**
-   * @override
-   */
-  getBaseAgentId() {
-    return `eyes.webdriverio/${VERSION}`
   }
   /**
    * @param {Object} driver - driver object for the specific framework
@@ -229,7 +227,7 @@ class EyesClassic extends EyesCore {
       this._configuration.getSessionType(),
     )
 
-    return this._driver.proxy
+    return this._driver
   }
   /**
    * @param name - name of the test case
