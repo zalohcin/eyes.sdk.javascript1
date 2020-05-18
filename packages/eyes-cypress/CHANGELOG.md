@@ -5,7 +5,7 @@
 - fixed typescript definitions file for eyesCheckWindow string argument and open browser name parameter. 
 - updated VGC for using source instead of referer
 - updated to @applitools/eyes-sdk-core@10.1.2
-- updated to @applitools/visual-grid-client@14.0.1
+- updated to @applitools/visual-grid-client@14.0.2
 
 ## 3.10.4 - 2020/5/7
 
