@@ -10,7 +10,7 @@ const rootPackageJson = require(resolve(rootPath, 'package.json'));
 const testAppPath = resolve(__dirname, '../fixtures/testApp');
 const pexec = p(exec);
 
-describe.only('package and install', () => {
+describe('package and install', () => {
   let packageFilePath;
   before(async () => {
     const {name, version} = rootPackageJson;
