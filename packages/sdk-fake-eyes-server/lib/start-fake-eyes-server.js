@@ -358,6 +358,12 @@ function startFakeEyesServer({
       contentMatches: 0, // TODO
       layoutMatches: 0, // TODO
       noneMatches: 0, // TODO
+      accessibilityStatus: runningSession.startInfo.defaultMatchSettings.accessibilitySettings
+        ? {
+            status: 'Passed',
+            ...runningSession.startInfo.defaultMatchSettings.accessibilitySettings,
+          }
+        : undefined, // TODO return only if checkpoints had accessibility regions
     }
   }
 
