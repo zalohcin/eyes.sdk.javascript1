@@ -174,25 +174,6 @@ class CheckSettings {
   }
 
   /**
-   * Set the accessibilityLevel level for the screenshot.
-   *
-   * @param {AccessibilityLevel} accessibilityLevel - The accessibilityLevel level to use.
-   * @return {this} - This instance of the settings object.
-   */
-  accessibilityValidation(accessibilityLevel) {
-    this._accessibilityLevel = accessibilityLevel
-    return this
-  }
-
-  /**
-   * @ignore
-   * @return {AccessibilityLevel}
-   */
-  getAccessibilityValidation() {
-    return this._accessibilityLevel
-  }
-
-  /**
    * Defines if to detect and ignore a blinking caret in the screenshot.
    *
    * @param {boolean} [ignoreCaret=true] - Whether or not to detect and ignore a blinking caret in the screenshot.
@@ -598,6 +579,10 @@ class CheckSettings {
     this._accessibilityRegions.push(accessibilityRegion)
 
     return this
+  }
+
+  accessibility(region, regionType) {
+    return this.accessibilityRegion(region, regionType)
   }
 
   /**

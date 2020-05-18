@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- support accessibility validation
 - added SDK agent id header for eyes server requests
 
 ## 3.8.11 - 2020/3/29

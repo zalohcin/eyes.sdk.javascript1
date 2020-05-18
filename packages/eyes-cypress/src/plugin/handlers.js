@@ -24,6 +24,8 @@ function makeHandlers({
     open: async args => {
       try {
         logger.log(`[handlers] open: close=${typeof close}, args=`, args);
+        args.accessibilitySettings = args.accessibilityValidation;
+        delete args.accessibilityValidation;
         const eyes = await openEyes(args);
         const runningTest = {
           abort: eyes.abort,
@@ -111,7 +113,6 @@ function makeHandlers({
       useDom,
       enablePatterns,
       ignoreDisplacements,
-      accessibilityLevel,
       accessibility,
     }) => {
       logger.log(`[handlers] checkWindow: checkWindow=${typeof checkWindow}`);
@@ -151,7 +152,6 @@ function makeHandlers({
         enablePatterns,
         ignoreDisplacements,
         accessibility,
-        accessibilityLevel,
       });
     },
 

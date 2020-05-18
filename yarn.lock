@@ -295,7 +295,6 @@
     "@applitools/http-commons" "2.3.12"
     "@applitools/isomorphic-fetch" "3.0.0"
     "@applitools/jsdom" "1.0.2"
-    chalk "3.0.0"
     he "1.2.0"
     lodash.mapvalues "^4.6.0"
     mime-types "^2.1.24"
