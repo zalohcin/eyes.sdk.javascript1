@@ -166,7 +166,7 @@ declare namespace Eyes {
     interface BrowserViewport {
       height:number
       width:number
-      name:'chrome'                        |
+      name?:'chrome'                       |
            'firefox'                       |
            'edgechromium'                  |
            'edgelegacy'                    |
