@@ -95,14 +95,14 @@ describe('SpecWrappedDriver', async () => {
     })
   })
 
-  it('extractElement(element)', async () => {
+  it('extractSelector(element)', async () => {
     const selector = 'div'
     const {value: element} = await driver.element(selector)
     const result = specs.extractSelector(element)
     assert.deepStrictEqual(result, undefined)
   })
 
-  it('extractElement(elementResponse)', async () => {
+  it('extractSelector(elementResponse)', async () => {
     const selector = 'div'
     const element = await driver.element(selector)
     const result = specs.extractSelector(element)
