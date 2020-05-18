@@ -531,6 +531,10 @@ class CheckSettings {
     return this
   }
 
+  accessibility(region, regionType) {
+    return this.accessibilityRegion(region, regionType)
+  }
+
   /**
    * @ignore
    * @return {GetRegion[]}

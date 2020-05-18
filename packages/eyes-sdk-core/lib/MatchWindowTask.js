@@ -192,6 +192,8 @@ class MatchWindowTask {
         ignoreDisplacements = this._eyes.getDefaultMatchSettings().getIgnoreDisplacements()
       }
 
+      const accessibilitySettings = this._eyes.getDefaultMatchSettings().getAccessibilitySettings()
+
       imageMatchSettings = new ImageMatchSettings({
         matchLevel,
         exact: null,
@@ -199,6 +201,7 @@ class MatchWindowTask {
         useDom,
         enablePatterns,
         ignoreDisplacements,
+        accessibilitySettings,
       })
 
       await this._collectRegions(checkSettings, imageMatchSettings, screenshot)
