@@ -2,6 +2,15 @@ const WDIOFrame = require('./WDIOFrame')
 const WDIOWrappedElement = require('./WDIOWrappedElement')
 
 module.exports = {
+  isEqualFrames(leftFrame, rightFrame) {
+    return WDIOFrame.equals(leftFrame, rightFrame)
+  },
+  createFrameReference(reference) {
+    return WDIOFrame.fromReference(reference)
+  },
+  createElement(logger, driver, element, selector) {
+    return new WDIOWrappedElement(logger, driver, element, selector)
+  },
   async executeScript(driver, script, ...args) {
     const {value} = await driver.execute(script, ...args)
     return value
@@ -14,12 +23,6 @@ module.exports = {
   },
   switchToParentFrame(driver) {
     return driver.frameParent()
-  },
-  isEqualFrames(leftFrame, rightFrame) {
-    return WDIOFrame.equals(leftFrame, rightFrame)
-  },
-  createFrameReference(reference) {
-    return WDIOFrame.fromReference(reference)
   },
   async findElement(driver, selector) {
     const {value} = await driver.element(selector.toString())
@@ -42,9 +45,6 @@ module.exports = {
       selector.toString(),
     )
     return value
-  },
-  createElement(logger, driver, element, selector) {
-    return new WDIOWrappedElement(logger, driver, element, selector)
   },
   async getWindowLocation(driver) {
     const {value} = await driver.windowHandlePosition()
