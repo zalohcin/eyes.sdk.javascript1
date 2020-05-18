@@ -40,8 +40,8 @@ class MockDriver {
     this.mockScript(EyesJsSnippets.GET_SCROLL_POSITION, () => {
       return [0, 0]
     })
-    this.mockScript(EyesJsSnippets.GET_ELEMENT_RECT, () => {
-      return {x: 0, y: 0, width: 100, height: 100}
+    this.mockScript(EyesJsSnippets.GET_ELEMENT_RECT, element => {
+      return element.rect || {x: 0, y: 0, width: 100, height: 100}
     })
     this.mockScript(EyesJsSnippets.GET_ELEMENT_CSS_PROPERTIES, (properties, element) => {
       return properties.map(
@@ -93,7 +93,7 @@ class MockDriver {
       }
     }
   }
-  async executeScript(script, args) {
+  async executeScript(script, args = []) {
     for (const [scriptMatcher, resultGenerator] of this._scripts.entries()) {
       if (
         TypeUtils.isFunction(scriptMatcher) ? scriptMatcher(script, args) : scriptMatcher === script

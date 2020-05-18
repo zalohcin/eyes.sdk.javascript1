@@ -1,9 +1,9 @@
 'use strict'
 const assert = require('assert')
-const WDIOWrappedDriver = require('../../src/WDIOWrappedDriver')
 const {Logger} = require('../../index')
+const FakeWrappedDriver = require('../utils/FakeWrappedDriver')
 
-describe('WDIOWrappedDriver', function() {
+describe('EyesWrappedDriver', () => {
   let logger
 
   before(async () => {
@@ -12,20 +12,20 @@ describe('WDIOWrappedDriver', function() {
 
   it('get executor', async () => {
     const browser = {}
-    const driver = new WDIOWrappedDriver(logger, browser)
-    assert.ok(driver.executor instanceof WDIOWrappedDriver.JsExecutor)
+    const driver = new FakeWrappedDriver(logger, browser)
+    assert.ok(driver.executor instanceof FakeWrappedDriver.JsExecutor)
   })
 
   it('get context', async () => {
     const browser = {}
-    const driver = new WDIOWrappedDriver(logger, browser)
-    assert.ok(driver.context instanceof WDIOWrappedDriver.BrowsingContext)
+    const driver = new FakeWrappedDriver(logger, browser)
+    assert.ok(driver.context instanceof FakeWrappedDriver.BrowsingContext)
   })
 
   it('get finder', async () => {
     const browser = {}
-    const driver = new WDIOWrappedDriver(logger, browser)
-    assert.ok(driver.finder instanceof WDIOWrappedDriver.ElementFinder)
+    const driver = new FakeWrappedDriver(logger, browser)
+    assert.ok(driver.finder instanceof FakeWrappedDriver.ElementFinder)
   })
 
   it('preserve native API', async () => {
@@ -38,7 +38,7 @@ describe('WDIOWrappedDriver', function() {
         return this.someField
       },
     }
-    const driver = new WDIOWrappedDriver(logger, browser)
+    const driver = new FakeWrappedDriver(logger, browser)
     Object.keys(browser).forEach(async propName => {
       if (typeof browser[propName] === 'function') {
         let browserResult = browser[propName]()

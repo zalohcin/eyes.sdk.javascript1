@@ -43,11 +43,11 @@ class EyesWrappedDriver {
     return class extends EyesWrappedDriver {
       /** @override */
       static get overrides() {
-        return overrides
+        return overrides || {}
       }
       /** @override */
       get overrides() {
-        return overrides
+        return overrides || {}
       }
       /** @override */
       static get specs() {
@@ -93,11 +93,11 @@ class EyesWrappedDriver {
   }
   /** @type {Object<string, Function>} */
   static get overrides() {
-    throw new TypeError('EyesWrappedDriver is not specialized')
+    return {}
   }
   /** @type {Object<string, Function>} */
   get overrides() {
-    throw new TypeError('EyesWrappedDriver is not specialized')
+    return {}
   }
   /** @type {SpecsWrappedDriver} */
   static get specs() {
@@ -166,7 +166,7 @@ class EyesWrappedDriver {
       switchToParentFrame: () => this._context.frameParent(),
       visit: url => {
         this._context.reset()
-        return this.specs.visit(url)
+        return this.specs.visit(this._driver, url)
       },
     }
     this._proxy = new Proxy(this, {
