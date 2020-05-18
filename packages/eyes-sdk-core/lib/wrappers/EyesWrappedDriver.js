@@ -169,14 +169,16 @@ class EyesWrappedDriver {
         return this.specs.visit(url)
       },
     }
-    this._proxy = new Proxy(this._driver, {
+    this._proxy = new Proxy(this, {
       get(target, key, receiver) {
         // WORKAROUND we couldn't return Promise-like object from the async function
         if (key === 'then') return undefined
         if (key in overrides) return overrides[key].bind(receiver, proxies)
-        return Reflect.get(target, key, receiver)
+        if (key in target) return Reflect.get(target, key, receiver)
+        return Reflect.get(target._driver, key)
       },
     })
+    return this._proxy
   }
   /**
    * Unwrapped driver for specific SDK
@@ -184,13 +186,6 @@ class EyesWrappedDriver {
    */
   get unwrapped() {
     return this._driver
-  }
-  /**
-   * Proxified driver for specific SDK
-   * @type {UnwrappedDriver}
-   */
-  get proxy() {
-    return this._proxy
   }
   /**
    * Implementation of JavaScript executor interface for specific SDK

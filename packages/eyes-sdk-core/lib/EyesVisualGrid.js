@@ -160,11 +160,11 @@ class EyesVisualGrid extends EyesCore {
     this._closeCommand = close
     this._abortCommand = abort
 
-    return this._driver.proxy
+    return this._driver
   }
   /**
    * @param {string} name
-   * @param {WebdriverioCheckSettings} checkSettings
+   * @param {CheckSettings} checkSettings
    */
   async check(name, checkSettings) {
     ArgumentGuard.notNull(checkSettings, 'checkSettings')
