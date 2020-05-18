@@ -4,6 +4,11 @@
 
 - support accessibilitySettings
 
+
+## 14.0.2 - 2020/5/18
+
+- fixed typescript definitions for open browser name parameter.
+
 ## 14.0.1 - 2020/5/17
 
 - using "url" instead of "source" ad referer header and eyes test source.

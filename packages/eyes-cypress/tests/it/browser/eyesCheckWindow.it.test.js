@@ -19,7 +19,6 @@ describe('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
-      win: {location: {href: 'some ref'}},
     });
 
     const tag = 'some tag';
@@ -53,7 +52,6 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        source: 'some ref',
       },
     });
     expect(resourcesPutted).to.eql([
@@ -101,7 +99,6 @@ describe('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
-      win: {location: {href: 'some referrer'}},
     });
 
     const tag = 'some tag';
@@ -169,7 +166,6 @@ describe('eyesCheckWindow', () => {
         useDom,
         enablePatterns,
         ignoreDisplacements,
-        source: 'some referrer',
         accessibility,
       },
     });
@@ -228,7 +224,6 @@ describe('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
-      win: {location: {href: 'some ref'}},
     });
 
     await eyesCheckWindow('bla doc');
@@ -280,7 +275,6 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        source: 'some ref',
       },
     });
     expect(resourcesPutted).to.eql([
@@ -334,7 +328,6 @@ describe('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
-      win: {location: {href: 'some ref'}},
     });
 
     await eyesCheckWindow('bla doc');
@@ -363,7 +356,6 @@ describe('eyesCheckWindow', () => {
         useDom: undefined,
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
-        source: 'some ref',
         accessibility: undefined,
       },
     });
@@ -405,7 +397,6 @@ describe('eyesCheckWindow', () => {
     const eyesCheckWindow = makeEyesCheckWindow({
       sendRequest,
       processPage,
-      win: {location: {href: 'some ref'}},
     });
 
     const tag = 'some tag';
@@ -437,7 +428,6 @@ describe('eyesCheckWindow', () => {
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
         accessibility: undefined,
-        source: 'some ref',
       },
     });
     expect(resourcesPutted).to.eql([

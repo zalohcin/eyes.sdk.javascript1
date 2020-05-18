@@ -2,9 +2,12 @@
 
 ## Unreleased
 
-- updated VGC for using source instead of referer
+
+ ## 3.10.5 - 2020/5/18
+
+- fixed typescript definitions file for eyesCheckWindow string argument and open browser name parameter. 
 - updated to @applitools/eyes-sdk-core@10.1.2
-- updated to @applitools/visual-grid-client@14.0.0
+- updated to @applitools/visual-grid-client@14.0.2
 
 ## 3.10.4 - 2020/5/7
 
