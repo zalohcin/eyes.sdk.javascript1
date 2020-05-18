@@ -143,7 +143,6 @@ describe('handlers', () => {
     const useDom = 'useDom';
     const enablePatterns = 'enablePatterns';
     const ignoreDisplacements = 'ignoreDisplacements';
-    const source = 'referrer';
     const accessibility = 'accessibility';
     const accessibilityLevel = 'accessibilityLevel';
     const resourceContents = {};
@@ -168,7 +167,6 @@ describe('handlers', () => {
       useDom,
       enablePatterns,
       ignoreDisplacements,
-      source,
       accessibility,
       accessibilityLevel,
     });
@@ -196,7 +194,6 @@ describe('handlers', () => {
       enablePatterns,
       ignoreDisplacements,
       frames: [],
-      source,
       accessibility,
       accessibilityLevel,
     });
@@ -294,7 +291,6 @@ describe('handlers', () => {
       useDom: undefined,
       enablePatterns: undefined,
       ignoreDisplacements: undefined,
-      source: undefined,
       accessibility: undefined,
       accessibilityLevel: undefined,
     });

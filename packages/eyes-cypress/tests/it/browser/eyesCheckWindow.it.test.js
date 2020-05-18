@@ -54,7 +54,6 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements: undefined,
         accessibility: undefined,
         accessibilityLevel: undefined,
-        source: 'some ref',
       },
     });
     expect(resourcesPutted).to.eql([
@@ -172,7 +171,6 @@ describe('eyesCheckWindow', () => {
         useDom,
         enablePatterns,
         ignoreDisplacements,
-        source: 'some referrer',
         accessibility,
         accessibilityLevel,
       },
@@ -285,7 +283,6 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements: undefined,
         accessibility: undefined,
         accessibilityLevel: undefined,
-        source: 'some ref',
       },
     });
     expect(resourcesPutted).to.eql([
@@ -368,7 +365,6 @@ describe('eyesCheckWindow', () => {
         useDom: undefined,
         enablePatterns: undefined,
         ignoreDisplacements: undefined,
-        source: 'some ref',
         accessibility: undefined,
         accessibilityLevel: undefined,
       },
@@ -444,7 +440,6 @@ describe('eyesCheckWindow', () => {
         ignoreDisplacements: undefined,
         accessibility: undefined,
         accessibilityLevel: undefined,
-        source: 'some ref',
       },
     });
     expect(resourcesPutted).to.eql([
