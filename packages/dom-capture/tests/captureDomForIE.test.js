@@ -33,7 +33,11 @@ describe('captureDom for IE', () => {
     fs.writeFileSync(path.resolve(__dirname, `fixtures/${name}`), content);
   }
 
-  async function buildDriver(browserName) {
+  async function openPageWith({
+    browserName,
+    version,
+    url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html',
+  }) {
     const username = process.env.SAUCE_USERNAME;
     const accessKey = process.env.SAUCE_ACCESS_KEY;
     if (!username || !accessKey) {
@@ -43,6 +47,7 @@ describe('captureDom for IE', () => {
     const sauceUrl = 'https://ondemand.saucelabs.com:443/wd/hub';
     const sauceCaps = {
       browserName,
+      version,
       username: process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
     };
@@ -53,16 +58,19 @@ describe('captureDom for IE', () => {
       .usingServer(sauceUrl)
       .build();
     await driver.manage().setTimeouts({script: 10000});
+    await driver
+      .manage()
+      .window()
+      .setRect({width: 1024, height: 768});
+
+    await driver.get(url);
     return driver;
   }
 
   it('works in Edge', async () => {
-    const driver = await buildDriver('MicrosoftEdge');
+    const driver = await openPageWith({browserName: 'MicrosoftEdge', version: '18'});
     try {
       const fixtureName = 'edge.dom.json';
-      const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
-      await driver.get(url);
-
       const result = await captureDom(driver);
       const domStr = beautifyOutput(result);
       if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
@@ -81,12 +89,9 @@ describe('captureDom for IE', () => {
   });
 
   it('works in IE 11', async () => {
-    const driver = await buildDriver('internet explorer');
+    const driver = await openPageWith({browserName: 'internet explorer'});
     try {
       const fixtureName = 'ie11.dom.json';
-      const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
-      await driver.get(url);
-
       const domStr = beautifyOutput(await captureDom(driver));
 
       if (process.env.APPLITOOLS_UPDATE_FIXTURES) {
@@ -104,12 +109,26 @@ describe('captureDom for IE', () => {
     }
   });
 
+  it('performs well in IE 11', async () => {
+    const driver = await openPageWith({
+      browserName: 'internet explorer',
+      url: 'https://www.softwareadvice.com/hr/rippling-profile/?automated=true',
+    });
+    try {
+      const start = new Date();
+      await captureDom(driver);
+      const end = new Date();
+      const duration = end - start;
+      expect(duration).to.be.below(90000);
+    } finally {
+      await driver.quit();
+    }
+  });
+
   it('works in IE 10 with poll', async () => {
-    const driver = await buildDriver('internet explorer');
+    const driver = await openPageWith({browserName: 'internet explorer'});
     try {
       const fixtureName = 'ie10.dom.json';
-      const url = 'http://applitools-dom-capture-origin-1.surge.sh/ie.html';
-      await driver.get(url);
 
       async function doPoll() {
         const result = await driver.executeScript(`return (${captureDomAndPoll})()`);

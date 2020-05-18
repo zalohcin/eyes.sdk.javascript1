@@ -15,13 +15,16 @@ function convertExecutionModeToSuffix(executionMode) {
 
 function makeEmitTests(initializeSdkImplementation, makeCoverageTests = doMakeCoverageTests) {
   let output = []
-  function emitTests(supportedTests, {branchName = 'master', host} = {}) {
+  function emitTests(supportedTests, {host, all = false} = {}) {
     supportedTests.forEach(supportedTest => {
-      if (supportedTest.disabled) return
+      if (!all && supportedTest.disabled) return
       const sdkImplementation = initializeSdkImplementation()
       const baselineTestName = `${supportedTest.name}${convertExecutionModeToSuffix(
         supportedTest.executionMode,
       )}`
+      const branchName = supportedTest.baselineVersion
+        ? `v${supportedTest.baselineVersion}`
+        : 'master'
       // hooks
       for (const hook in sdkImplementation.hooks) {
         if (hook === 'beforeEach') {
