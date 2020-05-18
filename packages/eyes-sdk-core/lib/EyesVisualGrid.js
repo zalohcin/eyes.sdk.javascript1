@@ -160,7 +160,7 @@ class EyesVisualGrid extends EyesCore {
     this._closeCommand = close
     this._abortCommand = abort
 
-    return this._driver
+    return this._driver.proxy
   }
   /**
    * @param {string} name

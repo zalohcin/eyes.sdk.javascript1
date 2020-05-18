@@ -229,7 +229,7 @@ class EyesClassic extends EyesCore {
       this._configuration.getSessionType(),
     )
 
-    return this._driver
+    return this._driver.proxy
   }
   /**
    * @param name - name of the test case

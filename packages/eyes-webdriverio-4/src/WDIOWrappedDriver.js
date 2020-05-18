@@ -2,20 +2,19 @@ const {EyesWrappedDriver} = require('@applitools/eyes-sdk-core')
 const SpecWrappedDriver = require('./SpecWrappedDriver')
 const LegacyWrappedDriver = require('./LegacyWrappedDriver')
 
-class WDIOWrappedDriver extends EyesWrappedDriver.specialize(SpecWrappedDriver) {
+const WDIOWrappedDriver = EyesWrappedDriver.specialize(SpecWrappedDriver, {
   /** @override */
-  async frame(reference) {
-    return this._context.frame(reference)
-  }
+  async frame(proxies, reference) {
+    return proxies.switchToFrame(reference)
+  },
   /** @override */
-  async frameParent() {
-    return this._context.frameParent()
-  }
+  async frameParent(proxies) {
+    return proxies.switchToParentFrame()
+  },
   /** @override */
-  async url(url) {
-    this._context.reset()
-    return this.specs.visit(this.unwrapped, url)
-  }
-}
+  async url(proxies, url) {
+    return proxies.visit(url)
+  },
+})
 
 module.exports = LegacyWrappedDriver(WDIOWrappedDriver)

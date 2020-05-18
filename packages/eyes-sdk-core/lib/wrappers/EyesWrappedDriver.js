@@ -19,6 +19,14 @@ const EyesDriverController = require('./EyesDriverController')
  */
 
 /**
+ * @typedef {Object} DriverOverrides
+ * @property {(reference) => Promise<*>} switchToFrame
+ * @property {() => Promise<*>} switchToParentFrame
+ * @property {(url: string) => Promise<*>} visit
+ *
+ */
+
+/**
  * @typedef {SpecsJsExecutor & SpecsBrowsingContext & SpecsElementFinder & SpecsDriverController} SpecsWrappedDriver
  */
 
@@ -27,12 +35,20 @@ class EyesWrappedDriver {
    * @param {SpecsWrappedDriver} SpecsWrappedDriver - specifications for the specific framework
    * @return {EyesWrappedDriver} specialized version of this class
    */
-  static specialize(SpecsWrappedDriver) {
+  static specialize(SpecsWrappedDriver, overrides) {
     const BrowsingContext = EyesBrowsingContext.specialize(SpecsWrappedDriver)
     const JsExecutor = EyesJsExecutor.specialize(SpecsWrappedDriver)
     const ElementFinder = EyesElementFinder.specialize(SpecsWrappedDriver)
     const DriverController = EyesDriverController.specialize(SpecsWrappedDriver)
     return class extends EyesWrappedDriver {
+      /** @override */
+      static get overrides() {
+        return overrides
+      }
+      /** @override */
+      get overrides() {
+        return overrides
+      }
       /** @override */
       static get specs() {
         return SpecsWrappedDriver
@@ -74,6 +90,14 @@ class EyesWrappedDriver {
         return DriverController
       }
     }
+  }
+  /** @type {Object<string, Function>} */
+  static get overrides() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
+  }
+  /** @type {Object<string, Function>} */
+  get overrides() {
+    throw new TypeError('EyesWrappedDriver is not specialized')
   }
   /** @type {SpecsWrappedDriver} */
   static get specs() {
@@ -127,26 +151,32 @@ class EyesWrappedDriver {
     }
     this._logger = logger
     this._driver = driver
-
-    this._proxy = new Proxy(this, {
-      get(target, key, receiver) {
-        // WORKAROUND we couldn't return this object from the async function because it think this is a Promise
-        if (key === 'then') {
-          return undefined
-        } else if (key in target) {
-          return Reflect.get(target, key, receiver)
-        } else {
-          return Reflect.get(target._driver, key)
-        }
-      },
-    })
-
     this._executor = new this.JsExecutor(this._logger, this)
     this._finder = new this.ElementFinder(this._logger, this)
     this._context = new this.BrowsingContext(this._logger, this)
     this._controller = new this.DriverController(this._logger, this)
 
-    return this._proxy
+    /**
+     * The set of function which should be use to override unwrapped driver functionality
+     * @type {DriverOverrides}
+     */
+    const overrides = this.overrides
+    const proxies = {
+      switchToFrame: reference => this._context.frame(reference),
+      switchToParentFrame: () => this._context.frameParent(),
+      visit: url => {
+        this._context.reset()
+        return this.specs.visit(url)
+      },
+    }
+    this._proxy = new Proxy(this._driver, {
+      get(target, key, receiver) {
+        // WORKAROUND we couldn't return Promise-like object from the async function
+        if (key === 'then') return undefined
+        if (key in overrides) return overrides[key].bind(receiver, proxies)
+        return Reflect.get(target, key, receiver)
+      },
+    })
   }
   /**
    * Unwrapped driver for specific SDK
@@ -154,6 +184,13 @@ class EyesWrappedDriver {
    */
   get unwrapped() {
     return this._driver
+  }
+  /**
+   * Proxified driver for specific SDK
+   * @type {UnwrappedDriver}
+   */
+  get proxy() {
+    return this._proxy
   }
   /**
    * Implementation of JavaScript executor interface for specific SDK
