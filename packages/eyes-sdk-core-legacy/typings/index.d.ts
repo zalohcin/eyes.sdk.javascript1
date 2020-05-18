@@ -80,7 +80,7 @@ export interface AccessibilitySettings {
   version: AccessibilityGuidelinesVersion
 }
 
-export interface TestAccessibilityStatus {
+export interface SessionAccessibilityStatus {
   level: AccessibilityLevel,
   version: AccessibilityGuidelinesVersion,
   status: AccessibilityStatus
@@ -115,7 +115,7 @@ export interface TestResults {
     layoutMatches: number,
     noneMatches: number,
     url: string,
-    accessibilityStatus: TestAccessibilityStatus
+    accessibilityStatus: SessionAccessibilityStatus
 }
 
 

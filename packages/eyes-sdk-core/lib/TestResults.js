@@ -339,7 +339,7 @@ class StepInfo {
 }
 
 /**
- * @typedef TestAccessibilityStatus
+ * @typedef SessionAccessibilityStatus
  * @type {object}
  * @property {AccessibilityLevel} level - accessibility level.
  * @property {AccessibilityGuidelinesVersion} version - accessibility guidelines version.
@@ -362,7 +362,7 @@ class TestResults {
    * @param {string} [hostOS]
    * @param {string} [hostApp]
    * @param {RectangleSize|object} [hostDisplaySize]
-   * @param {TestAccessibilityStatus} [accessibilityStatus]
+   * @param {SessionAccessibilityStatus} [accessibilityStatus]
    * @param {Date|string} [startedAt]
    * @param {number} [duration]
    * @param {boolean} [isNew]
@@ -626,14 +626,14 @@ class TestResults {
   }
 
   /**
-   * @return {TestAccessibilityStatus}
+   * @return {SessionAccessibilityStatus}
    */
   getAccessibilityStatus() {
     return this._accessibilityStatus
   }
 
   /**
-   * @param {TestAccessibilityStatus} value
+   * @param {SessionAccessibilityStatus} value
    */
   setAccessibilityStatus(value) {
     this._accessibilityStatus = value
