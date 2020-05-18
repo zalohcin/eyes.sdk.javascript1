@@ -2,9 +2,9 @@
 const {
   BrowserType,
   MatchLevel,
-} = require('../../../index')
-const {getDriver, getBatch, getEyes} = require('./util/TestSetup')
-const {testSetup, getCheckSettingsWithHook, validateVG} = require('./util/EyesDifferentRunners')
+} = require('../../../../index')
+const {getDriver, getBatch, getEyes} = require('../util/TestSetup')
+const {testSetup, getCheckSettingsWithHook, validateVG} = require('../util/EyesDifferentRunners')
 const batch = getBatch()
 
 describe('TestEyesDifferentRunners VG with hooks', () => {
@@ -32,8 +32,6 @@ describe('TestEyesDifferentRunners VG with hooks', () => {
 
   let testCase = testSetup(getCheckSettingsWithHook, validateVG)
   let cases = [
-    ['https://instagram.com', MatchLevel.Strict],
-    ['https://twitter.com', MatchLevel.Strict],
     ['https://wikipedia.org', MatchLevel.Strict],
     [
       'https://www.target.com/c/blankets-throws/-/N-d6wsb?lnk=ThrowsBlankets%E2%80%9C,tc',

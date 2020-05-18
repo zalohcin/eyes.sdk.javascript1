@@ -1,9 +1,9 @@
 'use strict'
 const {
   MatchLevel,
-} = require('../../../index')
-const {getDriver, getBatch, getEyes} = require('./util/TestSetup')
-const {testSetup, getCheckSettings} = require('./util/EyesDifferentRunners')
+} = require('../../../../index')
+const {getDriver, getBatch, getEyes} = require('../util/TestSetup')
+const {testSetup, getCheckSettings} = require('../util/EyesDifferentRunners')
 const batch = getBatch()
 
 describe('TestEyesDifferentRunners VG2', () => {
