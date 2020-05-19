@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Support for AccessibilityGuidelinesVersion
+- updated to @applitools/dom-snapshot@3.5.2
+- updated to @applitools/eyes-sdk-core@10.2.0
+- updated to @applitools/visual-grid-client@14.1.0
+
 
 
 ## 3.5.3 - 2020/5/4
