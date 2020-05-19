@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+
+
+## 5.11.0 - 2020/5/19
+
 - Support accessibility validation
 - removed "source" attribute from VG checkWindow
 - fetching resources with "referer" header.
@@ -10,7 +14,6 @@
 - updated to @applitools/dom-utils@4.7.17
 - updated to @applitools/eyes-sdk-core@10.2.0
 - updated to @applitools/visual-grid-client@14.1.0
-
 
 ## 5.10.1 - 2020/4/27
 
