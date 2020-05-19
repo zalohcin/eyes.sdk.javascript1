@@ -182,7 +182,7 @@ describe('SpecWrappedDriver', async () => {
     })
 
     it('isAndroid()', async () => {
-      const result = await specs.isMobile(driver)
+      const result = await specs.isAndroid(driver)
       assert.strictEqual(result, true)
     })
 
