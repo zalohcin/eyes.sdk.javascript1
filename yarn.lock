@@ -109,18 +109,6 @@
     es6-promise-pool "2.5.0"
     tunnel "0.0.6"
 
-"@applitools/eyes-sdk-core@10.0.1":
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-10.0.1.tgz#500b5a33f207f6ea70b92e83fee2efd8f013be68"
-  integrity sha512-Pw3SdpKkFRapJHdMxiel2ykseU6MZrKnsi7eZ6G01mYtmY2tsjSQvZn/rpO9h9hLR5t9C9hvKnM8Kj/jzkUTKw==
-  dependencies:
-    "@applitools/eyes-common" "3.22.1"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    axios "0.19.2"
-    chalk "3.0.0"
-    es6-promise-pool "2.5.0"
-    tunnel "0.0.6"
-
 "@applitools/eyes-sdk-core@10.1.2":
   version "10.1.2"
   resolved "https://registry.yarnpkg.com/@applitools/eyes-sdk-core/-/eyes-sdk-core-10.1.2.tgz#9db608eae787c879c9115a1ee9954a059d56eeae"
@@ -272,50 +260,10 @@
     postcss-value-parser "^4.0.2"
     throat "^5.0.0"
 
-"@applitools/visual-grid-client@13.7.6":
-  version "13.7.6"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-13.7.6.tgz#ed445fa3e5b428e9c3bbfbf07b2af47703279374"
-  integrity sha512-5Af/Mq6sac5CDKeqBzrqzx902xvNg5D3W7TEPOhojmKvycCXQkJkIHf6zetjZI8jsYpXJqxoYhbbA+bVyyeyLw==
-  dependencies:
-    "@applitools/dom-snapshot" "3.5.0"
-    "@applitools/eyes-sdk-core" "10.0.1"
-    "@applitools/feature-flags" "2.1.1"
-    "@applitools/functional-commons" "1.5.4"
-    "@applitools/http-commons" "2.3.12"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    "@applitools/jsdom" "1.0.2"
-    chalk "3.0.0"
-    he "1.2.0"
-    lodash.mapvalues "^4.6.0"
-    mime-types "^2.1.24"
-    mkdirp "^0.5.1"
-    postcss-value-parser "^4.0.2"
-    throat "^5.0.0"
-
 "@applitools/visual-grid-client@14.0.1":
   version "14.0.1"
   resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.0.1.tgz#479f37c54fc9f05eeccc28de561ad6280d458ccf"
   integrity sha512-K6xbXsfila3XWxRXcqcLLmBQ+W31FsUFFchIJ2i886MDL7beLGHcKOQ/u45RuLSIVj5h6Bn5Ce3mQrovrx7jEw==
-  dependencies:
-    "@applitools/dom-snapshot" "3.5.2"
-    "@applitools/eyes-sdk-core" "10.1.2"
-    "@applitools/feature-flags" "2.1.1"
-    "@applitools/functional-commons" "1.5.4"
-    "@applitools/http-commons" "2.3.12"
-    "@applitools/isomorphic-fetch" "3.0.0"
-    "@applitools/jsdom" "1.0.2"
-    chalk "3.0.0"
-    he "1.2.0"
-    lodash.mapvalues "^4.6.0"
-    mime-types "^2.1.24"
-    mkdirp "^0.5.1"
-    postcss-value-parser "^4.0.2"
-    throat "^5.0.0"
-
-"@applitools/visual-grid-client@14.0.2":
-  version "14.0.2"
-  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.0.2.tgz#17d0acbc121340039b8fd01f059039bd2806f909"
-  integrity sha512-3LAKqEQXR0aAuZ27o0eRMKNRhUoHfwQrEsb6KdfgahSKae47cjaeqphEjBZR9aeqAsXD8nf1Rbj5yK/tMA1oDA==
   dependencies:
     "@applitools/dom-snapshot" "3.5.2"
     "@applitools/eyes-sdk-core" "10.1.2"
