@@ -11,11 +11,15 @@ eyes.open({
     {width: 1024, height: 768, name: 'chrome'},
     {width: 1024, height: 768, name: 'ie11'},
     {width: 1024, height: 768}, // chrome is the default
-  ]      
+  ]
 });
 
+eyes.open({
+  accessibilitySettings: { level: 'AA', guidelinesVersion: 'WCAG_2_0'},
+})
+
 eyes.check({
-  tag: 'page loaded 4',      
+  tag: 'page loaded 4',
 });
 
 eyes.check({
@@ -35,7 +39,6 @@ eyes.check({
     beforeCaptureScreenshot: "document.body.style.backgroundColor = 'gold'"
   },
   sendDom: false,
-  accessibilityLevel: 'AA',
   accessibility: [
     {accessibilityType: 'RegularText', selector: '.some-div'},
     {accessibilityType: 'LargeText', selector: '//*[@id="main"]/h1', type: 'xpath'},

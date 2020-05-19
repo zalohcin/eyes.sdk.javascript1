@@ -74,7 +74,7 @@ describe('SessionStartInfo', () => {
         ],
         accessibilitySettings: {
           level: AccessibilityLevel.AA,
-          version: AccessibilityGuidelinesVersion.WCAG_2_0,
+          guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
         },
       }),
       branchName: 'some branch',

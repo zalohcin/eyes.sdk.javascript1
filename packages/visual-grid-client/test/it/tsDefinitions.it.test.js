@@ -6,7 +6,7 @@ const {exec} = require('child_process')
 const {promisify: p} = require('util')
 const pexec = p(exec)
 
-describe('typescript', () => {
+describe.only('typescript', () => {
   it('compiles with defenition file', async () => {
     const exampleFile = resolve(__dirname, './tsUsage.ts')
     try {
@@ -15,7 +15,7 @@ describe('typescript', () => {
       })
     } catch (ex) {
       console.error('Typescript compiling error:', ex.stdout)
-      throw 'Typescript compiling error'
+      throw `Typescript compiling error: ${ex.stdout}`
     }
   })
 })
