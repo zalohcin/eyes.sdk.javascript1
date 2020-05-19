@@ -4,4 +4,4 @@ const LegacyWrappedElement = require('./LegacyWrappedElement')
 
 const SeleniumWrappedElement = EyesWrappedElement.specialize(SpecWrappedElement)
 
-module.exports = LegacyWrappedElement(SeleniumWrappedElement)
+module.exports = SeleniumWrappedElement

@@ -4,15 +4,25 @@ const LegacyWrappedDriver = require('./LegacyWrappedDriver')
 
 const WDIOWrappedDriver = EyesWrappedDriver.specialize(SpecWrappedDriver, {
   /** @override */
-  async frame(proxies, reference) {
-    return proxies.switchToFrame(reference)
+  switchTo(proxies) {
+    const switchTo = this._driver.switchTo()
+    return new Proxy(switchTo, {
+      get(target, key, receiver) {
+        switch (key) {
+          case 'defaultContent':
+            return proxies.switchToFrame
+          case 'frame':
+            return proxies.switchToFrame
+          case 'parentFrame':
+            return proxies.switchToParentFrame
+          default:
+            return Reflect.get(target, key, receiver)
+        }
+      },
+    })
   },
   /** @override */
-  async frameParent(proxies) {
-    return proxies.switchToParentFrame()
-  },
-  /** @override */
-  async url(proxies, url) {
+  async get(proxies, url) {
     return proxies.visit(url)
   },
 })

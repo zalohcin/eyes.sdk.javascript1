@@ -1,6 +1,8 @@
 'use strict'
 
 const core = require('@applitools/eyes-sdk-core')
+const SeleniumCheckSettings = require('./src/SeleniumCheckSettings')
+const {SeleniumEyesClassic, SeleniumEyesVisualGrid, SeleniumEyesFactory} = require('./src/SeleniumSpecializedEyes')
 
 exports.EyesWebDriverScreenshot = require('./lib/capture/EyesWebDriverScreenshot').EyesWebDriverScreenshot
 exports.EyesWebDriverScreenshotFactory = require('./lib/capture/EyesWebDriverScreenshotFactory').EyesWebDriverScreenshotFactory
@@ -21,8 +23,8 @@ exports.IgnoreRegionByElement = require('./lib/fluent/IgnoreRegionByElement').Ig
 exports.IgnoreRegionBySelector = require('./lib/fluent/IgnoreRegionBySelector').IgnoreRegionBySelector
 exports.SelectorByElement = require('./lib/fluent/SelectorByElement').SelectorByElement
 exports.SelectorByLocator = require('./lib/fluent/SelectorByLocator').SelectorByLocator
-exports.SeleniumCheckSettings = require('./lib/fluent/SeleniumCheckSettings').SeleniumCheckSettings
-exports.Target = require('./lib/fluent/Target').Target
+exports.SeleniumCheckSettings = SeleniumCheckSettings
+exports.Target = SeleniumCheckSettings
 
 exports.Frame = require('./lib/frames/Frame').Frame
 exports.FrameChain = require('./lib/frames/FrameChain').FrameChain
@@ -55,9 +57,9 @@ exports.ImageOrientationHandler = require('./lib/ImageOrientationHandler').Image
 exports.JavascriptHandler = require('./lib/JavascriptHandler').JavascriptHandler
 exports.SeleniumJavaScriptExecutor = require('./lib/SeleniumJavaScriptExecutor').SeleniumJavaScriptExecutor
 
-exports.Eyes = require('./lib/EyesFactory').EyesFactory
-exports.EyesSelenium = require('./lib/EyesSelenium').EyesSelenium
-exports.EyesVisualGrid = require('./lib/EyesVisualGrid').EyesVisualGrid
+exports.Eyes = SeleniumEyesFactory
+exports.EyesSelenium = SeleniumEyesClassic
+exports.EyesVisualGrid = SeleniumEyesVisualGrid
 
 // eyes-common
 exports.AccessibilityLevel = core.AccessibilityLevel

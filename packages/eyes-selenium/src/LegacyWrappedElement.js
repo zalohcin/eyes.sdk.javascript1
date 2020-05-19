@@ -1,5 +1,4 @@
 function LegacyAPIElement(EyesWrappedElement) {
-  return EyesWrappedElement
   return class EyesWebElement extends EyesWrappedElement {
     get element() {
       return this.unwrapped

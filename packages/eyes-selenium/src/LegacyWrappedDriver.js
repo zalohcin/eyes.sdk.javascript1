@@ -1,83 +1,72 @@
-const LegacySelector = require('./LegacySelector')
+const {By} = require('selenium-webdriver')
 
 function LegacyAPIDriver(EyesWrappedDriver) {
-  return EyesWrappedDriver
   return class EyesWebDriver extends EyesWrappedDriver {
-    async executeScript(script, ...varArgs) {
-      return this._executor.executeScript(script, ...varArgs)
-    }
-    async executeAsyncScript(script, ...varArgs) {
-      return this._executor.executeAsyncScript(script, ...varArgs)
-    }
-    async findElement(locator) {
-      return this._finder.findElement(locator)
-    }
-    async findElements(locator) {
-      return this._finder.findElements(locator)
+    getRemoteWebDriver() {
+      return this._driver
     }
     async findElementById(id) {
-      return this.findElement(LegacySelector.id(id))
+      return this._driver.findElement(By.id(id))
     }
     async findElementsById(id) {
-      return this.findElements(LegacySelector.id(id))
+      return this._driver.findElements(By.id(id))
     }
     async findElementByName(name) {
-      return this.findElement(LegacySelector.name(name))
+      return this._driver.findElement(By.name(name))
     }
     async findElementsByName(name) {
-      return this.findElements(LegacySelector.name(name))
+      return this._driver.findElements(By.name(name))
     }
     async findElementByCssSelector(cssSelector) {
-      return this.findElement(LegacySelector.cssSelector(cssSelector))
+      return this._driver.findElement(By.cssSelector(cssSelector))
     }
     async findElementsByCssSelector(cssSelector) {
-      return this.findElements(LegacySelector.cssSelector(cssSelector))
+      return this._driver.findElements(By.cssSelector(cssSelector))
     }
-    async findElementByClassName(_className) {
-      throw new TypeError('findElementByClassName method is not implemented!')
+    async findElementByClassName(className) {
+      throw this._driver.findElement(By.className(className))
     }
-    async findElementsByClassName(_className) {
-      throw new TypeError('findElementsByClassName method is not implemented!')
+    async findElementsByClassName(className) {
+      throw this._driver.findElements(By.className(className))
     }
-    async findElementByLinkText(_linkText) {
-      throw new TypeError('findElementByLinkText method is not implemented!')
+    async findElementByLinkText(linkText) {
+      throw this._driver.findElement(By.linkText(linkText))
     }
-    async findElementsByLinkText(_linkText) {
-      throw new TypeError('findElementsByLinkText method is not implemented!')
+    async findElementsByLinkText(linkText) {
+      throw this._driver.findElements(By.linkText(linkText))
     }
-    async findElementByPartialLinkText(_partialLinkText) {
-      throw new TypeError('findElementByPartialLinkText method is not implemented!')
+    async findElementByPartialLinkText(partialLinkText) {
+      throw this._driver.findElement(By.partialLinkText(partialLinkText))
     }
-    async findElementsByPartialLinkText(_partialLinkText) {
-      throw new TypeError('findElementsByPartialLinkText method is not implemented!')
+    async findElementsByPartialLinkText(partialLinkText) {
+      throw this._driver.findElements(By.partialLinkText(partialLinkText))
     }
     async findElementByTagName(tagName) {
-      return this.findElement(LegacySelector.tagName(tagName))
+      return this._driver.findElement(By.tagName(tagName))
     }
     async findElementsByTagName(tagName) {
-      return this.findElements(LegacySelector.tagName(tagName))
+      return this._driver.findElements(By.tagName(tagName))
     }
     async findElementByXPath(xpath) {
-      return this.findElement(LegacySelector.xPath(xpath))
+      return this._driver.findElement(By.xPath(xpath))
     }
     async findElementsByXPath(xpath) {
-      return this.findElements(LegacySelector.xPath(xpath))
+      return this._driver.findElements(By.xPath(xpath))
+    }
+    async isMobile() {
+      return this._controller.isMobileDevice()
+    }
+    async isNotMobile() {
+      return !(await this._controller.isMobileDevice())
+    }
+    async getUserAgent() {
+      return this._controller.getUserAgent()
+    }
+    async getSessionId() {
+      return this._controller.getAUTSessionId()
     }
     getFrameChain() {
       return this._context._frameChain
-    }
-    switchTo() {
-      return {
-        defaultContent: () => this.frame(),
-        frame: arg => this.frame(arg),
-        parentFrame: () => this.frameParent(),
-      }
-    }
-    async sleep(ms) {
-      return this._driver.pause(ms)
-    }
-    async takeScreenshot() {
-      return this._driver.controller.takeScreenshot()
     }
   }
 }

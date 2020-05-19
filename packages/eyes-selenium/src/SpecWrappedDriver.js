@@ -72,26 +72,36 @@ module.exports = {
       .setRect(size)
   },
   async getOrientation(driver) {
-    // return driver.getOrientation()
+    const capabilities = await driver.getCapabilities()
+    const orientation = capabilities.get('orientation') || capabilities.get('deviceOrientation')
+    return orientation.toLowerCase()
   },
   async isMobile(driver) {
     const capabilities = await driver.getCapabilities()
     const platformName = capabilities.get('platformName')
-    const browserName = capabilities.get('browserName')
-    return platformName && ['ANDROID', 'IOS'].includes(platformName.toUpperCase()) && !browserName
+    return platformName ? ['android', 'ios'].includes(platformName.toLowerCase()) : false
   },
   async isAndroid(driver) {
     const capabilities = await driver.getCapabilities()
     const platformName = capabilities.get('platformName')
-    return platformName && platformName.toUpperCase() === 'ANDROID'
+    return platformName ? platformName.toLowerCase() === 'android' : false
   },
   async isIOS(driver) {
     const capabilities = await driver.getCapabilities()
     const platformName = capabilities.get('platformName')
-    return platformName && platformName.toUpperCase() === 'IOS'
+    return platformName ? platformName.toLowerCase() === 'ios' : false
+  },
+  async isNativeApp(driver) {
+    const capabilities = await driver.getCapabilities()
+    const platformName = capabilities.get('platformName')
+    const browserName = capabilities.get('browserName')
+    return platformName
+      ? ['android', 'ios'].includes(platformName.toLowerCase()) && !browserName
+      : false
   },
   async getPlatformVersion(driver) {
-    return driver.desiredCapabilities.platformVersion
+    const capabilities = await driver.getCapabilities()
+    return capabilities.get('platformVersion')
   },
   async getSessionId(driver) {
     const session = await driver.getSession()

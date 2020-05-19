@@ -145,22 +145,23 @@ describe('SpecWrappedDriver', async () => {
     })
   })
 
-  describe.skip('mobile', async () => {
+  describe('mobile browser', async () => {
     let driver
 
     before(async () => {
       driver = await new Builder()
         .withCapabilities({
-          browserName: 'safari',
-          platformName: 'iOS',
-          platformVersion: '11.0',
-          deviceName: 'iPad Air 2 Simulator',
-          deviceOrientation: 'portrait',
           username: process.env.SAUCE_USERNAME,
           accessKey: process.env.SAUCE_ACCESS_KEY,
-          idleTimeout: 360,
+          deviceName: 'Google Pixel 3a XL GoogleAPI Emulator',
+          platformName: 'Android',
+          platformVersion: '10.0',
+          deviceOrientation: 'landscape',
+          appiumVersion: '1.8.0',
+          browserName: 'Chrome',
+          browserVersion: 'latest',
         })
-        .usingServer('https://ondemand.saucelabs.com:443/wd/hub')
+        .usingServer('https://ondemand.saucelabs.com/wd/hub')
         .build()
     })
 
@@ -183,13 +184,75 @@ describe('SpecWrappedDriver', async () => {
       assert.strictEqual(result, false)
     })
 
+    it('isNativeApp()', async () => {
+      const result = await specs.isNativeApp(driver)
+      assert.strictEqual(result, false)
+    })
+
     it('getOrientation()', async () => {
-      await driver.setOrientation('landscape')
-      const landscape = await specs.getOrientation(driver)
-      assert.strictEqual(landscape, 'landscape')
-      await driver.setOrientation('portrait')
-      const portrait = await specs.getOrientation(driver)
-      assert.strictEqual(portrait, 'portrait')
+      const result = await specs.getOrientation(driver)
+      assert.strictEqual(result, 'landscape')
+    })
+
+    it('getPlatformVersion()', async () => {
+      const result = await specs.getPlatformVersion(driver)
+      assert.strictEqual(result, '10')
+    })
+  })
+
+  describe('mobile app', async () => {
+    let driver
+
+    before(async () => {
+      driver = await new Builder()
+        .withCapabilities({
+          username: process.env.SAUCE_USERNAME,
+          accessKey: process.env.SAUCE_ACCESS_KEY,
+          browserName: '',
+          name: 'AndroidNativeAppTest1',
+          platformName: 'Android',
+          deviceName: 'Android Emulator',
+          platformVersion: '6.0',
+          app: 'http://saucelabs.com/example_files/ContactManager.apk',
+          clearSystemFiles: true,
+          noReset: true,
+        })
+        .usingServer('https://ondemand.saucelabs.com/wd/hub')
+        .build()
+    })
+
+    after(async () => {
+      await driver.quit()
+    })
+
+    it('isMobile()', async () => {
+      const result = await specs.isMobile(driver)
+      assert.strictEqual(result, true)
+    })
+
+    it('isAndroid()', async () => {
+      const result = await specs.isAndroid(driver)
+      assert.strictEqual(result, true)
+    })
+
+    it('isIOS()', async () => {
+      const result = await specs.isIOS(driver)
+      assert.strictEqual(result, false)
+    })
+
+    it('isNativeApp()', async () => {
+      const result = await specs.isNativeApp(driver)
+      assert.strictEqual(result, true)
+    })
+
+    it('getOrientation()', async () => {
+      const result = await specs.getOrientation(driver)
+      assert.strictEqual(result, 'portrait')
+    })
+
+    it('getPlatformVersion()', async () => {
+      const result = await specs.getPlatformVersion(driver)
+      assert.strictEqual(result, '6.0')
     })
   })
 })
