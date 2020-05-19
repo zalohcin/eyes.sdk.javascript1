@@ -192,7 +192,6 @@ class EyesVisualGrid extends EyesCore {
         sendDom: (await this.getSendDom()) || config.sendDom,
         matchLevel: this.getMatchLevel() || config.matchLevel,
       }
-      const source = await this._controller.getSource()
       await this._checkWindowCommand({
         ...config,
         ...overrideConfig,
@@ -203,7 +202,6 @@ class EyesVisualGrid extends EyesCore {
         frames,
         url,
         cdt,
-        source,
       })
     })
   }
