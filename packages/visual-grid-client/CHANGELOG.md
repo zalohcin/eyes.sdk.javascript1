@@ -3,6 +3,7 @@
 ## Unreleased
 
 - support accessibilitySettings
+- updated to @applitools/eyes-sdk-core@10.2.0
 
 
 ## 14.0.2 - 2020/5/18
