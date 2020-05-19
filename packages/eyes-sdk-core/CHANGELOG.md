@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- add ability to output XUnit XML from the TestResultFormatter (per [Trello 261](https://trello.com/c/ozmI1rav))
 
 ## 10.2.0 - 2020/5/19
 
