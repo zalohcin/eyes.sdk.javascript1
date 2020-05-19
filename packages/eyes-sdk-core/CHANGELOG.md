@@ -2,8 +2,12 @@
 
 ## Unreleased
 
+
+## 10.2.0 - 2020/5/19
+
 - add AccessibilityGuidelinesVersion enum
 - remove accessibilityLevel from checkSettings
+- updated to @applitools/eyes-common@3.24.0
 
    ## 10.1.2 - 2020/5/13
 
