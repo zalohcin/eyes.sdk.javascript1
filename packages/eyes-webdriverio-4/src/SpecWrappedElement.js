@@ -41,6 +41,28 @@ module.exports = {
   extractId(element) {
     return element[ELEMENT_ID] || element[LEGACY_ELEMENT_ID]
   },
+  toSupportedSelector(selector) {
+    if (TypeUtils.has(selector, ['type', 'selector'])) {
+      if (selector.type === 'css') return `css selector:${selector.selector}`
+      else if (selector.type === 'xpath') return `xpath:${selector.selector}`
+    }
+    return selector
+  },
+  toEyesSelector(selector) {
+    if (selector instanceof LegacySelector) {
+      const {using, value} = selector
+      if (using === 'css selector') return {type: 'css', selector: value}
+      else if (using === 'xpath') return {type: 'xpath', selector: value}
+    } else if (TypeUtils.isString(selector)) {
+      const match = selector.match(/(css selector|xpath):(.+)/)
+      if (match) {
+        const [_, using, value] = match
+        if (using === 'css selector') return {type: 'css', selector: value}
+        else if (using === 'xpath') return {type: 'xpath', selector: value}
+      }
+    }
+    return {selector}
+  },
   extractElement(element) {
     const unwrapped = element.value ? element.value : element
     return {

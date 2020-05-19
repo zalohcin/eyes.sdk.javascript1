@@ -188,7 +188,10 @@ class EyesBrowsingContext {
         await this.frameParent()
         let frameElement
         if (contextInfo.selector) {
-          frameElement = await this._driver.finder.findElement(contextInfo.selector)
+          frameElement = await this._driver.finder.findElement({
+            type: 'xpath',
+            selector: contextInfo.selector,
+          })
         } else {
           frameElement = await EyesUtils.findFrameByContext(
             this._logger,

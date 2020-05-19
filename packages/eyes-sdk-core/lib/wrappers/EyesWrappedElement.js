@@ -28,13 +28,22 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
+ * Cross SDK selector
+ * @typedef {Object} EyesSelector
+ * @property {'css'|'xpath'} type
+ * @property {string} selector
+ */
+
+/**
  * The object which implements the lowest-level functions to work with element
  * @typedef {Object} SpecsWrappedElement
  * @property {(element) => boolean} isCompatible - return true if the value is an element, false otherwise
  * @property {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
+ * @property {(selector: EyesSelector) => SupportedSelector} toSupportedSelector - translate cross SDK selector to SDK specific selector
+ * @property {(selector: SupportedSelector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
+ * @property {(element: UnwrappedElement) => string} extractId - extract id from the unwrapped element
  * @property {(element: SupportedElement) => UnwrappedElement} [extractElement] - extract an element from the supported element
  * @property {(element: SupportedElement) => SupportedSelector} [extractSelector] - extract an element from the supported element
- * @property {(element: UnwrappedElement) => string} [extractId] - extract id from the unwrapped element
  * @property {(result) => boolean} [isStaleElementReferenceResult] - check if is a stale element reference result
  */
 
@@ -121,10 +130,26 @@ class EyesWrappedElement {
   /**
    * Check if passed selector is supported by current implementation
    * @param {*} selector
-   * @returns {boolean} true if selector is supported and could be passed in the {@link EyesWrappedElement.fromSelector} implementation
+   * @return {boolean} true if selector is supported and could be passed in the {@link EyesWrappedElement.fromSelector} implementation
    */
   static isSelector(selector) {
     return this.specs.isSelector(selector)
+  }
+  /**
+   * Translate cross SDK selector to SDK specific selector
+   * @param {EyesSelector} selector
+   * @return {SupportedSelector} translated SDK specific selector object
+   */
+  static toSupportedSelector(selector) {
+    return this.specs.toSupportedSelector(selector)
+  }
+  /**
+   * Translate SDK specific selector to cross SDK selector
+   * @param {SupportedSelector} selector
+   * @return {EyesSelector} translated cross SDK selector object
+   */
+  static toEyesSelector(selector) {
+    return this.specs.toEyesSelector(selector)
   }
   /**
    * Extract element ID from this class instance or unwrapped element object

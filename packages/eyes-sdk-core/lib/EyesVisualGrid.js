@@ -102,30 +102,20 @@ class EyesVisualGrid extends EyesCore {
     ArgumentGuard.notNull(this._configuration.getAppName(), 'appName')
     ArgumentGuard.notNull(this._configuration.getTestName(), 'testName')
 
-    if (
-      !this._configuration.getViewportSize() &&
-      this._configuration.getBrowsersInfo().length > 0
-    ) {
-      for (const browserInfo of this._configuration.getBrowsersInfo()) {
-        if (browserInfo.width) {
-          this._configuration.setViewportSize({
-            width: browserInfo.width,
-            height: browserInfo.height,
-          })
-          break
-        }
+    const browsersInfo = this._configuration.getBrowsersInfo()
+    if (!this._configuration.getViewportSize() && browsersInfo && browsersInfo.length > 0) {
+      const browserInfo = browsersInfo.find(browserInfo => browserInfo.width)
+      if (browserInfo) {
+        this._configuration.setViewportSize({width: browserInfo.width, height: browserInfo.height})
       }
     }
+
     if (!this._configuration.getViewportSize()) {
       const vs = await EyesUtils.getTopContextViewportSize(this._logger, this._driver)
       this._configuration.setViewportSize(vs)
     }
 
-    if (
-      (!this._configuration.getBrowsersInfo() ||
-        this._configuration.getBrowsersInfo().length === 0) &&
-      this._configuration.getViewportSize()
-    ) {
+    if (!browsersInfo || browsersInfo.length === 0) {
       const vs = this._configuration.getViewportSize()
       this._configuration.addBrowser(vs.getWidth(), vs.getHeight(), BrowserType.CHROME)
     }

@@ -28,6 +28,7 @@ class TargetRegionBySelector extends GetSelector {
    * @return {Promise<PersistedRegions[]>}
    */
   async toPersistedRegions(driver) {
+    driver.selector(this._selector)
     return EyesUtils.locatorToPersistedRegions(driver._logger, driver, this._selector)
   }
 }

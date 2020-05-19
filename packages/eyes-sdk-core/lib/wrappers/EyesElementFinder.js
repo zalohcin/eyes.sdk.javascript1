@@ -5,6 +5,7 @@
  * @typedef {import('./EyesWrappedDriver').UnwrappedDriver} UnwrappedDriver
  * @typedef {import('./EyesWrappedElement')} EyesWrappedElement
  * @typedef {import('./EyesWrappedElement').SupportedElement} SupportedElement
+ * @typedef {import('./EyesWrappedElement').EyesSelector} EyesSelector
  * @typedef {import('./EyesWrappedElement').SupportedSelector} SupportedSelector
  */
 
@@ -16,6 +17,8 @@
  * @property {(driver: UnwrappedDriver, selector: SupportedSelector) => EyesWrappedElement} findElements - return found elements
  * @property {(driver: UnwrappedDriver, element: SupportedElement, selector: SupportedSelector) => EyesWrappedElement} findElementsInElement - return found child elements
  * @property {(logger: Logger, driver: EyesWrappedDriver, element: SupportedElement, selector: SupportedSelector) => EyesWrappedElement} createElement - return wrapped element instance
+ * @property {(selector: EyesSelector) => SupportedSelector} toSupportedSelector - translate cross SDK selector to SDK specific selector
+ * @property {(selector: SupportedSelector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
  */
 
 class EyesElementFinder {
@@ -59,6 +62,7 @@ class EyesElementFinder {
    * @return {Promise<EyesWrappedElement>}
    */
   async findElement(selector, parentElement) {
+    selector = this.specs.toSupportedSelector(selector)
     const element = parentElement
       ? await this.specs.findElementInElement(this._driver.unwrapped, parentElement, selector)
       : await this.specs.findElement(this._driver.unwrapped, selector)

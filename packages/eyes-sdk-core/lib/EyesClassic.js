@@ -186,7 +186,7 @@ class EyesClassic extends EyesCore {
 
     if (!this._configuration.getViewportSize()) {
       const vs = await EyesUtils.getTopContextViewportSize(this._logger, this._driver)
-      this._configuration.setViewportSize(vs.toJSON())
+      this._configuration.setViewportSize(vs)
     }
 
     if (this._isDisabled) {
