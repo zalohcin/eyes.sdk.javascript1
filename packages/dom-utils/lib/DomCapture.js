@@ -10,7 +10,7 @@ const {
   PerformanceUtils,
   EyesError,
 } = require('@applitools/eyes-common')
-const {getCaptureDomAndPollScript} = require('@applitools/dom-capture')
+const {getCaptureDomAndPollScript, getCaptureDomAndPollForIE} = require('@applitools/dom-capture')
 
 const DomCaptureReturnType = {
   OBJECT: 'OBJECT',
@@ -79,9 +79,15 @@ class DomCapture {
    */
   async getWindowDom() {
     let script
+    const browserName = await this._driver.getBrowserName()
     if (!this._customScript) {
-      const captureDomScript = await getCaptureDomAndPollScript()
-      script = `${captureDomScript} return __captureDomAndPoll();`
+      if (browserName === 'internet explorer') {
+        const captureDomScript = await getCaptureDomAndPollForIE()
+        script = `${captureDomScript} return __captureDomAndPollForIE();`
+      } else {
+        const captureDomScript = await getCaptureDomAndPollScript()
+        script = `${captureDomScript} return __captureDomAndPoll();`
+      }
     } else {
       script = this._customScript
     }
