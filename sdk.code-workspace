@@ -109,8 +109,8 @@
 			"path": "packages/sdk-release-kit"
 		},
 		{
-			"name": "sdk-test-kit",
-			"path": "packages/sdk-test-kit"
+			"name": "sdk-shared",
+			"path": "packages/sdk-shared"
 		},
 		{
 			"name": "visual-grid-client",

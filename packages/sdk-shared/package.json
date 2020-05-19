@@ -1,5 +1,5 @@
 {
-  "name": "@applitools/sdk-release-kit",
+  "name": "@applitools/sdk-shared",
   "private": true,
   "version": "0.1.0",
   "engines": {
@@ -9,30 +9,21 @@
     "lib": "./src",
     "test": "./test"
   },
-  "bin": {
-    "bongo": "./src/cli/index.js"
-  },
-  "description": "Release Kit for Applitools SDKs",
+  "description": "General place for shared SDK things for development purposes",
   "author": "Applitools team <team@applitools.com>",
   "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
   "license": "SEE LICENSE IN LICENSE",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
-  }, "scripts": {
+  },
+  "scripts": {
     "test": "mocha test/**/*.spec.js",
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc"
   },
   "bugs": {
     "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
   },
-  "dependencies": {
-    "chalk": "3.0.0",
-    "node-fetch": "^2.6.0",
-    "yargs": "^15.0.2",
-    "micromatch": "^4.0.2"
-  },
-  "devDependencies": {
-    "mocha": "^6.2.2"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
