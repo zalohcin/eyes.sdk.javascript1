@@ -1536,7 +1536,11 @@
               }
             }
             if (this._defaultMatchSettings.getAccessibilitySettings()) {
-              imageMatchSettings.accessibilitySettings = this._defaultMatchSettings.getAccessibilitySettings()
+              const accessibilitySettings = this._defaultMatchSettings.getAccessibilitySettings()
+              imageMatchSettings.accessibilitySettings = {
+                level: accessibilitySettings.level,
+                version: accessibilitySettings.guidelinesVersion,
+              }
             }
             return _notifyEvent(
               this._logger,

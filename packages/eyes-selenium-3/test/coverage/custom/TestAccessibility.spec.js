@@ -1,7 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const {Eyes, Target} = require('../../../index')
+const {Eyes, Target, ConsoleLogHandler} = require('../../../index')
 const {By} = require('selenium-webdriver')
 const {batch, getDriver} = require('./util/TestSetup')
 const {getApiData} = require('./util/ApiAssertions')
@@ -23,6 +23,9 @@ describe('TestAccessibility', () => {
     }
 
     const eyes = new Eyes()
+    if (process.env.APPLITOOLS_SHOW_LOGS) {
+      eyes.setLogHandler(new ConsoleLogHandler(true))
+    }
     eyes.setAccessibilityValidation(accessibilitySettings)
     eyes.setBatch(batch)
 
@@ -39,7 +42,6 @@ describe('TestAccessibility', () => {
       {element: el, regionType: 'BoldText'},
     )
 
-    debugger
     await eyes.check('', checkSettings)
     const testResults = await eyes.close(false)
 
@@ -50,7 +52,7 @@ describe('TestAccessibility', () => {
     assert.strictEqual(sessionAccessibilityStatus.level, accessibilitySettings.level)
 
     const sessionResults = await getApiData(testResults)
-    const {startInfo, actualAppOutput} = sessionResults
+    const [actualAppOutput] = sessionResults.actualAppOutput
 
     const expectedAccessibilityRegions = [
       {type: 'LargeText', isDisabled: false, left: 10, top: 20, width: 30, height: 40},
@@ -63,12 +65,12 @@ describe('TestAccessibility', () => {
     }
 
     assert.deepStrictEqual(
-      startInfo.defaultMatchSettings.accessibilitySettings,
+      actualAppOutput.imageMatchSettings.accessibilitySettings,
       expectedAccessibilitySettings,
     )
 
     assert.deepStrictEqual(
-      actualAppOutput[0].imageMatchSettings.accessibility,
+      actualAppOutput.imageMatchSettings.accessibility,
       expectedAccessibilityRegions,
     )
 

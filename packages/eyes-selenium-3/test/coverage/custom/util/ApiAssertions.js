@@ -13,9 +13,7 @@ async function getTestResults(testSummary) {
 
 async function getApiData(testResults, apiKey = process.env.APPLITOOLS_API_KEY) {
   let response = await axios.get(
-    `${testResults
-      .getApiUrls()
-      .getSession()}?format=json&AccessToken=${testResults.getSecretToken()}&apiKey=${apiKey}`,
+    `${testResults.apiUrls.session}?format=json&AccessToken=${testResults.secretToken}&apiKey=${apiKey}`,
   )
   return response.data
 }
