@@ -74,10 +74,11 @@ export interface SessionStartInfo {
 export type AccessibilityLevel = "AA"|"AAA"
 export type AccessibilityGuidelinesVersion = "WCAG_2_0"|"WCAG_2_1"
 export type AccessibilityStatus = "Passed"|"Failed"
+export type AccessibilityRegionType = "IgnoreContrast"|"RegularText"|"LargeText"|"BoldText"|"GraphicalObject"
 
 export interface AccessibilitySettings {
   level: AccessibilityLevel
-  version: AccessibilityGuidelinesVersion
+  guidelinesVersion: AccessibilityGuidelinesVersion
 }
 
 export interface SessionAccessibilityStatus {

@@ -1535,6 +1535,9 @@
                 matchThreshold: exactObj.getMatchThreshold(),
               }
             }
+            if (this._defaultMatchSettings.getAccessibilitySettings()) {
+              imageMatchSettings.accessibilitySettings = this._defaultMatchSettings.getAccessibilitySettings()
+            }
             return _notifyEvent(
               this._logger,
               this._promiseFactory,
