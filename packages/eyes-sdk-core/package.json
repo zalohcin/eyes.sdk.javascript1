@@ -45,7 +45,7 @@
     "chai": "4.2.0",
     "chai-uuid": "1.0.6",
     "mocha": "7.0.1",
-    "chromedriver": "^80.0.0",
+    "chromedriver": "^83.0.0",
     "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "browser": {
