@@ -180,7 +180,7 @@ describe(appName, () => {
     })
   })
 
-  describe.skip(`Test_VG`, () => {
+  describe(`Test_VG`, () => {
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
