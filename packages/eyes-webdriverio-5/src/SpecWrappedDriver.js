@@ -1,5 +1,6 @@
 const WDIOFrame = require('./WDIOFrame')
 const WDIOWrappedElement = require('./WDIOWrappedElement')
+const LegacySelector = require('./LegacySelector')
 
 module.exports = {
   isEqualFrames(leftFrame, rightFrame) {
@@ -30,18 +31,30 @@ module.exports = {
     return driver.switchToParentFrame()
   },
   async findElement(driver, selector) {
-    return driver.$(selector.toString())
+    const element = await driver.$(
+      selector instanceof LegacySelector ? selector.toString() : selector,
+    )
+    return !element.error ? element : null
   },
-  async findElementInElement(driver, element, selector) {
-    const extendedElement = await driver.$(element)
-    return extendedElement.$(selector.toString())
+  async findElementInElement(driver, parentElement, selector) {
+    const extendedParentElement = await driver.$(parentElement)
+    const element = await extendedParentElement.$(
+      selector instanceof LegacySelector ? selector.toString() : selector,
+    )
+    return !element.error ? element : null
   },
   async findElements(driver, selector) {
-    return driver.$$(selector.toString())
+    const elements = await driver.$$(
+      selector instanceof LegacySelector ? selector.toString() : selector,
+    )
+    return Array.from(elements)
   },
-  async findElementsInElement(driver, element, selector) {
-    const extendedElement = await driver.$(element)
-    return extendedElement.$$(selector.toString())
+  async findElementsInElement(driver, parentElement, selector) {
+    const extendedParentElement = await driver.$(parentElement)
+    const elements = await extendedParentElement.$$(
+      selector instanceof LegacySelector ? selector.toString() : selector,
+    )
+    return Array.from(elements)
   },
   async getWindowLocation(driver) {
     const rect = await driver.getWindowRect()

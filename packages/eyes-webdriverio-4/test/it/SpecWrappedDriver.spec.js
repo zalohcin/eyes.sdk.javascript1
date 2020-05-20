@@ -79,12 +79,12 @@ describe('SpecWrappedDriver', async () => {
       const result = await specs.findElements(driver, 'div')
       assert.deepStrictEqual(result, expected)
     })
-    it('findElement(wrong)', async () => {
-      const result = await specs.findElement(driver, 'wrong selector')
+    it('findElement(non-existent)', async () => {
+      const result = await specs.findElement(driver, 'non-existent')
       assert.deepStrictEqual(result, null)
     })
-    it('findElements(wrong)', async () => {
-      const result = await specs.findElements(driver, 'wrong selector')
+    it('findElements(non-existent)', async () => {
+      const result = await specs.findElements(driver, 'non-existent')
       assert.deepStrictEqual(result, [])
     })
     it('getWindowLocation()', async () => {

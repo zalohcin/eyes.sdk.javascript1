@@ -80,6 +80,32 @@ describe('SpecWrappedDriver', async () => {
         assert.strictEqual(result[index].elementId, element.elementId),
       )
     })
+    it('findElement(function)', async () => {
+      const selector = function() {
+        return this.document.querySelector('#overflowing-div')
+      }
+      const expected = await driver.$(selector)
+      const result = await specs.findElement(driver, selector)
+      assert.strictEqual(result.elementId, expected.elementId)
+    })
+    it('findElements(function)', async () => {
+      const selector = function() {
+        return this.document.querySelectorAll('div')
+      }
+      const expected = await driver.$$(selector)
+      const result = await specs.findElements(driver, selector)
+      expected.forEach((element, index) =>
+        assert.strictEqual(result[index].elementId, element.elementId),
+      )
+    })
+    it('findElement(non-existent)', async () => {
+      const result = await specs.findElement(driver, 'non-existent')
+      assert.strictEqual(result, null)
+    })
+    it('findElements(non-existent)', async () => {
+      const result = await specs.findElements(driver, 'non-existent')
+      assert.deepStrictEqual(result, [])
+    })
     it('getWindowLocation()', async () => {
       const {x, y} = await driver.getWindowRect()
       const result = await specs.getWindowLocation(driver)
