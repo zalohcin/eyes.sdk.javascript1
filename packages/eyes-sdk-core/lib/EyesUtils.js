@@ -683,7 +683,7 @@ async function ensureRegionVisible(
   region,
 ) {
   if (!region) return
-  if (await controller.isMobileDevice()) {
+  if (await controller.isNative()) {
     logger.verbose(`NATIVE context identified, skipping 'ensure element visible'`)
     return
   }

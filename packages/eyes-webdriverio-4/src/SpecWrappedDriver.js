@@ -78,6 +78,9 @@ module.exports = {
   async isIOS(driver) {
     return driver.isIOS
   },
+  async isNative(driver) {
+    return driver.isMobile && !driver.desiredCapabilities.browserName
+  },
   async getPlatformVersion(driver) {
     return driver.desiredCapabilities.platformVersion
   },
