@@ -18,6 +18,7 @@ const EyesDriverOperationError = require('../errors/EyesDriverOperationError')
  * @property {(driver: UnwrappedDriver) => Promise<boolean>} isMobile - true if a mobile device, false otherwise
  * @property {(driver: UnwrappedDriver) => Promise<boolean>} isAndroid - true if an Android device, false otherwise
  * @property {(driver: UnwrappedDriver) => Promise<boolean>} isIOS - true if an iOS device, false otherwise
+ * @property {(driver: UnwrappedDriver) => Promise<boolean>} isNative - true if a native app, false otherwise
  * @property {(driver: UnwrappedDriver) => Promise<string>} getPlatformVersion - return version of the device's platform
  * @property {(driver: UnwrappedDriver) => Promise<string>} getSessionId - return id of the running session
  * @property {(driver: UnwrappedDriver) => Promise<string|Buffer>} takeScreenshot - return screenshot of the viewport
@@ -123,8 +124,15 @@ class EyesDriverController {
    * Check if running in mobile device
    * @return {Promise<boolean>} true if mobile, false otherwise
    */
-  async isMobileDevice() {
+  async isMobile() {
     return this.specs.isMobile(this._driver.unwrapped)
+  }
+  /**
+   * Check if running in mobile device with native context
+   * @return {Promise<boolean>} true if native, false otherwise
+   */
+  async isNative() {
+    return this.specs.isNative(this._driver.unwrapped)
   }
   /**
    * Get mobile OS if detected

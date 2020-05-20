@@ -75,6 +75,38 @@ describe('SpecWrappedDriver', async () => {
     assert.deepStrictEqual(result, elementId)
   })
 
+  it('toSupportedSelector(eyesSelector)', async () => {
+    const xpathEyesSelector = {type: 'xpath', selector: '/html[1]/body[1]/div[1]'}
+    const xpathResult = specs.toSupportedSelector(xpathEyesSelector)
+    assert.deepStrictEqual(xpathResult, `xpath:${xpathEyesSelector.selector}`)
+
+    const cssEyesSelector = {type: 'css', selector: 'html > body > div'}
+    const cssResult = specs.toSupportedSelector(cssEyesSelector)
+    assert.deepStrictEqual(cssResult, `css selector:${cssEyesSelector.selector}`)
+
+    const wrongEyesSelector = {type: 'wrong type', selector: 'wrong selector'}
+    const wrongResult = specs.toSupportedSelector(wrongEyesSelector)
+    assert.deepStrictEqual(wrongResult, wrongEyesSelector)
+  })
+
+  it('toEyesSelector(selector)', async () => {
+    const xpathSelector = 'xpath:/html[1]/body[1]/div[1]'
+    const xpathResult = specs.toEyesSelector(xpathSelector)
+    assert.deepStrictEqual(xpathResult, {type: 'xpath', selector: '/html[1]/body[1]/div[1]'})
+
+    const cssSelector = 'css selector:html > body > div'
+    const cssResult = specs.toEyesSelector(cssSelector)
+    assert.deepStrictEqual(cssResult, {type: 'css', selector: 'html > body > div'})
+
+    const tagSelector = '<tag />'
+    const tagResult = specs.toEyesSelector(tagSelector)
+    assert.deepStrictEqual(tagResult, {selector: tagSelector})
+
+    const wrongSelector = {isWrong: true}
+    const wrongResult = specs.toEyesSelector(wrongSelector)
+    assert.deepStrictEqual(wrongResult, {selector: wrongSelector})
+  })
+
   it('extractElement(element)', async () => {
     const {value: element} = await driver.element('div')
     const elementId = element.ELEMENT || element['element-6066-11e4-a52e-4f735466cecf']
@@ -95,14 +127,14 @@ describe('SpecWrappedDriver', async () => {
     })
   })
 
-  it('extractElement(element)', async () => {
+  it('extractSelector(element)', async () => {
     const selector = 'div'
     const {value: element} = await driver.element(selector)
     const result = specs.extractSelector(element)
     assert.deepStrictEqual(result, undefined)
   })
 
-  it('extractElement(elementResponse)', async () => {
+  it('extractSelector(elementResponse)', async () => {
     const selector = 'div'
     const element = await driver.element(selector)
     const result = specs.extractSelector(element)

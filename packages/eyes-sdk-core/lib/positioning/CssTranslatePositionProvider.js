@@ -55,7 +55,7 @@ class CssTranslatePositionProvider extends PositionProvider {
       return position
     } catch (err) {
       // Sometimes it is expected e.g. on Appium, otherwise, take care
-      this._logger.verbose(`Failed to extract current translate position!`)
+      this._logger.verbose(`Failed to extract current translate position!`, err)
       return Location.ZERO
     }
   }
@@ -86,7 +86,7 @@ class CssTranslatePositionProvider extends PositionProvider {
       return actualPosition
     } catch (err) {
       // Sometimes it is expected e.g. on Appium, otherwise, take care
-      this._logger.verbose(`Failed to set current scroll position!.`)
+      this._logger.verbose(`Failed to set current scroll position!.`, err)
       return Location.ZERO
     }
   }
@@ -130,7 +130,7 @@ class CssTranslatePositionProvider extends PositionProvider {
       this._logger.verbose('Current transform', transforms)
       return new PositionMemento({transforms})
     } catch (err) {
-      this._logger.verbose(`Failed to get current transforms!.`)
+      this._logger.verbose(`Failed to get current transforms!.`, err)
       return new PositionMemento({})
     }
   }
@@ -152,7 +152,7 @@ class CssTranslatePositionProvider extends PositionProvider {
       )
       this._logger.verbose('Transform (position) restored.')
     } catch (err) {
-      this._logger.verbose(`Failed to restore state!.`)
+      this._logger.verbose(`Failed to restore state!.`, err)
     }
   }
 }

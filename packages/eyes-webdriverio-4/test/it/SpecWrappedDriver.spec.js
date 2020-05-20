@@ -79,6 +79,14 @@ describe('SpecWrappedDriver', async () => {
       const result = await specs.findElements(driver, 'div')
       assert.deepStrictEqual(result, expected)
     })
+    it('findElement(wrong)', async () => {
+      const result = await specs.findElement(driver, 'wrong selector')
+      assert.deepStrictEqual(result, null)
+    })
+    it('findElements(wrong)', async () => {
+      const result = await specs.findElements(driver, 'wrong selector')
+      assert.deepStrictEqual(result, [])
+    })
     it('getWindowLocation()', async () => {
       const {value: expected} = await driver.windowHandlePosition()
       const {x, y} = expected
@@ -156,17 +164,22 @@ describe('SpecWrappedDriver', async () => {
     })
   })
 
-  describe('mobile', async () => {
+  describe('mobile browser', async () => {
     let driver
 
     before(async () => {
       driver = remote({
-        host: 'hub-cloud.browserstack.com',
-        user: process.env.BROWSERSTACK_USERNAME,
-        key: process.env.BROWSERSTACK_ACCESS_KEY,
+        port: '80',
+        path: '/wd/hub',
+        host: 'ondemand.saucelabs.com',
         desiredCapabilities: {
-          device: 'Google Pixel 3a XL',
-          os_version: '9.0',
+          browserName: 'Chrome',
+          platformName: 'Android',
+          platformVersion: '10.0',
+          deviceName: 'Google Pixel 3a XL GoogleAPI Emulator',
+          deviceOrientation: 'portrait',
+          username: process.env.SAUCE_USERNAME,
+          accesskey: process.env.SAUCE_ACCESS_KEY,
         },
       })
       await driver.init()
@@ -182,7 +195,7 @@ describe('SpecWrappedDriver', async () => {
     })
 
     it('isAndroid()', async () => {
-      const result = await specs.isMobile(driver)
+      const result = await specs.isAndroid(driver)
       assert.strictEqual(result, true)
     })
 
@@ -191,13 +204,79 @@ describe('SpecWrappedDriver', async () => {
       assert.strictEqual(result, false)
     })
 
+    it('isNative()', async () => {
+      const result = await specs.isNative(driver)
+      assert.strictEqual(result, false)
+    })
+
     it('getOrientation()', async () => {
-      await driver.setOrientation('landscape')
-      const landscape = await specs.getOrientation(driver)
-      assert.strictEqual(landscape, 'landscape')
-      await driver.setOrientation('portrait')
-      const portrait = await specs.getOrientation(driver)
-      assert.strictEqual(portrait, 'portrait')
+      const result = await specs.getOrientation(driver)
+      assert.strictEqual(result, 'portrait')
+    })
+
+    it('getPlatformVersion()', async () => {
+      const result = await specs.getPlatformVersion(driver)
+      assert.strictEqual(result, '10.0')
+    })
+  })
+
+  describe('native app', async () => {
+    let driver
+
+    before(async () => {
+      driver = remote({
+        port: '80',
+        path: '/wd/hub',
+        host: 'ondemand.saucelabs.com',
+        desiredCapabilities: {
+          browserName: '',
+          name: 'AndroidNativeAppTest1',
+          platformName: 'Android',
+          platformVersion: '6.0',
+          deviceName: 'Android Emulator',
+          deviceOrientation: 'landscape',
+          app: 'http://saucelabs.com/example_files/ContactManager.apk',
+          clearSystemFiles: true,
+          noReset: true,
+          username: process.env.SAUCE_USERNAME,
+          accessKey: process.env.SAUCE_ACCESS_KEY,
+        },
+      })
+      await driver.init()
+    })
+
+    after(async () => {
+      await driver.end()
+    })
+
+    it('isMobile()', async () => {
+      const result = await specs.isMobile(driver)
+      assert.strictEqual(result, true)
+    })
+
+    it('isAndroid()', async () => {
+      const result = await specs.isAndroid(driver)
+      assert.strictEqual(result, true)
+    })
+
+    it('isIOS()', async () => {
+      const result = await specs.isIOS(driver)
+      assert.strictEqual(result, false)
+    })
+
+    it('isNative()', async () => {
+      const result = await specs.isNative(driver)
+      assert.strictEqual(result, true)
+    })
+
+    it('getOrientation()', async () => {
+      const result = await specs.getOrientation(driver)
+      assert.strictEqual(result, 'landscape')
+    })
+
+    it('getPlatformVersion()', async () => {
+      const result = await specs.getPlatformVersion(driver)
+      assert.strictEqual(result, '6.0')
     })
   })
 })
