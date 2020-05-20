@@ -77,13 +77,14 @@ class DomCapture {
   async getBrowserName() {
     // to support an unwrapped driver (for testing)
     // we only want to call getBrowserName if it's there
-    if (this._driver.hasOwnProperty('getBrowserName')) return await this._driver.getBrowserName()
+    if (typeof this._driver.getBrowserName === 'function')
+      return await this._driver.getBrowserName()
   }
 
   async getBrowserVersion() {
     // to support an unwrapped driver (for testing)
     // we only want to call getBrowserVersion if it's there
-    if (this._driver.hasOwnProperty('getBrowserVersion'))
+    if (typeof this._driver.getBrowserVersion === 'function')
       return await this._driver.getBrowserVersion()
   }
 
@@ -95,7 +96,7 @@ class DomCapture {
   async isEdgeClassic() {
     const browserName = await this.getBrowserName()
     const browserVersion = await this.getBrowserVersion()
-    return browserName.toLowerCase().includes('edge') && browserVersion <= 18
+    return browserName.toLowerCase().includes('edge') && Math.floor(browserVersion) <= 18
   }
 
   async needsIEScript() {
