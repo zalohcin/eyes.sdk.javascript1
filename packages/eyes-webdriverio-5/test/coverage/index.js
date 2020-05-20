@@ -1,3 +1,4 @@
+const {URL} = require('url');
 const supportedTests = require('./supported-tests')
 const {makeEmitTracker} = require('@applitools/sdk-coverage-tests')
 const sdkName = 'eyes.webdriverio.javascript5'
@@ -41,6 +42,12 @@ function initialize() {
         },
       }`,
     )
+    if (options.host) {
+      const url = new URL(options.host)
+      result.storeHook('beforeEach', `browserOptions.hostname = '${url.hostname}'`)
+      result.storeHook('beforeEach', `browserOptions.port = ${url.port}`)
+      result.storeHook('beforeEach', `browserOptions.path = '${url.path || '/'}'`)
+    }
     result.storeHook('beforeEach', `driver = await remote(browserOptions)`)
     result.storeHook(
       'beforeEach',
