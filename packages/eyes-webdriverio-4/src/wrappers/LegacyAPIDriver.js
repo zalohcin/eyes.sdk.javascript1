@@ -88,6 +88,10 @@ function LegacyAPIDriver(WDIODriver) {
       const capabilities = await this.getCapabilities()
       return capabilities.browserName
     }
+    async getBrowserVersion() {
+      const capabilities = await this.getCapabilities()
+      return capabilities.browserVersion
+    }
   }
 }
 
