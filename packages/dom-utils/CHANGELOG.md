@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- fix to implicitly use the correct capture script when running on Internet Explorer (per [Trello 296](https://trello.com/c/EQD3JUOf/296-wdio-5-long-image-sometimes-fails-sometimes-succeeds))
+
+## 4.7.17 - 2020/5/19
+
+- updated to @applitools/eyes-common@3.24.0
 
 ## 4.7.16 - 2020/5/11
 

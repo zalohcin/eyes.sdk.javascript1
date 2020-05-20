@@ -1,0 +1,29 @@
+{
+  "name": "@applitools/sdk-shared",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "directories": {
+    "lib": "./src",
+    "test": "./test"
+  },
+  "description": "General place for shared SDK things for development purposes",
+  "author": "Applitools team <team@applitools.com>",
+  "homepage": "https://github.com/applitools/eyes.sdk.javascript1#readme",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/applitools/eyes.sdk.javascript1.git"
+  },
+  "scripts": {
+    "test": "mocha test/**/*.spec.js",
+    "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc"
+  },
+  "bugs": {
+    "url": "https://github.com/applitools/eyes.sdk.javascript1/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

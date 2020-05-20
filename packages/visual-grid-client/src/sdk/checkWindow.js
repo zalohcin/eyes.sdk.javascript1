@@ -29,7 +29,6 @@ function makeCheckWindow({
   openEyesPromises,
   fetchHeaders,
   matchLevel: _matchLevel,
-  accessibilityLevel: _accessibilityLevel,
   isSingleWindow,
   getUserAgents,
 }) {
@@ -51,7 +50,6 @@ function makeCheckWindow({
     accessibility,
     sendDom = true,
     matchLevel = _matchLevel,
-    accessibilityLevel = _accessibilityLevel,
     layout,
     strict,
     content,
@@ -241,7 +239,6 @@ function makeCheckWindow({
         ignoreDisplacements,
         renderId,
         matchLevel,
-        accessibilityLevel,
       })
 
       logger.verbose(
