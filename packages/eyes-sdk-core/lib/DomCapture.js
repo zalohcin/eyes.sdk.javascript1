@@ -96,7 +96,7 @@ class DomCapture {
   async isEdgeClassic() {
     const browserName = await this.getBrowserName()
     const browserVersion = await this.getBrowserVersion()
-    return browserName.toLowerCase().includes('edge') && Math.floor(browserVersion) <= 18
+    return browserName.toLowerCase().includes('edge') && Math.floor(browserVersion) <= 44
   }
 
   async needsIEScript() {
@@ -108,7 +108,6 @@ class DomCapture {
    */
   async getWindowDom() {
     let script
-    //const browserName = await this.getBrowserName()
     if (!this._customScript) {
       if (await this.needsIEScript()) {
         const captureDomScript = await getCaptureDomAndPollForIE()
