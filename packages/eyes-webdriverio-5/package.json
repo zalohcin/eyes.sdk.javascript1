@@ -54,7 +54,7 @@
   },
   "scripts": {
     "lint": "eslint '**/*.js'",
-    "test": "yarn test:unit && yarn test:e2e",
+    "test": "yarn test:unit && yarn test:it && yarn test:e2e",
     "test:e2e": "mocha --no-timeouts \"test/+(TestClassicApi*.js|TestFluentApi*.js|TestVisualGrid*.js)\"",
     "test:it": "mocha --no-timeouts \"test/it/*.js\"",
     "test:unit": "mocha \"test/unit/**/*.js\"",

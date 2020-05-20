@@ -2,6 +2,21 @@ const WDIOFrame = require('./WDIOFrame')
 const WDIOWrappedElement = require('./WDIOWrappedElement')
 
 module.exports = {
+  isEqualFrames(leftFrame, rightFrame) {
+    return WDIOFrame.equals(leftFrame, rightFrame)
+  },
+  createElement(logger, driver, element, selector) {
+    return new WDIOWrappedElement(logger, driver, element, selector)
+  },
+  createFrameReference(reference) {
+    return WDIOFrame.fromReference(reference)
+  },
+  toSupportedSelector(selector) {
+    return WDIOWrappedElement.toSupportedSelector(selector)
+  },
+  toEyesSelector(selector) {
+    return WDIOWrappedElement.toEyesSelector(selector)
+  },
   async executeScript(driver, script, ...args) {
     return driver.execute(script, ...args)
   },
@@ -13,12 +28,6 @@ module.exports = {
   },
   switchToParentFrame(driver) {
     return driver.switchToParentFrame()
-  },
-  isEqualFrames(leftFrame, rightFrame) {
-    return WDIOFrame.equals(leftFrame, rightFrame)
-  },
-  createFrameReference(reference) {
-    return WDIOFrame.fromReference(reference)
   },
   async findElement(driver, selector) {
     return driver.$(selector.toString())
@@ -33,9 +42,6 @@ module.exports = {
   async findElementsInElement(driver, element, selector) {
     const extendedElement = await driver.$(element)
     return extendedElement.$$(selector.toString())
-  },
-  createElement(logger, driver, element, selector) {
-    return new WDIOWrappedElement(logger, driver, element, selector)
   },
   async getWindowLocation(driver) {
     const rect = await driver.getWindowRect()
@@ -63,6 +69,9 @@ module.exports = {
   },
   async isIOS(driver) {
     return driver.isIOS
+  },
+  async isNative(driver) {
+    return driver.isMobile && !driver.capabilities.browserName
   },
   async getPlatformVersion(driver) {
     return driver.capabilities.platformVersion

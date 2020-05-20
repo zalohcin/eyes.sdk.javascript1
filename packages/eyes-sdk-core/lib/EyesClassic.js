@@ -292,7 +292,7 @@ class EyesClassic extends EyesCore {
    * @return {Promise<MatchResult>}
    */
   async _checkPrepare(checkSettings, operation) {
-    if (await this._controller.isMobileDevice()) return operation()
+    if (await this._controller.isNative()) return operation()
     this._stitchContent = checkSettings.getStitchContent()
     // sync stored frame chain with actual browsing context
     await this._context.framesRefresh()

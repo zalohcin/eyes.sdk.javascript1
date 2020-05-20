@@ -67,6 +67,38 @@ describe('SpecWrappedDriver', async () => {
     assert.deepStrictEqual(result, false)
   })
 
+  it('toSupportedSelector(eyesSelector)', async () => {
+    const xpathEyesSelector = {type: 'xpath', selector: '/html[1]/body[1]/div[1]'}
+    const xpathResult = specs.toSupportedSelector(xpathEyesSelector)
+    assert.deepStrictEqual(xpathResult, `xpath:${xpathEyesSelector.selector}`)
+
+    const cssEyesSelector = {type: 'css', selector: 'html > body > div'}
+    const cssResult = specs.toSupportedSelector(cssEyesSelector)
+    assert.deepStrictEqual(cssResult, `css selector:${cssEyesSelector.selector}`)
+
+    const wrongEyesSelector = {type: 'wrong type', selector: 'wrong selector'}
+    const wrongResult = specs.toSupportedSelector(wrongEyesSelector)
+    assert.deepStrictEqual(wrongResult, wrongEyesSelector)
+  })
+
+  it('toEyesSelector(selector)', async () => {
+    const xpathSelector = 'xpath:/html[1]/body[1]/div[1]'
+    const xpathResult = specs.toEyesSelector(xpathSelector)
+    assert.deepStrictEqual(xpathResult, {type: 'xpath', selector: '/html[1]/body[1]/div[1]'})
+
+    const cssSelector = 'css selector:html > body > div'
+    const cssResult = specs.toEyesSelector(cssSelector)
+    assert.deepStrictEqual(cssResult, {type: 'css', selector: 'html > body > div'})
+
+    const tagSelector = '<tag />'
+    const tagResult = specs.toEyesSelector(tagSelector)
+    assert.deepStrictEqual(tagResult, {selector: tagSelector})
+
+    const wrongSelector = {isWrong: true}
+    const wrongResult = specs.toEyesSelector(wrongSelector)
+    assert.deepStrictEqual(wrongResult, {selector: wrongSelector})
+  })
+
   it('extractId(element)', async () => {
     const elementId = 'elementId'
     const element = {'element-6066-11e4-a52e-4f735466cecf': elementId}
