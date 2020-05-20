@@ -33,6 +33,7 @@
   "dependencies": {
     "@applitools/eyes-common": "3.24.0",
     "@applitools/isomorphic-fetch": "3.0.0",
+    "@applitools/dom-capture": "7.2.0",
     "axios": "0.19.2",
     "chalk": "3.0.0",
     "es6-promise-pool": "2.5.0",
@@ -43,7 +44,9 @@
     "@applitools/sdk-release-kit": "0.1.0",
     "chai": "4.2.0",
     "chai-uuid": "1.0.6",
-    "mocha": "7.0.1"
+    "mocha": "7.0.1",
+    "chromedriver": "^83.0.0",
+    "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "browser": {
     "tunnel": false

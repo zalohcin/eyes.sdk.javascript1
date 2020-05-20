@@ -35,8 +35,8 @@ const {
   ScrollPositionProvider,
   ScrollElementPositionProvider,
   RegionPositionCompensationFactory,
+  DomCapture,
 } = require('@applitools/eyes-sdk-core')
-const {DomCapture} = require('@applitools/dom-utils')
 const WDIOCheckSettings = require('./WDIOCheckSettings')
 const WDIODriver = require('./wrappers/WDIODriver')
 

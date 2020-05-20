@@ -74,14 +74,43 @@ class DomCapture {
     return returnType === DomCaptureReturnType.OBJECT ? JSON.parse(dom) : dom
   }
 
+  async getBrowserName() {
+    // to support an unwrapped driver (for testing)
+    // we only want to call getBrowserName if it's there
+    if (typeof this._driver.getBrowserName === 'function')
+      return await this._driver.getBrowserName()
+  }
+
+  async getBrowserVersion() {
+    // to support an unwrapped driver (for testing)
+    // we only want to call getBrowserVersion if it's there
+    if (typeof this._driver.getBrowserVersion === 'function')
+      return await this._driver.getBrowserVersion()
+  }
+
+  async isInternetExplorer() {
+    const browserName = await this.getBrowserName()
+    return browserName === 'internet explorer'
+  }
+
+  async isEdgeClassic() {
+    const browserName = await this.getBrowserName()
+    const browserVersion = await this.getBrowserVersion()
+    if (browserName)
+      return browserName.toLowerCase().includes('edge') && Math.floor(browserVersion) <= 44
+  }
+
+  async needsIEScript() {
+    return (await this.isInternetExplorer()) || (await this.isEdgeClassic())
+  }
+
   /**
    * @return {Promise<{string}>}
    */
   async getWindowDom() {
     let script
-    const browserName = await this._driver.getBrowserName()
     if (!this._customScript) {
-      if (browserName === 'internet explorer') {
+      if (await this.needsIEScript()) {
         const captureDomScript = await getCaptureDomAndPollForIE()
         script = `${captureDomScript} return __captureDomAndPollForIE();`
       } else {
