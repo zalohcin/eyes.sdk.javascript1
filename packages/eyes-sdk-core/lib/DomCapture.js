@@ -74,12 +74,18 @@ class DomCapture {
     return returnType === DomCaptureReturnType.OBJECT ? JSON.parse(dom) : dom
   }
 
+  async getBrowserName() {
+    // to support an unwrapped driver (for testing)
+    // we only want to call getBrowserName if it's there
+    if (this._driver.hasOwnProperty('getBrowserName')) return await this._driver.getBrowserName()
+  }
+
   /**
    * @return {Promise<{string}>}
    */
   async getWindowDom() {
     let script
-    const browserName = await this._driver.getBrowserName()
+    const browserName = await this.getBrowserName()
     if (!this._customScript) {
       if (browserName === 'internet explorer') {
         const captureDomScript = await getCaptureDomAndPollForIE()
