@@ -9,10 +9,6 @@
 			"path": "packages/dom-snapshot"
 		},
 		{
-			"name": "dom-utils",
-			"path": "packages/dom-utils"
-		},
-		{
 			"name": "eyes-appium",
 			"path": "packages/eyes-appium"
 		},

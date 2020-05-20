@@ -4,6 +4,7 @@
 
 const common = require('@applitools/eyes-common')
 
+exports.DomCapture = require('./lib/DomCapture').DomCapture
 exports.AppOutputProvider = require('./lib/capture/AppOutputProvider').AppOutputProvider
 exports.AppOutputWithScreenshot = require('./lib/capture/AppOutputWithScreenshot').AppOutputWithScreenshot
 exports.EyesScreenshot = require('./lib/capture/EyesScreenshot').EyesScreenshot
