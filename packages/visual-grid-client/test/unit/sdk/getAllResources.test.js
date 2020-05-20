@@ -677,4 +677,17 @@ describe('getAllResources', () => {
       await server.close()
     }
   })
+
+  it('returns resource from cache with content', async () => {
+    const fontResource = {url: 'font.ttf', type: 'font/ttf', value: 'should have this value!'}
+    await getAllResources({
+      resourceUrls: [],
+      preResources: {[fontResource.url]: fontResource},
+    })
+    const resources = await getAllResources({
+      resourceUrls: [fontResource.url],
+      preResources: {},
+    })
+    expect(resources[fontResource.url]).to.eql(toRGridResource(fontResource))
+  })
 })

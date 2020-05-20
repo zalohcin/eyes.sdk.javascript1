@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- fixed 409 (Conflict) errors
 
 ## 14.4.1 - 2020/6/2
 
