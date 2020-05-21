@@ -50,7 +50,6 @@ exports.GetAccessibilityRegion = require('./lib/fluent/GetAccessibilityRegion').
 exports.AccessibilityRegionByRectangle = require('./lib/fluent/AccessibilityRegionByRectangle').AccessibilityRegionByRectangle
 exports.AccessibilityRegionBySelector = require('./lib/fluent/AccessibilityRegionBySelector')
 exports.AccessibilityRegionByElement = require('./lib/fluent/AccessibilityRegionByElement')
-exports.TargetRegionBySelector = require('./lib/fluent/TargetRegionBySelector')
 exports.TargetRegionByElement = require('./lib/fluent/TargetRegionByElement')
 
 exports.AppOutput = require('./lib/match/AppOutput').AppOutput

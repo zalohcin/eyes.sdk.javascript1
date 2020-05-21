@@ -17,10 +17,10 @@ describe('SpecWrappedDriver', async () => {
     const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
     before(async () => {
-      driver = remote({
-        desiredCapabilities: {
+      driver = await remote({
+        capabilities: {
           browserName: 'chrome',
-          chromeOptions: {
+          'goog:chromeOptions': {
             args: ['disable-infobars', 'headless'],
           },
         },
@@ -28,17 +28,16 @@ describe('SpecWrappedDriver', async () => {
         port: 9515,
         path: '/',
       })
-      await driver.init()
       await driver.url(url)
     })
 
     after(async () => {
-      await driver.end()
+      await driver.deleteSession()
     })
 
     it('executeScript(strings, ...args)', async () => {
       const args = [0, 'string', {key: 'value'}, [0, 1, 2, 3]]
-      const {value: expected} = await driver.execute('return arguments', ...args)
+      const expected = await driver.execute('return arguments', ...args)
       const result = await specs.executeScript(driver, 'return arguments', ...args)
       assert.deepStrictEqual(result, expected)
     })
@@ -50,64 +49,81 @@ describe('SpecWrappedDriver', async () => {
       assert.ok(duration >= sleep && duration <= sleep + 10)
     })
     it('switchToFrame(element)', async () => {
-      const {value: element} = await driver.$('[name="frame1"]')
-      await driver.frame(element)
-      const {value: expected} = await driver.execute('return document')
-      await driver.frame(null)
+      const element = await driver.findElement('css selector', '[name="frame1"]')
+      await driver.switchToFrame(element)
+      const expected = await driver.execute('return document')
+      await driver.switchToFrame(null)
       await specs.switchToFrame(driver, element)
-      const {value: result} = await driver.execute('return document')
-      await driver.frame(null)
+      const result = await driver.execute('return document')
+      await driver.switchToFrame(null)
       assert.deepStrictEqual(result, expected)
     })
     it('switchToFrame(null)', async () => {
-      const {value: top} = await driver.execute('return document')
-      const {value: element} = await driver.$('[name="frame1"]')
-      await driver.frame(element)
-      const {value: frame} = await driver.execute('return document')
+      const top = await driver.execute('return document')
+      const element = await driver.findElement('css selector', '[name="frame1"]')
+      await driver.switchToFrame(element)
+      const frame = await driver.execute('return document')
       assert.notDeepStrictEqual(frame, top)
       await specs.switchToFrame(driver, null)
-      const {value: result} = await driver.execute('return document')
+      const result = await driver.execute('return document')
       assert.deepStrictEqual(result, top)
     })
     it('findElement(string)', async () => {
-      const {value: expected} = await driver.element('#overflowing-div')
+      const expected = await driver.$('#overflowing-div')
       const result = await specs.findElement(driver, '#overflowing-div')
-      assert.deepStrictEqual(result, expected)
+      assert.strictEqual(result.elementId, expected.elementId)
     })
     it('findElements(string)', async () => {
-      const {value: expected} = await driver.elements('div')
+      const expected = await driver.$$('div')
       const result = await specs.findElements(driver, 'div')
-      assert.deepStrictEqual(result, expected)
+      expected.forEach((element, index) =>
+        assert.strictEqual(result[index].elementId, element.elementId),
+      )
+    })
+    it('findElement(function)', async () => {
+      const selector = function() {
+        return this.document.querySelector('#overflowing-div')
+      }
+      const expected = await driver.$(selector)
+      const result = await specs.findElement(driver, selector)
+      assert.strictEqual(result.elementId, expected.elementId)
+    })
+    it('findElements(function)', async () => {
+      const selector = function() {
+        return this.document.querySelectorAll('div')
+      }
+      const expected = await driver.$$(selector)
+      const result = await specs.findElements(driver, selector)
+      expected.forEach((element, index) =>
+        assert.strictEqual(result[index].elementId, element.elementId),
+      )
     })
     it('findElement(non-existent)', async () => {
       const result = await specs.findElement(driver, 'non-existent')
-      assert.deepStrictEqual(result, null)
+      assert.strictEqual(result, null)
     })
     it('findElements(non-existent)', async () => {
       const result = await specs.findElements(driver, 'non-existent')
       assert.deepStrictEqual(result, [])
     })
     it('getWindowLocation()', async () => {
-      const {value: expected} = await driver.windowHandlePosition()
-      const {x, y} = expected
+      const {x, y} = await driver.getWindowRect()
       const result = await specs.getWindowLocation(driver)
       assert.deepStrictEqual(result, {x, y})
     })
     it('getWindowSize()', async () => {
-      const {value: expected} = await driver.windowHandleSize()
-      const {width, height} = expected
+      const {width, height} = await driver.getWindowSize()
       const result = await specs.getWindowSize(driver)
       assert.deepStrictEqual(result, {width, height})
     })
     it('setWindowSize({width, height})', async () => {
       const location = {width: 300, height: 310}
       await specs.setWindowSize(driver, location)
-      const {value: actual} = await driver.windowHandleSize()
-      const {width, height} = actual
+      const {width, height} = await driver.getWindowSize()
       assert.deepStrictEqual({width, height}, location)
     })
     it('getSessionId()', async () => {
-      const expected = driver.requestHandler.sessionID
+      const expected = driver.sessionId
       const result = await specs.getSessionId(driver)
       assert.deepStrictEqual(result, expected)
     })
@@ -125,7 +141,7 @@ describe('SpecWrappedDriver', async () => {
       await specs.visit(driver, blank)
       const actual = await driver.getUrl()
       assert.deepStrictEqual(actual, blank)
-      await driver.url(driver, url)
+      await driver.url(url)
     })
     it('isMobile()', async () => {
       const result = await specs.isMobile(driver)
@@ -137,10 +153,10 @@ describe('SpecWrappedDriver', async () => {
     let driver
 
     before(async () => {
-      driver = remote({
-        desiredCapabilities: {
+      driver = await remote({
+        capabilities: {
           browserName: 'chrome',
-          chromeOptions: {
+          'goog:chromeOptions': {
             args: ['disable-infobars'],
           },
         },
@@ -148,18 +164,16 @@ describe('SpecWrappedDriver', async () => {
         port: 9515,
         path: '/',
       })
-      await driver.init()
     })
 
     after(async () => {
-      await driver.end()
+      await driver.deleteSession()
     })
 
     it('setWindowLocation({x, y})', async () => {
       const location = {x: 100, y: 110}
       await specs.setWindowLocation(driver, location)
-      const {value: actual} = await driver.windowHandlePosition()
-      const {x, y} = actual
+      const {x, y} = await driver.getWindowRect()
       assert.deepStrictEqual({x, y}, location)
     })
   })
@@ -168,11 +182,13 @@ describe('SpecWrappedDriver', async () => {
     let driver
 
     before(async () => {
-      driver = remote({
-        port: '80',
+      driver = await remote({
+        protocol: 'https',
+        hostname: 'ondemand.saucelabs.com',
+        port: 443,
         path: '/wd/hub',
-        host: 'ondemand.saucelabs.com',
-        desiredCapabilities: {
+        logLevel: 'error',
+        capabilities: {
           browserName: 'Chrome',
           platformName: 'Android',
           platformVersion: '10.0',
@@ -182,11 +198,10 @@ describe('SpecWrappedDriver', async () => {
           accesskey: process.env.SAUCE_ACCESS_KEY,
         },
       })
-      await driver.init()
     })
 
     after(async () => {
-      await driver.end()
+      await driver.deleteSession()
     })
 
     it('isMobile()', async () => {
@@ -216,7 +231,7 @@ describe('SpecWrappedDriver', async () => {
 
     it('getPlatformVersion()', async () => {
       const result = await specs.getPlatformVersion(driver)
-      assert.strictEqual(result, '10.0')
+      assert.strictEqual(result, '10')
     })
   })
 
@@ -224,11 +239,13 @@ describe('SpecWrappedDriver', async () => {
     let driver
 
     before(async () => {
-      driver = remote({
-        port: '80',
+      driver = await remote({
+        protocol: 'https',
+        hostname: 'ondemand.saucelabs.com',
+        port: 443,
         path: '/wd/hub',
-        host: 'ondemand.saucelabs.com',
-        desiredCapabilities: {
+        logLevel: 'error',
+        capabilities: {
           browserName: '',
           name: 'AndroidNativeAppTest1',
           platformName: 'Android',
@@ -242,11 +259,10 @@ describe('SpecWrappedDriver', async () => {
           accessKey: process.env.SAUCE_ACCESS_KEY,
         },
       })
-      await driver.init()
     })
 
     after(async () => {
-      await driver.end()
+      await driver.deleteSession()
     })
 
     it('isMobile()', async () => {

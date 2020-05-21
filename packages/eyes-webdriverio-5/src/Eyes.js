@@ -1,36 +1,33 @@
-'use strict'
+const {EyesFactory, EyesClassic, EyesVisualGrid} = require('@applitools/eyes-sdk-core')
+const {DomCapture} = require('@applitools/dom-utils')
+const VisualGridClient = require('@applitools/visual-grid-client')
+const WrappedDriver = require('./WDIOWrappedDriver')
+const WrappedElement = require('./WDIOWrappedElement')
+const CheckSettings = require('./WDIOCheckSettings')
 
-const {EyesRunner, ClassicRunner, VisualGridRunner} = require('@applitools/eyes-sdk-core')
+const {version} = require('../package.json')
 
-const {EyesWDIO} = require('./EyesWDIO')
-const {EyesVisualGrid} = require('./EyesVisualGrid')
+const WDIOEyesClassic = EyesClassic.specialize({
+  agentId: `eyes.webdriverio/${version}`,
+  WrappedDriver,
+  WrappedElement,
+  CheckSettings,
+  DomCapture,
+})
+const WDIOEyesVisualGrid = EyesVisualGrid.specialize({
+  agentId: `eyes.webdriverio.visualgrid/${version}`,
+  WrappedDriver,
+  WrappedElement,
+  CheckSettings,
+  VisualGridClient,
+})
+const WDIOEyesFactory = EyesFactory.specialize({
+  EyesClassic: WDIOEyesClassic,
+  EyesVisualGrid: WDIOEyesVisualGrid,
+})
 
-/**
- * @abstract
- * @extends EyesVisualGrid
- * @extends EyesWDIO
- */
-class Eyes {
-  /**
-   * Creates a new (possibly disabled) Eyes instance that interacts with the Eyes Server at the specified url.
-   *
-   * @param {string|boolean|VisualGridRunner} [serverUrl=EyesBase.getDefaultServerUrl()] The Eyes server URL.
-   * @param {boolean} [isDisabled=false] Set to true to disable Applitools Eyes and use the webdriver directly.
-   * @param {EyesRunner} [runner]
-   * @return {EyesWDIO|EyesVisualGrid}
-   */
-  constructor(serverUrl, isDisabled, runner = new ClassicRunner()) {
-    if (serverUrl instanceof EyesRunner) {
-      runner = serverUrl
-      serverUrl = undefined
-    }
-
-    if (runner && runner instanceof VisualGridRunner) {
-      return new EyesVisualGrid(serverUrl, isDisabled, runner)
-    }
-
-    return new EyesWDIO(serverUrl, isDisabled, runner)
-  }
+module.exports = {
+  WDIOEyesClassic,
+  WDIOEyesVisualGrid,
+  WDIOEyesFactory,
 }
-
-exports.Eyes = Eyes

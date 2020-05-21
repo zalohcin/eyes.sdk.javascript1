@@ -1,3 +1,4 @@
+const {URL} = require('url');
 const supportedTests = require('./supported-tests')
 const {makeEmitTracker} = require('@applitools/sdk-coverage-tests')
 const sdkName = 'eyes.webdriverio.javascript5'
@@ -41,6 +42,12 @@ function initialize() {
         },
       }`,
     )
+    if (options.host) {
+      const url = new URL(options.host)
+      result.storeHook('beforeEach', `browserOptions.hostname = '${url.hostname}'`)
+      result.storeHook('beforeEach', `browserOptions.port = ${url.port}`)
+      result.storeHook('beforeEach', `browserOptions.path = '${url.path || '/'}'`)
+    }
     result.storeHook('beforeEach', `driver = await remote(browserOptions)`)
     result.storeHook(
       'beforeEach',
@@ -140,9 +147,9 @@ function initialize() {
             }, ${isFully})`,
           )
         : result.storeCommand(
-            `await eyes.checkRegion(By.css('${target}'), ${matchTimeout}, ${
+            `await eyes.checkRegionBy(By.css('${target}'), ${
               tag ? '"' + tag + '"' : undefined
-            })`,
+            }, ${matchTimeout}, ${isFully})`,
           )
     } else {
       result.storeCommand(`{`)
@@ -233,11 +240,15 @@ function initialize() {
   }
 
   async function switchToFrame(selector) {
-    result.storeCommand(`await driver.switchToFrame(By.css('${selector}'))`)
+    result.storeCommand(`
+      await driver.switchToFrame(
+        await driver.findElement('css selector', '${selector}')
+      )
+    `)
   }
 
   async function type(selector, text) {
-    result.storeCommand(`await driver.elementSendKeys('${selector}', '${text}')`)
+    result.storeCommand(`await driver.$('${selector}').then(el => el.setValue('${text}'))`)
   }
   return {
     hooks: {

@@ -72,6 +72,7 @@ class EyesBrowsingContext {
    * @return {Promise<void>}
    */
   async frame(reference) {
+    if (await this._driver.controller.isNative()) return
     if (!reference) {
       this._logger.verbose('EyesBrowsingContext.frame(null)')
       return this.frameDefault()
@@ -90,6 +91,7 @@ class EyesBrowsingContext {
    * @return {Promise<void>}
    */
   async frameDefault() {
+    if (await this._driver.controller.isNative()) return
     this._logger.verbose('EyesBrowsingContext.frameDefault()')
     const result = await this.specs.switchToFrame(this._driver.unwrapped, null)
     this._logger.verbose('Done! Switching to default content...')
@@ -104,6 +106,7 @@ class EyesBrowsingContext {
    * @return {Promise<void>}
    */
   async frameParent(elevation = 1) {
+    if (await this._driver.controller.isNative()) return
     this._logger.verbose(`EyesBrowsingContext.frameParent(${elevation})`)
     let result
     while (elevation-- > 0) {
@@ -121,6 +124,7 @@ class EyesBrowsingContext {
    * @return {Promise<void>}
    */
   async frames(path) {
+    if (await this._driver.controller.isNative()) return
     const currentPath = Array.from(this._frameChain)
     const requiredPath = Array.from(path || [])
     if (currentPath.length === 0) return this.framesAppend(requiredPath)
@@ -160,6 +164,7 @@ class EyesBrowsingContext {
    * @return {Promise<void>}
    */
   async framesAppend(path) {
+    if (await this._driver.controller.isNative()) return
     this._logger.verbose('EyesBrowsingContext.framesAppend(path)')
     for (const frameReference of path) {
       await this.frame(frameReference)
@@ -171,6 +176,7 @@ class EyesBrowsingContext {
    * @return {Promise<*>}
    */
   async framesRefresh() {
+    if (await this._driver.controller.isNative()) return
     let contextInfo = await EyesUtils.getCurrentContextInfo(this._logger, this._driver.executor)
     // console.log(contextInfo)
     if (contextInfo.isRoot) {
@@ -182,7 +188,10 @@ class EyesBrowsingContext {
         await this.frameParent()
         let frameElement
         if (contextInfo.selector) {
-          frameElement = await this._driver.finder.findElement(contextInfo.selector)
+          frameElement = await this._driver.finder.findElement({
+            type: 'xpath',
+            selector: contextInfo.selector,
+          })
         } else {
           frameElement = await EyesUtils.findFrameByContext(
             this._logger,
@@ -211,6 +220,7 @@ class EyesBrowsingContext {
    * @return {Promise<any>} promise which resolve whatever an operation will resolve
    */
   async framesSwitchAndReturn(framePath, operation) {
+    if (await this._driver.controller.isNative()) return operation()
     const frameChain = this.frameChain
     await this.frames(framePath)
     try {
@@ -226,6 +236,7 @@ class EyesBrowsingContext {
    * @return {Promise<any>} promise which resolve whatever an operation will resolve
    */
   async framesAppendAndReturn(framePath, operation) {
+    if (await this._driver.controller.isNative()) return operation()
     const depth = framePath.length
     await this.framesAppend(framePath)
     try {

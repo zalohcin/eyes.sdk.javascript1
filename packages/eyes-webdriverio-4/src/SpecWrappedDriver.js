@@ -11,6 +11,12 @@ module.exports = {
   createElement(logger, driver, element, selector) {
     return new WDIOWrappedElement(logger, driver, element, selector)
   },
+  toSupportedSelector(selector) {
+    return WDIOWrappedElement.toSupportedSelector(selector)
+  },
+  toEyesSelector(selector) {
+    return WDIOWrappedElement.toEyesSelector(selector)
+  },
   async executeScript(driver, script, ...args) {
     const {value} = await driver.execute(script, ...args)
     return value
@@ -71,6 +77,9 @@ module.exports = {
   },
   async isIOS(driver) {
     return driver.isIOS
+  },
+  async isNative(driver) {
+    return driver.isMobile && !driver.desiredCapabilities.browserName
   },
   async getPlatformVersion(driver) {
     return driver.desiredCapabilities.platformVersion

@@ -186,7 +186,7 @@ class EyesClassic extends EyesCore {
 
     if (!this._configuration.getViewportSize()) {
       const vs = await EyesUtils.getTopContextViewportSize(this._logger, this._driver)
-      this._configuration.setViewportSize(vs.toJSON())
+      this._configuration.setViewportSize(vs)
     }
 
     if (this._isDisabled) {
@@ -196,7 +196,7 @@ class EyesClassic extends EyesCore {
 
     this._devicePixelRatio = UNKNOWN_DEVICE_PIXEL_RATIO
 
-    if (await this._controller.isMobileDevice()) {
+    if (await this._controller.isMobile()) {
       // set viewportSize to null if browser is mobile
       this._configuration.setViewportSize(null)
     }
@@ -292,6 +292,7 @@ class EyesClassic extends EyesCore {
    * @return {Promise<MatchResult>}
    */
   async _checkPrepare(checkSettings, operation) {
+    if (await this._controller.isNative()) return operation()
     this._stitchContent = checkSettings.getStitchContent()
     // sync stored frame chain with actual browsing context
     await this._context.framesRefresh()
@@ -299,7 +300,7 @@ class EyesClassic extends EyesCore {
     const appendFrameChain = checkSettings.frameChain
 
     const shouldHideScrollbars =
-      !(await this._controller.isMobileDevice()) &&
+      !(await this._controller.isMobile()) &&
       (this._configuration.getHideScrollbars() ||
         (this._configuration.getStitchMode() === StitchMode.CSS && this._stitchContent))
 
@@ -626,9 +627,9 @@ class EyesClassic extends EyesCore {
   async getScreenshot() {
     this._logger.verbose('getScreenshot()')
 
-    const isMobile = await this._controller.isMobileDevice()
+    const isNative = await this._controller.isNative()
     let activeElement = null
-    if (this._configuration.getHideCaret() && !isMobile) {
+    if (this._configuration.getHideCaret() && !isNative) {
       activeElement = await EyesUtils.blurElement(this._logger, this._executor)
     }
 
@@ -814,18 +815,14 @@ class EyesClassic extends EyesCore {
     this._logger.verbose('Trying to extract device pixel ratio...')
     this._devicePixelRatio = await EyesUtils.getDevicePixelRatio(this._logger, this._driver)
       .catch(async err => {
-        const isMobile = await this._controller.isMobileDevice()
-        if (!isMobile) throw err
+        const isNative = await this._controller.isNative()
+        if (!isNative) throw err
         const viewportSize = await this.getViewportSize()
-        this._devicePixelRatio = await EyesUtils.getMobilePixelRatio(
-          this._logger,
-          this._driver,
-          viewportSize,
-        )
+        return EyesUtils.getMobilePixelRatio(this._logger, this._driver, viewportSize)
       })
       .catch(err => {
         this._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
-        this._devicePixelRatio = DEFAULT_DEVICE_PIXEL_RATIO
+        return DEFAULT_DEVICE_PIXEL_RATIO
       })
 
     this._logger.verbose(`Device pixel ratio: ${this._devicePixelRatio}`)
@@ -914,7 +911,7 @@ class EyesClassic extends EyesCore {
       return Promise.resolve()
     }
 
-    if (!(await this._controller.isMobileDevice())) {
+    if (!(await this._controller.isMobile())) {
       ArgumentGuard.notNull(viewportSize, 'viewportSize')
       viewportSize = new RectangleSize(viewportSize)
       try {
@@ -955,7 +952,7 @@ class EyesClassic extends EyesCore {
    * @return {boolean}
    */
   async getSendDom() {
-    return !(await this._controller.isMobileDevice()) && super.getSendDom()
+    return !(await this._controller.isNative()) && super.getSendDom()
   }
 
   async getInferredEnvironment() {

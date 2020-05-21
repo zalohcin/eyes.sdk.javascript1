@@ -48,7 +48,7 @@ class ScrollPositionProvider extends PositionProvider {
       return position
     } catch (err) {
       // Sometimes it is expected e.g. on Appium, otherwise, take care
-      this._logger.verbose(`Failed to extract current scroll position!`)
+      this._logger.verbose(`Failed to extract current scroll position!`, err)
       return Location.ZERO
     }
   }
@@ -73,7 +73,7 @@ class ScrollPositionProvider extends PositionProvider {
       return actualLocation
     } catch (err) {
       // Sometimes it is expected e.g. on Appium, otherwise, take care
-      this._logger.verbose(`Failed to set current scroll position!.`)
+      this._logger.verbose(`Failed to set current scroll position!.`, err)
       return Location.ZERO
     }
   }

@@ -603,20 +603,17 @@ async function getElementXpath(logger, executor, element) {
  * @return {Promise<{type: string, selector: string}[]>} persisted regions for selector
  */
 async function locatorToPersistedRegions(logger, {finder, executor}, selector) {
-  // TODO move away from selenium like selectors
-  if (selector.using === 'xpath') {
-    return [{type: 'xpath', selector: selector.value}]
-  } else if (selector.using === 'css selector') {
-    return [{type: 'css', selector: selector.value}]
-  } else {
-    const elements = await finder.findElements(selector)
-    return Promise.all(
-      elements.map(async element => ({
-        type: 'xpath',
-        selector: await getElementXpath(logger, executor, element),
-      })),
-    )
+  const eyesSelector = finder.specs.toEyesSelector(selector)
+  if (eyesSelector.type === 'css' || eyesSelector.type === 'xpath') {
+    return [eyesSelector]
   }
+  const elements = await finder.findElements(selector)
+  return Promise.all(
+    elements.map(async element => ({
+      type: 'xpath',
+      selector: await getElementXpath(logger, executor, element),
+    })),
+  )
 }
 /**
  * @typedef {Object} ContextInfo
@@ -686,7 +683,7 @@ async function ensureRegionVisible(
   region,
 ) {
   if (!region) return
-  if (await controller.isMobileDevice()) {
+  if (await controller.isNative()) {
     logger.verbose(`NATIVE context identified, skipping 'ensure element visible'`)
     return
   }
