@@ -292,6 +292,7 @@ class EyesClassic extends EyesCore {
    * @return {Promise<MatchResult>}
    */
   async _checkPrepare(checkSettings, operation) {
+    if (await this._controller.isNative()) return operation()
     this._stitchContent = checkSettings.getStitchContent()
     // sync stored frame chain with actual browsing context
     await this._context.framesRefresh()
@@ -817,15 +818,11 @@ class EyesClassic extends EyesCore {
         const isNative = await this._controller.isNative()
         if (!isNative) throw err
         const viewportSize = await this.getViewportSize()
-        this._devicePixelRatio = await EyesUtils.getMobilePixelRatio(
-          this._logger,
-          this._driver,
-          viewportSize,
-        )
+        return EyesUtils.getMobilePixelRatio(this._logger, this._driver, viewportSize)
       })
       .catch(err => {
         this._logger.verbose('Failed to extract device pixel ratio! Using default.', err)
-        this._devicePixelRatio = DEFAULT_DEVICE_PIXEL_RATIO
+        return DEFAULT_DEVICE_PIXEL_RATIO
       })
 
     this._logger.verbose(`Device pixel ratio: ${this._devicePixelRatio}`)

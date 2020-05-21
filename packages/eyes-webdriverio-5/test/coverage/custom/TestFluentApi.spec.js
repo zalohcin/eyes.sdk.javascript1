@@ -207,7 +207,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it(`TestCheckLongIFrameModal`, async () => {
+    it.only(`TestCheckLongIFrameModal`, async () => {
       let driver = await eyes.open(browser, appName, `TestCheckLongIFrameModal_VG`, {
         width: 700,
         height: 460,

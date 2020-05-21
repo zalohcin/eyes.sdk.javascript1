@@ -154,7 +154,7 @@ class EyesDriverController {
       this._logger.log('Unknown device type.')
       return
     }
-    const version = await this.specs.getPlatformVersion()
+    const version = await this.specs.getPlatformVersion(this._driver.unwrapped)
     if (version) {
       os += ` ${version}`
     }
