@@ -2,7 +2,17 @@
 
 const core = require('@applitools/eyes-sdk-core')
 const SeleniumCheckSettings = require('./src/SeleniumCheckSettings')
-const {SeleniumEyesClassic, SeleniumEyesVisualGrid, SeleniumEyesFactory} = require('./src/SeleniumSpecializedEyes')
+const {
+  SeleniumEyesClassic,
+  SeleniumEyesVisualGrid,
+  SeleniumEyesFactory,
+} = require('./src/SeleniumSpecializedEyes')
+
+if (!process.env.SELENIUM_MAJOR_VERSION) {
+  const {version} = require('selenium-webdriver/package.json')
+  const [major] = version.split('.', 1)
+  process.env.SELENIUM_MAJOR_VERSION = major
+}
 
 exports.EyesWebDriverScreenshot = require('./lib/capture/EyesWebDriverScreenshot').EyesWebDriverScreenshot
 exports.EyesWebDriverScreenshotFactory = require('./lib/capture/EyesWebDriverScreenshotFactory').EyesWebDriverScreenshotFactory

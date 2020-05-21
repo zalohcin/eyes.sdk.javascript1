@@ -1,5 +1,5 @@
-const SeleniumFrame = require('./SeleniumFrame')
-const SeleniumWrappedElement = require('./SeleniumWrappedElement')
+const SeleniumFrame = require('../SeleniumFrame')
+const SeleniumWrappedElement = require('../SeleniumWrappedElement')
 
 module.exports = {
   isEqualFrames(leftFrame, rightFrame) {
@@ -24,8 +24,12 @@ module.exports = {
     return driver.switchTo().parentFrame()
   },
   async findElement(driver, selector) {
-    const element = await driver.findElement(selector)
-    return element
+    try {
+      return await driver.findElement(selector)
+    } catch (err) {
+      if (err.name === 'NoSuchElementError') return null
+      else throw err
+    }
   },
   async findElementInElement(driver, element, selector) {
     // const {value} = await driver.elementIdElement(
@@ -35,8 +39,7 @@ module.exports = {
     // return value
   },
   async findElements(driver, selector) {
-    const elements = await driver.findElements(selector)
-    return elements
+    return driver.findElements(selector)
   },
   async findElementsInElement(driver, element, selector) {
     // const {value} = await driver.elementIdElements(
@@ -49,27 +52,27 @@ module.exports = {
     const {x, y} = await driver
       .manage()
       .window()
-      .getRect()
+      .getPosition()
     return {x, y}
   },
   async setWindowLocation(driver, location) {
     await driver
       .manage()
       .window()
-      .setRect(location)
+      .setPosition(location.x, location.y)
   },
   async getWindowSize(driver) {
     const {width, height} = await driver
       .manage()
       .window()
-      .getRect()
+      .getSize()
     return {width, height}
   },
   async setWindowSize(driver, size) {
     await driver
       .manage()
       .window()
-      .setRect(size)
+      .setSize(size.width, size.height)
   },
   async getOrientation(driver) {
     const capabilities = await driver.getCapabilities()
@@ -91,7 +94,7 @@ module.exports = {
     const platformName = capabilities.get('platformName')
     return platformName ? platformName.toLowerCase() === 'ios' : false
   },
-  async isNativeApp(driver) {
+  async isNative(driver) {
     const capabilities = await driver.getCapabilities()
     const platformName = capabilities.get('platformName')
     const browserName = capabilities.get('browserName')
