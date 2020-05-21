@@ -9,10 +9,6 @@
 			"path": "packages/dom-snapshot"
 		},
 		{
-			"name": "eyes-appium",
-			"path": "packages/eyes-appium"
-		},
-		{
 			"name": "eyes-common-legacy",
 			"path": "packages/eyes-common-legacy"
 		},
@@ -31,10 +27,6 @@
 		{
 			"name": "eyes-leanft",
 			"path": "packages/eyes-leanft"
-		},
-		{
-			"name": "eyes-protractor",
-			"path": "packages/eyes-protractor"
 		},
 		{
 			"name": "eyes-sdk-core",
