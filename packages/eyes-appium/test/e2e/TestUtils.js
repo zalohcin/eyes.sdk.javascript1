@@ -2,11 +2,11 @@
 
 const path = require('path')
 
-const {DateTimeUtils} = require('@applitools/eyes-common')
 const {
   FileLogHandler,
   NullLogHandler,
   FileDebugScreenshotsProvider,
+  DateTimeUtils,
 } = require('@applitools/eyes-selenium')
 
 class TestUtils {
