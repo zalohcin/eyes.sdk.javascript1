@@ -1,6 +1,6 @@
 const tunnel = require('tunnel')
 
-const {GeneralUtils, DateTimeUtils, TypeUtils} = require('@applitools/eyes-common')
+const {GeneralUtils, DateTimeUtils, TypeUtils} = require('../..')
 
 const HTTP_STATUS_CODES = {
   CREATED: 201,

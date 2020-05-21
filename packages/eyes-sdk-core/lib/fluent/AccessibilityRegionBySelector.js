@@ -1,6 +1,6 @@
 'use strict'
 
-const {CoordinatesType, AccessibilityMatchSettings} = require('@applitools/eyes-common')
+const {CoordinatesType, AccessibilityMatchSettings} = require('../..')
 const {GetAccessibilityRegion} = require('./GetAccessibilityRegion')
 const EyesUtils = require('../EyesUtils')
 

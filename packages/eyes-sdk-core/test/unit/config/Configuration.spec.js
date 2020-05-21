@@ -1,6 +1,7 @@
 'use strict'
 
 const assert = require('assert')
+const {resetEnvVars} = require('../../testUtils')
 
 const {
   Configuration,
@@ -61,17 +62,16 @@ const NUMBER_CONFIGS = [
 ]
 
 describe('Configuration', () => {
+  let apiKey
+  before(() => {
+    apiKey = process.env.APPLITOOLS_API_KEY
+  })
   beforeEach(() => {
-    delete process.env.APPLITOOLS_API_KEY
-    delete process.env.APPLITOOLS_SERVER_URL
-    delete process.env.APPLITOOLS_BATCH_ID
-    delete process.env.APPLITOOLS_BATCH_NAME
-    delete process.env.APPLITOOLS_BATCH_SEQUENCE
-    delete process.env.APPLITOOLS_BATCH_NOTIFY
-    delete process.env.APPLITOOLS_BRANCH
-    delete process.env.APPLITOOLS_PARENT_BRANCH
-    delete process.env.APPLITOOLS_BASELINE_BRANCH
-    delete process.env.APPLITOOLS_DONT_CLOSE_BATCHES
+    resetEnvVars()
+  })
+  after(() => {
+    resetEnvVars()
+    process.env.APPLITOOLS_API_KEY = apiKey
   })
 
   function _getMethodName(propertyName) {
@@ -520,7 +520,7 @@ describe('Configuration', () => {
     config = config.setWaitBeforeScreenshots(24062019)
     assert.ok(config instanceof Configuration) // check that type is not changed
 
-    // use method from eyes-common/lib/config/Configuration
+    // use method from lib/config/Configuration
     config = config.setHostApp('demo')
     assert.ok(config instanceof Configuration) // check that type is not changed
 

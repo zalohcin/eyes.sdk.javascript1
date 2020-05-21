@@ -1,6 +1,6 @@
 'use strict'
 
-const {GeneralUtils, Region} = require('@applitools/eyes-common')
+const {GeneralUtils, Region} = require('../..')
 
 const {EmulationInfo} = require('./EmulationInfo')
 

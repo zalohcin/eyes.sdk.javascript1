@@ -1,6 +1,6 @@
 'use strict'
 
-const {ArgumentGuard} = require('@applitools/eyes-common')
+const {ArgumentGuard} = require('../..')
 const PositionProvider = require('./PositionProvider')
 const CssTranslatePositionMemento = require('./CssTranslatePositionMemento')
 const EyesUtils = require('../EyesUtils')

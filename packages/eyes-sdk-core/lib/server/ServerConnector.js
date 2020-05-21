@@ -3,7 +3,7 @@
 const Axios = require('axios')
 const zlib = require('zlib')
 
-const {GeneralUtils, ArgumentGuard} = require('@applitools/eyes-common')
+const {GeneralUtils, ArgumentGuard} = require('../..')
 
 const {RenderingInfo} = require('./RenderingInfo')
 const {RunningSession} = require('./RunningSession')

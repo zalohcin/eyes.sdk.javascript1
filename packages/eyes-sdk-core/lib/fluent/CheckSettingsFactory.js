@@ -1,6 +1,6 @@
 'use strict'
 
-const {TypeUtils, Region} = require('@applitools/eyes-common')
+const {TypeUtils, Region} = require('../..')
 
 const CheckSettings = require('./CheckSettings')
 const FrameLocator = require('./FrameLocator')

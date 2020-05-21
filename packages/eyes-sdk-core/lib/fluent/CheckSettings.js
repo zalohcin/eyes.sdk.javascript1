@@ -6,7 +6,7 @@ const {
   MatchLevel,
   FloatingMatchSettings,
   AccessibilityMatchSettings,
-} = require('@applitools/eyes-common')
+} = require('../..')
 
 const {GetRegion} = require('./GetRegion')
 const {IgnoreRegionByRectangle} = require('./IgnoreRegionByRectangle')
