@@ -3,7 +3,7 @@
 const assert = require('assert')
 const chromedriver = require('chromedriver')
 const {Builder} = require('selenium-webdriver')
-const testServer = require('../../util/testServer')
+const {testServer} = require('@applitools/sdk-shared')
 const {
   Eyes,
   Target,
@@ -11,16 +11,19 @@ const {
   TestResultsStatus,
   VisualGridRunner,
 } = require('../../../index')
+const {join} = require('path')
 
 describe('TestVisualGridRefererHeader', () => {
   let closeTestServer, closeTestServer2
   let serverUrl, driver
 
   before(async () => {
-    const testServer1 = testServer({port: 5555})
+    const staticPath = join(__dirname, '../../fixtures')
+    const testServer1 = testServer({port: 5555, staticPath})
     const testServer2 = testServer({
+      staticPath,
       port: 5556,
-      allowCORS: false,
+      allowCors: false,
       middleWare: (req, res, next) => {
         if (req.headers.referer === 'http://localhost:5555/cors.html') {
           next()
