@@ -1,12 +1,14 @@
-const mock = require('mock-require')
 const assert = require('assert')
-
-mock('selenium-webdriver', 'selenium-webdriver-4')
 const {Builder, By, WebElement} = require('selenium-webdriver')
 const specs = require('../../../src/selenium4/SpecWrappedElement')
-mock.stop('selenium-webdriver')
 
-describe('SpecWrappedDriver Selenium4', async () => {
+describe('SpecWrappedElement Selenium4', () => {
+  before(function() {
+    if (process.env.SELENIUM_MAJOR_VERSION !== '4') {
+      this.skip()
+    }
+  })
+
   let driver
 
   before(async () => {

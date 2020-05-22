@@ -1,12 +1,14 @@
-const mock = require('mock-require')
 const assert = require('assert')
-
-mock('selenium-webdriver', 'selenium-webdriver-4')
 const {Builder, By} = require('selenium-webdriver')
 const specs = require('../../../src/selenium4/SpecWrappedDriver')
-mock.stop('selenium-webdriver')
 
-describe('SpecWrappedDriver Selenium4', async () => {
+describe('SpecWrappedDriver Selenium4', () => {
+  before(function() {
+    if (process.env.SELENIUM_MAJOR_VERSION !== '4') {
+      this.skip()
+    }
+  })
+
   describe('headless desktop', async () => {
     let driver
     const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'

@@ -1,10 +1,14 @@
-const mock = require('mock-require')
-mock('selenium-webdriver', 'selenium-webdriver-3')
 const assert = require('assert')
 const {Builder, By} = require('selenium-webdriver')
 const specs = require('../../../src/selenium3/SpecWrappedDriver')
 
-describe('SpecWrappedDriver Selenium3', async () => {
+describe('SpecWrappedDriver Selenium3', () => {
+  before(function() {
+    if (process.env.SELENIUM_MAJOR_VERSION !== '3') {
+      this.skip()
+    }
+  })
+
   describe('headless desktop', async () => {
     let driver
     const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
@@ -304,5 +308,3 @@ describe('SpecWrappedDriver Selenium3', async () => {
     })
   })
 })
-
-mock.stop('selenium-webdriver')

@@ -1,10 +1,14 @@
-const mock = require('mock-require')
-mock('selenium-webdriver', 'selenium-webdriver-3')
 const assert = require('assert')
 const {Builder, By, WebElement} = require('selenium-webdriver')
 const specs = require('../../../src/selenium3/SpecWrappedElement')
 
-describe('SpecWrappedDriver Selenium3', async () => {
+describe('SpecWrappedElement Selenium3', () => {
+  before(function() {
+    if (process.env.SELENIUM_MAJOR_VERSION !== '3') {
+      this.skip()
+    }
+  })
+
   let driver
 
   before(async () => {
@@ -102,5 +106,3 @@ describe('SpecWrappedDriver Selenium3', async () => {
     }
   })
 })
-
-mock.stop('selenium-webdriver')
