@@ -30,4 +30,4 @@ const WDIOWrappedDriver = EyesWrappedDriver.specialize(SpecWrappedDriver, {
   },
 })
 
-module.exports = WDIOWrappedDriver
+module.exports = LegacyWrappedDriver(WDIOWrappedDriver)

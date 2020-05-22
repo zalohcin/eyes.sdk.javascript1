@@ -54,7 +54,7 @@ describe('VisualGrid Resources', () => {
 
     await eyes.check('region', Target.region(new Region(200, 200, 50, 100)))
 
-    await eyes.check('selector', Target.region('#scroll1'))
+    await eyes.check('selector', Target.region({css: '#scroll1'}))
 
     await eyes.close()
   })

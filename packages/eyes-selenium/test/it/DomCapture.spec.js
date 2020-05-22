@@ -164,7 +164,7 @@ describe('DOM Capture', () => {
 
   // TODO this should be a central utility also for production code (well, modified for cross browser compat and optimize to get also dimensions), not only tests!
   async function getEffectiveLocation(el) {
-    const rect = await el.getRect()
+    const rect = await (el.getRect ? el.getRect() : el.getLocation())
     const [borderLeft, borderTop] = await el
       .getDriver()
       .executeScript(

@@ -1,3 +1,5 @@
+const {TypeUtils} = require('@applitools/eyes-sdk-core')
+const {By} = require('selenium-webdriver')
 const SeleniumFrame = require('../SeleniumFrame')
 const SeleniumWrappedElement = require('../SeleniumWrappedElement')
 
@@ -31,6 +33,9 @@ module.exports = {
   },
   async findElement(driver, selector) {
     try {
+      if (TypeUtils.isString(selector)) {
+        selector = By.css(selector)
+      }
       return await driver.findElement(selector)
     } catch (err) {
       if (err.name === 'NoSuchElementError') return null
@@ -45,6 +50,9 @@ module.exports = {
     // return value
   },
   async findElements(driver, selector) {
+    if (TypeUtils.isString(selector)) {
+      selector = By.css(selector)
+    }
     return driver.findElements(selector)
   },
   async findElementsInElement(driver, element, selector) {
