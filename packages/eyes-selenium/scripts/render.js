@@ -13,7 +13,6 @@ const {
   EyesSeleniumUtils,
   DeviceName,
   ScreenOrientation,
-  // BatchInfo,
   // FileDebugScreenshotsProvider,
 } = require('../index')
 const path = require('path')
@@ -32,6 +31,15 @@ const args = yargs
     'yarn render http://example.org --ignore-regions "#ignore-this,.dynamic-element" --fully',
     'classic full page screenshot, 2 ignore selectors',
   )
+  .option('api-key', {
+    describe: 'Applitools API key',
+    type: 'string',
+    default: process.env.APPLITOOLS_API_KEY,
+  })
+  .option('target-element', {
+    describe: '',
+    type: 'string',
+  })
   .option('vg', {
     type: 'boolean',
     describe: 'when specified, use visual grid instead of classic runner',
@@ -61,16 +69,15 @@ const args = yargs
     type: 'string',
     coerce: parseBrowser,
   })
-  .option('device-emulation', {
-    describe: 'the device emulation to render to when in vg mode',
+  .option('device-name', {
+    describe: 'the chrome-emulation device name to render to when in vg mode',
     type: 'string',
-    choices: Object.keys(DeviceName),
+    choices: Object.values(DeviceName),
   })
   .option('screen-orientation', {
-    describe: 'the device emulation screen oriantation to render to when in device-emulation mode',
+    describe: 'the device screen oriantation to render to when in chrome emulation',
     type: 'string',
-    choices: Object.keys(ScreenOrientation),
-    default: 'PORTRAIT',
+    choices: Object.values(ScreenOrientation),
   })
   .option('ignore-displacements', {
     describe: 'when specified, ignore displaced content',
@@ -116,7 +123,43 @@ const args = yargs
       'whether to use charles as a proxy to webdriver calls (works on port 8888, need to start Charles manually prior to running this script',
     type: 'boolean',
   })
-
+  .option('env-name', {
+    describe: 'baseline env name',
+    type: 'string',
+  })
+  .option('driver-capabilities', {
+    describe:
+      'capabilities for driver. Comma-separated with colon for key/value. Example: --sauce-options "deviceName:iPhone 8 Simulator,platformName:iOS,platformVersion:13.2,appiumVersion:1.16.0,browserName:Safari"',
+    type: 'string',
+    coerce: parseCompoundParameter,
+  })
+  .option('driver-server', {
+    describe: 'server for driver.',
+    type: 'string',
+  })
+  .option('tag', {
+    describe: 'tag for checkpoint',
+    type: 'string',
+    default: 'selenium render',
+  })
+  .option('app-name', {
+    describe: 'app name for baseline',
+    type: 'string',
+    default: 'selenium render',
+  })
+  .option('display-name', {
+    describe:
+      "display name for test. This is what shows up in the dashboard as the test name, but doesn't affect the baseline.",
+    type: 'string',
+  })
+  .option('batch-id', {
+    describe: 'batch id',
+    type: 'string',
+  })
+  .option('batch-name', {
+    describe: 'batch name',
+    type: 'string',
+  })
   .help().argv
 
 const [url] = args._
@@ -127,34 +170,35 @@ if (!url) {
 ;(async function() {
   console.log('Running Selenium render for', url)
   console.log(
-    'Options: ',
-    Object.keys(args)
-      .map(key => (!['_', '$0'].includes(key) ? `* ${key}: ${args[key]}` : ''))
+    'Options:\n ',
+    Object.entries(args)
+      .map(argToString)
+      .filter(x => x)
       .join('\n  '),
   )
+
+  const isMobileEmulation = args.deviceName && !args.vg
 
   if (args.webdriverProxy) {
     await chromedriver.start(['--whitelisted-ips=127.0.0.1'], true)
   }
-  const driver = await buildDriver({headless: args.headless, webdriverProxy: args.webdriverProxy})
+
+  const driver = await buildDriver({...args, isMobileEmulation})
 
   const runner = args.vg ? new VisualGridRunner() : new ClassicRunner()
   const eyes = new Eyes(runner)
   const configuration = new Configuration({
-    viewportSize: {width: 1024, height: 768},
     stitchMode: args.css ? StitchMode.CSS : StitchMode.SCROLL,
   })
-  const [width, height] = args.viewportSize.split('x').map(Number)
-  configuration.setViewportSize({width, height})
+  if (args.viewportSize && !isMobileEmulation) {
+    const [width, height] = args.viewportSize.split('x').map(Number)
+    configuration.setViewportSize({width, height})
+  }
   if (args.browser) {
     configuration.addBrowsers(args.browser)
   }
-  if (args.deviceEmulation) {
-    const orientation = args.screenOrientation || 'PORTRAIT'
-    configuration.addDeviceEmulation(
-      DeviceName[args.deviceEmulation],
-      ScreenOrientation[orientation],
-    )
+  if (args.deviceName) {
+    configuration.addDeviceEmulation(args.deviceName, args.screenOrientation)
   }
   if (args.serverUrl) {
     configuration.setServerUrl(args.serverUrl)
@@ -164,6 +208,19 @@ if (!url) {
   }
   if (args.proxy) {
     configuration.setProxy(args.proxy)
+  }
+  if (args.envName) {
+    configuration.setBaselineEnvName(args.envName) // determines the baseline
+    configuration.setEnvironmentName(args.envName) // shows up in the Environment column in the dasboard
+  }
+  if (args.displayName) {
+    configuration.setDisplayName(args.displayName)
+  }
+  if (args.batchId || args.batchName) {
+    configuration.setBatch({id: args.batchId, name: args.batchName})
+  }
+  if (args.batchId) {
+    configuration.setDontCloseBatches(true)
   }
   eyes.setConfiguration(configuration)
 
@@ -175,9 +232,16 @@ if (!url) {
   await driver.get(url)
 
   try {
-    await eyes.open(driver, 'selenium render', url)
+    await eyes.open(driver, args.appName, url)
 
-    let target = Target.window()
+    let target
+
+    if (args.targetElement) {
+      target = Target.region(By.css(args.targetElement))
+    } else {
+      target = Target.window()
+    }
+    target = target
       .fully(args.fully)
       .ignoreDisplacements(args.ignoreDisplacements)
       .timeout(args.matchTimeout)
@@ -206,8 +270,8 @@ if (!url) {
       await EyesSeleniumUtils.scrollPage(driver)
     }
 
-    await eyes.check('selenium render', target)
-    await eyes.close(true)
+    await eyes.check(args.tag, target)
+    await eyes.close(false)
 
     const testResultsSummary = await runner.getAllTestResults(false)
     const resultsStr = testResultsSummary
@@ -227,18 +291,33 @@ if (!url) {
   }
 })()
 
-function buildDriver({headless, webdriverProxy} = {}) {
-  let builder = new Builder().withCapabilities({
+function buildDriver({
+  headless,
+  webdriverProxy,
+  driverCapabilities,
+  driverServer,
+  isMobileEmulation,
+  deviceName,
+} = {}) {
+  const capabilities = {
     browserName: 'chrome',
     'goog:chromeOptions': {
       args: headless ? ['--headless'] : [],
+      mobileEmulation: isMobileEmulation ? {deviceName} : undefined,
     },
-  })
+    username: process.env.SAUCE_USERNAME,
+    accesskey: process.env.SAUCE_ACCESS_KEY,
+    ...driverCapabilities,
+  }
+
+  let builder = new Builder().withCapabilities(capabilities).usingServer(driverServer)
+
   if (webdriverProxy) {
     builder = builder
       .usingServer('http://localhost.charlesproxy.com:9515')
       .usingWebDriverProxy('http://localhost:8888')
   }
+
   return builder.build()
 }
 
@@ -301,4 +380,25 @@ function parseBrowser(arg) {
     )
 
   return {name: match[1], width: parseInt(match[3], 10), height: parseInt(match[5], 10)}
+}
+
+/**
+ * "key1:value1,key2:value2,key3:value3" --> {key1: value1, key2: value2, key3: value3}
+ */
+function parseCompoundParameter(str) {
+  if (!str) return str
+
+  return str
+    .split(',')
+    .map(keyValue => keyValue.split(':'))
+    .reduce((acc, [key, value]) => {
+      acc[key] = value // not casting to Number or Boolean since I didn't need it
+      return acc
+    }, {})
+}
+
+function argToString([key, value]) {
+  const valueStr = typeof value === 'object' ? JSON.stringify(value) : value
+  const shouldShow = !['_', '$0'].includes(key) && key.indexOf('-') === -1 // don't show the entire cli, and show only the camelCase version of each arg
+  return shouldShow && `* ${key}: ${valueStr}`
 }

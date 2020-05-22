@@ -26,6 +26,6 @@ describe.skip(appName, () => {
     await browser.url('https://applitools.github.io/demo/TestPages/SpecialCharacters/index.html')
     await eyes.check('Test Special Characters', Target.window().fully())
     await eyes.close()
-    let allResults = await runner.getAllTestResults()
+    await runner.getAllTestResults()
   })
 })

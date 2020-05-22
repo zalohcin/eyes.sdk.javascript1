@@ -111,7 +111,7 @@ function makeHandlers({
       useDom,
       enablePatterns,
       ignoreDisplacements,
-      referrer,
+      source,
       accessibilityLevel,
       accessibility,
     }) => {
@@ -151,7 +151,7 @@ function makeHandlers({
         useDom,
         enablePatterns,
         ignoreDisplacements,
-        referrer,
+        source,
         accessibility,
         accessibilityLevel,
       });

@@ -58,8 +58,6 @@ function makeCheckWindow({
     useDom,
     enablePatterns,
     ignoreDisplacements,
-    source,
-    referrer,
   }) {
     if (target === 'window' && !fully) {
       sizeMode = 'viewport'
@@ -68,7 +66,7 @@ function makeCheckWindow({
     } else if (target === 'region' && region) {
       sizeMode = 'region'
     }
-    fetchHeaders['Referer'] = referrer
+    fetchHeaders['Referer'] = url
 
     const accErr = isInvalidAccessibility(accessibility)
     if (accErr) {
@@ -265,7 +263,7 @@ function makeCheckWindow({
         domUrl: domLocation,
         checkSettings,
         imageLocation,
-        source,
+        url,
       }
 
       return !isSingleWindow ? wrapper.checkWindow(checkArgs) : wrapper.testWindow(checkArgs)

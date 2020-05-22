@@ -20,7 +20,8 @@ describe('TestVGServerConfigs', () => {
 
   beforeEach(async () => {
     webDriver = await getDriver('CHROME')
-    ;({eyes, runner} = await getEyes('VG'))
+    eyes = await getEyes('VG')
+    runner = eyes.getRunner()
   })
 
   afterEach(async () => {
@@ -114,7 +115,7 @@ describe('Miscellaneous VG tests', () => {
     const edgeWarning = `${yellowStart}${edgeWarningText}${yellowEnd}`
 
     try {
-      const {eyes} = getEyes('VG')
+      const eyes = getEyes('VG')
       const configuration = eyes.getConfiguration()
       configuration.addBrowser(1000, 900, BrowserType.EDGE)
       configuration.addBrowser(1000, 900, BrowserType.FIREFOX)

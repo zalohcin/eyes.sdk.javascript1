@@ -46,7 +46,7 @@ describe('eyes-storybook', () => {
         'See details at <some_url>',
       )
       .replace(/Total time\: \d+ seconds/, 'Total time: <some_time> seconds');
-
+    console.log('XXXXXXXXX: normalizedStdout', normalizedStdout);
     expect(normalizedStdout).to.equal(`Using @applitools/eyes-storybook version ${version}.
 
 
@@ -55,28 +55,29 @@ Ignoring parameters for story: "with some emoji Button" since they are not seril
     --- property 'inner' closes the circle"
 
 [EYES: TEST RESULTS]:
-Button with-space yes-indeed: a yes-a b [1024x768] - Passed
-Button with-space yes-indeed/nested with-space yes: b yes-a b [1024x768] - Passed
-Button with-space yes-indeed/nested with-space yes/nested again-yes a: c yes-a b [1024x768] - Passed
-Button: with some emoji [1024x768] - Passed
-Button: with text [1024x768] - Passed
-Image: image [1024x768] - Passed
-Interaction: Popover [1024x768] - Passed
-Nested: story 1 [1024x768] - Passed
-Nested/Component: story 1.1 [1024x768] - Passed
-Nested/Component: story 1.2 [1024x768] - Passed
-Responsive UI: Red/green [1024x768] - Passed
-RTL: local RTL config [1024x768] - Passed
-RTL: local RTL config [rtl] [1024x768] - Passed
-RTL: should also do RTL [1024x768] - Passed
-RTL: should also do RTL [rtl] [1024x768] - Passed
-SOME section|Nested/Component: story 1.1 [1024x768] - Passed
-SOME section|Nested/Component: story 1.2 [1024x768] - Passed
-Text: appears after a delay [1024x768] - Passed
-Wow|one with-space yes-indeed/nested with-space yes/nested again-yes a: c yes-a b [1024x768] - Passed
+
+Button with-space yes-indeed: a yes-a b [Chrome] [1024x768] - Passed
+Button with-space yes-indeed/nested with-space yes: b yes-a b [Chrome] [1024x768] - Passed
+Button with-space yes-indeed/nested with-space yes/nested again-yes a: c yes-a b [Chrome] [1024x768] - Passed
+Button: with some emoji [Chrome] [1024x768] - Passed
+Button: with text [Chrome] [1024x768] - Passed
+Image: image [Chrome] [1024x768] - Passed
+Interaction: Popover [Chrome] [1024x768] - Passed
+Nested: story 1 [Chrome] [1024x768] - Passed
+Nested/Component: story 1.1 [Chrome] [1024x768] - Passed
+Nested/Component: story 1.2 [Chrome] [1024x768] - Passed
+Responsive UI: Red/green [Chrome] [1024x768] - Passed
+RTL: local RTL config [Chrome] [1024x768] - Passed
+RTL: local RTL config [rtl] [Chrome] [1024x768] - Passed
+RTL: should also do RTL [Chrome] [1024x768] - Passed
+RTL: should also do RTL [rtl] [Chrome] [1024x768] - Passed
+SOME section|Nested/Component: story 1.1 [Chrome] [1024x768] - Passed
+SOME section|Nested/Component: story 1.2 [Chrome] [1024x768] - Passed
+Text: appears after a delay [Chrome] [1024x768] - Passed
+Wow|one with-space yes-indeed/nested with-space yes/nested again-yes a: c yes-a b [Chrome] [1024x768] - Passed
+
 
 No differences were found!
-
 See details at <some_url>
 Total time: <some_time> seconds
 
@@ -188,12 +189,13 @@ Need a higher concurrency in your account? Email us @ sdr@applitools.com with yo
 
 
 [EYES: TEST RESULTS]:
-Single category: Single story [640x480] - Passed
-Single category: Single story [640x480] - Passed
-Single category: Single story [640x480] - Passed
+
+Single category: Single story [Chrome] [640x480] - Passed
+Single category: Single story [Chrome] [640x480] - Passed
+Single category: Single story [Firefox] [640x480] - Passed
+
 
 No differences were found!
-
 See details at <some_url>
 Total time: <some_time> seconds
 
