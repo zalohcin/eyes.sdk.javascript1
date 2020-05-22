@@ -1,5 +1,6 @@
 const SeleniumFrame = require('../SeleniumFrame')
 const SeleniumWrappedElement = require('../SeleniumWrappedElement')
+const cmd = require('selenium-webdriver/lib/command')
 
 module.exports = {
   isEqualFrames(leftFrame, rightFrame) {
@@ -11,7 +12,20 @@ module.exports = {
   createElement(logger, driver, element, selector) {
     return new SeleniumWrappedElement(logger, driver, element, selector)
   },
-  async executeScript(driver, script, ...args) {
+  toSupportedSelector(selector) {
+    return SeleniumWrappedElement.toSupportedSelector(selector)
+  },
+  toEyesSelector(selector) {
+    return SeleniumWrappedElement.toEyesSelector(selector)
+  },
+  prepareDriver(driver) {
+    cmd.Name.SWITCH_TO_PARENT_FRAME = 'switchToParentFrame'
+    driver
+      .getExecutor()
+      .defineCommand(cmd.Name.SWITCH_TO_PARENT_FRAME, 'POST', '/session/:sessionId/frame/parent')
+    return driver
+  },
+  executeScript(driver, script, ...args) {
     return driver.executeScript(script, ...args)
   },
   sleep(driver, ms) {
@@ -21,7 +35,7 @@ module.exports = {
     return driver.switchTo().frame(reference)
   },
   switchToParentFrame(driver) {
-    return driver.switchTo().parentFrame()
+    return driver.schedule(new cmd.Command(cmd.Name.SWITCH_TO_PARENT_FRAME))
   },
   async findElement(driver, selector) {
     try {

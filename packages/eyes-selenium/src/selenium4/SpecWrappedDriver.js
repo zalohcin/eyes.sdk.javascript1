@@ -11,6 +11,12 @@ module.exports = {
   createElement(logger, driver, element, selector) {
     return new SeleniumWrappedElement(logger, driver, element, selector)
   },
+  toSupportedSelector(selector) {
+    return SeleniumWrappedElement.toSupportedSelector(selector)
+  },
+  toEyesSelector(selector) {
+    return SeleniumWrappedElement.toEyesSelector(selector)
+  },
   async executeScript(driver, script, ...args) {
     return driver.executeScript(script, ...args)
   },

@@ -1,7 +1,7 @@
 'use strict'
 
 const {ArgumentGuard, Location, RectangleSize, Region} = require('@applitools/eyes-common')
-const Frame = require('./Frame')
+
 /**
  * @typedef {import('@applitools/eyes-common').Logger} Logger
  * @typedef {import('@applitools/eyes-common').Location} Location
@@ -26,28 +26,18 @@ class FrameChain {
 
   /**
    * Equality check for two frame chains
-   * @param {FrameChain} c1 - frame chain to be compared
-   * @param {FrameChain} c2 - frame chain to be compared
-   * @return {boolean} true if both objects represent the same frame chain, false otherwise
+   * @param {FrameChain} leftFrameChain - frame chain to be compared
+   * @param {FrameChain} rightFrameChain - frame chain to be compared
+   * @return {Promise<boolean>} true if both objects represent the same frame chain, false otherwise
    */
-  static equals(c1, c2) {
-    if (c1.size !== c2.size) {
-      return false
-    }
-    for (let index = 0; index < c1.size; ++index) {
-      if (Frame.equals(c1.frameAt(index), c2.frameAt(index))) {
-        return false
-      }
+  static async equals(leftFrameChain, rightFrameChain) {
+    if (leftFrameChain.size !== rightFrameChain.size) return false
+    for (let index = 0; index < leftFrameChain.size; ++index) {
+      const leftFrame = leftFrameChain.frameAt(index)
+      const rightFrame = rightFrameChain.frameAt(index)
+      if (!(await leftFrame.equals(rightFrame))) return false
     }
     return true
-  }
-
-  /**
-   * @param {number} index - index of needed frame
-   * @return {Frame} frame by index in array
-   */
-  frameAt(index) {
-    return this._frames[index]
   }
 
   /**
@@ -76,6 +66,14 @@ class FrameChain {
    */
   get current() {
     return this._frames[this._frames.length - 1]
+  }
+
+  /**
+   * @param {number} index - index of needed frame
+   * @return {Frame} frame by index in array
+   */
+  frameAt(index) {
+    return this._frames[index]
   }
 
   /**

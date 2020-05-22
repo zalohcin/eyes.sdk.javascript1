@@ -26,6 +26,7 @@ module.exports = {
     return element instanceof WebElement
   },
   isSelector(selector) {
+    if (!selector) return false
     return (
       selector instanceof By ||
       TypeUtils.has(selector, ['using', 'value']) ||

@@ -12,7 +12,7 @@ const EyesUtils = require('../EyesUtils')
 /**
  * The object which implements the lowest-level functions to work with browsing context
  * @typedef {Object} SpecsBrowsingContext
- * @property {(leftFrame: FrameReference, rightFrame: FrameReference) => boolean} isEqualFrames - return true if two frames are equal, false otherwise
+ * @property {(leftFrame: FrameReference, rightFrame: FrameReference) => Promise<boolean>} isEqualFrames - return true if two frames are equal, false otherwise
  * @property {(reference: FrameReference) => Frame} createFrameReference - return new frame reference
  * @property {(driver: UnwrappedDriver, reference: FrameReference) => void} switchToFrame - switch to frame specified with a reference
  * @property {(driver: UnwrappedDriver) => void} switchToParentFrame - switch to parent frame
@@ -129,9 +129,13 @@ class EyesBrowsingContext {
     const requiredPath = Array.from(path || [])
     if (currentPath.length === 0) return this.framesAppend(requiredPath)
     if (requiredPath.length === 0) return this.frameDefault()
-    const diffIndex = requiredPath.findIndex(
-      (frame, index) => !this.specs.isEqualFrames(currentPath[index], frame),
-    )
+    let diffIndex = -1
+    for (const [index, frame] of requiredPath.entries()) {
+      if (!(await this.specs.isEqualFrames(currentPath[index], frame))) {
+        diffIndex = index
+        break
+      }
+    }
     // required path is same as current or it is a sub-path of current
     if (diffIndex < 0) {
       // required path is same as current
@@ -201,7 +205,7 @@ class EyesBrowsingContext {
           )
         }
         if (!frameElement) throw new Error('Unable to find out the chain of frames')
-        if (this.specs.isEqualFrames(frameElement, frameChain.current)) {
+        if (await this.specs.isEqualFrames(frameElement, frameChain.current)) {
           await this.frameParent(frameChain.size - 1)
           framePath.unshift(...frameChain)
         } else {

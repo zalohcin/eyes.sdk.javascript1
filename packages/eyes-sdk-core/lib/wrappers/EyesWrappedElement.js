@@ -41,7 +41,7 @@ const EyesUtils = require('../EyesUtils')
  * @property {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
  * @property {(selector: EyesSelector) => SupportedSelector} toSupportedSelector - translate cross SDK selector to SDK specific selector
  * @property {(selector: SupportedSelector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
- * @property {(element: UnwrappedElement) => string} extractId - extract id from the unwrapped element
+ * @property {(element: UnwrappedElement) => Promise<string>} extractId - extract id from the unwrapped element
  * @property {(element: SupportedElement) => UnwrappedElement} [extractElement] - extract an element from the supported element
  * @property {(element: SupportedElement) => SupportedSelector} [extractSelector] - extract an element from the supported element
  * @property {(result) => boolean} [isStaleElementReferenceResult] - check if is a stale element reference result
@@ -154,24 +154,26 @@ class EyesWrappedElement {
   /**
    * Extract element ID from this class instance or unwrapped element object
    * @param {EyesWrappedElement|UnwrappedElement} element - element to extract ID
-   * @return {?string} if extraction is succeed returns ID of provided element, otherwise null
+   * @return {Promise<string>} if extraction is succeed returns ID of provided element, otherwise null
    */
-  static extractId(element) {
+  static async extractId(element) {
     return element instanceof EyesWrappedElement ? element.elementId : this.specs.extractId(element)
   }
   /**
    * Compare two elements, these elements could be an instances of this class or compatible objects
    * @param {EyesWrappedElement|UnwrappedElement} leftElement - element to compare
    * @param {EyesWrappedElement|UnwrappedElement} rightElement - element to compare
-   * @return {boolean} true if elements are equal, false otherwise
+   * @return {Promise<boolean>} true if elements are equal, false otherwise
    */
-  static equals(leftElement, rightElement) {
+  static async equals(leftElement, rightElement) {
     if (!leftElement || !rightElement) return false
-    return this.extractId(leftElement) === this.extractId(rightElement)
+    const leftElementId = await this.extractId(leftElement)
+    const rightElementId = await this.extractId(rightElement)
+    return leftElementId === rightElementId
   }
   /**
    * ID of the wrapped element
-   * @type {string}
+   * @type {Promise<string>}
    */
   get elementId() {
     return this.specs.extractId(this._element)
@@ -189,6 +191,14 @@ class EyesWrappedElement {
    */
   get unwrapped() {
     return this._element
+  }
+  /**
+   * Equality check for two elements
+   * @param {EyesWrappedDriver|UnwrappedElement} otherElement - element to compare
+   * @return {Promise<boolean>} true if elements are equal, false otherwise
+   */
+  async equals(otherFrame) {
+    return this.constructor.equals(this, otherFrame)
   }
   /**
    * Initialize element created from {@link SupportedElement} or {@link SupportedSelector}

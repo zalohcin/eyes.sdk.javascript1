@@ -54,10 +54,10 @@ function LegacyAPIDriver(EyesWrappedDriver) {
       return this._driver.findElements(By.xPath(xpath))
     }
     async isMobile() {
-      return this._controller.isMobileDevice()
+      return this._controller.isNative()
     }
     async isNotMobile() {
-      return !(await this._controller.isMobileDevice())
+      return !(await this._controller.isNative())
     }
     async getUserAgent() {
       return this._controller.getUserAgent()

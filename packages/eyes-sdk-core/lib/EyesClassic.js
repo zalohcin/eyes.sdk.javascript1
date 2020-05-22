@@ -505,8 +505,8 @@ class EyesClassic extends EyesCore {
     if (isScrollable) {
       this._targetPositionProvider =
         this._configuration.getStitchMode() === StitchMode.CSS
-          ? new CssTranslateElementPositionProvider(this._logger, this._driver, targetElement)
-          : new ScrollElementPositionProvider(this._logger, this._driver, targetElement)
+          ? new CssTranslateElementPositionProvider(this._logger, this._executor, targetElement)
+          : new ScrollElementPositionProvider(this._logger, this._executor, targetElement)
       // we don't need to specify it explicitly since this is the same as entire size
       this._regionFullArea = null
       await targetElement.preservePosition(this._targetPositionProvider)
