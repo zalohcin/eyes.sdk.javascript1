@@ -36,6 +36,10 @@ const args = yargs
     type: 'string',
     default: process.env.APPLITOOLS_API_KEY,
   })
+  .option('target-element', {
+    describe: '',
+    type: 'string',
+  })
   .option('vg', {
     type: 'boolean',
     describe: 'when specified, use visual grid instead of classic runner',
@@ -101,6 +105,10 @@ const args = yargs
     describe: 'match timeout',
     type: 'number',
     default: 0,
+  })
+  .options('accessibility-validation', {
+    describe: 'accessibility validation (comma separated, e.g. AA.WCAG_2_0)',
+    type: 'string',
   })
   .option('server-url', {
     describe: 'server url',
@@ -205,6 +213,10 @@ if (!url) {
   if (args.proxy) {
     configuration.setProxy(args.proxy)
   }
+  if (args.accessibilityValidation) {
+    const [level, version] = args.accessibilityValidation.split(',')
+    configuration.setAccessibilityValidation({level, version})
+  }
   if (args.envName) {
     configuration.setBaselineEnvName(args.envName) // determines the baseline
     configuration.setEnvironmentName(args.envName) // shows up in the Environment column in the dasboard
@@ -230,7 +242,14 @@ if (!url) {
   try {
     await eyes.open(driver, args.appName, url)
 
-    let target = Target.window()
+    let target
+
+    if (args.targetElement) {
+      target = Target.region(By.css(args.targetElement))
+    } else {
+      target = Target.window()
+    }
+    target = target
       .fully(args.fully)
       .ignoreDisplacements(args.ignoreDisplacements)
       .timeout(args.matchTimeout)

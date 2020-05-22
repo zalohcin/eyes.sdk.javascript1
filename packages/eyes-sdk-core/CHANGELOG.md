@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- add ability to output XUnit XML from the TestResultFormatter (per [Trello 261](https://trello.com/c/ozmI1rav))
+- fix to implicitly use the correct dom-capture script when running on Internet Explorer or Edge Classic (per [Trello 296](https://trello.com/c/EQD3JUOf/296-wdio-5-long-image-sometimes-fails-sometimes-succeeds))
+- merge dom-utils into the core
+- merge eyes-common into the core
+
+## 10.2.0 - 2020/5/19
+
+- add AccessibilityGuidelinesVersion enum
+- remove accessibilityLevel from checkSettings
+- updated to @applitools/eyes-common@3.24.0
 
    ## 10.1.2 - 2020/5/13
 

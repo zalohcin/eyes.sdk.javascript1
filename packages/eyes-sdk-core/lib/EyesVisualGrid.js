@@ -1,12 +1,10 @@
 'use strict'
 
-const {
-  BrowserType,
-  ArgumentGuard,
-  TypeUtils,
-  RectangleSize,
-  Configuration,
-} = require('@applitools/eyes-common')
+const {BrowserType} = require('./config/BrowserType')
+const {Configuration} = require('./config/Configuration')
+const {TypeUtils} = require('./utils/TypeUtils')
+const {ArgumentGuard} = require('./utils/ArgumentGuard')
+const {RectangleSize} = require('./geometry/RectangleSize')
 const TestResultsFormatter = require('./TestResultsFormatter')
 const {CorsIframeHandler, CorsIframeHandle} = require('./capture/CorsIframeHandler')
 const {VisualGridRunner} = require('./runner/VisualGridRunner')

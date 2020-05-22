@@ -14,6 +14,7 @@ const {
   RectangleSize,
   FloatingMatchSettings,
   AccessibilityLevel,
+  AccessibilityGuidelinesVersion,
   AccessibilityRegionType,
   AccessibilityRegionByRectangle,
   DriverCheckSettings,
@@ -68,7 +69,10 @@ describe('SessionStartInfo', () => {
             maxRightOffset: 20,
           }),
         ],
-        accessibilityLevel: AccessibilityLevel.AA,
+        accessibilitySettings: {
+          level: AccessibilityLevel.AA,
+          guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
+        },
       }),
       branchName: 'some branch',
       parentBranchName: 'parent branch',
@@ -82,7 +86,7 @@ describe('SessionStartInfo', () => {
       properties,
     })
 
-    const actualSerialization = JSON.stringify(sessionStartInfo)
+    const actualSerialization = JSON.stringify(sessionStartInfo, null, 2)
     const expectedSerialization = getResourceAsText('SessionStartInfo_Serialization.json')
     assert.strictEqual(
       actualSerialization,

@@ -1,13 +1,9 @@
 'use strict'
-
-const {
-  ArgumentGuard,
-  BrowserNames,
-  CoordinatesType,
-  Location,
-  RectangleSize,
-  Region,
-} = require('@applitools/eyes-common')
+const {ArgumentGuard} = require('../utils/ArgumentGuard')
+const {BrowserNames} = require('../useragent/BrowserNames')
+const {CoordinatesType} = require('../geometry/CoordinatesType')
+const {Location} = require('../geometry/Location')
+const {RectangleSize} = require('../geometry/RectangleSize')
 const CoordinatesTypeConversionError = require('../errors/CoordinatesTypeConversionError')
 const OutOfBoundsError = require('../errors/OutOfBoundsError').OutOfBoundsError
 const FrameChain = require('../frames/FrameChain')
