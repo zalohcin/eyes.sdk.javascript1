@@ -8,8 +8,8 @@ exports.EyesWDIO = WDIOEyesClassic
 exports.EyesVisualGrid = WDIOEyesVisualGrid
 exports.Target = WDIOCheckSettings
 exports.WebdriverioCheckSettings = WDIOCheckSettings
-
 exports.By = LegacySelector
+
 exports.AccessibilityLevel = core.AccessibilityLevel
 exports.AccessibilityMatchSettings = core.AccessibilityMatchSettings
 exports.AccessibilityRegionType = core.AccessibilityRegionType
