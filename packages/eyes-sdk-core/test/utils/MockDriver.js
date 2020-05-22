@@ -1,5 +1,5 @@
-const {TypeUtils} = require('@applitools/eyes-common')
 const EyesJsSnippets = require('../../lib/EyesJsSnippets')
+const {TypeUtils} = require('../../index')
 
 const DEFAULT_STYLES = {
   'border-left-width': '0px',

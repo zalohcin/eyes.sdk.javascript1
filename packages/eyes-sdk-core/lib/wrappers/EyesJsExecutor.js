@@ -2,7 +2,7 @@
 const EyesWrappedElement = require('./EyesWrappedElement')
 
 /**
- * @typedef {import('@applitools/eyes-common').Logger} Logger
+ * @typedef {import('../logging/Logger').Logger} Logger
  * @typedef {import('./EyesWrappedDriver')} EyesWrappedDriver
  */
 

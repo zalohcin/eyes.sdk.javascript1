@@ -6,9 +6,9 @@ const {RectangleSize} = require('../geometry/RectangleSize')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('@applitools/eyes-common').Logger} Logger
- * @typedef {import('@applitools/eyes-common').Location} Location
- * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
+ * @typedef {import('../logging/Logger').Logger} Logger
+ * @typedef {import('../geometry/Location').Location} Location
+ * @typedef {import('../geometry/RectangleSize').RectangleSize} RectangleSize
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
  * @typedef {import('../wrappers/EyesWrappedElement').SupportedElement} SupportedElement
  * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector

@@ -10,8 +10,8 @@ const FrameChain = require('../frames/FrameChain')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('@applitools/eyes-common').Logger} Logger
- * @typedef {import('@applitools/eyes-common').MutableImage} MutableImage
+ * @typedef {import('../logging/Logger').Logger} Logger
+ * @typedef {import('../images/MutableImage').MutableImage} MutableImage
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
  */
 

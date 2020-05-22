@@ -1,5 +1,7 @@
 'use strict'
-const {Location, RectangleSize, MutableImage} = require('@applitools/eyes-common')
+const {Location} = require('../geometry/Location')
+const {RectangleSize} = require('../geometry/RectangleSize')
+const {MutableImage} = require('../images/MutableImage')
 const EyesDriverOperationError = require('../errors/EyesDriverOperationError')
 
 /**

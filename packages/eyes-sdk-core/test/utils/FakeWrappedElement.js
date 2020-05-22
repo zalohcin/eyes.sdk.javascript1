@@ -1,5 +1,4 @@
-const {TypeUtils} = require('@applitools/eyes-common')
-const {EyesWrappedElement} = require('../../index')
+const {TypeUtils, EyesWrappedElement} = require('../../index')
 
 module.exports = EyesWrappedElement.specialize({
   isCompatible(element) {

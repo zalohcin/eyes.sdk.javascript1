@@ -12,7 +12,7 @@ const {EyesDriverOperationError} = require('./errors/EyesDriverOperationError')
 const EyesJsSnippets = require('./EyesJsSnippets')
 
 /**
- * @typedef {import('@applitools/eyes-common').Logger} Logger
+ * @typedef {import('./logging/Logger').Logger} Logger
  * @typedef {import('./wrappers/EyesBrowsingContext')} EyesBrowsingContext
  * @typedef {import('./wrappers/EyesDriverController')} EyesDriverController
  * @typedef {import('./wrappers/EyesElementFinder')} EyesElementFinder

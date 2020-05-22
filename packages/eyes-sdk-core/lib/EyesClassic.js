@@ -1,17 +1,14 @@
 'use strict'
-const {
-  StitchMode,
-  CoordinatesType,
-  ArgumentGuard,
-  TypeUtils,
-  Location,
-  RectangleSize,
-  Region,
-  UserAgent,
-  ReadOnlyPropertyHandler,
-  SimplePropertyHandler,
-} = require('@applitools/eyes-common')
-
+const {StitchMode} = require('./config/StitchMode')
+const {TypeUtils} = require('./utils/TypeUtils')
+const {ArgumentGuard} = require('./utils/ArgumentGuard')
+const {CoordinatesType} = require('./geometry/CoordinatesType')
+const {Region} = require('./geometry/Region')
+const {Location} = require('./geometry/Location')
+const {RectangleSize} = require('./geometry/RectangleSize')
+const {UserAgent} = require('./useragent/UserAgent')
+const {ReadOnlyPropertyHandler} = require('./handler/ReadOnlyPropertyHandler')
+const {SimplePropertyHandler} = require('./handler/SimplePropertyHandler')
 const {FailureReports} = require('./FailureReports')
 const {TestFailedError} = require('./errors/TestFailedError')
 const {MatchResult} = require('./match/MatchResult')

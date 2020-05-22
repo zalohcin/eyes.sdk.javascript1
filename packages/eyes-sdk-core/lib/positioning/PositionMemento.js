@@ -1,5 +1,5 @@
 'use strict'
-const {Location} = require('@applitools/eyes-common')
+const {Location} = require('../geometry/Location')
 
 /**
  * Encapsulates state for {@link PositionProvider} instances
