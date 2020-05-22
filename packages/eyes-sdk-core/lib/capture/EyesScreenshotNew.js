@@ -2,6 +2,7 @@
 const {ArgumentGuard} = require('../utils/ArgumentGuard')
 const {BrowserNames} = require('../useragent/BrowserNames')
 const {CoordinatesType} = require('../geometry/CoordinatesType')
+const {Region} = require('../geometry/Region')
 const {Location} = require('../geometry/Location')
 const {RectangleSize} = require('../geometry/RectangleSize')
 const CoordinatesTypeConversionError = require('../errors/CoordinatesTypeConversionError')
