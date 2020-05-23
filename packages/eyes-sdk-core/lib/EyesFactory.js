@@ -1,5 +1,5 @@
 'use strict'
-const {Configuration} = require('@applitools/eyes-common')
+const {Configuration} = require('./config/Configuration')
 const {CorsIframeHandle} = require('./capture/CorsIframeHandler')
 const {EyesRunner} = require('./runner/EyesRunner')
 const {ClassicRunner} = require('./runner/ClassicRunner')

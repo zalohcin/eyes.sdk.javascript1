@@ -1,5 +1,4 @@
 const {EyesFactory, EyesClassic, EyesVisualGrid} = require('@applitools/eyes-sdk-core')
-const {DomCapture} = require('@applitools/dom-utils')
 const VisualGridClient = require('@applitools/visual-grid-client')
 const WrappedDriver = require('./SeleniumWrappedDriver')
 const WrappedElement = require('./SeleniumWrappedElement')
@@ -12,7 +11,6 @@ const SeleniumEyesClassic = EyesClassic.specialize({
   WrappedDriver,
   WrappedElement,
   CheckSettings,
-  DomCapture,
 })
 const SeleniumEyesVisualGrid = EyesVisualGrid.specialize({
   agentId: `eyes.selenium.visualgrid.javascript/${version}`,
