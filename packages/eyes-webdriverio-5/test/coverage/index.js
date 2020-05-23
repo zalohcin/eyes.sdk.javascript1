@@ -1,4 +1,4 @@
-const {URL} = require('url');
+const {URL} = require('url')
 const supportedTests = require('./supported-tests')
 const {makeEmitTracker} = require('@applitools/sdk-coverage-tests')
 const sdkName = 'eyes.webdriverio.javascript5'
