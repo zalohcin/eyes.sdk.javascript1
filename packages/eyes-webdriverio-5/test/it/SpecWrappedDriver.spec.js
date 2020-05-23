@@ -171,6 +171,7 @@ describe('SpecWrappedDriver', async () => {
     })
 
     it('setWindowLocation({x, y})', async () => {
+      await driver.setWindowRect(null, null, 300, 300)
       const location = {x: 100, y: 110}
       await specs.setWindowLocation(driver, location)
       const {x, y} = await driver.getWindowRect()
