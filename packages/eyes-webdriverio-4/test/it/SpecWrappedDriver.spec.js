@@ -156,6 +156,7 @@ describe('SpecWrappedDriver', async () => {
     })
 
     it('setWindowLocation({x, y})', async () => {
+      await driver.windowHandleSize({width: 300, height: 300})
       const location = {x: 100, y: 110}
       await specs.setWindowLocation(driver, location)
       const {value: actual} = await driver.windowHandlePosition()
