@@ -182,7 +182,6 @@ class EyesBrowsingContext {
   async framesRefresh() {
     if (await this._driver.controller.isNative()) return
     let contextInfo = await EyesUtils.getCurrentContextInfo(this._logger, this._driver.executor)
-    // console.log(contextInfo)
     if (contextInfo.isRoot) {
       this._frameChain.clear()
     } else {

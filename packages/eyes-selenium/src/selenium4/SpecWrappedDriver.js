@@ -1,5 +1,6 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {By} = require('selenium-webdriver')
+const cmd = require('selenium-webdriver/lib/command')
 const SeleniumFrame = require('../SeleniumFrame')
 const SeleniumWrappedElement = require('../SeleniumWrappedElement')
 
@@ -76,11 +77,18 @@ module.exports = {
       .setRect(location)
   },
   async getWindowSize(driver) {
-    const {width, height} = await driver
-      .manage()
-      .window()
-      .getRect()
-    return {width, height}
+    try {
+      const {width, height} = await driver
+        .manage()
+        .window()
+        .getRect()
+      return {width, height}
+    } catch (err) {
+      // workaround for Appium
+      return driver.execute(
+        new cmd.Command(cmd.Name.GET_WINDOW_SIZE).setParameter('windowHandle', 'current'),
+      )
+    }
   },
   async setWindowSize(driver, size) {
     await driver
