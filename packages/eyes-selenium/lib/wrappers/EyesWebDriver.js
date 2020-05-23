@@ -86,6 +86,16 @@ class EyesWebDriver extends IWebDriver {
     return this._driver.getSession()
   }
 
+  async getBrowserName() {
+    const capabilities = await this.getCapabilities()
+    return capabilities.getBrowserName()
+  }
+
+  async getBrowserVersion() {
+    const capabilities = await this.getCapabilities()
+    return capabilities.getBrowserVersion()
+  }
+
   /**
    * @inheritDoc
    */

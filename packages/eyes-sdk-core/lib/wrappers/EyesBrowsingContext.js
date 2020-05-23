@@ -3,7 +3,7 @@ const FrameChain = require('../frames/FrameChain')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('@applitools/eyes-common').Logger} Logger
+ * @typedef {import('../logging/Logger').Logger} Logger
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('../wrappers/EyesWrappedDriver').unwrapped} UnwrappedDriver
  * @typedef {import('../frames/Frame').FrameReference} FrameReference

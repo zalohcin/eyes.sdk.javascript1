@@ -78,6 +78,20 @@ function LegacyAPIDriver(EyesWrappedDriver) {
     async takeScreenshot() {
       return this._driver.controller.takeScreenshot()
     }
+    async getCapabilities() {
+      return this._driver.desiredCapabilities
+    }
+    async getCurrentUrl() {
+      return this._driver.getUrl()
+    }
+    async getBrowserName() {
+      const capabilities = await this.getCapabilities()
+      return capabilities.browserName
+    }
+    async getBrowserVersion() {
+      const capabilities = await this.getCapabilities()
+      return capabilities.browserVersion
+    }
   }
 }
 

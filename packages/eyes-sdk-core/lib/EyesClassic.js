@@ -1,17 +1,14 @@
 'use strict'
-const {
-  StitchMode,
-  CoordinatesType,
-  ArgumentGuard,
-  TypeUtils,
-  Location,
-  RectangleSize,
-  Region,
-  UserAgent,
-  ReadOnlyPropertyHandler,
-  SimplePropertyHandler,
-} = require('@applitools/eyes-common')
-
+const {StitchMode} = require('./config/StitchMode')
+const {TypeUtils} = require('./utils/TypeUtils')
+const {ArgumentGuard} = require('./utils/ArgumentGuard')
+const {CoordinatesType} = require('./geometry/CoordinatesType')
+const {Region} = require('./geometry/Region')
+const {Location} = require('./geometry/Location')
+const {RectangleSize} = require('./geometry/RectangleSize')
+const {UserAgent} = require('./useragent/UserAgent')
+const {ReadOnlyPropertyHandler} = require('./handler/ReadOnlyPropertyHandler')
+const {SimplePropertyHandler} = require('./handler/SimplePropertyHandler')
 const {FailureReports} = require('./FailureReports')
 const {TestFailedError} = require('./errors/TestFailedError')
 const {MatchResult} = require('./match/MatchResult')
@@ -32,6 +29,7 @@ const ScrollPositionProvider = require('./positioning/ScrollPositionProvider')
 const CssTranslateElementPositionProvider = require('./positioning/CssTranslateElementPositionProvider')
 const ScrollElementPositionProvider = require('./positioning/ScrollElementPositionProvider')
 const {ClassicRunner} = require('./runner/ClassicRunner')
+const {DomCapture} = require('./DomCapture')
 const EyesUtils = require('./EyesUtils')
 const EyesCore = require('./EyesCore')
 
@@ -55,10 +53,9 @@ class EyesClassic extends EyesCore {
    * @param {EyesWrappedDriver} implementations.WrappedDriver - implementation for {@link EyesWrappedDriver}
    * @param {EyesWrappedElement} implementations.WrappedElement - implementation for {@link EyesWrappedElement}
    * @param {DriverCheckSettings} implementations.CheckSettings - specialized version of {@link DriverCheckSettings}
-   * @param {DomCapture} implementations.DomCapture - specialized class for creation a dom capture
    * @return {EyesClassic} specialized version of this class
    */
-  static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings, DomCapture}) {
+  static specialize({agentId, WrappedDriver, WrappedElement, CheckSettings}) {
     return class extends EyesClassic {
       /**
        * @return {EyesWrappedDriver} implementation for {@link EyesWrappedDriver}
@@ -77,12 +74,6 @@ class EyesClassic extends EyesCore {
        */
       static get CheckSettings() {
         return CheckSettings
-      }
-      /**
-       * @return {DomCapture} specialized class for creation a dom capture
-       */
-      static get DomCapture() {
-        return DomCapture
       }
       /**
        * @return {string} base agent id
@@ -879,7 +870,7 @@ class EyesClassic extends EyesCore {
   async tryCaptureDom() {
     try {
       this._logger.verbose('Getting window DOM...')
-      return await this.constructor.DomCapture.getFullWindowDom(this._logger, this._driver)
+      return await DomCapture.getFullWindowDom(this._logger, this._driver)
     } catch (ignored) {
       return ''
     }

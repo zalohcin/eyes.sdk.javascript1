@@ -1,12 +1,12 @@
 'use strict'
-const {ArgumentGuard} = require('@applitools/eyes-common')
+const {ArgumentGuard} = require('../utils/ArgumentGuard')
 const EyesJsExecutor = require('./EyesJsExecutor')
 const EyesBrowsingContext = require('./EyesBrowsingContext')
 const EyesElementFinder = require('./EyesElementFinder')
 const EyesDriverController = require('./EyesDriverController')
 
 /**
- * @typedef {import('@applitools/eyes-common').Logger} Logger
+ * @typedef {import('../logging/Logger').Logger} Logger
  * @typedef {import('./EyesJsExecutor').SpecsJsExecutor} SpecsJsExecutor
  * @typedef {import('./EyesBrowsingContext').SpecsBrowsingContext} SpecsBrowsingContext
  * @typedef {import('./EyesElementFinder').SpecsElementFinder} SpecsElementFinder

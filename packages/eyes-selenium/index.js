@@ -20,6 +20,7 @@ exports.Target = SeleniumCheckSettings
 exports.SeleniumCheckSettings = SeleniumCheckSettings
 
 exports.AccessibilityLevel = core.AccessibilityLevel
+exports.AccessibilityGuidelinesVersion = core.AccessibilityGuidelinesVersion
 exports.AccessibilityMatchSettings = core.AccessibilityMatchSettings
 exports.AccessibilityRegionType = core.AccessibilityRegionType
 exports.BatchInfo = core.BatchInfo

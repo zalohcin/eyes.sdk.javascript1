@@ -1,10 +1,6 @@
 'use strict'
 
-const {
-  AccessibilityMatchSettings,
-  AccessibilityRegionType,
-  ArgumentGuard,
-} = require('@applitools/eyes-common')
+const {AccessibilityMatchSettings, AccessibilityRegionType, ArgumentGuard} = require('../..')
 const {GetAccessibilityRegion} = require('./GetAccessibilityRegion')
 
 /**

@@ -1,21 +1,18 @@
 'use strict'
-
-const {
-  ArgumentGuard,
-  BrowserNames,
-  CoordinatesType,
-  Location,
-  RectangleSize,
-  Region,
-} = require('@applitools/eyes-common')
+const {ArgumentGuard} = require('../utils/ArgumentGuard')
+const {BrowserNames} = require('../useragent/BrowserNames')
+const {CoordinatesType} = require('../geometry/CoordinatesType')
+const {Region} = require('../geometry/Region')
+const {Location} = require('../geometry/Location')
+const {RectangleSize} = require('../geometry/RectangleSize')
 const CoordinatesTypeConversionError = require('../errors/CoordinatesTypeConversionError')
 const OutOfBoundsError = require('../errors/OutOfBoundsError').OutOfBoundsError
 const FrameChain = require('../frames/FrameChain')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('@applitools/eyes-common').Logger} Logger
- * @typedef {import('@applitools/eyes-common').MutableImage} MutableImage
+ * @typedef {import('../logging/Logger').Logger} Logger
+ * @typedef {import('../images/MutableImage').MutableImage} MutableImage
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
  */
 

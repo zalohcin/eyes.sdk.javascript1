@@ -1,4 +1,5 @@
-const {ArgumentGuard, Region} = require('@applitools/eyes-common')
+const {ArgumentGuard} = require('./utils/ArgumentGuard')
+const {Region} = require('./geometry/Region')
 const FrameChain = require('./frames/FrameChain')
 const ImageRotation = require('./positioning/ImageRotation')
 const {EyesBase} = require('./EyesBase')

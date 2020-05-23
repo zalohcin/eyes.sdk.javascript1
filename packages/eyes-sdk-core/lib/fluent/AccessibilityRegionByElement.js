@@ -1,11 +1,11 @@
 'use strict'
 
-const {AccessibilityMatchSettings, CoordinatesType} = require('@applitools/eyes-common')
+const {AccessibilityMatchSettings, CoordinatesType} = require('../..')
 const {GetAccessibilityRegion} = require('./GetAccessibilityRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('@applitools/eyes-common').AccessibilityRegionType} AccessibilityRegionType
+ * @typedef {import('../config/AccessibilityRegionType').AccessibilityRegionType} AccessibilityRegionType
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('../EyesClassic')} EyesClassic

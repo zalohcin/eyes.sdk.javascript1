@@ -1,6 +1,6 @@
 'use strict'
 
-const {Region} = require('@applitools/eyes-common')
+const {Region} = require('../..')
 const {ImageProvider} = require('./ImageProvider')
 const EyesScreenshot = require('./EyesScreenshotNew')
 

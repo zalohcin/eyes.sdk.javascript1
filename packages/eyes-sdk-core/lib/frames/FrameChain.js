@@ -1,11 +1,14 @@
 'use strict'
 
-const {ArgumentGuard, Location, RectangleSize, Region} = require('@applitools/eyes-common')
+const {ArgumentGuard} = require('../utils/ArgumentGuard')
+const {Region} = require('../geometry/Region')
+const {Location} = require('../geometry/Location')
+const {RectangleSize} = require('../geometry/RectangleSize')
 
 /**
- * @typedef {import('@applitools/eyes-common').Logger} Logger
- * @typedef {import('@applitools/eyes-common').Location} Location
- * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
+ * @typedef {import('../..').Logger} Logger
+ * @typedef {import('../..').Location} Location
+ * @typedef {import('../..').RectangleSize} RectangleSize
  */
 
 class FrameChain {

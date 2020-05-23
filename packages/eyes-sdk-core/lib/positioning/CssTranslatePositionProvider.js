@@ -1,12 +1,12 @@
 'use strict'
-
-const {ArgumentGuard, Location} = require('@applitools/eyes-common')
+const {ArgumentGuard} = require('../utils/ArgumentGuard')
+const {Location} = require('../geometry/Location')
 const PositionProvider = require('./PositionProvider')
 const PositionMemento = require('./PositionMemento')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
+ * @typedef {import('../geometry/RectangleSize').RectangleSize} RectangleSize
  * @typedef {import('../wrappers/EyesJsExecutor')} EyesJsExecutor
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
  */

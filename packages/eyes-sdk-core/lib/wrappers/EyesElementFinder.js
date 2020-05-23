@@ -1,6 +1,6 @@
 'use strict'
 /**
- * @typedef {import('@applitools/eyes-common').Logger} Logger
+ * @typedef {import('../logging/Logger').Logger} Logger
  * @typedef {import('./EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('./EyesWrappedDriver').UnwrappedDriver} UnwrappedDriver
  * @typedef {import('./EyesWrappedElement')} EyesWrappedElement
