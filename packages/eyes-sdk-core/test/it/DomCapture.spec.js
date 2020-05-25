@@ -13,7 +13,7 @@ const {
   FileLogHandler,
   PerformanceUtils,
   DateTimeUtils,
-} = require('@applitools/eyes-common')
+} = require('../..')
 const {DomCapture} = require('../../index')
 
 /**

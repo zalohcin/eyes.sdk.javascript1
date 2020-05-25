@@ -3,13 +3,7 @@
 const axios = require('axios')
 const {URL} = require('url')
 
-const {
-  ArgumentGuard,
-  Location,
-  GeneralUtils,
-  PerformanceUtils,
-  EyesError,
-} = require('@applitools/eyes-common')
+const {ArgumentGuard, Location, GeneralUtils, PerformanceUtils, EyesError} = require('..')
 const {getCaptureDomAndPollScript, getCaptureDomAndPollForIE} = require('@applitools/dom-capture')
 
 const DomCaptureReturnType = {

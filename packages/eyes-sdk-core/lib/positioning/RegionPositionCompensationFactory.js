@@ -1,6 +1,6 @@
 'use strict'
 
-const {BrowserNames} = require('@applitools/eyes-common')
+const {BrowserNames} = require('../..')
 
 const FirefoxRegionPositionCompensation = require('./FirefoxRegionPositionCompensation')
 const NullRegionPositionCompensation = require('./NullRegionPositionCompensation')

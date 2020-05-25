@@ -7,7 +7,7 @@ const {
   Region,
   PerformanceUtils,
   ImageMatchSettings,
-} = require('@applitools/eyes-common')
+} = require('..')
 
 const {MatchWindowData, Options} = require('./match/MatchWindowData')
 

@@ -2,7 +2,7 @@
 
 const PromisePool = require('es6-promise-pool')
 
-const {ArgumentGuard} = require('@applitools/eyes-common')
+const {ArgumentGuard} = require('..')
 
 const {RenderStatus} = require('./renderer/RenderStatus')
 

@@ -1,6 +1,6 @@
 'use strict'
 
-const {GeneralUtils, RectangleSize, DateTimeUtils} = require('@applitools/eyes-common')
+const {GeneralUtils, RectangleSize, DateTimeUtils} = require('..')
 
 const {TestResultsStatus} = require('./TestResultsStatus')
 

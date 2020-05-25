@@ -1,12 +1,12 @@
 'use strict'
 
-const {ArgumentGuard} = require('@applitools/eyes-common')
+const {ArgumentGuard} = require('../..')
 const {EyesJsBrowserUtils} = require('../EyesJsBrowserUtils')
 const {EyesWrappedElement} = require('../wrappers/EyesWrappedElement')
 /**
- * @typedef {import('@applitools/eyes-common').Logger} Logger
- * @typedef {import('@applitools/eyes-common').Location} Location
- * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
+ * @typedef {import('../..').Logger} Logger
+ * @typedef {import('../..').Location} Location
+ * @typedef {import('../..').RectangleSize} RectangleSize
  * @typedef {import('../wrappers/EyesWrappedElement').EyesWrappedElement} EyesWrappedElement
  */
 

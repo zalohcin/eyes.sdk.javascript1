@@ -9,14 +9,6 @@
 			"path": "packages/dom-snapshot"
 		},
 		{
-			"name": "eyes-appium",
-			"path": "packages/eyes-appium"
-		},
-		{
-			"name": "eyes-common",
-			"path": "packages/eyes-common"
-		},
-		{
 			"name": "eyes-common-legacy",
 			"path": "packages/eyes-common-legacy"
 		},
@@ -29,10 +21,6 @@
 			"path": "packages/eyes-images"
 		},
 		{
-			"name": "eyes-images-browser",
-			"path": "packages/eyes-images-browser"
-		},
-		{
 			"name": "eyes-images-legacy",
 			"path": "packages/eyes-images-legacy"
 		},
@@ -41,16 +29,8 @@
 			"path": "packages/eyes-leanft"
 		},
 		{
-			"name": "eyes-protractor",
-			"path": "packages/eyes-protractor"
-		},
-		{
 			"name": "eyes-sdk-core",
 			"path": "packages/eyes-sdk-core"
-		},
-		{
-			"name": "eyes-sdk-core-browser",
-			"path": "packages/eyes-sdk-core-browser"
 		},
 		{
 			"name": "eyes-sdk-core-legacy",
@@ -63,10 +43,6 @@
 		{
 			"name": "eyes-selenium-3",
 			"path": "packages/eyes-selenium-3"
-		},
-		{
-			"name": "eyes-selenium-jest-perf",
-			"path": "packages/eyes-selenium-jest-perf"
 		},
 		{
 			"name": "eyes-storybook",

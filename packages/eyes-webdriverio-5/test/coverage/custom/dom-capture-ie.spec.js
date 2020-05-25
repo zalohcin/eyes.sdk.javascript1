@@ -37,7 +37,7 @@ describe('JS Coverage Tests - WDIO5', async () => {
     it('dom-capture-edge-classic', async function() {
       eyes.setMatchTimeout(0)
       await browser.url('http://applitools-dom-capture-origin-1.surge.sh/ie.html')
-      await eyes.open(browser, this.test.parent.title, 'dom-capture-edge-classic')
+      await eyes.open(browser, this.test.parent.title, 'dom-capture-ie')
       await eyes.check(undefined, Target.window())
       const results = await eyes.close(false)
       await assertImage(results, {
@@ -78,7 +78,7 @@ describe('JS Coverage Tests - WDIO5', async () => {
     it('dom-capture-ie-11', async function() {
       eyes.setMatchTimeout(0)
       await browser.url('http://applitools-dom-capture-origin-1.surge.sh/ie.html')
-      await eyes.open(browser, this.test.parent.title, 'dom-capture-ie-11')
+      await eyes.open(browser, this.test.parent.title, 'dom-capture-ie')
       await eyes.check(undefined, Target.window())
       const results = await eyes.close(false)
       await assertImage(results, {

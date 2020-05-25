@@ -4,6 +4,11 @@
 
 
 
+## 5.11.1 - 2020/5/25
+
+- updated to @applitools/eyes-sdk-core@10.3.0
+- updated to @applitools/visual-grid-client@14.2.0
+
 ## 5.11.0 - 2020/5/19
 
 - Support accessibility validation

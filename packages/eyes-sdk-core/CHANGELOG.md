@@ -2,9 +2,13 @@
 
 ## Unreleased
 
+
+## 10.3.0 - 2020/5/24
+
 - add ability to output XUnit XML from the TestResultFormatter (per [Trello 261](https://trello.com/c/ozmI1rav))
+- fix to implicitly use the correct dom-capture script when running on Internet Explorer or Edge Classic (per [Trello 296](https://trello.com/c/EQD3JUOf/296-wdio-5-long-image-sometimes-fails-sometimes-succeeds))
 - merge dom-utils into the core
-- fix to implicitly use the correct dom-capture script when running on Internet Explorer (per [Trello 296](https://trello.com/c/EQD3JUOf/296-wdio-5-long-image-sometimes-fails-sometimes-succeeds))
+- merge eyes-common into the core
 
 ## 10.2.0 - 2020/5/19
 
