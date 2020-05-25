@@ -1,5 +1,12 @@
 'use strict'
-const {Eyes, Target, VisualGridRunner, Configuration, DeviceName} = require('../../../index')
+const {
+  Eyes,
+  Target,
+  VisualGridRunner,
+  Configuration,
+  DeviceName,
+  RectangleSize,
+} = require('../../../index')
 const {getDriver, getBatch} = require('./util/TestSetup')
 const batch = getBatch()
 
@@ -8,7 +15,7 @@ describe('TestRenderings', async () => {
 
   beforeEach(async () => {
     browser = await getDriver('CHROME')
-    runner = new VisualGridRunner(30)
+    runner = new VisualGridRunner(1)
     eyes = new Eyes(runner)
     eyes.setBranchName('master')
   })
@@ -23,6 +30,7 @@ describe('TestRenderings', async () => {
     conf.setAppName('Visual Grid Render Test')
     conf.setBatch(batch)
     conf.addDeviceEmulation(DeviceName.Galaxy_S5)
+    conf.setViewportSize(new RectangleSize(800, 600))
     eyes.setConfiguration(conf)
     await eyes.open(browser)
     await browser.url('https://applitools.github.io/demo/TestPages/DynamicResolution/mobile.html')
