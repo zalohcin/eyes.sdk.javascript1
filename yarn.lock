@@ -16,6 +16,15 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
+"@applitools/dom-utils@4.7.17":
+  version "4.7.17"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.7.17.tgz#c3d18093d5b373e3be57e95ebb3e4c87fca59800"
+  integrity sha512-bSGZiJChZZuzlcvLZhsXAHo1K6aRzXez1QfY3yF3HkMtrtdLJ63h2suAJQxOGvm/Kdvl9Ag78qJxPkcBoPTbCg==
+  dependencies:
+    "@applitools/dom-capture" "7.2.0"
+    "@applitools/eyes-common" "3.24.0"
+    axios "^0.19.0"
+
 "@applitools/eslint-plugin-compat@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@applitools/eslint-plugin-compat/-/eslint-plugin-compat-0.7.0.tgz#61785cfb4156ddbb06141116b7fd381ecf11afea"
@@ -99,6 +108,17 @@
     chalk "3.0.0"
     es6-promise-pool "2.5.0"
     tunnel "0.0.6"
+
+"@applitools/eyes-webdriverio@5.11.0":
+  version "5.11.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-webdriverio/-/eyes-webdriverio-5.11.0.tgz#5ddaf9808d798b57f9893350e18ac261056179f8"
+  integrity sha512-mnloccI9dAlpAIUeVUA03Bs0bF9VEs5TfxJ9EOrWjEPifTgoMuxU5Jh81fT7Zeg4TcGuUdna3pr4qnpq4yH3jQ==
+  dependencies:
+    "@applitools/dom-utils" "4.7.17"
+    "@applitools/eyes-sdk-core" "10.2.0"
+    "@applitools/visual-grid-client" "14.1.0"
+    selenium-webdriver "^4.0.0-alpha.5"
+    webdriverio "^5.18.6"
 
 "@applitools/feature-flags@2.1.1":
   version "2.1.1"
@@ -6266,10 +6286,22 @@ chrome-webstore-upload@^0.2.0:
   dependencies:
     got "^6.3.0"
 
-chromedriver@^80.0.0:
-  version "80.0.2"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-80.0.2.tgz#005b9bf19abebf678b5d5670a9f16605c437a154"
-  integrity sha512-MKrTzBtykWuIswRYgUw9dHXr96BShQYSy8NdLlo2LN1mZ17A9nxtz9v0h9z1zKWTVaxT7e0qvo41rSY5BL1i+Q==
+"chromedriver80@npm:chromedriver@80.0.0":
+  version "80.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-80.0.0.tgz#f9e2af4c2117e7e07dc4558cf9496a70ad6c3ddc"
+  integrity sha512-W4tIbaOve7HeGFLnbbZMV4AUlnBaapL+H41fvDFKOXCmUvgPhxVN9y/c3EgmsOcokLQkqxpOC/txEujms1eT0w==
+  dependencies:
+    "@testim/chrome-version" "^1.0.7"
+    del "^4.1.1"
+    extract-zip "^1.6.7"
+    mkdirp "^0.5.1"
+    request "^2.88.0"
+    tcp-port-used "^1.0.1"
+
+"chromedriver81@npm:chromedriver@81.0.0":
+  version "81.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-81.0.0.tgz#690ba333aedf2b4c4933b6590c3242d3e5f28f3c"
+  integrity sha512-BA++IQ7O1FzHmNpzMlOfLiSBvPZ946uuhtJjZHEIr/Gb+Ha9jiuGbHiT45l6O3XGbQ8BAwvbmdisjl4rTxro4A==
   dependencies:
     "@testim/chrome-version" "^1.0.7"
     axios "^0.19.2"
@@ -6278,7 +6310,7 @@ chromedriver@^80.0.0:
     mkdirp "^1.0.4"
     tcp-port-used "^1.0.1"
 
-chromedriver@^83.0.0:
+"chromedriver83@npm:chromedriver@83.0.0", chromedriver@^83.0.0:
   version "83.0.0"
   resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-83.0.0.tgz#75d7d838e58014658c3990089464166fef951926"
   integrity sha512-AePp9ykma+z4aKPRqlbzvVlc22VsQ6+rgF+0aL3B5onHOncK18dWSkLrSSJMczP/mXILN9ohGsvpuTwoRSj6OQ==
@@ -7665,6 +7697,19 @@ del@^3.0.0:
     p-map "^1.1.1"
     pify "^3.0.0"
     rimraf "^2.2.8"
+
+del@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/del/-/del-4.1.1.tgz#9e8f117222ea44a31ff3a156c049b99052a9f0b4"
+  integrity sha512-QwGuEUouP2kVwQenAsOof5Fv8K9t3D8Ca8NxcXKrIpEHjTXK5J2nXLdP+ALI1cgv8wj7KuwBhTwBkOZSJKM5XQ==
+  dependencies:
+    "@types/glob" "^7.1.1"
+    globby "^6.1.0"
+    is-path-cwd "^2.0.0"
+    is-path-in-cwd "^2.0.0"
+    p-map "^2.0.0"
+    pify "^4.0.1"
+    rimraf "^2.6.3"
 
 del@^5.1.0:
   version "5.1.0"
@@ -9110,7 +9155,7 @@ extract-text-webpack-plugin@^3.0.0:
     schema-utils "^0.3.0"
     webpack-sources "^1.0.1"
 
-extract-zip@1.7.0, extract-zip@^1.6.6:
+extract-zip@1.7.0, extract-zip@^1.6.6, extract-zip@^1.6.7:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/extract-zip/-/extract-zip-1.7.0.tgz#556cc3ae9df7f452c493a0cfb51cc30277940927"
   integrity sha512-xoh5G1W/PB0/27lXgMQyIhP5DSY/LhoCsOyZgb+6iMmRtCwVBo55uKaMoEYrDCKQhWvqEip5ZPKAc6eFNyf/MA==
@@ -11485,7 +11530,7 @@ is-path-cwd@^1.0.0:
   resolved "https://registry.yarnpkg.com/is-path-cwd/-/is-path-cwd-1.0.0.tgz#d225ec23132e89edd38fda767472e62e65f1106d"
   integrity sha1-0iXsIxMuie3Tj9p2dHLmLmXxEG0=
 
-is-path-cwd@^2.2.0:
+is-path-cwd@^2.0.0, is-path-cwd@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/is-path-cwd/-/is-path-cwd-2.2.0.tgz#67d43b82664a7b5191fd9119127eb300048a9fdb"
   integrity sha512-w942bTcih8fdJPJmQHFzkS76NEP8Kzzvmw92cXsazb8intwLqPibPPdXf4ANdKV3rYMuuQYGIWtvz9JilB3NFQ==
@@ -11497,12 +11542,26 @@ is-path-in-cwd@^1.0.0:
   dependencies:
     is-path-inside "^1.0.0"
 
+is-path-in-cwd@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/is-path-in-cwd/-/is-path-in-cwd-2.1.0.tgz#bfe2dca26c69f397265a4009963602935a053acb"
+  integrity sha512-rNocXHgipO+rvnP6dk3zI20RpOtrAM/kzbB258Uw5BWr3TpXi861yzjo16Dn4hUox07iw5AyeMLHWsujkjzvRQ==
+  dependencies:
+    is-path-inside "^2.1.0"
+
 is-path-inside@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/is-path-inside/-/is-path-inside-1.0.1.tgz#8ef5b7de50437a3fdca6b4e865ef7aa55cb48036"
   integrity sha1-jvW33lBDej/cprToZe96pVy0gDY=
   dependencies:
     path-is-inside "^1.0.1"
+
+is-path-inside@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/is-path-inside/-/is-path-inside-2.1.0.tgz#7c9810587d659a40d27bcdb4d5616eab059494b2"
+  integrity sha512-wiyhTzfDWsvwAW53OBWF5zuvaOGlZ6PwYxAbPVDhpm+gM09xKQGjBq/8uYN12aDvMxnAnq3dxTyoSoRNmg5YFg==
+  dependencies:
+    path-is-inside "^1.0.2"
 
 is-path-inside@^3.0.1:
   version "3.0.2"
