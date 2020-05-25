@@ -1,7 +1,7 @@
 const assert = require('assert')
 const {Builder, By} = require('selenium-webdriver')
 const specs = require('../../../src/selenium3/SpecWrappedDriver')
-const {getDriver} = require('../../coverage/custom/util/TestSetup')
+const {getDriver, Browsers} = require('../../coverage/custom/util/TestSetup')
 
 describe('SpecWrappedDriver Selenium3', () => {
   before(function() {
@@ -166,7 +166,7 @@ describe('SpecWrappedDriver Selenium3', () => {
     let driver
 
     before(async () => {
-      driver = await getDriver('CHROME')
+      driver = await getDriver(Browsers.chrome({headless: false}))
     })
 
     after(async () => {

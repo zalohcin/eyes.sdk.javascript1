@@ -47,6 +47,7 @@
   "devDependencies": {
     "@applitools/sdk-fake-eyes-server": "^2.0.0",
     "@applitools/sdk-release-kit": "0.1.0",
+    "assert-rejects": "1.0.0",
     "chai": "4.2.0",
     "chai-uuid": "1.0.6",
     "chromedriver": "^83.0.0",

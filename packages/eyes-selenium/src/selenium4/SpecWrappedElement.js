@@ -42,7 +42,7 @@ module.exports = {
     return selector
   },
   toEyesSelector(selector) {
-    if (TypeUtils.isString) {
+    if (TypeUtils.isString(selector)) {
       selector = By.css(selector)
     } else if (TypeUtils.has(selector, ['using', 'value'])) {
       selector = new By(selector.using, selector.value)

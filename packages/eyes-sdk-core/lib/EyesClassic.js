@@ -266,7 +266,7 @@ class EyesClassic extends EyesCore {
         }
       } else {
         const source = await this._controller.getSource()
-        return super.checkWindowBase(
+        return this.checkWindowBase(
           new NullRegionProvider(),
           checkSettings.getName(),
           false,
