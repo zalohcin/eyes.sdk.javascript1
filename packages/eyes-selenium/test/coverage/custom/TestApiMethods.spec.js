@@ -12,7 +12,8 @@ describe('api methods', () => {
   describe('classic', function() {
     beforeEach(async function() {
       webDriver = await getDriver('CHROME')
-      ;({eyes, runner} = await getEyes('classic', StitchMode.CSS))
+      eyes = await getEyes('classic', StitchMode.CSS)
+      runner = eyes.getRunner()
       eyes.setBatch(batch)
     })
     it('TestCloseAsync', testCloseAsync)
@@ -20,7 +21,8 @@ describe('api methods', () => {
   describe('visualGrid', function() {
     beforeEach(async function() {
       webDriver = await getDriver('CHROME')
-      ;({eyes, runner} = await getEyes('VG'))
+      eyes = await getEyes('VG')
+      runner = eyes.getRunner()
       eyes.setBatch(batch)
     })
     it('TestCloseAsync', testCloseAsync)

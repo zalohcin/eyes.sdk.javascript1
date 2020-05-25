@@ -1,5 +1,5 @@
 'use strict'
-const {Eyes, Target} = require('../../../index')
+const {Eyes, Target, Region} = require('../../../index')
 const {Builder, By} = require('selenium-webdriver')
 const {getBatch, sauceUrl} = require('./util/TestSetup')
 const batch = getBatch()
@@ -31,7 +31,7 @@ describe('TestAppiumNative', () => {
     eyes = new Eyes()
     eyes.setBatch(batch)
     await eyes.open(driver, 'Mobile Native Tests', 'Android Native App 1')
-    await eyes.checkWindow('Contact list')
+    await eyes.check('Contact list', Target.window().ignore(new Region(0, 0, 768, 48)))
     await eyes.close()
   })
 

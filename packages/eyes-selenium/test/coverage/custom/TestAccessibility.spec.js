@@ -38,7 +38,7 @@ describe('TestAccessibility', () => {
       guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
     }
 
-    const {eyes} = getEyes(useVisualGrid ? 'VG' : 'classic', null, {
+    const eyes = getEyes(useVisualGrid ? 'VG' : 'classic', null, {
       config: {
         matchTimeout: 0,
         defaultMatchSettings: {
