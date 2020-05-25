@@ -3,8 +3,8 @@
 const {describe, it, before} = require('mocha')
 const {expect} = require('chai')
 const {EyesSelenium, Target, Logger, ConsoleLogHandler} = require('../../')
-const {Builder, By} = require('selenium-webdriver')
-const {Options} = require('selenium-webdriver/chrome')
+const {By} = require('selenium-webdriver')
+const {getDriver} = require('../coverage/custom/util/TestSetup')
 const {startFakeEyesServer, getDom, getSession} = require('@applitools/sdk-fake-eyes-server')
 const logger = new Logger(process.env.APPLITOOLS_SHOW_LOGS)
 const path = require('path')
@@ -15,10 +15,7 @@ describe('DOM Capture', () => {
   const expectedFolder = path.resolve(__dirname, '../fixtures/tmp')
 
   before(async () => {
-    driver = await new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(new Options().headless())
-      .build()
+    driver = await getDriver('CHROME')
 
     if (!fs.existsSync(expectedFolder)) {
       fs.mkdirSync(expectedFolder)

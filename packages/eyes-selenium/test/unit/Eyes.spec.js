@@ -3,8 +3,7 @@
 require('chromedriver')
 const assert = require('assert')
 const {Logger} = require('@applitools/eyes-sdk-core')
-const {Builder, Capabilities} = require('selenium-webdriver')
-const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
+const {getDriver} = require('../coverage/custom/util/TestSetup')
 
 const {startFakeEyesServer} = require('@applitools/sdk-fake-eyes-server')
 
@@ -119,10 +118,7 @@ describe('Eyes', function() {
     const thrownScreenshotDone = Symbol()
     before(async () => {
       server = await startFakeEyesServer({logger})
-      driver = await new Builder()
-        .withCapabilities(Capabilities.chrome())
-        .setChromeOptions(new ChromeOptions().addArguments('disable-infobars').headless())
-        .build()
+      driver = await getDriver('CHROME')
       eyes = new Proxy(new Eyes(), {
         get(target, key, receiver) {
           if (key === 'checkWindowBase') {

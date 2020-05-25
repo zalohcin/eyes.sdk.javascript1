@@ -2,9 +2,8 @@
 
 require('chromedriver')
 const assert = require('assert')
-const {Builder, By, Capabilities} = require('selenium-webdriver')
-const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
-
+const {By} = require('selenium-webdriver')
+const {getDriver} = require('../coverage/custom/util/TestSetup')
 const {Eyes, Target, DiffsFoundError} = require('../../index')
 
 async function insertRandomBlock(target) {
@@ -24,10 +23,7 @@ let /** @type {string} */ appName,
 
 describe('TestClassicRunner', () => {
   before(async function() {
-    driver = await new Builder()
-      .withCapabilities(Capabilities.chrome())
-      .setChromeOptions(new ChromeOptions().headless().addArguments('disable-infobars'))
-      .build()
+    driver = await getDriver('CHROME')
 
     eyes = new Eyes()
     appName = this.test.parent.title

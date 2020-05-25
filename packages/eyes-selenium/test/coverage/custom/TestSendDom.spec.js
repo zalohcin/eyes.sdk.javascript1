@@ -30,7 +30,7 @@ describe(appName, () => {
       let eyes = new DomInterceptingEyes()
       eyes.setBatch(batch)
       eyes.setBranchName('master')
-      if(process.env['APPLITOOLS_API_KEY_SDK']){
+      if (process.env['APPLITOOLS_API_KEY_SDK']) {
         eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
       }
       await eyes.open(driver, 'Test Send DOM', 'Full Window', {

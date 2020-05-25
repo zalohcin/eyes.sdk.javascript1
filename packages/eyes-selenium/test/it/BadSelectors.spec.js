@@ -2,18 +2,15 @@
 
 require('chromedriver')
 const assertRejects = require('assert-rejects')
-const {Builder, By, NoSuchElementError} = require('selenium-webdriver')
-const {Options: ChromeOptions} = require('selenium-webdriver/chrome')
+const {getDriver} = require('../coverage/custom/util/TestSetup')
+const {By, NoSuchElementError} = require('selenium-webdriver')
 const {Eyes, VisualGridRunner, Target, RectangleSize, ConsoleLogHandler} = require('../../index')
 
 let /** @type {WebDriver} */ driver
 let eyes
 describe('Bad Selectors', () => {
   before(async () => {
-    driver = await new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(new ChromeOptions().headless())
-      .build()
+    driver = await getDriver('CHROME')
     eyes = new Eyes(new VisualGridRunner())
     eyes.setLogHandler(new ConsoleLogHandler(false))
   })

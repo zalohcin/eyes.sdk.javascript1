@@ -123,7 +123,7 @@ function getConfig() {
   let config = new Configuration()
   config.setAppName(appName)
   config.setBatch(batch)
-  if(process.env['APPLITOOLS_API_KEY_SDK']){
+  if (process.env['APPLITOOLS_API_KEY_SDK']) {
     config.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
   }
   config.setViewportSize({width: 800, height: 600})

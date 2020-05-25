@@ -1,14 +1,11 @@
 'use strict'
-const {
-  BrowserType,
-  MatchLevel,
-} = require('../../../../index')
+const {BrowserType, MatchLevel} = require('../../../../index')
 const {getDriver, getBatch, getEyes} = require('../util/TestSetup')
 const {testSetup, getCheckSettings, validateVG} = require('../util/EyesDifferentRunners')
 const batch = getBatch()
 
 describe('TestEyesDifferentRunners VG', () => {
-  afterEach(async function () {
+  afterEach(async function() {
     await this.webDriver.quit()
     await this.eyes.abortIfNotClosed()
   })

@@ -1,6 +1,7 @@
 const assert = require('assert')
-const {Builder, By, WebElement} = require('selenium-webdriver')
+const {By, WebElement} = require('selenium-webdriver')
 const specs = require('../../../src/selenium3/SpecWrappedElement')
+const {getDriver} = require('../../coverage/custom/util/TestSetup')
 
 describe('SpecWrappedElement Selenium3', () => {
   before(function() {
@@ -12,14 +13,7 @@ describe('SpecWrappedElement Selenium3', () => {
   let driver
 
   before(async () => {
-    driver = await new Builder()
-      .withCapabilities({
-        browserName: 'chrome',
-        'goog:chromeOptions': {
-          args: ['headless', 'disable-infobars'],
-        },
-      })
-      .build()
+    driver = await getDriver('CHROME')
     await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
   })
 

@@ -1,7 +1,5 @@
 'use strict'
-const {
-  MatchLevel,
-} = require('../../../../index')
+const {MatchLevel} = require('../../../../index')
 const {getDriver, getBatch, getEyes} = require('../util/TestSetup')
 const {testSetup, getCheckSettings} = require('../util/EyesDifferentRunners')
 const batch = getBatch()
@@ -23,10 +21,8 @@ describe('TestEyesDifferentRunners VG2', () => {
     })
   })
 
-  let testCase = testSetup(
-    getCheckSettings,
-    async () =>
-      console.log('Need merge of the runners updates to retrieve the test results for assertions')
+  let testCase = testSetup(getCheckSettings, async () =>
+    console.log('Need merge of the runners updates to retrieve the test results for assertions'),
   )
   let cases = [['https://amazon.com', MatchLevel.Layout]]
   cases.forEach(testData => {
