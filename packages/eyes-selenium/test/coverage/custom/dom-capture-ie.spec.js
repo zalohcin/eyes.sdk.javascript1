@@ -1,8 +1,8 @@
 // re: https://trello.com/c/EQD3JUOf
 const {Builder} = require('selenium-webdriver')
-const {Eyes, Target} = require('../../..')
+const {Target} = require('../../..')
 const {assertImage} = require('./util/ApiAssertions')
-const {sauceUrl} = require('./util/TestSetup')
+const {sauceUrl, getEyes} = require('./util/TestSetup')
 
 describe('JS Coverage Tests - Selenium 4', async () => {
   describe('edge', () => {
@@ -24,7 +24,7 @@ describe('JS Coverage Tests - Selenium 4', async () => {
         .withCapabilities(capabilities)
         .usingServer(sauceUrl)
         .build()
-      eyes = new Eyes()
+      eyes = getEyes()
     })
 
     after(async () => {
@@ -62,7 +62,7 @@ describe('JS Coverage Tests - Selenium 4', async () => {
         .withCapabilities(capabilities)
         .usingServer(sauceUrl)
         .build()
-      eyes = new Eyes()
+      eyes = getEyes()
     })
 
     after(async () => {

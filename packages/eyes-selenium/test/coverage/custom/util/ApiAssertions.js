@@ -17,11 +17,11 @@ async function getApiData(
     ? process.env.APPLITOOLS_API_KEY_SDK
     : process.env.APPLITOOLS_API_KEY,
 ) {
-  let response = await axios.get(
-    `${testResults
-      .getApiUrls()
-      .getSession()}?format=json&AccessToken=${testResults.getSecretToken()}&apiKey=${apiKey}`,
-  )
+  const url = `${testResults
+    .getApiUrls()
+    .getSession()}?format=json&AccessToken=${testResults.getSecretToken()}&apiKey=${apiKey}`
+
+  let response = await axios.get(url)
   return response.data
 }
 
