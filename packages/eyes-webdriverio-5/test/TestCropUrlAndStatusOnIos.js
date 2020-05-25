@@ -1,11 +1,12 @@
 'use strict'
 
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
 const {remote} = require('webdriverio')
 const {strictEqual} = require('assert')
 const {Eyes, Target, StitchMode, MatchLevel} = require('../index')
 
 const Common = require('./Common')
+const chromedriver = makeChromeDriver()
 
 let browser
 

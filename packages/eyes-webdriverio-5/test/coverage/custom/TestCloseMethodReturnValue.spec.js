@@ -1,6 +1,6 @@
 'use strict'
 
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
 const {remote} = require('webdriverio')
 const assert = require('assert')
 const {Eyes, Target, By, TestResults, VisualGridRunner} = require('../../../index')
@@ -9,6 +9,7 @@ const Common = require('../../Common')
 
 describe('TestStateAfterOperation', () => {
   let browser, eyes
+  const chromedriver = makeChromeDriver()
 
   before(async () => {
     await chromedriver.start([], true)

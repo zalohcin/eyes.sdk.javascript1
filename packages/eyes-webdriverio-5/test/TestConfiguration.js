@@ -1,6 +1,6 @@
 'use strict'
 
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
 const {remote} = require('webdriverio')
 const {deepStrictEqual} = require('assert')
 const {Eyes, Configuration} = require('../index')
@@ -8,6 +8,7 @@ const {Eyes, Configuration} = require('../index')
 const Common = require('./Common')
 
 let browser
+const chromedriver = makeChromeDriver()
 
 describe('Configuration', function() {
   this.timeout(5 * 60 * 1000)

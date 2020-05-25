@@ -1,11 +1,12 @@
 'use strict'
 
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
 const {remote} = require('webdriverio')
 const {By, Eyes, Target, VisualGridRunner, BrowserType, Configuration} = require('../index')
 const Common = require('./Common')
 
 let browser, /** @type {Eyes} */ eyes
+const chromedriver = makeChromeDriver()
 describe('VisualGridCheckFluent', function() {
   this.timeout(5 * 60 * 1000)
 

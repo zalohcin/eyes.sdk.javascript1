@@ -1,5 +1,6 @@
 'use strict'
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
+const chromedriver = makeChromeDriver()
 const {remote} = require('webdriverio')
 
 ;(async function() {

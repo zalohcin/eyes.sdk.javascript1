@@ -1,11 +1,12 @@
 'use strict'
 
 const assert = require('assert')
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
 const {remote} = require('webdriverio')
 const {Eyes, By, ClassicRunner, DiffsFoundError, ConsoleLogHandler, Target} = require('../index')
 
 let browser, runner, eyes, driver
+const chromedriver = makeChromeDriver()
 
 async function insertRandomBlock(target) {
   await driver.executeScript(`

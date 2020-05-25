@@ -1,6 +1,7 @@
 'use strict'
 
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
+const chromedriver = makeChromeDriver()
 const {remote} = require('webdriverio')
 const {Eyes, Target, ClassicRunner, Configuration, BatchInfo} = require('../index') // should be replaced to '@applitools/eyes-webdriverio'
 

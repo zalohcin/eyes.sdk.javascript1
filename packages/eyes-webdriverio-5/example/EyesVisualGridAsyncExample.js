@@ -1,6 +1,5 @@
 'use strict'
 
-require('chromedriver')
 const {remote} = require('webdriverio')
 const {
   Eyes,

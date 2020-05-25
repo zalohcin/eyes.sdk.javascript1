@@ -1,6 +1,6 @@
 'use strict'
 
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
 const {remote} = require('webdriverio')
 const assert = require('assert')
 const {AccessibilityRegionType} = require('@applitools/eyes-sdk-core')
@@ -18,8 +18,9 @@ const WebDriver = require('../../src/wrappers/WebDriver')
 
 describe('toPersistedRegions()', function() {
   let eyesWebDriver, driver
+  const chromedriver = makeChromeDriver()
   before(async () => {
-    await chromedriver.start()
+    await chromedriver.start(undefined, true)
     const browser = await remote({
       capabilities: {
         browserName: 'chrome',

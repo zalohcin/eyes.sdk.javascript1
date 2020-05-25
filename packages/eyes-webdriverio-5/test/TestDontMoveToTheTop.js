@@ -1,11 +1,12 @@
 'use strict'
 
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
 const {remote} = require('webdriverio')
 const {strictEqual} = require('assert')
 const {Eyes, Target} = require('../index')
 
 let browser
+const chromedriver = makeChromeDriver()
 
 describe('DontMoveToTheTop', function() {
   this.timeout(5 * 60 * 1000)

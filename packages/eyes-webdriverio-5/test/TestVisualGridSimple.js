@@ -1,6 +1,6 @@
 'use strict'
 
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
 const {remote} = require('webdriverio')
 const {
   Eyes,
@@ -14,6 +14,7 @@ const {
 
 const Common = require('./Common')
 
+const chromedriver = makeChromeDriver()
 let browser
 
 describe('VisualGridSimple', function() {

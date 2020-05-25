@@ -1,4 +1,5 @@
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
+const chromedriver = makeChromeDriver()
 
 if (!process.env.SKIP_CHROMEDRIVER || process.env.CVG_TEST_REMOTE) {
   const returnPromise = true

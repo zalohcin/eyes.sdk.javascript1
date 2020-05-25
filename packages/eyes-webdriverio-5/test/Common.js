@@ -2,7 +2,7 @@
 
 const {deepStrictEqual} = require('assert')
 const {remote} = require('webdriverio')
-const chromedriver = require('chromedriver')
+const {makeChromeDriver} = require('@applitools/sdk-shared')
 const geckodriver = require('geckodriver')
 const {Configuration, Eyes, NetHelper, StitchMode} = require('../index')
 
@@ -16,6 +16,7 @@ const {
 } = require('@applitools/eyes-sdk-core')
 const {ActualAppOutput, ImageMatchSettings, SessionResults} = metadata
 const url = require('url')
+const chromedriver = makeChromeDriver()
 
 const batchName = TypeUtils.getOrDefault(process.env.APPLITOOLS_BATCH_NAME, 'WebDriverIO Tests')
 let batchInfo = new BatchInfo(batchName)
