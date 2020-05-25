@@ -3,6 +3,9 @@ const FakeWrappedElement = require('./FakeWrappedElement')
 const FakeFrame = require('./FakeFrame')
 
 module.exports = EyesWrappedDriver.specialize({
+  toSupportedSelector(selector) {
+    return FakeWrappedElement.toSupportedSelector(selector)
+  },
   executeScript(driver, script, ...args) {
     return driver.executeScript(script, args)
   },
@@ -26,5 +29,37 @@ module.exports = EyesWrappedDriver.specialize({
   },
   createElement(logger, driver, element, selector) {
     return new FakeWrappedElement(logger, driver, element, selector)
+  },
+  takeScreenshot(driver) {
+    return driver.takeScreenshot()
+  },
+  isNative(_driver) {
+    return false
+  },
+  isMobile(_driver) {
+    return false
+  },
+  getSessionId() {
+    return 'session-id'
+  },
+  async getWindowSize(driver) {
+    const {width, height} = await driver.getWindowRect()
+    return {width, height}
+  },
+  async setWindowSize(driver, size) {
+    await driver.getWindowRect(size)
+  },
+  async getWindowLocation(driver) {
+    const {x, y} = await driver.getWindowRect()
+    return {x, y}
+  },
+  async setWindowLocation(driver, location) {
+    await driver.getWindowRect(location)
+  },
+  async getUrl(driver) {
+    return driver.getUrl()
+  },
+  async visit(driver, url) {
+    await driver.visit(url)
   },
 })

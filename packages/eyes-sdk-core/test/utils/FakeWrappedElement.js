@@ -7,6 +7,12 @@ module.exports = EyesWrappedElement.specialize({
   isSelector(selector) {
     return TypeUtils.isString(selector) || TypeUtils.has(selector, ['using', 'value'])
   },
+  toSupportedSelector(selector) {
+    if (TypeUtils.has(selector, ['type', 'selector'])) {
+      return selector.selector
+    }
+    return selector
+  },
   extractId(element) {
     return element.id
   },

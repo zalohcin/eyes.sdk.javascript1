@@ -83,9 +83,10 @@ const GET_SCROLL_POSITION = `
   }
 `
 
-const SCROLL_TO = (x, y) => `
-  var element = arguments[0] || document.scrollingElement || window;
-  element.scrollTo(${x}, ${y});
+const SCROLL_TO = `
+  var offset = argument[0];
+  var element = arguments[1] || document.scrollingElement || window;
+  element.scrollTo(offset.x, offset.y);
   return [element.scrollLeft, element.scrollTop];
 `
 

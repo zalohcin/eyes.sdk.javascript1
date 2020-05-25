@@ -415,7 +415,8 @@ async function getScrollLocation(_logger, executor, element) {
  */
 async function scrollTo(_logger, executor, location, element) {
   const [x, y] = await executor.executeScript(
-    EyesJsSnippets.SCROLL_TO(location.getX(), location.getY()),
+    EyesJsSnippets.SCROLL_TO,
+    {x: location.getX(), y: location.getY()},
     element,
   )
   return new Location(Math.ceil(Number.parseFloat(x)) || 0, Math.ceil(Number.parseFloat(y)) || 0)
