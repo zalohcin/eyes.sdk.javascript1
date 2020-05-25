@@ -32,8 +32,8 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "10.2.0",
-    "@applitools/visual-grid-client": "14.1.0",
+    "@applitools/eyes-sdk-core": "10.3.0",
+    "@applitools/visual-grid-client": "14.2.0",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "webdriverio": "^5.18.6"
   },
@@ -44,7 +44,7 @@
     "axios": "^0.19.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "chromedriver": "^83.0.0",
+    "chromedriver": "^81.0.0",
     "eslint": "^6.8.0",
     "geckodriver": "^1.19.1",
     "mocha": "^6.2.2",
