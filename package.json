@@ -39,7 +39,8 @@
   "scripts": {
     "lint": "eslint --ext .js .",
     "changelogs": "node scripts/changelogs.js",
-    "versions-ls": "node scripts/versions.js"
+    "versions-ls": "node scripts/versions.js",
+    "cleanup": "node scripts/cleanup.js"
   },
   "devDependencies": {
     "eslint": "^6.6.0",
