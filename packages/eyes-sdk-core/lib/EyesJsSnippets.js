@@ -84,7 +84,7 @@ const GET_SCROLL_POSITION = `
 `
 
 const SCROLL_TO = `
-  var offset = argument[0];
+  var offset = arguments[0];
   var element = arguments[1] || document.scrollingElement || window;
   element.scrollTo(offset.x, offset.y);
   return [element.scrollLeft, element.scrollTop];
