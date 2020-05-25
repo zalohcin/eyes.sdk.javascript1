@@ -11,12 +11,17 @@ async function getTestResults(testSummary) {
   return testResultContainer[0].getTestResults()
 }
 
-async function getApiData(testResults, apiKey = process.env.APPLITOOLS_API_KEY) {
-  let response = await axios.get(
-    `${testResults
-      .getApiUrls()
-      .getSession()}?format=json&AccessToken=${testResults.getSecretToken()}&apiKey=${apiKey}`,
-  )
+async function getApiData(
+  testResults,
+  apiKey = process.env.APPLITOOLS_API_KEY_SDK
+    ? process.env.APPLITOOLS_API_KEY_SDK
+    : process.env.APPLITOOLS_API_KEY,
+) {
+  const url = `${testResults
+    .getApiUrls()
+    .getSession()}?format=json&AccessToken=${testResults.getSecretToken()}&apiKey=${apiKey}`
+
+  let response = await axios.get(url)
   return response.data
 }
 

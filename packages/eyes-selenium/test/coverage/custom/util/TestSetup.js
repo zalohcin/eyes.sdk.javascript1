@@ -9,7 +9,6 @@ const {
   ConsoleLogHandler,
 } = require('../../../../index')
 const defaultArgs = process.env.NO_HEADLESS ? [] : ['headless']
-
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
 const Browsers = {
@@ -31,7 +30,10 @@ const batch = new BatchInfo('JS Coverage Tests - eyes-selenium')
 
 async function getDriver(browser) {
   let capabilities = Browsers[browser]
-  return new Builder().withCapabilities(capabilities).build()
+  return new Builder()
+    .withCapabilities(capabilities)
+    .usingServer(process.env.CVG_TESTS_REMOTE)
+    .build()
 }
 
 function getEyes(runnerType, stitchMode, options) {
@@ -57,11 +59,14 @@ function getEyes(runnerType, stitchMode, options) {
     if (options.config) eyes.setConfiguration(options.config)
   } else setDefault()
 
+  if (process.env['APPLITOOLS_API_KEY_SDK']) {
+    eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
+  }
+
   if (process.env.APPLITOOLS_SHOW_LOGS) {
     eyes.setLogHandler(new ConsoleLogHandler(true))
   }
-
-  return {eyes: eyes, runner: runner}
+  return eyes
 
   function setStitchMode() {
     stitchMode === 'CSS'

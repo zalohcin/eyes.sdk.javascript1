@@ -57,7 +57,7 @@
     "whatwg-fetch": "^3.0.0"
   },
   "dependencies": {
-    "@applitools/functional-commons": "^1.5.4"
+    "@applitools/functional-commons": "1.5.4"
   },
   "repository": {
     "type": "git",

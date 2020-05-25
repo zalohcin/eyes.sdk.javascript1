@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "14.1.0",
+  "version": "14.2.0",
   "description": "",
   "keywords": [
     "applitools",
@@ -32,7 +32,7 @@
   ],
   "dependencies": {
     "@applitools/dom-snapshot": "3.5.2",
-    "@applitools/eyes-sdk-core": "10.2.0",
+    "@applitools/eyes-sdk-core": "10.3.0",
     "@applitools/feature-flags": "2.1.1",
     "@applitools/functional-commons": "1.5.4",
     "@applitools/http-commons": "2.3.12",
@@ -76,7 +76,7 @@
     "test:browser": "mocha --no-timeouts 'test/browser/**/*.test.js'",
     "test": "yarn build:browser && yarn test:mocha",
     "render": "node example/render.js",
-    "preversion": "bongo preversion",
+    "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification"
   },
