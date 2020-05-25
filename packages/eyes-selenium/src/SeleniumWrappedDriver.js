@@ -5,7 +5,7 @@ const SpecWrappedDriver =
     ? require('./selenium3/SpecWrappedDriver')
     : require('./selenium4/SpecWrappedDriver')
 
-const WDIOWrappedDriver = EyesWrappedDriver.specialize(SpecWrappedDriver, {
+const SeleniumWrappedDriver = EyesWrappedDriver.specialize(SpecWrappedDriver, {
   /** @override */
   switchTo(proxies) {
     const switchTo = this._driver.switchTo()
@@ -30,4 +30,4 @@ const WDIOWrappedDriver = EyesWrappedDriver.specialize(SpecWrappedDriver, {
   },
 })
 
-module.exports = LegacyWrappedDriver(WDIOWrappedDriver)
+module.exports = LegacyWrappedDriver(SeleniumWrappedDriver)
