@@ -53,14 +53,15 @@ function getEyes(runnerType, stitchMode, options) {
       eyes = new Eyes()
       setStitchMode()
   }
-  if (process.env['APPLITOOLS_API_KEY_SDK']) {
-    eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
-  }
   if (options) {
     if (options.branchName) eyes.setBranchName(options.branchName)
     else eyes.setBranchName('master')
     if (options.config) eyes.setConfiguration(options.config)
   } else setDefault()
+
+  if (process.env['APPLITOOLS_API_KEY_SDK']) {
+    eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
+  }
 
   if (process.env.APPLITOOLS_SHOW_LOGS) {
     eyes.setLogHandler(new ConsoleLogHandler(true))

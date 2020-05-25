@@ -11,7 +11,12 @@ async function getTestResults(testSummary) {
   return testResultContainer[0].getTestResults()
 }
 
-async function getApiData(testResults, apiKey = process.env.APPLITOOLS_API_KEY_SDK ? process.env.APPLITOOLS_API_KEY_SDK : process.env.APPLITOOLS_API_KEY) {
+async function getApiData(
+  testResults,
+  apiKey = process.env.APPLITOOLS_API_KEY_SDK
+    ? process.env.APPLITOOLS_API_KEY_SDK
+    : process.env.APPLITOOLS_API_KEY,
+) {
   let response = await axios.get(
     `${testResults
       .getApiUrls()
