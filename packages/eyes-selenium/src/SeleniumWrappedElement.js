@@ -1,0 +1,10 @@
+const {EyesWrappedElement} = require('@applitools/eyes-sdk-core')
+const LegacyWrappedElement = require('./LegacyWrappedElement')
+const SpecWrappedElement =
+  process.env.SELENIUM_MAJOR_VERSION === '3'
+    ? require('./selenium3/SpecWrappedElement')
+    : require('./selenium4/SpecWrappedElement')
+
+const SeleniumWrappedElement = EyesWrappedElement.specialize(SpecWrappedElement)
+
+module.exports = LegacyWrappedElement(SeleniumWrappedElement)

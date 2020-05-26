@@ -5,7 +5,6 @@ const {
   Region,
   Logger,
   TargetRegionByElement,
-  TargetRegionBySelector,
   IgnoreRegionByRectangle,
   IgnoreRegionByElement,
   IgnoreRegionBySelector,
@@ -125,26 +124,12 @@ describe('toPersistedRegions()', () => {
     ])
   })
 
-  it('TargetRegionBySelector', async () => {
-    let region = new TargetRegionBySelector({using: 'css selector', value: '.some'})
-    let persistedRegion = await region.toPersistedRegions(driver)
-    assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '.some'}])
-
-    region = new TargetRegionBySelector({using: 'xpath', value: '//some'})
-    persistedRegion = await region.toPersistedRegions(driver)
-    assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: '//some'}])
-
-    region = new TargetRegionBySelector('custom selector')
-    persistedRegion = await region.toPersistedRegions(driver)
-    assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: element.unwrapped.xpath}])
-  })
-
   it('IgnoreRegionBySelector', async () => {
-    let region = new IgnoreRegionBySelector({using: 'css selector', value: '.some'})
+    let region = new IgnoreRegionBySelector('css:.some')
     let persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [{type: 'css', selector: '.some'}])
 
-    region = new IgnoreRegionBySelector({using: 'xpath', value: '//some'})
+    region = new IgnoreRegionBySelector('xpath://some')
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [{type: 'xpath', selector: '//some'}])
 
@@ -154,7 +139,7 @@ describe('toPersistedRegions()', () => {
   })
 
   it('FloatingRegionBySelector', async () => {
-    let region = new FloatingRegionBySelector({using: 'css selector', value: '.some'}, 1, 2, 3, 4)
+    let region = new FloatingRegionBySelector('css:.some', 1, 2, 3, 4)
     let persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {
@@ -167,7 +152,7 @@ describe('toPersistedRegions()', () => {
       },
     ])
 
-    region = new FloatingRegionBySelector({using: 'xpath', value: '//some'}, 1, 2, 3, 4)
+    region = new FloatingRegionBySelector('xpath://some', 1, 2, 3, 4)
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {
@@ -195,10 +180,7 @@ describe('toPersistedRegions()', () => {
   })
 
   it('AccessibilityRegionBySelector', async () => {
-    let region = new AccessibilityRegionBySelector(
-      {using: 'css selector', value: '.some'},
-      AccessibilityRegionType.RegularText,
-    )
+    let region = new AccessibilityRegionBySelector('css:.some', AccessibilityRegionType.RegularText)
     let persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {
@@ -208,10 +190,7 @@ describe('toPersistedRegions()', () => {
       },
     ])
 
-    region = new AccessibilityRegionBySelector(
-      {using: 'xpath', value: '//some'},
-      AccessibilityRegionType.RegularText,
-    )
+    region = new AccessibilityRegionBySelector('xpath://some', AccessibilityRegionType.RegularText)
     persistedRegion = await region.toPersistedRegions(driver)
     assert.deepStrictEqual(persistedRegion, [
       {

@@ -150,7 +150,8 @@ class EyesWrappedDriver {
       return driver
     }
     this._logger = logger
-    this._driver = driver
+    this._driver = this.specs.prepareDriver ? this.specs.prepareDriver(driver) : driver
+
     this._executor = new this.JsExecutor(this._logger, this)
     this._finder = new this.ElementFinder(this._logger, this)
     this._context = new this.BrowsingContext(this._logger, this)

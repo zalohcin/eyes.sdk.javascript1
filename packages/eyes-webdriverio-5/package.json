@@ -1,6 +1,6 @@
 {
   "name": "@applitools/eyes-webdriverio",
-  "version": "5.11.0",
+  "version": "5.11.2",
   "description": "Applitools Eyes SDK for WebdriverIO",
   "keywords": [
     "eyes-webdriverio",
@@ -32,8 +32,8 @@
   },
   "main": "./index.js",
   "dependencies": {
-    "@applitools/eyes-sdk-core": "10.2.0",
-    "@applitools/visual-grid-client": "14.1.0",
+    "@applitools/eyes-sdk-core": "10.3.1",
+    "@applitools/visual-grid-client": "14.2.1",
     "selenium-webdriver": "^4.0.0-alpha.5",
     "webdriverio": "^5.18.6"
   },
@@ -59,8 +59,8 @@
     "test:it": "mocha --no-timeouts \"test/it/*.js\"",
     "test:unit": "mocha \"test/unit/**/*.js\"",
     "coverage:generate": "coverage-tests create-tests --remote=http://localhost:4444/wd/hub",
-    "coverage:sandbox": "coverage-tests create-tests --remote=$CVG_TEST_REMOTE && yarn test:coverage && coverage-tests process-report",
-    "coverage:prod": "coverage-tests create-tests --remote=$CVG_TEST_REMOTE && yarn test:coverage && coverage-tests process-report --send-report prod",
+    "coverage:sandbox": "coverage-tests create-tests --remote=$CVG_TESTS_REMOTE && yarn test:coverage && coverage-tests process-report",
+    "coverage:prod": "coverage-tests create-tests --remote=$CVG_TESTS_REMOTE && yarn test:coverage && coverage-tests process-report --send-report prod",
     "test:coverage": "env APPLITOOLS_BATCH_NAME='JS Coverage Tests: eyes-webdriverio-5' APPLITOOLS_BATCH_ID=$(uuidgen) XUNIT_FILE=coverage-test-report.xml mocha-parallel-tests --no-timeouts --reporter spec-xunit-file --max-parallel 15 test/coverage/generic/*.spec.js",
     "test:coverage:custom": "mocha \"test/coverage/custom/**/*.spec.js\" --no-timeouts",
     "render": "node scripts/render.js",

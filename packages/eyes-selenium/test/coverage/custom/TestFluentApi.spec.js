@@ -15,7 +15,7 @@ describe(appName, () => {
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('classic', StitchMode.CSS))
+      eyes = await getEyes('classic', StitchMode.CSS)
     })
 
     it('TestCheckRegionInFrame2_Fluent', async () => {
@@ -73,7 +73,7 @@ describe(appName, () => {
       let frame = await driver.findElement(By.css('#modal2 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let rect = await getElementRect(element)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
@@ -87,7 +87,7 @@ describe(appName, () => {
       let frame = await driver.findElement(By.css('#modal3 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let rect = await getElementRect(element)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
@@ -97,7 +97,7 @@ describe(appName, () => {
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('classic', StitchMode.SCROLL))
+      eyes = await getEyes('classic', StitchMode.SCROLL)
     })
 
     it('TestCheckRegionInFrame2_Fluent', async () => {
@@ -155,7 +155,7 @@ describe(appName, () => {
       let frame = await driver.findElement(By.css('#modal2 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let rect = await getElementRect(element)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
@@ -174,7 +174,7 @@ describe(appName, () => {
       let frame = await driver.findElement(By.css('#modal3 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let rect = await getElementRect(element)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
@@ -184,7 +184,7 @@ describe(appName, () => {
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('VG'))
+      eyes = await getEyes('VG')
     })
 
     it.skip('TestCheckScrollableModal', async () => {
@@ -212,7 +212,7 @@ describe(appName, () => {
       let frame = await driver.findElement(By.css('#modal2 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let rect = await getElementRect(element)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
@@ -226,12 +226,22 @@ describe(appName, () => {
       let frame = await driver.findElement(By.css('#modal3 iframe'))
       await driver.switchTo().frame(frame)
       let element = await driver.findElement(By.css('html'))
-      let rect = await element.getRect()
+      let rect = await getElementRect(element)
       await performChecksOnLongRegion(rect, eyes)
       await eyes.close()
     })
   })
 })
+
+async function getElementRect(el) {
+  try {
+    return el.getRect()
+  } catch (err) {
+    const size = await el.getSize()
+    const location = await el.getLocation()
+    return {...size, ...location}
+  }
+}
 
 async function performChecksOnLongRegion(rect, eyes) {
   for (let currentY = rect.y, c = 1; currentY < rect.y + rect.height; currentY += 5000, c++) {

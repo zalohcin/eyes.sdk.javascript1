@@ -1,5 +1,7 @@
+const png = require('png-async')
 const EyesJsSnippets = require('../../lib/EyesJsSnippets')
 const {TypeUtils} = require('../../index')
+const FakeDomSnapshot = require('./FakeDomSnapshot')
 
 const DEFAULT_STYLES = {
   'border-left-width': '0px',
@@ -15,27 +17,33 @@ const DEFAULT_PROPS = {
 
 class MockDriver {
   constructor() {
+    this._window = {
+      url: 'http://default.url',
+      rect: {x: 0, y: 0, width: 1000, height: 1000},
+    }
     this._scripts = new Map()
     this._elements = new Map()
-    this._frames = new Map()
-    this._document = {id: Symbol('documentId')}
+    this._contexts = new Map()
+    this._contexts.set(null, {
+      document: {id: Symbol('documentId')},
+    })
     this._contextId = null
     this.mockScript(EyesJsSnippets.GET_CURRENT_CONTEXT_INFO, () => {
-      const context = this._frames.get(this._contextId)
-      const isRoot = !context
+      const context = this._contexts.get(this._contextId)
+      const isRoot = !this._contextId
       const isCORS = !isRoot && context.isCORS
-      const document = context ? context.document : this._document
+      const document = context.document
       const selector = !isCORS && !isRoot ? context.element.selector : null
       return {isRoot, isCORS, document, selector}
     })
     this.mockScript(EyesJsSnippets.GET_FRAMES, () => {
-      return Array.from(this._frames.values())
+      return Array.from(this._contexts.values())
         .filter(frame => frame.parentId === this._contextId)
         .map(frame => ({isCORS: frame.isCORS, element: frame.element}))
     })
-    this.mockScript('return document', () => {
-      const context = this._frames.get(this._contextId)
-      return context ? context.document : this._document
+    this.mockScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT, () => {
+      const context = this._contexts.get(this._contextId)
+      return context.document
     })
     this.mockScript(EyesJsSnippets.GET_SCROLL_POSITION, () => {
       return [0, 0]
@@ -51,6 +59,59 @@ class MockDriver {
     this.mockScript(EyesJsSnippets.GET_ELEMENT_PROPERTIES, (properties, element) => {
       return properties.map(property => (element.props || {})[property] || DEFAULT_PROPS[property])
     })
+    this.mockScript(EyesJsSnippets.GET_SCROLL_ROOT_ELEMENT, () => {
+      const context = this._contexts.get(this._contextId)
+      if (!context.document.scrollingElement) {
+        context.scrollingElement = {id: Symbol('scrolling element id')}
+      }
+      return context.scrollingElement
+    })
+    this.mockScript(EyesJsSnippets.SCROLL_TO, (offset, element) => {
+      let scrollingElement = element
+      if (!element) {
+        const context = this._contexts.get(this._contextId).document
+        if (!context.scrollingElement) {
+          context.scrollingElement = {id: Symbol('scrolling element id')}
+        }
+        scrollingElement = context.scrollingElement
+      }
+      scrollingElement.scrollPosition = offset
+      return [scrollingElement.scrollPosition.x, scrollingElement.scrollPosition.y]
+    })
+    this.mockScript(EyesJsSnippets.GET_SCROLL_POSITION, element => {
+      let scrollingElement = element
+      if (!element) {
+        const context = this._contexts.get(this._contextId).document
+        if (!context.scrollingElement) {
+          context.scrollingElement = {id: Symbol('scrolling element id')}
+        }
+        scrollingElement = context.scrollingElement
+      }
+      if (!scrollingElement.scrollPosition) {
+        scrollingElement.scrollPosition = {x: 0, y: 0}
+      }
+      return [scrollingElement.scrollPosition.x, scrollingElement.scrollPosition.y]
+    })
+    this.mockScript('return window.devicePixelRatio', () => {
+      return 1
+    })
+    this.mockScript(EyesJsSnippets.GET_VIEWPORT_SIZE, () => {
+      return [this._window.rect.width, this._window.rect.height]
+    })
+    this.mockScript(EyesJsSnippets.GET_ELEMENT_XPATH, element => {
+      const elements = Array.from(this._elements.values()).reduce(
+        (elements, array) => elements.concat(array),
+        [],
+      )
+      const index = elements.findIndex(({id}) => id === element.id)
+      return index >= 0
+        ? `/HTML[1]/BODY[1]/DIV[${index + 1}]`
+        : `//[data-fake-selector="${element.selector}"]`
+    })
+    this.mockScript(
+      script => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
+      () => FakeDomSnapshot.generateDomSnapshot(this),
+    )
   }
   mockScript(scriptMatcher, resultGenerator) {
     this._scripts.set(scriptMatcher, resultGenerator)
@@ -71,7 +132,7 @@ class MockDriver {
     elements.push(element)
     if (element.frame) {
       const contextId = Symbol('contextId')
-      this._frames.set(contextId, {
+      this._contexts.set(contextId, {
         id: contextId,
         parentId: state.parentContextId,
         isCORS: state.isCORS,
@@ -88,7 +149,9 @@ class MockDriver {
       if (node.children) {
         this.mockElements(node.children, {
           parentId: element.frame ? null : element.id,
-          parentContextId: element.frame ? this._frames.get(element.contextId).id : parentContextId,
+          parentContextId: element.frame
+            ? this._contexts.get(element.contextId).id
+            : parentContextId,
         })
       }
     }
@@ -114,7 +177,7 @@ class MockDriver {
     if (element === null) {
       return (this._contextId = null)
     }
-    const frame = this._frames.get(element.contextId)
+    const frame = this._contexts.get(element.contextId)
     if (frame && this._contextId === frame.parentId) {
       return (this._contextId = frame.id)
     } else {
@@ -123,11 +186,38 @@ class MockDriver {
   }
   async switchToParentFrame() {
     if (!this._contextId) return
-    for (const frame of this._frames.values()) {
+    for (const frame of this._contexts.values()) {
       if (frame.id === this._contextId) {
         return (this._contextId = frame.parentId)
       }
     }
+  }
+  async getWindowRect() {
+    return this._window.rect
+  }
+  async setWindowRect(rect) {
+    Object.assign(this._window.rect, rect)
+  }
+  async getUrl() {
+    return this._window.url
+  }
+  async visit(url) {
+    this._window.url = url
+  }
+  async takeScreenshot() {
+    const image = new png.Image({
+      width: this._window.rect.width,
+      height: this._window.rect.height,
+    })
+    const stream = image.pack()
+    return new Promise((resolve, reject) => {
+      let buffer = Buffer.from([])
+      stream.on('data', chunk => {
+        buffer = Buffer.concat([buffer, chunk])
+      })
+      stream.on('end', () => resolve(buffer))
+      stream.on('error', reject)
+    })
   }
 }
 

@@ -37,19 +37,19 @@ describe('FakeWrappedElement', function() {
 
   it('static extractId(element)', async () => {
     const element = await mock.findElement('some selector')
-    assert.strictEqual(FakeWrappedElement.extractId(element), element.id)
+    assert.strictEqual(await FakeWrappedElement.extractId(element), element.id)
   })
 
   it('static extractId(elementWrapper)', async () => {
     const element = await mock.findElement('some selector')
     const elementWrapper = new FakeWrappedElement(logger, driver, element)
-    assert.strictEqual(FakeWrappedElement.extractId(elementWrapper), element.id)
+    assert.strictEqual(await FakeWrappedElement.extractId(elementWrapper), element.id)
   })
 
   it('constructor(element)', async () => {
     const element = await mock.findElement('some selector')
     const constructed = new FakeWrappedElement(logger, driver, element)
-    assert.strictEqual(constructed.elementId, FakeWrappedElement.extractId(element))
+    assert.strictEqual(constructed.elementId, await FakeWrappedElement.extractId(element))
   })
 
   it('constructor(elementWrapper)', async () => {

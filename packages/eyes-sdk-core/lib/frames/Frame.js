@@ -25,7 +25,7 @@ const EyesUtils = require('../EyesUtils')
  * @typedef {Object} SpecsFrame
  * @property {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
  * @property {(element) => boolean} isCompatibleElement - return true if the value is an element, false otherwise
- * @property {(leftElement: SupportedElement|EyesWrappedElement, leftElement: SupportedElement|EyesWrappedElement) => boolean} isEqualElements - return true if elements are equal, false otherwise
+ * @property {(leftElement: SupportedElement|EyesWrappedElement, leftElement: SupportedElement|EyesWrappedElement) => Promise<boolean>} isEqualElements - return true if elements are equal, false otherwise
  * @property {(logger: Logger, driver: EyesWrappedDriver, element: SupportedElement, selector: SupportedSelector) => EyesWrappedElement} createElement - return wrapped element instance
  */
 
@@ -127,9 +127,9 @@ class Frame {
    * Equality check for two frame objects or frame elements
    * @param {Frame|EyesWrappedDriver} leftFrame - frame object or frame element
    * @param {Frame|EyesWrappedDriver} rightFrame - frame object or frame element
-   * @return {boolean} true if frames are described the same frame element, otherwise false
+   * @return {Promise<boolean>} true if frames are described the same frame element, otherwise false
    */
-  static equals(leftFrame, rightFrame) {
+  static async equals(leftFrame, rightFrame) {
     const leftElement = leftFrame instanceof Frame ? leftFrame.element : leftFrame
     const rightElement = rightFrame instanceof Frame ? rightFrame.element : rightFrame
     return this.specs.isEqualElements(leftElement, rightElement)
@@ -184,6 +184,14 @@ class Frame {
    */
   toReference() {
     return this.constructor.fromReference(this._element || this._reference, this._scrollRootElement)
+  }
+  /**
+   * Equality check for two frame objects or frame elements
+   * @param {Frame|EyesWrappedDriver} otherFrame - frame object or frame element
+   * @return {Promise<boolean>} true if frames are described the same frame element, otherwise false
+   */
+  async equals(otherFrame) {
+    return this.constructor.equals(this, otherFrame)
   }
   /**
    * Initialize frame reference by finding frame element and calculate metrics

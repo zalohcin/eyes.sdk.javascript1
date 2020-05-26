@@ -2,8 +2,13 @@
 
 ## Unreleased
 
-- add ability to render tests results to XUnit XML (per [Trello 261](https://trello.com/c/ozmI1rav))
 
+
+## 3.7.0 - 2020/5/24
+
+- add ability to render tests results to XUnit XML (per [Trello 261](https://trello.com/c/ozmI1rav))
+- updated to @applitools/eyes-sdk-core@10.3.0
+- updated to @applitools/visual-grid-client@14.2.0
 
 ## 3.6.0 - 2020/5/19
 

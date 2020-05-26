@@ -266,7 +266,7 @@ class EyesClassic extends EyesCore {
         }
       } else {
         const source = await this._controller.getSource()
-        return super.checkWindowBase(
+        return this.checkWindowBase(
           new NullRegionProvider(),
           checkSettings.getName(),
           false,
@@ -366,23 +366,27 @@ class EyesClassic extends EyesCore {
    * @return {Promise<MatchResult>}
    */
   async _checkRegion(checkSettings, targetRegion) {
-    const actualLocation = await EyesUtils.ensureRegionVisible(
-      this._logger,
-      this._driver,
-      this._positionProviderHandler.get(),
-      targetRegion,
-    )
+    try {
+      const actualLocation = await EyesUtils.ensureRegionVisible(
+        this._logger,
+        this._driver,
+        this._positionProviderHandler.get(),
+        targetRegion,
+      )
 
-    const regionToCheck = targetRegion.offset(-actualLocation.getX(), -actualLocation.getY())
+      this._regionToCheck = targetRegion.offset(-actualLocation.getX(), -actualLocation.getY())
 
-    const source = await this._controller.getSource()
-    return super.checkWindowBase(
-      new RegionProvider(regionToCheck),
-      checkSettings.getName(),
-      false,
-      checkSettings,
-      source,
-    )
+      const source = await this._controller.getSource()
+      return super.checkWindowBase(
+        new RegionProvider(this._regionToCheck),
+        checkSettings.getName(),
+        false,
+        checkSettings,
+        source,
+      )
+    } finally {
+      this._regionToCheck = null
+    }
   }
   /**
    * @param {DriverCheckSettings} checkSettings - check settings for the described test case
@@ -442,34 +446,27 @@ class EyesClassic extends EyesCore {
    * @return {Promise<MatchResult>}
    */
   async _checkElement(checkSettings, targetElement) {
-    await EyesUtils.ensureRegionVisible(
-      this._logger,
-      this._driver,
-      this._positionProviderHandler.get(),
-      await targetElement.getRect(),
-    )
+    try {
+      await EyesUtils.ensureRegionVisible(
+        this._logger,
+        this._driver,
+        this._positionProviderHandler.get(),
+        await targetElement.getRect(),
+      )
 
-    const RegionProviderImpl = class RegionProviderImpl extends RegionProvider {
-      async getRegion() {
-        const rect = await targetElement.getRect()
-        return new Region(
-          Math.ceil(rect.getLeft()),
-          Math.ceil(rect.getTop()),
-          rect.getWidth(),
-          rect.getHeight(),
-          CoordinatesType.CONTEXT_RELATIVE,
-        )
-      }
+      this._regionToCheck = await targetElement.getRect()
+
+      const source = await this._controller.getSource()
+      return super.checkWindowBase(
+        new RegionProvider(this._regionToCheck),
+        checkSettings.getName(),
+        false,
+        checkSettings,
+        source,
+      )
+    } finally {
+      this._regionToCheck = null
     }
-
-    const source = await this._controller.getSource()
-    return super.checkWindowBase(
-      new RegionProviderImpl(),
-      checkSettings.getName(),
-      false,
-      checkSettings,
-      source,
-    )
   }
   /**
    * @private
@@ -496,8 +493,8 @@ class EyesClassic extends EyesCore {
     if (isScrollable) {
       this._targetPositionProvider =
         this._configuration.getStitchMode() === StitchMode.CSS
-          ? new CssTranslateElementPositionProvider(this._logger, this._driver, targetElement)
-          : new ScrollElementPositionProvider(this._logger, this._driver, targetElement)
+          ? new CssTranslateElementPositionProvider(this._logger, this._executor, targetElement)
+          : new ScrollElementPositionProvider(this._logger, this._executor, targetElement)
       // we don't need to specify it explicitly since this is the same as entire size
       this._regionFullArea = null
       await targetElement.preservePosition(this._targetPositionProvider)
@@ -944,6 +941,13 @@ class EyesClassic extends EyesCore {
    */
   async getSendDom() {
     return !(await this._controller.isNative()) && super.getSendDom()
+  }
+
+  getImageLocation() {
+    if (this._regionToCheck) {
+      return this._regionToCheck.getLocation()
+    }
+    return Location.ZERO
   }
 
   async getInferredEnvironment() {

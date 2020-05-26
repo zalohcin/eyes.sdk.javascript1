@@ -123,6 +123,9 @@ function getConfig() {
   let config = new Configuration()
   config.setAppName(appName)
   config.setBatch(batch)
+  if (process.env['APPLITOOLS_API_KEY_SDK']) {
+    config.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
+  }
   config.setViewportSize({width: 800, height: 600})
   config.addBrowser(900, 600, BrowserType.CHROME)
   config.addBrowser(1024, 786, BrowserType.CHROME)

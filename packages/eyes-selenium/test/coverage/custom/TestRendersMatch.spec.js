@@ -70,6 +70,9 @@ async function initEyes(runner, driver, viewport, name) {
   conf.setAppName(appName)
   eyes.setConfiguration(conf)
   eyes.setBranchName('master')
+  if (process.env['APPLITOOLS_API_KEY_SDK']) {
+    eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
+  }
   await eyes.open(driver)
   return eyes
 }

@@ -14,7 +14,7 @@ describe(appName, async () => {
   describe('CSS', async () => {
     beforeEach(async () => {
       driver = await getDriver('CHROME')
-      ;({eyes} = await getEyes('classic', StitchMode.CSS))
+      eyes = await getEyes('classic', StitchMode.CSS)
       eyes.setBatch(batch)
     })
     it('TestDuplicatedIFrames', TestDuplicatedIFrames('TestDuplicatedIFrames'))
@@ -23,7 +23,7 @@ describe(appName, async () => {
   describe('SCROLL', async () => {
     beforeEach(async () => {
       driver = await getDriver('CHROME')
-      ;({eyes} = await getEyes('classic', StitchMode.SCROLL))
+      eyes = await getEyes('classic', StitchMode.SCROLL)
       eyes.setBatch(batch)
     })
     it('TestDuplicatedIFrames', TestDuplicatedIFrames('TestDuplicatedIFrames_Scroll'))
@@ -32,7 +32,7 @@ describe(appName, async () => {
   describe.skip('VG', async () => {
     beforeEach(async () => {
       driver = await getDriver('CHROME')
-      ;({eyes} = await getEyes('VG'))
+      eyes = await getEyes('VG')
       eyes.setBatch(batch)
     })
     it('TestDuplicatedIFrames', TestDuplicatedIFrames('TestDuplicatedIFrames_VG'))

@@ -83,9 +83,15 @@ const GET_SCROLL_POSITION = `
   }
 `
 
-const SCROLL_TO = (x, y) => `
-  var element = arguments[0] || document.scrollingElement || window;
-  element.scrollTo(${x}, ${y});
+const SCROLL_TO = `
+  var offset = arguments[0];
+  var element = arguments[1] || document.scrollingElement || document.documentElement;
+  if (element.scrollTo) {
+    element.scrollTo(offset.x, offset.y);
+  } else {
+    element.scrollTop = offset.x;
+    element.scrollLeft = offset.y;
+  }
   return [element.scrollLeft, element.scrollTop];
 `
 
@@ -205,7 +211,7 @@ const GET_CURRENT_CONTEXT_INFO = `
   return {
     isRoot: isRoot,
     isCORS: isCORS,
-    document: document,
+    document: document.documentElement,
     selector: selector,
   };
 `
@@ -224,6 +230,10 @@ const GET_FRAMES = `
       src: frameElement.src
     };
   });
+`
+
+const GET_DOCUMENT_ELEMENT = `
+  return document.documentElement
 `
 
 module.exports = {
@@ -251,4 +261,5 @@ module.exports = {
   GET_CURRENT_CONTEXT_INFO,
   GET_FRAME_BY_NAME_OR_ID,
   GET_FRAMES,
+  GET_DOCUMENT_ELEMENT,
 }

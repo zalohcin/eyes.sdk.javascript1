@@ -15,7 +15,8 @@ describe(appName, () => {
     let runner
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
-      ;({eyes, runner} = await getEyes('classic', StitchMode.CSS))
+      eyes = await getEyes('classic', StitchMode.CSS)
+      runner = eyes.getRunner()
       eyes.setBatch(batch)
     })
 
@@ -83,7 +84,8 @@ describe(appName, () => {
     let runner
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
-      ;({eyes, runner} = await getEyes('VG'))
+      eyes = await getEyes('VG')
+      runner = eyes.getRunner()
       eyes.setBatch(batch)
     })
 
@@ -255,6 +257,9 @@ async function makeCheck(runner, batch, driver, appName, testName, checkName) {
   let eyes = new Eyes(runner)
   eyes.setBatch(batch)
   eyes.setHostOS('Linux')
+  if (process.env['APPLITOOLS_API_KEY_SDK']) {
+    eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
+  }
   await eyes.open(driver, appName, testName, {width: 1200, height: 800})
   await eyes.check(
     checkName,

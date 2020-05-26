@@ -10,6 +10,7 @@ const uuid = require('uuid/v4')
 const fetch = require('node-fetch')
 
 function startFakeEyesServer({
+  matchMode = 'fair', // fair|always|never
   expectedFolder,
   updateFixtures,
   port,
@@ -229,18 +230,21 @@ function startFakeEyesServer({
       logger.log('matchWindowData', matchWindowData)
       const {appOutput: _appOutput} = matchWindowData
 
-      const expectedPath = path.resolve(
-        expectedFolder,
-        `${filenamify(`${req.params.id}__${hostOS}__${hostApp}`)}.png`,
-      )
+      let asExpected = matchMode === 'always'
+      if (matchMode === 'fair') {
+        const expectedPath = path.resolve(
+          expectedFolder,
+          `${filenamify(`${req.params.id}__${hostOS}__${hostApp}`)}.png`,
+        )
 
-      if (updateFixtures) {
-        logger.log('[sdk-fake-eyes-server] updating fixture at', expectedPath)
-        fs.writeFileSync(expectedPath, screenshot)
+        if (updateFixtures) {
+          logger.log('[sdk-fake-eyes-server] updating fixture at', expectedPath)
+          fs.writeFileSync(expectedPath, screenshot)
+        }
+
+        const expectedBuff = fs.readFileSync(expectedPath)
+        asExpected = screenshot.compare(expectedBuff) === 0
       }
-
-      const expectedBuff = fs.readFileSync(expectedPath)
-      const asExpected = screenshot.compare(expectedBuff) === 0
       steps.push({matchWindowData, asExpected})
       res.send({asExpected})
     },

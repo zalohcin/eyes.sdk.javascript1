@@ -30,6 +30,9 @@ describe(appName, () => {
       let eyes = new DomInterceptingEyes()
       eyes.setBatch(batch)
       eyes.setBranchName('master')
+      if (process.env['APPLITOOLS_API_KEY_SDK']) {
+        eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
+      }
       await eyes.open(driver, 'Test Send DOM', 'Full Window', {
         width: 1024,
         height: 768,
@@ -52,7 +55,7 @@ describe(appName, () => {
     let webDriver, eyes
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
-      ;({eyes} = await getEyes('classic', 'CSS'))
+      eyes = await getEyes('classic', 'CSS')
     })
 
     afterEach(async () => {

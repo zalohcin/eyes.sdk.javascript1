@@ -164,7 +164,9 @@ class EyesCore extends EyesBase {
       return
     }
 
-    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
+    if (
+      !(await FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain()))
+    ) {
       this._logger.verbose(`Ignoring ${action} (different frame)`)
       return
     }
@@ -189,7 +191,9 @@ class EyesCore extends EyesBase {
       return Promise.resolve()
     }
 
-    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
+    if (
+      !(await FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain()))
+    ) {
       this._logger.verbose(`Ignoring ${action} (different frame)`)
       return Promise.resolve()
     }
@@ -211,7 +215,7 @@ class EyesCore extends EyesBase {
    * @param {Region} control The control on which the trigger is activated (context relative coordinates).
    * @param {String} text  The trigger's text.
    */
-  addTextTrigger(control, text) {
+  async addTextTrigger(control, text) {
     if (this.getIsDisabled()) {
       this._logger.verbose(`Ignoring ${text} (disabled)`)
       return
@@ -223,7 +227,9 @@ class EyesCore extends EyesBase {
       return
     }
 
-    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
+    if (
+      !(await FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain()))
+    ) {
       this._logger.verbose(`Ignoring ${text} (different frame)`)
       return
     }
@@ -248,7 +254,9 @@ class EyesCore extends EyesBase {
       return Promise.resolve()
     }
 
-    if (!FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain())) {
+    if (
+      !(await FrameChain.equals(this._context.frameChain, this._lastScreenshot.getFrameChain()))
+    ) {
       this._logger.verbose(`Ignoring ${text} (different frame)`)
       return Promise.resolve()
     }

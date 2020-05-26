@@ -80,6 +80,7 @@ describe('DomCapture', function() {
     driver = await new Builder()
       .forBrowser('chrome')
       .setChromeOptions(new ChromeOptions().headless())
+      .usingServer(process.env.CVG_TESTS_REMOTE)
       .build()
 
     if (!driver.findElementByXPath) {

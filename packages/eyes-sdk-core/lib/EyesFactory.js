@@ -1,5 +1,6 @@
 'use strict'
-
+const {Configuration} = require('./config/Configuration')
+const {CorsIframeHandle} = require('./capture/CorsIframeHandler')
 const {EyesRunner} = require('./runner/EyesRunner')
 const {ClassicRunner} = require('./runner/ClassicRunner')
 const {VisualGridRunner} = require('./runner/VisualGridRunner')
@@ -55,6 +56,38 @@ class EyesFactory {
       return new this.constructor.EyesVisualGrid(serverUrl, isDisabled, runner)
     }
     return new this.constructor.EyesClassic(serverUrl, isDisabled, runner)
+  }
+
+  /**
+   * @private
+   * @param {string} [serverUrl] - The Eyes server URL.
+   * @param {boolean} [isDisabled=false] - Set {@code true} to disable Applitools Eyes and use the webdriver directly.
+   * @param {Object} [config] - Additional configuration object.
+   */
+  static fromBrowserInfo(serverUrl, isDisabled, config = {}) {
+    let eyes
+
+    if (config.browser) {
+      eyes = new this.EyesVisualGrid(serverUrl, isDisabled)
+
+      const cfg = new Configuration()
+      const browsers = Array.isArray(config.browser) ? config.browser : [config.browser]
+      browsers.forEach(browser => {
+        // If it quacks like a duck
+        if (browser.name) {
+          cfg.addBrowser(browser.width, browser.height, browser.name)
+        } else if (browser.deviceName) {
+          cfg.addDeviceEmulation(browser.deviceName, browser.screenOrientation)
+        }
+      })
+      eyes.setConfiguration(cfg)
+    } else {
+      eyes = new this.EyesClassic(serverUrl, isDisabled)
+    }
+
+    eyes._corsIframeHandle = CorsIframeHandle.BLANK
+
+    return eyes
   }
 }
 

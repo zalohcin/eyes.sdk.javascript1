@@ -415,7 +415,8 @@ async function getScrollLocation(_logger, executor, element) {
  */
 async function scrollTo(_logger, executor, location, element) {
   const [x, y] = await executor.executeScript(
-    EyesJsSnippets.SCROLL_TO(location.getX(), location.getY()),
+    EyesJsSnippets.SCROLL_TO,
+    {x: location.getX(), y: location.getY()},
     element,
   )
   return new Location(Math.ceil(Number.parseFloat(x)) || 0, Math.ceil(Number.parseFloat(y)) || 0)
@@ -652,7 +653,7 @@ async function getFrameByNameOrId(_logger, executor, nameOrId) {
  * @param {EyesElementFinder} driver.finder - element finder
  * @param {EyesJsExecutor} driver.executor - js executor
  * @param {ContextInfo} contextInfo - target context info
- * @param {(left: UnwrappedElement, right: UnwrappedElement) => boolean} comparator - check if two document elements are equal
+ * @param {(left: UnwrappedElement, right: UnwrappedElement) => Promise<boolean>} comparator - check if two document elements are equal
  * @return {Promise<Frame>} frame
  */
 async function findFrameByContext(_logger, {executor, context}, contextInfo, comparator) {
@@ -661,9 +662,9 @@ async function findFrameByContext(_logger, {executor, context}, contextInfo, com
     if (frameInfo.isCORS !== contextInfo.isCORS) continue
     await context.frame(frameInfo.element)
     const frame = context.frameChain.current
-    const contentDocument = await executor.executeScript('return document')
+    const contentDocument = await executor.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT)
     await context.frameParent()
-    if (comparator(contentDocument, contextInfo.document)) return frame
+    if (await comparator(contentDocument, contextInfo.document)) return frame
   }
 }
 /**
