@@ -22,7 +22,7 @@
     "visibility": "visible"
   },
   "rect": {
-    "width": 800,
+    "width": 785,
     "height": 600,
     "top": 0,
     "left": 0
@@ -56,7 +56,7 @@
         "visibility": "visible"
       },
       "rect": {
-        "width": 800,
+        "width": 785,
         "height": 600,
         "top": 0,
         "left": 0
@@ -90,7 +90,7 @@
             "visibility": "visible"
           },
           "rect": {
-            "width": 800,
+            "width": 785,
             "height": 73,
             "top": 0,
             "left": 0
@@ -130,7 +130,7 @@
             "visibility": "visible"
           },
           "rect": {
-            "width": 800,
+            "width": 785,
             "height": 184,
             "top": 73,
             "left": 0
@@ -255,7 +255,7 @@
                 "visibility": "visible"
               },
               "rect": {
-                "width": 250.109375,
+                "width": 279.234375,
                 "height": 184,
                 "top": 73,
                 "left": 413
@@ -292,7 +292,7 @@
                     "visibility": "visible"
                   },
                   "rect": {
-                    "width": 230.109375,
+                    "width": 259.234375,
                     "height": 72,
                     "top": 73,
                     "left": 433
@@ -330,9 +330,9 @@
                         "visibility": "visible"
                       },
                       "rect": {
-                        "width": 228.859375,
-                        "height": 22,
-                        "top": 74,
+                        "width": 256.578125,
+                        "height": 17,
+                        "top": 76,
                         "left": 433
                       },
                       "childNodes": [
@@ -350,7 +350,7 @@
                             "background-image": "none",
                             "background-size": "auto",
                             "border-width": "2px",
-                            "border-color": "rgb(118, 118, 118)",
+                            "border-color": "rgb(0, 0, 0)",
                             "border-style": "inset",
                             "color": "rgb(0, 0, 0)",
                             "display": "inline-block",
@@ -360,14 +360,14 @@
                             "margin": "0px",
                             "opacity": "1",
                             "overflow": "visible",
-                            "padding": "1px 2px",
+                            "padding": "1px 0px",
                             "visibility": "visible"
                           },
                           "rect": {
-                            "width": 176,
+                            "width": 205,
                             "height": 24,
                             "top": 73,
-                            "left": 485.859375
+                            "left": 484.578125
                           },
                           "attributes": {
                             "type": "text",
@@ -404,9 +404,9 @@
                       },
                       "rect": {
                         "width": 0,
-                        "height": 22,
-                        "top": 74,
-                        "left": 661.859375
+                        "height": 17,
+                        "top": 76,
+                        "left": 689.578125
                       },
                       "childNodes": []
                     },
@@ -438,9 +438,9 @@
                         "visibility": "visible"
                       },
                       "rect": {
-                        "width": 230.109375,
-                        "height": 22,
-                        "top": 98,
+                        "width": 259.234375,
+                        "height": 17,
+                        "top": 100,
                         "left": 433
                       },
                       "childNodes": [
@@ -458,7 +458,7 @@
                             "background-image": "none",
                             "background-size": "auto",
                             "border-width": "2px",
-                            "border-color": "rgb(118, 118, 118)",
+                            "border-color": "rgb(0, 0, 0)",
                             "border-style": "inset",
                             "color": "rgb(0, 0, 0)",
                             "display": "inline-block",
@@ -468,14 +468,14 @@
                             "margin": "0px",
                             "opacity": "1",
                             "overflow": "visible",
-                            "padding": "1px 2px",
+                            "padding": "1px 0px",
                             "visibility": "visible"
                           },
                           "rect": {
-                            "width": 176,
+                            "width": 205,
                             "height": 24,
                             "top": 97,
-                            "left": 487.109375
+                            "left": 487.234375
                           },
                           "attributes": {
                             "type": "email",
@@ -512,9 +512,9 @@
                       },
                       "rect": {
                         "width": 0,
-                        "height": 22,
-                        "top": 98,
-                        "left": 663.109375
+                        "height": 17,
+                        "top": 100,
+                        "left": 692.234375
                       },
                       "childNodes": []
                     },
@@ -528,11 +528,11 @@
                         "background-repeat": "repeat",
                         "background-origin": "padding-box",
                         "background-position": "0% 0%",
-                        "background-color": "rgb(239, 239, 239)",
+                        "background-color": "rgb(221, 221, 221)",
                         "background-image": "none",
                         "background-size": "auto",
                         "border-width": "2px",
-                        "border-color": "rgb(118, 118, 118)",
+                        "border-color": "rgb(221, 221, 221)",
                         "border-style": "outset",
                         "color": "rgb(0, 0, 0)",
                         "display": "inline-block",
@@ -546,7 +546,7 @@
                         "visibility": "visible"
                       },
                       "rect": {
-                        "width": 50.53125,
+                        "width": 52.46875,
                         "height": 24,
                         "top": 121,
                         "left": 433
@@ -597,7 +597,7 @@
                     "visibility": "visible"
                   },
                   "rect": {
-                    "width": 230.109375,
+                    "width": 259.234375,
                     "height": 0,
                     "top": 161,
                     "left": 433
@@ -653,8 +653,8 @@
           },
           "rect": {
             "width": 0,
-            "height": 22,
-            "top": 255,
+            "height": 17,
+            "top": 257,
             "left": 0
           },
           "childNodes": []
@@ -770,8 +770,8 @@
           },
           "rect": {
             "width": 0,
-            "height": 22,
-            "top": 457,
+            "height": 17,
+            "top": 459,
             "left": 0
           },
           "childNodes": []
@@ -805,8 +805,8 @@
           },
           "rect": {
             "width": 0,
-            "height": 22,
-            "top": 475,
+            "height": 17,
+            "top": 477,
             "left": 0
           },
           "childNodes": []
@@ -1162,8 +1162,8 @@
           },
           "rect": {
             "width": 0,
-            "height": 22,
-            "top": 1801,
+            "height": 17,
+            "top": 1803,
             "left": 554
           },
           "childNodes": []
