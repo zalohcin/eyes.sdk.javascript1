@@ -3,6 +3,7 @@ const assert = require('assert')
 const {Logger} = require('../../index')
 const MockDriver = require('../utils/MockDriver')
 const FakeWrappedDriver = require('../utils/FakeWrappedDriver')
+const EyesJsSnippets = require('../../lib/EyesJsSnippets')
 
 describe('EyesBrowsingContext', () => {
   let mock, driver
@@ -65,29 +66,29 @@ describe('EyesBrowsingContext', () => {
   })
 
   it('frame(null)', async () => {
-    const topContextDocument = await mock.executeScript('return document')
+    const topContextDocument = await mock.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT)
     await driver.context.frame(await mock.findElement('frame0'))
     await driver.context.frame(null)
     assert.strictEqual(driver.context.frameChain.size, 0)
-    const currentContextDocument = await mock.executeScript('return document')
+    const currentContextDocument = await mock.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT)
     assert.deepStrictEqual(currentContextDocument.id, topContextDocument.id)
   })
 
   it('frameParent()', async () => {
-    const topContextDocument = await mock.executeScript('return document')
+    const topContextDocument = await mock.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT)
     await driver.context.frame(await mock.findElement('frame1'))
-    const nestedContextDocument = await mock.executeScript('return document')
+    const nestedContextDocument = await mock.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT)
     await driver.context.frame(await mock.findElement('frame1-1'))
     assert.strictEqual(driver.context.frameChain.size, 2)
 
     await driver.context.frameParent()
     assert.strictEqual(driver.context.frameChain.size, 1)
-    const parentContextDocument = await mock.executeScript('return document')
+    const parentContextDocument = await mock.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT)
     assert.deepStrictEqual(parentContextDocument.id, nestedContextDocument.id)
 
     await driver.context.frameParent()
     assert.strictEqual(driver.context.frameChain.size, 0)
-    const grandparentContextDocument = await mock.executeScript('return document')
+    const grandparentContextDocument = await mock.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT)
     assert.deepStrictEqual(grandparentContextDocument.id, topContextDocument.id)
   })
 
@@ -95,12 +96,12 @@ describe('EyesBrowsingContext', () => {
     const frameSelectorsPath = ['frame1', 'frame1-1']
     const framePath = []
     const frameDocuments = []
-    frameDocuments.push(await mock.executeScript('return document'))
+    frameDocuments.push(await mock.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT))
     for (const frameSelector of frameSelectorsPath) {
       const frameElement = await mock.findElement(frameSelector)
       await driver.context.frame(frameElement)
       framePath.push(frameElement)
-      frameDocuments.unshift(await mock.executeScript('return document'))
+      frameDocuments.unshift(await mock.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT))
     }
     assert.strictEqual(driver.context.frameChain.size, frameSelectorsPath.length)
 
@@ -111,7 +112,8 @@ describe('EyesBrowsingContext', () => {
     assert.strictEqual(driver.context.frameChain.size, framePath.length)
 
     for (const frameDocument of frameDocuments) {
-      assert.deepStrictEqual((await mock.executeScript('return document')).id, frameDocument.id)
+      const currentDocument = await mock.executeScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT)
+      assert.deepStrictEqual(currentDocument.id, frameDocument.id)
       await driver.context.frameParent()
     }
   })
