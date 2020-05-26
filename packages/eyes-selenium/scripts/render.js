@@ -13,6 +13,7 @@ const {
   EyesSeleniumUtils,
   DeviceName,
   ScreenOrientation,
+  MatchLevel,
   // FileDebugScreenshotsProvider,
 } = require('../index')
 const path = require('path')
@@ -101,12 +102,17 @@ const args = yargs
     describe: 'before taking the screenshot, scroll page to the bottom and up',
     type: 'boolean',
   })
-  .options('match-timeout', {
+  .option('match-timeout', {
     describe: 'match timeout',
     type: 'number',
     default: 0,
   })
-  .options('accessibility-validation', {
+  .option('match-level', {
+    describe: 'match level',
+    type: 'string',
+    choices: Object.values(MatchLevel),
+  })
+  .option('accessibility-validation', {
     describe: 'accessibility validation (comma separated, e.g. AA.WCAG_2_0)',
     type: 'string',
   })
@@ -216,6 +222,9 @@ if (!url) {
   if (args.accessibilityValidation) {
     const [level, version] = args.accessibilityValidation.split(',')
     configuration.setAccessibilityValidation({level, version})
+  }
+  if (args.matchLevel) {
+    configuration.setMatchLevel(args.matchLevel)
   }
   if (args.envName) {
     configuration.setBaselineEnvName(args.envName) // determines the baseline
