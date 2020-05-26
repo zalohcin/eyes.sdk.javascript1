@@ -22,7 +22,7 @@ const MatchLevel = {
   /**
    * Images have the same layout.
    */
-  Layout: 'Layout2',
+  Layout: 'Layout',
 
   /**
    * Images have the same layout.
