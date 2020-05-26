@@ -32,7 +32,7 @@ const {lint} = require('../lint')
 const sendReleaseNotification = require('../send-report')
 const {createDotFolder} = require('../setup')
 const {verifyCommits, verifyInstalledVersions, verifyVersions} = require('../versions')
-const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags} = require('../git')
+const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags, isStagedForCommit} = require('../git')
 
 ;(async () => {
   try {
@@ -92,7 +92,9 @@ const {gitAdd, gitCommit, gitPullWithRebase, gitPushWithTags} = require('../git'
         if (isFix) {
           await gitAdd('package.json')
           await gitAdd('CHANGELOG.md')
-          await gitCommit()
+          if (await isStagedForCommit('package.json', 'CHANGELOG.md')) {
+            await gitCommit()
+          }
         }
         break
       case 'version':

@@ -18,9 +18,21 @@ async function gitPushWithTags() {
   await pexec(`git push --follow-tags`)
 }
 
+async function gitStatus() {
+  return await pexec(`git status --short`)
+}
+
+async function isStagedForCommit(...files) {
+  const {stdout} = await gitStatus()
+  const modifiedFiles = stdout.split('\n')
+  return files.some(file => modifiedFiles.includes(`M  ${file}`))
+}
+
 module.exports = {
   gitAdd,
   gitCommit,
   gitPullWithRebase,
   gitPushWithTags,
+  gitStatus,
+  isStagedForCommit,
 }
