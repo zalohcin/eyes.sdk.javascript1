@@ -1,25 +1,28 @@
 'use strict'
 
 const assert = require('assert')
+const axios = require('axios')
 const {
-  Target,
   AccessibilityLevel,
   AccessibilityGuidelinesVersion,
   AccessibilityRegionType,
-  AccessibilityRegionByElement,
-  AccessibilityRegionBySelector,
-} = require('../../../index')
-const {By} = require('selenium-webdriver')
-const {getEyes, getDriver, getBatch} = require('./util/TestSetup')
-const {getApiData} = require('./util/ApiAssertions')
+  VisualGridRunner,
+  ClassicRunner,
+} = require('../../index')
+const MockDriver = require('../utils/MockDriver')
+const FakeEyesFactory = require('../utils/FakeEyesFactory')
+const FakeCheckSettings = require('../utils/FakeCheckSettings')
 
 describe('TestAccessibility', () => {
   let driver
-  beforeEach(async () => {
-    driver = await getDriver('CHROME')
-  })
-  afterEach(async () => {
-    await driver.quit()
+
+  before(async () => {
+    driver = new MockDriver()
+    driver.mockElements([
+      {selector: 'element1', rect: {x: 10, y: 11, width: 101, height: 102}},
+      {selector: 'element2', rect: {x: 20, y: 21, width: 201, height: 202}},
+      {selector: 'element2', rect: {x: 30, y: 31, width: 301, height: 302}},
+    ])
   })
 
   it('TestAccessibility', async () => {
@@ -31,44 +34,45 @@ describe('TestAccessibility', () => {
   })
 
   async function runTest(useVisualGrid) {
-    await driver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-    const el = await driver.findElement(By.css('#overflowing-div'))
     const accessibilitySettings = {
       level: AccessibilityLevel.AA,
       guidelinesVersion: AccessibilityGuidelinesVersion.WCAG_2_0,
     }
 
-    const eyes = getEyes(useVisualGrid ? 'VG' : 'classic', null, {
-      config: {
-        matchTimeout: 0,
-        defaultMatchSettings: {
-          accessibilitySettings,
-        },
-        batch: getBatch(),
+    const runner = useVisualGrid ? new VisualGridRunner(10) : new ClassicRunner()
+    const eyes = new FakeEyesFactory(runner)
+    eyes.setConfiguration({
+      matchTimeout: 0,
+      defaultMatchSettings: {
+        accessibilitySettings,
       },
     })
 
-    await eyes.open(driver, 'SessionStartInfo', `TestAccessibility${useVisualGrid ? '_VG' : ''}`, {
-      width: 700,
-      height: 460,
-    })
-    const checkSettings = Target.window()
+    const wrappedDriver = await eyes.open(
+      driver,
+      'SessionStartInfo',
+      `TestAccessibility${useVisualGrid ? '_VG' : ''}`,
+      {
+        width: 700,
+        height: 460,
+      },
+    )
+
+    const element1 = await wrappedDriver.findElement('element1')
+
+    const checkSettings = FakeCheckSettings.window()
       .accessibilityRegion(
         {left: 10, top: 20, width: 30, height: 40},
         AccessibilityRegionType.LargeText,
       )
-      .accessibilityRegion(
-        new AccessibilityRegionBySelector(
-          By.css('.ignore'),
-          AccessibilityRegionType.IgnoreContrast,
-        ),
-      )
-      .accessibilityRegion(new AccessibilityRegionByElement(el, AccessibilityRegionType.BoldText))
+      .accessibilityRegion(element1, AccessibilityRegionType.BoldText)
+      .accessibilityRegion('element2', AccessibilityRegionType.IgnoreContrast)
 
     await eyes.check('', checkSettings)
     const testResults = await eyes.close(false)
 
     const sessionAccessibilityStatus = testResults.getAccessibilityStatus()
+
     assert.ok(sessionAccessibilityStatus)
     assert.ok(sessionAccessibilityStatus.status)
     assert.strictEqual(sessionAccessibilityStatus.version, accessibilitySettings.guidelinesVersion)
@@ -79,11 +83,10 @@ describe('TestAccessibility', () => {
 
     const expectedAccessibilityRegions = [
       {type: 'LargeText', isDisabled: false, left: 10, top: 20, width: 30, height: 40},
-      {type: 'IgnoreContrast', isDisabled: false, left: 10, top: 284, width: 800, height: 500},
-        useVisualGrid ? null : {type: 'IgnoreContrast', isDisabled: false, left: 122, top: 928, width: 456, height: 306}, // eslint-disable-line prettier/prettier
-        useVisualGrid ? null : {type: 'IgnoreContrast', isDisabled: false, left: 8, top: 1270, width: 690, height: 206}, // eslint-disable-line prettier/prettier
-      {type: 'BoldText', isDisabled: false, left: 8, top: 80, width: 304, height: 184},
-    ].filter(x => !!x)
+      {type: 'BoldText', isDisabled: false, left: 10, top: 11, width: 101, height: 102},
+      {type: 'IgnoreContrast', isDisabled: false, left: 20, top: 21, width: 201, height: 202},
+      {type: 'IgnoreContrast', isDisabled: false, left: 30, top: 31, width: 301, height: 302},
+    ]
     const expectedAccessibilitySettings = {
       level: 'AA',
       version: 'WCAG_2_0',
@@ -107,7 +110,7 @@ describe('TestAccessibility', () => {
       'SessionStartInfo',
       `TestAccessibility_No_Accessibility${useVisualGrid ? '_VG' : ''}`,
     )
-    await eyes.check('', Target.window())
+    await eyes.check('', FakeCheckSettings.window())
     const testResultsWithoutAccessibility = await eyes.close(false)
 
     assert.deepStrictEqual(testResultsWithoutAccessibility.getAccessibilityStatus(), undefined)
@@ -120,5 +123,14 @@ describe('TestAccessibility', () => {
       startInfoWithoutAccessibility.defaultMatchSettings.accessibilitySettings,
       undefined,
     )
+  }
+
+  async function getApiData(testResults, apiKey = process.env.APPLITOOLS_API_KEY) {
+    const url = `${testResults
+      .getApiUrls()
+      .getSession()}?format=json&AccessToken=${testResults.getSecretToken()}&apiKey=${apiKey}`
+
+    let response = await axios.get(url)
+    return response.data
   }
 })

@@ -1,6 +1,7 @@
 const png = require('png-async')
 const EyesJsSnippets = require('../../lib/EyesJsSnippets')
 const {TypeUtils} = require('../../index')
+const FakeDomSnapshot = require('./FakeDomSnapshot')
 
 const DEFAULT_STYLES = {
   'border-left-width': '0px',
@@ -94,6 +95,23 @@ class MockDriver {
     this.mockScript('return window.devicePixelRatio', () => {
       return 1
     })
+    this.mockScript(EyesJsSnippets.GET_VIEWPORT_SIZE, () => {
+      return [this._window.rect.width, this._window.rect.height]
+    })
+    this.mockScript(EyesJsSnippets.GET_ELEMENT_XPATH, element => {
+      const elements = Array.from(this._elements.values()).reduce(
+        (elements, array) => elements.concat(array),
+        [],
+      )
+      const index = elements.findIndex(({id}) => id === element.id)
+      return index >= 0
+        ? `/HTML[1]/BODY[1]/DIV[${index + 1}]`
+        : `//[data-fake-selector="${element.selector}"]`
+    })
+    this.mockScript(
+      script => /^\/\* @applitools\/dom-snapshot@[\d.]+ \*\//.test(script),
+      () => FakeDomSnapshot.generateDomSnapshot(this),
+    )
   }
   mockScript(scriptMatcher, resultGenerator) {
     this._scripts.set(scriptMatcher, resultGenerator)

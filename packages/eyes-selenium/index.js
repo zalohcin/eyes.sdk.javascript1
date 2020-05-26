@@ -19,13 +19,6 @@ exports.EyesVisualGrid = SeleniumEyesVisualGrid
 exports.Target = SeleniumCheckSettings
 exports.SeleniumCheckSettings = SeleniumCheckSettings
 
-exports.AccessibilityRegionByElement = core.AccessibilityRegionByElement
-exports.AccessibilityRegionBySelector = core.AccessibilityRegionBySelector
-exports.FloatingRegionByElement = core.FloatingRegionByElement
-exports.FloatingRegionBySelector = core.FloatingRegionBySelector
-exports.IgnoreRegionByElement = core.IgnoreRegionByElement
-exports.IgnoreRegionBySelector = core.IgnoreRegionBySelector
-
 exports.AccessibilityLevel = core.AccessibilityLevel
 exports.AccessibilityGuidelinesVersion = core.AccessibilityGuidelinesVersion
 exports.AccessibilityMatchSettings = core.AccessibilityMatchSettings

@@ -50,14 +50,14 @@ module.exports = EyesWrappedDriver.specialize({
     return {width, height}
   },
   async setWindowSize(driver, size) {
-    await driver.getWindowRect(size)
+    await driver.setWindowRect(size)
   },
   async getWindowLocation(driver) {
     const {x, y} = await driver.getWindowRect()
     return {x, y}
   },
   async setWindowLocation(driver, location) {
-    await driver.getWindowRect(location)
+    await driver.setWindowRect(location)
   },
   async getUrl(driver) {
     return driver.getUrl()
