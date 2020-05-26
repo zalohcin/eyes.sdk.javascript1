@@ -20,7 +20,6 @@ const DeviceName = {
   Galaxy_S3: 'Galaxy S3',
   Galaxy_S5: 'Galaxy S5',
   Galaxy_S8: 'Galaxy S8',
-  Galaxy_S8_Fixed: 'Samsung Galaxy S8 Fixed',
   Galaxy_S8_Plus: 'Galaxy S8 Plus',
   Galaxy_S9: 'Galaxy S9',
   Galaxy_S9_Plus: 'Galaxy S9 Plus',
