@@ -214,8 +214,8 @@
                 "visibility": "visible"
               },
               "rect": {
-                "width": 200,
-                "height": 380,
+                "width": 185,
+                "height": 416,
                 "top": 150,
                 "left": 18
               },
@@ -257,9 +257,9 @@
                 "visibility": "visible"
               },
               "rect": {
-                "width": 200,
-                "height": 290,
-                "top": 546,
+                "width": 185,
+                "height": 326,
+                "top": 582,
                 "left": 18
               },
               "childNodes": [
@@ -297,9 +297,9 @@
                 "visibility": "visible"
               },
               "rect": {
-                "width": 200,
-                "height": 308,
-                "top": 852,
+                "width": 185,
+                "height": 326,
+                "top": 924,
                 "left": 18
               },
               "childNodes": [
