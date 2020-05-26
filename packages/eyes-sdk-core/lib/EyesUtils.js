@@ -653,7 +653,7 @@ async function getFrameByNameOrId(_logger, executor, nameOrId) {
  * @param {EyesElementFinder} driver.finder - element finder
  * @param {EyesJsExecutor} driver.executor - js executor
  * @param {ContextInfo} contextInfo - target context info
- * @param {(left: UnwrappedElement, right: UnwrappedElement) => boolean} comparator - check if two document elements are equal
+ * @param {(left: UnwrappedElement, right: UnwrappedElement) => Promise<boolean>} comparator - check if two document elements are equal
  * @return {Promise<Frame>} frame
  */
 async function findFrameByContext(_logger, {executor, context}, contextInfo, comparator) {
@@ -664,7 +664,7 @@ async function findFrameByContext(_logger, {executor, context}, contextInfo, com
     const frame = context.frameChain.current
     const contentDocument = await executor.executeScript('return document')
     await context.frameParent()
-    if (comparator(contentDocument, contextInfo.document)) return frame
+    if (await comparator(contentDocument, contextInfo.document)) return frame
   }
 }
 /**

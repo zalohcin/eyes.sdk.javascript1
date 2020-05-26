@@ -14,7 +14,7 @@ describe('EyesClassic', () => {
   before(async () => {
     driver = new MockDriver()
     eyes = new FakeEyesClassic()
-    server = await startFakeEyesServer({logger: eyes._logger, alwaysMatch: true})
+    server = await startFakeEyesServer({logger: eyes._logger, matchMode: 'always'})
     serverUrl = `http://localhost:${server.port}`
     eyes.setServerUrl(serverUrl)
   })

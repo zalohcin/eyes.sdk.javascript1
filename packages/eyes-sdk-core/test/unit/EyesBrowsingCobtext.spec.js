@@ -205,7 +205,6 @@ describe('EyesBrowsingContext', () => {
       const frameElement22 = await mock.findElement('frame2-1-2')
       frameElements.push(frameElement22)
       await mock.switchToFrame(frameElement22)
-      // console.log(frameElement2, frameElement1)
       assert.strictEqual(driver.context.frameChain.size, 2)
       await driver.context.framesRefresh()
       const frameChain = driver.context.frameChain

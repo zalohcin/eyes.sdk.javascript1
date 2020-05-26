@@ -3,6 +3,9 @@ const FakeWrappedElement = require('./FakeWrappedElement')
 const FakeFrame = require('./FakeFrame')
 
 module.exports = EyesWrappedDriver.specialize({
+  toEyesSelector(selector) {
+    return FakeWrappedElement.toEyesSelector(selector)
+  },
   toSupportedSelector(selector) {
     return FakeWrappedElement.toSupportedSelector(selector)
   },

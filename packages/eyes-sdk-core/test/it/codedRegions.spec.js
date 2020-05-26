@@ -17,7 +17,7 @@ describe('codedRegions', async () => {
       {selector: 'element4', rect: {x: 40, y: 41, width: 401, height: 402}},
     ])
     eyes = new FakeEyesClassic()
-    server = await startFakeEyesServer({logger: eyes._logger, alwaysMatch: true})
+    server = await startFakeEyesServer({logger: eyes._logger, matchMode: 'always'})
     serverUrl = `http://localhost:${server.port}`
     eyes.setServerUrl(serverUrl)
   })

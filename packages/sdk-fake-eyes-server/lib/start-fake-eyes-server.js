@@ -10,7 +10,7 @@ const uuid = require('uuid/v4')
 const fetch = require('node-fetch')
 
 function startFakeEyesServer({
-  alwaysMatch,
+  matchMode = 'fair', // fair|always|never
   expectedFolder,
   updateFixtures,
   port,
@@ -230,8 +230,8 @@ function startFakeEyesServer({
       logger.log('matchWindowData', matchWindowData)
       const {appOutput: _appOutput} = matchWindowData
 
-      let asExpected = true
-      if (!alwaysMatch) {
+      let asExpected = matchMode === 'always'
+      if (matchMode === 'fair') {
         const expectedPath = path.resolve(
           expectedFolder,
           `${filenamify(`${req.params.id}__${hostOS}__${hostApp}`)}.png`,
