@@ -40,7 +40,7 @@ class MockDriver {
         .filter(frame => frame.parentId === this._contextId)
         .map(frame => ({isCORS: frame.isCORS, element: frame.element}))
     })
-    this.mockScript('return document', () => {
+    this.mockScript(EyesJsSnippets.GET_DOCUMENT_ELEMENT, () => {
       const context = this._contexts.get(this._contextId)
       return context.document
     })

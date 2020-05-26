@@ -48,10 +48,10 @@ function LegacyAPIDriver(EyesWrappedDriver) {
       return this._driver.findElements(By.tagName(tagName))
     }
     async findElementByXPath(xpath) {
-      return this._driver.findElement(By.xPath(xpath))
+      return this._driver.findElement(By.xpath(xpath))
     }
     async findElementsByXPath(xpath) {
-      return this._driver.findElements(By.xPath(xpath))
+      return this._driver.findElements(By.xpath(xpath))
     }
     async isMobile() {
       return this._controller.isNative()
@@ -67,6 +67,14 @@ function LegacyAPIDriver(EyesWrappedDriver) {
     }
     getFrameChain() {
       return this._context._frameChain
+    }
+    async getBrowserName() {
+      const capabilities = await this.getCapabilities()
+      return capabilities.getBrowserName()
+    }
+    async getBrowserVersion() {
+      const capabilities = await this.getCapabilities()
+      return capabilities.getBrowserVersion()
     }
   }
 }
