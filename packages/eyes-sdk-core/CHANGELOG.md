@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 10.3.1 - 2020/5/26
+
 - fix MatchLevel.Layout value ([Trello 1](https://trello.com/c/IBESoj8Q/371-cypress-unable-to-set-match-level-to-layout), [Trello 2](https://trello.com/c/EQD3JUOf/296-wdio-5-long-image-sometimes-fails-sometimes-succeeds))
 
 ## 10.3.0 - 2020/5/24
