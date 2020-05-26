@@ -1,5 +1,7 @@
 'use strict'
 
+const {Enum} = require('../utils/Enum')
+
 /**
  * The extent in which two images match (or are expected to match).
  *
@@ -20,7 +22,7 @@ const MatchLevel = {
   /**
    * Images have the same layout.
    */
-  Layout: 'Layout2',
+  Layout: 'Layout',
 
   /**
    * Images have the same layout.
@@ -43,5 +45,4 @@ const MatchLevel = {
   Exact: 'Exact',
 }
 
-Object.freeze(MatchLevel)
-exports.MatchLevel = MatchLevel
+exports.MatchLevel = Enum('MatchLevel', MatchLevel)

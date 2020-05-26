@@ -4,6 +4,10 @@
 
 
 
+## 14.2.1 - 2020/5/26
+
+- updated to @applitools/eyes-sdk-core@10.3.1 (from v10.3.0)
+
 ## 14.2.0 - 2020/5/24
 
 - updated to @applitools/eyes-sdk-core@10.3.0
