@@ -17,7 +17,6 @@ function makeEmitTests(initializeSdkImplementation, makeCoverageTests = doMakeCo
   let output = []
   function emitTests(supportedTests, {host, all = false} = {}) {
     supportedTests.forEach(supportedTest => {
-      if (!all && supportedTest.disabled) return
       const sdkImplementation = initializeSdkImplementation()
       const baselineTestName = `${supportedTest.name}${convertExecutionModeToSuffix(
         supportedTest.executionMode,
@@ -46,7 +45,11 @@ function makeEmitTests(initializeSdkImplementation, makeCoverageTests = doMakeCo
         debugger
       }
       // store
-      output.push({name: baselineTestName, ...sdkImplementation.out})
+      output.push({
+        name: baselineTestName,
+        disabled: !all && supportedTest.disabled,
+        ...sdkImplementation.out,
+      })
     })
     return output
   }
