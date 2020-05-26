@@ -1,6 +1,6 @@
 'use strict'
 
-const {Region, CoordinatesType} = require('@applitools/eyes-common')
+const {Region, CoordinatesType} = require('../..')
 const {GetRegion} = require('./GetRegion')
 const EyesUtils = require('../EyesUtils')
 

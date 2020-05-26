@@ -1,9 +1,9 @@
 'use strict'
 
 const {By} = require('selenium-webdriver')
-const {DomCapture} = require('@applitools/dom-utils')
 
 const {
+  DomCapture,
   SimplePropertyHandler,
   CoordinatesType,
   Region,

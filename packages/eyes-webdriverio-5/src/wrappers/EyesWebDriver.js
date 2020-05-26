@@ -72,6 +72,16 @@ class EyesWebDriver {
     return this.webDriver.sleep(ms)
   }
 
+  async getBrowserName() {
+    const capabilities = this.getCapabilities()
+    return capabilities.browserName
+  }
+
+  async getBrowserVersion() {
+    const capabilities = this.getCapabilities()
+    return capabilities.browserVersion
+  }
+
   /** @override */
   getCapabilities() {
     return this.webDriver.getCapabilities()

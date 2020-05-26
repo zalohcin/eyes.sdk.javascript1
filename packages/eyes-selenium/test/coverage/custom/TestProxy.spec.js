@@ -20,7 +20,7 @@ describe('TestProxy', () => {
 
   async function checkNetworkPassThroughProxy() {
     let webDriver = await getDriver('CHROME')
-    let {eyes} = await getEyes('VG')
+    let eyes = await getEyes('VG')
     try {
       let conf = new Configuration()
       conf.setBatch(batch)
@@ -43,7 +43,7 @@ describe('TestProxy', () => {
 
   async function checkNetworkFailIfNoProxy() {
     let webDriver = await getDriver('CHROME')
-    let {eyes} = await getEyes('VG')
+    let eyes = await getEyes('VG')
     try {
       let conf = new Configuration()
       conf.setBatch(batch)
