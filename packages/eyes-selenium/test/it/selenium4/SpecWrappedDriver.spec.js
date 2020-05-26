@@ -174,6 +174,10 @@ describe('SpecWrappedDriver Selenium4', () => {
     })
 
     it('setWindowLocation({x, y})', async () => {
+      await driver
+        .manage()
+        .window()
+        .setRect({width: 300, height: 300})
       const location = {x: 100, y: 110}
       await specs.setWindowLocation(driver, location)
       const {x, y} = await driver
