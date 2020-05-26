@@ -1,8 +1,7 @@
 'use strict'
-const {Eyes, Target, Region} = require('../../../../index')
+const {Target, Region} = require('../../../../index')
 const {Builder, By} = require('selenium-webdriver')
-const {getBatch, sauceUrl} = require('../util/TestSetup')
-const batch = getBatch()
+const {getEyes, sauceUrl} = require('../util/TestSetup')
 
 describe.skip('TestAppiumNative', () => {
   let driver, eyes
@@ -28,8 +27,7 @@ describe.skip('TestAppiumNative', () => {
       })
       .usingServer(sauceUrl)
       .build()
-    eyes = new Eyes()
-    eyes.setBatch(batch)
+    eyes = getEyes()
     await eyes.open(driver, 'Mobile Native Tests', 'Android Native App 1')
     await eyes.check('Contact list', Target.window().ignore(new Region(0, 0, 768, 48)))
     await eyes.close()
@@ -53,8 +51,7 @@ describe.skip('TestAppiumNative', () => {
       })
       .usingServer(sauceUrl)
       .build()
-    eyes = new Eyes()
-    eyes.setBatch(batch)
+    eyes = getEyes()
     await eyes.open(driver, 'Mobile Native Tests', 'Android Native App 2')
 
     let scrollableElement = await driver.findElement(

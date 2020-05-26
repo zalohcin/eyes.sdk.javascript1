@@ -16,6 +16,15 @@
   dependencies:
     "@applitools/functional-commons" "^1.5.4"
 
+"@applitools/dom-utils@4.7.17":
+  version "4.7.17"
+  resolved "https://registry.yarnpkg.com/@applitools/dom-utils/-/dom-utils-4.7.17.tgz#c3d18093d5b373e3be57e95ebb3e4c87fca59800"
+  integrity sha512-bSGZiJChZZuzlcvLZhsXAHo1K6aRzXez1QfY3yF3HkMtrtdLJ63h2suAJQxOGvm/Kdvl9Ag78qJxPkcBoPTbCg==
+  dependencies:
+    "@applitools/dom-capture" "7.2.0"
+    "@applitools/eyes-common" "3.24.0"
+    axios "^0.19.0"
+
 "@applitools/eslint-plugin-compat@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@applitools/eslint-plugin-compat/-/eslint-plugin-compat-0.7.0.tgz#61785cfb4156ddbb06141116b7fd381ecf11afea"
@@ -99,6 +108,17 @@
     chalk "3.0.0"
     es6-promise-pool "2.5.0"
     tunnel "0.0.6"
+
+"@applitools/eyes-webdriverio@5.11.0":
+  version "5.11.0"
+  resolved "https://registry.yarnpkg.com/@applitools/eyes-webdriverio/-/eyes-webdriverio-5.11.0.tgz#5ddaf9808d798b57f9893350e18ac261056179f8"
+  integrity sha512-mnloccI9dAlpAIUeVUA03Bs0bF9VEs5TfxJ9EOrWjEPifTgoMuxU5Jh81fT7Zeg4TcGuUdna3pr4qnpq4yH3jQ==
+  dependencies:
+    "@applitools/dom-utils" "4.7.17"
+    "@applitools/eyes-sdk-core" "10.2.0"
+    "@applitools/visual-grid-client" "14.1.0"
+    selenium-webdriver "^4.0.0-alpha.5"
+    webdriverio "^5.18.6"
 
 "@applitools/feature-flags@2.1.1":
   version "2.1.1"
