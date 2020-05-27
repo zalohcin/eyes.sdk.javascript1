@@ -1,6 +1,6 @@
 {
   "name": "@applitools/visual-grid-client",
-  "version": "14.2.1",
+  "version": "14.3.0",
   "description": "",
   "keywords": [
     "applitools",
@@ -76,7 +76,7 @@
     "test:browser": "mocha --no-timeouts 'test/browser/**/*.test.js'",
     "test": "yarn build:browser && yarn test:mocha",
     "render": "node example/render.js",
-    "preversion": "bongo preversion && yarn test",
+    "preversion": "bongo preversion",
     "version": "bongo version",
     "postversion": "bongo postversion --skip-release-notification"
   },
