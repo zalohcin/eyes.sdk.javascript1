@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-
+- added edgechromium-two-versions-back to typescript configurations.
 
 ## 14.3.0 - 2020/5/27
 
