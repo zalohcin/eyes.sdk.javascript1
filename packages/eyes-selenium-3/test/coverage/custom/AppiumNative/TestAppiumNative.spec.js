@@ -1,7 +1,7 @@
 'use strict'
-const {Target, StitchMode} = require('../../../index')
+const {Target, StitchMode} = require('../../../../index')
 const {Builder, By} = require('selenium-webdriver')
-const {sauceUrl, getEyes} = require('./util/TestSetup')
+const {sauceUrl, getEyes} = require('../util/TestSetup')
 
 describe('TestAppiumNative', () => {
   let driver, eyes
