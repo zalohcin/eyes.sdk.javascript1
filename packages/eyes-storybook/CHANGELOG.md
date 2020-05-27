@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- updated to @applitools/eyes-sdk-core@10.3.1 (from v10.3.0)
+- updated to @applitools/visual-grid-client@14.3.0 (from v14.2.0)
 
 
 
