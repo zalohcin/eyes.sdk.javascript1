@@ -11,6 +11,7 @@
       "packages/eyes-images",
       "packages/eyes-sdk-core",
       "packages/eyes-selenium",
+      "packages/eyes-protractor",
       "packages/eyes-testcafe",
       "packages/sdk-fake-eyes-server",
       "packages/sdk-coverage-tests",
