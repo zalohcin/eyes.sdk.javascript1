@@ -6,18 +6,22 @@ function generatePositionStyle(rect) {
   return `position:absolute;left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px`
 }
 
+function elementToCdt(element) {
+  const cdt = {
+    nodeType: 1,
+    nodeName: 'DIV',
+    attributes: [{name: 'data-fake-selector', value: element.selector}],
+    childNodeIndexes: [],
+  }
+  if (element.rect) {
+    cdt.attributes.push({name: 'style', value: generatePositionStyle(element.rect)})
+  }
+  return cdt
+}
+
 function generateDomSnapshot(driver) {
-  const cdt = Array.from(driver._elements.values()).reduce((cdt, elements) => {
-    const nodes = elements.map(element => ({
-      nodeType: 1,
-      nodeName: 'DIV',
-      attributes: [
-        {name: 'data-fake-selector', value: element.selector},
-        {name: 'style', value: generatePositionStyle(element.rect)},
-      ],
-      childNodeIndexes: [],
-    }))
-    return cdt.concat(nodes)
+  const cdt = Array.from(driver._elements.values()).reduce((cdt, elements) => { 
+    return cdt.concat(elements.map(elementToCdt))
   }, [])
   return JSON.stringify({
     status: 'SUCCESS',

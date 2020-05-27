@@ -101,6 +101,7 @@ exports.NewTestError = require('./lib/errors/NewTestError').NewTestError
 exports.OutOfBoundsError = require('./lib/errors/OutOfBoundsError').OutOfBoundsError
 exports.TestFailedError = require('./lib/errors/TestFailedError').TestFailedError
 exports.EyesDriverOperationError = require('./lib/errors/EyesDriverOperationError').EyesDriverOperationError
+exports.ElementNotFoundError = require('./lib/errors/ElementNotFoundError').ElementNotFoundError
 
 exports.CheckSettings = require('./lib/fluent/CheckSettings')
 exports.DriverCheckSettings = require('./lib/fluent/DriverCheckSettings')

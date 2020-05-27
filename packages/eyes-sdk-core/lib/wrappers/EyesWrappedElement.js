@@ -1,4 +1,5 @@
 'use strict'
+const {ElementNotFoundError} = require('../errors/ElementNotFoundError')
 const EyesUtils = require('../EyesUtils')
 
 /**
@@ -210,7 +211,7 @@ class EyesWrappedElement {
     if (!this._element) {
       const element = await driver.finder.findElement(this._selector)
       if (!element) {
-        throw new Error('Could not get element from selector!')
+        throw new ElementNotFoundError(this._selector)
       }
       this._element = element.unwrapped
     }
