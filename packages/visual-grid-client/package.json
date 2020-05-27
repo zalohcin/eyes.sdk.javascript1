@@ -74,7 +74,7 @@
     "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.test.js\"",
     "build:browser": "cd test/fixtures/test-app && yarn install --focused && yarn build",
     "test:browser": "mocha --no-timeouts 'test/browser/**/*.test.js'",
-    "test": "yarn build:browser",
+    "test": "yarn build:browser && yarn test:mocha",
     "render": "node example/render.js",
     "preversion": "bongo preversion && yarn test",
     "version": "bongo version",
