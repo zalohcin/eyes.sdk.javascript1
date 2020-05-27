@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- added edgechromium-two-versions-back to supported browsers.
 
 
 ## 14.2.1 - 2020/5/26
