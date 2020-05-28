@@ -64,7 +64,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it(`TestCheckLongIFrameModal`, async () => {
+    it.skip(`TestCheckLongIFrameModal`, async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal`, {
         width: 700,
         height: 460,
@@ -78,7 +78,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
+    it.skip(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal`, {
         width: 700,
         height: 460,
@@ -93,7 +93,7 @@ describe(appName, () => {
     })
   })
 
-  describe.skip(`Test_SCROLL`, () => {
+  describe(`Test_SCROLL`, () => {
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
@@ -146,7 +146,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it(`TestCheckLongIFrameModal`, async () => {
+    it.skip(`TestCheckLongIFrameModal`, async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal_Scroll`, {
         width: 700,
         height: 460,
@@ -160,7 +160,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
+    it.skip(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
       let driver = await eyes.open(
         webDriver,
         appName,
@@ -180,14 +180,14 @@ describe(appName, () => {
     })
   })
 
-  describe(`Test_VG`, () => {
+  describe.skip(`Test_VG`, () => {
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
       eyes = await getEyes('VG')
     })
 
-    it.skip('TestCheckScrollableModal', async () => {
+    it('TestCheckScrollableModal', async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckScrollableModal_VG`, {
         width: 700,
         height: 460,
@@ -203,7 +203,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it(`TestCheckLongIFrameModal`, async () => {
+    it.skip(`TestCheckLongIFrameModal`, async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal_VG`, {
         width: 700,
         height: 460,
@@ -217,7 +217,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
+    it.skip(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal_VG`, {
         width: 700,
         height: 460,

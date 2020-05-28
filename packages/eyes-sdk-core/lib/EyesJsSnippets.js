@@ -34,12 +34,23 @@ const GET_ELEMENT_RECT = `
   var element = arguments[0];
   var rect = element.getBoundingClientRect();
   var computedStyle = window.getComputedStyle(element);
+  var isFixed = isFixedElement(element);
   return {
-    x: rect.left + (window.scrollX || window.pageXOffset),
-    y: rect.top + (window.scrollY || window.pageYOffset),
+    x: isFixed ? element.offsetLeft : rect.left + (window.scrollX || window.pageXOffset),
+    y: isFixed ? element.offsetTop : rect.top + (window.scrollY || window.pageYOffset),
     width: rect.width,
     height: rect.height
   };
+
+  function isFixedElement(element) {
+    var offsetElement = element;
+    while (offsetElement && (offsetElement !== document.body || offsetElement !== document.documentElement)) {
+      offsetElement = offsetElement.offsetParent;
+    }
+    if (!offsetElement) return true;
+    var position = window.getComputedStyle(offsetElement).getPropertyValue('position');
+    return position === 'fixed';
+  }
 `
 
 const GET_ELEMENT_CLIENT_RECT = `
@@ -48,12 +59,23 @@ const GET_ELEMENT_CLIENT_RECT = `
   var computedStyle = window.getComputedStyle(element);
   var borderLeftWidth = parseInt(computedStyle.getPropertyValue('border-left-width'));
   var borderTopWidth = parseInt(computedStyle.getPropertyValue('border-top-width'));
+  var isFixed = isFixedElement(element);
   return {
-    x: rect.left + (window.scrollX || window.pageXOffset) + borderLeftWidth,
-    y: rect.top + (window.scrollY || window.pageYOffset) + borderTopWidth,
+    x: (isFixed ? element.offsetLeft : rect.left + (window.scrollX || window.pageXOffset)) + borderLeftWidth,
+    y: (isFixed ? element.offsetTop : rect.top + (window.scrollY || window.pageYOffset)) + borderTopWidth,
     width: element.clientWidth,
     height: element.clientHeight
   };
+
+  function isFixedElement(element) {
+    var offsetElement = element;
+    while (offsetElement && (offsetElement !== document.body || offsetElement !== document.documentElement)) {
+      offsetElement = offsetElement.offsetParent;
+    }
+    if (!offsetElement) return true;
+    var position = window.getComputedStyle(offsetElement).getPropertyValue('position');
+    return position === 'fixed';
+  }
 `
 
 const GET_ELEMENT_PROPERTIES = `
