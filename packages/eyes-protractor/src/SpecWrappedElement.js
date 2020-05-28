@@ -1,14 +1,13 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {WebElement, By} = require('selenium-webdriver')
+const {WebElement} = require('protractor')
 
 /**
- * @typedef {import('selenium-webdriver').ByHash} ByHash
- * @typedef {import('selenium-webdriver').By} By
+ * @typedef {import('protractor').Locator} Locator
  */
 
 /**
  * Supported selector type
- * @typedef {By|ByHash} SupportedSelector
+ * @typedef {Locator} SupportedSelector
  */
 
 /**

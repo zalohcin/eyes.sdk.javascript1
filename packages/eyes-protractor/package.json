@@ -63,11 +63,9 @@
   },
   "scripts": {
     "lint": "eslint . --ext .js --no-eslintrc --config ../../.eslintrc",
-    "test": "yarn test:unit && yarn test:it",
     "render": "node scripts/render.js",
-    "test:unit": "mocha --no-timeouts \"test/unit/**/*.spec.js\"",
-    "test:it": "mocha --no-timeouts ./test/it/protractor.conf.js",
-    "test:e2e": "mocha --no-timeouts \"test/e2e/**/*.spec.js\"",
+    "test": "yarn test:it",
+    "test:it": "mocha --no-timeouts ./test/it/*.spec.js",
     "coverage:generate": "coverage-tests create-tests --remote=$CVG_TESTS_REMOTE",
     "coverage:sandbox": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report",
     "coverage:prod": "yarn coverage:generate && yarn test:coverage && coverage-tests process-report --send-report prod",

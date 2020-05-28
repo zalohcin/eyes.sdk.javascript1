@@ -3,7 +3,7 @@ const {Runner} = require('protractor')
 const specs = require('../../src/SpecWrappedDriver')
 
 describe('SpecWrappedDriver', () => {
-  describe('headless desktop', async () => {
+  describe.only('headless desktop', async () => {
     let driver
     const url = 'https://applitools.github.io/demo/TestPages/FramesTestPage/'
 
@@ -24,6 +24,7 @@ describe('SpecWrappedDriver', () => {
       driver.by = driver.constructor.By
       driver.waitForAngularEnabled(false)
       await driver.get(url)
+      console.log((await driver.findElement(driver.by.css('div'))).constructor)
     })
 
     after(async () => {
