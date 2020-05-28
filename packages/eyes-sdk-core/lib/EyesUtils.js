@@ -5,7 +5,7 @@ const {
   RectangleSize,
   MutableImage,
   EyesError,
-} = require('@applitools/eyes-common')
+} = require('..')
 const {EyesDriverOperationError} = require('./errors/EyesDriverOperationError')
 const EyesJsSnippets = require('./EyesJsSnippets')
 

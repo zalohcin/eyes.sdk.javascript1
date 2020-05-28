@@ -3,6 +3,31 @@
 ## Unreleased
 
 
+## 14.3.1 - 2020/5/27
+
+- added edgechromium-two-versions-back to typescript configurations.
+
+## 14.3.0 - 2020/5/27
+
+- added edgechromium-two-versions-back to supported browsers.
+
+## 14.2.1 - 2020/5/26
+
+- updated to @applitools/eyes-sdk-core@10.3.1 (from v10.3.0)
+
+## 14.2.0 - 2020/5/24
+
+- updated to @applitools/eyes-sdk-core@10.3.0
+
+## 14.1.0 - 2020/5/19
+
+- support accessibilitySettings
+- updated to @applitools/eyes-sdk-core@10.2.0
+
+## 14.0.2 - 2020/5/18
+
+- fixed typescript definitions for open browser name parameter.
+
 ## 14.0.1 - 2020/5/17
 
 - using "url" instead of "source" ad referer header and eyes test source.

@@ -24,7 +24,7 @@ const {
   ArgumentGuard,
   SimplePropertyHandler,
   ReadOnlyPropertyHandler,
-  Configuration,
+  _Configuration,
   ClassicRunner,
   FrameChain,
   EyesUtils,
@@ -35,8 +35,8 @@ const {
   ScrollPositionProvider,
   ScrollElementPositionProvider,
   RegionPositionCompensationFactory,
+  DomCapture,
 } = require('@applitools/eyes-sdk-core')
-const {DomCapture} = require('@applitools/dom-utils')
 const WDIOCheckSettings = require('./WDIOCheckSettings')
 const WDIODriver = require('./wrappers/WDIODriver')
 
@@ -569,7 +569,7 @@ class EyesWDIO extends EyesBase {
   async _getFullFrameOrElementRegion() {
     const that = this
     if (that._checkFrameOrElement) {
-      return that._ensureFrameVisible().then(fc => {
+      return that._ensureFrameVisible().then(_fc => {
         // FIXME - Scaling should be handled in a single place instead
 
         return that._updateScalingParams().then(scaleProviderFactory => {

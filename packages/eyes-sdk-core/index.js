@@ -2,8 +2,76 @@
 
 /* eslint-disable max-len */
 
-const common = require('@applitools/eyes-common')
+// config
+exports.AccessibilityLevel = require('./lib/config/AccessibilityLevel').AccessibilityLevel
+exports.AccessibilityGuidelinesVersion = require('./lib/config/AccessibilityGuidelinesVersion').AccessibilityGuidelinesVersion
+exports.AccessibilityMatchSettings = require('./lib/config/AccessibilityMatchSettings').AccessibilityMatchSettings
+exports.AccessibilityRegionType = require('./lib/config/AccessibilityRegionType').AccessibilityRegionType
+exports.BatchInfo = require('./lib/config/BatchInfo').BatchInfo
+exports.BrowserType = require('./lib/config/BrowserType').BrowserType
+exports.Configuration = require('./lib/config/Configuration').Configuration
+exports.DeviceName = require('./lib/config/DeviceName').DeviceName
+exports.ExactMatchSettings = require('./lib/config/ExactMatchSettings').ExactMatchSettings
+exports.FloatingMatchSettings = require('./lib/config/FloatingMatchSettings').FloatingMatchSettings
+exports.ImageMatchSettings = require('./lib/config/ImageMatchSettings').ImageMatchSettings
+exports.MatchLevel = require('./lib/config/MatchLevel').MatchLevel
+exports.PropertyData = require('./lib/config/PropertyData').PropertyData
+exports.ProxySettings = require('./lib/config/ProxySettings').ProxySettings
+exports.ScreenOrientation = require('./lib/config/ScreenOrientation').ScreenOrientation
+exports.SessionType = require('./lib/config/SessionType').SessionType
+exports.StitchMode = require('./lib/config/StitchMode').StitchMode
+exports.IosDeviceName = require('./lib/config/IosDeviceName').IosDeviceName
+exports.IosScreenOrientation = require('./lib/config/IosScreenOrientation').IosScreenOrientation
+exports.IosVersion = require('./lib/config/IosVersion').IosVersion
 
+// debug
+exports.DebugScreenshotsProvider = require('./lib/debug/DebugScreenshotsProvider').DebugScreenshotsProvider
+exports.FileDebugScreenshotsProvider = require('./lib/debug/FileDebugScreenshotsProvider').FileDebugScreenshotsProvider
+exports.NullDebugScreenshotProvider = require('./lib/debug/NullDebugScreenshotProvider').NullDebugScreenshotProvider
+
+// errors
+exports.EyesError = require('./lib/errors/EyesError').EyesError
+
+// geometry
+exports.CoordinatesType = require('./lib/geometry/CoordinatesType').CoordinatesType
+exports.Location = require('./lib/geometry/Location').Location
+exports.RectangleSize = require('./lib/geometry/RectangleSize').RectangleSize
+exports.Region = require('./lib/geometry/Region').Region
+
+// handler
+exports.PropertyHandler = require('./lib/handler/PropertyHandler').PropertyHandler
+exports.ReadOnlyPropertyHandler = require('./lib/handler/ReadOnlyPropertyHandler').ReadOnlyPropertyHandler
+exports.SimplePropertyHandler = require('./lib/handler/SimplePropertyHandler').SimplePropertyHandler
+
+// images
+exports.ImageDeltaCompressor = require('./lib/images/ImageDeltaCompressor').ImageDeltaCompressor
+exports.MutableImage = require('./lib/images/MutableImage').MutableImage
+
+// logging
+exports.ConsoleLogHandler = require('./lib/logging/ConsoleLogHandler').ConsoleLogHandler
+exports.DebugLogHandler = require('./lib/logging/DebugLogHandler').DebugLogHandler
+exports.FileLogHandler = require('./lib/logging/FileLogHandler').FileLogHandler // -browser
+exports.Logger = require('./lib/logging/Logger').Logger
+exports.LogHandler = require('./lib/logging/LogHandler').LogHandler
+exports.NullLogHandler = require('./lib/logging/NullLogHandler').NullLogHandler
+
+// useragent
+exports.BrowserNames = require('./lib/useragent/BrowserNames').BrowserNames
+exports.OSNames = require('./lib/useragent/OSNames').OSNames
+exports.UserAgent = require('./lib/useragent/UserAgent').UserAgent
+
+// utils
+exports.ArgumentGuard = require('./lib/utils/ArgumentGuard').ArgumentGuard
+exports.ConfigUtils = require('./lib/utils/ConfigUtils').ConfigUtils
+exports.DateTimeUtils = require('./lib/utils/DateTimeUtils').DateTimeUtils
+exports.FileUtils = require('./lib/utils/FileUtils').FileUtils
+exports.GeneralUtils = require('./lib/utils/GeneralUtils').GeneralUtils
+exports.ImageUtils = require('./lib/utils/ImageUtils').ImageUtils
+exports.PerformanceUtils = require('./lib/utils/PerformanceUtils').PerformanceUtils
+exports.StreamUtils = require('./lib/utils/StreamUtils')
+exports.TypeUtils = require('./lib/utils/TypeUtils').TypeUtils
+exports.deserializeDomSnapshotResult = require('./lib/utils/deserializeDomSnapshotResult')
+exports.DomCapture = require('./lib/DomCapture').DomCapture
 exports.AppOutputProvider = require('./lib/capture/AppOutputProvider').AppOutputProvider
 exports.AppOutputWithScreenshot = require('./lib/capture/AppOutputWithScreenshot').AppOutputWithScreenshot
 exports.EyesScreenshot = require('./lib/capture/EyesScreenshot').EyesScreenshot
@@ -118,7 +186,7 @@ exports.MatchSingleWindowTask = require('./lib/MatchSingleWindowTask').MatchSing
 exports.MatchWindowTask = require('./lib/MatchWindowTask').MatchWindowTask
 exports.RenderWindowTask = require('./lib/RenderWindowTask').RenderWindowTask
 exports.TestResults = require('./lib/TestResults').TestResults
-exports.TestAccessibilityStatus = require('./lib/TestResults').TestAccessibilityStatus
+exports.TestResultsError = require('./lib/TestResults').TestResultsError
 exports.AccessibilityStatus = require('./lib/AccessibilityStatus').AccessibilityStatus
 exports.TestResultsFormatter = require('./lib/TestResultsFormatter').TestResultsFormatter
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus
@@ -137,65 +205,3 @@ exports.ClassicRunner = require('./lib/runner/ClassicRunner').ClassicRunner
 exports.VisualGridRunner = require('./lib/runner/VisualGridRunner').VisualGridRunner
 exports.TestResultContainer = require('./lib/runner/TestResultContainer').TestResultContainer
 exports.TestResultsSummary = require('./lib/runner/TestResultsSummary').TestResultsSummary
-
-// Classes from eyes-common which may be used as part of public API
-exports.AccessibilityLevel = common.AccessibilityLevel
-exports.AccessibilityMatchSettings = common.AccessibilityMatchSettings
-exports.AccessibilityRegionType = common.AccessibilityRegionType
-exports.BatchInfo = common.BatchInfo
-exports.BrowserType = common.BrowserType
-exports.Configuration = common.Configuration
-exports.DeviceName = common.DeviceName
-exports.ExactMatchSettings = common.ExactMatchSettings
-exports.FloatingMatchSettings = common.FloatingMatchSettings
-exports.ImageMatchSettings = common.ImageMatchSettings
-exports.MatchLevel = common.MatchLevel
-exports.PropertyData = common.PropertyData
-exports.ProxySettings = common.ProxySettings
-exports.ScreenOrientation = common.ScreenOrientation
-exports.SessionType = common.SessionType
-exports.StitchMode = common.StitchMode
-exports.IosVersion = common.IosVersion
-exports.IosScreenOrientation = common.IosScreenOrientation
-exports.IosDeviceName = common.IosDeviceName
-
-exports.DebugScreenshotsProvider = common.DebugScreenshotsProvider
-exports.FileDebugScreenshotsProvider = common.FileDebugScreenshotsProvider
-exports.NullDebugScreenshotProvider = common.NullDebugScreenshotProvider
-
-exports.EyesError = common.EyesError
-
-exports.CoordinatesType = common.CoordinatesType
-exports.Location = common.Location
-exports.RectangleSize = common.RectangleSize
-exports.Region = common.Region
-
-exports.PropertyHandler = common.PropertyHandler
-exports.ReadOnlyPropertyHandler = common.ReadOnlyPropertyHandler
-exports.SimplePropertyHandler = common.SimplePropertyHandler
-
-exports.ImageDeltaCompressor = common.ImageDeltaCompressor
-exports.MutableImage = common.MutableImage
-
-exports.ConsoleLogHandler = common.ConsoleLogHandler
-exports.DebugLogHandler = common.DebugLogHandler
-exports.FileLogHandler = common.FileLogHandler
-exports.Logger = common.Logger
-exports.LogHandler = common.LogHandler
-exports.NullLogHandler = common.NullLogHandler
-
-// Classes which can be used internally, but should not be exported from final SDKs
-exports.BrowserNames = common.BrowserNames
-exports.OSNames = common.OSNames
-exports.UserAgent = common.UserAgent
-
-exports.ArgumentGuard = common.ArgumentGuard
-exports.ConfigUtils = common.ConfigUtils
-exports.DateTimeUtils = common.DateTimeUtils
-exports.FileUtils = common.FileUtils
-exports.GeneralUtils = common.GeneralUtils
-exports.ImageUtils = common.ImageUtils
-exports.PerformanceUtils = common.PerformanceUtils
-exports.StreamUtils = common.StreamUtils
-exports.TypeUtils = common.TypeUtils
-exports.deserializeDomSnapshotResult = common.deserializeDomSnapshotResult

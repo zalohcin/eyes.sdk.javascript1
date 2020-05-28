@@ -17,7 +17,7 @@ const {
   SessionType,
   Configuration,
   GeneralUtils,
-} = require('@applitools/eyes-common')
+} = require('..')
 
 const {AppOutputProvider} = require('./capture/AppOutputProvider')
 const {AppOutputWithScreenshot} = require('./capture/AppOutputWithScreenshot')

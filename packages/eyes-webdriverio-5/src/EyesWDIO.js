@@ -24,9 +24,8 @@ const {
   SimplePropertyHandler,
   ClassicRunner,
   StitchMode,
+  DomCapture,
 } = require('@applitools/eyes-sdk-core')
-
-const {DomCapture} = require('@applitools/dom-utils')
 
 const ImageProviderFactory = require('./capture/ImageProviderFactory')
 const CssTranslatePositionProvider = require('./positioning/CssTranslatePositionProvider')

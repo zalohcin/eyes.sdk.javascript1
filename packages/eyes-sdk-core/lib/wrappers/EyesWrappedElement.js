@@ -2,9 +2,9 @@
 /* eslint-disable no-unused-vars */
 
 /**
- * @typedef {import('@applitools/eyes-common').Region} Region
- * @typedef {import('@applitools/eyes-common').Location} Location
- * @typedef {import('@applitools/eyes-common').RectangleSize} RectangleSize
+ * @typedef {import('../..').Region} Region
+ * @typedef {import('../..').Location} Location
+ * @typedef {import('../..').RectangleSize} RectangleSize
  */
 
 /**

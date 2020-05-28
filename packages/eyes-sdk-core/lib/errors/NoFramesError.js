@@ -1,5 +1,5 @@
 'use strict'
-const {EyesError} = require('@applitools/eyes-common')
+const {EyesError} = require('./EyesError')
 
 class NoFramesError extends EyesError {}
 

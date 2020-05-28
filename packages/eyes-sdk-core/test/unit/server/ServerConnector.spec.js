@@ -86,6 +86,7 @@ describe('ServerConnector', () => {
   })
 
   it('uploadScreenshot uploads to resultsUrl webhook', async () => {
+    assert.ok(process.env.APPLITOOLS_API_KEY)
     const serverConnector = getServerConnector()
     const renderingInfo = await serverConnector.renderInfo()
     const id = GeneralUtils.guid()

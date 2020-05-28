@@ -1,10 +1,26 @@
 # Changelog
 
 ## Unreleased
+- updated to @applitools/visual-grid-client@14.3.0 (from v14.2.1)
+- updated to @applitools/visual-grid-client@14.3.1 (from v14.3.0)
 
-- updated VGC for using source instead of referer
+
+## 3.11.1 - 2020/5/26
+
+- updated to @applitools/eyes-sdk-core@10.3.1 (from v10.2.0)
+- updated to @applitools/visual-grid-client@14.2.1 (from v14.1.0)
+
+## 3.11.0 - 2020/5/19
+
+- Support for accessibility validation
+- updated to @applitools/eyes-sdk-core@10.2.0
+- updated to @applitools/visual-grid-client@14.1.0
+
+ ## 3.10.5 - 2020/5/18
+
+- fixed typescript definitions file for eyesCheckWindow string argument and open browser name parameter. 
 - updated to @applitools/eyes-sdk-core@10.1.2
-- updated to @applitools/visual-grid-client@14.0.0
+- updated to @applitools/visual-grid-client@14.0.2
 
 ## 3.10.4 - 2020/5/7
 

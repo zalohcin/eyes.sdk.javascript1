@@ -1,26 +1,21 @@
 'use strict'
 
-const assert = require('assert')
-const chromedriver = require('chromedriver')
-const {Builder} = require('selenium-webdriver')
-const testServer = require('../../util/testServer')
-const {
-  Eyes,
-  Target,
-  ConsoleLogHandler,
-  TestResultsStatus,
-  VisualGridRunner,
-} = require('../../../index')
+const {testServer} = require('@applitools/sdk-shared')
+const {Target} = require('../../../index')
+const {getDriver, getEyes} = require('./util/TestSetup')
+const {join} = require('path')
 
 describe('TestVisualGridRefererHeader', () => {
-  let closeTestServer, closeTestServer2
-  let serverUrl, driver
+  let testServer1, testServer2
+  let driver
 
   before(async () => {
-    const testServer1 = testServer({port: 5555})
-    const testServer2 = testServer({
+    const staticPath = join(__dirname, '../../fixtures')
+    testServer1 = await testServer({port: 5555, staticPath})
+    testServer2 = await testServer({
+      staticPath,
       port: 5556,
-      allowCORS: false,
+      allowCors: false,
       middleWare: (req, res, next) => {
         if (req.headers.referer === 'http://localhost:5555/cors.html') {
           next()
@@ -29,49 +24,23 @@ describe('TestVisualGridRefererHeader', () => {
         }
       },
     })
-    const cd = chromedriver.start(['--whitelisted-ips=127.0.0.1'], true)
-
-    ;[{close: closeTestServer}, {close: closeTestServer2}] = await Promise.all([
-      testServer1,
-      testServer2,
-      cd,
-    ])
   })
 
   after(async () => {
     // await new Promise(r => setTimeout(r, 30000))
-    await Promise.all([chromedriver.stop(), closeTestServer(), closeTestServer2()])
+    await Promise.all([testServer1.close(), testServer2.close()])
   })
 
   beforeEach(async () => {
-    driver = await new Builder()
-      .withCapabilities({
-        browserName: 'chrome',
-        'goog:chromeOptions': {
-          args: ['headless'],
-        },
-      })
-      .build()
+    driver = await getDriver('CHROME')
   })
 
   it('send referer header', async () => {
     const url = 'http://localhost:5555/cors.html'
     await driver.get(url)
-    const eyes = setupEyes()
+    const eyes = getEyes('VG')
     await eyes.open(driver, 'VgFetch', ' VgFetch referer')
     await eyes.check('referer', Target.window())
-    const testResults = await eyes.close(false)
-    assert.strictEqual(testResults.getStatus(), TestResultsStatus.Passed)
+    await eyes.close()
   })
-
-  function setupEyes() {
-    const runner = new VisualGridRunner()
-    const eyes = new Eyes(runner)
-    eyes.setServerUrl(serverUrl)
-    if (process.env.APPLITOOLS_SHOW_LOGS) {
-      eyes.setLogHandler(new ConsoleLogHandler(true))
-    }
-    eyes.setMatchTimeout(0)
-    return eyes
-  }
 })

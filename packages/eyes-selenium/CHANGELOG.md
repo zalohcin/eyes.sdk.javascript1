@@ -2,10 +2,16 @@
 
 ## Unreleased
 
+
+
+
+## 4.37.0 - 2020/5/19
+
+- Support for AccessibilityGuidelinesVersion
 - removed "source" attribute from VG checkWindow
-- updated to @applitools/visual-grid-client@14.0.1
-
-
+- updated to @applitools/eyes-sdk-core@10.2.0
+- updated to @applitools/visual-grid-client@14.1.0
+- updated to @applitools/dom-utils@4.7.17
 
 ## 4.36.1 - 2020/5/17
 
