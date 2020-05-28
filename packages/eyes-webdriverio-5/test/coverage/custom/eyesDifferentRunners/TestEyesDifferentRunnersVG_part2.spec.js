@@ -3,9 +3,9 @@
 const {
   BrowserType,
   MatchLevel,
-} = require('../../../index')
-const {getDriver, getEyes} = require('./util/TestSetup')
-const {testSetup, getCheckSettings, validateVG} = require('./util/EyesDifferentRunners')
+} = require('../../../../index')
+const {getDriver, getEyes} = require('../util/TestSetup')
+const {testSetup, getCheckSettings, validateVG} = require('../util/EyesDifferentRunners')
 
 describe('TestEyesDifferentRunners VG', () => {
   afterEach(async function () {
@@ -30,21 +30,10 @@ describe('TestEyesDifferentRunners VG', () => {
 
   let testCase = testSetup(getCheckSettings, validateVG)
   let cases = [
-    ['https://amazon.com', MatchLevel.Layout],
-    ['https://applitools.com/docs/topics/overview.html', MatchLevel.Strict],
-    ['https://applitools.com/features/frontend-development', MatchLevel.Strict],
-    ['https://docs.microsoft.com/en-us/', MatchLevel.Strict],
     ['https://ebay.com', MatchLevel.Layout],
     ['https://facebook.com', MatchLevel.Strict],
     ['https://google.com', MatchLevel.Strict],
     ['https://instagram.com', MatchLevel.Strict],
-    ['https://twitter.com', MatchLevel.Strict],
-    ['https://wikipedia.org', MatchLevel.Strict],
-    [
-      'https://www.target.com/c/blankets-throws/-/N-d6wsb?lnk=ThrowsBlankets%E2%80%9C,tc',
-      MatchLevel.Strict,
-    ],
-    // ['https://youtube.com', MatchLevel.Layout],
   ]
   cases.forEach(testData => {
     it(testData[0], testCase(...testData))

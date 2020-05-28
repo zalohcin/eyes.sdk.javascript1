@@ -7,7 +7,10 @@ const {
   MatchLevel,
 } = require('../../../index')
 const {assertDefaultMatchSettings, assertImageMatchSettings} = require('./util/ApiAssertions')
-const {expect} = require('chai')
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+chai.use(chaiAsPromised)
+const expect = chai.expect
 
 describe('TestVGServerConfigs', () => {
   let browser, eyes, runner
@@ -22,7 +25,7 @@ describe('TestVGServerConfigs', () => {
     await browser.deleteSession()
   })
 
-  it.skip(`TestVGDoubleCloseNoCheck`, async () => {
+  it(`TestVGDoubleCloseNoCheck`, async () => {
     let conf = eyes.getConfiguration()
     conf.setAppName('app')
     conf.setTestName('test')
@@ -33,7 +36,7 @@ describe('TestVGServerConfigs', () => {
     await expect(eyes.close()).to.be.rejectedWith(Error, 'IllegalState: Eyes not open')
   })
 
-  it('TestVGChangeConfigAfterOpen', async () => {
+  it.skip('TestVGChangeConfigAfterOpen', async () => {
     let conf = eyes.getConfiguration()
     conf.setAppName('app')
     conf.setTestName('js test')

@@ -1,8 +1,8 @@
 'use strict'
-const {MatchLevel} = require('../../../index')
-const {getDriver, getBatch, getEyes} = require('./util/TestSetup')
-const {assertImages} = require('./util/ApiAssertions')
-const {testSetup, getCheckSettings} = require('./util/EyesDifferentRunners')
+const {MatchLevel} = require('../../../../index')
+const {getDriver, getBatch, getEyes} = require('../util/TestSetup')
+const {assertImages} = require('../util/ApiAssertions')
+const {testSetup, getCheckSettings} = require('../util/EyesDifferentRunners')
 const batch = getBatch()
 
 describe('TestEyesDifferentRunners Selenium', () => {
@@ -31,9 +31,6 @@ describe('TestEyesDifferentRunners Selenium', () => {
     ])
   })
   let cases = [
-    ['https://instagram.com', MatchLevel.Strict],
-    ['https://twitter.com', MatchLevel.Strict],
-    ['https://wikipedia.org', MatchLevel.Strict],
     [
       'https://www.target.com/c/blankets-throws/-/N-d6wsb?lnk=ThrowsBlankets%E2%80%9C,tc',
       MatchLevel.Strict,
