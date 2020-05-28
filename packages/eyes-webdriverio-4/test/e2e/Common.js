@@ -12,7 +12,6 @@ const {
   FloatingMatchSettings,
   metadata,
   RectangleSize,
-  Region,
   TypeUtils,
 } = require('@applitools/eyes-sdk-core')
 const {ActualAppOutput, ImageMatchSettings, SessionResults} = metadata
