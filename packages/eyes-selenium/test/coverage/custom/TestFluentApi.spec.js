@@ -180,7 +180,7 @@ describe(appName, () => {
     })
   })
 
-  describe.skip(`Test_VG`, () => {
+  describe(`Test_VG`, () => {
     beforeEach(async () => {
       webDriver = await getDriver('CHROME')
       await webDriver.get('https://applitools.github.io/demo/TestPages/FramesTestPage/')
@@ -203,7 +203,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it.skip(`TestCheckLongIFrameModal`, async () => {
+    it(`TestCheckLongIFrameModal`, async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckLongIFrameModal_VG`, {
         width: 700,
         height: 460,
@@ -217,7 +217,7 @@ describe(appName, () => {
       await eyes.close()
     })
 
-    it.skip(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
+    it(`TestCheckLongOutOfBoundsIFrameModal`, async () => {
       let driver = await eyes.open(webDriver, appName, `TestCheckLongOutOfBoundsIFrameModal_VG`, {
         width: 700,
         height: 460,
