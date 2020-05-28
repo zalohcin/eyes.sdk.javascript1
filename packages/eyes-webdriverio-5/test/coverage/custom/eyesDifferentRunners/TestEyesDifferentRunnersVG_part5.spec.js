@@ -30,8 +30,13 @@ describe('TestEyesDifferentRunners VG', () => {
 
   let testCase = testSetup(getCheckSettings, validateVG)
   let cases = [
-    ['https://amazon.com', MatchLevel.Layout],
-    ['https://applitools.com/docs/topics/overview.html', MatchLevel.Strict],
+    ['https://twitter.com', MatchLevel.Strict],
+    ['https://wikipedia.org', MatchLevel.Strict],
+    [
+      'https://www.target.com/c/blankets-throws/-/N-d6wsb?lnk=ThrowsBlankets%E2%80%9C,tc',
+      MatchLevel.Strict,
+    ],
+    // ['https://youtube.com', MatchLevel.Layout],
   ]
   cases.forEach(testData => {
     it(testData[0], testCase(...testData))

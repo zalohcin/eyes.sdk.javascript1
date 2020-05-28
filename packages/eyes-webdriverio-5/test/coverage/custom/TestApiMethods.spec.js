@@ -23,7 +23,7 @@ describe('api methods', () => {
   })
 
   async function testCloseAsync() {
-    await browser.url('https://applitools.com/helloworld')
+      await browser.url('https://applitools.com/helloworld')
     await eyes.open(browser, 'TestApiMethods', `TestCloseAsync_1`, {
       width: 800,
       height: 600,

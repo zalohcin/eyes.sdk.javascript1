@@ -253,6 +253,26 @@
     postcss-value-parser "^4.0.2"
     throat "^5.0.0"
 
+"@applitools/visual-grid-client@14.2.1":
+  version "14.2.1"
+  resolved "https://registry.yarnpkg.com/@applitools/visual-grid-client/-/visual-grid-client-14.2.1.tgz#0f939a37ae0d32288ee40215ebf3b5cd178d1cd1"
+  integrity sha512-3lSG4xX8V85l2ziYVg/Y6XOJFcCeiIjl8uFmh+qcCRxigzUh3dM5OjIi7CcVmbSWKAvDuoBxybZQ+T/K6EOFpw==
+  dependencies:
+    "@applitools/dom-snapshot" "3.5.2"
+    "@applitools/eyes-sdk-core" "10.3.1"
+    "@applitools/feature-flags" "2.1.1"
+    "@applitools/functional-commons" "1.5.4"
+    "@applitools/http-commons" "2.3.12"
+    "@applitools/isomorphic-fetch" "3.0.0"
+    "@applitools/jsdom" "1.0.2"
+    chalk "3.0.0"
+    he "1.2.0"
+    lodash.mapvalues "^4.6.0"
+    mime-types "^2.1.24"
+    mkdirp "^0.5.1"
+    postcss-value-parser "^4.0.2"
+    throat "^5.0.0"
+
 "@babel/code-frame@7.5.5":
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.5.5.tgz#bc0782f6d69f7b7d49531219699b988f669a8f9d"
@@ -6219,31 +6239,7 @@ chrome-webstore-upload@^0.2.0:
   dependencies:
     got "^6.3.0"
 
-chromedriver@^80.0.0:
-  version "80.0.2"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-80.0.2.tgz#005b9bf19abebf678b5d5670a9f16605c437a154"
-  integrity sha512-MKrTzBtykWuIswRYgUw9dHXr96BShQYSy8NdLlo2LN1mZ17A9nxtz9v0h9z1zKWTVaxT7e0qvo41rSY5BL1i+Q==
-  dependencies:
-    "@testim/chrome-version" "^1.0.7"
-    axios "^0.19.2"
-    del "^5.1.0"
-    extract-zip "^2.0.0"
-    mkdirp "^1.0.4"
-    tcp-port-used "^1.0.1"
-
-chromedriver@^83.0.0:
-  version "83.0.0"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-83.0.0.tgz#75d7d838e58014658c3990089464166fef951926"
-  integrity sha512-AePp9ykma+z4aKPRqlbzvVlc22VsQ6+rgF+0aL3B5onHOncK18dWSkLrSSJMczP/mXILN9ohGsvpuTwoRSj6OQ==
-  dependencies:
-    "@testim/chrome-version" "^1.0.7"
-    axios "^0.19.2"
-    del "^5.1.0"
-    extract-zip "^2.0.0"
-    mkdirp "^1.0.4"
-    tcp-port-used "^1.0.1"
-
-chromedriver@latest:
+chromedriver@^83.0.0, chromedriver@latest:
   version "83.0.0"
   resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-83.0.0.tgz#75d7d838e58014658c3990089464166fef951926"
   integrity sha512-AePp9ykma+z4aKPRqlbzvVlc22VsQ6+rgF+0aL3B5onHOncK18dWSkLrSSJMczP/mXILN9ohGsvpuTwoRSj6OQ==

@@ -1,7 +1,6 @@
 'use strict'
 const {Target, Configuration, DeviceName} = require('../../../index')
-const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
-const batch = getBatch()
+const {getDriver, getEyes} = require('./util/TestSetup')
 
 describe('TestRenderings', async () => {
   let browser, eyes
@@ -16,12 +15,12 @@ describe('TestRenderings', async () => {
     await eyes.abortIfNotClosed()
   })
 
-  it('TestMobileOnly', async () => {
+  it.skip('TestMobileOnly', async () => {
     let conf = new Configuration()
     conf.setTestName('Mobile Render Test')
     conf.setAppName('Visual Grid Render Test')
-    conf.setBatch(batch)
     conf.addDeviceEmulation(DeviceName.Galaxy_S5)
+    conf.setViewportSize({width: 800, height: 600})
     eyes.setConfiguration(conf)
     await eyes.open(browser)
     await browser.url('https://applitools.github.io/demo/TestPages/DynamicResolution/mobile.html')

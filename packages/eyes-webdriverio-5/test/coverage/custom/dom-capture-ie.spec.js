@@ -14,6 +14,7 @@ describe('JS Coverage Tests - WDIO5', async () => {
         hostname: 'ondemand.saucelabs.com',
         port: 80,
         path: '/wd/hub',
+        logLevel: 'silent',
         capabilities: {
           browserName: 'MicrosoftEdge',
           browserVersion: '18',
@@ -55,6 +56,7 @@ describe('JS Coverage Tests - WDIO5', async () => {
         hostname: 'ondemand.saucelabs.com',
         port: 80,
         path: '/wd/hub',
+        logLevel: 'silent',
         capabilities: {
           browserName: 'internet explorer',
           browserVersion: '11.285',
