@@ -1,3 +1,5 @@
+const LegacySelector = require('./LegacySelector')
+
 function LegacyAPIElement(EyesWrappedElement) {
   return class EyesWebElement extends EyesWrappedElement {
     get element() {
@@ -59,10 +61,22 @@ function LegacyAPIElement(EyesWrappedElement) {
       return this._driver.executor.executeScript(script, this)
     }
     async findElement(locator) {
-      return this._driver.finder.findElement(locator, this)
+      const extendedParentElement = await this._driver.unwrapped.$(this.unwrapped)
+      const element = await extendedParentElement.$(
+        locator instanceof LegacySelector ? locator.toString() : locator,
+      )
+      return !element.error
+        ? this._driver.specs.createElement(this._logger, this._driver, element, locator)
+        : null
     }
     async findElements(locator) {
-      return this._driver.finder.findElements(locator, this)
+      const extendedParentElement = await this._driver.unwrapped.$(this.unwrapped)
+      const elements = await extendedParentElement.$$(
+        locator instanceof LegacySelector ? locator.toString() : locator,
+      )
+      return Array.from(elements, element =>
+        this._driver.specs.createElement(this._logger, this._driver, element, locator),
+      )
     }
     async sendKeys(keysToSend) {
       await this._driver.unwrapped.elementClick(this.elementId)

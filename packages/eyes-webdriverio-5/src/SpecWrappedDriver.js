@@ -36,22 +36,8 @@ module.exports = {
     )
     return !element.error ? element : null
   },
-  async findElementInElement(driver, parentElement, selector) {
-    const extendedParentElement = await driver.$(parentElement)
-    const element = await extendedParentElement.$(
-      selector instanceof LegacySelector ? selector.toString() : selector,
-    )
-    return !element.error ? element : null
-  },
   async findElements(driver, selector) {
     const elements = await driver.$$(
-      selector instanceof LegacySelector ? selector.toString() : selector,
-    )
-    return Array.from(elements)
-  },
-  async findElementsInElement(driver, parentElement, selector) {
-    const extendedParentElement = await driver.$(parentElement)
-    const elements = await extendedParentElement.$$(
       selector instanceof LegacySelector ? selector.toString() : selector,
     )
     return Array.from(elements)

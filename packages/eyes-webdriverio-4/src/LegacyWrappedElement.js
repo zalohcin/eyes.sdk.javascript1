@@ -59,10 +59,24 @@ function LegacyAPIElement(EyesWrappedElement) {
       return this._driver.executor.executeScript(script, this)
     }
     async findElement(locator) {
-      return this._driver.finder.findElement(locator, this)
+      const {value} = await this._driver.unwrapped.elementIdElement(
+        await this.elementId,
+        locator.toString(),
+      )
+      return value
+        ? this._driver.specs.createElement(this._logger, this._driver, value, locator)
+        : null
     }
     async findElements(locator) {
-      return this._driver.finder.findElements(locator, this)
+      const {value} = await this._driver.unwrapped.elementIdElements(
+        await this.elementId,
+        locator.toString(),
+      )
+      return value && value.length > 0
+        ? value.map(element =>
+            this._driver.specs.createElement(this._logger, this._driver, element, locator),
+          )
+        : []
     }
     async sendKeys(keysToSend) {
       await this._driver.elementIdClick(this.elementId)

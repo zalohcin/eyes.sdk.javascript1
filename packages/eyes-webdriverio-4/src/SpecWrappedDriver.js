@@ -34,22 +34,8 @@ module.exports = {
     const {value} = await driver.element(selector.toString())
     return value
   },
-  async findElementInElement(driver, element, selector) {
-    const {value} = await driver.elementIdElement(
-      WDIOWrappedElement.extractId(element),
-      selector.toString(),
-    )
-    return value
-  },
   async findElements(driver, selector) {
     const {value} = await driver.elements(selector.toString())
-    return value
-  },
-  async findElementsInElement(driver, element, selector) {
-    const {value} = await driver.elementIdElements(
-      WDIOWrappedElement.extractId(element),
-      selector.toString(),
-    )
     return value
   },
   async getWindowLocation(driver) {

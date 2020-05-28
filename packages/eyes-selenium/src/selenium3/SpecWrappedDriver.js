@@ -45,22 +45,8 @@ module.exports = {
       else throw err
     }
   },
-  async findElementInElement(driver, element, selector) {
-    // const {value} = await driver.elementIdElement(
-    //   SeleniumWrappedElement.extractId(element),
-    //   selector.toString(),
-    // )
-    // return value
-  },
   async findElements(driver, selector) {
     return driver.findElements(selector)
-  },
-  async findElementsInElement(driver, element, selector) {
-    // const {value} = await driver.elementIdElements(
-    //   SeleniumWrappedElement.extractId(element),
-    //   selector.toString(),
-    // )
-    // return value
   },
   async getWindowLocation(driver) {
     const {x, y} = await driver
