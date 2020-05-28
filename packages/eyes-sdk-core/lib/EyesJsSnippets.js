@@ -44,7 +44,7 @@ const GET_ELEMENT_RECT = `
 
   function isFixedElement(element) {
     var offsetElement = element;
-    while (offsetElement && (offsetElement !== document.body || offsetElement !== document.documentElement)) {
+    while (offsetElement && offsetElement !== document.body && offsetElement !== document.documentElement) {
       offsetElement = offsetElement.offsetParent;
     }
     if (!offsetElement) return true;
@@ -69,7 +69,7 @@ const GET_ELEMENT_CLIENT_RECT = `
 
   function isFixedElement(element) {
     var offsetElement = element;
-    while (offsetElement && (offsetElement !== document.body || offsetElement !== document.documentElement)) {
+    while (offsetElement && offsetElement !== document.body && offsetElement !== document.documentElement) {
       offsetElement = offsetElement.offsetParent;
     }
     if (!offsetElement) return true;
