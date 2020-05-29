@@ -23,7 +23,7 @@ describe('api methods', () => {
   })
 
   async function testCloseAsync() {
-      await browser.url('https://applitools.com/helloworld')
+    await browser.url('https://applitools.com/helloworld')
     await eyes.open(browser, 'TestApiMethods', `TestCloseAsync_1`, {
       width: 800,
       height: 600,
@@ -33,6 +33,9 @@ describe('api methods', () => {
 
     let button = await browser.$('button')
     await button.click()
+    // after click button have a thicker border, which makes differences with a baseline for classic runner
+    let number = await browser.$('span.primary')
+    await number.click()
     await eyes.open(browser, 'TestApiMethods', `TestCloseAsync_2`, {
       width: 800,
       height: 600,

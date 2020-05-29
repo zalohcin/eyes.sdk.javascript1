@@ -2,7 +2,7 @@
 const {remote} = require('webdriverio')
 const {Target, By, Eyes} = require('../../..')
 
-describe.skip('Check Region, Chrome on Android', async () => {
+describe('Check Region, Chrome on Android', async () => {
   let eyes
   let browser
 
