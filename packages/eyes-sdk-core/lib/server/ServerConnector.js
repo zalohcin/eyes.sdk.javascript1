@@ -3,7 +3,7 @@
 const Axios = require('axios')
 const zlib = require('zlib')
 
-const {GeneralUtils, ArgumentGuard} = require('@applitools/eyes-common')
+const {GeneralUtils, ArgumentGuard} = require('../..')
 
 const {RenderingInfo} = require('./RenderingInfo')
 const {RunningSession} = require('./RunningSession')
@@ -45,6 +45,11 @@ const HTTP_STATUS_CODES = {
   INTERNAL_SERVER_ERROR: 500,
   BAD_GATEWAY: 502,
   GATEWAY_TIMEOUT: 504,
+}
+
+const AZURE_RETRY_CONFIG = {
+  delayBeforeRetry: 500,
+  retry: 5,
 }
 
 const REQUEST_GUID = GeneralUtils.guid()
@@ -291,7 +296,6 @@ class ServerConnector {
     const url = this._renderingInfo.getResultsUrl().replace('__random__', id)
     const config = {
       name: 'uploadScreenshot',
-      retry: 3,
       method: 'PUT',
       url,
       data: screenshot,
@@ -300,6 +304,7 @@ class ServerConnector {
         'x-ms-blob-type': 'BlockBlob',
         'content-type': 'application/octet-stream',
       },
+      ...AZURE_RETRY_CONFIG,
     }
 
     const response = await this._axios.request(config)
@@ -591,7 +596,6 @@ class ServerConnector {
     ArgumentGuard.notNull(runningRender, 'runningRender')
     ArgumentGuard.notNull(resource, 'resource')
     ArgumentGuard.notNull(resource.getContent(), 'resource.getContent()')
-    // eslint-disable-next-line max-len
     this._logger.verbose(
       `ServerConnector.putResource called with resource#${resource.getSha256Hash()} for render: ${runningRender}`,
     )
@@ -626,7 +630,11 @@ class ServerConnector {
       return true
     }
 
-    throw new Error(`ServerConnector.putResource - unexpected status (${response.statusText})`)
+    throw new Error(
+      `ServerConnector.putResource - unexpected status (${
+        response.statusText
+      }) for resource ${resource.getUrl() || ''} ${resource.getContentType()}`,
+    )
   }
 
   /**
@@ -698,7 +706,6 @@ class ServerConnector {
 
     const config = {
       name: 'postDomSnapshot',
-      retry: 3,
       method: 'PUT',
       url,
       data: zlib.gzipSync(Buffer.from(domJson)),
@@ -707,6 +714,7 @@ class ServerConnector {
         'x-ms-blob-type': 'BlockBlob',
         'Content-Type': 'application/octet-stream',
       },
+      ...AZURE_RETRY_CONFIG,
     }
 
     const response = await this._axios.request(config)

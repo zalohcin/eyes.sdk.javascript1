@@ -6,7 +6,7 @@ describe('TestAPI', () => {
   let webDriver, eyes
   beforeEach(async () => {
     webDriver = await getDriver('CHROME')
-    ;({eyes} = await getEyes('classic', 'CSS'))
+    eyes = await getEyes('classic', 'CSS')
   })
   afterEach(async () => {
     await eyes.abortIfNotClosed()

@@ -2,7 +2,7 @@
 const {getDriver, getEyes} = require('./util/TestSetup')
 const {Target, StitchMode} = require('../../../index')
 describe('api methods', () => {
-  let browser, eyes, runner
+  let browser, eyes
   afterEach(async function() {
     await browser.deleteSession()
     await eyes.abortIfNotClosed()
@@ -10,20 +10,20 @@ describe('api methods', () => {
   describe('classic', function() {
     beforeEach(async function() {
       browser = await getDriver('CHROME')
-      ;({eyes, runner} = await getEyes('classic', StitchMode.CSS))
+      eyes = await getEyes('classic', StitchMode.CSS)
     })
     it('TestCloseAsync', testCloseAsync)
   })
   describe('visualGrid', function() {
     beforeEach(async function() {
       browser = await getDriver('CHROME')
-      ;({eyes, runner} = await getEyes('VG'))
+      eyes = await getEyes('VG')
     })
     it('TestCloseAsync', testCloseAsync)
   })
 
   async function testCloseAsync() {
-    await browser.url('https://applitools.com/helloworld')
+      await browser.url('https://applitools.com/helloworld')
     await eyes.open(browser, 'TestApiMethods', `TestCloseAsync_1`, {
       width: 800,
       height: 600,
@@ -40,6 +40,6 @@ describe('api methods', () => {
     await eyes.check('step 2', Target.window())
     await eyes.closeAsync()
 
-    await runner.getAllTestResults()
+    await eyes.getRunner().getAllTestResults()
   }
 })

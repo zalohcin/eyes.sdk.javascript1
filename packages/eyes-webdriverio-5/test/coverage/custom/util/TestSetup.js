@@ -1,7 +1,7 @@
 'use strict'
 const {remote} = require('webdriverio')
 const {Eyes, ClassicRunner, VisualGridRunner, StitchMode, BatchInfo} = require('../../../../index')
-const defaultArgs = process.env.HEADLESS === 'true' ? ['headless'] : []
+const defaultArgs = process.env.NO_HEADLESS === 'true' ? [] : ['headless']
 
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
@@ -47,12 +47,15 @@ function getEyes(runnerType, stitchMode, options) {
       eyes = new Eyes()
       setStitchMode()
   }
+  if(process.env['APPLITOOLS_API_KEY_SDK']){
+    eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
+  }
   if (options) {
     if (options.branchName) eyes.setBranchName(options.branchName)
     else eyes.setBranchName('master')
     if (options.config) eyes.setConfiguration(options.config)
   } else setDefault()
-  return {eyes: eyes, runner: runner}
+  return eyes
 
   function setStitchMode() {
     stitchMode === 'CSS'

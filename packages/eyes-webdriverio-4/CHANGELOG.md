@@ -4,6 +4,35 @@
 
 
 
+## 2.15.0 - 2020/5/19
+
+- Support accessibility validation
+- removed "source" attribute from VG checkWindow
+- updated to @applitools/eyes-sdk-core@10.1.2
+- updated to @applitools/visual-grid-client@14.0.1
+- updated to @applitools/dom-utils@4.7.17
+- updated to @applitools/eyes-sdk-core@10.2.0
+- updated to @applitools/visual-grid-client@14.1.0
+
+## 2.14.1 - 2020/5/12
+
+- added devices to device emulation
+- return support for legacy `element` and `locator` fields in WDIOWrappedElement
+- updated to @applitools/dom-utils@4.7.16
+- updated to @applitools/eyes-sdk-core@10.1.1
+- updated to @applitools/visual-grid-client@13.8.0
+- handle mobile devices during working with frames
+
+## 2.14.0 - 2020/4/30
+
+- support webdriver API in the driver returning from `eyes.open`
+- support both EyesWrappedElement and webdriver.io objects (elements or responses) in all API's ([Trello](https://trello.com/c/JJ5vm3wS/269-frames-shadow-dom-break-region-checking))
+- preserve frame state after check operation ([Trello](https://trello.com/c/R1H28Z9z/218-wdio-45-constant-need-to-switch-to-new-iframe))
+- many bug fixes
+- updated to @applitools/visual-grid-client@13.7.3
+- updated to @applitools/eyes-sdk-core@10.0.0
+- updated to @applitools/visual-grid-client@13.7.5
+
 ## 2.13.1 - 2020/4/27
 
 - updated to @applitools/dom-utils@4.7.14

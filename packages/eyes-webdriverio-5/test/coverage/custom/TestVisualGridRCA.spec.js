@@ -1,14 +1,12 @@
 'use strict'
-const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
+const {getDriver, getEyes} = require('./util/TestSetup')
 const {Target} = require('../../../index')
 const appName = 'TestRendersMatch'
-const batch = getBatch()
 describe.skip(appName, async () => {
-  let browser, eyes, runner
+  let browser, eyes
   beforeEach(async () => {
     browser = await getDriver('CHROME')
-    ;({eyes, runner} = await getEyes('VG'))
-    eyes.setBatch(batch)
+    eyes = await getEyes('VG')
   })
 
   afterEach(async () => {
@@ -22,7 +20,7 @@ describe.skip(appName, async () => {
     eyes.sendDom = true
     await eyes.check('check', Target.window())
     await eyes.close()
-    await runner.getAllTestResults()
+    await eyes.getRunner().getAllTestResults()
   })
 
   it('Test_VG_RCA_Fluent', async () => {
@@ -36,6 +34,6 @@ describe.skip(appName, async () => {
     await eyes.open(browser, 'Test Visual Grid', 'Test RCA Config')
     await eyes.check('check', Target.window())
     await eyes.close()
-    await runner.getAllTestResults()
+    await eyes.getRunner().getAllTestResults()
   })
 })

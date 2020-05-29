@@ -143,7 +143,7 @@ declare namespace Eyes {
        * The accessibility level to use for the screenshots
        * Default value: 'None'
        */
-      accessibilityLevel?:AccessibilityLevel
+      accessibilitySettings?:AccessibilitySettings
 
       /**
        * DEPRECATED, use batchNotify.
@@ -166,7 +166,7 @@ declare namespace Eyes {
     interface BrowserViewport {
       height:number
       width:number
-      name:'chrome'                        |
+      name?:'chrome'                       |
            'firefox'                       |
            'edgechromium'                  |
            'edgelegacy'                    |
@@ -179,7 +179,8 @@ declare namespace Eyes {
            'firefox-two-versions-back'     |
            'safari-one-version-back'       |
            'safari-two-versions-back'      |
-           'edgechromium-one-version-back'
+           'edgechromium-one-version-back' |
+           'edgechromium-two-versions-back'
     }
 
     interface DeviceViewport {
@@ -189,7 +190,13 @@ declare namespace Eyes {
     }
   }
 
-  type AccessibilityLevel = "None"|"AA"|"AAA"
+  type AccessibilityLevel = "AA"|"AAA"
+  type AccessibilityGuidelinesVersion = "WCAG_2_0"|"WCAG_2_1"
+
+  interface AccessibilitySettings {
+    level: AccessibilityLevel
+    guidelinesVersion: AccessibilityGuidelinesVersion
+  }
 
   export namespace Check {
     interface Options {
@@ -273,12 +280,6 @@ declare namespace Eyes {
        * and not for normal production use.
        */
       sendDom?:boolean
-
-      /**
-       * The accessibility level to use for the screenshot
-       * Default value: 'None'
-       */
-      accessibilityLevel?:AccessibilityLevel
     }
 
     interface Selector {

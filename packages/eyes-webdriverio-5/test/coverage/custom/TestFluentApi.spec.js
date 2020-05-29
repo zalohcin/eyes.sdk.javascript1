@@ -18,7 +18,7 @@ describe(appName, () => {
 
   describe.skip(`Test`, () => {
     beforeEach(async () => {
-      ;({eyes} = await getEyes('classic', StitchMode.CSS))
+      eyes = await getEyes('classic', StitchMode.CSS)
     })
 
     it('TestCheckRegionInFrame2_Fluent', async () => {
@@ -101,7 +101,7 @@ describe(appName, () => {
 
   describe.skip(`Test_SCROLL`, () => {
     beforeEach(async () => {
-      ;({eyes} = await getEyes('classic', StitchMode.SCROLL))
+      eyes = await getEyes('classic', StitchMode.SCROLL)
     })
 
     it('TestCheckRegionInFrame2_Fluent', async () => {
@@ -184,7 +184,7 @@ describe(appName, () => {
 
   describe(`Test_VG`, () => {
     beforeEach(async () => {
-      ;({eyes} = await getEyes('VG'))
+      eyes = await getEyes('VG')
       let conf = eyes.getConfiguration()
       conf.addBrowser(700, 460, BrowserType.CHROME)
       eyes.setConfiguration(conf)

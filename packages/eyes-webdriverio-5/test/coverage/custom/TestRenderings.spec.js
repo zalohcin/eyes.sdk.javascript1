@@ -1,22 +1,13 @@
 'use strict'
-const {
-  Eyes,
-  Target,
-  VisualGridRunner,
-  Configuration,
-  DeviceName,
-  RectangleSize,
-} = require('../../../index')
-const {getDriver, getBatch} = require('./util/TestSetup')
-const batch = getBatch()
+const {Target, Configuration, DeviceName} = require('../../../index')
+const {getDriver, getEyes} = require('./util/TestSetup')
 
 describe('TestRenderings', async () => {
-  let browser, eyes, runner
+  let browser, eyes
 
   beforeEach(async () => {
     browser = await getDriver('CHROME')
-    runner = new VisualGridRunner(1)
-    eyes = new Eyes(runner)
+    eyes = getEyes('VG')
     eyes.setBranchName('master')
   })
   afterEach(async () => {
@@ -24,18 +15,17 @@ describe('TestRenderings', async () => {
     await eyes.abortIfNotClosed()
   })
 
-  it('TestMobileOnly', async () => {
+  it.skip('TestMobileOnly', async () => {
     let conf = new Configuration()
     conf.setTestName('Mobile Render Test')
     conf.setAppName('Visual Grid Render Test')
-    conf.setBatch(batch)
     conf.addDeviceEmulation(DeviceName.Galaxy_S5)
-    conf.setViewportSize(new RectangleSize(800, 600))
+    conf.setViewportSize({width: 800, height: 600})
     eyes.setConfiguration(conf)
     await eyes.open(browser)
     await browser.url('https://applitools.github.io/demo/TestPages/DynamicResolution/mobile.html')
     await eyes.check('Test Mobile Only', Target.window().fully())
     await eyes.close()
-    await runner.getAllTestResults()
+    await eyes.getRunner().getAllTestResults()
   })
 })

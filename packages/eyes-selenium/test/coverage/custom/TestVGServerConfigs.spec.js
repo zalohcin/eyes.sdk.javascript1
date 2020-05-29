@@ -4,6 +4,7 @@ const {
   Configuration,
   BrowserType,
   AccessibilityLevel,
+  AccessibilityGuidelinesVersion,
   DeviceName,
   MatchLevel,
 } = require('../../../index')
@@ -20,7 +21,8 @@ describe('TestVGServerConfigs', () => {
 
   beforeEach(async () => {
     webDriver = await getDriver('CHROME')
-    ;({eyes, runner} = await getEyes('VG'))
+    eyes = await getEyes('VG')
+    runner = eyes.getRunner()
   })
 
   afterEach(async () => {
@@ -53,17 +55,32 @@ describe('TestVGServerConfigs', () => {
     conf.addDeviceEmulation(DeviceName.iPhone_5SE)
     conf.addDeviceEmulation(DeviceName.iPad)
 
-    conf.setAccessibilityValidation(AccessibilityLevel.None).setIgnoreDisplacements(false)
+    conf
+      .setAccessibilityValidation({
+        level: AccessibilityLevel.AA,
+        version: AccessibilityGuidelinesVersion.WCAG_2_0,
+      })
+      .setIgnoreDisplacements(false)
     eyes.setConfiguration(conf)
 
     await eyes.open(webDriver)
 
-    conf.setAccessibilityValidation(AccessibilityLevel.AAA).setIgnoreDisplacements(true)
+    conf
+      .setAccessibilityValidation({
+        level: AccessibilityLevel.AAA,
+        version: AccessibilityGuidelinesVersion.WCAG_2_1,
+      })
+      .setIgnoreDisplacements(true)
     eyes.setConfiguration(conf)
 
     await eyes.checkWindow()
 
-    conf.setAccessibilityValidation(AccessibilityLevel.AA).setMatchLevel(MatchLevel.Layout)
+    conf
+      .setAccessibilityValidation({
+        level: AccessibilityLevel.AA,
+        version: AccessibilityGuidelinesVersion.WCAG_2_0,
+      })
+      .setMatchLevel(MatchLevel.Layout)
     eyes.setConfiguration(conf)
 
     await eyes.checkWindow()
@@ -75,19 +92,28 @@ describe('TestVGServerConfigs', () => {
     for (let container of results) {
       let result = container.getTestResults()
       await assertDefaultMatchSettings(result, {
-        accessibilityLevel: AccessibilityLevel.None,
+        accessibilitySettings: {
+          level: AccessibilityLevel.AA,
+          version: AccessibilityGuidelinesVersion.WCAG_2_0,
+        },
         ignoreDisplacements: false,
         matchLevel: MatchLevel.Strict,
       })
       await assertImageMatchSettings(result, {
-        accessibilityLevel: AccessibilityLevel.AAA,
+        accessibilitySettings: {
+          level: AccessibilityLevel.AAA,
+          version: AccessibilityGuidelinesVersion.WCAG_2_1,
+        },
         ignoreDisplacements: true,
         matchLevel: MatchLevel.Strict,
       })
       await assertImageMatchSettings(
         result,
         {
-          accessibilityLevel: AccessibilityLevel.AA,
+          accessibilityLevel: {
+            level: AccessibilityLevel.AA,
+            version: AccessibilityGuidelinesVersion.WCAG_2_0,
+          },
           ignoreDisplacements: true,
           matchLevel: MatchLevel.Layout2,
         },
@@ -114,7 +140,7 @@ describe('Miscellaneous VG tests', () => {
     const edgeWarning = `${yellowStart}${edgeWarningText}${yellowEnd}`
 
     try {
-      const {eyes} = getEyes('VG')
+      const eyes = getEyes('VG')
       const configuration = eyes.getConfiguration()
       configuration.addBrowser(1000, 900, BrowserType.EDGE)
       configuration.addBrowser(1000, 900, BrowserType.FIREFOX)

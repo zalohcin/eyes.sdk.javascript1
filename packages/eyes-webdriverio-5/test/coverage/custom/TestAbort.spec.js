@@ -155,13 +155,17 @@ function getConfig() {
   let config = new Configuration()
   config.setAppName(appName)
   config.setBatch(batch)
+  if(process.env['APPLITOOLS_API_KEY_SDK']){
+    eyes.setApiKey(process.env['APPLITOOLS_API_KEY_SDK'])
+  }
   config.setViewportSize({width: 800, height: 600})
   config.addBrowser(900, 600, BrowserType.CHROME)
   config.addBrowser(1024, 786, BrowserType.CHROME)
   config.addBrowser(900, 600, BrowserType.FIREFOX)
   config.addBrowser(900, 600, BrowserType.IE_10)
   config.addBrowser(900, 600, BrowserType.IE_11)
-  config.addBrowser(900, 600, BrowserType.EDGE)
+  config.addBrowser(900, 600, BrowserType.EDGE_LEGACY)
+  config.addBrowser(900, 600, BrowserType.EDGE_CHROMIUM)
   config.addDeviceEmulation(DeviceName.iPhone_4, ScreenOrientation.PORTRAIT)
   config.addDeviceEmulation(DeviceName.Galaxy_S5, ScreenOrientation.LANDSCAPE)
   return config

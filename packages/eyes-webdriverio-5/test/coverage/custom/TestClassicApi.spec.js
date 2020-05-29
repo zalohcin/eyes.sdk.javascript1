@@ -13,12 +13,17 @@ describe.skip(appName, () => {
     beforeEach(async () => {
       browser = await getDriver('CHROME')
       await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('classic', StitchMode.CSS))
+      eyes = await getEyes('classic', StitchMode.CSS)
     })
 
     it('TestCheckInnerFrame', async () => {
       eyes.hideScrollbars = false
-      let driver = await eyes.open(browser, appName, 'TestCheckInnerFrame', new RectangleSize(700, 460))
+      let driver = await eyes.open(
+        browser,
+        appName,
+        'TestCheckInnerFrame',
+        new RectangleSize(700, 460),
+      )
       await driver.executeScript(scrollTop)
       await driver.switchTo().defaultContent()
       let element = await driver.findElement(By.name('frame1'))
@@ -36,12 +41,17 @@ describe.skip(appName, () => {
     beforeEach(async () => {
       browser = await getDriver('CHROME')
       await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('classic', StitchMode.SCROLL))
+      eyes = await getEyes('classic', StitchMode.SCROLL)
     })
 
     it('TestCheckInnerFrame_SCROLL', async () => {
       eyes.hideScrollbars = false
-      let driver = await eyes.open(browser, appName, 'TestCheckInnerFrame_Scroll', new RectangleSize(700, 460))
+      let driver = await eyes.open(
+        browser,
+        appName,
+        'TestCheckInnerFrame_Scroll',
+        new RectangleSize(700, 460),
+      )
       await driver.executeScript(scrollTop)
       await driver.switchTo().defaultContent()
       let element = await driver.findElement(By.name('frame1'))
@@ -59,7 +69,7 @@ describe.skip(appName, () => {
     beforeEach(async () => {
       browser = await getDriver('CHROME')
       await browser.url('https://applitools.github.io/demo/TestPages/FramesTestPage/')
-      ;({eyes} = await getEyes('VG'))
+      eyes = await getEyes('VG')
       let conf = eyes.getConfiguration()
       conf.addBrowser(700, 460, BrowserType.CHROME)
       eyes.setConfiguration(conf)
@@ -83,6 +93,7 @@ describe.skip(appName, () => {
 })
 
 function scrollTop() {
+  // eslint-disable-next-line
   document.documentElement.scrollTop = 350
 }
 function makeItRed() {

@@ -4,6 +4,10 @@
 ## Unreleased
 
 
+ ## 7.2.0 - 2020/5/3
+
+- added shadow dom support ** Dom Capture version 1.3.0 ** 
+
  ## 7.1.5 - 2020/4/19
 
 - added font-weight style property ** Dom Capture version 1.2.0 ** 

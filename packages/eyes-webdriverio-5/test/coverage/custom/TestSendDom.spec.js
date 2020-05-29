@@ -1,17 +1,15 @@
 'use strict'
 const {assertImage} = require('./util/ApiAssertions')
-const {getDriver, getEyes, getBatch} = require('./util/TestSetup')
+const {getDriver, getEyes} = require('./util/TestSetup')
 const {Target, By} = require('../../../index')
 const appName = 'Test Send Dom'
-const batch = getBatch()
 
 describe(appName, () => {
   describe(`TestSendDom`, () => {
     let browser, eyes
     beforeEach(async () => {
       browser = await getDriver('CHROME')
-      ;({eyes} = await getEyes('classic', 'CSS'))
-      eyes.setBatch(batch)
+      eyes = await getEyes('classic', 'CSS')
     })
 
     afterEach(async () => {

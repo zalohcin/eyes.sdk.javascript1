@@ -7,7 +7,8 @@ describe.skip(appName, () => {
   let browser, eyes, runner
   beforeEach(async () => {
     browser = await getDriver('CHROME')
-    ;({eyes, runner} = await getEyes('VG'))
+    eyes = await getEyes('VG')
+    runner = eyes.getRunner()
   })
   afterEach(async () => {
     await eyes.abortIfNotClosed()
@@ -25,6 +26,6 @@ describe.skip(appName, () => {
     await browser.url('https://applitools.github.io/demo/TestPages/SpecialCharacters/index.html')
     await eyes.check('Test Special Characters', Target.window().fully())
     await eyes.close()
-    let allResults = await runner.getAllTestResults()
+    await runner.getAllTestResults()
   })
 })
