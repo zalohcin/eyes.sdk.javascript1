@@ -1,5 +1,7 @@
 const WDIOFrame = require('./WDIOFrame')
 const WDIOWrappedElement = require('./WDIOWrappedElement')
+const {remote} = require('webdriverio')
+const {URL} = require('url')
 
 module.exports = {
   isEqualFrames(leftFrame, rightFrame) {
@@ -18,8 +20,8 @@ module.exports = {
     return WDIOWrappedElement.toEyesSelector(selector)
   },
   async executeScript(driver, script, ...args) {
-    const {value} = await driver.execute(script, ...args)
-    return value
+    const resp = await driver.execute(script, ...args)
+    return resp.value
   },
   sleep(driver, ms) {
     return driver.pause(ms)
@@ -31,12 +33,12 @@ module.exports = {
     return driver.frameParent()
   },
   async findElement(driver, selector) {
-    const {value} = await driver.element(selector.toString())
-    return value
+    const resp = await driver.element(selector.toString())
+    return resp.value
   },
   async findElements(driver, selector) {
-    const {value} = await driver.elements(selector.toString())
-    return value
+    const resp = await driver.elements(selector.toString())
+    return resp.value
   },
   async getWindowLocation(driver) {
     const {value} = await driver.windowHandlePosition()
@@ -84,5 +86,43 @@ module.exports = {
   },
   async visit(driver, url) {
     return driver.url(url)
+  },
+
+  /********* for testing purposes */
+
+  async build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE}) {
+    const {hostname, port, pathname, protocol} = serverUrl ? new URL(serverUrl) : {}
+    const browser = remote({
+      logLevel: 'error',
+      desiredCapabilities: capabilities,
+      path: pathname,
+      port,
+      host: hostname,
+      protocol: protocol.replace(/:$/, ''),
+    })
+    await browser.init()
+    return new Proxy(browser, {
+      get(target, key, receiver) {
+        // WORKAROUND we couldn't return Promise-like object from the async function
+        if (key === 'then') return undefined
+        return Reflect.get(target, key, receiver)
+      },
+    })
+  },
+
+  async cleanup(driver) {
+    return driver.end()
+  },
+
+  async click(driver, el) {
+    return driver.elementIdClick(el.ELEMENT)
+  },
+
+  async waitUntilDisplayed(driver, selector, timeout) {
+    return driver.waitForVisible(selector, timeout)
+  },
+
+  async getElementRect(driver, el) {
+    return driver.elementIdRect(el.ELEMENT)
   },
 }

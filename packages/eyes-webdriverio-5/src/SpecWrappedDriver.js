@@ -1,6 +1,8 @@
 const WDIOFrame = require('./WDIOFrame')
 const WDIOWrappedElement = require('./WDIOWrappedElement')
 const LegacySelector = require('./LegacySelector')
+const {remote} = require('webdriverio')
+const {URL} = require('url')
 
 module.exports = {
   isEqualFrames(leftFrame, rightFrame) {
@@ -89,5 +91,36 @@ module.exports = {
   },
   async visit(driver, url) {
     return driver.url(url)
+  },
+
+  /********* for testing purposes */
+
+  async build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE}) {
+    const {host, port, pathname, protocol} = serverUrl ? new URL(serverUrl) : {}
+    return remote({
+      logLevel: 'error',
+      capabilities: capabilities,
+      path: pathname,
+      port,
+      host,
+      protocol: protocol.replace(/:$/, ''),
+    })
+  },
+
+  async cleanup(driver) {
+    return driver.deleteSession()
+  },
+
+  async click(_driver, el) {
+    return el.click()
+  },
+
+  async waitUntilDisplayed(driver, selector, timeout) {
+    const el = await this.findElement(driver, selector)
+    return el.waitForDisplayed({timeout})
+  },
+
+  async getElementRect(driver, el) {
+    return driver.getElementRect(el.elementId)
   },
 }

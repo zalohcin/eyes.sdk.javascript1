@@ -1,5 +1,5 @@
 const {TypeUtils} = require('@applitools/eyes-sdk-core')
-const {By} = require('selenium-webdriver')
+const {By, Builder, until} = require('selenium-webdriver')
 const cmd = require('selenium-webdriver/lib/command')
 const SeleniumFrame = require('../SeleniumFrame')
 const SeleniumWrappedElement = require('../SeleniumWrappedElement')
@@ -129,5 +129,30 @@ module.exports = {
   },
   async visit(driver, url) {
     return driver.get(url)
+  },
+
+  /********* for testing purposes */
+  async build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE}) {
+    return new Builder()
+      .withCapabilities(capabilities)
+      .usingServer(serverUrl)
+      .build()
+  },
+
+  async cleanup(driver) {
+    return driver.quit()
+  },
+
+  async click(_driver, el) {
+    return el.click()
+  },
+
+  async waitUntilDisplayed(driver, selector, timeout) {
+    const el = await this.findElement(driver, selector)
+    return driver.wait(until.elementIsVisible(el), timeout)
+  },
+
+  async getElementRect(_driver, el) {
+    return el.getRect()
   },
 }

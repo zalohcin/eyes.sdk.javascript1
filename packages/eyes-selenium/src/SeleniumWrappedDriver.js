@@ -1,9 +1,6 @@
 const {EyesWrappedDriver} = require('@applitools/eyes-sdk-core')
 const LegacyWrappedDriver = require('./LegacyWrappedDriver')
-const SpecWrappedDriver =
-  process.env.SELENIUM_MAJOR_VERSION === '3'
-    ? require('./selenium3/SpecWrappedDriver')
-    : require('./selenium4/SpecWrappedDriver')
+const SpecWrappedDriver = require('./SpecWrappedDriver')
 
 const SeleniumWrappedDriver = EyesWrappedDriver.specialize(SpecWrappedDriver, {
   /** @override */
