@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+
+## 11.0.0 - 2020/5/31
+
 - Unified core to power all SDK's
 
 ## 10.3.1 - 2020/5/26
