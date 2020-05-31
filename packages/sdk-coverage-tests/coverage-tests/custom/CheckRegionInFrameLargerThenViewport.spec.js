@@ -14,7 +14,7 @@ describe('CheckRegionInFrameLargerThenViewport', () => {
   })
 
   beforeEach(async () => {
-    await spec.switchToFrame(driver)
+    await spec.switchToFrame(driver, null)
   })
 
   afterEach(async () => {

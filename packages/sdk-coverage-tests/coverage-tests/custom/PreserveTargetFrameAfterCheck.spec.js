@@ -21,7 +21,7 @@ describe('PreserveTargetFrameAfterCheck', () => {
   })
 
   beforeEach(async () => {
-    await spec.switchToFrame(driver)
+    await spec.switchToFrame(driver, null)
     eyes = getEyes()
   })
 

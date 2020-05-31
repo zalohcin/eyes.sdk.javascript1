@@ -32,7 +32,7 @@ describe('Check Region IE11', () => {
   })
 
   it('captures an image of the element', async function() {
-    await driver.url('https://applitools.com/helloworld')
+    await spec.visit(driver, 'https://applitools.com/helloworld')
     await eyes.open(driver, this.test.parent.title, this.test.title)
     await eyes.check(undefined, Target.region('.section:nth-of-type(2)'))
     await eyes.close()
