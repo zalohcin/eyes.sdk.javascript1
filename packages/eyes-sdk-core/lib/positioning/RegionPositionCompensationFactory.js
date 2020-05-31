@@ -9,7 +9,7 @@ const SafariRegionPositionCompensation = require('./SafariRegionPositionCompensa
 class RegionPositionCompensationFactory {
   /**
    * @param {UserAgent} userAgent
-   * @param {Eyes|EyesWDIO} eyes
+   * @param {Eyes} eyes
    * @param {Logger} logger
    * @return {RegionPositionCompensation}
    */

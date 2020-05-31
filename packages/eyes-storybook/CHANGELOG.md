@@ -5,7 +5,7 @@
 - updated to @applitools/visual-grid-client@14.3.0 (from v14.2.0)
 - updated to @applitools/visual-grid-client@14.3.1 (from v14.3.0)
 
-
+- Unified core
 
 ## 3.7.0 - 2020/5/24
 

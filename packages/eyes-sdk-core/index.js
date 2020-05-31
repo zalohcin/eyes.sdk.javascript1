@@ -101,10 +101,10 @@ exports.NewTestError = require('./lib/errors/NewTestError').NewTestError
 exports.OutOfBoundsError = require('./lib/errors/OutOfBoundsError').OutOfBoundsError
 exports.TestFailedError = require('./lib/errors/TestFailedError').TestFailedError
 exports.EyesDriverOperationError = require('./lib/errors/EyesDriverOperationError').EyesDriverOperationError
+exports.ElementNotFoundError = require('./lib/errors/ElementNotFoundError').ElementNotFoundError
 
 exports.CheckSettings = require('./lib/fluent/CheckSettings')
-exports.CheckSettingsFactory = require('./lib/fluent/CheckSettingsFactory')
-exports.FrameLocator = require('./lib/fluent/FrameLocator')
+exports.DriverCheckSettings = require('./lib/fluent/DriverCheckSettings')
 exports.locatorToPersistedRegions = require('./lib/fluent/locatorToPersistedRegions')
 exports.GetRegion = require('./lib/fluent/GetRegion').GetRegion
 exports.GetSelector = require('./lib/fluent/GetSelector').GetSelector
@@ -119,7 +119,6 @@ exports.GetAccessibilityRegion = require('./lib/fluent/GetAccessibilityRegion').
 exports.AccessibilityRegionByRectangle = require('./lib/fluent/AccessibilityRegionByRectangle').AccessibilityRegionByRectangle
 exports.AccessibilityRegionBySelector = require('./lib/fluent/AccessibilityRegionBySelector')
 exports.AccessibilityRegionByElement = require('./lib/fluent/AccessibilityRegionByElement')
-exports.TargetRegionBySelector = require('./lib/fluent/TargetRegionBySelector')
 exports.TargetRegionByElement = require('./lib/fluent/TargetRegionByElement')
 
 exports.AppOutput = require('./lib/match/AppOutput').AppOutput
@@ -146,8 +145,6 @@ exports.CssTranslatePositionProvider = require('./lib/positioning/CssTranslatePo
 exports.ScrollElementPositionProvider = require('./lib/positioning/ScrollElementPositionProvider')
 exports.CssTranslateElementPositionProvider = require('./lib/positioning/CssTranslateElementPositionProvider')
 exports.PositionMemento = require('./lib/positioning/PositionMemento')
-exports.ScrollPositionMemento = require('./lib/positioning/ScrollPositionMemento')
-exports.CssTranslatePositionMemento = require('./lib/positioning/CssTranslatePositionMemento')
 
 exports.RenderInfo = require('./lib/renderer/RenderInfo').RenderInfo
 exports.RenderRequest = require('./lib/renderer/RenderRequest').RenderRequest
@@ -179,6 +176,9 @@ exports.Trigger = require('./lib/triggers/Trigger').Trigger
 
 exports.AppEnvironment = require('./lib/AppEnvironment').AppEnvironment
 exports.EyesBase = require('./lib/EyesBase').EyesBase
+exports.EyesClassic = require('./lib/EyesClassic')
+exports.EyesVisualGrid = require('./lib/EyesVisualGrid')
+exports.EyesFactory = require('./lib/EyesFactory')
 exports.EyesJsBrowserUtils = require('./lib/EyesJsBrowserUtils').EyesJsBrowserUtils
 exports.EyesUtils = require('./lib/EyesUtils')
 exports.FailureReports = require('./lib/FailureReports').FailureReports
@@ -191,14 +191,14 @@ exports.AccessibilityStatus = require('./lib/AccessibilityStatus').Accessibility
 exports.TestResultsFormatter = require('./lib/TestResultsFormatter').TestResultsFormatter
 exports.TestResultsStatus = require('./lib/TestResultsStatus').TestResultsStatus
 
-exports.FrameChain = require('./lib/frames/FrameChain').FrameChain
-exports.Frame = require('./lib/frames/Frame').Frame
+exports.FrameChain = require('./lib/frames/FrameChain')
+exports.Frame = require('./lib/frames/Frame')
 
-exports.EyesWrappedDriver = require('./lib/wrappers/EyesWrappedDriver').EyesWrappedDriver
-exports.EyesWrappedElement = require('./lib/wrappers/EyesWrappedElement').EyesWrappedElement
-exports.EyesJsExecutor = require('./lib/wrappers/EyesJsExecutor').EyesJsExecutor
-exports.EyesElementFinder = require('./lib/wrappers/EyesElementFinder').EyesElementFinder
-exports.EyesBrowsingContext = require('./lib/wrappers/EyesBrowsingContext').EyesBrowsingContext
+exports.EyesWrappedDriver = require('./lib/wrappers/EyesWrappedDriver')
+exports.EyesWrappedElement = require('./lib/wrappers/EyesWrappedElement')
+exports.EyesJsExecutor = require('./lib/wrappers/EyesJsExecutor')
+exports.EyesElementFinder = require('./lib/wrappers/EyesElementFinder')
+exports.EyesBrowsingContext = require('./lib/wrappers/EyesBrowsingContext')
 
 exports.EyesRunner = require('./lib/runner/EyesRunner').EyesRunner
 exports.ClassicRunner = require('./lib/runner/ClassicRunner').ClassicRunner

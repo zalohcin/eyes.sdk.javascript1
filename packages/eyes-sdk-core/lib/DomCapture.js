@@ -209,6 +209,7 @@ class DomCapture {
             await this._switchToParentFrame(framesCount)
           }
         } catch (ignored) {
+          console.log(ignored)
           domIFrame = {}
         }
         domSnapshot = domSnapshot.replace(

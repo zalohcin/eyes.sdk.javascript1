@@ -1,5 +1,6 @@
 'use strict'
 const {Builder} = require('selenium-webdriver')
+const {TypeUtils} = require('@applitools/eyes-sdk-core')
 const {
   Eyes,
   ClassicRunner,
@@ -8,28 +9,35 @@ const {
   BatchInfo,
   ConsoleLogHandler,
 } = require('../../../../index')
-const defaultArgs = process.env.NO_HEADLESS ? [] : ['headless']
 const SAUCE_SERVER_URL = 'https://ondemand.saucelabs.com:443/wd/hub'
 
 const Browsers = {
-  CHROME: {
-    browserName: 'chrome',
-    'goog:chromeOptions': {
-      args: defaultArgs,
-    },
+  chrome({headless = !process.env.NO_HEADLESS} = {}) {
+    const args = []
+    if (headless) args.push('headless')
+    return {
+      browserName: 'chrome',
+      'goog:chromeOptions': {
+        args,
+      },
+    }
   },
-  FIREFOX: {
-    browserName: 'firefox',
-    'moz:firefoxOptions': {
-      args: defaultArgs,
-    },
+  firefox({headless = !process.env.NO_HEADLESS} = {}) {
+    const args = []
+    if (headless) args.push('headless')
+    return {
+      browserName: 'firefox',
+      'moz:firefoxOptions': {
+        args,
+      },
+    }
   },
 }
 
 const batch = new BatchInfo('JS Coverage Tests - eyes-selenium')
 
 async function getDriver(browser) {
-  let capabilities = Browsers[browser]
+  let capabilities = TypeUtils.isString(browser) ? Browsers[browser.toLowerCase()]() : browser
   return new Builder()
     .withCapabilities(capabilities)
     .usingServer(process.env.CVG_TESTS_REMOTE)
@@ -85,6 +93,7 @@ function getBatch() {
 }
 
 module.exports = {
+  Browsers,
   getDriver: getDriver,
   getEyes: getEyes,
   getBatch: getBatch,
