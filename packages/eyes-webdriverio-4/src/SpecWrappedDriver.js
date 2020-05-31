@@ -92,18 +92,25 @@ module.exports = {
 
   async build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE}) {
     const {hostname, port, pathname, protocol} = serverUrl ? new URL(serverUrl) : {}
+
+    if ('sauce:options' in capabilities) {
+      capabilities = {...capabilities, ...capabilities['sauce:options']}
+    }
+
     const browser = remote({
-      logLevel: 'error',
+      logLevel: 'silent',
       desiredCapabilities: capabilities,
       path: pathname,
       port,
       host: hostname,
       protocol: protocol.replace(/:$/, ''),
     })
+
     await browser.init()
+
+    // WORKAROUND we couldn't return Promise-like object from the async function
     return new Proxy(browser, {
       get(target, key, receiver) {
-        // WORKAROUND we couldn't return Promise-like object from the async function
         if (key === 'then') return undefined
         return Reflect.get(target, key, receiver)
       },

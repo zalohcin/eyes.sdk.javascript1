@@ -96,15 +96,23 @@ module.exports = {
   /********* for testing purposes */
 
   async build({capabilities, serverUrl = process.env.CVG_TESTS_REMOTE}) {
-    const {host, port, pathname, protocol} = serverUrl ? new URL(serverUrl) : {}
-    return remote({
+    const {hostname, port, pathname, protocol} = serverUrl ? new URL(serverUrl) : {}
+    let fixedPort = port
+    if (protocol === 'http:' && !port) {
+      fixedPort = 80
+    }
+    if (protocol === 'https:' && !port) {
+      fixedPort = 443
+    }
+    const options = {
       logLevel: 'error',
       capabilities: capabilities,
       path: pathname,
-      port,
-      host,
+      port: fixedPort ? Number(fixedPort) : undefined,
+      hostname,
       protocol: protocol.replace(/:$/, ''),
-    })
+    }
+    return remote(options)
   },
 
   async cleanup(driver) {

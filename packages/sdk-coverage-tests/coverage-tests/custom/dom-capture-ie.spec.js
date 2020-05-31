@@ -22,7 +22,6 @@ describe('JS Coverage Tests - Selenium 4', async () => {
         browserVersion: '18',
         platformName: 'Windows 10',
         'sauce:options': sauceOptions,
-        ...sauceOptions, // for wdio4
       }
       driver = await spec.build({capabilities, serverUrl: sauceUrl})
       eyes = getEyes()
