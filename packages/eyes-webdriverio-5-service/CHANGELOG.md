@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Unified core
 
 ## 1.4.0 - 2020/5/19
 
