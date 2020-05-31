@@ -17,4 +17,4 @@ class GetFloatingRegion {
   }
 }
 
-exports.GetFloatingRegion = GetFloatingRegion
+module.exports = GetFloatingRegion

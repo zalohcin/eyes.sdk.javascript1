@@ -1,10 +1,10 @@
-'use strict'
+const Enum = require('../utils/Enum')
 
 /**
- * @readonly
- * @enum {string}
+ * @typedef {string} DeviceName
  */
-const DeviceName = {
+
+const DeviceNames = Enum('DeviceName', {
   Blackberry_PlayBook: 'Blackberry PlayBook',
   BlackBerry_Z30: 'BlackBerry Z30',
   Galaxy_A5: 'Galaxy A5',
@@ -67,7 +67,6 @@ const DeviceName = {
   Pixel_3_XL: 'Pixel 3 XL',
   Pixel_4: 'Pixel 4',
   Pixel_4_XL: 'Pixel 4 XL',
-}
+})
 
-Object.freeze(DeviceName)
-exports.DeviceName = DeviceName
+module.exports = DeviceNames

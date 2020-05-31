@@ -1,22 +1,17 @@
-'use strict'
+const Enum = require('../utils/Enum')
 
 /**
- * The type of the session.
- *
- * @readonly
- * @enum {string}
+ * @typedef {string} SessionType
  */
-const SessionType = {
-  /**
-   * Default type of sessions.
-   */
+
+/**
+ * Represents the types of available stitch modes.
+ */
+const SessionTypes = Enum('SessionType', {
+  /** Default type of sessions. */
   SEQUENTIAL: 'SEQUENTIAL',
-
-  /**
-   * A timing test session
-   */
+  /** A timing test session */
   PROGRESSION: 'PROGRESSION',
-}
+})
 
-Object.freeze(SessionType)
-exports.SessionType = SessionType
+module.exports = SessionTypes

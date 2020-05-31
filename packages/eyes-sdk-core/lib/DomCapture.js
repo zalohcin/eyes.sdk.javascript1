@@ -43,6 +43,7 @@ class DomCapture {
    * @param {EyesWrappedDriver} driver
    * @param {PositionProvider} [positionProvider]
    * @param {DomCaptureReturnType} [returnType]
+   * @param {string} [script]
    * @return {Promise<string|object>}
    */
   static async getFullWindowDom(
@@ -288,5 +289,5 @@ class DomCapture {
 }
 
 Object.freeze(DomCaptureReturnType)
+module.exports = DomCapture
 exports.DomCaptureReturnType = DomCaptureReturnType
-exports.DomCapture = DomCapture

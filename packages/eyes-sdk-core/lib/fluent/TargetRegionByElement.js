@@ -1,6 +1,6 @@
 'use strict'
 
-const {GetSelector} = require('./GetSelector')
+const GetSelector = require('./GetSelector')
 const EyesUtils = require('../EyesUtils')
 
 /**

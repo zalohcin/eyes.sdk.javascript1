@@ -1,51 +1,51 @@
 'use strict'
-const {ElementNotFoundError} = require('../errors/ElementNotFoundError')
+const ElementNotFoundError = require('../errors/ElementNotFoundError')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../logging/Logger').Logger} Logger
- * @typedef {import('../geometry/Region').Region} Region
- * @typedef {import('../geometry/Location').Location} Location
- * @typedef {import('../geometry/RectangleSize').RectangleSize} RectangleSize
+ * @typedef {import('../logging/Logger')} Logger
+ * @typedef {import('../geometry/Region')} Region
+ * @typedef {import('../geometry/Location')} Location
+ * @typedef {import('../geometry/RectangleSize')} RectangleSize
  * @typedef {import('./EyesWrappedDriver')} EyesWrappedDriver
  */
 
 /**
  * Compatible element type
- * @typedef {Object} SupportedElement
- * @property {?}
+ * @typedef SupportedElement
+ * @prop {?}
  */
 
 /**
  * Supported selector type
- * @typedef {Object} SupportedSelector
- * @property {?}
+ * @typedef SupportedSelector
+ * @prop {?}
  */
 
 /**
  * Unwrapped element supported by framework
- * @typedef {Object} UnwrappedElement
- * @property {?}
+ * @typedef UnwrappedElement
+ * @prop {?}
  */
 
 /**
  * Cross SDK selector
- * @typedef {Object} EyesSelector
- * @property {'css'|'xpath'} type
- * @property {string} selector
+ * @typedef EyesSelector
+ * @prop {'css'|'xpath'} type
+ * @prop {string} selector
  */
 
 /**
  * The object which implements the lowest-level functions to work with element
- * @typedef {Object} SpecsWrappedElement
- * @property {(element) => boolean} isCompatible - return true if the value is an element, false otherwise
- * @property {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
- * @property {(selector: EyesSelector) => SupportedSelector} toSupportedSelector - translate cross SDK selector to SDK specific selector
- * @property {(selector: SupportedSelector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
- * @property {(element: UnwrappedElement) => Promise<string>} extractId - extract id from the unwrapped element
- * @property {(element: SupportedElement) => UnwrappedElement} [extractElement] - extract an element from the supported element
- * @property {(element: SupportedElement) => SupportedSelector} [extractSelector] - extract an element from the supported element
- * @property {(result) => boolean} [isStaleElementReferenceResult] - check if is a stale element reference result
+ * @typedef SpecsWrappedElement
+ * @prop {(element) => boolean} isCompatible - return true if the value is an element, false otherwise
+ * @prop {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
+ * @prop {(selector: EyesSelector) => SupportedSelector} toSupportedSelector - translate cross SDK selector to SDK specific selector
+ * @prop {(selector: SupportedSelector) => EyesSelector} toEyesSelector - translate SDK specific selector to cross SDK selector
+ * @prop {(element: UnwrappedElement) => Promise<string>} extractId - extract id from the unwrapped element
+ * @prop {(element: SupportedElement) => UnwrappedElement} [extractElement] - extract an element from the supported element
+ * @prop {(element: SupportedElement) => SupportedSelector} [extractSelector] - extract an element from the supported element
+ * @prop {(result) => boolean} [isStaleElementReferenceResult] - check if is a stale element reference result
  */
 
 class EyesWrappedElement {

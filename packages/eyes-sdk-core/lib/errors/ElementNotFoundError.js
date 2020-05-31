@@ -1,4 +1,4 @@
-const {EyesError} = require('./EyesError')
+const EyesError = require('./EyesError')
 
 /**
  * Indicates that element wasn't found
@@ -14,4 +14,4 @@ class ElementNotFoundError extends EyesError {
   }
 }
 
-exports.ElementNotFoundError = ElementNotFoundError
+module.exports = ElementNotFoundError

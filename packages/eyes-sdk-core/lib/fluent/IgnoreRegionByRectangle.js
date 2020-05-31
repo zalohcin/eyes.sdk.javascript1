@@ -1,6 +1,6 @@
 'use strict'
 
-const {GetRegion} = require('./GetRegion')
+const GetRegion = require('./GetRegion')
 
 /**
  * @ignore
@@ -26,4 +26,4 @@ class IgnoreRegionByRectangle extends GetRegion {
   }
 }
 
-exports.IgnoreRegionByRectangle = IgnoreRegionByRectangle
+module.exports = IgnoreRegionByRectangle

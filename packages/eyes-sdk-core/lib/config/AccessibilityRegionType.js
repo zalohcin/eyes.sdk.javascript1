@@ -1,18 +1,18 @@
-'use strict'
+const Enum = require('../utils/Enum')
 
 /**
- * The type of accessibility for a resion.
- *
- * @readonly
- * @enum {string}
+ * @typedef {string} AccessibilityRegionType
  */
-const AccessibilityRegionType = {
+
+/**
+ * The type of accessibility for a region.
+ */
+const AccessibilityRegionTypes = Enum('AccessibilityRegionType', {
   IgnoreContrast: 'IgnoreContrast',
   RegularText: 'RegularText',
   LargeText: 'LargeText',
   BoldText: 'BoldText',
   GraphicalObject: 'GraphicalObject',
-}
+})
 
-Object.freeze(AccessibilityRegionType)
-exports.AccessibilityRegionType = AccessibilityRegionType
+module.exports = AccessibilityRegionTypes

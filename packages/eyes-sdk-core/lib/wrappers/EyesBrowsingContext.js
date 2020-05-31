@@ -3,7 +3,7 @@ const FrameChain = require('../frames/FrameChain')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../logging/Logger').Logger} Logger
+ * @typedef {import('../logging/Logger')} Logger
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('../wrappers/EyesWrappedDriver').unwrapped} UnwrappedDriver
  * @typedef {import('../frames/Frame').FrameReference} FrameReference
@@ -12,11 +12,11 @@ const EyesUtils = require('../EyesUtils')
 
 /**
  * The object which implements the lowest-level functions to work with browsing context
- * @typedef {Object} SpecsBrowsingContext
- * @property {(leftFrame: FrameReference, rightFrame: FrameReference) => Promise<boolean>} isEqualFrames - return true if two frames are equal, false otherwise
- * @property {(reference: FrameReference) => Frame} createFrameReference - return new frame reference
- * @property {(driver: UnwrappedDriver, reference: FrameReference) => void} switchToFrame - switch to frame specified with a reference
- * @property {(driver: UnwrappedDriver) => void} switchToParentFrame - switch to parent frame
+ * @typedef SpecsBrowsingContext
+ * @prop {(leftFrame: FrameReference, rightFrame: FrameReference) => Promise<boolean>} isEqualFrames - return true if two frames are equal, false otherwise
+ * @prop {(reference: FrameReference) => Frame} createFrameReference - return new frame reference
+ * @prop {(driver: UnwrappedDriver, reference: FrameReference) => void} switchToFrame - switch to frame specified with a reference
+ * @prop {(driver: UnwrappedDriver) => void} switchToParentFrame - switch to parent frame
  */
 
 class EyesBrowsingContext {

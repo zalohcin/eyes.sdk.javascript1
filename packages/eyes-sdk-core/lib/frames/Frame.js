@@ -1,14 +1,14 @@
 'use strict'
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {TypeUtils} = require('../utils/TypeUtils')
-const {Location} = require('../geometry/Location')
-const {RectangleSize} = require('../geometry/RectangleSize')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const TypeUtils = require('../utils/TypeUtils')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
 const EyesUtils = require('../EyesUtils')
 
 /**
- * @typedef {import('../logging/Logger').Logger} Logger
- * @typedef {import('../geometry/Location').Location} Location
- * @typedef {import('../geometry/RectangleSize').RectangleSize} RectangleSize
+ * @typedef {import('../logging/Logger')} Logger
+ * @typedef {import('../geometry/Location')} Location
+ * @typedef {import('../geometry/RectangleSize')} RectangleSize
  * @typedef {import('../wrappers/EyesWrappedElement')} EyesWrappedElement
  * @typedef {import('../wrappers/EyesWrappedElement').SupportedElement} SupportedElement
  * @typedef {import('../wrappers/EyesWrappedElement').SupportedSelector} SupportedSelector
@@ -22,11 +22,11 @@ const EyesUtils = require('../EyesUtils')
  */
 
 /**
- * @typedef {Object} SpecsFrame
- * @property {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
- * @property {(element) => boolean} isCompatibleElement - return true if the value is an element, false otherwise
- * @property {(leftElement: SupportedElement|EyesWrappedElement, leftElement: SupportedElement|EyesWrappedElement) => Promise<boolean>} isEqualElements - return true if elements are equal, false otherwise
- * @property {(logger: Logger, driver: EyesWrappedDriver, element: SupportedElement, selector: SupportedSelector) => EyesWrappedElement} createElement - return wrapped element instance
+ * @typedef SpecsFrame
+ * @prop {(selector) => boolean} isSelector - return true if the value is a valid selector, false otherwise
+ * @prop {(element) => boolean} isCompatibleElement - return true if the value is an element, false otherwise
+ * @prop {(leftElement: SupportedElement|EyesWrappedElement, rightElement: SupportedElement|EyesWrappedElement) => Promise<boolean>} isEqualElements - return true if elements are equal, false otherwise
+ * @prop {(logger: Logger, driver: EyesWrappedDriver, element: SupportedElement, selector: SupportedSelector) => EyesWrappedElement} createElement - return wrapped element instance
  */
 
 /**

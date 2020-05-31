@@ -1,7 +1,7 @@
 'use strict'
-const {Location} = require('../geometry/Location')
-const {RectangleSize} = require('../geometry/RectangleSize')
-const {MutableImage} = require('../images/MutableImage')
+const Location = require('../geometry/Location')
+const RectangleSize = require('../geometry/RectangleSize')
+const MutableImage = require('../images/MutableImage')
 const EyesDriverOperationError = require('../errors/EyesDriverOperationError')
 
 /**
@@ -11,22 +11,22 @@ const EyesDriverOperationError = require('../errors/EyesDriverOperationError')
 
 /**
  * The object which implements the lowest-level functions to work with element finder
- * @typedef {Object} SpecsDriverController
- * @property {(driver: UnwrappedDriver) => Promise<{x: number, y: number}>} getWindowLocation - return location of the window on the screen
- * @property {(driver: UnwrappedDriver, location: {x: number, y: number}) => Promise<void>} setWindowLocation - set location of the window on the screen
- * @property {(driver: UnwrappedDriver) => Promise<{width: number, height: number}>} getWindowSize - return size of the window
- * @property {(driver: UnwrappedDriver, location: {width: number, height: number}) => Promise<void>} setWindowSize - set size of the window
- * @property {(driver: UnwrappedDriver) => Promise<'landscape'|'portrait'>} getOrientation - return string which represents screen orientation
- * @property {(driver: UnwrappedDriver) => Promise<boolean>} isMobile - true if a mobile device, false otherwise
- * @property {(driver: UnwrappedDriver) => Promise<boolean>} isAndroid - true if an Android device, false otherwise
- * @property {(driver: UnwrappedDriver) => Promise<boolean>} isIOS - true if an iOS device, false otherwise
- * @property {(driver: UnwrappedDriver) => Promise<boolean>} isNative - true if a native app, false otherwise
- * @property {(driver: UnwrappedDriver) => Promise<string>} getPlatformVersion - return version of the device's platform
- * @property {(driver: UnwrappedDriver) => Promise<string>} getSessionId - return id of the running session
- * @property {(driver: UnwrappedDriver) => Promise<string|Buffer>} takeScreenshot - return screenshot of the viewport
- * @property {(driver: UnwrappedDriver) => Promise<string>} getTitle - return page title
- * @property {(driver: UnwrappedDriver) => Promise<string>} getSource - return current url
- * @property {(driver: UnwrappedDriver, url: string) => Promise<void>} visit - redirect to the specified url
+ * @typedef SpecsDriverController
+ * @prop {(driver: UnwrappedDriver) => Promise<{x: number, y: number}>} getWindowLocation - return location of the window on the screen
+ * @prop {(driver: UnwrappedDriver, location: {x: number, y: number}) => Promise<void>} setWindowLocation - set location of the window on the screen
+ * @prop {(driver: UnwrappedDriver) => Promise<{width: number, height: number}>} getWindowSize - return size of the window
+ * @prop {(driver: UnwrappedDriver, location: {width: number, height: number}) => Promise<void>} setWindowSize - set size of the window
+ * @prop {(driver: UnwrappedDriver) => Promise<'landscape'|'portrait'>} getOrientation - return string which represents screen orientation
+ * @prop {(driver: UnwrappedDriver) => Promise<boolean>} isMobile - true if a mobile device, false otherwise
+ * @prop {(driver: UnwrappedDriver) => Promise<boolean>} isAndroid - true if an Android device, false otherwise
+ * @prop {(driver: UnwrappedDriver) => Promise<boolean>} isIOS - true if an iOS device, false otherwise
+ * @prop {(driver: UnwrappedDriver) => Promise<boolean>} isNative - true if a native app, false otherwise
+ * @prop {(driver: UnwrappedDriver) => Promise<string>} getPlatformVersion - return version of the device's platform
+ * @prop {(driver: UnwrappedDriver) => Promise<string>} getSessionId - return id of the running session
+ * @prop {(driver: UnwrappedDriver) => Promise<string|Buffer>} takeScreenshot - return screenshot of the viewport
+ * @prop {(driver: UnwrappedDriver) => Promise<string>} getTitle - return page title
+ * @prop {(driver: UnwrappedDriver) => Promise<string>} getSource - return current url
+ * @prop {(driver: UnwrappedDriver, url: string) => Promise<void>} visit - redirect to the specified url
  */
 
 class EyesDriverController {

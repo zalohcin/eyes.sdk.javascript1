@@ -1,14 +1,13 @@
-'use strict'
+const Enum = require('../utils/Enum')
 
 /**
- * @readonly
- * @enum {string}
+ * @typedef {string} IosScreenOrientation
  */
-const IosScreenOrientation = {
+
+const IosScreenOrientations = Enum('IosScreenOrientation', {
   PORTRAIT: 'portrait',
   LANDSCAPE_LEFT: 'landscapeLeft',
   LANDSCAPE_RIGHT: 'landscapeRight',
-}
+})
 
-Object.freeze(IosScreenOrientation)
-exports.IosScreenOrientation = IosScreenOrientation
+module.exports = IosScreenOrientations

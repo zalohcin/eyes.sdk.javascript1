@@ -3,39 +3,37 @@
 const fs = require('fs')
 
 /**
- * @ignore
+ * @param {Buffer} imageBuffer
+ * @param {string} filename
+ * @return {Promise}
  */
-class FileUtils {
-  /**
-   * @param {Buffer} imageBuffer
-   * @param {string} filename
-   * @return {Promise}
-   */
-  static writeFromBuffer(imageBuffer, filename) {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(filename, imageBuffer, err => {
-        if (err) {
-          return reject(err)
-        }
-        return resolve()
-      })
+function writeFromBuffer(imageBuffer, filename) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(filename, imageBuffer, err => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve()
     })
-  }
-
-  /**
-   * @param {string} path
-   * @return {Promise<Buffer>}
-   */
-  static readToBuffer(path) {
-    return new Promise((resolve, reject) => {
-      fs.readFile(path, (err, data) => {
-        if (err) {
-          return reject(err)
-        }
-        return resolve(data)
-      })
-    })
-  }
+  })
 }
 
-exports.FileUtils = FileUtils
+/**
+ * @param {string} path
+ * @return {Promise<Buffer>}
+ */
+function readToBuffer(path) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, (err, data) => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve(data)
+    })
+  })
+}
+
+module.exports = {
+  writeFromBuffer,
+  readToBuffer,
+}

@@ -1,16 +1,13 @@
 'use strict'
-const {Configuration} = require('./config/Configuration')
-const {CorsIframeHandle} = require('./capture/CorsIframeHandler')
-const {EyesRunner} = require('./runner/EyesRunner')
-const {ClassicRunner} = require('./runner/ClassicRunner')
-const {VisualGridRunner} = require('./runner/VisualGridRunner')
+const Configuration = require('./config/Configuration')
+const CorsIframeHandles = require('./capture/CorsIframeHandles')
+const EyesRunner = require('./runner/EyesRunner')
+const ClassicRunner = require('./runner/ClassicRunner')
+const VisualGridRunner = require('./runner/VisualGridRunner')
 
 /**
  * @typedef {import('./EyesClassic')} EyesClassic
  * @typedef {import('./EyesVisualGrid')} EyesVisualGrid
- * @typedef {import('./runner/EyesRunner').EyesRunner} EyesRunner
- * @typedef {import('./runner/ClassicRunner').ClassicRunner} ClassicRunner
- * @typedef {import('./runner/VisualGridRunner').VisualGridRunner} VisualGridRunner
  */
 
 /**
@@ -85,7 +82,7 @@ class EyesFactory {
       eyes = new this.EyesClassic(serverUrl, isDisabled)
     }
 
-    eyes._corsIframeHandle = CorsIframeHandle.BLANK
+    eyes._corsIframeHandle = CorsIframeHandles.BLANK
 
     return eyes
   }

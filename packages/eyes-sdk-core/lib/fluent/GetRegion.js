@@ -1,6 +1,6 @@
 'use strict'
 
-const {GetSelector} = require('./GetSelector')
+const GetSelector = require('./GetSelector')
 
 /* eslint-disable no-unused-vars */
 
@@ -23,4 +23,4 @@ class GetRegion extends GetSelector {
   }
 }
 
-exports.GetRegion = GetRegion
+module.exports = GetRegion

@@ -1,6 +1,6 @@
 'use strict'
 
-const {PropertyHandler} = require('./PropertyHandler')
+const PropertyHandler = require('./PropertyHandler')
 
 /**
  * A property handler for read-only properties (i.e., set always fails).
@@ -33,4 +33,4 @@ class ReadOnlyPropertyHandler extends PropertyHandler {
   }
 }
 
-exports.ReadOnlyPropertyHandler = ReadOnlyPropertyHandler
+module.exports = ReadOnlyPropertyHandler

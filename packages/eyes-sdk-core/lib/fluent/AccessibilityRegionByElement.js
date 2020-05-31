@@ -1,7 +1,7 @@
 'use strict'
-
-const {AccessibilityMatchSettings, CoordinatesType} = require('../..')
-const {GetAccessibilityRegion} = require('./GetAccessibilityRegion')
+const AccessibilityMatchSettings = require('../config/AccessibilityMatchSettings')
+const CoordinatesTypes = require('../geometry/CoordinatesType')
+const GetAccessibilityRegion = require('./GetAccessibilityRegion')
 const EyesUtils = require('../EyesUtils')
 
 /**
@@ -10,10 +10,10 @@ const EyesUtils = require('../EyesUtils')
  * @typedef {import('../wrappers/EyesWrappedDriver')} EyesWrappedDriver
  * @typedef {import('../EyesClassic')} EyesClassic
  *
- * @typedef {Object} AccessibilityPersistedRegions
- * @property {string} type - selector type (css or xpath)
- * @property {string} selector - selector itself
- * @property {AccessibilityRegionType} accessibilityType - accessibility region type
+ * @typedef AccessibilityPersistedRegions
+ * @prop {string} type - selector type (css or xpath)
+ * @prop {string} selector - selector itself
+ * @prop {AccessibilityRegionType} accessibilityType - accessibility region type
  */
 
 class AccessibilityRegionByElement extends GetAccessibilityRegion {
@@ -37,8 +37,8 @@ class AccessibilityRegionByElement extends GetAccessibilityRegion {
     const rect = await this._element.getRect()
     const pTag = screenshot.convertLocation(
       rect.getLocation(),
-      CoordinatesType.CONTEXT_RELATIVE,
-      CoordinatesType.SCREENSHOT_AS_IS,
+      CoordinatesTypes.CONTEXT_RELATIVE,
+      CoordinatesTypes.SCREENSHOT_AS_IS,
     )
 
     const accessibilityRegion = new AccessibilityMatchSettings({

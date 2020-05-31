@@ -1,6 +1,6 @@
-const {TestResultsFormatter} = require('../../lib/TestResultsFormatter')
+const TestResultsFormatter = require('../../lib/TestResultsFormatter')
 const {TestResults, TestResultsError} = require('../../lib/TestResults')
-const {TestResultsStatus} = require('../../lib/TestResultsStatus')
+const TestResultsStatuses = require('../../lib/TestResultsStatus')
 const assert = require('assert')
 
 describe('TestResultsFormatter', () => {
@@ -34,14 +34,14 @@ describe('TestResultsFormatter', () => {
     it('works with 1 diff', () => {
       const testResults = [
         new TestResults({
-          status: TestResultsStatus.Passed,
+          status: TestResultsStatuses.Passed,
           name: 'My Component | Button2',
           hostApp: 'Chrome',
           hostDisplaySize: {width: 10, height: 20},
           appUrls: {batch: 'https://eyes.com/results'},
         }),
         new TestResults({
-          status: TestResultsStatus.Unresolved,
+          status: TestResultsStatuses.Unresolved,
           isDifferent: true,
           name: 'My Component | Button1',
           hostApp: 'Firefox',
@@ -66,7 +66,7 @@ Difference found. See https://eyes.com/results for details.
     it('works with multiple diffs', () => {
       const testResults = [
         new TestResults({
-          status: TestResultsStatus.Unresolved,
+          status: TestResultsStatuses.Unresolved,
           isDifferent: true,
           name: 'My Component | Button2',
           hostApp: 'Chrome',
@@ -74,7 +74,7 @@ Difference found. See https://eyes.com/results for details.
           appUrls: {batch: 'https://eyes.com/results'},
         }),
         new TestResults({
-          status: TestResultsStatus.Unresolved,
+          status: TestResultsStatuses.Unresolved,
           isDifferent: true,
           name: 'My Component | Button1',
           hostApp: 'Firefox',
@@ -102,7 +102,7 @@ Difference found. See https://eyes.com/results for details.
     it('works with 1 error', async () => {
       const testResults = [
         new TestResults({
-          status: TestResultsStatus.Passed,
+          status: TestResultsStatuses.Passed,
           isDifferent: false,
           name: 'My Component | Button2',
           hostApp: 'Chrome',
@@ -131,7 +131,7 @@ some error message
     it('works with multiple errors', async () => {
       const testResults = [
         new TestResults({
-          status: TestResultsStatus.Passed,
+          status: TestResultsStatuses.Passed,
           isDifferent: false,
           name: 'My Component | Button2',
           hostApp: 'Chrome',
@@ -169,7 +169,7 @@ some error message
     it('works with diffs and errors', async () => {
       const testResults = [
         new TestResults({
-          status: TestResultsStatus.Unresolved,
+          status: TestResultsStatuses.Unresolved,
           isDifferent: true,
           name: 'My Component | Button2',
           hostApp: 'Chrome',
@@ -210,7 +210,7 @@ some error message
     it('works with no diifs and no errors', async () => {
       const testResults = [
         new TestResults({
-          status: TestResultsStatus.Passed,
+          status: TestResultsStatuses.Passed,
           isDifferent: false,
           name: 'My Component | Button2',
           hostApp: 'Chrome',
@@ -248,7 +248,7 @@ some error message
     it('displays duration if provided', async () => {
       const testResults = [
         new TestResults({
-          status: TestResultsStatus.Passed,
+          status: TestResultsStatuses.Passed,
           isDifferent: false,
           name: 'My Component | Button2',
           hostApp: 'Chrome',

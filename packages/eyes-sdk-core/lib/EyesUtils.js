@@ -12,7 +12,7 @@ const {EyesDriverOperationError} = require('./errors/EyesDriverOperationError')
 const EyesJsSnippets = require('./EyesJsSnippets')
 
 /**
- * @typedef {import('./logging/Logger').Logger} Logger
+ * @typedef {import('./logging/Logger')} Logger
  * @typedef {import('./wrappers/EyesBrowsingContext')} EyesBrowsingContext
  * @typedef {import('./wrappers/EyesDriverController')} EyesDriverController
  * @typedef {import('./wrappers/EyesElementFinder')} EyesElementFinder
@@ -26,7 +26,8 @@ const EyesJsSnippets = require('./EyesJsSnippets')
 /**
  * Returns viewport size of current context
  * @param {Logger} _logger - logger instance
- * @param {EyesJsExecutor} executor - js executor
+ * @param {Object} driver
+ * @param {EyesJsExecutor} driver.executor - js executor
  * @return {RectangleSize} viewport size
  */
 async function getViewportSize(_logger, {executor}) {
@@ -624,11 +625,11 @@ async function locatorToPersistedRegions(logger, {finder, executor}, selector) {
   )
 }
 /**
- * @typedef {Object} ContextInfo
- * @property {boolean} isRoot - is root context
- * @property {boolean} isCORS - is cors context related to the parent
- * @property {UnwrappedElement} document - context document element
- * @property {string} frameSelector - xpath to the frame element related to the parent context
+ * @typedef ContextInfo
+ * @prop {boolean} isRoot - is root context
+ * @prop {boolean} isCORS - is cors context related to the parent
+ * @prop {UnwrappedElement} document - context document element
+ * @prop {string} frameSelector - xpath to the frame element related to the parent context
  *
  * Extract information about relations between current context and its parent
  * @param {Logger} _logger - logger instance
@@ -649,15 +650,15 @@ async function getFrameByNameOrId(_logger, executor, nameOrId) {
   return executor.executeScript(EyesJsSnippets.GET_FRAME_BY_NAME_OR_ID, nameOrId)
 }
 /**
- * @typedef {Object} FrameInfo
- * @property {boolean} isCORS - is cors frame related to the current context
- * @property {UnwrappedElement} element - frame element
- * @property {string} selector - xpath to the frame element related to the parent context
+ * @typedef FrameInfo
+ * @prop {boolean} isCORS - is cors frame related to the current context
+ * @prop {UnwrappedElement} element - frame element
+ * @prop {string} selector - xpath to the frame element related to the parent context
  *
  * Find by context information
  * @param {Logger} _logger - logger instance
  * @param {Object} driver
- * @param {EyesElementFinder} driver.finder - element finder
+ * @param {EyesBrowsingContext} driver.context - browsing context
  * @param {EyesJsExecutor} driver.executor - js executor
  * @param {ContextInfo} contextInfo - target context info
  * @param {(left: UnwrappedElement, right: UnwrappedElement) => Promise<boolean>} comparator - check if two document elements are equal

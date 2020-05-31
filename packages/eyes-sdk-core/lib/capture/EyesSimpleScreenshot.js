@@ -2,9 +2,9 @@
 
 const {ArgumentGuard, CoordinatesType, Location, RectangleSize, Region} = require('../..')
 
-const {OutOfBoundsError} = require('../errors/OutOfBoundsError')
-const {CoordinatesTypeConversionError} = require('../errors/CoordinatesTypeConversionError')
-const {EyesScreenshot} = require('./EyesScreenshot')
+const OutOfBoundsError = require('../errors/OutOfBoundsError')
+const CoordinatesTypeConversionError = require('../errors/CoordinatesTypeConversionError')
+const EyesScreenshot = require('./EyesScreenshot')
 
 /**
  * Encapsulates a screenshot taken by the images SDK.
@@ -173,4 +173,4 @@ class EyesSimpleScreenshot extends EyesScreenshot {
   }
 }
 
-exports.EyesSimpleScreenshot = EyesSimpleScreenshot
+module.exports = EyesSimpleScreenshot

@@ -8,12 +8,12 @@ const {
   AccessibilityMatchSettings,
 } = require('../..')
 
-const {GetRegion} = require('./GetRegion')
-const {IgnoreRegionByRectangle} = require('./IgnoreRegionByRectangle')
-const {FloatingRegionByRectangle} = require('./FloatingRegionByRectangle')
-const {AccessibilityRegionByRectangle} = require('./AccessibilityRegionByRectangle')
-const {GetFloatingRegion} = require('./GetFloatingRegion')
-const {GetAccessibilityRegion} = require('./GetAccessibilityRegion')
+const GetRegion = require('./GetRegion')
+const IgnoreRegionByRectangle = require('./IgnoreRegionByRectangle')
+const FloatingRegionByRectangle = require('./FloatingRegionByRectangle')
+const AccessibilityRegionByRectangle = require('./AccessibilityRegionByRectangle')
+const GetFloatingRegion = require('./GetFloatingRegion')
+const GetAccessibilityRegion = require('./GetAccessibilityRegion')
 
 /**
  * The Match settings object to use in the various Eyes.Check methods.

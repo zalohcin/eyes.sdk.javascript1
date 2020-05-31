@@ -1,10 +1,14 @@
 'use strict'
 
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {TypeUtils} = require('../utils/TypeUtils')
-const {RectangleSize} = require('./RectangleSize')
-const {Location} = require('./Location')
-const {CoordinatesType} = require('./CoordinatesType')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const TypeUtils = require('../utils/TypeUtils')
+const RectangleSize = require('./RectangleSize')
+const Location = require('./Location')
+const CoordinatesTypes = require('./CoordinatesType')
+
+/**
+ * @typedef {import('./CoordinatesType').CoordinatesType} CoordinatesType
+ */
 
 /**
  * @typedef {{left: number, top: number, width: number, height: number, coordinatesType: CoordinatesType|undefined}} RegionObject
@@ -120,23 +124,6 @@ const getSubRegionsWithVaryingSize = (containerRegion, maxSubRegionSize, scrollD
 class Region {
   /**
    * Creates a Region instance.
-   *
-   * @signature `new Region(region)`
-   * @sigparam {Region} region - The region instance to clone from.
-   *
-   * @signature `new Region(object)`
-   * @sigparam {{left: number, top: number, width: number, height: number}} object - The region object to clone from.
-   *
-   * @signature `new Region(location, size)`
-   * @sigparam {Location} location - The region location to use.
-   * @sigparam {RectangleSize} size - The region size to use.
-   *
-   * @signature `new Region(left, top, width, height)`
-   * @sigparam {number} left - The region left offset.
-   * @sigparam {number} top - The region top offset.
-   * @sigparam {number} width - The region width.
-   * @sigparam {number} height - The region height.
-   *
    * @param {Region|RegionObject|Location|number} varArg1 - The Region (or object) to clone from, the Location of new region or the left offset of new region.
    * @param {RectangleSize|number} [varArg2] - The Region size or the top offset of new region.
    * @param {CoordinatesType|number} [varArg3] - The width of new region.
@@ -192,7 +179,7 @@ class Region {
       this._top = Math.ceil(top)
       this._width = width
       this._height = height
-      this._coordinatesType = coordinatesType || CoordinatesType.SCREENSHOT_AS_IS
+      this._coordinatesType = coordinatesType || CoordinatesTypes.SCREENSHOT_AS_IS
     }
   }
 
@@ -574,6 +561,7 @@ class Region {
   }
 }
 
+/** @type {Region} */
 Region.EMPTY = new Region(0, 0, 0, 0)
 
-exports.Region = Region
+module.exports = Region

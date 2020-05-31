@@ -1,12 +1,12 @@
 'use strict'
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
+const ArgumentGuard = require('../utils/ArgumentGuard')
 const EyesJsExecutor = require('./EyesJsExecutor')
 const EyesBrowsingContext = require('./EyesBrowsingContext')
 const EyesElementFinder = require('./EyesElementFinder')
 const EyesDriverController = require('./EyesDriverController')
 
 /**
- * @typedef {import('../logging/Logger').Logger} Logger
+ * @typedef {import('../logging/Logger')} Logger
  * @typedef {import('./EyesJsExecutor').SpecsJsExecutor} SpecsJsExecutor
  * @typedef {import('./EyesBrowsingContext').SpecsBrowsingContext} SpecsBrowsingContext
  * @typedef {import('./EyesElementFinder').SpecsElementFinder} SpecsElementFinder
@@ -14,15 +14,15 @@ const EyesDriverController = require('./EyesDriverController')
  */
 
 /**
- * @typedef {Object} UnwrappedDriver
- * @property {?}
+ * @typedef UnwrappedDriver
+ * @prop {?}
  */
 
 /**
- * @typedef {Object} DriverOverrides
- * @property {(reference) => Promise<*>} switchToFrame
- * @property {() => Promise<*>} switchToParentFrame
- * @property {(url: string) => Promise<*>} visit
+ * @typedef DriverOverrides
+ * @prop {(reference) => Promise<*>} switchToFrame
+ * @prop {() => Promise<*>} switchToParentFrame
+ * @prop {(url: string) => Promise<*>} visit
  *
  */
 

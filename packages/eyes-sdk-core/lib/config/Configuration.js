@@ -1,16 +1,20 @@
 'use strict'
+const BatchInfo = require('./BatchInfo')
+const PropertyData = require('./PropertyData')
+const ProxySettings = require('./ProxySettings')
+const BrowserType = require('./BrowserType')
+const StitchMode = require('./StitchMode')
+const ScreenOrientation = require('./ScreenOrientation')
+const ImageMatchSettings = require('./ImageMatchSettings')
+const RectangleSize = require('../geometry/RectangleSize')
+const ArgumentGuard = require('../utils/ArgumentGuard')
+const TypeUtils = require('../utils/TypeUtils')
+const GeneralUtils = require('../utils/GeneralUtils')
 
-const {BatchInfo} = require('./BatchInfo')
-const {PropertyData} = require('./PropertyData')
-const {ProxySettings} = require('./ProxySettings')
-const {BrowserType} = require('./BrowserType')
-const {StitchMode} = require('./StitchMode')
-const {ScreenOrientation} = require('./ScreenOrientation')
-const {ImageMatchSettings} = require('./ImageMatchSettings')
-const {RectangleSize} = require('../geometry/RectangleSize')
-const {ArgumentGuard} = require('../utils/ArgumentGuard')
-const {TypeUtils} = require('../utils/TypeUtils')
-const {GeneralUtils} = require('../utils/GeneralUtils')
+/**
+ * @typedef {import('./AccessibilityLevel').AccessibilityLevel} AccessibilityLevel
+ * @typedef {import('./AccessibilityGuidelinesVersion').AccessibilityGuidelinesVersion} AccessibilityGuidelinesVersion
+ */
 
 /**
  * @typedef {{level: AccessibilityLevel, guidelinesVersion: AccessibilityGuidelinesVersion}} AccessibilitySettings
@@ -61,7 +65,10 @@ class Configuration {
    * @param {Configuration|object} [configuration]
    */
   constructor(configuration) {
-    /** @type {boolean} */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this._showLogs = undefined
     /** @type {boolean} */
     this._saveDebugData = undefined
@@ -1279,4 +1286,4 @@ class Configuration {
   }
 }
 
-exports.Configuration = Configuration
+module.exports = Configuration
