@@ -367,6 +367,7 @@ describe('openEyes', () => {
 * safari-one-version-back
 * safari-two-versions-back
 * edgechromium-one-version-back
+* edgechromium-two-versions-back
 
 Received: 'firefox-1'.`,
     )

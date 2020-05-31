@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- updated to @applitools/visual-grid-client@14.3.0 (from v14.2.1)
+- updated to @applitools/visual-grid-client@14.3.1 (from v14.3.0)
 
 - Unified core
 

@@ -179,7 +179,8 @@ declare namespace Eyes {
            'firefox-two-versions-back'     |
            'safari-one-version-back'       |
            'safari-two-versions-back'      |
-           'edgechromium-one-version-back'
+           'edgechromium-one-version-back' |
+           'edgechromium-two-versions-back'
     }
 
     interface DeviceViewport {
