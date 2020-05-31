@@ -20,7 +20,7 @@ function elementToCdt(element) {
 }
 
 function generateDomSnapshot(driver) {
-  const cdt = Array.from(driver._elements.values()).reduce((cdt, elements) => { 
+  const cdt = Array.from(driver._elements.values()).reduce((cdt, elements) => {
     return cdt.concat(elements.map(elementToCdt))
   }, [])
   return JSON.stringify({
