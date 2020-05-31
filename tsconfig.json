@@ -1,11 +1,6 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "baseUrl": "./",
-    "paths": {
-      "@applitools/eyes-sdk-core": ["./packages/eyes-sdk-core"]
-    }
+    "module": "commonjs",
+    "moduleResolution": "node"
   },
 }

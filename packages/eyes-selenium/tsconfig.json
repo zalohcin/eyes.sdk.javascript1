@@ -1,12 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "declarationDir": "typings",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outFile": "typings.d.ts",
-    "types": ["@applitools/eyes-sdk-core"]
+    "stripInternal": true,
+    "removeComments": false,
+    "allowJs": true,
   },
   "include": ["./index.js"],
-  // "include": ["../eye-sdk-core/lib/**/*.js"],
-  "references": [{"path": "../eyes-sdk-core"}]
 }

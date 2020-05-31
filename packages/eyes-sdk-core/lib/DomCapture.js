@@ -89,7 +89,7 @@ class DomCapture {
   }
 
   /**
-   * @return {Promise<{string}>}
+   * @return {Promise<string>}
    */
   async getWindowDom() {
     let script
@@ -112,7 +112,7 @@ class DomCapture {
   /**
    * @param {string} script
    * @param {string} url
-   * @return {Promise<{string}>}
+   * @return {Promise<string>}
    */
   async getFrameDom(script, url) {
     let timeout, result
