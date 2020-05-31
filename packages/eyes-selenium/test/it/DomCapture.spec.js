@@ -12,7 +12,7 @@ const fs = require('fs')
 
 describe('DOM Capture', () => {
   let driver, eyes, serverUrl, closeServer
-  const expectedFolder = path.resolve(__dirname, '../fixtures/tmp')
+  const expectedFolder = path.resolve(__dirname, '/tmp')
 
   before(async () => {
     driver = await getDriver('CHROME')
